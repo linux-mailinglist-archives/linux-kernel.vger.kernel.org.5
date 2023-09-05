@@ -2,183 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6C5791FC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 02:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2AEF792446
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 17:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240604AbjIEAOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 20:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33516 "EHLO
+        id S229604AbjIEP6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 11:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232553AbjIEAOg (ORCPT
+        with ESMTP id S245106AbjIEBwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 20:14:36 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38903E6;
-        Mon,  4 Sep 2023 17:14:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693872873; x=1725408873;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=jXTml8ROylRcpxrDeh4M3sSBh0Z2uZU+fib1foNMrZI=;
-  b=JiKnljQaa1iOZNIj2ltzZ48Bjvx7ILRH0jlCyXmRAWVLdJ3dO8Ts+Dak
-   4wF+UjOT3fzHCSodCfUp7CyD21UdZpVv0MCori9EG0+tjlvIWzHN+6zQd
-   I3dKoiX2eWqydhdClPeQYLSA4YVnnqU730EDFOMYCnrDk1QlxFwv+qjGF
-   2Z3Rim7ukjYLR9rgGiTFrR/ccug63mPNyAhvHMfn+71IDrSD9ze1aiOBy
-   4irrSNxeUq7GamU4Flii/D7tHNGjhWnNROY1DDnzQb7JfQzb9z/AdjX4v
-   MhZVEuiegXzTtn1+bx9t+wV1NmNmlBD779kefsLNwKjcEanb9d7Z4F0r7
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="440643559"
-X-IronPort-AV: E=Sophos;i="6.02,227,1688454000"; 
-   d="scan'208";a="440643559"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 17:14:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="806391108"
-X-IronPort-AV: E=Sophos;i="6.02,227,1688454000"; 
-   d="scan'208";a="806391108"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Sep 2023 17:14:32 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 4 Sep 2023 17:14:31 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Mon, 4 Sep 2023 17:14:31 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.171)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Mon, 4 Sep 2023 17:14:31 -0700
+        Mon, 4 Sep 2023 21:52:06 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2087.outbound.protection.outlook.com [40.107.93.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0F2CC6;
+        Mon,  4 Sep 2023 18:52:02 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sh0uHGa+5UcMfWHlonWc1ADcRBDH0WKwDYmwSoNrN23Nrjrs4krkf1c2PtwdZGjG5wTdl5VVelI4sA601CnKlXMphxpjK6rb8Bfpo87s9YvRWUV5iC/778xweny8TFq+63rpd6y+2yZ99xmYANoRLnrz//zare3FTfszavkSEgFPZKdohDR9SIucxT2a8kzDvWjZolgqHLg7m5gwtoVYjVj2jepy4hfNPp47izBK2NriaZu03CwDDDGyTh26DWhAP2syXAsYgVwKaRq2n5+F3s53mY/JObwExWeMs44k34bOaF47lw0nf+5mvGQftIRk4Ei5csRyxjlKeWhUw3Ex7w==
+ b=iTrjf0oqiMFjZpZ6c+jnsJagu1o/fY7Iy7JutLeQlq/Hyb+8xNeJWtGFbkM6iWiN2+ZYWm2/vquLqtzlww4uUXce/2sSr8oo0WuEjL5EExK8ww1OoGjWCF6nidSuBiQgXRh2BrYZnzuiPg6IEA5HwKimghBbKFgT6/o9ifri8G0vnOMrHefvgJ0ZA1ivjQchgyWkZ7BZtMVbf1Ag2fAmOdDBvHqeKvrnidZje5puVeDtMyvaB2w1fhER1J4B4XQsrpgEHpMBUA6ZBofxdkvucJ4KaPZNf3987jBKMMKGLB3A5YGXfHIIbGjesoPj7ZyWd6GLeelaY41tEuwAPmlRSA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wdqquMmJBgBEhEF2NWtWvZ1hE0FdPMdfjJj3E1oijVU=;
- b=QeRnd+7EMDVgeMMmu3Jz4D/6PqJpyauqLq75ta+ElBi4Q0iMHoTK97sC9SbfDi1PtQmSi5MuNvZy4UwNaxs18vSoOo/wmCRkQYILKcaRMGwOhOMLpzUdgqFAgGr2C/iCgMLA0HSEo56rzLT7Mu8HkeVLeyGY3kfDYQUK+Oe9K4h4p+ajGx3rFyvhlqkn4nbmWuEwuVKSHQjT4N6Oa4TzWfkDVHJH+rLutKXT1xjgniRM9cLwcM2iTezBVpcOyX5CUe9ScIBHStAUXLaPydeJv4Up+X0iSGmaEENm3jrzJwbh+HJXBluOYrECGxendWHjqku5T0/yZ3PWC1H+b1njig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by SJ1PR11MB6250.namprd11.prod.outlook.com (2603:10b6:a03:459::17) with
+ bh=Ws2yf4YYsM18t4BNSIPeY2jo1PNGYVhD5jWIe4u2ENI=;
+ b=jjwXHO8IuKcs7xnPNHAojVEJhXrJ9yyN3avhGRwl+/p8Q8CWrc+y+dm8e8jfJ1zRw0KR+ubYyX+nyLOE3ZaAu2tl9O8nt/DNvrjfScfkRMfI/vilynKjp3yFUtny0slLagkYk3EyFVKZJn4FPcZWh8d4zhIOEuRgzyu9Vr4mU0fvXWOVCsaA18Cpx+LnI2r0VcB76VXsa4HEB+uI+Bo2aJWIIlQc9w+Q+z1m6rZ4KYaKnqv09aFbtIAr2v1EjcnbxlKXcVdTMVLgibJlJHsuTeJLuEDN7Ze8TFQoIWiNT7R5T9YYB+2LBaezW8bCCVzmeGviO5LwzTWOA2deIKjSHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ws2yf4YYsM18t4BNSIPeY2jo1PNGYVhD5jWIe4u2ENI=;
+ b=Eh3uai1HrJCHy90FgJH0LuabRvYhIl8Mlgi1sT0bHAzpKB+/5Aja6w0CpTnhZ3Jw/W/BubRu71nW5TIcjHFrtFg9CUJV+8ZH9E4Y5tbRkxH3jsnwfHY+RcTpE73bWURXaOo7SQ2Cm2M3etkQhiJ3uzDzEj5hW1d0mnnrelRtkx8=
+Received: from DS7PR03CA0187.namprd03.prod.outlook.com (2603:10b6:5:3b6::12)
+ by DM4PR12MB8558.namprd12.prod.outlook.com (2603:10b6:8:187::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Tue, 5 Sep
- 2023 00:14:29 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::6da5:f747:ba54:6938]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::6da5:f747:ba54:6938%6]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
- 00:14:29 +0000
-Date:   Mon, 4 Sep 2023 17:14:25 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Jiang <dave.jiang@intel.com>, <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-CC:     Navneet Singh <navneet.singh@intel.com>,
-        Fan Ni <fan.ni@samsung.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Alison Schofield <alison.schofield@intel.com>,
-        "Vishal Verma" <vishal.l.verma@intel.com>,
-        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC v2 03/18] cxl/mem: Read Dynamic capacity
- configuration from the device
-Message-ID: <64f672e1d4da7_1e8e78294c7@iweiny-mobl.notmuch>
-References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
- <20230604-dcd-type2-upstream-v2-3-f740c47e7916@intel.com>
- <db3bd5d0-640a-b121-f3e7-cfb73dc6c9ff@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <db3bd5d0-640a-b121-f3e7-cfb73dc6c9ff@intel.com>
-X-ClientProxiedBy: BYAPR21CA0011.namprd21.prod.outlook.com
- (2603:10b6:a03:114::21) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.30; Tue, 5 Sep
+ 2023 01:51:57 +0000
+Received: from CY4PEPF0000EDD3.namprd03.prod.outlook.com
+ (2603:10b6:5:3b6:cafe::9) by DS7PR03CA0187.outlook.office365.com
+ (2603:10b6:5:3b6::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33 via Frontend
+ Transport; Tue, 5 Sep 2023 01:51:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EDD3.mail.protection.outlook.com (10.167.241.207) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6768.25 via Frontend Transport; Tue, 5 Sep 2023 01:51:57 +0000
+Received: from jasmine-meng.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 4 Sep
+ 2023 20:51:52 -0500
+From:   Meng Li <li.meng@amd.com>
+To:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <x86@kernel.org>, <linux-acpi@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        <linux-kselftest@vger.kernel.org>,
+        "Nathan Fontenot" <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        "Perry Yuan" <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>, Meng Li <li.meng@amd.com>,
+        Wyes Karny <wyes.karny@amd.com>
+Subject: [PATCH V5 2/7] acpi: cppc: Add get the highest performance cppc control
+Date:   Tue, 5 Sep 2023 09:51:11 +0800
+Message-ID: <20230905015116.2268926-3-li.meng@amd.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230905015116.2268926-1-li.meng@amd.com>
+References: <20230905015116.2268926-1-li.meng@amd.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|SJ1PR11MB6250:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1b79f2df-398e-40fd-9625-08dbada5123c
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD3:EE_|DM4PR12MB8558:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5d6848bc-7f2c-4300-c552-08dbadb2b031
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: momsah3LATqOzkejOc7qv/vqZvilw9EgXpnTiqmidipAkRc5jcMI2Gs+7GTnltOefTle/EJU3i/dxYOTCDpWYrLsiwxBepg0+QoIj6jlV4q4jf2CIDiF0ESleKnfHAVusIY1qXq6QhUEx4Q1G4Af26SOfXXKpe5q7ibKuOvykGeydbP9h2nL9MtbZYI5osfyRwCC4UxP4AxFtg9oIrt8lhQlq7YpXuXtSawLjJsn48MowM8rhgrJ6NXLai3BQAGkS16xollI/vaDlN9KyBhDQQ2tDTB/J6tVF6+8YKucdrEnYcKhaVxjRtSEGhemroqi7s5GVg0Fv0nDLG58B13dVLeG5GfjBFLTHJvCwkX2S+qNIZjj4voZ2KHNY4ZeOF76z87w9Txeaa9af7hMs+MtBzJl0muyLLpOrQF+3tLJHYjvyLC/vm1F5gJUlpcc5MbZ/GL/RU7Wb2CZoZHAIBiJwcywnNSYhnkEssNJShnYBtzV7iBE6Y2qEF767f47UZhLpGfPLTpnW/6gHFDqCPdF4v7tUD5Sc7tgCQag5mCKKcf5DjNIwuTF4kxFngJS06X5
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(39860400002)(346002)(396003)(376002)(1800799009)(451199024)(186009)(2906002)(83380400001)(4744005)(53546011)(6506007)(6486002)(54906003)(6636002)(316002)(66556008)(110136005)(66476007)(66946007)(478600001)(6666004)(5660300002)(26005)(44832011)(41300700001)(6512007)(9686003)(8676002)(4326008)(8936002)(82960400001)(38100700002)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PrVVHHYDNzYmgpRrz7T+13B1A5uA1o+dG7AZ8mxQk+Imm9WmL2E9zOWlc9bc?=
- =?us-ascii?Q?cw/v5BBYBinxux3VCIpfYqAb+HWIyyv7laLNsCV18glcqaLcynP5RA6IO5YO?=
- =?us-ascii?Q?mId0iJ+CwSLS10qwSF5HTENT8Zz53OOFNaP3IwmePjt2Ic54hsBKspsMsure?=
- =?us-ascii?Q?XxlRQUSi/aePGRrmEQoxD/Ma7lQTPKB49H1W4nWTs7cpITMvJ4eLVIdveLzd?=
- =?us-ascii?Q?OCNRY6l98p97vDwEb8Q3OmsCW4w4cWWlZ0fd9IC1ml3zmRMGf18d4DELZ8ej?=
- =?us-ascii?Q?EYi5rhYiApgMkSj6JPRgtvsvtBaPm7gmEKwZuO6E1yynQaMaMJth6xP/5+Qf?=
- =?us-ascii?Q?9oJBm6Y/0zfcycs2tual9R1Q39vas3YTOynG9XWfo23RWIe+ao6hDp/B/mIw?=
- =?us-ascii?Q?1J78hdwm1ciFzODpGrLMs8Dywy4fk2DYwSPDLjxlWwxdTYEp+L2tAKTCE+9U?=
- =?us-ascii?Q?AOY1zW65B72dK1PuxMCrR9TAXumnkJWIW4aEsDdhKihjFJFBGkP8apb3avUr?=
- =?us-ascii?Q?0+M1tAZIiukKo32PIWZEiER0Z4KBWakfayVpXbf74Hb/rBGBs9OUo9Y11gyE?=
- =?us-ascii?Q?fDyQ6O69KmcY0sS/VOB2C1r7uC41BRVmQudXQCp12xyLNPQRj4oo0YCBJxgp?=
- =?us-ascii?Q?swxyCfjW/hsMykzlj31hMHRWyhdeYM3oCN4ilN2m6E6LY50mpA44vPTh7Fgz?=
- =?us-ascii?Q?KYZpLvinrT0MrSPA1JqU0ou+tq1i+dXNfiOAKmhCKGgQ0R5RerJ9uyyu0CeK?=
- =?us-ascii?Q?TcQZ5aNAJe79LcsCrqzLNiBZYyIF42HYaYjxVXNFKP9FegRxJ20EmGwN+/zE?=
- =?us-ascii?Q?wNg+abeLl2wmlAcfY5MP1k/sz71LlyEudgxM/Xo4m96BFzNv4D/CseBLWhwk?=
- =?us-ascii?Q?sn4rFoRfj6ZLsfLdk+iPVhVoGHkOP+xMwItFy1EPfv5adNxuYWZSYy0k5Vxu?=
- =?us-ascii?Q?/rqoAplDj0iHogICWwVVyB2e+xiNd3yJeAFHa/DPHfGLLlpfggYSs2PhrQDG?=
- =?us-ascii?Q?AA6K0VaIvZ/WF/MCMYdxRkwP0ksA9wmNeopEHpi2F+6NeHUJrX23Q2Nsqrz/?=
- =?us-ascii?Q?isTXsNxXLepReaNL/jDAT8DcUPrpO3oqGc9Ei+l+NDRtyEDk4QXnYL82CW76?=
- =?us-ascii?Q?KMDZQ+DbeABKA5D7c5tg9Xqi+MBpwkc59Seatoe8RKVkExUGrCczqAvahXeh?=
- =?us-ascii?Q?wSHOIIe0YXlbq3aYBlP/ra3CmdyRMRSglHP9lBSExmTOH7udMoIZt2k6gjtt?=
- =?us-ascii?Q?8wdSnh5+izZhytDoFPhYTLj6EVv2Umxon1ADIhjwmO+F9kasboEVyoZ4pt+8?=
- =?us-ascii?Q?yVgnWWqtlFzdu3Yy+Wq13geebA/7J2VNu8VMjqnqo1FNXIRcA8sTxQyXAe5b?=
- =?us-ascii?Q?RC53rluUnz2WDc9abXzHFluPa8TOIE5VNuIIAeK+wCBKkUuswe+68F/Fghkx?=
- =?us-ascii?Q?BtzrpukVk3oWe5q7xqx/pI9DccsF9CENZ0faZfJ7c4n/v42ciVM8yuFNTjk6?=
- =?us-ascii?Q?pdVvYN3dFyxIcNniO+fgSneS/i6GKKW087SwS12QBT3OPukkFdjkeu/cTnjW?=
- =?us-ascii?Q?o7lvFiMZ7vhtm2Sm/6Z3gC0YKyBc7sePbUSGtMhY?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1b79f2df-398e-40fd-9625-08dbada5123c
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 00:14:29.2372
+X-Microsoft-Antispam-Message-Info: JcYr3VaIOjM1Zi7R6CUufjJGsJ5TZ85JqXXMxfoWBYv/Xh+hqjzaFuMCyC8ZDZsTJWX48wJw1gnQASbSe2JCIauln3VLnyEDhhd0XtwB3KryHa4DoOBSPTWlJTCkYwA5lgg5ZDU0bzf4PVtZ4om2vzg7wPqx/vkfRHiaXS6IUkwqU7Xjegbd5IZNJB3uoeiGt/tb+U0xVT/s3Hpa80sfHMF5KnYVyimuOm0zHiv0mFXesNm9+qrjRcF1qvgwni/C2K2xhWy9esRGpXtar1PwzaceI8SUn9OespmEzdE52VwFvfWXnUZrBa9JEjOIlgfn1AXYypV7YN9GjQ+WPoKYBfZMkK3Xp0vHe3J+BOOil72PAaEHXPx3bSC/YMQcvGj9/sfSeox8YnzN3r1YO+w/4Y3o7ri/BDZR2pPBGPnxdyOz7SIpX4bELAQJKzL4h4vx24oYKzEFgryCqq9K3dMuUS2jwMTb/s1FR1+/KSFrAMMWWUfz7Vl2dHwp169EHdqexH5CNsgjyzau70n2LN+BKDcqKPZ196Nzp7NRek8i96gFGb/Egn1C5K3tXEmoeC4izMcrDIV1xW0cz5a6QuqW65Kv5jTij84aZvetljPlyKtR2DV6LlcyZQ3g1cSLuJLyRzlXg1TdhoYpskk2hSmOfo6k737nKYESaurXNiNab7OUhu+CXHEP+2qg3jF7irISp7nhqxDGMcEWJLRNVDQA1k9DQpXmNkoVLXoRoBIj5Q0VFyEYw4lh5eYJhJvCJFW4aXZKZdwYnfmpUXIGh7xHpUr92hDMar94JXVU3PMTq0g=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(376002)(136003)(346002)(1800799009)(451199024)(186009)(82310400011)(46966006)(36840700001)(40470700004)(70206006)(316002)(6636002)(36756003)(110136005)(54906003)(86362001)(70586007)(2906002)(40480700001)(8936002)(5660300002)(8676002)(4326008)(40460700003)(41300700001)(1076003)(36860700001)(336012)(2616005)(426003)(16526019)(47076005)(26005)(966005)(478600001)(81166007)(356005)(82740400003)(7696005)(6666004)(15583001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 01:51:57.3799
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vGvSdOpnRll0AwkSiO9QUq+HWOJzrn4aGcmhFqaBhG45Lj1MyTqi9H9hLEMKFOzf3zB4zlOJzKLFYei+zrkzVg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR11MB6250
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d6848bc-7f2c-4300-c552-08dbadb2b031
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD3.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB8558
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dave Jiang wrote:
-> 
-> 
-> On 8/28/23 22:20, ira.weiny@intel.com wrote:
-> > From: Navneet Singh <navneet.singh@intel.com>
-> > 
-> > Devices can optionally support Dynamic Capacity (DC).  These devices are
-> > known as Dynamic Capacity Devices (DCD).
-> > 
-> > Implement the DC (opcode 48XXh) mailbox commands as specified in CXL 3.0
-> > section 8.2.9.8.9.  Read the DC configuration and store the DC region
-> > information in the device state.
-> > 
-> > Co-developed-by: Navneet Singh <navneet.singh@intel.com>
-> > Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> Uncapitalize Dynamic in subject
+Add support for getting the highest performance to the
+generic CPPC driver. This enables downstream drivers
+such as amd-pstate to discover and use these values.
 
-Fair enough.
+Please refer to the ACPI_Spec for details on continuous
+performance control of CPPC.
 
-> 
-> Also, maybe split out the REGION vs DECODER as a prep patch.
+Signed-off-by: Meng Li <li.meng@amd.com>
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+Reviewed-by: Wyes Karny <wyes.karny@amd.com>
+Link: https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html?highlight=cppc#cpc-continuous-performance-control
+---
+ drivers/acpi/cppc_acpi.c | 13 +++++++++++++
+ include/acpi/cppc_acpi.h |  5 +++++
+ 2 files changed, 18 insertions(+)
 
-Done per Jonathan.
+diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+index 7ff269a78c20..ad388a0e8484 100644
+--- a/drivers/acpi/cppc_acpi.c
++++ b/drivers/acpi/cppc_acpi.c
+@@ -1154,6 +1154,19 @@ int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
+ 	return cppc_get_perf(cpunum, NOMINAL_PERF, nominal_perf);
+ }
+ 
++/**
++ * cppc_get_highest_perf - Get the highest performance register value.
++ * @cpunum: CPU from which to get highest performance.
++ * @highest_perf: Return address.
++ *
++ * Return: 0 for success, -EIO otherwise.
++ */
++int cppc_get_highest_perf(int cpunum, u64 *highest_perf)
++{
++	return cppc_get_perf(cpunum, HIGHEST_PERF, highest_perf);
++}
++EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
++
+ /**
+  * cppc_get_epp_perf - Get the epp register value.
+  * @cpunum: CPU from which to get epp preference value.
+diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+index 6126c977ece0..c0b69ffe7bdb 100644
+--- a/include/acpi/cppc_acpi.h
++++ b/include/acpi/cppc_acpi.h
+@@ -139,6 +139,7 @@ struct cppc_cpudata {
+ #ifdef CONFIG_ACPI_CPPC_LIB
+ extern int cppc_get_desired_perf(int cpunum, u64 *desired_perf);
+ extern int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf);
++extern int cppc_get_highest_perf(int cpunum, u64 *highest_perf);
+ extern int cppc_get_perf_ctrs(int cpu, struct cppc_perf_fb_ctrs *perf_fb_ctrs);
+ extern int cppc_set_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls);
+ extern int cppc_set_enable(int cpu, bool enable);
+@@ -165,6 +166,10 @@ static inline int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
+ {
+ 	return -ENOTSUPP;
+ }
++static inline int cppc_get_highest_perf(int cpunum, u64 *highest_perf)
++{
++	return -ENOTSUPP;
++}
+ static inline int cppc_get_perf_ctrs(int cpu, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
+ {
+ 	return -ENOTSUPP;
+-- 
+2.34.1
 
-Thanks for the review.
-Ira
