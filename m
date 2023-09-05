@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FA2792D5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAEA792D5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238982AbjIESZ7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Sep 2023 14:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49384 "EHLO
+        id S238611AbjIES0N convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Sep 2023 14:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232744AbjIESZ6 (ORCPT
+        with ESMTP id S232744AbjIES0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 14:25:58 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F227619B;
-        Tue,  5 Sep 2023 11:25:29 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-794c7d95ba5so108709739f.0;
-        Tue, 05 Sep 2023 11:25:29 -0700 (PDT)
+        Tue, 5 Sep 2023 14:26:12 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261BFCF9;
+        Tue,  5 Sep 2023 11:25:41 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-794e0e8b588so127460739f.1;
+        Tue, 05 Sep 2023 11:25:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693938206; x=1694543006;
+        d=1e100.net; s=20221208; t=1693938220; x=1694543020;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MxX1X1j/fywNnxeJETa5SKqpVl9n1CDPD3uaNFdTeIA=;
-        b=TEZt/mpaxP4o6Da8zI0NcwUXxdzD0C9ZTo963yVTAUJ9PsY62KZKlqGhDkGxnAe5NV
-         Xq02n5o69LIQXokDkp1bw3uEVhFE1C94Dk13uRTsZ4EraPO6eAyTzp2uctMAJe/RB09A
-         p6Vh1iADG+UBdJ0v0kA/gpEbdbscVzEEqNzHlSwoJsYrOGHzsEq/68/z/S1Dddb8cBvz
-         sxF56xF4j6OzIINGPV5gXVRut9kEFVkZiTzt6bBJ/o6eZGgLV6LTpg7Em0t8tnikaEgx
-         lfC8/88hKv+JLmgYuRrr1HIuvSw5JAH56w9j2yGtLIvOltAhyyB/AxnzRFlMuE38Cwvn
-         LoTw==
-X-Gm-Message-State: AOJu0YzN3v2C/GkaG7S8W1YqpDsSZgGodcMUoo/LQuumvx2Z3Gj80vFR
-        b+DIkiroB2YPX5yBPbJcSksbLXZ2iiMd7+Zuhbg=
-X-Google-Smtp-Source: AGHT+IFdsXyewg79sxgJDZU3WEmPZE1K/300agF+YggqNZmuovlyZ8d3WuM3D9CJ2I8K5RL1OfzEVcpjiW6WY+XMcg0=
-X-Received: by 2002:a5e:a713:0:b0:78b:b892:e334 with SMTP id
- b19-20020a5ea713000000b0078bb892e334mr14957651iod.11.1693938206573; Tue, 05
- Sep 2023 11:23:26 -0700 (PDT)
+        bh=DHEnGqxw8d4wb+1Vk/P+WvuthLFK4N5sRk7D0hL/o58=;
+        b=S9g4I4xgRzogTOQFlMVzwfa/PAIIDLIw649TMGTBrmsmDffZi9JX6HtgYyg+J4inDj
+         EfeQ7LD9OLlnUYseLUSZHWHkRWoekS5ZTnU61YtIzAI9PkQ65XQhNmaSaDX6xKFuV9iB
+         enOruLYn3rIBm7XMdnVdUprSclmIqeOUrhk6GKF1lJV7+qLYbiSyYI8RXqKnBe4PVQbN
+         USaWKRt41XRCCXYAu6Aic7mE2Z1Jdg1aPs6buhXSy3TQmztwWqfohH1hDonTFDUKhcOY
+         s/buOeOKmjN4wjVEKRTGhAaSrUMbQ4XfLB7f/hakM43Pd0ZbOMlnC8AjBPu6+vHQTGwi
+         26+Q==
+X-Gm-Message-State: AOJu0Yx8bfbNA12lyncVjH3kICTPNSwFiSXM1paoh1NjzoVr/RYdIsR/
+        xtxqX/yNEIsVCvR9NHKVnAxggvcNA7WZBDh+RaU=
+X-Google-Smtp-Source: AGHT+IFEwGLfzplztPrYG3JDLWzONm1qK6Opfb76y8YjayHkuDO5ECFC3Z5goRWcyza2o5g0ZP4LOZyRF8UYj5yg1tw=
+X-Received: by 2002:a5e:8f06:0:b0:787:1472:3181 with SMTP id
+ c6-20020a5e8f06000000b0078714723181mr15644419iok.3.1693938219833; Tue, 05 Sep
+ 2023 11:23:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230905181554.3202873-1-irogers@google.com> <20230905181554.3202873-2-irogers@google.com>
-In-Reply-To: <20230905181554.3202873-2-irogers@google.com>
+References: <20230905181554.3202873-1-irogers@google.com> <20230905181554.3202873-3-irogers@google.com>
+In-Reply-To: <20230905181554.3202873-3-irogers@google.com>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 5 Sep 2023 11:23:15 -0700
-Message-ID: <CAM9d7ci-MZsJFKOtk2YebJSmarbkO_zaAmVgug8Ymbi6sev-QQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/3] perf completion: Support completion of libpfm4 events
+Date:   Tue, 5 Sep 2023 11:23:28 -0700
+Message-ID: <CAM9d7cjFSBJV0H4Ai=oHA6CzdyACpoTyrq+LSuTfTJJfvkgndQ@mail.gmail.com>
+Subject: Re: [PATCH v1 3/3] perf completion: Support completion of metrics/metricgroups
 To:     Ian Rogers <irogers@google.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -66,7 +66,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, Sep 5, 2023 at 11:16 AM Ian Rogers <irogers@google.com> wrote:
 >
-> Use `perf list --raw-dump pfm` to support completion of libpfm4 events.
+> Allow metrics to expand for -M or --metrics options.
 >
 > Signed-off-by: Ian Rogers <irogers@google.com>
 
@@ -81,17 +81,17 @@ Namhyung
 >  1 file changed, 4 insertions(+)
 >
 > diff --git a/tools/perf/perf-completion.sh b/tools/perf/perf-completion.sh
-> index 40cfc30ad7ad..319ad724b97a 100644
+> index 319ad724b97a..f224d79b89e6 100644
 > --- a/tools/perf/perf-completion.sh
 > +++ b/tools/perf/perf-completion.sh
-> @@ -198,6 +198,10 @@ __perf_main ()
->                 else
->                         __perfcomp_colon "$evts" "$cur1"
->                 fi
-> +       elif [[ $prev == @("--pfm-events") &&
-> +               $prev_skip_opts == @(record|stat|top) ]]; then
-> +               local evts=$($cmd list --raw-dump pfm)
-> +               __perfcomp "$evts" "$cur"
+> @@ -202,6 +202,10 @@ __perf_main ()
+>                 $prev_skip_opts == @(record|stat|top) ]]; then
+>                 local evts=$($cmd list --raw-dump pfm)
+>                 __perfcomp "$evts" "$cur"
+> +       elif [[ $prev == @("-M"|"--metrics") &&
+> +               $prev_skip_opts == @(stat) ]]; then
+> +               local metrics=$($cmd list --raw-dump metric metricgroup)
+> +               __perfcomp "$metrics" "$cur"
 >         else
 >                 # List subcommands for perf commands
 >                 if [[ $prev_skip_opts == @(kvm|kmem|mem|lock|sched|
