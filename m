@@ -2,116 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2521792A7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895A07927F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238991AbjIEQiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52282 "EHLO
+        id S1347814AbjIEQSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:18:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354791AbjIEOYS (ORCPT
+        with ESMTP id S1354792AbjIEOYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 10:24:18 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E274189
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 07:24:14 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52a1ce529fdso3495579a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 07:24:14 -0700 (PDT)
+        Tue, 5 Sep 2023 10:24:35 -0400
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF16194
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 07:24:31 -0700 (PDT)
+Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-490cd6db592so800272e0c.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 07:24:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693923852; x=1694528652; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iVp7mkHXr+2wOrv7T4nMYTKfiU2Rr3GKiul2WMppLoU=;
-        b=ZlRWyXnuO+BrDfbMBq01Cwa5R9LQRjuAt4zmH6Il52gYCLtQO5i/En92+4LDoylMAd
-         QdBtsJjb+YgSTAj5+In7MVl7cmMM3tmCW86u3w7ruXGaW3HaEq7KtbKNXZZzH6bKxKYf
-         ftsZ6zjnkUnKAy/em/joUaitSJBp8gXMGic+Y=
+        d=google.com; s=20221208; t=1693923870; x=1694528670; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rtg0JV+CO28r/3TvA7CtNqhGLbhNAM/8Tnh4hPoGQnU=;
+        b=cIqGumjZaNP51NtJny7H9KFfgslTyyGhR7EUsN9RApU76ixIAcs5j7OaZqR56bxSPI
+         N5MamOmm4vbjRo4LJtYhPmYHajNAQD2XKiUs+xnvC/lIzzduxwjJ6L5QNCopZtoJows8
+         J7lgSNT51xUrzJkB4L4lZc85wfWDIAx2PCFAkBwfYY81vFejhbqra7j8fBZ1PI0YV6iR
+         B5g/PhdTfvMn6OxPTDMtuuCQ7IBpHIIJnIDETUVBnzb/pwx8gPT4YHgPiZNChvFUoSMg
+         RUt+Yxn2CV/XUxXO1unRLjVW0089KKiQnigzI6AKCMXkqrzBNRujVQKcYxF64Ez8wD0N
+         f6VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693923852; x=1694528652;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iVp7mkHXr+2wOrv7T4nMYTKfiU2Rr3GKiul2WMppLoU=;
-        b=D7KGinlZRYqU5+m5Uy79WBvhX5SGaYtEv7SJSWzMGhA/h+BqCpvpwOw9dWHoLE0BmV
-         TAPfLTu1obWDvt8jC3tVnrmCHooxEwNi02m5rpsayYQA8ZQnSFwfmXb6a5CqpCaJzNeZ
-         T9KiPLTudINblxgDQHDnf+1Hyii/JKgDh16aiKVztoTu8iF+2wb2jSisRfIknR66zax2
-         kP/gkHm/EOdmCVYR7AVhmztPOqbgTrgLnYqKXwmwTnc/UuJUjZN8iv55814HyL4jZmyi
-         1CMgMX3zdFU7fHiEc+69q+hxaKGc2ttP27/Tz57VFyEky0xWabVyfbYiztZN+JPh9UgH
-         EG/Q==
-X-Gm-Message-State: AOJu0YyiLpunJv/chIPeh04nSYb+ZDtPZTCI/O2MXtjgbEiXTtYjkhSQ
-        1+mBbHTJ1j2+lRrfod6PALY/htLvxXLT0eDUMysF5A==
-X-Google-Smtp-Source: AGHT+IFX8rb821OgcFc8qIcK62JuBl4SmmQIijoBDyGywsfrPN6CIkneUdX5ggtEweb0xyJ06tUReQ==
-X-Received: by 2002:aa7:d790:0:b0:52b:daff:f702 with SMTP id s16-20020aa7d790000000b0052bdafff702mr10127953edq.16.1693923852287;
-        Tue, 05 Sep 2023 07:24:12 -0700 (PDT)
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com. [209.85.128.48])
-        by smtp.gmail.com with ESMTPSA id v18-20020a056402349200b0052e1783ab25sm3182690edc.70.2023.09.05.07.24.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Sep 2023 07:24:11 -0700 (PDT)
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4005f0a6c2bso179425e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 07:24:11 -0700 (PDT)
-X-Received: by 2002:a05:600c:3d0c:b0:3f7:3e85:36a with SMTP id
- bh12-20020a05600c3d0c00b003f73e85036amr264789wmb.7.1693923851202; Tue, 05 Sep
- 2023 07:24:11 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693923870; x=1694528670;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rtg0JV+CO28r/3TvA7CtNqhGLbhNAM/8Tnh4hPoGQnU=;
+        b=PoD3BQyxaAcPy3UYJAlJC218dzGCn7s2LhQULhL90cmvFnIlwpDzCchoSJg5oLRUus
+         lNg6zPl5C2YUgd2vSd/g6zBk98RE33p78M5iKT7xclX//NKXr1c2FiJ2+AfbtkmZOAxb
+         dOL7JoXE0O27xByx/yTYAO+Ej4ZKjZrQVUEqavtvBIa+GhDkTsFCSgaaXK1JbJ6jkv3/
+         ZMMYsCys7q7Gg5pIRljuluGs3iz9O5hRKYArP2+ou23zcXIPDdm9S/S+PfPbxn3p07RW
+         0mODwpAdPR6y9S0rpHDOJGEBpL1q1KFw5MpUUckTGAUxUKZfzzRGCW3t7EJBpn+k/vf7
+         j2PA==
+X-Gm-Message-State: AOJu0Yx3Gc07AQQtiaWbW9anWCv1RMkI0DgMjVAwP/QwGqywNfGavuJN
+        kMb1urmjlqT45IpLS+TxyTrKyVHXN76JIcAZMpdidw==
+X-Google-Smtp-Source: AGHT+IEWoDhzho+yngW0aCmJ/4l2W7ac9+woo+yuM0ML8a0qrzG+hU+odrwxXpclmNhFqwuK8T1fNq4QgGni4tFlVOA=
+X-Received: by 2002:a1f:dfc2:0:b0:48d:3434:fe1a with SMTP id
+ w185-20020a1fdfc2000000b0048d3434fe1amr11957524vkg.3.1693923870055; Tue, 05
+ Sep 2023 07:24:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230901234202.566951-1-dianders@chromium.org>
- <20230901164111.RFT.1.I3d5598bd73a59b5ded71430736c93f67dc5dea61@changeid> <ZPSsBhbekKY7VyDg@shell.armlinux.org.uk>
-In-Reply-To: <ZPSsBhbekKY7VyDg@shell.armlinux.org.uk>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 5 Sep 2023 07:23:54 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WT4Hf1XVA641WtNFg4WRYFKarU1WOkLPEbr0eiVQuZPg@mail.gmail.com>
-Message-ID: <CAD=FV=WT4Hf1XVA641WtNFg4WRYFKarU1WOkLPEbr0eiVQuZPg@mail.gmail.com>
-Subject: Re: [RFT PATCH 01/15] drm/armada: Call drm_atomic_helper_shutdown()
- at shutdown time
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>, airlied@gmail.com,
-        daniel@ffwll.ch, linux-kernel@vger.kernel.org
+References: <x49y1i42j1z.fsf@segfault.boston.devel.redhat.com>
+In-Reply-To: <x49y1i42j1z.fsf@segfault.boston.devel.redhat.com>
+From:   Matteo Rizzo <matteorizzo@google.com>
+Date:   Tue, 5 Sep 2023 16:24:17 +0200
+Message-ID: <CAHKB1wKh3-9icDXK9_qorJr4DZ61Bt7mZznFT75R99a8LeMi_w@mail.gmail.com>
+Subject: Re: [PATCH v5] io_uring: add a sysctl to disable io_uring system-wide
+To:     io-uring@vger.kernel.org, axboe@kernel.dk, asml.silence@gmail.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        corbet@lwn.net, akpm@linux-foundation.org, keescook@chromium.org,
+        ribalda@chromium.org, rostedt@goodmis.org, jannh@google.com,
+        chenhuacai@kernel.org, gpiccoli@igalia.com, ldufour@linux.ibm.com,
+        evn@google.com, poprdi@google.com, jordyzomer@google.com,
+        krisman@suse.de, andres@anarazel.de, Jeff Moyer <jmoyer@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi all,
 
-On Sun, Sep 3, 2023 at 8:53=E2=80=AFAM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
+Is there still anything that needs to be changed in this patch? As far as
+I can tell all the remaining feedback has been addressed.
+
+--
+Matteo
+
+On Mon, 21 Aug 2023 at 23:10, Jeff Moyer <jmoyer@redhat.com> wrote:
 >
-> On Fri, Sep 01, 2023 at 04:41:12PM -0700, Douglas Anderson wrote:
-> > Based on grepping through the source code this driver appears to be
-> > missing a call to drm_atomic_helper_shutdown() at system shutdown
-> > time. Among other things, this means that if a panel is in use that it
-> > won't be cleanly powered off at system shutdown time.
-> >
-> > The fact that we should call drm_atomic_helper_shutdown() in the case
-> > of OS shutdown/restart comes straight out of the kernel doc "driver
-> > instance overview" in drm_drv.c.
-> >
-> > This driver was fairly easy to update. The drm_device is stored in the
-> > drvdata so we just have to make sure the drvdata is NULL whenever the
-> > device is not bound.
+> From: Matteo Rizzo <matteorizzo@google.com>
 >
-> ... and there I think you have a misunderstanding of the driver model.
-> Please have a look at device_unbind_cleanup() which will be called if
-> probe fails, or when the device is removed (in other words, when it is
-> not bound to a driver.)
-
-...and there I think you didn't read this patch closely enough and
-perhaps that you have a misunderstanding of the component model.
-Please have a look at the difference between armada_drm_unbind() and
-armada_drm_remove() and also check which of those two functions is
-being modified by my patch. Were this patch adding a call to
-"dev_set_drvdata(dev, NULL)" in armada_drm_remove() then your NAK
-would be justified. However, I am not aware of anything in the
-component unbind path nor in the failure case of component bind that
-would NULL the drvdata.
-
-Kindly look at the patch a second time with this in mind.
-
--Doug
+> Introduce a new sysctl (io_uring_disabled) which can be either 0, 1, or
+> 2. When 0 (the default), all processes are allowed to create io_uring
+> instances, which is the current behavior.  When 1, io_uring creation is
+> disabled (io_uring_setup() will fail with -EPERM) for unprivileged
+> processes not in the kernel.io_uring_group group.  When 2, calls to
+> io_uring_setup() fail with -EPERM regardless of privilege.
+>
+> Signed-off-by: Matteo Rizzo <matteorizzo@google.com>
+> [JEM: modified to add io_uring_group]
+> Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
