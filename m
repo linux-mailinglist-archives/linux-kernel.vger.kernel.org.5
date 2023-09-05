@@ -2,178 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE6A7931EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 00:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D13867931EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 00:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244805AbjIEWXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 18:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
+        id S244837AbjIEWYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 18:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjIEWXp (ORCPT
+        with ESMTP id S232296AbjIEWYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 18:23:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB51D185;
-        Tue,  5 Sep 2023 15:23:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693952622; x=1725488622;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=PZ8K/Y6fP2+GV/U6uh2DerdNLUjBinIKc22XgnQErp0=;
-  b=O08x02vUr3X9Igtack++7Rxn8Lv52jtfz/1mlIiONX/OgRSyie/rxbdi
-   XVtbcJm7PnlmdeybtsfBNgZOIluL8smG3T844lG1SqHSvvYvSZwntEmpb
-   459SFn0y+Sm8tYtybZc/WniH2l/uxxcAQ8wmYIU1EGKMa8tBRdcZm9YiI
-   x0D+hmHYxd7xzZswr8ztv/5bOuqpu+r9mMP2NnAFmDtLLR601glXmgW11
-   mront3sBeL2KRu9l12PGVzgQD03rUssEsmEn7U1dfzJg2I+T/g6x7/lid
-   HErD+62oplzKrTHQM4zbFeafX2D/Pm8wanusUdx1piiGUH2DhpeEA/Wly
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="443306960"
-X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="443306960"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 15:23:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="734820249"
-X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="734820249"
-Received: from yjie-desk1.jf.intel.com (HELO [10.24.100.126]) ([10.24.100.126])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 15:23:41 -0700
-Message-ID: <3b798806-d144-58a8-6fa3-e893299bc690@linux.intel.com>
-Date:   Tue, 5 Sep 2023 15:23:41 -0700
+        Tue, 5 Sep 2023 18:24:39 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD5C197
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 15:24:31 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5007f3d3235so4835341e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 15:24:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693952669; x=1694557469; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qYhc2Ab3VZYZ8IlYXlqDSrtZZTVSJAYsW6CaMnCEvOs=;
+        b=fJSIIJVchoB7n5gLLbTZacHcpY77kdZ0865xIwjRn3YmnV5IzVdxJIIwW+LPfSd/6H
+         WmQBbKvRwW5pgmfHOhGX1ldV82KMqJRXckAKILv5usKPEwLX8tvzdeDqXqyGaKApqAw8
+         5X6Uso/Ccp/T0hZA2kx4r12bw76OUAycr7TEk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693952669; x=1694557469;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qYhc2Ab3VZYZ8IlYXlqDSrtZZTVSJAYsW6CaMnCEvOs=;
+        b=ebzR88CRXL8ml23W8hEv+RtKCKGVloxRafTtSAGSnw/fnHUWxsaE8gyUdEkS9uLTM2
+         Ftu/tbxLqpkvwM55mVKHRRzfzhn6bJ5rYcNpBNudzGedVahYrUhmodkXPpKy9WTdxhMh
+         HXTyNH10VSKREfhjkT4+AIq9YgNpvgD1dTtgK8pz0Oe7GLvIXLfD3ThPI1bmPxhgqUKO
+         +og2k01zQxducL3Tw6K9PN4JnlrQVT3E0I7dEweh42SAQF07kvZ15ACkS+piIAfto+cM
+         QiQt1YY97qFFbsI2USRymPd6iCiAD3DGhe1QftmdbIbYcUmQyC8jtknqYEQTgApJC8dU
+         GXhw==
+X-Gm-Message-State: AOJu0YwcAikulFpPf1/jE0K5v6siU3LZTIvLcM6GXXGOjAKcP/pzGV24
+        SbIHhDAatyyNr+EO2m8ego3tr669Fhin3lCOS/RLQg==
+X-Google-Smtp-Source: AGHT+IEaJFDN/Ujwzx4KejG+aid9NsVzxVXssaZhS2Q/zd9KxlbT13Wu7F94SUSUesxv5jh0Q1PZ3bqmbbOc3qbXw0A=
+X-Received: by 2002:a19:7913:0:b0:501:b960:e1af with SMTP id
+ u19-20020a197913000000b00501b960e1afmr732260lfc.23.1693952669541; Tue, 05 Sep
+ 2023 15:24:29 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 5 Sep 2023 17:24:29 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2] cpufreq: intel_pstate: set stale CPU frequency to
- minimum
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <001d01d9d3a7$71736f50$545a4df0$@telus.net>
- <CAJZ5v0g=TEY0+dL9AGh1cYNnwQ=L6G8CRxXVD0AyWsaK5aDsdA@mail.gmail.com>
- <9665af79-d439-e05a-5333-62f71a2ac55c@linux.intel.com>
- <2023082901-moonscape-album-b7cc@gregkh>
- <02d8a574-a07a-f595-aee2-13908df74e68@linux.intel.com>
- <CAJZ5v0i4_PnCJGkkMzBMF9GX3N6LLNQdnuyX6nRzWHy_f9T=3A@mail.gmail.com>
-From:   Keyon Jie <yang.jie@linux.intel.com>
-In-Reply-To: <CAJZ5v0i4_PnCJGkkMzBMF9GX3N6LLNQdnuyX6nRzWHy_f9T=3A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,LOTS_OF_MONEY,MONEY_NOHTML,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZPCbSse3J6ksZwJa@smile.fi.intel.com>
+References: <20230831011405.3246849-1-swboyd@chromium.org> <20230831011405.3246849-2-swboyd@chromium.org>
+ <ZPCbSse3J6ksZwJa@smile.fi.intel.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date:   Tue, 5 Sep 2023 17:24:29 -0500
+Message-ID: <CAE-0n52wAqsmm4cs6JX2W2G10VxjLzocXVmF9c_GC+52Fi4djQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] platform/x86: intel_scu_ipc: Check status after
+ timeouts in busy_loop()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        platform-driver-x86@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Prashant Malani <pmalani@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/5/23 11:30, Rafael J. Wysocki wrote:
-> On Tue, Sep 5, 2023 at 8:17 PM Keyon Jie <yang.jie@linux.intel.com> wrote:
->>
->>
->>
->> On 8/29/23 01:57, Greg KH wrote:
->>> On Mon, Aug 28, 2023 at 04:35:13PM -0700, Keyon Jie wrote:
->>>>
->>>>
->>>> On 8/22/23 04:46, Rafael J. Wysocki wrote:
->>>>> On Sun, Aug 20, 2023 at 10:46 PM Doug Smythies <dsmythies@telus.net> wrote:
->>>>>>
->>>>>> The intel_pstate CPU frequency scaling driver does not
->>>>>> use policy->cur and it is 0.
->>>>>> When the CPU frequency is outdated arch_freq_get_on_cpu()
->>>>>> will default to the nominal clock frequency when its call to
->>>>>> cpufreq_quick_getpolicy_cur returns the never updated 0.
->>>>>> Thus, the listed frequency might be outside of currently
->>>>>> set limits. Some users are complaining about the high
->>>>>> reported frequency, albeit stale, when their system is
->>>>>> idle and/or it is above the reduced maximum they have set.
->>>>>>
->>>>>> This patch will maintain policy_cur for the intel_pstate
->>>>>> driver at the current minimum CPU frequency.
->>>>>>
->>>>>> Reported-by: Yang Jie <yang.jie@linux.intel.com>
->>>>>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217597
->>>>>> Signed-off-by: Doug Smythies <dsmythies@telus.net>
->>>>>> ---
->>>>>>
->>>>>> v1 -> v2:
->>>>>>       * v1 was a completely different approach, programming around
->>>>>>         the issue rather than fixing it at the source.
->>>>>>         reference:
->>>>>>         https://patchwork.kernel.org/project/linux-pm/patch/006901d9be8c$f4439930$dccacb90$@telus.net/
->>>>>>       * v2 does not fix an issue with the intel_cpufreq CPU scaling
->>>>>>         driver (A.K.A. the intel_pstate driver in passive mode) and
->>>>>>         the schedutil CPU frequency scaling governor when HWP is enabled
->>>>>>         where limit changes are not reflected in the stale listed frequencies.
->>>>>>         A fix for that will be some future patch.
->>>>>>
->>>>>> ---
->>>>>>     drivers/cpufreq/intel_pstate.c | 5 +++++
->>>>>>     1 file changed, 5 insertions(+)
->>>>>>
->>>>>> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
->>>>>> index 8ca2bce4341a..08284dee583a 100644
->>>>>> --- a/drivers/cpufreq/intel_pstate.c
->>>>>> +++ b/drivers/cpufreq/intel_pstate.c
->>>>>> @@ -2609,6 +2609,11 @@ static int intel_pstate_set_policy(struct cpufreq_policy *policy)
->>>>>>                            intel_pstate_clear_update_util_hook(policy->cpu);
->>>>>>                    intel_pstate_hwp_set(policy->cpu);
->>>>>>            }
->>>>>> +       /* policy current is never updated with the intel_pstate driver
->>>>>> +        * but it is used as a stale frequency value. So, keep it within
->>>>>> +        * limits.
->>>>>> +        */
->>>>>> +       policy->cur = policy->min;
->>>>>>
->>>>>>            mutex_unlock(&intel_pstate_limits_lock);
->>>>>>
->>>>>> --
->>>>>
->>>>> Applied as 6.6 material, with some mailer-induced white space damage
->>>>> fixed and the new comment adjusted to the kernel coding style.
->>>>>
->>>>> Thanks!
->>>>
->>>> Hi Doug and Rafael,
->>>>
->>>> Thank you for making the fix happen.
->>>>
->>>> Hi Greg,
->>>>
->>>> Will this be picked to the stable linux-6.1.y and linux-6.4.y kernel, it
->>>> could benefit to users there.
->>>
->>> Sure, when it hits Linus's tree, please follow the instructions in:
->>>       https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
->>> for how to get it merged.
->>
->> Thank you Greg.
->>
->> Hi Rafael,
->>
->> As the issue happens from the 5.18 onward kernels, we need the fix to be
->> picked for stable kernels after that, could you please help to add "Cc:
->> stable@vger.kernel.org" in the sign-off area when you send it to the
->> mainline?
-> 
-> It's already merged, as commit d51847acb018 ("cpufreq: intel_pstate:
-> set stale CPU frequency to minimum").
-> 
-> Please feel free to send an inclusion request for it to stable@vger.kernel.org
+Quoting Andy Shevchenko (2023-08-31 06:53:14)
+> On Wed, Aug 30, 2023 at 06:14:01PM -0700, Stephen Boyd wrote:
+> > It's possible for the polling loop in busy_loop() to get scheduled away
+> > for a long time.
+> >
+> >   status = ipc_read_status(scu);
+> >   <long time scheduled away>
+> >   if (!(status & IPC_STATUS_BUSY))
+> >
+> > If this happens, then the status bit could change and this function
+> > would never test it again after checking the jiffies against the timeout
+> > limit. Polling code should check the condition one more time after the
+> > timeout in case this happens.
+> >
+> > The read_poll_timeout() helper implements this logic, and is shorter, so
+> > simply use that helper here.
+>
+> I don't remember by heart, but on some older Intel hardware this might have
+> been called during early stages where ktime() is not functional yet.
+>
+> Is this still a case here?
 
-Thank you Rafael, will do.
+I have no idea if that happens in early stages. What about
+suspend/resume though? I suppose timekeeping could be suspended in that
+case, so we can't really check anything with ktime.
 
-Thanks,
-~Keyon
-
-> 
-> Thanks!
+I can rework this patch to simply recheck the busy bit so that we don't
+have to figure out if the code is called early or from suspend paths.
