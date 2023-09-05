@@ -2,242 +2,553 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB004792704
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54320792A0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbjIEQEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59330 "EHLO
+        id S1354442AbjIEQ3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354181AbjIEKGh (ORCPT
+        with ESMTP id S1354182AbjIEKHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:06:37 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD8090;
-        Tue,  5 Sep 2023 03:06:32 -0700 (PDT)
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3858AxNN016950;
-        Tue, 5 Sep 2023 12:06:11 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=scab9o1vuzKmYp8hok449uqiQ9nrpBKEYFW+Y+rdU14=; b=tb
-        Ou5FeDJPawXZtMG2UFCqwaqZTEk80V++0SJmgzfEAFD3d8xhJTB6RXgxYRuE+LfX
-        lcf/vmgMAQxVV/aSrtHLESoGKO9c1bL7LC3jeIWWz5mtO3+S90/ni6bqxNZdiASp
-        ROOAxWcsT4qpB3Hjq3fZnlcjutiN+pRSmR1Tg9xE/lsZZ6C1xroLneWklLOlT1Ga
-        DYURHFjn4tpbc1zIMYPzt81TNxbeaggu4hNdJRSflYycirsPQB6F+B8eOiKBZcw+
-        iO5tv9MpholJWiXOSmJ+UZUuM6ccm75sSZypkdP5qYrUKJiedrbaID4QDXZrlfSp
-        jZJrQVruCtCtDjNGp+JA==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3sutffbfg3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 12:06:11 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B2F8B100057;
-        Tue,  5 Sep 2023 12:06:10 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AA6D82309C3;
-        Tue,  5 Sep 2023 12:06:10 +0200 (CEST)
-Received: from [10.252.5.4] (10.252.5.4) by SHFDAG1NODE1.st.com (10.75.129.69)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Tue, 5 Sep
- 2023 12:06:10 +0200
-Message-ID: <9cf91ed4-8d57-6d84-1767-708a296803b9@foss.st.com>
-Date:   Tue, 5 Sep 2023 12:06:09 +0200
+        Tue, 5 Sep 2023 06:07:46 -0400
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A5590;
+        Tue,  5 Sep 2023 03:07:40 -0700 (PDT)
+Date:   Tue, 05 Sep 2023 10:07:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1693908458; x=1694167658;
+        bh=oY3VfZLK4Uv930IgBQ+sR11P73HLBy0tpaviWTM5HZU=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=Pk3lbzdVbNB1EPOKAyM1sO8qsImaFumjjEoE2deIXnjgQg0Lf50MVoX+B2H+5Pvj+
+         dH62VJcsHRJI20YpNNB10x6uO3oJO2vt4yJYHUYYaU6ah1hXctacjgy993fCQSsMUX
+         9i1EJsgD8iMh6b5pOa4ksGHrlt6ZH0qp71amh1jfK/DGodoHeR7bkJRxn7sB6eL91B
+         bXFgOVkGB52zzCVTicCkp2ua69wHrv5DrTiVW5KQtLlER4T5+7ZDAXDbn2U3R8R/gM
+         Ssun+o/k+ZBfV9eSh9vgjkDYbYPF67l6lQGcxqRyckkft7YIxVDheLYW+jIrs+0QQ+
+         MqnHGgEJoXEow==
+To:     Alice Ryhl <aliceryhl@google.com>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     rust-for-linux@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev
+Subject: Re: [PATCH v4 4/7] rust: workqueue: add helper for defining work_struct fields
+Message-ID: <ESFnxZLcZD-JbNp5PHtrjAdophrPm9gOJR1C5kwsvw6errySiqsG7zbs-0bKWKGrq3Phz7-of0M1znwoTNYAZATTHBhUaFehe5bHP1YksCw=@proton.me>
+In-Reply-To: <20230828104807.1581592-5-aliceryhl@google.com>
+References: <20230828104807.1581592-1-aliceryhl@google.com> <20230828104807.1581592-5-aliceryhl@google.com>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC v2 01/11] iio: introduce iio backend device
-To:     =?UTF-8?Q?Nuno_S=c3=a1?= <noname.nuno@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-CC:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        "Fabrice GASNIER" <fabrice.gasnier@st.com>
-References: <20230727150324.1157933-1-olivier.moysan@foss.st.com>
- <20230727150324.1157933-2-olivier.moysan@foss.st.com>
- <7ec3fe6183409c218b97a3359e951731b47fe16d.camel@gmail.com>
- <095f9c64-bcac-e838-ba69-b5df623c444f@foss.st.com>
- <8b63cad8749ceca31d2f50ee36925ce18523620f.camel@gmail.com>
-Content-Language: en-US
-From:   Olivier MOYSAN <olivier.moysan@foss.st.com>
-In-Reply-To: <8b63cad8749ceca31d2f50ee36925ce18523620f.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.252.5.4]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-05_07,2023-08-31_01,2023-05-22_02
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nuno,
+> The main challenge with defining `work_struct` fields is making sure
+> that the function pointer stored in the `work_struct` is appropriate for
+> the work item type it is embedded in. It needs to know the offset of the
+> `work_struct` field being used (even if there are several!) so that it
+> can do a `container_of`, and it needs to know the type of the work item
+> so that it can call into the right user-provided code. All of this needs
+> to happen in a way that provides a safe API to the user, so that users
+> of the workqueue cannot mix up the function pointers.
+>=20
+> There are three important pieces that are relevant when doing this:
+>=20
+>  * The pointer type.
+>  * The work item struct. This is what the pointer points at.
+>  * The `work_struct` field. This is a field of the work item struct.
+>=20
+> This patch introduces a separate trait for each piece. The pointer type
+> is given a `WorkItemPointer` trait, which pointer types need to
+> implement to be usable with the workqueue. This trait will be
+> implemented for `Arc` and `Box` in a later patch in this patchset.
+> Implementing this trait is unsafe because this is where the
+> `container_of` operation happens, but user-code will not need to
+> implement it themselves.
+>=20
+> The work item struct should then implement the `WorkItem` trait. This
+> trait is where user-code specifies what they want to happen when a work
+> item is executed. It also specifies what the correct pointer type is.
+>=20
+> Finally, to make the work item struct know the offset of its
+> `work_struct` field, we use a trait called `HasWork<T, ID>`. If a type
+> implements this trait, then the type declares that, at the given offset,
+> there is a field of type `Work<T, ID>`. The trait is marked unsafe
+> because the OFFSET constant must be correct, but we provide an
+> `impl_has_work!` macro that can safely implement `HasWork<T>` on a type.
+> The macro expands to something that only compiles if the specified field
+> really has the type `Work<T>`. It is used like this:
+>=20
+> ```
+> struct MyWorkItem {
+>     work_field: Work<MyWorkItem, 1>,
+> }
+>=20
+> impl_has_work! {
+>     impl HasWork<MyWorkItem, 1> for MyWorkItem { self.work_field }
+> }
+> ```
+>=20
+> Note that since the `Work` type is annotated with an id, you can have
+> several `work_struct` fields by using a different id for each one.
+>=20
+> Co-developed-by: Gary Guo <gary@garyguo.net>
+> Signed-off-by: Gary Guo <gary@garyguo.net>
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 
-On 9/1/23 10:01, Nuno Sá wrote:
-> Hi Olivier,
-> 
-> On Thu, 2023-08-31 at 18:14 +0200, Olivier MOYSAN wrote:
->> Hi Nuno,
->>
->> On 7/28/23 10:42, Nuno Sá wrote:
->>> Hi Olivier,
->>>
->>> On Thu, 2023-07-27 at 17:03 +0200, Olivier Moysan wrote:
->>>> Add a new device type in IIO framework.
->>>> This backend device does not compute channel attributes and does not expose
->>>> them through sysfs, as done typically in iio-rescale frontend device.
->>>> Instead, it allows to report information applying to channel
->>>> attributes through callbacks. These backend devices can be cascaded
->>>> to represent chained components.
->>>> An IIO device configured as a consumer of a backend device can compute
->>>> the channel attributes of the whole chain.
->>>>
->>>> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
->>>> ---
->>>>    drivers/iio/Makefile               |   1 +
->>>>    drivers/iio/industrialio-backend.c | 107 +++++++++++++++++++++++++++++
->>>>    include/linux/iio/backend.h        |  56 +++++++++++++++
->>>>    3 files changed, 164 insertions(+)
->>>>    create mode 100644 drivers/iio/industrialio-backend.c
->>>>    create mode 100644 include/linux/iio/backend.h
->>>>
->>>> diff --git a/drivers/iio/Makefile b/drivers/iio/Makefile
->>>> index 9622347a1c1b..9b59c6ab1738 100644
->>>> --- a/drivers/iio/Makefile
->>>> +++ b/drivers/iio/Makefile
->>>> @@ -5,6 +5,7 @@
->>>>    
->>>>    obj-$(CONFIG_IIO) += industrialio.o
->>>>    industrialio-y := industrialio-core.o industrialio-event.o inkern.o
->>>> +industrialio-$(CONFIG_IIO_BACKEND) += industrialio-backend.o
->>>>    industrialio-$(CONFIG_IIO_BUFFER) += industrialio-buffer.o
->>>>    industrialio-$(CONFIG_IIO_TRIGGER) += industrialio-trigger.o
->>>>    
->>>> diff --git a/drivers/iio/industrialio-backend.c b/drivers/iio/industrialio-
->>>> backend.c
->>>> new file mode 100644
->>>> index 000000000000..7d0625889873
->>>> --- /dev/null
->>>> +++ b/drivers/iio/industrialio-backend.c
->>>> @@ -0,0 +1,107 @@
->>>> +// SPDX-License-Identifier: GPL-2.0
->>>> +/* The industrial I/O core, backend handling functions
->>>> + *
->>>> + */
->>>> +
->>>> +#include <linux/kernel.h>
->>>> +#include <linux/device.h>
->>>> +#include <linux/property.h>
->>>> +#include <linux/iio/iio.h>
->>>> +#include <linux/iio/backend.h>
->>>> +
->>>> +static DEFINE_IDA(iio_backend_ida);
->>>> +
->>>> +#define to_iio_backend(_device) container_of((_device), struct iio_backend,
->>>> dev)
->>>> +
->>>> +static void iio_backend_release(struct device *device)
->>>> +{
->>>> +       struct iio_backend *backend = to_iio_backend(device);
->>>> +
->>>> +       kfree(backend->name);
->>>> +       kfree(backend);
->>>> +}
->>>> +
->>>> +static const struct device_type iio_backend_type = {
->>>> +       .release = iio_backend_release,
->>>> +       .name = "iio_backend_device",
->>>> +};
->>>> +
->>>> +struct iio_backend *iio_backend_alloc(struct device *parent)
->>>> +{
->>>> +       struct iio_backend *backend;
->>>> +
->>>> +       backend = devm_kzalloc(parent, sizeof(*backend), GFP_KERNEL);
->>>>
->>>
->>> No error checking.
->>>
->>> I guess a lot of cleanings are still missing but the important thing I wanted to
->>> notice is that the above pattern is not ok.
->>> Your 'struct iio_backend *backend'' embeds a 'stuct device' which is a
->>> refcounted object. Nevertheless, you're binding the lifetime of your object to
->>> the parent device and that is wrong. The reason is that as soon as your parent
->>> device get's released or just unbinded from it's driver, all the devres stuff
->>> (including your 'struct iio_backend' object) will be released independentof
->>> your 'struct device' refcount value...
->>>
->>> So, you might argue this won't ever be an issue in here but the pattern is still
->>> wrong. There are some talks about this, the last one was given at the latest
->>> EOSS:
->>>
->>> https://www.youtube.com/watch?v=HCiJL7djGw8&list=PLbzoR-pLrL6pY8a8zSKRC6-AihFrruOkq&index=27&ab_channel=TheLinuxFoundation
->>>
->>
->> This is a good point. Thanks for pointing it out. Sure, there are still
->> many things to improve.
->>
->> I have seen the comment from Jonathan on your "Add converter framework"
->> serie. I had a quick look at the serie. It seems that we share the need
->> to aggregate some IIO devices. But I need to read it more carefully to
->> check if we can find some convergences here.
-> 
-> Yeah, In my case, the backend devices are typically FPGA soft cores and the aggregate
-> device might connect to multiple of these backends. That was one of the reason why I
-> used the component API where the aggregate device is only configured when all the
-> devices are probed. Similarly, when one of them is unbind, the whole thing should be
-> torn down. Also, in my case, the frontend device needs to do a lot of setup on the
-> backend device so the whole thing works (so I do have/need a lot more .ops).
-> 
-> Anyways, it does not matter much what the backend device is and from a first glance
-> and looking at the .ops you have, it seems that this could easily be supported in the
-> framework I'm adding. The only things I'm seeing are:
+I have a small suggestion below, but nothing critical, so
 
-Thanks for your feedback. Yes, my feeling is that the API I need for the 
-dfsdm use case, can be covered by the API you propose. I'm not familiar 
-with component API however, as I discovered it in your serie. It is not 
-clear for me how this affects device tree description of the hardware. 
-So I need to take time to look at existing examples.
-I think I need also to try a template implementation of dfsdm use case 
-based on your API, to figure out how it could work.
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
 
-> 
-> 1) You would need to use the component API if it's ok. Also not sure if the cascaded
-> usecase you mention would work with that API.
-> 
+> ---
+> v3 -> v4:
+>  * The helper was changed to take a name argument, and is implemented
+>    directly.
+>  * `Work::new` now takes a name argument, and a `new_work!` macro was
+>    introduced to help call it.
+>  * Use `core::mem::offset_of` rather than a custom implementation.
+>  * Fix imports in examples.
+>  * Dropped Reviewed-bys due to changes.
+>=20
+>  rust/helpers.c           |  13 ++
+>  rust/kernel/lib.rs       |   1 +
+>  rust/kernel/workqueue.rs | 257 ++++++++++++++++++++++++++++++++++++++-
+>  scripts/Makefile.build   |   2 +-
+>  4 files changed, 271 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/rust/helpers.c b/rust/helpers.c
+> index ebd69490127b..45cf9702d4e4 100644
+> --- a/rust/helpers.c
+> +++ b/rust/helpers.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/sched/signal.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/wait.h>
+> +#include <linux/workqueue.h>
+>=20
+>  __noreturn void rust_helper_BUG(void)
+>  {
+> @@ -137,6 +138,18 @@ void rust_helper_put_task_struct(struct task_struct =
+*t)
+>  }
+>  EXPORT_SYMBOL_GPL(rust_helper_put_task_struct);
+>=20
+> +void rust_helper_init_work_with_key(struct work_struct *work, work_func_=
+t func,
+> +=09=09=09=09    bool onstack, const char *name,
+> +=09=09=09=09    struct lock_class_key *key)
+> +{
+> +=09__init_work(work, onstack);
+> +=09work->data =3D (atomic_long_t)WORK_DATA_INIT();
+> +=09lockdep_init_map(&work->lockdep_map, name, key, 0);
+> +=09INIT_LIST_HEAD(&work->entry);
+> +=09work->func =3D func;
+> +}
+> +EXPORT_SYMBOL_GPL(rust_helper_init_work_with_key);
+> +
+>  /*
+>   * `bindgen` binds the C `size_t` type as the Rust `usize` type, so we c=
+an
+>   * use it in contexts where Rust expects a `usize` like slice (array) in=
+dices.
+> diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
+> index b56aaea3de7a..c537d2edb4c8 100644
+> --- a/rust/kernel/lib.rs
+> +++ b/rust/kernel/lib.rs
+> @@ -16,6 +16,7 @@
+>  #![feature(coerce_unsized)]
+>  #![feature(dispatch_from_dyn)]
+>  #![feature(new_uninit)]
+> +#![feature(offset_of)]
+>  #![feature(ptr_metadata)]
+>  #![feature(receiver_trait)]
+>  #![feature(unsize)]
+> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> index 82e3fb19fdaf..da37bfa97211 100644
+> --- a/scripts/Makefile.build
+> +++ b/scripts/Makefile.build
+> @@ -262,7 +262,7 @@ $(obj)/%.lst: $(src)/%.c FORCE
+>  # Compile Rust sources (.rs)
+>  # ----------------------------------------------------------------------=
+-----
+>=20
+> -rust_allowed_features :=3D new_uninit
+> +rust_allowed_features :=3D new_uninit,offset_of
+>=20
+>  # `--out-dir` is required to avoid temporaries being created by `rustc` =
+in the
+>  # current working directory, which may be not accessible in the out-of-t=
+ree
+> diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
+> index 6dbc5b9b3da9..251541f1cd68 100644
+> --- a/rust/kernel/workqueue.rs
+> +++ b/rust/kernel/workqueue.rs
+> @@ -2,9 +2,42 @@
+>=20
+>  //! Work queues.
+>  //!
+> +//! This file has two components: The raw work item API, and the safe wo=
+rk item API.
+> +//!
+> +//! One pattern that is used in both APIs is the `ID` const generic, whi=
+ch exists to allow a single
+> +//! type to define multiple `work_struct` fields. This is done by choosi=
+ng an id for each field,
+> +//! and using that id to specify which field you wish to use. (The actua=
+l value doesn't matter, as
+> +//! long as you use different values for different fields of the same st=
+ruct.) Since these IDs are
+> +//! generic, they are used only at compile-time, so they shouldn't exist=
+ in the final binary.
+> +//!
+> +//! # The raw API
+> +//!
+> +//! The raw API consists of the `RawWorkItem` trait, where the work item=
+ needs to provide an
+> +//! arbitrary function that knows how to enqueue the work item. It shoul=
+d usually not be used
+> +//! directly, but if you want to, you can use it without using the piece=
+s from the safe API.
+> +//!
+> +//! # The safe API
+> +//!
+> +//! The safe API is used via the `Work` struct and `WorkItem` traits. Fu=
+rthermore, it also includes
+> +//! a trait called `WorkItemPointer`, which is usually not used directly=
+ by the user.
+> +//!
+> +//!  * The `Work` struct is the Rust wrapper for the C `work_struct` typ=
+e.
+> +//!  * The `WorkItem` trait is implemented for structs that can be enque=
+ued to a workqueue.
+> +//!  * The `WorkItemPointer` trait is implemented for the pointer type t=
+hat points at a something
+> +//!    that implements `WorkItem`.
+> +//!
+>  //! C header: [`include/linux/workqueue.h`](../../../../include/linux/wo=
+rkqueue.h)
+>=20
+> -use crate::{bindings, types::Opaque};
+> +use crate::{bindings, prelude::*, sync::LockClassKey, types::Opaque};
+> +use core::marker::PhantomData;
+> +
+> +/// Creates a [`Work`] initialiser with the given name and a newly-creat=
+ed lock class.
+> +#[macro_export]
+> +macro_rules! new_work {
+> +    ($($name:literal)?) =3D> {
+> +        $crate::workqueue::Work::new($crate::optional_name!($($name)?), =
+$crate::static_lock_class!())
+> +    };
+> +}
+>=20
+>  /// A kernel work queue.
+>  ///
+> @@ -108,6 +141,228 @@ unsafe fn __enqueue<F>(self, queue_work_on: F) -> S=
+elf::EnqueueOutput
+>          F: FnOnce(*mut bindings::work_struct) -> bool;
+>  }
+>=20
+> +/// Defines the method that should be called directly when a work item i=
+s executed.
+> +///
+> +/// This trait is implemented by `Pin<Box<T>>` and `Arc<T>`, and is main=
+ly intended to be
+> +/// implemented for smart pointer types. For your own structs, you would=
+ implement [`WorkItem`]
+> +/// instead. The `run` method on this trait will usually just perform th=
+e appropriate
+> +/// `container_of` translation and then call into the `run` method from =
+the [`WorkItem`] trait.
+> +///
+> +/// This trait is used when the `work_struct` field is defined using the=
+ [`Work`] helper.
+> +///
+> +/// # Safety
+> +///
+> +/// Implementers must ensure that [`__enqueue`] uses a `work_struct` ini=
+tialized with the [`run`]
+> +/// method of this trait as the function pointer.
+> +///
+> +/// [`__enqueue`]: RawWorkItem::__enqueue
+> +/// [`run`]: WorkItemPointer::run
+> +pub unsafe trait WorkItemPointer<const ID: u64>: RawWorkItem<ID> {
+> +    /// Run this work item.
+> +    ///
+> +    /// # Safety
+> +    ///
+> +    /// The provided `work_struct` pointer must originate from a previou=
+s call to `__enqueue` where
+> +    /// the `queue_work_on` closure returned true, and the pointer must =
+still be valid.
+> +    unsafe extern "C" fn run(ptr: *mut bindings::work_struct);
+> +}
+> +
+> +/// Defines the method that should be called when this work item is exec=
+uted.
+> +///
+> +/// This trait is used when the `work_struct` field is defined using the=
+ [`Work`] helper.
+> +pub trait WorkItem<const ID: u64 =3D 0> {
+> +    /// The pointer type that this struct is wrapped in. This will typic=
+ally be `Arc<Self>` or
+> +    /// `Pin<Box<Self>>`.
+> +    type Pointer: WorkItemPointer<ID>;
+> +
+> +    /// The method that should be called when this work item is executed=
+.
+> +    fn run(this: Self::Pointer);
+> +}
+> +
+> +/// Links for a work item.
+> +///
+> +/// This struct contains a function pointer to the `run` function from t=
+he [`WorkItemPointer`]
+> +/// trait, and defines the linked list pointers necessary to enqueue a w=
+ork item in a workqueue.
+> +///
+> +/// Wraps the kernel's C `struct work_struct`.
+> +///
+> +/// This is a helper type used to associate a `work_struct` with the [`W=
+orkItem`] that uses it.
+> +#[repr(transparent)]
+> +pub struct Work<T: ?Sized, const ID: u64 =3D 0> {
+> +    work: Opaque<bindings::work_struct>,
+> +    _inner: PhantomData<T>,
+> +}
+> +
+> +// SAFETY: Kernel work items are usable from any thread.
+> +//
+> +// We do not need to constrain `T` since the work item does not actually=
+ contain a `T`.
+> +unsafe impl<T: ?Sized, const ID: u64> Send for Work<T, ID> {}
+> +// SAFETY: Kernel work items are usable from any thread.
+> +//
+> +// We do not need to constrain `T` since the work item does not actually=
+ contain a `T`.
+> +unsafe impl<T: ?Sized, const ID: u64> Sync for Work<T, ID> {}
+> +
+> +impl<T: ?Sized, const ID: u64> Work<T, ID> {
+> +    /// Creates a new instance of [`Work`].
+> +    #[inline]
+> +    #[allow(clippy::new_ret_no_self)]
+> +    pub fn new(name: &'static CStr, key: &'static LockClassKey) -> impl =
+PinInit<Self>
+> +    where
+> +        T: WorkItem<ID>,
+> +    {
+> +        // SAFETY: The `WorkItemPointer` implementation promises that `r=
+un` can be used as the work
+> +        // item function.
+> +        unsafe {
+> +            kernel::init::pin_init_from_closure(move |slot| {
+> +                let slot =3D Self::raw_get(slot);
+> +                bindings::init_work_with_key(
+> +                    slot,
+> +                    Some(T::Pointer::run),
+> +                    false,
+> +                    name.as_char_ptr(),
+> +                    key.as_ptr(),
+> +                );
+> +                Ok(())
+> +            })
+> +        }
 
-The cascaded use case by itself is not a real requirement for dfsdm use 
-case. The idea here was to think about future possible needs, and to 
-ensure that the solution is scalable enough. So, it is not a strong 
-requirement, but we probably need to keep it in mind.
+I would suggest this instead:
+```
+        pin_init!(Self {
+            // SAFETY: The `WorkItemPointer` implementation promises that `=
+run` can be used as the
+            // work item function.
+            work <- Opaque::ffi_init(|slot| unsafe {
+                bindings::init_work_with_key(
+                    slot,
+                    Some(T::Pointer::run),
+                    false,
+                    name.as_char_ptr(),
+                    key.as_ptr(),
+                )
+            }),
+            _inner: PhantomData,
+        })
+```
 
-> 2) We would need to add the .read_raw() op. If you look at my RFC, I already have
-> some comments/concerns about having an option like that (see there).
-> 
-> Having said that, none of the above are blockers as 1), I can ditch the component API
-> in favour of typical FW/OF lookup (even though the component API makes some things
-> easier to handle) and 2), adding a .read_raw() op is not a blocker for me.
-> 
+> +    }
+> +
+> +    /// Get a pointer to the inner `work_struct`.
+> +    ///
+> +    /// # Safety
+> +    ///
+> +    /// The provided pointer must not be dangling and must be properly a=
+ligned. (But the memory
+> +    /// need not be initialized.)
+> +    #[inline]
+> +    pub unsafe fn raw_get(ptr: *const Self) -> *mut bindings::work_struc=
+t {
+> +        // SAFETY: The caller promises that the pointer is aligned and n=
+ot dangling.
+> +        //
+> +        // A pointer cast would also be ok due to `#[repr(transparent)]`=
+. We use `addr_of!` so that
+> +        // the compiler does not complain that the `work` field is unuse=
+d.
+> +        unsafe { Opaque::raw_get(core::ptr::addr_of!((*ptr).work)) }
+> +    }
+> +}
+> +
+> +/// Declares that a type has a [`Work<T, ID>`] field.
+> +///
+> +/// The intended way of using this trait is via the [`impl_has_work!`] m=
+acro. You can use the macro
+> +/// like this:
+> +///
+> +/// ```no_run
+> +/// use kernel::impl_has_work;
+> +/// use kernel::prelude::*;
+> +/// use kernel::workqueue::Work;
+> +///
+> +/// struct MyWorkItem {
+> +///     work_field: Work<MyWorkItem, 1>,
+> +/// }
+> +///
+> +/// impl_has_work! {
+> +///     impl HasWork<MyWorkItem, 1> for MyWorkItem { self.work_field }
+> +/// }
+> +/// ```
+> +///
+> +/// Note that since the `Work` type is annotated with an id, you can hav=
+e several `work_struct`
+> +/// fields by using a different id for each one.
+> +///
+> +/// # Safety
+> +///
+> +/// The [`OFFSET`] constant must be the offset of a field in Self of typ=
+e [`Work<T, ID>`]. The methods on
+> +/// this trait must have exactly the behavior that the definitions given=
+ below have.
+> +///
+> +/// [`Work<T, ID>`]: Work
+> +/// [`impl_has_work!`]: crate::impl_has_work
+> +/// [`OFFSET`]: HasWork::OFFSET
+> +pub unsafe trait HasWork<T, const ID: u64 =3D 0> {
+> +    /// The offset of the [`Work<T, ID>`] field.
+> +    ///
+> +    /// [`Work<T, ID>`]: Work
+> +    const OFFSET: usize;
+> +
+> +    /// Returns the offset of the [`Work<T, ID>`] field.
+> +    ///
+> +    /// This method exists because the [`OFFSET`] constant cannot be acc=
+essed if the type is not Sized.
+> +    ///
+> +    /// [`Work<T, ID>`]: Work
+> +    /// [`OFFSET`]: HasWork::OFFSET
+> +    #[inline]
+> +    fn get_work_offset(&self) -> usize {
+> +        Self::OFFSET
+> +    }
+> +
+> +    /// Returns a pointer to the [`Work<T, ID>`] field.
+> +    ///
+> +    /// # Safety
+> +    ///
+> +    /// The provided pointer must point at a valid struct of type `Self`=
+.
+> +    ///
+> +    /// [`Work<T, ID>`]: Work
+> +    #[inline]
+> +    unsafe fn raw_get_work(ptr: *mut Self) -> *mut Work<T, ID> {
+> +        // SAFETY: The caller promises that the pointer is valid.
+> +        unsafe { (ptr as *mut u8).add(Self::OFFSET) as *mut Work<T, ID> =
+}
+> +    }
+> +
+> +    /// Returns a pointer to the struct containing the [`Work<T, ID>`] f=
+ield.
+> +    ///
+> +    /// # Safety
+> +    ///
+> +    /// The pointer must point at a [`Work<T, ID>`] field in a struct of=
+ type `Self`.
+> +    ///
+> +    /// [`Work<T, ID>`]: Work
+> +    #[inline]
+> +    unsafe fn work_container_of(ptr: *mut Work<T, ID>) -> *mut Self
+> +    where
+> +        Self: Sized,
+> +    {
+> +        // SAFETY: The caller promises that the pointer points at a fiel=
+d of the right type in the
+> +        // right kind of struct.
+> +        unsafe { (ptr as *mut u8).sub(Self::OFFSET) as *mut Self }
+> +    }
+> +}
+> +
+> +/// Used to safely implement the [`HasWork<T, ID>`] trait.
+> +///
+> +/// # Examples
+> +///
+> +/// ```
+> +/// use kernel::impl_has_work;
+> +/// use kernel::sync::Arc;
+> +/// use kernel::workqueue::{self, Work};
+> +///
+> +/// struct MyStruct {
+> +///     work_field: Work<MyStruct, 17>,
+> +/// }
+> +///
+> +/// impl_has_work! {
+> +///     impl HasWork<MyStruct, 17> for MyStruct { self.work_field }
+> +/// }
+> +/// ```
+> +///
+> +/// [`HasWork<T, ID>`]: HasWork
+> +#[macro_export]
+> +macro_rules! impl_has_work {
+> +    ($(impl$(<$($implarg:ident),*>)?
+> +       HasWork<$work_type:ty $(, $id:tt)?>
+> +       for $self:ident $(<$($selfarg:ident),*>)?
+> +       { self.$field:ident }
+> +    )*) =3D> {$(
+> +        // SAFETY: The implementation of `raw_get_work` only compiles if=
+ the field has the right
+> +        // type.
+> +        unsafe impl$(<$($implarg),*>)? $crate::workqueue::HasWork<$work_=
+type $(, $id)?> for $self $(<$($selfarg),*>)? {
+> +            const OFFSET: usize =3D ::core::mem::offset_of!(Self, $field=
+) as usize;
+> +
+> +            #[inline]
+> +            unsafe fn raw_get_work(ptr: *mut Self) -> *mut $crate::workq=
+ueue::Work<$work_type $(, $id)?> {
+> +                // SAFETY: The caller promises that the pointer is not d=
+angling.
+> +                unsafe {
+> +                    ::core::ptr::addr_of_mut!((*ptr).$field)
+> +                }
+> +            }
+> +        }
+> +    )*};
+> +}
+> +
+>  /// Returns the system work queue (`system_wq`).
+>  ///
+>  /// It is the one used by `schedule[_delayed]_work[_on]()`. Multi-CPU mu=
+lti-threaded. There are
+> --
+> 2.42.0.rc1.204.g551eb34607-goog
+>=20
 
-Yes, It would be nice to have read_raw(), as this allows to stick to 
-existing IIO API for standard IIO attributes. But I guess this should 
-not be a problem.
-
-> Alternatively, another (maybe crazy) idea would be to have this framework have the
-> really generic stuff (like lookup + generic ops) and build my iio-converter on top of
-> it (extending it). You know, some OO fun :). Maybe not worth the trouble though.
-> 
-> Let's if Jonathan has some suggestions on how to proceed...
-> 
-> - Nuno Sá
->>>
-> 
-
-Olivier
