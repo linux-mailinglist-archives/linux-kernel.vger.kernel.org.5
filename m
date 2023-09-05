@@ -2,155 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4691D792B19
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D41792884
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238782AbjIEQrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51716 "EHLO
+        id S236802AbjIEQWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:22:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354437AbjIELhS (ORCPT
+        with ESMTP id S1354431AbjIELf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 07:37:18 -0400
-Received: from s.wrqvwxzv.outbound-mail.sendgrid.net (s.wrqvwxzv.outbound-mail.sendgrid.net [149.72.154.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F38F1AB
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 04:37:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
-        h=mime-version:subject:references:from:in-reply-to:to:cc:content-type:
-        content-transfer-encoding:cc:content-type:from:subject:to;
-        s=s1; bh=8Oon+UZVxMzjsZmhyhxxf4Iok+yFxg7JUkPTPozzk2Y=;
-        b=UVXSHcpHRkuysgyXTlsLgYFD5G8Zf+7iKD2zhOY93EMero2+yHxox8SQCGOt52IQsbmu
-        LFG86tfIhEG9SBKzMcjTS87Wr08UHxaVaQogNfYs7JVvDqPhoreHTP9FFGnawws9df7mj6
-        gF8V2GOKOo4yTnmrUATsP1JSxx5YAuNK+YXHfODzvk9sOiMcr94AY+F+QBGTAdgWxhcRNT
-        AsyHlKVqRDA5sFQe5qbAYVDFozpAz+F0Lt2Dwgh1XdEHxPfb7SKwakXtZjVNg56Ge/gCgt
-        50ipMMb5phMrP8fQlWDiy+ziLLN0+hi5IxX27I4crpuV+ih+2LPFRUZYCHYmya9g==
-Received: by filterdrecv-7765c6879f-mrb57 with SMTP id filterdrecv-7765c6879f-mrb57-1-64F71232-5
-        2023-09-05 11:34:10.187704852 +0000 UTC m=+2232639.625816428
-Received: from [192.168.1.50] (unknown)
-        by geopod-ismtpd-8 (SG) with ESMTP
-        id jd1KlkDuTLa2t2toI-Tyqw
-        Tue, 05 Sep 2023 11:34:09.834 +0000 (UTC)
-Message-ID: <ca8d3730-dc32-0192-d812-82cc58700260@kwiboo.se>
-Date:   Tue, 05 Sep 2023 11:34:10 +0000 (UTC)
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 0/3] Make Rockchip IO domains dependency from other
- devices explicit
+        Tue, 5 Sep 2023 07:35:26 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2077.outbound.protection.outlook.com [40.107.93.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01353CE
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 04:35:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XQBG6yGpnluSvo3/EzvXtalrok5s3FI4gjNlwQoZpgvv6f5kLuzPVv95t/b159IEJs9d6MWqylVW1bYfa9uV/XSjzlRa/hV8IyXPdMFH56406RTJ9BTGQ3euMbCpLO7DcXDYB827wft3P1bc+VRrk8Pi0RHfNsTjkpfqhONi9Y4gejL3UrAWNOieEWUDDY/c+P1kL2oBuFf2TabZPbKn1RTUW/p9lVKoGMFAL4hxHbpSleLedX3tphxIWWEwglCDcaodPibert0dJysozVc6xLZuV1aTMCsqUImKf2/lSbx2SXwtgJ+B6HnINoMu5AB4g8sBVg34GfQRQokMaeF/8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5EE4utq0UswnyrKwmY2YEdSXlTqt8lMdOVFl/9bMmRE=;
+ b=RjyvO59ziskIPEzYPdjAgmp1hdzgRW5/YikjZkw333tJ6trF1P9o1MmDHImCmY22fZbKPvd2r9beKkorsKR9PYTRXEAWCeygHYc2n6zEY/6klqymKib/anYs7zy2LTPPNNFNiDCQQqhwbEnwsnXcZp8q9sqnBH3I3FZYB1hq7UDVsbZeBRQ2XDYl9qb9lkxNw1tAh8OrLKwiQFedBA/KCMdITUTHQjF1h8jysm9shEKEpTfrNyWh8ep1Gdmb2Jf9p3rAkyZamtaEyBYPfns8S6gX/5WVJ4vtYZcjYy4vfBIS4R5Ct8YX9FJ08mI1wKSOLUkBLKITS8mPHV0EV/XL5A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5EE4utq0UswnyrKwmY2YEdSXlTqt8lMdOVFl/9bMmRE=;
+ b=YVixcqdfQmbKmprKkBIb6l0JEV4HpWcMHj2O5ky8rAW4ph1UdUKoPJ91lfDompTfIO2xH0PHWMmDWNgUBtQt7i36pVp8bZ8BDtJ3Bhpm0dtE2L+M20Lg5gNIULgO8MHfBYOflrR7FaJbuTZ8KqNDbFAYAu9tntwE2F7XKaffG3Q=
+Received: from BL1PR12MB5849.namprd12.prod.outlook.com (2603:10b6:208:384::18)
+ by CH3PR12MB9024.namprd12.prod.outlook.com (2603:10b6:610:176::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.22; Tue, 5 Sep
+ 2023 11:35:19 +0000
+Received: from BL1PR12MB5849.namprd12.prod.outlook.com
+ ([fe80::c838:299:8697:dd70]) by BL1PR12MB5849.namprd12.prod.outlook.com
+ ([fe80::c838:299:8697:dd70%5]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
+ 11:35:19 +0000
+From:   "Chen, Jiqian" <Jiqian.Chen@amd.com>
+To:     Gerd Hoffmann <kraxel@redhat.com>,
+        =?utf-8?B?TWFyYy1BbmRyw6kgTHVyZWF1?= <marcandre.lureau@gmail.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Robert Beckett <bob.beckett@collabora.com>,
+        David Airlie <airlied@redhat.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+CC:     =?utf-8?B?Um9nZXIgUGF1IE1vbm7DqQ==?= <roger.pau@citrix.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
+        Xenia Ragiadakou <burzalodowa@gmail.com>,
+        "Huang, Honglei1" <Honglei1.Huang@amd.com>,
+        "Zhang, Julia" <Julia.Zhang@amd.com>,
+        "Huang, Ray" <Ray.Huang@amd.com>,
+        "Chen, Jiqian" <Jiqian.Chen@amd.com>
+Subject: Re: [LINUX KERNEL PATCH v3 0/1] add S3 support for virtgpu
+Thread-Topic: [LINUX KERNEL PATCH v3 0/1] add S3 support for virtgpu
+Thread-Index: AQHZuwGAgZyRAq2jq0mtwDyHtWJn8bAM5DSA
+Date:   Tue, 5 Sep 2023 11:35:18 +0000
+Message-ID: <BL1PR12MB584920409C08C72F8F2D3AF8E7E8A@BL1PR12MB5849.namprd12.prod.outlook.com>
+References: <20230720115805.8206-1-Jiqian.Chen@amd.com>
+In-Reply-To: <20230720115805.8206-1-Jiqian.Chen@amd.com>
+Accept-Language: en-US
 Content-Language: en-US
-References: <20230904115816.1237684-1-s.hauer@pengutronix.de>
-From:   Jonas Karlman <jonas@kwiboo.se>
-In-Reply-To: <20230904115816.1237684-1-s.hauer@pengutronix.de>
-X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h8rKZkhjZNKspq1qu?=
- =?us-ascii?Q?L4Ur5DSU6M7CKd5T0Kq7NrTwxkY0tJnRNwRv890?=
- =?us-ascii?Q?ix6HcaePIYyKW9zxu6ZLyGrpetznd+uB5S1Dlgl?=
- =?us-ascii?Q?plZTeXSWqP9NfqnFo7J=2FZab5+FSbBkH8lju7GTo?=
- =?us-ascii?Q?pVDtsmY87Fwltw+ZpyRuwb65ai5cWJcyIpndsM?=
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        kernel@pengutronix.de,
-        Quentin Schulz <quentin.schulz@theobroma-systems.com>,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-X-Entity-ID: P7KYpSJvGCELWjBME/J5tg==
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-imapappendstamp: BL1PR12MB5849.namprd12.prod.outlook.com
+ (15.20.6745.026)
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR12MB5849:EE_|CH3PR12MB9024:EE_
+x-ms-office365-filtering-correlation-id: 91a14c4e-f335-41c5-5424-08dbae042e94
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3ow3wkpo0Vp/Ot04rTEO6oR3fysZpKfJcTfjvO8gcZXQjMMroVVbJY05cC8CheuSkYvBKqZqJN4xKXPv+ssC3YDDyHToowGo14wRyO7jgjhbTBfkcgzEmvYJzYJSKwxtYtkKRZO5qAZXh9/bfq6etEvsDgr0QIzWkF0wMFw4pUF3mv1xfW5TsDOzM7loFLXrTjuq1+qiern/C1XufYq9NVoLJ6DiH1oPqji07IW90lIz99+uwjzoyKPW6YBXqHb6OtSfpYPtU4etTRancj+62Fy+oRQfVX0cz3zYbUfhv9D137QbWbl4seo6ZIp7b7N2CE+vNfLmJPujoRhH1+bxGQTkXyQ5hWf5UttyamBeRrXA8Czu9rVKYI8wdRUfOGGcqyuNSEUoo0xAU5USSMHzTnzNu5eSC48Yg2M1tS+38yJd930Yj5Cmc3BdN3cikAfWjx7QtnwWQqur9pmDM3qZI3WYJj5D2/BQiZ/KkBYBQ/Y3SbzKGT0Ao0O8XEhfQzUE3Yhlvut8JO7PS2xzgK/LRQf+z0NmW1sN+yfkOejaBI6yHvg8DuNJfKt6FFT9Zll+gUE+d//SSdEK1lBjEhVHkOevOs1Gr6AVJ8C+qEzUyNqHPTG1tSWegexaYPz2FU/tzVb7y0ZX8Eb5xjkVdQzMNUr693hUlfh6HCf66hggXtw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(136003)(39860400002)(346002)(186009)(1800799009)(451199024)(55016003)(41300700001)(33656002)(26005)(38070700005)(38100700002)(966005)(64756008)(921005)(66476007)(110136005)(76116006)(66556008)(66446008)(66946007)(83380400001)(54906003)(316002)(71200400001)(478600001)(52536014)(122000001)(53546011)(5660300002)(2906002)(9686003)(8936002)(7416002)(6506007)(8676002)(7696005)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bFpBUTV5NzdNKzQ0Tlo0VFVuS3l6aDVyOVV4V1dyeVhuOSs3MGFVek9IZ1FD?=
+ =?utf-8?B?ekwrMU1tZWJuTTZXSHJSYXBsNDB0TmRyTCtCZjhleDQvZStuazFwVUdEdms0?=
+ =?utf-8?B?bUhmaGxENUNSWDBYVjZIdkY0aE05ZzhBUEQ1TzlUOVFkM3c5dmNiOWhETWs3?=
+ =?utf-8?B?cjdQcTFNOFg4cHNEZzZUNC9yY2tFb2svV0Z4QnpJSUk4SSswUTB3SWpabThy?=
+ =?utf-8?B?SUU2ZUZEZXI5V2RjZ3BIVktnR0lJMHdFOFd0aThuSnJPRlpBZ0lIQS9MWURT?=
+ =?utf-8?B?ZTZjWkNvTUJZT1JyNjZPY2dDWGc4N2ZzMjBiTDdjMHc0RjhpeE5pNVlaZSsv?=
+ =?utf-8?B?d0c0dnZxODdnNmZIc3A3OU1VS0ZhRjZMVTQ4VjVkaEkwNUh0R2QyR0VjUlQx?=
+ =?utf-8?B?WHhSK3EzNjRaYmNraGtPeTl5MlpxM0FIbjV3VVlXMi8zcmIvemVLNzdTa3lu?=
+ =?utf-8?B?MjQ2c0FCWFVNVnBGZDdKVHNYZnJ0TVJucVUzSlVlVzd3T0l5NVRYd1BSbXU5?=
+ =?utf-8?B?UE5WeHRPZVJoY0o1cDhvUFlyWHVRcjkrbUg4OThYanhNSTdDMW5DVXdwckh2?=
+ =?utf-8?B?Y2pJTU1Oa0ZZUXl1QXNjMVN3UUljaWNXdW9lamRYUkc5dXdlNXZCL0srR2N2?=
+ =?utf-8?B?dGdqa1lDUUtFd1pVeWFMN2NndGgwUExTZVdhUkZNWCt0TGdQb29DSTF6bzdO?=
+ =?utf-8?B?Ym16V1FpbHZianhlWVppSG01TVc0NlM0TVdBV3B3dzVocENLcXhpU0xzdnZV?=
+ =?utf-8?B?NCtmM0V3V1A3aTh4SWJ6Mk14S0ZPVlJUTlJ3bGZKVmdlK1NpYmJURjhCcmhV?=
+ =?utf-8?B?Q3B3ZGU1eUdpc3diQnV1MWQxanF4emd3Y0xaQjNmNjl6eVlIY2hucFBXL2M5?=
+ =?utf-8?B?c3c2NUhaS3BFY0hFalBUaEU3czBjRTAycnBiVHBJamdVampSM1JzOXhJS3Q3?=
+ =?utf-8?B?K0Mzc29QTnBsRXlMNEJlYlhMcVo5REJZTkZuV0Rnb0VFR1VSNSt6VEUrSjZs?=
+ =?utf-8?B?cEhEcklIRGpuVlZpNmhGWk9FWE9qZittZi9EQlQ2eDN5OEFCVmtUS1doWFE3?=
+ =?utf-8?B?ZldIcUx1VngzZ1B3YitVYThROFQxYS9aOUZ3Z0thRVM5Wm1kMVAwdFpWaWZV?=
+ =?utf-8?B?d0ViRE1RV1hjZWtyRGlNUS9yL2o5dzNTODNtczZEMVR3S0Z4K0VmbXhyQXlr?=
+ =?utf-8?B?VDhaSzl1R2x6RksvamU5SnRZRFl4NDlUSm5SbTBMa2RBWjBLWXdDUWxNYWc0?=
+ =?utf-8?B?QWZpQUhsYTg3MjZvVHpuaHJKVVZNOWY0bmpIYjI5NjBhR1libUhpZjcyeVNh?=
+ =?utf-8?B?MVl1M2JpbnF5dDV0VEE0TUs5Z3RTc1FNOVdaSGFKdVFMbHpicE10SkhWcVhU?=
+ =?utf-8?B?M3BrL1VqVkx2aUZhaU0wOUZsVEFZcUpINFB6UHROdnlyK1lDczBRWjRIYzJh?=
+ =?utf-8?B?NGJqbW50azdNL3cwdXJlNnNtQm1qa0E5dnIxdFFqaWhBZG1DU0FNTytBcEQv?=
+ =?utf-8?B?OUp3WERsSDJ6bHdNU2hsYWZhUXdSOWRFTys5VkNSb1EwN056b3pkWDNaWENh?=
+ =?utf-8?B?MUNoVnpWYXg1VUpkVDFEKzg3clRCRlpKUEJtN043ZWpRTnQ2MTNBNjgyY09K?=
+ =?utf-8?B?Qmc1eThla2FMdVBSQVg0U2QyY3lLN2cvZ0JvaVhvUGtMUXJNWS9KcDV3dmVu?=
+ =?utf-8?B?aFdnUXVOK2tMNWZ4aVU0UCs3UHZ2ekswemEwZGlxaDJRd3VJMm1kVFZhYkl1?=
+ =?utf-8?B?Rm1GbXltMFA5L3I1TWdvMXlINVJGY2VKMS9VMFFRbzhxYTFPdEE2TVd4R2pz?=
+ =?utf-8?B?UHRFdndNcXJqeER6Y2xZK1d3UGVxcjlVKzlTMjNWWkpOMVdNbzRIYXFvaTA0?=
+ =?utf-8?B?SnVDU3BEanNYejhhcXY0QXhaMFQ4YnM2UFN4bmN6RkVtZjNsemNTbnRBMVlF?=
+ =?utf-8?B?T2NoZUhqaWFIcTVDUTM0SE4rRStEdTVCTUVtMU0xWEZGNWRTUjVaNzFrTmhE?=
+ =?utf-8?B?TUJON1lWbHNsOTBCRmxYUCs3QWZxZHByTjlQTVJYRkVUVVRxRGpvL0doS3A2?=
+ =?utf-8?B?YUM1U0NRNTZLMjVCR1B6UEY2Zzh3Ym5GMkVUeW9BK1JRa3NMVG90c2ltS0RG?=
+ =?utf-8?Q?Xjc0=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <05DE8599489D95488AECB5F2CC9D18BD@amdcloud.onmicrosoft.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 91a14c4e-f335-41c5-5424-08dbae042e94
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Sep 2023 11:35:18.7071
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QjJAaAV4brKV4ueX0Mq8z6OzOA1BFkjJRpayWWp6dPdxkbPyHu5BwbT/kqa5LI6tnSqH66nMUez7rOETZGebkw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9024
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sascha,
-
-On 2023-09-04 13:58, Sascha Hauer wrote:
-> This is a continuation of the patch posted by Quentin Schulz here [1]
-> 
-> This series aims to solve a problem with Rockchip IO domains. On many
-> Rockchip SoCs the pins are driven by external supplies normally
-> controlled by regulators of a PMIC. There are multiple voltages allowed
-> for the regulators; additionally the chosen voltage has to be programmed
-> into SoC registers. There already is a driver [2] handling setting these
-> registers. The driver works by registering a notifier on the regulators.
-> Whenever a regulator is about to change its voltage then the notifier will
-> program the IO domain registers suitably for the new voltage.
-> 
-> The problem is that there is no dependency between pins and the IO
-> domain driver which means that it can happen that a pin is used before
-> the IO domain driver has been probed. In that case the pin can end up
-> being non functional as neither the regulator has been configured
-> correctly nor the SoC registers have been adjusted to the regulators
-> voltage.
-> 
-> One way to ensure correct probing order is to defer probing of devices
-> in the pinctrl driver until the IO domain driver has been probed. We
-> can't do this for all devices though, as that would introduce a cyclic
-> dependency when for example the I2C port needed to access the PMIC for
-> the regulators is part of a IO domain itself.
-> 
-> This series solves these problems similarly to Quentins patch. With
-> Quentins patch we would have to add rockchip,io-domain properties for
-> all pin group nodes we wish to honor the IO domain dependency for. We
-> could put these properties into the board dts files which would mean
-> that we either only add the properties to nodes which actually byte us,
-> or that we would have to add the properties to all possible pin groups
-> except the ones needed to access the PMIC. We could also put these
-> properties into the dtsi files, but that would mean a board has to add a
-> /delete-property/ rockchip,io-domain to the pin groups needed to access
-> the PMIC to avoid circular dependencies.
-> 
-> The approach chosen here is slightly different. First of all this series
-> doesn't change the current behaviour without board specific dts changes.
-> To activate the IO domain dependency handling, a board has to add a
-> rockchip,io-domains property to the pinctrl node. When this property is
-> present all pins are assumed to need the IO domain driver. Pin groups
-> needed to access the PMIC can then be given a rockchip,io-domain-boot-on
-> property. When this property is given then the IO domain is assumed to
-> be correctly configured by the boot loader. It should be added to all
-> pin groups needed to access the PMIC to avoid cyclic dependencies. Patch
-> 3/3 contains a usage example for the Radxa Rock-3a.
-
-FYI, I have sent out a series that ports the IO domain driver to U-Boot.
-This was needed to have working Ethernet on RK356x devices that use a
-1.8V PHY. Initially only RK356x support have been ported but support for
-other SoCs should follow in the future. Vendor U-Boot also initialize
-the IO domain configuration based on the voltage reported by the
-supplying regulator.
-
-So at least for the example board IO domains should be configured when
-entering linux while booting using a future version of mainline U-Boot.
-
-https://lore.kernel.org/u-boot/20230821223020.3918620-1-jonas@kwiboo.se/
-
-Regards,
-Jonas
-
-> 
-> Sascha
-> 
-> [1] https://lore.kernel.org/lkml/20220802095252.2486591-1-foss+kernel@0leil.net/
-> [2] drivers/soc/rockchip/io-domain.c
-> 
-> Sascha Hauer (3):
->   pinctrl: rockchip: add support for io-domain dependency
->   dt-bindings: pinctrl: rockchip: Add io domain properties
->   arm64: dts: rockchip: rock-3a: add io domain properties
-> 
->  .../bindings/pinctrl/rockchip,pinctrl.yaml    | 13 +++-
->  .../boot/dts/rockchip/rk3568-rock-3a.dts      | 11 ++++
->  drivers/pinctrl/pinctrl-rockchip.c            | 64 +++++++++++++++++++
->  drivers/pinctrl/pinctrl-rockchip.h            |  3 +
->  4 files changed, 90 insertions(+), 1 deletion(-)
-> 
-
+SGkgYWxsLA0KU29ycnkgZm9yIHRoZSBsYXRlIHVwZGF0ZSBvZiB0aGUgdjQgcGF0Y2hlcyBvbiBR
+ZW11IHNpZGU6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3FlbXUtZGV2ZWwvMjAyMzA3MjAxMjA4
+MTYuODc1MS0xLUppcWlhbi5DaGVuQGFtZC5jb20vIC4NCkFuZCBJIGhhdmUgY3JlYXRlZCBhbiAi
+aXNzdWUiIGluIHRoZSBRZW11IGdpdGxhYiBmb3IgdHJhY2luZyB0aGlzIHByb2JsZW06IGh0dHBz
+Oi8vZ2l0bGFiLmNvbS9xZW11LXByb2plY3QvcWVtdS8tL2lzc3Vlcy8xODYwLg0KRG8geW91IGhh
+dmUgYW55IG90aGVyIGNvbW1lbnRzIGFib3V0IG15IHBhdGNoZXMgPyBPciBhbnkgZ3VpZGFuY2Ug
+b24gd2hhdCBJIHNob3VsZCBkbyBuZXh0PyBJIGFtIGxvb2tpbmcgZm9yd2FyZCB0byBnZXR0aW5n
+IHJlcGx5IGZyb20geW91Lg0KDQpPbiAyMDIzLzcvMjAgMTk6NTgsIEppcWlhbiBDaGVuIHdyb3Rl
+Og0KPiB2MzoNCj4gSGkgYWxsLA0KPiBUaGFua3MgZm9yIEdlcmQgSG9mZm1hbm4ncyBhZHZpY2Uu
+IFYzIG1ha2VzIGJlbG93IGNoYW5nZXM6DQo+ICogVXNlIGVudW0gZm9yIGZyZWV6ZSBtb2RlLCBz
+byB0aGlzIGNhbiBiZSBleHRlbmRlZCB3aXRoIG1vcmUNCj4gICBtb2RlcyBpbiB0aGUgZnV0dXJl
+Lg0KPiAqIFJlbmFtZSBmdW5jdGlvbnMgYW5kIHBhcmF0ZW1lcnMgd2l0aCAiX1MzIiBwb3N0Zml4
+Lg0KPiBBbmQgbm8gZnVuY3Rpb25hbCBjaGFuZ2VzLg0KPiANCj4gQmVzdCByZWdhcmRzLA0KPiBK
+aXFpYW4gQ2hlbi4NCj4gDQo+IA0KPiB2MjoNCj4gDQo+IEhpIGFsbCwNCj4gVGhhbmtzIHRvIE1h
+cmMtQW5kcsOpIEx1cmVhdSwgUm9iZXJ0IEJlY2tldHQgYW5kIEdlcmQgSG9mZm1hbm4gZm9yDQo+
+IHRoZWlyIGFkdmljZSBhbmQgZ3VpZGFuY2UuIFYyIG1ha2VzIGJlbG93IGNoYW5nZXM6DQo+ICog
+Q2hhbmdlIFZJUlRJT19DUFVfQ01EX1NUQVRVU19GUkVFWklORyB0byAweDA0MDAgKDwweDEwMDAp
+DQo+ICogQWRkIGEgbmV3IGZlYXR1cmUgZmxhZyBWSVJUSU9fR1BVX0ZfRlJFRVpJTkcsIHNvIHRo
+YXQgZ3Vlc3QgYW5kDQo+ICAgaG9zdCBjYW4gbmVnb3RpYXRlIHdoZW5ldmVyIGZyZWV6aW5nIGlz
+IHN1cHBvcnRlZCBvciBub3QuDQo+IA0KPiBWMiBvZiBRZW11IHBhdGNoOg0KPiBodHRwczovL2xv
+cmUua2VybmVsLm9yZy9xZW11LWRldmVsLzIwMjMwNjMwMDcwMDE2Ljg0MTQ1OS0xLUppcWlhbi5D
+aGVuQGFtZC5jb20vVC8jdA0KPiANCj4gDQo+IHYxOg0KPiANCj4gbGluaywNCj4gaHR0cHM6Ly9s
+b3JlLmtlcm5lbC5vcmcvbGttbC8yMDIzMDYwODA2Mzg1Ny4xNjc3OTczLTEtSmlxaWFuLkNoZW5A
+YW1kLmNvbS8NCj4gDQo+IEhpIGFsbCwNCj4gSSBhbSB3b3JraW5nIHRvIGltcGxlbWVudCB2aXJ0
+Z3B1IFMzIGZ1bmN0aW9uIG9uIFhlbi4NCj4gDQo+IEN1cnJlbnRseSBvbiBYZW4sIGlmIHdlIHN0
+YXJ0IGEgZ3Vlc3Qgd2hvIGVuYWJsZXMgdmlydGdwdSwgYW5kIHRoZW4NCj4gcnVuICJlY2hvIG1l
+bSA+IC9zeXMvcG93ZXIvc3RhdGUiIHRvIHN1c3BlbmQgZ3Vlc3QuIEFuZCBydW4NCj4gInN1ZG8g
+eGwgdHJpZ2dlciA8Z3Vlc3QgaWQ+IHMzcmVzdW1lIiB0byByZXN1bWUgZ3Vlc3QuIFdlIGNhbiBm
+aW5kIHRoYXQNCj4gdGhlIGd1ZXN0IGtlcm5lbCBjb21lcyBiYWNrLCBidXQgdGhlIGRpc3BsYXkg
+ZG9lc24ndC4gSXQganVzdCBzaG93cyBhDQo+IGJsYWNrIHNjcmVlbi4NCj4gDQo+IEluIHJlc3Bv
+bnNlIHRvIHRoZSBhYm92ZSBwaGVub21lbm9uLCBJIGhhdmUgZm91bmQgdHdvIHByb2JsZW1zLg0K
+PiANCj4gRmlyc3QsIGlmIHdlIG1vdmUgbW91c2Ugb24gdGhlIGJsYWNrIHNjcmVlbiwgZ3Vlc3Qg
+a2VybmVsIHN0aWxsIHNlbmRzIGENCj4gY3Vyc29yIHJlcXVlc3QgdG8gUWVtdSwgYnV0IFFlbXUg
+ZG9lc24ndCByZXNwb25zZS4gQmVjYXVzZSB3aGVuIGd1ZXN0DQo+IGlzIHN1c3BlbmRpbmcsIGl0
+IGNhbGxzIGRldmljZV9zdXNwZW5kLCBhbmQgdGhlbiBjYWxsIGludG8gUWVtdSB0byBjYWxsDQo+
+IHZpcnRpb19yZXNldC0+X192aXJ0aW9fcXVldWVfcmVzZXQuIEluIF9fdmlydGlvX3F1ZXVlX3Jl
+c2V0LCBpdCBjbGVhcnMNCj4gYWxsIHZpcnRxdWV1ZSBpbmZvcm1hdGlvbiBvbiBRZW11IGVuZC4g
+U28sIGFmdGVyIGd1ZXN0IHJlc3VtZXMsIFFlbXUNCj4gY2FuJ3QgZ2V0IG1lc3NhZ2UgZnJvbSB2
+aXJ0cXVldWUuDQo+IA0KPiBTZWNvbmQsIHRoZSByZWFzb24gd2h5IGRpc3BsYXkgY2FuJ3QgY29t
+ZSBiYWNrIGlzIHRoYXQgd2hlbiBndWVzdCBpcw0KPiBzdXNwZW5kaW5nLCBpdCBjYWxscyBpbnRv
+IFFlbXUgdG8gY2FsbCB2aXJ0aW9fcmVzZXQtPnZpcnRpb19ncHVfZ2xfcmVzZXQuDQo+IEluIHZp
+cnRpb19ncHVfZ2xfcmVzZXQsIGl0IGRlc3Ryb3lzIGFsbCByZXNvdXJjZXMgYW5kIHJlc2V0cyBy
+ZW5kZXJlciwNCj4gd2hpY2ggYXJlIHVzZWQgZm9yIGRpc3BsYXkuIFNvIGFmdGVyIGd1ZXN0IHJl
+c3VtZXMsIHRoZSBkaXNwbGF5IGNhbid0DQo+IGNvbWUgYmFjayB0byB0aGUgc3RhdHVzIHdoZW4g
+Z3Vlc3QgaXMgc3VzcGVuZGVkLg0KPiANCj4gVGhpcyBwYXRjaCBpbml0aWFsaXplcyB2aXJ0cXVl
+dWUgd2hlbiBndWVzdCBpcyByZXN1bWluZyB0byBzb2x2ZSBmaXJzdA0KPiBwcm9ibGVtLiBBbmQg
+aXQgbm90aWZpZXMgUWVtdSB0aGF0IGd1ZXN0IGlzIHN1c3BlbmRpbmcgdG8gcHJldmVudCBRZW11
+DQo+IGRlc3Ryb3lpbmcgcmVzb3VyY2VzLCB0aGlzIGlzIHRvIHNvbHZlIHNlY29uZCBwcm9ibGVt
+LiBBbmQgdGhlbiwgSSBjYW4NCj4gYnJpbmcgdGhlIGRpc3BsYXkgYmFjaywgYW5kIGV2ZXJ5dGhp
+bmcgY29udGludWVzIHRoZWlyIGFjdGlvbnMgYWZ0ZXINCj4gZ3Vlc3QgcmVzdW1lcy4NCj4gDQo+
+IE1vZGlmaWNhdGlvbnMgb24gUWVtdSBlbmQ6DQo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3Fl
+bXUtZGV2ZWwvMjAyMzA2MDgwMjU2NTUuMTY3NDM1Ny0yLUppcWlhbi5DaGVuQGFtZC5jb20vDQo+
+IA0KPiBKaXFpYW4gQ2hlbiAoMSk6DQo+ICAgdmlydGdwdTogaW5pdCB2cSBkdXJpbmcgcmVzdW1l
+IGFuZCBub3RpZnkgcWVtdSBndWVzdCBzdGF0dXMNCj4gDQo+ICBkcml2ZXJzL2dwdS9kcm0vdmly
+dGlvL3ZpcnRncHVfZGVidWdmcy5jIHwgIDEgKw0KPiAgZHJpdmVycy9ncHUvZHJtL3ZpcnRpby92
+aXJ0Z3B1X2Rydi5jICAgICB8IDM5ICsrKysrKysrKysrKysrKysrKysrKysrKw0KPiAgZHJpdmVy
+cy9ncHUvZHJtL3ZpcnRpby92aXJ0Z3B1X2Rydi5oICAgICB8ICA1ICsrKw0KPiAgZHJpdmVycy9n
+cHUvZHJtL3ZpcnRpby92aXJ0Z3B1X2ttcy5jICAgICB8IDM2ICsrKysrKysrKysrKysrKystLS0t
+LS0NCj4gIGRyaXZlcnMvZ3B1L2RybS92aXJ0aW8vdmlydGdwdV92cS5jICAgICAgfCAxNiArKysr
+KysrKysrDQo+ICBpbmNsdWRlL3VhcGkvbGludXgvdmlydGlvX2dwdS5oICAgICAgICAgIHwgMTkg
+KysrKysrKysrKysrDQo+ICA2IGZpbGVzIGNoYW5nZWQsIDEwNyBpbnNlcnRpb25zKCspLCA5IGRl
+bGV0aW9ucygtKQ0KPiANCg0KLS0gDQpCZXN0IHJlZ2FyZHMsDQpKaXFpYW4gQ2hlbi4NCg==
