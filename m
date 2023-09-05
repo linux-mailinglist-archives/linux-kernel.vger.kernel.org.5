@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F9A792BE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD072792A8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347043AbjIERDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:03:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47766 "EHLO
+        id S242666AbjIEQjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354173AbjIEKEg (ORCPT
+        with ESMTP id S1354176AbjIEKFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:04:36 -0400
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9F01B4
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:04:32 -0700 (PDT)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1c0a90de7a2so30579495ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 03:04:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693908272; x=1694513072;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wwZYeHvtD9GZdB9/hKTalrH/ocSz88uD/tT+zhW9brI=;
-        b=D1T4HcTfPqwKkixZkLXMENuIXCix6HZvn4dMvgZ6Idqi07bXw9kPTtK6t5rpvWw5VQ
-         MCjOADk72Ueatb9ciPkSzw9B6XG5qigMaql24IqKM+wZqLSgEww+kSgqNIHDlAaQuIP+
-         pMm9SJOiKQZ2NY1SqG9VLNcjnrWYogvh8hpf460wN4Husz8FcinFmbVmUT5TTyr7PFz7
-         3gPMQSmAMQDE/MJy4qey+O8TqIwi+V+z8AhQLitV0HCAD5PquejOayUmydHpfveifDgd
-         sQg2BtjfEa+LrVnOPvv680I9HoxdVY0MFgq+zmcvLooZSmILBn6ZvoxKfeZ0T7ImW4Yf
-         J/7Q==
-X-Gm-Message-State: AOJu0Yxk2Xy9fv6C2wW1PKbjnqse3TU1db6CqqSPApp3i7kW/T0J+vFj
-        tWES/B9WNGz1a+xe/Mo2huI59T5pD0V/0WuDK3Ld9cUNSKVs
-X-Google-Smtp-Source: AGHT+IHikA7EnkeoU+BIWTDaP4XZIFS90veVBj/F+9Kv4krrGsmoDY8YF039ZFFbOkLb9ZOdVyHzzQ05/3mjkQGls8eEuUPFLn53
+        Tue, 5 Sep 2023 06:05:44 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E42790;
+        Tue,  5 Sep 2023 03:05:40 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB74011FB;
+        Tue,  5 Sep 2023 03:06:17 -0700 (PDT)
+Received: from [10.34.100.102] (e126645.nice.arm.com [10.34.100.102])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D616D3F793;
+        Tue,  5 Sep 2023 03:05:35 -0700 (PDT)
+Message-ID: <cd795543-53db-ed14-e9dd-b5738a4f3b9d@arm.com>
+Date:   Tue, 5 Sep 2023 12:05:30 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:f344:b0:1bb:a13a:c21e with SMTP id
- q4-20020a170902f34400b001bba13ac21emr3542263ple.10.1693908272272; Tue, 05 Sep
- 2023 03:04:32 -0700 (PDT)
-Date:   Tue, 05 Sep 2023 03:04:32 -0700
-In-Reply-To: <CANp29Y65sCETzq3CttPHww40W_tQ2S=0HockV-aSUi9dE8HGow@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d9daf4060499c0c9@google.com>
-Subject: Re: [syzbot] [block] kernel BUG in __block_write_begin_int
-From:   syzbot <syzbot+4a08ffdf3667b36650a1@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, djwong@kernel.org, hch@infradead.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        nogikh@google.com, song@kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu, yukuai3@huawei.com,
-        zhang_shurong@foxmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 4/4] energy_model: use a fixed reference frequency
+Content-Language: en-US
+To:     Vincent Guittot <vincent.guittot@linaro.org>,
+        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        viresh.kumar@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-pm@vger.kernel.org
+Cc:     conor.dooley@microchip.com, suagrfillet@gmail.com,
+        ajones@ventanamicro.com, lftan@kernel.org
+References: <20230901130312.247719-1-vincent.guittot@linaro.org>
+ <20230901130312.247719-5-vincent.guittot@linaro.org>
+From:   Pierre Gondois <pierre.gondois@arm.com>
+In-Reply-To: <20230901130312.247719-5-vincent.guittot@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,64 +56,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hello Vincent,
+I tried the patch-set on a platform using cppc_cpufreq and that has boosting
+frequencies,
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in __kthread_create_on_node
+1-
+On such platform, the CPU capacity comes from the CPPC highest_frequency
+field. The CPU capacity is set to the capacity of the boosting frequency.
+This behaviour is different from DT platforms where the CPU capacity is
+updated whenever the boosting mode is enabled (it seems).
 
-------------[ cut here ]------------
-different return values (11 and 6) from vsnprintf("kmmpd-%.*s", ...)
-WARNING: CPU: 1 PID: 12350 at lib/kasprintf.c:31 kvasprintf+0x17b/0x190 lib/kasprintf.c:30
-Modules linked in:
-CPU: 1 PID: 12350 Comm: syz-executor.0 Not tainted 6.5.0-syzkaller-11705-gfd19eb3c02e0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:kvasprintf+0x17b/0x190 lib/kasprintf.c:30
-Code: 48 8d 65 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 cb db 55 fd 48 c7 c7 a0 0a 59 8b 44 89 e6 89 da 48 8b 4c 24 18 e8 65 56 1c fd <0f> 0b eb 98 e8 2c 46 90 06 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3
-RSP: 0018:ffffc90003507620 EFLAGS: 00010246
-RAX: 2ce359f82b370100 RBX: 0000000000000006 RCX: ffff88806a543b80
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc900035076f0 R08: ffffffff81541672 R09: 1ffff1101732516a
-R10: dffffc0000000000 R11: ffffed101732516b R12: 000000000000000b
-R13: ffffc90003507880 R14: 1ffff920006a0ec8 R15: ffff888025476fa0
-FS:  00007f224ed5d6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2c420000 CR3: 00000000691b6000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __kthread_create_on_node+0x1a9/0x3c0 kernel/kthread.c:444
- kthread_create_on_node+0xde/0x120 kernel/kthread.c:512
- ext4_multi_mount_protect+0x792/0x9f0 fs/ext4/mmp.c:392
- __ext4_fill_super fs/ext4/super.c:5363 [inline]
- ext4_fill_super+0x4495/0x6d10 fs/ext4/super.c:5703
- get_tree_bdev+0x416/0x5b0 fs/super.c:1577
- vfs_get_tree+0x8c/0x280 fs/super.c:1750
- do_new_mount+0x28f/0xae0 fs/namespace.c:3335
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f224e07e1ea
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f224ed5cee8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007f224ed5cf80 RCX: 00007f224e07e1ea
-RDX: 0000000020000040 RSI: 0000000020000500 RDI: 00007f224ed5cf40
-RBP: 0000000020000040 R08: 00007f224ed5cf80 R09: 0000000000004500
-R10: 0000000000004500 R11: 0000000000000246 R12: 0000000020000500
-R13: 00007f224ed5cf40 R14: 00000000000004b4 R15: 0000000020000540
- </TASK>
+Wouldn't it be better to have CPU max capacities set to their boosting
+capacity as for CPPC base platforms ? It seems the max frequency is always
+available somehow for all the cpufreq drivers with boosting available, i.e.
+acpi-cpufreq, amd-pstate, cppc_cpufreq.
 
 
-Tested on:
+2-
+On the CPPC based platforms, the per_cpu freq_factor is not used/updated,
+meaning that we have:
+arch_scale_freq_ref_em()
+\-arch_scale_freq_ref()
+   \-topology_get_freq_ref()
+     \-per_cpu(freq_factor, cpu) (set to the default value: 1)
+and em_cpu_energy()'s ref_freq variable is then set to 1 instead of the max
+frequency (leading to a 0 energy computation).
 
-commit:         fd19eb3c iomap: handle error conditions more gracefull..
-git tree:       git://git.infradead.org/users/hch/misc.git bdev-iomap-fix
-console output: https://syzkaller.appspot.com/x/log.txt?x=11955af0680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ff0db7a15ba54ead
-dashboard link: https://syzkaller.appspot.com/bug?extid=4a08ffdf3667b36650a1
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+3-
+Also just in case, arch_scale_freq_ref_policy() and cpufreq_get_hw_max_freq()
+seem to have close (but not identical) purpose,
 
-Note: no patches were applied.
+Regards,
+Pierre
+
+On 9/1/23 15:03, Vincent Guittot wrote:
+> The last item of a performance domain is not always the performance point
+> that has been used to compute CPU's capacity. This can lead to different
+> target frequency compared with other part of the system like schedutil and
+> would result in wrong energy estimation.
+> 
+> a new arch_scale_freq_ref() is available to return a fixed and coherent
+> frequency reference that can be used when computing the CPU's frequency
+> for an level of utilization. Use this function when available or fallback
+> to the last performance domain item otherwise.
+> 
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> ---
+>   include/linux/energy_model.h | 20 +++++++++++++++++---
+>   1 file changed, 17 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+> index b9caa01dfac4..7ee07be6928e 100644
+> --- a/include/linux/energy_model.h
+> +++ b/include/linux/energy_model.h
+> @@ -204,6 +204,20 @@ struct em_perf_state *em_pd_get_efficient_state(struct em_perf_domain *pd,
+>   	return ps;
+>   }
+>   
+> +#ifdef arch_scale_freq_ref
+> +static __always_inline
+> +unsigned long  arch_scale_freq_ref_em(int cpu, struct em_perf_domain *pd)
+> +{
+> +	return arch_scale_freq_ref(cpu);
+> +}
+> +#else
+> +static __always_inline
+> +unsigned long  arch_scale_freq_ref_em(int cpu, struct em_perf_domain *pd)
+> +{
+> +	return pd->table[pd->nr_perf_states - 1].frequency;
+> +}
+> +#endif
+> +
+>   /**
+>    * em_cpu_energy() - Estimates the energy consumed by the CPUs of a
+>    *		performance domain
+> @@ -224,7 +238,7 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+>   				unsigned long max_util, unsigned long sum_util,
+>   				unsigned long allowed_cpu_cap)
+>   {
+> -	unsigned long freq, scale_cpu;
+> +	unsigned long freq, ref_freq, scale_cpu;
+>   	struct em_perf_state *ps;
+>   	int cpu;
+>   
+> @@ -241,11 +255,11 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+>   	 */
+>   	cpu = cpumask_first(to_cpumask(pd->cpus));
+>   	scale_cpu = arch_scale_cpu_capacity(cpu);
+> -	ps = &pd->table[pd->nr_perf_states - 1];
+> +	ref_freq = arch_scale_freq_ref_em(cpu, pd);
+>   
+>   	max_util = map_util_perf(max_util);
+>   	max_util = min(max_util, allowed_cpu_cap);
+> -	freq = map_util_freq(max_util, ps->frequency, scale_cpu);
+> +	freq = map_util_freq(max_util, ref_freq, scale_cpu);
+>   
+>   	/*
+>   	 * Find the lowest performance state of the Energy Model above the
