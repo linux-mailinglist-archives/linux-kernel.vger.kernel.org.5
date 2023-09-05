@@ -2,142 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A77792942
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73AB17929CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351471AbjIEQZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
+        id S1353498AbjIEQ2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:28:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242863AbjIEAbT (ORCPT
+        with ESMTP id S243767AbjIEA7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 20:31:19 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E459197;
-        Mon,  4 Sep 2023 17:31:14 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68a529e1974so1047857b3a.3;
-        Mon, 04 Sep 2023 17:31:14 -0700 (PDT)
+        Mon, 4 Sep 2023 20:59:09 -0400
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02BB11B8;
+        Mon,  4 Sep 2023 17:59:06 -0700 (PDT)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1ccb6a69b13so1698007fac.2;
+        Mon, 04 Sep 2023 17:59:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693873874; x=1694478674; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KahAxRhz3wgRQR6LYRmsSMVDqlviJZ+3n3aTM3fwp30=;
-        b=afQ2k1vTQ5KN61ZqVFn6dzQdYoJLroDRNM5H9qhSymUFFmrVRLZebOgFzi+VxKsObR
-         FGfVX2fV0ClOOlVt9g1/cuOFW07a713YSuNMm9jawpo6KJvIhysm/fKhozPNr5inSb9w
-         ajbJpDYsaf9Jvs8bAPVaO71hgUU/YoIVGml8XSLnTbRwi11AJak2uSXIvNz8rWwJvE0a
-         lLcbnQW8gbA5tAr2tn2HtEmpbktaRb6JB9lNckqq6IiLH9MDyGbUd8LW9XgHS7aRC4Sf
-         Wbsg+6r6XUPvnH5K8zviHcxO72QktAPrKmknTr/KympR9K1JPD1yGuUGtpoe8glveK4g
-         i2Tg==
+        d=gmail.com; s=20221208; t=1693875545; x=1694480345; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=dLrGwF7Q9t7xxwB/U+vDJLJpUVQoRU/i+CxEAvmTOTw=;
+        b=E2u9KhGcAfvxrF2r7sV2sWj7iamEWCvTwcHpTJzlVImae9Rnj8wmCF1dc2wic0zzUz
+         KTpPgqvrTZPCvtqJkSgWmt/3KGnkezcwgoHpobDUrpfIIG73JleFSsVMN+UjbGRqysN/
+         EEH4bFvswOt9FA1PcvD7nH9dpANWb/CDegG7hQuVXAZ2qFlFNzel3pWTBgsALgaIAO45
+         Y+RUu8hLQkOxx2FkVamep22T0IdN0vFAEilXXnJCy2k0bQISgzneeCsLa1iHYm/EDTG5
+         inbtkF4+iXn2WfRXJDvWmGtAKwq5tbQrfopNuLpaaeFu+/rDmDtPo2LCOKHXDDMvqWUg
+         kVVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693873874; x=1694478674;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KahAxRhz3wgRQR6LYRmsSMVDqlviJZ+3n3aTM3fwp30=;
-        b=P3GIjOzJOqSsgVbD5OZbztc/GWvPWEoRPycY2mB6VeIjx9F91C7Q5/ub1Vl8pEWla5
-         GFSJb3NFmTkV3RVcI6PT5Dy7eSjSgZGJVzHDPitSBRsw325m0P+4+WGAYOX0RwDgnLfE
-         8Q3IpRxHC+IB6cHXO867EulJgdKzvHH8xwOkkK3XzmfXn/KUJFVlqb9yoUqqm9R1ju3V
-         +NbDGetRwgweHaSnnzdEZ66eyXLS89/WOo7F+1sjJhJ5tbMoK/kDwCprNUg4NaiWnZdO
-         bh6Fq4kdjJGNUKrfBLvEBfmtno7KCJ9wbGAgysAAs0sVtTQKxPyAHiFw5Z64Szbn5kx/
-         vWzg==
-X-Gm-Message-State: AOJu0Yysz6gqyYLcvaIXwUSYuYiALZaSyFCkfUFRVl21MmW4kG/rbsQL
-        O8hbOy2RLZxe6EUtsol2x/VzA+1F6E8=
-X-Google-Smtp-Source: AGHT+IH2Nn8EYpPw2lv1daEhr7GqVp/qmLMwcHTb+vcj7H9xfK/s+1xTMyzOZol0NEzvBYUNI0eNQA==
-X-Received: by 2002:a05:6a20:a103:b0:135:38b5:7e58 with SMTP id q3-20020a056a20a10300b0013538b57e58mr11807695pzk.37.1693873873895;
-        Mon, 04 Sep 2023 17:31:13 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id e5-20020a63ee05000000b0055386b1415dsm7185342pgi.51.2023.09.04.17.31.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 17:31:13 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 98525991F66C; Tue,  5 Sep 2023 07:31:09 +0700 (WIB)
-Date:   Tue, 5 Sep 2023 07:31:09 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Adam Ford <aford173@gmail.com>,
-        Linux OMAP <linux-omap@vger.kernel.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Linux Stable <stable@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: 6.1.y Regression found on AM3517
-Message-ID: <ZPZ2zTS9loj06u31@debian.me>
-References: <CAHCN7xJjK=BaNHa=+OKzOmFtNRYKX_APTp5Zj3g-X_iQcpyK6g@mail.gmail.com>
+        d=1e100.net; s=20221208; t=1693875545; x=1694480345;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dLrGwF7Q9t7xxwB/U+vDJLJpUVQoRU/i+CxEAvmTOTw=;
+        b=QklooEgy0ikG0R3la6oelBcHzr7fVPjyysVlUOtGGisJ0bPgqQd4Atgv207IzeTbTq
+         zkmB4dGnUl0kbYmPrNNgV3u75UbQ9+ctf8uRLJzLmiXVjz40ca53dMYhRJ/ImgS1jfTs
+         p/l12RrbIWpJKtXoLU8CiJKTsa98iYJY4Ke6shuoUm5f+p/ALKGuKX2K84DTAwwzKxiA
+         fGzhccqG13zEl7QCRIL3BCFjjlhTHoek9meYAXtXQ+db5HfT/rXWFO25J1Vqr2csyL+7
+         2xNQf5/BCl73PY1X9XoK2BP7Gs99PUdhY5tr/s9GvpaQNpsILcM3BghhX4BaDkn7d+TQ
+         14pg==
+X-Gm-Message-State: AOJu0YzhruR7hbf95T4e2sBf9sb0zYkGHbomDqd+udTwgJPjf1XQ/5+p
+        d72YRlra/TQH7p2ftZk0VQc=
+X-Google-Smtp-Source: AGHT+IECbTnQOZgaDbcCVxBK4jnwwMyne108aX195E7LvljvfjUH31XW+BzLrh9JNzRTvDoQM844Ag==
+X-Received: by 2002:a05:6870:220b:b0:1cd:249a:690c with SMTP id i11-20020a056870220b00b001cd249a690cmr14771662oaf.20.1693875545135;
+        Mon, 04 Sep 2023 17:59:05 -0700 (PDT)
+Received: from [192.168.1.119] ([216.130.59.33])
+        by smtp.gmail.com with ESMTPSA id t9-20020a4aadc9000000b0055975f57993sm4965632oon.42.2023.09.04.17.59.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Sep 2023 17:59:04 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Message-ID: <96eb9ff2-a687-bbd5-9cb1-4b044f7deae3@lwfinger.net>
+Date:   Mon, 4 Sep 2023 19:59:03 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4TN05Y37ezUfG4hO"
-Content-Disposition: inline
-In-Reply-To: <CAHCN7xJjK=BaNHa=+OKzOmFtNRYKX_APTp5Zj3g-X_iQcpyK6g@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2] ssb: Fix division by zero issue in ssb_calc_clock_rate
+To:     Rand Deeb <rand.sec96@gmail.com>, Michael Buesch <m@bues.ch>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     deeb.rand@confident.ru, lvc-project@linuxtesting.org,
+        voskresenski.stanislav@confident.ru
+References: <20230904232346.34991-1-rand.sec96@gmail.com>
+Content-Language: en-US
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+In-Reply-To: <20230904232346.34991-1-rand.sec96@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/4/23 18:23, Rand Deeb wrote:
+> In ssb_calc_clock_rate(), there is a potential issue where the value of
+> m1 could be zero due to initialization using clkfactor_f6_resolv(). This
+> situation raised concerns about the possibility of a division by zero
+> error.
+> 
+> We fixed it by following the suggestions provided by Larry Finger
+> <Larry.Finger@lwfinger.net> and Michael Büsch <m@bues.ch>. The fix
+> involves returning a value of 1 instead of 0 in clkfactor_f6_resolv().
+> This modification ensures the proper functioning of the code and
+> eliminates the risk of division by zero errors.
+> 
+> Signed-off-by: Rand Deeb <rand.sec96@gmail.com>
+> ---
+>   drivers/ssb/main.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/ssb/main.c b/drivers/ssb/main.c
+> index 0a26984acb2c..9e54bc7eec66 100644
+> --- a/drivers/ssb/main.c
+> +++ b/drivers/ssb/main.c
+> @@ -835,7 +835,7 @@ static u32 clkfactor_f6_resolve(u32 v)
+>   	case SSB_CHIPCO_CLK_F6_7:
+>   		return 7;
+>   	}
+> -	return 0;
+> +	return 1;
+>   }
+Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
 
---4TN05Y37ezUfG4hO
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Larry
 
-On Mon, Sep 04, 2023 at 11:37:46AM -0500, Adam Ford wrote:
-> I have an AM3517-EVM board that I am trying to use the latest 6.1.y
-> stable, currently 6.1.51.
->=20
-> With git bisect, I narrowed the regression between 6.1.15 and 6.1.16 to c=
-ommit
-> eaf9b5612a47 ("driver core: fw_devlink: Don't purge child fwnode's
-> consumer links")
->=20
-> In the regression, 48002000.scm appears as not ready.  This affects a
-> variety of dependent peripherals making them unavailable:
->=20
-> wl12xx_buf platform: supplier 48002000.scm not ready
-> wl12xx_vmmc2 platform: supplier wl12xx_buf not ready
-> 48050000.dss platform: supplier display@0 not ready
-> 48064800.ehci platform: supplier hsusb1_phy not ready
-> backlight platform: supplier 48002000.scm not ready
-> display@0 platform: supplier backlight not ready
-> dmtimer-pwm@11 platform: supplier 48002000.scm not ready
-> hsusb1_phy platform: supplier 48002000.scm not ready
-> gpio-leds platform: supplier 48002000.scm not ready
-> 480b4000.mmc platform: supplier wl12xx_vmmc2 not ready
->=20
-> If I build 6.1.51 but I checkout drivers/base/core.c from commit
-> 2455b81afe68 ("driver core: fw_devlink: Add DL_FLAG_CYCLE support to
-> device links"),
-> the regression is gone.
->=20
-> I checked the 6.5 kernel, and it appears fine, so I think there is a
-> possible backport commit missing, and I was hoping Saravana or Tony
-> might have a suggestion as to which one(s) I should try.  I don't know
-> if this is found on other OMAP3 boards, but I wouldn't be surprised.
->=20
+>   
+>   /* Calculate the speed the backplane would run at a given set of clockcontrol values */
 
-Thanks for the regression report. I'm adding it to regzbot as stable-specif=
-ic
-entry:
-
-#regzbot ^introduced: eaf9b5612a47f0
-#regzbot title: keeping consumer links of child fwnode doesn't prepare AM35=
-17-EVM suppliers
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---4TN05Y37ezUfG4hO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZPZ2xwAKCRD2uYlJVVFO
-o5IOAQCIGavurK5E7nfTaIRDBoo892kQOqYZMQk0+2UlRBIopQEAjVjV5/kU645H
-VdDDpJxC+ONryhpYy6J5KLZwuF+6wQA=
-=czyX
------END PGP SIGNATURE-----
-
---4TN05Y37ezUfG4hO--
