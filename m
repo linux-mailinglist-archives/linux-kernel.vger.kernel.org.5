@@ -2,158 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F4E79269F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9D1792AE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239587AbjIEQUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
+        id S1345218AbjIEQoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354052AbjIEJ2r (ORCPT
+        with ESMTP id S1354056AbjIEJcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 05:28:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074D412E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 02:28:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693906122; x=1725442122;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=0DR/G0UhyVG5ezWuiUzUoHRpGIb4iCTcoAthz7qJHk8=;
-  b=ikrZnq939oCubfrd0rjXJjmK87q1HenYXWuNGDb1kRlenh58y3zYpDI2
-   tQOpvUZWqa2JddCgFPHZpLU9C/0YiOf1xIh7JMXZrvlHITwv1hytEuXW5
-   SsFCmZS2LxwS+z1B+gKED/97StD/gmZ/Pig5fAtQ4U1SOAa62pTCxm8wJ
-   RK5tokvbB1vKsNZ3EMIWB4f+rTz8d1SDHhRGRb33tcewvnvJGUbTdZ/w0
-   0gCkkMkhbh0hWwE0dvLoh/VVrPLH9t+fx7/NGSXF1PB1BZcHlEwZuD6ip
-   /8PAT8dCY77VZL+D0lFab+lIDLNlpWsI2K+0GEfn/owqfJ6/cshJIMPCR
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="376678227"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="376678227"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 02:28:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="987756186"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="987756186"
-Received: from lkp-server02.sh.intel.com (HELO e0b2ea88afd5) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 05 Sep 2023 02:28:40 -0700
-Received: from kbuild by e0b2ea88afd5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qdSMQ-0001UY-2q;
-        Tue, 05 Sep 2023 09:28:38 +0000
-Date:   Tue, 5 Sep 2023 17:28:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: drivers/firmware/efi/libstub/efi-stub-helper.c:662: warning:
- Function parameter or member 'out' not described in 'efi_load_initrd'
-Message-ID: <202309051737.HzLpuGnc-lkp@intel.com>
+        Tue, 5 Sep 2023 05:32:00 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A711A8
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 02:31:54 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-245-ommP8AmzMiq0pu9qgEv8Hw-1; Tue, 05 Sep 2023 10:31:51 +0100
+X-MC-Unique: ommP8AmzMiq0pu9qgEv8Hw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 5 Sep
+ 2023 10:31:48 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Tue, 5 Sep 2023 10:31:48 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Mathieu Desnoyers' <mathieu.desnoyers@efficios.com>,
+        Denis Arefev <arefev@swemel.ru>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+CC:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "trufanov@swemel.ru" <trufanov@swemel.ru>,
+        "vfh@swemel.ru" <vfh@swemel.ru>
+Subject: RE: [PATCH v2] The value may overflow
+Thread-Topic: [PATCH v2] The value may overflow
+Thread-Index: AQHZ3xnFNLjoHgiM306HccvtrgnILrAL+Rdg
+Date:   Tue, 5 Sep 2023 09:31:48 +0000
+Message-ID: <429249323d5f41ebbfa4f9e0294b2ddb@AcuMS.aculab.com>
+References: <20230904094251.64022-1-arefev@swemel.ru>
+ <bb708695-a513-2006-0985-d6686e525f5a@efficios.com>
+In-Reply-To: <bb708695-a513-2006-0985-d6686e525f5a@efficios.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3f86ed6ec0b390c033eae7f9c487a3fea268e027
-commit: f4dc7fffa9873db50ec25624572f8217a6225de8 efi: libstub: unify initrd loading between architectures
-date:   11 months ago
-config: riscv-allnoconfig (https://download.01.org/0day-ci/archive/20230905/202309051737.HzLpuGnc-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230905/202309051737.HzLpuGnc-lkp@intel.com/reproduce)
+RnJvbTogTWF0aGlldSBEZXNub3llcnMNCj4gU2VudDogMDQgU2VwdGVtYmVyIDIwMjMgMTE6MjQN
+Cj4gDQo+IE9uIDkvNC8yMyAwNTo0MiwgRGVuaXMgQXJlZmV2IHdyb3RlOg0KPiA+IFRoZSB2YWx1
+ZSBvZiBhbiBhcml0aG1ldGljIGV4cHJlc3Npb24gMSA8PCAoY3B1IC0gc2RwLT5teW5vZGUtPmdy
+cGxvKQ0KPiA+IGlzIHN1YmplY3QgdG8gb3ZlcmZsb3cgZHVlIHRvIGEgZmFpbHVyZSB0byBjYXN0
+IG9wZXJhbmRzIHRvIGEgbGFyZ2VyDQo+ID4gZGF0YSB0eXBlIGJlZm9yZSBwZXJmb3JtaW5nIGFy
+aXRobWV0aWMNCj4gDQo+IFRoZSBwYXRjaCB0aXRsZSBzaG91bGQgaWRlbnRpZnkgbW9yZSBwcmVj
+aXNlbHkgaXRzIGNvbnRleHQsIGUuZy46DQo+IA0KPiAic3JjdTogRml4IHNyY3Vfc3RydWN0IG5v
+ZGUgZ3JwbWFzayBvdmVyZmxvdyBvbiA2NC1iaXQgc3lzdGVtcyINCj4gDQo+IEFsc28sIGFzIEkg
+c3RhdGVkIGluIG15IHJlcGx5IHRvIHRoZSBwcmV2aW91cyB2ZXJzaW9uLCB0aGUgcGF0Y2ggY29t
+bWl0DQo+IG1lc3NhZ2Ugc2hvdWxkIGRlc2NyaWJlIHRoZSBpbXBhY3Qgb2YgdGhlIGJ1ZyBpdCBm
+aXhlcy4NCg0KQW5kIGlzIHRoZSBhbmFseXNpcyBjb21wbGV0ZT8NCklzIDFVTCByaWdodCBmb3Ig
+MzJiaXQgYXJjaHM/Pw0KSXMgNjQgYml0cyBldmVuIGVub3VnaD8/DQoNCglEYXZpZA0KDQo+IA0K
+PiBUaGFua3MsDQo+IA0KPiBNYXRoaWV1DQo+IA0KPiANCj4gPg0KPiA+IEZvdW5kIGJ5IExpbnV4
+IFZlcmlmaWNhdGlvbiBDZW50ZXIgKGxpbnV4dGVzdGluZy5vcmcpIHdpdGggU1ZBQ0UuDQo+ID4N
+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBEZW5pcyBBcmVmZXYgPGFyZWZldkBzd2VtZWwucnU+DQo+ID4g
+LS0tDQo+ID4gdjI6IEFkZGVkIGZpeGVzIHRvIHRoZSBzcmN1X3NjaGVkdWxlX2Nic19zbnAgZnVu
+Y3Rpb24gYXMgc3VnZ2VzdGVkIGJ5DQo+ID4gTWF0aGlldSBEZXNub3llcnMgPG1hdGhpZXUuZGVz
+bm95ZXJzQGVmZmljaW9zLmNvbT4NCj4gPiAgIGtlcm5lbC9yY3Uvc3JjdXRyZWUuYyB8IDQgKyst
+LQ0KPiA+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkN
+Cj4gPg0KPiA+IGRpZmYgLS1naXQgYS9rZXJuZWwvcmN1L3NyY3V0cmVlLmMgYi9rZXJuZWwvcmN1
+L3NyY3V0cmVlLmMNCj4gPiBpbmRleCAyMGQ3YTIzOGQ2NzUuLjZjMThlNjAwNWFlMSAxMDA2NDQN
+Cj4gPiAtLS0gYS9rZXJuZWwvcmN1L3NyY3V0cmVlLmMNCj4gPiArKysgYi9rZXJuZWwvcmN1L3Ny
+Y3V0cmVlLmMNCj4gPiBAQCAtMjIzLDcgKzIyMyw3IEBAIHN0YXRpYyBib29sIGluaXRfc3JjdV9z
+dHJ1Y3Rfbm9kZXMoc3RydWN0IHNyY3Vfc3RydWN0ICpzc3AsIGdmcF90IGdmcF9mbGFncykNCj4g
+PiAgIAkJCQlzbnAtPmdycGxvID0gY3B1Ow0KPiA+ICAgCQkJc25wLT5ncnBoaSA9IGNwdTsNCj4g
+PiAgIAkJfQ0KPiA+IC0JCXNkcC0+Z3JwbWFzayA9IDEgPDwgKGNwdSAtIHNkcC0+bXlub2RlLT5n
+cnBsbyk7DQo+ID4gKwkJc2RwLT5ncnBtYXNrID0gMVVMIDw8IChjcHUgLSBzZHAtPm15bm9kZS0+
+Z3JwbG8pOw0KPiA+ICAgCX0NCj4gPiAgIAlzbXBfc3RvcmVfcmVsZWFzZSgmc3NwLT5zcmN1X3N1
+cC0+c3JjdV9zaXplX3N0YXRlLCBTUkNVX1NJWkVfV0FJVF9CQVJSSUVSKTsNCj4gPiAgIAlyZXR1
+cm4gdHJ1ZTsNCj4gPiBAQCAtODMzLDcgKzgzMyw3IEBAIHN0YXRpYyB2b2lkIHNyY3Vfc2NoZWR1
+bGVfY2JzX3NucChzdHJ1Y3Qgc3JjdV9zdHJ1Y3QgKnNzcCwgc3RydWN0IHNyY3Vfbm9kZSAqc25w
+DQo+ID4gICAJaW50IGNwdTsNCj4gPg0KPiA+ICAgCWZvciAoY3B1ID0gc25wLT5ncnBsbzsgY3B1
+IDw9IHNucC0+Z3JwaGk7IGNwdSsrKSB7DQo+ID4gLQkJaWYgKCEobWFzayAmICgxIDw8IChjcHUg
+LSBzbnAtPmdycGxvKSkpKQ0KPiA+ICsJCWlmICghKG1hc2sgJiAoMVVMIDw8IChjcHUgLSBzbnAt
+PmdycGxvKSkpKQ0KPiA+ICAgCQkJY29udGludWU7DQo+ID4gICAJCXNyY3Vfc2NoZWR1bGVfY2Jz
+X3NkcChwZXJfY3B1X3B0cihzc3AtPnNkYSwgY3B1KSwgZGVsYXkpOw0KPiA+ICAgCX0NCj4gDQo+
+IC0tDQo+IE1hdGhpZXUgRGVzbm95ZXJzDQo+IEVmZmljaU9TIEluYy4NCj4gaHR0cHM6Ly93d3cu
+ZWZmaWNpb3MuY29tDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBS
+b2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9u
+IE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309051737.HzLpuGnc-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/firmware/efi/libstub/efi-stub-helper.c:559: warning: Function parameter or member 'initrd' not described in 'efi_load_initrd_dev_path'
-   drivers/firmware/efi/libstub/efi-stub-helper.c:559: warning: Excess function parameter 'load_addr' description in 'efi_load_initrd_dev_path'
-   drivers/firmware/efi/libstub/efi-stub-helper.c:559: warning: Excess function parameter 'load_size' description in 'efi_load_initrd_dev_path'
->> drivers/firmware/efi/libstub/efi-stub-helper.c:662: warning: Function parameter or member 'out' not described in 'efi_load_initrd'
-
-
-vim +662 drivers/firmware/efi/libstub/efi-stub-helper.c
-
-f046fff8bc4c4d Ilias Apalodimas    2021-11-19  649  
-8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  650  /**
-8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  651   * efi_load_initrd() - Load initial RAM disk
-8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  652   * @image:	EFI loaded image protocol
-947228cb9f1a2c Atish Patra         2021-07-02  653   * @soft_limit:	preferred address for loading the initrd
-947228cb9f1a2c Atish Patra         2021-07-02  654   * @hard_limit:	upper limit address for loading the initrd
-8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  655   *
-8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  656   * Return:	status code
-8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  657   */
-f61900fd0ebf6c Arvind Sankar       2020-04-30  658  efi_status_t efi_load_initrd(efi_loaded_image_t *image,
-f61900fd0ebf6c Arvind Sankar       2020-04-30  659  			     unsigned long soft_limit,
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  660  			     unsigned long hard_limit,
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  661  			     const struct linux_efi_initrd **out)
-f61900fd0ebf6c Arvind Sankar       2020-04-30 @662  {
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  663  	efi_guid_t tbl_guid = LINUX_EFI_INITRD_MEDIA_GUID;
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  664  	efi_status_t status = EFI_SUCCESS;
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  665  	struct linux_efi_initrd initrd, *tbl;
-f61900fd0ebf6c Arvind Sankar       2020-04-30  666  
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  667  	if (!IS_ENABLED(CONFIG_BLK_DEV_INITRD) || efi_noinitrd)
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  668  		return EFI_SUCCESS;
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  669  
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  670  	status = efi_load_initrd_dev_path(&initrd, hard_limit);
-f61900fd0ebf6c Arvind Sankar       2020-04-30  671  	if (status == EFI_SUCCESS) {
-f61900fd0ebf6c Arvind Sankar       2020-04-30  672  		efi_info("Loaded initrd from LINUX_EFI_INITRD_MEDIA_GUID device path\n");
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  673  		if (initrd.size > 0)
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  674  			efi_measure_initrd(initrd.base, initrd.size);
-f61900fd0ebf6c Arvind Sankar       2020-04-30  675  	} else if (status == EFI_NOT_FOUND) {
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  676  		status = efi_load_initrd_cmdline(image, &initrd, soft_limit,
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  677  						 hard_limit);
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  678  		/* command line loader disabled or no initrd= passed? */
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  679  		if (status == EFI_UNSUPPORTED || status == EFI_NOT_READY)
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  680  			return EFI_SUCCESS;
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  681  		if (status == EFI_SUCCESS)
-f61900fd0ebf6c Arvind Sankar       2020-04-30  682  			efi_info("Loaded initrd from command line option\n");
-f61900fd0ebf6c Arvind Sankar       2020-04-30  683  	}
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  684  	if (status != EFI_SUCCESS)
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  685  		goto failed;
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  686  
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  687  	status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, sizeof(initrd),
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  688  			     (void **)&tbl);
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  689  	if (status != EFI_SUCCESS)
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  690  		goto free_initrd;
-f046fff8bc4c4d Ilias Apalodimas    2021-11-19  691  
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  692  	*tbl = initrd;
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  693  	status = efi_bs_call(install_configuration_table, &tbl_guid, tbl);
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  694  	if (status != EFI_SUCCESS)
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  695  		goto free_tbl;
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  696  
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  697  	if (out)
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  698  		*out = tbl;
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  699  	return EFI_SUCCESS;
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  700  
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  701  free_tbl:
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  702  	efi_bs_call(free_pool, tbl);
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  703  free_initrd:
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  704  	efi_free(initrd.size, initrd.base);
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  705  failed:
-f4dc7fffa9873d Ard Biesheuvel      2022-09-16  706  	efi_err("Failed to load initrd: 0x%lx\n", status);
-f61900fd0ebf6c Arvind Sankar       2020-04-30  707  	return status;
-f61900fd0ebf6c Arvind Sankar       2020-04-30  708  }
-14c574f35cfbc9 Arvind Sankar       2020-05-18  709  
-
-:::::: The code at line 662 was first introduced by commit
-:::::: f61900fd0ebf6c6b91719d63272a54f4d11051df efi/libstub: Unify initrd loading across architectures
-
-:::::: TO: Arvind Sankar <nivedita@alum.mit.edu>
-:::::: CC: Ard Biesheuvel <ardb@kernel.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
