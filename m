@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A6E7928B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D648792AE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345526AbjIEQX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
+        id S1344807AbjIEQoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354202AbjIEKJo (ORCPT
+        with ESMTP id S1354200AbjIEKJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:09:44 -0400
+        Tue, 5 Sep 2023 06:09:42 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09F390;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF061B4;
         Tue,  5 Sep 2023 03:09:39 -0700 (PDT)
 Date:   Tue, 05 Sep 2023 10:09:37 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7A8HBGBd88rRl7efaER8y9kSpgW4+R79EQWm6RepGr4=;
-        b=lEva++buwT/x4cMFxGau5qakPu0lB/cfC0+2XA/23F9RGqOA2/KWwIc7nBCc2zlpQz077T
-        px3CNWxbvtqAPZsaijq2zT/oCX8p4LS0gxIxdRYG9dimzcrjs73pvUhlT08xBtcpZvX6Iz
-        67/JcGPqrbZ50ur/Ho5qvXR5xZk7fEh0XjRkzhJ2RZAEzVdv8O1TqxYBMXC1+hoN3kUIeP
-        jGG7g+pRi7q4ug4GAdyYc5OaVimVyiedJtg46Z/Ls8UYf3/0Yzp2W7GP556eYL3PHpxSaZ
-        E5/4ptWRFCGDFfBKedP85LbCWPdmPc9pt7jAQkMnhwQJ6AMZ04zaMhxlmtGqHw==
+        bh=ebE7ouAFN2v/AbRS0OPXGuebP8JRD1BKcjklxO7PBMU=;
+        b=4qQfU4HM0z7uHxKOp1al1dBIQEb9D59VI3/nXtoTNukCx7aG2/wMMhdUBC+QVurDaUtzZW
+        wl82UmTIrxjwjxEDSXzb0GdVUEVMlT6Nopi0XnQNLGR3+nhni/jIpXeOjiQq7VakkHPmCu
+        wpb8ih/Cxd34nw8W5MD/ZUSSvCU21xyTiSO2aF6pW7JcppOL6sRqlheci9m2xpugNI57zB
+        WMQ8XOHyOx+uZZNfDutlxenWTK7YYskK5QO5k9w40NmDJ16iR7J5iIpeHsmXNXkxawIyhc
+        N2ULN53C8ohBUH11EEwMQRJsIyNO03ABNVr1cm+W2LeTOfh63MMtQmhjnpZBRw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1693908578;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,22 +36,22 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7A8HBGBd88rRl7efaER8y9kSpgW4+R79EQWm6RepGr4=;
-        b=BnpY0amrpG3RPq4UJecN0KeAp+aNbMADxXjoA/nIeqWUefoBewq5zecvcyWd4c6P2dMrZw
-        5HfYzalWDy+Gc2DA==
+        bh=ebE7ouAFN2v/AbRS0OPXGuebP8JRD1BKcjklxO7PBMU=;
+        b=++g/qD4dzQ+BEIQ+3X5MDkjroAoEZpR/0T7/TqtEg9zrUdirHcAgRFCG4lecJFcUDr4tJg
+        AXpcDpC40Bhf0/AA==
 From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] x86/srso: Fix vulnerability reporting for missing microcode
+Subject: [tip: x86/bugs] x86/srso: Fix unret validation dependencies
 Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <a8a14f97d1b0e03ec255c81637afdf4cf0ae9c99.1693889988.git.jpoimboe@kernel.org>
-References: <a8a14f97d1b0e03ec255c81637afdf4cf0ae9c99.1693889988.git.jpoimboe@kernel.org>
+In-Reply-To: <299fb7740174d0f2335e91c58af0e9c242b4bac1.1693889988.git.jpoimboe@kernel.org>
+References: <299fb7740174d0f2335e91c58af0e9c242b4bac1.1693889988.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
-Message-ID: <169390857784.27769.8542911288058791596.tip-bot2@tip-bot2>
+Message-ID: <169390857741.27769.3886495315985619628.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,175 +67,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/bugs branch of tip:
 
-Commit-ID:     534be1d0ecfa327cda06fd9e556b2f56062da3d7
-Gitweb:        https://git.kernel.org/tip/534be1d0ecfa327cda06fd9e556b2f56062da3d7
+Commit-ID:     96d660f35790646f15b69010f767b6b7948fb723
+Gitweb:        https://git.kernel.org/tip/96d660f35790646f15b69010f767b6b7948fb723
 Author:        Josh Poimboeuf <jpoimboe@kernel.org>
-AuthorDate:    Mon, 04 Sep 2023 22:04:52 -07:00
+AuthorDate:    Mon, 04 Sep 2023 22:04:53 -07:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Tue, 05 Sep 2023 12:05:07 +02:00
 
-x86/srso: Fix vulnerability reporting for missing microcode
+x86/srso: Fix unret validation dependencies
 
-The SRSO default safe-ret mitigation is reported as "mitigated" even if
-microcode hasn't been updated.  That's wrong because userspace may still
-be vulnerable to SRSO attacks due to IBPB not flushing branch type
-predictions.
-
-Report the safe-ret + !microcode case as vulnerable.
-
-Also report the microcode-only case as vulnerable as it leaves the
-kernel open to attacks.
+CONFIG_CPU_SRSO isn't dependent on CONFIG_CPU_UNRET_ENTRY (AMD
+Retbleed), so the two features are independently configurable.  Fix
+several issues for the (presumably rare) case where CONFIG_CPU_SRSO is
+enabled but CONFIG_CPU_UNRET_ENTRY isn't.
 
 Fixes: fb3bd914b3ec ("x86/srso: Add a Speculative RAS Overflow mitigation")
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/a8a14f97d1b0e03ec255c81637afdf4cf0ae9c99.1693889988.git.jpoimboe@kernel.org
+Link: https://lore.kernel.org/r/299fb7740174d0f2335e91c58af0e9c242b4bac1.1693889988.git.jpoimboe@kernel.org
 ---
- Documentation/admin-guide/hw-vuln/srso.rst | 24 +++++++++-----
- arch/x86/kernel/cpu/bugs.c                 | 36 ++++++++++++---------
- 2 files changed, 39 insertions(+), 21 deletions(-)
+ arch/x86/include/asm/nospec-branch.h | 4 ++--
+ include/linux/objtool.h              | 3 ++-
+ scripts/Makefile.vmlinux_o           | 3 ++-
+ 3 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/admin-guide/hw-vuln/srso.rst b/Documentation/admin-guide/hw-vuln/srso.rst
-index b6cfb51..e715bfc 100644
---- a/Documentation/admin-guide/hw-vuln/srso.rst
-+++ b/Documentation/admin-guide/hw-vuln/srso.rst
-@@ -46,12 +46,22 @@ The possible values in this file are:
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index c55cc24..197ff4f 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -271,7 +271,7 @@
+ .Lskip_rsb_\@:
+ .endm
  
-    The processor is not vulnerable
+-#ifdef CONFIG_CPU_UNRET_ENTRY
++#if defined(CONFIG_CPU_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO)
+ #define CALL_UNTRAIN_RET	"call entry_untrain_ret"
+ #else
+ #define CALL_UNTRAIN_RET	""
+@@ -312,7 +312,7 @@
  
-- * 'Vulnerable: no microcode':
-+* 'Vulnerable':
-+
-+   The processor is vulnerable and no mitigations have been applied.
-+
-+ * 'Vulnerable: No microcode':
+ .macro UNTRAIN_RET_FROM_CALL
+ #if defined(CONFIG_CPU_UNRET_ENTRY) || defined(CONFIG_CPU_IBPB_ENTRY) || \
+-	defined(CONFIG_CALL_DEPTH_TRACKING)
++	defined(CONFIG_CALL_DEPTH_TRACKING) || defined(CONFIG_CPU_SRSO)
+ 	VALIDATE_UNRET_END
+ 	ALTERNATIVE_3 "",						\
+ 		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
+diff --git a/include/linux/objtool.h b/include/linux/objtool.h
+index 03f82c2..b5440e7 100644
+--- a/include/linux/objtool.h
++++ b/include/linux/objtool.h
+@@ -130,7 +130,8 @@
+  * it will be ignored.
+  */
+ .macro VALIDATE_UNRET_BEGIN
+-#if defined(CONFIG_NOINSTR_VALIDATION) && defined(CONFIG_CPU_UNRET_ENTRY)
++#if defined(CONFIG_NOINSTR_VALIDATION) && \
++	(defined(CONFIG_CPU_UNRET_ENTRY) || defined(CONFIG_CPU_SRSO))
+ .Lhere_\@:
+ 	.pushsection .discard.validate_unret
+ 	.long	.Lhere_\@ - .
+diff --git a/scripts/Makefile.vmlinux_o b/scripts/Makefile.vmlinux_o
+index 0edfdb4..25b3b58 100644
+--- a/scripts/Makefile.vmlinux_o
++++ b/scripts/Makefile.vmlinux_o
+@@ -37,7 +37,8 @@ objtool-enabled := $(or $(delay-objtool),$(CONFIG_NOINSTR_VALIDATION))
  
-    The processor is vulnerable, no microcode extending IBPB
-    functionality to address the vulnerability has been applied.
+ vmlinux-objtool-args-$(delay-objtool)			+= $(objtool-args-y)
+ vmlinux-objtool-args-$(CONFIG_GCOV_KERNEL)		+= --no-unreachable
+-vmlinux-objtool-args-$(CONFIG_NOINSTR_VALIDATION)	+= --noinstr $(if $(CONFIG_CPU_UNRET_ENTRY), --unret)
++vmlinux-objtool-args-$(CONFIG_NOINSTR_VALIDATION)	+= --noinstr \
++							   $(if $(or $(CONFIG_CPU_UNRET_ENTRY),$(CONFIG_CPU_SRSO)), --unret)
  
-- * 'Mitigation: microcode':
-+ * 'Vulnerable: Safe RET, no microcode':
-+
-+   The "Safe RET" mitigation (see below) has been applied to protect the
-+   kernel, but the IBPB-extending microcode has not been applied.  User
-+   space tasks may still be vulnerable.
-+
-+ * 'Vulnerable: Microcode, no safe RET':
+ objtool-args = $(vmlinux-objtool-args-y) --link
  
-    Extended IBPB functionality microcode patch has been applied. It does
-    not address User->Kernel and Guest->Host transitions protection but it
-@@ -72,11 +82,11 @@ The possible values in this file are:
- 
-    (spec_rstack_overflow=microcode)
- 
-- * 'Mitigation: safe RET':
-+ * 'Mitigation: Safe RET':
- 
--   Software-only mitigation. It complements the extended IBPB microcode
--   patch functionality by addressing User->Kernel and Guest->Host
--   transitions protection.
-+   Combined microcode/software mitigation. It complements the
-+   extended IBPB microcode patch functionality by addressing
-+   User->Kernel and Guest->Host transitions protection.
- 
-    Selected by default or by spec_rstack_overflow=safe-ret
- 
-@@ -129,7 +139,7 @@ an indrect branch prediction barrier after having applied the required
- microcode patch for one's system. This mitigation comes also at
- a performance cost.
- 
--Mitigation: safe RET
-+Mitigation: Safe RET
- --------------------
- 
- The mitigation works by ensuring all RET instructions speculate to
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 6c47f37..e45dd69 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2353,6 +2353,8 @@ early_param("l1tf", l1tf_cmdline);
- 
- enum srso_mitigation {
- 	SRSO_MITIGATION_NONE,
-+	SRSO_MITIGATION_UCODE_NEEDED,
-+	SRSO_MITIGATION_SAFE_RET_UCODE_NEEDED,
- 	SRSO_MITIGATION_MICROCODE,
- 	SRSO_MITIGATION_SAFE_RET,
- 	SRSO_MITIGATION_IBPB,
-@@ -2368,11 +2370,13 @@ enum srso_mitigation_cmd {
- };
- 
- static const char * const srso_strings[] = {
--	[SRSO_MITIGATION_NONE]           = "Vulnerable",
--	[SRSO_MITIGATION_MICROCODE]      = "Mitigation: microcode",
--	[SRSO_MITIGATION_SAFE_RET]	 = "Mitigation: safe RET",
--	[SRSO_MITIGATION_IBPB]		 = "Mitigation: IBPB",
--	[SRSO_MITIGATION_IBPB_ON_VMEXIT] = "Mitigation: IBPB on VMEXIT only"
-+	[SRSO_MITIGATION_NONE]			= "Vulnerable",
-+	[SRSO_MITIGATION_UCODE_NEEDED]		= "Vulnerable: No microcode",
-+	[SRSO_MITIGATION_SAFE_RET_UCODE_NEEDED]	= "Vulnerable: Safe RET, no microcode",
-+	[SRSO_MITIGATION_MICROCODE]		= "Vulnerable: Microcode, no safe RET",
-+	[SRSO_MITIGATION_SAFE_RET]		= "Mitigation: Safe RET",
-+	[SRSO_MITIGATION_IBPB]			= "Mitigation: IBPB",
-+	[SRSO_MITIGATION_IBPB_ON_VMEXIT]	= "Mitigation: IBPB on VMEXIT only"
- };
- 
- static enum srso_mitigation srso_mitigation __ro_after_init = SRSO_MITIGATION_NONE;
-@@ -2409,10 +2413,7 @@ static void __init srso_select_mitigation(void)
- 	if (!boot_cpu_has_bug(X86_BUG_SRSO) || cpu_mitigations_off())
- 		goto pred_cmd;
- 
--	if (!has_microcode) {
--		pr_warn("IBPB-extending microcode not applied!\n");
--		pr_warn(SRSO_NOTICE);
--	} else {
-+	if (has_microcode) {
- 		/*
- 		 * Zen1/2 with SMT off aren't vulnerable after the right
- 		 * IBPB microcode has been applied.
-@@ -2428,6 +2429,12 @@ static void __init srso_select_mitigation(void)
- 			srso_mitigation = SRSO_MITIGATION_IBPB;
- 			goto out;
- 		}
-+	} else {
-+		pr_warn("IBPB-extending microcode not applied!\n");
-+		pr_warn(SRSO_NOTICE);
-+
-+		/* may be overwritten by SRSO_CMD_SAFE_RET below */
-+		srso_mitigation = SRSO_MITIGATION_UCODE_NEEDED;
- 	}
- 
- 	switch (srso_cmd) {
-@@ -2457,7 +2464,10 @@ static void __init srso_select_mitigation(void)
- 				setup_force_cpu_cap(X86_FEATURE_SRSO);
- 				x86_return_thunk = srso_return_thunk;
- 			}
--			srso_mitigation = SRSO_MITIGATION_SAFE_RET;
-+			if (has_microcode)
-+				srso_mitigation = SRSO_MITIGATION_SAFE_RET;
-+			else
-+				srso_mitigation = SRSO_MITIGATION_SAFE_RET_UCODE_NEEDED;
- 		} else {
- 			pr_err("WARNING: kernel not compiled with CPU_SRSO.\n");
- 		}
-@@ -2490,7 +2500,7 @@ static void __init srso_select_mitigation(void)
- 	}
- 
- out:
--	pr_info("%s%s\n", srso_strings[srso_mitigation], has_microcode ? "" : ", no microcode");
-+	pr_info("%s\n", srso_strings[srso_mitigation]);
- 
- pred_cmd:
- 	if ((!boot_cpu_has_bug(X86_BUG_SRSO) || srso_cmd == SRSO_CMD_OFF) &&
-@@ -2701,9 +2711,7 @@ static ssize_t srso_show_state(char *buf)
- 	if (boot_cpu_has(X86_FEATURE_SRSO_NO))
- 		return sysfs_emit(buf, "Mitigation: SMT disabled\n");
- 
--	return sysfs_emit(buf, "%s%s\n",
--			  srso_strings[srso_mitigation],
--			  boot_cpu_has(X86_FEATURE_IBPB_BRTYPE) ? "" : ", no microcode");
-+	return sysfs_emit(buf, "%s\n", srso_strings[srso_mitigation]);
- }
- 
- static ssize_t gds_show_state(char *buf)
