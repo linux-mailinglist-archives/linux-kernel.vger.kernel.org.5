@@ -2,71 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F92B792D52
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FFFA792D58
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231663AbjIESUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 14:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36244 "EHLO
+        id S241199AbjIESYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 14:24:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241005AbjIESTy (ORCPT
+        with ESMTP id S241155AbjIESYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 14:19:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BACF9D;
-        Tue,  5 Sep 2023 11:19:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693937946; x=1725473946;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=OJSFhDmct7oPXZQb2l3WGeV9v9ga9tNiVzoHRU4k9cg=;
-  b=mOOb4+FHtNblDOiLvctj+5dhs1b6fYT58hw+KafiqXEmE6gTMeSU5UJE
-   xs63Q6ArHCzMATMmyLPslrZS4k4jKsaxLZidEmoSnr1qN4ZS1UX9eFqNN
-   sw16KC/SPvCnRui49EGnrr9dFlb9zgdO4Rjh5r+Cvg+QY7saKRGk7rMTy
-   WyaelmEktCOBC0dg5O7S2HQpmmhMk9ASSF4ZD4w/0aLRPTtq8UZRFoSNE
-   xozbh2Yw+Wv1Lp5I9FyX7cLJyL4qfpvwR9zeAGoUDCoxT3Lhiqaz1WKro
-   Rke3s4e+0w45/m54YJlxSXzgolVFgrhqfApAkzIpqZ4x9G3WnLQKfIhfK
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="361901615"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="361901615"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 11:17:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="717963958"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="717963958"
-Received: from yjie-desk1.jf.intel.com (HELO [10.24.100.126]) ([10.24.100.126])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 11:17:56 -0700
-Message-ID: <02d8a574-a07a-f595-aee2-13908df74e68@linux.intel.com>
-Date:   Tue, 5 Sep 2023 11:17:42 -0700
+        Tue, 5 Sep 2023 14:24:50 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897F61B7;
+        Tue,  5 Sep 2023 11:24:16 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-76ee895a3cbso169659985a.0;
+        Tue, 05 Sep 2023 11:24:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693938168; x=1694542968; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DXwyeYXdRfYZvJbbFR7Covv6HPd1SVxlTSYepV/tmjs=;
+        b=Gh57aQCwamY9ay52nr7yfq+Ap4GPuXV18enA2UJtScAO+5muMv+6upeOZs6kaeB3a8
+         CqKLqp7ElBlf+sTJDMVWxtRFBhk0KVf7OpNAd93lb79SKbzKI77xyD+oEL+0ynWr3bGq
+         qwtuwZoLs+dc1PXAeNNOiCRNvMJeoxEprHgUS7Od7U7ltVpCpqrsrecYqEqBm5oO5zZj
+         T4esP/xPDcdp8zIlYWU1qbN4yTfVYejweiVNqZ3ncp+7p8PU8sZdQorhFeDZY20AxoDQ
+         s6WYyHap+Se4rLfC5vixPuaoCGFkeljV1nNpvXH2W2FA5VTVyFR904BxtM0Hy+RPi7Wc
+         dNvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693938168; x=1694542968;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DXwyeYXdRfYZvJbbFR7Covv6HPd1SVxlTSYepV/tmjs=;
+        b=b9XHXIpwzGE66BM6C+vT31yUTR002qi8VOQ5jzZJeoYpO052TKdJVMMYWm59YyaStD
+         g7sXSwaX+0tay6Nixn37OSe1DwOYfJWFr6T22etnnYi4hO4QQFc1XzZA/jm+zckz0L/R
+         eL+KlsAUMAqb3o3cUvWoRL3qWdIq+nsUe+Dqh1ncHUBWIIZ5993TF/C23X9Eq4t/RTuR
+         KLbR6XgnKFGKDro5PnuHWZUUWqk8o0Akvt179iUr6es4JJCqEtjmUNwbtCUFuDHLFx3x
+         gdkqp6ZCZnUuma2KiH95w10ZgN4fuQyrbvQVxGzzY63AgSin+S/rN+hkIy4jIWGlqgET
+         /ZyQ==
+X-Gm-Message-State: AOJu0YypQoN4KoMjy3ulXyhARtqQMpqYiVkOCOIXJ01IJYOl1xDz1kHw
+        lhJK8Yvu8+W5RbOOzselAQ0=
+X-Google-Smtp-Source: AGHT+IFW9Z6b7lLJ7ZH3OAu/H5jbs1/ChicKVm8Mq264VDiXgiAV7q+i5W4z0XnwH6R5/y7akufhXA==
+X-Received: by 2002:a05:620a:2407:b0:76f:1aaa:1bee with SMTP id d7-20020a05620a240700b0076f1aaa1beemr14714939qkn.62.1693938167738;
+        Tue, 05 Sep 2023 11:22:47 -0700 (PDT)
+Received: from [10.69.73.253] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id b10-20020a05620a126a00b007671678e325sm4271375qkl.88.2023.09.05.11.22.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Sep 2023 11:22:46 -0700 (PDT)
+Message-ID: <4abb799a-1b9d-42f3-aaf7-b8248ccaa467@gmail.com>
+Date:   Tue, 5 Sep 2023 11:22:44 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2] cpufreq: intel_pstate: set stale CPU frequency to
- minimum
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <001d01d9d3a7$71736f50$545a4df0$@telus.net>
- <CAJZ5v0g=TEY0+dL9AGh1cYNnwQ=L6G8CRxXVD0AyWsaK5aDsdA@mail.gmail.com>
- <9665af79-d439-e05a-5333-62f71a2ac55c@linux.intel.com>
- <2023082901-moonscape-album-b7cc@gregkh>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 00/31] 6.1.52-rc1 review
 Content-Language: en-US
-From:   Keyon Jie <yang.jie@linux.intel.com>
-In-Reply-To: <2023082901-moonscape-album-b7cc@gregkh>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20230904182946.999390199@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; keydata=
+ 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
+ HGuUuzv+GKZ6nsysJw==
+In-Reply-To: <20230904182946.999390199@linuxfoundation.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,LOTS_OF_MONEY,MONEY_NOHTML,
-        NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -75,95 +114,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 8/29/23 01:57, Greg KH wrote:
-> On Mon, Aug 28, 2023 at 04:35:13PM -0700, Keyon Jie wrote:
->>
->>
->> On 8/22/23 04:46, Rafael J. Wysocki wrote:
->>> On Sun, Aug 20, 2023 at 10:46 PM Doug Smythies <dsmythies@telus.net> wrote:
->>>>
->>>> The intel_pstate CPU frequency scaling driver does not
->>>> use policy->cur and it is 0.
->>>> When the CPU frequency is outdated arch_freq_get_on_cpu()
->>>> will default to the nominal clock frequency when its call to
->>>> cpufreq_quick_getpolicy_cur returns the never updated 0.
->>>> Thus, the listed frequency might be outside of currently
->>>> set limits. Some users are complaining about the high
->>>> reported frequency, albeit stale, when their system is
->>>> idle and/or it is above the reduced maximum they have set.
->>>>
->>>> This patch will maintain policy_cur for the intel_pstate
->>>> driver at the current minimum CPU frequency.
->>>>
->>>> Reported-by: Yang Jie <yang.jie@linux.intel.com>
->>>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217597
->>>> Signed-off-by: Doug Smythies <dsmythies@telus.net>
->>>> ---
->>>>
->>>> v1 -> v2:
->>>>      * v1 was a completely different approach, programming around
->>>>        the issue rather than fixing it at the source.
->>>>        reference:
->>>>        https://patchwork.kernel.org/project/linux-pm/patch/006901d9be8c$f4439930$dccacb90$@telus.net/
->>>>      * v2 does not fix an issue with the intel_cpufreq CPU scaling
->>>>        driver (A.K.A. the intel_pstate driver in passive mode) and
->>>>        the schedutil CPU frequency scaling governor when HWP is enabled
->>>>        where limit changes are not reflected in the stale listed frequencies.
->>>>        A fix for that will be some future patch.
->>>>
->>>> ---
->>>>    drivers/cpufreq/intel_pstate.c | 5 +++++
->>>>    1 file changed, 5 insertions(+)
->>>>
->>>> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
->>>> index 8ca2bce4341a..08284dee583a 100644
->>>> --- a/drivers/cpufreq/intel_pstate.c
->>>> +++ b/drivers/cpufreq/intel_pstate.c
->>>> @@ -2609,6 +2609,11 @@ static int intel_pstate_set_policy(struct cpufreq_policy *policy)
->>>>                           intel_pstate_clear_update_util_hook(policy->cpu);
->>>>                   intel_pstate_hwp_set(policy->cpu);
->>>>           }
->>>> +       /* policy current is never updated with the intel_pstate driver
->>>> +        * but it is used as a stale frequency value. So, keep it within
->>>> +        * limits.
->>>> +        */
->>>> +       policy->cur = policy->min;
->>>>
->>>>           mutex_unlock(&intel_pstate_limits_lock);
->>>>
->>>> --
->>>
->>> Applied as 6.6 material, with some mailer-induced white space damage
->>> fixed and the new comment adjusted to the kernel coding style.
->>>
->>> Thanks!
->>
->> Hi Doug and Rafael,
->>
->> Thank you for making the fix happen.
->>
->> Hi Greg,
->>
->> Will this be picked to the stable linux-6.1.y and linux-6.4.y kernel, it
->> could benefit to users there.
+On 9/4/2023 11:30 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.52 release.
+> There are 31 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Sure, when it hits Linus's tree, please follow the instructions in:
->      https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> for how to get it merged.
-
-Thank you Greg.
-
-Hi Rafael,
-
-As the issue happens from the 5.18 onward kernels, we need the fix to be 
-picked for stable kernels after that, could you please help to add "Cc: 
-stable@vger.kernel.org" in the sign-off area when you send it to the 
-mainline?
-
-Thank you,
-~Keyon
-
+> Responses should be made by Wed, 06 Sep 2023 18:29:29 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.52-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
 > 
 > thanks,
 > 
 > greg k-h
+
+On ARCH_BRCMSTB using 32-bit and 64-bit kernels, build tested on 
+BMIPS_GENERIC:
+
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
