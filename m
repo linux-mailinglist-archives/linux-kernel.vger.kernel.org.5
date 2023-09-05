@@ -2,123 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D610792447
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 17:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 142B879244A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 17:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229573AbjIEP62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 11:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
+        id S229711AbjIEP6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 11:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343596AbjIECkP (ORCPT
+        with ESMTP id S1344421AbjIEDiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 22:40:15 -0400
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD66E6;
-        Mon,  4 Sep 2023 19:40:10 -0700 (PDT)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 3852dg4t095690;
-        Tue, 5 Sep 2023 10:39:42 +0800 (+08)
-        (envelope-from Wenchao.Chen@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx05.spreadtrum.com [10.29.1.56])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RfqQY4hNyz2RD6Z7;
-        Tue,  5 Sep 2023 10:36:53 +0800 (CST)
-Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx05.spreadtrum.com
- (10.29.1.56) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Tue, 5 Sep
- 2023 10:39:40 +0800
-From:   Wenchao Chen <wenchao.chen@unisoc.com>
-To:     <ulf.hansson@linaro.org>
-CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wenchao.chen666@gmail.com>, <zhenxiong.lai@unisoc.com>,
-        <yuelin.tang@unisoc.com>, Wenchao Chen <wenchao.chen@unisoc.com>
-Subject: [PATCH V3 2/2] mmc: hsq: dynamic adjustment of hsq->depth
-Date:   Tue, 5 Sep 2023 10:39:21 +0800
-Message-ID: <20230905023921.10766-3-wenchao.chen@unisoc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230905023921.10766-1-wenchao.chen@unisoc.com>
-References: <20230905023921.10766-1-wenchao.chen@unisoc.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.13.2.29]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- shmbx05.spreadtrum.com (10.29.1.56)
-X-MAIL: SHSQR01.spreadtrum.com 3852dg4t095690
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 4 Sep 2023 23:38:13 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CD9CC7
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 20:38:10 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58fbc0e0c6dso21111157b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 20:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693885089; x=1694489889; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=RtnM2lSnMvooeKQ4ZkPF0YnuLxt+osNAFntTo/Bcl0M=;
+        b=dELJWcx/VX9cK5dczh6x1loDTn1xkwHl83Z2QC3n0SRof9aOZHeIJ/KzkMkJacwGBL
+         iVPqPBMcCK4BhrM1Eh94WO63/x8JnvDJRahZRhV6Q8LoZrRe+4hspUxLhcSUo2FiQgKd
+         gYYi2fX77yUxW63vjfRb3gH3xac9EmWSxIV9HIB0jZehWDmtmyeYpxCWbq7XakXzFDFR
+         8fk781OeaGuTkox/Olih/zHW924N7LTFPNtCDlP4F3+lKb/sHgGl2DjG2gYUgf0fmTch
+         MmkN/ijecQ19aKyhyPsYot1LDcBuCv0ooFd5c2u+lOn8ZuX8HfKye5Id3xiEGtZUtpc5
+         IjQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693885089; x=1694489889;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RtnM2lSnMvooeKQ4ZkPF0YnuLxt+osNAFntTo/Bcl0M=;
+        b=XVLw2bH5R6OQU/65jEPwONvR+hcfQ3ZMkr9IDk4skRw5O088mIBJRhgJycXg+ZhNXa
+         rpRaqc5q5fQ/HcJkRRupyawtq7LsNXfuF32fj0Bh1ufKXCVqLg2yTrtxufkqYtsgSqIC
+         glhuOYC+tigh24+DUj7G+aQsUqae4mGHmo4/uUA1RsNurvxTyXJsFlduqmkLLosjCR/1
+         aqEqesOh5gNPraO7pIZe+JWeNAUAItJ6VP3O024Q6vGdu6nz2QZyT1Amp0WJicvn8yYL
+         hIXITJNr9/To2Ejsjec6AkxDWstm4rDA5QeocYh4vS4cyZl8OkAPaOzDHhIXVmEVY1rY
+         ghtg==
+X-Gm-Message-State: AOJu0YwAG52V1QU8ZfoqMAKrE55BO0nzFq2a+6Tw4mArHNe/fkzMqN/a
+        k663jqjkRNY4NUtd0YIbqB5zHWwuVQyM
+X-Google-Smtp-Source: AGHT+IEVU8gM7rNq+UH+h2AXjp3JAXNBpqbDRZ1/FSUIs1w1vltNnUemBaxZvAsC4kexX5N8m82eF5v56P0F
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:1e0b:753:60d0:6c22])
+ (user=irogers job=sendgmr) by 2002:a05:6902:10e:b0:d7f:4ba0:b5da with SMTP id
+ o14-20020a056902010e00b00d7f4ba0b5damr68093ybh.13.1693885089268; Mon, 04 Sep
+ 2023 20:38:09 -0700 (PDT)
+Date:   Mon,  4 Sep 2023 20:38:05 -0700
+Message-Id: <20230905033805.3094293-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
+Subject: [PATCH v1] perf parse-events: Fix driver config term
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        James Clark <james.clark@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Increasing hsq_depth improves random write performance.
+Inadvertently deleted in commit 30f4ade33d64 ("perf tools: Revert
+enable indices setting syntax for BPF map").
 
-Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+Reported-by: James Clark <james.clark@arm.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- drivers/mmc/host/mmc_hsq.c | 27 +++++++++++++++++++++++++++
- drivers/mmc/host/mmc_hsq.h |  5 +++++
- 2 files changed, 32 insertions(+)
+ tools/perf/util/parse-events.y | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/drivers/mmc/host/mmc_hsq.c b/drivers/mmc/host/mmc_hsq.c
-index 8556cacb21a1..0984c39108ba 100644
---- a/drivers/mmc/host/mmc_hsq.c
-+++ b/drivers/mmc/host/mmc_hsq.c
-@@ -21,6 +21,31 @@ static void mmc_hsq_retry_handler(struct work_struct *work)
- 	mmc->ops->request(mmc, hsq->mrq);
+diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+index 4a305df61f74..21bfe7e0d944 100644
+--- a/tools/perf/util/parse-events.y
++++ b/tools/perf/util/parse-events.y
+@@ -839,6 +839,23 @@ PE_TERM
+ 
+ 	$$ = term;
  }
- 
-+static void mmc_hsq_modify_threshold(struct mmc_hsq *hsq)
++|
++PE_DRV_CFG_TERM
 +{
-+	struct mmc_host *mmc = hsq->mmc;
-+	struct mmc_request *mrq;
-+	struct hsq_slot *slot;
-+	int need_change = 0;
-+	int tag;
++	struct parse_events_term *term;
++	char *config = strdup($1);
++	int err;
 +
-+	for (tag = 0; tag < HSQ_NUM_SLOTS; tag++) {
-+		slot = &hsq->slot[tag];
-+		mrq = slot->mrq;
-+		if (mrq && mrq->data &&
-+			(mrq->data->blksz * mrq->data->blocks == 4096) &&
-+			(mrq->data->flags & MMC_DATA_WRITE))
-+			need_change++;
-+		else
-+			break;
++	if (!config)
++		YYNOMEM;
++	err = parse_events_term__str(&term, PARSE_EVENTS__TERM_TYPE_DRV_CFG, config, $1, &@1, NULL);
++	if (err) {
++		free($1);
++		free(config);
++		PE_ABORT(err);
 +	}
-+
-+	if (need_change > 1)
-+		mmc->hsq_depth = HSQ_PERFORMANCE_DEPTH;
-+	else
-+		mmc->hsq_depth = HSQ_NORMAL_DEPTH;
++	$$ = term;
 +}
-+
- static void mmc_hsq_pump_requests(struct mmc_hsq *hsq)
- {
- 	struct mmc_host *mmc = hsq->mmc;
-@@ -42,6 +67,8 @@ static void mmc_hsq_pump_requests(struct mmc_hsq *hsq)
- 		return;
- 	}
  
-+	mmc_hsq_modify_threshold(hsq);
-+
- 	slot = &hsq->slot[hsq->next_tag];
- 	hsq->mrq = slot->mrq;
- 	hsq->qcnt--;
-diff --git a/drivers/mmc/host/mmc_hsq.h b/drivers/mmc/host/mmc_hsq.h
-index aa5c4543b55f..dd352a6ac32a 100644
---- a/drivers/mmc/host/mmc_hsq.h
-+++ b/drivers/mmc/host/mmc_hsq.h
-@@ -10,6 +10,11 @@
-  * flight to avoid a long latency.
-  */
- #define HSQ_NORMAL_DEPTH	2
-+/*
-+ * For 4k random writes, we allow hsq_depth to increase to 5
-+ * for better performance.
-+ */
-+#define HSQ_PERFORMANCE_DEPTH	5
+ sep_dc: ':' |
  
- struct hsq_slot {
- 	struct mmc_request *mrq;
 -- 
-2.17.1
+2.42.0.283.g2d96d420d3-goog
 
