@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AED377929C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2F2792A94
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352627AbjIEQ1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36958 "EHLO
+        id S243464AbjIEQjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:39:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350993AbjIEFFT (ORCPT
+        with ESMTP id S1351014AbjIEFFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 01:05:19 -0400
+        Tue, 5 Sep 2023 01:05:20 -0400
 Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91FB9CCF
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 22:05:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0309FCD2
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 22:05:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id C1889CE10A3
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 05:05:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A00BEC433C9;
-        Tue,  5 Sep 2023 05:05:12 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 5DCCBCE10AF
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 05:05:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40E37C433CB;
+        Tue,  5 Sep 2023 05:05:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1693890313;
-        bh=M0a/H/pEcZzBFFM+N5QiV+JwT5qTf0DWq1jP92T/lrQ=;
+        bh=roaZa6DJKVHyMmMO2D1vNZ9eeHp8DbQmu8mMGYbUivE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KcCit0MPQ0HnJSGUQfsZmxxM2bUxQIRSETXau2n+eWtQz31dypini42TkDWTGzVOZ
-         XgEW0CtLhsLJ9wkhike5qbboOHCqBHwPKJ8vTYr6UMsqnuHitl3IOI9VXEGJoDPH/c
-         R33fx59r4dx+WDR5MtSKzuXuF1Nbo+BJ+0BJznmSUfrFdKlStkKQyACOWCC/hLxQn+
-         T5Qls47z4XCCNn6vemLzBnwn/Fl18tf2hb9lGD58TDMr442kHxoRgn/D2CwNQg5AGR
-         dkcESPZ90FyfcrsjHIbWF/qgppQDv+yKnVc3e2yNipmUGito6Dg0Pn9T9bp20aW89s
-         KkjTln9B5LmDw==
+        b=F0Xi9J+qx2jWa/RxizWxGlmFAaslhM+YtPPtc+kgHqLYxiAaCE3lEL3ZDunANpx9H
+         acyn6se1NiWuosv5KRpZIT6cE1y8OlKhUG1CK+BbxXx0xsxb5h/jSr1vdVKRetoZ5X
+         CrVP+mRCWjL4KUXGF6Gz0mgn0fCbHEl066Y6LHqSz1m5Xm1m41yK2+Mqi1iFf6zc+i
+         KrM2JjykS8YPXCP7oIGrX3ui45Pe2s21APSNneWG+Eip6ZhkjhI+VnZ6VesFFPi93U
+         vcp1XW03Hv4ikMTJ9ojl9ffm8/9H6TyZGazGv88a1LdRGXZZizHmsKYuYWM/KcX4RQ
+         nJd6FJG/iH9Kw==
 From:   Josh Poimboeuf <jpoimboe@kernel.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
         Andrew Cooper <andrew.cooper3@citrix.com>,
         Nikolay Borisov <nik.borisov@suse.com>,
         gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH v3 10/20] x86/alternatives: Remove faulty optimization
-Date:   Mon,  4 Sep 2023 22:04:54 -0700
-Message-ID: <16d19d2249d4485d8380fb215ffaae81e6b8119e.1693889988.git.jpoimboe@kernel.org>
+Subject: [PATCH v3 11/20] x86/srso: Improve i-cache locality for alias mitigation
+Date:   Mon,  4 Sep 2023 22:04:55 -0700
+Message-ID: <eadaf5530b46a7ae8b936522da45ae555d2b3393.1693889988.git.jpoimboe@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1693889988.git.jpoimboe@kernel.org>
 References: <cover.1693889988.git.jpoimboe@kernel.org>
@@ -60,43 +60,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit
+Move srso_alias_return_thunk() to the same section as
+srso_alias_safe_ret() so they can share a cache line.
 
-  095b8303f383 ("x86/alternative: Make custom return thunk unconditional")
-
-made '__x86_return_thunk' a placeholder value.  All code setting
-X86_FEATURE_RETHUNK also changes the value of 'x86_return_thunk'.  So
-the optimization at the beginning of apply_returns() is dead code.
-
-Also, before the above-mentioned commit, the optimization actually had a
-bug It bypassed __static_call_fixup(), causing some raw returns to
-remain unpatched in static call trampolines.  Thus the 'Fixes' tag.
-
-Fixes: d2408e043e72 ("x86/alternative: Optimize returns patching")
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 ---
- arch/x86/kernel/alternative.c | 8 --------
- 1 file changed, 8 deletions(-)
+ arch/x86/lib/retpoline.S | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 099d58d02a26..34be5fbaf41e 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -720,14 +720,6 @@ void __init_or_module noinline apply_returns(s32 *start, s32 *end)
- {
- 	s32 *s;
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index cd86aeb5fdd3..9ab634f0b5d2 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -177,15 +177,14 @@ SYM_START(srso_alias_safe_ret, SYM_L_GLOBAL, SYM_A_NONE)
+ 	int3
+ SYM_FUNC_END(srso_alias_safe_ret)
  
--	/*
--	 * Do not patch out the default return thunks if those needed are the
--	 * ones generated by the compiler.
--	 */
--	if (cpu_feature_enabled(X86_FEATURE_RETHUNK) &&
--	    (x86_return_thunk == __x86_return_thunk))
--		return;
+-	.section .text..__x86.return_thunk
 -
- 	for (s = start; s < end; s++) {
- 		void *dest = NULL, *addr = (void *)s + *s;
- 		struct insn insn;
+-SYM_CODE_START(srso_alias_return_thunk)
++SYM_CODE_START_NOALIGN(srso_alias_return_thunk)
+ 	UNWIND_HINT_FUNC
+ 	ANNOTATE_NOENDBR
+ 	call srso_alias_safe_ret
+ 	ud2
+ SYM_CODE_END(srso_alias_return_thunk)
+ 
++	.section .text..__x86.return_thunk
+ /*
+  * Some generic notes on the untraining sequences:
+  *
 -- 
 2.41.0
 
