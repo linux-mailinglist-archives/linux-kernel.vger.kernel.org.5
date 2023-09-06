@@ -2,261 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 755FB794309
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862AE794326
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243301AbjIFS2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 14:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46460 "EHLO
+        id S243780AbjIFSel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 14:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242007AbjIFS20 (ORCPT
+        with ESMTP id S243393AbjIFSdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 14:28:26 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2070.outbound.protection.outlook.com [40.107.243.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931DF199A
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 11:28:18 -0700 (PDT)
+        Wed, 6 Sep 2023 14:33:53 -0400
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2055.outbound.protection.outlook.com [40.107.249.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D266B173B;
+        Wed,  6 Sep 2023 11:33:30 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YDAuFMnaPpuB+Jpdb46VBYhZkFB0siOV0MJAqc40t/JAYKitplSASRfS8yvSLqOifLkhOr0TLUwnlOlY3/BQegwWY/S/Pz1XSIp/xDYbQH3YckWLaaRm44d80ulwZn8FAgJsUHL6snJ/iA6ZgKNG+sILQH1Nom5KOa7TVely5EF4WD3ji4EPq9YP2ru8s2+Ate4rD8Yco3BRca2mHWEeqUHMz1Adt1dFQmcBim6hgX6gcEN4PBL0MkBdQEKjQTENXxo8RY/ff3F8CGIfXVgAPHHLu7IFoOgsTZ6oEg7/7vNjxyJBpRRY4ZW+0/NRk2f/fWO/AqQ5tAsFZM5xokwzdg==
+ b=SP72kGjd226rggbrlsXSapxRUKxt6UbOpsrMv5NYFTYrR3XieE3lDrnsbX+rhkOBq063vV2oDDs8zKg3+OrlqZzgGspEPqsUx7iz8v7gms1cnEo4IWsPr3QAZcsRipfQyvjZ7yJZaylRDibWZrR0Ct/ArvpKsRs0biBZeyJY7plyX8+tcClzSvngWWtEm3QTHe4V8Aml67eqOYIHrfkbcRTMJoh9a48L3KCG8NLV1nHsw6rR470O0MaejmaW5cZzjj9sGjxWoQfIAP7stZ6r8Zd4Wibl6KdLpLQ7BxSN2MtQRi/JBXF3b6o2VGKC0gxsjpARAXSTLqebvl4TkdIYSg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mJdD62HtomrYZPoSGq5MxBj+slacvvCZ/IdlFKZ7O9c=;
- b=CScUx6O3m4PQuUSnRXXyu2R0J2gTSjm1i3Gv4z0MkG9R6USAaLSV/M0ac/8JGupEjazog8j2oiKCkElZI0kX+VP0B6eO+Uu601n/iCOmpAAzD5wAdyOojx8+T3ptVKe/F0G+7Iy7vS3Te73qJLps2BI5AfEui785SaHGY8GpvaRA4+Vd+oYvVM7qvR+0XaCNfZ2AjMKy+s6wUXfMxk1XCPr8xiLE5nJ4BjqlNnE+yZ54Kk2GMuaQBQ628xFjFbUVzYSIS8Vf8foBcokJjJ2fxyd0gWtoM5BPu6MZoqz326C/Le/2pbZxQa5cjCEf5n8LxjPVlBzeEf4kZq3dMMe0jw==
+ bh=1KwRHgBeI2RfFlpa1CWoeEYlzYH93l6sFLUa1kihgNA=;
+ b=lIcYsV0qBIsRTAEbmOlswGAVR9Q6KjtUJ63GoP5Dlr7VM4kgYf2jP0HE9m4ZRAi82TmRiQXNaH9uFdXk8eNQ8jLe290pPYVSbU8CJE/h/lQ6/aQEps19KxMOr25jr+dfxGZqq59JD44MOxZ8ut5aKYi57iDyHFllP7QAC5SOWDrj3FRPSnTiBybsXAOccQIYp3W+t4Xvob5E6FHr0oaxUTKyVHjU2DlYG9RaFF/rtQZndFGI+vRzr+8l7PjDVu1j0WtOU7Ie25Cm3ghh+Vi1VNNJZg7kjjXQRC3rhU6kIMQGg48OfPt6z3zL3kdIqgzuwdLY/yIWAlcBK3HYRIThsw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mJdD62HtomrYZPoSGq5MxBj+slacvvCZ/IdlFKZ7O9c=;
- b=KdAApKIGkkQZI7ojc5PGxzUx7THpY7qNqlawM6NDllgL6Y6jrkssB8EgUuUkCsCx7vB6I6huiWP/H/Eb99Bnd7HI1xykNpqTLAYbx4WkIGj7ZEEcYW8qRuR3PDdfEf14T1cppW0i2drCW5YWE4egkM2iSaJOMS4IBW/0AI2TXJE=
+ bh=1KwRHgBeI2RfFlpa1CWoeEYlzYH93l6sFLUa1kihgNA=;
+ b=Mou5g47HNNytPrCuB8Z7Tnfhb8NwCftsGYnK1USPd6MD5msvPNfx43Pb0beM/41aBmAyj4OO2cHGw+D4lwenkdBFMubMDbfXa2Y3TIdywK0DD38bbV1iMWCzSzqfjly0uEbBAbuS5LIJnOxBDPeWjrQ1OTxUW90MYXUEj5MZTCE=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
- by PH7PR12MB5901.namprd12.prod.outlook.com (2603:10b6:510:1d5::19) with
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from GV1PR04MB9071.eurprd04.prod.outlook.com (2603:10a6:150:22::11)
+ by DU2PR04MB9148.eurprd04.prod.outlook.com (2603:10a6:10:2f7::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Wed, 6 Sep
- 2023 18:28:16 +0000
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::121e:5e68:c78a:1f2f]) by CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::121e:5e68:c78a:1f2f%3]) with mapi id 15.20.6745.030; Wed, 6 Sep 2023
- 18:28:15 +0000
-Message-ID: <4e94e9a2-89d0-4f87-9dac-795f1135242c@amd.com>
-Date:   Wed, 6 Sep 2023 14:28:10 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 34/34] drm/amd/display: Use 3x4 CTM for plane CTM
-Content-Language: en-US
-To:     Melissa Wen <mwen@igalia.com>, amd-gfx@lists.freedesktop.org,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
-        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de
-Cc:     Joshua Ashton <joshua@froggi.es>,
-        Sebastian Wick <sebastian.wick@redhat.com>,
-        Xaver Hugl <xaver.hugl@gmail.com>,
-        Shashank Sharma <Shashank.Sharma@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
-        linux-kernel@vger.kernel.org
-References: <20230810160314.48225-1-mwen@igalia.com>
- <20230810160314.48225-35-mwen@igalia.com>
-From:   Harry Wentland <harry.wentland@amd.com>
-In-Reply-To: <20230810160314.48225-35-mwen@igalia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YT4PR01CA0131.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:d5::28) To CO6PR12MB5427.namprd12.prod.outlook.com
- (2603:10b6:5:358::13)
+ 2023 18:33:27 +0000
+Received: from GV1PR04MB9071.eurprd04.prod.outlook.com
+ ([fe80::374:6c14:7fd3:e932]) by GV1PR04MB9071.eurprd04.prod.outlook.com
+ ([fe80::374:6c14:7fd3:e932%6]) with mapi id 15.20.6745.034; Wed, 6 Sep 2023
+ 18:33:27 +0000
+From:   Han Xu <han.xu@nxp.com>
+To:     Han Xu <han.xu@nxp.com>, Haibo Chen <haibo.chen@nxp.com>,
+        Yogesh Gaur <yogeshgaur.83@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: nxp-fspi: reset the FLSHxCR1 registers
+Date:   Wed,  6 Sep 2023 13:32:54 -0500
+Message-Id: <20230906183254.235847-1-han.xu@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR03CA0012.namprd03.prod.outlook.com
+ (2603:10b6:a03:33a::17) To GV1PR04MB9071.eurprd04.prod.outlook.com
+ (2603:10a6:150:22::11)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|PH7PR12MB5901:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1e972e7b-1df2-4e51-589b-08dbaf070922
+X-MS-TrafficTypeDiagnostic: GV1PR04MB9071:EE_|DU2PR04MB9148:EE_
+X-MS-Office365-Filtering-Correlation-Id: c4b06311-1e2b-4904-ebe2-08dbaf07c275
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zcR4i9XHFiQghtuSHGm3lN5fgh4Jgej9uIMg03HtIKvqfyuQuuapKc7b32j47iYRE34EdCKAev5zD6VQw++34F6TrFV+PH2B9extDrqrOi279YcayT1rlaagdcN4vTkEBe1rhguyyeq9R+HHlbLUJyanaaRA5HOdN8XGM6QLE/pYc22t82i+nKxbcRqs1nB5TRfFhXgo0+C2JvKSFkMwW9suqM37sEcwtHJlIaKOzfMpXNflyYaT9MQC9mhXLg3yVQTArUPPb58gMdPFlfEaPE449WJfUOetZH0LAQC3u96Z742mBP/+ydklMhYcZyEQ5TG9VVuyEn9GxY1sf4wESD/UI5qfjPquQC0xCKD3o+zm7chDV3g1glq2HDBzHLEJ0gMGcD38tFgO2ZcoOSMnLQvHP1M335Fn2x2FzpI1pBxr4PlejRUu4kvtYaV8Xa+TgmHfuQWxYUKcY4crK+o3yoFIdxNfM41UKkhDPnsdexomPNflSNa1MxxL3NE6/6PuzDh9PxkZlB7bgNkURCMvwBp/eAWRSWXbNIb3S9AnD7R4la53yN5omjuGKNYj1X1Z+UBEYBJJhraxGpGBkNesjRGcnP3GhTRsatqBnw4bj1Yxl2u9gx+V/QpqjM51xtSWRNzuH8lWKnm9mngyYBPTXWQsPrMfm9ot+uv5c8qaZx0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(136003)(366004)(376002)(396003)(186009)(451199024)(1800799009)(31696002)(86362001)(7416002)(478600001)(54906003)(66946007)(66556008)(66476007)(316002)(2906002)(36756003)(110136005)(41300700001)(5660300002)(8936002)(8676002)(6512007)(4326008)(6486002)(53546011)(6506007)(31686004)(26005)(44832011)(2616005)(83380400001)(921005)(6666004)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: YEqT4Xn+m2r9j2Om4fdFknmFldBuBtNIt7sTO8GnGTGvb2jS2VSN1c/MoYlFtINOV5xR/f6ZpsjOpUr1uTflGZMfNWjW6KNw1ll+YWopSpbA6hcA5AOElPQzketWhGFG4EwLxwgGuBbxKJZXoWb7Ce36Yqqd9XjGcbH3T2RPxY5L6aosQ9lNqtVvIbicsvzwE/MrsCZWq+34k37mnmVJkZH1a/CfyT0cZiMxvxEgMgSZhkXbltE1PrQq5nZ7CzGZ3a0//5B6g28pKrxYwWvBzP087hsGdM2Mpg2IgVXuJHP2SbvYNDbI5YOjCz6R+dkWte4640oD57nORzWrkVquOy+tFw4mwmikeWzIFkvg8p7rXQj22Kug/t+m7bXUsRRshFg1Two2UDotcY5z58BnzTr8zfkdo0xliFU6frdPOtb2HbTKSbJmw63O27kF/q9Ax6ol2lTqgLhnavwUXUMLws1ZP9IR+m6YomZ4Ks6JhMReslrR+bU5zVdwjmFv7WYI3LJ3KHfKOo1a4wstYGHlHOyBUxosL4D0daJ/ucibhVUE6w68EFqf+TD3X+GtXni/RTiA8KBjpdD06gZBKX98E45TGLYbf9T1RPn2MfXz8z4F082y0NrZ7Ohki9wzJBet
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV1PR04MB9071.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(39860400002)(376002)(366004)(136003)(451199024)(186009)(1800799009)(6506007)(6486002)(6666004)(52116002)(6512007)(478600001)(110136005)(2906002)(26005)(2616005)(1076003)(66556008)(41300700001)(44832011)(66476007)(316002)(8676002)(66946007)(4326008)(5660300002)(8936002)(36756003)(86362001)(38100700002)(38350700002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RzRPYzJ3Rm91TS9hazZzZk91dlFYSjE4UmFKTWcwNTdqcTVtanFZekNFMjhB?=
- =?utf-8?B?VThmQjNuZmxuWGVPZ1ZHWkJkNit4Y2ttS0dNY3hUZUJwQ0lOdHdpTG83SjEx?=
- =?utf-8?B?NStOQkRmOEFoSSs3anI2TVB1REdlV2lmTWpLUzJJYXFWZWpJZk92TXJUUTBG?=
- =?utf-8?B?WnpHdFBPSndiUXArcWxPeFd5T1RtSkhaNnF0c1ZqNG5xSXdnWUxHMHQxKzV0?=
- =?utf-8?B?eDB0dEd0dmdkV3BFRmFaTGVZUzdVc1ZwTU5IQnR4NlVIRnNkV3pUM2JNbVVw?=
- =?utf-8?B?OThSS1FGVEJsOW9qeExKRnpzMXpuUkQvdys5RmNjZEZLK0J1YTAvWDNhZC93?=
- =?utf-8?B?ajhlZmMzV016UUNFci9RQU9sd0NlZndnY05UeGQ3Vjhmc3o5TFU1dXpjKy8r?=
- =?utf-8?B?MFNtalNFVWY3eTUzakNPeUtPRStXMG5iSXNRUWxHQzlhRDNKWkpTUTBJMmR0?=
- =?utf-8?B?azJydlJwWE1RbXVGZHE0L0c3NU1vazcxcm1CQXFQeitEQVkvNWsrbXlYQkxa?=
- =?utf-8?B?bWJOZms1RER2QXh2clErM1JDZEFmVkxWVnc5akszWXVRbVRWZHlJSWFWc0Yx?=
- =?utf-8?B?UFZ4NHlibkloQTREYVd4dTFobjFVUnlnNFp0d3djaWErTzlSTVRLdWloUzVl?=
- =?utf-8?B?dGlxcTZidEFaZTR2VnR1QWkzVlJTWDRxcEtRRTVGODNFd2h2UGZZRFdtemx2?=
- =?utf-8?B?cFRxdUtQSUt2VTdKV1JrandEalNKNi91Y3pyLzhYQ0lQQXp1TG93eVRLNENH?=
- =?utf-8?B?NXFCVm5VbVdSaGZaYWhHTUo2WnQ2SklWbXhUZnl4NmYxL3luS3BiRW4wU2dK?=
- =?utf-8?B?MnBtbWs4MkZNaXlsR0I0blVtb0Rnenlmb01zNDZIMVp2cEZvam5DU3NYdlpG?=
- =?utf-8?B?MVl4USs4MmpPY2xzWGdxNjBJZ21IZVZFZER1MFUybmZxUGZRVElRZURWVXI0?=
- =?utf-8?B?a0dUckNZSkszK0o4bjhjR05DcGtkNUFRdUtVbEQ5T0h1NjR0MjVvWTJONTd2?=
- =?utf-8?B?RkMrR0ozeklwaTdVZ2xDQ3Q5UWpGeHBTNUtueW8yNTd5MGh4eElqcXQwL2dR?=
- =?utf-8?B?RmJGNC9YellNc0M3L0JRNml4UFFidXB4RjRlYitnR2w2MDJSQXVwNFNITGJp?=
- =?utf-8?B?dkFKa3phNGkvWFUvY2dDV09mQ2hDOU9CTjY2N1NFYUxzaG9HeW9JcENrRTNU?=
- =?utf-8?B?cTArRTFZbjQrK2Q4c01NbUJPaWdOOGlCNVh2QXhrTmhQZm5rcXZtWXZkV0hO?=
- =?utf-8?B?TksyNEZWYjl1dUJyZWlnMXF2YW5UK255RDU5V0lSdW8ra1RGd0p5L0daWm9G?=
- =?utf-8?B?RFFES01yeFFDeTVRbm5KeWYrOHJ5ZDRNRWxHVUgyZXJNZ21uakpkNzFVTlRa?=
- =?utf-8?B?VG9VMEVLZHRRbjF4OHhMYklwVTNPbFFNdVNnSEFWK1F3eWdBMmFQbkNaTENY?=
- =?utf-8?B?VzhUL0N2aTdkYVVBbGwweUh4dnZ2NjNpRDh5elNUL0ZCcGJPY3QvSlFraFM1?=
- =?utf-8?B?WW1NY2RGVUtMQ3hEVU5vcFJsVWd4Z2FDeE1qWm51bURlRVRzenE1dlNqUzh4?=
- =?utf-8?B?ZUdvRDM1aldySUZtQWxKaU5EUHBmeEVPbDNNckd4QnFBSUIxaXNYUkt3QU01?=
- =?utf-8?B?ak1sM2NFWFBmcldzc3hpYWxyd2IyU2FRRStGWkY4TGFvS1prZTBkMm1IRVFq?=
- =?utf-8?B?THp6eW5helNVSjlNcTVzYytsY0FXY1QvOVArWG9BeUthSlRBUFJiQWxrYlcw?=
- =?utf-8?B?Z3l5cjhzRXBRbkM2Y2NxdksxRFExUmlRSDczQ1JNc253cWtyanZoN2ZtMUxG?=
- =?utf-8?B?QlBlUzJwaS9sZHd4NzA5VnZ5UzB1dEhMSi9TOWdYVTdSdWpSK0VRSFA3L2VG?=
- =?utf-8?B?R2xpRDdsdXBZOG4zcnBKajhqZzduUGFic0Y1V3Nsc1NDT2RucFQ0d1l2a0h4?=
- =?utf-8?B?dy91RS95OVNNQ1I1cjdGT0dPbXhJcmJTQTA1ZHlONXFOWVloR2pWN085Tjds?=
- =?utf-8?B?MnpRNFlGUkc2ZkZhb0lwUnBzR1JmdUpCZ0tpbWdnTlRVazd5bU1vL1FtRldG?=
- =?utf-8?B?elZWSnhMY3V3cXowcXExcTIzY0IwSUk0MmpVKzFyTy9oK2tvRlpkbUpQUzVv?=
- =?utf-8?Q?VPN+Gq8l4hNMBNTHY9XS6XB+i?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e972e7b-1df2-4e51-589b-08dbaf070922
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?be4CTWYP7dJ0dAmB7zPXSTeC4VmRNxov7Spyvf05BRUCkQzuMQFuPH0cSwwF?=
+ =?us-ascii?Q?sfKDv/uejGbfrxwqIjspFcbMB1udqWY4KSGW5sV2sOQ0Wzc+Pod/HBMEwchn?=
+ =?us-ascii?Q?tqAqsHKv1wYgYrQPPoSfLzA3yy1S9BFw432sCLoRpQXSQhgGUabpXh8JQXD2?=
+ =?us-ascii?Q?PyCOa5X9PnbHQvKHjR6wSiM2R3CpzXyqo6zRKhiDidqpwMshFPwR7c/ZGOWK?=
+ =?us-ascii?Q?yNjRHPBRq0xK5ng6IdnXrramg6/Ct7dKpanw+LhrZdmT5ozp3OAhI9DwtCPg?=
+ =?us-ascii?Q?hMt8Co2qu2TrAJPYF0dzmMya8uYE3KYEKPGD0aJAGTLapeP9wIF/0K/rrDSo?=
+ =?us-ascii?Q?eOlVrmNUGc7XY9fckBoUu46J5AnzAFfcctzwlPdlSTe3ZCVUKRiE6dO7tg/r?=
+ =?us-ascii?Q?2imOO1BaqlpHJbluSiY6xxZaYNMXBR4Zthp1GLGIPCFCM5tHhdNYDgNIOeNg?=
+ =?us-ascii?Q?R62qnjzlgVMr7p6VGFqBkpi2JpaSSSIm+v3uBe+Pjn5USJkolDsL9q11ry9K?=
+ =?us-ascii?Q?9GUNvOFe9zAMwqpQIb4wjQZ3Hb6oWigSJS6hnDFrlkxH4+COGE1apYmlEofh?=
+ =?us-ascii?Q?E/tZv79xcgB5iMoi/3j8P1sjZxN9mTmFVeTA2gM/xNv+MO5wCyWQU1Fx23f/?=
+ =?us-ascii?Q?QaLjb6Namccq0QHDi6z8VhIOCjvUJbCNdNqNJ+8DryV/sv5Ub+SRPzI5yqNF?=
+ =?us-ascii?Q?009LeKsTHI/D9Sc1YY9kRzFfkhTgTAFD25+sQK4EhFzdVLHWs2UA+kaON3V/?=
+ =?us-ascii?Q?Ju6wwEpXWgxA3EvAesJSUYZbX0V4rtrVOiLgTk8TCaOoVR8TcLK0f+t1KGpE?=
+ =?us-ascii?Q?6U0SPJKu3Hrl6Jk+F4E5Aw1LPKM7OBeEwa2Bwj+3lUv0e2u08Fmx0MMc37bi?=
+ =?us-ascii?Q?oL/rkrZNFPA4c+MpDy/RbaNbYo1GIV/ZX9KC99U2LfaW1NLaJ7BvoBleLRVP?=
+ =?us-ascii?Q?tKES25chvrTj3r7x+VYWvqh6LPfY/BMNUlVKBgStnJv1v/n7FpxVNsLvPd1f?=
+ =?us-ascii?Q?dOIGPkWFKWkvdV7W4UhNYZua8/oIpvzLa3tmU5LvPiaPHo+n6peKpIBuKr5p?=
+ =?us-ascii?Q?YvwAnxXHMkJGvfNX/m5UgCh1c5pZB/Q+uLrk4yV/oqPXVy3ZCRalSLL7HGuD?=
+ =?us-ascii?Q?IPF+/FNhx6UdHLBn6vJ2/BPb+GR2rbMhHJriauFiLBr8zHdYplpgf4oNyekI?=
+ =?us-ascii?Q?jvnbK2h+0i9Doq/g+gLkR9w85uQkyDUQoksLFZ9KkRMDy7DixpLfrceiDeGR?=
+ =?us-ascii?Q?r2xPJ24660s1qxzJROjMxxNRSYkLIKfY0xWkI41FvP9HV6J7LBB7MpB/izfX?=
+ =?us-ascii?Q?JvV3Iz8NdAWs/5/9rr1lhfd1FcPERpXBrBl3ZBLr9p8tvES7l7s0zk0XTUZO?=
+ =?us-ascii?Q?mSKmdtqUKunwdUlIEDQHMnqyoG/OAiaOPAltH1bl1DcKXr0qmPofLeTab4GY?=
+ =?us-ascii?Q?hPplT/xovC7KyLnoupGwbzLNcPXoKb1FHWL55dbYSSPspWvpqdE+ol5NlZl2?=
+ =?us-ascii?Q?zAvaJh3NfLs2kvj1ayHmneozgwzUq3OD6CrG4kHsrsbPmG1y2VmfA6PSm12S?=
+ =?us-ascii?Q?8phhkgXsIWYpabqKsuw=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c4b06311-1e2b-4904-ebe2-08dbaf07c275
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR04MB9071.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 18:28:15.8055
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 18:33:26.8504
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vvF6QD5NrSMfCCrrnwJtzKok8tA+1zXtheh9ZZ2JuXWdhfwIV6oQ5kVQXs9xkU2ZvSIGgK0FwXRgfLkpgLLFWw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5901
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: nqEfzzsTGcNJ3TSW02SqXaW5dcKptR8DsLisPEdqeZEqtzSPofzQUbhKGR+T3VPt
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9148
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Reset the FLSHxCR1 registers to default value. ROM may set the register
+value and it affects the SPI NAND normal functions.
 
+Signed-off-by: Han Xu <han.xu@nxp.com>
+---
+ drivers/spi/spi-nxp-fspi.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-On 2023-08-10 12:03, Melissa Wen wrote:
-> From: Joshua Ashton <joshua@froggi.es>
-> 
-> Signed-off-by: Joshua Ashton <joshua@froggi.es>
-> Signed-off-by: Melissa Wen <mwen@igalia.com>
-> ---
->  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 32 +++++++++++++++++--
->  .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   |  2 +-
->  include/uapi/drm/drm_mode.h                   |  8 +++++
->  3 files changed, 38 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> index 7ff329101fd4..0a51af44efd5 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> @@ -412,6 +412,32 @@ static void __drm_ctm_to_dc_matrix(const struct drm_color_ctm *ctm,
->  	}
->  }
->  
-> +/**
-> + * __drm_ctm2_to_dc_matrix - converts a DRM CTM2 to a DC CSC float matrix
-> + * @ctm: DRM color transformation matrix
-> + * @matrix: DC CSC float matrix
-> + *
-> + * The matrix needs to be a 3x4 (12 entry) matrix.
-> + */
-> +static void __drm_ctm2_to_dc_matrix(const struct drm_color_ctm2 *ctm,
-> +				   struct fixed31_32 *matrix)
-> +{
-> +	int i;
-> +
-> +	/*
-> +	 * DRM gives a 3x3 matrix, but DC wants 3x4. Assuming we're operating
-> +	 * with homogeneous coordinates, augment the matrix with 0's.
-> +	 *
-
-Left-over copy-paste comment. This version takes 3x4 as input param.
-
-> +	 * The format provided is S31.32, using signed-magnitude representation.
-> +	 * Our fixed31_32 is also S31.32, but is using 2's complement. We have
-> +	 * to convert from signed-magnitude to 2's complement.
-> +	 */
-> +	for (i = 0; i < 12; i++) {
-> +		/* gamut_remap_matrix[i] = ctm[i - floor(i/4)] */
-> +		matrix[i] = dc_fixpt_from_s3132(ctm->matrix[i]);
-> +	}
-> +}
-> +
->  /**
->   * __set_legacy_tf - Calculates the legacy transfer function
->   * @func: transfer function
-> @@ -1159,7 +1185,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
->  {
->  	struct amdgpu_device *adev = drm_to_adev(crtc->base.state->dev);
->  	struct dm_plane_state *dm_plane_state = to_dm_plane_state(plane_state);
-> -	struct drm_color_ctm *ctm = NULL;
-> +	struct drm_color_ctm2 *ctm = NULL;
->  	struct dc_color_caps *color_caps = NULL;
->  	bool has_crtc_cm_degamma;
->  	int ret;
-> @@ -1213,7 +1239,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
->  
->  	/* Setup CRTC CTM. */
->  	if (dm_plane_state->ctm) {
-> -		ctm = (struct drm_color_ctm *)dm_plane_state->ctm->data;
-> +		ctm = (struct drm_color_ctm2 *)dm_plane_state->ctm->data;
->  
->  		/*
->  		 * So far, if we have both plane and CRTC CTM, plane CTM takes
-> @@ -1224,7 +1250,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
->  		 * provide support for both DPP and MPC matrix at the same
->  		 * time.
->  		 */
-> -		__drm_ctm_to_dc_matrix(ctm, dc_plane_state->gamut_remap_matrix.matrix);
-> +		__drm_ctm2_to_dc_matrix(ctm, dc_plane_state->gamut_remap_matrix.matrix);
->  
->  		dc_plane_state->gamut_remap_matrix.enable_remap = true;
->  		dc_plane_state->input_csc_color_matrix.enable_adjustment = false;
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-> index 0b1081c690cb..27962a3d30f5 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-> @@ -1543,7 +1543,7 @@ dm_atomic_plane_set_property(struct drm_plane *plane,
->  		ret = drm_property_replace_blob_from_id(plane->dev,
->  							&dm_plane_state->ctm,
->  							val,
-> -							sizeof(struct drm_color_ctm), -1,
-> +							sizeof(struct drm_color_ctm2), -1,
-
-We need to update the comment for dm_plane_state.ctm in amdgpu_dm.h
-to specify the property is of type drm_color_ctm2 (or drm_color_ctm_3x4).
-
->  							&replaced);
->  		dm_plane_state->base.color_mgmt_changed |= replaced;
->  		return ret;
-> diff --git a/include/uapi/drm/drm_mode.h b/include/uapi/drm/drm_mode.h
-> index 46becedf5b2f..402288133e4c 100644
-> --- a/include/uapi/drm/drm_mode.h
-> +++ b/include/uapi/drm/drm_mode.h
-> @@ -838,6 +838,14 @@ struct drm_color_ctm {
->  	__u64 matrix[9];
->  };
->  
-> +struct drm_color_ctm2 {
-
-Calling this drm_color_ctm_3x4 might be good to make it clear this is
-for a 3x4 matrix.
-
-Harry
-
-> +	/*
-> +	 * Conversion matrix in S31.32 sign-magnitude
-> +	 * (not two's complement!) format.
-> +	 */
-> +	__u64 matrix[12];
-> +};
-> +
->  struct drm_color_lut {
->  	/*
->  	 * Values are mapped linearly to 0.0 - 1.0 range, with 0x0 == 0.0 and
+diff --git a/drivers/spi/spi-nxp-fspi.c b/drivers/spi/spi-nxp-fspi.c
+index 45a4acc95661..c964f41dcc42 100644
+--- a/drivers/spi/spi-nxp-fspi.c
++++ b/drivers/spi/spi-nxp-fspi.c
+@@ -1084,6 +1084,13 @@ static int nxp_fspi_default_setup(struct nxp_fspi *f)
+ 	fspi_writel(f, FSPI_AHBCR_PREF_EN | FSPI_AHBCR_RDADDROPT,
+ 		 base + FSPI_AHBCR);
+ 
++	/* Reset the FLSHxCR1 registers. */
++	reg = FSPI_FLSHXCR1_TCSH(0x3) | FSPI_FLSHXCR1_TCSS(0x3);
++	fspi_writel(f, reg, base + FSPI_FLSHA1CR1);
++	fspi_writel(f, reg, base + FSPI_FLSHA2CR1);
++	fspi_writel(f, reg, base + FSPI_FLSHB1CR1);
++	fspi_writel(f, reg, base + FSPI_FLSHB2CR1);
++
+ 	/* AHB Read - Set lut sequence ID for all CS. */
+ 	fspi_writel(f, SEQID_LUT, base + FSPI_FLSHA1CR2);
+ 	fspi_writel(f, SEQID_LUT, base + FSPI_FLSHA2CR2);
+-- 
+2.34.1
 
