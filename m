@@ -2,80 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C286793D34
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4FA793D3B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240821AbjIFM4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46922 "EHLO
+        id S240852AbjIFM5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbjIFM4G (ORCPT
+        with ESMTP id S232933AbjIFM5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:56:06 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C5510CC;
-        Wed,  6 Sep 2023 05:56:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDF2EC433C8;
-        Wed,  6 Sep 2023 12:56:00 +0000 (UTC)
-Date:   Wed, 6 Sep 2023 08:56:21 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Zheng Yejian <zhengyejian1@huawei.com>
-Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Ajay Kaher <akaher@vmware.com>, <shuah@kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Ye Weihua <yeweihua4@huawei.com>
-Subject: Re: [PATCH] selftests/ftrace: Correctly enable event in
- instance-event.tc
-Message-ID: <20230906085621.6e20db28@gandalf.local.home>
-In-Reply-To: <2667182e-691e-2ab4-4c2d-a47d76f38107@huawei.com>
-References: <20230626001144.2635956-1-zhengyejian1@huawei.com>
-        <20230626191114.8c5a66fbaa28af3c303923bd@kernel.org>
-        <20230626191255.53baab4ed48d7111dcd44cad@kernel.org>
-        <20230710183741.78f04c68@gandalf.local.home>
-        <1cb3aee2-19af-c472-e265-05176fe9bd84@huawei.com>
-        <20230905183638.2b539fae@gandalf.local.home>
-        <9cad73cd-1f8b-2f3f-cda4-99b89a87b931@huawei.com>
-        <20230906072759.4e8bee1c@gandalf.local.home>
-        <2667182e-691e-2ab4-4c2d-a47d76f38107@huawei.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 6 Sep 2023 08:57:15 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ACCC410CC;
+        Wed,  6 Sep 2023 05:57:08 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6A703106F;
+        Wed,  6 Sep 2023 05:57:46 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 04C5E3F7C5;
+        Wed,  6 Sep 2023 05:57:06 -0700 (PDT)
+Message-ID: <bad29fb0-c734-853b-492b-ce2d01a293c5@arm.com>
+Date:   Wed, 6 Sep 2023 14:56:57 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH 2/7] sched/pelt: Add a new function to approximate
+ runtime to reach given util
+Content-Language: en-US
+To:     Qais Yousef <qyousef@layalina.io>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Lukasz Luba <lukasz.luba@arm.com>
+References: <20230827233203.1315953-1-qyousef@layalina.io>
+ <20230827233203.1315953-3-qyousef@layalina.io>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20230827233203.1315953-3-qyousef@layalina.io>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Sep 2023 19:57:24 +0800
-Zheng Yejian <zhengyejian1@huawei.com> wrote:
-
-> BTW, I do reproduce with following testcase fix, then just run: 
-> ./ftracetest test.d/instances/instance-event.tc
-> diff --git 
-> a/tools/testing/selftests/ftrace/test.d/instances/instance-event.tc 
-> b/tools/testing/selftests/ftrace/test.d/instances/instance-event.tc
-> index 0eb47fbb3f44..42422e425107 100644
-> --- a/tools/testing/selftests/ftrace/test.d/instances/instance-event.tc
-> +++ b/tools/testing/selftests/ftrace/test.d/instances/instance-event.tc
-> @@ -39,7 +39,7 @@ instance_read() {
+On 28/08/2023 01:31, Qais Yousef wrote:
+> It is basically the ramp-up time from 0 to a given value. Will be used
+> later to implement new tunable to control response time  for schedutil.
 > 
->   instance_set() {
->           while :; do
-> -                echo 1 > foo/events/sched/sched_switch
-> +                echo 1 > foo/events/sched/sched_switch/enable
->           done 2> /dev/null
->   }
+> Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> ---
+>  kernel/sched/pelt.c  | 21 +++++++++++++++++++++
+>  kernel/sched/sched.h |  1 +
+>  2 files changed, 22 insertions(+)
+> 
+> diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
+> index 50322005a0ae..f673b9ab92dc 100644
+> --- a/kernel/sched/pelt.c
+> +++ b/kernel/sched/pelt.c
+> @@ -487,3 +487,24 @@ unsigned long approximate_util_avg(unsigned long util, u64 delta)
+>  
+>  	return sa.util_avg;
+>  }
+> +
+> +/*
+> + * Approximate the required amount of runtime in ms required to reach @util.
+> + */
+> +u64 approximate_runtime(unsigned long util)
+> +{
+> +	struct sched_avg sa = {};
+> +	u64 delta = 1024; // period = 1024 = ~1ms
+> +	u64 runtime = 0;
+> +
+> +	if (unlikely(!util))
+> +		return runtime;
+> +
+> +	while (sa.util_avg < util) {
+> +		accumulate_sum(delta, &sa, 0, 0, 1);
+> +		___update_load_avg(&sa, 0);
+> +		runtime++;
+> +	}
+> +
+> +	return runtime;
+> +}
 
-Ah thanks. I didn't have that on my test box :-p
+S_n = S_inv * (1 - 0.5^(t/hl))
 
-Although I'm still having issues reproducing it. Do you have anything
-special on your kernel command line?
+t = hl * ln(1 - Sn/S_inv)/ln(0.5)
 
--- Steve
+(1) for a little CPU (capacity_orig = 446)
+
+t = 32ms * ln(1 - 446/1024)/ln(0.5)
+
+t = 26ms
+
+(2) for a big CPU (capacity = 1023 (*instead of 1024 since ln(0) not
+    defined
+
+t = 32ms * ln(1 - 1023/1024)/ln(0.5)
+
+t = 320ms
+
+[...]
