@@ -2,77 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F16F793C3E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A92C793C43
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240491AbjIFMG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:06:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40216 "EHLO
+        id S240440AbjIFMHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:07:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237744AbjIFMG6 (ORCPT
+        with ESMTP id S232358AbjIFMHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:06:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5BE137
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:06:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xxtZLesekG5b3wFQxKCMYE9RzV9DalJ9DCN36y6rges=; b=KAoOyUKic//cS3SljhfoqVfwOG
-        t7OA3gIUOpNAA9sB6I2SEhf0rc1Hi3hISHknlsGytlQdui4DTImSv2xtPfyAUGu/OqdBf+BL63Z8z
-        236J0uwDWZqgDLDQBf2wQ1dorXu2QGAuaqU7wG4/W4KLyVprOEfmIc4pMFngUYWylubzUC7tKhjfv
-        S/U9w/yJABX6EhBgi+pc3XcrSmzgIJAR1wlOMdVwwsU4Mf3XKayxhIqwt8Q+bw5BhGkXViTp7PpHA
-        qWPWSRsYsWWNoHMzxYVdEEthDJqsGpIHNfj2HHtEurbEqpHqcVVZ1kTWKyPQQHh+MAQYLQavtct46
-        PAE+j/0g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qdrJ2-0029QD-Oq; Wed, 06 Sep 2023 12:06:48 +0000
-Date:   Wed, 6 Sep 2023 13:06:48 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Edward AD <eadavis@sina.com>
-Cc:     syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] mm: as the same logic with queue_pages_range
-Message-ID: <ZPhrWDYL+JfI6upH@casper.infradead.org>
-References: <000000000000f392a60604a65085@google.com>
- <20230906061902.591996-1-eadavis@sina.com>
+        Wed, 6 Sep 2023 08:07:07 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4ED310F5;
+        Wed,  6 Sep 2023 05:07:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=HONuq0NAXDSinCSdNAk81emvfs27Qxol2w88sK/FGnw=; b=KiJs1rQEOtGrGQ1frkzZVM5G7k
+        tkVdm3q2nXa1Ux62dURs6vv0mkHvLdM0loie+UoEYOZoKT3xHbHBlVZgr3uVUFVz+01NT/N+r6fE8
+        Y+bvGGHYJCYiunNbIxrqM0s2eFeYr3B2dwFQTS78GIrtfznJC2ySNIQW5wK2/Ly2KZgc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qdrJ5-005tq0-Gj; Wed, 06 Sep 2023 14:06:51 +0200
+Date:   Wed, 6 Sep 2023 14:06:51 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+Subject: Re: [RFC net-next v2 1/2] dt-bindings: net: dsa: microchip: Update
+ ksz device tree bindings for drive strength
+Message-ID: <662be602-82a2-4e00-ba03-4b9e3aa0f8d2@lunn.ch>
+References: <20230906105904.1477021-1-o.rempel@pengutronix.de>
+ <20230906105904.1477021-2-o.rempel@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230906061902.591996-1-eadavis@sina.com>
+In-Reply-To: <20230906105904.1477021-2-o.rempel@pengutronix.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 02:19:02PM +0800, Edward AD wrote:
-> Only dealwith queue_pages_range locked vmas.
-
-What?
-
-> Signed-off-by: Edward AD <eadavis@sina.com>
-> ---
->  mm/mempolicy.c | 2 ++
->  1 file changed, 2 insertions(+)
+On Wed, Sep 06, 2023 at 12:59:03PM +0200, Oleksij Rempel wrote:
+> Extend device tree bindings to support drive strength configuration for the
+> ksz* switches. Introduced properties:
+> - microchip,hi-drive-strength-microamp: Controls the drive strength for
+>   high-speed interfaces like GMII/RGMII and more.
+> - microchip,lo-drive-strength-microamp: Governs the drive strength for
+>   low-speed interfaces such as LEDs, PME_N, and others.
+> - microchip,io-drive-strength-microamp: Controls the drive strength for
+>   for undocumented Pads on KSZ88xx variants.
 > 
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 42b5567e3773..13050b968479 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -1342,6 +1342,8 @@ static long do_mbind(unsigned long start, unsigned long len,
->  	vma_iter_init(&vmi, mm, start);
->  	prev = vma_prev(&vmi);
->  	for_each_vma_range(vmi, vma, end) {
-> +		if (!vma || start < vma->vm_start)
-> +			continue;
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  .../bindings/net/dsa/microchip,ksz.yaml       | 23 +++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> index e51be1ac03623..66bd770839d50 100644
+> --- a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> +++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> @@ -49,6 +49,29 @@ properties:
+>        Set if the output SYNCLKO clock should be disabled. Do not mix with
+>        microchip,synclko-125.
+>  
+> +  microchip,io-drive-strength-microamp:
+> +    description:
+> +      IO Pad Drive Strength
+> +    minimum: 8000
+> +    maximum: 16000
+> +    default: 16000
 
-#define for_each_vma_range(__vmi, __vma, __end)                         \
-        while (((__vma) = vma_find(&(__vmi), (__end))) != NULL)
+You should list the valid values, using the syntax:
 
-How can this produce a vma that is either NULL or has a vm_start after start?
+enum: [ 250, 500, 750, 1000, ...];
 
+
+    Andrew
+
+---
+pw-bot: cr
