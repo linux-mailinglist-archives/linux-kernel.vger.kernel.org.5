@@ -2,139 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D08793526
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 08:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A422E793527
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 08:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238122AbjIFGHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 02:07:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46500 "EHLO
+        id S236323AbjIFGKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 02:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241386AbjIFGHn (ORCPT
+        with ESMTP id S229786AbjIFGKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 02:07:43 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF3610DC;
-        Tue,  5 Sep 2023 23:07:23 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3865knGv028100;
-        Wed, 6 Sep 2023 06:07:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=XwnqHZrjEXk32wMzzvgxT0wFIpyLkqsdotf/qrmxZ3s=;
- b=CWy6Lh+WsANgEtBKUsepb0F+Sr6TAO2DX1jOYvPpTSlHccWH54Hi1e5ezPKotXQ5eIow
- os95PXOMDyISR0MqK98gnE2zcDsYesdjw+SLrnbtORI9StpI9sOhb93+yP6na/dgOFhV
- ZvQtLZZXmErVYcy/fPmn9bjzMQZPUpAt6n7Cnkh4YzhWdZQwEZvr/V+C0sLbWRueGWzx
- VlLZQ7F1/mOhD12bVGuy5Vp1/sooH9OifhgE9pD7rBDYo01s7T485Jlyi/6Q+5Vsy90m
- WyAZHmMWqGTC+uxp7gRKtzE6qFd7WSZgHZ6spGtrn0kyej1mg+l5xqZchX6adMpjE5Lf XQ== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sww32tvy5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Sep 2023 06:07:20 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38667J2c021035
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 6 Sep 2023 06:07:19 GMT
-Received: from [10.216.33.5] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 5 Sep
- 2023 23:07:14 -0700
-Message-ID: <22165524-706a-324a-5d3c-83b4aaa0162a@quicinc.com>
-Date:   Wed, 6 Sep 2023 11:37:10 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 2/4] clk: qcom: branch: Add mem ops support for branch2
- clocks
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>
-CC:     Taniya Das <quic_tdas@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ajit Pandey <quic_ajipan@quicinc.com>,
-        Jagadeesh Kona <quic_jkona@quicinc.com>
-References: <20230808051407.647395-1-quic_imrashai@quicinc.com>
- <20230808051407.647395-3-quic_imrashai@quicinc.com>
- <98d0632c-7129-4e3a-aba7-e805e3281f91@linaro.org>
-Content-Language: en-US
-From:   Imran Shaik <quic_imrashai@quicinc.com>
-In-Reply-To: <98d0632c-7129-4e3a-aba7-e805e3281f91@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: rU3R9v8C3mx1KS1xG2GYZpwSvD6creZQ
-X-Proofpoint-GUID: rU3R9v8C3mx1KS1xG2GYZpwSvD6creZQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-05_13,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- clxscore=1015 suspectscore=0 adultscore=0 lowpriorityscore=0 bulkscore=0
- mlxlogscore=877 mlxscore=0 priorityscore=1501 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309060052
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Sep 2023 02:10:18 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922DC198
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 23:10:11 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1BCF722437;
+        Wed,  6 Sep 2023 06:10:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693980610; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xdRDi5mtaCUJf5leM0kpyY2RGuxnrhxdzXOeSIODiTM=;
+        b=wEKuigTgWaKVIOo1tcgXvoQpUNRlStYyixf5JWz39/bUoqNuP+DisKQBLILRkM2OtauJdn
+        2RVsD4jhgtdd04ZUesvsLN6XYWVvxHOmoQCYCywDgEPDtFOGrerNAi1d74/nF+VQkmJu/H
+        EWUsAicW0MbJLOziBIeY10AL7EsamYM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693980610;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xdRDi5mtaCUJf5leM0kpyY2RGuxnrhxdzXOeSIODiTM=;
+        b=Pdtq5CJUqDaHxtEVL8nw15Vp5zejZQtR/lxAsA0M0RTBFd22T3E8kBkx+HIiBwWksksp1r
+        BaSaWkkQC+avYUCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DBE8E1333E;
+        Wed,  6 Sep 2023 06:10:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id H7DBNMEX+GRSHAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Wed, 06 Sep 2023 06:10:09 +0000
+Date:   Wed, 06 Sep 2023 08:10:09 +0200
+Message-ID: <877cp3esse.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Antonio Terceiro <antonio.terceiro@linaro.org>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: snd-cmipci oops during probe on arm64 (current mainline, pre-6.6-rc1)
+In-Reply-To: <ZPelHaX/Lt++kkOm@linaro.org>
+References: <ZPelHaX/Lt++kkOm@linaro.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/10/2023 1:27 AM, Konrad Dybcio wrote:
-> On 8.08.2023 07:14, Imran Shaik wrote:
->> From: Taniya Das <quic_tdas@quicinc.com>
->>
->> Clock CBCRs with memories need an update for memory before enable/disable
->> of the clock. Add support for the mem ops to handle this sequence.
->>
->> Signed-off-by: Taniya Das <quic_tdas@quicinc.com>
->> Signed-off-by: Imran Shaik <quic_imrashai@quicinc.com>
->> ---
-> Could you expand the commit message a bit? What does this clock
-> memory do?
+On Wed, 06 Sep 2023 00:01:01 +0200,
+Antonio Terceiro wrote:
 > 
-
-Sure, will expand the commit message with more details and push the next 
-series.
-
-> [..]
+> Hi,
 > 
->> +static int clk_branch2_mem_enable(struct clk_hw *hw)
->> +{
->> +	struct clk_branch *br = to_clk_branch(hw);
->> +	u32 val;
->> +	int count = 200;
->> +
->> +	regmap_update_bits(br->clkr.regmap, br->mem_enable_reg,
->> +			br->mem_enable_ack_bit, br->mem_enable_ack_bit);
->> +
->> +	regmap_read(br->clkr.regmap, br->mem_ack_reg, &val);
->> +
->> +	while (count-- > 0) {
->> +		if (val & br->mem_enable_ack_bit)
->> +			return clk_branch2_enable(hw);
->> +		udelay(1);
->> +		regmap_read(br->clkr.regmap, br->mem_ack_reg, &val);
->> +	}
-> readl_poll_timeout?
+> I'm using an arm64 workstation, and wanted to add a sound card to it. I bought
+> one who was pretty popular around where I live, and it is supported by the
+> snd-cmipci driver.
 > 
+> It's this one:
+> 
+> 0005:02:00.0 Multimedia audio controller: C-Media Electronics Inc CMI8738/CMI8768 PCI Audio (rev 10)
+> 
+> After building a mailine kernel (post-v6.5, pre-rc1) on Debian testing arm64
+> with localmodconfig + CONFIG_SND_CMIPCI=m, it crashes with "Unable to handle
+> kernel paging request at virtual address fffffbfffe80000c", and the system
+> never finishes to boot. The login manager never shows up and the serial console
+> never gets to a login prompt. I observed the same issue on a 6.3 Debian kernel,
+> after rebuilding with CONFIG_SND_CMIPCI=m.
+> 
+> If I stop the module from being automatically loaded by adding
+> `blacklist snd-cmipci` to /etc/modprobe.d/snd-cmipci.conf (or if I
+> remove the card from the PCIe slot), I get the system to boot. But tring
+> to load the module manually causes the same crash (I only tested this
+> with the card on):
+> 
+> [  +4,501093] snd_cmipci 0005:02:00.0: stream 512 already in tree
+> [  +0,000155] Unable to handle kernel paging request at virtual address fffffbfffe80000c
+> [  +0,007927] Mem abort info:
+> [  +0,002793]   ESR = 0x0000000096000006
+> [  +0,003743]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [  +0,005307]   SET = 0, FnV = 0
+> [  +0,003049]   EA = 0, S1PTW = 0
+> [  +0,003134]   FSC = 0x06: level 2 translation fault
+> [  +0,004872] Data abort info:
+> [  +0,002873]   ISV = 0, ISS = 0x00000006, ISS2 = 0x00000000
+> [  +0,005479]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+> [  +0,005047]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+> [  +0,000003] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000080519fe9000
+> [  +0,000004] [fffffbfffe80000c] pgd=000008051a979003, p4d=000008051a979003, pud=000008051a97a003, pmd=0000000000000000
+> [  +0,000009] Internal error: Oops: 0000000096000006 [#1] SMP
+> [  +0,028142] Modules linked in: snd_cmipci(+) snd_mpu401_uart snd_opl3_lib xt_conntrack xt_MASQUERADE nf_conntrack_netlink xfrm_user xfrm_algo xt_addrtype nft_compat br_netfilter nft_masq nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 bridge stp llc nf_tables nfnetlink uvcvideo videobuf2_vmalloc videobuf2_memops uvc videobuf2_v4l2 videodev videobuf2_common snd_seq_dummy snd_hrtimer snd_seq qrtr rfkill overlay ftdi_sio usbserial snd_usb_audio snd_usbmidi_lib snd_pcm aes_ce_blk aes_ce_cipher snd_hwdep polyval_ce snd_rawmidi polyval_generic snd_seq_device joydev snd_timer ghash_ce hid_generic gf128mul snd usbhid sha2_ce ipmi_ssif soundcore hid mc sha256_arm64 ipmi_devintf arm_spe_pmu ipmi_msghandler sha1_ce sbsa_gwdt binfmt_misc nls_ascii nls_cp437 vfat fat xgene_hwmon cppc_cpufreq arm_cmn arm_dsu_pmu evdev nfsd auth_rpcgss nfs_acl lockd grace dm_mod fuse loop efi_pstore dax sunrpc configfs ip_tables x_tables autofs4 ext4 crc16 mbcache jbd2 btrfs efivarfs raid10 raid
+ 456 async_raid6_recov async_memcpy
+> [  +0,000142]  async_pq async_xor async_tx libcrc32c crc32c_generic xor xor_neon raid6_pq raid1 raid0 multipath linear md_mod nvme nvme_core ast t10_pi drm_shmem_helper xhci_pci drm_kms_helper xhci_hcd crc64_rocksoft crc64 drm crc_t10dif usbcore crct10dif_generic igb crct10dif_ce crct10dif_common usb_common i2c_algo_bit i2c_designware_platform i2c_designware_core
+> [  +0,121670] CPU: 0 PID: 442 Comm: kworker/0:4 Not tainted 6.5.0+ #2
+> [  +0,006259] Hardware name: ADLINK AVA Developer Platform/AVA Developer Platform, BIOS TianoCore 2.04.100.07 (SYS: 2.06.20220308) 09/08/2022
+> [  +0,012506] Workqueue: events work_for_cpu_fn
+> [  +0,004353] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [  +0,006953] pc : logic_inl+0xa0/0xd8
+> [  +0,003570] lr : snd_cmipci_probe+0x7a4/0x1140 [snd_cmipci]
+> [  +0,005578] sp : ffff80008287bc70
+> [  +0,003303] x29: ffff80008287bc70 x28: ffff08008af9d6a0 x27: 0000000000000000
+> [  +0,007128] x26: ffffc4818263c228 x25: 0000000000000000 x24: 0000000000000001
+> [  +0,007127] x23: ffff07ff81a9e000 x22: ffff07ff81a9e0c0 x21: ffff08008af9d080
+> [  +0,007127] x20: ffffc4818263c000 x19: 0000000000000000 x18: ffffffffffffffff
+> [  +0,007127] x17: 0000000000000000 x16: ffffc4819ac3cd38 x15: ffff80008287ba80
+> [  +0,007127] x14: 0000000000000001 x13: ffff80008287bbc4 x12: 0000000000000000
+> [  +0,007126] x11: ffff07ff834616d0 x10: ffffffffffffffc0 x9 : ffffc4819a61dd18
+> [  +0,007127] x8 : 0000000000000228 x7 : 0000000000000001 x6 : 00000000000000ff
+> [  +0,007127] x5 : ffffc4819adb7998 x4 : 0000000000000000 x3 : 00000000000000ff
+> [  +0,007127] x2 : 0000000000ffbffe x1 : 000000000000000c x0 : fffffbfffe80000c
+> [  +0,007126] Call trace:
+> [  +0,002436]  logic_inl+0xa0/0xd8
+> [  +0,003221]  local_pci_probe+0x48/0xb8
+> [  +0,003744]  work_for_cpu_fn+0x24/0x40
+> [  +0,003741]  process_one_work+0x170/0x3a8
+> [  +0,004002]  worker_thread+0x23c/0x460
+> [  +0,003742]  kthread+0xe8/0xf8
+> [  +0,003047]  ret_from_fork+0x10/0x20
+> [  +0,003569] Code: d2bfd000 f2df7fe0 f2ffffe0 8b000020 (b9400000) 
+> [  +0,006083] ---[ end trace 0000000000000000 ]---
+> 
+> Because this sound card chipset seems to be popular (pretty much all PCI cards
+> I can find to buy locally use that), I'm thinking this might be specific to
+> arm64, otherwise someone would have seen this before.
 
-Sure, will check and use this.
+There is only one change in this driver code itself since 6.5 (commit
+b6ba0aa46138), and judging from the stack trace, it's unrelated with
+your problem.   It's more likely a regression in the lower level code,
+e.g. PCI layer or arch/arm64 stuff.
 
-Thanks,
-Imran
+Could you try git bisect?
 
-> Konrad
+
+thanks,
+
+Takashi
