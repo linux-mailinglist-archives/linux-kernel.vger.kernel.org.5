@@ -2,404 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0CB7943CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BFC17943D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242395AbjIFT3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 15:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35834 "EHLO
+        id S244218AbjIFTaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 15:30:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbjIFT3T (ORCPT
+        with ESMTP id S244203AbjIFTaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 15:29:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B3C173B;
-        Wed,  6 Sep 2023 12:29:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76740C433C7;
-        Wed,  6 Sep 2023 19:29:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694028554;
-        bh=2kov9/TKrJmdoLxE+jOCbxIrVesxxxeaC6ZimLlagpY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gvCXsBjWMR5/uRk2WyOrENoyaqYbq4C1rfzon4UyyFO++f4JtbH2z5BBcmobF0gH8
-         u7UIjQz1wkxxM96qbYaIXbZej2NvRemMGNumybNlJREqHs/btECJDiIUU4CpezprP4
-         OvrFzZBkHBGhQwcwmtOU3BsbTME2zfVwuk9ZLsvO5w7kNrMqr+Q6JF4cxqqGY+du72
-         1Z9Ek3U8tOomAXmdvkm4TDKVpxErkGHVJpcCnMIqitLvIZAi3e34pod6HwCf+8oZn7
-         cwzCilikc8i+FqJiKDEePCfYvvhx/+gKFSXbBzouO/0KZouNeSnGhnjvAnHt70Vy8D
-         TV0jTPZHUxbHg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7EBAD403F4; Wed,  6 Sep 2023 16:29:11 -0300 (-03)
-Date:   Wed, 6 Sep 2023 16:29:11 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH 3/5] perf lock contention: Add -g/--lock-cgroup option
-Message-ID: <ZPjTB3tj+/b90+BF@kernel.org>
-References: <20230906174903.346486-1-namhyung@kernel.org>
- <20230906174903.346486-4-namhyung@kernel.org>
- <ZPjRpY6FINE0iBr3@kernel.org>
+        Wed, 6 Sep 2023 15:30:22 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2041.outbound.protection.outlook.com [40.107.237.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5851A19A8
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 12:30:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QL0Cmuz29+DbzIW/qZtcCzMqnNnrWEjIL96sbDA7KNTiLsr45LZb7n4JX8v64P1y1IofrKFz7vquOzh2pY6bgRystmjRtUa7kHeB6cSD0VwX/KjVmG9qX7uxHbcpVupQMhl3pj+e4k4kkJFddH/w2YSm2Wzx2+cHUCMBwfGTr/IQVd5061bt0uwrLYwRbQhDiOBTwDdQywc2yEgVVz1RbQ5cEXd23nznSVg507p2oKAHk+MLUInZkvQDX9PsgDS1xtfjTu2qP2RKy4P8pcGQVC5EUiFuMtceV9FBfAfGgeW9zoqvojoEswB5uTujoQ4ZAYcoAau3SH/pyqr5XpdDwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Gh7QcvNZ9uT3dY8Y3eY71rEA9fTMDeaPqBRAOSdKg78=;
+ b=h18RgkSPtRsgGhuQRaApU9IkatDO0+AACYP+OnvdB/NxEVHTen8HG9XHuUimp3XFaOlwbzDDhrB75ivr76/0ejC9ID2R1oqRBpu7ATH8loNGPupZ17iU1prsad7qljR77mhtST+FGeI9+EtkWHixwhIObRLGGdFWW3fJZpp7Z//I6Wu30/BxRAPCZt869PaHS7QgSPC6DCRkgFF5yLO8NCrnI72H4ZuDpZ/slwLjw4FIgUeibj0rJFfS98ktuJQNWjEv/Zi98LmxWcAZcRxWgprn9rmG6j6CABPZ18SWrYAgctXQ/Pux+XSgZjN5sSmeVPLDye1DI1uNz3k7+NsYfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Gh7QcvNZ9uT3dY8Y3eY71rEA9fTMDeaPqBRAOSdKg78=;
+ b=ZWTNs/sG85PplhFbJL4m04/t8CjPdnbZuhw2eDJWzdXEmFky7I7cL42lpZAdidIiaZTQhbWZffECWwvmR/fAXLEIWqNWKiUlqkao18EX19vW7HO1TR5PJPhHqROAd82qBKdNTfrDf3C465F+S+r44TS+s3g/mET27Z0w+WmL0Ls=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by DM4PR12MB9070.namprd12.prod.outlook.com (2603:10b6:8:bc::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Wed, 6 Sep
+ 2023 19:30:10 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::121e:5e68:c78a:1f2f]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::121e:5e68:c78a:1f2f%3]) with mapi id 15.20.6745.030; Wed, 6 Sep 2023
+ 19:30:10 +0000
+Message-ID: <758deee7-7530-4931-830e-d5a4acff337f@amd.com>
+Date:   Wed, 6 Sep 2023 15:30:04 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 10/34] drm/amd/display: add plane 3D LUT
+ driver-specific properties
+Content-Language: en-US
+To:     Melissa Wen <mwen@igalia.com>, amd-gfx@lists.freedesktop.org,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
+        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     Joshua Ashton <joshua@froggi.es>,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        Xaver Hugl <xaver.hugl@gmail.com>,
+        Shashank Sharma <Shashank.Sharma@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
+        linux-kernel@vger.kernel.org
+References: <20230810160314.48225-1-mwen@igalia.com>
+ <20230810160314.48225-11-mwen@igalia.com>
+From:   Harry Wentland <harry.wentland@amd.com>
+In-Reply-To: <20230810160314.48225-11-mwen@igalia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQBPR01CA0062.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:2::34) To CO6PR12MB5427.namprd12.prod.outlook.com
+ (2603:10b6:5:358::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZPjRpY6FINE0iBr3@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|DM4PR12MB9070:EE_
+X-MS-Office365-Filtering-Correlation-Id: e5000ca2-050d-410a-04aa-08dbaf0faf21
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8VYgfI9rruIJmTRP1Lf6MA0bGi1OdRG4cLQQ+b+zByQifkRy7XHokgLFMZ14zHJ3gjhSWkc5N7mTBO002v+0vVvoXSs/3xDJO3eD9f5Cy2VfNuBIOEfOTCFMcWKyNQUzcKQATWAbqtYmwJuymFF6ltUF/JS9SdgmVeRRM+1NfXcNK1Wr01fw+bNTIHeEbvFPmYvPaC/T3Zgwh4da7e7AmBsUnhF4xPyTkayy5R4EZEcpeGbEv9WuJSxS3nQxWarOOOV7G57EqPwEjffsLacPCNOJivCH+PQKQXoa7ycDDDCxRqj2e08go3wEEF05ZDh7VvWw6mQaeO+tZAYIbLyZiqsGHCYxupu8Ug5EbKbL+14toXl9zP1bxqs08gc3Ol5vkzOuqMmC/MYFc1gqUMl0IyRRvcnAnmJ/3DgFfal9S5uk4uivedA9OmiQAYatNbFyCejd/hiw9pTOBstRgL1EZYMCuU/c4sSWx1BcT5rON35sXG2mwozWk4hIUseCpbXLlBAbSukxdKzTSO8OrbriNojBxvk6aq6LuAGK5nqTGe9HY3TR3Jn/BJ5Y4l2ifJBFbEt5KhVaDscWtUFXDKucVi+/HvnEif0yEv4J5PEWNSHZa5YX5c8mAa+i5nNfZdW9C1xyO5fKuf0JGD6n/ldoas7Lqphab81FwdGTmFhOUGM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(346002)(366004)(39860400002)(186009)(451199024)(1800799009)(31686004)(36756003)(921005)(83380400001)(6506007)(8676002)(31696002)(5660300002)(6666004)(4326008)(44832011)(8936002)(26005)(2616005)(86362001)(41300700001)(6486002)(6512007)(53546011)(110136005)(7416002)(66476007)(316002)(38100700002)(966005)(478600001)(2906002)(66946007)(54906003)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cm9uaXNYeGI4ZmN2ZzU2anJNaFZTN1dlcGpMK09STGU1azlDcGxwTEpKWUVX?=
+ =?utf-8?B?VlBNeVVMamdVVkpHTmxjQnJlbWp5K09rT3dBOERpVDQzY2tlRlcvWlZuU1VZ?=
+ =?utf-8?B?cFZLcFEvL3Z6VUV1SDBiQzJLQ0YwcjlMWUFoUGtIYXpGTnV4aE1wdFEwbDNY?=
+ =?utf-8?B?RjFRSnpYTEQyaXNVRUVpTUlMSkM0QnB6VVdvNDcvZ1dxTEQwTlcyUE91Ujds?=
+ =?utf-8?B?OXJGNE4rUDZqK28vMlZUaU11TEdPT3JZM0Q4SGJ6WDA1M0tla1RvUjhyeTBa?=
+ =?utf-8?B?blJFTXR5ZjRNNlBnN3ZhcFRYU3Z2YnZ2UE1nMWdrNldlSnVzMm1ZRGtqZjV2?=
+ =?utf-8?B?L2hMaDdBMHV3NGZUZnBWankxSnlmZHhHQ2JGVEFjK2Q2N1BqWVlwMFB3Z3h2?=
+ =?utf-8?B?NmxoSjdQQlBXeVR5V3BzamJ0ZGJrdVVhNngvSlBOa0RXU1B1dHUwYVl5NFFn?=
+ =?utf-8?B?QnVPY3kyRmZqV28wang4Q2hSUEU4cjRaV3JSU2ljVXZGZi9uQ09mTjlYL0lI?=
+ =?utf-8?B?YjFtNm5WQjRJekpSRmpacXVCSHdiYVFNRVQ3SDZLRWVMWHVwNytGZDBoeU1p?=
+ =?utf-8?B?QWZ2cm1TRlZ5TW9tdzFyaDl0dlp5RWpxQlZ6VW4rWnU3L0RoY3MwRDBRSC9F?=
+ =?utf-8?B?OXNDUjh4eUlQVi9HeDh2alI1MWg1cVBNakdRNlBieHRvN3VWZm5zdStTdk0z?=
+ =?utf-8?B?MkRBY1VDcldkK2dYYW1uRUFocmg5bzdwcllyMmdoRjBtSGVnWStNdnc3OTNo?=
+ =?utf-8?B?U1ZibGxwamE2Y01sSnN1ZGUxd0NUcXBVSm1GMXRYUGNnVTNlNWltS1Y5enRs?=
+ =?utf-8?B?MjhTRDFsdnZzVnl6NTNhTzNIdEJWelVicm40WTVGK1lqbE0yTDI2N3F6Rkho?=
+ =?utf-8?B?U0Y3eEhyQmNnYm0rNUZmb2dmQS9oU1dXQUxNZ1RFbDN4WDg4RktVUC9xbjBu?=
+ =?utf-8?B?MlQrZW5XWGgyZUlrSEt0aDZRdXhIS3ZMNGhMMUVKQ1lQT21rL1htVmJXb3hJ?=
+ =?utf-8?B?QmNzSVhYMzVPQ1VCNEtWUmdTNnZUcC9EeHZLZ29MUFEyS3JhZW02SFk2N01T?=
+ =?utf-8?B?WEFkSVBSUzZxT3pRUHVCUFVEUlQ1b2dScFlEdVV0eTBOMndGZ0ptSlJCK1Fm?=
+ =?utf-8?B?aU1GSEhjbjNDdmRLZWhIcElCbERGWDVPUkJwam1IckI2b0xjalhOOFB4SWR2?=
+ =?utf-8?B?ZVorRkJDSW4yVjFTOWUvQk5nSVgvZG9sTVVqZDlwUEt3b09tcFZMV1JBUHoy?=
+ =?utf-8?B?UTd6bmdxdEYvR2pUakpaVU5BWlRpeGlKbnBqbXdBRElxSy95S3FUTG84V01E?=
+ =?utf-8?B?T0diQlBKWUd2Wm9taWdFTjFoak9WZzB4ZmxUbGpadndSKzJ5enVmc2RyemhY?=
+ =?utf-8?B?NXMweVc4YlhDKytuaGxma3g4YytXY3dlZm9UWXVVa1JqVW5QTG91d1JxRFpo?=
+ =?utf-8?B?R0VFb3BISHJQYWgxK0R3UWdRbTJwQWg4K3ZnN21BQks2bjFCS3JObkMrdTNi?=
+ =?utf-8?B?bHF5RGFCRm5aaDlRZW5iSzFLVE9pcWVsVjNIcEVGSFBEM0s1VFFYdU05VVp5?=
+ =?utf-8?B?aExLc3YwYThZNk9ncjhhK001Qjh0Qi9RTXE3STc0RkVrWWJCTXNncDZKWTcx?=
+ =?utf-8?B?dFNLYVFPZTFtbzFHUGRzaC9vdThJdWZWTkw5Y3VNelY5WFhFdzVESXdRY0xl?=
+ =?utf-8?B?YVovcHUyZEZwZXJybnVmR2VBeXM3ejRpZ0JyaUk0Q2NPNWNHRzV0OWdsVFFu?=
+ =?utf-8?B?bjRsSUJiaGNQZEJaR2M2azFZamYvTDd5dUVFQWJyNXhTMlNNcjVXQ2U2Y3cz?=
+ =?utf-8?B?dVVPVS9sYTg3enBDTzdXVkQyVlJGQTBpMVN5RHpKdzBqeDNPK2FRUXFIZHhP?=
+ =?utf-8?B?YXpSRlFWbU1TazJjNFNMRjdXdy9iTVdVdktMN1YvZEw1OWNORUVuMlIzQklQ?=
+ =?utf-8?B?ckRYMU9XekYwZWIzTzlwbDhuWlMxbTF4K2tPTlRVWGgyV2cwVURoKzRKcm9I?=
+ =?utf-8?B?U2dqdkxwN21ONFpNZko2REExaWJMRnBocU5ZU3dzVTZiSWY3Rm1WakljS3Nt?=
+ =?utf-8?B?U2pJazN0ekd0SlRIVWNta2VsMkdvR3AyaEpxTnBsZkNnNUtEY0hLeFdxVmxF?=
+ =?utf-8?Q?0tYYIMIEynThkLK4Iiol3NXvR?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5000ca2-050d-410a-04aa-08dbaf0faf21
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 19:30:10.1943
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +oGYm6GkjkEsMUoNWq8GGFc7uKlEVleUaNQkbqtk/yESLRW2L0fQ0zQgYeOt/l1+b4pRESYA05RENkeVMWYJpw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB9070
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 06, 2023 at 04:23:17PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Sep 06, 2023 at 10:49:01AM -0700, Namhyung Kim escreveu:
-> > The -g option shows lock contention stats break down by cgroups.
-> > Add LOCK_AGGR_CGROUP mode and use it instead of use_cgroup field.
-> > 
-> >   $ sudo ./perf lock con -abg sleep 1
-> >    contended   total wait     max wait     avg wait   cgroup
-> > 
-> >            8     15.70 us      6.34 us      1.96 us   /
-> >            2      1.48 us       747 ns       738 ns   /user.slice/.../app.slice/app-gnome-google\x2dchrome-6442.scope
-> >            1       848 ns       848 ns       848 ns   /user.slice/.../session.slice/org.gnome.Shell@x11.service
-> >            1       220 ns       220 ns       220 ns   /user.slice/.../session.slice/pipewire-pulse.service
-> > 
-> > For now, the cgroup mode only works with BPF (-b).
-> 
-> Can we try to be consistent with other tools?
-> 
-> [root@quaco ~]# perf record -h -g
-> 
->  Usage: perf record [<options>] [<command>]
->     or: perf record [<options>] -- <command> [<options>]
-> 
->     -g                    enables call-graph recording
-> 
-> [root@quaco ~]# perf record -h -G
-> 
->  Usage: perf record [<options>] [<command>]
->     or: perf record [<options>] -- <command> [<options>]
-> 
->     -G, --cgroup <name>   monitor event in cgroup name only
-> 
-> [root@quaco ~]# set -o vi
-> [root@quaco ~]# perf lock contention -h -G
-> 
->  Usage: perf lock contention [<options>]
-> 
-> 
-> [root@quaco ~]#
-> 
-> I.e. use -G in this patch?
-> 
-> If you agree I can fixup things here, otherwise why not?
 
-I see that you use -G in 4/5, unsure now, but this looks like --sort in
-'perf report', no?
 
-- Arnaldo
- 
-> - Arnaldo
+On 2023-08-10 12:02, Melissa Wen wrote:
+> Add 3D LUT property for plane gamma correction using a 3D lookup table.
+> Since a 3D LUT has a limited number of entries in each dimension we want
+> to use them in an optimal fashion. This means using the 3D LUT in a
+> colorspace that is optimized for human vision, such as sRGB, PQ, or
+> another non-linear space. Therefore, userpace may need one 1D LUT
+> (shaper) before it to delinearize content and another 1D LUT after 3D
+> LUT (blend) to linearize content again for blending. The next patches
+> add these 1D LUTs to the plane color mgmt pipeline.
+> 
+> Signed-off-by: Melissa Wen <mwen@igalia.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h      | 10 ++++++++
+>  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h |  9 ++++++++
+>  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 14 +++++++++++
+>  .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   | 23 +++++++++++++++++++
+>  4 files changed, 56 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
+> index 66bae0eed80c..730a88236501 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
+> @@ -363,6 +363,16 @@ struct amdgpu_mode_info {
+>  	 * @plane_hdr_mult_property:
+>  	 */
+>  	struct drm_property *plane_hdr_mult_property;
+> +	/**
+> +	 * @plane_lut3d_property: Plane property for gamma correction using a
+> +	 * 3D LUT (pre-blending).
+> +	 */
+
+I think we'll want to describe how the 3DLUT entries are laid out.
+Something that describes how userspace should fill it, like
+gamescope does for example:
+https://github.com/ValveSoftware/gamescope/blob/7108880ed80b68c21750369e2ac9b7315fecf264/src/color_helpers.cpp#L302
+
+Something like: a three-dimensional array, with each dimension
+having a size of the cubed root of lut3d_size, blue being the
+outermost dimension, red the innermost.
+
+
+> +	struct drm_property *plane_lut3d_property;
+> +	/**
+> +	 * @plane_degamma_lut_size_property: Plane property to define the max
+> +	 * size of 3D LUT as supported by the driver (read-only).
+> +	 */
+
+We should probably document that the size of the 3DLUT should
+be the size of one dimension cubed, or that the cubed root of
+the LUT size gives the size per dimension.
+
+Harry
+
+> +	struct drm_property *plane_lut3d_size_property;
+>  };
 >  
-> > Reviewed-by: Ian Rogers <irogers@google.com>
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/Documentation/perf-lock.txt        |  4 ++
-> >  tools/perf/builtin-lock.c                     | 40 ++++++++++++++++++-
-> >  tools/perf/util/bpf_lock_contention.c         | 16 +++++---
-> >  .../perf/util/bpf_skel/lock_contention.bpf.c  | 31 +++++++++++++-
-> >  tools/perf/util/bpf_skel/lock_data.h          |  3 +-
-> >  tools/perf/util/lock-contention.h             |  1 -
-> >  6 files changed, 85 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/tools/perf/Documentation/perf-lock.txt b/tools/perf/Documentation/perf-lock.txt
-> > index 30eea576721f..61c491df72b8 100644
-> > --- a/tools/perf/Documentation/perf-lock.txt
-> > +++ b/tools/perf/Documentation/perf-lock.txt
-> > @@ -208,6 +208,10 @@ CONTENTION OPTIONS
-> >  	Show results using a CSV-style output to make it easy to import directly
-> >  	into spreadsheets. Columns are separated by the string specified in SEP.
-> >  
-> > +-g::
-> > +--lock-cgroup::
-> > +	Show lock contention stat by cgroup.  Requires --use-bpf.
-> > +
-> >  
-> >  SEE ALSO
-> >  --------
-> > diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-> > index 06430980dfd7..b98948dd40ba 100644
-> > --- a/tools/perf/builtin-lock.c
-> > +++ b/tools/perf/builtin-lock.c
-> > @@ -60,6 +60,7 @@ static bool combine_locks;
-> >  static bool show_thread_stats;
-> >  static bool show_lock_addrs;
-> >  static bool show_lock_owner;
-> > +static bool show_lock_cgroups;
-> >  static bool use_bpf;
-> >  static unsigned long bpf_map_entries = MAX_ENTRIES;
-> >  static int max_stack_depth = CONTENTION_STACK_DEPTH;
-> > @@ -619,6 +620,7 @@ static int get_key_by_aggr_mode_simple(u64 *key, u64 addr, u32 tid)
-> >  		*key = tid;
-> >  		break;
-> >  	case LOCK_AGGR_CALLER:
-> > +	case LOCK_AGGR_CGROUP:
-> >  	default:
-> >  		pr_err("Invalid aggregation mode: %d\n", aggr_mode);
-> >  		return -EINVAL;
-> > @@ -1103,6 +1105,7 @@ static int report_lock_contention_begin_event(struct evsel *evsel,
-> >  			if (lock_contention_caller(evsel, sample, buf, sizeof(buf)) < 0)
-> >  				name = "Unknown";
-> >  			break;
-> > +		case LOCK_AGGR_CGROUP:
-> >  		case LOCK_AGGR_TASK:
-> >  		default:
-> >  			break;
-> > @@ -1653,6 +1656,9 @@ static void print_header_stdio(void)
-> >  	case LOCK_AGGR_ADDR:
-> >  		fprintf(lock_output, "  %16s   %s\n\n", "address", "symbol");
-> >  		break;
-> > +	case LOCK_AGGR_CGROUP:
-> > +		fprintf(lock_output, "  %s\n\n", "cgroup");
-> > +		break;
-> >  	default:
-> >  		break;
-> >  	}
-> > @@ -1680,6 +1686,9 @@ static void print_header_csv(const char *sep)
-> >  	case LOCK_AGGR_ADDR:
-> >  		fprintf(lock_output, "%s%s %s%s %s\n", "address", sep, "symbol", sep, "type");
-> >  		break;
-> > +	case LOCK_AGGR_CGROUP:
-> > +		fprintf(lock_output, "%s\n", "cgroup");
-> > +		break;
-> >  	default:
-> >  		break;
-> >  	}
-> > @@ -1720,6 +1729,9 @@ static void print_lock_stat_stdio(struct lock_contention *con, struct lock_stat
-> >  		fprintf(lock_output, "  %016llx   %s (%s)\n", (unsigned long long)st->addr,
-> >  			st->name, get_type_name(st->flags));
-> >  		break;
-> > +	case LOCK_AGGR_CGROUP:
-> > +		fprintf(lock_output, "  %s\n", st->name);
-> > +		break;
-> >  	default:
-> >  		break;
-> >  	}
-> > @@ -1770,6 +1782,9 @@ static void print_lock_stat_csv(struct lock_contention *con, struct lock_stat *s
-> >  		fprintf(lock_output, "%llx%s %s%s %s\n", (unsigned long long)st->addr, sep,
-> >  			st->name, sep, get_type_name(st->flags));
-> >  		break;
-> > +	case LOCK_AGGR_CGROUP:
-> > +		fprintf(lock_output, "%s\n",st->name);
-> > +		break;
-> >  	default:
-> >  		break;
-> >  	}
-> > @@ -1999,6 +2014,27 @@ static int check_lock_contention_options(const struct option *options,
-> >  		return -1;
-> >  	}
-> >  
-> > +	if (show_lock_cgroups && !use_bpf) {
-> > +		pr_err("Cgroups are available only with BPF\n");
-> > +		parse_options_usage(usage, options, "lock-cgroup", 0);
-> > +		parse_options_usage(NULL, options, "use-bpf", 0);
-> > +		return -1;
-> > +	}
-> > +
-> > +	if (show_lock_cgroups && show_lock_addrs) {
-> > +		pr_err("Cannot use cgroup and addr mode together\n");
-> > +		parse_options_usage(usage, options, "lock-cgroup", 0);
-> > +		parse_options_usage(NULL, options, "lock-addr", 0);
-> > +		return -1;
-> > +	}
-> > +
-> > +	if (show_lock_cgroups && show_thread_stats) {
-> > +		pr_err("Cannot use cgroup and thread mode together\n");
-> > +		parse_options_usage(usage, options, "lock-cgroup", 0);
-> > +		parse_options_usage(NULL, options, "threads", 0);
-> > +		return -1;
-> > +	}
-> > +
-> >  	if (symbol_conf.field_sep) {
-> >  		if (strstr(symbol_conf.field_sep, ":") || /* part of type flags */
-> >  		    strstr(symbol_conf.field_sep, "+") || /* part of caller offset */
-> > @@ -2060,7 +2096,8 @@ static int __cmd_contention(int argc, const char **argv)
-> >  	con.machine = &session->machines.host;
-> >  
-> >  	con.aggr_mode = aggr_mode = show_thread_stats ? LOCK_AGGR_TASK :
-> > -		show_lock_addrs ? LOCK_AGGR_ADDR : LOCK_AGGR_CALLER;
-> > +		show_lock_addrs ? LOCK_AGGR_ADDR :
-> > +		show_lock_cgroups ? LOCK_AGGR_CGROUP : LOCK_AGGR_CALLER;
-> >  
-> >  	if (con.aggr_mode == LOCK_AGGR_CALLER)
-> >  		con.save_callstack = true;
-> > @@ -2524,6 +2561,7 @@ int cmd_lock(int argc, const char **argv)
-> >  	OPT_BOOLEAN('o', "lock-owner", &show_lock_owner, "show lock owners instead of waiters"),
-> >  	OPT_STRING_NOEMPTY('x', "field-separator", &symbol_conf.field_sep, "separator",
-> >  		   "print result in CSV format with custom separator"),
-> > +	OPT_BOOLEAN('g', "lock-cgroup", &show_lock_cgroups, "show lock stats by cgroup"),
-> >  	OPT_PARENT(lock_options)
-> >  	};
-> >  
-> > diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-> > index c6bd7c9b2d57..42753a0dfdc5 100644
-> > --- a/tools/perf/util/bpf_lock_contention.c
-> > +++ b/tools/perf/util/bpf_lock_contention.c
-> > @@ -152,7 +152,10 @@ int lock_contention_prepare(struct lock_contention *con)
-> >  	skel->bss->needs_callstack = con->save_callstack;
-> >  	skel->bss->lock_owner = con->owner;
-> >  
-> > -	if (con->use_cgroup) {
-> > +	if (con->aggr_mode == LOCK_AGGR_CGROUP) {
-> > +		if (cgroup_is_v2("perf_event"))
-> > +			skel->bss->use_cgroup_v2 = 1;
-> > +
-> >  		read_all_cgroups(&con->cgroups);
-> >  	}
-> >  
-> > @@ -214,12 +217,12 @@ static const char *lock_contention_get_name(struct lock_contention *con,
-> >  			return "siglock";
-> >  
-> >  		/* global locks with symbols */
-> > -		sym = machine__find_kernel_symbol(machine, key->lock_addr, &kmap);
-> > +		sym = machine__find_kernel_symbol(machine, key->lock_addr_or_cgroup, &kmap);
-> >  		if (sym)
-> >  			return sym->name;
-> >  
-> >  		/* try semi-global locks collected separately */
-> > -		if (!bpf_map_lookup_elem(lock_fd, &key->lock_addr, &flags)) {
-> > +		if (!bpf_map_lookup_elem(lock_fd, &key->lock_addr_or_cgroup, &flags)) {
-> >  			if (flags == LOCK_CLASS_RQLOCK)
-> >  				return "rq_lock";
-> >  		}
-> > @@ -227,8 +230,8 @@ static const char *lock_contention_get_name(struct lock_contention *con,
-> >  		return "";
-> >  	}
-> >  
-> > -	if (con->use_cgroup) {
-> > -		u64 cgrp_id = key->lock_addr;
-> > +	if (con->aggr_mode == LOCK_AGGR_CGROUP) {
-> > +		u64 cgrp_id = key->lock_addr_or_cgroup;
-> >  		struct cgroup *cgrp = __cgroup__find(&con->cgroups, cgrp_id);
-> >  
-> >  		if (cgrp)
-> > @@ -329,7 +332,8 @@ int lock_contention_read(struct lock_contention *con)
-> >  			ls_key = key.pid;
-> >  			break;
-> >  		case LOCK_AGGR_ADDR:
-> > -			ls_key = key.lock_addr;
-> > +		case LOCK_AGGR_CGROUP:
-> > +			ls_key = key.lock_addr_or_cgroup;
-> >  			break;
-> >  		default:
-> >  			goto next;
-> > diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> > index 8d3cfbb3cc65..823354999022 100644
-> > --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> > +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> > @@ -118,6 +118,9 @@ int needs_callstack;
-> >  int stack_skip;
-> >  int lock_owner;
-> >  
-> > +int use_cgroup_v2;
-> > +int perf_subsys_id = -1;
-> > +
-> >  /* determine the key of lock stat */
-> >  int aggr_mode;
-> >  
-> > @@ -130,6 +133,29 @@ int data_fail;
-> >  int task_map_full;
-> >  int data_map_full;
-> >  
-> > +static inline __u64 get_current_cgroup_id(void)
-> > +{
-> > +	struct task_struct *task;
-> > +	struct cgroup *cgrp;
-> > +
-> > +	if (use_cgroup_v2)
-> > +		return bpf_get_current_cgroup_id();
-> > +
-> > +	task = bpf_get_current_task_btf();
-> > +
-> > +	if (perf_subsys_id == -1) {
-> > +#if __has_builtin(__builtin_preserve_enum_value)
-> > +		perf_subsys_id = bpf_core_enum_value(enum cgroup_subsys_id,
-> > +						     perf_event_cgrp_id);
-> > +#else
-> > +		perf_subsys_id = perf_event_cgrp_id;
-> > +#endif
-> > +	}
-> > +
-> > +	cgrp = BPF_CORE_READ(task, cgroups, subsys[perf_subsys_id], cgroup);
-> > +	return BPF_CORE_READ(cgrp, kn, id);
-> > +}
-> > +
-> >  static inline int can_record(u64 *ctx)
-> >  {
-> >  	if (has_cpu) {
-> > @@ -364,10 +390,13 @@ int contention_end(u64 *ctx)
-> >  			key.stack_id = pelem->stack_id;
-> >  		break;
-> >  	case LOCK_AGGR_ADDR:
-> > -		key.lock_addr = pelem->lock;
-> > +		key.lock_addr_or_cgroup = pelem->lock;
-> >  		if (needs_callstack)
-> >  			key.stack_id = pelem->stack_id;
-> >  		break;
-> > +	case LOCK_AGGR_CGROUP:
-> > +		key.lock_addr_or_cgroup = get_current_cgroup_id();
-> > +		break;
-> >  	default:
-> >  		/* should not happen */
-> >  		return 0;
-> > diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_skel/lock_data.h
-> > index 260062a9f2ab..08482daf61be 100644
-> > --- a/tools/perf/util/bpf_skel/lock_data.h
-> > +++ b/tools/perf/util/bpf_skel/lock_data.h
-> > @@ -6,7 +6,7 @@
-> >  struct contention_key {
-> >  	u32 stack_id;
-> >  	u32 pid;
-> > -	u64 lock_addr;
-> > +	u64 lock_addr_or_cgroup;
-> >  };
-> >  
-> >  #define TASK_COMM_LEN  16
-> > @@ -39,6 +39,7 @@ enum lock_aggr_mode {
-> >  	LOCK_AGGR_ADDR = 0,
-> >  	LOCK_AGGR_TASK,
-> >  	LOCK_AGGR_CALLER,
-> > +	LOCK_AGGR_CGROUP,
-> >  };
-> >  
-> >  enum lock_class_sym {
-> > diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
-> > index 70423966d778..a073cc6a82d2 100644
-> > --- a/tools/perf/util/lock-contention.h
-> > +++ b/tools/perf/util/lock-contention.h
-> > @@ -144,7 +144,6 @@ struct lock_contention {
-> >  	int owner;
-> >  	int nr_filtered;
-> >  	bool save_callstack;
-> > -	bool use_cgroup;
-> >  };
-> >  
-> >  #ifdef HAVE_BPF_SKEL
-> > -- 
-> > 2.42.0.283.g2d96d420d3-goog
-> > 
-> 
-> -- 
-> 
-> - Arnaldo
+>  #define AMDGPU_MAX_BL_LEVEL 0xFF
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+> index 44f17ac11a5f..deea90212e31 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+> @@ -769,6 +769,11 @@ struct dm_plane_state {
+>  	 * S31.32 sign-magnitude.
+>  	 */
+>  	__u64 hdr_mult;
+> +	/**
+> +	 * @lut3d: 3D lookup table blob. The blob (if not NULL) is an array of
+> +	 * &struct drm_color_lut.
+> +	 */
+> +	struct drm_property_blob *lut3d;
+>  };
+>  
+>  struct dm_crtc_state {
+> @@ -854,6 +859,10 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+>  
+>  void amdgpu_dm_trigger_timing_sync(struct drm_device *dev);
+>  
+> +/* 3D LUT max size is 17x17x17 */
+> +#define MAX_COLOR_3DLUT_ENTRIES 4913
+> +#define MAX_COLOR_3DLUT_BITDEPTH 12
+> +/* 1D LUT size */
+>  #define MAX_COLOR_LUT_ENTRIES 4096
+>  /* Legacy gamm LUT users such as X doesn't like large LUT sizes */
+>  #define MAX_COLOR_LEGACY_LUT_ENTRIES 256
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> index b891aaf5f7c1..7e6d4df99a0c 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> @@ -209,6 +209,20 @@ amdgpu_dm_create_color_properties(struct amdgpu_device *adev)
+>  		return -ENOMEM;
+>  	adev->mode_info.plane_hdr_mult_property = prop;
+>  
+> +	prop = drm_property_create(adev_to_drm(adev),
+> +				   DRM_MODE_PROP_BLOB,
+> +				   "AMD_PLANE_LUT3D", 0);
+> +	if (!prop)
+> +		return -ENOMEM;
+> +	adev->mode_info.plane_lut3d_property = prop;
+> +
+> +	prop = drm_property_create_range(adev_to_drm(adev),
+> +					 DRM_MODE_PROP_IMMUTABLE,
+> +					 "AMD_PLANE_LUT3D_SIZE", 0, UINT_MAX);
+> +	if (!prop)
+> +		return -ENOMEM;
+> +	adev->mode_info.plane_lut3d_size_property = prop;
+> +
+>  	return 0;
+>  }
+>  #endif
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
+> index ab7f0332c431..882391f7add6 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
+> @@ -1353,6 +1353,8 @@ dm_drm_plane_duplicate_state(struct drm_plane *plane)
+>  
+>  	if (dm_plane_state->degamma_lut)
+>  		drm_property_blob_get(dm_plane_state->degamma_lut);
+> +	if (dm_plane_state->lut3d)
+> +		drm_property_blob_get(dm_plane_state->lut3d);
+>  
+>  	dm_plane_state->degamma_tf = old_dm_plane_state->degamma_tf;
+>  	dm_plane_state->hdr_mult = old_dm_plane_state->hdr_mult;
+> @@ -1426,6 +1428,8 @@ static void dm_drm_plane_destroy_state(struct drm_plane *plane,
+>  
+>  	if (dm_plane_state->degamma_lut)
+>  		drm_property_blob_put(dm_plane_state->degamma_lut);
+> +	if (dm_plane_state->lut3d)
+> +		drm_property_blob_put(dm_plane_state->lut3d);
+>  
+>  	if (dm_plane_state->dc_state)
+>  		dc_plane_state_release(dm_plane_state->dc_state);
+> @@ -1456,6 +1460,14 @@ dm_atomic_plane_attach_color_mgmt_properties(struct amdgpu_display_manager *dm,
+>  	drm_object_attach_property(&plane->base,
+>  				   dm->adev->mode_info.plane_hdr_mult_property,
+>  				   AMDGPU_HDR_MULT_DEFAULT);
+> +
+> +	if (dpp_color_caps.hw_3d_lut) {
+> +		drm_object_attach_property(&plane->base,
+> +					   mode_info.plane_lut3d_property, 0);
+> +		drm_object_attach_property(&plane->base,
+> +					   mode_info.plane_lut3d_size_property,
+> +					   MAX_COLOR_3DLUT_ENTRIES);
+> +	}
+>  }
+>  
+>  static int
+> @@ -1487,6 +1499,14 @@ dm_atomic_plane_set_property(struct drm_plane *plane,
+>  			dm_plane_state->hdr_mult = val;
+>  			dm_plane_state->base.color_mgmt_changed = 1;
+>  		}
+> +	} else if (property == adev->mode_info.plane_lut3d_property) {
+> +		ret = drm_property_replace_blob_from_id(plane->dev,
+> +							&dm_plane_state->lut3d,
+> +							val, -1,
+> +							sizeof(struct drm_color_lut),
+> +							&replaced);
+> +		dm_plane_state->base.color_mgmt_changed |= replaced;
+> +		return ret;
+>  	} else {
+>  		drm_dbg_atomic(plane->dev,
+>  			       "[PLANE:%d:%s] unknown property [PROP:%d:%s]]\n",
+> @@ -1514,6 +1534,9 @@ dm_atomic_plane_get_property(struct drm_plane *plane,
+>  		*val = dm_plane_state->degamma_tf;
+>  	} else if (property == adev->mode_info.plane_hdr_mult_property) {
+>  		*val = dm_plane_state->hdr_mult;
+> +	} else 	if (property == adev->mode_info.plane_lut3d_property) {
+> +		*val = (dm_plane_state->lut3d) ?
+> +			dm_plane_state->lut3d->base.id : 0;
+>  	} else {
+>  		return -EINVAL;
+>  	}
 
--- 
-
-- Arnaldo
