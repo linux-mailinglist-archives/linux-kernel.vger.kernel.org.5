@@ -2,177 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC8E793CE6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D15793CEA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239811AbjIFMoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47768 "EHLO
+        id S240756AbjIFMoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233463AbjIFMoC (ORCPT
+        with ESMTP id S233463AbjIFMoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:44:02 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854D1170D
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:43:58 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-313e742a787so607483f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 05:43:58 -0700 (PDT)
+        Wed, 6 Sep 2023 08:44:04 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9DA1721
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:43:59 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-501bef6e0d3so2906008e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 05:43:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694004237; x=1694609037; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=97T82DaWND1ic3tMqCxU8VDEgFQSQlyfp7fMNRtDH0U=;
-        b=ZA30sYVDmR8bpKIysuffD17UzICwGniTcl++Mp8ZDHNf935kJiD54AnGUayUJCqkAC
-         qIPkPlrqfJmorMDVVp8zuXXzqfkeMIhBf2gJPAntXQu4otQR1xM8Zdn5FMOG+W1CoUIg
-         VGe119ms0GbeFqBpgT1vgkjee+n6Qns67kjwFyylL9VMvWCwBD+YMQukPWKbu3zdvsKa
-         r4OFzr844o/HESAJGrhqTRvlMClq6K31xN5V+g52efpSuTxjDJ6s6grZ6LzqlzCkU87w
-         EVDH6S1LSy0mdmmSFUirsDCMBlv528ro3ApzweglH6QrTXyElfEZG5DA22GytEJ5BeOg
-         ZoaA==
+        d=linaro.org; s=google; t=1694004238; x=1694609038; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SZjPlBqgnDQzIPB5KuAwzX6y/nfJycbmx8H+lJxBo78=;
+        b=ri/F0L/fo2e2r+1K7sP1+QtDiGO4oZbCfC0XH1I2fVXDoWmRDmIWZ8cykRfYgoBm5F
+         P36AzB2jAarNxNB1DSP85TtKgHdmfP0vLaBVRsDMOLeofGTqrNP41mTpdyZ+FpPfs73R
+         1f0mdJFfy5XafL7Rj9YzlT9qBi4bPIHRwqt4QiOYeJsqq4g4oLFbkG7RlV7C5j2rlfTf
+         1vCAMYZ5JaOuarF2/TDXptr5qEq3O4fmc41a12nRfsoAt/blmE8j3YwSxFqfCFmoKDyf
+         FuRZHgb8DnzRg75aUstdrYP6oR84WURHK08NqA/Y8fYCoGptOCCEaSRhvizFgcCvmXxo
+         jK9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694004237; x=1694609037;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=97T82DaWND1ic3tMqCxU8VDEgFQSQlyfp7fMNRtDH0U=;
-        b=X4z7R5LbMQCCSya+16GayCEA0IIZXVJyxxuUYZ3L5qFkqBjJ+ot2K6HzLzgqu8lK3E
-         k76Q/+Tic4/3BvYfdmDSXGpXKtOVZd3iJxQBu081uFxrjbc85lJ4qb8JHZBD1SEtapeK
-         rEB/GLfubMsNqJ0fmBE8tu0/g5YCIvGb+4z8c1bFObFTm+oNxuhwse/B3RrGi0SUbPvl
-         Tfe+ZNbrfaBdb5dE7Vg0FQrLzKSabbmezsQsei9Mq75FgD26C4ruIW7GHD7be05uu/Fm
-         TGwrvc3isxzq33n6jNg7rcUrJRRZnziyHg0JxItc/UBxew3t5fBUCmGUmFUdHqpWdAFs
-         uW8g==
-X-Gm-Message-State: AOJu0YzNjFjeIw4gc3eRqrHhIrKlVCKcPDZVxPHsmfZHfWMhLjRg5wOZ
-        YF9a/ZJoyf0swQB7cMRz0e0wUV0CxxQHM4Yeqk6UJA==
-X-Google-Smtp-Source: AGHT+IE5EzPlYpM04M+Q/aJihvrqk89xvt00ppxx1QLaRQWeDL07/bJeynyeRYAenM4+M4c30V7uH8C5wCvl72MrsjQ=
-X-Received: by 2002:a05:6000:5c9:b0:30f:c1fa:7901 with SMTP id
- bh9-20020a05600005c900b0030fc1fa7901mr2582820wrb.5.1694004237054; Wed, 06 Sep
- 2023 05:43:57 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1694004238; x=1694609038;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SZjPlBqgnDQzIPB5KuAwzX6y/nfJycbmx8H+lJxBo78=;
+        b=b5kOLmV32A/m9Z9utTbtevcvyvZg6pOkqy6gDISR4r6/vmAkYWq25iRaecuRp8Tqit
+         HMRV1JX3WlhP/O7vpz7tHCNhQIrKEG5vM3zXS7iDpjg0kHUudGb0iMWdrp+G8hfrosNJ
+         HLe3/J8W21yfUzJK+udZlE0RmgHZdLTytvU/3jVtDvJsk22prBMHFy3PD7G6YN/w7E2W
+         Bkoz5JixJDN25AnSSu2tbDcE2hfgOgOOU1E+xsprhVHIGgTTknF0bfPF5qPuf91yrPtK
+         wcekTve1zQd1NBw+XJcUb3k+C91gZnSzlxHfTtCe3s7Yow17w8jHpOsEM3MC3ojeZLMQ
+         rY2Q==
+X-Gm-Message-State: AOJu0Yx7rSuxtb2m4dKl6XlBJ0hl9fgO04M7HGKgBCmK+WQn8ECREnnZ
+        CxI/RJELHLSL9PnFS6fYMeOJJg==
+X-Google-Smtp-Source: AGHT+IFRWlzlHNwcMzhjaCekHtz8y2GT5557IniLJLUxSqX4REkvEuvBZ/WhKLTSC9YTYVzWnzvPyQ==
+X-Received: by 2002:ac2:5457:0:b0:4fb:8948:2b8e with SMTP id d23-20020ac25457000000b004fb89482b8emr2271482lfn.8.1694004237744;
+        Wed, 06 Sep 2023 05:43:57 -0700 (PDT)
+Received: from [192.168.37.154] (178235177204.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.204])
+        by smtp.gmail.com with ESMTPSA id ko18-20020a170907987200b0099de082442esm9022170ejc.70.2023.09.06.05.43.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 05:43:57 -0700 (PDT)
+Message-ID: <77f3e252-5209-44e8-83ed-2a578c5a94d4@linaro.org>
+Date:   Wed, 6 Sep 2023 14:43:54 +0200
 MIME-Version: 1.0
-References: <20230801085402.1168351-1-alexghiti@rivosinc.com>
- <20230801085402.1168351-5-alexghiti@rivosinc.com> <CA+V-a8t56xDqMTQfoKcsvPF8errkTMydaDz5V6nejLvVfJrW3g@mail.gmail.com>
- <CAHVXubiENHt36LrcSBoNU0rAMQ8EoT6tde9M8vLP3Hw2nwMm8g@mail.gmail.com>
- <CA+V-a8vJJFCKy3pCL2Qp1NogL-K5s9moGDbv3tTvx+z1FeKarw@mail.gmail.com>
- <CAHVXubhLB9Pw51C1ed1Youp9k0qTJKrokUAqf=Xnr+m3BoN5=g@mail.gmail.com> <CA+V-a8s0i=VMSbMa6WvOiZpqe_idAhq4cZ0inSdCNy39-rQeAg@mail.gmail.com>
-In-Reply-To: <CA+V-a8s0i=VMSbMa6WvOiZpqe_idAhq4cZ0inSdCNy39-rQeAg@mail.gmail.com>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Wed, 6 Sep 2023 14:43:46 +0200
-Message-ID: <CAHVXubjgjAwMOi0J5zZJkuX8RKwgfKp-_=tVTLDvKN=tBBdxNQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] riscv: Improve flush_tlb_kernel_range()
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Jones <ajones@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/53] dt-bindings: interconnect: qcom,bcm-voter: Add
+ qcom,bcm-voter-idx
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        Mike Tipton <quic_mdtipton@quicinc.com>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230708-topic-rpmh_icc_rsc-v1-0-b223bd2ac8dd@linaro.org>
+ <20230708-topic-rpmh_icc_rsc-v1-2-b223bd2ac8dd@linaro.org>
+ <68fb8e22-dd23-d4bf-eda0-444039fd8e26@linaro.org>
+ <9201cb8d-845a-b5dc-02a5-9633572b5877@linaro.org>
+ <f393324f-c9ec-1572-fb15-1856cef9d846@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <f393324f-c9ec-1572-fb15-1856cef9d846@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 2:24=E2=80=AFPM Lad, Prabhakar
-<prabhakar.csengg@gmail.com> wrote:
->
-> Hi Alexandre,
->
-> On Wed, Sep 6, 2023 at 1:18=E2=80=AFPM Alexandre Ghiti <alexghiti@rivosin=
-c.com> wrote:
-> >
-> > On Wed, Sep 6, 2023 at 2:09=E2=80=AFPM Lad, Prabhakar
-> > <prabhakar.csengg@gmail.com> wrote:
-> > >
-> > > Hi Alexandre,
-> > >
-> > > On Wed, Sep 6, 2023 at 1:01=E2=80=AFPM Alexandre Ghiti <alexghiti@riv=
-osinc.com> wrote:
-> > > >
-> > > > Hi Prabhakar,
-> > > >
-> > > > On Wed, Sep 6, 2023 at 1:49=E2=80=AFPM Lad, Prabhakar
-> > > > <prabhakar.csengg@gmail.com> wrote:
-> > > > >
-> > > > > Hi Alexandre,
-> > > > >
-> > > > > On Tue, Aug 1, 2023 at 9:58=E2=80=AFAM Alexandre Ghiti <alexghiti=
-@rivosinc.com> wrote:
-> > > > > >
-> > > > > > This function used to simply flush the whole tlb of all harts, =
-be more
-> > > > > > subtile and try to only flush the range.
-> > > > > >
-> > > > > > The problem is that we can only use PAGE_SIZE as stride since w=
-e don't know
-> > > > > > the size of the underlying mapping and then this function will =
-be improved
-> > > > > > only if the size of the region to flush is < threshold * PAGE_S=
-IZE.
-> > > > > >
-> > > > > > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > > > > > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> > > > > > ---
-> > > > > >  arch/riscv/include/asm/tlbflush.h | 11 +++++-----
-> > > > > >  arch/riscv/mm/tlbflush.c          | 34 +++++++++++++++++++++++=
---------
-> > > > > >  2 files changed, 31 insertions(+), 14 deletions(-)
-> > > > > >
-> > > > > After applying this patch, I am seeing module load issues on RZ/F=
-ive
-> > > > > (complete log [0]). I am testing defconfig + [1] (rz/five related
-> > > > > configs).
-> > > > >
-> > > > > Any pointers on what could be an issue here?
-> > > >
-> > > > Can you give me the exact version of the kernel you use? The trap
-> > > > addresses are vmalloc addresses, and a fix for those landed very la=
-te
-> > > > in the release cycle.
-> > > >
-> > > I am using next-20230906, Ive pushed a branch [1] for you to have a l=
-ook.
-> > >
-> > > [0] https://github.com/prabhakarlad/linux/tree/rzfive-debug
-> >
-> > Great, thanks, I had to get rid of this possibility :)
-> >
-> > As-is, I have no idea, can you try to "bisect" the problem? I mean
-> > which patch in the series leads to those traps?
-> >
-> Oops sorry for not mentioning earlier, this is the offending patch
-> which leads to the issues seen on rz/five.
+On 5.08.2023 23:21, Krzysztof Kozlowski wrote:
+> On 15/07/2023 17:09, Konrad Dybcio wrote:
+>> On 12.07.2023 22:43, Krzysztof Kozlowski wrote:
+>>> On 11/07/2023 14:18, Konrad Dybcio wrote:
+>>>> In order to (at least partially) untangle the global BCM voter lookup
+>>>> (as again, they are shared throughout the entire system and not bound to
+>>>> individual buses/providers), introduce a new required property to assign
+>>>> a unique identifier to each BCM voter.
+>>>>
+>>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>>>> ---
+>>>>  .../devicetree/bindings/interconnect/qcom,bcm-voter.yaml       | 10 ++++++++++
+>>>>  1 file changed, 10 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,bcm-voter.yaml b/Documentation/devicetree/bindings/interconnect/qcom,bcm-voter.yaml
+>>>> index eec987640b37..09321c1918bf 100644
+>>>> --- a/Documentation/devicetree/bindings/interconnect/qcom,bcm-voter.yaml
+>>>> +++ b/Documentation/devicetree/bindings/interconnect/qcom,bcm-voter.yaml
+>>>> @@ -38,8 +38,14 @@ properties:
+>>>>  
+>>>>      $ref: /schemas/types.yaml#/definitions/uint32
+>>>>  
+>>>> +  qcom,bcm-voter-idx:
+>>>> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+>>>> +    description:
+>>>> +      A globally unique predefined discrimnator, identifying each BCM voter.
+>>>
+>>> s/each/this/ ?
+>> Right, this makes more sense
+>>
+>>> If I understand correctly, there might be more than one instance. The
+>>> problem is that I cannot find such case in upstream sources.
+>> I don't think there can be more than one per RSC.
+>>
+>> SM8550 splits some RSCs into "channels" and these channels have their
+>> individual voters, however they would still be attached to these
+>> channel subnodes/subdevices and no, we don't support that yet.
+> 
+> Then shouldn't this be one number, not an array?
+> 
+>>
+>>>
+>>>
+>>>> +
+>>>>  required:
+>>>>    - compatible
+>>>> +  - qcom,bcm-voter-idx
+>>>
+>>> This should not be really required, because it affects the ABI.
+>> Hm.. can I deprecate lack of it somehow?
+> 
+> In general: no. Anyway, it depends how much you need it. Breaking ABI
+> might be justified, but I just did not get such need from the commit
+> msg. Your commit msg looks to me closer to a cleanup.
++ Mike
 
-Ok, so at least I found the following problem, but I don't see how
-that could fix your issue: can you give a try anyway? I keep looking
-into this, thanks
+Yes and no. But mostly yes.
 
-diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-index df2a0838c3a1..b5692bc6c76a 100644
---- a/arch/riscv/mm/tlbflush.c
-+++ b/arch/riscv/mm/tlbflush.c
-@@ -239,7 +239,7 @@ void flush_tlb_range(struct vm_area_struct *vma,
-unsigned long start,
+The current way of depicting the BCM voter as a child of the RSC
+is rather stupid. Think of the discussion that we had with
+Bartosz about adding child devices to SCM only to bind Linux
+drivers.
 
- void flush_tlb_kernel_range(unsigned long start, unsigned long end)
- {
--       __flush_tlb_range(NULL, start, end, PAGE_SIZE);
-+       __flush_tlb_range(NULL, start, end - start, PAGE_SIZE);
- }
+The "voters" are totally a Linux software construct - there is a
+piece of hw called BCM (Bus Clock Manager) to which you send votes
+through the RSC (Resource State Coordinator). Each major subsystem
+has its own RSC (APPS, display, pcie on newer/compute, camera
+starting from 8550 etc.) that you submit these through.
 
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+Currently the bcm-voter driver provides a structure where vote data
+is stored and everything is concluded with a pair of rpmh_write_batch
+(one for wake-only and one for sleep buckets).
 
->
-> Cheers,
-> Prabhakar
+After reading what I just wrote, maybe we can just reference the RSC
+directly. Or in the aforementioned case of 8550 CAMSS RSC having
+multiple channels per RSC, its subchannel.
+
+Perhaps this cleanup should be extended to get rid of this subnode.
+Or maybe even the driver, or part of it.
+
+Actually, I need to think about this a bit more, as we also need to
+reuse half of BCM voter logic in the Adreno code (to shove the
+generated RPMh commands into the GPU Management Unit which pokes at
+RPMh on its own)...
+
+I think Mike should comment on this rather incoherent monologue of
+mine..
+
+Konrad
