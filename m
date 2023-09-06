@@ -2,214 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8885079435C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BD5794360
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243975AbjIFTAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 15:00:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42894 "EHLO
+        id S229919AbjIFTCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 15:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232282AbjIFS7z (ORCPT
+        with ESMTP id S232282AbjIFTCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 14:59:55 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79551717
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 11:59:51 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-52e64bc7c10so117384a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 11:59:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694026790; x=1694631590; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=276KKM87k7JPS03fWRSBAhab8yYbGj1pfUBVIYq9nXc=;
-        b=bojjjfDyeEzBhcJt0eQVPHMmJU4Vy1zNPfDG6eLwgYYu9mDgVq8Q0fovC57tY9EbgD
-         c0gawPT6QAvCWtx44pRioojZizZX6jqU1Q5RIoGiiJ14L46zDY9C6Q2hlDLazUvmsfkv
-         7ef18DV1yP57yWsdgiCbyy4jx6K+PsarqaZG71cxKOsXdhDF1+7OELhX8IOJHBz4MzBl
-         Yr+KsK0w6CpZe/Kwt3SsxOwv9UElzEIGOhOpIec4PnN4H0odpeghHIH29B+AgD0BhGr7
-         TL/0nK6ISXplHxJlprTTuv3SNnGW6QSDbbrpOxrL0qoUOzNfqgbaqtMzhp07MePS+0Ut
-         Sgow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694026790; x=1694631590;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=276KKM87k7JPS03fWRSBAhab8yYbGj1pfUBVIYq9nXc=;
-        b=dmqMPgjkFHpWWgVjnV1SnWr3iDR/0IXEZXJfqD+Y9yln8bUFoSfSC0ds4OOHEgh0h4
-         kPfncnLCKLrkFr2L5IbXcjsYT9FWppvSbBwwk9jWrZUOj+OqGeVuMgBTIdyxrQwV9/KL
-         IRLMEJ7V8GEaC5fF3l/i5yK5sNNseBsHqodEVxDI0vN37stHtl2zP99UgWGzm1bRUdKk
-         IlYMBN9q3IpMtkR2ZZIJp/2q1F1+ynNmisL0FwNXrc1trG27AZa3FHUVTgb8GfEJccbn
-         Cd74AejVIAToRdrzXFM/iAtc65l88NEkRL2pbcuJ5TiAbLzueY4a2p9M57lPYcHZHFQq
-         VhJw==
-X-Gm-Message-State: AOJu0YwwYj8ToAVuKMKtXyWwJ/EPcAA64Q/lWwAImT4lWj3TuN4kEfTn
-        FCBb1/GxNT0MlOJlpJSL0kw=
-X-Google-Smtp-Source: AGHT+IG2BDKoyEgFNGH2VDWeYuqsWCnknWAs4D+C+BWim7gAMZS1R98Sf6eaQCCMlJR5aKtwR9BJLA==
-X-Received: by 2002:a17:907:2c75:b0:99b:dd1d:64ba with SMTP id ib21-20020a1709072c7500b0099bdd1d64bamr3231759ejc.50.1694026789829;
-        Wed, 06 Sep 2023 11:59:49 -0700 (PDT)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id rn5-20020a170906d92500b0099cc402d3ddsm9217955ejb.202.2023.09.06.11.59.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 11:59:49 -0700 (PDT)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH] x86/percpu: Define {raw,this}_cpu_try_cmpxchg{64,128}
-Date:   Wed,  6 Sep 2023 20:58:44 +0200
-Message-ID: <20230906185941.53527-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 6 Sep 2023 15:02:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5C51B7;
+        Wed,  6 Sep 2023 12:02:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HRUyo/GGAKaU+Y8vWHlOUhQPoeDU0MO4N8+nCzgiEfk=; b=BrclOytmh39lz0kBvAB3u47peY
+        19QwbpbrxmLEEGoVqX/aY8+egyUm/uNHi3q0AtqJrPQbTrPzuGM2JQpL4u0i020mkzPMpGyftoHj5
+        XJDFy4wRac1RGbTpZvFIUtybhpBZM7zVBUOwiNaJbgP9CsnGwms3tCuyAJh2hjmCqm/aRXxOJpYoH
+        OoDdON/kcV2cAIqNMK7L4NfkeOFTblMmbBYVxXz7pHx3ov2LhSJlDfl2SLBqZinis75wnQpx6DEOH
+        AklfvcJ91/U+g6XX0nDCYYMBA2QJfZ6oakdhBctkfEzKxtxZ5D6cdpCul7HjPqfu1j30s8ohT/Cm7
+        GUoDiedw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qdxmm-004m6r-R2; Wed, 06 Sep 2023 19:01:56 +0000
+Date:   Wed, 6 Sep 2023 20:01:56 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Bernd Schubert <bernd.schubert@fastmail.fm>,
+        Mateusz Guzik <mjguzik@gmail.com>, brauner@kernel.org,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH] vfs: add inode lockdep assertions
+Message-ID: <ZPjMpIKh+xxLbEZI@casper.infradead.org>
+References: <20230831151414.2714750-1-mjguzik@gmail.com>
+ <ZPiYp+t6JTUscc81@casper.infradead.org>
+ <b0434328-01f9-dc5c-fe25-4a249130a81d@fastmail.fm>
+ <20230906152948.GE28160@frogsfrogsfrogs>
+ <ZPiiDj1T3lGp2w2c@casper.infradead.org>
+ <20230906170724.GI28202@frogsfrogsfrogs>
+ <ZPjGDGyDf2/ngML9@casper.infradead.org>
+ <20230906184336.GH28160@frogsfrogsfrogs>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230906184336.GH28160@frogsfrogsfrogs>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define target-specific {raw,this}_cpu_try_cmpxchg64 and
-{raw,this}_cpu_try_cmpxchg128 macros. These definitions override
-the generic fallback definitions and enable target-specific
-optimized implementations.
+On Wed, Sep 06, 2023 at 11:43:36AM -0700, Darrick J. Wong wrote:
+> On Wed, Sep 06, 2023 at 07:33:48PM +0100, Matthew Wilcox wrote:
+> > On Wed, Sep 06, 2023 at 10:07:24AM -0700, Darrick J. Wong wrote:
+> > > On Wed, Sep 06, 2023 at 05:00:14PM +0100, Matthew Wilcox wrote:
+> > > > +++ b/fs/xfs/xfs_inode.c
+> > > > @@ -361,7 +361,7 @@ xfs_isilocked(
+> > > >  {
+> > > >  	if (lock_flags & (XFS_ILOCK_EXCL|XFS_ILOCK_SHARED)) {
+> > > >  		if (!(lock_flags & XFS_ILOCK_SHARED))
+> > > > -			return !!ip->i_lock.mr_writer;
+> > > > +			return rwsem_is_write_locked(&ip->i_lock.mr_lock);
+> > > 
+> > > You'd be better off converting this to:
+> > > 
+> > > 	return __xfs_rwsem_islocked(&ip->i_lock.mr_lock,
+> > > 				(lock_flags & XFS_ILOCK_SHARED));
+> > > 
+> > > And then fixing __xfs_rwsem_islocked to do:
+> > > 
+> > > static inline bool
+> > > __xfs_rwsem_islocked(
+> > > 	struct rw_semaphore	*rwsem,
+> > > 	bool			shared)
+> > > {
+> > > 	if (!debug_locks) {
+> > > 		if (!shared)
+> > > 			return rwsem_is_write_locked(rwsem);
+> > > 		return rwsem_is_locked(rwsem);
+> > > 	}
+> > > 
+> > > 	...
+> > > }
+> > 
+> > Thanks.
+> > 
+> > > > +++ b/include/linux/rwsem.h
+> > > > @@ -72,6 +72,11 @@ static inline int rwsem_is_locked(struct rw_semaphore *sem)
+> > > >  	return atomic_long_read(&sem->count) != 0;
+> > > >  }
+> > > >  
+> > > > +static inline int rwsem_is_write_locked(struct rw_semaphore *sem)
+> > > > +{
+> > > > +	return atomic_long_read(&sem->count) & 1;
+> > > 
+> > > 
+> > > atomic_long_read(&sem->count) & RWSEM_WRITER_LOCKED ?
+> > 
+> > Then this would either have to be in rwsem.c or we'd have to move the
+> > definition of RWSEM_WRITER_LOCKED to rwsem.h.  All three options are
+> > kind of bad.  I think I hate the bare '1' least.
+> 
+> I disagree, because using the bare 1 brings the most risk that someone
+> will subtly break the locking assertions some day when they get the
+> bright idea to move RWSEM_WRITER_LOCKED to the upper bit and fail to
+> notice this predicate and its magic number.  IMO moving it to the header
+> file (possibly with the usual __ prefix) would be preferable to leaving
+> a landmine.
 
-Several places in mm/slub.o improve from e.g.:
++       return atomic_long_read(&sem->count) & 1 /* RWSEM_WRITER_LOCKED */;
 
-    53bc:	48 8d 4f 40          	lea    0x40(%rdi),%rcx
-    53c0:	48 89 fa             	mov    %rdi,%rdx
-    53c3:	49 8b 5c 05 00       	mov    0x0(%r13,%rax,1),%rbx
-    53c8:	4c 89 e8             	mov    %r13,%rax
-    53cb:	49 8d 30             	lea    (%r8),%rsi
-    53ce:	e8 00 00 00 00       	call   53d3 <...>
-			53cf: R_X86_64_PLT32	this_cpu_cmpxchg16b_emu-0x4
-    53d3:	48 31 d7             	xor    %rdx,%rdi
-    53d6:	4c 31 e8             	xor    %r13,%rax
-    53d9:	48 09 c7             	or     %rax,%rdi
-    53dc:	75 ae                	jne    538c <...>
-
-to:
-
-    53bc:	48 8d 4a 40          	lea    0x40(%rdx),%rcx
-    53c0:	49 8b 1c 07          	mov    (%r15,%rax,1),%rbx
-    53c4:	4c 89 f8             	mov    %r15,%rax
-    53c7:	48 8d 37             	lea    (%rdi),%rsi
-    53ca:	e8 00 00 00 00       	call   53cf <...>
-			53cb: R_X86_64_PLT32	this_cpu_cmpxchg16b_emu-0x4
-    53cf:	75 bb                	jne    538c <...>
-
-reducing the size of mm/slub.o by 80 bytes:
-
-   text    data     bss     dec     hex filename
-  39758    5337    4208   49303    c097 slub-new.o
-  39838    5337    4208   49383    c0e7 slub-old.o
-
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
----
- arch/x86/include/asm/percpu.h | 67 +++++++++++++++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
-
-diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-index 34734d730463..4c3641927f39 100644
---- a/arch/x86/include/asm/percpu.h
-+++ b/arch/x86/include/asm/percpu.h
-@@ -237,12 +237,47 @@ do {									\
- 
- #define raw_cpu_cmpxchg64(pcp, oval, nval)	percpu_cmpxchg64_op(8,         , pcp, oval, nval)
- #define this_cpu_cmpxchg64(pcp, oval, nval)	percpu_cmpxchg64_op(8, volatile, pcp, oval, nval)
-+
-+#define percpu_try_cmpxchg64_op(size, qual, _var, _ovalp, _nval)	\
-+({									\
-+	bool success;							\
-+	u64 *_oval = (u64 *)(_ovalp);					\
-+	union {								\
-+		u64 var;						\
-+		struct {						\
-+			u32 low, high;					\
-+		};							\
-+	} old__, new__;							\
-+									\
-+	old__.var = *_oval;						\
-+	new__.var = _nval;						\
-+									\
-+	asm qual (ALTERNATIVE("leal %P[var], %%esi; call this_cpu_cmpxchg8b_emu", \
-+			      "cmpxchg8b " __percpu_arg([var]), X86_FEATURE_CX8) \
-+		  CC_SET(z)						\
-+		  : CC_OUT(z) (success),				\
-+		    [var] "+m" (_var),					\
-+		    "+a" (old__.low),					\
-+		    "+d" (old__.high)					\
-+		  : "b" (new__.low),					\
-+		    "c" (new__.high)					\
-+		  : "memory", "esi");					\
-+	if (unlikely(!success))						\
-+		*_oval = old__.var;					\
-+	likely(success);						\
-+})
-+
-+#define raw_cpu_try_cmpxchg64(pcp, ovalp, nval)		percpu_try_cmpxchg64_op(8,         , pcp, ovalp, nval)
-+#define this_cpu_try_cmpxchg64(pcp, ovalp, nval)	percpu_try_cmpxchg64_op(8, volatile, pcp, ovalp, nval)
- #endif
- 
- #ifdef CONFIG_X86_64
- #define raw_cpu_cmpxchg64(pcp, oval, nval)	percpu_cmpxchg_op(8,         , pcp, oval, nval);
- #define this_cpu_cmpxchg64(pcp, oval, nval)	percpu_cmpxchg_op(8, volatile, pcp, oval, nval);
- 
-+#define raw_cpu_try_cmpxchg64(pcp, ovalp, nval)		percpu_try_cmpxchg_op(8,         , pcp, ovalp, nval);
-+#define this_cpu_try_cmpxchg64(pcp, ovalp, nval)	percpu_try_cmpxchg_op(8, volatile, pcp, ovalp, nval);
-+
- #define percpu_cmpxchg128_op(size, qual, _var, _oval, _nval)		\
- ({									\
- 	union {								\
-@@ -269,6 +304,38 @@ do {									\
- 
- #define raw_cpu_cmpxchg128(pcp, oval, nval)	percpu_cmpxchg128_op(16,         , pcp, oval, nval)
- #define this_cpu_cmpxchg128(pcp, oval, nval)	percpu_cmpxchg128_op(16, volatile, pcp, oval, nval)
-+
-+#define percpu_try_cmpxchg128_op(size, qual, _var, _ovalp, _nval)	\
-+({									\
-+	bool success;							\
-+	u128 *_oval = (u128 *)(_ovalp);					\
-+	union {								\
-+		u128 var;						\
-+		struct {						\
-+			u64 low, high;					\
-+		};							\
-+	} old__, new__;							\
-+									\
-+	old__.var = *_oval;						\
-+	new__.var = _nval;						\
-+									\
-+	asm qual (ALTERNATIVE("leaq %P[var], %%rsi; call this_cpu_cmpxchg16b_emu", \
-+			      "cmpxchg16b " __percpu_arg([var]), X86_FEATURE_CX16) \
-+		  CC_SET(z)						\
-+		  : CC_OUT(z) (success),				\
-+		    [var] "+m" (_var),					\
-+		    "+a" (old__.low),					\
-+		    "+d" (old__.high)					\
-+		  : "b" (new__.low),					\
-+		    "c" (new__.high)					\
-+		  : "memory", "rsi");					\
-+	if (unlikely(!success))						\
-+		*_oval = old__.var;					\
-+	likely(success);						\
-+})
-+
-+#define raw_cpu_try_cmpxchg128(pcp, ovalp, nval)	percpu_try_cmpxchg128_op(16,         , pcp, ovalp, nval)
-+#define this_cpu_try_cmpxchg128(pcp, ovalp, nval)	percpu_try_cmpxchg128_op(16, volatile, pcp, ovalp, nval)
- #endif
- 
- /*
--- 
-2.41.0
-
+works for you?
