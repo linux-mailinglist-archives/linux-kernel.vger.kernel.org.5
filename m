@@ -2,68 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F6B794183
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7423A794182
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243252AbjIFQ3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 12:29:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32818 "EHLO
+        id S243241AbjIFQ3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 12:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbjIFQ3U (ORCPT
+        with ESMTP id S229549AbjIFQ3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 12:29:20 -0400
+        Wed, 6 Sep 2023 12:29:19 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A6319B1;
-        Wed,  6 Sep 2023 09:28:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C21E3C43397;
-        Wed,  6 Sep 2023 16:27:44 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94BE1BCF
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 09:28:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2856CC433B7;
+        Wed,  6 Sep 2023 16:27:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694017664;
-        bh=hthk+pY8fjwypZLQ2j/TWWg7VUX2AvpAPwTTBme6ZVw=;
+        s=k20201202; t=1694017667;
+        bh=u5m+U2r+6I65Yy4/E+JYFn8hlxjcVjkI4XxXxPzU8Qg=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=eEGVXH7/ltjPwoQBN7qBIoYRbr6sZglnefQN9n/rbqiy31FdlO7RsKbyI1F+2UtQx
-         +4g6DtS4I3tsR36VnDkaTEDuN0mNsZViXDjMZrz+yIcRl7t4Msrn26u1246fIft0E+
-         oYfIEwYbQVC1oH9rpM++6gco29pLQQ/ImFPMcIeoa3AZskaGjUKQMJXPcaHVz63tMY
-         OOXF7ld6yHPh/NUc4vXUnTyjV20wTN+Kab5UjyTtp2QX0hQQ2QyGCbk95nxfA7epEM
-         2gEE/5hEbSVpaY/CqjZZFeP2PhySFFCE7YUfg5EUr0CwDZoGt/zjYD6NQrX6zESi/v
-         KQsiETRuCfm0Q==
+        b=XEEEPaVks1+22u6r2VXx0ey0Q4HeehMxU16I5h+rhq58Zcff/DW8VeVgDjgIK/i4b
+         gGyGA6IRcaMLm1JZshnQWq2oAZw+q8FxQC3oolSy7teLkIhv6wFh6SuV7yJwfeJUI8
+         Dnhc4adyBkoB8vjCSzQyYfMoUwv1NdJfe7Vz7rLRxrE148cVH00ACXdYdQds3uud3c
+         bJYD55PyZaWHn7zJQ6zNYhJVA5it/zi1CnoAEP94hcpW0mUT22iZv+nc3qX4Ffz5Od
+         15ohZNAgfm+tX2+4A9hsSmyVyUNpuYlDivDOtGJmK5hiVOQWZFUbeVVFSLWb4dLO26
+         2AdvjMk4FMjaQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A9EE2C04E28;
-        Wed,  6 Sep 2023 16:27:44 +0000 (UTC)
-Subject: Re: [GIT PULL REQUEST] watchdog - v6.6 release cycle.
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0E49BC04D3F;
+        Wed,  6 Sep 2023 16:27:47 +0000 (UTC)
+Subject: Re: [GIT PULL] Backlight for v6.6
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230905201327.GA31462@www.linux-watchdog.org>
-References: <20230905201327.GA31462@www.linux-watchdog.org>
-X-PR-Tracked-List-Id: <linux-watchdog.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230905201327.GA31462@www.linux-watchdog.org>
-X-PR-Tracked-Remote: git://www.linux-watchdog.org/linux-watchdog.git tags/linux-watchdog-6.6-rc1
-X-PR-Tracked-Commit-Id: 8c776a0401f1dcfcfc8e5549c5260668bec59c0e
+In-Reply-To: <20230904141139.GC13143@google.com>
+References: <20230904141139.GC13143@google.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230904141139.GC13143@google.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight.git backlight-next-6.6
+X-PR-Tracked-Commit-Id: a4464092f2c514a7f0788906d340f0bab59fdd73
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 29057cc5bddc785ea0a11534d7ad2546fa0872d3
-Message-Id: <169401766468.7147.18358548810150523575.pr-tracker-bot@kernel.org>
-Date:   Wed, 06 Sep 2023 16:27:44 +0000
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>
+X-PR-Merge-Commit-Id: 57ac7ff8cb4d30fbb91d4ac1d44aa35c22bb8d52
+Message-Id: <169401766705.7147.10785518123433119004.pr-tracker-bot@kernel.org>
+Date:   Wed, 06 Sep 2023 16:27:47 +0000
+To:     Lee Jones <lee@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Bharat Bhushan <bbhushan2@marvell.com>,
-        Chengfeng Ye <dg573847474@gmail.com>,
-        Fabio Estevam <festevam@denx.de>,
-        Florent CARLI <fcarli@gmail.com>,
-        Huqiang Qin <huqiang.qin@amlogic.com>,
-        Li Hua Qian <huaqian.li@siemens.com>,
-        Li Zetao <lizetao1@huawei.com>,
-        Mathieu Othacehe <othacehe@gnu.org>,
-        Meng Li <meng.li@windriver.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Raag Jadav <raag.jadav@intel.com>,
-        Robert Marko <robimarko@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Ruan Jinjie <ruanjinjie@huawei.com>
+        Lee Jones <lee@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -74,12 +58,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 5 Sep 2023 22:13:27 +0200:
+The pull request you sent on Mon, 4 Sep 2023 15:11:39 +0100:
 
-> git://www.linux-watchdog.org/linux-watchdog.git tags/linux-watchdog-6.6-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight.git backlight-next-6.6
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/29057cc5bddc785ea0a11534d7ad2546fa0872d3
+https://git.kernel.org/torvalds/c/57ac7ff8cb4d30fbb91d4ac1d44aa35c22bb8d52
 
 Thank you!
 
