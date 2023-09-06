@@ -2,168 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5747937B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 305C27937C1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234199AbjIFJIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 05:08:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
+        id S232225AbjIFJJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 05:09:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234922AbjIFJIU (ORCPT
+        with ESMTP id S232338AbjIFJJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 05:08:20 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1DDC9CFD;
-        Wed,  6 Sep 2023 02:08:13 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8Cxh+h8Qfhk0kAgAA--.29184S3;
-        Wed, 06 Sep 2023 17:08:12 +0800 (CST)
-Received: from [0.0.0.0] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxvM56QfhkpFxuAA--.3166S3;
-        Wed, 06 Sep 2023 17:08:10 +0800 (CST)
-Message-ID: <b51d49f3-e3de-6b8d-9cb4-df5c03f3cdc0@loongson.cn>
-Date:   Wed, 6 Sep 2023 17:08:10 +0800
+        Wed, 6 Sep 2023 05:09:41 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1118295;
+        Wed,  6 Sep 2023 02:09:34 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2bcfd3220d3so51339911fa.2;
+        Wed, 06 Sep 2023 02:09:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693991372; x=1694596172; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rFAc0ENvdawtNpNN8VvAfyOPRtP79Ec15LEe0csz82o=;
+        b=ekjwbsRoQGS07jcauO+GiayVfrN+ZXo9M71YQjdKsxcWhhDA2+tJWj8VrMeAraeXKR
+         txL4D/YfUfWESqwID7Gf84jFni67EUid7PbCxj+9oxG/OkrY/obKHKD/wUkWml8wEkak
+         lYf0zQ2qmEok0j4tRz8G0VO7ZJbpIVxYs9yOdoNtmOcarEJ6pdy29bBYxIomxjF7RDN9
+         a1QlMpktbf7+mGb3N3i68EjLrBQKomc2pGr3tBNmPZCrHd5PWDwkjjpeKoz924KjeOy9
+         ilDY7Et3S/rfKW0DkqZ1Nfw815lYzOblnwF/8PP3zFE6cg2ieRx0+rHUXfJCF6XNRyh+
+         oB9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693991372; x=1694596172;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rFAc0ENvdawtNpNN8VvAfyOPRtP79Ec15LEe0csz82o=;
+        b=cYMMsbxLn0ojz8tOJ69QSoYilFW8A5fIXai+iRmgyEtN24u0Ibm95WoOxHAKegdgpq
+         XTv4vtI2MOhnIECObV74NaOuprxjHK/Kg0ZL9h2RaIQnq5tA/gEM9R61cHL+XN9t86xB
+         uGa6XIx4z7eSMkbXe6Rd0QYXWG0crWP4djrXnoOzP4mKE/gF49YdT1S7xT53Sy3X0lsz
+         1YP1ZeJy3WnGfpHmNKdM3QRc3PKvlXYur31xNm3GDh2SsiT/zzCFM7hDqdxL+AAYt1/r
+         wkiEAtXSrPPULPROVlUAUXiYarwH/JhNYvLY8Y6lP6tuhB6wsokPT0vCQLRgJR78LweZ
+         c8Gw==
+X-Gm-Message-State: AOJu0YxBpctY+/ylyY4K7VKsHNkMvThffKCObevkCNoQqiKuYtVwi6vk
+        nBBS0P56IrhNeSe5ZRX/HYD+/SGyKP1IdYMnB44=
+X-Google-Smtp-Source: AGHT+IGaZt6wsaWTbeCCw1/OFTccreQdD11HazSIZhfbhlO6zQVsNMMI+83UdqvCNrcOOuteAKYC2L4cc72BzWIWZ78=
+X-Received: by 2002:a2e:9859:0:b0:2bd:1fee:aacf with SMTP id
+ e25-20020a2e9859000000b002bd1feeaacfmr1890357ljj.24.1693991372034; Wed, 06
+ Sep 2023 02:09:32 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
- to select the primary video adapter at boot time
-Content-Language: en-US
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
-References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
- <44ec8549-dc36-287e-4359-abd3ec8d22d6@suse.de>
- <5afd2efb-f838-f9b7-02a9-2cf4d4fd2382@loongson.cn>
- <2adfa653-ac35-d560-be52-c92848a1eef5@gmail.com>
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <2adfa653-ac35-d560-be52-c92848a1eef5@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxvM56QfhkpFxuAA--.3166S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxArWruw1kuFW8Ar4UKF1xJFc_yoWrJw1rpF
-        4YqFyUtr4kGr1rAr4Skw48WFZ5AFsFqFy5GF1vgr1Fv398Xr1Fvr9rtF4UCa4UXrn7Z3W0
-        9rWFqrW7GF4DZFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6F4UJVW0owAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
-        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
-        Jw1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
-        CYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48J
-        MxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1l
-        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8loGPUUUU
-        U==
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1693659382.git.haibo1.xu@intel.com> <8173daae52720dbdabbd88a5d412f653e6706de1.1693659382.git.haibo1.xu@intel.com>
+ <20230904-06f09083d5190fd50e53b1ea@orel> <CAJve8on7Yi7cDuXOVznuRdTvfUhig2hZy8g72nvnHkM7omoVAw@mail.gmail.com>
+ <20230906-c35fdc0e07d2cc0f9cb93203@orel>
+In-Reply-To: <20230906-c35fdc0e07d2cc0f9cb93203@orel>
+From:   Haibo Xu <xiaobo55x@gmail.com>
+Date:   Wed, 6 Sep 2023 17:09:20 +0800
+Message-ID: <CAJve8ok-Z6VCziFj5t0=BoouZ-VLyGaqEng-dYGTFnP-CR36kw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/8] tools: riscv: Add header file csr.h
+To:     Andrew Jones <ajones@ventanamicro.com>
+Cc:     Haibo Xu <haibo1.xu@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Guo Ren <guoren@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+        wchen <waylingii@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Lei Wang <lei4.wang@intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Peter Gonda <pgonda@google.com>,
+        =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>,
+        Thomas Huth <thuth@redhat.com>, Like Xu <likexu@tencent.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Michal Luczaj <mhal@rbox.co>,
+        zhang songyi <zhang.songyi@zte.com.cn>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        kvm-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-
-On 2023/9/6 14:45, Christian König wrote:
-> Am 05.09.23 um 15:30 schrieb suijingfeng:
->> Hi,
->>
->>
->> On 2023/9/5 18:45, Thomas Zimmermann wrote:
->>> Hi
->>>
->>> Am 04.09.23 um 21:57 schrieb Sui Jingfeng:
->>>> From: Sui Jingfeng <suijingfeng@loongson.cn>
->>>>
->>>> On a machine with multiple GPUs, a Linux user has no control over 
->>>> which
->>>> one is primary at boot time. This series tries to solve above 
->>>> mentioned
->>>
->>> If anything, the primary graphics adapter is the one initialized by 
->>> the firmware. I think our boot-up graphics also make this assumption 
->>> implicitly.
->>>
->>
->> Yes, but by the time of DRM drivers get loaded successfully,the 
->> boot-up graphics already finished.
+On Wed, Sep 6, 2023 at 3:13=E2=80=AFPM Andrew Jones <ajones@ventanamicro.co=
+m> wrote:
 >
-> This is an incorrect assumption.
+> On Wed, Sep 06, 2023 at 02:35:42PM +0800, Haibo Xu wrote:
+> > On Mon, Sep 4, 2023 at 9:33=E2=80=AFPM Andrew Jones <ajones@ventanamicr=
+o.com> wrote:
+> > >
+> > > On Sat, Sep 02, 2023 at 08:59:25PM +0800, Haibo Xu wrote:
+> > > > Borrow the csr definitions and operations from kernel's
+> > > > arch/riscv/include/asm/csr.h to tools/ for riscv.
+> > > >
+> > > > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> > > > ---
+> > > >  tools/arch/riscv/include/asm/csr.h | 521 +++++++++++++++++++++++++=
+++++
+> > > >  1 file changed, 521 insertions(+)
+> > > >  create mode 100644 tools/arch/riscv/include/asm/csr.h
+> > > >
+> > > > diff --git a/tools/arch/riscv/include/asm/csr.h b/tools/arch/riscv/=
+include/asm/csr.h
+> > > > new file mode 100644
+> > > > index 000000000000..4e86c82aacbd
+> > > > --- /dev/null
+> > > > +++ b/tools/arch/riscv/include/asm/csr.h
+> > > > @@ -0,0 +1,521 @@
+> > > > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > > > +/*
+> > > > + * Copyright (C) 2015 Regents of the University of California
+> > > > + */
+> > > > +
+> > > > +#ifndef _ASM_RISCV_CSR_H
+> > > > +#define _ASM_RISCV_CSR_H
+> > > > +
+> > > > +#include <linux/bits.h>
+> > > > +
+> > > > +/* Status register flags */
+> > > > +#define SR_SIE               _AC(0x00000002, UL) /* Supervisor Int=
+errupt Enable */
+> > > > +#define SR_MIE               _AC(0x00000008, UL) /* Machine Interr=
+upt Enable */
+> > > > +#define SR_SPIE              _AC(0x00000020, UL) /* Previous Super=
+visor IE */
+> > > > +#define SR_MPIE              _AC(0x00000080, UL) /* Previous Machi=
+ne IE */
+> > > > +#define SR_SPP               _AC(0x00000100, UL) /* Previously Sup=
+ervisor */
+> > > > +#define SR_MPP               _AC(0x00001800, UL) /* Previously Mac=
+hine */
+> > > > +#define SR_SUM               _AC(0x00040000, UL) /* Supervisor Use=
+r Memory Access */
+> > > > +
+> > > > +#define SR_FS                _AC(0x00006000, UL) /* Floating-point=
+ Status */
+> > > > +#define SR_FS_OFF    _AC(0x00000000, UL)
+> > > > +#define SR_FS_INITIAL        _AC(0x00002000, UL)
+> > > > +#define SR_FS_CLEAN  _AC(0x00004000, UL)
+> > > > +#define SR_FS_DIRTY  _AC(0x00006000, UL)
+> > > > +
+> > > > +#define SR_VS                _AC(0x00000600, UL) /* Vector Status =
+*/
+> > > > +#define SR_VS_OFF    _AC(0x00000000, UL)
+> > > > +#define SR_VS_INITIAL        _AC(0x00000200, UL)
+> > > > +#define SR_VS_CLEAN  _AC(0x00000400, UL)
+> > > > +#define SR_VS_DIRTY  _AC(0x00000600, UL)
+> > > > +
+> > > > +#define SR_XS                _AC(0x00018000, UL) /* Extension Stat=
+us */
+> > > > +#define SR_XS_OFF    _AC(0x00000000, UL)
+> > > > +#define SR_XS_INITIAL        _AC(0x00008000, UL)
+> > > > +#define SR_XS_CLEAN  _AC(0x00010000, UL)
+> > > > +#define SR_XS_DIRTY  _AC(0x00018000, UL)
+> > > > +
+> > > > +#define SR_FS_VS     (SR_FS | SR_VS) /* Vector and Floating-Point =
+Unit */
+> > > > +
+> > > > +#ifndef CONFIG_64BIT
+> > >
+> > > How do we ensure CONFIG_64BIT is set?
+> > >
+> >
+> > Currently, no explicit checking for this.
+> > Shall we add a gatekeeper in this file to ensure it is set?
 >
-> drm_aperture_remove_conflicting_pci_framebuffers() and co don't kill 
-> the framebuffer, 
-
-Well, my original description to this technique point is that
-
-1) "Firmware framebuffer device already get killed by the drm_aperture_remove_conflicting_pci_framebuffers() function (or its siblings)"
-2) "By the time of DRM drivers get loaded successfully, the boot-up graphics already finished."
-
-The word "killed" here is rough and coarse description about
-how does the drm device driver take over the firmware framebuffer.
-Since there seems have something obscure our communication,
-lets make the things clear. See below for more elaborate description.
-
-
-> they just remove the current framebuffer driver to avoid further updates.
+> Not in this file, since this file is shared by all the tools and...
 >
-This statement doesn't sound right, for UEFI environment,
-a correct description is that they remove the platform device, not the framebuffer driver.
-For the machines with the UEFI firmware, framebuffer driver here definitely refer to the efifb.
-The efifb still reside in the system(linux kernel).
+> >
+> > #ifndef CONFIG_64BIT
+> > #error "CONFIG_64BIT was not set"
+> > #endif
+>
+> ...we'll surely hit this error right now since nothing is setting
+> CONFIG_64BIT when compiling KVM selftests.
+>
+> We need to define CONFIG_64BIT in the build somewhere prior to any
+> headers which depend on it being included. Maybe we can simply
+> add -DCONFIG_64BIT to CFLAGS, since all KVM selftests supported
+> architectures are 64-bit.
+>
 
-Please see the aperture_detach_platform_device() function in video/aperture.c
+Make sense! Another option can be just add "#define CONFIG_64BIT" at
+the begin of csr.h
 
-> So what happens (at least for amdgpu) is that we take over the 
-> framebuffer,
+> (Please trim emails, as I've been doing, when discussing specific parts.)
+>
 
-This statement here is also not an accurate description.
+Sure, thanks for the suggestions!
 
-Strictly speaking, drm/amdgpu takes over the device (the VRAM hardware),
-not the framebuffer.
-
-The word "take over" here is also dubious, because drm/amdgpu takes over nothing.
-
- From the perspective of device-driver model, the GPU hardware *belongs* to the amdgpu drivers.
-Why you need to take over a thing originally and belong to you?
-
-If you could build the drm/amdgpu into the kernel and make it get loaded
-before the efifb. Then, there no need to use the firmware framebuffer (
-the talking is limited to the display boot graphics purpose here).
-On such a case, the so-called "take over" will not happen.
-
-The truth is that the efifb create a platform device, which *occupy*
-part of the VRAM hardware resource. Thus, the efifb and the drm/amdgpu
-form the conflict. There are conflict because they share the same
-hardware resource. It is the hardware resources(address ranges) used
-by two different driver are conflict. Not the efifb driver itself
-conflict with drm/amdgpu driver.
-
-Thus, drm_aperture_remove_conflicting_xxxxxx() function have to kill
-one of the device are conflicting. Not to kill the driver. Therefore,
-the correct word would be the "reclaim".
-drm/amdgpu *reclaim* the hardware resource (vram address range) originally belong to you.
-
-The modeset state (including the framebuffer content) still reside in the amdgpu device.
-You just get the dirty framebuffer image in the framebuffer object.
-But the framebuffer object already dirty since it in the UEFI firmware stage.
-
-In conclusion, *reclaim* is more accurate than the "take over".
-And as far as I'm understanding, the drm/amdgpu take over nothing, no gains.
-
-Well, welcome to correct me if I'm wrong.
-
+> Thanks,
+> drew
