@@ -2,185 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9943794239
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7A1794241
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243361AbjIFRt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 13:49:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54320 "EHLO
+        id S243344AbjIFRuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 13:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243322AbjIFRtQ (ORCPT
+        with ESMTP id S242614AbjIFRuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 13:49:16 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E9719AB;
-        Wed,  6 Sep 2023 10:49:12 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-26f3e26e55aso55960a91.3;
-        Wed, 06 Sep 2023 10:49:12 -0700 (PDT)
+        Wed, 6 Sep 2023 13:50:08 -0400
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00291E59;
+        Wed,  6 Sep 2023 10:49:35 -0700 (PDT)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1c26bb27feeso94445fac.0;
+        Wed, 06 Sep 2023 10:49:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694022552; x=1694627352; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1694022565; x=1694627365; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sREEdJnLV25PRgE9rZctlCHLNA0dfro01PxzCPskaGg=;
-        b=cqZnzUjqkFnXxuDHNehdFAtsTnFrWzXe7+jEKVi+EFz09VxOCnmiA4OD3UZo7D8mzR
-         6i8QoSMAx0Uo6/FgrXYkNK0D2tjFUDAVeCw0eJy12NzZnpKFjmsh6gqdzWIP9ibEGo1F
-         QY8TgBFfw2pG1ZBeyx90Syn9DwG/1giACV6kdrmfGAYyvHNddaaseMvVH+g5Sx3M/JUX
-         fepLHY2ZEvq7ikS214V6isw/lJ+t2oevJZMPPF2epTvnSh1Rrbxu/zAUOhRUbuHQ3EM2
-         WRQHcYFEbH7Dzp3SCXIjHfV16euxzJ8QbR1pUJQ+9eYqSa8pNquQLbeiNM1tL6wUkBRr
-         y4hQ==
+        bh=0OckE9XR7XqLavE1NTvHSJ96NXkQ2QIgEye4jTfkAdg=;
+        b=hJtEV2yJVYq7K/Lu8g2Cn4pNDMcsdH9cXp5cncBsNb4KqrwxAbl3Dc/We7FzNWOVeq
+         XJUTS1qdzyO0m0wiBMlbUWUUIhuJVTziXyGgT988QVVsHEmN3xNbR6xUD1u4XKTsKNrx
+         0eQ1XOTzaeEYA5QJsDt9IYmjPOTvc7w6A3cQuBEQUQObfNSZFnfh65lRJiXhQl3Ky8YI
+         J5Kj1R7pgNEdVaL/EeZkJHUzIcVlYT98uk2/c/b1d3J9WRypb8kjt45PXnnfSX6iulPL
+         RMv/W+pF7z9+WLm3r4GNRH7kPO+ZR13tpnEYCA/23ckYbxhVltXw5fOmZXiXZMRHfyeM
+         zdnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694022552; x=1694627352;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=sREEdJnLV25PRgE9rZctlCHLNA0dfro01PxzCPskaGg=;
-        b=VQ7LrB62OsXAH90K1yf6IZtIniN/T8wnNdJcytHvhm269PNQU1BjA1mD5onBMj2c+h
-         9pyXDzrd53t4GoCw42/rAuvbuiggYNDinL51xRkKXc84xxjikvgT3/wmHdEUKLUUHL26
-         RV78g/ogpkqOLXjklgRi8OT6sMKqGodc0zfAzgOdHbw22rm9orV936V0Y5mSe2ogkFlO
-         I/aKZMua7V/q1Bhb06bsfUhvF+oZIvDR6h7v3IgfMa+25sIYwxg2OHVT/fN0fYHrVj8B
-         ILQG60Bx7DQlWzDkEXLHIh1JxbQqAq+j9bxpi7/utZgWQWOR5YpxHyu5QWuTNHm4bWmG
-         NHQQ==
-X-Gm-Message-State: AOJu0YyaQE6wu/bFP6pEecgx9R5GoYlFo4g9coAhOpX4+l2pFSVY38q2
-        5f687yGW1IzP1+G/8nO+UzU=
-X-Google-Smtp-Source: AGHT+IHLhl3/DR8t3gDwlwd9D+ssr1P6JOXbRwZvboLp+3yqpHPYpZ1qzegv1uKe9S5ZlaimsBJAOA==
-X-Received: by 2002:a17:90a:898d:b0:263:9661:a35c with SMTP id v13-20020a17090a898d00b002639661a35cmr13834087pjn.8.1694022551829;
-        Wed, 06 Sep 2023 10:49:11 -0700 (PDT)
-Received: from bangji.corp.google.com ([2620:15c:2c0:5:5035:1b47:9a3f:312c])
-        by smtp.gmail.com with ESMTPSA id p11-20020a17090ad30b00b00262eccfa29fsm63564pju.33.2023.09.06.10.49.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 10:49:11 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Subject: [PATCH 5/5] perf test: Improve perf lock contention test
-Date:   Wed,  6 Sep 2023 10:49:03 -0700
-Message-ID: <20230906174903.346486-6-namhyung@kernel.org>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-In-Reply-To: <20230906174903.346486-1-namhyung@kernel.org>
-References: <20230906174903.346486-1-namhyung@kernel.org>
+        d=1e100.net; s=20221208; t=1694022565; x=1694627365;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0OckE9XR7XqLavE1NTvHSJ96NXkQ2QIgEye4jTfkAdg=;
+        b=Ws//R61ALVbEKi1N+NhgsHlqlutCwbbfWllSQwiWxSnYpZMF/Q14+8U+s0addZF5Vi
+         +3FXZUKcq0V2dyouwYgyL/YclCzTWSl1xfVEiWJgNbAwMbKUH9KHQRbfWtbGAO4ISk52
+         bpoue7KMjWXoGkPuTZ3rVu1ZTAQIVGAdu/VaoaSv+yu/9DT5d23GCj2t5fo6GnF8J3Cw
+         v6uVQ7rpLhK0Ej9uYU6o8g+TnprNjU6WZgvyovbyGmxWaihhZ5wVutNbHIHBF3nnrA8L
+         p7xQ0fHQCAbmRBbGLUg8FmAD3XDT1w6OPYW0UHATDEPQuFJa4LX0qyIjokpV5PGRPYV9
+         kQ1A==
+X-Gm-Message-State: AOJu0YxLE0O32oRfqYon9TrBNXBRxGGlZPgU2/+BZcoZ73iiH9amzXB8
+        5phKUxonQQoXY0SkQ31InqK2h3TYcT+WeUVY1Cw=
+X-Google-Smtp-Source: AGHT+IH9425uguIPlZWIuuKXrAiVTNUvU96FSm7pht9qHJYP0oafzxBFwJjkkOT7Wg95M0jvIp6eTzknNatrc9ZNSUM=
+X-Received: by 2002:a05:6870:5488:b0:1b0:5290:c95e with SMTP id
+ f8-20020a056870548800b001b05290c95emr18777117oan.42.1694022564983; Wed, 06
+ Sep 2023 10:49:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230906102557.3432236-1-alpic@google.com> <20230906115928.3749928-1-alpic@google.com>
+In-Reply-To: <20230906115928.3749928-1-alpic@google.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Wed, 6 Sep 2023 13:49:14 -0400
+Message-ID: <CAEjxPJ7bu7tC3-xYN9mnh8jGtH6EOP0e5SC+LNR_uhK18dM+cQ@mail.gmail.com>
+Subject: Re: [PATCH V2] SELinux: Check correct permissions for FS_IOC32_*
+To:     Alfred Piccioni <alpic@google.com>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>, stable@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add cgroup aggregation and filter tests.
+On Wed, Sep 6, 2023 at 7:59=E2=80=AFAM Alfred Piccioni <alpic@google.com> w=
+rote:
+>
+> Some ioctl commands do not require ioctl permission, but are routed to
+> other permissions such as FILE_GETATTR or FILE_SETATTR. This routing is
+> done by comparing the ioctl cmd to a set of 64-bit flags (FS_IOC_*).
+>
+> However, if a 32-bit process is running on a 64-bit kernel, it emits
+> 32-bit flags (FS_IOC32_*) for certain ioctl operations. These flags are
+> being checked erroneously, which leads to these ioctl operations being
+> routed to the ioctl permission, rather than the correct file permissions.
+>
+> Two possible solutions exist:
+>
+> - Trim parameter "cmd" to a u16 so that only the last two bytes are
+>   checked in the case statement.
+>
+> - Explicitly add the FS_IOC32_* codes to the case statement.
+>
+> Solution 2 was chosen because it is a minimal explicit change. Solution
+> 1 is a more elegant change, but is less explicit, as the switch
+> statement appears to only check the FS_IOC_* codes upon first reading.
+>
+> Fixes: 0b24dcb7f2f7 ("Revert "selinux: simplify ioctl checking"")
+> Signed-off-by: Alfred Piccioni <alpic@google.com>
+> Cc: stable@vger.kernel.org
 
-  $ sudo ./perf test -v contention
-   84: kernel lock contention analysis test                            :
-  --- start ---
-  test child forked, pid 222423
-  Testing perf lock record and perf lock contention
-  Testing perf lock contention --use-bpf
-  Testing perf lock record and perf lock contention at the same time
-  Testing perf lock contention --threads
-  Testing perf lock contention --lock-addr
-  Testing perf lock contention --lock-cgroup
-  Testing perf lock contention --type-filter (w/ spinlock)
-  Testing perf lock contention --lock-filter (w/ tasklist_lock)
-  Testing perf lock contention --callstack-filter (w/ unix_stream)
-  Testing perf lock contention --callstack-filter with task aggregation
-  Testing perf lock contention --cgroup-filter
-  Testing perf lock contention CSV output
-  test child finished with 0
-  ---- end ----
-  kernel lock contention analysis test: Ok
+Reviewed-by: Stephen Smalley <stephen.smalley.work@gmail.com>
 
-Reviewed-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/tests/shell/lock_contention.sh | 45 +++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
-
-diff --git a/tools/perf/tests/shell/lock_contention.sh b/tools/perf/tests/shell/lock_contention.sh
-index d120e83db7d9..966e67db75f3 100755
---- a/tools/perf/tests/shell/lock_contention.sh
-+++ b/tools/perf/tests/shell/lock_contention.sh
-@@ -123,6 +123,24 @@ test_aggr_addr()
- 	fi
- }
- 
-+test_aggr_cgroup()
-+{
-+	echo "Testing perf lock contention --lock-cgroup"
-+
-+	if ! perf lock con -b true > /dev/null 2>&1 ; then
-+		echo "[Skip] No BPF support"
-+		return
-+	fi
-+
-+	# the perf lock contention output goes to the stderr
-+	perf lock con -a -b -g -E 1 -q -- perf bench sched messaging > /dev/null 2> ${result}
-+	if [ "$(cat "${result}" | wc -l)" != "1" ]; then
-+		echo "[Fail] BPF result count is not 1:" "$(cat "${result}" | wc -l)"
-+		err=1
-+		exit
-+	fi
-+}
-+
- test_type_filter()
- {
- 	echo "Testing perf lock contention --type-filter (w/ spinlock)"
-@@ -232,6 +250,31 @@ test_aggr_task_stack_filter()
- 		exit
- 	fi
- }
-+test_cgroup_filter()
-+{
-+	echo "Testing perf lock contention --cgroup-filter"
-+
-+	if ! perf lock con -b true > /dev/null 2>&1 ; then
-+		echo "[Skip] No BPF support"
-+		return
-+	fi
-+
-+	perf lock con -a -b -g -E 1 -F wait_total -q -- perf bench sched messaging > /dev/null 2> ${result}
-+	if [ "$(cat "${result}" | wc -l)" != "1" ]; then
-+		echo "[Fail] BPF result should have a cgroup result:" "$(cat "${result}")"
-+		err=1
-+		exit
-+	fi
-+
-+	cgroup=$(cat "${result}" | awk '{ print $3 }')
-+	perf lock con -a -b -g -E 1 -G "${cgroup}" -q -- perf bench sched messaging > /dev/null 2> ${result}
-+	if [ "$(cat "${result}" | wc -l)" != "1" ]; then
-+		echo "[Fail] BPF result should have a result with cgroup filter:" "$(cat "${cgroup}")"
-+		err=1
-+		exit
-+	fi
-+}
-+
- 
- test_csv_output()
- {
-@@ -275,10 +318,12 @@ test_bpf
- test_record_concurrent
- test_aggr_task
- test_aggr_addr
-+test_aggr_cgroup
- test_type_filter
- test_lock_filter
- test_stack_filter
- test_aggr_task_stack_filter
-+test_cgroup_filter
- test_csv_output
- 
- exit ${err}
--- 
-2.42.0.283.g2d96d420d3-goog
-
+> ---
+> V1->V2: Cleaned up some typos and added tag for -stable tree inclusion.
+>
+>  security/selinux/hooks.c | 4 ++++
+>  1 file changed, 4 insertions(+)
