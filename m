@@ -2,123 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5CEF793BF0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF9C8793BEF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240243AbjIFL5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:57:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34438 "EHLO
+        id S236546AbjIFL5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238057AbjIFL5O (ORCPT
+        with ESMTP id S231449AbjIFL5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 6 Sep 2023 07:57:14 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63BA6CE9;
-        Wed,  6 Sep 2023 04:57:11 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-79536bc669dso142390939f.3;
-        Wed, 06 Sep 2023 04:57:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694001431; x=1694606231; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ETStM79EhTs6Ycln+MpBOlSHhZ1EU5fe9eA0HiVtwus=;
-        b=oUF40hm6gigNCbo9Ofs32OLGi0Bkz+Lag4FWd4IVyl1GxgrVn+wfo9v7ZZxD0c3PEP
-         Vy5PZT69RQsO9Nag1clc+wVcI0oRBdYtQ9gGi+l1O8VTY9TN0vZMbhp8l+GY34cD/wG+
-         dAPHMIL4seBnPOnDDb1MlzjJtMUYDlh7lOz/3S3az30E7eGLYttC0CrULJxzH+uUSsVI
-         NcdaKR1hsMWaPCbqiULwV+pHrlHj3IReLIlQ2fl8P5e3NnWKwkzEIl3g5WBK6mwcv3p/
-         Vfczj/BD7vXa8bdPiEL3eaShe/eYXwJWKZvyGEgxDQKOoq/WfOAUmjI/y1AEiaQKDlOd
-         AzMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694001431; x=1694606231;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ETStM79EhTs6Ycln+MpBOlSHhZ1EU5fe9eA0HiVtwus=;
-        b=U/PqC89S48uFE2AU/V9UKPPotcZlYAcIv14vCulgnutszcb1lWEtcn5kyuTJJAZ/WS
-         HEYFD+KnpElcZ+1VhaXHT67Z1MYhkCzWviCXzDobRwUn63qGMmEgRoHsvabV22ZIzEmK
-         QZ64FnqhQad/hlzVzRUYYro+JLfS3Kma5D4XXye/AKZVfPKvoYuV3+gY+DR0OiUzdVTq
-         UOxAExe6lboQnbLdoya3FScHBgqSNI4RYL6TobawuvBslNKvqqk1R9b1K4M7T3RwUP8E
-         QXENq9A5r3m6+kfbdE17qchl3RVdofU6HXcHKOGcFfutSQ4CflGrOWT6L1UvhkdMZjdU
-         XX/A==
-X-Gm-Message-State: AOJu0Yx5iaJ7OC1418laiTPUIaO03AO3aszpdVmR0lS4Lm2ngQw5rkCI
-        Y7yyRYlT1svEaDtl4N9TgLfCJy4Sg8FIAntE9BQ=
-X-Google-Smtp-Source: AGHT+IEOhq6VDgO3a0YX3tdNF7tWgG7HbMlJSr7peyF1oA/kLtARoeuJcOKm/EM7g19JdHSakjYDsH7PEMyT+vf7fzc=
-X-Received: by 2002:a6b:4904:0:b0:787:953:514b with SMTP id
- u4-20020a6b4904000000b007870953514bmr18718722iob.3.1694001430751; Wed, 06 Sep
- 2023 04:57:10 -0700 (PDT)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9E5199
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:57:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694001429; x=1725537429;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=jYtwMmRQI5kIZ/7B4HRqlgg7UlCbB50ODAsb951eppY=;
+  b=Cw1nddnYmhAZP/cVhLgNyv1Dj7eaAubY6PVbQHjtGNVjLQU8gtQe1xMm
+   9noDQrgmbVCTIdc2zMi+qORCWlQY517jM90LQTNTbFXsw/rse1LWUQwIT
+   ZRdgA28M9Peh/VWa1smBiEHIw3jZOd1R3r3EyAHHhNSwOqJ8m5AIPAnKH
+   xrCNAlMUgHqrNqxDGTkzEioEaaQVfOAHeTM4aYLvJUidLoBI2PuBiQbKg
+   cArX8vlaup2URxpZz0USan16/GKuf1G1z9Mzlp19xwQp+6p2p4Y9WHqaE
+   2NB4OaZyHgGleZp82Zd0XnIwPfU9dU7tRMYrFylztMC6hpQtV3pP4BgaH
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="356531816"
+X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
+   d="scan'208";a="356531816"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 04:57:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="770720359"
+X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
+   d="scan'208";a="770720359"
+Received: from yinbingc-mobl.ccr.corp.intel.com (HELO [10.249.254.11]) ([10.249.254.11])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 04:57:05 -0700
+Message-ID: <e44c93dd-68b2-b8af-6f9a-4d7c6370f105@linux.intel.com>
+Date:   Wed, 6 Sep 2023 13:57:03 +0200
 MIME-Version: 1.0
-References: <20230905125603.74528-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <71ed3e90-2c94-2692-7b13-9788acfb9af6@tuxon.dev>
-In-Reply-To: <71ed3e90-2c94-2692-7b13-9788acfb9af6@tuxon.dev>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Wed, 6 Sep 2023 12:56:10 +0100
-Message-ID: <CA+V-a8vkRmQBe=CAcrf2HaPpHDQS5fZADWLGDrJXSU9iP5dtPw@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: renesas: pinctrl-rzg2l: Add validation of GPIO
- pin in rzg2l_gpio_request()
-To:     claudiu beznea <claudiu.beznea@tuxon.dev>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] Documentation/gpu: VM_BIND locking document
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Danilo Krummrich <dakr@redhat.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Francois Dugast <francois.dugast@intel.com>,
+        linux-kernel@vger.kernel.org, Oak Zeng <oak.zeng@intel.com>,
+        dri-devel@lists.freedesktop.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        intel-xe@lists.freedesktop.org
+References: <20230816091547.2982-1-thomas.hellstrom@linux.intel.com>
+ <ZPeGld0mBwbWptV9@cassiopeiae>
+ <4e7a2b2e-1ab5-09b6-b2de-9b2a82a8a32e@linux.intel.com>
+ <1c6cbf97-7e85-a48f-9e6a-ed716ab5b05d@redhat.com>
+ <1a2965a4-943f-0ba7-b082-155d75b94d59@linux.intel.com>
+ <20230906130929.74e3c6cc@collabora.com>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>
+In-Reply-To: <20230906130929.74e3c6cc@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claudiu,
+Hi, Boris
 
-Thank you for the review.
+On 9/6/23 13:09, Boris Brezillon wrote:
+> On Wed, 6 Sep 2023 10:32:24 +0200
+> Thomas Hellström <thomas.hellstrom@linux.intel.com> wrote:
+>
+>
+>>>>>> +Introducing external (or shared) buffer objects
+>>>>>> +===============================================
+>>>>>> +
+>>>>>> +Since shared buffer objects may be shared by multiple gpu_vm's they
+>>>>>> +can't share their reservation object with a single gpu_vm, but
+>>>>>> will rather
+>>>>>> +have a reservation object of their own. The shared objects bound to a
+>>>>>> +gpu_vm using one or many
+>>>>>> +gpu_vmas are therefore typically put on a per-gpu_vm list which is
+>>>>>> +protected by the gpu_vm lock. One could in theory protect it also
+>>>>>> with
+>>>>>> +the ``gpu_vm->resv``, but since the list of dma_resvs to take is
+>>>>>> typically
+>>>>>> +built before the ``gpu_vm->resv`` is locked due to a limitation in
+>>>>>> +the current locking helpers, that is typically not done. Also see
+>>>>>> +below for userptr gpu_vmas.
+>>>>>> +
+>>>>>> +At eviction time we now need to invalidate *all* gpu_vmas of a shared
+>>>>>> +object, but we can no longer be certain that we hold the gpu_vm's
+>>>>>> +dma_resv of all the object's gpu_vmas. We can only be certain that we
+>>>>> I need to think a bit more about locking of extobj and evicted
+>>>>> object tracking
+>>>>> in the case of processing 'drm_gpuva_ops' directly through callbacks
+>>>>> within the
+>>>>> fence signalling critical path as mentioend in [1].
+>>>>>
+>>>>> In order to support that, we'd need to protect extobjs with a
+>>>>> separate lock,
+>>>>> and while iterating extobjs to acquire the dma-resv lock drop the
+>>>>> lock within
+>>>>> the loop before we actually acquire the dma-resv lock. Maple tree
+>>>>> supports that
+>>>>> already and this can be fully done within the GPUVA manager; no need
+>>>>> for the
+>>>>> driver to care about that.
+>>>> So do I understand correctly that this because you want to update the
+>>>> gpuvm state while operations are progressing asynchronously?
+>>>>
+>>>> If so, I wonder whether that could really be done? For example to
+>>>> allocate enough memory for page-tables etc, you need to know the
+>>>> details of the operations at IOCTL execution time, and to know the
+>>>> details you need to know the state from the previous operation?
+>>>
+>>> Right, sync and async bind can't run fully concurrently, but you could
+>>> "inject" a
+>>> sync one between two async ones such that the sync ones executed from
+>>> the IOCTL
+>>> directly while async execution is stalled meanwhile. This would be
+>>> possible because
+>>> the actual drm_gpuva_ops would be calculated within the async
+>>> execution path rather
+>>> than in the IOCTL. But yes, page-table management must be desinged to
+>>> support that.
+> FWIW, the panthor driver is designed this way (note that I'm not
+> supporting GEM eviction yet, so there might be subtleties I missed).
 
-On Wed, Sep 6, 2023 at 9:12=E2=80=AFAM claudiu beznea <claudiu.beznea@tuxon=
-.dev> wrote:
->
-> Hi, Prabhakar,
->
-> On 9/5/23 15:56, Prabhakar wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > Validate the GPIO pin request in rzg2l_gpio_request() callback using
-> > rzg2l_validate_gpio_pin() function. This stops any accidental usage
-> > of GPIO pins which are not supported by the SoCs.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > ---
-> >  drivers/pinctrl/renesas/pinctrl-rzg2l.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/=
-renesas/pinctrl-rzg2l.c
-> > index 37cdfe4b04f9..4ad08a4b786a 100644
-> > --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > @@ -795,12 +795,18 @@ static const struct pinconf_ops rzg2l_pinctrl_con=
-fops =3D {
-> >  static int rzg2l_gpio_request(struct gpio_chip *chip, unsigned int off=
-set)
-> >  {
-> >       struct rzg2l_pinctrl *pctrl =3D gpiochip_get_data(chip);
-> > +     const struct pinctrl_pin_desc *pin =3D &pctrl->desc.pins[offset];
-> > +     u64 *pin_data =3D pin->drv_data;
->
-> Maybe move this down a bit to keep the reverse christmas tree order that
-> the driver is using as pattern.
->
-Sure, will do and send a v2.
+The problem is that once you've published your VM_BIND out-fence, any 
+code path required to signal that fence may notallocate memory nor or 
+grab any locks that allows allocating memory while held including 
+dma_resv locks, and that means all required page-table memory needs to 
+be allocated synchronously in the IOCTL, and all evicted bos need to be 
+made resident in the IOCTL, and at least in the xe driver the amount of 
+memory we need to allocate depends on the vm state, so we can't really 
+update the vm state asynchronously either.
 
-> Other than this:
-> Reviewed-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> Tested-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-Thanks for testing.
+But as long as any async binding work required for signalling the 
+VM_BIND out-fence is properly annotated with 
+dma_fence_begin_signalling() and dma_fence_end_signalling() and there 
+aren't any lockdep splats, things should be good. It would trigger on 
+both memory allocation and attempts to grab a dma_resv lock.
 
-Cheers,
-Prabhakar
+
+>
+>> OK, well one of the main motivations for Xe is to be able to pipeline
+>> interleaving binds and execs if needed, like so:
+>>
+>> - Bind vmas for scene 1.
+>> - Submit scene 1.
+>> - Unbind vmas for scene 1.
+>> - Bind vmas for scene 2.
+>> - Submit scene 2.
+>> - Unbind vmas for scene 2.
+>>
+>> And being able to *submit* all of the above while the async binding of
+>> vmas for scene (step 1) has not yet completed.
+>> I can't really see how this could be done, while obeying dma-fence
+>> rules, unless state is updated synchronously while submitting?
+> The idea in this case is to detect when a GPU job dependency is a
+> VM_BIND out-fence, turn drm_sched_fence->parent into an
+> xxx_vm_bind_job_fence object that's holding the GEM that's about to be
+> mapped (AFAICT, we don't need to do anything for unmap operations), and
+> then add our GPU job fence to this BO. This should not only guarantee
+> that the GEMs we depend on are mapped before the GPU job is executed
+> (the fence wait does that), but also that such yet-to-be-mapped GEMs
+> won't be evicted just after they've been mapped and before the GPU had
+> a chance to execute (unless I'm missing something, adding our GPU job
+> fence to the BO being targeted by a pending VM_BIND(async,map) operation
+> solves this problem).
+
+Yes, we're essentially doing the same. The issue here is that when we, 
+for example *submit* Bind vmas for scene 2,
+we need to know how much page-table memory to allocate, and what BOs to 
+make resident to be able to publish the out-fence. That means we need to 
+know what the VM state would look like at the end of "Unbind vmas for 
+scene 1". If the VM state is updated at submission time, that's all ok 
+but if it's updated at execution time, we'd have to guess what resources 
+to pre-allocate.
+
+/Thomas
+
+
+
