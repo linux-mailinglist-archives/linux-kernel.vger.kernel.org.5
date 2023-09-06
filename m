@@ -2,100 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A28977936CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32DF77936D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234227AbjIFIGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 04:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
+        id S234360AbjIFIGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 04:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjIFIGY (ORCPT
+        with ESMTP id S234452AbjIFIGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 04:06:24 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E593CF4
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 01:06:19 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52e297c7c39so4011461a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 01:06:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693987577; x=1694592377; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=N6rX866dZWeyzbwrDmGLylNXIPdDEierfj+vUzSrXHo=;
-        b=OpMftCNYvMQ+JX4HPuHRdIFb38miZd91DdOI3N/Ld6RtW2c/lv4p5MMNFcpzE7JccN
-         qWQIu/LtmocXSUYM/4rBYjhULtYLL8yw/674zROjMM6y2cZ/JXIaEn3I5OqK0h0t34qI
-         OMuyuH43IRou5PHTNrf64n5rF02DVYOoiW9Dhv12NECcj1NCOF1LZqX0/oL6IMjOIOHx
-         juVjHVa/JGjVHf/goJjB/Vg6SogQO6caoZ5RZuWz4tkdxb/CGyZyibtVM+qjYkIbLQSu
-         1c5seF0GQQP6KKhi1z4xZgp1j8V2RQijBYfq+hFlB3xH1csRBQzlhOrpug6POQnJx6VB
-         lvtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693987577; x=1694592377;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N6rX866dZWeyzbwrDmGLylNXIPdDEierfj+vUzSrXHo=;
-        b=Y6olIV+qR+BoF3I0uKAXENEImgF4wVzzk9Rr3Es0DWuyPagN74fInQuibqZsVBXC3g
-         N0tU5yJlBFWfnOljwuXlHw73+eNgOEqSwtBFINczeHgIAfc6ZisVu9SAAqic65amJ0W2
-         DyMNMAzvytL95R+Kc94os9Q4XfRklvmPbOKrWdbNfa4LcnqIKvaP56kkPt5tsozi90G1
-         V1ZZ7ysweluuPjWK7m2HWM3LdepyTVmRTsHquMQImMrEcz7QEsiHBUlQ9UCC5tvM6vn8
-         bG3ZLiZQHa52fNiKdJyIjvnVDJNDTx/h14QMpcytBuSTGcgQ1bIn6MeJ/zfHbmCsnZ1z
-         SUKA==
-X-Gm-Message-State: AOJu0YyqEsR+3fxEPAcGmsguopYmrR9wGKpxfJRehSts4v101OptcFRP
-        nHh/G4blIWrMI5r8BKKx3MCzJQ==
-X-Google-Smtp-Source: AGHT+IGAd+DD8OLZo0kvehoHFC2Eczx87NK8Bkhpv9Weu6nYexYG43coH+qot4a4ptKUU/3kIRogPA==
-X-Received: by 2002:a17:906:cc4e:b0:9a2:292d:ea63 with SMTP id mm14-20020a170906cc4e00b009a2292dea63mr1488410ejb.37.1693987577410;
-        Wed, 06 Sep 2023 01:06:17 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id h5-20020a1709062dc500b009a2235ed496sm8871288eji.141.2023.09.06.01.06.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 01:06:16 -0700 (PDT)
-Message-ID: <9df52150-f18b-cebd-11a8-a1c9dece09f0@linaro.org>
-Date:   Wed, 6 Sep 2023 10:06:15 +0200
+        Wed, 6 Sep 2023 04:06:40 -0400
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 264E0E52;
+        Wed,  6 Sep 2023 01:06:31 -0700 (PDT)
+X-IronPort-AV: E=Sophos;i="6.02,231,1688396400"; 
+   d="scan'208";a="178901450"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie6.idc.renesas.com with ESMTP; 06 Sep 2023 17:06:30 +0900
+Received: from localhost.localdomain (unknown [10.226.92.21])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id DBCAE41D147D;
+        Wed,  6 Sep 2023 17:06:27 +0900 (JST)
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.au@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 2/5] usb: typec: tcpci_rt1711h: Convert enum->pointer for data in the match tables
+Date:   Wed,  6 Sep 2023 09:06:16 +0100
+Message-Id: <20230906080619.36930-3-biju.das.jz@bp.renesas.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230906080619.36930-1-biju.das.jz@bp.renesas.com>
+References: <20230906080619.36930-1-biju.das.jz@bp.renesas.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH RESEND 5/7] dt-bindings: mailbox: qcom: add one more clock
- provider for IPQ mailbox
-Content-Language: en-US
-To:     Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-        Anusha Rao <quic_anusha@quicinc.com>,
-        Devi Priya <quic_devipriy@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org
-References: <20230904-gpll_cleanup-v1-0-de2c448f1188@quicinc.com>
- <20230904-gpll_cleanup-v1-5-de2c448f1188@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230904-gpll_cleanup-v1-5-de2c448f1188@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/09/2023 06:56, Kathiravan Thirumoorthy wrote:
-> Mailbox controller present in the IPQ SoCs takes the GPLL0 clock also as
-> an input. Document the same.
-> 
+Currently did varaible is used for HW differences between the devices which
+complicates the code by adding checks.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Therefore it is better to convert enum->pointer for data match and extend
+match support for both ID and OF tables by using i2c_get_match_data().
 
-Best regards,
-Krzysztof
+Add struct rt1711h_chip_info with did variable and replace did->info in
+struct rt1711h_chip. Later patch will add more hw differences to
+struct rt1711h_chip_info and avoid checking did for HW differences.
+
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2->v3:
+ * Added Rb tag from Andy.
+v1->v2:
+ * Updated commit description.
+---
+ drivers/usb/typec/tcpm/tcpci_rt1711h.c | 30 ++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/usb/typec/tcpm/tcpci_rt1711h.c b/drivers/usb/typec/tcpm/tcpci_rt1711h.c
+index 6146bca8e55f..2b7258d3cb4e 100644
+--- a/drivers/usb/typec/tcpm/tcpci_rt1711h.c
++++ b/drivers/usb/typec/tcpm/tcpci_rt1711h.c
+@@ -51,13 +51,17 @@
+ /* 1b0 as fixed rx threshold of rd/rp 0.55V, 1b1 depends on RTCRTL4[0] */
+ #define BMCIO_RXDZEN	BIT(0)
+ 
++struct rt1711h_chip_info {
++	u16 did;
++};
++
+ struct rt1711h_chip {
+ 	struct tcpci_data data;
+ 	struct tcpci *tcpci;
+ 	struct device *dev;
+ 	struct regulator *vbus;
++	const struct rt1711h_chip_info *info;
+ 	bool src_en;
+-	u16 did;
+ };
+ 
+ static int rt1711h_read16(struct rt1711h_chip *chip, unsigned int reg, u16 *val)
+@@ -105,7 +109,7 @@ static int rt1711h_init(struct tcpci *tcpci, struct tcpci_data *tdata)
+ 		return ret;
+ 
+ 	/* Enable PD30 extended message for RT1715 */
+-	if (chip->did == RT1715_DID) {
++	if (chip->info->did == RT1715_DID) {
+ 		ret = regmap_update_bits(regmap, RT1711H_RTCTRL8,
+ 					 RT1711H_ENEXTMSG, RT1711H_ENEXTMSG);
+ 		if (ret < 0)
+@@ -200,7 +204,7 @@ static inline int rt1711h_init_cc_params(struct rt1711h_chip *chip, u8 status)
+ 	if ((cc1 >= TYPEC_CC_RP_1_5 && cc2 < TYPEC_CC_RP_DEF) ||
+ 	    (cc2 >= TYPEC_CC_RP_1_5 && cc1 < TYPEC_CC_RP_DEF)) {
+ 		rxdz_en = BMCIO_RXDZEN;
+-		if (chip->did == RT1715_DID)
++		if (chip->info->did == RT1715_DID)
+ 			rxdz_sel = RT1711H_BMCIO_RXDZSEL;
+ 		else
+ 			rxdz_sel = 0;
+@@ -319,7 +323,7 @@ static int rt1711h_check_revision(struct i2c_client *i2c, struct rt1711h_chip *c
+ 	ret = i2c_smbus_read_word_data(i2c, TCPC_BCD_DEV);
+ 	if (ret < 0)
+ 		return ret;
+-	if (ret != chip->did) {
++	if (ret != chip->info->did) {
+ 		dev_err(&i2c->dev, "did is not correct, 0x%04x\n", ret);
+ 		return -ENODEV;
+ 	}
+@@ -336,7 +340,7 @@ static int rt1711h_probe(struct i2c_client *client)
+ 	if (!chip)
+ 		return -ENOMEM;
+ 
+-	chip->did = (size_t)device_get_match_data(&client->dev);
++	chip->info = i2c_get_match_data(client);
+ 
+ 	ret = rt1711h_check_revision(client, chip);
+ 	if (ret < 0) {
+@@ -391,17 +395,25 @@ static void rt1711h_remove(struct i2c_client *client)
+ 	tcpci_unregister_port(chip->tcpci);
+ }
+ 
++static const struct rt1711h_chip_info rt1711h = {
++	.did = RT1711H_DID,
++};
++
++static const struct rt1711h_chip_info rt1715 = {
++	.did = RT1715_DID,
++};
++
+ static const struct i2c_device_id rt1711h_id[] = {
+-	{ "rt1711h", 0 },
+-	{ "rt1715", 0 },
++	{ "rt1711h", (kernel_ulong_t)&rt1711h },
++	{ "rt1715", (kernel_ulong_t)&rt1715 },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(i2c, rt1711h_id);
+ 
+ #ifdef CONFIG_OF
+ static const struct of_device_id rt1711h_of_match[] = {
+-	{ .compatible = "richtek,rt1711h", .data = (void *)RT1711H_DID },
+-	{ .compatible = "richtek,rt1715", .data = (void *)RT1715_DID },
++	{ .compatible = "richtek,rt1711h", .data = &rt1711h },
++	{ .compatible = "richtek,rt1715", .data = &rt1715 },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, rt1711h_of_match);
+-- 
+2.25.1
 
