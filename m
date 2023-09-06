@@ -2,189 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 942387943BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADE97943BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242401AbjIFTTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 15:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58214 "EHLO
+        id S237339AbjIFTUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 15:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244181AbjIFTS4 (ORCPT
+        with ESMTP id S244221AbjIFTTx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 15:18:56 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596621BDD;
-        Wed,  6 Sep 2023 12:18:47 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-26f7f71b9a7so137847a91.0;
-        Wed, 06 Sep 2023 12:18:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694027927; x=1694632727; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ld+kZKXpmR6Fg6T3EwuKq7UToW9GAZ6Oid2qQccKGn4=;
-        b=c9R4j171TidhoiDVUvDUWBbKiHfN4FIk4JTmjXLYVfe2L2D8brDHi1E78AarTJiv9I
-         2tcZ0YhH7Jrgp8XQpfqty31F2FvxPYx/uKNchf30fUJTIA50oE3CbzaHf2THA5qZPIhr
-         mst5vRx20GD5reF6xvzwyvHGk8wKQdRAO9Of3hLNS7LMXjjWAU9wW0laEcKD0WSsGVnF
-         5Pulywlbz9bHsI85dKmwMQjgNrqjiMyAlyka/DYp0lsGDCM/pfjETGmMR3knDtBkxKT8
-         V1BsTDYYlBfLM+dRig2fgn3NwNkW7A/4inBE6JHeXlCRXJdpyuFPrDejbWcclO9S0mTY
-         ueSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694027927; x=1694632727;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ld+kZKXpmR6Fg6T3EwuKq7UToW9GAZ6Oid2qQccKGn4=;
-        b=MUkXK5apMjcIecHlJNSsyugdvbEg6uO8Qnp8STvo4I4+a/dZCYW8ftjdGi3PWFSbvw
-         pjXc51lUu8D20kD0ZMBvKocRBpigiGVgkqnJc52U5KSqv8Okbp9NfELp+aiDzHNJ7Ket
-         B1f1IUyRXTTAqVlrRdyuZjXdoxMFpk3/uvXDY1J7iwQGk7ONIgKUD54kQavvL88IZYUN
-         tpzCNcF2OeNOjhI06Tx5ca70OWZuXeIovNuNDnqqLzFO3jWCYIV01izT056sSRXMfyy9
-         f+l7cGgWxaaIGqaQMJ2JFqLj2mZPscgdxzqCSPGBUInfdYzhdevFVcETclre3fWLEj2Z
-         oplw==
-X-Gm-Message-State: AOJu0YxrlExSFIAPZ2q8PJ4weXExrWUuU//+jAhrwqkvzhBhghgErCof
-        M9B+7/H7YFVX3pDKbFQ93VBxsTGfl5XN2Oh2dgs=
-X-Google-Smtp-Source: AGHT+IFCSbdVUxgWJzLrxfSRiUW/eGGPUL3k2TslBDvsE7l8uuX8RUCbiQ6bvVk/sJCtoLIKnw8hmybmgwnySCP/7jY=
-X-Received: by 2002:a17:90a:be16:b0:268:29cf:3231 with SMTP id
- a22-20020a17090abe1600b0026829cf3231mr15346826pjs.3.1694027926627; Wed, 06
- Sep 2023 12:18:46 -0700 (PDT)
+        Wed, 6 Sep 2023 15:19:53 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250D61BDC;
+        Wed,  6 Sep 2023 12:19:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B00D7C433C7;
+        Wed,  6 Sep 2023 19:19:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694027951;
+        bh=fDiQ1DFoxubnMjhSHE4t+Y28KnhW4AGvaGOqfQ+YewY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eCs2csUwRXVlc+RT23GNCY8Mk7/cvHz/ZMCJ+CWctYefv6TC0Vw3p53LF/+lI1fwy
+         cr/SUEwI3DEt6diAtE6GGZX5w8mrvJg/oqcF1DbdZC3w+IlRbez7PwUuUgB6C6lmcf
+         AmlitduG2UOOeip1gmUymKo+KVjRDNubn7VEsUNNG7DEco3r+dbjfcQojEbBaH2vNc
+         oQLaSZEXBL58VDC7NrDerrJpSrRkXVDX4flOPRANASDbVd6uQ292Z7lzALVorHmiKs
+         KL0dTvxD1QxogPW6Y6KlwSxizwSACIXd92fnqcwpaO8dXdrnoxgddgNMKtaKIytHAD
+         oAvvs4KnLwpvQ==
+Date:   Wed, 6 Sep 2023 12:19:11 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Bernd Schubert <bernd.schubert@fastmail.fm>,
+        Mateusz Guzik <mjguzik@gmail.com>, brauner@kernel.org,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH] vfs: add inode lockdep assertions
+Message-ID: <20230906191911.GJ28202@frogsfrogsfrogs>
+References: <20230831151414.2714750-1-mjguzik@gmail.com>
+ <ZPiYp+t6JTUscc81@casper.infradead.org>
+ <b0434328-01f9-dc5c-fe25-4a249130a81d@fastmail.fm>
+ <20230906152948.GE28160@frogsfrogsfrogs>
+ <ZPiiDj1T3lGp2w2c@casper.infradead.org>
+ <20230906170724.GI28202@frogsfrogsfrogs>
+ <ZPjGDGyDf2/ngML9@casper.infradead.org>
+ <20230906184336.GH28160@frogsfrogsfrogs>
+ <ZPjMpIKh+xxLbEZI@casper.infradead.org>
 MIME-Version: 1.0
-References: <20230904180806.1002832-1-joel@joelfernandes.org>
- <20230904180806.1002832-2-joel@joelfernandes.org> <9e329429-73a5-4926-af4f-edcf9e547101@lucifer.local>
- <20230905114841.GB3881391@google.com>
-In-Reply-To: <20230905114841.GB3881391@google.com>
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-Date:   Wed, 6 Sep 2023 20:18:35 +0100
-Message-ID: <CAA5enKafgfqNE0DWg7tcd-iNGeE0Aud5VcmmWzdguK9Psq0uhQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] rcu: Dump vmalloc memory info safely
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Zhen Lei <thunder.leizhen@huaweicloud.com>,
-        rcu@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        stable@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPjMpIKh+xxLbEZI@casper.infradead.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Sept 2023 at 12:48, Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> On Tue, Sep 05, 2023 at 08:00:44AM +0100, Lorenzo Stoakes wrote:
-> > On Mon, Sep 04, 2023 at 06:08:05PM +0000, Joel Fernandes (Google) wrote:
-> > > From: Zqiang <qiang.zhang1211@gmail.com>
-> > >
-> > > Currently, for double invoke call_rcu(), will dump rcu_head objects
-> > > memory info, if the objects is not allocated from the slab allocator,
-> > > the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
-> > > need to be held, since the call_rcu() can be invoked in interrupt context,
-> > > therefore, there is a possibility of spinlock deadlock scenarios.
-> > >
-> > > And in Preempt-RT kernel, the rcutorture test also trigger the following
-> > > lockdep warning:
-> > >
-> > > BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
-> > > in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
-> > > preempt_count: 1, expected: 0
-> > > RCU nest depth: 1, expected: 1
-> > > 3 locks held by swapper/0/1:
-> > >  #0: ffffffffb534ee80 (fullstop_mutex){+.+.}-{4:4}, at: torture_init_begin+0x24/0xa0
-> > >  #1: ffffffffb5307940 (rcu_read_lock){....}-{1:3}, at: rcu_torture_init+0x1ec7/0x2370
-> > >  #2: ffffffffb536af40 (vmap_area_lock){+.+.}-{3:3}, at: find_vmap_area+0x1f/0x70
-> > > irq event stamp: 565512
-> > > hardirqs last  enabled at (565511): [<ffffffffb379b138>] __call_rcu_common+0x218/0x940
-> > > hardirqs last disabled at (565512): [<ffffffffb5804262>] rcu_torture_init+0x20b2/0x2370
-> > > softirqs last  enabled at (399112): [<ffffffffb36b2586>] __local_bh_enable_ip+0x126/0x170
-> > > softirqs last disabled at (399106): [<ffffffffb43fef59>] inet_register_protosw+0x9/0x1d0
-> > > Preemption disabled at:
-> > > [<ffffffffb58040c3>] rcu_torture_init+0x1f13/0x2370
-> > > CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-rc4-rt2-yocto-preempt-rt+ #15
-> > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
-> > > Call Trace:
-> > >  <TASK>
-> > >  dump_stack_lvl+0x68/0xb0
-> > >  dump_stack+0x14/0x20
-> > >  __might_resched+0x1aa/0x280
-> > >  ? __pfx_rcu_torture_err_cb+0x10/0x10
-> > >  rt_spin_lock+0x53/0x130
-> > >  ? find_vmap_area+0x1f/0x70
-> > >  find_vmap_area+0x1f/0x70
-> > >  vmalloc_dump_obj+0x20/0x60
-> > >  mem_dump_obj+0x22/0x90
-> > >  __call_rcu_common+0x5bf/0x940
-> > >  ? debug_smp_processor_id+0x1b/0x30
-> > >  call_rcu_hurry+0x14/0x20
-> > >  rcu_torture_init+0x1f82/0x2370
-> > >  ? __pfx_rcu_torture_leak_cb+0x10/0x10
-> > >  ? __pfx_rcu_torture_leak_cb+0x10/0x10
-> > >  ? __pfx_rcu_torture_init+0x10/0x10
-> > >  do_one_initcall+0x6c/0x300
-> > >  ? debug_smp_processor_id+0x1b/0x30
-> > >  kernel_init_freeable+0x2b9/0x540
-> > >  ? __pfx_kernel_init+0x10/0x10
-> > >  kernel_init+0x1f/0x150
-> > >  ret_from_fork+0x40/0x50
-> > >  ? __pfx_kernel_init+0x10/0x10
-> > >  ret_from_fork_asm+0x1b/0x30
-> > >  </TASK>
-> > >
-> > > The previous patch fixes this by using the deadlock-safe best-effort
-> > > version of find_vm_area. However, in case of failure print the fact that
-> > > the pointer was a vmalloc pointer so that we print at least something.
-> > >
-> > > Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
-> > > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > > Cc: rcu@vger.kernel.org
-> > > Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > > Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > ---
-> > >  mm/util.c | 4 +++-
-> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/mm/util.c b/mm/util.c
-> > > index dd12b9531ac4..406634f26918 100644
-> > > --- a/mm/util.c
-> > > +++ b/mm/util.c
-> > > @@ -1071,7 +1071,9 @@ void mem_dump_obj(void *object)
-> > >     if (vmalloc_dump_obj(object))
-> > >             return;
-> > >
-> > > -   if (virt_addr_valid(object))
-> > > +   if (is_vmalloc_addr(object))
-> > > +           type = "vmalloc memory";
-> > > +   else if (virt_addr_valid(object))
-> > >             type = "non-slab/vmalloc memory";
-> >
-> > I think you should update this to say non-slab/non-vmalloc memory (as much
-> > as that description sucks!) as this phrasing in the past meant to say
-> > 'non-slab or vmalloc memory' (already confusing phrasing) so better to be
-> > clear.
->
-> True, though the issue you mentioned it is in existing code, a respin of this
-> patch could update it to say non-vmalloc. Good point, thanks for reviewing!
+On Wed, Sep 06, 2023 at 08:01:56PM +0100, Matthew Wilcox wrote:
+> On Wed, Sep 06, 2023 at 11:43:36AM -0700, Darrick J. Wong wrote:
+> > On Wed, Sep 06, 2023 at 07:33:48PM +0100, Matthew Wilcox wrote:
+> > > On Wed, Sep 06, 2023 at 10:07:24AM -0700, Darrick J. Wong wrote:
+> > > > On Wed, Sep 06, 2023 at 05:00:14PM +0100, Matthew Wilcox wrote:
+> > > > > +++ b/fs/xfs/xfs_inode.c
+> > > > > @@ -361,7 +361,7 @@ xfs_isilocked(
+> > > > >  {
+> > > > >  	if (lock_flags & (XFS_ILOCK_EXCL|XFS_ILOCK_SHARED)) {
+> > > > >  		if (!(lock_flags & XFS_ILOCK_SHARED))
+> > > > > -			return !!ip->i_lock.mr_writer;
+> > > > > +			return rwsem_is_write_locked(&ip->i_lock.mr_lock);
+> > > > 
+> > > > You'd be better off converting this to:
+> > > > 
+> > > > 	return __xfs_rwsem_islocked(&ip->i_lock.mr_lock,
+> > > > 				(lock_flags & XFS_ILOCK_SHARED));
+> > > > 
+> > > > And then fixing __xfs_rwsem_islocked to do:
+> > > > 
+> > > > static inline bool
+> > > > __xfs_rwsem_islocked(
+> > > > 	struct rw_semaphore	*rwsem,
+> > > > 	bool			shared)
+> > > > {
+> > > > 	if (!debug_locks) {
+> > > > 		if (!shared)
+> > > > 			return rwsem_is_write_locked(rwsem);
+> > > > 		return rwsem_is_locked(rwsem);
+> > > > 	}
+> > > > 
+> > > > 	...
+> > > > }
+> > > 
+> > > Thanks.
+> > > 
+> > > > > +++ b/include/linux/rwsem.h
+> > > > > @@ -72,6 +72,11 @@ static inline int rwsem_is_locked(struct rw_semaphore *sem)
+> > > > >  	return atomic_long_read(&sem->count) != 0;
+> > > > >  }
+> > > > >  
+> > > > > +static inline int rwsem_is_write_locked(struct rw_semaphore *sem)
+> > > > > +{
+> > > > > +	return atomic_long_read(&sem->count) & 1;
+> > > > 
+> > > > 
+> > > > atomic_long_read(&sem->count) & RWSEM_WRITER_LOCKED ?
+> > > 
+> > > Then this would either have to be in rwsem.c or we'd have to move the
+> > > definition of RWSEM_WRITER_LOCKED to rwsem.h.  All three options are
+> > > kind of bad.  I think I hate the bare '1' least.
+> > 
+> > I disagree, because using the bare 1 brings the most risk that someone
+> > will subtly break the locking assertions some day when they get the
+> > bright idea to move RWSEM_WRITER_LOCKED to the upper bit and fail to
+> > notice this predicate and its magic number.  IMO moving it to the header
+> > file (possibly with the usual __ prefix) would be preferable to leaving
+> > a landmine.
+> 
+> +       return atomic_long_read(&sem->count) & 1 /* RWSEM_WRITER_LOCKED */;
+> 
+> works for you?
 
-No it's not, you're changing the meaning, because you changed the code
-that determines the output...
+Yeah I guess that works.
 
-This has been merged now despite my outstanding comments (!) so I
-guess I'll have to send a follow up patch to address this.
-
->
->  - Joel
->
-
-
-
---
-Lorenzo Stoakes
-https://ljs.io
+--D
