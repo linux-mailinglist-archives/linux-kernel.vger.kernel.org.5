@@ -2,48 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3FC793FE7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF5A793FE9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242331AbjIFPEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 11:04:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45924 "EHLO
+        id S232889AbjIFPG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 11:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242329AbjIFPEq (ORCPT
+        with ESMTP id S229567AbjIFPG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 11:04:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA553172E;
-        Wed,  6 Sep 2023 08:04:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=groQG1OAW27aukn1St9p3F4vniNu3SS9OKbBgobN+Bs=; b=vp2bRP15Vy14N+6CcyGS9jmrcP
-        TAXO05O33h8pa0eNO9YWZGsrcXlhOK6MePNEMxsU1EhgjZ/2zsxmIU2keEKBuYR/oNx+80NIWc7Be
-        c3UP6l4nnPxpFoEPfjCG+vw1euWLVIH0mOUH8X9+E2A7YdpgFqvvD5XQA0HYIqc7sia9RKuScx8SH
-        X1Aejmxr14zV7z3SHdaxmlAIVijEYo1Rv89K5afqfBIT60QAYdOCZ8FWxfJF076uYR80/zKKsAAnE
-        haRt6wD6wtSU2S8ch7VHIsx4MAvw767NMktj08KTTbQfNiFzb/qk0+sby8p6sIOZBQnDs4ZWCZr0a
-        S/LrKL/w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qdu4l-003JhT-NR; Wed, 06 Sep 2023 15:04:15 +0000
-Date:   Wed, 6 Sep 2023 16:04:15 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mike Rapoport <rppt@kernel.org>,
+        Wed, 6 Sep 2023 11:06:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4C7E49
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 08:06:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694012782; x=1725548782;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Gw9VPFGulL9SMj3bg/qb7UVUBLhbdyxQTjG8dgwPDs4=;
+  b=W/14AjnFVDlx6Pa3iXGLLMcPWd89kfeHRkz6latxXV8riuXskAbbg29q
+   YD6FSV8oA/kEX+4fL8upw58DyFIsWVi4laNQdyh9m0RW+v/Owl7bKs+Pm
+   wIcIPKC00rP3gDP8BzFFO2O74UHntltoG7pkzzS0QiQlEJCoXr7cR87XA
+   UAwiMVJefpWq68z7U+SUVE3baZqBburVNA+H5Bt5mz26+PNeI5GIIZfIr
+   LQl1g1ZWhWSGSWcrTqJ5rtmYpITahA9fP7oc5ZeAq31vx66t2LaSxs24i
+   7KhG7xeW+1yoGoRTM05plqT2GkmebXWMh1I8pfjG7CjvoEEsI5rYlZtQf
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="443478255"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="443478255"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 08:06:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="865171164"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="865171164"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 06 Sep 2023 08:06:15 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qdu6f-0000Jb-1I;
+        Wed, 06 Sep 2023 15:06:13 +0000
+Date:   Wed, 6 Sep 2023 23:05:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bibo Mao <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, WANG Xuerui <kernel@xen0n.name>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] docs/mm: Physical Memory: add "Memory map" section
-Message-ID: <ZPiU7/Rg8g+B58Wa@casper.infradead.org>
-References: <20230906074210.3051751-1-rppt@kernel.org>
- <87ledjgy93.fsf@meer.lwn.net>
+        Linux Memory Management List <linux-mm@kvack.org>,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] LoongArch: Clear invalid tlb when set huge page PTE entry
+Message-ID: <202309062224.jKf5JY7H-lkp@intel.com>
+References: <20230905044828.1460721-1-maobibo@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87ledjgy93.fsf@meer.lwn.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <20230905044828.1460721-1-maobibo@loongson.cn>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,83 +66,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 08:41:28AM -0600, Jonathan Corbet wrote:
-> > +  All flags are declared in ``include/linux/page-flags.h``. There are a
-> > +  number of macros defined for testing, clearing and setting the flags. Page
-> > +  flags should not be accessed directly, but only using these macros.
-> 
-> It would sure be nice if we had documentation for what all the flags
-> mean :)
+Hi Bibo,
 
-When I figure them out, I'll let you know!
+kernel test robot noticed the following build errors:
 
-> > +``_mapcount``
-> > +  If the page can be mapped to userspace, encodes the number of times this
-> > +  page is referenced by a page table.
-> > +  Do not use directly, call page_mapcount().
-> 
-> Have we figured out what mapcount really means yet? :)
+[auto build test ERROR on akpm-mm/mm-everything]
+[also build test ERROR on linus/master v6.5 next-20230906]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Hah!  I know what this field means today!  In two hours time, I might
-be less sure!  (Does LWN want to come along to that MM meeting and write
-it up for an article?)
+url:    https://github.com/intel-lab-lkp/linux/commits/Bibo-Mao/LoongArch-Clear-invalid-tlb-when-set-huge-page-PTE-entry/20230906-013753
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20230905044828.1460721-1-maobibo%40loongson.cn
+patch subject: [PATCH] LoongArch: Clear invalid tlb when set huge page PTE entry
+config: loongarch-allnoconfig (https://download.01.org/0day-ci/archive/20230906/202309062224.jKf5JY7H-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230906/202309062224.jKf5JY7H-lkp@intel.com/reproduce)
 
-> > +``virtual``
-> > +  Virtual address in the kernel direct map. Will be ``NULL`` for highmem
-> > +  pages. Only defined for some architectures.
-> 
-> I'd say virtual is absent more often than present anymore, right?
-> Perhaps it's worth being more explicit about that.  And maybe say to use
-> page_address() rather than accessing it directly?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309062224.jKf5JY7H-lkp@intel.com/
 
-That's something I've been thinking about for the folio kernel-doc.
-Just stop documenting the things that you "shouldn't use".
-Non-kernel-doc comments in the source about what you should use instead,
-but no kernel-doc comments to say "Use page_address() instead of this".
+All errors (new ones prefixed by >>):
 
-> > +For pages on unevictable "LRU list" ``lru`` is overlayed with an anonymous
-> > +struct containing two fields:
-> > +
-> > +``__filler``
-> > +  A dummy field that must be always even to avoid conflict with compound
-> > +  page encoding.
-> 
-> Do we care about the constraints on this field's contents?  Presumably
-> that is taken care of somewhere and nobody should mess with it?
+>> arch/loongarch/mm/tlb.c:204:6: error: redefinition of 'set_huge_pte_at'
+     204 | void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
+         |      ^~~~~~~~~~~~~~~
+   In file included from arch/loongarch/mm/tlb.c:9:
+   include/linux/hugetlb.h:1175:20: note: previous definition of 'set_huge_pte_at' with type 'void(struct mm_struct *, long unsigned int,  pte_t *, pte_t)'
+    1175 | static inline void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
+         |                    ^~~~~~~~~~~~~~~
+   arch/loongarch/mm/tlb.c: In function 'set_huge_pte_at':
+>> arch/loongarch/mm/tlb.c:215:29: error: implicit declaration of function 'huge_pte_none'; did you mean 'huge_pte_lock'? [-Werror=implicit-function-declaration]
+     215 |         if (!cpu_has_ptw && huge_pte_none(*ptep))
+         |                             ^~~~~~~~~~~~~
+         |                             huge_pte_lock
+   arch/loongarch/mm/tlb.c: At top level:
+   arch/loongarch/mm/tlb.c:281:6: warning: no previous prototype for 'setup_tlb_handler' [-Wmissing-prototypes]
+     281 | void setup_tlb_handler(int cpu)
+         |      ^~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
 
-I also think that documenting here which things are in a union with
-other things is unnecessary.  If someone cares for such a level of
-detail, they'd better be reading the source code instead of this.
-Nobody should be using it, better to just leave it undocumented.
 
-> > +``mapping``
-> > +  The file this page belongs to. Can be pagecache or swapcahe. For
+vim +/set_huge_pte_at +204 arch/loongarch/mm/tlb.c
 
-Oh, actually, no, it can't be swapcache.  If the page is in the
-swapcache, you find its swapcache through swapcache_mapping().
-That's because ->mapping is reused as an anon_vma pointer for anon
-pages.
+   203	
+ > 204	void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
+   205			pte_t *ptep, pte_t pte)
+   206	{
+   207		/*
+   208		 * If huge pte entry is none, tlb entry with normal page size is filled
+   209		 * for machines which does not support hardware page walking.
+   210		 *
+   211		 * Thread maybe migrates to other CPUs after page fault happends and
+   212		 * migrates back again after hugepage pte is set, tlbs with normal page
+   213		 * about invalid_pte_table need be flushed
+   214		 */
+ > 215		if (!cpu_has_ptw && huge_pte_none(*ptep))
+   216			flush_tlb_mm(mm);
+   217	
+   218		set_pte_at(mm, addr, ptep, pte);
+   219	}
+   220	
 
-> > +  anonymous memory refers to the `struct anon_vma`.
-> > +  See also ``include/linux/page-flags.h`` for ``PAGE_MAPPING_FLAGS``
-> 
-> It seems like putting in the types for fields like this would be useful;
-> readers of the HTML docs can then follow the links and see what is
-> actually pointed to.
-> 
-> > +``index``
-> > +  Page offset within mapping. Overlaps with ``share``.
-> > +
-> > +``share``
-> > +  Share count for fsdax. Overlaps with ``index``.
-
-fsdax is not pagecache, so this probably shouldn't be documented here.
-
-> I wonder if it might be better to structure it as if the splitting of
-> struct page were already complete, with a section for each page
-> descriptor type, even the ones that don't exist as separate entities
-> yet?  Maybe that would make it easier for people to keep it current as
-> they hack pieces out of struct page?
-
-Yes.  Although I don't think we quite know what it's all going to
-look like yet, which makes it challenging to document!
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
