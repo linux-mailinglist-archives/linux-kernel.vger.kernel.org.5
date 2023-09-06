@@ -2,176 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BF3793ECF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E352793EE9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241596AbjIFObQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41490 "EHLO
+        id S241654AbjIFOcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231896AbjIFObP (ORCPT
+        with ESMTP id S241666AbjIFOcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:31:15 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFABA10E9
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:31:09 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5280ef23593so5045862a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 07:31:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694010667; x=1694615467; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G+7p6NMsxOjRyL4QMAB/bB/PBWKoduMJyy2zj/3BYKM=;
-        b=OyMW80fA8axA2Pme+Y3acL9wJ7W4CFc84Jie1J/UcM8+7xyII/R5wlYuURzQ9Z29bl
-         7He38PQn173IQeTn+F9lcOGM4Nn5GKPNsYyz/MhcAeJkbRUcupUpz5cM/Y8iwWvAt9AP
-         27nfPhJbXuE/QiBIN9dM6Lb2vtNhV/QLtajcw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694010667; x=1694615467;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G+7p6NMsxOjRyL4QMAB/bB/PBWKoduMJyy2zj/3BYKM=;
-        b=MAZ5lxV+zwwg/Mf0+6VJBtUVg6jyFNFWd3rE1lPjXXjN0bwv/U0XCp/OzZ/KQNa8eP
-         kCctnTX1gSw1h/Ij2p+WElqbUq4cPtwgX4kvNItcSS6wrTwq+UcTP4ZMtYHs4cc3n2U4
-         kWqQfSw8r4VOGNZAnxaIHc9bHDkMUqBLwk8z1xpztEJglqhXP9/W2PWJ2x4ZTUi2dQC4
-         J9Xxirq3r7fm68ZaOH43HnLagSlnSje/F2kwdzcS83CCK9b9kPhwmpityEcspm5jMTEf
-         PDxhHmCCqxpujiuLzq3tskDMbqb0yPKaXqNHO0qosR0scdKiUELonRtT3/y9wHVmzoLn
-         fvDA==
-X-Gm-Message-State: AOJu0YwzDAmtzz6yCuae4AwbNys2lVsW+EAlAjwTc8/lHDPxr4RT0kiN
-        0+CA3O1btcF/D82F8UX6XrktfduspxVAgy16R+Uwix2b
-X-Google-Smtp-Source: AGHT+IGr1S4xJdqSXyXKJFr3x/gw9mVojjc5gyUAs75HnQtUbJi1zSBkqAJsU0Qp0QIGav6HV1HCDg==
-X-Received: by 2002:a05:6402:124c:b0:523:364b:e6a9 with SMTP id l12-20020a056402124c00b00523364be6a9mr2561159edw.38.1694010667241;
-        Wed, 06 Sep 2023 07:31:07 -0700 (PDT)
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
-        by smtp.gmail.com with ESMTPSA id w25-20020aa7cb59000000b005222c6fb512sm8521690edt.1.2023.09.06.07.31.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 07:31:06 -0700 (PDT)
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-402c80b71ecso95895e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 07:31:06 -0700 (PDT)
-X-Received: by 2002:a05:600c:5493:b0:3fe:eb42:7ec with SMTP id
- iv19-20020a05600c549300b003feeb4207ecmr115838wmb.1.1694010665909; Wed, 06 Sep
- 2023 07:31:05 -0700 (PDT)
+        Wed, 6 Sep 2023 10:32:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A21B198D;
+        Wed,  6 Sep 2023 07:32:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694010757; x=1725546757;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=V5V26GejPVyOSxfUjPT2mOYUtjVt5U4tPwu4TvOFpFo=;
+  b=DGcdpouBJM6X78hmVQXFs0SGvjbjaHu8Eq4J+vAMr3cvb85yzqSyzF6i
+   vK9aUlLiOVeaYSLvbW+kjMrrWIbVT87hJQGKm35QTq0fVsNrlcrH0X4Zb
+   izVDhTHbMH3z2cgREvr5jgXb/sJHkmIwlmaLJOOfS1XTIptXSmR2sbSR9
+   juqZVze/SbpA6OrzG4Ja4x8eyvDk72lxzcmdb+HNaVJytZbGkg2/sJk3T
+   PKmpr90+fUBSacei9zZlDw7C7BxUEpNLX+J5E9XGwJ3kw4JSDaqujvBT+
+   z6o9dAoj70IK8GxutcccTh67FsaVWKq7g4+8JgMrQRxPSTl2e0mQ3k9ul
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="441055375"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="441055375"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 07:31:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="811685411"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="811685411"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 06 Sep 2023 07:31:49 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id BCEB017D; Wed,  6 Sep 2023 17:31:47 +0300 (EEST)
+Date:   Wed, 6 Sep 2023 17:31:47 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        platform-driver-x86@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Prashant Malani <pmalani@chromium.org>
+Subject: Re: [PATCH 1/3] platform/x86: intel_scu_ipc: Check status after
+ timeouts in busy_loop()
+Message-ID: <20230906143147.GD1599918@black.fi.intel.com>
+References: <20230831011405.3246849-1-swboyd@chromium.org>
+ <20230831011405.3246849-2-swboyd@chromium.org>
+ <20230901055011.GT3465@black.fi.intel.com>
+ <CAE-0n50XCw7ugkoTAUfb5Jrr6-Vh=bvXfTOSeHV_ymyOQfRB2g@mail.gmail.com>
+ <ZPiCz6AaLc4mqGH8@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20230901234202.566951-1-dianders@chromium.org>
- <20230901164111.RFT.13.I0a9940ff6f387d6acf4e71d8c7dbaff8c42e3aaa@changeid>
- <32186b941d6228a102b5e799aadf34206b58ac15.camel@pengutronix.de>
- <CAD=FV=WLw3cAU0nuNuKXiu=Zbv4tVa3aa35GFaxsjO880T0pmw@mail.gmail.com> <d56dfb568711b4b932edc9601010feda020c2c22.camel@pengutronix.de>
-In-Reply-To: <d56dfb568711b4b932edc9601010feda020c2c22.camel@pengutronix.de>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 6 Sep 2023 07:30:48 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XJ=O5oMKcBSh0qD=ZXUpRgvV8HCheABL7s-T_u+6TsHg@mail.gmail.com>
-Message-ID: <CAD=FV=XJ=O5oMKcBSh0qD=ZXUpRgvV8HCheABL7s-T_u+6TsHg@mail.gmail.com>
-Subject: Re: [RFT PATCH 13/15] drm/imx/ipuv3: Call drm_atomic_helper_shutdown()
- at shutdown/unbind time
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>, airlied@gmail.com,
-        daniel@ffwll.ch, festevam@gmail.com, kernel@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, shawnguo@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZPiCz6AaLc4mqGH8@smile.fi.intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Sep 5, 2023 at 10:47=E2=80=AFPM Philipp Zabel <p.zabel@pengutronix.=
-de> wrote:
->
-> Hi,
->
-> On Di, 2023-09-05 at 13:29 -0700, Doug Anderson wrote:
-> > Hi,
-> >
-> > On Mon, Sep 4, 2023 at 1:30=E2=80=AFAM Philipp Zabel <p.zabel@pengutron=
-ix.de> wrote:
+On Wed, Sep 06, 2023 at 04:46:55PM +0300, Andy Shevchenko wrote:
+> On Tue, Sep 05, 2023 at 05:27:23PM -0500, Stephen Boyd wrote:
+> > Quoting Mika Westerberg (2023-08-31 22:50:11)
+> > > On Wed, Aug 30, 2023 at 06:14:01PM -0700, Stephen Boyd wrote:
+> > > > It's possible for the polling loop in busy_loop() to get scheduled away
+> > > > for a long time.
+> > > >
+> > > >   status = ipc_read_status(scu);
+> > > >   <long time scheduled away>
+> > > >   if (!(status & IPC_STATUS_BUSY))
 > > >
-> > > On Fr, 2023-09-01 at 16:41 -0700, Douglas Anderson wrote:
-> > > > Based on grepping through the source code this driver appears to be
-> > > > missing a call to drm_atomic_helper_shutdown() at system shutdown t=
-ime
-> > > > and at driver unbind time. Among other things, this means that if a
-> > > > panel is in use that it won't be cleanly powered off at system
-> > > > shutdown time.
-> > > >
-> > > > The fact that we should call drm_atomic_helper_shutdown() in the ca=
-se
-> > > > of OS shutdown/restart and at driver remove (or unbind) time comes
-> > > > straight out of the kernel doc "driver instance overview" in
-> > > > drm_drv.c.
-> > > >
-> > > > A few notes about this fix:
-> > > > - When adding drm_atomic_helper_shutdown() to the unbind path, I ad=
-ded
-> > > >   it after drm_kms_helper_poll_fini() since that's when other drive=
-rs
-> > > >   seemed to have it.
-> > > > - Technically with a previous patch, ("drm/atomic-helper:
-> > > >   drm_atomic_helper_shutdown(NULL) should be a noop"), we don't
-> > > >   actually need to check to see if our "drm" pointer is NULL before
-> > > >   calling drm_atomic_helper_shutdown(). We'll leave the "if" test i=
-n,
-> > > >   though, so that this patch can land without any dependencies. It
-> > > >   could potentially be removed later.
-> > > > - This patch also makes sure to set the drvdata to NULL in the case=
- of
-> > > >   bind errors to make sure that shutdown can't access freed data.
-> > > >
-> > > > Suggested-by: Maxime Ripard <mripard@kernel.org>
-> > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > >
-> > > Thank you,
-> > > Tested-by: Philipp Zabel <p.zabel@pengutronix.de>
-> >
-> > Thanks! I notice that:
-> >
-> > ./scripts/get_maintainer.pl --scm -f drivers/gpu/drm/imx/ipuv3/imx-drm-=
-core.c
-> >
-> > Doesn't say drm-misc but also when I look at the MAINTAINERS file and
-> > find the section for "DRM DRIVERS FOR FREESCALE IMX"
->
-> That should probably say "IMX5/6" nowadays. There are a lot more i.MX
-> that do not use IPUv3 than those that do.
->
-> > it doesn't explicitly list a different git tree.
->
-> I used to send pull requests from git.pengutronix.de/git/pza/linux,
-> same as for the reset controller framework. I might still have to do
-> that for changes in drivers/gpu/ipu-v3 that need coordination between
-> drm and v4l2, but usually pure drm/imx/ipuv3 changes are pushed to drm-
-> misc.
->
-> > I guess the "shawnguo" git tree listed by get_maintainer.pl is just
-> > from regex matching?
->
-> The "N: imx" pattern in "ARM/FREESCALE IMX / MXC ARM ARCHITECTURE", I
-> think.
->
-> > Would you expect this to go through drm-misc? If so, I'll probably
-> > land it sooner rather than later. I can also post up a patch making it
-> > obvious that "DRM DRIVERS FOR FREESCALE IMX" goes through drm-misc if
-> > you don't object.
->
-> Yes, both would be great.
+> > > How can the status bit change here as we are the only user and the SCU
+> > > access is serialized by ipclock?
+> > 
+> > I don't know how the SCU works. I thought that IPC_STATUS_BUSY bit was
+> > cleared by the SCU when it was done processing. With that assumption, I
+> > tried to show that the status is read and then the process schedules
+> > away for a long time and has an outdated view of the busy bit.
+> 
+> We probably have different versions of firmwares for the different SoC
+> generations. But I _think_ that you are right, the SCU firmware should
+> clear the bit when it's done.
 
-Maintainers update posted at:
-
-https://lore.kernel.org/r/20230906072803.1.Idef7e77e8961cbeb8625183eec9db03=
-56b2eccd0@changeid
-
-I'll aim to land ${SUBJECT} patch early next week unless there are any
-objections.
-
--Doug
+Yes, IIRC it does. Okay I see the (potential, although quite unlikely)
+problem now. Thanks!
