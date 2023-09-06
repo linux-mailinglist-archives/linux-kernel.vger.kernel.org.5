@@ -2,169 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F00179341D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 05:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C04479342A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 05:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233637AbjIFD1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 23:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33544 "EHLO
+        id S234818AbjIFDhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 23:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229783AbjIFD1v (ORCPT
+        with ESMTP id S229783AbjIFDhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 23:27:51 -0400
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33EFCE8;
-        Tue,  5 Sep 2023 20:27:46 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0VrRuUhU_1693970860;
-Received: from 30.240.113.202(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VrRuUhU_1693970860)
-          by smtp.aliyun-inc.com;
-          Wed, 06 Sep 2023 11:27:43 +0800
-Message-ID: <bad0d23d-a66e-0558-469b-a2dd1d5eb497@linux.alibaba.com>
-Date:   Wed, 6 Sep 2023 11:27:38 +0800
+        Tue, 5 Sep 2023 23:37:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B73A128;
+        Tue,  5 Sep 2023 20:37:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693971435; x=1725507435;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=BEhDvMys6aNAZ6aKLz07QUSQiYDm/jAne4aaaqGD91Y=;
+  b=nH4/zuXbrgO9AqmdRc+vXvKeJDO+rGFG5ffO+lTwb/WnSma2aLIi8Mgj
+   cImUIggJyi8bWRjFegYgnbkYOSgTmvYEwkoo96WUKPTY7RQBm4MqiP7GY
+   1RrxsH1uagTrL+Vgzz8UGp5rInnGuj+Pp1RtZTrgDj1vnJiWLiUn54glc
+   9d07ynyVEEou4+RpGD8DVLs+Wlz/b2Tr653eAY/QNSpw66qvu4y76QaQc
+   kjiWGkWvzh7Rt5mux/+7H7cF4sJrKq5DBjRXy/zkoYavvYzzjhAW7f/OJ
+   VU2cH3M45supmJrX+y08T5kryZ9A97l3tXav8+ocycVAT63aa9guyUFSx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="367179210"
+X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
+   d="scan'208";a="367179210"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 20:37:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="776430874"
+X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
+   d="scan'208";a="776430874"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Sep 2023 20:36:55 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 5 Sep 2023 20:36:55 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 5 Sep 2023 20:36:54 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 5 Sep 2023 20:36:54 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 5 Sep 2023 20:36:54 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QpOFCAIZJfypNgDAVCQLv85cxKfMQAZYAYXDhvaiaB6At0ng16iIarzFvI3VXSIcPMtV2GDNDzPtFJXpd7t0+t6LzD9Ixz+sA5mWRb+OjiwdohrdZLCgPcWfmfykI0KDrEx7Q3GXS0aCAEvkbkxQGeUMU/3DB7uni/ONkPqoU83nkYNwfTfYUi0tmdNIYFIfvqK1cxNfwPHmmSmwZrRnI6qZFB/shXSCxKFQFGzRZAxmPL/9gkWuEj+2xTT++ek+A5JsQopOPHd24b0OCGZDmvCvMVYQOA0LlUXPRuZA9ad33vNa/ThAkajz9f9GTX3OKp3GmSOrz3W/g23OyEfqlw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cpFirkmfqh/oZD25egw8vXlVk3DSYmyze2gSrqf/RzY=;
+ b=eUU0tgypDdCXYkHC2t4XfcfiO159wog5D+Skgrox+Y8ikmhArciqIErQRa6aanF+IgEezrAtoOCdMC7ng62jOt+Uq6CAuIiCUd25JLpQfs/HULmZgJuUZBZB+weD9Nb7Y+p3fyPNrTH8/EI9DoVRAZXAmimBPaNvJV5WBFawjgwAmZb3jJRu1EQNG/kmyZ4QKt65lSrCftDf1PZFUIp+eULMeC+KC1uVTMIzNnoiNdWvcradk80qBUo1uInKyRvVqrokFigMXJGNZMrkPKCbZ8pE/F+ZXFc+hpPG5KF0b9UlzIIJDiNkk64oku9hBuVJt4+Mr7LdWRm/s/7C6QcigA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by PH0PR11MB5048.namprd11.prod.outlook.com (2603:10b6:510:3d::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Wed, 6 Sep
+ 2023 03:36:52 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::6da5:f747:ba54:6938]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::6da5:f747:ba54:6938%6]) with mapi id 15.20.6745.030; Wed, 6 Sep 2023
+ 03:36:52 +0000
+Date:   Tue, 5 Sep 2023 20:36:47 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ira Weiny <ira.weiny@intel.com>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        Navneet Singh <navneet.singh@intel.com>,
+        Fan Ni <fan.ni@samsung.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC v2 11/18] cxl/region: Expose DC extents on region
+ driver load
+Message-ID: <64f7f3cf14b0e_1e8e78294e8@iweiny-mobl.notmuch>
+References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
+ <20230604-dcd-type2-upstream-v2-11-f740c47e7916@intel.com>
+ <20230829172048.000006fb@Huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230829172048.000006fb@Huawei.com>
+X-ClientProxiedBy: BY5PR03CA0002.namprd03.prod.outlook.com
+ (2603:10b6:a03:1e0::12) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v4 1/2] perf/core: Bail out early if the request AUX area
- is out of bound
-Content-Language: en-US
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-To:     Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     alexander.shishkin@linux.intel.com, mingo@redhat.com,
-        baolin.wang@linux.alibaba.com, acme@kernel.org,
-        mark.rutland@arm.com, jolsa@kernel.org, namhyung@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nathan@kernel.org, bpf@vger.kernel.org
-References: <20230804072945.85731-1-xueshuai@linux.alibaba.com>
- <20230804072945.85731-2-xueshuai@linux.alibaba.com>
- <20230804085947.GB589820@leoy-yangtze.lan>
- <534c5e53-07bb-07bd-0435-76a10b55228d@linux.alibaba.com>
-In-Reply-To: <534c5e53-07bb-07bd-0435-76a10b55228d@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|PH0PR11MB5048:EE_
+X-MS-Office365-Filtering-Correlation-Id: 796a443e-9e0d-431f-6dea-08dbae8a825d
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0AEAvFqdndqTkde9K566F2Ep0/WTfV/Tem2/aKz1mHi2T/Owl25cvDHN4uB7Xy/yXnNW/k7fZTtgqJ0SbHUGVESDeqaifnp0XBviNDDg9/cvkbg6kyCg8crjuPfE5mTW+KV1A80ZxGg74Dp48VaXEkvcUtq8sdzGg2TEpDMz5QZh6uXlZLxBIULdWcWfmVYrhtMv39VUxnmY5vQ9lNyPthwzrIbto+fofr3c/YQcpn4H1uKtbIlX3cGBsbF0JRVI89dEe7gCUZSxQPUzQOf9pYxCBNwMQ19or2fsOAvyAijNoLeoAt/vSvNVm/vktwxJj1yujxytUwP+l+1yuzpXZDSibgowT6J+f7DSDx1vO9dPj2usmrOhBkrEMyMeoG8YI4lT+VDxdXHRxM0/vk2VzGsyXYukao52viIy1AvjaRI8EyM+m7Zy93IGscQHTIS66dMMdMkxMt16QEpQWqQHAyHw708VLqCm6/Hmki5FOC5RFg4ohagdRVc14HNyAc8GX/h78ODB3C2MBvr/CBn44bb0oGS8F216QphR4P5IXYS7KpvoHBKJtUAk3IHHoveP
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(366004)(376002)(39860400002)(136003)(186009)(1800799009)(451199024)(41300700001)(5660300002)(26005)(2906002)(86362001)(38100700002)(82960400001)(44832011)(8936002)(4326008)(8676002)(6666004)(6512007)(9686003)(6486002)(6506007)(478600001)(110136005)(316002)(66946007)(54906003)(66476007)(66556008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qDP+TbB6XlyKvvfmV29Vo82At7aRgL76Cst991zIpz8YFl8AiWKh0tOynJXl?=
+ =?us-ascii?Q?pvzdm53l1jpkoGNfPTo8XfGBblsWa3vMV84mGCLV8mCl1M48cPSlEKPcQH2t?=
+ =?us-ascii?Q?H7+9uxEWqNIlShDbMcXAEQIovM7ttOm3/dTSJRVBeiKbsqPWpEkOuZhy4X2R?=
+ =?us-ascii?Q?BjmFamtN1namATl4cORP7YNtmVD/oTTOx30jAue6XunOHufm01Nqw/SRdffV?=
+ =?us-ascii?Q?8xjK/zvDJ/9HGyYV3sHKFIYTttc48ItFGYy0VhCwqkyOps0MbHYB1c7hEu1c?=
+ =?us-ascii?Q?fCEVlCRViO4JqUbmtT2HJvynMvqRvKw+F4qrT4dpsGHcKiRN4fynmlLQggOk?=
+ =?us-ascii?Q?+46MDRd4NncMJu3lVQTxQ2CiDVP+FxA3pnzzISFVkJgnLiZM+yZnUhaaaaAC?=
+ =?us-ascii?Q?z95W+nKlLEl0Uz7WFTF3FbaVa2kYSpms+poJqMrGdA3N+i8zB5G0JzeIMOso?=
+ =?us-ascii?Q?8KIijSedvSTIcZu4QCzjKEfMzDKpQ+z+UzzrvRA5vcsTaweyVTuumX71//3K?=
+ =?us-ascii?Q?1fHRCcOQ69MxZ7UAtZ1nT7Kf3oFhZ/vxN6oSJHLqnYhN95L3amn5lAX7hxOd?=
+ =?us-ascii?Q?aiRX2AnY993Wuy0Ftt21ey5biID0G5ytcZB31kXVEHd9sHgk50CAOvbj759E?=
+ =?us-ascii?Q?kfCpgrkR632+N5UJQrPD9WROmXBF4spNZ+OX3LMdgnDBhY3fWTaxK1LlQkLi?=
+ =?us-ascii?Q?JKYFw3OGSCHXOUq3SfrYZKnhvoOZdGAgcIA/+VsHa1Y/fJ/pSyvrfqOAINLo?=
+ =?us-ascii?Q?h4UNmX5dMgOyoWQSo/gqSN8uYnUGjqoKFY4T6u7OQPyN4VtsguVAjB1D/owo?=
+ =?us-ascii?Q?/LHyYDhyYut2pjaS4oVDiKMKOGROHrZ7PCtL6cA1EIgmGoLUxWsDXtUvAVL1?=
+ =?us-ascii?Q?pS5cZYaB0tUh8OyKYgO7+9+gO7OTYaUg3VAGgeiewAW5FO3nGS8kB6jhL0Wx?=
+ =?us-ascii?Q?2jhTkGrmyFpaVo18URsVwQAP07iMtxUYXq/ALAWzkkEOwCkYgRvITcUwhQP6?=
+ =?us-ascii?Q?FQYVaJxgjn9S0fnYRNtzZ4ryPAurRt+D3PAhTcrWtnJ3vNJqxCg0jk742pYG?=
+ =?us-ascii?Q?m5Gz6ll1t0DDxR6fREMA6zbide1ss5ENtExV623hcq68Ni0Uuhk/tRYcr0Fv?=
+ =?us-ascii?Q?NunqPbC74QV7t77GCXRinv4XXybfm+pl7cR/CsNjS3K+B+0dUGPiKE9UpKpF?=
+ =?us-ascii?Q?GjKtGnMTWLthnG+igZvlWVqLUFBz3HsPatnLc0cxGeboqlK1TuNknXkR5ep5?=
+ =?us-ascii?Q?hRiDXCTdelKLov4dvhi1sj3tA0jUhTUt/4eP7tDveNnuLtJ3wNLMIi+7Umxl?=
+ =?us-ascii?Q?l130aF3ofZTFuDzrmk/YeNVBsvU0BXMOLTVfjXt+3abtdsX1VAiIUZZb6nae?=
+ =?us-ascii?Q?jKdNj0iS1W2u564iUBzZnjVxK6yAtxkom+ig1h/hW7pnH4AFR2cvWIaesI7N?=
+ =?us-ascii?Q?nOcQ/mwmigH0b1hVOLeJ89eTXWH4cgth0YOT4ct31J0G5LWzK+uoDrnE6l0y?=
+ =?us-ascii?Q?eBhGk1xOX9tIN4ZV2rHWhmMUVCMY6ktM2awG3a4Xe4pcTiOKZBCPbPFhcgZb?=
+ =?us-ascii?Q?5dh6ne7kRNtcRnUC75JN5x0MP4PSiBlRJQZQLSYr?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 796a443e-9e0d-431f-6dea-08dbae8a825d
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 03:36:52.1582
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IOJ19PE9VKVVFaW73dc1oxSZpJa3iNeiGn00peSobETEHMVFiTJH+yehvdLFUDEhjEbAD6lrXMsNByULcL48Qg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5048
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jonathan Cameron wrote:
+> On Mon, 28 Aug 2023 22:21:02 -0700
+> Ira Weiny <ira.weiny@intel.com> wrote:
+> 
+> > Ultimately user space must associate Dynamic Capacity (DC) extents with
+> > DAX devices.  Remember also that DCD extents may have been accepted
+> > previous to regions being created and must have references held until
+> > all higher level regions and DAX devices are done with the memory.
+> > 
+> > On CXL region driver load scan existing device extents and create CXL
+> > DAX region extents as needed.
+> > 
+> > Create abstractions for the extents to be used in DAX region.  This
+> > includes a generic interface to take proper references on the lower
+> > level CXL region extents.
+> > 
+> > Also maintain separate objects for the DAX region extent device vs the
+> > DAX region extent.  The DAX region extent device has a shorter life span
+> > which corresponds to the removal of an extent while a DAX device is
+> > still using it.  In this case an extent continues to exist whilst the
+> > ability to create new DAX devices on that extent is prevented.
+> > 
+> > NOTE: Without interleaving; the device, CXL region, and DAX region
+> > extents have a 1:1:1 relationship.  Future support for interleaving will
+> > maintain a 1:N relationship between CXL region extents and the hardware
+> > extents.
+> > 
+> > While the ability to create DAX devices on an extent exists; expose the
+> > necessary details of DAX region extents by creating a device with the
+> > following sysfs entries.
+> > 
+> > /sys/bus/cxl/devices/dax_regionX/extentY
+> > /sys/bus/cxl/devices/dax_regionX/extentY/length
+> > /sys/bus/cxl/devices/dax_regionX/extentY/label
+> > 
+> > Label is a rough analogy to the DC extent tag.  As such the DC extent
+> > tag is used to initially populate the label.  However, the label is made
+> > writeable so that it can be adjusted in the future when forming a DAX
+> > device.
+> > 
+> > Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> > Co-developed-by: Navneet Singh <navneet.singh@intel.com>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > 
+> 
+> Trivial stuff inline.
+> 
+> 
+> 
+> > diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+> > index 27cf2daaaa79..4dab52496c3f 100644
+> > --- a/drivers/dax/dax-private.h
+> > +++ b/drivers/dax/dax-private.h
+> > @@ -5,6 +5,7 @@
+> >  #ifndef __DAX_PRIVATE_H__
+> >  #define __DAX_PRIVATE_H__
+> >  
+> > +#include <linux/pgtable.h>
+> >  #include <linux/device.h>
+> >  #include <linux/cdev.h>
+> >  #include <linux/idr.h>
+> > @@ -40,6 +41,58 @@ struct dax_region {
+> >  	struct device *youngest;
+> >  };
+> >  
+> > +/*
+> /**
+> 
+> as it's valid kernel doc so no disadvantage really.
 
+Sure. Done.
 
-On 2023/8/4 19:24, Shuai Xue wrote:
 > 
+> > + * struct dax_region_extent - extent data defined by the low level region
+> > + * driver.
+> > + * @private_data: lower level region driver data
+> > + * @ref: track number of dax devices which are using this extent
+> > + * @get: get reference to low level data
+> > + * @put: put reference to low level data
 > 
-> On 2023/8/4 16:59, Leo Yan wrote:
->> On Fri, Aug 04, 2023 at 03:29:44PM +0800, Shuai Xue wrote:
->>> When perf-record with a large AUX area, e.g 4GB, it fails with:
->>>
->>>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
->>>     failed to mmap with 12 (Cannot allocate memory)
->>>
->>> and it reveals a WARNING with __alloc_pages():
->>>
->>> [   66.595604] ------------[ cut here ]------------
->>> [   66.600206] WARNING: CPU: 44 PID: 17573 at mm/page_alloc.c:5568 __alloc_pages+0x1ec/0x248
->>> [   66.608375] Modules linked in: ip6table_filter(E) ip6_tables(E) iptable_filter(E) ebtable_nat(E) ebtables(E) aes_ce_blk(E) vfat(E) fat(E) aes_ce_cipher(E) crct10dif_ce(E) ghash_ce(E) sm4_ce_cipher(E) sm4(E) sha2_ce(E) sha256_arm64(E) sha1_ce(E) acpi_ipmi(E) sbsa_gwdt(E) sg(E) ipmi_si(E) ipmi_devintf(E) ipmi_msghandler(E) ip_tables(E) sd_mod(E) ast(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) nvme(E) sysimgblt(E) i2c_algo_bit(E) nvme_core(E) drm_shmem_helper(E) ahci(E) t10_pi(E) libahci(E) drm(E) crc64_rocksoft(E) i40e(E) crc64(E) libata(E) i2c_core(E)
->>> [   66.657719] CPU: 44 PID: 17573 Comm: perf Kdump: loaded Tainted: G            E      6.3.0-rc4+ #58
->>> [   66.666749] Hardware name: Default Default/Default, BIOS 1.2.M1.AL.P.139.00 03/22/2023
->>> [   66.674650] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
->>> [   66.681597] pc : __alloc_pages+0x1ec/0x248
->>> [   66.685680] lr : __kmalloc_large_node+0xc0/0x1f8
->>> [   66.690285] sp : ffff800020523980
->>> [   66.693585] pmr_save: 000000e0
->>> [   66.696624] x29: ffff800020523980 x28: ffff000832975800 x27: 0000000000000000
->>> [   66.703746] x26: 0000000000100000 x25: 0000000000100000 x24: ffff8000083615d0
->>> [   66.710866] x23: 0000000000040dc0 x22: ffff000823d6d140 x21: 000000000000000b
->>> [   66.717987] x20: 000000000000000b x19: 0000000000000000 x18: 0000000000000030
->>> [   66.725108] x17: 0000000000000000 x16: ffff800008f05be8 x15: ffff000823d6d6d0
->>> [   66.732229] x14: 0000000000000000 x13: 343373656761705f x12: 726e202c30206574
->>> [   66.739350] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffff8000083af570
->>> [   66.746471] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 : 000000000005fff4
->>> [   66.753592] x5 : 0000000000000000 x4 : ffff000823d6d8d8 x3 : 0000000000000000
->>> [   66.760713] x2 : 0000000000000000 x1 : 0000000000000001 x0 : 0000000000040dc0
->>> [   66.767834] Call trace:
->>> [   66.770267]  __alloc_pages+0x1ec/0x248
->>> [   66.774003]  __kmalloc_large_node+0xc0/0x1f8
->>> [   66.778259]  __kmalloc_node+0x134/0x1e8
->>> [   66.782081]  rb_alloc_aux+0xe0/0x298
->>> [   66.785643]  perf_mmap+0x440/0x660
->>> [   66.789031]  mmap_region+0x308/0x8a8
->>> [   66.792593]  do_mmap+0x3c0/0x528
->>> [   66.795807]  vm_mmap_pgoff+0xf4/0x1b8
->>> [   66.799456]  ksys_mmap_pgoff+0x18c/0x218
->>> [   66.803365]  __arm64_sys_mmap+0x38/0x58
->>> [   66.807187]  invoke_syscall+0x50/0x128
->>> [   66.810922]  el0_svc_common.constprop.0+0x58/0x188
->>> [   66.815698]  do_el0_svc+0x34/0x50
->>> [   66.818999]  el0_svc+0x34/0x108
->>> [   66.822127]  el0t_64_sync_handler+0xb8/0xc0
->>> [   66.826296]  el0t_64_sync+0x1a4/0x1a8
->>> [   66.829946] ---[ end trace 0000000000000000 ]---
->>>
->>> 'rb->aux_pages' allocated by kcalloc() is a pointer array which is used to
->>> maintains AUX trace pages. The allocated page for this array is physically
->>> contiguous (and virtually contiguous) with an order of 0..MAX_ORDER. If the
->>> size of pointer array crosses the limitation set by MAX_ORDER, it reveals a
->>> WARNING.
->>>
->>> So bail out early with -ENOMEM if the request AUX area is out of bound,
->>> e.g.:
->>>
->>>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
->>>     failed to mmap with 12 (Cannot allocate memory)
->>>
->>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->>> ---
->>>  kernel/events/ring_buffer.c | 3 +++
->>>  1 file changed, 3 insertions(+)
->>>
->>> diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
->>> index a0433f37b024..c445e927368d 100644
->>> --- a/kernel/events/ring_buffer.c
->>> +++ b/kernel/events/ring_buffer.c
->>> @@ -699,6 +699,9 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
->>>  		watermark = 0;
->>>  	}
->>>  
->>> +	/* Can't allocate more than MAX_ORDER */
->>
->> The comment is confused.  I'd like to refine it as:
->>
->>   /*
->>    * kcalloc_node() is unable to allocate buffer if the size is larger
->>    * than: PAGE_SIZE << MAX_ORDER; directly bail out in this case.
->>    */
-> 
-> Hi, Leo,
-> 
-> Thank you for your quick feedback. The comment is simplified from Peter's reply in v2
-> version. Your refined comment is more detailed and it makes sense to me, I would like
-> to adopt it if @Peter has no other opinions.
-> 
->> To be honest, I am not sure if perf core maintainers like this kind
->> thing or not.  Please seek their opinion before you move forward.
->>
-> 
-> and hi, all perf core maintainers,
-> 
-> I have not received explicit objection from perf core maintainers @Peter or @James so
-> I moved forward to address their comments. It's fine to me to wait for more opinions from
-> perf core maintainers.
-> 
-> Best Regards,
-> Shuai
-> 
+> I'd like to understand when these are optional - perhaps comment on that?
 
-Hi, Leo, and all folks,
+They are not optional in this implementation.  I got a bit carried away in
+extrapolating the dax_region away from the lower levels in thinking that
+some other implementation may not need these.
 
-Any more comments? Should I move forward to send a new patch?
+I will still keep the helpers below though.
 
-Thank you.
+> 
+> > + */
+> > +struct dax_region_extent {
+> > +	void *private_data;
+> > +	struct kref ref;
+> > +	void (*get)(struct dax_region_extent *dr_extent);
+> > +	void (*put)(struct dax_region_extent *dr_extent);
+> > +};
+> > +
+> > +static inline void dr_extent_get(struct dax_region_extent *dr_extent)
+> > +{
+> > +	if (dr_extent->get)
+> > +		dr_extent->get(dr_extent);
+> > +}
+> > +
+> > +static inline void dr_extent_put(struct dax_region_extent *dr_extent)
+> > +{
+> > +	if (dr_extent->put)
+> > +		dr_extent->put(dr_extent);
+> > +}
+> > +
+> > +#define DAX_EXTENT_LABEL_LEN 64
+> 
+> blank line here.
 
-Best Regards,
-Shuai
+Sure.  Done
+
+Ira
