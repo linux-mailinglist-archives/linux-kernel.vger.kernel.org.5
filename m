@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5DC793A34
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 121EA793A3B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbjIFKrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 06:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
+        id S234910AbjIFKsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 06:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbjIFKrW (ORCPT
+        with ESMTP id S234876AbjIFKr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 06:47:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273691730;
-        Wed,  6 Sep 2023 03:47:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693997236; x=1725533236;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=ymyiI8n2WES/QdaORSDqpei3Mu93ry3qBVlK6F6utw8=;
-  b=lyWm1MvGzdb9NOFVY/4ux5G+gxNjLjfIPuzX7MUA7Gx/tKAYYiEnUBfa
-   gjjxeWODjY2OVQ47OmXaOeWWrTGbLxIadHkN0suyRu/lmOo4Dq8yuevOC
-   wjS8JS8AdwJwqlG/kjXIHbCVPE3Nrqc2oHUNRZjQZcmz13abXqGmz/AdL
-   B2TJC6U0EdFAfy0R79BQ8u19aACr4RyGIr4+iC3jBm8xxYzhDVTX0Ur1H
-   1nztbmw1c0P8jt9R5Vgq/2vHX32Dr6buKkXhifOaRTGAYsSZ8diGAX3ws
-   zDoJYlSVr+R18RHAWBAWQ200eqHugQQa3uMvH9O2BNXREBJ+n3d02D/+A
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="375932777"
-X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
-   d="scan'208";a="375932777"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 03:47:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="988190501"
-X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
-   d="scan'208";a="988190501"
-Received: from swegrzyn-mobl.ger.corp.intel.com ([10.252.60.192])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 03:47:12 -0700
-Date:   Wed, 6 Sep 2023 13:47:10 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>
-Subject: Re: [PATCH] serial: sc16is7xx: remove unused to_sc16is7xx_port
- macro
-In-Reply-To: <20230905181649.134720-1-hugo@hugovil.com>
-Message-ID: <f8912f92-dda9-9f56-99fa-f3f79d95c86@linux.intel.com>
-References: <20230905181649.134720-1-hugo@hugovil.com>
+        Wed, 6 Sep 2023 06:47:59 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA5DB171A
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 03:47:48 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso516655466b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 03:47:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693997267; x=1694602067; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZO65eTXGHBrtgHAyZZ8d/aTZdYjPqPSyqi7odEiRkKA=;
+        b=BNf2Hs/cxFromizNHD+/c6ZuseRYdbp4Q8oASgFJzPqc2Ki8eK5dBUmXqVHFKAdTM9
+         f0O1dEpL3u8KIjhaT6rmBMjInc5WgjJeavcJiyjjwU+w874TuXU2qJN3rDIAOQ34/XKO
+         Dk8Xz6uNuSWwFkjTpwFVpE/velVhrnY5x7rlbpPdTCtmbLrZOCKNLeVqNz1S27GDptsf
+         Vh0y+nObQL3hTaI7ZEVbqqu6ILWuWHrWUaiMrqOIAbQU6yJtD13dsJJfzEadWBu4yCN9
+         diLhskW8tg83k/FwT7kby1evnk6qaS/2cgyz/aJk5DqUcDz1zFGCXQRzPr7A44cfvfjv
+         /HGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693997267; x=1694602067;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZO65eTXGHBrtgHAyZZ8d/aTZdYjPqPSyqi7odEiRkKA=;
+        b=GslwJTaaapZhdHDC1u4ZwBj9PwmuAenkT2IwJoDk7ViFpMxq98hyiT7eMFC6m8YviV
+         I8FOWzmVuwXRpG1RbFhinIO4VRgTdaPWDWA7gChgeLW6MWAEuXEFvWqieCgRK1XiwUoN
+         1Y0U4fkFS6zAS3RNQJsKeDgF/pa0Drw5iWQvGqebbm0jeAbMLeZ7MHYVnkB7DN3ZORfe
+         QX1wjramsY1nBE7dP1ha8BsmV9vqmPGmekhBFJtV0+Zrd+mEg6kPlFtRCygoI9i08RTV
+         uAND8w2g+tAmzNt10XeWucsgLoEvcvevvWkDLMnSztb8r3MHqFmgWmZtSkpWFQA62YHX
+         lIEA==
+X-Gm-Message-State: AOJu0YyylhO9n6BA0hqRu/TnVO9dph0eXBYzlCn57ZHFBUROTv/FBODG
+        ATrC1b0deUxsD3MFUajpqMgubw==
+X-Google-Smtp-Source: AGHT+IFlZm1yVsPEs9YxE6Ry6DfjnXJ01nQEBd4ajUs9plRF26FBDEiqEIkkDf1R7PERv9KnUnDUEg==
+X-Received: by 2002:a17:906:8a4c:b0:9a5:d657:47ec with SMTP id gx12-20020a1709068a4c00b009a5d65747ecmr1871453ejc.64.1693997267271;
+        Wed, 06 Sep 2023 03:47:47 -0700 (PDT)
+Received: from krzk-bin.. (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id e7-20020a170906248700b0099cc15f09a0sm8791163ejb.55.2023.09.06.03.47.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 03:47:46 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 1/6] arm64: dts: qcom: sm8550-mtp: use correct UFS supply
+Date:   Wed,  6 Sep 2023 12:47:39 +0200
+Message-Id: <20230906104744.163479-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1916176287-1693997234=:1906"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+According to schematics the VCCQ2 supply is not connected and the L3G
+regulator instead powers up the controller pads (VDD_PX10).  Use correct
+supply vdd-hba and drop unsupported current limit for the vdd-hba.
 
---8323329-1916176287-1693997234=:1906
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/sm8550-mtp.dts | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-On Tue, 5 Sep 2023, Hugo Villeneuve wrote:
-
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> 
-> This macro is not used anywhere.
-> 
-> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> ---
->  drivers/tty/serial/sc16is7xx.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-> index f61d98e09dc3..d8534580c6d5 100644
-> --- a/drivers/tty/serial/sc16is7xx.c
-> +++ b/drivers/tty/serial/sc16is7xx.c
-> @@ -358,7 +358,6 @@ static struct uart_driver sc16is7xx_uart = {
->  static void sc16is7xx_ier_set(struct uart_port *port, u8 bit);
->  static void sc16is7xx_stop_tx(struct uart_port *port);
->  
-> -#define to_sc16is7xx_port(p,e)	((container_of((p), struct sc16is7xx_port, e)))
->  #define to_sc16is7xx_one(p,e)	((container_of((p), struct sc16is7xx_one, e)))
->  
->  static int sc16is7xx_line(struct uart_port *port)
-> 
-> base-commit: 3f86ed6ec0b390c033eae7f9c487a3fea268e027
-
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-
-Note that Greg might be happier if you wait next time until after the 
-merge window is closed before sending non-fixes patch like this.
-
+diff --git a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
+index f29cce5186ac..91aa37ecb259 100644
+--- a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
++++ b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
+@@ -797,8 +797,7 @@ &ufs_mem_hc {
+ 	vcc-max-microamp = <1300000>;
+ 	vccq-supply = <&vreg_l1g_1p2>;
+ 	vccq-max-microamp = <1200000>;
+-	vccq2-supply = <&vreg_l3g_1p2>;
+-	vccq2-max-microamp = <100>;
++	vdd-hba-supply = <&vreg_l3g_1p2>;
+ 
+ 	status = "okay";
+ };
 -- 
- i.
+2.34.1
 
---8323329-1916176287-1693997234=:1906--
