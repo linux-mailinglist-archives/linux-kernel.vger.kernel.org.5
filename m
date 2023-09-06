@@ -2,84 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0233794510
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 362AF794512
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244779AbjIFVY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 17:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44932 "EHLO
+        id S244781AbjIFV0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 17:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231781AbjIFVY6 (ORCPT
+        with ESMTP id S231781AbjIFV0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 17:24:58 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10BCC173B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 14:24:55 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6befdb1f545so241073a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 14:24:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694035494; x=1694640294; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GWC0scYfUcpjGiaSYDl8OTHYYNTx4MVTsQ/udlg5YMc=;
-        b=t9FFcO4/Bi1wOZlcuwaJP82na8lU8yruTMEx4uoWdhz/e4JJKo2VNQf3rhtO40BqKd
-         IA0g1unHNwQYiCEQYVhEASyWms1wn2iYM6reC98e+115PDQAU0okcCaAjwMnqWZ0jLlk
-         UX+b6UD6CGTXcdhpz5+mqP7M0hn4OLa4udU0kyN1st29JwN+NcaNCRtN2Yw0OJYQAWBP
-         zjmKFRK5UA26m+04fAbGjjJHzYXlMLLoTIKFMHgQKSkreq3tYlfvxcwV0x7S/YwBXCav
-         E5HA3yy1srtgPebfiuSRcXjS/fiGLQRiEn7oCl6xjKjEyNVPGCVuDirYWtYOzemGaxKa
-         luxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694035494; x=1694640294;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GWC0scYfUcpjGiaSYDl8OTHYYNTx4MVTsQ/udlg5YMc=;
-        b=ZUkIURo8f4FukgWqwWUdAceofRZQYAuoNbFdxCaPkdiwaVw+XVadkigZlZcGQL1p2J
-         jtYv+MrFXG7osx21stA79Fad/1V1pYVXLZinS+ssadBQ8hl2C1pVT3Bm0U5qA4Y9REdL
-         wHcr3MFfvKLH0pcHoFxFLcDKDBmQ3z6CUHxEUPeYw7gRgO/julBA0aO2S8w7vU8JrIXd
-         R5tm6CFL5zLMGxp9Acn5k4VbEx1dTeqmkzhLhIs6mdZ+DVmu6REYsI/FiFjsZqi+ayLw
-         E/Y+jjCae8+lSDyq/J41nBtrjbI6jodPCppPq8d3OhryRNZViMP1xUJCf4sKy1PJYp9f
-         1DXQ==
-X-Gm-Message-State: AOJu0YzivszuGUS67PLvwG1C2yTXZ+4cjoUsPZ98U7lzb1mwERI6fdpX
-        Y0acQfxqrO2JbF6SkJU+YeLXkgKM31UoVwzDCw6JZg==
-X-Google-Smtp-Source: AGHT+IFPsVndCeBo40u3rX9JIqhESaxWN53EdxLX74lsEc8fthP0isEFqBZ6PGo9Hmx69vN8M2MdelnkfIsuURtvkAg=
-X-Received: by 2002:a9d:5c83:0:b0:6b9:b096:2617 with SMTP id
- a3-20020a9d5c83000000b006b9b0962617mr2966540oti.14.1694035494341; Wed, 06 Sep
- 2023 14:24:54 -0700 (PDT)
+        Wed, 6 Sep 2023 17:26:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A115B173B;
+        Wed,  6 Sep 2023 14:26:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B4C4C433C7;
+        Wed,  6 Sep 2023 21:26:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694035577;
+        bh=BlBtuzP4WLhslFzCA4A573BYCXxi0Cf+G4azjlhW7Co=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M0kZbLVTCZfH42OQoJmZX2RUXcBcsPUmH4P1PmAnTPyqzugHJjnRi8rz52qPJ5DkA
+         KDzY9+xgRjofRpJvxpWD+upFSkTl/a/TYN6rYFz8ZsGaNUrBlxvwGqqqT7uFfcdSr+
+         KwTTxUUUREqjQB7gDxwEdBccZSFxtetmTqjdq2Xs/ayuj6BBzKXQFXH4Jp9z0m7FEV
+         no5SlE2VMZqLg+WCKDuxjP4d7tMHpOIxG9BZKGS5eD4TcwYSIOt/tFAfvATS1l3175
+         /09HuBOpJUeNe9atdJYPyEwPu2a18P0BSm+jKls0fcJ8r97JVwBPa4oT2F2n7vMx+O
+         4Xr7HPWssbQYA==
+Date:   Wed, 6 Sep 2023 14:26:16 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Bernd Schubert <bernd.schubert@fastmail.fm>,
+        Mateusz Guzik <mjguzik@gmail.com>, brauner@kernel.org,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH] vfs: add inode lockdep assertions
+Message-ID: <20230906212616.GI28160@frogsfrogsfrogs>
+References: <20230831151414.2714750-1-mjguzik@gmail.com>
+ <ZPiYp+t6JTUscc81@casper.infradead.org>
+ <b0434328-01f9-dc5c-fe25-4a249130a81d@fastmail.fm>
+ <20230906152948.GE28160@frogsfrogsfrogs>
+ <ZPiiDj1T3lGp2w2c@casper.infradead.org>
+ <20230906170724.GI28202@frogsfrogsfrogs>
+ <ZPjqwUq+lUOhYOEa@casper.infradead.org>
 MIME-Version: 1.0
-References: <20230906142357.138846-1-brgl@bgdev.pl>
-In-Reply-To: <20230906142357.138846-1-brgl@bgdev.pl>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 6 Sep 2023 23:24:43 +0200
-Message-ID: <CACRpkdZ86dery1k2Wh-Kxy8L3Tc=W+G=RGY5kAirDFXVrkML=g@mail.gmail.com>
-Subject: Re: [PATCH] gpio: xgene-sb: don't include gpiolib.h
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPjqwUq+lUOhYOEa@casper.infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 4:24=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl> =
-wrote:
+On Wed, Sep 06, 2023 at 10:10:25PM +0100, Matthew Wilcox wrote:
+> On Wed, Sep 06, 2023 at 10:07:24AM -0700, Darrick J. Wong wrote:
+> > You'd be better off converting this to:
+> > 
+> > 	return __xfs_rwsem_islocked(&ip->i_lock.mr_lock,
+> > 				(lock_flags & XFS_ILOCK_SHARED));
+> > 
+> > And then fixing __xfs_rwsem_islocked to do:
+> > 
+> > static inline bool
+> > __xfs_rwsem_islocked(
+> > 	struct rw_semaphore	*rwsem,
+> > 	bool			shared)
+> > {
+> > 	if (!debug_locks) {
+> > 		if (!shared)
+> > 			return rwsem_is_write_locked(rwsem);
+> > 		return rwsem_is_locked(rwsem);
+> > 	}
+> > 
+> > 	...
+> > }
+> 
+> so ... I did that.  And then many isilocked() calls started failing.
+> generic/017 was the first one:
+> 
+> 00030 XFS: Assertion failed: xfs_isilocked(ip, XFS_ILOCK_EXCL), file: fs/xfs/libxfs/xfs_trans_inode.c, line: 93
+> 00030 ------------[ cut here ]------------
+> 00030 WARNING: CPU: 5 PID: 77 at fs/xfs/xfs_message.c:104 assfail+0x2c/0x40
+> 00030 Modules linked in:
+> 00030 CPU: 5 PID: 77 Comm: kworker/5:1 Kdump: loaded Not tainted 6.5.0-00006-g88a61c17df8f-dirty #14
+> 00030 Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> 00030 Workqueue: xfsalloc xfs_btree_split_worker
+> 00030 RIP: 0010:assfail+0x2c/0x40
+> 00030 Code: 89 d0 41 89 c9 48 c7 c2 80 70 0f 82 48 89 f1 48 89 e5 48 89 fe 48 c7
+>  c7 08 4f 07 82 e8 fd fd ff ff 80 3d 26 cc ed 00 00 75 04 <0f> 0b 5d c3 0f 0b 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 55 48
+> 00030 RSP: 0018:ffff888003f0bc28 EFLAGS: 00010246
+> 00030 RAX: 00000000ffffffea RBX: ffff88800d9a0000 RCX: 000000007fffffff
+> 00030 RDX: 0000000000000021 RSI: 0000000000000000 RDI: ffffffff82074f08
+> 00030 RBP: ffff888003f0bc28 R08: 0000000000000000 R09: 000000000000000a
+> 00030 R10: 000000000000000a R11: 0fffffffffffffff R12: ffff888009ff6000
+> 00030 R13: ffff88800ac8a000 R14: 0000000000000001 R15: ffff88800af0a000
+> 00030 FS:  0000000000000000(0000) GS:ffff88807d940000(0000) knlGS:0000000000000000
+> 00030 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> 00030 CR2: 00007ff177b05d58 CR3: 0000000007aa2002 CR4: 0000000000770ea0
+> 00030 PKRU: 55555554
+> 00030 Call Trace:
+> 00030  <TASK>
+> 00030  ? show_regs+0x5c/0x70
+> 00030  ? __warn+0x84/0x180
+> 00030  ? assfail+0x2c/0x40
+> 00030  ? report_bug+0x18e/0x1c0
+> 00030  ? handle_bug+0x3e/0x70
+> 00030  ? exc_invalid_op+0x18/0x70
+> 00030  ? asm_exc_invalid_op+0x1b/0x20
+> 00030  ? assfail+0x2c/0x40
+> 00030  ? assfail+0x23/0x40
+> 00030  xfs_trans_log_inode+0xf9/0x120
+> 00030  xfs_bmbt_alloc_block+0xf0/0x1c0
+> 00030  __xfs_btree_split+0xf8/0x6c0
+> 00030  ? __this_cpu_preempt_check+0x13/0x20
+> 00030  ? lock_acquire+0xc8/0x280
+> 00030  xfs_btree_split_worker+0x8a/0x110
+> 00030  process_one_work+0x23f/0x510
+> 00030  worker_thread+0x4d/0x3b0
+> 00030  ? process_one_work+0x510/0x510
+> 00030  kthread+0x106/0x140
+> 00030  ? kthread_complete_and_exit+0x20/0x20
+> 00030  ret_from_fork+0x31/0x50
+> 00030  ? kthread_complete_and_exit+0x20/0x20
+> 00030  ret_from_fork_asm+0x11/0x20
+> 00030  </TASK>
+> 00030 irq event stamp: 2901
+> 00030 hardirqs last  enabled at (2909): [<ffffffff810e4d83>] __up_console_sem+0x53/0x60
+> 00030 hardirqs last disabled at (2916): [<ffffffff810e4d68>] __up_console_sem+0x38/0x60
+> 00030 softirqs last  enabled at (0): [<ffffffff81067bd0>] copy_process+0x830/0x1c10
+> 00030 softirqs last disabled at (0): [<0000000000000000>] 0x0
+> 00030 ---[ end trace 0000000000000000 ]---
+> 
+> but here's the thing, I have lockdep enabled.  So it's not testing my
+> new rwsem_is_write_locked() code, it's testing the current lockdep
+> stuff.
+> 
+> So I have a feeling that we're not telling lockdep that we've acquired
+> the i_lock.  Or something?  Seems unlikely that this is a real bug;
+> surely we'd've noticed before now.
+> 
+> Code here:
+> https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/mrlock
+> 
+> ie git clone git://git.infradead.org/users/willy/pagecache.git mrlock
+> 
+> You don't need the top commit.  754fb6a68dae is enough to provoke it,
+> as long as you have CONFIG_LOCKDEP enabled.
 
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> The gpiolib.h is unnecessarily included in the driver. None of its
-> symbols are used so drop it.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Yeah.  The lockdep assertions in __xfs_rwsem_islocked are broken because
+the fsstress thread takes the ILOCK_EXCL, decides to defer a bmap btree
+split to a workqueue to avoid overflowing the kernel stack, and doesn't
+tell lockdep that the workqueue is (effectively) the rwsem owner until
+it completes.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+The last time we tried to get rid of mrlock_t, dchinner suggested using
+lockdep_assert_held_non_owner to fix the assertions, but (a) that
+doesn't seem to exist in TOT 6.5 and (b) the inode rwsems protect the
+inode data structure, not threads.  Hence you could just get rid of the
+lockdep assertions and use the rwsem_* versions unconditionally.
 
-Yours,
-Linus Walleij
+--D
