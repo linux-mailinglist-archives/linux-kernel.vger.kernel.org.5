@@ -2,199 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB23F794503
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1AA794506
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244735AbjIFVSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 17:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
+        id S244741AbjIFVTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 17:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234572AbjIFVSh (ORCPT
+        with ESMTP id S234572AbjIFVTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 17:18:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF249C;
-        Wed,  6 Sep 2023 14:18:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694035113; x=1725571113;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=Hrh6MnTMRYH79ecIVpp5acj9okYIHWs+xrieAzVimug=;
-  b=L8LG3Z3NciWMtoog6DTiMlkbSiyHe91oyjEkP2lR8KqDPQNC2u95kThy
-   7JYgQHcg7qhjm2jvByK5vCHpq6AYKiqrzqgCCaFOljOi2w2nyGKNw6CCi
-   ZQGwqwfRjvTk+esrDgygtkgZHrAvQWCbyaYgYBTQ64ipy9OA0vJeS0XME
-   d7xUVOPVfcMUXqYrRclB/PZikQwX0Wyf4wqZ643Icb2GjsLP6/F55OsDE
-   SD11C1Px2ALMmXMf4s48TwsflPKqwLwjyr8l/aStnpWWn7C9iPPtIXnT4
-   +UmEtb1wW8FxbM07cKPiP46FopjAsqYxhCdDOlX5o5OBXLy/Ph3xOJ+pZ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="379896849"
-X-IronPort-AV: E=Sophos;i="6.02,233,1688454000"; 
-   d="scan'208";a="379896849"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 14:18:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="884894107"
-X-IronPort-AV: E=Sophos;i="6.02,233,1688454000"; 
-   d="scan'208";a="884894107"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Sep 2023 14:18:20 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 6 Sep 2023 14:18:31 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 6 Sep 2023 14:18:30 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Wed, 6 Sep 2023 14:18:30 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Wed, 6 Sep 2023 14:18:28 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dVRfTjNJHH7objPMS52GJquTmD/m6vyG7zzwkhMSiMc/gC4vXDPhDdHer007BZRDiWozol5l8w9X/fdQRWjuwbTHhJVhWFfeAjVopkR8Szpiz6h2nnD9bXu+E7bxDNltfYpgSJd75I4aahSWfp2zymSkX68ScbYa0KWOeCNJqvrEHdhn3A5z7jK4dWqlHsJ6soazZ8lfEibpGHxivDJEOchSRICW3TVR/VbGhUIdygm1KjTF9QIWKJqKlXXX4DrtDum2tPCI1wBwj+3kw5EoaQzsMVdBzHmvBJWbYCdCe9h20NqQXKuJH76AiN7H0tBAwEOlf1Q9hnuwiyxYhlgYlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YunKIhrMnfv0ziiItIYjibEXhd6Bj9PyLBIn4zKIjaQ=;
- b=Udr58noRLyX3jTNLsQNb1zEMZivaG3ycPXRWw69wtXQw+lAxg7mssb5rA2YprfmAWy5R173T2XQc3uJwuS4+4BKW/WNHxCBaUHueNow6CTLRhZthVViTlBKOymbAICJR8JlcFOBl7OltOCQ6umnbpvNsr9cKnps8Ux052oE+tKKdErS9THSSR4aE+5Jh5p/f7J/DePjteWtveO9Sp268BIklbpLws+JWvkttrA3MTb47HxBUUE0z1dWHnnGSCyy2RkEosR5JVZMojD10/p3czG2fyHBl+sK0fy+MtNPRbbhqnxs3dSGn1KlVGCWf2DIUIZuLadsDa41bQNbQKqMurA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by SN7PR11MB6726.namprd11.prod.outlook.com (2603:10b6:806:266::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Wed, 6 Sep
- 2023 21:18:26 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::6da5:f747:ba54:6938]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::6da5:f747:ba54:6938%6]) with mapi id 15.20.6745.034; Wed, 6 Sep 2023
- 21:18:26 +0000
-Date:   Wed, 6 Sep 2023 14:18:23 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ira Weiny <ira.weiny@intel.com>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        Navneet Singh <navneet.singh@intel.com>,
-        Fan Ni <fan.ni@samsung.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC v2 17/18] tools/testing/cxl: Add DC Regions to mock
- mem data
-Message-ID: <64f8ec9f3241d_1e8e782941c@iweiny-mobl.notmuch>
-References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
- <20230604-dcd-type2-upstream-v2-17-f740c47e7916@intel.com>
- <20230830132037.00005348@Huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230830132037.00005348@Huawei.com>
-X-ClientProxiedBy: SJ0PR03CA0245.namprd03.prod.outlook.com
- (2603:10b6:a03:3a0::10) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+        Wed, 6 Sep 2023 17:19:04 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC63E172C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 14:18:53 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-401bdff4cb4so3288025e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 14:18:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1694035132; x=1694639932; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mQ404al4WDQD3mH0iDuVts7w8k2DZJ9BRW045r0DG3s=;
+        b=sqrqa+oNtkTDwfJ48wpz1xZkYlLjrsjZpsbSn9Xu+hOLTKwQgGyyLmiPy4s7J0MH5K
+         lC15rICOtehlmDddPiiUy1N2niygg3kGOVe8/ubYbWaQUe8R4ujuxwfH3gNJYsmlp/ZM
+         srjPmt7f81Zv6wkod/EwaOJdSUTMKkSqko1Km2ZAXUXuWN7yPCzIYVWDChCa5GSjjDec
+         nkOTkYuUftFYXUJvztG04XZ5ll8pxYtQ794JyRCG39K11Pm2J5iJkzlTzEEXVKHTGSrx
+         vZXUw767su21eHjVnFiO5YccFLcYyjMNHUxhgRMA4zWO9gDaNRjzKL2+ULHp19JHKqTS
+         hKhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694035132; x=1694639932;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mQ404al4WDQD3mH0iDuVts7w8k2DZJ9BRW045r0DG3s=;
+        b=ccnbR8xJYmZbszoy6W75LvtPAqNVD7F1SeBoioJUgTO4Khf6UZZCgCCUIV8qVdu5Id
+         JiJeHL7PUNWOMOB5ps2sjly0sw5tE4KOhWQ6PyEkTBNrjTzqc3pwRisUgZZZRWSZZ1+U
+         HVj4pKxsr3lhX7sk8wzjfCmFNrrenyWzniDRT/NgRzCpLkmrVxjlhidCITmgtPhxwW0p
+         fO9PVtRQc+j12hexQCaZHo1abzCFhJ/sUEpBdevj0RGwvL1IADyI+LzAic24RkD4zAKV
+         OmuPEG6ovG0xNCbwBQYNT/48dY4mQgFI49V3oWbifamTpLSEXlTg+fmUiZEPFz8VlEQg
+         FPEA==
+X-Gm-Message-State: AOJu0YwfTqMu6neMndyULg6T2tJztGvfTEmtwpcgX8hZJMaup1wEBfJr
+        wHSGewPGgTD0eHp2AntpG88GUw==
+X-Google-Smtp-Source: AGHT+IHIC9xo+qy2JSUyVNWgZgRalSRXOIOp7lDXK6uc1KMIpTujD/zrrNw2Yq2rRnqau8G53oKNXA==
+X-Received: by 2002:a5d:6508:0:b0:319:7ac6:5161 with SMTP id x8-20020a5d6508000000b003197ac65161mr2891753wru.43.1694035132089;
+        Wed, 06 Sep 2023 14:18:52 -0700 (PDT)
+Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
+        by smtp.gmail.com with ESMTPSA id l21-20020a1c7915000000b003fef6881350sm599302wme.25.2023.09.06.14.18.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 14:18:51 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 22:18:50 +0100
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC PATCH 0/7] sched: cpufreq: Remove magic margins
+Message-ID: <20230906211850.zyvk6qtt6fvpxaf3@airbuntu>
+References: <20230827233203.1315953-1-qyousef@layalina.io>
+ <a6365f63-4669-15e5-b843-f4bfb1bd5e68@arm.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|SN7PR11MB6726:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2afc75b4-66da-4339-9f62-08dbaf1ecf45
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CeVh3FTF+CPlBtx/qjIQF/QpVQdWKBSNdeXA+RBZk9G9z+KLN9Y2a4Ta9Hx4mOqGyjNlmEPFkmYpyLADE3zXXOqghkU5VTLucVDWsHcVpntisJCOg2hrEn1RHIcBFzFaTRtxt19y7q/WuDYdeYa/QaXYdCMW0EEnQSjZK8gVxyHNctRpCyKTy8NhSyNMV1W1/3Jf2iuMsWldvftbMw64+ip3gvn7g2SFBKOTN0YIi5t6FtSFRGWAPRT0U2h7rl5X7fhmUz6AcWTyTWudlzerFLidgqEZOP9z20eYjrpuNs8uNMHJNtMUE4zsEwTSfeV5dAQUMkbFxF3UMF04MuSwP9CblBtBRh4tWhSx4h4QgLVxRgpGnhsE9YntmZ9qEoRs2O4nC3eGcYVfnpmV6B11ygYZ8JSgKqUi899/0OXXSYFlK1GnYvp7saJe8mJuNq9hlslJRi3s4ZuG3md7N1R1vohF1VTv62H+8ggjYZ++tlvfX3dQwy/AXHWAxOc5ZaG3WOJYavU0KE6l5AFgcmvzgWITGcmKZYqRS2LY8VGle4Tfoe2galoITCMA9S3YPJJR
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(39860400002)(136003)(376002)(1800799009)(186009)(451199024)(82960400001)(9686003)(6666004)(6486002)(6506007)(86362001)(38100700002)(26005)(2906002)(6512007)(83380400001)(478600001)(110136005)(4326008)(41300700001)(8936002)(8676002)(5660300002)(66476007)(316002)(54906003)(66556008)(44832011)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XxmrJ+9GhUslfB8ZjqZqr65YKZ/VClvsrHeDLH7TCaEf8B2LKoCSoeo3Y+7x?=
- =?us-ascii?Q?tGOpluOYdLS2rQPtJXWsmhko+Cm52QEm/vABjwoHmue1924jQfUFx+ILsPzd?=
- =?us-ascii?Q?86Nbnf9HKfl+rm71Ez8URixG5+mEkFtd8Sm6q9obDcktoCr9D1ACYER1ZXE2?=
- =?us-ascii?Q?ccUE4t2JUu4240+/zCR0alDQLPDQQm+f4qZYPg9+MZHGTHm/0OB9EIeOdqwM?=
- =?us-ascii?Q?LlalslWLQcgII+/IMSV2pA4qwzgYz33cDT2I6hThoZTjUNT5Msxm74XDYFlQ?=
- =?us-ascii?Q?X19E9lLvYDESuPKYb5XZxAjn3kPzJOcKlnq3k1SXmLNSBSRjC+6EhkzZv75y?=
- =?us-ascii?Q?QbS127yjHjyHOb5agCDxSW60VZf7wP0df48brcWusSvcS5IUhBvRhdIfO/c8?=
- =?us-ascii?Q?HkhPrJrPMPr6exk1meNGx3ot5qIBHGRHTqxtrpoOdMLA0/Jhmwrxj727gyT7?=
- =?us-ascii?Q?uCZVJDRGINjRedUmq4Ifnz49lDhIezpv9RqH3V1NjQ+4kDNSXQEIigQaRlQK?=
- =?us-ascii?Q?wBDZcQoeCivoEnsDdevhxZY6FVZdk1OI4IE+s5L/GspQurJVkUFNh1sXqVji?=
- =?us-ascii?Q?5fu6hQX/N/QErtXPZQHB9gIx+wFJidRVMssgJAG2orI0XrfPXsQbvy3qImP2?=
- =?us-ascii?Q?OEZayRQhVANKQwuNrlN/oiThR90W6/dEQh7HEajOC9DiMAlAcM1SCSOuM72e?=
- =?us-ascii?Q?7STUE+OH2fLnpLs39f3bSQGYyGju1iYhnG650iQk0Tn3p91YvQzLsNJ5I6//?=
- =?us-ascii?Q?9+mLUarsepPqiYHDW5Kv+d8xvzU+pKcjJIMgaoD3ybWSSptqk+RgCwGwSnPA?=
- =?us-ascii?Q?2X9PRjDlV+lo9Rq9gn5r6rPPdSWdCVG60CyXob3AhW/Iv+aOehxLiYP/FLdm?=
- =?us-ascii?Q?d6kgH6LXwczAzGzlO/Mexz/UvSK9ajHGvOxlBykpyOL6GNlxDPXJ/NycqFan?=
- =?us-ascii?Q?NQAZhghZvGicxvFOAWHx7osgWfbDq6YAJ6DOGj86QfonJ4i/gR88mfS7lgT8?=
- =?us-ascii?Q?j9lEOMt4w3V83aIFqCcr/OHRO+aDtPqiio+75XfmFUKdKOo0shPDb9+K5++l?=
- =?us-ascii?Q?Zm2Bx3nVo4lIs+iclkTVu/2qqpfz/VqYB40dZV92lFn2p6pUbwj7WwAKioo1?=
- =?us-ascii?Q?r2fuzQ9Cu/eY28ejskLuLAlx9pMYDysqYOqPk/JXSAnJ8yvO4Wu+gQ0eZcTt?=
- =?us-ascii?Q?h++FBdrK8mJ0q9pz4u/5exJ84uJq/wceG3laZ0qakVuYnfCoYQ4ilGFQ7gDl?=
- =?us-ascii?Q?ZyjNnX/vVtsKm35P46vn2dTeLK1ifbitNqcZ/P6tglbLHmBlWmg6N8gi3Jtt?=
- =?us-ascii?Q?hGVuj7wpt5F8IFcnXAcz27NAF30NWJSjejqv6f+VZl42SrUuoKp1sN3Q54+I?=
- =?us-ascii?Q?ghMNXU42Oiugf4UEEmWbxbKuwDMkr+Mm+iT1v3lnFD9BryvvhBPDFLeQy/4k?=
- =?us-ascii?Q?/rYY7wlY88DfpIa6Ns4lLOjUEEUBJX47vlrx5HflFEL8ciBi9OE531GfZL/8?=
- =?us-ascii?Q?yMAp9ffyxA/Cs38J+isKkpYigHox/FhcYPN1MAmQ6Viv4H3DUerNpAZZknog?=
- =?us-ascii?Q?crcwBbSzkbu77Kyfq72KRu6tkE/OpIm9m7Oh9hLb?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2afc75b4-66da-4339-9f62-08dbaf1ecf45
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 21:18:26.6042
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: knDD6oUvyBRhK+TfA1jb40O4BCOlnnK7ZP0r2Rcs1HI9J9TIXVcPvMgpd+SZQzbXRjzUl5g138fauOODIW6iFw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6726
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a6365f63-4669-15e5-b843-f4bfb1bd5e68@arm.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jonathan Cameron wrote:
-> On Mon, 28 Aug 2023 22:21:08 -0700
-> Ira Weiny <ira.weiny@intel.com> wrote:
-> 
-> > To test DC regions the mock memory devices will need to store
-> > information about the regions and manage fake extent data.
-> > 
-> > Define mock_dc_region information within the mock memory data.  Add
-> > sysfs entries on the mock device to inject and delete extents.
-> > 
-> > The inject format is <start>:<length>:<tag>
-> > The delete format is <start>
-> > 
-> > Add DC mailbox commands to the CEL and implement those commands.
-> > 
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> Looks fine to me.  Totally trivial comment inline.
-> 
-> FWIW
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> 
-> 
-> > +
-> >  static int mock_gsl(struct cxl_mbox_cmd *cmd)
-> >  {
-> >  	if (cmd->size_out < sizeof(mock_gsl_payload))
-> > @@ -1315,6 +1429,148 @@ static int mock_activate_fw(struct cxl_mockmem_data *mdata,
-> >  	return -EINVAL;
-> >  }
-> >  
-> 
-> Bit inconsistent on whether there are one or two blank lines between functions.
+Hi Lukasz
 
-I missed this one in my internal review.  There should be no
-inconsistency...  always 1 unless I messed up!  :-D
+On 09/06/23 10:18, Lukasz Luba wrote:
+> Hi Qais,
+> 
+> On 8/28/23 00:31, Qais Yousef wrote:
+> > Since the introduction of EAS and schedutil, we had two magic 0.8 and 1.25
+> > margins applied in fits_capacity() and apply_dvfs_headroom().
+> > 
+> > As reported two years ago in
+> > 
+> > 	https://lore.kernel.org/lkml/1623855954-6970-1-git-send-email-yt.chang@mediatek.com/
+> > 
+> > these values are not good fit for all systems and people do feel the need to
+> > modify them regularly out of tree.
+> 
+> That is true, in Android kernel those are known 'features'. Furthermore,
+> in my game testing it looks like higher margins do help to shrink
+> number of dropped frames, while on other types of workloads (e.g.
+> those that you have in the link above) the 0% shows better energy.
 
-Thanks,
-Ira
+Do you keep margins high for all types of CPU? I think the littles are the
+problematic ones which higher margins helps as this means you move away from
+them quickly.
+
+> 
+> I remember also the results from MTK regarding the PELT HALF_LIFE
+> 
+> https://lore.kernel.org/all/0f82011994be68502fd9833e499749866539c3df.camel@mediatek.com/
+> 
+> The numbers for 8ms half_life where showing really nice improvement
+> for the 'min fps' metric. I got similar with higher margin.
+> 
+> IMO we can derive quite important information from those different
+> experiments:
+> More sustainable workloads like "Yahoo browser" don't need margin.
+> More unpredictable workloads like "Fortnite" (shooter game with 'open
+> world') need some decent margin.
+
+Yeah. So the point is that while we should have a sensible default, but there
+isn't a one size fits all. But the question is how the user/sysadmin should
+control this? This series is what I propose of course :)
+
+I also think the current forced/fixed margin values enforce a policy that is
+clearly not a good default on many systems. With no alternative in hand but to
+hack their own solutions.
+
+> 
+> The problem is that the periodic task can be 'noisy'. The low-pass
+
+Hehe. That's because they're not really periodic ;-)
+
+I think the model of a periodic task is not suitable for most workloads. All
+of them are dynamic and how much they need to do at each wake up can very
+significantly over 10s of ms.
+
+> filter which is our exponentially weighted moving avg PELT will
+> 'smooth' the measured values. It will block sudden 'spikes' since
+> they are high-frequency changes. Those sudden 'spikes' are
+> the task activations where we need to compute a bit longer, e.g.
+> there was explosion in the game. The 25% margin helps us to
+> be ready for this 'noisy' task - the CPU frequency is higher
+> (and capacity). So if a sudden need for longer computation
+> is seen, then we have enough 'idle time' (~25% idle) to serve this
+> properly and not loose the frame.
+> 
+> The margin helps in two ways for 'noisy' workloads:
+> 1. in fits_capacity() to avoid a CPU which couldn't handle it
+>    and prefers CPUs with higher capacity
+> 2. it asks for longer 'idle time' e.g. 25-40% (depends on margin) to
+>    serve sudden computation need
+> 
+> IIUC, your proposal is to:
+> 1. extend the low-pass filter to some higher frequency, so we
+>    could see those 'spikes' - that's the PELT HALF_LIFE boot
+>    parameter for 8ms
+
+That's another way to look at it, yes. We can control how reactive we'd like
+the system to be for changes.
+
+> 1.1. You are likely to have a 'gift' from the Util_est
+>      which picks the max util_avg values and maintains them
+>      for a while. That's why the 8ms PELT information can last longer
+>      and you can get higher frequency and longer idle time.
+
+This is probably controversial statement. But I am not in favour of util_est.
+I need to collect the data, but I think we're better with 16ms PELT HALFLIFE as
+default instead. But I will need to do a separate investigation on that.
+
+> 2. Plumb in this new idea of dvfs_update_delay as the new
+>    'margin' - this I don't understand
+> 
+> For the 2. I don't see that the dvfs HW characteristics are best
+> for this problem purpose. We can have a really fast DVFS HW,
+> but we need some decent spare idle time in some workloads, which
+> are two independent issues IMO. You might get the higher
+> idle time thanks to 1.1. but this is a 'side effect'.
+> 
+> Could you explain a bit more why this dvfs_update_delay is
+> crucial here?
+
+I'm not sure why you relate this to idle time. And the word margin is a bit
+overloaded here. so I suppose you're referring to the one we have in
+map_util_perf() or apply_dvfs_headroom(). And I suppose you assume this extra
+headroom will result in idle time, but this is not necessarily true IMO.
+
+My rationale is simply that DVFS based on util should follow util_avg as-is.
+But as pointed out in different discussions happened elsewhere, we need to
+provide a headroom for this util to grow as if we were to be exact and the task
+continues to run, then likely the util will go above the current OPP before we
+get a chance to change it again. If we do have an ideal hardware that takes
+0 time to change frequency, then this headroom IMO is not needed because
+frequency will follow us as util grows. Assuming here that util updates
+instantaneously as the task continues to run.
+
+So instead of a constant 25% headroom; I redefine this to be a function of the
+hardware delay. If we take a decision now to choose which OPP, then it should
+be based on util_avg value after taking into account how much it'll grow before
+we take the next decision (which the dvfs_update_delay). We don't need any more
+than that.
+
+Maybe we need to take into account how often we call update_load_avg(). I'm not
+sure about this yet.
+
+If the user wants to have faster response time, then the new knobs are the way
+to control that. But the headroom should be small enough to make sure we don't
+overrun until the next decision point. Not less, and not more.
+
+
+Thanks!
+
+--
+Qais Yousef
