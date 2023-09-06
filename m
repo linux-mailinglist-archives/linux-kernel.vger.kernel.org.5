@@ -2,247 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F26187933FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 05:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74569793406
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 05:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234632AbjIFDOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 23:14:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49840 "EHLO
+        id S235465AbjIFDVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 23:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbjIFDOO (ORCPT
+        with ESMTP id S229767AbjIFDVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 23:14:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A4C199;
-        Tue,  5 Sep 2023 20:14:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693970049; x=1725506049;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=sLoh/CbXARoHd0nwHonOB7+6MT33ITGmmYTWIMuEh1Y=;
-  b=YiPsta/H3TbTtFsNBZtzvYgA9p5/Wvf7iK8ZZjW/AzoKOVPHa3/JtoDv
-   Tbz0+ffyy3b8pu0XMvtdDW8X8pHK1+1IUPneVchjx/3xAX6gjGpN52vsN
-   8zOXlIOq19Jz3Ovyuq1j2ydNYAJyCL/bHHtug2EoL/+CWKjboUqkKIkpx
-   glfYIb2XxGONUSLuNpNSyQNfZb00LrjxHFhiP7zKFyhJvACmilmFJxNnT
-   eJlLsHOk152yYscIuH083WlDiDUj8Bm6EVumxyFHfpZCPgYSeYEd1mSWi
-   QX8b/I3+2qe5BrfDVrRfrGaviIdndHRUFgVfKwsg4da/muKZhdN/JbcYW
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="443351140"
-X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="443351140"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 20:14:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="691149032"
-X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="691149032"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Sep 2023 20:14:09 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 5 Sep 2023 20:14:09 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 5 Sep 2023 20:14:08 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Tue, 5 Sep 2023 20:14:08 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.46) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Tue, 5 Sep 2023 20:14:08 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B4GI8j0BERUj8zBqwH1zifTsQkEKZXYt1NdK69XBgJf9KVVoejXboLsSoyCtOw2blSDieqLl2dcTd9Q98AJ2jPDzf1YQ7U5GF6n3HWgYDuoNzU62rb94k0/v1PdYXnVfzhWypKAVZPFDaLot4Y4NtmFq3LI4qFz2qUEK/10d6eHirAF4FlGPTTFhuecf4tmQ0XOoXjeFcz+Nm4e+Bot5ObC1E+JYOFzz+pA06W0ybMHiLyLgAMv/Hz2t5jWVYqpWmX1z/Qbp0QikZVos1EBUgqP0o/Ilbpn5Krw8roIqrAjbCb9Bk2IuE5idIYQ6eMbsMFNpbKMf0XUzELbfA0GnhA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sLoh/CbXARoHd0nwHonOB7+6MT33ITGmmYTWIMuEh1Y=;
- b=i6IfHUsHv/Sr/hyvr9DaL6zZKZC73KPdlOtGISCcrl0L0cC+/p184wkP+P9up2XPUdl+Wt6Hte+jn4gDVCKGNguGAE4jdhgGX3R9U7QTZpD/NRUXwrHVYtdzM84drKobXPL2DmByH6FcIC/47qj4DA8eP63fZjVBcw8Aa+DDddED/tzOh5pav+8m7dKp81c5vx+DuWHzA+YFM9UQ1dWI7d1aQ2y+04eAToQaup5MLFqvRGbw0BuByVZZk006kn257tpA4xdLf6UbrK3DgeuNIMYVzqnknogjrrDLFhL1kTyZsLOzzHH1a9huzb8R3gS+iFOBb8zB9e5jVYSRdCFH0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ0PR11MB6622.namprd11.prod.outlook.com (2603:10b6:a03:478::6)
- by CO1PR11MB5009.namprd11.prod.outlook.com (2603:10b6:303:9e::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Wed, 6 Sep
- 2023 03:14:06 +0000
-Received: from SJ0PR11MB6622.namprd11.prod.outlook.com
- ([fe80::b077:468b:fc83:6489]) by SJ0PR11MB6622.namprd11.prod.outlook.com
- ([fe80::b077:468b:fc83:6489%5]) with mapi id 15.20.6745.030; Wed, 6 Sep 2023
- 03:14:06 +0000
-From:   "Zhang, Rui" <rui.zhang@intel.com>
-To:     "ville.syrjala@linux.intel.com" <ville.syrjala@linux.intel.com>
-CC:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>
-Subject: Re: [PATCH v2 09/15] powercap/intel_rapl: Cleanup Power Limits
- support
-Thread-Topic: [PATCH v2 09/15] powercap/intel_rapl: Cleanup Power Limits
- support
-Thread-Index: AQHZcmkRGiMQBvUl20ugv9kSVUDzmrAMnbiAgAFd1wA=
-Date:   Wed, 6 Sep 2023 03:14:06 +0000
-Message-ID: <ae58059aed29f2c9e1e99ad67046881e43942eaf.camel@intel.com>
-References: <20230419024419.324436-1-rui.zhang@intel.com>
-         <20230419024419.324436-10-rui.zhang@intel.com> <ZPbJBanVmoMuOhMR@intel.com>
-In-Reply-To: <ZPbJBanVmoMuOhMR@intel.com>
-Accept-Language: en-US
+        Tue, 5 Sep 2023 23:21:38 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D663CE8
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 20:21:33 -0700 (PDT)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3863J1NX017947;
+        Wed, 6 Sep 2023 03:21:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=Gx1Ygurdq4IvbYVYkhgMgcUaLS8j1ahO62sMWAKUqp4=;
+ b=tuCg6c29Us16vHHGe7qw4OqLYnZ9waESdhBBizlTbejbDD0qCAimJwNwki+s0vrWq5uV
+ DHLGgBPU+jbnLAhkiXJ3wLTo89+MCe2687Gm+rjqk73jAa1+24UHghjxr+iEvv0cGt9C
+ v/1Eh+g4gtkPHGQD9O5PzX0OYa0mZIE0vllcVV50ks3HjjR6dOrcoBymTZ7DDlE8BFmZ
+ EvKUVij5YZxiiMZXRt0y6DRxh/5Brv16lhf0gtId2beJvmZ7j6XjVQ7104VFPGUXNRAM
+ xfCN8gU9/q3NXCivsj+Eq0SdkVC4gzlJ5lOVn5Klu5NRpWOiz8TWoxXPv/84fhnFAgtH xg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sxhdrg0tc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Sep 2023 03:21:17 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3863LGrb024424;
+        Wed, 6 Sep 2023 03:21:16 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sxhdrg0t4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Sep 2023 03:21:16 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3861YfPx012212;
+        Wed, 6 Sep 2023 03:21:15 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3svhkjyfp3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Sep 2023 03:21:15 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3863LEGr4260356
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 6 Sep 2023 03:21:15 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C4D8758052;
+        Wed,  6 Sep 2023 03:21:14 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 25EC158056;
+        Wed,  6 Sep 2023 03:21:10 +0000 (GMT)
+Received: from [9.171.19.125] (unknown [9.171.19.125])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Wed,  6 Sep 2023 03:21:09 +0000 (GMT)
+Message-ID: <a3eb29cd-e87e-49f4-1745-b7b9518dfb08@linux.vnet.ibm.com>
+Date:   Wed, 6 Sep 2023 08:51:08 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2] sched/topology: remove sysctl_sched_energy_aware
+ depending on the architecture
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR11MB6622:EE_|CO1PR11MB5009:EE_
-x-ms-office365-filtering-correlation-id: 68d78a81-0291-4134-26ea-08dbae875495
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: NoMoGq/fjUTJq5c7+h8uOjQwYnBZvALd/I1h/VWX8gsvM5qBSF1MXYJwRzu6JYWXMAOLS7Poe1bix92jOx4GnQrGoC2oSmt4iS+vqPF0Acjqd7BdkIbeq9sWZ97dSFJPY6uLOkrUbfIGzn9xfjdn8HfDH0OHRHptIPtziXMP01Sc136bITUI4x2l1+ribsSGEpBAqhwgtjQO0E19Mnnz5729WRXtGltCUKldBpriMK1ME3S1BIweeY11wbR4RKzGS69PBZ51vtQ9fkbHJqOKH7NQ0MAqX1KIXlmjYoll/mXRnNR5dS16Yfn9a6do346RN4Y4uoKYQaGnkoJofk+3/gUNaoDZHhRYaFsDc7rePbK0InT+PWtBGqIiOZh9HS0rxUbnR+Rs/n8/a/1+dokuDpawQWpVRFTsZ8Ni7TgwU5lvJZv4vheYlqNlHWBH7gPrhupiBeLM+WwhNcqbfktnIPmIgh2TtmpYIJXPULxfp0D6VqZ5JSpS4ksGffugDZ0Z5d/heg5Onomymg3yPEQ8Qlx30heVIAEEcSTCpeSlUkQ7JNm1CLEe8YKCW6FEspqeGzVALBws2VCeu/QtFWuw60ZKQUm+V5EXXMx3mSTcVtZ5RDgwC/xtsPw4WwvtmhLS
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB6622.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(376002)(39860400002)(396003)(186009)(1800799009)(451199024)(82960400001)(122000001)(6512007)(478600001)(38070700005)(8936002)(64756008)(91956017)(76116006)(316002)(54906003)(6916009)(66556008)(66476007)(66574015)(66446008)(41300700001)(38100700002)(4326008)(66946007)(8676002)(86362001)(71200400001)(6506007)(6486002)(36756003)(26005)(5660300002)(2906002)(83380400001)(2616005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QmtOWklwL3NQcVhVdDdTWnIrUmJEWTlVdGM5bUlaY0dybDhvUlNqZkZNS3Ny?=
- =?utf-8?B?RU02SE1VQ3paNlFIWVJadFEyNjYxR0FaWFJCRnQzcEw5b3BLdFZ1TGlxWU90?=
- =?utf-8?B?dGl0ckw3QjRqeldia2lwRXhBbzZBS0l3L0dVaGFqdjNxYUxmVUw5aDRXWnBW?=
- =?utf-8?B?L0lzYWhHZ0pxdHdMSW51WjV0Yk8wOGxENDRUbkQwQkhhajJQZU1PMmNhOGls?=
- =?utf-8?B?ZjkvZkNHRXBjRXJ5RzExNkM1bDdjYWlremhBTUY1TTNSdlgyQ2J3cTA5RFN0?=
- =?utf-8?B?cExMZThFK2JYNU1hb3ZwNEpZazkvSFBPbFpFSDJxeGhuVlp0UHk3NTNRbTFx?=
- =?utf-8?B?bjJhWTVJUk5ENlRINm9VRmJXWWJ4K0VFb2UwNjVCQTFWbkowcVh2blZXcStY?=
- =?utf-8?B?amVWRnJVSmpoL3JmR1o5allxdW9RL3lUbWpjTWlWZmlEWUJBckpjaHRaMWZF?=
- =?utf-8?B?Tm9BeW5qK2c4SVZOR2VHMVlCWXJTeGg1RFZRczc1bW1GdWhYcXpiekdkZVdn?=
- =?utf-8?B?QWFrN1dkdU9ZSkt3WHR3Yzd1dnNKMVZmNXdjRHN1ZjZSeHNLV05BaEZxK2tU?=
- =?utf-8?B?RS9JdFJoOVVhU0E1bm04ZHgveUxnMy9jL0pVMC9lOTd5MzJIbXltZUJQaUlP?=
- =?utf-8?B?eFEwKzdPT0xkSDhhS21CZ0R0MGd6K0lmUE9IMEQybUtZeWVsbklOOTlTdXFK?=
- =?utf-8?B?amc5T3N6SmVPV2ZnOG10NmJEWEpKSGVvOEVaT3ZqNUNaRnd5U1BXOGxGUk1Q?=
- =?utf-8?B?OWNsbitHZTAxQjlUaU9VUHU4Tk41eE9XSkJOekpXRWdVaHhFT3JQMVZwZmV2?=
- =?utf-8?B?T1FSVkN2a3dJY3ZyTHJLaCtFSmxiNE9MV3IzaGlNbzZKTUFJV3dUQ29uSHBY?=
- =?utf-8?B?blYvMVVjRi80M1BxVlpwK0tkbmpSQ0M5STh2VE4ycjFzNTZJeFJLZC82cGln?=
- =?utf-8?B?STliNVVYMGtPcFRLTFpDMStBNytxYm5ma3hKQlh6V09XUTMyQmN0Y3k3Z0pt?=
- =?utf-8?B?L25jODhGdGkyYnlrT0ZGU01IREhiYkNSSWZRL2JVMk5xK1BYd29CVkI0dnRS?=
- =?utf-8?B?U2RCc1kxd2pyK2FORFVqUGpnTVZOQzNnMmFnMmEyUHFNWlJKa1kwNDhQOStw?=
- =?utf-8?B?bjNlaHZDZ3lBMW1Fdk0yeUE2dEpmL3V2cVNvQ0hVV3lVb3RGSmdGdUxGelJW?=
- =?utf-8?B?d2tKdEV5RjZSR3hKTDVrRTFjdmZHRjdDUFRBQnJEOHl2QlBQNHJsRWZYeDNF?=
- =?utf-8?B?OHhiUVFhVDdSWjJ5QmRnVHB2QXRaRUpwTXd4L0lsNkQ4UVNrQ1lWbUduUVFn?=
- =?utf-8?B?dUVESnZXbGdnMmxLVmJldmoveGdLNWFsTlhsK3FtY0l6SUZpK2srb1hMVEtK?=
- =?utf-8?B?b25BQzRuaEVBZGU1VzJvTmtLdlViVllMZkd3bUtpZmZYN3dBRHR6T2J4MUdr?=
- =?utf-8?B?SXpkT0ZlWUh1cEkweklxMHU2VFcwd1dWZkZJTStBckUxTktjdzN6SXU3UlJy?=
- =?utf-8?B?WjhDR2M5TUhHOUw2WnRoK3Q3bGJXVVJMSWE0cVlHMFZ6cnZvYld6S0pPUkN6?=
- =?utf-8?B?ckZzamt5UlVNemhBRjBVNWhPTXlmTkJVZXR6V3NQYXNtVkpDeTNDVytXR3VO?=
- =?utf-8?B?bmk4RDNRL09uYnBPUG9mZHJlTnBZeEhXOEw0VlFSNExOWktDcGRYU1BPa1BC?=
- =?utf-8?B?dTVYT0xLbmo5MnVQVlBwM1ZLM29vd1BSNVRuNkdybWZrajdYUEUxMUhVWUY4?=
- =?utf-8?B?N1IwZjgweGV0SHV1SndDalhjT0xRV0xJbDgvRXBETUVlMHFrczVIZlM0M3Bz?=
- =?utf-8?B?VzVBNjlSajQvSkNqOUNIbzkyV1hpY1U1enhZM0V1RWFGWm8vTm5kNmZINGVs?=
- =?utf-8?B?U0VEWStBQ1pscnFGYlZXanptbW5GOW91eWhRbDhGL0JxMFJ0S3paRFFGMW5S?=
- =?utf-8?B?Y0VGWHRtcVJwZmdwbitmTU9GcHFjMCtpek9EeWdYekR6TGl5cUFFZkMvN00z?=
- =?utf-8?B?VWF4R04zMjZYc1dPYXBiTjIzYjhzazBGL254L2Y3bHVsRUhiVjZpdlJIbHc3?=
- =?utf-8?B?MzBHcjBaYnFUWWl4SFBMSFl6ODVyTXd1RFowcmh2Y1YzdXNJdDhJMTRsUkVF?=
- =?utf-8?Q?DU6WDH3Ay5YWYpCLH2S+h4Cpb?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C5C3B9EDF597F048B7FFEFBFCCB3C187@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+To:     Pierre Gondois <pierre.gondois@arm.com>
+Cc:     dietmar.eggemann@arm.com, vincent.guittot@linaro.org,
+        peterz@infradead.org, mingo@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
+        quentin.perret@arm.com, srikar@linux.vnet.ibm.com,
+        mgorman@techsingularity.net, mingo@kernel.org, yu.c.chen@intel.com
+References: <20230901065249.137242-1-sshegde@linux.vnet.ibm.com>
+ <b81e3d8f-88e3-e7b5-0dbc-78268193db7e@arm.com>
+From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+In-Reply-To: <b81e3d8f-88e3-e7b5-0dbc-78268193db7e@arm.com>
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: lB7qk32FoJL7XJOcH4njY3Tdk5oQDwnU
+X-Proofpoint-GUID: 8MQExDS1kTwrtDxdjllHobhKfgzoOD73
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB6622.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68d78a81-0291-4134-26ea-08dbae875495
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Sep 2023 03:14:06.5834
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4QoLvZDG0XIxFYO/c1ZtnRQhKBCzYPL0dB32K6MXsV3IHo8RwEBv4DhXtgv2dlPuY68LVqOp8S5i4dieYfsWNQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5009
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_13,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 impostorscore=0
+ mlxscore=0 mlxlogscore=999 bulkscore=0 spamscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309060026
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIFZpbGxlLA0KDQpPbiBUdWUsIDIwMjMtMDktMDUgYXQgMDk6MjEgKzAzMDAsIFZpbGxlIFN5
-cmrDpGzDpCB3cm90ZToNCj4gT24gV2VkLCBBcHIgMTksIDIwMjMgYXQgMTA6NDQ6MTNBTSArMDgw
-MCwgWmhhbmcgUnVpIHdyb3RlOg0KPiA+IFRoZSBzYW1lIHNldCBvZiBvcGVyYXRpb25zIGFyZSBz
-aGFyZWQgYnkgZGlmZmVyZW50IFBvd2VydCBMaW1pdHMsDQo+ID4gaW5jbHVkaW5nIFBvd2VyIExp
-bWl0IGdldC9zZXQsIFBvd2VyIExpbWl0IGVuYWJsZS9kaXNhYmxlLCBjbGFtcGluZw0KPiA+IGVu
-YWJsZS9kaXNhYmxlLCB0aW1lIHdpbmRvdyBnZXQvc2V0LCBhbmQgbWF4IHBvd2VyIGdldC9zZXQs
-IGV0Yy4NCj4gPiANCj4gPiBCdXQgdGhlIHNhbWUgb3BlcmF0aW9uIGZvciBkaWZmZXJlbnQgUG93
-ZXIgTGltaXQgaGFzIGRpZmZlcmVudA0KPiA+IHByaW1pdGl2ZXMgYmVjYXVzZSB0aGV5IHVzZSBk
-aWZmZXJlbnQgcmVnaXN0ZXJzL3JlZ2lzdGVyIGJpdHMuDQo+ID4gDQo+ID4gQSBsb3Qgb2YgZGly
-dHkvZHVwbGljYXRlIGNvZGUgd2FzIGludHJvZHVjZWQgdG8gaGFuZGxlIHRoaXMNCj4gPiBkaWZm
-ZXJlbmNlLg0KPiA+IA0KPiA+IEludHJvZHVjZSBhIHVuaXZlcnNhbCB3YXkgdG8gaXNzdWUgUG93
-ZXIgTGltaXQgb3BlcmF0aW9ucy4NCj4gPiBJbnN0ZWFkIG9mIHVzaW5nIGhhcmRjb2RlZCBwcmlt
-aXRpdmUgbmFtZSBkaXJlY3RseSwgdXNlIFBvd2VyIExpbWl0DQo+ID4gaWQNCj4gPiArIG9wZXJh
-dGlvbiB0eXBlLCBhbmQgaGlkZSBhbGwgdGhlIFBvd2VyIExpbWl0IGRpZmZlcmVuY2UgZGV0YWls
-cw0KPiA+IGluIGENCj4gPiBjZW50cmFsIHBsYWNlLCBnZXRfcGxfcHJpbSgpLiBUd28gaGVscGVy
-cywgcmFwbF9yZWFkX3BsX2RhdGEoKSBhbmQNCj4gPiByYXBsX3dyaXRlX3BsX2RhdGEoKSwgYXJl
-IGludHJvZHVjZWQgYXQgdGhlIHNhbWUgdGltZSB0byBzaW1wbGlmeQ0KPiA+IHRoZQ0KPiA+IGNv
-ZGUgZm9yIGlzc3VpbmcgUG93ZXIgTGltaXQgb3BlcmF0aW9ucy4NCj4gPiANCj4gPiBTaWduZWQt
-b2ZmLWJ5OiBaaGFuZyBSdWkgPHJ1aS56aGFuZ0BpbnRlbC5jb20+DQo+ID4gVGVzdGVkLWJ5OiBX
-YW5nIFdlbmR5IDx3ZW5keS53YW5nQGludGVsLmNvbT4NCj4gPiAtLS0NCj4gPiDCoGRyaXZlcnMv
-cG93ZXJjYXAvaW50ZWxfcmFwbF9jb21tb24uYyB8IDM0MyArKysrKysrKysrKystLS0tLS0tLS0t
-LQ0KPiA+IC0tLS0NCj4gPiDCoGluY2x1ZGUvbGludXgvaW50ZWxfcmFwbC5owqDCoMKgwqDCoMKg
-wqDCoMKgwqAgfMKgwqAgMSAtDQo+ID4gwqAyIGZpbGVzIGNoYW5nZWQsIDE0NiBpbnNlcnRpb25z
-KCspLCAxOTggZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcG93
-ZXJjYXAvaW50ZWxfcmFwbF9jb21tb24uYw0KPiA+IGIvZHJpdmVycy9wb3dlcmNhcC9pbnRlbF9y
-YXBsX2NvbW1vbi5jDQo+ID4gaW5kZXggOGU3N2RmNDIyNTdhLi43ZjgwYzM1ZTVjODYgMTAwNjQ0
-DQo+ID4gLS0tIGEvZHJpdmVycy9wb3dlcmNhcC9pbnRlbF9yYXBsX2NvbW1vbi5jDQo+ID4gKysr
-IGIvZHJpdmVycy9wb3dlcmNhcC9pbnRlbF9yYXBsX2NvbW1vbi5jDQo+IDxzbmlwPg0KPiA+IEBA
-IC04MTgsNiArNzc4LDMzIEBAIHN0YXRpYyBpbnQgcmFwbF93cml0ZV9kYXRhX3JhdyhzdHJ1Y3QN
-Cj4gPiByYXBsX2RvbWFpbiAqcmQsDQo+ID4gwqDCoMKgwqDCoMKgwqDCoHJldHVybiByZXQ7DQo+
-ID4gwqB9DQo+ID4gwqANCj4gPiArc3RhdGljIGludCByYXBsX3JlYWRfcGxfZGF0YShzdHJ1Y3Qg
-cmFwbF9kb21haW4gKnJkLCBpbnQgcGwsDQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGVudW0gcGxfcHJpbXMgcGxfcHJpbSwgYm9v
-bCB4bGF0ZSwNCj4gPiB1NjQgKmRhdGEpDQo+ID4gK3sNCj4gPiArwqDCoMKgwqDCoMKgwqBlbnVt
-IHJhcGxfcHJpbWl0aXZlcyBwcmltID0gZ2V0X3BsX3ByaW0ocGwsIHBsX3ByaW0pOw0KPiA+ICsN
-Cj4gPiArwqDCoMKgwqDCoMKgwqBpZiAoIWlzX3BsX3ZhbGlkKHJkLCBwbCkpDQo+ID4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiAtRUlOVkFMOw0KPiA+ICsNCj4gPiArwqDC
-oMKgwqDCoMKgwqByZXR1cm4gcmFwbF9yZWFkX2RhdGFfcmF3KHJkLCBwcmltLCB4bGF0ZSwgZGF0
-YSk7DQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBpbnQgcmFwbF93cml0ZV9wbF9kYXRhKHN0
-cnVjdCByYXBsX2RvbWFpbiAqcmQsIGludCBwbCwNCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBlbnVtIHBsX3ByaW1zIHBsX3By
-aW0sDQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgdW5zaWduZWQgbG9uZyBsb25nIHZhbHVlKQ0KPiA+ICt7DQo+ID4gK8KgwqDC
-oMKgwqDCoMKgZW51bSByYXBsX3ByaW1pdGl2ZXMgcHJpbSA9IGdldF9wbF9wcmltKHBsLCBwbF9w
-cmltKTsNCj4gPiArDQo+ID4gK8KgwqDCoMKgwqDCoMKgaWYgKCFpc19wbF92YWxpZChyZCwgcGwp
-KQ0KPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gLUVJTlZBTDsNCj4g
-PiArDQo+ID4gK8KgwqDCoMKgwqDCoMKgaWYgKHJkLT5zdGF0ZSAmIERPTUFJTl9TVEFURV9CSU9T
-X0xPQ0tFRCkgew0KPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwcl93YXJuKCIl
-czolczolcyBsb2NrZWQgYnkgQklPU1xuIiwgcmQtPnJwLT5uYW1lLA0KPiA+IHJkLT5uYW1lLCBw
-bF9uYW1lc1twbF0pOw0KPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4g
-LUVBQ0NFUzsNCj4gDQo+IFRoaXMgc2VlbXMgdG8gYmUgY2F1c2luZyBhIGxvdCBvZiBXQVJOIGxl
-dmVsIGRtZXNnIHNwYW0gWzFdIGR1cmluZw0KPiBzdXNwZW5kL3Jlc3VtZSBvbiBzZXZlcmFsIG1h
-Y2hpbmVzLiBJIHN1cHBvc2UgcHJldmlvdXNseSB0aGUNCj4gd2FybmluZyB3YXMgb25seSBwcmlu
-dGVkIHdoZW4gdHJ5aW5nIHRvIGNoYW5nZSB0aGUgbGltaXRzIGV4cGxpY2l0bHksDQoNCkJlZm9y
-ZSB0aGlzIHBhdGNoLCB3aGVuIGVuYWJsaW5nIGEgcG93ZXIgbGltaXQsIGl0IGRvZXNuJ3QgZ2l2
-ZSBhDQp3YXJuaW5nIGJ1dCByZXR1cm5zIC1FQUNDRVMgZGlyZWN0bHkuDQoNCkFmdGVyIHRoaXMg
-cGF0Y2gsIGl0IGdpdmVzIGEgd2FybmluZyB3aGVuIGFueSBjaGFuZ2UgaXMgbWFkZSB0byBhDQps
-b2NrZWQgcG93ZXIgbGltaXQsIGFuZCB0aGlzIGluY2x1ZGVzIGVuYWJsaW5nL3NldHRpbmcgdGhl
-IHBvd2VyIGxpbWl0LA0KY2hhbmdpbmcgdGhlIHRpbWUgd2luZG93LCBldGMuDQoNClNvIEkgdGhp
-bmsgaW4geW91ciBjYXNlLCB0aGUgUkFQTCBQYWNrYWdlIGRvbWFpbiBpcyBlbmFibGVkIHVwb24g
-cmVzdW1lDQpmb3Igc29tZSByZWFzb24sIG1heWJlIHJlcXVlc3RlZCBieSB0aGVybWFsZCwgYW5k
-IHRoYXQncyB3aHkgd2Ugc2VlDQp0aGlzIG5ldyB3YXJuaW5nLg0KDQpUaGUgYmVsb3cgY2hhbmdl
-IGtlZXBzIHRoZSBwcmV2aW91cyBsb2dpYywgY2FuIHlvdSBjb25maXJtIHRoaXM/DQoNCklNTywg
-dGhlIG5ldyBsb2dpYyBpcyByaWdodCBiZWNhdXNlIG1ha2luZyBhbnkgY2hhbmdlIHRvIGEgDQps
-b2NrZWQgcG93ZXIgbGltaXQgaXMgbWVhbmluZ2xlc3MuDQoNClNyaW5pdmFzLA0KDQpEbyB3ZSBj
-aGVjayBpZiBhIGRvbWFpbi9wb3dlcl9saW1pdCBpcyBsb2NrZWQgYmVmb3JlIHdlIGVuYWJsaW5n
-IGl0IGluDQp0aGVybWFsZD8NCg0KdGhhbmtzLA0KcnVpDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJz
-L3Bvd2VyY2FwL2ludGVsX3JhcGxfY29tbW9uLmMNCmIvZHJpdmVycy9wb3dlcmNhcC9pbnRlbF9y
-YXBsX2NvbW1vbi5jDQppbmRleCA1YzJlNmQ1ZWVhMmEuLmY2ODE2YTkxZDAyNyAxMDA2NDQNCi0t
-LSBhL2RyaXZlcnMvcG93ZXJjYXAvaW50ZWxfcmFwbF9jb21tb24uYw0KKysrIGIvZHJpdmVycy9w
-b3dlcmNhcC9pbnRlbF9yYXBsX2NvbW1vbi5jDQpAQCAtODkzLDcgKzg5Myw3IEBAIHN0YXRpYyBp
-bnQgcmFwbF93cml0ZV9wbF9kYXRhKHN0cnVjdCByYXBsX2RvbWFpbg0KKnJkLCBpbnQgcGwsDQog
-CWlmICghaXNfcGxfdmFsaWQocmQsIHBsKSkNCiAJCXJldHVybiAtRUlOVkFMOw0KIA0KLQlpZiAo
-cmQtPnJwbFtwbF0ubG9ja2VkKSB7DQorCWlmIChyZC0+cnBsW3BsXS5sb2NrZWQgJiYgcGxfcHJp
-bSA9PSBQTF9MSU1JVCkgew0KIAkJcHJfd2FybigiJXM6JXM6JXMgbG9ja2VkIGJ5IEJJT1NcbiIs
-IHJkLT5ycC0+bmFtZSwgcmQtDQo+bmFtZSwgcGxfbmFtZXNbcGxdKTsNCiAJCXJldHVybiAtRUFD
-Q0VTOw0KIAl9DQoNCg0KDQoNCg0K
+
+
+On 9/5/23 7:33 PM, Pierre Gondois wrote:
+> Hello Shrikanth,
+
+Hi Pierre. Thanks for the review. 
+
+> I tried the patch (on a platform using the cppc_cpufreq driver). The
+> platform
+> normally has EAS enabled, but the patch removed the sched_energy_aware
+> sysctl.
+> It seemed the following happened (in the below order):
+> 
+> 1. sched_energy_aware_sysctl_init()
+> Doesn't set sysctl_sched_energy_aware as cpufreq_freq_invariance isn't set
+> and arch_scale_freq_invariant() returns false
+> 
+> 2. cpufreq_register_driver()
+> Sets cpufreq_freq_invariance during cpufreq initialization
+> sched_energy_set()
+> 
+> 3. sched_energy_set()
+> Is called with has_eas=0 since build_perf_domains() doesn't see the
+> platform
+> as EAS compatible. Indeed sysctl_sched_energy_aware=0.
+> So with sysctl_sched_energy_aware=0 and has_eas=0, sched_energy_aware
+> sysctl
+> is not enabled even though EAS should be possible.
+> 
+> 
+
+Yes. That is the case mentioned by Chen Yu. this patch missed that case. 
+
+> On 9/1/23 08:52, Shrikanth Hegde wrote:
+>> Currently sysctl_sched_energy_aware doesn't alter the said behaviour on
+>> some of the architectures. IIUC its meant to either force rebuild the
+>> perf domains or cleanup the perf domains by echoing 1 or 0 respectively.
+> 
+> There is a definition of the sysctl at:
+> Documentation/admin-guide/sysctl/kernel.rst::sched_energy_aware
+> 
+
+Sorry my bad, i didnt read it, It is as below.
+"Enables/disables Energy Aware Scheduling (EAS). EAS starts                      
+automatically on platforms where it can run (that is,                           
+platforms with asymmetric CPU topologies and having an Energy                   
+Model available). If your platform happens to meet the                          
+requirements for EAS but you do not want to use it, change                      
+this value to 0.   "
+
+
+It doesn't define whats the expected behavior on platforms 
+which doesn't support EAS.
+
+
+
+
+> Also a personal comment about the commit message (FWIW), I think it should
+> be a bit more impersonal and factual. The commit message seems to describe
+> the code rather than the desired behaviour.
+> 
+>>
+>> perf domains are not built when there is SMT, or when there is no
+>> Asymmetric CPU topologies or when there is no frequency invariance.
+>> Since such cases EAS is not set and perf domains are not built. By
+>> changing the values of sysctl_sched_energy_aware, its not possible to
+>> force build the perf domains. Hence remove this sysctl on such platforms
+>> that dont support it. Some of the settings can be changed later
+>> such as smt_active by offlining the CPU's, In those cases if
+>> build_perf_domains returns true, re-enable the sysctl.
+>>
+>> Anytime, when sysctl_sched_energy_aware is changed sched_energy_update
+>> is set when building the perf domains. Making use of that to find out if
+>> the change is happening by sysctl or dynamic system change.
+>>
+>> Taking different cases:
+>> Case1. system while booting has EAS capability, sysctl will be set 1.
+>> Hence
+>> perf domains will be built if needed. On changing the sysctl to 0, since
+>> sched_energy_update is true, perf domains would be freed and sysctl will
+>> not be removed. later sysctl is changed to 1, enabling the perf domains
+>> rebuild again. Since sysctl is already there, it will skip register.
+>>
+>> Case2. System while booting doesn't have EAS Capability. Later after
+>> system
+>> change it becomes capable of EAS. sched_energy_update is false. Though
+>> sysctl is 0, will go ahead and try to enable eas. This is the current
+>> behaviour. if has_eas  is true, then sysctl will be registered. After
+>> that any sysctl change is same as Case1.
+>>
+>> Case3. System becomes not capable of EAS due to system change. Here since
+>> sched_energy_update is false, build_perf_domains return has_eas as false
+>> due to one of the checks and Since this is dynamic change remove the
+>> sysctl.
+>> Any further change which enables EAS is Case2
+>>
+>> Note: This hasn't been tested on platform which supports EAS. If the
+>> change can be verified on that it would really help. This has been
+>> tested on power10 which doesn't support EAS. sysctl_sched_energy_aware
+>> is removed with patch.
+>>
+>> changes since v1:
+>> Chen Yu had pointed out that this will not destroy the perf domains on
+>> architectures where EAS is supported by changing the sysctl. This patch
+>> addresses that.
+>> [v1] Link:
+>> https://lore.kernel.org/lkml/20230829065040.920629-1-sshegde@linux.vnet.ibm.com/#t
+>>
+>> Signed-off-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+>> ---
+>>   kernel/sched/topology.c | 45 +++++++++++++++++++++++++++++++++--------
+>>   1 file changed, 37 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+>> index 05a5bc678c08..4d16269ac21a 100644
+>> --- a/kernel/sched/topology.c
+>> +++ b/kernel/sched/topology.c
+>> @@ -208,7 +208,8 @@ sd_parent_degenerate(struct sched_domain *sd,
+>> struct sched_domain *parent)
+>>
+>>   #if defined(CONFIG_ENERGY_MODEL) &&
+>> defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
+>>   DEFINE_STATIC_KEY_FALSE(sched_energy_present);
+>> -static unsigned int sysctl_sched_energy_aware = 1;
+>> +static unsigned int sysctl_sched_energy_aware;
+>> +static struct ctl_table_header *sysctl_eas_header;
+> 
+> The variables around the presence/absence of EAS are:
+> - sched_energy_present:
+> EAS is up and running
+> 
+> - sysctl_sched_energy_aware:
+> The user wants to use EAS (or not). Doesn't mean EAS can run on the
+> platform.
+> 
+> - sched_energy_set/partition_sched_domains_locked's "has_eas":
+> Local variable. Represent whether EAS can run on the platform.
+> 
+> IMO it would be simpler to (un)register sched_energy_aware sysctl
+> in partition_sched_domains_locked(), based on the value of "has_eas".
+> This would allow to let all the logic as it is right now, inside
+> build_perf_domains(), and then advertise sched_energy_aware sysctl
+> if EAS can run on the platform.
+> sched_energy_aware_sysctl_init() would be deleted then.
+> 
+> 
+
+problem with that is for systems that have EAS capability. 
+i.e system has EAS, but admin wanted to to disable the EAS. hence 
+has_eas will return false. But sysctl cannot be removed in this case. 
+
+>>   static DEFINE_MUTEX(sched_energy_mutex);
+>>   static bool sched_energy_update;
+>>
+>> @@ -226,6 +227,7 @@ static int sched_energy_aware_handler(struct
+>> ctl_table *table, int write,
+>>           void *buffer, size_t *lenp, loff_t *ppos)
+>>   {
+>>       int ret, state;
+>> +    int prev_val = sysctl_sched_energy_aware;
+>>
+>>       if (write && !capable(CAP_SYS_ADMIN))
+>>           return -EPERM;
+>> @@ -233,8 +235,11 @@ static int sched_energy_aware_handler(struct
+>> ctl_table *table, int write,
+>>       ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+>>       if (!ret && write) {
+>>           state = static_branch_unlikely(&sched_energy_present);
+>> -        if (state != sysctl_sched_energy_aware)
+>> +        if (state != sysctl_sched_energy_aware && prev_val !=
+>> sysctl_sched_energy_aware) {
+>> +            if (sysctl_sched_energy_aware && !state)
+>> +                pr_warn("Attempt to build energy domains when EAS is
+>> disabled\n");
+>>               rebuild_sched_domains_energy();
+>> +        }
+>>       }
+>>
+>>       return ret;
+>> @@ -255,7 +260,14 @@ static struct ctl_table
+>> sched_energy_aware_sysctls[] = {
+>>
+>>   static int __init sched_energy_aware_sysctl_init(void)
+>>   {
+>> -    register_sysctl_init("kernel", sched_energy_aware_sysctls);
+>> +    int cpu = cpumask_first(cpu_active_mask);
+>> +
+>> +    if (sched_smt_active() || !per_cpu(sd_asym_cpucapacity, cpu) ||
+>> +        !arch_scale_freq_invariant())
+>> +        return 0;
+>> +
+>> +    sysctl_eas_header = register_sysctl("kernel",
+>> sched_energy_aware_sysctls);
+>> +    sysctl_sched_energy_aware = 1;
+>>       return 0;
+>>   }
+>>
+>> @@ -336,10 +348,28 @@ static void sched_energy_set(bool has_eas)
+>>           if (sched_debug())
+>>               pr_info("%s: stopping EAS\n", __func__);
+>>           static_branch_disable_cpuslocked(&sched_energy_present);
+>> +#ifdef CONFIG_PROC_SYSCTL
+>> +        /*
+>> +         * if the architecture supports EAS and forcefully
+>> +         * perf domains are destroyed, there should be a sysctl
+>> +         * to enable it later. If this was due to dynamic system
+>> +         * change such as SMT<->NON_SMT then remove sysctl.
+>> +         */
+>> +        if (sysctl_eas_header && !sched_energy_update) {
+>> +            unregister_sysctl_table(sysctl_eas_header);
+>> +            sysctl_eas_header = NULL;
+>> +        }
+>> +#endif
+>> +        sysctl_sched_energy_aware = 0;
+>>       } else if (has_eas &&
+>> !static_branch_unlikely(&sched_energy_present)) {
+>>           if (sched_debug())
+>>               pr_info("%s: starting EAS\n", __func__);
+>>           static_branch_enable_cpuslocked(&sched_energy_present);
+>> +#ifdef CONFIG_PROC_SYSCTL
+>> +        if (!sysctl_eas_header)
+>> +            sysctl_eas_header = register_sysctl("kernel",
+>> sched_energy_aware_sysctls);
+>> +#endif
+>> +        sysctl_sched_energy_aware = 1;
+>>       }
+>>   }
+>>
+>> @@ -380,15 +410,14 @@ static bool build_perf_domains(const struct
+>> cpumask *cpu_map)
+>>       struct cpufreq_policy *policy;
+>>       struct cpufreq_governor *gov;
+>>
+>> -    if (!sysctl_sched_energy_aware)
+>> +    if (!sysctl_sched_energy_aware && sched_energy_update)
+>>           goto free;
+>>
+>>       /* EAS is enabled for asymmetric CPU capacity topologies. */
+>>       if (!per_cpu(sd_asym_cpucapacity, cpu)) {
+>> -        if (sched_debug()) {
+>> -            pr_info("rd %*pbl: CPUs do not have asymmetric
+>> capacities\n",
+>> -                    cpumask_pr_args(cpu_map));
+>> -        }
+>> +        if (sched_debug())
+>> +            pr_info("rd %*pbl: Disabling EAS,  CPUs do not have
+>> asymmetric capacities\n",
+>> +                cpumask_pr_args(cpu_map));
+>>           goto free;
+>>       }
+>>
+>> -- 
+>> 2.31.1
+>>
+>>
+> 
+> Regards,
+> Pierre
