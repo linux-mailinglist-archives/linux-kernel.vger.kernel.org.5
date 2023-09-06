@@ -2,198 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1772E7943F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4A97943FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237173AbjIFTxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 15:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
+        id S240855AbjIFTzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 15:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239798AbjIFTxA (ORCPT
+        with ESMTP id S235378AbjIFTzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 15:53:00 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DB0AD172C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 12:52:48 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2723B106F;
-        Wed,  6 Sep 2023 12:53:26 -0700 (PDT)
-Received: from [10.57.5.192] (unknown [10.57.5.192])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 87BD23F67D;
-        Wed,  6 Sep 2023 12:52:46 -0700 (PDT)
-Message-ID: <43632d9d-722c-b14f-336a-eac402ef9362@arm.com>
-Date:   Wed, 6 Sep 2023 20:52:40 +0100
+        Wed, 6 Sep 2023 15:55:37 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1021595
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 12:55:33 -0700 (PDT)
+Received: from [192.168.1.90] (unknown [81.18.92.207])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: cristicc)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 37D2566071C9;
+        Wed,  6 Sep 2023 20:55:31 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694030131;
+        bh=2KxpuPLY69OjJIbp80A3wlXtunQ/auxoaIoxRETzcuo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=bUF3pS9kNsMeA4GBVV8oVlUYwxPRUWLBPxbqecxYcS0mYabXunx6WVfxjTL4ho4/F
+         yuOb4doBJcKy6J2Vcp7RQvyMDkTOYJ2/aT+386cgbUwO4C0C+p25A0Z09jMKvxvewV
+         lbth5G93KdU0O9RmP3klpasFQUR7LikYGpIKrHtqo8pzoWD3EuZuPtwPQsuwzgwlAS
+         cT6iJbx6Z9zHrnlvn7vtvdASjk7sb42vKKinJiWmZPGluUiowWKvhyi+gpAHhOxk1p
+         onlaJyYm1rY9CxiHXQEw7ZC8GVhSrMXZtAkmu8rt46H5rWiMNCBytR51VkF+RpOqkU
+         D8YAKplrqyscw==
+Message-ID: <de9bf872-16ca-4b4e-9543-87f463b985a0@collabora.com>
+Date:   Wed, 6 Sep 2023 22:55:28 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: snd-cmipci oops during probe on arm64 (current mainline,
- pre-6.6-rc1)
-Content-Language: en-GB
-To:     Antonio Terceiro <antonio.terceiro@linaro.org>
-Cc:     Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 9/9] ASoC: cs35l41: Use devm_pm_runtime_enable()
+Content-Language: en-US
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <ZPelHaX/Lt++kkOm@linaro.org> <877cp3esse.wl-tiwai@suse.de>
- <4f335dd2-8043-c60e-cf84-c2b01c4fee12@arm.com> <ZPjGuCdmPgqznc5t@linaro.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <ZPjGuCdmPgqznc5t@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Stefan Binding <sbinding@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20230902210621.1184693-1-cristian.ciocaltea@collabora.com>
+ <20230902210621.1184693-10-cristian.ciocaltea@collabora.com>
+ <20230905094535.GK103419@ediswmail.ad.cirrus.com>
+ <953eb242-4d52-4cdc-8f7d-71af003778c5@collabora.com>
+ <20230906163725.GN103419@ediswmail.ad.cirrus.com>
+From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <20230906163725.GN103419@ediswmail.ad.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMjAyMy0wOS0wNiAxOTozNiwgQW50b25pbyBUZXJjZWlybyB3cm90ZToNCj4gT24gV2Vk
-LCBTZXAgMDYsIDIwMjMgYXQgMDE6NDk6MTZQTSArMDEwMCwgUm9iaW4gTXVycGh5IHdyb3Rl
-Og0KPj4gT24gMjAyMy0wOS0wNiAwNzoxMCwgVGFrYXNoaSBJd2FpIHdyb3RlOg0KPj4+IE9u
-IFdlZCwgMDYgU2VwIDIwMjMgMDA6MDE6MDEgKzAyMDAsDQo+Pj4gQW50b25pbyBUZXJjZWly
-byB3cm90ZToNCj4+Pj4NCj4+Pj4gSGksDQo+Pj4+DQo+Pj4+IEknbSB1c2luZyBhbiBhcm02
-NCB3b3Jrc3RhdGlvbiwgYW5kIHdhbnRlZCB0byBhZGQgYSBzb3VuZCBjYXJkIHRvIGl0LiBJ
-IGJvdWdodA0KPj4+PiBvbmUgd2hvIHdhcyBwcmV0dHkgcG9wdWxhciBhcm91bmQgd2hlcmUg
-SSBsaXZlLCBhbmQgaXQgaXMgc3VwcG9ydGVkIGJ5IHRoZQ0KPj4+PiBzbmQtY21pcGNpIGRy
-aXZlci4NCj4+Pj4NCj4+Pj4gSXQncyB0aGlzIG9uZToNCj4+Pj4NCj4+Pj4gMDAwNTowMjow
-MC4wIE11bHRpbWVkaWEgYXVkaW8gY29udHJvbGxlcjogQy1NZWRpYSBFbGVjdHJvbmljcyBJ
-bmMgQ01JODczOC9DTUk4NzY4IFBDSSBBdWRpbyAocmV2IDEwKQ0KPj4+Pg0KPj4+PiBBZnRl
-ciBidWlsZGluZyBhIG1haWxpbmUga2VybmVsIChwb3N0LXY2LjUsIHByZS1yYzEpIG9uIERl
-YmlhbiB0ZXN0aW5nIGFybTY0DQo+Pj4+IHdpdGggbG9jYWxtb2Rjb25maWcgKyBDT05GSUdf
-U05EX0NNSVBDST1tLCBpdCBjcmFzaGVzIHdpdGggIlVuYWJsZSB0byBoYW5kbGUNCj4+Pj4g
-a2VybmVsIHBhZ2luZyByZXF1ZXN0IGF0IHZpcnR1YWwgYWRkcmVzcyBmZmZmZmJmZmZlODAw
-MDBjIiwgYW5kIHRoZSBzeXN0ZW0NCj4+Pj4gbmV2ZXIgZmluaXNoZXMgdG8gYm9vdC4gVGhl
-IGxvZ2luIG1hbmFnZXIgbmV2ZXIgc2hvd3MgdXAgYW5kIHRoZSBzZXJpYWwgY29uc29sZQ0K
-Pj4+PiBuZXZlciBnZXRzIHRvIGEgbG9naW4gcHJvbXB0LiBJIG9ic2VydmVkIHRoZSBzYW1l
-IGlzc3VlIG9uIGEgNi4zIERlYmlhbiBrZXJuZWwsDQo+Pj4+IGFmdGVyIHJlYnVpbGRpbmcg
-d2l0aCBDT05GSUdfU05EX0NNSVBDST1tLg0KPj4+Pg0KPj4+PiBJZiBJIHN0b3AgdGhlIG1v
-ZHVsZSBmcm9tIGJlaW5nIGF1dG9tYXRpY2FsbHkgbG9hZGVkIGJ5IGFkZGluZw0KPj4+PiBg
-YmxhY2tsaXN0IHNuZC1jbWlwY2lgIHRvIC9ldGMvbW9kcHJvYmUuZC9zbmQtY21pcGNpLmNv
-bmYgKG9yIGlmIEkNCj4+Pj4gcmVtb3ZlIHRoZSBjYXJkIGZyb20gdGhlIFBDSWUgc2xvdCks
-IEkgZ2V0IHRoZSBzeXN0ZW0gdG8gYm9vdC4gQnV0IHRyaW5nDQo+Pj4+IHRvIGxvYWQgdGhl
-IG1vZHVsZSBtYW51YWxseSBjYXVzZXMgdGhlIHNhbWUgY3Jhc2ggKEkgb25seSB0ZXN0ZWQg
-dGhpcw0KPj4+PiB3aXRoIHRoZSBjYXJkIG9uKToNCj4+Pj4NCj4+Pj4gWyAgKzQsNTAxMDkz
-XSBzbmRfY21pcGNpIDAwMDU6MDI6MDAuMDogc3RyZWFtIDUxMiBhbHJlYWR5IGluIHRyZWUN
-Cj4+Pj4gWyAgKzAsMDAwMTU1XSBVbmFibGUgdG8gaGFuZGxlIGtlcm5lbCBwYWdpbmcgcmVx
-dWVzdCBhdCB2aXJ0dWFsIGFkZHJlc3MgZmZmZmZiZmZmZTgwMDAwYw0KPj4+PiBbICArMCww
-MDc5MjddIE1lbSBhYm9ydCBpbmZvOg0KPj4+PiBbICArMCwwMDI3OTNdICAgRVNSID0gMHgw
-MDAwMDAwMDk2MDAwMDA2DQo+Pj4+IFsgICswLDAwMzc0M10gICBFQyA9IDB4MjU6IERBQlQg
-KGN1cnJlbnQgRUwpLCBJTCA9IDMyIGJpdHMNCj4+Pj4gWyAgKzAsMDA1MzA3XSAgIFNFVCA9
-IDAsIEZuViA9IDANCj4+Pj4gWyAgKzAsMDAzMDQ5XSAgIEVBID0gMCwgUzFQVFcgPSAwDQo+
-Pj4+IFsgICswLDAwMzEzNF0gICBGU0MgPSAweDA2OiBsZXZlbCAyIHRyYW5zbGF0aW9uIGZh
-dWx0DQo+Pj4+IFsgICswLDAwNDg3Ml0gRGF0YSBhYm9ydCBpbmZvOg0KPj4+PiBbICArMCww
-MDI4NzNdICAgSVNWID0gMCwgSVNTID0gMHgwMDAwMDAwNiwgSVNTMiA9IDB4MDAwMDAwMDAN
-Cj4+Pj4gWyAgKzAsMDA1NDc5XSAgIENNID0gMCwgV25SID0gMCwgVG5EID0gMCwgVGFnQWNj
-ZXNzID0gMA0KPj4+PiBbICArMCwwMDUwNDddICAgR0NTID0gMCwgT3ZlcmxheSA9IDAsIERp
-cnR5Qml0ID0gMCwgWHMgPSAwDQo+Pj4+IFsgICswLDAwMDAwM10gc3dhcHBlciBwZ3RhYmxl
-OiA0ayBwYWdlcywgNDgtYml0IFZBcywgcGdkcD0wMDAwMDgwNTE5ZmU5MDAwDQo+Pj4+IFsg
-ICswLDAwMDAwNF0gW2ZmZmZmYmZmZmU4MDAwMGNdIHBnZD0wMDAwMDgwNTFhOTc5MDAzLCBw
-NGQ9MDAwMDA4MDUxYTk3OTAwMywgcHVkPTAwMDAwODA1MWE5N2EwMDMsIHBtZD0wMDAwMDAw
-MDAwMDAwMDAwDQo+Pj4+IFsgICswLDAwMDAwOV0gSW50ZXJuYWwgZXJyb3I6IE9vcHM6IDAw
-MDAwMDAwOTYwMDAwMDYgWyMxXSBTTVANCj4+Pj4gWyAgKzAsMDI4MTQyXSBNb2R1bGVzIGxp
-bmtlZCBpbjogc25kX2NtaXBjaSgrKSBzbmRfbXB1NDAxX3VhcnQgc25kX29wbDNfbGliIHh0
-X2Nvbm50cmFjayB4dF9NQVNRVUVSQURFIG5mX2Nvbm50cmFja19uZXRsaW5rIHhmcm1fdXNl
-ciB4ZnJtX2FsZ28geHRfYWRkcnR5cGUgbmZ0X2NvbXBhdCBicl9uZXRmaWx0ZXIgbmZ0X21h
-c3EgbmZ0X2NoYWluX25hdCBuZl9uYXQgbmZfY29ubnRyYWNrIG5mX2RlZnJhZ19pcHY2IG5m
-X2RlZnJhZ19pcHY0IGJyaWRnZSBzdHAgbGxjIG5mX3RhYmxlcyBuZm5ldGxpbmsgdXZjdmlk
-ZW8gdmlkZW9idWYyX3ZtYWxsb2MgdmlkZW9idWYyX21lbW9wcyB1dmMgdmlkZW9idWYyX3Y0
-bDIgdmlkZW9kZXYgdmlkZW9idWYyX2NvbW1vbiBzbmRfc2VxX2R1bW15IHNuZF9ocnRpbWVy
-IHNuZF9zZXEgcXJ0ciByZmtpbGwgb3ZlcmxheSBmdGRpX3NpbyB1c2JzZXJpYWwgc25kX3Vz
-Yl9hdWRpbyBzbmRfdXNibWlkaV9saWIgc25kX3BjbSBhZXNfY2VfYmxrIGFlc19jZV9jaXBo
-ZXIgc25kX2h3ZGVwIHBvbHl2YWxfY2Ugc25kX3Jhd21pZGkgcG9seXZhbF9nZW5lcmljIHNu
-ZF9zZXFfZGV2aWNlIGpveWRldiBzbmRfdGltZXIgZ2hhc2hfY2UgaGlkX2dlbmVyaWMgZ2Yx
-MjhtdWwgc25kIHVzYmhpZCBzaGEyX2NlIGlwbWlfc3NpZiBzb3VuZGNvcmUgaGlkIG1jIHNo
-YTI1Nl9hcm02NCBpcG1pX2RldmludGYgYXJtX3NwZV9wbXUgaXBtaV9tc2doYW5kbGVyIHNo
-YTFfY2Ugc2JzYV9nd2R0IGJpbmZtdF9taXNjIG5sc19hc2NpaSBubHNfY3A0MzcgdmZhdCBm
-YXQgeGdlbmVfaHdtb24gY3BwY19jcHVmcmVxIGFybV9jbW4gYXJtX2RzdV9wbXUgZXZkZXYg
-bmZzZCBhdXRoX3JwY2dzcyBuZnNfYWNsIGxvY2tkIGdyYWNlIGRtX21vZCBmdXNlIGxvb3Ag
-ZWZpX3BzdG9yZSBkYXggc3VucnBjIGNvbmZpZ2ZzIGlwX3RhYmxlcyB4X3RhYmxlcyBhdXRv
-ZnM0IGV4dDQgY3JjMTYgbWJjYWNoZSBqYmQyIGJ0cmZzIGVmaXZhcmZzIHJhaWQxMCByYWlk
-DQo+Pj4gICAgNDU2IGFzeW5jX3JhaWQ2X3JlY292IGFzeW5jX21lbWNweQ0KPj4+PiBbICAr
-MCwwMDAxNDJdICBhc3luY19wcSBhc3luY194b3IgYXN5bmNfdHggbGliY3JjMzJjIGNyYzMy
-Y19nZW5lcmljIHhvciB4b3JfbmVvbiByYWlkNl9wcSByYWlkMSByYWlkMCBtdWx0aXBhdGgg
-bGluZWFyIG1kX21vZCBudm1lIG52bWVfY29yZSBhc3QgdDEwX3BpIGRybV9zaG1lbV9oZWxw
-ZXIgeGhjaV9wY2kgZHJtX2ttc19oZWxwZXIgeGhjaV9oY2QgY3JjNjRfcm9ja3NvZnQgY3Jj
-NjQgZHJtIGNyY190MTBkaWYgdXNiY29yZSBjcmN0MTBkaWZfZ2VuZXJpYyBpZ2IgY3JjdDEw
-ZGlmX2NlIGNyY3QxMGRpZl9jb21tb24gdXNiX2NvbW1vbiBpMmNfYWxnb19iaXQgaTJjX2Rl
-c2lnbndhcmVfcGxhdGZvcm0gaTJjX2Rlc2lnbndhcmVfY29yZQ0KPj4+PiBbICArMCwxMjE2
-NzBdIENQVTogMCBQSUQ6IDQ0MiBDb21tOiBrd29ya2VyLzA6NCBOb3QgdGFpbnRlZCA2LjUu
-MCsgIzINCj4+Pj4gWyAgKzAsMDA2MjU5XSBIYXJkd2FyZSBuYW1lOiBBRExJTksgQVZBIERl
-dmVsb3BlciBQbGF0Zm9ybS9BVkEgRGV2ZWxvcGVyIFBsYXRmb3JtLCBCSU9TIFRpYW5vQ29y
-ZSAyLjA0LjEwMC4wNyAoU1lTOiAyLjA2LjIwMjIwMzA4KSAwOS8wOC8yMDIyDQo+Pj4+IFsg
-ICswLDAxMjUwNl0gV29ya3F1ZXVlOiBldmVudHMgd29ya19mb3JfY3B1X2ZuDQo+Pj4+IFsg
-ICswLDAwNDM1M10gcHN0YXRlOiA4MDQwMDAwOSAoTnpjdiBkYWlmICtQQU4gLVVBTyAtVENP
-IC1ESVQgLVNTQlMgQlRZUEU9LS0pDQo+Pj4+IFsgICswLDAwNjk1M10gcGMgOiBsb2dpY19p
-bmwrMHhhMC8weGQ4DQo+Pj4+IFsgICswLDAwMzU3MF0gbHIgOiBzbmRfY21pcGNpX3Byb2Jl
-KzB4N2E0LzB4MTE0MCBbc25kX2NtaXBjaV0NCj4+Pj4gWyAgKzAsMDA1NTc4XSBzcCA6IGZm
-ZmY4MDAwODI4N2JjNzANCj4+Pj4gWyAgKzAsMDAzMzAzXSB4Mjk6IGZmZmY4MDAwODI4N2Jj
-NzAgeDI4OiBmZmZmMDgwMDhhZjlkNmEwIHgyNzogMDAwMDAwMDAwMDAwMDAwMA0KPj4+PiBb
-ICArMCwwMDcxMjhdIHgyNjogZmZmZmM0ODE4MjYzYzIyOCB4MjU6IDAwMDAwMDAwMDAwMDAw
-MDAgeDI0OiAwMDAwMDAwMDAwMDAwMDAxDQo+Pj4+IFsgICswLDAwNzEyN10geDIzOiBmZmZm
-MDdmZjgxYTllMDAwIHgyMjogZmZmZjA3ZmY4MWE5ZTBjMCB4MjE6IGZmZmYwODAwOGFmOWQw
-ODANCj4+Pj4gWyAgKzAsMDA3MTI3XSB4MjA6IGZmZmZjNDgxODI2M2MwMDAgeDE5OiAwMDAw
-MDAwMDAwMDAwMDAwIHgxODogZmZmZmZmZmZmZmZmZmZmZg0KPj4+PiBbICArMCwwMDcxMjdd
-IHgxNzogMDAwMDAwMDAwMDAwMDAwMCB4MTY6IGZmZmZjNDgxOWFjM2NkMzggeDE1OiBmZmZm
-ODAwMDgyODdiYTgwDQo+Pj4+IFsgICswLDAwNzEyN10geDE0OiAwMDAwMDAwMDAwMDAwMDAx
-IHgxMzogZmZmZjgwMDA4Mjg3YmJjNCB4MTI6IDAwMDAwMDAwMDAwMDAwMDANCj4+Pj4gWyAg
-KzAsMDA3MTI2XSB4MTE6IGZmZmYwN2ZmODM0NjE2ZDAgeDEwOiBmZmZmZmZmZmZmZmZmZmMw
-IHg5IDogZmZmZmM0ODE5YTYxZGQxOA0KPj4+PiBbICArMCwwMDcxMjddIHg4IDogMDAwMDAw
-MDAwMDAwMDIyOCB4NyA6IDAwMDAwMDAwMDAwMDAwMDEgeDYgOiAwMDAwMDAwMDAwMDAwMGZm
-DQo+Pj4+IFsgICswLDAwNzEyN10geDUgOiBmZmZmYzQ4MTlhZGI3OTk4IHg0IDogMDAwMDAw
-MDAwMDAwMDAwMCB4MyA6IDAwMDAwMDAwMDAwMDAwZmYNCj4+Pj4gWyAgKzAsMDA3MTI3XSB4
-MiA6IDAwMDAwMDAwMDBmZmJmZmUgeDEgOiAwMDAwMDAwMDAwMDAwMDBjIHgwIDogZmZmZmZi
-ZmZmZTgwMDAwYw0KPj4+PiBbICArMCwwMDcxMjZdIENhbGwgdHJhY2U6DQo+Pj4+IFsgICsw
-LDAwMjQzNl0gIGxvZ2ljX2lubCsweGEwLzB4ZDgNCj4+Pj4gWyAgKzAsMDAzMjIxXSAgbG9j
-YWxfcGNpX3Byb2JlKzB4NDgvMHhiOA0KPj4+PiBbICArMCwwMDM3NDRdICB3b3JrX2Zvcl9j
-cHVfZm4rMHgyNC8weDQwDQo+Pj4+IFsgICswLDAwMzc0MV0gIHByb2Nlc3Nfb25lX3dvcmsr
-MHgxNzAvMHgzYTgNCj4+Pj4gWyAgKzAsMDA0MDAyXSAgd29ya2VyX3RocmVhZCsweDIzYy8w
-eDQ2MA0KPj4+PiBbICArMCwwMDM3NDJdICBrdGhyZWFkKzB4ZTgvMHhmOA0KPj4+PiBbICAr
-MCwwMDMwNDddICByZXRfZnJvbV9mb3JrKzB4MTAvMHgyMA0KPj4+PiBbICArMCwwMDM1Njld
-IENvZGU6IGQyYmZkMDAwIGYyZGY3ZmUwIGYyZmZmZmUwIDhiMDAwMDIwIChiOTQwMDAwMCkN
-Cj4+Pj4gWyAgKzAsMDA2MDgzXSAtLS1bIGVuZCB0cmFjZSAwMDAwMDAwMDAwMDAwMDAwIF0t
-LS0NCj4+Pj4NCj4+Pj4gQmVjYXVzZSB0aGlzIHNvdW5kIGNhcmQgY2hpcHNldCBzZWVtcyB0
-byBiZSBwb3B1bGFyIChwcmV0dHkgbXVjaCBhbGwgUENJIGNhcmRzDQo+Pj4+IEkgY2FuIGZp
-bmQgdG8gYnV5IGxvY2FsbHkgdXNlIHRoYXQpLCBJJ20gdGhpbmtpbmcgdGhpcyBtaWdodCBi
-ZSBzcGVjaWZpYyB0bw0KPj4+PiBhcm02NCwgb3RoZXJ3aXNlIHNvbWVvbmUgd291bGQgaGF2
-ZSBzZWVuIHRoaXMgYmVmb3JlLg0KPj4+DQo+Pj4gVGhlcmUgaXMgb25seSBvbmUgY2hhbmdl
-IGluIHRoaXMgZHJpdmVyIGNvZGUgaXRzZWxmIHNpbmNlIDYuNSAoY29tbWl0DQo+Pj4gYjZi
-YTBhYTQ2MTM4KSwgYW5kIGp1ZGdpbmcgZnJvbSB0aGUgc3RhY2sgdHJhY2UsIGl0J3MgdW5y
-ZWxhdGVkIHdpdGgNCj4+PiB5b3VyIHByb2JsZW0uICAgSXQncyBtb3JlIGxpa2VseSBhIHJl
-Z3Jlc3Npb24gaW4gdGhlIGxvd2VyIGxldmVsIGNvZGUsDQo+Pj4gZS5nLiBQQ0kgbGF5ZXIg
-b3IgYXJjaC9hcm02NCBzdHVmZi4NCj4+Pg0KPj4+IENvdWxkIHlvdSB0cnkgZ2l0IGJpc2Vj
-dD8NCj4+DQo+PiBIbW0sIGJ1dCBoYXMgdGhpcyBjb21iaW5hdGlvbiBvZiBjYXJkIGFuZCBt
-YWNoaW5lICpldmVyKiBhY3R1YWxseSB3b3JrZWQ/DQo+IA0KPiBUaGF0IGNvdWxkIGJlIGl0
-LiBJbiB0cnlpbmcgdG8gZmluZCBhIHN0YXJ0aW5nIHBvaW50IGZvciB0aGUgYmlzZWN0aW9u
-LA0KPiBJIHRyaWVkIDYuMS4wLCA1LjE1LjEzMCwgYW5kIDUuMTAuMTksIGFuZCB0aGV5IGFs
-bCBmYWlsIGluIGV4YWN0bHkgdGhlDQo+IHNhbWUgd2F5LiBJIGRpZG4ndCBnbyBmdXJ0aGVy
-IGJhY2suDQo+IA0KPj4gSXQncyBibG93aW5nIHVwIHRyeWluZyB0byBhY2Nlc3MgUENJIEkv
-TyBzcGFjZSwgd2hpY2ggaGFzIGFwcGFyZW50bHkgZW5kZWQNCj4+IHVwIGluIHRoZSBpbmRp
-cmVjdCBhY2Nlc3MgbWVjaGFuaXNtIHdpdGhvdXQgdGhhdCBiZWluZyBjb25maWd1cmVkIGNv
-cnJlY3RseS4NCj4+IFRoYXQgaXMgZGVmaW5pdGVseSBhbiBpc3N1ZSBkb3duIHNvbWV3aGVy
-ZSBiZXR3ZWVuIHRoZSBQQ0kgbGF5ZXIgYW5kIHRoZQ0KPj4gc3lzdGVtIGZpcm13YXJlLiBE
-b2VzIHRoZSBzeXN0ZW0gZXZlbiBoYXZlIGFuIEkvTyBzcGFjZSB3aW5kb3c/IFNvbWUgYXJt
-NjQNCj4+IG1hY2hpbmVzIGRvbid0LiBJIGd1ZXNzIHdlIG1pZ2h0IG5vdCBoYXZlIGdvdCBh
-cyBmYXIgYXMgcHJvYmluZyBhIGRyaXZlciBpZg0KPj4gdGhlIEkvTyBCQVIgY291bGRuJ3Qg
-YmUgYXNzaWduZWQgYXQgYWxsLCBidXQgZWl0aGVyIHdheSBzb21ldGhpbmcncyBub3QgZ29u
-ZQ0KPj4gcmlnaHQuDQo+IA0KPiBJJ20gcHJldHR5IHN1cmUgSSBzYXcgcmVwb3J0cyBvZiBw
-ZW9wbGUgdXNpbmcgUENJIEdQVXMgb24gdGhpcyBtYWNoaW5lLA0KPiBidXQgSSB3b3VsZCBu
-ZWVkIHRvIGNvbmZpcm0uDQoNCkdQVXMgYW5kIGFueSBvdGhlciBQQ0llIGRldmljZXMgd2ls
-bCBiZSBmaW5lLCBzaW5jZSB0aGV5IHdpbGwgdXNlIG1lbW9yeSANCkJBUnMgLSBJL08gc3Bh
-Y2UgaXMgcHJldHR5IG11Y2ggZGVwcmVjYXRlZCBpbiBQQ0llLCBhbmQgYXMgbWVudGlvbmVk
-IA0Kc29tZSBzeXN0ZW1zIGRvbid0IGV2ZW4gc3VwcG9ydCBpdCBhdCBhbGwuIEkgZm91bmQg
-YSBkYXRhc2hlZXQgZm9yIA0KQ01JODczOCwgYW5kIHRoZXkgc2VlbSB0byBiZSByaWdodCBh
-dCB0aGUgb3RoZXIgZW5kIG9mIHRoZSBzY2FsZSBhcyANCmxlZ2FjeSBQQ0kgY2hpcHMgd2l0
-aCAqb25seSogYW4gSS9PIEJBUiAoYW5kIHNvIEkgZ3Vlc3MgeW91ciBjYXJkIA0KaW5jbHVk
-ZXMgYSBQQ0llLVBDSSBicmlkZ2UgYXMgd2VsbCksIHNvIGFyZSBkZWZpbml0ZWx5IGdvaW5n
-IHRvIGJlIA0KaGl0dGluZyBwYXRocyB0aGF0IGFyZSBsZXNzIHdlbGwtZXhlcmNpc2VkIG9u
-IGFybTY0IGluIGdlbmVyYWwuDQoNCj4gV2hhdCBpbmZvIHdvdWxkIEkgbmVlZCB0byBnYXRo
-ZXIgZnJvbSB0aGUgbWFjaGluZSBpbiBvcmRlciB0byBmaWd1cmUNCj4gdGhpcyBvdXQ/DQoN
-ClRoZSBmaXJzdCB0aGluZyBJJ2QgdHJ5IGlzIHJlYnVpbGRpbmcgdGhlIGtlcm5lbCB3aXRo
-IA0KQ09ORklHX0lORElSRUNUX1BJTyBkaXNhYmxlZCBhbmQgc2VlIHdoYXQgZGlmZmVyZW5j
-ZSB0aGF0IG1ha2VzLiBJJ20gbm90IA0KdG9vIGZhbWlsaWFyIHdpdGggdGhhdCBhcmVhIG9m
-IHRoZSBjb2RlLCBzbyB0aGUgZmluZXIgZGV0YWlscyBvZiBob3cgdG8gDQpkZWJ1ZyBicm9r
-ZW4gSS9PIHNwYWNlIGJleW9uZCB0aGF0IHdvdWxkIGJlIG1vcmUgb2YgYSBsaW51eC1wY2kg
-cXVlc3Rpb24uDQoNClRoYW5rcywNClJvYmluLg0K
+On 9/6/23 19:37, Charles Keepax wrote:
+> On Tue, Sep 05, 2023 at 10:15:46PM +0300, Cristian Ciocaltea wrote:
+>> On 9/5/23 12:45, Charles Keepax wrote:
+>>> On Sun, Sep 03, 2023 at 12:06:21AM +0300, Cristian Ciocaltea wrote:
+>>>> Simplify runtime PM during probe by converting pm_runtime_enable() to
+>>>> the managed version.
+>>>>
+>>>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>>>> ---
+>>>> @@ -1376,7 +1379,6 @@ void cs35l41_remove(struct cs35l41_private *cs35l41)
+>>>>  	cancel_work_sync(&cs35l41->mdsync_up_work);
+>>>>  
+>>>>  	pm_runtime_get_sync(cs35l41->dev);
+>>>> -	pm_runtime_disable(cs35l41->dev);
+>>>>  
+>>>>  	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1, 0xFFFFFFFF);
+>>>>  	if (cs35l41->hw_cfg.bst_type == CS35L41_SHD_BOOST_PASS ||
+>>>
+>>> Are we sure this is safe? The remove handler appears to be
+>>> written to disable pm_runtime at the start presumably to stop the
+>>> resume/suspend handler running during the remove callback.
+>>> Whereas after this change the pm_runtime isn't disabled until
+>>> after the remove callback has run. Does this open a window were
+>>> we could get an erroneous pm_runtime suspend after the
+>>> pm_runtime_put_noidle?
+>>
+>> I've just made a test adding a 6s sleep before returning from the remove 
+>> handler: 
+>>
+>> [14444.894316] cs35l41 spi-VLV1776:00: Runtime resume
+>> [14444.894469] cs35l41 spi-VLV1776:00: sleep 6s before return of cs35l41_remove()
+>> [14448.338994] cs35l41 spi-VLV1776:00: Runtime suspend
+>> [14451.079649] cs35l41 spi-VLV1776:00: return from cs35l41_remove()
+>> [14451.080129] cs35l41 spi-VLV1776:00: Runtime resume
+>> [14451.080165] cs35l41 spi-VLV1776:00: ASoC: Unregistered DAI 'cs35l41-pcm'
+>> [14451.080181] cs35l41 spi-VLV1776:00: Runtime suspend
+>> [14451.813639] acp5x_i2s_playcap acp5x_i2s_playcap.0: ASoC: Unregistered DAI 'acp5x_i2s_playcap.0'
+>>
+>> As expected, suspend triggered, but a resume was issued later, before DAI
+>> got unregistered.
+>>
+>> I didn't notice any issues while repeating the test several times, hence 
+>> I wonder what would be the reason to prevent getting suspend/resume events 
+>> at this point?
+> 
+> The enter/exit hibernate code might run, which at the very
+> least might result in a bunch of unexpected and failing bus
+> traffic. Having a bit of a poke through the code, I guess the
+> most dangerous thing would if you actually got as far as an
+> extra runtime resume. This might cause cs35l41_init_boost
+> to run which would undo the work done by the call to
+> cs35l41_safe_reset in remove, which could leave the boost in a
+> dangerous state when we enable reset/power down the supplies,
+> which I think was not considered good. But its just likely
+> simpler/cleaner if we don't have to think about all the
+> possible implications of such things by just not allowing
+> it to happen.
+
+Agree, let's keep it simple. I will revert the change and instead ensure
+a proper cleanup of pm_runtime_use_autosuspend(), according to the
+documentation:
+
+"It's important to undo this with pm_runtime_dont_use_autosuspend() at
+driver exit time unless your driver initially enabled pm_runtime with
+devm_pm_runtime_enable() (which handles it for you)."
+
+Thanks for the clarifications,
+Cristian
