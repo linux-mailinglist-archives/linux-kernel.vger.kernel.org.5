@@ -2,52 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFD57934E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 07:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CCF7934E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 07:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238640AbjIFFbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 01:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42838 "EHLO
+        id S239702AbjIFFdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 01:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjIFFbn (ORCPT
+        with ESMTP id S229741AbjIFFdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 01:31:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9CCEA;
-        Tue,  5 Sep 2023 22:31:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDB7DC433C8;
-        Wed,  6 Sep 2023 05:31:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693978299;
-        bh=rJ1kMZwOKUcLDxu3c5XV92Q+OBYmrSY6fvs4j7JYUJQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d98PVfbRPTrl4c9dtskIe/w9cA0opQKxZ4Q0w2VjfnEvX+av6xbVZix2Ms7pqozF1
-         oAWk39a8kin313xtOe3cVEqIllzAtZLFQPlXL4jft+U3tU5rgK3hTP5JnqBs4ZhkpQ
-         T8OfNcDRoF+T9K0mn1oI97URJbDZvz3eAyrwOU42ZAXIghm6zUBmTvp2kTTIJtnQvU
-         rSC11fqXr1ixlOPuLBKkEZcP7rUiLysqbPHBohdz2aJSSYR/Va4tLTY5jhL8yspKCJ
-         3Q6ME2VawtVOgHyl1GddusZFWiZWiTS2PsyUZCTjUCDPAH440Ca+y1WW+JgfDNEndc
-         fFodJtNp+Jexw==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, damon@lists.linux.dev,
-        SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.5 00/34] 6.5.2-rc1 review
-Date:   Wed,  6 Sep 2023 05:31:36 +0000
-Message-Id: <20230906053136.72519-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230904182948.594404081@linuxfoundation.org>
-References: 
+        Wed, 6 Sep 2023 01:33:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE17EEA;
+        Tue,  5 Sep 2023 22:33:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693978428; x=1725514428;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=FZ/m7FomPfXPRk4GBSL1OiQkLTl0EuoMl+30KDzbF/A=;
+  b=OIqPB/NLfvEFdCvnoP4gu8cTNelukwZygS8xOUWjbTXtT9hQs6Vas/K9
+   laLqe2dmhwHEGK+gW9U+4G/GYgQuU7WS2kyI69aiU4L7n1uAn9a5ZdfkF
+   ffw846z6aq+9laGCKCnpkNF3WPm+Z+ADk0VZXzH0UryO7s+UWaJsfCOBR
+   2NV5/0RYc+KOx/TW5MjXXrZ2XOovZdXsOwNSXbah7yYmaul+3tFcPc2MG
+   ytluHEQjm372gY/heBOzGVfpduwyyB0DvvJbSP1DSUoVVVnwWiLFcM34L
+   +6gb6FtfJ+EGUp21f4/K08xRcUev2rDq84jqr39JSC419AVs+sNnRKpdH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="463358044"
+X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
+   d="scan'208";a="463358044"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 22:33:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="691177683"
+X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
+   d="scan'208";a="691177683"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.216.62])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 22:33:43 -0700
+Message-ID: <7035c4ba-2432-2bde-27dc-601b4df74ea7@intel.com>
+Date:   Wed, 6 Sep 2023 08:33:39 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.0
+Subject: Re: [PATCH v3] mmc: sdhci-pci-gli: fix LPM negotiation so x86/S0ix
+ SoCs can suspend
+To:     Sven van Ashbrook <svenva@chromium.org>, ulf.hansson@linaro.org,
+        ben.chuang@genesyslogic.com.tw, jasonlai.genesyslogic@gmail.com
+Cc:     LKML <linux-kernel@vger.kernel.org>, jason.lai@genesyslogic.com.tw,
+        skardach@google.com, Renius Chen <reniuschengl@gmail.com>,
+        rafael.j.wysocki@intel.com, linux-mmc@vger.kernel.org,
+        stable@vger.kernel.org, SeanHY.chen@genesyslogic.com.tw,
+        victor.shih@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
+References: <20230831160055.v3.1.I7ed1ca09797be2dd76ca914c57d88b32d24dac88@changeid>
+ <8d88df6b-20c8-cc8e-c08a-e9f09466dc41@intel.com>
+ <CAG-rBig796Yc9iyTiLOLt2R9PW9SoOFtuks3a1usu4XwvkzAOQ@mail.gmail.com>
+Content-Language: en-US
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <CAG-rBig796Yc9iyTiLOLt2R9PW9SoOFtuks3a1usu4XwvkzAOQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,65 +73,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 5/09/23 21:15, Sven van Ashbrook wrote:
+> What do we need for Ulf to add this to the maintainer git?
 
-On Mon, 4 Sep 2023 19:29:47 +0100 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+Nothing, it will get processed in due course, likely making it into
+one of the 6.6 release candidates, because it is a fix, and from
+there to stable.
 
-> This is the start of the stable review cycle for the 6.5.2 release.
-> There are 34 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+But right now is the middle of the merge window so some delay can
+be expected anyway.
+
+> What do we need for Ulf to add this to the maintainer git? There are
+>                                                            There are
+> released devices waiting for this fix, but picking from list generates
+> lots of paperwork, so I'd prefer to pick from git.
 > 
-> Responses should be made by Wed, 06 Sep 2023 18:29:29 +0000.
-> Anything received after that time might be too late.
+> We have a LGTM from Jason Lai, do we need one from Ben Chuang as well?
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.2-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
+> On Mon, Sep 4, 2023 at 3:42 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>>
+>> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+>>
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
-
-Tested-by: SeongJae Park <sj@kernel.org>
-
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 3b1345379dfa ("Linux 6.5.2-rc1")
-
-Thanks,
-SJ
-
-[...]
-
----
-
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: debugfs_rm_non_contexts.sh
-ok 8 selftests: damon: sysfs.sh
-ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
-ok 10 selftests: damon: reclaim.sh
-ok 11 selftests: damon: lru_sort.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_m68k.sh
-ok 12 selftests: damon-tests: build_arm64.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
-
-PASS
