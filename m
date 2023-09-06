@@ -2,110 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D068794189
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0630579418F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241087AbjIFQac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 12:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59618 "EHLO
+        id S242987AbjIFQhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 12:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjIFQaa (ORCPT
+        with ESMTP id S231196AbjIFQhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 12:30:30 -0400
-Received: from out-230.mta0.migadu.com (out-230.mta0.migadu.com [IPv6:2001:41d0:1004:224b::e6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2541BD5
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 09:30:05 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 16:29:56 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694017802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bEgnp9Jqgw+nMxjxuhnJ3/9gomqpg02qsQ9hOL23ty4=;
-        b=ake6scgq2A1YXiCc77F2VTncDUTrhHSaH3KayngKZjFIey4i2QD/G62GEzbz6N5WlfSU7b
-        +HMdMJSo9gje09hYnyt4C6aXEH8YaNjS+WlMHhLW3AS/0czZPtAs2Jynn4WYQQxmw8pgLh
-        6Q+UuKNp8fIwd49LJgzLSq6lH8zJ4HI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Oliver Upton <oliver.upton@linux.dev>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org,
-        qperret@google.com, ricarkol@google.com, tabba@google.com,
-        bgardon@google.com, zhenyzha@redhat.com, yihyu@redhat.com,
-        shan.gavin@gmail.com
-Subject: Re: [PATCH] KVM: arm64: Fix soft-lockup on relaxing PTE permission
-Message-ID: <ZPipBOzdM9lj/uO9@linux.dev>
-References: <20230904072826.1468907-1-gshan@redhat.com>
- <ZPWPoEgBETeI1um1@linux.dev>
- <0f93a015-4f10-b53e-f67f-a84db43ca533@redhat.com>
- <ZPduJ08GKaKXwIhM@linux.dev>
- <bfdafdc5-4abf-a387-0857-e8cb84e4b3d7@redhat.com>
+        Wed, 6 Sep 2023 12:37:12 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C923C1738;
+        Wed,  6 Sep 2023 09:37:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=kC/adOmPdO89VH7yR1A+ieJSp6e/4jhkrzrqxAYoq4Q=; b=ZY0B0RFpQ9y8GWbA9R1g80J8/y
+        hq2amJhTIfAWWLb6RhZOQ5JA0WTlW/XesbFOKLHVntcVrs0tNjeOdAEWFTx5/fmLKbMQsi8CwIgPr
+        K6R/e0qNrDNLyPh/E8TdRgvBikMlyhvgty0NVpQ/Rang/PEgjJM1/co4cnipew1rHxi80ZKnLM/vY
+        dZ7/fxDY02anS2XW9XTymJELpm7I+xMMWDCYvlbW/X16N9ZNctFKNuZ1zoYVpfuajY6J0FJgsYDAl
+        JOUb1EQYzNnpe49NJQRoVa2m+6rSuJ86VuqVp5mRnmmqxnv4kBCfO+ESkwxUJNkF3kcFMRI4JWnGr
+        tnuPALbw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54168)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qdvWL-0000pm-0k;
+        Wed, 06 Sep 2023 17:36:49 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qdvWJ-0004vb-TO; Wed, 06 Sep 2023 17:36:47 +0100
+Date:   Wed, 6 Sep 2023 17:36:47 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com, devicetree@vger.kernel.org
+Subject: Re: [RFC net-next v2 2/2] net: dsa: microchip: Add drive strength
+ configuration
+Message-ID: <ZPiqn94YbJXCqpT8@shell.armlinux.org.uk>
+References: <20230906105904.1477021-1-o.rempel@pengutronix.de>
+ <20230906105904.1477021-3-o.rempel@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bfdafdc5-4abf-a387-0857-e8cb84e4b3d7@redhat.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230906105904.1477021-3-o.rempel@pengutronix.de>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gavin,
+On Wed, Sep 06, 2023 at 12:59:04PM +0200, Oleksij Rempel wrote:
+> +static void ksz9477_drive_strength_error(struct ksz_device *dev, int milliamp)
+> +{
+> +	size_t array_size = ARRAY_SIZE(ksz9477_drive_strengths);
+> +	char supported_values[100];
+> +	int i;
+> +
+> +	for (i = 0; i < array_size; i++) {
+> +		if (i == 0)
+> +			snprintf(supported_values, sizeof(supported_values),
+> +				 "%d", ksz9477_drive_strengths[i].milliamp);
+> +		else
+> +			snprintf(supported_values, sizeof(supported_values),
+> +				 "%s, %d", supported_values,
+> +				 ksz9477_drive_strengths[i].milliamp);
 
-On Wed, Sep 06, 2023 at 08:26:24AM +1000, Gavin Shan wrote:
+That's an interesting way to append... I note that snprintf(3) has a
+note about this, suggesting that (a) the standards make this undefined
+and (b) that depending on the gcc version used, this may not produce
+the expected results. Taking both together seems sufficient
+justification to stay away from attempting this method of appending
+a string.
 
-[...]
+> +static int ksz9477_drive_strength_write(struct ksz_device *dev,
+> +					struct ksz_driver_strength_prop *props,
+> +					int num_props)
+> +{
+> +	int i, ret, reg;
+> +	u8 val;
+	u8 val, mask;
 
-> It seems I didn't make it clear enough. The reason why I had the concern
-> to avoid reading ctr_el0 is we read ctr_el0 for twice in the following path,
-> but I doubt if anybody cares. Since it's a hot path, each bit of performance
-> gain will count.
-> 
->   invalidate_icache_guest_page
->   __invalidate_icache_guest_page   // first read on ctr_el0, with your code changes
->   icache_inval_pou(va, va + size)
->   invalidate_icache_by_line
->     icache_line_size               // second read on ctr_el0
+> +
+> +	if (props[KSZ_DRIVER_STRENGTH_IO].value != -1)
+> +		dev_warn(dev->dev, "%s is not supported by this chip variant\n",
+> +			 props[KSZ_DRIVER_STRENGTH_IO].name);
+> +
+> +	if (dev->chip_id == KSZ8795_CHIP_ID ||
+> +	    dev->chip_id == KSZ8794_CHIP_ID ||
+> +	    dev->chip_id == KSZ8765_CHIP_ID)
+> +		reg = KSZ8795_REG_SW_CTRL_20;
+> +	else
+> +		reg = KSZ9477_REG_SW_IO_STRENGTH;
+> +
 
-That can be addressed by shoving the check deep into
-invalidate_icache_by_line, which would benefit _all_ use cases of
-I-cache invalidation by VA. I haven't completely made up my mind about
-that, though, because of the consequences of a global invalidation.
+> +	ret = ksz_read8(dev, reg, &val);
+> +	if (ret)
+> +		return ret;
+> +
+Remote this.
 
-> > > @size is guranteed to be PAGE_SIZE or PMD_SIZE aligned. Maybe
-> > > we can just aggressively do something like below, disregarding the icache thrashing.
-> > > In this way, the code is further simplified.
-> > > 
-> > >      if (size > PAGE_SIZE) {
-> > >          icache_inval_all_pou();
-> > >      } else {
-> > >          icache_inval_pou((unsigned long)va,
-> > >                           (unsigned long)va + size);
-> > >      }                                                          // parantheses is still needed
-> > 
-> > This could work too but we already have a kernel heuristic for limiting
-> > the amount of broadcast invalidations, which is MAX_TLBI_OPS. I don't
-> > want to introduce a second, KVM-specific hack to address the exact same
-> > thing.
-> > 
-> 
-> Ok. I was confused at the first glance since TLB isn't relevant to icache.
-> I think it's fine to reuse MAX_TLBI_OPS here, but a comment may be needed.
-> Oliver, could you please send a formal patch for your changes?
+	val = mask = 0;
 
-Yeah, I think I may have said it before, but this thing needs to be
-called 'MAX_DVM_OPS'. I-cache invalidations and TLB invalidations become
-DVMOps (Distributed Virtual Memory) in terms of CHI, which pile up at the
-miscellaneous node in the mesh.
+> +	for (i = 0; i < num_props; i++) {
+> +		if (props[i].value == -1)
+> +			continue;
+> +
+> +		ret = ksz9477_drive_strength_to_reg(props[i].value);
+> +		if (ret < 0) {
+> +			ksz9477_drive_strength_error(dev, props[i].value);
+> +			return ret;
+> +		}
+> +
+> +		val &= ~(SW_DRIVE_STRENGTH_M << props[i].offset);
 
-Give me a day or two to convince myself of the right way to go about
-this and I'll send out what I have.
+		mask |= SW_DRIVE_STRENGTH_M << props[i].offset;
+
+> +		val |= ret << props[i].offset;
+
+		val |= ret << props[i].offset;
+
+> +	}
+> +
+> +	return ksz_write8(dev, reg, val);
+
+	return ksz_rmw8(dev, reg, mask, val);
+
+maybe safer?
+
 
 -- 
-Thanks,
-Oliver
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
