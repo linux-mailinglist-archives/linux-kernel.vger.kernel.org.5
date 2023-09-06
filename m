@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBB2794442
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BFB794443
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242857AbjIFUGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 16:06:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
+        id S243667AbjIFUIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 16:08:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbjIFUGm (ORCPT
+        with ESMTP id S230473AbjIFUId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 16:06:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C231D7;
-        Wed,  6 Sep 2023 13:06:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694030799; x=1725566799;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Yy84/Xk9VMmXeaZDz9etLBxRJHsaQPXyEOL3fPHQHKM=;
-  b=WNV+hUF/7GnCcCzy0gKb4uiEwPOq1k0K3gRGhwpM55hYh+/iDzS2rFEj
-   ogec0Do4ReYKT8FP5RCItK9//H9NRahBY698Hg+HX5qKsGKyVKSyu/gXu
-   bBYfMZBJuiAb0xMxZLOS/3bhQCliJJUxDLwrN4D26+lXIkBv3N8zibHOZ
-   u4pqxk/hp72vIF9LpkawPpKrJ6r4M6Pl4DxgrYA1KI//NYfZFlu3S+XOZ
-   rSvtgeJzsvwtimZSiKG2iwMOmxBL4soHx8YzdIVz3i+35SXddmfpobHxZ
-   Bd7TWOjAZ1Twk1D5qeNUvs8yoRcuk06LDMAr5M5Gk+wzlC5teMAsW0HB1
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="443559590"
-X-IronPort-AV: E=Sophos;i="6.02,233,1688454000"; 
-   d="scan'208";a="443559590"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 13:06:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="811807912"
-X-IronPort-AV: E=Sophos;i="6.02,233,1688454000"; 
-   d="scan'208";a="811807912"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 13:06:36 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qdynJ-00796e-1l;
-        Wed, 06 Sep 2023 23:06:33 +0300
-Date:   Wed, 6 Sep 2023 23:06:33 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        platform-driver-x86@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Prashant Malani <pmalani@chromium.org>
-Subject: Re: [PATCH v2 2/3] platform/x86: intel_scu_ipc: Check status upon
- timeout in ipc_wait_for_interrupt()
-Message-ID: <ZPjbyckhj63Gw+SB@smile.fi.intel.com>
-References: <20230906180944.2197111-1-swboyd@chromium.org>
- <20230906180944.2197111-3-swboyd@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230906180944.2197111-3-swboyd@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Sep 2023 16:08:33 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC25C1992
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 13:08:29 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-68bf123aca4so327704b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 13:08:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1694030909; x=1694635709; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oBtIgZl1ms5fC0VvHcL+Q3mCBoxVdMVA1BmpLPYDsb8=;
+        b=hs69AfxoOPjmdGbfLu887VoPV0tR5f716UiQ7Lr4c5elll96tp80CJE2vha9rrehOr
+         oWDb3yKE7T092l9utTuyqtRlQQ/vFtySynDMyMLFwht2ATiE/LalWLrodNmFy229I2B2
+         8KbAFGoPRvrhO7NBm9x17DAgms3DEw3xVxAzMlsS//of34T1N6ZhWf7NBh+XUkVVPoiE
+         4K3gL+ZIIDlJvThJ+OMVGMaPbMWMyQFX5cOjNaUhmamtOQ3p1iHDsMuxtUwwgKXO6cHB
+         X28cUuKCNq/xC5er+y2/mYZhEdvfW54dx+AVXSoWIeKa8Oc/oSvpfedl0n7XpC3joT06
+         sfrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694030909; x=1694635709;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oBtIgZl1ms5fC0VvHcL+Q3mCBoxVdMVA1BmpLPYDsb8=;
+        b=P0irKYINxKVN8boa/8XgPQDDmG10Ouj4XaemmMDzboZlalallCPL9iyI/2ZplGYrxy
+         VT3yXzB8arS6fUcGya0tVGpEbYwxMluYJKhBAOFHo7PITifCEe+sDq3cI0BtU6TdJqeH
+         iTqMBID/OrPZOHCBs0IlNGyjJ7MvLRFzTczRSDNms6CCIgG6JpZ3t+3UH9XvflnPLCai
+         /IL7blV3nhQd20yruTyYEJL+yaY/cS5hbgkr8artK6ytgQxxFNKoVNX9jWEyEB/MbzuZ
+         MTB7JOIGFXa1V7JSOFc3t5MAJCCBefBqGjaMHCUAL5O53erHD1YEj3KR41eKto9sLE5I
+         MsTQ==
+X-Gm-Message-State: AOJu0YygWyP3oZLjkKaefaAmgsCQXYoByQf0VPcvHP0Mru6Wz4IN7NbD
+        SSusdlctfup/Yc8mF+GScOQ78CiReDQ=
+X-Google-Smtp-Source: AGHT+IFSk0M46Pz8MoaYiFpqpBPwiY5U6p475LaEet0bYsUgS14XKHdC+RnyK9LNko9huZyr4AB5W2XG1Lw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:4186:b0:68e:37ea:4f16 with SMTP id
+ ca6-20020a056a00418600b0068e37ea4f16mr404435pfb.0.1694030909345; Wed, 06 Sep
+ 2023 13:08:29 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 13:08:27 -0700
+In-Reply-To: <10bdaf6d-1c5c-6502-c340-db3f84bf74a1@intel.com>
+Mime-Version: 1.0
+References: <CAPm50aLd5ZbAqd8O03fEm6UhHB_svfFLA19zBfgpDEQsQUhoGw@mail.gmail.com>
+ <10bdaf6d-1c5c-6502-c340-db3f84bf74a1@intel.com>
+Message-ID: <ZPjcO/N54pvhLjSz@google.com>
+Subject: Re: [PATCH] KVM: X86: Reduce calls to vcpu_load
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Hao Peng <flyingpenghao@gmail.com>, pbonzini@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 11:09:42AM -0700, Stephen Boyd wrote:
-> It's possible for the completion in ipc_wait_for_interrupt() to timeout,
-> simply because the interrupt was delayed in being processed. A timeout
-> in itself is not an error. This driver should check the status register
-> upon a timeout to ensure that scheduling or interrupt processing delays
-> don't affect the outcome of the IPC return value.
+On Wed, Sep 06, 2023, Xiaoyao Li wrote:
+> On 9/6/2023 2:24 PM, Hao Peng wrote:
+> > From: Peng Hao <flyingpeng@tencent.com>
+> > 
+> > The call of vcpu_load/put takes about 1-2us. Each
+> > kvm_arch_vcpu_create will call vcpu_load/put
+> > to initialize some fields of vmcs, which can be
+> > delayed until the call of vcpu_ioctl to process
+> > this part of the vmcs field, which can reduce calls
+> > to vcpu_load.
 > 
->  CPU0                                                   SCU
->  ----                                                   ---
->  ipc_wait_for_interrupt()
->   wait_for_completion_timeout(&scu->cmd_complete)
->   [TIMEOUT]                                             status[IPC_STATUS_BUSY]=0
+> what if no vcpu ioctl is called after vcpu creation?
 > 
-> Fix this problem by reading the status bit in all cases, regardless of
-> the timeout. If the completion times out, we'll assume the problem was
-> that the IPC_STATUS_BUSY bit was still set, but if the status bit is
-> cleared in the meantime we know that we hit some scheduling delay and we
-> should just check the error bit.
+> And will the first (it was second before this patch) vcpu_load() becomes
+> longer? have you measured it?
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+I don't think the first vcpu_load() becomes longer, this avoids an entire
+load()+put() pair by doing the initialization in the first ioctl().
 
--- 
-With Best Regards,
-Andy Shevchenko
+That said, the patch is obviously buggy, it hooks kvm_arch_vcpu_ioctl() instead
+of kvm_vcpu_ioctl(), e.g. doing KVM_RUN, KVM_SET_SREGS, etc. will cause explosions.
 
+It will also break the TSC synchronization logic in kvm_arch_vcpu_postcreate(),
+which can "race" with ioctls() as the vCPU file descriptor is accessible by
+userspace the instant it's installed into the fd tables, i.e. userspace doesn't
+have to wait for KVM_CREATE_VCPU to complete.
 
+And I gotta imagine there are other interactions I haven't thought of off the
+top of my head, e.g. the vCPU is also reachable via kvm_for_each_vcpu().  All it
+takes is one path that touches a lazily initialized field for this to fall apart.
+
+> I don't think it worth the optimization unless a strong reason.
+
+Yeah, this is a lot of subtle complexity to shave 1-2us.
