@@ -2,56 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 384B5793648
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F407279364C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbjIFHc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 03:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39270 "EHLO
+        id S233301AbjIFHdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 03:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbjIFHcz (ORCPT
+        with ESMTP id S230457AbjIFHdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 03:32:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6182794;
-        Wed,  6 Sep 2023 00:32:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5279AC433C7;
-        Wed,  6 Sep 2023 07:32:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693985571;
-        bh=rA6dVSbG+dQq5j1TWqDv/sU8ofco7JkJsESS9r4nexI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EpiIJ1va/OaAlymFCx4jcMot106SymqceVmqONNNcqQY7R0gUrH7ExLhQnq0I2rom
-         sqbmxWokxHdagxbPRmcjYpRL/F+JoszpNW/CcEooYOOxN93NYtShdQYC79Vp80EiBi
-         fcLosiNlmJQGKRmnBwcMmRFohwBvq25CcgfF1UnSS/80BquP9HaE//Tq2S6tbULpv/
-         IFhG0Q7/jCxFx7rxL2HIUQObVHoudFj5jhUpD9fezJisUDgt9riqCEmocbFrMJiT6E
-         EMAsBWawBRUO/i9hdvZmHdsd+Nf6i7ZnFBY6e8tweB9P2NpzHoIeEod1USOwjIu2cv
-         WmD32kkBWNwzg==
-Date:   Wed, 6 Sep 2023 09:32:47 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        Alain Volmat <alain.volmat@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-i2c@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] i2c: stm32f7: Add atomic_xfer method to driver
-Message-ID: <20230906073247.hjzjywivxzt3lcxw@zenone.zhora.eu>
-References: <20230816080552.3045491-1-sean@geanix.com>
- <20230903124620.6yrnpbpj37on6wih@zenone.zhora.eu>
- <6A1B6BF0-C298-43D3-9B63-0FB1EC9E902B@geanix.com>
- <20230905230821.h7a7thjgm2do3w64@zenone.zhora.eu>
- <2356AD12-9631-4707-8EA5-385E9D6A5716@geanix.com>
+        Wed, 6 Sep 2023 03:33:03 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43211E53;
+        Wed,  6 Sep 2023 00:32:59 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1282F6606EE0;
+        Wed,  6 Sep 2023 08:32:57 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693985577;
+        bh=Suut8+s0FHTKuSqrkmmDOEiABmt5dMjN+myE+DMpao4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hP3EMHCEoghTEeD4tl3WsCO1XIdu67KmZR38wNRd/4Wagzj0jsM64RYBvocyOkqi8
+         srNX9OgvWK+ZK4m4IE9GC5MKtDN+OocUlJKLPABGFt9Z+WOqPKRrW+tTNyD+NUdX+0
+         6s2o+NSbS053mRwxzD39ECWOQFvTVwHyB6VmiWchab/BTcT5pikQbkbw5E7op8jy49
+         yl+EcMYPDY4M7aWfaPLr1uoW0Z92iso8bX4ZG4edIvZiCPoRKlOV+a7t6kkrV/KZmj
+         YSwc2Lm7D792dIbXofG1+zPQzNO9+KFRY1J98SG1/CNyqxh48DlQF1YdHToecvVIwu
+         KjHRkzuCOawtQ==
+Date:   Wed, 6 Sep 2023 09:32:54 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        robdclark@gmail.com, quic_abhinavk@quicinc.com,
+        dmitry.baryshkov@linaro.org, sean@poorly.run,
+        marijn.suijten@somainline.org, robh@kernel.org,
+        steven.price@arm.com, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        healych@amazon.com, kernel@collabora.com,
+        freedreno@lists.freedesktop.org
+Subject: Re: [PATCH v3 3/8] drm/panfrost: Enable debugfs toggling of cycle
+ counter register
+Message-ID: <20230906093254.1f078b88@collabora.com>
+In-Reply-To: <20230905184533.959171-4-adrian.larumbe@collabora.com>
+References: <20230905184533.959171-1-adrian.larumbe@collabora.com>
+        <20230905184533.959171-4-adrian.larumbe@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2356AD12-9631-4707-8EA5-385E9D6A5716@geanix.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,84 +64,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
+On Tue,  5 Sep 2023 19:45:19 +0100
+Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com> wrote:
 
-> >>>> @@ -357,6 +357,7 @@ struct stm32f7_i2c_dev {
-> >>>> u32 dnf_dt;
-> >>>> u32 dnf;
-> >>>> struct stm32f7_i2c_alert *alert;
-> >>>> + bool atomic;
-> >>> 
-> >>> this smells a bit racy here, this works only if the xfer's are
-> >>> always sequential.
-> >>> 
-> >>> What happens when we receive at the same time two xfer's, one
-> >>> atomic and one non atomic?
-> >> 
-> >> From the include/i2c.h:
-> >> * @master_xfer_atomic: same as @master_xfer. Yet, only using atomic context
-> >> *   so e.g. PMICs can be accessed very late before shutdown. Optional.
-> >> 
-> >> So it’s only used very late in the shutdown.
-> >> 
-> >> It’s implemented the same way as in:
-> >> drivers/i2c/busses/i2c-imx.c
-> >> drivers/i2c/busses/i2c-meson.c
-> >> drivers/i2c/busses/i2c-mv64xxx.c
-> >> drivers/i2c/busses/i2c-tegra.c
-> >> … etc…
-> >> 
-> >> 
-> >> In drivers/i2c/i2c-core.h it’s determined whether it’s atomic transfer or not:
-> >> 
-> >> /*
-> >> * We only allow atomic transfers for very late communication, e.g. to access a
-> >> * PMIC when powering down. Atomic transfers are a corner case and not for
-> >> * generic use!
-> >> */
-> >> static inline bool i2c_in_atomic_xfer_mode(void)
-> >> {
-> >>        return system_state > SYSTEM_RUNNING && irqs_disabled();
-> >> }
-> >> 
-> >> So you would not have an atomic transfer and later an non atomic.
-> > 
-> > What about the opposite? I.e. a non atomic and later an atomic,
-> > for very late tardive communications :)
-> 
-> Sure it’s the opposite? Normal scenario is “non atomic” transfers going on and under shutdown it switches to “atomic”.
-> From i2c_in_atomic_xfer_mode() it can’t go from “atomic” -> “non atomic”.
+> Allow user space to decide whether the cycle counting register should be
+> enabled. The main goal is letting tools like nvtop or IGT's gputop access
+> this information in debug builds to obtain engine utilisation numbers.
 
-well at some point we move from non atomic to atomic and we
-preempt whatever is non atomic in order to go atomic, including
-non atomic transfers.
+Given you add a debugfs knob, I would simply drop the module param
+introduced in the previous patch, it's just redundant, and I'd expect
+people who care about profiling to have DEBUGFS enabled anyway.
 
-A "global" variable thrown there without protection is a bit weak
-and we need to be sure to be covering all possible scenarios when
-this variable is used.
+>=20
+> Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com>
+> ---
+>  drivers/gpu/drm/panfrost/Makefile           |  2 +
+>  drivers/gpu/drm/panfrost/panfrost_debugfs.c | 51 +++++++++++++++++++++
+>  drivers/gpu/drm/panfrost/panfrost_debugfs.h | 13 ++++++
+>  drivers/gpu/drm/panfrost/panfrost_drv.c     |  5 ++
+>  4 files changed, 71 insertions(+)
+>  create mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
+>  create mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
+>=20
+> diff --git a/drivers/gpu/drm/panfrost/Makefile b/drivers/gpu/drm/panfrost=
+/Makefile
+> index 7da2b3f02ed9..2c01c1e7523e 100644
+> --- a/drivers/gpu/drm/panfrost/Makefile
+> +++ b/drivers/gpu/drm/panfrost/Makefile
+> @@ -12,4 +12,6 @@ panfrost-y :=3D \
+>  	panfrost_perfcnt.o \
+>  	panfrost_dump.o
+> =20
+> +panfrost-$(CONFIG_DEBUG_FS) +=3D panfrost_debugfs.o
+> +
+>  obj-$(CONFIG_DRM_PANFROST) +=3D panfrost.o
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_debugfs.c b/drivers/gpu/dr=
+m/panfrost/panfrost_debugfs.c
+> new file mode 100644
+> index 000000000000..48d5ddfcb1c6
+> --- /dev/null
+> +++ b/drivers/gpu/drm/panfrost/panfrost_debugfs.c
+> @@ -0,0 +1,51 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright 2023 Collabora ltd. */
+> +
+> +#include <linux/debugfs.h>
+> +#include <drm/drm_debugfs.h>
+> +#include <drm/drm_file.h>
+> +#include <drm/panfrost_drm.h>
+> +
+> +#include "panfrost_device.h"
+> +#include "panfrost_gpu.h"
+> +#include "panfrost_debugfs.h"
+> +
+> +static int
+> +profile_get(void *data, u64 *val)
+> +{
+> +	struct drm_device *dev =3D data;
+> +	struct panfrost_device *pfdev =3D dev->dev_private;
+> +
+> +	*val =3D atomic_read(&pfdev->profile_mode);
+> +
+> +	return 0;
+> +}
+> +
+> +static int
+> +profile_set(void *data, u64 val)
+> +{
+> +	struct drm_device *dev =3D data;
+> +	struct panfrost_device *pfdev =3D dev->dev_private;
+> +
+> +	if (atomic_read(&pfdev->profile_mode) =3D=3D val)
+> +		return 0;
+> +
+> +	if (val =3D=3D false)
+> +		panfrost_cycle_counter_stop(pfdev);
 
-> extern enum system_states {
-> SYSTEM_BOOTING,
-> SYSTEM_SCHEDULING,
-> SYSTEM_FREEING_INITMEM,
-> SYSTEM_RUNNING,
-> SYSTEM_HALT,
-> SYSTEM_POWER_OFF,
-> SYSTEM_RESTART,
-> SYSTEM_SUSPEND,
-> } system_state;
-> 
-> If you are asking what happens if a “non atomic” transfer is ongoing and irq’s is disabled, IDK.
-> 
-> Let’s get Wolfram in the loop (Sorry I forgot to add you) :)
+I don't think we want to stop the counter immediately. We should
+instead let the job logic switch it off when all jobs with profiling
+enabled are done.
 
-Nah, it's OK... I am thinking aloud here and trying to cover
-possible scenarios. I also think that setting up a spinlock might
-be too much paranoiac and not necessary.
+> +	else
+> +		atomic_set(&pfdev->profile_mode, 1);
+> +
+> +	return 0;
+> +}
+> +
+> +DEFINE_DEBUGFS_ATTRIBUTE(profile_fops,
+> +			 profile_get, profile_set,
+> +			 "%llu\n");
+> +
+> +void panfrost_debugfs_init(struct drm_minor *minor)
+> +{
+> +	struct drm_device *dev =3D minor->dev;
+> +
+> +	debugfs_create_file("profile", 0600, minor->debugfs_root,
+> +		dev, &profile_fops);
 
-I'm going to ack it... but I will keep a few thoughts on thinking
-what can happen wrong here.
+With the panfrost_cycle_counter_stop() call in profile_set() dropped,
+you should be able to use debugfs_create_atomic_t() here.
 
-Acked-by: Andi Shyti <andi.shyti@kernel.org> 
+> +}
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_debugfs.h b/drivers/gpu/dr=
+m/panfrost/panfrost_debugfs.h
+> new file mode 100644
+> index 000000000000..db1c158bcf2f
+> --- /dev/null
+> +++ b/drivers/gpu/drm/panfrost/panfrost_debugfs.h
+> @@ -0,0 +1,13 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright 2023 Collabora ltd.
+> + */
+> +
+> +#ifndef PANFROST_DEBUGFS_H
+> +#define PANFROST_DEBUGFS_H
+> +
+> +#ifdef CONFIG_DEBUG_FS
+> +void panfrost_debugfs_init(struct drm_minor *minor);
+> +#endif
+> +
+> +#endif  /* PANFROST_DEBUGFS_H */
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/pa=
+nfrost/panfrost_drv.c
+> index a2ab99698ca8..2dfd9f79a31b 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> @@ -20,6 +20,7 @@
+>  #include "panfrost_job.h"
+>  #include "panfrost_gpu.h"
+>  #include "panfrost_perfcnt.h"
+> +#include "panfrost_debugfs.h"
+> =20
+>  static bool unstable_ioctls;
+>  module_param_unsafe(unstable_ioctls, bool, 0600);
+> @@ -546,6 +547,10 @@ static const struct drm_driver panfrost_drm_driver =
+=3D {
+> =20
+>  	.gem_create_object	=3D panfrost_gem_create_object,
+>  	.gem_prime_import_sg_table =3D panfrost_gem_prime_import_sg_table,
+> +
+> +#ifdef CONFIG_DEBUG_FS
+> +	.debugfs_init		=3D panfrost_debugfs_init,
+> +#endif
+>  };
+> =20
+>  static int panfrost_probe(struct platform_device *pdev)
 
-Andi
