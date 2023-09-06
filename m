@@ -2,170 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7DE793D26
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE6F793D2A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240347AbjIFMxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
+        id S240763AbjIFMxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbjIFMxD (ORCPT
+        with ESMTP id S230316AbjIFMxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:53:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012EBE43;
-        Wed,  6 Sep 2023 05:52:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54BDDC433C7;
-        Wed,  6 Sep 2023 12:52:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694004779;
-        bh=IEQWAcQjvy0vq8Wt0nLK8PBigx3I9ooqM2Ln/kxqa8Y=;
+        Wed, 6 Sep 2023 08:53:06 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF60810E2;
+        Wed,  6 Sep 2023 05:53:02 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (ftip006315900.acc1.colindale.21cn-nte.bt.net [81.134.214.249])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1141CC67;
+        Wed,  6 Sep 2023 14:51:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1694004694;
+        bh=CK01IiZiOV1yzBXhaL2G5EakiuDqVpjdqXxmqxECGis=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UuTtdlafUYrrBR4SAd4A5R/rmJEvoZrOtMKNmsb1+9+RJvg+HEFQSBA3+UveWLrMe
-         KoDhNOr7CWOoxzPSC/OPiRC7408bRdYFuz/ynqg+URjQETLUPKwqQfeJTOGjBeZcuw
-         pj9P/EpNrGTxEq5Rre/G6MzazlxmXWsM2UPdcL/MsW6rZks1LQ49jcdMPLopbnpd8x
-         9NQeCyC2esxQVktTzYzpLG7FUeUvdtomN5s3t8iJTCJJ6y/fmC5SyzaIo5IzpfFKOK
-         qP8cZxRUwL7l7oWAWvPVze+ENNHIBivObQQ8xs1RSjkbOlrQPH2NcYMkem61+cQIHG
-         P1FcuZSPKe2/w==
-Date:   Wed, 6 Sep 2023 15:52:14 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] docs/mm: Physical Memory: add "Memory map" section
-Message-ID: <20230906125214.GK3223@kernel.org>
-References: <20230906074210.3051751-1-rppt@kernel.org>
- <ZPhurt9P7hnsVvua@casper.infradead.org>
+        b=kM4/wrxycaptyYTYg2Gwps4Cf8UyilDJHlIBqWZKG1gEB8Sukz+oDH15W8kG2xwd0
+         Vl6VELjdsUVr+G3UsUUVbv38p3B7qf2rAvEUfsAqv73CPpllezPNnCFXqIYbGVCSCh
+         P6LlGKh1VoDWvo8cEhfLybXlypN/CwQ8DhN5ANaA=
+Date:   Wed, 6 Sep 2023 15:53:14 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Janne Grunau <j@jannau.net>, Simon Ser <contact@emersion.fr>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        freedreno@lists.freedesktop.org, Won Chung <wonchung@google.com>
+Subject: Re: [RFC PATCH v1 01/12] Revert "drm/sysfs: Link DRM connectors to
+ corresponding Type-C connectors"
+Message-ID: <20230906125314.GI17308@pendragon.ideasonboard.com>
+References: <20230903214150.2877023-1-dmitry.baryshkov@linaro.org>
+ <20230903214150.2877023-2-dmitry.baryshkov@linaro.org>
+ <ZPbrtAlO2Y+bjDhf@kuha.fi.intel.com>
+ <CAA8EJpqUg2-k7LLBL38RHU1sThkXB54ca68xEMd1yMnHQcQ++w@mail.gmail.com>
+ <ZPh0Ps9UJ3HLzdeR@kuha.fi.intel.com>
+ <CAA8EJpratbBybgk8woD3maA=J_HuQis44Unq0n+c_UvaFs__AA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZPhurt9P7hnsVvua@casper.infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAA8EJpratbBybgk8woD3maA=J_HuQis44Unq0n+c_UvaFs__AA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 01:21:02PM +0100, Matthew Wilcox wrote:
-> On Wed, Sep 06, 2023 at 10:42:10AM +0300, Mike Rapoport wrote:
-> > +The basic memory descriptor is called :ref:`struct page <Pages>` and it is
-> > +essentially a union of several structures, each representing a page frame
-> > +metadata for a paricular usage.
+On Wed, Sep 06, 2023 at 03:48:35PM +0300, Dmitry Baryshkov wrote:
+> On Wed, 6 Sept 2023 at 15:44, Heikki Krogerus wrote:
+> > On Tue, Sep 05, 2023 at 01:56:59PM +0300, Dmitry Baryshkov wrote:
+> > > On Tue, 5 Sept 2023 at 11:50, Heikki Krogerus wrote:
+> > > > On Mon, Sep 04, 2023 at 12:41:39AM +0300, Dmitry Baryshkov wrote:
+> > > > > The kdev->fwnode pointer is never set in drm_sysfs_connector_add(), so
+> > > > > dev_fwnode() checks never succeed, making the respective commit NOP.
+> > > >
+> > > > That's not true. The dev->fwnode is assigned when the device is
+> > > > created on ACPI platforms automatically. If the drm_connector fwnode
+> > > > member is assigned before the device is registered, then that fwnode
+> > > > is assigned also to the device - see drm_connector_acpi_find_companion().
+> > > >
+> > > > But please note that even if drm_connector does not have anything in
+> > > > its fwnode member, the device may still be assigned fwnode, just based
+> > > > on some other logic (maybe in drivers/acpi/acpi_video.c?).
+> > > >
+> > > > > And if drm_sysfs_connector_add() is modified to set kdev->fwnode, it
+> > > > > breaks drivers already using components (as it was pointed at [1]),
+> > > > > resulting in a deadlock. Lockdep trace is provided below.
+> > > > >
+> > > > > Granted these two issues, it seems impractical to fix this commit in any
+> > > > > sane way. Revert it instead.
+> > > >
+> > > > I think there is already user space stuff that relies on these links,
+> > > > so I'm not sure you can just remove them like that. If the component
+> > > > framework is not the correct tool here, then I think you need to
+> > > > suggest some other way of creating them.
+> > >
+> > > The issue (that was pointed out during review) is that having a
+> > > component code in the framework code can lead to lockups. With the
+> > > patch #2 in place (which is the only logical way to set kdev->fwnode
+> > > for non-ACPI systems) probing of drivers which use components and set
+> > > drm_connector::fwnode breaks immediately.
+> > >
+> > > Can we move the component part to the respective drivers? With the
+> > > patch 2 in place, connector->fwnode will be copied to the created
+> > > kdev's fwnode pointer.
+> > >
+> > > Another option might be to make this drm_sysfs component registration optional.
+> >
+> > You don't need to use the component framework at all if there is
+> > a better way of determining the connection between the DP and its
+> > Type-C connector (I'm assuming that that's what this series is about).
+> > You just need the symlinks, not the component.
 > 
-> "each representing page frame metadata".  And "particular".
+> The problem is that right now this component registration has become
+> mandatory. And if I set the kdev->fwnode manually (like in the patch
+> 2), the kernel hangs inside the component code.
+> That's why I proposed to move the components to the place where they
+> are really necessary, e.g. i915 and amd drivers.
 
-sure
- 
-> >  Folios
-> > -======
-> > +------
-> >  
-> > -.. admonition:: Stub
-> > +`struct folio` represents a physically, virtually and logically contiguous
-> > +set of bytes. It is a power-of-two in size, and it is aligned to that same
-> > +power-of-two. It is at least as large as ``PAGE_SIZE``. If it is in the
-> > +page cache, it is at a file offset which is a multiple of that
-> > +power-of-two. It may be mapped into userspace at an address which is at an
-> > +arbitrary page offset, but its kernel virtual address is aligned to its
-> > +size.
-> >  
-> > -   This section is incomplete. Please list and describe the appropriate fields.
-> > +`struct folio` occupies several consecutive entries in the memory map and
-> > +has the following fields:
-> > +
-> > +``flags``
-> > +  Identical to the page flags.
-> > +
-> > +``lru``
-> > +  Least Recently Used list; tracks how recently this folio was used.
-> > +
-> > +``mlock_count``
-> > +  Number of times this folio has been pinned by mlock().
-> > +
-> > +``mapping``
-> > +  The file this page belongs to. Can be pagecache or swapcahe. For
-> > +  anonymous memory refers to the `struct anon_vma`.
-> > +
-> > +``index``
-> > +  Offset within the file, in units of pages. For anonymous memory, this is
-> > +  the index from the beginning of the mmap.
-> > +
-> > +``private``
-> > +  Filesystem per-folio data (see folio_attach_private()). Used for
-> > +  ``swp_entry_t`` if folio is in the swap cache
-> > +  (i.e. folio_test_swapcache() is true)
-> > +
-> > +``_mapcount``
-> > +  Do not access this member directly. Use folio_mapcount() to find out how
-> > +  many times this folio is mapped by userspace.
-> > +
-> > +``_refcount``
-> > +  Do not access this member directly. Use folio_ref_count() to find how
-> > +  many references there are to this folio.
-> > +
-> > +``memcg_data``
-> > +  Memory Control Group data.
-> > +
-> > +``_folio_dtor``
-> > +  Which destructor to use for this folio.
-> > +
-> > +``_folio_order``
-> > +  The allocation order of a folio. Do not use directly, call folio_order().
-> > +
-> > +``_entire_mapcount``
-> > +  How many times the entire folio is mapped as a single unit (for example
-> > +  by a PMD or PUD entry). Does not include PTE-mapped subpages. This might
-> > +  be useful for debugging, but to find out how many times the folio is
-> > +  mapped look at folio_mapcount() or page_mapcount() or total_mapcount()
-> > +  instead.
-> > +  Do not use directly, call folio_entire_mapcount().
-> > +
-> > +``_nr_pages_mapped``
-> > +  The total number of times the folio is mapped.
-> > +  Do not use directly, call folio_mapcount().
-> > +
-> > +``_pincount``
-> > +  Used to track pinning of the folio for DMA.
-> > +  Do not use directly, call folio_maybe_dma_pinned().
-> > +
-> > +``_folio_nr_pages``
-> > +  The number of pages in the folio.
-> > +  Do not use directly, call folio_nr_pages().
-> > +
-> > +``_hugetlb_subpool``
-> > +  HugeTLB subpool the folio beongs to.
-> > +  Do not use directly, use accessor in ``include/linux/hugetlb.h``.
-> > +
-> > +``_hugetlb_cgroup``
-> > +  Memory Control Group data for a HugeTLB folio.
-> > +  Do not use directly, use accessor in ``include/linux/hugetlb_cgroup.h``.
-> > +
-> > +``_hugetlb_cgroup_rsvd``
-> > +  Memory Control Group data for a HugeTLB folio.
-> > +  Do not use directly, use accessor in ``include/linux/hugetlb_cgroup.h``.
-> > +
-> > +``_hugetlb_hwpoison``
-> > +  List of failed (hwpoisoned) pages for a HugeTLB folio.
-> > +  Do not use directly, call raw_hwp_list_head().
-> > +
-> > +``_deferred_list``
-> > +  Folios to be split under memory pressure.
-> 
-> I don't understand why you've done all this instead of linking to the
-> kernel-doc I wrote.
-
-We can't have it both in Documentation/core-api/mm-api.rst and here without
-sphinx complaining: 
-
-Documentation/mm/physical_memory:561: include/linux/mm_types.h:3: WARNING: Duplicate C declaration, also defined at core-api/mm-api:3.
-Declaration is '.. c:struct:: folio'.
+I'm all for keeping the component framework out of common code. I
+dislike that framework with passion, and still haven't lost all hopes of
+replacing it with something better.
 
 -- 
-Sincerely yours,
-Mike.
+Regards,
+
+Laurent Pinchart
