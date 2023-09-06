@@ -2,49 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD0779414E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 909D2794151
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242806AbjIFQTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 12:19:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48304 "EHLO
+        id S242964AbjIFQTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 12:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbjIFQTD (ORCPT
+        with ESMTP id S242881AbjIFQTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 12:19:03 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4552F198B;
-        Wed,  6 Sep 2023 09:18:59 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 852D8106F;
-        Wed,  6 Sep 2023 09:19:36 -0700 (PDT)
-Received: from [10.57.5.192] (unknown [10.57.5.192])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 512F63F67D;
-        Wed,  6 Sep 2023 09:18:57 -0700 (PDT)
-Message-ID: <5d81a9cd-f96d-bcdb-7878-74c2ead26cfb@arm.com>
-Date:   Wed, 6 Sep 2023 17:18:51 +0100
+        Wed, 6 Sep 2023 12:19:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C567199B;
+        Wed,  6 Sep 2023 09:19:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58C8EC433C8;
+        Wed,  6 Sep 2023 16:19:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694017146;
+        bh=SyvLhDIG0MoJ6FBzjIUjYOBH06hsZVQwkCnIi9FHiDU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eseHbEVmMhrY9PaGwIkO64mOynH5pr1vjbpR/LNqjoBmhA0anmhRcZ/d1ScCLVh6U
+         3pxXPNziMa8Z7a+mltB417gs6kryPvq/9YrgSiNsQijV9OnvmRxdY41irUtYXX3mDr
+         /crCfW2KNLRK58L83A9XPQaRGf40jp86BE5K1mZ7ac021a5IVjA5GiMEOu9iTGVJvi
+         hS44yxEWq9WGikt/WA9LsmmeMsDm8M8r1sSyLotBcbsIDbicv8pbM8NWj6cuZQQe0y
+         fVk41sFaPa2ZSFkTspZSpE8z9N3EM6JmN39yxQyw0a2cl8oHUWkQupnHWYq5EpqXKL
+         c4oq+BE+2NdFg==
+Date:   Wed, 6 Sep 2023 18:19:01 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Zdenek Kabelac <zkabelac@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Jan Kara <jack@suse.cz>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] fix writing to the filesystem after unmount
+Message-ID: <20230906-aufkam-bareinlage-6e7d06d58e90@brauner>
+References: <59b54cc3-b98b-aff9-14fc-dc25c61111c6@redhat.com>
+ <20230906-launenhaft-kinder-118ea59706c8@brauner>
+ <f5d63867-5b3e-294b-d1f5-a128817cfc7@redhat.com>
+ <20230906-aufheben-hagel-9925501b7822@brauner>
+ <60f244be-803b-fa70-665e-b5cba15212e@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 0/2] KVM: x86/mmu: .change_pte() optimization in TDP MMU
-Content-Language: en-GB
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Yan Zhao <yan.y.zhao@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20230808085056.14644-1-yan.y.zhao@intel.com>
- <ZN0S28lkbo6+D7aF@google.com> <ZN1jBFBH4C2bFjzZ@yzhao56-desk.sh.intel.com>
- <ZN5elYQ5szQndN8n@google.com> <ZN9FQf343+kt1YsX@yzhao56-desk.sh.intel.com>
- <ZPWBM5DDC6MKINUe@yzhao56-desk.sh.intel.com> <ZPd6Y9KJ0FfbCa0Q@google.com>
- <5ff1591c-d41c-331f-84a6-ac690c48ff5d@arm.com> <ZPiQQ0OANuaOYdIS@google.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <ZPiQQ0OANuaOYdIS@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <60f244be-803b-fa70-665e-b5cba15212e@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,82 +56,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-06 15:44, Sean Christopherson wrote:
-> On Wed, Sep 06, 2023, Robin Murphy wrote:
->> On 2023-09-05 19:59, Sean Christopherson wrote:
->>> And if the driver *doesn't* initialize the data, then the copy is at best pointless,
->>> and possibly even worse than leaking stale swiotlb data.
->>
->> Other than the overhead, done right it can't be any worse than if SWIOTLB
->> were not involved at all.
+On Wed, Sep 06, 2023 at 06:01:06PM +0200, Mikulas Patocka wrote:
 > 
-> Yep.
 > 
->>> Looking at commit ddbd89deb7d3 ("swiotlb: fix info leak with DMA_FROM_DEVICE"),
->>> IIUC the data leak was observed with a synthetic test "driver" that was developed
->>> to verify a real data leak fixed by commit a45b599ad808 ("scsi: sg: allocate with
->>> __GFP_ZERO in sg_build_indirect()").  Which basically proves my point: copying
->>> from the source only adds value absent a bug in the owning driver.
->>
->> Huh? IIUC the bug there was that the SCSI layer failed to sanitise
->> partially-written buffers. That bug was fixed, and the scrutiny therein
->> happened to reveal that SWIOTLB *also* had a lower-level problem with
->> partial writes, in that it was corrupting DMA-mapped memory which was not
->> updated by the device. Partial DMA writes are not in themselves indicative
->> of a bug, they may well be a valid and expected behaviour.
+> On Wed, 6 Sep 2023, Christian Brauner wrote:
 > 
-> The problem is that the comment only talks about leaking data to userspace, and
-> doesn't say anything about data corruption or the "swiotlb needs to match hardware"
-> justification that Linus pointed out.  I buy both of those arguments for copying
-> data from the original page, but the "may prevent leaking swiotlb content" is IMO
-> completely nonsensical, because if preventing leakage is the only goal, then
-> explicitly initializing the memory is better in every way.
+> > > > IOW, you'd also hang on any umount of a bind-mount. IOW, every
+> > > > single container making use of this filesystems via bind-mounts would
+> > > > hang on umount and shutdown.
+> > > 
+> > > bind-mount doesn't modify "s->s_writers.frozen", so the patch does nothing 
+> > > in this case. I tried unmounting bind-mounts and there was no deadlock.
+> > 
+> > With your patch what happens if you do the following?
+> > 
+> > #!/bin/sh -ex
+> > modprobe brd rd_size=4194304
+> > vgcreate vg /dev/ram0
+> > lvcreate -L 16M -n lv vg
+> > mkfs.ext4 /dev/vg/lv
+> > 
+> > mount -t ext4 /dev/vg/lv /mnt/test
+> > mount --bind /mnt/test /opt
+> > mount --make-private /opt
+> > 
+> > dmsetup suspend /dev/vg/lv
+> > (sleep 1; dmsetup resume /dev/vg/lv) &
+> > 
+> > umount /opt # I'd expect this to hang
+> > 
+> > md5sum /dev/vg/lv
+> > md5sum /dev/vg/lv
+> > dmsetup remove_all
+> > rmmod brd
 > 
-> If no one objects, I'll put together a patch to rewrite the comment in terms of
-> mimicking hardware and not corrupting the caller's data.
+> "umount /opt" doesn't hang. It waits one second (until dmsetup resume is 
+> called) and then proceeds.
 
-Sounds good to me. I guess the trouble is that as soon as a CVE is 
-involved it can then get hard to look past it, or want to risk appearing 
-to downplay it :)
+So unless I'm really misreading the code - entirely possible - the
+umount of the bind-mount now waits until the filesystem is resumed with
+your patch. And if that's the case that's a bug.
 
->>> IMO, rather than copying from the original memory, swiotlb_tbl_map_single() should
->>> simply zero the original page(s) when establishing the mapping.  That would harden
->>> all usage of swiotlb and avoid the read-before-write behavior that is problematic
->>> for KVM.
->>
->> Depends on one's exact definition of "harden"... Corrupting memory with
->> zeros is less bad than corrupting memory with someone else's data if you
->> look at it from an information security point of view, but from a
->> not-corrupting-memory point of view it's definitely still corrupting memory
->> :/
->>
->> Taking a step back, is there not an argument that if people care about
->> general KVM performance then they should maybe stop emulating obsolete PC
->> hardware from 30 years ago, and at least emulate obsolete PC hardware from
->> 20 years ago that supports 64-bit DMA?
-> 
-> Heh, I don't think there's an argument per se, people most definitely shouldn't
-> be emulating old hardware if they care about performance.  I already told Yan as
-> much.
-> 
->> Even non-virtualised, SWIOTLB is pretty horrible for I/O performance by its
->> very nature - avoiding it if at all possible should always be preferred.
-> 
-> Yeah.  The main reason I didn't just sweep this under the rug is the confidential
-> VM use case, where SWIOTLB is used to bounce data from guest private memory into
-> shread buffers.  There's also a good argument that anyone that cares about I/O
-> performance in confidential VMs should put in the effort to enlighten their device
-> drivers to use shared memory directly, but practically speaking that's easier said
-> than done.
+If at all, then only the last umount, the one that destroys the
+superblock, should wait for the filesystem to become unfrozen.
 
-Indeed a bunch of work has gone into SWIOTLB recently trying to make it 
-a bit more efficient for such cases where it can't be avoided, so it is 
-definitely still interesting to learn about impacts at other levels like 
-this. Maybe there's a bit of a get-out for confidential VMs though, 
-since presumably there's not much point COW-ing encrypted private 
-memory, so perhaps KVM might end up wanting to optimise that out and 
-thus happen to end up less sensitive to unavoidable SWIOTLB behaviour 
-anyway?
+A bind-mount shouldn't as there are still active mounts of the
+filesystem (e.g., /mnt/test).
 
-Cheers,
-Robin.
+So you should see this with (unless I really misread things):
+
+#!/bin/sh -ex
+modprobe brd rd_size=4194304
+vgcreate vg /dev/ram0
+lvcreate -L 16M -n lv vg
+mkfs.ext4 /dev/vg/lv
+
+mount -t ext4 /dev/vg/lv /mnt/test
+mount --bind /mnt/test /opt
+mount --make-private /opt
+
+dmsetup suspend /dev/vg/lv
+
+umount /opt # This will hang with your patch?
+
+> 
+> Then, it fails with "rmmod: ERROR: Module brd is in use" because the 
+> script didn't unmount /mnt/test.
+> 
+> > > BTW. what do you think that unmount of a frozen filesystem should properly 
+> > > do? Fail with -EBUSY? Or, unfreeze the filesystem and unmount it? Or 
+> > > something else?
+> > 
+> > In my opinion we should refuse to unmount frozen filesystems and log an
+> > error that the filesystem is frozen. Waiting forever isn't a good idea
+> > in my opinion.
+> 
+> But lvm may freeze filesystems anytime - so we'd get randomly returned 
+> errors then.
+
+So? Or you might hang at anytime.
+
+> 
+> > But this is a significant uapi change afaict so this would need to be
+> > hidden behind a config option, a sysctl, or it would have to be a new
+> > flag to umount2() MNT_UNFROZEN which would allow an administrator to use
+> > this flag to not unmount a frozen filesystems.
+> 
+> The kernel currently distinguishes between kernel-initiated freeze (that 
+> is used by the XFS scrub) and userspace-initiated freeze (that is used by 
+> the FIFREEZE ioctl and by device-mapper initiated freeze through 
+> freeze_bdev).
+
+Yes, I'm aware.
+
+> 
+> Perhaps we could distinguish between FIFREEZE-initiated freezes and 
+> device-mapper initiated freezes as well. And we could change the logic to 
+> return -EBUSY if the freeze was initiated by FIFREEZE and to wait for 
+> unfreeze if it was initiated by the device-mapper.
+
+For device mapper initiated freezes you can unfreeze independent of any
+filesystem mountpoint via dm ioctls.
