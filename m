@@ -2,105 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F7B793A90
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF56B793A97
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237057AbjIFLCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:02:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
+        id S237592AbjIFLDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236772AbjIFLCC (ORCPT
+        with ESMTP id S236949AbjIFLDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:02:02 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5688A1BB;
-        Wed,  6 Sep 2023 04:01:48 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8E58610FC;
-        Wed,  6 Sep 2023 13:00:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1693998019;
-        bh=N42PrMhNFpBpVcotTxriEP2qoUFpOMZJHFS7+bFjaok=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=SbEUUI5pMyrnXwxJU2xkWGB3vQ9UYQV+etGxjYlcPOicAP8wxjjuhmJVpuAwShP0P
-         insCddr5SyORhex+i/cBhj/ab6frUvXj32AYwauuM7NJD9lkKwYaQOROz3ipbOVZkq
-         as2PDOk7YKPIXjBau6fIXyVdcaBAU4Ag979FcxfU=
-Content-Type: text/plain; charset="utf-8"
+        Wed, 6 Sep 2023 07:03:37 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941CE1BB
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:03:33 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-500cfb168c6so5803972e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 04:03:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.com; s=cloud; t=1693998212; x=1694603012; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4cP1GgEPsuH5x3JwCdVLlQl6m1HOoYau4dFR4xNCE00=;
+        b=UorI0YmeynhPkNvprOgRfYrsJ5o9LKPskI3FOdtg9wDVY33E7XSBX8Zqo+aPVVR70q
+         sVREWufSBEYeEgD22Sa/LWymVTPbKY/y2Zq2ytjRYfo6fti5IfKZPlAG6qyn2HOvvNjv
+         NzsmMO1CXkf/xroLTu6/5ZfmSqGMzZorHUvi8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693998212; x=1694603012;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4cP1GgEPsuH5x3JwCdVLlQl6m1HOoYau4dFR4xNCE00=;
+        b=KoMzkdG9e3vxL7Ys3XR0135DW/C+zwR84AQfJSkPF3RIaTtemlYpFDldo4mhFGNRKg
+         CnqcR+gXSqlSrLKNigWXObt8D6pyZFkTndWj8A2JiHP3+q6Y7povb17YGwIWl1vumLYI
+         3BCsGOs7aNxsFxr1NTeC/5yEIt4hdV+kh9V/RdhM8bYjk6u2qE8DqFcjWUqgQeFntt9s
+         R9O37oJ1TQq3eKCyiEuFLN/nY4hQkp5KfdxqOxh2AkxUynp5bIunz2a3yTbuqNAvEPzI
+         c7OPv+yunZcbxX4eWSS2KtUR++jyXP3mpnk1GXgZaDzKfhdeyxFqCLUZ2y0tqFQJ67Zl
+         en1Q==
+X-Gm-Message-State: AOJu0Ywksf9JIAkojzVyq+OWYlQVb4VWviHPaFmBxxoBf/XGsEfX2ZBJ
+        N3rpZS/V9ZA1ynMe7gXkV7vHSfww9PEyFVfJ+eLeAAedkbtQGPw/xg==
+X-Google-Smtp-Source: AGHT+IGajkHriDp2V73gLnt8w9Q25yWyd69bww3RGThTXV/dyVspDiEGJ6yxe7gAgW9hORJWYBsEuf4z+KZwKyH4opw=
+X-Received: by 2002:a05:6512:2393:b0:500:b5db:990b with SMTP id
+ c19-20020a056512239300b00500b5db990bmr2354910lfv.47.1693998211695; Wed, 06
+ Sep 2023 04:03:31 -0700 (PDT)
 MIME-Version: 1.0
+References: <878r9sga1t.fsf@kernel.org> <CAG7k0Epk6KJvoDJKVc86sc_ems3DTbKvPLouBzOoVvn1tZwQ=w@mail.gmail.com>
+ <87o7ifelt7.fsf@kernel.org>
+In-Reply-To: <87o7ifelt7.fsf@kernel.org>
+From:   Ross Lagerwall <ross.lagerwall@cloud.com>
+Date:   Wed, 6 Sep 2023 12:03:20 +0100
+Message-ID: <CAG7k0Ep6ZT6f_wcr67ZOz-kDjNx2M-wax8QFoA5-WfyMhycR3A@mail.gmail.com>
+Subject: Re: [regression v6.5-rc1] PCI: comm "swapper/0" leaking memory
+To:     Kalle Valo <kvalo@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org,
+        regressions@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230906093531.GO7971@pendragon.ideasonboard.com>
-References: <20230905233118.183140-1-paul.elder@ideasonboard.com> <20230905233118.183140-4-paul.elder@ideasonboard.com> <502fc7b1-a32d-6901-3a45-d2aa0e0c3849@linaro.org> <20230906083237.GL7971@pendragon.ideasonboard.com> <a3ed9856-a87b-5cf6-26b5-ff2b19234a8a@linaro.org> <20230906090058.GB17308@pendragon.ideasonboard.com> <59e07c6a-6f1b-0cc7-dddc-96d2a4050843@linaro.org> <20230906093531.GO7971@pendragon.ideasonboard.com>
-Subject: Re: [PATCH 3/3] arm64: dts: mediatek: mt8365-pumpkin: Add overlays for thp7312 cameras
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Paul Elder <paul.elder@ideasonboard.com>,
-        linux-media@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Date:   Wed, 06 Sep 2023 12:01:43 +0100
-Message-ID: <169399810391.277971.691693692840899613@ping.linuxembedded.co.uk>
-User-Agent: alot/0.10
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Laurent Pinchart (2023-09-06 10:35:31)
-> On Wed, Sep 06, 2023 at 11:21:31AM +0200, Krzysztof Kozlowski wrote:
-> > On 06/09/2023 11:00, Laurent Pinchart wrote:
-> > >>> has a regulator@0. There are similar instances for clocks.
-> > >>>
-> > >>> I understand why it may not be a good idea, and how the root node is
-> > >>> indeed not a bus. In some cases, those regulators and clocks are gr=
-ouped
-> > >>> in a regulators or clocks node that has a "simple-bus" compatible. =
-I'm
-> > >>> not sure if that's a good idea, but at least it should validate.
-> > >>>
-> > >>> What's the best practice for discrete board-level clocks and regula=
-tors
-> > >>> in overlays ? How do we ensure that their node name will not confli=
-ct
-> > >>> with the board to which the overlay is attached ?
-> > >>
-> > >> Top-level nodes (so under /) do not have unit addresses. If they hav=
-e -
-> > >> it's an error, because it is not a bus. Also, unit address requires =
-reg.
-> > >> No reg? No unit address. DTC reports this as warnings as well.
-> > >=20
-> > > I agree with all that, but what's the recommended practice to add
-> > > top-level clocks and regulators in overlays, in a way that avoids
-> > > namespace clashes with the base board ?
-> >=20
-> > Whether you use regulator@0 or regulator-0, you have the same chances of
-> > clash.
->=20
-> No disagreement there. My question is whether there's a recommended
-> practice to avoid clashes, or if it's an unsolved problem that gets
-> ignored for now because there's only 36h in a day and there are more
-> urgent things to do.
+On Wed, Sep 6, 2023 at 9:40=E2=80=AFAM Kalle Valo <kvalo@kernel.org> wrote:
+>
+> Ross Lagerwall <ross.lagerwall@cloud.com> writes:
+>
+> > On Wed, Aug 30, 2023 at 10:21=E2=80=AFAM Kalle Valo <kvalo@kernel.org> =
+wrote:
+> >
+> >>
+> >> I noticed that starting from v6.5-rc1 my ath11k tests reported several
+> >> memory leaks from swapper/0:
+> >>
+> >> unreferenced object 0xffff88810a02b7a8 (size 96):
+> >>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
+> >>   hex dump (first 32 bytes):
+> >>     80 b8 02 0a 81 88 ff ff b8 72 07 00 00 c9 ff ff  .........r......
+> >>     c8 b7 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+> >>   backtrace:
+> >> unreferenced object 0xffff88810a02b880 (size 96):
+> >>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
+> >>   hex dump (first 32 bytes):
+> >>     58 b9 02 0a 81 88 ff ff a8 b7 02 0a 81 88 ff ff  X...............
+> >>     a0 b8 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+> >>   backtrace:
+> >> unreferenced object 0xffff88810a02b958 (size 96):
+> >>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
+> >>   hex dump (first 32 bytes):
+> >>     30 ba 02 0a 81 88 ff ff 80 b8 02 0a 81 88 ff ff  0...............
+> >>     78 b9 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  x...............
+> >>   backtrace:
+> >> unreferenced object 0xffff88810a02ba30 (size 96):
+> >>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
+> >>   hex dump (first 32 bytes):
+> >>     08 bb 02 0a 81 88 ff ff 58 b9 02 0a 81 88 ff ff  ........X.......
+> >>     50 ba 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  P...............
+> >>   backtrace:
+> >> unreferenced object 0xffff88810a02bb08 (size 96):
+> >>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
+> >>   hex dump (first 32 bytes):
+> >>     e0 bb 02 0a 81 88 ff ff 30 ba 02 0a 81 88 ff ff  ........0.......
+> >>     28 bb 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  (...............
+> >>   backtrace:
+> >>
+> >> I can easily reproduce this by doing a simple insmod and rmmod of ath1=
+1k
+> >> and it's dependencies (mac80211, MHI etc). I can reliability reproduce
+> >> the leaks but I only see them once after a boot, I need to reboot the
+> >> host to see the leaks again. v6.4 has no leaks.
+> >>
+> >> I did a bisect and found the commit below. I verified reverting the
+> >> commit makes the leaks go away.
+> >>
+> >> commit e54223275ba1bc6f704a6bab015fcd2ae4f72572
+> >> Author:     Ross Lagerwall <ross.lagerwall@citrix.com>
+> >> AuthorDate: Thu May 25 16:32:48 2023 +0100
+> >> Commit:     Bjorn Helgaas <bhelgaas@google.com>
+> >> CommitDate: Fri Jun 9 15:06:16 2023 -0500
+> >>
+> >>     PCI: Release resource invalidated by coalescing
+> >
+> > Hi Kalle,
+> >
+> > I can't reproduce the leak by loading/unloading the ath11k module. I su=
+spect
+> > that the leak is always there when PCI resources are coalesced but
+> > kmemleak doesn't notice until ath11k is loaded.
+> >
+> > Can you please try the following to confirm it fixes it?
+>
+> I run various tests with your patch and I don't see leaks anymore. I
+> also veried that without your patch I see the leak immediately.
+>
+> Thanks for fixing this so quickly, it would good to have this fix in
+> v6.6 if possible.
+>
+> Tested-by: Kalle Valo <kvalo@kernel.org>
+>
 
-Should an overlay add these items to a simple-bus specific to that
-overlay/device that is being supported?
+Thanks, I will send out a proper patch now.
 
-That would 'namespace' the added fixed-clocks/fixed-regulators etc...
-
-But maybe it's overengineering or mis-using the simple-bus.
-
-And the items are still not on a 'bus' with an address - they just exist
-on a presumably externally provided board....
-
---
-Kieran
+Ross
