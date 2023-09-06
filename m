@@ -2,131 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD3D793746
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1ED9793749
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234997AbjIFIlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 04:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49370 "EHLO
+        id S235402AbjIFImG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 04:42:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbjIFIlA (ORCPT
+        with ESMTP id S235063AbjIFImF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 04:41:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6C68F;
-        Wed,  6 Sep 2023 01:40:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D520CC433C9;
-        Wed,  6 Sep 2023 08:40:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693989656;
-        bh=33osJvMi9BkVlhAaa6FIokdBDnUZlNZzV6kbO/dmsVI=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=qXSpfDQOyB1xWgYrcNz+6QSgQyCR06Yj44CINKaWehowHXiUO73ng8lfQD0d2Jpoj
-         wqHa7F3iZl7r0mzZIOu8Npa4pa9ZU/Qqssm7fcr6nWHRkT1aH7RSDg7gUeKcVp7EH6
-         dZsxh/Paw9NOLeWCrgtA8ps8tS3Va+53HBzYUaQZA/oBzj/yg96aBdGgGATzXa4T/k
-         gUQE6g+sDDTpHu4E6sRzJHM3uRN0AhxEzO0JyCErPqdh8hkiuOvDyZGiBODWbN/DJQ
-         02E2qr4cQGvwmYdHBbfLNm9v8oxAd2hJXhmWOn8lAYZ9ALF7QU+T3QtYGQAdcK7uXt
-         3ErZC2knqhscA==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Ross Lagerwall <ross.lagerwall@cloud.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org,
-        regressions@lists.linux.dev
-Subject: Re: [regression v6.5-rc1] PCI: comm "swapper/0" leaking memory
-References: <878r9sga1t.fsf@kernel.org>
-        <CAG7k0Epk6KJvoDJKVc86sc_ems3DTbKvPLouBzOoVvn1tZwQ=w@mail.gmail.com>
-Date:   Wed, 06 Sep 2023 11:40:52 +0300
-In-Reply-To: <CAG7k0Epk6KJvoDJKVc86sc_ems3DTbKvPLouBzOoVvn1tZwQ=w@mail.gmail.com>
-        (Ross Lagerwall's message of "Tue, 5 Sep 2023 17:28:38 +0100")
-Message-ID: <87o7ifelt7.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Wed, 6 Sep 2023 04:42:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0369A128
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 01:42:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mzsEOIsbxzyfVGfAlsQ2OkrMap2oWKr8BXxAo4dJO5I=; b=gssM71fG+GSJ7NPRnlPvX9zlh7
+        1AdePOrBFB31bPh2GEYZEaCiJ10Aof4UmrlMAigKRRkpN2E0tZ2MH0Ae0IxMal1uiPTZzaYlUlrTD
+        DtxN1cew0O/H8zbi07oqexMXUOo9/7LBcEI5SZd3p7dMLtEMM34yoqn2oKgzzwQA2gkixeuHcN1wc
+        cS2TEYzsRuBObuDzmpFT65/fJeCHsOFu3I2ZY47ZVkHzaLDiF1fGCzgW06WTT1NSTRPbsWT1QIv7n
+        G/YVAQSn0HM7P3lrQS3fqYTRT7v1fRKy9k7gmnnOlIeoiLFRmoDaCBJndhsHOWZQItdXJXuUaz+44
+        azbmIqlg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qdo6c-000ktI-Be; Wed, 06 Sep 2023 08:41:46 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C571C3003F2; Wed,  6 Sep 2023 10:41:45 +0200 (CEST)
+Date:   Wed, 6 Sep 2023 10:41:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>, x86@kernel.org
+Subject: Re: [RFC PATCH 1/2] sched: Rate limit migrations to 1 per 2ms per
+ task
+Message-ID: <20230906084145.GC38741@noisy.programming.kicks-ass.net>
+References: <20230905171105.1005672-1-mathieu.desnoyers@efficios.com>
+ <20230905171105.1005672-2-mathieu.desnoyers@efficios.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230905171105.1005672-2-mathieu.desnoyers@efficios.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ross Lagerwall <ross.lagerwall@cloud.com> writes:
+On Tue, Sep 05, 2023 at 01:11:04PM -0400, Mathieu Desnoyers wrote:
+> Rate limit migrations to 1 migration per 2 milliseconds per task. On a
+> kernel with EEVDF scheduler (commit b97d64c722598ffed42ece814a2cb791336c6679),
 
-> On Wed, Aug 30, 2023 at 10:21=E2=80=AFAM Kalle Valo <kvalo@kernel.org> wr=
-ote:
->
->>
->> I noticed that starting from v6.5-rc1 my ath11k tests reported several
->> memory leaks from swapper/0:
->>
->> unreferenced object 0xffff88810a02b7a8 (size 96):
->>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
->>   hex dump (first 32 bytes):
->>     80 b8 02 0a 81 88 ff ff b8 72 07 00 00 c9 ff ff  .........r......
->>     c8 b7 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  ................
->>   backtrace:
->> unreferenced object 0xffff88810a02b880 (size 96):
->>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
->>   hex dump (first 32 bytes):
->>     58 b9 02 0a 81 88 ff ff a8 b7 02 0a 81 88 ff ff  X...............
->>     a0 b8 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  ................
->>   backtrace:
->> unreferenced object 0xffff88810a02b958 (size 96):
->>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
->>   hex dump (first 32 bytes):
->>     30 ba 02 0a 81 88 ff ff 80 b8 02 0a 81 88 ff ff  0...............
->>     78 b9 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  x...............
->>   backtrace:
->> unreferenced object 0xffff88810a02ba30 (size 96):
->>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
->>   hex dump (first 32 bytes):
->>     08 bb 02 0a 81 88 ff ff 58 b9 02 0a 81 88 ff ff  ........X.......
->>     50 ba 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  P...............
->>   backtrace:
->> unreferenced object 0xffff88810a02bb08 (size 96):
->>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
->>   hex dump (first 32 bytes):
->>     e0 bb 02 0a 81 88 ff ff 30 ba 02 0a 81 88 ff ff  ........0.......
->>     28 bb 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  (...............
->>   backtrace:
->>
->> I can easily reproduce this by doing a simple insmod and rmmod of ath11k
->> and it's dependencies (mac80211, MHI etc). I can reliability reproduce
->> the leaks but I only see them once after a boot, I need to reboot the
->> host to see the leaks again. v6.4 has no leaks.
->>
->> I did a bisect and found the commit below. I verified reverting the
->> commit makes the leaks go away.
->>
->> commit e54223275ba1bc6f704a6bab015fcd2ae4f72572
->> Author:     Ross Lagerwall <ross.lagerwall@citrix.com>
->> AuthorDate: Thu May 25 16:32:48 2023 +0100
->> Commit:     Bjorn Helgaas <bhelgaas@google.com>
->> CommitDate: Fri Jun 9 15:06:16 2023 -0500
->>
->>     PCI: Release resource invalidated by coalescing
->
-> Hi Kalle,
->
-> I can't reproduce the leak by loading/unloading the ath11k module. I susp=
-ect
-> that the leak is always there when PCI resources are coalesced but
-> kmemleak doesn't notice until ath11k is loaded.
->
-> Can you please try the following to confirm it fixes it?
+This is not in any way related to the actual eevdf part, perhaps just
+call it fair.
 
-I run various tests with your patch and I don't see leaks anymore. I
-also veried that without your patch I see the leak immediately.
 
-Thanks for fixing this so quickly, it would good to have this fix in
-v6.6 if possible.
+>  include/linux/sched.h |  2 ++
+>  kernel/sched/core.c   |  1 +
+>  kernel/sched/fair.c   | 14 ++++++++++++++
+>  kernel/sched/sched.h  |  2 ++
+>  4 files changed, 19 insertions(+)
+> 
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 177b3f3676ef..1111d04255cc 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -564,6 +564,8 @@ struct sched_entity {
+>  
+>  	u64				nr_migrations;
+>  
+> +	u64				next_migration_time;
+> +
+>  #ifdef CONFIG_FAIR_GROUP_SCHED
+>  	int				depth;
+>  	struct sched_entity		*parent;
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 479db611f46e..0d294fce261d 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -4510,6 +4510,7 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
+>  	p->se.vruntime			= 0;
+>  	p->se.vlag			= 0;
+>  	p->se.slice			= sysctl_sched_base_slice;
+> +	p->se.next_migration_time	= 0;
+>  	INIT_LIST_HEAD(&p->se.group_node);
+>  
+>  #ifdef CONFIG_FAIR_GROUP_SCHED
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index d92da2d78774..24ac69913005 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -960,6 +960,14 @@ int sched_update_scaling(void)
+>  
+>  static void clear_buddies(struct cfs_rq *cfs_rq, struct sched_entity *se);
+>  
+> +static bool should_migrate_task(struct task_struct *p, int prev_cpu)
+> +{
+> +	/* Rate limit task migration. */
+> +	if (sched_clock_cpu(prev_cpu) < p->se.next_migration_time)
+> +	       return false;
+> +	return true;
+> +}
+> +
+>  /*
+>   * XXX: strictly: vd_i += N*r_i/w_i such that: vd_i > ve_i
+>   * this is probably good enough.
+> @@ -7897,6 +7905,9 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
+>  		want_affine = !wake_wide(p) && cpumask_test_cpu(cpu, p->cpus_ptr);
+>  	}
+>  
+> +	if (want_affine && !should_migrate_task(p, prev_cpu))
+> +		return prev_cpu;
+> +
+>  	rcu_read_lock();
+>  	for_each_domain(cpu, tmp) {
+>  		/*
+> @@ -7944,6 +7955,9 @@ static void migrate_task_rq_fair(struct task_struct *p, int new_cpu)
+>  {
+>  	struct sched_entity *se = &p->se;
+>  
+> +	/* Rate limit task migration. */
+> +	se->next_migration_time = sched_clock_cpu(new_cpu) + SCHED_MIGRATION_RATELIMIT_WINDOW;
+> +
+>  	if (!task_on_rq_migrating(p)) {
+>  		remove_entity_load_avg(se);
+>  
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index cf54fe338e23..c9b1a5976761 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -104,6 +104,8 @@ struct cpuidle_state;
+>  #define TASK_ON_RQ_QUEUED	1
+>  #define TASK_ON_RQ_MIGRATING	2
+>  
+> +#define SCHED_MIGRATION_RATELIMIT_WINDOW	2000000		/* 2 ms */
+> +
+>  extern __read_mostly int scheduler_running;
+>  
+>  extern unsigned long calc_load_update;
 
-Tested-by: Kalle Valo <kvalo@kernel.org>
+Urgh... so we already have much of this around task_hot() /
+can_migrate_task(). And I would much rather see we extend those things
+to this wakeup migration path, rather than build a whole new parallel
+thing.
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+Also:
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+> I have noticed that in order to observe the speedup, the workload needs
+> to keep the CPUs sufficiently busy to cause runqueue lock contention,
+> but not so busy that they don't go idle.
+
+This would suggest inhibiting pulling tasks based on rq statistics,
+instead of tasks stats. It doesn't matter when the task migrated last,
+what matter is that this rq doesn't want new tasks at this point.
+
+Them not the same thing.
+
