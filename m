@@ -2,83 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D79F793305
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 02:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B33793308
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 02:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243057AbjIFAtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 20:49:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
+        id S243441AbjIFAtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 20:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbjIFAtJ (ORCPT
+        with ESMTP id S230312AbjIFAtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 20:49:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6ED199
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 17:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=I5z10LnLWSXAHPqe7mz8C6zD93RhuMzewKOg+qlq2WQ=; b=EflQnnTC1wk0PT/HVjR2GU2oUt
-        BK1bETdOUojcH9S+JKWOronEzzK8U6dJ8ad18XhZYzV9P73J/8Rwn05gzKurMAH532fJiGUr+KlkS
-        eHj4tzjDP/u+cgemcOiQp7GZradrJNeZr2jj0QpKXMfnlRvF+zc+28O79pAuPv1mQwlFCrcZvmW/a
-        MmJ2KpstyduM1WuiMiXp74ZQ1nPhz+2liGyY5wjM15oUeq4w2pOQfz8zwSx8hySdri3ac+eoGhvld
-        OZGRxQnYbharvNn2T4GT5czXK7xMXXuHX/DSrM8kkRg3fZdVI4nXa6qTsq2XwtTkyeWmRkMahkEnE
-        C7dF7pJg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qdgj0-00F5yq-OT; Wed, 06 Sep 2023 00:48:54 +0000
-Date:   Wed, 6 Sep 2023 01:48:54 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 01/11] hugetlb: set hugetlb page flag before
- optimizing vmemmap
-Message-ID: <ZPfMds3PloTLeZPP@casper.infradead.org>
-References: <20230905214412.89152-1-mike.kravetz@oracle.com>
- <20230905214412.89152-2-mike.kravetz@oracle.com>
+        Tue, 5 Sep 2023 20:49:20 -0400
+Received: from TWMBX02.aspeed.com (mail.aspeedtech.com [211.20.114.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA07CDB;
+        Tue,  5 Sep 2023 17:49:14 -0700 (PDT)
+Received: from TWMBX02.aspeed.com (192.168.0.24) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 6 Sep
+ 2023 08:49:12 +0800
+Received: from twmbx02.aspeed.com (192.168.10.10) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 6 Sep 2023 08:49:12 +0800
+From:   Tommy Huang <tommy_huang@aspeedtech.com>
+To:     <brendan.higgins@linux.dev>, <andi.shyti@kernel.org>,
+        <p.zabel@pengutronix.de>, <linux-i2c@vger.kernel.org>,
+        <openbmc@lists.ozlabs.org>
+CC:     <benh@kernel.crashing.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <BMC-SW@aspeedtech.com>, <jae.hyun.yoo@linux.intel.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH v3] i2c: aspeed: Reset the i2c controller when timeout occurs
+Date:   Wed, 6 Sep 2023 08:49:10 +0800
+Message-ID: <20230906004910.4157305-1-tommy_huang@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905214412.89152-2-mike.kravetz@oracle.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+Received-SPF: Fail (TWMBX02.aspeed.com: domain of tommy_huang@aspeedtech.com
+ does not designate 192.168.10.10 as permitted sender)
+ receiver=TWMBX02.aspeed.com; client-ip=192.168.10.10;
+ helo=twmbx02.aspeed.com;
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_FAIL,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 02:44:00PM -0700, Mike Kravetz wrote:
-> @@ -456,6 +457,7 @@ int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head)
->  	unsigned long vmemmap_start = (unsigned long)head, vmemmap_end;
->  	unsigned long vmemmap_reuse;
->  
-> +	VM_WARN_ON_ONCE(!PageHuge(head));
->  	if (!HPageVmemmapOptimized(head))
->  		return 0;
->  
-> @@ -550,6 +552,7 @@ void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head)
->  	unsigned long vmemmap_start = (unsigned long)head, vmemmap_end;
->  	unsigned long vmemmap_reuse;
->  
-> +	VM_WARN_ON_ONCE(!PageHuge(head));
->  	if (!vmemmap_should_optimize(h, head))
->  		return;
+Reset the i2c controller when an i2c transfer timeout occurs.
+The remaining interrupts and device should be reset to avoid
+unpredictable controller behavior.
 
-Someone who's looking for an easy patch or three should convert both
-of these functions to take a folio instead of a page.  All callers
-pass &folio->page.  Obviously do that work on top of Mike's patch set
-to avoid creating more work for him.
+Fixes: 2e57b7cebb98 ("i2c: aspeed: Add multi-master use case support")
+Cc: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+Cc: <stable@vger.kernel.org> # v5.1+
+Signed-off-by: Tommy Huang <tommy_huang@aspeedtech.com>
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+---
+V3: Submit this patch for clearing patch style typo.
+---
+ drivers/i2c/busses/i2c-aspeed.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
+index 2e5acfeb76c8..5a416b39b818 100644
+--- a/drivers/i2c/busses/i2c-aspeed.c
++++ b/drivers/i2c/busses/i2c-aspeed.c
+@@ -698,13 +698,16 @@ static int aspeed_i2c_master_xfer(struct i2c_adapter *adap,
+ 
+ 	if (time_left == 0) {
+ 		/*
+-		 * If timed out and bus is still busy in a multi master
+-		 * environment, attempt recovery at here.
++		 * In a multi-master setup, if a timeout occurs, attempt
++		 * recovery. But if the bus is idle, we still need to reset the
++		 * i2c controller to clear the remaining interrupts.
+ 		 */
+ 		if (bus->multi_master &&
+ 		    (readl(bus->base + ASPEED_I2C_CMD_REG) &
+ 		     ASPEED_I2CD_BUS_BUSY_STS))
+ 			aspeed_i2c_recover_bus(bus);
++		else
++			aspeed_i2c_reset(bus);
+ 
+ 		/*
+ 		 * If timed out and the state is still pending, drop the pending
+-- 
+2.25.1
+
