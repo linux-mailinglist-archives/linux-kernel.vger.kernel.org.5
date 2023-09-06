@@ -2,89 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD777936B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8E77936B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233511AbjIFIBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 04:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
+        id S233689AbjIFIBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 04:01:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbjIFIBD (ORCPT
+        with ESMTP id S231971AbjIFIBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 04:01:03 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B32CDB;
-        Wed,  6 Sep 2023 01:01:00 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Wed, 6 Sep 2023 04:01:39 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1258CEE;
+        Wed,  6 Sep 2023 01:01:34 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9201222407;
-        Wed,  6 Sep 2023 08:00:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1693987258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Th6i3Ci6XMV5czHwHHRQpy4WXZpYK1vSc4mKPzvASOU=;
-        b=Pb4lNhvGotAuMduqcxpX1veGfBW2fSsxbs9Pu7MCDvZuKYqbhIBY10E+hTUliKOLBUS8xT
-        IScFwkZq92rxWtvku6iqGuFuVgR5lDAVbkoOihu7XH0KTBnfaYqyy4A7lldnkADZSSK6sy
-        waSNnkdND+zVot6yoT1DyeMpgGyp2zc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1693987258;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Th6i3Ci6XMV5czHwHHRQpy4WXZpYK1vSc4mKPzvASOU=;
-        b=8aX8Ngai6ZtyQlD2914oRoaCD9456/pp3O+p6YtiEHc05I1uh8Iu/T2mBUnSMDxI5k/fIo
-        p/VLTw2WkzUAHvBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8ACD11346C;
-        Wed,  6 Sep 2023 08:00:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2QG0ILkx+GRiVwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 06 Sep 2023 08:00:57 +0000
-Message-ID: <bcefb739-b45c-8349-8010-ac137ab61c29@suse.cz>
-Date:   Wed, 6 Sep 2023 10:00:56 +0200
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 182296600BB0;
+        Wed,  6 Sep 2023 09:01:33 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693987293;
+        bh=vSEIaR0lPEZiYOY+uQLPwZjudJxV4ZVUe6FLxcVC0oM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BlCQogUgTVT6d/M0WuRpPNnxcGrYQsqBEPt5nZTW+RnlfvDefBMOijc0pc2WBAqWX
+         I8vZ1WhUPmG6/Fdqnt+vjclknMeJ6Yn/gPfr71yyCQRbas99W7A0fIMg46imeFMIz9
+         d0lPsbRf6q/LDXLrgiqbGq9LgxQNEXJGK2GUREm+5B74v0f7lwVCcPIOvPDOLkZcXx
+         xlEAFah0wCK1uVE/MTkPtSoIR08Hd3wNhfrbAr8xpb9q6HHSdKQtEQZQCS+PLWyZwk
+         VoA1N1uJWB48Ks3P8agTXP8ovAA2bIIvOGSWYI6IvUb/dp2onK7BKe3xujQTtXscPP
+         NDQd7n7rSqxPg==
+Date:   Wed, 6 Sep 2023 10:01:30 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        robdclark@gmail.com, quic_abhinavk@quicinc.com,
+        dmitry.baryshkov@linaro.org, sean@poorly.run,
+        marijn.suijten@somainline.org, robh@kernel.org,
+        steven.price@arm.com, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        healych@amazon.com, kernel@collabora.com,
+        freedreno@lists.freedesktop.org
+Subject: Re: [PATCH v3 7/8] drm/panfrost: Implement generic DRM object RSS
+ reporting function
+Message-ID: <20230906100130.530c4e4a@collabora.com>
+In-Reply-To: <20230905184533.959171-8-adrian.larumbe@collabora.com>
+References: <20230905184533.959171-1-adrian.larumbe@collabora.com>
+        <20230905184533.959171-8-adrian.larumbe@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH gmem FIXUP] mm, compaction: make testing
- mapping_unmovable() safe
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     ackerleytng@google.com, akpm@linux-foundation.org,
-        anup@brainfault.org, aou@eecs.berkeley.edu,
-        chao.p.peng@linux.intel.com, chenhuacai@kernel.org,
-        david@redhat.com, isaku.yamahata@gmail.com, jarkko@kernel.org,
-        jmorris@namei.org, kirill.shutemov@linux.intel.com,
-        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        kvmarm@lists.linux.dev, liam.merwick@oracle.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-riscv@lists.infradead.org,
-        linux-security-module@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, mail@maciej.szmigiero.name,
-        maz@kernel.org, michael.roth@amd.com, mpe@ellerman.id.au,
-        oliver.upton@linux.dev, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, paul@paul-moore.com, pbonzini@redhat.com,
-        qperret@google.com, serge@hallyn.com, tabba@google.com,
-        vannapurve@google.com, wei.w.wang@intel.com, willy@infradead.org,
-        yu.c.zhang@linux.intel.com
-References: <20230901082025.20548-2-vbabka@suse.cz>
- <ZPfAL0D95AwXD9tg@google.com>
-Content-Language: en-US
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <ZPfAL0D95AwXD9tg@google.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,20 +64,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/6/23 01:56, Sean Christopherson wrote:
-> On Fri, Sep 01, 2023, Vlastimil Babka wrote:
->> As Kirill pointed out, mapping can be removed under us due to
->> truncation. Test it under folio lock as already done for the async
->> compaction / dirty folio case. To prevent locking every folio with
->> mapping to do the test, do it only for unevictable folios, as we can
->> expect the unmovable mapping folios are also unevictable - it is the
->> case for guest memfd folios.
-> 
-> Rather than expect/assume that unmovable mappings are always unevictable, how about
-> requiring that?  E.g. either through a VM_WARN_ON in mapping_set_unmovable(), or by
-> simply having that helper forcefully set AS_UNEVICTABLE as well.
+On Tue,  5 Sep 2023 19:45:23 +0100
+Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com> wrote:
 
-Yeah I guess we could make the helper do that, with a comment, as gmem is
-the only user right now. And if in the future somebody has case where it
-makes sense to have unmovable without unevictable, we can discuss what to do
-about it then.
+> BO's RSS is updated every time new pages are allocated on demand and mapp=
+ed
+> for the object at GPU page fault's IRQ handler, but only for heap buffers.
+> The reason this is unnecessary for non-heap buffers is that they are mapp=
+ed
+> onto the GPU's VA space and backed by physical memory in their entirety at
+> BO creation time.
+>=20
+> This calculation is unnecessary for imported PRIME objects, since heap
+> buffers cannot be exported by our driver, and the actual BO RSS size is t=
+he
+> one reported in its attached dmabuf structure.
+>=20
+> Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com>
+> ---
+>  drivers/gpu/drm/panfrost/panfrost_gem.c | 14 ++++++++++++++
+>  drivers/gpu/drm/panfrost/panfrost_gem.h |  5 +++++
+>  drivers/gpu/drm/panfrost/panfrost_mmu.c | 12 ++++++++----
+>  3 files changed, 27 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/pa=
+nfrost/panfrost_gem.c
+> index 7d8f83d20539..cb92c0ed7615 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_gem.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
+> @@ -208,6 +208,19 @@ static enum drm_gem_object_status panfrost_gem_statu=
+s(struct drm_gem_object *obj
+>  	return res;
+>  }
+> =20
+> +static size_t panfrost_gem_rss(struct drm_gem_object *obj)
+> +{
+> +	struct panfrost_gem_object *bo =3D to_panfrost_bo(obj);
+> +
+> +	if (bo->is_heap)
+> +		return bo->heap_rss_size;
+> +	else if (bo->base.pages) {
+> +		WARN_ON(bo->heap_rss_size);
+> +		return bo->base.base.size;
+> +	} else
+> +		return 0;
+
+Nit: please add brackets on all conditional blocks, even if only the
+second one needs it.
+
+> +}
+> +
+>  static const struct drm_gem_object_funcs panfrost_gem_funcs =3D {
+>  	.free =3D panfrost_gem_free_object,
+>  	.open =3D panfrost_gem_open,
+> @@ -220,6 +233,7 @@ static const struct drm_gem_object_funcs panfrost_gem=
+_funcs =3D {
+>  	.vunmap =3D drm_gem_shmem_object_vunmap,
+>  	.mmap =3D drm_gem_shmem_object_mmap,
+>  	.status =3D panfrost_gem_status,
+> +	.rss =3D panfrost_gem_rss,
+>  	.vm_ops =3D &drm_gem_shmem_vm_ops,
+>  };
+> =20
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.h b/drivers/gpu/drm/pa=
+nfrost/panfrost_gem.h
+> index ad2877eeeccd..13c0a8149c3a 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_gem.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.h
+> @@ -36,6 +36,11 @@ struct panfrost_gem_object {
+>  	 */
+>  	atomic_t gpu_usecount;
+> =20
+> +	/*
+> +	 * Object chunk size currently mapped onto physical memory
+> +	 */
+> +	size_t heap_rss_size;
+> +
+>  	bool noexec		:1;
+>  	bool is_heap		:1;
+>  };
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/pa=
+nfrost/panfrost_mmu.c
+> index d54d4e7b2195..67c206124781 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> @@ -285,17 +285,19 @@ static void panfrost_mmu_flush_range(struct panfros=
+t_device *pfdev,
+>  	pm_runtime_put_autosuspend(pfdev->dev);
+>  }
+> =20
+> -static int mmu_map_sg(struct panfrost_device *pfdev, struct panfrost_mmu=
+ *mmu,
+> +static size_t mmu_map_sg(struct panfrost_device *pfdev, struct panfrost_=
+mmu *mmu,
+>  		      u64 iova, int prot, struct sg_table *sgt)
+>  {
+>  	unsigned int count;
+>  	struct scatterlist *sgl;
+>  	struct io_pgtable_ops *ops =3D mmu->pgtbl_ops;
+>  	u64 start_iova =3D iova;
+> +	size_t total =3D 0;
+> =20
+>  	for_each_sgtable_dma_sg(sgt, sgl, count) {
+>  		unsigned long paddr =3D sg_dma_address(sgl);
+>  		size_t len =3D sg_dma_len(sgl);
+> +		total +=3D len;
+> =20
+>  		dev_dbg(pfdev->dev, "map: as=3D%d, iova=3D%llx, paddr=3D%lx, len=3D%zx=
+", mmu->as, iova, paddr, len);
+> =20
+> @@ -315,7 +317,7 @@ static int mmu_map_sg(struct panfrost_device *pfdev, =
+struct panfrost_mmu *mmu,
+> =20
+>  	panfrost_mmu_flush_range(pfdev, mmu, start_iova, iova - start_iova);
+> =20
+> -	return 0;
+> +	return total;
+>  }
+> =20
+>  int panfrost_mmu_map(struct panfrost_gem_mapping *mapping)
+> @@ -447,6 +449,7 @@ static int panfrost_mmu_map_fault_addr(struct panfros=
+t_device *pfdev, int as,
+>  	pgoff_t page_offset;
+>  	struct sg_table *sgt;
+>  	struct page **pages;
+> +	size_t mapped_size;
+> =20
+>  	bomapping =3D addr_to_mapping(pfdev, as, addr);
+>  	if (!bomapping)
+> @@ -518,10 +521,11 @@ static int panfrost_mmu_map_fault_addr(struct panfr=
+ost_device *pfdev, int as,
+>  	if (ret)
+>  		goto err_map;
+> =20
+> -	mmu_map_sg(pfdev, bomapping->mmu, addr,
+> -		   IOMMU_WRITE | IOMMU_READ | IOMMU_NOEXEC, sgt);
+> +	mapped_size =3D mmu_map_sg(pfdev, bomapping->mmu, addr,
+> +				 IOMMU_WRITE | IOMMU_READ | IOMMU_NOEXEC, sgt);
+> =20
+>  	bomapping->active =3D true;
+> +	bo->heap_rss_size +=3D mapped_size;
+
+The alloc-on-fault granularity is set static (2MB), so no need to
+make mmu_map_sg() return the mapped size, we can just do +=3D SZ_2M if
+things worked.
+
+> =20
+>  	dev_dbg(pfdev->dev, "mapped page fault @ AS%d %llx", as, addr);
+> =20
+
