@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4784793DAB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62346793DAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239457AbjIFNa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 09:30:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58510 "EHLO
+        id S240012AbjIFNbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 09:31:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbjIFNaz (ORCPT
+        with ESMTP id S238136AbjIFNbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 09:30:55 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E802E6B;
-        Wed,  6 Sep 2023 06:30:52 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-5739965a482so507720eaf.0;
-        Wed, 06 Sep 2023 06:30:52 -0700 (PDT)
+        Wed, 6 Sep 2023 09:31:17 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BD110E2
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 06:31:12 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4e6so5296009a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 06:31:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694007051; x=1694611851; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OTEkkM13Gphml9oWsQLKQadc/TQ9JNkPJiqMr8G3e3Y=;
-        b=nbYKiHMQSQuEUVFzNEcFY+wOiw015zrDvlVsyPuhLlEdbmQtVvxbxYlVvpaGUfpYMz
-         pMRFUJ0Mh/cCc5mXq9P4rGCWtFzKabTZmN/J7KTQk9Uw9sSbtMZMocgRjjQpRIB7ROYw
-         oCViOvgPGMgS1rmR/XErJhRdYxsTzOHnCZUZ232y1Sn2miYAryLHr4PM/tAIcTrEuf5+
-         SzlQMjdZ9WG7gicYBDSuNFkD+/1Szf5Fl8utd1Ciyyc/b2zFygFCvnLXEJKi7cX0ctZM
-         /5pnp61fSvr0EdALMxAeaRAG9VFRwHqBvD3se5dhHmUmR64qPcmsZQN1yEMS2qNengGt
-         o9Nw==
+        d=linbit-com.20230601.gappssmtp.com; s=20230601; t=1694007070; x=1694611870; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZQEKqe3bDH27s4AsrbKUQCFmR3pSzTgTwp308wc1fxo=;
+        b=TpPAb2WZoync7bkj+W8asv1tvuYlocWNvHOO95MypyoyFX/1mUOkh0uG3vk/R1CFkr
+         bHWwfMnZGmpusMuV5QoG9cTWT5Awu9AQxrPUsmeGLrszO6/fmvco7+EMY53zli95p2kp
+         +3BKaOC1ywWm5+NqAAkeIYkiTfrAVzpwLwylfFDN2XxY6i5sfTAekA/Ha8qWXeNKAD6j
+         W/ocAfgR8RDcShVCi59SIyhWL9PYsjiIMNjtScOVeVyS8vYsIwmlwb+j5cCNnPBEjfwn
+         NmQ3twANGAUPa69tPs87TSMu9E2dNd4VK2GkuXwvvGSViSt7+N7YB/Oa7HnoHih9cxC5
+         rtcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694007051; x=1694611851;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OTEkkM13Gphml9oWsQLKQadc/TQ9JNkPJiqMr8G3e3Y=;
-        b=HHjaN0/8GplDE4dbcS81+VRgICfTsY6Gab/Mv/i4sojQEga9S9XzafY6/8pnleNsp4
-         cAKiUaSWsuRfVrtZZW2scQ01TRK93hFjL8WBIt9S7LFmjF1+em/wwnVIyRO21MoPKEIJ
-         phix0ecYMIIRbuC+XjmRUDhRk3d1mMUV7zJLvV6P+d1n6wV89bjeKi54T76b8Kh/6Jlc
-         gX09JvsGriahC2eYM/CEw+TSkGsz9yYJ0NKzvM6RLVb27YrSLuptNwRMIlz9BD1rhK70
-         KOSR7thtl+l/7jvJlVnhGv98SKF0Cz8NLG9f2MnE4zK9oB7jrAiLBE97x46zIUo+lFu2
-         A4/g==
-X-Gm-Message-State: AOJu0YzrtJ2XnLxNggFGdvnoBvFrGs+XjYohyDQ0M7olTyk/qX3o3S64
-        MfwfsSvwKDd1eO9NfZkaS//M04VW+hFPWUT3u5Rt5PAfy5c=
-X-Google-Smtp-Source: AGHT+IHgLCr9gzW2JJF1hKuXjYYCqfgfES4I2E2T/f/NXykru6PWJ3HpwETfOO7MQqDJVnXNymS8YNrqHgB4Gk5toi8=
-X-Received: by 2002:a4a:9bd2:0:b0:56e:a037:3827 with SMTP id
- b18-20020a4a9bd2000000b0056ea0373827mr7143267ook.0.1694007051265; Wed, 06 Sep
- 2023 06:30:51 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1694007070; x=1694611870;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZQEKqe3bDH27s4AsrbKUQCFmR3pSzTgTwp308wc1fxo=;
+        b=dVjsnPGBznrcEkC1KhmWMPEyZ6XR7juERYMo/cNTu/BLrOSi8UO89BwueW9KOSUgkw
+         v5UrvV5Xe7wa6uiU1qSp4hyuXCStBVaub3RhVGbf1ZUyS506JOezKD1WxM0wxW5qpZJ9
+         7YaPWW/kyTJlvNoBIirzu1ZT3GDH9b9SizxbkiKmfFpI2gYVmKMQmMvhDUdgaC/Ddc5O
+         O1Of4XTmJTbG+y6VtANIdoDBLO6/GapUJzcWGOHT13sDdyaFx7tTltWAytI8gYXvMrZz
+         /216WDWN7XtwmzN722CuLjmcJWOsuUp8/ZaogsWclgCObk1DiwWXUM1MVtLdfjSplPHM
+         OFhw==
+X-Gm-Message-State: AOJu0YwVXzg9u/38vTBVWIpjkb/VJNb5oK1/MZ9s7ddbCl176Y3zQPZW
+        uJ6FWgfXp5O+G4g8MjjMfo+fGw==
+X-Google-Smtp-Source: AGHT+IHxQ1RmQuQHmgQQmnWbUnYbPKmInDa2Y2sq1quXXuZPSayEmNlnZxowArje3NTqDDs5B/wckw==
+X-Received: by 2002:a17:906:1044:b0:99b:c86b:1d25 with SMTP id j4-20020a170906104400b0099bc86b1d25mr2395858ejj.26.1694007070656;
+        Wed, 06 Sep 2023 06:31:10 -0700 (PDT)
+Received: from localhost.localdomain (h082218028181.host.wavenet.at. [82.218.28.181])
+        by smtp.gmail.com with ESMTPSA id gh4-20020a170906e08400b009875a6d28b0sm8983369ejb.51.2023.09.06.06.31.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 06:31:10 -0700 (PDT)
+From:   =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= 
+        <christoph.boehmwalder@linbit.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     drbd-dev@lists.linbit.com, linux-kernel@vger.kernel.org,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        linux-block@vger.kernel.org,
+        Linux regression tracking <regressions@leemhuis.info>,
+        Serguei Ivantsov <manowar@gsc-game.com>,
+        David Howells <dhowells@redhat.com>,
+        =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= 
+        <christoph.boehmwalder@linbit.com>, stable@vger.kernel.org
+Subject: [PATCH] drbd: swap bvec_set_page len and offset
+Date:   Wed,  6 Sep 2023 15:30:34 +0200
+Message-ID: <20230906133034.948817-1-christoph.boehmwalder@linbit.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230905-strncpy-arch-x86-platform-uv-uv_nmi-v3-1-3efd6798b569@google.com>
- <ZPhsSzHG6YMViOSk@gmail.com> <bce762af-0da7-bb5e-1580-b42803c183f6@redhat.com>
-In-Reply-To: <bce762af-0da7-bb5e-1580-b42803c183f6@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 6 Sep 2023 16:30:15 +0300
-Message-ID: <CAHp75Vdn_pPkjg=zyspnraz2RARrWJ6A76e8_PKLhtUrewFQMg@mail.gmail.com>
-Subject: Re: [PATCH v3] x86/platform/uv: refactor deprecated strcpy and strncpy
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Justin Stitt <justinstitt@google.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 3:16=E2=80=AFPM Hans de Goede <hdegoede@redhat.com> =
-wrote:
-> On 9/6/23 14:10, Ingo Molnar wrote:
+bvec_set_page has the following signature:
 
->         strscpy(arg, val, strnchrnul(val, sizeof(arg)-1, '\n') - val + 1)=
-;
+static inline void bvec_set_page(struct bio_vec *bv, struct page *page,
+		unsigned int len, unsigned int offset)
 
-If you want to make it short and more readable, you can use
+However, the usage in DRBD swaps the len and offset parameters. This
+leads to a bvec with length=0 instead of the intended length=4096, which
+causes sock_sendmsg to return -EIO.
 
-  strscpy(arg, val, sizeof(arg));
-  strreplace(arg, '\n', '\0');
+This leaves DRBD unable to transmit any pages and thus completely
+broken.
 
---=20
-With Best Regards,
-Andy Shevchenko
+Swapping the parameters fixes the regression.
+
+Fixes: eeac7405c735 ("drbd: Use sendmsg(MSG_SPLICE_PAGES) rather than sendpage()")
+Reported-by: Serguei Ivantsov <manowar@gsc-game.com>
+Link: https://lore.kernel.org/regressions/CAKH+VT3YLmAn0Y8=q37UTDShqxDLsqPcQ4hBMzY7HPn7zNx+RQ@mail.gmail.com/
+Cc: stable@vger.kernel.org
+Signed-off-by: Christoph Böhmwalder <christoph.boehmwalder@linbit.com>
+---
+ drivers/block/drbd/drbd_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
+index 79ab532aabaf..6bc86106c7b2 100644
+--- a/drivers/block/drbd/drbd_main.c
++++ b/drivers/block/drbd/drbd_main.c
+@@ -1557,7 +1557,7 @@ static int _drbd_send_page(struct drbd_peer_device *peer_device, struct page *pa
+ 	do {
+ 		int sent;
+ 
+-		bvec_set_page(&bvec, page, offset, len);
++		bvec_set_page(&bvec, page, len, offset);
+ 		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, len);
+ 
+ 		sent = sock_sendmsg(socket, &msg);
+-- 
+2.41.0
+
