@@ -2,226 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAA1793BB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 842C2793BB7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240184AbjIFLta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37762 "EHLO
+        id S240160AbjIFLt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233166AbjIFLt2 (ORCPT
+        with ESMTP id S229745AbjIFLtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:49:28 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B003CF;
-        Wed,  6 Sep 2023 04:49:24 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7951f0e02ecso148900439f.0;
-        Wed, 06 Sep 2023 04:49:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694000963; x=1694605763; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=802AAgv3wz2LTyeTpPVTFVHu+dHOc2J+fZFm2H+OBEw=;
-        b=kJx8N5GMF04Yc7kBmIBQWcjxMipr4kZ+mYPVQlBGVCtyFzGPj38W7LlLpLmwGxVvOq
-         hkbN00osAhfvBRqRozixeEUWnQYreQdLONGn7gohz3BJuBqNIvMW0vDUYq4/iw09EHpB
-         fwXj43/oXVHIEQ3HPKmALNnJu3ONBpTIeEs65HubgBHLQLqlIyEohH9cfHj3ozuUs/lW
-         V1eNDSFS/nMet1hQ6UnHKt6W5p3SzJFUQgWyyLF+y3j09tX7YKnH4c88+1PKeGhqh6KO
-         odqwDpXXpOedA8rxw+dzj971dtS57lO7XhyES+DnyWWh8yi6tmB99N7XsRIOh5akkRDN
-         yE0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694000963; x=1694605763;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=802AAgv3wz2LTyeTpPVTFVHu+dHOc2J+fZFm2H+OBEw=;
-        b=iQ3hCRAbfsTb+z9s6I9LBdGm1md+q2eN5b07E+ams7HSf3bOE8JRgGONFe0kXLWUHt
-         RtxvqoHKF1sxH6J7ItWh2a9SATxq6yr5H9Ke0ESfYDnsNVBgMXK787k+xh7uCovtbwZX
-         ckBZbO/s22rCvdKunpA45EXArwlIs8tupqzxtghVidhfdEt4ekps0p2GCd8XIsp5v38J
-         3eaV3A9x2odwsyBBfFq38ixH83pdwedPxmDXnnap76choLjIUsAPLuAfvwayHNEJ5IjN
-         tTu/bKwQZw2et1q2ZciQL+EjZ4Dr2biQJDDfoXgwWn6OhVUm8LJL8D4mo4jUDDP/LEcW
-         H7PQ==
-X-Gm-Message-State: AOJu0Yym5Gkmz7dRCX2bJHBnWvtOu5zfnRat6QMST3OHTHJFGKASt1Ft
-        HYgQbiGN8RG9PpTPmQfnJC+fTI0DSHdzsa7pUSY=
-X-Google-Smtp-Source: AGHT+IH6DsqPi8SdheBZsKbjp3rpBzMgs3khBwXDcwUm7Ggzj9VNJPHEk/gmeAu63HwwnE9vy9hfNu4uF24UTfDzyME=
-X-Received: by 2002:a05:6602:2246:b0:792:72b8:b8a with SMTP id
- o6-20020a056602224600b0079272b80b8amr16942731ioo.18.1694000963404; Wed, 06
- Sep 2023 04:49:23 -0700 (PDT)
+        Wed, 6 Sep 2023 07:49:25 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2512BCF;
+        Wed,  6 Sep 2023 04:49:22 -0700 (PDT)
+X-UUID: 686ac61a4cab11eea33bb35ae8d461a2-20230906
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=52E412ODifuzDOHdYgLGCZhv8rQa4JIlCqlA9ZnKBJs=;
+        b=IZYVBI9Shkjttp75FFilqlGWq9G/NCDCH23vuNjYxKGZ2xFyYzDeQxH/b2fJnlom+eFA1ilCEAqrhbIYQx7chUrPqXWUcr/hMnWXA+bSqIEzMwFwakzyXWXokaHUrqnQZmX38TcaTkGX2aJZSgYt4JMTLX0ol2psBn+JdXTzAU8=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:73db00ef-4cc4-4ab3-a951-fa7f2e73f5c9,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:9a13b7c2-1e57-4345-9d31-31ad9818b39f,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 686ac61a4cab11eea33bb35ae8d461a2-20230906
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 380854610; Wed, 06 Sep 2023 19:49:16 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.186) by
+ MTKMBS14N2.mediatek.inc (172.21.101.76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 6 Sep 2023 19:49:15 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkmbs11n1.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
+ Transport; Wed, 6 Sep 2023 19:49:14 +0800
+Message-ID: <10cbb316-b08b-a8c1-87dd-00e6ad2aeb7a@mediatek.com>
+Date:   Wed, 6 Sep 2023 19:49:11 +0800
 MIME-Version: 1.0
-References: <20230801085402.1168351-1-alexghiti@rivosinc.com> <20230801085402.1168351-5-alexghiti@rivosinc.com>
-In-Reply-To: <20230801085402.1168351-5-alexghiti@rivosinc.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Wed, 6 Sep 2023 12:48:57 +0100
-Message-ID: <CA+V-a8t56xDqMTQfoKcsvPF8errkTMydaDz5V6nejLvVfJrW3g@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] riscv: Improve flush_tlb_kernel_range()
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Jones <ajones@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v2 2/2] arm64: dts: mediatek: add device-tree for Genio
+ 1200 EVK board
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+CC:     Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>, Ben Lok <ben.lok@mediatek.com>
+References: <20230904092043.5157-1-macpaul.lin@mediatek.com>
+ <20230906092527.18281-1-macpaul.lin@mediatek.com>
+ <20230906092527.18281-2-macpaul.lin@mediatek.com>
+ <2cb8069a-976b-0af4-a427-1e63ba4e7870@linaro.org>
+ <951e34bc-dda3-f9d4-b251-7f0fd02052ee@mediatek.com>
+ <145f9a3e-af61-c62f-1752-2abb7663d7a3@linaro.org>
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+In-Reply-To: <145f9a3e-af61-c62f-1752-2abb7663d7a3@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
 
-On Tue, Aug 1, 2023 at 9:58=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosinc.=
-com> wrote:
->
-> This function used to simply flush the whole tlb of all harts, be more
-> subtile and try to only flush the range.
->
-> The problem is that we can only use PAGE_SIZE as stride since we don't kn=
-ow
-> the size of the underlying mapping and then this function will be improve=
-d
-> only if the size of the region to flush is < threshold * PAGE_SIZE.
->
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> ---
->  arch/riscv/include/asm/tlbflush.h | 11 +++++-----
->  arch/riscv/mm/tlbflush.c          | 34 +++++++++++++++++++++++--------
->  2 files changed, 31 insertions(+), 14 deletions(-)
->
-After applying this patch, I am seeing module load issues on RZ/Five
-(complete log [0]). I am testing defconfig + [1] (rz/five related
-configs).
 
-Any pointers on what could be an issue here?
+On 9/6/23 18:20, Krzysztof Kozlowski wrote:
+> 	
+> 
+> External email : Please do not click links or open attachments until you 
+> have verified the sender or the content.
+> 
+> On 06/09/2023 12:15, Macpaul Lin wrote:
+>>>> +
+>>>> +wifi_3v3: wifi-3v3-regulator {
+>>>
+>>> This is a friendly reminder during the review process.
+>>>
+>>> It seems my previous comments were not fully addressed. Maybe my
+>>> feedback got lost between the quotes, maybe you just forgot to apply it.
+>>> Please go back to the previous discussion and either implement all
+>>> requested changes or keep discussing them.
+>> 
+>> 
+>> This keeps a format with -regulator is because I've found some other use 
+>> cases. It seems "-regulator" or "regulator-" could be arbitrary. I'm not 
+>> sure if it is a new guideline for regulator's node. If there is in the 
+>> devicetree document, maybe I just missed it?
+> 
+> What is the point to name in the same DTS some of the regulators
+> "regulator-foo" and some "foo-regulator"?
+> 
+> Best regards,
+> Krzysztof
+> 
 
-[0] https://paste.debian.net/1291116/
-[1] https://paste.debian.net/1291118/
+It looks like I've miss the point of previous review comment.
+Updated new patch in v3 series.
 
-Cheers,
-Prabhakar
-
-> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/t=
-lbflush.h
-> index f5c4fb0ae642..7426fdcd8ec5 100644
-> --- a/arch/riscv/include/asm/tlbflush.h
-> +++ b/arch/riscv/include/asm/tlbflush.h
-> @@ -37,6 +37,7 @@ void flush_tlb_mm_range(struct mm_struct *mm, unsigned =
-long start,
->  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
->  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
->                      unsigned long end);
-> +void flush_tlb_kernel_range(unsigned long start, unsigned long end);
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
->  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start=
-,
-> @@ -53,15 +54,15 @@ static inline void flush_tlb_range(struct vm_area_str=
-uct *vma,
->         local_flush_tlb_all();
->  }
->
-> -#define flush_tlb_mm(mm) flush_tlb_all()
-> -#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
-> -#endif /* !CONFIG_SMP || !CONFIG_MMU */
-> -
->  /* Flush a range of kernel pages */
->  static inline void flush_tlb_kernel_range(unsigned long start,
->         unsigned long end)
->  {
-> -       flush_tlb_all();
-> +       local_flush_tlb_all();
->  }
->
-> +#define flush_tlb_mm(mm) flush_tlb_all()
-> +#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
-> +#endif /* !CONFIG_SMP || !CONFIG_MMU */
-> +
->  #endif /* _ASM_RISCV_TLBFLUSH_H */
-> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> index 0c955c474f3a..687808013758 100644
-> --- a/arch/riscv/mm/tlbflush.c
-> +++ b/arch/riscv/mm/tlbflush.c
-> @@ -120,18 +120,27 @@ static void __flush_tlb_range(struct mm_struct *mm,=
- unsigned long start,
->                               unsigned long size, unsigned long stride)
->  {
->         struct flush_tlb_range_data ftd;
-> -       struct cpumask *cmask =3D mm_cpumask(mm);
-> -       unsigned int cpuid;
-> +       struct cpumask *cmask, full_cmask;
->         bool broadcast;
->
-> -       if (cpumask_empty(cmask))
-> -               return;
-> +       if (mm) {
-> +               unsigned int cpuid;
-> +
-> +               cmask =3D mm_cpumask(mm);
-> +               if (cpumask_empty(cmask))
-> +                       return;
-> +
-> +               cpuid =3D get_cpu();
-> +               /* check if the tlbflush needs to be sent to other CPUs *=
-/
-> +               broadcast =3D cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
-> +       } else {
-> +               cpumask_setall(&full_cmask);
-> +               cmask =3D &full_cmask;
-> +               broadcast =3D true;
-> +       }
->
-> -       cpuid =3D get_cpu();
-> -       /* check if the tlbflush needs to be sent to other CPUs */
-> -       broadcast =3D cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
->         if (static_branch_unlikely(&use_asid_allocator)) {
-> -               unsigned long asid =3D atomic_long_read(&mm->context.id) =
-& asid_mask;
-> +               unsigned long asid =3D mm ? atomic_long_read(&mm->context=
-.id) & asid_mask : 0;
->
->                 if (broadcast) {
->                         if (riscv_use_ipi_for_rfence()) {
-> @@ -165,7 +174,8 @@ static void __flush_tlb_range(struct mm_struct *mm, u=
-nsigned long start,
->                 }
->         }
->
-> -       put_cpu();
-> +       if (mm)
-> +               put_cpu();
->  }
->
->  void flush_tlb_mm(struct mm_struct *mm)
-> @@ -196,6 +206,12 @@ void flush_tlb_range(struct vm_area_struct *vma, uns=
-igned long start,
->
->         __flush_tlb_range(vma->vm_mm, start, end - start, stride_size);
->  }
-> +
-> +void flush_tlb_kernel_range(unsigned long start, unsigned long end)
-> +{
-> +       __flush_tlb_range(NULL, start, end, PAGE_SIZE);
-> +}
-> +
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start=
-,
->                         unsigned long end)
-> --
-> 2.39.2
->
->
+Thanks
+Macpaul Lin
