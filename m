@@ -2,116 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F0D793820
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CC6793826
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbjIFJZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 05:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
+        id S236558AbjIFJ0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 05:26:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236730AbjIFJZK (ORCPT
+        with ESMTP id S229456AbjIFJ0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 05:25:10 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C0B10C9
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 02:25:06 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4bdso4952166a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 02:25:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693992305; x=1694597105; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XDAh0aCllih17eVlFn1jaipFdLOlK9NfNTLcE0E+Gek=;
-        b=eQhgiDckWFM2iW69fTGqU3JOxMjLP/oEjETlmkWKL6sbrDBwyWeWb7qFXbt27JN4K1
-         K5Exd9GgCOAO1kKdOwp8Sz9Lkk0FbE0/4Hkb4gko8CRzHK2+6tBRmHZg6sWBiQ5wJPR0
-         lRZcs6jdJNJnrJ/MvZwYzC3fhTMwnYb2N2H0EQhaRkOsXJDuKSG1mm6n2RAqxdUy+1W6
-         XLOWRckAdIxQogUSF9QScEefXklrPpCvOU4gr03tcToy+k8VlhTt2ZvUj7hudEB7JvAW
-         2snT4KHKtAcXuY5b6uY78TGZxWpdei6N6kBTYeYWf32UtJfeRsBG1upBsvQMhtbMNxX4
-         Ycuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693992305; x=1694597105;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XDAh0aCllih17eVlFn1jaipFdLOlK9NfNTLcE0E+Gek=;
-        b=LHcbYGjDlo6cXAsSsNIdgMVMzTKEdwe+N2RMQTPLw1enM3rOayKGWZ8Jl9bh4tUQzU
-         qqdXSNixEZgEIxT79fbBNj5lTZg06badEeo76D+I/tFrfVeEg2uq9Aq5nZNTntLt2DRq
-         UMJJE+qUDoiiT6/QCpQ2p29mFQiM3Gv8rCS5vpCOlfwWnkWJiH8AcHCgs5+RX76Eycbn
-         U0WfgEIoejr8Wjho2wlIOUZQPlSmpZw6LKerWl3+1cMkp4a8pF00Mv5ZhquDnYj8K6b0
-         0yieDE0Q/Z73IHGqKdVQyh7/WvVXZlVDQlTmItEYksiijP8Int5AirXVgDerZHGHCsld
-         K4PQ==
-X-Gm-Message-State: AOJu0YzfmQHHn+7OdC4h6Ca2fbBnm1pp8mYiW75uxER80j89WJlWlc/Z
-        HEo1ins4ruOd3iKbNYHwUyVWyg==
-X-Google-Smtp-Source: AGHT+IFFo+QJScmITF/zsTHhCFf8BwYb/OcZFemUtjPrr/hckmIBNoTGAzRiOkyVbW+lJx86HX6gGA==
-X-Received: by 2002:aa7:dace:0:b0:525:69ec:e1c8 with SMTP id x14-20020aa7dace000000b0052569ece1c8mr1578435eds.40.1693992305071;
-        Wed, 06 Sep 2023 02:25:05 -0700 (PDT)
-Received: from [10.167.154.1] (178235177204.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.204])
-        by smtp.gmail.com with ESMTPSA id q10-20020aa7cc0a000000b005232c051605sm8096155edt.19.2023.09.06.02.25.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 02:25:04 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Wed, 06 Sep 2023 11:24:59 +0200
-Subject: [PATCH 5/5] arm64: dts: qcom: qrb2210-rb1: Hook up USB3
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230906-topic-rb1_features_sans_icc-v1-5-e92ce6fbde16@linaro.org>
-References: <20230906-topic-rb1_features_sans_icc-v1-0-e92ce6fbde16@linaro.org>
-In-Reply-To: <20230906-topic-rb1_features_sans_icc-v1-0-e92ce6fbde16@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        Wed, 6 Sep 2023 05:26:43 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7861713;
+        Wed,  6 Sep 2023 02:26:02 -0700 (PDT)
+X-UUID: 53e4f0084c9711eea33bb35ae8d461a2-20230906
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=Q+EKRdtZIo0mYckBkAo76wvPbZv7DyYXeS7XjmVBTq8=;
+        b=RsBjTspo7yF3qz5N0OMYbSOJaehxR/WyNYe+PGg52MNoxxVyNdG5hLZlKMql1x9YbTcTbBlAVBqeSUjTac4Ue9zaXZQiVdj5uAiWykKxwaJy1TpvYUeGdgHpWnL3YHJcrLyikdJyFiZEQRi58DQkPEmdL5EsqK7ref7pDpV+eos=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:5f024a08-f12d-4ec2-8ee0-542f96c4a12c,IP:0,U
+        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:-5
+X-CID-META: VersionHash:0ad78a4,CLOUDID:f3bf2e20-33fd-4aaa-bb43-d3fd68d9d5ae,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 53e4f0084c9711eea33bb35ae8d461a2-20230906
+Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw01.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 2035552793; Wed, 06 Sep 2023 17:25:32 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 6 Sep 2023 17:25:31 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 6 Sep 2023 17:25:31 +0800
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693992295; l=712;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=QbeFe51vD05DVZiBOlvsL2lYN7leouI3Bx68sEs+dDY=;
- b=xmDOXv3FY/Ud72be9WmQQ9zSBqko7R9Q8DTNzNZ8Ua/mjgwnlHSaLQ42k2pAfxYRXj0uaAuNP
- jkk5NfbwsbeCPMK8r4ok4+0kTm6ofr5uhAwqWDn95GVs0ebMCkLRXIk
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+CC:     Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>
+Subject: [PATCH v2 1/2] dt-bindings: arm64: dts: mediatek: add mt8395-evk board
+Date:   Wed, 6 Sep 2023 17:25:26 +0800
+Message-ID: <20230906092527.18281-1-macpaul.lin@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20230904092043.5157-1-macpaul.lin@mediatek.com>
+References: <20230904092043.5157-1-macpaul.lin@mediatek.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Configure the USB3 PHY to enable USB3 functionality
+1. Add compatible for MT8395.
+2. Add bindings for the MediaTek mt8395-evk board, also known
+as the "Genio 1200-EVK".
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+The MT8195 and MT8395 belong to the same SoC family,
+with only minor differences in their physical characteristics.
+They utilize unique efuse values for differentiation.
+
+The booting process and configurations are managed by boot
+loaders, firmware, and TF-A. Consequently, the part numbers
+and procurement channels vary.
+
+Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
 ---
- arch/arm64/boot/dts/qcom/qrb2210-rb1.dts | 6 ++++++
- 1 file changed, 6 insertions(+)
+ Documentation/devicetree/bindings/arm/mediatek.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/qrb2210-rb1.dts b/arch/arm64/boot/dts/qcom/qrb2210-rb1.dts
-index fd45f58e254d..94885b9c21c8 100644
---- a/arch/arm64/boot/dts/qcom/qrb2210-rb1.dts
-+++ b/arch/arm64/boot/dts/qcom/qrb2210-rb1.dts
-@@ -409,6 +409,12 @@ &usb {
- 	status = "okay";
- };
- 
-+&usb_qmpphy {
-+	vdda-phy-supply = <&pm2250_l12>;
-+	vdda-pll-supply = <&pm2250_l13>;
-+	status = "okay";
-+};
-+
- &usb_hsphy {
- 	vdd-supply = <&pm2250_l12>;
- 	vdda-pll-supply = <&pm2250_l13>;
+Changes for v2:
+ - add more detail description for mt8395.
+ - add bindings for mt8395, and mt8395-evk.
 
+diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+index ae12b1cab9fb..d7a20df640d7 100644
+--- a/Documentation/devicetree/bindings/arm/mediatek.yaml
++++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+@@ -248,6 +248,11 @@ properties:
+           - enum:
+               - mediatek,mt8365-evk
+           - const: mediatek,mt8365
++      - description: MediaTek Genio 1200 Boards (Genio 1200 EVK)
++        items:
++          - enum:
++              - mediatek,mt8395-evk
++          - const: mediatek,mt8395
+       - items:
+           - enum:
+               - mediatek,mt8516-pumpkin
 -- 
-2.42.0
+2.18.0
 
