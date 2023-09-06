@@ -2,66 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9667179404F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09EFE794054
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242566AbjIFPYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 11:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59496 "EHLO
+        id S238481AbjIFP0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 11:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235431AbjIFPYq (ORCPT
+        with ESMTP id S230465AbjIFP0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 11:24:46 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7541733;
-        Wed,  6 Sep 2023 08:24:37 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::646])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id EF799732;
-        Wed,  6 Sep 2023 15:24:35 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net EF799732
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1694013876; bh=eCJWPxmbGltM8yyS/gebeUQ2VUhtkX6yxucysuzpFHI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=a1UYCaIaCWPGa7TAyKUjkkTNTPPvKYlPWv+erPTOizQOmVURKxz2WPQS4CwPzovTg
-         4OlrUunGFYOGXfvvW0MvaqjzDN0B4WvLGXOJip3bJ4Xib+rTsFDgdhdzkusVCsL0kH
-         ZRAhsuV6kI54p6LjAhTMVmLg6TMhtebMsjVN+EF4m/aoYaOIAOBsTfgWCVYgx7BPuH
-         G/luZpeDS4sJ3MO+jWZTooi9KDdAflIRZ/TAfQmhbAumj1w12AOMqrUAmqJ7epiGih
-         GND9wJLS/vLJ3VDOljg6oWxdvhForSKP0J8YRMxcKv0R5A2EUrVe86FtizHw9Dj66s
-         UBYVIeVIG3D8A==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] docs/mm: Physical Memory: add "Memory map" section
-In-Reply-To: <ZPiU7/Rg8g+B58Wa@casper.infradead.org>
-References: <20230906074210.3051751-1-rppt@kernel.org>
- <87ledjgy93.fsf@meer.lwn.net> <ZPiU7/Rg8g+B58Wa@casper.infradead.org>
-Date:   Wed, 06 Sep 2023 09:24:35 -0600
-Message-ID: <87ledj5npo.fsf@meer.lwn.net>
+        Wed, 6 Sep 2023 11:26:21 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 42AA9E5C;
+        Wed,  6 Sep 2023 08:26:18 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 897528050;
+        Wed,  6 Sep 2023 15:26:17 +0000 (UTC)
+Date:   Wed, 6 Sep 2023 18:26:16 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Marc Haber <mh+linux-kernel@zugschlus.de>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux KVM <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: Linux 6.5 speed regression, boot VERY slow with anything systemd
+ related
+Message-ID: <20230906152616.GE11676@atomide.com>
+References: <ZO3sA2GuDbEuQoyj@torres.zugschlus.de>
+ <ZO4GeazfcA09SfKw@google.com>
+ <ZO4JCfnzRRL1RIZt@torres.zugschlus.de>
+ <ZO4RzCr/Ugwi70bZ@google.com>
+ <ZO4YJlhHYjM7MsK4@torres.zugschlus.de>
+ <ZO4nbzkd4tovKpxx@google.com>
+ <ZO5OeoKA7TbAnrI1@torres.zugschlus.de>
+ <ZPEPFJ8QvubbD3H9@google.com>
+ <20230901122431.GU11676@atomide.com>
+ <ZPiPkSY6NRzfWV5Z@torres.zugschlus.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPiPkSY6NRzfWV5Z@torres.zugschlus.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> writes:
+* Marc Haber <mh+linux-kernel@zugschlus.de> [230906 14:41]:
+> With my tools I have found out that it really seems to be related to the
+> CPU of the host. I have changed my VM definition to "copy host CPU
+> configuration to VM" in libvirt and have moved this very VM (image and
+> settings) to hosts with a "Ryzen 5 Pro 4650G" and to an "Intel Xeon
+> E3-1246" where they work flawlessly, while on both APUs I have available
+> ("AMD G-T40E" and "AMD GX-412TC SOC") the regression in 6.5 shows. And
+> if I boot other VMs on the APUs with 6.5 the issue comes up. It is a
+> clear regression since going back to 4.6's serial code solves the issue
+> on the APUs.
 
->> Have we figured out what mapcount really means yet? :)
->
-> Hah!  I know what this field means today!  In two hours time, I might
-> be less sure!  (Does LWN want to come along to that MM meeting and write
-> it up for an article?)
+Not sure why the CPU matters here..
 
-It's on my radar, not yet sure if I can make it or not.  Wednesdays are
-a pain...
+One thing to check is if you have these in your .config:
 
-jon
+CONFIG_SERIAL_CORE=y
+CONFIG_SERIAL_CORE_CONSOLE=y
+
+Or do you maybe have CONFIG_SERIAL_CORE=m as loadable module?
+
+If you have CONFIG_SERIAL_CORE=m, maybe you need to modprobe serial_base
+if you have some minimal rootfs that does not automatically do it for you.
+
+Regards,
+
+Tony
