@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BF7793FEF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF846793FEA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240437AbjIFPHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 11:07:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43174 "EHLO
+        id S241982AbjIFPGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 11:06:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242358AbjIFPHC (ORCPT
+        with ESMTP id S237523AbjIFPGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 11:07:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B941990;
-        Wed,  6 Sep 2023 08:06:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F7DDC433CD;
-        Wed,  6 Sep 2023 15:06:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694012811;
-        bh=8R4kzh3nTSqACHjy9Igl6y50DXqOQIL6KrU6Xizd5vw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AhWcnUbZ+xiAHtObPOonQ+/3NaC1cqET1bOPJgIMdhVZyxeUDtximhNM1VeLq7jJO
-         WnDoh+ChzesxUgRi5ykHRvVdLBWFOGdUWnPjrryEYomWsbfusvvHlA1i83vtKsTuVf
-         O9w2nvS6DEojbkdATDQsk/fE7QZ8yg6rLJjsOdcn+4cUcL+aYiqxqzckDGluhSe99a
-         d3rXta069sDO3orkisIZR+unsGClW+oAJbgSUvK6bVcgm2R1EMAsl+d6bMKRwTnDbZ
-         cC6SL+MhYSdCQdGMILC4dnTWs52jBbJdujfzVSsSW+qQSiBENhmxlL+D8S6lijxtlS
-         y3yvYICVYFdVw==
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5733bcf6eb6so2049257eaf.0;
-        Wed, 06 Sep 2023 08:06:51 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yx+PRNKN3vmGnmbPuw3OUU3liDjPr3gWw1SCkP0vepCz8YMS/Cm
-        w/YhrAI0IhWNWADed5g6K407AVgkS3ltjVqL968=
-X-Google-Smtp-Source: AGHT+IHs9MYVYX/hL5BllUuyFYnsWzXobUhMf+WTR4jpf255UF4qgkKxgbZrXP3NqiWFcMlEU6SXSZNicl0p1mJq7Xo=
-X-Received: by 2002:a4a:6c11:0:b0:573:4e21:5d25 with SMTP id
- q17-20020a4a6c11000000b005734e215d25mr12858374ooc.9.1694012810670; Wed, 06
- Sep 2023 08:06:50 -0700 (PDT)
+        Wed, 6 Sep 2023 11:06:33 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A2810F8
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 08:06:28 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bcb0b973a5so59592011fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 08:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694012786; x=1694617586; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=md6yvbIaCY1wIEZej5F+EGAA01mvLh1YX5R7yH3UNb4=;
+        b=IsvwZatcpoUZMJJpBncDDl7aQ4c9zGkviBAnzT1JjF6Aj1yhZ0dI+APq4wvdM/hmn/
+         j81Fidczug9eavCUnRxy2dxQ6fcQa8Bhu4PfMUI+L9SPEbJ4qzRRnG5LmrBcVg2eo16m
+         QHsly9Dp7OUnGZE2oqnKSiEG+7vjazfYcZ2KtJqTuk00igSutdk594UHqloW5HW4SPB0
+         mQckf7iNyjtvJpiagF/zTRcPM6d5ap2H9KyRxBSm6fT8eyx36kHpVYN0je5iI1kt5q3l
+         LsyhfjYPAqqMojkQLL1rnT5jr6kAUTfwJVN5iUPM9FV/do0lVNleSJ4tui5OEYPXmlsP
+         jj1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694012786; x=1694617586;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=md6yvbIaCY1wIEZej5F+EGAA01mvLh1YX5R7yH3UNb4=;
+        b=WJJUxICNEuyv/3TNRyK1cb2Zc2G/rOPgvPDXQ7kNHOXTZGaH5mAHfEfWSiPLjl5Vwj
+         juEzwjUvaPnI85fj2aWPed5yk/XrVbH4hthxWQPQvnVuypJ0Q3H9l14trEu4t9JeejTC
+         hU07uE8yYa4YTNiZo508R1ekVnfOxcwvfyqQhnaTYDMR31UZHY5MzgxIC0VwJJkLwi6p
+         WhIQxDaLF/hahxOlNEl9Wu7V0q6VLs7k9/rTDuGiRc90hFBSENYtKwKSvd64zCntKnjG
+         XisbfJf73shNtmzgTjLnGFvX+MkVsgHNepHxmA3V2fyBjmU0SXNL2A727tEPnvY9sHEk
+         5T6Q==
+X-Gm-Message-State: AOJu0YwDHwZs6e3QSfgb17Z8WiK5RA1qQSA5Dc6eV4FnOW5YTAeK0K0a
+        jzFrv29jP6ab12/Njv5xIHQ=
+X-Google-Smtp-Source: AGHT+IFP5O3nhoAfZwg8+CxRZ3wuOldaX2B3xbaRfAFF13oHHH3QoHKizP8eph+zE53aW9DQbvTU3g==
+X-Received: by 2002:a2e:b16e:0:b0:2b6:e283:32cb with SMTP id a14-20020a2eb16e000000b002b6e28332cbmr2290270ljm.23.1694012786033;
+        Wed, 06 Sep 2023 08:06:26 -0700 (PDT)
+Received: from pc636 (host-90-235-20-237.mobileonline.telia.com. [90.235.20.237])
+        by smtp.gmail.com with ESMTPSA id j12-20020a2e800c000000b002b9f0b25ff6sm3430004ljg.4.2023.09.06.08.06.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 08:06:25 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Wed, 6 Sep 2023 17:06:22 +0200
+To:     Baoquan He <bhe@redhat.com>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Dave Chinner <david@fromorbit.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 1/9] mm: vmalloc: Add va_alloc() helper
+Message-ID: <ZPiVbvdtoDob7fA+@pc636>
+References: <20230829081142.3619-1-urezki@gmail.com>
+ <20230829081142.3619-2-urezki@gmail.com>
+ <ZPgTR19GX9EI8J0d@MiWiFi-R3L-srv>
 MIME-Version: 1.0
-References: <20230828080423.3539686-1-alessandro.carminati@gmail.com>
- <CAK7LNATf5zQH=qOX3HCcAoaccK1KTjoGNuXc-d2-FM-japABoQ@mail.gmail.com> <CAPp5cGQgn0kfxPc+pmLMEJmHzOJ2HQQbsWSE0LFsxi4bigHOdQ@mail.gmail.com>
-In-Reply-To: <CAPp5cGQgn0kfxPc+pmLMEJmHzOJ2HQQbsWSE0LFsxi4bigHOdQ@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 7 Sep 2023 00:06:14 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATRCcQ7yBjoBiq8remJtVA0hfSr=yW-oY1_m9WneQuvQQ@mail.gmail.com>
-Message-ID: <CAK7LNATRCcQ7yBjoBiq8remJtVA0hfSr=yW-oY1_m9WneQuvQQ@mail.gmail.com>
-Subject: Re: [PATCH v3] scripts/link-vmlinux.sh: Add alias to duplicate
- symbols for kallsyms
-To:     Alessandro Carminati <alessandro.carminati@gmail.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Nick Alcock <nick.alcock@oracle.com>,
-        Kris Van Hees <kris.van.hees@oracle.com>,
-        Eugene Loh <eugene.loh@oracle.com>,
-        Francis Laniel <flaniel@linux.microsoft.com>,
-        Viktor Malik <vmalik@redhat.com>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPgTR19GX9EI8J0d@MiWiFi-R3L-srv>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,259 +84,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 7:09=E2=80=AFPM Alessandro Carminati
-<alessandro.carminati@gmail.com> wrote:
->
-> Hello Masahiro,
->
-> Thank you for your suggestions,
-> Il giorno sab 2 set 2023 alle ore 08:36 Masahiro Yamada
-> <masahiroy@kernel.org> ha scritto:
-> >
-> > On Mon, Aug 28, 2023 at 8:45=E2=80=AFPM Alessandro Carminati (Red Hat)
-> > <alessandro.carminati@gmail.com> wrote:
-> > >
-> > > From: Alessandro Carminati <alessandro.carminati@gmail.com>
-> > >
-> > > It is not uncommon for drivers or modules related to similar peripher=
-als
-> > > to have symbols with the exact same name.
-> > > While this is not a problem for the kernel's binary itself, it become=
-s an
-> > > issue when attempting to trace or probe specific functions using
-> > > infrastructure like ftrace or kprobe.
-> > >
-> > > The tracing subsystem relies on the `nm -n vmlinux` output, which pro=
-vides
-> > > symbol information from the kernel's ELF binary. However, when multip=
-le
-> > > symbols share the same name, the standard nm output does not differen=
-tiate
-> > > between them. This can lead to confusion and difficulty when trying t=
-o
-> > > probe the intended symbol.
-> > >
-> > >  ~ # cat /proc/kallsyms | grep " name_show"
-> > >  ffffffff8c4f76d0 t name_show
-> > >  ffffffff8c9cccb0 t name_show
-> > >  ffffffff8cb0ac20 t name_show
-> > >  ffffffff8cc728c0 t name_show
-> > >  ffffffff8ce0efd0 t name_show
-> > >  ffffffff8ce126c0 t name_show
-> > >  ffffffff8ce1dd20 t name_show
-> > >  ffffffff8ce24e70 t name_show
-> > >  ffffffff8d1104c0 t name_show
-> > >  ffffffff8d1fe480 t name_show
-> > >
-> > > **kas_alias** addresses this challenge by extending the symbol names =
-with
-> > > unique suffixes during the kernel build process.
-> > > The newly created aliases for these duplicated symbols are unique nam=
-es
-> > > that can be fed to the ftracefs interface. By doing so, it enables
-> > > previously unreachable symbols to be probed.
-> > >
-> > >  ~ # cat /proc/kallsyms | grep " name_show"
-> > >  ffffffff974f76d0 t name_show
-> > >  ffffffff974f76d0 t name_show__alias__6340
-> > >  ffffffff979cccb0 t name_show
-> > >  ffffffff979cccb0 t name_show__alias__6341
-> > >  ffffffff97b0ac20 t name_show
-> > >  ffffffff97b0ac20 t name_show__alias__6342
-> > >  ffffffff97c728c0 t name_show
-> > >  ffffffff97c728c0 t name_show__alias__6343
-> > >  ffffffff97e0efd0 t name_show
-> > >  ffffffff97e0efd0 t name_show__alias__6344
-> > >  ffffffff97e126c0 t name_show
-> > >  ffffffff97e126c0 t name_show__alias__6345
-> > >  ffffffff97e1dd20 t name_show
-> > >  ffffffff97e1dd20 t name_show__alias__6346
-> > >  ffffffff97e24e70 t name_show
-> > >  ffffffff97e24e70 t name_show__alias__6347
-> > >  ffffffff981104c0 t name_show
-> > >  ffffffff981104c0 t name_show__alias__6348
-> > >  ffffffff981fe480 t name_show
-> > >  ffffffff981fe480 t name_show__alias__6349
-> > >  ~ # echo "p:kprobes/evnt1 name_show__alias__6349" \
-> > >  > >/sys/kernel/tracing/kprobe_events
-> > >  ~ # cat /sys/kernel/tracing/kprobe_events
-> > >  p:kprobes/evnt1 name_show__alias__6349
-> > >
-> > > Changes from v1:
-> > > - Integrated changes requested by Masami to exclude symbols with pref=
-ixes
-> > >   "_cfi" and "_pfx".
-> > > - Introduced a small framework to handle patterns that need to be exc=
-luded
-> > >   from the alias production.
-> > > - Excluded other symbols using the framework.
-> > > - Introduced the ability to discriminate between text and data symbol=
-s.
-> > > - Added two new config symbols in this version: CONFIG_KALLSYMS_ALIAS=
-_DATA,
-> > >   which allows data for data, and CONFIG_KALLSYMS_ALIAS_DATA_ALL, whi=
-ch
-> > >   excludes all filters and provides an alias for each duplicated symb=
-ol.
-> > >
-> > > https://lore.kernel.org/all/20230711151925.1092080-1-alessandro.carmi=
-nati@gmail.com/
-> > >
-> > > Changes from v2:
-> > > - Alias tags are created by querying DWARF information from the vmlin=
-ux.
-> > > - The filename + line number is normalized and appended to the origin=
-al name.
-> > > - The tag begins with '@' to indicate the symbol source.
-> > > - Not a change, but worth mentioning, since the alias is added to the=
- existing
-> > >   list, the old duplicated name is preserved, and the livepatch way o=
-f dealing
-> > >   with duplicates is maintained.
-> > > - Acknowledging the existence of scenarios where inlined functions de=
-clared in
-> > >   header files may result in multiple copies due to compiler behavior=
-, though
-> > >    it is not actionable as it does not pose an operational issue.
-> > > - Highlighting a single exception where the same name refers to diffe=
-rent
-> > >   functions: the case of "compat_binfmt_elf.c," which directly includ=
-es
-> > >   "binfmt_elf.c" producing identical function copies in two separate
-> > >   modules.
-> > >
-> > > sample from new v3
-> > >
-> > >  ~ # cat /proc/kallsyms | grep gic_mask_irq
-> > >  ffffd0b03c04dae4 t gic_mask_irq
-> > >  ffffd0b03c04dae4 t gic_mask_irq@_drivers_irqchip_irq-gic_c_167
-> > >  ffffd0b03c050960 t gic_mask_irq
-> > >  ffffd0b03c050960 t gic_mask_irq@_drivers_irqchip_irq-gic-v3_c_404
-> > >  ~ #
-> > >
-> > > https://lore.kernel.org/all/20230714150326.1152359-1-alessandro.carmi=
-nati@gmail.com/
-> > >
-> > > Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@g=
-mail.com>
-> > > ---
-> > >  init/Kconfig                        |  36 ++++
-> > >  scripts/Makefile                    |   4 +
-> > >  scripts/kas_alias/Makefile          |   4 +
-> > >  scripts/kas_alias/a2l.c             | 268 ++++++++++++++++++++++++++=
-++
-> > >  scripts/kas_alias/a2l.h             |  32 ++++
-> > >  scripts/kas_alias/duplicates_list.c |  70 ++++++++
-> > >  scripts/kas_alias/duplicates_list.h |  15 ++
-> > >  scripts/kas_alias/item_list.c       | 230 ++++++++++++++++++++++++
-> > >  scripts/kas_alias/item_list.h       |  26 +++
-> > >  scripts/kas_alias/kas_alias.c       | 217 ++++++++++++++++++++++
-> > >  scripts/link-vmlinux.sh             |  11 +-
-> > >  11 files changed, 910 insertions(+), 3 deletions(-)
-> >
-> >
-> > I added some review comments in another thread, but
-> > one of the biggest concerns might be "910 insertions".
-> >
-> >
-> > What this program does is quite simple,
-> > "find duplicated names, and call addr2line".
-> >
-> >
-> >
-> > You wrote a lot of code to self-implement these:
-> >
-> >  - sort function
-> >  - parse PATH env variable to find addr2line
-> >  - fork addr2line to establish pipe communications
-> >
-> >
-> >
-> > Have you considered writing the code in Python (or Perl)?
-> > Is it too slow?
->
-> I have attempted to incorporate all your suggestions.
-> I refactored the C code to utilize hashing instead of sorting, and I
-> completely re-implemented the entire thing in Python for the purpose of
-> comparison.
->
-> You are correct;
-> the C version is indeed faster, but the difference is negligible when
-> considering the use case and code maintainability.
+On Wed, Sep 06, 2023 at 01:51:03PM +0800, Baoquan He wrote:
+> On 08/29/23 at 10:11am, Uladzislau Rezki (Sony) wrote:
+> > Currently __alloc_vmap_area() function contains an open codded
+> > logic that finds and adjusts a VA based on allocation request.
+> > 
+> > Introduce a va_alloc() helper that adjusts found VA only. It
+> > will be used later at least in two places.
+> > 
+> > There is no a functional change as a result of this patch.
+> > 
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > Reviewed-by: Lorenzo Stoakes <lstoakes@gmail.com>
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > ---
+> >  mm/vmalloc.c | 41 ++++++++++++++++++++++++++++-------------
+> >  1 file changed, 28 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > index 93cf99aba335..00afc1ee4756 100644
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -1481,6 +1481,32 @@ adjust_va_to_fit_type(struct rb_root *root, struct list_head *head,
+> >  	return 0;
+> >  }
+> >  
+> > +static unsigned long
+> > +va_alloc(struct vmap_area *va,
+> > +		struct rb_root *root, struct list_head *head,
+> > +		unsigned long size, unsigned long align,
+> > +		unsigned long vstart, unsigned long vend)
+> > +{
+> > +	unsigned long nva_start_addr;
+> > +	int ret;
+> > +
+> > +	if (va->va_start > vstart)
+> > +		nva_start_addr = ALIGN(va->va_start, align);
+> > +	else
+> > +		nva_start_addr = ALIGN(vstart, align);
+> > +
+> > +	/* Check the "vend" restriction. */
+> > +	if (nva_start_addr + size > vend)
+> > +		return vend;
+> > +
+> > +	/* Update the free vmap_area. */
+> > +	ret = adjust_va_to_fit_type(root, head, va, nva_start_addr, size);
+> > +	if (WARN_ON_ONCE(ret))
+> > +		return vend;
+> > +
+> > +	return nva_start_addr;
+> > +}
+> > +
+> >  /*
+> >   * Returns a start address of the newly allocated area, if success.
+> >   * Otherwise a vend is returned that indicates failure.
+> > @@ -1493,7 +1519,6 @@ __alloc_vmap_area(struct rb_root *root, struct list_head *head,
+> >  	bool adjust_search_size = true;
+> >  	unsigned long nva_start_addr;
+> >  	struct vmap_area *va;
+> > -	int ret;
+> >  
+> >  	/*
+> >  	 * Do not adjust when:
+> > @@ -1511,18 +1536,8 @@ __alloc_vmap_area(struct rb_root *root, struct list_head *head,
+> >  	if (unlikely(!va))
+> >  		return vend;
+> >  
+> > -	if (va->va_start > vstart)
+> > -		nva_start_addr = ALIGN(va->va_start, align);
+> > -	else
+> > -		nva_start_addr = ALIGN(vstart, align);
+> > -
+> > -	/* Check the "vend" restriction. */
+> > -	if (nva_start_addr + size > vend)
+> > -		return vend;
+> > -
+> > -	/* Update the free vmap_area. */
+> > -	ret = adjust_va_to_fit_type(root, head, va, nva_start_addr, size);
+> > -	if (WARN_ON_ONCE(ret))
+> > +	nva_start_addr = va_alloc(va, root, head, size, align, vstart, vend);
+> > +	if (nva_start_addr == vend)
+> >  		return vend;
+> >  
+> >  #if DEBUG_AUGMENT_LOWEST_MATCH_CHECK
+> > -- 
+> > 2.30.2
+> 
+> Reviewed-by: Baoquan He <bhe@redhat.com>
+> 
+Thanks, i picked it for V3.
 
-
-Nice. Then, I prefer shorter code.
-
-The Python implementation is 0.2 sec slower
-(given the script is executed three times, 0.6 sec cost in total)
-but it is not a big issue, I think.
-
-Thanks.
-
-
-
-
-
-
-
-
-
->
-> Here's a direct comparison of the two.
-> ```
-> ~ $ time ./kas_alias.py -a /usr/bin/aarch64-linux-gnu-addr2line \
->                       -n linux-6.5/.tmp_vmlinux.kallsyms1.syms \
->                       -v linux-6.5/.tmp_vmlinux.kallsyms1 \
->                       -o output_py
->
-> real    0m1.626s
-> user    0m1.436s
-> sys     0m0.185s
-> $ cat kas_alias.py | wc -l
-> 133
-> ~ $ time ./kas_alias -a /usr/bin/aarch64-linux-gnu-addr2line \
->                    -v linux-6.5/.tmp_vmlinux.kallsyms1 \
->                    -n linux-6.5/.tmp_vmlinux.kallsyms1.syms \
->                    -o output_c
->
-> real    0m1.418s
-> user    0m1.262s
-> sys     0m0.162s
-> ~ $ cat a2l.c a2l.h conf.c conf.h item_list.c item_list.h kas_alias.c | w=
-c -l
-> 742
-> ~ $ diff output_py output_c
-> ~ $
-> ```
-> C version is 7/10% faster but is more than 5 times in terms of code size.
->
-> >
-> > Most of the functions you implemented are already
-> > available in script languages.
-> >
-> >
-> >
-> > I am not sure if "@<file-path>" is a good solution,
-> > but the amount of the added code looks too much to me.
->
-> I followed Francis's suggestion and made the separator between
-> <symbol name> and <normalized filename> an argument that you can select
-> using the command line. Since I'm not aware of a better choice, I set the
-> default value to '@'.
->
-> >
-> >
-> >
-> >
-> > --
-> > Best Regards
-> > Masahiro Yamada
->
-> Best regards
-> Alessandro Carminati
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+--
+Uladzislau Rezki
