@@ -2,77 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F10F0793637
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7553179363B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232724AbjIFHZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 03:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58670 "EHLO
+        id S232757AbjIFH1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 03:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232433AbjIFHZo (ORCPT
+        with ESMTP id S231147AbjIFH1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 03:25:44 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E123E62
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:25:32 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bcb0b973a5so52426261fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 00:25:32 -0700 (PDT)
+        Wed, 6 Sep 2023 03:27:15 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F60392
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:27:11 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-52e297c7c39so3956854a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 00:27:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693985131; x=1694589931; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1693985229; x=1694590029; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=mUAOYZdXRcgmDE4GJOIyJRjMyBBPbYoHip/KFygnL6I=;
-        b=RYEWX/lCDGo2EddE+b94EyW52lHeTiv5ttuiHLrm4uqahS7kBAeiTBBLzMHQ06LwhX
-         Vje8c8382chL9quyrywzPij1k8TehL3P1FDhkdoYDz3dDLLgn2SXXZWzLQnjsusUiSkw
-         adVLXv17DELtwVH/DQLN/w7MYnzk+6vA+pc6ZrdBgq5wFMK2XzAxEsah/4a60i4g9Q5e
-         e7l7LiokThH5FTOlwS5Dl3RjRVT90l0qe352hNIoXj7UIqvnPLRaTd9t4HQ3gh/8zXnM
-         uhCh6N6lRIOgbYdO04K18FURYerBdo2ZR2ftRUhQtogAEOde5ct9mzAt3eVlQtoSUYjD
-         iM0g==
+        bh=K/D3S02pV0j69DWmyqjSauKntrk3YcPUrV89cnyW/2M=;
+        b=sYtcyiEL1JTuSC/ZCEWrORbeFahq2hS2aAgAC8pcC7yxeMqbNOXRuq/17L6tiMdDd9
+         gg0iImVO2zUEaglC0X+HC0rbCRr9gfH8LI/CvGYFQF4qvCgRCyBjRt8Kf/FgExAhT9ap
+         XMhLvQGTPgGLF1GOJV1SqMZoIaNaiAML8DM/nxBt6MBD7PXMrdjuzYzTWxnSNq8OKZ2l
+         F1+28c6RlPsdIVlbgFQ4rTx3cAuDhmVlc2TMxVm+XdpCAEQ2FZJZUrSheraZJVjb7X6m
+         PSD+EdJ2q0UIgTm5N6pYSoaletpBRxmGxulmofi8AtS1I6jkEfpcmntIlBZMQNigetzQ
+         TlPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693985131; x=1694589931;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1693985229; x=1694590029;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mUAOYZdXRcgmDE4GJOIyJRjMyBBPbYoHip/KFygnL6I=;
-        b=YZ9xnM9HGPALkRW3L3RBX8NoKOpsnhoB2l00KhACempdvmvx0xDp8oR2fPHfi0wLve
-         VrMPntEJxJ4DTVeOOfy2IMgyrOswUaCGIyyJkJbuY8s6/w6xGoDGyFD+921B8q3xxgoZ
-         ad7Y6F0PHmmE3CrYEd6TYhllC8Dxo8k3Z2pEaD3nzhEP00crIOGGpRRlLYZj0yRLRcFG
-         I8g0jXmfy+R9Ys0AStb15DgarCz++4KB9Or/ZI9QCL9n9tE9bu3gJs71cQ2NHRkvVWeD
-         R5FMNWAXtwnty80GLlHSnIbZciV1kXx0ovVBlmIzJp9zU4bTPmSdVcUlZL1eTAD13F46
-         ZzjQ==
-X-Gm-Message-State: AOJu0YyP2yqp9Jb7lU8w9LEkUKxVjfuVuRiWChZu4olNIUwxs6BZfkFI
-        Eo6IWImDlY6JQe1T/ecQg224Vw==
-X-Google-Smtp-Source: AGHT+IGkbZGflpIW5BJD/uJXYniQZ1XaQe3cfHAUvuH3jHWmBuLCMVyCFN4J0k3Fj5x5wa+Nspf96g==
-X-Received: by 2002:a2e:9016:0:b0:2b7:11f8:27d with SMTP id h22-20020a2e9016000000b002b711f8027dmr1422317ljg.7.1693985130776;
-        Wed, 06 Sep 2023 00:25:30 -0700 (PDT)
-Received: from [192.168.0.173] ([79.115.63.137])
-        by smtp.gmail.com with ESMTPSA id l8-20020a05600c1d0800b003fef6881350sm19682389wms.25.2023.09.06.00.25.29
+        bh=K/D3S02pV0j69DWmyqjSauKntrk3YcPUrV89cnyW/2M=;
+        b=MKIZk/qnK/oTlAq3ny6ukwPJLmMXtSuotde3GFmUDMLXk8zzFB3FhXk6uwMNa7Gg4N
+         aNZcDSJHUCRK+vQ05t0OHdEewQvyilSZLWl4kkfhXnflP5M6spxcKP8V5Zn7V7UKKaoh
+         3Vg91gLRMtcCIuHKcWq1rr6QQPNsWHhgSmoFgGCpBNjFOXcxqASxDz2NuIMSo5zkmLmk
+         OqMktTB8fs5l0DiBNw+/trAkC+FscZ5WpHTNcxSm2XpkvTS+VYmRQmhF3G5C6SLtARA0
+         qOn7T615zrLIqxpX88L/OoPyg0KuS2/+/Wuvza6lZcV/errmwRuK3ILLYtzaRTus2t2v
+         aZZg==
+X-Gm-Message-State: AOJu0YxpJ7kaab+db0t9hWmzNkH+zsF4VeOejg/VcMUmAUSB4dR395ml
+        PClqkFdU9wua04Dn6sS+lNFNoA==
+X-Google-Smtp-Source: AGHT+IFSivZXNYKgOoZ31LkGFVLn7z0ozLSMGOS34alVtKgZpxs2nm8bdPv5Y8/tJvhmbBZRQfgz0Q==
+X-Received: by 2002:a17:907:724b:b0:9a1:d5de:5e3 with SMTP id ds11-20020a170907724b00b009a1d5de05e3mr1621628ejc.54.1693985229558;
+        Wed, 06 Sep 2023 00:27:09 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id qc8-20020a170906d8a800b0099275c59bc9sm8561948ejb.33.2023.09.06.00.27.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 00:25:30 -0700 (PDT)
-Message-ID: <fdd524be-c339-09b1-e306-8002ee851b31@linaro.org>
-Date:   Wed, 6 Sep 2023 10:25:28 +0300
+        Wed, 06 Sep 2023 00:27:09 -0700 (PDT)
+Message-ID: <502fc7b1-a32d-6901-3a45-d2aa0e0c3849@linaro.org>
+Date:   Wed, 6 Sep 2023 09:27:07 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 14/41] mtd: spi-nor: rename .otp_org to .otp and make
- it a pointer
-To:     Michael Walle <mwalle@kernel.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
- <20230807-mtd-flash-info-db-rework-v2-14-291a0f39f8d8@kernel.org>
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 3/3] arm64: dts: mediatek: mt8365-pumpkin: Add overlays
+ for thp7312 cameras
 Content-Language: en-US
-In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-14-291a0f39f8d8@kernel.org>
+To:     Paul Elder <paul.elder@ideasonboard.com>,
+        linux-media@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20230905233118.183140-1-paul.elder@ideasonboard.com>
+ <20230905233118.183140-4-paul.elder@ideasonboard.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230905233118.183140-4-paul.elder@ideasonboard.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,56 +85,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 22.08.2023 10:09, Michael Walle wrote:
-> Move the OTP ops out of the flash_info structure. Besides of saving some
-> space, there will be a new macro SNOR_OTP() which can be used to set the
-> ops:
->   .otp = SNOR_OTP(...),
+On 06/09/2023 01:31, Paul Elder wrote:
+> Add overlays for the Pumpkin i350 to support THP7312 cameras.
 > 
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
-
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-
+> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
 > ---
->  drivers/mtd/spi-nor/core.c | 2 +-
->  drivers/mtd/spi-nor/core.h | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
+>  arch/arm64/boot/dts/mediatek/Makefile         |  4 +
+>  .../mt8365-pumpkin-common-thp7312.dtsi        | 23 ++++++
+>  .../mt8365-pumpkin-csi0-thp7312-imx258.dtso   | 73 +++++++++++++++++++
+>  .../mt8365-pumpkin-csi1-thp7312-imx258.dtso   | 73 +++++++++++++++++++
+>  4 files changed, 173 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
+>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi0-thp7312-imx258.dtso
+>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi1-thp7312-imx258.dtso
 > 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 80c340c7863a..1c443fe568cf 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2978,7 +2978,7 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
->  	struct device_node *np = spi_nor_get_flash_node(nor);
+> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
+> index 20570bc40de8..ceaf24105001 100644
+> --- a/arch/arm64/boot/dts/mediatek/Makefile
+> +++ b/arch/arm64/boot/dts/mediatek/Makefile
+> @@ -56,4 +56,8 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-evk.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-pumpkin.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8516-pumpkin.dtb
 >  
->  	params->quad_enable = spi_nor_sr2_bit1_quad_enable;
-> -	params->otp.org = &info->otp_org;
-> +	params->otp.org = info->otp;
->  
->  	/* Default to 16-bit Write Status (01h) Command */
->  	nor->flags |= SNOR_F_HAS_16BIT_SR;
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 81535f31907f..c22f5cf65a58 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -555,7 +555,7 @@ struct flash_info {
->  
->  	u8 mfr_flags;
->  
-> -	const struct spi_nor_otp_organization otp_org;
-> +	const struct spi_nor_otp_organization *otp;
->  	const struct spi_nor_fixups *fixups;
->  };
->  
-> @@ -605,7 +605,7 @@ struct flash_info {
->  		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,		\
->  
->  #define OTP_INFO(_len, _n_regions, _base, _offset)			\
-> -		.otp_org = {						\
-> +		.otp = &(const struct spi_nor_otp_organization){	\
->  			.len = (_len),					\
->  			.base = (_base),				\
->  			.offset = (_offset),				\
-> 
+> +mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-csi0-thp7312-imx258.dtbo
+> +mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-csi1-thp7312-imx258.dtbo
+>  mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-ethernet-usb.dtbo
+> +
+> +dtb-$(CONFIG_ARCH_MEDIATEK) += mtk-mt8365-pumpkin.dtb
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
+> new file mode 100644
+> index 000000000000..478697552617
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
+> @@ -0,0 +1,23 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 Ideas on Board
+> + * Author: Paul Elder <paul.elder@ideasonboard.com>
+> + */
+> +
+> +/dts-v1/;
+> +/plugin/;
+> +
+> +&{/} {
+> +	vsys_v4p2: regulator@0 {
+
+Hm? Is this a bus?
+
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vsys-v4p2";
+> +		regulator-min-microvolt = <4200000>;
+> +		regulator-max-microvolt = <4200000>;
+> +	};
+> +
+> +	camera61_clk: cam_clk24m {
+
+And this is not on a bus? It's the same / node!
+
+Please work on mainline, which means take mainline code and change it to
+your needs. Do not take downstream poor code and change it...
+
+No underscores in node names. Also generic node names, so at least with
+generic prefix or suffix.
+
+
+> +		compatible = "fixed-clock";
+> +		clock-frequency = <24000000>;
+> +		#clock-cells = <0>;
+> +	};
+> +};
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi0-thp7312-imx258.dtso b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi0-thp7312-imx258.dtso
+> new file mode 100644
+> index 000000000000..740d14a19d75
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi0-thp7312-imx258.dtso
+> @@ -0,0 +1,73 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 Ideas on Board
+> + * Author: Paul Elder <paul.elder@ideasonboard.com>
+> + */
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/pinctrl/mt8365-pinfunc.h>
+> +#include "mt8365-pumpkin-common-thp7312.dtsi"
+> +
+> +&i2c3 {
+> +	camera@61 {
+> +		compatible = "thine,thp7312";
+> +		reg = <0x61>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&cam0_pins_default>;
+> +		reset-gpios = <&pio 118 GPIO_ACTIVE_LOW>;
+> +		clocks = <&camera61_clk>;
+> +
+> +		vddcore-supply = <&vsys_v4p2>;
+> +		vhtermrx-supply = <&vsys_v4p2>;
+> +		vddtx-supply = <&vsys_v4p2>;
+> +		vddhost-supply = <&vsys_v4p2>;
+> +		vddcmos-supply = <&vsys_v4p2>;
+> +		vddgpio_0-supply = <&vsys_v4p2>;
+> +		vddgpio_1-supply = <&vsys_v4p2>;
+> +		DOVDD-supply = <&vsys_v4p2>;
+> +		AVDD-supply = <&vsys_v4p2>;
+> +		DVDD-supply = <&vsys_v4p2>;
+> +
+> +		orientation = <0>;
+> +		rotation = <0>;
+> +
+> +		thine,rx,data-lanes = <4 1 3 2>;
+
+NAK for this property.
+
+
+> +
+> +		port {
+> +			isp1_out: endpoint {
+> +				remote-endpoint = <&seninf_in1>;
+> +				data-lanes = <4 2 1 3>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&pio {
+> +	cam0_pins_default: cam0_pins_default {
+
+No underscores in node names.
+
+> +		pins_rst {
+
+Ditto
+
+
+Best regards,
+Krzysztof
+
