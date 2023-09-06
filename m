@@ -2,112 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6FD793C28
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D4E793C68
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240430AbjIFMDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
+        id S237795AbjIFMCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237032AbjIFMDn (ORCPT
+        with ESMTP id S231265AbjIFMCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:03:43 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B2010D0
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:03:38 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52e297c7c39so4351096a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 05:03:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694001816; x=1694606616; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TG8v1WUrQJRuwyVst1yh78ZkZ2N3yjOTrkiIIhevQjM=;
-        b=LsATkX3PA9RuR24Q+4eOh2Y8rccnXOWiVizTBz7KWfvxRSpcf594xfOHOupSDUkvUj
-         u4h6921+rQoaYBkUgfWnt9C9+jWVAyVtwUwxb8+prT2fWtxmnUHfW33u7MtlarXAS85x
-         ERmxFio49rs+7asTxMFyTH9IRvHM4e6zbvb+BikmtfkHXHUojktaSWv0cLk8HnfxMHs4
-         9A16CfopSoi/YtNg/MAfWdu3WUhdXIHwFqpxja8h8/EbdiAEN67QNZPk4j0TrorvZXKQ
-         LoOXE38Vc/Vnqc9O1t50ud9RUK1jqwJuQk/ugOHZ/EDU2OKhcGSl75UCVQbckd+NxsfQ
-         jZDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694001816; x=1694606616;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TG8v1WUrQJRuwyVst1yh78ZkZ2N3yjOTrkiIIhevQjM=;
-        b=QLnQOdtsIqEbl0ryrrTaifi4hchZXMi9wy86leU3c4ppyRIJHZ1pTU8eL31pdn6Koa
-         W5j14M8GHsdTugVd56VEHGOp/7xCvoQKRqzu6JsSOGIIgWvm9cXwCfy1BqxlxksIGmnk
-         Jb494lAklHK3KkVgkSxH+ixkH/889PxzgwEwSaDHynHgiyyYuvCb9Pi//pIxpPdBpllm
-         MBmoAJEWHeK5qyWv7LBUBr8MXs8Le4pp9/ehuj3eECpeVgHiqdIXMaH1xat+rnlJ5NMS
-         86EZzZ8BwHPlz9++1+H6hbdMrjTLME8U86k6A1vt0Di+VaWA1Kra7xjxNUoHyg1VWfqL
-         32QA==
-X-Gm-Message-State: AOJu0Ywtg5WhpOHt05QR5wcMz9+/kaD4WbVzjVvbxVewEgZjrqICQh+c
-        KumqLkAjrCZisr32PeW0yKr/F1gMMccT1o9lfTZsBQ==
-X-Google-Smtp-Source: AGHT+IEq8qhz9cNHqr8duJ2KbTtO4ySOl5J8Jd6unVRxNtSyip3WQ7CbJufHcW0Xz4GUVvZWdnonI9xLeXNXTLjmBnY=
-X-Received: by 2002:aa7:c0cf:0:b0:522:ca6b:ad7d with SMTP id
- j15-20020aa7c0cf000000b00522ca6bad7dmr2017626edp.9.1694001816458; Wed, 06 Sep
- 2023 05:03:36 -0700 (PDT)
+        Wed, 6 Sep 2023 08:02:41 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E893210F5
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:02:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CBE5C433C7;
+        Wed,  6 Sep 2023 12:02:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694001753;
+        bh=q+ygTF8Sz49mjT86dwdndFEl1wHyqfAEeqoYnTLNyGk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z4gSYhhWb41sEFzjBM4Wa0QAmG9tJCgHQyQwwJDbQ90H9pFR8n88pnukSZjfn3u3y
+         fIH3EuX15fHKYDtmPPkQ3sVPSz9/yWvOMVZcWpdmGwfUP0Pu59lK6QnQpPXiA4Zn83
+         /D7NlBucE73BK5jVzcygsJzUUT0ZJZQ07Xlfi6WhgxE/WON7h+VjeKXIoyXW1KSdz5
+         7rInuyy5Cp29Q2JHf/Gi+jX/3onWjHnyP4t5RQVoGHKfTFGsq/u7kUdHLIYDDwU2ON
+         ooUqPBi0XuPMlPDEiZyEdgCrEJRyL28dtd8YNV7wjoDxjtyQLg0zybLNJE8vwH/+j6
+         mvwh4l84d+/ZA==
+Date:   Wed, 6 Sep 2023 15:01:48 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Usama Arif <usama.arif@bytedance.com>
+Cc:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
+        linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
+        fam.zheng@bytedance.com, liangma@liangbit.com,
+        punit.agrawal@bytedance.com
+Subject: Re: [v4 3/4] memblock: introduce MEMBLOCK_RSRV_NOINIT flag
+Message-ID: <20230906120148.GJ3223@kernel.org>
+References: <20230906112605.2286994-1-usama.arif@bytedance.com>
+ <20230906112605.2286994-4-usama.arif@bytedance.com>
 MIME-Version: 1.0
-References: <20230821152606.10325-1-vinayakph123@gmail.com>
-In-Reply-To: <20230821152606.10325-1-vinayakph123@gmail.com>
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Wed, 6 Sep 2023 17:33:25 +0530
-Message-ID: <CAO_48GESs+C-jRTefgLbksRSS25HtAcpCmbGKgFDDee-UsPnVA@mail.gmail.com>
-Subject: Re: [PATCH] Remove the parameter not described warning
-To:     Vinayak Hegde <vinayakph123@gmail.com>
-Cc:     gustavo@padovan.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230906112605.2286994-4-usama.arif@bytedance.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Vinayak,
+On Wed, Sep 06, 2023 at 12:26:04PM +0100, Usama Arif wrote:
+> For reserved memory regions marked with this flag,
+> reserve_bootmem_region is not called during memmap_init_reserved_pages.
+> This can be used to avoid struct page initialization for
+> regions which won't need them, for e.g. hugepages with
+> HVO enabled.
 
-On Mon, 21 Aug 2023 at 20:56, Vinayak Hegde <vinayakph123@gmail.com> wrote:
->
-> Signed-off-by: Vinayak Hegde <vinayakph123@gmail.com>
+Nit: please spell out HVO, otherwise
+ 
+> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
 
-Thank you for your patch. Could you please make the git commit message
-a bit more descriptive? Please describe how did you find this warning,
-atleast.
+Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
 > ---
->  include/uapi/linux/sync_file.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/uapi/linux/sync_file.h b/include/uapi/linux/sync_fil=
-e.h
-> index 7e42a5b7558b..ff0a931833e2 100644
-> --- a/include/uapi/linux/sync_file.h
-> +++ b/include/uapi/linux/sync_file.h
-> @@ -56,7 +56,7 @@ struct sync_fence_info {
->   * @name:      name of fence
->   * @status:    status of fence. 1: signaled 0:active <0:error
->   * @flags:     sync_file_info flags
-> - * @num_fences number of fences in the sync_file
-> + * @num_fences:        number of fences in the sync_file
->   * @pad:       padding for 64-bit alignment, should always be zero
->   * @sync_fence_info: pointer to array of struct &sync_fence_info with al=
-l
->   *              fences in the sync_file
-> --
-> 2.34.1
->
+>  include/linux/memblock.h |  9 +++++++++
+>  mm/memblock.c            | 33 ++++++++++++++++++++++++++++-----
+>  2 files changed, 37 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index 1c1072e3ca06..ae3bde302f70 100644
+> --- a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -40,6 +40,8 @@ extern unsigned long long max_possible_pfn;
+>   * via a driver, and never indicated in the firmware-provided memory map as
+>   * system RAM. This corresponds to IORESOURCE_SYSRAM_DRIVER_MANAGED in the
+>   * kernel resource tree.
+> + * @MEMBLOCK_RSRV_NOINIT: memory region for which struct pages are
+> + * not initialized (only for reserved regions).
+>   */
+>  enum memblock_flags {
+>  	MEMBLOCK_NONE		= 0x0,	/* No special request */
+> @@ -47,6 +49,7 @@ enum memblock_flags {
+>  	MEMBLOCK_MIRROR		= 0x2,	/* mirrored region */
+>  	MEMBLOCK_NOMAP		= 0x4,	/* don't add to kernel direct mapping */
+>  	MEMBLOCK_DRIVER_MANAGED = 0x8,	/* always detected via a driver */
+> +	MEMBLOCK_RSRV_NOINIT	= 0x10,	/* don't initialize struct pages */
+>  };
+>  
+>  /**
+> @@ -125,6 +128,7 @@ int memblock_clear_hotplug(phys_addr_t base, phys_addr_t size);
+>  int memblock_mark_mirror(phys_addr_t base, phys_addr_t size);
+>  int memblock_mark_nomap(phys_addr_t base, phys_addr_t size);
+>  int memblock_clear_nomap(phys_addr_t base, phys_addr_t size);
+> +int memblock_reserved_mark_noinit(phys_addr_t base, phys_addr_t size);
+>  
+>  void memblock_free_all(void);
+>  void memblock_free(void *ptr, size_t size);
+> @@ -259,6 +263,11 @@ static inline bool memblock_is_nomap(struct memblock_region *m)
+>  	return m->flags & MEMBLOCK_NOMAP;
+>  }
+>  
+> +static inline bool memblock_is_reserved_noinit(struct memblock_region *m)
+> +{
+> +	return m->flags & MEMBLOCK_RSRV_NOINIT;
+> +}
+> +
+>  static inline bool memblock_is_driver_managed(struct memblock_region *m)
+>  {
+>  	return m->flags & MEMBLOCK_DRIVER_MANAGED;
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index a49efbaee7e0..8f7a0cb668d4 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -996,6 +996,24 @@ int __init_memblock memblock_clear_nomap(phys_addr_t base, phys_addr_t size)
+>  	return memblock_setclr_flag(&memblock.memory, base, size, 0, MEMBLOCK_NOMAP);
+>  }
+>  
+> +/**
+> + * memblock_reserved_mark_noinit - Mark a reserved memory region with flag
+> + * MEMBLOCK_RSRV_NOINIT which results in the struct pages not being initialized
+> + * for this region.
+> + * @base: the base phys addr of the region
+> + * @size: the size of the region
+> + *
+> + * struct pages will not be initialized for reserved memory regions marked with
+> + * %MEMBLOCK_RSRV_NOINIT.
+> + *
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +int __init_memblock memblock_reserved_mark_noinit(phys_addr_t base, phys_addr_t size)
+> +{
+> +	return memblock_setclr_flag(&memblock.reserved, base, size, 1,
+> +				    MEMBLOCK_RSRV_NOINIT);
+> +}
+> +
+>  static bool should_skip_region(struct memblock_type *type,
+>  			       struct memblock_region *m,
+>  			       int nid, int flags)
+> @@ -2112,13 +2130,18 @@ static void __init memmap_init_reserved_pages(void)
+>  		memblock_set_node(start, end, &memblock.reserved, nid);
+>  	}
+>  
+> -	/* initialize struct pages for the reserved regions */
+> +	/*
+> +	 * initialize struct pages for reserved regions that don't have
+> +	 * the MEMBLOCK_RSRV_NOINIT flag set
+> +	 */
+>  	for_each_reserved_mem_region(region) {
+> -		nid = memblock_get_region_node(region);
+> -		start = region->base;
+> -		end = start + region->size;
+> +		if (!memblock_is_reserved_noinit(region)) {
+> +			nid = memblock_get_region_node(region);
+> +			start = region->base;
+> +			end = start + region->size;
+>  
+> -		reserve_bootmem_region(start, end, nid);
+> +			reserve_bootmem_region(start, end, nid);
+> +		}
+>  	}
+>  }
+>  
+> -- 
+> 2.25.1
+> 
 
-Best,
-Sumit.
-
---=20
-Thanks and regards,
-
-Sumit Semwal (he / him)
-Tech Lead - LCG, Vertical Technologies
-Linaro.org =E2=94=82 Open source software for ARM SoCs
+-- 
+Sincerely yours,
+Mike.
