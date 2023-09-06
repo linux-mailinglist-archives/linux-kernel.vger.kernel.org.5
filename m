@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 603CC793BCF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9101C793BE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239387AbjIFLxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:53:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57932 "EHLO
+        id S238157AbjIFLzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:55:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbjIFLxn (ORCPT
+        with ESMTP id S231449AbjIFLzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:53:43 -0400
+        Wed, 6 Sep 2023 07:55:47 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC327199;
-        Wed,  6 Sep 2023 04:53:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C75EAC433C8;
-        Wed,  6 Sep 2023 11:53:38 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07391717;
+        Wed,  6 Sep 2023 04:55:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1072DC433C7;
+        Wed,  6 Sep 2023 11:55:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694001219;
-        bh=bwfka+JpEPprvMJfxECixELCrmxr7bmCc76S67cIWJc=;
+        s=k20201202; t=1694001341;
+        bh=FDZb2P6B0ZGwz9DnHq2oQkdMxKB5yoZzWthnXB71JxU=;
         h=Date:From:To:Subject:In-Reply-To:References:Cc:From;
-        b=pMq9vRCjBQipcs/aGh/mqFdWLTVT6zoNUA45SoqJkid4FVZFVHUKDSkn8We/Lnk49
-         Sl4CzaRMQEeJR+5N+R98d62v8tOnx4oBqbZw2c+7MrGq3BruD17BAF6+lkbDb8ERuF
-         s++0s/mxgKte4JV8lE75+9388UVUqZcjtSgk3aweApo1nb3wta8sy6tALPX8aC6WNj
-         EYPa9T2cMpc2dPujrkpRxZtl4d4QgL2FTl8OfK9I5Xg6CFaUTolcjrShhaucDCI03/
-         U589q3S+QVP08oGXMJvETk42p4BPPJNtCBSgLccvNLp79AYZ8YJxwoY8BXX4fl0ZNR
-         plgeXBLDN5VEw==
-Message-ID: <e4f53f712d7a98c974fc04788720ce78.mripard@kernel.org>
-Date:   Wed, 06 Sep 2023 11:53:36 +0000
+        b=jhhnLlTyoqdIJqEsBEzcRyQzk5+hGjuuSb/2wrdwqMn9IuYUxHaciHhF6nIkY6VjQ
+         VH9qX4Zw31P6hfNBw/Qy7oMaadRuC6kDSqG4q+g76JE/cmIm/sY855HKXvR8xyRGEa
+         ZBEHR8ahL4Ha2z247Q7L8FNYnbSc1sWRjXVERfIHw3vJHhjIrg2wQU47v843C39Vy1
+         Y0x5A7JtA5Uw02Lw0zFBzYwMn3/X+clluAgYvrukVOlEh50NIGf9GDvHwA1p3/DuZu
+         4jClhytET6ay7v47gtPknSh5LW5Grhx5VQ6W7+qMBLloOo+wVZ7yjBWtaTavkPEXv/
+         STDBDqEhplRVw==
+Message-ID: <54a97af7c14f23ce12be9eb40075733f.mripard@kernel.org>
+Date:   Wed, 06 Sep 2023 11:55:39 +0000
 From:   "Maxime Ripard" <mripard@kernel.org>
 To:     "Sarah Walker" <sarah.walker@imgtec.com>
-Subject: Re: [PATCH v6 07/20] drm/imagination: Add GPU register headers
-In-Reply-To: <20230906095542.3280699-8-sarah.walker@imgtec.com>
-References: <20230906095542.3280699-8-sarah.walker@imgtec.com>
+Subject: Re: [PATCH v6 08/20] drm/imagination: Add firmware and MMU related
+ headers
+In-Reply-To: <20230906095542.3280699-9-sarah.walker@imgtec.com>
+References: <20230906095542.3280699-9-sarah.walker@imgtec.com>
 Cc:     afd@ti.com, airlied@gmail.com, boris.brezillon@collabora.com,
         christian.koenig@amd.com, conor+dt@kernel.org, corbet@lwn.net,
         dakr@redhat.com, daniel@ffwll.ch, devicetree@vger.kernel.org,
@@ -56,13 +57,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Sep 2023 10:55:29 +0100, Sarah Walker wrote:
+On Wed, 6 Sep 2023 10:55:30 +0100, Sarah Walker wrote:
 > Changes since v5:
 > - Split up header commit due to size
 > 
 > Signed-off-by: Sarah Walker <sarah.walker@imgtec.com>
 
-Reviewed-by: Maxime Ripard <mripard@kernel.org>
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
 Thanks!
 Maxime
