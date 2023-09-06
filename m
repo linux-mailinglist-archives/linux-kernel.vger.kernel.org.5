@@ -2,99 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C4279438B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D26794390
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243262AbjIFTEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 15:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54024 "EHLO
+        id S243926AbjIFTGv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Sep 2023 15:06:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239160AbjIFTEl (ORCPT
+        with ESMTP id S230383AbjIFTGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 15:04:41 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674371FDA
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 12:04:06 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d74a012e613so137240276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 12:04:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694027023; x=1694631823; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8z7JfMeTWIa2dMIiQZF3QfNFt+waJmFYaLRg5N1AX5A=;
-        b=eo+K1xA7ms6DFDGW/npp6j1DlZ9ma2kXzhbQMBJ4a2VgYVEFXPkeaBQVVADWrSkaaL
-         4H0NyWrMepvuD7mzRqytOve+hi6s5VTklS43E6CUeVRcvDEL5KY8gDQSQrqpVmtXxYzP
-         0Pb8AvCA7doDlXW/pQ//NIGzftAAN9rB9gc8magZoSt7z7gct3D4KXUu8sosZXN1uyd7
-         qi29bkrHpWfjTBTnC2vmdtrwnJVdpmyhWtKUrkZe4JrgwwZCgIxsB7CP2gSNbTN2iSU/
-         3Mmf4JaYShJ93KiHxmzJBP52gBRm7RX9rOiHAybadKPBvgekIYFJaV7k2M6XHRHfZ08e
-         rB5w==
+        Wed, 6 Sep 2023 15:06:40 -0400
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 751F0E59;
+        Wed,  6 Sep 2023 12:06:36 -0700 (PDT)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5920efd91c7so1809307b3.2;
+        Wed, 06 Sep 2023 12:06:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694027023; x=1694631823;
+        d=1e100.net; s=20221208; t=1694027195; x=1694631995;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8z7JfMeTWIa2dMIiQZF3QfNFt+waJmFYaLRg5N1AX5A=;
-        b=cL+73lIKxlJZZGDj8TLFmDFMCg0gOHbMkjFgAvmIOn1BfETpsTpr0fmYu/VX1K/+qz
-         Qt1F74gqH1qz0BqTgGp0S6mIcA6ZID1QGQbw/Qk+6oYOymqLyazyLqqHWo0zfF7/F+Xq
-         Sh006+NIl4JPm6SwfJ6dBQjHzSds9sjlKE4cjr/k0p1MccEuouAdghb2kRm1GouEa8CR
-         1ntkRNd7XHKkD3xY6MLQZ8W7Nbe2AjmQCfTy4AwKUjWRtSVfUrgIs41kSMk3VKqogPTr
-         kdO8a4jBj0htM4U3jrgxjIDH+vQT18lxevNN34+yfmWwLWUvnmjuaJ9rqTaVSdn4nP1R
-         43pg==
-X-Gm-Message-State: AOJu0YzPp1Kn8CMHo6ryZIYWeNTR+KCqhjbEssBIqvpQIsyO8GqQ7xxq
-        mnvwLmebuJnCHCfl6354SiKatpNkktd7F/ooB3NsBg==
-X-Google-Smtp-Source: AGHT+IH86FyU3nX8IvvfomZQMTa9OGpwmdFMH+65w5YXwKbO2KVUTcIKAGjBIG77tJnR85zEQ4SNo0g2UWc6erEZNP4=
-X-Received: by 2002:a25:a429:0:b0:d79:e08f:e9c2 with SMTP id
- f38-20020a25a429000000b00d79e08fe9c2mr496388ybi.11.1694027023098; Wed, 06 Sep
- 2023 12:03:43 -0700 (PDT)
+        bh=Hr7cLgUZCclofomOdxpQVhNfG1jKUPi2HnqwisL8720=;
+        b=dFeUIem4ioHWxmv0UHjOK0O5qM8vmFeL/0VlulfvLSGXDDXLT5dozYVZOce4rmIZlz
+         RUx1xeDlh6QPWSfAEUdrlGYG8IhkmLsTJLaGG+eDI1+893hhAfh4GRYKpsvXXG5CiXAy
+         MDhRc57H046duSixq8c3OpdbTqm+yoFZFeyT//96AMNweOt/2J3YhFiMdC12//afeKFx
+         lI2I6blH1XZeipTY7PSzhU/rtO+FY85/BwBNMk0pNAiVI+hXJMPqursB7mlrHyfxYAiJ
+         lVWiom5cfh4st2PkCdXKXjpeHeV8N4LcP4ic3bMjOOB1Y5yZFpCzvFcmR0E+eMOWoiEe
+         Vd+A==
+X-Gm-Message-State: AOJu0Yw31Rz5lwWmzp/nL/U08uNY6Gi5ahUNf/n2RH/f6OhEBVehFwy1
+        Frunw5s3bitIXS6OuD7RGIEKWvMkc/726g==
+X-Google-Smtp-Source: AGHT+IEYLksrmP27A7LLEl9wreOXL9OC9W9fyxL9g12q4xJm1463tomIab6qsn0eiHMTKibW07at7Q==
+X-Received: by 2002:a0d:cf04:0:b0:573:d3cd:3d2a with SMTP id r4-20020a0dcf04000000b00573d3cd3d2amr16695468ywd.28.1694027195495;
+        Wed, 06 Sep 2023 12:06:35 -0700 (PDT)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
+        by smtp.gmail.com with ESMTPSA id p189-20020a815bc6000000b0054bfc94a10dsm3906178ywb.47.2023.09.06.12.06.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 12:06:35 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-d7b91422da8so158292276.2;
+        Wed, 06 Sep 2023 12:06:34 -0700 (PDT)
+X-Received: by 2002:a25:7691:0:b0:d6b:8ea4:b8a1 with SMTP id
+ r139-20020a257691000000b00d6b8ea4b8a1mr18126841ybc.12.1694027194758; Wed, 06
+ Sep 2023 12:06:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230906095542.3280699-1-sarah.walker@imgtec.com> <20230906095542.3280699-4-sarah.walker@imgtec.com>
-In-Reply-To: <20230906095542.3280699-4-sarah.walker@imgtec.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 6 Sep 2023 21:03:31 +0200
-Message-ID: <CACRpkdaNbr_7ivzz=fam2rup0HYH6UivBexLDWLLyWiXDSHoOA@mail.gmail.com>
-Subject: Re: [PATCH v6 03/20] dt-bindings: gpu: Add Imagination Technologies
- PowerVR/IMG GPU
-To:     Sarah Walker <sarah.walker@imgtec.com>
-Cc:     dri-devel@lists.freedesktop.org, frank.binns@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        airlied@gmail.com, daniel@ffwll.ch, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, corbet@lwn.net, christian.koenig@amd.com,
-        matt.coster@imgtec.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
-        faith.ekstrand@collabora.com, afd@ti.com, hns@goldelico.com,
-        matthew.brost@intel.com, luben.tuikov@amd.com, dakr@redhat.com
+References: <20230819004356.1454718-1-Liam.Howlett@oracle.com>
+ <20230819004356.1454718-2-Liam.Howlett@oracle.com> <3f86d58e-7f36-c6b4-c43a-2a7bcffd3bd@linux-m68k.org>
+ <20230906152325.dblzauybyoq5kd35@revolver>
+In-Reply-To: <20230906152325.dblzauybyoq5kd35@revolver>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 6 Sep 2023 21:06:22 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWpvpWoDa=Ox-do92czYRvkok6_x6pYUH+ZouMcJbXy+Q@mail.gmail.com>
+Message-ID: <CAMuHMdWpvpWoDa=Ox-do92czYRvkok6_x6pYUH+ZouMcJbXy+Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] maple_tree: Disable mas_wr_append() when other
+ readers are possible
+To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Shanker Donthineni <sdonthineni@nvidia.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 11:56=E2=80=AFAM Sarah Walker <sarah.walker@imgtec.c=
-om> wrote:
+Hi Liam,
 
-> Add the device tree binding documentation for the IMG AXE GPU used in
-> TI AM62 SoCs.
+On Wed, Sep 6, 2023 at 5:24 PM Liam R. Howlett <Liam.Howlett@oracle.com> wrote:
+> * Geert Uytterhoeven <geert@linux-m68k.org> [230829 12:42]:
+> > On Fri, 18 Aug 2023, Liam R. Howlett wrote:
+> > > The current implementation of append may cause duplicate data and/or
+> > > incorrect ranges to be returned to a reader during an update.  Although
+> > > this has not been reported or seen, disable the append write operation
+> > > while the tree is in rcu mode out of an abundance of caution.
 >
-> Co-developed-by: Frank Binns <frank.binns@imgtec.com>
-> Signed-off-by: Frank Binns <frank.binns@imgtec.com>
-> Signed-off-by: Sarah Walker <sarah.walker@imgtec.com>
-> ---
-> Changes since v5:
-> - Update compatible string & description to match marketing name
-> - Remove unnecessary clock-names definition in ti,am62-gpu constraints
-> - Document that GPU revision is discoverable
+> ...
+> > >
+> > > Fixes: 54a611b60590 ("Maple Tree: add new data structure")
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+> >
+> > Thanks for your patch, which is now commit cfeb6ae8bcb96ccf
+> > ("maple_tree: disable mas_wr_append() when other readers are
+> > possible") in v6.5, and is being backported to stable.
+> >
+> > On Renesas RZ/A1 and RZ/A2 (single-core Cortex-A9), this causes the
+> > following warning:
+> >
+> >      clocksource: timer@e803b000: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 28958491609 ns
+> >      sched_clock: 32 bits at 66MHz, resolution 15ns, wraps every 32537631224ns
+> >      /soc/timer@e803b000: used for clocksource
+> >      /soc/timer@e803c000: used for clock events
+> >     +------------[ cut here ]------------
+> >     +WARNING: CPU: 0 PID: 0 at init/main.c:992 start_kernel+0x2f0/0x480
+> >     +Interrupts were enabled early
+>
+> Note that the maple tree is involved in tracking the interrupts, see
+> kernel/irq/irqdesc.c irq_insert_desc(), etc.
+>
+> >     +CPU: 0 PID: 0 Comm: swapper Not tainted 6.5.0-rza2mevb-10197-g99b80d6b92b5 #237
+>
+> I cannot find commit id 99b80d6b92b5.
 
-This looks good to me!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+That's my local tree, based on renesas-drivers-2023-08-29-v6.5.
 
-Yours,
-Linus Walleij
+>
+> >     +Hardware name: Generic R7S9210 (Flattened Device Tree)
+> >     + unwind_backtrace from show_stack+0x10/0x14
+> >     + show_stack from dump_stack_lvl+0x24/0x3c
+> >     + dump_stack_lvl from __warn+0x74/0xb8
+> >     + __warn from warn_slowpath_fmt+0x78/0xb0
+> >     + warn_slowpath_fmt from start_kernel+0x2f0/0x480
+> >     + start_kernel from 0x0
+> >     +---[ end trace 0000000000000000 ]---
+> >      Console: colour dummy device 80x30
+> >      printk: console [tty0] enabled
+> >      Calibrating delay loop (skipped) preset value.. 1056.00 BogoMIPS (lpj=5280000)
+> >
+> > Reverting this commit fixes the issue.
+>
+> I have set up testing with qemu for powerpc 32b, and reverting this
+> patch does not fix it for me.  Did you revert the patch or bisect to the
+> issue?
+
+I did bisect the issue (on RZ/A) to cfeb6ae8bcb96ccf.
+Reverting that commit on top of my local tree fixed the issue.
+
+> It also happens on 0e0e9bd5f7b9 (I ran git checkout cfeb6ae8bcb96ccf^ to
+> get the commit immediately before cfeb6ae8bcb96ccf).
+
+That is not the case on Renesas RZ/A (which is arm32).
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
