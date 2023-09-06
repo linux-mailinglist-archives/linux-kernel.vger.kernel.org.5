@@ -2,107 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDD07945F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 00:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77543794601
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 00:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244982AbjIFWHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 18:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34226 "EHLO
+        id S244990AbjIFWLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 18:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233043AbjIFWHQ (ORCPT
+        with ESMTP id S236369AbjIFWLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 18:07:16 -0400
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B16A199B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 15:07:12 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A2AA7C0002;
-        Wed,  6 Sep 2023 22:07:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1694038031;
+        Wed, 6 Sep 2023 18:11:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F9D19B3
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 15:10:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694038227;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=mCCueHqxrK4depNZb+Y64oZRKRhws2c6uxnRIrlmxnA=;
-        b=hcM/cWkI9+oFzPF0aVuI3YBpfMF2d0yD2QRnZ222uzLSs+M5FBhUw21M4m52PVEyExf5LO
-        Kex1zpkrQ/rLaGQhh5ldEM8hzywvjipxcnKWiLuizlrHbW/ZeNSb9SHUOA3a05epS6DPhZ
-        +6MNr1FKVpuRsCOMR9nAmUZDuapkNamLplwdlJ7ULsjyiYMhfWfa6u17nzIMhnusM/36S3
-        HErsJVmNrLy04R45UNRJnJy80Fp6ha8E6YpSbJliO7E3b3zJxAz4k1fXp77sd8hS1XAo3Y
-        07BLth/CUaXfkkrVFDLvx5FA3di9ICOqEGz0FfzqxBMaSORpzmAeZuOWSVfuOw==
-Date:   Thu, 7 Sep 2023 00:07:10 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] I3C changes for 6.6
-Message-ID: <20230906220710e64b2b71@mail.local>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2sW5n0U9nqfDRjI4qbYKErrgizSRaxysFjpyGkvRHBg=;
+        b=Pg99Aw0dhrjssfj+plRZ73iAzmz80+t6FzoooYMo5YOjDFkLKZv62XF4FxljMbibakqOrb
+        gWlugmjp43pbB5CdnXYoQls8seJQWvdY++J14P9i7h5PP0X9VcuRGlwMkKJAy4kV+FVodZ
+        XQCAdiOokbHqs1rtsWQOjmjv9FyPDWo=
+Received: from mail-ua1-f69.google.com (mail-ua1-f69.google.com
+ [209.85.222.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-44-Uef_PYPbP02ANXCf4Fa7-A-1; Wed, 06 Sep 2023 18:10:25 -0400
+X-MC-Unique: Uef_PYPbP02ANXCf4Fa7-A-1
+Received: by mail-ua1-f69.google.com with SMTP id a1e0cc1a2514c-7a2c1ae776bso96351241.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 15:10:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694038225; x=1694643025;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2sW5n0U9nqfDRjI4qbYKErrgizSRaxysFjpyGkvRHBg=;
+        b=hVQcGWrkz2MrKFDtjaJZd1RAOEXJ7uPCuBnnG2xMf67BfwrkI3yTf65b7BuA+d5BgK
+         vO+03/0o6i3ywNC1ONxAIBC/fs1cJbJ1/zHZ8Pffl1MBKMsZXVFsiSWED9PTaDkoQa2X
+         b0LOsa94dT0cDO1jP+Kh6niIAgwmF6euL2DY64lUGdbCRr3hULHUG19BcbjPSWAqPpQA
+         8QCK4+53FbAyZwK6iVo0gknr2rhyZwbSWplAGPONsKGHDWGCU1Tb4a/+qCZIkntp2xEV
+         UcC6zBPl/uOsbIQ/HX18MYHE6qRxRYh281Z8K4onjIFXgd++piFYcWcDaMIjhOYlOUl0
+         2itQ==
+X-Gm-Message-State: AOJu0YzXzMBL2c7/FfVYy/zxCw6Q7PxjkAkPmMI1dlYZBxTnxmcgnHZO
+        KUd3FBDN89yQdhlcTS+7E15Q2WLV8s3Bb5GqcE4FnysMng0Fd6KMUH+QGg8bcvegcY8CwOzMfju
+        p2IXw5tQonQ5IKMwG4T9LTI0OonbyIhxe/IBbZROd
+X-Received: by 2002:a67:ee4d:0:b0:444:17aa:df60 with SMTP id g13-20020a67ee4d000000b0044417aadf60mr4110665vsp.13.1694038225083;
+        Wed, 06 Sep 2023 15:10:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHp5n1WB8R1og/NcZaTM8SckALAeHpMUrTVBDu8TXyXcr3qI/pIRPsrfv30I89brgsoG52emGtevyCvY1jn784=
+X-Received: by 2002:a67:ee4d:0:b0:444:17aa:df60 with SMTP id
+ g13-20020a67ee4d000000b0044417aadf60mr4110646vsp.13.1694038224758; Wed, 06
+ Sep 2023 15:10:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-14-seanjc@google.com>
+ <84a908ae-04c7-51c7-c9a8-119e1933a189@redhat.com> <ZLq8ylTsFQ1s4BAZ@google.com>
+In-Reply-To: <ZLq8ylTsFQ1s4BAZ@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Date:   Thu, 7 Sep 2023 00:10:13 +0200
+Message-ID: <CABgObfYLuRx5oAfOKM1fNuyRw5BNhe127sbRYhmpoT9MsjMYQQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v11 13/29] KVM: Add transparent hugepage support for
+ dedicated guest memory
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On Fri, Jul 21, 2023 at 7:13=E2=80=AFPM Sean Christopherson <seanjc@google.=
+com> wrote:
+> On Fri, Jul 21, 2023, Paolo Bonzini wrote:
+> > On 7/19/23 01:44, Sean Christopherson wrote:
+> > > @@ -413,6 +454,9 @@ int kvm_gmem_create(struct kvm *kvm, struct kvm_c=
+reate_guest_memfd *args)
+> > >     u64 flags =3D args->flags;
+> > >     u64 valid_flags =3D 0;
+> > > +   if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE))
+> > > +           valid_flags |=3D KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
+> > > +
+> >
+> > I think it should be always allowed.  The outcome would just be "never =
+have
+> > a hugepage" if thp is not enabled in the kernel.
+>
+> I don't have a strong preference.  My thinking was that userspace would p=
+robably
+> rather have an explicit error, as opposed to silently running with a misc=
+onfigured
+> setup.
 
-Here is the i3c subsytem pull request for 6.6. There are mostly small
-fixes as people ar finally starting to have access to actual hardware.
+Considering that is how madvise(MADV_HUGEPAGE) behaves, your patch is
+good. I disagree but consistency is better.
 
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+Paolo
 
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux.git tags/i3c/for-6.6
-
-for you to fetch changes up to 6e13d6528be2f7e801af63c8153b87293f25d736:
-
-  i3c: master: svc: fix probe failure when no i3c device exist (2023-09-06 01:21:47 +0200)
-
-----------------------------------------------------------------
-I3C for 6.6
-
-Core:
- - Fix SETDASA when static and dynamic adress are equal
- - Fix cmd_v1 DAA exit criteria
-
-Drivers:
- - svc: allow probing without any device
-
-----------------------------------------------------------------
-Aniket (2):
-      dt-bindings: i3c: Fix description for assigned-address
-      i3c: master: Fix SETDASA process
-
-Billy Tsai (1):
-      i3c/master: cmd_v1: Fix the exit criteria for the daa procedure
-
-Frank Li (1):
-      i3c: master: svc: fix probe failure when no i3c device exist
-
-Miquel Raynal (1):
-      i3c: master: svc: Describe member 'saved_regs'
-
-Rob Herring (1):
-      i3c: Explicitly include correct DT includes
-
-Ruan Jinjie (1):
-      i3c: master: svc: Do not check for 0 return after calling platform_get_irq()
-
- Documentation/devicetree/bindings/i3c/i3c.yaml | 15 +++++++++++----
- drivers/i3c/master.c                           |  6 +++++-
- drivers/i3c/master/ast2600-i3c-master.c        |  1 -
- drivers/i3c/master/i3c-master-cdns.c           |  1 -
- drivers/i3c/master/mipi-i3c-hci/cmd_v1.c       |  2 +-
- drivers/i3c/master/svc-i3c-master.c            | 19 +++++++++++++++----
- 6 files changed, 32 insertions(+), 12 deletions(-)
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
