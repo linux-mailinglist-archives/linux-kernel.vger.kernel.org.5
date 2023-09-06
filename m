@@ -2,52 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A9B794131
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF0F794134
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236562AbjIFQJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 12:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53182 "EHLO
+        id S238396AbjIFQJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 12:09:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237886AbjIFQJU (ORCPT
+        with ESMTP id S237777AbjIFQJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 12:09:20 -0400
+        Wed, 6 Sep 2023 12:09:37 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEF41BC1;
-        Wed,  6 Sep 2023 09:08:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A38CC433C8;
-        Wed,  6 Sep 2023 16:08:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E04F21997;
+        Wed,  6 Sep 2023 09:09:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B970C433C7;
+        Wed,  6 Sep 2023 16:08:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694016492;
-        bh=SPpLKHtX8Y6oT9mdiYFoueHVffAY85S/NIcUtHBuU9U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jWWJoz+cfRZlDiTYU3bMgF6FVPVKOzxuYcmL5Am1dziWPFwACKuhVhrAFiBhH1sAb
-         RpvFyM4vpLL35D4NZgdLg2MF2IbxK65tDynDHDmh3p6b8N6vqQs+CcsCRKfcUF/gso
-         ZiwFXKCVaRBQg+koPO48ORhHx5F8cr/CHXfIGSA2TNfsmn1PaK2CnWdddeXfN72un2
-         afdKrUgQRbRVyh/fQ5Fiy6tmuXl5B9QDYmRpM3w5WrNBeb2gWI4/qw/lBpM+8zrIZe
-         QisP55Ph7+5WCkU7+Gbilh6Er2LpquqQJLHAwIa7LhZRClYkKPy470mQtz6efvIbNL
-         Qi2u4hiKXyrSw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C2D31403F4; Wed,  6 Sep 2023 13:08:09 -0300 (-03)
-Date:   Wed, 6 Sep 2023 13:08:09 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        kan.liang@linux.intel.com, james.clark@arm.com,
-        tmricht@linux.ibm.com, ak@linux.intel.com,
-        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v8 0/6] perf record: Track sideband events for all CPUs
- when tracing selected CPUs
-Message-ID: <ZPij6XjhdUW3nIqU@kernel.org>
-References: <20230904023340.12707-1-yangjihong1@huawei.com>
+        s=k20201202; t=1694016539;
+        bh=JdR56YlXcpyvtRpoamjz0Pk7Vfmcc9MGNe0qBgrNBMY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=for6qEhUxv1FtRLPOwopQHgZtefqRxJAhdHXf4s5bIw4M4KXBYUxkBgRPEX7POOtg
+         rzXfRyS3IXhUqLVmPPArwULcNDVpzPvhzgiQoHKMtqApychXnb7R7twqpMLiGIn4lB
+         wcVcxsnSHmqMugIOgLSDPVHCfFCmcPPJ+NzGa3Zsx42Zq1mlFnSdwZyRsk7+PoLfqB
+         DyS6a0HzTGg6PewNIEesO0N/A46ADc0qgrWmGn1H5W1Lo6FOdp7AeFZIiLXzc8RT+w
+         SnJWXOVipaIoEBXH8STAp9mC3eVMgYzUZv9WVcQ8bxvuz3u3VcSKJNXvyHTpnmNIXU
+         70/R5+Q4xTlGQ==
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-4ff09632194so6606369e87.2;
+        Wed, 06 Sep 2023 09:08:59 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyPUZ6uG+7gaLXzMQ35SRcV61c1BC8wtvWynAwMn11odUYu1ZEi
+        uH0yypHxf8BFuNArT0hpmZBLTrw6EOLm8I5qehg=
+X-Google-Smtp-Source: AGHT+IHJ7l1KOz/r1QQF049O4yuAb8C5zJaW2+brtp2HPScOtjbv+MaizDWk8MjokSuO1ZSIUWqAchFVMKiS0l6xEB4=
+X-Received: by 2002:a19:6555:0:b0:4fd:d470:203b with SMTP id
+ c21-20020a196555000000b004fdd470203bmr2328593lfj.69.1694016537219; Wed, 06
+ Sep 2023 09:08:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230904023340.12707-1-yangjihong1@huawei.com>
-X-Url:  http://acmel.wordpress.com
+References: <20230830231758.2561402-1-sjg@chromium.org> <20230830231758.2561402-3-sjg@chromium.org>
+ <CAMj1kXG5-aqoOtKdPFEdm=_5SdvgUTOhcDOBP1zdARAvKphJtg@mail.gmail.com>
+ <CAL_JsqLx0KnXxFc8mFyT_RmA2qeBEutMXj_3nKo_g==cuSeYuQ@mail.gmail.com> <CAPnjgZ1U+Gy0Q_Sc63p0ixkWF9iJEEBLhV8-N9-sh7OGNy-OmQ@mail.gmail.com>
+In-Reply-To: <CAPnjgZ1U+Gy0Q_Sc63p0ixkWF9iJEEBLhV8-N9-sh7OGNy-OmQ@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 6 Sep 2023 18:08:46 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXG9vM0haSOu19j7ujQCBEN6CBeXVAH96nm+gixt9FmMrA@mail.gmail.com>
+Message-ID: <CAMj1kXG9vM0haSOu19j7ujQCBEN6CBeXVAH96nm+gixt9FmMrA@mail.gmail.com>
+Subject: Re: [PATCH v5 3/4] schemas: Add some common reserved-memory usages
+To:     Simon Glass <sjg@chromium.org>
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        Maximilian Brune <maximilian.brune@9elements.com>,
+        ron minnich <rminnich@gmail.com>,
+        Tom Rini <trini@konsulko.com>,
+        Dhaval Sharma <dhaval@rivosinc.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Yunhui Cui <cuiyunhui@bytedance.com>,
+        linux-acpi@vger.kernel.org, Gua Guo <gua.guo@intel.com>,
+        Lean Sheng Tan <sheng.tan@9elements.com>,
+        Guo Dong <guo.dong@intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Chiu Chasel <chasel.chiu@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -58,187 +71,185 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Sep 04, 2023 at 02:33:34AM +0000, Yang Jihong escreveu:
-> User space tasks can migrate between CPUs, track sideband events for all
-> CPUs.
-> 
-> The specific scenarios are as follows:
-> 
->          CPU0                                 CPU1
->   perf record -C 0 start
->                               taskA starts to be created and executed
->                                 -> PERF_RECORD_COMM and PERF_RECORD_MMAP
->                                    events only deliver to CPU1
->                               ......
->                                 |
->                           migrate to CPU0
->                                 |
->   Running on CPU0    <----------/
->   ...
-> 
->   perf record -C 0 stop
-> 
-> Now perf samples the PC of taskA. However, perf does not record the
-> PERF_RECORD_COMM and PERF_RECORD_COMM events of taskA.
-> Therefore, the comm and symbols of taskA cannot be parsed.
-> 
-> The sys_perf_event_open invoked is as follows:
-> 
->   # perf --debug verbose=3 record -e cpu-clock -C 1 true
->   <SNIP>
->   Opening: cpu-clock
->   ------------------------------------------------------------
->   perf_event_attr:
->     type                             1 (PERF_TYPE_SOFTWARE)
->     size                             136
->     config                           0 (PERF_COUNT_SW_CPU_CLOCK)
->     { sample_period, sample_freq }   4000
->     sample_type                      IP|TID|TIME|CPU|PERIOD|IDENTIFIER
->     read_format                      ID|LOST
->     disabled                         1
->     inherit                          1
->     freq                             1
->     sample_id_all                    1
->     exclude_guest                    1
->   ------------------------------------------------------------
->   sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 5
->   Opening: dummy:u
->   ------------------------------------------------------------
->   perf_event_attr:
->     type                             1 (PERF_TYPE_SOFTWARE)
->     size                             136
->     config                           0x9 (PERF_COUNT_SW_DUMMY)
->     { sample_period, sample_freq }   1
->     sample_type                      IP|TID|TIME|CPU|IDENTIFIER
->     read_format                      ID|LOST
->     inherit                          1
->     exclude_kernel                   1
->     exclude_hv                       1
->     mmap                             1
->     comm                             1
->     task                             1
->     sample_id_all                    1
->     exclude_guest                    1
->     mmap2                            1
->     comm_exec                        1
->     ksymbol                          1
->     bpf_event                        1
->   ------------------------------------------------------------
->   sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 6
->   sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 7
->   sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 9
->   sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 10
->   sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 11
->   sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 12
->   sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 13
->   sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 14
->   <SNIP>
-> 
-> Changes since_v7:
->  - The condition for requiring system_wide sideband is changed to
->    "as long as a non-dummy event exists" (patch4).
->  - Modify the corresponding test case to record only dummy event (patch6).
->  - Thanks to tested-by tag from Ravi, but because the solution is modified,
->    the tested-by tag of Ravi is not added to this version.
-> 
-> Changes since_v6:
->  - Patch1:
->     1. No change.
->     2. Keep Acked-by tag from Adrian.
->  - Patch2:
->     1. Update commit message as suggested by Ian.
->     2. Keep Acked-by tag from Adrian because code is not modified.
->  - Patch3:
->     1. Update comment as suggested by Ian.
->     2. Merge original patch5 ("perf test: Update base-record & system-wide-dummy attr") as suggested by Ian.
->     3. Only merge commit, keep Acked-by tag from Adrian.
->  - Patch4:
->     1. No change. Because Adrian recommends not changing the function name.
->     2. Keep Acked-by tag from Adrian.
->  - Patch5:
->     1. Add cleanup on trap function as suggested by Ian.
->     2. Remove Tested-by tag from Adrian because the script is modified.
->  - Patch6:
->     1. Add Reviewed-by tag from Ian.
+On Wed, 6 Sept 2023 at 16:54, Simon Glass <sjg@chromium.org> wrote:
+>
+> Hi Rob, Ard,
+>
+> On Wed, 6 Sept 2023 at 08:34, Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Tue, Sep 5, 2023 at 4:44=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org>=
+ wrote:
+> > >
+> > > On Thu, 31 Aug 2023 at 01:18, Simon Glass <sjg@chromium.org> wrote:
+> > > >
+> > > > The Devicetree specification skips over handling of a logical view =
+of
+> > > > the memory map, pointing users to the UEFI specification.
+> > > >
+> > > > It is common to split firmware into 'Platform Init', which does the
+> > > > initial hardware setup and a "Payload" which selects the OS to be b=
+ooted.
+> > > > Thus an handover interface is required between these two pieces.
+> > > >
+> > > > Where UEFI boot-time services are not available, but UEFI firmware =
+is
+> > > > present on either side of this interface, information about memory =
+usage
+> > > > and attributes must be presented to the "Payload" in some form.
+> > > >
+> > >
+> > > I don't think the UEFI references are needed or helpful here.
+> > >
+> > > > This aims to provide an small schema addition for this mapping.
+> > > >
+> > > > For now, no attempt is made to create an exhaustive binding, so the=
+re are
+> > > > some example types listed. More can be added later.
+> > > >
+> > > > The compatible string is not included, since the node name is enoug=
+h to
+> > > > indicate the purpose of a node, as per the existing reserved-memory
+> > > > schema.
+> >
+> > Node names reflect the 'class', but not what's specifically in the
+> > node. So really, all reserved-memory nodes should have the same name,
+> > but that ship already sailed for existing users. 'compatible' is the
+> > right thing here. As to what the node name should be, well, we haven't
+> > defined that. I think we just used 'memory' on some platforms.
+>
+> OK
+>
+> >
+> > > > This binding does not include a binding for the memory 'attribute'
+> > > > property, defined by EFI_BOOT_SERVICES.GetMemoryMap(). It may be us=
+eful
+> > > > to have that as well, but perhaps not as a bit mask.
+> > > >
+> > > > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > > > ---
+> > > >
+> > > > Changes in v5:
+> > > > - Drop the memory-map node (should have done that in v4)
+> > > > - Tidy up schema a bit
+> > > >
+> > > > Changes in v4:
+> > > > - Make use of the reserved-memory node instead of creating a new on=
+e
+> > > >
+> > > > Changes in v3:
+> > > > - Reword commit message again
+> > > > - cc a lot more people, from the FFI patch
+> > > > - Split out the attributes into the /memory nodes
+> > > >
+> > > > Changes in v2:
+> > > > - Reword commit message
+> > > >
+> > > >  .../reserved-memory/common-reserved.yaml      | 53 +++++++++++++++=
+++++
+> > > >  1 file changed, 53 insertions(+)
+> > > >  create mode 100644 dtschema/schemas/reserved-memory/common-reserve=
+d.yaml
+> > > >
+> > > > diff --git a/dtschema/schemas/reserved-memory/common-reserved.yaml =
+b/dtschema/schemas/reserved-memory/common-reserved.yaml
+> > > > new file mode 100644
+> > > > index 0000000..d1b466b
+> > > > --- /dev/null
+> > > > +++ b/dtschema/schemas/reserved-memory/common-reserved.yaml
+> > > > @@ -0,0 +1,53 @@
+> > > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/reserved-memory/common-reserved=
+.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Common memory reservations
+> > > > +
+> > > > +description: |
+> > > > +  Specifies that the reserved memory region can be used for the pu=
+rpose
+> > > > +  indicated by its node name.
+> > > > +
+> > > > +  Clients may reuse this reserved memory if they understand what i=
+t is for.
+> > > > +
+> > > > +maintainers:
+> > > > +  - Simon Glass <sjg@chromium.org>
+> > > > +
+> > > > +allOf:
+> > > > +  - $ref: reserved-memory.yaml
+> > > > +
+> > > > +properties:
+> > > > +  $nodename:
+> > > > +    enum:
+> > > > +      - acpi-reclaim
+> > > > +      - acpi-nvs
+> > > > +      - boot-code
+> > > > +      - boot-data
+> > > > +      - runtime-code
+> > > > +      - runtime-data
+> > > > +
+> > >
+> > > These types are used by firmware to describe the nature of certain
+> > > memory regions to the OS. Boot code and data can be discarded, as wel=
+l
+> > > as ACPI reclaim after its contents have been consumed. Runtime code
+> > > and data need to be mapped for runtime features to work.
+> > >
+> > > When one firmware phase communicates the purpose of a certain memory
+> > > reservation to another, it is typically not limited to whether its
+> > > needs to be preserved and when it needs to be mapped (and with which
+> > > attributes). I'd expect a memory reservation appearing under this nod=
+e
+> > > to have a clearly defined purpose, and the subsequent phases need to
+> > > be able to discover this information.
+> > >
+> > > For example, a communication buffer for secure<->non-secure
+> > > communication or a page with spin tables used by PSCI. None of the
+> > > proposed labels are appropriate for this, and I'd much rather have a
+> > > compatible string or some other property that clarifies the nature in
+> > > a more suitable way. Note that 'no-map' already exists to indicate
+> > > that the CPU should not map this memory unless it does so for the
+> > > specific purpose that the reservation was made for.
+> >
+> > I agree. I think compatible is the better approach. Some property like
+> > 'discard' may not be sufficient information if the OS needs to consume
+> > the region first and then discard it. Better to state exactly what's
+> > there and then the OS can imply the rest.
+>
+> OK, so what sort of compatible strings?
+>
+> How about:
+> "acpi-reclaim" - holds ACPI tables; memory can be reclaimed once the
+> tables are read and no-longer needed
 
-I'm in doubt about these Acked-by/Reviewed-by tags, do they still stand? They are
-not in the latest series, can you please check?
+ACPI reclaim is a policy, not a purpose. This memory could contain
+many different things.
 
-- Arnaldo
- 
-> Changes since_v5:
->  - No code changes.
->  - Detailed commit message of patch3.
->  - Add Acked-by and Tested-by tags from Adrian Hunter.
-> 
-> Changes since_v4:
->  - Simplify check code for record__tracking_system_wide().
->  - Add perf attr test result to commit message for patch 7.
-> 
-> Changes since_v3:
->  - Check fall_kernel, all_user, and dummy or exclude_user when determining
->    whether system wide is required.
-> 
-> Changes since_v2:
->  - Rename record_tracking.sh to record_sideband.sh in tools/perf/tests/shell.
->  - Remove "perf evlist: Skip dummy event sample_type check for evlist_config" patch.
->  - Add opts->all_kernel check in record__config_tracking_events().
->  - Add perf_event_attr test for record selected CPUs exclude_user.
->  - Update base-record & system-wide-dummy sample_type attr expected values for test-record-C0.
-> 
-> Changes since v1:
->  - Add perf_evlist__go_system_wide() via internal/evlist.h instead of
->    exporting perf_evlist__propagate_maps().
->  - Use evlist__add_aux_dummy() instead of evlist__add_dummy() in
->    evlist__findnew_tracking_event().
->  - Add a parameter in evlist__findnew_tracking_event() to deal with
->    system_wide inside.
->  - Add sideband for all CPUs when tracing selected CPUs comments on
->    the perf record man page.
->  - Use "sideband events" instead of "tracking events".
->  - Adjust the patches Sequence.
->  - Add patch5 to skip dummy event sample_type check for evlist_config.
->  - Add patch6 to update system-wide-dummy attr values for perf test.
-> 
-> Yang Jihong (6):
->   perf evlist: Add perf_evlist__go_system_wide() helper
->   perf evlist: Add evlist__findnew_tracking_event() helper
->   perf record: Move setting tracking events before
->     record__init_thread_masks()
->   perf record: Track sideband events for all CPUs when tracing selected
->     CPUs
->   perf test: Add test case for record sideband events
->   perf test: Add perf_event_attr test for record selected CPUs
->     exclude_user
-> 
-> Yang Jihong (6):
->   perf evlist: Add perf_evlist__go_system_wide() helper
->   perf evlist: Add evlist__findnew_tracking_event() helper
->   perf record: Move setting tracking events before
->     record__init_thread_masks()
->   perf record: Track sideband events for all CPUs when tracing selected
->     CPUs
->   perf test: Add test case for record sideband events
->   perf test: Add perf_event_attr test for record dummy event
-> 
->  tools/lib/perf/evlist.c                    |  9 +++
->  tools/lib/perf/include/internal/evlist.h   |  2 +
->  tools/perf/Documentation/perf-record.txt   |  3 +
->  tools/perf/builtin-record.c                | 92 +++++++++++++++-------
->  tools/perf/tests/attr/system-wide-dummy    | 14 ++--
->  tools/perf/tests/attr/test-record-C0       |  4 +-
->  tools/perf/tests/attr/test-record-dummy-C0 | 55 +++++++++++++
->  tools/perf/tests/shell/record_sideband.sh  | 58 ++++++++++++++
->  tools/perf/util/evlist.c                   | 18 +++++
->  tools/perf/util/evlist.h                   |  1 +
->  10 files changed, 221 insertions(+), 35 deletions(-)
->  create mode 100644 tools/perf/tests/attr/test-record-dummy-C0
->  create mode 100755 tools/perf/tests/shell/record_sideband.sh
-> 
-> -- 
-> 2.30.GIT
-> 
+> "boot-code" - holds boot code; memory can be reclaimed once the boot
+> phase is complete
+> "runtime-code" - holds runtime code; memory can be reclaimed only if
+> this code will not be used from that point
+>
 
--- 
+These are also policies. They can be inferred from the purpose.
 
-- Arnaldo
+> etc. We can then have more specific compatibles, like:
+>
+> "psci-spin-table" - holds PSCI spin tables
+>
+> so you could do:
+>
+> compatible =3D "runtime-code", "psci-spin-table";
+>
+
+I understand that this binding targets firmware<->firmware rather than
+firmware<->OS, which makes it much more difficult to keep it both
+generic and sufficiently descriptive.
+
+However, I still feel that all the overlap with UEFI memory types is
+not what we want here. UEFI knows how to manage its own memory map,
+what it needs to know is what memory is already in use and for which
+exact purpose. Whether or not that implies that the memory can be
+freed at some point or can be mapped or not should follow from that.
