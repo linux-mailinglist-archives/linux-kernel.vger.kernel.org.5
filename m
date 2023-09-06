@@ -2,186 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BEA0793C88
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73A1793C8E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240630AbjIFMXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:23:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41726 "EHLO
+        id S240641AbjIFMXx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Sep 2023 08:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231504AbjIFMXL (ORCPT
+        with ESMTP id S231504AbjIFMXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:23:11 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C7F2410F7;
-        Wed,  6 Sep 2023 05:23:07 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1127)
-        id 3ED6A2127D29; Wed,  6 Sep 2023 05:23:07 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3ED6A2127D29
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1694002987;
-        bh=GcmoeHEZqmYSxPBXkGbiIt6VZAhFc9Ngk4PsxTeHqzM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C/Xu+QSsraqmAvqOKbuQukFu8XLegSTvFc5XchO7C/hznLc8x17uSr/dsC2ph+zIj
-         CpjXJQYxhYcRzlvzDbQrLv3l6x1BpaxdXqQtRiYzgNVhXmkbDovqXpRL7ZReNgnaFL
-         9EiTD30hTJAXIqkmcyndopQCuE4TkzZk+HZZKYjE=
-Date:   Wed, 6 Sep 2023 05:23:07 -0700
-From:   Saurabh Singh Sengar <ssengar@linux.microsoft.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Saurabh Singh Sengar <ssengar@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH v4 0/3] UIO driver for low speed Hyper-V
- devices
-Message-ID: <20230906122307.GA5737@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1691132996-11706-1-git-send-email-ssengar@linux.microsoft.com>
- <2023081215-canine-fragile-0a69@gregkh>
- <PUZP153MB06350DAEA2384B996519E07EBE1EA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
- <2023082246-lumping-rebate-4142@gregkh>
+        Wed, 6 Sep 2023 08:23:52 -0400
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBAE610F7;
+        Wed,  6 Sep 2023 05:23:48 -0700 (PDT)
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3ab2a0391c0so2421425b6e.1;
+        Wed, 06 Sep 2023 05:23:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694003028; x=1694607828;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EiLcgx0X2/cqDwn5jAxVjbJXdSuPWp4f8xGHRL6HsRw=;
+        b=Iu4cY2EMTw33SN5MwJLnW7dEH6bxudcu2vvI8shvq6ifPdUikEbHn7Ar3c6xImD0Hf
+         fCjaDoyzHO2o02IOMUL0ewU+VrZSG6oNRffX36XcZYBlJ7hyHeGNqiuhr1aRuZn4v+GI
+         TU6GNRTYcxwLkM3SZoLbthlAUn3z4N9+4YCGZqS1IUjWEaRJd57izICzd8EMITis9w/T
+         jMiHXAu/trVlXk7ohIWis+U4k0RRZ91XNDC5odCrcj6w6JUl1IJDClymepyj6mhyez0q
+         62KDKcG3yQOVZPcVvH9VVpFUa04GpNftZ0/9dhiIwrv1ICPCuiE6TrA+iR7t078ZXhyq
+         oaKw==
+X-Gm-Message-State: AOJu0YxXKTHh0O3QWqIiCwiqEixVCcDcCzTwG9GBA7p62JWLPKf35XuM
+        vVfe2/OE17e5yn0yC0Cmao2o1Vy4Yux1lQ==
+X-Google-Smtp-Source: AGHT+IEeE69NM+8NV8tCRk2rPXVDvbfM9F7eJZKcwGVnN2DnyxKxw3x6OK6I/UjC69oa7OxVncWF6w==
+X-Received: by 2002:a05:6808:10d4:b0:3a8:48e7:a6ab with SMTP id s20-20020a05680810d400b003a848e7a6abmr18958262ois.20.1694003027743;
+        Wed, 06 Sep 2023 05:23:47 -0700 (PDT)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id n135-20020a0dcb8d000000b00583b40d907esm3736469ywd.16.2023.09.06.05.23.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 05:23:47 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-d7cbcfdf137so3080979276.2;
+        Wed, 06 Sep 2023 05:23:47 -0700 (PDT)
+X-Received: by 2002:a25:73ce:0:b0:d77:d593:da9 with SMTP id
+ o197-20020a2573ce000000b00d77d5930da9mr15447152ybc.28.1694003027362; Wed, 06
+ Sep 2023 05:23:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023082246-lumping-rebate-4142@gregkh>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230904135852.12146-1-wsa+renesas@sang-engineering.com>
+ <20230904135852.12146-4-wsa+renesas@sang-engineering.com> <CAMuHMdW3nGaCHU2GeO3=MHDvZskmXd17GJwj=xBp_ZVawAtniA@mail.gmail.com>
+ <ZPhsVLiGck+XF5T7@shikoro>
+In-Reply-To: <ZPhsVLiGck+XF5T7@shikoro>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 6 Sep 2023 14:23:35 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUE3BVZzsBGSZRPyZRK46zZJ_1jtNMV_Lv-Tp5YXPOY8A@mail.gmail.com>
+Message-ID: <CAMuHMdUE3BVZzsBGSZRPyZRK46zZJ_1jtNMV_Lv-Tp5YXPOY8A@mail.gmail.com>
+Subject: Re: [PATCH 3/3] i2c: rcar: add FastMode+ support
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 01:48:03PM +0200, Greg KH wrote:
-> On Mon, Aug 21, 2023 at 07:36:18AM +0000, Saurabh Singh Sengar wrote:
-> > 
-> > 
-> > > -----Original Message-----
-> > > From: Greg KH <gregkh@linuxfoundation.org>
-> > > Sent: Saturday, August 12, 2023 4:45 PM
-> > > To: Saurabh Sengar <ssengar@linux.microsoft.com>
-> > > Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
-> > > <haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
-> > > <decui@microsoft.com>; Michael Kelley (LINUX) <mikelley@microsoft.com>;
-> > > corbet@lwn.net; linux-kernel@vger.kernel.org; linux-hyperv@vger.kernel.org;
-> > > linux-doc@vger.kernel.org
-> > > Subject: [EXTERNAL] Re: [PATCH v4 0/3] UIO driver for low speed Hyper-V
-> > > devices
-> > > 
-> > > On Fri, Aug 04, 2023 at 12:09:53AM -0700, Saurabh Sengar wrote:
-> > > > Hyper-V is adding multiple low speed "speciality" synthetic devices.
-> > > > Instead of writing a new kernel-level VMBus driver for each device,
-> > > > make the devices accessible to user space through a UIO-based
-> > > > hv_vmbus_client driver. Each device can then be supported by a user
-> > > > space driver. This approach optimizes the development process and
-> > > > provides flexibility to user space applications to control the key
-> > > > interactions with the VMBus ring buffer.
-> > > 
-> > > Why is it faster to write userspace drivers here?  Where are those new drivers,
-> > > and why can't they be proper kernel drivers?  Are all hyper-v drivers going to
-> > > move to userspace now?
-> > 
-> > Hi Greg,
-> > 
-> > You are correct; it isn't faster. However, the developers working on these userspace
-> > drivers can concentrate entirely on the business logic of these devices. The more
-> > intricate aspects of the kernel, such as interrupt management and host communication,
-> > can be encapsulated within the uio driver.
-> 
-> Yes, kernel drivers are hard, we all know that.
-> 
-> But if you do it right, it doesn't have to be, saying "it's too hard for
-> our programmers to write good code for our platform" isn't exactly a
-> good endorcement of either your programmers, or your platform :)
-> 
-> > The quantity of Hyper-V devices is substantial, and their numbers are consistently
-> > increasing. Presently, all of these drivers are in a development/planning phase and
-> > rely significantly on the acceptance of this UIO driver as a prerequisite.
-> 
-> Don't make my acceptance of something that you haven't submitted before
-> a business decision that I need to make, that's disenginous.
-> 
-> > Not all hyper-v drivers will move to userspace, but many a new slow Hyperv-V
-> > devices will use this framework and will avoid introducing a new kernel driver. We
-> > will also plan to remove some of the existing drivers like kvp/vss.
-> 
-> Define "slow" please.
+Hi Wolfram,
 
-In the Hyper-V environment, most devices, with the exception of network and storage,
-typically do not require extensive data read/write exchanges with the host. Such
-devices are considered to be 'slow' devices.
+On Wed, Sep 6, 2023 at 2:11 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> > >         ick = rate / (cdf + 1);
+> >
+> > In case of FM+, cdf will be zero, and ick == rate?
+>
+> Yes.
+>
+> > > @@ -292,34 +324,55 @@ static int rcar_i2c_clock_calculate(struct rcar_i2c_priv *priv)
+> > >         round = (ick + 500000) / 1000000 * sum;
+> >
+> > ick == rate if FM+
+>
+> Yes, does this induce a change here?
 
-> 
-> > > > The new synthetic devices are low speed devices that don't support
-> > > > VMBus monitor bits, and so they must use vmbus_setevent() to notify
-> > > > the host of ring buffer updates. The new driver provides this
-> > > > functionality along with a configurable ring buffer size.
-> > > >
-> > > > Moreover, this series of patches incorporates an update to the fcopy
-> > > > application, enabling it to seamlessly utilize the new interface. The
-> > > > older fcopy driver and application will be phased out gradually.
-> > > > Development of other similar userspace drivers is still underway.
-> > > >
-> > > > Moreover, this patch series adds a new implementation of the fcopy
-> > > > application that uses the new UIO driver. The older fcopy driver and
-> > > > application will be phased out gradually. Development of other similar
-> > > > userspace drivers is still underway.
-> > > 
-> > > You are adding a new user api with the "ring buffer" size api, which is odd for
-> > > normal UIO drivers as that's not something that UIO was designed for.
-> > > 
-> > > Why not just make you own generic type uiofs type kernel api if you really
-> > > want to do all of this type of thing in userspace instead of in the kernel?
-> > 
-> > Could you please elaborate more on this suggestion. I couldn't understand it
-> > completely.
-> 
-> Why is uio the requirement here?  Why not make your own framework to
-> write hv drivers in userspace that fits in better with the overall goal?
-> Call it "hvfs" or something like that, much like we have usbfs for
-> writing usb drivers in userspace.
-> 
-> Bolting on HV drivers to UIO seems very odd as that is not what this
-> framework is supposed to be providing at all.  UIO was to enable "pass
-> through" memory-mapped drivers that only wanted an interrupt and access
-> to raw memory locations in the hardware.
-> 
-> Now you are adding ring buffer managment and all other sorts of things
-> just for your platform.  So make it a real subsystem tuned exactly for
-> what you need and NOT try to force it into the UIO interface (which
-> should know nothing about ring buffers...)
+No, just pointing it out, and wondering if this is intended...
 
-Thank you for elaborating the details. I will drop the plan to introduce a
-new UIO driver for this effort. However, I would like to know your thoughts
-on enhancing existing 'uio_hv_generic' driver to achieve the same.  We
-already have 'uio_hv_generic' driver in linux kernel, which is used for
-developing userspace drivers for 'fast Hyper-V devices'.
+>
+> > >         round = (round + 500) / 1000;
+> >
+> > DIV_ROUND_UP()
+>
+> DIV_ROUND_CLOSEST() I'd say, but I have a seperate patch for that.
 
-Since these newly introduced synthetic devices operate at a lower speed,
-they do not have the capability to support monitor bits. Instead, we must
-utilize the 'vmbus_setevent()' method to enable interrupts from the host.
-Earlier we made an attempt to support slow devices by uio_hv_generic :
-https://lore.kernel.org/lkml/1665685754-13971-1-git-send-email-ssengar@linux.microsoft.com/.
-At that time, the absence of userspace code (fcopy) hindered progress
-in this direction.
+Oops (it's too hot here for more coffee...)
 
-Acknowledging your valid concerns about introducing a new UIO driver for
-Hyper-V, I propose exploring the potential to enhance the existing
-'uio_hv_generic' driver to accommodate slower devices effectively. My
-commitment to this endeavour includes ensuring the seamless operation of
-the existing 'fcopy' functionality with the modified 'uio_hv_generic'
-driver. Additionally, I will undertake the task of removing the current
-'fcopy' kernel driver and userspace daemon as part of this effort.
+> > > +       if (priv->flags & ID_P_FMPLUS) {
+> >
+> > IIUIC, on R-ar Gen3 and later you can use ICCCR2 without FM+, for
+> > improved accuracy, too?
+>
+> Yeah, we could do that. It indeed improves accuracy:
+>
+>         old             new
+> 100kHz: 97680/100000    99950/100000
+> 400kHz: 373482/400000   399201/400000
+>
+> Caring about regressions here is a bit over the top, or?
 
-Please let me know your thoughts. I look forward to your feedback and
-the opportunity to discuss this proposal further. 
+Probably OK.
 
-- Saurabh
+> > > +               /*
+> > > +                * SMD should be smaller than SCLD and SCHD, we arbitrarily set
+> > > +                * the ratio 1:3. SCHD:SCLD ratio is 1:1, thus:
+> > > +                * SCL  = clkp / (8 + SMD * 2 + SCLD + SCHD + F[(ticf + tr + intd) * clkp])
+> > > +                * SCL  = clkp / (8 + SMD * 2 + SMD * 3 + SMD * 3 + F[...])
+> > > +                * SCL  = clkp / (8 + SMD * 8 + F[...])
+> > > +                */
+> > > +               smd = DIV_ROUND_UP(ick / t.bus_freq_hz - 8 - round, 8);
+> >
+> > Perhaps use rate instead of ick?
+>
+> That's probably cleaner.
+>
+> > DIV_ROUND_UP(ick, 8 * (t.bus_freq_hz - 8 - round));
+>
+> This looks like you assumed "ick / (t.bus_freq_hz - 8 - round)" but it
+> is "(ick / t.bus_freq_hz) - 8 - round"?
+
+Oops (again)
+
+OK do you need rounding for the division of ick and t.bus_freq_hz,
+or is the adjustment bij "- (round + 8)" already taking care of that?
+I guess I just don't understand the intended formula here...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
