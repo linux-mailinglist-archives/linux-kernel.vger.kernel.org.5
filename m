@@ -2,112 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F286793EA9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DBB793E50
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238882AbjIFOXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49194 "EHLO
+        id S241039AbjIFOEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbjIFOW7 (ORCPT
+        with ESMTP id S232210AbjIFOEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:22:59 -0400
-X-Greylist: delayed 1059 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 06 Sep 2023 07:22:30 PDT
-Received: from nc1.cschramm.eu (nc1.cschramm.eu [IPv6:2a03:4000:48:83:4479:b8ff:fef1:2c03])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB101985
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:22:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cschramm.eu
-        ; s=20160910; h=Subject:Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        From:References:Cc:To:MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID
-        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
-        :List-Post:List-Owner:List-Archive;
-        bh=UvzrRU4aI7jB0kZh31bHpMZkLIz4PAmUbS0QK2KbTAc=; b=uJYLGCIXGlmilGRmmWNFbmnhzr
-        1HVIJIGBVVSIiN5MJEaEJ1Fk5Kg+rNqh9G6lO0v5A0g2z5b4Di9qJdX0OHvx96STV0xAp2ABNR4zW
-        ZVS03V73cidA+c/rAtEOxmIuP0ma9iLWZKvM5ef7q2Jl2wHcwMQ+n1ZahAmFBJ0hgL/U=;
-Received: from [2001:a61:2768:4a01:e992:1369:1720:9bd7]
-        by nc1.cschramm.eu with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <linux@cschramm.eu>)
-        id 1qdt8n-00Ao54-U2; Wed, 06 Sep 2023 16:04:30 +0200
-Message-ID: <101c3910-a164-4b4c-9474-8743dc6d1199@cschramm.eu>
-Date:   Wed, 6 Sep 2023 16:04:14 +0200
+        Wed, 6 Sep 2023 10:04:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDEC810D3;
+        Wed,  6 Sep 2023 07:04:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81621C433C8;
+        Wed,  6 Sep 2023 14:04:26 +0000 (UTC)
+Date:   Wed, 6 Sep 2023 10:04:44 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Zheng Yejian <zhengyejian1@huawei.com>
+Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Ajay Kaher <akaher@vmware.com>, <shuah@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Ye Weihua <yeweihua4@huawei.com>
+Subject: Re: [PATCH] selftests/ftrace: Correctly enable event in
+ instance-event.tc
+Message-ID: <20230906100444.7cdf6248@gandalf.local.home>
+In-Reply-To: <77c3a142-0a03-8fa2-e5b5-cea9515065f4@huawei.com>
+References: <20230626001144.2635956-1-zhengyejian1@huawei.com>
+        <20230626191114.8c5a66fbaa28af3c303923bd@kernel.org>
+        <20230626191255.53baab4ed48d7111dcd44cad@kernel.org>
+        <20230710183741.78f04c68@gandalf.local.home>
+        <1cb3aee2-19af-c472-e265-05176fe9bd84@huawei.com>
+        <20230905183638.2b539fae@gandalf.local.home>
+        <9cad73cd-1f8b-2f3f-cda4-99b89a87b931@huawei.com>
+        <20230906072759.4e8bee1c@gandalf.local.home>
+        <2667182e-691e-2ab4-4c2d-a47d76f38107@huawei.com>
+        <20230906085621.6e20db28@gandalf.local.home>
+        <20230906090252.36219543@gandalf.local.home>
+        <fcc5d688-9d58-3b4c-58de-472330160142@huawei.com>
+        <20230906094306.67a51feb@gandalf.local.home>
+        <20230906094553.388cd787@gandalf.local.home>
+        <77c3a142-0a03-8fa2-e5b5-cea9515065f4@huawei.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20230606142637.5171-1-kirill.shutemov@linux.intel.com>
- <cover.1686063086.git.thomas.lendacky@amd.com>
- <a52fa69f460fd1876d70074b20ad68210dfc31dd.1686063086.git.thomas.lendacky@amd.com>
-From:   Christopher Schramm <linux@cschramm.eu>
-In-Reply-To: <a52fa69f460fd1876d70074b20ad68210dfc31dd.1686063086.git.thomas.lendacky@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:a61:2768:4a01:e992:1369:1720:9bd7
-X-SA-Exim-Mail-From: linux@cschramm.eu
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH v9 5/6] x86/sev: Add SNP-specific unaccepted memory
- support
-X-SA-Exim-Version: 4.2.1 (built Sat, 13 Feb 2021 17:57:42 +0000)
-X-SA-Exim-Scanned: Yes (on nc1.cschramm.eu)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 5c72067c06d4..b9c451f75d5e 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1543,11 +1543,13 @@ config X86_MEM_ENCRYPT
->   config AMD_MEM_ENCRYPT
->   	bool "AMD Secure Memory Encryption (SME) support"
->   	depends on X86_64 && CPU_SUP_AMD
-> +	depends on EFI_STUB
->   	select DMA_COHERENT_POOL
->   	select ARCH_USE_MEMREMAP_PROT
->   	select INSTRUCTION_DECODER
->   	select ARCH_HAS_CC_PLATFORM
->   	select X86_MEM_ENCRYPT
-> +	select UNACCEPTED_MEMORY
->   	help
->   	  Say yes to enable support for the encryption of system memory.
->   	  This requires an AMD processor that supports Secure Memory
+On Wed, 6 Sep 2023 22:01:35 +0800
+Zheng Yejian <zhengyejian1@huawei.com> wrote:
 
-Unfortunately this makes AMD_MEM_ENCRYPT depend on EFI just to 
-unconditionally enable UNACCEPTED_MEMORY. It seems like an easy target 
-to make that optional, e.g. with a separate configuration item:
+> Will the qemu version have an impact? Mine is:
 
----
-config AMD_UNACCEPTED_MEMORY
-        def_bool y
-        depends on AMD_MEM_ENCRYPT && EFI_STUB
-        select UNACCEPTED_MEMORY
----
+It shouldn't, but...
 
-Using that we can successfully build and run SNP VMs without UEFI/OVMF 
-(which we already did with earlier Linux versions).
+> 
+> $ qemu-system-x86_64 --version
+> QEMU emulator version 4.2.1 (Debian 1:4.2-3ubuntu6.27)
+> Copyright (c) 2003-2019 Fabrice Bellard and the QEMU Project developers
 
- From a quick look at
 
-   [PATCHv14 9/9] x86/tdx: Add unaccepted memory support
+I'm using:
 
-it actually seems very similar for INTEL_TDX_GUEST.
+$ qemu-system-x86_64 --version
+QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-5)
+Copyright (c) 2003-2022 Fabrice Bellard and the QEMU Project developers
 
-Ideally UNACCEPTED_MEMORY would not assume EFI either, but the 
-implementation actually clearly does.
+Maybe it's just that yours causes the race window to be bigger.
+
+-- Steve
