@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED1D7944DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777B57944E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244613AbjIFVAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 17:00:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38388 "EHLO
+        id S244637AbjIFVBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 17:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232411AbjIFVAP (ORCPT
+        with ESMTP id S232411AbjIFVBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 17:00:15 -0400
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 640B0180
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 14:00:12 -0700 (PDT)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1ccc0d2e697so212008fac.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 14:00:12 -0700 (PDT)
+        Wed, 6 Sep 2023 17:01:12 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D418A1BCA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 14:01:02 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5007f3d3235so333085e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 14:01:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694034011; x=1694638811; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2/pwierm3geTwmDbGyOTegsvARs4VbCErTu9xnGSGKQ=;
-        b=FhRaY3wV1cmt0AFkGpmynXHbmkWYYF9y4MJuKOV3R2br2wal3+XFgAJDgnHX4LqGIi
-         s2VQirwjDfRwyHf5Fq1S+ibSW/IvLxORlb6Voc9VsieLgSX66HQRvIw3WBZ2xU7c+rmn
-         I1jr/MdSpfr4FwwxSGIMoucjN0613+9gSJ2HIvKmKXMsNBfI425oROzTyOiQFJuy6G5t
-         klA/g82iWx7x7gxFRUMZoUYnNKA1t7HOuy9rT/kOfY8iUW6BhbgtH4Hv9DlylT2sy5gO
-         zLZ/iK9kCFrg6iioHNrCL694/ezYjSBi/EJc5KaMdapsHTwtKDoNw3WbgfBadClRJhhy
-         MYbA==
+        d=chromium.org; s=google; t=1694034061; x=1694638861; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UQMwCTpNt+KxTz9xWXAiav+VDadxFYUSFtneEl0FIW0=;
+        b=VHvQgDphtOHxOvhgyxW65S6EfDjlM2VMAAAHyLP9H5r9e8U7pHDvj4/VEmLRri8Ltk
+         ZP2OG0ZwPHFV8Hn4CxsflQTkw+fXyE5ZMr6+4Q4oTdbtFf3hyA365SUVYZDuhUb0pccJ
+         zSor9S64Uh3RIVAoB+dcr5nlOjg+iCt7eurvc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694034011; x=1694638811;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2/pwierm3geTwmDbGyOTegsvARs4VbCErTu9xnGSGKQ=;
-        b=VAzPyjJBPjzxONLRtiUJtR5BvxhXfsnlAQiEOrcXlZaNR1L7qamWUclvzHEfgN27ap
-         AXISHj5rwk8J8vAHI3fPqvFpdqiI7ITlB4Uw3At3A4CUVTX3OacxVShsyQQTJLDAT44I
-         CQ0usNgFFKKfYoJ+6EJhF4hOIGZoO4pzLf60tubnknZHJRIcj9+bY72bRUwxMwVX1xqz
-         gOZ+Mx8YAtsr1NE666CyUBcBzjZOSuNcfb/fha3hhC9PP483pSBk/Z1nY2JvcjjBOS9z
-         Q7Q7qVQp3ceHWDNH8y2vAtzJNMaEaD8yCm8WTT+lu8VlI2afTcktiKQ70MsF/rBg7aXI
-         cRCQ==
-X-Gm-Message-State: AOJu0YxpiSDQ+MuZPRqgQ9HXUy/glJYkHdP/FYXLBbuf/ShDqQkgk/WJ
-        FbY5Yx5i37zJ0nOVwvc3/Zs=
-X-Google-Smtp-Source: AGHT+IFv3dLk3FZQ+S5ys+7ZRzdMcKUQN5Bg35xrtWeiheQLbsG+0wYE4xxTuwUCncv2z03QyLIE/Q==
-X-Received: by 2002:a05:6870:e6c5:b0:1be:d49b:a3c5 with SMTP id s5-20020a056870e6c500b001bed49ba3c5mr22284941oak.29.1694034011323;
-        Wed, 06 Sep 2023 14:00:11 -0700 (PDT)
-Received: from geday ([2804:7f2:8006:99ef:50e4:98e3:42a7:1619])
-        by smtp.gmail.com with ESMTPSA id c21-20020a05687093d500b001d0d4c3f758sm8131032oal.9.2023.09.06.14.00.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 14:00:10 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 18:00:10 -0300
-From:   Geraldo Nascimento <geraldogabriel@gmail.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Antonio Terceiro <antonio.terceiro@linaro.org>,
-        Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: snd-cmipci oops during probe on arm64 (current mainline,
- pre-6.6-rc1)
-Message-ID: <ZPjoWr17SNFHLDPD@geday>
-References: <ZPelHaX/Lt++kkOm@linaro.org>
- <877cp3esse.wl-tiwai@suse.de>
- <4f335dd2-8043-c60e-cf84-c2b01c4fee12@arm.com>
- <ZPjGuCdmPgqznc5t@linaro.org>
- <ZPjM7op/B/CGCF/N@geday>
- <9e48fb7c-72a5-241a-004a-5f6791a81475@arm.com>
+        d=1e100.net; s=20221208; t=1694034061; x=1694638861;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UQMwCTpNt+KxTz9xWXAiav+VDadxFYUSFtneEl0FIW0=;
+        b=E0XlQic4lR2XA8acY84JQDP2dzaiCsywv0eUvsLij4rLSiGVUGlRlODid7qgN6bCtS
+         9Mm3/stpcmPzLxtZLRLNion98lF9LjfUgaqyf6PDvOp7SMdcXbLuDuS/l+0qxoyNY3Ya
+         M1Xx/9VyXI2fy7/qa3+48p0/sJ33aZ3Nda7I2JKHSeE+RTbcsEQvZxTcPttRLO1GF/Cm
+         Lw2ySBZdJlFeTCYHDrAoxHPjGN2Gt8mXBDzxzcfxFG26/qGotkBolIo6w70emsU1Y3rq
+         auH96d2FJdrSHrbPEwtemJLSYcQV8jYdbHD/PDSjOLzXWtkMOZIR/6jprh24c0NTJF0+
+         5Tpw==
+X-Gm-Message-State: AOJu0YzHm+5fSfffabCDIQ1Y9Nt8I3Mi9T3roKtA1EN3d0ux0f8CAAu/
+        6ixcPr0heEhs8spEOv22+lTiolRESlKniMnUCPA=
+X-Google-Smtp-Source: AGHT+IHeTgtdOicfUiKdp9wt20Ia8q1ZZSgP5IF0Pi1bgW7dXG8drWJstw4Edd8pWZczpD3IlxMxMQ==
+X-Received: by 2002:a19:5e57:0:b0:4f8:4512:c844 with SMTP id z23-20020a195e57000000b004f84512c844mr2975926lfi.48.1694034061033;
+        Wed, 06 Sep 2023 14:01:01 -0700 (PDT)
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com. [209.85.221.50])
+        by smtp.gmail.com with ESMTPSA id t11-20020a05640203cb00b0052a1d98618bsm8981482edw.54.2023.09.06.14.00.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 14:00:59 -0700 (PDT)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-31c3726cc45so326913f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 14:00:58 -0700 (PDT)
+X-Received: by 2002:adf:e70a:0:b0:315:8f4f:81b2 with SMTP id
+ c10-20020adfe70a000000b003158f4f81b2mr3137778wrm.64.1694034057706; Wed, 06
+ Sep 2023 14:00:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9e48fb7c-72a5-241a-004a-5f6791a81475@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+References: <20230817-chicony-v2-1-88335519989d@chromium.org> <20230906134435.GA24846@pendragon.ideasonboard.com>
+In-Reply-To: <20230906134435.GA24846@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Wed, 6 Sep 2023 23:00:42 +0200
+X-Gmail-Original-Message-ID: <CANiDSCv9wFPW32Y8TfxXWnOWyTtURg-D9F-AUmZeeLBfU1=p=A@mail.gmail.com>
+Message-ID: <CANiDSCv9wFPW32Y8TfxXWnOWyTtURg-D9F-AUmZeeLBfU1=p=A@mail.gmail.com>
+Subject: Re: [PATCH v2] media: uvcvideo: Fix power line control for a Chicony camera
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,24 +74,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 09:37:18PM +0100, Robin Murphy wrote:
-> 
-> Bit bigger than a Pi... ;)
+Hi Laurent
+
+On Wed, 6 Sept 2023 at 15:44, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
 >
+> Hi Ricardo,
+>
+> On Tue, Sep 05, 2023 at 03:29:52PM +0000, Ricardo Ribalda wrote:
+> > The device does not implement the control properly.
+> >
+> > Fixes v4l2-compliance error:
+> >
+> > info: checking control 'Power Line Frequency' (0x00980918)
+> > fail: v4l2-test-controls.cpp(552): could not set valid menu item 3
+> >
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>
+> This still applies :-)
+>
+> I've taken the patch in my tree and will push it for v6.7.
 
-Ohh, that's impressive indeed!
+Thanks!
+>
+> > ---
+> > This camera, like other Chicony devices, do not implement properly the
+> > Power Line Frequency control.
+> >
+> > This time, I do not have direct access to the device, just to the
+> > report, but since other devices from the same family are showing the
+> > same error, it is safe to assume that the same fix will work here.
+> > ---
+> > Changes in v2:
+> > - Fix IntefaceProtocol, the camera is uvc1.5
+> > - I managed to write 0 to the control, so the proper quirk is uvc11 not
+> >   limited
+> > - Changes by Laurent:
+> >       - Rename device
+> >       - s/v4l/v4l2
+> > - Link to v1: https://lore.kernel.org/r/20230817-chicony-v1-1-76bde4d6ff6b@chromium.org
+> > ---
+> >  drivers/media/usb/uvc/uvc_driver.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> > index 08fcd2ffa727..4b5ea3501753 100644
+> > --- a/drivers/media/usb/uvc/uvc_driver.c
+> > +++ b/drivers/media/usb/uvc/uvc_driver.c
+> > @@ -2592,6 +2592,15 @@ static const struct usb_device_id uvc_ids[] = {
+> >         .bInterfaceSubClass   = 1,
+> >         .bInterfaceProtocol   = 0,
+> >         .driver_info          = (kernel_ulong_t)&uvc_ctrl_power_line_limited },
+> > +     /* Chicony Electronics Co., Ltd Integrated Camera */
+> > +     { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
+> > +                             | USB_DEVICE_ID_MATCH_INT_INFO,
+> > +       .idVendor             = 0x04f2,
+> > +       .idProduct            = 0xb67c,
+> > +       .bInterfaceClass      = USB_CLASS_VIDEO,
+> > +       .bInterfaceSubClass   = 1,
+> > +       .bInterfaceProtocol   = UVC_PC_PROTOCOL_15,
+> > +       .driver_info          = (kernel_ulong_t)&uvc_ctrl_power_line_uvc11 },
+> >       /* Chicony EasyCamera */
+> >       { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
+> >                               | USB_DEVICE_ID_MATCH_INT_INFO,
+> >
+> > ---
+> > base-commit: 4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
+> > change-id: 20230817-chicony-9c35f2046c6f
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
 
-But looking around with Google, it turns out the Altra Ampere PCIe is
-definitely quirky, see:
 
-https://lore.kernel.org/linux-acpi/20200806225525.GA706347@bjorn-Precision-5520/T/
-https://github.com/Tencent/TencentOS-kernel/commit/f454797b673c06c0eb1b77be20d8a475ad2fbf6f
 
-The first quirk should probably be activated on Antonio's kernel but the
-second one being a downstream Tencent patch, isn't. Alas, the second
-quirk comes with a performance hit, see:
-
-https://gitlab.freedesktop.org/drm/amd/-/issues/2078
-
-Thanks,
-Geraldo Nascimento
+-- 
+Ricardo Ribalda
