@@ -2,105 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9592794418
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203B5794425
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243516AbjIFT6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 15:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39348 "EHLO
+        id S243870AbjIFUA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 16:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243634AbjIFT6e (ORCPT
+        with ESMTP id S243377AbjIFUAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 15:58:34 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE2B1BC3
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 12:58:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0Axsa9zJW+eC7m29fyYEzz33sTSDLk02wkvemBCnaKs=; b=J+2sOkI4p7HBILqvkRZPZrmKXb
-        6lvNuKz3JPuXo2FxgaAqZhB/z4ROkwF7PeiLjEGG/Cv8m9t9tjzBxSF9ZqzNGKq73l9qTp5ouLoD+
-        aO6b6ajTfnG4BzSsclu6BFq/SEs8dLL6HCEG0XUg3OigqMMTyLCpr1uuKYLqDGgLAklEZmxS/BIum
-        iAqrXcox4HEYr+LrftpqGS6IAljL2zwzh/no+PD7FjPabnMOKAsDWYuXgfJGESHtNtPGwGG9//Wv8
-        6xeJkPA5vpEH6SUstLclN+OLgTO4zf9odZ1Ph/Um5WtmlwuSEWg0CSX5x505SGH8KdHczwpqzo+bc
-        mESB80GA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qdyfF-001FmQ-16;
-        Wed, 06 Sep 2023 19:58:15 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6976D300422; Wed,  6 Sep 2023 21:58:14 +0200 (CEST)
-Date:   Wed, 6 Sep 2023 21:58:14 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <song@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        Kees Cook <keescook@chromium.org>, x86@kernel.org
-Subject: Re: [PATCH] x86/vmlinux: Fix linker fill bytes for ld.lld
-Message-ID: <20230906195814.GE28278@noisy.programming.kicks-ass.net>
-References: <20230906175215.2236033-1-song@kernel.org>
+        Wed, 6 Sep 2023 16:00:35 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE361992
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 13:00:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=from:to:cc:subject:date:message-id
+        :mime-version:content-transfer-encoding; s=k1; bh=A3ixWxOf22d750
+        WBlTRj5T+ZBuyZaVvPJI9t1l4g7TY=; b=HdNOkU1Hj07eZC0l1r5gG0NDPhgbcT
+        oHy3xRdz1t00WqjF8QOIEGYZArEiV6autpeM70cQNe4CjeVZ6X2IHrZpFsAnOmQv
+        QVGb1xSngGOTZa8Gj0RhXwSqsfbNZthsFh0rKAJ4sFpS36tV8ZmWUVd7IGYa+lAz
+        R2lz/ChOxz22D4U7LeTkbfqNwfD3NV9nYu3xtVP22ewBaWVqNizFzn6qucar8VCP
+        fIZ1AKT3rXsyY02XlMvYWAwWxaDo084+SZ5/ZkDiA69GxYa+sH0maRalz56GVRbO
+        bl2vSeqMcNqoXuBiw2TfNsud27kHIJXYdlEr9Vd/nw7A15CSl6A97uyA==
+Received: (qmail 2929762 invoked from network); 6 Sep 2023 22:00:26 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 6 Sep 2023 22:00:26 +0200
+X-UD-Smtp-Session: l3s3148p1@a7rIMbYEDIsgAQnoAFZhALrSGIaWNE/A
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] i2c: clock calculation cleanups for Renesas devices
+Date:   Wed,  6 Sep 2023 22:00:18 +0200
+Message-Id: <20230906200024.5305-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230906175215.2236033-1-song@kernel.org>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 10:52:15AM -0700, Song Liu wrote:
-> With ":text =0xcccc", ld.lld fills unused text area with 0xcccc0000.
-> Example objdump -D output:
-> 
-> ffffffff82b04203:       00 00                   add    %al,(%rax)
-> ffffffff82b04205:       cc                      int3
-> ffffffff82b04206:       cc                      int3
-> ffffffff82b04207:       00 00                   add    %al,(%rax)
-> ffffffff82b04209:       cc                      int3
-> ffffffff82b0420a:       cc                      int3
-> 
-> Replace it with ":text =0xcccccccc", so we get the following instead:
-> 
-> ffffffff82b04203:       cc                      int3
-> ffffffff82b04204:       cc                      int3
-> ffffffff82b04205:       cc                      int3
-> ffffffff82b04206:       cc                      int3
-> ffffffff82b04207:       cc                      int3
-> ffffffff82b04208:       cc                      int3
-> 
-> gcc/ld doesn't seem to have the same issue. The generated code stays the
-> same for gcc/ld.
-> 
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: x86@kernel.org
-> Signed-off-by: Song Liu <song@kernel.org>
+While implementing FastMode+ support for the R-Car IP core, I noticed
+potential for other cleanups. It turned out that it makes sense to apply
+them first, so here is the series. Tested on a Renesas Falcon board with
+an R-Car V3U. The calculated values are identical for 100 and 400kHz.
+The RIIC patch is build tested only.
 
-Please provide a Fixes tag, I'm thinking this (otherwise trivial commit)
-wants to be backported for sanity.
+Looking forward to comments!
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-> ---
->  arch/x86/kernel/vmlinux.lds.S | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-> index 83d41c2601d7..41d56fb9bf92 100644
-> --- a/arch/x86/kernel/vmlinux.lds.S
-> +++ b/arch/x86/kernel/vmlinux.lds.S
-> @@ -156,7 +156,7 @@ SECTIONS
->  		ALIGN_ENTRY_TEXT_END
->  		*(.gnu.warning)
->  
-> -	} :text =0xcccc
-> +	} :text =0xcccccccc
->  
->  	/* End of text section, which should occupy whole number of pages */
->  	_etext = .;
-> -- 
-> 2.34.1
-> 
+Wolfram Sang (5):
+  i2c: rcar: avoid non-standard use of goto
+  i2c: rcar: properly format a debug output
+  i2c: rcar: calculate divider instead of brute-forcing it
+  i2c: rcar: remove open coded DIV_ROUND_CLOSEST
+  i2c: riic: avoid potential division by zero
+
+ drivers/i2c/busses/i2c-rcar.c | 41 +++++++++++++++--------------------
+ drivers/i2c/busses/i2c-riic.c |  2 +-
+ 2 files changed, 19 insertions(+), 24 deletions(-)
+
+-- 
+2.35.1
+
