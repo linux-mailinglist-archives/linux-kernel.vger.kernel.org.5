@@ -2,166 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D78579375C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AF079374C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235755AbjIFIrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 04:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57200 "EHLO
+        id S235455AbjIFIoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 04:44:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235428AbjIFIrc (ORCPT
+        with ESMTP id S232985AbjIFIoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 04:47:32 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A7EE73;
-        Wed,  6 Sep 2023 01:47:11 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RgbbH5TgPz4f3lXn;
-        Wed,  6 Sep 2023 16:47:07 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgA3xqiKPPhkSK37CQ--.11064S4;
-        Wed, 06 Sep 2023 16:47:08 +0800 (CST)
-From:   linan666@huaweicloud.com
-To:     dlemoal@kernel.org, htejun@gmail.com
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linan122@huawei.com, yukuai3@huawei.com, yi.zhang@huawei.com,
-        houtao1@huawei.com, yangerkun@huawei.com
-Subject: [PATCH v4] ata: libata-eh: Honor all EH scheduling requests
-Date:   Wed,  6 Sep 2023 16:42:12 +0800
-Message-Id: <20230906084212.1016634-1-linan666@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+        Wed, 6 Sep 2023 04:44:17 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6D61A8F;
+        Wed,  6 Sep 2023 01:44:13 -0700 (PDT)
+Received: from loongson.cn (unknown [10.180.13.176])
+        by gateway (Coremail) with SMTP id _____8DxfevcO_hkRj4gAA--.62429S3;
+        Wed, 06 Sep 2023 16:44:12 +0800 (CST)
+Received: from loongson-pc.loongson.cn (unknown [10.180.13.176])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx7yPIO_hktVduAA--.28519S2;
+        Wed, 06 Sep 2023 16:44:11 +0800 (CST)
+From:   Hongchen Zhang <zhanghongchen@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        "Mike Rapoport IBM)" <rppt@kernel.org>,
+        Feiyang Chen <chenfeiyang@loongson.cn>,
+        Hongchen Zhang <zhanghongchen@loongson.cn>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        "Matthew Wilcox Oracle)" <willy@infradead.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+Subject: [PATCH v2] LoongArch: add p?d_leaf() definitions
+Date:   Wed,  6 Sep 2023 16:43:51 +0800
+Message-Id: <20230906084351.3533-1-zhanghongchen@loongson.cn>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgA3xqiKPPhkSK37CQ--.11064S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxuF45Zry3JFy5GrWUZr13Jwb_yoW5Wr1rpF
-        Z8Xw1qgryDtry0vr4DZF1rXryrGay8Ca42gFyDGw1fZr4qk34rt397CFZ0gFyakr97XF13
-        Za1qq3sxCF1kZrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487
-        Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aV
-        AFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4kE6xkIj40E
-        w7xC0wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1kpnJ
-        UUUUU==
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: AQAAf8Cx7yPIO_hktVduAA--.28519S2
+X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/1tbiAQAGB2T3-DUCqgABsz
+X-Coremail-Antispam: 1Uk129KBj93XoWrZr48Zw45XF17CF43Gr15GFX_yoW8JF4UpF
+        9rAF97KF45Kas7C34Dtr1Y9FnrZws7WF12gFyYva18XFnxXws7Zr4kXrn8ZFW5XaykXFWI
+        gFs3Kw1YgF1xXwbCm3ZEXasCq-sJn29KB7ZKAUJUUUUD529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUBFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6F4UJVW0owAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_
+        WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
+        JVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
+        vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
+        x2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26c
+        xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAF
+        wI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jr9NsUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Nan <linan122@huawei.com>
+When I do LTP test, LTP test case ksm06 caused panic at
+	break_ksm_pmd_entry
+	  -> pmd_leaf (Huge page table but False)
+	  -> pte_present (panic)
 
-If a disk is removed and quickly inserted when an I/O error is processing,
-the disk may not be able to be re-added. The function call timeline is as
-follows:
+The reason is pmd_leaf is not defined, So like
+commit 501b81046701 ("mips: mm: add p?d_leaf() definitions")
+add p?d_leaf() definition for LoongArch.
 
-  interrupt                            scsi_eh
+v2: add Fixes: in commit message.
 
-  ahci_error_intr
-   ata_port_freeze
-    __ata_port_freeze
-     =>ahci_freeze (turn IRQ off)
-    ata_port_abort
-     ata_do_link_abort
-      ata_port_schedule_eh
-       =>ata_std_sched_eh
-        ata_eh_set_pending
-	 set EH_PENDING
-        scsi_schedule_eh
-         shost->host_eh_scheduled++ (=1)
-                                       scsi_error_handler
-                                        =>ata_scsi_error
-                                         ata_scsi_port_error_handler
-					  clear EH_PENDING
-                                          =>ahci_error_handler
-                                          . sata_pmp_error_handler
-                                          .  ata_eh_reset
-                                          .   ata_eh_thaw_port
-                                          .   . =>ahci_thaw (turn IRQ on)
-  ahci_error_intr			  .   .
-   ata_port_freeze			  .   .
-    __ata_port_freeze			  .   .
-     =>ahci_freeze (turn IRQ off)	  .   .
-    ...					  .   .
-        ata_eh_set_pending		  .   .
-	 set EH_PENDING			  .   .
-        scsi_schedule_eh		  .   .
-         shost->host_eh_scheduled++ (=2)  .   .
-					  .   clear EH_PENDING
-					  check EH_PENDING
-                                          =>ata_std_end_eh
-                                           host->host_eh_scheduled = 0;
-
-'host_eh_scheduled' is 0 and scsi eh thread will not be scheduled again.
-The ata port remains frozen and will never be enabled.
-
-To fix this issue, decrease 'host_eh_scheduled' instead of setting it to 0
-so that EH is scheduled again to re-enable the port. Also move the update
-of 'nr_active_links' to 0 when 'host_eh_scheduled' is 0 to
-ata_scsi_port_error_handler().
-
-Cc: stable@vger.kernel.org
-Fixes: ad9e27624479 ("[PATCH] libata-eh-fw: update ata_scsi_error() for new EH")
-Reported-by: luojian <luojian5@huawei.com>
-Signed-off-by: Li Nan <linan122@huawei.com>
-Reviewed-by: Niklas Cassel <niklas.cassel@wdc.com>
+Fixes: 09cfefb7fa70 ("LoongArch: Add memory management")
+Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
 ---
-Changes in v4:
- - add fix tag and Cc stable
+ arch/loongarch/include/asm/pgtable.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
- drivers/ata/libata-eh.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/ata/libata-eh.c b/drivers/ata/libata-eh.c
-index 159ba6ba19eb..2d5ecd68b7e0 100644
---- a/drivers/ata/libata-eh.c
-+++ b/drivers/ata/libata-eh.c
-@@ -735,6 +735,12 @@ void ata_scsi_port_error_handler(struct Scsi_Host *host, struct ata_port *ap)
- 	 */
- 	ap->ops->end_eh(ap);
+diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/include/asm/pgtable.h
+index 370c6568ceb8..ea54653b7aab 100644
+--- a/arch/loongarch/include/asm/pgtable.h
++++ b/arch/loongarch/include/asm/pgtable.h
+@@ -243,6 +243,9 @@ static inline void pmd_clear(pmd_t *pmdp)
  
-+	if (!ap->scsi_host->host_eh_scheduled) {
-+		/* make sure nr_active_links is zero after EH */
-+		WARN_ON(ap->nr_active_links);
-+		ap->nr_active_links = 0;
-+	}
+ #define pmd_phys(pmd)		PHYSADDR(pmd_val(pmd))
+ 
++#define pmd_leaf(pmd)		((pmd_val(pmd) & _PAGE_HUGE) != 0)
++#define pud_leaf(pud)		((pud_val(pud) & _PAGE_HUGE) != 0)
 +
- 	spin_unlock_irqrestore(ap->lock, flags);
- 	ata_eh_release(ap);
- 
-@@ -946,9 +952,7 @@ EXPORT_SYMBOL_GPL(ata_std_sched_eh);
-  */
- void ata_std_end_eh(struct ata_port *ap)
- {
--	struct Scsi_Host *host = ap->scsi_host;
--
--	host->host_eh_scheduled = 0;
-+	ap->scsi_host->host_eh_scheduled--;
- }
- EXPORT_SYMBOL(ata_std_end_eh);
- 
-@@ -3922,10 +3926,6 @@ void ata_eh_finish(struct ata_port *ap)
- 			}
- 		}
- 	}
--
--	/* make sure nr_active_links is zero after EH */
--	WARN_ON(ap->nr_active_links);
--	ap->nr_active_links = 0;
- }
- 
- /**
+ #ifndef CONFIG_TRANSPARENT_HUGEPAGE
+ #define pmd_page(pmd)		(pfn_to_page(pmd_phys(pmd) >> PAGE_SHIFT))
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE  */
+
+base-commit: a47fc304d2b678db1a5d760a7d644dac9b067752
 -- 
-2.39.2
+2.33.0
 
