@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC189793EA6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD04F793EB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240849AbjIFOWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47136 "EHLO
+        id S241173AbjIFOXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240452AbjIFOWE (ORCPT
+        with ESMTP id S229907AbjIFOXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:22:04 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 178FF1733
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:22:01 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9a9d82d73f9so39807266b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 07:22:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694010119; x=1694614919; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aH4htNzKGyY0NdJjI9Mh9TCs3stuoDgE8Vga1mOypZE=;
-        b=B1M2mycWyOr51VgXntoehG9uufrIAzFv28rjZl/9qZGtg9+keev98X4Ef3v1Kgnp26
-         qUzb5X6HFSeMGaUWWI4o17eo9xjmToBoHx+bSm+u+QJMxfPZe29rvp9KWgel3eZx8Q31
-         XLLUmcs5WdpWARkdZqoCEUXxG5iIADSJ3ANwTv3I3fNVCmrxxm4wMDNRynrRjIpBzvWi
-         Cvk6GwWtWcOBNzAdrer4MS6KurywSwA8KmbBTQ7ejdiEDbN8QvmoXjdN5hPPexuKq0Lo
-         UUie34i3HkPuafIqNLV7/eiwJ3pq4i2sMN9bQsSgPbmLHEsDU3+6w2+2tBSTxb6WMxOc
-         s8xQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694010119; x=1694614919;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aH4htNzKGyY0NdJjI9Mh9TCs3stuoDgE8Vga1mOypZE=;
-        b=M8gUB6QSRHyba7g7jOql9yXFEZUOVtOszhoE3wWr0mtM44dOTiH7q3xcMMmCG32ZL+
-         CQZz3TyoNXdBfjq4BMuswqsIcbhSGLX7Sb1J9L79BgqxfjxW8l7+/Ox3b6V2MUUCNH4V
-         7UCzy/T3CitbuRsKVgYGoTvFz4Y2blaWKVMx5zPTLainClA0kvw0Rq4h8FKQZ/4XleNR
-         KBNI2sFSUHS9Xk07vrkoZoY+pYEpoHF0W2g7niS6hI6cUk7erUam4hzApvxBzHExOdZ7
-         9+XVdHx3vy33VX10nUOC9JfN2y4g3V5tPefJvRWPpQGSXR67s7RAuqP5eB3bjQuTSMf0
-         +EKg==
-X-Gm-Message-State: AOJu0YxfVyhD2RGGcKjcjSGmdUQ7GHDt0teczG9MQfWuQiqMQdiUm4iP
-        zfrB2A9S44qV2xC8Q1wQMMSUsw==
-X-Google-Smtp-Source: AGHT+IFi+OpUFkhb9ey5NOFeAogtUpHwnCW7LVTTvZROsam4q2ZF0lAdYYLSknDRZ3B3wuhs91z/Uw==
-X-Received: by 2002:a17:906:76da:b0:9a1:8a54:145f with SMTP id q26-20020a17090676da00b009a18a54145fmr2460169ejn.40.1694010119371;
-        Wed, 06 Sep 2023 07:21:59 -0700 (PDT)
-Received: from [192.168.0.107] ([79.115.63.137])
-        by smtp.gmail.com with ESMTPSA id x10-20020a1709064a8a00b009937e7c4e54sm9041491eju.39.2023.09.06.07.21.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 07:21:58 -0700 (PDT)
-Message-ID: <d84e5757-a8b6-4b32-b326-6114e55ee5ea@linaro.org>
-Date:   Wed, 6 Sep 2023 15:21:56 +0100
+        Wed, 6 Sep 2023 10:23:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0F36CF4;
+        Wed,  6 Sep 2023 07:23:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694010222; x=1725546222;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=NkDVpIGP6hSnJ3pk9APCaVMBJZKKIjfhnS1bhhI9K34=;
+  b=mKyCBVWAGWaZlz75eeHuLfvlL+naMw4265lZo5ku0raG7nYXINerp35m
+   SmLgWjXZD8VI4atMP1ElGAt7Csff1rg3aTOj6p2IgO4qLuQLl1LJcxRx3
+   P9kyW7c8OUqDT94t9pRj0u54X/MrzoM/TSSaJnnlg/TC8JmOgmYfQvoq8
+   X9PPHgrwXu9RflooEVqBVTn0sQqUak7CcXUBt1T0KNXVtn+hEryH+iZGG
+   wumfIWADkf05r7zrCsWA5SxAx13NubFxu6ob9CAshV4SAxc5pJrtim8Gs
+   LJ5Xb4cucE33U3W5FESeCATtvom40yk/3/7IJKZu9H6GaDGY6t0QR7Baf
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="408082887"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="408082887"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 07:23:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="915296693"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="915296693"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 07:23:33 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qdtRK-006xiY-08;
+        Wed, 06 Sep 2023 17:23:30 +0300
+Date:   Wed, 6 Sep 2023 17:23:29 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dipen Patel <dipenp@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
+        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 10/21] gpiolib: replace find_chip_by_name() with
+ gpio_device_find_by_label()
+Message-ID: <ZPiLYYzzffKaTKlT@smile.fi.intel.com>
+References: <20230905185309.131295-1-brgl@bgdev.pl>
+ <20230905185309.131295-11-brgl@bgdev.pl>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ARM: dts: at91/trivial: fix typo in crypto DT naming
-Content-Language: en-US
-To:     nicolas.ferre@microchip.com, linux-arm-kernel@lists.infradead.org
-Cc:     Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        devicetree@vger.kernel.org
-References: <20230906135838.59247-1-nicolas.ferre@microchip.com>
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230906135838.59247-1-nicolas.ferre@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230905185309.131295-11-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/6/23 14:58, nicolas.ferre@microchip.com wrote:
-> From: Nicolas Ferre <nicolas.ferre@microchip.com>
+On Tue, Sep 05, 2023 at 08:52:58PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> Fix typo in DT name for TDES node.
-> 
-> Fixes: 4b6140b96dfe ("ARM: dts: at91: Use the generic "crypto" node name for the crypto IPs")
-> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+> Remove all remaining uses of find_chip_by_name() (and subsequently:
+> gpiochip_find()) from gpiolib.c and use the new
+> gpio_device_find_by_label() instead.
 
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+...
 
-> ---
->  arch/arm/boot/dts/microchip/sama5d4.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/microchip/sama5d4.dtsi b/arch/arm/boot/dts/microchip/sama5d4.dtsi
-> index 41284e013f53..cbfc60fed37c 100644
-> --- a/arch/arm/boot/dts/microchip/sama5d4.dtsi
-> +++ b/arch/arm/boot/dts/microchip/sama5d4.dtsi
-> @@ -694,7 +694,7 @@ aes: crypto@fc044000 {
->  				clock-names = "aes_clk";
->  			};
->  
-> -			tdes: crpyto@fc04c000 {
-> +			tdes: crypto@fc04c000 {
->  				compatible = "atmel,at91sam9g46-tdes";
->  				reg = <0xfc04c000 0x100>;
->  				interrupts = <14 IRQ_TYPE_LEVEL_HIGH 0>;
+> -		desc = gpiochip_get_desc(gc, p->chip_hwnum);
+> +		desc = gpiochip_get_desc(gdev->chip, p->chip_hwnum);
+
+Why not gpio_device_get_desc()?
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
