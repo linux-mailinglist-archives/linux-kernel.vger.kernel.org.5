@@ -2,151 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA56779398E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4EE793994
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238711AbjIFKKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 06:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42664 "EHLO
+        id S237812AbjIFKLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 06:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbjIFKKl (ORCPT
+        with ESMTP id S231305AbjIFKLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 06:10:41 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051BA9E;
-        Wed,  6 Sep 2023 03:10:38 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bceca8a41aso53487381fa.0;
-        Wed, 06 Sep 2023 03:10:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693995036; x=1694599836; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EfOqaeV+KknayCO8Oeiwloxt+zMetEN9D2laP149Llc=;
-        b=eX7iAaVjLf53GweOplBPQovNC4DitqXdyaFSGS7sS4KLCaHEsY47HRom2wt4P8QvU9
-         qF+Pv+myq4l5Etj6ij4jBQL/VbWh3uo+S2UOVwdhuVCKXu4EPs8rn1L3KNPJoRHfSVjS
-         LLbfZ7NhgiAZ/h5yq/KMVTwMJMlC2eLBbyJXXLRM4LdgK1Z6Lb2KOvam0NMSDVqki7dn
-         hn8GzHIMtIr6NUXSHuG+IZCTM+E2LXCM3tfA7SG9WEWnUdtAT8+C8Jp7wN/L9uIUuMND
-         jNf3nlHjacG2MLgTbEnl41pcFxaNnXGejI3yMOdF8Ub5zi9mEGBjG1V15d9VS4NEU8sE
-         bH/g==
+        Wed, 6 Sep 2023 06:11:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1ECA1713
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 03:10:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693995058;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hv8DYu7MTr4kuGV37i9sTqxH6eTvGFMuruIX7/nBGWo=;
+        b=fzpEpczDwAQ4iW0XBRFn+aGDbqXHVjq5V7p1jyNlg+V2ynipNCixXQKGRpD8bN0tZDA9gc
+        kkak29rdcVWwPrNRxyIjZzhJ4LluKWxQEQPkA64QrJKuyt+bqmc7AWjEmBjkblmmjKWoJv
+        rxD2JfI00cIla5l3QdvMohRXeEHLLKs=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-452-J5pm6bi9PvS7uP-0x22kLw-1; Wed, 06 Sep 2023 06:10:56 -0400
+X-MC-Unique: J5pm6bi9PvS7uP-0x22kLw-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2bceb2b3024so36386881fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 03:10:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693995036; x=1694599836;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EfOqaeV+KknayCO8Oeiwloxt+zMetEN9D2laP149Llc=;
-        b=MVs+5RAYL/CJF+ph25mnyWqHMj7ADCDv+XknKKb3NFTd57YPceJGVl7WW+NbU7ONc8
-         w0wm5MGzIRk2G2e83EEUZMb/0UUhMBPtscsn2LjFzfE+m/7YkW9ts4Qnd/USqmaPkjQ3
-         BUEOHIp9a7+CNLVmdKUO9n6aifMz2c+/q5+nngL7MYlwbvoF7J71ysVVI/hAeyb2s2b5
-         qtavY6j0khPpnHIE+81oJY4L25YZZpdOf4DCqxvkNMTy5sWRNrBAWrdkG10QMGp3+kpZ
-         ED+APKOLyJJGGHs0XY7IUEnNgreglj8c4K1sprY22cOdVi6zDoyQwEBdiT/Pk5Syd94o
-         EOzQ==
-X-Gm-Message-State: AOJu0YxQilSnoIQMtBo5B9xXlgEl6W+szWwxgrpOD4mNorqB4BY8Mfwk
-        ZLAJqvQBjDYlXhbTe2q/BPYmvlZLwyk61/TU3no=
-X-Google-Smtp-Source: AGHT+IFgpGZUTmfvyaicrKry99f2uX/eh3DtKB8c/qKcmnkcHz7uwZYtn0qD9L1QTcGEetIJKq9wCp8WNJgZPbJB/RM=
-X-Received: by 2002:a05:651c:104a:b0:2bd:180d:67b1 with SMTP id
- x10-20020a05651c104a00b002bd180d67b1mr1816321ljm.51.1693995035890; Wed, 06
- Sep 2023 03:10:35 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693995055; x=1694599855;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hv8DYu7MTr4kuGV37i9sTqxH6eTvGFMuruIX7/nBGWo=;
+        b=KSgmKrWTRv0d9UYyvHuYaDjJSELvoFMTO1ln6ZitNwE+czy7ByuEMBB9AyVFXMiowO
+         0gADHGzMrJwveaNz/Ck3WbczgEVTSB4FF4DPHylKP8iFxAoh/icOochOtQMKLKn7Z5Rh
+         o3tYA5KSS9ELwbtgDzlWYh4QVgi91uupygATGYa3NZaH0BGv1aBZu4+gwiQ8nG0FreXf
+         IkzGbmYHeMjUO8e5BT8+Qbna42Ck/WR1ti+eqyVshBB5OMNjky4krgRq7trJA2Puj9Xi
+         drg61qxS3x8XrTULR4VPJ+PUOxa1xO6k8LMfAB1ed4ehs+kTFkiMrS6uEoXeEuDuecq2
+         T4xA==
+X-Gm-Message-State: AOJu0YxujZFLQA68pRMOI3860YNIpXP9HKMjFW1wU4cAJ31RSxv620ar
+        zwxIdO7aag7/ucOWPCR8XdVM5rdcuQtJpcWw4cABXklofozdsHMiRArTTPPfbIe3xUM8/uOVn4F
+        XofwWz7kU4jQg9c8sBrlSLsl8
+X-Received: by 2002:a2e:870d:0:b0:2bc:b9c7:7ba8 with SMTP id m13-20020a2e870d000000b002bcb9c77ba8mr1821975lji.43.1693995054991;
+        Wed, 06 Sep 2023 03:10:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHlEOBg4YUUo+ApwkDK41eZQoOWRKWT9hoI43BTnkb2886b1jJOEBUZMQKvCBA2uq3yLQagdg==
+X-Received: by 2002:a2e:870d:0:b0:2bc:b9c7:7ba8 with SMTP id m13-20020a2e870d000000b002bcb9c77ba8mr1821960lji.43.1693995054655;
+        Wed, 06 Sep 2023 03:10:54 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id n17-20020a7bcbd1000000b003fee777fd84sm19425278wmi.41.2023.09.06.03.10.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 03:10:54 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>, deller@gmx.de,
+        daniel@ffwll.ch, sam@ravnborg.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH 4/7] fbdev/core: Move logo functions into separate
+ source file
+In-Reply-To: <20230829142109.4521-5-tzimmermann@suse.de>
+References: <20230829142109.4521-1-tzimmermann@suse.de>
+ <20230829142109.4521-5-tzimmermann@suse.de>
+Date:   Wed, 06 Sep 2023 12:10:53 +0200
+Message-ID: <87fs3r4no2.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-References: <cover.1693659382.git.haibo1.xu@intel.com> <b6ef1b031e3a581f481cf19a26623388163444b4.1693659382.git.haibo1.xu@intel.com>
- <20230904-aa8b0d8d23d391586686038a@orel>
-In-Reply-To: <20230904-aa8b0d8d23d391586686038a@orel>
-From:   Haibo Xu <xiaobo55x@gmail.com>
-Date:   Wed, 6 Sep 2023 18:10:24 +0800
-Message-ID: <CAJve8ok5cU+h1K+WJ+aDpB+u+PBo8XosUyyVbMGy-xR0XiWFdw@mail.gmail.com>
-Subject: Re: [PATCH v2 7/8] KVM: riscv: selftest: Change vcpu_has_ext to a
- common function
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Guo Ren <guoren@kernel.org>,
-        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-        wchen <waylingii@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Lei Wang <lei4.wang@intel.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Like Xu <likexu@tencent.com>, Peter Gonda <pgonda@google.com>,
-        Thomas Huth <thuth@redhat.com>,
-        =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Michal Luczaj <mhal@rbox.co>, Paul Durrant <paul@xen.org>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 4, 2023 at 10:04=E2=80=AFPM Andrew Jones <ajones@ventanamicro.c=
-om> wrote:
->
-> On Sat, Sep 02, 2023 at 08:59:29PM +0800, Haibo Xu wrote:
-> > diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/t=
-esting/selftests/kvm/riscv/get-reg-list.c
-> > index d8ecacd03ecf..c4028bf32e3f 100644
-> > --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > @@ -44,20 +44,6 @@ bool check_reject_set(int err)
-> >       return err =3D=3D EINVAL;
-> >  }
-> >
-> > -static inline bool vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
-> > -{
-> > -     int ret;
-> > -     unsigned long value;
-> > -
-> > -     ret =3D __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
-> > -     if (ret) {
-> > -             printf("Failed to get ext %d", ext);
-> > -             return false;
-> > -     }
-> > -
-> > -     return !!value;
->
-> get-reg-list will now assert on get-reg when an extension isn't present,
-> rather than failing the __TEST_REQUIRE(), which would do a skip instead.
-> We need both the return false version and the assert version.
->
+Thomas Zimmermann <tzimmermann@suse.de> writes:
 
-Ok, Will keep this one for get-reg-list and add another one for
-arch-timer specific usage.
-
-> > -}
-> > -
-> >  void finalize_vcpu(struct kvm_vcpu *vcpu, struct vcpu_reg_list *c)
-> >  {
-> >       struct vcpu_reg_sublist *s;
-> > --
-> > 2.34.1
-> >
+> Move the fbdev function for displaying boot-up logos into their
+> own file fb_logo.c. The file can later be build depending on the
+> state of CONFIG_LOGO. No functional changes.
 >
-> Thanks,
-> drew
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> ---
+>  drivers/video/fbdev/core/Makefile      |   1 +
+>  drivers/video/fbdev/core/fb_internal.h |   6 +
+>  drivers/video/fbdev/core/fb_logo.c     | 533 +++++++++++++++++++++++++
+>  drivers/video/fbdev/core/fbmem.c       | 524 ------------------------
+>  include/linux/fb.h                     |   5 -
+>  5 files changed, 540 insertions(+), 529 deletions(-)
+>  create mode 100644 drivers/video/fbdev/core/fb_logo.c
+>
+> diff --git a/drivers/video/fbdev/core/Makefile b/drivers/video/fbdev/core/Makefile
+> index edfde2948e5c..adce31155e92 100644
+> --- a/drivers/video/fbdev/core/Makefile
+> +++ b/drivers/video/fbdev/core/Makefile
+> @@ -2,6 +2,7 @@
+>  obj-$(CONFIG_FB_NOTIFY)           += fb_notify.o
+>  obj-$(CONFIG_FB_CORE)             += fb.o
+>  fb-y                              := fb_info.o \
+> +                                     fb_logo.o \
+
+Maybe instead of adding this unconditionally you could only add it when
+CONFIG_LOGO is enabled ?
+
+[...]
+
+> diff --git a/drivers/video/fbdev/core/fb_logo.c b/drivers/video/fbdev/core/fb_logo.c
+> new file mode 100644
+> index 000000000000..76ba5a2bebae
+> --- /dev/null
+> +++ b/drivers/video/fbdev/core/fb_logo.c
+> @@ -0,0 +1,533 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/export.h>
+> +#include <linux/fb.h>
+> +#include <linux/linux_logo.h>
+> +
+> +bool fb_center_logo __read_mostly;
+> +int fb_logo_count __read_mostly = -1;
+> +
+> +#ifdef CONFIG_LOGO
+
+[...]
+
+> +#else
+> +int fb_prepare_logo(struct fb_info *info, int rotate)
+> +{
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(fb_prepare_logo);
+> +
+> +int fb_show_logo(struct fb_info *info, int rotate)
+> +{
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(fb_show_logo);
+
+I would move the CONFIG_LOGO #ifdefery to the header file and make these a
+static inline function, instead of having the stubs here and exporting
+symbols for functions that are a no-op.
+
+I think that will also fix the issues that the robot complained about.
+
+Other than that, the patch looks good to me.
+
+Acked-by: Javier Martinez Canillas <javierm@redhat.com>
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
