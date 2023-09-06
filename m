@@ -2,283 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF8D793E60
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8867B793E5A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241495AbjIFOKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:10:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38780 "EHLO
+        id S241442AbjIFOJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241473AbjIFOKH (ORCPT
+        with ESMTP id S232210AbjIFOJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:10:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B71810E7
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:10:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694009401; x=1725545401;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=2aHrkL0oyKVUnnvZBnpegupvgPJNGCaYmkEBB3jgoB0=;
-  b=LTLLxL9eeeGStB+VbMihachqcnEiQxnOSv3tJBPDY0j3j2JtSBcgEs9Q
-   UQsSkgtJHywYe9PSk3hHqFKEZaoz1DEmc+L+cVwMnHRNHpMQMNje9EFT/
-   zGyah51QzfM5hh2qrioyIIdPeMLQMoK4i8xniRKugD+xtCOdYPwbwghWn
-   0S1KhTIgRGY38/amWrU/Aj/eQhngChE4AP4ROx/hCPT0BgM6ekxWIXIOc
-   ytCB1iii9WCJM3pfEU5pwM726iIrBB/XUmnJBSC9tfQQ4b+4yOCG9H8Oe
-   praZgumNapnaRHbcShKLFOLtwWw0ACPpXNhrQA6aqKtdfr/HKpvkmfWx7
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="408078121"
-X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
-   d="scan'208";a="408078121"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 07:08:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="1072400539"
-X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
-   d="scan'208";a="1072400539"
-Received: from yinbingc-mobl.ccr.corp.intel.com (HELO [10.249.254.11]) ([10.249.254.11])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 07:08:09 -0700
-Message-ID: <a2c14db7-caed-2467-4ebf-5d66e3b970bd@linux.intel.com>
-Date:   Wed, 6 Sep 2023 16:08:07 +0200
+        Wed, 6 Sep 2023 10:09:14 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE0FA9;
+        Wed,  6 Sep 2023 07:09:10 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31c5cac3ae2so3183818f8f.3;
+        Wed, 06 Sep 2023 07:09:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694009349; x=1694614149; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u9W/IcTlMNGZK9Ps/aVx0GxYtJz9nPGjUgurMbWW3dw=;
+        b=QJfHpDJnpEUBAaI/6+tZGy1fH1WDgOp3YKCz/n6ngCpUQlV8NvDwgJHuCan5vQG3dk
+         WNuS1CJ6pBxFbso16ZncRyipJ6uwHpVO9tvnicwwVSv+0cg8nraZWptPuCUz6zLj5Xuf
+         nEC0dnrmyE56BnOYwqWbmtqDWzNZJp7dsqMhr52jFR1zSwP3l09/lWD1Z6ftXSNvOtfU
+         UyD8fFFJq2eH8hmfzqom2NX2JvT+QW29clVjOJQnSbRfXjK3dTKYxg5s3++5cDYQMpDw
+         S3Rs8lTaDIlAbXrjIbUONrKXZ44NWxmSGbeBFPsUnYTizQuZ3lxy/UkfGMCUub844RkX
+         xjQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694009349; x=1694614149;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u9W/IcTlMNGZK9Ps/aVx0GxYtJz9nPGjUgurMbWW3dw=;
+        b=ir61yBKoico30vhFVmQQF/ZUvqCw3Ymb2p03x9ISosBMDR0K9YJGTzP+nPR5fEQTYY
+         qe3qi0+ufoJfZh8D+s7ipvHg1TiOrznpXILp5jZQBD/FUe6+f+CWZ5cz8XdOZvZRVTUe
+         nf+yFXiaD2DcaVr1tkGVpk3qXIoFlKeqTDF7It61eKWkBiWG1UkZJJM2RkjUbLmJ8Js1
+         NkjXFu7oLQN9bRVNiZyYr0oK2hKc5kiqLirROwcA+k2m5zW3oaUxJaANgSTAjcHin+3+
+         fOs8GEJ00inACiO9o6libjNK0K3Q5HxoVQa2EuVZzu65JAPcpuNd0rwMKrLg8EHsdEUb
+         TvgQ==
+X-Gm-Message-State: AOJu0Yz+rdbk0zThRXsbI6WxnGPVgPL19lC5IVOlsfnVA2sh0AC6qqx7
+        lk63kYFQEjvCg4uq04ll8uMveczg2Ps=
+X-Google-Smtp-Source: AGHT+IEyyJOYBjWMd5RqK365SmNrfFzw+bEYRaLE3YHtYnxhlNi1gTmlhpmWYimIiShBesCw0X57nQ==
+X-Received: by 2002:a05:6000:184:b0:313:f1c8:a968 with SMTP id p4-20020a056000018400b00313f1c8a968mr2423710wrx.2.1694009348590;
+        Wed, 06 Sep 2023 07:09:08 -0700 (PDT)
+Received: from gmail.com (1F2EF6A2.nat.pool.telekom.hu. [31.46.246.162])
+        by smtp.gmail.com with ESMTPSA id a3-20020a056000050300b003179d5aee67sm20483099wrf.94.2023.09.06.07.09.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 07:09:03 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 6 Sep 2023 16:09:01 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v3] x86/platform/uv: refactor deprecated strcpy and
+ strncpy
+Message-ID: <ZPiH/ds9oeimXDdb@gmail.com>
+References: <20230905-strncpy-arch-x86-platform-uv-uv_nmi-v3-1-3efd6798b569@google.com>
+ <ZPhsSzHG6YMViOSk@gmail.com>
+ <bce762af-0da7-bb5e-1580-b42803c183f6@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] Documentation/gpu: VM_BIND locking document
-Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Danilo Krummrich <dakr@redhat.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Francois Dugast <francois.dugast@intel.com>,
-        linux-kernel@vger.kernel.org, Oak Zeng <oak.zeng@intel.com>,
-        dri-devel@lists.freedesktop.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-xe@lists.freedesktop.org
-References: <20230816091547.2982-1-thomas.hellstrom@linux.intel.com>
- <ZPeGld0mBwbWptV9@cassiopeiae>
- <4e7a2b2e-1ab5-09b6-b2de-9b2a82a8a32e@linux.intel.com>
- <1c6cbf97-7e85-a48f-9e6a-ed716ab5b05d@redhat.com>
- <1a2965a4-943f-0ba7-b082-155d75b94d59@linux.intel.com>
- <20230906130929.74e3c6cc@collabora.com>
- <e44c93dd-68b2-b8af-6f9a-4d7c6370f105@linux.intel.com>
- <20230906150038.30936ae2@collabora.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>
-In-Reply-To: <20230906150038.30936ae2@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bce762af-0da7-bb5e-1580-b42803c183f6@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Boris,
 
-On 9/6/23 15:00, Boris Brezillon wrote:
-> On Wed, 6 Sep 2023 13:57:03 +0200
-> Thomas Hellström <thomas.hellstrom@linux.intel.com> wrote:
->
->> Hi, Boris
->>
->> On 9/6/23 13:09, Boris Brezillon wrote:
->>> On Wed, 6 Sep 2023 10:32:24 +0200
->>> Thomas Hellström <thomas.hellstrom@linux.intel.com> wrote:
->>>
->>>   
->>>>>>>> +Introducing external (or shared) buffer objects
->>>>>>>> +===============================================
->>>>>>>> +
->>>>>>>> +Since shared buffer objects may be shared by multiple gpu_vm's they
->>>>>>>> +can't share their reservation object with a single gpu_vm, but
->>>>>>>> will rather
->>>>>>>> +have a reservation object of their own. The shared objects bound to a
->>>>>>>> +gpu_vm using one or many
->>>>>>>> +gpu_vmas are therefore typically put on a per-gpu_vm list which is
->>>>>>>> +protected by the gpu_vm lock. One could in theory protect it also
->>>>>>>> with
->>>>>>>> +the ``gpu_vm->resv``, but since the list of dma_resvs to take is
->>>>>>>> typically
->>>>>>>> +built before the ``gpu_vm->resv`` is locked due to a limitation in
->>>>>>>> +the current locking helpers, that is typically not done. Also see
->>>>>>>> +below for userptr gpu_vmas.
->>>>>>>> +
->>>>>>>> +At eviction time we now need to invalidate *all* gpu_vmas of a shared
->>>>>>>> +object, but we can no longer be certain that we hold the gpu_vm's
->>>>>>>> +dma_resv of all the object's gpu_vmas. We can only be certain that we
->>>>>>> I need to think a bit more about locking of extobj and evicted
->>>>>>> object tracking
->>>>>>> in the case of processing 'drm_gpuva_ops' directly through callbacks
->>>>>>> within the
->>>>>>> fence signalling critical path as mentioend in [1].
->>>>>>>
->>>>>>> In order to support that, we'd need to protect extobjs with a
->>>>>>> separate lock,
->>>>>>> and while iterating extobjs to acquire the dma-resv lock drop the
->>>>>>> lock within
->>>>>>> the loop before we actually acquire the dma-resv lock. Maple tree
->>>>>>> supports that
->>>>>>> already and this can be fully done within the GPUVA manager; no need
->>>>>>> for the
->>>>>>> driver to care about that.
->>>>>> So do I understand correctly that this because you want to update the
->>>>>> gpuvm state while operations are progressing asynchronously?
->>>>>>
->>>>>> If so, I wonder whether that could really be done? For example to
->>>>>> allocate enough memory for page-tables etc, you need to know the
->>>>>> details of the operations at IOCTL execution time, and to know the
->>>>>> details you need to know the state from the previous operation?
->>>>> Right, sync and async bind can't run fully concurrently, but you could
->>>>> "inject" a
->>>>> sync one between two async ones such that the sync ones executed from
->>>>> the IOCTL
->>>>> directly while async execution is stalled meanwhile. This would be
->>>>> possible because
->>>>> the actual drm_gpuva_ops would be calculated within the async
->>>>> execution path rather
->>>>> than in the IOCTL. But yes, page-table management must be desinged to
->>>>> support that.
->>> FWIW, the panthor driver is designed this way (note that I'm not
->>> supporting GEM eviction yet, so there might be subtleties I missed).
->> The problem is that once you've published your VM_BIND out-fence, any
->> code path required to signal that fence may notallocate memory nor or
->> grab any locks that allows allocating memory while held including
->> dma_resv locks, and that means all required page-table memory needs to
->> be allocated synchronously in the IOCTL,
-> Yep, that's already what I do, by over-provisioning for the worst case
-> scenario (page table tree is empty), and returning unused pages after
-> the operation is done.
->
->> and all evicted bos need to be
->> made resident in the IOCTL,
-> Yep, I'm pinning memory to BOs in that path too.
->
->> and at least in the xe driver the amount of
->> memory we need to allocate depends on the vm state, so we can't really
->> update the vm state asynchronously either.
-> For Mali, we can calculate the maximum amount of pages we'll need for a
-> MAP operation, by assuming the page table is empty. Then it's just a
-> matter of returning unused pages to a fast-alloc pool so we can
-> speed-up further page table allocations (we're using a kmem_cache here,
-> since the page table update is done by the CPU and memory is shared on
-> Arm, but there's no reason you can't have your own cache
-> implementation).
->
->> But as long as any async binding work required for signalling the
->> VM_BIND out-fence is properly annotated with
->> dma_fence_begin_signalling() and dma_fence_end_signalling() and there
->> aren't any lockdep splats, things should be good. It would trigger on
->> both memory allocation and attempts to grab a dma_resv lock.
-> I have dma_fence_{begin,end}_signalling() annotations in the
-> ::run_job() path, and no lockdep complaint spotted so far.
->
->>
->>>   
->>>> OK, well one of the main motivations for Xe is to be able to pipeline
->>>> interleaving binds and execs if needed, like so:
->>>>
->>>> - Bind vmas for scene 1.
->>>> - Submit scene 1.
->>>> - Unbind vmas for scene 1.
->>>> - Bind vmas for scene 2.
->>>> - Submit scene 2.
->>>> - Unbind vmas for scene 2.
->>>>
->>>> And being able to *submit* all of the above while the async binding of
->>>> vmas for scene (step 1) has not yet completed.
->>>> I can't really see how this could be done, while obeying dma-fence
->>>> rules, unless state is updated synchronously while submitting?
->>> The idea in this case is to detect when a GPU job dependency is a
->>> VM_BIND out-fence, turn drm_sched_fence->parent into an
->>> xxx_vm_bind_job_fence object that's holding the GEM that's about to be
->>> mapped (AFAICT, we don't need to do anything for unmap operations), and
->>> then add our GPU job fence to this BO. This should not only guarantee
->>> that the GEMs we depend on are mapped before the GPU job is executed
->>> (the fence wait does that), but also that such yet-to-be-mapped GEMs
->>> won't be evicted just after they've been mapped and before the GPU had
->>> a chance to execute (unless I'm missing something, adding our GPU job
->>> fence to the BO being targeted by a pending VM_BIND(async,map) operation
->>> solves this problem).
-> It's not exactly that, because we'd need to add a GEMs of all the
-> pending VM_BIND(map) jobs that come before the expressed dependency, not
-> just the one attached to the dependency itself. But after chatting with
-> Danilo, I realized we might not even need to track the GEMs being
-> mapped at the fence level if we call drm_gpuva_extobj_insert() in the
-> ioctl(VM_BIND) path:
->
-> - drm_gpuva_extobj_insert() will make sure the GEM is added to
->    the ext-object map even before it's actually mapped to the VM (for
->    private GEMs, it doesn't matter, because they are using the VM resv,
->    so any private GEM mapped will automatically receive the VM resv
->    updates).
->
-> Now, when a GPU job is queued, we do all the VM GEM preparation, which
-> includes the following steps:
->
-> - drm_gpuva_manager_validate() will make already-bound-but-evicted GEMs
->    resident
-> - Iterate over all ext-objs to add our fence (I'm skipping the slot
->    reservation step that's implied). Because drm_gpuva_extobj_insert()
->    was called early, we also get all the GEMs that are not yet mapped,
->    but are about to be mapped. This means they won't be evicted until
->    after our job is done
-> - add our fence to the VM resv
->
-> Unless I'm missing something, this should guarantee that all GEMs are
-> resident and mapped when the job is executed.
->
->> Yes, we're essentially doing the same. The issue here is that when we,
->> for example *submit* Bind vmas for scene 2,
->> we need to know how much page-table memory to allocate,
-> This is solved with over-provisioning in our case.
->
->> and what BOs to
->> make resident to be able to publish the out-fence.
-> That's basically what Danilo's latest gpuva_mgr patchset tries to
-> provide generic helpers for, by exposing functions to iterate over all
-> evicted GEMs (so we can make them resident) and adding a way to add
-> fences to all GEMs currently bound to the VM. That leaves external GEMs
-> that are about to be mapped, which, I think, is addressed by the
-> solution detailed above.
->
->> That means we need to
->> know what the VM state would look like at the end of "Unbind vmas for
->> scene 1".
-> Not necessarily, as long as you know all the GEMs that are currently
-> mapped and those that are about to be mapped. The extobj set provides
-> exactly that for external GEMs.
->
->> If the VM state is updated at submission time, that's all ok
->> but if it's updated at execution time, we'd have to guess what resources
->> to pre-allocate.
-> As long as you have enough resources pre-allocated to do the VM update
-> (not saying this is easy to guess on Intel, but it's doable on Mali,
-> and the page table caching makes over-provisioning not too bad, as long
-> as we limit the number of in-flight VM_BIND jobs).
+* Hans de Goede <hdegoede@redhat.com> wrote:
 
-OK, then it sounds we're on the same page. I guess it would i theory be 
-possible to pre-allocate all needed resources on xe as well, but if the 
-vm state lock is made an inner lock in order for us to be able to grab 
-it within the dma-fence critical section, then it comes with a number of 
-drawbacks as well:
-* Over-allocation of resources.
-* Need to spawn a cpu-thread for the async part (currently we utilize 
-the GPU for that).
-* Probably looking at locking inversions wrt userptr?
-* Probably looking at locking inversions wrt recoverable pagefaults?
-* Mismatch with the cpu mmap() / munmap() interface where the mmap_sem 
-is the outermost lock.
+> Hi Ingo,
+> 
+> On 9/6/23 14:10, Ingo Molnar wrote:
+> > 
+> > * Justin Stitt <justinstitt@google.com> wrote:
+> > 
+> >> Both `strncpy` and `strcpy` are deprecated for use on NUL-terminated
+> >> destination strings [1].
+> >>
+> >> We can see that `arg` and `uv_nmi_action` are expected to be
+> >> NUL-terminated strings due to their use within `strcmp()` and format
+> >> strings respectively.
+> >>
+> >> With this in mind, a suitable replacement is `strscpy` [2] due to the
+> >> fact that it guarantees NUL-termination on its destination buffer
+> >> argument which is _not_ the case for `strncpy` or `strcpy`!
+> >>
+> >> In this case, we can drop both the forced NUL-termination and the `... -1` from:
+> >> |       strncpy(arg, val, ACTION_LEN - 1);
+> >> as `strscpy` implicitly has this behavior.
+> >>
+> >> Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+> >> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> >> Link: https://github.com/KSPP/linux/issues/90
+> >> Cc: linux-hardening@vger.kernel.org
+> >> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > 
+> >>  arch/x86/platform/uv/uv_nmi.c | 7 +++----
+> >>  1 file changed, 3 insertions(+), 4 deletions(-)
+> > 
+> > Note that this commit is already upstream:
+> > 
+> >   1e6f01f72855 ("x86/platform/uv: Refactor code using deprecated strcpy()/strncpy() interfaces to use strscpy()")
+> > 
+> > Below is the delta your v3 patch has compared to what is upstream - is it 
+> > really necessary to open code it, instead of using strnchrnul() as your 
+> > original patch did? Am I missing anything here?
+> 
+> The new version is a result of a review from my because IMHO:
+> 
+> 	strscpy(arg, val, strnchrnul(val, sizeof(arg)-1, '\n') - val + 1);
+> 
+> Is really unreadable / really hard to reason about if
+> this is actually correct and does not contain any
+> of by 1 bugs.
+> 
+> Note that the diff of v3 compared to the code before v2 landed is
+> actually smaller now and actually matches the subject of:
+> "refactor deprecated strcpy and strncpy"
+> 
+> Where as v2 actually touches more code / refactor things
+> which fall outside of a "one change per patch" approach.
+> The:
+> 
+> 	p = strchr(arg, '\n');
+> 	if (p)
+> 		*p = '\0';
+> 
+> was already there before v2 landed.
+> 
+> I also suggested to do a follow up patch to change things to:
+> 
+> 	strscpy(arg, val, sizeof(arg));
+> 	p = strchrnul(arg, '\n');
+> 	*p = '\0';
+> 
+> Which IMHO is much more readable then what has landed
+> now. But since v2 has already landed I guess the best
+> thing is just to stick with what we have upstream now...
 
-So for us currently it currently looks like the sync state update is the 
-preferred one... But OTOH we haven't fully implemented the unwinding yet...
+Well, how about we do a delta patch with all the changes
+you suggested? I'm all for readability.
 
-/Thomas
+Thanks,
 
-
-
-
-
+	Ingo
