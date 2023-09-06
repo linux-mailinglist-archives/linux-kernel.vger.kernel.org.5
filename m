@@ -2,499 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E082793EA0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9CE793EA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236493AbjIFOVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:21:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38368 "EHLO
+        id S238059AbjIFOWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:22:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjIFOVu (ORCPT
+        with ESMTP id S239811AbjIFOWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:21:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42B3CF4
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:20:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694010058;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=z4hpJjlQTDqQs+eFnDMOq3zFFBSEXWclS96j2J3xL68=;
-        b=S8jY8a8YJ5zi46ZWcsiKe9vnn7G2FyGnvqAx+TqnpnfiqgSJ3sbQsFDhq+KQCfoAbep9vE
-        SmBhQteBLsSFFdTLlkHAu95U8DDRxBDGPUoa7VgorLXkY+ccEOQpiHCsXyyTPOsWjnFMxC
-        WjyuGbOKkL+zMXs3pcxBVxf4oBZUT/0=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-682-AYDCGzJTOw-enix4NEuawg-1; Wed, 06 Sep 2023 10:20:57 -0400
-X-MC-Unique: AYDCGzJTOw-enix4NEuawg-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-52c55b44141so2889444a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 07:20:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694010056; x=1694614856;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=z4hpJjlQTDqQs+eFnDMOq3zFFBSEXWclS96j2J3xL68=;
-        b=GnfjHH8a7pPjbER/ZBqFTtjA2CgcSUajiqSfhcf23BtatMFCmSOZpfDMbFLuRAAemW
-         djF58SjqWlqXbZ9oobtKd1A2W7nySxrPGnyT8Un3uboF/mMPp4yfaTsKP+b9WfJwV9BS
-         XczBlqrCWefclueak7AC9c4b9cx7FRxHTe9M4QMg1xndBDcz8YjcAjjeczgpn4QO25pJ
-         ZF/lTzBbIOvd6p0JKzKvT5brnISV0aCqGxaDI7FoT5Kn1AioXH8bR0z2MwJDk6cEwqZp
-         oDMfqA+gZMCbIfLyKlTI8MZr6XSmlBfxLNUfPZ13nZA//afGmkzsmDJGXBpTkfLUWGz/
-         Ushg==
-X-Gm-Message-State: AOJu0YxEnEiMT5+rJFtVZETHJ73OfytfxIXEE35/PWJweM8wF73dp/L8
-        nemTI7wk5bBEUQdI6iWiSa97P9lJu9jxLxDZxujdCEej2vCVCZ6jKtIOrH5AaSqNRlY+SXjNNsE
-        4Wx8jDcGdUJyqrAM2eQuVVIfs
-X-Received: by 2002:a05:6402:8cc:b0:51e:4439:f474 with SMTP id d12-20020a05640208cc00b0051e4439f474mr2367056edz.35.1694010055865;
-        Wed, 06 Sep 2023 07:20:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEkI2cK7qU+vJiouuQ+P7eC2xWgdk3ODHU36yWuhlR5G+jXrXMzbf9jcG5BBulw/f81kkoIGg==
-X-Received: by 2002:a05:6402:8cc:b0:51e:4439:f474 with SMTP id d12-20020a05640208cc00b0051e4439f474mr2367030edz.35.1694010055306;
-        Wed, 06 Sep 2023 07:20:55 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
-        by smtp.gmail.com with ESMTPSA id o10-20020aa7c7ca000000b0051e1660a34esm8441381eds.51.2023.09.06.07.20.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 07:20:54 -0700 (PDT)
-Message-ID: <22246322-d150-96df-58c6-436a70dd21da@redhat.com>
-Date:   Wed, 6 Sep 2023 16:20:53 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH drm-misc-next 2/3] drm/gpuva_mgr: generalize
- dma_resv/extobj handling and GEM validation
+        Wed, 6 Sep 2023 10:22:04 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2071.outbound.protection.outlook.com [40.107.244.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D066B10F8;
+        Wed,  6 Sep 2023 07:21:58 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Avd1uRnQNtTVrzCpmiZ8S33PS0bdqUEB039eAyaL8QSpDdcvlcjGQFVHX+LCFfuXU3neCw3NUQVWwLjonSk+fXjJkpxm4W3Asd/Btm4sN4wF2s1xFsglk++FxHENRNMIAwkAeMmlIJQP2J4i7tJul1ixymwu7+oVsQCPhF0+S1HS2M2wP0z+rIF1kbgp+9eTjBk9PpZaARjlSd422TH/ApJmXsZodkh0cOsTh++b6/JFpaZ+TYs2FA2inhHAi0lVx1Dj14l+M0H9+emDipqSD6OeSu0YY2Hk47cX2DCP263TtzdFwky99aco8zWxPPdSBUMVBsVpQJ5DStRIJThbXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sgiJ/rxiQUmzg/gyg77r2AIGspeYrYNaBbYo10/Nr34=;
+ b=MWpqwSdm/TAgfG2i7gPJFImpkwWON71xXlFo282rYIzh3YU+MiXcaocz79jYNhqaqd24edM7WMOAHzGBs14HfpZceJcOHQ+p5oSlx0wDEiENpsh6cY5CLv0T18Odq3PKW31v/zPxcrApBD0Yha7wGgprktnyX/+YCr4mLFzCfXD1pTC3rKpXEBOzt/UmBeXfbTh01exixswvVenjkd0pLVqdMLIl2S1kqqkXRYynYF8OsJT54Cr/tQoBXbOOYzdXDl1UdEX2yr4ki0AwHe5NwJqyKmxO5VbJgbCkXLef9sf+sBbQaeDsrs/EgklL5nv7I4gobYHDUsvTD9EgMOQ8Rw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sgiJ/rxiQUmzg/gyg77r2AIGspeYrYNaBbYo10/Nr34=;
+ b=afGbmNoocDRC4T68cpWhR2lfV1DfgrB1vAZl+69leAPwY7aDk7lxkj1tkFrszwfDr2uO8/Ii0YVfmuaa6xVCzYpkKhWYjSZKVlj64Jdf5SIhSRsNmyBk9yHgBn6MUHNwu8VAg1ABoOh625bl0Crd5q8julzLR01y9jaR0HM0wBA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CH2PR12MB3688.namprd12.prod.outlook.com (2603:10b6:610:28::33)
+ by MN2PR12MB4565.namprd12.prod.outlook.com (2603:10b6:208:26b::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Wed, 6 Sep
+ 2023 14:21:56 +0000
+Received: from CH2PR12MB3688.namprd12.prod.outlook.com
+ ([fe80::6268:19d9:8c1b:f448]) by CH2PR12MB3688.namprd12.prod.outlook.com
+ ([fe80::6268:19d9:8c1b:f448%6]) with mapi id 15.20.6745.034; Wed, 6 Sep 2023
+ 14:21:56 +0000
+Message-ID: <9259e3f3-8e17-40da-a0e1-3f95b0879ba1@amd.com>
+Date:   Wed, 6 Sep 2023 09:21:51 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/3] remoteproc: zynqmp: get TCM from device-tree
 Content-Language: en-US
-From:   Danilo Krummrich <dakr@redhat.com>
-To:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        christian.koenig@amd.com, faith.ekstrand@collabora.com,
-        bskeggs@redhat.com, Liam.Howlett@oracle.com,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20230820215320.4187-3-dakr@redhat.com>
- <0c50ff22-0f11-1e27-c32e-694ce2b1e6c5@shipmail.org> <ZO864yp3UyVEfEjz@pollux>
- <88c45fe6-0942-707c-9ea7-8486c177fcd7@shipmail.org> <ZO9Zq2RhbX8EeHrn@pollux>
- <736b6b6d-9e04-a27d-7d60-0c45d696b304@shipmail.org>
- <ZPB26A0/oLHTmyqk@cassiopeiae>
- <a8f28d62-daec-927a-a33d-5be3eec6a1ed@shipmail.org>
- <ZPDk/lao1JlBNGoJ@cassiopeiae>
- <8a8253ae-0b85-df90-b480-64eeebfafc6d@shipmail.org>
- <ZPHUuU4L4P2A8gan@cassiopeiae>
-Organization: RedHat
-In-Reply-To: <ZPHUuU4L4P2A8gan@cassiopeiae>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Michal Simek <michal.simek@amd.com>
+Cc:     Conor Dooley <conor+dt@kernel.org>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
+        Ben Levinsky <ben.levinsky@amd.com>
+References: <20230829181900.2561194-1-tanmay.shah@amd.com>
+ <20230829181900.2561194-4-tanmay.shah@amd.com>
+ <f6943509-25c5-b4fe-2218-638cc06a4e04@linaro.org>
+ <a88a0240-30a2-4c99-baeb-091b44e4c2b7@amd.com>
+ <dc5d4145-770f-3318-b026-5ce29483d384@linaro.org>
+From:   Tanmay Shah <tanmay.shah@amd.com>
+In-Reply-To: <dc5d4145-770f-3318-b026-5ce29483d384@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: SJ0PR03CA0388.namprd03.prod.outlook.com
+ (2603:10b6:a03:3a1::33) To CH2PR12MB3688.namprd12.prod.outlook.com
+ (2603:10b6:610:28::33)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH2PR12MB3688:EE_|MN2PR12MB4565:EE_
+X-MS-Office365-Filtering-Correlation-Id: e7dec5ca-189d-4fe6-6da8-08dbaee49fa7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jk7oRV3YE3j2IpEr+U5ihlHaKMKgy1PXiVT3COXDeXaLtWx1guS9BrT4nkvtXKXJpqmM5fQ7z+HAiXBqSVsoEHpb9bjDGo4P5FivmPttL5DteA/zxQjyxhKsk1gIsPZXWdfTnoDwLH1hagSnNRClCF4511L1EqIVLTQrslMdweOJj9QRVMf8JPqPoVHnsGlj7w/GnReI0DzwJkXeF3Eg5uXJdMDB5Nz27S3fd1b+oPJvGPXvqh8VEmSuqEFH9X4ce6Nt2UN6rWbS61mrl1vPIp7HIGo/NasLMVc5BHzZYyFhXCylNJBCeMz2jB/BupikFxAtLY1zHVTRSgzb+yCLAqYjlKXJR7vlUp5ZbPzi8f0SiYkRVNBWRTYMBRKNWgtZqdk4mqbdoT/xs6vP44D/1BDnUYiz9CYG4HXZvhlBM+ZU5vKYNFsYnesWw5XPoS+c8w+ojPfK2g4SNXjjFOHmeSNjL7iUByjyklFuOBZiP86Al2CRcB49gOlev1hfcpPs/5L5G/MuaJRRZrYCw6OuYeJvjLI3AUqfbTgzn8mD8l0eYhfsuYnbpKDO9P2a0DDO/oQMiUajyoImKhFp3cbUU39bJFGQMYXprm3r5M4nAPBeSrJXeI3pa08kHWMIcak0NSEjwNxzxTMvrlN/JkTd3ekz2WHKdRGtGWqCgUS2GPk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB3688.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(39860400002)(136003)(376002)(366004)(186009)(1800799009)(451199024)(2616005)(921005)(38100700002)(26005)(6486002)(6506007)(53546011)(6512007)(36756003)(83380400001)(31696002)(86362001)(44832011)(5660300002)(7416002)(41300700001)(6636002)(54906003)(316002)(66556008)(66946007)(110136005)(66476007)(8936002)(4326008)(8676002)(31686004)(6666004)(478600001)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dUFCcnRVSDloNGV0R3FSWUpFMG1vSGxGL2VYMXRIVXFFMGZ2YUFkblF3MDFp?=
+ =?utf-8?B?WXNjYlhQR1RkRG5vM2I3STl3Q3BDcTdQWXFGQ3Z4d0F2UVZwSE1CMGxBNERh?=
+ =?utf-8?B?a1UrM2NORytVRTlsTFVpUm1sc3crbHlqWURXTkJQR0JmdHl1TThoLzJmL3Ry?=
+ =?utf-8?B?WTZQQjhnMjE1STlIc0FQa3V1WmhrSTlrVE5MYmJKaDRFSTJjQ1g2V3lkUS9t?=
+ =?utf-8?B?dVJtd3ZlRlFYQlQyU0ZBNzMzYU90Yld1YWhQSm04S0J3TWU4L25yZGZOTEo0?=
+ =?utf-8?B?RVcvbWJEL2ZyUGo3RW01blIwTnRSc3l3REJFS2VDRHlNMWE4cWYyby96YkZp?=
+ =?utf-8?B?QVJCMCtDWmdwSnFRNHp2ZTVvc3o1NVNMdHgrSGRLOCt5M3g4eGxpblUxVXJR?=
+ =?utf-8?B?NXhPcVpQMjhLNzVsY3RYb3hxSnhmV0lqa1ltdkxQbjJWQTRITnUxM054MkxV?=
+ =?utf-8?B?bWhDK0o0bzNib0tkeDhCek92dDJ1cEZZWGlWekJ5eUhYUndISXJ2MWlodFBW?=
+ =?utf-8?B?a0xNSkpLbm5DcUdzQmhrZGVnejhabG5PSytjeDdDQmRKTHlGR0RIYVhIOHdl?=
+ =?utf-8?B?R3Q2VG1GT1V6b3Q3VTQrOTN5UXYxdlJaMXQ2NWlpQTF2VVJZbUVVbzNXS1g4?=
+ =?utf-8?B?NkVHdDhzZnZKUXRJbDVHbkJNUW12MTk5bWplQ3Nzek1PUjFBTHVhc1djNUpu?=
+ =?utf-8?B?d3pJRSswMWhuRVJlMWZWdkV5Q0JYdDFjaGFYMEtNdjBCeUMrejRLMy9yYXht?=
+ =?utf-8?B?UGN3R1Fsc0taR1ZQaFg5aHhyR2RVWVkxWE9hb2ZtNm9aMjBGVUo5U0gzc01T?=
+ =?utf-8?B?Z3JlbzZwVFlrZjhoNmoxaERPekpWY3VHT0x0Slh2VHNmdGU0NHpjUlF1cUdO?=
+ =?utf-8?B?RGhYTWtqcTB0a2IxVVZQNXNrZjFuSXJOQk04NU9EL1ZrTmk5RXFXQXJ0N2FB?=
+ =?utf-8?B?SGRjanExUkI3OGJzR0VPbVhLNDhTNHgwWnpXTE16VkZ4eTZSZmNPa2s0LzRE?=
+ =?utf-8?B?bUg4aXkvOEprZk50Q1ZsalNoNmh2ZkxTT3VMRm9pMEZUQzRTaXA1Z3dQdENV?=
+ =?utf-8?B?Z3R1Mk9LYU1xZ1J2Mzd2Y3RwTXh2ZHZkNDV5a0VKTU5mY2YxL3ZFbWpFS3d5?=
+ =?utf-8?B?MC9IMEpJT1ByQ1hRSnd6d0tqZWErNmNwV05KYktaQ1RwMm5wQzNZeVROWDc5?=
+ =?utf-8?B?R0dQR2VNTnowZUo4ZGo5MGJWY1RKbXg3L1JDUVV6Q2h5REh2ZFZ5cUFKOEZW?=
+ =?utf-8?B?VFNqaTMvM1B6Uzhyd0ZLSHJNQWdRQ3hvTU9SOXFJMmkrS0FZdzRKNnRuR1Vo?=
+ =?utf-8?B?amZsM1hzRWxlYW92RjlweGVBUXlVTWRmSTlOb3BCRWRKUldBOHJHVUQrWWQv?=
+ =?utf-8?B?NWZKM2QySUd1bWJpd0dlU0daZG5RTURKbjREY0ZOYzVHdXhoYXk4b0VWRkoz?=
+ =?utf-8?B?NzJxMklDY2JUajZJRFF5blVRbnpCQmh6NXpkV3loVFk0Z0pBYUYvekRKRmxa?=
+ =?utf-8?B?d2Q1T2c2Rm95WWQzRmVXQmkrenVxbnZDV1Ezc09zbS9NamxKV0ZnM1g1ZUdh?=
+ =?utf-8?B?aTJibURyd0hLbzU2YkcyVVBxWjFTTGU2UXh5eFNqa2s3Y3BDWVpSNjZTa3Ir?=
+ =?utf-8?B?TlREM0NhMHlTcndHaEVpYk16amFkZ0xZSTFsRUlNL0dNR0owRi8wczRUdjBZ?=
+ =?utf-8?B?b3BhS2NaSE9RNFBCd0hMZy9PVGFkZGg2bG85RlJXbm4vT2t2YjVGbld1dStx?=
+ =?utf-8?B?TjJJUkYxR1ZFNEt6MklYYkVCZzQwb1N3MWZFUDAvMUI2aXgyb2plZVBFQVpp?=
+ =?utf-8?B?T3BONjZaZk5wSk9udWVmUDZuMHA1Vk5OQlBsc0JZVFVUMnZ4bmFyTmNqS1hl?=
+ =?utf-8?B?WXdJYjU3Wm8xc2hWWlVrMkw5QnB4MDNlUTBrdUUwMk9jb3RjdXFncGlNOU1U?=
+ =?utf-8?B?RnNrOFltRlk1eC9oTGhLcG9zckpKUEZSYTlyczBNcko3bU4xR09yN2VEczZB?=
+ =?utf-8?B?WGNEL0ZPNlk2UzdTL3JZdEI1NjNHZ2sxQkhGSHRqSnFqT0tDMkdDc2FLK1FP?=
+ =?utf-8?B?TDRjelRYVHpIbTgvUUlMeVhNY2lxK1BKczV5S09TWWRrRXlLRmVLNFZCTXI4?=
+ =?utf-8?Q?b7GFgi6s9Tgtkvv506MF1wkTM?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e7dec5ca-189d-4fe6-6da8-08dbaee49fa7
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB3688.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 14:21:55.9423
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PeMv7uvP16fpdmzlf299ELC0motW+by3Ps2OwhR2DzXnMAnfHr2WR0GMShqlel5K
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4565
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/23 14:10, Danilo Krummrich wrote:
-> On Fri, Sep 01, 2023 at 07:59:21AM +0200, Thomas Hellström (Intel) wrote:
->>
->> On 8/31/23 21:07, Danilo Krummrich wrote:
->>> On Thu, Aug 31, 2023 at 06:53:01PM +0200, Thomas Hellström (Intel) wrote:
->>>> Hi,
->>>>
->>>> On 8/31/23 13:18, Danilo Krummrich wrote:
->>>>> On Thu, Aug 31, 2023 at 11:04:06AM +0200, Thomas Hellström (Intel) wrote:
->>>>>> Hi!
->>>>>>
->>>>>> On 8/30/23 17:00, Danilo Krummrich wrote:
->>>>>>> On Wed, Aug 30, 2023 at 03:42:08PM +0200, Thomas Hellström (Intel) wrote:
->>>>>>>> On 8/30/23 14:49, Danilo Krummrich wrote:
->>>>>>>>> Hi Thomas,
->>>>>>>>>
->>>>>>>>> thanks for having a look!
->>>>>>>>>
->>>>>>>>> On Wed, Aug 30, 2023 at 09:27:45AM +0200, Thomas Hellström (Intel) wrote:
->>>>>>>>>> Hi, Danilo.
->>>>>>>>>>
->>>>>>>>>> Some quick comments since I'm doing some Xe work in this area. Will probably
->>>>>>>>>> get back with more.
->>>>>>>>>>
->>>>>>>>>> On 8/20/23 23:53, Danilo Krummrich wrote:
->>>>> <snip>
->>>>>
->>>>>>>>>>> diff --git a/include/drm/drm_gpuva_mgr.h b/include/drm/drm_gpuva_mgr.h
->>>>>>>>>>> index ed8d50200cc3..693e2da3f425 100644
->>>>>>>>>>> --- a/include/drm/drm_gpuva_mgr.h
->>>>>>>>>>> +++ b/include/drm/drm_gpuva_mgr.h
->>>>>>>>>>> @@ -26,12 +26,16 @@
->>>>>>>>>>>         */
->>>>>>>>>>>        #include <linux/list.h>
->>>>>>>>>>> +#include <linux/dma-resv.h>
->>>>>>>>>>> +#include <linux/maple_tree.h>
->>>>>>>>>>>        #include <linux/rbtree.h>
->>>>>>>>>>>        #include <linux/types.h>
->>>>>>>>>>>        #include <drm/drm_gem.h>
->>>>>>>>>>> +#include <drm/drm_exec.h>
->>>>>>>>>>>        struct drm_gpuva_manager;
->>>>>>>>>>> +struct drm_gpuva_gem;
->>>>>>>>>>>        struct drm_gpuva_fn_ops;
->>>>>>>>>>>        /**
->>>>>>>>>>> @@ -140,7 +144,7 @@ struct drm_gpuva {
->>>>>>>>>>>        int drm_gpuva_insert(struct drm_gpuva_manager *mgr, struct drm_gpuva *va);
->>>>>>>>>>>        void drm_gpuva_remove(struct drm_gpuva *va);
->>>>>>>>>>> -void drm_gpuva_link(struct drm_gpuva *va);
->>>>>>>>>>> +void drm_gpuva_link(struct drm_gpuva *va, struct drm_gpuva_gem *vm_bo);
->>>>>>>>>>>        void drm_gpuva_unlink(struct drm_gpuva *va);
->>>>>>>>>>>        struct drm_gpuva *drm_gpuva_find(struct drm_gpuva_manager *mgr,
->>>>>>>>>>> @@ -240,15 +244,137 @@ struct drm_gpuva_manager {
->>>>>>>>>>>        	 * @ops: &drm_gpuva_fn_ops providing the split/merge steps to drivers
->>>>>>>>>>>        	 */
->>>>>>>>>>>        	const struct drm_gpuva_fn_ops *ops;
->>>>>>>>>>> +
->>>>>>>>>>> +	/**
->>>>>>>>>>> +	 * @d_obj: Dummy GEM object; used internally to pass the GPU VMs
->>>>>>>>>>> +	 * dma-resv to &drm_exec.
->>>>>>>>>>> +	 */
->>>>>>>>>>> +	struct drm_gem_object d_obj;
->>>>>>>>>>> +
->>>>>>>>>>> +	/**
->>>>>>>>>>> +	 * @resv: the &dma_resv for &drm_gem_objects mapped in this GPU VA
->>>>>>>>>>> +	 * space
->>>>>>>>>>> +	 */
->>>>>>>>>>> +	struct dma_resv *resv;
->>>>>>>>>>> +
->>>>>>>>>>> +	/**
->>>>>>>>>>> +	 * @exec: the &drm_exec helper to lock external &drm_gem_objects
->>>>>>>>>>> +	 */
->>>>>>>>>>> +	struct drm_exec exec;
->>>>>>>>>>> +
->>>>>>>>>>> +	/**
->>>>>>>>>>> +	 * @mt_ext: &maple_tree storing external &drm_gem_objects
->>>>>>>>>>> +	 */
->>>>>>>>>>> +	struct maple_tree mt_ext;
->>>>>>>>>> Why are you using a maple tree here? Insertion and removal is O(log(n))
->>>>>>>>>> instead of O(1) for a list?
->>>>>>>>>>
->>>>>>>>> Having a list of drm_gem_objects directly wouldn't work, as multiple GPU-VMs
->>>>>>>>> could have mappings of the same extobj.
->>>>>>>>>
->>>>>>>>> I considered using the VM_BO abstraction (struct drm_gpuva_gem) as list entry
->>>>>>>>> instead, which also seems to be the obvious choice. However, there is a locking
->>>>>>>>> conflict.
->>>>>>>>>
->>>>>>>>> A drm_gem_object keeps a list of drm_gpuva_gems, while each drm_gpuva_gem keeps
->>>>>>>>> a list of drm_gpuvas. Both lists are either protected with the dma-resv lock of
->>>>>>>>> the corresponding drm_gem_object, or with an external lock provided by the
->>>>>>>>> driver (see drm_gem_gpuva_set_lock()). The latter is used by drivers performing
->>>>>>>>> changes on the GPUVA space directly from the fence signalling path.
->>>>>>>>>
->>>>>>>>> Now, similar to what drm_gpuva_link() and drm_gpuva_unlink() are doing already,
->>>>>>>>> we'd want to add a drm_gpuva_gem to the extobj list for the first mapping being
->>>>>>>>> linked and we'd want to remove it for the last one being unlinked.
->>>>>>>>>
->>>>>>>>> (Actually we'd want to add the drm_gpuva_gem object to the extobj list even
->>>>>>>>> before, because otherwise we'd not acquire it's dma-resv lock of this GEM object
->>>>>>>>> through drm_gpuva_manager_lock(). But that's trival, we could do that when we
->>>>>>>>> create the drm_gpuva_gem, which we need to do anyways.)
->>>>>>>>>
->>>>>>>>> Anyway, we'd probably want to keep removing the drm_gpuva_gem from the extobj
->>>>>>>>> list from drm_gpuva_unlink() when the last mapping of this BO is unlinked. In
->>>>>>>>> order to do so, we'd (as discussed above) either need to hold the outer GPU-VM
->>>>>>>>> lock or the GPU-VMs dma-resv lock. Both would be illegal in the case
->>>>>>>>> drm_gpuva_unlink() is called from within the fence signalling path. For drivers
->>>>>>>>> like XE or Nouveau, we'd at least need to make sure to not mess up the locking
->>>>>>>>> hierarchy of GPU-VM lock and dma-resv lock of the corresponding BO.
->>>>>>>>>
->>>>>>>>> Considering all that, I thought it's probably better to track extobjs separate
->>>>>>>>> from the drm_gpuva_gem, hence the maple tree choice.
->>>>>>>> Hm. OK, in Xe we're having a list of the xe_vmas (drm_gpuvas) that point to
->>>>>>>> external objects, or in the case of multiple mappings to the same gem
->>>>>>>> object, only one of the drm_gpuvas is in the list. These are protected by
->>>>>>>> the GPU-VM lock. I don't see a problem with removing those from the fence
->>>>>>>> signalling path, though?
->>>>>>> I intentionally tried to avoid keeping a list of drm_gpuvas to track extobjs,
->>>>>>> since this is generic code I don't know how much mappings of an external object
->>>>>>> the corresponding driver potentially creates. This could become a pretty large
->>>>>>> list to iterate. Another reason was, that I want to keep the drm_gpuva structure
->>>>>>> as small as possible, hence avoiding another list_head.
->>>>>> Yes, the list might be pretty large, but OTOH you never iterate to access a
->>>>>> single list element. When you need to iterate the whole list you need to do
->>>>>> that regardless of the data structure used. As for the list head, it might
->>>>>> perhaps be aliased (union) with an upcoming userptr list head?
->>>>>>
->>>>> Oh, I did not mean that I'm concerned about the size of a list of extobjs in
->>>>> general, that would indeed be the same for every data structure chosen. But I
->>>>> would be concerned about keeping a list of *all* mappings being backed by an
->>>>> extobj.
->>>>>
->>>>>>> Now, it sounds like in XE you're doing some kind of optimization just keeping a
->>>>>>> single mapping of an extobj in the list? How do you know when to remove it? What
->>>>>>> if the mapping from the extobj list gets unmapped, but there is still another
->>>>>>> one left in the GPU-VM being backed by the same BO?
->>>>>> When removing from the lists, we iterate through the object's list of vmas,
->>>>>> and if there is one matching the same vm, we replace the old one with the
->>>>>> new one. A similar iteration is done when adding to avoid adding one that is
->>>>>> already on the list.
->>>>> I see, but wouldn't this be O(n) on insertion and O(m) on removal of an extobj,
->>>>> while using the maple tree is O(log(n))?
->>>> No, insertion and removal is O(m) where m is the number of vms the object is
->>>> currently bound to. Typically a very small number.
->>> Ok, my guess was that on insertion you'd actually walk the extobj list and see
->>> if there's a vma backed by the same BO already, while on removal you said you're
->>> walking the BO's vma list. So I guess on insertion you're also walking the BO's
->>> vma list and see if there's already a mapping for this VM?
->>>
->>> In your case that might make sense if you expect the extobj list to be larger
->>> than the BO's vma list typically. In general I don't think this is true.
->>
->> I think we're then optimizing for different scenarios. Our compute driver
->> will use mostly external objects only, and if shared, I don't forsee them
->> bound to many VMs. What saves us currently here is that in compute mode we
->> only really traverse the extobj list after a preempt fence wait, or when a
->> vm is using a new context for the first time. So vm's extobj list is pretty
->> large. Each bo's vma list will typically be pretty small.
-> 
-> Admittedly, I did not had in mind VMs where every GEM is an extobj. However,
-> especially for iterating a lot of extobjs a maple tree should perform better
-> than a list.
-> 
->>
->> Another reason for us to use the list is that one possible, but not yet
->> implemented, workaround for this is the "vm fence", which when attached to
->> external bos pulls them off the extobj list and on "enable_signalling()"
->> splices its sublist of external bos back, and then snapshots the vm's
->> dma_resv and waits for all its fences. (The idea is that it should very
->> seldom be waited for in practice, and largely eliminate the extobj
->> handling). Here a list is an ideal data structure for list removal and
->> splicing. TBH we really want to avoid this optimization but we need to see
->> how bad extobj handling ends up in practice for the compute drivers.
-> 
-> If you end up doing this I highly doubt it'd make sense to use the GPUVA
-> manager for that, even if it would implement extobjs as a list of drm_gpuva_gems
-> (VM_BOs). It'd probably be a mess. When you remove extobjs from the GPUVA
-> manager, not because they're actually gone, but because you want to keep them
-> separate, you'd need to make sure to keep the drm_gpuva_gem structure alive,
-> which means you would need to increase the GPUVA managers refcount for extobjs
-> manually. You could probably also just "steal" them silently, but that'd be
-> quite nasty as well.
-> 
->>
->>
->>>
->>>>>>> Although assuming that's a no-go for GPUVA wouldn't an XArray be a better
->>>>>>> choice, keeping O(1)?
->>>>>>> When tracking extobjs, the address of the drm_gem_object is the key while the
->>>>>>> reference count is the value. I was thinking of an XArray as well, but I was
->>>>>>> worried that the corresponding indices could be too much distributed for an
->>>>>>> XArray to still be efficient. Now that I think about it, it's probably not that
->>>>>>> bad.
->>>>>>>
->>>>>>> Btw., while I agree trying to make things as efficient as possible, what is the
->>>>>>> magnitue for extobjs to be tracked, do we need to worry about the O(log(n))?
->>>>>> Not sure yet, TBH, but I think one of our UMDs can only use external object,
->>>>>> because they don't know at creation time which ones need exporting. However
->>>>>> if this turns out to be too bad, there are various flavours of "clever but
->>>>>> complicated" optimizations that we could think of to reduce the list size.
->>>>>> Still in our case, we opted for the vma list head for now.
->>>>> Considering the above, I would guess that if your current approach is good
->>>>> enough, a maple tree will work as well.
->>>> Hmm, Yeah it's probably a bikeshed since each drm_exec builds a realloced
->>>> array of all external objects on each exec.
->>> I did a quick sketchy benchmark, which is probably good enough. In a maple tree
->>> with 0xFFFF - 1 existing entries insertion of a random (non-existant) entry
->>> took on average ~530ns over 1k iterations.
->>>
->>> The average insertion time for each entry to build up a tree with 0xFFFF - 1
->>> entries in the first place was ~1.3us. That's expected since it should hit
->>> memory allocations more often than the previous one. The maximum peak was ~10us.
->>> Inserting already existing entries took ~300ns.
->>>
->>> That's probably good enough.
->>
->> That's hard to tell because we have nothing to compare with. For drm_exec,
->> Christian chose a realloced array because of linked list cache locality
->> issues, and Xarray locking requirements causing measurable performance
->> issues. Wouldn't a maple tree suffer from both of these?
-> 
-> Maple tree was designed for cache efficient traversal and to replace rbtree and
-> linked lists in MM because of their lack of cache efficiency. (That's also why
-> it is really unfortunate that we couldn't use maple tree for VMA tracking in the
-> GPUVA manager.)
-> 
-> In terms of locking, I can only imagine an issue because Xarray always seems to
-> use RCU and hence you can't get rid of some grace period latency? Otherwise it
-> should just be a spinlock.
-> 
-> @Christian: Or was there a different issue?
-> 
-> Maple tree can disable RCU entirely [1] AFAIK, hence likely we can avoid such an
-> issue.
-> 
-> [1] https://elixir.bootlin.com/linux/latest/source/include/linux/maple_tree.h#L612
-> 
->>
->> In any case if you go for the maple tree would it be possible to hide the
->> implementation in a way as to make it not too hard to replace if real-world
->> workloads prove it necessary?
-> 
-> Of course, I would want to do that anyway.
 
-Just a heads-up. It looks like (with the help of Boris) I can come up with a solution
-everyone should be happy with. I think we can move extobjs to a list and API and locking
-wise just do (almost) everything as we would as if there wouldn't be the use-case of
-updating the VA space with direct callback from the fence signaling path.
+On 9/6/23 1:20 AM, Philippe Mathieu-Daudé wrote:
+> On 5/9/23 23:48, Tanmay Shah wrote:
+> > 
+> > On 9/4/23 2:50 AM, Philippe Mathieu-Daudé wrote:
+> >> Hi,
+> >>
+> >> On 29/8/23 20:19, Tanmay Shah wrote:
+> >>> Use new dt bindings to get TCM address and size
+> >>> information. Also make sure that driver stays
+> >>> compatible with previous device-tree bindings.
+> >>> So, if TCM information isn't available in device-tree
+> >>> for zynqmp platform, hard-coded address of TCM will
+> >>> be used.
+> >>>
+> >>> New platforms that are compatible with this
+> >>> driver must add TCM support in device-tree as per new
+> >>> bindings.
+> >>>
+> >>> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+> >>> ---
+> >>>    drivers/remoteproc/xlnx_r5_remoteproc.c | 279 +++++++++++++++++++-----
+> >>>    1 file changed, 221 insertions(+), 58 deletions(-)
+> >>
+> >>
+> >>>    /**
+> >>> @@ -75,11 +79,17 @@ struct mbox_info {
+> >>>     * Hardcoded TCM bank values. This will be removed once TCM bindings are
+> >>>     * accepted for system-dt specifications and upstreamed in linux kernel
+> >>
+> >> Just curious, for how long this fall back code has to be maintained?
+> >> (When/how will we know we can remove it?)
+> > 
+> > 
+> > I believe we should never remove it. It's important that driver works with old bindings as well.
+>
+> Do you mind posting a followup patch updating the comment,
+> to clarify?
 
-Drivers doing that can simply schedule work to call drm_gpuva_unlink() from the fence
-signaling path for explicit unmaps to avoid locking issues.
 
-Drivers relying on VA space updates in the IOCTL already aren't affected at all.
+Sure I will post the follow up patch with comments updated.
 
-I'll probably send out a v2 today or tomorrow.
+I will wait for reviews from Mathieu on driver's patch then will address all the comments in v5.
 
-- Danilo
 
-> 
->>
->>>
->>>>> Otherwise, if you want, I could do some experiments with Xarray and see how
->>>>> that works out compared to using a maple tree.
->>>>>
->>>>> Btw. another nice thing about using Xarray or maple tree for that is that
->>>>> drivers updating the VA space from the fence signalling path don't need to
->>>>> hold a GPU-VM lock to update the extobj list. Actually, they might not need
->>>>> a GPU-VM lock at all.
->>>> I still don't follow why drivers would want to do that. Isn't the VA space /
->>>> fence object list always updated sync from the IOCTL?
->>> For the extobj list I don't see any advantage not doing that in the IOCTL right
->>> away. For the VA space there are a few advantages doing it in the fence
->>> signalling path.
->>>
->>> (1) No need to allocate drm_gpuva_ops at all. For a given map / unmap request
->>>       the driver can receive the callbacks for map / remap / unmap directly.
->>> (2) No need to unwind VA space updates on failure, also no need for any other
->>>       unwind tricks.
->>> (3) Synchronous bind jobs can be injected at any point of time and don't need to
->>>       be queued up in the scheduler to preserve ordering.
->>> (4) Potentially less error prone ressource management. Although, I admit partly
->>>       this is just the consequence of (1) and (2).
->>>
->>> Actually, once I get the page table management prepared for that I'd like to
->>> move Nouveau over this approach.
->>
->> OK. I guess I need to look at the resulting implementation to fully digest
->> this.
->>
->> Thanks,
->>
->> Thomas
->>
->>
->>>
->>>> /Thomas
->>>>
->>>>
->>>>>> /Thomas
->>>>>>
->>>>>>
->>>>>>>>>>> +
->>>>>>>>>>> +	/**
->>>>>>>>>>> +	 * @evict: structure holding the evict list and evict list lock
->>>>>>>>>>> +	 */
->>>>>>>>>>> +	struct {
->>>>>>>>>>> +		/**
->>>>>>>>>>> +		 * @list: &list_head storing &drm_gem_objects currently being
->>>>>>>>>>> +		 * evicted
->>>>>>>>>>> +		 */
->>>>>>>>>>> +		struct list_head list;
->>>>>>>>>>> +
->>>>>>>>>>> +		/**
->>>>>>>>>>> +		 * @lock: spinlock to protect the evict list against concurrent
->>>>>>>>>>> +		 * insertion / removal of different &drm_gpuva_gems
->>>>>>>>>>> +		 */
->>>>>>>>>>> +		spinlock_t lock;
->>>>>>>>>>> +	} evict;
->>>>>>>>>>>        };
->>>>>>>>>>>        void drm_gpuva_manager_init(struct drm_gpuva_manager *mgr,
->>>>>>>>>>> +			    struct drm_device *drm,
->>>>>>>>>>>        			    const char *name,
->>>>>>>>>>>        			    u64 start_offset, u64 range,
->>>>>>>>>>>        			    u64 reserve_offset, u64 reserve_range,
->>>>>>>>>>>        			    const struct drm_gpuva_fn_ops *ops);
->>>>>>>>>>>        void drm_gpuva_manager_destroy(struct drm_gpuva_manager *mgr);
->>>>>>>>>>> +/**
->>>>>>>>>>> + * DRM_GPUVA_EXEC - returns the &drm_gpuva_managers &drm_exec instance
->>>>>>>>>>> + * @mgr: the &drm_gpuva_managers to return the &drm_exec instance for
->>>>>>>>>>> + */
->>>>>>>>>>> +#define DRM_GPUVA_EXEC(mgr)	&(mgr)->exec
->>>>>>>>>> A struct ww_acquire_ctx and thus a drm_exec is fundamentally per task and
->>>>>>>>>> should typically be allocated on the stack. Otherwise you'd need to protect
->>>>>>>>>> the mgr->exec member with an exclusive lock throughout the locking process,
->>>>>>>>>> and that's not what we want.
->>>>>>>>> Oh, good point. I think it works in Nouveau, because there it's implicitly
->>>>>>>>> protected with the job submission lock.
->>>>>>>>>
->>>>>>>>>> Did you consider subclassing a drm_exec for drm_gpuva purposes and add
->>>>>>>>>> needed ops to it: Like so:
->>>>>>>>> That's a good idea, will take this into V2.
->>>>>>>> Actually, I'm not fully sure that was a good idea: I've now have a working
->>>>>>>> version of Xe ported over to drm_exec, having these helpers in mind and with
->>>>>>>> the intention to start using them as they mature. What I found, though is
->>>>>>>> that open-coding the drm_exec loop is not all that bad, but that building
->>>>>>>> blocks that can be called from within the loop are useful:
->>>>>>>>
->>>>>>>> Like the drm_gpuva_prepare_objects() and an imaginary
->>>>>>>> drm_gpuva_prepare_gpuva() that locks the vm resv and the resv of the object
->>>>>>>> (if different and the gpuva points to the object. And
->>>>>>>> drm_gpuva_prepare_array() although we don't use it within Xe. That means you
->>>>>>>> can use these building blocks like helpers and avoid the fn() callback by
->>>>>>>> instead open-coding.
->>>>>>>>
->>>>>>>> But I guess YMMV.
->>>>>>> That's exactly why those building blocks are exported, I already had in mind
->>>>>>> that there might be drivers which still want to open-code the drm_exec loop,
->>>>>>> while others might just want a simple interface to lock everything.
->>>>>>>
->>>>>>> I still think it is a good idea, but I'd keep that as simple as possible. And
->>>>>>> for everything else just let the driver open-code it and use the "building
->>>>>>> blocks" - will also expand the bulding blocks to what you mentioned above.
->>>>>>>
->>>>>>>>>> struct drm_gpuva_exec_ops {
->>>>>>>>>>          int (*fn) (struct drm_gpuva_exec *exec, int num_fences);
->>>>>>>>> Is this the fn argument from drm_gpuva_manager_lock_extra()?
->>>>>>>>>
->>>>>>>>>>          int (*bo_validate) (struct drm_gpuva_exec *exec, struct drm_gem_object
->>>>>>>>>> *obj);
->>>>>>>>> I guess we could also keep that within the drm_gpuva_fn_ops? This should always
->>>>>>>>> be the same callback, right?
->>>>>>>>>
->>>>>>>>>> };
->>>>>>>>>>
->>>>>>>>>> struct drm_gpuva_exec {
->>>>>>>>>>          const struct drm_gpuva_exec_ops *ops;
->>>>>>>>>>          struct drm_exec exec;
->>>>>>>>>>          struct drm_gpuva_manager *mgr;
->>>>>>>>>> };
->>>>>>>>>>
->>>>>>>>>> Although I'd actually expect bo_validate to be part of fn in the typical
->>>>>>>>>> case. The drm_gpuva_exec would then be allocated by the caller on the stack.
->>>>>>>>> This doesn't sound like my assumption about fn() above is correct.
->>>>>>>> Well one important thing in our conversion is that ttm_bo_validate () needs
->>>>>>>> to be in the until_all_locked() loop. We want to be able soon to use
->>>>>>>> sleeping locks for eviction, so a xe_bo_validate() would, at least
->>>>>>>> temporarily, add locked objects to the drm_exec list of locked objects. That
->>>>>>>> means everything that may end up calling validate deep within the call chain
->>>>>>>> needs to be part of the until_all_locked() loop, so our
->>>>>>>> drm_gpuva_manager_lock_extra() fn callback would include those validates and
->>>>>>>> look different all the time. Hence that's why open-coding isn't all that
->>>>>>>> bad...
->>>>>>> Oh, I see. You indeed want to call validate() from within until_all_locked().
->>>>>>>
->>>>>>>> /Thomas
->>>>>>>>
->>>>>>>>
->>>>> <snip>
->>
-
+>
+> Thanks,
+>
+> Phil.
