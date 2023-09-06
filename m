@@ -2,155 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0630579418F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA7579418D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242987AbjIFQhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 12:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        id S242971AbjIFQhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 12:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbjIFQhM (ORCPT
+        with ESMTP id S231196AbjIFQhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 12:37:12 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C923C1738;
-        Wed,  6 Sep 2023 09:37:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=kC/adOmPdO89VH7yR1A+ieJSp6e/4jhkrzrqxAYoq4Q=; b=ZY0B0RFpQ9y8GWbA9R1g80J8/y
-        hq2amJhTIfAWWLb6RhZOQ5JA0WTlW/XesbFOKLHVntcVrs0tNjeOdAEWFTx5/fmLKbMQsi8CwIgPr
-        K6R/e0qNrDNLyPh/E8TdRgvBikMlyhvgty0NVpQ/Rang/PEgjJM1/co4cnipew1rHxi80ZKnLM/vY
-        dZ7/fxDY02anS2XW9XTymJELpm7I+xMMWDCYvlbW/X16N9ZNctFKNuZ1zoYVpfuajY6J0FJgsYDAl
-        JOUb1EQYzNnpe49NJQRoVa2m+6rSuJ86VuqVp5mRnmmqxnv4kBCfO+ESkwxUJNkF3kcFMRI4JWnGr
-        tnuPALbw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54168)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qdvWL-0000pm-0k;
-        Wed, 06 Sep 2023 17:36:49 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qdvWJ-0004vb-TO; Wed, 06 Sep 2023 17:36:47 +0100
-Date:   Wed, 6 Sep 2023 17:36:47 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        UNGLinuxDriver@microchip.com, devicetree@vger.kernel.org
-Subject: Re: [RFC net-next v2 2/2] net: dsa: microchip: Add drive strength
- configuration
-Message-ID: <ZPiqn94YbJXCqpT8@shell.armlinux.org.uk>
-References: <20230906105904.1477021-1-o.rempel@pengutronix.de>
- <20230906105904.1477021-3-o.rempel@pengutronix.de>
+        Wed, 6 Sep 2023 12:37:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62F510F7;
+        Wed,  6 Sep 2023 09:36:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B087C433C8;
+        Wed,  6 Sep 2023 16:36:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694018217;
+        bh=CeZDExZ3JEeTA83YlOxkGWYuI1ZSMRsMF2DMHyG4XJQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Kgo6HLo+U1CPRmH5TVketmasBXd6OpO0qoSIKvazMSeusYZwTebZN66NCPGoZQ6BR
+         RuLPnQBLDIQptWmXCX/nVqXSLrwmYIkpeAcwBrzsh8C6QumLmjNxht3m2vOvUzeKO0
+         9AWUuUPm6y7LpTtAAdCB3Ci0JAPN6t0zfORFs9/YYNtr5K95u+bt7ymCAbrGSkhiZW
+         BdCInhRL/iK7TCz9AD5B7MXTaluBpd6VaUpYDmNBlkBx5f0ch71pKLmi4f+WM/sAcA
+         7TFq+xQJ/x/deUADdptgMOrgajOdKnbr/BPpKti7AlhSrlY9K2Rsrp897z/6DUhm2o
+         9ywASMHnCiUHQ==
+Date:   Wed, 6 Sep 2023 17:36:52 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, Shuah Khan <shuah@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: selftests: user_events: Test terminated by assertion
+Message-ID: <9f8a7f98-1e07-402a-8967-ba8d7e3c2418@sirena.org.uk>
+References: <CA+G9fYuugZ0OMeS6HvpSS4nuf_A3s455ecipGBvER0LJHojKZg@mail.gmail.com>
+ <ZPidKsNWH34Xt+r6@DESKTOP-4OLSCEK.>
+ <e24daa53-d8c7-4c40-b04d-20b64ae220fa@sirena.org.uk>
+ <20230906122822.0ecef430@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5dKKrsabEw5/gFwi"
 Content-Disposition: inline
-In-Reply-To: <20230906105904.1477021-3-o.rempel@pengutronix.de>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230906122822.0ecef430@gandalf.local.home>
+X-Cookie: She blinded me with science!
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 12:59:04PM +0200, Oleksij Rempel wrote:
-> +static void ksz9477_drive_strength_error(struct ksz_device *dev, int milliamp)
-> +{
-> +	size_t array_size = ARRAY_SIZE(ksz9477_drive_strengths);
-> +	char supported_values[100];
-> +	int i;
-> +
-> +	for (i = 0; i < array_size; i++) {
-> +		if (i == 0)
-> +			snprintf(supported_values, sizeof(supported_values),
-> +				 "%d", ksz9477_drive_strengths[i].milliamp);
-> +		else
-> +			snprintf(supported_values, sizeof(supported_values),
-> +				 "%s, %d", supported_values,
-> +				 ksz9477_drive_strengths[i].milliamp);
 
-That's an interesting way to append... I note that snprintf(3) has a
-note about this, suggesting that (a) the standards make this undefined
-and (b) that depending on the gcc version used, this may not produce
-the expected results. Taking both together seems sufficient
-justification to stay away from attempting this method of appending
-a string.
+--5dKKrsabEw5/gFwi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +static int ksz9477_drive_strength_write(struct ksz_device *dev,
-> +					struct ksz_driver_strength_prop *props,
-> +					int num_props)
-> +{
-> +	int i, ret, reg;
-> +	u8 val;
-	u8 val, mask;
+On Wed, Sep 06, 2023 at 12:28:22PM -0400, Steven Rostedt wrote:
+> Mark Brown <broonie@kernel.org> wrote:
 
-> +
-> +	if (props[KSZ_DRIVER_STRENGTH_IO].value != -1)
-> +		dev_warn(dev->dev, "%s is not supported by this chip variant\n",
-> +			 props[KSZ_DRIVER_STRENGTH_IO].name);
-> +
-> +	if (dev->chip_id == KSZ8795_CHIP_ID ||
-> +	    dev->chip_id == KSZ8794_CHIP_ID ||
-> +	    dev->chip_id == KSZ8765_CHIP_ID)
-> +		reg = KSZ8795_REG_SW_CTRL_20;
-> +	else
-> +		reg = KSZ9477_REG_SW_IO_STRENGTH;
-> +
+> > Yes, tests should skip if preconditions for running them aren't met.
 
-> +	ret = ksz_read8(dev, reg, &val);
-> +	if (ret)
-> +		return ret;
-> +
-Remote this.
+> Yep, see how the ftrace selftests run. If it is determined that the feature
+> is not present, it simple returns UNSUPPORTED and not FAILED.
 
-	val = mask = 0;
+In KTAP terms that's specifically SKIP, generated by calling SKIP() if
+using kselftest_harness.h.
 
-> +	for (i = 0; i < num_props; i++) {
-> +		if (props[i].value == -1)
-> +			continue;
-> +
-> +		ret = ksz9477_drive_strength_to_reg(props[i].value);
-> +		if (ret < 0) {
-> +			ksz9477_drive_strength_error(dev, props[i].value);
-> +			return ret;
-> +		}
-> +
-> +		val &= ~(SW_DRIVE_STRENGTH_M << props[i].offset);
+--5dKKrsabEw5/gFwi
+Content-Type: application/pgp-signature; name="signature.asc"
 
-		mask |= SW_DRIVE_STRENGTH_M << props[i].offset;
+-----BEGIN PGP SIGNATURE-----
 
-> +		val |= ret << props[i].offset;
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmT4qqMACgkQJNaLcl1U
+h9DhrAf+J8BksLMv8NQLFFWVW8p3QI7SJEnsNEghMTSq7MCyjAlAHAkzFMCAAllL
+aYn0RBZ6IIE6+Nx/0i3zbe0ySiktg/cFv9J8YUYa0pcX6J9q/beNpUZnvUWjJuPq
+a80/Pl5hMeVEvztBgZpsKxvqr1Wo4Qk1+sxTUg4ufFGHTjgMbP7hj4qph8HsCJQC
+9lX7XZ9kaATUmOCwMe7UcXCSzBvmGnMmEkpjHBouvUsIrz4x3zqZ+ThYhQGLBokH
+oWWcWiXYkXarp1jusDEdRDlySBNtxIz6UW0hmTMbIpS3x+04LCkauIsYbcpQaLjP
+nLbSNafHMK71t4kmiU3IT1YAKk2eBQ==
+=Pbqx
+-----END PGP SIGNATURE-----
 
-		val |= ret << props[i].offset;
-
-> +	}
-> +
-> +	return ksz_write8(dev, reg, val);
-
-	return ksz_rmw8(dev, reg, mask, val);
-
-maybe safer?
-
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+--5dKKrsabEw5/gFwi--
