@@ -2,411 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D847935B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 08:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539297935D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbjIFGwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 02:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59430 "EHLO
+        id S242257AbjIFHCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 03:02:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233784AbjIFGwN (ORCPT
+        with ESMTP id S242222AbjIFHC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 02:52:13 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF8DE53
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 23:51:47 -0700 (PDT)
-Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 200A03F1;
-        Wed,  6 Sep 2023 08:50:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1693983013;
-        bh=zCdE8XiOOATs6bq11J0QsPBhnlpTi/F5xNfjh4XmLPA=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=wVepnI4Hc6wfK9eDD7XM9L4xRVAfD22MGHSGNGSTu2Irt32yU3SRpiTRxbMriIlHZ
-         IrrI4vdz/ayOcn7eE6+raT9slJdopEfEbBMHcjLOYPUf9OvePhtEHzjT93Dj0uUe7r
-         8pqMY5U6gYBcXun3TQuaDJX57FJQtfix3l90oc5M=
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date:   Wed, 06 Sep 2023 09:50:59 +0300
-Subject: [PATCH v4 12/12] drm/bridge: tc358768: Attempt to fix DSI
- horizontal timings
+        Wed, 6 Sep 2023 03:02:28 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912C4CFA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:02:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89AEBC433C8;
+        Wed,  6 Sep 2023 06:52:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693983146;
+        bh=0NziAyuGDsV9zXfsHJVohBzLH3NbghzsK2C3zeEmOlU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gIHMpLZ2j2JcyfddgSOW5mPefsoYHmmBV43KCrjcOWquBPojSBHPQee3eeGAPahP9
+         gqKT9O7KVc+VEScR9cfZ+wWoDiXyD9jn/ROjG42hfdIsU1JqWHBUyaqsZ6Xgt1ZJ8H
+         ph/HRjSm34hOC8X5JdCWj/fEUkD6XKayu+278+/d3af931gfuR0BWBw+yYc+FqJBWc
+         6Gx37ZeZmwHRZLGmyIbekyy37tnTddyoonhAzAiwaTdFWh0jqFh63nATiSeqjg0GjM
+         brSt+mWDh5KDR1Pcvvt63i8SFbEtwX7QnuEwWku8dtVz8YcIjSRpQti9cAH6k6a+Y9
+         gfWf7jvR0pYFQ==
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Date:   Wed, 06 Sep 2023 08:52:22 +0200
+From:   Michael Walle <mwalle@kernel.org>
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     Pratyush Yadav <pratyush@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 10/41] mtd: spi-nor: make sector_size optional
+In-Reply-To: <21cd9421-52e6-432a-b612-a8bb9c48f98b@linaro.org>
+References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
+ <20230807-mtd-flash-info-db-rework-v2-10-291a0f39f8d8@kernel.org>
+ <21cd9421-52e6-432a-b612-a8bb9c48f98b@linaro.org>
+Message-ID: <8ce4677710a5a19677ab86aaa41a70ab@kernel.org>
+X-Sender: mwalle@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230906-tc358768-v4-12-31725f008a50@ideasonboard.com>
-References: <20230906-tc358768-v4-0-31725f008a50@ideasonboard.com>
-In-Reply-To: <20230906-tc358768-v4-0-31725f008a50@ideasonboard.com>
-To:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?utf-8?q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Francesco Dolcini <francesco@dolcini.it>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Aradhya Bhatia <a-bhatia1@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=11895;
- i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=zCdE8XiOOATs6bq11J0QsPBhnlpTi/F5xNfjh4XmLPA=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBk+CFsJctMykGU8ZjkqzadR65gx6uZ0FwXM43KS
- Y7Ehccod0OJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZPghbAAKCRD6PaqMvJYe
- 9WydEACv4c8a/UYDlgak2KAPOYvdh/qdM+zM0Cb5AeMlsxKqcmotuNCmL/HrgaNdovl3J9iB431
- x6DPh7YY4p8gsmhuBiM/5zFruqdBQ+Y1MidcFg/yjaaXzXm7QBD8Trjb4TPJ0UWGoyI9xTxiq2j
- U1h81EsMDa0lqKmUPPkQljlGohC5UqgJV1e3DoRkptyATyCnnNdgqLitVDDkrmFPdIuo/jJWuMy
- k2g5fMbE16NYa8L9KCfqAtwtcHgo9hYmLgCaenV02d2qS3ALD/S3KtDj3gywS4w7eB6d69f2ltS
- 6onIIrLTvlGypxuKETokcJgcbJD+OJVRvQiHBUksBiMp+SGy3EP9NxwUipxJEjEkFnOmTfqHFpz
- +5LMv5P2blrOHWrFH1pIXd2p68A9a1iTsf6ZatABreKFvjmScNRahKcju8oID5YGRbEBhkwKK1k
- nU5vTwX2x3BtFV/06rQjACVXEGGEMMiOlytxtekQRjnDvYU/7ogFrvj8QHt9BKzRXk5lCQDjUtC
- BkLc4tMyEO7JAVF5est7laWWjJxZUkLgobioNFpE0n6GGVA/8JGox3lgxui+6Sk6vhKVHsuwLJm
- vxKkV9HNv/TNj9qvTNzpNJPT0LDTJKyxp1awkAFi6FMSKLlY/EjJ4ugzBtK9VqJGaTLYQMg32hm
- B65DJJcGzM+CIZw==
-X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
- fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DSI horizontal timing calculations done by the driver seem to often
-lead to underflows or overflows, depending on the videomode.
+>>  #define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
+>>  	.size = (_sector_size) * (_n_sectors),				\
+>> -	.sector_size = (_sector_size),					\
+>> +	.sector_size = (_sector_size == SZ_64K) ? 0 : (_sector_size),	\
+> 
+> why do you clear the sector_size?
 
-There are two main things the current driver doesn't seem to get right:
-DSI HSW and HFP, and VSDly. However, even following Toshiba's
-documentation it seems we don't always get a working display.
+Because that is also a preparation for the large conversion, where the
+default value of 64k is dropped. And to be able to verify (because you
+can't really review these conversion patches) the ro segments are the
+same, this patch already set it to zero if the INFO entry has the
+default size.
 
-This patch attempts to fix the horizontal timings for DSI event mode, and
-on a system with a DSI->HDMI encoder, a lot of standard HDMI modes now
-seem to work. The work relies on Toshiba's documentation, but also quite
-a bit on empirical testing.
+I'll amend the commit message.
 
-This also adds timing related debug prints to make it easier to improve
-on this later.
-
-The DSI pulse mode has only been tested with a fixed-resolution panel,
-which limits the testing of different modes on DSI pulse mode. However,
-as the VSDly calculation also affects pulse mode, so this might cause a
-regression.
-
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Tested-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
----
- drivers/gpu/drm/bridge/tc358768.c | 211 +++++++++++++++++++++++++++++++++-----
- 1 file changed, 183 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
-index f41bf56b7d6b..e5ecf1a79e82 100644
---- a/drivers/gpu/drm/bridge/tc358768.c
-+++ b/drivers/gpu/drm/bridge/tc358768.c
-@@ -9,6 +9,7 @@
- #include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
- #include <linux/kernel.h>
-+#include <linux/math64.h>
- #include <linux/media-bus-format.h>
- #include <linux/minmax.h>
- #include <linux/module.h>
-@@ -157,6 +158,7 @@ struct tc358768_priv {
- 	u32 frs;	/* PLL Freqency range for HSCK (post divider) */
- 
- 	u32 dsiclk;	/* pll_clk / 2 */
-+	u32 pclk;	/* incoming pclk rate */
- };
- 
- static inline struct tc358768_priv *dsi_host_to_tc358768(struct mipi_dsi_host
-@@ -380,6 +382,7 @@ static int tc358768_calc_pll(struct tc358768_priv *priv,
- 	priv->prd = best_prd;
- 	priv->frs = frs;
- 	priv->dsiclk = best_pll / 2;
-+	priv->pclk = mode->clock * 1000;
- 
- 	return 0;
- }
-@@ -638,6 +641,28 @@ static u32 tc358768_ps_to_ns(u32 ps)
- 	return ps / 1000;
- }
- 
-+static u32 tc358768_dpi_to_ns(u32 val, u32 pclk)
-+{
-+	return (u32)div_u64((u64)val * NANO, pclk);
-+}
-+
-+/* Convert value in DPI pixel clock units to DSI byte count */
-+static u32 tc358768_dpi_to_dsi_bytes(struct tc358768_priv *priv, u32 val)
-+{
-+	u64 m = (u64)val * priv->dsiclk / 4 * priv->dsi_lanes;
-+	u64 n = priv->pclk;
-+
-+	return (u32)div_u64(m + n - 1, n);
-+}
-+
-+static u32 tc358768_dsi_bytes_to_ns(struct tc358768_priv *priv, u32 val)
-+{
-+	u64 m = (u64)val * NANO;
-+	u64 n = priv->dsiclk / 4 * priv->dsi_lanes;
-+
-+	return (u32)div_u64(m, n);
-+}
-+
- static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
- {
- 	struct tc358768_priv *priv = bridge_to_tc358768(bridge);
-@@ -647,11 +672,19 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
- 	s32 raw_val;
- 	const struct drm_display_mode *mode;
- 	u32 hsbyteclk_ps, dsiclk_ps, ui_ps;
--	u32 dsiclk, hsbyteclk, video_start;
--	const u32 internal_delay = 40;
-+	u32 dsiclk, hsbyteclk;
- 	int ret, i;
- 	struct videomode vm;
- 	struct device *dev = priv->dev;
-+	/* In pixelclock units */
-+	u32 dpi_htot, dpi_data_start;
-+	/* In byte units */
-+	u32 dsi_dpi_htot, dsi_dpi_data_start;
-+	u32 dsi_hsw, dsi_hbp, dsi_hact, dsi_hfp;
-+	const u32 dsi_hss = 4; /* HSS is a short packet (4 bytes) */
-+	/* In hsbyteclk units */
-+	u32 dsi_vsdly;
-+	const u32 internal_dly = 40;
- 
- 	if (mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) {
- 		dev_warn_once(dev, "Non-continuous mode unimplemented, falling back to continuous\n");
-@@ -686,27 +719,23 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
- 	case MIPI_DSI_FMT_RGB888:
- 		val |= (0x3 << 4);
- 		hact = vm.hactive * 3;
--		video_start = (vm.hsync_len + vm.hback_porch) * 3;
- 		data_type = MIPI_DSI_PACKED_PIXEL_STREAM_24;
- 		break;
- 	case MIPI_DSI_FMT_RGB666:
- 		val |= (0x4 << 4);
- 		hact = vm.hactive * 3;
--		video_start = (vm.hsync_len + vm.hback_porch) * 3;
- 		data_type = MIPI_DSI_PACKED_PIXEL_STREAM_18;
- 		break;
- 
- 	case MIPI_DSI_FMT_RGB666_PACKED:
- 		val |= (0x4 << 4) | BIT(3);
- 		hact = vm.hactive * 18 / 8;
--		video_start = (vm.hsync_len + vm.hback_porch) * 18 / 8;
- 		data_type = MIPI_DSI_PIXEL_STREAM_3BYTE_18;
- 		break;
- 
- 	case MIPI_DSI_FMT_RGB565:
- 		val |= (0x5 << 4);
- 		hact = vm.hactive * 2;
--		video_start = (vm.hsync_len + vm.hback_porch) * 2;
- 		data_type = MIPI_DSI_PACKED_PIXEL_STREAM_16;
- 		break;
- 	default:
-@@ -716,9 +745,150 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
- 		return;
- 	}
- 
-+	/*
-+	 * There are three important things to make TC358768 work correctly,
-+	 * which are not trivial to manage:
-+	 *
-+	 * 1. Keep the DPI line-time and the DSI line-time as close to each
-+	 *    other as possible.
-+	 * 2. TC358768 goes to LP mode after each line's active area. The DSI
-+	 *    HFP period has to be long enough for entering and exiting LP mode.
-+	 *    But it is not clear how to calculate this.
-+	 * 3. VSDly (video start delay) has to be long enough to ensure that the
-+	 *    DSI TX does not start transmitting until we have started receiving
-+	 *    pixel data from the DPI input. It is not clear how to calculate
-+	 *    this either.
-+	 */
-+
-+	dpi_htot = vm.hactive + vm.hfront_porch + vm.hsync_len + vm.hback_porch;
-+	dpi_data_start = vm.hsync_len + vm.hback_porch;
-+
-+	dev_dbg(dev, "dpi horiz timing (pclk): %u + %u + %u + %u = %u\n",
-+		vm.hsync_len, vm.hback_porch, vm.hactive, vm.hfront_porch,
-+		dpi_htot);
-+
-+	dev_dbg(dev, "dpi horiz timing (ns): %u + %u + %u + %u = %u\n",
-+		tc358768_dpi_to_ns(vm.hsync_len, vm.pixelclock),
-+		tc358768_dpi_to_ns(vm.hback_porch, vm.pixelclock),
-+		tc358768_dpi_to_ns(vm.hactive, vm.pixelclock),
-+		tc358768_dpi_to_ns(vm.hfront_porch, vm.pixelclock),
-+		tc358768_dpi_to_ns(dpi_htot, vm.pixelclock));
-+
-+	dev_dbg(dev, "dpi data start (ns): %u + %u = %u\n",
-+		tc358768_dpi_to_ns(vm.hsync_len, vm.pixelclock),
-+		tc358768_dpi_to_ns(vm.hback_porch, vm.pixelclock),
-+		tc358768_dpi_to_ns(dpi_data_start, vm.pixelclock));
-+
-+	dsi_dpi_htot = tc358768_dpi_to_dsi_bytes(priv, dpi_htot);
-+	dsi_dpi_data_start = tc358768_dpi_to_dsi_bytes(priv, dpi_data_start);
-+
-+	if (dsi_dev->mode_flags & MIPI_DSI_MODE_VIDEO_SYNC_PULSE) {
-+		dsi_hsw = tc358768_dpi_to_dsi_bytes(priv, vm.hsync_len);
-+		dsi_hbp = tc358768_dpi_to_dsi_bytes(priv, vm.hback_porch);
-+	} else {
-+		/* HBP is included in HSW in event mode */
-+		dsi_hbp = 0;
-+		dsi_hsw = tc358768_dpi_to_dsi_bytes(priv,
-+			vm.hsync_len + vm.hback_porch);
-+
-+		/*
-+		 * The pixel packet includes the actual pixel data, and:
-+		 * DSI packet header = 4 bytes
-+		 * DCS code = 1 byte
-+		 * DSI packet footer = 2 bytes
-+		 */
-+		dsi_hact = hact + 4 + 1 + 2;
-+
-+		dsi_hfp = dsi_dpi_htot - dsi_hact - dsi_hsw - dsi_hss;
-+
-+		/*
-+		 * Here we should check if HFP is long enough for entering LP
-+		 * and exiting LP, but it's not clear how to calculate that.
-+		 * Instead, this is a naive algorithm that just adjusts the HFP
-+		 * and HSW so that HFP is (at least) roughly 2/3 of the total
-+		 * blanking time.
-+		 */
-+		if (dsi_hfp < (dsi_hfp + dsi_hsw + dsi_hss) * 2 / 3) {
-+			u32 old_hfp = dsi_hfp;
-+			u32 old_hsw = dsi_hsw;
-+			u32 tot = dsi_hfp + dsi_hsw + dsi_hss;
-+
-+			dsi_hsw = tot / 3;
-+
-+			/*
-+			 * Seems like sometimes HSW has to be divisible by num-lanes, but
-+			 * not always...
-+			 */
-+			dsi_hsw = roundup(dsi_hsw, priv->dsi_lanes);
-+
-+			dsi_hfp = dsi_dpi_htot - dsi_hact - dsi_hsw - dsi_hss;
-+
-+			dev_dbg(dev,
-+				"hfp too short, adjusting dsi hfp and dsi hsw from %u, %u to %u, %u\n",
-+				old_hfp, old_hsw, dsi_hfp, dsi_hsw);
-+		}
-+
-+		dev_dbg(dev,
-+			"dsi horiz timing (bytes): %u, %u + %u + %u + %u = %u\n",
-+			dsi_hss, dsi_hsw, dsi_hbp, dsi_hact, dsi_hfp,
-+			dsi_hss + dsi_hsw + dsi_hbp + dsi_hact + dsi_hfp);
-+
-+		dev_dbg(dev, "dsi horiz timing (ns): %u + %u + %u + %u + %u = %u\n",
-+			tc358768_dsi_bytes_to_ns(priv, dsi_hss),
-+			tc358768_dsi_bytes_to_ns(priv, dsi_hsw),
-+			tc358768_dsi_bytes_to_ns(priv, dsi_hbp),
-+			tc358768_dsi_bytes_to_ns(priv, dsi_hact),
-+			tc358768_dsi_bytes_to_ns(priv, dsi_hfp),
-+			tc358768_dsi_bytes_to_ns(priv, dsi_hss + dsi_hsw + dsi_hbp + dsi_hact + dsi_hfp));
-+	}
-+
-+	/* VSDly calculation */
-+
-+	/* Start with the HW internal delay */
-+	dsi_vsdly = internal_dly;
-+
-+	/* Convert to byte units as the other variables are in byte units */
-+	dsi_vsdly *= priv->dsi_lanes;
-+
-+	/* Do we need more delay, in addition to the internal? */
-+	if (dsi_dpi_data_start > dsi_vsdly + dsi_hss + dsi_hsw + dsi_hbp) {
-+		dsi_vsdly = dsi_dpi_data_start - dsi_hss - dsi_hsw - dsi_hbp;
-+		dsi_vsdly = roundup(dsi_vsdly, priv->dsi_lanes);
-+	}
-+
-+	dev_dbg(dev, "dsi data start (bytes) %u + %u + %u + %u = %u\n",
-+		dsi_vsdly, dsi_hss, dsi_hsw, dsi_hbp,
-+		dsi_vsdly + dsi_hss + dsi_hsw + dsi_hbp);
-+
-+	dev_dbg(dev, "dsi data start (ns) %u + %u + %u + %u = %u\n",
-+		tc358768_dsi_bytes_to_ns(priv, dsi_vsdly),
-+		tc358768_dsi_bytes_to_ns(priv, dsi_hss),
-+		tc358768_dsi_bytes_to_ns(priv, dsi_hsw),
-+		tc358768_dsi_bytes_to_ns(priv, dsi_hbp),
-+		tc358768_dsi_bytes_to_ns(priv, dsi_vsdly + dsi_hss + dsi_hsw + dsi_hbp));
-+
-+	/* Convert back to hsbyteclk */
-+	dsi_vsdly /= priv->dsi_lanes;
-+
-+	/*
-+	 * The docs say that there is an internal delay of 40 cycles.
-+	 * However, we get underflows if we follow that rule. If we
-+	 * instead ignore the internal delay, things work. So either
-+	 * the docs are wrong or the calculations are wrong.
-+	 *
-+	 * As a temporary fix, add the internal delay here, to counter
-+	 * the subtraction when writing the register.
-+	 */
-+	dsi_vsdly += internal_dly;
-+
-+	/* Clamp to the register max */
-+	if (dsi_vsdly - internal_dly > 0x3ff) {
-+		dev_warn(dev, "VSDly too high, underflows likely\n");
-+		dsi_vsdly = 0x3ff + internal_dly;
-+	}
-+
- 	/* VSDly[9:0] */
--	video_start = max(video_start, internal_delay + 1) - internal_delay;
--	tc358768_write(priv, TC358768_VSDLY, video_start);
-+	tc358768_write(priv, TC358768_VSDLY, dsi_vsdly - internal_dly);
- 
- 	tc358768_write(priv, TC358768_DATAFMT, val);
- 	tc358768_write(priv, TC358768_DSITX_DT, data_type);
-@@ -826,18 +996,6 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
- 
- 		/* vbp */
- 		tc358768_write(priv, TC358768_DSI_VBPR, vm.vback_porch);
--
--		/* hsw * byteclk * ndl / pclk */
--		val = (u32)div_u64(vm.hsync_len *
--				   (u64)hsbyteclk * priv->dsi_lanes,
--				   vm.pixelclock);
--		tc358768_write(priv, TC358768_DSI_HSW, val);
--
--		/* hbp * byteclk * ndl / pclk */
--		val = (u32)div_u64(vm.hback_porch *
--				   (u64)hsbyteclk * priv->dsi_lanes,
--				   vm.pixelclock);
--		tc358768_write(priv, TC358768_DSI_HBPR, val);
- 	} else {
- 		/* Set event mode */
- 		tc358768_write(priv, TC358768_DSI_EVENT, 1);
-@@ -851,16 +1009,13 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
- 
- 		/* vbp (not used in event mode) */
- 		tc358768_write(priv, TC358768_DSI_VBPR, 0);
-+	}
- 
--		/* (hsw + hbp) * byteclk * ndl / pclk */
--		val = (u32)div_u64((vm.hsync_len + vm.hback_porch) *
--				   (u64)hsbyteclk * priv->dsi_lanes,
--				   vm.pixelclock);
--		tc358768_write(priv, TC358768_DSI_HSW, val);
-+	/* hsw (bytes) */
-+	tc358768_write(priv, TC358768_DSI_HSW, dsi_hsw);
- 
--		/* hbp (not used in event mode) */
--		tc358768_write(priv, TC358768_DSI_HBPR, 0);
--	}
-+	/* hbp (bytes) */
-+	tc358768_write(priv, TC358768_DSI_HBPR, dsi_hbp);
- 
- 	/* hact (bytes) */
- 	tc358768_write(priv, TC358768_DSI_HACT, hact);
-
--- 
-2.34.1
-
+-michael
