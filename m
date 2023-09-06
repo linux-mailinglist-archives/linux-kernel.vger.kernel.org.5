@@ -2,111 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 035FC79385A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5570C793857
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237217AbjIFJeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 05:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32998 "EHLO
+        id S237165AbjIFJd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 05:33:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237277AbjIFJdt (ORCPT
+        with ESMTP id S237257AbjIFJdt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 6 Sep 2023 05:33:49 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767B71985;
-        Wed,  6 Sep 2023 02:32:53 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-79536bc6697so119821039f.1;
-        Wed, 06 Sep 2023 02:32:53 -0700 (PDT)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2551982
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 02:32:50 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9a2a4a5472dso154972866b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 02:32:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693992772; x=1694597572; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mupUPPSzcJJRakpj7WwBk32eQdNzGLMXaNaR5uYzp8A=;
-        b=Dzy44+sOzdbwhd4QcnIg0YHTHu55rWSzdCZOeeKK+defqfmBN75i+pU8rq4c/4tOet
-         A+UqVIiF8etQOehGHwSbnEIam161FLezBcOqJpw5VamgqKQlHjty7CSxwhPlbd4m6n2W
-         hd0kvsvzRDGk4/oyxKVedLIp40c0hu4PN0CNvSdjtLH8TMkyHze9liTQzkMIvG0peDeU
-         x0QUJDpA6QOwr6JL0g+MBMdCxtSlzKNDSDgcaacVGQKNV9If7myzLCRdCr0CQZl4gEyN
-         9ct51igsu5VfiAVKRV2Xo9ao7ToMnYf4B/8bm9nDMuzj3nVqpmESg3e3L9hcsjyk3G/F
-         Ow4w==
+        d=linaro.org; s=google; t=1693992769; x=1694597569; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1RFjlJFCPC0cFB7nl+UKfpa8lGL9BW79DIGhjR08yhs=;
+        b=gyzKwJveAEVFe0cbGdFaCQyJshgoim0oyRczPdJy2pnwBRIKKwWWuCJMFxnYXeruQ1
+         bjAWiKfvyaJU5Bpw5xWQ6SBxuNE9DWOH/kV061icmq76ZPS+nu7iW9zKBMuM4tHBWsjl
+         g4lkwWIkzwaSuPUM+8cTzm/iCfNa6UGwJLIyY8EafSJxNRXtBUkDc7nWss/I7P5Z13WO
+         LS/0fiyfQTN/pyDXSKAWjpTJBr/JwCaop1CKziPeOxN8Mz7Iq62nDdoJ0Npn4irOo+sq
+         Pw3CZnObd1a28ISoaatiMwPevAdxVoe9zJyoHSGSDEFypdRudPm3ftyOrh0OnA+25LLu
+         tw9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693992772; x=1694597572;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mupUPPSzcJJRakpj7WwBk32eQdNzGLMXaNaR5uYzp8A=;
-        b=Lc9YzqzJDnTeL0cLWKrfJyI5nlLmW6GypI7UFX1PuZbMXLNjzXUOWXsJbu5eS6CGzs
-         Txm9DxPjUtusp9wUBgVBVNisunpGT8SNOo7dzAbtsuxYEKwOsbj2dWP0Qq4w5GC4uQ+f
-         XjyYcQFlqbSoJ8j8tgFSnJx7g5UF63O4NTJgvCYrvDsrtxAimwjNV0pbRIW9iYKAcOga
-         qwawfHO8RWR4vLoDlho7m9U+qocPVgxoNm6Iqt/FHYDCpisdFyTieKNrnrHbSpA9G54q
-         TqQMT/YE5fQVpY051kVstm3osE1VigiWStf686/IR5OrVL94jdouUS1pUiZbEnnYaIT6
-         OWaQ==
-X-Gm-Message-State: AOJu0YyRvyyosPw3A7rgLogBxL5Ae3PVav1YJ+dp1xzzzNsftq5vHecU
-        yUZm7uRCShHBNjSNhvopsDSypxZGprI=
-X-Google-Smtp-Source: AGHT+IE/SxiZTAwA6/WLLQiLQA7rDnQp1XnmilfdxbosDcDYc7XRyk31gS9W2/PZj8txrfKloPKY3Q==
-X-Received: by 2002:a5e:db07:0:b0:784:314f:8d68 with SMTP id q7-20020a5edb07000000b00784314f8d68mr16922177iop.1.1693992772074;
-        Wed, 06 Sep 2023 02:32:52 -0700 (PDT)
-Received: from aford-B741.lan ([2601:447:d001:897f:b68d:99e6:78c9:f0e6])
-        by smtp.gmail.com with ESMTPSA id s10-20020a02cf2a000000b0042b320c13aasm4792732jar.89.2023.09.06.02.32.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 02:32:50 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-omap@vger.kernel.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] bus: ti-sysc: Fix missing AM35xx SoC matching
-Date:   Wed,  6 Sep 2023 04:32:44 -0500
-Message-Id: <20230906093244.99292-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20221208; t=1693992769; x=1694597569;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1RFjlJFCPC0cFB7nl+UKfpa8lGL9BW79DIGhjR08yhs=;
+        b=bbgVxX56e3LAL7djlsTO2ukDIOlq19mMgHJ+zMvlZ8xl7xl/rGx9ne6huqUUx89N3s
+         zy9X7FfJUs5D3XXT9W9Mxzp8j6T6VX/pMUeOt9DqFQ4Yxn/MsMV+zgM7od5jHGG7jXLw
+         faRa0loq2k6BbLKTy1S48CL68kqDhMyM0wXfZMau/Xjex4s6pUoZbbThrvu6/ExeExA1
+         b7Mwf+ta7J8d4dzCe64YdnxF0yF1S1NKVC+RMDiff36ih2wsHDS8nM9aMe/Grf5ReSk5
+         eZ7Kidug7G7ZdWxnqX8hhvc+9pUOq6DjsbNO0t4Wlpr5SpMZTlfEMi3ODg6HQglS9gfk
+         sy0A==
+X-Gm-Message-State: AOJu0YzG23XIkeMflLWWKHvYKUupPe2kvzIAnRjY3Z7HCQ2i2MZCmYOs
+        CpI9Tej93Z2I+y8AttWIIQ40Ng==
+X-Google-Smtp-Source: AGHT+IFH22HeZBUv9SCW8pQB0gqyGQb79qyXqVsMorJy10kXv88hv5Dm8psdOKRk4xCU6hyl04lIyQ==
+X-Received: by 2002:a17:906:738f:b0:99c:5056:4e31 with SMTP id f15-20020a170906738f00b0099c50564e31mr2404848ejl.15.1693992769275;
+        Wed, 06 Sep 2023 02:32:49 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id z16-20020a170906715000b0099cc3c7ace2sm8901841ejj.140.2023.09.06.02.32.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 02:32:48 -0700 (PDT)
+Message-ID: <fbad941f-232b-9f56-5de3-98a16a8c4d89@linaro.org>
+Date:   Wed, 6 Sep 2023 11:32:47 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm64: dts: mediatek: add mt8395-evk
+ board
+Content-Language: en-US
+To:     Macpaul Lin <macpaul.lin@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>
+References: <20230904092043.5157-1-macpaul.lin@mediatek.com>
+ <20230906092527.18281-1-macpaul.lin@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230906092527.18281-1-macpaul.lin@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit feaa8baee82a ("bus: ti-sysc: Implement SoC revision handling")
-created a list of SoC types searching for strings based on names
-and wildcards which associates the SoC to different families.
+On 06/09/2023 11:25, Macpaul Lin wrote:
+> 1. Add compatible for MT8395.
+> 2. Add bindings for the MediaTek mt8395-evk board, also known
+> as the "Genio 1200-EVK".
+> 
+> The MT8195 and MT8395 belong to the same SoC family,
+> with only minor differences in their physical characteristics.
+> They utilize unique efuse values for differentiation.
+> 
+> The booting process and configurations are managed by boot
+> loaders, firmware, and TF-A. Consequently, the part numbers
+> and procurement channels vary.
+> 
+> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/arm/mediatek.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
 
-The OMAP34xx and OMAP35xx are treated as SOC_3430 while
-OMAP36xx and OMAP37xx are treated as SOC_3630, but the AM35xx
-isn't listed.
+Do not attach (thread) your patchsets to some other threads (unrelated
+or older versions). This buries them deep in the mailbox and might
+interfere with applying entire sets.
 
-The AM35xx is mostly an OMAP3430, and a later commit a12315d6d270
-("bus: ti-sysc: Make omap3 gpt12 quirk handling SoC specific") looks
-for the SOC type and behaves in a certain way if it's SOC_3430.
+> 
+> Changes for v2:
+>  - add more detail description for mt8395.
+>  - add bindings for mt8395, and mt8395-evk.
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> index ae12b1cab9fb..d7a20df640d7 100644
+> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
+> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> @@ -248,6 +248,11 @@ properties:
+>            - enum:
+>                - mediatek,mt8365-evk
+>            - const: mediatek,mt8365
+> +      - description: MediaTek Genio 1200 Boards (Genio 1200 EVK)
+> +        items:
+> +          - enum:
+> +              - mediatek,mt8395-evk
+> +          - const: mediatek,mt8395
 
-This caused a regression on the AM3517 causing it to return two
-errors:
 
- ti-sysc: probe of 48318000.target-module failed with error -16
- ti-sysc: probe of 49032000.target-module failed with error -16
+I don't understand. You said last time this is fully compatible with
+mt8195, so why it's not here?
 
-Fix this by treating the AM35xx as a SOC_3430, and the error
-conditions will disappear.
 
-Fixes: a12315d6d270 ("bus: ti-sysc: Make omap3 gpt12 quirk handling SoC specific")
-Fixes: feaa8baee82a ("bus: ti-sysc: Implement SoC revision handling")
-
-Signed-off-by: Adam Ford <aford173@gmail.com>
-
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
-index eb4e7bee1e20..5d7779747941 100644
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -3025,6 +3025,7 @@ static void ti_sysc_idle(struct work_struct *work)
- static const struct soc_device_attribute sysc_soc_match[] = {
- 	SOC_FLAG("OMAP242*", SOC_2420),
- 	SOC_FLAG("OMAP243*", SOC_2430),
-+	SOC_FLAG("AM35*", SOC_3430),
- 	SOC_FLAG("OMAP3[45]*", SOC_3430),
- 	SOC_FLAG("OMAP3[67]*", SOC_3630),
- 	SOC_FLAG("OMAP443*", SOC_4430),
--- 
-2.39.2
+Best regards,
+Krzysztof
 
