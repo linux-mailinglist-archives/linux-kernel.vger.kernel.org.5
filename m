@@ -2,219 +2,404 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 193357943CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0CB7943CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244195AbjIFTaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 15:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35828 "EHLO
+        id S242395AbjIFT3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 15:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbjIFT37 (ORCPT
+        with ESMTP id S230152AbjIFT3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 15:29:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263911724
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 12:29:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694028550;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BkNqqrFNSye+85FOkqcxyjqr5JGuixiZESeFlYs5s54=;
-        b=RsS+b1gC6lb/jCqDvFmx7oMn69TRTpCzi7M5svc9bPSpmmZzpnYAAQl0UcWGUqYndRP2Pk
-        nHsHp2ETZE5Aoh4JrjRj5gRKfQdHLMrPofa1abpnNVxAG4u1rwkoQWDI956mVs0LPzCKFq
-        CtKGq+3RabGNQO34WEckxZuyD44wVvs=
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
- [209.85.166.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-60-IRsdDpOsMfaKYL6vR76CAA-1; Wed, 06 Sep 2023 15:29:07 -0400
-X-MC-Unique: IRsdDpOsMfaKYL6vR76CAA-1
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-34f1d8e4ec6so1399715ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 12:29:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694028546; x=1694633346;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BkNqqrFNSye+85FOkqcxyjqr5JGuixiZESeFlYs5s54=;
-        b=h+MeFSraphrhJKp/IdFnSss3w/h81I0936K1Vy0uBPtljFcFuGFhkR+fW37VrylaAP
-         s+DWz1KhLuMQQfemY+LFRLbkoqJX3VxKtEkNR0twe9P3ddq72i+ROlMezgh4yMMLu1H3
-         Ybq7S/vftiN0btgSMqrQJARaWUaRTsHHb2tuZIJmV7w4v8fAKbm30z46sMBomNvaGIYw
-         wCw9d+hi4iL0VN6iwRJtfblUI09D7IzgNHCvah98dVBszKzC8vFIS+pGNMZwD3u8DuOw
-         QGyArIYozkhKvOHaLWztjuPvV7am+jQ8mKt3+q928dcL6ZTKHi5eY7HqrTB8sy3wBc5N
-         2YVQ==
-X-Gm-Message-State: AOJu0Yzvinb5RkS46CTbnEH6sd8ANk0ovwMG91f1ood0VOZczJi8mP3z
-        w8UDioRIJmu4I22ynZ3eVk9Qw+ZvX9tMKYkavA7ChKb6VfYoGFfwX8h7VkYL9B5FvltwmITLs/r
-        JcEtmrG5mnmoS02KePL1SJB0C
-X-Received: by 2002:a05:6e02:1d11:b0:347:6b30:5bd3 with SMTP id i17-20020a056e021d1100b003476b305bd3mr21867129ila.13.1694028546536;
-        Wed, 06 Sep 2023 12:29:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEyKFIvkN7zuLMbU6PvggO334g+2dgeQZvJcZ8JKJqA6E6EEEA4iTKmp69E/q99AN/ZBKFIOQ==
-X-Received: by 2002:a05:6e02:1d11:b0:347:6b30:5bd3 with SMTP id i17-20020a056e021d1100b003476b305bd3mr21867112ila.13.1694028546213;
-        Wed, 06 Sep 2023 12:29:06 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id m11-20020a92710b000000b0034e28100d1csm3233596ilc.58.2023.09.06.12.29.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 12:29:05 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 13:29:04 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc:     Sui Jingfeng <suijingfeng@loongson.cn>,
-        nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>
-Subject: Re: [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user to
- select the primary video adapter at boot time
-Message-ID: <20230906132904.4e49e269.alex.williamson@redhat.com>
-In-Reply-To: <a6337007-b6fa-2ce9-d0cd-46465b540205@linux.dev>
-References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
-        <20230905085243.4b22725e.alex.williamson@redhat.com>
-        <a6337007-b6fa-2ce9-d0cd-46465b540205@linux.dev>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
+        Wed, 6 Sep 2023 15:29:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B3C173B;
+        Wed,  6 Sep 2023 12:29:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76740C433C7;
+        Wed,  6 Sep 2023 19:29:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694028554;
+        bh=2kov9/TKrJmdoLxE+jOCbxIrVesxxxeaC6ZimLlagpY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gvCXsBjWMR5/uRk2WyOrENoyaqYbq4C1rfzon4UyyFO++f4JtbH2z5BBcmobF0gH8
+         u7UIjQz1wkxxM96qbYaIXbZej2NvRemMGNumybNlJREqHs/btECJDiIUU4CpezprP4
+         OvrFzZBkHBGhQwcwmtOU3BsbTME2zfVwuk9ZLsvO5w7kNrMqr+Q6JF4cxqqGY+du72
+         1Z9Ek3U8tOomAXmdvkm4TDKVpxErkGHVJpcCnMIqitLvIZAi3e34pod6HwCf+8oZn7
+         cwzCilikc8i+FqJiKDEePCfYvvhx/+gKFSXbBzouO/0KZouNeSnGhnjvAnHt70Vy8D
+         TV0jTPZHUxbHg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7EBAD403F4; Wed,  6 Sep 2023 16:29:11 -0300 (-03)
+Date:   Wed, 6 Sep 2023 16:29:11 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH 3/5] perf lock contention: Add -g/--lock-cgroup option
+Message-ID: <ZPjTB3tj+/b90+BF@kernel.org>
+References: <20230906174903.346486-1-namhyung@kernel.org>
+ <20230906174903.346486-4-namhyung@kernel.org>
+ <ZPjRpY6FINE0iBr3@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPjRpY6FINE0iBr3@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Sep 2023 11:51:59 +0800
-Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+Em Wed, Sep 06, 2023 at 04:23:17PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Wed, Sep 06, 2023 at 10:49:01AM -0700, Namhyung Kim escreveu:
+> > The -g option shows lock contention stats break down by cgroups.
+> > Add LOCK_AGGR_CGROUP mode and use it instead of use_cgroup field.
+> > 
+> >   $ sudo ./perf lock con -abg sleep 1
+> >    contended   total wait     max wait     avg wait   cgroup
+> > 
+> >            8     15.70 us      6.34 us      1.96 us   /
+> >            2      1.48 us       747 ns       738 ns   /user.slice/.../app.slice/app-gnome-google\x2dchrome-6442.scope
+> >            1       848 ns       848 ns       848 ns   /user.slice/.../session.slice/org.gnome.Shell@x11.service
+> >            1       220 ns       220 ns       220 ns   /user.slice/.../session.slice/pipewire-pulse.service
+> > 
+> > For now, the cgroup mode only works with BPF (-b).
+> 
+> Can we try to be consistent with other tools?
+> 
+> [root@quaco ~]# perf record -h -g
+> 
+>  Usage: perf record [<options>] [<command>]
+>     or: perf record [<options>] -- <command> [<options>]
+> 
+>     -g                    enables call-graph recording
+> 
+> [root@quaco ~]# perf record -h -G
+> 
+>  Usage: perf record [<options>] [<command>]
+>     or: perf record [<options>] -- <command> [<options>]
+> 
+>     -G, --cgroup <name>   monitor event in cgroup name only
+> 
+> [root@quaco ~]# set -o vi
+> [root@quaco ~]# perf lock contention -h -G
+> 
+>  Usage: perf lock contention [<options>]
+> 
+> 
+> [root@quaco ~]#
+> 
+> I.e. use -G in this patch?
+> 
+> If you agree I can fixup things here, otherwise why not?
 
-> Hi,
->=20
->=20
-> On 2023/9/5 22:52, Alex Williamson wrote:
-> > On Tue,  5 Sep 2023 03:57:15 +0800
-> > Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
-> > =20
-> >> From: Sui Jingfeng <suijingfeng@loongson.cn>
-> >>
-> >> On a machine with multiple GPUs, a Linux user has no control over which
-> >> one is primary at boot time. This series tries to solve above mentioned
-> >> problem by introduced the ->be_primary() function stub. The specific
-> >> device drivers can provide an implementation to hook up with this stub=
- by
-> >> calling the vga_client_register() function.
-> >>
-> >> Once the driver bound the device successfully, VGAARB will call back to
-> >> the device driver. To query if the device drivers want to be primary or
-> >> not. Device drivers can just pass NULL if have no such needs.
-> >>
-> >> Please note that:
-> >>
-> >> 1) The ARM64, Loongarch, Mips servers have a lot PCIe slot, and I would
-> >>     like to mount at least three video cards.
-> >>
-> >> 2) Typically, those non-86 machines don't have a good UEFI firmware
-> >>     support, which doesn't support select primary GPU as firmware stag=
-e.
-> >>     Even on x86, there are old UEFI firmwares which already made undes=
-ired
-> >>     decision for you.
-> >>
-> >> 3) This series is attempt to solve the remain problems at the driver l=
-evel,
-> >>     while another series[1] of me is target to solve the majority of t=
-he
-> >>     problems at device level.
-> >>
-> >> Tested (limited) on x86 with four video card mounted, Intel UHD Graphi=
-cs
-> >> 630 is the default boot VGA, successfully override by ast2400 with
-> >> ast.modeset=3D10 append at the kernel cmd line.
-> >>
-> >> $ lspci | grep VGA
-> >>
-> >>   00:02.0 VGA compatible controller: Intel Corporation CoffeeLake-S GT=
-2 [UHD Graphics 630] =20
-> > In all my previous experiments with VGA routing and IGD I found that
-> > IGD can't actually release VGA routing and Intel confirmed the hardware
-> > doesn't have the ability to do so. =20
->=20
-> Which model of the IGD you are using?=C2=A0even for the IGD in Atom D2550,
-> the legacy 128KB VGA memory range can be=C2=A0tuned to be mapped to IGD
-> or to the DMI Interface. See the 1.7.3.2 section of the N2000 datasheet[1=
-].
+I see that you use -G in 4/5, unsure now, but this looks like --sort in
+'perf report', no?
 
-I believe it's the VGA I/O that can't be disabled, there's no means to
-do so other than the I/O enable bit in the command register and iirc
-the driver depends on this for other features.  The history of this is
-pretty old, but here are some links:
+- Arnaldo
+ 
+> - Arnaldo
+>  
+> > Reviewed-by: Ian Rogers <irogers@google.com>
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/perf/Documentation/perf-lock.txt        |  4 ++
+> >  tools/perf/builtin-lock.c                     | 40 ++++++++++++++++++-
+> >  tools/perf/util/bpf_lock_contention.c         | 16 +++++---
+> >  .../perf/util/bpf_skel/lock_contention.bpf.c  | 31 +++++++++++++-
+> >  tools/perf/util/bpf_skel/lock_data.h          |  3 +-
+> >  tools/perf/util/lock-contention.h             |  1 -
+> >  6 files changed, 85 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/tools/perf/Documentation/perf-lock.txt b/tools/perf/Documentation/perf-lock.txt
+> > index 30eea576721f..61c491df72b8 100644
+> > --- a/tools/perf/Documentation/perf-lock.txt
+> > +++ b/tools/perf/Documentation/perf-lock.txt
+> > @@ -208,6 +208,10 @@ CONTENTION OPTIONS
+> >  	Show results using a CSV-style output to make it easy to import directly
+> >  	into spreadsheets. Columns are separated by the string specified in SEP.
+> >  
+> > +-g::
+> > +--lock-cgroup::
+> > +	Show lock contention stat by cgroup.  Requires --use-bpf.
+> > +
+> >  
+> >  SEE ALSO
+> >  --------
+> > diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+> > index 06430980dfd7..b98948dd40ba 100644
+> > --- a/tools/perf/builtin-lock.c
+> > +++ b/tools/perf/builtin-lock.c
+> > @@ -60,6 +60,7 @@ static bool combine_locks;
+> >  static bool show_thread_stats;
+> >  static bool show_lock_addrs;
+> >  static bool show_lock_owner;
+> > +static bool show_lock_cgroups;
+> >  static bool use_bpf;
+> >  static unsigned long bpf_map_entries = MAX_ENTRIES;
+> >  static int max_stack_depth = CONTENTION_STACK_DEPTH;
+> > @@ -619,6 +620,7 @@ static int get_key_by_aggr_mode_simple(u64 *key, u64 addr, u32 tid)
+> >  		*key = tid;
+> >  		break;
+> >  	case LOCK_AGGR_CALLER:
+> > +	case LOCK_AGGR_CGROUP:
+> >  	default:
+> >  		pr_err("Invalid aggregation mode: %d\n", aggr_mode);
+> >  		return -EINVAL;
+> > @@ -1103,6 +1105,7 @@ static int report_lock_contention_begin_event(struct evsel *evsel,
+> >  			if (lock_contention_caller(evsel, sample, buf, sizeof(buf)) < 0)
+> >  				name = "Unknown";
+> >  			break;
+> > +		case LOCK_AGGR_CGROUP:
+> >  		case LOCK_AGGR_TASK:
+> >  		default:
+> >  			break;
+> > @@ -1653,6 +1656,9 @@ static void print_header_stdio(void)
+> >  	case LOCK_AGGR_ADDR:
+> >  		fprintf(lock_output, "  %16s   %s\n\n", "address", "symbol");
+> >  		break;
+> > +	case LOCK_AGGR_CGROUP:
+> > +		fprintf(lock_output, "  %s\n\n", "cgroup");
+> > +		break;
+> >  	default:
+> >  		break;
+> >  	}
+> > @@ -1680,6 +1686,9 @@ static void print_header_csv(const char *sep)
+> >  	case LOCK_AGGR_ADDR:
+> >  		fprintf(lock_output, "%s%s %s%s %s\n", "address", sep, "symbol", sep, "type");
+> >  		break;
+> > +	case LOCK_AGGR_CGROUP:
+> > +		fprintf(lock_output, "%s\n", "cgroup");
+> > +		break;
+> >  	default:
+> >  		break;
+> >  	}
+> > @@ -1720,6 +1729,9 @@ static void print_lock_stat_stdio(struct lock_contention *con, struct lock_stat
+> >  		fprintf(lock_output, "  %016llx   %s (%s)\n", (unsigned long long)st->addr,
+> >  			st->name, get_type_name(st->flags));
+> >  		break;
+> > +	case LOCK_AGGR_CGROUP:
+> > +		fprintf(lock_output, "  %s\n", st->name);
+> > +		break;
+> >  	default:
+> >  		break;
+> >  	}
+> > @@ -1770,6 +1782,9 @@ static void print_lock_stat_csv(struct lock_contention *con, struct lock_stat *s
+> >  		fprintf(lock_output, "%llx%s %s%s %s\n", (unsigned long long)st->addr, sep,
+> >  			st->name, sep, get_type_name(st->flags));
+> >  		break;
+> > +	case LOCK_AGGR_CGROUP:
+> > +		fprintf(lock_output, "%s\n",st->name);
+> > +		break;
+> >  	default:
+> >  		break;
+> >  	}
+> > @@ -1999,6 +2014,27 @@ static int check_lock_contention_options(const struct option *options,
+> >  		return -1;
+> >  	}
+> >  
+> > +	if (show_lock_cgroups && !use_bpf) {
+> > +		pr_err("Cgroups are available only with BPF\n");
+> > +		parse_options_usage(usage, options, "lock-cgroup", 0);
+> > +		parse_options_usage(NULL, options, "use-bpf", 0);
+> > +		return -1;
+> > +	}
+> > +
+> > +	if (show_lock_cgroups && show_lock_addrs) {
+> > +		pr_err("Cannot use cgroup and addr mode together\n");
+> > +		parse_options_usage(usage, options, "lock-cgroup", 0);
+> > +		parse_options_usage(NULL, options, "lock-addr", 0);
+> > +		return -1;
+> > +	}
+> > +
+> > +	if (show_lock_cgroups && show_thread_stats) {
+> > +		pr_err("Cannot use cgroup and thread mode together\n");
+> > +		parse_options_usage(usage, options, "lock-cgroup", 0);
+> > +		parse_options_usage(NULL, options, "threads", 0);
+> > +		return -1;
+> > +	}
+> > +
+> >  	if (symbol_conf.field_sep) {
+> >  		if (strstr(symbol_conf.field_sep, ":") || /* part of type flags */
+> >  		    strstr(symbol_conf.field_sep, "+") || /* part of caller offset */
+> > @@ -2060,7 +2096,8 @@ static int __cmd_contention(int argc, const char **argv)
+> >  	con.machine = &session->machines.host;
+> >  
+> >  	con.aggr_mode = aggr_mode = show_thread_stats ? LOCK_AGGR_TASK :
+> > -		show_lock_addrs ? LOCK_AGGR_ADDR : LOCK_AGGR_CALLER;
+> > +		show_lock_addrs ? LOCK_AGGR_ADDR :
+> > +		show_lock_cgroups ? LOCK_AGGR_CGROUP : LOCK_AGGR_CALLER;
+> >  
+> >  	if (con.aggr_mode == LOCK_AGGR_CALLER)
+> >  		con.save_callstack = true;
+> > @@ -2524,6 +2561,7 @@ int cmd_lock(int argc, const char **argv)
+> >  	OPT_BOOLEAN('o', "lock-owner", &show_lock_owner, "show lock owners instead of waiters"),
+> >  	OPT_STRING_NOEMPTY('x', "field-separator", &symbol_conf.field_sep, "separator",
+> >  		   "print result in CSV format with custom separator"),
+> > +	OPT_BOOLEAN('g', "lock-cgroup", &show_lock_cgroups, "show lock stats by cgroup"),
+> >  	OPT_PARENT(lock_options)
+> >  	};
+> >  
+> > diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
+> > index c6bd7c9b2d57..42753a0dfdc5 100644
+> > --- a/tools/perf/util/bpf_lock_contention.c
+> > +++ b/tools/perf/util/bpf_lock_contention.c
+> > @@ -152,7 +152,10 @@ int lock_contention_prepare(struct lock_contention *con)
+> >  	skel->bss->needs_callstack = con->save_callstack;
+> >  	skel->bss->lock_owner = con->owner;
+> >  
+> > -	if (con->use_cgroup) {
+> > +	if (con->aggr_mode == LOCK_AGGR_CGROUP) {
+> > +		if (cgroup_is_v2("perf_event"))
+> > +			skel->bss->use_cgroup_v2 = 1;
+> > +
+> >  		read_all_cgroups(&con->cgroups);
+> >  	}
+> >  
+> > @@ -214,12 +217,12 @@ static const char *lock_contention_get_name(struct lock_contention *con,
+> >  			return "siglock";
+> >  
+> >  		/* global locks with symbols */
+> > -		sym = machine__find_kernel_symbol(machine, key->lock_addr, &kmap);
+> > +		sym = machine__find_kernel_symbol(machine, key->lock_addr_or_cgroup, &kmap);
+> >  		if (sym)
+> >  			return sym->name;
+> >  
+> >  		/* try semi-global locks collected separately */
+> > -		if (!bpf_map_lookup_elem(lock_fd, &key->lock_addr, &flags)) {
+> > +		if (!bpf_map_lookup_elem(lock_fd, &key->lock_addr_or_cgroup, &flags)) {
+> >  			if (flags == LOCK_CLASS_RQLOCK)
+> >  				return "rq_lock";
+> >  		}
+> > @@ -227,8 +230,8 @@ static const char *lock_contention_get_name(struct lock_contention *con,
+> >  		return "";
+> >  	}
+> >  
+> > -	if (con->use_cgroup) {
+> > -		u64 cgrp_id = key->lock_addr;
+> > +	if (con->aggr_mode == LOCK_AGGR_CGROUP) {
+> > +		u64 cgrp_id = key->lock_addr_or_cgroup;
+> >  		struct cgroup *cgrp = __cgroup__find(&con->cgroups, cgrp_id);
+> >  
+> >  		if (cgrp)
+> > @@ -329,7 +332,8 @@ int lock_contention_read(struct lock_contention *con)
+> >  			ls_key = key.pid;
+> >  			break;
+> >  		case LOCK_AGGR_ADDR:
+> > -			ls_key = key.lock_addr;
+> > +		case LOCK_AGGR_CGROUP:
+> > +			ls_key = key.lock_addr_or_cgroup;
+> >  			break;
+> >  		default:
+> >  			goto next;
+> > diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> > index 8d3cfbb3cc65..823354999022 100644
+> > --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> > +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> > @@ -118,6 +118,9 @@ int needs_callstack;
+> >  int stack_skip;
+> >  int lock_owner;
+> >  
+> > +int use_cgroup_v2;
+> > +int perf_subsys_id = -1;
+> > +
+> >  /* determine the key of lock stat */
+> >  int aggr_mode;
+> >  
+> > @@ -130,6 +133,29 @@ int data_fail;
+> >  int task_map_full;
+> >  int data_map_full;
+> >  
+> > +static inline __u64 get_current_cgroup_id(void)
+> > +{
+> > +	struct task_struct *task;
+> > +	struct cgroup *cgrp;
+> > +
+> > +	if (use_cgroup_v2)
+> > +		return bpf_get_current_cgroup_id();
+> > +
+> > +	task = bpf_get_current_task_btf();
+> > +
+> > +	if (perf_subsys_id == -1) {
+> > +#if __has_builtin(__builtin_preserve_enum_value)
+> > +		perf_subsys_id = bpf_core_enum_value(enum cgroup_subsys_id,
+> > +						     perf_event_cgrp_id);
+> > +#else
+> > +		perf_subsys_id = perf_event_cgrp_id;
+> > +#endif
+> > +	}
+> > +
+> > +	cgrp = BPF_CORE_READ(task, cgroups, subsys[perf_subsys_id], cgroup);
+> > +	return BPF_CORE_READ(cgrp, kn, id);
+> > +}
+> > +
+> >  static inline int can_record(u64 *ctx)
+> >  {
+> >  	if (has_cpu) {
+> > @@ -364,10 +390,13 @@ int contention_end(u64 *ctx)
+> >  			key.stack_id = pelem->stack_id;
+> >  		break;
+> >  	case LOCK_AGGR_ADDR:
+> > -		key.lock_addr = pelem->lock;
+> > +		key.lock_addr_or_cgroup = pelem->lock;
+> >  		if (needs_callstack)
+> >  			key.stack_id = pelem->stack_id;
+> >  		break;
+> > +	case LOCK_AGGR_CGROUP:
+> > +		key.lock_addr_or_cgroup = get_current_cgroup_id();
+> > +		break;
+> >  	default:
+> >  		/* should not happen */
+> >  		return 0;
+> > diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_skel/lock_data.h
+> > index 260062a9f2ab..08482daf61be 100644
+> > --- a/tools/perf/util/bpf_skel/lock_data.h
+> > +++ b/tools/perf/util/bpf_skel/lock_data.h
+> > @@ -6,7 +6,7 @@
+> >  struct contention_key {
+> >  	u32 stack_id;
+> >  	u32 pid;
+> > -	u64 lock_addr;
+> > +	u64 lock_addr_or_cgroup;
+> >  };
+> >  
+> >  #define TASK_COMM_LEN  16
+> > @@ -39,6 +39,7 @@ enum lock_aggr_mode {
+> >  	LOCK_AGGR_ADDR = 0,
+> >  	LOCK_AGGR_TASK,
+> >  	LOCK_AGGR_CALLER,
+> > +	LOCK_AGGR_CGROUP,
+> >  };
+> >  
+> >  enum lock_class_sym {
+> > diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
+> > index 70423966d778..a073cc6a82d2 100644
+> > --- a/tools/perf/util/lock-contention.h
+> > +++ b/tools/perf/util/lock-contention.h
+> > @@ -144,7 +144,6 @@ struct lock_contention {
+> >  	int owner;
+> >  	int nr_filtered;
+> >  	bool save_callstack;
+> > -	bool use_cgroup;
+> >  };
+> >  
+> >  #ifdef HAVE_BPF_SKEL
+> > -- 
+> > 2.42.0.283.g2d96d420d3-goog
+> > 
+> 
+> -- 
+> 
+> - Arnaldo
 
-https://lore.kernel.org/all/1376486637.31494.19.camel@ul30vt.home/
-https://bbs.archlinux.org/viewtopic.php?pid=3D1400212#p1400212
-https://lore.kernel.org/all/20130815223917.27890.28003.stgit@bling.home/
-https://lore.kernel.org/all/20130824144701.23370.42110.stgit@bling.home/
-https://lore.kernel.org/all/20140509201655.2849.97478.stgit@bling.home/
+-- 
 
-I think the issue was that i915 doesn't claim to the VGA arbiter to be
-controlling legacy VGA ranges, but in fact the hardware does claim
-those ranges.  We can "fix" i915 to report that VGA MMIO space is
-owned and can be controlled, but then Xorg likely sees multiple VGA
-arbiter clients and disables DRI because it wants to mmap VGA MMIO
-space.
-
-Therefore unless something has changed in the past 10yrs, i915 owns but
-does not advertise ownership of the VGA address spaces and therefore
-the arbiter can't and doesn't know to change VGA routing to enable a
-"be_primary" path to another device.
-=20
-> If a specific model of Intel has a bug in the VGA routing hardware logic =
-unit,
-> I would like to ignore it. Or switch to the UEFI firmware on such hardwar=
-e.
-
-That's a convenient and impractical approach.  I expect all Intel HD
-graphics has this issue.  Unknown for Xe.
-
-> It is the hardware engineer's responsibility, I will not worry about it.
-
-We often need to deal with broken hardware in the kernel.
-
-> Thanks for you tell this.
->=20
-> [1] https://www.intel.com/content/dam/doc/datasheet/atom-d2000-n2000-vol-=
-2-datasheet.pdf
->=20
->=20
-> >   It will always be primary from a
-> > VGA routing perspective.  Was this actually tested with non-UEFI? =20
->=20
->=20
-> As you already said,=C2=A0the generous Intel already have confirmed that =
-the hardware defect.
-> So probably this is a good chance to switch to UEFI to solve the problem.=
- Then, no
-> testing for legacy is needed.
-
-Then why are we hacking on VGA arbitration in this series at all?
-
-> > I suspect it might only work in UEFI mode where we probably don't
-> > actually have a dependency on VGA routing.  This is essentially why
-> > vfio requires UEFI ROMs when assigning GPUs to VMs, VGA routing is too
-> > broken to use on Intel systems with IGD.  Thanks, =20
->=20
-> Thanks for you tell me this.
->=20
-> To be honest, I have only tested my patch on machines with UEFI=C2=A0firm=
-ware.
-> Since UEFI because the main stream, but if this patch is really useful for
-> majority machine, I'm satisfied. The results is not too bad.
-
-This looks like a pretty significant scoping issue if you're proposing
-changes to the VGA arbiter which specifically handles the routing of
-legacy VGA address spaces but are not willing to commit to testing
-legacy configurations.  Thanks,
-
-Alex
-
+- Arnaldo
