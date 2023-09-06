@@ -2,85 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDF27942BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D98C7942C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243644AbjIFSGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 14:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
+        id S238201AbjIFSH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 14:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233808AbjIFSGt (ORCPT
+        with ESMTP id S234325AbjIFSH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 14:06:49 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36FECE9
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 11:06:45 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-5712b68dbc0so55716eaf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 11:06:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694023605; x=1694628405; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xnjUXTs6pn0ju4mRyE2WoYS0dp5/lgNA0GigOa0IJOE=;
-        b=JJjJp8iN5iYBayQNzOEqsXfYcRs9IGPqp/ea7uoegT2LBTyZDvQZgAZstwQYaRR6mA
-         AY/eebxPnK50rFUJmuNAoBEO9AHfMadLs45DfArcgEHYeCJeFhjjiXXegTj25ujXUJvC
-         D1r/BqK4o5262aB3SY0TqkzD5f/MkH79Ze2EFFuIFf1CkoAKgJYR2I74nz3owm4YfTdy
-         6uHmKpuD4sBBG1vgaUuWP/+zxvP4qQ3iqFVvJa5/7ufKgLEjVsOB5yknBWXlYEFF00vj
-         TITC7Av9jbMe1dUYj9cjNWQlbfjIc4Uipvw3vSksuZGLURhzgo1ywXixq2iffUB0c1Ii
-         +SmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694023605; x=1694628405;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xnjUXTs6pn0ju4mRyE2WoYS0dp5/lgNA0GigOa0IJOE=;
-        b=Ivf787Fc8qGaWjFFLfi+748UPJMSW6vhV6wH+cgpn77HAXkJB0pF7fFaZNAN3axLhA
-         xBzciDs8xZmMuLtQlCvSP30n970/OSNBF4CmP14DYS/9Zs4Car9RM1AFrgdfkMINoQ8F
-         scHgPcGyyiQ2N698oKCUrh6BYU3YZ8YflZSrgJOyTwM7ecdeis1MBpUaV9Hzr3DMzj6A
-         tyrZFIIIDUpRm9To/rs2XewuuR2Mc1OtAQ9e74jgg5q7lZNfu2XbsiLoTzgBRcV5fvD1
-         8yqDuLFHrJ51VTB6f1Xf8TAEUuUOFsj/enmP84AM867rANkicab78kwl9ujsrkhb9e6E
-         OmUg==
-X-Gm-Message-State: AOJu0Yy5rLE8s15TKQwRGbWJ3qAZ4/YVOs9SBJOMVDd8Z9xWl24QK2I3
-        +6lb7ewaENp4xj+Dz5+5AjFXNoL0LgXxUBjil/A=
-X-Google-Smtp-Source: AGHT+IHnL4YXufn9orOCAMqeVB24UhQCchcrVK0uam4MUJbJywzc+ivZOogndzFAOBRpb/+5dkxeUeS0OnRV6OQuMLI=
-X-Received: by 2002:a05:6808:3089:b0:39c:93ba:cb92 with SMTP id
- bl9-20020a056808308900b0039c93bacb92mr21643536oib.8.1694023605202; Wed, 06
- Sep 2023 11:06:45 -0700 (PDT)
+        Wed, 6 Sep 2023 14:07:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5DAA1724
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 11:07:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4438FC433C7;
+        Wed,  6 Sep 2023 18:07:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694023639;
+        bh=LK/9RFwAWACpDVkJmUMLa4ZQcl1iT5eciMmgvqDRP+s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KfJ6SGeyG/KrBP0dZuQ2sQn02bCkZJ+aM3V9f3+RZeEMWUjQHqk285OqMaVDaWaoi
+         yqy6yyVu+LRLQmKbJ8g0LeMvVQWCFHWQsKfkrR5BWxUJSrPNvPf1TdVCFOoFZTkyzw
+         dbvYxwRmTj15VMEidM58t1UQbkFrFx1OPft6GG6y9Phn68dO7pLyZGccuojTDjHOvI
+         RvgbLnjk52ttRqS5AZjfBEDYoGBIedPuanlO8owmfxva7SgyMFNcvPuhkDjQbPZzrt
+         WVC/QtBxOYPwXJCvHqpo2VQM5k2gQGfFrAseWzht+W5ZOaHYI8/98H0lNjApjNPOBY
+         PW4FubQkVUrmw==
+Date:   Wed, 6 Sep 2023 19:07:13 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        John Hsu =?utf-8?B?KOioseawuOe/sCk=?= <John.Hsu@mediatek.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        Xiaobing Shi =?utf-8?B?KOWPsuWwj+WFtSk=?= 
+        <Xiaobing.Shi@mediatek.com>,
+        Chunhui Li =?utf-8?B?KOadjuaYpei+iSk=?= 
+        <chunhui.li@mediatek.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Kuan-Ying Lee =?utf-8?B?KOadjuWGoOepjik=?= 
+        <Kuan-Ying.Lee@mediatek.com>,
+        Casper Li =?utf-8?B?KOadjuS4reamrik=?= <casper.li@mediatek.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [BUG kernel-5.15] aarch64: __pi_strncmp() out-of-bound error
+Message-ID: <20230906180713.GA5021@willie-the-truck>
+References: <e9f30f7d5b7d72a3521da31ab2002b49a26f542e.camel@mediatek.com>
+ <ZNEOmRb2sYQlVYwj@FVFF77S0Q05N.cambridge.arm.com>
+ <729b1505-c466-8a71-6079-4b0d9f81731d@arm.com>
+ <20230810143118.GA5795@willie-the-truck>
+ <10095b14-c005-c791-7e3e-d6561dac4dec@arm.com>
+ <20230810160907.GA5951@willie-the-truck>
 MIME-Version: 1.0
-References: <20230903184607.272198-1-jim.cromie@gmail.com> <20230903184607.272198-4-jim.cromie@gmail.com>
- <ZPV6CMBlDWriMyva@ashyti-mobl2.lan> <ZPir+7VYXcKv117q@intel.com>
-In-Reply-To: <ZPir+7VYXcKv117q@intel.com>
-From:   jim.cromie@gmail.com
-Date:   Wed, 6 Sep 2023 12:06:18 -0600
-Message-ID: <CAJfuBxyRn_FQtGmSiJjtOuJDs+40TPWcjW+JA5u8K-FSrDTHUA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/6] drm_dbg: add trailing newlines to msgs
-To:     Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc:     Andi Shyti <andi.shyti@linux.intel.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, daniel.vetter@ffwll.ch,
-        daniel@ffwll.ch, jani.nikula@intel.com,
-        ville.syrjala@linux.intel.com, seanpaul@chromium.org,
-        robdclark@gmail.com, Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Imre Deak <imre.deak@intel.com>,
-        Radhakrishna Sripada <radhakrishna.sripada@intel.com>,
-        Mika Kahola <mika.kahola@intel.com>,
-        =?UTF-8?Q?Jos=C3=A9_Roberto_de_Souza?= <jose.souza@intel.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Matthew Auld <matthew.auld@intel.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Fei Yang <fei.yang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810160907.GA5951@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -89,46 +69,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 10:42=E2=80=AFAM Rodrigo Vivi <rodrigo.vivi@intel.co=
-m> wrote:
->
-> On Mon, Sep 04, 2023 at 08:32:40AM +0200, Andi Shyti wrote:
-> > Hi Jim,
-> >
-> > On Sun, Sep 03, 2023 at 12:46:00PM -0600, Jim Cromie wrote:
-> > > By at least strong convention, a print-buffer's trailing newline says
-> > > "message complete, send it".  The exception (no TNL, followed by a ca=
-ll
-> > > to pr_cont) proves the general rule.
-> > >
-> > > Most DRM.debug calls already comport with this: 207 DRM_DEV_DEBUG,
-> > > 1288 drm_dbg.  Clean up the remainders, in maintainer sized chunks.
-> > >
-> > > No functional changes.
-> > >
-> > > Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
-> >
-> > Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com>
->
-> I pushed this i915 one to our drm-intel-next.
-> While doing it I have changed the subject to make it clear
-> this is 'drm/i915:'.
->
-> I believe you should do similar change to all the other patches
-> to make it clear in the subject about which domain that commit
-> is touching... instead of only 'drm_dbg'.
->
+On Thu, Aug 10, 2023 at 05:09:07PM +0100, Will Deacon wrote:
+> On Thu, Aug 10, 2023 at 04:00:00PM +0100, Robin Murphy wrote:
+> > On 10/08/2023 3:31 pm, Will Deacon wrote:
+> > > On Thu, Aug 10, 2023 at 01:23:28PM +0100, Robin Murphy wrote:
+> > > > I'm not sure there's strictly a bug here. The C standard says:
+> > > > 
+> > > > "The strncmp function compares not more than n characters (characters that
+> > > > follow a null character are not compared) ..."
+> > > > 
+> > > > so although any characters between the first NULL and n must not be
+> > > > considered for the result of the comparison, there doesn't seem to be any
+> > > > explicit promise anywhere that they can't be *accessed*. AFAICT what happens
+> > > > here is in the request to compare at most 23 characters, it ends up in the
+> > > > do_misaligned case, loop_misaligned runs twice and finds no differences or
+> > > > NULLs in characters 0-7 and 8-15, so then done_loop loads characters 15-23
+> > > > to compare the last 7, and is tripped up by 22-23 not actually existing in
+> > > > src2. Possibly the original intent was that this case should have ended up
+> > > > in page_end_loop, and the condition for that was slightly off, but I'm not
+> > > > sure, and this code is obsolete now anyway.
+> > > 
+> > > The long backtrace above worries me, as it suggests that you can trigger
+> > > this from userspace. In that case I think it's a bug regardless of what
+> > > the C standard says.
+> > 
+> > Bleh, poor choice of words... obviously there is a bug overall, it just
+> > might arguably be in the caller's expectations rather than the strncmp()
+> > implementation itself. However I would concur that there's no way we're
+> > going over all ~3000 strncmp() callsites with the "well, actually" comb just
+> > for this. It was more to say I don't think it's worth digging much deeper
+> > into exactly why, and I agree the pragmatic thing to do is either rip it out
+> > or backport the newer MTE-safe implementation which should be more robust.
+> 
+> Heh, then we agree. I was worried you'd gone mad :)
 
-I will do that, and drop the one you've already pushed.
-Thank you both.
+In the end I cherry-picked the newer implementation rather than fall back to
+the generic implementation:
 
+https://lore.kernel.org/r/20230906180336.4973-1-will@kernel.org
 
-> i.e.: 183670347b06 ("drm/i915: add trailing newlines to msgs")
-> https://cgit.freedesktop.org/drm-intel/commit/?h=3Ddrm-intel-next&id=3D18=
-3670347b060521920a81f84ff7f10e227ebe05
->
-> Thanks for the patch,
-> Rodrigo.
->
-> >
-> > Andi
+Will
