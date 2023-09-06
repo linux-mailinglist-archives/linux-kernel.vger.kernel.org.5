@@ -2,130 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6CE7933E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 04:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B193F7933E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 04:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbjIFCv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 22:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56414 "EHLO
+        id S241624AbjIFCwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 22:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjIFCv4 (ORCPT
+        with ESMTP id S229525AbjIFCwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 22:51:56 -0400
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99711E42;
-        Tue,  5 Sep 2023 19:51:20 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VrRzBg5_1693968670;
-Received: from 30.97.49.39(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VrRzBg5_1693968670)
-          by smtp.aliyun-inc.com;
-          Wed, 06 Sep 2023 10:51:12 +0800
-Message-ID: <bc05ff13-97a0-f101-6aad-d9d217648e20@linux.alibaba.com>
-Date:   Wed, 6 Sep 2023 10:51:10 +0800
+        Tue, 5 Sep 2023 22:52:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF70CCC2;
+        Tue,  5 Sep 2023 19:52:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693968757; x=1725504757;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=b/IlaQTZB5j0he0vRsx9Okx0UXxCOU0YpQJ6T4yXngA=;
+  b=DMIibnaRFzWF1T6bqd7Pv5CQyz4p1FWdFI4dURTwximIraEr4bj5nt48
+   FOzJ1ZF9/wLWii9tO6HwsCKFQ+9TK2ZYSPvSqe7wNpUIjQmnVqjBqY7md
+   QCt8Y1vsnBhVFstZzXUVjppXRGVjLTzBCtd9RSFb6O70qmnWrriMwaKVI
+   KCNteS4HxhH9Gs/jtjNCzKGHzRXNFZ7UbQ8AlDTDC39+aFWy9FkCdRpre
+   QnZ1cVmtJkypkqdAaHzRfER70xGP1UO9OFIljX3hx8voxyxWU3LQterBL
+   HjS1W+ihEM2rDpO9IvD3dyH3jqQEkn0DT+f2Q38zsimFXTSOR053YRZwx
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="407954966"
+X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
+   d="scan'208";a="407954966"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 19:52:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="776411652"
+X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
+   d="scan'208";a="776411652"
+Received: from lkp-server02.sh.intel.com (HELO e0b2ea88afd5) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 05 Sep 2023 19:52:34 -0700
+Received: from kbuild by e0b2ea88afd5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qdiea-0002Oj-11;
+        Wed, 06 Sep 2023 02:52:29 +0000
+Date:   Wed, 6 Sep 2023 10:52:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ajay Kaher <akaher@vmware.com>,
+        Zheng Yejian <zhengyejian1@huawei.com>
+Subject: Re: [PATCH] tracefs/eventfs: Use dput to free the toplevel events
+ directory
+Message-ID: <202309061055.V08YOtla-lkp@intel.com>
+References: <20230905183332.628d7cc0@gandalf.local.home>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH 2/4] crypto: qat - Remove zlib-deflate
-To:     dsterba@suse.cz, Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Yang Shen <shenyang39@huawei.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        ardb@kernel.org, kees@kernel.org, linux-kernel@vger.kernel.org,
-        enlin.mu@unisoc.com, ebiggers@google.com, gpiccoli@igalia.com,
-        willy@infradead.org, yunlong.xing@unisoc.com,
-        yuxiaozhang@google.com, qat-linux@intel.com,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Weigang Li <weigang.li@intel.com>, Chris Mason <clm@meta.com>,
-        Brian Will <brian.will@intel.com>, linux-btrfs@vger.kernel.org
-References: <ZO8ULhlJSrJ0Mcsx@gondor.apana.org.au>
- <E1qbI7x-009Bvo-IM@formenos.hmeau.com>
- <ZPcqALQ0Ck/3lF0U@gcabiddu-mobl1.ger.corp.intel.com>
- <20230905162302.GD14420@twin.jikos.cz>
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <20230905162302.GD14420@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230905183332.628d7cc0@gandalf.local.home>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Steven,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on linus/master]
+[also build test WARNING on next-20230905]
+[cannot apply to v6.5]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Steven-Rostedt/tracefs-eventfs-Use-dput-to-free-the-toplevel-events-directory/20230906-063414
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20230905183332.628d7cc0%40gandalf.local.home
+patch subject: [PATCH] tracefs/eventfs: Use dput to free the toplevel events directory
+config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230906/202309061055.V08YOtla-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230906/202309061055.V08YOtla-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309061055.V08YOtla-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   fs/tracefs/event_inode.c: In function 'eventfs_remove_events_dir':
+>> fs/tracefs/event_inode.c:804:31: warning: variable 'ei' set but not used [-Wunused-but-set-variable]
+     804 |         struct eventfs_inode *ei;
+         |                               ^~
 
 
-On 2023/9/6 00:23, David Sterba wrote:
-> On Tue, Sep 05, 2023 at 02:15:44PM +0100, Giovanni Cabiddu wrote:
->> Hi Herbert,
->>
->> On Wed, Aug 30, 2023 at 06:08:47PM +0800, Herbert Xu wrote:
->>> Remove the implementation of zlib-deflate because it is completely
->>> unused in the kernel.
->> We are working at a new revision of [1] which enables BTRFS to use acomp
->> for offloading zlib-deflate. We see that there is value in using QAT for
->> such use case in terms of throughput / CPU utilization / compression ratio
->> compared to software.
->> Zlib-deflate is preferred to deflate since BTRFS already uses that
->> format.
->>
->> We expect to send this patch for 6.7.
->> Can we keep zlib-deflate in the kernel?
->>
->> Thanks,
->>
->> [1] https://patchwork.kernel.org/project/linux-btrfs/patch/1467083180-111750-1-git-send-email-weigang.li@intel.com/
-> 
-> The patch is from 2016 and zlib though still supported has been
-> superseded by zstd that is from 2017. It would be good to see numbers
-> comparing zlib (cpu), zlib (qat) against relevant zstd levels. The
-> offloading might be an improvement and worth adding the support
-> otherwise I don't see much reason to add it unless there are users.
-> 
-> I can see there's QAT support for zstd too,
-> https://github.com/intel/QAT-ZSTD-Plugin, can't find one for lzo but in
-> case ther's QAT for all 3 algorithms used by btrfs I wouldn't mind
-> keeping the QAT support for zlib for parity.
+vim +/ei +804 fs/tracefs/event_inode.c
 
-Just my personal side note: from my own point of view, QAT actually only
-has DEFLATE and LZ4 format hardware end-to-end (de)compression support [1]
-(IAA actually has DEFLATE-family format only [2]).
+5bdcd5f5331a276 Ajay Kaher 2023-07-28  794  
+5bdcd5f5331a276 Ajay Kaher 2023-07-28  795  /**
+5bdcd5f5331a276 Ajay Kaher 2023-07-28  796   * eventfs_remove_events_dir - remove eventfs dir or file from list
+5bdcd5f5331a276 Ajay Kaher 2023-07-28  797   * @dentry: events's dentry to be removed.
+5bdcd5f5331a276 Ajay Kaher 2023-07-28  798   *
+5bdcd5f5331a276 Ajay Kaher 2023-07-28  799   * This function remove events main directory
+5bdcd5f5331a276 Ajay Kaher 2023-07-28  800   */
+5bdcd5f5331a276 Ajay Kaher 2023-07-28  801  void eventfs_remove_events_dir(struct dentry *dentry)
+5bdcd5f5331a276 Ajay Kaher 2023-07-28  802  {
+5bdcd5f5331a276 Ajay Kaher 2023-07-28  803  	struct tracefs_inode *ti;
+5bdcd5f5331a276 Ajay Kaher 2023-07-28 @804  	struct eventfs_inode *ei;
 
-They partially support compressing Zstd format with their internal
-hardware lz4s + postprocessing pipeline (mostly a LZ77 matchfinder) by
-using hardware (with hw_buffer_sz less than 128KiB. [3][4]) and Zstd
-hardware decompression is currently not supported since there is no
-such hardware format support.
-
-I'm not saying new Zstd algorithm is not amazing.  Yet from the hardware
-perspective, I guess that due to gzip, the original zip, png, pdf, docx,
-https, even pppoe all based on DEFLATE (you could see a lot other OSes
-support DEFLATE-family format), so it's reasonble to resolve such
-de-facto standard with limited hardware first to boost up data center
-use cases.  If they have abundant hardware chip room, I guess they will
-consider Zstd as well.
-
-As for zlib container format, I don't see zlib Adler-32 checksum is
-useful since almost all hardware accelerator supports raw DEFLATE but
-Adler-32 checksum is uncommon.  If we consider better integrating
-support, we should consider a more common hash (instead Adler-32
-checksum) of or by using merkle tree to build the trust chain.
-
-Actually we're working on EROFS raw deflate to enable IAA accelerator
-support so we also hope IAA patchset could be landed upstream [5] so
-I could upstream my work then.  Therefore, I hope "hisilicon ZIP
-driver" could support raw deflate too (after a quick search, their
-decompression spend is 1530 MB/s compared with the original zlib
-219 MB/s on their platform [6])
-
-[1] https://github.com/intel/QATzip
-[2] https://cdrdv2.intel.com/v1/dl/getContent/721858
-[3] https://github.com/facebook/zstd/issues/455#issuecomment-1397204587
-[4] https://github.com/intel/QATzip/blob/master/utils/qzstd.c#L211
-[5] https://lore.kernel.org/r/20230807203726.1682123-1-tom.zanussi@linux.intel.com
-[6] https://compare-intel-kunpeng.readthedocs.io/zh_CN/latest/accelerator.html
-
-Thanks,
-Gao Xiang
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
