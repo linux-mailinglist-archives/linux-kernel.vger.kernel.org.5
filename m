@@ -2,91 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C68379408D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4353779408E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240518AbjIFPkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 11:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33528 "EHLO
+        id S237523AbjIFPlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 11:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234160AbjIFPkN (ORCPT
+        with ESMTP id S232304AbjIFPlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 11:40:13 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC621724;
-        Wed,  6 Sep 2023 08:40:06 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bce552508fso220271fa.1;
-        Wed, 06 Sep 2023 08:40:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694014805; x=1694619605; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m/HPucnlC02KhI0SeMm2PgbrX3vHL5Q/olvC4crY43c=;
-        b=reUUNFobDpRDRbQaf4BCbd5n6zL5RkSqvMDrpx4aF7qvuO03tdF+R7dHZp5/TwaRZA
-         e+pV9UnJ0u23nuu7GeP8Nrjdath38bUN3M6dGWXc+w1nQCis2ovDXOllZSjyRDgli5hp
-         sqSkr3jSR+gRKpim3zA7VtCkHuApNncoUtnEHPCiObyTnhkLpD10NBZtudzVMeQOYrvU
-         9k3Z3CKVARtzeZm5GG1WyZjDiHPecp2rHs1J5kskT7DoDp/2SbXKj9HDDfTolbBOIXLX
-         DZGfDhhkTHXyU8A9aVlGPK0N9LftlcMJzGHWMmiGGCXDl9J+/tX10u4cc9he4mc87w2E
-         tVQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694014805; x=1694619605;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m/HPucnlC02KhI0SeMm2PgbrX3vHL5Q/olvC4crY43c=;
-        b=f2zkbHxIyrk1fpJm49zch7QFoDsky9kmzM23AZ5I07GkFtyWUfyMrgkQDCNcJbD/aY
-         rTz+QT5gBgdI36JMXnlx2TXzXZsAtTzlSUeeN8C6mw3Q9CxVIxBlup9qGRssG5WdsZPp
-         /l4gR23Xke3ikXz6db/5Oowf/kfOL38g94Tyk21d438vb0TJswXDe5/ruUu9GrHXRPaZ
-         89s8oxu7bWWOistBLPYaJNBHpq4hbkJgK9b4xuWHMnV14C5TRsJERuP613FrLpCz/0e3
-         qSeY0HDY/3rvFCQ50FKPNLTWvOxDX0tpY7v4xDrhlF17JGAdOorQsQCsr1WrONCfRH41
-         1Buw==
-X-Gm-Message-State: AOJu0Ywt7+Q3Whuw2TX4uWd/9JDfDIfCL5H9P6QbX6m8a3p6s4huB9t6
-        qpwSOJqpu2jdS8qF51TYQ00=
-X-Google-Smtp-Source: AGHT+IHCnMGf52dMqIogIESmHIXmUwUyrQBgjv0g5Mn/v/6vJ7Xj8XnHckyDdvsromuU5o4bDp+zFw==
-X-Received: by 2002:a2e:8898:0:b0:2b9:e93e:65e6 with SMTP id k24-20020a2e8898000000b002b9e93e65e6mr2430913lji.35.1694014804552;
-        Wed, 06 Sep 2023 08:40:04 -0700 (PDT)
-Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id lu7-20020a170906fac700b0099bcf1c07c6sm9175356ejb.138.2023.09.06.08.40.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 08:40:03 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Martin Botka <martin.botka@somainline.org>,
-        Martin Botka <martin.botka1@gmail.com>,
-        Martin Botka <martin@biqu3d.com>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jami Kettunen <jamipkettunen@somainline.org>,
-        Paul Bouchara <paul.bouchara@somainline.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Ludwig Kormann <ludwig.kormann@ict42.de>,
-        Andrew Lunn <andrew@lunn.ch>, Icenowy Zheng <uwu@icenowy.me>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] arm64: dts: allwinner: h616: Add BigTreeTech Pi support
-Date:   Wed, 06 Sep 2023 17:39:59 +0200
-Message-ID: <4511281.LvFx2qVVIh@jernej-laptop>
-In-Reply-To: <20230906112434.460b46c4@donnerap.manchester.arm.com>
-References: <20230807145349.2220490-1-martin@biqu3d.com> <1909632.taCxCBeP46@archlinux>
- <20230906112434.460b46c4@donnerap.manchester.arm.com>
+        Wed, 6 Sep 2023 11:41:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE08BC;
+        Wed,  6 Sep 2023 08:41:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06B24C433C8;
+        Wed,  6 Sep 2023 15:41:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694014874;
+        bh=iiJZWAYxRtMc9lZR5UR45Z+cgCiGl6bOaoOUTY43tKQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JqGXf2/Udd6tPkNGB6BxfD7B3G8DLA2MXFB48pYVIXoto+e+rH2Z+0h4WyKNKMPNP
+         qOIjRPnn1LXxEWxTHyhX4F0Yc870yzXtJo946EJi0EkHgua0+FGMixto252I6Gcsmr
+         bfaR4PsCw+ISnOp3+a+PkxeKn26/Nfl8Ddzf0D8ZifPiHQy03myUeAKfux7egvKMpt
+         FfDVKKeAtpnUd+HpCNq0rbvnJpHZCN1ca2aZ4eWNwyrzOHPf6+euQedGvdN3eKyZlr
+         VyW79zLVp9CobeucyZ0gKWIp3jdrsH6EGowKrQpy2uhcwZRLmRdzYC6kHjqMW7AuGt
+         4CxszOcv2+tGA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E47A2403F4; Wed,  6 Sep 2023 12:41:11 -0300 (-03)
+Date:   Wed, 6 Sep 2023 12:41:11 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH 1/5] perf tools: Add read_all_cgroups() and
+ __cgroup_find()
+Message-ID: <ZPidlwe2yXEDZB+U@kernel.org>
+References: <20230830230126.260508-1-namhyung@kernel.org>
+ <20230830230126.260508-2-namhyung@kernel.org>
+ <ZPic6Fegc7PGSvmp@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZPic6Fegc7PGSvmp@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -95,305 +61,201 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne sreda, 06. september 2023 ob 12:24:34 CEST je Andre Przywara napisal(a):
-> On Tue, 05 Sep 2023 22:45:27 +0200
-> Jernej =C5=A0krabec <jernej.skrabec@gmail.com> wrote:
->=20
-> Hi,
->=20
-> > On Thursday, August 24, 2023 10:48:20 PM CEST Martin Botka wrote:
-> > > On Mon, Aug 14 2023 at 12:47:59 PM +02:00:00, Martin Botka
-> > >=20
-> > > <martin.botka@somainline.org> wrote:
-> > > > On Mon, Aug 14 2023 at 12:26:07 PM +02:00:00, Jernej =C5=A0krabec
-> > > >=20
-> > > > <jernej.skrabec@gmail.com> wrote:
-> > > >> Dne nedelja, 13. avgust 2023 ob 18:22:49 CEST je Martin Botka
-> > > >>=20
-> > > >> =7Fnapisal(a):
-> > > >>>  On Sun, Aug 13 2023 at 05:55:35 PM +02:00:00, Jernej =C5=A0krabec
-> > > >>> =20
-> > > >>>  <jernej.skrabec@gmail.com> wrote:
-> > > >>>  > Dne ponedeljek, 07. avgust 2023 ob 16:53:24 CEST je Martin Bot=
-ka
-> > > >>>  >=20
-> > > >>>  > napisal(a):
-> > > >>>  >>  The BigTreeTech Pi is an H616 based board based on CB1.
-> > > >>>  >>  Just in Rpi format board.
-> > > >>>  >> =20
-> > > >>>  >>  It features the same internals as BTT CB1 but adds:
-> > > >>>  >>      - Fan port
-> > > >>>  >>      - IR receiver
-> > > >>>  >>      - ADXL345 Accelerometer connector via SPI
-> > > >>>  >>      - 24V DC power supply via terminal plugs
-> > > >>>  >>      - USB to CAN module connector (The actual USB to CAN
-> > > >>>=20
-> > > >>> =7F=7Fhappens on
-> > > >>>=20
-> > > >>>  >> the
-> > > >>>  >>=20
-> > > >>>  >>  external module)
-> > > >>>  >> =20
-> > > >>>  >>  List of currently working things is same as BTT CB1 but also:
-> > > >>>  >>      - IR receiver
-> > > >>>  >>      - ADXL345 connector
-> > > >>>  >> =20
-> > > >>>  >>  Signed-off-by: Martin Botka <martin@biqu3d.com>
-> > > >>>  >>  Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-> > > >>>  >>  ---
-> > > >>>  >> =20
-> > > >>>  >>  Changes in V2:
-> > > >>>  >>      - Add UART alongside aliases and chosen for it
-> > > >>>  >>      - Add model string
-> > > >>>  >>      - Enable IR receiver
-> > > >>>  >>      - Enable SPI0 for ADXL345 connector
-> > > >>>  >> =20
-> > > >>>  >>  Changes in V3:
-> > > >>>  >>      - Add missing semicolons
-> > > >>>  >>      - Add pinctrl for SPI0
-> > > >>>  >>  =20
-> > > >>>  >>   arch/arm64/boot/dts/allwinner/Makefile        |  1 +
-> > > >>>  >>   .../allwinner/sun50i-h616-bigtreetech-pi.dts  | 70
-> > > >>>  >>=20
-> > > >>>  >> +++++++++++++++++++
-> > > >>>  >>=20
-> > > >>>  >>   2 files changed, 71 insertions(+)
-> > > >>>  >>   create mode 100644
-> > > >>>  >> =20
-> > > >>>  >>  arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-> > > >>>  >> =20
-> > > >>>  >>  diff --git a/arch/arm64/boot/dts/allwinner/Makefile
-> > > >>>  >>  b/arch/arm64/boot/dts/allwinner/Makefile index
-> > > >>>  >>=20
-> > > >>>  >> 7b386428510b..0b6232a7f328
-> > > >>>  >>=20
-> > > >>>  >>  100644
-> > > >>>  >>  --- a/arch/arm64/boot/dts/allwinner/Makefile
-> > > >>>  >>  +++ b/arch/arm64/boot/dts/allwinner/Makefile
-> > > >>>  >>  @@ -39,5 +39,6 @@ dtb-$(CONFIG_ARCH_SUNXI) +=3D
-> > > >>>  >>=20
-> > > >>>  >> sun50i-h6-pine-h64-model-b.dtb
-> > > >>>  >>=20
-> > > >>>  >>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h6-tanix-tx6.dtb
-> > > >>>  >> =20
-> > > >>>  >>   dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h6-tanix-tx6-mini.dtb
-> > > >>>  >>   dtb-$(CONFIG_ARCH_SUNXI) +=3D
-> > > >>>=20
-> > > >>> =7F=7Fsun50i-h616-bigtreetech-cb1-manta.dtb
-> > > >>>=20
-> > > >>>  >>  +dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h616-bigtreetech-pi.dtb
-> > > >>>  >> =20
-> > > >>>  >>   dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h616-orangepi-zero2.dtb
-> > > >>>  >>   dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h616-x96-mate.dtb
-> > > >>>  >> =20
-> > > >>>  >>  diff --git
-> > > >>>  >>=20
-> > > >>>  >> a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-> > > >>>  >>=20
-> > > >>>  >>  b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.d=
-ts
-> > > >>>=20
-> > > >>> =7F=7Fnew
-> > > >>>=20
-> > > >>>  >> file
-> > > >>>  >>=20
-> > > >>>  >>  mode 100644
-> > > >>>  >>  index 000000000000..b0d0386e8f13
-> > > >>>  >>  --- /dev/null
-> > > >>>  >>  +++
-> > > >>>=20
-> > > >>> =7F=7Fb/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.=
-dts
-> > > >>>=20
-> > > >>>  >>  @@ -0,0 +1,70 @@
-> > > >>>  >>  +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-> > > >>>  >>  +/*
-> > > >>>  >>  + * Copyright (C) 2023 Martin Botka <martin@biqu3d.com>.
-> > > >>>  >>  + */
-> > > >>>  >>  +
-> > > >>>  >>  +/dts-v1/;
-> > > >>>  >>  +
-> > > >>>  >>  +#include "sun50i-h616-bigtreetech-cb1.dtsi"
-> > > >>>  >>  +
-> > > >>>  >>  +/ {
-> > > >>>  >>  +	model =3D "BigTreeTech Pi";
-> > > >>>  >>  +	compatible =3D "bigtreetech,pi", "allwinner,sun50i-
-h616";
-> > > >>>  >>  +
-> > > >>>  >>  +	aliases {
-> > > >>>  >>  +		serial0 =3D &uart0;
-> > > >>>  >>  +	};
-> > > >>>  >>  +
-> > > >>>  >>  +	chosen {
-> > > >>>  >>  +		stdout-path =3D "serial0:115200n8";
-> > > >>>  >>  +	};
-> > > >>>  >>  +};
-> > > >>>  >>  +
-> > > >>>  >>  +&ehci0 {
-> > > >>>  >>  +	status =3D "okay";
-> > > >>>  >>  +};
-> > > >>>  >>  +
-> > > >>>  >>  +&ehci1 {
-> > > >>>  >>  +	status =3D "okay";
-> > > >>>  >>  +};
-> > > >>>  >>  +
-> > > >>>  >>  +&ehci2 {
-> > > >>>  >>  +	status =3D "okay";
-> > > >>>  >>  +};
-> > > >>>  >>  +
-> > > >>>  >>  +&ehci3 {
-> > > >>>  >>  +	status =3D "okay";
-> > > >>>  >>  +};
-> > > >>>  >>  +
-> > > >>>  >>  +&ir {
-> > > >>>  >>  +	status =3D "okay";
-> > > >>>  >>  +};
-> > > >>>  >>  +
-> > > >>>  >>  +&ohci0 {
-> > > >>>  >>  +	status =3D "okay";
-> > > >>>  >>  +};
-> > > >>>  >>  +
-> > > >>>  >>  +&ohci1 {
-> > > >>>  >>  +	status =3D "okay";
-> > > >>>  >>  +};
-> > > >>>  >>  +
-> > > >>>  >>  +&ohci2 {
-> > > >>>  >>  +	status =3D "okay";
-> > > >>>  >>  +};
-> > > >>>  >>  +
-> > > >>>  >>  +&ohci3 {
-> > > >>>  >>  +	status =3D "okay";
-> > > >>>  >>  +};
-> > > >>>  >>  +
-> > > >>>  >>  +&spi0 {
-> > > >>>  >>  +	/* SPI connection for onboard connector for ADXL345
-> > > >>>=20
-> > > >>> =7F=7Faccelerometer
-> > > >>>=20
-> > > >>>  > */
-> > > >>>  >=20
-> > > >>>  >>  +	status =3D "okay";
-> > > >>>  >>  +	pinctrl-names =3D "default";
-> > > >>>  >>  +	pinctrl-0 =3D <&spi0_pins>, <&spi0_cs0_pin>;
-> > > >>>  >=20
-> > > >>>  > Driver and compatible for ADXL345 already exists, why don't you
-> > > >>>=20
-> > > >>> =7F=7Fadd
-> > > >>>=20
-> > > >>>  > child node
-> > > >>>  > for it?
-> > > >>>  >=20
-> > > >>>  > Best regards,
-> > > >>>  > Jernej
-> > > >>> =20
-> > > >>>  Ah. So the ADXL345 actually wont be driven by kernel.
-> > > >>=20
-> > > >> DT is hardware description, it's not concerned what is done on
-> > > >> =7Fsoftware side,
-> > > >> either kernel or user space.
-> > > >=20
-> > > > Im aware. But this is not a device that is on the board. Its simply=
- a
-> > > > connector for the device.
-> > > > Like Rpi has connectors for camera module :)
-> >=20
-> > Actually it matters only if this other board is firmly connected with b=
-ase
-> > board. If it is not, then SPI node should be dropped and be handled with
-> > DT
-> > overlays.
->=20
-> So I do understand the reasoning behind not describing those generic pin
-> header connectors, where people could hook up anything, and use it as a
-> GPIO or as a special function device, but just wanted to check on this
-> situation:
-> Don't we even describe pins dedicated to those custom connectors,
-> especially if there is an "obvious" external device to connect to? Is it
-> the same situation like with these FPC camera connectors?
+Em Wed, Sep 06, 2023 at 12:38:17PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Wed, Aug 30, 2023 at 04:01:22PM -0700, Namhyung Kim escreveu:
+> > The read_all_cgroups() is to build a tree of cgroups in the system and
+> > users can look up a cgroup using __cgroup_find().
+> 
+> ⬢[acme@toolbox perf-tools-next]$ alias m='make -k BUILD_BPF_SKEL=1 CORESIGHT=1 O=/tmp/build/perf-tools-next -C tools/perf install-bin && git status && perf test python'
+> ⬢[acme@toolbox perf-tools-next]$ m
+> make: Entering directory '/var/home/acme/git/perf-tools-next/tools/perf'
+>   BUILD:   Doing 'make -j32' parallel build
+> Warning: Kernel ABI header differences:
+>   diff -u tools/include/uapi/linux/perf_event.h include/uapi/linux/perf_event.h
+>   diff -u tools/arch/x86/include/asm/cpufeatures.h arch/x86/include/asm/cpufeatures.h
+>   diff -u tools/arch/x86/include/asm/msr-index.h arch/x86/include/asm/msr-index.h
+>   diff -u tools/arch/arm64/include/uapi/asm/perf_regs.h arch/arm64/include/uapi/asm/perf_regs.h
+> 
+>   INSTALL libsubcmd_headers
+>   INSTALL libperf_headers
+>   INSTALL libapi_headers
+>   INSTALL libsymbol_headers
+>   INSTALL libbpf_headers
+>   CC      /tmp/build/perf-tools-next/builtin-lock.o
+>   CC      /tmp/build/perf-tools-next/util/bpf_lock_contention.o
+> builtin-lock.c: In function ‘__cmd_contention’:
+> builtin-lock.c:2162:9: error: too few arguments to function ‘lock_contention_finish’
+>  2162 |         lock_contention_finish();
+>       |         ^~~~~~~~~~~~~~~~~~~~~~
+> In file included from builtin-lock.c:14:
+> util/lock-contention.h:156:5: note: declared here
+>   156 | int lock_contention_finish(struct lock_contention *con);
+>       |     ^~~~~~~~~~~~~~~~~~~~~~
+> make[3]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:97: /tmp/build/perf-tools-next/builtin-lock.o] Error 1
+> make[3]: *** Waiting for unfinished jobs....
+> util/bpf_lock_contention.c: In function ‘lock_contention_get_name’:
+> util/bpf_lock_contention.c:231:34: error: ‘struct contention_key’ has no member named ‘lock_addr_or_cgroup’
+>   231 |                 u64 cgrp_id = key->lock_addr_or_cgroup;
+>       |                                  ^~
+> make[4]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:97: /tmp/build/perf-tools-next/util/bpf_lock_contention.o] Error 1
+> make[3]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:150: util] Error 2
+> make[2]: *** [Makefile.perf:662: /tmp/build/perf-tools-next/perf-in.o] Error 2
+> make[1]: *** [Makefile.perf:238: sub-make] Error 2
+> make: *** [Makefile:113: install-bin] Error 2
+> make: Leaving directory '/var/home/acme/git/perf-tools-next/tools/perf'
+> ⬢[acme@toolbox perf-tools-next]$
+> 
+> Trying to figure this out.
 
-I would say yes. SPI connector can still be used as GPIOs or anything else,=
-=20
-since there is no device soldered directly to it.
+So it works on the following patch:
 
-Best regards,
-Jernej
+⬢[acme@toolbox perf-tools-next]$ git log --oneline -5
+94a54d498ae35c66 (HEAD) perf lock contention: Add -g/--lock-cgroup option
+defe88978441a00d perf lock contention: Prepare to handle cgroups
+cc0717270d2f0daa perf cgroup: Add read_all_cgroups() and __cgroup_find()
+752d73a1dd62cd4a perf shell completion: Support completion of metrics/metricgroups
+72aa5816258bf9fe perf completion: Support completion of libpfm4 events
+⬢[acme@toolbox perf-tools-next]$
 
->=20
-> Cheers,
-> Andre
->=20
-> > > >>>  The SPI connection is enabled so that klipper (3d printer
-> > > >>>=20
-> > > >>> firmware) =7F=7Fcan
-> > > >>>=20
-> > > >>>  be told to look for ADXL345 at this SPI and use it on its own.
-> > > >>> =20
-> > > >>>  Klipper will initialize and communicate with the ADXL on its own.
-> > > >>=20
-> > > >> What do you mean by firmware? User space app? In this case I suppo=
-se
-> > > >> =7Fyou'll use
-> > > >> direct SPI commands from user space? AFAIK that's less and less
-> > > >> =7Fsupported by
-> > > >> kernel (in contrast to I2C).
-> > > >=20
-> > > > Firmware as in 3d printer firmware. Klipper runs on the board (CB1 =
-or
-> > > > BTT Pi) and is indeed an userspace app.
-> > > > And indeed uses direct SPI commands to the device.
-> > > >=20
-> > > > The reason for this is the flexibility.
-> > > > If Klipper read the values from kernel or well from the files the
-> > > > ADXL driver would create
-> > > > then it would be unable to communicate with ADXL that is on toolhead
-> > > > board. Or would have to have
-> > > > direct initialization either way for those. Thus it just controls t=
-he
-> > > > ADXL itself :)
-> > > >=20
-> > > > I understand that this may be bit confusing. If there is still
-> > > > something not clear im more then happy to explain in
-> > > > full detail how the userspace and 3D printer communicate :)
-> >=20
-> > As I said, DT doesn't care about implementation. DT is HW description, =
-so
-> > either if it's fixed connection (soldered wires), then describe in full,
-> > otherwise it's considered addon board and thus non-essential, so it sho=
-uld
-> > be handled with DT overlays.
-> >=20
-> > Can be CB1 bought separately from 3D printer package and thus used with=
-out
-> > ADXL sensor?
-> >=20
-> > > > Cheers,
-> > > > Martin.
-> > >=20
-> > > Hello,
-> > > Jernej any comments on this ?
-> > > I would like to resolve this conversation :)
-> > > We do have a bunch of time before the new cycle but never hurts to get
-> > > it figured out ahead of time :)
-> >=20
-> > Sorry, not enough free time over summer.
-> >=20
-> > Best regards,
-> > Jernej
-> >=20
-> > > Cheers,
-> > > Martin
-> > >=20
-> > > >> Best regards,
-> > > >> Jernej
-> > > >>=20
-> > > >>>  >>  +};
-> > > >>>  >>  +
-> > > >>>  >>  +&uart0 {
-> > > >>>  >>  +	pinctrl-names =3D "default";
-> > > >>>  >>  +	pinctrl-0 =3D <&uart0_ph_pins>;
-> > > >>>  >>  +	status =3D "okay";
-> > > >>>  >>  +};
+Please check and submit a v2.
 
+- Arnaldo
+ 
+> - Arnaldo
+>  
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/perf/util/cgroup.c | 61 ++++++++++++++++++++++++++++++++++------
+> >  tools/perf/util/cgroup.h |  4 +++
+> >  2 files changed, 57 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
+> > index bfb13306d82c..2e969d1464f4 100644
+> > --- a/tools/perf/util/cgroup.c
+> > +++ b/tools/perf/util/cgroup.c
+> > @@ -48,28 +48,36 @@ static int open_cgroup(const char *name)
+> >  }
+> >  
+> >  #ifdef HAVE_FILE_HANDLE
+> > -int read_cgroup_id(struct cgroup *cgrp)
+> > +static u64 __read_cgroup_id(const char *path)
+> >  {
+> > -	char path[PATH_MAX + 1];
+> > -	char mnt[PATH_MAX + 1];
+> >  	struct {
+> >  		struct file_handle fh;
+> >  		uint64_t cgroup_id;
+> >  	} handle;
+> >  	int mount_id;
+> >  
+> > +	handle.fh.handle_bytes = sizeof(handle.cgroup_id);
+> > +	if (name_to_handle_at(AT_FDCWD, path, &handle.fh, &mount_id, 0) < 0)
+> > +		return -1ULL;
+> > +
+> > +	return handle.cgroup_id;
+> > +}
+> > +
+> > +int read_cgroup_id(struct cgroup *cgrp)
+> > +{
+> > +	char path[PATH_MAX + 1];
+> > +	char mnt[PATH_MAX + 1];
+> > +
+> >  	if (cgroupfs_find_mountpoint(mnt, PATH_MAX + 1, "perf_event"))
+> >  		return -1;
+> >  
+> >  	scnprintf(path, PATH_MAX, "%s/%s", mnt, cgrp->name);
+> >  
+> > -	handle.fh.handle_bytes = sizeof(handle.cgroup_id);
+> > -	if (name_to_handle_at(AT_FDCWD, path, &handle.fh, &mount_id, 0) < 0)
+> > -		return -1;
+> > -
+> > -	cgrp->id = handle.cgroup_id;
+> > +	cgrp->id = __read_cgroup_id(path);
+> >  	return 0;
+> >  }
+> > +#else
+> > +static inline u64 __read_cgroup_id(const char *path) { return -1ULL; }
+> >  #endif  /* HAVE_FILE_HANDLE */
+> >  
+> >  #ifndef CGROUP2_SUPER_MAGIC
+> > @@ -562,6 +570,11 @@ struct cgroup *cgroup__findnew(struct perf_env *env, uint64_t id,
+> >  	return cgrp;
+> >  }
+> >  
+> > +struct cgroup *__cgroup__find(struct rb_root *root, uint64_t id)
+> > +{
+> > +	return __cgroup__findnew(root, id, /*create=*/false, /*path=*/NULL);
+> > +}
+> > +
+> >  struct cgroup *cgroup__find(struct perf_env *env, uint64_t id)
+> >  {
+> >  	struct cgroup *cgrp;
+> > @@ -587,3 +600,35 @@ void perf_env__purge_cgroups(struct perf_env *env)
+> >  	}
+> >  	up_write(&env->cgroups.lock);
+> >  }
+> > +
+> > +void read_all_cgroups(struct rb_root *root)
+> > +{
+> > +	char mnt[PATH_MAX];
+> > +	struct cgroup_name *cn;
+> > +	int prefix_len;
+> > +
+> > +	if (cgroupfs_find_mountpoint(mnt, sizeof(mnt), "perf_event"))
+> > +		return;
+> > +
+> > +	/* cgroup_name will have a full path, skip the root directory */
+> > +	prefix_len = strlen(mnt);
+> > +
+> > +	/* collect all cgroups in the cgroup_list */
+> > +	if (nftw(mnt, add_cgroup_name, 20, 0) < 0)
+> > +		return;
+> > +
+> > +	list_for_each_entry(cn, &cgroup_list, list) {
+> > +		const char *name;
+> > +		u64 cgrp_id;
+> > +
+> > +		/* cgroup_name might have a full path, skip the prefix */
+> > +		name = cn->name + prefix_len;
+> > +		if (name[0] == '\0')
+> > +			name = "/";
+> > +
+> > +		cgrp_id = __read_cgroup_id(cn->name);
+> > +		__cgroup__findnew(root, cgrp_id, /*create=*/true, name);
+> > +	}
+> > +
+> > +	release_cgroup_list();
+> > +}
+> > diff --git a/tools/perf/util/cgroup.h b/tools/perf/util/cgroup.h
+> > index 12256b78608c..beb6fe1012ed 100644
+> > --- a/tools/perf/util/cgroup.h
+> > +++ b/tools/perf/util/cgroup.h
+> > @@ -37,6 +37,7 @@ int parse_cgroups(const struct option *opt, const char *str, int unset);
+> >  struct cgroup *cgroup__findnew(struct perf_env *env, uint64_t id,
+> >  			       const char *path);
+> >  struct cgroup *cgroup__find(struct perf_env *env, uint64_t id);
+> > +struct cgroup *__cgroup__find(struct rb_root *root, uint64_t id);
+> >  
+> >  void perf_env__purge_cgroups(struct perf_env *env);
+> >  
+> > @@ -49,6 +50,9 @@ static inline int read_cgroup_id(struct cgroup *cgrp __maybe_unused)
+> >  }
+> >  #endif  /* HAVE_FILE_HANDLE */
+> >  
+> > +/* read all cgroups in the system and save them in the rbtree */
+> > +void read_all_cgroups(struct rb_root *root);
+> > +
+> >  int cgroup_is_v2(const char *subsys);
+> >  
+> >  #endif /* __CGROUP_H__ */
+> > -- 
+> > 2.42.0.283.g2d96d420d3-goog
+> > 
+> 
+> -- 
+> 
+> - Arnaldo
 
+-- 
 
-
+- Arnaldo
