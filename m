@@ -2,109 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 862AE794326
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9A379431F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243780AbjIFSel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 14:34:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
+        id S243812AbjIFSeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 14:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243393AbjIFSdx (ORCPT
+        with ESMTP id S238201AbjIFSdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 14:33:53 -0400
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2055.outbound.protection.outlook.com [40.107.249.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D266B173B;
-        Wed,  6 Sep 2023 11:33:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SP72kGjd226rggbrlsXSapxRUKxt6UbOpsrMv5NYFTYrR3XieE3lDrnsbX+rhkOBq063vV2oDDs8zKg3+OrlqZzgGspEPqsUx7iz8v7gms1cnEo4IWsPr3QAZcsRipfQyvjZ7yJZaylRDibWZrR0Ct/ArvpKsRs0biBZeyJY7plyX8+tcClzSvngWWtEm3QTHe4V8Aml67eqOYIHrfkbcRTMJoh9a48L3KCG8NLV1nHsw6rR470O0MaejmaW5cZzjj9sGjxWoQfIAP7stZ6r8Zd4Wibl6KdLpLQ7BxSN2MtQRi/JBXF3b6o2VGKC0gxsjpARAXSTLqebvl4TkdIYSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1KwRHgBeI2RfFlpa1CWoeEYlzYH93l6sFLUa1kihgNA=;
- b=lIcYsV0qBIsRTAEbmOlswGAVR9Q6KjtUJ63GoP5Dlr7VM4kgYf2jP0HE9m4ZRAi82TmRiQXNaH9uFdXk8eNQ8jLe290pPYVSbU8CJE/h/lQ6/aQEps19KxMOr25jr+dfxGZqq59JD44MOxZ8ut5aKYi57iDyHFllP7QAC5SOWDrj3FRPSnTiBybsXAOccQIYp3W+t4Xvob5E6FHr0oaxUTKyVHjU2DlYG9RaFF/rtQZndFGI+vRzr+8l7PjDVu1j0WtOU7Ie25Cm3ghh+Vi1VNNJZg7kjjXQRC3rhU6kIMQGg48OfPt6z3zL3kdIqgzuwdLY/yIWAlcBK3HYRIThsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1KwRHgBeI2RfFlpa1CWoeEYlzYH93l6sFLUa1kihgNA=;
- b=Mou5g47HNNytPrCuB8Z7Tnfhb8NwCftsGYnK1USPd6MD5msvPNfx43Pb0beM/41aBmAyj4OO2cHGw+D4lwenkdBFMubMDbfXa2Y3TIdywK0DD38bbV1iMWCzSzqfjly0uEbBAbuS5LIJnOxBDPeWjrQ1OTxUW90MYXUEj5MZTCE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from GV1PR04MB9071.eurprd04.prod.outlook.com (2603:10a6:150:22::11)
- by DU2PR04MB9148.eurprd04.prod.outlook.com (2603:10a6:10:2f7::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Wed, 6 Sep
- 2023 18:33:27 +0000
-Received: from GV1PR04MB9071.eurprd04.prod.outlook.com
- ([fe80::374:6c14:7fd3:e932]) by GV1PR04MB9071.eurprd04.prod.outlook.com
- ([fe80::374:6c14:7fd3:e932%6]) with mapi id 15.20.6745.034; Wed, 6 Sep 2023
- 18:33:27 +0000
-From:   Han Xu <han.xu@nxp.com>
-To:     Han Xu <han.xu@nxp.com>, Haibo Chen <haibo.chen@nxp.com>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: nxp-fspi: reset the FLSHxCR1 registers
-Date:   Wed,  6 Sep 2023 13:32:54 -0500
-Message-Id: <20230906183254.235847-1-han.xu@nxp.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR03CA0012.namprd03.prod.outlook.com
- (2603:10b6:a03:33a::17) To GV1PR04MB9071.eurprd04.prod.outlook.com
- (2603:10a6:150:22::11)
+        Wed, 6 Sep 2023 14:33:51 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E117DE6A;
+        Wed,  6 Sep 2023 11:33:23 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31dcd553fecso149981f8f.2;
+        Wed, 06 Sep 2023 11:33:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694025202; x=1694630002; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DkMd8RucoJq7+YF1ccMKdQnJgACQ8uOQuFZimzqRtoU=;
+        b=qS/lQOlGe9YTHo+9cyHgy/2Fs68CQZh7ERBYpL5LbKfn0sgbr/NUCnAypT0iFvyvk3
+         xax9bhdzBqT3JkYAn/td+h2SeAePsi7JBMHYMPJBM60r0L+ldh5087kxPFKh16hMKwSD
+         9kN5G3m+7yM6C330zWfBLynyjhuyNikpuNhRIOl0GniLml0EB5YKPpSQMyMTKRur3++n
+         W0tVxBRVBLE18aE2W3BX9jFgkiBb/KOMteJIOdWW8VN4SLzEuW4/vezwKi1sqI1g+p4L
+         SnYUvP+qYS5Zv52P7Dba10jMsvH8rI6FjygUOEn70xu0BCu2EmS7GvvVe7Fn06MmV1pn
+         3l7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694025202; x=1694630002;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DkMd8RucoJq7+YF1ccMKdQnJgACQ8uOQuFZimzqRtoU=;
+        b=jJ8aN5giTnIct2tZaXdzEyCUqQUlFIT9RHt10uHC32vaLHt34yf8mZxd1EMef8bZLi
+         ht0kBJU7yycqoLaFqsc/9G1zTJuyKwO74AXUpH/b+/lKOInW7Yr7QHoZ+Y6i/MXDi5fW
+         VGgloAgk1sb/M++q3jJq+JLLoW4aI5sPmY2wtkKl/rL+ndkcKweW1vYb0/uCgGg9bkN7
+         uTzB9IQj9C3B28O2ubzfdSnBspKcWfi/feRbONt9X+r4xW/WV21SSceMfjeFO6PrKodi
+         brz/zliZpyPXdV8I+Unlh3GBeSLi0vxqk/o6UfGoCgYxAl99MH8tyl/gT4+CgVnKd78M
+         PCFQ==
+X-Gm-Message-State: AOJu0YzcO4rasZMubkDkdBwwL6kUynIbFEZvLWeTXFxbs0fS8qyDpRM+
+        /T6se3l2vT15uO7QHHWR62w=
+X-Google-Smtp-Source: AGHT+IEHI/QWDjLE4ntz3KI5NlVa9dtEpq2TyN/azxHrtUHhNiLe4lz1R2Kk3jYEQfgGuKa1ZQOSnA==
+X-Received: by 2002:a05:6000:1366:b0:31a:d6cb:7f94 with SMTP id q6-20020a056000136600b0031ad6cb7f94mr2913086wrz.23.1694025201915;
+        Wed, 06 Sep 2023 11:33:21 -0700 (PDT)
+Received: from ip-172-31-30-46.eu-west-1.compute.internal (ec2-54-170-241-106.eu-west-1.compute.amazonaws.com. [54.170.241.106])
+        by smtp.gmail.com with ESMTPSA id l10-20020a5d4bca000000b003180155493esm21094891wrt.67.2023.09.06.11.33.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 11:33:21 -0700 (PDT)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     puranjay12@gmail.com
+Subject: [PATCH bpf-next v2 0/8] arm32, bpf: add support for cpuv4 insns
+Date:   Wed,  6 Sep 2023 18:33:12 +0000
+Message-Id: <20230906183320.1959008-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: GV1PR04MB9071:EE_|DU2PR04MB9148:EE_
-X-MS-Office365-Filtering-Correlation-Id: c4b06311-1e2b-4904-ebe2-08dbaf07c275
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YEqT4Xn+m2r9j2Om4fdFknmFldBuBtNIt7sTO8GnGTGvb2jS2VSN1c/MoYlFtINOV5xR/f6ZpsjOpUr1uTflGZMfNWjW6KNw1ll+YWopSpbA6hcA5AOElPQzketWhGFG4EwLxwgGuBbxKJZXoWb7Ce36Yqqd9XjGcbH3T2RPxY5L6aosQ9lNqtVvIbicsvzwE/MrsCZWq+34k37mnmVJkZH1a/CfyT0cZiMxvxEgMgSZhkXbltE1PrQq5nZ7CzGZ3a0//5B6g28pKrxYwWvBzP087hsGdM2Mpg2IgVXuJHP2SbvYNDbI5YOjCz6R+dkWte4640oD57nORzWrkVquOy+tFw4mwmikeWzIFkvg8p7rXQj22Kug/t+m7bXUsRRshFg1Two2UDotcY5z58BnzTr8zfkdo0xliFU6frdPOtb2HbTKSbJmw63O27kF/q9Ax6ol2lTqgLhnavwUXUMLws1ZP9IR+m6YomZ4Ks6JhMReslrR+bU5zVdwjmFv7WYI3LJ3KHfKOo1a4wstYGHlHOyBUxosL4D0daJ/ucibhVUE6w68EFqf+TD3X+GtXni/RTiA8KBjpdD06gZBKX98E45TGLYbf9T1RPn2MfXz8z4F082y0NrZ7Ohki9wzJBet
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV1PR04MB9071.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(39860400002)(376002)(366004)(136003)(451199024)(186009)(1800799009)(6506007)(6486002)(6666004)(52116002)(6512007)(478600001)(110136005)(2906002)(26005)(2616005)(1076003)(66556008)(41300700001)(44832011)(66476007)(316002)(8676002)(66946007)(4326008)(5660300002)(8936002)(36756003)(86362001)(38100700002)(38350700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?be4CTWYP7dJ0dAmB7zPXSTeC4VmRNxov7Spyvf05BRUCkQzuMQFuPH0cSwwF?=
- =?us-ascii?Q?sfKDv/uejGbfrxwqIjspFcbMB1udqWY4KSGW5sV2sOQ0Wzc+Pod/HBMEwchn?=
- =?us-ascii?Q?tqAqsHKv1wYgYrQPPoSfLzA3yy1S9BFw432sCLoRpQXSQhgGUabpXh8JQXD2?=
- =?us-ascii?Q?PyCOa5X9PnbHQvKHjR6wSiM2R3CpzXyqo6zRKhiDidqpwMshFPwR7c/ZGOWK?=
- =?us-ascii?Q?yNjRHPBRq0xK5ng6IdnXrramg6/Ct7dKpanw+LhrZdmT5ozp3OAhI9DwtCPg?=
- =?us-ascii?Q?hMt8Co2qu2TrAJPYF0dzmMya8uYE3KYEKPGD0aJAGTLapeP9wIF/0K/rrDSo?=
- =?us-ascii?Q?eOlVrmNUGc7XY9fckBoUu46J5AnzAFfcctzwlPdlSTe3ZCVUKRiE6dO7tg/r?=
- =?us-ascii?Q?2imOO1BaqlpHJbluSiY6xxZaYNMXBR4Zthp1GLGIPCFCM5tHhdNYDgNIOeNg?=
- =?us-ascii?Q?R62qnjzlgVMr7p6VGFqBkpi2JpaSSSIm+v3uBe+Pjn5USJkolDsL9q11ry9K?=
- =?us-ascii?Q?9GUNvOFe9zAMwqpQIb4wjQZ3Hb6oWigSJS6hnDFrlkxH4+COGE1apYmlEofh?=
- =?us-ascii?Q?E/tZv79xcgB5iMoi/3j8P1sjZxN9mTmFVeTA2gM/xNv+MO5wCyWQU1Fx23f/?=
- =?us-ascii?Q?QaLjb6Namccq0QHDi6z8VhIOCjvUJbCNdNqNJ+8DryV/sv5Ub+SRPzI5yqNF?=
- =?us-ascii?Q?009LeKsTHI/D9Sc1YY9kRzFfkhTgTAFD25+sQK4EhFzdVLHWs2UA+kaON3V/?=
- =?us-ascii?Q?Ju6wwEpXWgxA3EvAesJSUYZbX0V4rtrVOiLgTk8TCaOoVR8TcLK0f+t1KGpE?=
- =?us-ascii?Q?6U0SPJKu3Hrl6Jk+F4E5Aw1LPKM7OBeEwa2Bwj+3lUv0e2u08Fmx0MMc37bi?=
- =?us-ascii?Q?oL/rkrZNFPA4c+MpDy/RbaNbYo1GIV/ZX9KC99U2LfaW1NLaJ7BvoBleLRVP?=
- =?us-ascii?Q?tKES25chvrTj3r7x+VYWvqh6LPfY/BMNUlVKBgStnJv1v/n7FpxVNsLvPd1f?=
- =?us-ascii?Q?dOIGPkWFKWkvdV7W4UhNYZua8/oIpvzLa3tmU5LvPiaPHo+n6peKpIBuKr5p?=
- =?us-ascii?Q?YvwAnxXHMkJGvfNX/m5UgCh1c5pZB/Q+uLrk4yV/oqPXVy3ZCRalSLL7HGuD?=
- =?us-ascii?Q?IPF+/FNhx6UdHLBn6vJ2/BPb+GR2rbMhHJriauFiLBr8zHdYplpgf4oNyekI?=
- =?us-ascii?Q?jvnbK2h+0i9Doq/g+gLkR9w85uQkyDUQoksLFZ9KkRMDy7DixpLfrceiDeGR?=
- =?us-ascii?Q?r2xPJ24660s1qxzJROjMxxNRSYkLIKfY0xWkI41FvP9HV6J7LBB7MpB/izfX?=
- =?us-ascii?Q?JvV3Iz8NdAWs/5/9rr1lhfd1FcPERpXBrBl3ZBLr9p8tvES7l7s0zk0XTUZO?=
- =?us-ascii?Q?mSKmdtqUKunwdUlIEDQHMnqyoG/OAiaOPAltH1bl1DcKXr0qmPofLeTab4GY?=
- =?us-ascii?Q?hPplT/xovC7KyLnoupGwbzLNcPXoKb1FHWL55dbYSSPspWvpqdE+ol5NlZl2?=
- =?us-ascii?Q?zAvaJh3NfLs2kvj1ayHmneozgwzUq3OD6CrG4kHsrsbPmG1y2VmfA6PSm12S?=
- =?us-ascii?Q?8phhkgXsIWYpabqKsuw=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4b06311-1e2b-4904-ebe2-08dbaf07c275
-X-MS-Exchange-CrossTenant-AuthSource: GV1PR04MB9071.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 18:33:26.8504
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nqEfzzsTGcNJ3TSW02SqXaW5dcKptR8DsLisPEdqeZEqtzSPofzQUbhKGR+T3VPt
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9148
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -112,32 +82,224 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reset the FLSHxCR1 registers to default value. ROM may set the register
-value and it affects the SPI NAND normal functions.
+Changes in V1 -> V2:
+- Fix coding style issues.
+- Don't use tmp variable for src in emit_ldsx_r() as it is redundant.
+- Optimize emit_ldsx_r() when offset can fit in immediate.
 
-Signed-off-by: Han Xu <han.xu@nxp.com>
----
- drivers/spi/spi-nxp-fspi.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Add the support for cpuv4 instructions for ARM32 BPF JIT. 64-bit division
+was not supported earlier so this series adds 64-bit DIV, SDIV, MOD, SMOD
+instructions as well.
 
-diff --git a/drivers/spi/spi-nxp-fspi.c b/drivers/spi/spi-nxp-fspi.c
-index 45a4acc95661..c964f41dcc42 100644
---- a/drivers/spi/spi-nxp-fspi.c
-+++ b/drivers/spi/spi-nxp-fspi.c
-@@ -1084,6 +1084,13 @@ static int nxp_fspi_default_setup(struct nxp_fspi *f)
- 	fspi_writel(f, FSPI_AHBCR_PREF_EN | FSPI_AHBCR_RDADDROPT,
- 		 base + FSPI_AHBCR);
- 
-+	/* Reset the FLSHxCR1 registers. */
-+	reg = FSPI_FLSHXCR1_TCSH(0x3) | FSPI_FLSHXCR1_TCSS(0x3);
-+	fspi_writel(f, reg, base + FSPI_FLSHA1CR1);
-+	fspi_writel(f, reg, base + FSPI_FLSHA2CR1);
-+	fspi_writel(f, reg, base + FSPI_FLSHB1CR1);
-+	fspi_writel(f, reg, base + FSPI_FLSHB2CR1);
-+
- 	/* AHB Read - Set lut sequence ID for all CS. */
- 	fspi_writel(f, SEQID_LUT, base + FSPI_FLSHA1CR2);
- 	fspi_writel(f, SEQID_LUT, base + FSPI_FLSHA2CR2);
+This series needs any one of the patches from [1] to disable zero-extension
+for BPF_MEMSX to support ldsx.
+
+The relevant selftests have passed expect ldsx_insn which needs fentry:
+
+Tested on BeagleBone Black (ARMv7-A):
+
+[root@alarm del]# echo 1 > /proc/sys/net/core/bpf_jit_enable
+[root@alarm del]# ./test_progs -a verifier_sdiv,verifier_movsx,verifier_ldsx,verifier_gotol,verifier_bswap
+#337/1   verifier_bswap/BSWAP, 16:OK
+#337/2   verifier_bswap/BSWAP, 16 @unpriv:OK
+#337/3   verifier_bswap/BSWAP, 32:OK
+#337/4   verifier_bswap/BSWAP, 32 @unpriv:OK
+#337/5   verifier_bswap/BSWAP, 64:OK
+#337/6   verifier_bswap/BSWAP, 64 @unpriv:OK
+#337     verifier_bswap:OK
+#351/1   verifier_gotol/gotol, small_imm:OK
+#351/2   verifier_gotol/gotol, small_imm @unpriv:OK
+#351     verifier_gotol:OK
+#359/1   verifier_ldsx/LDSX, S8:OK
+#359/2   verifier_ldsx/LDSX, S8 @unpriv:OK
+#359/3   verifier_ldsx/LDSX, S16:OK
+#359/4   verifier_ldsx/LDSX, S16 @unpriv:OK
+#359/5   verifier_ldsx/LDSX, S32:OK
+#359/6   verifier_ldsx/LDSX, S32 @unpriv:OK
+#359/7   verifier_ldsx/LDSX, S8 range checking, privileged:OK
+#359/8   verifier_ldsx/LDSX, S16 range checking:OK
+#359/9   verifier_ldsx/LDSX, S16 range checking @unpriv:OK
+#359/10  verifier_ldsx/LDSX, S32 range checking:OK
+#359/11  verifier_ldsx/LDSX, S32 range checking @unpriv:OK
+#359     verifier_ldsx:OK
+#370/1   verifier_movsx/MOV32SX, S8:OK
+#370/2   verifier_movsx/MOV32SX, S8 @unpriv:OK
+#370/3   verifier_movsx/MOV32SX, S16:OK
+#370/4   verifier_movsx/MOV32SX, S16 @unpriv:OK
+#370/5   verifier_movsx/MOV64SX, S8:OK
+#370/6   verifier_movsx/MOV64SX, S8 @unpriv:OK
+#370/7   verifier_movsx/MOV64SX, S16:OK
+#370/8   verifier_movsx/MOV64SX, S16 @unpriv:OK
+#370/9   verifier_movsx/MOV64SX, S32:OK
+#370/10  verifier_movsx/MOV64SX, S32 @unpriv:OK
+#370/11  verifier_movsx/MOV32SX, S8, range_check:OK
+#370/12  verifier_movsx/MOV32SX, S8, range_check @unpriv:OK
+#370/13  verifier_movsx/MOV32SX, S16, range_check:OK
+#370/14  verifier_movsx/MOV32SX, S16, range_check @unpriv:OK
+#370/15  verifier_movsx/MOV32SX, S16, range_check 2:OK
+#370/16  verifier_movsx/MOV32SX, S16, range_check 2 @unpriv:OK
+#370/17  verifier_movsx/MOV64SX, S8, range_check:OK
+#370/18  verifier_movsx/MOV64SX, S8, range_check @unpriv:OK
+#370/19  verifier_movsx/MOV64SX, S16, range_check:OK
+#370/20  verifier_movsx/MOV64SX, S16, range_check @unpriv:OK
+#370/21  verifier_movsx/MOV64SX, S32, range_check:OK
+#370/22  verifier_movsx/MOV64SX, S32, range_check @unpriv:OK
+#370/23  verifier_movsx/MOV64SX, S16, R10 Sign Extension:OK
+#370/24  verifier_movsx/MOV64SX, S16, R10 Sign Extension @unpriv:OK
+#370     verifier_movsx:OK
+#382/1   verifier_sdiv/SDIV32, non-zero imm divisor, check 1:OK
+#382/2   verifier_sdiv/SDIV32, non-zero imm divisor, check 1 @unpriv:OK
+#382/3   verifier_sdiv/SDIV32, non-zero imm divisor, check 2:OK
+#382/4   verifier_sdiv/SDIV32, non-zero imm divisor, check 2 @unpriv:OK
+#382/5   verifier_sdiv/SDIV32, non-zero imm divisor, check 3:OK
+#382/6   verifier_sdiv/SDIV32, non-zero imm divisor, check 3 @unpriv:OK
+#382/7   verifier_sdiv/SDIV32, non-zero imm divisor, check 4:OK
+#382/8   verifier_sdiv/SDIV32, non-zero imm divisor, check 4 @unpriv:OK
+#382/9   verifier_sdiv/SDIV32, non-zero imm divisor, check 5:OK
+#382/10  verifier_sdiv/SDIV32, non-zero imm divisor, check 5 @unpriv:OK
+#382/11  verifier_sdiv/SDIV32, non-zero imm divisor, check 6:OK
+#382/12  verifier_sdiv/SDIV32, non-zero imm divisor, check 6 @unpriv:OK
+#382/13  verifier_sdiv/SDIV32, non-zero imm divisor, check 7:OK
+#382/14  verifier_sdiv/SDIV32, non-zero imm divisor, check 7 @unpriv:OK
+#382/15  verifier_sdiv/SDIV32, non-zero imm divisor, check 8:OK
+#382/16  verifier_sdiv/SDIV32, non-zero imm divisor, check 8 @unpriv:OK
+#382/17  verifier_sdiv/SDIV32, non-zero reg divisor, check 1:OK
+#382/18  verifier_sdiv/SDIV32, non-zero reg divisor, check 1 @unpriv:OK
+#382/19  verifier_sdiv/SDIV32, non-zero reg divisor, check 2:OK
+#382/20  verifier_sdiv/SDIV32, non-zero reg divisor, check 2 @unpriv:OK
+#382/21  verifier_sdiv/SDIV32, non-zero reg divisor, check 3:OK
+#382/22  verifier_sdiv/SDIV32, non-zero reg divisor, check 3 @unpriv:OK
+#382/23  verifier_sdiv/SDIV32, non-zero reg divisor, check 4:OK
+#382/24  verifier_sdiv/SDIV32, non-zero reg divisor, check 4 @unpriv:OK
+#382/25  verifier_sdiv/SDIV32, non-zero reg divisor, check 5:OK
+#382/26  verifier_sdiv/SDIV32, non-zero reg divisor, check 5 @unpriv:OK
+#382/27  verifier_sdiv/SDIV32, non-zero reg divisor, check 6:OK
+#382/28  verifier_sdiv/SDIV32, non-zero reg divisor, check 6 @unpriv:OK
+#382/29  verifier_sdiv/SDIV32, non-zero reg divisor, check 7:OK
+#382/30  verifier_sdiv/SDIV32, non-zero reg divisor, check 7 @unpriv:OK
+#382/31  verifier_sdiv/SDIV32, non-zero reg divisor, check 8:OK
+#382/32  verifier_sdiv/SDIV32, non-zero reg divisor, check 8 @unpriv:OK
+#382/33  verifier_sdiv/SDIV64, non-zero imm divisor, check 1:OK
+#382/34  verifier_sdiv/SDIV64, non-zero imm divisor, check 1 @unpriv:OK
+#382/35  verifier_sdiv/SDIV64, non-zero imm divisor, check 2:OK
+#382/36  verifier_sdiv/SDIV64, non-zero imm divisor, check 2 @unpriv:OK
+#382/37  verifier_sdiv/SDIV64, non-zero imm divisor, check 3:OK
+#382/38  verifier_sdiv/SDIV64, non-zero imm divisor, check 3 @unpriv:OK
+#382/39  verifier_sdiv/SDIV64, non-zero imm divisor, check 4:OK
+#382/40  verifier_sdiv/SDIV64, non-zero imm divisor, check 4 @unpriv:OK
+#382/41  verifier_sdiv/SDIV64, non-zero imm divisor, check 5:OK
+#382/42  verifier_sdiv/SDIV64, non-zero imm divisor, check 5 @unpriv:OK
+#382/43  verifier_sdiv/SDIV64, non-zero imm divisor, check 6:OK
+#382/44  verifier_sdiv/SDIV64, non-zero imm divisor, check 6 @unpriv:OK
+#382/45  verifier_sdiv/SDIV64, non-zero reg divisor, check 1:OK
+#382/46  verifier_sdiv/SDIV64, non-zero reg divisor, check 1 @unpriv:OK
+#382/47  verifier_sdiv/SDIV64, non-zero reg divisor, check 2:OK
+#382/48  verifier_sdiv/SDIV64, non-zero reg divisor, check 2 @unpriv:OK
+#382/49  verifier_sdiv/SDIV64, non-zero reg divisor, check 3:OK
+#382/50  verifier_sdiv/SDIV64, non-zero reg divisor, check 3 @unpriv:OK
+#382/51  verifier_sdiv/SDIV64, non-zero reg divisor, check 4:OK
+#382/52  verifier_sdiv/SDIV64, non-zero reg divisor, check 4 @unpriv:OK
+#382/53  verifier_sdiv/SDIV64, non-zero reg divisor, check 5:OK
+#382/54  verifier_sdiv/SDIV64, non-zero reg divisor, check 5 @unpriv:OK
+#382/55  verifier_sdiv/SDIV64, non-zero reg divisor, check 6:OK
+#382/56  verifier_sdiv/SDIV64, non-zero reg divisor, check 6 @unpriv:OK
+#382/57  verifier_sdiv/SMOD32, non-zero imm divisor, check 1:OK
+#382/58  verifier_sdiv/SMOD32, non-zero imm divisor, check 1 @unpriv:OK
+#382/59  verifier_sdiv/SMOD32, non-zero imm divisor, check 2:OK
+#382/60  verifier_sdiv/SMOD32, non-zero imm divisor, check 2 @unpriv:OK
+#382/61  verifier_sdiv/SMOD32, non-zero imm divisor, check 3:OK
+#382/62  verifier_sdiv/SMOD32, non-zero imm divisor, check 3 @unpriv:OK
+#382/63  verifier_sdiv/SMOD32, non-zero imm divisor, check 4:OK
+#382/64  verifier_sdiv/SMOD32, non-zero imm divisor, check 4 @unpriv:OK
+#382/65  verifier_sdiv/SMOD32, non-zero imm divisor, check 5:OK
+#382/66  verifier_sdiv/SMOD32, non-zero imm divisor, check 5 @unpriv:OK
+#382/67  verifier_sdiv/SMOD32, non-zero imm divisor, check 6:OK
+#382/68  verifier_sdiv/SMOD32, non-zero imm divisor, check 6 @unpriv:OK
+#382/69  verifier_sdiv/SMOD32, non-zero reg divisor, check 1:OK
+#382/70  verifier_sdiv/SMOD32, non-zero reg divisor, check 1 @unpriv:OK
+#382/71  verifier_sdiv/SMOD32, non-zero reg divisor, check 2:OK
+#382/72  verifier_sdiv/SMOD32, non-zero reg divisor, check 2 @unpriv:OK
+#382/73  verifier_sdiv/SMOD32, non-zero reg divisor, check 3:OK
+#382/74  verifier_sdiv/SMOD32, non-zero reg divisor, check 3 @unpriv:OK
+#382/75  verifier_sdiv/SMOD32, non-zero reg divisor, check 4:OK
+#382/76  verifier_sdiv/SMOD32, non-zero reg divisor, check 4 @unpriv:OK
+#382/77  verifier_sdiv/SMOD32, non-zero reg divisor, check 5:OK
+#382/78  verifier_sdiv/SMOD32, non-zero reg divisor, check 5 @unpriv:OK
+#382/79  verifier_sdiv/SMOD32, non-zero reg divisor, check 6:OK
+#382/80  verifier_sdiv/SMOD32, non-zero reg divisor, check 6 @unpriv:OK
+#382/81  verifier_sdiv/SMOD64, non-zero imm divisor, check 1:OK
+#382/82  verifier_sdiv/SMOD64, non-zero imm divisor, check 1 @unpriv:OK
+#382/83  verifier_sdiv/SMOD64, non-zero imm divisor, check 2:OK
+#382/84  verifier_sdiv/SMOD64, non-zero imm divisor, check 2 @unpriv:OK
+#382/85  verifier_sdiv/SMOD64, non-zero imm divisor, check 3:OK
+#382/86  verifier_sdiv/SMOD64, non-zero imm divisor, check 3 @unpriv:OK
+#382/87  verifier_sdiv/SMOD64, non-zero imm divisor, check 4:OK
+#382/88  verifier_sdiv/SMOD64, non-zero imm divisor, check 4 @unpriv:OK
+#382/89  verifier_sdiv/SMOD64, non-zero imm divisor, check 5:OK
+#382/90  verifier_sdiv/SMOD64, non-zero imm divisor, check 5 @unpriv:OK
+#382/91  verifier_sdiv/SMOD64, non-zero imm divisor, check 6:OK
+#382/92  verifier_sdiv/SMOD64, non-zero imm divisor, check 6 @unpriv:OK
+#382/93  verifier_sdiv/SMOD64, non-zero imm divisor, check 7:OK
+#382/94  verifier_sdiv/SMOD64, non-zero imm divisor, check 7 @unpriv:OK
+#382/95  verifier_sdiv/SMOD64, non-zero imm divisor, check 8:OK
+#382/96  verifier_sdiv/SMOD64, non-zero imm divisor, check 8 @unpriv:OK
+#382/97  verifier_sdiv/SMOD64, non-zero reg divisor, check 1:OK
+#382/98  verifier_sdiv/SMOD64, non-zero reg divisor, check 1 @unpriv:OK
+#382/99  verifier_sdiv/SMOD64, non-zero reg divisor, check 2:OK
+#382/100 verifier_sdiv/SMOD64, non-zero reg divisor, check 2 @unpriv:OK
+#382/101 verifier_sdiv/SMOD64, non-zero reg divisor, check 3:OK
+#382/102 verifier_sdiv/SMOD64, non-zero reg divisor, check 3 @unpriv:OK
+#382/103 verifier_sdiv/SMOD64, non-zero reg divisor, check 4:OK
+#382/104 verifier_sdiv/SMOD64, non-zero reg divisor, check 4 @unpriv:OK
+#382/105 verifier_sdiv/SMOD64, non-zero reg divisor, check 5:OK
+#382/106 verifier_sdiv/SMOD64, non-zero reg divisor, check 5 @unpriv:OK
+#382/107 verifier_sdiv/SMOD64, non-zero reg divisor, check 6:OK
+#382/108 verifier_sdiv/SMOD64, non-zero reg divisor, check 6 @unpriv:OK
+#382/109 verifier_sdiv/SMOD64, non-zero reg divisor, check 7:OK
+#382/110 verifier_sdiv/SMOD64, non-zero reg divisor, check 7 @unpriv:OK
+#382/111 verifier_sdiv/SMOD64, non-zero reg divisor, check 8:OK
+#382/112 verifier_sdiv/SMOD64, non-zero reg divisor, check 8 @unpriv:OK
+#382/113 verifier_sdiv/SDIV32, zero divisor:OK
+#382/114 verifier_sdiv/SDIV32, zero divisor @unpriv:OK
+#382/115 verifier_sdiv/SDIV64, zero divisor:OK
+#382/116 verifier_sdiv/SDIV64, zero divisor @unpriv:OK
+#382/117 verifier_sdiv/SMOD32, zero divisor:OK
+#382/118 verifier_sdiv/SMOD32, zero divisor @unpriv:OK
+#382/119 verifier_sdiv/SMOD64, zero divisor:OK
+#382/120 verifier_sdiv/SMOD64, zero divisor @unpriv:OK
+#382     verifier_sdiv:OK
+Summary: 5/163 PASSED, 0 SKIPPED, 0 FAILED
+
+As the selftests don't compile for 32-bit architectures without
+modifications I have added new tests to lib/test_bpf.c for cpuv4 insns:
+
+test_bpf: Summary: 1052 PASSED, 0 FAILED, [891/1040 JIT'ed]
+test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
+test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+
+[1] https://lore.kernel.org/all/mb61p5y4u3ptd.fsf@amazon.com/
+
+Puranjay Mohan (8):
+  arm32, bpf: add support for 32-bit offset jmp instruction
+  arm32, bpf: add support for sign-extension load instruction
+  arm32, bpf: add support for sign-extension mov instruction
+  arm32, bpf: add support for unconditional bswap instruction
+  arm32, bpf: add support for 32-bit signed division
+  arm32, bpf: add support for 64 bit division instruction
+  selftest, bpf: enable cpu v4 tests for arm32
+  bpf/tests: add tests for cpuv4 instructions
+
+ arch/arm/net/bpf_jit_32.c                     | 275 ++++++++++++-
+ arch/arm/net/bpf_jit_32.h                     |   4 +
+ include/linux/filter.h                        |  50 ++-
+ lib/test_bpf.c                                | 371 ++++++++++++++++++
+ .../selftests/bpf/progs/verifier_bswap.c      |   3 +-
+ .../selftests/bpf/progs/verifier_gotol.c      |   3 +-
+ .../selftests/bpf/progs/verifier_ldsx.c       |   3 +-
+ .../selftests/bpf/progs/verifier_movsx.c      |   3 +-
+ .../selftests/bpf/progs/verifier_sdiv.c       |   3 +-
+ 9 files changed, 688 insertions(+), 27 deletions(-)
+
 -- 
-2.34.1
+2.39.2
 
