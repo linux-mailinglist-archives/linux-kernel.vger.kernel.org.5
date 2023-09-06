@@ -2,53 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8313C794297
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF32179429C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243599AbjIFR7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 13:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46938 "EHLO
+        id S243610AbjIFSAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 14:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231616AbjIFR7M (ORCPT
+        with ESMTP id S234426AbjIFSAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 13:59:12 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B085B1BEC;
-        Wed,  6 Sep 2023 10:58:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ADFBC433C7;
-        Wed,  6 Sep 2023 17:57:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694023046;
-        bh=T+JeBsQMgoMoI7Z9ii2a1ZJMhG7TMCLD0rxSwh0+Fyc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f3TojB3HlAsvztCJe887XS0zMGeyr7noAfkBlSx0A4VSFsD2ztyxcuVOKTCZ5oZ6p
-         q9eqBtx18x/V6OoLylL7dKmBeNSXPtHkmCW2BYfCVOrxNwDjDq6VoHz9e+ib7XtbYt
-         MqLxpJ8Vvx9jprTZaxqKccvsQNgrlPFM2h8E5i2BIyqn/lHhlw05gYRsmVDlwjfqPz
-         bLFeNr+IlL3/24OSf9JC1PJgCNjDvxSOO2Hh5bZYLrdXz2dN2cranztji539T5HghI
-         1CBHjHbanR1m0y8BVYsd90hHn0kCaGYSxmeEyeRz6cRtqxVHdCU79NmZ9IQv24vNtq
-         Yehp7o8EzlLog==
-Date:   Wed, 6 Sep 2023 10:57:25 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        Christian Brauner <christian@brauner.io>
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230906175725.GF28160@frogsfrogsfrogs>
-References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
- <ZPcsHyWOHGJid82J@infradead.org>
- <20230906000007.ry5rmk35vt57kppx@moria.home.lan>
- <ZPfKsp9/LVHbk4Px@casper.infradead.org>
- <20230906161002.2ztelmyzgy3pbmcd@moria.home.lan>
+        Wed, 6 Sep 2023 14:00:46 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E1119AA;
+        Wed,  6 Sep 2023 11:00:41 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-501be2d45e0so56765e87.3;
+        Wed, 06 Sep 2023 11:00:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694023240; x=1694628040; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=jBgTcuweOSdxAt78rjk31W7FbaJq9OxXi+LN0LW4j3I=;
+        b=Lv5V9z7uwmmlxTfYD4ZbjUpaw+YNtKchGAfdP+y4aQqb8eCVQTA71KUWQjzeqLBBdK
+         GUeDEh7kAYjo59ZcYfbDvXRz7pTQ97HnNdrf+9at75ajulwMcvfupD6WidABMXEBBNBN
+         oTEmLn9eJBOWZaSsidNxyqAHqvXfuypkP0E8ejQuwUYqEGRhETsXazJamhh/w0XH0E+J
+         OWh47+6imN2ytXGHgBKZDVZbBFcIzJ0XIpgk0PeGvLUVR8Hj5qdu4nohkfxUJl3NWAfR
+         /pb0wJZpBq+3NDh1NvFCSUmLkVZBbmCmJdwf4lQy0Jse8XhaUaQ/82K3gh2Ld84WYgyb
+         i4LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694023240; x=1694628040;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jBgTcuweOSdxAt78rjk31W7FbaJq9OxXi+LN0LW4j3I=;
+        b=jsencCDufSH8Zne3H3/llbllIE5oqemUmpnzS0vDGwtsmSvgdnNz8gY5ujAfsE1bsG
+         xz1YbUmTSuOIi7SzL29ey1KpiQfaJ+H6Jn5nurn7eu2uhE0kIUehx0Qt1xQyuDdNkR52
+         ZdD4G6HRWjPWp/ejzBREIQMeGYsooqPcCWK7OT4UBCX5PHfk+svjWKCjPs3/TmuFDCvH
+         edj1iMk6ZDoXW2nI2D7wK7Mie8sar6zqkNRZuo4ok47gSG5fxDJjKw/KilbysOJFG0xr
+         PRNziZbfZNb6fHRTdjkLozo8X99g/KLf4GHufG9teyYLsvzmvG0GjJ1G6pAhOEyjDmt7
+         feQw==
+X-Gm-Message-State: AOJu0YzSL+5BQF6a1H/c0k7Qe+gbLmUdRYsn3YKIvP5VRJAwUjTj0Ctn
+        1/hMsbMIP0/ASX2D37jpP5g=
+X-Google-Smtp-Source: AGHT+IFkyU7EgVhPjzf6MonOxLpVL2r9D5B+9nJyXSdu3smQNk5NapaZVQ+wMSlMQgeEvxexfLwn7w==
+X-Received: by 2002:a05:6512:324e:b0:500:94c3:8e3b with SMTP id c14-20020a056512324e00b0050094c38e3bmr2610126lfr.57.1694023239455;
+        Wed, 06 Sep 2023 11:00:39 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id ay9-20020a056402202900b0052a198d8a4dsm8715532edb.52.2023.09.06.11.00.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 11:00:38 -0700 (PDT)
+Message-ID: <c7f9db8879a9342080e74b9270e9925132b02f59.camel@gmail.com>
+Subject: Re: [syzbot] [bpf?] general protection fault in
+ bpf_prog_offload_verifier_prep
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     syzbot <syzbot+291100dcb32190ec02a8@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
+        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
+        song@kernel.org, syzkaller-bugs@googlegroups.com,
+        yonghong.song@linux.dev
+Date:   Wed, 06 Sep 2023 21:00:37 +0300
+In-Reply-To: <20230906075730.6d61420a@kernel.org>
+References: <000000000000d97f3c060479c4f8@google.com>
+         <ef4b96a75ff8fa87a82a35d4d050338d0bd9cce1.camel@gmail.com>
+         <f3eacce9566d14141cb591dc8364123b809841cb.camel@gmail.com>
+         <20230906075730.6d61420a@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230906161002.2ztelmyzgy3pbmcd@moria.home.lan>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,125 +83,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 12:10:02PM -0400, Kent Overstreet wrote:
-> On Wed, Sep 06, 2023 at 01:41:22AM +0100, Matthew Wilcox wrote:
-> > On Tue, Sep 05, 2023 at 08:00:07PM -0400, Kent Overstreet wrote:
-> > > On Tue, Sep 05, 2023 at 06:24:47AM -0700, Christoph Hellwig wrote:
-> > > > Hi Kent,
-> > > > 
-> > > > I thought you'd follow Christians proposal to actually work with
-> > > > people to try to use common APIs (i.e. to use iomap once it's been
-> > > > even more iter-like, for which I'm still waiting for suggestions),
-> > > > and make your new APIs used more widely if they are a good idea
-> > > > (which also requires explaining them better) and aim for 6.7 once
-> > > > that is done.
-> > > 
-> > > Christoph, I get that iomap is your pet project and you want to make it
-> > > better and see it more widely used.
+On Wed, 2023-09-06 at 07:57 -0700, Jakub Kicinski wrote:
+> On Wed, 06 Sep 2023 16:50:23 +0300 Eduard Zingerman wrote:
+> > diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
+> > index 3e4f2ec1af06..302e38bffffa 100644
+> > --- a/kernel/bpf/offload.c
+> > +++ b/kernel/bpf/offload.c
+> > @@ -199,12 +199,11 @@ static int __bpf_prog_dev_bound_init(struct bpf_p=
+rog *prog, struct net_device *n
+> >         offload->netdev =3D netdev;
+> > =20
+> >         ondev =3D bpf_offload_find_netdev(offload->netdev);
+> > +       if (bpf_prog_is_offloaded(prog->aux) && (!ondev || !ondev->offd=
+ev)) {
+> > +               err =3D -EINVAL;
+> > +               goto err_free;
+> > +       }
+> >         if (!ondev) {
+> > -               if (bpf_prog_is_offloaded(prog->aux)) {
+> > -                       err =3D -EINVAL;
+> > -                       goto err_free;
+> > -               }
+> > -
+> >                 /* When only binding to the device, explicitly
+> >                  * create an entry in the hashtable.
+> >                  */
+>=20
+> LGTM, FWIW.
 
-Christoph quit as maintainer 78 days ago.
+Thanks, I'll wrap it up as a proper patch with a test.
 
-> > > But the reasons bcachefs doesn't use iomap have been discussed at
-> > > length, and I've posted and talked about the bcachefs equivalents of
-> > > that code. You were AWOL on those discussions; you consistently say
-> > > "bcachefs should use iomap" and then walk away, so those discussions
-> > > haven't moved forwards.
-> > > 
-> > > To recap, besides being more iterator like (passing data structures
-> > > around with iterators, vs. indirect function calls into the filesystem),
-> > > bcachefs also hangs a bit more state off the pagecache, due to being
-> > > multi device and also using the same data structure for tracking disk
-> > > reservations (because why make the buffered write paths look that up
-> > > separately?).
-> > 
-> > I /thought/ the proposal was to use iomap for bcachefs DIO and leave
+>=20
+> > With the following reasoning: for offloaded programs offload device
+> > should exist and it should not be a fake device create in !ondev branch=
+.
+> >=20
+> > Stanislav, could you please take a look? I think this is related to com=
+mit:
+> > 2b3486bc2d23 ("bpf: Introduce device-bound XDP programs")
 
-I wasn't aware of /any/ active effort to make bcachefs use iomap for any
-purpose.
-
-> > buffered writes for a different day.  I agree the iomap buffered write
-> > path is inappropriate for bcachefs today.  I'd like that to change,
-> > but there's a lot of functionality that it would need to support.
-> 
-> No, I'm not going to convert the bcachefs DIO path to iomap; not as it
-> exitss now.
-> 
-> Right now I've got a clean separation between the VFS level DIO code,
-> and the lower level bcachefs code that walks the extents btree and
-> issues IOs. I have to consider the iomap approach where the
-> loop-up-mappings-and-issue loop is in iomap code but calling into
-> filesystem code pretty gross.
-> 
-> I was talking about this /years/ ago when I did the work to make it
-> possible to efficiently split bios - iomap could have taken the approach
-> bcachefs did, the prereqs were in place when iomap was started, but it
-> didn't happen - iomap ended up being a more conservative approach, a
-> cleaned up version of buffer heads and fs/direct-IO.c.
-
-<shrug> iirc the genesis of xfs "iomap" was that it was created to
-supply space mappings to pnfs, and then got reused for directio and
-pagecache operations.  Later that was hoisted wholesale to the vfs.
-Then spectre/meltdown happened and our indirect function call toy got
-taken away, and now we're stuck figuring out how to remove them all.
-
-IOWs, individual tactics that each made sense for maintaining the
-overall stability of xfs, but overall didn't amount to anything
-ambitious.
-
-In the end I'd probably rather do something like this to eliminate all
-the indirect function calls:
-
-int
-xfs_zero_range(
-	struct xfs_inode	*ip,
-	loff_t			pos,
-	loff_t			len,
-	bool			*did_zero)
-{
-	struct iomap_iter	iter = { };
-	struct inode		*inode = VFS_I(ip);
-	int			ret = 0;
-
-	iomap_start_zero_range(&iter, inode, pos, len);
-	while (iter.len > 0) {
-		ret = xfs_buffered_write_iomap_begin(&iter, &iter.write_map,
-				&iter.read_map);
-		if (ret)
-			break;
-		len = iomap_zero_range_iter(&iter, did_zero);
-		if (len < 0) {
-			ret = len;
-			break;
-		}
-		ret = xfs_buffered_write_iomap_end(&iter, len, &iter.write_map);
-		if (ret)
-			break;
-		iomap_iter_advance(&iter, len);
-	}
-	iomap_end_zero_range(&iter);
-
-	return iter.write > 0 ? iter.write : ret;
-}
-
-(I would also rename iter.iomap and iter.srcmap to make it more obvious
-which ones get filled out under what circumstances.)
-
-> That's fine, iomap is certainly an improvement over what it was
-> replacing, but it would not be an improvement for bcachefs.
-
-Filesystems are free to implement read_ and write_iter as they choose,
-whether or not that involves iomap.
-
-> I think it might be more fruitful to look at consolidating the buffered
-> IO code in bcachefs and iomap. The conceptual models are a bit closer,
-> bcachefs's buffered IO code is just a bit more fully-featured in that it
-> does the dirty block tracking in a unified way. That was a project that
-> turned out pretty nicely.
-
-I think I'd much rather gradually revise iomap for everyone and cut
-bcachefs over when its ready.  I don't think revising iomap is a
-reasonable precondition for merging bcachefs, nor do I think it's a good
-idea to risk destabilizing bcachefs just to hack in a new dependency
-that won't even fit well.
-
---D
