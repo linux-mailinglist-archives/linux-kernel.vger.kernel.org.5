@@ -2,191 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8AC793736
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C173A79373F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234389AbjIFIgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 04:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46416 "EHLO
+        id S234920AbjIFIid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 04:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231225AbjIFIgo (ORCPT
+        with ESMTP id S231931AbjIFIic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 04:36:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F296E45;
-        Wed,  6 Sep 2023 01:36:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693989400; x=1725525400;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=maAaduQC/jMLXVrd6ua7PRyFySwiFZ5TmPV6cPW5xaA=;
-  b=RlyKTyJQDA6bLhZFBceYvZXQWVubRYAOpykWnNzGW0vJLD5xOvK4/wFk
-   Bw7ALFkby26q7dTDTHlf5Rgay3Zc1iociP3pkZc8jGt5VF/+0Q4eZjq5U
-   DGh5r/A6Qv36aF2B4H01lQIQOAGhlPNVIuKlavPIQRrdSNJna/XqW4n5C
-   9iZVuapcqNbre34nqA2/+bxE02pHsw6CoFiMEFV5AEARnJ9g3cUA35dTl
-   g8s1wzfljDCRxv3weg2MhsC4cLc1m5oiV/Bhq87DmLaDAGZZJC7xLbSYl
-   lFuaYT816Y1drjU5x36vJygsPi2bxecnyeeS/XogBEN5rhGFikCjjDvGi
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="440980907"
-X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
-   d="scan'208";a="440980907"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 01:36:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="831570836"
-X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
-   d="scan'208";a="831570836"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by FMSMGA003.fm.intel.com with SMTP; 06 Sep 2023 01:36:35 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 06 Sep 2023 11:36:34 +0300
-Date:   Wed, 6 Sep 2023 11:36:34 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Saranya Gopal <saranya.gopal@intel.com>,
-        Rajaram Regupathy <rajaram.regupathy@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Wayne Chang <waynec@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-usb@vger.kernel.org
-Subject: Re: ucsi debugfs oops (current Linus pre-6.6-rc1)
-Message-ID: <ZPg6EjlnLVdyBKKm@kuha.fi.intel.com>
-References: <700df3c4-2f6c-85f9-6c61-065bc5b2db3a@intel.com>
- <5740a4d2-4402-451a-83bd-875331b5de11@amd.com>
+        Wed, 6 Sep 2023 04:38:32 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2050.outbound.protection.outlook.com [40.107.215.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE912E45
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 01:38:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WHMCecUGSu43pE1UKNylKOoK5sC02x84x1ba9TFU+ox1q59u4F0Kb9DdKfXOgkqZIcXg22HwZXXcoTnSdbVtTSZn4ZSAmbrDy4e4/sc3u+zmXRTZbk9Pg6Ok9Ly5jWZVlFelyDzAX/HfB0mX1rXQGGiWAPbhGj55oO6dqg8XCBDxXru46G/Le9ao4w/npUq+HIIVtAhxoXyvhAowrtdXCzxty+Amtuv1weS8wEuv0rmBzSq2PTJXoaiPphcTkCdK7+YFhD0zeC6R6YJDuDB4NhwlduPhE1+QcSEWBWi30cWvOxkBwfn/GPUDkADaDbvDYHL0zhxtuVhq8muLZ2JQFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=M7rjnWJ6fke13uLHUOM5oHUP8pNYysl8XmbST6Rz+ME=;
+ b=GaGLDao4ebSVOMuNvkH0h/nihZdiL2TRB30i3qyeLTQ6Bk+pznVaYxM7c10IKj5C9+udBDzkBGsfFHyEouFdBmthH99+rqRo2jgmmivxVTmiX/faZNVvJLp8IP3bQIEPMKTau8TzM4ibrKEN4f0Cws5SkeD9Crv9vqcOyWOorP7z38HLUugoHt6TEsG3YM4f9shpEreXERfNEXyfaR+RX13O2ggqxYVUWFr0PtMh+mcHBcmUp4KkrPQEApxIiziA7SCI+wkdXI+iAlatf4dypxh8tH6xp19z+ONUNIUmDCNmrdvTNCZVUx9g7JGtwIV8giVk4M8XD+SMd4Gpm79vsQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=jaguarmicro.com; dmarc=pass action=none
+ header.from=jaguarmicro.com; dkim=pass header.d=jaguarmicro.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jaguarmicro.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M7rjnWJ6fke13uLHUOM5oHUP8pNYysl8XmbST6Rz+ME=;
+ b=SFYDZVjuXHFmx/mqoIfrHP362gkQJ2AqFvpFYDkMVa5xo1zHQMe7v+wR5IicTu4SbzdGVAjboPJbTcCLM9KCJ98R03tDuaw894Eapqc+JJ7OHqCKgB9/BNIPpEkOiLddLV5aOcmXiQIBOMQoUnfoTKBYjOrNWaoLrKeGJZHUBnuSQZ2W3nktWPIPxVItqYZ/ZXYo7sGxXUOKjMXoDm46JjYXyWw9W434LEyW1EXacFUOUPCrv5OV88mR+hXZYbDxvoqkWfdfcx0Z7/O1Dd6b5LEZNUrnarmotAhVUL4Ot+I2f2ULP70okdSz3C2RKOrOyed9/ZWwUA1HOSRcdtH+fw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=jaguarmicro.com;
+Received: from TY2PR06MB3424.apcprd06.prod.outlook.com (2603:1096:404:104::19)
+ by TYZPR06MB6497.apcprd06.prod.outlook.com (2603:1096:400:458::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Wed, 6 Sep
+ 2023 08:38:19 +0000
+Received: from TY2PR06MB3424.apcprd06.prod.outlook.com
+ ([fe80::cca4:d6a6:69d4:6e9a]) by TY2PR06MB3424.apcprd06.prod.outlook.com
+ ([fe80::cca4:d6a6:69d4:6e9a%7]) with mapi id 15.20.6745.034; Wed, 6 Sep 2023
+ 08:38:19 +0000
+From:   Angus Chen <angus.chen@jaguarmicro.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Angus Chen <angus.chen@jaguarmicro.com>
+Subject: [PATCH] mm/vmscan: print err before panic
+Date:   Wed,  6 Sep 2023 16:37:00 +0800
+Message-Id: <20230906083700.181-1-angus.chen@jaguarmicro.com>
+X-Mailer: git-send-email 2.33.0.windows.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SI2P153CA0009.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:140::18) To TY2PR06MB3424.apcprd06.prod.outlook.com
+ (2603:1096:404:104::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5740a4d2-4402-451a-83bd-875331b5de11@amd.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TY2PR06MB3424:EE_|TYZPR06MB6497:EE_
+X-MS-Office365-Filtering-Correlation-Id: e5eef631-5d34-4b68-e52d-08dbaeb49f1c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 11NYl22J6L7AW0QWwg19vsGOcwXWD2BWxA88YLCyGvvylsHnUrV9jvz2lgIemEEDiPm4lNOL+NFZFx1/u/eoGJORtTzhF+2BtDP+ykefmN23wMBicKQoIiVinchFjnqsD/GTEeyJ6AwTyEZonI6Jvrg9TPYJbTOH/wI2hFTMaOB8hZe04PphT6cRQH6tEHCrTO25PTApI5XszQYKvmnPT41dPBnQxNf6GZm+/QaCTnLBN+VvEFFa93TXM9f9hfRAYLjrgIzBqKq5ewrZ6Ssf9i7T5944ycNQ7N7S+igwtaVo62aXeWm4pp3sMCN8W977pX1PGExV05h8Omy9TTs3yW3dKUHVlue3nsSgcMXGa4dg7AbqLZZ8erRCDtjia5M1tNSf+kszkO6ButGQMyM/IN+kgnJauEOniBoibPIVLRP8Gn0sS3gQbwC20DipxGkQXgxGrGh5Fgqz8Vcg/w4lvJeCHYfeivIXD5qxiVnX6KVvuS9Eb0dN+H//Bau8RHVvtBH0L1RngJ0Mq+Se8i345F0Nbc/qGRqOdiDxaI3vE/8/XLhKLZuLMlkVilYArcBhV3cSeDCXa5m34wpiQa8Nw6Kp8kEjGKQ2cG/CbYZbygGok0DHbWOxl2+TkoHJ5UX+
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR06MB3424.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39830400003)(346002)(376002)(396003)(136003)(366004)(186009)(451199024)(1800799009)(26005)(5660300002)(6666004)(44832011)(66556008)(66946007)(66476007)(6512007)(6916009)(316002)(41300700001)(52116002)(107886003)(8936002)(2616005)(8676002)(4326008)(1076003)(6486002)(6506007)(478600001)(83380400001)(4744005)(2906002)(86362001)(36756003)(38350700002)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UjZkNU5HNjkxOXl6Zmc5Y3Q5ZEQzSENQRVZMdVpwckgxdzNvUjV1ZkZ6WElH?=
+ =?utf-8?B?K0tHSm9MRDBOMlR3ODFzOGR2dG9mWFdScjBXMkZKdWtCdEZ0YmRXbkFMKzF2?=
+ =?utf-8?B?dFljRUpXeUhrTzRpZHZ1MUxlejl5VWdWS1p6V0JKR2w1NmE4bDRUaVE5dEc0?=
+ =?utf-8?B?OEZMdkFJKzNmUGREbmx2R0xZaVFydXpGTDBHMjI5OTQ0amx5bzlVQVNteFAx?=
+ =?utf-8?B?VmZxdnJiSlZqSlk5STdFK1FBZG5SdG84WmR5cXlGTXFVYWl0bWNzQmhvcTZU?=
+ =?utf-8?B?cEYxamhWVTE1a1ZINk1MU0pxdE1QSXFwTzdUT3ZmeTgwSllrQVJwdTF2Q2Rq?=
+ =?utf-8?B?eUFxSU50by9aNkYxMVNKR3gvUTMrZjl6b2o3ZDV4MHNWUDF0WUtNaStYYldD?=
+ =?utf-8?B?WnpzSm9zWW1Yd0E4Zm9DY1l0aSt1bHFrV3UvNWxsaEs4NW1HUGJhU2N1dURv?=
+ =?utf-8?B?d0VTcisyYm9lUk5CdkxpV2Yrc1pqZWRoMnFRU3JkKzhpbjZOS0cwYy9vc21X?=
+ =?utf-8?B?L1E1Z2hIdUNxZDIycWc5czlnSTlyanp6V3JDQmxJOGF5eU83akllYnJ3aWV5?=
+ =?utf-8?B?Rkoza3B5OHhWYkM3SnVKNlVSY2tvcGRwRE5ENEV0VTltcWFoK2VicDNaOWVq?=
+ =?utf-8?B?RkJCQ1RiU1l5OFlDdlRjck1LU21QOFNwOGNvSng0S3A3OHlja0RRTVdCT21L?=
+ =?utf-8?B?ZXRDSm9OV2FWVE92c3JsbXhnQ2twUU5xUTU4WnBqWmh6bGZjdEh2Tk5qaEpW?=
+ =?utf-8?B?ejQxbFVXUkJKTzJIRk04Tk5XQzJOY1drL3NjZW5SWmdOSHRIdDhQWjlRK0ds?=
+ =?utf-8?B?TEFlcjZYNmFYWmhNWHFDZ0ZNN3hPeHI5NGF4a0ZaWHhvaDVhcFhoNWt5UHJY?=
+ =?utf-8?B?K0RRN3ZMSmhTbFJvTWoya2pOancrMVVUTkFRR0VKcCtTUlUzY2tGb3JXNmxW?=
+ =?utf-8?B?Tm9oSmU2Snh0d0YwUURQNjB4RW1lT25GbnZLNVErRHY4YjQzZU40MGFTdmhp?=
+ =?utf-8?B?UXZBaDUyOFRQV1VNN0ROTFNwb1VsN05GU2tvajJpaDNUV3YvQXdIVW80Ulcx?=
+ =?utf-8?B?ZlpwaVZ1cHp2Tmh2UXdpa0M0Y0tiRXJBUEgxNGtsTm9icUVYeHVOMkZ3dFBM?=
+ =?utf-8?B?ZFg1cUI2ZWxQSzdtNklkMnNiY05sWnBBZUtBb3Rack1aemN4NEhiNUx1c0lZ?=
+ =?utf-8?B?WlRTNUR6QnkvazdZRDVSZ3ZhNkhacUhKaWJEdWt3SFVKTW9jcDlTZ2Z1KzVo?=
+ =?utf-8?B?OENlbkY2VlpEWXlpdnBmTy9kc3hFZGY3ZFBXOTUveU1hWUI4SExNS0ZSaWpH?=
+ =?utf-8?B?R0ZJZXpMOTNuUDFEK0svR0NXUDRGczc1T1owMTU2dHkrRWJrSTVFdlR5c1Q3?=
+ =?utf-8?B?MCtQOXZRYWI5UXM1QkZHZXN4YXVTUVBjbkNYVFdBTTd6TDNUTVBES1VYWFpr?=
+ =?utf-8?B?TjZyQXB4QXY2T2xPTkczNEFCdWFhK2pTMlg4V2NPNUpMdjd2WVBabVlLSEdZ?=
+ =?utf-8?B?UXI5Y1lERFA4UnRreVVMVEVtbmhaYitoZHczVVRBZjFDc3g4YStHWUNUR2xC?=
+ =?utf-8?B?ZmovYVA2L1oyU2R5dHRtaENwT2VCRDlURkRFUUt4RlhSNTNUNGx0aWxQeDl4?=
+ =?utf-8?B?enJEUkdiQlJQVnlaRWthMFhXMEg2cGFKVzBOMnVBbjZLRHhib2VrK3l1ZExh?=
+ =?utf-8?B?Tmttbm9lOGp0UCtSdElCYzBvVmI5a1Yrcyt6RU0yVFVxWVl1WGpXenEwNmdG?=
+ =?utf-8?B?czR0dVVwbTVxTHhVUGNnQWN6MWFCVEpOMjJMK2prcWFFTEFaZkhFWG1YR1RJ?=
+ =?utf-8?B?NG5RT2ZpNDREakNHbnRWa1hPWGJ2NC9pcGFNaEFTam9QQ0g5dVd1MVhmRGxh?=
+ =?utf-8?B?RnZkV2xJV2RmN2VFREQ2SkRJby9wRUpjd1BqY212dDQ3bnB4a2FnNzZlMkNx?=
+ =?utf-8?B?Y3R6U0tlK0VyUmVXcTg4V3MrK2lENC9FMWdEZ0FIcktPb0FNaHYyWEpaQStO?=
+ =?utf-8?B?cUJzOEpNM2grbU41aitXMDNobkttZHJjUTM0VHRkcURERmJxcXdMbTFYVWNQ?=
+ =?utf-8?B?RTc4V2RoQ1d0TkhJVVNWNFNocmFnbEEycjNSOXZQeWtmVFVQNVBiSFNEZkdF?=
+ =?utf-8?B?S2xLMmI0SklaQjdOOS9VVlIyN3dZL1FNZk9HVnZ0OE5lNzJYL3hrQm8wWDdR?=
+ =?utf-8?B?c0E9PQ==?=
+X-OriginatorOrg: jaguarmicro.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5eef631-5d34-4b68-e52d-08dbaeb49f1c
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR06MB3424.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 08:38:19.1936
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 1e45a5c2-d3e1-46b3-a0e6-c5ebf6d8ba7b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HaHC++3rn2RlKTIAg4JjYdm2zRBh8VffHNK5e9gwXBuPF1RoX5T9iCCUjblnxLerxlX3fm7v3Pv0trjBp6fk4qzICAeIHpFY5NY+auESOTA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB6497
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_PASS,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+If panic is enable,the err information will not be printed before bugon,
+So swap it.
+Print the return value of PTR_ERR(pgdat->kswapd) also.
 
-On Tue, Sep 05, 2023 at 02:25:35PM -0500, Mario Limonciello wrote:
-> On 9/5/2023 14:10, Dave Hansen wrote:
-> > I'm having some problems booting Linus's current tree.  It seems to have
-> > happened in some content between commit 3f86ed6ec0b3 and df0383ffad.
-> > 
-> > I'm suspecting this commit:
-> > 
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=df0383ffad64dc09954a60873c1e202b47f08d90
-> > 
-> > I'm seeing a null pointer oops on this line:
-> > 
-> > void ucsi_debugfs_unregister(struct ucsi *ucsi)
-> > {
-> > ===>    debugfs_remove_recursive(ucsi->debugfs->dentry);
-> >          kfree(ucsi->debugfs);
-> > }
-> > 
-> > on this instruction:
-> > 
-> >      66 0f 1f 00             nop    WORD PTR [rax]
-> >      0f 1f 44 00 00          nop    DWORD PTR [rax+rax*1+0x0]
-> >      53                      push   rbx
-> >      48 8b 47 38             mov    rax,QWORD PTR [rdi+0x38]
-> >      48 89 fb                mov    rbx,rdi
-> > =>  48 8b 78 20             mov    rdi,QWORD PTR [rax+0x20]
-> >      e8 36 16 26 e1          call   0xffffffffe1261669
-> >      48 8b 7b 38             mov    rdi,QWORD PTR [rbx+0x38]
-> >      5b                      pop    rbx
-> >      e9 5c 79 03 e1          jmp    0xffffffffe1037999
-> > 
-> > That's the second dereference in the function, so I assume this is
-> > trying to dereference 'debugfs' above.  It appears that this is some
-> > failure/error path out of ucsi_acpi_probe() that's not handled correctly.
-> > 
-> > Probably this:
-> > 
-> > >          if (ACPI_FAILURE(status)) {
-> > >                  dev_err(&pdev->dev, "failed to install notify handler\n");
-> > >                  ucsi_destroy(ua->ucsi);
-> > >                  return -ENODEV;
-> > >          }
-> > > 
-> > >          ret = ucsi_register(ua->ucsi);
-> > 
-> > where ucsi_destroy() is called before ucsi_register().  Although I do
-> > _not_ see the dev_err() message anywhere.
-> 
-> If your theory is right could it be that the printk handler was racing and
-> that's why it didn't come up?
-> 
-> In any case I'd think you can add this to ucsi_debugfs_unregister() to avoid
-> it.
-> 
-> if (!ucsi->debugfs)
-> 	return;
+Signed-off-by: Angus Chen <angus.chen@jaguarmicro.com>
+---
+ mm/vmscan.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thank you guys for the report. I'll prepare the patch for this.
-
-
-> > Full oops is below.
-> > 
-> > I'll try putting some hacks in place to avoid the null pointer.  Also,
-> > please forgive the lack of a bisect for the moment.  This is happening
-> > on my main laptop and it's a mild pain to do bisects on here.
-> > 
-> > > [    4.903493] BUG: kernel NULL pointer dereference, address: 0000000000000020^M
-> > > [    4.905624] #PF: supervisor read access in kernel mode^M
-> > > [    4.907326] #PF: error_code(0x0000) - not-present page^M
-> > > [    4.908993] PGD 0 P4D 0 ^M
-> > > [    4.910998] Oops: 0000 [#1] PREEMPT SMP NOPTI^M
-> > > [    4.913077] CPU: 6 PID: 150 Comm: systemd-udevd Not tainted 6.5.0-11704-g3f86ed6ec0b3 #138^M
-> > > [    4.915211] Hardware name: Framework Laptop/FRANBMCP0B, BIOS 03.10 07/19/2022^M
-> > > [    4.917355] RIP: 0010:ucsi_debugfs_unregister+0x11/0x30 [typec_ucsi]^M
-> > > [    4.919705] Code: 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 0f 1f 00 0f 1f 44 00 00 53 48 8b 47 38 48 89 fb <48> 8b 78 20 e8 36 16 26 e1 48 8b 7b 38 5b e9 5c 79 03 e1 66 66 2e^M
-> > > [    4.921982] RSP: 0018:ffffc900007e7bb8 EFLAGS: 00010246^M
-> > > [    4.924227] RAX: 0000000000000000 RBX: ffff888101b2be00 RCX: 0000000000009a06^M
-> > > [    4.926752] RDX: 0000000000000000 RSI: ffff888104491798 RDI: ffff888101b2be00^M
-> > > [    4.929312] RBP: ffff888101b2be00 R08: 0000000000009906 R09: 00000000000333f0^M
-> > > [    4.931887] R10: 0000000000000000 R11: 0000000000000000 R12: 00000000ffffffed^M
-> > > [    4.934451] R13: ffff888102594810 R14: ffff888100653600 R15: ffff888101fa7f78^M
-> > > [    4.937115] FS:  00007f5dd0fb48c0(0000) GS:ffff88906fb80000(0000) knlGS:0000000000000000^M
-> > > [    4.939581] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
-> > > [    4.941308] CR2: 0000000000000020 CR3: 0000000105070005 CR4: 0000000000f70ee0^M
-> > > [    4.943022] PKRU: 55555554^M
-> > > [    4.944731] Call Trace:^M
-> > > [    4.946438]  <TASK>^M
-> > > [    4.948167]  ? __die+0x24/0x70^M
-> > > [    4.949864]  ? page_fault_oops+0x15b/0x440^M
-> > > [    4.951563]  ? acpi_evaluate_object+0x190/0x2f0^M
-> > > [    4.953201]  ? _raw_spin_lock_irqsave+0x28/0x50^M
-> > > [    4.954841]  ? exc_page_fault+0x6e/0x160^M
-> > > [    4.956461]  ? asm_exc_page_fault+0x26/0x30^M
-> > > [    4.958067]  ? ucsi_debugfs_unregister+0x11/0x30 [typec_ucsi]^M
-> > > [    4.959677]  ucsi_destroy+0x12/0x20 [typec_ucsi]^M
-> > > [    4.961298]  ucsi_acpi_probe+0x1cc/0x230 [ucsi_acpi]^M
-> > > [    4.962908]  platform_probe+0x40/0xb0^M
-> > > [    4.964522]  really_probe+0x1a2/0x410^M
-> > > [    4.966110]  __driver_probe_device+0x78/0x160^M
-> > > [    4.967735]  driver_probe_device+0x1e/0x90^M
-> > > [    4.969306]  __driver_attach+0xd6/0x1d0^M
-> > > [    4.970874]  ? __pfx___driver_attach+0x10/0x10^M
-> > > [    4.972449]  bus_for_each_dev+0x79/0xd0^M
-> > > [    4.974022]  bus_add_driver+0x116/0x220^M
-> > > [    4.975600]  driver_register+0x60/0x120^M
-> > > [    4.977169]  ? __pfx_ucsi_acpi_platform_driver_init+0x10/0x10 [ucsi_acpi]^M
-> > > [    4.978762]  do_one_initcall+0x45/0x220^M
-> > > [    4.980367]  ? kmalloc_trace+0x29/0x90^M
-> > > [    4.981952]  do_init_module+0x90/0x260^M
-> > > [    4.983530]  init_module_from_file+0x8b/0xd0^M
-> > > [    4.985087]  idempotent_init_module+0x181/0x240^M
-> > > [    4.986639]  __x64_sys_finit_module+0x5e/0xb0^M
-> > > [    4.988198]  do_syscall_64+0x3c/0x90^M
-> > > [    4.989739]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8^M
-> > > [    4.991290] RIP: 0033:0x7f5dd16aaa3d^M
-
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 6f13394b112e..0436f0ed9671 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -7892,8 +7892,9 @@ void __meminit kswapd_run(int nid)
+ 		pgdat->kswapd = kthread_run(kswapd, pgdat, "kswapd%d", nid);
+ 		if (IS_ERR(pgdat->kswapd)) {
+ 			/* failure at boot is fatal */
++			pr_err("Failed to start kswapd on node %d，ret=%ld\n",
++				   nid, PTR_ERR(pgdat->kswapd));
+ 			BUG_ON(system_state < SYSTEM_RUNNING);
+-			pr_err("Failed to start kswapd on node %d\n", nid);
+ 			pgdat->kswapd = NULL;
+ 		}
+ 	}
 -- 
-heikki
+2.25.1
+
