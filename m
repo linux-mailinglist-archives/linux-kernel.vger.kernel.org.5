@@ -2,151 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C299A794721
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 01:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B23CB796D97
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 01:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242103AbjIFXRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 19:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45398 "EHLO
+        id S244795AbjIFXXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 19:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236302AbjIFXRS (ORCPT
+        with ESMTP id S242306AbjIFXXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 19:17:18 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8FBA172E
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 16:17:13 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50098cc8967so495729e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 16:17:13 -0700 (PDT)
+        Wed, 6 Sep 2023 19:23:04 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50FCD199B
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 16:22:59 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-76da0ed3b7aso22981085a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 16:22:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694042232; x=1694647032; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=amaeJ0Fab/jVgSejYsWbzXhmle5m64ntHUW0zCfkNPo=;
-        b=aPEgXuqR2GjFwgfvv7+ENSWuVIlXahEdbPIOvD3wA6UqUAncEeyeKpTYSvGeqwW27g
-         aHz1Ri1vsOAqEgoB3WwCMrhDpkS5JOyaPwIESMhCqIpLKxPDofQjV8iaZtIGrmhzITFF
-         VxKcPbYWdnJSqKC5icqa1HEiZwR6K43DJcPLM=
+        d=paul-moore.com; s=google; t=1694042578; x=1694647378; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=JyLgnDBJYphoRi84J21IgPf+ilIRiEV9Th+QE8elsEM=;
+        b=RG08oSrAdvxTDuTUM8LrKflm2r0GL0d2AVCulMmDAA5AOm0+0C9WsUEd2djvNHALLA
+         mShwQHyI20wyjJKicyZmXQdHyHVj2N37gr1fqewXu8wnYiy8jLJM0RELiikeXCf6ThJp
+         vx6qWjNu0OmhXiXHoSR+8zw4xukH/PjcVvpIkqWEPbBxjl0B+RMD8SBZ2c2lJwvk+Ug+
+         RvR8PqIzrD7kVeOdmTrO69wEdrNNI/Rz1LZQQfW5zn9WiX4LF1ET16lQ877AN//mnbTP
+         uHEQq4q8RA330+CRSPcPqq7Ossyppegfa/LK5jLP7ujs+jC6EBIPa3bazHjLTEkBJX6R
+         Y54g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694042232; x=1694647032;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=amaeJ0Fab/jVgSejYsWbzXhmle5m64ntHUW0zCfkNPo=;
-        b=Q0QEfyqIm9SfHmzJM+z95CmM2zvG4+irQWWz2oqpSMPSGeM/+DToilfpGcV63E6tt4
-         dsY7gF8/ip+FP0S43qOop3OPcOoLeaxclrYnRByITZIYZlhtepa+6jZHImk55UVwYFUj
-         sxjBHGkmpjY9aJXV5u1DotxMK8y5/Wgm3iGDyuTR2U5E7mNzB2RKVwaKJvYLEAxw3ewg
-         hp8evDRer8YJv7weE4Ow/5A/UAf8h0HYGzl4Bz1rvJKhvhagOflqIxTAW4JVYYP9hQXd
-         +l0n8c7oqi+dxTv/v330LGsQWmeuuvXs2eFEDbJEABzbjRHpOZTh2T7R3HE33gB+1BWX
-         KnaQ==
-X-Gm-Message-State: AOJu0YyOSeJ+0LkEkj+iWxHrg60bIQvdJB9CQE3YzMJ2jnqBzkQqDqQI
-        RGSZlxcBghSikx/i330nt8fLS7uaqJotLMomva/iCOsk
-X-Google-Smtp-Source: AGHT+IETbXUFoURXJCzIWqwcyeSQ/z/GY3LpUAe4SXW977y7FfXU3oaTdOZaFkmQ72Nh8qPJBVoksg==
-X-Received: by 2002:a05:6512:47c:b0:4fd:bdf8:930d with SMTP id x28-20020a056512047c00b004fdbdf8930dmr3513727lfd.22.1694042231815;
-        Wed, 06 Sep 2023 16:17:11 -0700 (PDT)
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
-        by smtp.gmail.com with ESMTPSA id i4-20020a170906264400b0099bcd1fa5b0sm9625961ejc.192.2023.09.06.16.17.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 16:17:10 -0700 (PDT)
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-31dca134c83so365333f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 16:17:10 -0700 (PDT)
-X-Received: by 2002:a05:6000:1cc9:b0:31d:d977:4e3d with SMTP id
- bf9-20020a0560001cc900b0031dd9774e3dmr3263064wrb.19.1694042229754; Wed, 06
- Sep 2023 16:17:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
- <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
- <CAHk-=whaiVhuO7W1tb8Yb-CuUHWn7bBnJ3bM7bvcQiEQwv_WrQ@mail.gmail.com>
- <CAHk-=wi6EAPRzYttb+qnZJuzinUnH9xXy-a1Y5kvx5Qs=6xDew@mail.gmail.com> <ZPj1WuwKKnvVEZnl@kernel.org>
-In-Reply-To: <ZPj1WuwKKnvVEZnl@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 6 Sep 2023 16:16:52 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiy=JOAWvSLwPq-jHPBfq8EX5NjVkEoh+RUMZbVn+GuOg@mail.gmail.com>
-Message-ID: <CAHk-=wiy=JOAWvSLwPq-jHPBfq8EX5NjVkEoh+RUMZbVn+GuOg@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1694042578; x=1694647378;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JyLgnDBJYphoRi84J21IgPf+ilIRiEV9Th+QE8elsEM=;
+        b=H6wmhuePx0mmt0d9LFJwvIKem+F/iohyQ25gHvl45mqP69EXwBILbwAI+ehzWMkjpn
+         UQIBWJQFZRlAVz9qYmD5WmF6V9fMIWTYQG/ehfVw/vQ94GV+OmS2DaifaENPFa1O678p
+         4JVrSuuwzZ3H1MC/xRA3oHHIiC9imWi0bE6Vu1IMlOVHAu0BLfPgqlEXgo8TgKZQ27I0
+         eqj1mgyYX5o7gt3AndnFMsziu3Pm3ViCCzdbe6Qy8NinvG/Knp5T3EmueclPdNN50GVN
+         iGDYDufWkyjtrP5CifES9U1ZH4nPI12NT7ajArOZ+mwa/sJIcrkFy7lLRQqOwwJmSOwD
+         4XEQ==
+X-Gm-Message-State: AOJu0YwN/aeWUHjNaCF7pT7UFjgA+HCyB7wXYCpHtK9bDbA74fxDIP5t
+        /P+kvIGZ/0WE7Ka6CN4g2Ivf
+X-Google-Smtp-Source: AGHT+IHwauC9HkTF09HzRHGuvsDsEZfkrM0pvP2ZLytbwm89qxZikr07GAa6o4YJPUMtn8f88hrvYw==
+X-Received: by 2002:a05:620a:3944:b0:765:7a1e:a456 with SMTP id qs4-20020a05620a394400b007657a1ea456mr19635332qkn.54.1694042578351;
+        Wed, 06 Sep 2023 16:22:58 -0700 (PDT)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id c18-20020a05620a11b200b0076f206cf16fsm5305460qkk.89.2023.09.06.16.22.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 16:22:57 -0700 (PDT)
+Date:   Wed, 06 Sep 2023 19:22:57 -0400
+Message-ID: <6bdfc1b73926b16fc4eea848f25275ed.paul@paul-moore.com>
+From:   Paul Moore <paul@paul-moore.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>, casey@schaufler-ca.com,
+        linux-security-module@vger.kernel.org
+Cc:     jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, mic@digikod.net
+Subject: Re: [PATCH v14 4/11] LSM: syscalls for current process attributes
+References: <20230828195802.135055-5-casey@schaufler-ca.com>
+In-Reply-To: <20230828195802.135055-5-casey@schaufler-ca.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Sept 2023 at 14:55, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
->
-> > I don't think gcc ever uses less than that (ie while a six_lock_type
-> > could fit in two bits, it's still going to be considered at least a
-> > 8-bit value in practice).
->
-> There are some cases where people stuff the enum into a bitfield, but
-> no, no simple type.
+On Aug 28, 2023 Casey Schaufler <casey@schaufler-ca.com> wrote:
+> 
+> Create a system call lsm_get_self_attr() to provide the security
+> module maintained attributes of the current process.
+> Create a system call lsm_set_self_attr() to set a security
+> module maintained attribute of the current process.
+> Historically these attributes have been exposed to user space via
+> entries in procfs under /proc/self/attr.
+> 
+> The attribute value is provided in a lsm_ctx structure. The structure
+> identifies the size of the attribute, and the attribute value. The format
+> of the attribute value is defined by the security module. A flags field
+> is included for LSM specific information. It is currently unused and must
+> be 0. The total size of the data, including the lsm_ctx structure and any
+> padding, is maintained as well.
+> 
+> struct lsm_ctx {
+>         __u64 id;
+>         __u64 flags;
+>         __u64 len;
+>         __u64 ctx_len;
+>         __u8 ctx[];
+> };
+> 
+> Two new LSM hooks are used to interface with the LSMs.
+> security_getselfattr() collects the lsm_ctx values from the
+> LSMs that support the hook, accounting for space requirements.
+> security_setselfattr() identifies which LSM the attribute is
+> intended for and passes it along.
+> 
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Serge Hallyn <serge@hallyn.com>
+> Reviewed-by: John Johansen <john.johansen@canonical.com>
+> ---
+>  Documentation/userspace-api/lsm.rst |  70 +++++++++++++
+>  include/linux/lsm_hook_defs.h       |   4 +
+>  include/linux/lsm_hooks.h           |   1 +
+>  include/linux/security.h            |  19 ++++
+>  include/linux/syscalls.h            |   5 +
+>  include/uapi/linux/lsm.h            |  36 +++++++
+>  kernel/sys_ni.c                     |   2 +
+>  security/Makefile                   |   1 +
+>  security/lsm_syscalls.c             |  57 +++++++++++
+>  security/security.c                 | 146 ++++++++++++++++++++++++++++
+>  10 files changed, 341 insertions(+)
+>  create mode 100644 Documentation/userspace-api/lsm.rst
+>  create mode 100644 security/lsm_syscalls.c
 
-Note that I am talking about the types gcc uses natively.
+...
 
-To show what I'm talking about, build this (silly) code that has some
-of the same enum types that bcachefs has:
+> diff --git a/security/security.c b/security/security.c
+> index 82253294069c..aa4ade1f71b9 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -3798,6 +3798,152 @@ void security_d_instantiate(struct dentry *dentry, struct inode *inode)
+>  }
+>  EXPORT_SYMBOL(security_d_instantiate);
+>  
+> +/**
+> + * security_getselfattr - Read an LSM attribute of the current process.
+> + * @attr: which attribute to return
+> + * @uctx: the user-space destination for the information, or NULL
+> + * @size: pointer to the size of space available to receive the data
+> + * @flags: special handling options. LSM_FLAG_SINGLE indicates that only
+> + * attributes associated with the LSM identified in the passed @ctx be
+> + * reported.
+> + *
+> + * A NULL value for @uctx can be used to get both the number of attributes
+> + * and the size of the data.
+> + *
+> + * Returns the number of attributes found on success, negative value
+> + * on error. @size is reset to the total size of the data.
+> + * If @size is insufficient to contain the data -E2BIG is returned.
+> + */
+> +int security_getselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
+> +			 size_t __user *size, u32 flags)
+> +{
+> +	struct security_hook_list *hp;
+> +	struct lsm_ctx lctx = { .id = LSM_ID_UNDEF, };
+> +	u8 __user *base = (u8 __user *)uctx;
+> +	size_t total = 0;
+> +	size_t entrysize;
+> +	size_t left;
+> +	bool toobig = false;
+> +	bool single = false;
+> +	int count = 0;
+> +	int rc;
+> +
+> +	if (attr == LSM_ATTR_UNDEF)
+> +		return -EINVAL;
+> +	if (size == NULL)
+> +		return -EINVAL;
+> +	if (get_user(left, size))
+> +		return -EFAULT;
+> +
+> +	if (flags) {
+> +		/*
+> +		 * Only flag supported is LSM_FLAG_SINGLE
+> +		 */
+> +		if (flags & LSM_FLAG_SINGLE)
+> +			return -EINVAL;
 
-    #include <stdio.h>
+Should this be something like the following?
 
-    enum enum1 {
-        val1 = 0,
-        val2 = 1,
-        val3 = 2,
-    };
+  if (flags & ~LSM_FLAG_SINGLE)
+    return -EINVAL;
 
-    enum enum2 {
-        num1 = -1,
-        num2 = 0,
-        num3 = 1,
-        num4 = 2,
-    };
+> +		if (uctx &&
+> +		    copy_struct_from_user(&lctx, sizeof(lctx), uctx, left))
+> +			return -EFAULT;
+> +		/*
+> +		 * If the LSM ID isn't specified it is an error.
+> +		 */
+> +		if (lctx.id == LSM_ID_UNDEF)
+> +			return -EINVAL;
+> +		single = true;
+> +	}
+> +
+> +	/*
+> +	 * In the usual case gather all the data from the LSMs.
+> +	 * In the single case only get the data from the LSM specified.
+> +	 */
+> +	hlist_for_each_entry(hp, &security_hook_heads.getselfattr, list) {
+> +		if (single) {
+> +			if (count > 0)
+> +				break;
+> +			if (lctx.id != hp->lsmid->id)
+> +				continue;
+> +		}
+> +		entrysize = left;
+> +		if (base)
+> +			uctx = (struct lsm_ctx __user *)(base + total);
+> +		rc = hp->hook.getselfattr(attr, uctx, &entrysize, flags);
+> +		if (rc == -EOPNOTSUPP) {
+> +			rc = 0;
+> +			continue;
+> +		}
+> +		if (rc == -E2BIG) {
+> +			toobig = true;
+> +			left = 0;
+> +			total += entrysize;
+> +			continue;
+> +		}
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		left -= entrysize;
+> +		total += entrysize;
+> +		count += rc;
+> +	}
+> +	if (put_user(total, size))
+> +		return -EFAULT;
+> +	if (toobig)
+> +		return -E2BIG;
+> +	if (count == 0)
+> +		return LSM_RET_DEFAULT(getselfattr);
+> +	return count;
+> +}
 
-    int main(int argc, char **argv)
-    {
-        printf("%d %d (%zu %zu)\n",
-                (enum enum1) num1,
-                (enum enum1) num1 == num1,
-                sizeof(enum enum1),
-                sizeof(enum enum2));
-        return 0;
-    }
 
-and run it. On x86 with no special options, you should get something like this:
-
-    -1 1 (4 4)
-
-ie both types have a four-byte size, and casting 'num1' to 'enum
-enum1' will in fact give you back -1, and will then compare equal to
-num1 in the end.
-
-Because both types are in practice just 'int'.
-
-But now do the same with -fshort-enums, and you instead get
-
-    255 0 (1 1)
-
-because both types are just a single byte, and casting 'num1' to 'enum
-enum1' will in fact result in 255 (because it's an _unsigned_ type),
-and then comparing with the original num1 value will no longer compare
-equal.
-
-(But casting it then further back to 'enum enum2' will in fact result
-in -1 again, because you're effectively casting it back to 'signed
-char', and then 255 and -1 are in fact the same in that type).
-
-End result: you can get some really unexpected behavior if you cast
-enums to other types.
-
-Which is, of course, exactly why the compiler is warning about the
-comparison and about passing in the wrong type of enum.
-
-Sadly, the compiler doesn't warn about the cast, so you can hide all
-of this by just adding casts. That doesn't make it *right*, of course.
-
-              Linus
+--
+paul-moore.com
