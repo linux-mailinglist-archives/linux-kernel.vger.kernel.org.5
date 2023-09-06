@@ -2,324 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 083F2793EC5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73776793EC6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238297AbjIFO1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60818 "EHLO
+        id S241561AbjIFO1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:27:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233285AbjIFO1b (ORCPT
+        with ESMTP id S241536AbjIFO1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:27:31 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42EAF10F5
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:27:26 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7a294a4ee4bso604150241.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 07:27:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694010445; x=1694615245; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pW/0ftx44nuZvnIVfoBb4IXQmDJJsfiAnE8tMNiYS4g=;
-        b=O9xhEB3Plkxv5dvcADeOe1tj7cOcbLoR2NDbG5kcwLAOeK3P4tA4+sJm6a03eNZ0d/
-         vRjfL7g6VlDq4GsMpFGGnreKG9aqsTwcEWVN+49kZZzj12SusOUAPjHHdrtWZWqb/5n9
-         MfhqV1ShoTknqadFy6QQNyaD5SebwwdzChO9l5cxdylXiYyr/qI+qGl08fJeg6zGOlO9
-         aEZdGyaBc5jD47p+ioo+jhnohFgVZVjuIhm978HlZUQ5B5FP45R70X5BOUEhK0BSAa1K
-         g3iBH+uPGjOWixtNEYIu/6UxV9lITjIWm1ytCAiEjs4+5BaXRc6+PNa31GyqUDn2aZYa
-         vacw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694010445; x=1694615245;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pW/0ftx44nuZvnIVfoBb4IXQmDJJsfiAnE8tMNiYS4g=;
-        b=DoZuVorje8EaWGR+8JE6/HhlLBswuyNVmLs29N9vfqQwXbCB50xKv9FInbEADPXN9V
-         VG/rOPb747MwVTNHaunUIJSkUNogU8R+DipQiukeaFAH8ggm+Yrx4E2H6lDfCsAKbpZX
-         nQYQTL77eGdNg8lRXROHhTJyzVbncy7zY2HW/7KqreB8mF560JUBfyrGFbfDVtuoplaV
-         RDL2Siy1PMHJiF+3gLAtdTvCePCqrw9y7LfO7wRlPuN+xMHRnkn+l89p9P+z15X6sNct
-         A/CgqOYgOIREPawdHkUHpujBtWLsUmA8Oo95zDUzXr7SkTJ3u3etWRjfEYWs00v/Rau/
-         HKng==
-X-Gm-Message-State: AOJu0Yxau6N7utbmbjiG09rWkFCTYrUwD44yWeo5Ht6nZzX2uZ/Lpp8w
-        goGl4RXJyCDGSv6K/MMU0pGWoqwxN/RF1hevVvznog==
-X-Google-Smtp-Source: AGHT+IHoZDtEvlafSlOtaL3eIj2H5vP48KL4yKOmxNr5WPPA1hwUKpDDD/YvuNOyFoHGnvDWIVi1aWHPf6UcXmEixBk=
-X-Received: by 2002:a05:6102:3003:b0:44d:acfd:6f0a with SMTP id
- s3-20020a056102300300b0044dacfd6f0amr1975222vsa.16.1694010445227; Wed, 06 Sep
- 2023 07:27:25 -0700 (PDT)
+        Wed, 6 Sep 2023 10:27:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0318210F8;
+        Wed,  6 Sep 2023 07:27:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E30F3C433C8;
+        Wed,  6 Sep 2023 14:27:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694010453;
+        bh=E2dEVMjCQREhmLTzdsKdjcRv3tuY2YPJjqOVBTRfaqU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y5VRCrPXYpZ9TK0KUE5LgWYQ5ba24HjnRdC/QV8fZKNJf2ZAcHqUKc5vEL/HiB0Og
+         v/cLZayVLocDkFZAj4/6Vo7dB8i0UBRC8/jlxHolRAP6eI32xphCv8tMg6YeRJLEm4
+         n8jjYR+qTY+JP/lS7agrONLuvP9yPMU0du5WxR0a+/2KHb9PdAw6wzOllMdk+vo81Z
+         8hIcaeHMA3mQKiU87rINjo5JzaCo1pyOZklORG+jg3fWZjjZKxTfXKCSJSXxmC57AN
+         MUJ01s4AXT+3enoVwZv118kQ2iTdaago31ubNWztm02E1hTrfPZ2ZTzR2hoP2KDeiI
+         LF666CV/69TZw==
+Date:   Wed, 6 Sep 2023 16:27:28 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Zdenek Kabelac <zkabelac@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Jan Kara <jack@suse.cz>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] fix writing to the filesystem after unmount
+Message-ID: <20230906-launenhaft-kinder-118ea59706c8@brauner>
+References: <59b54cc3-b98b-aff9-14fc-dc25c61111c6@redhat.com>
 MIME-Version: 1.0
-References: <20230905185309.131295-1-brgl@bgdev.pl> <20230905185309.131295-12-brgl@bgdev.pl>
- <8f51b4a8-bb9c-4918-61a8-4ab402da1ed0@redhat.com>
-In-Reply-To: <8f51b4a8-bb9c-4918-61a8-4ab402da1ed0@redhat.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 6 Sep 2023 16:27:14 +0200
-Message-ID: <CAMRc=Mfmp3Nd5jwNWr=kc8RFO-arFDwEvLxj5Qu9_1OOXR2gHQ@mail.gmail.com>
-Subject: Re: [RFT PATCH 11/21] platform: x86: android-tablets: don't access
- GPIOLIB private members
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Dipen Patel <dipenp@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Gross <markgross@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
-        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <59b54cc3-b98b-aff9-14fc-dc25c61111c6@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 3:01=E2=80=AFPM Hans de Goede <hdegoede@redhat.com> =
-wrote:
->
-> Hi Bartosz,
->
-> On 9/5/23 20:52, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > We're slowly removing cases of abuse of the GPIOLIB public API. One of
-> > the biggest issues is looking up and accessing struct gpio_chip whose
-> > life-time is tied to the provider and which can disappear from under an=
-y
-> > user at any given moment. We have provided new interfaces that use the
-> > opaque struct gpio_device which is reference counted and will soon be
-> > thorougly protected with appropriate locking.
-> >
-> > Stop using old interfaces in this driver and switch to safer
-> > alternatives.
-> >
-> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> First of all sorry for the issues this hack-ish kernel module
-> is causing for cleaning up gpiolib APIs.
->
-> I don't know how close a look you took at the code, so first of
-> all let me try to briefly explain what this hackish kernel module
-> is for:
->
-> There are some x86_64/ACPI tablets which shipped with Android as
-> factory OS. On these tablets the device-specific (BSP style)
-> kernel has things like the touchscreen driver simply having
-> a hardcoded I2C bus-number + I2C client address. Combined
-> with also hardcoded GPIO numbers (using the old number base APIs)
-> for any GPIOs it needs.
->
-> So the original Android kernels do not need the devices
-> to be properly described in ACPI and the ACPI tables are
-> just one big copy and paste job from some BSP which do
-> not accurately describe the hardware at all.
->
-> x86-android-tablets.ko identifies affected models by their
-> DMI strings and then manually instantiates things like
-> i2c-clients for the touchscreen, accelerometer and also
-> other stuff. Yes this is ugly but it allows mainline kernels
-> to run pretty well on these devices since other then
-> the messed up ACPI tables these are pretty standard x86/ACPI
-> tablets.
->
-> I hope this explains the hacks, now on to the problems
-> these are causing:
+On Wed, Sep 06, 2023 at 03:26:21PM +0200, Mikulas Patocka wrote:
+> lvm may suspend any logical volume anytime. If lvm suspend races with
+> unmount, it may be possible that the kernel writes to the filesystem after
+> unmount successfully returned. The problem can be demonstrated with this
+> script:
+> 
+> #!/bin/sh -ex
+> modprobe brd rd_size=4194304
+> vgcreate vg /dev/ram0
+> lvcreate -L 16M -n lv vg
+> mkfs.ext4 /dev/vg/lv
+> mount -t ext4 /dev/vg/lv /mnt/test
+> dmsetup suspend /dev/vg/lv
+> (sleep 1; dmsetup resume /dev/vg/lv) &
+> umount /mnt/test
+> md5sum /dev/vg/lv
+> md5sum /dev/vg/lv
+> dmsetup remove_all
+> rmmod brd
+> 
+> The script unmounts the filesystem and runs md5sum twice, the result is
+> that these two invocations return different hash.
+> 
+> What happens:
+> * dmsetup suspend calls freeze_bdev, that goes to freeze_super and it
+>   increments sb->s_active
+> * then we unmount the filesystem, we go to cleanup_mnt, cleanup_mnt calls
+>   deactivate_super, deactivate_super sees that sb->s_active is 2, so it
+>   decreases it to 1 and does nothing - the umount syscall returns
+>   successfully
+> * now we have a mounted filesystem despite the fact that umount returned
 
-This makes sense! Maybe we'd need a good-old board file setting up all
-non-described devices using the driver model?
+That can happen for any number of reasons. Other codepaths might very
+well still hold active references to the superblock. The same thing can
+happen when you have your filesystem pinned in another mount namespace.
 
->
-> > ---
-> >  .../platform/x86/x86-android-tablets/core.c   | 38 ++++++++++---------
-> >  1 file changed, 20 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/drivers/platform/x86/x86-android-tablets/core.c b/drivers/=
-platform/x86/x86-android-tablets/core.c
-> > index 2fd6060a31bb..687f84cd193c 100644
-> > --- a/drivers/platform/x86/x86-android-tablets/core.c
-> > +++ b/drivers/platform/x86/x86-android-tablets/core.c
-> > @@ -12,6 +12,7 @@
-> >
-> >  #include <linux/acpi.h>
-> >  #include <linux/dmi.h>
-> > +#include <linux/gpio/consumer.h>
-> >  #include <linux/gpio/driver.h>
-> >  #include <linux/gpio/machine.h>
-> >  #include <linux/irq.h>
-> > @@ -21,27 +22,28 @@
-> >  #include <linux/string.h>
-> >
-> >  #include "x86-android-tablets.h"
-> > -/* For gpiochip_get_desc() which is EXPORT_SYMBOL_GPL() */
-> > -#include "../../../gpio/gpiolib.h"
-> > -#include "../../../gpio/gpiolib-acpi.h"
-> > -
-> > -static int gpiochip_find_match_label(struct gpio_chip *gc, void *data)
-> > -{
-> > -     return gc->label && !strcmp(gc->label, data);
-> > -}
-> >
-> >  int x86_android_tablet_get_gpiod(const char *label, int pin, struct gp=
-io_desc **desc)
-> >  {
-> > +     struct gpio_device *gdev;
-> >       struct gpio_desc *gpiod;
-> > -     struct gpio_chip *chip;
-> >
-> > -     chip =3D gpiochip_find((void *)label, gpiochip_find_match_label);
-> > -     if (!chip) {
-> > -             pr_err("error cannot find GPIO chip %s\n", label);
-> > +     /*
-> > +      * FIXME: handle GPIOs correctly! This driver should really use s=
-truct
-> > +      * device and GPIO lookup tables.
-> > +      *
-> > +      * WONTDO: We do leak this reference, but the whole approach to g=
-etting
-> > +      * GPIOs in this driver is such an abuse of the GPIOLIB API that =
-it
-> > +      * doesn't make it much worse and it's the only way to keep the
-> > +      * interrupt requested later functional...
-> > +      */
-> > +     gdev =3D gpio_device_find_by_label(label);
-> > +     if (!gdev) {
-> > +             pr_err("error cannot find GPIO device %s\n", label);
-> >               return -ENODEV;
-> >       }
-> >
-> > -     gpiod =3D gpiochip_get_desc(chip, pin);
-> > +     gpiod =3D gpio_device_get_desc(gdev, pin);
-> >       if (IS_ERR(gpiod)) {
-> >               pr_err("error %ld getting GPIO %s %d\n", PTR_ERR(gpiod), =
-label, pin);
-> >               return PTR_ERR(gpiod);
->
->
-> So rather then the above I think what needs to happen here
-> (and I can hopefully make some time for that this weekend) is:
->
-> 1. Have the x86-android-tablets code instantiate a
->    "x86-android-tablets" platform-dev
-> 2. Have the code generate a gpiod_lookup_table for all GPIOs
->    for which it currently uses x86_android_tablet_get_gpiod()
->    with the .dev_id set to "x86-android-tablets"
-> 3. Use regular gpiod_get() on the "x86-android-tablets" pdev
->    to get the desc.
->
-> I think this should solve all the issues with
-> x86_android_tablet_get_gpiod() poking inside
-> gpiolib external since now it is only using
-> public gpiolib APIs, right ?
->
-> One question about 2. there are 2 ways to do this:
->
-> i. Have the module_init() function loop over all
-> x86_dev_info members which will result in calling
-> x86_android_tablet_get_gpiod() and have it generate
-> one big gpiod_lookup_table for all GPIOs needed
-> in one go. At which point x86_android_tablet_get_gpiod()
-> goes away and can be directly replaced with gpiod_get()
-> calls on the pdev.
->
-> ii. Keep x86_android_tablet_get_gpiod() and have it
-> generate a gpiod_lookup_table with just 1 entry for
-> the GPIO which its caller wants. Register the lookup
-> table, do the gpiod_get() and then immediately
-> unregister the lookup table again.
->
-> ii. Would be easier for me to implement, especially
-> since there is also some custom (board specific)
-> init code calling x86_android_tablet_get_gpiod()
-> which would require some special handling for i.
->
-> OTOH I guess some people will consider ii. somewhat
-> ugly, although AFAICT it is perfectly ok to use
-> the gpiolib lookup APIs this way.
->
-> Can you please let me known if you are ok with ii,
-> or if you would prefer me going with solution i. ?
->
+If you really want to be absolutely sure that the superblock is
+destroyed you must use a mechanism like fanotify which allows you to get
+notified on superblock destruction.
 
-I am fine with ii. I have recently sent a patch that does exactly that
-in one of the SPI drivers. It's ugly but it's better than what we have
-now.
+> @@ -1251,7 +1251,7 @@ static void cleanup_mnt(struct mount *mn
+>  	}
+>  	fsnotify_vfsmount_delete(&mnt->mnt);
+>  	dput(mnt->mnt.mnt_root);
+> -	deactivate_super(mnt->mnt.mnt_sb);
+> +	wait_and_deactivate_super(mnt->mnt.mnt_sb);
 
-> That way when I can make some time to start working
-> on this I can pick the preferred solution right away.
->
->
->
-> > @@ -257,9 +259,9 @@ static void x86_android_tablet_cleanup(void)
-> >
-> >  static __init int x86_android_tablet_init(void)
-> >  {
-> > +     struct gpio_device *gdev __free(gpio_device_put) =3D NULL;
-> >       const struct x86_dev_info *dev_info;
-> >       const struct dmi_system_id *id;
-> > -     struct gpio_chip *chip;
-> >       int i, ret =3D 0;
-> >
-> >       id =3D dmi_first_match(x86_android_tablet_ids);
-> > @@ -273,13 +275,13 @@ static __init int x86_android_tablet_init(void)
-> >        * _AEI (ACPI Event Interrupt) handlers, disable these.
-> >        */
-> >       if (dev_info->invalid_aei_gpiochip) {
-> > -             chip =3D gpiochip_find(dev_info->invalid_aei_gpiochip,
-> > -                                  gpiochip_find_match_label);
-> > -             if (!chip) {
-> > +             gdev =3D gpio_device_find_by_label(
-> > +                             dev_info->invalid_aei_gpiochip);
-> > +             if (!gdev) {
-> >                       pr_err("error cannot find GPIO chip %s\n", dev_in=
-fo->invalid_aei_gpiochip);
-> >                       return -ENODEV;
-> >               }
-> > -             acpi_gpiochip_free_interrupts(chip);
-> > +             acpi_gpio_device_free_interrupts(gdev);
-> >       }
-> >
-> >       /*
->
-> After some recent improvements there is only 1 board left which sets
-> dev_info->invalid_aei_gpiochip and that can easily be replaced with
-> with adding 1 extra entry to gpiolib_acpi_quirks[] inside
-> drivers/gpio/gpiolib-acpi.c .
->
-> So I believe the right solution here is to just remove
-> dev_info->invalid_aei_gpiochip support for x86-android-tablets
-> all together and then at least x86-android-tablets will no
-> longer be making any hackish acpi_gpiochip_free_interrupts() calls.
->
-> I don't want to make any promises wrt the timing, but I should
-> be able to prepare a set of patches which simply removes all
-> the private gpiolib API use from x86-android-tablets, so that
-> you don't need to workaround that in this patch series.
->
-> With some luck I can have an immutable branch with 6.6-rc1 +
-> such a patch-series ready for you soon after 6.6-rc1 is
-> released.
->
+Your patch means that we hang on any umount when the filesystem is
+frozen. IOW, you'd also hang on any umount of a bind-mount. IOW, every
+single container making use of this filesystems via bind-mounts would
+hang on umount and shutdown.
 
-That would be awesome, thanks a lot!
+You'd effectively build a deadlock trap for userspace when the
+filesystem is frozen. And nothing can make progress until that thing is
+thawed. Umount can't block if the block device is frozen.
 
-> Regards,
->
-> Hans
->
->
->
+>  	mnt_free_id(mnt);
+>  	call_rcu(&mnt->mnt_rcu, delayed_free_vfsmnt);
+>  }
+> Index: linux-2.6/fs/super.c
+> ===================================================================
+> --- linux-2.6.orig/fs/super.c	2023-09-05 21:09:16.000000000 +0200
+> +++ linux-2.6/fs/super.c	2023-09-06 09:52:20.000000000 +0200
+> @@ -36,6 +36,7 @@
+>  #include <linux/lockdep.h>
+>  #include <linux/user_namespace.h>
+>  #include <linux/fs_context.h>
+> +#include <linux/delay.h>
+>  #include <uapi/linux/mount.h>
+>  #include "internal.h"
+>  
+> @@ -365,6 +366,25 @@ void deactivate_super(struct super_block
+>  EXPORT_SYMBOL(deactivate_super);
+>  
+>  /**
+> + *	wait_and_deactivate_super	-	wait for unfreeze and drop a reference
+> + *	@s: superblock to deactivate
+> + *
+> + *	Variant of deactivate_super(), except that we wait if the filesystem is
+> + *	frozen. This is required on unmount, to make sure that the filesystem is
+> + *	really unmounted when this function returns.
+> + */
+> +void wait_and_deactivate_super(struct super_block *s)
+> +{
+> +	down_write(&s->s_umount);
+> +	while (s->s_writers.frozen != SB_UNFROZEN) {
+> +		up_write(&s->s_umount);
+> +		msleep(1);
+> +		down_write(&s->s_umount);
+> +	}
+> +	deactivate_locked_super(s);
 
-Bart
+That msleep(1) alone is a pretty nasty hack. We should definitely not
+spin in code like this. That superblock could stay frozen for a long
+time without s_umount held. So this is spinning.
 
-[1] https://lore.kernel.org/lkml/d57a99ce-77eb-409f-8371-95f2658fa0c0@siren=
-a.org.uk/T/
+Even if we wanted to do this it would need to use a similar wait
+mechanism for the filesystem to be thawed like we do in
+thaw_super_locked().
