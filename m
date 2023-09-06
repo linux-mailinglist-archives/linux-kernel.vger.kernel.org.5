@@ -2,119 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 766C17939D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7917939E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239024AbjIFK2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 06:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
+        id S239136AbjIFK3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 06:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233613AbjIFK2m (ORCPT
+        with ESMTP id S239114AbjIFK3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 06:28:42 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3888F10C8;
-        Wed,  6 Sep 2023 03:28:39 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-411f5dd7912so23521711cf.3;
-        Wed, 06 Sep 2023 03:28:39 -0700 (PDT)
+        Wed, 6 Sep 2023 06:29:50 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60F4CF4
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 03:29:46 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-68c0cb00fb3so3042071b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 03:29:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693996118; x=1694600918; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=unw3hN0Jsf7yZF3t4Yk9uPBU7tvhkv2SzT1b1nOos6s=;
-        b=Lv3/GvHBA4mpo2NS7mu/J3LmnKt1yb2dU85dmp4b+gf05KtTitv7wCC0Lbr1/qF98R
-         I11mf9NJOBZ3QrdX3r9KCUfJZg9sC5zd0usXIlZoXPJwzZuG7HzQ4DSLldyXmzMMFGh5
-         UVfoJD9ww1gA79gKbb/D/xBjJN/rt5/aZyzFFPwBSNLKnXm6YvFcD714E4PCGKdNVWOX
-         o9eY8VZcT0vb1uX4DXwCuE6kabQCrPvJqXJnv5UF2b0VNHQvK/ULZ8medCGyEOOZNAaE
-         AWUFUYU14fEg8nxjv8fLSfs+WRh3nndRZPw792+jeYvyS0P6RqUoPX2w+fM+WxScIyh9
-         U2Tg==
+        d=chromium.org; s=google; t=1693996186; x=1694600986; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=E+owG17nq22VwtZZibnF77JmIyluppq/Dc52KA5d+8I=;
+        b=j32XOsCh0pD3fRx60/Mx/+SODKxTetWFfYDJhFOGhXociHcmd+hF0gwAxcMZGnoLRE
+         8BO9ud2BCLN5pDy9G3bhJTbER2K4G101+EExw4M1TiWibp9A9Khe/87s/MkVC96RrT8I
+         LInEx8PpQgWYVJSrb1kanpyFIVp43UKWR+H8Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693996118; x=1694600918;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=unw3hN0Jsf7yZF3t4Yk9uPBU7tvhkv2SzT1b1nOos6s=;
-        b=HuI+c/YiMCIjdg0XI6XP8x5+LTgmDQ8au34q21OufcZlQp3pwTeBOymIdf0KGaLecj
-         IJGVh3KZ2u0rfz39XmRmcdGE6KOnVks05APJ9x5RxOVupStzZnyMggJcqFJ+cSnrZyLt
-         DgUiTFaa2DozJkjs4OTz4KFle/Wlih8NXXtuIOeLNw6DI+D2TIWPSa4UqByy60ioVE58
-         npTmewN9wlfKoxXz9AemCYcTrorD6ZBAmClbSs79Rs03o1H75kSiuOn/VI9tg6+RPWB5
-         kppYvgHuNcHYeZOJ3trAebHDZjyhLf0N68tUZf1OoNTQ2ZVK30QvIyEziHljzt8FGuVS
-         a3IQ==
-X-Gm-Message-State: AOJu0YwLEKcA/NRlM317QnDq591U10QIyedseappljlntjSBDEolWeI4
-        nwWPMbuJ9gKgySWbGp1Tmn7DthYhsixLLlAspdw=
-X-Google-Smtp-Source: AGHT+IE5Z/OzudmNQji9Aj5KqpKfkzoXojjJf5hnSCvtORN41w5USBetbpaC3mYY8dCp0qK+2M1nRf/LuAg6nUR6N5Q=
-X-Received: by 2002:ac8:5e11:0:b0:412:184d:cfe7 with SMTP id
- h17-20020ac85e11000000b00412184dcfe7mr19191173qtx.26.1693996117933; Wed, 06
- Sep 2023 03:28:37 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693996186; x=1694600986;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E+owG17nq22VwtZZibnF77JmIyluppq/Dc52KA5d+8I=;
+        b=Z8sYth7AHZ1zwfUcS66ZNzlzi07c6dNdsoFdfbOP4vVatGRB4iynYHlgZZor4CPLy/
+         CKyFhxITFdWXOYPCY0Jcj9JueZ7TD5oCDG7PSD+DnBLJfbrED6k9ReUJj3tkA1Zrn7BF
+         0ly387ox/+Bj3Ta/LfW21fQWJ2fNFfQGOet9/qPEITjWE1kCZyztwjb2FU997+33mOnY
+         nG4MjLTVbWhF2NxOL1yo3e7/XomZIakCu5JLFiBR2LWVcsS4uloLEIoHqvvUVGucTh+h
+         FbNTYwHcJLB1Unj33xUxpIgMAxTT1wqSxPjI3e0xfPV9zEWLAeBxNqe2xAOhqB4kyH7T
+         dgsg==
+X-Gm-Message-State: AOJu0YxMyH5wlSVD3ljAXGnRlXGsG5onauzQwmRB4joLheFrS16P/ltM
+        ZIBVr5QEULHmlp9R9bHJLR5o7A==
+X-Google-Smtp-Source: AGHT+IGxD4+nr/PrDHnNRmR0yvKtaPrz6EN00Tkrjtb4CAgW7P0eDpvJJO7ouRTXhlj9xWfxx5GXVQ==
+X-Received: by 2002:a05:6a00:2281:b0:68c:70:d175 with SMTP id f1-20020a056a00228100b0068c0070d175mr19113640pfe.13.1693996186143;
+        Wed, 06 Sep 2023 03:29:46 -0700 (PDT)
+Received: from treapking.tpe.corp.google.com ([2401:fa00:1:10:56d0:a851:8f06:9964])
+        by smtp.gmail.com with ESMTPSA id s18-20020a63af52000000b00528da88275bsm10938511pgo.47.2023.09.06.03.29.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 03:29:45 -0700 (PDT)
+From:   Pin-yen Lin <treapking@chromium.org>
+To:     linux-wireless@vger.kernel.org
+Cc:     Brian Norris <briannorris@chromium.org>,
+        Polaris Pi <pinkperfect2021@gmail.com>,
+        Matthew Wang <matthewmwang@chromium.org>,
+        Pin-yen Lin <treapking@chromium.org>,
+        linux-kernel@vger.kernel.org, Kalle Valo <kvalo@kernel.org>
+Subject: [PATCH] wifi: mwifiex: Fix oob check condition in mwifiex_process_rx_packet
+Date:   Wed,  6 Sep 2023 18:29:12 +0800
+Message-ID: <20230906102940.1120269-1-treapking@chromium.org>
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 MIME-Version: 1.0
-References: <8eb5498d-89f6-e39e-d757-404cc3cfaa5c@vivier.eu>
- <20230630083852.3988-1-norbert.lange@andritz.com> <e8161622-beb0-d8d5-6501-f0bee76a372d@vivier.eu>
- <20230630-hufen-herzallerliebst-fde8e7aecba0@brauner> <202307121239.1EB4D324@keescook>
-In-Reply-To: <202307121239.1EB4D324@keescook>
-From:   Norbert Lange <nolange79@gmail.com>
-Date:   Wed, 6 Sep 2023 12:28:27 +0200
-Message-ID: <CADYdroNw5ZPPUqXQ5Psb8ffzi47SzvJAixQgxm+vsmV9eX_kYg@mail.gmail.com>
-Subject: Re: [PATCH v8 1/1] ns: add binfmt_misc to the user namespace
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Laurent Vivier <laurent@vivier.eu>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        containers@lists.linux-foundation.org, jan.kiszka@siemens.com,
-        jannh@google.com, avagin@gmail.com, dima@arista.com,
-        James.Bottomley@hansenpartnership.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mi., 12. Juli 2023 um 21:40 Uhr schrieb Kees Cook <keescook@chromium.org=
->:
->
-> On Fri, Jun 30, 2023 at 11:06:59AM +0200, Christian Brauner wrote:
-> > On Fri, Jun 30, 2023 at 10:52:22AM +0200, Laurent Vivier wrote:
-> > > Hi Norbert,
-> > >
-> > > Le 30/06/2023 =C3=A0 10:38, Norbert Lange a =C3=A9crit :
-> > > > Any news on this? What remains to be done, who needs to be harrasse=
-d?
-> > > >
-> > > > Regards, Norbert
-> > >
-> > > Christian was working on a new version but there is no update for 1 y=
-ear.
-> > >
-> > > [PATCH v2 1/2] binfmt_misc: cleanup on filesystem umount
-> > > https://lkml.org/lkml/2021/12/16/406
-> > > [PATCH v2 2/2] binfmt_misc: enable sandboxed mounts
-> > > https://lkml.org/lkml/2021/12/16/407
-> > >
-> > > And personally I don't have the time to work on this.
-> >
-> > I've actually rebased this a few weeks ago:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/log/?h=3Dvf=
-s.binfmt_misc
-> > It has Acks, it's done. The only thing back then was Kees had wanted to
-> > take this but never did. I'll ping him.
->
-> Hi! Can you resend this now that the merge window is closed? I looked at
-> it in your tree and it seems okay. I remain a bit nervous about exposing
-> it to unpriv access, but I'd like to give it a try. It'd be very useful!
->
-> -Kees
->
-> --
-> Kees Cook
+Only skip the code path trying to access the rfc1042 headers when the
+buffer is too small, so the driver can still process packets without
+rfc1042 headers.
 
-Hate to be that guy, but did anything move closer towards upstream
-since that post?
+Fixes: 119585281617 ("wifi: mwifiex: Fix OOB and integer underflow when rx packets")
+Signed-off-by: Pin-yen Lin <treapking@chromium.org>
 
-Norbert
+---
+
+ drivers/net/wireless/marvell/mwifiex/sta_rx.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/wireless/marvell/mwifiex/sta_rx.c b/drivers/net/wireless/marvell/mwifiex/sta_rx.c
+index 65420ad67416..ebb65f3c086c 100644
+--- a/drivers/net/wireless/marvell/mwifiex/sta_rx.c
++++ b/drivers/net/wireless/marvell/mwifiex/sta_rx.c
+@@ -86,7 +86,8 @@ int mwifiex_process_rx_packet(struct mwifiex_private *priv,
+ 	rx_pkt_len = le16_to_cpu(local_rx_pd->rx_pkt_length);
+ 	rx_pkt_hdr = (void *)local_rx_pd + rx_pkt_off;
+ 
+-	if (sizeof(*rx_pkt_hdr) + rx_pkt_off > skb->len) {
++	if (sizeof(rx_pkt_hdr->eth803_hdr) + sizeof(rfc1042_header) +
++	    rx_pkt_off > skb->len) {
+ 		mwifiex_dbg(priv->adapter, ERROR,
+ 			    "wrong rx packet offset: len=%d, rx_pkt_off=%d\n",
+ 			    skb->len, rx_pkt_off);
+@@ -95,12 +96,13 @@ int mwifiex_process_rx_packet(struct mwifiex_private *priv,
+ 		return -1;
+ 	}
+ 
+-	if ((!memcmp(&rx_pkt_hdr->rfc1042_hdr, bridge_tunnel_header,
+-		     sizeof(bridge_tunnel_header))) ||
+-	    (!memcmp(&rx_pkt_hdr->rfc1042_hdr, rfc1042_header,
+-		     sizeof(rfc1042_header)) &&
+-	     ntohs(rx_pkt_hdr->rfc1042_hdr.snap_type) != ETH_P_AARP &&
+-	     ntohs(rx_pkt_hdr->rfc1042_hdr.snap_type) != ETH_P_IPX)) {
++	if (sizeof(rx_pkt_hdr) + rx_pkt_off <= skb->len &&
++	    ((!memcmp(&rx_pkt_hdr->rfc1042_hdr, bridge_tunnel_header,
++		      sizeof(bridge_tunnel_header))) ||
++	     (!memcmp(&rx_pkt_hdr->rfc1042_hdr, rfc1042_header,
++		      sizeof(rfc1042_header)) &&
++	      ntohs(rx_pkt_hdr->rfc1042_hdr.snap_type) != ETH_P_AARP &&
++	      ntohs(rx_pkt_hdr->rfc1042_hdr.snap_type) != ETH_P_IPX))) {
+ 		/*
+ 		 *  Replace the 803 header and rfc1042 header (llc/snap) with an
+ 		 *    EthernetII header, keep the src/dst and snap_type
+-- 
+2.42.0.283.g2d96d420d3-goog
+
