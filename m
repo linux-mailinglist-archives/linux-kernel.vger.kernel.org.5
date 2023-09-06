@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C6E7946BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 00:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DFB77946C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 01:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244587AbjIFW7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 18:59:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
+        id S244730AbjIFXBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 19:01:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231475AbjIFW7T (ORCPT
+        with ESMTP id S231475AbjIFXBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 18:59:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA7819A9;
-        Wed,  6 Sep 2023 15:59:15 -0700 (PDT)
+        Wed, 6 Sep 2023 19:01:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFC019B5
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 16:01:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694041155; x=1725577155;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=iZpacsJmtPibvRYCVTNE2cwagSSO7Bbbq8tQpQEh6CI=;
-  b=jMdG8uWYkmbLcw8PDu2Me4eS7cVHoJLWNjsYqHwXA1IXNl7PgKyjz3tc
-   TB1KLGAHGxVMmTn8bjjxv1qJ8AQUvhWJwTWaQGYuWVSdxMuQb1nhjIzKU
-   a9gW1vN907KAfwbwyt5780n7yXS7VamyunJNlE7p4EB09yvITSXmHItFs
-   4SAtdQacKqxWj5sh1k1xsdAiW/2mfCjRKyS2v39G50tHgokShFkLiREBL
-   x3dce893sHuBfTNd1ZlPGU5m1uwo3ZemhEkZ/GAx45q2P7QK3EAYvaFwC
-   1PtcTJFy4WgTQJ2NWuSsKuHAEqBkuxahJtMLLaIHhzo+iAwUBvf6p89sT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="463582382"
+  t=1694041277; x=1725577277;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=awpKATS8jUdcDj7eQHRvrOutVUUwskNG8zGevD2cdnE=;
+  b=d9oUVRCDnv7iV3cDPVhldrvUYyKH/l7d3JaWRmzyh0gqBuGQL51+TwIQ
+   PTbecqiIaByiAHA4FOG8WaDnDT1Whow3c6PFjwMTFu3BBxHojc98TxvuL
+   EgfLZvtzZqGvHrbgHZOcBDb0I5WS5WqvyjAMPtoEGv2YZs6E2sxsLyF+S
+   N71Vhm66++PSLjmtguOzkPBh0ohVCMLknQtDCUpePuaWQ0T0NBs8SetGq
+   iskunEh7SAbWFikpca2+R33aE4gRJPYalw6iXrWZuUeLpFrjoT9oCx4Ne
+   cMRtAEN9gfe3kf42Ywi8kw5l9M9YsWmu8Hnrw47GvDh3fiz+1FDlDZqrU
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="367427703"
 X-IronPort-AV: E=Sophos;i="6.02,233,1688454000"; 
-   d="scan'208";a="463582382"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 15:59:14 -0700
+   d="scan'208";a="367427703"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 16:01:17 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="691498791"
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="915463005"
 X-IronPort-AV: E=Sophos;i="6.02,233,1688454000"; 
-   d="scan'208";a="691498791"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 06 Sep 2023 15:59:08 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qe1UI-0000ff-0E;
-        Wed, 06 Sep 2023 22:59:06 +0000
-Date:   Thu, 7 Sep 2023 06:58:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Nitesh Shetty <nj.shetty@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, martin.petersen@oracle.com,
-        mcgrof@kernel.org, gost.dev@samsung.com,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Anuj Gupta <anuj20.g@samsung.com>,
-        Vincent Fu <vincent.fu@samsung.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v15 12/12] null_blk: add support for copy offload
-Message-ID: <202309070607.akFEF327-lkp@intel.com>
-References: <20230906163844.18754-13-nj.shetty@samsung.com>
+   d="scan'208";a="915463005"
+Received: from lmgabald-mobl2.amr.corp.intel.com (HELO [10.212.242.149]) ([10.212.242.149])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 16:01:16 -0700
+Message-ID: <e037f1c0-aaf6-7951-04ea-6d27e557b61b@intel.com>
+Date:   Wed, 6 Sep 2023 16:01:16 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230906163844.18754-13-nj.shetty@samsung.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] x86/sev-es: Do not use copy_from_kernel_nofault in early
+ #VC handler
+Content-Language: en-US
+To:     Adam Dunlap <acdunlap@google.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nikunj A Dadhania <nikunj@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>, Jacob Xu <jacobhxu@google.com>
+References: <20230906224541.2778523-1-acdunlap@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <20230906224541.2778523-1-acdunlap@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,84 +76,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nitesh,
+On 9/6/23 15:45, Adam Dunlap wrote:
+>  static int vc_fetch_insn_kernel(struct es_em_ctxt *ctxt,
+> -				unsigned char *buffer)
+> +				unsigned char *buffer, bool is_early)
+>  {
+> -	return copy_from_kernel_nofault(buffer, (unsigned char *)ctxt->regs->ip, MAX_INSN_SIZE);
+> +	if (is_early) {
+> +		memcpy(buffer, (unsigned char *)ctxt->regs->ip, MAX_INSN_SIZE);
+> +		return 0;
+> +	} else {
+> +		return copy_from_kernel_nofault(buffer, (unsigned char *)ctxt->regs->ip,
+> +			MAX_INSN_SIZE);
+> +	}
+>  }
 
-kernel test robot noticed the following build warnings:
+This isn't the normal way we do these kinds of things.
 
-[auto build test WARNING on c50216cfa084d5eb67dc10e646a3283da1595bb6]
+If we go with this solution, they next guy who tries
+copy_from_kernel_nofault() will hit the same issue, and start plumbing
+their own 'is_early' through _their_ little chunk of arch/x86.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Nitesh-Shetty/block-Introduce-queue-limits-and-sysfs-for-copy-offload-support/20230907-015817
-base:   c50216cfa084d5eb67dc10e646a3283da1595bb6
-patch link:    https://lore.kernel.org/r/20230906163844.18754-13-nj.shetty%40samsung.com
-patch subject: [PATCH v15 12/12] null_blk: add support for copy offload
-config: parisc-allyesconfig (https://download.01.org/0day-ci/archive/20230907/202309070607.akFEF327-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230907/202309070607.akFEF327-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309070607.akFEF327-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/trace/define_trace.h:102,
-                    from drivers/block/null_blk/trace.h:104,
-                    from drivers/block/null_blk/main.c:15:
-   drivers/block/null_blk/./trace.h: In function 'trace_raw_output_nullb_copy_op':
->> drivers/block/null_blk/./trace.h:91:27: warning: format '%lu' expects argument of type 'long unsigned int', but argument 7 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
-      91 |                 TP_printk("%s req=%-15s: dst=%llu, src=%llu, len=%lu",
-         |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/trace/trace_events.h:203:34: note: in definition of macro 'DECLARE_EVENT_CLASS'
-     203 |         trace_event_printf(iter, print);                                \
-         |                                  ^~~~~
-   include/trace/trace_events.h:45:30: note: in expansion of macro 'PARAMS'
-      45 |                              PARAMS(print));                   \
-         |                              ^~~~~~
-   drivers/block/null_blk/./trace.h:73:1: note: in expansion of macro 'TRACE_EVENT'
-      73 | TRACE_EVENT(nullb_copy_op,
-         | ^~~~~~~~~~~
-   drivers/block/null_blk/./trace.h:91:17: note: in expansion of macro 'TP_printk'
-      91 |                 TP_printk("%s req=%-15s: dst=%llu, src=%llu, len=%lu",
-         |                 ^~~~~~~~~
-   In file included from include/trace/trace_events.h:237:
-   drivers/block/null_blk/./trace.h:91:68: note: format string is defined here
-      91 |                 TP_printk("%s req=%-15s: dst=%llu, src=%llu, len=%lu",
-         |                                                                  ~~^
-         |                                                                    |
-         |                                                                    long unsigned int
-         |                                                                  %u
-
-
-vim +91 drivers/block/null_blk/./trace.h
-
-    72	
-    73	TRACE_EVENT(nullb_copy_op,
-    74			TP_PROTO(struct request *req,
-    75				 sector_t dst, sector_t src, size_t len),
-    76			TP_ARGS(req, dst, src, len),
-    77			TP_STRUCT__entry(
-    78					 __array(char, disk, DISK_NAME_LEN)
-    79					 __field(enum req_op, op)
-    80					 __field(sector_t, dst)
-    81					 __field(sector_t, src)
-    82					 __field(size_t, len)
-    83			),
-    84			TP_fast_assign(
-    85				       __entry->op = req_op(req);
-    86				       __assign_disk_name(__entry->disk, req->q->disk);
-    87				       __entry->dst = dst;
-    88				       __entry->src = src;
-    89				       __entry->len = len;
-    90			),
-  > 91			TP_printk("%s req=%-15s: dst=%llu, src=%llu, len=%lu",
-    92				  __print_disk_name(__entry->disk),
-    93				  blk_op_str(__entry->op),
-    94				  __entry->dst, __entry->src, __entry->len)
-    95	);
-    96	#endif /* _TRACE_NULLB_H */
-    97	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Usually, we'll add some gunk in arch/x86/boot/compressed/misc.h to
+override the troublesome implementation.  In this case, it would make a
+lot of sense to somehow avoid touching boot_cpu_data.x86_virt_bits in
+the first place.
