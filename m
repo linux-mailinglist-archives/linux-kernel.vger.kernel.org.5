@@ -2,164 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAB4793AC0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C57F793AD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239366AbjIFLJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43062 "EHLO
+        id S236920AbjIFLOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:14:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239457AbjIFLJo (ORCPT
+        with ESMTP id S231366AbjIFLOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:09:44 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D38010D0
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:09:34 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id F091D660576C;
-        Wed,  6 Sep 2023 12:09:32 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693998573;
-        bh=wtMi2Jo89LF3SAKhqo51VzspsnaHwlPHkoAaD3w7JIo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KDIPYh1mU3KC5nDqqCPwRLOoIDLbkdVI8sY69NgwfEuBOc35gqviRpN2uYG254VIK
-         tZ6xqICd5pAQ2tLUV2BBqIljPoCb3C096D32aKU7vBQ7kHQ5wWd+5eb7CmGBvKtDtm
-         17OlKP8/rALjnUX4aHGm2veHRcur1izSTDZk/h4AYIXQwx1RpIVNSK3L+ltU0GBBrd
-         V8qJjeYwwTAvpbCJ+tngAy9IDszvGYEBrJ48iJnKErYEzyZo3+Ht/Om/qyF+b9Psfn
-         9T585s7O/87zJQScSYTeZLdpVONyfaPcDrG/cJhar0VovdRZnogQpLW6hvl1Knohnt
-         e8/oPAPIF365Q==
-Date:   Wed, 6 Sep 2023 13:09:29 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Thomas =?UTF-8?B?SGVsbHN0csO2bQ==?= 
-        <thomas.hellstrom@linux.intel.com>
-Cc:     Danilo Krummrich <dakr@redhat.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Francois Dugast <francois.dugast@intel.com>,
-        linux-kernel@vger.kernel.org, Oak Zeng <oak.zeng@intel.com>,
-        dri-devel@lists.freedesktop.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-xe@lists.freedesktop.org
-Subject: Re: [PATCH v2] Documentation/gpu: VM_BIND locking document
-Message-ID: <20230906130929.74e3c6cc@collabora.com>
-In-Reply-To: <1a2965a4-943f-0ba7-b082-155d75b94d59@linux.intel.com>
-References: <20230816091547.2982-1-thomas.hellstrom@linux.intel.com>
-        <ZPeGld0mBwbWptV9@cassiopeiae>
-        <4e7a2b2e-1ab5-09b6-b2de-9b2a82a8a32e@linux.intel.com>
-        <1c6cbf97-7e85-a48f-9e6a-ed716ab5b05d@redhat.com>
-        <1a2965a4-943f-0ba7-b082-155d75b94d59@linux.intel.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Wed, 6 Sep 2023 07:14:22 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B30DCFF;
+        Wed,  6 Sep 2023 04:14:18 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (ftip006315900.acc1.colindale.21cn-nte.bt.net [81.134.214.249])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BFC44283;
+        Wed,  6 Sep 2023 13:12:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1693998769;
+        bh=AQq3rEfJzkraL3WBQ5gV4/xZ6makPLqqmlJnfXoE3io=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C2N+FLau4PxGx+LQpHMmqzlTxOuTtEhXfFZiohfI+g33WDbMPqaGhdPhTVhEP2jyp
+         wN5w0kRIT+mUBr/4d2mODnoWE/QoCjfuh+MVl72PMk7Q+gNduK0uydH2T5K4uIOxIu
+         ENZsc1WHRFAd13ZUaSWyF7zxJRIRo/mdo5rNWYG8=
+Date:   Wed, 6 Sep 2023 14:14:29 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 3/3] arm64: dts: mediatek: mt8365-pumpkin: Add overlays
+ for thp7312 cameras
+Message-ID: <20230906111429.GC17308@pendragon.ideasonboard.com>
+References: <20230905233118.183140-1-paul.elder@ideasonboard.com>
+ <20230905233118.183140-4-paul.elder@ideasonboard.com>
+ <502fc7b1-a32d-6901-3a45-d2aa0e0c3849@linaro.org>
+ <20230906083237.GL7971@pendragon.ideasonboard.com>
+ <a3ed9856-a87b-5cf6-26b5-ff2b19234a8a@linaro.org>
+ <20230906090058.GB17308@pendragon.ideasonboard.com>
+ <59e07c6a-6f1b-0cc7-dddc-96d2a4050843@linaro.org>
+ <20230906093531.GO7971@pendragon.ideasonboard.com>
+ <169399810391.277971.691693692840899613@ping.linuxembedded.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <169399810391.277971.691693692840899613@ping.linuxembedded.co.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Sep 2023 10:32:24 +0200
-Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
+On Wed, Sep 06, 2023 at 12:01:43PM +0100, Kieran Bingham wrote:
+> Quoting Laurent Pinchart (2023-09-06 10:35:31)
+> > On Wed, Sep 06, 2023 at 11:21:31AM +0200, Krzysztof Kozlowski wrote:
+> > > On 06/09/2023 11:00, Laurent Pinchart wrote:
+> > > >>> has a regulator@0. There are similar instances for clocks.
+> > > >>>
+> > > >>> I understand why it may not be a good idea, and how the root node is
+> > > >>> indeed not a bus. In some cases, those regulators and clocks are grouped
+> > > >>> in a regulators or clocks node that has a "simple-bus" compatible. I'm
+> > > >>> not sure if that's a good idea, but at least it should validate.
+> > > >>>
+> > > >>> What's the best practice for discrete board-level clocks and regulators
+> > > >>> in overlays ? How do we ensure that their node name will not conflict
+> > > >>> with the board to which the overlay is attached ?
+> > > >>
+> > > >> Top-level nodes (so under /) do not have unit addresses. If they have -
+> > > >> it's an error, because it is not a bus. Also, unit address requires reg.
+> > > >> No reg? No unit address. DTC reports this as warnings as well.
+> > > > 
+> > > > I agree with all that, but what's the recommended practice to add
+> > > > top-level clocks and regulators in overlays, in a way that avoids
+> > > > namespace clashes with the base board ?
+> > > 
+> > > Whether you use regulator@0 or regulator-0, you have the same chances of
+> > > clash.
+> > 
+> > No disagreement there. My question is whether there's a recommended
+> > practice to avoid clashes, or if it's an unsolved problem that gets
+> > ignored for now because there's only 36h in a day and there are more
+> > urgent things to do.
+> 
+> Should an overlay add these items to a simple-bus specific to that
+> overlay/device that is being supported?
+> 
+> That would 'namespace' the added fixed-clocks/fixed-regulators etc...
+> 
+> But maybe it's overengineering or mis-using the simple-bus.
 
+You would still need to name the node that groups the regulators and
+clocks in a way that wouldn't clash between multiple overlays and the
+base board. It would be nice to have nodes that are "private" to an
+overlay.
 
-> >>>> +Introducing external (or shared) buffer objects
-> >>>> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>>> +
-> >>>> +Since shared buffer objects may be shared by multiple gpu_vm's they
-> >>>> +can't share their reservation object with a single gpu_vm, but=20
-> >>>> will rather
-> >>>> +have a reservation object of their own. The shared objects bound to=
- a
-> >>>> +gpu_vm using one or many
-> >>>> +gpu_vmas are therefore typically put on a per-gpu_vm list which is
-> >>>> +protected by the gpu_vm lock. One could in theory protect it also=20
-> >>>> with
-> >>>> +the ``gpu_vm->resv``, but since the list of dma_resvs to take is=20
-> >>>> typically
-> >>>> +built before the ``gpu_vm->resv`` is locked due to a limitation in
-> >>>> +the current locking helpers, that is typically not done. Also see
-> >>>> +below for userptr gpu_vmas.
-> >>>> +
-> >>>> +At eviction time we now need to invalidate *all* gpu_vmas of a shar=
-ed
-> >>>> +object, but we can no longer be certain that we hold the gpu_vm's
-> >>>> +dma_resv of all the object's gpu_vmas. We can only be certain that =
-we =20
-> >>> I need to think a bit more about locking of extobj and evicted=20
-> >>> object tracking
-> >>> in the case of processing 'drm_gpuva_ops' directly through callbacks=
-=20
-> >>> within the
-> >>> fence signalling critical path as mentioend in [1].
-> >>>
-> >>> In order to support that, we'd need to protect extobjs with a=20
-> >>> separate lock,
-> >>> and while iterating extobjs to acquire the dma-resv lock drop the=20
-> >>> lock within
-> >>> the loop before we actually acquire the dma-resv lock. Maple tree=20
-> >>> supports that
-> >>> already and this can be fully done within the GPUVA manager; no need=
-=20
-> >>> for the
-> >>> driver to care about that. =20
-> >>
-> >> So do I understand correctly that this because you want to update the=
-=20
-> >> gpuvm state while operations are progressing asynchronously?
-> >>
-> >> If so, I wonder whether that could really be done? For example to=20
-> >> allocate enough memory for page-tables etc, you need to know the=20
-> >> details of the operations at IOCTL execution time, and to know the=20
-> >> details you need to know the state from the previous operation? =20
-> >
-> >
-> > Right, sync and async bind can't run fully concurrently, but you could=
-=20
-> > "inject" a
-> > sync one between two async ones such that the sync ones executed from=20
-> > the IOCTL
-> > directly while async execution is stalled meanwhile. This would be=20
-> > possible because
-> > the actual drm_gpuva_ops would be calculated within the async=20
-> > execution path rather
-> > than in the IOCTL. But yes, page-table management must be desinged to=20
-> > support that.
+> And the items are still not on a 'bus' with an address - they just exist
+> on a presumably externally provided board....
 
-FWIW, the panthor driver is designed this way (note that I'm not
-supporting GEM eviction yet, so there might be subtleties I missed).
+-- 
+Regards,
 
->=20
-> OK, well one of the main motivations for Xe is to be able to pipeline=20
-> interleaving binds and execs if needed, like so:
->=20
-> - Bind vmas for scene 1.
-> - Submit scene 1.
-> - Unbind vmas for scene 1.
-> - Bind vmas for scene 2.
-> - Submit scene 2.
-> - Unbind vmas for scene 2.
->=20
-> And being able to *submit* all of the above while the async binding of=20
-> vmas for scene (step 1) has not yet completed.
-> I can't really see how this could be done, while obeying dma-fence=20
-> rules, unless state is updated synchronously while submitting?
-
-The idea in this case is to detect when a GPU job dependency is a
-VM_BIND out-fence, turn drm_sched_fence->parent into an
-xxx_vm_bind_job_fence object that's holding the GEM that's about to be
-mapped (AFAICT, we don't need to do anything for unmap operations), and
-then add our GPU job fence to this BO. This should not only guarantee
-that the GEMs we depend on are mapped before the GPU job is executed
-(the fence wait does that), but also that such yet-to-be-mapped GEMs
-won't be evicted just after they've been mapped and before the GPU had
-a chance to execute (unless I'm missing something, adding our GPU job
-fence to the BO being targeted by a pending VM_BIND(async,map) operation
-solves this problem).
+Laurent Pinchart
