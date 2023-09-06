@@ -2,335 +2,396 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C95E379334B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 03:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDF679334D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 03:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239688AbjIFBS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 21:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38980 "EHLO
+        id S240648AbjIFBTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 21:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234015AbjIFBS5 (ORCPT
+        with ESMTP id S229482AbjIFBTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 21:18:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE466CF2;
-        Tue,  5 Sep 2023 18:18:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693963117; x=1725499117;
-  h=date:from:to:cc:subject:message-id:
-   content-transfer-encoding:mime-version;
-  bh=xo3ZXQQ5wb3NLHpLwuSEFv0ma0UWWMCj4XjUltNYoHs=;
-  b=DHtWq0fMQovj1nwwwMO5RppZuHRs3+iLcuv+wHFVB/eImsj4xRybuQ/g
-   8RaJdHtzi8j0xH26mOGJACbNBDfLvy9S2t6PJHSyWZzeUfwoOvvWf+Jtf
-   GWNULhyCVgrhwSB6mrfJ1FABMgxrcw2+zKQdKwWSax120B+KhCoiTRhIO
-   AS8xgcL8bAiO3U45XAvrWjrpVb+YyB4Z5dc7NGrc7JEQH+xqCwiSvFhro
-   0wHYKOXXViB+6uQvW0GhNCR6hI+LaMelxVmKPxvKlurwd5+ffzcRcVffx
-   dwXSMinNZEHs9fvTyBixvMiLiy4La/d8V7+E6yzwe/0KvQuPux1WDRwIi
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="443334596"
-X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="443334596"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 18:18:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="770547993"
-X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="770547993"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Sep 2023 18:18:36 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 5 Sep 2023 18:18:36 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Tue, 5 Sep 2023 18:18:36 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.177)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Tue, 5 Sep 2023 18:18:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l3AgJg3PDzS5vTlOPXl8ctrLawDHhj72yhzlxdJwmRJ7XUM/ITedJSDahvIbNYMXOqrxZmdMr5D0BYH3/pKVlAW0qfFym4XNFk1VHsjJkKYUUl9c3z4rjp7Vd5F4l5NM1Ugva6IpgrkwUqFuq0ZmjvYa8lzmvwiXYY2HZ3W/ECKcKhmt9Ef7pmsCC9HgIutnZKysmN0vkz53iotkxd/2TLGTCJ7T8z9HXgeSxoGxSJFxWoD1IW3dwlGPm+opjLjL4K3EBmTSfG+mNDm/DsiroKlleG2EYp+YST0f19YvuR3pkMCEpcxTx+9xSFM1yocbxrfTNyqM8MrTZZGLl6zflg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yXwxOJjgEB2GXvREM1x0IXEANWoWWqq4UejVqAaJ0sE=;
- b=hPnrIpkczEFXkdc7uN+569rFbvrayQ6RZ0mzNqmRkVHgkKi6ktfSVcoGDAR79pPDu8okynGRrYK4Vk5X27wwxTFLgGFun5ljpNE4MaBmH6ot3Ke0toqqDuEYZ71em/XK5Z69t25A81Ha9x3lg7MBtQ6IdvaAvQ8dNJxBVwpI8CIKUQBeWENQ+gFcNQXycvBmsYo+KSCI9l0zBpahsulplbPfD6tnlZDO/VRY+Z7OdI/qJIbQ/6XFPmWUO5aB6kYQQi+zGIWOHEvquIEs63ruUpZFCh6AqSZ7IpPyJZ0Or6zaa/QyanhcJsN/OLzgmbsA4Q6bvp3j9SKkOV4CCUqu1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
- by PH7PR11MB7145.namprd11.prod.outlook.com (2603:10b6:510:1ec::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.20; Wed, 6 Sep
- 2023 01:18:32 +0000
-Received: from PH8PR11MB6779.namprd11.prod.outlook.com
- ([fe80::73c6:1231:e700:924]) by PH8PR11MB6779.namprd11.prod.outlook.com
- ([fe80::73c6:1231:e700:924%4]) with mapi id 15.20.6745.030; Wed, 6 Sep 2023
- 01:18:31 +0000
-Date:   Wed, 6 Sep 2023 09:18:21 +0800
-From:   kernel test robot <oliver.sang@intel.com>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-CC:     <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
-        <linux-kernel@vger.kernel.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        <linux-pm@vger.kernel.org>, <ying.huang@intel.com>,
-        <feng.tang@intel.com>, <fengwei.yin@intel.com>,
-        <oliver.sang@intel.com>
-Subject: [linus:master] [cpuidle]  5484e31bbb:
- adrestia.wakeup_cost_periodic_us -33.3% improvement
-Message-ID: <202309051653.1dce02c8-oliver.sang@intel.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR06CA0244.apcprd06.prod.outlook.com
- (2603:1096:4:ac::28) To PH8PR11MB6779.namprd11.prod.outlook.com
- (2603:10b6:510:1ca::17)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|PH7PR11MB7145:EE_
-X-MS-Office365-Filtering-Correlation-Id: 37259d0a-976c-4016-1984-08dbae772ec2
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oWrYcE11oRRTDjfpJa8xs/jy/B/z85J31sxPPJvxqxOLSl6ZKFZZfmwlEPecwHVYEwlY6mQBAvix4CfgqfgNwfm1LYX3mZ+TfJLb1qReVuSq/iIpKghRCqAYo/M+GFnOX35qO8nYUaVImPUpyXrFH6J4Z+2mG59TvFc9cGXTcznBICHPjWojYzmTwHa1UiHdYuWoWhQdy1C+RxUePNTbsbroOwf3CUpgqH8u+C76uEJ+aJ4vSmPM/l5g/4XSK81GFrvEcGKPHBlQbq2FVKz2ryWpHezWCarRglkjZn7QXrLpbwXEv7AxKhGSZOX0CkLVaRvYCrawbaaQzTkQ7aFpV38wxDF7pFo/AbzI0wKgufmHYb8wmfbwo75QabBURcBhJPMvHwA6OTskO0brFeWVEQsd89ynGRxIqrjEjxfnQZGE0wjcRLFWzpwcBIQTYphHc36NJ2HQHAk+8sUJUkSIlS70U9uHb/RgAxIhBXGuFSCdlsZYeM8CJCWdR4kwxevdncpcA63sKtTrKxU/gsp/wXRJyl2WBRrCFASnRx5bCEPpAdvecI844phHJOoCsQwZyD4RwD0aS9RnLXcavYaXNg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6779.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(136003)(39860400002)(376002)(396003)(186009)(451199024)(1800799009)(478600001)(36756003)(8676002)(4326008)(86362001)(2616005)(5660300002)(6666004)(1076003)(6506007)(6486002)(26005)(6512007)(6862004)(41300700001)(107886003)(8936002)(83380400001)(66556008)(37006003)(38100700002)(6636002)(66946007)(966005)(2906002)(66476007)(82960400001)(316002)(30864003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?AjxvP8zFr9/H7f32IF2ZSoNy1LZr8M6SX1HxxsPAVEy0QrxlGbzMrVBnbB?=
- =?iso-8859-1?Q?GCbW1DggKCDPl6pJBpNue+EYky/n6+egLMBP7zgzWQC+NNtQkmMKN1FNy3?=
- =?iso-8859-1?Q?/VNZbtsar/V9q3I7FXvoeYS3JEKduV52R5wt47Z/djxOVI7lBhGDnM+jA3?=
- =?iso-8859-1?Q?JXVA8odEpDQMtItd5HalJEu7tC2RrlCWxpkXUyaFsKhpkRS5qPskcLXnDr?=
- =?iso-8859-1?Q?4+Wo3XPcTf8Bc2SjzUhI8M9uSFECaI3Lf4DPfJejsKWjea/imhOJGRz7EO?=
- =?iso-8859-1?Q?Z3tydlYg2xyhbnNIXmsKn8dShDIUYPQshiTadkG4nGLC8Lz6//fDpT7w91?=
- =?iso-8859-1?Q?hwMOaHcrpie9h2Pv402yBtxzmj+42IqlyejOokECSbbJ2yMY9xQejP8XOH?=
- =?iso-8859-1?Q?o1zD0eWFuEbihitFpJIuL4iHuTsTTZ2rpoJAFhrWgmqFZVOEIPk0U9MNAM?=
- =?iso-8859-1?Q?mf42qcb5edipsXrNMZZxWEy3NR+IABgjDOigwhrqiB5AyBlsGcnS8bWCp0?=
- =?iso-8859-1?Q?gz+CCGO0MDOkwceJwhVir7HDX+mJlx2v7IHYBqLUaS9iQmy4Tm6kJMjZEJ?=
- =?iso-8859-1?Q?/4vXXwY3v8CO40NFVMurluqRoMo/Ni4DiLeI2GaBjQiLSCboJmD/Mmxzd0?=
- =?iso-8859-1?Q?/W0B6K5t0Qvqv5+J95NSGTjN0PknUwBg/jxImsnB66t4+V1FhOAULbX0Ax?=
- =?iso-8859-1?Q?PubiNL/qmPI7UHkN8JDj87fgrnrfIlhceZAud9872N2AcTZCozRLGZJPvO?=
- =?iso-8859-1?Q?1eEG0bgSQUGhRPW2kp0K9cMzVFv2iRioVNsv8bERjN7hpdjrjZsZI1xcHU?=
- =?iso-8859-1?Q?mOP5ucCmMpsblHVFAmRnQH5rVAM/S6tvxaOySec6DQQJUIylTP1pSmlUiA?=
- =?iso-8859-1?Q?eSQzm5EaENeIeL77q2dHXCBzNksKbWoIpBjf10ARsNVtwIW7MtNfdfd1Bb?=
- =?iso-8859-1?Q?5xRnBbu6OtPIgVMIiUA7Wiwph4r02uq88CwDCFR/UrBEISkgy8/tBbuMnG?=
- =?iso-8859-1?Q?qJUYNjUV3KqcN3ABCw9P76pd3qWuDNJXallhF+NeFoj1SL+aJECYDyMTLi?=
- =?iso-8859-1?Q?MaCBIJ8nSOsFjH0MvQU5JRK0I48sP1gl1Q/YbFLX3EHJL5NwWfxV5gfghC?=
- =?iso-8859-1?Q?Nl2kL/AVR/ri2r4GmrRNUt7P75VA6iom0cIKmPmWBMnhw8oQsW+hvpLziw?=
- =?iso-8859-1?Q?YmZarS+FMgX5R9Fv/RnF7ct0Vn1a2jj2Qo8MOJ3r5l5NAI28i3kq7m9/JU?=
- =?iso-8859-1?Q?YiVpOmE8UJ/eq4hbr2FNoJ7jBmcsa9LnXI7Wq5O0O03KrxkiZ3elVluzTn?=
- =?iso-8859-1?Q?4SLdcKRDV006+M6ySPNcacA/yS5hHeBCZSBICHhG6t6nFaWGDacpVhv9uu?=
- =?iso-8859-1?Q?/gfwhJZKIw/XRA23FcOiy/6dk4gz1ApA+QbxvBc8qkpP3JzjmIKguLmBAF?=
- =?iso-8859-1?Q?rhmHAU1WXzSB9+YYJLcMux4ogfSTXr33YdcUEUHg8HlOKpaPng0dga+UEG?=
- =?iso-8859-1?Q?AJOueZ65UREpwe+KPZM7RRWMMoFps4GLN4JpBfXgdr5j9msMm1BTlMRv6H?=
- =?iso-8859-1?Q?eUfUxbV31HjV8PcbC1LTI0kzuWIvzL9Hs5wZoEsQZChY0GDo/uPAlhaiyO?=
- =?iso-8859-1?Q?LL/VsoYu7FpwxS86GNhl8bkeOEu5nZeab30JZhQFsuKHzeIstEc7I4Aw?=
- =?iso-8859-1?Q?=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37259d0a-976c-4016-1984-08dbae772ec2
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6779.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 01:18:31.5571
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tqByKjsm6qDJnrwtK6oP5LFOOOWig0sUATaOHLgTWdCnHp+/aRbcvc9NEEJ2OBtTSqMck/wAxCnxKtvE2ckoYw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7145
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 5 Sep 2023 21:19:46 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAB3EB;
+        Tue,  5 Sep 2023 18:19:42 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6bd066b0fd4so2045563a34.2;
+        Tue, 05 Sep 2023 18:19:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693963181; x=1694567981; darn=vger.kernel.org;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0W55U5dkDtWOdXQ18nuxk1kw/1nO1uoqQOX3LJ5eFjs=;
+        b=Ju7YLgWMmtclhLz+yUFP90di54dzLoSjA+FXJFfbZwc4DcOJ4Z3tAMxeYA46Thly0B
+         y89Sfp1hA/P8/PrzbXX4wmcWgSu5HTxvMX83pbNepVor91wBiyixpXPKSdKKuH7SoOqA
+         lG9zh6/mzPLUHWuWi/Yomc1KelC9lQMKfEk2VOZeXLSwrqrwpjpFCkykqVI09Pjj/TlT
+         44gcgO4cHCMlUMOS+MYmLlV08xbS2zP3leeapYV0CFYSH0cfukiKBHLQUfNb2/WlWRgb
+         UF7j+2mRZvzaYEV5DnKaEGKk6hDgRB9V3Hd7fV+ObQfHGQf2MK1y/6+8Z9aHn85lFGAy
+         npSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693963181; x=1694567981;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0W55U5dkDtWOdXQ18nuxk1kw/1nO1uoqQOX3LJ5eFjs=;
+        b=iRPMcihO6mn88d2zvhNvd3EqGEeWCBg7GmceXOXJGLKkA6Vsq1V3bR1VfgJ2lyATuR
+         s6/Fnyqv6spsuYdJDqRkfOkZQlS5gyCdovIs9euE83StqJAO/kuwfU9/uqWGI/4Z0KcV
+         LDCC5a9dPsULBngZodaty/gJWNynavHSrbFwPQSR4kZtd3qcmMJ29qWwiz04IeX6+Kgx
+         uw2X1PUyoOCNaCa6ZHfRpL8K94eGiDKKrIa8iVUtnTjsKrQPUaQOJnHsOO1keZ09RdLt
+         M6lB0GLPEwi+DTwfEdSI2e+QEYOhgzL8aUjjmT82RrJRD0oMIH58YZqyTGf/SA/vJjQZ
+         W4zQ==
+X-Gm-Message-State: AOJu0YzLJgYJpuwgJ9DgceKQg88gopG07CuxmKTkP8ntHcYOl5egkFeJ
+        +Kpb+/zuNIuh9x+maMc5w5s=
+X-Google-Smtp-Source: AGHT+IHUqIIfqH6hHVZT5nenrjqak3YLcIQPeKu8Rfz5D5SxRToO9MysRXt2zHBfuYzGWKBwZNR4JA==
+X-Received: by 2002:a9d:7dd3:0:b0:6b7:56d9:533 with SMTP id k19-20020a9d7dd3000000b006b756d90533mr13624755otn.28.1693963181447;
+        Tue, 05 Sep 2023 18:19:41 -0700 (PDT)
+Received: from smtpclient.apple ([2401:e180:8850:2f48:dd19:4847:5d6f:9042])
+        by smtp.gmail.com with ESMTPSA id bt19-20020a632913000000b0056129129ef8sm9870964pgb.18.2023.09.05.18.19.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Sep 2023 18:19:41 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Mining Lin <mimi05633@gmail.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v5 1/1] rtc: nuvoton: Compatible with NCT3015Y-R and NCT3018Y-R
+Date:   Wed, 6 Sep 2023 09:19:29 +0800
+Message-Id: <D6734DA5-839E-40A6-9085-F25BB8D70022@gmail.com>
+References: <202309050635059ecd17a2@mail.local>
+Cc:     avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        a.zummo@towertech.it, KWLIU@nuvoton.com, JJLIU0@nuvoton.com,
+        KFLIN@nuvoton.com, mylin1@nuvoton.com, openbmc@lists.ozlabs.org,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <202309050635059ecd17a2@mail.local>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+X-Mailer: iPhone Mail (20G75)
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dear Alexandre,
 
+Thanks for your comments.
+The replies are as follow.
 
-Hello,
+Thanks.
+Best regard,
+Mia
 
-kernel test robot noticed a -33.3% improvement of adrestia.wakeup_cost_periodic_us on:
+>=20
+> On Sep 5, 2023, at 2:35 PM, Alexandre Belloni <alexandre.belloni@bootlin.c=
+om> wrote:
+>=20
+> =EF=BB=BFOn 05/09/2023 14:03:41+0800, Mia Lin wrote:
+>> The NCT3015Y-R and NCT3018Y-R use the same datasheet
+>>    but have different topologies as follows.
+>> - Topology (Only 1st i2c can set TWO bit and HF bit)
+>>  In NCT3015Y-R,
+>>    rtc 1st i2c is connected to a host CPU
+>>    rtc 2nd i2c is connected to a BMC
+>>  In NCT3018Y-R,
+>>    rtc 1st i2c is connected to a BMC
+>>    rtc 2nd i2c is connected to a host CPU
+>> In order to be compatible with NCT3015Y-R and NCT3018Y-R,
+>> - In probe,
+>>  If part number is NCT3018Y-R, only set HF bit to 24-Hour format.
+>>  Else, do nothing
+>> - In set_time,
+>>  If part number is NCT3018Y-R && TWO bit is 0,
+>>     change TWO bit to 1, and restore TWO bit after updating time.
+>> - Refine error messages to pinpoint the correct location.
+>>=20
+>> Signed-off-by: Mia Lin <mimi05633@gmail.com>
+>> ---
+>> drivers/rtc/rtc-nct3018y.c | 87 ++++++++++++++++++++++++++++----------
+>> 1 file changed, 64 insertions(+), 23 deletions(-)
+>>=20
+>> diff --git a/drivers/rtc/rtc-nct3018y.c b/drivers/rtc/rtc-nct3018y.c
+>> index a4e3f924837e..9ec20f241e15 100644
+>> --- a/drivers/rtc/rtc-nct3018y.c
+>> +++ b/drivers/rtc/rtc-nct3018y.c
+>> @@ -23,6 +23,7 @@
+>> #define NCT3018Y_REG_CTRL    0x0A /* timer control */
+>> #define NCT3018Y_REG_ST        0x0B /* status */
+>> #define NCT3018Y_REG_CLKO    0x0C /* clock out */
+>> +#define NCT3018Y_REG_PART    0x21 /* part info */
+>>=20
+>> #define NCT3018Y_BIT_AF        BIT(7)
+>> #define NCT3018Y_BIT_ST        BIT(7)
+>> @@ -37,6 +38,7 @@
+>> #define NCT3018Y_REG_BAT_MASK        0x07
+>> #define NCT3018Y_REG_CLKO_F_MASK    0x03 /* frequenc mask */
+>> #define NCT3018Y_REG_CLKO_CKE        0x80 /* clock out enabled */
+>> +#define NCT3018Y_REG_PART_NCT3018Y    0x02
+>>=20
+>> struct nct3018y {
+>>    struct rtc_device *rtc;
+>> @@ -46,6 +48,8 @@ struct nct3018y {
+>> #endif
+>> };
+>>=20
+>> +static int part_num;
+>> +
+>=20
+> This must be part of struct nct3018y.
+[Mia] I will move the part number parameter to struct nct3018y.
+>=20
+>> static int nct3018y_set_alarm_mode(struct i2c_client *client, bool on)
+>> {
+>>    int err, flags;
+>> @@ -55,7 +59,7 @@ static int nct3018y_set_alarm_mode(struct i2c_client *c=
+lient, bool on)
+>>    flags =3D  i2c_smbus_read_byte_data(client, NCT3018Y_REG_CTRL);
+>>    if (flags < 0) {
+>>        dev_dbg(&client->dev,
+>> -            "Failed to read NCT3018Y_REG_CTRL\n");
+>> +            "%s: Failed to read ctrl reg.\n", __func__);
+>=20
+> If you really insist on this change, what about:
+>=20
+> #define pr_fmt(fmt) "%s: " fmt, __func__
+[Mia] Do you mean to replace dev_dbg with pr_debug? If yes, for consistency,=
+ I'm going to refine all messages via pr_debug. Thank you for your suggestio=
+n.
 
+>>        return flags;
+>>    }
+>>=20
+>> @@ -67,21 +71,21 @@ static int nct3018y_set_alarm_mode(struct i2c_client *=
+client, bool on)
+>>    flags |=3D NCT3018Y_BIT_CIE;
+>>    err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
+>>    if (err < 0) {
+>> -        dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL\n");
+>> +        dev_dbg(&client->dev, "%s: Unable to write ctrl reg.\n", __func_=
+_);
+>>        return err;
+>>    }
+>>=20
+>>    flags =3D  i2c_smbus_read_byte_data(client, NCT3018Y_REG_ST);
+>>    if (flags < 0) {
+>>        dev_dbg(&client->dev,
+>> -            "Failed to read NCT3018Y_REG_ST\n");
+>> +            "%s: Failed to read status reg.\n", __func__);
+>>        return flags;
+>>    }
+>>=20
+>>    flags &=3D ~(NCT3018Y_BIT_AF);
+>>    err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_ST, flags);
+>>    if (err < 0) {
+>> -        dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_ST\n");
+>> +        dev_dbg(&client->dev, "%s: Unable to write status reg.\n", __fun=
+c__);
+>>        return err;
+>>    }
+>>=20
+>> @@ -155,7 +159,7 @@ static int nct3018y_rtc_read_time(struct device *dev,=
+ struct rtc_time *tm)
+>>        return err;
+>>=20
+>>    if (!buf[0]) {
+>> -        dev_dbg(&client->dev, " voltage <=3D1.7, date/time is not reliab=
+le.\n");
+>> +        dev_dbg(&client->dev, "%s: voltage <=3D1.7, date/time is not rel=
+iable.\n", __func__);
+>>        return -EINVAL;
+>>    }
+>>=20
+>> @@ -178,26 +182,44 @@ static int nct3018y_rtc_set_time(struct device *dev=
+, struct rtc_time *tm)
+>> {
+>>    struct i2c_client *client =3D to_i2c_client(dev);
+>>    unsigned char buf[4] =3D {0};
+>> -    int err;
+>> +    int err, flags;
+>> +    int restore_flags =3D 0;
+>> +
+>> +    flags =3D i2c_smbus_read_byte_data(client, NCT3018Y_REG_CTRL);
+>> +    if (flags < 0) {
+>> +        dev_dbg(&client->dev, "%s: Failed to read ctrl reg.\n", __func__=
+);
+>> +        return flags;
+>> +    }
+>> +
+>> +    /* Check and set TWO bit */
+>> +    if ((part_num & NCT3018Y_REG_PART_NCT3018Y) && !(flags & NCT3018Y_BI=
+T_TWO)) {
+>> +        restore_flags =3D 1;
+>> +        flags |=3D NCT3018Y_BIT_TWO;
+>> +        err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, fla=
+gs);
+>> +        if (err < 0) {
+>> +            dev_dbg(&client->dev, "%s: Unable to write ctrl reg.\n", __f=
+unc__);
+>> +            return err;
+>> +        }
+>> +    }
+>>=20
+>>    buf[0] =3D bin2bcd(tm->tm_sec);
+>>    err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_SC, buf[0]);
+>>    if (err < 0) {
+>> -        dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_SC\n");
+>> +        dev_dbg(&client->dev, "%s: Unable to write seconds reg.\n", __fu=
+nc__);
+>>        return err;
+>>    }
+>>=20
+>>    buf[0] =3D bin2bcd(tm->tm_min);
+>>    err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_MN, buf[0]);
+>>    if (err < 0) {
+>> -        dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_MN\n");
+>> +        dev_dbg(&client->dev, "%s: Unable to write minutes reg.\n", __fu=
+nc__);
+>>        return err;
+>>    }
+>>=20
+>>    buf[0] =3D bin2bcd(tm->tm_hour);
+>>    err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_HR, buf[0]);
+>>    if (err < 0) {
+>> -        dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_HR\n");
+>> +        dev_dbg(&client->dev, "%s: Unable to write hour reg.\n", __func_=
+_);
+>>        return err;
+>>    }
+>>=20
+>> @@ -208,10 +230,22 @@ static int nct3018y_rtc_set_time(struct device *dev=
+, struct rtc_time *tm)
+>>    err =3D i2c_smbus_write_i2c_block_data(client, NCT3018Y_REG_DW,
+>>                         sizeof(buf), buf);
+>>    if (err < 0) {
+>> -        dev_dbg(&client->dev, "Unable to write for day and mon and year\=
+n");
+>> +        dev_dbg(&client->dev, "%s: Unable to write for day and mon and y=
+ear.\n", __func__);
+>>        return -EIO;
+>>    }
+>>=20
+>> +    /* Restore TWO bit */
+>> +    if (restore_flags) {
+>> +        if (part_num & NCT3018Y_REG_PART_NCT3018Y)
+>> +            flags &=3D ~NCT3018Y_BIT_TWO;
+>> +
+>> +        err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, fla=
+gs);
+>> +        if (err < 0) {
+>> +            dev_dbg(&client->dev, "%s: Unable to write ctrl reg.\n", __f=
+unc__);
+>> +            return err;
+>> +        }
+>> +    }
+>> +
+>>    return err;
+>> }
+>>=20
+>> @@ -224,7 +258,7 @@ static int nct3018y_rtc_read_alarm(struct device *dev=
+, struct rtc_wkalrm *tm)
+>>    err =3D i2c_smbus_read_i2c_block_data(client, NCT3018Y_REG_SCA,
+>>                        sizeof(buf), buf);
+>>    if (err < 0) {
+>> -        dev_dbg(&client->dev, "Unable to read date\n");
+>> +        dev_dbg(&client->dev, "%s: Unable to read date.\n", __func__);
+>>        return -EIO;
+>>    }
+>>=20
+>> @@ -257,19 +291,19 @@ static int nct3018y_rtc_set_alarm(struct device *de=
+v, struct rtc_wkalrm *tm)
+>>=20
+>>    err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_SCA, bin2bcd(tm=
+->time.tm_sec));
+>>    if (err < 0) {
+>> -        dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_SCA\n");
+>> +        dev_dbg(&client->dev, "%s: Unable to write seconds alarm reg.\n"=
+, __func__);
+>>        return err;
+>>    }
+>>=20
+>>    err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_MNA, bin2bcd(tm=
+->time.tm_min));
+>>    if (err < 0) {
+>> -        dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_MNA\n");
+>> +        dev_dbg(&client->dev, "%s: Unable to write minutes alarm reg.\n"=
+, __func__);
+>>        return err;
+>>    }
+>>=20
+>>    err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_HRA, bin2bcd(tm=
+->time.tm_hour));
+>>    if (err < 0) {
+>> -        dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_HRA\n");
+>> +        dev_dbg(&client->dev, "%s: Unable to write hour alarm reg.\n", _=
+_func__);
+>>        return err;
+>>    }
+>>=20
+>> @@ -473,23 +507,29 @@ static int nct3018y_probe(struct i2c_client *client=
+)
+>>=20
+>>    flags =3D i2c_smbus_read_byte_data(client, NCT3018Y_REG_CTRL);
+>>    if (flags < 0) {
+>> -        dev_dbg(&client->dev, "%s: read error\n", __func__);
+>> +        dev_dbg(&client->dev, "%s: Failed to read ctrl reg.\n", __func__=
+);
+>>        return flags;
+>>    } else if (flags & NCT3018Y_BIT_TWO) {
+>> -        dev_dbg(&client->dev, "%s: NCT3018Y_BIT_TWO is set\n", __func__)=
+;
+>> +        dev_dbg(&client->dev, "%s: TWO bit is set.\n", __func__);
+>>    }
+>>=20
+>> -    flags =3D NCT3018Y_BIT_TWO;
+>> -    err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);=
 
-commit: 5484e31bbbff285f9505c4766373f840ffb746e5 ("cpuidle: menu: Skip tick_nohz_get_sleep_length() call in some cases")
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-
-testcase: adrestia
-test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-4770K CPU @ 3.50GHz (Haswell) with 8G memory
-parameters:
-
-	nr_threads: 100
-	cpufreq_governor: performance
-
-
-
-Details are as below:
--------------------------------------------------------------------------------------------------->
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20230905/202309051653.1dce02c8-oliver.sang@intel.com
-
-=========================================================================================
-compiler/cpufreq_governor/kconfig/nr_threads/rootfs/tbox_group/testcase:
-  gcc-12/performance/x86_64-rhel-8.3/100/debian-11.1-x86_64-20220510.cgz/lkp-hsw-d04/adrestia
-
-commit: 
-  2662342079 ("cpuidle: teo: Gather statistics regarding whether or not to stop the tick")
-  5484e31bbb ("cpuidle: menu: Skip tick_nohz_get_sleep_length() call in some cases")
-
-2662342079f54b8a 5484e31bbbff285f9505c476637 
----------------- --------------------------- 
-         %stddev     %change         %stddev
-             \          |                \  
-      0.06 ± 56%     -52.2%       0.03 ± 17%  perf-sched.sch_delay.max.ms.do_task_dead.do_exit.do_group_exit.__x64_sys_exit_group.do_syscall_64
-      9603            -0.8%       9529        proc-vmstat.nr_slab_unreclaimable
-     12707            -6.7%      11859        vmstat.system.in
-      0.91            -0.2        0.74        mpstat.cpu.all.irq%
-      0.06            -0.0        0.05        mpstat.cpu.all.soft%
-    698830 ± 11%     +18.4%     827374 ±  7%  sched_debug.cpu.avg_idle.max
-    222705 ± 10%     +18.7%     264460 ±  5%  sched_debug.cpu.avg_idle.stddev
-      0.34 ± 16%     +35.5%       0.47 ± 15%  sched_debug.cpu.clock.stddev
-    242150           -79.0%      50912 ±  7%  adrestia.time.involuntary_context_switches
-     38.40            -5.7%      36.20        adrestia.time.percent_of_cpu_this_job_got
-    138.60            -6.7%     129.34        adrestia.time.system_time
-      6.00           -33.3%       4.00        adrestia.wakeup_cost_periodic_us
-   5674120          +110.4%   11939267        turbostat.C1
-     33.31            +5.8       39.11        turbostat.C1%
-   3296324           +24.3%    4096313        turbostat.C1E
-      4.70            +6.5       11.18 ±  2%  turbostat.C1E%
-   5791021           -48.2%    3001325 ±  2%  turbostat.C3
-     17.79            +4.8       22.59        turbostat.C3%
-    810414           -85.6%     117003 ±  4%  turbostat.C6
-      8.11            -6.8        1.31 ±  5%  turbostat.C6%
-   1442211           -52.8%     680532 ±  2%  turbostat.C7s
-     23.74            -9.1       14.69 ±  2%  turbostat.C7s%
-     61.86           +20.3%      74.43        turbostat.CPU%c1
-     14.52 ±  2%     -28.7%      10.35 ±  3%  turbostat.CPU%c3
-      3.89           -93.4%       0.26 ± 11%  turbostat.CPU%c6
-      7.81 ±  5%     -49.6%       3.94 ±  4%  turbostat.CPU%c7
-     10.66            +3.9%      11.08        turbostat.CorWatt
-      3.49            -0.5        3.02        turbostat.POLL%
-      1.48 ±  2%     -75.0%       0.37 ± 18%  turbostat.Pkg%pc2
-     18.29            +5.4%      19.28        turbostat.PkgWatt
-     12.72           -16.8%      10.59        perf-stat.i.MPKI
- 4.574e+08            -3.8%  4.398e+08        perf-stat.i.branch-instructions
-      1.46            -0.1        1.31        perf-stat.i.branch-miss-rate%
-   7284139            -8.1%    6690632        perf-stat.i.branch-misses
-      2.68            -0.9        1.80        perf-stat.i.cache-miss-rate%
-    458457           -41.3%     268958        perf-stat.i.cache-misses
-  18029497           -17.1%   14954548        perf-stat.i.cache-references
-      2.25            -6.0%       2.11        perf-stat.i.cpi
- 3.612e+09            -8.1%  3.318e+09        perf-stat.i.cpu-cycles
-      9738           -64.2%       3490 ±  4%  perf-stat.i.cpu-migrations
-      9532           +49.8%      14284        perf-stat.i.cycles-between-cache-misses
-      0.58 ±  2%      -0.2        0.43 ±  4%  perf-stat.i.dTLB-load-miss-rate%
-   1915780           -22.0%    1494726 ±  7%  perf-stat.i.dTLB-load-misses
-      0.31 ±  3%      -0.1        0.25 ±  5%  perf-stat.i.dTLB-store-miss-rate%
-    611947 ±  2%     -22.2%     476112 ±  3%  perf-stat.i.dTLB-store-misses
-  3.11e+08            -4.8%  2.962e+08        perf-stat.i.dTLB-stores
-     50.70           -12.1       38.63        perf-stat.i.iTLB-load-miss-rate%
-    709004           -14.4%     606971 ±  4%  perf-stat.i.iTLB-load-misses
-    641330           +22.2%     783541        perf-stat.i.iTLB-loads
- 2.025e+09            -3.2%   1.96e+09        perf-stat.i.instructions
-      2772           +23.4%       3420 ±  2%  perf-stat.i.instructions-per-iTLB-miss
-      0.48            +5.4%       0.50        perf-stat.i.ipc
-      0.45            -8.1%       0.41        perf-stat.i.metric.GHz
-    161.95            -3.4%     156.41        perf-stat.i.metric.M/sec
-      8.90           -14.3%       7.63        perf-stat.overall.MPKI
-      1.59            -0.1        1.52        perf-stat.overall.branch-miss-rate%
-      2.54            -0.7        1.80        perf-stat.overall.cache-miss-rate%
-      1.78            -5.1%       1.69        perf-stat.overall.cpi
-      7878           +56.6%      12335        perf-stat.overall.cycles-between-cache-misses
-      0.37            -0.1        0.30 ±  6%  perf-stat.overall.dTLB-load-miss-rate%
-      0.20 ±  2%      -0.0        0.16 ±  3%  perf-stat.overall.dTLB-store-miss-rate%
-     52.51            -8.9       43.63 ±  2%  perf-stat.overall.iTLB-load-miss-rate%
-      2856           +13.2%       3234 ±  4%  perf-stat.overall.instructions-per-iTLB-miss
-      0.56            +5.4%       0.59        perf-stat.overall.ipc
- 4.565e+08            -3.8%   4.39e+08        perf-stat.ps.branch-instructions
-   7270403            -8.1%    6677885        perf-stat.ps.branch-misses
-    457602           -41.3%     268449        perf-stat.ps.cache-misses
-  17995840           -17.1%   14926426        perf-stat.ps.cache-references
- 3.605e+09            -8.1%  3.312e+09        perf-stat.ps.cpu-cycles
-      9720           -64.2%       3484 ±  4%  perf-stat.ps.cpu-migrations
-   1912206           -22.0%    1491912 ±  7%  perf-stat.ps.dTLB-load-misses
-    610806 ±  2%     -22.2%     475217 ±  3%  perf-stat.ps.dTLB-store-misses
- 3.104e+08            -4.8%  2.956e+08        perf-stat.ps.dTLB-stores
-    707671           -14.4%     605828 ±  4%  perf-stat.ps.iTLB-load-misses
-    640132           +22.2%     782070        perf-stat.ps.iTLB-loads
- 2.021e+09            -3.2%  1.957e+09        perf-stat.ps.instructions
- 1.089e+12            -3.9%  1.047e+12        perf-stat.total.instructions
-     28.35 ±  5%      -3.8       24.57 ± 11%  perf-profile.calltrace.cycles-pp.poll_idle.cpuidle_enter_state.cpuidle_enter.cpuidle_idle_call.do_idle
-     70.22            -2.0       68.23        perf-profile.calltrace.cycles-pp.secondary_startup_64_no_verify
-      2.07 ±  6%      -0.5        1.57 ± 11%  perf-profile.calltrace.cycles-pp.menu_select.cpuidle_idle_call.do_idle.cpu_startup_entry.start_secondary
-      3.95 ±  5%      -0.4        3.57 ±  3%  perf-profile.calltrace.cycles-pp.__schedule.schedule.pipe_read.vfs_read.ksys_read
-      4.02 ±  4%      -0.4        3.65 ±  2%  perf-profile.calltrace.cycles-pp.schedule.pipe_read.vfs_read.ksys_read.do_syscall_64
-      0.82 ± 14%      +0.2        1.03 ± 15%  perf-profile.calltrace.cycles-pp.hrtimer_interrupt.__sysvec_apic_timer_interrupt.sysvec_apic_timer_interrupt.asm_sysvec_apic_timer_interrupt.cpuidle_enter_state
-      2.07            +0.2        2.29 ±  9%  perf-profile.calltrace.cycles-pp.ksys_write.do_syscall_64.entry_SYSCALL_64_after_hwframe.__libc_write.start_thread
-      0.86 ± 15%      +0.2        1.08 ± 12%  perf-profile.calltrace.cycles-pp.__sysvec_apic_timer_interrupt.sysvec_apic_timer_interrupt.asm_sysvec_apic_timer_interrupt.cpuidle_enter_state.cpuidle_enter
-      3.22 ±  3%      +0.3        3.53 ±  6%  perf-profile.calltrace.cycles-pp.do_syscall_64.entry_SYSCALL_64_after_hwframe.__libc_write.start_thread
-      3.27 ±  3%      +0.3        3.59 ±  6%  perf-profile.calltrace.cycles-pp.entry_SYSCALL_64_after_hwframe.__libc_write.start_thread
-      1.30 ± 12%      +0.4        1.71 ± 12%  perf-profile.calltrace.cycles-pp.sysvec_apic_timer_interrupt.asm_sysvec_apic_timer_interrupt.cpuidle_enter_state.cpuidle_enter.cpuidle_idle_call
-      1.41 ± 11%      +0.4        1.84 ± 10%  perf-profile.calltrace.cycles-pp.asm_sysvec_apic_timer_interrupt.cpuidle_enter_state.cpuidle_enter.cpuidle_idle_call.do_idle
-      0.21 ±122%      +0.4        0.66 ±  8%  perf-profile.calltrace.cycles-pp.prepare_to_wait_event.pipe_read.vfs_read.ksys_read.do_syscall_64
-      4.08 ±  3%      +0.6        4.65 ±  8%  perf-profile.calltrace.cycles-pp.__libc_write.start_thread
-     15.14 ±  2%      +0.9       16.08 ±  6%  perf-profile.calltrace.cycles-pp.start_thread
-     28.56 ±  5%      -3.8       24.73 ± 11%  perf-profile.children.cycles-pp.poll_idle
-     70.19            -2.0       68.19        perf-profile.children.cycles-pp.do_idle
-     70.22            -2.0       68.23        perf-profile.children.cycles-pp.secondary_startup_64_no_verify
-     70.22            -2.0       68.23        perf-profile.children.cycles-pp.cpu_startup_entry
-      2.40 ±  4%      -0.6        1.80 ±  9%  perf-profile.children.cycles-pp.menu_select
-      0.74 ± 18%      -0.4        0.33 ± 32%  perf-profile.children.cycles-pp.newidle_balance
-      1.47 ±  8%      -0.4        1.05 ± 14%  perf-profile.children.cycles-pp.pick_next_task_fair
-      4.13 ±  4%      -0.4        3.72 ±  2%  perf-profile.children.cycles-pp.schedule
-      0.76 ± 13%      -0.4        0.38 ± 26%  perf-profile.children.cycles-pp.tick_nohz_get_sleep_length
-      0.58 ± 19%      -0.3        0.29 ± 24%  perf-profile.children.cycles-pp.switch_mm_irqs_off
-      0.55 ± 14%      -0.3        0.26 ± 45%  perf-profile.children.cycles-pp.load_balance
-      0.42 ± 23%      -0.2        0.24 ± 32%  perf-profile.children.cycles-pp.tick_nohz_next_event
-      0.22 ± 17%      -0.1        0.09 ± 31%  perf-profile.children.cycles-pp.hrtimer_next_event_without
-      0.21 ± 31%      -0.1        0.09 ± 65%  perf-profile.children.cycles-pp.select_idle_cpu
-      0.16 ± 25%      -0.1        0.06 ± 88%  perf-profile.children.cycles-pp.set_task_cpu
-      0.19 ± 47%      -0.1        0.09 ± 42%  perf-profile.children.cycles-pp.leave_mm
-      0.27 ± 18%      -0.1        0.18 ± 23%  perf-profile.children.cycles-pp.asm_sysvec_call_function_single
-      0.13 ± 32%      -0.1        0.04 ± 90%  perf-profile.children.cycles-pp.__hrtimer_next_event_base
-      0.26 ±  3%      -0.1        0.18 ± 13%  perf-profile.children.cycles-pp.tick_nohz_idle_enter
-      0.09 ± 26%      +0.1        0.16 ± 28%  perf-profile.children.cycles-pp.clockevents_program_event
-      0.44 ±  9%      +0.1        0.56 ±  9%  perf-profile.children.cycles-pp.entry_SYSCALL_64_safe_stack
-      0.37 ±  3%      +0.2        0.54 ± 11%  perf-profile.children.cycles-pp.mutex_unlock
-      0.46 ± 13%      +0.2        0.68 ± 10%  perf-profile.children.cycles-pp.prepare_to_wait_event
-      1.63 ±  3%      +0.2        1.87 ±  5%  perf-profile.children.cycles-pp.__entry_text_start
-      1.75 ± 12%      +0.3        2.04 ± 11%  perf-profile.children.cycles-pp.sysvec_apic_timer_interrupt
-      1.87 ± 11%      +0.3        2.19 ±  9%  perf-profile.children.cycles-pp.asm_sysvec_apic_timer_interrupt
-      1.32 ±  4%      +0.4        1.76 ±  7%  perf-profile.children.cycles-pp.syscall_return_via_sysret
-     13.54 ±  2%      +0.6       14.15 ±  2%  perf-profile.children.cycles-pp.__libc_read
-     15.14 ±  2%      +0.9       16.08 ±  6%  perf-profile.children.cycles-pp.start_thread
-     27.99 ±  6%      -3.7       24.26 ± 11%  perf-profile.self.cycles-pp.poll_idle
-      0.56 ± 20%      -0.3        0.28 ± 24%  perf-profile.self.cycles-pp.switch_mm_irqs_off
-      1.34 ±  5%      -0.3        1.07 ± 11%  perf-profile.self.cycles-pp.menu_select
-      0.24 ± 12%      -0.1        0.18 ±  8%  perf-profile.self.cycles-pp.update_curr
-      0.14 ± 12%      -0.0        0.11 ± 10%  perf-profile.self.cycles-pp.touch_atime
-      0.03 ±127%      +0.1        0.09 ± 24%  perf-profile.self.cycles-pp.copy_page_from_iter
-      0.21 ± 17%      +0.1        0.35 ± 19%  perf-profile.self.cycles-pp.prepare_to_wait_event
-      0.44 ± 20%      +0.2        0.59 ± 13%  perf-profile.self.cycles-pp.pipe_write
-      0.36 ±  6%      +0.2        0.54 ± 12%  perf-profile.self.cycles-pp.mutex_unlock
-      1.42 ±  4%      +0.2        1.60 ±  6%  perf-profile.self.cycles-pp.__entry_text_start
-      1.32 ±  4%      +0.4        1.76 ±  6%  perf-profile.self.cycles-pp.syscall_return_via_sysret
-
-
-
-Disclaimer:
-Results have been estimated based on internal Intel analysis and are provided
-for informational purposes only. Any difference in system hardware or software
-design or configuration may affect actual performance.
-
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+>> -    if (err < 0) {
+>> -        dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL\n");
+>> -        return err;
+>> +    part_num =3D i2c_smbus_read_byte_data(client, NCT3018Y_REG_PART);
+>> +    if (part_num < 0) {
+>> +        dev_dbg(&client->dev, "%s: Failed to read part info reg.\n", __f=
+unc__);
+>> +        return part_num;
+>> +    } else if (part_num & NCT3018Y_REG_PART_NCT3018Y) {
+>> +        flags =3D NCT3018Y_BIT_HF;
+>> +        err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, fla=
+gs);
+>> +        if (err < 0) {
+>> +            dev_dbg(&client->dev, "%s: Unable to write ctrl reg.\n", __f=
+unc__);
+>> +            return err;
+>> +        }
+>>    }
+>>=20
+>>    flags =3D 0;
+>>    err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_ST, flags);
+>>    if (err < 0) {
+>> -        dev_dbg(&client->dev, "%s: write error\n", __func__);
+>> +        dev_dbg(&client->dev, "%s: Failed to clear status reg.\n", __fun=
+c__);
+>>        return err;
+>>    }
+>>=20
+>> @@ -507,7 +547,8 @@ static int nct3018y_probe(struct i2c_client *client)
+>>                        IRQF_ONESHOT | IRQF_TRIGGER_FALLING,
+>>                        "nct3018y", client);
+>>        if (err) {
+>> -            dev_dbg(&client->dev, "unable to request IRQ %d\n", client->=
+irq);
+>> +            dev_dbg(&client->dev, "%s: Unable to request IRQ %d.\n",
+>> +                __func__, client->irq);
+>>            return err;
+>>        }
+>>    } else {
+>> --=20
+>> 2.17.1
+>>=20
+>=20
+> --=20
+> Alexandre Belloni, co-owner and COO, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
