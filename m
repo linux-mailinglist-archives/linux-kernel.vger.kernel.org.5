@@ -2,97 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C84AE794208
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A5979420D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238897AbjIFRa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 13:30:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
+        id S241682AbjIFRbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 13:31:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbjIFRa6 (ORCPT
+        with ESMTP id S230258AbjIFRbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 13:30:58 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AB8A199F;
-        Wed,  6 Sep 2023 10:30:43 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bc8a2f71eeso563955ad.0;
-        Wed, 06 Sep 2023 10:30:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694021442; x=1694626242; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GdFFIRXVw4asO0rRRfkbifUfRAANRxtyam8HgnhO5TU=;
-        b=gcB2dztdNQdLyALSwa6INxCYzinWbZ4hSHEeDTpJh9cjuoPFq8x74Tw/leAv7glvfB
-         Oir9lQ81cgO1pZkW9YPilY1evMKn37AMTV3g7bqC69DVZS9rFSE4pza9T1iIH+6QFg+Y
-         DRizwIgxlUC/etkbR5yyk7YvnhwRXa5B02Rl0j+GLNUPqr/hZW2XOBEtJDcNc49oBshi
-         +VhpT5KZwPXu5HtHQD2Qo6SZjuMsBNmzCiBE/x+sz2rCuCtuN9S7NtGbB/rrDt4A9slY
-         LNc8Qr1Ar7YKuQ2CwhW75bXW+d8P4lXXb8Dtmb1Qpkf7W+VUSFlP5+OCWjGIbKSRu++B
-         ioIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694021442; x=1694626242;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GdFFIRXVw4asO0rRRfkbifUfRAANRxtyam8HgnhO5TU=;
-        b=lXUdy/ez1drViyXZro7+0nQgOgy4n+YONCgLDt4MG/jpArjtw6NWpfMT7vRyIzWIde
-         3NUhLQ1nEe4UwHwvyI9pXyy8D1GTby7vzJh3lhoup+2yZOJdiZdGSpLfPx5AeKXxMhMK
-         fC+xE7JpR0WgJoi/0M7cJBJTzZZMzULdS5sGddfRI8bnXiNPBgbA+UXvhG7blZHUdFbA
-         uvvgknhkUqNo1VXArJlTO5I7k7/Y++Rmuyg5+VJCxbju5GKnE8AvSIcGIntCzNZ02GtZ
-         X5OSy3LHXF1btiR/pVcYudIQKQNzC6KJNb19tdEV9/dZpIARukP5ZdQaXReY/E4uVKHp
-         1C9g==
-X-Gm-Message-State: AOJu0YwaiGWFHPcEThklS8Uchqlfr6uyWulb9TYVGzFwTOWkAkSOqWOO
-        ER+r/AaBku6rMR3RHPouP9c=
-X-Google-Smtp-Source: AGHT+IE2VjplLtclOfxZAuJPA3ldL1BglB9zV3kfKp4UCm8i5PdJ340U5moc50cE7BX5EnMVGdHqYA==
-X-Received: by 2002:a17:90a:7a8f:b0:26c:f871:e6b1 with SMTP id q15-20020a17090a7a8f00b0026cf871e6b1mr12085090pjf.22.1694021442398;
-        Wed, 06 Sep 2023 10:30:42 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t10-20020a17090ad50a00b002682523653asm40955pju.49.2023.09.06.10.30.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 10:30:41 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 6 Sep 2023 10:30:41 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.4 00/32] 6.4.15-rc1 review
-Message-ID: <0bf59003-ec01-47e6-ad61-b0ccb356bf45@roeck-us.net>
-References: <20230904182947.899158313@linuxfoundation.org>
+        Wed, 6 Sep 2023 13:31:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BEA219A0;
+        Wed,  6 Sep 2023 10:31:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694021507; x=1725557507;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=P7Ojj2nkB1I7IVeMxWzMpXw+Jr2i7iyNnkbN3p4MMTs=;
+  b=kFYoNuGYXLu+bwvf1KfBW0CQQqI3Nyvcd/iGNd3q5I5NV6JVbCSdEmDe
+   JcPMdqeqTAEOApzJdMnpyyfVJW16+sxVq076WhZHlvuczIv+RRsZxA8EB
+   kWzplGu0kZ05d+ryGk/9Y+OKfweIpMT2OaPcCGapWs3T6tQnU1p8bneVT
+   VNQvJw4jb/sQJ+lMU/qcC5iSfHQCS2lw7ypvR9Yvu5TXkbjodRq+9damE
+   uFTDLJ3QHXmzGv800U5ua0KUNz7VeWd1vTCAitrlY+HeYDzidedpkGbod
+   mg5+/QcVb87kKTB0lFEKTXJWc6WFzqiDE9pN1WW9hP+58MIk+JiEwFliB
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="441111882"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="441111882"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 10:31:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="741642648"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="741642648"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 06 Sep 2023 10:31:42 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qdwNQ-0000Rh-1F;
+        Wed, 06 Sep 2023 17:31:40 +0000
+Date:   Thu, 7 Sep 2023 01:31:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kartik <kkartik@nvidia.com>, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, sumitg@nvidia.com, arnd@arndb.de,
+        pshete@nvidia.com, andriy.shevchenko@linux.intel.com,
+        digetx@gmail.com, petlozup@nvidia.com, windhl@126.com,
+        frank.li@vivo.com, robh@kernel.org, stefank@nvidia.com,
+        pdeschrijver@nvidia.com, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v2 2/6] soc/tegra: fuse: Add tegra_acpi_init_apbmisc()
+Message-ID: <202309070129.gFw1OFMp-lkp@intel.com>
+References: <20230905125824.2947-3-kkartik@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230904182947.899158313@linuxfoundation.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230905125824.2947-3-kkartik@nvidia.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 07:29:58PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.15 release.
-> There are 32 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 06 Sep 2023 18:29:29 +0000.
-> Anything received after that time might be too late.
-> 
+Hi Kartik,
 
-Build results:
-	total: 157 pass: 157 fail: 0
-Qemu test results:
-	total: 524 pass: 524 fail: 0
+kernel test robot noticed the following build warnings:
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+[auto build test WARNING on tegra/for-next]
+[also build test WARNING on linus/master v6.5 next-20230906]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Guenter
+url:    https://github.com/intel-lab-lkp/linux/commits/Kartik/soc-tegra-fuse-Refactor-resource-mapping/20230906-032546
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git for-next
+patch link:    https://lore.kernel.org/r/20230905125824.2947-3-kkartik%40nvidia.com
+patch subject: [PATCH v2 2/6] soc/tegra: fuse: Add tegra_acpi_init_apbmisc()
+config: arm64-randconfig-r023-20230906 (https://download.01.org/0day-ci/archive/20230907/202309070129.gFw1OFMp-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230907/202309070129.gFw1OFMp-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309070129.gFw1OFMp-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/soc/tegra/fuse/tegra-apbmisc.c:133:36: warning: unused variable 'apbmisc_acpi_match' [-Wunused-const-variable]
+   static const struct acpi_device_id apbmisc_acpi_match[] = {
+                                      ^
+   1 warning generated.
+
+
+vim +/apbmisc_acpi_match +133 drivers/soc/tegra/fuse/tegra-apbmisc.c
+
+   132	
+ > 133	static const struct acpi_device_id apbmisc_acpi_match[] = {
+   134		{ "NVDA2010" },
+   135		{ /* sentinel */ }
+   136	};
+   137	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
