@@ -2,89 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BBD7932ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 02:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40E97932EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 02:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233558AbjIFAh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 20:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55184 "EHLO
+        id S240213AbjIFAjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 20:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230386AbjIFAh4 (ORCPT
+        with ESMTP id S230386AbjIFAjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 20:37:56 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46FB3199
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 17:37:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=peMNFRppx4JKrYCZehA0f8BNK7zNufc5EpwG6akHcdk=; b=TQUpp7IhwXYdQJjOweUnIOkBpU
-        6mT52Ed7GD9MEbwVwuEaD+IZxusqH7ra9OH0ajFjh3O71Mds5teX0bxpZEh+6+VMUbMkCl8wYA804
-        PtiXfLPsBRpfEAddq2o4LkpDbDdQecrQRgddEO4kVFJtSrZwgYmAA8LnqUFXyjBIHXleulj2cveUa
-        SfuSktsHZ9CfTchdsVwbyLCY1fMavS8Z2Bu5pp2ogRBxIy7FiRrhxq8GNCwR8VGjIJdOT/pY0T7Ie
-        diGlbpdaq2vrIRdR2NlFnRJgtk4eDtlVwTLLGfVrZ5BSz4fd7HeneMFtm84FJT07joFtTw0W4M0u1
-        ZlbzLiEg==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qdgYH-006xjZ-0W;
-        Wed, 06 Sep 2023 00:37:49 +0000
-Message-ID: <927e9f62-f273-fb90-2374-e6de2de795a4@infradead.org>
-Date:   Tue, 5 Sep 2023 17:37:47 -0700
+        Tue, 5 Sep 2023 20:39:14 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1428199;
+        Tue,  5 Sep 2023 17:39:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1693960749;
+        bh=9SzOc2eVVFdZBWdYMyl/TtJTI6sHlh7Cr3aC84LwvK4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Sonz4tiWCA2MpfFPa8ZVK2ajt+aCT02sc4BBNulOP2eMqoUhTp2ClZme8CRnsL01K
+         JSz9hsiKpULQ8pkZQnpefZdz7Q0sQVQdnR3qaEOUXoUoXn9JC/XIKSFHPCLm1xXCVY
+         JCCnfIfNrji9iEygBzq2HKeSZWTyhextbhy+PkSiM7wX7WrpcbklxV/Ert8UO/hgyn
+         L/ayNoY4q48AOM5sXYOHK9kVQcq57rWivsBcKu1KFXOthsbJCDrMnW99P9cTR1hPAC
+         CtR3N/iL4Ruc02dNPVOGE0ceZEjsXdgWoWbAwackoQcAkjqzL+5DmlPl6LoMlbbsTF
+         xOd8XFkSBMvUw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RgNmD66xRz4wxR;
+        Wed,  6 Sep 2023 10:39:08 +1000 (AEST)
+Date:   Wed, 6 Sep 2023 10:39:05 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Jinjie Ruan <ruanjinjie@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Luo Jiaxing <luojiaxing@huawei.com>,
+        Xingui Yang <yangxingui@huawei.com>
+Subject: linux-next: manual merge of the scsi-mkp tree with the mm tree
+Message-ID: <20230906103905.0752736e@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] soc: loongson2_pm: add dependency on INPUT
-Content-Language: en-US
-To:     Yinbo Zhu <zhuyinbo@loongson.cn>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org
-Cc:     Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        loongson-kernel@lists.loongnix.cn, Liu Yun <liuyun@loongson.cn>,
-        kernel test robot <lkp@intel.com>
-References: <20230905123629.4510-1-zhuyinbo@loongson.cn>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230905123629.4510-1-zhuyinbo@loongson.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/lVP_cTRtyzol0zOrfSVy7zh";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+--Sig_/lVP_cTRtyzol0zOrfSVy7zh
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 9/5/23 05:36, Yinbo Zhu wrote:
-> This fixes some undefined references to `input_set_capability' and
-> `input_register_device` issue when INPUT is not enabled.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/all/202309030751.pDnTZX4E-lkp@intel.com/
-> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
-> ---
->  drivers/soc/loongson/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/soc/loongson/Kconfig b/drivers/soc/loongson/Kconfig
-> index 314e13bb3e01c..1b57af1e55298 100644
-> --- a/drivers/soc/loongson/Kconfig
-> +++ b/drivers/soc/loongson/Kconfig
-> @@ -20,6 +20,7 @@ config LOONGSON2_GUTS
->  config LOONGSON2_PM
->  	bool "Loongson-2 SoC Power Management Controller Driver"
->  	depends on LOONGARCH && OF
-> +	depends on INPUT
->  	help
->  	  The Loongson-2's power management controller was ACPI, supports ACPI
->  	  S2Idle (Suspend To Idle), ACPI S3 (Suspend To RAM), ACPI S4 (Suspend To
+Hi all,
 
-The preferred patch has already been posted:
+Today's linux-next merge of the scsi-mkp tree got a conflict in:
 
-https://lore.kernel.org/all/16a37f6ad3cc9417b6638c2cd532d88c79468eb1.1693623752.git.zhoubinbin@loongson.cn/
+  drivers/scsi/qla2xxx/qla_dfs.c
 
--- 
-~Randy
+between commit:
+
+  d16e04dc79ed ("scsi: qla2xxx: use DEFINE_SHOW_STORE_ATTRIBUTE() helper fo=
+r debugfs")
+
+from the mm tree and commit:
+
+  d0b0822e32db ("scsi: qla2xxx: Fix NULL vs IS_ERR() bug for debugfs_create=
+_dir()")
+
+from the scsi-mkp tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/scsi/qla2xxx/qla_dfs.c
+index debb14d71e8a,a7a364760b80..000000000000
+--- a/drivers/scsi/qla2xxx/qla_dfs.c
++++ b/drivers/scsi/qla2xxx/qla_dfs.c
+@@@ -662,8 -707,8 +662,8 @@@ create_nodes
+ =20
+  	if (IS_QLA27XX(ha) || IS_QLA83XX(ha) || IS_QLA28XX(ha)) {
+  		ha->tgt.dfs_naqp =3D debugfs_create_file("naqp",
+ -		    0400, ha->dfs_dir, vha, &dfs_naqp_ops);
+ +		    0400, ha->dfs_dir, vha, &qla_dfs_naqp_fops);
+- 		if (!ha->tgt.dfs_naqp) {
++ 		if (IS_ERR(ha->tgt.dfs_naqp)) {
+  			ql_log(ql_log_warn, vha, 0xd011,
+  			       "Unable to create debugFS naqp node.\n");
+  			goto out;
+
+--Sig_/lVP_cTRtyzol0zOrfSVy7zh
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmT3yikACgkQAVBC80lX
+0GxsZQgAnx6GCsy9tsJi2lH2Z+ZqfM7qfnKYNXO3NeVLmJHL9lrI18+9iWZBytFI
+5EFihmCycUETGzcq4zdc2oWhcVUhTaItnH4x8fWp59f3vQ8buvZx2UTM2mdfWMhs
+3kXUd5gmwEtVi0pbRgN6InA6nncJ5OIpGEVKw0IdJJIMMgc2+Vz1G/8bcaTHIjsW
+OxhcCqcsFg1xDvNkI7+P6sLVYRCNX02olClFJ//95jJx8ny5P709UHgU52WSdr33
+zilnOXi5pHynq0bPSpVoVt2xmyz0qRWzUPTDU2YorkWiIPKbmkMZVcBS+dW4fh7w
+OFK8iPco/1kC4yGTLK+z0MqRCfdAyQ==
+=YBQE
+-----END PGP SIGNATURE-----
+
+--Sig_/lVP_cTRtyzol0zOrfSVy7zh--
