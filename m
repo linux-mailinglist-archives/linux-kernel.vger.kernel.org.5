@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2D6794159
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6DB79415B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242990AbjIFQX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 12:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
+        id S243036AbjIFQXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 12:23:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232536AbjIFQX0 (ORCPT
+        with ESMTP id S236226AbjIFQX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 12:23:26 -0400
-Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480B01992;
-        Wed,  6 Sep 2023 09:23:22 -0700 (PDT)
+        Wed, 6 Sep 2023 12:23:29 -0400
+Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1660E19A0;
+        Wed,  6 Sep 2023 09:23:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1694017403;
-  x=1725553403;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1694017404;
+  x=1725553404;
   h=from:date:subject:mime-version:content-transfer-encoding:
    message-id:references:in-reply-to:to:cc;
-  bh=KrG2MZOvGizkIauCc3KWNFT1LrSe5AapyjWhd8HHjzw=;
-  b=nFrXfywm8vIqMf0viZunfjwoaEYf53rY2mYe0TNtZJo6ySVg1yhKRZJH
-   vLqxIXyhdBWb46eT+Ad187J24ZrNXQ9VYyM0Gkkjbn844LAqdiZVZ4SYi
-   i+DX1DVAxlGPAbsegf3bkuFqL1fs4Jcr5ZbgsquAGso9EpvwsRZ4C1Ok2
-   Me3UD2DnfqRKNZ5BDZ2B9/BuXNfP6b6MhExY4fDTqbiQngps5aTjnNKxv
-   yMJCWCjJ2aLobN9EECAZlo0RPcYE1AfNpWlanlkhhLHBzQCLSBQElkc4F
-   tPymOKd5syW+3dDQsOQUp6rBHfh30Ftjb1ob4nuUf+l+solL5w3eOq1Kx
-   A==;
+  bh=aUAwXvtXGHutTByOh+hjaBOyIhjW4Rjz+jAnGbHGoFs=;
+  b=cfxI3GtPDVp6JUpkZk7QHC3h3+dgzaOrHGxdKWNa6BG7DUQue4qh9NQq
+   9WNalcWU6o3qRiAA4Dtnw9ZVjbLKW/WMGTEzO1Yd144tNJ8Tvp4lJrl+k
+   9/hkwI4evOK0DOiDRJ+XJbym6NJmZAuZxaD5gRSDnnvzNsaBz57RgjgQa
+   PaFk6lUiZYBoPHoh4gxE9JcivaEcb+0IleVf8E0QJNYMd5sEUMRcv9hHD
+   M9up2og6Ks0G5J8bAVPxntfVI52U3mchzLNZdcjE1vjN4GGJaNHSKpU44
+   KvOz8rKzEkoHc8tZLWd227pJ/KmeWebna3y04vaVDIs8aL69ioq/flejF
+   g==;
 From:   Stefan x Nilsson <stefan.x.nilsson@axis.com>
-Date:   Wed, 6 Sep 2023 18:22:16 +0200
-Subject: [PATCH 1/2] dt-bindings: display: Add st7735s driver
+Date:   Wed, 6 Sep 2023 18:22:17 +0200
+Subject: [PATCH 2/2] drm: tiny: Add st7735s driver
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20230906-st7735s-v1-1-add92677c190@axis.com>
+Message-ID: <20230906-st7735s-v1-2-add92677c190@axis.com>
 References: <20230906-st7735s-v1-0-add92677c190@axis.com>
 In-Reply-To: <20230906-st7735s-v1-0-add92677c190@axis.com>
 To:     David Lechner <david@lechnology.com>,
@@ -50,127 +50,341 @@ CC:     <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bindings for a driver for Sitronix st7735s display controller, as
-well as for a Winstar wf0096atyaa3dnn0 0.96" 80x160 TFT panel.
+Add a driver for Sitronix st7735s display controller, as well as a
+Winstar wf0096atyaa3dnn0 0.96" 80x160 TFT panel.
+
+The driver code is very similar to st7735r, but with adaptations for
+the pipe_enable function. There is also optional support to specify
+a power regulator for the display.
 
 Signed-off-by: Stefan x Nilsson <stefan.x.nilsson@axis.com>
 ---
- .../bindings/display/sitronix,st7735s.yaml         | 81 ++++++++++++++++++++++
- MAINTAINERS                                        |  6 ++
- 2 files changed, 87 insertions(+)
+ MAINTAINERS                    |   1 +
+ drivers/gpu/drm/tiny/Kconfig   |  14 +++
+ drivers/gpu/drm/tiny/Makefile  |   1 +
+ drivers/gpu/drm/tiny/st7735s.c | 264 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 280 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/sitronix,st7735s.yaml b/Documentation/devicetree/bindings/display/sitronix,st7735s.yaml
-new file mode 100644
-index 000000000000..36234ec22fe2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/sitronix,st7735s.yaml
-@@ -0,0 +1,81 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/sitronix,st7735s.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Sitronix ST7735S Display Panels
-+
-+maintainers:
-+  - Stefan x Nilsson <stefan.x.nilsson@axis.com>
-+
-+description:
-+  This binding is for display panels using a Sitronix ST7735S
-+  controller in SPI mode.
-+
-+allOf:
-+  - $ref: panel/panel-common.yaml#
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - description:
-+          Winstar WF0096ATYAA3DNN0 0.96" 80x160 Color TFT
-+        items:
-+          - enum:
-+              - winstar,wf0096atyaa3dnn0
-+          - const: sitronix,st7735s
-+
-+  dc-gpios:
-+    maxItems: 1
-+    description: Display data/command selection (D/CX)
-+
-+  backlight: true
-+  reg: true
-+  spi-max-frequency: true
-+  reset-gpios: true
-+  rotation: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - dc-gpios
-+
-+additionalProperties: true
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    backlight: backlight {
-+            compatible = "gpio-backlight";
-+            gpios = <&gpio 44 GPIO_ACTIVE_HIGH>;
-+    };
-+
-+    regdisplay: regulatordisplay {
-+            compatible = "regulator-fixed";
-+            regulator-name = "display";
-+            regulator-min-microvolt = <3300000>;
-+            regulator-max-microvolt = <3300000>;
-+            regulator-enable-ramp-delay = <100000>;
-+            enable-active-high;
-+    };
-+
-+    spi {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+
-+            display@0 {
-+                    compatible = "winstar,wf0096atyaa3dnn0","sitronix,st7735s";
-+                    reg = <0>;
-+                    spi-max-frequency = <12000000>;
-+                    dc-gpios = <&gpio 43 GPIO_ACTIVE_HIGH>;
-+                    reset-gpios = <&gpio 23 GPIO_ACTIVE_HIGH>;
-+                    backlight = <&backlight>;
-+                    power-supply = <&regdsiplay>;
-+                    rotation = <270>;
-+            };
-+    };
-+
-+...
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 6308efa121e1..c00b2b9086f2 100644
+index c00b2b9086f2..f24295d691e5 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -6728,6 +6728,12 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	Documentation/devicetree/bindings/display/sitronix,st7735r.yaml
- F:	drivers/gpu/drm/tiny/st7735r.c
+@@ -6733,6 +6733,7 @@ M:	Stefan x Nilsson <stefan.x.nilsson@axis.com>
+ S:	Maintained
+ T:	git git://anongit.freedesktop.org/drm/drm-misc
+ F:	Documentation/devicetree/bindings/display/sitronix,st7735s.yaml
++F:	drivers/gpu/drm/tiny/st7735s.c
  
-+DRM DRIVER FOR SITRONIX ST7735S PANELS
-+M:	Stefan x Nilsson <stefan.x.nilsson@axis.com>
-+S:	Maintained
-+T:	git git://anongit.freedesktop.org/drm/drm-misc
-+F:	Documentation/devicetree/bindings/display/sitronix,st7735s.yaml
-+
  DRM DRIVER FOR SOLOMON SSD130X OLED DISPLAYS
  M:	Javier Martinez Canillas <javierm@redhat.com>
- S:	Maintained
+diff --git a/drivers/gpu/drm/tiny/Kconfig b/drivers/gpu/drm/tiny/Kconfig
+index f6889f649bc1..2917f5412ddd 100644
+--- a/drivers/gpu/drm/tiny/Kconfig
++++ b/drivers/gpu/drm/tiny/Kconfig
+@@ -212,3 +212,17 @@ config TINYDRM_ST7735R
+ 	  * Okaya RH128128T 1.44" 128x128 TFT
+ 
+ 	  If M is selected the module will be called st7735r.
++
++config TINYDRM_ST7735S
++	tristate "DRM support for Sitronix ST7735S display panels"
++	depends on DRM && SPI
++	select DRM_KMS_HELPER
++	select DRM_GEM_DMA_HELPER
++	select DRM_MIPI_DBI
++	select BACKLIGHT_CLASS_DEVICE
++	help
++	  DRM driver for Sitronix ST7735S with one of the following
++	  LCDs:
++	  * Winstar WF0096ATYAA3DNN0 0.96" 80x160 Color TFT
++
++	  If M is selected the module will be called st7735s.
+diff --git a/drivers/gpu/drm/tiny/Makefile b/drivers/gpu/drm/tiny/Makefile
+index 76dde89a044b..2e805c5b6f16 100644
+--- a/drivers/gpu/drm/tiny/Makefile
++++ b/drivers/gpu/drm/tiny/Makefile
+@@ -16,3 +16,4 @@ obj-$(CONFIG_TINYDRM_MI0283QT)		+= mi0283qt.o
+ obj-$(CONFIG_TINYDRM_REPAPER)		+= repaper.o
+ obj-$(CONFIG_TINYDRM_ST7586)		+= st7586.o
+ obj-$(CONFIG_TINYDRM_ST7735R)		+= st7735r.o
++obj-$(CONFIG_TINYDRM_ST7735S)		+= st7735s.o
+diff --git a/drivers/gpu/drm/tiny/st7735s.c b/drivers/gpu/drm/tiny/st7735s.c
+new file mode 100644
+index 000000000000..42290f4128db
+--- /dev/null
++++ b/drivers/gpu/drm/tiny/st7735s.c
+@@ -0,0 +1,264 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * DRM driver for display panels connected to a Sitronix ST7735S
++ * display controller in SPI mode.
++ *
++ * Copyright (C) 2023 Axis Communications AB
++ */
++
++#include <linux/backlight.h>
++#include <linux/delay.h>
++#include <linux/dma-buf.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/property.h>
++#include <linux/spi/spi.h>
++#include <video/mipi_display.h>
++
++#include <drm/drm_atomic_helper.h>
++#include <drm/drm_drv.h>
++#include <drm/drm_fbdev_generic.h>
++#include <drm/drm_gem_atomic_helper.h>
++#include <drm/drm_gem_dma_helper.h>
++#include <drm/drm_managed.h>
++#include <drm/drm_mipi_dbi.h>
++
++#define ST7735S_FRMCTR1		0xb1
++#define ST7735S_FRMCTR2		0xb2
++#define ST7735S_FRMCTR3		0xb3
++#define ST7735S_INVCTR		0xb4
++#define ST7735S_PWCTR1		0xc0
++#define ST7735S_PWCTR2		0xc1
++#define ST7735S_PWCTR3		0xc2
++#define ST7735S_PWCTR4		0xc3
++#define ST7735S_PWCTR5		0xc4
++#define ST7735S_VMCTR1		0xc5
++#define ST7735S_GAMCTRP1	0xe0
++#define ST7735S_GAMCTRN1	0xe1
++
++#define ST7735S_MY	BIT(7)
++#define ST7735S_MX	BIT(6)
++#define ST7735S_MV	BIT(5)
++#define ST7735S_RGB	BIT(3)
++
++struct st7735s_cfg {
++	const struct drm_display_mode mode;
++	unsigned int left_offset;
++	unsigned int top_offset;
++	unsigned int write_only:1;
++	unsigned int rgb:1;		/* RGB (vs. BGR) */
++};
++
++struct st7735s_priv {
++	struct mipi_dbi_dev dbidev;	/* Must be first for .release() */
++	const struct st7735s_cfg *cfg;
++};
++
++static void st7735s_pipe_enable(struct drm_simple_display_pipe *pipe,
++				struct drm_crtc_state *crtc_state,
++				struct drm_plane_state *plane_state)
++{
++	struct mipi_dbi_dev *dbidev = drm_to_mipi_dbi_dev(pipe->crtc.dev);
++	struct st7735s_priv *priv = container_of(dbidev, struct st7735s_priv,
++						 dbidev);
++	struct mipi_dbi *dbi = &dbidev->dbi;
++	int ret, idx;
++	u8 addr_mode;
++
++	if (!drm_dev_enter(pipe->crtc.dev, &idx))
++		return;
++
++	DRM_DEBUG_KMS("\n");
++
++	ret = mipi_dbi_poweron_reset(dbidev);
++	if (ret)
++		goto out_exit;
++
++	mipi_dbi_command(dbi, MIPI_DCS_EXIT_SLEEP_MODE);
++	msleep(120);
++	mipi_dbi_command(dbi, MIPI_DCS_SET_DISPLAY_OFF);
++
++	mipi_dbi_command(dbi, ST7735S_FRMCTR1, 0x05, 0x3c, 0x3c);
++	mipi_dbi_command(dbi, ST7735S_FRMCTR2, 0x05, 0x3c, 0x3c);
++	mipi_dbi_command(dbi, ST7735S_FRMCTR3, 0x05, 0x3c, 0x3c, 0x05, 0x3c, 0x3c);
++	mipi_dbi_command(dbi, ST7735S_INVCTR, 0x07);
++	mipi_dbi_command(dbi, ST7735S_PWCTR1, 0xe9, 0x09, 0x04);
++	mipi_dbi_command(dbi, ST7735S_PWCTR2, 0xc5);
++	mipi_dbi_command(dbi, ST7735S_PWCTR3, 0x0d, 0x00);
++	mipi_dbi_command(dbi, ST7735S_PWCTR4, 0x8d, 0x6a);
++	mipi_dbi_command(dbi, ST7735S_PWCTR5, 0x8a, 0xee);
++	mipi_dbi_command(dbi, ST7735S_VMCTR1, 0x15);
++	mipi_dbi_command(dbi, MIPI_DCS_ENTER_INVERT_MODE);
++	/* Enable gate power save mode */
++	mipi_dbi_command(dbi, 0xFC, 0xC0);
++	switch (dbidev->rotation) {
++	default:
++		addr_mode = ST7735S_MX | ST7735S_MY;
++		break;
++	case 90:
++		addr_mode = ST7735S_MX | ST7735S_MV;
++		break;
++	case 180:
++		addr_mode = 0;
++		break;
++	case 270:
++		addr_mode = ST7735S_MY | ST7735S_MV;
++		break;
++	}
++
++	if (priv->cfg->rgb)
++		addr_mode |= ST7735S_RGB;
++
++	mipi_dbi_command(dbi, MIPI_DCS_SET_ADDRESS_MODE, addr_mode);
++	mipi_dbi_command(dbi, MIPI_DCS_SET_PIXEL_FORMAT,
++			 MIPI_DCS_PIXEL_FMT_16BIT);
++	mipi_dbi_command(dbi, MIPI_DCS_SET_COLUMN_ADDRESS, 0x00, 0x01, 0x00, 0xa0);
++	mipi_dbi_command(dbi, MIPI_DCS_SET_PAGE_ADDRESS, 0x00, 0x1a, 0x00, 0x69);
++	mipi_dbi_command(dbi, ST7735S_GAMCTRP1, 0x07, 0x0e, 0x08, 0x07, 0x10,
++			 0x07, 0x02, 0x07, 0x09, 0x0f, 0x25, 0x36, 0x00, 0x08,
++			 0x04, 0x10);
++	mipi_dbi_command(dbi, ST7735S_GAMCTRN1, 0x0a, 0x0d, 0x08, 0x07, 0x0f,
++			 0x07, 0x02, 0x07, 0x09, 0x0f, 0x25, 0x35, 0x00, 0x09,
++			 0x04, 0x10);
++	mipi_dbi_command(dbi, MIPI_DCS_SET_DISPLAY_ON);
++
++	mipi_dbi_enable_flush(dbidev, crtc_state, plane_state);
++out_exit:
++	drm_dev_exit(idx);
++}
++
++static const struct drm_simple_display_pipe_funcs st7735s_pipe_funcs = {
++	DRM_MIPI_DBI_SIMPLE_DISPLAY_PIPE_FUNCS(st7735s_pipe_enable),
++};
++
++static const struct st7735s_cfg wf0096atyaa3dnn0_cfg = {
++	.mode		= { DRM_SIMPLE_MODE(80, 160, 11, 22) },
++	.left_offset	= 1,
++	.top_offset	= 26,
++	.write_only	= true,
++	.rgb		= true,
++};
++
++DEFINE_DRM_GEM_DMA_FOPS(st7735s_fops);
++
++static const struct drm_driver st7735s_driver = {
++	.driver_features	= DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
++	.fops			= &st7735s_fops,
++	DRM_GEM_DMA_DRIVER_OPS_VMAP,
++	.debugfs_init		= mipi_dbi_debugfs_init,
++	.name			= "st7735s",
++	.desc			= "Sitronix ST7735S",
++	.date			= "20230825",
++	.major			= 1,
++	.minor			= 0,
++};
++
++static const struct of_device_id st7735s_of_match[] = {
++	{ .compatible = "winstar,wf0096atyaa3dnn0", .data = &wf0096atyaa3dnn0_cfg },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, st7735s_of_match);
++
++static const struct spi_device_id st7735s_id[] = {
++	{ "wf0096atyaa3dnn0", (uintptr_t)&wf0096atyaa3dnn0_cfg },
++	{ },
++};
++MODULE_DEVICE_TABLE(spi, st7735s_id);
++
++static int st7735s_probe(struct spi_device *spi)
++{
++	struct device *dev = &spi->dev;
++	const struct st7735s_cfg *cfg;
++	struct mipi_dbi_dev *dbidev;
++	struct st7735s_priv *priv;
++	struct drm_device *drm;
++	struct mipi_dbi *dbi;
++	struct gpio_desc *dc;
++	u32 rotation = 0;
++	int ret;
++
++	cfg = device_get_match_data(&spi->dev);
++	if (!cfg)
++		cfg = (void *)spi_get_device_id(spi)->driver_data;
++
++	priv = devm_drm_dev_alloc(dev, &st7735s_driver,
++				  struct st7735s_priv, dbidev.drm);
++	if (IS_ERR(priv))
++		return PTR_ERR(priv);
++
++	dbidev = &priv->dbidev;
++	priv->cfg = cfg;
++
++	dbi = &dbidev->dbi;
++	drm = &dbidev->drm;
++
++	dbi->reset = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
++	if (IS_ERR(dbi->reset))
++		return dev_err_probe(dev, PTR_ERR(dbi->reset), "Failed to get GPIO 'reset'\n");
++
++	dc = devm_gpiod_get(dev, "dc", GPIOD_OUT_LOW);
++	if (IS_ERR(dc))
++		return dev_err_probe(dev, PTR_ERR(dc), "Failed to get GPIO 'dc'\n");
++
++	dbidev->backlight = devm_of_find_backlight(dev);
++	if (IS_ERR(dbidev->backlight))
++		return PTR_ERR(dbidev->backlight);
++
++	dbidev->regulator = devm_regulator_get(dev, "power");
++	device_property_read_u32(dev, "rotation", &rotation);
++
++	ret = mipi_dbi_spi_init(spi, dbi, dc);
++	if (ret)
++		return ret;
++
++	if (cfg->write_only)
++		dbi->read_commands = NULL;
++
++	dbidev->left_offset = cfg->left_offset;
++	dbidev->top_offset = cfg->top_offset;
++
++	ret = mipi_dbi_dev_init(dbidev, &st7735s_pipe_funcs, &cfg->mode,
++				rotation);
++	if (ret)
++		return ret;
++
++	drm_mode_config_reset(drm);
++
++	ret = drm_dev_register(drm, 0);
++	if (ret)
++		return ret;
++
++	spi_set_drvdata(spi, drm);
++
++	drm_fbdev_generic_setup(drm, 0);
++
++	return 0;
++}
++
++static void st7735s_remove(struct spi_device *spi)
++{
++	struct drm_device *drm = spi_get_drvdata(spi);
++
++	drm_dev_unplug(drm);
++	drm_atomic_helper_shutdown(drm);
++}
++
++static void st7735s_shutdown(struct spi_device *spi)
++{
++	drm_atomic_helper_shutdown(spi_get_drvdata(spi));
++}
++
++static struct spi_driver st7735s_spi_driver = {
++	.driver = {
++		.name = "st7735s",
++		.of_match_table = st7735s_of_match,
++	},
++	.id_table = st7735s_id,
++	.probe = st7735s_probe,
++	.remove = st7735s_remove,
++	.shutdown = st7735s_shutdown,
++};
++module_spi_driver(st7735s_spi_driver);
++
++MODULE_DESCRIPTION("Sitronix ST7735S DRM driver");
++MODULE_LICENSE("GPL");
 
 -- 
 2.30.2
