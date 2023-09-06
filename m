@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C56E4793FDC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE24793FDF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242283AbjIFPDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 11:03:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55092 "EHLO
+        id S242317AbjIFPDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 11:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242286AbjIFPDh (ORCPT
+        with ESMTP id S242286AbjIFPDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 11:03:37 -0400
+        Wed, 6 Sep 2023 11:03:43 -0400
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D598D173F;
-        Wed,  6 Sep 2023 08:03:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABF1172E;
+        Wed,  6 Sep 2023 08:03:34 -0700 (PDT)
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 349A332009B4;
-        Wed,  6 Sep 2023 11:03:30 -0400 (EDT)
+        by mailout.west.internal (Postfix) with ESMTP id 45E1632009C5;
+        Wed,  6 Sep 2023 11:03:33 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 06 Sep 2023 11:03:31 -0400
+  by compute2.internal (MEProxy); Wed, 06 Sep 2023 11:03:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
         :cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1694012609; x=1694099009; bh=xs9KL3ri9aVI+oSz6c/wzHeHoEyYgueyVep
-        lOsiSZNc=; b=nB5E8Nf0GD6htUo2aB4p6yasTdnEGokEuYUgdnPHevyRvD+KCkp
-        N0NbHMsERPS0fbnw8fRvJTxRO/oZy+uwVXCoffh9/V7DiL/YooG3rI0Iknk3UMlJ
-        Jn1ve3i+kfepifLG2+YMczZwP6hYfkuGGYTsrR0dpH4D5g8szHurVlMglHfAE2Nw
-        vz1IzDq3LMsH1l55+342ENlb4iViNA/l0F+QL6Rbl89rGSqZ300iQNin1uwY7gt/
-        ShQLkG2HN5NinkY4VpN9pAV5FeovYMZpgxGbs3toTEwWrAR5y9QaPsvgy1U8LWFb
-        qO/7bGq0wnYGjE0CCMb7jopJc7eF4iDZFcg==
+        1694012612; x=1694099012; bh=cqtMZEUvBe54JghNmYIOYKwpXMmZI+q66Bi
+        2kSF9BAQ=; b=pCUlhr0PqKkKxrLg6/MAEej8PHN+UaXMGYaUKHfsyEqZii72vIv
+        gF0fdzEG7vtIqYpsYif27qqiciuJZzSDA7T2n7kmrF6jYoO4IbIeU7tWfi44QyhO
+        oA/2yQBIU24n81ylhfY2Uwg+ko+lEw4sQWOCQjHJ9bQUtylPhYkxswK9Bom7G2Mr
+        steSMIHZpymEEv6tObZHSSMoWMvHdbCz41mA0Jup92qZz7oNa9OwMRQb1pGmrd+e
+        Pq+xtKcSl10jploMADZBMHSKRZUhEfTTqWDrOX0BmF1lf8LFc96vYrrnLrmYX5t8
+        E4WBACH3Il/bRFeSCRzmP6v2BwcvEP3khfA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:reply-to:sender:subject:subject:to:to:x-me-proxy
         :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1694012609; x=1694099009; bh=xs9KL3ri9aVI+oSz6c/wzHeHoEyYgueyVep
-        lOsiSZNc=; b=aXvL/qIcbNerg/966+RIQLQ9nA/n3Ukd8U5WJbdEZm6vwrid1Nl
-        FToc5Hnw1VWFaeKCb28wiRh22eYTgChPUcq5gTy0V3uFckWRe0XFyWiEaKb3hY04
-        FmxX+uynciVOqI0kMOawAYg6aIixIR+f8SG+pm2y4bVKCGg2LH7EWEcCwjb70KrL
-        sSKzqUBRL3lHL9o1axhL//JzYLylnNFw01HA0j6z4X99CVue7pEU0eb3sZljwrLL
-        ppvdSfotAlWLaaIfOoV5XrwkTZjHG9h9sjbFVc2o2fmSMmfWDSStdRHuPTsauNkF
-        1KBmC7grgN1XHuIw3GKVQxVxPoWthxoO9dQ==
-X-ME-Sender: <xms:wJT4ZBDvnMmA-k7gLbL54g0Tvazm_rERi74HdidQ00VVITUkEVUB_w>
-    <xme:wJT4ZPhFUGFKBlivCh48PnIWvLMLXm_QTcWPoHx6p2FaXEHBWZVpEqOs-5alI0Ipv
-    tKmpo4QyLpmDOc44g>
-X-ME-Received: <xmr:wJT4ZMnyChaMMjizGmEr8tqKtPik9_d7Hq-NPcWIvoxT76dwfXMimTTd-t0qYigMT1NuCa5uA4dOk4ISzYrFRmntPqoVr7_jGzNnbIsYD-DZCDQPxw7B5VTG>
+        1694012612; x=1694099012; bh=cqtMZEUvBe54JghNmYIOYKwpXMmZI+q66Bi
+        2kSF9BAQ=; b=qhSDgtanx+0+pDt3JTxcMZmdRwzhQPSAjuqOLwGGTNZLjO57/tf
+        WGxNmarVSk8cnsbHZlErQ7AvWs2JK+xMUdbld8zXeqCu65S8QwCeJJqVqP/IhCUq
+        0WNVFsMVBLnF6psCkT7qZofRZcAkaE5qJv26bJEze+db608cOoTam68AgTDzY6Ja
+        MG8x2WjkNaBlVIlLdGckGofLL7kZE6aycGsmA4peiiHgBE+rRCWAz8iVyHrGCTsP
+        gq77YUMS8WGl7Lk6Cc1YrtApBiTV5XK51y9CbUQil26cyUNceJyZbXLByzlLabGa
+        RgOL68x+vSiMAhQHz/oTn6PUSsVILwOLfIQ==
+X-ME-Sender: <xms:xJT4ZBY71GYStdWBRlHBWO-8i0BJOfsKezrAoojoilZT3JbZHdZHIA>
+    <xme:xJT4ZIYIsUlHfjVq_76WSWr2d0IpCy2mzHjjpdrXPqzAF7v6l1L7bid9gvr1JkpuP
+    u-nPYc8wAagF12-wA>
+X-ME-Received: <xmr:xJT4ZD9d8XStu7PVDDBlDXsQZ9ioFJU1K8m5pn445Wvyayqnfft0I7O8Bw97W2UURbc5gIkMeLYSNmtzAM6geey8Rr0QqqA8KOpMy6o6NHagv9uzqpR6Olro>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehfedgkeefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     goufhorhhtvggutfgvtghiphdvucdlgedtmdenucfjughrpefhvfevufffkffojghfrhgg
     gfestdhqredtredttdenucfhrhhomhepkghiucgjrghnuceoiihirdihrghnsehsvghnth
     drtghomheqnecuggftrfgrthhtvghrnhepgeeghedugfduuddvleehheetgeeltdetieev
-    uefhffevkefhveeufeeiieejgedvnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrg
+    uefhffevkefhveeufeeiieejgedvnecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrg
     hmpehmrghilhhfrhhomhepiihirdihrghnsehsvghnthdrtghomh
-X-ME-Proxy: <xmx:wJT4ZLxh-Zy5_1B-OGM3Qx3CZLLOIARl3Ud5IERV8uX0LCbMcwS3LA>
-    <xmx:wJT4ZGRJkUHOo6BctyPnMa7uyVYUagVzdVXI2wiEEWVfvFztgNw5qg>
-    <xmx:wJT4ZOaz4lMA5hXBB-3sVAJEBCRpsXNQjQm0mmf6UFXprXM8B_lgmw>
-    <xmx:wZT4ZCaMxRSZJ0pt2cWJJMqWN3qoIHUH-Lo2bSrYs6iOCroNzUH6-Q>
+X-ME-Proxy: <xmx:xJT4ZPq5goF-CykdXQPaV9zgOdARNtQnkAbZJ4TiPtc5vlnpqGv1cA>
+    <xmx:xJT4ZMqPexIDgACBGKgrXcfwrt8-edSVRaz2HO3Sg-bgMseJ5Tk-eQ>
+    <xmx:xJT4ZFRR6hw0k6MxacvO32sny1-63PgvqFcYcrafGEiwPEjCt_LSKA>
+    <xmx:xJT4ZBRhx8TOEi-R15o7nAvxjH1il-in8fUP3uTahPeThzVg2EWWkg>
 Feedback-ID: iccd040f4:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 6 Sep 2023 11:03:28 -0400 (EDT)
+ 6 Sep 2023 11:03:31 -0400 (EDT)
 From:   Zi Yan <zi.yan@sent.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org
@@ -74,9 +74,9 @@ Cc:     Zi Yan <ziy@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
         Muchun Song <muchun.song@linux.dev>,
         "Mike Rapoport (IBM)" <rppt@kernel.org>, stable@vger.kernel.org,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2 3/5] mm/memory_hotplug: use nth_page() in place of direct struct page manipulation.
-Date:   Wed,  6 Sep 2023 11:03:07 -0400
-Message-Id: <20230906150309.114360-4-zi.yan@sent.com>
+Subject: [PATCH v2 4/5] fs: use nth_page() in place of direct struct page manipulation.
+Date:   Wed,  6 Sep 2023 11:03:08 -0400
+Message-Id: <20230906150309.114360-5-zi.yan@sent.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230906150309.114360-1-zi.yan@sent.com>
 References: <20230906150309.114360-1-zi.yan@sent.com>
@@ -94,34 +94,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zi Yan <ziy@nvidia.com>
 
-When dealing with hugetlb pages, manipulating struct page pointers
-directly can get to wrong struct page, since struct page is not guaranteed
-to be contiguous on SPARSEMEM without VMEMMAP. Use nth_page() to handle
-it properly.
+When dealing with hugetlb pages, struct page is not guaranteed to be
+contiguous on SPARSEMEM without VMEMMAP. Use nth_page() to handle it
+properly.
 
-Fixes: eeb0efd071d8 ("mm,memory_hotplug: fix scan_movable_pages() for gigan=
-tic hugepages")
+Fixes: 38c1ddbde6c6 ("hugetlbfs: improve read HWPOISON hugepage")
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Zi Yan <ziy@nvidia.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 ---
- mm/memory_hotplug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/hugetlbfs/inode.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 1b03f4ec6fd2..3b301c4023ff 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1689,7 +1689,7 @@ static int scan_movable_pages(unsigned long start, un=
-signed long end,
- 		 */
- 		if (HPageMigratable(head))
- 			goto found;
--		skip =3D compound_nr(head) - (page - head);
-+		skip =3D compound_nr(head) - (pfn - page_to_pfn(head));
- 		pfn +=3D skip - 1;
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index 316c4cebd3f3..60fce26ff937 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -295,7 +295,7 @@ static size_t adjust_range_hwpoison(struct page *page, =
+size_t offset, size_t byt
+ 	size_t res =3D 0;
+=20
+ 	/* First subpage to start the loop. */
+-	page +=3D offset / PAGE_SIZE;
++	page =3D nth_page(page, offset / PAGE_SIZE);
+ 	offset %=3D PAGE_SIZE;
+ 	while (1) {
+ 		if (is_raw_hwpoison_page_in_hugepage(page))
+@@ -309,7 +309,7 @@ static size_t adjust_range_hwpoison(struct page *page, =
+size_t offset, size_t byt
+ 			break;
+ 		offset +=3D n;
+ 		if (offset =3D=3D PAGE_SIZE) {
+-			page++;
++			page =3D nth_page(page, 1);
+ 			offset =3D 0;
+ 		}
  	}
- 	return -ENOENT;
 --=20
 2.40.1
 
