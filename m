@@ -2,159 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 669E57946D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 01:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F1F796741
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 01:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238024AbjIFXKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 19:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45070 "EHLO
+        id S244366AbjIFXUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 19:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232142AbjIFXKS (ORCPT
+        with ESMTP id S233803AbjIFXUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 19:10:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C2819AE;
-        Wed,  6 Sep 2023 16:10:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694041814; x=1725577814;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fEw9pa/NdSdFIzoYPpsMEnIibMq4wIaQI1Ds5infKOM=;
-  b=E5rzABPYSUURtvuKavD2wZ4b1H84KsKUutiZMZiJe3II2r483z5XAlGM
-   7WHQIbxwevRaRyqlCp80h4pDIM60/dacXQI+UjnARlHePz1q9tF6g0EAR
-   pduio5XivamZs0wulZBJHPrCMmnLa8RpkaNgiORxFJ0A9TSdeQX0JF6g1
-   zZFRMS/JovbQH74h/JWerVXby5VYq8Px9cQOroyK9KIC6R3iYHXZBBPGw
-   hhz7L0hk5WfLgJKuTX6QhqPpAM4nFRF+EKfxp9XnTQEzzfE5JhIWGsiPS
-   NKy0ghWtHHpi49rkPSfHDbbWd2zz8jicA8icHZ34e1zOeto4WCcMoNCWi
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="408215572"
-X-IronPort-AV: E=Sophos;i="6.02,233,1688454000"; 
-   d="scan'208";a="408215572"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 16:10:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="744866586"
-X-IronPort-AV: E=Sophos;i="6.02,233,1688454000"; 
-   d="scan'208";a="744866586"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 06 Sep 2023 16:10:09 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qe1ew-0000gB-2m;
-        Wed, 06 Sep 2023 23:10:06 +0000
-Date:   Thu, 7 Sep 2023 07:09:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Andryuk <jandryuk@gmail.com>,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Roger Pau Monne <roger.pau@citrix.com>,
-        stable@vger.kernel.org, Jason Andryuk <jandryuk@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v2] acpi/processor: sanitize _PDC buffer bits when
- running as Xen dom0
-Message-ID: <202309070625.dJUDcGZg-lkp@intel.com>
-References: <20230906182125.48642-1-jandryuk@gmail.com>
+        Wed, 6 Sep 2023 19:20:41 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C3F173B;
+        Wed,  6 Sep 2023 16:20:37 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7D9881FD7B;
+        Wed,  6 Sep 2023 23:20:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694042435;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cgodE4ydDVlHm5Hs6I7NhySZqPHst/TeqSQFj1Ju8nE=;
+        b=Kq8LNuaY3Oy90JFbmYjlqaNWUn5+g3XXdtPF2zYYYkmKdX33XBaBATt4CCeh/9dswZapgl
+        5IWbjbmKXF1WZH/DkkK1x4hbzERML+QlID162osX9X2ZsTDXUxxCUOiTp84BQ4hzX30H6c
+        4fUbABxOQXP5xKBLCxRljYdrEekgQiM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694042435;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cgodE4ydDVlHm5Hs6I7NhySZqPHst/TeqSQFj1Ju8nE=;
+        b=g2uipkudF7rb0SEqoXrhLINDvxVMCEMIvZ/eQT593Hw/xMbemjrhAFe4LWRFkUKS4vdoKQ
+        aQRiOel/rWitVODQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 514921346C;
+        Wed,  6 Sep 2023 23:20:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id FDO8EkMJ+WR+MgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 06 Sep 2023 23:20:35 +0000
+Date:   Thu, 7 Sep 2023 01:13:54 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org
+Subject: Re: [GIT PULL] bcachefs
+Message-ID: <20230906231354.GX14420@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
+ <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
+ <CAHk-=whaiVhuO7W1tb8Yb-CuUHWn7bBnJ3bM7bvcQiEQwv_WrQ@mail.gmail.com>
+ <CAHk-=wi6EAPRzYttb+qnZJuzinUnH9xXy-a1Y5kvx5Qs=6xDew@mail.gmail.com>
+ <ZPj1WuwKKnvVEZnl@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230906182125.48642-1-jandryuk@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZPj1WuwKKnvVEZnl@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+On Wed, Sep 06, 2023 at 06:55:38PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Sep 06, 2023 at 01:20:59PM -0700, Linus Torvalds escreveu:
+> > On Wed, 6 Sept 2023 at 13:02, Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > > And guess what happens when you have (unsigned char)-1? It does *not*
+> > > cast back to -1.
+> > 
+> > Side note: again, this may be one of those "it works in practice",
+> > because if we have -fshort-enums, I think 'enum
+> > btree_node_locked_type' in turn ends up being represented as a 'signed
+> > char', because that's the smallest simple type that can fit all those
+> > values.
+>  
+> > I don't think gcc ever uses less than that (ie while a six_lock_type
+> > could fit in two bits, it's still going to be considered at least a
+> > 8-bit value in practice).
+> 
+> There are some cases where people stuff the enum into a bitfield, but
+> no, no simple type.
+> 
+> ⬢[acme@toolbox perf-tools-next]$ pahole | grep -w enum | grep :
+> 	enum btrfs_rsv_type        type:8;               /*    28:16  4 */
+> 	enum btrfs_delayed_item_type type:8;             /*   100: 0  4 */
 
-kernel test robot noticed the following build errors:
+The simple grep might give a skewed view, in the above case there's also
 
-[auto build test ERROR on tip/x86/core]
-[also build test ERROR on v6.5]
-[cannot apply to rafael-pm/linux-next linus/master next-20230906]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+/* Bitfield combined with previous fields */
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jason-Andryuk/acpi-processor-sanitize-_PDC-buffer-bits-when-running-as-Xen-dom0/20230907-022235
-base:   tip/x86/core
-patch link:    https://lore.kernel.org/r/20230906182125.48642-1-jandryuk%40gmail.com
-patch subject: [PATCH v2] acpi/processor: sanitize _PDC buffer bits when running as Xen dom0
-config: x86_64-randconfig-r011-20230907 (https://download.01.org/0day-ci/archive/20230907/202309070625.dJUDcGZg-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230907/202309070625.dJUDcGZg-lkp@intel.com/reproduce)
+in the full output, with adjacent bool struct members it's all packed
+into one int. I think I've always seen an int for enums, unless it was
+explicitly narrowed in the structure (:8) or by __packed attribute in
+the enum definition.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309070625.dJUDcGZg-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/acpi/processor_pdc.c: In function 'acpi_processor_eval_pdc':
->> drivers/acpi/processor_pdc.c:147:17: error: implicit declaration of function 'xen_sanitize_pdc' [-Werror=implicit-function-declaration]
-     147 |                 xen_sanitize_pdc(buffer);
-         |                 ^~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/xen_sanitize_pdc +147 drivers/acpi/processor_pdc.c
-
-   116	
-   117	/*
-   118	 * _PDC is required for a BIOS-OS handshake for most of the newer
-   119	 * ACPI processor features.
-   120	 */
-   121	static acpi_status
-   122	acpi_processor_eval_pdc(acpi_handle handle, struct acpi_object_list *pdc_in)
-   123	{
-   124		acpi_status status = AE_OK;
-   125		union acpi_object *obj;
-   126		u32 *buffer = NULL;
-   127	
-   128		obj = pdc_in->pointer;
-   129		buffer = (u32 *)(obj->buffer.pointer);
-   130	
-   131		if (boot_option_idle_override == IDLE_NOMWAIT) {
-   132			/*
-   133			 * If mwait is disabled for CPU C-states, the C2C3_FFH access
-   134			 * mode will be disabled in the parameter of _PDC object.
-   135			 * Of course C1_FFH access mode will also be disabled.
-   136			 */
-   137			buffer[2] &= ~(ACPI_PDC_C_C2C3_FFH | ACPI_PDC_C_C1_FFH);
-   138		}
-   139	
-   140		if (xen_initial_domain()) {
-   141			/*
-   142			 * When Linux is running as Xen dom0, the hypervisor is the
-   143			 * entity in charge of the processor power management, and so
-   144			 * Xen needs to check the OS capabilities reported in the _PDC
-   145			 * buffer matches what the hypervisor driver supports.
-   146			 */
- > 147			xen_sanitize_pdc(buffer);
-   148		}
-   149	
-   150		status = acpi_evaluate_object(handle, "_PDC", pdc_in, NULL);
-   151	
-   152		if (ACPI_FAILURE(status))
-   153			acpi_handle_debug(handle,
-   154			    "Could not evaluate _PDC, using legacy perf control\n");
-   155	
-   156		return status;
-   157	}
-   158	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 	enum kernel_pkey_operation op:8;                 /*    40: 0  4 */
+> 	enum integrity_status      ima_file_status:4;    /*    96: 0  4 */
+> 	enum integrity_status      ima_mmap_status:4;    /*    96: 4  4 */
+> 	enum integrity_status      ima_bprm_status:4;    /*    96: 8  4 */
+> 	enum integrity_status      ima_read_status:4;    /*    96:12  4 */
+> 	enum integrity_status      ima_creds_status:4;   /*    96:16  4 */
+> 	enum integrity_status      evm_status:4;         /*    96:20  4 */
+> 	enum fs_context_purpose    purpose:8;            /*   152: 0  4 */
+> 	enum fs_context_phase      phase:8;              /*   152: 8  4 */
+> 	enum fs_value_type         type:8;               /*     8: 0  4 */
+> 	enum sgx_page_type         type:16;              /*     8: 8  4 */
+> 	enum nf_hook_ops_type      hook_ops_type:8;      /*    24: 8  4 */
+> 		enum resctrl_event_id evtid:8;         /*     0:10  4 */
+> 		enum _cache_type   type:5;             /*     0: 0  4 */
