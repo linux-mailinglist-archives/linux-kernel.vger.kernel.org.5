@@ -2,78 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9C979386F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E77793874
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237248AbjIFJit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 05:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
+        id S237366AbjIFJjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 05:39:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236943AbjIFJir (ORCPT
+        with ESMTP id S229938AbjIFJjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 05:38:47 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C9C10F8
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 02:38:44 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52e64bc7c10so2570759a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 02:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693993122; x=1694597922; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VHg/PnZPAmHNCn9sgOYr+tYtY1Bqd8zviST80lc2aw4=;
-        b=r9XJ49dlJG192gaIxnY628pDp9it358verdz1sqfGt4eZHs0FaSVtcp30u9vvBgbRG
-         N5rIO968zNk8ej8kE4sj/TVhkHr6+s/NAkxFuIi/bT86HA3bdyu+dZy8rFbHhyBEUtWK
-         kLOcreQAHdBgjKv9Y1NJ48Kj5KR04IbzYViddrXpNpZvGXoBRqJUN1RsGULDYPs2EDbl
-         krM5KGrxpNNejfNxEQ8wr9F3ScYNNDpOkCBN83TP64ExadffvJEW7DElL7YrfQLJ4cwv
-         Dwokfh8q5R/Y7dyojDAUZh8bTJ7lTxNPo5N2p/ZhMC2LLutnGZmGw4iOPGgpkp3KIqSS
-         eOew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693993122; x=1694597922;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VHg/PnZPAmHNCn9sgOYr+tYtY1Bqd8zviST80lc2aw4=;
-        b=W/Rv/9kf5K3AIkV8NYsSS8LwAYo9GzRXzkx+S4DmEnHHNRTw8nX86MFoh2+om5U14b
-         Y1wCBVb6951j2SKMEEwJ1gFZ9rzWzCW3vfp0NLuV94s91o9ygEfrQQL4JzjPztv6iezY
-         RhLAguQu4SQnXj0Ae59gyV9yff/qFPH3l9so3nSUW64JNjsPVJWqLDxE+zdJO/cigzak
-         57+f4ItKoNY5X/Kbo+hJMKZJTWLMhOg1EcUDlw8WtTeBhcB7Z2vQHtBRqlGTini/x5Ds
-         Vzl/LeCuD97qI4WjLSRV859R7QAFt+GOKVJr1dL338IWhBqaVswSKOYC8JEJ9bhAT7s3
-         B1sQ==
-X-Gm-Message-State: AOJu0YyZOTs/ni6Oq4J5tRG+Q5VcinP98xoe04XR4o4VbaNMKXDCOni+
-        sTzphpubkR4uYxTdIU8IS2v37w==
-X-Google-Smtp-Source: AGHT+IEwkq2sY4g0DPxicF7yqTjk6DEJ2KGo5cVCVztNdl+qSYXNw4B9GRl4qit7TtYJmTRtKVKrEw==
-X-Received: by 2002:aa7:d402:0:b0:521:e502:baf8 with SMTP id z2-20020aa7d402000000b00521e502baf8mr2201320edq.11.1693993122553;
-        Wed, 06 Sep 2023 02:38:42 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id r14-20020a056402034e00b00523d2a1626esm8244673edw.6.2023.09.06.02.38.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 02:38:42 -0700 (PDT)
-Message-ID: <c32d93c1-a7f5-6e8b-cd43-96479c17899a@linaro.org>
-Date:   Wed, 6 Sep 2023 11:38:41 +0200
+        Wed, 6 Sep 2023 05:39:18 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB08E170E;
+        Wed,  6 Sep 2023 02:39:14 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3869QNGv030584;
+        Wed, 6 Sep 2023 09:39:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=WcoaMstEcb9PYJs3c0I4Hwl2EMVk75QAJ5EMvaI1MG8=;
+ b=epy1vVLjlBoWHZI6euEDpxRmXr71IE9HdrHqrk9fPruS1P85i1D9tKSDtKaKUO9dCjSQ
+ UXNR6QG596+8HtYsyJy7UYYfu2xMGrjIEyWIsYNEXA52dl3iJaNDChojLeVBpLDVBSIS
+ 8RgJJoDrAqpnp6a355uUUk1Mi2xGZoCA9IPrBwx4AO6F2THTmtYRnT8RQLlphCGa6gZK
+ z/Rgo2H4sEKPdr+7BpDjWuU7kEac7VRMcAgYBiuhfc8xu1BZ3Rh225l50yi3bTAVEY5g
+ Hfc4aEEGVVoOvWvpTYOG5eNKQytMe9IbRJ1a8+OEtRNz8mcVOUSPbhiFn40xh2AYTmFJ Fw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sww32ugs9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Sep 2023 09:39:10 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3869d8KU015556
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 6 Sep 2023 09:39:08 GMT
+Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 6 Sep
+ 2023 02:39:02 -0700
+Message-ID: <75abfafd-2065-258d-0964-e1c50f094ee5@quicinc.com>
+Date:   Wed, 6 Sep 2023 15:08:59 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 2/5] arm64: dts: qcom: qrb2210-rb1: Fix regulators
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.0
+Subject: Re: [PATCH RESEND 7/7] arm64: dts: qcom: include the GPLL0 as clock
+ provider for IPQ mailbox
 Content-Language: en-US
 To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-References: <20230906-topic-rb1_features_sans_icc-v1-0-e92ce6fbde16@linaro.org>
- <20230906-topic-rb1_features_sans_icc-v1-2-e92ce6fbde16@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230906-topic-rb1_features_sans_icc-v1-2-e92ce6fbde16@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+        Michael Turquette <mturquette@baylibre.com>,
+        "Stephen Boyd" <sboyd@kernel.org>,
+        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+        Anusha Rao <quic_anusha@quicinc.com>,
+        Devi Priya <quic_devipriy@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>
+References: <20230904-gpll_cleanup-v1-0-de2c448f1188@quicinc.com>
+ <20230904-gpll_cleanup-v1-7-de2c448f1188@quicinc.com>
+ <cbb530b9-224b-4b6f-8551-dd8340a59408@linaro.org>
+From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+In-Reply-To: <cbb530b9-224b-4b6f-8551-dd8340a59408@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: NpWrelN3wKnrjE-udJJW4keua5sE6v5n
+X-Proofpoint-GUID: NpWrelN3wKnrjE-udJJW4keua5sE6v5n
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-06_03,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ clxscore=1015 suspectscore=0 adultscore=0 lowpriorityscore=0 bulkscore=0
+ mlxlogscore=736 mlxscore=0 priorityscore=1501 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309060081
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -84,26 +93,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/09/2023 11:24, Konrad Dybcio wrote:
-> Commit b4fe47d12f1f ("arm64: dts: qcom: qrb2210-rb1: Add regulators")
-> introduced regulator settings that were never put in place, as all of the
-> properties ended 'microvolts' instead of 'microvolt' (which dt schema did
-> not check for back then).
-> 
-> Fix the microvolts-microvolt typo and adjust voltage ranges where it's
-> necessary to fit within the volt = base + n*step formula.
-> 
-> Reported-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-> Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Fixes: b4fe47d12f1f ("arm64: dts: qcom: qrb2210-rb1: Add regulators")
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
 
-Dmitry fixed it already... but apparently never sent it upstream, so his
-loss.
+On 9/6/2023 3:03 PM, Konrad Dybcio wrote:
+> On 6.09.2023 06:56, Kathiravan Thirumoorthy wrote:
+>> While the kernel is booting up, APSS PLL will be running at 800MHz with
+>> GPLL0 as source. Once the cpufreq driver is available, APSS PLL will be
+>> configured to the rate based on the opp table and the source also will be
+>> changed to APSS_PLL_EARLY.
+>>
+>> Also, dynamic scaling of CPUFreq is not supported on IPQ5332, so to switch
+>> between the frequencies we need to park the APSS PLL in safe source,
+>> here it is GPLL0 and then shutdown and bring up the APSS PLL in the
+>> desired rate. So this patch is preparatory one to enable the CPUFreq on
+>> IPQ5332.
+>>
+>> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+>> ---
+> Please split this. Somebody reverting this in the future will have
+> a hard time resolving conflicts.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Best regards,
-Krzysztof
+Ack, will split it out in V2.
 
+
+>
+> Konrad
