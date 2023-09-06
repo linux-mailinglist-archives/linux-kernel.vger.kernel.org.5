@@ -2,73 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A017933C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 04:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBD97933CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 04:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238831AbjIFCfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 22:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52044 "EHLO
+        id S241417AbjIFClr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 22:41:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjIFCfA (ORCPT
+        with ESMTP id S241049AbjIFClq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 22:35:00 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E4041109;
-        Tue,  5 Sep 2023 19:34:55 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8BxpPBO5fdkjwggAA--.64399S3;
-        Wed, 06 Sep 2023 10:34:54 +0800 (CST)
-Received: from [0.0.0.0] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx3yNM5fdkBeZtAA--.27326S3;
-        Wed, 06 Sep 2023 10:34:52 +0800 (CST)
-Message-ID: <6d1d8acc-5140-f710-ac00-cb423d7fce78@loongson.cn>
-Date:   Wed, 6 Sep 2023 10:34:52 +0800
+        Tue, 5 Sep 2023 22:41:46 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BA1E41;
+        Tue,  5 Sep 2023 19:41:39 -0700 (PDT)
+X-UUID: e22a69084c5e11ee8051498923ad61e6-20230906
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=wU2b4FfMrOH1WfUlVsQQlHq+T7r0NVr/yzvkGrizXGY=;
+        b=kzjlTPaae/Jb44katXMSg89T66JNpC1LyuIaFKuJp+wHyPSWFFlGu2u1y/W0Db7Bb55hMLX0+ly6CW5QszZXtWWDuw6cSLOr31uKK0ATDW7du9c3G2nKsSRVp76JaF8Ct9GlSbrQ6Izg+a/jZ+hZeJSNhQBVyqrm56We/h/+gPQ=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:1380620d-96d0-4c5e-9b5c-f2557438dd9e,IP:0,U
+        RL:0,TC:0,Content:2,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:2
+X-CID-META: VersionHash:0ad78a4,CLOUDID:83c1b0c2-1e57-4345-9d31-31ad9818b39f,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:4,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: e22a69084c5e11ee8051498923ad61e6-20230906
+Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw02.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 2012800782; Wed, 06 Sep 2023 10:41:30 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 6 Sep 2023 10:41:28 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkmbs13n2.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
+ Transport; Wed, 6 Sep 2023 10:41:24 +0800
+Message-ID: <0acb43c3-3164-2a17-0105-84dbd533af8a@mediatek.com>
+Date:   Wed, 6 Sep 2023 10:41:22 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
- to select the primary video adapter at boot time
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH 1/2] dt-bindings: arm64: dts: mediatek: Add mt8395-evk
+ board
 Content-Language: en-US
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
-References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
- <44ec8549-dc36-287e-4359-abd3ec8d22d6@suse.de>
- <5afd2efb-f838-f9b7-02a9-2cf4d4fd2382@loongson.cn>
- <773be4c6-0b3d-be39-7857-b3e2942007d9@suse.de>
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <773be4c6-0b3d-be39-7857-b3e2942007d9@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+CC:     Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+References: <20230904092043.5157-1-macpaul.lin@mediatek.com>
+ <e2e35d4d-7853-fccc-28c2-b8ecf309d6ec@linaro.org>
+ <00f0a1cf-6246-92e9-13b0-cf31bb292a94@mediatek.com>
+ <97b82a16-8710-9430-35c8-673381aaa417@linaro.org>
+ <d5645707-bcb0-4d4b-1d94-d3cd17c042fb@mediatek.com>
+ <ddbc2681-bbda-88a1-643c-54fcabc9b83a@linaro.org>
+ <bf8394c6-5460-8696-f46b-0c39927aaf84@collabora.com>
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+In-Reply-To: <bf8394c6-5460-8696-f46b-0c39927aaf84@collabora.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8Bx3yNM5fdkBeZtAA--.27326S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW7Cw18Kry8Zr4kKw17ZryrGrX_yoW8Aw1rpF
-        WYgFWqkrWkGr4rAF4FyF1Fgr1Fqw4kJFWFgr48ZrZayF90v34avrWxtan0ga4UJrnxX3W5
-        GrZIgryxGFyDZrXCm3ZEXasCq-sJn29KB7ZKAUJUUUU3529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2IqxVAqx4xG67
-        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
-        v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcApnDU
-        UUU
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_PASS,SPF_PASS,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -76,52 +89,106 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2023/9/5 23:05, Thomas Zimmermann wrote:
-> Hi
->
-> Am 05.09.23 um 15:30 schrieb suijingfeng:
->> Hi,
->>
->>
->> On 2023/9/5 18:45, Thomas Zimmermann wrote:
->>> Hi
+
+On 9/5/23 18:58, AngeloGioacchino Del Regno and Krzsztof Kozlowski wrote:
+> Il 05/09/23 12:36, Krzysztof Kozlowski ha scritto:
+>> On 05/09/2023 11:36, Macpaul Lin wrote:
 >>>
->>> Am 04.09.23 um 21:57 schrieb Sui Jingfeng:
->>>> From: Sui Jingfeng <suijingfeng@loongson.cn>
+>>>
+>>> On 9/4/23 20:11, Krzysztof Kozlowski wrote:
 >>>>
->>>> On a machine with multiple GPUs, a Linux user has no control over 
->>>> which
->>>> one is primary at boot time. This series tries to solve above 
->>>> mentioned
+>>>>
+>>>> External email : Please do not click links or open attachments until 
+>>>> you
+>>>> have verified the sender or the content.
+>>>>
+>>>> On 04/09/2023 11:50, Macpaul Lin wrote:
+>>>>>
+>>>>>
+>>>>> On 9/4/23 17:33, Krzysztof Kozlowski wrote:
+>>>>>>
+>>>>>>
+>>>>>> External email : Please do not click links or open attachments 
+>>>>>> until you
+>>>>>> have verified the sender or the content.
+>>>>>>
+>>>>>> On 04/09/2023 11:20, Macpaul Lin wrote:
+>>>>>>> Add bindings for the MediaTek mt8395-evk board.
+>>>>>>> The mt8359-evk board is also named as "Genio 1200-EVK".
+>>>>>>> MT8195 and MT8395 are the same family series SoC could share
+>>>>>>
+>>>>>> How can be the same and have different numbers? You sill need 
+>>>>>> dedicated
+>>>>>> compatible.
+>>>>>>
+>>>>>
+>>>>> The SoCs mt8195 and mt8395 are designed for different market 
+>>>>> application
+>>>>> and physical characteristics, using different efuse values for
+>>>>> distinction. The booting flow and configurations are controllered 
+>>>>> by the
+>>>>> boot loaders, firmware, and TF-A. Therefore, the part numbers and
+>>>>> procurement channels are different. The detail information of these
+>>>>> efuse values is proprietary, so I cant disclose it futher. Hence the
+>>>>> most of peripheral drivers and base address are almost the same.
+>>>>
+>>>> 1. Drivers? So we talk about compatibility, not the same.
+>>>> 2. "almost the same" is not the same. Follow the guidelines for writing
+>>>> bindings.
+>>>>
 >>>
->>> If anything, the primary graphics adapter is the one initialized by 
->>> the firmware. I think our boot-up graphics also make this assumption 
->>> implicitly.
+>>> Thanks for the review.
 >>>
+>>> After internal confirmation and discussion, it can be confirmed that the
+>>> MT8195 and MT8395 are identical SoCs from to binding's perspective.
 >>
->> Yes, but by the time of DRM drivers get loaded successfully,the 
->> boot-up graphics already finished.
->> Firmware framebuffer device already get killed by the 
->> drm_aperture_remove_conflicting_pci_framebuffers()
->> function (or its siblings). So, this series is definitely not to 
->> interact with the firmware framebuffer
->
-> Yes and no. The helpers you mention will attempt to remove the 
-> firmware framebuffer on the given PCI device. If you have multiple PCI 
-> devices, the other devices would not be affected.
->
-Yes and no.
+>> I am sorry, but I really do not care what you internally discussed about
+>> bindings. I do not think your internal review respect existing
+>> guidelines. You talked about drivers, not "bindings perspective", so
+>> your internal discussion is clearly discussing something else.
+>>
+>>> MediaTek hope the mt8395 boards could directly use mt8195.dtsi, without
+>>> the need to create a separate mt8395.dtsi to include mt8195.dtsi.
+>>> Therefore, we hope to fully adopt the bindings of mt8195. However, I
+>>> will submit a revised patch for compatible since they are different 
+>>> boards.
+>>
+>> You can disagree but then I expect arguments from your side.
+>>
+> 
+> In short - they're the same chip, as in, they behave the same on a 
+> *hardware*
+> perspective; what changes is the bootchain (plus stricter security from 
+> TF-A)
+> and allowable temperature ranges for operation, that's practically it...
+> 
+> ...so yes the compatible for the "new soc" must be documented, but that's
+> practically just a revision, *not a new soc* at all.
+> 
+> (though, I agree that seeing a different name as in 1 -> 3 can be totally
+> confusing)
+> 
+> The drivers difference that Macpaul hinted to are about drivers needing 
+> some
+> SMC calls instead of direct MMIO manipulation, so, something like two 
+> bindings
+> for something like two drivers will need to add a 8395 compatible; 
+> speaking of
+> what we would have in a devicetree for this SoC, that'd be exactly 99% 
+> identical
+> to mt8195.dtsi.
+> 
+> Anyway, drivers are drivers, bindings describe hardware - and the hw is, 
+> again,
+> the same...
+> 
+> Hope that this makes things clearer! :-)
+> 
+> Cheers,
+> Angelo
 
+Thanks for your patience and clarification.
+I'll submit new SOC binding and revise the patches for mt8395 board.
 
-For the yes part: drm_aperture_remove_conflicting_pci_framebuffers() only kill the conflict one.
-But for a specific machine with the modern UEFI firmware,
-there should be only one firmware framebuffer driver.
-That shoudd be the EFIFB(UEFI GOP). I do have multiple PCI devices,
-but I don't understand when and why a system will have more than one firmware framebuffer.
-
-Even for the machines with the legacy BIOS, the fixed VGA aperture address range
-can only be owned by one firmware driver. It is just that we need to handle the
-routing, the ->set_decode() callback of vga_client_register() is used to do such
-work. Am I correct?
-
-
+Thanks
+Macpaul Lin
