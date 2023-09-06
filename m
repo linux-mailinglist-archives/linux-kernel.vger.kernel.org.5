@@ -2,153 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8C37938F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5E77938FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237937AbjIFJyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 05:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52568 "EHLO
+        id S231344AbjIFJy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 05:54:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237931AbjIFJx7 (ORCPT
+        with ESMTP id S231264AbjIFJy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 05:53:59 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A511717;
-        Wed,  6 Sep 2023 02:53:54 -0700 (PDT)
-X-UUID: 479e5d124c9b11eea33bb35ae8d461a2-20230906
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=jDK+6RfIR9DfKyFeGVgBFLvvd4UMW0Rk4nzSlScLa/Q=;
-        b=AlA9tzZf+wLhSsaBVczpRXyNnYnQYda1AfEO3Nqe0Wy4RS44RgjDt1R1CZDys5x8Dix2hqD/sVG6eMqnaCjulyuzmBcpFSwKHubBjoI/iY0Jb2lPNtfb3Ln5DmHdRLAfMLcEQK3fwbtFRKZ5nOVb7w+NqeT1UfhxUuncy2YPN74=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:d85ad678-67b9-4f2f-9171-382efd52d204,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:3a739f13-4929-4845-9571-38c601e9c3c9,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: 479e5d124c9b11eea33bb35ae8d461a2-20230906
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 2036339397; Wed, 06 Sep 2023 17:53:50 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 6 Sep 2023 17:53:48 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkmbs13n1.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Wed, 6 Sep 2023 17:53:46 +0800
-Message-ID: <c3ddf00c-235a-2d23-db60-c998a67a3fcd@mediatek.com>
-Date:   Wed, 6 Sep 2023 17:53:41 +0800
+        Wed, 6 Sep 2023 05:54:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488341717
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 02:54:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693994044;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4tzibQVke0hKt8IOTav8MFtlZQ2trxpBqLxq9f+UJCg=;
+        b=DZqbRuUv+SPvtnAMaMjts4/10xZzY942HPltd0Bx0Zn6Ld42v0IwC751dUVMO7KRz9NgHI
+        qG9F8J3SCtY9i8MC0+IBGx/lpUtxH9hhwIQcQuCHBqRhbb59N48evAJQqAExSUG5d6Lq35
+        nDn0057OHeHBsiA0oJzd92YUnpwgSM4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-505-189Phx_BO9KiHLZ7nqFDMw-1; Wed, 06 Sep 2023 05:54:03 -0400
+X-MC-Unique: 189Phx_BO9KiHLZ7nqFDMw-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-31adc3ca07aso1796658f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 02:54:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693994042; x=1694598842;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4tzibQVke0hKt8IOTav8MFtlZQ2trxpBqLxq9f+UJCg=;
+        b=ikpBTRAUvKqSGIcFn3oHTgWWKtSgPAePcPTqy0/fBV/BeWFqoJHidYYHFdAd63OiBL
+         D3mgRkVsVb2OazpR2xnBeTIyRlJ9wrTnKRVOUI+QEzv+AAQFW+heDdlEtqa4tdszYUMf
+         4Hfa/fr5Klr7c/TTb7DZ8HiVK0CpnWP9PM3f+CTbGJY0AgYpfifwrexg5+j3Qb1hd5kq
+         N85m6AkmOb6J2yXgiliaHsBesJeh2VnR5kw7DYp3Z4k09BiurbCi/4KB/dgR7G5OAnhp
+         6t7dH9jseqaIhvScHcm0Zt6oG7n49dAvxyWfpFWixsHGmvX3U6FV5dzx3NDbUF+t/SpY
+         diyw==
+X-Gm-Message-State: AOJu0YxMl5/re1cPfCEmZMsWHCxhSbPLfEz3bSuwledBUoVdxKZDd4DD
+        DxyTad8c9pj/SnnTOZncVVXk9beUu4PUyUZHC9OAnwsd81u49cOR0tFYj0pbsHWynn9/bV7lEkr
+        3LoPpNzbeenCFkcyzd4DaiH8c
+X-Received: by 2002:adf:f512:0:b0:31a:d871:7ae7 with SMTP id q18-20020adff512000000b0031ad8717ae7mr1954035wro.29.1693994042095;
+        Wed, 06 Sep 2023 02:54:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHgP7ciy8RiRDljW7l6SGuO/N0itwoSv2n3TNrlmpxaanZjeoaWxrwp9lqX4hZlX6Ivt08wqQ==
+X-Received: by 2002:adf:f512:0:b0:31a:d871:7ae7 with SMTP id q18-20020adff512000000b0031ad8717ae7mr1954025wro.29.1693994041793;
+        Wed, 06 Sep 2023 02:54:01 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id bt12-20020a056000080c00b0031433443265sm14238423wrb.53.2023.09.06.02.54.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 02:54:01 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>, deller@gmx.de,
+        daniel@ffwll.ch, sam@ravnborg.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH 2/7] fbdev/mmp/mmpfb: Do not display boot-up logo
+In-Reply-To: <20230829142109.4521-3-tzimmermann@suse.de>
+References: <20230829142109.4521-1-tzimmermann@suse.de>
+ <20230829142109.4521-3-tzimmermann@suse.de>
+Date:   Wed, 06 Sep 2023 11:54:00 +0200
+Message-ID: <87ledj4og7.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm64: dts: mediatek: add mt8395-evk
- board
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     Bear Wang <bear.wang@mediatek.com>,
-        Pablo Sun <pablo.sun@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>
-References: <20230904092043.5157-1-macpaul.lin@mediatek.com>
- <20230906092527.18281-1-macpaul.lin@mediatek.com>
- <fbad941f-232b-9f56-5de3-98a16a8c4d89@linaro.org>
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-In-Reply-To: <fbad941f-232b-9f56-5de3-98a16a8c4d89@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thomas Zimmermann <tzimmermann@suse.de> writes:
 
+> The fbcon module takes care of displaying the logo, if any. Remove
+> the code form mmpfb. If we want to display the logo without fbcon,
 
-On 9/6/23 17:32, Krzysztof Kozlowski wrote:
-> 	
-> 
-> External email : Please do not click links or open attachments until you 
-> have verified the sender or the content.
-> 
-> On 06/09/2023 11:25, Macpaul Lin wrote:
->> 1. Add compatible for MT8395.
->> 2. Add bindings for the MediaTek mt8395-evk board, also known
->> as the "Genio 1200-EVK".
->> 
->> The MT8195 and MT8395 belong to the same SoC family,
->> with only minor differences in their physical characteristics.
->> They utilize unique efuse values for differentiation.
->> 
->> The booting process and configurations are managed by boot
->> loaders, firmware, and TF-A. Consequently, the part numbers
->> and procurement channels vary.
->> 
->> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
->> ---
->>  Documentation/devicetree/bindings/arm/mediatek.yaml | 5 +++++
->>  1 file changed, 5 insertions(+)
-> 
-> Do not attach (thread) your patchsets to some other threads (unrelated
-> or older versions). This buries them deep in the mailbox and might
-> interfere with applying entire sets.
-> 
->> 
->> Changes for v2:
->>  - add more detail description for mt8395.
->>  - add bindings for mt8395, and mt8395-evk.
->> 
->> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
->> index ae12b1cab9fb..d7a20df640d7 100644
->> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
->> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
->> @@ -248,6 +248,11 @@ properties:
->>            - enum:
->>                - mediatek,mt8365-evk
->>            - const: mediatek,mt8365
->> +      - description: MediaTek Genio 1200 Boards (Genio 1200 EVK)
->> +        items:
->> +          - enum:
->> +              - mediatek,mt8395-evk
->> +          - const: mediatek,mt8395
-> 
-> 
-> I don't understand. You said last time this is fully compatible with
-> mt8195, so why it's not here?
-> 
+s/form/from
 
-Yes, mt8395 is fully compatible with mt8195.
+> we should implement this in the fbdev core code.
+>
 
-But after reading Angelo's comment, we thought it is necessary to create 
-a new compatible to avoid confusion for users.
-https://lore.kernel.org/lkml/bf8394c6-5460-8696-f46b-0c39927aaf84@collabora.com/
+The commit message says the same than patch #1 but the driver will behave
+differently right? That is, won't only show the logo when fbcon is not
+enabled but unconditionally? So the logo will be duplicated when fbcon is
+enabled?
 
-Although they are fully compatible, developers cannot arbitrarily 
-replace the chip on the board with another one. So separated bindings 
-might be better.
+If I understood that correctly, probably you should mention that in the
+commit message since removing the fb_show_logo() will make the driver to
+behave correctly.
 
-> Best regards,
-> Krzysztof
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> ---
 
-Thanks
-Macpaul Lin
+Acked-by: Javier Martinez Canillas <javierm@redhat.com>
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
