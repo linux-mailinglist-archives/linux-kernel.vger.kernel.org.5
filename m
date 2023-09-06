@@ -2,68 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6DA79330D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 02:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B2F793310
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 02:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240344AbjIFAvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 20:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
+        id S243783AbjIFAxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 20:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230394AbjIFAvL (ORCPT
+        with ESMTP id S229641AbjIFAxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 20:51:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5751A2;
-        Tue,  5 Sep 2023 17:51:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A04CEC433D9;
-        Wed,  6 Sep 2023 00:51:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693961467;
-        bh=LOkOYWgDpfMaKM7j4I5vUi6HfzRf1uXiYn5Gp+JhJpQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=L9WwUkhZH0udrang5lEoCi0RceXC8fGySw+ca+m9zeW98RbDllgO7iupNjB2o0B5B
-         aGiwGYr19AKbj/4TGCg9+HFGYnibln30VNAPU211UHAMwH0SOW+DkP7xTcVgWyOBpw
-         G585HAPi49WnN5OpHHFwEPxhSKclHdWMyuCmPG3WTxUrE4ZtnqbXsctIjWK/zuZwjv
-         M8M2eS7fOal4CftuhgWiR0hT9J/jWXPxnuhoQ9ltVNxaaZJJAtN7wF9OdzLaPBog23
-         5afycDar+wrubbKbG8Lk1GJCCvgVpoR0rGTYP/7RpCLST5W5uoudZPucw5CTPkP1+B
-         FyvZf4Tp1iH7Q==
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5280ef23593so4077965a12.3;
-        Tue, 05 Sep 2023 17:51:07 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwY5GqxOPtmltYzTu5GjcRLSCiKKXjUjJnU5Ypllop8wIeoYERc
-        KsC4OMQ9COwnFqP3r5t9o7ocqJCtqxLLyqxTxQg=
-X-Google-Smtp-Source: AGHT+IElTkbYyZUPYQR5VBzmrBOK5ldKYAEDs8YsLwAGbLGs88zIULj6n77vYmOOI8MWwsoyk9I/bmDTQ6RDTZ1WQsI=
-X-Received: by 2002:aa7:d843:0:b0:51e:ed6:df38 with SMTP id
- f3-20020aa7d843000000b0051e0ed6df38mr950573eds.13.1693961465837; Tue, 05 Sep
- 2023 17:51:05 -0700 (PDT)
+        Tue, 5 Sep 2023 20:53:12 -0400
+Received: from mail-pl1-f206.google.com (mail-pl1-f206.google.com [209.85.214.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C24C1A2
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 17:53:07 -0700 (PDT)
+Received: by mail-pl1-f206.google.com with SMTP id d9443c01a7336-1c097e8a175so32826065ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 17:53:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693961586; x=1694566386;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kdwrxuKw3aDgC7TsPyfzDkWDKgXCuVtFUYAIf25m1dw=;
+        b=IYT8kdMpELAF+yyWa1Zck3xeq2EtA8c+K454wsSFr1ZO86pR/dArw7CB8fDUQ/YEf0
+         F6VtBseKIAdUtHdu6FK1TLuqYueJgJDWfdioLl7wwByuaNPHOvxcl//hvzMopIxKpu6y
+         2k6pUi2Zh7kRibpzTktvy5YlO34cFvgpbXZLLy9Y9wxcE+YpRCUT1lCRCcCbIaT4I18J
+         TgKsCLiRI5ZH1Pgs8Z7CJE3Q+l3d9Mbvj6LxDgQkUIIGCyg3uK81Nzi6q7uWzS+1QZMS
+         IELe7vcuBFxPJv/QIAB6Ys5xxYlX/ZmMqkxksX0MQzlG5Yb78W9O9QITMvnwec4G3W4D
+         vcoQ==
+X-Gm-Message-State: AOJu0YxH1DrOzTWNBzh6FgxtvfOuf2uNsqdl+i2A2v3gIZaKosnopMz+
+        AjHm9dr5zX0YOif5IAloqdjkvmOuwQy7rzSAHqGeJ76lI6JJ
+X-Google-Smtp-Source: AGHT+IGt/gmyyr1MtBbz39IpBNMgCLuXvqFPZKZJCsUwhDll6WqgzQZK3CV9ezLZYRftQtuSHkSBKMqpkwEC0WI6XQQ+CDGaVU2/
 MIME-Version: 1.0
-References: <IA1PR20MB49534918FCA69399CE2E0C53BBE0A@IA1PR20MB4953.namprd20.prod.outlook.com>
-In-Reply-To: <IA1PR20MB49534918FCA69399CE2E0C53BBE0A@IA1PR20MB4953.namprd20.prod.outlook.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 6 Sep 2023 08:50:54 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRTwk6P+PnJcyQKVKADOAjHGmFxkS=axqg58hWvyu=wwA@mail.gmail.com>
-Message-ID: <CAJF2gTRTwk6P+PnJcyQKVKADOAjHGmFxkS=axqg58hWvyu=wwA@mail.gmail.com>
-Subject: Re: [PATCH v4] riscv: dts: allwinner: d1: Add PMU event node
-To:     Inochi Amaoto <inochiama@outlook.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Stuebner <heiko@sntech.de>, Wei Fu <wefu@redhat.com>,
-        Pei Chen <cp0613@linux.alibaba.com>,
-        Wenhan Chen <chenwenhan.cwh@alibaba-inc.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
+X-Received: by 2002:a17:902:e803:b0:1b9:e8e5:b0a4 with SMTP id
+ u3-20020a170902e80300b001b9e8e5b0a4mr5009843plg.8.1693961586558; Tue, 05 Sep
+ 2023 17:53:06 -0700 (PDT)
+Date:   Tue, 05 Sep 2023 17:53:06 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a14f020604a62a98@google.com>
+Subject: [syzbot] [f2fs?] kernel BUG in f2fs_put_super
+From:   syzbot <syzbot+ebd7072191e2eddd7d6e@syzkaller.appspotmail.com>
+To:     chao@kernel.org, jaegeuk@kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, terrelln@fb.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,102 +56,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 12:29=E2=80=AFPM Inochi Amaoto <inochiama@outlook.c=
-om> wrote:
->
-> D1 has several pmu events supported by opensbi.
-> These events can be used by perf for profiling.
->
-> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
-> Link: https://dl.linux-sunxi.org/D1/Xuantie_C906_R1S0_User_Manual.pdf
-> Link: https://github.com/T-head-Semi/openc906/blob/main/C906_RTL_FACTORY/=
-gen_rtl/pmu/rtl/aq_hpcp_top.v#L657
-> ---
-> changed from v3:
-> 1. remove wrong event mapping of 0x0000a
-> 2. add reference url of c906 events implementation (D1 only support event=
-s
-> described in R1S0 user manual, but event mapping is the same)
->
-> changed from v2:
-> 1. move pmu node from /soc to / to avoid warnings when checking.
->
-> The meaning of T-HEAD events can be found in this pending patch:
-> https://lore.kernel.org/linux-perf-users/IA1PR20MB4953DD82D0116EC291C2177=
-7BBE2A@IA1PR20MB4953.namprd20.prod.outlook.com
->
-> The patch above also provides a example that shows how to setup
-> environment and use perf with T-HEAD events.
-> ---
->  arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi | 39 +++++++++++++++++++
->  1 file changed, 39 insertions(+)
->
-> diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi b/arch/riscv/b=
-oot/dts/allwinner/sun20i-d1s.dtsi
-> index 8275630af977..53a984d78e3f 100644
-> --- a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-> +++ b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-> @@ -73,4 +73,43 @@ plic: interrupt-controller@10000000 {
->                         #interrupt-cells =3D <2>;
->                 };
->         };
-> +
-> +       pmu {
-> +               compatible =3D "riscv,pmu";
-> +               riscv,event-to-mhpmcounters =3D
-> +                       <0x00003 0x00003 0x00000008>,
-> +                       <0x00004 0x00004 0x00000010>,
-> +                       <0x00005 0x00005 0x00000200>,
-> +                       <0x00006 0x00006 0x00000100>,
-> +                       <0x10000 0x10000 0x00004000>,
-> +                       <0x10001 0x10001 0x00008000>,
-> +                       <0x10002 0x10002 0x00010000>,
-> +                       <0x10003 0x10003 0x00020000>,
-> +                       <0x10019 0x10019 0x00000040>,
-> +                       <0x10021 0x10021 0x00000020>;
-> +               riscv,event-to-mhpmevent =3D
-> +                       <0x00003 0x00000000 0x00000001>,
-> +                       <0x00004 0x00000000 0x00000002>,
-> +                       <0x00005 0x00000000 0x00000007>,
-> +                       <0x00006 0x00000000 0x00000006>,
-> +                       <0x10000 0x00000000 0x0000000c>,
-> +                       <0x10001 0x00000000 0x0000000d>,
-> +                       <0x10002 0x00000000 0x0000000e>,
-> +                       <0x10003 0x00000000 0x0000000f>,
-> +                       <0x10019 0x00000000 0x00000004>,
-> +                       <0x10021 0x00000000 0x00000003>;
-> +               riscv,raw-event-to-mhpmcounters =3D
-> +                       <0x00000000 0x00000001 0xffffffff 0xffffffff 0x00=
-000008>,
-> +                       <0x00000000 0x00000002 0xffffffff 0xffffffff 0x00=
-000010>,
-> +                       <0x00000000 0x00000003 0xffffffff 0xffffffff 0x00=
-000020>,
-> +                       <0x00000000 0x00000004 0xffffffff 0xffffffff 0x00=
-000040>,
-> +                       <0x00000000 0x00000005 0xffffffff 0xffffffff 0x00=
-000080>,
-> +                       <0x00000000 0x00000006 0xffffffff 0xffffffff 0x00=
-000100>,
-> +                       <0x00000000 0x00000007 0xffffffff 0xffffffff 0x00=
-000200>,
-> +                       <0x00000000 0x0000000b 0xffffffff 0xffffffff 0x00=
-002000>,
-> +                       <0x00000000 0x0000000c 0xffffffff 0xffffffff 0x00=
-004000>,
-> +                       <0x00000000 0x0000000d 0xffffffff 0xffffffff 0x00=
-008000>,
-> +                       <0x00000000 0x0000000e 0xffffffff 0xffffffff 0x00=
-010000>,
-> +                       <0x00000000 0x0000000f 0xffffffff 0xffffffff 0x00=
-020000>;
-> +       };
->  };
-> --
-> 2.42.0
->
-Reviewed-by: Guo Ren <guoren@kernel.org>
+Hello,
 
---=20
-Best Regards
- Guo Ren
+syzbot found the following issue on:
+
+HEAD commit:    e0152e7481c6 Merge tag 'riscv-for-linus-6.6-mw1' of git://..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11072fdfa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=30b036635ccf91ce
+dashboard link: https://syzkaller.appspot.com/bug?extid=ebd7072191e2eddd7d6e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-e0152e74.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/8159e43fa183/vmlinux-e0152e74.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b0ced23e91f7/bzImage-e0152e74.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ebd7072191e2eddd7d6e@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+kernel BUG at fs/f2fs/super.c:1639!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 15451 Comm: syz-executor.1 Not tainted 6.5.0-syzkaller-09338-ge0152e7481c6 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:f2fs_put_super+0xce1/0xed0 fs/f2fs/super.c:1639
+Code: 03 0f b6 14 02 48 89 d8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 27 48 63 0b 89 ea 48 c7 c6 40 f9 ba 8a 4c 89 e7 e8 ff 77 ff ff <0f> 0b 4c 89 ee 48 c7 c7 c0 d2 18 8d e8 5e bd a1 00 eb a6 48 89 df
+RSP: 0018:ffffc9000420fc00 EFLAGS: 00010282
+
+RAX: 0000000000000000 RBX: ffff888058dd4f80 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff816a3a30 RDI: 0000000000000005
+RBP: 000000000000000a R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: 2073662d53463246 R12: ffff888058dd4000
+R13: 000000000000000a R14: dffffc0000000000 R15: 0000000000000001
+FS:  00007fbbc86656c0(0000) GS:ffff88806b600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f621a85f000 CR3: 0000000111785000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ generic_shutdown_super+0x161/0x3c0 fs/super.c:693
+ kill_block_super+0x3b/0x70 fs/super.c:1646
+ kill_f2fs_super+0x2b7/0x3d0 fs/f2fs/super.c:4879
+ deactivate_locked_super+0x9a/0x170 fs/super.c:481
+ deactivate_super+0xde/0x100 fs/super.c:514
+ cleanup_mnt+0x222/0x3d0 fs/namespace.c:1254
+ task_work_run+0x14d/0x240 kernel/task_work.c:179
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x210/0x240 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
+ do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fbbc787e1ea
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fbbc8664ee8 EFLAGS: 00000202
+ ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffec RBX: 00007fbbc8664f80 RCX: 00007fbbc787e1ea
+RDX: 0000000020000040 RSI: 0000000020000080 RDI: 00007fbbc8664f40
+RBP: 0000000020000040 R08: 00007fbbc8664f80 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000080
+R13: 00007fbbc8664f40 R14: 00000000000054f4 R15: 0000000020000540
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:f2fs_put_super+0xce1/0xed0 fs/f2fs/super.c:1639
+Code: 03 0f b6 14 02 48 89 d8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 27 48 63 0b 89 ea 48 c7 c6 40 f9 ba 8a 4c 89 e7 e8 ff 77 ff ff <0f> 0b 4c 89 ee 48 c7 c7 c0 d2 18 8d e8 5e bd a1 00 eb a6 48 89 df
+RSP: 0018:ffffc9000420fc00 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffff888058dd4f80 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff816a3a30 RDI: 0000000000000005
+RBP: 000000000000000a R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: 2073662d53463246 R12: ffff888058dd4000
+R13: 000000000000000a R14: dffffc0000000000 R15: 0000000000000001
+FS:  00007fbbc86656c0(0000) GS:ffff88806b600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fffb061dfa8 CR3: 0000000111785000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
