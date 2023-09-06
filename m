@@ -2,46 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 170FD793D03
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7DE793D26
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236492AbjIFMt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
+        id S240347AbjIFMxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231200AbjIFMt0 (ORCPT
+        with ESMTP id S230316AbjIFMxD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:49:26 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 502CA10F8
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:49:22 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C72FE106F;
-        Wed,  6 Sep 2023 05:49:59 -0700 (PDT)
-Received: from [10.57.5.192] (unknown [10.57.5.192])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 63D583F7C5;
-        Wed,  6 Sep 2023 05:49:20 -0700 (PDT)
-Message-ID: <4f335dd2-8043-c60e-cf84-c2b01c4fee12@arm.com>
-Date:   Wed, 6 Sep 2023 13:49:16 +0100
+        Wed, 6 Sep 2023 08:53:03 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012EBE43;
+        Wed,  6 Sep 2023 05:52:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54BDDC433C7;
+        Wed,  6 Sep 2023 12:52:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694004779;
+        bh=IEQWAcQjvy0vq8Wt0nLK8PBigx3I9ooqM2Ln/kxqa8Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UuTtdlafUYrrBR4SAd4A5R/rmJEvoZrOtMKNmsb1+9+RJvg+HEFQSBA3+UveWLrMe
+         KoDhNOr7CWOoxzPSC/OPiRC7408bRdYFuz/ynqg+URjQETLUPKwqQfeJTOGjBeZcuw
+         pj9P/EpNrGTxEq5Rre/G6MzazlxmXWsM2UPdcL/MsW6rZks1LQ49jcdMPLopbnpd8x
+         9NQeCyC2esxQVktTzYzpLG7FUeUvdtomN5s3t8iJTCJJ6y/fmC5SyzaIo5IzpfFKOK
+         qP8cZxRUwL7l7oWAWvPVze+ENNHIBivObQQ8xs1RSjkbOlrQPH2NcYMkem61+cQIHG
+         P1FcuZSPKe2/w==
+Date:   Wed, 6 Sep 2023 15:52:14 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] docs/mm: Physical Memory: add "Memory map" section
+Message-ID: <20230906125214.GK3223@kernel.org>
+References: <20230906074210.3051751-1-rppt@kernel.org>
+ <ZPhurt9P7hnsVvua@casper.infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: snd-cmipci oops during probe on arm64 (current mainline,
- pre-6.6-rc1)
-Content-Language: en-GB
-To:     Takashi Iwai <tiwai@suse.de>,
-        Antonio Terceiro <antonio.terceiro@linaro.org>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <ZPelHaX/Lt++kkOm@linaro.org> <877cp3esse.wl-tiwai@suse.de>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <877cp3esse.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPhurt9P7hnsVvua@casper.infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,123 +52,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMjAyMy0wOS0wNiAwNzoxMCwgVGFrYXNoaSBJd2FpIHdyb3RlOg0KPiBPbiBXZWQsIDA2
-IFNlcCAyMDIzIDAwOjAxOjAxICswMjAwLA0KPiBBbnRvbmlvIFRlcmNlaXJvIHdyb3RlOg0K
-Pj4NCj4+IEhpLA0KPj4NCj4+IEknbSB1c2luZyBhbiBhcm02NCB3b3Jrc3RhdGlvbiwgYW5k
-IHdhbnRlZCB0byBhZGQgYSBzb3VuZCBjYXJkIHRvIGl0LiBJIGJvdWdodA0KPj4gb25lIHdo
-byB3YXMgcHJldHR5IHBvcHVsYXIgYXJvdW5kIHdoZXJlIEkgbGl2ZSwgYW5kIGl0IGlzIHN1
-cHBvcnRlZCBieSB0aGUNCj4+IHNuZC1jbWlwY2kgZHJpdmVyLg0KPj4NCj4+IEl0J3MgdGhp
-cyBvbmU6DQo+Pg0KPj4gMDAwNTowMjowMC4wIE11bHRpbWVkaWEgYXVkaW8gY29udHJvbGxl
-cjogQy1NZWRpYSBFbGVjdHJvbmljcyBJbmMgQ01JODczOC9DTUk4NzY4IFBDSSBBdWRpbyAo
-cmV2IDEwKQ0KPj4NCj4+IEFmdGVyIGJ1aWxkaW5nIGEgbWFpbGluZSBrZXJuZWwgKHBvc3Qt
-djYuNSwgcHJlLXJjMSkgb24gRGViaWFuIHRlc3RpbmcgYXJtNjQNCj4+IHdpdGggbG9jYWxt
-b2Rjb25maWcgKyBDT05GSUdfU05EX0NNSVBDST1tLCBpdCBjcmFzaGVzIHdpdGggIlVuYWJs
-ZSB0byBoYW5kbGUNCj4+IGtlcm5lbCBwYWdpbmcgcmVxdWVzdCBhdCB2aXJ0dWFsIGFkZHJl
-c3MgZmZmZmZiZmZmZTgwMDAwYyIsIGFuZCB0aGUgc3lzdGVtDQo+PiBuZXZlciBmaW5pc2hl
-cyB0byBib290LiBUaGUgbG9naW4gbWFuYWdlciBuZXZlciBzaG93cyB1cCBhbmQgdGhlIHNl
-cmlhbCBjb25zb2xlDQo+PiBuZXZlciBnZXRzIHRvIGEgbG9naW4gcHJvbXB0LiBJIG9ic2Vy
-dmVkIHRoZSBzYW1lIGlzc3VlIG9uIGEgNi4zIERlYmlhbiBrZXJuZWwsDQo+PiBhZnRlciBy
-ZWJ1aWxkaW5nIHdpdGggQ09ORklHX1NORF9DTUlQQ0k9bS4NCj4+DQo+PiBJZiBJIHN0b3Ag
-dGhlIG1vZHVsZSBmcm9tIGJlaW5nIGF1dG9tYXRpY2FsbHkgbG9hZGVkIGJ5IGFkZGluZw0K
-Pj4gYGJsYWNrbGlzdCBzbmQtY21pcGNpYCB0byAvZXRjL21vZHByb2JlLmQvc25kLWNtaXBj
-aS5jb25mIChvciBpZiBJDQo+PiByZW1vdmUgdGhlIGNhcmQgZnJvbSB0aGUgUENJZSBzbG90
-KSwgSSBnZXQgdGhlIHN5c3RlbSB0byBib290LiBCdXQgdHJpbmcNCj4+IHRvIGxvYWQgdGhl
-IG1vZHVsZSBtYW51YWxseSBjYXVzZXMgdGhlIHNhbWUgY3Jhc2ggKEkgb25seSB0ZXN0ZWQg
-dGhpcw0KPj4gd2l0aCB0aGUgY2FyZCBvbik6DQo+Pg0KPj4gWyAgKzQsNTAxMDkzXSBzbmRf
-Y21pcGNpIDAwMDU6MDI6MDAuMDogc3RyZWFtIDUxMiBhbHJlYWR5IGluIHRyZWUNCj4+IFsg
-ICswLDAwMDE1NV0gVW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgcGFnaW5nIHJlcXVlc3QgYXQg
-dmlydHVhbCBhZGRyZXNzIGZmZmZmYmZmZmU4MDAwMGMNCj4+IFsgICswLDAwNzkyN10gTWVt
-IGFib3J0IGluZm86DQo+PiBbICArMCwwMDI3OTNdICAgRVNSID0gMHgwMDAwMDAwMDk2MDAw
-MDA2DQo+PiBbICArMCwwMDM3NDNdICAgRUMgPSAweDI1OiBEQUJUIChjdXJyZW50IEVMKSwg
-SUwgPSAzMiBiaXRzDQo+PiBbICArMCwwMDUzMDddICAgU0VUID0gMCwgRm5WID0gMA0KPj4g
-WyAgKzAsMDAzMDQ5XSAgIEVBID0gMCwgUzFQVFcgPSAwDQo+PiBbICArMCwwMDMxMzRdICAg
-RlNDID0gMHgwNjogbGV2ZWwgMiB0cmFuc2xhdGlvbiBmYXVsdA0KPj4gWyAgKzAsMDA0ODcy
-XSBEYXRhIGFib3J0IGluZm86DQo+PiBbICArMCwwMDI4NzNdICAgSVNWID0gMCwgSVNTID0g
-MHgwMDAwMDAwNiwgSVNTMiA9IDB4MDAwMDAwMDANCj4+IFsgICswLDAwNTQ3OV0gICBDTSA9
-IDAsIFduUiA9IDAsIFRuRCA9IDAsIFRhZ0FjY2VzcyA9IDANCj4+IFsgICswLDAwNTA0N10g
-ICBHQ1MgPSAwLCBPdmVybGF5ID0gMCwgRGlydHlCaXQgPSAwLCBYcyA9IDANCj4+IFsgICsw
-LDAwMDAwM10gc3dhcHBlciBwZ3RhYmxlOiA0ayBwYWdlcywgNDgtYml0IFZBcywgcGdkcD0w
-MDAwMDgwNTE5ZmU5MDAwDQo+PiBbICArMCwwMDAwMDRdIFtmZmZmZmJmZmZlODAwMDBjXSBw
-Z2Q9MDAwMDA4MDUxYTk3OTAwMywgcDRkPTAwMDAwODA1MWE5NzkwMDMsIHB1ZD0wMDAwMDgw
-NTFhOTdhMDAzLCBwbWQ9MDAwMDAwMDAwMDAwMDAwMA0KPj4gWyAgKzAsMDAwMDA5XSBJbnRl
-cm5hbCBlcnJvcjogT29wczogMDAwMDAwMDA5NjAwMDAwNiBbIzFdIFNNUA0KPj4gWyAgKzAs
-MDI4MTQyXSBNb2R1bGVzIGxpbmtlZCBpbjogc25kX2NtaXBjaSgrKSBzbmRfbXB1NDAxX3Vh
-cnQgc25kX29wbDNfbGliIHh0X2Nvbm50cmFjayB4dF9NQVNRVUVSQURFIG5mX2Nvbm50cmFj
-a19uZXRsaW5rIHhmcm1fdXNlciB4ZnJtX2FsZ28geHRfYWRkcnR5cGUgbmZ0X2NvbXBhdCBi
-cl9uZXRmaWx0ZXIgbmZ0X21hc3EgbmZ0X2NoYWluX25hdCBuZl9uYXQgbmZfY29ubnRyYWNr
-IG5mX2RlZnJhZ19pcHY2IG5mX2RlZnJhZ19pcHY0IGJyaWRnZSBzdHAgbGxjIG5mX3RhYmxl
-cyBuZm5ldGxpbmsgdXZjdmlkZW8gdmlkZW9idWYyX3ZtYWxsb2MgdmlkZW9idWYyX21lbW9w
-cyB1dmMgdmlkZW9idWYyX3Y0bDIgdmlkZW9kZXYgdmlkZW9idWYyX2NvbW1vbiBzbmRfc2Vx
-X2R1bW15IHNuZF9ocnRpbWVyIHNuZF9zZXEgcXJ0ciByZmtpbGwgb3ZlcmxheSBmdGRpX3Np
-byB1c2JzZXJpYWwgc25kX3VzYl9hdWRpbyBzbmRfdXNibWlkaV9saWIgc25kX3BjbSBhZXNf
-Y2VfYmxrIGFlc19jZV9jaXBoZXIgc25kX2h3ZGVwIHBvbHl2YWxfY2Ugc25kX3Jhd21pZGkg
-cG9seXZhbF9nZW5lcmljIHNuZF9zZXFfZGV2aWNlIGpveWRldiBzbmRfdGltZXIgZ2hhc2hf
-Y2UgaGlkX2dlbmVyaWMgZ2YxMjhtdWwgc25kIHVzYmhpZCBzaGEyX2NlIGlwbWlfc3NpZiBz
-b3VuZGNvcmUgaGlkIG1jIHNoYTI1Nl9hcm02NCBpcG1pX2RldmludGYgYXJtX3NwZV9wbXUg
-aXBtaV9tc2doYW5kbGVyIHNoYTFfY2Ugc2JzYV9nd2R0IGJpbmZtdF9taXNjIG5sc19hc2Np
-aSBubHNfY3A0MzcgdmZhdCBmYXQgeGdlbmVfaHdtb24gY3BwY19jcHVmcmVxIGFybV9jbW4g
-YXJtX2RzdV9wbXUgZXZkZXYgbmZzZCBhdXRoX3JwY2dzcyBuZnNfYWNsIGxvY2tkIGdyYWNl
-IGRtX21vZCBmdXNlIGxvb3AgZWZpX3BzdG9yZSBkYXggc3VucnBjIGNvbmZpZ2ZzIGlwX3Rh
-YmxlcyB4X3RhYmxlcyBhdXRvZnM0IGV4dDQgY3JjMTYgbWJjYWNoZSBqYmQyIGJ0cmZzIGVm
-aXZhcmZzIHJhaWQxMCByYWlkDQo+ICAgNDU2IGFzeW5jX3JhaWQ2X3JlY292IGFzeW5jX21l
-bWNweQ0KPj4gWyAgKzAsMDAwMTQyXSAgYXN5bmNfcHEgYXN5bmNfeG9yIGFzeW5jX3R4IGxp
-YmNyYzMyYyBjcmMzMmNfZ2VuZXJpYyB4b3IgeG9yX25lb24gcmFpZDZfcHEgcmFpZDEgcmFp
-ZDAgbXVsdGlwYXRoIGxpbmVhciBtZF9tb2QgbnZtZSBudm1lX2NvcmUgYXN0IHQxMF9waSBk
-cm1fc2htZW1faGVscGVyIHhoY2lfcGNpIGRybV9rbXNfaGVscGVyIHhoY2lfaGNkIGNyYzY0
-X3JvY2tzb2Z0IGNyYzY0IGRybSBjcmNfdDEwZGlmIHVzYmNvcmUgY3JjdDEwZGlmX2dlbmVy
-aWMgaWdiIGNyY3QxMGRpZl9jZSBjcmN0MTBkaWZfY29tbW9uIHVzYl9jb21tb24gaTJjX2Fs
-Z29fYml0IGkyY19kZXNpZ253YXJlX3BsYXRmb3JtIGkyY19kZXNpZ253YXJlX2NvcmUNCj4+
-IFsgICswLDEyMTY3MF0gQ1BVOiAwIFBJRDogNDQyIENvbW06IGt3b3JrZXIvMDo0IE5vdCB0
-YWludGVkIDYuNS4wKyAjMg0KPj4gWyAgKzAsMDA2MjU5XSBIYXJkd2FyZSBuYW1lOiBBRExJ
-TksgQVZBIERldmVsb3BlciBQbGF0Zm9ybS9BVkEgRGV2ZWxvcGVyIFBsYXRmb3JtLCBCSU9T
-IFRpYW5vQ29yZSAyLjA0LjEwMC4wNyAoU1lTOiAyLjA2LjIwMjIwMzA4KSAwOS8wOC8yMDIy
-DQo+PiBbICArMCwwMTI1MDZdIFdvcmtxdWV1ZTogZXZlbnRzIHdvcmtfZm9yX2NwdV9mbg0K
-Pj4gWyAgKzAsMDA0MzUzXSBwc3RhdGU6IDgwNDAwMDA5IChOemN2IGRhaWYgK1BBTiAtVUFP
-IC1UQ08gLURJVCAtU1NCUyBCVFlQRT0tLSkNCj4+IFsgICswLDAwNjk1M10gcGMgOiBsb2dp
-Y19pbmwrMHhhMC8weGQ4DQo+PiBbICArMCwwMDM1NzBdIGxyIDogc25kX2NtaXBjaV9wcm9i
-ZSsweDdhNC8weDExNDAgW3NuZF9jbWlwY2ldDQo+PiBbICArMCwwMDU1NzhdIHNwIDogZmZm
-ZjgwMDA4Mjg3YmM3MA0KPj4gWyAgKzAsMDAzMzAzXSB4Mjk6IGZmZmY4MDAwODI4N2JjNzAg
-eDI4OiBmZmZmMDgwMDhhZjlkNmEwIHgyNzogMDAwMDAwMDAwMDAwMDAwMA0KPj4gWyAgKzAs
-MDA3MTI4XSB4MjY6IGZmZmZjNDgxODI2M2MyMjggeDI1OiAwMDAwMDAwMDAwMDAwMDAwIHgy
-NDogMDAwMDAwMDAwMDAwMDAwMQ0KPj4gWyAgKzAsMDA3MTI3XSB4MjM6IGZmZmYwN2ZmODFh
-OWUwMDAgeDIyOiBmZmZmMDdmZjgxYTllMGMwIHgyMTogZmZmZjA4MDA4YWY5ZDA4MA0KPj4g
-WyAgKzAsMDA3MTI3XSB4MjA6IGZmZmZjNDgxODI2M2MwMDAgeDE5OiAwMDAwMDAwMDAwMDAw
-MDAwIHgxODogZmZmZmZmZmZmZmZmZmZmZg0KPj4gWyAgKzAsMDA3MTI3XSB4MTc6IDAwMDAw
-MDAwMDAwMDAwMDAgeDE2OiBmZmZmYzQ4MTlhYzNjZDM4IHgxNTogZmZmZjgwMDA4Mjg3YmE4
-MA0KPj4gWyAgKzAsMDA3MTI3XSB4MTQ6IDAwMDAwMDAwMDAwMDAwMDEgeDEzOiBmZmZmODAw
-MDgyODdiYmM0IHgxMjogMDAwMDAwMDAwMDAwMDAwMA0KPj4gWyAgKzAsMDA3MTI2XSB4MTE6
-IGZmZmYwN2ZmODM0NjE2ZDAgeDEwOiBmZmZmZmZmZmZmZmZmZmMwIHg5IDogZmZmZmM0ODE5
-YTYxZGQxOA0KPj4gWyAgKzAsMDA3MTI3XSB4OCA6IDAwMDAwMDAwMDAwMDAyMjggeDcgOiAw
-MDAwMDAwMDAwMDAwMDAxIHg2IDogMDAwMDAwMDAwMDAwMDBmZg0KPj4gWyAgKzAsMDA3MTI3
-XSB4NSA6IGZmZmZjNDgxOWFkYjc5OTggeDQgOiAwMDAwMDAwMDAwMDAwMDAwIHgzIDogMDAw
-MDAwMDAwMDAwMDBmZg0KPj4gWyAgKzAsMDA3MTI3XSB4MiA6IDAwMDAwMDAwMDBmZmJmZmUg
-eDEgOiAwMDAwMDAwMDAwMDAwMDBjIHgwIDogZmZmZmZiZmZmZTgwMDAwYw0KPj4gWyAgKzAs
-MDA3MTI2XSBDYWxsIHRyYWNlOg0KPj4gWyAgKzAsMDAyNDM2XSAgbG9naWNfaW5sKzB4YTAv
-MHhkOA0KPj4gWyAgKzAsMDAzMjIxXSAgbG9jYWxfcGNpX3Byb2JlKzB4NDgvMHhiOA0KPj4g
-WyAgKzAsMDAzNzQ0XSAgd29ya19mb3JfY3B1X2ZuKzB4MjQvMHg0MA0KPj4gWyAgKzAsMDAz
-NzQxXSAgcHJvY2Vzc19vbmVfd29yaysweDE3MC8weDNhOA0KPj4gWyAgKzAsMDA0MDAyXSAg
-d29ya2VyX3RocmVhZCsweDIzYy8weDQ2MA0KPj4gWyAgKzAsMDAzNzQyXSAga3RocmVhZCsw
-eGU4LzB4ZjgNCj4+IFsgICswLDAwMzA0N10gIHJldF9mcm9tX2ZvcmsrMHgxMC8weDIwDQo+
-PiBbICArMCwwMDM1NjldIENvZGU6IGQyYmZkMDAwIGYyZGY3ZmUwIGYyZmZmZmUwIDhiMDAw
-MDIwIChiOTQwMDAwMCkNCj4+IFsgICswLDAwNjA4M10gLS0tWyBlbmQgdHJhY2UgMDAwMDAw
-MDAwMDAwMDAwMCBdLS0tDQo+Pg0KPj4gQmVjYXVzZSB0aGlzIHNvdW5kIGNhcmQgY2hpcHNl
-dCBzZWVtcyB0byBiZSBwb3B1bGFyIChwcmV0dHkgbXVjaCBhbGwgUENJIGNhcmRzDQo+PiBJ
-IGNhbiBmaW5kIHRvIGJ1eSBsb2NhbGx5IHVzZSB0aGF0KSwgSSdtIHRoaW5raW5nIHRoaXMg
-bWlnaHQgYmUgc3BlY2lmaWMgdG8NCj4+IGFybTY0LCBvdGhlcndpc2Ugc29tZW9uZSB3b3Vs
-ZCBoYXZlIHNlZW4gdGhpcyBiZWZvcmUuDQo+IA0KPiBUaGVyZSBpcyBvbmx5IG9uZSBjaGFu
-Z2UgaW4gdGhpcyBkcml2ZXIgY29kZSBpdHNlbGYgc2luY2UgNi41IChjb21taXQNCj4gYjZi
-YTBhYTQ2MTM4KSwgYW5kIGp1ZGdpbmcgZnJvbSB0aGUgc3RhY2sgdHJhY2UsIGl0J3MgdW5y
-ZWxhdGVkIHdpdGgNCj4geW91ciBwcm9ibGVtLiAgIEl0J3MgbW9yZSBsaWtlbHkgYSByZWdy
-ZXNzaW9uIGluIHRoZSBsb3dlciBsZXZlbCBjb2RlLA0KPiBlLmcuIFBDSSBsYXllciBvciBh
-cmNoL2FybTY0IHN0dWZmLg0KPiANCj4gQ291bGQgeW91IHRyeSBnaXQgYmlzZWN0Pw0KDQpI
-bW0sIGJ1dCBoYXMgdGhpcyBjb21iaW5hdGlvbiBvZiBjYXJkIGFuZCBtYWNoaW5lICpldmVy
-KiBhY3R1YWxseSB3b3JrZWQ/DQoNCkl0J3MgYmxvd2luZyB1cCB0cnlpbmcgdG8gYWNjZXNz
-IFBDSSBJL08gc3BhY2UsIHdoaWNoIGhhcyBhcHBhcmVudGx5IA0KZW5kZWQgdXAgaW4gdGhl
-IGluZGlyZWN0IGFjY2VzcyBtZWNoYW5pc20gd2l0aG91dCB0aGF0IGJlaW5nIGNvbmZpZ3Vy
-ZWQgDQpjb3JyZWN0bHkuIFRoYXQgaXMgZGVmaW5pdGVseSBhbiBpc3N1ZSBkb3duIHNvbWV3
-aGVyZSBiZXR3ZWVuIHRoZSBQQ0kgDQpsYXllciBhbmQgdGhlIHN5c3RlbSBmaXJtd2FyZS4g
-RG9lcyB0aGUgc3lzdGVtIGV2ZW4gaGF2ZSBhbiBJL08gc3BhY2UgDQp3aW5kb3c/IFNvbWUg
-YXJtNjQgbWFjaGluZXMgZG9uJ3QuIEkgZ3Vlc3Mgd2UgbWlnaHQgbm90IGhhdmUgZ290IGFz
-IGZhciANCmFzIHByb2JpbmcgYSBkcml2ZXIgaWYgdGhlIEkvTyBCQVIgY291bGRuJ3QgYmUg
-YXNzaWduZWQgYXQgYWxsLCBidXQgDQplaXRoZXIgd2F5IHNvbWV0aGluZydzIG5vdCBnb25l
-IHJpZ2h0Lg0KDQpUaGFua3MsDQpSb2Jpbi4NCg==
+On Wed, Sep 06, 2023 at 01:21:02PM +0100, Matthew Wilcox wrote:
+> On Wed, Sep 06, 2023 at 10:42:10AM +0300, Mike Rapoport wrote:
+> > +The basic memory descriptor is called :ref:`struct page <Pages>` and it is
+> > +essentially a union of several structures, each representing a page frame
+> > +metadata for a paricular usage.
+> 
+> "each representing page frame metadata".  And "particular".
+
+sure
+ 
+> >  Folios
+> > -======
+> > +------
+> >  
+> > -.. admonition:: Stub
+> > +`struct folio` represents a physically, virtually and logically contiguous
+> > +set of bytes. It is a power-of-two in size, and it is aligned to that same
+> > +power-of-two. It is at least as large as ``PAGE_SIZE``. If it is in the
+> > +page cache, it is at a file offset which is a multiple of that
+> > +power-of-two. It may be mapped into userspace at an address which is at an
+> > +arbitrary page offset, but its kernel virtual address is aligned to its
+> > +size.
+> >  
+> > -   This section is incomplete. Please list and describe the appropriate fields.
+> > +`struct folio` occupies several consecutive entries in the memory map and
+> > +has the following fields:
+> > +
+> > +``flags``
+> > +  Identical to the page flags.
+> > +
+> > +``lru``
+> > +  Least Recently Used list; tracks how recently this folio was used.
+> > +
+> > +``mlock_count``
+> > +  Number of times this folio has been pinned by mlock().
+> > +
+> > +``mapping``
+> > +  The file this page belongs to. Can be pagecache or swapcahe. For
+> > +  anonymous memory refers to the `struct anon_vma`.
+> > +
+> > +``index``
+> > +  Offset within the file, in units of pages. For anonymous memory, this is
+> > +  the index from the beginning of the mmap.
+> > +
+> > +``private``
+> > +  Filesystem per-folio data (see folio_attach_private()). Used for
+> > +  ``swp_entry_t`` if folio is in the swap cache
+> > +  (i.e. folio_test_swapcache() is true)
+> > +
+> > +``_mapcount``
+> > +  Do not access this member directly. Use folio_mapcount() to find out how
+> > +  many times this folio is mapped by userspace.
+> > +
+> > +``_refcount``
+> > +  Do not access this member directly. Use folio_ref_count() to find how
+> > +  many references there are to this folio.
+> > +
+> > +``memcg_data``
+> > +  Memory Control Group data.
+> > +
+> > +``_folio_dtor``
+> > +  Which destructor to use for this folio.
+> > +
+> > +``_folio_order``
+> > +  The allocation order of a folio. Do not use directly, call folio_order().
+> > +
+> > +``_entire_mapcount``
+> > +  How many times the entire folio is mapped as a single unit (for example
+> > +  by a PMD or PUD entry). Does not include PTE-mapped subpages. This might
+> > +  be useful for debugging, but to find out how many times the folio is
+> > +  mapped look at folio_mapcount() or page_mapcount() or total_mapcount()
+> > +  instead.
+> > +  Do not use directly, call folio_entire_mapcount().
+> > +
+> > +``_nr_pages_mapped``
+> > +  The total number of times the folio is mapped.
+> > +  Do not use directly, call folio_mapcount().
+> > +
+> > +``_pincount``
+> > +  Used to track pinning of the folio for DMA.
+> > +  Do not use directly, call folio_maybe_dma_pinned().
+> > +
+> > +``_folio_nr_pages``
+> > +  The number of pages in the folio.
+> > +  Do not use directly, call folio_nr_pages().
+> > +
+> > +``_hugetlb_subpool``
+> > +  HugeTLB subpool the folio beongs to.
+> > +  Do not use directly, use accessor in ``include/linux/hugetlb.h``.
+> > +
+> > +``_hugetlb_cgroup``
+> > +  Memory Control Group data for a HugeTLB folio.
+> > +  Do not use directly, use accessor in ``include/linux/hugetlb_cgroup.h``.
+> > +
+> > +``_hugetlb_cgroup_rsvd``
+> > +  Memory Control Group data for a HugeTLB folio.
+> > +  Do not use directly, use accessor in ``include/linux/hugetlb_cgroup.h``.
+> > +
+> > +``_hugetlb_hwpoison``
+> > +  List of failed (hwpoisoned) pages for a HugeTLB folio.
+> > +  Do not use directly, call raw_hwp_list_head().
+> > +
+> > +``_deferred_list``
+> > +  Folios to be split under memory pressure.
+> 
+> I don't understand why you've done all this instead of linking to the
+> kernel-doc I wrote.
+
+We can't have it both in Documentation/core-api/mm-api.rst and here without
+sphinx complaining: 
+
+Documentation/mm/physical_memory:561: include/linux/mm_types.h:3: WARNING: Duplicate C declaration, also defined at core-api/mm-api:3.
+Declaration is '.. c:struct:: folio'.
+
+-- 
+Sincerely yours,
+Mike.
