@@ -2,111 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 556ED794147
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD0779414E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242760AbjIFQQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 12:16:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38790 "EHLO
+        id S242806AbjIFQTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 12:19:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbjIFQQa (ORCPT
+        with ESMTP id S230349AbjIFQTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 12:16:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEA2198B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 09:15:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694016940;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ySBQ8UU2v3ruiAA4bTZ1K97iZuDORkFQAMOFS4JWWBs=;
-        b=b7TJ87aQBNI+WTsIwLyd+D1VuFx0oF5wmqrfjPA7Vj4WZBQ39Rugz/F4LKYcRxOg8BfO7U
-        LinuWfuQVlQznb2EeDAr0wLDTlp+K8lFPwBTkY7UEy+oR1xvOd4t7e9VWlydXpsbtbic0q
-        opEh4UDD15jMvC/0vKQwv48FGgphl2A=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-152-UGuRLipKOqCxQLX6pyEEFA-1; Wed, 06 Sep 2023 12:15:39 -0400
-X-MC-Unique: UGuRLipKOqCxQLX6pyEEFA-1
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-4121c086963so429171cf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 09:15:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694016938; x=1694621738;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ySBQ8UU2v3ruiAA4bTZ1K97iZuDORkFQAMOFS4JWWBs=;
-        b=KLrGCgr+HbbHSWwh9jDD5VQDUfGICd+ejPcVjtU6VeXRiPCe+UbsXXNbGnZzdNusmb
-         PPlpOFaFchzk1QW5ViX+1aQxmxGY0CgL49YUlCXS1T5q2qZ1lseSqmFvhZwFFbMhmvtQ
-         sv8me6csJtoLiekcAr66l/ZgpXGEqefv0p0nkxHVcZk7oSs1QNhuLNNuYzHO9dfDD0aA
-         G5aJnvQZfkutTrF0CUzmcek6lmcEULrqGHLMHas6DdwOB3cGDWfHxb2FnkXPNeq4qGfq
-         kRd409ls+yPLnN2xzNY0nYnoy1QdDu5KC2F1jTdXym1/OslvElEypAhOdaysqwJQhFb1
-         1NlA==
-X-Gm-Message-State: AOJu0YxggBiSiqI5IybyC3LI5+x44WMDe2aW2XZ8MA7wIYv9XvDE9JNx
-        l+xaRYUovnIyOFnSBkf/8Ge5SPiy3eJmY1yCuonMoOrDarcg4sGjgUBmmluBRJI63SwDnhi4W2B
-        OqxbOSstkq4OPbq0migw2tk+vIe9lT+SEmTiz9pqb
-X-Received: by 2002:ac8:7ef0:0:b0:414:ed76:bea1 with SMTP id r16-20020ac87ef0000000b00414ed76bea1mr1132363qtc.67.1694016938577;
-        Wed, 06 Sep 2023 09:15:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG008JiqeqVkvqHQZFk51x1f9Ml14ocAwGpDZbzp2uKfdk4jeAuXVQtoHjOvPCQ5l9xRL/5vzpaFT68eIIdCAA=
-X-Received: by 2002:ac8:7ef0:0:b0:414:ed76:bea1 with SMTP id
- r16-20020ac87ef0000000b00414ed76bea1mr1132349qtc.67.1694016938191; Wed, 06
- Sep 2023 09:15:38 -0700 (PDT)
+        Wed, 6 Sep 2023 12:19:03 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4552F198B;
+        Wed,  6 Sep 2023 09:18:59 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 852D8106F;
+        Wed,  6 Sep 2023 09:19:36 -0700 (PDT)
+Received: from [10.57.5.192] (unknown [10.57.5.192])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 512F63F67D;
+        Wed,  6 Sep 2023 09:18:57 -0700 (PDT)
+Message-ID: <5d81a9cd-f96d-bcdb-7878-74c2ead26cfb@arm.com>
+Date:   Wed, 6 Sep 2023 17:18:51 +0100
 MIME-Version: 1.0
-References: <20230831063129.335425-1-leobras@redhat.com> <20230906140947.GA33104@noisy.programming.kicks-ass.net>
-In-Reply-To: <20230906140947.GA33104@noisy.programming.kicks-ass.net>
-From:   Leonardo Bras Soares Passos <leobras@redhat.com>
-Date:   Wed, 6 Sep 2023 13:15:27 -0300
-Message-ID: <CAJ6HWG7H1EtWRcNLc=Ka-PGnJ9MRQ0Ft8PHBRnwadRNRSUxjEA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/1] smp: Change function signatures to use call_single_data_t
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Guo Ren <guoren@kernel.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Imran Khan <imran.f.khan@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 0/2] KVM: x86/mmu: .change_pte() optimization in TDP MMU
+Content-Language: en-GB
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Yan Zhao <yan.y.zhao@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20230808085056.14644-1-yan.y.zhao@intel.com>
+ <ZN0S28lkbo6+D7aF@google.com> <ZN1jBFBH4C2bFjzZ@yzhao56-desk.sh.intel.com>
+ <ZN5elYQ5szQndN8n@google.com> <ZN9FQf343+kt1YsX@yzhao56-desk.sh.intel.com>
+ <ZPWBM5DDC6MKINUe@yzhao56-desk.sh.intel.com> <ZPd6Y9KJ0FfbCa0Q@google.com>
+ <5ff1591c-d41c-331f-84a6-ac690c48ff5d@arm.com> <ZPiQQ0OANuaOYdIS@google.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <ZPiQQ0OANuaOYdIS@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 11:10=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> On Thu, Aug 31, 2023 at 03:31:28AM -0300, Leonardo Bras wrote:
-> > call_single_data_t is a size-aligned typedef of struct __call_single_da=
-ta.
-> >
-> > This alignment is desirable in order to have smp_call_function*() avoid
-> > bouncing an extra cacheline in case of an unaligned csd, given this
-> > would hurt performance.
-> >
-> > Since the removal of struct request->csd in commit 660e802c76c8
-> > ("blk-mq: use percpu csd to remote complete instead of per-rq csd") the=
-re
-> > are no current users of smp_call_function*() with unaligned csd.
-> >
-> > Change every 'struct __call_single_data' function parameter to
-> > 'call_single_data_t', so we have warnings if any new code tries to
-> > introduce an smp_call_function*() call with unaligned csd.
-> >
-> > Signed-off-by: Leonardo Bras <leobras@redhat.com>
->
-> Fair enough, I'll go queue it somewhere.
->
+On 2023-09-06 15:44, Sean Christopherson wrote:
+> On Wed, Sep 06, 2023, Robin Murphy wrote:
+>> On 2023-09-05 19:59, Sean Christopherson wrote:
+>>> And if the driver *doesn't* initialize the data, then the copy is at best pointless,
+>>> and possibly even worse than leaking stale swiotlb data.
+>>
+>> Other than the overhead, done right it can't be any worse than if SWIOTLB
+>> were not involved at all.
+> 
+> Yep.
+> 
+>>> Looking at commit ddbd89deb7d3 ("swiotlb: fix info leak with DMA_FROM_DEVICE"),
+>>> IIUC the data leak was observed with a synthetic test "driver" that was developed
+>>> to verify a real data leak fixed by commit a45b599ad808 ("scsi: sg: allocate with
+>>> __GFP_ZERO in sg_build_indirect()").  Which basically proves my point: copying
+>>> from the source only adds value absent a bug in the owning driver.
+>>
+>> Huh? IIUC the bug there was that the SCSI layer failed to sanitise
+>> partially-written buffers. That bug was fixed, and the scrutiny therein
+>> happened to reveal that SWIOTLB *also* had a lower-level problem with
+>> partial writes, in that it was corrupting DMA-mapped memory which was not
+>> updated by the device. Partial DMA writes are not in themselves indicative
+>> of a bug, they may well be a valid and expected behaviour.
+> 
+> The problem is that the comment only talks about leaking data to userspace, and
+> doesn't say anything about data corruption or the "swiotlb needs to match hardware"
+> justification that Linus pointed out.  I buy both of those arguments for copying
+> data from the original page, but the "may prevent leaking swiotlb content" is IMO
+> completely nonsensical, because if preventing leakage is the only goal, then
+> explicitly initializing the memory is better in every way.
+> 
+> If no one objects, I'll put together a patch to rewrite the comment in terms of
+> mimicking hardware and not corrupting the caller's data.
 
-Thanks Peter!
+Sounds good to me. I guess the trouble is that as soon as a CVE is 
+involved it can then get hard to look past it, or want to risk appearing 
+to downplay it :)
 
+>>> IMO, rather than copying from the original memory, swiotlb_tbl_map_single() should
+>>> simply zero the original page(s) when establishing the mapping.  That would harden
+>>> all usage of swiotlb and avoid the read-before-write behavior that is problematic
+>>> for KVM.
+>>
+>> Depends on one's exact definition of "harden"... Corrupting memory with
+>> zeros is less bad than corrupting memory with someone else's data if you
+>> look at it from an information security point of view, but from a
+>> not-corrupting-memory point of view it's definitely still corrupting memory
+>> :/
+>>
+>> Taking a step back, is there not an argument that if people care about
+>> general KVM performance then they should maybe stop emulating obsolete PC
+>> hardware from 30 years ago, and at least emulate obsolete PC hardware from
+>> 20 years ago that supports 64-bit DMA?
+> 
+> Heh, I don't think there's an argument per se, people most definitely shouldn't
+> be emulating old hardware if they care about performance.  I already told Yan as
+> much.
+> 
+>> Even non-virtualised, SWIOTLB is pretty horrible for I/O performance by its
+>> very nature - avoiding it if at all possible should always be preferred.
+> 
+> Yeah.  The main reason I didn't just sweep this under the rug is the confidential
+> VM use case, where SWIOTLB is used to bounce data from guest private memory into
+> shread buffers.  There's also a good argument that anyone that cares about I/O
+> performance in confidential VMs should put in the effort to enlighten their device
+> drivers to use shared memory directly, but practically speaking that's easier said
+> than done.
+
+Indeed a bunch of work has gone into SWIOTLB recently trying to make it 
+a bit more efficient for such cases where it can't be avoided, so it is 
+definitely still interesting to learn about impacts at other levels like 
+this. Maybe there's a bit of a get-out for confidential VMs though, 
+since presumably there's not much point COW-ing encrypted private 
+memory, so perhaps KVM might end up wanting to optimise that out and 
+thus happen to end up less sensitive to unavoidable SWIOTLB behaviour 
+anyway?
+
+Cheers,
+Robin.
