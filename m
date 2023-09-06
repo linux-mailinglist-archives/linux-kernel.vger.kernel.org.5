@@ -2,175 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 117497936DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C99457936E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234659AbjIFIIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 04:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58242 "EHLO
+        id S234727AbjIFIJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 04:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234687AbjIFIIo (ORCPT
+        with ESMTP id S229613AbjIFIJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 04:08:44 -0400
-Received: from out-212.mta1.migadu.com (out-212.mta1.migadu.com [IPv6:2001:41d0:203:375::d4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D837CF4
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 01:08:12 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693987681;
+        Wed, 6 Sep 2023 04:09:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579BFCF0
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 01:08:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693987712;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cqhvozPJyOZ2dLvEvaEN6mEFv0YePr1ku/O9UOlrXRU=;
-        b=iIxpJPM73cdK4dsInHamJ3MzzFXV6/nEKenRQiyFE1arzvCbMPiQ0i1ArjNn8v6FVohm9w
-        2t3LqDkJ3FMfr64vBS6NYjlNxpiE90DNkWPfYyGA1p+/FJ5Mk7IKw7oF4odAO+Fm/cWbv8
-        /Tr6FEF2JN2NbyvLRsVZssJWtX/TDIQ=
-Mime-Version: 1.0
-Subject: Re: [PATCH v2 07/11] hugetlb: perform vmemmap restoration on a list
- of pages
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <5e091211-9a32-8480-55fb-faff6a0fadef@linux.dev>
-Date:   Wed, 6 Sep 2023 16:07:20 +0800
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <38E2F051-E00B-4104-A616-0EEB2729386F@linux.dev>
-References: <20230905214412.89152-1-mike.kravetz@oracle.com>
- <20230905214412.89152-8-mike.kravetz@oracle.com>
- <5e091211-9a32-8480-55fb-faff6a0fadef@linux.dev>
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        bh=jpgfei2mfNvSiBZbRRCl7P6mieU8IYIrOksXh8s484g=;
+        b=PWEhUvHwAMI2jAggA2m0GAjhWmJ7ObBOk8MJxIyoCLo9xXeuzNXeGoa2l5KbsMZJFpLFhM
+        guIASIf9oqy+rAXjc1xZPfqjlasmwbU4ojY6qjMXRccks3J/ruqWUmdKP//wIhkWhQEvZx
+        RIqO7T8I4z/EWnZyOT/nbrtetSqqZzQ=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-135-c-1e24ASN6iMthTlA_1eWw-1; Wed, 06 Sep 2023 04:08:31 -0400
+X-MC-Unique: c-1e24ASN6iMthTlA_1eWw-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fef5403093so3077255e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 01:08:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693987710; x=1694592510;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jpgfei2mfNvSiBZbRRCl7P6mieU8IYIrOksXh8s484g=;
+        b=hULIxWfpk12y5sRNbrq04dkzj01oLtYCzZaTZDBELTYRSjd2koHZhuhb3CzDfsPK05
+         BDOcsviW3OyWslMVF3UbehTZxG5BLTCA+fRqIlwoyILfF5MT7Tvfv0eGnWmHSCtafxtl
+         Z2T+XeDPmVNQyUlpUsJU3M/Z1MlujVced8ctIvRAiU8Bfz4mXD6LqLoKRSUg8Owsi6Nu
+         rx22q+rCi+RhHYkhDS7o8VcZZIuizz6EJmhXe4B5C64dbHjP9eZVvyRPrhnn2xPB8jnE
+         8I1KaBbaP6J0iExrmazD5agw7Bp4XWhdmMA2bvQ8+uQAuzflDgis1EAGvffMnGdQj/+J
+         hHRw==
+X-Gm-Message-State: AOJu0YzjRb0oPu6HzAO+JibMwpj43Eotvt+mQWTNP+COVOX4oQQVnFs7
+        wCcjKOg/RB1TCmrAQLyIeyaTHa8eZ2n+UVe4yENm6L7kO4eLgwGg6b3jjXxbcl9bIUK9JG+H1Kf
+        Q33Z8OijA5mxZ5IQQzD4lr7uJ1gWTozY+
+X-Received: by 2002:a7b:c3d4:0:b0:401:b0f2:88d3 with SMTP id t20-20020a7bc3d4000000b00401b0f288d3mr1770330wmj.19.1693987709929;
+        Wed, 06 Sep 2023 01:08:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFgKRZGg24VAJlwi+mt8CWKv31c7AYMp2iY70qBNPHox6O/y3ikwfE9JXwExw0xYtzhhTh2sQ==
+X-Received: by 2002:a7b:c3d4:0:b0:401:b0f2:88d3 with SMTP id t20-20020a7bc3d4000000b00401b0f288d3mr1770306wmj.19.1693987709595;
+        Wed, 06 Sep 2023 01:08:29 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70c:6c00:92a4:6f8:ff7e:6853? (p200300cbc70c6c0092a406f8ff7e6853.dip0.t-ipconnect.de. [2003:cb:c70c:6c00:92a4:6f8:ff7e:6853])
+        by smtp.gmail.com with ESMTPSA id p6-20020adfce06000000b0031ad2f9269dsm19826639wrn.40.2023.09.06.01.08.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 01:08:29 -0700 (PDT)
+Message-ID: <a371b120-5536-1054-7f09-957b427e46ff@redhat.com>
+Date:   Wed, 6 Sep 2023 10:08:28 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] LoongArch: add p?d_leaf() definitions
+Content-Language: en-US
+To:     Hongchen Zhang <zhanghongchen@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Mike Rapoport IBM)" <rppt@kernel.org>,
+        Feiyang Chen <chenfeiyang@loongson.cn>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        "Matthew Wilcox Oracle)" <willy@infradead.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+References: <20230905064955.16316-1-zhanghongchen@loongson.cn>
+ <d6012fe0-9d06-f5ac-857c-c38034bf0758@redhat.com>
+ <4a06f415-281f-b76f-ed03-211b07ccd6a4@loongson.cn>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <4a06f415-281f-b76f-ed03-211b07ccd6a4@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 06.09.23 10:06, Hongchen Zhang wrote:
+> Hi David,
+> 
+> On 2023/9/6 pm 3:42, David Hildenbrand wrote:
+>> On 05.09.23 08:49, Hongchen Zhang wrote:
+>>> When I do LTP test, LTP test case ksm06 caused panic at
+>>>      break_ksm_pmd_entry
+>>>        -> pmd_leaf (Huge page table but False)
+>>>        -> pte_present (panic)
+>>>
+>>
+>> Probably there are other problematic bits without that can trigger that?
+>> I suspect walk_page_range*() callers might be affected,
+> I rechecked the code and found that other architectures that support
+> THP have defined pmd_leaf.
+> So there is not problem on other architectures.
 
+I meant other walk_page_range*() callers on loongarch might similarly be 
+affected. IOW, KSM might not be the only bit being able to trigger such 
+panics on loongarch.
 
-> On Sep 6, 2023, at 15:33, Muchun Song <muchun.song@linux.dev> wrote:
->=20
->=20
->=20
-> On 2023/9/6 05:44, Mike Kravetz wrote:
->> When removing hugetlb pages from the pool, we first create a list
->> of removed pages and then free those pages back to low level =
-allocators.
->> Part of the 'freeing process' is to restore vmemmap for all base =
-pages
->> if necessary.  Pass this list of pages to a new routine
->> hugetlb_vmemmap_restore_folios() so that vmemmap restoration can be
->> performed in bulk.
->>=20
->> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
->> ---
->>  mm/hugetlb.c         |  3 +++
->>  mm/hugetlb_vmemmap.c | 13 +++++++++++++
->>  mm/hugetlb_vmemmap.h |  5 +++++
->>  3 files changed, 21 insertions(+)
->>=20
->> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->> index 554be94b07bd..dd2dbc256172 100644
->> --- a/mm/hugetlb.c
->> +++ b/mm/hugetlb.c
->> @@ -1838,6 +1838,9 @@ static void update_and_free_pages_bulk(struct =
-hstate *h, struct list_head *list)
->>  {
->>   struct folio *folio, *t_folio;
->>  + /* First restore vmemmap for all pages on list. */
->> + hugetlb_vmemmap_restore_folios(h, list);
->> +
->>   list_for_each_entry_safe(folio, t_folio, list, lru) {
->>   update_and_free_hugetlb_folio(h, folio, false);
->>   cond_resched();
->> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
->> index ac5577d372fe..79de984919ef 100644
->> --- a/mm/hugetlb_vmemmap.c
->> +++ b/mm/hugetlb_vmemmap.c
->> @@ -481,6 +481,19 @@ int hugetlb_vmemmap_restore(const struct hstate =
-*h, struct page *head)
->>   return ret;
->>  }
->>  +/*
->> + * This function will attempt to resore vmemmap for a list of =
-folios.  There
->> + * is no guarantee that restoration will be successful for all or =
-any folios.
->> + * This is used in bulk operations, and no feedback is given to the =
-caller.
->> + */
->> +void hugetlb_vmemmap_restore_folios(const struct hstate *h, struct =
-list_head *folio_list)
->> +{
->> + struct folio *folio;
->> +
->> + list_for_each_entry(folio, folio_list, lru)
->> + (void)hugetlb_vmemmap_restore(h, &folio->page);
->=20
-> I am curious about the purpose of "void" here, seems it it not =
-necessnary,
-> ritgh? We cound see so many palces where we do not add the void if the =
-caller
-> does not care about the return value of the callee.
+-- 
+Cheers,
 
-Another question: should we stop restoring vmemmap pages when
-hugetlb_vmemmap_restore() fails? In which case, I suspect there
-is no memory probably, there is no need to continue, right?
-
->=20
-> Thanks.
->> +}
->> +
->>  /* Return true iff a HugeTLB whose vmemmap should and can be =
-optimized. */
->>  static bool vmemmap_should_optimize(const struct hstate *h, const =
-struct page *head)
->>  {
->> diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
->> index 036494e040ca..b4ee945dc1d4 100644
->> --- a/mm/hugetlb_vmemmap.h
->> +++ b/mm/hugetlb_vmemmap.h
->> @@ -12,6 +12,7 @@
->>    #ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
->>  int hugetlb_vmemmap_restore(const struct hstate *h, struct page =
-*head);
->> +void hugetlb_vmemmap_restore_folios(const struct hstate *h, struct =
-list_head *folio_list);
->>  void hugetlb_vmemmap_optimize(const struct hstate *h, struct page =
-*head);
->>  void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct =
-list_head *folio_list);
->>  @@ -44,6 +45,10 @@ static inline int hugetlb_vmemmap_restore(const =
-struct hstate *h, struct page *h
->>   return 0;
->>  }
->>  +static inline void hugetlb_vmemmap_restore_folios(const struct =
-hstate *h, struct list_head *folio_list)
->> +{
->> +}
->> +
->>  static inline void hugetlb_vmemmap_optimize(const struct hstate *h, =
-struct page *head)
->>  {
->>  }
->=20
+David / dhildenb
 
