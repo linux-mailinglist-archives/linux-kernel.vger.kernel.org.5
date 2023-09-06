@@ -2,174 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4743793762
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6F379376D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235829AbjIFIsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 04:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41550 "EHLO
+        id S236139AbjIFItK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 04:49:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232277AbjIFIsR (ORCPT
+        with ESMTP id S235881AbjIFItC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 04:48:17 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80158E7D
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 01:47:58 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 38B962243E;
-        Wed,  6 Sep 2023 08:47:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1693990077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0uT0YFvIdeCTeE263WdlZfe3neZinltqXCqjpX729zw=;
-        b=21NqZz92+OsEE5a9/xev+KsJtysrVwI5yH5OkVNTHBXjHiP/HmE1qvNQs92sjF41gsmJEv
-        rca7+EX4iPm9W3uhzvXEkuils4PvkhMQ864WRdkD2eHWzAfrt5EyqDoz2Wq61jjI2LugAn
-        pw+ga6eLVsJEaPrfH7q5qZ0iLBfO2mU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1693990077;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0uT0YFvIdeCTeE263WdlZfe3neZinltqXCqjpX729zw=;
-        b=Yv4ga7yRQr/H6F4uobneZT4bXjAHJB1O9JB6TvbS5TJPFZputXmEpCrYcFYon7Q47xd/fN
-        uHYl8gIdoHu+R+BA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 08B8B1333E;
-        Wed,  6 Sep 2023 08:47:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 4tsoAb08+GQndAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 06 Sep 2023 08:47:57 +0000
-Message-ID: <2cb3f35b-a18c-75fa-d73e-95a4fb8cf079@suse.cz>
-Date:   Wed, 6 Sep 2023 10:47:56 +0200
+        Wed, 6 Sep 2023 04:49:02 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89012E76;
+        Wed,  6 Sep 2023 01:48:50 -0700 (PDT)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3868Z4nt021181;
+        Wed, 6 Sep 2023 08:48:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=3ADrDgev14r5OWCL9x3U1yc8Xe/xKR0+iOVCoQWm1qA=;
+ b=b3ZUkFvX7upMVYvjZr9V40lhB5DjoQW3kPPZQyoumhFWhiaPt0WCCcMgOXQjlfP22bM2
+ Yq1GE8Xze9Qj67MjSao3ZczReztp+M1aZmFoG49fAKsTP7ZUYow34+qsEwUwIJ9iYv+B
+ k9ovCYY4E8OJDF6WTVpfWE/aqxELEPzwiFEtWZZVH1LHm8Q3dE6bt9Oje9AktzdM2x/c
+ NFxxQ93BqmYRJSOWQqdjSYRcxk12lw53xIyPLq9IM7f/YKDPeDVQmOoHYJCG63hs3BJb
+ RywXhcRcdl1GIS01ngXx+2QuyrOtNNjPRzEvUe+6BtWvyvUzb37Benh0z+wkNv5HKne7 wg== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sxp1mg1f6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Sep 2023 08:48:25 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3867NFA1010355;
+        Wed, 6 Sep 2023 08:48:24 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3suugc67fd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Sep 2023 08:48:24 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3868mNAh035692;
+        Wed, 6 Sep 2023 08:48:23 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3suugc67er-1;
+        Wed, 06 Sep 2023 08:48:23 +0000
+From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        ChiaEn Wu <chiaen_wu@richtek.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com, harshit.m.mogalapalli@oracle.com
+Subject: [PATCH] power: supply: mt6370: Fix missing error code in mt6370_chg_toggle_cfo()
+Date:   Wed,  6 Sep 2023 01:48:15 -0700
+Message-ID: <20230906084815.2827930-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] slab: kmalloc_size_roundup() must not return 0 for
- non-zero size
-Content-Language: en-US
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "'linux-mm@kvack.org'" <linux-mm@kvack.org>
-Cc:     'Kees Cook' <keescook@chromium.org>,
-        'Christoph Lameter' <cl@linux.com>,
-        'Pekka Enberg' <penberg@kernel.org>,
-        'David Rientjes' <rientjes@google.com>,
-        'Joonsoo Kim' <iamjoonsoo.kim@lge.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        'Eric Dumazet' <edumazet@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-References: <fcfee37ead054de19871139167aca787@AcuMS.aculab.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <fcfee37ead054de19871139167aca787@AcuMS.aculab.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_SOFTFAIL,T_SPF_HELO_TEMPERROR autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-06_02,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
+ suspectscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309060073
+X-Proofpoint-GUID: mBA6BaxruvbDyQa6SZnY-Fl1TQfJqhVM
+X-Proofpoint-ORIG-GUID: mBA6BaxruvbDyQa6SZnY-Fl1TQfJqhVM
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please Cc: also R: folks in MAINTAINERS, adding them now.
+When mt6370_chg_field_get() suceeds, ret is set to zero and returning
+zero when flash led is still in strobe mode looks incorrect.
 
-On 9/6/23 10:18, David Laight wrote:
-> The typical use of kmalloc_size_roundup() is:
-> 	ptr = kmalloc(sz = kmalloc_size_roundup(size), ...);
-> 	if (!ptr) return -ENOMEM.
-> This means it is vitally important that the returned value isn't
-> less than the argument even if the argument is insane.
-> In particular if kmalloc_slab() fails or the value is above
-> (MAX_ULONG - PAGE_SIZE) zero is returned and kmalloc() will return
-> it's single zero-length buffer.
-> 
-> Fix by returning the input size on error or if the size exceeds
-> a 'sanity' limit.
-> kmalloc() will then return NULL is the size really is too big.
-> 
-> Signed-off-by: David Laight <david.laight@aculab.com>
-> Fixes: 05a940656e1eb ("slab: Introduce kmalloc_size_roundup()")
-> ---
-> The 'sanity limit' value doesn't really matter (even if too small)
-> It could be 'MAX_ORDER + PAGE_SHIFT' but one ppc64 has MAX_ORDER 16
-> and I don't know if that also has large pages.
+Fixes: 233cb8a47d65 ("power: supply: mt6370: Add MediaTek MT6370 charger driver")
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+This is based on static analysis with smatch, only compile tested.
+---
+ drivers/power/supply/mt6370-charger.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Well we do have KMALLOC_MAX_SIZE, which is based on MAX_ORDER + PAGE_SHIFT
-(and no issues on ppc64 so I'd expect the combination of MAX_ORDER and
-PAGE_SHIFT should always be such that it doesn't overflow on the particular
-arch) so I think it would be the most straightforward to simply use that.
-
-> Maybe it could be 1ul << 30 on 64bit, but it really doesn't matter
-> if it is too big.
-> 
-> The original patch also added kmalloc_size_roundup() to mm/slob.c
-> that can also round up a value to zero - but has since been removed.
-> 
->  mm/slab_common.c | 29 ++++++++++++++---------------
->  1 file changed, 14 insertions(+), 15 deletions(-)
-> 
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index cd71f9581e67..8418eccda8cf 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -747,22 +747,21 @@ size_t kmalloc_size_roundup(size_t size)
->  {
->  	struct kmem_cache *c;
->  
-> -	/* Short-circuit the 0 size case. */
-> -	if (unlikely(size == 0))
-> -		return 0;
-> -	/* Short-circuit saturated "too-large" case. */
-> -	if (unlikely(size == SIZE_MAX))
-> -		return SIZE_MAX;
-> -	/* Above the smaller buckets, size is a multiple of page size. */
-> -	if (size > KMALLOC_MAX_CACHE_SIZE)
-> -		return PAGE_SIZE << get_order(size);
-> +	if (size && size <= KMALLOC_MAX_CACHE_SIZE) {
-
-I guess the whole test could all be likely().
-
-Also this patch could probably be just replacing the SIZE_MAX test with >=
-KMALLOC_MAX_SIZE, but since the majority is expected to be 0 < size <=
-KMALLOC_MAX_CACHE_SIZE, your reordering makes sense to me.
-
-> +		/*
-> +		 * The flags don't matter since size_index is common to all.
-> +		 * Neither does the caller for just getting ->object_size.
-> +		 */
-> +		c = kmalloc_slab(size, GFP_KERNEL, 0);
-> +		return likely(c) ? c->object_size : size;
-> +	}
->  
-> -	/*
-> -	 * The flags don't matter since size_index is common to all.
-> -	 * Neither does the caller for just getting ->object_size.
-> -	 */
-> -	c = kmalloc_slab(size, GFP_KERNEL, 0);
-> -	return c ? c->object_size : 0;
-> +	/* Return 'size' for 0 and very large - kmalloc() may fail. */
-> +	if (unlikely((size - 1) >> (sizeof (long) == 8 ? 34 : 30)))
-
-So I'd just test for size == 0 || size > KMALLOC_MAX_SIZE?
-
-> +		return size;
-> +
-> +	/* Above the smaller buckets, size is a multiple of page size. */
-> +	return PAGE_SIZE << get_order(size);
->  }
->  EXPORT_SYMBOL(kmalloc_size_roundup);
->  
+diff --git a/drivers/power/supply/mt6370-charger.c b/drivers/power/supply/mt6370-charger.c
+index f27dae5043f5..a9641bd3d8cf 100644
+--- a/drivers/power/supply/mt6370-charger.c
++++ b/drivers/power/supply/mt6370-charger.c
+@@ -324,7 +324,7 @@ static int mt6370_chg_toggle_cfo(struct mt6370_priv *priv)
+ 
+ 	if (fl_strobe) {
+ 		dev_err(priv->dev, "Flash led is still in strobe mode\n");
+-		return ret;
++		return -EINVAL;
+ 	}
+ 
+ 	/* cfo off */
+-- 
+2.39.3
 
