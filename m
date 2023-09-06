@@ -2,79 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB44793E5E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58649793E6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241464AbjIFOKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:10:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
+        id S241512AbjIFOKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:10:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232210AbjIFOKC (ORCPT
+        with ESMTP id S233888AbjIFOKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:10:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731A3B4;
-        Wed,  6 Sep 2023 07:09:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Tt4D3SaV+KPBRyJX3TDIXz1/qOjMegHojpxvbyzkBnI=; b=SGpP4R9alvo//Vg65rp/0ue9Aw
-        s95I1yGwzMYmfGAUk3hv73Bgjhlsu78uHy24OJ1stkPjsxqQqOu+fRBJymxuEE+TX293wKm4s0AMz
-        E6CZOLY+JgIvm5TShKY7WZVVARfRifIOg0+bms6wz2j7BDvbZM0s2MQiY/7/ariuC+ujTXF15jy1i
-        Q94dIOelEIOqd8uT/wC+C3K06XQD3Fd7AOU2PyLxv8ahISq9ya4RLer9i+nlJCso0+LI7vn12oK2z
-        TuQq3sFbjz8nSmfReSU3pWtGAIj+v57PRDjo6hCthmIolfdb9oxigY0bxY1BYvpAHZb9V56bus/j+
-        lmmMKGrQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qdtE3-002vwH-KQ; Wed, 06 Sep 2023 14:09:47 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4D6FF3003F2; Wed,  6 Sep 2023 16:09:47 +0200 (CEST)
-Date:   Wed, 6 Sep 2023 16:09:47 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Leonardo Bras <leobras@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Guo Ren <guoren@kernel.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Imran Khan <imran.f.khan@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/1] smp: Change function signatures to use
- call_single_data_t
-Message-ID: <20230906140947.GA33104@noisy.programming.kicks-ass.net>
-References: <20230831063129.335425-1-leobras@redhat.com>
+        Wed, 6 Sep 2023 10:10:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639B51726;
+        Wed,  6 Sep 2023 07:10:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694009427; x=1725545427;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=F7bl2h3DX3KJUesLeL2e/fpx9L5jnQCY/nK4NgE/LN8=;
+  b=g3TfX+F5c9xs045JV9UkPGwPcOsj25+u2hqakhIJSlX5rsF/Xnj+2PbX
+   GFOUeqZxs1Omg3vIbqQoir+ARc9lysQGgTbH1lgVFKuzr2wIE3LQF5Dkl
+   LVPw/mEiJWCmdAR4HCu/aP9PXgiWO/3JSdpmPo/OaqRJcAyB+/2dFLsy4
+   fJ+zadFSrAZsoP2M8E4LWE7t6OvVY9G7h+fg3Z8loUTRNpqBR2VRVWPRh
+   gKhXFt91pM8pzQFuyWtfVd3rHmUWpC0yGL3FdxgGlD8yWVFGfkUdypJ9K
+   EQfqvoL8PafH9Q1XCCFqblVCAkFqmy9VY3mDMUPokCMjvYcGcMiit++O3
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="441049792"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="441049792"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 07:10:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="735068521"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="735068521"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 07:10:21 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qdtEY-006xYP-12;
+        Wed, 06 Sep 2023 17:10:18 +0300
+Date:   Wed, 6 Sep 2023 17:10:18 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dipen Patel <dipenp@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
+        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 02/21] gpiolib: provide gpio_device_find()
+Message-ID: <ZPiISpLoVx35PuYc@smile.fi.intel.com>
+References: <20230905185309.131295-1-brgl@bgdev.pl>
+ <20230905185309.131295-3-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230831063129.335425-1-leobras@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230905185309.131295-3-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 03:31:28AM -0300, Leonardo Bras wrote:
-> call_single_data_t is a size-aligned typedef of struct __call_single_data.
+On Tue, Sep 05, 2023 at 08:52:50PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> This alignment is desirable in order to have smp_call_function*() avoid
-> bouncing an extra cacheline in case of an unaligned csd, given this
-> would hurt performance.
+> gpiochip_find() is wrong and its kernel doc is misleading as the
+> function doesn't return a reference to the gpio_chip but just a raw
+> pointer. The chip itself is not guaranteed to stay alive, in fact it can
+> be deleted at any point. Also: other than GPIO drivers themselves,
+> nobody else has any business accessing gpio_chip structs.
 > 
-> Since the removal of struct request->csd in commit 660e802c76c8
-> ("blk-mq: use percpu csd to remote complete instead of per-rq csd") there
-> are no current users of smp_call_function*() with unaligned csd.
-> 
-> Change every 'struct __call_single_data' function parameter to
-> 'call_single_data_t', so we have warnings if any new code tries to
-> introduce an smp_call_function*() call with unaligned csd.
-> 
-> Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> Provide a new gpio_device_find() function that returns a real reference
+> to the opaque gpio_device structure that is guaranteed to stay alive for
+> as long as there are active users of it.
 
-Fair enough, I'll go queue it somewhere.
+...
+
+> +/**
+> + * gpio_device_find() - find a specific GPIO device
+> + * @data: data to pass to match function
+> + * @match: Callback function to check gpio_chip
+
+> + * Returns:
+> + * New reference to struct gpio_device.
+
+I believe this is wrong location of the Return section.
+AFAIU how kernel doc uses section markers, this entire description becomes
+a Return(s) section. Have you tried to render man/html/pdf and see this?
+
+> + * Similar to bus_find_device(). It returns a reference to a gpio_device as
+> + * determined by a user supplied @match callback. The callback should return
+> + * 0 if the device doesn't match and non-zero if it does. If the callback
+> + * returns non-zero, this function will return to the caller and not iterate
+> + * over any more gpio_devices.
+> + *
+> + * The callback takes the GPIO chip structure as argument. During the execution
+> + * of the callback function the chip is protected from being freed. TODO: This
+> + * actually has yet to be implemented.
+> + *
+> + * If the function returns non-NULL, the returned reference must be freed by
+> + * the caller using gpio_device_put().
+> + */
+> +struct gpio_device *gpio_device_find(void *data,
+
+> +				     int (*match)(struct gpio_chip *gc,
+> +						  void *data))
+
+One line?
+Or maybe a type for it? (gpio_match_fn, for example)
+
+> +{
+> +	struct gpio_device *gdev;
+> +
+> +	guard(spinlock_irqsave)(&gpio_lock);
+> +
+> +	list_for_each_entry(gdev, &gpio_devices, list) {
+> +		if (gdev->chip && match(gdev->chip, data))
+> +			return gpio_device_get(gdev);
+> +	}
+> +
+> +	return NULL;
+> +}
+
+...
+
+> +struct gpio_device *gpio_device_find(void *data,
+> +				     int (*match)(struct gpio_chip *gc,
+> +						  void *data));
+
+Ditto.
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
