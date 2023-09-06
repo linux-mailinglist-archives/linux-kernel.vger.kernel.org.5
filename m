@@ -2,49 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD5679398B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA56779398E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238622AbjIFKKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 06:10:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60548 "EHLO
+        id S238711AbjIFKKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 06:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbjIFKKL (ORCPT
+        with ESMTP id S229947AbjIFKKl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 06:10:11 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00967171D;
-        Wed,  6 Sep 2023 03:10:04 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qdpTx-0003eF-Va; Wed, 06 Sep 2023 12:09:58 +0200
-Message-ID: <4a639fff-445e-455b-9a31-57368d6b7021@leemhuis.info>
-Date:   Wed, 6 Sep 2023 12:09:56 +0200
+        Wed, 6 Sep 2023 06:10:41 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051BA9E;
+        Wed,  6 Sep 2023 03:10:38 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bceca8a41aso53487381fa.0;
+        Wed, 06 Sep 2023 03:10:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693995036; x=1694599836; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EfOqaeV+KknayCO8Oeiwloxt+zMetEN9D2laP149Llc=;
+        b=eX7iAaVjLf53GweOplBPQovNC4DitqXdyaFSGS7sS4KLCaHEsY47HRom2wt4P8QvU9
+         qF+Pv+myq4l5Etj6ij4jBQL/VbWh3uo+S2UOVwdhuVCKXu4EPs8rn1L3KNPJoRHfSVjS
+         LLbfZ7NhgiAZ/h5yq/KMVTwMJMlC2eLBbyJXXLRM4LdgK1Z6Lb2KOvam0NMSDVqki7dn
+         hn8GzHIMtIr6NUXSHuG+IZCTM+E2LXCM3tfA7SG9WEWnUdtAT8+C8Jp7wN/L9uIUuMND
+         jNf3nlHjacG2MLgTbEnl41pcFxaNnXGejI3yMOdF8Ub5zi9mEGBjG1V15d9VS4NEU8sE
+         bH/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693995036; x=1694599836;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EfOqaeV+KknayCO8Oeiwloxt+zMetEN9D2laP149Llc=;
+        b=MVs+5RAYL/CJF+ph25mnyWqHMj7ADCDv+XknKKb3NFTd57YPceJGVl7WW+NbU7ONc8
+         w0wm5MGzIRk2G2e83EEUZMb/0UUhMBPtscsn2LjFzfE+m/7YkW9ts4Qnd/USqmaPkjQ3
+         BUEOHIp9a7+CNLVmdKUO9n6aifMz2c+/q5+nngL7MYlwbvoF7J71ysVVI/hAeyb2s2b5
+         qtavY6j0khPpnHIE+81oJY4L25YZZpdOf4DCqxvkNMTy5sWRNrBAWrdkG10QMGp3+kpZ
+         ED+APKOLyJJGGHs0XY7IUEnNgreglj8c4K1sprY22cOdVi6zDoyQwEBdiT/Pk5Syd94o
+         EOzQ==
+X-Gm-Message-State: AOJu0YxQilSnoIQMtBo5B9xXlgEl6W+szWwxgrpOD4mNorqB4BY8Mfwk
+        ZLAJqvQBjDYlXhbTe2q/BPYmvlZLwyk61/TU3no=
+X-Google-Smtp-Source: AGHT+IFgpGZUTmfvyaicrKry99f2uX/eh3DtKB8c/qKcmnkcHz7uwZYtn0qD9L1QTcGEetIJKq9wCp8WNJgZPbJB/RM=
+X-Received: by 2002:a05:651c:104a:b0:2bd:180d:67b1 with SMTP id
+ x10-20020a05651c104a00b002bd180d67b1mr1816321ljm.51.1693995035890; Wed, 06
+ Sep 2023 03:10:35 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: [PATCH AUTOSEL 6.1 10/15] scsi: aacraid: Reply queue mapping to
- CPUs based on IRQ affinity
-Content-Language: en-US, de-DE
-To:     Sasha Levin <sashal@kernel.org>,
-        Sagar Biradar <sagar.biradar@microchip.com>
-Cc:     Gilbert Wu <gilbert.wu@microchip.com>,
-        John Garry <john.g.garry@oracle.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        aacraid@microsemi.com, jejb@linux.ibm.com,
-        linux-scsi@vger.kernel.org,
-        Linux kernel regressions list <regressions@lists.linux.dev>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20230829133245.520176-1-sashal@kernel.org>
- <20230829133245.520176-10-sashal@kernel.org>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-In-Reply-To: <20230829133245.520176-10-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693995005;d2075766;
-X-HE-SMSGID: 1qdpTx-0003eF-Va
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+References: <cover.1693659382.git.haibo1.xu@intel.com> <b6ef1b031e3a581f481cf19a26623388163444b4.1693659382.git.haibo1.xu@intel.com>
+ <20230904-aa8b0d8d23d391586686038a@orel>
+In-Reply-To: <20230904-aa8b0d8d23d391586686038a@orel>
+From:   Haibo Xu <xiaobo55x@gmail.com>
+Date:   Wed, 6 Sep 2023 18:10:24 +0800
+Message-ID: <CAJve8ok5cU+h1K+WJ+aDpB+u+PBo8XosUyyVbMGy-xR0XiWFdw@mail.gmail.com>
+Subject: Re: [PATCH v2 7/8] KVM: riscv: selftest: Change vcpu_has_ext to a
+ common function
+To:     Andrew Jones <ajones@ventanamicro.com>
+Cc:     Haibo Xu <haibo1.xu@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Guo Ren <guoren@kernel.org>,
+        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+        wchen <waylingii@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Lei Wang <lei4.wang@intel.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Like Xu <likexu@tencent.com>, Peter Gonda <pgonda@google.com>,
+        Thomas Huth <thuth@redhat.com>,
+        =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Michal Luczaj <mhal@rbox.co>, Paul Durrant <paul@xen.org>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        kvm-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -53,168 +105,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.08.23 15:32, Sasha Levin wrote:
-> From: Sagar Biradar <sagar.biradar@microchip.com>
-> 
-> [ Upstream commit 9dc704dcc09eae7d21b5da0615eb2ed79278f63e ]
-> 
-> Fix the I/O hang that arises because of the MSIx vector not having a mapped
-> online CPU upon receiving completion.
+On Mon, Sep 4, 2023 at 10:04=E2=80=AFPM Andrew Jones <ajones@ventanamicro.c=
+om> wrote:
+>
+> On Sat, Sep 02, 2023 at 08:59:29PM +0800, Haibo Xu wrote:
+> > diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/t=
+esting/selftests/kvm/riscv/get-reg-list.c
+> > index d8ecacd03ecf..c4028bf32e3f 100644
+> > --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> > +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> > @@ -44,20 +44,6 @@ bool check_reject_set(int err)
+> >       return err =3D=3D EINVAL;
+> >  }
+> >
+> > -static inline bool vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
+> > -{
+> > -     int ret;
+> > -     unsigned long value;
+> > -
+> > -     ret =3D __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
+> > -     if (ret) {
+> > -             printf("Failed to get ext %d", ext);
+> > -             return false;
+> > -     }
+> > -
+> > -     return !!value;
+>
+> get-reg-list will now assert on get-reg when an extension isn't present,
+> rather than failing the __TEST_REQUIRE(), which would do a skip instead.
+> We need both the return false version and the assert version.
+>
 
-Sasha: you might want to consider dropping this from the 6.1 and 5.15
-autosel queues for now, as this commit apparently causes a regression:
-https://bugzilla.kernel.org/show_bug.cgi?id=217599
+Ok, Will keep this one for get-reg-list and add another one for
+arch-timer specific usage.
 
-Sagar Biradar: as this is a commit of yours; could you please look into
-the report? It was bisected a few weeks ago, but I suspect nobody told
-you. Ahh, the joys of bugzilla.
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
-
-> SCSI cmds take the blk_mq route, which is setup during init. Reserved cmds
-> fetch the vector_no from mq_map after init is complete. Before init, they
-> have to use 0 - as per the norm.
-> 
-> Reviewed-by: Gilbert Wu <gilbert.wu@microchip.com>
-> Signed-off-by: Sagar Biradar <Sagar.Biradar@microchip.com>
-> Reviewed-by: John Garry <john.g.garry@oracle.com>
-> Link: https://lore.kernel.org/r/20230519230834.27436-1-sagar.biradar@microchip.com
-> Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/scsi/aacraid/aacraid.h |  1 +
->  drivers/scsi/aacraid/commsup.c |  6 +++++-
->  drivers/scsi/aacraid/linit.c   | 14 ++++++++++++++
->  drivers/scsi/aacraid/src.c     | 25 +++++++++++++++++++++++--
->  4 files changed, 43 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/scsi/aacraid/aacraid.h b/drivers/scsi/aacraid/aacraid.h
-> index 5e115e8b2ba46..7c6efde75da66 100644
-> --- a/drivers/scsi/aacraid/aacraid.h
-> +++ b/drivers/scsi/aacraid/aacraid.h
-> @@ -1678,6 +1678,7 @@ struct aac_dev
->  	u32			handle_pci_error;
->  	bool			init_reset;
->  	u8			soft_reset_support;
-> +	u8			use_map_queue;
->  };
->  
->  #define aac_adapter_interrupt(dev) \
-> diff --git a/drivers/scsi/aacraid/commsup.c b/drivers/scsi/aacraid/commsup.c
-> index deb32c9f4b3e6..3f062e4013ab6 100644
-> --- a/drivers/scsi/aacraid/commsup.c
-> +++ b/drivers/scsi/aacraid/commsup.c
-> @@ -223,8 +223,12 @@ int aac_fib_setup(struct aac_dev * dev)
->  struct fib *aac_fib_alloc_tag(struct aac_dev *dev, struct scsi_cmnd *scmd)
->  {
->  	struct fib *fibptr;
-> +	u32 blk_tag;
-> +	int i;
->  
-> -	fibptr = &dev->fibs[scsi_cmd_to_rq(scmd)->tag];
-> +	blk_tag = blk_mq_unique_tag(scsi_cmd_to_rq(scmd));
-> +	i = blk_mq_unique_tag_to_tag(blk_tag);
-> +	fibptr = &dev->fibs[i];
->  	/*
->  	 *	Null out fields that depend on being zero at the start of
->  	 *	each I/O
-> diff --git a/drivers/scsi/aacraid/linit.c b/drivers/scsi/aacraid/linit.c
-> index 5ba5c18b77b46..bff49b8ab057d 100644
-> --- a/drivers/scsi/aacraid/linit.c
-> +++ b/drivers/scsi/aacraid/linit.c
-> @@ -19,6 +19,7 @@
->  
->  #include <linux/compat.h>
->  #include <linux/blkdev.h>
-> +#include <linux/blk-mq-pci.h>
->  #include <linux/completion.h>
->  #include <linux/init.h>
->  #include <linux/interrupt.h>
-> @@ -505,6 +506,15 @@ static int aac_slave_configure(struct scsi_device *sdev)
->  	return 0;
->  }
->  
-> +static void aac_map_queues(struct Scsi_Host *shost)
-> +{
-> +	struct aac_dev *aac = (struct aac_dev *)shost->hostdata;
-> +
-> +	blk_mq_pci_map_queues(&shost->tag_set.map[HCTX_TYPE_DEFAULT],
-> +			      aac->pdev, 0);
-> +	aac->use_map_queue = true;
-> +}
-> +
->  /**
->   *	aac_change_queue_depth		-	alter queue depths
->   *	@sdev:	SCSI device we are considering
-> @@ -1489,6 +1499,7 @@ static struct scsi_host_template aac_driver_template = {
->  	.bios_param			= aac_biosparm,
->  	.shost_groups			= aac_host_groups,
->  	.slave_configure		= aac_slave_configure,
-> +	.map_queues			= aac_map_queues,
->  	.change_queue_depth		= aac_change_queue_depth,
->  	.sdev_groups			= aac_dev_groups,
->  	.eh_abort_handler		= aac_eh_abort,
-> @@ -1776,6 +1787,8 @@ static int aac_probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
->  	shost->max_lun = AAC_MAX_LUN;
->  
->  	pci_set_drvdata(pdev, shost);
-> +	shost->nr_hw_queues = aac->max_msix;
-> +	shost->host_tagset = 1;
->  
->  	error = scsi_add_host(shost, &pdev->dev);
->  	if (error)
-> @@ -1908,6 +1921,7 @@ static void aac_remove_one(struct pci_dev *pdev)
->  	struct aac_dev *aac = (struct aac_dev *)shost->hostdata;
->  
->  	aac_cancel_rescan_worker(aac);
-> +	aac->use_map_queue = false;
->  	scsi_remove_host(shost);
->  
->  	__aac_shutdown(aac);
-> diff --git a/drivers/scsi/aacraid/src.c b/drivers/scsi/aacraid/src.c
-> index 11ef58204e96f..61949f3741886 100644
-> --- a/drivers/scsi/aacraid/src.c
-> +++ b/drivers/scsi/aacraid/src.c
-> @@ -493,6 +493,10 @@ static int aac_src_deliver_message(struct fib *fib)
->  #endif
->  
->  	u16 vector_no;
-> +	struct scsi_cmnd *scmd;
-> +	u32 blk_tag;
-> +	struct Scsi_Host *shost = dev->scsi_host_ptr;
-> +	struct blk_mq_queue_map *qmap;
->  
->  	atomic_inc(&q->numpending);
->  
-> @@ -505,8 +509,25 @@ static int aac_src_deliver_message(struct fib *fib)
->  		if ((dev->comm_interface == AAC_COMM_MESSAGE_TYPE3)
->  			&& dev->sa_firmware)
->  			vector_no = aac_get_vector(dev);
-> -		else
-> -			vector_no = fib->vector_no;
-> +		else {
-> +			if (!fib->vector_no || !fib->callback_data) {
-> +				if (shost && dev->use_map_queue) {
-> +					qmap = &shost->tag_set.map[HCTX_TYPE_DEFAULT];
-> +					vector_no = qmap->mq_map[raw_smp_processor_id()];
-> +				}
-> +				/*
-> +				 *	We hardcode the vector_no for
-> +				 *	reserved commands as a valid shost is
-> +				 *	absent during the init
-> +				 */
-> +				else
-> +					vector_no = 0;
-> +			} else {
-> +				scmd = (struct scsi_cmnd *)fib->callback_data;
-> +				blk_tag = blk_mq_unique_tag(scsi_cmd_to_rq(scmd));
-> +				vector_no = blk_mq_unique_tag_to_hwq(blk_tag);
-> +			}
-> +		}
->  
->  		if (native_hba) {
->  			if (fib->flags & FIB_CONTEXT_FLAG_NATIVE_HBA_TMF) {
+> > -}
+> > -
+> >  void finalize_vcpu(struct kvm_vcpu *vcpu, struct vcpu_reg_list *c)
+> >  {
+> >       struct vcpu_reg_sublist *s;
+> > --
+> > 2.34.1
+> >
+>
+> Thanks,
+> drew
