@@ -2,78 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2BC793B90
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E7C793B93
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234644AbjIFLjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41768 "EHLO
+        id S237248AbjIFLmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:42:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233969AbjIFLjy (ORCPT
+        with ESMTP id S233793AbjIFLmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:39:54 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D7B2A8
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:39:49 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9a645e54806so475388166b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 04:39:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694000388; x=1694605188; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=i6139+D6DWYBEQFbYVRHbB1M+9Vyz8rmHNEFxByoPP0=;
-        b=DXrpyxS4HGSMeCegmtzGkdl4q6nVFlGI1LTKrueU/a8DLUjT2ElkB7bKAunLydCGGL
-         tf3UiaBy3DPaKQg5RNGCf9IjJkiEdASztwWrnAdjHv24Mei6gE4jrwqdEufRWkq1lwOG
-         XL38ovyvnxC8Nn6ILYM2PN+smLaWlb+896nG0x5/1Hwy1+w05C+tRY5Qe0dHxfNy7FM2
-         3j5qoeS4czLTSG6l0AYyoniquVPDEye9eh/roxIMNC8IylXHFALZpYZkMK3GrZmqoVNE
-         ZN5QgeB7/hX2LQ+d+Vii0bwLArJ1JzRYAxBYFfFO3soHOypBOydOlxj9sRsxgg6D98TI
-         P+aA==
+        Wed, 6 Sep 2023 07:42:16 -0400
+Received: from mail-pj1-f77.google.com (mail-pj1-f77.google.com [209.85.216.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938F9CA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:42:12 -0700 (PDT)
+Received: by mail-pj1-f77.google.com with SMTP id 98e67ed59e1d1-26ecc4795a4so3959776a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 04:42:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694000388; x=1694605188;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i6139+D6DWYBEQFbYVRHbB1M+9Vyz8rmHNEFxByoPP0=;
-        b=MqkoxZ4to8JUbxf6aywPbwld6mr8r7XrUXOL1zWhFN1BZ+WkIh5zsr+qvHi3SkdU4m
-         aw+L2zWiFFZmlA7blPfeuR0NFE1GlJHeF2xQl0ntjY/bDaR8PgFAgkACNqrdK0VXBacb
-         tPlQs/Oqq4vRCCZQZsaaj20UuGqs/tkjoG18bd1ba+gj9ZuCgodU3vIUumg+8wXaOsDC
-         VzK2zE2TYjmd8ZAX44/3OfpEjsyFuKOwXhTKuj/U/67c3P4PEKyRFS1B6SbhDve4Lbyp
-         3TpZK3avBN+oJTIU3Uc3Q092Mcsu3p98kCNZ4asXn3LHeYfvjmX2k6KGv4mlPhZmkRmy
-         JCMw==
-X-Gm-Message-State: AOJu0YyZiTz5RkkM+ImiXewypca1rKFKiIgk28EDcG3MHdE5ZFOEQlpu
-        Vs/j3ZDlROE3G7PUKg1wnwisJA==
-X-Google-Smtp-Source: AGHT+IGqFj+iPyflVwiAkrWZiS4zdN6+gwVCT2jc689Q3pjrCCMR5l4L0szRSVolWGaS5u8WlpXQZQ==
-X-Received: by 2002:a17:906:3149:b0:9a1:be5b:f499 with SMTP id e9-20020a170906314900b009a1be5bf499mr1663852eje.24.1694000388047;
-        Wed, 06 Sep 2023 04:39:48 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id qx12-20020a170906fccc00b0099bd86f9248sm8871714ejb.63.2023.09.06.04.39.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 04:39:47 -0700 (PDT)
-Message-ID: <fe346849-cd0f-aee5-9ab9-ea581025329b@linaro.org>
-Date:   Wed, 6 Sep 2023 13:39:46 +0200
+        d=1e100.net; s=20221208; t=1694000532; x=1694605332;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mgm4FvWa3BKSRlLi2OGqzTICf6l825wM16V78xPPAuI=;
+        b=lpVT0dPtB4cHKY05qfpPzmlrcVRhF2UBaElCR2K3zXBKfxnGkOtBAdSAMYiS5bSlHm
+         HFe0t30Rl7n4myagR44zJkG69pENePZn07QYQI4dsJh/1aXUldH7S4rZbmU/RiI1citn
+         7sw+cd2xtJ00wspDBMFnJiqLB2jFhLYB3mhdrp3HbIAEg5z3/MNlskMuhrYGLdM/Km9y
+         E/opxxKafCJeN2mElYQmOpjOQreBzmoapSLmHfJjeukeehbMgTAXZVSVb/IJngRWmNv6
+         3qeLKlhivl4U5PQhIJ48XAuJKlPjK+aOpLzn9xpkJLO4EnEu+6Dv5UHW8R1ToFsMGTxB
+         T9VA==
+X-Gm-Message-State: AOJu0YznJ4zdn3BFtjb82wHwEy67V54GTTBm2HxBNYlAO2jE494/zm69
+        +gOX2M3Cx7gTM/WIOTkRCcWGdAxvSr1LbPwaF2k+dXgeMTrW
+X-Google-Smtp-Source: AGHT+IHQYLZtz6vLjN0KeGAyveKhAq6Q0dCa+xbTebR1FxdE03KP0paQKULbcKxiqtdNz+wFxUM88ytkroo+z7iduvzlXH6UaEqx
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/6] arm64: dts: qcom: sm8550-mtp: use correct UFS supply
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230906104744.163479-1-krzysztof.kozlowski@linaro.org>
- <9c7fae56-85a2-4691-8192-24237761d25c@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <9c7fae56-85a2-4691-8192-24237761d25c@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Received: by 2002:a17:902:d48e:b0:1bc:1189:16d with SMTP id
+ c14-20020a170902d48e00b001bc1189016dmr5569688plg.3.1694000532076; Wed, 06 Sep
+ 2023 04:42:12 -0700 (PDT)
+Date:   Wed, 06 Sep 2023 04:42:11 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f6bf6d0604af3b95@google.com>
+Subject: [syzbot] [dri?] WARNING in drm_syncobj_array_find
+From:   syzbot <syzbot+95416f957d84e858b377@syzkaller.appspotmail.com>
+To:     airlied@gmail.com, christian.koenig@amd.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        sumit.semwal@linaro.org, syzkaller-bugs@googlegroups.com,
+        tzimmermann@suse.de
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,21 +58,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/09/2023 13:28, Konrad Dybcio wrote:
-> On 6.09.2023 12:47, Krzysztof Kozlowski wrote:
->> According to schematics the VCCQ2 supply is not connected and the L3G
->> regulator instead powers up the controller pads (VDD_PX10).  Use correct
->> supply vdd-hba and drop unsupported current limit for the vdd-hba.
-> Why is it unsupported?
+Hello,
 
-Maybe I was here not precise. I move the regulator from vccq2 to
-vdd-hba. vccq2 has control of current in UFS core driver. Bindings also
-allow it.
+syzbot found the following issue on:
 
-vdd-hba does not have current control in UFS (ignored) and bindings do
-not allow such max-microamp property. Why? I don't know. That's how it
-is done.
+HEAD commit:    0468be89b3fa Merge tag 'iommu-updates-v6.6' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13571367a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=39744401c57166fc
+dashboard link: https://syzkaller.appspot.com/bug?extid=95416f957d84e858b377
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111c39a8680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1267d83fa80000
 
-Best regards,
-Krzysztof
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-0468be89.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7feba36779de/vmlinux-0468be89.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b1cdc0506491/bzImage-0468be89.xz
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+95416f957d84e858b377@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 2 PID: 5141 at mm/page_alloc.c:4415 __alloc_pages+0x3ab/0x4a0 mm/page_alloc.c:4415
+Modules linked in:
+CPU: 2 PID: 5141 Comm: syz-executor127 Not tainted 6.5.0-syzkaller-10885-g0468be89b3fa #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:__alloc_pages+0x3ab/0x4a0 mm/page_alloc.c:4415
+Code: ff ff 00 0f 84 2f fe ff ff 80 ce 01 e9 27 fe ff ff 83 fe 0a 0f 86 3a fd ff ff 80 3d c9 37 e6 0c 00 75 09 c6 05 c0 37 e6 0c 01 <0f> 0b 45 31 f6 e9 97 fe ff ff e8 b6 10 9e ff 84 c0 0f 85 8a fe ff
+RSP: 0018:ffffc900030b7a18 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000040cc0 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000016 RDI: 0000000000040cc0
+RBP: 1ffff92000616f44 R08: 0000000000000005 R09: 0000000000000000
+R10: 00000000ffffff1f R11: 0000000000000000 R12: 0000000000000016
+R13: 0000000000000000 R14: ffffffff84b4e215 R15: ffff888013722000
+FS:  00005555555a4380(0000) GS:ffff88806b800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200001c0 CR3: 000000002accd000 CR4: 0000000000350ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __alloc_pages_node include/linux/gfp.h:237 [inline]
+ alloc_pages_node include/linux/gfp.h:260 [inline]
+ __kmalloc_large_node+0x87/0x1c0 mm/slab_common.c:1164
+ __do_kmalloc_node mm/slab_common.c:1011 [inline]
+ __kmalloc.cold+0xb/0xe0 mm/slab_common.c:1036
+ kmalloc_array include/linux/slab.h:636 [inline]
+ drm_syncobj_array_find+0x35/0x3c0 drivers/gpu/drm/drm_syncobj.c:1246
+ drm_syncobj_timeline_signal_ioctl+0x21f/0x860 drivers/gpu/drm/drm_syncobj.c:1533
+ drm_ioctl_kernel+0x280/0x4c0 drivers/gpu/drm/drm_ioctl.c:789
+ drm_ioctl+0x5cb/0xbf0 drivers/gpu/drm/drm_ioctl.c:892
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7ff62d53f129
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe7c669ea8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffe7c66a078 RCX: 00007ff62d53f129
+RDX: 0000000020000500 RSI: 00000000c01864cd RDI: 0000000000000003
+RBP: 00007ff62d5b2610 R08: 0023647261632f69 R09: 00007ffe7c66a078
+R10: 000000000000001f R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffe7c66a068 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
