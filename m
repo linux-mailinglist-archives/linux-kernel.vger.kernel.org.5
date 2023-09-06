@@ -2,117 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88EA97942FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6247942FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243782AbjIFSVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 14:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53382 "EHLO
+        id S243847AbjIFSVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 14:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237740AbjIFSVW (ORCPT
+        with ESMTP id S237740AbjIFSVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 14:21:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD29F10C8
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 11:21:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694024478; x=1725560478;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=TMEii4Jj19WYLeTuZA4EsMmAdVxojylah3wKsp6y6/Y=;
-  b=UWA020pmzqLSHlTxTsYu7DFDST+KzVd+wBR5KsbTxRm3dE104XhY9XUa
-   tO4SStLpyt5Y/ZwFioLEDV27pclOpP4vIJ8y9+ERQp5/XubCwd7/e4i3s
-   f0OKuBEaBDhcsE13LatSunC5QEiMTIU3ILrAmx77d1d96bESJ93M85rZy
-   vlxKhgJUKDnVCWTZdqhI1a29DOjDQcfdUWAinv73IQVQDIYhv9G1pA/iY
-   adP/8PPz460gZueTH3mFQW9ioSprXr5wYFU6fLyz/3izTQxq7F8rXO+E9
-   HHCIlY2Wmr5EaHj+QOIDSHV3uPCANdbuQ8YCeTaRSp7ke+FnmojEjcKCR
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="408155775"
-X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
-   d="scan'208";a="408155775"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 11:21:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="807131113"
-X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
-   d="scan'208";a="807131113"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 11:21:17 -0700
-Date:   Wed, 6 Sep 2023 11:21:16 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        Babu Moger <babu.moger@amd.com>
-Cc:     Amit Singh Tomar <amitsinght@marvell.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        George Cherian <gcherian@marvell.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "peternewman@google.com" <peternewman@google.com>,
-        Drew Fustini <dfustini@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: resctrl2 - status
-Message-ID: <ZPjDHN0nvHz9kWFn@agluck-desk3>
-References: <DS7PR11MB6077FE180B11A9138D8E7ED7FC1DA@DS7PR11MB6077.namprd11.prod.outlook.com>
- <35f05064-a412-ad29-5352-277fb147bbc4@intel.com>
- <SJ1PR11MB6083BC6B330FA7B7DFD3E76AFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <dc4cd365-2a02-32a3-da78-7ba745877e97@intel.com>
- <SJ1PR11MB6083C0ED50E9B644F4AF8E4BFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
- <ZOkU+d4AsLGSAG+y@agluck-desk3>
- <b48fe955-c1b4-4aeb-1ab0-bf26e56e1f0e@intel.com>
- <ZOlRNTq3lE7VNHjU@agluck-desk3>
- <9742f177-a0ce-c5d3-5d92-90dda32f5d07@intel.com>
+        Wed, 6 Sep 2023 14:21:43 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CADEB10CA;
+        Wed,  6 Sep 2023 11:21:36 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-76dc7b0da9fso8719385a.1;
+        Wed, 06 Sep 2023 11:21:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694024496; x=1694629296; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zklSHdsI2UWJPNn1ecr8Eo6vQMjVOJa/0zR4bl3TAqc=;
+        b=I4AfqcsyHgvp/9XkeB99SsAy4veuUaDrizA78uwUUwxNCDBpVp5AHH7RK/BOX9RYLu
+         Cb2FF0FDDWsk+MZvegfm8+9B2UxIOJXLQ4zQLurZLTzwFag3a9gm+abt+xZR3C+xDrOW
+         bn9eGcvlRLbPEJP3mMPabyiwOn3biErJrazNfQcTQAUnj82HFGfIr+fdK5yv2Y+YpSn6
+         jjJcgnnRQPMrML2CEUvLmXAyEuniOsgrMZd/xKzSkLr2oKRaK4FIUul87U4Ysr9BoIje
+         MfbE/ixwHrOW8WKjICw6I+g9RhQjddCxB2yzsOOKYyQS3ksSu9XS10/kcNfTsiDQt8MI
+         TeSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694024496; x=1694629296;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zklSHdsI2UWJPNn1ecr8Eo6vQMjVOJa/0zR4bl3TAqc=;
+        b=J9hm5rqRfA3Zhpog8o4346ky9DdNaZVAvxqBmraS/3MtpdUEIJEkMdelFBU+jIgJY1
+         77RhZBmrZu1IZwuutq4bpQ3oQqMuYrgwpGGDcJ8Z1aZg0QrYGejdfmV7qXv/6d7hiVlI
+         U5hXdq2njhWgyN8hiYXfr8m/4cxtV+vECZCA7aRxnshx/gI4++HyWBJbIvt56RKsfQ3P
+         R7mBomqDA0HIf8+Jnasg+anlKs7EEoLkznHcWpo/xK2E+PRB39N2YLtqkkxrOg9HUKU9
+         j5cX79mif/GytHzxkCifkfvepu+vuwY8XRwYYQP8u8R239FfyRU55W3YwZKlUfwUHt1v
+         /Oxg==
+X-Gm-Message-State: AOJu0YyKaWkTkPVWdfldVWJEKUd/ut6aol2CVVCILltwXU+ARbffwZ6c
+        fE5BIL+cfTxZkH2YYmgWVb8=
+X-Google-Smtp-Source: AGHT+IGHLnABm96FdDRUcT50m1IX58j6HqwLhDE/W1lxdQtnCSL26QzqbxI+re/ZCl4UzGIAe5nrRQ==
+X-Received: by 2002:a05:620a:248a:b0:76e:f5c5:1bac with SMTP id i10-20020a05620a248a00b0076ef5c51bacmr19230155qkn.48.1694024495823;
+        Wed, 06 Sep 2023 11:21:35 -0700 (PDT)
+Received: from pm2-ws13.praxislan02.com (207-172-141-204.s8906.c3-0.slvr-cbr1.lnh-slvr.md.cable.rcncustomer.com. [207.172.141.204])
+        by smtp.gmail.com with ESMTPSA id f9-20020a05620a15a900b0076ee82f7726sm5090024qkk.132.2023.09.06.11.21.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 11:21:34 -0700 (PDT)
+From:   Jason Andryuk <jandryuk@gmail.com>
+To:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>
+Cc:     Roger Pau Monne <roger.pau@citrix.com>, stable@vger.kernel.org,
+        Jason Andryuk <jandryuk@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+Subject: [PATCH v2] acpi/processor: sanitize _PDC buffer bits when running as Xen dom0
+Date:   Wed,  6 Sep 2023 14:21:23 -0400
+Message-ID: <20230906182125.48642-1-jandryuk@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9742f177-a0ce-c5d3-5d92-90dda32f5d07@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Roger Pau Monne <roger.pau@citrix.com>
 
-On Mon, Aug 28, 2023 at 07:50:12AM -0700, Reinette Chatre wrote:
-> heh ... sounds familiar to "To transition smoothly it may be required
-> for all currently supported features to be loaded by default". It is not
-> obvious to me how this also closes the other opens.
+The Processor _PDC buffer bits notify ACPI of the OS capabilities, and
+so ACPI can adjust the return of other Processor methods taking the OS
+capabilities into account.
 
-Reinette,
+When Linux is running as a Xen dom0, it's the hypervisor the entity
+in charge of processor power management, and hence Xen needs to make
+sure the capabilities reported in the _PDC buffer match the
+capabilities of the driver in Xen.
 
-It seems unlikley that I'll be able to close every open. But I'll
-keep trying as you point them out.
+Introduce a small helper to sanitize the buffer when running as Xen
+dom0.
 
-I've just pushed an updated set of patches to:
+When Xen supports HWP, this serves as the equivalent of commit
+a21211672c9a ("ACPI / processor: Request native thermal interrupt
+handling via _OSC") to avoid SMM crashes.  Xen will set bit 12 in the
+_PDC bits and the _PDC call will apply it.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/aegl/linux.git resctrl_v65
+[ jandryuk: Mention Xen HWP's need.  Move local variables ]
+Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
+---
+v2:
+Move local variables in acpi_processor_eval_pdc() to reuse in both conditions.
+---
+ arch/x86/include/asm/xen/hypervisor.h |  6 ++++++
+ arch/x86/xen/enlighten.c              | 19 +++++++++++++++++++
+ drivers/acpi/processor_pdc.c          | 22 ++++++++++++++++------
+ 3 files changed, 41 insertions(+), 6 deletions(-)
 
-Rebased to v6.5. Includes the module auto-load code discussed in
-previous e-mail.
+diff --git a/arch/x86/include/asm/xen/hypervisor.h b/arch/x86/include/asm/xen/hypervisor.h
+index 5fc35f889cd1..0f88a7e450d3 100644
+--- a/arch/x86/include/asm/xen/hypervisor.h
++++ b/arch/x86/include/asm/xen/hypervisor.h
+@@ -63,4 +63,10 @@ void __init xen_pvh_init(struct boot_params *boot_params);
+ void __init mem_map_via_hcall(struct boot_params *boot_params_p);
+ #endif
+ 
++#ifdef CONFIG_XEN_DOM0
++void xen_sanitize_pdc(uint32_t *buf);
++#else
++static inline void xen_sanitize_pdc(uint32_t *buf) { BUG(); }
++#endif
++
+ #endif /* _ASM_X86_XEN_HYPERVISOR_H */
+diff --git a/arch/x86/xen/enlighten.c b/arch/x86/xen/enlighten.c
+index b8db2148c07d..9f7fc11330a3 100644
+--- a/arch/x86/xen/enlighten.c
++++ b/arch/x86/xen/enlighten.c
+@@ -346,3 +346,22 @@ void xen_arch_unregister_cpu(int num)
+ }
+ EXPORT_SYMBOL(xen_arch_unregister_cpu);
+ #endif
++
++#ifdef CONFIG_XEN_DOM0
++void xen_sanitize_pdc(uint32_t *buf)
++{
++	struct xen_platform_op op = {
++		.cmd			= XENPF_set_processor_pminfo,
++		.interface_version	= XENPF_INTERFACE_VERSION,
++		.u.set_pminfo.id	= -1,
++		.u.set_pminfo.type	= XEN_PM_PDC,
++	};
++	int ret;
++
++	set_xen_guest_handle(op.u.set_pminfo.pdc, buf);
++	ret = HYPERVISOR_platform_op(&op);
++	if (ret)
++		pr_info("sanitize of _PDC buffer bits from Xen failed: %d\n",
++		        ret);
++}
++#endif
+diff --git a/drivers/acpi/processor_pdc.c b/drivers/acpi/processor_pdc.c
+index 18fb04523f93..9393dd4a3158 100644
+--- a/drivers/acpi/processor_pdc.c
++++ b/drivers/acpi/processor_pdc.c
+@@ -122,6 +122,11 @@ static acpi_status
+ acpi_processor_eval_pdc(acpi_handle handle, struct acpi_object_list *pdc_in)
+ {
+ 	acpi_status status = AE_OK;
++	union acpi_object *obj;
++	u32 *buffer = NULL;
++
++	obj = pdc_in->pointer;
++	buffer = (u32 *)(obj->buffer.pointer);
+ 
+ 	if (boot_option_idle_override == IDLE_NOMWAIT) {
+ 		/*
+@@ -129,14 +134,19 @@ acpi_processor_eval_pdc(acpi_handle handle, struct acpi_object_list *pdc_in)
+ 		 * mode will be disabled in the parameter of _PDC object.
+ 		 * Of course C1_FFH access mode will also be disabled.
+ 		 */
+-		union acpi_object *obj;
+-		u32 *buffer = NULL;
+-
+-		obj = pdc_in->pointer;
+-		buffer = (u32 *)(obj->buffer.pointer);
+ 		buffer[2] &= ~(ACPI_PDC_C_C2C3_FFH | ACPI_PDC_C_C1_FFH);
+-
+ 	}
++
++	if (xen_initial_domain()) {
++		/*
++		 * When Linux is running as Xen dom0, the hypervisor is the
++		 * entity in charge of the processor power management, and so
++		 * Xen needs to check the OS capabilities reported in the _PDC
++		 * buffer matches what the hypervisor driver supports.
++		 */
++		xen_sanitize_pdc(buffer);
++	}
++
+ 	status = acpi_evaluate_object(handle, "_PDC", pdc_in, NULL);
+ 
+ 	if (ACPI_FAILURE(status))
+-- 
+2.41.0
 
-James: 
-
-I'm now hoping for some feedback from ARM folks on whether this is a
-useful direction. Is it possible to implement MPAM features on top of
-this base architecture independent layer. If not, am I just missing
-some simple extensions that you will need. Or is there some fundamental
-problem that looks hard/impossible to resolve?
-
-Babu:
-
-Can you try this out on an AMD system. I think I covered most of the
-existing AMD resctrl features, but I have no machine to test the code
-on, so very likely there are bugs in these code paths.
-
-I'd like to make any needed changes now, before I start breaking this
-into reviewable bite-sized patches to avoid too much churn.
-
--Tony
