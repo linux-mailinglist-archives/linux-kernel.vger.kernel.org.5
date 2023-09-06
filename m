@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3022B7938AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77617938AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235121AbjIFJoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 05:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50102 "EHLO
+        id S237506AbjIFJop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 05:44:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232279AbjIFJof (ORCPT
+        with ESMTP id S232279AbjIFJoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 05:44:35 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECA01997
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 02:44:09 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso507549666b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 02:44:09 -0700 (PDT)
+        Wed, 6 Sep 2023 05:44:44 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB8E1BF6
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 02:44:16 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50079d148aeso5764176e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 02:44:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693993446; x=1694598246; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1693993453; x=1694598253; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Kceo6UNyVAWBxiYbjByhIfn5Dymn9L1sOTGNJrZDBbU=;
-        b=wHPV+cSyrQ1rFl96ksu6Ao48hdKsoGwUVX2qTkHI+JsLwAitwrH2RwOD+rJViCTxuG
-         6lrQytsIVb3ePcShxbk8q59ek6zrWraYyct4dXq1uCKgMuLq9lDvV/95SAW0AfbxYzF8
-         ClURWGLwtIypDYN/hEX5Zl1xxWW8GIfor+q8/yXzjsboP2eXSYGlT22tsVTiPIo1B1U7
-         VLnSgwm0NAxdMUUphEwzgot1H41OhOvJQHUMVYSI8jeL6v2+8nLqn58Nnh9PVK4zTgVR
-         IfelkINBCB6mejJ7bfxJYxgZG0cWDa7RiJi+S9wFjMQjtWH1EO02FtyQFQm/+LV8z+8V
-         y/0Q==
+        bh=GBQXHUH6DtatCcRxzVcXALsRjVBvhgw7/R+Y8UEZ+zo=;
+        b=VHHQ/BKpJUT+OzOq/k5+ULkQi+Yr+j4I0RFuctc7TDyUbJ7T7w0EdJSnYYGIq41f9R
+         ucbAo2++RbH32/DBYhfxRv/XeJo69fvxuKshwQIY9RDbou6XIv7rLzUyRsvqBX4UCZfd
+         5GiPXi9RvUsjDTzDQX370f73nMOGVLGiJ3npoFx7gnTmWc++ttfgQEyec0sEn6mwmhPv
+         JE90fKH9fST4gak3QMSXEHmGN4D7jbL/ad44pFrFHy2jyPS87pGfUPVmU6PwTUtpCt4w
+         OOY2Ogj/+Eh3wOHzyb8y5FrbOe2rWeL9Ny8qKYmEZVemXgqOQiDCLe8nkriYKybryiiC
+         C6uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693993446; x=1694598246;
+        d=1e100.net; s=20221208; t=1693993453; x=1694598253;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kceo6UNyVAWBxiYbjByhIfn5Dymn9L1sOTGNJrZDBbU=;
-        b=j8DjQwQrMXx/5CnO6CyiLaSjmEmTkZnvXQpZPp7Cfw9xgVCR0DBPWpkRUg1446h82p
-         Tc5N/WKL92ptmPULyJAlr7gviFsexsCO1V2rvF9mFZ5VWZxwSBNNDu0rZqEcEr6bY10w
-         Vj69E2jDFzFj8DNBO5FMqS1m/KyUh14crJ42FJCBo/Vb93yim/zZRdT1Np7RUkbafOFz
-         8xHvCNrYZ0Y2G993fxS2nvzOjeH6GFdlS9p873bmogAcZp8I4g5zymg2FPMvlCHXavBN
-         zew3dyjYV2gWxxHMKD8tfYNLSj03HWoE1ONBXceep2plNo/lWe3mrErXYy1EOd4ooGS7
-         Bxrw==
-X-Gm-Message-State: AOJu0YxxUpiS5M9ifNyiPhO4LGHr5J4J8PxLaBdxS6NGccEF7Tc7JpSp
-        KBZN220BRyKiM6bes4spC/4zGA==
-X-Google-Smtp-Source: AGHT+IHdbD13vyY3Bbo5QL/ARKNb9adwZ/uciSFugU4EC1cogFxmDgysTg02CVael3AFCcAE3PIB7g==
-X-Received: by 2002:a17:906:295:b0:9a1:c4ba:c04c with SMTP id 21-20020a170906029500b009a1c4bac04cmr1923392ejf.31.1693993446249;
-        Wed, 06 Sep 2023 02:44:06 -0700 (PDT)
+        bh=GBQXHUH6DtatCcRxzVcXALsRjVBvhgw7/R+Y8UEZ+zo=;
+        b=c1A/mgHsgJ3iHay62vmmxpJEfqpr6skswhnllj4ok/LuLMMsKV0pUaeMvKwWZDHs0L
+         qnfnsuYiG9YQGkR6o+QoJDYT5xSxszv+s0EobCD/PEqcPTY9ZbC5V8jmJZlgtTCG63H/
+         JEP9i7dHlxR49/Od9LlBbXjdYjn8cH2bQRDRBB1S6hq/5X0CLz1NCCwAIFN3mkIvzJek
+         zjRytjFl4AN4CvNDUb6cmkcRQQ42L8FDhg275nbFiGx6Qq/TwXFKXJgWubHk3Fgm4hok
+         MoNPf8cGDIkTJs5R/MZrT+ituLS1xhwyApStef0FWzTaLhbH4r/V9+vcvsb40A1Np9YF
+         s8FA==
+X-Gm-Message-State: AOJu0YzX3E0PSs0ug48Trle95GunxodwYQFq7dzlDHl78vh7oivhXFHA
+        BZqX8qhnT3Pst5dmhqt/YxpcnQ==
+X-Google-Smtp-Source: AGHT+IE9ztHxaWDYZornzjVYS/n5YjkQ5K5POV23HAchzWNjQ01GU+6SosCWHVDAVjxsE4fWflLGpA==
+X-Received: by 2002:a19:c21a:0:b0:4fb:911b:4e19 with SMTP id l26-20020a19c21a000000b004fb911b4e19mr1668017lfc.35.1693993453000;
+        Wed, 06 Sep 2023 02:44:13 -0700 (PDT)
 Received: from [192.168.37.154] (178235177204.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.204])
-        by smtp.gmail.com with ESMTPSA id xo9-20020a170907bb8900b0099cbe71f3b5sm8674419ejc.0.2023.09.06.02.44.05
+        by smtp.gmail.com with ESMTPSA id xo9-20020a170907bb8900b0099cbe71f3b5sm8674419ejc.0.2023.09.06.02.44.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 02:44:05 -0700 (PDT)
-Message-ID: <045858e7-457a-4b29-a984-53209b2f38a9@linaro.org>
-Date:   Wed, 6 Sep 2023 11:44:05 +0200
+        Wed, 06 Sep 2023 02:44:12 -0700 (PDT)
+Message-ID: <e430d1a6-374c-41f2-a4dc-ef24f594f558@linaro.org>
+Date:   Wed, 6 Sep 2023 11:44:11 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/12] arm64: dts: qcom: msm8998-mtp: correct UFS pad
+Subject: Re: [PATCH 10/12] arm64: dts: qcom: msm8998-oneplus: correct UFS pad
  supply
 Content-Language: en-US
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
@@ -66,7 +66,7 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20230905161920.252013-1-krzysztof.kozlowski@linaro.org>
- <20230905161920.252013-10-krzysztof.kozlowski@linaro.org>
+ <20230905161920.252013-11-krzysztof.kozlowski@linaro.org>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -103,11 +103,11 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230905161920.252013-10-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230905161920.252013-11-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -135,7 +135,7 @@ On 5.09.2023 18:19, Krzysztof Kozlowski wrote:
 > Bring back handling of this supply by using more appropriate regulator -
 > UFS controller host supply.  This also fixes dtbs_check warning:
 > 
->   msm8998-mtp.dtb: phy@1da7000: 'vddp-ref-clk-supply' does not match any of the regexes: 'pinctrl-[0-9]+'
+>   msm8998-oneplus-dumpling.dtb: phy@1da7000: 'vddp-ref-clk-supply' does not match any of the regexes: 'pinctrl-[0-9]+'
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
