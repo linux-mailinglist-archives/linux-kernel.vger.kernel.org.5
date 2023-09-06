@@ -2,79 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6FA793CA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB84793CAD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbjIFMbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35096 "EHLO
+        id S234938AbjIFMeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjIFMbX (ORCPT
+        with ESMTP id S229470AbjIFMeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:31:23 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0C5170D;
-        Wed,  6 Sep 2023 05:31:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=l8w5U8Lo+Ib8rdRaUcxv84w69rTq14NU8ZSfpAgImrU=; b=KLQuWSv0mz09IR2wkr3eCTIWVL
-        IYXnu+t86H2cLlxaTw9o+mnMOG7rWaRPL7MJo+0Fln0PYbzGi+HW9TQVc74baXCt1qnHlTgmeriEr
-        6vQlYkNQB12trzCJGjM9H7WTN8xYSG5Z3vcdNpFw1OCijfK7RYNrHI8Z1bqgi5QKfcGg=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qdrgi-005tx3-Fm; Wed, 06 Sep 2023 14:31:16 +0200
-Date:   Wed, 6 Sep 2023 14:31:16 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Sergio Callegari <sergio.callegari@gmail.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, netdev@vger.kernel.org,
-        Linux Kernel Mailing list <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Oliver Neukum <oliver@neukum.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Regression with AX88179A: can't manually set MAC address anymore
-Message-ID: <d6777bc1-46ad-4ad9-a7e3-655dbe4f6317@lunn.ch>
-References: <54cb50af-b8e7-397b-ff7e-f6933b01a4b9@gmail.com>
- <ZPcfsd_QcJwQq0dK@debian.me>
- <6315027e-d1ab-4dec-acf2-0a77bb948807@gmail.com>
- <ZPfZQsLKG9LKGR1G@debian.me>
- <075308b2-7768-40b2-9c00-a5a14df62678@gmail.com>
+        Wed, 6 Sep 2023 08:34:09 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F471717
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:34:00 -0700 (PDT)
+X-QQ-mid: bizesmtp69t1694003607tudcir6g
+Received: from wangjiexun-virtual-machine.loca ( [120.225.34.249])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 06 Sep 2023 20:33:25 +0800 (CST)
+X-QQ-SSF: 01200000000000101000000A0000000
+X-QQ-FEAT: rZJGTgY0+YN9fNMQKTSU9Qgqmi6m+PTsmzRVbNPtaV/A5xhJrUGcYwefmJlX2
+        11PftMTdzH2cqBPrK2tlbOMGpQPvsx8ROqEMCA/K2OPtv6nPQVRePJtHMTGpp3PJhhqFPGb
+        mikZCnSfIQyPN6JjodtSzMSxYb71LKA68AgC47JS3pH+QggfbwA/kb5qXHsFsv3qKloNs2s
+        lHsWWZbIrfD9dIvnlNY3g4tkJqXGvREKwMEdd9pq0AyX4lZ/M2iIPo55/InKgZyQouQDwCQ
+        AJikqyw/4mNUxwHlmQWJv0RwcRymPazYlLgJ2rjxgwaOtqaK+HeVtR1IL5uxTti4kk64G7L
+        oWIQ8BC8T3eFKHZxH5DVYT7eO6zYALNU8SbEBu1VkT3wY3sgcrHXFzVYBlPGA==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 16057446587632364950
+From:   Jiexun Wang <wangjiexun@tinylab.org>
+To:     conor@kernel.org
+Cc:     guoren@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, falcon@tinylab.org,
+        jszhang@kernel.org, tglx@linutronix.de,
+        Jiexun Wang <wangjiexun@tinylab.org>
+Subject: [PATCH v2] RISC-V: Fix use of non existent CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK
+Date:   Wed,  6 Sep 2023 20:32:16 +0800
+Message-Id: <20230906123216.255932-1-wangjiexun@tinylab.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <075308b2-7768-40b2-9c00-a5a14df62678@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> So if the in-tree driver could be fixed to correctly support the manual
-> configuration of the hardware (MAC) address as it used to be that would be
-> the best. I hope that Andrew Lunn's hypothesis is correct, and that cdc_ncm
-> can be extended to work with AX88179A even when a manual MAC addr is
-> configured.
+If configuration options SOFTIRQ_ON_OWN_STACK and PREEMPT_RT 
+are enabled simultaneously under RISC-V architecture,
+it will result in a compilation failure:
 
-I think it can, but it looks like it needs a different
-implementation. The CDC NCM standard is publicly available. It
-documents an optional call to set the MAC address, and there appears
-to be a capability bit to indicate if its implemented in a specific
-device. Ideally if the bit is not set -EOPNOTSUPP should be returned
-when trying to set the MAC address, otherwise make the call to let the
-hardware know of the new MAC address.
+arch/riscv/kernel/irq.c:64:6: error: redefinition of 'do_softirq_own_stack'
+   64 | void do_softirq_own_stack(void)
+      |      ^~~~~~~~~~~~~~~~~~~~
+In file included from ./arch/riscv/include/generated/asm/softirq_stack.h:1,
+                 from arch/riscv/kernel/irq.c:15:
+./include/asm-generic/softirq_stack.h:8:20: note: previous definition of 'do_softirq_own_stack' was here
+    8 | static inline void do_softirq_own_stack(void)
+      |                    ^~~~~~~~~~~~~~~~~~~~
+      
+After changing CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK to CONFIG_SOFTIRQ_ON_OWN_STACK,
+compilation can be successful.
 
-Sorry, i don't have the time or the hardware to actually implement
-this. But i can review patches and help with processes.
+Fixes: dd69d07a5a6c ("riscv: stack: Support HAVE_SOFTIRQ_ON_OWN_STACK")
+Signed-off-by: Jiexun Wang <wangjiexun@tinylab.org>
+---
+Changes in v2:
+- changed to a more suitable subject line
+- add a Fixes tag
 
-      Andrew
+---
+ arch/riscv/kernel/irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-	
+diff --git a/arch/riscv/kernel/irq.c b/arch/riscv/kernel/irq.c
+index a8efa053c4a5..a86f272ae2c3 100644
+--- a/arch/riscv/kernel/irq.c
++++ b/arch/riscv/kernel/irq.c
+@@ -60,7 +60,7 @@ static void init_irq_stacks(void)
+ }
+ #endif /* CONFIG_VMAP_STACK */
+ 
+-#ifdef CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK
++#ifdef CONFIG_SOFTIRQ_ON_OWN_STACK
+ void do_softirq_own_stack(void)
+ {
+ #ifdef CONFIG_IRQ_STACKS
+-- 
+2.34.1
+
