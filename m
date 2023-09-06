@@ -2,275 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F8E79352A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 08:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9588379352F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 08:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237904AbjIFGMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 02:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39704 "EHLO
+        id S238293AbjIFGPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 02:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbjIFGMV (ORCPT
+        with ESMTP id S229786AbjIFGPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 02:12:21 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DE8184
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 23:12:16 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fef56f7223so30462035e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 23:12:16 -0700 (PDT)
+        Wed, 6 Sep 2023 02:15:44 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1147B9B;
+        Tue,  5 Sep 2023 23:15:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1693980941; x=1725516941;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=46s7aj6PqbJ5skaiDZV1RkX6mxcmfHMujrX0TNr9p7U=;
+  b=QeX4SezDDYv9AB7Us/Etf5dK/H0PSpxvOC4fWVCAsHF9OlO2LN8Y8bBX
+   GZnzUCWPpsD4omVXzg8aFA3AQPibLFEHy4kvdcl2pgNroa8W1tUAoqKeD
+   jRfwfzS9K7Lpuh1r0AxBGtrpaymMM/s2hKcRbKLv2iwQx2rPXXS+yfw9o
+   ia99K693D4OUQJ4dYxjnJNVmVIvkwxI/i29Qa8YbTRBswQ4lnger9Le6g
+   9PPiX/b1ovbvWCDWdMw0EBNLlF8iEpF+l/tNjaBpzxhSZv0HlA6mn/03M
+   HfFpp9BLoDv/vvepqpW6ztuDjY0CFic86i/kMuTMCmRnJHrc5rrY27epV
+   w==;
+X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
+   d="scan'208";a="233633718"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Sep 2023 23:15:40 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 5 Sep 2023 23:15:40 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21 via Frontend Transport; Tue, 5 Sep 2023 23:15:40 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KXwMqvDIr3eUPQEBkao2msQtKHAxm2oxY8c/u4qWeUQeTEFdFO7sgH0dJhlNASKPtXxdEvM3Za5mJg9DR09z/Rl4npXSZk/Gez4AdFCCHbXenhCx8/sMqcCOjqdjGGFPnXEtGsB4IANqM1BKaiKd/oZS5jGDTbZVr0FNrV/OSJkLpUelPufacdSeeD1mHL2XYaTfc6cHkqgSAeebu5WTFXmDJNElFElei9iSZNPh+BBBqYMKIHm2Hi4nirK7iN3/27L5x6Klp8or6X8xjFYgNrLd2fdpotciWcW/dhK3ImI3FKFALa+3IZVDKrOZxijz4NYtsw8bl55jn9g1LqPKnw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=46s7aj6PqbJ5skaiDZV1RkX6mxcmfHMujrX0TNr9p7U=;
+ b=hX0XoEoYng/IRjWAAMsK4IhqabbHXC2zDN1t4O80w3uyJECkjLG9NRvCvJeMxTvihoEsCOMT0nn5hm4+hXDDFEq0iitst3eiJKd9tIrsfxNOOq5AEkWxFwjxcjkLO6l1J63R78QWJmD/3QjoM4njt478ZYcE5SYGpxGDW25bLNHUi+3d0+91b8H+K2gKWIKY6OS4FTH49CCMsVqkHHd1Xr2uK1XRpBcxdbHJuZPLBGcNmNcTjhGuMIjeVpeAGZaXFjwF3bef0G1O8XU0vaCzn3t6G9ssDuprALiDB/Ej6KA7wAyG3Mnbq3B9nirno03uJ4Pbdik76bZkPBqOCqKk9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693980734; x=1694585534; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=h94JAIHyqIQXwlFMVI95h36aEWO8zTCPUM5D+TVtu0g=;
-        b=mix5OEhRmNZb51W2v9afhibEXvSh+rn/J0AtC3vm7rtrUKQdWcdixhiNOIrBBSpfl6
-         w4QHuGS+i0ySR0TM0HtZCANZx6SW9xaTHJZI/QKAlZ7Xw7kZqJ+gK13Y3usyDjCimd3H
-         zjqqdwL0FnBQjw8RmJ2kv2WNMTMKhgqg8w+zl+3QQx3FcMQc5CAG2Ds5+05QEeYAgQui
-         Gdg2wxLGBTx5e61SRzQGPD4E6i0ayAhCvhOi3Dux1JDfIsQ2V3OOkW5IMRE7tIQ249lv
-         nrqivQ9GDTqgYEbC4uPkj08v9E8TAxy4dquEm4t3sjhHWwinP1rzsTHBbj8J/t6ShJSG
-         1RGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693980734; x=1694585534;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h94JAIHyqIQXwlFMVI95h36aEWO8zTCPUM5D+TVtu0g=;
-        b=gbih4Y0dN8H43R7aSuKeOPj0nB72I5uExuof2g3PSMN7tYxEnMHe2TR2+giLzwVU5Y
-         nF/lfdiZqn+WnS65P5zoskYFS3xRJwZJqwkd4gTpSAswbA07TRrQb7WN8AycHHHinLzF
-         jCg44HcnNSeGryfQN1v/G/b/rXqsqe0V27M+zRDZyffcEgl0SXmXwlbml9ELh1dS3wLn
-         KKFxIwSB8DLQVtd4xr1lM2VhX9MhijxRiFxkP9teUc4cFk9V3dweSdS7U5nBWERx391C
-         ERF2oFDgZ98hJl5axH0wwWjhU/lLVnECKVNePHsm2oqh5Qwgn87NpDLeiyJxCv3Xdy/9
-         FA1Q==
-X-Gm-Message-State: AOJu0YxRnnuu1otOgoYlzwnyLEaEER5o6wTh3BJnC6QCqtSiFI7KEIIl
-        Kf93MroWWdL95Slshh7FFRSrjQ==
-X-Google-Smtp-Source: AGHT+IGVvTfP4UQKN/H3MG8p5oeiXQme+JMYKYt/haFIYwn19+NNGA9kOcyL8bJXtlHO6ls1g2sYOQ==
-X-Received: by 2002:a05:600c:a388:b0:3fe:173e:4a34 with SMTP id hn8-20020a05600ca38800b003fe173e4a34mr1449277wmb.40.1693980734582;
-        Tue, 05 Sep 2023 23:12:14 -0700 (PDT)
-Received: from [192.168.0.107] ([79.115.63.137])
-        by smtp.gmail.com with ESMTPSA id f7-20020a1c6a07000000b003fe407ca05bsm21957172wmc.37.2023.09.05.23.12.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Sep 2023 23:12:14 -0700 (PDT)
-Message-ID: <4cbc9c03-7b47-48e9-8a91-f08c44284579@linaro.org>
-Date:   Wed, 6 Sep 2023 07:12:12 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 13/41] mtd: spi-nor: move the .id and .id_len into an
- own structure
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=46s7aj6PqbJ5skaiDZV1RkX6mxcmfHMujrX0TNr9p7U=;
+ b=cQkTwgZ274tpzXnQI2DgGJn24XOTt5qQy2kbZqD1ne2+RA0PD5ShQvf/deaHKzE42AenoqWvb3yC2Z5rvcIiaBVktP58SnxzqkVCreN+ua2++F0jXQCCglvpHrRnWAmAkapGjmyhXvACpxGsZiByjx+DtMskdl1ZI/w2ySZAF2Q=
+Received: from DM6PR11MB4185.namprd11.prod.outlook.com (2603:10b6:5:195::29)
+ by PH7PR11MB7098.namprd11.prod.outlook.com (2603:10b6:510:20d::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Wed, 6 Sep
+ 2023 06:15:37 +0000
+Received: from DM6PR11MB4185.namprd11.prod.outlook.com
+ ([fe80::591f:32f4:3319:e1f8]) by DM6PR11MB4185.namprd11.prod.outlook.com
+ ([fe80::591f:32f4:3319:e1f8%7]) with mapi id 15.20.6745.030; Wed, 6 Sep 2023
+ 06:15:36 +0000
+From:   <Hari.PrasathGE@microchip.com>
+To:     <christophe.jaillet@wanadoo.fr>, <thierry.reding@gmail.com>,
+        <u.kleine-koenig@pengutronix.de>, <Nicolas.Ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>
+CC:     <linux-pwm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] pwm: atmel: add missing clk_disable_unprepare()
+Thread-Topic: [PATCH v2] pwm: atmel: add missing clk_disable_unprepare()
+Thread-Index: AQHZ3WdS8rZ/EszNg0KFcLXEK4uBNrAHuggAgAWeQgA=
+Date:   Wed, 6 Sep 2023 06:15:36 +0000
+Message-ID: <f08d820b-cef3-bc9d-69ce-fc6d3f65a550@microchip.com>
+References: <20230902063232.22620-1-Hari.PrasathGE@microchip.com>
+ <f15da804-206b-be53-b59e-06a3edfa0e96@wanadoo.fr>
+In-Reply-To: <f15da804-206b-be53-b59e-06a3edfa0e96@wanadoo.fr>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Michael Walle <mwalle@kernel.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
- <20230807-mtd-flash-info-db-rework-v2-13-291a0f39f8d8@kernel.org>
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-13-291a0f39f8d8@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR11MB4185:EE_|PH7PR11MB7098:EE_
+x-ms-office365-filtering-correlation-id: 35d00196-1a42-4601-669f-08dbaea0afbb
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: req2SLYGroN02mpUz5na/sNCfPgfLGDvp/ze8TZLpHfZ/aNf+C3t6cIUbJ0BM0zgmrKJD9fFFz7kkY/YOlxIxqIJc5WmKRbVgQ20uRdgbohWqyOyYjhPb9Slbw634MNJ4LgnBl9Zeqv3pVs0Q2q/sTB2eNGkxlRQe92M39cyx7aDaT6JBmPtmSPscGeBVQWLhuLk9wyAlBp8UEe6WTBRLVo7VZ4aAr/slKM2h+6MCeKpduuOicOjbOC6sN/w07MyzjGg+5EH4aOO+YBO7mD19wKNwSHOu6esFqtUA7tsqCp7pDQmBN8CUjX5fVVJ4RtGUUQFFHGlI4ClS+KhSdKaWkfutugjD03PYoNnYCVJRRFlJll+pUU5Qyzx+IqdnK1BzZ7Pr6gQKsxe4rVZndL0wa52TNGO0S8uLuL6Y9eqK8/wE1Af3Ty4mR52lRfQ1oOegAKRQfuXQyQpiNlVdz7e2xQMmmWZjoUVt2o8YwTcTtePumvcOJfB3u3VN6bOyF4xq0mpImczRT5fKTgVuOKBZOHpi4SHZqChKMjJolllYJItJ9X+r3JCR6/1/OTdLrn6fZkheCpv61MUr0P1Kk792N6fi3LSwAgMBxeBPe4jIVlrBIzi8O0hXVubU7oD9MCzPWCERoUz9f++51mxxG5QVQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4185.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(366004)(346002)(396003)(186009)(451199024)(1800799009)(38070700005)(38100700002)(478600001)(966005)(83380400001)(36756003)(53546011)(6512007)(6486002)(6506007)(26005)(122000001)(2616005)(71200400001)(31686004)(316002)(54906003)(64756008)(66446008)(66574015)(66476007)(2906002)(4326008)(8676002)(8936002)(41300700001)(5660300002)(86362001)(66556008)(66946007)(76116006)(110136005)(31696002)(91956017)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dXF3S0QxZXJOV2FsSStWY2ZyM2YzczRSbVRPZnZoMGhwOE5aQjk0eEh5T3BC?=
+ =?utf-8?B?U0Q0N2t3T3I3NzByZ2ZZajk1Y0Z2MmlpWkpoaHhGaTVoNUwwMkFPMFRQZlBn?=
+ =?utf-8?B?OE40Nk9hUzNEUFRQU1M5bVQ5cGsvS05NZ3hYQjM5ZEtzVGlpUDVqeEl4blZP?=
+ =?utf-8?B?ZXFXazBMV2xYQXhnVmlKZDRyc2xEMW9IQWppRnNJdGd5QjU5MVE3Rm5JRnA1?=
+ =?utf-8?B?TXR2ZDYxdXBYZXNzWFFpT3gwbWhBZDNCeFcxY0oxYjNyREc4T1Q5MzNvR281?=
+ =?utf-8?B?ODl5bUltZmZ5YkNjN0piLzdBMjJYVzd4eGZpL0JncXU4bHd3TVN6d1RIWlJu?=
+ =?utf-8?B?eG1LdHZieWJXQSs4RUN3NkJWT3RERitrbG5sN0QzWjcvUFB3bEJWU3podnJP?=
+ =?utf-8?B?ME1ZbzlDTFhndEFwdzcwVEsrRm1rYUZwUXJwcStFRlJMRGRJOHArK2hjWEtk?=
+ =?utf-8?B?MGtUTlV5UjRIbGlRb0NRR2hlenp1WTdLL2IwZHdDSkU3L0V3VlVZL1M2aGd4?=
+ =?utf-8?B?c0hoMTg2UDhVZVlWSlhxdVIxdGZkdklPUGx3L3hCQ0JqMENwSVVEeUd2Wm5l?=
+ =?utf-8?B?V1ZrYnFIb2srejVkYVNzZjh5bW1pc0xBOWQvRDlyanFOTWtvb3hQUDMrVmFG?=
+ =?utf-8?B?Z3pqT3BabGpCTmJuZDJjOHROMXgxOFdobUdacWtlZ2hvOWJvajBHR0Jucy9H?=
+ =?utf-8?B?VUZVd0laWEg3KzRiUmdPOGwya1BveDVCbG1CMUNYWVEwVmVDSUJyQnVoSVph?=
+ =?utf-8?B?RnNGTkppRE5ML2dtaVVZcG5tcXRqRDNYOXZUcXVjcGdmSjhhWlp2MjRpRTlJ?=
+ =?utf-8?B?elRhVUdSYzBHRGxYVlBpT3laWTZuaWo4c0dIV3BYT1c0YlQ1eDdGMHhpK1E4?=
+ =?utf-8?B?N2NUazk2ZjlOamNJa2dINStMNDQrMC9KaVNDaFBHYXRYR0ttWm1YZHFqWlNW?=
+ =?utf-8?B?ZzVXMlJiVzBUQlZsN0J2U3J2aW1LMjBIN0t0MFhXY1FIWVl2bEpEYkoxcFQ0?=
+ =?utf-8?B?djU1blN1dUNyTEtPSUZRcmcxUVlUV2JQVGxBV2VlSDlsclZGVmNVMk5UQ0FH?=
+ =?utf-8?B?bkxqNjdTOFJRWjMvYzFuZ01Pbk04dG91NmFhNzN0bWJjZkNEeTJ4SXBpM1Fm?=
+ =?utf-8?B?WEZuNnhaSGk1ZnBHVG8zYzF2TC80WmRaQ3g2QXF1Y2dYZGlNWUx3RXBDSkMy?=
+ =?utf-8?B?K2NlRTBMYmp3b08rc2czMFNhWmk2cWNPakx6cE85Ym50S3Y2OTZIVlZjaExi?=
+ =?utf-8?B?ZjI5RTByaGFydGxyZTRGWWsvMm45cngrblJjL1NSSmpteGNuWXh0a2NHL1k5?=
+ =?utf-8?B?M2ZrR2NPRndVWGxlNTBibVR3cXJ2NjVLeWNSRTNqR3NLM0JpaXZzZEFKRStW?=
+ =?utf-8?B?Qzd0bWZYQS9GZzJwV0hiQU8yWnZsWDlxeEpQRUJBNktrZDJMWjBUbFA0NERz?=
+ =?utf-8?B?Q3NLdlE2cThZYzRFalo2VWhCcTJxU3lNanNaanRwQmRrcG1lMTU3UURLRW8w?=
+ =?utf-8?B?aTArbHc5d1Q3SnFPNnNWOWtMaXI3NWl2THlJTWxVVWJ6ME1VVUdsVzdrQ0RR?=
+ =?utf-8?B?Uktwazd6ZXcyVjhGbjJRZjkrdlV3QnNiekJLbTdXakVxd04yUHBNVXNva3Bl?=
+ =?utf-8?B?clpCVkYzRUEwQVVVNzZsWkhMazAwaGtianQ2dWRWZDFCZDJycExjTkZxeUV2?=
+ =?utf-8?B?dDZJSWhKNDJDV1dZZk1lSWF6WnkxQ3BESEtHSzZLWWh2Vy9PN29sUmRKTVhG?=
+ =?utf-8?B?YW1JMTlyeUg2Q3RHYTRFQTdGZDRLOC85bE9nV2VBT2YraDY0RS9ONGduQUdH?=
+ =?utf-8?B?NTdRTWpwQnBHTk5UNlpteU1Vc0JSc2RPYzRDZW42cjliNnkyd2FnUGY2MHNP?=
+ =?utf-8?B?ZGZjZFl5c3dEd0lsc2JFY1FER21CSGVwcEdPRVRzN09LdVhVZGdHNjVEeU1o?=
+ =?utf-8?B?NVlXR1VJZHd5M1llU09tVTY0WE44d3dRZ0FOdVRMOGJmQWxBU3JaMnNZWGJv?=
+ =?utf-8?B?YnVSYy9ST1RGb0lieG9kdnk3SzQzVUVwdFZxYmt3aVZ5YTRtZzFGeEt2WDZT?=
+ =?utf-8?B?c25zenIxZmMxdE9uMFNLcHo1amtLM2VUaEMycUNBVnM4Zm43RmZZaG5BeGtG?=
+ =?utf-8?B?QXY0RFV4ZFpZaDY0SlphK2VZYmRkaXhISkV5OEtReFVTc1JzODh6ZmRhWWhl?=
+ =?utf-8?B?NHc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F55348CAC2278146BEB0F653E4740111@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4185.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 35d00196-1a42-4601-669f-08dbaea0afbb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Sep 2023 06:15:36.9221
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /CV+DczdcW2ja95uWUYvA6OuXxTdYrnE+8MmyqYBi8SZFCk/1mnzoJOR1QU/T2DVuensn/SAhOBzUClNlkzTk7OsqhMxVnelnSPSOo4lB6Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7098
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/22/23 08:09, Michael Walle wrote:
-> Create a new structure to hold a flash ID and its length. The goal is to
-> have a new macro SNOR_ID() which can have a flexible id length. This way
-> we can get rid of all the individual INFOx() macros.
-> 
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
-> ---
->  drivers/mtd/spi-nor/core.c      |  6 +++---
->  drivers/mtd/spi-nor/core.h      | 33 ++++++++++++++++++++++++---------
->  drivers/mtd/spi-nor/micron-st.c |  4 ++--
->  drivers/mtd/spi-nor/spansion.c  |  4 ++--
->  drivers/mtd/spi-nor/sysfs.c     |  6 +++---
->  drivers/mtd/spi-nor/winbond.c   |  1 -
->  6 files changed, 34 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 4ba1778eda4b..80c340c7863a 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2028,8 +2028,8 @@ static const struct flash_info *spi_nor_match_id(struct spi_nor *nor,
->  	for (i = 0; i < ARRAY_SIZE(manufacturers); i++) {
->  		for (j = 0; j < manufacturers[i]->nparts; j++) {
->  			part = &manufacturers[i]->parts[j];
-> -			if (part->id_len &&
-> -			    !memcmp(part->id, id, part->id_len)) {
-> +			if (part->id &&
-> +			    !memcmp(part->id->bytes, id, part->id->len)) {
->  				nor->manufacturer = manufacturers[i];
->  				return part;
->  			}
-> @@ -3370,7 +3370,7 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
->  	 * If caller has specified name of flash model that can normally be
->  	 * detected using JEDEC, let's verify it.
->  	 */
-> -	if (name && info->id_len) {
-> +	if (name && info->id) {
->  		const struct flash_info *jinfo;
->  
->  		jinfo = spi_nor_detect(nor);
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index c42b65623da7..81535f31907f 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -446,12 +446,22 @@ struct spi_nor_fixups {
->  	int (*late_init)(struct spi_nor *nor);
->  };
->  
-> +/**
-> + * struct spi_nor_id - SPI NOR flash ID.
-> + *
-> + * @bytes: the flash's ID bytes. The first three bytes are the JEDIC ID.
-
-typo, JEDIC. But are there 3 bytes of ID specified by JEDEC? I remeber
-there's only the MFR ID specified, the rest are flash specific, which
-are not mentioned by JEDEC.
-
-> + * @len:   the number of bytes of ID.
-> + */
-> +struct spi_nor_id {
-> +	const u8 *bytes;
-> +	u8 len;
-> +};
-> +
->  /**
->   * struct flash_info - SPI NOR flash_info entry.
-> + * @id:   pointer to struct spi_nor_id or NULL, which means "no ID" (mostly
-> + *        older chips).
->   * @name: the name of the flash.
-> - * @id:             the flash's ID bytes. The first three bytes are the
-> - *                  JEDIC ID. JEDEC ID zero means "no ID" (mostly older chips).
-> - * @id_len:         the number of bytes of ID.
->   * @size:           the size of the flash in bytes.
->   * @sector_size:    (optional) the size listed here is what works with
->   *                  SPINOR_OP_SE, which isn't necessarily called a "sector" by
-> @@ -510,8 +520,7 @@ struct spi_nor_fixups {
->   */
->  struct flash_info {
->  	char *name;
-> -	u8 id[SPI_NOR_MAX_ID_LEN];
-> -	u8 id_len;
-> +	const struct spi_nor_id *id;
->  	size_t size;
->  	unsigned sector_size;
->  	u16 page_size;
-> @@ -554,12 +563,18 @@ struct flash_info {
->  #define SPI_NOR_ID_3ITEMS(_id) ((_id) >> 16) & 0xff, SPI_NOR_ID_2ITEMS(_id)
->  
->  #define SPI_NOR_ID(_jedec_id, _ext_id)					\
-> -	.id = { SPI_NOR_ID_3ITEMS(_jedec_id), SPI_NOR_ID_2ITEMS(_ext_id) }, \
-> -	.id_len = !(_jedec_id) ? 0 : (3 + ((_ext_id) ? 2 : 0))
-> +	.id = &(const struct spi_nor_id){				\
-> +		.bytes = (const u8[]){ SPI_NOR_ID_3ITEMS(_jedec_id),	\
-> +				       SPI_NOR_ID_2ITEMS(_ext_id) },	\
-> +		.len = !(_jedec_id) ? 0 : (3 + ((_ext_id) ? 2 : 0)),	\
-> +	}
->  
->  #define SPI_NOR_ID6(_jedec_id, _ext_id)					\
-> -	.id = { SPI_NOR_ID_3ITEMS(_jedec_id), SPI_NOR_ID_3ITEMS(_ext_id) }, \
-> -	.id_len = 6
-> +	.id = &(const struct spi_nor_id){				\
-> +		.bytes = (const u8[]){ SPI_NOR_ID_3ITEMS(_jedec_id),	\
-> +				       SPI_NOR_ID_3ITEMS(_ext_id) },	\
-> +		.len = 6,						\
-> +	}
->  
->  #define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
->  	.size = (_sector_size) * (_n_sectors),				\
-> diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-> index 5406a3af2ce0..229c951efcce 100644
-> --- a/drivers/mtd/spi-nor/micron-st.c
-> +++ b/drivers/mtd/spi-nor/micron-st.c
-> @@ -78,7 +78,7 @@ static int micron_st_nor_octal_dtr_en(struct spi_nor *nor)
->  		return ret;
->  	}
->  
-> -	if (memcmp(buf, nor->info->id, nor->info->id_len))
-> +	if (memcmp(buf, nor->info->id->bytes, nor->info->id->len))
->  		return -EINVAL;
->  
->  	return 0;
-> @@ -114,7 +114,7 @@ static int micron_st_nor_octal_dtr_dis(struct spi_nor *nor)
->  		return ret;
->  	}
->  
-> -	if (memcmp(buf, nor->info->id, nor->info->id_len))
-> +	if (memcmp(buf, nor->info->id->bytes, nor->info->id->len))
->  		return -EINVAL;
->  
->  	return 0;
-> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-> index e6468569f178..d7012ab3de2c 100644
-> --- a/drivers/mtd/spi-nor/spansion.c
-> +++ b/drivers/mtd/spi-nor/spansion.c
-> @@ -228,7 +228,7 @@ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
->  		return ret;
->  	}
->  
-> -	if (memcmp(buf, nor->info->id, nor->info->id_len))
-> +	if (memcmp(buf, nor->info->id->bytes, nor->info->id->len))
->  		return -EINVAL;
->  
->  	return 0;
-> @@ -272,7 +272,7 @@ static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
->  		return ret;
->  	}
->  
-> -	if (memcmp(buf, nor->info->id, nor->info->id_len))
-> +	if (memcmp(buf, nor->info->id->bytes, nor->info->id->len))
->  		return -EINVAL;
->  
->  	return 0;
-> diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
-> index c09bb832b3b9..2dfdc555a69f 100644
-> --- a/drivers/mtd/spi-nor/sysfs.c
-> +++ b/drivers/mtd/spi-nor/sysfs.c
-> @@ -35,8 +35,8 @@ static ssize_t jedec_id_show(struct device *dev,
->  	struct spi_device *spi = to_spi_device(dev);
->  	struct spi_mem *spimem = spi_get_drvdata(spi);
->  	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> -	const u8 *id = nor->info->id_len ? nor->info->id : nor->id;
-> -	u8 id_len = nor->info->id_len ?: SPI_NOR_MAX_ID_LEN;
-> +	const u8 *id = nor->info->id ? nor->info->id->bytes : nor->id;
-> +	u8 id_len = nor->info->id ? nor->info->id->len : SPI_NOR_MAX_ID_LEN;
->  
->  	return sysfs_emit(buf, "%*phN\n", id_len, id);
->  }
-> @@ -78,7 +78,7 @@ static umode_t spi_nor_sysfs_is_visible(struct kobject *kobj,
->  
->  	if (attr == &dev_attr_manufacturer.attr && !nor->manufacturer)
->  		return 0;
-> -	if (attr == &dev_attr_jedec_id.attr && !nor->info->id_len && !nor->id)
-> +	if (attr == &dev_attr_jedec_id.attr && !nor->info->id && !nor->id)
->  		return 0;
->  
->  	return 0444;
-> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-> index c21fed842762..7873cc394f07 100644
-> --- a/drivers/mtd/spi-nor/winbond.c
-> +++ b/drivers/mtd/spi-nor/winbond.c
-> @@ -121,7 +121,6 @@ static const struct flash_info winbond_nor_parts[] = {
->  	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16)
->  		NO_SFDP_FLAGS(SECT_4K) },
->  	{ "w25q128", INFO(0xef4018, 0, 0, 0)
-> -		PARSE_SFDP
-
-this is a leftover that should be squashed in a previous commit.
-
-I'm fine with the overal idea, but please fix the comment about the 3
-bytes of jedec id.
-
->  		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
->  	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-> 
+SGVsbG8gQ2hyaXN0b3BoZSwNCg0KT24gMDIvMDkvMjMgOTo1NyBwbSwgQ2hyaXN0b3BoZSBKQUlM
+TEVUIHdyb3RlOg0KPiBFWFRFUk5BTCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4g
+YXR0YWNobWVudHMgdW5sZXNzIHlvdSBrbm93IA0KPiB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0K
+PiBMZSAwMi8wOS8yMDIzIMOgIDA4OjMyLCBIYXJpIFByYXNhdGggR3VqdWxhbiBFbGFuZ28gYSDD
+qWNyaXQgOg0KPj4gRml4IHRoZSBiZWxvdyBzbWF0Y2ggd2FybmluZzoNCj4+DQo+PiBkcml2ZXJz
+L3B3bS9wd20tYXRtZWwtaGxjZGMuYzoxNjcgYXRtZWxfaGxjZGNfcHdtX2FwcGx5KCkgd2Fybjog
+DQo+PiAnbmV3X2NsaycgZnJvbSBjbGtfcHJlcGFyZV9lbmFibGUoKSBub3QgcmVsZWFzZWQgb24g
+bGluZXM6IA0KPj4gMTEyLDEzNywxNDIsMTQ5Lg0KPj4NCj4+ICdGaXhlczogMmI0OTg0YmVmNDdh
+NSAoInB3bTogYXRtZWwtaGxjZGM6IENvbnZlcnQgdG8gdGhlIGF0b21pYyBQV00gDQo+PiBBUEki
+KScNCj4gDQo+IEhpLA0KPiANCj4gVGhlcmUgc2hvdWxkbid0IGJlICcgYmVmb3JlIEZpeGVzOiwg
+bmVpdGhlciBhdCB0aGUgZW5kLg0KPiBDb21taXQgaWQgc2hvdWxkIGJlIDEyIGNoYXJzLCBub3Qg
+MTMuDQo+IFRoZXJlIHNob3VsZG4ndCBiZSBhIGJsYW5rIGxpbmUgYmV0d2VlbiBGaXhlcyBhbmQg
+U2lnbmVkLW9mZi1ieS4NCj4gDQo+IEkgdGhpbmsgdGhhdCB0aGUgRml4ZXMgdGFnIHNob3VsZCBi
+ZSAyYjQ5ODRiZWY0N2EgKCJwd206IGFkZCBzdXBwb3J0IGZvcg0KPiBhdG1lbC1obGNkYy1wd20g
+ZGV2aWNlIi4NCj4gVGhlIGNvbW1pdCB5b3UgcG9pbnQgeW91IGhhdmUgdG91Y2hlZCB0aGlzIGNv
+ZGUsIGJlIHBhcnQgb2Ygd2hhdCB5b3UNCj4gY2hhbmdlIHdhcyBhbHJlYWR5IHRoZXJlIGJlZm9y
+ZSB0aGF0Lg0KPiANCg0KVGhhbmsgeW91LCBJIGFkbWl0IHRoYXQgSSBoYXZlIG1lc3NlcyB1cCB0
+aGlzIHBhcnQuIEl0cyBiZWVuIHF1aXRlIGEgDQp3aGlsZSBzZW5kaW5nIHBhdGNoZXMgdXBzdHJl
+YW0gYW5kIEkgc2VlbSB0byBoYXZlIGZvcmdvdHRlbiB0aGUgYmFzaWNzLiANCkkgd2lsbCB0YWtl
+IHRpbWUgdG8gc2VuZCB0aGUgdjMgcGF5aW5nIG1vcmUgYXR0ZW50aW9uIHRvIHRoZXNlIHNtYWxs
+IA0KZGV0YWlscy4NCg0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IEhhcmkgUHJhc2F0aCBHdWp1bGFu
+IEVsYW5nbyA8SGFyaS5QcmFzYXRoR0VAbWljcm9jaGlwLmNvbT4NCj4+DQo+IA0KPiBUaGVyZSBz
+aG91bGQgYmUgYSAtLS0gYmV0d2VlbiB0aGUgc2lnbmVkLW9mLWJ5IGFuZCB0aGUgYmVsb3cgY2hh
+bmdlbG9nLA0KPiBzbyB0aGF0IHRoZSBjaGFuZ2Vsb2cgd2lsbCBub3QgYmUgbWVyZ2VkIGluIHRo
+ZSBnaXQgaGlzdG9yeS4NCj4gDQo+IEFsc28sIGl0IGlzIGFsc28gdXNlZnVsIHRvIGFkZCB0aGUg
+bGluayBhdCBsb3JlLmtlcm5lbC5vcmcgb2YgcHJldmlvdXMNCj4gdmVyc2lvbnMuDQo+IA0KPiBI
+ZXJlLCBpdCB3b3VsZCBiZSBzb21ldGhpbmcgbGlrZToNCj4gdjE6DQo+IGh0dHBzOi8vbG9yZS5r
+ZXJuZWwub3JnL2FsbC8yMDIzMDgyMjA3MDQ0MS4yMjE3MC0xLUhhcmkuUHJhc2F0aEdFQG1pY3Jv
+Y2hpcC5jb20vDQo+IA0KPj4gY2hhbmdlbG9nIG9mIHYyOg0KPj4NCj4+IMKgwqDCoMKgwqDCoMKg
+wqDCoCAtIG1vdmVkIHRoZSBjbGtfZGlzYWJsZV91bnByZXBhcmUgdG8gc2luZ2xlIHBvaW50IG9m
+IHJldHVybi4NCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCAtIGN1cl9jbGsgc2V0IHRvIE5VTEwgYmVm
+b3JlIHJldHVybi4NCj4+IC0tLQ0KPj4gwqAgZHJpdmVycy9wd20vcHdtLWF0bWVsLWhsY2RjLmMg
+fCAxMiArKysrKysrLS0tLS0NCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKyks
+IDUgZGVsZXRpb25zKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcHdtL3B3bS1hdG1l
+bC1obGNkYy5jIA0KPj4gYi9kcml2ZXJzL3B3bS9wd20tYXRtZWwtaGxjZGMuYw0KPj4gaW5kZXgg
+OTZhNzA5YTlkNDlhLi40ZDM1YjgzODIwM2YgMTAwNjQ0DQo+PiAtLS0gYS9kcml2ZXJzL3B3bS9w
+d20tYXRtZWwtaGxjZGMuYw0KPj4gKysrIGIvZHJpdmVycy9wd20vcHdtLWF0bWVsLWhsY2RjLmMN
+Cj4+IEBAIC00NCw3ICs0NCw3IEBAIHN0YXRpYyBpbnQgYXRtZWxfaGxjZGNfcHdtX2FwcGx5KHN0
+cnVjdCBwd21fY2hpcCAqYywgDQo+PiBzdHJ1Y3QgcHdtX2RldmljZSAqcHdtLA0KPj4gwqDCoMKg
+wqDCoCBzdHJ1Y3QgYXRtZWxfaGxjZGNfcHdtICpjaGlwID0gdG9fYXRtZWxfaGxjZGNfcHdtKGMp
+Ow0KPj4gwqDCoMKgwqDCoCBzdHJ1Y3QgYXRtZWxfaGxjZGMgKmhsY2RjID0gY2hpcC0+aGxjZGM7
+DQo+PiDCoMKgwqDCoMKgIHVuc2lnbmVkIGludCBzdGF0dXM7DQo+PiAtwqDCoMKgwqAgaW50IHJl
+dDsNCj4+ICvCoMKgwqDCoCBpbnQgcmV0ID0gMDsNCj4gDQo+IFRoaXMgaW5pdGlhbGl6YXRpb24g
+bG9va3MgdW4tbmVlZGVkIGFuZCB1bi1yZWxhdGVkIHRvIHlvdXIgY2hhbmdlcy4NCj4gDQoNClRo
+b3VnaCB0aGUga2VybmVsIEFQSSdzIHVzZWQgYmVsb3cgcmV0dXJuIDAgdXBvbiBzdWNjZXNzIGJ1
+dCBqdXN0IA0KdGhvdWdodCBJIHdpbGwgaW5pdGlhbGl6ZSBpdCB0byAwLg0KDQo+Pg0KPj4gwqDC
+oMKgwqDCoCBpZiAoc3RhdGUtPmVuYWJsZWQpIHsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIHN0cnVjdCBjbGsgKm5ld19jbGsgPSBobGNkYy0+c2xvd19jbGs7DQo+PiBAQCAtMTA5LDcg
+KzEwOSw3IEBAIHN0YXRpYyBpbnQgYXRtZWxfaGxjZGNfcHdtX2FwcGx5KHN0cnVjdCBwd21fY2hp
+cCANCj4+ICpjLCBzdHJ1Y3QgcHdtX2RldmljZSAqcHdtLA0KPj4gwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgQVRNRUxfSExDRENfQ0xLUFdNU0VMLA0KPj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZ2VuY2ZnKTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAocmV0KQ0KPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiByZXQ7DQo+PiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZ290
+byBkaXNhYmxlX25ld19jbGs7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9DQo+Pg0K
+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZG9fZGl2KHB3bWN2YWwsIHN0YXRlLT5wZXJp
+b2QpOw0KPj4gQEAgLTEzNCwxOCArMTM0LDIwIEBAIHN0YXRpYyBpbnQgYXRtZWxfaGxjZGNfcHdt
+X2FwcGx5KHN0cnVjdCBwd21fY2hpcCANCj4+ICpjLCBzdHJ1Y3QgcHdtX2RldmljZSAqcHdtLA0K
+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBBVE1FTF9ITENEQ19QV01QT0wsDQo+PiDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIHB3bWNmZyk7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAocmV0
+KQ0KPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIHJl
+dDsNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGdvdG8gZGlz
+YWJsZV9uZXdfY2xrOw0KPj4NCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldCA9IHJl
+Z21hcF93cml0ZShobGNkYy0+cmVnbWFwLCBBVE1FTF9ITENEQ19FTiwNCj4+IMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgQVRN
+RUxfSExDRENfUFdNKTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmIChyZXQpDQo+
+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gcmV0Ow0K
+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZ290byBkaXNhYmxl
+X25ld19jbGs7DQo+Pg0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0ID0gcmVnbWFw
+X3JlYWRfcG9sbF90aW1lb3V0KGhsY2RjLT5yZWdtYXAsIA0KPj4gQVRNRUxfSExDRENfU1IsDQo+
+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0YXR1cywNCj4+IMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RhdHVzICYgQVRNRUxfSExDRENfUFdNLA0KPj4gwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAxMCwgMCk7DQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIGlmIChyZXQpDQo+IA0KPiBSZW1vdmluZyB0aGlzIHRlc3QgbG9va3Mgd3JvbmcuDQoN
+CldpbGwgYWRkIGl0IGJhY2sgYW5kIGluY2x1ZGUgYSAnZ290bycNCg0KPiANCj4+ICtkaXNhYmxl
+X25ld19jbGs6DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBj
+bGtfZGlzYWJsZV91bnByZXBhcmUobmV3X2Nsayk7DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCBjaGlwLT5jdXJfY2xrID0gTlVMTDsNCj4+IMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gcmV0Ow0KPiANCj4gVGhpcyBp
+cyBhIHJlYWxseSB1bnVzdWFsIHBhdHRlcm4uDQo+IFVzdWFsbHksIGFuIGVycm9yIGhhbmRsaW5n
+IHBhdGggaXMgYWRkZWQgYXQgdGhlIGVuZCBvZiB0aGUgZnVuY3Rpb24sIG5vdA0KPiBpbiB0aGUg
+bWlkZGxlLg0KPiANCj4gQ0oNCg0KSSB3aWxsIG1vdmUgdGhpcyB0b3dhcmRzIHRoZSBlbmQgYXMg
+aXQncyBkb25lIHVzdWFsbHkuDQoNCi1IYXJpDQoNCj4gDQo+PiDCoMKgwqDCoMKgIH0gZWxzZSB7
+DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXQgPSByZWdtYXBfd3JpdGUoaGxjZGMt
+PnJlZ21hcCwgQVRNRUxfSExDRENfRElTLA0KPiANCg==
