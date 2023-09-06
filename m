@@ -2,152 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A727934A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 07:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5499E7934B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 07:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232817AbjIFFBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 01:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56698 "EHLO
+        id S239450AbjIFFFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 01:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230391AbjIFFBR (ORCPT
+        with ESMTP id S230330AbjIFFFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 01:01:17 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3559CC2;
-        Tue,  5 Sep 2023 22:01:14 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3864eOIq020202;
-        Wed, 6 Sep 2023 05:01:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=eIZcKPwVL6+2epnQ/gz/nF5ciddoea6Nbp2GtZbFDeY=;
- b=RaMBREg5pTlf0SQVUGGeZmpt5JPdt3hegXEkrkQHrgKEI1RxR9eQwJ/rBXebAat4p7pu
- pn9HA3RziIWaL90wBDNIDPv0LjRv+56qndzIrqbNYDm5k2tvvv3DWFR6Tqguwtlkh8Fs
- 76b0Z1K3ngXvBdZ52Zdeo5qqL85BE7BjFN3W7PbkEL9mqG8r+p5HV1yglhEPsheMUuA8
- ZNg6uyVNb6QHCLK/HgLmohmd3fWFBeZWaICaQF0bgCrajOFCMadtO9oIwan9bhVcpB5Y
- TpPnHYAl+UVMZUVx4+sfCtFBRRWJEBwC5DmTXn48Jf1YS5w7mYjpujtxvGaToO7rNv2/ IQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3swprekjvu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Sep 2023 05:01:01 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 386510at032520
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 6 Sep 2023 05:01:00 GMT
-Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 5 Sep
- 2023 22:00:54 -0700
-Message-ID: <131ad20f-ed64-11b8-e1d8-f48990115b21@quicinc.com>
-Date:   Wed, 6 Sep 2023 10:30:51 +0530
+        Wed, 6 Sep 2023 01:05:08 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 95B9CC2
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 22:05:04 -0700 (PDT)
+Received: from [172.20.10.67] (c-73-118-245-227.hsd1.wa.comcast.net [73.118.245.227])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 96176212B18B;
+        Tue,  5 Sep 2023 22:05:03 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 96176212B18B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1693976703;
+        bh=KKgsOAhDKOzqo69u3zNX41ZaU+WuV4X01q+Ns+I6CPo=;
+        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+        b=UyxQbLMEeAft8ZsE9dSu91CV3ja8JNP91tt6A0MTemXqt7rdrukHq+eTWnxn9RHjB
+         24IZID5a4WJ8tadEz77nrnf3tjtatmlE8P5aA+iAAkrSitfbbqgLw2Iq1wgYpdFATn
+         z+dcYXDV0XqmbjZzep9IfxNd2hjRvNzgGNlV9q7w=
+Message-ID: <dafbccb4-f7be-838f-c037-91ff2dc324e4@linux.microsoft.com>
+Date:   Tue, 5 Sep 2023 22:05:04 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Subject: Re: [PATCH RESEND 0/7] Add GPLL0 as clock provider for the Qualcomm's
- IPQ mailbox controller
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+From:   Easwar Hariharan <eahariha@linux.microsoft.com>
+Subject: Re: [PATCH v2 1/1] iommu/arm-smmu-v3: Fix error case of range command
+To:     zhurui <zhurui3@huawei.com>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     Nicolin Chen <nicolinc@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Tomas Krcka <krckatom@amazon.de>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <d5fc1f72-7428-4fef-d868-d06b85add635@huawei.com>
+ <20230804165225.GF30679@willie-the-truck> <ZM1DqxXcBT2SOs8/@Asurada-Nvidia>
+ <015b4573-9d74-451b-8028-a1050ade7019@huawei.com>
+ <661a7bb5-99e1-de16-d860-0cd17f7a0470@arm.com>
+ <20230808162409.GB2890@willie-the-truck>
+ <80ead8ee-4dbe-7b3c-44f5-944073a2a39d@arm.com>
+ <412886be-644a-5b46-9bfa-1c9a358f9a5d@huawei.com>
+ <280d0be7-7d41-ed78-bf4b-3db6c0076e22@arm.com>
+ <197e87cd-91a2-dce8-716c-488b379abbaf@arm.com>
+ <20230818162114.GB16216@willie-the-truck>
+ <d05378c0-5b85-caaf-ae0d-49576adf7d86@huawei.com>
 Content-Language: en-US
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        "Stephen Boyd" <sboyd@kernel.org>,
-        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-        Anusha Rao <quic_anusha@quicinc.com>,
-        Devi Priya <quic_devipriy@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>
-References: <20230904-gpll_cleanup-v1-0-de2c448f1188@quicinc.com>
-From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-In-Reply-To: <20230904-gpll_cleanup-v1-0-de2c448f1188@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: xlCtJKh4lnpZwYAdqx9t-wMSBzJ4Rv1s
-X-Proofpoint-GUID: xlCtJKh4lnpZwYAdqx9t-wMSBzJ4Rv1s
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-05_13,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- spamscore=0 suspectscore=0 impostorscore=0 malwarescore=0 phishscore=0
- clxscore=1015 lowpriorityscore=0 priorityscore=1501 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309060045
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <d05378c0-5b85-caaf-ae0d-49576adf7d86@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-19.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/25/23 01:12, zhurui wrote:
+> On 2023/8/19 0:21, Will Deacon wrote:
+>> On Fri, Aug 18, 2023 at 05:19:31PM +0100, Robin Murphy wrote:
+>>> On 2023-08-09 14:48, Robin Murphy wrote:
+>>> [...]
+>>>> Does the patch below work for you?
+>>>
+>>> Any comments on this? Just noticed this commit on a local dev branch and
+>>> realised I'd totally forgotten about it already. I'm pretty confident it
+>>> ought to be right, but then it *was* also me who missed the original bug to
+>>> begin with... ;)
+>>
+>> I'm happy to take it if zhurui can confirm that it fixes their issue...
+>>
+>> Will (had also forgotten about this)
+>>
+>>>> ----->8-----
+>>>> Subject: [PATCH] iommu/arm-smmu-v3: Avoid constructing invalid range
+>>>> commands
+>>>>
+>>>> Although io-pgtable's non-leaf invalidations are always for full tables,
+>>>> I missed that SVA also uses non-leaf invalidations, while being at the
+>>>> mercy of whatever range the MMU notifier throws at it. This means it
+>>>> definitely wants the previous TTL fix as well, since it also doesn't
+>>>> know exactly which leaf level(s) may need invalidating, but it can also
+>>>> give us less-aligned ranges wherein certain corners may lead to building
+>>>> an invalid command where TTL, Num and Scale are all 0. It should be fine
+>>>> to handle this by over-invalidating an extra page, since falling back to
+>>>> a non-range command opens up a whole can of errata-flavoured worms.
+>>>>
+>>>> Fixes: 6833b8f2e199 ("iommu/arm-smmu-v3: Set TTL invalidation hint better")
+>>>> Reported-by: Rui Zhu <zhurui3@huawei.com>
+>>>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+>>>> ---
+>>>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 15 ++++++++++-----
+>>>>    1 file changed, 10 insertions(+), 5 deletions(-)
+>>>>
+>>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>> b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>> index 9b0dc3505601..6ccbae9b93a1 100644
+>>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>> @@ -1895,18 +1895,23 @@ static void __arm_smmu_tlb_inv_range(struct
+>>>> arm_smmu_cmdq_ent *cmd,
+>>>>            /* Get the leaf page size */
+>>>>            tg = __ffs(smmu_domain->domain.pgsize_bitmap);
+>>>>
+>>>> +        num_pages = size >> tg;
+>>>> +
+>>>>            /* Convert page size of 12,14,16 (log2) to 1,2,3 */
+>>>>            cmd->tlbi.tg = (tg - 10) / 2;
+>>>>
+>>>>            /*
+>>>> -         * Determine what level the granule is at. For non-leaf,
+>>>> io-pgtable
+>>>> -         * assumes .tlb_flush_walk can invalidate multiple levels at once,
+>>>> -         * so ignore the nominal last-level granule and leave TTL=0.
+>>>> +         * Determine what level the granule is at. For non-leaf, both
+>>>> +         * io-pgtable and SVA pass a nominal last-level granule because
+>>>> +         * they don't know what level(s) actually apply, so ignore that
+>>>> +         * and leave TTL=0. However for various errata reasons we still
+>>>> +         * want to use a range command, so avoid the SVA corner case
+>>>> +         * where both scale and num could be 0 as well.
+>>>>             */
+>>>>            if (cmd->tlbi.leaf)
+>>>>                cmd->tlbi.ttl = 4 - ((ilog2(granule) - 3) / (tg - 3));
+>>>> -
+>>>> -        num_pages = size >> tg;
+>>>> +        else if ((num_pages & CMDQ_TLBI_RANGE_NUM_MAX) == 1)
+>>>> +            num_pages++;
+>>>>        }
+>>>>
+>>>>        cmds.num = 0;
+>>>>
+> 
+> Hi, Will and Robin,
+> Sorry for taking so long to reply you. We have some problems with our machine these days. It's
+> solved just today. I give a test with Robin's patch for our testcase, everything is ok. I think
+> the problem has been solved.
+> 
+> Thanks,
+> ZhuRui.
+>
 
-On 9/6/2023 10:26 AM, Kathiravan Thirumoorthy wrote:
-> Currently mailbox controller takes the XO and APSS PLL as the input. It
-> can take the GPLL0 also as an input. This patch series adds the same and
-> fixes the issue caused by this.
->
-> Once the cpufreq driver is up, it tries to bump up the cpu frequency
-> above 800MHz, while doing so system is going to unusable state. Reason
-> being, with the GPLL0 included as clock source, clock framework tries to
-> achieve the required rate with the possible parent and since GPLL0 carries
-> the CLK_SET_RATE_PARENT flag, clock rate of the GPLL0 is getting
-> changed, causing the issue.
->
-> First half of the series, removes the CLK_SET_RATE_PARENT flag from the
-> PLL clocks since the PLL clock rates shouldn't be changed. Another
-> half, add the necessary support to include the GPLL0 as clock provider
-> for mailbox and accomodate the changes in APSS clock driver.
->
-> This is also the preparatory series to enable the CPUFreq on IPQ5332
-> SoC. Dynamic scaling of CPUFreq is not supported on IPQ5332, so to
-> switch between the frequencies we need to park the APSS PLL in safe
-> source, here it is GPLL0 and then shutdown and bring up the APSS PLL in
-> the desired rate.
->
-> For IPQ5332 SoC, this series depends on the below patch
-> https://lore.kernel.org/linux-arm-msm/1693474133-10467-1-git-send-email-quic_varada@quicinc.com/
+Hi Robin,
 
+Could you please send out this patch since ZhuRui has confirmed it fixes 
+their issue and CC it to stable for v5.15+? Or if Will is willing to 
+pick it up off this thread, I can do the backport to stable.
 
-My bad.. This is not a 'resend', this is V1.. I'm trying to get used to 
-b4 and messed up... Will rectify it in future.
+-- 
+Thanks,
+Easwar
 
-
->
-> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-> ---
-> Kathiravan Thirumoorthy (7):
->        clk: qcom: ipq8074: drop the CLK_SET_RATE_PARENT flag from PLL clocks
->        clk: qcom: ipq6018: drop the CLK_SET_RATE_PARENT flag from PLL clocks
->        clk: qcom: ipq9574: drop the CLK_SET_RATE_PARENT flag from GPLL clocks
->        clk: qcom: ipq5332: drop the CLK_SET_RATE_PARENT flag from GPLL clocks
->        dt-bindings: mailbox: qcom: add one more clock provider for IPQ mailbox
->        clk: qcom: apss-ipq6018: add the GPLL0 clock also as clock provider
->        arm64: dts: qcom: include the GPLL0 as clock provider for IPQ mailbox
->
->   .../devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml         | 2 ++
->   arch/arm64/boot/dts/qcom/ipq5332.dtsi                              | 4 ++--
->   arch/arm64/boot/dts/qcom/ipq6018.dtsi                              | 4 ++--
->   arch/arm64/boot/dts/qcom/ipq8074.dtsi                              | 4 ++--
->   arch/arm64/boot/dts/qcom/ipq9574.dtsi                              | 4 ++--
->   drivers/clk/qcom/apss-ipq6018.c                                    | 3 +++
->   drivers/clk/qcom/gcc-ipq5332.c                                     | 2 --
->   drivers/clk/qcom/gcc-ipq6018.c                                     | 7 -------
->   drivers/clk/qcom/gcc-ipq8074.c                                     | 7 -------
->   drivers/clk/qcom/gcc-ipq9574.c                                     | 4 ----
->   10 files changed, 13 insertions(+), 28 deletions(-)
-> ---
-> base-commit: a47fc304d2b678db1a5d760a7d644dac9b067752
-> change-id: 20230904-gpll_cleanup-8b3e8b058c8b
->
-> Best regards,
