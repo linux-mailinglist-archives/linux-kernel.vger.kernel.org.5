@@ -2,222 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7553179363B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981D679363E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232757AbjIFH1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 03:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
+        id S232887AbjIFH2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 03:28:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231147AbjIFH1P (ORCPT
+        with ESMTP id S230361AbjIFH2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 03:27:15 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F60392
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:27:11 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-52e297c7c39so3956854a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 00:27:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693985229; x=1694590029; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=K/D3S02pV0j69DWmyqjSauKntrk3YcPUrV89cnyW/2M=;
-        b=sYtcyiEL1JTuSC/ZCEWrORbeFahq2hS2aAgAC8pcC7yxeMqbNOXRuq/17L6tiMdDd9
-         gg0iImVO2zUEaglC0X+HC0rbCRr9gfH8LI/CvGYFQF4qvCgRCyBjRt8Kf/FgExAhT9ap
-         XMhLvQGTPgGLF1GOJV1SqMZoIaNaiAML8DM/nxBt6MBD7PXMrdjuzYzTWxnSNq8OKZ2l
-         F1+28c6RlPsdIVlbgFQ4rTx3cAuDhmVlc2TMxVm+XdpCAEQ2FZJZUrSheraZJVjb7X6m
-         PSD+EdJ2q0UIgTm5N6pYSoaletpBRxmGxulmofi8AtS1I6jkEfpcmntIlBZMQNigetzQ
-         TlPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693985229; x=1694590029;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K/D3S02pV0j69DWmyqjSauKntrk3YcPUrV89cnyW/2M=;
-        b=MKIZk/qnK/oTlAq3ny6ukwPJLmMXtSuotde3GFmUDMLXk8zzFB3FhXk6uwMNa7Gg4N
-         aNZcDSJHUCRK+vQ05t0OHdEewQvyilSZLWl4kkfhXnflP5M6spxcKP8V5Zn7V7UKKaoh
-         3Vg91gLRMtcCIuHKcWq1rr6QQPNsWHhgSmoFgGCpBNjFOXcxqASxDz2NuIMSo5zkmLmk
-         OqMktTB8fs5l0DiBNw+/trAkC+FscZ5WpHTNcxSm2XpkvTS+VYmRQmhF3G5C6SLtARA0
-         qOn7T615zrLIqxpX88L/OoPyg0KuS2/+/Wuvza6lZcV/errmwRuK3ILLYtzaRTus2t2v
-         aZZg==
-X-Gm-Message-State: AOJu0YxpJ7kaab+db0t9hWmzNkH+zsF4VeOejg/VcMUmAUSB4dR395ml
-        PClqkFdU9wua04Dn6sS+lNFNoA==
-X-Google-Smtp-Source: AGHT+IFSivZXNYKgOoZ31LkGFVLn7z0ozLSMGOS34alVtKgZpxs2nm8bdPv5Y8/tJvhmbBZRQfgz0Q==
-X-Received: by 2002:a17:907:724b:b0:9a1:d5de:5e3 with SMTP id ds11-20020a170907724b00b009a1d5de05e3mr1621628ejc.54.1693985229558;
-        Wed, 06 Sep 2023 00:27:09 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id qc8-20020a170906d8a800b0099275c59bc9sm8561948ejb.33.2023.09.06.00.27.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 00:27:09 -0700 (PDT)
-Message-ID: <502fc7b1-a32d-6901-3a45-d2aa0e0c3849@linaro.org>
-Date:   Wed, 6 Sep 2023 09:27:07 +0200
+        Wed, 6 Sep 2023 03:28:21 -0400
+Received: from out-227.mta1.migadu.com (out-227.mta1.migadu.com [95.215.58.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2611792
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:28:16 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1693985294;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=938feFunuVXrcQFgTRaCo4N0Cd13MIgXYg/3Qnd6T7g=;
+        b=OlHVPoQNIIWLajc/u/NPrn8F8+xDKk2SY0BWtBkfBz3Xn51WktNbj5XpWZ2IR0/aWW+Bdy
+        jy/sSX7uz3wVfm18fYS6eGuqhqgA1fboaTlV1sFtW1IjCQBUyLBdLhiRI0OpGpWtWlxn8p
+        Jqn11zt98CKVXa7uQBPeG2D5JWZMnSQ=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     anthony.l.nguyen@intel.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH] i40e: Add rx_missed_errors for buffer exhaustion
+Date:   Wed,  6 Sep 2023 15:27:57 +0800
+Message-Id: <20230906072757.3929754-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 3/3] arm64: dts: mediatek: mt8365-pumpkin: Add overlays
- for thp7312 cameras
-Content-Language: en-US
-To:     Paul Elder <paul.elder@ideasonboard.com>,
-        linux-media@vger.kernel.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230905233118.183140-1-paul.elder@ideasonboard.com>
- <20230905233118.183140-4-paul.elder@ideasonboard.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230905233118.183140-4-paul.elder@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/09/2023 01:31, Paul Elder wrote:
-> Add overlays for the Pumpkin i350 to support THP7312 cameras.
-> 
-> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
-> ---
->  arch/arm64/boot/dts/mediatek/Makefile         |  4 +
->  .../mt8365-pumpkin-common-thp7312.dtsi        | 23 ++++++
->  .../mt8365-pumpkin-csi0-thp7312-imx258.dtso   | 73 +++++++++++++++++++
->  .../mt8365-pumpkin-csi1-thp7312-imx258.dtso   | 73 +++++++++++++++++++
->  4 files changed, 173 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi0-thp7312-imx258.dtso
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi1-thp7312-imx258.dtso
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-> index 20570bc40de8..ceaf24105001 100644
-> --- a/arch/arm64/boot/dts/mediatek/Makefile
-> +++ b/arch/arm64/boot/dts/mediatek/Makefile
-> @@ -56,4 +56,8 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-evk.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-pumpkin.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8516-pumpkin.dtb
->  
-> +mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-csi0-thp7312-imx258.dtbo
-> +mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-csi1-thp7312-imx258.dtbo
->  mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-ethernet-usb.dtbo
-> +
-> +dtb-$(CONFIG_ARCH_MEDIATEK) += mtk-mt8365-pumpkin.dtb
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
-> new file mode 100644
-> index 000000000000..478697552617
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
-> @@ -0,0 +1,23 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2023 Ideas on Board
-> + * Author: Paul Elder <paul.elder@ideasonboard.com>
-> + */
-> +
-> +/dts-v1/;
-> +/plugin/;
-> +
-> +&{/} {
-> +	vsys_v4p2: regulator@0 {
+As the comment in struct rtnl_link_stats64, rx_dropped should not
+include packets dropped by the device due to buffer exhaustion.
+They are counted in rx_missed_errors, procfs folds those two counters
+together.
 
-Hm? Is this a bus?
+Add rx_missed_errors for buffer exhaustion, rx_missed_errors corresponds
+to rx_discards, rx_dropped corresponds to rx_discards_other.
 
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vsys-v4p2";
-> +		regulator-min-microvolt = <4200000>;
-> +		regulator-max-microvolt = <4200000>;
-> +	};
-> +
-> +	camera61_clk: cam_clk24m {
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c |  3 ++-
+ drivers/net/ethernet/intel/i40e/i40e_main.c    | 18 +++++++-----------
+ .../net/ethernet/intel/i40e/i40e_virtchnl_pf.c |  2 +-
+ 3 files changed, 10 insertions(+), 13 deletions(-)
 
-And this is not on a bus? It's the same / node!
-
-Please work on mainline, which means take mainline code and change it to
-your needs. Do not take downstream poor code and change it...
-
-No underscores in node names. Also generic node names, so at least with
-generic prefix or suffix.
-
-
-> +		compatible = "fixed-clock";
-> +		clock-frequency = <24000000>;
-> +		#clock-cells = <0>;
-> +	};
-> +};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi0-thp7312-imx258.dtso b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi0-thp7312-imx258.dtso
-> new file mode 100644
-> index 000000000000..740d14a19d75
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi0-thp7312-imx258.dtso
-> @@ -0,0 +1,73 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2023 Ideas on Board
-> + * Author: Paul Elder <paul.elder@ideasonboard.com>
-> + */
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/pinctrl/mt8365-pinfunc.h>
-> +#include "mt8365-pumpkin-common-thp7312.dtsi"
-> +
-> +&i2c3 {
-> +	camera@61 {
-> +		compatible = "thine,thp7312";
-> +		reg = <0x61>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&cam0_pins_default>;
-> +		reset-gpios = <&pio 118 GPIO_ACTIVE_LOW>;
-> +		clocks = <&camera61_clk>;
-> +
-> +		vddcore-supply = <&vsys_v4p2>;
-> +		vhtermrx-supply = <&vsys_v4p2>;
-> +		vddtx-supply = <&vsys_v4p2>;
-> +		vddhost-supply = <&vsys_v4p2>;
-> +		vddcmos-supply = <&vsys_v4p2>;
-> +		vddgpio_0-supply = <&vsys_v4p2>;
-> +		vddgpio_1-supply = <&vsys_v4p2>;
-> +		DOVDD-supply = <&vsys_v4p2>;
-> +		AVDD-supply = <&vsys_v4p2>;
-> +		DVDD-supply = <&vsys_v4p2>;
-> +
-> +		orientation = <0>;
-> +		rotation = <0>;
-> +
-> +		thine,rx,data-lanes = <4 1 3 2>;
-
-NAK for this property.
-
-
-> +
-> +		port {
-> +			isp1_out: endpoint {
-> +				remote-endpoint = <&seninf_in1>;
-> +				data-lanes = <4 2 1 3>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&pio {
-> +	cam0_pins_default: cam0_pins_default {
-
-No underscores in node names.
-
-> +		pins_rst {
-
-Ditto
-
-
-Best regards,
-Krzysztof
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+index bd1321bf7e26..77e4ac103866 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+@@ -245,6 +245,7 @@ static const struct i40e_stats i40e_gstrings_net_stats[] = {
+ 	I40E_NETDEV_STAT(rx_errors),
+ 	I40E_NETDEV_STAT(tx_errors),
+ 	I40E_NETDEV_STAT(rx_dropped),
++	I40E_NETDEV_STAT(rx_missed_errors),
+ 	I40E_NETDEV_STAT(tx_dropped),
+ 	I40E_NETDEV_STAT(collisions),
+ 	I40E_NETDEV_STAT(rx_length_errors),
+@@ -321,7 +322,7 @@ static const struct i40e_stats i40e_gstrings_stats[] = {
+ 	I40E_PF_STAT("port.rx_broadcast", stats.eth.rx_broadcast),
+ 	I40E_PF_STAT("port.tx_broadcast", stats.eth.tx_broadcast),
+ 	I40E_PF_STAT("port.tx_errors", stats.eth.tx_errors),
+-	I40E_PF_STAT("port.rx_dropped", stats.eth.rx_discards),
++	I40E_PF_STAT("port.rx_discards", stats.eth.rx_discards),
+ 	I40E_PF_STAT("port.tx_dropped_link_down", stats.tx_dropped_link_down),
+ 	I40E_PF_STAT("port.rx_crc_errors", stats.crc_errors),
+ 	I40E_PF_STAT("port.illegal_bytes", stats.illegal_bytes),
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index de7fd43dc11c..290c011168c2 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -489,6 +489,7 @@ static void i40e_get_netdev_stats_struct(struct net_device *netdev,
+ 	stats->tx_dropped	= vsi_stats->tx_dropped;
+ 	stats->rx_errors	= vsi_stats->rx_errors;
+ 	stats->rx_dropped	= vsi_stats->rx_dropped;
++	stats->rx_missed_errors	= vsi_stats->rx_missed_errors;
+ 	stats->rx_crc_errors	= vsi_stats->rx_crc_errors;
+ 	stats->rx_length_errors	= vsi_stats->rx_length_errors;
+ }
+@@ -680,17 +681,13 @@ i40e_stats_update_rx_discards(struct i40e_vsi *vsi, struct i40e_hw *hw,
+ 			      struct i40e_eth_stats *stat_offset,
+ 			      struct i40e_eth_stats *stat)
+ {
+-	u64 rx_rdpc, rx_rxerr;
+-
+ 	i40e_stat_update32(hw, I40E_GLV_RDPC(stat_idx), offset_loaded,
+-			   &stat_offset->rx_discards, &rx_rdpc);
++			   &stat_offset->rx_discards, &stat->rx_discards);
+ 	i40e_stat_update64(hw,
+ 			   I40E_GL_RXERR1H(i40e_compute_pci_to_hw_id(vsi, hw)),
+ 			   I40E_GL_RXERR1L(i40e_compute_pci_to_hw_id(vsi, hw)),
+ 			   offset_loaded, &stat_offset->rx_discards_other,
+-			   &rx_rxerr);
+-
+-	stat->rx_discards = rx_rdpc + rx_rxerr;
++			   &stat->rx_discards_other);
+ }
+ 
+ /**
+@@ -712,9 +709,6 @@ void i40e_update_eth_stats(struct i40e_vsi *vsi)
+ 	i40e_stat_update32(hw, I40E_GLV_TEPC(stat_idx),
+ 			   vsi->stat_offsets_loaded,
+ 			   &oes->tx_errors, &es->tx_errors);
+-	i40e_stat_update32(hw, I40E_GLV_RDPC(stat_idx),
+-			   vsi->stat_offsets_loaded,
+-			   &oes->rx_discards, &es->rx_discards);
+ 	i40e_stat_update32(hw, I40E_GLV_RUPP(stat_idx),
+ 			   vsi->stat_offsets_loaded,
+ 			   &oes->rx_unknown_protocol, &es->rx_unknown_protocol);
+@@ -971,8 +965,10 @@ static void i40e_update_vsi_stats(struct i40e_vsi *vsi)
+ 	ns->tx_errors = es->tx_errors;
+ 	ons->multicast = oes->rx_multicast;
+ 	ns->multicast = es->rx_multicast;
+-	ons->rx_dropped = oes->rx_discards;
+-	ns->rx_dropped = es->rx_discards;
++	ons->rx_dropped = oes->rx_discards_other;
++	ns->rx_dropped = es->rx_discards_other;
++	ons->rx_missed_errors = oes->rx_discards;
++	ns->rx_missed_errors = es->rx_discards;
+ 	ons->tx_dropped = oes->tx_discards;
+ 	ns->tx_dropped = es->tx_discards;
+ 
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+index 8ea1a238dcef..3b514abfaa1e 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+@@ -4914,7 +4914,7 @@ int i40e_get_vf_stats(struct net_device *netdev, int vf_id,
+ 	vf_stats->tx_bytes   = stats->tx_bytes;
+ 	vf_stats->broadcast  = stats->rx_broadcast;
+ 	vf_stats->multicast  = stats->rx_multicast;
+-	vf_stats->rx_dropped = stats->rx_discards;
++	vf_stats->rx_dropped = stats->rx_discards + stats->rx_discards_other;
+ 	vf_stats->tx_dropped = stats->tx_discards;
+ 
+ 	return 0;
+-- 
+2.25.1
 
