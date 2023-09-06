@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D321B794381
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E164794384
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244041AbjIFTDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 15:03:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39466 "EHLO
+        id S244016AbjIFTDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 15:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243995AbjIFTCh (ORCPT
+        with ESMTP id S244009AbjIFTCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 6 Sep 2023 15:02:37 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CB41B7
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 12:02:33 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-79565370aa3so5564239f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 12:02:33 -0700 (PDT)
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37CCECC7;
+        Wed,  6 Sep 2023 12:02:34 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-792717ef3c9so4131539f.3;
+        Wed, 06 Sep 2023 12:02:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694026952; x=1694631752; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694026953; x=1694631753; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7joZjSDNylfwIjlN/v1EJKsLNVMUogPTU5+zZ+4Y2sA=;
-        b=l7bUw00O7hX9W/k/qeYBNo2ag8y4j+NYyhtg5DnM/VAbDgD/eoKqPx1C7gciq2KddS
-         oCAk8hs1w4N8oQa9L8EZD57ONP1xsQdBw6S4QQRKPjhYTFBQ8uKUbcR1UXbgT0MOKaZq
-         Wp0MYKwwic7VhX6QD65foIplDNaeR4EDbo2OnMYenLVq9mgA9KOyDhsV9mfq/bW9+NeC
-         JwGM54IyAWTtCqkeCm9ugNQdXL/Fn4kkT7wG85SL1k1RMIQNhIfPQ3IOhuzt8VZ6vqqz
-         L7rs0o/TBZd3W22a2zqCpeygtfSRMF0O10pwQlItCl7MOEGa7eSVioR7C0jzOjr9SWoV
-         WIIA==
+        bh=Shuu74iNOrUzggTrIzmIdLUSQe5OqUirbEavz/33+0U=;
+        b=FFEglAkon2EdUzMQJvIeUA9aHlG/CB49Uyjr0uPSrrlB4t6T0rRiuktA448p/b4INr
+         lrXJ1Rg+dWq+mMVVjiMn+RRN2Tvxq3j4GpGBIlynaKdftvSiBcMi+nnOk3d92fX2CUbh
+         MXIjBvTRkoxjkIsNa7JCMy/zZxN1JxG+IE1qCL1bV1f419//UoBb0muo2jtzJBb/Outz
+         eeYLajpdOC5tuj6YI0LqqgF36/aoPGhLlC7P6BdrPDdMxiXPzn+zHZCDT2FocCyYnuUO
+         ZMcYdp4ytHP7sLysdlXwhw9SN/2APpRda5Lm1l/q4fr7ro7odEG+Lnhae7a6ZU+taigu
+         K5LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694026952; x=1694631752;
+        d=1e100.net; s=20221208; t=1694026953; x=1694631753;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7joZjSDNylfwIjlN/v1EJKsLNVMUogPTU5+zZ+4Y2sA=;
-        b=i2cNQ7T+RlAzl+9zWE7hFo1l8Ql7Ou5WXHbzwBsfF9XC4A8/HK/ShI5urivHgYMKxE
-         RVRpJwXnkj9bGG+bh2D896+C5Z1VpkfFc3CxX7s9+pDC4J8buI5gCCgV0FXpAloIufHz
-         b3bCOgxxefWOTwkp8OMcv4GDWrfgOYXVXRlD8ZEPb6gXoaIozibcPy3HD2xl3Xpijm38
-         Mm+TRbIKnYAHIgvpFRrBSNrImaFisLR5AhxFLyBuqfN++uzu/ZxGojwMmxNFz+ibFQEJ
-         Ym2pXTdUJqtNCsQkuuM7wlmn9QZUyCqm11mRO+Xq1h6gedN//I9dAV8+RNKe4cnfvajQ
-         1spg==
-X-Gm-Message-State: AOJu0Yz+D/br8p57GRh3RsCaUXUb2/UBaENBzuGro8N24In3Dkx5x+J1
-        fTqCY4Vujf7TsUP2TuPTev8Et652LEK/Ow==
-X-Google-Smtp-Source: AGHT+IF9+5z8gW/L2WmhxsI+81BMma/N4jRZCRB7iE4meseUn0CUi23FnZlRHWkkTJI6XVkfvLHlSg==
-X-Received: by 2002:a5e:8913:0:b0:783:47cd:27b5 with SMTP id k19-20020a5e8913000000b0078347cd27b5mr18383468ioj.3.1694026952009;
-        Wed, 06 Sep 2023 12:02:32 -0700 (PDT)
+        bh=Shuu74iNOrUzggTrIzmIdLUSQe5OqUirbEavz/33+0U=;
+        b=iEInu+Z1xorFODkfFogcDGtj5OfLOz93500m7/hn+ZcUXltS/heCRbBy3ZoM31XnYX
+         S/JxPOcDYaP8kygAWSFptBLRF+phsUJY5XBwUMwRYCE1bAhOd42Wcra8zMOzJf7LkxgN
+         QnU/mJAw8EuwnnYZIYEmvP7VEe55s9ypldYDMWkjQImvsal5lYdS/3ii678OVCX/RsmM
+         zQGFWgesDsCX1Wh/ah2oR/vgFMVvRNWZmhbYEjS7T0M3Y2cjqQQaaQ+QF0KHqAlycZC7
+         JlBBg0j5XdaQhwmduHgvar3bmrY1KNMTCQqdebmQvNCIIvP5HVDpC5gbQQBgedmnxR76
+         e/xQ==
+X-Gm-Message-State: AOJu0YxpN9/rZ2/yvDr9LOcTLRHNayPYd6So/8uA3qVXjCwpkhpjTARY
+        2u3UPj7Y5BK8PRAL2HSBoYTqTCnfqXa44A==
+X-Google-Smtp-Source: AGHT+IG8dUwsOLP2n+Ukg0ohoD1JineJZS15vcrecPVQqbrwV1b9zykvv4DUg7GBrgG/kgmfyMJyGQ==
+X-Received: by 2002:a6b:dc17:0:b0:792:8d16:91ef with SMTP id s23-20020a6bdc17000000b007928d1691efmr16839930ioc.18.1694026953259;
+        Wed, 06 Sep 2023 12:02:33 -0700 (PDT)
 Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id w11-20020a5d844b000000b0076ffebfc9fasm5152306ior.47.2023.09.06.12.02.31
+        by smtp.googlemail.com with ESMTPSA id w11-20020a5d844b000000b0076ffebfc9fasm5152306ior.47.2023.09.06.12.02.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 12:02:31 -0700 (PDT)
+        Wed, 06 Sep 2023 12:02:32 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
         amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
@@ -57,12 +57,15 @@ To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
 Cc:     daniel.vetter@ffwll.ch, daniel@ffwll.ch, jani.nikula@intel.com,
         ville.syrjala@linux.intel.com, seanpaul@chromium.org,
         robdclark@gmail.com, Jim Cromie <jim.cromie@gmail.com>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Edmund Dea <edmund.j.dea@intel.com>,
-        David Airlie <airlied@gmail.com>
-Subject: [PATCH v3 2/5] drm/kmb: add trailing newlines to drm_dbg msgs
-Date:   Wed,  6 Sep 2023 13:02:20 -0600
-Message-ID: <20230906190224.583577-3-jim.cromie@gmail.com>
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org
+Subject: [PATCH v3 3/5] drm/msm: add trailing newlines to drm_dbg msgs
+Date:   Wed,  6 Sep 2023 13:02:21 -0600
+Message-ID: <20230906190224.583577-4-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230906190224.583577-1-jim.cromie@gmail.com>
 References: <20230906190224.583577-1-jim.cromie@gmail.com>
@@ -89,83 +92,44 @@ No functional changes.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- drivers/gpu/drm/kmb/kmb_crtc.c  | 10 +++++-----
- drivers/gpu/drm/kmb/kmb_plane.c |  6 +++---
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/msm/msm_fb.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/kmb/kmb_crtc.c b/drivers/gpu/drm/kmb/kmb_crtc.c
-index 647872f65bff..a58baf25322d 100644
---- a/drivers/gpu/drm/kmb/kmb_crtc.c
-+++ b/drivers/gpu/drm/kmb/kmb_crtc.c
-@@ -94,7 +94,7 @@ static void kmb_crtc_set_mode(struct drm_crtc *crtc,
- 	vm.hback_porch = 0;
- 	vm.hsync_len = 28;
+diff --git a/drivers/gpu/drm/msm/msm_fb.c b/drivers/gpu/drm/msm/msm_fb.c
+index e3f61c39df69..88bb5fa23bb1 100644
+--- a/drivers/gpu/drm/msm/msm_fb.c
++++ b/drivers/gpu/drm/msm/msm_fb.c
+@@ -89,7 +89,7 @@ int msm_framebuffer_prepare(struct drm_framebuffer *fb,
  
--	drm_dbg(dev, "%s : %dactive height= %d vbp=%d vfp=%d vsync-w=%d h-active=%d h-bp=%d h-fp=%d hsync-l=%d",
-+	drm_dbg(dev, "%s : %dactive height= %d vbp=%d vfp=%d vsync-w=%d h-active=%d h-bp=%d h-fp=%d hsync-l=%d\n",
- 		__func__, __LINE__,
- 			m->crtc_vdisplay, vm.vback_porch, vm.vfront_porch,
- 			vm.vsync_len, m->crtc_hdisplay, vm.hback_porch,
-@@ -194,24 +194,24 @@ static enum drm_mode_status
- 	int vfp = mode->vsync_start - mode->vdisplay;
+ 	for (i = 0; i < n; i++) {
+ 		ret = msm_gem_get_and_pin_iova(fb->obj[i], aspace, &msm_fb->iova[i]);
+-		drm_dbg_state(fb->dev, "FB[%u]: iova[%d]: %08llx (%d)",
++		drm_dbg_state(fb->dev, "FB[%u]: iova[%d]: %08llx (%d)\n",
+ 			      fb->base.id, i, msm_fb->iova[i], ret);
+ 		if (ret)
+ 			return ret;
+@@ -176,9 +176,9 @@ static struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
+ 	const struct msm_format *format;
+ 	int ret, i, n;
  
- 	if (mode->vdisplay < KMB_CRTC_MAX_HEIGHT) {
--		drm_dbg(dev, "height = %d less than %d",
-+		drm_dbg(dev, "height = %d less than %d\n",
- 			mode->vdisplay, KMB_CRTC_MAX_HEIGHT);
- 		return MODE_BAD_VVALUE;
- 	}
- 	if (mode->hdisplay < KMB_CRTC_MAX_WIDTH) {
--		drm_dbg(dev, "width = %d less than %d",
-+		drm_dbg(dev, "width = %d less than %d\n",
- 			mode->hdisplay, KMB_CRTC_MAX_WIDTH);
- 		return MODE_BAD_HVALUE;
- 	}
- 	refresh = drm_mode_vrefresh(mode);
- 	if (refresh < KMB_MIN_VREFRESH || refresh > KMB_MAX_VREFRESH) {
--		drm_dbg(dev, "refresh = %d less than %d or greater than %d",
-+		drm_dbg(dev, "refresh = %d less than %d or greater than %d\n",
- 			refresh, KMB_MIN_VREFRESH, KMB_MAX_VREFRESH);
- 		return MODE_BAD;
- 	}
+-	drm_dbg_state(dev, "create framebuffer: mode_cmd=%p (%dx%d@%4.4s)",
+-			mode_cmd, mode_cmd->width, mode_cmd->height,
+-			(char *)&mode_cmd->pixel_format);
++	drm_dbg_state(dev, "create framebuffer: mode_cmd=%p (%dx%d@%4.4s)\n",
++		      mode_cmd, mode_cmd->width, mode_cmd->height,
++		      (char *)&mode_cmd->pixel_format);
  
- 	if (vfp < KMB_CRTC_MIN_VFP) {
--		drm_dbg(dev, "vfp = %d less than %d", vfp, KMB_CRTC_MIN_VFP);
-+		drm_dbg(dev, "vfp = %d less than %d\n", vfp, KMB_CRTC_MIN_VFP);
- 		return MODE_BAD;
- 	}
+ 	n = info->num_planes;
+ 	format = kms->funcs->get_format(kms, mode_cmd->pixel_format,
+@@ -232,7 +232,7 @@ static struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
  
-diff --git a/drivers/gpu/drm/kmb/kmb_plane.c b/drivers/gpu/drm/kmb/kmb_plane.c
-index 9e0562aa2bcb..308bd1cb50c8 100644
---- a/drivers/gpu/drm/kmb/kmb_plane.c
-+++ b/drivers/gpu/drm/kmb/kmb_plane.c
-@@ -78,7 +78,7 @@ static unsigned int check_pixel_format(struct drm_plane *plane, u32 format)
- 	 * plane configuration is not supported.
- 	 */
- 	if (init_disp_cfg.format && init_disp_cfg.format != format) {
--		drm_dbg(&kmb->drm, "Cannot change format after initial plane configuration");
-+		drm_dbg(&kmb->drm, "Cannot change format after initial plane configuration\n");
- 		return -EINVAL;
- 	}
- 	for (i = 0; i < plane->format_count; i++) {
-@@ -124,7 +124,7 @@ static int kmb_plane_atomic_check(struct drm_plane *plane,
- 	if ((init_disp_cfg.width && init_disp_cfg.height) &&
- 	    (init_disp_cfg.width != fb->width ||
- 	    init_disp_cfg.height != fb->height)) {
--		drm_dbg(&kmb->drm, "Cannot change plane height or width after initial configuration");
-+		drm_dbg(&kmb->drm, "Cannot change plane height or width after initial configuration\n");
- 		return -EINVAL;
- 	}
- 	can_position = (plane->type == DRM_PLANE_TYPE_OVERLAY);
-@@ -375,7 +375,7 @@ static void kmb_plane_atomic_update(struct drm_plane *plane,
- 	spin_lock_irq(&kmb->irq_lock);
- 	if (kmb->kmb_under_flow || kmb->kmb_flush_done) {
- 		spin_unlock_irq(&kmb->irq_lock);
--		drm_dbg(&kmb->drm, "plane_update:underflow!!!! returning");
-+		drm_dbg(&kmb->drm, "plane_update:underflow!!!! returning\n");
- 		return;
- 	}
- 	spin_unlock_irq(&kmb->irq_lock);
+ 	refcount_set(&msm_fb->dirtyfb, 1);
+ 
+-	drm_dbg_state(dev, "create: FB ID: %d (%p)", fb->base.id, fb);
++	drm_dbg_state(dev, "create: FB ID: %d (%p)\n", fb->base.id, fb);
+ 
+ 	return fb;
+ 
 -- 
 2.41.0
 
