@@ -2,121 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B193F7933E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 04:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2397933E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 04:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241624AbjIFCwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 22:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36870 "EHLO
+        id S237033AbjIFC6h convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Sep 2023 22:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjIFCwl (ORCPT
+        with ESMTP id S229525AbjIFC6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 22:52:41 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF70CCC2;
-        Tue,  5 Sep 2023 19:52:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693968757; x=1725504757;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=b/IlaQTZB5j0he0vRsx9Okx0UXxCOU0YpQJ6T4yXngA=;
-  b=DMIibnaRFzWF1T6bqd7Pv5CQyz4p1FWdFI4dURTwximIraEr4bj5nt48
-   FOzJ1ZF9/wLWii9tO6HwsCKFQ+9TK2ZYSPvSqe7wNpUIjQmnVqjBqY7md
-   QCt8Y1vsnBhVFstZzXUVjppXRGVjLTzBCtd9RSFb6O70qmnWrriMwaKVI
-   KCNteS4HxhH9Gs/jtjNCzKGHzRXNFZ7UbQ8AlDTDC39+aFWy9FkCdRpre
-   QnZ1cVmtJkypkqdAaHzRfER70xGP1UO9OFIljX3hx8voxyxWU3LQterBL
-   HjS1W+ihEM2rDpO9IvD3dyH3jqQEkn0DT+f2Q38zsimFXTSOR053YRZwx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="407954966"
-X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="407954966"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 19:52:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="776411652"
-X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="776411652"
-Received: from lkp-server02.sh.intel.com (HELO e0b2ea88afd5) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 05 Sep 2023 19:52:34 -0700
-Received: from kbuild by e0b2ea88afd5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qdiea-0002Oj-11;
-        Wed, 06 Sep 2023 02:52:29 +0000
-Date:   Wed, 6 Sep 2023 10:52:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ajay Kaher <akaher@vmware.com>,
-        Zheng Yejian <zhengyejian1@huawei.com>
-Subject: Re: [PATCH] tracefs/eventfs: Use dput to free the toplevel events
- directory
-Message-ID: <202309061055.V08YOtla-lkp@intel.com>
-References: <20230905183332.628d7cc0@gandalf.local.home>
+        Tue, 5 Sep 2023 22:58:37 -0400
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0FA1184;
+        Tue,  5 Sep 2023 19:58:33 -0700 (PDT)
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7927611c54bso122465639f.2;
+        Tue, 05 Sep 2023 19:58:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693969113; x=1694573913;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AHA/CZb972+rGa7PLzhmGS/p+N4WJm97/nO5EcN6Ds0=;
+        b=NlN/oKT7bQy8nCJs/omupGkBXd+pqHs2IpN8/vTYY9TDF5XiHMlXR2Jks2yYd/14qa
+         l7D+n7Ov5I+OG3oij4ZrQgbPnP/HfB1XAvrSuyt5eOiggsY7cS9P4sHXu993KD9DMWju
+         Etj5naAeoEWdCsd+VQKWuldA5E+ZcpTU12pYS5Uu7pX+O1c8gcPwoEZ6B63dygmeDKLL
+         UTIR4A1GljrLXQlHtdW5C6p5I8y7Rb7jtM3FpdKWS55z4FATqrUME8yIDOVTtpqzIAdf
+         LpZ4mk9oqVosvEyK36odw1d6wGkmLe9fVCVOqNIl2nHd5RNR5FUhv3y0iEv9nDZSH0Zn
+         678g==
+X-Gm-Message-State: AOJu0Yw9iNxDQNLmGg1repnOjvskN33Qujj7gks/h5KNdIpPtcoz6emA
+        mKm/T/NGugJGiSFVjMX4DhxTYms1abcY4oHIWIU=
+X-Google-Smtp-Source: AGHT+IE1NKfVkyq0xjvB5OEQlRNdJKCYn+xWS/xXnPlmvVgeEIkorpw8TMN4A9uEblACZ55eTblk5/Ui7tsOHcdCiOs=
+X-Received: by 2002:a5d:8449:0:b0:792:4cfc:178f with SMTP id
+ w9-20020a5d8449000000b007924cfc178fmr15961626ior.16.1693969112902; Tue, 05
+ Sep 2023 19:58:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905183332.628d7cc0@gandalf.local.home>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230906003912.3317462-1-irogers@google.com>
+In-Reply-To: <20230906003912.3317462-1-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 5 Sep 2023 19:58:20 -0700
+Message-ID: <CAM9d7cgBZufrSWQhSeipV35_y3Kb1EWSoqtXMvLBnCFaoS9Atg@mail.gmail.com>
+Subject: Re: [PATCH v1] perf stat: Fix aggr mode initialization
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
+Hi Ian,
 
-kernel test robot noticed the following build warnings:
+On Tue, Sep 5, 2023 at 5:39 PM Ian Rogers <irogers@google.com> wrote:
+>
+> Generating metrics llc_code_read_mpi_demand_plus_prefetch,
+> llc_data_read_mpi_demand_plus_prefetch,
+> llc_miss_local_memory_bandwidth_read,
+> llc_miss_local_memory_bandwidth_write,
+> nllc_miss_remote_memory_bandwidth_read, memory_bandwidth_read,
+> memory_bandwidth_write, uncore_frequency, upi_data_transmit_bw,
+> C2_Pkg_Residency, C3_Core_Residency, C3_Pkg_Residency,
+> C6_Core_Residency, C6_Pkg_Residency, C7_Core_Residency,
+> C7_Pkg_Residency, UNCORE_FREQ and tma_info_system_socket_clks would
+> trigger an address sanitizer heap-buffer-overflows on a SkylakeX.
+>
+> ```
+> ==2567752==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x5020003ed098 at pc 0x5621a816654e bp 0x7fffb55d4da0 sp 0x7fffb55d4d98
+> READ of size 4 at 0x5020003eee78 thread T0
+>     #0 0x558265d6654d in aggr_cpu_id__is_empty tools/perf/util/cpumap.c:694:12
+>     #1 0x558265c914da in perf_stat__get_aggr tools/perf/builtin-stat.c:1490:6
+>     #2 0x558265c914da in perf_stat__get_global_cached tools/perf/builtin-stat.c:1530:9
+>     #3 0x558265e53290 in should_skip_zero_counter tools/perf/util/stat-display.c:947:31
+>     #4 0x558265e53290 in print_counter_aggrdata tools/perf/util/stat-display.c:985:18
+>     #5 0x558265e51931 in print_counter tools/perf/util/stat-display.c:1110:3
+>     #6 0x558265e51931 in evlist__print_counters tools/perf/util/stat-display.c:1571:5
+>     #7 0x558265c8ec87 in print_counters tools/perf/builtin-stat.c:981:2
+>     #8 0x558265c8cc71 in cmd_stat tools/perf/builtin-stat.c:2837:3
+>     #9 0x558265bb9bd4 in run_builtin tools/perf/perf.c:323:11
+>     #10 0x558265bb98eb in handle_internal_command tools/perf/perf.c:377:8
+>     #11 0x558265bb9389 in run_argv tools/perf/perf.c:421:2
+>     #12 0x558265bb9389 in main tools/perf/perf.c:537:3
+> ```
+>
+> The issue was the use of testing a cpumap with NULL rather than using
+> empty, as a map containing the dummy value isn't NULL and the -1
+> results in an empty aggr map being allocated which legitimately
+> overflows when any member is accessed.
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on next-20230905]
-[cannot apply to v6.5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Right, evlist__create_maps() set it to non-NULL.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Steven-Rostedt/tracefs-eventfs-Use-dput-to-free-the-toplevel-events-directory/20230906-063414
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20230905183332.628d7cc0%40gandalf.local.home
-patch subject: [PATCH] tracefs/eventfs: Use dput to free the toplevel events directory
-config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230906/202309061055.V08YOtla-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230906/202309061055.V08YOtla-lkp@intel.com/reproduce)
+>
+> Fixes: 8a96f454f566 ("perf stat: Avoid SEGV if core.cpus isn't set")
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309061055.V08YOtla-lkp@intel.com/
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-All warnings (new ones prefixed by >>):
-
-   fs/tracefs/event_inode.c: In function 'eventfs_remove_events_dir':
->> fs/tracefs/event_inode.c:804:31: warning: variable 'ei' set but not used [-Wunused-but-set-variable]
-     804 |         struct eventfs_inode *ei;
-         |                               ^~
+Thanks,
+Namhyung
 
 
-vim +/ei +804 fs/tracefs/event_inode.c
-
-5bdcd5f5331a276 Ajay Kaher 2023-07-28  794  
-5bdcd5f5331a276 Ajay Kaher 2023-07-28  795  /**
-5bdcd5f5331a276 Ajay Kaher 2023-07-28  796   * eventfs_remove_events_dir - remove eventfs dir or file from list
-5bdcd5f5331a276 Ajay Kaher 2023-07-28  797   * @dentry: events's dentry to be removed.
-5bdcd5f5331a276 Ajay Kaher 2023-07-28  798   *
-5bdcd5f5331a276 Ajay Kaher 2023-07-28  799   * This function remove events main directory
-5bdcd5f5331a276 Ajay Kaher 2023-07-28  800   */
-5bdcd5f5331a276 Ajay Kaher 2023-07-28  801  void eventfs_remove_events_dir(struct dentry *dentry)
-5bdcd5f5331a276 Ajay Kaher 2023-07-28  802  {
-5bdcd5f5331a276 Ajay Kaher 2023-07-28  803  	struct tracefs_inode *ti;
-5bdcd5f5331a276 Ajay Kaher 2023-07-28 @804  	struct eventfs_inode *ei;
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  tools/perf/builtin-stat.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index 07b48f6df48e..a3af805a1d57 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -1622,7 +1622,7 @@ static int perf_stat_init_aggr_mode(void)
+>          * taking the highest cpu number to be the size of
+>          * the aggregation translate cpumap.
+>          */
+> -       if (evsel_list->core.user_requested_cpus)
+> +       if (!perf_cpu_map__empty(evsel_list->core.user_requested_cpus))
+>                 nr = perf_cpu_map__max(evsel_list->core.user_requested_cpus).cpu;
+>         else
+>                 nr = 0;
+> --
+> 2.42.0.283.g2d96d420d3-goog
+>
