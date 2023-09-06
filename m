@@ -2,74 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62346793DAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95774793DB0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240012AbjIFNbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 09:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33424 "EHLO
+        id S240662AbjIFNb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 09:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238136AbjIFNbR (ORCPT
+        with ESMTP id S240294AbjIFNbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 09:31:17 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BD110E2
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 06:31:12 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4e6so5296009a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 06:31:12 -0700 (PDT)
+        Wed, 6 Sep 2023 09:31:23 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E762410F5
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 06:31:17 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c1ff5b741cso28653035ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 06:31:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linbit-com.20230601.gappssmtp.com; s=20230601; t=1694007070; x=1694611870; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZQEKqe3bDH27s4AsrbKUQCFmR3pSzTgTwp308wc1fxo=;
-        b=TpPAb2WZoync7bkj+W8asv1tvuYlocWNvHOO95MypyoyFX/1mUOkh0uG3vk/R1CFkr
-         bHWwfMnZGmpusMuV5QoG9cTWT5Awu9AQxrPUsmeGLrszO6/fmvco7+EMY53zli95p2kp
-         +3BKaOC1ywWm5+NqAAkeIYkiTfrAVzpwLwylfFDN2XxY6i5sfTAekA/Ha8qWXeNKAD6j
-         W/ocAfgR8RDcShVCi59SIyhWL9PYsjiIMNjtScOVeVyS8vYsIwmlwb+j5cCNnPBEjfwn
-         NmQ3twANGAUPa69tPs87TSMu9E2dNd4VK2GkuXwvvGSViSt7+N7YB/Oa7HnoHih9cxC5
-         rtcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694007070; x=1694611870;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1694007077; x=1694611877; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ZQEKqe3bDH27s4AsrbKUQCFmR3pSzTgTwp308wc1fxo=;
-        b=dVjsnPGBznrcEkC1KhmWMPEyZ6XR7juERYMo/cNTu/BLrOSi8UO89BwueW9KOSUgkw
-         v5UrvV5Xe7wa6uiU1qSp4hyuXCStBVaub3RhVGbf1ZUyS506JOezKD1WxM0wxW5qpZJ9
-         7YaPWW/kyTJlvNoBIirzu1ZT3GDH9b9SizxbkiKmfFpI2gYVmKMQmMvhDUdgaC/Ddc5O
-         O1Of4XTmJTbG+y6VtANIdoDBLO6/GapUJzcWGOHT13sDdyaFx7tTltWAytI8gYXvMrZz
-         /216WDWN7XtwmzN722CuLjmcJWOsuUp8/ZaogsWclgCObk1DiwWXUM1MVtLdfjSplPHM
-         OFhw==
-X-Gm-Message-State: AOJu0YwVXzg9u/38vTBVWIpjkb/VJNb5oK1/MZ9s7ddbCl176Y3zQPZW
-        uJ6FWgfXp5O+G4g8MjjMfo+fGw==
-X-Google-Smtp-Source: AGHT+IHxQ1RmQuQHmgQQmnWbUnYbPKmInDa2Y2sq1quXXuZPSayEmNlnZxowArje3NTqDDs5B/wckw==
-X-Received: by 2002:a17:906:1044:b0:99b:c86b:1d25 with SMTP id j4-20020a170906104400b0099bc86b1d25mr2395858ejj.26.1694007070656;
-        Wed, 06 Sep 2023 06:31:10 -0700 (PDT)
-Received: from localhost.localdomain (h082218028181.host.wavenet.at. [82.218.28.181])
-        by smtp.gmail.com with ESMTPSA id gh4-20020a170906e08400b009875a6d28b0sm8983369ejb.51.2023.09.06.06.31.09
+        bh=HFiIToPJJ6FCujPCd0yAiudON8W0oAyn/p/xhdheEPI=;
+        b=TcJBJqViJQH0WUoGZHr2CeYzr6j2F49y85Irz2yRGUj62rcq3qhEISpjxEtMmnTRor
+         ssFeCKpBJqcxEInoJyJ9Ye0nO/xCQqHKQOTHI0YF+figRCwMN67HO53l8oqzjmSgXmoF
+         AvRSd4rmZ/83T0c9d4LgxWP2Gl0Yb9xaPZLwL8Vn0BHE2L+n5vWP4rdku0BQ4z+/F+qr
+         WKVTa9hDPEBCrJCtcLK983/aNFNJ6qXIPahtelLHQ7ZVGMozvJrCVOHqGZcHS5kqidpu
+         8heGV735cVM75WnBER7HQQTQxf1/dB2oyuoR7q0PiGH1P6fR++pMSQ8+Zk2R1kI6Bg50
+         Lj8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694007077; x=1694611877;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HFiIToPJJ6FCujPCd0yAiudON8W0oAyn/p/xhdheEPI=;
+        b=MM+51T1ZdkGZ1dnt1PctrJb4Y5DEZkFuiZH6gv5Qv1BZQrEufZaWcaEPJc979HfJwS
+         Xhb5/TbOg8rxpMTEtk0hLCkkCibBHrCnASDXNc8E3+M7BcUxfMrRm5a/rBTylY0MGC0o
+         FUYALeRX/xiVEFrbSvTQltfthBZum9xAaLuikvqFJvDKJB42b6MEy3dbee/NMWRADQvt
+         6g6qA2LVge9A2+oMfYYabeULbQ87WJb776KMskNV+XKYL0crgesm3+DBU9Q4kmLngEqx
+         2WPIpcunWC5OgYS5HMrfKLDaR5ph7HQuREgC21AOgbQixipPFlPUbnipDe7eubVdENkO
+         SCTg==
+X-Gm-Message-State: AOJu0YxvmO0yOd+V2boxdOI2Tjd/YBPi/lNYRGbXPUPz4oHXRIe0GS9A
+        xzfU1ZivJXVNV+UAQBkvcbM/Rw==
+X-Google-Smtp-Source: AGHT+IFwZpFgYNDB0gtie9f9xZT1VXEyo52isr74Zc0CNOQ3PnFA6lS5vlwt+yMD++Tx1IPK+2iobg==
+X-Received: by 2002:a17:90b:1e4e:b0:268:46fb:df32 with SMTP id pi14-20020a17090b1e4e00b0026846fbdf32mr14983572pjb.34.1694007077128;
+        Wed, 06 Sep 2023 06:31:17 -0700 (PDT)
+Received: from localhost ([135.180.227.0])
+        by smtp.gmail.com with ESMTPSA id j5-20020a17090aeb0500b0026b4d215627sm10973520pjz.21.2023.09.06.06.31.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 06:31:10 -0700 (PDT)
-From:   =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     drbd-dev@lists.linbit.com, linux-kernel@vger.kernel.org,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        linux-block@vger.kernel.org,
-        Linux regression tracking <regressions@leemhuis.info>,
-        Serguei Ivantsov <manowar@gsc-game.com>,
-        David Howells <dhowells@redhat.com>,
-        =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>, stable@vger.kernel.org
-Subject: [PATCH] drbd: swap bvec_set_page len and offset
-Date:   Wed,  6 Sep 2023 15:30:34 +0200
-Message-ID: <20230906133034.948817-1-christoph.boehmwalder@linbit.com>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Wed, 06 Sep 2023 06:31:16 -0700 (PDT)
+Date:   Wed, 06 Sep 2023 06:31:16 -0700 (PDT)
+X-Google-Original-Date: Wed, 06 Sep 2023 06:31:13 PDT (-0700)
+Subject:     Re: [PATCH bpf-next v4 0/4] bpf, riscv: use BPF prog pack allocator in BPF JIT
+In-Reply-To: <169396862749.1987.4994366714692856707.git-patchwork-notify@kernel.org>
+CC:     puranjay12@gmail.com, linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, pulehui@huawei.com,
+        Conor Dooley <conor.dooley@microchip.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, bjorn@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     patchwork-bot+linux-riscv@kernel.org
+Message-ID: <mhng-b249bbd6-f716-44d4-88b9-2aa1e058641d@palmer-ri-x1c9>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,42 +76,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bvec_set_page has the following signature:
+On Tue, 05 Sep 2023 19:50:27 PDT (-0700), patchwork-bot+linux-riscv@kernel.org wrote:
+> Hello:
+>
+> This series was applied to riscv/linux.git (for-next)
+> by Palmer Dabbelt <palmer@rivosinc.com>:
+>
+> On Thu, 31 Aug 2023 13:12:25 +0000 you wrote:
+>> Changes in v3 -> v4:
+>> 1. Add Acked-by:, Tested-by:, etc.
+>> 2. Add the core BPF patch[3] which was earlier sent with ARM64 series to
+>>    this series so it can go with this.
+>>
+>> Changes in v2 -> v3:
+>> 1. Fix maximum width of code in patches from 80 to 100. [All patches]
+>> 2. Add checks for ctx->ro_insns == NULL. [Patch 3]
+>> 3. Fix check for edge condition where amount of text to set > 2 * pagesize
+>>    [Patch 1 and 2]
+>> 4. Add reviewed-by in patches.
+>> 5. Adding results of selftest here:
+>>    Using the command: ./test_progs on qemu
+>>    Without the series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
+>>    With this series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
+>>
+>> [...]
+>
+> Here is the summary with links:
+>   - [bpf-next,v4,1/4] bpf: make bpf_prog_pack allocator portable
+>     https://git.kernel.org/riscv/c/063119d90a06
+>   - [bpf-next,v4,2/4] riscv: extend patch_text_nosync() for multiple pages
+>     https://git.kernel.org/riscv/c/fb81d562ed1f
+>   - [bpf-next,v4,3/4] riscv: implement a memset like function for text
+>     https://git.kernel.org/riscv/c/f071fe652d73
+>   - [bpf-next,v4,4/4] bpf, riscv: use prog pack allocator in the BPF JIT
+>     https://git.kernel.org/riscv/c/19ea9d201008
+>
+> You are awesome, thank you!
 
-static inline void bvec_set_page(struct bio_vec *bv, struct page *page,
-		unsigned int len, unsigned int offset)
-
-However, the usage in DRBD swaps the len and offset parameters. This
-leads to a bvec with length=0 instead of the intended length=4096, which
-causes sock_sendmsg to return -EIO.
-
-This leaves DRBD unable to transmit any pages and thus completely
-broken.
-
-Swapping the parameters fixes the regression.
-
-Fixes: eeac7405c735 ("drbd: Use sendmsg(MSG_SPLICE_PAGES) rather than sendpage()")
-Reported-by: Serguei Ivantsov <manowar@gsc-game.com>
-Link: https://lore.kernel.org/regressions/CAKH+VT3YLmAn0Y8=q37UTDShqxDLsqPcQ4hBMzY7HPn7zNx+RQ@mail.gmail.com/
-Cc: stable@vger.kernel.org
-Signed-off-by: Christoph Böhmwalder <christoph.boehmwalder@linbit.com>
----
- drivers/block/drbd/drbd_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
-index 79ab532aabaf..6bc86106c7b2 100644
---- a/drivers/block/drbd/drbd_main.c
-+++ b/drivers/block/drbd/drbd_main.c
-@@ -1557,7 +1557,7 @@ static int _drbd_send_page(struct drbd_peer_device *peer_device, struct page *pa
- 	do {
- 		int sent;
- 
--		bvec_set_page(&bvec, page, offset, len);
-+		bvec_set_page(&bvec, page, len, offset);
- 		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, len);
- 
- 		sent = sock_sendmsg(socket, &msg);
--- 
-2.41.0
-
+Looks like I screwed up the merge a bit here, so these hashes have 
+changed a bit.
