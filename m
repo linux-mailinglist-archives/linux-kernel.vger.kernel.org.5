@@ -2,88 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 557A57941D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77877941CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242356AbjIFRDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 13:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32860 "EHLO
+        id S241821AbjIFRBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 13:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242163AbjIFRDO (ORCPT
+        with ESMTP id S232372AbjIFRBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 13:03:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22CE199B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 10:03:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694019790; x=1725555790;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=sSnAZ5tzb4efyEc4PN+Wa/OSCcQnYXksqDJ2OYcdwIY=;
-  b=PECl+1Kq4ZZJdINjhdkXrJ9Rx/S7us7UT4m097qYaa8YH7LmZdqaT7+i
-   5G1R3qOpney7vh1a1tu8KhoGBc15L5pwwgKbH3ZPs3Lkfuvd8dIzNFFty
-   zYiEdxTKzIr/tkZ9hCUeMhFP+l3R9WlBJEogwcDvRBPK6jh1iNcI38JPD
-   RNGpyZCrLM03gNI8iZxZuGtL9CC2ALEoqEyhgqPfoXcYEEM9wHCkHjnIE
-   BG/2ZbfnQmhs210PRCZde7/rPU1XjecdPW8geiQElpcCPUVHebBxeJPou
-   uQURRekvKC9Oq3WmeQDTZb8yAHUMsTKztRYI95mxdf84ET9an9k4owsYr
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="377038784"
-X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
-   d="scan'208";a="377038784"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 10:01:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="718332117"
-X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
-   d="scan'208";a="718332117"
-Received: from lmgabald-mobl2.amr.corp.intel.com (HELO [10.212.242.149]) ([10.212.242.149])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 10:01:20 -0700
-Message-ID: <2114d5c0-3903-f4be-795b-829c3a1e5f9f@intel.com>
-Date:   Wed, 6 Sep 2023 10:01:20 -0700
+        Wed, 6 Sep 2023 13:01:37 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 518221BB
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 10:01:32 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68a410316a2so75788b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 10:01:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694019692; x=1694624492; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PgPN5RmmA1Doz2MUm5n36iknKd9POJzDYOXRAJnYbJ0=;
+        b=oQq8T3cNjvT19XkrjOh0kpILEFlSj3m+iSI7iCHoy25YHRUaeS5PefbOOn0l40Ug1I
+         bK+7v8COiizo1wZz0LVAXTwoWdwt6PX5YQLIamQvbufBg2CnP/49BGsDNiBPEMP+jJDv
+         bHkRSDcmXbZXlvkHpXbePA5WonLD2wkja9NZbjezdxhqKcI3w0h8ksnLfAdjaCwlHS/K
+         W4HznY7egL8ne/2Pw+Xb+tUI5T3W1YvB7Y7t/J7PjmX0CxGDNavS0jZN82bYTbwi81Ie
+         SpueoxKFLQEG+8XsDf4Pg3PK4TTpSLgtqOn4308ZOmm56wVaAWCfjEHePw91U+Jacsfp
+         UHdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694019692; x=1694624492;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PgPN5RmmA1Doz2MUm5n36iknKd9POJzDYOXRAJnYbJ0=;
+        b=a0R7HM42mvl8nK10oejZAGmFfIojJAUGExv3+bmGxMOhM0pVit6HIF4QxqoytoCp5N
+         n4w9W/wsUnvzaZdkwkEmsbAHhF9SkvtpsK3bwSLSv6HCl+3e8Wm2fIGxkSbnnXx9flon
+         yCgsI1b+5yIzqfvqFxUcHVTN7qw+MacDFdt1o/jtgIxA0Ncz9C9kvfCqjLnOMy9zH7aA
+         mhbu04S4NvRTtCSp1++K8qVuIfKw4T5IPGTcfTMSn5Nwu/SesfbiPcKxP2osq/LRDkj3
+         OaBATBE6X6fdPd9Z4KU0ddKK9SN88sEooOe5bGH4HGHTnDx991hlHMYtb7Jf5WAvazzN
+         mZ8Q==
+X-Gm-Message-State: AOJu0YyWOMB3AHN3bN/d1PmDYxgVKCfEW92JKx4ik5HzP8982C0fC1pq
+        buJevp/++/JOZZ9iojfl2qo=
+X-Google-Smtp-Source: AGHT+IEPETRZvtt22QYuozA+Vct++KXETst9yUsd+5iFCRh/fKGK/GnXnthVW5AQPO9GKGU+XMjAaQ==
+X-Received: by 2002:a05:6a20:9759:b0:10c:7c72:bdf9 with SMTP id hs25-20020a056a20975900b0010c7c72bdf9mr13309426pzc.29.1694019691528;
+        Wed, 06 Sep 2023 10:01:31 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:eca7])
+        by smtp.gmail.com with ESMTPSA id y5-20020aa78045000000b0064d74808738sm11072515pfm.214.2023.09.06.10.01.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 10:01:30 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 6 Sep 2023 07:01:29 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Z qiang <qiang.zhang1211@gmail.com>
+Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] workqueue: Fix UAF report by KASAN in
+ pwq_release_workfn()
+Message-ID: <ZPiwaaZaDPVexezn@slm.duckdns.org>
+References: <20230902115026.13460-1-qiang.zhang1211@gmail.com>
+ <ZPd4yKqbvBNGV7cL@slm.duckdns.org>
+ <CALm+0cVf+E_Y41AdEwLjm2gZAjzeKaZev1Tu1hUS-VpYH0eEHQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2] x86: Remove the arch_calc_vm_prot_bits() macro from
- the uapi
-Content-Language: en-US
-To:     Thomas Huth <thuth@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Nicolas Schier <nicolas@fjasle.eu>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org
-References: <20230906162658.142511-1-thuth@redhat.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <20230906162658.142511-1-thuth@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALm+0cVf+E_Y41AdEwLjm2gZAjzeKaZev1Tu1hUS-VpYH0eEHQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/6/23 09:26, Thomas Huth wrote:
-> The arch_calc_vm_prot_bits() macro uses VM_PKEY_BIT0 etc. which are
-> not part of the uapi, so the macro is completely useless for userspace.
-> It is also hidden behind the CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
-> config switch which we shouldn't expose to userspace. Thus let's move
-> this macro into a new internal header instead.
-> 
-> Fixes: 8f62c883222c ("x86/mm/pkeys: Add arch-specific VMA protection bits")
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
-> Signed-off-by: Thomas Huth <thuth@redhat.com>
+On Wed, Sep 06, 2023 at 10:12:34AM +0800, Z qiang wrote:
+> Flush the pwq_release_worker is insufficient, the call_rcu() is
+> invoked to release wq
+> in pwq_release_workfn(), this is also asynchronous.
 
-Gah, sorry this got dropped.  I went to go throw it in my review queue
-and saw your last version in there.  I plan to apply it (this time)
-shortly after we see -rc1.
+But rcu_free_pwq() doesn't access wq or anything. The last access is from
+the work function.
 
-In any case:
+Thanks.
 
-Acked-by: Dave Hansen <dave.hansen@intel.com>
+-- 
+tejun
