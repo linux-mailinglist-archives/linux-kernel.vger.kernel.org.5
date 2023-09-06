@@ -2,194 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B426B7937B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5747937B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236279AbjIFJIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 05:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58246 "EHLO
+        id S234199AbjIFJIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 05:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233572AbjIFJIJ (ORCPT
+        with ESMTP id S234922AbjIFJIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 05:08:09 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE948CFD
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 02:08:05 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rgc3N46Jrz4f3tNb
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 17:08:00 +0800 (CST)
-Received: from [10.174.178.55] (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgDHVqlwQfhk+8P8CQ--.16917S3;
-        Wed, 06 Sep 2023 17:08:01 +0800 (CST)
-Subject: Re: [PATCH v2 3/8] crash_core: change parse_crashkernel() to support
- crashkernel=,high|low parsing
-To:     Baoquan He <bhe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        catalin.marinas@arm.com, thunder.leizhen@huawei.com,
-        dyoung@redhat.com, prudo@redhat.com, samuel.holland@sifive.com,
-        kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-        x86@kernel.org
-References: <20230829121610.138107-1-bhe@redhat.com>
- <20230829121610.138107-4-bhe@redhat.com>
- <c4a1f96e-2c8d-a496-61f3-0299d77c5c84@huaweicloud.com>
- <ZPGzlIkXqVThTwjg@MiWiFi-R3L-srv>
- <2b9af1b7-8d80-46b7-d582-156a97456a36@huaweicloud.com>
- <ZPbm5SwHOhiAtG7w@MiWiFi-R3L-srv>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
-Message-ID: <58a0c4be-0302-04e0-8723-df37407884a8@huaweicloud.com>
-Date:   Wed, 6 Sep 2023 17:07:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 6 Sep 2023 05:08:20 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1DDC9CFD;
+        Wed,  6 Sep 2023 02:08:13 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8Cxh+h8Qfhk0kAgAA--.29184S3;
+        Wed, 06 Sep 2023 17:08:12 +0800 (CST)
+Received: from [0.0.0.0] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxvM56QfhkpFxuAA--.3166S3;
+        Wed, 06 Sep 2023 17:08:10 +0800 (CST)
+Message-ID: <b51d49f3-e3de-6b8d-9cb4-df5c03f3cdc0@loongson.cn>
+Date:   Wed, 6 Sep 2023 17:08:10 +0800
 MIME-Version: 1.0
-In-Reply-To: <ZPbm5SwHOhiAtG7w@MiWiFi-R3L-srv>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
+ to select the primary video adapter at boot time
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgDHVqlwQfhk+8P8CQ--.16917S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxXrW7CFWxGw4fGrWDWw1Utrb_yoW5CFW5pr
-        y8AF4Utr1UtFn3Cw1IyrZ7ZayIy3yqyFyUXFWY9F90yasrtwn3Gr15Kr1UurWDGrn09a1a
-        vF4rtFsIk3WUZrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UWE__UUUUU=
-X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
+References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
+ <44ec8549-dc36-287e-4359-abd3ec8d22d6@suse.de>
+ <5afd2efb-f838-f9b7-02a9-2cf4d4fd2382@loongson.cn>
+ <2adfa653-ac35-d560-be52-c92848a1eef5@gmail.com>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <2adfa653-ac35-d560-be52-c92848a1eef5@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxvM56QfhkpFxuAA--.3166S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoWxArWruw1kuFW8Ar4UKF1xJFc_yoWrJw1rpF
+        4YqFyUtr4kGr1rAr4Skw48WFZ5AFsFqFy5GF1vgr1Fv398Xr1Fvr9rtF4UCa4UXrn7Z3W0
+        9rWFqrW7GF4DZFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6F4UJVW0owAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
+        Jw1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
+        CYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48J
+        MxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8loGPUUUU
+        U==
 X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
 
-On 2023/9/5 16:29, Baoquan He wrote:
-> On 09/04/23 at 10:47am, Leizhen (ThunderTown) wrote:
+On 2023/9/6 14:45, Christian König wrote:
+> Am 05.09.23 um 15:30 schrieb suijingfeng:
+>> Hi,
 >>
 >>
->> On 2023/9/1 17:49, Baoquan He wrote:
->>>>> +
->>>>> +		*high = true;
->>>>> +	} else if (ret || !*crash_size) {
->>>> This check can be moved outside of #ifdef. Because even '!high', it's completely
->>>> applicable. The overall adjustment is as follows:
->>> Hmm, the current logic is much easier to understand. However, I may not
->>> 100% get your suggestion. Can you paste the complete code in your
->>> suggested way? Do not need 100% correct code, just the skeleton of code logic
->>> so that I can better understand it and add inline comment.
+>> On 2023/9/5 18:45, Thomas Zimmermann wrote:
+>>> Hi
+>>>
+>>> Am 04.09.23 um 21:57 schrieb Sui Jingfeng:
+>>>> From: Sui Jingfeng <suijingfeng@loongson.cn>
+>>>>
+>>>> On a machine with multiple GPUs, a Linux user has no control over 
+>>>> which
+>>>> one is primary at boot time. This series tries to solve above 
+>>>> mentioned
+>>>
+>>> If anything, the primary graphics adapter is the one initialized by 
+>>> the firmware. I think our boot-up graphics also make this assumption 
+>>> implicitly.
+>>>
 >>
->> int __init parse_crashkernel(...)
->> {
->> 	int ret;
->>
->> 	/* crashkernel=X[@offset] */
->> 	ret = __parse_crashkernel(cmdline, system_ram, crash_size,
->> 				crash_base, NULL);
->>
->> #ifdef CONFIG_ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
->> 	if (high && ret == -ENOENT) {
->> 		... ...		//The code for your original branch "else if (ret == -ENOENT) {"
->> 		ret = 0;	//Added based on the next discussion
->> 	}
->> +#endif
->>
->>  	if (!*crash_size)
->> 		ret = -EINVAL;
->>
->> 	return ret;
->> }
->>
-> Thanks, Zhen Lei.
-> 
-> I paste the whole parse_crashkernel() as you suggested at bottom. Please
-> check if it's what you want. 
+>> Yes, but by the time of DRM drivers get loaded successfully,the 
+>> boot-up graphics already finished.
+>
+> This is an incorrect assumption.
+>
+> drm_aperture_remove_conflicting_pci_framebuffers() and co don't kill 
+> the framebuffer, 
 
-Yes.
+Well, my original description to this technique point is that
 
-> To me, both is fine to me. I have two minor
-> concerns to your suggested way.
-> 
-> 1)
-> I took the "if (!high) return" way because except of x86/arm64, all
-> other architectures will call parse_crashkerne() and check
-> if *crash_size ==0. Please try 'git grep "parse_crashkernel(" arch'
-> and check those call sites. With that, we will have duplicated checking.
+1) "Firmware framebuffer device already get killed by the drm_aperture_remove_conflicting_pci_framebuffers() function (or its siblings)"
+2) "By the time of DRM drivers get loaded successfully, the boot-up graphics already finished."
 
-Add some patches to remove the duplicated checking of other ARCHs? After this
-patch series upstreamed.
+The word "killed" here is rough and coarse description about
+how does the drm device driver take over the firmware framebuffer.
+Since there seems have something obscure our communication,
+lets make the things clear. See below for more elaborate description.
 
-> 
->         ret = __parse_crashkernel(cmdline, system_ram, crash_size,
->                                 crash_base, NULL);
->         if (!high)
->                 return ret;
-> 2)
-> I actually like below branch and the code comment. It can give people
-> hint about what's going on in that case. Discarding it is a little pity.
 
-Except that "!*crash_size" and "(high && ret == -ENOENT)" needs special comments,
-other common errors do not need to be described, I think. Even if some is required,
-it should be placed in function __parse_crashkernel().
+> they just remove the current framebuffer driver to avoid further updates.
+>
+This statement doesn't sound right, for UEFI environment,
+a correct description is that they remove the platform device, not the framebuffer driver.
+For the machines with the UEFI firmware, framebuffer driver here definitely refer to the efifb.
+The efifb still reside in the system(linux kernel).
 
-> 
->         } else if (ret || !*crash_size) {
->                 /* The specified value is invalid */
->                 return -1;
->         }
-> 
-> int __init parse_crashkernel(...)
-> {
-> 	int ret;
-> 
-> 	/* crashkernel=X[@offset] */
-> 	ret = __parse_crashkernel(cmdline, system_ram, crash_size,
-> 				crash_base, NULL);
-> #ifdef CONFIG_ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
-> 	if (high && ret == -ENOENT) {
-> 		ret = __parse_crashkernel(cmdline, 0, crash_size,
-> 				crash_base, suffix_tbl[SUFFIX_HIGH]);
-> 		if (ret || !*crash_size)
-> 			return -EINVAL;
-> 
-> 		/*
-> 		 * crashkernel=Y,low can be specified or not, but invalid value
-> 		 * is not allowed.
-> 		 */
-> 		ret = __parse_crashkernel(cmdline, 0, low_size,
-> 				crash_base, suffix_tbl[SUFFIX_LOW]);
-> 		if (ret == -ENOENT) {
-> 			*low_size = DEFAULT_CRASH_KERNEL_LOW_SIZE;
-> 			ret = 0;
-> 		} else if (ret) {
-> 			return ret;
-> 		}
-> 
-> 		*high = true;
-> 	}
-> #endif
-> 
-> 	if (!*crash_size)
-> 		ret = -EINVAL;
-> 
-> 	return ret;
-> }
-> 
-> .
-> 
+Please see the aperture_detach_platform_device() function in video/aperture.c
 
--- 
-Regards,
-  Zhen Lei
+> So what happens (at least for amdgpu) is that we take over the 
+> framebuffer,
+
+This statement here is also not an accurate description.
+
+Strictly speaking, drm/amdgpu takes over the device (the VRAM hardware),
+not the framebuffer.
+
+The word "take over" here is also dubious, because drm/amdgpu takes over nothing.
+
+ From the perspective of device-driver model, the GPU hardware *belongs* to the amdgpu drivers.
+Why you need to take over a thing originally and belong to you?
+
+If you could build the drm/amdgpu into the kernel and make it get loaded
+before the efifb. Then, there no need to use the firmware framebuffer (
+the talking is limited to the display boot graphics purpose here).
+On such a case, the so-called "take over" will not happen.
+
+The truth is that the efifb create a platform device, which *occupy*
+part of the VRAM hardware resource. Thus, the efifb and the drm/amdgpu
+form the conflict. There are conflict because they share the same
+hardware resource. It is the hardware resources(address ranges) used
+by two different driver are conflict. Not the efifb driver itself
+conflict with drm/amdgpu driver.
+
+Thus, drm_aperture_remove_conflicting_xxxxxx() function have to kill
+one of the device are conflicting. Not to kill the driver. Therefore,
+the correct word would be the "reclaim".
+drm/amdgpu *reclaim* the hardware resource (vram address range) originally belong to you.
+
+The modeset state (including the framebuffer content) still reside in the amdgpu device.
+You just get the dirty framebuffer image in the framebuffer object.
+But the framebuffer object already dirty since it in the UEFI firmware stage.
+
+In conclusion, *reclaim* is more accurate than the "take over".
+And as far as I'm understanding, the drm/amdgpu take over nothing, no gains.
+
+Well, welcome to correct me if I'm wrong.
 
