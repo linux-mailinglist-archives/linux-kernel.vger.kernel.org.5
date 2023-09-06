@@ -2,108 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7CE794446
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC34F79444C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244105AbjIFUJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 16:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39358 "EHLO
+        id S231558AbjIFULs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 16:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbjIFUJT (ORCPT
+        with ESMTP id S230473AbjIFULq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 16:09:19 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB88198E
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 13:09:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IWRauGgfrnnZLkU3oyZlz7GvuOrCS1ynxFHxzRGiEN8=; b=D3Sv0y3rc6sEcVHK2gNnmavfrm
-        s3V73rfzkB3M1Jv606Op8mnWArT7KtAsjK6A3HAsZLFa4vpb58MCWTfbptoHptDwb3lXD0c1/TR5o
-        4i9+yQ/MerWu+A0929nGza4BSDCrU3Qj3KDLmfD9UWV1aotHG3u4O1k3664S4qQjRqv9YZd3Ku+gs
-        bqkShLmW21pNNkvFxU1nH/4PJSb2JF1tnI8ZRmzY+f0adg+jaJX/5kBbHveDQOB9wtxtiMEhBXLYL
-        YY5bdo7RTVn1wxJWoixud+CUl1BHp4Am84Q1wvnGozxHTFbF1W1kacV60EC8asBYFC2+u1QufJYUy
-        mMhBCb/w==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qdypT-001Ft2-0z;
-        Wed, 06 Sep 2023 20:08:49 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5E295300422; Wed,  6 Sep 2023 22:08:48 +0200 (CEST)
-Date:   Wed, 6 Sep 2023 22:08:48 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
-Subject: Re: [PATCH v4 6/7] sched/deadline: Deferrable dl server
-Message-ID: <20230906200848.GA35105@noisy.programming.kicks-ass.net>
-References: <cover.1693510979.git.bristot@kernel.org>
- <754dab7f30695ca10a41613068bb63db3bfea003.1693510979.git.bristot@kernel.org>
- <20230905134203.GA20703@noisy.programming.kicks-ass.net>
- <b3b3a5c5-6688-966d-3d78-3e140730cb7b@redhat.com>
- <20230906082952.GB38741@noisy.programming.kicks-ass.net>
- <0ce80c5d-2433-13d5-33df-d110cf8faa9c@redhat.com>
- <20230906200406.GF28278@noisy.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230906200406.GF28278@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Sep 2023 16:11:46 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 765D49E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 13:11:42 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d71f505d21dso262057276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 13:11:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1694031101; x=1694635901; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=peODubx65uqMrjkWQ//78jxQ/SfLOSDFlEmlVraSU1s=;
+        b=oMsKFAzjqYxda23YRciiU/mrunUU5yBTgyJ3VM24LhBDNZaQiGt7H+L9l5FaUfyLTK
+         a1SW5hpwO4Y03/6Qv5QtKzg1syo6YgQF5TBIkXNaAJNFAXFGxbqj6UXfaRb2rMDiMWxv
+         DseSWxmCdHPUyEMWuB3XmQMM4jeXPDEuyRfDicb+G+IxPeYCW2ZIXHBDpn7CaGs5KY3F
+         bobY5+zYc84aUpTNVkQu585vN/ujKM4KwAi7UIqfLXlE6wKxQocrBIwpu0EWxa8Loq7d
+         tMVhh+CK9rkcHQwZKXm81wiAMDIyjjiKhPaD2grJ3IvHN7dOU63RDnUgCZx5c/mINXMn
+         dgrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694031101; x=1694635901;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=peODubx65uqMrjkWQ//78jxQ/SfLOSDFlEmlVraSU1s=;
+        b=TWoHwqZAbnqh+jPgP/ajRHXXa4g8AUHoWPZFIBaWbR+UvdVeP0rEy0AsORuTM0tMlS
+         +m0HBh9s5IIhrGaszwzmotlu36PtJCMzpQ0jrFAhE/MSiLMoYPQvOxTqC5nL+HWLmswM
+         BofNIqyhxiN2scoPzcgD27Nv/HYvXWa3pTOKdxVLjKPTcfzv3dB89QwP4UZBMIeNh+N6
+         w+1KX9nYNy/GR6sAJxwOiVY3DX/LY0PHeT4I+IosNgavQU21jRrtyYAIyZCA3FdiSZ4z
+         PkG03ZY5kRPt9GCZv5fHUNfgw411Fi+3nAc17Dl6X3QNEA9mhxOoyrCOw/UO3DbTsLlS
+         Xgtw==
+X-Gm-Message-State: AOJu0Yz63RYtYxoIkMZS5AE7p28IvBnksDNghwZZy/BmiaZ79sF8+pA4
+        LFzXgBNA+QGyiSpKdCpoWFqOasqsTfg=
+X-Google-Smtp-Source: AGHT+IHmjE1nbBVkGoMBFKQzpb3eElrhE6wjuj15n/74+GzAvNY7DEWoz7hxMLzs2bUnBR0Ne6hV8GK53i4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:8b0a:0:b0:d78:1cbd:fe37 with SMTP id
+ i10-20020a258b0a000000b00d781cbdfe37mr399580ybl.2.1694031101774; Wed, 06 Sep
+ 2023 13:11:41 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 13:11:40 -0700
+In-Reply-To: <68a44c6d-21c9-30c2-b0cf-66f02f9d2f4e@amd.com>
+Mime-Version: 1.0
+References: <20230906151449.18312-1-pgonda@google.com> <68a44c6d-21c9-30c2-b0cf-66f02f9d2f4e@amd.com>
+Message-ID: <ZPjc/PoBLPNNLukt@google.com>
+Subject: Re: [PATCH V2] KVM: SEV: Update SEV-ES shutdown intercepts with more metadata
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Peter Gonda <pgonda@google.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 10:04:06PM +0200, Peter Zijlstra wrote:
-> On Wed, Sep 06, 2023 at 04:58:11PM +0200, Daniel Bristot de Oliveira wrote:
+On Wed, Sep 06, 2023, Tom Lendacky wrote:
+> On 9/6/23 10:14, Peter Gonda wrote:
+> > Currently if an SEV-ES VM shuts down userspace sees KVM_RUN struct with
 > 
-> > > So one thing we could do is have update_curr_fair() decrement
-> > > fair_server's runtime and yield the period then it hits 0 (and capping
-> > > it at 0, not allowing it to go negative or so).
-> > > 
-> > > That way you only force the situation when FAIR hasn't had it's allotted
-> > > time this perio, and only for as much as to make up for the time it
-> > > lacks.
+> s/down userspace/down, userspace/
+
+Heh, yeah, I read that the same way you did.
+
+> > only the INVALID_ARGUMENT. This is a very limited amount of information
+> > to debug the situation. Instead KVM can return a
+> > KVM_EXIT_SHUTDOWN to alert userspace the VM is shutting down and
+> > is not usable any further.
 > > 
-> > We can also decrease the runtime to a negative number while in
-> > defer/throttle state, and let the while in replenish_dl_entity() to
-> > replenish with the += runtime;
+> > Signed-off-by: Peter Gonda <pgonda@google.com>
+> > Cc: Paolo Bonzini <pbonzini@redhat.com>
+> > Cc: Sean Christopherson <seanjc@google.com>
+> > Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> > Cc: Joerg Roedel <joro@8bytes.org>
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Cc: x86@kernel.org
+> > Cc: kvm@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > 
+> > ---
+> >   arch/x86/kvm/svm/svm.c | 8 +++++---
+> >   1 file changed, 5 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> > index 956726d867aa..cecf6a528c9b 100644
+> > --- a/arch/x86/kvm/svm/svm.c
+> > +++ b/arch/x86/kvm/svm/svm.c
+> > @@ -2131,12 +2131,14 @@ static int shutdown_interception(struct kvm_vcpu *vcpu)
+> >   	 * The VM save area has already been encrypted so it
+> >   	 * cannot be reinitialized - just terminate.
+> >   	 */
+> > -	if (sev_es_guest(vcpu->kvm))
+> > -		return -EINVAL;
+> > +	if (sev_es_guest(vcpu->kvm)) {
+> > +		kvm_run->exit_reason = KVM_EXIT_SHUTDOWN;
+> > +		return 0;
+> > +	}
 > 
-> Yes, but my point was that fair_server gives a lower bound of runtime
-> per period, more -- if available -- is fine.
-> 
-> If we allow negative runtime, you'll affect future periods, and that is
-> not desired in this case.
-> 
-> Or am I still confused?
+> Just a nit... feel free to ignore, but, since KVM_EXIT_SHUTDOWN is also set
+> at the end of the function and I don't think kvm_vcpu_reset() clears the
+> value from kvm_run, you could just set kvm_run->exit_reason on entry and
+> just return 0 early for an SEV-ES guest.
 
-That is, let update_curr_fair() decrement fair_server runtime
-*unconditionally* -- even if the task was not selected through the
-server.
+kvm_run is writable by userspace though, so KVM can't rely on kvm_run->exit_reason
+for correctness.
 
-Specifically, if the fair task is selected normally due to lack of
-deadline tasks, that runtime *still* counts towards the fair-server and
-have the server yield the period when zero.
-
-This means that fair_server is only effective IFF 'normal' execution
-doesn't match the fair_server.runtime execution.
-
-
+And IIUC, the VMSA is also toast, i.e. doing anything other than marking the VM
+dead is futile, no?
