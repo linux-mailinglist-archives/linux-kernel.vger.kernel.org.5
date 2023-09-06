@@ -2,237 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F039C793C16
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6FD793C28
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236451AbjIFMCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:02:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48900 "EHLO
+        id S240430AbjIFMDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236342AbjIFMCO (ORCPT
+        with ESMTP id S237032AbjIFMDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:02:14 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7FB1982
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:01:50 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-31977ace1c8so3175064f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 05:01:50 -0700 (PDT)
+        Wed, 6 Sep 2023 08:03:43 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B2010D0
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:03:38 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52e297c7c39so4351096a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 05:03:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694001709; x=1694606509; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694001816; x=1694606616; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Sp8EZRgwEyyTmPheARIzvhEwRO9ZLG7z8fbcdxO2Tiw=;
-        b=hU/AqF7GIRAB8oT4N9Ws4ccnyTADv9k8kqWFV0Mf6s9Zxi0gySh/EaTPSs6gWzEQUN
-         NGK3zKaxg/hHrMcYPRikzocElEvkKBExor3mWs+b8m6sy1KDc7AHhdsU/WlpmfnV10e1
-         5k6yw6TIxO/ZAfI+tqzp5VItPGZEk0zQgj46Tulk46AOC/wAQ3lJ82HGh4ahX0QwmGBW
-         JUtv/tnDwk4mkatfCt8shKVqepbqZldGX6FuljnsShWkeAIU8Zskcja0WXy1ahn55wAA
-         8+ELSOGdB4pPPPQF1bH80QIi0q58xeHoM29IXSujsqcBtWajvgUrI09T4PlZjSjLfiuZ
-         RtRg==
+        bh=TG8v1WUrQJRuwyVst1yh78ZkZ2N3yjOTrkiIIhevQjM=;
+        b=LsATkX3PA9RuR24Q+4eOh2Y8rccnXOWiVizTBz7KWfvxRSpcf594xfOHOupSDUkvUj
+         u4h6921+rQoaYBkUgfWnt9C9+jWVAyVtwUwxb8+prT2fWtxmnUHfW33u7MtlarXAS85x
+         ERmxFio49rs+7asTxMFyTH9IRvHM4e6zbvb+BikmtfkHXHUojktaSWv0cLk8HnfxMHs4
+         9A16CfopSoi/YtNg/MAfWdu3WUhdXIHwFqpxja8h8/EbdiAEN67QNZPk4j0TrorvZXKQ
+         LoOXE38Vc/Vnqc9O1t50ud9RUK1jqwJuQk/ugOHZ/EDU2OKhcGSl75UCVQbckd+NxsfQ
+         jZDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694001709; x=1694606509;
+        d=1e100.net; s=20221208; t=1694001816; x=1694606616;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Sp8EZRgwEyyTmPheARIzvhEwRO9ZLG7z8fbcdxO2Tiw=;
-        b=ZGr+6YizAgUaqrJBTOKGaABXKirRST7QTnfDqcBv4UURSPLC3fTxCgXgzl2vcfwcTo
-         O0hti3VrgwxpXyqLIbD1Ivuk0kB7jCemaXrrwRR+5lsNdYozMhFvB/Kt2G7QGIahO8or
-         zNsXuslk9tp1HxNE5fLhTHlYrujTF1SFgp4IDuuXohj5Tsuk7jNDp6q4sU5M4nNG7mQZ
-         NxKE8ZNBPAsAvZ3e3o3+v3TqrYZ8rktWP7JpL8Mg0OLMskwXcXhdchXg+nwGQRX/rZOb
-         cAU1FdGq81RTbdq+3xgXTXu7yYQRIOF8yHIKsRxelQIJpPOeZ6LwyGKiz4aUbm0jsNzU
-         Dxmw==
-X-Gm-Message-State: AOJu0Yyjxk7sJ2+H0DVL+CwuuFoleqKfSvXFYgRzDTOt0sk7WkBAGHs+
-        uTL++tU+LTQ+5IxscoLP14v7/PxWFqye3G4RsPdbFg==
-X-Google-Smtp-Source: AGHT+IEhIllMnM0PjECRqiitAitNZCsEvGEterT8Gl6AxXRapewVRPWj9ivnFDU+enq8y+LvA5OL44z2Ha1PBTDFPVs=
-X-Received: by 2002:a5d:6e88:0:b0:319:6b5e:85e3 with SMTP id
- k8-20020a5d6e88000000b003196b5e85e3mr1878514wrz.71.1694001708759; Wed, 06 Sep
- 2023 05:01:48 -0700 (PDT)
+        bh=TG8v1WUrQJRuwyVst1yh78ZkZ2N3yjOTrkiIIhevQjM=;
+        b=QLnQOdtsIqEbl0ryrrTaifi4hchZXMi9wy86leU3c4ppyRIJHZ1pTU8eL31pdn6Koa
+         W5j14M8GHsdTugVd56VEHGOp/7xCvoQKRqzu6JsSOGIIgWvm9cXwCfy1BqxlxksIGmnk
+         Jb494lAklHK3KkVgkSxH+ixkH/889PxzgwEwSaDHynHgiyyYuvCb9Pi//pIxpPdBpllm
+         MBmoAJEWHeK5qyWv7LBUBr8MXs8Le4pp9/ehuj3eECpeVgHiqdIXMaH1xat+rnlJ5NMS
+         86EZzZ8BwHPlz9++1+H6hbdMrjTLME8U86k6A1vt0Di+VaWA1Kra7xjxNUoHyg1VWfqL
+         32QA==
+X-Gm-Message-State: AOJu0Ywtg5WhpOHt05QR5wcMz9+/kaD4WbVzjVvbxVewEgZjrqICQh+c
+        KumqLkAjrCZisr32PeW0yKr/F1gMMccT1o9lfTZsBQ==
+X-Google-Smtp-Source: AGHT+IEq8qhz9cNHqr8duJ2KbTtO4ySOl5J8Jd6unVRxNtSyip3WQ7CbJufHcW0Xz4GUVvZWdnonI9xLeXNXTLjmBnY=
+X-Received: by 2002:aa7:c0cf:0:b0:522:ca6b:ad7d with SMTP id
+ j15-20020aa7c0cf000000b00522ca6bad7dmr2017626edp.9.1694001816458; Wed, 06 Sep
+ 2023 05:03:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230801085402.1168351-1-alexghiti@rivosinc.com>
- <20230801085402.1168351-5-alexghiti@rivosinc.com> <CA+V-a8t56xDqMTQfoKcsvPF8errkTMydaDz5V6nejLvVfJrW3g@mail.gmail.com>
-In-Reply-To: <CA+V-a8t56xDqMTQfoKcsvPF8errkTMydaDz5V6nejLvVfJrW3g@mail.gmail.com>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Wed, 6 Sep 2023 14:01:38 +0200
-Message-ID: <CAHVXubiENHt36LrcSBoNU0rAMQ8EoT6tde9M8vLP3Hw2nwMm8g@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] riscv: Improve flush_tlb_kernel_range()
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Jones <ajones@ventanamicro.com>
+References: <20230821152606.10325-1-vinayakph123@gmail.com>
+In-Reply-To: <20230821152606.10325-1-vinayakph123@gmail.com>
+From:   Sumit Semwal <sumit.semwal@linaro.org>
+Date:   Wed, 6 Sep 2023 17:33:25 +0530
+Message-ID: <CAO_48GESs+C-jRTefgLbksRSS25HtAcpCmbGKgFDDee-UsPnVA@mail.gmail.com>
+Subject: Re: [PATCH] Remove the parameter not described warning
+To:     Vinayak Hegde <vinayakph123@gmail.com>
+Cc:     gustavo@padovan.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+Hello Vinayak,
 
-On Wed, Sep 6, 2023 at 1:49=E2=80=AFPM Lad, Prabhakar
-<prabhakar.csengg@gmail.com> wrote:
+On Mon, 21 Aug 2023 at 20:56, Vinayak Hegde <vinayakph123@gmail.com> wrote:
 >
-> Hi Alexandre,
->
-> On Tue, Aug 1, 2023 at 9:58=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosin=
-c.com> wrote:
-> >
-> > This function used to simply flush the whole tlb of all harts, be more
-> > subtile and try to only flush the range.
-> >
-> > The problem is that we can only use PAGE_SIZE as stride since we don't =
-know
-> > the size of the underlying mapping and then this function will be impro=
-ved
-> > only if the size of the region to flush is < threshold * PAGE_SIZE.
-> >
-> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> > ---
-> >  arch/riscv/include/asm/tlbflush.h | 11 +++++-----
-> >  arch/riscv/mm/tlbflush.c          | 34 +++++++++++++++++++++++--------
-> >  2 files changed, 31 insertions(+), 14 deletions(-)
-> >
-> After applying this patch, I am seeing module load issues on RZ/Five
-> (complete log [0]). I am testing defconfig + [1] (rz/five related
-> configs).
->
-> Any pointers on what could be an issue here?
+> Signed-off-by: Vinayak Hegde <vinayakph123@gmail.com>
 
-Can you give me the exact version of the kernel you use? The trap
-addresses are vmalloc addresses, and a fix for those landed very late
-in the release cycle.
+Thank you for your patch. Could you please make the git commit message
+a bit more descriptive? Please describe how did you find this warning,
+atleast.
 
+> ---
+>  include/uapi/linux/sync_file.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> [0] https://paste.debian.net/1291116/
-> [1] https://paste.debian.net/1291118/
+> diff --git a/include/uapi/linux/sync_file.h b/include/uapi/linux/sync_fil=
+e.h
+> index 7e42a5b7558b..ff0a931833e2 100644
+> --- a/include/uapi/linux/sync_file.h
+> +++ b/include/uapi/linux/sync_file.h
+> @@ -56,7 +56,7 @@ struct sync_fence_info {
+>   * @name:      name of fence
+>   * @status:    status of fence. 1: signaled 0:active <0:error
+>   * @flags:     sync_file_info flags
+> - * @num_fences number of fences in the sync_file
+> + * @num_fences:        number of fences in the sync_file
+>   * @pad:       padding for 64-bit alignment, should always be zero
+>   * @sync_fence_info: pointer to array of struct &sync_fence_info with al=
+l
+>   *              fences in the sync_file
+> --
+> 2.34.1
 >
-> Cheers,
-> Prabhakar
->
-> > diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm=
-/tlbflush.h
-> > index f5c4fb0ae642..7426fdcd8ec5 100644
-> > --- a/arch/riscv/include/asm/tlbflush.h
-> > +++ b/arch/riscv/include/asm/tlbflush.h
-> > @@ -37,6 +37,7 @@ void flush_tlb_mm_range(struct mm_struct *mm, unsigne=
-d long start,
-> >  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
-> >  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
-> >                      unsigned long end);
-> > +void flush_tlb_kernel_range(unsigned long start, unsigned long end);
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >  #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
-> >  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long sta=
-rt,
-> > @@ -53,15 +54,15 @@ static inline void flush_tlb_range(struct vm_area_s=
-truct *vma,
-> >         local_flush_tlb_all();
-> >  }
-> >
-> > -#define flush_tlb_mm(mm) flush_tlb_all()
-> > -#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
-> > -#endif /* !CONFIG_SMP || !CONFIG_MMU */
-> > -
-> >  /* Flush a range of kernel pages */
-> >  static inline void flush_tlb_kernel_range(unsigned long start,
-> >         unsigned long end)
-> >  {
-> > -       flush_tlb_all();
-> > +       local_flush_tlb_all();
-> >  }
-> >
-> > +#define flush_tlb_mm(mm) flush_tlb_all()
-> > +#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
-> > +#endif /* !CONFIG_SMP || !CONFIG_MMU */
-> > +
-> >  #endif /* _ASM_RISCV_TLBFLUSH_H */
-> > diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> > index 0c955c474f3a..687808013758 100644
-> > --- a/arch/riscv/mm/tlbflush.c
-> > +++ b/arch/riscv/mm/tlbflush.c
-> > @@ -120,18 +120,27 @@ static void __flush_tlb_range(struct mm_struct *m=
-m, unsigned long start,
-> >                               unsigned long size, unsigned long stride)
-> >  {
-> >         struct flush_tlb_range_data ftd;
-> > -       struct cpumask *cmask =3D mm_cpumask(mm);
-> > -       unsigned int cpuid;
-> > +       struct cpumask *cmask, full_cmask;
-> >         bool broadcast;
-> >
-> > -       if (cpumask_empty(cmask))
-> > -               return;
-> > +       if (mm) {
-> > +               unsigned int cpuid;
-> > +
-> > +               cmask =3D mm_cpumask(mm);
-> > +               if (cpumask_empty(cmask))
-> > +                       return;
-> > +
-> > +               cpuid =3D get_cpu();
-> > +               /* check if the tlbflush needs to be sent to other CPUs=
- */
-> > +               broadcast =3D cpumask_any_but(cmask, cpuid) < nr_cpu_id=
-s;
-> > +       } else {
-> > +               cpumask_setall(&full_cmask);
-> > +               cmask =3D &full_cmask;
-> > +               broadcast =3D true;
-> > +       }
-> >
-> > -       cpuid =3D get_cpu();
-> > -       /* check if the tlbflush needs to be sent to other CPUs */
-> > -       broadcast =3D cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
-> >         if (static_branch_unlikely(&use_asid_allocator)) {
-> > -               unsigned long asid =3D atomic_long_read(&mm->context.id=
-) & asid_mask;
-> > +               unsigned long asid =3D mm ? atomic_long_read(&mm->conte=
-xt.id) & asid_mask : 0;
-> >
-> >                 if (broadcast) {
-> >                         if (riscv_use_ipi_for_rfence()) {
-> > @@ -165,7 +174,8 @@ static void __flush_tlb_range(struct mm_struct *mm,=
- unsigned long start,
-> >                 }
-> >         }
-> >
-> > -       put_cpu();
-> > +       if (mm)
-> > +               put_cpu();
-> >  }
-> >
-> >  void flush_tlb_mm(struct mm_struct *mm)
-> > @@ -196,6 +206,12 @@ void flush_tlb_range(struct vm_area_struct *vma, u=
-nsigned long start,
-> >
-> >         __flush_tlb_range(vma->vm_mm, start, end - start, stride_size);
-> >  }
-> > +
-> > +void flush_tlb_kernel_range(unsigned long start, unsigned long end)
-> > +{
-> > +       __flush_tlb_range(NULL, start, end, PAGE_SIZE);
-> > +}
-> > +
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long sta=
-rt,
-> >                         unsigned long end)
-> > --
-> > 2.39.2
-> >
-> >
+
+Best,
+Sumit.
+
+--=20
+Thanks and regards,
+
+Sumit Semwal (he / him)
+Tech Lead - LCG, Vertical Technologies
+Linaro.org =E2=94=82 Open source software for ARM SoCs
