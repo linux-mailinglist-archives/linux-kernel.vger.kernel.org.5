@@ -2,97 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE63794231
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9F8794233
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242007AbjIFRtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 13:49:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58040 "EHLO
+        id S243301AbjIFRtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 13:49:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241786AbjIFRtE (ORCPT
+        with ESMTP id S242051AbjIFRtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 13:49:04 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF8D19A5;
-        Wed,  6 Sep 2023 10:49:00 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bf55a81eeaso668915ad.0;
-        Wed, 06 Sep 2023 10:49:00 -0700 (PDT)
+        Wed, 6 Sep 2023 13:49:12 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729E119AE;
+        Wed,  6 Sep 2023 10:49:07 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-26f57f02442so73335a91.0;
+        Wed, 06 Sep 2023 10:49:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694022539; x=1694627339; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EiLEqOiUuFsG5pLs9DQeYVreWHkGWHR7/Vi/UE5qiQY=;
-        b=Sq3MPUpiUFrWDPvgumF2urJ0rxaB7gxTiL2/8xIYmxuKNjQrab606a6R5D1EvuoVhG
-         wkEMFxyYDYKS2ykLICrbU+ypSTYcuWkWiGZ5LX/NDJTaI9/k9ZylMFa5OTDyd8JusMBB
-         6KgtMJ0vNGtgYNCVuQv9x+yZ6CGnGX62i/LGVSkMsx1SeDY3Cqyt92irM57zNoqGcvsh
-         W1PXRj51YV5rHOwS5kNeYaMaB8qzKlkQMiGuz3cYMtPEHLw8nOPUdYNT/ddTnXBXk3/x
-         ScwpC3Wg5Pt10zG1uIgR1anxv1XfBa8z37sF6G+SjpEBJy28mjtMjoL/tHLie5Ti2Mpl
-         2cxg==
+        d=gmail.com; s=20221208; t=1694022545; x=1694627345; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=rbxxF3pN1PaPN9re65XUx8AyYVj3neI58zu4FlTZdnI=;
+        b=NneKSSnWP9k+Gmm3c9BjmStAPPkEeTLG2eX/mfZpZM5S9zX1hplXVI9360FVdF7d5W
+         PiOZcVESIaTDZ4QwgnvJF0C2wBVEpVfxshE1ru7VGjgzwOFBDilVcfArLZ6zow7lTlGq
+         sWM5mpYKJJt8IIwmpSP+9IdNhEe+nx1mTroGNl0oxCcXgieqai8jxCWVIarvNfYDQTzM
+         BojYSmvCktpBFwdQ4XewDLv3OIssPI48kRvBmGlguWSzLl9SsFl6JF5LXEN6Pn/5FrpK
+         7RSqV+My3sjnZG2zo2igf0gGzOjAzqF2eZJJehyD0i7Nt0evVQsSRIvHeqxJ1GR6aivK
+         eZIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694022539; x=1694627339;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EiLEqOiUuFsG5pLs9DQeYVreWHkGWHR7/Vi/UE5qiQY=;
-        b=NDENH32hAPMOp5yLmGiGtB0s3VUpteZwH4EVXHJpYWtnn0YRtHK6ccrj4FgTaGFt6l
-         WAwnBGY1Lyj3gPeS/uZY7dcmz8KZjaPb6gsvF3KUwle/DWKrV9KLyD54ohZNqw8oPt2O
-         fpG3IbKrlrZfiTxpARaxZb+9CcIdKh1yWONrNE0sK4X67mc1NiFTtDVS5fyJbmjVcZZO
-         FbKyAQ+eh++4O5Js0uzLjyeiwtVMKZ3DmcDoktGizU93rHw7RgduOs6MCS/za4yqs1Jj
-         hpqhmSWTvw7wgDYU0OsKHGkI3r+s6M5tCgNywQ9KH3sz+/u7MulFZCvDQ9yzeb2mEZyt
-         4rhA==
-X-Gm-Message-State: AOJu0YyNQU5otJwO3QCoLqw9vN2l5kasO5V2VBeSqLHXjOANlorgfYSJ
-        kbfnvg1HCNy1yMOJ/HVSBCubw1YksoZ+AYbI6UI=
-X-Google-Smtp-Source: AGHT+IEmKaf0FLqA6/LpyRqv2kGRO3n0XGn+C8UOUCXtgGAJCZHSs9vWekKIk4GT/fkG5UY5pvPReM7MtqrUUUPzh4E=
-X-Received: by 2002:a17:902:ce90:b0:1c0:98fe:3677 with SMTP id
- f16-20020a170902ce9000b001c098fe3677mr16562580plg.56.1694022539570; Wed, 06
- Sep 2023 10:48:59 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1694022545; x=1694627345;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rbxxF3pN1PaPN9re65XUx8AyYVj3neI58zu4FlTZdnI=;
+        b=hgxyMHcDcLIDEScEBudu4NNmu+F9NU1h14XLzhKezQRAXyb12zA8XlH+MX1nkHGmcZ
+         w3hWACXsdGIDKqYbTtdazv2RXSbmqxSQ96Fl48vjt+5mwpqBrv5lM8vw+OkMUsigQG2h
+         Mi1aphQvLprheAhjB5aV1pCZEinfeNQ4H45RWNKK4W5JLSJGFtrnjV090ZvxnrDmSm4U
+         iy6ImFrIQR7SPY+89Q4vXtG/q/4ezOLJYiqaKoonQVrju55PR5A9Gln+tTZwuz+gHLPQ
+         AuLLzOf+VYYqkzplmlnlTZH5l2A+mny/d8NlS7sl2lgGQH6v7im/Yw1vgq9HPIu341BE
+         C/Ew==
+X-Gm-Message-State: AOJu0Yy8o9hEA/RZ7v+vLHlGtPWLMCqkyGYzGv2Ya+Ppe+8jTYaf+9Jx
+        plVTvSIn8vV2yd0impF+JiU=
+X-Google-Smtp-Source: AGHT+IHIsJB5k5MtRKBtd9SIsU3bq2FtvyoDxLeB6d+PFGwSuPycpKDnvgaXIq9FsjtETtPqxw3hMQ==
+X-Received: by 2002:a17:90a:2acf:b0:26b:36dc:2f08 with SMTP id i15-20020a17090a2acf00b0026b36dc2f08mr14447576pjg.46.1694022545392;
+        Wed, 06 Sep 2023 10:49:05 -0700 (PDT)
+Received: from bangji.corp.google.com ([2620:15c:2c0:5:5035:1b47:9a3f:312c])
+        by smtp.gmail.com with ESMTPSA id p11-20020a17090ad30b00b00262eccfa29fsm63564pju.33.2023.09.06.10.49.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 10:49:04 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Subject: [PATCHSET 0/5] perf lock contention: Add cgroup support (v2)
+Date:   Wed,  6 Sep 2023 10:48:58 -0700
+Message-ID: <20230906174903.346486-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 MIME-Version: 1.0
-References: <20230904182945.178705038@linuxfoundation.org> <a3a98d35-bc3b-2619-c616-c8e74b57ea9b@w6rz.net>
-In-Reply-To: <a3a98d35-bc3b-2619-c616-c8e74b57ea9b@w6rz.net>
-From:   Allen Pais <stable.kernel.dev@gmail.com>
-Date:   Wed, 6 Sep 2023 10:48:48 -0700
-Message-ID: <CAJq+SaA2M=7gg5UikGrHrjb-h=7u0xBcQsJXODrzFvAPU5uY3g@mail.gmail.com>
-Subject: Re: [PATCH 5.15 00/28] 5.15.131-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > This is the start of the stable review cycle for the 5.15.131 release.
-> > There are 28 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed, 06 Sep 2023 18:29:29 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >       https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.131-rc1.gz
-> > or in the git tree and branch at:
-> >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
+Hello,
 
-Compiled and booted on my x86_64 and ARM64 test systems. No errors or
-regressions.
+The cgroup support comes with two flavors.  One is to aggregate the
+result by cgroups and the other is to filter result for the given
+cgroups.  For now, it only works in BPF mode.
 
-Tested-by: Allen Pais <apais@linux.microsoft.com>
+* v2 changes
+ - fix compiler errors  (Arnaldo)
+ - add Reviewed-by from Ian
+ 
+The first one is -g/--lock-cgroup option to show lock stats by cgroups
+like below.  The cgroup names were shortened for brevity:
 
-Thanks.
+  $ sudo perf lock con -abg perf bench sched messaging
+   contended   total wait     max wait     avg wait   cgroup
+
+        1052      3.34 ms     84.71 us      3.17 us   /app-org.gnome.Terminal.slice/vte-spawn-52221fb8-b33f-4a52-b5c3-e35d1e6fc0e0.scope
+          13    106.60 us     11.48 us      8.20 us   /session.slice/org.gnome.Shell@x11.service
+          12     21.20 us      4.93 us      1.77 us   /
+           3     12.10 us      8.80 us      4.03 us   /session-4.scope
+           2     10.98 us      7.50 us      5.49 us   /app-gnome-firefox\x2desr-34054.scope
+           2      6.04 us      4.88 us      3.02 us   /app-gnome-google\x2dchrome-6442.scope
+           1      5.63 us      5.63 us      5.63 us   /app-org.gnome.Terminal.slice/gnome-terminal-server.service
+           1      3.51 us      3.51 us      3.51 us   /pipewire.service
+           1      2.15 us      2.15 us      2.15 us   /pipewire-pulse.service
+           1       742 ns       742 ns       742 ns   /dbus.service
+
+The other is -G/--cgroup-filter option to show lock stats only from the
+given cgroups.  It doesn't support cgroup hierarchy and regex matching.
+
+  $ sudo perf lock con -abt -G / perf bench sched messaging
+   contended   total wait     max wait     avg wait          pid   comm
+
+           2     10.58 us      8.39 us      5.29 us       257552   kworker/4:1
+           2      9.76 us      7.96 us      4.88 us            0   swapper
+           4      5.36 us      2.09 us      1.34 us       255462   kworker/0:2
+           3      3.33 us      1.48 us      1.11 us       257680   kworker/3:1
+           2      2.59 us      1.46 us      1.29 us       257478   kworker/2:2
+           1      1.50 us      1.50 us      1.50 us           15   rcu_preempt
+
+You can also use these two options together. :)
+
+The two more test cases were added to the existing lock contention test.
+
+The code is available at 'perf/lock-cgroup-v2' branch in the tree below.
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+
+
+Thanks,
+Namhyung
+
+
+Namhyung Kim (5):
+  perf tools: Add read_all_cgroups() and __cgroup_find()
+  perf lock contention: Prepare to handle cgroups
+  perf lock contention: Add -g/--lock-cgroup option
+  perf lock contention: Add -G/--cgroup-filter option
+  perf test: Improve perf lock contention test
+
+ tools/perf/Documentation/perf-lock.txt        |  8 ++
+ tools/perf/builtin-lock.c                     | 99 ++++++++++++++++++-
+ tools/perf/tests/shell/lock_contention.sh     | 45 +++++++++
+ tools/perf/util/bpf_lock_contention.c         | 51 +++++++++-
+ .../perf/util/bpf_skel/lock_contention.bpf.c  | 48 ++++++++-
+ tools/perf/util/bpf_skel/lock_data.h          |  3 +-
+ tools/perf/util/cgroup.c                      | 63 ++++++++++--
+ tools/perf/util/cgroup.h                      |  5 +
+ tools/perf/util/lock-contention.h             | 10 +-
+ 9 files changed, 312 insertions(+), 20 deletions(-)
+
+
+base-commit: 45fc4628c15ab2cb7b2f53354b21db63f0a41f81
+-- 
+2.42.0.283.g2d96d420d3-goog
+
