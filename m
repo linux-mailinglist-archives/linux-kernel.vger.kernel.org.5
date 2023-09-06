@@ -2,165 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA97F793842
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51D7793847
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237026AbjIFJav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 05:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57168 "EHLO
+        id S235850AbjIFJcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 05:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234237AbjIFJau (ORCPT
+        with ESMTP id S231169AbjIFJb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 05:30:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047E019BD;
-        Wed,  6 Sep 2023 02:30:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 235C0C433C7;
-        Wed,  6 Sep 2023 09:29:56 +0000 (UTC)
-Message-ID: <7d068861-2396-00e7-5851-bfb35810ab0a@xs4all.nl>
-Date:   Wed, 6 Sep 2023 11:29:55 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2] media: amphion: handle firmware debug message
-Content-Language: en-US, nl
-To:     Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org
-Cc:     shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230823023837.23101-1-ming.qian@nxp.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230823023837.23101-1-ming.qian@nxp.com>
+        Wed, 6 Sep 2023 05:31:58 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2090.outbound.protection.outlook.com [40.107.7.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0DA170A
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 02:31:53 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TS5OhMQYt2A+gL9p598ypz9I/N414RrPrPph1HDL29sw808sy/b3G9C0tTBafRZdnq1OqpHlJEc463YHosa3IaLj5pJuG5F/mlSLRqxAfqE1lYTXfkUjL1ybnjBfsgX3V5VmD2zD1wox1FOntBjui4xmtQ80TMu9nAMecOzKTD2iGecGE/2WfGJh0YXPs7TAZOdvXTZGeynL83yg2sscLCX1USrHouTryM47nFoUB1Sg88aRMZeMbTJV0ItNVhspbvmWf/5iqjlVfyRJJGgTVEijt5IoWpIazU04kr33IwiLZXkLcOB91sqYkrz2r0bU754uX2Tbon8zRUKObVhwiA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oHShvVMpLFpuSVH+77so7o5PlZjjH7PsiGvSaQGmVrw=;
+ b=Yq+o/xZ22bmkaD1dj8dAvnQlxcWT9VUgdUpikaMD2IVQlgUAQR/gBO2VrquFzj9Dt7NM4TJ+2nBhXz7TAsNBgZXFveMrRtsBdwgdj/dHYUBVg2kgBp3X6muDR3HO564IBWK+VajC2kkk19zp7CCmza/SijPz0H5xPMHN6co0St2WmHs6IjrnPRePzOj7FJHFus6A//I8EY4dsVgp5toESpJEq0pAqLIItPZMomq+hMIN6W1pgfoNVtIdNooo66jb31vOWO2PUPQMiiOthFzvTaUCpdyuM1z15Y0VNGCbVv+ecAJ5W+0oZYO/6GIC/VcQHzMoVjjK6T4rok3N6/Cd6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oHShvVMpLFpuSVH+77so7o5PlZjjH7PsiGvSaQGmVrw=;
+ b=VNZ4yk+TauLmmR8745EdOlmf7CFhWbIw0v0B5imr8T134uePdzDYD6z6p7tmJ7nB5Zup2gTcNd424JgoKUnRSdrhUgE3mCvGfppkYDVdWv38NBZQJqt6j3EN7iG2/69K2RGnbhkO+lkKtx3+wgJVdPE7p1JyTP4I98VwR4Ahl3w=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kontron.de;
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
+ by GVXPR10MB8251.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:120::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.21; Wed, 6 Sep
+ 2023 09:31:49 +0000
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::7c42:15ff:f9fa:b221]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::7c42:15ff:f9fa:b221%4]) with mapi id 15.20.6745.030; Wed, 6 Sep 2023
+ 09:31:49 +0000
+Message-ID: <86fac1f0-0fcb-4cbd-a983-03a6e7c41097@kontron.de>
+Date:   Wed, 6 Sep 2023 11:31:45 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/5] drm/bridge: samsung-dsim: fix various modes with
+ ADV7535 bridge
+Content-Language: en-US, de-DE
+From:   Frieder Schrempf <frieder.schrempf@kontron.de>
+To:     Michael Tretter <m.tretter@pengutronix.de>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     kernel@pengutronix.de, Marco Felsch <m.felsch@pengutronix.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de>
+ <a95481b7-e38c-4b7c-be49-4c74e07d3523@kontron.de>
+In-Reply-To: <a95481b7-e38c-4b7c-be49-4c74e07d3523@kontron.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: BE1P281CA0229.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:8c::19) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:102:263::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|GVXPR10MB8251:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7cc31a99-73f0-4f34-cd71-08dbaebc187e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EKizITnDg1ORdv8Xz38FElxPXIxql9FCtJUfYlogtbHH4DLYm3SjspDSVljQYGIJqqF46j9/9wePQ04XBbCkXrDJFD6pb0uv2eZ5AThVYEimz1GM+y0rhKDAzBj1Sy7bIMO7B7u+dUqPyAmul9NQz/L0U7is2sWBfDmiPpJcMi+gQiLd6NvkmNeau4ePRBktc4x7/+JQeHvbAz2FOLj17DqLD4BdXQsye5Tu72h93grpp/onCQ2RzqXpX2JdfoByw8I/xC9m/kEkzmnzDChZwVE5gJiK9bgnE3+CtPc8Jz+hQeADMKNqopXVRoRje61EEePBG4uuIQHJazz/My4x7mG2+W9hOOi5zT6EGW1qaOpQPuQ9bQh3SIojjMFppMkwuLXjLVS0weUVP4ngPpeHbMqBRPobZqrRy9QNYrRtdv4QV59z5vmummYMh4v56g9EYm89bNc8uxZ0vnTazHw9p1TCiJQzf8dvO1C0t32h8fCnPDBNU90rYjdGg6wOc7O93g0qR6Pf53X/FjdZ6+9tgr2HPdmW9Ud7kj04n2b72TcZE8r4YMnjb+DxGrn/hsMkyNhmhuDLEkzKraAGBCjlF3bzIam1UCrfWhFc2veDyLi+GGWrQgXLnNXv2Baa04q3EDwJUcRivC3H/PdBx8j/HnDRr77Pqkt4aHx/e2lPbVY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(396003)(346002)(366004)(451199024)(186009)(1800799009)(38100700002)(478600001)(921005)(966005)(36756003)(31686004)(6666004)(26005)(41300700001)(6486002)(2616005)(110136005)(316002)(66946007)(66476007)(66556008)(83380400001)(53546011)(6512007)(6506007)(8936002)(8676002)(2906002)(4326008)(44832011)(31696002)(86362001)(5660300002)(7416002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ckxsME5rVTRhLytLdmlOQzI2WUpJTHNKTE1oU0QybUdDSVNjUHMwUWRNaGtV?=
+ =?utf-8?B?R09aSndCYTBpc0FOL0tpUGxFeWpYVnBxMUZiWCtHSjNROXRuQkozSGRTWW5u?=
+ =?utf-8?B?QTdkL01GNDZQUlBDaTZlTFl3ODBjd1hycDZrOTlYYUJBNUIxVVJpcXA3clA0?=
+ =?utf-8?B?Mi84VitsVUV4ZmcrR3h4bUFyYXIwZ0xybGYxTk1VbWVWUHgrVGV6NE8xNjAz?=
+ =?utf-8?B?NGFRTXk4QzVpbkJCYzlDcjR5QjcrQithcDdSK0NSVzZCUzZzeGFKRmx6Y1R2?=
+ =?utf-8?B?VFNMRnI1QTI3UWZHK0NBODdiNnVaZXVXT1Q3d3kwSFpGNmhML3B4M1hxT3hu?=
+ =?utf-8?B?azRqRkVzQlBoVHhkampibkdkdzB6Y25SZDJ3OWZUTkdFTHArU2pNSnFYemtq?=
+ =?utf-8?B?S3BrNVR3YkNhTGlvSG1FMURjQVNXcWY0L2JObzhZY0xpUjJHb1g0YlJkL0or?=
+ =?utf-8?B?UlpPNDRHNXEwdGRCWXZuT29CWng3U2NOcXowNVY0ME1TajBySnlRbjJJeWhJ?=
+ =?utf-8?B?c2w2NmZRWXBJTkVSc3lQaFk5VW8yVURvbUdCbTlVM016b05qeVJKQ2lrbGNp?=
+ =?utf-8?B?cnQwMWRXTW4zcVdENFAwcFM4QytTT1N5Y0l3TW1NazRoU3NsTDBFa3hXMXJm?=
+ =?utf-8?B?dFlNOERDYXhVb080VXNsdXRXQmQwOFJUbnZSM2dBVWZXVk85dm01NHNDeWlL?=
+ =?utf-8?B?aGFvQ3ZvaTdOTTE5STNRSHFYckpUSjJTSWMxR0pBMUk1R205STRFa0N1RFhM?=
+ =?utf-8?B?cUNIcjFnM3BJSy9hdDhCRDJOVGMrTS8zYWdUdmtpbW0vL21DYUJjUkJaOXNw?=
+ =?utf-8?B?L3FPRW53K0VSeDRhc2xwZlJnRGlqZVRMSGgweUNUU2NlNllhUlZ0Nm9zV3JV?=
+ =?utf-8?B?QStvZ04waDZqQ2VQcHRTM1R2N1l5UHdHOEs0K0t0T2tyOG56NzB4ZktpRUdh?=
+ =?utf-8?B?WU1jdzZBc0NZK050aGJKNURhb2dKU2NOZjZ6dW9BZDc0bktBWUtrU2o0RERM?=
+ =?utf-8?B?YUpaZEJta25NelNhcTlxUXljSEk4aEk2QUNkSndST0tHTDd3YzYzZzh3NkVx?=
+ =?utf-8?B?dS8xTVEwVE44M0VTakdaUGZTUHl6bFN4SWRkYitMbHNZNCt6RndNbVFoMDlJ?=
+ =?utf-8?B?MS9TYnhNdjFiaS81OE5iWkltRjF3YkNCc3A2S0d3dVcrV0FRTHdBWmptckRS?=
+ =?utf-8?B?QW1PcmY2cmRGekh5R1djR1pidkM5TWtLWXMycGZqVklJRmRNYTdwbm9hQ3FE?=
+ =?utf-8?B?WDU2cEJJblpiTmZvN0hnenZkSUVxc0o0TW05ekdrWC9pK2FkVEkxTDMrMGFn?=
+ =?utf-8?B?eUp0dkZoRTJQMlUyL2hxdCtnUlpVMkVGWTBLNk0yVEd5Q3BlSjdqUlY0TlJy?=
+ =?utf-8?B?N1FsdHVxWXhGay9NRjRzcys3b1U4aWwzYS9TSVN5SmxVOWRPV3JlNy9lZTVk?=
+ =?utf-8?B?OFRZWnR1bjNORDRGQ2tmVm9HU09yTXlCOUlJclR1K3ZGWFROckRXK1hqWU9k?=
+ =?utf-8?B?aVgydWtTTzdZdHpUYmNjd1FMb0NLNW1xVi9tUitGa3U4MFpHU3QrM0QwcStG?=
+ =?utf-8?B?YjQ1UWc5VUNIZmNwUHhEdmZtbDBoU3hONXNHcjRmaEFmUVl5WTNmaWQ1bUgr?=
+ =?utf-8?B?TzliVGxkb2JUK25zdGVpZ2xwc21FUEtBTGZtd2FpdXp2S1RpUFdDQUlRTk4r?=
+ =?utf-8?B?akllYzk1eDhId2V3OXZjVFZVck1kVHZnb2lhTzBZRVovTFVsWXhiQjN5SHU2?=
+ =?utf-8?B?TDMyZGRoM0N6dnlWSHBzT1BYVjFjL01vTTV6Y2NJNFZ6R1c0cXF6OVJ3eGNM?=
+ =?utf-8?B?YzRUWDJpeWlOVWFKeFhla09sYURvVHJicGNud3gwY3dLMWpiZXZrbS9odkor?=
+ =?utf-8?B?YjVmUWoxeThkR3dzdmVweklFOVdmQXR4Qmd5eSt3RzZ4ajVUNXNpR1VkM1h1?=
+ =?utf-8?B?T1d6UmxYWmVDN2RjaDZJc094VWVpQlFVUGFHeWZSWnl5WXczUklWSERyVnZT?=
+ =?utf-8?B?bGhnOVMzY2puemtpOGZrbUh1NXBpanJpNncyR0lkL2tsdWV3TkhQVmtDMnlU?=
+ =?utf-8?B?ZU44OS9XaWg5cmlpOW1qL1FadEdIM3ZCaXNRUkJKQnlmZzloc3NzMWxYUmJ5?=
+ =?utf-8?B?Sk1vcTdQUnJKT2piY251dldKZ1ovYWRUYU5YRjUzK1hrR1grSmdRQldwL2p2?=
+ =?utf-8?B?Q1E9PQ==?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7cc31a99-73f0-4f34-cd71-08dbaebc187e
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 09:31:49.2342
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 85wZmplyprsjexLL80GKVyOnOVb4PGm82dFcmjHWGPqf70noetXQRkv4RQ63px27s8YcAHn7DZ4nxJQNjef+CpPvlvMv63WoWd/GuWBvSkg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR10MB8251
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/08/2023 04:38, Ming Qian wrote:
-> decoder firmware may notify host some debug message,
-> it can help analyze the state of the firmware in case of error
+On 04.09.23 16:02, Frieder Schrempf wrote:
+> Hi Michael,
 > 
-> Fixes: 9f599f351e86 ("media: amphion: add vpu core driver")
-> Signed-off-by: Ming Qian <ming.qian@nxp.com>
-> Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-> ---
-> v2
-> - force to terminate string message data
->  drivers/media/platform/amphion/vpu_defs.h    | 1 +
->  drivers/media/platform/amphion/vpu_helpers.c | 1 +
->  drivers/media/platform/amphion/vpu_malone.c  | 1 +
->  drivers/media/platform/amphion/vpu_msgs.c    | 9 +++++++++
->  drivers/media/platform/amphion/vpu_rpc.c     | 3 ++-
->  5 files changed, 14 insertions(+), 1 deletion(-)
+> On 28.08.23 17:59, Michael Tretter wrote:
+>> I tested the i.MX8M Nano EVK with the NXP supplied MIPI-DSI adapter,
+>> which uses an ADV7535 MIPI-DSI to HDMI converter. I found that a few
+>> modes were working, but in many modes my monitor stayed dark.
+>>
+>> This series fixes the Samsung DSIM bridge driver to bring up a few more
+>> modes:
+>>
+>> The driver read the rate of the PLL ref clock only during probe.
+>> However, if the clock is re-parented to the VIDEO_PLL, changes to the
+>> pixel clock have an effect on the PLL ref clock. Therefore, the driver
+>> must read and potentially update the PLL ref clock on every modeset.
+>>
+>> I also found that the rounding mode of the porches and active area has
+>> an effect on the working modes. If the driver rounds up instead of
+>> rounding down and be calculates them in Hz instead of kHz, more modes
+>> start to work.
+>>
+>> The following table shows the modes that were working in my test without
+>> this patch set and the modes that are working now:
+>>
+>> |            Mode | Before | Now |
+>> | 1920x1080-60.00 | X      | X   |
+>> | 1920x1080-59.94 |        | X   |
+>> | 1920x1080-50.00 |        | X   |
+>> | 1920x1080-30.00 |        | X   |
+>> | 1920x1080-29.97 |        | X   |
+>> | 1920x1080-25.00 |        | X   |
+>> | 1920x1080-24.00 |        |     |
+>> | 1920x1080-23.98 |        |     |
+>> | 1680x1050-59.88 |        | X   |
+>> | 1280x1024-75.03 | X      | X   |
+>> | 1280x1024-60.02 | X      | X   |
+>> |  1200x960-59.99 |        | X   |
+>> |  1152x864-75.00 | X      | X   |
+>> |  1280x720-60.00 |        |     |
+>> |  1280x720-59.94 |        |     |
+>> |  1280x720-50.00 |        | X   |
+>> |  1024x768-75.03 |        | X   |
+>> |  1024x768-60.00 |        | X   |
+>> |   800x600-75.00 | X      | X   |
+>> |   800x600-60.32 | X      | X   |
+>> |   720x576-50.00 | X      | X   |
+>> |   720x480-60.00 |        |     |
+>> |   720x480-59.94 | X      |     |
+>> |   640x480-75.00 | X      | X   |
+>> |   640x480-60.00 |        | X   |
+>> |   640x480-59.94 |        | X   |
+>> |   720x400-70.08 |        |     |
+>>
+>> Interestingly, the 720x480-59.94 mode stopped working. However, I am
+>> able to bring up the 720x480 modes by manually hacking the active area
+>> (hsa) to 40 and carefully adjusting the clocks, but something still
+>> seems to be off.
+>>
+>> Unfortunately, a few more modes are still not working at all. The NXP
+>> downstream kernel has some quirks to handle some of the modes especially
+>> wrt. to the porches, but I cannot figure out, what the driver should
+>> actually do in these cases. Maybe there is still an error in the
+>> calculation of the porches and someone at NXP can chime in.
 > 
-> diff --git a/drivers/media/platform/amphion/vpu_defs.h b/drivers/media/platform/amphion/vpu_defs.h
-> index 667637eedb5d..7320852668d6 100644
-> --- a/drivers/media/platform/amphion/vpu_defs.h
-> +++ b/drivers/media/platform/amphion/vpu_defs.h
-> @@ -71,6 +71,7 @@ enum {
->  	VPU_MSG_ID_TIMESTAMP_INFO,
->  	VPU_MSG_ID_FIRMWARE_XCPT,
->  	VPU_MSG_ID_PIC_SKIPPED,
-> +	VPU_MSG_ID_DBG_MSG,
->  };
->  
->  enum VPU_ENC_MEMORY_RESOURSE {
-> diff --git a/drivers/media/platform/amphion/vpu_helpers.c b/drivers/media/platform/amphion/vpu_helpers.c
-> index af3b336e5dc3..d12310af9ebc 100644
-> --- a/drivers/media/platform/amphion/vpu_helpers.c
-> +++ b/drivers/media/platform/amphion/vpu_helpers.c
-> @@ -489,6 +489,7 @@ const char *vpu_id_name(u32 id)
->  	case VPU_MSG_ID_UNSUPPORTED: return "unsupported";
->  	case VPU_MSG_ID_FIRMWARE_XCPT: return "exception";
->  	case VPU_MSG_ID_PIC_SKIPPED: return "skipped";
-> +	case VPU_MSG_ID_DBG_MSG: return "debug msg";
->  	}
->  	return "<unknown>";
->  }
-> diff --git a/drivers/media/platform/amphion/vpu_malone.c b/drivers/media/platform/amphion/vpu_malone.c
-> index f771661980c0..d3425de7bccd 100644
-> --- a/drivers/media/platform/amphion/vpu_malone.c
-> +++ b/drivers/media/platform/amphion/vpu_malone.c
-> @@ -745,6 +745,7 @@ static struct vpu_pair malone_msgs[] = {
->  	{VPU_MSG_ID_UNSUPPORTED, VID_API_EVENT_UNSUPPORTED_STREAM},
->  	{VPU_MSG_ID_FIRMWARE_XCPT, VID_API_EVENT_FIRMWARE_XCPT},
->  	{VPU_MSG_ID_PIC_SKIPPED, VID_API_EVENT_PIC_SKIPPED},
-> +	{VPU_MSG_ID_DBG_MSG, VID_API_EVENT_DBG_MSG_DEC},
->  };
->  
->  static void vpu_malone_pack_fs_alloc(struct vpu_rpc_event *pkt,
-> diff --git a/drivers/media/platform/amphion/vpu_msgs.c b/drivers/media/platform/amphion/vpu_msgs.c
-> index d0ead051f7d1..999efeaebfd5 100644
-> --- a/drivers/media/platform/amphion/vpu_msgs.c
-> +++ b/drivers/media/platform/amphion/vpu_msgs.c
-> @@ -180,6 +180,14 @@ static void vpu_session_handle_pic_skipped(struct vpu_inst *inst, struct vpu_rpc
->  	vpu_inst_unlock(inst);
->  }
->  
-> +static void vpu_session_handle_dbg_msg(struct vpu_inst *inst, struct vpu_rpc_event *pkt)
-> +{
-> +	char *str = (char *)pkt->data;
-> +
-> +	if (strlen(str))
+> Thanks for working on this! We tested these patches with our Kontron BL
+> i.MX8MM board and a "10.1inch HDMI LCD (E)" display from Waveshare  [1].
+> 
+> Without this series we don't get an image with the default mode of the
+> display (1024x600). With this series applied, it's now working.
 
-This can be replaced by: 'if (*str)', it's faster than strlen.
+Minor correction: The display does work, but there is some flickering
+and occasional black screens if you let it run for some time. So there
+is still some sync issue.
 
-> +		dev_info(inst->dev, "instance %d firmware dbg msg : %s\n", inst->id, str);
-> +}
-> +
->  static struct vpu_msg_handler handlers[] = {
->  	{VPU_MSG_ID_START_DONE, vpu_session_handle_start_done},
->  	{VPU_MSG_ID_STOP_DONE, vpu_session_handle_stop_done},
-> @@ -196,6 +204,7 @@ static struct vpu_msg_handler handlers[] = {
->  	{VPU_MSG_ID_UNSUPPORTED, vpu_session_handle_error},
->  	{VPU_MSG_ID_FIRMWARE_XCPT, vpu_session_handle_firmware_xcpt},
->  	{VPU_MSG_ID_PIC_SKIPPED, vpu_session_handle_pic_skipped},
-> +	{VPU_MSG_ID_DBG_MSG, vpu_session_handle_dbg_msg},
->  };
->  
->  static int vpu_session_handle_msg(struct vpu_inst *inst, struct vpu_rpc_event *msg)
-> diff --git a/drivers/media/platform/amphion/vpu_rpc.c b/drivers/media/platform/amphion/vpu_rpc.c
-> index f626a9f835e0..8234370afee5 100644
-> --- a/drivers/media/platform/amphion/vpu_rpc.c
-> +++ b/drivers/media/platform/amphion/vpu_rpc.c
-> @@ -144,7 +144,7 @@ static int vpu_rpc_receive_msg_buf(struct vpu_shared_addr *shared, struct vpu_rp
->  	msg->hdr.num = (msgword >> 16) & 0xff;
->  	msg->hdr.id = msgword & 0x3fff;
->  
-> -	if (msg->hdr.num > ARRAY_SIZE(msg->data))
-> +	if (msg->hdr.num >= ARRAY_SIZE(msg->data))
+Anyway it's better than not working at all.
 
-Is this right? You are changing the max length just to be able to set the
-last byte to 0, which makes sense for VPU_MSG_ID_DBG_MSG but perhaps not for
-others.
-
-I think it would be better to leave this code as-is and instead set the
-last byte to 0 in vpu_session_handle_dbg_msg(). That's where it is actually
-needed.
-
-Or am I missing something here?
-
-Regards,
-
-	Hans
-
->  		return -EINVAL;
->  
->  	for (i = 0; i < msg->hdr.num; i++) {
-> @@ -156,6 +156,7 @@ static int vpu_rpc_receive_msg_buf(struct vpu_shared_addr *shared, struct vpu_rp
->  			data = shared->msg_mem_vir;
->  		}
->  	}
-> +	msg->data[msg->hdr.num] = 0;
->  
->  	/*update rptr after data is read*/
->  	mb();
-
+> 
+> For the whole series:
+> 
+> Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de> # Kontron BL
+> i.MX8MM + Waveshare 10.1inch HDMI LCD (E)
+> 
+> Thanks
+> Frieder
+> 
+> [1] https://www.waveshare.com/10.1inch-hdmi-lcd-e.htm
