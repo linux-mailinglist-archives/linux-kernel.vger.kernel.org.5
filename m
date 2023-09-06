@@ -2,114 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 083EF793DF0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB04D793DF7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241190AbjIFNoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 09:44:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37966 "EHLO
+        id S241234AbjIFNpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 09:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241205AbjIFNo3 (ORCPT
+        with ESMTP id S230499AbjIFNpi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 09:44:29 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A763ACF1;
-        Wed,  6 Sep 2023 06:44:24 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (ftip006315900.acc1.colindale.21cn-nte.bt.net [81.134.214.249])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C7529DE2;
-        Wed,  6 Sep 2023 15:42:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1694007775;
-        bh=u4Udi0Lh3/ENj11A1kKppoLsDHz9Y54DddubQmo2aOE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c7bc1uk4DXuH4yd0GClAEj3qP1dWj73gxszSF8o/+J53Rl2++XesBn41s2L54ylVP
-         SNZCOlMleMiuE4ckN0SIrIHqQlour1daBPUNTI8+QvIhhoSK0DpR0QBpaktzKcUzlB
-         ciklPbA3iPob9lOQVL7NmczZj+Q9XSC5WHewTNw4=
-Date:   Wed, 6 Sep 2023 16:44:35 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] media: uvcvideo: Fix power line control for a Chicony
- camera
-Message-ID: <20230906134435.GA24846@pendragon.ideasonboard.com>
-References: <20230817-chicony-v2-1-88335519989d@chromium.org>
+        Wed, 6 Sep 2023 09:45:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC3DCF1;
+        Wed,  6 Sep 2023 06:45:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B10F3C433C8;
+        Wed,  6 Sep 2023 13:45:33 +0000 (UTC)
+Date:   Wed, 6 Sep 2023 09:45:53 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Zheng Yejian <zhengyejian1@huawei.com>
+Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Ajay Kaher <akaher@vmware.com>, <shuah@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Ye Weihua <yeweihua4@huawei.com>
+Subject: Re: [PATCH] selftests/ftrace: Correctly enable event in
+ instance-event.tc
+Message-ID: <20230906094553.388cd787@gandalf.local.home>
+In-Reply-To: <20230906094306.67a51feb@gandalf.local.home>
+References: <20230626001144.2635956-1-zhengyejian1@huawei.com>
+        <20230626191114.8c5a66fbaa28af3c303923bd@kernel.org>
+        <20230626191255.53baab4ed48d7111dcd44cad@kernel.org>
+        <20230710183741.78f04c68@gandalf.local.home>
+        <1cb3aee2-19af-c472-e265-05176fe9bd84@huawei.com>
+        <20230905183638.2b539fae@gandalf.local.home>
+        <9cad73cd-1f8b-2f3f-cda4-99b89a87b931@huawei.com>
+        <20230906072759.4e8bee1c@gandalf.local.home>
+        <2667182e-691e-2ab4-4c2d-a47d76f38107@huawei.com>
+        <20230906085621.6e20db28@gandalf.local.home>
+        <20230906090252.36219543@gandalf.local.home>
+        <fcc5d688-9d58-3b4c-58de-472330160142@huawei.com>
+        <20230906094306.67a51feb@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230817-chicony-v2-1-88335519989d@chromium.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
+On Wed, 6 Sep 2023 09:43:06 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-On Tue, Sep 05, 2023 at 03:29:52PM +0000, Ricardo Ribalda wrote:
-> The device does not implement the control properly.
+> > also can be reproduced with the newest:
+> > 65d6e954e378 ("Merge tag 'gfs2-v6.5-rc5-fixes' of 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2")
+> > 
+> > And revert commit 27152bceea1d ("eventfs: Move tracing/events to
+> > eventfs"), the issue just seems gone.  
 > 
-> Fixes v4l2-compliance error:
-> 
-> info: checking control 'Power Line Frequency' (0x00980918)
-> fail: v4l2-test-controls.cpp(552): could not set valid menu item 3
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> The reason I'm asking is that there could be something added that fixes it.
+> I'm testing Linus's tree at: cbb557ba92f08b945e2cb20b7ab37ef49ab53cdd
 
-This still applies :-)
+Never mind, I just noticed that your above sha includes this one.
 
-I've taken the patch in my tree and will push it for v6.7.
+Not sure why I can't reproduce this. I'm using qemu as well.
 
-> ---
-> This camera, like other Chicony devices, do not implement properly the
-> Power Line Frequency control.
-> 
-> This time, I do not have direct access to the device, just to the
-> report, but since other devices from the same family are showing the
-> same error, it is safe to assume that the same fix will work here.
-> ---
-> Changes in v2:
-> - Fix IntefaceProtocol, the camera is uvc1.5
-> - I managed to write 0 to the control, so the proper quirk is uvc11 not
->   limited
-> - Changes by Laurent:
-> 	- Rename device
-> 	- s/v4l/v4l2
-> - Link to v1: https://lore.kernel.org/r/20230817-chicony-v1-1-76bde4d6ff6b@chromium.org
-> ---
->  drivers/media/usb/uvc/uvc_driver.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> index 08fcd2ffa727..4b5ea3501753 100644
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -2592,6 +2592,15 @@ static const struct usb_device_id uvc_ids[] = {
->  	  .bInterfaceSubClass	= 1,
->  	  .bInterfaceProtocol	= 0,
->  	  .driver_info		= (kernel_ulong_t)&uvc_ctrl_power_line_limited },
-> +	/* Chicony Electronics Co., Ltd Integrated Camera */
-> +	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
-> +				| USB_DEVICE_ID_MATCH_INT_INFO,
-> +	  .idVendor		= 0x04f2,
-> +	  .idProduct		= 0xb67c,
-> +	  .bInterfaceClass	= USB_CLASS_VIDEO,
-> +	  .bInterfaceSubClass	= 1,
-> +	  .bInterfaceProtocol	= UVC_PC_PROTOCOL_15,
-> +	  .driver_info		= (kernel_ulong_t)&uvc_ctrl_power_line_uvc11 },
->  	/* Chicony EasyCamera */
->  	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
->  				| USB_DEVICE_ID_MATCH_INT_INFO,
-> 
-> ---
-> base-commit: 4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
-> change-id: 20230817-chicony-9c35f2046c6f
-
--- 
-Regards,
-
-Laurent Pinchart
+-- Steve
