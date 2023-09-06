@@ -2,158 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 909D2794151
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7BB794155
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242964AbjIFQTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 12:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
+        id S232910AbjIFQUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 12:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242881AbjIFQTL (ORCPT
+        with ESMTP id S239866AbjIFQUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 12:19:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C567199B;
-        Wed,  6 Sep 2023 09:19:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58C8EC433C8;
-        Wed,  6 Sep 2023 16:19:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694017146;
-        bh=SyvLhDIG0MoJ6FBzjIUjYOBH06hsZVQwkCnIi9FHiDU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eseHbEVmMhrY9PaGwIkO64mOynH5pr1vjbpR/LNqjoBmhA0anmhRcZ/d1ScCLVh6U
-         3pxXPNziMa8Z7a+mltB417gs6kryPvq/9YrgSiNsQijV9OnvmRxdY41irUtYXX3mDr
-         /crCfW2KNLRK58L83A9XPQaRGf40jp86BE5K1mZ7ac021a5IVjA5GiMEOu9iTGVJvi
-         hS44yxEWq9WGikt/WA9LsmmeMsDm8M8r1sSyLotBcbsIDbicv8pbM8NWj6cuZQQe0y
-         fVk41sFaPa2ZSFkTspZSpE8z9N3EM6JmN39yxQyw0a2cl8oHUWkQupnHWYq5EpqXKL
-         c4oq+BE+2NdFg==
-Date:   Wed, 6 Sep 2023 18:19:01 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Zdenek Kabelac <zkabelac@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Jan Kara <jack@suse.cz>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] fix writing to the filesystem after unmount
-Message-ID: <20230906-aufkam-bareinlage-6e7d06d58e90@brauner>
-References: <59b54cc3-b98b-aff9-14fc-dc25c61111c6@redhat.com>
- <20230906-launenhaft-kinder-118ea59706c8@brauner>
- <f5d63867-5b3e-294b-d1f5-a128817cfc7@redhat.com>
- <20230906-aufheben-hagel-9925501b7822@brauner>
- <60f244be-803b-fa70-665e-b5cba15212e@redhat.com>
+        Wed, 6 Sep 2023 12:20:36 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06B51997;
+        Wed,  6 Sep 2023 09:20:31 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-34baf19955cso14533065ab.2;
+        Wed, 06 Sep 2023 09:20:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694017231; x=1694622031; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TMz79hxFJ9olxIr9jfYLcoGR3OAZ7+P2iKJ9lBzWAYI=;
+        b=nVxklLs1lC4Zzfo/xa+vODXywjPbDc+ENZTtyzcLSzzLKCFSNxenUnPcXsUhONLgLU
+         jBAWdgc+25OICuMs0mybCpVNHWNB2lTwA9UX2jMUEec8yiVghNzDTe8qm7JO3pB1qlLu
+         +XwyDOnFiec8xKIk44U4JrrnK3kiWEMuH3o2B8553QQqj8iRyOfzVEUKhtBufGsK2TvQ
+         S4HhaBcV6SN8y2Iz7vrH/5wMoGf4qbILAAH50CjzbOhJwcOowdsYDZvD1H/qNEmlW6lm
+         uBUkyrbWLspyi13tKsWh0B14L87GqJfKfwrasCjOi9Zw7KS+SW6dLAuuksM4YEcWZO8K
+         jCtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694017231; x=1694622031;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TMz79hxFJ9olxIr9jfYLcoGR3OAZ7+P2iKJ9lBzWAYI=;
+        b=MF346SLVPqGaeaGLzyKit6/8+CnXgmPgiwlkFzBPh0eSuBMkLKSc2li4FBCwoWFVhK
+         MwFJIMW5hs8u3hWSN+L0eHxQ84aLxnYb9opfokiM/Z1j1SL0xMUZYTp1i5FJyT7F3row
+         O1W2kSgsviRzp3qRtM2DmNF2K56oVlTH9P0h1LYK5AcYhWqDivIU99N7NVXNhMIq0OLz
+         93Z/Sl1jzsX4GvG450XSLeLDqMVvQM7MJGnX/3rl8KT6745le61LrIYj6B0LY4auz7q1
+         uhEGxR2FT1hckAgi2N8Wv0kcYdVOx2UWV7tCZoNHvQFxFOLFuxwc0ebo8eR9AeBE9aO6
+         9TpA==
+X-Gm-Message-State: AOJu0Yz+/SbXRhKXnhh52H5wZuAHfRukaDdjsvyX2ysaSxuSI9W9y+Ld
+        iNBrbo0qcMVAaGrAKnd9aAk=
+X-Google-Smtp-Source: AGHT+IF753sF+R0bbfveiAP2bNpfdgjIXEKSJ2XFC4nSpweh/kXqzw1120AgkU4jF8VutN6VBXIwSw==
+X-Received: by 2002:a92:c74f:0:b0:34f:2484:64ce with SMTP id y15-20020a92c74f000000b0034f248464cemr5501106ilp.23.1694017231189;
+        Wed, 06 Sep 2023 09:20:31 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k27-20020a634b5b000000b00573db18bca2sm3478128pgl.33.2023.09.06.09.20.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 09:20:30 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <8a3b41a2-0ab2-6213-04a1-54ab7263c647@roeck-us.net>
+Date:   Wed, 6 Sep 2023 09:20:29 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <60f244be-803b-fa70-665e-b5cba15212e@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz,
+        Jean Delvare <jdelvare@suse.com>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230906084837.3043030-1-Delphine_CC_Chiu@wiwynn.com>
+ <20230906084837.3043030-3-Delphine_CC_Chiu@wiwynn.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] hwmon: max31790: support to config PWM as TACH
+In-Reply-To: <20230906084837.3043030-3-Delphine_CC_Chiu@wiwynn.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 06:01:06PM +0200, Mikulas Patocka wrote:
+On 9/6/23 01:48, Delphine CC Chiu wrote:
+> The PWM outputs of max31790 could be used as tachometer inputs by
+> setting the fan configuration register, but the driver doesn't support
+> to config the PWM outputs as tachometer inputs currently.
 > 
+> Add a function to get properties of the setting of max31790 to config
+> PWM outputs as tachometer inputs before initializing max31790.
+> For example: set `pwm-as-tach = /bits/ 8 <2 5>` in DTS for max31790 and
+> the driver will config PWMOUT2 and PWMOUT5 as TACH8 and TACH11.
 > 
-> On Wed, 6 Sep 2023, Christian Brauner wrote:
+
+Devicetree properties have to be documented in a property file
+and have to be approved by a devicetree maintainer.
+
+Personally I don't think this is the proper way of configuring this,
+but I'll let devicetree maintainers decide.
+
+> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+> ---
+>   drivers/hwmon/max31790.c | 50 ++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 50 insertions(+)
 > 
-> > > > IOW, you'd also hang on any umount of a bind-mount. IOW, every
-> > > > single container making use of this filesystems via bind-mounts would
-> > > > hang on umount and shutdown.
-> > > 
-> > > bind-mount doesn't modify "s->s_writers.frozen", so the patch does nothing 
-> > > in this case. I tried unmounting bind-mounts and there was no deadlock.
-> > 
-> > With your patch what happens if you do the following?
-> > 
-> > #!/bin/sh -ex
-> > modprobe brd rd_size=4194304
-> > vgcreate vg /dev/ram0
-> > lvcreate -L 16M -n lv vg
-> > mkfs.ext4 /dev/vg/lv
-> > 
-> > mount -t ext4 /dev/vg/lv /mnt/test
-> > mount --bind /mnt/test /opt
-> > mount --make-private /opt
-> > 
-> > dmsetup suspend /dev/vg/lv
-> > (sleep 1; dmsetup resume /dev/vg/lv) &
-> > 
-> > umount /opt # I'd expect this to hang
-> > 
-> > md5sum /dev/vg/lv
-> > md5sum /dev/vg/lv
-> > dmsetup remove_all
-> > rmmod brd
-> 
-> "umount /opt" doesn't hang. It waits one second (until dmsetup resume is 
-> called) and then proceeds.
+> diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
+> index 0cd44c1e998a..0f8fe911539b 100644
+> --- a/drivers/hwmon/max31790.c
+> +++ b/drivers/hwmon/max31790.c
+> @@ -480,6 +480,52 @@ static const struct hwmon_chip_info max31790_chip_info = {
+>   	.info = max31790_info,
+>   };
+>   
+> +static int max31790_config_pwm_as_tach(struct device *dev,
+> +				       struct i2c_client *client)
+> +{
+> +	struct device_node *np = dev->of_node;
+> +	int i, ret = 0, size, channel;
+> +	u8 pwm_index[NR_CHANNEL] = { 0 };
+> +	u8 fan_config;
+> +
+> +	size = of_property_count_u8_elems(np, "pwm-as-tach");
+> +
+> +	if ((size > 0) && (size <= NR_CHANNEL)) {
 
-So unless I'm really misreading the code - entirely possible - the
-umount of the bind-mount now waits until the filesystem is resumed with
-your patch. And if that's the case that's a bug.
+Please refrain from unnecessary ( ).
 
-If at all, then only the last umount, the one that destroys the
-superblock, should wait for the filesystem to become unfrozen.
+> +		ret = of_property_read_u8_array(np, "pwm-as-tach", pwm_index,
+> +						size);
+> +		if (ret) {
+> +			dev_err(dev,
+> +				"Property 'pwm-as-tach' cannot be read.\n");
+> +			return ret;
+> +		}
+> +
+> +		for (i = 0; i < size; i++) {
+> +			if ((pwm_index[i] == 0) ||
+> +			    (pwm_index[i] > NR_CHANNEL)) {
+> +				continue;
+> +			}
 
-A bind-mount shouldn't as there are still active mounts of the
-filesystem (e.g., /mnt/test).
+Silently accepting bad data seems like a bad idea to me.
 
-So you should see this with (unless I really misread things):
+> +
+> +			channel = pwm_index[i] - 1;
+> +			fan_config = i2c_smbus_read_byte_data(
+> +				client, MAX31790_REG_FAN_CONFIG(channel));
+> +			if (fan_config < 0) {
 
-#!/bin/sh -ex
-modprobe brd rd_size=4194304
-vgcreate vg /dev/ram0
-lvcreate -L 16M -n lv vg
-mkfs.ext4 /dev/vg/lv
+An u8 is never < 0
 
-mount -t ext4 /dev/vg/lv /mnt/test
-mount --bind /mnt/test /opt
-mount --make-private /opt
+> +				dev_err(dev,
+> +					"Read fan config for channel %d failed.\n",
+> +					channel);
+> +				return fan_config;
+> +			}
+> +
+> +			fan_config |= (MAX31790_FAN_CFG_CTRL_MON |
+> +				       MAX31790_FAN_CFG_TACH_INPUT);
 
-dmsetup suspend /dev/vg/lv
+This assumes that the channel is configured as pwm.
+What if the BIOS / ROMMON configured another channel which you want as
+pwm channel as fan input channel ?
 
-umount /opt # This will hang with your patch?
+> +			i2c_smbus_write_byte_data(
+> +				client, MAX31790_REG_FAN_CONFIG(channel),
+> +				fan_config);
+> +		}
+> +	}
 
-> 
-> Then, it fails with "rmmod: ERROR: Module brd is in use" because the 
-> script didn't unmount /mnt/test.
-> 
-> > > BTW. what do you think that unmount of a frozen filesystem should properly 
-> > > do? Fail with -EBUSY? Or, unfreeze the filesystem and unmount it? Or 
-> > > something else?
-> > 
-> > In my opinion we should refuse to unmount frozen filesystems and log an
-> > error that the filesystem is frozen. Waiting forever isn't a good idea
-> > in my opinion.
-> 
-> But lvm may freeze filesystems anytime - so we'd get randomly returned 
-> errors then.
+Silently ignoring errors seems like a bad idea.
 
-So? Or you might hang at anytime.
+> +
+> +	return 0;
+> +}
+> +
+>   static int max31790_init_client(struct i2c_client *client,
+>   				struct max31790_data *data)
+>   {
+> @@ -521,6 +567,10 @@ static int max31790_probe(struct i2c_client *client)
+>   	data->client = client;
+>   	mutex_init(&data->update_lock);
+>   
+> +	err = max31790_config_pwm_as_tach(dev, client);
+> +	if (err)
+> +		dev_crit(dev, "Config PWM as TACH failed.\n");
+> +
+>   	/*
+>   	 * Initialize the max31790 chip
+>   	 */
 
-> 
-> > But this is a significant uapi change afaict so this would need to be
-> > hidden behind a config option, a sysctl, or it would have to be a new
-> > flag to umount2() MNT_UNFROZEN which would allow an administrator to use
-> > this flag to not unmount a frozen filesystems.
-> 
-> The kernel currently distinguishes between kernel-initiated freeze (that 
-> is used by the XFS scrub) and userspace-initiated freeze (that is used by 
-> the FIFREEZE ioctl and by device-mapper initiated freeze through 
-> freeze_bdev).
-
-Yes, I'm aware.
-
-> 
-> Perhaps we could distinguish between FIFREEZE-initiated freezes and 
-> device-mapper initiated freezes as well. And we could change the logic to 
-> return -EBUSY if the freeze was initiated by FIFREEZE and to wait for 
-> unfreeze if it was initiated by the device-mapper.
-
-For device mapper initiated freezes you can unfreeze independent of any
-filesystem mountpoint via dm ioctls.
