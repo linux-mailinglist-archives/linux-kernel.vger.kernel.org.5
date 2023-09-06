@@ -2,99 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87BC17933BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 04:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A017933C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 04:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbjIFC1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 22:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44834 "EHLO
+        id S238831AbjIFCfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 22:35:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjIFC1N (ORCPT
+        with ESMTP id S229628AbjIFCfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 22:27:13 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3FD6CDE;
-        Tue,  5 Sep 2023 19:27:09 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-68becf931bfso2105979b3a.0;
-        Tue, 05 Sep 2023 19:27:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693967229; x=1694572029; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/YDixPpX0g5WZRo9H4Hc1n4iO7NG7GMD3/mGn+bU5KE=;
-        b=UnhrDoFTjwb3vbPDdbV0ZrFDiSqpBnf4tuVSBnK+hKX9K0xI8dq2p4gI3dk29pL/+l
-         nbQFOu11IUSuIV4XNeFbVC21ZxYYsT36RFb9HY5UJ7r7uT4OnHOn4ZziDa7nisSoHx1O
-         i7Q9CtQJUVot6Z/MIuY8QxVr3h6ZEShF2IO9Oi5pmuH2DBi94DcD4iebcEcv0Pi642Hr
-         8wleCXHW+BD/frOYAbTgB92PIjAvcaH6LvhQU9cPzdUvyrEjfzIqV+9RFWC36f19705h
-         LtdUCnjBouZFFjf7J8Mt/agEf3H8milfZOPEnR2pEAKngnSfAwuUmdWMwzZZDpzSpgly
-         Vtvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693967229; x=1694572029;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/YDixPpX0g5WZRo9H4Hc1n4iO7NG7GMD3/mGn+bU5KE=;
-        b=gSZhtWP2w8moghM250WzCMTSoLWzgHUsmNAnv8zVeorA18zlLYsIw4sTYLtnkUwP1B
-         TyI9KhHp5pl8oOsTdz2hCjFgtwS/fzXPwhbvDsjU5dy/sPESCLrJ7Eb4vWbM7vY9U55D
-         G4e649FCTsPIH6IjRogk0CsA8wT8Hzxl1bJ1q8P4NXDjdgL3/7UZxWmEW16pviP24J58
-         OS5uq0zlc6wp+2c6C6I8kba1835jnfnwL7VltOyyvhA8lBBAlnkHa/t/gvL2ZyCi4T04
-         UH6rk0rORj3VxbVB+WzEZ9Y1tWhC+YFOT1oYw5e6aUi3J0Sjk2p7652jLPFQqmNq9J8G
-         mlwA==
-X-Gm-Message-State: AOJu0Yzv/fvfVE5rHnT99XtLB0zSTcOVNrySpYVGke3EnQcoqDo1w2t4
-        kJNplba+bU69liMIvxl3Des=
-X-Google-Smtp-Source: AGHT+IH1nbG1WLw7E24n9u6IgDMUHEMu0LSImK1dD9wt+SGz6ObchDBJoLAm5m9A2JsQmMTLuJqYMw==
-X-Received: by 2002:a05:6a20:158e:b0:13e:9dba:ea52 with SMTP id h14-20020a056a20158e00b0013e9dbaea52mr15170663pzj.13.1693967229274;
-        Tue, 05 Sep 2023 19:27:09 -0700 (PDT)
-Received: from arch-pc.genesyslogic.com.tw (60-251-58-169.hinet-ip.hinet.net. [60.251.58.169])
-        by smtp.gmail.com with ESMTPSA id c10-20020a62e80a000000b0064fde7ae1ffsm9683967pfi.38.2023.09.05.19.27.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 19:27:08 -0700 (PDT)
-From:   Ben Chuang <benchuanggli@gmail.com>
-To:     svenva@chromium.org
-Cc:     linux-mmc@vger.kernel.org, SeanHY.chen@genesyslogic.com.tw,
-        adrian.hunter@intel.com, ben.chuang@genesyslogic.com.tw,
-        benchuanggli@gmail.com, greg.tu@genesyslogic.com.tw,
-        jason.lai@genesyslogic.com.tw, jasonlai.genesyslogic@gmail.com,
-        linux-kernel@vger.kernel.org, rafael.j.wysocki@intel.com,
-        reniuschengl@gmail.com, skardach@google.com,
-        stable@vger.kernel.org, ulf.hansson@linaro.org,
-        victor.shih@genesyslogic.com.tw
-Subject: Re: [PATCH v3] mmc: sdhci-pci-gli: fix LPM negotiation so x86/S0ix SoCs can suspend
-Date:   Wed,  6 Sep 2023 10:25:30 +0800
-Message-ID: <20230906022530.825734-1-benchuanggli@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <CAG-rBig796Yc9iyTiLOLt2R9PW9SoOFtuks3a1usu4XwvkzAOQ@mail.gmail.com>
-References: <CAG-rBig796Yc9iyTiLOLt2R9PW9SoOFtuks3a1usu4XwvkzAOQ@mail.gmail.com>
+        Tue, 5 Sep 2023 22:35:00 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E4041109;
+        Tue,  5 Sep 2023 19:34:55 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8BxpPBO5fdkjwggAA--.64399S3;
+        Wed, 06 Sep 2023 10:34:54 +0800 (CST)
+Received: from [0.0.0.0] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx3yNM5fdkBeZtAA--.27326S3;
+        Wed, 06 Sep 2023 10:34:52 +0800 (CST)
+Message-ID: <6d1d8acc-5140-f710-ac00-cb423d7fce78@loongson.cn>
+Date:   Wed, 6 Sep 2023 10:34:52 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
+ to select the primary video adapter at boot time
+Content-Language: en-US
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
+References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
+ <44ec8549-dc36-287e-4359-abd3ec8d22d6@suse.de>
+ <5afd2efb-f838-f9b7-02a9-2cf4d4fd2382@loongson.cn>
+ <773be4c6-0b3d-be39-7857-b3e2942007d9@suse.de>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <773be4c6-0b3d-be39-7857-b3e2942007d9@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8Bx3yNM5fdkBeZtAA--.27326S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7Cw18Kry8Zr4kKw17ZryrGrX_yoW8Aw1rpF
+        WYgFWqkrWkGr4rAF4FyF1Fgr1Fqw4kJFWFgr48ZrZayF90v34avrWxtan0ga4UJrnxX3W5
+        GrZIgryxGFyDZrXCm3ZEXasCq-sJn29KB7ZKAUJUUUU3529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcApnDU
+        UUU
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: benchuanggli@gmail.com
 
-On Tue, Sep 5, 2023 at 11:15 AM Sven van Ashbrook <svenva@chromium.org>
-> What do we need for Ulf to add this to the maintainer git? There are
-> released devices waiting for this fix, but picking from list generates
-> lots of paperwork, so I'd prefer to pick from git.
+On 2023/9/5 23:05, Thomas Zimmermann wrote:
+> Hi
 >
-> We have a LGTM from Jason Lai, do we need one from Ben Chuang as well?
-
-LGTM, too.
-
-Best regards,
-Ben Chuang
-
+> Am 05.09.23 um 15:30 schrieb suijingfeng:
+>> Hi,
+>>
+>>
+>> On 2023/9/5 18:45, Thomas Zimmermann wrote:
+>>> Hi
+>>>
+>>> Am 04.09.23 um 21:57 schrieb Sui Jingfeng:
+>>>> From: Sui Jingfeng <suijingfeng@loongson.cn>
+>>>>
+>>>> On a machine with multiple GPUs, a Linux user has no control over 
+>>>> which
+>>>> one is primary at boot time. This series tries to solve above 
+>>>> mentioned
+>>>
+>>> If anything, the primary graphics adapter is the one initialized by 
+>>> the firmware. I think our boot-up graphics also make this assumption 
+>>> implicitly.
+>>>
+>>
+>> Yes, but by the time of DRM drivers get loaded successfully,the 
+>> boot-up graphics already finished.
+>> Firmware framebuffer device already get killed by the 
+>> drm_aperture_remove_conflicting_pci_framebuffers()
+>> function (or its siblings). So, this series is definitely not to 
+>> interact with the firmware framebuffer
 >
->On Mon, Sep 4, 2023 at 3:42 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
->>
+> Yes and no. The helpers you mention will attempt to remove the 
+> firmware framebuffer on the given PCI device. If you have multiple PCI 
+> devices, the other devices would not be affected.
+>
+Yes and no.
+
+
+For the yes part: drm_aperture_remove_conflicting_pci_framebuffers() only kill the conflict one.
+But for a specific machine with the modern UEFI firmware,
+there should be only one firmware framebuffer driver.
+That shoudd be the EFIFB(UEFI GOP). I do have multiple PCI devices,
+but I don't understand when and why a system will have more than one firmware framebuffer.
+
+Even for the machines with the legacy BIOS, the fixed VGA aperture address range
+can only be owned by one firmware driver. It is just that we need to handle the
+routing, the ->set_decode() callback of vga_client_register() is used to do such
+work. Am I correct?
+
 
