@@ -2,74 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B31D77933F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 05:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249427933FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 05:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233868AbjIFDIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 23:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56318 "EHLO
+        id S234522AbjIFDMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 23:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbjIFDI2 (ORCPT
+        with ESMTP id S229767AbjIFDMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 23:08:28 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2881212A;
-        Tue,  5 Sep 2023 20:08:22 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8Cx77sk7fdkkwsgAA--.5450S3;
-        Wed, 06 Sep 2023 11:08:20 +0800 (CST)
-Received: from [0.0.0.0] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxF80j7fdk4u5tAA--.64736S3;
-        Wed, 06 Sep 2023 11:08:19 +0800 (CST)
-Message-ID: <abf8053d-4c4a-2562-b57f-db92a0cb15a7@loongson.cn>
-Date:   Wed, 6 Sep 2023 11:08:19 +0800
+        Tue, 5 Sep 2023 23:12:42 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E0DBB199;
+        Tue,  5 Sep 2023 20:12:34 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 3863Bp3R2030400, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 3863Bp3R2030400
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 6 Sep 2023 11:11:51 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Wed, 6 Sep 2023 11:12:13 +0800
+Received: from fc38.localdomain (172.22.228.98) by RTEXMBS04.realtek.com.tw
+ (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Wed, 6 Sep 2023
+ 11:12:12 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     <kuba@kernel.org>, <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <nic_swsd@realtek.com>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>
+Subject: [PATCH net v2] r8152: avoid the driver drops a lot of packets
+Date:   Wed, 6 Sep 2023 11:11:48 +0800
+Message-ID: <20230906031148.16774-421-nic_swsd@realtek.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
- to select the primary video adapter at boot time
-Content-Language: en-US
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
-References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
- <44ec8549-dc36-287e-4359-abd3ec8d22d6@suse.de>
- <5afd2efb-f838-f9b7-02a9-2cf4d4fd2382@loongson.cn>
- <773be4c6-0b3d-be39-7857-b3e2942007d9@suse.de>
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <773be4c6-0b3d-be39-7857-b3e2942007d9@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxF80j7fdk4u5tAA--.64736S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW7Ar4DuFWDJFyUXF1rCF4kAFc_yoW8JFW5pF
-        W5tF18ta95WFWfAr97Jr409Fy0vrn5Jay8Xrn5WryDA3Z8Gr92v3y8t398Za4UC393Z3Wa
-        yr90qas3KayDJabCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_GFv_Wrylx2IqxVAqx4xG67
-        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
-        v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcApnDU
-        UUU
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.22.228.98]
+X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SPF_HELO_TEMPERROR autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,37 +61,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Stop submitting rx, if the driver queue more than 256 packets.
 
+If the hardware is more fast than the software, the driver would start
+queuing the packets. And, the driver starts dropping the packets, if it
+queues more than 1000 packets.
 
-On 2023/9/5 23:05, Thomas Zimmermann wrote:
-> However, on modern Linux systems the primary display does not really 
-> exist. 'Primary' is the device that is available via VGA, VESA or EFI. 
+Increase the weight of NAPI could improve the situation. However, the
+weight has been changed to 64, so we have to stop submitting rx when the
+driver queues too many packets. Then, the device may send the pause frame
+to slow down the receiving, when the FIFO of the device is full.
 
-I may miss the point, what do you means by choose the word "modern"?
-Are you trying to tell me that X server is too old and Wayland is the modern display server?
+Fixes: cf74eb5a5bc8 ("eth: r8152: try to use a normal budget")
+Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+---
+v2:
+Add WARN_ON_ONCE() and debug message for the skb_queue_len(&tp->rx_queue).
 
+ drivers/net/usb/r8152.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-> Our drivers don't use these interfaces, but the native registers.
-
-
-Yes and no?
-
-Yes for the machine with the UEFI firmware,
-but I not sure if this statement is true for the machine with the legacy firmware.
-
-As the display controller in the ASpeed BMC is VGA compatible.
-Therefore, in theory, it should works with the VGA console on the machine
-with another VGA compatible video card. So the ast_vga_set_decode() function
-provided in the 0007 patch probably useful on legacy firmware environment.
-
-To be honest, I have tested this on various machine with UEFI firmware.
-But I didn't realized that I should do the testing on legacy firmware environment
-before sending this patch. It seems that the testing effort needed are quite
-exhausting, since all my machines come with the UEFI firmware.
-
-So is it OK to leave the legacy part to someone else who interested in it?
-Probably Alex is more professional at legacy VGA routing stuff?
-:-)
-
+diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+index 332c853ca99b..4a62e420a7be 100644
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -2484,10 +2484,6 @@ static int rx_bottom(struct r8152 *tp, int budget)
+ 			unsigned int pkt_len, rx_frag_head_sz;
+ 			struct sk_buff *skb;
+ 
+-			/* limit the skb numbers for rx_queue */
+-			if (unlikely(skb_queue_len(&tp->rx_queue) >= 1000))
+-				break;
+-
+ 			pkt_len = le32_to_cpu(rx_desc->opts1) & RX_LEN_MASK;
+ 			if (pkt_len < ETH_ZLEN)
+ 				break;
+@@ -2556,9 +2552,14 @@ static int rx_bottom(struct r8152 *tp, int budget)
+ 		}
+ 
+ submit:
+-		if (!ret) {
++		if (!ret && likely(skb_queue_len(&tp->rx_queue) < 256)) {
+ 			ret = r8152_submit_rx(tp, agg, GFP_ATOMIC);
+ 		} else {
++			WARN_ON_ONCE(skb_queue_len(&tp->rx_queue) >= 1000);
++			if (net_ratelimit())
++				netif_dbg(tp, rx_err, tp->netdev,
++					  "submit_rx=%d, rx_queue=%u\n",
++					  ret, skb_queue_len(&tp->rx_queue));
+ 			urb->actual_length = 0;
+ 			list_add_tail(&agg->list, next);
+ 		}
+-- 
+2.41.0
 
