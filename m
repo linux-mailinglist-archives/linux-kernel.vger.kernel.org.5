@@ -2,126 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1FE793676
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE71793677
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233896AbjIFHjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 03:39:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
+        id S234094AbjIFHjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 03:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234023AbjIFHjj (ORCPT
+        with ESMTP id S234028AbjIFHjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 03:39:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344ABE6;
-        Wed,  6 Sep 2023 00:39:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693985974; x=1725521974;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=fgNzEeiwp6pBaULO4mpRILdHhEu7rh3ebMJew1dYykw=;
-  b=PnKs9o5qIPXRpbt5VN3AXHE+wHvUR7zFx4VtAIvhTT9jZs1aavCfd8WL
-   35gyUSGaoBIvNCEd01Gbj9xVN34jxhaSCP7z9YXx8FpNZfHy8oD3IsWXP
-   4jlY/UkFLbRyRW3ytp6rIdwaKwJPmblXUX1QdwkCl+3yg4s5K0XPnJ38l
-   hl8vliZIBSLpm6A66Es9qRnl8k+jGBc6HVcMIMPCBlvoFW+S9qC88B9f3
-   qRICwlVwI7Fg6LTNhtlbiKP6gnQQia0yTk3Jb2crx46xf+S7xabRCIvtL
-   Ru9yd9fmeTQBuM6PN44fdGhMcLviNuF63jgnnyGtmd6XW6XpS9j/k8/k6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="375898479"
-X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
-   d="scan'208";a="375898479"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 00:39:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="988133806"
-X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
-   d="scan'208";a="988133806"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.252.60.154])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 00:39:29 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-coco@lists.linux.dev, linux-efi@vger.kernel.org,
-        kexec@lists.infradead.org
-Subject: [PATCH 3/3] /dev/mem: Do not map unaccepted memory
-Date:   Wed,  6 Sep 2023 10:39:02 +0300
-Message-Id: <20230906073902.4229-4-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230906073902.4229-1-adrian.hunter@intel.com>
-References: <20230906073902.4229-1-adrian.hunter@intel.com>
+        Wed, 6 Sep 2023 03:39:40 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DBBCE
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:39:33 -0700 (PDT)
+Received: from kwepemi500004.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RgZ0h28y1zhZFQ;
+        Wed,  6 Sep 2023 15:35:32 +0800 (CST)
+Received: from [10.67.121.37] (10.67.121.37) by kwepemi500004.china.huawei.com
+ (7.221.188.17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 6 Sep
+ 2023 15:39:30 +0800
+Subject: Re: [PATCH V2 drivers/perf: hisi:] drivers/perf: hisi: fix set wrong
+ filter mode for running events issue
+To:     Yicong Yang <yangyicong@huawei.com>,
+        Jijie Shao <shaojijie@huawei.com>
+References: <20230901035027.3881389-1-shaojijie@huawei.com>
+ <a2111bbf-4d40-2112-6f3a-86c152e7ee0b@huawei.com>
+CC:     <shenjian15@huawei.com>, <wangjie125@huawei.com>,
+        <liuyonglong@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <will@kernel.org>,
+        <jonathan.cameron@huawei.com>, <mark.rutland@arm.com>,
+        <yangyicong@hisilicon.com>
+From:   "chenhao (EZ)" <chenhao418@huawei.com>
+Message-ID: <7e841e72-8a81-a2a5-ff3c-84594b4cf11c@huawei.com>
+Date:   Wed, 6 Sep 2023 15:39:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <a2111bbf-4d40-2112-6f3a-86c152e7ee0b@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.121.37]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemi500004.china.huawei.com (7.221.188.17)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support for unaccepted memory was added recently, refer commit
-dcdfdd40fa82 ("mm: Add support for unaccepted memory"), whereby
-a virtual machine may need to accept memory before it can be used.
 
-Do not map unaccepted memory because it can cause the guest to fail.
 
-For /dev/mem, this means a read of unaccepted memory will return zeros,
-a write to unaccepted memory will be ignored, but an mmap of unaccepted
-memory will return an error.
+On 2023/9/6 14:26, Yicong Yang wrote:
+> On 2023/9/1 11:50, Jijie Shao wrote:
+>> From: Hao Chen <chenhao418@huawei.com>
+>>
+>> hns3_pmu_select_filter_mode() includes A series of mode judgments such
+>> as global mode ,function mode, function-queue mode, port mode, port-tc
+>> mode.
+>>
+>> For a special scenario:
+>> command use parameter
+>> perf stat -a -e hns3_pmu_sicl_0/bdf=0x3700,config=0x3,queue=0x0,
+>> and hns3_pmu_is_enabled_func_mode() has a judgement as below:
+>> if (!(pmu_event->filter_support & HNS3_PMU_FILTER_SUPPORT_FUNC))
+>>
+>> filter_support of event 0x3 hasn't set bit for func mode, so it can't
+>> enter func-mode branch, and continue to func-queue mode judgement, port
+>> judgement, port-tc mode, then enter port-tc mode.
+>>
+>> It's not up to expectations, it shouldn't enter any modes but
+>> return -ENOENT.
+>>
+>> port-tc mode parameter show as below:
+>> perf stat -a -e hns3_pmu_sicl_0/config=0x00001,port=0x0,tc=0x1
+>>
+>> port-tc mode should use bdf parameter as 0, so, add judgement of
+>> bdf parameter to fix it.
+>>
+> 
+> Will the change here block the below unsupported case for event 0x3?
+> 
+> $ perf stat -a -e hns3_pmu_sicl_0/bdf=0x0,config=0x3,queue=0x0/
+> 
+> Otherwise you should handle this case.
+> 
 
-Fixes: dcdfdd40fa82 ("mm: Add support for unaccepted memory")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- drivers/char/mem.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Yes, it can't block this scenario, this modify of judgement for bdf is not inappropriate.
 
-diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-index 1052b0f2d4cf..1a7c5728783c 100644
---- a/drivers/char/mem.c
-+++ b/drivers/char/mem.c
-@@ -147,7 +147,8 @@ static ssize_t read_mem(struct file *file, char __user *buf,
- 			goto failed;
- 
- 		err = -EFAULT;
--		if (allowed == 2) {
-+		if (allowed == 2 ||
-+		    range_contains_unaccepted_memory(p, p + sz)) {
- 			/* Show zeros for restricted memory. */
- 			remaining = clear_user(buf, sz);
- 		} else {
-@@ -226,7 +227,8 @@ static ssize_t write_mem(struct file *file, const char __user *buf,
- 			return -EPERM;
- 
- 		/* Skip actual writing when a page is marked as restricted. */
--		if (allowed == 1) {
-+		if (allowed == 1 &&
-+		    !range_contains_unaccepted_memory(p, p + sz)) {
- 			/*
- 			 * On ia64 if a page has been mapped somewhere as
- 			 * uncached, then it must also be accessed uncached
-@@ -378,6 +380,9 @@ static int mmap_mem(struct file *file, struct vm_area_struct *vma)
- 						&vma->vm_page_prot))
- 		return -EINVAL;
- 
-+	if (range_contains_unaccepted_memory(offset, offset + size))
-+		return -EINVAL;
-+
- 	vma->vm_page_prot = phys_mem_access_prot(file, vma->vm_pgoff,
- 						 size,
- 						 vma->vm_page_prot);
--- 
-2.34.1
+I will think another scheme to handle this issue.
 
+>> Signed-off-by: Hao Chen <chenhao418@huawei.com>
+>> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+>> ---
+>> changeLog:
+>>   v2: add more details in log message suggested by Will
+>>   v1 link: https://lore.kernel.org/all/20230816094619.3563784-1-shaojijie@huawei.com/
+>> ---
+>>  drivers/perf/hisilicon/hns3_pmu.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/perf/hisilicon/hns3_pmu.c b/drivers/perf/hisilicon/hns3_pmu.c
+>> index e0457d84af6b..2aa9cb045705 100644
+>> --- a/drivers/perf/hisilicon/hns3_pmu.c
+>> +++ b/drivers/perf/hisilicon/hns3_pmu.c
+>> @@ -998,12 +998,13 @@ static bool
+>>  hns3_pmu_is_enabled_port_tc_mode(struct perf_event *event,
+>>  				 struct hns3_pmu_event_attr *pmu_event)
+>>  {
+>> +	u16 bdf = hns3_pmu_get_bdf(event);
+>>  	u8 tc_id = hns3_pmu_get_tc(event);
+>>  
+>>  	if (!(pmu_event->filter_support & HNS3_PMU_FILTER_SUPPORT_PORT_TC))
+>>  		return false;
+>>  
+>> -	return tc_id != HNS3_PMU_FILTER_ALL_TC;
+>> +	return (tc_id != HNS3_PMU_FILTER_ALL_TC) && (!bdf);
+>>  }
+>>  
+>>  static bool
+>>
+> .
+> 
