@@ -2,140 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 130187944DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1077944D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244600AbjIFU5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 16:57:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56344 "EHLO
+        id S236495AbjIFU4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 16:56:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236060AbjIFU5H (ORCPT
+        with ESMTP id S236060AbjIFU4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 16:57:07 -0400
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A99C1133;
-        Wed,  6 Sep 2023 13:57:02 -0700 (PDT)
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-        id 1qdza7-0000HF-00; Wed, 06 Sep 2023 22:56:59 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 3569DC020D; Wed,  6 Sep 2023 22:54:44 +0200 (CEST)
-Date:   Wed, 6 Sep 2023 22:54:44 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     torvalds@linux-foundation.org
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] MIPS changes for v6.6
-Message-ID: <ZPjnFLtq9OK+UxZ2@alpha.franken.de>
+        Wed, 6 Sep 2023 16:56:00 -0400
+Received: from smtprelay06.ispgateway.de (smtprelay06.ispgateway.de [80.67.18.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31AD8133;
+        Wed,  6 Sep 2023 13:55:56 -0700 (PDT)
+Received: from [77.64.243.219] (helo=note-book.lan)
+        by smtprelay06.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <git@apitzsch.eu>)
+        id 1qdzZ2-0003MR-GF; Wed, 06 Sep 2023 22:55:52 +0200
+From:   =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
+Subject: [PATCH v3 0/2] leds: Add a driver for KTD202x
+Date:   Wed, 06 Sep 2023 22:55:16 +0200
+Message-Id: <20230906-ktd202x-v3-0-7fcb91c65d3a@apitzsch.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIADTn+GQC/2WNyw7CIBBFf6VhLQboU1f+hzHNAIMQta1Qm2rTf
+ 5d20xh3cyfn3DuRgN5hIMdkIh4HF1zbxJDuEqIsNFekTsdMBBMpK3hFb72O90jzrJACSi0yJkm
+ kJQSk0kOj7MLL5yOvzR2CrT2CX4jOo3HjunW+xGxd6Fv/XqcHvnz/VwZOGTWKV8KgAa3LE3Su/
+ wRl9/giS8sgNvPA+GaKaKZKVpIpYAL1rznP8xe8fIv3/AAAAA==
+To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.3
+X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6eaae198076080886b9e7d57f4ae06fa782f90ef:
+Add the binding description and the corresponding driver for
+the Kinetic KTD2026 and KTD2027.
 
-  Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
+Signed-off-by: André Apitzsch <git@apitzsch.eu>
+---
+Changes in v3:
+- Add r-b to bindings patch
+- Replace .probe_new by .probe
+- Link to v2: https://lore.kernel.org/r/20230901-ktd202x-v2-0-3cb8b0ca02ed@apitzsch.eu
 
-are available in the Git repository at:
+Changes in v2:
+- Make binding description filename match compatible
+- Address comments by Lee Jones
+  - Extend driver description in Kconfig
+  - Add copyright + link to datasheet
+  - Add unit to definition/variable names, where needed
+  - Define magic numbers
+  - Remove forward declaration of 'struct ktd202x'
+  - Remove superfluous comments
+  - Get rid of struct ktd202x_info
+  - Join ktd202x_chip_init() with ktd202x_chip_enable()
+  - Return the error on ktd202x_chip_disable()
+  - Remove unreachable case from chip_in_use()
+  - Rename ktd202x_brightness_set() argument from num_colors to num_channels
+  - Forward errors received in ktd202x_brightness_set()
+  - Remove variable for 'num_channels = 1'
+  - Add some explanations to blink time calculation
+  - Remove unneeded lcdev from ktd202x_blink_*_set()
+  - Add define for max brightness and replace deprecated LED_FULL by it
+  - Move setting led_classdev.brightness to ktd202x_brightness_*_set()
+  - Move mutex_lock inside ktd202x_blink_set()
+  - Add comment that 'color' property is optional (allow EINVAL)
+  - Replace escaped double quotes by single quotes
+  - Avoid overloading variable 'color'
+  - Do not lock during probe
+  - Remove usage of 'of_match_ptr'
+- Document interrupt and pull-up supply, like done for aw2013[1]
+- Fix error in num_steps calculation
+- Link to v1: https://lore.kernel.org/r/20230618-ktd202x-v1-0-fc182fefadd7@apitzsch.eu
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_6.6
+[1] https://lore.kernel.org/linux-leds/20230815-aw2013-vio-v3-0-2505296b0856@gerhold.net/
 
-for you to fetch changes up to e7513eccb7d7f82e28f4730210b42da71edaa6a6:
+---
+André Apitzsch (2):
+      dt-bindings: leds: Add Kinetic KTD2026/2027 LED
+      leds: add ktd202x driver
 
-  MIPS: TXx9: Do PCI error checks on own line (2023-08-28 09:59:06 +0200)
+ .../devicetree/bindings/leds/kinetic,ktd202x.yaml  | 171 ++++++
+ drivers/leds/rgb/Kconfig                           |  13 +
+ drivers/leds/rgb/Makefile                          |   1 +
+ drivers/leds/rgb/leds-ktd202x.c                    | 625 +++++++++++++++++++++
+ 4 files changed, 810 insertions(+)
+---
+base-commit: 66d9573193967138cd12e232d4b5bc2b57e0d1ac
+change-id: 20230618-ktd202x-546b2a7d240b
 
-----------------------------------------------------------------
-just cleanups and fixes
-
-----------------------------------------------------------------
-Ilpo J�rvinen (1):
-      MIPS: TXx9: Do PCI error checks on own line
-
-Jiaxun Yang (1):
-      MIPS: Loongson64: Fix more __iomem attributes
-
-Keguang Zhang (2):
-      MIPS: loongson32: Remove regs-clk.h
-      MIPS: loongson32: Remove regs-rtc.h
-
-Maciej W. Rozycki (3):
-      MIPS: Fix CONFIG_CPU_DADDI_WORKAROUNDS `modules_install' regression
-      MIPS: Only fiddle with CHECKFLAGS if `need-compiler'
-      Revert MIPS: Loongson: Fix build error when make modules_install
-
-Masahiro Yamada (3):
-      mips: remove unneeded #include <asm/export.h>
-      mips: replace #include <asm/export.h> with #include <linux/export.h>
-      mips: remove <asm/export.h>
-
-Nathan Chancellor (1):
-      MIPS: VDSO: Conditionally export __vdso_gettimeofday()
-
-Rob Herring (3):
-      MIPS: Explicitly include correct DT includes
-      MIPS: Fixup explicit DT include clean-up
-      MIPS: More explicit DT include clean-ups
-
-Sui Jingfeng (1):
-      Mips: loongson3_defconfig: Enable ast drm driver by default
-
-Trevor Woerner (1):
-      arch/mips/configs/*_defconfig cleanup
-
- arch/mips/Makefile                                |  16 ++-
- arch/mips/bmips/setup.c                           |   1 -
- arch/mips/cavium-octeon/flash_setup.c             |   3 +-
- arch/mips/cavium-octeon/octeon-memcpy.S           |   2 +-
- arch/mips/cavium-octeon/octeon-platform.c         |   2 +
- arch/mips/cavium-octeon/octeon-usb.c              |   2 +
- arch/mips/configs/ip22_defconfig                  |   1 -
- arch/mips/configs/loongson3_defconfig             |   1 +
- arch/mips/configs/malta_defconfig                 |   1 -
- arch/mips/configs/malta_kvm_defconfig             |   1 -
- arch/mips/configs/maltaup_xpa_defconfig           |   1 -
- arch/mips/configs/rm200_defconfig                 |   1 -
- arch/mips/include/asm/Kbuild                      |   1 -
- arch/mips/include/asm/mach-loongson32/loongson1.h |   2 -
- arch/mips/include/asm/mach-loongson32/regs-clk.h  |  81 -----------
- arch/mips/include/asm/mach-loongson32/regs-rtc.h  |  19 ---
- arch/mips/kernel/mcount.S                         |   2 +-
- arch/mips/kernel/octeon_switch.S                  |   1 -
- arch/mips/kernel/r2300_fpu.S                      |   2 +-
- arch/mips/kernel/r2300_switch.S                   |   1 -
- arch/mips/kernel/r4k_fpu.S                        |   2 +-
- arch/mips/lantiq/irq.c                            |   2 +-
- arch/mips/lantiq/xway/dcdc.c                      |   3 +-
- arch/mips/lantiq/xway/gptu.c                      |   3 +-
- arch/mips/lantiq/xway/sysctrl.c                   |   1 -
- arch/mips/lantiq/xway/vmmc.c                      |   3 +-
- arch/mips/lib/csum_partial.S                      |   2 +-
- arch/mips/lib/memcpy.S                            |   2 +-
- arch/mips/lib/memset.S                            |   2 +-
- arch/mips/lib/strncpy_user.S                      |   2 +-
- arch/mips/lib/strnlen_user.S                      |   2 +-
- arch/mips/loongson32/common/platform.c            |   8 --
- arch/mips/loongson64/smp.c                        | 160 +++++++++++-----------
- arch/mips/mm/page-funcs.S                         |   2 +-
- arch/mips/mm/tlb-funcs.S                          |   2 +-
- arch/mips/pci/pci-lantiq.c                        |   4 +-
- arch/mips/pci/pci-rt2880.c                        |   5 +-
- arch/mips/pic32/pic32mzda/config.c                |   2 +-
- arch/mips/ralink/ill_acc.c                        |   2 +
- arch/mips/ralink/irq.c                            |   2 +-
- arch/mips/ralink/of.c                             |   2 +-
- arch/mips/ralink/prom.c                           |   2 -
- arch/mips/txx9/generic/pci.c                      |  43 +++---
- arch/mips/vdso/vdso.lds.S                         |   2 +
- 44 files changed, 149 insertions(+), 252 deletions(-)
- delete mode 100644 arch/mips/include/asm/mach-loongson32/regs-clk.h
- delete mode 100644 arch/mips/include/asm/mach-loongson32/regs-rtc.h
-
+Best regards,
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+André Apitzsch <git@apitzsch.eu>
+
