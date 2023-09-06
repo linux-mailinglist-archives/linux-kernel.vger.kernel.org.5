@@ -2,112 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A485E793E89
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FAD9793E91
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240419AbjIFOQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34776 "EHLO
+        id S240849AbjIFORx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbjIFOQi (ORCPT
+        with ESMTP id S240669AbjIFORw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:16:38 -0400
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2073.outbound.protection.outlook.com [40.107.247.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E3AE77;
-        Wed,  6 Sep 2023 07:16:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q2WpI29mUTY9F8175s/Tp0POh2Z6hG6nHPahkBtTVNDnbcfN6Z183mEj6tf5cib6sEVTNtZnzqjJ/jqHZ+B5wv3Eyojrk1VF4Jv0vwClRHQeL7e9u9sL3E+HBKZt85hS9dzhVynDGYE5PaV+ACp99+EyGabx+zIYu/Wez399YTQ3wsmQU6n2D1P9UlVbql0TWUWY6YJrlCLy3JvQN2pIIiSUUXsGCItWzJ6HrJQqOR8me+5tA7XODuXUK18hxV4uZlJYveZGm+b9+RvY2cv5kkFgMKz3pL8u+cHQNDN9dHxTVPiIiwH42F8ayWDeM+k7NbFg1YuVg96Xknlgv2AOAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ND99i3z84ZiOeDEnaM57wSjeLHmjY5I44oirMiMw8SE=;
- b=Yi95FL7ssBNoAlkHeCHYwMcG++LDRj/8Djw9j3nZXZYvN0k0oKXtUcbIpS8elfDMd7huSedPg8Q1ob0LzO/8U0IsRTbQhaXdd68kfVgQq5YyeKYYN4n3VD9AAOUO8E0rigWkgQPCr7MfFs8HPzxNwKj9vBVGE1GArlHI2zeFHCwkGVaqhl6xJ1Wt5sNZscvkYfWstH/S7F8/m4kpdslGV1Q0dhuyIBYwEIQES/9O/N5GoSmLmSRhftC5cfMJqtf85MHvwHpQU99BnA0R2eX+V00fRg8k7ofuZ0u/zYLubp7V8HL/dwPK9vmsIJU3VTPicqWiPLh6TPsom67ZMghTwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ND99i3z84ZiOeDEnaM57wSjeLHmjY5I44oirMiMw8SE=;
- b=P2SYdfhZ2LhnFfkcHgo48xuzTI9Gvi3amtx1lQhUSMICCfV50GgzuR0eKtbjbRthzdqhFKCERYY1Jp976ITGsNecpPt8RNy5/2mfMk2yF1Z1F9rnz3ox0VHWcwGHkcXKrLy80+rhB6WWpAMDkjxAqn2mUEiFeE4F2McPSSHajTo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by PAXPR04MB8375.eurprd04.prod.outlook.com (2603:10a6:102:1be::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Wed, 6 Sep
- 2023 14:16:30 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::568a:57ee:35b5:e454]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::568a:57ee:35b5:e454%3]) with mapi id 15.20.6745.030; Wed, 6 Sep 2023
- 14:16:30 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     netdev@vger.kernel.org, Claudiu Manoil <claudiu.manoil@nxp.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: [PATCH net] net: enetc: distinguish error from valid pointers in enetc_fixup_clear_rss_rfs()
-Date:   Wed,  6 Sep 2023 17:16:09 +0300
-Message-Id: <20230906141609.247579-1-vladimir.oltean@nxp.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: AM0PR05CA0077.eurprd05.prod.outlook.com
- (2603:10a6:208:136::17) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
+        Wed, 6 Sep 2023 10:17:52 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB5EE4C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:17:48 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-794d98181f0so155888839f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 07:17:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1694009868; x=1694614668; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Iu7OT2bcEXCIdHfig8w+3vXulx2YiGto+l76rBqKbA0=;
+        b=5S/Sl04dGCLfXboHcglmDFFWfbQbw0biC9aISwBmPbJjEgH9hBwaOuPlaoxL09Fg5L
+         +NEeMvYsyjTSLxxoOeofTJSOEYlkUsA7DDUvrgIyADJn/PFf/13li0qtH9RHmZ+G3VNH
+         nGfwp2D1OXIdQuI+eAdoPx16De/UM3E2KNCgTVl2dSD2tO6CbwIOwCY9Ywj0Re0aE74D
+         vuxY8AJy2X1WI9qKckGXobEh/6YaOAFGgRfnMDw+aRVfDH0jjXor2IPTe2kWlEwP0G1u
+         UsvgXbca59aRgm61iO4iszCILGlF7sk5k+fyDOkUYVPq+VCug1BSfk58jg5HXZCMXc0l
+         J69Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694009868; x=1694614668;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Iu7OT2bcEXCIdHfig8w+3vXulx2YiGto+l76rBqKbA0=;
+        b=ktiUYgdVJDwXfbYDe2pBZKIibWasUJmhKUoSgsTSyjgQDQQCyf2FB312c9JhPIooRI
+         rSFsoHfRmojgGLBjvEj8ATzEPZTWYSXnNlke+pPbgOEGpbZQor+yvgRKbU+hrq0WGJz/
+         zFuOEa8TlK/wJzUjJ41zrYh8ucTGh85bAZeD2h+pOAbFVpYrQWOQF9fQd9zUZi+oXNk3
+         axg8SsR5BTLhvuLHytJLOedgQg851ckM+0Uoghcshx6rd/RvONrUtArDF+j3rO26sHop
+         XUjUNM985M2VpBRBax9gmj1/kGR9jtBQeG75tvOGdYTAjvW4lBI+jFwJx6VhI6AmbiPH
+         GNyA==
+X-Gm-Message-State: AOJu0Yy+lGogDkDhohdACa1cxmhG9Kam8dTp6pLIn4N7B/gWrzmHner2
+        uQaifI3gqu6ufLVrC1GfqbEhP0wUpqZARW8H7UKRVehYq958EDbNETI=
+X-Google-Smtp-Source: AGHT+IHQkboujHrOaSmdEGFmIRBPqspCZbW38QdHA2LAPUgocyuSTB4VDQ7FGTDlp2rZC7IOFjMfKv+zIM8qBv3LsDw=
+X-Received: by 2002:a6b:4904:0:b0:787:4b5f:b6cf with SMTP id
+ u4-20020a6b4904000000b007874b5fb6cfmr17444605iob.5.1694009868214; Wed, 06 Sep
+ 2023 07:17:48 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|PAXPR04MB8375:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4450e2d1-c1ac-4915-1ace-08dbaee3dda8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6g9+VIsk5nmawL5lsN0EeqgphlpVhW/jldGxlJP13A7GboKCBQyKaWnichwjhjFoHpC/nFeWjokbsHRfhlEWaYCJOgVGcb48eDG+2wvHISjZnDEmuJG8ctMUM6XNcAMUrtSFc/5+uAwqF2nxux5o/bmneBjnJJ/IPB4cLdhibyqt96sftLlWvlOBXUGsFqi3683jaj1K9VbsA2O0KhGzcuYP4ZaKbS0a16pufsKJVhux564VdGLTVaBmaUJ7WD+Fw/mQqWw459lNVeqbqT30ek3t4/eFYC8Lv8vOvAxN+LID2nwEo5Cvj28w8QwW+VGA4pYMZE8h01lSalEWU3KXlGxsltd0A8c18F4EMRVjobEq2pOdS2K17NOBblK9d18pBvopgT+NbaJSwqlQCxa57puD7vXX73U9udLAReakUCOOFzQE939APZkGEfR16iMIjwPBj1KiPv+rCtG3fMNZP6828jG2fLcnL8zYDl1m1pxgvtO04+HQMpoTHGxnVD4XHJ574eQcfRCUFfLE8zGVg8dRmbUDVMksRBm8Covc0v0BTP9gadn1yhLE4GN3X8Pv03HwozuEGnBPxWbjPnbZSpB1ndVxPhYuB3MBWx9gQtE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(396003)(366004)(136003)(186009)(451199024)(1800799009)(41300700001)(38100700002)(86362001)(6666004)(2616005)(38350700002)(83380400001)(966005)(478600001)(1076003)(26005)(6512007)(6486002)(52116002)(6506007)(36756003)(66946007)(66476007)(6636002)(2906002)(37006003)(66556008)(54906003)(316002)(5660300002)(8936002)(6862004)(8676002)(4326008)(44832011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YFWcQkW3aXegdu6ExEhrIPwHrHnw050VryURKh+f4/JkG9As+WWsX2HwuR4b?=
- =?us-ascii?Q?OhkkeD9Zk9bziFAtNGpNtMHOHaJQ3jmiaZFFOCPkp23wdcI7C0V9VvmrAU20?=
- =?us-ascii?Q?mSqt91SLe8ZZro/98+e4eaPn0ghajrAF34+oGYJ2U16GOgZY2PPWow84/GWb?=
- =?us-ascii?Q?jnegEWPgqUSRS7Gae0ON7N1TfVGSV4aczCMbSFMGGJyj20RD3xtG9m7IBS/t?=
- =?us-ascii?Q?vyVrdSyumievh3yDVVBm3QN2xoVps1suZecTn+J4EHRWCKZtUWUqj4nay7t/?=
- =?us-ascii?Q?2ZRpsxHM1q36SbMeovCWkIEsb4pZAkQPnh6mooHhzene0ZkrtHriltmJdZQP?=
- =?us-ascii?Q?vKnpiHCYr69gQDW5bMxKoVNwxdhD5aD2EZ/LnDLMJwSV7YeQZVniJwnT/qH5?=
- =?us-ascii?Q?axArjYwD+DpaR2YDLsl7M65pHHiIGlWyrYxIvnesZ0745mBARCwaJpBY/rdL?=
- =?us-ascii?Q?IwMWseksSC+vCSqYtb8ylEIwHChwseAS7qBL2VeIpQe2YLfgXMc4NAXWL9tS?=
- =?us-ascii?Q?G9NVlR/u+iqbnx9UuPJJK2cPUS2tNM0M2xaCSz0NFirX8vXIgqXNv1QOCMS8?=
- =?us-ascii?Q?ABM+L+BEkMcRapowBBVkV5w2qRn52K7VUnBWgnXC3XwtNTxmRPCAkyeVMhMr?=
- =?us-ascii?Q?IvMaGJcOfgoIobgHPzuNfjsxGt258TuQzo44/fGf5CMMvASCMNpYvFfYhA1e?=
- =?us-ascii?Q?+zJ5luZx7EVqBueOpMZSfT7a9f7lwf4OYUYsHhSpx4nEOrBRq7czddB0c4Wl?=
- =?us-ascii?Q?DQ3oAoa23g+VZ71jmyXIG8Q5U+EyLZZPZ9ebP/43cbmy5PzuDSBbRZ/4WYWd?=
- =?us-ascii?Q?PbtnAEvHhQAH0wtUVaw2jPHfKgGbfuPIKXrnCADvgqma/fx4tpolXXwGqI6e?=
- =?us-ascii?Q?KQD3R6r58lpwTWoq9AjHITRlr11Rbl3qosMcm02EoRDEjrsTtbV9KZjKuiq/?=
- =?us-ascii?Q?zxoJlOGGedfaRfdRIYQYBMBL+wJhk8zvXKz1NHBHpjuGscVYWx1AZPXpAjt7?=
- =?us-ascii?Q?wc7ozlj854C9bqiC7QQJC28rVNidqmMYiwMEXRVDJBJkExVy3e8a/tMAdjB6?=
- =?us-ascii?Q?/jJcyxEiVpD0lQkxK/lCx9PNi1BaZ4cqZZUFAU6w58eeKzRWeQwMuhQUffsq?=
- =?us-ascii?Q?ZIr6d8uckLOCw8ttmHc9GXDipkOdk3hDYL4OFx7nU+EQDREDKPK9fNbbyVG4?=
- =?us-ascii?Q?7jjcvNEXKEooE9nLHfnHcF4EOt/VM2vy1RZ1IncWYiZfDdi0IUK0OYE3xOiB?=
- =?us-ascii?Q?3EuN0VqiKx1xrULdb1CZoPT/IX0ObkY3lBhz/iiGrU3j2hjysEGsEdfG31tC?=
- =?us-ascii?Q?ftEnp9gN1B5o4L5zVZHEsqQPMtGXVMofGzb6k8wisinM+JNQyMusPuQpzBg+?=
- =?us-ascii?Q?IJPR4T/03PcARbz9hc2Rnm1TU8UHXeuVE+/KAJjl//G8MT8+VUnjl8pWQwsq?=
- =?us-ascii?Q?PFu0g6/W//nVr+/xxHLazfsysmqTQQ6zP+28yV7FBAHZuPVJIhw0O/HB3AS2?=
- =?us-ascii?Q?tAZqJO3GLWcEak1Wh9evYDCWmIssyUkicM5zjdOfaKG7uOUHlHnrc3h3pwP0?=
- =?us-ascii?Q?zNSqfdZgDM7Bg2kQCh/vAhU+tD4YK/v/N7W3uQ9ACH77E4j7ugvCGO0urnAB?=
- =?us-ascii?Q?Vg=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4450e2d1-c1ac-4915-1ace-08dbaee3dda8
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 14:16:30.4600
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DXrh8bd66LgxThVtbS50QrcQl+gIPoHKlDccFJH54iXnwiKO7p2EtLmiBXp7kmfaGJNwY8rGAa7LqdrLgxj+vA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8375
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+References: <20230831105252.1385911-1-zhaoyang.huang@unisoc.com>
+ <ZPCEim0AZG5hTSYH@casper.infradead.org> <CAGWkznGAJVZtn49zNHsMAjRSfTRR707QXYY0m8Q+yABTsiig2Q@mail.gmail.com>
+ <CAG_fn=VJrO3e9q0M6KA9nopqyDuRO4g7SBak6YptiEvzdE+nkA@mail.gmail.com>
+ <ZPWNTiAxZZh/kzew@dhcp22.suse.cz> <CAHk-=wh2s26=Hj03cJXBWELmgCY=z5=mhTTDNVVKDAbda8g7Xw@mail.gmail.com>
+ <20230904182234.GB30774@sol.localdomain>
+In-Reply-To: <20230904182234.GB30774@sol.localdomain>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 6 Sep 2023 16:17:07 +0200
+Message-ID: <CAG_fn=XnynfbY5pYQqJz7XAwz_fHJXmF5jNmVCrTAtgKBf1LzQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: make __GFP_SKIP_ZERO visible to skip zero operation
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Zhaoyang Huang <huangzhaoyang@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, ke.wang@unisoc.com,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mateusz Guzik <mjguzik@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -115,35 +85,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-enetc_psi_create() returns an ERR_PTR() or a valid station interface
-pointer, but checking for the non-NULL quality of the return code blurs
-that difference away. So if enetc_psi_create() fails, we call
-enetc_psi_destroy() when we shouldn't. This will likely result in
-crashes, since enetc_psi_create() cleans up everything after itself when
-it returns an ERR_PTR().
+On Mon, Sep 4, 2023 at 8:22=E2=80=AFPM Eric Biggers <ebiggers@kernel.org> w=
+rote:
+>
+> On Mon, Sep 04, 2023 at 10:34:25AM -0700, Linus Torvalds wrote:
+> > On Mon, 4 Sept 2023 at 00:55, Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > >       Sooner or later this will become an
+> > > unreviewable mess so the value of init_on_alloc will become very
+> > > dubious.
+> >
+> > The value of init_on_alloc is *already* very dubious.
+> >
+> > Exactly because people will turn it off, because it hurts performance
+> > so much - and in pointless ways.
+> >
+> > You do realize that distributions - well, at least Fedora - simply
+> > don't turn INIT_ON_ALLOC_DEFAULT_ON on at all?
+> >
+> > So the current state of init_on_alloc is that nobody sane uses it. You
+> > have to think you're special to enable it, because it is *so* bad.
+> >
+> > Security people need to realize that the primary point of computing is
+> > NEVER EVER security. Security is entirely pointless without a usable
+> > system.
+> >
+> > Unless security people realize that they are always secondary, they
+> > aren't security people, they are just random wankers.
+> >
+> > And people who state this truism had better not get shamed for
+> > standing up to stupidity.
+> >
+>
+> Android and Ubuntu both set CONFIG_INIT_ON_ALLOC_DEFAULT_ON.  I think thi=
+s makes
+> it clear that the init-on-alloc feature is useful for a substantial amoun=
+t of
+> users even in its current form.
+>
+> I would caution against checking the kernel config for the distro you hap=
+pen to
+> be using and extrapolating that to all Linux systems.
+>
+> Regardless, I'm in favor of a per allocation opt-out flag like GFP_SKIP_Z=
+ERO.
+> There are clear cases where it makes sense, for example some places in th=
+e VFS
+> where the performance impact is large and the code has been carefully rev=
+iewed.
 
-Fixes: f0168042a212 ("net: enetc: reimplement RFS/RSS memory clearing as PCI quirk")
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/netdev/582183ef-e03b-402b-8e2d-6d9bb3c83bd9@moroto.mountain/
-Suggested-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
----
- drivers/net/ethernet/freescale/enetc/enetc_pf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+What are our options to prevent this flag from spreading uncontrollably?
+Would it make sense to still provide a separate API for such
+allocations, so that the flag doesn't get added into some module-level
+`gfp` variable?
 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-index e0a4cb7e3f50..c153dc083aff 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-@@ -1402,7 +1402,7 @@ static void enetc_fixup_clear_rss_rfs(struct pci_dev *pdev)
- 		return;
- 
- 	si = enetc_psi_create(pdev);
--	if (si)
-+	if (!IS_ERR(si))
- 		enetc_psi_destroy(pdev);
- }
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_FREESCALE, ENETC_DEV_ID_PF,
--- 
-2.34.1
+>
+> I don't really like the idea
+> (https://lore.kernel.org/lkml/CAG_fn=3DUQEuvJ9WXou_sW3moHcVQZJ9NvJ5McNcsY=
+E8xw_WEYGw@mail.gmail.com/)
+> of making the system administrator have to opt out allocation sites indiv=
+idually
+> via a kernel command-line parameter.  Yes, it makes the opt out less like=
+ly to
+> be abused as two parties (developer and system administrator) have to con=
+sent to
+> each individual opt out.  So it theory it sounds good.  But I feel that d=
+oesn't
+> outweigh the fact that it would be complicated and hard to use.  How abou=
+t just
+> having two options: one to always honor GFP_SKIP_ZERO in the code and one=
+ to
+> always ignore it.
 
+I am afraid we still need some level of granularity here.
+E.g. we definitely want to skip initialization for kstrdup(),
+kmemdup() and friends, some would say even on the systems running with
+init_on_alloc=3D1.
+For e.g. 3rd party driver allocations we also need an opt-out flag,
+but the need for a kill switch to disable that flag is higher. On the
+other hand, that kill switch does not have to disable the carefully
+reviewed opt-outs in the upstream code.
+
+Assuming that OS vendors usually control their kernel source, we can
+probably distinguish between opting out the allocations done within
+statically linked code and the modules, introducing the following
+levels of initialization that could be controlled by init_on_alloc:
+ - init_on_alloc=3D1 - initialize all allocations, like it's done currently
+ - init_on_alloc=3Dexcept_static_optouts - initialize all allocations,
+allow GFP_SKIP_ZERO in the statically linked code
+ - init_on_alloc=3Dexcept_optouts - initialize all allocations, allow
+GFP_SKIP_ZERO in the kernel and the modules
+ - init_on_alloc=3D0 - do not initialize allocations by default
+
+In this scheme, the system administrator may choose to either be
+paranoid, or choose to trust just their OS vendor, or trust the driver
+vendors as well.
+In any case, it will be possible to dynamically pull the plug on the opt-ou=
+ts.
+
+>
+> - Eric
+
+
+
+
+--
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
