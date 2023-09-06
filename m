@@ -2,217 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 913F6794682
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 00:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2DD79467F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 00:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242351AbjIFWqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 18:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48500 "EHLO
+        id S235366AbjIFWqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 18:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232065AbjIFWqf (ORCPT
+        with ESMTP id S229920AbjIFWqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 18:46:35 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AABB19BE
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 15:46:28 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-26d63b60934so446847a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 15:46:28 -0700 (PDT)
+        Wed, 6 Sep 2023 18:46:14 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DF819AE
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 15:46:10 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-7926b7f8636so8096939f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 15:46:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694040387; x=1694645187; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=a8kBLbMJIUfrDOfQ2nMnVDZgkBkWKK9DgBH83jtLTQY=;
-        b=o8vzXdMhjyKi3KiF4DbMjHhELdaCSwheMfH9B//LAn+u0zmD1jIkTu8W7kghs3BFK1
-         rrt3e8wpAFlXes/Jwz3We+KhNF2ml9hKjRf8wAIsFcqQ3W+EuTUm487rDXdTyvglJMdi
-         FHKR7o9v5IlNuyEYdU9CQi2NQ9yOKtTVgCFV/kGQX0ZgYw1qa+BG3lwODNAxS1pLn0Xn
-         5brSe0UlCPgsiW0pTtPTnopOROoOBsYM3zhptBnRlKAS9xrrxTdRrpjb1pDWgI0YBGO1
-         nvrX0kIruCl9qwmLFLO/s0xrzePlKlXrc+8guNZiC57Gf44oTIeY+DpTvruf91KM2O8f
-         lrOA==
+        d=joelfernandes.org; s=google; t=1694040370; x=1694645170; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Omk8h6qAI8/QBggIcV1LJ4IashJ7NgP8xYw8aRJySEM=;
+        b=wBLGQYfYnStAMjWybLWIuTKmyEVxrVrNb+Fu4BQt7bOBO27XqhdYLEzaG1dH/nMGgE
+         GAMYU7fvyM0cdp2c/ByVRaWGXCwps83zryfdwaa8a/3c4T3iyMjLRtUgyodQRq2RG9Ff
+         iMdvUrRRu8NQKLFwEU1DDw/TKZlVOe6rvonkE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694040387; x=1694645187;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=a8kBLbMJIUfrDOfQ2nMnVDZgkBkWKK9DgBH83jtLTQY=;
-        b=S2tB3lGnVVeebIRjrAu8Kx/y6jKGSI1Gey89vXZ4P8Tpl9KdSKqqF7pZNAJzVyvB+h
-         TcajZt+YDOGQChoYpoJ+zM8szMbw3/s3cJwU6d4vPyJ05fhj1KVPxnPEtHI+NL1w+ZNu
-         ueZ736xHoPMFgJa1I57IP9F4wY6pM6Sj44wdK8PEP+ZIiKEhV9Lh1QU9KS6CKGwkCDox
-         NlQA0ckon3DiikEpod/Ch1G6Kx+iWNtGFKop5cDwTwuqoIhARw1kX6siiBMvTwpx0phm
-         Nz0CtRWnuob0yIzocFtyuhK0lA0dAOrGH+zuZVxIAyDNVLVKycVBgcH8ZPg6xzb9LpRk
-         FaCw==
-X-Gm-Message-State: AOJu0YyXfV1Wq8GThZ3wiPKg5DEtTiDOYKWXsbvKPd68k/6gmipytt/X
-        FtTjkwocIwIYmoeG0kdUDozJsVyLE5T17/h5Kwx9QJBneY9RLdFQJS0FDHScW6pJhcv9AniA4Lq
-        B94ogi0be8JZwxBu4RSGE2RLBUfdfPZraTa1hPvg15JL+/sweCx/BTZZASb6Jfu5y6aWaZypxVw
-        Q=
-X-Google-Smtp-Source: AGHT+IEUAS5dVw1yy/udY/GOoBYfA+aaazD2euPW5YHvhBX91zWVOARIhHL6D7WMTA+yb3YtZSppclRuT8xhtw==
-X-Received: from anticipation.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:4517])
- (user=acdunlap job=sendgmr) by 2002:a17:90a:cd03:b0:26d:1fd8:135e with SMTP
- id d3-20020a17090acd0300b0026d1fd8135emr4208700pju.2.1694040387325; Wed, 06
- Sep 2023 15:46:27 -0700 (PDT)
-Date:   Wed,  6 Sep 2023 15:45:41 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230906224541.2778523-1-acdunlap@google.com>
-Subject: [PATCH] x86/sev-es: Do not use copy_from_kernel_nofault in early #VC handler
-From:   Adam Dunlap <acdunlap@google.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nikunj A Dadhania <nikunj@amd.com>,
-        Adam Dunlap <acdunlap@google.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>, Jacob Xu <jacobhxu@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1694040370; x=1694645170;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Omk8h6qAI8/QBggIcV1LJ4IashJ7NgP8xYw8aRJySEM=;
+        b=ignly76jv+rg5327vbQhBEqRNsnGyq/87p5fwGl3T0C8z5ILlXswlNTkziSL7x0g0R
+         0EkjQtD/2Odl2pP/K38PCJU5a0CrFVVxMmTD6pOKSXXLrG9XfP76BJlKiYC4PkO428ZR
+         5a9sxahvDLYx1Rkxt+eaM7tSD6uYJ3YxQquP2/Tc8Mqzn1LPVq6MGEP8p9w1P0sazmR3
+         iHugjaNrfn/3ignzvikEAFk0J9PtQExbIQ3PGJoiQ9uB/5z5nQEu0FhZ4jQvu3PiD6De
+         XQUMlP8Yb/ZqfbtxHlaQZKe1jnIhJ5g1u98autCWJuF7YXK+gewqJWs5tmB0WUYLt5Ed
+         6jvg==
+X-Gm-Message-State: AOJu0YzC3U7RTqNHrvaCq+HR1u+JYDZHlpSYVb1+P0keEtqysEpwi+VA
+        enmzkXnCB9FLfcihySHcsIEZeA==
+X-Google-Smtp-Source: AGHT+IHp8evXSLOC7rntt6cZ3sHD+jrdtq6uVSsSZMx3E8qry9hjqQhqNWKp8kFBoRxi1VB+KVux7w==
+X-Received: by 2002:a05:6602:70f:b0:790:aed5:d0b0 with SMTP id f15-20020a056602070f00b00790aed5d0b0mr1178474iox.0.1694040370078;
+        Wed, 06 Sep 2023 15:46:10 -0700 (PDT)
+Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id s17-20020a6bd311000000b00790d72848efsm5210392iob.15.2023.09.06.15.46.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 15:46:09 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 22:46:08 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Zhen Lei <thunder.leizhen@huaweicloud.com>,
+        rcu@vger.kernel.org, Zqiang <qiang.zhang1211@gmail.com>,
+        stable@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 1/2] mm/vmalloc: Add a safer version of find_vm_area()
+ for debug
+Message-ID: <20230906224608.GB1646335@google.com>
+References: <20230904180806.1002832-1-joel@joelfernandes.org>
+ <571d4a4a-0674-4c84-b714-8e7582699e30@lucifer.local>
+ <20230905114709.GA3881391@google.com>
+ <CAA5enKbvrvTx=d6MgLZjupnsEuoCnRN8e9p+ffnJV1rJS+HkXA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA5enKbvrvTx=d6MgLZjupnsEuoCnRN8e9p+ffnJV1rJS+HkXA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the early #VC handler before start_kernel,
-boot_cpu_data.x86_virt_bits is not yet initialized.
-copy_from_kernel_nofault references this variable, so it cannot be
-called. Instead, simply use memcpy.
+On Wed, Sep 06, 2023 at 08:23:18PM +0100, Lorenzo Stoakes wrote:
+> On Tue, 5 Sept 2023 at 12:47, Joel Fernandes <joel@joelfernandes.org> wrote:
+> >
+> > On Tue, Sep 05, 2023 at 08:09:16AM +0100, Lorenzo Stoakes wrote:
+> > > On Mon, Sep 04, 2023 at 06:08:04PM +0000, Joel Fernandes (Google) wrote:
+> > > > It is unsafe to dump vmalloc area information when trying to do so from
+> > > > some contexts. Add a safer trylock version of the same function to do a
+> > > > best-effort VMA finding and use it from vmalloc_dump_obj().
+> > >
+> > > It'd be nice to have more details as to precisely which contexts and what this
+> > > resolves.
+> >
+> > True. I was hoping the 'trylock' mention would be sufficient (example hardirq
+> > context interrupting a lock-held region) but you're right.
+> >
+> > > > [applied test robot feedback on unused function fix.]
+> > > > [applied Uladzislau feedback on locking.]
+> > > >
+> > > > Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
+> > > > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > > > Cc: rcu@vger.kernel.org
+> > > > Cc: Zqiang <qiang.zhang1211@gmail.com>
+> > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
+> > > > Cc: stable@vger.kernel.org
+> > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > ---
+> > > >  mm/vmalloc.c | 26 ++++++++++++++++++++++----
+> > > >  1 file changed, 22 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > > > index 93cf99aba335..2c6a0e2ff404 100644
+> > > > --- a/mm/vmalloc.c
+> > > > +++ b/mm/vmalloc.c
+> > > > @@ -4274,14 +4274,32 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+> > > >  #ifdef CONFIG_PRINTK
+> > > >  bool vmalloc_dump_obj(void *object)
+> > > >  {
+> > > > -   struct vm_struct *vm;
+> > > >     void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+> > > > +   const void *caller;
+> > > > +   struct vm_struct *vm;
+> > > > +   struct vmap_area *va;
+> > > > +   unsigned long addr;
+> > > > +   unsigned int nr_pages;
+> > > >
+> > > > -   vm = find_vm_area(objp);
+> > > > -   if (!vm)
+> > > > +   if (!spin_trylock(&vmap_area_lock))
+> > > > +           return false;
+> > >
+> > > It'd be good to have a comment here explaining why we must trylock here. I am
+> > > also concerned that in the past this function would return false only if the
+> > > address was not a vmalloc one, but now it might just return false due to lock
+> > > contention and the user has no idea which it is?
+> > >
+> > > I'd want to at least output "vmalloc region cannot lookup lock contention"
+> > > vs. the below cannot find case.
+> >
+> > In the patch 2/2 we do print if the address looks like a vmalloc address even
+> > if the vmalloc look up fails.
+> 
+> No, you output exactly what was output before, only changing what it
+> means and in no way differentiating between couldn't find vmalloc
+> area/couldn't get lock.
 
-Usage of this uninitialized variable is currently causing boot failures
-in the latest version of ubuntu2204 in the gcp project, but in general
-reading the uninitialized variable is undefined behavior. If the
-variable happens to be 0, UB also happens due to a bit shift by 64.
+2/2 does this:
+                         -     if (virt_addr_valid(object))
+                         +     if (is_vmalloc_addr(object))
+                         +             type = "vmalloc memory";
+                         +     else if (virt_addr_valid(object))
+                                       type = "non-slab/vmalloc memory";
 
-Fixes: 1aa9aa8ee517 ("x86/sev-es: Setup GHCB-based boot #VC handler")
+This code is executed only if vmalloc_dump_obj() returns false. The
+is_vmalloc_addr() was added by 2/2 which is newly added right?
 
-Tested-by: Jacob Xu <jacobhxu@google.com>
-Signed-off-by: Adam Dunlap <acdunlap@google.com>
----
- arch/x86/boot/compressed/sev.c |  4 ++--
- arch/x86/kernel/sev-shared.c   |  4 ++--
- arch/x86/kernel/sev.c          | 22 ++++++++++++++--------
- 3 files changed, 18 insertions(+), 12 deletions(-)
+You are right we are not differentiating between trylock failure and failure to
+find the vmalloc area. I was just saying, even though we don't differentiate,
+we do print "vmalloc memory" right? That wasn't being printed before.
 
-diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
-index 09dc8c187b3c..0829ae00a885 100644
---- a/arch/x86/boot/compressed/sev.c
-+++ b/arch/x86/boot/compressed/sev.c
-@@ -73,7 +73,7 @@ static inline void sev_es_wr_ghcb_msr(u64 val)
- 	boot_wrmsr(MSR_AMD64_SEV_ES_GHCB, &m);
- }
- 
--static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt)
-+static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt, bool is_early)
- {
- 	char buffer[MAX_INSN_SIZE];
- 	int ret;
-@@ -290,7 +290,7 @@ void do_boot_stage2_vc(struct pt_regs *regs, unsigned long exit_code)
- 		sev_es_terminate(SEV_TERM_SET_GEN, GHCB_SEV_ES_GEN_REQ);
- 
- 	vc_ghcb_invalidate(boot_ghcb);
--	result = vc_init_em_ctxt(&ctxt, regs, exit_code);
-+	result = vc_init_em_ctxt(&ctxt, regs, exit_code, true);
- 	if (result != ES_OK)
- 		goto finish;
- 
-diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-index 2eabccde94fb..616be2e9a663 100644
---- a/arch/x86/kernel/sev-shared.c
-+++ b/arch/x86/kernel/sev-shared.c
-@@ -176,7 +176,7 @@ static bool vc_decoding_needed(unsigned long exit_code)
- 
- static enum es_result vc_init_em_ctxt(struct es_em_ctxt *ctxt,
- 				      struct pt_regs *regs,
--				      unsigned long exit_code)
-+				      unsigned long exit_code, bool is_early)
- {
- 	enum es_result ret = ES_OK;
- 
-@@ -184,7 +184,7 @@ static enum es_result vc_init_em_ctxt(struct es_em_ctxt *ctxt,
- 	ctxt->regs = regs;
- 
- 	if (vc_decoding_needed(exit_code))
--		ret = vc_decode_insn(ctxt);
-+		ret = vc_decode_insn(ctxt, is_early);
- 
- 	return ret;
- }
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 1ee7bed453de..93f117e5cddf 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -270,9 +270,15 @@ static __always_inline void sev_es_wr_ghcb_msr(u64 val)
- }
- 
- static int vc_fetch_insn_kernel(struct es_em_ctxt *ctxt,
--				unsigned char *buffer)
-+				unsigned char *buffer, bool is_early)
- {
--	return copy_from_kernel_nofault(buffer, (unsigned char *)ctxt->regs->ip, MAX_INSN_SIZE);
-+	if (is_early) {
-+		memcpy(buffer, (unsigned char *)ctxt->regs->ip, MAX_INSN_SIZE);
-+		return 0;
-+	} else {
-+		return copy_from_kernel_nofault(buffer, (unsigned char *)ctxt->regs->ip,
-+			MAX_INSN_SIZE);
-+	}
- }
- 
- static enum es_result __vc_decode_user_insn(struct es_em_ctxt *ctxt)
-@@ -304,12 +310,12 @@ static enum es_result __vc_decode_user_insn(struct es_em_ctxt *ctxt)
- 		return ES_DECODE_FAILED;
- }
- 
--static enum es_result __vc_decode_kern_insn(struct es_em_ctxt *ctxt)
-+static enum es_result __vc_decode_kern_insn(struct es_em_ctxt *ctxt, bool is_early)
- {
- 	char buffer[MAX_INSN_SIZE];
- 	int res, ret;
- 
--	res = vc_fetch_insn_kernel(ctxt, buffer);
-+	res = vc_fetch_insn_kernel(ctxt, buffer, is_early);
- 	if (res) {
- 		ctxt->fi.vector     = X86_TRAP_PF;
- 		ctxt->fi.error_code = X86_PF_INSTR;
-@@ -324,12 +330,12 @@ static enum es_result __vc_decode_kern_insn(struct es_em_ctxt *ctxt)
- 		return ES_OK;
- }
- 
--static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt)
-+static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt, bool is_early)
- {
- 	if (user_mode(ctxt->regs))
- 		return __vc_decode_user_insn(ctxt);
- 	else
--		return __vc_decode_kern_insn(ctxt);
-+		return __vc_decode_kern_insn(ctxt, is_early);
- }
- 
- static enum es_result vc_write_mem(struct es_em_ctxt *ctxt,
-@@ -1829,7 +1835,7 @@ static bool vc_raw_handle_exception(struct pt_regs *regs, unsigned long error_co
- 	ghcb = __sev_get_ghcb(&state);
- 
- 	vc_ghcb_invalidate(ghcb);
--	result = vc_init_em_ctxt(&ctxt, regs, error_code);
-+	result = vc_init_em_ctxt(&ctxt, regs, error_code, false);
- 
- 	if (result == ES_OK)
- 		result = vc_handle_exitcode(&ctxt, ghcb, error_code);
-@@ -1969,7 +1975,7 @@ bool __init handle_vc_boot_ghcb(struct pt_regs *regs)
- 
- 	vc_ghcb_invalidate(boot_ghcb);
- 
--	result = vc_init_em_ctxt(&ctxt, regs, exit_code);
-+	result = vc_init_em_ctxt(&ctxt, regs, exit_code, true);
- 	if (result == ES_OK)
- 		result = vc_handle_exitcode(&ctxt, boot_ghcb, exit_code);
- 
--- 
-2.42.0.283.g2d96d420d3-goog
+> > Also the reporter's usecase is not a common one. We only attempt to dump
+> > information if there was a debug objects failure (example if somebody did a
+> > double call_rcu). In such a situation, the patch will prevent a deadlock and
+> > still print something about the address.
+> 
+> Right, but the function still purports to do X but does Y.
+> 
+> >
+> > > Under heavy lock contention aren't you potentially breaking the ability to
+> > > introspect vmalloc addresses? Wouldn't it be better to explicitly detect the
+> > > contexts under which acquiring this spinlock is not appropriate?
+> >
+> > Yes this is a good point, but there's another case as well: PREEMPT_RT can
+> > sleep on lock contention (as spinlocks are sleeping) and we can't sleep from
+> > call_rcu() as it may be called in contexts that cannot sleep. So we handle
+> > that also using trylock.
+> 
+> Right so somebody now has to find this email to realise that. I hate
+> implicit knowledge like this, it needs a comment. It also furthers the
+> point that it'd be useful to differentiate between the two.
 
+This is a valid point, and I acknowledged it in last email. A code comment could
+indeed be useful.
+
+So I guess from an agreement standpoint, I agree:
+
+1/2 could use an additional comment explaining why we need trylock (sighting
+the RT sleeping lock issue).
+
+2/2 could update the existing code to convert "non-slab/vmalloc" to
+"non-slab/non-vmalloc". Note: that's an *existing* issue.
+
+The issue in 2/2 is not a new one so that can certainly be a separate patch.
+And while at it, we could update the comment in that patch as well.
+
+But the whole differentiating between trylock vs vmalloc area lookup failure
+is not that useful -- just my opinion fwiw! I honestly feel differentiating
+between trylock vs vmalloc area lookup failure complicates the code because
+it will require passing this information down from vmalloc_dump_obj() to the
+caller AFAICS and I am not sure if the person reading the debug will really
+care much. But I am OK with whatever the -mm community wants and I am happy
+to send out a new patch on top with the above that I agree on since Andrew
+took these 2 (but for the stuff I don't agree, I would appreciate if you
+could send a patch for review and I am happy to review it!).
+
+As you mentioned, this series is a stability fix and we can put touch-ups on
+top of it if needed, and there is also plenty of time till the next merge
+window. Allow me a few days and I'll do the new patch on top (I'd say dont
+bother to spend your time on it, I'll do it).
+
+thanks,
+
+ - Joel
+
+
+> 
+> 
+> -- 
+> Lorenzo Stoakes
+> https://ljs.io
