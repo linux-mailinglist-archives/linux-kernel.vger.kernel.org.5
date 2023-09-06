@@ -2,154 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F24793326
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 03:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55007793330
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 03:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239807AbjIFBGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 21:06:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53826 "EHLO
+        id S237343AbjIFBLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 21:11:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbjIFBGb (ORCPT
+        with ESMTP id S233453AbjIFBLj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 21:06:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D60CEE
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 18:06:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693962379; x=1725498379;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=8bss4pbHqG1CAlYmwdVWUjsywuELsy7Bk4uND0wb1M8=;
-  b=CHuBRBwRDpU67zeeVIv7OAnICx1FKB2uphE+n9qDPsSFpPxQrjtlWCeJ
-   f85lt0Yxp+m/mIH7jr/u3dH3JFVRbnhRNPHNjBBamdvjf1pYrYIMVZ2wZ
-   f/c+UTyc3eGwcIQuyVbL42VKiyV4GvmMphqG5kq7IuUOt5fOMyED17JPr
-   R/ZV2CazitnvA7YX67p+CSTerDfM0lhcZ5MnInIGIr6BsRm57JzECytmn
-   gUH040Lf2SnLPU9j2rDm1Gxb8bQC//nTuLPkCemObL0vwrxn5YIFummkh
-   ys3rTeYgz3cO2Mc9zAXmlpJcX4xGJ/qWOFIEC3gXxVt3O/wj1LyiYPS4d
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="379656474"
-X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="379656474"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 18:06:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="1072180441"
-X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="1072180441"
-Received: from lkp-server02.sh.intel.com (HELO e0b2ea88afd5) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 05 Sep 2023 18:06:07 -0700
-Received: from kbuild by e0b2ea88afd5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qdgzd-0002I3-2E;
-        Wed, 06 Sep 2023 01:06:05 +0000
-Date:   Wed, 6 Sep 2023 09:05:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: ../lib/gcc/xtensa-linux/13.2.0/plugin/include/c-family/c-common.h:173:10:
- fatal error: cp/cp-trait.def: No such file or directory
-Message-ID: <202309060858.Zfd1IFhN-lkp@intel.com>
+        Tue, 5 Sep 2023 21:11:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1351B3;
+        Tue,  5 Sep 2023 18:11:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 190E1C433C8;
+        Wed,  6 Sep 2023 01:11:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693962690;
+        bh=38UssaFaZayoI6U5IKOuuqMDBMRrzSnz5dYgB67NSgU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=j20KuZXTsaK8/J0L8XFI2WZzTIQA9xmOaYcwLjFEKXt11i0hL6oGmBSY9bEqrWA85
+         qFwheqExwYq6Ha8JneprLQtawh9IkicZFRv7Pu+MLY1vEoMG6S67xn7Iyj7/yRFKLt
+         zZVml6kI2+cpZ/BU5QbOK2rajMedYOLi78N+8cabhQR4nhl6+HHA6q8D+kLsloQein
+         FK8XbeNtjnNkekYFBplGxZ5d2s+HzZh0kPBGdiHGLf2ReCxoblN5vScLEyvy6I9MJJ
+         nx1/klWninffswbDEs2st0jXUe6danoROz2YWMUN0z2J3TlyBTb/swy8CRYLpHsoOA
+         u1rl4cIq6nD9Q==
+Message-ID: <3b7f0d1d-57ec-7870-fc6e-0449e3112461@kernel.org>
+Date:   Wed, 6 Sep 2023 10:11:29 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ata: sata_mv: Fix incorrect string length computation in
+ mv_dump_mem()
+Content-Language: en-US
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-ide@vger.kernel.org
+References: <1a35e114a3dcc33053ca7cca41cb06b8426d8c40.1693857262.git.christophe.jaillet@wanadoo.fr>
+ <b5dcc85d-f709-a3a3-e7ad-9c71f278842a@kernel.org>
+ <9150d691-49b8-c102-a5de-d1fa207d61ed@wanadoo.fr>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <9150d691-49b8-c102-a5de-d1fa207d61ed@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Max,
+On 9/6/23 00:28, Christophe JAILLET wrote:
+> 
+> 
+> Le 05/09/2023 à 07:04, Damien Le Moal a écrit :
+>> On 9/5/23 04:54, Christophe JAILLET wrote:
+>>> snprintf() returns the "number of characters which *would* be generated for
+>>> the given input", not the size *really* generated.
+>>>
+>>> In order to avoid too large values for 'o' (and potential negative values
+>>> for "sizeof(linebuf) o") use scnprintf() instead of snprintf().
+>>>
+>>> Note that given the "w < 4" in the for loop, the buffer can NOT
+>>> overflow, but using the *right* function is always better.
+>>>
+>>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>>
+>> Doesn't this need Fixes and CC stable tags ?
+> 
+> I don't think so.
+> As said in the commit message :
+>     Note that given the "w < 4" in the for loop, the buffer can NOT
+>     overflow, but using the *right* function is always better.
+> 
+> linebuf is 38 chars.
+> In each iteration, we write 9 bytes + NULL.
+> We write only 4 elements per line (because of w < 4), so 9 * 4 + 1 = 37 
+> bytes are needed.
+> 9 is for %08x<space>
+> 
+> It can't overflow.
+> Moreover, it is really unlikely that the size of linebuf or the number 
+> of elements on each line change in a stable kernel.
+> 
+> So, from my POV, this patch is more a clean-up than anything else.
+> 
+> I would even agree that it is maybe not even needed. But should someone 
+> cut'n'paste it one day, then using the correct function could maybe help 
+> him.
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+OK. Fine. But then maybe the patch title should be something like "Improve
+string length computation in mv_dump_mem()" as the "Fix" word you used seems to
+be somewhat misleading. With the patch title as is, the stable bot will likely
+pick up that patch for stable. Fine with me, unless you see an issue with that.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   65d6e954e37872fd9afb5ef3fc0481bb3c2f20f4
-commit: 7dc0eb0b6d9f3e2b6a560a04f86ef065a4531a9f xtensa: enable plugin support
-date:   1 year, 6 months ago
-config: xtensa-allyesconfig (https://download.01.org/0day-ci/archive/20230906/202309060858.Zfd1IFhN-lkp@intel.com/config)
-compiler: xtensa-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230906/202309060858.Zfd1IFhN-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309060858.Zfd1IFhN-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   scripts/sign-file.c: In function 'display_openssl_errors':
-   scripts/sign-file.c:89:9: warning: 'ERR_get_error_line' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-      89 |         while ((e = ERR_get_error_line(&file, &line))) {
-         |         ^~~~~
-   In file included from scripts/sign-file.c:29:
-   /usr/include/openssl/err.h:423:15: note: declared here
-     423 | unsigned long ERR_get_error_line(const char **file, int *line);
-         |               ^~~~~~~~~~~~~~~~~~
-   scripts/sign-file.c: In function 'drain_openssl_errors':
-   scripts/sign-file.c:102:9: warning: 'ERR_get_error_line' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-     102 |         while (ERR_get_error_line(&file, &line)) {}
-         |         ^~~~~
-   /usr/include/openssl/err.h:423:15: note: declared here
-     423 | unsigned long ERR_get_error_line(const char **file, int *line);
-         |               ^~~~~~~~~~~~~~~~~~
-   scripts/sign-file.c: In function 'read_private_key':
-   scripts/sign-file.c:142:17: warning: 'ENGINE_load_builtin_engines' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-     142 |                 ENGINE_load_builtin_engines();
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   In file included from scripts/sign-file.c:30:
-   /usr/include/openssl/engine.h:358:28: note: declared here
-     358 | OSSL_DEPRECATEDIN_3_0 void ENGINE_load_builtin_engines(void);
-         |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   scripts/sign-file.c:144:17: warning: 'ENGINE_by_id' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-     144 |                 e = ENGINE_by_id("pkcs11");
-         |                 ^
-   /usr/include/openssl/engine.h:336:31: note: declared here
-     336 | OSSL_DEPRECATEDIN_3_0 ENGINE *ENGINE_by_id(const char *id);
-         |                               ^~~~~~~~~~~~
-   scripts/sign-file.c:146:17: warning: 'ENGINE_init' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-     146 |                 if (ENGINE_init(e))
-         |                 ^~
-   /usr/include/openssl/engine.h:620:27: note: declared here
-     620 | OSSL_DEPRECATEDIN_3_0 int ENGINE_init(ENGINE *e);
-         |                           ^~~~~~~~~~~
-   scripts/sign-file.c:151:25: warning: 'ENGINE_ctrl_cmd_string' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-     151 |                         ERR(!ENGINE_ctrl_cmd_string(e, "PIN", key_pass, 0),
-         |                         ^~~
-   /usr/include/openssl/engine.h:479:5: note: declared here
-     479 | int ENGINE_ctrl_cmd_string(ENGINE *e, const char *cmd_name, const char *arg,
-         |     ^~~~~~~~~~~~~~~~~~~~~~
-   scripts/sign-file.c:153:17: warning: 'ENGINE_load_private_key' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-     153 |                 private_key = ENGINE_load_private_key(e, private_key_name,
-         |                 ^~~~~~~~~~~
-   /usr/include/openssl/engine.h:638:11: note: declared here
-     638 | EVP_PKEY *ENGINE_load_private_key(ENGINE *e, const char *key_id,
-         |           ^~~~~~~~~~~~~~~~~~~~~~~
-   In file included from scripts/gcc-plugins/gcc-common.h:54,
-                    from scripts/gcc-plugins/latent_entropy_plugin.c:78:
->> ../lib/gcc/xtensa-linux/13.2.0/plugin/include/c-family/c-common.h:173:10: fatal error: cp/cp-trait.def: No such file or directory
-     173 | #include "cp/cp-trait.def"
-         |          ^~~~~~~~~~~~~~~~~
-   compilation terminated.
-   make[3]: *** [scripts/gcc-plugins/Makefile:48: scripts/gcc-plugins/latent_entropy_plugin.so] Error 1
-   In file included from scripts/gcc-plugins/gcc-common.h:54,
-                    from scripts/gcc-plugins/randomize_layout_plugin.c:19:
->> ../lib/gcc/xtensa-linux/13.2.0/plugin/include/c-family/c-common.h:173:10: fatal error: cp/cp-trait.def: No such file or directory
-     173 | #include "cp/cp-trait.def"
-         |          ^~~~~~~~~~~~~~~~~
-   compilation terminated.
-   make[3]: *** [scripts/gcc-plugins/Makefile:48: scripts/gcc-plugins/randomize_layout_plugin.so] Error 1
-   make[3]: Target '__build' not remade because of errors.
-   make[2]: *** [scripts/Makefile.build:550: scripts/gcc-plugins] Error 2
-   make[2]: Target '__build' not remade because of errors.
-   make[1]: *** [Makefile:1175: scripts] Error 2
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:219: __sub-make] Error 2
-   make: Target 'prepare' not remade because of errors.
+> 
+> CJ
+> 
+>>
+>>> ---
+>>>   drivers/ata/sata_mv.c | 4 ++--
+>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/ata/sata_mv.c b/drivers/ata/sata_mv.c
+>>> index d105db5c7d81..45e48d653c60 100644
+>>> --- a/drivers/ata/sata_mv.c
+>>> +++ b/drivers/ata/sata_mv.c
+>>> @@ -1255,8 +1255,8 @@ static void mv_dump_mem(struct device *dev, void __iomem *start, unsigned bytes)
+>>>   
+>>>   	for (b = 0; b < bytes; ) {
+>>>   		for (w = 0, o = 0; b < bytes && w < 4; w++) {
+>>> -			o += snprintf(linebuf + o, sizeof(linebuf) - o,
+>>> -				      "%08x ", readl(start + b));
+>>> +			o += scnprintf(linebuf + o, sizeof(linebuf) - o,
+>>> +				       "%08x ", readl(start + b));
+>>>   			b += sizeof(u32);
+>>>   		}
+>>>   		dev_dbg(dev, "%s: %p: %s\n",
+>>
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Damien Le Moal
+Western Digital Research
+
