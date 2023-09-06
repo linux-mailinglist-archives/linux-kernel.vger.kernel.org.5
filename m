@@ -2,68 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A9B7939A9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076CE7939B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235191AbjIFKT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 06:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45484 "EHLO
+        id S237115AbjIFKUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 06:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233028AbjIFKTZ (ORCPT
+        with ESMTP id S233028AbjIFKUQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 06:19:25 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DFE10C6
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 03:19:21 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qdpcu-0004oz-GH; Wed, 06 Sep 2023 12:19:12 +0200
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qdpcs-004P41-A9; Wed, 06 Sep 2023 12:19:10 +0200
-Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qdpcr-0029pN-QY; Wed, 06 Sep 2023 12:19:09 +0200
-Date:   Wed, 6 Sep 2023 12:19:09 +0200
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Quentin Schulz <quentin.schulz@theobroma-systems.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        linux-rockchip@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        Wed, 6 Sep 2023 06:20:16 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7244E10C7
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 03:20:12 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4cbso4811775a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 03:20:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693995611; x=1694600411; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bq5VaCN58woKfHlu27g2JEDxXsqU8G37VcS/uYaOtG0=;
+        b=AlKmqOwhhBr2V67YG9Z20CkK5bWFizanI2oRm1PWqnTkoLTZPyGZiPFawSHcdhvpEv
+         D3L/lUizrrPEUa3UYQ27F2BWLr56ngf35RN6BflDjYOXNV+BW1SbFnhrJumIlUtoq5m3
+         /4oeVgRd3bI2gIED3A/UnLgvS6oGEVsZK44zoTFSx4q0G3mAyvB+cwUgabAE3sNyLkys
+         avP3LNxxpy9YBjmMr+nNV0djXQvdtlxP26qBLV0+RzbgDs/9OkLUo1RAlmSBnajrW0Ti
+         fx5mnpoHBNUPhvS3hf7UYjiMltKWvjX/ebmQUQPFgu7nJ/6iE8t4duCO2RyqpdzddvPe
+         U3KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693995611; x=1694600411;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bq5VaCN58woKfHlu27g2JEDxXsqU8G37VcS/uYaOtG0=;
+        b=lDhbJoCo4RJng9cGzT36kKJ7zOAFkUmun2De9S4yQ9TGj8/Mp45BzqjPa+gfng4b9F
+         bn7rNK61V1CRAtvdn2eCWv1JO81wj1fFvZxhHz70rPtBXmpQOfXdvfjR4TgZ9h1q6ZYl
+         Du4ySOWhQ16VA6VxC2LzK64/enPWLvz6fLISw+VqGDU+4iz8/dX2sNPUDw/evKDkvq4N
+         3k3PuIbkTNj55P5XMBuS/jrDHV9DgNLDLLjMuEwRCk5h0Ebic61oL18iDWXJOdmQ7I17
+         QTk6W08F0kpvK8SG3WmzuENPakdAFUm4VMFdPy8dXKKVGN/3k6HbCKlJdHZC0n1661ty
+         2kqQ==
+X-Gm-Message-State: AOJu0Yw21VQ/oyMXQdh+oQrp2MzaD6Riqv0SCEz8lfCnKlinoFO86Btz
+        Bqkf/mDZ58ppRhR6cd92tdFOkA==
+X-Google-Smtp-Source: AGHT+IECInaTz8AGdtzkKqE3txhHtVT5HkkOVMm7zF06XwaR9R8LGP/zSAC3l08RLFTjiI82UIK5ew==
+X-Received: by 2002:a17:906:cd1:b0:9a2:232f:6f79 with SMTP id l17-20020a1709060cd100b009a2232f6f79mr1652416ejh.25.1693995610974;
+        Wed, 06 Sep 2023 03:20:10 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id hb26-20020a170906b89a00b009931a3adf64sm8986930ejb.17.2023.09.06.03.20.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 03:20:10 -0700 (PDT)
+Message-ID: <145f9a3e-af61-c62f-1752-2abb7663d7a3@linaro.org>
+Date:   Wed, 6 Sep 2023 12:20:09 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2 2/2] arm64: dts: mediatek: add device-tree for Genio
+ 1200 EVK board
+Content-Language: en-US
+To:     Macpaul Lin <macpaul.lin@mediatek.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH 2/3] dt-bindings: pinctrl: rockchip: Add io domain
- properties
-Message-ID: <20230906101909.GB492117@pengutronix.de>
-References: <20230904115816.1237684-1-s.hauer@pengutronix.de>
- <20230904115816.1237684-3-s.hauer@pengutronix.de>
- <b4017947-9e16-7d97-a7b1-3e6964a1f7a9@arm.com>
- <5166ca75-5454-8f64-4f61-fcc0f7a4c235@theobroma-systems.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5166ca75-5454-8f64-4f61-fcc0f7a4c235@theobroma-systems.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>, Ben Lok <ben.lok@mediatek.com>
+References: <20230904092043.5157-1-macpaul.lin@mediatek.com>
+ <20230906092527.18281-1-macpaul.lin@mediatek.com>
+ <20230906092527.18281-2-macpaul.lin@mediatek.com>
+ <2cb8069a-976b-0af4-a427-1e63ba4e7870@linaro.org>
+ <951e34bc-dda3-f9d4-b251-7f0fd02052ee@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <951e34bc-dda3-f9d4-b251-7f0fd02052ee@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,63 +91,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 10:20:26AM +0200, Quentin Schulz wrote:
-> Sascha, Robin,
+On 06/09/2023 12:15, Macpaul Lin wrote:
+>>> +
+>>> +wifi_3v3: wifi-3v3-regulator {
+>>
+>> This is a friendly reminder during the review process.
+>>
+>> It seems my previous comments were not fully addressed. Maybe my
+>> feedback got lost between the quotes, maybe you just forgot to apply it.
+>> Please go back to the previous discussion and either implement all
+>> requested changes or keep discussing them.
 > 
-> On 9/5/23 11:03, Robin Murphy wrote:
-> > [You don't often get email from robin.murphy@arm.com. Learn why this is
-> > important at https://aka.ms/LearnAboutSenderIdentification ]
-> > 
-> > > +        type: boolean
-> > > +        description:
-> > > +          If true assume that the io domain needed for this pin
-> > > group has been
-> > > +          configured correctly by the bootloader. This is needed to
-> > > break cyclic
-> > > +          dependencies introduced when a io domain needs a
-> > > regulator that can be
-> > > +          accessed through pins configured here.
-> > 
-> > This is describing a Linux implementation detail, not the binding
-> > itself. There's no technical reason a DT consumer couldn't already
-> > figure this much out from the existing topology (by observing that the
-> > pinctrl consumer is a grandparent of the I/O domain's supply).
-> > 
 > 
-> I am guessing you're suggesting to have some complex handling in the driver
-> to detect those cyclic dependencies and ignore the IO domain dependency for
-> the pinctrl pins where this happens?
+> This keeps a format with -regulator is because I've found some other use 
+> cases. It seems "-regulator" or "regulator-" could be arbitrary. I'm not 
+> sure if it is a new guideline for regulator's node. If there is in the 
+> devicetree document, maybe I just missed it?
 
-I haven't read this as a suggestion, but only as an argument to make it
-clear that I should describe the binding rather than anticipating
-how it should be used.
+What is the point to name in the same DTS some of the regulators
+"regulator-foo" and some "foo-regulator"?
 
-I may have misunderstood it though.
+Best regards,
+Krzysztof
 
-> One of the issues we're having here too is that we lose granularity. There
-> are multiple domains inside an IO domain device and here we make the whole
-> pinctrl device depend on all domains from one IO domain device (there can be
-> multiple ones) while it is factually (on the HW level) only dependent on one
-> domain. Considering (if I remember correctly) Heiko highly suggested we
-> think about adding child nodes to the IO domain devices to have a DT node
-> per domain in the IO domain device, how would this work with the suggested
-> DT binding?
-
-I started implementing that. I have moved the IO domains into subnodes
-of the IO domain controller and started adding phandles from the pin
-groups in rk3568-pinctrl.dtsi to the corresponding IO domains. After a
-couple of hours I had phandles for around a quarter of the existing
-groups of only one SoC, so doing this for all SoCs would really be a
-cumbersome job.
-
-In the end I realized this doesn't solve any problem. Also adding the
-properties I suggested doesn't prevent us from adding the more specific
-dependencies from the pins to their actual IO domains later.
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
