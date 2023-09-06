@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4DA79362A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E80679362C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbjIFHYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 03:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51048 "EHLO
+        id S232720AbjIFHYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 03:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231515AbjIFHYB (ORCPT
+        with ESMTP id S232261AbjIFHYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 03:24:01 -0400
+        Wed, 6 Sep 2023 03:24:02 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12EF3E41;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4621CFF;
         Wed,  6 Sep 2023 00:23:58 -0700 (PDT)
-Received: from kwepemm600007.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RgYjC73rnzrSjC;
-        Wed,  6 Sep 2023 15:22:07 +0800 (CST)
+Received: from kwepemm600007.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RgYfj3zXrzhZFp;
+        Wed,  6 Sep 2023 15:19:57 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 6 Sep 2023 15:23:55 +0800
+ 15.1.2507.31; Wed, 6 Sep 2023 15:23:56 +0800
 From:   Jijie Shao <shaojijie@huawei.com>
 To:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
         <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
@@ -30,9 +30,9 @@ CC:     <shenjian15@huawei.com>, <wangjie125@huawei.com>,
         <liuyonglong@huawei.com>, <shaojijie@huawei.com>,
         <chenhao418@huawei.com>, <netdev@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH net 6/7] net: hns3: fix the port information display when sfp is absent
-Date:   Wed, 6 Sep 2023 15:20:17 +0800
-Message-ID: <20230906072018.3020671-7-shaojijie@huawei.com>
+Subject: [PATCH net 7/7] net: hns3: remove GSO partial feature bit
+Date:   Wed, 6 Sep 2023 15:20:18 +0800
+Message-ID: <20230906072018.3020671-8-shaojijie@huawei.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230906072018.3020671-1-shaojijie@huawei.com>
 References: <20230906072018.3020671-1-shaojijie@huawei.com>
@@ -52,33 +52,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yisen Zhuang <yisen.zhuang@huawei.com>
+From: Jie Wang <wangjie125@huawei.com>
 
-When sfp is absent or unidentified, the port type should be
-displayed as PORT_OTHERS, rather than PORT_FIBRE.
+HNS3 NIC does not support GSO partial packets segmentation. Actually tunnel
+packets for example NvGRE packets segment offload and checksum offload is
+already supported. There is no need to keep gso partial feature bit. So
+this patch removes it.
 
-Fixes: 88d10bd6f730 ("net: hns3: add support for multiple media type")
-Signed-off-by: Yisen Zhuang <yisen.zhuang@huawei.com>
+Fixes: 76ad4f0ee747 ("net: hns3: Add support of HNS3 Ethernet Driver for hip08 SoC")
+Signed-off-by: Jie Wang <wangjie125@huawei.com>
 Signed-off-by: Jijie Shao <shaojijie@huawei.com>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-index 36858a72d771..682239f33082 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-@@ -773,7 +773,9 @@ static int hns3_get_link_ksettings(struct net_device *netdev,
- 		hns3_get_ksettings(h, cmd);
- 		break;
- 	case HNAE3_MEDIA_TYPE_FIBER:
--		if (module_type == HNAE3_MODULE_TYPE_CR)
-+		if (module_type == HNAE3_MODULE_TYPE_UNKNOWN)
-+			cmd->base.port = PORT_OTHER;
-+		else if (module_type == HNAE3_MODULE_TYPE_CR)
- 			cmd->base.port = PORT_DA;
- 		else
- 			cmd->base.port = PORT_FIBRE;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+index 81947c4e5100..b4895c7b3efd 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -3316,8 +3316,6 @@ static void hns3_set_default_feature(struct net_device *netdev)
+ 
+ 	netdev->priv_flags |= IFF_UNICAST_FLT;
+ 
+-	netdev->gso_partial_features |= NETIF_F_GSO_GRE_CSUM;
+-
+ 	netdev->features |= NETIF_F_HW_VLAN_CTAG_FILTER |
+ 		NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_CTAG_RX |
+ 		NETIF_F_RXCSUM | NETIF_F_SG | NETIF_F_GSO |
 -- 
 2.30.0
 
