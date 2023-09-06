@@ -2,217 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3A1793597
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 08:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F74C793596
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 08:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237122AbjIFGuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 02:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
+        id S234370AbjIFGtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 02:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbjIFGuA (ORCPT
+        with ESMTP id S230104AbjIFGtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 02:50:00 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594CBCFA;
-        Tue,  5 Sep 2023 23:49:56 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3866fZu1012110;
-        Wed, 6 Sep 2023 06:49:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : mime-version :
- content-type; s=pp1; bh=hpQKNfo6U16AwKtZqIESlBlwyqrKWSYpNKNB15nKW+8=;
- b=Gvd0G9e5MJiP3pNMOTbMY3r3cTW8cBTX1aeKkrNleEkVuMn33P5AIEXFPC3mhTxXAeTu
- J1IY+Sd4Cq6nsf8ljntTISL/BusDeOpxYi/HRg6FnRcLCiDtGs5L8Wq3r8EQuJn4cCPQ
- smv0H4ff9P5JDsX+9fJYlhvxH9nWOCnWS6lzrO/Ey0G+Ok63mRzvK3x1vZJWY4x3SJWP
- R/c3qyDOk8gbnBmW/xLIIcQLcCODOlMhsOe52hT8jWRAujBX9WY4PxCQVLrYpOGTtY9U
- /OTcQftNAhgpw146HLxAjYuW9QHStWyUx1+VAqsVeF+ib0gPtg0tmjR2afVKknKwaioA Kg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sxmcjr6bu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Sep 2023 06:49:16 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3866frXm013184;
-        Wed, 6 Sep 2023 06:49:15 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sxmcjr6bb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Sep 2023 06:49:15 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38659Njk011124;
-        Wed, 6 Sep 2023 06:49:14 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3svj31rage-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Sep 2023 06:49:14 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3866nCK561341968
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 6 Sep 2023 06:49:12 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BD2372004E;
-        Wed,  6 Sep 2023 06:49:12 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4F97120040;
-        Wed,  6 Sep 2023 06:49:12 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed,  6 Sep 2023 06:49:12 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 4/9] fprobe: rethook: Use ftrace_regs in fprobe exit
- handler and rethook
-References: <169280372795.282662.9784422934484459769.stgit@devnote2>
-        <169280377434.282662.7610009313268953247.stgit@devnote2>
-        <20230904224038.4420a76ea15931aa40179697@kernel.org>
-        <yt9d5y4pozrl.fsf@linux.ibm.com>
-        <20230905223633.23cd4e6e8407c45b934be477@kernel.org>
-Date:   Wed, 06 Sep 2023 08:49:11 +0200
-In-Reply-To: <20230905223633.23cd4e6e8407c45b934be477@kernel.org> (Masami
-        Hiramatsu's message of "Tue, 5 Sep 2023 22:36:33 +0900")
-Message-ID: <yt9dzg1zokyg.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        Wed, 6 Sep 2023 02:49:32 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C245CC3;
+        Tue,  5 Sep 2023 23:49:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1417FC433C8;
+        Wed,  6 Sep 2023 06:49:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693982969;
+        bh=uasGGamLNhO03kpRJBSDvMhv53fkVk6TGqwr6D9fAUM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ZTV4w53S1Ii+kDtOeQ5PC9Jvkg4JkabOW2cGFCrMOjSUOh0B+9I7Lc+ZSFElqPrVb
+         cZj8johtSRAlTGszjIxIJuuAQbxNeSSmhDJlpg3OTMIK98Ao5+ZUfQc9oxrF4gSZkf
+         5keAtyf41z4W+PoI5WfzibIbRGAWDqQd7Pdhl/xK/ZOc1BS5xvE5VeMER+LBrVkk45
+         Hf6k29t5lKzHlgIty8tYPorrXuqaAIM4R4yBokQsBNC1l1WKCJGudGQhWYLFgvH1J5
+         4K05RnLHDwPH0NCDuAmXYnZwvSFWKzGGVsu3UWR02oNubTQReslh0PTUHLNSpEFHIx
+         DwIzm9adZgxRw==
+Message-ID: <a01dc25c-16c0-2d72-23f1-d0955007fcc0@kernel.org>
+Date:   Wed, 6 Sep 2023 15:49:27 +0900
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: VfqUkRXvjBIDEgigSlkozvmCeU6UomUF
-X-Proofpoint-GUID: Pni8IGuwgJSKY-NuHenskpMz5GGOBf-A
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-05_13,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- impostorscore=0 clxscore=1015 adultscore=0 malwarescore=0 mlxlogscore=869
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309060054
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3] ata: libata-eh: Honor all EH scheduling requests
+Content-Language: en-US
+To:     linan666@huaweicloud.com
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linan122@huawei.com, yukuai3@huawei.com, yi.zhang@huawei.com,
+        houtao1@huawei.com, yangerkun@huawei.com
+References: <20230906063321.905103-1-linan666@huaweicloud.com>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20230906063321.905103-1-linan666@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masami,
+On 9/6/23 15:33, linan666@huaweicloud.com wrote:
+> From: Li Nan <linan122@huawei.com>
+> 
+> If a disk is removed and quickly inserted when an I/O error is processing,
+> the disk may not be able to be re-added. The function call timeline is as
+> follows:
+> 
+>   interrupt                            scsi_eh
+> 
+>   ahci_error_intr
+>    ata_port_freeze
+>     __ata_port_freeze
+>      =>ahci_freeze (turn IRQ off)
+>     ata_port_abort
+>      ata_do_link_abort
+>       ata_port_schedule_eh
+>        =>ata_std_sched_eh
+>         ata_eh_set_pending
+> 	 set EH_PENDING
+>         scsi_schedule_eh
+>          shost->host_eh_scheduled++ (=1)
+>                                        scsi_error_handler
+>                                         =>ata_scsi_error
+>                                          ata_scsi_port_error_handler
+> 					  clear EH_PENDING
+>                                           =>ahci_error_handler
+>                                           . sata_pmp_error_handler
+>                                           .  ata_eh_reset
+>                                           .   ata_eh_thaw_port
+>                                           .   . =>ahci_thaw (turn IRQ on)
+>   ahci_error_intr			  .   .
+>    ata_port_freeze			  .   .
+>     __ata_port_freeze			  .   .
+>      =>ahci_freeze (turn IRQ off)	  .   .
+>     ...					  .   .
+>         ata_eh_set_pending		  .   .
+> 	 set EH_PENDING			  .   .
+>         scsi_schedule_eh		  .   .
+>          shost->host_eh_scheduled++ (=2)  .   .
+> 					  .   clear EH_PENDING
+> 					  check EH_PENDING
+>                                           =>ata_std_end_eh
+>                                            host->host_eh_scheduled = 0;
+> 
+> 'host_eh_scheduled' is 0 and scsi eh thread will not be scheduled again.
+> The ata port remains frozen and will never be enabled.
+> 
+> To fix this issue, decrease 'host_eh_scheduled' instead of setting it to 0
+> so that EH is scheduled again to re-enable the port. Also move the update
+> of 'nr_active_links' to 0 when 'host_eh_scheduled' is 0 to
+> ata_scsi_port_error_handler().
+> 
+> Reported-by: luojian <luojian5@huawei.com>
+> Signed-off-by: Li Nan <linan122@huawei.com>
 
-Masami Hiramatsu (Google) <mhiramat@kernel.org> writes:
+Looks good to me, but I think this needs a Fixes tag, and "Cc: stable".
+Please add that.
 
-> Thus, we need to ensure that the ftrace_regs which is saved in the ftrace
-> *without* FTRACE_WITH_REGS flags, can be used for hooking the function
-> return. I saw;
->
-> void arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mcount)
-> {
->         rh->ret_addr = regs->gprs[14];
->         rh->frame = regs->gprs[15];
->
->         /* Replace the return addr with trampoline addr */
->         regs->gprs[14] = (unsigned long)&arch_rethook_trampoline;
-> }
->
-> gprs[15] is a stack pointer, so it is saved in ftrace_regs too, but what about
-> gprs[14]? (I guess it is a link register)
-> We need to read the gprs[14] and ensure that is restored to gpr14 when the
-> ftrace is exit even without FTRACE_WITH_REGS flag.
->
-> IOW, it is ftrace save regs/restore regs code issue. I need to check how the
-> function_graph implements it.
+> ---
+> Changes in v3:
+>  - change patch title, previously it was: "scsi: ata: Fix a race condition
+>    between scsi error handler and ahci interrupt".
+>  - drop the variable 'host' in ata_std_end_eh().
+>  - improve commit message.
+> 
+>  drivers/ata/libata-eh.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/ata/libata-eh.c b/drivers/ata/libata-eh.c
+> index 159ba6ba19eb..2d5ecd68b7e0 100644
+> --- a/drivers/ata/libata-eh.c
+> +++ b/drivers/ata/libata-eh.c
+> @@ -735,6 +735,12 @@ void ata_scsi_port_error_handler(struct Scsi_Host *host, struct ata_port *ap)
+>  	 */
+>  	ap->ops->end_eh(ap);
+>  
+> +	if (!ap->scsi_host->host_eh_scheduled) {
+> +		/* make sure nr_active_links is zero after EH */
+> +		WARN_ON(ap->nr_active_links);
+> +		ap->nr_active_links = 0;
+> +	}
+> +
+>  	spin_unlock_irqrestore(ap->lock, flags);
+>  	ata_eh_release(ap);
+>  
+> @@ -946,9 +952,7 @@ EXPORT_SYMBOL_GPL(ata_std_sched_eh);
+>   */
+>  void ata_std_end_eh(struct ata_port *ap)
+>  {
+> -	struct Scsi_Host *host = ap->scsi_host;
+> -
+> -	host->host_eh_scheduled = 0;
+> +	ap->scsi_host->host_eh_scheduled--;
+>  }
+>  EXPORT_SYMBOL(ata_std_end_eh);
+>  
+> @@ -3922,10 +3926,6 @@ void ata_eh_finish(struct ata_port *ap)
+>  			}
+>  		}
+>  	}
+> -
+> -	/* make sure nr_active_links is zero after EH */
+> -	WARN_ON(ap->nr_active_links);
+> -	ap->nr_active_links = 0;
+>  }
+>  
+>  /**
 
-gpr2-gpr14 are always saved in ftrace_caller/ftrace_regs_caller(),
-regardless of the FTRACE_WITH_REGS flags. The only difference is that
-without the FTRACE_WITH_REGS flag the program status word (psw) is not
-saved because collecting that is a rather expensive operation.
-
-I used the following commands to test rethook (is that the correct
-testcase?)
-
-#!/bin/bash
-cd /sys/kernel/tracing
-
-echo 'r:icmp_rcv icmp_rcv' >kprobe_events
-echo 1 >events/kprobes/icmp_rcv/enable
-ping -c 1 127.0.0.1
-cat trace
-
-which gave me:
-
-ping-686     [001] ..s1.    96.890817: icmp_rcv: (ip_protocol_deliver_rcu+0x42/0x218 <- icmp_rcv)
-
-I applied the following patch on top of your patches to make it compile,
-and rethook still seems to work:
-
-commit dab51b0a5b885660630433ac89f8e64a2de0eb86
-Author: Sven Schnelle <svens@linux.ibm.com>
-Date:   Wed Sep 6 08:06:23 2023 +0200
-
-    rethook wip
-    
-    Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-
-diff --git a/arch/s390/kernel/rethook.c b/arch/s390/kernel/rethook.c
-index af10e6bdd34e..4e86c0a1a064 100644
---- a/arch/s390/kernel/rethook.c
-+++ b/arch/s390/kernel/rethook.c
-@@ -3,8 +3,9 @@
- #include <linux/kprobes.h>
- #include "rethook.h"
- 
--void arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mcount)
-+void arch_rethook_prepare(struct rethook_node *rh, struct ftrace_regs *fregs, bool mcount)
- {
-+	struct pt_regs *regs = (struct pt_regs *)fregs;
- 	rh->ret_addr = regs->gprs[14];
- 	rh->frame = regs->gprs[15];
- 
-@@ -13,10 +14,11 @@ void arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mc
- }
- NOKPROBE_SYMBOL(arch_rethook_prepare);
- 
--void arch_rethook_fixup_return(struct pt_regs *regs,
-+void arch_rethook_fixup_return(struct ftrace_regs *fregs,
- 			       unsigned long correct_ret_addr)
- {
- 	/* Replace fake return address with real one. */
-+	struct pt_regs *regs = (struct pt_regs *)fregs;
- 	regs->gprs[14] = correct_ret_addr;
- }
- NOKPROBE_SYMBOL(arch_rethook_fixup_return);
-@@ -24,9 +26,9 @@ NOKPROBE_SYMBOL(arch_rethook_fixup_return);
- /*
-  * Called from arch_rethook_trampoline
-  */
--unsigned long arch_rethook_trampoline_callback(struct pt_regs *regs)
-+unsigned long arch_rethook_trampoline_callback(struct ftrace_regs *fregs)
- {
--	return rethook_trampoline_handler(regs, regs->gprs[15]);
-+	return rethook_trampoline_handler(fregs, fregs->regs.gprs[15]);
- }
- NOKPROBE_SYMBOL(arch_rethook_trampoline_callback);
- 
-diff --git a/arch/s390/kernel/rethook.h b/arch/s390/kernel/rethook.h
-index 32f069eed3f3..0fe62424fc78 100644
---- a/arch/s390/kernel/rethook.h
-+++ b/arch/s390/kernel/rethook.h
-@@ -2,6 +2,6 @@
- #ifndef __S390_RETHOOK_H
- #define __S390_RETHOOK_H
- 
--unsigned long arch_rethook_trampoline_callback(struct pt_regs *regs);
-+unsigned long arch_rethook_trampoline_callback(struct ftrace_regs *fregs);
- 
- #endif
+-- 
+Damien Le Moal
+Western Digital Research
 
