@@ -2,163 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E89793FCF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A89793FD3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242231AbjIFPAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 11:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35720 "EHLO
+        id S241736AbjIFPDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 11:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233482AbjIFPAf (ORCPT
+        with ESMTP id S233482AbjIFPDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 11:00:35 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2046.outbound.protection.outlook.com [40.107.20.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81AC172E;
-        Wed,  6 Sep 2023 08:00:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RIBVbTl6WZhOlYtvqaORwm7MgpDRc6NlcB6A0SmRnImWbBK5jPrj/BGWYb+7BAd2cvMIhQz28DCVlzPKw1PQwebu9e/f35l/XU9lyWIfFTZ/CXrUWcjfj+R9eX3P4ElVeyDFLmareoZBJqdhgFtCSt9t0voIT3oV+e3UPIEZ5HE5HuzDZBnxPIbfrXpxbL7xFJ63q3Vd7aNf/XddRWMJyc6HxrKamBPoOuWikA/TtnbbcMEnmgfc1c8aswRbQ643DiwuvEITUXms+C1dwO4O4OhXTA0UJ1FwQYI3DkMwlbT/AoPccoknaM8c33Hvlf/tBrMuQp00vOo+ZVzX92wpXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8GTfce8yE0Erh6aoplcgcty/02lNor+Bh/rDuulPXdg=;
- b=h8kaT0xzGOhVVJ3F0HjdeirEqBy4152LyCFPnbFUcqm2A3k/A25PF7PWbIXIy+7Po/+PR/BjFvaiwilg6a8FDxz89ijuqPNTxf6bnWR/ce85GowlFoQTXIEhFu+SEef5i3k6gJMgskAaTEoRFGOJNmXVCvS7BbIxNKMuCUu6BysYjli8dA/ihDnZ9TGu9a0E4XVBJDYB/5h0NrYXfINVyPKduGLDGNWOBq2IzoXBL8y9DBXE7QUWLaYSV1HbvspqKN0aYD8eaHnKebZ6JPWvqQ9Kq2/FuMsyaFFhxuFVIhcr/KrcHkQd5XkrOf6+bxxuvOIenjuQWBav9Yy20uGQYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8GTfce8yE0Erh6aoplcgcty/02lNor+Bh/rDuulPXdg=;
- b=QiNuDbX76+ud6mCpmcNRH7ylSnnBx8i10GsS3U93Iapj4LuUcB2w9rgGPch2ODK1JxJBmj/YAFQP1NVc9Vn9psmwbPcsbkmRCXxJoxOk+m58AqsD6C0Y4een0N+/FsU5aJCNRzIf2rlJJPD+0PqeOAXD7X4O0lzgCLdLh8ygh7E=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by AS8PR04MB7528.eurprd04.prod.outlook.com (2603:10a6:20b:297::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Wed, 6 Sep
- 2023 15:00:28 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::aa90:117d:c1d0:346a]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::aa90:117d:c1d0:346a%3]) with mapi id 15.20.6745.034; Wed, 6 Sep 2023
- 15:00:27 +0000
-Date:   Wed, 6 Sep 2023 11:00:12 -0400
-From:   Frank Li <Frank.li@nxp.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     tglx@linutronix.de, aisheng.dong@nxp.com, bhelgaas@google.com,
-        devicetree@vger.kernel.org, festevam@gmail.com,
-        imx@lists.linux.dev, jdmason@kudzu.us, kernel@pengutronix.de,
-        kishon@ti.com, krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
-        ntb@lists.linux.dev, peng.fan@nxp.com, robh+dt@kernel.org,
-        s.hauer@pengutronix.de, shawnguo@kernel.org
-Subject: Re: [PATCH 1/3] PCI: endpoint: Add RC-to-EP doorbell support using
- platform MSI controller
-Message-ID: <ZPiT/LJGpNbCRDZk@lizhi-Precision-Tower-5810>
-References: <20230426203436.1277307-1-Frank.Li@nxp.com>
- <20230426203436.1277307-2-Frank.Li@nxp.com>
- <20230902045214.GA2913@thinkpad>
- <20230902045328.GB2913@thinkpad>
- <ZPf/EkffMC51iLQ/@lizhi-Precision-Tower-5810>
- <20230906122605.GB5930@thinkpad>
- <ZPiNwQg3rDQMRA/6@lizhi-Precision-Tower-5810>
- <20230906145227.GC5930@thinkpad>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230906145227.GC5930@thinkpad>
-X-ClientProxiedBy: BYAPR07CA0052.namprd07.prod.outlook.com
- (2603:10b6:a03:60::29) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Wed, 6 Sep 2023 11:03:23 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281FEE49;
+        Wed,  6 Sep 2023 08:03:19 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 6D2FB320092A;
+        Wed,  6 Sep 2023 11:03:18 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 06 Sep 2023 11:03:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1694012597; x=1694098997; bh=nT
+        uP10zriYyST8Q/kBCNG/qEQgmqc70KHU1yjiMDwLg=; b=Sn70enwh1eH007UJNc
+        cyTt2nHpLZx1vQXdrhk438xafdqp5ZuDSJAtPeceUmtBeGUE7LmH3LLhREeuxFXi
+        o1j/JRtZIwdGsclczjEvFQF0Fs43c1qm69kCLNXwsb98wLaVRmlHQ5j0kRgA6R0x
+        aAgssCKGyGj0/rReVQey4zOuwRpbTR9eJBKA2fzDbi81QYocnTwZbPod+pOroKHf
+        MLTDIpatpHi+ffs8FXqViLfGWAkcMvekidGMx64rzVB7FU4strT98RIlnFPCrV0Z
+        fKHza8ElRmeH2gUD4+25WTGLjFZa5uvZd/NkMXJvV9aBVmMU5LsJF6Ow+Rc0P83g
+        5RMQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm1; t=1694012597; x=1694098997; bh=n
+        TuP10zriYyST8Q/kBCNG/qEQgmqc70KHU1yjiMDwLg=; b=abyRc8o8LiDpvKbHi
+        raN8Yulebq767LF3nLwmzWfDM1dVKzNk/M9refFnLGQv7/VmvjGIuSlVUPL/t89r
+        HRoS7P15C73rFKnKSIgAVXMLGes+9tyefoMU5jE0VbhVwCNizYbHi4AnHfgdnzUC
+        V5fsIjlbOheo8HlHsLc742H6jQUJo5AXlPMERpd1hBFq/aI8QjfZdkxLZSttq5t0
+        L0Zr/P46BbTsevdvf9OUt0vE6ZY64xgCfwXK9/u+WOt8uccU9iJkdKrUYx9hcEID
+        qkw7p2PMqjRtx5raaPi75LnvpCkcItR6g8QMxssAQVzlmV7AhptttM1ypJczPYdf
+        HlpiA==
+X-ME-Sender: <xms:s5T4ZJwVjvizExJgeDCfV9hvstJwM9xlZMOLSgUoTWyKiAENiLG72Q>
+    <xme:s5T4ZJR3r_cjPFWx-qbxWHa1-DSG0g0lZ6WJamoxPaNOSNy7xEBNnLnSuBpNWxR1F
+    6zdW2hJLhF12JU-3g>
+X-ME-Received: <xmr:s5T4ZDU69abxYUefTaLGn48O_aS6HzCMczQoXOxaQUM9eTj-BpH3WwHT8tWbzNAvZ2D82GZMzudd21Za_18cA6vXbMdiKj7WG_UcOxTrKZECbofpkyTy_KWr>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehfedgkeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    goufhorhhtvggutfgvtghiphdvucdlgedtmdenucfjughrpefhvfevufffkfforhgggfes
+    tdhqredtredttdenucfhrhhomhepkghiucgjrghnuceoiihirdihrghnsehsvghnthdrtg
+    homheqnecuggftrfgrthhtvghrnhepudffkeeujedvteeglefgvddugffgjeetvdehveeh
+    vdehvdejvdegjedvffelueevnecuffhomhgrihhnpehmrghnihhpuhhlrghtihhonhdrmh
+    hmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepiihi
+    rdihrghnsehsvghnthdrtghomh
+X-ME-Proxy: <xmx:tJT4ZLjSdEwyzC4tYTNrcNV6e3bBjx0t0fwzuiDrL56DCbRz8saKxw>
+    <xmx:tJT4ZLDM8pCTwZImO9eG0ftEhwvqXN_YR4jGlg_DJS5hJ954jJ6hcA>
+    <xmx:tJT4ZELjba6lr-ACO2rmMUxMsqKl8dU83DVgaXgTJh8iMCenZdTytw>
+    <xmx:tZT4ZHsRxOv17cIkiIbuF1Tbwqym3PxwksssxPG-BUQn6TLY1fWT5A>
+Feedback-ID: iccd040f4:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 6 Sep 2023 11:03:15 -0400 (EDT)
+From:   Zi Yan <zi.yan@sent.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Cc:     Zi Yan <ziy@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>
+Subject: [PATCH v2 0/5] Use nth_page() in place of direct struct page manipulation
+Date:   Wed,  6 Sep 2023 11:03:04 -0400
+Message-Id: <20230906150309.114360-1-zi.yan@sent.com>
+X-Mailer: git-send-email 2.40.1
+Reply-To: Zi Yan <ziy@nvidia.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AS8PR04MB7528:EE_
-X-MS-Office365-Filtering-Correlation-Id: f393c4e8-920e-445e-2e36-08dbaeea01b2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mQasP6ZZAZKGQLgSlPmRVY3C2MQjGovzjTe05f5G4MEK715M86I5C0KdFmPXnuLDs4E03LW1WoE4Fx0dnC+H9Vla1DWtyfW93W5jMJ1tAGRdGyCqKYDxAN2BhbdLDr4DTNW2A3M92599AA/jM2lTVdGpIdE9mpB2n0xcecG7rMxs21wbQR/Pz7mKtikFHSNJIsrSqZE4wKMVl5A1k3tEOaayAx0TT46YnonQLc6fQPqEQi0IXgs6X4ssL76MSzCMjbku+uYwedkfovV3tP+3c33BwSR/VjATcMTsalEUI7qr2nR9t9UBvokZNGWoy+xNIejxZyTZfXyNSDDd1cYgTljOlzDkpMsrFYAzwTg/y9JIF1T/gU6Lztu9MouWhw681dnQaXVv+LKk2L/kybfk10/OGb+4SkGLvAjd2ScvTb3PNlomErmazUmEtauRIUGSiQpqQXFwd4IJRbm4rDbEi5dfv9GbuQ8iq1ExX4uh9zMWfY8/kfirf6fRBoiDaUQSB1trcv3Wod9CmPNqxv2sQSF2UFju2FQzIXu4HvTzBhMOPRqbjeH4jT7kGd0LxMa5g8R2xqc6l0HLjYMdyQUUFOIh0MU9GPTzPDE/1ft2bt1UgG1WndR80UdNJLfVLjNq
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(396003)(346002)(366004)(136003)(39860400002)(186009)(451199024)(1800799009)(33716001)(41300700001)(6506007)(83380400001)(52116002)(26005)(7416002)(5660300002)(4326008)(8676002)(8936002)(6666004)(6486002)(9686003)(6512007)(2906002)(4744005)(316002)(38100700002)(38350700002)(86362001)(478600001)(66556008)(6916009)(66946007)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SWhtMlRhTnVUd040Y3l5a0xvd0FVbjcySXErcDZxRlNITENHWnU3d2J2WXJJ?=
- =?utf-8?B?VmFOV3Y2NThUT3IxdlI2UXlsMkl1VCtsV0tHL0NWQ21Ha3VBL0UzVGFBSUV6?=
- =?utf-8?B?NzV5Q3I1QzRGVVppTUxsZU5PUEl6RDhtMmlaZnlzRW9Sak44N0xKV2k0UitO?=
- =?utf-8?B?UlRTdWdKNk9ES09FQlJrc0oyZE1vKzZPbnJyeWp3c3k0VlpBS0twcklFTkhj?=
- =?utf-8?B?enpQVThQcUpQRVp5S3Y2UktMZFEvMWtsaUNBNmNRVS9TVGFaclFoM1FPUWwr?=
- =?utf-8?B?NUVGUHlvT2d2WnE5ZU9aenkwUnN1b1Zia01Ic3pxOWI1RnJSYnZBckNvMG44?=
- =?utf-8?B?bFJ5T2UvMm41b1UxdDhiMnFsVCs2U05BRXBaOFpmcFNYVWgvR1hJcEVXNkMw?=
- =?utf-8?B?N2JqNzd5N3g4SHV5d0tJMEJQVVMydnI5SFZXZzluU1dzZUFQNVhtb3MrWDRu?=
- =?utf-8?B?QmhYWGs1N2czNkorWWdHZ2k4LzVPSVZRL1p4M1NONVJZV0NCNWJqeVU4TWRT?=
- =?utf-8?B?dnZ0Y0FYazZIeHBZM3l0U3pHYmc2Rk1tekRNUC9CSURSRmZITGRkMVVOOVRE?=
- =?utf-8?B?QXkvcWtVbVNsa2tQTC9zeWhVRVRqY1VyRkxMb0krQ3JVT0o2Q0tEZjJTbm9L?=
- =?utf-8?B?SlpRWDdyNzM0R3didFdlN0swQ3k0Sm9wQVJSOWVtUjFmUGFZRXhJSnpRRUhU?=
- =?utf-8?B?emNtcktGUHdlVGZSZ3BRV3FpaFZCSGlRbVFweUpzakNVRkszc0ErMkEzaXFv?=
- =?utf-8?B?MWVZWEd1TEkzMVIrckV0MUEreHc1SWJiVGtXWFJRRWFpYVlZRTdFL3djTEhY?=
- =?utf-8?B?blN3aTNucEE2UEErSFRvSGdHN01KVThZcGJvL0J4SjVWeW0zOWtBSlU4MzRu?=
- =?utf-8?B?YngwU0FHYUtSWkhKNWs2a3lFWGtZZFFHbUl1am5pNUllYk9Za0xJRDN2a3Uw?=
- =?utf-8?B?cWVqdEF4cW5qNFh6bXZPcDV4dGdvZDJYbGJpVDhPMHYxM2pSQWhTQ2djMEZw?=
- =?utf-8?B?a2FNQndwbWxOUzhtOGZPeStkZTUzQUY5c1REYy9HNHAxSU9EaVdZV2VPRENn?=
- =?utf-8?B?ZXg1ZzNCU1p4QkpVOEZyUnZaZ2pLSlBBMW9uZ0NRbmZQNFdJR0NCUGErODhW?=
- =?utf-8?B?SDRoVElua0xvQ010WXJOOTZCU3VlOXM4Z0w0M1Nvc3FXVHBKL2FFTlp0Wmll?=
- =?utf-8?B?aWxZT0tBcW9RK1BZSzJlaFVxQVJrRjJIQ3Z2ZGF4d2xYU25neWg1bENGVnJW?=
- =?utf-8?B?K1dnYTNibHJULzFQMTJUb2MvQTFPT1lNaWNwMjJQbk8xaFV5NzlFditmYzRZ?=
- =?utf-8?B?REF5WUEvTlE0b3RYZW80NnYrVFBISDVWOFJZSDR2b2dIRTFEOXh1NCtXMFlo?=
- =?utf-8?B?UTZyVndrdUE0QWgxODM4TE9VclpicVVCSUpKZ21yQVdtOUFSNXIyeE1NVzlG?=
- =?utf-8?B?cnlJaDJWQlhPYWJFcjA4SDJxRnlZc0NId2tVWGNrdjRCOUN2emE5YmdJVkJ0?=
- =?utf-8?B?dy9IVXQ0MmdJL2lQc2pxZzRrUGFlTFVHN3FjV0Z0dUwvNFU2VjI5V2Qrd0JS?=
- =?utf-8?B?N3ZlaHZVdnpMN3VkVUMwYjlqL3p6cndzQmNMR25JUm1PTkU2cDVtUE5zRWpj?=
- =?utf-8?B?NEppSUZQdVFHQlQwUEEvYm03dERWRTFTUGZha0ZhMmxmaHlCYk8rMG9aNzZ3?=
- =?utf-8?B?ckxSZ3pQVjVFL2NvQVRkMUt6Wmcrc1ZuTmdONUFDaTJXblk1b1hwbW4vcko3?=
- =?utf-8?B?RTJKa3dYKy82ZExRbU9wTWx6YzA4MmZyd2Rtd2l6cEIrT3lObytUY0tEZ2Er?=
- =?utf-8?B?ekJiOVNDY1NwMmJ4SmEzLzJUd2taNlRqazNmeFM3djJYSFZqN0tBVk4xcUJB?=
- =?utf-8?B?ejdSRUtMT21nUTNRQ2NnODYxdWViSVFnOW1yc2JpNkd0bGM0dnlyaDBoQ0gz?=
- =?utf-8?B?WG9zNXJHbEEyQkJZWFRvWGdNdHhCVkZVa0Z3VERXblhDZ1lBV0wrbGdFdjdP?=
- =?utf-8?B?NCtjOVpsemFQaE9hdGRLUmdwRnRGRjg2Z20vc29xcVhuV3EwdjBQbWJDdFB2?=
- =?utf-8?B?ekFTVXdnem5SblY0LytFRkhBMGNUZmRuTWk5WVRReGhZdno1dlN0TVA1NjJ0?=
- =?utf-8?Q?JyYO5vhHGyWPEgLIRQlUJNpKV?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f393c4e8-920e-445e-2e36-08dbaeea01b2
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 15:00:27.9048
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: p4pw0HXhPEiwaiRS8E6y6epcj2gMl+QdaseM5dsEW7DOk+cfb2vNcVoIMQKYSvMEuRF0Li/dIQXCSrSzEYgetA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7528
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 08:22:27PM +0530, Manivannan Sadhasivam wrote:
-> > > 
-> > > Can't you assign it in the EPF driver itself? I do not want any OF reference in
-> > > the EPF core since it has no OF support.
-> > 
-> > If that, Each EPF driver need do duplicate work. 
-> > 
-> 
-> Yes, and that's how it should be. EPF core has no job in supplying the of_node.
-> It is the responsibility of the EPF drivers as they depend on OF for platform
-> support.
+From: Zi Yan <ziy@nvidia.com>
 
-EPF driver still not depend on OF. such pci-epf-test, which was probed by
-configfs.
+On SPARSEMEM without VMEMMAP, struct page is not guaranteed to be
+contiguous, since each memory section's memmap might be allocated
+independently. hugetlb pages can go beyond a memory section size, thus
+direct struct page manipulation on hugetlb pages/subpages might give
+wrong struct page. Kernel provides nth_page() to do the manipulation
+properly. Use that whenever code can see hugetlb pages.
 
-Frank 
+The patches are on top of next-20230906
 
-> 
-> - Mani
-> 
-> > IMS will support per-device MSI domain, then we can implement customized
-> > MSI irq allocated. But so far, it is simplest solution, we can update it
-> > after IMS implementation at kernel. Only one place need be changed.
-> > 
-> மணிவண்ணன் சதாசிவம்
+Changes from v1:
+1. Separated first patch into three and add Fixes for better backport.
+2. Collected Reviewed-by.
+
+Zi Yan (5):
+  mm/cma: use nth_page() in place of direct struct page manipulation.
+  mm/hugetlb: use nth_page() in place of direct struct page
+    manipulation.
+  mm/memory_hotplug: use nth_page() in place of direct struct page
+    manipulation.
+  fs: use nth_page() in place of direct struct page manipulation.
+  mips: use nth_page() in place of direct struct page manipulation.
+
+ arch/mips/mm/cache.c | 2 +-
+ fs/hugetlbfs/inode.c | 4 ++--
+ mm/cma.c             | 2 +-
+ mm/hugetlb.c         | 2 +-
+ mm/memory_hotplug.c  | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
+
+--=20
+2.40.1
+
