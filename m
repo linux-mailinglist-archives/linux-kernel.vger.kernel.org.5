@@ -2,100 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E02F7942D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1877942E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243866AbjIFSLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 14:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55544 "EHLO
+        id S243469AbjIFSMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 14:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243769AbjIFSLB (ORCPT
+        with ESMTP id S233762AbjIFSMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 14:11:01 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CAD81997;
-        Wed,  6 Sep 2023 11:10:46 -0700 (PDT)
-Received: from [192.168.68.123] (unknown [177.134.102.128])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 10DE76606E9D;
-        Wed,  6 Sep 2023 19:10:42 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694023845;
-        bh=+BguOnFMoN0DTEiUJmqvKDEQH9cUWtAs2AUE4hzsEfs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=XGr2l4DMSIi0YKMIThC5xNr6ONwfxb3OkfXw/vDpEqW2rrzxJGnMLFjhl2/tz69aw
-         KG+fXoq0i8viL6lLfhtXmecqrFEOWTN/APQg+SvwQmDs3mH102RBt4to042tiRhOX9
-         ZbviQDzTQqE91t5jmM6B2bZckV3AE0NcS6cGh/HHh9oHVWPCaQ5iP9YxQnnSgv2773
-         lZMwTv0MHFSsq0RVooZcNvzp+GOGMbfOGMPzYJBpBnI8Exdq9f1ybq4VQmpWXcE2Kp
-         ar1MXA5be30LqVbZ6Qrxwz9XF999wq4IyGV1qNj601na7BjhmPOTXHUmI/Vc7YJ+gZ
-         UcfWh66AdcERg==
-Message-ID: <5e44d344-dee0-027d-4766-01515e6ea155@collabora.com>
-Date:   Wed, 6 Sep 2023 15:10:37 -0300
+        Wed, 6 Sep 2023 14:12:40 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EDC19BC
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 11:12:29 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68a3ced3ec6so116865b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 11:12:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694023949; x=1694628749; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rzB/a+Y/lgN6TI3eOxXMKAuw0gNhLZ5Kr4Exadxywqo=;
+        b=C+CzTbcjEHUf3yQsEjRfD9PMntW7j/Cl+D28GEPf66/vLntnSvERPwsi1kU4eYVbVE
+         v7l9efFKsDtH00mitIxEuhPOTGTqvEEUJutUnv4frCY/IosxumEfFCLLXrGiqJ7qBuUg
+         I2XAn/bBVorbGqm56E9sfG1oxVKxTjcnglodY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694023949; x=1694628749;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rzB/a+Y/lgN6TI3eOxXMKAuw0gNhLZ5Kr4Exadxywqo=;
+        b=RNyHapazc+j21ZZ22GPmINwXxHmL0TAd6+lUD2kC1YOXf/Jlp/PB5U4d+78qFXFTH3
+         igirEGXL4MBzccV4pBB5cFJU4vB9XWXIHuV55nSpLzVaOwI+EYf+2kjyTsPWgIXgkWWk
+         yNWwnTwJ6BfLkdhfWpYYoZb7Awy6MyHRWigLTAgpKMWLws8qH+tcr/VbIFJTZHGG/y8s
+         JnJfH+8O4SYjBgBjBd5JS97lPj5poe9cnBtO0w3sAC7LCOfS+g11K9pPW6x0yNpsHLAb
+         CX7QKWWxHmooUZFjdebTISs4bG4Jm+3USQoOmH0fmKWZjSmOzZK3BF1a+5cP08rimVyZ
+         g5Og==
+X-Gm-Message-State: AOJu0YyQdkxovpbipusjdzgyZQZpuHrfLFcccwOw55+oF4mhK2Q/zHEu
+        j6hAmwmyGiFPHS6M/PYkF1LJZQ==
+X-Google-Smtp-Source: AGHT+IFw80g3ey9sUj6HYD/2kE56XDAkqaOhhVXfaGukTfoWlgxr29tf8KH2PEk4eYpkhtgk61cguQ==
+X-Received: by 2002:a05:6a21:3e0b:b0:14c:5dc3:f1d5 with SMTP id bk11-20020a056a213e0b00b0014c5dc3f1d5mr15722364pzc.32.1694023949115;
+        Wed, 06 Sep 2023 11:12:29 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:11a:201:a404:ed4a:5a1e:3b4a])
+        by smtp.gmail.com with ESMTPSA id c10-20020a62e80a000000b0064fde7ae1ffsm11080552pfi.38.2023.09.06.11.12.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 11:12:28 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Sean Paul <sean@poorly.run>, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+Subject: [PATCH 0/2] drm/msm/dp: More DPCD cleanups
+Date:   Wed,  6 Sep 2023 11:12:24 -0700
+Message-ID: <20230906181226.2198441-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2] Remove the parameter not described warning
-Content-Language: en-US
-To:     Vinayak Hegde <vinayakph123@gmail.com>, sumit.semwal@linaro.org,
-        gustavo@padovan.org
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org
-References: <ZPiuH+ghqamtwJGA@vinayak-ubuntu>
-From:   Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <ZPiuH+ghqamtwJGA@vinayak-ubuntu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinayak,
+This is a follow-on to this series[1]. I can resend the whole pile if
+desired.
 
-Thanks for you patch
+[1] https://lore.kernel.org/r/20230829184735.2841739-1-swboyd@chromium.org
 
-On 06/09/2023 13:51, Vinayak Hegde wrote:
-> I encountered a warning during kernel documentation compilation
+Stephen Boyd (2):
+  drm/msm/dp: Inline dp_display_is_sink_count_zero()
+  drm/msm/dp: Remove error message when downstream port not connected
 
-Usually we write the commit message in imperative mood, please check: 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
+ drivers/gpu/drm/msm/dp/dp_display.c | 10 +---------
+ drivers/gpu/drm/msm/dp/dp_panel.c   |  1 -
+ 2 files changed, 1 insertion(+), 10 deletions(-)
 
-> due to a missing colon in the documentation for the
-> 'num_fences' variable in the sync_file.h header file.
-> This change adds the missing colon to align with the documentation format.
-> 
-> Signed-off-by: Vinayak Hegde <vinayakph123@gmail.com>
-> ---
->   include/uapi/linux/sync_file.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/uapi/linux/sync_file.h b/include/uapi/linux/sync_file.h
-> index 7e42a5b7558b..b389a5495181 100644
-> --- a/include/uapi/linux/sync_file.h
-> +++ b/include/uapi/linux/sync_file.h
 
-Since you are modifying this file, if you run:
-     git log --oneline include/uapi/linux/sync_file.h
-you will notice that almost all changes start with "dma-buf/sync_file:" 
-prefix, it would be nice to maintain the style pattern for the commit title.
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+prerequisite-patch-id: c637903336fb0fd5593f0016f0c863305c43a6b9
+prerequisite-patch-id: 8610693078de9cd5041266c70c4d044d15a5f701
+prerequisite-patch-id: e10675f41cc68dcefa566f7f288b2df72afdb116
+prerequisite-patch-id: 63280d764b830e3d25455ae642840cff5f90e118
+prerequisite-patch-id: 567e00d48c5a296b454079a51483f2acce357347
+prerequisite-patch-id: 1c18472728edc1ca8800dd6ed6ff12cb98084ea8
+prerequisite-patch-id: c6f74b922b3a4f2255bcdab11fe3a2ecf7891262
+-- 
+https://chromeos.dev
 
-Regards,
-Helen
-
-> @@ -56,7 +56,7 @@ struct sync_fence_info {
->    * @name:	name of fence
->    * @status:	status of fence. 1: signaled 0:active <0:error
->    * @flags:	sync_file_info flags
-> - * @num_fences	number of fences in the sync_file
-> + * @num_fences: number of fences in the sync_file
->    * @pad:	padding for 64-bit alignment, should always be zero
->    * @sync_fence_info: pointer to array of struct &sync_fence_info with all
->    *		 fences in the sync_file
