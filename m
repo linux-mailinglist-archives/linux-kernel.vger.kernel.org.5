@@ -2,49 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52CCD793787
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3101A793793
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235720AbjIFI5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 04:57:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58940 "EHLO
+        id S235964AbjIFJAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 05:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbjIFI5O (ORCPT
+        with ESMTP id S230115AbjIFJAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 04:57:14 -0400
+        Wed, 6 Sep 2023 05:00:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0224D184;
-        Wed,  6 Sep 2023 01:57:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DB7FC433C7;
-        Wed,  6 Sep 2023 08:57:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693990630;
-        bh=JZGUePwl6/0DjGndwCMmh1J3++0RqMmIei8uSU9hbD8=;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 619C1197
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 02:00:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52462C433C8;
+        Wed,  6 Sep 2023 09:00:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693990801;
+        bh=WOGAWS13sQQwB2RID/SlKfczvn6KIrFrTl+18tFhlv4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=itF05d9VXRjSiPj62d0CqBBiUTScgKvirVgpg8Uz9kUxNHH6/XJaZ/2hupha+ktyb
-         DzPAB4/0JWmQrr3Ar3n9p/xt+IXHg3Kbf5CFFHdyOERoLIpUStvsEk3fVd15COCIS3
-         vrVMsu7jxb8pv/JSp4BSyHvn5NOxImM3jopFtDVI=
-Date:   Wed, 6 Sep 2023 09:57:07 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Mario Limonciello <mario.limonciello@amd.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Saranya Gopal <saranya.gopal@intel.com>,
-        Rajaram Regupathy <rajaram.regupathy@intel.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Wayne Chang <waynec@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: ucsi: Fix NULL pointer dereference
-Message-ID: <2023090638-overexert-endearing-3726@gregkh>
-References: <20230906084842.1922052-1-heikki.krogerus@linux.intel.com>
+        b=tNsMPYvudd2+uXKb9r06cmVskzu+oeUqQr+InBIyxyYr72aFXouocRlOdoZ5pHoLf
+         gcK/R4LEcH1RtShHaLLHDkQCfiqpF3llFU8h8duR0fbd+SBvGRMfT0BZSGc+MDDY4Y
+         j9pGJrZp0taSPN3ruOTdxE7fMzabs5uN/yNkOXKQw4NQBEGMYS7So/mSkpg/P7QxX6
+         Fe8znob9dFA/CiPy3abaPziktJlMqb7U/Z8jkCdS0S0/+6xX4Vm3FxhOQxZWob+jVg
+         vtl9yO6Ktv9Cy05hq2BL/HBtpHn85jHOC+/9ABEu/cTQO0pep3WErnHQ1saoNia/e6
+         OivWJpuDDa8bw==
+Date:   Wed, 6 Sep 2023 09:59:57 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] MFD for v6.6
+Message-ID: <20230906085957.GH13143@google.com>
+References: <20230904140444.GA13143@google.com>
+ <CAHk-=wg-tX4YBjr2MOa=3pJz6wr2rG1nYDNwDC-vtUo4eeTtAw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230906084842.1922052-1-heikki.krogerus@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wg-tX4YBjr2MOa=3pJz6wr2rG1nYDNwDC-vtUo4eeTtAw@mail.gmail.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -54,40 +49,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 11:48:42AM +0300, Heikki Krogerus wrote:
-> Making sure the UCSI debugfs entry actually exists before
-> attempting to remove it.
+On Mon, 04 Sep 2023, Linus Torvalds wrote:
+
+> On Mon, 4 Sept 2023 at 07:04, Lee Jones <lee@kernel.org> wrote:
+> >
+> >  - New Drivers
+> >    - Add support for the Cirrus Logic CS42L43 Audio CODEC
 > 
-> Fixes: df0383ffad64 ("usb: typec: ucsi: Add debugfs for ucsi commands")
-> Reported-by: Dave Hansen <dave.hansen@intel.com>
-> Closes: https://lore.kernel.org/linux-usb/700df3c4-2f6c-85f9-6c61-065bc5b2db3a@intel.com/
-> Suggested-by: Dave Hansen <dave.hansen@intel.com>
-> Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
-> Cc: Saranya Gopal <saranya.gopal@intel.com>
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> ---
->  drivers/usb/typec/ucsi/debugfs.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/ucsi/debugfs.c b/drivers/usb/typec/ucsi/debugfs.c
-> index 0c7bf88d4a7f..f67733cecfdf 100644
-> --- a/drivers/usb/typec/ucsi/debugfs.c
-> +++ b/drivers/usb/typec/ucsi/debugfs.c
-> @@ -84,6 +84,9 @@ void ucsi_debugfs_register(struct ucsi *ucsi)
->  
->  void ucsi_debugfs_unregister(struct ucsi *ucsi)
->  {
-> +	if (IS_ERR_OR_NULL(ucsi) || !ucsi->debugfs)
-> +		return;
-> +
->  	debugfs_remove_recursive(ucsi->debugfs->dentry);
+> .. this had apparently already come in through the spi tree (although
+> Mark incorrectly called it the CS43L43 ;).
 
-Why are you saving the dentry at all?  Why not just have debugfs look it
-up when you want to remove it based on the filename?
+Yes, we shared an immutable branch between us.
 
-Anyway, not a big deal here, just a comment.  I'll queue this up after
--rc1 is out.
-
-thanks,
-
-greg k-h
+-- 
+Lee Jones [李琼斯]
