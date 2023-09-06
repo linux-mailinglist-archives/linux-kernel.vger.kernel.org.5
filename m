@@ -2,136 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5443A793BBE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4F7793BC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240246AbjIFLts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
+        id S240216AbjIFLup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240216AbjIFLtk (ORCPT
+        with ESMTP id S231449AbjIFLuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:49:40 -0400
-Received: from CHE01-ZR0-obe.outbound.protection.outlook.com (mail-zr0che01on2129.outbound.protection.outlook.com [40.107.24.129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8E8CFD;
-        Wed,  6 Sep 2023 04:49:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=duagon.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tcBhdlB0UvTIrj22ntjc1FmuAPYvQOCMqkAmzEqP6qU=;
- b=jjVIt6064NqsGWu2+KFTGpHAGTHYtbPJlnNljFk2rF1HjK5BqpiV7YfxvJbQC/7bleL2ElrkPjis/yrVSqh1CLdecoo3RvnFDys13pFZzvoEFT8/owDZIRkauGAefudwAerlnoGFzhchUi5AtB5urrKvX+l6BR/4ftaWsF5ekGE=
-Received: from DB7PR05CA0006.eurprd05.prod.outlook.com (2603:10a6:10:36::19)
- by ZR1P278MB1086.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:5c::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Wed, 6 Sep
- 2023 11:49:31 +0000
-Received: from DB1PEPF00039231.eurprd03.prod.outlook.com
- (2603:10a6:10:36:cafe::46) by DB7PR05CA0006.outlook.office365.com
- (2603:10a6:10:36::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34 via Frontend
- Transport; Wed, 6 Sep 2023 11:49:31 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 77.74.96.169)
- smtp.mailfrom=duagon.com; dkim=pass (signature was verified)
- header.d=duagon.com;dmarc=pass action=none header.from=duagon.com;
-Received-SPF: Pass (protection.outlook.com: domain of duagon.com designates
- 77.74.96.169 as permitted sender) receiver=protection.outlook.com;
- client-ip=77.74.96.169; helo=securemail.duagon.com; pr=C
-Received: from securemail.duagon.com (77.74.96.169) by
- DB1PEPF00039231.mail.protection.outlook.com (10.167.8.104) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6768.25 via Frontend Transport; Wed, 6 Sep 2023 11:49:31 +0000
-Received: from securemail (localhost [127.0.0.1])
-        by securemail.duagon.com (Postfix) with SMTP id 4Rggdk4X8LzxpF;
-        Wed,  6 Sep 2023 13:49:30 +0200 (CEST)
-Received: from CHE01-ZR0-obe.outbound.protection.outlook.com (mail-zr0che01lp2111.outbound.protection.outlook.com [104.47.22.111])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 6 Sep 2023 07:50:44 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1905919A8;
+        Wed,  6 Sep 2023 04:50:08 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by securemail.duagon.com (Postfix) with ESMTPS;
-        Wed,  6 Sep 2023 13:49:29 +0200 (CEST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kxH03koB1cBhlsLEvKyEvFlhM1HxHm4VSSKbcBpuys90PKb3jMogWYLpwiV6pjpcXmgDj3ldJ90dX6o+iqovg1fdQxNAGKmCozQS3mLAa6vO7Yvu4YP0OAgSQOTyOwZ33PC7+Qm5ty7FOkOaM6alSLJ9ryMWX2xCClrmm9IMchMvRKGkGqKLwDHzF8zVDRulwPDjMhsNBJvT8N4npol0GXO01Hn1ojDnEJ3819MP4LWKSlIJTwWsh9M8/EkDysOyMB+mdKkcbKzxTJQFG9m+lxwDRXdag15qMofCsEeYV5FkDExN6Zj2B5Oo1yzT2XTWCFe55/n6Gb/KW0hrCjrksA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tcBhdlB0UvTIrj22ntjc1FmuAPYvQOCMqkAmzEqP6qU=;
- b=NbBDw3ydBK9WbirMUZaZoAVKwQSXTYbpRol1aWSxr4X9bl8w9zwLTz1tudJ8G9uXXP3mVt8xE50pQeTKBUiKviGyX1E4YqmFCkfwXZVfuJNaRhQ05r+AWJdW4tT7YZqqP+p3o1RcXV+RZtyiGbndJ3aocFLJGdJPGM21H0vwx4XU6+KSSF5tEz/VsFwiIBppNBPf98zk9vX/qyQk2pjUBCzrZkc/14V/uBZixptcKAZGtCGcbqyo2WuehWYB33zX1CmjCZAz0wpsmU7MKrNfSnHfB2xcanNP8gLobXTVQa2fmdk1OhgMShkQwsgycc+L4xRmkYwKLNE80e7o7E0K4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=duagon.com; dmarc=pass action=none header.from=duagon.com;
- dkim=pass header.d=duagon.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=duagon.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tcBhdlB0UvTIrj22ntjc1FmuAPYvQOCMqkAmzEqP6qU=;
- b=jjVIt6064NqsGWu2+KFTGpHAGTHYtbPJlnNljFk2rF1HjK5BqpiV7YfxvJbQC/7bleL2ElrkPjis/yrVSqh1CLdecoo3RvnFDys13pFZzvoEFT8/owDZIRkauGAefudwAerlnoGFzhchUi5AtB5urrKvX+l6BR/4ftaWsF5ekGE=
-Received: from GV0P278MB0996.CHEP278.PROD.OUTLOOK.COM (2603:10a6:710:4f::13)
- by ZR0P278MB0774.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:4e::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Wed, 6 Sep
- 2023 11:49:28 +0000
-Received: from GV0P278MB0996.CHEP278.PROD.OUTLOOK.COM
- ([fe80::a222:6d25:1fdb:a800]) by GV0P278MB0996.CHEP278.PROD.OUTLOOK.COM
- ([fe80::a222:6d25:1fdb:a800%3]) with mapi id 15.20.6745.030; Wed, 6 Sep 2023
- 11:49:28 +0000
-From:   =?iso-8859-1?Q?Rodr=EDguez_Barbarin=2C_Jos=E9_Javier?= 
-        <JoseJavier.Rodriguez@duagon.com>
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jirislaby@kernel.org" <jirislaby@kernel.org>
-CC:     "morbidrsa@gmail.com" <morbidrsa@gmail.com>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jth@kernel.org" <jth@kernel.org>,
-        =?iso-8859-1?Q?Sanju=E1n_Garc=EDa=2C_Jorge?= 
-        <Jorge.SanjuanGarcia@duagon.com>,
-        =?iso-8859-1?Q?Sanju=E1n_Garc=EDa=2C_Jorge?= 
-        <Jorge.SanjuanGarcia@duagon.com>,
-        =?iso-8859-1?Q?Rodr=EDguez_Barbarin=2C_Jos=E9_Javier?= 
-        <JoseJavier.Rodriguez@duagon.com>
-Subject: [PATCH v3 2/2] mcb: use short version for function pointer for
- mcb_free_bus
-Thread-Topic: [PATCH v3 2/2] mcb: use short version for function pointer for
- mcb_free_bus
-Thread-Index: AQHZ4LgxiyYmw8Q6ZUKWOFwaI/GpAw==
-Date:   Wed, 6 Sep 2023 11:49:28 +0000
-Message-ID: <20230906114901.63174-3-JoseJavier.Rodriguez@duagon.com>
-References: <20230906114901.63174-1-JoseJavier.Rodriguez@duagon.com>
-In-Reply-To: <20230906114901.63174-1-JoseJavier.Rodriguez@duagon.com>
-Accept-Language: es-ES, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-Authentication-Results-Original: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=duagon.com;
-x-ms-traffictypediagnostic: GV0P278MB0996:EE_|ZR0P278MB0774:EE_|DB1PEPF00039231:EE_|ZR1P278MB1086:EE_
-X-MS-Office365-Filtering-Correlation-Id: b9384965-261a-4c0e-4ca6-08dbaecf5524
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: kmrs2CtNLrZtn44xeUmtEVFU3fHOmb/fWPiXecNQGDWw9StKupM5Np6xGkSc+DrTeIVzuGMkaC9tw4qKb91kvwSF2Y9Z5eILMumqdefuo5Cayql3Tbg4GXWp0X9hHJNHB1AsTFy71eFG4tyDjfOyWPXrpVgoYENzsyNYKCK22CEz7jBJLnZNoMjA4WXUIaComNpaSX+MZod3Kb+KNQtIsl41sc9KDzp3V0H579Y7UVcqcPgxaFmjiB4pDwUqgcuHEM0zd5yOx1QlAhmA1fAc73JwRdIDaRnDCjLQz69QfWcRcjRlyw2EAbPXVGTedT7WOfb+L+I4V4uqLNb59ARK3mjRJCt4YG9GI9t4Ejbc9FotDpTxG1Mcfn4MGvFf/j1BdxhkC0u7oA4VJVeKB1V5JR9KDLu+tSpqV3lwDFzHcBQFPlN09Hdwq18G7BA96QINnovlNsMuVLbUe4fD9WrjpI5Q9+5qk46dOkusHIe8U4WnC10A788a/dOs7ueQAsOxACwREJCyGCvzTNioLpyucL4pq63mHXMztFMP5Sh1tI785L0mqpJ121zIlTn07dIrY04dLwLC9BccpDJQQlKo/XDw4f/UOsYBA1UJ3Ke9X6FGQ9FC9doxMnAKi0aj3aKD
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV0P278MB0996.CHEP278.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(376002)(136003)(396003)(346002)(366004)(451199024)(186009)(1800799009)(71200400001)(6506007)(6486002)(107886003)(478600001)(83380400001)(4744005)(2906002)(1076003)(26005)(66556008)(64756008)(54906003)(66446008)(41300700001)(66476007)(2616005)(316002)(91956017)(110136005)(8676002)(5660300002)(4326008)(8936002)(76116006)(38100700002)(36756003)(6512007)(122000001)(38070700005)(86362001)(66946007);DIR:OUT;SFP:1102;
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 38AE92240E;
+        Wed,  6 Sep 2023 11:50:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694001004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=srEHtrw1vxgf6RLyNFIk62u1dAa2534DFtpm4MUN3iU=;
+        b=vvBDaYK5gBuI0aXYe/UXdHPTZ0G84MC2hqbm0EYy63L7bl0+SvcLF5rZQzd5OQgHSD8OWq
+        R20pvUYszqbjen7wiOq3efP0dWPi8S2a2a6vrW29w/ErRKimkYnGylhPqEW7TdSBH0+tAe
+        SJ0OSJrWIiU6GvL0SrSGSnHKyTvZ3so=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694001004;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=srEHtrw1vxgf6RLyNFIk62u1dAa2534DFtpm4MUN3iU=;
+        b=thDnHi5ASZwzu2YRp+YAIQQqqwRTy5oQdQ7I+FDPLp/YzI8H5dGlOKCRu1nSdaCenbEQOD
+        fBDrS9eBo3yln9DQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AD3141333E;
+        Wed,  6 Sep 2023 11:50:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8ao/KWtn+GQsYAAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Wed, 06 Sep 2023 11:50:03 +0000
+Message-ID: <1f055418-1bfe-6b7d-3972-7b433661e731@suse.de>
+Date:   Wed, 6 Sep 2023 13:50:02 +0200
 MIME-Version: 1.0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZR0P278MB0774
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: DB1PEPF00039231.eurprd03.prod.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs: 8f311bc5-f4f7-4879-f692-08dbaecf5393
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TqMC4eOG9Dkvi1S7GsaTaEa2VZoAzVGvRqlpYmSqfgj90gK+Lr0Qh2r1nyUlUJk2jd55a7qB83fpiXbcRoRf7B5JdVpyu6hNZEHVTeWhNkxS0BQhLA3UdoA8EHD2WQVmEgyHkibIPiFCuQrqsuUZSMf2xzFvKFF9z5bPUwwO33b8PfJ2jeZfr3TssMBFY2VGQug5DjnVtUT4ZUP5soL+vmKyHjh7g1nqZ3RKco8y7oDgh0WG/5cOyOwOfbBx1t624iAnc3AQJ/NYGomBWi2q+mZzEbn9nZ5dYDR1WmIuGLG5JFzwKXrgCdEPVnc2NJhh4KKGjl9QeTqU0NPh/5zMgGfUeow4xuhKcVvHzZUKOxvmgTzSlKBnm1CSYwZyqc5E+cZQGz83gCig7AAIMeFtqFUVZ5ZHayPsl3SJsULAHyudEmIrxh9V17QSv3dPEijcsmxV/nxirz7v1X/R+a3I7b6gBiL5R579KQf2P6b0knZyRVm9wAA9L/7HNE+uOqe8RHVosAiuRkozhaAY46djf7kgeezYoYzOam0f0DHyjjDTR3uZCGWKqB8duj31UxGK2MRozPUiDD3XegiN9mDSDopQEDMxDRWdJ1HQhY/ZFl+7y0hd2HpHeFZCAxMScC6/cDjojij23tvKQxSZDwxdlAkEpZT33KUTKUjiUBbNmT3D4A4eHxnhcQa7U7nZqmnHFxWWyLoZwYtsMzywTU74pLHmecxb8QVWZbijFC2ANrQj95G1RDX9Wus3RHIJsX11
-X-Forefront-Antispam-Report: CIP:77.74.96.169;CTRY:CH;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:securemail.duagon.com;PTR:169.96.74.77.ftth.as8758.net;CAT:NONE;SFS:(13230031)(396003)(346002)(39850400004)(376002)(136003)(82310400011)(451199024)(186009)(1800799009)(36840700001)(46966006)(40470700004)(1076003)(8676002)(316002)(110136005)(54906003)(70206006)(4326008)(107886003)(2616005)(70586007)(8936002)(82740400003)(40480700001)(356005)(6486002)(81166007)(6506007)(41300700001)(6512007)(336012)(26005)(5660300002)(478600001)(2906002)(40460700003)(83380400001)(36860700001)(4744005)(47076005)(86362001)(36756003);DIR:OUT;SFP:1102;
-X-OriginatorOrg: duagon.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 11:49:31.0150
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b9384965-261a-4c0e-4ca6-08dbaecf5524
-X-MS-Exchange-CrossTenant-Id: e5e7e96e-8a28-45d6-9093-a40dd5b51a57
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5e7e96e-8a28-45d6-9093-a40dd5b51a57;Ip=[77.74.96.169];Helo=[securemail.duagon.com]
-X-MS-Exchange-CrossTenant-AuthSource: DB1PEPF00039231.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZR1P278MB1086
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v1 v1 4/7] drm/fourcc: Add drm/vs tiled modifiers
+Content-Language: en-US
+To:     Keith Zhao <keith.zhao@starfivetech.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        christian.koenig@amd.com, Bjorn Andersson <andersson@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Guo <shawnguo@kernel.org>, Jagan Teki <jagan@edgeble.ai>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Shengyang Chen <shengyang.chen@starfivetech.com>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>
+References: <20230801101030.2040-1-keith.zhao@starfivetech.com>
+ <20230801101030.2040-5-keith.zhao@starfivetech.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20230801101030.2040-5-keith.zhao@starfivetech.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------x8RZV0Luikz7jTH2pG1swqua"
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -139,32 +94,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jorge Sanjuan Garcia <jorge.sanjuangarcia@duagon.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------x8RZV0Luikz7jTH2pG1swqua
+Content-Type: multipart/mixed; boundary="------------YObmTMDzrOw3nXo9vvd00TM2";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Keith Zhao <keith.zhao@starfivetech.com>,
+ dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Cc: David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Emil Renner Berthing <kernel@esmil.dk>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
+ Sumit Semwal <sumit.semwal@linaro.org>, christian.koenig@amd.com,
+ Bjorn Andersson <andersson@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Shawn Guo <shawnguo@kernel.org>, Jagan Teki <jagan@edgeble.ai>,
+ Chris Morgan <macromorgan@hotmail.com>, Jack Zhu
+ <jack.zhu@starfivetech.com>, Shengyang Chen
+ <shengyang.chen@starfivetech.com>,
+ Changhuang Liang <changhuang.liang@starfivetech.com>
+Message-ID: <1f055418-1bfe-6b7d-3972-7b433661e731@suse.de>
+Subject: Re: [PATCH v1 v1 4/7] drm/fourcc: Add drm/vs tiled modifiers
+References: <20230801101030.2040-1-keith.zhao@starfivetech.com>
+ <20230801101030.2040-5-keith.zhao@starfivetech.com>
+In-Reply-To: <20230801101030.2040-5-keith.zhao@starfivetech.com>
 
-Just a style change so that the device release callbacks are defined
-in the same way for devices in mcb_bus and mcb_device.
+--------------YObmTMDzrOw3nXo9vvd00TM2
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Signed-off-by: Jorge Sanjuan Garcia <jorge.sanjuangarcia@duagon.com>
-Co-developed-by: Jose Javier Rodriguez Barbarin <JoseJavier.Rodriguez@duago=
-n.com>
-Signed-off-by: Jose Javier Rodriguez Barbarin <JoseJavier.Rodriguez@duagon.=
-com>
----
- drivers/mcb/mcb-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+SGkNCg0KQW0gMDEuMDguMjMgdW0gMTI6MTAgc2NocmllYiBLZWl0aCBaaGFvOg0KPiBUaGVz
+ZSBhcmUgbWFpbmx5IHVzZWQgaW50ZXJuYWxseSBpbiB2cy1kcm0sDQo+IEknbSBub3Qgc3Vy
+ZSBpZiB0aGUgbmV3IG1vZGlmaWVycyBjYW4gYmUgdXNlZCB3aXRoIHRoZSBleGlzdGluZyBv
+bmVzLg0KPiBJZiB0aGVyZSBpcyBhIHByb2JsZW0sIEkgd2lsbCBpbXByb3ZlIGl0IGZ1cnRo
+ZXIuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBLZWl0aCBaaGFvIDxrZWl0aC56aGFvQHN0YXJm
+aXZldGVjaC5jb20+DQo+IC0tLQ0KPiAgIGluY2x1ZGUvdWFwaS9kcm0vZHJtX2ZvdXJjYy5o
+IHwgMjcgKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ICAgMSBmaWxlIGNoYW5nZWQs
+IDI3IGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL3VhcGkvZHJt
+L2RybV9mb3VyY2MuaCBiL2luY2x1ZGUvdWFwaS9kcm0vZHJtX2ZvdXJjYy5oDQo+IGluZGV4
+IDhkYjdmZDNmNy4uMGI4ODRjZjUwIDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL3VhcGkvZHJt
+L2RybV9mb3VyY2MuaA0KPiArKysgYi9pbmNsdWRlL3VhcGkvZHJtL2RybV9mb3VyY2MuaA0K
+PiBAQCAtNDE5LDYgKzQxOSw3IEBAIGV4dGVybiAiQyIgew0KPiAgICNkZWZpbmUgRFJNX0ZP
+Uk1BVF9NT0RfVkVORE9SX0FSTSAgICAgMHgwOA0KPiAgICNkZWZpbmUgRFJNX0ZPUk1BVF9N
+T0RfVkVORE9SX0FMTFdJTk5FUiAweDA5DQo+ICAgI2RlZmluZSBEUk1fRk9STUFUX01PRF9W
+RU5ET1JfQU1MT0dJQyAweDBhDQo+ICsjZGVmaW5lIERSTV9GT1JNQVRfTU9EX1ZFTkRPUl9W
+UyAgICAgIDB4MGINCj4gICANCj4gICAvKiBhZGQgbW9yZSB0byB0aGUgZW5kIGFzIG5lZWRl
+ZCAqLw0KPiAgIA0KPiBAQCAtMTU2Miw2ICsxNTYzLDMyIEBAIGRybV9mb3VyY2NfY2Fub25p
+Y2FsaXplX252aWRpYV9mb3JtYXRfbW9kKF9fdTY0IG1vZGlmaWVyKQ0KPiAgICNkZWZpbmUg
+QU1EX0ZNVF9NT0RfQ0xFQVIoZmllbGQpIFwNCj4gICAJKH4oKF9fdTY0KUFNRF9GTVRfTU9E
+XyMjZmllbGQjI19NQVNLIDw8IEFNRF9GTVRfTU9EXyMjZmllbGQjI19TSElGVCkpDQo+ICAg
+DQo+ICsjZGVmaW5lIERSTV9GT1JNQVRfTU9EX1ZTX1RZUEVfTk9STUFMICAgICAgICAweDAw
+DQo+ICsjZGVmaW5lIERSTV9GT1JNQVRfTU9EX1ZTX1RZUEVfQ09NUFJFU1NFRCAgICAweDAx
+DQo+ICsjZGVmaW5lIERSTV9GT1JNQVRfTU9EX1ZTX1RZUEVfQ1VTVE9NXzEwQklUICAweDAy
+DQo+ICsjZGVmaW5lIERSTV9GT1JNQVRfTU9EX1ZTX1RZUEVfTUFTSyAgICAgKChfX3U2NCkw
+eDMgPDwgNTQpDQo+ICsNCj4gKyNkZWZpbmUgZm91cmNjX21vZF92c19jb2RlKHR5cGUsIHZh
+bCkgXA0KPiArCWZvdXJjY19tb2RfY29kZShWUywgKCgoKF9fdTY0KXR5cGUpIDw8IDU0KSB8
+ICh2YWwpKSkNCj4gKw0KPiArI2RlZmluZSBEUk1fRk9STUFUX01PRF9WU19OT1JNX01PREVf
+TUFTSyAgICAgICAgMHgxRg0KDQo+ICsjZGVmaW5lIERSTV9GT1JNQVRfTU9EX1ZTX0xJTkVB
+UiAgICAgICAgICAgICAgICAweDAwDQoNClRoaXMgZGVmaW5lIHNob3VsZCBiZSByZW1vdmVk
+IGlmIGl0IGRvZXMgdGhlIHNhbWUgYXMgRFJNX0ZPUk1BVF9NT0RFX0xJTkVBUi4NCg0KPiAr
+I2RlZmluZSBEUk1fRk9STUFUX01PRF9WU19TVVBFUl9USUxFRF9YTUFKT1IgICAgMHgwMg0K
+PiArI2RlZmluZSBEUk1fRk9STUFUX01PRF9WU19TVVBFUl9USUxFRF9ZTUFKT1IgICAgMHgw
+Mw0KPiArI2RlZmluZSBEUk1fRk9STUFUX01PRF9WU19USUxFXzhYOCAgICAgICAgICAgICAg
+MHgwNA0KPiArI2RlZmluZSBEUk1fRk9STUFUX01PRF9WU19USUxFXzhYNCAgICAgICAgICAg
+ICAgMHgwNw0KPiArI2RlZmluZSBEUk1fRk9STUFUX01PRF9WU19TVVBFUl9USUxFRF9YTUFK
+T1JfOFg0ICAgIDB4MEINCj4gKyNkZWZpbmUgRFJNX0ZPUk1BVF9NT0RfVlNfU1VQRVJfVElM
+RURfWU1BSk9SXzRYOCAgICAweDBDDQo+ICsjZGVmaW5lIERSTV9GT1JNQVRfTU9EX1ZTX1RJ
+TEVfTU9ERTRYNCAgICAgICAgICAweDE1DQo+ICsNCg0KVGhlIGV4aXN0aW5nIGZvcm1hdHMg
+aW4gdGhpcyBmaWxlIGhhdmUgZG9jdW1lbnRhdGlvbiBvbiB0aGVpciBlZmZlY3RzIA0KYW5k
+IG1lYW5pbmcuIFlvdSBzaG91bGQgaW5jbHVkZSBzaW1pbGFyIGNvbW1lbnRzIGhlcmUuDQoN
+CkJlc3QgcmVnYXJkcw0KVGhvbWFzDQoNCj4gKyNkZWZpbmUgZm91cmNjX21vZF92c19ub3Jt
+X2NvZGUodGlsZSkgXA0KPiArCWZvdXJjY19tb2RfdnNfY29kZShEUk1fRk9STUFUX01PRF9W
+U19UWVBFX05PUk1BTCwgXA0KPiArCQkJCSh0aWxlKSkNCj4gKw0KPiArI2RlZmluZSBmb3Vy
+Y2NfbW9kX3ZzX2N1c3RvbV9jb2RlKHRpbGUpIFwNCj4gKwlmb3VyY2NfbW9kX3ZzX2NvZGUo
+RFJNX0ZPUk1BVF9NT0RfVlNfVFlQRV9DVVNUT01fMTBCSVQsIFwNCj4gKwkJCQkodGlsZSkp
+DQo+ICsNCj4gICAjaWYgZGVmaW5lZChfX2NwbHVzcGx1cykNCj4gICB9DQo+ICAgI2VuZGlm
+DQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXIN
+ClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2Ug
+MTQ2LCA5MDQ2MSBOdWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBN
+eWVycywgQW5kcmV3IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcg
+TnVlcm5iZXJnKQ0K
 
-diff --git a/drivers/mcb/mcb-core.c b/drivers/mcb/mcb-core.c
-index 0cac5bead84f..5c6157b0db75 100644
---- a/drivers/mcb/mcb-core.c
-+++ b/drivers/mcb/mcb-core.c
-@@ -288,7 +288,7 @@ struct mcb_bus *mcb_alloc_bus(struct device *carrier)
- 	bus->dev.parent =3D carrier;
- 	bus->dev.bus =3D &mcb_bus_type;
- 	bus->dev.type =3D &mcb_carrier_device_type;
--	bus->dev.release =3D &mcb_free_bus;
-+	bus->dev.release =3D mcb_free_bus;
-=20
- 	dev_set_name(&bus->dev, "mcb:%d", bus_nr);
- 	rc =3D device_add(&bus->dev);
---=20
-2.34.1
+--------------YObmTMDzrOw3nXo9vvd00TM2--
+
+--------------x8RZV0Luikz7jTH2pG1swqua
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmT4Z2oFAwAAAAAACgkQlh/E3EQov+CH
+mg//SpaTKVtkes9IwmSFYLCrsiGY+ENdlyEWqYOT+L1v0I8ah3YSFn9u5dNexysMSX7yFh/CfJI5
+IYn7INPHVjDxiHMki2RJa2MXXIAqN/6tP3Cx7gy4fhOIk5PdhrI9Jydme5BuHsN0CunyMjCS0Cb6
+ZOH7WDzyoo3xNkLH1K49DRQec1K6mJnkGvlYoA2GVpNRW33C7+lraipvfCWLGji3kJ2T3H/joTJe
+/Js8Z2fMJKgXOtFv2Th3fTknEKye0vJVKUc7TG1XBdmGlxMLblZz2d1GKePqD09qbS2iD7qmS4dN
+7qSvdsXXnKAzACVZxQ6Bmfv/xzLGZu7MdbRl+cBjOHiJ9JjLXHVJFy3+peRHPMVggH+8itsDSEEK
+ERnwOlynxwtDW/foZgz1MJDCyeYc2sUfBvdQdO5qj0PVK7Dwx6Wee6eWvX+Jr/gkqmAkzSjIsP36
+yY7igKuDKhnM+uzHppYrNZgRmJRjLP7+wLy9IMWunu79cdkbtt/Erxc9jI138Yi+Y7Spz+kxAGls
+hoPtQilGWoPSoBRGEU3UmqBgcettLrv4E4b1Zf7TDEXkHg3ntkMMS7Fovjj8T1HVXhmAnho+Kpos
+K4hqdisKjyPy0XvnecYbrU+tJBc97MjMeRN36wRZjZdKXW8I4SWSEFmyoVMzH0V6vjMrARAfQMCG
+Sro=
+=Jw1c
+-----END PGP SIGNATURE-----
+
+--------------x8RZV0Luikz7jTH2pG1swqua--
