@@ -2,113 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B984794472
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879E7794475
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241877AbjIFUXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 16:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44568 "EHLO
+        id S243687AbjIFUXi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Sep 2023 16:23:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236993AbjIFUWw (ORCPT
+        with ESMTP id S236993AbjIFUXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 16:22:52 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D435D19AD
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 13:22:45 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bcfd3220d3so4552021fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 13:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694031764; x=1694636564; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zxKCsV8R8YrR5Gy4S8qpXFuMk6MLJhqEnRXr9jkGcto=;
-        b=EhfnE2/SPpAjyK8S4cYUaToslBQkg4F8mbbZkbSAjaz4G9VDCAE04tBN4H/3Mji1O7
-         P18hBCHGL96otMv4HbyqPUtF7RSppICJaOK8awnHlN0wBr+1D77Qsc3bLyz3b3Rudh1G
-         VfPB2uAv8Se9parOuwKzAJcCzhbeFRYiDCQ5w=
+        Wed, 6 Sep 2023 16:23:36 -0400
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A904E59;
+        Wed,  6 Sep 2023 13:23:33 -0700 (PDT)
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1a2dd615ddcso68662fac.0;
+        Wed, 06 Sep 2023 13:23:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694031764; x=1694636564;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zxKCsV8R8YrR5Gy4S8qpXFuMk6MLJhqEnRXr9jkGcto=;
-        b=Vq/8taGd0XCAhCg/pZK3izy6n26ON3wEOF7e7u2rBReN/dVMtfJnhlg4oJYpdwq+2H
-         YKf2+fTl/8wOu73bGKQEQugeFO8fYn7zCfsPsYPaTJX7jWjpXuIAdFZSEnVRt0K/ncQ4
-         TG86R/5ADE/RuZVNYx4CqmL9xOGF2uzQkTD2N+EOgiFYK12mKA0KzJbzHIFKTi7WrPz0
-         Fg/yOz5MF2lrkZRQuMRE5n1szNyYTNQ38MTxcHOuPiaVzOVuonmoOfc4KN4Kq3NR1EXa
-         yBU6ZBUWsJ8cr4sygspNeJTqgdNIC3gnmM+dE35uieOFbsDvXlapGibEv99b/4Cl9qeB
-         bsLQ==
-X-Gm-Message-State: AOJu0Yz+hgefz7d4JBkwaDCxRgLSQBLHdBjGCL2PM+iVeM53dNdE37bO
-        32YBbx9CEKWPg4SYgC7q3lt3LhrCwEnL/vTUXbIItA==
-X-Google-Smtp-Source: AGHT+IEmvetndVdOFFwz7V6Ymy0S4rpC+9TPoqGCwOVPobwU6fcOpZdLTjsBJP1lmQrg+aBzt/1Fql+MvEJ3cIL85Eo=
-X-Received: by 2002:a2e:8756:0:b0:2b6:e2aa:8fbc with SMTP id
- q22-20020a2e8756000000b002b6e2aa8fbcmr3268617ljj.8.1694031764129; Wed, 06 Sep
- 2023 13:22:44 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 6 Sep 2023 15:22:43 -0500
+        d=1e100.net; s=20221208; t=1694031812; x=1694636612;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pf2yP3P7qdvXU33CpkaxRjxknUH4REyAw53pkZuj3eY=;
+        b=lhQ0Wqg6XvomGLQmaDo2XiyJlirnbmbLGPLXJtyrvivnutAbt7z4Ul9OrTdoU4kDgF
+         QTHPLyO6pFsYB/nf+1Z/J1tJ26Cv2SDcqBKL3XtI6xTbPD/iSj0WGLFcIg6sog0ZDdzt
+         aXi9TJUxES2szozYBt21e7rGAW+bW3EGC+vNfNk7kbOA+OKNKsBJa6htUWFdDVdEjg39
+         5psx9y9KnzSXTNoTTZui87PsqCeEjQD0x4XRdcVslb6SHqH3Pj4DZBKvAR3lJqM6Jumb
+         xXccBUDnbSaTghFypucFzkpeZL827wolysUfyjYloDPiH7kuWSJsaPtNO/v7VSMztnIA
+         y5zg==
+X-Gm-Message-State: AOJu0YwWTZw6oaW/X5ZcApUHEqTevEp0H+xSOE2QBlXFvCR8dPhqDRbf
+        DhSQ6iCbvqohjXzMtOnoX5MTvfVb3tG1w2Ix/CshmBIH
+X-Google-Smtp-Source: AGHT+IGziI81dKFosk5RSKfP7aVdMFvE3/AQIy6NE4AftRZQePhHb/Tnc583U76XxkY82jh+pQ80hic+7x2GUIIk1vU=
+X-Received: by 2002:a4a:db8a:0:b0:573:4a72:6ec with SMTP id
+ s10-20020a4adb8a000000b005734a7206ecmr15120672oou.1.1694031812473; Wed, 06
+ Sep 2023 13:23:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ZPjdZ3xNmBEBvNiS@smile.fi.intel.com>
-References: <20230906180944.2197111-1-swboyd@chromium.org> <20230906180944.2197111-4-swboyd@chromium.org>
- <ZPjdZ3xNmBEBvNiS@smile.fi.intel.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date:   Wed, 6 Sep 2023 15:22:43 -0500
-Message-ID: <CAE-0n53iGCL3q=CsDKZr28eMjx40miLNG6+-jf12JKMxuAKkKg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] platform/x86: intel_scu_ipc: Fail IPC send if
- still busy
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        platform-driver-x86@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Prashant Malani <pmalani@chromium.org>
+References: <20230906190816.2966001-1-srinivas.pandruvada@linux.intel.com>
+In-Reply-To: <20230906190816.2966001-1-srinivas.pandruvada@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 6 Sep 2023 22:23:21 +0200
+Message-ID: <CAJZ5v0je4b5cTeanU3O+L79BNtEhhzykrhuPVHoV9m1UfcLodg@mail.gmail.com>
+Subject: Re: [PATCH v2] powercap: intel_rapl: Fix invalid setting of Power
+ Limit 4
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     rafael@kernel.org, rui.zhang@intel.com, linux-pm@vger.kernel.org,
+        sumeet.r.pawnikar@intel.com, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Andy Shevchenko (2023-09-06 13:13:27)
-> On Wed, Sep 06, 2023 at 11:09:43AM -0700, Stephen Boyd wrote:
-> > It's possible for interrupts to get significantly delayed to the point
-> > that callers of intel_scu_ipc_dev_command() and friends can call the
-> > function once, hit a timeout, and call it again while the interrupt
-> > still hasn't been processed. This driver will get seriously confused if
-> > the interrupt is finally processed after the second IPC has been sent
-> > with ipc_command(). It won't know which IPC has been completed. This
-> > could be quite disastrous if calling code assumes something has happened
-> > upon return from intel_scu_ipc_dev_simple_command() when it actually
-> > hasn't.
-> >
-> > Let's avoid this scenario by simply returning -EBUSY in this case.
-> > Hopefully higher layers will know to back off or fail gracefully when
-> > this happens. It's all highly unlikely anyway, but it's better to be
-> > correct here as we have no way to know which IPC the status register is
-> > telling us about if we send a second IPC while the previous IPC is still
-> > processing.
+On Wed, Sep 6, 2023 at 9:08 PM Srinivas Pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
 >
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> System runs at minimum performance, once powercap RAPL package domain
+> enabled flag is changed from 1 to 0 to 1.
 >
-> Also see below.
+> Setting RAPL package domain enabled flag to 0, results in setting of
+> power limit 4 (PL4) MSR 0x601 to 0. This implies disabling PL4 limit.
+> The PL4 limit controls the peak power. So setting 0, results in some
+> undesirable performance, which depends on hardware implementation.
 >
-> ...
+> Even worse, when the enabled flag is set to 1 again. This will set PL4
+> MSR value to 0x01, which means reduce peak power to 0.125W. This will
+> force system to run at the lowest possible performance on every PL4
+> supported system.
 >
-> > @@ -450,6 +468,12 @@ int intel_scu_ipc_dev_simple_command(struct intel_scu_ipc_dev *scu, int cmd,
-> >               return -ENODEV;
-> >       }
+> Setting enabled flag should only affect the "enable" bit, not other
+> bits. Here it is changing power limit.
 >
-> >       scu = ipcdev;
+> This is caused by a change which assumes that there is an enable bit in
+> the PL4 MSR like other power limits. Although PL4 enable/disable bit is
+> present with TPMI RAPL interface, it is not present with the MSR
+> interface.
 >
-> Side observation: Isn't this a bug? We should not override the supplied parameter.
+> There is a rapl_primitive_info defined for non existent PL4 enable bit
+> and then it is used with the commit 9050a9cd5e4c ("powercap: intel_rapl:
+> Cleanup Power Limits support") to enable PL4. This is wrong, hence remove
+> this rapl primitive for PL4. Also in the function
+> rapl_detect_powerlimit(), PL_ENABLE is used to check for the presence of
+> power limits. Replace PL_ENABLE with PL_LIMIT, as PL_LIMIT must be
+> present. Without this change, PL4 controls will not be available in the
+> sysfs once rapl primitive for PL4 is removed.
+>
+> Fixes: 9050a9cd5e4c ("powercap: intel_rapl: Cleanup Power Limits support")
+> Suggested-by: Zhang Rui <rui.zhang@intel.com>
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Tested-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+> Cc: stable@vger.kernel.org # v6.5+
+> ---
+> v2
+> - Remove RAPL primitive for PL4 instead as suggedted by Rui
+> - Replace PL_ENABLE with PL_LIMIT for domain detect
+> - Update change log and header
+>
+>  drivers/powercap/intel_rapl_common.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/drivers/powercap/intel_rapl_common.c b/drivers/powercap/intel_rapl_common.c
+> index 5c2e6d5eea2a..40a2cc649c79 100644
+> --- a/drivers/powercap/intel_rapl_common.c
+> +++ b/drivers/powercap/intel_rapl_common.c
+> @@ -658,8 +658,6 @@ static struct rapl_primitive_info rpi_msr[NR_RAPL_PRIMITIVES] = {
+>                             RAPL_DOMAIN_REG_LIMIT, ARBITRARY_UNIT, 0),
+>         [PL2_CLAMP] = PRIMITIVE_INFO_INIT(PL2_CLAMP, POWER_LIMIT2_CLAMP, 48,
+>                             RAPL_DOMAIN_REG_LIMIT, ARBITRARY_UNIT, 0),
+> -       [PL4_ENABLE] = PRIMITIVE_INFO_INIT(PL4_ENABLE, POWER_LIMIT4_MASK, 0,
+> -                               RAPL_DOMAIN_REG_PL4, ARBITRARY_UNIT, 0),
+>         [TIME_WINDOW1] = PRIMITIVE_INFO_INIT(TIME_WINDOW1, TIME_WINDOW1_MASK, 17,
+>                             RAPL_DOMAIN_REG_LIMIT, TIME_UNIT, 0),
+>         [TIME_WINDOW2] = PRIMITIVE_INFO_INIT(TIME_WINDOW2, TIME_WINDOW2_MASK, 49,
+> @@ -1458,7 +1456,7 @@ static void rapl_detect_powerlimit(struct rapl_domain *rd)
+>                         }
+>                 }
+>
+> -               if (rapl_read_pl_data(rd, i, PL_ENABLE, false, &val64))
+> +               if (rapl_read_pl_data(rd, i, PL_LIMIT, false, &val64))
+>                         rd->rpl[i].name = NULL;
+>         }
+>  }
+> --
 
-If it is a bug that would be great to know. I wanted to make an API that
-got the scu if it wasn't busy but then I ran across this code that
-replaced the scu with ipcdev.
+Applied as 6.6-rc material, thanks!
