@@ -2,80 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09EFE794054
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE94794057
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238481AbjIFP0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 11:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47204 "EHLO
+        id S242568AbjIFP1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 11:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbjIFP0V (ORCPT
+        with ESMTP id S230465AbjIFP1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 11:26:21 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 42AA9E5C;
-        Wed,  6 Sep 2023 08:26:18 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 897528050;
-        Wed,  6 Sep 2023 15:26:17 +0000 (UTC)
-Date:   Wed, 6 Sep 2023 18:26:16 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Marc Haber <mh+linux-kernel@zugschlus.de>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux KVM <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: Linux 6.5 speed regression, boot VERY slow with anything systemd
- related
-Message-ID: <20230906152616.GE11676@atomide.com>
-References: <ZO3sA2GuDbEuQoyj@torres.zugschlus.de>
- <ZO4GeazfcA09SfKw@google.com>
- <ZO4JCfnzRRL1RIZt@torres.zugschlus.de>
- <ZO4RzCr/Ugwi70bZ@google.com>
- <ZO4YJlhHYjM7MsK4@torres.zugschlus.de>
- <ZO4nbzkd4tovKpxx@google.com>
- <ZO5OeoKA7TbAnrI1@torres.zugschlus.de>
- <ZPEPFJ8QvubbD3H9@google.com>
- <20230901122431.GU11676@atomide.com>
- <ZPiPkSY6NRzfWV5Z@torres.zugschlus.de>
+        Wed, 6 Sep 2023 11:27:17 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8259E5C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 08:27:13 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c0d0bf18d7so23655895ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 08:27:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694014033; x=1694618833; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=/zC3sGldpjzeO9CMTZXERQUoaHDgQlu9tqCa3BrGgAE=;
+        b=ZTBwdQ+WF35PHzUSDLhLhN3NBH3Vd/FMyx/RQ919NWpeYm5JmPBiVdJ55MpOpApon4
+         kYQzR9P1JjswUF6RKp0DyG8N84y1Yy52aCxsgPH/cXan4yQZ7Dx9t5KdJaKr6U+N1mlW
+         uQauYp88I6jedPTXOEejxe6oS204Vj9rzr3SSqAJjsRxYDNLOJxXXK2hx1u1mU0IYJG/
+         PXa10A6iye4Y/64Z5HbrZqPbYUW0uI48+GV//DO4po9bXgvVAWTcyv7GnETkT9JQp20N
+         t5bRfV2GRyDsg5Q6SkPVNIrXNGJAMFWuJm5iEd11imVp8XaNVimOrhMj3e/DJ8KOo0Aa
+         64yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694014033; x=1694618833;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/zC3sGldpjzeO9CMTZXERQUoaHDgQlu9tqCa3BrGgAE=;
+        b=Kxnw2/cHphm2Pg9RnTL8j5ZsO1vippoTqYSB4dTDfnpNgejF9aq8u6iuslnlzCXZee
+         1aXWhAXJxXWkzB86bitZTHF/uvm5zAMM04/FFfUfp6AKecO2vC6lTGu2RcVf+cnRCJEu
+         vEa9sKQNpUOqqt315auAlfgJV2xn34XF8jebvRdCRwhTNrABjg0FMNrTIItSouvdrfVN
+         YPWmia3qlQxg2dXT+wDBJqezg8FYmnCHmJVYNlflMsNjUZBrMEPJtaPmsXD0MTm9/ZuC
+         N3/KhXMx+7CiLwlNVuR3SnTXGB6D3aWfyx8ZPFeZvTAHG1lrLe6f3GobOvm621tIHI/A
+         PFsw==
+X-Gm-Message-State: AOJu0YyOhxmp0MghJSy0z6fslXz/PlHS2CDVZg0X55zNYtw3xZBEIRzX
+        fsMjfvCO4dndnTD9zi9vC/zf
+X-Google-Smtp-Source: AGHT+IG3+CorsfPvIhXCthxDyrsclXr1JANLccL0UeFE1jZA2vIkElTgbVbw6jVva0tUGoKzfeesBA==
+X-Received: by 2002:a17:903:4296:b0:1bd:ca21:c85 with SMTP id ju22-20020a170903429600b001bdca210c85mr12134409plb.69.1694014033186;
+        Wed, 06 Sep 2023 08:27:13 -0700 (PDT)
+Received: from thinkpad ([120.138.12.139])
+        by smtp.gmail.com with ESMTPSA id 19-20020a170902ee5300b001bb99ea5d02sm11265261plo.4.2023.09.06.08.27.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 08:27:12 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 20:57:04 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     tglx@linutronix.de, aisheng.dong@nxp.com, bhelgaas@google.com,
+        devicetree@vger.kernel.org, festevam@gmail.com,
+        imx@lists.linux.dev, jdmason@kudzu.us, kernel@pengutronix.de,
+        kishon@ti.com, krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
+        ntb@lists.linux.dev, peng.fan@nxp.com, robh+dt@kernel.org,
+        s.hauer@pengutronix.de, shawnguo@kernel.org
+Subject: Re: [PATCH 1/3] PCI: endpoint: Add RC-to-EP doorbell support using
+ platform MSI controller
+Message-ID: <20230906152704.GD5930@thinkpad>
+References: <20230426203436.1277307-1-Frank.Li@nxp.com>
+ <20230426203436.1277307-2-Frank.Li@nxp.com>
+ <20230902045214.GA2913@thinkpad>
+ <20230902045328.GB2913@thinkpad>
+ <ZPf/EkffMC51iLQ/@lizhi-Precision-Tower-5810>
+ <20230906122605.GB5930@thinkpad>
+ <ZPiNwQg3rDQMRA/6@lizhi-Precision-Tower-5810>
+ <20230906145227.GC5930@thinkpad>
+ <ZPiT/LJGpNbCRDZk@lizhi-Precision-Tower-5810>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZPiPkSY6NRzfWV5Z@torres.zugschlus.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZPiT/LJGpNbCRDZk@lizhi-Precision-Tower-5810>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Marc Haber <mh+linux-kernel@zugschlus.de> [230906 14:41]:
-> With my tools I have found out that it really seems to be related to the
-> CPU of the host. I have changed my VM definition to "copy host CPU
-> configuration to VM" in libvirt and have moved this very VM (image and
-> settings) to hosts with a "Ryzen 5 Pro 4650G" and to an "Intel Xeon
-> E3-1246" where they work flawlessly, while on both APUs I have available
-> ("AMD G-T40E" and "AMD GX-412TC SOC") the regression in 6.5 shows. And
-> if I boot other VMs on the APUs with 6.5 the issue comes up. It is a
-> clear regression since going back to 4.6's serial code solves the issue
-> on the APUs.
+On Wed, Sep 06, 2023 at 11:00:12AM -0400, Frank Li wrote:
+> On Wed, Sep 06, 2023 at 08:22:27PM +0530, Manivannan Sadhasivam wrote:
+> > > > 
+> > > > Can't you assign it in the EPF driver itself? I do not want any OF reference in
+> > > > the EPF core since it has no OF support.
+> > > 
+> > > If that, Each EPF driver need do duplicate work. 
+> > > 
+> > 
+> > Yes, and that's how it should be. EPF core has no job in supplying the of_node.
+> > It is the responsibility of the EPF drivers as they depend on OF for platform
+> > support.
+> 
+> EPF driver still not depend on OF. such pci-epf-test, which was probed by
+> configfs.
+> 
 
-Not sure why the CPU matters here..
+Hmm, yeah. Then it should be part of the EPC driver.
 
-One thing to check is if you have these in your .config:
+Sorry for the confusion.
 
-CONFIG_SERIAL_CORE=y
-CONFIG_SERIAL_CORE_CONSOLE=y
+- Mani
 
-Or do you maybe have CONFIG_SERIAL_CORE=m as loadable module?
+> Frank 
+> 
+> > 
+> > - Mani
+> > 
+> > > IMS will support per-device MSI domain, then we can implement customized
+> > > MSI irq allocated. But so far, it is simplest solution, we can update it
+> > > after IMS implementation at kernel. Only one place need be changed.
+> > > 
+> > மணிவண்ணன் சதாசிவம்
 
-If you have CONFIG_SERIAL_CORE=m, maybe you need to modprobe serial_base
-if you have some minimal rootfs that does not automatically do it for you.
-
-Regards,
-
-Tony
+-- 
+மணிவண்ணன் சதாசிவம்
