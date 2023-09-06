@@ -2,114 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB947937E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D69B79372F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234941AbjIFJSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 05:18:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41056 "EHLO
+        id S232575AbjIFIcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 04:32:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232647AbjIFJSU (ORCPT
+        with ESMTP id S229722AbjIFIca (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 05:18:20 -0400
-X-Greylist: delayed 1817 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 06 Sep 2023 02:18:16 PDT
-Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 51831CFD
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 02:18:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=tmJhS
-        KuGPCps3pxGDV+8fu4pl00yW9H10nfqaenC7JE=; b=GrEg3Ib/QiFfcSBZD+X0Q
-        3eaealIG7jQSXv61MY4HU4sE1EI7DOoHoL+q+Drlr8wyqot6OqesH2GY/fmHUGuu
-        82wfXAuOUejiIwRhoZPZA8//bXz7npCuzAoNPfrY0yGzAlM+h+waDMIa0pxsdzaj
-        3JLB9lTHzCJDXwexPT3kMA=
-Received: from wangjingyang-redmi-book.. (unknown [223.160.128.242])
-        by zwqz-smtp-mta-g1-0 (Coremail) with SMTP id _____wBnN+X1OPhk9Rm5AQ--.29951S2;
-        Wed, 06 Sep 2023 16:31:50 +0800 (CST)
-From:   Jingyang Wang <wjy7717@126.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jingyang Wang <wjy7717@126.com>
-Subject: [PATCH] Bluetooth: Add support ITTIM PE50-M75C
-Date:   Wed,  6 Sep 2023 16:31:47 +0800
-Message-Id: <20230906083147.25298-1-wjy7717@126.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 6 Sep 2023 04:32:30 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DB3CF0;
+        Wed,  6 Sep 2023 01:32:26 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (ftip006315900.acc1.colindale.21cn-nte.bt.net [81.134.214.249])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CD1124D;
+        Wed,  6 Sep 2023 10:30:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1693989057;
+        bh=8PS+3+ct+TlytlOBH+xgkomraO+qI22hRRiHVvboPPc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MfFeb/q5mcrQO1LHWJqr90i6oINRUFf8/MEyZvTeo62sf5JmvT7dwuKUuvKAD7pGm
+         P6gJPh0tMd3Nm0ErxDc4hqNmgWH2RpZl0x4IO/DQ+7PsQZHxJE5yD/imZAObI3MJG5
+         87fW4VV9fs7nJuP8Vwo2l8/zONXEBPyP7sz7PhnM=
+Date:   Wed, 6 Sep 2023 11:32:37 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Paul Elder <paul.elder@ideasonboard.com>,
+        linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 3/3] arm64: dts: mediatek: mt8365-pumpkin: Add overlays
+ for thp7312 cameras
+Message-ID: <20230906083237.GL7971@pendragon.ideasonboard.com>
+References: <20230905233118.183140-1-paul.elder@ideasonboard.com>
+ <20230905233118.183140-4-paul.elder@ideasonboard.com>
+ <502fc7b1-a32d-6901-3a45-d2aa0e0c3849@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wBnN+X1OPhk9Rm5AQ--.29951S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxCr1ftFWxtFyUJr43CF4UArb_yoW5Xr1rp3
-        Z5J3Z8Zr1Sgr1jg3sIkr18AayfW34xu342g3WDGw1fXFZ3Aan7JF1UArWfXr4vkr4fK3Z0
-        qFnru3yrKr1UtFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zinYFtUUUUU=
-X-Originating-IP: [223.160.128.242]
-X-CM-SenderInfo: 5zm1llirx6ij2wof0z/1tbiihrim1pEEuAerQAAs2
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <502fc7b1-a32d-6901-3a45-d2aa0e0c3849@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--Device(35f5:7922) from /sys/kernel/debug/usb/devices
-P:  Vendor=35f5 ProdID=7922 Rev= 1.00
-S:  Manufacturer=MediaTek Inc.
-S:  Product=Wireless_Device
-S:  SerialNumber=000000000
-C:* #Ifs= 3 Cfg#= 1 Atr=e0 MxPwr=100mA
-A:  FirstIf#= 0 IfCount= 3 Cls=e0(wlcon) Sub=01 Prot=01
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
-E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-I:* If#= 2 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=8a(I) Atr=03(Int.) MxPS=  64 Ivl=125us
-E:  Ad=0a(O) Atr=03(Int.) MxPS=  64 Ivl=125us
-I:  If#= 2 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=8a(I) Atr=03(Int.) MxPS= 512 Ivl=125us
-E:  Ad=0a(O) Atr=03(Int.) MxPS= 512 Ivl=125us
+Hi Krzysztof,
 
-Signed-off-by: Jingyang Wang <wjy7717@126.com>
----
- drivers/bluetooth/btusb.c | 3 +++
- 1 file changed, 3 insertions(+)
+On Wed, Sep 06, 2023 at 09:27:07AM +0200, Krzysztof Kozlowski wrote:
+> On 06/09/2023 01:31, Paul Elder wrote:
+> > Add overlays for the Pumpkin i350 to support THP7312 cameras.
+> > 
+> > Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+> > ---
+> >  arch/arm64/boot/dts/mediatek/Makefile         |  4 +
+> >  .../mt8365-pumpkin-common-thp7312.dtsi        | 23 ++++++
+> >  .../mt8365-pumpkin-csi0-thp7312-imx258.dtso   | 73 +++++++++++++++++++
+> >  .../mt8365-pumpkin-csi1-thp7312-imx258.dtso   | 73 +++++++++++++++++++
+> >  4 files changed, 173 insertions(+)
+> >  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
+> >  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi0-thp7312-imx258.dtso
+> >  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi1-thp7312-imx258.dtso
+> > 
+> > diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
+> > index 20570bc40de8..ceaf24105001 100644
+> > --- a/arch/arm64/boot/dts/mediatek/Makefile
+> > +++ b/arch/arm64/boot/dts/mediatek/Makefile
+> > @@ -56,4 +56,8 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-evk.dtb
+> >  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-pumpkin.dtb
+> >  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8516-pumpkin.dtb
+> >  
+> > +mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-csi0-thp7312-imx258.dtbo
+> > +mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-csi1-thp7312-imx258.dtbo
+> >  mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-ethernet-usb.dtbo
+> > +
+> > +dtb-$(CONFIG_ARCH_MEDIATEK) += mtk-mt8365-pumpkin.dtb
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
+> > new file mode 100644
+> > index 000000000000..478697552617
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
+> > @@ -0,0 +1,23 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (c) 2023 Ideas on Board
+> > + * Author: Paul Elder <paul.elder@ideasonboard.com>
+> > + */
+> > +
+> > +/dts-v1/;
+> > +/plugin/;
+> > +
+> > +&{/} {
+> > +	vsys_v4p2: regulator@0 {
+> 
+> Hm? Is this a bus?
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 499f4809fcdf..23590c9315ca 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -644,6 +644,9 @@ static const struct usb_device_id quirks_table[] = {
- 	{ USB_DEVICE(0x04ca, 0x3804), .driver_info = BTUSB_MEDIATEK |
- 						     BTUSB_WIDEBAND_SPEECH |
- 						     BTUSB_VALID_LE_STATES },
-+	{ USB_DEVICE(0x35f5, 0x7922), .driver_info = BTUSB_MEDIATEK |
-+						     BTUSB_WIDEBAND_SPEECH |
-+						     BTUSB_VALID_LE_STATES },
- 
- 	/* Additional Realtek 8723AE Bluetooth devices */
- 	{ USB_DEVICE(0x0930, 0x021d), .driver_info = BTUSB_REALTEK },
+There are multiple instances of "numbered" regulators in upstream DT
+files, for instance arch/arm/boot/dts/nxp/imx/imx6qdl-nitrogen6_max.dtsi
+has a regulator@0. There are similar instances for clocks.
+
+I understand why it may not be a good idea, and how the root node is
+indeed not a bus. In some cases, those regulators and clocks are grouped
+in a regulators or clocks node that has a "simple-bus" compatible. I'm
+not sure if that's a good idea, but at least it should validate.
+
+What's the best practice for discrete board-level clocks and regulators
+in overlays ? How do we ensure that their node name will not conflict
+with the board to which the overlay is attached ?
+
+> > +		compatible = "regulator-fixed";
+> > +		regulator-name = "vsys-v4p2";
+> > +		regulator-min-microvolt = <4200000>;
+> > +		regulator-max-microvolt = <4200000>;
+> > +	};
+> > +
+> > +	camera61_clk: cam_clk24m {
+> 
+> And this is not on a bus? It's the same / node!
+> 
+> Please work on mainline, which means take mainline code and change it to
+> your needs. Do not take downstream poor code and change it...
+> 
+> No underscores in node names. Also generic node names, so at least with
+> generic prefix or suffix.
+> 
+> > +		compatible = "fixed-clock";
+> > +		clock-frequency = <24000000>;
+> > +		#clock-cells = <0>;
+> > +	};
+> > +};
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi0-thp7312-imx258.dtso b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi0-thp7312-imx258.dtso
+> > new file mode 100644
+> > index 000000000000..740d14a19d75
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi0-thp7312-imx258.dtso
+> > @@ -0,0 +1,73 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (c) 2023 Ideas on Board
+> > + * Author: Paul Elder <paul.elder@ideasonboard.com>
+> > + */
+> > +
+> > +#include <dt-bindings/gpio/gpio.h>
+> > +#include <dt-bindings/pinctrl/mt8365-pinfunc.h>
+> > +#include "mt8365-pumpkin-common-thp7312.dtsi"
+> > +
+> > +&i2c3 {
+> > +	camera@61 {
+> > +		compatible = "thine,thp7312";
+> > +		reg = <0x61>;
+> > +		pinctrl-names = "default";
+> > +		pinctrl-0 = <&cam0_pins_default>;
+> > +		reset-gpios = <&pio 118 GPIO_ACTIVE_LOW>;
+> > +		clocks = <&camera61_clk>;
+> > +
+> > +		vddcore-supply = <&vsys_v4p2>;
+> > +		vhtermrx-supply = <&vsys_v4p2>;
+> > +		vddtx-supply = <&vsys_v4p2>;
+> > +		vddhost-supply = <&vsys_v4p2>;
+> > +		vddcmos-supply = <&vsys_v4p2>;
+> > +		vddgpio_0-supply = <&vsys_v4p2>;
+> > +		vddgpio_1-supply = <&vsys_v4p2>;
+> > +		DOVDD-supply = <&vsys_v4p2>;
+> > +		AVDD-supply = <&vsys_v4p2>;
+> > +		DVDD-supply = <&vsys_v4p2>;
+> > +
+> > +		orientation = <0>;
+> > +		rotation = <0>;
+> > +
+> > +		thine,rx,data-lanes = <4 1 3 2>;
+> 
+> NAK for this property.
+
+Please explain why. You commented very briefly in the bindings review,
+and it wasn't clear to me if you were happy or not with the property,
+and if not, why.
+
+> > +
+> > +		port {
+> > +			isp1_out: endpoint {
+> > +				remote-endpoint = <&seninf_in1>;
+> > +				data-lanes = <4 2 1 3>;
+> > +			};
+> > +		};
+> > +	};
+> > +};
+> > +
+> > +&pio {
+> > +	cam0_pins_default: cam0_pins_default {
+> 
+> No underscores in node names.
+> 
+> > +		pins_rst {
+> 
+> Ditto
+
 -- 
-2.34.1
+Regards,
 
+Laurent Pinchart
