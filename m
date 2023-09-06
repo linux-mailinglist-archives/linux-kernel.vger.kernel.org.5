@@ -2,71 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E8F794529
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F55879452C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241942AbjIFVhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 17:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
+        id S229725AbjIFVhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 17:37:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231613AbjIFVg7 (ORCPT
+        with ESMTP id S244804AbjIFVhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 17:36:59 -0400
+        Wed, 6 Sep 2023 17:37:22 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB8BE7C;
-        Wed,  6 Sep 2023 14:36:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3B28C433C7;
-        Wed,  6 Sep 2023 21:36:53 +0000 (UTC)
-Date:   Wed, 6 Sep 2023 17:37:06 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     zhengyejian1@huawei.com, akaher@vmware.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
-        shuah@kernel.org, skhan@linuxfoundation.org, yeweihua4@huawei.com
-Subject: Re: "[PATCH] selftests/ftrace: Correctly enable event in
- instance-event.tc"
-Message-ID: <20230906173706.7aeb8716@gandalf.local.home>
-In-Reply-To: <20230906103718.0405ccb4@gandalf.local.home>
-References: <b62e6539-7b25-c8ab-6b6c-47e723023297@huawei.com>
-        <20230906142652.191866-1-naresh.kamboju@linaro.org>
-        <20230906103718.0405ccb4@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB1F19AF;
+        Wed,  6 Sep 2023 14:37:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B589C433C8;
+        Wed,  6 Sep 2023 21:37:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694036234;
+        bh=VWz69qCidAW4eY587FfNE7Ut5ePeITucYZqjg8X5KWg=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=DwSburqj7K+fZcs9m+n7jzwCZD00+YF3Qzk2m/c37Jll7xhaw/KJlbzQFvdL2WExn
+         fiucGEr3tentBGGXVk6Rkgc91eOqPmXgthCZRIXdOALEngWiSE4HQ31Ja/TQy6GYHt
+         LWz9ln7In/vpUYVMdGI+1IVP4NLdTc/cNa+HFIsb/96rF7JQNRBg+58c95HPXmfiZ3
+         FjfdIv2/2ljgGZfclVPemXM6RQQtbmehFWQ0wC4iwG8RIL7fKDbesyKS7dolrva4yx
+         5ZGcd0TW5a4XF1V8Qff7jipAJowBFCIzJcx0PdlU9F7a6s4AhQI24z3MmJBMoFjqog
+         LwaVlqegQ4wXg==
+Message-ID: <1301b37b3aa489f8025d68ccbb42a72b.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230826112524.4134627-1-bigunclemax@gmail.com>
+References: <1669569799-8526-1-git-send-email-badolevishal1116@gmail.com> <20230826112524.4134627-1-bigunclemax@gmail.com>
+Subject: Re: [PATCH v5] Common clock: To list active consumers of clocks
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     badolevishal1116@gmail.com, chinmoyghosh2001@gmail.com,
+        linux-kernel@vger.kernel.org, mintupatel89@gmail.com,
+        mturquette@baylibre.com, vimal.kumar32@gmail.com
+To:     Maksim Kiselev <bigunclemax@gmail.com>, linux-clk@vger.kernel.org
+Date:   Wed, 06 Sep 2023 14:37:11 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Sep 2023 10:37:18 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Quoting Maksim Kiselev (2023-08-26 04:25:24)
+> Sorry for disturbing. Just a gentle ping :)=20
+> This patch looks abandoned.
+> Is there any chance that it will be reviewed?
+>=20
 
-> > Log details,
-> > -------------
-> > # ok 45 ftrace - test tracing error log support
-> > <47>[ 1373.662292] systemd-journald[90]: Sent WATCHDOG=1 notification.
-> > # ok 46 Test creation and deletion of trace instances while setting an event  
-> 
-> It's definitely a race with the creation and deletion of instances.
-> 
-> I'm going to run it on my laptop VM and see if that reproduces it. My other
-> VM is on a pretty powerful machine, and perhaps that's keeping it from
-> hitting the race.
-
-Putting in a while loop of:
-
-  # while :; do ./ftracetest test.d/instances/instance-event.tc ; done
-
-eventually triggered the bug. Looks like this is really an existing bug not
-related to the eventfs, but the eventfs code actually opened up the window
-of this race.
-
-Hopefully I'll have a fix shortly.
-
--- Steve
+You could review it. Or resend it.
