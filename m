@@ -2,169 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3712079379B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16C479379E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbjIFJAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 05:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41154 "EHLO
+        id S236219AbjIFJBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 05:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235914AbjIFJAv (ORCPT
+        with ESMTP id S232885AbjIFJBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 05:00:51 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19824E50;
-        Wed,  6 Sep 2023 02:00:47 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (ftip006315900.acc1.colindale.21cn-nte.bt.net [81.134.214.249])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2EE1AAF2;
-        Wed,  6 Sep 2023 10:59:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1693990758;
-        bh=4wPXFKoJ8tbHdlnTo39VoR7+ojgp/oBrZhSOyNoere8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n+xaMIK2jsOnY15WbPObM6RNDALiX6P7Dl+xwCCN0E4XdBsbgbrLzL2bAekobM1Zs
-         dWCuoJ7QA66cUgSEzTSacvfAq7+hl2oDEXJ4Cieill4SSJh1QU5/MvTlxoXbxUoYCb
-         fJpAdVOLYM1NshP9Rx+CGeiicIlPlIqwEFVcxKJs=
-Date:   Wed, 6 Sep 2023 12:00:58 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Paul Elder <paul.elder@ideasonboard.com>,
-        linux-media@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 3/3] arm64: dts: mediatek: mt8365-pumpkin: Add overlays
- for thp7312 cameras
-Message-ID: <20230906090058.GB17308@pendragon.ideasonboard.com>
-References: <20230905233118.183140-1-paul.elder@ideasonboard.com>
- <20230905233118.183140-4-paul.elder@ideasonboard.com>
- <502fc7b1-a32d-6901-3a45-d2aa0e0c3849@linaro.org>
- <20230906083237.GL7971@pendragon.ideasonboard.com>
- <a3ed9856-a87b-5cf6-26b5-ff2b19234a8a@linaro.org>
+        Wed, 6 Sep 2023 05:01:19 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C238E47;
+        Wed,  6 Sep 2023 02:01:14 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso58103431fa.1;
+        Wed, 06 Sep 2023 02:01:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693990872; x=1694595672; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pGBcwbFPU/bGY4zSYaJ1ifEXL5+F/gokQ5BwkUen+qA=;
+        b=iI5Zx8SdjJeOWbbelquqp94upW5usvO+MVcmV0oJfjuP78uSgy2G5cQjzT6A1sOWZr
+         2K+89cnS3vjSeedhw0EQl93KM3AKy/a5G3/+AKtY2Xc6ceg6FFdqOgZqDxfp9YALTIhh
+         cChrPkvCBMTSltpGVkAAcIpJq4kb+nNsDAoVxg2lhaJ5130ZyM5vGe12+6ft5gBhgIsq
+         1qdXc8lRux9aHDjOxkN9/xB5eFTnrOjbXMMzivbYOnixBAknmYRskvMH00tAUJkX1cpl
+         RYS2KaiWpLm6nRNW0Af37Ua48+OavzJf2bo7kjkac+SyvWKrolUmrZs5bt8++OoQyfGC
+         7z0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693990872; x=1694595672;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pGBcwbFPU/bGY4zSYaJ1ifEXL5+F/gokQ5BwkUen+qA=;
+        b=j99GDk0hsmQCnvZhnxHlboQ4Crftk5NPIFfB2jT3LZHqMpfCdDDL180Tbwb3V5xRJm
+         z/ZkGereFJpSleTjpEYkJpl+bXZKI20DpM31K8GXYkQzGBYyWVe73voNKwWlW45HhSA+
+         9QyJYczMInSgbk59vvgoEJpBT3n6PEg9KXzkT/v1ls0fTzTV3Ibf2NsnzpdVUnPnlKaY
+         BwBRZYnkSpzZv7hHpfkXgW9y9fYosX6bm+uqmAxvqP+6kdlU1laPxZrPMEs/yq0xjn4n
+         QGqkhlmUA99FukPQvF+mrg9FHNGbn0Ff+GhrWH2xIR0kfLc69eJTsQSGog1f6Hx9veRY
+         azKw==
+X-Gm-Message-State: AOJu0YzKcYRuaqqx2GBcrnr3chfLaOBbRxcEfegbeajLnJxKMu8O/E/t
+        dZF2hHfsIVEt8DE0Gt69A3JSUjLQYihgNF2nG6Y=
+X-Google-Smtp-Source: AGHT+IFEeFdFaGaTLQBI687uLLemZurhXtmM5YDshrwY9B8n6Jsr0TB3y/S2wMiOM3uqcoQPE8js1WezowOosvA6ZU4=
+X-Received: by 2002:a2e:3603:0:b0:2b9:e53f:e201 with SMTP id
+ d3-20020a2e3603000000b002b9e53fe201mr1722458lja.31.1693990872213; Wed, 06 Sep
+ 2023 02:01:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <a3ed9856-a87b-5cf6-26b5-ff2b19234a8a@linaro.org>
+References: <cover.1693659382.git.haibo1.xu@intel.com> <c87337cfd7fb135e2efed589360a78c26a402eac.1693659382.git.haibo1.xu@intel.com>
+ <20230904-11e853ffe3d8e9cf9ec6079d@orel> <CAJve8onwjBQcbVy75qyOF3A51-T0WyBkmeCV_wOZvzaPcrBVFg@mail.gmail.com>
+ <CAJve8ok-zZAG7T3t5XD-CtJn47tTE867Xaaw_YHYy1XmUL41rw@mail.gmail.com> <20230906-3f0318fa20365f9211998bae@orel>
+In-Reply-To: <20230906-3f0318fa20365f9211998bae@orel>
+From:   Haibo Xu <xiaobo55x@gmail.com>
+Date:   Wed, 6 Sep 2023 17:01:00 +0800
+Message-ID: <CAJve8omsTQB04dZDCtK=0Fz3ExTuPFVQKvxz9Du5WyfqOwnuSg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/8] KVM: arm64: selftest: Split arch_timer test code
+To:     Andrew Jones <ajones@ventanamicro.com>
+Cc:     Haibo Xu <haibo1.xu@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Guo Ren <guoren@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Lei Wang <lei4.wang@intel.com>, Like Xu <likexu@tencent.com>,
+        Peter Gonda <pgonda@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Thomas Huth <thuth@redhat.com>,
+        =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Michal Luczaj <mhal@rbox.co>, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        kvm-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 10:48:23AM +0200, Krzysztof Kozlowski wrote:
-> On 06/09/2023 10:32, Laurent Pinchart wrote:
-> > On Wed, Sep 06, 2023 at 09:27:07AM +0200, Krzysztof Kozlowski wrote:
-> >> On 06/09/2023 01:31, Paul Elder wrote:
-> >>> Add overlays for the Pumpkin i350 to support THP7312 cameras.
-> >>>
-> >>> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
-> >>> ---
-> >>>  arch/arm64/boot/dts/mediatek/Makefile         |  4 +
-> >>>  .../mt8365-pumpkin-common-thp7312.dtsi        | 23 ++++++
-> >>>  .../mt8365-pumpkin-csi0-thp7312-imx258.dtso   | 73 +++++++++++++++++++
-> >>>  .../mt8365-pumpkin-csi1-thp7312-imx258.dtso   | 73 +++++++++++++++++++
-> >>>  4 files changed, 173 insertions(+)
-> >>>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
-> >>>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi0-thp7312-imx258.dtso
-> >>>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi1-thp7312-imx258.dtso
-> >>>
-> >>> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-> >>> index 20570bc40de8..ceaf24105001 100644
-> >>> --- a/arch/arm64/boot/dts/mediatek/Makefile
-> >>> +++ b/arch/arm64/boot/dts/mediatek/Makefile
-> >>> @@ -56,4 +56,8 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-evk.dtb
-> >>>  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-pumpkin.dtb
-> >>>  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8516-pumpkin.dtb
-> >>>  
-> >>> +mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-csi0-thp7312-imx258.dtbo
-> >>> +mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-csi1-thp7312-imx258.dtbo
-> >>>  mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-ethernet-usb.dtbo
-> >>> +
-> >>> +dtb-$(CONFIG_ARCH_MEDIATEK) += mtk-mt8365-pumpkin.dtb
-> >>> diff --git a/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
-> >>> new file mode 100644
-> >>> index 000000000000..478697552617
-> >>> --- /dev/null
-> >>> +++ b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
-> >>> @@ -0,0 +1,23 @@
-> >>> +// SPDX-License-Identifier: GPL-2.0
-> >>> +/*
-> >>> + * Copyright (c) 2023 Ideas on Board
-> >>> + * Author: Paul Elder <paul.elder@ideasonboard.com>
-> >>> + */
-> >>> +
-> >>> +/dts-v1/;
-> >>> +/plugin/;
-> >>> +
-> >>> +&{/} {
-> >>> +	vsys_v4p2: regulator@0 {
-> >>
-> >> Hm? Is this a bus?
-> > 
-> > There are multiple instances of "numbered" regulators in upstream DT
-> > files, for instance arch/arm/boot/dts/nxp/imx/imx6qdl-nitrogen6_max.dtsi
-> 
-> That's the only example I saw... I fixed it now.
-> 
-> > has a regulator@0. There are similar instances for clocks.
-> > 
-> > I understand why it may not be a good idea, and how the root node is
-> > indeed not a bus. In some cases, those regulators and clocks are grouped
-> > in a regulators or clocks node that has a "simple-bus" compatible. I'm
-> > not sure if that's a good idea, but at least it should validate.
-> > 
-> > What's the best practice for discrete board-level clocks and regulators
-> > in overlays ? How do we ensure that their node name will not conflict
-> > with the board to which the overlay is attached ?
-> 
-> Top-level nodes (so under /) do not have unit addresses. If they have -
-> it's an error, because it is not a bus. Also, unit address requires reg.
-> No reg? No unit address. DTC reports this as warnings as well.
+On Wed, Sep 6, 2023 at 3:01=E2=80=AFPM Andrew Jones <ajones@ventanamicro.co=
+m> wrote:
+>
+> On Wed, Sep 06, 2023 at 11:44:26AM +0800, Haibo Xu wrote:
+> > On Wed, Sep 6, 2023 at 10:14=E2=80=AFAM Haibo Xu <xiaobo55x@gmail.com> =
+wrote:
+> > >
+> > > On Mon, Sep 4, 2023 at 9:24=E2=80=AFPM Andrew Jones <ajones@ventanami=
+cro.com> wrote:
+> ...
+> > > > > +
+> > > > > +enum guest_stage {
+> > > > > +     GUEST_STAGE_VTIMER_CVAL=3D1,
+> > > > > +     GUEST_STAGE_VTIMER_TVAL,
+> > > > > +     GUEST_STAGE_PTIMER_CVAL,
+> > > > > +     GUEST_STAGE_PTIMER_TVAL,
+> > > > > +     GUEST_STAGE_MAX,
+> > > > > +};
+> > > >
+> > > > This enum also belongs in aarch64/arch_timer.c
+> > > >
+> > >
+> > > Yes, it should be in aarch64/arch_timer.c
+> > >
+> >
+> > After moving the above enum definition to aarch64/arch_timer.c, the
+> > below errors was reported
+> > while compiling kvm/arch_timer.o
+> >
+> > include/timer_test.h:37:26: error: field =E2=80=98guest_stage=E2=80=99 =
+has incomplete type
+> >    37 |         enum guest_stage guest_stage;
+> >         |                                        ^~~~~~~~~~~
+> >
+> > Since kvm/arch_timer.c was independent of kvm/aarch64/arch_timer.c
+> > during OBJ compiling,
+> > I think it may be not possible to move the enum definition to
+> > aarch64/arch_timer.c
+> >
+> > If we keep the definition in this header file, we can enclose it with
+> > #ifdef __aarch64__ for aarch64 only.
+> >
+>
+> Let's change struct test_vcpu_shared_data to
+>
+>  struct test_vcpu_shared_data {
+>         int nr_iter;
+>         int guest_stage;
+>         uint64_t xcnt;
+>  };
+>
+> and then let the aarch64 code treat guest_stage as an enum and the riscv
+> code can completely ignore it (no need to create an unused enum).
+>
 
-I agree with all that, but what's the recommended practice to add
-top-level clocks and regulators in overlays, in a way that avoids
-namespace clashes with the base board ?
+Good idea! Will fix it in v3.
 
-> >>> +		orientation = <0>;
-> >>> +		rotation = <0>;
-> >>> +
-> >>> +		thine,rx,data-lanes = <4 1 3 2>;
-> >>
-> >> NAK for this property.
-> > 
-> > Please explain why. You commented very briefly in the bindings review,
-> > and it wasn't clear to me if you were happy or not with the property,
-> > and if not, why.
-> 
-> Because it is duplicating endpoint. At least from the description.
-
-The THP7312 is an external ISP. At the hardware level, it has an input
-side, with a CSI-2 receiver and an I2C master controller, and an output
-side, with a CSI-2 transmitter and an I2C slave controller. A raw camera
-sensor is connected on the input side, transmitting image data to the
-THP7312, and being controlled over I2C by the firmware running on the
-THP7312. From a Linux point of view, only the output side of the THP7312
-is visible, and the combination of the raw camera sensor and the THP7312
-acts as a smart camera sensor, producing YUV images.
-
-As there are two CSI-2 buses, the data lanes configuration needs to be
-specified for both sides. On the output side, connected to the SoC and
-visible to Linux, the bindings use a port node with an endpoint and the
-standard data-lanes property. On the input side, which is invisible to
-Linux, the bindings use the vendor-specific thine,rx,data-lanes
-property. Its semantics is identical to the standard data-lanes
-property, but it's not located in an endpoint as there's no port for the
-input side.
-
--- 
-Regards,
-
-Laurent Pinchart
+> Thanks,
+> drew
