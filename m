@@ -2,78 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22344793D8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3963D793D9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240452AbjIFNVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 09:21:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54788 "EHLO
+        id S235285AbjIFN0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 09:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231766AbjIFNVq (ORCPT
+        with ESMTP id S232307AbjIFN0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 09:21:46 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5276010C7
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 06:21:42 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99c1c66876aso541135366b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 06:21:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694006501; x=1694611301; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5VeKi9/ArJTcrdf/DJQWIeh6fMdLX32bOeVBSbYiaos=;
-        b=husH/zp9/SSyhOM63F1EVjV+XCBnoKoDjcI+iK8KyBqsBYL2luTCLW+5cUG22a4lLT
-         1f2uKHnAMr/UW5DWO1W6P5tx/FZTU3Tw4ZGXWi1rLxPUQ+1LFNMH3kWXp/pwRwilcVG7
-         UiGjknjH/leEhAiBdlXAL+/M18svHuCJp04lyARD10+jwzOG5Ju2jSc2euNM8xW51hE3
-         VG71LjtNPHDfItDDd0OLPoecA6vnlWuvyFj6sAwwgGbVAbvnx59OjE5Ai3fpj0eAQxAc
-         D3vmZpOJ1IBcBj9BaA5JP75394d87Sluoo5NDQLoBAGNld/AJDPX7nWyXi1FsJ0/9DQ9
-         agZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694006501; x=1694611301;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5VeKi9/ArJTcrdf/DJQWIeh6fMdLX32bOeVBSbYiaos=;
-        b=IBZtlwnk8Dtyesnm89rPqP4El0zeILFRMpvjUnGPVkzxm5Y/spBmGecNprl5JaOkhE
-         8XomdA5UglYz8oMUVwpLnWN2r1oRyrb3/kfLdm9JeyXVgoKINX/3C52Ext8HgBMAs19p
-         CJDhEU+TDWD/+x7tsJwAO6FKB6gBb1QLFD87DVY0BI+FP71dGTEcayIznt+r6THakmQz
-         PXoX7MxEPZf/xkRf/Vvq8blL1j17TnfgsYJQGBmPgADEE40bsbE6pXnXEct0N7f29qJZ
-         4kmeO6wKjANMcYA/XrqelZV7xXkm7dvCVLeyY7QWYdl8xlCJH8e+egBVZcecQrJAmjBK
-         /Ang==
-X-Gm-Message-State: AOJu0YxOcZUILNNrsbbDSZyljfruce8KaGdEnJJWT898P8Lv/XIuHwsW
-        FKH8M7Zhsuap/qsO9rMoVP2uaQ==
-X-Google-Smtp-Source: AGHT+IHV10jiJH/3WC9ALJHJW1lfi34oo5lqmZPk3BL0t6juF8X5rY+MxuF2VkP3ZNWfJRtva7WsmA==
-X-Received: by 2002:a17:906:1d1:b0:9a1:fb4c:3b65 with SMTP id 17-20020a17090601d100b009a1fb4c3b65mr2496168ejj.14.1694006500792;
-        Wed, 06 Sep 2023 06:21:40 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id gu18-20020a170906f29200b0098f99048053sm9165893ejb.148.2023.09.06.06.21.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 06:21:40 -0700 (PDT)
-Message-ID: <6ae8f584-63ac-2d41-c689-c49eefa19764@linaro.org>
-Date:   Wed, 6 Sep 2023 15:21:38 +0200
+        Wed, 6 Sep 2023 09:26:23 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46B210E2
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 06:26:16 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 83E8C1F459;
+        Wed,  6 Sep 2023 13:26:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694006775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zPEx/as2GZuIMuZSiPTwrqmnZcEPZ5iPb0RuDEC2pEI=;
+        b=fTe4UDRUH45Di70HOKDhVdrs7CP5B1Rg0HW2IKpo6tpN66ZD6GGnU08bf7nuT0zLsKzUcv
+        6ekx7UlCNEHXnt6D7H5rWcm274vNOSSgt+lfwASvkt+Z+pccvs1wsJdBUVhQ+20SgIz0gx
+        xwtCQSvGruQHrvwFI1JQbZW46x+tNbU=
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 346CF2C142;
+        Wed,  6 Sep 2023 13:26:15 +0000 (UTC)
+Date:   Wed, 6 Sep 2023 15:26:14 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH printk v3 3/7] printk: nbcon: Add buffer management
+Message-ID: <ZPh99nwo9zJXxqQz@alley>
+References: <20230903150539.245076-1-john.ogness@linutronix.de>
+ <20230903150539.245076-4-john.ogness@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2] dt-bindings: rtc: mcp795: move to trivial-rtc
-To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Bartczak <emilbart@gmail.com>,
-        Josef Gajdusek <atx@atx.name>
-Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230906-topic-rtc_mcp795_yaml-v2-1-f9bef40c99b9@gmail.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230906-topic-rtc_mcp795_yaml-v2-1-f9bef40c99b9@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230903150539.245076-4-john.ogness@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,65 +56,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/09/2023 14:48, Javier Carrasco wrote:
-> The current mcp795 bindings in text format do not support validation and
-> are missing the optional interrupt property that is currently supported.
+On Sun 2023-09-03 17:11:35, John Ogness wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
 > 
-> Adding the missing property makes the bindings identical to the existing
-> trivial-rtc bindings.
+> In case of hostile takeovers it must be ensured that the previous
+> owner cannot scribble over the output buffer of the emergency/panic
+> context. This is achieved by:
 > 
-> Add maxim,mcp795 to the trivial-rtc bindings and delete current .txt
-> bindings
+>  - Adding a global output buffer instance for the panic context.
+>    This is the only situation where hostile takeovers can occur and
+>    there is always at most 1 panic context.
 > 
-> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> ---
-> The current mcp795 bindings in text format do not support validation and
-> are missing the optional interrupt property that is currently supported.
+>  - Allocating an output buffer per console upon console
+>    registration. This buffer is used by the console owner when not
+>    in panic context.
 > 
-> Adding the missing property makes the bindings identical to the existing
-> trivial-rtc bindings.
+>  - Choosing the appropriate buffer is handled in the acquire/release
+>    functions.
 > 
-> Add maxim,mcp795 to the trivial-rtc bindings and delete current .txt
-> bindings
-> ---
-> Changes in v2:
-> - Move mcp795 to trivial-rtc
-> - Link to v1: https://lore.kernel.org/r/20230906-topic-rtc_mcp795_yaml-v1-1-de75c377b5b0@gmail.com
-> ---
->  Documentation/devicetree/bindings/rtc/maxim,mcp795.txt | 11 -----------
->  Documentation/devicetree/bindings/rtc/trivial-rtc.yaml |  2 ++
->  2 files changed, 2 insertions(+), 11 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/rtc/maxim,mcp795.txt b/Documentation/devicetree/bindings/rtc/maxim,mcp795.txt
-> deleted file mode 100644
-> index a59fdd8c236d..000000000000
-> --- a/Documentation/devicetree/bindings/rtc/maxim,mcp795.txt
-> +++ /dev/null
-> @@ -1,11 +0,0 @@
-> -* Maxim MCP795		SPI Serial Real-Time Clock
-> -
-> -Required properties:
-> -- compatible: Should contain "maxim,mcp795".
-> -- reg: SPI address for chip
-> -
-> -Example:
-> -	mcp795: rtc@0 {
-> -		compatible = "maxim,mcp795";
-> -		reg = <0>;
-> -	};
-> diff --git a/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml b/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
-> index 9af77f21bb7f..ae4792bbde92 100644
-> --- a/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
-> +++ b/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
-> @@ -49,6 +49,8 @@ properties:
->        - isil,isl12022
->        # Real Time Clock Module with I2C-Bus
->        - microcrystal,rv3029
-> +      # SPI-BUS INTERFACE REAL TIME CLOCK MODULE
-> +      - maxim,mcp795
+> --- a/kernel/printk/nbcon.c
+> +++ b/kernel/printk/nbcon.c
+> @@ -503,6 +514,30 @@ static void nbcon_context_release(struct nbcon_context *ctxt)
+>  		new.unsafe |= cur.unsafe_takeover;
+>  
+>  	} while (!nbcon_state_try_cmpxchg(con, &cur, &new));
+> +
+> +	ctxt->pbufs = NULL;
+> +}
+> +
+> +/**
+> + * nbcon_alloc - Allocate buffers needed by the nbcon console
+> + * @con:	Console to initialize
+> + *
+> + * Return:	True on success. False otherwise and the console cannot
+> + *		be used.
+> + *
+> + * This is not part of nbcon_init() because buffer allocation must
+> + * be performed earlier in the console registration process.
+> + */
+> +bool nbcon_alloc(struct console *con)
+> +{
+> +
+> +	con->pbufs = kmalloc(sizeof(*con->pbufs), GFP_KERNEL);
 
-Does not look ordered by compatible.
+We might need to use memblock_alloc() at least for early consoles.
 
-Best regards,
-Krzysztof
+mm_core_init() is called after processing the kernel parameters.
 
+For example, setup_log_buf() or vfs_caches_init_early() use
+memblock_alloc() as well.
+
+> +	if (!con->pbufs) {
+> +		con_printk(KERN_ERR, con, "failed to allocate printing buffer\n");
+> +		return false;
+> +	}
+> +
+> +	return true;
+>  }
+>  
+>  /**
+> @@ -525,4 +563,6 @@ void nbcon_cleanup(struct console *con)
+>  	struct nbcon_state state = { };
+>  
+>  	nbcon_state_set(con, &state);
+> +	kfree(con->pbufs);
+> +	con->pbufs = NULL;
+
+It would be cleaner to create nbcon_free() as a counter part
+for nbcon_alloc().
+
+>  }
+
+Best Regards,
+Petr
