@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEFD793B12
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C124793B13
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239549AbjIFLZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:25:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42274 "EHLO
+        id S238760AbjIFLZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239593AbjIFLZH (ORCPT
+        with ESMTP id S239548AbjIFLZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:25:07 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01CA51732;
-        Wed,  6 Sep 2023 04:24:56 -0700 (PDT)
+        Wed, 6 Sep 2023 07:25:09 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738C3173D;
+        Wed,  6 Sep 2023 04:24:57 -0700 (PDT)
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 386BOmfc079598;
-        Wed, 6 Sep 2023 06:24:48 -0500
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 386BOq7n108179;
+        Wed, 6 Sep 2023 06:24:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1693999488;
-        bh=09ameIc1hhngYc/zjMnZ6JmG3HcT+ptJFLrmXgx7wI4=;
+        s=ti-com-17Q1; t=1693999492;
+        bh=hFEbiIrjN3eKDCVYYMmc3g8mHaL8TO2DTZfQmocFoZE=;
         h=From:To:Subject:Date:In-Reply-To:References;
-        b=UzY9bLLjpt7144AwXVyqOnipGJnW+RCMlyWykzJCk4P/SnGMqIdsLy1bgDvfhzOJa
-         0b3gVqOcMmHd9qsm709+fGKA+7c3HHHwo6xf01qGJAJj4CqZ8IApXbetCKNQ9rgD/F
-         3Y+p4kPPnPKbXLt4vfro2QS3grrOdlx446mpakS0=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 386BOmh0108346
+        b=b/3qFixc3ofjTaP7YpnqVJcNRiBJW1q1Khd0jfYXEqPgC3HmgB8lcEgouPKq4JDvI
+         IwojFgwM+I9VzZw2CXeND0AcKmTvOsu1QcZSdkKEI+UbogfXv+CHMq6DaiEBY8y5+/
+         eCeng+Cl4uXlFbqGHdCF5ndwREF7z376f4OFLOFE=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 386BOqaU108365
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 6 Sep 2023 06:24:48 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 6 Sep 2023 06:24:52 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 6
- Sep 2023 06:24:48 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2023 06:24:51 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 6 Sep 2023 06:24:48 -0500
+ Frontend Transport; Wed, 6 Sep 2023 06:24:52 -0500
 Received: from TI.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 386BON7v099810;
-        Wed, 6 Sep 2023 06:24:45 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 386BON7w099810;
+        Wed, 6 Sep 2023 06:24:48 -0500
 From:   Apurva Nandan <a-nandan@ti.com>
 To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
         Vignesh Raghavendra <vigneshr@ti.com>,
@@ -50,9 +50,9 @@ To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Hari Nagalla <hnagalla@ti.com>, Udit Kumar <u-kumar1@ti.com>
-Subject: [PATCH v4 6/9] arm64: dts : ti: k3-am68-sk-som: Add DDR carveout memory nodes for R5F
-Date:   Wed, 6 Sep 2023 16:54:19 +0530
-Message-ID: <20230906112422.2846151-7-a-nandan@ti.com>
+Subject: [PATCH v4 7/9] arm64: dts : ti: k3-am68-sk-som: Add DDR carveout memory nodes for C71x DSP
+Date:   Wed, 6 Sep 2023 16:54:20 +0530
+Message-ID: <20230906112422.2846151-8-a-nandan@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230906112422.2846151-1-a-nandan@ti.com>
 References: <20230906112422.2846151-1-a-nandan@ti.com>
@@ -71,200 +71,95 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Two carveout reserved memory nodes each have been added for each of the
-R5F remote processor device within both the MCU and MAIN domains for the
-TI K3 AM68 SK boards. These nodes are assigned to the respective rproc
-device nodes as well. The first region will be used as the DMA pool for
-the rproc device, and the second region will furnish the static carveout
-regions for the firmware memory.
+C71x DSP for the TI K3 AM68 SK boards. These nodes are assigned to the
+respective rproc device nodes as well. The first region will be used as
+the DMA pool for the rproc device, and the second region will furnish
+the static carveout regions for the firmware memory.
 
 The current carveout addresses and sizes are defined statically for each
-device. The R5F processors do not have an MMU, and as such require the
-exact memory used by the firmwares to be set-aside. The firmware images
-do not require any RSC_CARVEOUT entries in their resource tables either
-to allocate the memory for firmware memory segments.
-
-Note that the R5F1 carveouts are needed only if the R5F cluster is
-running in Split (non-LockStep) mode. The reserved memory nodes can be
-disabled later on if there is no use-case defined to use the
-corresponding
-remote processor.
+device. The C71x DSP processor supports a MMU called CMMU, but is not
+currently supported and as such requires the exact memory used by the
+firmware to be set-aside.
 
 Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
 Signed-off-by: Apurva Nandan <a-nandan@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi | 156 +++++++++++++++++++++
- 1 file changed, 156 insertions(+)
+ arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi | 52 ++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi b/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi
-index 6c9139f73201..beab405274ab 100644
+index beab405274ab..20861a0a46b0 100644
 --- a/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi
 +++ b/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi
-@@ -25,6 +25,84 @@ secure_ddr: optee@9e800000 {
- 			reg = <0x00 0x9e800000 0x00 0x01800000>;
+@@ -98,6 +98,30 @@ main_r5fss1_core1_memory_region: r5f-memory@a5100000 {
  			no-map;
  		};
-+
-+		mcu_r5fss0_core0_dma_memory_region: r5f-dma-memory@a0000000 {
+ 
++		c71_0_dma_memory_region: c71-dma-memory@a6000000 {
 +			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa0000000 0x00 0x100000>;
++			reg = <0x00 0xa6000000 0x00 0x100000>;
 +			no-map;
 +		};
 +
-+		mcu_r5fss0_core0_memory_region: r5f-memory@a0100000 {
++		c71_0_memory_region: c71-memory@a6100000 {
 +			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa0100000 0x00 0xf00000>;
++			reg = <0x00 0xa6100000 0x00 0xf00000>;
 +			no-map;
 +		};
 +
-+		mcu_r5fss0_core1_dma_memory_region: r5f-dma-memory@a1000000 {
++		c71_1_dma_memory_region: c71-dma-memory@a7000000 {
 +			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa1000000 0x00 0x100000>;
++			reg = <0x00 0xa7000000 0x00 0x100000>;
 +			no-map;
 +		};
 +
-+		mcu_r5fss0_core1_memory_region: r5f-memory@a1100000 {
++		c71_1_memory_region: c71-memory@a7100000 {
 +			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa1100000 0x00 0xf00000>;
++			reg = <0x00 0xa7100000 0x00 0xf00000>;
 +			no-map;
 +		};
 +
-+		main_r5fss0_core0_dma_memory_region: r5f-dma-memory@a2000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa2000000 0x00 0x100000>;
-+			no-map;
-+		};
-+
-+		main_r5fss0_core0_memory_region: r5f-memory@a2100000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa2100000 0x00 0xf00000>;
-+			no-map;
-+		};
-+
-+		main_r5fss0_core1_dma_memory_region: r5f-dma-memory@a3000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa3000000 0x00 0x100000>;
-+			no-map;
-+		};
-+
-+		main_r5fss0_core1_memory_region: r5f-memory@a3100000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa3100000 0x00 0xf00000>;
-+			no-map;
-+		};
-+
-+		main_r5fss1_core0_dma_memory_region: r5f-dma-memory@a4000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa4000000 0x00 0x100000>;
-+			no-map;
-+		};
-+
-+		main_r5fss1_core0_memory_region: r5f-memory@a4100000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa4100000 0x00 0xf00000>;
-+			no-map;
-+		};
-+
-+		main_r5fss1_core1_dma_memory_region: r5f-dma-memory@a5000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa5000000 0x00 0x100000>;
-+			no-map;
-+		};
-+
-+		main_r5fss1_core1_memory_region: r5f-memory@a5100000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x00 0xa5100000 0x00 0xf00000>;
-+			no-map;
-+		};
-+
-+		rtos_ipc_memory_region: ipc-memories@a8000000 {
-+			reg = <0x00 0xa8000000 0x00 0x01c00000>;
-+			alignment = <0x1000>;
-+			no-map;
-+		};
+ 		rtos_ipc_memory_region: ipc-memories@a8000000 {
+ 			reg = <0x00 0xa8000000 0x00 0x01c00000>;
+ 			alignment = <0x1000>;
+@@ -170,6 +194,20 @@ mbox_main_r5fss1_core1: mbox-main-r5fss1-core1 {
  	};
  };
  
-@@ -49,3 +127,81 @@ eeprom@51 {
- 		reg = <0x51>;
- 	};
++&mailbox0_cluster4 {
++	status = "okay";
++	interrupts = <420>;
++	mbox_c71_0: mbox-c71-0 {
++		ti,mbox-rx = <0 0 0>;
++		ti,mbox-tx = <1 0 0>;
++	};
++
++	mbox_c71_1: mbox-c71-1 {
++		ti,mbox-rx = <2 0 0>;
++		ti,mbox-tx = <3 0 0>;
++	};
++};
++
+ &mcu_r5fss0_core0 {
+ 	mboxes = <&mailbox0_cluster0>, <&mbox_mcu_r5fss0_core0>;
+ 	memory-region = <&mcu_r5fss0_core0_dma_memory_region>,
+@@ -205,3 +243,17 @@ &main_r5fss1_core1 {
+ 	memory-region = <&main_r5fss1_core1_dma_memory_region>,
+ 			<&main_r5fss1_core1_memory_region>;
  };
 +
-+&mailbox0_cluster0 {
++&c71_0 {
 +	status = "okay";
-+	interrupts = <436>;
-+	mbox_mcu_r5fss0_core0: mbox-mcu-r5fss0-core0 {
-+		ti,mbox-rx = <0 0 0>;
-+		ti,mbox-tx = <1 0 0>;
-+	};
-+
-+	mbox_mcu_r5fss0_core1: mbox-mcu-r5fss0-core1 {
-+		ti,mbox-rx = <2 0 0>;
-+		ti,mbox-tx = <3 0 0>;
-+	};
++	mboxes = <&mailbox0_cluster4>, <&mbox_c71_0>;
++	memory-region = <&c71_0_dma_memory_region>,
++			<&c71_0_memory_region>;
 +};
 +
-+&mailbox0_cluster1 {
++&c71_1 {
 +	status = "okay";
-+	interrupts = <432>;
-+	mbox_main_r5fss0_core0: mbox-main-r5fss0-core0 {
-+		ti,mbox-rx = <0 0 0>;
-+		ti,mbox-tx = <1 0 0>;
-+	};
-+
-+	mbox_main_r5fss0_core1: mbox-main-r5fss0-core1 {
-+		ti,mbox-rx = <2 0 0>;
-+		ti,mbox-tx = <3 0 0>;
-+	};
-+};
-+
-+&mailbox0_cluster2 {
-+	status = "okay";
-+	interrupts = <428>;
-+	mbox_main_r5fss1_core0: mbox-main-r5fss1-core0 {
-+		ti,mbox-rx = <0 0 0>;
-+		ti,mbox-tx = <1 0 0>;
-+	};
-+
-+	mbox_main_r5fss1_core1: mbox-main-r5fss1-core1 {
-+		ti,mbox-rx = <2 0 0>;
-+		ti,mbox-tx = <3 0 0>;
-+	};
-+};
-+
-+&mcu_r5fss0_core0 {
-+	mboxes = <&mailbox0_cluster0>, <&mbox_mcu_r5fss0_core0>;
-+	memory-region = <&mcu_r5fss0_core0_dma_memory_region>,
-+			<&mcu_r5fss0_core0_memory_region>;
-+};
-+
-+&mcu_r5fss0_core1 {
-+	mboxes = <&mailbox0_cluster0>, <&mbox_mcu_r5fss0_core1>;
-+	memory-region = <&mcu_r5fss0_core1_dma_memory_region>,
-+			<&mcu_r5fss0_core1_memory_region>;
-+};
-+
-+&main_r5fss0_core0 {
-+	mboxes = <&mailbox0_cluster1>, <&mbox_main_r5fss0_core0>;
-+	memory-region = <&main_r5fss0_core0_dma_memory_region>,
-+			<&main_r5fss0_core0_memory_region>;
-+};
-+
-+&main_r5fss0_core1 {
-+	mboxes = <&mailbox0_cluster1>, <&mbox_main_r5fss0_core1>;
-+	memory-region = <&main_r5fss0_core1_dma_memory_region>,
-+			<&main_r5fss0_core1_memory_region>;
-+};
-+
-+&main_r5fss1_core0 {
-+	mboxes = <&mailbox0_cluster2>, <&mbox_main_r5fss1_core0>;
-+	memory-region = <&main_r5fss1_core0_dma_memory_region>,
-+			<&main_r5fss1_core0_memory_region>;
-+};
-+
-+&main_r5fss1_core1 {
-+	mboxes = <&mailbox0_cluster2>, <&mbox_main_r5fss1_core1>;
-+	memory-region = <&main_r5fss1_core1_dma_memory_region>,
-+			<&main_r5fss1_core1_memory_region>;
++	mboxes = <&mailbox0_cluster4>, <&mbox_c71_1>;
++	memory-region = <&c71_1_dma_memory_region>,
++			<&c71_1_memory_region>;
 +};
 -- 
 2.34.1
