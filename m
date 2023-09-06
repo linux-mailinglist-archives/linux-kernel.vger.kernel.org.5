@@ -2,180 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B4B793C34
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21D3793C39
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240452AbjIFMFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
+        id S240488AbjIFMGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbjIFMFc (ORCPT
+        with ESMTP id S240480AbjIFMGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:05:32 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2046.outbound.protection.outlook.com [40.107.223.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C426BF;
-        Wed,  6 Sep 2023 05:05:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S1YpDCsnL0lGCo0NAHxFKNSOP6CKutY8lL8WO3byvrtoaG2l/+IBkPwHxjVY/ytrQJS75nWrufSfHel34/aC6k/4N7moAvR/8+s7UC3B5TUy6SgOxTMjYaXUQF7Ywh8+0gCFU2u9pRi0CNmPf9Q+vlgCF/zUCbUtLY7Fz2cEZlO2FiYGTkPy1nU4kyMNpm47s81oTlKcnIQFfo1fwoB4LUNUIh87culOhKktNYUhdWP3ub90ywWAKO1ECzqdzD8I9n3G/HREsBLm1BvvpZH6VUnxpQG2FFYEzYuPJREyG9mbTngzkOThWf0dZgtRY+4s2dkHVtfEjMRPNMiaa/nPHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=O+mFrzaJYIzAhGVyZzx+eqMuuorF9fFWAqUXtrL81S0=;
- b=U/YKBJpCe9FzCpO7vwFNjmWn0BotElSdI7BQlSrUyREF6kf7Tog6OjfOPDfSGC83ybEZuoPlv5qltSFuVifWuuFv063FqBRhsg8sLbsdwK5DS/rvksTQ6KJBDh6HRC6MDQkAFukhs8PKm+QuQdVdzQMKGusve2Otj1a+CXEmXZHo51NQlHsxwejMBFccXhAbvIwkda84N+9koNBR2IUUVJONbxAzFQPJv/yiYIt+4kMg+iiDlaztgPIwUtQ+PrvK+YNekl9C09CX2xU62eciB0/mNskiX/lTBjMFJgRxMLvCYGCz95f4nqx/SAw0X4ubeALkbVOB68sS2MZnEDJruw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O+mFrzaJYIzAhGVyZzx+eqMuuorF9fFWAqUXtrL81S0=;
- b=T7N9bcUgwW1TjL3hT2cJ8Xzo5H+qSjdG4wPKbJf8lTGI4kxVSu9WoXVHtq+WGhYAIqZSebHk8CCpFsMQOlVdmG6Dx1fseAKkjiRF1eU9niGsKIdSSFtwr5WZXe1cgWIKizzlMn4uBsKeASth9p+/+3CPXS/BrDLu84nluFaDbGk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS7PR12MB6095.namprd12.prod.outlook.com (2603:10b6:8:9c::19) by
- MW4PR12MB7285.namprd12.prod.outlook.com (2603:10b6:303:22e::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Wed, 6 Sep
- 2023 12:05:25 +0000
-Received: from DS7PR12MB6095.namprd12.prod.outlook.com
- ([fe80::44a:f414:7a0f:9dae]) by DS7PR12MB6095.namprd12.prod.outlook.com
- ([fe80::44a:f414:7a0f:9dae%7]) with mapi id 15.20.6745.034; Wed, 6 Sep 2023
- 12:05:25 +0000
-Message-ID: <288ac4c1-b66d-477a-ba2e-9b8d8dde4dc6@amd.com>
-Date:   Wed, 6 Sep 2023 07:05:21 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: typec: ucsi: Fix NULL pointer dereference
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Saranya Gopal <saranya.gopal@intel.com>,
-        Rajaram Regupathy <rajaram.regupathy@intel.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Wayne Chang <waynec@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-usb@vger.kernel.org
-References: <20230906084842.1922052-1-heikki.krogerus@linux.intel.com>
- <2023090638-overexert-endearing-3726@gregkh>
-Content-Language: en-US
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <2023090638-overexert-endearing-3726@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR03CA0042.namprd03.prod.outlook.com
- (2603:10b6:5:100::19) To DS7PR12MB6095.namprd12.prod.outlook.com
- (2603:10b6:8:9c::19)
+        Wed, 6 Sep 2023 08:06:06 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DBC1A4
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:06:01 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9a648f9d8e3so484863566b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 05:06:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694001960; x=1694606760; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=RnE6ybsHsRfqbSRiCw65bve3WZBj9PBmcz+92cU9XrM=;
+        b=knL5qik6NiYr5I53PINcNJvrmf7iiLLSv0ae5a6a6/7uJIe5/gQDBEKfgascIPAzSx
+         9komCTibr68F1JXJ+psZdfysILGLwzED3EOaTe0qerBNWfUV5XjFGX2sIrLKUgwZj9He
+         NJWSTbEqyxdXAnVGi3fg3DX+b0+1Yh9xNe67U5pic2xMKXe2wliVYUDHH9BrD5DvxJaS
+         Huk/CL0yfZbRV/7w9pDlvLBOEuGkpuDnXTJc/fkWLQJB7pkMkBxpsGVo44HtZTFOKagh
+         VOdVPqN0XfBuQny46QTMUSVXGPZlTmrskY8AoFiibL882yBTHscrdWhDCsChRZ7Pv7cT
+         4Apg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694001960; x=1694606760;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RnE6ybsHsRfqbSRiCw65bve3WZBj9PBmcz+92cU9XrM=;
+        b=bbT8IzmYS9GzNZoJ2naDWIzsmrN1ud7zPXEom5QOqPSjlJQVqFc72jfWDBYX9aXjfU
+         +pe345Ffc1wiG3R28D4nGJdIhJauZLXWPDI22SUWgt4NgUWmE5NnpvfkuKLJuvo3KXgm
+         4G4VNlnZ3LYC/8HcYb2phst3ch3J+tJKUhOFNVrIVJrzv2Rs1aJJbN+fyNY/PXJG1YDN
+         TbVmbFiOHSLZss3CkajrMci5hocWMNEj5L+eaE13OUNM7FxJOA2vF8n4VHqV4BzJMOtc
+         pCsVNTRyN0hD7BqfOfdRlhz0jmFtXSk1BhNFr9e5g/tFoGiQYUUpGPTXRcgwRxGkTLed
+         juhA==
+X-Gm-Message-State: AOJu0YwzTNMEz1nDY+fwSH1RoMuNH9Ejn32IxSakCViLIDtD2EXUYyRd
+        gHv5G/XGCptjyQYAOBKY++goNOAF4rEMEm237G4=
+X-Google-Smtp-Source: AGHT+IEiAMNpbcOFOpt36HtSQySzO+1jdqRMZEEUzJ5mkpptv2P8p6BykXjwWZrtEZ0bZ119cYn5Zg==
+X-Received: by 2002:a17:907:75e4:b0:9a3:c4f4:12dc with SMTP id jz4-20020a17090775e400b009a3c4f412dcmr2276409ejc.7.1694001960235;
+        Wed, 06 Sep 2023 05:06:00 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id j6-20020a170906278600b00992b50fbbe9sm8950596ejc.90.2023.09.06.05.05.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 05:05:59 -0700 (PDT)
+Message-ID: <8197d5c6-bd05-ff16-59d5-ba3eb06a5921@linaro.org>
+Date:   Wed, 6 Sep 2023 14:05:58 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6095:EE_|MW4PR12MB7285:EE_
-X-MS-Office365-Filtering-Correlation-Id: 99c319a1-5ae7-4fa4-e66e-08dbaed18cec
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Zru2iMZXf9qsv6fsD1fBT5NxOAMAzLuOac83hLcsEKLPyJsJbPV/XYl4ZLbTMACGHooeVWoFBGDYogqk77EWkrSnaODDRAkcJf8qOJiXzxLh0OT7+t2zBAIqGnh5752zCqMwqFLfVBq8NiG1CV2BoUuVU8vXdwrSAtnXTax6JX/h+FHMsiQ6KHqiDHN7eEfwyRGa1zC97SaCbZ0/tDleqowJ/U4tHtSS+DlNbtdQbcL6OalyGEFKhSDV6FesSBkGtFfcm0ikuInHHBGeBX5xxo6FxnRVXqbz9e4KIN+oz4lJujXFcMRpiX15IpmVRcDvA5lcNPPc5PS4RT6l3VdGfG3P7gEoMF8zmIEGB3lIj+S+Lu42kJSdfZ6ruuuM2bIwygTwQ1IBFNeNsjGoGWX+dtRS6pXYTFxjkzk+s7fGU4bxUdqzNuxXI39NkzrY5zVEMovUB/NV55cFtIChfa+E/cQQEJq+IrsI9g0+ISjm7Y5zoyelRLSWZj4fCDOBoj8PLCfb6O8hx84Szq7uA0YXs+UfcbPK8izHMoWmyksumSdYtSzHptGDCU7GDg9oL3dr05buDrXm6S1rWo8QgTtd3jy/Z2FLg3b6vFFWg3nywArb8q7C7jf0YrwWSp9EtHNJW8EDPy9sSBNf4WDnih7AmQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6095.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(376002)(366004)(136003)(1800799009)(451199024)(186009)(2906002)(7416002)(31686004)(66899024)(66556008)(83380400001)(66946007)(36756003)(54906003)(66476007)(110136005)(4326008)(316002)(8676002)(41300700001)(5660300002)(8936002)(44832011)(6486002)(6506007)(2616005)(966005)(86362001)(26005)(31696002)(6666004)(6512007)(38100700002)(53546011)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MHpsS0s2TzJNekQwL2t6aHBGQk81ZjlYcmRBc3FGQWJ0M3BwS1A2WjV2Wk1O?=
- =?utf-8?B?ZkNOWWt4MVhYVXJqK1JNRFBTeU54VStyRzJNYUVuN2l4ckZJWCtYajZ2YXU0?=
- =?utf-8?B?VUppN1I1aHZHajJDanB2Zm9oUlJiUkpxTXE1R05lcEhXYWM1UkpacEUrWFR4?=
- =?utf-8?B?RFdWallhZkRGZ2F2aFdGbnR1ajFEN0ZaNzI1V1RTMndCZWlkelU1SWdMRlY5?=
- =?utf-8?B?SzdBMFpxVm9jRnZUdll3Nit6VFJxUU9USDZsVTNjSWVIdHlFdTl4WUdtMWdN?=
- =?utf-8?B?azhhdnFnT1JjL1RLbndiaU8zMnlUenZ3OGU5RVM4L21TWUJZTHRjdzJnOG9G?=
- =?utf-8?B?S2JaWXZwcXhLanpObkIvWDQzOU94dCtXbXBNZUVRVXZFK2lmenAwZDZycFUw?=
- =?utf-8?B?SVY5MnFLTzRZUmxBbkZPZGlOYUlZRGdZeEo1RG50bzRaVG9EZnVCdkgwVWdQ?=
- =?utf-8?B?OXpDcHJLb3RhVXhyeitqVWtPemkvaEYyTEhCbFk0ZlRibjU2aEwzeFI2dHNF?=
- =?utf-8?B?QXphcVpNMW81Sm1MRTc0Tndya2p4bDdTVUFVMVRhNTZVOHhZVkhIUCtrU2t6?=
- =?utf-8?B?enhkaElEOTB5TS8zdXhiZEkwZmI2WnExUWtOdlZMekdrQmJ2UFRnRm8wdXNl?=
- =?utf-8?B?TU1lV1JzbGw0ODFhTmMyVmZDOUhrSXF1MWVwcmp4aEdiMWVEUlF6MlhMNjJB?=
- =?utf-8?B?UjlMNFVLQk1aQXNaNGQrbFpReVBwZXI5VzRjcXFiNlVEMDA0dUtFTTNpV0NP?=
- =?utf-8?B?NjIwYmNDZWtNZk9FWWxIa1d5M3k3Sml5QTRCSDViVTlvdnpORjlSclk3ckk0?=
- =?utf-8?B?WjJlQ1NWQ3pnV0JRVC82dStBT2tiUHBGRDhzUWQzanRhb3pZcnl5QkZiOXN4?=
- =?utf-8?B?bXpjcHEyMGp1Ly9vWHdHZFdCTEFRdEVFTUZkTUU0QXZ2YUtqZ3h0QTdPS1Av?=
- =?utf-8?B?SnVkT3lEYXdCcFhHQTJrUTJTVmd1OWxTeXJFS3NVRzBwcE1UQytUWU4yWGRm?=
- =?utf-8?B?OTlIakJLenlmMGV6OGM2cmFMK0M0SmNTays3N1lwV3lXaGxBNFBWVFBaRnB0?=
- =?utf-8?B?ZXh3Vlpna1pTMmZhWUNTYkg0eVRNTHEzR2R0UEN3M3plS3RhdGZ3eXp5MGhI?=
- =?utf-8?B?VVdtRlVRSnJDamhFa0pDclBwWUJCQ0pLMHltaXQ3c2NGbUV4VEo1V0NaM1lE?=
- =?utf-8?B?RlVGbU5CdXdzQi9rcjFieGZxV1ZxNGFlV0tobkhNZ0xTNmZrVWtpMmxyM2p4?=
- =?utf-8?B?ZzdWVm13RXQ4cTN3cU1sL1FlZWZiRHlzWnRRa2NBaHNubmdvTkoxNmhGZHhG?=
- =?utf-8?B?NkU3VFh5MEc3NVErNHVEZXZ3dkhpeGRZZ2hQWVdFZ1hjT2pSaVpLRmNUTitC?=
- =?utf-8?B?cU1INFVFN0FKNUZOSlduRnEzSlIxdUo5UWVjTGNQSWdWSE5jSk5pcVVJd3cv?=
- =?utf-8?B?b0FPa3A4NHNrTmp1Vk8rcER3UnZ4c3lHNEx3S1pqZUk3bFlaZDdna2pVNTNH?=
- =?utf-8?B?Si9GczJkRi9VbnVQRGkvNUpoVEw4QzJMelJyNzVQQVpYQUFEelRpN1IyaGFt?=
- =?utf-8?B?TFJRK1ZVUXM2ZnNRWnVKNUgwdFp6NzlsV20rdEhvVFJKTk9kdUtmUTdHVWRC?=
- =?utf-8?B?SlVvdWJtYnMwczliMnlCVzN6emVOY0pVQjRRZXVMU1RHb1NSQ0hFKzJQYnZy?=
- =?utf-8?B?MERuZGcxbW1MaGRDVmk5cTNYQzJrZnV5MXRqOU5ycTYxckR1RTR4bXc5dkZM?=
- =?utf-8?B?bzJBSS93VmxxWnZERE5jaTNTdWhpR2VpRHJjNEw1TWRUb3hjeXFpTXZZdnJy?=
- =?utf-8?B?RngzV2pYM1dmcFM1WExhSUlxVkIyY3Bzbjl5MWlhWmhkdHBNRFNacHBtblgy?=
- =?utf-8?B?SWlwVE9QSkFLUE5SRzVSeHlldStNTk1STWdUTW81UCtOK0xacmJoYm9mL0s0?=
- =?utf-8?B?eWQyVWk0WGJFbUZDYUwzMGFpZVAvdFFndURhck12V0hmeEZPT3VycnFPSGNP?=
- =?utf-8?B?d3NYZDhzK3Y2YkZ0SUlWMlhHYkVuRXFnVTJMem1wUk1lOGtwTk1SNkFmRC9a?=
- =?utf-8?B?UVJQbVN1cXE4VmNUZm93aHFlRFlpQ3UvcUFrQUo3Zm8rRFVSUmh1TXA3SnJu?=
- =?utf-8?Q?V/ArgG8v28vk2Nz5EO3kG9D/t?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99c319a1-5ae7-4fa4-e66e-08dbaed18cec
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6095.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 12:05:25.4038
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /B/iTXlYRwNs/uq+fkxzUFC50YGCZNgwONAOdgaLgGoFhBM/JRpJbCiBICthn1Vqp/zYO7pyeJmp9x0fCdGBEw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7285
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 1/6] arm64: dts: qcom: sm8550-mtp: use correct UFS supply
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230906104744.163479-1-krzysztof.kozlowski@linaro.org>
+ <9c7fae56-85a2-4691-8192-24237761d25c@linaro.org>
+ <fe346849-cd0f-aee5-9ab9-ea581025329b@linaro.org>
+ <91f74079-1be3-4c66-9942-cb02c96c8848@linaro.org>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <91f74079-1be3-4c66-9942-cb02c96c8848@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/6/2023 03:57, Greg Kroah-Hartman wrote:
-> On Wed, Sep 06, 2023 at 11:48:42AM +0300, Heikki Krogerus wrote:
->> Making sure the UCSI debugfs entry actually exists before
->> attempting to remove it.
+On 06/09/2023 13:50, Konrad Dybcio wrote:
+> On 6.09.2023 13:39, Krzysztof Kozlowski wrote:
+>> On 06/09/2023 13:28, Konrad Dybcio wrote:
+>>> On 6.09.2023 12:47, Krzysztof Kozlowski wrote:
+>>>> According to schematics the VCCQ2 supply is not connected and the L3G
+>>>> regulator instead powers up the controller pads (VDD_PX10).  Use correct
+>>>> supply vdd-hba and drop unsupported current limit for the vdd-hba.
+>>> Why is it unsupported?
 >>
->> Fixes: df0383ffad64 ("usb: typec: ucsi: Add debugfs for ucsi commands")
->> Reported-by: Dave Hansen <dave.hansen@intel.com>
->> Closes: https://lore.kernel.org/linux-usb/700df3c4-2f6c-85f9-6c61-065bc5b2db3a@intel.com/
->> Suggested-by: Dave Hansen <dave.hansen@intel.com>
->> Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
->> Cc: Saranya Gopal <saranya.gopal@intel.com>
->> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-I could also reproduce it with 7733171926cc336ddf0c8f847eefaff569dbff86 
-on two different laptops.
-
->> ---
->>   drivers/usb/typec/ucsi/debugfs.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/usb/typec/ucsi/debugfs.c b/drivers/usb/typec/ucsi/debugfs.c
->> index 0c7bf88d4a7f..f67733cecfdf 100644
->> --- a/drivers/usb/typec/ucsi/debugfs.c
->> +++ b/drivers/usb/typec/ucsi/debugfs.c
->> @@ -84,6 +84,9 @@ void ucsi_debugfs_register(struct ucsi *ucsi)
->>   
->>   void ucsi_debugfs_unregister(struct ucsi *ucsi)
->>   {
->> +	if (IS_ERR_OR_NULL(ucsi) || !ucsi->debugfs)
->> +		return;
->> +
->>   	debugfs_remove_recursive(ucsi->debugfs->dentry);
+>> Maybe I was here not precise. I move the regulator from vccq2 to
+>> vdd-hba. vccq2 has control of current in UFS core driver. Bindings also
+>> allow it.
+> Looks like the bindings are out of sync with the driver.
 > 
-> Why are you saving the dentry at all?  Why not just have debugfs look it
-> up when you want to remove it based on the filename?
-> 
-> Anyway, not a big deal here, just a comment.  I'll queue this up after
-> -rc1 is out.
+> ufshcd_populate_vreg() which parses current is used for both vccq2
+> and vdd-hba.
 
-It might be worth sending before rc1 if it ends up being widespread.
+Just for convenience. The current is not used for vdd-hba. Also:
 
-> 
-> thanks,
-> 
-> greg k-h
+https://lore.kernel.org/all/20230906113302.201888-1-krzysztof.kozlowski@linaro.org/
+
+Best regards,
+Krzysztof
 
