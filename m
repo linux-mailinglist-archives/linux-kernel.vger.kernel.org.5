@@ -2,152 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 718407942EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2057942EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242990AbjIFSQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 14:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44342 "EHLO
+        id S243336AbjIFSQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 14:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjIFSQC (ORCPT
+        with ESMTP id S229484AbjIFSQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 14:16:02 -0400
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2123.outbound.protection.outlook.com [40.107.114.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42891E6A
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 11:15:58 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PTpotGiztZRPykVc4Y5aS0zOoYNe5JityyPWfNXB3dVUXMuM8ju8Ez/iGV1IVuh3n7nUhMe0TmPpIr5v3FXSyTrfg/cviYYvrL8rg1Qpc18FtW2oqbNXe4pgn2pAhHjpVmJjvaOUiuKnaNEqLhoD3v9fN3/NeSZLPyidK74YfGFSXgH6e//8qBMSxb1xderOFRq9OjSlYXF1/TUJ1q0fIzRLkAv+QjwS3KL+UWbbSS3iLyI4FBoTaS2UwgG5DVFP9Ssb2tujjhTNFqH1ffnP6GIVuHDSBU1B7AYKKimBexEdjHSlE0BfXAuUDp2/kA+sLdw7C0MvsEB1tuM/wjAV7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vCVdmmXi7PEsezVeFoxam+VhmO6Et8xO9nCv8E7VA7U=;
- b=oMGf9QGsRCkFsK5aMpVlz0DCCsZBIRaGjXzVU8XuSsGtFxULHOi2BUtXWB+Xa8WpPszdFY+LG7hwXANyiA9q569wFdarZoFdBe7FItb0UmngS7LQ8Di7bwV0ztdCR01mJ7W1xLQczur1qff2X5/cpndtif0G58d7NUecc26VcBKW+/5AbzkWGNZEQ1m2W6erFg3ehAx0Gwppxdt9o0w5rW7BghaEHB9q3XWjOajbiDUMC9NcbDfPeQ4EJE9tPziVAMFJYdt/d91mYlm6R/bRUTWvt7/uEf0eOEbl6RlnwNdTOBT+tYZLPprZZ9x+1LrOaV+zojyF55TdPopkk4R2rg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vCVdmmXi7PEsezVeFoxam+VhmO6Et8xO9nCv8E7VA7U=;
- b=rYqSVKZeHtXnPwLhXjcVJTQpoaUPW6cO9Oq3UPCjIKJ4/VmioQt2t4V08Pcb/BQrCuegT4wg8YGEy/J876aYx+vv3cf3m/APdD/rs0LlZJZ0hPlYec6pRpXjp2YTRR3nbbr3dhpZLhCoptHXNLZ1ansTMNfKPXBwvCPpMEglb/4=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by OS3PR01MB9867.jpnprd01.prod.outlook.com (2603:1096:604:1ee::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.37; Wed, 6 Sep
- 2023 18:15:54 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706%5]) with mapi id 15.20.6745.035; Wed, 6 Sep 2023
- 18:15:50 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Doug Anderson <dianders@chromium.org>
-CC:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: RE: [PATCH v6 4/4] drm/bridge: panel: Drop CONFIG_OF conditional
- around *_of_get_bridge()
-Thread-Topic: [PATCH v6 4/4] drm/bridge: panel: Drop CONFIG_OF conditional
- around *_of_get_bridge()
-Thread-Index: AQHZ4NjJrboJYt2k+0mV4e+gbCj57LAOGnNA
-Date:   Wed, 6 Sep 2023 18:15:49 +0000
-Message-ID: <OS0PR01MB59225D7B9D78DA6F216E378B86EFA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20230831080938.47454-1-biju.das.jz@bp.renesas.com>
- <20230831080938.47454-5-biju.das.jz@bp.renesas.com>
- <CAD=FV=UFuTion7w4maxVVWZmzoRGXcoUjp9NV9xE3_Kf2ZCvTA@mail.gmail.com>
-In-Reply-To: <CAD=FV=UFuTion7w4maxVVWZmzoRGXcoUjp9NV9xE3_Kf2ZCvTA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|OS3PR01MB9867:EE_
-x-ms-office365-filtering-correlation-id: fd9b92c8-d903-4949-ba9a-08dbaf054c59
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: I3JC13qsJjbHhcUQHnGhTEBd3EVO1jCy65hDNv/1aZKJsbfACw+weCk2+gWnuYmx1GHe9qfLD7AS2yrdzUothmaagQpmm9KNAwT2//3VvfgeQBgxXmUZbQznX0g7+7SjdfaYzwTb0nIwcK0ai2DmzCGPHoOY7+wX1mrgaOaeJ2WJjCtS7GY+r4B+piH5u0SXLkDLwzB17c+Y7GJ/OE+s02vqqzUoqp21w/K775CriJ6nSZ1rGkBTwjnQyw1dEHJzDEJcshP1o154UYgLu+E49j8a602oC1g1klS7ko0WOFGvFNUm0Q4HziTRQl/wgU9w9cR1iFl4Er/i+HBnJp7mg/m4db22u0YOCYmMxyWlnIEsf3mpofUJ8h46UUo1ZNRE+VHvwUoa8WxLjGHyFzULujUAdgheaRyEt8m87wNFuA53vSyeqLubBXqlXOsmNRKiuLUq4irMy0J4galeckF/ho4gt5m5aOVn4UkTR880QkdkCLZxdbnQLm3/9MNX0IEkqmxcp3jr5lJXHop+EvcZHt6rolWuUR3LtbqcRbonSUSCBBhjE+EapwfO/ZGcGenaQxdM+aBej01ClUpMWct0e+paWJTn0cLcFgEJhm4zA5/dcQ2ILWLSZTLKlLvWX6QZ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(376002)(366004)(396003)(39860400002)(1800799009)(186009)(451199024)(9686003)(53546011)(7696005)(6506007)(38070700005)(38100700002)(122000001)(71200400001)(86362001)(478600001)(26005)(83380400001)(76116006)(52536014)(8676002)(8936002)(5660300002)(4326008)(55016003)(316002)(6916009)(54906003)(64756008)(66556008)(66446008)(66946007)(66476007)(41300700001)(33656002)(4744005)(2906002)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eEVxRCswSEtSejBBK2RRU1ZGZVRqWHNTVTJtRlk0UEpOVEJxeWtjMnhQemtR?=
- =?utf-8?B?b25TTk1Lc1JGbENQZ3FValluV1BjV21jZDJ0ZFBoMVRLb05nS0xLUDcwNXVD?=
- =?utf-8?B?K0dkK3ZZOUZidW5tQ3czVHRpSis5bS9PRTNhekFFK0dBRlZWZjU4ZjVBTmVE?=
- =?utf-8?B?dGRxZkNwR25JM3dIaloxUlc3ZXNjYU12cWxIVkd1bVpTaXdxK3VEci9lUEcr?=
- =?utf-8?B?WXZMWTEyWURQSGhQbGR5eXRVeFpzWDE0cUZERGlISTVyOUN3U1lqOFdaVCsx?=
- =?utf-8?B?cHcwWk9NQnZEVGVrMyt4OTBPUW5JSVBJYkMwckRWa3RTNW52WVJHTld4RGZs?=
- =?utf-8?B?byt3a21PdU5JTHI1dXBxeXhMdE5HZ0phTnZRWkZ4Y0JoWDEvbjZxZGFOaEJX?=
- =?utf-8?B?cGlxMG1tNEhpclRvRGtFRW9UcFVDck5sVFNweWRleEJZSERQWHF3TU9HdHM3?=
- =?utf-8?B?UjlHWkh2bGltOFRnS29YcVBIQ3d1ZTliSldqNVFVTjQvV0tTbklzR3VpT1Mv?=
- =?utf-8?B?UUNtZjZGeUpvd2dLRGZvZXlUSzJVRWF1enNtK1VMVzdOZ2lUdlNqU2xXY0ZU?=
- =?utf-8?B?eXdWVWU1R0pRLzBCYWJrQXhDbXQxSGs1b2R2Y2pZclhQSm5kbkVZdUpRSmxU?=
- =?utf-8?B?T1hSRTZzTXZVWnJRdnNXU3F3VHpKL1VyRFI4K2crcVBhL1k0UVF5SjVkalVX?=
- =?utf-8?B?NHZZbnhjbmV2RDdJYjhrTW5FUUdTQlFlM3lvYXdwNkZURHZvSGNXQS8yRHRD?=
- =?utf-8?B?cjNtTDAyWmNSdjdjWEE3Tm9BQkFOWFpIaGQzWnBSdFZWeG94NzhPSERvTUV2?=
- =?utf-8?B?eml1UTZ4dG1LNmVXbjBiY1NCbzYvUmtXM1NndlRKeUpZSVovSUZ5N1IxZlVh?=
- =?utf-8?B?bnJCTCtmeFh1WWFBdkxsMnB6TzRlaWVuYVNYbVppdVJJb3Znbmh5akdxZmlF?=
- =?utf-8?B?SVZBSjd3UWdxdmtmZmlEdHBYaGhucCtQU09MVGhXU092SU96NjZ2TmZNRmR2?=
- =?utf-8?B?Vng1ZUdDVzBjeTZsSEROMUdsSjNJTEsxVDFaQWxCcWo1TWJGWThNVlNpYWVG?=
- =?utf-8?B?UERKYXJmWm5SVnkzc1RhMWZhdmxOVmROeDRyQTZrQ0ExQ1dLMDRiMmZ1RHcv?=
- =?utf-8?B?Qm14azgrUkFtVlhwcGlvMjhCejFSSmRHNjZSS0wwVlR0emNaYzlJaWFwWXI5?=
- =?utf-8?B?UTRERWlUTHhWNmFtTm11MHpzdm1RVmZQcWdMc1RLd2VFMXE2emN3VmN5bFVD?=
- =?utf-8?B?UjNkeVVUODRQb09HVmQ1VU5acksraXZYUVdEcXgwcG9HaHhEUjFNUEx4UWNh?=
- =?utf-8?B?aFJscHRiNEZNRENLQmlsa1NHdDdJbm1waFpSdC80MG5qUFRVcFNYZFRSa0xy?=
- =?utf-8?B?WU1URlhPaU45WEVuVWlYYnhPQmNKcEg0QTdZdHp0YzhocTBVdTIzd1J5YzVU?=
- =?utf-8?B?VjM0dThsT25NcVdZbGFtZ003eVVHN2VLRE9lcjhCYzdIQXhEZDhoNHBGeVVF?=
- =?utf-8?B?bGtWclp2T3QwWStoSWRRYTN3NDlDUGczbkkxUUdqc2JOdnJHMHpPWlNtdlJ2?=
- =?utf-8?B?R3UwOC9ZemZWVWxUMVhsa0ZQc3dmeHE0bHVqbUlqWUdTdDJrbHppTHFHK0Ji?=
- =?utf-8?B?RTArK1g3TW5JUlNKVmtJdjBHeHhuTUlEQ2tTWUMxcVNPK2lFT202Mmd0bUJt?=
- =?utf-8?B?QlZneUZET0UxMmlqWmRiVHVFWGJFM0tVQzZ1SW9TeExPMHVrRW1NOEZwZFY0?=
- =?utf-8?B?SlByZUErc0Vpd2tWa1oxVy9QdDJYYnFVdiszQUNIT0lwYnBUYW8rUmx5WlBo?=
- =?utf-8?B?dDJ1RmQ3OU9ZeW9vdWI3cTlxckQremFUN0E0Z3NiU0QrVEpmaUN2Z1BtbDhO?=
- =?utf-8?B?dkUzaVZibTAycGltM3pkU21NY2hmbEVZOE14ei91T3FrejdYb2U2bEpPZDVj?=
- =?utf-8?B?dDdlaWhER210Sm5BSDVrUXdRbnhIOXpNSVJTOStEbDArcFkzU0x2c2xlM1BK?=
- =?utf-8?B?UXhKT3BKUVhsWmhuZ1dOb0lENzRxVDNRRHVqbDhYYlZkekJDQXU0aDZGb3hY?=
- =?utf-8?B?SmZuYnlzRElmQ2pZOHRwcHgwKzMrL1QwNXpueGVUZjkvUk9vaTkzRnE3Qmw0?=
- =?utf-8?B?eGd2N0xoQ1RNRFFCRUZuaDduQXd4cmxnbnk2NHdFM0IwT295YzI0QUt5Mklu?=
- =?utf-8?B?eXc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 6 Sep 2023 14:16:36 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC8E10C8
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 11:16:32 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-26f3e26e55aso80565a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 11:16:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694024192; x=1694628992; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lsgYsuYMD9JP8mkY+KHbnfMRzc75nfCa+ZIUoHqmh8o=;
+        b=eKyRyrbrzCmltcfDEIQHmkeKHU3sIqNIrePmTyAHZtIlw3V9eSkz5KNYEjkwRTtf9y
+         BhGP7HKkgq8Akq4SjGojAc22d+B5Y3VGZkLe1qx++GG9ZwRovjTtBOa9Aw1w/8zPmYjU
+         yEwQavKI+3DWQEhi1Gls0CKZzjVPky0cJARZg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694024192; x=1694628992;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lsgYsuYMD9JP8mkY+KHbnfMRzc75nfCa+ZIUoHqmh8o=;
+        b=Hts9tpqVc0qDRD15Nmu+LU6F4nW80Wzb5gaXpBJbAeLbWOzT51MSs+K4vmNYkMwFEg
+         5MnpNfVjB8w8lMeNF/uvF+EahCx8mxSqDZCzw3q67Rl6mEyTrVC70V0yoKyNMoIjM3oN
+         KcHd111knFrzU4RLW/Y5bBQ6pQmDa8lAOudJR8oDHxMBkAJGcwqemR2BzTjfHPvdz/4R
+         lFS1W9ryRDjuufjGf9C4cem/NDS3VcyMa05q6FmC1KJeoftog9yWLYBKA6XiBoWAAe8k
+         Rq813QLhLCyQMIvn9p1B2+XK/HaJfygT0T51Ln34kZ5FDWqU8nAfuJwqO3mNS+FQzckf
+         Ltlg==
+X-Gm-Message-State: AOJu0Yx/keHM7qyDDiNpnEEiufxWaZM6gjhMypvq+sghjYaZ12wOgjgi
+        1DfirWBLKXiit/vm9Mvb3k8PVw==
+X-Google-Smtp-Source: AGHT+IGG4aTceHugUlvAN9jn2NNSgfQYELoIrGL+Bol5zOldnujC5xO5Tq8qDa0dRqi1FTLXYfteLQ==
+X-Received: by 2002:a17:90a:d3c5:b0:262:ded7:63d with SMTP id d5-20020a17090ad3c500b00262ded7063dmr14197409pjw.17.1694024192356;
+        Wed, 06 Sep 2023 11:16:32 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id d12-20020a170902c18c00b001b694140d96sm11363171pld.170.2023.09.06.11.16.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 11:16:31 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 11:16:30 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "'linux-mm@kvack.org'" <linux-mm@kvack.org>,
+        'Vlastimil Babka' <vbabka@suse.cz>,
+        'Christoph Lameter' <cl@linux.com>,
+        'Pekka Enberg' <penberg@kernel.org>,
+        'David Rientjes' <rientjes@google.com>,
+        'Joonsoo Kim' <iamjoonsoo.kim@lge.com>,
+        'Andrew Morton' <akpm@linux-foundation.org>,
+        'Eric Dumazet' <edumazet@google.com>
+Subject: Re: [PATCH] slab: kmalloc_size_roundup() must not return 0 for
+ non-zero size
+Message-ID: <202309061106.C0690BDBB@keescook>
+References: <fcfee37ead054de19871139167aca787@AcuMS.aculab.com>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd9b92c8-d903-4949-ba9a-08dbaf054c59
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Sep 2023 18:15:49.3289
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: deAdHBIytZDGUblte3FLgwQWErLxK43FWHK9wyc90yZcUJcoVGhvn5v/uy67RpGtahTy2VlYzVtzUtNHKET3TZi4bKqlxrznTgxGDjkZyNs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB9867
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fcfee37ead054de19871139167aca787@AcuMS.aculab.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRG91ZyBBbmRlcnNvbiwNCg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHY2IDQvNF0gZHJtL2Jy
-aWRnZTogcGFuZWw6IERyb3AgQ09ORklHX09GIGNvbmRpdGlvbmFsDQo+IGFyb3VuZCAqX29mX2dl
-dF9icmlkZ2UoKQ0KPiANCj4gSGksDQo+IA0KPiBPbiBUaHUsIEF1ZyAzMSwgMjAyMyBhdCAxOjEw
-4oCvQU0gQmlqdSBEYXMgPGJpanUuZGFzLmp6QGJwLnJlbmVzYXMuY29tPg0KPiB3cm90ZToNCj4g
-Pg0KPiA+IERyb3AgdW5uZWNlc3NhcnkgQ09ORklHX09GIGNvbmRpdGlvbmFsIGFyb3VuZCBkZXZt
-X2RybV9vZl9nZXRfYnJpZGdlKCkNCj4gPiBhbmQNCj4gPiBkcm1tX29mX2dldF9icmlkZ2UoKSBh
-cyBpdCBpcyBndWFyZGVkIHdpdGggI2lmLi4jZWxzZSBibG9ja3MgaW4NCj4gPiBkcm1fYnJpZGdl
-LmguDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBCaWp1IERhcyA8YmlqdS5kYXMuanpAYnAucmVu
-ZXNhcy5jb20+DQo+ID4gLS0tDQo+ID4gdjY6DQo+ID4gICogTmV3IHBhdGNoLg0KPiA+IC0tLQ0K
-PiA+ICBkcml2ZXJzL2dwdS9kcm0vYnJpZGdlL3BhbmVsLmMgfCAzIC0tLQ0KPiA+ICAxIGZpbGUg
-Y2hhbmdlZCwgMyBkZWxldGlvbnMoLSkNCj4gDQo+IEp1c3QgdG8gYmUgZXhwbGljaXQsIEknbSBf
-bm90XyBsYW5kaW5nIHRoaXMgcGF0Y2ggdGhvdWdoIEkndmUgbGFuZGVkDQo+IHBhdGNoZXMgIzEg
-LSAjMyBmcm9tIHRoaXMgc2VyaWVzLg0KDQpUaGFuayB5b3UuDQoNCkNoZWVycywNCkJpanUNCg==
+On Wed, Sep 06, 2023 at 08:18:21AM +0000, David Laight wrote:
+> The typical use of kmalloc_size_roundup() is:
+> 	ptr = kmalloc(sz = kmalloc_size_roundup(size), ...);
+> 	if (!ptr) return -ENOMEM.
+> This means it is vitally important that the returned value isn't
+> less than the argument even if the argument is insane.
+> In particular if kmalloc_slab() fails or the value is above
+> (MAX_ULONG - PAGE_SIZE) zero is returned and kmalloc() will return
+> it's single zero-length buffer.
+> 
+> Fix by returning the input size on error or if the size exceeds
+> a 'sanity' limit.
+> kmalloc() will then return NULL is the size really is too big.
+> 
+> Signed-off-by: David Laight <david.laight@aculab.com>
+> Fixes: 05a940656e1eb ("slab: Introduce kmalloc_size_roundup()")
+> ---
+> The 'sanity limit' value doesn't really matter (even if too small)
+> It could be 'MAX_ORDER + PAGE_SHIFT' but one ppc64 has MAX_ORDER 16
+> and I don't know if that also has large pages.
+> Maybe it could be 1ul << 30 on 64bit, but it really doesn't matter
+> if it is too big.
+
+I agree that returning 0 for an (impossible to reach) non-zero
+is wrong, but the problem seen in netdev was that a truncation happened
+for a value returned by kmalloc_size_roundup().
+
+So, for the first, it shouldn't be possible for "c" to ever be NULL here:
+
+	c = kmalloc_slab(size, GFP_KERNEL, 0);
+	return c ? c->object_size : 0;
+
+But sure, we can return KMALLOC_MAX_SIZE for that.
+
+The pathological case was this:
+
+	unsigned int truncated;
+	size_t fullsize = UINT_MAX + 1;
+
+ 	ptr = kmalloc(truncated = kmalloc_size_roundup(fullsize), ...);
+
+Should the logic be changed to return KMALLOC_MAX_SIZE for anything
+larger than KMALLOC_MAX_SIZE? This seems like a different kind of
+foot-gun.
+
+Everything else in the allocator sanity checking (e.g. struct_size(),
+etc) uses SIZE_MAX as the saturation value, which is why
+kmalloc_size_roundup() did too.
+
+-- 
+Kees Cook
