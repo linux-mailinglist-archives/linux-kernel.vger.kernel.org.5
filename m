@@ -2,140 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF447941EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEACC7941F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243085AbjIFRRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 13:17:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
+        id S243270AbjIFRSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 13:18:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243000AbjIFRRz (ORCPT
+        with ESMTP id S241187AbjIFRSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 13:17:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BD71998
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 10:17:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694020627;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CR3YynKXaKiiQJdEERaEXmnpbVzEvFa9RLxlNGmAE/M=;
-        b=MWn+GNBmF71fN6BK4qRyTd7YH1rgZEnTx4hUBLEqpw8B1GUn+WAUJ0tNJ5ljTidUZQsBnC
-        epyB0nnowsdAN6tSJ1RX2n1/xoXz+bNqhN3zHt0jLsn/on83AfawTjtNDfHQObmK1UP74n
-        blM3/jGbAAsFwY5J5ebzqiayTpy9dwU=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-44-nfg3LGUWNcaUXHMINZnI9w-1; Wed, 06 Sep 2023 13:17:05 -0400
-X-MC-Unique: nfg3LGUWNcaUXHMINZnI9w-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4005f0a53c5so931715e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 10:17:05 -0700 (PDT)
+        Wed, 6 Sep 2023 13:18:16 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993D21998;
+        Wed,  6 Sep 2023 10:18:11 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bcb89b476bso1881961fa.1;
+        Wed, 06 Sep 2023 10:18:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694020690; x=1694625490; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pfI7yf43ET624hBFUVSQTNKbTQVCOa1P5ykThzOMYn0=;
+        b=h69HQbtaW/exEs5hnksH5QynXuluwXaEEUYNTe4BVdDmmNQDSxr1aQP/tqa7K23Bh6
+         kQf2xFOK7UQ1ToAJUVUpGNrJtXx5m8dAMmqNZdeuOt0ho3hHtSZkMU2zioS3V95h7Ukr
+         Ug+9bOp7BcirV5NEWdNeEk0cdzCiiB1KwI4VYwY13RvIlGdpLr591TDdAqPQkTfUOe8z
+         J6abzrPVliw/gKbq5lvmE78WjP6jsK1r/7VI2qfG4JBgaxqktbKP+yoED4uXkMlPrYkY
+         j8QgEfReSsLsWGUGS30Yn8eW5LX7xxIsv87D2X0vi565KFSBhaq0hBAx4DMcQDrhBluX
+         z8HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694020625; x=1694625425;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CR3YynKXaKiiQJdEERaEXmnpbVzEvFa9RLxlNGmAE/M=;
-        b=Hq9UYRmyhe9R9mX+P44CDsz+1CH70MNuaR5btkadU76wN5is7NGGCRTGfizQduRZ0H
-         JyVZ6H4h4MBdIWOkgKUfbGV/9Q6cmhj+VoDGNcqooXYpoexgIwkuje2v4hnMaCrHDa3r
-         qMZZxtOClDLXsV6Lf9T2NzOAb24gcSF377i/EeWNg8I3a+RKzPnHg4Gnel44xaKbmhnH
-         QZiTmuV90FChZbfwfVWXcHFlFA19avKaauzqTn0YcfBgIgz3Btl0dvxX/GXQcX+Rl+I/
-         cALFN/7hwxv890quencWEBOTWGsgfpxNNV6mIjutAt3OHx2xqgYZnXAuOyCxieAi2BzV
-         Oldw==
-X-Gm-Message-State: AOJu0Yxt0BCWndV/AtHnIvaMRCpOHqNWkZSuJRbCsWobYUqxkY2CI7f5
-        9Phy1jopiq+ip35QG+chQdtVjcTsoNB+eZ+Zzwj6b0kKd0q6J+Oj9bu6rGwt3xCvH6ZIfXJMrsA
-        1lAGbtA667k18zhQLeF+9kKim
-X-Received: by 2002:a7b:c4ce:0:b0:401:23fc:1f92 with SMTP id g14-20020a7bc4ce000000b0040123fc1f92mr2809011wmk.25.1694020624811;
-        Wed, 06 Sep 2023 10:17:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGG4o9bck5/tiQkiMkWZdjBFcs77pyDT3CLH5B1kIaOGxIvv2R5B5SW/T3zGzGf0a1B9aicQQ==
-X-Received: by 2002:a7b:c4ce:0:b0:401:23fc:1f92 with SMTP id g14-20020a7bc4ce000000b0040123fc1f92mr2808989wmk.25.1694020624418;
-        Wed, 06 Sep 2023 10:17:04 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70c:6c00:92a4:6f8:ff7e:6853? (p200300cbc70c6c0092a406f8ff7e6853.dip0.t-ipconnect.de. [2003:cb:c70c:6c00:92a4:6f8:ff7e:6853])
-        by smtp.gmail.com with ESMTPSA id x3-20020a1c7c03000000b003fefaf299b6sm88234wmc.38.2023.09.06.10.17.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 10:17:03 -0700 (PDT)
-Message-ID: <6dfbc043-c969-f78d-1e56-5434026246ea@redhat.com>
-Date:   Wed, 6 Sep 2023 19:17:02 +0200
+        d=1e100.net; s=20221208; t=1694020690; x=1694625490;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pfI7yf43ET624hBFUVSQTNKbTQVCOa1P5ykThzOMYn0=;
+        b=RcwGTYgJ8Za7Qj8zf05d2lKjHK54OwN1vZKz6rg7WZLhQBhPW9cOIrw1lTqK3ygOkm
+         FTP2LaeA4owMnkzqwyZ/dNeULBJ7YWhD6Dre/ovTGZ5PGFRubmz4+lMUhIqT9Piw1Wly
+         HCZ3OZt2DqPFWamEwxfksP0uP1iW41WAAe9Yj37D8Of2JrIK630lxE++VhNAfIH4izQH
+         Uaps1+U+gO8xKmHahRzCPFIoWUdWgbn/f0gI9jn+HlBf5zHM0ZCYNfAQxDPNGJgSdo/z
+         Kvfn4GmDrq7Ceir8SzfDQUU5fa4yF9nMzG+eR/TsBUK2/pqpxZl0mmlr2eXEwRT0XtDB
+         GK0A==
+X-Gm-Message-State: AOJu0YworAEg7EXvix3SCHCAV99Xo3k2m5rZv0vDBg0iBNevTd2DG202
+        15923NJ85URNTBRtrGqPZYFmF/FS8tF5mZicnxk=
+X-Google-Smtp-Source: AGHT+IHD4DYumYFCdjNLjF17I5NUhBT5IsnI3QSr+gxh0BVtcDdFsPs8sHyeBZKBYZNYeeu/PAbo0Kqq90jvZsMCXg8=
+X-Received: by 2002:a2e:8195:0:b0:2b7:3656:c594 with SMTP id
+ e21-20020a2e8195000000b002b73656c594mr2544980ljg.3.1694020689414; Wed, 06 Sep
+ 2023 10:18:09 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 3/5] mm/memory_hotplug: use nth_page() in place of
- direct struct page manipulation.
-Content-Language: en-US
-To:     Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>, stable@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-References: <20230906150309.114360-1-zi.yan@sent.com>
- <20230906150309.114360-4-zi.yan@sent.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230906150309.114360-4-zi.yan@sent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230827072057.1591929-1-zhouchuyi@bytedance.com>
+ <20230827072057.1591929-3-zhouchuyi@bytedance.com> <CAADnVQLKytNcAF_LkMgMJ1sq9Tv8QMNc3En7Psuxg+=FXP+B-A@mail.gmail.com>
+ <e5e986a0-0bb9-6611-77f0-f8472346965e@bytedance.com>
+In-Reply-To: <e5e986a0-0bb9-6611-77f0-f8472346965e@bytedance.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 6 Sep 2023 10:17:57 -0700
+Message-ID: <CAADnVQL-ZGV6C7VWdQpX64f0+gokE5MLBO3F2J3WyMoq-_NCPg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 2/4] bpf: Introduce process open coded
+ iterator kfuncs
+To:     Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.09.23 17:03, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
+On Wed, Sep 6, 2023 at 5:38=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.com>=
+ wrote:
+>
+> Hello, Alexei.
+>
+> =E5=9C=A8 2023/9/6 04:09, Alexei Starovoitov =E5=86=99=E9=81=93:
+> > On Sun, Aug 27, 2023 at 12:21=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedanc=
+e.com> wrote:
+> >>
+> >> This patch adds kfuncs bpf_iter_process_{new,next,destroy} which allow
+> >> creation and manipulation of struct bpf_iter_process in open-coded ite=
+rator
+> >> style. BPF programs can use these kfuncs or through bpf_for_each macro=
+ to
+> >> iterate all processes in the system.
+> >>
+> >> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+> >> ---
+> >>   include/uapi/linux/bpf.h       |  4 ++++
+> >>   kernel/bpf/helpers.c           |  3 +++
+> >>   kernel/bpf/task_iter.c         | 31 +++++++++++++++++++++++++++++++
+> >>   tools/include/uapi/linux/bpf.h |  4 ++++
+> >>   tools/lib/bpf/bpf_helpers.h    |  5 +++++
+> >>   5 files changed, 47 insertions(+)
+> >>
+> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> >> index 2a6e9b99564b..cfbd527e3733 100644
+> >> --- a/include/uapi/linux/bpf.h
+> >> +++ b/include/uapi/linux/bpf.h
+> >> @@ -7199,4 +7199,8 @@ struct bpf_iter_css_task {
+> >>          __u64 __opaque[1];
+> >>   } __attribute__((aligned(8)));
+> >>
+> >> +struct bpf_iter_process {
+> >> +       __u64 __opaque[1];
+> >> +} __attribute__((aligned(8)));
+> >> +
+> >>   #endif /* _UAPI__LINUX_BPF_H__ */
+> >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> >> index cf113ad24837..81a2005edc26 100644
+> >> --- a/kernel/bpf/helpers.c
+> >> +++ b/kernel/bpf/helpers.c
+> >> @@ -2458,6 +2458,9 @@ BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER=
+_DESTROY)
+> >>   BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW)
+> >>   BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET_NUL=
+L)
+> >>   BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
+> >> +BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
+> >> +BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET_NULL)
+> >> +BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
+> >>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
+> >>   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+> >>   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+> >> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> >> index b1bdba40b684..a6717a76c1e0 100644
+> >> --- a/kernel/bpf/task_iter.c
+> >> +++ b/kernel/bpf/task_iter.c
+> >> @@ -862,6 +862,37 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct=
+ bpf_iter_css_task *it)
+> >>          kfree(kit->css_it);
+> >>   }
+> >>
+> >> +struct bpf_iter_process_kern {
+> >> +       struct task_struct *tsk;
+> >> +} __attribute__((aligned(8)));
+> >> +
+> >> +__bpf_kfunc int bpf_iter_process_new(struct bpf_iter_process *it)
+> >> +{
+> >> +       struct bpf_iter_process_kern *kit =3D (void *)it;
+> >> +
+> >> +       BUILD_BUG_ON(sizeof(struct bpf_iter_process_kern) !=3D sizeof(=
+struct bpf_iter_process));
+> >> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_process_kern) !=3D
+> >> +                                       __alignof__(struct bpf_iter_pr=
+ocess));
+> >> +
+> >> +       rcu_read_lock();
+> >> +       kit->tsk =3D &init_task;
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +__bpf_kfunc struct task_struct *bpf_iter_process_next(struct bpf_iter=
+_process *it)
+> >> +{
+> >> +       struct bpf_iter_process_kern *kit =3D (void *)it;
+> >> +
+> >> +       kit->tsk =3D next_task(kit->tsk);
+> >> +
+> >> +       return kit->tsk =3D=3D &init_task ? NULL : kit->tsk;
+> >> +}
+> >> +
+> >> +__bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *it=
+)
+> >> +{
+> >> +       rcu_read_unlock();
+> >> +}
+> >
+> > This iter can be used in all ctx-s which is nice, but let's
+> > make the verifier enforce rcu_read_lock/unlock done by bpf prog
+> > instead of doing in the ctor/dtor of iter, since
+> > in sleepable progs the verifier won't recognize that body is RCU CS.
+> > We'd need to teach the verifier to allow bpf_iter_process_new()
+> > inside in_rcu_cs() and make sure there is no rcu_read_unlock
+> > while BPF_ITER_STATE_ACTIVE.
+> > bpf_iter_process_destroy() would become a nop.
+>
+> Thanks for your review!
+>
+> I think bpf_iter_process_{new, next, destroy} should be protected by
+> bpf_rcu_read_lock/unlock explicitly whether the prog is sleepable or
+> not, right?
 
-Subject talks about "nth_page()" but that's not what this patch does.
+Correct. By explicit bpf_rcu_read_lock() in case of sleepable progs
+or just by using them in normal bpf progs that have implicit rcu_read_lock(=
+)
+done before calling into them.
 
-> 
-> When dealing with hugetlb pages, manipulating struct page pointers
-> directly can get to wrong struct page, since struct page is not guaranteed
-> to be contiguous on SPARSEMEM without VMEMMAP. Use nth_page() to handle
-> it properly.
+> I'm not very familiar with the BPF verifier, but I believe
+> there is still a risk in directly calling these kfuns even if
+> in_rcu_cs() is true.
+>
+> Maby what we actually need here is to enforce BPF verifier to check
+> env->cur_state->active_rcu_lock is true when we want to call these kfuncs=
+.
 
-^ dito
+active_rcu_lock means explicit bpf_rcu_read_lock.
+Currently we do allow bpf_rcu_read_lock in non-sleepable, but it's pointles=
+s.
 
-> 
-> Fixes: eeb0efd071d8 ("mm,memory_hotplug: fix scan_movable_pages() for gigantic hugepages")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->   mm/memory_hotplug.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 1b03f4ec6fd2..3b301c4023ff 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -1689,7 +1689,7 @@ static int scan_movable_pages(unsigned long start, unsigned long end,
->   		 */
->   		if (HPageMigratable(head))
->   			goto found;
-> -		skip = compound_nr(head) - (page - head);
-> +		skip = compound_nr(head) - (pfn - page_to_pfn(head));
->   		pfn += skip - 1;
->   	}
->   	return -ENOENT;
+Technically we can extend the check:
+                if (in_rbtree_lock_required_cb(env) && (rcu_lock ||
+rcu_unlock)) {
+                        verbose(env, "Calling
+bpf_rcu_read_{lock,unlock} in unnecessary rbtree callback\n");
+                        return -EACCES;
+                }
+to discourage their use in all non-sleepable, but it will break some progs.
 
-I suspect systems without VMEMMAP also don't usually support gigantic 
-pages AND hotunplug :)
+I think it's ok to check in_rcu_cs() to allow bpf_iter_process_*().
+If bpf prog adds explicit and unnecessary bpf_rcu_read_lock() around
+the iter ops it won't do any harm.
+Just need to make sure that rcu unlock logic:
+                } else if (rcu_unlock) {
+                        bpf_for_each_reg_in_vstate(env->cur_state,
+state, reg, ({
+                                if (reg->type & MEM_RCU) {
+                                        reg->type &=3D ~(MEM_RCU |
+PTR_MAYBE_NULL);
+                                        reg->type |=3D PTR_UNTRUSTED;
+                                }
+                        }));
+clears iter state that depends on rcu.
 
-With the subject+description fixed
+I thought about changing mark_stack_slots_iter() to do
+st->type =3D PTR_TO_STACK | MEM_RCU;
+so that the above clearing logic kicks in,
+but it might be better to have something iter specific.
+is_iter_reg_valid_init() should probably be changed to
+make sure reg->type is not UNTRUSTED.
 
-Acked-by: David Hildenbrand <david@redhat.com>
-
--- 
-Cheers,
-
-David / dhildenb
-
+Andrii,
+do you have better suggestions?
