@@ -2,75 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A167934FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 07:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A848A793503
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 07:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233574AbjIFFop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 01:44:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60882 "EHLO
+        id S240833AbjIFFpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 01:45:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjIFFoo (ORCPT
+        with ESMTP id S233278AbjIFFps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 01:44:44 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6049CDD
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 22:44:40 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9a1de3417acso121617866b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 22:44:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693979079; x=1694583879; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vUHY9l/ahFbvg+wX1AOKxG+CKEDbszdQhJl5/ZPug+U=;
-        b=ASTF3AGd2/mZIrJFPkzUhZhGzv0vgP5zZl+CnFCXl31iBbFXJvxdfFLIWrgShrH6/8
-         IT9fp4MGaVbDVnlWOD4Oq7n4eKh+eVlUrXcAKAtDEe8tL+hwXmkgnXzWT3EoDgSozvzn
-         RpgKM5bCkKDqknC9RPgmfLTSGmwK5fG5hy2p/pD+/w4B6PJO9vJOzUWMZwWch7VcBqJF
-         KqEYpk5SGZbha7n0xl3CVc5YPEmSUd474XwZvCx1J2zvvOAG5Syk/63dzAK53kpL/Zco
-         lI9FTTl6hAwh1W+UTjnCjyH/Ry8xx8i/KxoINiEDOxKI4XHWNzswNoIgvEW2UdM0cv++
-         k12A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693979079; x=1694583879;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vUHY9l/ahFbvg+wX1AOKxG+CKEDbszdQhJl5/ZPug+U=;
-        b=A6+BwzKE5dUhrwkc4cBoZTch/109wp7YQM+5zZIfEszRc/sCDA5C3SOayygn9Wj5Jz
-         FV0C1T42uRUymarE7wjggkmK+ALHGheyi635ATN6FvcHooxapXb+WCHysMsE/YOpjjGJ
-         lryWgqPnkrEP++E/E9jipqYddqXX/mG3c4PIdeKHmSutNPkWrmYWpoZYoBwlep1lVmJu
-         e2aaQofBF2t++LBzyZzIw5vO7egfWnvAj4x04Vp6v2ujsW5DSUt34D1odBwaUkBGMYXJ
-         vD8gILjXv+fOZXm7Gd5xDJNii7KLbcDe1fA/H5CaFW/vgp1bZQ/Olb1m6JmOgEyLjnNc
-         Vv5w==
-X-Gm-Message-State: AOJu0Ywoi9nYZJyLWcW9uDWhPibXrxnUvniLgFi6MQs+akLIy8HRXijs
-        BaomF3hf4qpns3WS2/YAATk9pg==
-X-Google-Smtp-Source: AGHT+IFl1BcO96LjspG5iGCfeQZEf2a6mVEE6l1iTne3gvRX8Z+bq8yIcW7UAnLjy+sjJTRGcXSk/g==
-X-Received: by 2002:a17:906:53c5:b0:9a2:1e14:86b9 with SMTP id p5-20020a17090653c500b009a21e1486b9mr2036998ejo.0.1693979078634;
-        Tue, 05 Sep 2023 22:44:38 -0700 (PDT)
-Received: from [192.168.0.107] ([79.115.63.137])
-        by smtp.gmail.com with ESMTPSA id z17-20020a170906241100b0099bd7b26639sm8551322eja.6.2023.09.05.22.44.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Sep 2023 22:44:38 -0700 (PDT)
-Message-ID: <21cd9421-52e6-432a-b612-a8bb9c48f98b@linaro.org>
-Date:   Wed, 6 Sep 2023 06:44:35 +0100
+        Wed, 6 Sep 2023 01:45:48 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4137FDD;
+        Tue,  5 Sep 2023 22:45:45 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3865jcC4003863;
+        Wed, 6 Sep 2023 05:45:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=YjwBTbzCUUk3nM0bXPUAJHG7ws0zjRLanM3m5nzw0tw=;
+ b=irndMFwWB0ZGOiRXn9F1auO0ZxVhL08dWBjkcyxzm7ubbvBGJTpHlUFkdCQjGXt3phV/
+ pvkP77oLk7gm4Mc5GGqT0fWEtLxdSFcdfq5jSPi4x7mP0Qica18djHCM/0vmhOFBb6Dq
+ XtTVu162wgD4LeDQLdpZ1//GdkzmpDhItY3Lo6dVZu/24J1sDILND9KRHl2Bvm8bFBKG
+ RxNJ2v8yCI9KM+TM7dmNcwRs3i3jjVcfRZcejj35AqCRld6mY+o2bvjGZbemD6R6yi4B
+ IT71DObculLzpDWDbNPK7CdIrG5yGSN8azkOoq/2t4DqU2Gf4lyurXIlk92H4cOyS8yT IA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sxgk2r9fn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Sep 2023 05:45:38 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3865jaeN027916
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 6 Sep 2023 05:45:37 GMT
+Received: from [10.214.66.58] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 5 Sep
+ 2023 22:45:28 -0700
+Message-ID: <0abadf59-e94c-a358-98a0-6e2d6233ff1b@quicinc.com>
+Date:   Wed, 6 Sep 2023 11:15:25 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 10/41] mtd: spi-nor: make sector_size optional
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH v2 2/5] dt-bindings: phy: qcom,qmp-usb: Add SDX75 USB3 PHY
 Content-Language: en-US
-To:     Michael Walle <mwalle@kernel.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
- <20230807-mtd-flash-info-db-rework-v2-10-291a0f39f8d8@kernel.org>
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-10-291a0f39f8d8@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
+        <kishon@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <gregkh@linuxfoundation.org>, <abel.vesa@linaro.org>,
+        <quic_wcheng@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <kernel@quicinc.com>
+References: <1693909838-6682-1-git-send-email-quic_rohiagar@quicinc.com>
+ <1693909838-6682-3-git-send-email-quic_rohiagar@quicinc.com>
+ <37fe0c7e-60ad-4c27-b40f-471cc3d92e1c@linaro.org>
+ <ea9df6f3-dfde-ea7a-af22-2a0839d82d32@quicinc.com>
+ <1838845b-9586-6f8c-a4d6-ef052e0a12db@quicinc.com>
+ <CAA8EJpqK1FzD2+c6TsicP-fjP+vKJGNWKZ2UodphkROb0WkX1A@mail.gmail.com>
+From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
+In-Reply-To: <CAA8EJpqK1FzD2+c6TsicP-fjP+vKJGNWKZ2UodphkROb0WkX1A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: y9zKDggDgvJKhoJVLxnLTzV13dQtc3t1
+X-Proofpoint-ORIG-GUID: y9zKDggDgvJKhoJVLxnLTzV13dQtc3t1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_13,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ mlxscore=0 phishscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxlogscore=999 impostorscore=0 spamscore=0 bulkscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309060051
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -78,93 +91,105 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 9/6/2023 11:09 AM, Dmitry Baryshkov wrote:
+> On Wed, 6 Sept 2023 at 08:26, Rohit Agarwal <quic_rohiagar@quicinc.com> wrote:
+>>
+>> On 9/6/2023 10:52 AM, Rohit Agarwal wrote:
+>>> On 9/6/2023 2:04 AM, Dmitry Baryshkov wrote:
+>>>> On 05/09/2023 13:30, Rohit Agarwal wrote:
+>>>>> Add dt-bindings for USB3 PHY found on Qualcomm SDX75.
+>>>>>
+>>>>> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+>>>>> ---
+>>>>>    .../phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml        | 40
+>>>>> ++++++++++++++++++++--
+>>>>>    1 file changed, 37 insertions(+), 3 deletions(-)
+>>>>>
+>>>>> diff --git
+>>>>> a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml
+>>>>> b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml
+>>>>>
+>>>>> index f99fbbc..5725620 100644
+>>>>> ---
+>>>>> a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml
+>>>>> +++
+>>>>> b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml
+>>>>> @@ -20,6 +20,7 @@ properties:
+>>>>>          - qcom,qcm2290-qmp-usb3-phy
+>>>>>          - qcom,sa8775p-qmp-usb3-uni-phy
+>>>>>          - qcom,sc8280xp-qmp-usb3-uni-phy
+>>>>> +      - qcom,sdx75-qmp-usb3-uni-phy
+>>>> I think the ident is wrong here.
+>>> Same. Somehow, your reply has the issue but original not able to see.
+>>>
+>>>>>          - qcom,sm6115-qmp-usb3-phy
+>>>>>        reg:
+>>>>> @@ -38,9 +39,7 @@ properties:
+>>>>>        maxItems: 2
+>>>>>        reset-names:
+>>>>> -    items:
+>>>>> -      - const: phy
+>>>>> -      - const: phy_phy
+>>>>> +    maxItems: 2
+>>>>>        vdda-phy-supply: true
+>>>>>    @@ -75,6 +74,7 @@ allOf:
+>>>>>              contains:
+>>>>>                enum:
+>>>>>                  - qcom,ipq9574-qmp-usb3-phy
+>>>>> +              - qcom,sdx75-qmp-usb3-uni-phy
+>>>>>        then:
+>>>>>          properties:
+>>>>>            clock-names:
+>>>>> @@ -122,6 +122,40 @@ allOf:
+>>>>>          required:
+>>>>>            - power-domains
+>>>>>    +  - if:
+>>>>> +      properties:
+>>>>> +        compatible:
+>>>>> +          contains:
+>>>>> +            enum:
+>>>>> +              - qcom,ipq9574-qmp-usb3-phy
+>>>>> +              - qcom,qcm2290-qmp-usb3-phy
+>>>>> +              - qcom,sa8775p-qmp-usb3-uni-phy
+>>>>> +              - qcom,sc8280xp-qmp-usb3-uni-phy
+>>>>> +              - qcom,sm6115-qmp-usb3-phy
+>>>>> +    then:
+>>>>> +      properties:
+>>>>> +        resets:
+>>>>> +          maxItems: 2
+>>>>> +        reset-names:
+>>>>> +          items:
+>>>>> +            - const: phy
+>>>>> +            - const: phy_phy
+>>>>> +
+>>>>> +  - if:
+>>>>> +      properties:
+>>>>> +        compatible:
+>>>>> +          contains:
+>>>>> +            enum:
+>>>>> +              - qcom,sdx75-qmp-usb3-uni-phy
+>>>>> +    then:
+>>>>> +      properties:
+>>>>> +        resets:
+>>>>> +          maxItems: 2
+>>>>> +        reset-names:
+>>>>> +          items:
+>>>>> +            - const: phy
+>>>>> +            - const: common
+>>>> Could you please point us to the actual DTS patch adding this PHY?
+>>>> I'd say, it is highly likely that you are trying to bring in the
+>>>> unnecessary change.
+>>> I have not posted the dt patches yet. But sdx75 uses these resets.
+>>> GCC_USB3PHY_PHY_BCR, GCC_USB3_PHY_BCR
+>>>
+>>> These are same as sdx65 and sdx55.
+>> Ok I see in your patch
+>> https://lore.kernel.org/linux-phy/20230824211952.1397699-17-dmitry.baryshkov@linaro.org/
+>> you are updating the resets name. Fine, this change becomes unnecessary.
+>> Will rebase my change on your patches.
+> Well, even without my changes, GCC_USB3PHY_PHY_BCR is "phy_phy", just
+> judging by the name.
+Yes. Ok.
 
-On 8/22/23 08:09, Michael Walle wrote:
-> Most of the (old, non-SFDP) flashes use a sector size of 64k. Make that
-> a default value so it can be optional in the flash_info database.
-> 
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
-> ---
->  drivers/mtd/spi-nor/core.c | 6 ++++--
->  drivers/mtd/spi-nor/core.h | 8 +++++---
->  drivers/mtd/spi-nor/swp.c  | 6 +++++-
->  3 files changed, 14 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index c84be791341e..368851ff9f40 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2756,7 +2756,8 @@ static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
->  {
->  	struct spi_nor_flash_parameter *params = nor->params;
->  	struct spi_nor_erase_map *map = &params->erase_map;
-> -	const u8 no_sfdp_flags = nor->info->no_sfdp_flags;
-> +	const struct flash_info *info = nor->info;
-> +	const u8 no_sfdp_flags = info->no_sfdp_flags;
->  	u8 i, erase_mask;
->  
->  	if (no_sfdp_flags & SPI_NOR_DUAL_READ) {
-> @@ -2810,7 +2811,8 @@ static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
->  		i++;
->  	}
->  	erase_mask |= BIT(i);
-> -	spi_nor_set_erase_type(&map->erase_type[i], nor->info->sector_size,
-> +	spi_nor_set_erase_type(&map->erase_type[i],
-> +			       info->sector_size ?: SPI_NOR_DEFAULT_SECTOR_SIZE,
->  			       SPINOR_OP_SE);
->  	spi_nor_init_uniform_erase_map(map, erase_mask, params->size);
->  }
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 8627d0b95be6..fba3ea8536a5 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -16,6 +16,7 @@
->   */
->  #define SPI_NOR_DEFAULT_PAGE_SIZE 256
->  #define SPI_NOR_DEFAULT_N_BANKS 1
-> +#define SPI_NOR_DEFAULT_SECTOR_SIZE SZ_64K
->  
->  /* Standard SPI NOR flash operations. */
->  #define SPI_NOR_READID_OP(naddr, ndummy, buf, len)			\
-> @@ -452,8 +453,9 @@ struct spi_nor_fixups {
->   *                  JEDIC ID. JEDEC ID zero means "no ID" (mostly older chips).
->   * @id_len:         the number of bytes of ID.
->   * @size:           the size of the flash in bytes.
-> - * @sector_size:    the size listed here is what works with SPINOR_OP_SE, which
-> - *                  isn't necessarily called a "sector" by the vendor.
-> + * @sector_size:    (optional) the size listed here is what works with
-> + *                  SPINOR_OP_SE, which isn't necessarily called a "sector" by
-> + *                  the vendor. Defaults to 64k.
->   * @n_banks:        (optional) the number of banks. Defaults to 1.
->   * @page_size:      (optional) the flash's page size. Defaults to 256.
->   * @addr_nbytes:    number of address bytes to send.
-> @@ -565,7 +567,7 @@ struct flash_info {
->  
->  #define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
->  	.size = (_sector_size) * (_n_sectors),				\
-> -	.sector_size = (_sector_size),					\
-> +	.sector_size = (_sector_size == SZ_64K) ? 0 : (_sector_size),	\
-
-why do you clear the sector_size?
-
->  	.n_banks = (_n_banks)
->  
->  /* Used when the "_ext_id" is two bytes at most */
-> diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-> index 40bf52867095..585813310ee1 100644
-> --- a/drivers/mtd/spi-nor/swp.c
-> +++ b/drivers/mtd/spi-nor/swp.c
-> @@ -34,7 +34,11 @@ static u8 spi_nor_get_sr_tb_mask(struct spi_nor *nor)
->  static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
->  {
->  	unsigned int bp_slots, bp_slots_needed;
-> -	unsigned int sector_size = nor->info->sector_size;
-> +	/*
-> +	 * sector_size will eventually be replaced with the max erase size of
-> +	 * the flash. For now, we need to have that ugly default.
-> +	 */
-> +	unsigned int sector_size = nor->info->sector_size ?: SPI_NOR_DEFAULT_SECTOR_SIZE;
->  	u64 n_sectors = div_u64(nor->params->size, sector_size);
->  	u8 mask = spi_nor_get_sr_bp_mask(nor);
->  
-> 
+Thanks,
+Rohit.
