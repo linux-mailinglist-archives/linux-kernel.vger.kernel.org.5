@@ -2,81 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 104047936F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B797936F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233150AbjIFIMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 04:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39074 "EHLO
+        id S234869AbjIFIM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 04:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234855AbjIFIMW (ORCPT
+        with ESMTP id S234863AbjIFIM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 04:12:22 -0400
-Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B3EBF
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 01:12:18 -0700 (PDT)
-Received: by a3.inai.de (Postfix, from userid 65534)
-        id C93E85875CAF0; Wed,  6 Sep 2023 10:12:16 +0200 (CEST)
+        Wed, 6 Sep 2023 04:12:26 -0400
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA97199
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 01:12:22 -0700 (PDT)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1bf707f526bso36112605ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 01:12:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693987941; x=1694592741;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=82QbnuFy0EG0LHvViiB2pXG0FDTbEfXV795Uy9CoPro=;
+        b=afdGaDNGC4uKUYrPz28/kmaee76wvqkgjb4+UhurwVeUhpHBnD3S8RIAcnZRrmD3bN
+         fEGw7aj6BD5Kp3pSx/vqQ6tDNq8MCUMddppZtQ0soaVyxfpIJKprv6f7dcEjgETU3Ffm
+         fK9A128BIgtbX0Dt7Cnb+m2Ea7R4J8FgSJdNgg0ddLo1IZcDSuGII2qTYp8jQVnchHko
+         7uZrPu72weEn1ef+0sqAhNNG5MBAgSNScQkBqzmWmuiWL7ISDs2ADhhVdPvm3Ov5GaLU
+         MS6gdVfNZQZgmUqX6o9aym9GTOcoHVr/Y+xMux6S2ey2nXEgbmaL84uhanJnGIhinVAl
+         vGzg==
+X-Gm-Message-State: AOJu0YwNVgi0XdJE3VypO/lreyg98TpzKKqFjVsfnjB/YXJphyUKOPbX
+        zlveJthFedqRqS0+i237q/E5dY8JkEpqVirP/21X7nHwMBSM
+X-Google-Smtp-Source: AGHT+IFNGU5TT6CxawjWlseoIlyLhWlP63rGBeA4IMzVD5wYi5s962I+x/MChTRS4Q06+DoQtmBfanYwykGUTiRMfXs9ldC5c0aR
+MIME-Version: 1.0
+X-Received: by 2002:a17:902:d48d:b0:1c1:3ba1:b635 with SMTP id
+ c13-20020a170902d48d00b001c13ba1b635mr5477345plg.4.1693987941534; Wed, 06 Sep
+ 2023 01:12:21 -0700 (PDT)
+Date:   Wed, 06 Sep 2023 01:12:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008253550604ac4d36@google.com>
+Subject: [syzbot] Monthly nfc report (Sep 2023)
+From:   syzbot <syzbot+listb569d2a8a4e132119665@syzkaller.appspotmail.com>
+To:     krzysztof.kozlowski@linaro.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-Received: from a4.inai.de (a4.inai.de [IPv6:2a01:4f8:10b:45d8::f8])
-        by a3.inai.de (Postfix) with ESMTP id 7E56358730358;
-        Wed,  6 Sep 2023 10:12:16 +0200 (CEST)
-From:   Jan Engelhardt <jengelh@inai.de>
-To:     o-takashi@sakamocchi.jp
-Cc:     linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: [PATCH] firewire: allow deactivating the IEEE1394 menuconfig section at once
-Date:   Wed,  6 Sep 2023 10:12:16 +0200
-Message-ID: <20230906081216.22849-1-jengelh@inai.de>
-X-Mailer: git-send-email 2.42.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Presently, one needs to enter "FireWire (IEEE 1394) subsystem --->",
-then deselect all options individually. Speed up that process by
-making the "--->" line be togglable in its own right.
+Hello nfc maintainers/developers,
 
-Signed-off-by: Jan Engelhardt <jengelh@inai.de>
+This is a 31-day syzbot report for the nfc subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/nfc
+
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 13 issues are still open and 17 have been fixed so far.
+
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 585     Yes   INFO: task hung in rfkill_global_led_trigger_worker (2)
+                  https://syzkaller.appspot.com/bug?extid=2e39bc6569d281acbcfb
+<2> 116     Yes   BUG: corrupted list in nfc_llcp_unregister_device
+                  https://syzkaller.appspot.com/bug?extid=81232c4a81a886e2b580
+<3> 106     Yes   BUG: corrupted list in nfc_llcp_register_device
+                  https://syzkaller.appspot.com/bug?extid=c1d0a03d305972dbbe14
+<4> 80      Yes   INFO: task hung in nfc_rfkill_set_block
+                  https://syzkaller.appspot.com/bug?extid=3e3c2f8ca188e30b1427
+<5> 16      Yes   INFO: task hung in rfkill_sync_work
+                  https://syzkaller.appspot.com/bug?extid=9ef743bba3a17c756174
+<6> 5       Yes   UBSAN: shift-out-of-bounds in nci_activate_target
+                  https://syzkaller.appspot.com/bug?extid=0839b78e119aae1fec78
+<7> 2       Yes   memory leak in skb_copy (2)
+                  https://syzkaller.appspot.com/bug?extid=6eb09d75211863f15e3e
+<8> 1       Yes   memory leak in virtual_ncidev_write (2)
+                  https://syzkaller.appspot.com/bug?extid=6b7c68d9c21e4ee4251b
+
 ---
- drivers/firewire/Kconfig | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/firewire/Kconfig b/drivers/firewire/Kconfig
-index 0a6596b027db..be1a9e685782 100644
---- a/drivers/firewire/Kconfig
-+++ b/drivers/firewire/Kconfig
-@@ -1,8 +1,18 @@
- # SPDX-License-Identifier: GPL-2.0-only
--menu "IEEE 1394 (FireWire) support"
-+menuconfig FIREWIRE_SUPPORT
-+	bool "IEEE 1394 (FireWire) support"
-+	default y
- 	depends on PCI || COMPILE_TEST
- 	# firewire-core does not depend on PCI but is
- 	# not useful without PCI controller driver
-+	help
-+	  Support for FireWire.
-+
-+	  The answer to this question will not directly affect the
-+	  kernel: saying N will just cause the configurator to skip all
-+	  the questions about FireWire.
-+
-+if FIREWIRE_SUPPORT
- 
- config FIREWIRE
- 	tristate "FireWire driver stack"
-@@ -96,4 +106,4 @@ config FIREWIRE_NOSY
- 
- 	  If unsure, say N.
- 
--endmenu
-+endif # FIREWIRE_SUPPORT
--- 
-2.42.0
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
