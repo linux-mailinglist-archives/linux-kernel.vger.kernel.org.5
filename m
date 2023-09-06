@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7B7793B24
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B205D793B29
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238048AbjIFL1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:27:55 -0400
+        id S239592AbjIFL15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:27:57 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236232AbjIFL1x (ORCPT
+        with ESMTP id S237057AbjIFL1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:27:53 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C918D19BC
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:27:10 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99c3c8adb27so533992666b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 04:27:10 -0700 (PDT)
+        Wed, 6 Sep 2023 07:27:54 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA59E43
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:27:13 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9a9d82d73f9so10477066b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 04:27:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693999620; x=1694604420; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1693999627; x=1694604427; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=GOM33DXd3Sk7ndVLCHFEfmNlQYtoykW8EnX2/+VMqsg=;
-        b=UntdfvAat0HwOxkiNAwDKU+GDS4kPqJwXUG/ahTXSae+JKVpvn3XRR1BMnT/rf4BqM
-         9qS+Fmh8+NibDvUbJebLgRhDfpt2WWQj9kWY9yufqiYuqixObIDaaWduodJbk8/tUIso
-         QSEZvEl9/4INjo9huUJlmaRLNnzgTZzovN+3S4g0EqfErbZFh14DHZ/9PvCkGKspPdZn
-         riVGHngh2FRiMsXeVlv+XbkCGQakp1DoMYGR6Tq9IhPRtdWDdT+O4uZbYyOFrgG7ehrm
-         8Gue+a6mZKu8icUl56oeD1LCmQ1v1JMqRzpNinEWEetdwid5XT9JUifGndGBrqNpiNgQ
-         /Lvg==
+        bh=BzYIkWUWUE38ZUDuJgZ2cvxjsY6xPprLp7fF0sj0dY4=;
+        b=JkQL3yb5VgdjMIBgiQ446ywSh3ftKgWWKSCrj860Ek9AHOD3+2UgFYCGAz5xt6Mvyy
+         qLhmgi3TfmHaN316Uvm0ITEGMY+elEG2XNTogHoJ4Ii3zjzoDwFbKC90WTSyJ+y2woUK
+         AtvJFqr1wiO9GU7dOy1H5Mas7dlXrwfkRU6nCbk/mJWR7IXiOsN2FYsvnA5a8LcQmE7x
+         q/nPeNXEkNnEheten9N+RkyJAGEwrSmshto0awnDLX4MavIdS6c8K4SAVJz6LzlHHl6T
+         SQMDncRu675mq5wanrgpv0kODv3oyIQF9T/p2UjRNmi0i/Jep1/1G4TjIaUTgsUTB5G+
+         JYZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693999620; x=1694604420;
+        d=1e100.net; s=20221208; t=1693999627; x=1694604427;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GOM33DXd3Sk7ndVLCHFEfmNlQYtoykW8EnX2/+VMqsg=;
-        b=cVfijv4/Com1UR0N8sm8/k38r6hBIXI5BSQdjZqMGlIEcCPNkjK9RMuA0adMDChj2n
-         Hbw8B5lnI4JW99qFpGh78pUtpD3oQuuEcYnQnnC4akIXs4p1S/NfmE3+W06s7P0Bzt4H
-         imfeAPdpt07UulQChUyWq1P+FvFggiWiaqBaBcvqPcqqCOgOPTpHYIzsEeLnPikmfxAx
-         sah4ZsoIRIV1Ic7pfMWBHOJ8Gx1litirN7MqGciLts+WvXMDGLnbYka2/AHzju6LXgiR
-         8HFQizaXTVWQ7MqYtBjSPgURE1SnjABIPrpXWGN5DywPGjAwcI1OaVjiYPDnF7dtf3qu
-         +4og==
-X-Gm-Message-State: AOJu0Yyy94ddOqLy0g9rHlvnTZ3zz1ayN33KU6Bem9KcwQ2PfMNMNjk8
-        5UkoGkYzxBGeLdo+5FFKiSDleQ==
-X-Google-Smtp-Source: AGHT+IEV7duPYAJVA64fvgeFJr+zjvONpH2hUiZb+f+qtTNJ/gM3WrpmPA3dXrLxqQ7pFAKak/3SNA==
-X-Received: by 2002:a17:906:cd2:b0:9a2:c5a:6c9a with SMTP id l18-20020a1709060cd200b009a20c5a6c9amr2205081ejh.45.1693999620169;
-        Wed, 06 Sep 2023 04:27:00 -0700 (PDT)
+        bh=BzYIkWUWUE38ZUDuJgZ2cvxjsY6xPprLp7fF0sj0dY4=;
+        b=BNjM3vNo7680Z5S8YWnvBLZwZ0XNevpRFctn8gtiD7yvCIBdvw8e4A8z+lhaFH7B8L
+         dfH55o0eSQ9EwRegWxLiCC95DIOEgeFQKhtMtXXs3bXUNbsntFfjr6kmR16iMwmrGwCd
+         NUbhgXoxy2M7FhgLY0+xhHdM/LH/PKpEBn6G6By+T1c5W/9wMavJUDcQ+U2n7THh3BQj
+         FtTiYAxNQcVIMdrxVmxX58bGKW+eUyEt3/piEmL7gO1Ah2jQb+Pqil1/+i8AqTgjRIpP
+         3KjjB9nTEmdOh4pLrNF5L187GXJA18/vhTbTaEm+9JDxN143SG4sf0IMgLPmOSZLADRz
+         yeug==
+X-Gm-Message-State: AOJu0YzXeRJzTNCYuRdlyFsTKmSjY0/FoxE8+VrBpYO7qZwg7mhFuma0
+        RPQHUYwnfbYaSfQqQBRDCrhSkQ==
+X-Google-Smtp-Source: AGHT+IGTB1o851EmrADzUlRazgMZVreK3BJ+kbODXQvCLx5g1QBpeFqlgU9x2zhD/Avp74AQX3pYlw==
+X-Received: by 2002:a17:906:3115:b0:9a1:c447:3c62 with SMTP id 21-20020a170906311500b009a1c4473c62mr1882583ejx.49.1693999627235;
+        Wed, 06 Sep 2023 04:27:07 -0700 (PDT)
 Received: from [192.168.37.154] (178235177204.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.204])
-        by smtp.gmail.com with ESMTPSA id lt20-20020a170906fa9400b009a193a5acffsm8770546ejb.121.2023.09.06.04.26.58
+        by smtp.gmail.com with ESMTPSA id lt20-20020a170906fa9400b009a193a5acffsm8770546ejb.121.2023.09.06.04.27.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 04:26:59 -0700 (PDT)
-Message-ID: <a96ec24f-1992-4d8b-b3fd-30dfe106f5d4@linaro.org>
-Date:   Wed, 6 Sep 2023 13:26:58 +0200
+        Wed, 06 Sep 2023 04:27:06 -0700 (PDT)
+Message-ID: <7b9dcd0a-4aa1-4aa4-a193-81736e974fe6@linaro.org>
+Date:   Wed, 6 Sep 2023 13:27:05 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/4] arm64: dts: qcom: ipq6018: Fix hwlock index for
+Subject: Re: [PATCH v3 3/4] arm64: dts: qcom: ipq8074: Fix hwlock index for
  SMEM
 Content-Language: en-US
 To:     Vignesh Viswanathan <quic_viswanat@quicinc.com>, agross@kernel.org,
@@ -66,7 +66,7 @@ Cc:     quic_kathirav@quicinc.com, quic_anusha@quicinc.com,
         quic_sjaganat@quicinc.com, quic_srichara@quicinc.com,
         quic_varada@quicinc.com, stable@vger.kernel.org
 References: <20230904172516.479866-1-quic_viswanat@quicinc.com>
- <20230904172516.479866-3-quic_viswanat@quicinc.com>
+ <20230904172516.479866-4-quic_viswanat@quicinc.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -103,7 +103,7 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230904172516.479866-3-quic_viswanat@quicinc.com>
+In-Reply-To: <20230904172516.479866-4-quic_viswanat@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -120,10 +120,10 @@ On 4.09.2023 19:25, Vignesh Viswanathan wrote:
 > SMEM uses lock index 3 of the TCSR Mutex hwlock for allocations
 > in SMEM region shared by the Host and FW.
 > 
-> Fix the SMEM hwlock index to 3 for IPQ6018.
+> Fix the SMEM hwlock index to 3 for IPQ8074.
 > 
 > Cc: stable@vger.kernel.org
-> Fixes: 5bf635621245 ("arm64: dts: ipq6018: Add a few device nodes")
+> Fixes: 42124b947e8e ("arm64: dts: qcom: ipq8074: add SMEM support")
 > Signed-off-by: Vignesh Viswanathan <quic_viswanat@quicinc.com>
 > ---
 Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
