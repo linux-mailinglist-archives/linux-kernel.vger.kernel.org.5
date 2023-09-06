@@ -2,139 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C038E793CF2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC0E793CF5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240787AbjIFMpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50174 "EHLO
+        id S237040AbjIFMsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240784AbjIFMpA (ORCPT
+        with ESMTP id S229953AbjIFMsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:45:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C16171F;
-        Wed,  6 Sep 2023 05:44:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694004295; x=1725540295;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2WFFdBuEq97dJvORezwILe9aKvh+wu88t3sQ9yPyujk=;
-  b=QXfN3zJSqnbjdtkqE6NQ86Sb1faEN/fOrfP4HVoJ871eWeY1RdSS4R8J
-   yvUvBSANhTLm/Hyv37EL0hGG/bybAT4RngiA1j2q15zx1t/ybSlU7TcV2
-   wLc1VRAbOyhZIxXWdqeQ7t+z50BWey52zYCGHwrsU01H2pXt0UB8B4/CV
-   87FwZLm5yGa1ipLixboUXZ4BDhHJshODzjqUMq0MWI/cQ6SstFlunVsKt
-   QAKmZwQaKE+YUQt6UiOnJIkgH1kZfDXXWHXT4X0MQpNNWJ2TVBklfrTWQ
-   Aa9tp3aast6MwqdyhVwNs0SGitgoD+Ist85VpoeGsDO0Mqj6PXdtowKXb
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="367280616"
-X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
-   d="scan'208";a="367280616"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 05:44:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="1072369586"
-X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
-   d="scan'208";a="1072369586"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga005.fm.intel.com with SMTP; 06 Sep 2023 05:44:47 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 06 Sep 2023 15:44:46 +0300
-Date:   Wed, 6 Sep 2023 15:44:46 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Janne Grunau <j@jannau.net>, Simon Ser <contact@emersion.fr>,
-        Andy Gross <agross@kernel.org>,
+        Wed, 6 Sep 2023 08:48:15 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EC510CC;
+        Wed,  6 Sep 2023 05:48:11 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 386Cm0cs108094;
+        Wed, 6 Sep 2023 07:48:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1694004480;
+        bh=XK/SwLICaCLfc0se6GRlvgadAXfN7ZXJHwFWx0+Eq/w=;
+        h=From:To:Subject:Date;
+        b=IZMTUeTMGJGMTEjc98SWcpnrv4Hm5Owso049zLCiqsFxXODJSEonz2sM+z/iIvXOG
+         6ex0RimJJ4uou+ffUEDiy7s5X3rNsME94Fcct6ycYs7qzkWQfz77FCmVPVxHz2F0q9
+         BEPBzdqXg/yfyGXSEomuI4tfJBAE2r3uMzBNyle4=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 386Cm0ck055300
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 6 Sep 2023 07:48:00 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 6
+ Sep 2023 07:48:00 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 6 Sep 2023 07:48:00 -0500
+Received: from TI.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 386ClvQh022881;
+        Wed, 6 Sep 2023 07:47:57 -0500
+From:   Apurva Nandan <a-nandan@ti.com>
+To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
         Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        freedreno@lists.freedesktop.org, Won Chung <wonchung@google.com>
-Subject: Re: [RFC PATCH v1 01/12] Revert "drm/sysfs: Link DRM connectors to
- corresponding Type-C connectors"
-Message-ID: <ZPh0Ps9UJ3HLzdeR@kuha.fi.intel.com>
-References: <20230903214150.2877023-1-dmitry.baryshkov@linaro.org>
- <20230903214150.2877023-2-dmitry.baryshkov@linaro.org>
- <ZPbrtAlO2Y+bjDhf@kuha.fi.intel.com>
- <CAA8EJpqUg2-k7LLBL38RHU1sThkXB54ca68xEMd1yMnHQcQ++w@mail.gmail.com>
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suman Anna <s-anna@ti.com>, <linux-remoteproc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Devarsh Thakkar <devarsht@ti.com>,
+        Hari Nagalla <hnagalla@ti.com>, Udit Kumar <u-kumar1@ti.com>
+Subject: [PATCH] remoteproc: k3-r5: Wait for core0 power-up before powering up core1
+Date:   Wed, 6 Sep 2023 18:17:56 +0530
+Message-ID: <20230906124756.3480579-1-a-nandan@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpqUg2-k7LLBL38RHU1sThkXB54ca68xEMd1yMnHQcQ++w@mail.gmail.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 01:56:59PM +0300, Dmitry Baryshkov wrote:
-> Hi Heikki,
-> 
-> On Tue, 5 Sept 2023 at 11:50, Heikki Krogerus
-> <heikki.krogerus@linux.intel.com> wrote:
-> >
-> > Hi Dmitry,
-> >
-> > On Mon, Sep 04, 2023 at 12:41:39AM +0300, Dmitry Baryshkov wrote:
-> > > The kdev->fwnode pointer is never set in drm_sysfs_connector_add(), so
-> > > dev_fwnode() checks never succeed, making the respective commit NOP.
-> >
-> > That's not true. The dev->fwnode is assigned when the device is
-> > created on ACPI platforms automatically. If the drm_connector fwnode
-> > member is assigned before the device is registered, then that fwnode
-> > is assigned also to the device - see drm_connector_acpi_find_companion().
-> >
-> > But please note that even if drm_connector does not have anything in
-> > its fwnode member, the device may still be assigned fwnode, just based
-> > on some other logic (maybe in drivers/acpi/acpi_video.c?).
-> >
-> > > And if drm_sysfs_connector_add() is modified to set kdev->fwnode, it
-> > > breaks drivers already using components (as it was pointed at [1]),
-> > > resulting in a deadlock. Lockdep trace is provided below.
-> > >
-> > > Granted these two issues, it seems impractical to fix this commit in any
-> > > sane way. Revert it instead.
-> >
-> > I think there is already user space stuff that relies on these links,
-> > so I'm not sure you can just remove them like that. If the component
-> > framework is not the correct tool here, then I think you need to
-> > suggest some other way of creating them.
-> 
-> The issue (that was pointed out during review) is that having a
-> component code in the framework code can lead to lockups. With the
-> patch #2 in place (which is the only logical way to set kdev->fwnode
-> for non-ACPI systems) probing of drivers which use components and set
-> drm_connector::fwnode breaks immediately.
-> 
-> Can we move the component part to the respective drivers? With the
-> patch 2 in place, connector->fwnode will be copied to the created
-> kdev's fwnode pointer.
-> 
-> Another option might be to make this drm_sysfs component registration optional.
+PSC controller has a limitation that it can only power-up the second core
+when the first core is in ON state. Power-state for core0 should be equal
+to or higher than core1, else the kernel is seen hanging during rproc
+loading.
 
-You don't need to use the component framework at all if there is
-a better way of determining the connection between the DP and its
-Type-C connector (I'm assuming that that's what this series is about).
-You just need the symlinks, not the component.
+Make the powering up of cores sequential, by waiting for the current core
+to power-up before proceeding to the next core, with a timeout of 2sec.
+Add a wait queue event in k3_r5_cluster_rproc_init call, that will wait
+for the current core to be released from reset before proceeding with the
+next core.
 
-thanks,
+Fixes: 6dedbd1d5443 ("remoteproc: k3-r5: Add a remoteproc driver for R5F subsystem")
 
+Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+---
+
+ kpv report: https://gist.githubusercontent.com/apurvanandan1997/feb3b304121c265b7827be43752b7ae8/raw
+
+ drivers/remoteproc/ti_k3_r5_remoteproc.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/drivers/remoteproc/ti_k3_r5_remoteproc.c b/drivers/remoteproc/ti_k3_r5_remoteproc.c
+index ad3415a3851b..ba5e503f7c9c 100644
+--- a/drivers/remoteproc/ti_k3_r5_remoteproc.c
++++ b/drivers/remoteproc/ti_k3_r5_remoteproc.c
+@@ -103,12 +103,14 @@ struct k3_r5_soc_data {
+  * @dev: cached device pointer
+  * @mode: Mode to configure the Cluster - Split or LockStep
+  * @cores: list of R5 cores within the cluster
++ * @core_transition: wait queue to sync core state changes
+  * @soc_data: SoC-specific feature data for a R5FSS
+  */
+ struct k3_r5_cluster {
+ 	struct device *dev;
+ 	enum cluster_mode mode;
+ 	struct list_head cores;
++	wait_queue_head_t core_transition;
+ 	const struct k3_r5_soc_data *soc_data;
+ };
+ 
+@@ -128,6 +130,7 @@ struct k3_r5_cluster {
+  * @atcm_enable: flag to control ATCM enablement
+  * @btcm_enable: flag to control BTCM enablement
+  * @loczrama: flag to dictate which TCM is at device address 0x0
++ * @released_from_reset: flag to signal when core is out of reset
+  */
+ struct k3_r5_core {
+ 	struct list_head elem;
+@@ -144,6 +147,7 @@ struct k3_r5_core {
+ 	u32 atcm_enable;
+ 	u32 btcm_enable;
+ 	u32 loczrama;
++	bool released_from_reset;
+ };
+ 
+ /**
+@@ -460,6 +464,8 @@ static int k3_r5_rproc_prepare(struct rproc *rproc)
+ 			ret);
+ 		return ret;
+ 	}
++	core->released_from_reset = true;
++	wake_up_interruptible(&cluster->core_transition);
+ 
+ 	/*
+ 	 * Newer IP revisions like on J7200 SoCs support h/w auto-initialization
+@@ -1140,6 +1146,7 @@ static int k3_r5_rproc_configure_mode(struct k3_r5_rproc *kproc)
+ 		return ret;
+ 	}
+ 
++	core->released_from_reset = c_state;
+ 	ret = ti_sci_proc_get_status(core->tsp, &boot_vec, &cfg, &ctrl,
+ 				     &stat);
+ 	if (ret < 0) {
+@@ -1280,6 +1287,21 @@ static int k3_r5_cluster_rproc_init(struct platform_device *pdev)
+ 		    cluster->mode == CLUSTER_MODE_SINGLECPU ||
+ 		    cluster->mode == CLUSTER_MODE_SINGLECORE)
+ 			break;
++
++		/* R5 cores require to be powered on sequentially, core0
++		 * should be in higher power state than core1 in a cluster
++		 * So, wait for current core to power up before proceeding
++		 * to next core and put timeout of 2sec for each core.
++		 */
++		ret = wait_event_interruptible_timeout(cluster->core_transition,
++						       core->released_from_reset,
++						       msecs_to_jiffies(2000));
++		if (ret <= 0) {
++			dev_err(dev,
++				"Timed out waiting for %s core to power up!\n",
++				rproc->name);
++			return ret;
++		}
+ 	}
+ 
+ 	return 0;
+@@ -1709,6 +1731,7 @@ static int k3_r5_probe(struct platform_device *pdev)
+ 	cluster->dev = dev;
+ 	cluster->soc_data = data;
+ 	INIT_LIST_HEAD(&cluster->cores);
++	init_waitqueue_head(&cluster->core_transition);
+ 
+ 	ret = of_property_read_u32(np, "ti,cluster-mode", &cluster->mode);
+ 	if (ret < 0 && ret != -EINVAL) {
 -- 
-heikki
+2.34.1
+
