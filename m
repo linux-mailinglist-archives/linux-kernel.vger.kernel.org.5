@@ -2,212 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7747939E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C537939EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239101AbjIFK3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 06:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42622 "EHLO
+        id S238950AbjIFKbr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Sep 2023 06:31:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239049AbjIFK3t (ORCPT
+        with ESMTP id S230102AbjIFKbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 06:29:49 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BFFCF2
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 03:29:44 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id a1e0cc1a2514c-79d8edd6d99so1335104241.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 03:29:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693996183; x=1694600983; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=14tABX8v9DzRI8vQhmxyZH1rPqnsC0/wtKNBEqsNL9E=;
-        b=qgMoEWCcEc3N2kulOWVDfi9PZZKSJguhyD6PGkdFU6WDVA+G7Q3UgJudq73UVJPbJm
-         WKh+agt2J01aAsw5iV9eJgcG6e79gbwjkU8d6ZV8vsemtzZUxjFZB5ufR1n2/y8+FOJt
-         ocyJXrazFkqD2GslEQSk0C53CeGF3HI1uvTchpeJfYtg2Fy6HCtXkcq4IK66E/tVTxCJ
-         t8RjRDN/2Rv/BYS8RFrV7TcCnyDG4KAU3U1YJWlirqDvo3AZkyYjQ5PRbXbzatxTYjbl
-         6ya+V4nPQWl+B0zxJe/EHQFpEmefDB7WsGbsbwtQ+UpzSlSFoxh94OxqITnAK+JOoOLJ
-         qXuQ==
+        Wed, 6 Sep 2023 06:31:46 -0400
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23709CE2;
+        Wed,  6 Sep 2023 03:31:42 -0700 (PDT)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-d7d50ba994eso2968731276.1;
+        Wed, 06 Sep 2023 03:31:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693996183; x=1694600983;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=14tABX8v9DzRI8vQhmxyZH1rPqnsC0/wtKNBEqsNL9E=;
-        b=E6DqGATDbqJ9n/FFWTZufbPXmtxhFApKL4sLmQkNdDQLzlg9dPjw2sojBc32aP1EIs
-         JlAy91Tg3fZhUIBybjE1Vlcxl/q1xf3QdCk+ZKTYiDlZFjKJsvTbsk3TptEGrSlhDiU0
-         UPJgOKcF94NY6Jcmq6YQYlyAP6Vl+3WhpDsEMCzOnXX2+dYIUHkQ/uPtOq44An2oW1Ru
-         t8M3lLaFRDhTJ9bFC7Eey23bhCU0cD0bV8PAtv4793iDG0qZDgkcuPnR0d7ys95nW9HA
-         68tV2jHydsJTNpfoOzlcd4YJ/bVmhCjtWDMhmiCZD27W2vOJFU5WhDY8ucefJV5CBrGH
-         MkiQ==
-X-Gm-Message-State: AOJu0YwFzJzphHjuS3PSdJ+ceflq0QXApNRMUUuAdjRXHvyV6pFtP7h8
-        NH0eP00dyfhSCAi8J7rCf3sxIG7atQjlNpM1y8k+Kw==
-X-Google-Smtp-Source: AGHT+IGTFUFDZV/w/ok9OdXf5klp6eJ37RU5Fa69bLIG8TiI4rI3Kzw7Q9EyuRnMTxSYasY7LyaFxDZCXR10IM+gV4Q=
-X-Received: by 2002:a67:ff83:0:b0:44d:5b62:bcd5 with SMTP id
- v3-20020a67ff83000000b0044d5b62bcd5mr2639843vsq.23.1693996183486; Wed, 06 Sep
- 2023 03:29:43 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693996301; x=1694601101;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3mp+XFav+gv2iGOZnJObeWkSIHa4blAGQ6C5KKvsasw=;
+        b=eVNnX9N4xcNbujviBJeFQF8R4In0mtGJu5guEWZu+Q8gHMdTHZPkOUW2b/IEb6OwSn
+         HrTvO1NgUt10AYzQq1s7y3sp6misdgyhq0FengKaD9bV5JrGTOQVVU9dQ5+MOgMPCKDS
+         R9e9NxCTQxkJ98982aYe4u9AbEROxgki+S2ew4agFxPI5gGWTVVKtY0Bw3PHX03+n4da
+         81o3vii4BnGJfEoCmtmRhjWiYWlFLyfRkdZrhJR7hFbUZT+TtjdDLsB7Ct9zgmO1v4pn
+         M+1mwsfVsT7Ghw9i6G2Ubo/KuMqfAmwh6F34U2te+JDQ4t4UX9v/03MXjsJyAO2sZMwg
+         VK7A==
+X-Gm-Message-State: AOJu0Yz8zb0rvbYPqMB2xyyY+rZ55itljq/5sZihu3jcsH5GCT3pIOYX
+        xLdEaZdeVU6nJ9JqvpKhD1VM7jK6m2hWNw==
+X-Google-Smtp-Source: AGHT+IFoLzsFkumLMxu1Q+L+tKq5cl1aLQQkzXO9szMOIBnQLHpb9oa7qxD9Zdk7ESgPozMCYiiJiQ==
+X-Received: by 2002:a25:7691:0:b0:d6b:8ea4:b8a1 with SMTP id r139-20020a257691000000b00d6b8ea4b8a1mr16707447ybc.12.1693996301052;
+        Wed, 06 Sep 2023 03:31:41 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id k66-20020a252445000000b00d071631665fsm3242028ybk.59.2023.09.06.03.31.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 03:31:40 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-d7d50ba994eso2968718276.1;
+        Wed, 06 Sep 2023 03:31:40 -0700 (PDT)
+X-Received: by 2002:a25:55:0:b0:d4c:cbd2:f6f3 with SMTP id 82-20020a250055000000b00d4ccbd2f6f3mr15437569yba.53.1693996300390;
+ Wed, 06 Sep 2023 03:31:40 -0700 (PDT)
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 6 Sep 2023 15:59:32 +0530
-Message-ID: <CA+G9fYuugZ0OMeS6HvpSS4nuf_A3s455ecipGBvER0LJHojKZg@mail.gmail.com>
-Subject: selftests: user_events: Test terminated by assertion
-To:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Mark Brown <broonie@kernel.org>
+References: <20230904135852.12146-1-wsa+renesas@sang-engineering.com> <20230904135852.12146-4-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20230904135852.12146-4-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 6 Sep 2023 12:31:29 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW3nGaCHU2GeO3=MHDvZskmXd17GJwj=xBp_ZVawAtniA@mail.gmail.com>
+Message-ID: <CAMuHMdW3nGaCHU2GeO3=MHDvZskmXd17GJwj=xBp_ZVawAtniA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] i2c: rcar: add FastMode+ support
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The selftests: user_events tests failed on all devices and all architectures.
+Hi Wolfram,
 
-Test log:
----------
-kselftest: Running tests in user_events
-TAP version 13
-1..4
-# timeout set to 90
-# selftests: user_events: ftrace_test
-# TAP version 13
-# 1..6
-# # Starting 6 tests from 1 test cases.
-# #  RUN           user.register_events ...
-# # ftrace_test.c:210:register_events:Expected -1 (-1) != self->status_fd (-1)
-# # register_events: Test terminated by assertion
-# #          FAIL  user.register_events
-# not ok 1 user.register_events
-# #  RUN           user.write_events ...
-# # ftrace_test.c:210:write_events:Expected -1 (-1) != self->status_fd (-1)
-# # write_events: Test terminated by assertion
-# #          FAIL  user.write_events
-# not ok 2 user.write_events
-# #  RUN           user.write_empty_events ...
-# # ftrace_test.c:210:write_empty_events:Expected -1 (-1) !=
-self->status_fd (-1)
-# # write_empty_events: Test terminated by assertion
-# #          FAIL  user.write_empty_events
-# not ok 3 user.write_empty_events
-# #  RUN           user.write_fault ...
-# # ftrace_test.c:210:write_fault:Expected -1 (-1) != self->status_fd (-1)
-# # write_fault: Test terminated by assertion
-# #          FAIL  user.write_fault
-# not ok 4 user.write_fault
-# #  RUN           user.write_validator ...
-# # ftrace_test.c:210:write_validator:Expected -1 (-1) != self->status_fd (-1)
-# # write_validator: Test terminated by assertion
-# #          FAIL  user.write_validator
-# not ok 5 user.write_validator
-# #  RUN           user.print_fmt ...
-# # ftrace_test.c:210:print_fmt:Expected -1 (-1) != self->status_fd (-1)
-# # print_fmt: Test terminated by assertion
-# #          FAIL  user.print_fmt
-# not ok 6 user.print_fmt
-# # FAILED: 0 / 6 tests passed.
-# # Totals: pass:0 fail:6 xfail:0 xpass:0 skip:0 error:0
-not ok 1 selftests: user_events: ftrace_test # exit=1
-# timeout set to 90
-# selftests: user_events: dyn_test
-# TAP version 13
-# 1..4
-# # Starting 4 tests from 1 test cases.
-# #  RUN           user.basic_types ...
-# # dyn_test.c:157:basic_types:Expected -1 (-1) != parse(&self->check,
-\"u:__test_event u64 a\") (-1)
-# # basic_types: Test terminated by assertion
-# #          FAIL  user.basic_types
-# not ok 1 user.basic_types
-# #  RUN           user.loc_types ...
-# # dyn_test.c:181:loc_types:Expected -1 (-1) != parse(&self->check,
-\"u:__test_event __data_loc char[] a\") (-1)
-# # loc_types: Test terminated by assertion
-# #          FAIL  user.loc_types
-# not ok 2 user.loc_types
-# #  RUN           user.size_types ...
-# # dyn_test.c:189:size_types:Expected -1 (-1) != parse(&self->check,
-\"u:__test_event struct custom a 20\") (-1)
-# # size_types: Test terminated by assertion
-# #          FAIL  user.size_types
-# not ok 3 user.size_types
-# #  RUN           user.matching ...
-# # dyn_test.c:199:matching:Expected -1 (-1) !=
-check_match(&self->check, \"__test_event u32 a\", \"__test_event u32
-a\", &match) (-1)
-# # matching: Test terminated by assertion
-# #          FAIL  user.matching
-# not ok 4 user.matching
-# # FAILED: 0 / 4 tests passed.
-# # Totals: pass:0 fail:4 xfail:0 xpass:0 skip:0 error:0
-not ok 2 selftests: user_events: dyn_test # exit=1
-# timeout set to 90
-# selftests: user_events: perf_test
-# TAP version 13
-# 1..2
-# # Starting 2 tests from 1 test cases.
-# #  RUN           user.perf_write ...
-# # perf_test.c:117:perf_write:Expected -1 (-1) != self->data_fd (-1)
-# # perf_write: Test terminated by assertion
-# #          FAIL  user.perf_write
-# not ok 1 user.perf_write
-# #  RUN           user.perf_empty_events ...
-# # perf_test.c:117:perf_empty_events:Expected -1 (-1) != self->data_fd (-1)
-# # perf_empty_events: Test terminated by assertion
-# #          FAIL  user.perf_empty_events
-# not ok 2 user.perf_empty_events
-# # FAILED: 0 / 2 tests passed.
-# # Totals: pass:0 fail:2 xfail:0 xpass:0 skip:0 error:0
-not ok 3 selftests: user_events: perf_test # exit=1
-# timeout set to 90
-# selftests: user_events: abi_test
-# TAP version 13
-# 1..4
-# # Starting 4 tests from 1 test cases.
-# #  RUN           user.enablement ...
-# # abi_test.c:106:enablement:Expected 0 (0) ==
-reg_enable(&self->check, sizeof(int), 0) (-1)
-# # enablement: Test terminated by assertion
-# #          FAIL  user.enablement
-# not ok 1 user.enablement
-# #  RUN           user.bit_sizes ...
-# # abi_test.c:126:bit_sizes:Expected 0 (0) ==
-reg_enable(&self->check, sizeof(int), 0) (-1)
-# # bit_sizes: Test terminated by assertion
-# #          FAIL  user.bit_sizes
-# not ok 2 user.bit_sizes
-# #  RUN           user.forks ...
-# # abi_test.c:154:forks:Expected 0 (0) == reg_enable(&self->check,
-sizeof(int), 0) (-1)
-# # forks: Test terminated by assertion
-# #          FAIL  user.forks
-# not ok 3 user.forks
-# #  RUN           user.clones ...
-# # abi_test.c:212:clones:Expected 0 (0) == reg_enable(&self->check,
-sizeof(int), 0) (-1)
-# # clones: Test terminated by assertion
-# #          FAIL  user.clones
-# not ok 4 user.clones
-# # FAILED: 0 / 4 tests passed.
-# # Totals: pass:0 fail:4 xfail:0 xpass:0 skip:0 error:0
-not ok 4 selftests: user_events: abi_test # exit=1
+On Tue, Sep 5, 2023 at 6:01 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> Apply the different formula and register setting for activating FM+ on
+> Gen4 devtypes.
+>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+
+Thanks for your patch!
+
+> --- a/drivers/i2c/busses/i2c-rcar.c
+> +++ b/drivers/i2c/busses/i2c-rcar.c
+
+> @@ -128,7 +139,7 @@ struct rcar_i2c_priv {
+>         wait_queue_head_t wait;
+>
+>         int pos;
+> -       u32 icccr;
+> +       u32 clock_val;
+
+Perhaps use a union to store either icccr or smd?
+
+>         u8 recovery_icmcr;      /* protected by adapter lock */
+>         enum rcar_i2c_type devtype;
+>         struct i2c_client *slave;
+> @@ -217,7 +228,17 @@ static void rcar_i2c_init(struct rcar_i2c_priv *priv)
+>         rcar_i2c_write(priv, ICMCR, MDBS);
+>         rcar_i2c_write(priv, ICMSR, 0);
+>         /* start clock */
+> -       rcar_i2c_write(priv, ICCCR, priv->icccr);
+> +       if (priv->flags & ID_P_FMPLUS) {
+> +               rcar_i2c_write(priv, ICCCR, 0);
+> +               rcar_i2c_write(priv, ICMPR, priv->clock_val);
+> +               rcar_i2c_write(priv, ICHPR, 3 * priv->clock_val);
+> +               rcar_i2c_write(priv, ICLPR, 3 * priv->clock_val);
+> +               rcar_i2c_write(priv, ICCCR2, FMPE | CDFD | HLSE | SME);
+
+ICCCR2 note 1: "ICCCR2 should be written to prior to writing ICCCR."
+
+> +       } else {
+> +               rcar_i2c_write(priv, ICCCR, priv->clock_val);
+> +               if (priv->devtype >= I2C_RCAR_GEN3)
+> +                       rcar_i2c_write(priv, ICCCR2, 0);
+
+Likewise.
+
+> +       }
+>
+>         if (priv->devtype >= I2C_RCAR_GEN3)
+>                 rcar_i2c_write(priv, ICFBSCR, TCYC17);
+> @@ -242,7 +263,7 @@ static int rcar_i2c_bus_barrier(struct rcar_i2c_priv *priv)
+>
+>  static int rcar_i2c_clock_calculate(struct rcar_i2c_priv *priv)
+>  {
+> -       u32 scgd, cdf, round, ick, sum, scl, cdf_width;
+> +       u32 scgd, cdf = 0, round, ick, sum, scl, cdf_width, smd;
+>         unsigned long rate;
+>         struct device *dev = rcar_i2c_priv_to_dev(priv);
+>         struct i2c_timings t = {
+> @@ -252,19 +273,26 @@ static int rcar_i2c_clock_calculate(struct rcar_i2c_priv *priv)
+>                 .scl_int_delay_ns       = 50,
+>         };
+>
+> -       cdf_width = (priv->devtype == I2C_RCAR_GEN1) ? 2 : 3;
+> -
+>         /* Fall back to previously used values if not supplied */
+>         i2c_parse_fw_timings(dev, &t, false);
+>
+> +       if (t.bus_freq_hz > I2C_MAX_FAST_MODE_FREQ &&
+> +           priv->devtype >= I2C_RCAR_GEN4)
+> +               priv->flags |= ID_P_FMPLUS;
+> +       else
+> +               priv->flags &= ~ID_P_FMPLUS;
+> +
+>         /*
+>          * calculate SCL clock
+>          * see
+> -        *      ICCCR
+> +        *      ICCCR (and ICCCR2 for FastMode+)
+>          *
+>          * ick  = clkp / (1 + CDF)
+>          * SCL  = ick / (20 + SCGD * 8 + F[(ticf + tr + intd) * ick])
+>          *
+> +        * for FastMode+:
+> +        * SCL  = clkp / (8 + SMD * 2 + SCLD + SCHD +F[(ticf + tr + intd) * clkp])
+> +        *
+>          * ick  : I2C internal clock < 20 MHz
+>          * ticf : I2C SCL falling time
+>          * tr   : I2C SCL rising  time
+> @@ -273,10 +301,14 @@ static int rcar_i2c_clock_calculate(struct rcar_i2c_priv *priv)
+>          * F[]  : integer up-valuation
+>          */
+>         rate = clk_get_rate(priv->clk);
+> -       cdf = rate / 20000000;
+> -       if (cdf >= 1U << cdf_width) {
+> -               dev_err(dev, "Input clock %lu too high\n", rate);
+> -               return -EIO;
+> +
+> +       if (!(priv->flags & ID_P_FMPLUS)) {
+> +               cdf = rate / 20000000;
+> +               cdf_width = (priv->devtype == I2C_RCAR_GEN1) ? 2 : 3;
+> +               if (cdf >= 1U << cdf_width) {
+> +                       dev_err(dev, "Input clock %lu too high\n", rate);
+> +                       return -EIO;
+> +               }
+>         }
+>         ick = rate / (cdf + 1);
+
+In case of FM+, cdf will be zero, and ick == rate?
+
+> @@ -292,34 +324,55 @@ static int rcar_i2c_clock_calculate(struct rcar_i2c_priv *priv)
+>         round = (ick + 500000) / 1000000 * sum;
+
+ick == rate if FM+
+
+>         round = (round + 500) / 1000;
+
+DIV_ROUND_UP()
+
+>
+> -       /*
+> -        * SCL  = ick / (20 + SCGD * 8 + F[(ticf + tr + intd) * ick])
+> -        *
+> -        * Calculation result (= SCL) should be less than
+> -        * bus_speed for hardware safety
+> -        *
+> -        * We could use something along the lines of
+> -        *      div = ick / (bus_speed + 1) + 1;
+> -        *      scgd = (div - 20 - round + 7) / 8;
+> -        *      scl = ick / (20 + (scgd * 8) + round);
+> -        * (not fully verified) but that would get pretty involved
+> -        */
+> -       for (scgd = 0; scgd < 0x40; scgd++) {
+> -               scl = ick / (20 + (scgd * 8) + round);
+> -               if (scl <= t.bus_freq_hz)
+> -                       break;
+> -       }
+> +       if (priv->flags & ID_P_FMPLUS) {
+
+IIUIC, on R-ar Gen3 and later you can use ICCCR2 without FM+, for
+improved accuracy, too?
+
+> +               /*
+> +                * SMD should be smaller than SCLD and SCHD, we arbitrarily set
+> +                * the ratio 1:3. SCHD:SCLD ratio is 1:1, thus:
+> +                * SCL  = clkp / (8 + SMD * 2 + SCLD + SCHD + F[(ticf + tr + intd) * clkp])
+> +                * SCL  = clkp / (8 + SMD * 2 + SMD * 3 + SMD * 3 + F[...])
+> +                * SCL  = clkp / (8 + SMD * 8 + F[...])
+> +                */
+> +               smd = DIV_ROUND_UP(ick / t.bus_freq_hz - 8 - round, 8);
+
+Perhaps use rate instead of ick?
+
+DIV_ROUND_UP(ick, 8 * (t.bus_freq_hz - 8 - round));
+
+> +               scl = ick / (8 + 8 * smd + round);
+
+DIV_ROUND_UP()?
+
+>
+> -       if (scgd == 0x40) {
+> -               dev_err(dev, "it is impossible to calculate best SCL\n");
+> -               return -EIO;
+> -       }
+> +               if (smd > 0xff) {
+> +                       dev_err(dev, "it is impossible to calculate best SCL\n");
+> +                       return -EINVAL;
+
+Perhaps some "goto error", to share with the error handling for non-FM+?
+
+> +               }
+>
+> -       dev_dbg(dev, "clk %d/%d(%lu), round %u, CDF:0x%x, SCGD: 0x%x\n",
+> -               scl, t.bus_freq_hz, rate, round, cdf, scgd);
+> +               dev_dbg(dev, "clk %d/%d(%lu), round %u, SMD:0x%x, SCHD: 0x%x\n",
+
+%u/%u
+
+Perhaps it makes more sense to print SMD and SCHD in decimal?
+
+This also applies to the existing code (CDF/SCGD) you moved into
+the else branch.
+
+> +                       scl, t.bus_freq_hz, rate, round, smd, 3 * smd);
+>
+> -       /* keep icccr value */
+> -       priv->icccr = scgd << cdf_width | cdf;
+> +               priv->clock_val = smd;
+> +       } else {
+> +               /*
+> +                * SCL  = ick / (20 + SCGD * 8 + F[(ticf + tr + intd) * ick])
+> +                *
+> +                * Calculation result (= SCL) should be less than
+> +                * bus_speed for hardware safety
+> +                *
+> +                * We could use something along the lines of
+> +                *      div = ick / (bus_speed + 1) + 1;
+> +                *      scgd = (div - 20 - round + 7) / 8;
+> +                *      scl = ick / (20 + (scgd * 8) + round);
+> +                * (not fully verified) but that would get pretty involved
+> +                */
+> +               for (scgd = 0; scgd < 0x40; scgd++) {
+> +                       scl = ick / (20 + (scgd * 8) + round);
+> +                       if (scl <= t.bus_freq_hz)
+> +                               break;
+> +               }
+> +
+> +               if (scgd == 0x40) {
+> +                       dev_err(dev, "it is impossible to calculate best SCL\n");
+> +                       return -EINVAL;
+
+This was -EIO before.
 
 
-Links:
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230906/testrun/19717988/suite/kselftest-user_events/test/user_events_abi_test/log
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230906/testrun/19717988/suite/kselftest-user_events/test/user_events_abi_test/details/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2V0Oq00RB2Cvog83Dw4Gg6a4Rtj/
+> +               }
+> +
+> +               dev_dbg(dev, "clk %d/%d(%lu), round %u, CDF:0x%x, SCGD: 0x%x\n",
+> +                       scl, t.bus_freq_hz, rate, round, cdf, scgd);
+> +
+> +               priv->clock_val = scgd << cdf_width | cdf;
+> +       }
+>
+>         return 0;
+>  }
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 --
-Linaro LKFT
-https://lkft.linaro.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
