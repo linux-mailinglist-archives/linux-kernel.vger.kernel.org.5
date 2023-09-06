@@ -2,103 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD65793C0A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04116793C01
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240418AbjIFL7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48966 "EHLO
+        id S240373AbjIFL7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbjIFL7u (ORCPT
+        with ESMTP id S240340AbjIFL7K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:59:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10AF8BF
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:59:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694001540;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=SKAV4fdQ3q6kj6qxeQRHTIbhfVN1rKf4+zbwkUoPtTU=;
-        b=hcU5cqt3iTObhTl24ygPuCM9s6NudHQ63KIRzkDtdjw057bwxF9s781R8BdP181RTGCmIa
-        apDt+0WjbNA9TXV4FXVpk82Yi+/M8SIQqt7OOsoJz/17jW4IRjFlzXjn+NXQKqYv70dQvK
-        IBvdCpFEzgS5cVVRcepXP3eLliKQhvk=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-217-rhGtyjGZNOqhe1jDRYopIw-1; Wed, 06 Sep 2023 07:58:57 -0400
-X-MC-Unique: rhGtyjGZNOqhe1jDRYopIw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-401ea9bf934so22034955e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 04:58:56 -0700 (PDT)
+        Wed, 6 Sep 2023 07:59:10 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF22CE6
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:59:06 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-52c88a03f99so4793427a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 04:59:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694001545; x=1694606345; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0eY60L1vqLhFNroIzfX3ZIdyRPyMgbcLJxNulph+C5w=;
+        b=fKGWI9W7wR8TmAcC645SaibNfSyqdUgmlqU4euQ81IsKDcrWCDl2qjx1XsRxDHRZl0
+         ZAUiUb6jxFuZCjBKCqM//9iBMqfEWifFG4X+hCHouAYpJaMuiNQ9Q8lNl4Os9xZc5wov
+         axw5qbpfV/cBJaTASEqeZS0o1cUMqa2Nsmu3FuVmXX7rKV872JqkmbLGf75XfOi5Jk0Q
+         2dI9G04cha8bcREqaD8HX8k8l8u9rK+0lTfSbr+YlzdZroc3Zgt460aD+KAk67krOpXV
+         XdbQqQWfxBve+quffrB8AOqjS1Q0jHgyqh84oTomHeWXdTrj7sZ/64OVl2yBoTR66HgE
+         jmOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694001536; x=1694606336;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20221208; t=1694001545; x=1694606345;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SKAV4fdQ3q6kj6qxeQRHTIbhfVN1rKf4+zbwkUoPtTU=;
-        b=Xg4Rw7KkH17AFZedYRg7fSBwCK8xmsl10jYty00s1TzMgjzevoZu0XMRaXdcMZdYj0
-         J1adsNyWhaFwfBmpj2J43eaUIaNbX05mRSaXuKO64AXQG8i/y5BJaLwKSb/iWV5SBGnf
-         Fp9R50Z2EKzidPhrO027VIqo0Fou4yiHK3y6RgJwvfkTJyGBxadiq0gcsUGSlfD+uT9q
-         fXQrY7li5s+yRGW6WjEHuMRnX/dbFGyEtWirfxL/yqB5RIUGVeBLWBK8w+Cj4bLM09TX
-         Bc40TbO40vsxQSWS4WL6J8OtFBz33G8xPYM0GKEdG4Yv25FWIJNa9pUdKzxPikJoUsDG
-         Uh0Q==
-X-Gm-Message-State: AOJu0YynX1trGtuAuYWZnd7pfTlIvjAd/3rAbDYp8eWzRb7O3J466rDk
-        KjsXMNHLFdcYS/6gTkriFIWM7vzavT213DmPFV/A5ptvbuWQJQTZsFqMgPfpokdTatqP3KXT37B
-        BwP/xENH530+DbbSznjWYoG5S
-X-Received: by 2002:a05:600c:b58:b0:401:bf87:989c with SMTP id k24-20020a05600c0b5800b00401bf87989cmr2026887wmr.34.1694001535742;
-        Wed, 06 Sep 2023 04:58:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHPggtM57hDQTIGuqanL6rw8QE92aXofPdGiP8puZm9Op7yO5UYaLvV6EFOToqu3n5AXS4P7w==
-X-Received: by 2002:a05:600c:b58:b0:401:bf87:989c with SMTP id k24-20020a05600c0b5800b00401bf87989cmr2026874wmr.34.1694001535392;
-        Wed, 06 Sep 2023 04:58:55 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.94.163])
-        by smtp.gmail.com with ESMTPSA id r16-20020a05600c299000b00400268671c6sm19480370wmd.13.2023.09.06.04.58.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 04:58:55 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 13:58:52 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        netdev <netdev@vger.kernel.org>,
-        Valentin Schneider <vschneid@redhat.com>
-Subject: Question on tw_timer TIMER_PINNED
-Message-ID: <ZPhpfMjSiHVjQkTk@localhost.localdomain>
+        bh=0eY60L1vqLhFNroIzfX3ZIdyRPyMgbcLJxNulph+C5w=;
+        b=P5cOIDCSIruDrIYBs6INbh6BBRP4RvAkjBKYKnFvX8U/iZylMNEQa47afohnRrBg6i
+         rVPJuOye89lnChNd0Wz9TYIAv0NQ7lq+9MRGDhfCZH/y2rvUov2qJfJ56rsWyAhJtdf3
+         QRU7anmh/BFNnRqrINhOWEUF0ZmqaHioM4jLexbUssGtXpxn0tr+mxCVWjVKW7jlpdIY
+         oJv2CJuqPVUwrveqe74xyVvd2xN2iP0vUmz2zBkY0bCLgSH39JajZeP3s3KaBmGh8blL
+         PFgRckHfM+s2icpEr0Oy9q3DY3j/BvEpM2h5UcZbg3xYZslGn0pu8pGtqpdK4EvptBQO
+         umiw==
+X-Gm-Message-State: AOJu0Yyxe5KCPDHvGNyqiNsehdMJkNxyO6mbm0QzrmruNQnNd0k0eIrL
+        gJzktAIBQO6Va9gCCTbJhzzI4w==
+X-Google-Smtp-Source: AGHT+IF9sAT+cjxkgPNsf+QIwIxOAoiZdeDBevNhm3tks4xh9tnp+4JXd0PrPwEP3hqmdZltjlbETg==
+X-Received: by 2002:aa7:dace:0:b0:523:40d0:34d1 with SMTP id x14-20020aa7dace000000b0052340d034d1mr2179204eds.4.1694001545044;
+        Wed, 06 Sep 2023 04:59:05 -0700 (PDT)
+Received: from [192.168.37.154] (178235177204.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.204])
+        by smtp.gmail.com with ESMTPSA id a9-20020aa7d749000000b005257da6be23sm8448955eds.75.2023.09.06.04.59.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 04:59:04 -0700 (PDT)
+Message-ID: <168d4136-7382-481a-9c4d-f43b1f95f987@linaro.org>
+Date:   Wed, 6 Sep 2023 13:59:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: sc7180: Add ADSP
+Content-Language: en-US
+To:     Nikita Travkin <nikita@trvn.ru>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org
+Cc:     David Wronek <davidwronek@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+References: <20230905-sc7180-adsp-rproc-v2-0-8ab7f299600a@trvn.ru>
+ <20230905-sc7180-adsp-rproc-v2-4-8ab7f299600a@trvn.ru>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230905-sc7180-adsp-rproc-v2-4-8ab7f299600a@trvn.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On 5.09.2023 12:41, Nikita Travkin wrote:
+> sc7180 has an ADSP remoteproc that exclusively controls the audio
+> hardware on devices that use Qualcomm firmware.
+> 
+> Add it along with the relevant audio services.
+> 
+> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+> ---
+> v2: rename service nodes according to the schema, reorder properties
+> ---
+remoteproc@62400000: glink-edge:apr: 'qcom,domain' is a required property
+remoteproc@62400000: glink-edge: Unevaluated properties are not allowed
+('apr' was unexpected)
+remoteproc@62400000: Unevaluated properties are not allowed ('glink-edge',
+'qcom,smem-state-names', 'qcom,smem-states' were unexpected)
+apr: 'qcom,domain' is a required property
+service@4: Unevaluated properties are not allowed ('cc' was unexpected)
 
-I'm bothering you with a question about timewait_sock tw_timer, as I
-believe you are one of the last persons touching it sometime ago. Please
-feel free to redirect if I failed to git blame it correctly.
+you need to enable the node to get all the warnings
 
-At my end, latency spikes (entering the kernel) have been reported when
-running latency sensitive applications in the field (essentially a
-polling userspace application that doesn't want any interruption at
-all). I think I've been able to track down one of such interruptions to
-the servicing of tw_timer_handler. This system isolates application CPUs
-dynamically, so what I think it happens is that at some point tw_timer
-is armed on a CPU, and it is PINNED to that CPU, meanwhile (before the
-60s timeout) such CPU is 'isolated' and the latency sensitive app
-started on it. After 60s the timer fires and interrupts the app
-generating a spike.
-
-I'm not very familiar with this part of the kernel and from staring
-at code for a while I had mixed feeling about the need to keep tw_timer
-as TIMER_PINNED. Could you please shed some light on it? Is it a strict
-functional requirement or maybe a nice to have performance (locality I'd
-guess) improvement? Could we in principle make it !PINNED (so that it
-can be moved/queued away and prevent interruptions)?
-
-Thanks a lot in advance!
-Juri
-
+Konrad
