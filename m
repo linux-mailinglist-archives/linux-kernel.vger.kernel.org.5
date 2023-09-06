@@ -2,159 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0D6794484
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8902379448A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236335AbjIFU2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 16:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49426 "EHLO
+        id S244481AbjIFU30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 16:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244428AbjIFU2u (ORCPT
+        with ESMTP id S243625AbjIFU3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 16:28:50 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318A619B1
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 13:28:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=FLTOwwr5W43vbiGYl2v2rKXXuVv9T2DL3IE1Nf+wFh4=; b=TmD8pgRJhAchnJvuzfhT5jRS7w
-        AfJO/UhAW/m4rOUw/qZ7914fzD+kvfDaF06viiN5wAm/qrqfrZgiYhr8gia6w09jmB0lyGWctoRpG
-        SaPzgLvKgpqHmGhH3JrakBfc7UOS67ChNDTCfGxqOMwzFy8XnxH3VDFigRiQdpUvmJaZSkBiBsprL
-        wCrKAngc1/yhzYfVuK/xAiLROJSlX88apCtXVcDcT9z5OF+xFt//qAvuOhydgGIMjjoJHR0OJpEZx
-        407g22zbK1c8kAkUc9MBneL/uwjlh5sRFzjurjcvhBiVAPlZracCBw5kO7hy+BZ6Bh0nWKa9AZrmk
-        ZQQO4BPQ==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qdz8i-00AqvX-1z;
-        Wed, 06 Sep 2023 20:28:40 +0000
-Message-ID: <555ac3b5-93ee-efca-45d7-f34b5e91d891@infradead.org>
-Date:   Wed, 6 Sep 2023 13:28:38 -0700
+        Wed, 6 Sep 2023 16:29:24 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D791BC6
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 13:29:12 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-5009dd43130so132e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 13:29:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1694032150; x=1694636950; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u1tlMNe6P+SoHizV0ZMopCCCIGPz74BBXUDpqPFOlrQ=;
+        b=VoEN6Bc8eI0939Jklr1N/q0v5gwO9Wz+/e8NPfntJQUyuEmPl4GTRvi4UdnF6BtNc1
+         K08ix9yDnZjhPbQcnKZazmZ7MwqO3xXpuyc4HVSKtohBI8HevMJXX/K9mhJo3OmEgbEB
+         UlRBzoRgFQlEzHl0Xkv8SDhj3QH7MOrFHdlXDZcwqjLFQEuZ2QE5fUeuKTCbfBUA61TB
+         gIBC+uigHUforaM7nWVbGh1LvEmdQzcNqG60M/rPAP5xW2Q1dVfFbcZBrTugLnGK4bdN
+         vJSt68peJi7H2bu3ZAh4xGhIdNQDR0Peu1rqhNieYdYxvlA/jZrKTI0dFwnzTWhtzV/N
+         AWiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694032150; x=1694636950;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u1tlMNe6P+SoHizV0ZMopCCCIGPz74BBXUDpqPFOlrQ=;
+        b=cnRfVMQ6pwYue+nx5LGpfLNct74XL6VuGWHXBXhF3pwPoHMRybYDqICRLPXnpCxAIZ
+         PPoeJja8pcFdsPKcikAAPta7gfKB/VlBoGCs9RO1OcvoW/Vlw8iUFMN9XuZYv7faOxlY
+         Zpza5S5xS5g92Ayr/uzEO3Pr+w8yqHglITPxj4r6wvcP+6lqEg33Ca0oXoOA3zPZc1S3
+         rmIxEetlIhP/rorVPQ4df1xtlmrTM3/roA6gpE3kNoDG4GuUKTR96oE+6GSxjG61L2G4
+         kwrgzAZ4CS9C0i6a+KO7Qf3WFIuK7TC2xWZfNAYRHk1tnN2tcLN+acGzJmlJsawmHYfh
+         3tjQ==
+X-Gm-Message-State: AOJu0YyIUlwiBHWzO9b2+Ptzty+KJhR8wBY6MqYMUZ+9lXlOnF6cM2Po
+        lDu6sFRa52vYcbJrjOAi04g90uncynhib31TiqdzOQ==
+X-Google-Smtp-Source: AGHT+IF0qwICN0OULzMVz0QSiGIgwDuU3npgPxlcvk2yZ90NesAAG+1ogY0DdXCdOuaMGZyz9pBGwIvQY4ENlmiNW8M=
+X-Received: by 2002:a19:c20c:0:b0:501:90dd:be8e with SMTP id
+ l12-20020a19c20c000000b0050190ddbe8emr18060lfc.5.1694032150482; Wed, 06 Sep
+ 2023 13:29:10 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] drm/connector: document supported_colorspaces and
- DRM_MODE_COLORIMETRY_COUNT
-Content-Language: en-US
-To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230906-topic-drm_connector_doc-v1-1-f4ce7ad0150c@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230906-topic-drm_connector_doc-v1-1-f4ce7ad0150c@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230906151449.18312-1-pgonda@google.com> <68a44c6d-21c9-30c2-b0cf-66f02f9d2f4e@amd.com>
+ <ZPjc/PoBLPNNLukt@google.com> <249694b0-2afd-f653-a443-124e510f4a4c@amd.com> <ZPjgaKoF9jVS/ATx@google.com>
+In-Reply-To: <ZPjgaKoF9jVS/ATx@google.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Wed, 6 Sep 2023 14:28:58 -0600
+Message-ID: <CAMkAt6p2T8OfnUcqcw8Kvq195VnxQoaAwdetuouMdE1NvjO5Uw@mail.gmail.com>
+Subject: Re: [PATCH V2] KVM: SEV: Update SEV-ES shutdown intercepts with more metadata
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Sep 6, 2023 at 2:26=E2=80=AFPM Sean Christopherson <seanjc@google.c=
+om> wrote:
+>
+> On Wed, Sep 06, 2023, Tom Lendacky wrote:
+> > On 9/6/23 15:11, Sean Christopherson wrote:
+> > > On Wed, Sep 06, 2023, Tom Lendacky wrote:
+> > > > On 9/6/23 10:14, Peter Gonda wrote:
+> > > > > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> > > > > index 956726d867aa..cecf6a528c9b 100644
+> > > > > --- a/arch/x86/kvm/svm/svm.c
+> > > > > +++ b/arch/x86/kvm/svm/svm.c
+> > > > > @@ -2131,12 +2131,14 @@ static int shutdown_interception(struct k=
+vm_vcpu *vcpu)
+> > > > >          * The VM save area has already been encrypted so it
+> > > > >          * cannot be reinitialized - just terminate.
+> > > > >          */
+> > > > > -       if (sev_es_guest(vcpu->kvm))
+> > > > > -               return -EINVAL;
+> > > > > +       if (sev_es_guest(vcpu->kvm)) {
+> > > > > +               kvm_run->exit_reason =3D KVM_EXIT_SHUTDOWN;
+> > > > > +               return 0;
+> > > > > +       }
+> > > >
+> > > > Just a nit... feel free to ignore, but, since KVM_EXIT_SHUTDOWN is =
+also set
+> > > > at the end of the function and I don't think kvm_vcpu_reset() clear=
+s the
+> > > > value from kvm_run, you could just set kvm_run->exit_reason on entr=
+y and
+> > > > just return 0 early for an SEV-ES guest.
+> > >
+> > > kvm_run is writable by userspace though, so KVM can't rely on kvm_run=
+->exit_reason
+> > > for correctness.
+> > >
+> > > And IIUC, the VMSA is also toast, i.e. doing anything other than mark=
+ing the VM
+> > > dead is futile, no?
+> >
+> > I was just saying that "kvm_run->exit_reason =3D KVM_EXIT_SHUTDOWN;" is=
+ in the
+> > shutdown_interception() function twice now (at both exit points of the
+> > function) and can probably just be moved to the top of the function and=
+ be
+> > common for both exit points, now, right?
+> >
+> > I'm not saying to get rid of it, just set it sooner.
+>
+> Ah, I thought you were saying bail early from kvm_vcpu_reset().  I agree =
+that not
+> having completely split logic would be ideal.  What about this?
+>
+>         /*
+>          * VMCB is undefined after a SHUTDOWN intercept.  INIT the vCPU t=
+o put
+>          * the VMCB in a known good state.  Unfortuately, KVM doesn't hav=
+e
+>          * KVM_MP_STATE_SHUTDOWN and can't add it without potentially bre=
+aking
+>          * userspace.  At a platform view, INIT is acceptable behavior as
+>          * there exist bare metal platforms that automatically INIT the C=
+PU
+>          * in response to shutdown.
+>          *
+>          * The VM save area for SEV-ES guests has already been encrypted =
+so it
+>          * cannot be reinitialized, i.e. synthesizing INIT is futile.
+>          */
+>         if (!sev_es_guest(vcpu->kvm)) {
+>                 clear_page(svm->vmcb);
+>                 kvm_vcpu_reset(vcpu, true);
+>         }
+>
+>         kvm_run->exit_reason =3D KVM_EXIT_SHUTDOWN;
+>         return 0;
 
-On 9/6/23 11:19, Javier Carrasco wrote:
-> The supported_colorspaces parameter was added to the following
-> functions without documenting it:
-> 
-> drm_mode_create_dp_colorspace_property
-> drm_mode_create_hdmi_colorspace_property
-> 
-> The missing descriptions generate warnings when compiling the
-> documentation. Add the descriptions to document the
-> supported_colorspaces parameter.
-> 
-> The drm_colorspace enum member DRM_MODE_COLORIMETRY_COUNT has been
-> properly documented by moving the description out of the enum to the
-> member description list to get rid of an additional warning and improve
-> documentation clarity.
-> 
-> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> ---
-> The supported_colorspaces parameter was added to the following
-> functions without documenting it:
-> 
-> drm_mode_create_dp_colorspace_property
-> drm_mode_create_hdmi_colorspace_property
-> 
-> The missing descriptions generate warnings when compiling the
-> documentation. Add the descriptions to document the
-> supported_colorspaces parameter.
-> 
-> The drm_colorspace enum member DRM_MODE_COLORIMETRY_COUNT has been
-> properly documented by moving the description out of the enum to the
-> member description list to get rid of an additional warning and improve
-> documentation clarity.
-> ---
->  drivers/gpu/drm/drm_connector.c | 2 ++
->  include/drm/drm_connector.h     | 3 ++-
->  2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-> index bf8371dc2a61..77bfe17dcf98 100644
-> --- a/drivers/gpu/drm/drm_connector.c
-> +++ b/drivers/gpu/drm/drm_connector.c
-
-These (2) are already fixed in linux-next.
-
-> @@ -2203,6 +2203,7 @@ static int drm_mode_create_colorspace_property(struct drm_connector *connector,
->  /**
->   * drm_mode_create_hdmi_colorspace_property - create hdmi colorspace property
->   * @connector: connector to create the Colorspace property on.
-> + * @supported_colorspaces: colorspaces supported by the driver.
->   *
->   * Called by a driver the first time it's needed, must be attached to desired
->   * HDMI connectors.
-> @@ -2227,6 +2228,7 @@ EXPORT_SYMBOL(drm_mode_create_hdmi_colorspace_property);
->  /**
->   * drm_mode_create_dp_colorspace_property - create dp colorspace property
->   * @connector: connector to create the Colorspace property on.
-> + * @supported_colorspaces: colorspaces supported by the driver.
->   *
->   * Called by a driver the first time it's needed, must be attached to desired
->   * DP connectors.
-> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> index d300fde6c1a4..18cf46e3478b 100644
-> --- a/include/drm/drm_connector.h
-> +++ b/include/drm/drm_connector.h
-
-This one still needs to be fixed/applied.
-You can add:
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> @@ -498,6 +498,8 @@ enum drm_privacy_screen_status {
->   *   ITU-R BT.601 colorimetry format
->   *   The DP spec does not say whether this is the 525 or the 625
->   *   line version.
-> + * @DRM_MODE_COLORIMETRY_COUNT:
-> + *   Not a valid value; merely used four counting
->   */
->  enum drm_colorspace {
->  	/* For Default case, driver will set the colorspace */
-> @@ -522,7 +524,6 @@ enum drm_colorspace {
->  	DRM_MODE_COLORIMETRY_RGB_WIDE_FIXED	= 13,
->  	DRM_MODE_COLORIMETRY_RGB_WIDE_FLOAT	= 14,
->  	DRM_MODE_COLORIMETRY_BT601_YCC		= 15,
-> -	/* not a valid value; merely used for counting */
->  	DRM_MODE_COLORIMETRY_COUNT
->  };
->  
-> 
-> ---
-> base-commit: 65d6e954e37872fd9afb5ef3fc0481bb3c2f20f4
-> change-id: 20230906-topic-drm_connector_doc-42dae3ba43c6
-> 
-> Best regards,
-
--- 
-~Randy
+Looks better to me. Thanks!
