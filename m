@@ -2,104 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AFD3793D7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E5B793D82
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237562AbjIFNOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 09:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
+        id S238338AbjIFNQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 09:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjIFNOl (ORCPT
+        with ESMTP id S237291AbjIFNQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 09:14:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E0DCE2
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 06:14:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dlfLGTra2/Vr9tNq9nX/R6Uf8c35js0cF92plr4gIlQ=; b=BQJJFfM1Dw8zD04634kUN9/ZEh
-        /B4QCQ/MWy5vomTAWazPUZ9R+g/qwyReIqmXNj4BICwlW+CVcpqkh1fLs8bfqGZqLE6WBRkfYc9JP
-        90luWDYgNXGl1jxpVSfdvHZG1IG0MCQWDu9oxzNcSPQ4twzCQ4/cDJy7sP5KQmn12hSaqnOciOTwF
-        TCuSZM1gb4pruIYSoFv5AWdxitENzWDGteziV6FSjaRBlvaKjsDSC4a4ECaxdjYwSiwwc3RiXzZMe
-        KIkFyxSssB09qkXD4I7iUvm6RRz9Hr4RdWn3rEPRtO8Z69QrF3qnAcML5YBiWk14LbohpjXRGnX1b
-        bX02AYcA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qdsM1-002bh2-F9; Wed, 06 Sep 2023 13:13:57 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1AFF8300422; Wed,  6 Sep 2023 15:13:57 +0200 (CEST)
-Date:   Wed, 6 Sep 2023 15:13:56 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     mingo@kernel.org, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, corbet@lwn.net,
-        qyousef@layalina.io, chris.hyser@oracle.com,
-        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
-        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
-        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
-        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
-        tglx@linutronix.de
-Subject: Re: [PATCH 00/15] sched: EEVDF and latency-nice and/or slice-attr
-Message-ID: <20230906131356.GG38741@noisy.programming.kicks-ass.net>
-References: <20230531115839.089944915@infradead.org>
- <dlbtvvm5cewqzh5bcpl4cqhcwxmnnjb6pdle5jzywiiznlactd@cmhnpim42m3p>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dlbtvvm5cewqzh5bcpl4cqhcwxmnnjb6pdle5jzywiiznlactd@cmhnpim42m3p>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Sep 2023 09:16:16 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95EE6CE2
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 06:16:12 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-53482b44007so1920196a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 06:16:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1694006172; x=1694610972; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6uld++PB00AvttIUabIU7xcqVSkPz344JqFl8ppv134=;
+        b=VZcNZXWJ5o647XY3ZFBM8Dck33z/hii5Mpv4JnMEdcpQO2BXSko5L0DJwEOZ5hgW0/
+         VcDCNxKWKO69DifeDrrZ+cTP6tvik68l7bKvfISnOudpShXwTbwTXEt42XqQLj7+uz9R
+         Ibh7AFOIMp73qNxDFr7AWcOqCKGATb8geI/A9lhIGIxwAf+qG+rl+QtS/HNpeqjEEpcJ
+         IqPYfId3cfPBQI/ZX9TPZE2+jZjVGS5WCd26oyM4StOCcyPGUWIwbN4h6QA2+ioyKvCL
+         OrOqJ0EJZOgkffRKFZoZ+ZPv7omgF1iIJFTyGUxSQfMJDIKBN89DqjyVSCYgbYc6jL4D
+         tMBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694006172; x=1694610972;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6uld++PB00AvttIUabIU7xcqVSkPz344JqFl8ppv134=;
+        b=Kf1/72rW4S7hoMTNw8WRHpUn+jPWta9wHuzBNGJMMZBuogxvHYn+OVGPcDuzKtV2cv
+         MOghOAZluAbYAOPC1fkS+kYR3f5Qh/ZEEtmbLvh0VM/kZzr/Aid3bBPO5fbDhiv/Ibsh
+         jDgi4fYdXjjcFwkU9ftASTbDmHpwjF1eThDJqES6qt3nzIJvCbAo2SaVcyUBgBsiypU/
+         3K9YBWiuh7RJ66qE1wWTDLY3M9zN5T1d0OmOC1jAwuokzBFaaTC5KrKLyHL778VqjmoQ
+         XsZi3iFilhk2vgeuWeh408Xf8ycN1QMLhDNC7wDF4Pexo/cZxuH1szJflfnfy6TZn3Bb
+         ZmNg==
+X-Gm-Message-State: AOJu0YyGGBppvWK03kAFdcjVFkPaUohBlOgp0RfD/9k3OworDQJ6JkEl
+        xdPUVyqz9Aw6w4uZQYq6bJZK/g==
+X-Google-Smtp-Source: AGHT+IE490DJ0B8HsJUKc5YGg+iZZKcgEd0HmXU6tZkHPl3GceN2Bm3rAS+0TX+wSHA1qhJxq3bR3A==
+X-Received: by 2002:a17:90b:4c50:b0:271:7a79:ecbb with SMTP id np16-20020a17090b4c5000b002717a79ecbbmr13634747pjb.28.1694006171898;
+        Wed, 06 Sep 2023 06:16:11 -0700 (PDT)
+Received: from localhost ([135.180.227.0])
+        by smtp.gmail.com with ESMTPSA id gm15-20020a17090b100f00b002681bda127esm10986823pjb.35.2023.09.06.06.16.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 06:16:10 -0700 (PDT)
+Date:   Wed, 06 Sep 2023 06:16:10 -0700 (PDT)
+X-Google-Original-Date: Wed, 06 Sep 2023 06:16:08 PDT (-0700)
+Subject:     Re: [PATCH v3 4/4] riscv: Improve flush_tlb_kernel_range()
+In-Reply-To: <CAHVXubjgjAwMOi0J5zZJkuX8RKwgfKp-_=tVTLDvKN=tBBdxNQ@mail.gmail.com>
+CC:     prabhakar.csengg@gmail.com, geert+renesas@glider.be,
+        Will Deacon <will@kernel.org>, aneesh.kumar@linux.ibm.com,
+        akpm@linux-foundation.org, npiggin@gmail.com, peterz@infradead.org,
+        mchitale@ventanamicro.com, vincent.chen@sifive.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ajones@ventanamicro.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     alexghiti@rivosinc.com
+Message-ID: <mhng-bed35427-44cd-4d85-9589-df2483346d32@palmer-ri-x1c9>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 08:52:26PM -0400, Daniel Jordan wrote:
+On Wed, 06 Sep 2023 05:43:46 PDT (-0700), alexghiti@rivosinc.com wrote:
+> On Wed, Sep 6, 2023 at 2:24 PM Lad, Prabhakar
+> <prabhakar.csengg@gmail.com> wrote:
+>>
+>> Hi Alexandre,
+>>
+>> On Wed, Sep 6, 2023 at 1:18 PM Alexandre Ghiti <alexghiti@rivosinc.com> wrote:
+>> >
+>> > On Wed, Sep 6, 2023 at 2:09 PM Lad, Prabhakar
+>> > <prabhakar.csengg@gmail.com> wrote:
+>> > >
+>> > > Hi Alexandre,
+>> > >
+>> > > On Wed, Sep 6, 2023 at 1:01 PM Alexandre Ghiti <alexghiti@rivosinc.com> wrote:
+>> > > >
+>> > > > Hi Prabhakar,
+>> > > >
+>> > > > On Wed, Sep 6, 2023 at 1:49 PM Lad, Prabhakar
+>> > > > <prabhakar.csengg@gmail.com> wrote:
+>> > > > >
+>> > > > > Hi Alexandre,
+>> > > > >
+>> > > > > On Tue, Aug 1, 2023 at 9:58 AM Alexandre Ghiti <alexghiti@rivosinc.com> wrote:
+>> > > > > >
+>> > > > > > This function used to simply flush the whole tlb of all harts, be more
+>> > > > > > subtile and try to only flush the range.
+>> > > > > >
+>> > > > > > The problem is that we can only use PAGE_SIZE as stride since we don't know
+>> > > > > > the size of the underlying mapping and then this function will be improved
+>> > > > > > only if the size of the region to flush is < threshold * PAGE_SIZE.
+>> > > > > >
+>> > > > > > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+>> > > > > > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+>> > > > > > ---
+>> > > > > >  arch/riscv/include/asm/tlbflush.h | 11 +++++-----
+>> > > > > >  arch/riscv/mm/tlbflush.c          | 34 +++++++++++++++++++++++--------
+>> > > > > >  2 files changed, 31 insertions(+), 14 deletions(-)
+>> > > > > >
+>> > > > > After applying this patch, I am seeing module load issues on RZ/Five
+>> > > > > (complete log [0]). I am testing defconfig + [1] (rz/five related
+>> > > > > configs).
+>> > > > >
+>> > > > > Any pointers on what could be an issue here?
+>> > > >
+>> > > > Can you give me the exact version of the kernel you use? The trap
+>> > > > addresses are vmalloc addresses, and a fix for those landed very late
+>> > > > in the release cycle.
+>> > > >
+>> > > I am using next-20230906, Ive pushed a branch [1] for you to have a look.
+>> > >
+>> > > [0] https://github.com/prabhakarlad/linux/tree/rzfive-debug
+>> >
+>> > Great, thanks, I had to get rid of this possibility :)
+>> >
+>> > As-is, I have no idea, can you try to "bisect" the problem? I mean
+>> > which patch in the series leads to those traps?
+>> >
+>> Oops sorry for not mentioning earlier, this is the offending patch
+>> which leads to the issues seen on rz/five.
+>
+> Ok, so at least I found the following problem, but I don't see how
+> that could fix your issue: can you give a try anyway? I keep looking
+> into this, thanks
+>
+> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> index df2a0838c3a1..b5692bc6c76a 100644
+> --- a/arch/riscv/mm/tlbflush.c
+> +++ b/arch/riscv/mm/tlbflush.c
+> @@ -239,7 +239,7 @@ void flush_tlb_range(struct vm_area_struct *vma,
+> unsigned long start,
+>
+>  void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+>  {
+> -       __flush_tlb_range(NULL, start, end, PAGE_SIZE);
+> +       __flush_tlb_range(NULL, start, end - start, PAGE_SIZE);
+>  }
+>
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
 
-> We're investigating the other benchmarks, but here's what I've found so far
-> with SPEC CPU.  Some schedstats showed that eevdf is tick-preemption happy
-> (patches below).  These stats were taken over 1 minute near the middle of a ~26
-> minute benchmark (502.gcc_r).
-> 
->     Base: v6.5-rc4-based kernel
->     EEVDF: Base + the latest EEVDF patches from tip/sched/core
-> 
->     schedstat                     Base            EEVDF
-> 
->     sched                    1,243,911        3,947,251
-> 
->     tick_check_preempts     12,899,049
->     tick_preempts            1,022,998
-> 
->     check_deadline                           15,878,463
->     update_deadline                           3,895,530
->     preempt_deadline                          3,751,580
-> 
-> In both kernels, tick preemption is primarily what drives schedule()s.
-> Preemptions happen over three times more often for EEVDF because in the base,
-> tick preemption happens after a task has run through its ideal timeslice as a
-> fraction of sched_latency (so two tasks sharing a CPU each get 12ms on a server
-> with enough CPUs, sched_latency being 24ms), whereas with eevdf, a task's base
-> slice determines when it gets tick-preempted, and that's 3ms by default.  It
-> seems SPEC CPU isn't liking the increased scheduling of EEVDF in a cpu-bound
-> load like this.  When I set the base_slice_ns sysctl to 12000000, the
-> regression disappears.
-> 
-> I'm still thinking about how to fix it. 
+Alex and I were talking a bit.  I'm OK just dropping the TLB flush 
+series for this release, that way we can get to the bottom of what's 
+wrong.
 
-EEVDF fundamentally supports per task request/slice sizes, which is the
-primary motivator for finally finishing these patches.
-
-So the plan is to extend sched_setattr() to allow tasks setting their
-own ideal slice length. But we're not quite there yet.
-
-Having just returned from PTO the mailbox is an utter trainwreck, but
-I'll try and refresh those few patches this week for consideration.
-
-In the meantime I think you found the right knob to twiddle.
+>
+>>
+>> Cheers,
+>> Prabhakar
