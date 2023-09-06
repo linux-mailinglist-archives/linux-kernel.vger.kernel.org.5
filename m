@@ -2,123 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD415793924
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0A2793944
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238095AbjIFJ5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 05:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49922 "EHLO
+        id S238262AbjIFKC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 06:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238089AbjIFJ5j (ORCPT
+        with ESMTP id S234340AbjIFKC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 05:57:39 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE4E1734
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 02:57:04 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59504967e00so36929257b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 02:57:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693994221; x=1694599021; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=S6U/bZx3CCZkDt+9hB5fA1eaCfzNi7bkJC7f529EWkw=;
-        b=4Lwoon3q1cTNc6SsgNfllwEhT9sYQRs4hl9b+sHJT/rf2epZ6dLPV/1SYI1nLWVoN0
-         cy48v5+GpCTBUaMJnmNqjschfyYvA5nw+lTCUD+Cy5kej5eEPEIT+jgn+5NmCX3D/EyB
-         B6URpCXw2wSUYtASp81rIBFc/2EAm6cvMw5vTjaZwA4oqQopaRZ11QoKQNc69sSVtkhd
-         aqQf9EX34LH3trob1Qh06cM1dorCkQVcK/ZWy6DNHrOci3WuQoIuAFoUJBtTTgnhHt4M
-         G5i7sDCdSPKnorjh+vSDsR3LpWFDOGhUvjS+LnQNXUjw19vyiPIVgYvsvX01C50Y2MSP
-         pmOg==
+        Wed, 6 Sep 2023 06:02:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F218D170E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 03:00:50 -0700 (PDT)
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-466-rmTvppXLNnOd5bqmiosBcQ-1; Wed, 06 Sep 2023 05:59:40 -0400
+X-MC-Unique: rmTvppXLNnOd5bqmiosBcQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fe182913c5so22422515e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 02:59:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693994221; x=1694599021;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S6U/bZx3CCZkDt+9hB5fA1eaCfzNi7bkJC7f529EWkw=;
-        b=LK2TdimnmHj39vbveEyBMu3U8t6v7DDLvS1o010Y/A9xwh8JIEMGLjQLrUtEEowsfd
-         0WnyeyQr3vNDcwAmwIWA6w8OZ3oggRx4IrXHWsxnCE/AGat+OPRD7cHqK61H91jIojkB
-         8iXm5aKBtBs+u8GPHYRYcEcRsu9nWP8ySM1LKBK6LfWRQQLTQQRNabgp0+X0NeKsk8fq
-         1cXKE99oJZUBHT226E4uNRdf1SJuU1KelYWxOnMRJMyWr9U4qPkiF8uuM1PjP65CdA2U
-         JDKKSOigCsJrU4OxEGKRYsChv4TS3BNmFpw+rRvjbg/Rtll3/j6wnIW4C2fffuunBJle
-         HnPw==
-X-Gm-Message-State: AOJu0YzJNyyy9AAHiY0uzO9xbnmgMppbijRWA2QdWfqLg19yUehBpjHZ
-        li/8Q/MOUDFv0jWQJmsucVVxkp2FXEZHa7s=
-X-Google-Smtp-Source: AGHT+IGtrKPNRYI3AhoixLmlwImfM2X/hdnQadWPxqOqcdFIZ2UCfmxKsJFXaNdIbjrF+J7e1IOSJ4uKQ9IdQe4=
-X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a81:ca51:0:b0:58c:b5a4:8e1f with SMTP id
- y17-20020a81ca51000000b0058cb5a48e1fmr421736ywk.3.1693994221613; Wed, 06 Sep
- 2023 02:57:01 -0700 (PDT)
-Date:   Wed,  6 Sep 2023 09:56:59 +0000
-In-Reply-To: <ESFnxZLcZD-JbNp5PHtrjAdophrPm9gOJR1C5kwsvw6errySiqsG7zbs-0bKWKGrq3Phz7-of0M1znwoTNYAZATTHBhUaFehe5bHP1YksCw=@proton.me>
-Mime-Version: 1.0
-References: <ESFnxZLcZD-JbNp5PHtrjAdophrPm9gOJR1C5kwsvw6errySiqsG7zbs-0bKWKGrq3Phz7-of0M1znwoTNYAZATTHBhUaFehe5bHP1YksCw=@proton.me>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230906095659.906257-1-aliceryhl@google.com>
-Subject: Re: [PATCH v4 4/7] rust: workqueue: add helper for defining
- work_struct fields
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     benno.lossin@proton.me
-Cc:     alex.gaynor@gmail.com, aliceryhl@google.com,
-        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
-        jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
-        ojeda@kernel.org, patches@lists.linux.dev,
-        rust-for-linux@vger.kernel.org, tj@kernel.org, wedsonaf@gmail.com
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1693994379; x=1694599179;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NmAkZbkLbqrhYKWGilvLnXtd6fKYLLSrfrWjxYIXvzE=;
+        b=XET6eVJteGSgDaVyUVwDopLO7Ykpg3CpC9/HZVM6un8Ew+p9oHq+HKfzIwMGFLM7qW
+         yAMgZGDVEpUl8hAVTYcUlcGSOUObGJ8VS2iGHYSVKbk6RjJP0AOBTPOkIWgloF8StxA+
+         rs30glqf/WKjXbNX8yfQZvt+hn6Q/ogop9vGtvHiaAmUbzeAUyl/ilno7D5T5obbK+AO
+         jczauZypdaGvLK6IrJ6G5eVRGPRrQVFbn4SPD2yxgvSDBqE4y3kHFUdRdNSwPdnc9Rn8
+         vRmeHFC3YtECfoxbyNdLfO/mFZHC6Jy698vu97UZakAdiiwZjVY61Q7of+Oz8vCNaQT9
+         VxLA==
+X-Gm-Message-State: AOJu0YyMnZnCNKIIvOfeeKdAo+3pTUtdem9qkgRaVe6EB1Ufj2u4nQiK
+        GZq5kap0Eu5a0s9vauhtwOD8Meuxw8sXEHcTa0vIkpWoNK5GEpG7YhE7hUwatF+6/Z0OCX//3Z2
+        Sh0gcmpShdv/6U/eotz24iDLc
+X-Received: by 2002:a05:600c:128f:b0:3fe:25b3:951d with SMTP id t15-20020a05600c128f00b003fe25b3951dmr1928465wmd.5.1693994378901;
+        Wed, 06 Sep 2023 02:59:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE5+OhfOUQuGHMsv/QI74pAE53OdzJ3LqKgxFhHFhepwapLYpSxbrf63ipC3UeI9PeqR2f8jA==
+X-Received: by 2002:a05:600c:128f:b0:3fe:25b3:951d with SMTP id t15-20020a05600c128f00b003fe25b3951dmr1928450wmd.5.1693994378520;
+        Wed, 06 Sep 2023 02:59:38 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id 15-20020a05600c22cf00b003fe2de3f94fsm19249458wmg.12.2023.09.06.02.59.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 02:59:38 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>, deller@gmx.de,
+        daniel@ffwll.ch, sam@ravnborg.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH 3/7] fbdev/core: Fix style of code for boot-up logo
+In-Reply-To: <20230829142109.4521-4-tzimmermann@suse.de>
+References: <20230829142109.4521-1-tzimmermann@suse.de>
+ <20230829142109.4521-4-tzimmermann@suse.de>
+Date:   Wed, 06 Sep 2023 11:59:37 +0200
+Message-ID: <87il8n4o6u.fsf@minerva.mail-host-address-is-not-set>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Benno Lossin <benno.lossin@proton.me> writes:
->> +impl<T: ?Sized, const ID: u64> Work<T, ID> {
->> +    /// Creates a new instance of [`Work`].
->> +    #[inline]
->> +    #[allow(clippy::new_ret_no_self)]
->> +    pub fn new(name: &'static CStr, key: &'static LockClassKey) -> impl PinInit<Self>
->> +    where
->> +        T: WorkItem<ID>,
->> +    {
->> +        // SAFETY: The `WorkItemPointer` implementation promises that `run` can be used as the work
->> +        // item function.
->> +        unsafe {
->> +            kernel::init::pin_init_from_closure(move |slot| {
->> +                let slot = Self::raw_get(slot);
->> +                bindings::init_work_with_key(
->> +                    slot,
->> +                    Some(T::Pointer::run),
->> +                    false,
->> +                    name.as_char_ptr(),
->> +                    key.as_ptr(),
->> +                );
->> +                Ok(())
->> +            })
->> +        }
-> 
-> I would suggest this instead:
-> ```
->         pin_init!(Self {
->             // SAFETY: The `WorkItemPointer` implementation promises that `run` can be used as the
->             // work item function.
->             work <- Opaque::ffi_init(|slot| unsafe {
->                 bindings::init_work_with_key(
->                     slot,
->                     Some(T::Pointer::run),
->                     false,
->                     name.as_char_ptr(),
->                     key.as_ptr(),
->                 )
->             }),
->             _inner: PhantomData,
->         })
-> ```
+Thomas Zimmermann <tzimmermann@suse.de> writes:
 
-I thought that I changed this in this patchset ...
+> Fix a number of warnings from checkpatch.pl in this code before
+> moving it into a separate file. This includes
+>
+>  * Prefer 'unsigned int' to bare use of 'unsigned'
+>  * space required after that ',' (ctx:VxV)
+>  * space prohibited after that open parenthesis '('
+>  * suspect code indent for conditional statements (16, 32)
+>  * braces {} are not necessary for single statement blocks
+>
+> No functional changes.
+>
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> ---
 
-Anyway, I don't think it's a big deal. If I need to send a v5 for some
-other reason, then I will fix this there. Otherwise, I don't think it's
-necessary to send a v5 just for this.
+[...]
 
-Alice
+> -	static const unsigned char mask[] = { 0,0x80,0xc0,0xe0,0xf0,0xf8,0xfc,0xfe,0xff };
+> +	static const unsigned char mask[] = {
+> +		0, 0x80, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc, 0xfe, 0xff
+> +	};
+
+I didn't know that checkpatch.pl complained about this.
+
+Acked-by: Javier Martinez Canillas <javierm@redhat.com>
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
