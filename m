@@ -2,114 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F147938CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C47D7938D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237742AbjIFJsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 05:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46334 "EHLO
+        id S237761AbjIFJtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 05:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237153AbjIFJsQ (ORCPT
+        with ESMTP id S237153AbjIFJsz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 05:48:16 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E2B10F8
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 02:48:13 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99de884ad25so534333066b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 02:48:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693993691; x=1694598491; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7l5e5jrLFPB+I4LFDv0nRUzADbay4Tp8MYv24l9aPn0=;
-        b=TDhblc9SRZ5wA07f3XbvULGkO0KqJ7jg1S6hMnPiLWW9xfx2un2c7GsN3k1yuypvAT
-         lPdIIVEK17BqX+yWfMQLV9jmZ/6xclE0b6g2JWih/F77uy9H3AhBUyTWvDW2eQ2QoYSb
-         VnOudYOHcf4QoH37ULM5tnxs5HN7s4DW1QXLaut1PMvAR7T6FfdV5vMxtY0JPORUE4O2
-         O+C9OzOvnhsKjTc2Qf1tzC3/XAjXfoiBgIs4XnsgUEVKiHNIOsLL7BaMcshMHV52mKR6
-         lfACWszgC+m5lpclKQSsy19YXe/XWfUf2C2KTPe+M4VDVJc4iDXEpV3NK3+OOLNlQb8K
-         tw2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693993691; x=1694598491;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7l5e5jrLFPB+I4LFDv0nRUzADbay4Tp8MYv24l9aPn0=;
-        b=RP9Xj/mC2TnbH1mT+6E1e2cshrZ7UqEQlpudtdAKzaSzE+0XLYVGcKjSY8OrX4eRQN
-         eYo5nBis3kq0qWeFWQqFonqMKyWadZqCcX3qqsG/sbHaiKjDJmulD7lehrZOCf9WLzyc
-         g4ZdV3HgWT/zHTh/9ppMn9OwurJ5cQFE+uB/wZAcYkSC/y6D5tVG9Ir7A8ZdfPdb8rnH
-         dIZyE7uKH9cU5iFRLeMCVGpaxxkdxFCp/aIZ46WV4Yhx6xI3FSp4uKmXa74Iswm251DU
-         GjjFBiTRLY6gPUqU90QVQWitUllQ3OPRFfZlvlmh5oNiKPb/gTqLVo0bqLLHMOZMy6Wj
-         3p1A==
-X-Gm-Message-State: AOJu0YyPM7NPoAAbFq4QaBaDXw146/YxrFgkWSWTVVvL6M4nP/7/jw4I
-        6fwtIFpqvNqrzpK7DsOG3df7dw==
-X-Google-Smtp-Source: AGHT+IF5SVq/Lc90motqQuAQR3TsxE76OkjJENkCNUVAmo760B595MKCYdCqPwQTmQzogj2343lTUg==
-X-Received: by 2002:a17:907:3f99:b0:9a5:cab0:b061 with SMTP id hr25-20020a1709073f9900b009a5cab0b061mr1898538ejc.51.1693993691683;
-        Wed, 06 Sep 2023 02:48:11 -0700 (PDT)
-Received: from [192.168.37.154] (178235177204.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.204])
-        by smtp.gmail.com with ESMTPSA id hb26-20020a170906b89a00b009931a3adf64sm8948845ejb.17.2023.09.06.02.48.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 02:48:11 -0700 (PDT)
-Message-ID: <9848b712-e06e-4333-a260-928832962746@linaro.org>
-Date:   Wed, 6 Sep 2023 11:48:09 +0200
+        Wed, 6 Sep 2023 05:48:55 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3F8041994;
+        Wed,  6 Sep 2023 02:48:35 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8BxpPDxSvhkEkggAA--.64746S3;
+        Wed, 06 Sep 2023 17:48:33 +0800 (CST)
+Received: from [0.0.0.0] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx3yPvSvhkg2huAA--.28402S3;
+        Wed, 06 Sep 2023 17:48:31 +0800 (CST)
+Message-ID: <3f41eea5-d441-304d-f441-eaf7ce63d3e1@loongson.cn>
+Date:   Wed, 6 Sep 2023 17:48:31 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/12] arm64: dts: qcom: sm6125-sprout: drop incorrect UFS
- phy max current
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
+ to select the primary video adapter at boot time
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230905161920.252013-1-krzysztof.kozlowski@linaro.org>
- <20230905161920.252013-2-krzysztof.kozlowski@linaro.org>
- <e5c218a6-5b71-4887-b79a-9fd2dfb85009@linaro.org>
- <2104ccc8-8d71-f867-f3e1-2d4d02acb8ca@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <2104ccc8-8d71-f867-f3e1-2d4d02acb8ca@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, linux-pci@vger.kernel.org
+References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
+ <151c0429-dbc2-e987-1491-6c733ca159ac@suse.de>
+ <3eced3f5-622f-31a6-f8a0-ff0812be74ff@loongson.cn>
+ <6035cf27-1506-dda7-e1ca-d83ce5cb5340@suse.de>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <6035cf27-1506-dda7-e1ca-d83ce5cb5340@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Bx3yPvSvhkg2huAA--.28402S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoWxtF4UuFWxWr17Gw47JryrAFc_yoWxJw17pF
+        ykuay5KF4kJrn5C340v3WUuFWFq3y8JFWfJrn3G345ua90kryUZFZFgw4Y9asrCr4fXF15
+        tF4Ut3429343AagCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AK
+        xVWxJr0_GcWln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
+        6r1DMcIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU7pnQUU
+        UUU
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -117,22 +74,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6.09.2023 11:45, Krzysztof Kozlowski wrote:
-> On 06/09/2023 11:40, Konrad Dybcio wrote:
->> On 5.09.2023 18:19, Krzysztof Kozlowski wrote:
->>> Neither bindings nor UFS phy driver use properties like
->>> 'vdda-phy-max-microamp' and 'vdda-pll-max-microamp':
->>>
->>>   sm6125-xiaomi-laurel-sprout.dtb: phy@4807000: 'vdda-phy-max-microamp', 'vdda-pll-max-microamp' do not match any of the regexes: 'pinctrl-[0-9]+'
->>>
->>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>> ---
->> ufshcd_populate_vreg uses this, but looks like nobody added it
->> to bindings.
-> 
-> That's UFS controller, not phy. I do not see any usage of it in the phy.
-Oh right..
+Hi,
 
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Konrad
+On 2023/9/6 16:05, Thomas Zimmermann wrote:
+> Hi
+>
+> Am 05.09.23 um 17:59 schrieb suijingfeng:
+> [...]
+>>> FYI: per-driver modeset parameters are deprecated and not to be 
+>>> used. Please don't promote them.
+>>
+>>
+>> Well, please wait, I want to explain.
+>>
+>>
+>>
+>> drm/nouveau already promote it a little bit.
+>>
+>> Despite no code of conduct or specification guiding how the modules 
+>> parameters should be.
+>> Noticed that there already have a lot of DRM drivers support the 
+>> modeset parameters,
+>
+> Please look at the history and discussion around this parameter. To my 
+> knowledge, 'modeset' got introduced when modesetting with still done 
+> in userspace. It was an easy way of disabling the kernel driver if the 
+> system's Xorg did no yet support kernel mode setting.
+>
+> Fast forward a few years and all Linux' use kernel modesetting, which 
+> make the modeset parameters obsolete. We discussed and decided to keep 
+> them in, because many articles and blog posts refer to them. We didn't 
+> want to invalidate them. BUT modeset is deprecated and not allowed in 
+> new code. If you look at existing modeset usage, you will eventually 
+> come across the comment at [1].
+>
+
+OK, no problem. I agree what you said.
+
+
+> There's 'nomodeset', which disables all native drivers. It's useful 
+> for debugging or as a quick-fix if the graphics driver breaks. If you 
+> want to disable a specific driver, please use one of the options for 
+> blacklisting.
+>
+Yeah, the 'nomodeset' disables all native drivers,
+this is a good point of it, but this is also the weak point of it.
+
+Sometimes, when you are developing a drm driver for a new device.
+You will see the pain. Its too often a programmer's modification
+make the entire Linux kernel hang there. The problematic drm
+driver kernel module already in the initrd. Then, the real
+need to disable the ill-functional drm driver kernel module
+only. While what you recommend to disable them all. There
+are subtle difference.
+
+Another limitation of the 'nomodeset' parameter is that
+it is only available on recent upstream kernel. Low version
+downstream kernel don't has this parameter supported yet.
+So this create inconstant developing experience. I believe that
+there always some people need do back-port and upstream work
+for various reasons.
+
+While (kindly, no offensive) debating, since we have the modprobe.blacklist
+why we still need the 'nomodeset' parameter ?
+why not try modprobe.blacklist="amdgpu,radeon,i915,ast,nouveau,gma500_gfx, ..."
+
+:-/
+
+
+But OK in overall, I will listen to your advice.
+
+
+> Best regards
+> Thomas
+>
+> [1] 
+> https://elixir.bootlin.com/linux/v6.5/source/include/drm/drm_module.h#L83
+>
+>
+>> for the modeset parameter, authors of various device driver try to 
+>> make the usage not
+>> conflict with others. I believe that this is good thing for Linux users.
+>> It is probably the responsibility of the drm core maintainers to 
+>> force various drm
+>> drivers to reach a minimal consensus. Probably it pains to do so and 
+>> doesn't pay off.
+>> But reach a minimal consensus do benefit to Linux users.
+>>
+>>
+>>> You can use modprobe.blacklist or initcall_blacklist on the kernel 
+>>> command line.
+>>>
+>> There are some cases where the modprobe.blacklist doesn't works,
+>> I have come cross several time during the past.
+>> Because the device selected by the VGAARB is device-level thing,
+>> it is not the driver's problem.
+>>
+>> Sometimes when VGAARB has a bug, it will select a wrong device as 
+>> primary.
+>> And the X server will use this wrong device as primary and completely 
+>> crash
+>> there, due to lack a driver. Take my old S3 Graphics as an example:
+>>
+>> $ lspci | grep VGA
+>>
+>>   00:06.1 VGA compatible controller: Loongson Technology LLC DC 
+>> (Display Controller) (rev 01)
+>>   03:00.0 VGA compatible controller: Advanced Micro Devices, Inc. 
+>> [AMD/ATI] Caicos XT [Radeon HD 7470/8470 / R5 235/310 OEM]
+>>   07:00.0 VGA compatible controller: S3 Graphics Ltd. Device 9070 
+>> (rev 01)
+>>   08:00.0 VGA compatible controller: S3 Graphics Ltd. Device 9070 
+>> (rev 01)
+>>
+>> Before apply this patch:
+>>
+>> [    0.361748] pci 0000:00:06.1: vgaarb: setting as boot VGA device
+>> [    0.361753] pci 0000:00:06.1: vgaarb: VGA device added: 
+>> decodes=io+mem,owns=io+mem,locks=none
+>> [    0.361765] pci 0000:03:00.0: vgaarb: VGA device added: 
+>> decodes=io+mem,owns=none,locks=none
+>> [    0.361773] pci 0000:07:00.0: vgaarb: VGA device added: 
+>> decodes=io+mem,owns=none,locks=none
+>> [    0.361779] pci 0000:08:00.0: vgaarb: VGA device added: 
+>> decodes=io+mem,owns=none,locks=none
+>> [    0.361781] vgaarb: loaded
+>> [    0.367838] pci 0000:00:06.1: Overriding boot device as 1002:6778
+>> [    0.367841] pci 0000:00:06.1: Overriding boot device as 5333:9070
+>> [    0.367843] pci 0000:00:06.1: Overriding boot device as 5333:9070
+>>
+>>
+>> For known reason, one of my system select the S3 Graphics as primary 
+>> GPU.
+>> But this S3 Graphics not even have a decent drm upstream driver yet.
+>> Under such a case, I begin to believe that only the device who has a
+>> driver deserve the primary.
+>>
+>> Under such a condition, I want to reboot and enter the graphic 
+>> environment
+>> with other working video cards. Either platform integrated and 
+>> discrete GPU.
+>> This don't means I should compromise by un-mount the S3 graphics card 
+>> from
+>> the motherboard, this also don't means that I should update my BIOS 
+>> setting.
+>> As sometimes, the BIOS is more worse.
+>>
+>> With this series applied, all I need to do is to reboot the computer and
+>> pass a command line. By force override another video card (who has a
+>> decent driver support) as primary, I'm able to do the debugging under
+>> graphic environment. I would like to examine what's wrong with the 
+>> vgaarb
+>> on a specific platform under X server graphic environment.
+>>
+>> Probably try compile a driver for this card and see it works, simply 
+>> reboot
+>> without the need to change anything. It is so efficient. So this is 
+>> probably
+>> the second usage of my patch. It hand the right of control back to the
+>> graphic developer.
+>>
+>>
+>
+
