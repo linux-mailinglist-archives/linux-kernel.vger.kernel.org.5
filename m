@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8391B796D96
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 01:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BA4796D98
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 01:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244759AbjIFXXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 19:23:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54192 "EHLO
+        id S244784AbjIFXY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 19:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239386AbjIFXXE (ORCPT
+        with ESMTP id S232862AbjIFXYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 19:23:04 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2004F1BC2
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 16:23:00 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-76da239ba16so23347685a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 16:23:00 -0700 (PDT)
+        Wed, 6 Sep 2023 19:24:55 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12074199B
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 16:24:52 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99bf3f59905so31595566b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 16:24:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1694042579; x=1694647379; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=KOVYO4KGfJmlJ7Sc2gzc02HVhijlhI6QaYPVbI8wZaQ=;
-        b=Dxi2BeWdgwdIN8YZhjupYJe/oWDTT76PYFQC1skLho99k/wqgdrDdpW4UuT7tBVGqF
-         3gbmT1yv1ThDX8MkchXUN15JrBcabAO6TlxCgpIXZHzFP3JW7j7brwbDRVQekOLGiWtD
-         2jP8mVX6ed3qVhC7QYNj1mI3fLwg5JRvkJTxGtDNCMPq3XPGXkTGl0sgLnosiI9OyPJZ
-         gQl1LhsCN2pFATvZTcRfVDd/1/6Cpk6rkaW1GD6JLE68b47g6cwgkDC4+9c/NdI0igKo
-         HjQr8FOnXoEGM0VpqrbL/Mfp4u9bFNx7A7yAa1BHdEZDOU/M1ad8c2BOBKM+hJ4KIeDC
-         jrEg==
+        d=google.com; s=20221208; t=1694042690; x=1694647490; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OIy/S2GIHPrddAMkFG5TTxbNi1DEK6tKwQNJxNkWe38=;
+        b=IIVbi4VkdLw7viVCAd8th7IKzDvLLzuKctsMeThCP4gWIxAw2ggnOrZE+/qoQEfwjP
+         FE2fqm4Ut6Fbg7/rtv8jmYPTbW36gef5qDqLmwLEExJb9kMk9YFOvcNGfn2z//zox6O/
+         bKfnP+8lF2EGONPAvloUO7q8b231L1tGsgIzbJKXPoVrNWW6gPnjqMf04QdEZ+Y+h8r2
+         QF7pKiA2l/nePc49PLRXNaU05DutIY0RgQ/CPnRkNRRck55gHX0Tk8aS9l3WvJZWPbwF
+         GeosVGfJ17vqxICcJ/GyEbVtNsnXBLtpw6tkcLsuolhnRGlq5EdtrpjcZkFEJTutE9se
+         JZ3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694042579; x=1694647379;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KOVYO4KGfJmlJ7Sc2gzc02HVhijlhI6QaYPVbI8wZaQ=;
-        b=FwIHUnAsGVnWKoF72Vapr1SwerKJdg/zf+J4KjDVJt71k5rud+W+siCldhm9ImuJOv
-         Crm+Syn0y8uykuQIRT2XF2TnfXrz2s1V62+mkplYDfem00vpz38bad4eeMa0kBavLnON
-         kPEdoZwLVlw9DLq0iaho3xBL75u9lInnr8+ZuW5MOQOjK5aCNAt3QG1wm3PQpYzkX3Ag
-         RQOUfbjhmuIQM4dXhOk62pUV/WWGTFBfduer7DveEIT8DcysNSWb55lG0+fkU2f+/4ak
-         Np/Icz26zmPInqzrWw26W5r/hp6zaY4B6/NTDPBPX5b2YKdijqbUI6x4pESzUAwX2SEu
-         0ZQA==
-X-Gm-Message-State: AOJu0YydC1kcVNVHis0ltohAE4HYUuLruzeGV1A1pTNr+ktnaVnV0psJ
-        /Q/vK/abfjnBT3KCVjWqegtl
-X-Google-Smtp-Source: AGHT+IFIySrBFtfHW4VE2otNW++I6blWD0r5TQBNO/aYEvyfvC2zgOpj8M47LcEvSORebSxjhgL5Bw==
-X-Received: by 2002:a05:620a:28cc:b0:76f:1d46:4a9f with SMTP id l12-20020a05620a28cc00b0076f1d464a9fmr23129313qkp.4.1694042579258;
-        Wed, 06 Sep 2023 16:22:59 -0700 (PDT)
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id w27-20020a05620a149b00b0076ef3e6e6a4sm5326420qkj.42.2023.09.06.16.22.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 16:22:58 -0700 (PDT)
-Date:   Wed, 06 Sep 2023 19:22:58 -0400
-Message-ID: <333abafe25b35db5d770b5e459c14888.paul@paul-moore.com>
-From:   Paul Moore <paul@paul-moore.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>, serge@hallyn.com,
-        mic@digikod.net, linux-security-module@vger.kernel.org
-Cc:     jmorris@namei.org, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH v14 11/11] LSM: selftests for Linux Security Module  syscalls
-References: <20230828195802.135055-12-casey@schaufler-ca.com>
-In-Reply-To: <20230828195802.135055-12-casey@schaufler-ca.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PP_MIME_FAKE_ASCII_TEXT,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        d=1e100.net; s=20221208; t=1694042690; x=1694647490;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OIy/S2GIHPrddAMkFG5TTxbNi1DEK6tKwQNJxNkWe38=;
+        b=FJaZMYyCCUgNF8n1ie0g0k6T7VHczK0sD9cDMopklt3Mg/16JRxOrq186yzqV44/na
+         7hAOJE4Ud0NXeR3tEkma+7VWZJwB+H2Pz3LHGKGSyRzyfDBSFZwxDH/LuxaE4p2R3dUB
+         +yGp33nim1kSVaNYOpkP0WVve99Yj0qx0YCed92QdJfZqdhqCYcLQ/trwQDXyn3V5LWt
+         S2LO8swGQzBvEnkc/j6ZWL2CpV+sa6d5N3eZaL8EC/3mJj+cUl6VLypBT3Je29qR7vaP
+         GfIHkeggbcsHJns4/Yw0Lv4VH3RUZeMjCqJYUWjnEn3IgtaP8y/ypazCZP5ME/qWqk5d
+         N/TQ==
+X-Gm-Message-State: AOJu0YwB6aa3XoMHFht75Fat7omAl6PGrFMxE20UM4Gt8ll/8wK7JBYM
+        jyBdDqNv27RFezexdD1W0bdzk6K+EC39kedGDSepPA==
+X-Google-Smtp-Source: AGHT+IEZKgVhzYxiWAo3bdKKl4UyUlyaeu6fY9gq+pQ95E/bGNm66qdOOfJECF9YXi7Fzq8L9vZkeXF7WUvEl5qI8PI=
+X-Received: by 2002:a17:907:2bed:b0:9a1:b6e1:c2e with SMTP id
+ gv45-20020a1709072bed00b009a1b6e10c2emr3536524ejc.33.1694042690451; Wed, 06
+ Sep 2023 16:24:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230905-strncpy-arch-arm64-v4-1-bc4b14ddfaef@google.com> <20230906184849.GB5021@willie-the-truck>
+In-Reply-To: <20230906184849.GB5021@willie-the-truck>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Wed, 6 Sep 2023 16:24:37 -0700
+Message-ID: <CAFhGd8qEYGvajC8jNCcMf1zy7A5hY0Cn767CC=XDgtoJsmQDhA@mail.gmail.com>
+Subject: Re: [PATCH v4] arm64/sysreg: refactor deprecated strncpy
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Mostafa Saleh <smostafa@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,38 +73,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 28, 2023 Casey Schaufler <casey@schaufler-ca.com> wrote:
-> 
-> Add selftests for the three system calls supporting the LSM
-> infrastructure. This set of tests is limited by the differences
-> in access policy enforced by the existing security modules.
-> 
-> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-> ---
->  MAINTAINERS                                   |   1 +
->  security/security.c                           |   2 +-
->  tools/testing/selftests/Makefile              |   1 +
->  tools/testing/selftests/lsm/.gitignore        |   1 +
->  tools/testing/selftests/lsm/Makefile          |  17 ++
->  tools/testing/selftests/lsm/common.c          |  89 ++++++
->  tools/testing/selftests/lsm/common.h          |  33 +++
->  tools/testing/selftests/lsm/config            |   3 +
->  .../selftests/lsm/lsm_get_self_attr_test.c    | 275 ++++++++++++++++++
->  .../selftests/lsm/lsm_list_modules_test.c     | 140 +++++++++
->  .../selftests/lsm/lsm_set_self_attr_test.c    |  74 +++++
->  11 files changed, 635 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/lsm/.gitignore
->  create mode 100644 tools/testing/selftests/lsm/Makefile
->  create mode 100644 tools/testing/selftests/lsm/common.c
->  create mode 100644 tools/testing/selftests/lsm/common.h
->  create mode 100644 tools/testing/selftests/lsm/config
->  create mode 100644 tools/testing/selftests/lsm/lsm_get_self_attr_test.c
->  create mode 100644 tools/testing/selftests/lsm/lsm_list_modules_test.c
->  create mode 100644 tools/testing/selftests/lsm/lsm_set_self_attr_test.c
+On Wed, Sep 6, 2023 at 11:48=E2=80=AFAM Will Deacon <will@kernel.org> wrote=
+:
+>
+> On Tue, Sep 05, 2023 at 08:10:21PM +0000, Justin Stitt wrote:
+> > strncpy is deprecated [1] and should not be used if the src string is
+> > not NUL-terminated.
+> >
+> > When dealing with `cmdline` we are counting the number of characters
+> > until a space then copying these over into `buf`. Let's not use any of
+> > the str*() functions since the src string is not necessarily NUL-termin=
+ated.
+> >
+> > Prefer `memcpy()` alongside a forced NUL-termination as it more
+> > accurately describes what is going on within this function, i.e: copyin=
+g
+> > from non NUL-terminated buffer into a NUL-terminated buffer.
+> >
+> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#st=
+rncpy-on-nul-terminated-strings [1]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Suggested-by: Kees Cook <keescook@chromium.org>
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > ---
+> > Changes in v4:
+> > - rebase onto mainline (thanks Will)
+> > - Link to v3: https://lore.kernel.org/r/20230831-strncpy-arch-arm64-v3-=
+1-cdbb1e7ea5e1@google.com
+>
+> The original patch converting the strncpy() to strscpy() has already land=
+ed
+> upstream, so this doesn't apply as-is.
+>
+> Rather than go through a v5, I've reverted your original patch and squash=
+ed
+> this on top with a new commit message. I'll push it out tomorrow on to th=
+e
+> arm64 fixes branch.
+Thanks! Sorry I hadn't noticed it go through -- especially with all
+the reviews surrounding the patches.
 
-Both Serge and Mickaël had comments on the previous revision of this
-patch, it would be nice if they could review the current revision and
-comment.
-
---
-paul-moore.com
+>
+> Thanks,
+>
+> Will
