@@ -2,164 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E09C6793E30
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E880793E37
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241335AbjIFN6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 09:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
+        id S241330AbjIFN6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 09:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbjIFN55 (ORCPT
+        with ESMTP id S241336AbjIFN6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 09:57:57 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE5710F5
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 06:57:49 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6D3BD22302;
-        Wed,  6 Sep 2023 13:57:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1694008668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=q7OA73ODeuzanjyJ7EdEc/ybpFb3Wkpfax58iwx/ejk=;
-        b=JLreQiKBrnJ/262TLjvojvwGvo+cWAQJRs44luEzvaAIzVPfuA1+463ffos5L9Mxzoqe2V
-        42gufn4LdhH526Cl18Dq8jGQEZtYK4cIlRZdn/bQJCI3E5JoMl6oBMdAUeufe3/STv381+
-        D7aBgwOUWISJ07jSjegKjASgCwBZTFk=
-Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 1E7D22C142;
-        Wed,  6 Sep 2023 13:57:48 +0000 (UTC)
-Date:   Wed, 6 Sep 2023 15:57:47 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v3 4/7] printk: nbcon: Add ownership state
- functions
-Message-ID: <ZPiFW6H-umxxB4CE@alley>
-References: <20230903150539.245076-1-john.ogness@linutronix.de>
- <20230903150539.245076-5-john.ogness@linutronix.de>
+        Wed, 6 Sep 2023 09:58:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB8D1730;
+        Wed,  6 Sep 2023 06:58:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694008691; x=1725544691;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2WWHRUyg9p2ZSwhYGZ7eiU78qxzL0KM29diRxubyLdk=;
+  b=YLvgcZNKiyxkNpMan/KckybSeHCIcxRWofzdkeSDN1LlFE4wTbpaIVvh
+   vppeAUTojFMPOhg+NVPthyNna4weP3yWnm2MYimt1bnp16YnQM5SUVagL
+   mtM8yJDRAivAXl6fjDZGjc/c1QMBRhbAee3JmLtj9khTY3zERVrbmTpmL
+   A2D/LxSDUfIJN3P9lUa4j2tZg5NwGlsHopObBlY7eg2rcav0igbcU6V9n
+   LfwHBwv1y/8+8qFjm4ltbn2uC62k87xy/ZbHugMXn90eZkiaB4/PM/rdG
+   DHAY9pQ8BCogbSE+yWE/k84Id1EQkbRClCDi/B90fRkdrY7kwSkFpVj2m
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="357382157"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="357382157"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 06:58:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="741558602"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="741558602"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 06:58:08 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qdt2j-006xPT-07;
+        Wed, 06 Sep 2023 16:58:05 +0300
+Date:   Wed, 6 Sep 2023 16:58:04 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        platform-driver-x86@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Prashant Malani <pmalani@chromium.org>
+Subject: Re: [PATCH 1/3] platform/x86: intel_scu_ipc: Check status after
+ timeouts in busy_loop()
+Message-ID: <ZPiFbDWeUV99YE50@smile.fi.intel.com>
+References: <20230831011405.3246849-1-swboyd@chromium.org>
+ <20230831011405.3246849-2-swboyd@chromium.org>
+ <ZPCbSse3J6ksZwJa@smile.fi.intel.com>
+ <CAE-0n52wAqsmm4cs6JX2W2G10VxjLzocXVmF9c_GC+52Fi4djQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230903150539.245076-5-john.ogness@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAE-0n52wAqsmm4cs6JX2W2G10VxjLzocXVmF9c_GC+52Fi4djQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 2023-09-03 17:11:36, John Ogness wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
+On Tue, Sep 05, 2023 at 05:24:29PM -0500, Stephen Boyd wrote:
+> Quoting Andy Shevchenko (2023-08-31 06:53:14)
+> > On Wed, Aug 30, 2023 at 06:14:01PM -0700, Stephen Boyd wrote:
+> > > It's possible for the polling loop in busy_loop() to get scheduled away
+> > > for a long time.
+> > >
+> > >   status = ipc_read_status(scu);
+> > >   <long time scheduled away>
+> > >   if (!(status & IPC_STATUS_BUSY))
+> > >
+> > > If this happens, then the status bit could change and this function
+> > > would never test it again after checking the jiffies against the timeout
+> > > limit. Polling code should check the condition one more time after the
+> > > timeout in case this happens.
+> > >
+> > > The read_poll_timeout() helper implements this logic, and is shorter, so
+> > > simply use that helper here.
+> >
+> > I don't remember by heart, but on some older Intel hardware this might have
+> > been called during early stages where ktime() is not functional yet.
+> >
+> > Is this still a case here?
 > 
-> Provide functions that are related to the safe handover mechanism
-> and allow console drivers to dynamically specify unsafe regions:
-> 
->  - nbcon_context_can_proceed()
-> 
->    Invoked by a console owner to check whether a handover request
->    is pending or whether the console has been taken over by another
->    context. If a handover request is pending, this function will
->    also perform the handover, thus cancelling its own ownership.
-> 
->  - nbcon_context_update_unsafe()
-> 
->    Invoked by a console owner to denote that the driver is about
->    to enter or leave a critical region where a take over is unsafe.
->    This function is also a cancellation point where loss of
->    ownership can occur.
-> 
->    The unsafe state is stored in the console state and allows a
->    new context to make informed decisions whether to attempt a
->    takeover of such a console. The unsafe state is also available
->    to the driver so that it can make informed decisions about the
->    required actions and possibly take a special emergency path.
-> 
-> Co-developed-by: John Ogness <john.ogness@linutronix.de>
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> Signed-off-by: Thomas Gleixner (Intel) <tglx@linutronix.de>
+> I have no idea if that happens in early stages.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+I briefly browsed the current tree and it seems it's not the case.
 
-See one comment below.
+> What about
+> suspend/resume though? I suppose timekeeping could be suspended in that
+> case, so we can't really check anything with ktime.
 
-> --- a/kernel/printk/nbcon.c
-> +++ b/kernel/printk/nbcon.c
-> @@ -518,6 +517,112 @@ static void nbcon_context_release(struct nbcon_context *ctxt)
->  	ctxt->pbufs = NULL;
->  }
->  
-> +/**
-> + * nbcon_context_can_proceed - Check whether ownership can proceed
-> + * @ctxt:	The nbcon context from nbcon_context_try_acquire()
-> + * @cur:	The current console state
-> + *
-> + * Return:	True if this context still owns the console. False if
-> + *		ownership was handed over or taken.
-> + *
-> + * Must be invoked after the record was dumped into the assigned buffer
-> + * and at appropriate safe places in the driver.
-> + *
-> + * When this function returns false then the calling context no longer owns
-> + * the console and is no longer allowed to go forward. In this case it must
-> + * back out immediately and carefully. The buffer content is also no longer
-> + * trusted since it no longer belongs to the calling context.
-> + */
-> +static bool nbcon_context_can_proceed(struct nbcon_context *ctxt, struct nbcon_state *cur)
-> +{
-> +	unsigned int cpu = smp_processor_id();
-> +
-> +	/* Make sure this context still owns the console. */
-> +	if (!nbcon_owner_matches(cur, cpu, ctxt->prio))
-> +		return false;
-> +
-> +	/* The console owner can proceed if there is no waiter. */
-> +	if (cur->req_prio == NBCON_PRIO_NONE)
-> +		return true;
-> +
-> +	/*
-> +	 * A console owner within an unsafe region is always allowed to
-> +	 * proceed, even if there are waiters. It can perform a handover
-> +	 * when exiting the unsafe region. Otherwise the waiter will
-> +	 * need to perform an unsafe hostile takeover.
-> +	 */
-> +	if (cur->unsafe)
-> +		return true;
-> +
-> +	/* Waiters always have higher priorities than owners. */
-> +	WARN_ON_ONCE(cur->req_prio <= cur->prio);
-> +
-> +	/*
-> +	 * Having a safe point for take over and eventually a few
-> +	 * duplicated characters or a full line is way better than a
-> +	 * hostile takeover. Post processing can take care of the garbage.
-> +	 * Release and hand over.
-> +	 */
-> +	nbcon_context_release(ctxt);
-> +
-> +	/*
-> +	 * It is not known whether the handover succeeded. The outermost
+Hmm... SCU itself is running all the time I think. The timekeeping depends on
+the platform, but is it really the case? I dunno.
 
-It was not immediately clear to me what exactly "handover succeeded" did mean.
-I would write:
+> I can rework this patch to simply recheck the busy bit so that we don't
+> have to figure out if the code is called early or from suspend paths.
 
-	* It is not clear whether the waiter really took the lock
-	* and re-printed the record. The outermost calsite...
+Yeah, probably we can do this and leave this nice cleanup in place.
 
-> +	 * callsite has to make the final decision whether printing
-> +	 * should proceed or not (via reacquire, possibly hostile). The
-> +	 * console is now unlocked so go back all the way instead of
-> +	 * trying to implement heuristics in tons of places.
-> +	 */
-> +	return false;
-> +}
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Best Regards,
-Petr
+
