@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FAD794060
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7547279405F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242613AbjIFP2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 11:28:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55286 "EHLO
+        id S242598AbjIFP2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 11:28:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231278AbjIFP2Z (ORCPT
+        with ESMTP id S230465AbjIFP2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 6 Sep 2023 11:28:25 -0400
 Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626DE1717;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 881BD172E;
         Wed,  6 Sep 2023 08:28:21 -0700 (PDT)
 Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl [85.222.111.42])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id C94C6866A0;
-        Wed,  6 Sep 2023 17:28:18 +0200 (CEST)
+        by phobos.denx.de (Postfix) with ESMTPSA id 9C4FB86907;
+        Wed,  6 Sep 2023 17:28:19 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1694014099;
-        bh=juvUfxNm6RLKydd0BNfwpDvpkl5RSgEH+Mo6sHbohMY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Gk71eKVTgnNTXmwch5G7r67L1fo3ra2Xw7nbPZOGOlOQl4RXAva9eIKBPSeshkaPR
-         LATyWw254O7Y6pk7RhjVU+3bC++gqO29NFKcv/0uSGD2qBlxZGkGEoT4OeIHplLUvL
-         DbMwhVoS5Iu9nq1Q/26aRM5MtOsh7A65bN2J+sZEvFer6X04FogRqC29Bu5QQ+2xi2
-         V0OUoNLp1IIjQR+kPYV96zFowGnTGjQxHvpwnJnVXdo6ImmQRiSD0EgyJtjC8T3JrM
-         BVFp8f76L7F1MTMJdcqjZoGXrwKS1FlUGhFMscwNSctZWAYdxbhiQldcj/Kwkmuojn
-         mpbCt1MuOlfkQ==
+        s=phobos-20191101; t=1694014100;
+        bh=T/KQl1HywPi4vYo0yqw4JCxbizw+aauG7ITE4o6W/po=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oNH2m7lpRt1sE3H1hlQJlMX+ukZfFJv51L2Nnn4qFH5hRtm8wPFl4LpnPoM4h0pi9
+         xGqfVwBFVZx1G2N4xknbN7siGWKZY4hD0mW/dkcz0fNe9rrSzzzFllH32jlN9Mo2Mv
+         U37Y7xtVZFFKjpdsQ5SLTw5NEGA4B0eET764AhGo9crZj35ND2RSC0NdSqcddm3HZs
+         Qo/OYIdm9wsHFgQG6lXICsiwFQoS6RJJ9zr+eHvLeZEk/l/8cKITe3GCDP2fLQaZ3G
+         cttP/bICmElQ6ilYeXNP4rfnhFRygT2vcvAlUoaM1pbfaPMytmGnftM9hhM57uSLbq
+         X4Xp1d928Hncg==
 From:   Lukasz Majewski <lukma@denx.de>
 To:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
         Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
@@ -43,10 +43,12 @@ Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         Oleksij Rempel <linux@rempel-privat.de>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukasz Majewski <lukma@denx.de>
-Subject: [[RFC PATCH v4 net-next] 0/2] net: dsa: hsr: Enable HSR HW offloading for KSZ9477
-Date:   Wed,  6 Sep 2023 17:27:59 +0200
-Message-Id: <20230906152801.921664-1-lukma@denx.de>
+Subject: [[RFC PATCH v4 net-next] 1/2] net: dsa: Extend ksz9477 TAG setup to support HSR frames duplication
+Date:   Wed,  6 Sep 2023 17:28:00 +0200
+Message-Id: <20230906152801.921664-2-lukma@denx.de>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230906152801.921664-1-lukma@denx.de>
+References: <20230906152801.921664-1-lukma@denx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
@@ -60,49 +62,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series provides support for HSR HW offloading in KSZ9477
-switch IC.
+The KSZ9477 has support for HSR (High-Availability Seamless Redundancy).
+One of its offloading (i.e. performed in the switch IC hardware) features
+is to duplicate received frame to both HSR aware switch ports.
 
-To test this feature:
-ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 version 1
-ip link set dev lan1 up
-ip link set dev lan2 up
-ip a add 192.168.0.1/24 dev hsr0
-ip link set dev hsr0 up
+To achieve this goal - the tail TAG needs to be modified. To be more
+specific, both ports must be marked as destination (egress) ones.
 
-To remove HSR network device:
-ip link del hsr0
+The NETIF_F_HW_HSR_DUP flag indicates that the device supports HSR and
+assures (in HSR core code) that frame is sent only once from HOST to
+switch with tail tag indicating both ports.
 
-It is also possible to create another HSR interface, but it will
-only support HSR is software - e.g.
-ip link add name hsr1 type hsr slave1 lan3 slave2 lan4 supervision 45 version 1
+Signed-off-by: Lukasz Majewski <lukma@denx.de>
+---
+Changes for v2:
+- Use ksz_hsr_get_ports() to obtain the bits values corresponding to
+  HSR aware ports
 
-Test HW:
-Two KSZ9477-EVB boards with HSR ports set to "Port1" and "Port2".
+Changes for v3:
+- None
 
-Performance SW used:
-nuttcp -S --nofork
-nuttcp -vv -T 60 -r 192.168.0.2
-nuttcp -vv -T 60 -t 192.168.0.2
+Changes for v4:
+- Iterate over switch ports to find ones supporting HSR. Comparing to v3,
+  where caching of egress tag bits were used, no noticeable performance
+  regression has been observed.
+---
+ net/dsa/tag_ksz.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Code: v6.5-rc7 Linux repository
-Tested HSR v0 and v1
-Results:
-With KSZ9477 offloading support added: RX: 100 Mbps TX: 98 Mbps
-With no offloading 		       RX: 63 Mbps  TX: 63 Mbps
-
-
-Lukasz Majewski (2):
-  net: dsa: Extend ksz9477 TAG setup to support HSR frames duplication
-  net: dsa: hsr: Enable in KSZ9477 switch HW HSR offloading
-
- drivers/net/dsa/microchip/ksz9477.c    | 81 ++++++++++++++++++++++++++
- drivers/net/dsa/microchip/ksz9477.h    |  2 +
- drivers/net/dsa/microchip/ksz_common.c | 76 ++++++++++++++++++++++++
- drivers/net/dsa/microchip/ksz_common.h |  3 +
- net/dsa/tag_ksz.c                      |  8 +++
- 5 files changed, 170 insertions(+)
-
+diff --git a/net/dsa/tag_ksz.c b/net/dsa/tag_ksz.c
+index ea100bd25939..3632e47dea9e 100644
+--- a/net/dsa/tag_ksz.c
++++ b/net/dsa/tag_ksz.c
+@@ -293,6 +293,14 @@ static struct sk_buff *ksz9477_xmit(struct sk_buff *skb,
+ 	if (is_link_local_ether_addr(hdr->h_dest))
+ 		val |= KSZ9477_TAIL_TAG_OVERRIDE;
+ 
++	if (dev->features & NETIF_F_HW_HSR_DUP) {
++		struct net_device *hsr_dev = dp->hsr_dev;
++		struct dsa_port *other_dp;
++
++		dsa_hsr_foreach_port(other_dp, dp->ds, hsr_dev)
++			val |= BIT(other_dp->index);
++	}
++
+ 	*tag = cpu_to_be16(val);
+ 
+ 	return ksz_defer_xmit(dp, skb);
 -- 
 2.20.1
 
