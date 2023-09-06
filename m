@@ -2,49 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC05A7935FC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8F4793602
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbjIFHNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 03:13:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58334 "EHLO
+        id S231486AbjIFHNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 03:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230514AbjIFHNi (ORCPT
+        with ESMTP id S231520AbjIFHNr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 03:13:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06B9E60
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:13:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A3CFC433C8;
-        Wed,  6 Sep 2023 07:13:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693984414;
-        bh=xbpzvOy1GbMdzWOLcnPSwZpXoa52vIob+3+/5L6zTO0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vp6ei2RspuPENaYFEij+M8YMq1wAYO5vWV8K2G0JaK+XK4bMI+Tss/7qOjJctjsbA
-         uTYeT8WpQrox9A0CPTkzwD5GJIFAhN0p8aftbPhHGKBq6hEI+9iBD4izW6iSEorkCi
-         RcVX0o+FEgZiq+KVhT8aOklHPxJP0cTkm84n+FC9qe0X1kjcaAJII7+v1PceleftJr
-         m53VU/z+YWsUZgA9RZbz7ns+x90yEpfAtgDwhmFQpbTfpCeAYTj+PB8vAch8KM97PJ
-         bduC+5XQlS+HU8mbqGRJop/p1pkgI1P10lhu4nFLpEwcwhU4aFOPwPrZwbJu/oaBBq
-         d/zAcrFsJh61w==
-Date:   Wed, 6 Sep 2023 09:13:29 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Aleksa Sarai <cyphar@cyphar.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Damian Tometzki <dtometzki@fedoraproject.org>,
-        Daniel Verkamp <dverkamp@chromium.org>,
-        Jeff Xu <jeffxu@google.com>, Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memfd: drop warning for missing exec-related flags
-Message-ID: <20230906-eichenbaum-hektar-01140b56ca64@brauner>
-References: <20230906-memfd-reduce-spam-v1-1-1f0d35facd95@cyphar.com>
+        Wed, 6 Sep 2023 03:13:47 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED217E59
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:13:35 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bb9a063f26so52681151fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 00:13:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1693984414; x=1694589214; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=aTsez1MtzhhlmQ/mCF+KXbnv+lrjtNHxtrQ8tWacSro=;
+        b=XgR5KbP8Z9ANBsYHz0mmqisWhDFYtmyh2NRc0lXzhXWmuH5kplq6j+GO1JewPY+uLq
+         2gTaqMt1rBCIM3Wx0dTOhmchlxY4kb4wlfdZyfEOl92FX3DYtUSceJa6ckO+6kE+XjxH
+         vhMcLu0aGqrlhPfpvYJSMjU/3wz1ZdjovcLkCx7xyt3sYWB2rXqP5eAOqlzKxEBG/8IQ
+         NByG3jAHpT/c6rQEN+oZ8SVLgrBlpkO+ir0GVweWfwwjP/giFDb9mNvBj0tbGEV0ck0M
+         wnq5fpD6n63xHBaauUiHCgqATzjEOyVz68IOucj2YGwjphLUBmjRr1+dMmNjhn77todl
+         F7gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693984414; x=1694589214;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aTsez1MtzhhlmQ/mCF+KXbnv+lrjtNHxtrQ8tWacSro=;
+        b=ScKxzTYS+BCfVRGZwsxXO9V81VvSEwXyaARlr2q1gkC84wBWhQneUQtjVa+hIEYyMW
+         YodZl/jXJQLXB7WjMH3rHi2sXJ5/paK8IhMER7gBSBZsypk0Abq95lw0tNOnHc0YBpNh
+         9PSWHPeUzph+LsdxTmbE73HTDOVHYRX2rich39UOW66nPNqBWlYeRvnb2xeHXAQrjb7x
+         sKcN2bkhVMFHR51RW2PRD6U5n7PJjnlwZWP/9Gn/2tM9BQByZ45VwcFn2BD2KnMTMJPl
+         5WPbIO+VvnhSVHNZ89y1k9Y2c5HUBD6WWX0nsQfT7p4qsUBwAeiZqSsnMLl2DtMIpkGj
+         Ce+A==
+X-Gm-Message-State: AOJu0YzXrHRg38VDDAC5ewRuxRZY8zV4c8egVJH/pU7l1P586Fzor46e
+        J6CbZq3MwpuzSUDZxNskioCAPg==
+X-Google-Smtp-Source: AGHT+IFUfuCxBleSioCsaDTw5kdKiT/iGJ6erAaiBayaHgVuc5Zh2EjkSrt7wvrXGoCM5I5C4sZAoA==
+X-Received: by 2002:a2e:9254:0:b0:2b9:55c9:c228 with SMTP id v20-20020a2e9254000000b002b955c9c228mr1549101ljg.27.1693984413992;
+        Wed, 06 Sep 2023 00:13:33 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id e2-20020a05600c218200b003fef5402d2dsm22237218wme.8.2023.09.06.00.13.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 00:13:33 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 09:13:32 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Haibo Xu <xiaobo55x@gmail.com>
+Cc:     Haibo Xu <haibo1.xu@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Guo Ren <guoren@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+        wchen <waylingii@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Lei Wang <lei4.wang@intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Peter Gonda <pgonda@google.com>,
+        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        Thomas Huth <thuth@redhat.com>, Like Xu <likexu@tencent.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Michal Luczaj <mhal@rbox.co>,
+        zhang songyi <zhang.songyi@zte.com.cn>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        kvm-riscv@lists.infradead.org
+Subject: Re: [PATCH v2 3/8] tools: riscv: Add header file csr.h
+Message-ID: <20230906-c35fdc0e07d2cc0f9cb93203@orel>
+References: <cover.1693659382.git.haibo1.xu@intel.com>
+ <8173daae52720dbdabbd88a5d412f653e6706de1.1693659382.git.haibo1.xu@intel.com>
+ <20230904-06f09083d5190fd50e53b1ea@orel>
+ <CAJve8on7Yi7cDuXOVznuRdTvfUhig2hZy8g72nvnHkM7omoVAw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230906-memfd-reduce-spam-v1-1-1f0d35facd95@cyphar.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJve8on7Yi7cDuXOVznuRdTvfUhig2hZy8g72nvnHkM7omoVAw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,27 +110,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 05:02:06PM +1000, Aleksa Sarai wrote:
-> Commit 434ed3350f57 ("memfd: improve userspace warnings for missing
-> exec-related flags") attempted to make these warnings more useful (so
-> they would work as an incentive to get users to switch to specifying
-> these flags -- as intended by the original MFD_NOEXEC_SEAL patchset).
-> Unfortunately, it turns out that even INFO-level logging is too extreme
-> to enable by default and alternative solutions to the spam issue (such
-> as doing more extreme rate-limiting per-task) are either too ugly or
-> overkill for something as simple as emitting a log as a developer aid.
+On Wed, Sep 06, 2023 at 02:35:42PM +0800, Haibo Xu wrote:
+> On Mon, Sep 4, 2023 at 9:33 PM Andrew Jones <ajones@ventanamicro.com> wrote:
+> >
+> > On Sat, Sep 02, 2023 at 08:59:25PM +0800, Haibo Xu wrote:
+> > > Borrow the csr definitions and operations from kernel's
+> > > arch/riscv/include/asm/csr.h to tools/ for riscv.
+> > >
+> > > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> > > ---
+> > >  tools/arch/riscv/include/asm/csr.h | 521 +++++++++++++++++++++++++++++
+> > >  1 file changed, 521 insertions(+)
+> > >  create mode 100644 tools/arch/riscv/include/asm/csr.h
+> > >
+> > > diff --git a/tools/arch/riscv/include/asm/csr.h b/tools/arch/riscv/include/asm/csr.h
+> > > new file mode 100644
+> > > index 000000000000..4e86c82aacbd
+> > > --- /dev/null
+> > > +++ b/tools/arch/riscv/include/asm/csr.h
+> > > @@ -0,0 +1,521 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > > +/*
+> > > + * Copyright (C) 2015 Regents of the University of California
+> > > + */
+> > > +
+> > > +#ifndef _ASM_RISCV_CSR_H
+> > > +#define _ASM_RISCV_CSR_H
+> > > +
+> > > +#include <linux/bits.h>
+> > > +
+> > > +/* Status register flags */
+> > > +#define SR_SIE               _AC(0x00000002, UL) /* Supervisor Interrupt Enable */
+> > > +#define SR_MIE               _AC(0x00000008, UL) /* Machine Interrupt Enable */
+> > > +#define SR_SPIE              _AC(0x00000020, UL) /* Previous Supervisor IE */
+> > > +#define SR_MPIE              _AC(0x00000080, UL) /* Previous Machine IE */
+> > > +#define SR_SPP               _AC(0x00000100, UL) /* Previously Supervisor */
+> > > +#define SR_MPP               _AC(0x00001800, UL) /* Previously Machine */
+> > > +#define SR_SUM               _AC(0x00040000, UL) /* Supervisor User Memory Access */
+> > > +
+> > > +#define SR_FS                _AC(0x00006000, UL) /* Floating-point Status */
+> > > +#define SR_FS_OFF    _AC(0x00000000, UL)
+> > > +#define SR_FS_INITIAL        _AC(0x00002000, UL)
+> > > +#define SR_FS_CLEAN  _AC(0x00004000, UL)
+> > > +#define SR_FS_DIRTY  _AC(0x00006000, UL)
+> > > +
+> > > +#define SR_VS                _AC(0x00000600, UL) /* Vector Status */
+> > > +#define SR_VS_OFF    _AC(0x00000000, UL)
+> > > +#define SR_VS_INITIAL        _AC(0x00000200, UL)
+> > > +#define SR_VS_CLEAN  _AC(0x00000400, UL)
+> > > +#define SR_VS_DIRTY  _AC(0x00000600, UL)
+> > > +
+> > > +#define SR_XS                _AC(0x00018000, UL) /* Extension Status */
+> > > +#define SR_XS_OFF    _AC(0x00000000, UL)
+> > > +#define SR_XS_INITIAL        _AC(0x00008000, UL)
+> > > +#define SR_XS_CLEAN  _AC(0x00010000, UL)
+> > > +#define SR_XS_DIRTY  _AC(0x00018000, UL)
+> > > +
+> > > +#define SR_FS_VS     (SR_FS | SR_VS) /* Vector and Floating-Point Unit */
+> > > +
+> > > +#ifndef CONFIG_64BIT
+> >
+> > How do we ensure CONFIG_64BIT is set?
+> >
 > 
-> Given that the flags are new and there is no harm to not specifying them
-> (after all, we maintain backwards compatibility) we can just drop the
-> warnings for now until some time in the future when most programs have
-> migrated and distributions start using vm.memfd_noexec=1 (where failing
-> to pass the flag would result in unexpected errors for programs that use
-> executable memfds).
-> 
-> Fixes: 434ed3350f57 ("memfd: improve userspace warnings for missing exec-related flags")
-> Reported-by: Damian Tometzki <dtometzki@fedoraproject.org>
-> Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
-> ---
+> Currently, no explicit checking for this.
+> Shall we add a gatekeeper in this file to ensure it is set?
 
-Looks good to me,
-Reviewed-by: Christian Brauner <brauner@kernel.org>
+Not in this file, since this file is shared by all the tools and...
+
+> 
+> #ifndef CONFIG_64BIT
+> #error "CONFIG_64BIT was not set"
+> #endif
+
+...we'll surely hit this error right now since nothing is setting
+CONFIG_64BIT when compiling KVM selftests.
+
+We need to define CONFIG_64BIT in the build somewhere prior to any
+headers which depend on it being included. Maybe we can simply
+add -DCONFIG_64BIT to CFLAGS, since all KVM selftests supported
+architectures are 64-bit.
+
+(Please trim emails, as I've been doing, when discussing specific parts.)
+
+Thanks,
+drew
