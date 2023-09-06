@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B0D7934B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 07:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54B47934B9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 07:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234370AbjIFFHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 01:07:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
+        id S238619AbjIFFK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 01:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239631AbjIFFHn (ORCPT
+        with ESMTP id S238230AbjIFFK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 01:07:43 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D44197;
-        Tue,  5 Sep 2023 22:07:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=lu5CsFTRvNr2ltXiexrLfJ//QES5eteF0z+ySRWEFww=; b=fBMcQWBkpelZiJnLJ61x+/6zhe
-        t/iDgcdwPc4iUifkHpZqMwkKw9lah9QNFs5GXDilC0YmlSdh3K0HkdQKphSlzHx5m6POhpxVwoUMp
-        eIKGpvq6HxSIbeP1zC/6z9pbDAzEBy+GKI0ZtWZnVLjfgqvsGMF1eJYkSdvlM4MQh5T5ee7/gNYui
-        4vmz4fgXnKcuaF92nzfJ+hgtQiSfoa8dYFjNAwllcSpBkC49zthaDiCL5WWInBg19UeGO6kyE3DTk
-        UgZLYqnzoiEdcQeY1x0asLAz3NBoreo8VhJ9gD5JBFhWlaY/7sYulJEZVzaV3m/S9q5Y0L1EfvnUU
-        kKYPaVoA==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qdklK-007H5s-2l;
-        Wed, 06 Sep 2023 05:07:34 +0000
-Message-ID: <4b55e7c0-aed2-5225-fcac-1122a985800b@infradead.org>
-Date:   Tue, 5 Sep 2023 22:07:33 -0700
+        Wed, 6 Sep 2023 01:10:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD4FE4A
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 22:10:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D2289C433CB;
+        Wed,  6 Sep 2023 05:10:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693977022;
+        bh=qT/y5R9fBn1NeTGnJI8nbaXj2qg7qzFGbubGB+tg3Sg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=nrUqxu1iUAhpkD1yEoMkiIAziUwxl0YqGZ5Pa0bip6wqDQLMvoAoN/hlWcLmA0B5Y
+         GtYPuQ/YwY1H6VvDvfgzVuRa74Vsi7AB0p1WSVtbohQuM2N3rbzxpkfYGmqg/YPRVo
+         Jej7oV5LsUxjeHaiYiYKirgi9y3OgY6SuY+T6x3qbnSPYA5NotYcoI4rVQdyTsFs95
+         eH7+pzZuuzDxWawetuka30UC3qWHyM/odtQPW5gv4UQMaxhM7GshTq9AnrO6+p0xkp
+         xzVXiMGw27/PnQY6F3wIT8GdwUMFMJjWS8OK1wIo+bs757u6jUeR5IYMyiG55eR/Rk
+         GB/votDSMLP8w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B8704E22B00;
+        Wed,  6 Sep 2023 05:10:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v1] mlxbf-bootctl: add NET dependency into Kconfig
-Content-Language: en-US
-To:     David Thompson <davthompson@nvidia.com>, hdegoede@redhat.com,
-        markgross@kernel.org, vadimp@nvidia.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-References: <20230905133243.31550-1-davthompson@nvidia.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230905133243.31550-1-davthompson@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v2] net/ipv6: SKB symmetric hash should incorporate
+ transport ports
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169397702275.22023.11705389195236834744.git-patchwork-notify@kernel.org>
+Date:   Wed, 06 Sep 2023 05:10:22 +0000
+References: <20230905103610.3087983-1-qtian@vmware.com>
+In-Reply-To: <20230905103610.3087983-1-qtian@vmware.com>
+To:     Quan Tian <qtian@vmware.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, uablrek@gmail.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,45 +54,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
-Hi,
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-On 9/5/23 06:32, David Thompson wrote:
-> The latest version of the mlxbf_bootctl driver utilizes
-> "sysfs_format_mac", and this API is only available if
-> NET is defined in the kernel configuration. This patch
-> changes the mlxbf_bootctl Kconfig to depend on NET.
+On Tue,  5 Sep 2023 10:36:10 +0000 you wrote:
+> __skb_get_hash_symmetric() was added to compute a symmetric hash over
+> the protocol, addresses and transport ports, by commit eb70db875671
+> ("packet: Use symmetric hash for PACKET_FANOUT_HASH."). It uses
+> flow_keys_dissector_symmetric_keys as the flow_dissector to incorporate
+> IPv4 addresses, IPv6 addresses and ports. However, it should not specify
+> the flag as FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL, which stops further
+> dissection when an IPv6 flow label is encountered, making transport
+> ports not being incorporated in such case.
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
+> [...]
 
-Also
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Here is the summary with links:
+  - [net,v2] net/ipv6: SKB symmetric hash should incorporate transport ports
+    https://git.kernel.org/netdev/net/c/a5e2151ff9d5
 
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309031058.JvwNDBKt-lkp@intel.com/
-> Signed-off-by: David Thompson <davthompson@nvidia.com>
-> ---
->  drivers/platform/mellanox/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/platform/mellanox/Kconfig b/drivers/platform/mellanox/Kconfig
-> index 382793e73a60..e52aea996ca5 100644
-> --- a/drivers/platform/mellanox/Kconfig
-> +++ b/drivers/platform/mellanox/Kconfig
-> @@ -60,6 +60,7 @@ config MLXBF_BOOTCTL
->  	tristate "Mellanox BlueField Firmware Boot Control driver"
->  	depends on ARM64
->  	depends on ACPI
-> +	depends on NET
->  	help
->  	  The Mellanox BlueField firmware implements functionality to
->  	  request swapping the primary and alternate eMMC boot partition,
-
-
-I'm sure that this will fix the build problem, but I don't see this
-being a network driver. To me it looks like some management s/w
-that can run independently of networking software.
-It just wants to show/store a MAC address -- no networking.
-FWIW.
-
+You are awesome, thank you!
 -- 
-~Randy
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
