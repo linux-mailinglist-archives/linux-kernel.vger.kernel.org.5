@@ -2,172 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC817942F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88EA97942FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243780AbjIFSTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 14:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58634 "EHLO
+        id S243782AbjIFSVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 14:21:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243782AbjIFSTh (ORCPT
+        with ESMTP id S237740AbjIFSVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 14:19:37 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C75721732
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 11:19:32 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99cce6f7de2so2675566b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 11:19:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694024371; x=1694629171; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=brVuhGNSmL2KjjAtb0WsBUqLQf3d/P9cAPHdmHgOTbE=;
-        b=l2WfBC1qd31I3NZmkG6VDJDWE/nRglLR69+sAFBvkpEipynVV3JUwpxbhujD7Bmto/
-         xTGgx3Zv0E7hYt8kvRrKaVb/EHuPpmiIdX1r8nDkTrPnyDoCc8+VMPaCemPIkFAhhnyS
-         6yixUlvbYVvunzSWWaaDnC6Fk/FsrdNgIR6waM6Lo+ZbRwpdX8A0Uo/IhlwljVgc0a/H
-         DEcv4yEyVuJ0GMPfKJJFb+OiEvdX9huVTO2541LXsf/jFMy5TCfpYIMAHHM7wwIWIi9V
-         meMcCiqQ/NYz/TsoEUpQU24BmVO2dFrk4SGiz4qlTaJeow9vRL/LA34cqa/q/dw3BwEl
-         f4ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694024371; x=1694629171;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=brVuhGNSmL2KjjAtb0WsBUqLQf3d/P9cAPHdmHgOTbE=;
-        b=UnOQMcEJJ2TevLS7GOhfFOMWu8KGfKq2AQzuaGzA8xs/idyjXA9dKfmf4iJEYZ+dF5
-         DskIugUQsbz+V7FviofS1krUVjTE/V8rAq/jf35k4CjtGTPsDWqxnPu4jgpfTxD6regL
-         2uHOru5x4F1+GBzp6/6mHC9Y5pP7m8GDNoq++gxX5OzLEnxNLhJ/tpWhY2+i7VoXGnIe
-         3RdAxkHv4FiO3/4mMjEpeyBzXc/6VHNznQJ3z1Z/A/wRis5Wm9t95l/drtQgemwBsbEF
-         oXOcz2BQnMO1TzCnL1iO2TK5oZUCdJaNNms6oZ1a/s9+Y53umsGnGPgso3aivoCSXyD8
-         M4qg==
-X-Gm-Message-State: AOJu0YxaLKUXB379YvARMepnkvh885dDYHH0LHAqsJyaJAZLBWFkHGh6
-        ftZcoqQuSjYEm2MgBMSYVNE=
-X-Google-Smtp-Source: AGHT+IHAnI889hIsnFWWcWV/k5vE0fMUU6pVi/t1v65SUwHvOj7p3j1rAwq/pOhnoXkQ72cJ0bMboA==
-X-Received: by 2002:a17:906:3d2a:b0:9a1:fc90:bdf2 with SMTP id l10-20020a1709063d2a00b009a1fc90bdf2mr3073093ejf.21.1694024371285;
-        Wed, 06 Sep 2023 11:19:31 -0700 (PDT)
-Received: from [127.0.1.1] (2a02-8389-41b4-ce80-82c3-f600-375e-54bc.cable.dynamic.v6.surfer.at. [2a02:8389:41b4:ce80:82c3:f600:375e:54bc])
-        by smtp.gmail.com with ESMTPSA id x24-20020a170906299800b0099cadcf13cesm9350186eje.66.2023.09.06.11.19.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 11:19:30 -0700 (PDT)
-From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date:   Wed, 06 Sep 2023 20:19:29 +0200
-Subject: [PATCH] drm/connector: document supported_colorspaces and
- DRM_MODE_COLORIMETRY_COUNT
+        Wed, 6 Sep 2023 14:21:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD29F10C8
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 11:21:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694024478; x=1725560478;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TMEii4Jj19WYLeTuZA4EsMmAdVxojylah3wKsp6y6/Y=;
+  b=UWA020pmzqLSHlTxTsYu7DFDST+KzVd+wBR5KsbTxRm3dE104XhY9XUa
+   tO4SStLpyt5Y/ZwFioLEDV27pclOpP4vIJ8y9+ERQp5/XubCwd7/e4i3s
+   f0OKuBEaBDhcsE13LatSunC5QEiMTIU3ILrAmx77d1d96bESJ93M85rZy
+   vlxKhgJUKDnVCWTZdqhI1a29DOjDQcfdUWAinv73IQVQDIYhv9G1pA/iY
+   adP/8PPz460gZueTH3mFQW9ioSprXr5wYFU6fLyz/3izTQxq7F8rXO+E9
+   HHCIlY2Wmr5EaHj+QOIDSHV3uPCANdbuQ8YCeTaRSp7ke+FnmojEjcKCR
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="408155775"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="408155775"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 11:21:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="807131113"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="807131113"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 11:21:17 -0700
+Date:   Wed, 6 Sep 2023 11:21:16 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        Babu Moger <babu.moger@amd.com>
+Cc:     Amit Singh Tomar <amitsinght@marvell.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        George Cherian <gcherian@marvell.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "peternewman@google.com" <peternewman@google.com>,
+        Drew Fustini <dfustini@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: resctrl2 - status
+Message-ID: <ZPjDHN0nvHz9kWFn@agluck-desk3>
+References: <DS7PR11MB6077FE180B11A9138D8E7ED7FC1DA@DS7PR11MB6077.namprd11.prod.outlook.com>
+ <35f05064-a412-ad29-5352-277fb147bbc4@intel.com>
+ <SJ1PR11MB6083BC6B330FA7B7DFD3E76AFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <dc4cd365-2a02-32a3-da78-7ba745877e97@intel.com>
+ <SJ1PR11MB6083C0ED50E9B644F4AF8E4BFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
+ <ZOkU+d4AsLGSAG+y@agluck-desk3>
+ <b48fe955-c1b4-4aeb-1ab0-bf26e56e1f0e@intel.com>
+ <ZOlRNTq3lE7VNHjU@agluck-desk3>
+ <9742f177-a0ce-c5d3-5d92-90dda32f5d07@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230906-topic-drm_connector_doc-v1-1-f4ce7ad0150c@gmail.com>
-X-B4-Tracking: v=1; b=H4sIALDC+GQC/x2N0QrCMAwAf2Xk2UJtx0B/RWSkaXR5WDuSIsLYv
- 9v5eBzH7WCswgb3YQflj5jU0uF6GYAWLG92kjtD8CH6m59cq5uQy7rOVEthalXnXMmNISPHhGO
- kCXqd0NglxULL2a9ojfUUm/JLvv/l43kcP96JCt+CAAAA
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694024369; l=3375;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=XV2PA7cr0H7sW98GKzNL+aV/eA4RnJXKRgazWsFy6y4=;
- b=kR2YgUglN1L8b1w6Fo+0crgbap4wAZhb0h4VIkqL28FUiwXAMT8DjbcdCV74jDQ9/pErwCWNP
- BwFMTJ3p9bIBMxs/GAluoYOgbhINE7F2rjKIg3dFecNfJjW/JF8tl+Q
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9742f177-a0ce-c5d3-5d92-90dda32f5d07@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The supported_colorspaces parameter was added to the following
-functions without documenting it:
 
-drm_mode_create_dp_colorspace_property
-drm_mode_create_hdmi_colorspace_property
+On Mon, Aug 28, 2023 at 07:50:12AM -0700, Reinette Chatre wrote:
+> heh ... sounds familiar to "To transition smoothly it may be required
+> for all currently supported features to be loaded by default". It is not
+> obvious to me how this also closes the other opens.
 
-The missing descriptions generate warnings when compiling the
-documentation. Add the descriptions to document the
-supported_colorspaces parameter.
+Reinette,
 
-The drm_colorspace enum member DRM_MODE_COLORIMETRY_COUNT has been
-properly documented by moving the description out of the enum to the
-member description list to get rid of an additional warning and improve
-documentation clarity.
+It seems unlikley that I'll be able to close every open. But I'll
+keep trying as you point them out.
 
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
-The supported_colorspaces parameter was added to the following
-functions without documenting it:
+I've just pushed an updated set of patches to:
 
-drm_mode_create_dp_colorspace_property
-drm_mode_create_hdmi_colorspace_property
+  git://git.kernel.org/pub/scm/linux/kernel/git/aegl/linux.git resctrl_v65
 
-The missing descriptions generate warnings when compiling the
-documentation. Add the descriptions to document the
-supported_colorspaces parameter.
+Rebased to v6.5. Includes the module auto-load code discussed in
+previous e-mail.
 
-The drm_colorspace enum member DRM_MODE_COLORIMETRY_COUNT has been
-properly documented by moving the description out of the enum to the
-member description list to get rid of an additional warning and improve
-documentation clarity.
----
- drivers/gpu/drm/drm_connector.c | 2 ++
- include/drm/drm_connector.h     | 3 ++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+James: 
 
-diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-index bf8371dc2a61..77bfe17dcf98 100644
---- a/drivers/gpu/drm/drm_connector.c
-+++ b/drivers/gpu/drm/drm_connector.c
-@@ -2203,6 +2203,7 @@ static int drm_mode_create_colorspace_property(struct drm_connector *connector,
- /**
-  * drm_mode_create_hdmi_colorspace_property - create hdmi colorspace property
-  * @connector: connector to create the Colorspace property on.
-+ * @supported_colorspaces: colorspaces supported by the driver.
-  *
-  * Called by a driver the first time it's needed, must be attached to desired
-  * HDMI connectors.
-@@ -2227,6 +2228,7 @@ EXPORT_SYMBOL(drm_mode_create_hdmi_colorspace_property);
- /**
-  * drm_mode_create_dp_colorspace_property - create dp colorspace property
-  * @connector: connector to create the Colorspace property on.
-+ * @supported_colorspaces: colorspaces supported by the driver.
-  *
-  * Called by a driver the first time it's needed, must be attached to desired
-  * DP connectors.
-diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-index d300fde6c1a4..18cf46e3478b 100644
---- a/include/drm/drm_connector.h
-+++ b/include/drm/drm_connector.h
-@@ -498,6 +498,8 @@ enum drm_privacy_screen_status {
-  *   ITU-R BT.601 colorimetry format
-  *   The DP spec does not say whether this is the 525 or the 625
-  *   line version.
-+ * @DRM_MODE_COLORIMETRY_COUNT:
-+ *   Not a valid value; merely used four counting
-  */
- enum drm_colorspace {
- 	/* For Default case, driver will set the colorspace */
-@@ -522,7 +524,6 @@ enum drm_colorspace {
- 	DRM_MODE_COLORIMETRY_RGB_WIDE_FIXED	= 13,
- 	DRM_MODE_COLORIMETRY_RGB_WIDE_FLOAT	= 14,
- 	DRM_MODE_COLORIMETRY_BT601_YCC		= 15,
--	/* not a valid value; merely used for counting */
- 	DRM_MODE_COLORIMETRY_COUNT
- };
- 
+I'm now hoping for some feedback from ARM folks on whether this is a
+useful direction. Is it possible to implement MPAM features on top of
+this base architecture independent layer. If not, am I just missing
+some simple extensions that you will need. Or is there some fundamental
+problem that looks hard/impossible to resolve?
 
----
-base-commit: 65d6e954e37872fd9afb5ef3fc0481bb3c2f20f4
-change-id: 20230906-topic-drm_connector_doc-42dae3ba43c6
+Babu:
 
-Best regards,
--- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Can you try this out on an AMD system. I think I covered most of the
+existing AMD resctrl features, but I have no machine to test the code
+on, so very likely there are bugs in these code paths.
 
+I'd like to make any needed changes now, before I start breaking this
+into reviewable bite-sized patches to avoid too much churn.
+
+-Tony
