@@ -2,332 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5318D793FAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACECC793FAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242113AbjIFOyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:54:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55818 "EHLO
+        id S242173AbjIFOy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:54:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242214AbjIFOyZ (ORCPT
+        with ESMTP id S234003AbjIFOy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:54:25 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EEDC199C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:54:16 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6601C66056FC;
-        Wed,  6 Sep 2023 15:54:14 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694012054;
-        bh=n9rEq06Zk6ZVE6xosXvqOnjcoYl82n9F0Nj4DTpFtHk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fWAqdzX8p9rWe3fWzNv1o7w0DeLDns5jPnybBFAXXuFjeHbrHsdg4wonlMjqt/3jn
-         RdmqM4VO5yu8lg5EhBNvdABUCqBBHrumoFP0/Z8R2HK+oojFxHfSqd/vcSjPLHuDdh
-         f7+09lChG7sOhT+4lwgbs1HGzHqqdNz0nXrZqD9lfV9IiAlofQN3UxQmrUB14Un+Qf
-         pL3TF42McZjYbaMjEYOYRm5BAU5thpaS81UNsUJNRRBbkv4TuPXxL91MvFlGclF4+X
-         lkg2/J/+Ue8f5d3+G9p9XbdvG6/kIvu8snNWpLTJS3RQeS4mDcvRWWV+6G+fZYkAT3
-         qgWoxYJgjtrOg==
-Date:   Wed, 6 Sep 2023 16:54:11 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Thomas =?UTF-8?B?SGVsbHN0csO2bQ==?= 
-        <thomas.hellstrom@linux.intel.com>
-Cc:     Danilo Krummrich <dakr@redhat.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Francois Dugast <francois.dugast@intel.com>,
-        linux-kernel@vger.kernel.org, Oak Zeng <oak.zeng@intel.com>,
-        dri-devel@lists.freedesktop.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-xe@lists.freedesktop.org
-Subject: Re: [PATCH v2] Documentation/gpu: VM_BIND locking document
-Message-ID: <20230906165411.3ffc9e65@collabora.com>
-In-Reply-To: <a2c14db7-caed-2467-4ebf-5d66e3b970bd@linux.intel.com>
-References: <20230816091547.2982-1-thomas.hellstrom@linux.intel.com>
-        <ZPeGld0mBwbWptV9@cassiopeiae>
-        <4e7a2b2e-1ab5-09b6-b2de-9b2a82a8a32e@linux.intel.com>
-        <1c6cbf97-7e85-a48f-9e6a-ed716ab5b05d@redhat.com>
-        <1a2965a4-943f-0ba7-b082-155d75b94d59@linux.intel.com>
-        <20230906130929.74e3c6cc@collabora.com>
-        <e44c93dd-68b2-b8af-6f9a-4d7c6370f105@linux.intel.com>
-        <20230906150038.30936ae2@collabora.com>
-        <a2c14db7-caed-2467-4ebf-5d66e3b970bd@linux.intel.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Wed, 6 Sep 2023 10:54:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D5919BB;
+        Wed,  6 Sep 2023 07:54:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694012072; x=1725548072;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Vk//cjnhY2oDIuOGEkFkGzdr0kjytapLaS56kH9oSpw=;
+  b=PIu8/n5Iyy+wrHXltceVS/rRh5tPt8itJmJ8kqvC5JQBMhxxXwytYTKL
+   92Wg9xbBU5Mr1j+wTRcsL3oCnQdQ2gRJoNb/SO/jms/bUkk+ZBx+t78GM
+   +tDmgFQdJbg9trfWXZg/XO0Z/WMizz+BLd9B1TY3GTCx1BZ83xdJ/2LhS
+   McMG8lXmEteFog9wFg+1x5BUl8bJOY06v/lc2zIkqNq69IEtjpTPjXyLp
+   YJLFAV8H6dFkryTCYzvB3Lxi1YgCMgJnh7fEl4uRaVE8G4D2MRqfDQnOd
+   r3kPIzn7lAArkOakM1Ijca80j32y5C1ewevEX0Q2q9slxXBsQDw7qlF+b
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="377000030"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="377000030"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 07:54:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="691312894"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="691312894"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 07:54:29 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qdtvG-006y71-1f;
+        Wed, 06 Sep 2023 17:54:26 +0300
+Date:   Wed, 6 Sep 2023 17:54:26 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     Yury Norov <yury.norov@gmail.com>, Uros Bizjak <ubizjak@gmail.com>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v1 1/1] bitops: Share BYTES_TO_BITS() for everyone
+Message-ID: <ZPiSogB2GdyM+oJx@smile.fi.intel.com>
+References: <20230824123728.2761663-1-andriy.shevchenko@linux.intel.com>
+ <a5574786-0a49-454d-67e3-571983e6a6e8@intel.com>
+ <ZPCT2vV0r8l/wxim@smile.fi.intel.com>
+ <05febba8-49a5-5f9d-34b0-d85d976e1416@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <05febba8-49a5-5f9d-34b0-d85d976e1416@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
-
-On Wed, 6 Sep 2023 16:08:07 +0200
-Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
-
-> Hi, Boris,
->=20
-> On 9/6/23 15:00, Boris Brezillon wrote:
-> > On Wed, 6 Sep 2023 13:57:03 +0200
-> > Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
-> > =20
-> >> Hi, Boris
+On Wed, Sep 06, 2023 at 04:40:39PM +0200, Alexander Lobakin wrote:
+> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Date: Thu, 31 Aug 2023 16:21:30 +0300
+> > On Fri, Aug 25, 2023 at 04:49:07PM +0200, Alexander Lobakin wrote:
+> >> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> >> Date: Thu, 24 Aug 2023 15:37:28 +0300
 > >>
-> >> On 9/6/23 13:09, Boris Brezillon wrote: =20
-> >>> On Wed, 6 Sep 2023 10:32:24 +0200
-> >>> Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
+> >>> It may be new callers for the same macro, share it.
 > >>>
-> >>>    =20
-> >>>>>>>> +Introducing external (or shared) buffer objects
-> >>>>>>>> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> >>>>>>>> +
-> >>>>>>>> +Since shared buffer objects may be shared by multiple gpu_vm's =
-they
-> >>>>>>>> +can't share their reservation object with a single gpu_vm, but
-> >>>>>>>> will rather
-> >>>>>>>> +have a reservation object of their own. The shared objects boun=
-d to a
-> >>>>>>>> +gpu_vm using one or many
-> >>>>>>>> +gpu_vmas are therefore typically put on a per-gpu_vm list which=
- is
-> >>>>>>>> +protected by the gpu_vm lock. One could in theory protect it al=
-so
-> >>>>>>>> with
-> >>>>>>>> +the ``gpu_vm->resv``, but since the list of dma_resvs to take is
-> >>>>>>>> typically
-> >>>>>>>> +built before the ``gpu_vm->resv`` is locked due to a limitation=
- in
-> >>>>>>>> +the current locking helpers, that is typically not done. Also s=
-ee
-> >>>>>>>> +below for userptr gpu_vmas.
-> >>>>>>>> +
-> >>>>>>>> +At eviction time we now need to invalidate *all* gpu_vmas of a =
-shared
-> >>>>>>>> +object, but we can no longer be certain that we hold the gpu_vm=
-'s
-> >>>>>>>> +dma_resv of all the object's gpu_vmas. We can only be certain t=
-hat we =20
-> >>>>>>> I need to think a bit more about locking of extobj and evicted
-> >>>>>>> object tracking
-> >>>>>>> in the case of processing 'drm_gpuva_ops' directly through callba=
-cks
-> >>>>>>> within the
-> >>>>>>> fence signalling critical path as mentioend in [1].
-> >>>>>>>
-> >>>>>>> In order to support that, we'd need to protect extobjs with a
-> >>>>>>> separate lock,
-> >>>>>>> and while iterating extobjs to acquire the dma-resv lock drop the
-> >>>>>>> lock within
-> >>>>>>> the loop before we actually acquire the dma-resv lock. Maple tree
-> >>>>>>> supports that
-> >>>>>>> already and this can be fully done within the GPUVA manager; no n=
-eed
-> >>>>>>> for the
-> >>>>>>> driver to care about that. =20
-> >>>>>> So do I understand correctly that this because you want to update =
-the
-> >>>>>> gpuvm state while operations are progressing asynchronously?
-> >>>>>>
-> >>>>>> If so, I wonder whether that could really be done? For example to
-> >>>>>> allocate enough memory for page-tables etc, you need to know the
-> >>>>>> details of the operations at IOCTL execution time, and to know the
-> >>>>>> details you need to know the state from the previous operation? =20
-> >>>>> Right, sync and async bind can't run fully concurrently, but you co=
-uld
-> >>>>> "inject" a
-> >>>>> sync one between two async ones such that the sync ones executed fr=
-om
-> >>>>> the IOCTL
-> >>>>> directly while async execution is stalled meanwhile. This would be
-> >>>>> possible because
-> >>>>> the actual drm_gpuva_ops would be calculated within the async
-> >>>>> execution path rather
-> >>>>> than in the IOCTL. But yes, page-table management must be desinged =
-to
-> >>>>> support that. =20
-> >>> FWIW, the panthor driver is designed this way (note that I'm not
-> >>> supporting GEM eviction yet, so there might be subtleties I missed). =
-=20
-> >> The problem is that once you've published your VM_BIND out-fence, any
-> >> code path required to signal that fence may notallocate memory nor or
-> >> grab any locks that allows allocating memory while held including
-> >> dma_resv locks, and that means all required page-table memory needs to
-> >> be allocated synchronously in the IOCTL, =20
-> > Yep, that's already what I do, by over-provisioning for the worst case
-> > scenario (page table tree is empty), and returning unused pages after
-> > the operation is done.
-> > =20
-> >> and all evicted bos need to be
-> >> made resident in the IOCTL, =20
-> > Yep, I'm pinning memory to BOs in that path too.
-> > =20
-> >> and at least in the xe driver the amount of
-> >> memory we need to allocate depends on the vm state, so we can't really
-> >> update the vm state asynchronously either. =20
-> > For Mali, we can calculate the maximum amount of pages we'll need for a
-> > MAP operation, by assuming the page table is empty. Then it's just a
-> > matter of returning unused pages to a fast-alloc pool so we can
-> > speed-up further page table allocations (we're using a kmem_cache here,
-> > since the page table update is done by the CPU and memory is shared on
-> > Arm, but there's no reason you can't have your own cache
-> > implementation).
-> > =20
-> >> But as long as any async binding work required for signalling the
-> >> VM_BIND out-fence is properly annotated with
-> >> dma_fence_begin_signalling() and dma_fence_end_signalling() and there
-> >> aren't any lockdep splats, things should be good. It would trigger on
-> >> both memory allocation and attempts to grab a dma_resv lock. =20
-> > I have dma_fence_{begin,end}_signalling() annotations in the
-> > ::run_job() path, and no lockdep complaint spotted so far.
-> > =20
-> >> =20
-> >>>    =20
-> >>>> OK, well one of the main motivations for Xe is to be able to pipeline
-> >>>> interleaving binds and execs if needed, like so:
-> >>>>
-> >>>> - Bind vmas for scene 1.
-> >>>> - Submit scene 1.
-> >>>> - Unbind vmas for scene 1.
-> >>>> - Bind vmas for scene 2.
-> >>>> - Submit scene 2.
-> >>>> - Unbind vmas for scene 2.
-> >>>>
-> >>>> And being able to *submit* all of the above while the async binding =
-of
-> >>>> vmas for scene (step 1) has not yet completed.
-> >>>> I can't really see how this could be done, while obeying dma-fence
-> >>>> rules, unless state is updated synchronously while submitting? =20
-> >>> The idea in this case is to detect when a GPU job dependency is a
-> >>> VM_BIND out-fence, turn drm_sched_fence->parent into an
-> >>> xxx_vm_bind_job_fence object that's holding the GEM that's about to be
-> >>> mapped (AFAICT, we don't need to do anything for unmap operations), a=
-nd
-> >>> then add our GPU job fence to this BO. This should not only guarantee
-> >>> that the GEMs we depend on are mapped before the GPU job is executed
-> >>> (the fence wait does that), but also that such yet-to-be-mapped GEMs
-> >>> won't be evicted just after they've been mapped and before the GPU had
-> >>> a chance to execute (unless I'm missing something, adding our GPU job
-> >>> fence to the BO being targeted by a pending VM_BIND(async,map) operat=
-ion
-> >>> solves this problem). =20
-> > It's not exactly that, because we'd need to add a GEMs of all the
-> > pending VM_BIND(map) jobs that come before the expressed dependency, not
-> > just the one attached to the dependency itself. But after chatting with
-> > Danilo, I realized we might not even need to track the GEMs being
-> > mapped at the fence level if we call drm_gpuva_extobj_insert() in the
-> > ioctl(VM_BIND) path:
-> >
-> > - drm_gpuva_extobj_insert() will make sure the GEM is added to
-> >    the ext-object map even before it's actually mapped to the VM (for
-> >    private GEMs, it doesn't matter, because they are using the VM resv,
-> >    so any private GEM mapped will automatically receive the VM resv
-> >    updates).
-> >
-> > Now, when a GPU job is queued, we do all the VM GEM preparation, which
-> > includes the following steps:
-> >
-> > - drm_gpuva_manager_validate() will make already-bound-but-evicted GEMs
-> >    resident
-> > - Iterate over all ext-objs to add our fence (I'm skipping the slot
-> >    reservation step that's implied). Because drm_gpuva_extobj_insert()
-> >    was called early, we also get all the GEMs that are not yet mapped,
-> >    but are about to be mapped. This means they won't be evicted until
-> >    after our job is done
-> > - add our fence to the VM resv
-> >
-> > Unless I'm missing something, this should guarantee that all GEMs are
-> > resident and mapped when the job is executed.
-> > =20
-> >> Yes, we're essentially doing the same. The issue here is that when we,
-> >> for example *submit* Bind vmas for scene 2,
-> >> we need to know how much page-table memory to allocate, =20
-> > This is solved with over-provisioning in our case.
-> > =20
-> >> and what BOs to
-> >> make resident to be able to publish the out-fence. =20
-> > That's basically what Danilo's latest gpuva_mgr patchset tries to
-> > provide generic helpers for, by exposing functions to iterate over all
-> > evicted GEMs (so we can make them resident) and adding a way to add
-> > fences to all GEMs currently bound to the VM. That leaves external GEMs
-> > that are about to be mapped, which, I think, is addressed by the
-> > solution detailed above.
-> > =20
-> >> That means we need to
-> >> know what the VM state would look like at the end of "Unbind vmas for
-> >> scene 1". =20
-> > Not necessarily, as long as you know all the GEMs that are currently
-> > mapped and those that are about to be mapped. The extobj set provides
-> > exactly that for external GEMs.
-> > =20
-> >> If the VM state is updated at submission time, that's all ok
-> >> but if it's updated at execution time, we'd have to guess what resourc=
-es
-> >> to pre-allocate. =20
-> > As long as you have enough resources pre-allocated to do the VM update
-> > (not saying this is easy to guess on Intel, but it's doable on Mali,
-> > and the page table caching makes over-provisioning not too bad, as long
-> > as we limit the number of in-flight VM_BIND jobs). =20
->=20
-> OK, then it sounds we're on the same page. I guess it would i theory be=20
-> possible to pre-allocate all needed resources on xe as well, but if the=20
-> vm state lock is made an inner lock in order for us to be able to grab=20
-> it within the dma-fence critical section, then it comes with a number of=
-=20
-> drawbacks as well:
-> * Over-allocation of resources.
-> * Need to spawn a cpu-thread for the async part (currently we utilize=20
-> the GPU for that).
+> >>> Note, it's unknown why it's represented in the current form instead of
+> >>> simple multiplication and commit 1ff511e35ed8 ("tracing/kprobes: Add
+> >>> bitfield type") doesn't explain that neither. Let leave it as is and
+> >>> we may improve it in the future.
+> >>
+> >> Maybe symmetrical change in tools/ like I did[0] an aeon ago?
+> > 
+> > Hmm... Why can't you simply upstream your version? It seems better than mine.
+> 
+> It was a part of the Netlink bigint API which is a bit on hold for now
+> (I needed this macro available treewide).
+> But I can send it as standalone if you're fine with that.
 
-I guess the async CPU part is the logic returning unused resources to
-the cache. You can use a work item/wq for that instead of a thread, but
-yes, there's some work to be done on the CPU, indeed.
+I'm fine. Yury?
 
-> * Probably looking at locking inversions wrt userptr?
-> * Probably looking at locking inversions wrt recoverable pagefaults?
+> >> [0]
+> >> https://github.com/alobakin/linux/commit/fd308001fe6d38837fe820427209a6a99e4850a8
 
-Okay, I clearly didn't look at userptr, and I briefly looked at
-alloc-on-fault but didn't finish/test my implementation since I didn't
-have a use case for it.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-For the use cases we have, we only need to take the VM lock (the lock
-protecting the VM state) when executing a VM operation (map/unmap), and
-that's in the dma-signalling path where we do no allocation (thanks
-to the pre-allocation logic) and no attempt to acquire a resv lock.
 
-Tbh, I'm not even sure we'd need a lock if that wasn't for the debugfs
-gpuva dumper, because drm_sched makes it so VM operations are
-serialized (VM ops happen on the CPU, and there's one thread dequeuing
-drm_sched_jobs).
-
-The extobj set is protected using another lock in Danilo's
-implementation (and my open-coded implementation did something similar,
-though slightly broken apparently), so maybe that's the one you're
-worried about.
-
-> * Mismatch with the cpu mmap() / munmap() interface where the mmap_sem=20
-> is the outermost lock.
->=20
-> So for us currently it currently looks like the sync state update is the=
-=20
-> preferred one...
-
-Just to clarify things, I'm not trying to convince you to use the async
-model, just saying that's what we went for, and, at first glance, it
-didn't seem completely insane to me. But if there's something
-fundamentally broken in this approach, I think I'd like to figure it
-out early, so thanks for all your inputs :-).
-
-Regards,
-
-Boris
