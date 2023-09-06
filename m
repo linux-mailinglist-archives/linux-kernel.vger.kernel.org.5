@@ -2,80 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A00793988
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD5679398B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237553AbjIFKJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 06:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54646 "EHLO
+        id S238622AbjIFKKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 06:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbjIFKJz (ORCPT
+        with ESMTP id S229947AbjIFKKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 06:09:55 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87A79E;
-        Wed,  6 Sep 2023 03:09:50 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-5738cb00eebso2198025eaf.2;
-        Wed, 06 Sep 2023 03:09:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693994990; x=1694599790; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1hB+PvGMU7bVonbgCU3v3Efy35gCAE3hYixxnZD/At8=;
-        b=dhF5NVxd+uiDT2QxuQsvKzqriKnOY/RST9IuW1hSKt6jbyfr0SeJSwRr9oa8Det382
-         YcJyO5ieoCu33zEkibhMuSBwZSif6Y4ctnd591ajw17ZXSHwNrcXxmpvZSbJP3ijQimW
-         1JEvXoCGcFpxa0B11+m57Inz8KqfntFVoVx7m8zeZz8pdP/kd6uUpSeT/ywhM4VkoXNA
-         F1y8NJeNGmP1QttwuJ5tYAXn1Hj5GfvHw1q81wgY/HLfhHJPO5TkWKe1jMHhJ++VR8MB
-         GVNEkpACNKxvXzhhdRFMYj1oAo23c2RzXps7rAYPa8ulkNxCUT4EsDj1In9bjnMcIy7Q
-         VW4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693994990; x=1694599790;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1hB+PvGMU7bVonbgCU3v3Efy35gCAE3hYixxnZD/At8=;
-        b=kMtyZSNQawjRq78RsR+lCO3b5S6EBkBAEipSLbENN8BIY0z1XCJ5BXUj2UzaHQe7ht
-         6Ay1fOka6fTa7QzLbBQs5SuGmZsf9PdUaibI5hJq7jydnJu0BcGheyVcsLKkjszvE1nC
-         D13QYmSpRzDrX2VM1MEVpeusaza3SPJWDTJzEKUeq5OIh1eFXHApJVlbkWwHJBzaEJtJ
-         9SACKNDuaZro1xyEab0caluGREwGC0eygcNo0QTYpmDQIaJ+a2NWq5Oxgd7S/Y8koPJ5
-         P3mUYgSb4NaQtZT+JvBta8A5hlRpogmEZ6QDT8mtZqZND4IVK3wGx34ktCOqlz/4dh9s
-         ah3w==
-X-Gm-Message-State: AOJu0YxZQuS4mYYNXA8I5ENW4jD3cHvzUTRm4Rr5VW4qxnX1HuOCKYX4
-        b8x59kw8QSoWGYnpggPXyj/G9M9eNbLR57ATMPo=
-X-Google-Smtp-Source: AGHT+IGsVIO3Wdlzdu5IoNPsgfuXEEegjy8jw54qEODMt1x9AhK2XQp2UlXOyvRNEqjuDd11FqPfJpy8H/Hf20nIUGU=
-X-Received: by 2002:a05:6820:284:b0:571:aceb:26ce with SMTP id
- q4-20020a056820028400b00571aceb26cemr14312637ood.1.1693994989962; Wed, 06 Sep
- 2023 03:09:49 -0700 (PDT)
+        Wed, 6 Sep 2023 06:10:11 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00967171D;
+        Wed,  6 Sep 2023 03:10:04 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qdpTx-0003eF-Va; Wed, 06 Sep 2023 12:09:58 +0200
+Message-ID: <4a639fff-445e-455b-9a31-57368d6b7021@leemhuis.info>
+Date:   Wed, 6 Sep 2023 12:09:56 +0200
 MIME-Version: 1.0
-References: <20230828080423.3539686-1-alessandro.carminati@gmail.com> <CAK7LNATf5zQH=qOX3HCcAoaccK1KTjoGNuXc-d2-FM-japABoQ@mail.gmail.com>
-In-Reply-To: <CAK7LNATf5zQH=qOX3HCcAoaccK1KTjoGNuXc-d2-FM-japABoQ@mail.gmail.com>
-From:   Alessandro Carminati <alessandro.carminati@gmail.com>
-Date:   Wed, 6 Sep 2023 12:09:13 +0200
-Message-ID: <CAPp5cGQgn0kfxPc+pmLMEJmHzOJ2HQQbsWSE0LFsxi4bigHOdQ@mail.gmail.com>
-Subject: Re: [PATCH v3] scripts/link-vmlinux.sh: Add alias to duplicate
- symbols for kallsyms
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Nick Alcock <nick.alcock@oracle.com>,
-        Kris Van Hees <kris.van.hees@oracle.com>,
-        Eugene Loh <eugene.loh@oracle.com>,
-        Francis Laniel <flaniel@linux.microsoft.com>,
-        Viktor Malik <vmalik@redhat.com>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: [PATCH AUTOSEL 6.1 10/15] scsi: aacraid: Reply queue mapping to
+ CPUs based on IRQ affinity
+Content-Language: en-US, de-DE
+To:     Sasha Levin <sashal@kernel.org>,
+        Sagar Biradar <sagar.biradar@microchip.com>
+Cc:     Gilbert Wu <gilbert.wu@microchip.com>,
+        John Garry <john.g.garry@oracle.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        aacraid@microsemi.com, jejb@linux.ibm.com,
+        linux-scsi@vger.kernel.org,
+        Linux kernel regressions list <regressions@lists.linux.dev>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20230829133245.520176-1-sashal@kernel.org>
+ <20230829133245.520176-10-sashal@kernel.org>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <20230829133245.520176-10-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693995005;d2075766;
+X-HE-SMSGID: 1qdpTx-0003eF-Va
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -84,225 +53,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Masahiro,
+On 29.08.23 15:32, Sasha Levin wrote:
+> From: Sagar Biradar <sagar.biradar@microchip.com>
+> 
+> [ Upstream commit 9dc704dcc09eae7d21b5da0615eb2ed79278f63e ]
+> 
+> Fix the I/O hang that arises because of the MSIx vector not having a mapped
+> online CPU upon receiving completion.
 
-Thank you for your suggestions,
-Il giorno sab 2 set 2023 alle ore 08:36 Masahiro Yamada
-<masahiroy@kernel.org> ha scritto:
->
-> On Mon, Aug 28, 2023 at 8:45=E2=80=AFPM Alessandro Carminati (Red Hat)
-> <alessandro.carminati@gmail.com> wrote:
-> >
-> > From: Alessandro Carminati <alessandro.carminati@gmail.com>
-> >
-> > It is not uncommon for drivers or modules related to similar peripheral=
-s
-> > to have symbols with the exact same name.
-> > While this is not a problem for the kernel's binary itself, it becomes =
-an
-> > issue when attempting to trace or probe specific functions using
-> > infrastructure like ftrace or kprobe.
-> >
-> > The tracing subsystem relies on the `nm -n vmlinux` output, which provi=
-des
-> > symbol information from the kernel's ELF binary. However, when multiple
-> > symbols share the same name, the standard nm output does not differenti=
-ate
-> > between them. This can lead to confusion and difficulty when trying to
-> > probe the intended symbol.
-> >
-> >  ~ # cat /proc/kallsyms | grep " name_show"
-> >  ffffffff8c4f76d0 t name_show
-> >  ffffffff8c9cccb0 t name_show
-> >  ffffffff8cb0ac20 t name_show
-> >  ffffffff8cc728c0 t name_show
-> >  ffffffff8ce0efd0 t name_show
-> >  ffffffff8ce126c0 t name_show
-> >  ffffffff8ce1dd20 t name_show
-> >  ffffffff8ce24e70 t name_show
-> >  ffffffff8d1104c0 t name_show
-> >  ffffffff8d1fe480 t name_show
-> >
-> > **kas_alias** addresses this challenge by extending the symbol names wi=
-th
-> > unique suffixes during the kernel build process.
-> > The newly created aliases for these duplicated symbols are unique names
-> > that can be fed to the ftracefs interface. By doing so, it enables
-> > previously unreachable symbols to be probed.
-> >
-> >  ~ # cat /proc/kallsyms | grep " name_show"
-> >  ffffffff974f76d0 t name_show
-> >  ffffffff974f76d0 t name_show__alias__6340
-> >  ffffffff979cccb0 t name_show
-> >  ffffffff979cccb0 t name_show__alias__6341
-> >  ffffffff97b0ac20 t name_show
-> >  ffffffff97b0ac20 t name_show__alias__6342
-> >  ffffffff97c728c0 t name_show
-> >  ffffffff97c728c0 t name_show__alias__6343
-> >  ffffffff97e0efd0 t name_show
-> >  ffffffff97e0efd0 t name_show__alias__6344
-> >  ffffffff97e126c0 t name_show
-> >  ffffffff97e126c0 t name_show__alias__6345
-> >  ffffffff97e1dd20 t name_show
-> >  ffffffff97e1dd20 t name_show__alias__6346
-> >  ffffffff97e24e70 t name_show
-> >  ffffffff97e24e70 t name_show__alias__6347
-> >  ffffffff981104c0 t name_show
-> >  ffffffff981104c0 t name_show__alias__6348
-> >  ffffffff981fe480 t name_show
-> >  ffffffff981fe480 t name_show__alias__6349
-> >  ~ # echo "p:kprobes/evnt1 name_show__alias__6349" \
-> >  > >/sys/kernel/tracing/kprobe_events
-> >  ~ # cat /sys/kernel/tracing/kprobe_events
-> >  p:kprobes/evnt1 name_show__alias__6349
-> >
-> > Changes from v1:
-> > - Integrated changes requested by Masami to exclude symbols with prefix=
-es
-> >   "_cfi" and "_pfx".
-> > - Introduced a small framework to handle patterns that need to be exclu=
-ded
-> >   from the alias production.
-> > - Excluded other symbols using the framework.
-> > - Introduced the ability to discriminate between text and data symbols.
-> > - Added two new config symbols in this version: CONFIG_KALLSYMS_ALIAS_D=
-ATA,
-> >   which allows data for data, and CONFIG_KALLSYMS_ALIAS_DATA_ALL, which
-> >   excludes all filters and provides an alias for each duplicated symbol=
-.
-> >
-> > https://lore.kernel.org/all/20230711151925.1092080-1-alessandro.carmina=
-ti@gmail.com/
-> >
-> > Changes from v2:
-> > - Alias tags are created by querying DWARF information from the vmlinux=
-.
-> > - The filename + line number is normalized and appended to the original=
- name.
-> > - The tag begins with '@' to indicate the symbol source.
-> > - Not a change, but worth mentioning, since the alias is added to the e=
-xisting
-> >   list, the old duplicated name is preserved, and the livepatch way of =
-dealing
-> >   with duplicates is maintained.
-> > - Acknowledging the existence of scenarios where inlined functions decl=
-ared in
-> >   header files may result in multiple copies due to compiler behavior, =
-though
-> >    it is not actionable as it does not pose an operational issue.
-> > - Highlighting a single exception where the same name refers to differe=
-nt
-> >   functions: the case of "compat_binfmt_elf.c," which directly includes
-> >   "binfmt_elf.c" producing identical function copies in two separate
-> >   modules.
-> >
-> > sample from new v3
-> >
-> >  ~ # cat /proc/kallsyms | grep gic_mask_irq
-> >  ffffd0b03c04dae4 t gic_mask_irq
-> >  ffffd0b03c04dae4 t gic_mask_irq@_drivers_irqchip_irq-gic_c_167
-> >  ffffd0b03c050960 t gic_mask_irq
-> >  ffffd0b03c050960 t gic_mask_irq@_drivers_irqchip_irq-gic-v3_c_404
-> >  ~ #
-> >
-> > https://lore.kernel.org/all/20230714150326.1152359-1-alessandro.carmina=
-ti@gmail.com/
-> >
-> > Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gma=
-il.com>
-> > ---
-> >  init/Kconfig                        |  36 ++++
-> >  scripts/Makefile                    |   4 +
-> >  scripts/kas_alias/Makefile          |   4 +
-> >  scripts/kas_alias/a2l.c             | 268 ++++++++++++++++++++++++++++
-> >  scripts/kas_alias/a2l.h             |  32 ++++
-> >  scripts/kas_alias/duplicates_list.c |  70 ++++++++
-> >  scripts/kas_alias/duplicates_list.h |  15 ++
-> >  scripts/kas_alias/item_list.c       | 230 ++++++++++++++++++++++++
-> >  scripts/kas_alias/item_list.h       |  26 +++
-> >  scripts/kas_alias/kas_alias.c       | 217 ++++++++++++++++++++++
-> >  scripts/link-vmlinux.sh             |  11 +-
-> >  11 files changed, 910 insertions(+), 3 deletions(-)
->
->
-> I added some review comments in another thread, but
-> one of the biggest concerns might be "910 insertions".
->
->
-> What this program does is quite simple,
-> "find duplicated names, and call addr2line".
->
->
->
-> You wrote a lot of code to self-implement these:
->
->  - sort function
->  - parse PATH env variable to find addr2line
->  - fork addr2line to establish pipe communications
->
->
->
-> Have you considered writing the code in Python (or Perl)?
-> Is it too slow?
+Sasha: you might want to consider dropping this from the 6.1 and 5.15
+autosel queues for now, as this commit apparently causes a regression:
+https://bugzilla.kernel.org/show_bug.cgi?id=217599
 
-I have attempted to incorporate all your suggestions.
-I refactored the C code to utilize hashing instead of sorting, and I
-completely re-implemented the entire thing in Python for the purpose of
-comparison.
+Sagar Biradar: as this is a commit of yours; could you please look into
+the report? It was bisected a few weeks ago, but I suspect nobody told
+you. Ahh, the joys of bugzilla.
 
-You are correct;
-the C version is indeed faster, but the difference is negligible when
-considering the use case and code maintainability.
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
-Here's a direct comparison of the two.
-```
-~ $ time ./kas_alias.py -a /usr/bin/aarch64-linux-gnu-addr2line \
-                      -n linux-6.5/.tmp_vmlinux.kallsyms1.syms \
-                      -v linux-6.5/.tmp_vmlinux.kallsyms1 \
-                      -o output_py
-
-real    0m1.626s
-user    0m1.436s
-sys     0m0.185s
-$ cat kas_alias.py | wc -l
-133
-~ $ time ./kas_alias -a /usr/bin/aarch64-linux-gnu-addr2line \
-                   -v linux-6.5/.tmp_vmlinux.kallsyms1 \
-                   -n linux-6.5/.tmp_vmlinux.kallsyms1.syms \
-                   -o output_c
-
-real    0m1.418s
-user    0m1.262s
-sys     0m0.162s
-~ $ cat a2l.c a2l.h conf.c conf.h item_list.c item_list.h kas_alias.c | wc =
--l
-742
-~ $ diff output_py output_c
-~ $
-```
-C version is 7/10% faster but is more than 5 times in terms of code size.
-
->
-> Most of the functions you implemented are already
-> available in script languages.
->
->
->
-> I am not sure if "@<file-path>" is a good solution,
-> but the amount of the added code looks too much to me.
-
-I followed Francis's suggestion and made the separator between
-<symbol name> and <normalized filename> an argument that you can select
-using the command line. Since I'm not aware of a better choice, I set the
-default value to '@'.
-
->
->
->
->
-> --
-> Best Regards
-> Masahiro Yamada
-
-Best regards
-Alessandro Carminati
+> SCSI cmds take the blk_mq route, which is setup during init. Reserved cmds
+> fetch the vector_no from mq_map after init is complete. Before init, they
+> have to use 0 - as per the norm.
+> 
+> Reviewed-by: Gilbert Wu <gilbert.wu@microchip.com>
+> Signed-off-by: Sagar Biradar <Sagar.Biradar@microchip.com>
+> Reviewed-by: John Garry <john.g.garry@oracle.com>
+> Link: https://lore.kernel.org/r/20230519230834.27436-1-sagar.biradar@microchip.com
+> Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/scsi/aacraid/aacraid.h |  1 +
+>  drivers/scsi/aacraid/commsup.c |  6 +++++-
+>  drivers/scsi/aacraid/linit.c   | 14 ++++++++++++++
+>  drivers/scsi/aacraid/src.c     | 25 +++++++++++++++++++++++--
+>  4 files changed, 43 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/scsi/aacraid/aacraid.h b/drivers/scsi/aacraid/aacraid.h
+> index 5e115e8b2ba46..7c6efde75da66 100644
+> --- a/drivers/scsi/aacraid/aacraid.h
+> +++ b/drivers/scsi/aacraid/aacraid.h
+> @@ -1678,6 +1678,7 @@ struct aac_dev
+>  	u32			handle_pci_error;
+>  	bool			init_reset;
+>  	u8			soft_reset_support;
+> +	u8			use_map_queue;
+>  };
+>  
+>  #define aac_adapter_interrupt(dev) \
+> diff --git a/drivers/scsi/aacraid/commsup.c b/drivers/scsi/aacraid/commsup.c
+> index deb32c9f4b3e6..3f062e4013ab6 100644
+> --- a/drivers/scsi/aacraid/commsup.c
+> +++ b/drivers/scsi/aacraid/commsup.c
+> @@ -223,8 +223,12 @@ int aac_fib_setup(struct aac_dev * dev)
+>  struct fib *aac_fib_alloc_tag(struct aac_dev *dev, struct scsi_cmnd *scmd)
+>  {
+>  	struct fib *fibptr;
+> +	u32 blk_tag;
+> +	int i;
+>  
+> -	fibptr = &dev->fibs[scsi_cmd_to_rq(scmd)->tag];
+> +	blk_tag = blk_mq_unique_tag(scsi_cmd_to_rq(scmd));
+> +	i = blk_mq_unique_tag_to_tag(blk_tag);
+> +	fibptr = &dev->fibs[i];
+>  	/*
+>  	 *	Null out fields that depend on being zero at the start of
+>  	 *	each I/O
+> diff --git a/drivers/scsi/aacraid/linit.c b/drivers/scsi/aacraid/linit.c
+> index 5ba5c18b77b46..bff49b8ab057d 100644
+> --- a/drivers/scsi/aacraid/linit.c
+> +++ b/drivers/scsi/aacraid/linit.c
+> @@ -19,6 +19,7 @@
+>  
+>  #include <linux/compat.h>
+>  #include <linux/blkdev.h>
+> +#include <linux/blk-mq-pci.h>
+>  #include <linux/completion.h>
+>  #include <linux/init.h>
+>  #include <linux/interrupt.h>
+> @@ -505,6 +506,15 @@ static int aac_slave_configure(struct scsi_device *sdev)
+>  	return 0;
+>  }
+>  
+> +static void aac_map_queues(struct Scsi_Host *shost)
+> +{
+> +	struct aac_dev *aac = (struct aac_dev *)shost->hostdata;
+> +
+> +	blk_mq_pci_map_queues(&shost->tag_set.map[HCTX_TYPE_DEFAULT],
+> +			      aac->pdev, 0);
+> +	aac->use_map_queue = true;
+> +}
+> +
+>  /**
+>   *	aac_change_queue_depth		-	alter queue depths
+>   *	@sdev:	SCSI device we are considering
+> @@ -1489,6 +1499,7 @@ static struct scsi_host_template aac_driver_template = {
+>  	.bios_param			= aac_biosparm,
+>  	.shost_groups			= aac_host_groups,
+>  	.slave_configure		= aac_slave_configure,
+> +	.map_queues			= aac_map_queues,
+>  	.change_queue_depth		= aac_change_queue_depth,
+>  	.sdev_groups			= aac_dev_groups,
+>  	.eh_abort_handler		= aac_eh_abort,
+> @@ -1776,6 +1787,8 @@ static int aac_probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	shost->max_lun = AAC_MAX_LUN;
+>  
+>  	pci_set_drvdata(pdev, shost);
+> +	shost->nr_hw_queues = aac->max_msix;
+> +	shost->host_tagset = 1;
+>  
+>  	error = scsi_add_host(shost, &pdev->dev);
+>  	if (error)
+> @@ -1908,6 +1921,7 @@ static void aac_remove_one(struct pci_dev *pdev)
+>  	struct aac_dev *aac = (struct aac_dev *)shost->hostdata;
+>  
+>  	aac_cancel_rescan_worker(aac);
+> +	aac->use_map_queue = false;
+>  	scsi_remove_host(shost);
+>  
+>  	__aac_shutdown(aac);
+> diff --git a/drivers/scsi/aacraid/src.c b/drivers/scsi/aacraid/src.c
+> index 11ef58204e96f..61949f3741886 100644
+> --- a/drivers/scsi/aacraid/src.c
+> +++ b/drivers/scsi/aacraid/src.c
+> @@ -493,6 +493,10 @@ static int aac_src_deliver_message(struct fib *fib)
+>  #endif
+>  
+>  	u16 vector_no;
+> +	struct scsi_cmnd *scmd;
+> +	u32 blk_tag;
+> +	struct Scsi_Host *shost = dev->scsi_host_ptr;
+> +	struct blk_mq_queue_map *qmap;
+>  
+>  	atomic_inc(&q->numpending);
+>  
+> @@ -505,8 +509,25 @@ static int aac_src_deliver_message(struct fib *fib)
+>  		if ((dev->comm_interface == AAC_COMM_MESSAGE_TYPE3)
+>  			&& dev->sa_firmware)
+>  			vector_no = aac_get_vector(dev);
+> -		else
+> -			vector_no = fib->vector_no;
+> +		else {
+> +			if (!fib->vector_no || !fib->callback_data) {
+> +				if (shost && dev->use_map_queue) {
+> +					qmap = &shost->tag_set.map[HCTX_TYPE_DEFAULT];
+> +					vector_no = qmap->mq_map[raw_smp_processor_id()];
+> +				}
+> +				/*
+> +				 *	We hardcode the vector_no for
+> +				 *	reserved commands as a valid shost is
+> +				 *	absent during the init
+> +				 */
+> +				else
+> +					vector_no = 0;
+> +			} else {
+> +				scmd = (struct scsi_cmnd *)fib->callback_data;
+> +				blk_tag = blk_mq_unique_tag(scsi_cmd_to_rq(scmd));
+> +				vector_no = blk_mq_unique_tag_to_hwq(blk_tag);
+> +			}
+> +		}
+>  
+>  		if (native_hba) {
+>  			if (fib->flags & FIB_CONTEXT_FLAG_NATIVE_HBA_TMF) {
