@@ -2,132 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C3D793AE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79547793AEE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238313AbjIFLP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
+        id S234643AbjIFLVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:21:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238118AbjIFLPY (ORCPT
+        with ESMTP id S232637AbjIFLVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:15:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455C81730;
-        Wed,  6 Sep 2023 04:15:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C571FC433C7;
-        Wed,  6 Sep 2023 11:15:13 +0000 (UTC)
-Message-ID: <ffcb655c-3016-d8bc-2e85-67eb34588d27@xs4all.nl>
-Date:   Wed, 6 Sep 2023 13:15:12 +0200
+        Wed, 6 Sep 2023 07:21:14 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E9AA8;
+        Wed,  6 Sep 2023 04:21:09 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qdqaq-0007aA-3Z; Wed, 06 Sep 2023 13:21:08 +0200
+Message-ID: <a8d206b6-d1d8-4c9a-b82c-724c2def0491@leemhuis.info>
+Date:   Wed, 6 Sep 2023 13:21:07 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [RFC PATCH 0/3] Google Chameleon v3 video driver
-Content-Language: en-US, nl
-To:     =?UTF-8?Q?Pawe=c5=82_Anikiel?= <pan@semihalf.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Cc:     dinguyen@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mchehab@kernel.org, upstream@semihalf.com, amstan@chromium.org,
-        ribalda@chromium.org
-References: <20230630144006.1513270-1-pan@semihalf.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-In-Reply-To: <20230630144006.1513270-1-pan@semihalf.com>
+User-Agent: Mozilla Thunderbird
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+To:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     Sasha Levin <sashal@kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Linux kernel regressions list <regressions@lists.linux.dev>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Content-Language: en-US, de-DE
+Subject: Consider picking up "tpm: Enable hwrng only for Pluton on AMD CPUs"
+ rather sooner than later
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693999269;407aed1e;
+X-HE-SMSGID: 1qdqaq-0007aA-3Z
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pawel,
+Hi stable team, JFYI, the recently mainline commit 8f7f35e5aa6f21 ("tpm:
+Enable hwrng only for Pluton on AMD CPUs") from Jarkko contains a stable
+tag, but it might be worth picking up rather sooner than later, as it
+fixes a regression that seems to annoy quite a few users of 6.1.y, 6.4.y
+and 6.5; that's why at least Fedora is already working on picking the
+fix up ahead of the stable-tree.
 
-Apologies for the much-too-long delay, but I finally had time to look at this.
-
-On 30/06/2023 16:40, Paweł Anikiel wrote:
-> The Google Chameleon v3 is a testing device for external displays. It
-> is based on an Arria 10 SoCFPGA. This patch adds a V4L2 driver for the
-> video system. The video system consists of:
->   * Six video interfaces (DMA ping pong buffers) in the FPGA, called
->   "framebuffers".
->   * Two Intel DisplayPort DPRX IP cores in the FPGA, one MST x4, one SST
->   * IT68051 chip, handled by EC firmware
-> 
-> The driver is implemented as a single device driver, because the video
-> interface devices need to talk to the DisplayPort IP core devices
-> (e.g. to configure the EDID). This has the effect of the DPRX driver
-> being in the chameleonv3 directory even though it's an Intel IP.
-> 
-> The DPRX code handles all the AUX communication (DPCD, sideband messages,
-> message transfers). There is similarity to what's already present in
-> the DRM subsystem, but I found it hard to reuse that code effectively.
-> 
-> My main concern is with the overall structure of the driver - how it's
-> divided into parts, the interfaces and APIs used, etc. Any feedback is
-> greately appreciated.
-
-I need to see the v4l2-compliance output for this new driver. Typically
-'v4l2-compliance -s -d /dev/videoX' should be enough. You have to compile
-v4l2-compliance from the git repo (git://linuxtv.org/v4l-utils.git) to ensure
-you use the latest and greatest version.
-
-Obviously any failures should be fixed. Just copy-and-paste the v4l2-compliance
-output to the cover letter.
-
-Regards,
-
-	Hans
-
-> 
-> Paweł Anikiel (3):
->   media: Add 10, 12, and 16 bit RGB formats
->   media: Add Google Chameleon v3 video driver
->   ARM: dts: Add Chameleon v3 video node
-> 
->  .../socfpga/socfpga_arria10_chameleonv3.dts   |  54 ++
->  drivers/media/platform/Kconfig                |   1 +
->  drivers/media/platform/Makefile               |   1 +
->  drivers/media/platform/google/Kconfig         |   4 +
->  drivers/media/platform/google/Makefile        |   2 +
->  .../media/platform/google/chameleonv3/Kconfig |   9 +
->  .../platform/google/chameleonv3/Makefile      |  15 +
->  .../platform/google/chameleonv3/chv3-core.c   | 292 ++++++++++
->  .../platform/google/chameleonv3/chv3-core.h   |  17 +
->  .../platform/google/chameleonv3/chv3-fb.c     | 539 ++++++++++++++++++
->  .../platform/google/chameleonv3/chv3-fb.h     |  34 ++
->  .../platform/google/chameleonv3/dprx-aux.c    |  77 +++
->  .../platform/google/chameleonv3/dprx-dp.c     |  82 +++
->  .../platform/google/chameleonv3/dprx-dpcd.c   | 424 ++++++++++++++
->  .../platform/google/chameleonv3/dprx-dprx.c   | 262 +++++++++
->  .../platform/google/chameleonv3/dprx-edid.c   |  39 ++
->  .../platform/google/chameleonv3/dprx-i2c.c    |  41 ++
->  .../platform/google/chameleonv3/dprx-mt.c     | 184 ++++++
->  .../platform/google/chameleonv3/dprx-sbmsg.c  | 162 ++++++
->  .../media/platform/google/chameleonv3/dprx.h  | 128 +++++
->  drivers/media/v4l2-core/v4l2-ioctl.c          |   5 +
->  include/uapi/linux/videodev2.h                |   5 +
->  22 files changed, 2377 insertions(+)
->  create mode 100644 drivers/media/platform/google/Kconfig
->  create mode 100644 drivers/media/platform/google/Makefile
->  create mode 100644 drivers/media/platform/google/chameleonv3/Kconfig
->  create mode 100644 drivers/media/platform/google/chameleonv3/Makefile
->  create mode 100644 drivers/media/platform/google/chameleonv3/chv3-core.c
->  create mode 100644 drivers/media/platform/google/chameleonv3/chv3-core.h
->  create mode 100644 drivers/media/platform/google/chameleonv3/chv3-fb.c
->  create mode 100644 drivers/media/platform/google/chameleonv3/chv3-fb.h
->  create mode 100644 drivers/media/platform/google/chameleonv3/dprx-aux.c
->  create mode 100644 drivers/media/platform/google/chameleonv3/dprx-dp.c
->  create mode 100644 drivers/media/platform/google/chameleonv3/dprx-dpcd.c
->  create mode 100644 drivers/media/platform/google/chameleonv3/dprx-dprx.c
->  create mode 100644 drivers/media/platform/google/chameleonv3/dprx-edid.c
->  create mode 100644 drivers/media/platform/google/chameleonv3/dprx-i2c.c
->  create mode 100644 drivers/media/platform/google/chameleonv3/dprx-mt.c
->  create mode 100644 drivers/media/platform/google/chameleonv3/dprx-sbmsg.c
->  create mode 100644 drivers/media/platform/google/chameleonv3/dprx.h
-> 
-
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
