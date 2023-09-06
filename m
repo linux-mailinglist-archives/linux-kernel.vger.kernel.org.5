@@ -2,91 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81EBC79402C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D30794034
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242447AbjIFPUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 11:20:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
+        id S242502AbjIFPVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 11:21:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbjIFPUR (ORCPT
+        with ESMTP id S232672AbjIFPVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 11:20:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431871717;
-        Wed,  6 Sep 2023 08:20:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qxp2t+bVHW8cmZYbivfo0KSh5jDiqaqDQ6bYkaNkWNg=; b=cFN2ja9Wv5igmbovtOkdtREqz3
-        Y9jwx4BGIQnvbIf/QdhRs178R1cS7jV8mm5ZcWytjQ6c8fakFAO05eXXGF2sh/zhWcSocKNuspMH2
-        knfXjYs35VgCZd/7VP6iIITKtUSc/Z9hGGeODtYBvZEDEIMduXAXwIQ0cPZLSTHa9QCgo6Tyaf8b+
-        v4GV5zPRo6HzOiinyWmYRQhL2AExRoGG8wSkYUkXouvHcfSxEmLtlloVRTyK3bQVIbtJFFHCdD7rr
-        RsgwKEwIOZl+bYUz+PeOWs/GinxvYA45HU7PV3T8/c7t+RKRt27FSsi88Rk8tV+dbc4oK0ecN3HGS
-        urAN1B1g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qduK7-003NvM-Rg; Wed, 06 Sep 2023 15:20:07 +0000
-Date:   Wed, 6 Sep 2023 16:20:07 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     brauner@kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        bernd.schubert@fastmail.fm
-Subject: Re: [RFC PATCH] vfs: add inode lockdep assertions
-Message-ID: <ZPiYp+t6JTUscc81@casper.infradead.org>
-References: <20230831151414.2714750-1-mjguzik@gmail.com>
+        Wed, 6 Sep 2023 11:21:14 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 631E41717;
+        Wed,  6 Sep 2023 08:21:09 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 783DC8050;
+        Wed,  6 Sep 2023 15:21:08 +0000 (UTC)
+Date:   Wed, 6 Sep 2023 18:21:07 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Marc Haber <mh+linux-kernel@zugschlus.de>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux KVM <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: Linux 6.5 speed regression, boot VERY slow with anything systemd
+ related
+Message-ID: <20230906152107.GD11676@atomide.com>
+References: <ZO3sA2GuDbEuQoyj@torres.zugschlus.de>
+ <ZO4GeazfcA09SfKw@google.com>
+ <ZO4JCfnzRRL1RIZt@torres.zugschlus.de>
+ <ZO4RzCr/Ugwi70bZ@google.com>
+ <ZO4YJlhHYjM7MsK4@torres.zugschlus.de>
+ <ZO4nbzkd4tovKpxx@google.com>
+ <ZO5OeoKA7TbAnrI1@torres.zugschlus.de>
+ <ZPEPFJ8QvubbD3H9@google.com>
+ <20230901122431.GU11676@atomide.com>
+ <ZPiPkSY6NRzfWV5Z@torres.zugschlus.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230831151414.2714750-1-mjguzik@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZPiPkSY6NRzfWV5Z@torres.zugschlus.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 05:14:14PM +0200, Mateusz Guzik wrote:
-> +++ b/include/linux/fs.h
-> @@ -842,6 +842,16 @@ static inline void inode_lock_shared_nested(struct inode *inode, unsigned subcla
->  	down_read_nested(&inode->i_rwsem, subclass);
->  }
->  
-> +static inline void inode_assert_locked(struct inode *inode)
-> +{
-> +	lockdep_assert_held(&inode->i_rwsem);
-> +}
-> +
-> +static inline void inode_assert_write_locked(struct inode *inode)
-> +{
-> +	lockdep_assert_held_write(&inode->i_rwsem);
-> +}
+* Marc Haber <mh+linux-kernel@zugschlus.de> [230906 14:41]:
+> If I cannot see the host boot, I cannot debug, and if I cannot type into
+> grub, I cannot find out whether removing the serial console from the
+> kernel command line fixes the issue. I have removed the network
+> interface to simplify things, so I need a working console.
 
-This mirrors what we have in mm, but it's only going to trigger on
-builds that have lockdep enabled.  Lockdep is very expensive; it
-easily doubles the time it takes to run xfstests on my laptop, so
-I don't generally enable it.  So what we also have in MM is:
+I use something like this for a serial console:
 
-static inline void mmap_assert_write_locked(struct mm_struct *mm)
-{
-        lockdep_assert_held_write(&mm->mmap_lock);
-        VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
-}
+-serial stdio -append "console=ttyS0 other kernel command line options"
 
-Now if you have lockdep enabled, you get the lockdep check which
-gives you all the lovely lockdep information, but if you don't, you
-at least get the cheap check that someone is holding the lock at all.
+Regards,
 
-ie I would make this:
-
-+static inline void inode_assert_write_locked(struct inode *inode)
-+{
-+	lockdep_assert_held_write(&inode->i_rwsem);
-+	WARN_ON_ONCE(!inode_is_locked(inode));
-+}
-
-Maybe the locking people could give us a rwsem_is_write_locked()
-predicate, but until then, this is the best solution we came up with.
+Tony
