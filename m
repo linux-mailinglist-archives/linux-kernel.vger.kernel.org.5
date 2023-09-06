@@ -2,216 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4492793C5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C574793C67
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240597AbjIFMLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
+        id S240617AbjIFMMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:12:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231842AbjIFMLL (ORCPT
+        with ESMTP id S240590AbjIFMMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:11:11 -0400
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2120F1726
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:11:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        sang-engineering.com; h=date:from:to:cc:subject:message-id
-        :references:mime-version:content-type:in-reply-to; s=k1; bh=YyKx
-        SEw64CuPDiuCgGzAN3A6ofWzKjxmBcED81gY0A4=; b=UhLN09bTV7ehGrr8oh43
-        6VjNiIRbx6EIwC9zNWj8NGxat5pG4ldrNJ/f7YxGhemcwJNC75/ofWoZhowrlQr1
-        hRS3lt9v+IJR6o6wuKlInAinV4PWfHQdWsDUgGfBrq1131jEQSbFJUaya05Ffyt/
-        WDdSSrvwbfFo55Kf2MMWTvnBStuU2dpiV6A/lZhvmNsSaLSwMwsQom8qWvefPR2w
-        Yxnp8pDdqMQ0DGJPOidtfbD0rAE4nKXG44qAtSex4erOXPI/JZ8RTwQl9y5nr5yI
-        mcPMdfN4SmqEcyTSL9hK5c42Wn/fudwNqQdjMHOOFpaQ1g2X/DQPGKX8Qkhe7n2+
-        Dg==
-Received: (qmail 2814613 invoked from network); 6 Sep 2023 14:11:01 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 6 Sep 2023 14:11:01 +0200
-X-UD-Smtp-Session: l3s3148p1@hTsJo68EPRQucrGD
-Date:   Wed, 6 Sep 2023 14:11:00 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] i2c: rcar: add FastMode+ support
-Message-ID: <ZPhsVLiGck+XF5T7@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-renesas-soc@vger.kernel.org,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230904135852.12146-1-wsa+renesas@sang-engineering.com>
- <20230904135852.12146-4-wsa+renesas@sang-engineering.com>
- <CAMuHMdW3nGaCHU2GeO3=MHDvZskmXd17GJwj=xBp_ZVawAtniA@mail.gmail.com>
+        Wed, 6 Sep 2023 08:12:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A17E71;
+        Wed,  6 Sep 2023 05:12:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694002368; x=1725538368;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IX8tqAU4qqO4xD68t3JJmbkfL8h79O8BisSE4UjrixU=;
+  b=JzwTu5jodsE1ARpc0Ff0D+XJ+W2av1zvk6PIkdrq6AghZTPlWjqRnf0F
+   ndgjiuefGR4AsccBGPaklesK/tioIqXgZrFNHOBbyMkJgglfzKyPvgSTQ
+   lpTL/Rhjq9k9fMEK/FBVwEhh0cH4m1HUfCzdHtZBhZAJn3eZN7zQblH9k
+   jE7Q8SgNPhl+gtLl57irBRWB4hwQEkvurpMcEA1YX8lo/Y0vVJTuBPcny
+   26y0TIB47ZaXYCyz0jNhSvDW/NgRB4SGlDwuRuvkDxS/fjLF04q7DuRO4
+   jsS9lACZhWverDpc6htDeYe8muNaSkEx5JFNEUIHAabUKDwnhUb0pbj+2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="357362012"
+X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
+   d="scan'208";a="357362012"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 05:12:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="806982511"
+X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
+   d="scan'208";a="806982511"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 06 Sep 2023 05:12:03 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qdrO4-0000Bh-2d;
+        Wed, 06 Sep 2023 12:12:00 +0000
+Date:   Wed, 6 Sep 2023 20:11:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Meng Li <li.meng@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-acpi@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        Perry Yuan <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>, Meng Li <li.meng@amd.com>
+Subject: Re: [PATCH V5 3/7] cpufreq: amd-pstate: Enable amd-pstate preferred
+ core supporting.
+Message-ID: <202309061958.4wimkcbo-lkp@intel.com>
+References: <20230905015116.2268926-4-li.meng@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="T7IJSgVMdsFtcOK6"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdW3nGaCHU2GeO3=MHDvZskmXd17GJwj=xBp_ZVawAtniA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230905015116.2268926-4-li.meng@amd.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Meng,
 
---T7IJSgVMdsFtcOK6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+kernel test robot noticed the following build warnings:
 
-Hi Geert,
+[auto build test WARNING on rafael-pm/linux-next]
+[also build test WARNING on linus/master v6.5 next-20230906]
+[cannot apply to tip/x86/core]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> > -       u32 icccr;
-> > +       u32 clock_val;
->=20
-> Perhaps use a union to store either icccr or smd?
+url:    https://github.com/intel-lab-lkp/linux/commits/Meng-Li/x86-Drop-CPU_SUP_INTEL-from-SCHED_MC_PRIO-for-the-expansion/20230906-003754
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+patch link:    https://lore.kernel.org/r/20230905015116.2268926-4-li.meng%40amd.com
+patch subject: [PATCH V5 3/7] cpufreq: amd-pstate: Enable amd-pstate preferred core supporting.
+config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20230906/202309061958.4wimkcbo-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230906/202309061958.4wimkcbo-lkp@intel.com/reproduce)
 
-Yup, can do.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309061958.4wimkcbo-lkp@intel.com/
 
->=20
-> >         u8 recovery_icmcr;      /* protected by adapter lock */
-> >         enum rcar_i2c_type devtype;
-> >         struct i2c_client *slave;
-> > @@ -217,7 +228,17 @@ static void rcar_i2c_init(struct rcar_i2c_priv *pr=
-iv)
-> >         rcar_i2c_write(priv, ICMCR, MDBS);
-> >         rcar_i2c_write(priv, ICMSR, 0);
-> >         /* start clock */
-> > -       rcar_i2c_write(priv, ICCCR, priv->icccr);
-> > +       if (priv->flags & ID_P_FMPLUS) {
-> > +               rcar_i2c_write(priv, ICCCR, 0);
-> > +               rcar_i2c_write(priv, ICMPR, priv->clock_val);
-> > +               rcar_i2c_write(priv, ICHPR, 3 * priv->clock_val);
-> > +               rcar_i2c_write(priv, ICLPR, 3 * priv->clock_val);
-> > +               rcar_i2c_write(priv, ICCCR2, FMPE | CDFD | HLSE | SME);
->=20
-> ICCCR2 note 1: "ICCCR2 should be written to prior to writing ICCCR."
+All warnings (new ones prefixed by >>):
 
-Eeks, I remembered it the other way around :/
-
-> >         ick =3D rate / (cdf + 1);
->=20
-> In case of FM+, cdf will be zero, and ick =3D=3D rate?
-
-Yes.
-
->=20
-> > @@ -292,34 +324,55 @@ static int rcar_i2c_clock_calculate(struct rcar_i=
-2c_priv *priv)
-> >         round =3D (ick + 500000) / 1000000 * sum;
->=20
-> ick =3D=3D rate if FM+
-
-Yes, does this induce a change here?
-
-> >         round =3D (round + 500) / 1000;
->=20
-> DIV_ROUND_UP()
-
-DIV_ROUND_CLOSEST() I'd say, but I have a seperate patch for that.
-
-> > +       if (priv->flags & ID_P_FMPLUS) {
->=20
-> IIUIC, on R-ar Gen3 and later you can use ICCCR2 without FM+, for
-> improved accuracy, too?
-
-Yeah, we could do that. It indeed improves accuracy:
-
-	old		new
-100kHz:	97680/100000	99950/100000
-400kHz: 373482/400000	399201/400000
-
-Caring about regressions here is a bit over the top, or?
-
-> > +               /*
-> > +                * SMD should be smaller than SCLD and SCHD, we arbitra=
-rily set
-> > +                * the ratio 1:3. SCHD:SCLD ratio is 1:1, thus:
-> > +                * SCL  =3D clkp / (8 + SMD * 2 + SCLD + SCHD + F[(ticf=
- + tr + intd) * clkp])
-> > +                * SCL  =3D clkp / (8 + SMD * 2 + SMD * 3 + SMD * 3 + F=
-[...])
-> > +                * SCL  =3D clkp / (8 + SMD * 8 + F[...])
-> > +                */
-> > +               smd =3D DIV_ROUND_UP(ick / t.bus_freq_hz - 8 - round, 8=
-);
->=20
-> Perhaps use rate instead of ick?
-
-That's probably cleaner.
-
-> DIV_ROUND_UP(ick, 8 * (t.bus_freq_hz - 8 - round));
-
-This looks like you assumed "ick / (t.bus_freq_hz - 8 - round)" but it
-is "(ick / t.bus_freq_hz) - 8 - round"?
-
-> > +               scl =3D ick / (8 + 8 * smd + round);
->=20
-> DIV_ROUND_UP()?
-
-Okay.
-
-> > +               if (smd > 0xff) {
-> > +                       dev_err(dev, "it is impossible to calculate bes=
-t SCL\n");
-> > +                       return -EINVAL;
->=20
-> Perhaps some "goto error", to share with the error handling for non-FM+?
-
-I will check with the refactored code.
-
-> > -       dev_dbg(dev, "clk %d/%d(%lu), round %u, CDF:0x%x, SCGD: 0x%x\n",
-> > -               scl, t.bus_freq_hz, rate, round, cdf, scgd);
-> > +               dev_dbg(dev, "clk %d/%d(%lu), round %u, SMD:0x%x, SCHD:=
- 0x%x\n",
->=20
-> %u/%u
->=20
-> Perhaps it makes more sense to print SMD and SCHD in decimal?
->=20
-> This also applies to the existing code (CDF/SCGD) you moved into
-> the else branch.
-
-Can do. I don't care it is debug output.
-
-> > +               if (scgd =3D=3D 0x40) {
-> > +                       dev_err(dev, "it is impossible to calculate bes=
-t SCL\n");
-> > +                       return -EINVAL;
->=20
-> This was -EIO before.
-
-I'll squash this into a seperate cleanup patch I have.
-
-Thanks,
-
-   Wolfram
+   In file included from include/linux/node.h:18,
+                    from include/linux/cpu.h:17,
+                    from include/linux/cpufreq.h:12,
+                    from drivers/cpufreq/amd-pstate.c:30:
+>> include/linux/device.h:198:33: warning: 'dev_attr_hw_prefcore' defined but not used [-Wunused-variable]
+     198 |         struct device_attribute dev_attr_##_name = __ATTR_RO(_name)
+         |                                 ^~~~~~~~~
+   drivers/cpufreq/amd-pstate.c:1131:8: note: in expansion of macro 'DEVICE_ATTR_RO'
+    1131 | static DEVICE_ATTR_RO(hw_prefcore);
+         |        ^~~~~~~~~~~~~~
 
 
---T7IJSgVMdsFtcOK6
-Content-Type: application/pgp-signature; name="signature.asc"
+vim +/dev_attr_hw_prefcore +198 include/linux/device.h
 
------BEGIN PGP SIGNATURE-----
+ca22e56debc57b4 Kay Sievers        2011-12-14  123  
+ca22e56debc57b4 Kay Sievers        2011-12-14  124  ssize_t device_show_ulong(struct device *dev, struct device_attribute *attr,
+ca22e56debc57b4 Kay Sievers        2011-12-14  125  			  char *buf);
+ca22e56debc57b4 Kay Sievers        2011-12-14  126  ssize_t device_store_ulong(struct device *dev, struct device_attribute *attr,
+ca22e56debc57b4 Kay Sievers        2011-12-14  127  			   const char *buf, size_t count);
+ca22e56debc57b4 Kay Sievers        2011-12-14  128  ssize_t device_show_int(struct device *dev, struct device_attribute *attr,
+ca22e56debc57b4 Kay Sievers        2011-12-14  129  			char *buf);
+ca22e56debc57b4 Kay Sievers        2011-12-14  130  ssize_t device_store_int(struct device *dev, struct device_attribute *attr,
+ca22e56debc57b4 Kay Sievers        2011-12-14  131  			 const char *buf, size_t count);
+91872392f08486f Borislav Petkov    2012-10-09  132  ssize_t device_show_bool(struct device *dev, struct device_attribute *attr,
+91872392f08486f Borislav Petkov    2012-10-09  133  			char *buf);
+91872392f08486f Borislav Petkov    2012-10-09  134  ssize_t device_store_bool(struct device *dev, struct device_attribute *attr,
+91872392f08486f Borislav Petkov    2012-10-09  135  			 const char *buf, size_t count);
+ca22e56debc57b4 Kay Sievers        2011-12-14  136  
+cd00bc2ca42705b James Seo          2023-05-08  137  /**
+cd00bc2ca42705b James Seo          2023-05-08  138   * DEVICE_ATTR - Define a device attribute.
+cd00bc2ca42705b James Seo          2023-05-08  139   * @_name: Attribute name.
+cd00bc2ca42705b James Seo          2023-05-08  140   * @_mode: File mode.
+cd00bc2ca42705b James Seo          2023-05-08  141   * @_show: Show handler. Optional, but mandatory if attribute is readable.
+cd00bc2ca42705b James Seo          2023-05-08  142   * @_store: Store handler. Optional, but mandatory if attribute is writable.
+cd00bc2ca42705b James Seo          2023-05-08  143   *
+cd00bc2ca42705b James Seo          2023-05-08  144   * Convenience macro for defining a struct device_attribute.
+cd00bc2ca42705b James Seo          2023-05-08  145   *
+cd00bc2ca42705b James Seo          2023-05-08  146   * For example, ``DEVICE_ATTR(foo, 0644, foo_show, foo_store);`` expands to:
+cd00bc2ca42705b James Seo          2023-05-08  147   *
+cd00bc2ca42705b James Seo          2023-05-08  148   * .. code-block:: c
+cd00bc2ca42705b James Seo          2023-05-08  149   *
+cd00bc2ca42705b James Seo          2023-05-08  150   *	struct device_attribute dev_attr_foo = {
+cd00bc2ca42705b James Seo          2023-05-08  151   *		.attr	= { .name = "foo", .mode = 0644 },
+cd00bc2ca42705b James Seo          2023-05-08  152   *		.show	= foo_show,
+cd00bc2ca42705b James Seo          2023-05-08  153   *		.store	= foo_store,
+cd00bc2ca42705b James Seo          2023-05-08  154   *	};
+cd00bc2ca42705b James Seo          2023-05-08  155   */
+a7fd67062efc5b0 Kay Sievers        2005-10-01  156  #define DEVICE_ATTR(_name, _mode, _show, _store) \
+a7fd67062efc5b0 Kay Sievers        2005-10-01  157  	struct device_attribute dev_attr_##_name = __ATTR(_name, _mode, _show, _store)
+cd00bc2ca42705b James Seo          2023-05-08  158  
+cd00bc2ca42705b James Seo          2023-05-08  159  /**
+cd00bc2ca42705b James Seo          2023-05-08  160   * DEVICE_ATTR_PREALLOC - Define a preallocated device attribute.
+cd00bc2ca42705b James Seo          2023-05-08  161   * @_name: Attribute name.
+cd00bc2ca42705b James Seo          2023-05-08  162   * @_mode: File mode.
+cd00bc2ca42705b James Seo          2023-05-08  163   * @_show: Show handler. Optional, but mandatory if attribute is readable.
+cd00bc2ca42705b James Seo          2023-05-08  164   * @_store: Store handler. Optional, but mandatory if attribute is writable.
+cd00bc2ca42705b James Seo          2023-05-08  165   *
+cd00bc2ca42705b James Seo          2023-05-08  166   * Like DEVICE_ATTR(), but ``SYSFS_PREALLOC`` is set on @_mode.
+cd00bc2ca42705b James Seo          2023-05-08  167   */
+7fda9100bb8258b Christophe Leroy   2017-12-18  168  #define DEVICE_ATTR_PREALLOC(_name, _mode, _show, _store) \
+7fda9100bb8258b Christophe Leroy   2017-12-18  169  	struct device_attribute dev_attr_##_name = \
+7fda9100bb8258b Christophe Leroy   2017-12-18  170  		__ATTR_PREALLOC(_name, _mode, _show, _store)
+cd00bc2ca42705b James Seo          2023-05-08  171  
+cd00bc2ca42705b James Seo          2023-05-08  172  /**
+cd00bc2ca42705b James Seo          2023-05-08  173   * DEVICE_ATTR_RW - Define a read-write device attribute.
+cd00bc2ca42705b James Seo          2023-05-08  174   * @_name: Attribute name.
+cd00bc2ca42705b James Seo          2023-05-08  175   *
+cd00bc2ca42705b James Seo          2023-05-08  176   * Like DEVICE_ATTR(), but @_mode is 0644, @_show is <_name>_show,
+cd00bc2ca42705b James Seo          2023-05-08  177   * and @_store is <_name>_store.
+cd00bc2ca42705b James Seo          2023-05-08  178   */
+ced321bf9151535 Greg Kroah-Hartman 2013-07-14  179  #define DEVICE_ATTR_RW(_name) \
+ced321bf9151535 Greg Kroah-Hartman 2013-07-14  180  	struct device_attribute dev_attr_##_name = __ATTR_RW(_name)
+cd00bc2ca42705b James Seo          2023-05-08  181  
+cd00bc2ca42705b James Seo          2023-05-08  182  /**
+cd00bc2ca42705b James Seo          2023-05-08  183   * DEVICE_ATTR_ADMIN_RW - Define an admin-only read-write device attribute.
+cd00bc2ca42705b James Seo          2023-05-08  184   * @_name: Attribute name.
+cd00bc2ca42705b James Seo          2023-05-08  185   *
+cd00bc2ca42705b James Seo          2023-05-08  186   * Like DEVICE_ATTR_RW(), but @_mode is 0600.
+cd00bc2ca42705b James Seo          2023-05-08  187   */
+3022c6a1b4b76c4 Dan Williams       2020-06-25  188  #define DEVICE_ATTR_ADMIN_RW(_name) \
+3022c6a1b4b76c4 Dan Williams       2020-06-25  189  	struct device_attribute dev_attr_##_name = __ATTR_RW_MODE(_name, 0600)
+cd00bc2ca42705b James Seo          2023-05-08  190  
+cd00bc2ca42705b James Seo          2023-05-08  191  /**
+cd00bc2ca42705b James Seo          2023-05-08  192   * DEVICE_ATTR_RO - Define a readable device attribute.
+cd00bc2ca42705b James Seo          2023-05-08  193   * @_name: Attribute name.
+cd00bc2ca42705b James Seo          2023-05-08  194   *
+cd00bc2ca42705b James Seo          2023-05-08  195   * Like DEVICE_ATTR(), but @_mode is 0444 and @_show is <_name>_show.
+cd00bc2ca42705b James Seo          2023-05-08  196   */
+ced321bf9151535 Greg Kroah-Hartman 2013-07-14  197  #define DEVICE_ATTR_RO(_name) \
+ced321bf9151535 Greg Kroah-Hartman 2013-07-14 @198  	struct device_attribute dev_attr_##_name = __ATTR_RO(_name)
+cd00bc2ca42705b James Seo          2023-05-08  199  
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmT4bFAACgkQFA3kzBSg
-KbZv3A//X40G/mXBVIsm9A1xDul1E9P+P8XuhKQwaefee1bYOvOQVv1r+a+LayVq
-nV2zSyH4l5Ec4oXubwPO2+hdgxYLpZRl4aejjtaUrTlRvEHLb/xCI7Hn3OQ1G/yc
-G5CFBP3Etnhk7y9uNo7Et/3Oy5X2AlwDRR9c01WPw/BY9GobnY3x09A6YTm5TtT2
-jBBx9TPFGmwhulGt1JXBFBEifPJfOvjR34yAubRAulwTGdbOVvufvULZIIJrXlku
-Y/hOQZbklOLu/M6/3Te6/pZYg2BzFcUM8S/g5uDYx2dC1RvOrlLnlcZb0L5WrhsM
-10lnU1qwYDQqNTdwChuXepMsg90UpFLCwzrcH8nayLzaaCHjYmv/oV9ft1rpxZxj
-14v8/BgO9zCWhe9hBAdcVPH+npHs6yAD/fyUmsppbsN6WVP+NCd8apKpUAhuPdVY
-5oVfW02a8jkw9WLo2tjzqhRNFHG2JiRXRdd4Ej+OH1DcdV9ytEURiw8ztmAothfG
-GoGH8CjZjn2xHNTvPEY4A+3kbAgVe9a/pB3vXpIRjf0DYr8OSI5mUvx/oZwTk4qw
-VBVeLFihA3TuOwMU0PtoLw9ioDmzfaETOLqrpJL0Pij82WtAz20i45D4lDZ/Jcgi
-vGeCWVbZeLwOzivXDFQYZ1GPpxSDUqdwPRHTCurQPv8GFm9AKFI=
-=iUx3
------END PGP SIGNATURE-----
-
---T7IJSgVMdsFtcOK6--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
