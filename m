@@ -2,84 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F44779449B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3608A79449F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240634AbjIFUhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 16:37:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59830 "EHLO
+        id S244185AbjIFUhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 16:37:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbjIFUh3 (ORCPT
+        with ESMTP id S244552AbjIFUhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 16:37:29 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E4655E9
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 13:37:25 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 96EAB106F;
-        Wed,  6 Sep 2023 13:38:03 -0700 (PDT)
-Received: from [10.57.5.192] (unknown [10.57.5.192])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DCC9F3F67D;
-        Wed,  6 Sep 2023 13:37:23 -0700 (PDT)
-Message-ID: <9e48fb7c-72a5-241a-004a-5f6791a81475@arm.com>
-Date:   Wed, 6 Sep 2023 21:37:18 +0100
+        Wed, 6 Sep 2023 16:37:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8B81BE3;
+        Wed,  6 Sep 2023 13:37:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 752DEC433C7;
+        Wed,  6 Sep 2023 20:37:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694032660;
+        bh=WNCTFefz3CcpzqKSotqoAygswWbEwTNxu8p3XslG08E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Omou1izHD182NcmjOiMK/LG3FaV5ctirRXTFyaBG16tE7r5v1ka/Mo9Q/79wcsjbj
+         SE1oESgM34xqU2afWZz8xc7kw49cHLzrs3/12QDfPg9UOPCtGVjYv/ARz1dUEb5Dl6
+         DUJbVp3yD2RR78ZfNfo2JTSt2rhMrePIrZ+9Bd3k=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 6.5.2
+Date:   Wed,  6 Sep 2023 21:37:35 +0100
+Message-ID: <2023090636-powwow-racism-2b6e@gregkh>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: snd-cmipci oops during probe on arm64 (current mainline,
- pre-6.6-rc1)
-Content-Language: en-GB
-To:     Geraldo Nascimento <geraldogabriel@gmail.com>,
-        Antonio Terceiro <antonio.terceiro@linaro.org>
-Cc:     Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <ZPelHaX/Lt++kkOm@linaro.org> <877cp3esse.wl-tiwai@suse.de>
- <4f335dd2-8043-c60e-cf84-c2b01c4fee12@arm.com> <ZPjGuCdmPgqznc5t@linaro.org>
- <ZPjM7op/B/CGCF/N@geday>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <ZPjM7op/B/CGCF/N@geday>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-06 20:03, Geraldo Nascimento wrote:
-> On Wed, Sep 06, 2023 at 03:36:40PM -0300, Antonio Terceiro wrote:
->> On Wed, Sep 06, 2023 at 01:49:16PM +0100, Robin Murphy wrote:
->>> On 2023-09-06 07:10, Takashi Iwai wrote:
->>>> On Wed, 06 Sep 2023 00:01:01 +0200,
->>>> Antonio Terceiro wrote:
->>>>>
->>>>> Hi,
->>>>>
-> 
-> Hi Antonio, my 2 cents:
-> 
->>>>> I'm using an arm64 workstation, and wanted to add a sound card to it. I bought
->>>>> one who was pretty popular around where I live, and it is supported by the
->>>>> snd-cmipci driver.
-> 
-> Specifically, which arm64 workstation? I'm guessing Compute Module 4 IO
-> Board + Raspbery Pi CM4? This detail is important because the stack
-> trace you provided only references generic PCI calls and there's a need
-> to know exactly which PCIe driver could be failing. Is it pcie-brcmstb?
+I'm announcing the release of the 6.5.2 kernel.
 
-Bit bigger than a Pi... ;)
+All users of the 6.5 kernel series must upgrade.
 
- > [  +0,006259] Hardware name: ADLINK AVA Developer Platform/AVA 
-Developer Platform, BIOS TianoCore 2.04.100.07 (SYS: 2.06.20220308) 
-09/08/2022
+The updated 6.5.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-6.5.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-They look like pretty nice boxes - https://www.ipi.wiki/pages/com-hpc-altra
+thanks,
 
+greg k-h
 
-Robin.
+------------
+
+ Documentation/devicetree/bindings/serial/nxp,sc16is7xx.txt |   46 +++++++++++++
+ Makefile                                                   |    2 
+ arch/arm/mach-pxa/sharpsl_pm.c                             |    2 
+ arch/arm/mach-pxa/spitz.c                                  |   14 ---
+ arch/mips/alchemy/devboards/db1000.c                       |    8 --
+ arch/mips/alchemy/devboards/db1200.c                       |   19 -----
+ arch/mips/alchemy/devboards/db1300.c                       |   10 --
+ drivers/firmware/stratix10-svc.c                           |    2 
+ drivers/fsi/fsi-master-ast-cf.c                            |    1 
+ drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c                     |    4 -
+ drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c                     |    4 -
+ drivers/hid/wacom.h                                        |    1 
+ drivers/hid/wacom_sys.c                                    |   25 +++++--
+ drivers/hid/wacom_wac.c                                    |    1 
+ drivers/hid/wacom_wac.h                                    |    1 
+ drivers/mmc/host/Kconfig                                   |    5 -
+ drivers/net/ethernet/freescale/enetc/enetc_ptp.c           |    2 
+ drivers/net/wireless/ath/ath11k/dp_tx.c                    |   10 +-
+ drivers/net/wireless/mediatek/mt76/mt76_connac_mac.c       |    7 +
+ drivers/net/wireless/mediatek/mt76/mt7921/main.c           |    2 
+ drivers/net/wireless/realtek/rtw88/usb.c                   |    5 +
+ drivers/pinctrl/pinctrl-amd.c                              |    4 -
+ drivers/rtc/rtc-ds1685.c                                   |    2 
+ drivers/staging/rtl8712/os_intfs.c                         |    1 
+ drivers/staging/rtl8712/usb_intf.c                         |    1 
+ drivers/tty/serial/qcom_geni_serial.c                      |    5 +
+ drivers/tty/serial/sc16is7xx.c                             |   17 ++++
+ drivers/usb/chipidea/ci_hdrc_imx.c                         |   10 +-
+ drivers/usb/chipidea/usbmisc_imx.c                         |    6 +
+ drivers/usb/dwc3/dwc3-meson-g12a.c                         |    6 +
+ drivers/usb/serial/option.c                                |    7 +
+ drivers/usb/typec/tcpm/tcpci.c                             |    4 +
+ drivers/usb/typec/tcpm/tcpm.c                              |    7 +
+ fs/erofs/zdata.c                                           |    2 
+ fs/nilfs2/alloc.c                                          |    3 
+ fs/nilfs2/inode.c                                          |    7 +
+ fs/smb/server/auth.c                                       |    3 
+ fs/smb/server/oplock.c                                     |    2 
+ fs/smb/server/smb2pdu.c                                    |    2 
+ fs/smb/server/smb2pdu.h                                    |    2 
+ fs/smb/server/transport_rdma.c                             |   25 +++++--
+ include/linux/usb/tcpci.h                                  |    1 
+ kernel/module/main.c                                       |   14 +++
+ kernel/trace/trace.c                                       |    4 -
+ sound/usb/stream.c                                         |   11 ++-
+ 45 files changed, 219 insertions(+), 98 deletions(-)
+
+Aaron Armstrong Skomra (1):
+      HID: wacom: remove the battery when the EKR is off
+
+Arnd Bergmann (1):
+      ARM: pxa: remove use of symbol_get()
+
+Badhri Jagan Sridharan (1):
+      tcpm: Avoid soft reset when partner does not support get_status
+
+Brian Foster (1):
+      tracing: Zero the pipe cpumask on alloc to avoid spurious -EBUSY
+
+Christoph Hellwig (4):
+      mmc: au1xmmc: force non-modular build and remove symbol_get usage
+      net: enetc: use EXPORT_SYMBOL_GPL for enetc_phc_index
+      rtc: ds1685: use EXPORT_SYMBOL_GPL for ds1685_rtc_poweroff
+      modules: only allow symbol_get of EXPORT_SYMBOL_GPL modules
+
+Deren Wu (2):
+      wifi: mt76: mt7921: do not support one stream on secondary antenna only
+      wifi: mt76: mt7921: fix skb leak by txs missing in AMSDU
+
+Gao Xiang (1):
+      erofs: ensure that the post-EOF tails are all zeroed
+
+Greg Kroah-Hartman (1):
+      Linux 6.5.2
+
+Hugo Villeneuve (3):
+      serial: sc16is7xx: fix broken port 0 uart init
+      serial: sc16is7xx: fix bug when first setting GPIO direction
+      dt-bindings: sc16is7xx: Add property to change GPIO function
+
+Johan Hovold (1):
+      serial: qcom-geni: fix opp vote on shutdown
+
+Juerg Haefliger (1):
+      fsi: master-ast-cf: Add MODULE_FIRMWARE macro
+
+Lang Yu (1):
+      drm/amdgpu: correct vmhub index in GMC v10/11
+
+Luke Lu (1):
+      usb: dwc3: meson-g12a: do post init to fix broken usb after resumption
+
+Marco Felsch (1):
+      usb: typec: tcpci: clear the fault status bit
+
+Mario Limonciello (1):
+      pinctrl: amd: Don't show `Invalid config param` errors
+
+Martin Kohn (1):
+      USB: serial: option: add Quectel EM05G variant (0x030e)
+
+Nam Cao (1):
+      staging: rtl8712: fix race condition
+
+Namjae Jeon (4):
+      ksmbd: fix wrong DataOffset validation of create context
+      ksmbd: fix slub overflow in ksmbd_decode_ntlmssp_auth_blob()
+      ksmbd: replace one-element array with flex-array member in struct smb2_ea_info
+      ksmbd: reduce descriptor size if remaining bytes is less than request size
+
+Ryusuke Konishi (1):
+      nilfs2: fix WARNING in mark_buffer_dirty due to discarded buffer reuse
+
+Sascha Hauer (1):
+      wifi: rtw88: usb: kill and free rx urbs on probe failure
+
+Slark Xiao (1):
+      USB: serial: option: add FOXCONN T99W368/T99W373 product
+
+Sven Eckelmann (2):
+      wifi: ath11k: Don't drop tx_status when peer cannot be found
+      wifi: ath11k: Cleanup mac80211 references on failure during tx_complete
+
+Takashi Iwai (1):
+      ALSA: usb-audio: Fix init call orders for UAC1
+
+Wang Ming (1):
+      firmware: stratix10-svc: Fix an NULL vs IS_ERR() bug in probe
+
+Xu Yang (1):
+      usb: chipidea: imx: improve logic if samsung,picophy-* parameter is 0
+
