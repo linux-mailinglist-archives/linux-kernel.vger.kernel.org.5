@@ -2,202 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A45D979419F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AA97941A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233544AbjIFQm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 12:42:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33804 "EHLO
+        id S237591AbjIFQnS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Sep 2023 12:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232341AbjIFQmx (ORCPT
+        with ESMTP id S232341AbjIFQnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 12:42:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3C61738
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 09:42:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694018568; x=1725554568;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=Bd+eR1D8MJ14EOAkMNWnmTSrj7/rtOLUPkFcbu+nGIk=;
-  b=WvEp4jdoDJrahonbrmYkyp1cok4BxFwPErpufe/i2f7oemL+GPhSXbwS
-   ZoEamt09ss2SuCX1/vUsfXdDxFHkBWFNw+AiDxDDPW+7xBFDQWvUlHtly
-   i7qwUVUa/vGg04t+IDHQCOpqGWC8bUWlDq4n0wCy/0/efH9VKYswCuLH8
-   PYhcbYDFGRVljDlBQA/WNYnyG0/ejxqf1/wJEPDdflCr2HBrv+xgs3g4K
-   I0xjlc+j2Q3/T4bLc6VxARqr9UzPoyObSJGqWjiOYKw/9PX5Z+qTIis2X
-   MkokvsyEEjB9DkNWeuOtBMZTzqcLEThH3WPvBiLrzkhOOWlGLVDYl9XdI
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="380916553"
-X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
-   d="scan'208";a="380916553"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 09:42:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="770835198"
-X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
-   d="scan'208";a="770835198"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Sep 2023 09:42:47 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 6 Sep 2023 09:42:46 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Wed, 6 Sep 2023 09:42:46 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.176)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Wed, 6 Sep 2023 09:42:46 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nOztwVmbBtZKvh6N9Jny71CyKqkRTRUCovelDiRQkESfaklZUq9ToALQvSLqvX7tGiZ7HCdZNycMX4WCqzIETQJiSeJs7nhz8ssHZLCJTLMn+QZMvQUU6xh+kzQ3HX43fgkKkiC2OJC12MHrv/4Y6bvi5SFp0c2BY134KOHjJ5Ktn4FQY0k9JFlV7rxLOHMA4NgUeFFim1OMizMapjlUmZnncydMHmS0cACyXm3SLcGYlRLkMSNii2JBhu6umTPJiM+RLubZBoGuJW/vMno7LScwo8Kz7cc/MnF7DFcXYEQ77oj//3ZWIRPyldG7mpM1XO6lrog/eUnxBlmLwiVnHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OmqXDNQ7XkHp6MZXnHUOvCRHI8TTIVQzSM7sz3xYHbY=;
- b=F0j85sdLIR8Nm7J9Of8rgHLegZvhIPOgnMddBoh7nTfxN65opFzV6SfWHtu0pQBjlAyIWVgxSKcTQQq/0NollsD1ofH/eAapyula4WhbAWa8xhS2LWAZHaWywuoLN3EP4sx6CB2616BTJG4hF5UVKOVqMZG+bXU1ZVGgjjO1ubjFA1wRUehZ31/VvN6tt4WLnGJAO/8oba7gUyEgc7Z8eIz4bDHgtay/3fAaDnqFhbIefHGGilovrCNkyg0CpIFoly+1BXmcoBqWwfTSIpdTx+w49m8nMRx7OfDuooKH1qzWzFmfNpNsrujA+kDmJOzCkhnK56HA8S5S5ScTbb6jDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6059.namprd11.prod.outlook.com (2603:10b6:208:377::9)
- by SJ0PR11MB8294.namprd11.prod.outlook.com (2603:10b6:a03:478::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Wed, 6 Sep
- 2023 16:42:44 +0000
-Received: from MN0PR11MB6059.namprd11.prod.outlook.com
- ([fe80::7f94:b6c4:1ce2:294]) by MN0PR11MB6059.namprd11.prod.outlook.com
- ([fe80::7f94:b6c4:1ce2:294%5]) with mapi id 15.20.6745.034; Wed, 6 Sep 2023
- 16:42:44 +0000
-Date:   Wed, 6 Sep 2023 12:42:35 -0400
-From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
-To:     Andi Shyti <andi.shyti@linux.intel.com>
-CC:     Jim Cromie <jim.cromie@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
-        <intel-gvt-dev@lists.freedesktop.org>,
-        <intel-gfx@lists.freedesktop.org>, <daniel.vetter@ffwll.ch>,
-        <daniel@ffwll.ch>, <jani.nikula@intel.com>,
-        <ville.syrjala@linux.intel.com>, <seanpaul@chromium.org>,
-        <robdclark@gmail.com>, Jani Nikula <jani.nikula@linux.intel.com>,
-        "Joonas Lahtinen" <joonas.lahtinen@linux.intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Imre Deak <imre.deak@intel.com>,
-        Radhakrishna Sripada <radhakrishna.sripada@intel.com>,
-        Mika Kahola <mika.kahola@intel.com>,
-        =?iso-8859-1?Q?Jos=E9?= Roberto de Souza 
-        <jose.souza@intel.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        "Andrzej Hajda" <andrzej.hajda@intel.com>,
-        Matthew Auld <matthew.auld@intel.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Fei Yang <fei.yang@intel.com>
-Subject: Re: [PATCH v2 3/6] drm_dbg: add trailing newlines to msgs
-Message-ID: <ZPir+7VYXcKv117q@intel.com>
-References: <20230903184607.272198-1-jim.cromie@gmail.com>
- <20230903184607.272198-4-jim.cromie@gmail.com>
- <ZPV6CMBlDWriMyva@ashyti-mobl2.lan>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZPV6CMBlDWriMyva@ashyti-mobl2.lan>
-X-ClientProxiedBy: SJ0PR03CA0011.namprd03.prod.outlook.com
- (2603:10b6:a03:33a::16) To MN0PR11MB6059.namprd11.prod.outlook.com
- (2603:10b6:208:377::9)
+        Wed, 6 Sep 2023 12:43:17 -0400
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A537A1997;
+        Wed,  6 Sep 2023 09:43:11 -0700 (PDT)
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-792726d3aeeso166957139f.0;
+        Wed, 06 Sep 2023 09:43:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694018591; x=1694623391;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Fdur3Nxp4iSAbsNGs5pw1u0030rGBz45vpHxbt7j4e4=;
+        b=OgOTXeYS/VG52N6PjgrFTm4GkuJc0gabPiRj8bml/povWOdD18QrV0NXCGJ9ZBHJRd
+         1CcPgasuP9xqzeuAr+2xJZpf2n+VLTs8Ph0hvi8CKqJe+OoyTy9IRIVXwp/i6r4+TrgP
+         k3WG59kMm2NkvR0cGtMl26WdqvGcj51B0agb7nNQM3y26Nc+geJRtb038f9lWUTb2zZb
+         ntctYqK/ZL3+MAfU2NlsQGmStFGImxQjDiBFo6tajprSr632JPnzAI9Y0YoCA3VoEupA
+         W5iFHVgDLZ8FoqUV/TDvmQJmmm3rwBV0+Lx4tN8a4BKz+hmfDx5lVgPjocp+969jfMxC
+         5/dQ==
+X-Gm-Message-State: AOJu0YwJ0Ci6pi7ldPQbWzhiIna62/LoOVMGGqs2eaSeZLsJrt2ygVJ4
+        UK0UpUA4p8IXoVS2xWf5jyUGYrQzX9oY2iOOKB3UjVRM
+X-Google-Smtp-Source: AGHT+IFhzDjwp3J8vlD5TE9XH+TAex8H9QyLYVERxjjZ52pDp1nEDotMOcRPrjS8YLqKgte3ag8nNlPxYqGg5QbHKV8=
+X-Received: by 2002:a6b:6f11:0:b0:787:4f3c:730d with SMTP id
+ k17-20020a6b6f11000000b007874f3c730dmr19442163ioc.18.1694018590698; Wed, 06
+ Sep 2023 09:43:10 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6059:EE_|SJ0PR11MB8294:EE_
-X-MS-Office365-Filtering-Correlation-Id: 342f2e74-1d49-48da-7f93-08dbaef84b31
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wsb34ZNaIpz75bglQoLj1j6vUUmeW+TScoeEKDh1HF097g656MdFYsFkw1IPLtg6nPCTchT8aCBDQob6eiNPsQZLj56J+pOQTXyem/bo2fOOAlFmRYUW4kC+dR0QSnvX4EV40UGoJf4NuRz4yvk6wopcRVFUOHiEOYNLZrOBaiyIl2xNT5CBCdsJaNYmOD0EsNAhhD6X7jR96wFYoJWSN5MroLevaQyi3SKzp8T/isiLK1epvFcntd8YNBUROUZziMUogWAb+VJZR0yQpOHWa9onoOWBsRkKSx+X+0fzoZtNiVbkXRD6Gu4oS3DSxyBv12m2RxlQiEyvaE0nAv6LhlQ2vVs9GeIKB9HXhJjZin5hNyII7sL3suRCRzaZY5Nvy0eyEEzk9zAoqddxhXdS+smJ28WO3Pc/EuHm4NCPAhzB6XNv/9g8SHip/mWXRmOGd25x38s9SRvtN8GTUU1GGgmyq1A5Biv/Y2ZDejsNhXyqXAAVH29mu95r2GmAk5Z/mVY77UfGDzpDL1YP9htg1ljmUZHsS09xay0uZpfj+gLAl6zTYYo8kHRYts0NCBQmkiSGVC3hp5Z25Sp3iYIT4QgijbOpBLUPQHueEynDx48=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6059.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(396003)(376002)(39860400002)(451199024)(186009)(1800799009)(26005)(2906002)(83380400001)(8936002)(8676002)(6512007)(2616005)(6486002)(6506007)(7416002)(36756003)(86362001)(82960400001)(38100700002)(44832011)(478600001)(5660300002)(6666004)(966005)(4326008)(316002)(6916009)(66946007)(66476007)(66556008)(54906003)(41300700001)(67856001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6feADvTnj6kmk3/BwpavmgIGUaDg4VtPiS9Sfj3hTgOFE4Csyqdd8rfD1HQC?=
- =?us-ascii?Q?EQCaEI0ALtDa8Vr4z+HzrFub1p61XC2zJKtK9RyOYJF4SWVrBpndCgril+CH?=
- =?us-ascii?Q?oHJyZdra3acfKQNAsXrZiQnUGJufKw/P+2+1lie3s2J692aj7b4b/XpqCsVG?=
- =?us-ascii?Q?cQXOYHeh9PEQB/XxtK8Z7fkZv0IZd3ywnmp1CsUn+af3RbU1A3X+h0eo19Nz?=
- =?us-ascii?Q?b1QYk9rwJBy6k0TY2LLHuXF0Cmawjvw0epyYmb6JMGT3DgyGdwo2TmM5OhTX?=
- =?us-ascii?Q?Xx/XmX6mcKGs3lWktCqJYwNqVcLhMRjkAJQtziqp8WFmGsf+B/oDmY9Cp8MK?=
- =?us-ascii?Q?Nd6Kspg9j3A3i8NxIs9WrkrqbO7qBZ9S4Gfm/a3MwxLFQfoz8obWi3yq4Bvt?=
- =?us-ascii?Q?QxjkVgTP1DFWBrgD0xhCgS9sI8lhlHHZu38XKuARh6/HMvRStTiXYoQ538BP?=
- =?us-ascii?Q?zTlPG1GzScHu3/+FdhHW0Uxnh8Di4oK8bKQ95wgrAXh5HX+fVRLoZcd1RkML?=
- =?us-ascii?Q?3xJ/v12pJ7jyHFMkpRgts/ag5D5PHeaSSI34SBW/ujLZah+Bo9DAZ6RzT2AA?=
- =?us-ascii?Q?I1ZY+l8SSvNdtqqny0n0ykqULeKWZfHIimjhndrQXqs9RZWSJ8Zt+3FzyEio?=
- =?us-ascii?Q?Kb3ANA6VfN2RYtPR0wFk6Kxv70BXWtakLNCuTDzy8MHqqRni6LcX3TCXZweW?=
- =?us-ascii?Q?KAFMYSpIZ78Ev2tTPgseLgKkAr1SngI/wARfoXw2l8kYLUWmRX0Lkhw6rOCq?=
- =?us-ascii?Q?fNotFMv7DsRm9wvCFfn/lYq9SREw3JXikpVE/YXBDRLHQBGgrq7gSdG2aGoP?=
- =?us-ascii?Q?7AqrFt8NWhgr+zaFxRn8V/O5Zcb4ShvJ+1kxdjJ1gHowSZ4Qa5ra3zLozzab?=
- =?us-ascii?Q?sKjzqQ1TuIUGws+ge9Nz3nHfEfLmUAP2LAt0iCcy22jBJ3Oh2LwiaDfZHim0?=
- =?us-ascii?Q?jDkp+MYMvH6dV2Pkkd/QurQtC4JNSpxMI0PqC6tAi3w+HpAD1Qmsrvvwliwn?=
- =?us-ascii?Q?NlcVLxR8zTx2VdwVV+pSLoi8F1RPYjfbtGxUU6b7NX9ktlRtnkbximI5EyCT?=
- =?us-ascii?Q?HQq9A5YK8HtgVAaZ+HGWw2ke5M/Kk+ELagLL5e92d4ScEXD1hJNCY2iRE0IK?=
- =?us-ascii?Q?JP0P4TKU5bfeXiyo7QVNArAO6pUq8BralwuKY849VWhujzC4VeqcZfrYOX2M?=
- =?us-ascii?Q?PqhsG4efKSY1vbK/8ue+9bBBgr+dxGTmWGZlUW/+GnCn/M8zRvtHCn8kB6EC?=
- =?us-ascii?Q?GGiwrZKWIcdqMone0foGFDY/mYwI6JCMs3Z7YFz1jUd3I2pbrhPftx6+mAv6?=
- =?us-ascii?Q?w7ys9njArcNlA6aZTaKub8yS07sPnynJeef2eZqAPWGLUn4iVydF+TgY0IId?=
- =?us-ascii?Q?4A0Syk6eBrdVJvfVm4vq9dYd8adVYdCEYLKuyDwaE9yaDreCx+GkTVjWV4lK?=
- =?us-ascii?Q?cI6FsZKOAAqKQHOjy/ja+1xW2Jgv+2M2AafWT0OWnZ54FrkksyYC8wpeNpJG?=
- =?us-ascii?Q?he5wBIZADiezIwmjjCVSF7q5bZ3RFuPa/3Sui7xIOEodBKr2Aye7MPgP1lPx?=
- =?us-ascii?Q?txDlO5/uMYrjRnZlrUB1HOCl85eRb36OiesMD7MEf0nucwh3CODwTjUlTg/8?=
- =?us-ascii?Q?Kg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 342f2e74-1d49-48da-7f93-08dbaef84b31
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6059.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 16:42:44.3200
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VkeZ/gf8WZWL8g89X6My1qvmTLrQojCqbKhP1XtHPB4YhjysNZTRZyzfEn/kUoYQl1XJNrxIeLE87Cf0l1fjkw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB8294
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230830230126.260508-1-namhyung@kernel.org> <20230830230126.260508-2-namhyung@kernel.org>
+ <ZPic6Fegc7PGSvmp@kernel.org> <ZPidlwe2yXEDZB+U@kernel.org>
+In-Reply-To: <ZPidlwe2yXEDZB+U@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 6 Sep 2023 09:42:59 -0700
+Message-ID: <CAM9d7citcFGPiupaJamb3ujdvZUjzuXkVQ_0iTJzpfEjsu71pw@mail.gmail.com>
+Subject: Re: [PATCH 1/5] perf tools: Add read_all_cgroups() and __cgroup_find()
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 08:32:40AM +0200, Andi Shyti wrote:
-> Hi Jim,
-> 
-> On Sun, Sep 03, 2023 at 12:46:00PM -0600, Jim Cromie wrote:
-> > By at least strong convention, a print-buffer's trailing newline says
-> > "message complete, send it".  The exception (no TNL, followed by a call
-> > to pr_cont) proves the general rule.
-> > 
-> > Most DRM.debug calls already comport with this: 207 DRM_DEV_DEBUG,
-> > 1288 drm_dbg.  Clean up the remainders, in maintainer sized chunks.
-> > 
-> > No functional changes.
-> > 
-> > Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
-> 
-> Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com> 
+Hi Arnaldo,
 
-I pushed this i915 one to our drm-intel-next.
-While doing it I have changed the subject to make it clear
-this is 'drm/i915:'.
+On Wed, Sep 6, 2023 at 8:41 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+>
+> Em Wed, Sep 06, 2023 at 12:38:17PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Wed, Aug 30, 2023 at 04:01:22PM -0700, Namhyung Kim escreveu:
+> > > The read_all_cgroups() is to build a tree of cgroups in the system and
+> > > users can look up a cgroup using __cgroup_find().
+> >
+> > ⬢[acme@toolbox perf-tools-next]$ alias m='make -k BUILD_BPF_SKEL=1 CORESIGHT=1 O=/tmp/build/perf-tools-next -C tools/perf install-bin && git status && perf test python'
+> > ⬢[acme@toolbox perf-tools-next]$ m
+> > make: Entering directory '/var/home/acme/git/perf-tools-next/tools/perf'
+> >   BUILD:   Doing 'make -j32' parallel build
+> > Warning: Kernel ABI header differences:
+> >   diff -u tools/include/uapi/linux/perf_event.h include/uapi/linux/perf_event.h
+> >   diff -u tools/arch/x86/include/asm/cpufeatures.h arch/x86/include/asm/cpufeatures.h
+> >   diff -u tools/arch/x86/include/asm/msr-index.h arch/x86/include/asm/msr-index.h
+> >   diff -u tools/arch/arm64/include/uapi/asm/perf_regs.h arch/arm64/include/uapi/asm/perf_regs.h
+> >
+> >   INSTALL libsubcmd_headers
+> >   INSTALL libperf_headers
+> >   INSTALL libapi_headers
+> >   INSTALL libsymbol_headers
+> >   INSTALL libbpf_headers
+> >   CC      /tmp/build/perf-tools-next/builtin-lock.o
+> >   CC      /tmp/build/perf-tools-next/util/bpf_lock_contention.o
+> > builtin-lock.c: In function ‘__cmd_contention’:
+> > builtin-lock.c:2162:9: error: too few arguments to function ‘lock_contention_finish’
+> >  2162 |         lock_contention_finish();
+> >       |         ^~~~~~~~~~~~~~~~~~~~~~
+> > In file included from builtin-lock.c:14:
+> > util/lock-contention.h:156:5: note: declared here
+> >   156 | int lock_contention_finish(struct lock_contention *con);
+> >       |     ^~~~~~~~~~~~~~~~~~~~~~
+> > make[3]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:97: /tmp/build/perf-tools-next/builtin-lock.o] Error 1
+> > make[3]: *** Waiting for unfinished jobs....
+> > util/bpf_lock_contention.c: In function ‘lock_contention_get_name’:
+> > util/bpf_lock_contention.c:231:34: error: ‘struct contention_key’ has no member named ‘lock_addr_or_cgroup’
+> >   231 |                 u64 cgrp_id = key->lock_addr_or_cgroup;
+> >       |                                  ^~
+> > make[4]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:97: /tmp/build/perf-tools-next/util/bpf_lock_contention.o] Error 1
+> > make[3]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:150: util] Error 2
+> > make[2]: *** [Makefile.perf:662: /tmp/build/perf-tools-next/perf-in.o] Error 2
+> > make[1]: *** [Makefile.perf:238: sub-make] Error 2
+> > make: *** [Makefile:113: install-bin] Error 2
+> > make: Leaving directory '/var/home/acme/git/perf-tools-next/tools/perf'
+> > ⬢[acme@toolbox perf-tools-next]$
+> >
+> > Trying to figure this out.
+>
+> So it works on the following patch:
+>
+> ⬢[acme@toolbox perf-tools-next]$ git log --oneline -5
+> 94a54d498ae35c66 (HEAD) perf lock contention: Add -g/--lock-cgroup option
+> defe88978441a00d perf lock contention: Prepare to handle cgroups
+> cc0717270d2f0daa perf cgroup: Add read_all_cgroups() and __cgroup_find()
+> 752d73a1dd62cd4a perf shell completion: Support completion of metrics/metricgroups
+> 72aa5816258bf9fe perf completion: Support completion of libpfm4 events
+> ⬢[acme@toolbox perf-tools-next]$
+>
+> Please check and submit a v2.
 
-I believe you should do similar change to all the other patches
-to make it clear in the subject about which domain that commit
-is touching... instead of only 'drm_dbg'.
+Thanks for the report, I'll fix it.
 
-i.e.: 183670347b06 ("drm/i915: add trailing newlines to msgs")
-https://cgit.freedesktop.org/drm-intel/commit/?h=drm-intel-next&id=183670347b060521920a81f84ff7f10e227ebe05
-
-Thanks for the patch,
-Rodrigo.
-
-> 
-> Andi
+Thanks,
+Namhyung
