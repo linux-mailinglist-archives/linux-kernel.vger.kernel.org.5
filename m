@@ -2,119 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BB7793F43
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A975B793F6C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241896AbjIFOrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:47:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
+        id S235263AbjIFOsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237665AbjIFOra (ORCPT
+        with ESMTP id S241982AbjIFOsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:47:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4441733;
-        Wed,  6 Sep 2023 07:47:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694011641; x=1725547641;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+wfY4dLBSqJqYH1eCxjcFAXhA4C/3J/082gICwAh3j0=;
-  b=ghK7etziZqPENMCNQvwzCS7ygAOgdueW+tE38+Ww6ksvDkA4qr5BpEhc
-   OBu9qxG4lVgsYl31tAU5j2fEv/Qee3UXEUmX8EWFfEP34EhmmC9nrzCwS
-   kjTCf+ROOrc2zkByGx49ivz5NWiJaRe0BCoOFyv+5IucD4JiB9neSQS5t
-   PP9X5LLbDbV+31IlXGNwfSPZrZkkGNx0cHQuQBIkkDulGRC9YsK2ut3ux
-   d/lcyKoQBsLWYLh/87LCdCHBzIcNROzqv1Rm5+KnfsS35y75hp1u7k21g
-   1qg/kJ1IQlF5ZGvjrJLV+/QzC0aYoxQ/ZWySObnynBJm8WaO9hvblY8z9
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="408088687"
-X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
-   d="scan'208";a="408088687"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 07:47:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="856460670"
-X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
-   d="scan'208";a="856460670"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 07:47:04 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qdto5-006y0f-0Q;
-        Wed, 06 Sep 2023 17:47:01 +0300
-Date:   Wed, 6 Sep 2023 17:47:00 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Dipen Patel <dipenp@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
-        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFT PATCH 14/21] hte: tegra194: don't access struct gpio_chip
-Message-ID: <ZPiQ5AvmjCiudnWK@smile.fi.intel.com>
-References: <20230905185309.131295-1-brgl@bgdev.pl>
- <20230905185309.131295-15-brgl@bgdev.pl>
+        Wed, 6 Sep 2023 10:48:43 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF9E1986
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:48:34 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9a9d6b98845so83790966b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 07:48:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694011712; x=1694616512; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VM31Omv2VF1wbkMub+dDYlOZRCfHD1+o+lV3RVrjZoc=;
+        b=GGBWcBMmyAVjbwKOSqmOjtk9iNRrcS11SzgeeIT6wBqAckCOBB+oyF0oU0hwkMDqXT
+         lFfKEmWF0aOI/DccPx927CzmcY5r6Ph2Sn2CgZacCi/f3Na0hYoWnQCP43Dh4unxSWPZ
+         ZvXqzeSq2lgyCUwYIAa/C5BBwC+JOpgXnW9v0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694011712; x=1694616512;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VM31Omv2VF1wbkMub+dDYlOZRCfHD1+o+lV3RVrjZoc=;
+        b=HsO7+PA4ElAPoocrYplBLiKcT6jr9r1kIh3hdECZ3IlJaXeSJb/DRbG+QeOz73F9Yp
+         6Z702iXltQQCZOcYNk/qG87AFepGgSuMjE7gYcR9Z/+CkrYfKiBdHoqLJBuXYlzKm3wm
+         aJV9MOwKlmqGKqJsYa2u8LkMmFkVCIt35G7fj3LdsCHS1w6iY60WKLKF7x942y0KoJ7o
+         KfsFhXQMYdYt1sYF6oukucucNvRLTpEIdYi61lFT5IvbGidZ9H2hrGEEhOfDq01V4/ab
+         4QPk6/GMjvTikYMj/qd7TAOzXsonPCgUUaFEwBDrXeexju9HiHpsx0hn0PHrCvr0Pu0L
+         6C2g==
+X-Gm-Message-State: AOJu0YxMw+Qlc4Vve+lxJyX4Lxse1bDjKrv8hu/frPRb9yc2DMFrdD7E
+        b7tCPM/83wXFXq6g1t1NPRiPWckpRwBuBbdMyfE+4A==
+X-Google-Smtp-Source: AGHT+IHNMWaasVkgp44pFNPVHkyJontSd/vvGQZX5Wxd2x9pX7I8Zx1MV/UPgxQHR/mIRxbiRhQ5295jv/BnGFJcWSk=
+X-Received: by 2002:a17:906:9754:b0:9a5:9b93:d60d with SMTP id
+ o20-20020a170906975400b009a59b93d60dmr3084119ejy.36.1694011712458; Wed, 06
+ Sep 2023 07:48:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905185309.131295-15-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230829191812.135759-1-sjg@chromium.org> <20230829191812.135759-4-sjg@chromium.org>
+ <CAL_JsqLFX9PpMcJBv2yZXRpQyQ-h1DrGyApE0+AAYN2LCCj7Kg@mail.gmail.com> <CAMWxwJ13-itCyyKaH21nncaX2OUesGwpfMNHocvDEKHzZ1_F4Q@mail.gmail.com>
+In-Reply-To: <CAMWxwJ13-itCyyKaH21nncaX2OUesGwpfMNHocvDEKHzZ1_F4Q@mail.gmail.com>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Wed, 6 Sep 2023 08:48:16 -0600
+Message-ID: <CAPnjgZ2NacjTmMB4fUL+ttAmMvn+3oJS8fA+Lu94zgMOt4rKCw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] memory: Add ECC property
+To:     Lean Sheng Tan <sheng.tan@9elements.com>
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        Dhaval Sharma <dhaval@rivosinc.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Gua Guo <gua.guo@intel.com>, Tom Rini <trini@konsulko.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        ron minnich <rminnich@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Maximilian Brune <maximilian.brune@9elements.com>,
+        Chiu Chasel <chasel.chiu@intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Yunhui Cui <cuiyunhui@bytedance.com>,
+        linux-acpi@vger.kernel.org, Guo Dong <guo.dong@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 08:53:02PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Using struct gpio_chip is not safe as it will disappear if the
-> underlying driver is unbound for any reason. Switch to using reference
-> counted struct gpio_device and its dedicated accessors.
+Hi Sheng,
 
-...
+On Wed, 6 Sept 2023 at 08:47, Lean Sheng Tan <sheng.tan@9elements.com> wrot=
+e:
+>
+> Hi Rob,
+> Sorry for missing this:
+> regarding your question on whether if the memory can support both single-=
+bit and multi-bit ECC, i think the answer is yes.
+> @Dong, Guo or @Chiu, Chasel could you help to confirm on this?
 
-> +	struct gpio_device *gdev __free(gpio_device_put) = NULL;
+I sent a v5 series which breaks these out into separate properties.
 
-Using this requires cleanup.h to be included.
-Does any of the included GPIO headers guarantee that inclusion implicitly?
-Even though, it's a good practice to include headers of what we are using
-independently if other (library) headers include them. I.o.w. we can rely
-only on our headers (here HTE framework related) to guarantee any inclusions
-implicitly.
+Regards,
+Simon
 
-This also applies to other users of the same construct.
-
-...
-
->  static int tegra_gpiochip_match(struct gpio_chip *chip, void *data)
->  {
->  	return chip->fwnode == of_node_to_fwnode(data);
->  }
-
-Not sure how many users of this kind of match, but it might be useful to have
-it by GPIO library
-
-	gpio_device_find_by_fwnode()
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+>
+> Thanks.
+>
+> Best Regards,
+> Lean Sheng Tan
+>
+>
+>
+> 9elements GmbH, Kortumstra=C3=9Fe 19-21, 44787 Bochum, Germany
+> Email: sheng.tan@9elements.com
+> Phone: +49 234 68 94 188
+> Mobile: +49 176 76 113842
+>
+> Registered office: Bochum
+> Commercial register: Amtsgericht Bochum, HRB 17519
+> Management: Sebastian German, Eray Bazaar
+>
+> Data protection information according to Art. 13 GDPR
+>
+>
+> On Tue, 29 Aug 2023 at 23:38, Rob Herring <robh@kernel.org> wrote:
+>>
+>> On Tue, Aug 29, 2023 at 2:18=E2=80=AFPM Simon Glass <sjg@chromium.org> w=
+rote:
+>> >
+>> > Some memories provides ECC correction. For software which wants to che=
+ck
+>> > memory, it is helpful to see which regions provide this feature.
+>> >
+>> > Add this as a property of the /memory nodes, since it presumably follo=
+ws
+>> > the hardware-level memory system.
+>> >
+>> > Signed-off-by: Simon Glass <sjg@chromium.org>
+>> > ---
+>> >
+>> > (no changes since v3)
+>> >
+>> > Changes in v3:
+>> > - Add new patch to update the /memory nodes
+>> >
+>> >  dtschema/schemas/memory.yaml | 9 ++++++++-
+>> >  1 file changed, 8 insertions(+), 1 deletion(-)
+>> >
+>> > diff --git a/dtschema/schemas/memory.yaml b/dtschema/schemas/memory.ya=
+ml
+>> > index 1d74410..981af04 100644
+>> > --- a/dtschema/schemas/memory.yaml
+>> > +++ b/dtschema/schemas/memory.yaml
+>> > @@ -34,7 +34,14 @@ patternProperties:
+>> >          description:
+>> >            For the purpose of identification, each NUMA node is associ=
+ated with
+>> >            a unique token known as a node id.
+>> > -
+>> > +      attr:
+>>
+>> Kind of vague.
+>>
+>> > +        $ref: /schemas/types.yaml#/definitions/string-array
+>> > +        description: |
+>> > +          Attributes possessed by this memory region:
+>> > +
+>> > +            "single-bit-ecc" - supports single-bit ECC
+>> > +            "multi-bit-ecc" - supports multiple-bit ECC
+>>
+>> "supports" means corrects or reports? Most h/w supports both, but only
+>> reports multi-bit errors.
+>>
+>> > +            "no-ecc" - non-ECC memory
+>>
+>> Don't define values in free form text.
+>>
+>> This form is difficult to validate especially when non-ECC related
+>> attr's are added to the mix as we can't really define which
+>> combinations are valid. For example how do we prevent:
+>>
+>> attr =3D "single-bit-ecc", "multi-bit-ecc";
+>>
+>> Or maybe that's valid? If so, how would we express that?
+>>
+>> Why do we need "no-ecc"? Is that the same as no "attr" property?
+>>
+>> I think it's better if we have 'ecc-type' or something? Or generally,
+>> a property per class/type of attribute.
+>>
+>> Rob
