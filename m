@@ -2,307 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DF679385D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035FC79385A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237342AbjIFJeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 05:34:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
+        id S237217AbjIFJeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 05:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237336AbjIFJdu (ORCPT
+        with ESMTP id S237277AbjIFJdt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 05:33:50 -0400
-Received: from out-218.mta1.migadu.com (out-218.mta1.migadu.com [IPv6:2001:41d0:203:375::da])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F1C6198A
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 02:33:02 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693992780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cDuMH40hxOK+JtqDBTqduPq+D+6jIzzbwpv0RQE2wqg=;
-        b=wBcThs4+axMpjTkBicZ5G1oORkyq7IWMsLyQgrvgpaFJjGXezo0DECGsL4H3b+iICGGNBM
-        A5CfCYjk+h9ncW2htg4Bc4Bbp/OcVEKtR4iUHkMIArcYotn3/NBh2hr4DlOGkqaGFwOhKB
-        mIDhxwp2rCB6tSz4tY2Jnmw4jpzZgCs=
-Mime-Version: 1.0
-Subject: Re: [External] [PATCH v2 09/11] hugetlb: batch PMD split for bulk
- vmemmap dedup
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <2e942706-5772-0a93-bab3-902644c578e7@oracle.com>
-Date:   Wed, 6 Sep 2023 17:32:15 +0800
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <D58A4D84-A397-4283-BB24-D31A27809DF3@linux.dev>
-References: <20230905214412.89152-1-mike.kravetz@oracle.com>
- <20230905214412.89152-10-mike.kravetz@oracle.com>
- <0b0609d8-bc87-0463-bafd-9613f0053039@linux.dev>
- <CAMZfGtU2HX4UR1T2HW75xY70ZMSOdzNZ2py=EggoBYqP_1+QFg@mail.gmail.com>
- <2e942706-5772-0a93-bab3-902644c578e7@oracle.com>
-To:     Joao Martins <joao.m.martins@oracle.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Sep 2023 05:33:49 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767B71985;
+        Wed,  6 Sep 2023 02:32:53 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-79536bc6697so119821039f.1;
+        Wed, 06 Sep 2023 02:32:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693992772; x=1694597572; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mupUPPSzcJJRakpj7WwBk32eQdNzGLMXaNaR5uYzp8A=;
+        b=Dzy44+sOzdbwhd4QcnIg0YHTHu55rWSzdCZOeeKK+defqfmBN75i+pU8rq4c/4tOet
+         A+UqVIiF8etQOehGHwSbnEIam161FLezBcOqJpw5VamgqKQlHjty7CSxwhPlbd4m6n2W
+         hd0kvsvzRDGk4/oyxKVedLIp40c0hu4PN0CNvSdjtLH8TMkyHze9liTQzkMIvG0peDeU
+         x0QUJDpA6QOwr6JL0g+MBMdCxtSlzKNDSDgcaacVGQKNV9If7myzLCRdCr0CQZl4gEyN
+         9ct51igsu5VfiAVKRV2Xo9ao7ToMnYf4B/8bm9nDMuzj3nVqpmESg3e3L9hcsjyk3G/F
+         Ow4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693992772; x=1694597572;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mupUPPSzcJJRakpj7WwBk32eQdNzGLMXaNaR5uYzp8A=;
+        b=Lc9YzqzJDnTeL0cLWKrfJyI5nlLmW6GypI7UFX1PuZbMXLNjzXUOWXsJbu5eS6CGzs
+         Txm9DxPjUtusp9wUBgVBVNisunpGT8SNOo7dzAbtsuxYEKwOsbj2dWP0Qq4w5GC4uQ+f
+         XjyYcQFlqbSoJ8j8tgFSnJx7g5UF63O4NTJgvCYrvDsrtxAimwjNV0pbRIW9iYKAcOga
+         qwawfHO8RWR4vLoDlho7m9U+qocPVgxoNm6Iqt/FHYDCpisdFyTieKNrnrHbSpA9G54q
+         TqQMT/YE5fQVpY051kVstm3osE1VigiWStf686/IR5OrVL94jdouUS1pUiZbEnnYaIT6
+         OWaQ==
+X-Gm-Message-State: AOJu0YyRvyyosPw3A7rgLogBxL5Ae3PVav1YJ+dp1xzzzNsftq5vHecU
+        yUZm7uRCShHBNjSNhvopsDSypxZGprI=
+X-Google-Smtp-Source: AGHT+IE/SxiZTAwA6/WLLQiLQA7rDnQp1XnmilfdxbosDcDYc7XRyk31gS9W2/PZj8txrfKloPKY3Q==
+X-Received: by 2002:a5e:db07:0:b0:784:314f:8d68 with SMTP id q7-20020a5edb07000000b00784314f8d68mr16922177iop.1.1693992772074;
+        Wed, 06 Sep 2023 02:32:52 -0700 (PDT)
+Received: from aford-B741.lan ([2601:447:d001:897f:b68d:99e6:78c9:f0e6])
+        by smtp.gmail.com with ESMTPSA id s10-20020a02cf2a000000b0042b320c13aasm4792732jar.89.2023.09.06.02.32.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 02:32:50 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-omap@vger.kernel.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] bus: ti-sysc: Fix missing AM35xx SoC matching
+Date:   Wed,  6 Sep 2023 04:32:44 -0500
+Message-Id: <20230906093244.99292-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit feaa8baee82a ("bus: ti-sysc: Implement SoC revision handling")
+created a list of SoC types searching for strings based on names
+and wildcards which associates the SoC to different families.
 
+The OMAP34xx and OMAP35xx are treated as SOC_3430 while
+OMAP36xx and OMAP37xx are treated as SOC_3630, but the AM35xx
+isn't listed.
 
-> On Sep 6, 2023, at 17:26, Joao Martins <joao.m.martins@oracle.com> =
-wrote:
->=20
->=20
->=20
-> On 06/09/2023 10:11, Muchun Song wrote:
->> On Wed, Sep 6, 2023 at 4:25=E2=80=AFPM Muchun Song =
-<muchun.song@linux.dev> wrote:
->>>=20
->>>=20
->>>=20
->>> On 2023/9/6 05:44, Mike Kravetz wrote:
->>>> From: Joao Martins <joao.m.martins@oracle.com>
->>>>=20
->>>> In an effort to minimize amount of TLB flushes, batch all PMD =
-splits
->>>> belonging to a range of pages in order to perform only 1 (global) =
-TLB
->>>> flush.
->>>>=20
->>>> Rebased and updated by Mike Kravetz
->>>>=20
->>>> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
->>>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
->>>> ---
->>>>  mm/hugetlb_vmemmap.c | 72 =
-+++++++++++++++++++++++++++++++++++++++++---
->>>>  1 file changed, 68 insertions(+), 4 deletions(-)
->>>>=20
->>>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
->>>> index a715712df831..d956551699bc 100644
->>>> --- a/mm/hugetlb_vmemmap.c
->>>> +++ b/mm/hugetlb_vmemmap.c
->>>> @@ -37,7 +37,7 @@ struct vmemmap_remap_walk {
->>>>      struct list_head        *vmemmap_pages;
->>>>  };
->>>>=20
->>>> -static int split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long start)
->>>> +static int split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long start, =
-bool flush)
->>>>  {
->>>>      pmd_t __pmd;
->>>>      int i;
->>>> @@ -80,7 +80,8 @@ static int split_vmemmap_huge_pmd(pmd_t *pmd, =
-unsigned long start)
->>>>              /* Make pte visible before pmd. See comment in =
-pmd_install(). */
->>>>              smp_wmb();
->>>>              pmd_populate_kernel(&init_mm, pmd, pgtable);
->>>> -             flush_tlb_kernel_range(start, start + PMD_SIZE);
->>>> +             if (flush)
->>>> +                     flush_tlb_kernel_range(start, start + =
-PMD_SIZE);
->>>>      } else {
->>>>              pte_free_kernel(&init_mm, pgtable);
->>>>      }
->>>> @@ -127,11 +128,20 @@ static int vmemmap_pmd_range(pud_t *pud, =
-unsigned long addr,
->>>>      do {
->>>>              int ret;
->>>>=20
->>>> -             ret =3D split_vmemmap_huge_pmd(pmd, addr & PMD_MASK);
->>>> +             ret =3D split_vmemmap_huge_pmd(pmd, addr & PMD_MASK,
->>>> +                             walk->remap_pte !=3D NULL);
->>>=20
->>> It is bettter to only make @walk->remap_pte indicate whether we =
-should go
->>> to the last page table level. I suggest reusing VMEMMAP_NO_TLB_FLUSH
->>> to indicate whether we should flush the TLB at pmd level. It'll be =
-more
->>> clear.
->>>=20
->>>>              if (ret)
->>>>                      return ret;
->>>>=20
->>>>              next =3D pmd_addr_end(addr, end);
->>>> +
->>>> +             /*
->>>> +              * We are only splitting, not remapping the hugetlb =
-vmemmap
->>>> +              * pages.
->>>> +              */
->>>> +             if (!walk->remap_pte)
->>>> +                     continue;
->>>> +
->>>>              vmemmap_pte_range(pmd, addr, next, walk);
->>>>      } while (pmd++, addr =3D next, addr !=3D end);
->>>>=20
->>>> @@ -198,7 +208,8 @@ static int vmemmap_remap_range(unsigned long =
-start, unsigned long end,
->>>>                      return ret;
->>>>      } while (pgd++, addr =3D next, addr !=3D end);
->>>>=20
->>>> -     flush_tlb_kernel_range(start, end);
->>>> +     if (walk->remap_pte)
->>>> +             flush_tlb_kernel_range(start, end);
->>>>=20
->>>>      return 0;
->>>>  }
->>>> @@ -297,6 +308,35 @@ static void vmemmap_restore_pte(pte_t *pte, =
-unsigned long addr,
->>>>      set_pte_at(&init_mm, addr, pte, mk_pte(page, pgprot));
->>>>  }
->>>>=20
->>>> +/**
->>>> + * vmemmap_remap_split - split the vmemmap virtual address range =
-[@start, @end)
->>>> + *                      backing PMDs of the directmap into PTEs
->>>> + * @start:     start address of the vmemmap virtual address range =
-that we want
->>>> + *             to remap.
->>>> + * @end:       end address of the vmemmap virtual address range =
-that we want to
->>>> + *             remap.
->>>> + * @reuse:     reuse address.
->>>> + *
->>>> + * Return: %0 on success, negative error code otherwise.
->>>> + */
->>>> +static int vmemmap_remap_split(unsigned long start, unsigned long =
-end,
->>>> +                             unsigned long reuse)
->>>> +{
->>>> +     int ret;
->>>> +     struct vmemmap_remap_walk walk =3D {
->>>> +             .remap_pte      =3D NULL,
->>>> +     };
->>>> +
->>>> +     /* See the comment in the vmemmap_remap_free(). */
->>>> +     BUG_ON(start - reuse !=3D PAGE_SIZE);
->>>> +
->>>> +     mmap_read_lock(&init_mm);
->>>> +     ret =3D vmemmap_remap_range(reuse, end, &walk);
->>>> +     mmap_read_unlock(&init_mm);
->>>> +
->>>> +     return ret;
->>>> +}
->>>> +
->>>>  /**
->>>>   * vmemmap_remap_free - remap the vmemmap virtual address range =
-[@start, @end)
->>>>   *                  to the page which @reuse is mapped to, then =
-free vmemmap
->>>> @@ -602,11 +642,35 @@ void hugetlb_vmemmap_optimize(const struct =
-hstate *h, struct page *head)
->>>>      free_vmemmap_page_list(&vmemmap_pages);
->>>>  }
->>>>=20
->>>> +static void hugetlb_vmemmap_split(const struct hstate *h, struct =
-page *head)
->>>> +{
->>>> +     unsigned long vmemmap_start =3D (unsigned long)head, =
-vmemmap_end;
->>>> +     unsigned long vmemmap_reuse;
->>>> +
->>>> +     if (!vmemmap_should_optimize(h, head))
->>>> +             return;
->>>> +
->>>> +     vmemmap_end     =3D vmemmap_start + hugetlb_vmemmap_size(h);
->>>> +     vmemmap_reuse   =3D vmemmap_start;
->>>> +     vmemmap_start   +=3D HUGETLB_VMEMMAP_RESERVE_SIZE;
->>>> +
->>>> +     /*
->>>> +      * Split PMDs on the vmemmap virtual address range =
-[@vmemmap_start,
->>>> +      * @vmemmap_end]
->>>> +      */
->>>> +     vmemmap_remap_split(vmemmap_start, vmemmap_end, =
-vmemmap_reuse);
->>>> +}
->>>> +
->>>>  void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct =
-list_head *folio_list)
->>>>  {
->>>>      struct folio *folio;
->>>>      LIST_HEAD(vmemmap_pages);
->>>>=20
->>>> +     list_for_each_entry(folio, folio_list, lru)
->>>> +             hugetlb_vmemmap_split(h, &folio->page);
->>>=20
->>> Maybe it is reasonable to add a return value to =
-hugetlb_vmemmap_split()
->>> to indicate whether it has done successfully, if it fails, it must =
-be
->>> OOM, in which case, there is no sense to continue to split the page =
-table
->>> and optimize the vmemmap pages subsequently, right?
->>=20
->> Sorry, it is reasonable to continue to optimize the vmemmap pages
->> subsequently since it should succeed because those vmemmap pages
->> have been split successfully previously.
->>=20
->> Seems we should continue to optimize vmemmap once =
-hugetlb_vmemmap_split()
->> fails, then we will have more memory to continue to split.=20
->=20
-> Good point
->=20
->> But it will
->> make hugetlb_vmemmap_optimize_folios() a little complex. I'd like to
->> hear you guys' opinions here.
->>=20
-> I think it won't add that much complexity if we don't optimize too =
-much of the
-> slowpath (when we are out of memory). In the batch freeing patch we =
-could
-> additionally test the return value of __hugetlb_vmemmap_optimize() for =
-ENOMEM
-> and free the currently stored vmemmap_pages (if any), and keep =
-iterating the
-> optimize loop. Should be simple enough and make this a bit more =
-resilient to
-> that scenario.
+The AM35xx is mostly an OMAP3430, and a later commit a12315d6d270
+("bus: ti-sysc: Make omap3 gpt12 quirk handling SoC specific") looks
+for the SOC type and behaves in a certain way if it's SOC_3430.
 
-Yep, we could try this.
+This caused a regression on the AM3517 causing it to return two
+errors:
 
-> But we would need to keep the earlier check you commented above
-> (where we use @remap_pte to defer PMD flush).
+ ti-sysc: probe of 48318000.target-module failed with error -16
+ ti-sysc: probe of 49032000.target-module failed with error -16
 
-I think 2 flags will suitable for you, one is =
-VMEMMAP_REMAP_NO_TLB_FLUSH,
-another is VMEMMAP_SPLIT_NO_TLB_FLUSH.
+Fix this by treating the AM35xx as a SOC_3430, and the error
+conditions will disappear.
 
-Thanks.
+Fixes: a12315d6d270 ("bus: ti-sysc: Make omap3 gpt12 quirk handling SoC specific")
+Fixes: feaa8baee82a ("bus: ti-sysc: Implement SoC revision handling")
 
->=20
->> Thanks.
->>=20
->>>=20
->>> Thanks.
->>>=20
->>>> +
->>>> +     flush_tlb_all();
->>>> +
->>>>      list_for_each_entry(folio, folio_list, lru)
->>>>              __hugetlb_vmemmap_optimize(h, &folio->page, =
-&vmemmap_pages);
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+index eb4e7bee1e20..5d7779747941 100644
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -3025,6 +3025,7 @@ static void ti_sysc_idle(struct work_struct *work)
+ static const struct soc_device_attribute sysc_soc_match[] = {
+ 	SOC_FLAG("OMAP242*", SOC_2420),
+ 	SOC_FLAG("OMAP243*", SOC_2430),
++	SOC_FLAG("AM35*", SOC_3430),
+ 	SOC_FLAG("OMAP3[45]*", SOC_3430),
+ 	SOC_FLAG("OMAP3[67]*", SOC_3630),
+ 	SOC_FLAG("OMAP443*", SOC_4430),
+-- 
+2.39.2
 
