@@ -2,76 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB04D793DF7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3559B793DFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241234AbjIFNpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 09:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53936 "EHLO
+        id S239718AbjIFNrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 09:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230499AbjIFNpi (ORCPT
+        with ESMTP id S232279AbjIFNrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 09:45:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC3DCF1;
-        Wed,  6 Sep 2023 06:45:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B10F3C433C8;
-        Wed,  6 Sep 2023 13:45:33 +0000 (UTC)
-Date:   Wed, 6 Sep 2023 09:45:53 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Zheng Yejian <zhengyejian1@huawei.com>
-Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Ajay Kaher <akaher@vmware.com>, <shuah@kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Ye Weihua <yeweihua4@huawei.com>
-Subject: Re: [PATCH] selftests/ftrace: Correctly enable event in
- instance-event.tc
-Message-ID: <20230906094553.388cd787@gandalf.local.home>
-In-Reply-To: <20230906094306.67a51feb@gandalf.local.home>
-References: <20230626001144.2635956-1-zhengyejian1@huawei.com>
-        <20230626191114.8c5a66fbaa28af3c303923bd@kernel.org>
-        <20230626191255.53baab4ed48d7111dcd44cad@kernel.org>
-        <20230710183741.78f04c68@gandalf.local.home>
-        <1cb3aee2-19af-c472-e265-05176fe9bd84@huawei.com>
-        <20230905183638.2b539fae@gandalf.local.home>
-        <9cad73cd-1f8b-2f3f-cda4-99b89a87b931@huawei.com>
-        <20230906072759.4e8bee1c@gandalf.local.home>
-        <2667182e-691e-2ab4-4c2d-a47d76f38107@huawei.com>
-        <20230906085621.6e20db28@gandalf.local.home>
-        <20230906090252.36219543@gandalf.local.home>
-        <fcc5d688-9d58-3b4c-58de-472330160142@huawei.com>
-        <20230906094306.67a51feb@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 6 Sep 2023 09:47:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87E2CF1;
+        Wed,  6 Sep 2023 06:47:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694008036; x=1725544036;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=zDFPAPYGX2IZoTeqMbNV/DXZinj8Poy4eWm5AtR/VnU=;
+  b=Xjs8s0VkJanOfenWMR+CwGjZZTnbEYx5a/E8yOACsO02jRa2HhzIo5rT
+   8he5wCfwdFYvAwjC/O3/2pgaaaBkd0FIYUwpBFs5649NZT6TXQy5JowKz
+   1Ny+brNE/2bsk06/jsTglFIr71/YhTOqXBPapavHMhkxzQMJv8iXlmezp
+   GehxQ0mdjYAHshBVn+kyrWjN/TRtJqLe89HtKs4CJZ1BR2eD+lFxCQAvg
+   ejBoj9OEz8Fx6F3yuP7a7doLEzIhAD6qwUY0nB7Iuh8OiFbuA89Sgh/8K
+   6uwx+HD+g7mroo7Emo0WpKeoCVAJ/Kk8kxLecVh6hTCDY+O26YIzeTg31
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="380866183"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="380866183"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 06:47:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="988236819"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="988236819"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 06:47:12 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qdsrw-006xGR-01;
+        Wed, 06 Sep 2023 16:46:56 +0300
+Date:   Wed, 6 Sep 2023 16:46:55 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        platform-driver-x86@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Prashant Malani <pmalani@chromium.org>
+Subject: Re: [PATCH 1/3] platform/x86: intel_scu_ipc: Check status after
+ timeouts in busy_loop()
+Message-ID: <ZPiCz6AaLc4mqGH8@smile.fi.intel.com>
+References: <20230831011405.3246849-1-swboyd@chromium.org>
+ <20230831011405.3246849-2-swboyd@chromium.org>
+ <20230901055011.GT3465@black.fi.intel.com>
+ <CAE-0n50XCw7ugkoTAUfb5Jrr6-Vh=bvXfTOSeHV_ymyOQfRB2g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE-0n50XCw7ugkoTAUfb5Jrr6-Vh=bvXfTOSeHV_ymyOQfRB2g@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Sep 2023 09:43:06 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> > also can be reproduced with the newest:
-> > 65d6e954e378 ("Merge tag 'gfs2-v6.5-rc5-fixes' of 
-> > git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2")
-> > 
-> > And revert commit 27152bceea1d ("eventfs: Move tracing/events to
-> > eventfs"), the issue just seems gone.  
+On Tue, Sep 05, 2023 at 05:27:23PM -0500, Stephen Boyd wrote:
+> Quoting Mika Westerberg (2023-08-31 22:50:11)
+> > On Wed, Aug 30, 2023 at 06:14:01PM -0700, Stephen Boyd wrote:
+> > > It's possible for the polling loop in busy_loop() to get scheduled away
+> > > for a long time.
+> > >
+> > >   status = ipc_read_status(scu);
+> > >   <long time scheduled away>
+> > >   if (!(status & IPC_STATUS_BUSY))
+> >
+> > How can the status bit change here as we are the only user and the SCU
+> > access is serialized by ipclock?
 > 
-> The reason I'm asking is that there could be something added that fixes it.
-> I'm testing Linus's tree at: cbb557ba92f08b945e2cb20b7ab37ef49ab53cdd
+> I don't know how the SCU works. I thought that IPC_STATUS_BUSY bit was
+> cleared by the SCU when it was done processing. With that assumption, I
+> tried to show that the status is read and then the process schedules
+> away for a long time and has an outdated view of the busy bit.
 
-Never mind, I just noticed that your above sha includes this one.
+We probably have different versions of firmwares for the different SoC
+generations. But I _think_ that you are right, the SCU firmware should
+clear the bit when it's done.
 
-Not sure why I can't reproduce this. I'm using qemu as well.
+-- 
+With Best Regards,
+Andy Shevchenko
 
--- Steve
+
