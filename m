@@ -2,182 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E02793321
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 03:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4153A793322
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 03:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238174AbjIFBCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 21:02:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48582 "EHLO
+        id S238640AbjIFBDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 21:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbjIFBCy (ORCPT
+        with ESMTP id S230062AbjIFBDx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 21:02:54 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2081.outbound.protection.outlook.com [40.107.243.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5161A3;
-        Tue,  5 Sep 2023 18:02:51 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zk3VZVhKVyjfN9eqRbK3jyV+UwZY2WeAlYvHPyJeKxJisPF14vsxLm4GuOMH5bTdFSzomLw3tPLJ/hoDcxJj3P0SgcQjSnkVKK9JhqNqwK5z87zjBI4DDjMezOZzWOQaPFQobRNJV9c2bsz5s5+bw5xZyj/7HFhjlZS4ZRBLlYPkmrmCpqO2ME8NO4Ztpb1pN+UYxm29VtZc0HtHiW9EujDLc2gCtYnDLgQBrMvssn4iZp9lRBVif3LpBX1h5SfOLhMqfbw+EecWFpGb5AEBfhWhE3RpYO2O9qxcdYrgox9oBPx91WbixjNBQSozWburQwQ3YDQ8XC4q+zngeBkLUA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+kIpEQM3YHYY0mSzn7nZjQV73WkDD6JAd/Jx3b/2VLo=;
- b=nm5dVOPprtowz65LpyxZ455MX2E11+IyZWiGpSqdkIvaT+yA1iPIDEelW9h+KRmUGetPCwKBMYhKo0zCNpag/zax7BrMbd5ZCq9Ji4REXuRmua/aTdeRlNSLq6Kb/OMpXkKAMe3S2QTOwYdgNWBIkfBHdlm4wXMDAB6GoHR7/DyKyciIjsNuLGuBVifH4ZRklJULtn6HDaA5hMslDiuGQ3bNFFkq2B4+e1wa9bJ2FZV7NorG797/O0ixqzEVDVolFSo+l/JNslMDQ8LBjQsMUSHnhtAe7bgTqlloWbIo/CYEKug4O61q4SYy7FmVfYAlBS6KUr4pfdgs9JI3gO6syg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+kIpEQM3YHYY0mSzn7nZjQV73WkDD6JAd/Jx3b/2VLo=;
- b=3OsGnkdVozyk1hh5A8rJnv4c+rMpA7cxEWQbvTca5FeHDDK8EZMM1shx4G5y23DzrYluZSywAyNoEQpSPJlLaVwTwIk6kxsc8HqmkSFHsWuBsKcowG5J2phJXuIaQddV41PFevvu331tBxo7SUfdAIQzW17fL7+o3G8TZ6bGym8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH0PR12MB7982.namprd12.prod.outlook.com (2603:10b6:510:28d::5)
- by MN0PR12MB5931.namprd12.prod.outlook.com (2603:10b6:208:37e::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Wed, 6 Sep
- 2023 01:02:48 +0000
-Received: from PH0PR12MB7982.namprd12.prod.outlook.com
- ([fe80::ee63:b5d6:340c:63b2]) by PH0PR12MB7982.namprd12.prod.outlook.com
- ([fe80::ee63:b5d6:340c:63b2%5]) with mapi id 15.20.6745.034; Wed, 6 Sep 2023
- 01:02:47 +0000
-Message-ID: <f17a483b-3a75-9268-392b-69340d9121b8@amd.com>
-Date:   Tue, 5 Sep 2023 18:02:45 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] vfio/pds: Limit Calling dev_dbg function to
- CONFIG_PCI_ATS
-Content-Language: en-US
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        oushixiong <oushixiong@kylinos.cn>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Yishai Hadas <yishaih@nvidia.com>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Brett Creeley <brett.creeley@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230905024028.940377-1-oushixiong@kylinos.cn>
- <20230905083119.27cf3c03.alex.williamson@redhat.com>
-From:   Brett Creeley <bcreeley@amd.com>
-In-Reply-To: <20230905083119.27cf3c03.alex.williamson@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PH7PR17CA0001.namprd17.prod.outlook.com
- (2603:10b6:510:324::25) To PH0PR12MB7982.namprd12.prod.outlook.com
- (2603:10b6:510:28d::5)
+        Tue, 5 Sep 2023 21:03:53 -0400
+Received: from mail-pl1-f208.google.com (mail-pl1-f208.google.com [209.85.214.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC5D1A3
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 18:03:49 -0700 (PDT)
+Received: by mail-pl1-f208.google.com with SMTP id d9443c01a7336-1c0888c175fso31339395ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 18:03:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693962229; x=1694567029;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3o4aqefOnfZZp0bGQqmL+DEsPalW2hv9Y52VLM2n/+E=;
+        b=iuPlFdNnJHhLwR9UIPJmm4ZUpGKl8GAMIHPwGONgl3Be0wWNp5QKCwmYbzIe1X5bNq
+         HODM0B+j4yr31RnBpPB4OR14dI2re7grS1eP+V5IMXNV3RlClQOeE6xoGxHZlbjCuFo2
+         pxiBPRscQ8ifRXlrp1VUrAFgFJKYb8zY2ogEYV759ezCAXdNWitLoqqShwrIshm7W0mp
+         olsuVZ2GqSf+7nS8m/Rp5i0TpXgSMNKz2ighYu0He1dENQ8NoY1WJOOLTfTX8yz/AUJe
+         FmAv1xtODRl0Uz1iJyNf7mDrqbTbK7MsUrBj1w2UDsCIUJJY2vGDzXwXNfSl+xvuPnNT
+         kqHA==
+X-Gm-Message-State: AOJu0YyCPrKj5xQP8HlzYhq9gmWZ3z++gTI8/83zX4PGtLsWWASqgdbL
+        atSX6n27AJw6gFoO41Ruq3J4YhTHqJqNADdCN5RWjjlKGOq1
+X-Google-Smtp-Source: AGHT+IFFI9N6cY9cl66efcyaJW5lci61+71otZof8ZgRRCX+mkdAHvpx3mcdAE0ahKvfSX+/+4If/MEvsQ2heW7Ms08DJyVeVR8/
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR12MB7982:EE_|MN0PR12MB5931:EE_
-X-MS-Office365-Filtering-Correlation-Id: c8446fd1-4467-4d46-7f77-08dbae74fc68
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IzcBzHJEVxs+Wi0FN+Jh2oDJWUIc2ckPggpWfvcRwzZhjkwLBDb4rDzFFuaDnvExBP7rLeMutLs3d0xshfIRMh6zyHbRfxocrrlUYOJ7WR2VWKqKz7tFdvvdP6P/aogTucVuNigEqAKjS4gwhJKym7pkXVIL/7SwCZcpyz6rDGn/Gp88DXtfIDowU0wQ0UGbIZO8IyAKcIs48yBlVeCP43YOrExe6FpS6OMTDRO3q2d0FTZPkirkVXFFgFpafI7l/Iu8SLaQ6mqu3Fl7atXbpu/V52M4VAGVAx5hTvjXqEOw2QP2+M3igUyzXTFZWkA68mD7XqDYXIktFaTsPkAlriZ2g4GWqlQGL2K5ut2cjh34u8zxoqvbXDoS7YUxy+GhawIOFe9y9ko9i21k6oQn+MSsfM91dVDhJRVXMEFi/7/asriCOPYUdpUPzc24jKIeJQaZVIXctx1GTXt/r+QlaMpm65gvMa6qKgA49ZqpPz40WQ1nXQ0crdUz3hZe6RzJ7CkPvHMYxh7jyXosuzbSwt/S96rfZNzfKLTBqiZlFRw+OhqlAN9Oru9ZvoGQ0XZUO2yx351ZgJddIjdyelC8etT6JYOKZXavhv6wVh0bPq4DlcgLKvDicoin36zKj8f5URTZCub3GMAsuaFNrxGCXQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB7982.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(39860400002)(346002)(376002)(451199024)(1800799009)(186009)(31686004)(5660300002)(8936002)(110136005)(66476007)(36756003)(54906003)(66556008)(316002)(66946007)(2906002)(4326008)(8676002)(41300700001)(6486002)(6506007)(26005)(6512007)(53546011)(38100700002)(478600001)(83380400001)(2616005)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QnUyaUlJaUdWdzdlZnhteTFra29QNFd1MERZQzBQTEdnaTFJemI2ZGowcjg0?=
- =?utf-8?B?QlhVNUd0MTdCemk1N0J0TUFUb1RZVWdHUzA1Ris2SnRXZ1krZnFWL0lPcVBJ?=
- =?utf-8?B?aTlFVGdiTmdnRWRmUGNKVXpiTy80Q3EvemxpNmdHcVA5TUltaEFVZ2pFcXVi?=
- =?utf-8?B?QkdrV3F6b1ROZ0ZhME1LK0VGRkdWRE9NMXpJQlhtaWVXTW5ZQWRCUTVma0NZ?=
- =?utf-8?B?alVtR2hkQWc1OTNKVWJBNUZmT0x5TmJLY005MkRBMnQzSWh5dTZaaEUrQjVj?=
- =?utf-8?B?dndlY0UyazlHTGxVNi91Wm5qZ0JKVElNVk9oWFRFcHA0ZFV1djVvcVUrM2Nv?=
- =?utf-8?B?eTYzZkZoSU9ObllvRm1EZXV3MHVCOUVlQ0lOUC9ycGtTYUFDTWNVVEhJTE9Y?=
- =?utf-8?B?UlN0eEpyRG00K090MnhxaVBZYzYzUFNUTVJWOGEzUG9kS1pySmRmUEJmU1dv?=
- =?utf-8?B?dElqWXpzOHVkMjFnYWVkZDJjRFcrdG9RQm5zNzZPVUFlMWZxRG9neEZxc2c2?=
- =?utf-8?B?eFB1OGk2c21JcUlTUEp4VmRaZ0FRdWM2NlpmTnZTZEpZMXdHL1RVUEMzRmxi?=
- =?utf-8?B?aU1zY1pLV1FqcW9LVmZWZ3dYbG5qNHlhRUNGcmtVeEZmQXFaRFFSSngxNit1?=
- =?utf-8?B?MjVSL3llYzYwQnVLUUlwbERrRzRwY2Q0L1FPaXVqeXJQWlN4N2FsUmNnSjhM?=
- =?utf-8?B?NCtFSEdpK3VlUHVPU2ExYlVGTlF1NllxVHpOSDlWNUpGeTFPTks3TlJ0QVkw?=
- =?utf-8?B?MUJqSnI0bXFGVG9mYnZubzNPN0dDMzVPak50d1hEeENqV0pONTlpRnlQQ0p2?=
- =?utf-8?B?MUVKZlhJbXdWZE0rekMzcDVKKzdmNDJWdGJoMmNzSktSS1dUQVVMdXIxTVlI?=
- =?utf-8?B?UnlPOTE0OU9oSDN6QXdkT2xwRE8rRnUvZnArZmlSRm1lSllrK1d2bTBmeCtq?=
- =?utf-8?B?VnFSUHZvaXVIUHVDc2dLZTdlWWV4eTFEN2QvT2VoMmVDTXFkOGpsNG5yM2ZZ?=
- =?utf-8?B?aHYxTC9ZbWp4QXNRZ3VON2Jabld0R1ovdHd2MlpVdXFkUFlCN1NQQlBSUEda?=
- =?utf-8?B?RzlTNG4weGxDMnQ2emU5QXJYSFJaN0pvN3hFT1c5bkZmcURHRXU2M01KMmlW?=
- =?utf-8?B?eVB1enFhSWhQN0pucjh0YmxRanpZTHV3MlVLTkNteHNHbnJQZUpyV3B2aXlB?=
- =?utf-8?B?aWFoMGh1cEpheng4eVN2VnIvU1pFTEVJeVk1NmRwMG1SOUh6Z3g5VkhLb1pV?=
- =?utf-8?B?S3BSVzFucDVKWDJHZStxQmVKL0g2bWc3RkEwa1NwTHZoOVlhUm9HQ1dZcmw5?=
- =?utf-8?B?N2ExNmw4aWkxT29DNFdZZC9VRkNCem92blFCeG1wc1RibFJVV2UxQ1A5eXVl?=
- =?utf-8?B?QjhHTElMNDFjemVHWk9XMk4rYS9keEE2Y3F1cm40SDR4Vjg1c0NlL0xpNm9M?=
- =?utf-8?B?SU5MNDNLdkNIYTMxQlJXWXZoNmRTR1Fzc3ZFRW5sNjlaR3lLWDRhaUtsQzU2?=
- =?utf-8?B?dUtXdXg1VnJTNmdiNitxSFQ3UTVBamRHSjlUczVGam91NW5LT3Yvb2FldEUy?=
- =?utf-8?B?RnNqenhucCtHZTVUbVYyNGRlU2pVMGVKaTlyOTVMbEltclRWeU1JRWVTakJU?=
- =?utf-8?B?VWlQQmlKMm1VbnlxZGRDS3M4MWROaitJSEVsbFRjWmFiUk9pK2kxZmdFN21S?=
- =?utf-8?B?Rk9tQ0ZqVlVqU2Z6MysyckhlMGpHRVoxeks1QVdJSVdMeEUwRlVMNHNqYmt5?=
- =?utf-8?B?WDE0a0tLTmVtNXhnQmhwVzlIaTRDSFBLWWJVWHJoTUIvbk5Jd2NhdlFNN2Rz?=
- =?utf-8?B?TDd2UWJpTE5vRWx4cEE2LzJvZmtzKzd1VmVYRTduMHFTN1NNM09HMUFjQzly?=
- =?utf-8?B?K25iLzlBM0RhdnFYQisyaUJZTEEvOW5KSms4blhIeVB2ZjlQbENLZzl1RHpF?=
- =?utf-8?B?eXlTWG1GYXh5SnAwMURzUEc1WGFuVi9SdUhOUkVMVDZlenhkdFloZzlPMkxy?=
- =?utf-8?B?SEtGNzNhQ2loUVhsRFE5RTlEUERCY1JmRHZYbHdNKzc4blhhcEEvd0ZQQzhv?=
- =?utf-8?B?cXJER0R4d0tzWGhkL1V6ZFJuVWJyWTBvNEZSb2UzVWNrc2NiV2JCQVdYZVZt?=
- =?utf-8?Q?fbso1e9t6kiEdaZir6b8lBIkN?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8446fd1-4467-4d46-7f77-08dbae74fc68
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB7982.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 01:02:47.8636
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qspnLiYV6PvRbSSOrOWEcQ+ao22ocA4bIT0SvT1mhFqtK3ZpxyXnSkPIyedQYbtuTFtDbISGBWlP7QD5PZ0nRw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5931
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:903:2452:b0:1b8:a555:7615 with SMTP id
+ l18-20020a170903245200b001b8a5557615mr4991082pls.9.1693962229484; Tue, 05 Sep
+ 2023 18:03:49 -0700 (PDT)
+Date:   Tue, 05 Sep 2023 18:03:49 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f392a60604a65085@google.com>
+Subject: [syzbot] [mm?] kernel BUG in vma_replace_policy
+From:   syzbot <syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/5/2023 7:31 AM, Alex Williamson wrote:
-> Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
-> 
-> 
-> On Tue,  5 Sep 2023 10:40:28 +0800
-> oushixiong <oushixiong@kylinos.cn> wrote:
-> 
->> From: Shixiong Ou <oushixiong@kylinos.cn>
->>
->> If CONFIG_PCI_ATS isn't set, then pdev->physfn is not defined.
->> So it causes a compilation issue:
->>
->> ../drivers/vfio/pci/pds/vfio_dev.c:165:30: error: ‘struct pci_dev’ has no member named ‘physfn’; did you mean ‘is_physfn’?
->>    165 |   __func__, pci_dev_id(pdev->physfn), pci_id, vf_id,
->>        |                              ^~~~~~
->>
->> Signed-off-by: Shixiong Ou <oushixiong@kylinos.cn>
->> ---
->>   drivers/vfio/pci/pds/vfio_dev.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/vfio/pci/pds/vfio_dev.c b/drivers/vfio/pci/pds/vfio_dev.c
->> index b46174f5eb09..18b4a6a5bc16 100644
->> --- a/drivers/vfio/pci/pds/vfio_dev.c
->> +++ b/drivers/vfio/pci/pds/vfio_dev.c
->> @@ -160,10 +160,13 @@ static int pds_vfio_init_device(struct vfio_device *vdev)
->>        vdev->log_ops = &pds_vfio_log_ops;
->>
->>        pci_id = PCI_DEVID(pdev->bus->number, pdev->devfn);
->> +
->> +#ifdef CONFIG_PCI_ATS
->>        dev_dbg(&pdev->dev,
->>                "%s: PF %#04x VF %#04x vf_id %d domain %d pds_vfio %p\n",
->>                __func__, pci_dev_id(pdev->physfn), pci_id, vf_id,
->>                pci_domain_nr(pdev->bus), pds_vfio);
->> +#endif
->>
->>        return 0;
->>   }
-> 
-> AIUI, this whole driver is dependent on SR-IOV functionality, so perhaps
-> this should be gated at Kconfig?  Thanks,
-> 
-> Alex
+Hello,
 
-It seems like depending on SR-IOV functionality makes more sense.
+syzbot found the following issue on:
 
-Thanks,
+HEAD commit:    a47fc304d2b6 Add linux-next specific files for 20230831
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=16502ddba80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6ecd2a74f20953b9
+dashboard link: https://syzkaller.appspot.com/bug?extid=b591856e0f0139f83023
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=120e7d70680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1523f9c0680000
 
-Brett
-> 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b2e8f4217527/disk-a47fc304.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ed6cdcc09339/vmlinux-a47fc304.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/bd9b2475bf5a/bzImage-a47fc304.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com
+
+vma ffff888077381a00 start 0000000020c2a000 end 0000000021000000 mm ffff8880258a8980
+prot 25 anon_vma 0000000000000000 vm_ops 0000000000000000
+pgoff 20c2a file 0000000000000000 private_data 0000000000000000
+flags: 0x8100077(read|write|exec|mayread|maywrite|mayexec|account|softdirty)
+------------[ cut here ]------------
+kernel BUG at include/linux/mm.h:733!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 5040 Comm: syz-executor418 Not tainted 6.5.0-next-20230831-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:vma_assert_write_locked include/linux/mm.h:733 [inline]
+RIP: 0010:vma_assert_write_locked include/linux/mm.h:729 [inline]
+RIP: 0010:vma_replace_policy+0x406/0x4e0 mm/mempolicy.c:783
+Code: ff 48 89 ef e8 db 78 ff ff e9 83 fe ff ff e8 d1 7c ad ff 4c 89 e7 e8 a9 86 eb ff 0f 0b e8 c2 7c ad ff 48 89 df e8 fa 83 eb ff <0f> 0b e8 b3 7c ad ff 41 89 ec e9 58 fe ff ff 48 c7 c7 d0 55 ce 8e
+RSP: 0018:ffffc9000395fc58 EFLAGS: 00010282
+RAX: 000000000000011b RBX: ffff888077381a00 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff816b9a92 RDI: 0000000000000005
+RBP: ffff888014a7e030 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: 0000000000000001 R12: 0000000000000015
+R13: 0000000000000016 R14: 0000000000000001 R15: 0000000021000000
+FS:  0000555556684380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffd277b0020 CR3: 00000000773e1000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ mbind_range+0x37c/0x530 mm/mempolicy.c:855
+ do_mbind+0x583/0xa00 mm/mempolicy.c:1345
+ kernel_mbind+0x1d4/0x1f0 mm/mempolicy.c:1502
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fb959069369
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd276bed98 EFLAGS: 00000246 ORIG_RAX: 00000000000000ed
+RAX: ffffffffffffffda RBX: 00007ffd276bef78 RCX: 00007fb959069369
+RDX: 0000000000000004 RSI: 0000000000c00000 RDI: 0000000020400000
+RBP: 00007fb9590dc610 R08: 0000000000000000 R09: 0000000000000003
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffd276bef68 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:vma_assert_write_locked include/linux/mm.h:733 [inline]
+RIP: 0010:vma_assert_write_locked include/linux/mm.h:729 [inline]
+RIP: 0010:vma_replace_policy+0x406/0x4e0 mm/mempolicy.c:783
+Code: ff 48 89 ef e8 db 78 ff ff e9 83 fe ff ff e8 d1 7c ad ff 4c 89 e7 e8 a9 86 eb ff 0f 0b e8 c2 7c ad ff 48 89 df e8 fa 83 eb ff <0f> 0b e8 b3 7c ad ff 41 89 ec e9 58 fe ff ff 48 c7 c7 d0 55 ce 8e
+RSP: 0018:ffffc9000395fc58 EFLAGS: 00010282
+RAX: 000000000000011b RBX: ffff888077381a00 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff816b9a92 RDI: 0000000000000005
+RBP: ffff888014a7e030 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: 0000000000000001 R12: 0000000000000015
+R13: 0000000000000016 R14: 0000000000000001 R15: 0000000021000000
+FS:  0000555556684380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffd277b0020 CR3: 00000000773e1000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
