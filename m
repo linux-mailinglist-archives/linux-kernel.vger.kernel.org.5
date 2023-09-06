@@ -2,222 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8EA7940F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6063A7940FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242836AbjIFQBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 12:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38554 "EHLO
+        id S242832AbjIFQCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 12:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242810AbjIFQBV (ORCPT
+        with ESMTP id S236680AbjIFQCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 12:01:21 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302271995;
-        Wed,  6 Sep 2023 09:01:06 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1c8e9d75ce1so2286957fac.3;
-        Wed, 06 Sep 2023 09:01:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694016065; x=1694620865; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X6LWx34t6RPAjjhmdGIBM9ahXBcms5DV7AzJj+GPzQA=;
-        b=ONqqDStry78+CyAPJLvKA1iL7NeZkxN1UkezYBEI2EEVSMq2swzic9P11kbUTQDVkU
-         iUJ+/c0IF1em9CScixSwkXmfQEw2ym+r5SYbeF/myaPoc1uc1hSESdbk9VDn0zpN42D4
-         GgX8zMdR/siLRt+mOzJzScvAS8lEs6RVAQUUWJQsfMKVvp3PM1X15+O0/WSKIKIsOwkC
-         PykAg2bQksLbbFJzbnvNvZyCNe0bsPS6BbeFu5rjAvVBIRNG7M/rzLpqsnNmnC8+zt3b
-         +md/A4oxDEQ33/ZNgLA58RNQx37EPG1WX8Cv/Q9sedp8w2Y3yhppuhyYPNZWBcyC+5Be
-         ScKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694016065; x=1694620865;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X6LWx34t6RPAjjhmdGIBM9ahXBcms5DV7AzJj+GPzQA=;
-        b=l2KFVcE5WA1HSF3o+Rx4FcOqH2b7DSUFlmvRH2zabYO9lSx+7Z1MUjjq7pkv/oVvUD
-         aF3RKj7AcDayd9441CeLtYgUK2jd6RplMjgzFsx9muAB9TBwZV7rPikYAQ5rL/4ibwF2
-         vxIVYi0UafG9KmlNnihYUHPbBGsj6LHPVQCUw5eC8DzvXastdb3oWxfklY3sssBqgc7R
-         3+HAx96y7Qh03zNc1AeU5uu5ZxfQRKsYmUjsZrz1P+5qfjI2/5+y/1lvy2a/2QSS4w1D
-         sDtmyFaa/Rsw1xNWBxrsaJss0bV3YTVARlnZ2OjE80cTKdNAK25akyBrJGkV5ebeQ84b
-         Vetg==
-X-Gm-Message-State: AOJu0YyGfwAIZ2JET9xRCTaxDdeJd/hD2Xv6/Fc7ltOiPtIlHkbhkDqH
-        zfMqaQjgcyEaTLcX5xheOJTZTLXrYKAcDrcfZwI=
-X-Google-Smtp-Source: AGHT+IF+5jWUuhtjXrUwCDU2vqm+oD8PcmuCjMCceh985Ms+NPGpiBmtRG8mj/pojUh/Gya7OusMLGeBbVHAX3QI5GA=
-X-Received: by 2002:a05:6870:d79f:b0:1bc:26d:6664 with SMTP id
- bd31-20020a056870d79f00b001bc026d6664mr17177800oab.16.1694016065112; Wed, 06
- Sep 2023 09:01:05 -0700 (PDT)
+        Wed, 6 Sep 2023 12:02:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B2810C7
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 09:01:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694016074;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RGPPbmO08ttjc/gDON/wShpO8XSYQN5IRch5OGh+AgE=;
+        b=Jsi3q2YZto/SM03rLjaA3cVX/v+IxQCfjsZKmEhMNisj7isrE9PDrxe2KT9c0p+FMSOGEr
+        lG/eAJg3xAgP6OuphM+FDp12Plb7DsCYGpioh4R05U4X8BSnE1HtmhBM44DbUoClZAkvtl
+        0apJcCx+CKNOdsxixh7BUi/m+K5TX8w=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-690-yHcjSMTpP_SKHg_hAi5JHA-1; Wed, 06 Sep 2023 12:01:10 -0400
+X-MC-Unique: yHcjSMTpP_SKHg_hAi5JHA-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 30A83183719C;
+        Wed,  6 Sep 2023 16:01:07 +0000 (UTC)
+Received: from file1-rdu.file-001.prod.rdu2.dc.redhat.com (unknown [10.11.5.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 03C07493112;
+        Wed,  6 Sep 2023 16:01:07 +0000 (UTC)
+Received: by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix, from userid 12668)
+        id E3E1330C1C07; Wed,  6 Sep 2023 16:01:06 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix) with ESMTP id DFDA23FD6A;
+        Wed,  6 Sep 2023 18:01:06 +0200 (CEST)
+Date:   Wed, 6 Sep 2023 18:01:06 +0200 (CEST)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+To:     Christian Brauner <brauner@kernel.org>
+cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Zdenek Kabelac <zkabelac@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Jan Kara <jack@suse.cz>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] fix writing to the filesystem after unmount
+In-Reply-To: <20230906-aufheben-hagel-9925501b7822@brauner>
+Message-ID: <60f244be-803b-fa70-665e-b5cba15212e@redhat.com>
+References: <59b54cc3-b98b-aff9-14fc-dc25c61111c6@redhat.com> <20230906-launenhaft-kinder-118ea59706c8@brauner> <f5d63867-5b3e-294b-d1f5-a128817cfc7@redhat.com> <20230906-aufheben-hagel-9925501b7822@brauner>
 MIME-Version: 1.0
-References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
- <20230904195724.633404-4-sui.jingfeng@linux.dev> <d3e6a9ce-1c7a-8e44-3127-413cd471a8e9@amd.com>
- <40f32814-ca87-6e29-0e10-4b4463a2920d@loongson.cn>
-In-Reply-To: <40f32814-ca87-6e29-0e10-4b4463a2920d@loongson.cn>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 6 Sep 2023 12:00:53 -0400
-Message-ID: <CADnq5_OYPha5cGF+tSj4fvSmf-6tObzNSe2__nG-SbjX6v_2vw@mail.gmail.com>
-Subject: Re: [RFC,drm-misc-next v4 3/9] drm/radeon: Implement .be_primary() callback
-To:     suijingfeng <suijingfeng@loongson.cn>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-pci@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 5, 2023 at 1:25=E2=80=AFPM suijingfeng <suijingfeng@loongson.cn=
-> wrote:
->
-> Hi,
->
->
-> On 2023/9/5 13:50, Christian K=C3=B6nig wrote:
-> > Am 04.09.23 um 21:57 schrieb Sui Jingfeng:
-> >> From: Sui Jingfeng <suijingfeng@loongson.cn>
-> >>
-> >> On a machine with multiple GPUs, a Linux user has no control over
-> >> which one
-> >> is primary at boot time.
-> >
-> > Question is why is that useful? Should we give users the ability to
-> > control that?
-> >
-> > I don't see an use case for this.
-> >
->
-> On a specific machine with multiple GPUs mounted, only the
-> primary graphics get POST-ed (initialized) by the firmware.
-> Therefore the DRM drivers for the rest video cards have to
-> work without the prerequisite setups done by firmware, This
-> is called as POST.
 
-I think that should be regarded as a bug in the driver that should be
-fixed and this would not help with that case.  If a driver can't
-initialize a device without aid from the pre-OS environment, that
-should be fixed in the driver.  This solution also doesn't fix which
-device is selected as the primary by the pre-OS environment.  That can
-only be fixed in the pre-OS environment code.
 
->
-> One of the use cases is to test if a specific DRM driver
-> would works properly, under the circumstance of not being
-> POST-ed, The ast drm driver is the first one which refused
-> to work if not being POST-ed by the firmware.
->
-> Before apply this series, I was unable make drm/ast as the
-> primary video card easily. The problem is that on a multiple
-> video card configuration, the monitor connected with my
-> AST2400 card not light up. While confusing, a naive programmer
-> may suspect the PRIME is not working.
->
-> After applied this series and passing ast.modeset=3D10 on the
-> kernel cmd line, I found that the monitor connected with my
-> ast2400 video card still black, It doesn't display and It
-> doesn't show image to me.
+On Wed, 6 Sep 2023, Christian Brauner wrote:
 
-The problem with adding modeset=3D10 is that it only helps when you have
-one GPU driven by that driver in the system.  If you have multiple
-GPUs driven by that driver, which one would that apply to?  E.g., what
-if you have 2 AMD GPUs in the system.
+> > > IOW, you'd also hang on any umount of a bind-mount. IOW, every
+> > > single container making use of this filesystems via bind-mounts would
+> > > hang on umount and shutdown.
+> > 
+> > bind-mount doesn't modify "s->s_writers.frozen", so the patch does nothing 
+> > in this case. I tried unmounting bind-mounts and there was no deadlock.
+> 
+> With your patch what happens if you do the following?
+> 
+> #!/bin/sh -ex
+> modprobe brd rd_size=4194304
+> vgcreate vg /dev/ram0
+> lvcreate -L 16M -n lv vg
+> mkfs.ext4 /dev/vg/lv
+> 
+> mount -t ext4 /dev/vg/lv /mnt/test
+> mount --bind /mnt/test /opt
+> mount --make-private /opt
+> 
+> dmsetup suspend /dev/vg/lv
+> (sleep 1; dmsetup resume /dev/vg/lv) &
+> 
+> umount /opt # I'd expect this to hang
+> 
+> md5sum /dev/vg/lv
+> md5sum /dev/vg/lv
+> dmsetup remove_all
+> rmmod brd
 
->
-> While in the process of study drm/ast, I know that drm/ast
-> driver has the POST code shipped, See the ast_post_gpu() function.
-> Then, I was wondering why this function doesn't works.
->
-> After a short-time (hasty) debugging, I found that the ast_post_gpu()
-> function didn't get run. Because it have something to do with the
-> ast->config_mode. Without thinking too much, I hardcoded the
-> ast->config_mode as ast_use_p2a, the key point is to force the
-> ast_post_gpu() function to run.
->
->
-> ```
->
-> --- a/drivers/gpu/drm/ast/ast_main.c
-> +++ b/drivers/gpu/drm/ast/ast_main.c
-> @@ -132,6 +132,8 @@ static int ast_device_config_init(struct ast_device
-> *ast)
->                  }
->          }
->
-> +       ast->config_mode =3D ast_use_p2a;
-> +
->          switch (ast->config_mode) {
->          case ast_use_defaults:
->                  drm_info(dev, "Using default configuration\n");
->
-> ```
->
-> Then, the monitor light up, it display the Ubuntu greeter to me. Therefor=
-e
-> my patch is useful, at least for the Linux drm driver tester and develope=
-r.
-> It allow programmers to test the specific part of a specific driver witho=
-ut
-> changing a line of the source code and without the need of sudo authority=
-.
->
-> It improves the efficiency of the testing and patch verification. I know
-> the PrimaryGPU option of Xorg conf, but this approach will remember the
-> setup have been made, you need modify it with root authority each time
-> you want to switch the primary. But on the process of rapid developing
-> and/or testing for multiple video drivers, with only one computer hardwar=
-e
-> resource available. What we really want is a one-shot command, as provide=
-d
-> by this series.  So, this is the first use case.
->
->
-> The second use case is that sometime the firmware is not reliable.
-> While there are thousands of ARM64, PowerPC and Mips servers machine,
-> Most of them don't have a good UEFI firmware support. I haven't test the
-> drm/amdgpu and drm/radeon at my ARM64 server yet. Because this ARM64
-> server always use the platform(BMC) integrated display controller as prim=
-ary.
-> The UEFI firmware of it does not provide options menu to tune.
-> So, for the first time, the discrete card because useless, despite more p=
-owerful.
-> I will take time to carry on the testing, so I will be able to tell more
-> in the future.
->
->
-> Even on X86, when select the PEG as primary on the UEFI BIOS menu.
-> There is no way to tell the bios which one of my three
-> discrete video be the primary. Not to mention some old UEFI
-> firmware, which doesn't provide a setting at all.
-> While the benefit of my approach is the flexibility.
-> Yes the i915, amdgpu and radeon are good quality,
-> but there may have programmers want to try nouveau.
->
->
-> The third use case is that VGAARB is also not reliable, It will
-> select a wrong device as primary. Especially on Arm64, Loongarch
-> and mips arch etc. And the X server will use this wrong device
-> as primary and completely crash there. Either because of lacking
-> a driver or the driver has a bug which can not bear the graphic
-> environment up. VGAARB is firmware dependent.
-> My patch provide a temporary method to rescue.
->
+"umount /opt" doesn't hang. It waits one second (until dmsetup resume is 
+called) and then proceeds.
 
-It sounds like we need a general purpose "primary" selector.  I think
-it's sort of orthogonal to VGA.  VGAARB is just for managing VGA
-routing on PCI.  It's not really directly related to which GPU you
-want to be the primary when the OS loads.  Maybe some new kernel
-parameter, E.g., primary_display=3D<string> where the string would be
-the specific device you wanted to be the primary,  E.g., you could use
-the PCI BDF on PCI devices, primary_display=3D0000:0a:00.0 or some other
-device string for non-PCI devices.
+Then, it fails with "rmmod: ERROR: Module brd is in use" because the 
+script didn't unmount /mnt/test.
 
-Alex
+> > BTW. what do you think that unmount of a frozen filesystem should properly 
+> > do? Fail with -EBUSY? Or, unfreeze the filesystem and unmount it? Or 
+> > something else?
+> 
+> In my opinion we should refuse to unmount frozen filesystems and log an
+> error that the filesystem is frozen. Waiting forever isn't a good idea
+> in my opinion.
+
+But lvm may freeze filesystems anytime - so we'd get randomly returned 
+errors then.
+
+> But this is a significant uapi change afaict so this would need to be
+> hidden behind a config option, a sysctl, or it would have to be a new
+> flag to umount2() MNT_UNFROZEN which would allow an administrator to use
+> this flag to not unmount a frozen filesystems.
+
+The kernel currently distinguishes between kernel-initiated freeze (that 
+is used by the XFS scrub) and userspace-initiated freeze (that is used by 
+the FIFREEZE ioctl and by device-mapper initiated freeze through 
+freeze_bdev).
+
+Perhaps we could distinguish between FIFREEZE-initiated freezes and 
+device-mapper initiated freezes as well. And we could change the logic to 
+return -EBUSY if the freeze was initiated by FIFREEZE and to wait for 
+unfreeze if it was initiated by the device-mapper.
+
+Mikulas
+
