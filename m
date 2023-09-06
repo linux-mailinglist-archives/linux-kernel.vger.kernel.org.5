@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 699A7793971
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 611BF79397A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234066AbjIFKEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 06:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43884 "EHLO
+        id S231759AbjIFKGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 06:06:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238455AbjIFKEO (ORCPT
+        with ESMTP id S230188AbjIFKG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 06:04:14 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DD910C6;
-        Wed,  6 Sep 2023 03:04:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4748FC116A4;
-        Wed,  6 Sep 2023 10:04:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693994649;
-        bh=aS1CKaB6IFSQkKTbYW+1TFmWQDgffGuIc55cdYEnypg=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=ZP55AfhYN50EjDrCcB8iW90YByCyC9iI7NvOypziRPiBsL36v4/AH2CIRK5jiBx71
-         FFnu77u00PPBrzOpwW99gzZlzkv0btytdQzqjvyoOQMjpDCaSorBYmJ4sO0dJv58qR
-         2jsxP3XA2cOYiZH/ihFSxL88c11EEngkf3G67jxi/kOsjw6H/q5EzwPVprfDKYmmq6
-         u+i3v4S2PaNE5NWxYG44kOk4AO/h9ykWOIx+gX9L+yO1LkgWLrmIvtAUQBmwg8N0aN
-         WDMRwKzn4CxUyIfjfdILa1m5J6Nmo6MdV6iHbPJN3zWpCnEvw5Qx/tqIe9MCcDonn4
-         Q/rnhxDsvinSA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 32D19EB8FA5;
-        Wed,  6 Sep 2023 10:04:09 +0000 (UTC)
-From:   Joel Granados via B4 Relay 
-        <devnull+j.granados.samsung.com@kernel.org>
-Date:   Wed, 06 Sep 2023 12:03:29 +0200
-Subject: [PATCH 8/8] c-sky: rm sentinel element from ctl_talbe array
+        Wed, 6 Sep 2023 06:06:26 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097531723
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 03:05:48 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9a6190af24aso530473766b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 03:05:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693994745; x=1694599545; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7tKSKwBQVJKDaycrv4wlK1AbEjFOCJ/VVVw+I8g0nGI=;
+        b=OGGvPgR/BGfFhvXkOtmyminynoXM4BVTqXvnPHePT4aZLOK/9fHxprWiUw/hytpNvK
+         iXvE4RpSOeSNSXwYh8NikXVYzORZt8CpJX8nqegvDT0TyXTSeBm939sYuSLyXLemddaS
+         mT/31LrrlXS79ox8thi557bsHXCbTyfzyA0F5JjxBHhUCZ/bOK6hh+4+Id2x+1WhiJKG
+         1HZnIdV/AM+qf9LhA16eM/MKElnte60QySwKZmeoNoeB9NrBTSi+g4fSQ7mkzPZ11pst
+         QN6GDyA+sunlcXmU56F2vWCsWoyvcOWziPfWHeKsq+y2q/wuUqqA0x/lMtHwHxwM6oUH
+         qVVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693994745; x=1694599545;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7tKSKwBQVJKDaycrv4wlK1AbEjFOCJ/VVVw+I8g0nGI=;
+        b=jmcDdFOGOPC0XDQeA1l4IW7JoEJsUmcLBC9bMYIjqr0lj+SUECu9d7AhZBqFq9/azJ
+         051aimMJfaomnaxx7vZp5pm+l1Y15/thDuje/J8GU1iqMnCoQNes6yvpGC/hEenx56DV
+         Ik/NzxMBfK3f20QsnIb5XC+gFlm8qXGgsrlrl783oL1pwWVCsbQFjOd6ngg9HMP5VINs
+         uFJH171wjLTIKWoVjcKJS6MNY/q8MMkzyFzDBDNs6O6UI7jTK4kMjkPzUHImDgWFIF81
+         Pn9F4OQXjcyylCpYeYvIwCCFODCeL0vF097iA8zPDjfodLGBjPT3cellPd4pnZjXw2/W
+         WeBQ==
+X-Gm-Message-State: AOJu0Yym36OImPAVsaDNEgF0cez3c5Bn93a11tXHDDee6GLyVZmcAnU2
+        dINAElVLhfVed8qmAY8m7Uwu9Q==
+X-Google-Smtp-Source: AGHT+IEpRMvEFs2ZXroiFAbWtiUkVoWLxloTk4Lnh3qMYc6HU6F1RXvTuILRkfk3ScVp4BKkj9bzmg==
+X-Received: by 2002:a17:906:9e:b0:9a1:eb67:c0ce with SMTP id 30-20020a170906009e00b009a1eb67c0cemr1953939ejc.50.1693994744740;
+        Wed, 06 Sep 2023 03:05:44 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id o21-20020a1709062e9500b009a13fdc139fsm8824751eji.183.2023.09.06.03.05.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 03:05:44 -0700 (PDT)
+Message-ID: <5ee0ab7f-0250-accb-83bb-0704ea9074e1@linaro.org>
+Date:   Wed, 6 Sep 2023 12:05:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230906-jag-sysctl_remove_empty_elem_arch-v1-8-3935d4854248@samsung.com>
-References: <20230906-jag-sysctl_remove_empty_elem_arch-v1-0-3935d4854248@samsung.com>
-In-Reply-To: <20230906-jag-sysctl_remove_empty_elem_arch-v1-0-3935d4854248@samsung.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Guo Ren <guoren@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-s390@vger.kernel.org,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm64: dts: mediatek: add mt8395-evk
+ board
+Content-Language: en-US
+To:     Macpaul Lin <macpaul.lin@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-ia64@vger.kernel.org, linux-csky@vger.kernel.org,
-        Joel Granados <j.granados@samsung.com>
-X-Mailer: b4 0.13-dev-86aa5
-X-Developer-Signature: v=1; a=openpgp-sha256; l=980; i=j.granados@samsung.com;
- h=from:subject:message-id; bh=7bf5/tJGBhUQ9WK71ygDU4S0n97i+v0/NjwZE0o5pgU=;
- b=owEB7QES/pANAwAKAbqXzVK3lkFPAcsmYgBk+E6WREfxGpSEon2IoEhHuwmPhd3lTNK0oImor
- fAfRY0k+XKJAbMEAAEKAB0WIQSuRwlXJeYxJc7LJ5C6l81St5ZBTwUCZPhOlgAKCRC6l81St5ZB
- TyDwC/9FZEUSgEzlF7Ci/QWFlhzpOZwTgs6G1qVsDC2AsbhA0jgrplsVHcwsNKyVlmGgQ5vfrta
- AH8fSSOEcSJfoy1ev1mzCDfYY+AwZD0Iy9ga2WQ2skPBd9sjsJmzzsq01zWuRA3K8vELOvAmw5X
- 5wDlhgg73sM7bY5QFpAvBOUwA0iCDvesjkqvKzOcDtOI7UHvrhvA4aU707BZq6KxCZ2sjHNMG7/
- L0mYjBGd9aLOWanKzP6FdWafWJZVG1SXFRLtfhYGo1kAHi0uSOYPGzvhR0TCbXXWVgwaFfJgjyJ
- CIDqEL5JsAA1uo9NErYbwccIFdf77G8k2faRS0nqc9bwzQkHIYpauUZZgzHkq7RlWXiMx+wiIsX
- ZNw2x+uXfqg2gDOa2PUzENunfeKSWXRdUUbLHyvQylboT6rPMLIct3GIuYh6cpwNTkzK886rmRn
- 7/5Cf/CQU1gWgoVV9rRFdJSkFrYISwOHblDUKSVegiC+VPuuYfY+EPVPZcrT2S+IYb74U=
-X-Developer-Key: i=j.granados@samsung.com; a=openpgp;
- fpr=F1F8E46D30F0F6C4A45FF4465895FAAC338C6E77
-X-Endpoint-Received: by B4 Relay for j.granados@samsung.com/default with auth_id=70
-X-Original-From: Joel Granados <j.granados@samsung.com>
-Reply-To: <j.granados@samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        linux-mediatek@lists.infradead.org
+Cc:     Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>
+References: <20230904092043.5157-1-macpaul.lin@mediatek.com>
+ <20230906092527.18281-1-macpaul.lin@mediatek.com>
+ <fbad941f-232b-9f56-5de3-98a16a8c4d89@linaro.org>
+ <c3ddf00c-235a-2d23-db60-c998a67a3fcd@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <c3ddf00c-235a-2d23-db60-c998a67a3fcd@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -97,36 +91,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joel Granados <j.granados@samsung.com>
+On 06/09/2023 11:53, Macpaul Lin wrote:
+> 
+> 
+> On 9/6/23 17:32, Krzysztof Kozlowski wrote:
+>> 	
+>>
+>> External email : Please do not click links or open attachments until you 
+>> have verified the sender or the content.
+>>
+>> On 06/09/2023 11:25, Macpaul Lin wrote:
+>>> 1. Add compatible for MT8395.
+>>> 2. Add bindings for the MediaTek mt8395-evk board, also known
+>>> as the "Genio 1200-EVK".
+>>>
+>>> The MT8195 and MT8395 belong to the same SoC family,
+>>> with only minor differences in their physical characteristics.
+>>> They utilize unique efuse values for differentiation.
+>>>
+>>> The booting process and configurations are managed by boot
+>>> loaders, firmware, and TF-A. Consequently, the part numbers
+>>> and procurement channels vary.
+>>>
+>>> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/arm/mediatek.yaml | 5 +++++
+>>>  1 file changed, 5 insertions(+)
+>>
+>> Do not attach (thread) your patchsets to some other threads (unrelated
+>> or older versions). This buries them deep in the mailbox and might
+>> interfere with applying entire sets.
+>>
+>>>
+>>> Changes for v2:
+>>>  - add more detail description for mt8395.
+>>>  - add bindings for mt8395, and mt8395-evk.
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+>>> index ae12b1cab9fb..d7a20df640d7 100644
+>>> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
+>>> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+>>> @@ -248,6 +248,11 @@ properties:
+>>>            - enum:
+>>>                - mediatek,mt8365-evk
+>>>            - const: mediatek,mt8365
+>>> +      - description: MediaTek Genio 1200 Boards (Genio 1200 EVK)
+>>> +        items:
+>>> +          - enum:
+>>> +              - mediatek,mt8395-evk
+>>> +          - const: mediatek,mt8395
+>>
+>>
+>> I don't understand. You said last time this is fully compatible with
+>> mt8195, so why it's not here?
+>>
+> 
+> Yes, mt8395 is fully compatible with mt8195.
+> 
+> But after reading Angelo's comment, we thought it is necessary to create 
+> a new compatible to avoid confusion for users.
+> https://lore.kernel.org/lkml/bf8394c6-5460-8696-f46b-0c39927aaf84@collabora.com/
+> 
 
-This commit comes at the tail end of a greater effort to remove the
-empty elements at the end of the ctl_table arrays (sentinels) which
-will reduce the overall build time size of the kernel and run time
-memory bloat by ~64 bytes per sentinel (further information Link :
-https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+New compatible is a requirement, you got clear comments from me on this
+as well. However we did not ask to remove a compatible of compatible
+devices. You also need it. Otherwise how your compatibility is going to
+work?
 
-Remove sentinel from alignment_tbl ctl_table array.
-
-Signed-off-by: Joel Granados <j.granados@samsung.com>
----
- arch/csky/abiv1/alignment.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/arch/csky/abiv1/alignment.c b/arch/csky/abiv1/alignment.c
-index b60259daed1b..0d75ce7b0328 100644
---- a/arch/csky/abiv1/alignment.c
-+++ b/arch/csky/abiv1/alignment.c
-@@ -328,8 +328,7 @@ static struct ctl_table alignment_tbl[5] = {
- 		.maxlen = sizeof(align_usr_count),
- 		.mode = 0666,
- 		.proc_handler = &proc_dointvec
--	},
--	{}
-+	}
- };
- 
- static int __init csky_alignment_init(void)
-
--- 
-2.30.2
+Best regards,
+Krzysztof
 
