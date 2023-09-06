@@ -2,66 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B74CE7941E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BCA7941E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242930AbjIFRKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 13:10:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
+        id S242964AbjIFRMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 13:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234838AbjIFRKc (ORCPT
+        with ESMTP id S230087AbjIFRMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 13:10:32 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 865C0DD;
-        Wed,  6 Sep 2023 10:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SJz4XT95wezg+B9GJkWziQTgnHcuphiw5Sf/cZrUB04=; b=Ja1eK9E0/smdRgpsTz/bzZdHtM
-        gpXXqy7HhjSZqeVmUec0qjzcRFyZgyI9TI+1M95r8dZYTSRuATUvkomnUhltHVxQwcd+sqKewmiPn
-        X8Ftmt/PFlooAI009AsllSFFgYTLN965B5zknSaIv9sakWlN8OlSK4RPdWMCBEKBnFh4uXp2DM2gj
-        jG1uq8NlZxtDQ4m8JJh0kNLS9C9YN12qiieYALkdlQLzJdmCosnEGAVvOemDCDSDSGl4ZYly+u0yc
-        Szjm03hKTCEYQBKMH2AfcuXzYaCPpl0gQkQMxRM0bRMut0+40kEl7hAmOVBo8aRmwViwqhTBpcj1l
-        0fgvb1dA==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qdw2q-0040cT-0x;
-        Wed, 06 Sep 2023 17:10:24 +0000
-Date:   Wed, 6 Sep 2023 18:10:24 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Zdenek Kabelac <zkabelac@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Jan Kara <jack@suse.cz>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] fix writing to the filesystem after unmount
-Message-ID: <20230906171024.GB800259@ZenIV>
-References: <59b54cc3-b98b-aff9-14fc-dc25c61111c6@redhat.com>
- <20230906-launenhaft-kinder-118ea59706c8@brauner>
- <f5d63867-5b3e-294b-d1f5-a128817cfc7@redhat.com>
- <20230906-aufheben-hagel-9925501b7822@brauner>
- <60f244be-803b-fa70-665e-b5cba15212e@redhat.com>
+        Wed, 6 Sep 2023 13:12:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CCB81998;
+        Wed,  6 Sep 2023 10:12:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67BE9C433C8;
+        Wed,  6 Sep 2023 17:12:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694020333;
+        bh=6qE2Q4/atC55i1H6dYfBesBmcKopLfm2pz+aZeXFQ2U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=DwkOcC8gHrOgLq7zzce7tTdFCw+TO40y7Uhdrz8IM+s1i67NClqGOOilTOS/mVuue
+         vxakKwPUMdsrLoR+0Lj5M6Q8wckbEnvpN1tZgTqpS07rBj7Y7Cp0Mh8sl42TCU5RJZ
+         KqY1QQahlHr8dLff/uso80ntevVNt9DszpRLIsxry2W+cc+H/iWhkyPGYhMPrnwmwd
+         PiuIxyBHYqNtewucjtihEp8RBiS6XgKnRdqJtmrG88XM1IqzCvpRrfOiaAXPQK9uHR
+         B37MAZcoKadPzMcVXE/KaRQ/wOWkdQ0kbHM0wXddZV/zY09DLpnm5fn5B2ZgYHtPPL
+         GjuhVBzNrs3JA==
+Date:   Wed, 6 Sep 2023 12:12:11 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     sharath.kumar.d.m@intel.com
+Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        dinguyen@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] PCI: altera: add suport for Agilex Family FPGA
+Message-ID: <20230906171211.GA230112@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <60f244be-803b-fa70-665e-b5cba15212e@redhat.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230906110918.1501376-3-sharath.kumar.d.m@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 06:01:06PM +0200, Mikulas Patocka wrote:
+Capitalize subject line similarly.
 
-> Perhaps we could distinguish between FIFREEZE-initiated freezes and 
-> device-mapper initiated freezes as well. And we could change the logic to 
-> return -EBUSY if the freeze was initiated by FIFREEZE and to wait for 
-> unfreeze if it was initiated by the device-mapper.
+s/suport/support/
 
-By the time you get to cleanup_mnt() it's far too late to return -EBUSY.
+On Wed, Sep 06, 2023 at 04:39:18PM +0530, sharath.kumar.d.m@intel.com wrote:
+> From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+
+Needs a commit log.  It's ok to repeat the subject line.
+
+> +#define AGLX_BDF_REG 0x00002004
+> +#define AGLX_ROOT_PORT_IRQ_STATUS 0x14c
+> +#define AGLX_ROOT_PORT_IRQ_ENABLE 0x150
+> +#define CFG_AER                   (1<<4)
+
+This seems to be AGLX-specific so maybe should have a prefix?
+
+> +static u32 port_conf_off;
+
+port_conf_off looks like something that should be per-controller.
+
+> +static int aglx_rp_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
+> +			int where, int size, u32 *value)
+> +{
+> +	void __iomem *addr = AGLX_RP_CFG_ADDR(pcie, where);
+> +
+> +	switch (size) {
+> +	case 1:
+> +		*value = readb(addr);
+> +		break;
+> +	case 2:
+> +		*value = readw(addr);
+> +		break;
+> +	default:
+> +		*value = readl(addr);
+> +		break;
+> +	}
+> +
+> +	/* interrupt pin not programmed in hardware
+> +	 */
+
+Use single-line comment style:
+
+  /* interrupt pin not programmed in hardware */
+
+> +	if (where == 0x3d)
+> +		*value = 0x01;
+> +	if (where == 0x3c)
+> +		*value |= 0x0100;
+
+Use PCI_INTERRUPT_LINE and PCI_INTERRUPT_PIN.
+
+> +	return PCIBIOS_SUCCESSFUL;
+> +}
+
+> +static void aglx_isr(struct irq_desc *desc)
+> +{
+> +	struct irq_chip *chip = irq_desc_get_chip(desc);
+> +	struct altera_pcie *pcie;
+> +	struct device *dev;
+> +	u32 status;
+> +	int ret;
+> +
+> +	chained_irq_enter(chip, desc);
+> +	pcie = irq_desc_get_handler_data(desc);
+> +	dev = &pcie->pdev->dev;
+> +
+> +	status = readl((pcie->hip_base + port_conf_off
+> +		+ AGLX_ROOT_PORT_IRQ_STATUS));
+> +	if (status & CFG_AER) {
+> +		ret = generic_handle_domain_irq(pcie->irq_domain, 0);
+> +		if (ret)
+> +			dev_err_ratelimited(dev, "unexpected IRQ,\n");
+
+Remove the comma at end (or maybe you meant to add something else?)
+Looks like the place it was copied from had "unexpected IRQ, INT%d".
+
+> +	if (pcie->pcie_data->version == ALTERA_PCIE_V3) {
+> +		pcie->cs_base =
+> +			devm_platform_ioremap_resource_byname(pdev, "Cs");
+> +		if (IS_ERR(pcie->cs_base))
+> +			return PTR_ERR(pcie->cs_base);
+> +		of_property_read_u32(pcie->pdev->dev.of_node, "port_conf_stat",
+> +			&port_conf_off);
+> +		dev_info(&pcie->pdev->dev, "port_conf_stat_off =%x\n", port_conf_off);
+
+Is this a debug message?  Doesn't look like something we need all the
+time.  If you want it all the time, use %#x so it's clear that it's
+hex.
+
+> +static const struct altera_pcie_data altera_pcie_3_0_data = {
+> +	.ops = &altera_pcie_ops_3_0,
+> +	.version = ALTERA_PCIE_V3,
+> +	.cap_offset = 0x70,
+
+> +	.cfgrd0 = 0,
+> +	.cfgrd1 = 0,
+> +	.cfgwr0 = 0,
+> +	.cfgwr1 = 0,
+
+cfgrd0, ..., cfgwr1 aren't used here, so no need to initialize them.
