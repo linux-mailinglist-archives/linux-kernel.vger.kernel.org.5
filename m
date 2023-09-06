@@ -2,353 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E31297943D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 197B87943DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244232AbjIFTdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 15:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47524 "EHLO
+        id S244228AbjIFTgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 15:36:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231865AbjIFTdh (ORCPT
+        with ESMTP id S231865AbjIFTgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 15:33:37 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2082.outbound.protection.outlook.com [40.107.243.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA07A1BF
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 12:33:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g62SOZQV36vBI9Bq9PLT2DM30C7vnclJeABtycd1lA4E9mffcnhc62R5Y6WSeRMoUFYVN0YwygeD/JyEAB5pwCNxRiCdLz442aweqKsci2l7y6UrXwEBNSCbPC7NmoRT3w6fV6C5dIBSQigzKpKmR9PdcT80fKB0aXhg+y3a5cEJ45eogK8HNlPcS9Gs41wnTFLCFeT/yJ8XjJDBT7rCYyKqR77GHWFGBRwDj6+YZm+oSkbc1okb6wT6ei5eFG4kn0spsPYTHB5I+KCQW9z6IQu+pXiiK4L6RTYnjbmPC+YnwbgJgrsKmxHdd4Arugh3SlNZJXV4ZebssSCVpk/xUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5CamVGkW1y+6tx96YcOwatTq0qLzT3e4qg93/rHP78s=;
- b=QSiLWqbM5bM9BWj6sMMtoVUr6+sbhJqVIXe8+IuYhO8KarmsfGrJq6epqc/z6NWA3/l3w4hNVChIFuQSH+IELEMU9s/iudZF5D/knvDUdJUUIgG1zp+OLm14weFH85hcvW10Krr2SmqzIFDvZZflTU/w0NAcaPuCxdV0HYRfwqx4SZSVTD4hnOAZvz0I1Ezu5UC87pAnZUFmOonFLoGW/+O++uCBrXV+xJ1wBMFIMYYMvj/Wrf5TMPuBf/mzL3dNunQHQ7aA4zhCkuHdXK9BkadlNuiLEotDSqJfXRpCaTaLnEhXKQGf/5nzAe/5m2aUnFCe/G9pY6Zoo5UV/HDL0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5CamVGkW1y+6tx96YcOwatTq0qLzT3e4qg93/rHP78s=;
- b=v7mOYkqdEYaQt3yEHaCR5o8uTGR1mfX57nuUuP2wHas5sdg/e1hEwZRMCNeUFB3DjVAMyQIAR+XgxksgHQqudEadLhTrG+Rhh8HYwSC9lOX7C1XLT71Bgbi8uy+rGKCmL6HkyPh0pyIX7HdtJ8U5hTpogYG63VY7uT/MZ+22XZ0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
- by LV3PR12MB9094.namprd12.prod.outlook.com (2603:10b6:408:19e::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.32; Wed, 6 Sep
- 2023 19:33:28 +0000
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::121e:5e68:c78a:1f2f]) by CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::121e:5e68:c78a:1f2f%3]) with mapi id 15.20.6745.030; Wed, 6 Sep 2023
- 19:33:28 +0000
-Message-ID: <b8b1dd2d-069d-4410-a3a1-d1cdb61fd4a8@amd.com>
-Date:   Wed, 6 Sep 2023 15:33:24 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/34] drm/amd/display: add AMD driver-specific
- properties for color mgmt
-Content-Language: en-US
-To:     Melissa Wen <mwen@igalia.com>, amd-gfx@lists.freedesktop.org,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
-        dri-devel@lists.freedesktop.org, airlied@gmail.com,
-        brian.starkey@arm.com, christian.koenig@amd.com, daniel@ffwll.ch,
-        liviu.dudau@arm.com, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de, Xinhui.Pan@amd.com
-Cc:     Joshua Ashton <joshua@froggi.es>,
-        Sebastian Wick <sebastian.wick@redhat.com>,
-        Xaver Hugl <xaver.hugl@gmail.com>,
-        Shashank Sharma <Shashank.Sharma@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
-        linux-kernel@vger.kernel.org
-References: <20230810160314.48225-1-mwen@igalia.com>
-From:   Harry Wentland <harry.wentland@amd.com>
-In-Reply-To: <20230810160314.48225-1-mwen@igalia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQBPR0101CA0016.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00::29) To CO6PR12MB5427.namprd12.prod.outlook.com
- (2603:10b6:5:358::13)
+        Wed, 6 Sep 2023 15:36:43 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B5413E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 12:36:38 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9a5be3166a2so11953066b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 12:36:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1694028996; x=1694633796; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=mtg/nQGifsLU9qENmxHQ00cXrbdcS8vGgWh6gQnrcGw=;
+        b=T6ThRm66IWmdaFXMf60iEREX9Ykq0DkcVyyAIGuu32RbuubRDBWAaUBpmyA42in7iG
+         BnSGXorXHnPGBXV9zRy2nTOcZUzKP9fZD9DB3QARcdnjIrlihkmTH/tVfkUo9t4NWjSm
+         u0cU13paXB2tDxyuI1jSQ4TFoX94Re93q22tU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694028996; x=1694633796;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mtg/nQGifsLU9qENmxHQ00cXrbdcS8vGgWh6gQnrcGw=;
+        b=GQW8wIC79n9JaNk+rgXZJ2+CUOZW3oAQszudWUjAWX3bXll1FtA3llA2nH7/Z95YJZ
+         uxrsi2t5LHNdf/+Hui6WbLvtyQhzNN1bmDNsnING79eMxnTj6/kyvZqzo+QZJSq0U6pq
+         yDmcs49ao4W9PUOj5x0TB7shqZ/ToTVUuq1flfpPnGM2oDl+Eo3ZFNHfssx60mQdWA4o
+         8eR9LBXBTR+kmHWMc6mw/0E1Go41a3ZeZ2fQssUAbPVLVEgMDENlAadKo0IjpvI3SFPF
+         KXMRXUli8dr8R/jAsFKoOFFFO7WgptvndPbYesAZCZ+4D1ehWWi7c72CJB0iAy18xWP/
+         IJNA==
+X-Gm-Message-State: AOJu0Yz5jR86DdlkXUt2s0woT6HNX19Z3iDWgAobGyb+D7bHWopdCimT
+        LqpJXZwG8AgYOVxTGeji73qmoImx8pwo98HZx+MYMw==
+X-Google-Smtp-Source: AGHT+IHljzLwnQnB6l6tPinT3FqD3V+4DGl4wDj0z9foh8J7HOmvpyh0hANUXoDI7hY/slDk5S/SGA==
+X-Received: by 2002:a17:906:2101:b0:99d:6ca6:7a8c with SMTP id 1-20020a170906210100b0099d6ca67a8cmr2775431ejt.63.1694028996488;
+        Wed, 06 Sep 2023 12:36:36 -0700 (PDT)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
+        by smtp.gmail.com with ESMTPSA id g4-20020a170906594400b0099b76c3041csm9400770ejr.7.2023.09.06.12.36.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 12:36:36 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-52a1ce52ef4so143827a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 12:36:35 -0700 (PDT)
+X-Received: by 2002:a05:6402:334:b0:525:6d6e:ed4a with SMTP id
+ q20-20020a056402033400b005256d6eed4amr3250657edw.23.1694028995634; Wed, 06
+ Sep 2023 12:36:35 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|LV3PR12MB9094:EE_
-X-MS-Office365-Filtering-Correlation-Id: 19b4feb8-44dd-4ee5-8b96-08dbaf10253c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: icgzc6R0MCWmKIDSnTHcPlr5PZxaIfYrmhTpZ8BWhUBLFkQNEd2QESV/rKc8uju2Ud6K3yWA0KHCAjfOEHG81W/N1KgcLql3B2Mag+SylltGaEi4PGu0GlsVLtk8l55xU0YMYHdcB5b1ET+XcXfTg+OvNMm51VCzkG/lCffkGn2itGs4TNPyNigExQUjCBXtozj4N469LXOAFCucoGa13/xeLMGmkmJhaP7rUGf8fiQIH0XJSdA8fBLCMPXi/ZBOiOI3yFfboDpKAomDBF8BkCx6+aEEbn7Ut+1vQXiQgwTl9dDF3YTr0/teJNRcJxqTZ13NWgk85p6PRtTTSh89i5C/lxpbnGMzT1U0+HGQL2UxfZ6mHd29x25do8+5SfUM1BzLEA4YZ15o8nS0w0poVu8rf143LaKcTifDeRzbYXEP7iPTKBCfZS0FFAHiBcKC+hrhwweEVhaCem1prMXUiY/0oHzAoNnTBjlhadtrdvOj4edvyL3ZxZl1Ru0DaJ2EJcRStTZFuhAFVA/e53AVtp9mylG76jSO9EPUFzg14m4lhcmI4Gr/TJRot8I5iJF7mjLB10SJ5/vkmYrqa+wIdnsT0SzbctR1CnxhaN+uMQ69l4RTlRlokPlXIOUaduypPzrLzaPU1Blf53ctZC1Z5l9KUXhW7b0+gaxk53sqwD1iUUBGTUMKOFW47DHnbNWm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(136003)(376002)(396003)(451199024)(186009)(1800799009)(966005)(7416002)(8936002)(41300700001)(83380400001)(44832011)(478600001)(31686004)(8676002)(2906002)(6666004)(5660300002)(316002)(6636002)(66476007)(66556008)(66946007)(54906003)(110136005)(4326008)(6512007)(53546011)(6506007)(26005)(6486002)(2616005)(66899024)(36756003)(31696002)(921005)(38100700002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WUZmTkxiZFVVcHdCYzZ5V3BOVU9sTk05VmhzZGFPbnV4Tm5OOWlsZTMxb3lX?=
- =?utf-8?B?ZHdOd1QzbjRNME1sTjF3OXRNWEtTYnZXNEkra3QvTkQra2J0cmVzZ3gzRTQ0?=
- =?utf-8?B?ZDkrT2x5Sy9DQzA2Y1lSTDFxRzBySkhXRmxnOXI3T1NrUmhyZnZ6UFlGeTZ3?=
- =?utf-8?B?cmo3cVRKYUtWTllEU1BLN3hRZk9nMW0rcHBuYUVGVzd6dTdPZGVMbExEbE1Z?=
- =?utf-8?B?Z3dTZ013U1J1V1BucTArNWY2R1N6akxmeFV4WnNZdDk3OGppbFlYN2VtaGJt?=
- =?utf-8?B?LzFqaTVZV0pTVkhxODZ6QS9BME4rb0Y3NndFakNSTGNpcGJxY0lObVlCU051?=
- =?utf-8?B?U21BeGhKd0YzeWZYeW5QVUQwcEVsS2R3QUNkZUdYcGJiZHdrR2dLSTMvbTJl?=
- =?utf-8?B?ZENCNERBYVorWWFwRnlaZTdoQkpLVE1hSHp5ZUZKUzFHY0hXVGkvemh1Wjlr?=
- =?utf-8?B?L0Z4UDY1MXlHTURSUWYvSDNiUGcxMVdnUlNsN3lkdWxyTGNMQmdpLyt3TGpJ?=
- =?utf-8?B?cmd4MUQreHhXMFpRalo1L3c3Z3p2UXZ4WTBnTVJGOVIyUHZEUnBhT0M0aTBR?=
- =?utf-8?B?OUU2UDhIVUxSMi9oU2ZyQ25zRjlaTU5KaHh4ZUtpMmMvQytScTNWZEpGN0Yy?=
- =?utf-8?B?aU95Y3BTSUtVZm1rNkRmalc0OEFEd2xPV2RYZHArUExIbzl4SDFTZGhDRXVw?=
- =?utf-8?B?TC82VTZNK1BXbHErbnFrb3NkOHJYcytCcjA5UmJxd0lFK0JkRzZKcTN3QVlK?=
- =?utf-8?B?UVpJRlk1UkMyeHpycVZ5cnAvOWU4TlNjeDVzcGNkT2JKLzA1VGRCeGtheGxn?=
- =?utf-8?B?bHFiMkJVb0dSTWlubUlvdks3aElINnRIZy80Rm5tWCtHZEtPekFaUklTTG4x?=
- =?utf-8?B?YkN0bktmeXFtcmpqb0MvZklSV1ZPVVl4eVJoWCttWlVJYWZuRGNPMlhodVJq?=
- =?utf-8?B?NENhL2V2OSs0Y25WZ3dyZjRIanF6RWxza0FLeUlWa1JuYllMYlFQd2F4em5W?=
- =?utf-8?B?b3NMRW10Vyt4YS9TYUVkbVpsWERTRlNmVit5dDVsSjlGR3BkYkd4OFpaRm42?=
- =?utf-8?B?Rkd1TEQvaEpwd3ZiU1p3NXFUNmVXWUo3b2tqenh1Y1NaYTRWSHE5cFNoTWxy?=
- =?utf-8?B?TzZYZjhiT1JXNE10OUxnSG1XSWhnRy9wQzczM3FjVUh3cDVjL0l3bWR2cnZX?=
- =?utf-8?B?a29DMFkxcEpqbWxON2dOM2taeTdFMkVhYmVFK3RkRVlSLzNGdHRNa3NDa0ZH?=
- =?utf-8?B?bUw4UFNYV3JmRXVVRytIMWZOYjFKWkgxL0owNWhFYVNpZk9YMFZlMTlENzZQ?=
- =?utf-8?B?YXQ4bjRzeHlsRTFnSXR4YnpYQzZVRTFPbG11YnV0NWNFRjJJMHFaTHYvSDR1?=
- =?utf-8?B?dDFFdERtUGRVT252L0krYTNtQm1VQlpCQitQdFF1UVNLSm9YcXlubG1zUzRl?=
- =?utf-8?B?R1BiMXN5bTlXVU9pSVlGdjNFMTJHanlVcmdQZVhQMGkzeDc2TXFMM2RET052?=
- =?utf-8?B?cndjbjZOQlMyVG5YbllPWWJId1RhMVB5OVJGcjRkNXFSem9GSVIzV3pzaFJp?=
- =?utf-8?B?eW9qQzZyajl3bDB2dlgzcC9GVjdXckZ1NnFNSENDYys0ZDltNWpDWDgyeVFm?=
- =?utf-8?B?dnI1MCtmbmdQV0hYajA3eGs2MFpkSitBRm5XUGJ3U0JyTTBESll5SXhnVzNl?=
- =?utf-8?B?VVo1eGpsV1ViY3orRi95allvSU1MdHVGSFpadU51VFY2OWlwbFd6eDY3UDhx?=
- =?utf-8?B?b1EyRy9VY05Mem8vWFVlak9DcWJycks4WWx2d0dvZzlCQ294MnhiREl5Vy9D?=
- =?utf-8?B?R1FzalRJdDA0clVDUW5xOGhsYmhhN3pUaWtqWHhaOStwNkN2Nzg2NnlSK2xZ?=
- =?utf-8?B?SC9ldGdQeGNhbGQxOGNzRGMrcXlOcExNOU1sdmJpcGFNT3oxT2tEenRzY3Rh?=
- =?utf-8?B?d3gzeUJnSmNRVmdMdE9WKzFHaGlnMzRxakY4aFlidWd1czlCakFOV2lUS0o3?=
- =?utf-8?B?WlZ6ejBBZmpjUnRwb3d0VWF3WGdNRE8yTnA1c2x4T0pHMnJZTkNjelY0OThk?=
- =?utf-8?B?ckJ5S3ZwSUZwRzlWMlp6K1cvbm5hcjhKeG80K3h6V09HZHRUL2paRE01bEpH?=
- =?utf-8?Q?Go/7fQiW4+jzu0wKVdGLBOIDq?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 19b4feb8-44dd-4ee5-8b96-08dbaf10253c
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 19:33:28.3512
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: W8DOxIh2VSJG9s1HctrQ0NXAyjvyx1o0OQSZ5jxBJ/+V0dmdznAzAevX1BO/8YWvevrcmKQYiyNbo2zcwo7+hg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9094
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
+In-Reply-To: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 6 Sep 2023 12:36:18 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
+Message-ID: <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-10 12:02, Melissa Wen wrote:
-> Hi all,
-> 
-> Here is the next version of our work to enable AMD driver-specific color
-> management properties [1][2]. This series is a collection of
-> contributions from Joshua, Harry, and me to enhance the AMD KMS color
-> pipeline for Steam Deck/SteamOS by exposing additional pre-blending and
-> post-blending color capabilities from those available in the current DRM
-> KMS API[3].
-> 
-> The userspace case here is Gamescope which is the compositor for
-> SteamOS. Gamescope is already using these features to implement its
-> color management pipeline [4].
-> 
-> In this version, I try to address all concerns shared in the previous
-> one, i.e.:
-> - Replace DRM_ by AMDGPU_ prefix for transfer function enumeration; 
-> - Explicitly define EOTFs and inverse EOTFs and set props accordingly;
-> - Document pre-defined transfer functions;
-> - Remove misleading comments;
-> - Remove post-blending/MPC shaper and 3D LUT support;
-> - Move driver-specific property operations from amdgpu_display.c to
->   amdgpu_dm_color.c;
-> - Reset planes if any color props change;
-> - Nits/small fixes;
-> 
-> Bearing in mind the complexity of color concepts, I believe there is a
-> high chance of some misunderstanding from my side when defining EOTFs
-> and documenting pre-defined TFs. So, reviews are very important and
-> welcome (thanks in advance). FWIW, I added Harry as a co-developer of
-> this TF documentation since I based on his description of EOTF/inv_EOTF
-> and previous documentation work [5]. Let me know if there is a better
-> way for credits.
-> 
-> Two DC patches were already applied and, therefore, removed from the
-> series. I added r-b according to previous feedback. We also add plane
-> CTM to driver-specific properties. As a result, this is the updated list
-> of all driver-specific color properties exposed by this series:
-> 
-> - plane degamma LUT and pre-defined TF;
-> - plane HDR multiplier;
-> - plane CTM 3x4;
-> - plane shaper LUT and pre-defined TF;
-> - plane 3D LUT;
-> - plane blend LUT and pre-defined TF;
-> - CRTC gamma pre-defined TF;
-> 
-> Remember you can find the AMD HW color capabilities documented here:
-> https://dri.freedesktop.org/docs/drm/gpu/amdgpu/display/display-manager.html#color-management-properties
-> 
-> Worth mentioning that the pre-blending degamma block can use ROM curves
-> for some pre-defined TFs, but the other blocks use the AMD color module
-> to calculate this curve considering pre-defined coefficients.
-> 
-> We need changes on DC gamut remap matrix to support the plane and CRTC
-> CTM on drivers that support both. I've sent a previous patch to apply
-> these changes to all DCN3+ families [6]. Here I use the same changes but
-> limited to DCN301. Just let me know if you prefer the previous/expanded
-> version.
-> 
-> Finally, this is the Linux/AMD color management API before and after
-> blending with the driver-specific properties:
-> 
-> +----------------------+
-> |   PLANE              |
-> |                      |
-> |  +----------------+  |
-> |  | AMD Degamma    |  |
-> |  |                |  |
-> |  | EOTF | 1D LUT  |  |
-> |  +--------+-------+  |
-> |           |          |
-> |  +--------v-------+  |
-> |  |    AMD HDR     |  |
-> |  |    Multiply    |  |
-> |  +--------+-------+  |
-> |           |          |
-> |  +--------v-------+  |
-> |  |  AMD CTM (3x4) |  |
-> |  +--------+-------+  |
-> |           |          |
-> |  +--------v-------+  |
-> |  | AMD Shaper     |  |
-> |  |                |  |
-> |  | inv_EOTF |     |  |
-> |  | Custom 1D LUT  |  |
-> |  +--------+-------+  |
-> |           |          |
-> |  +--------v-------+  |
-> |  |   AMD 3D LUT   |  |
-> |  |   17^3/12-bit  |  |
-> |  +--------+-------+  |
-> |           |          |
-> |  +--------v-------+  |
-> |  | AMD Blend      |  |
-> |  |                |  |
-> |  | EOTF | 1D LUT  |  |
-> |  +--------+-------+  |
-> |           |          |
-> ++----------v---------++
-> ||      Blending      ||
-> ++----------+---------++
-> |    CRTC   |          |
-> |           |          |
-> |   +-------v-------+  |
-> |   | DRM Degamma   |  |
-> |   |               |  |
-> |   | Custom 1D LUT |  |
-> |   +-------+-------+  |
-> |           |          |
-> |   +-------v-------+  |
-> |   | DRM CTM (3x3) |  |
-> |   +-------+-------+  |
-> |           |          |
-> |   +-------v-------+  |
-> |   | DRM Gamma     |  |
-> |   |               |  |
-> |   | Custom 1D LUT |  |
-> |   +---------------+  |
-> |   | *AMD Gamma    |  |
-> |   |   inv_EOTF    |  |
-> |   +---------------+  |
-> |                      |
-> +----------------------+
-> 
-> Let me know your thoughts.
-> 
+So I'm starting to look at this because I have most other pull
+requests done, and while I realize there's no universal support for it
+I suspect any further changes are better done in-tree. The out-of-tree
+thing has been done.
 
-Thanks again for your amazing work on this.
+However, while I'll continue to look at it in this form, I just
+realized that it's completely unacceptable for one very obvious
+reason:
 
-Patches 5, 6, 14, 16, and 24 are
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+On Sat, 2 Sept 2023 at 20:26, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>
+>   https://evilpiepirate.org/git/bcachefs.git bcachefs-for-upstream
 
-I left comments on the remaining unreviewed patches.
+No way am I pulling that without a signed tag and a pgp key with a
+chain of trust. You've been around for long enough that having such a
+key shouldn't be a problem for you, so make it happen.
 
-Harry
+There are a few other issues that I have with this, and Christoph did
+mention a big one: it's not been in linux-next. I don't know why I
+thought it had been, it's just such an obvious thing for any new "I
+want this merged upstream" tree.
 
-> Best Regards,
-> 
-> Melissa Wen
-> 
-> [1] https://lore.kernel.org/dri-devel/20230423141051.702990-1-mwen@igalia.com
-> [2] https://lore.kernel.org/dri-devel/20230523221520.3115570-1-mwen@igalia.com
-> [3] https://github.com/ValveSoftware/gamescope/blob/master/src/docs/Steam%20Deck%20Display%20Pipeline.png
-> [4] https://github.com/ValveSoftware/gamescope
-> [5] https://lore.kernel.org/dri-devel/20210730204134.21769-1-harry.wentland@amd.com
-> [6] https://lore.kernel.org/dri-devel/20230721132431.692158-1-mwen@igalia.com
-> 
-> 
-> Harry Wentland (1):
->   drm/amd/display: fix segment distribution for linear LUTs
-> 
-> Joshua Ashton (14):
->   drm/amd/display: add plane degamma TF driver-specific property
->   drm/amd/display: add plane HDR multiplier driver-specific property
->   drm/amd/display: add plane blend LUT and TF driver-specific properties
->   drm/amd/display: add CRTC gamma TF support
->   drm/amd/display: set sdr_ref_white_level to 80 for out_transfer_func
->   drm/amd/display: mark plane as needing reset if color props change
->   drm/amd/display: add plane degamma TF and LUT support
->   drm/amd/display: add dc_fixpt_from_s3132 helper
->   drm/amd/display: add HDR multiplier support
->   drm/amd/display: handle empty LUTs in __set_input_tf
->   drm/amd/display: add plane blend LUT and TF support
->   drm/amd/display: allow newer DC hardware to use degamma ROM for PQ/HLG
->   drm/amd/display: copy 3D LUT settings from crtc state to stream_update
->   drm/amd/display: Use 3x4 CTM for plane CTM
-> 
-> Melissa Wen (19):
->   drm/drm_mode_object: increase max objects to accommodate new color
->     props
->   drm/drm_property: make replace_property_blob_from_id a DRM helper
->   drm/drm_plane: track color mgmt changes per plane
->   drm/amd/display: add driver-specific property for plane degamma LUT
->   drm/amd/display: explicitly define EOTF and inverse EOTF
->   drm/amd/display: document AMDGPU pre-defined transfer functions
->   drm/amd/display: add plane 3D LUT driver-specific properties
->   drm/amd/display: add plane shaper LUT and TF driver-specific
->     properties
->   drm/amd/display: add CRTC gamma TF driver-specific property
->   drm/amd/display: add comments to describe DM crtc color mgmt behavior
->   drm/amd/display: encapsulate atomic regamma operation
->   drm/amd/display: decouple steps for mapping CRTC degamma to DC plane
->   drm/amd/display: reject atomic commit if setting both plane and CRTC
->     degamma
->   drm/amd/display: add plane shaper LUT support
->   drm/amd/display: add plane shaper TF support
->   drm/amd/display: add plane 3D LUT support
->   drm/amd/display: set stream gamut remap matrix to MPC for DCN301
->   drm/amd/display: add plane CTM driver-specific property
->   drm/amd/display: add plane CTM support
-> 
->  drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h      |  71 ++
->  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  34 +-
->  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h | 101 +++
->  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 805 ++++++++++++++++--
->  .../amd/display/amdgpu_dm/amdgpu_dm_crtc.c    |  72 ++
->  .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   | 224 ++++-
->  .../amd/display/dc/dcn10/dcn10_cm_common.c    |  93 +-
->  .../drm/amd/display/dc/dcn30/dcn30_hwseq.c    |  37 +
->  .../drm/amd/display/dc/dcn30/dcn30_hwseq.h    |   3 +
->  .../drm/amd/display/dc/dcn301/dcn301_init.c   |   2 +-
->  .../gpu/drm/amd/display/include/fixed31_32.h  |  12 +
->  drivers/gpu/drm/arm/malidp_crtc.c             |   2 +-
->  drivers/gpu/drm/drm_atomic.c                  |   1 +
->  drivers/gpu/drm/drm_atomic_state_helper.c     |   1 +
->  drivers/gpu/drm/drm_atomic_uapi.c             |  43 +-
->  drivers/gpu/drm/drm_property.c                |  49 ++
->  include/drm/drm_mode_object.h                 |   2 +-
->  include/drm/drm_plane.h                       |   7 +
->  include/drm/drm_property.h                    |   6 +
->  include/uapi/drm/drm_mode.h                   |   8 +
->  20 files changed, 1446 insertions(+), 127 deletions(-)
-> 
+So these kinds of "I'll just ignore _all_ basic rules" kinds of issues
+do annoy me.
 
+I need to know that you understand that if you actually want this
+upstream, you need to work with upstream.
+
+That very much means *NOT* continuing this "I'll just do it my way".
+You need to show that you can work with others, that you can work
+within the framework of upstream, and that not every single thread you
+get into becomes an argument.
+
+This, btw, is not negotiable.  If you feel uncomfortable with that
+basic notion, you had better just continue doing development outside
+the main kernel tree for another decade.
+
+The fact that I only now notice that you never submitted this to
+linux-next is obviously on me. My bad.
+
+But at the same time it worries me that it might be a sign of you just
+thinking that your way is special.
+
+                Linus
