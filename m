@@ -2,53 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE71793677
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041F8793678
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234094AbjIFHjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 03:39:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60210 "EHLO
+        id S231486AbjIFHk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 03:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234028AbjIFHjk (ORCPT
+        with ESMTP id S229517AbjIFHk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 03:39:40 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DBBCE
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:39:33 -0700 (PDT)
-Received: from kwepemi500004.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RgZ0h28y1zhZFQ;
-        Wed,  6 Sep 2023 15:35:32 +0800 (CST)
-Received: from [10.67.121.37] (10.67.121.37) by kwepemi500004.china.huawei.com
- (7.221.188.17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 6 Sep
- 2023 15:39:30 +0800
-Subject: Re: [PATCH V2 drivers/perf: hisi:] drivers/perf: hisi: fix set wrong
- filter mode for running events issue
-To:     Yicong Yang <yangyicong@huawei.com>,
-        Jijie Shao <shaojijie@huawei.com>
-References: <20230901035027.3881389-1-shaojijie@huawei.com>
- <a2111bbf-4d40-2112-6f3a-86c152e7ee0b@huawei.com>
-CC:     <shenjian15@huawei.com>, <wangjie125@huawei.com>,
-        <liuyonglong@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <will@kernel.org>,
-        <jonathan.cameron@huawei.com>, <mark.rutland@arm.com>,
-        <yangyicong@hisilicon.com>
-From:   "chenhao (EZ)" <chenhao418@huawei.com>
-Message-ID: <7e841e72-8a81-a2a5-ff3c-84594b4cf11c@huawei.com>
-Date:   Wed, 6 Sep 2023 15:39:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Wed, 6 Sep 2023 03:40:28 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3901F1702
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:40:02 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bcfe28909so479939866b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 00:40:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693985999; x=1694590799; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=orvUtnN2ovbrorDPALco13qgAyfYNfZYZYYlqBkdr5o=;
+        b=ByfFeEMqIEYJ0J68EyaLt3GA1d1hTbsNN9a+qE8HVY5i1oHuPfLhdBp2JIlO1Q61c1
+         uLmm2ysQBv+ho5FWNST4d5s+MHng1mAhvEEqY+0VlT0UwmgzI3Vr923QoApFjo0pHPlX
+         +ddghVCHwSvPD1vU6XUERDojr3douVqXQ19G6NWaQKVzuc0uowdyOdn1bY3szC/gL2S+
+         8mbDlW2IOh3BJS/sLnaEkCeEHyOEDoxaxNOqlhH6D6hpovM4b5mIC8tUQ9R7smpgRw0y
+         +5bYO7Y2GwU0OHQS2GOlfNEMcDVu5f/UsTR0LPosGBiZ/98zbk3hl1+KkODNT/KoJRBw
+         qoig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693985999; x=1694590799;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=orvUtnN2ovbrorDPALco13qgAyfYNfZYZYYlqBkdr5o=;
+        b=EF68gGNZW3lYAgxMskJfuZ74frA5G8DKSezMEdhEtDjm6QpUMiSzQ1fZuLo67Orgp/
+         zfObTugc0abs/Ix/OwRIYejxR1sPkmkWuI2vpHVNiPi9jcEyBaZoRuMZj3Jjfw7alvgC
+         6WrpzVIQ9XBWxbB9Hvto+vTGXQAZXtOqr6Pzu4sG0TC3qXLxCRC8m8L1XYr2aq3xqbbP
+         8TLMOMu8v9x4RV3ml/2ShoAWOtdmlF5/SvL21BXeEWJZBeA/AnD6Jznb3RlvgVXi2F11
+         DwjurZeitTMENSYFSCAuU0xlysgijiph5O2L6rXhx2RBvjELg5PYZNbLzFae0JuoMz+6
+         Vy2w==
+X-Gm-Message-State: AOJu0Ywt562K/aYQ+hQdqS4uUoW8kVVbCyHzQV3BS6v1c/2mPe2NEtaF
+        E8TDFv96CGVXiGlCAlfyFcksUw==
+X-Google-Smtp-Source: AGHT+IHiQSnCMmZF2IYo0dQojmRNvIMHTjIHbz8K7G0CiRy1PCg/A0xcmeRnekZzhuBTvgBwx/GFqg==
+X-Received: by 2002:a17:907:a056:b0:9a6:4f23:9d8f with SMTP id gz22-20020a170907a05600b009a64f239d8fmr1555676ejc.47.1693985999381;
+        Wed, 06 Sep 2023 00:39:59 -0700 (PDT)
+Received: from [192.168.0.173] ([79.115.63.137])
+        by smtp.gmail.com with ESMTPSA id c11-20020a170906924b00b009929ab17be0sm8607665ejx.162.2023.09.06.00.39.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 00:39:58 -0700 (PDT)
+Message-ID: <47dbbc77-6ff4-2a5e-213e-f909ee90805f@linaro.org>
+Date:   Wed, 6 Sep 2023 10:39:57 +0300
 MIME-Version: 1.0
-In-Reply-To: <a2111bbf-4d40-2112-6f3a-86c152e7ee0b@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 40/41] mtd: spi-nor: atmel: drop duplicate entry
+Content-Language: en-US
+To:     Michael Walle <mwalle@kernel.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
+ <20230807-mtd-flash-info-db-rework-v2-40-291a0f39f8d8@kernel.org>
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-40-291a0f39f8d8@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.121.37]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemi500004.china.huawei.com (7.221.188.17)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -57,74 +81,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2023/9/6 14:26, Yicong Yang wrote:
-> On 2023/9/1 11:50, Jijie Shao wrote:
->> From: Hao Chen <chenhao418@huawei.com>
->>
->> hns3_pmu_select_filter_mode() includes A series of mode judgments such
->> as global mode ,function mode, function-queue mode, port mode, port-tc
->> mode.
->>
->> For a special scenario:
->> command use parameter
->> perf stat -a -e hns3_pmu_sicl_0/bdf=0x3700,config=0x3,queue=0x0,
->> and hns3_pmu_is_enabled_func_mode() has a judgement as below:
->> if (!(pmu_event->filter_support & HNS3_PMU_FILTER_SUPPORT_FUNC))
->>
->> filter_support of event 0x3 hasn't set bit for func mode, so it can't
->> enter func-mode branch, and continue to func-queue mode judgement, port
->> judgement, port-tc mode, then enter port-tc mode.
->>
->> It's not up to expectations, it shouldn't enter any modes but
->> return -ENOENT.
->>
->> port-tc mode parameter show as below:
->> perf stat -a -e hns3_pmu_sicl_0/config=0x00001,port=0x0,tc=0x1
->>
->> port-tc mode should use bdf parameter as 0, so, add judgement of
->> bdf parameter to fix it.
->>
+On 22.08.2023 10:09, Michael Walle wrote:
+> The Atmel AT26DF321 and AT25DF321 have the same ID. Both were just
+> discovered by reading their IDs, that is, there is no probing by name.
+> Thus only the first one in the list was ever probed. The AT25DF is the
+> newer series. Drop the older one.
 > 
-> Will the change here block the below unsupported case for event 0x3?
-> 
-> $ perf stat -a -e hns3_pmu_sicl_0/bdf=0x0,config=0x3,queue=0x0/
-> 
-> Otherwise you should handle this case.
-> 
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
 
-Yes, it can't block this scenario, this modify of judgement for bdf is not inappropriate.
+keep the first entry, to have the name backward compatible. It's not a
+hard rule to have the name backward compatible, but if we can, let's
+keep it.
 
-I will think another scheme to handle this issue.
 
->> Signed-off-by: Hao Chen <chenhao418@huawei.com>
->> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
->> ---
->> changeLog:
->>   v2: add more details in log message suggested by Will
->>   v1 link: https://lore.kernel.org/all/20230816094619.3563784-1-shaojijie@huawei.com/
->> ---
->>  drivers/perf/hisilicon/hns3_pmu.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/perf/hisilicon/hns3_pmu.c b/drivers/perf/hisilicon/hns3_pmu.c
->> index e0457d84af6b..2aa9cb045705 100644
->> --- a/drivers/perf/hisilicon/hns3_pmu.c
->> +++ b/drivers/perf/hisilicon/hns3_pmu.c
->> @@ -998,12 +998,13 @@ static bool
->>  hns3_pmu_is_enabled_port_tc_mode(struct perf_event *event,
->>  				 struct hns3_pmu_event_attr *pmu_event)
->>  {
->> +	u16 bdf = hns3_pmu_get_bdf(event);
->>  	u8 tc_id = hns3_pmu_get_tc(event);
->>  
->>  	if (!(pmu_event->filter_support & HNS3_PMU_FILTER_SUPPORT_PORT_TC))
->>  		return false;
->>  
->> -	return tc_id != HNS3_PMU_FILTER_ALL_TC;
->> +	return (tc_id != HNS3_PMU_FILTER_ALL_TC) && (!bdf);
->>  }
->>  
->>  static bool
->>
-> .
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+
+> ---
+>  drivers/mtd/spi-nor/atmel.c | 7 -------
+>  1 file changed, 7 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
+> index 18e904962d0e..95f0e139284e 100644
+> --- a/drivers/mtd/spi-nor/atmel.c
+> +++ b/drivers/mtd/spi-nor/atmel.c
+> @@ -206,13 +206,6 @@ static const struct flash_info atmel_nor_parts[] = {
+>  		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
+>  		.no_sfdp_flags = SECT_4K,
+>  		.fixups = &atmel_nor_global_protection_fixups
+> -	}, {
+> -		.id = SNOR_ID(0x1f, 0x47, 0x00),
+> -		.name = "at26df321",
+> -		.size = SZ_4M,
+> -		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
+> -		.no_sfdp_flags = SECT_4K,
+> -		.fixups = &atmel_nor_global_protection_fixups
+>  	}, {
+>  		.id = SNOR_ID(0x1f, 0x47, 0x01),
+>  		.name = "at25df321a",
 > 
