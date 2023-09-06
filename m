@@ -2,145 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BAF4793C76
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A135C793C7A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233429AbjIFMSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:18:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60490 "EHLO
+        id S239234AbjIFMTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:19:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbjIFMSw (ORCPT
+        with ESMTP id S231493AbjIFMTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:18:52 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF761BB
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:18:48 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4013454fa93so35286195e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 05:18:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694002727; x=1694607527; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uCatPaNtALkNNK4KsoXQ8WAXqz9RrcLBBDmwLPI3Vw0=;
-        b=PgznwoWAQRlakNaKTmQOWC2X0RWDWcUTRXyWxFGIahQ0uUs3rP/iBmYJAYc1CnRfqW
-         iQNz0afCqr4ozxkonWvMkXErZtWEwNYw/NO+7NDmASLjGLv27Uuk4vvaj17gSEog5Myw
-         6DzoP3mrGralIeqL1wKwYhWCzIColc72oUfzjGqKnabfOpxpvglYL0mIvHknH7KRtuYC
-         QQ+ux87miZkc3kzzBjROIV7NPGLz4+qMhwQIY+zxhr1bdhUBBpNcvTad25GWuQ3SHMOQ
-         3EChiKHrbBZlyH1y2Z/7t6RYKaOFy0VSikAZ1FE6DcGvc/AKfs71g2mzq7kWw2v5rjH7
-         INpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694002727; x=1694607527;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uCatPaNtALkNNK4KsoXQ8WAXqz9RrcLBBDmwLPI3Vw0=;
-        b=E/ACzQ+KkywK0uHprgez5LIuWjv1+GLV+w9p9nTl8pGf6qLVQCauu3PV8vAVU0ETdC
-         uV7r7940Y2brqb7XPfyXKV4MIP2cFkHQvttWv+X/N8EplwYOT+gd/+cbFrx8r1VrbHzS
-         3KdPLke0YXpTJfGw15ik9iF96enmToaQzJ7Wvp3+TUqQplBj622548hB4dL3hyBnMsAK
-         zOK5jSxjN9SIG3kF5q4RT6PrlLTu/9VU8ZSl1L70ZOemXU7tjlpMgR3JVl+9Q15qrr0W
-         gCS3qghPCno+7GTj/igfv/Dcb7ZO17lnDcSihtzF3F0C/GyjnR+sML5kMTO+SwEn9J8h
-         1axg==
-X-Gm-Message-State: AOJu0YwBeycPVFHnNoV007kajicBnJjmjSnQYtGrhdckBDBIirK22vGc
-        6dflqiupMujvdoWGvopEJqt8QRcWDAv6g5qednLTjQ==
-X-Google-Smtp-Source: AGHT+IHr5EDmAZjNEiPKlcvR7awkoi1CNbTcJGcicRFsNZbpcWizj4wm9k/5LZIJTpywY2sKGNbDzYOdptyCzoRBUHk=
-X-Received: by 2002:adf:f011:0:b0:31c:8257:2c78 with SMTP id
- j17-20020adff011000000b0031c82572c78mr2105408wro.52.1694002726940; Wed, 06
- Sep 2023 05:18:46 -0700 (PDT)
+        Wed, 6 Sep 2023 08:19:44 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3314BF9;
+        Wed,  6 Sep 2023 05:19:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=public-files.de;
+ s=s31663417; t=1694002754; x=1694607554; i=frank-w@public-files.de;
+ bh=e0081cInfBKzI1JPOJchcZQctsDgMNVHwcQcjiRNKTg=;
+ h=X-UI-Sender-Class:Date:From:To:CC:Subject:Reply-to:In-Reply-To:Referenc
+ es;
+ b=n+FHE74GGs7iQQExFGT8fTlcQFlNWq7/pGkA1VAdENDlztHWxBjU7bEYfh7Wy/5TRc4Pljx
+ E5DVV6SLJ4Ym9esjAQVJOzVgKnBbiyfo1Q7bwsJxyhlWgoXlQ0z1RgigwlxET/pxqmziBccB4
+ pL52oYSQrcG8W/Lm3hoS18P8ZI+zZFWdsoezJwNe2hnts8PVfOmQigB5+BV9t9ejWgqfBrccC
+ zi0GXALJQQ9f9CFTk3EOZp3d69o1cxPSlR4h7VvCpI4vYhsWTiWsCOYAI+KghRoiZ3uXg8Pe5
+ fKpHL9Due/HqYr3ZwiJwP1xzqq1U67WKDzyTAJjmFmqK5gisPzyA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [IPv6:::1] ([80.187.71.204]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MtOKc-1pmZMS1k8k-00uqpI; Wed, 06
+ Sep 2023 14:19:14 +0200
+Date:   Wed, 06 Sep 2023 14:19:11 +0200
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Macpaul Lin <macpaul.lin@mediatek.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        =?ISO-8859-1?Q?Bernhard_Rosenkr=E4nzer?= <bero@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+CC:     Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v2_1/2=5D_dt-bindings=3A_arm64?= =?US-ASCII?Q?=3A_dts=3A_mediatek=3A_add_mt8395-evk_board?=
+User-Agent: K-9 Mail for Android
+Reply-to: frank-w@public-files.de
+In-Reply-To: <c951f693-b219-4745-be20-a8e1fee0099d@mediatek.com>
+References: <20230904092043.5157-1-macpaul.lin@mediatek.com> <20230906092527.18281-1-macpaul.lin@mediatek.com> <fbad941f-232b-9f56-5de3-98a16a8c4d89@linaro.org> <c3ddf00c-235a-2d23-db60-c998a67a3fcd@mediatek.com> <f343b6e2-6106-47eb-71cb-f391aff6cb7f@collabora.com> <50f7fbdd-8592-7a47-b2d8-a1af8ed93b92@linaro.org> <c951f693-b219-4745-be20-a8e1fee0099d@mediatek.com>
+Message-ID: <E3DEDA34-C203-4560-B07D-8BCB44204FF3@public-files.de>
 MIME-Version: 1.0
-References: <20230801085402.1168351-1-alexghiti@rivosinc.com>
- <20230801085402.1168351-5-alexghiti@rivosinc.com> <CA+V-a8t56xDqMTQfoKcsvPF8errkTMydaDz5V6nejLvVfJrW3g@mail.gmail.com>
- <CAHVXubiENHt36LrcSBoNU0rAMQ8EoT6tde9M8vLP3Hw2nwMm8g@mail.gmail.com> <CA+V-a8vJJFCKy3pCL2Qp1NogL-K5s9moGDbv3tTvx+z1FeKarw@mail.gmail.com>
-In-Reply-To: <CA+V-a8vJJFCKy3pCL2Qp1NogL-K5s9moGDbv3tTvx+z1FeKarw@mail.gmail.com>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Wed, 6 Sep 2023 14:18:35 +0200
-Message-ID: <CAHVXubhLB9Pw51C1ed1Youp9k0qTJKrokUAqf=Xnr+m3BoN5=g@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] riscv: Improve flush_tlb_kernel_range()
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Jones <ajones@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Provags-ID: V03:K1:O/pBamwEeOol5A2BT1I7ZdcnXSsAYQXRMcNrEL6HiXWgdfa1QVO
+ Ss66XXOehHOACvDffgmThSn5M+rlr5/PLEgFCmUu9111ZdKdZfKainTtc8OxiGDPION4KiK
+ UJ+KZNe5oLx1q/+ebykxqgeoqE+MdqF0uWVh5YIqU+bMARn8pGobL0iThqpb9tKCQAD5Ubc
+ 5LBgiudCKYEGk9urriwRA==
+UI-OutboundReport: notjunk:1;M01:P0:E8Xc5Uvy3ng=;T+94gWu53WDA87IePiH/JBNpwDo
+ VuP9OrqBwGjTaiiOY9KR0FN+QLAQFYQs32HJmOZbWjyj/4Hi1xNeYvNonaMC/WO3fyFtq5od8
+ zmbalYdW4WcZiDm6TzDjEhzpF7bPXoRaGER/vIZwrzHjH/6+CZBbi2u6BCosvfKVKT3ltdLDN
+ W21txCnhzHmdqnVdEmbEt5mVK4ybq5ek/vWoJBGzIu53SzVzoI3a9nAM8Dqr7jGUmn4mcafVK
+ JuBevjuDNF02NW1dAE009nUZf5j2c74A032Uxsyh5qo4DZPWGM0eRapDbdcXC9LUceHHY1YkE
+ TG6F2wbcGoqGUi3qoxG0zRDUyt4oGUACkRvXqCna3fo/L10XeerUzFNe/pOxjrv3+fRk/k4xb
+ YvK1szY/ui0TNxHdKioL/8YBT42BD+xtOpuzlR5uBaqkE9lfTnPC5hT0IQa2Bi5Ksv+/9bBmJ
+ 0M7V5u7ay9wmNwmG9pOP4gSCDsISthNelCzV3w++CEk2SX+ssTpEM7P/sb2IbxRcpHTQJrKm1
+ UbPMvyDZgbEioe/VJU1q4XOZ701tnafSvdbEWdYv4wLy1m37H/nu1Trft52ApiMjTitnKrH8O
+ FIlvR66uFYXiD58VPeZq8kVaYXDALf1t8u7WkD1HtUJm5y4p7hMbckFr8tiUtOHR/l2cZ0Vof
+ GqTd0omc31nrD0Jy6VXEDwIWo1D9pX0OvCykpxI59/gR3HbJ7olQp5e/G8khRZhEz34gK7Ghe
+ IeJmB73NIV9HhCXmys14zf61/Y5W1GRflNKEYcxTqXg2NDh4YG9MOZwFW63qFo7eC6hLZPIEZ
+ ZghiH4Oe+XgIb5EzzpuUAgfW2tUps53N/vtoYwTQHHJjv0f3EVTU/nPH7nFntkW4x7PDiCzNO
+ ++L6PVzwqevWvgdUhNVDJ1+zHBhlOILW8ItlaTXtzhuX9duSrEp6n/dFQXYCWkTi9q8BSvAaX
+ XpfYVaC4iFG7sKw9+w7iv4PDWqw=
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,T_SPF_TEMPERROR autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 2:09=E2=80=AFPM Lad, Prabhakar
-<prabhakar.csengg@gmail.com> wrote:
->
-> Hi Alexandre,
->
-> On Wed, Sep 6, 2023 at 1:01=E2=80=AFPM Alexandre Ghiti <alexghiti@rivosin=
-c.com> wrote:
-> >
-> > Hi Prabhakar,
-> >
-> > On Wed, Sep 6, 2023 at 1:49=E2=80=AFPM Lad, Prabhakar
-> > <prabhakar.csengg@gmail.com> wrote:
-> > >
-> > > Hi Alexandre,
-> > >
-> > > On Tue, Aug 1, 2023 at 9:58=E2=80=AFAM Alexandre Ghiti <alexghiti@riv=
-osinc.com> wrote:
-> > > >
-> > > > This function used to simply flush the whole tlb of all harts, be m=
-ore
-> > > > subtile and try to only flush the range.
-> > > >
-> > > > The problem is that we can only use PAGE_SIZE as stride since we do=
-n't know
-> > > > the size of the underlying mapping and then this function will be i=
-mproved
-> > > > only if the size of the region to flush is < threshold * PAGE_SIZE.
-> > > >
-> > > > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > > > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> > > > ---
-> > > >  arch/riscv/include/asm/tlbflush.h | 11 +++++-----
-> > > >  arch/riscv/mm/tlbflush.c          | 34 +++++++++++++++++++++++----=
-----
-> > > >  2 files changed, 31 insertions(+), 14 deletions(-)
-> > > >
-> > > After applying this patch, I am seeing module load issues on RZ/Five
-> > > (complete log [0]). I am testing defconfig + [1] (rz/five related
-> > > configs).
-> > >
-> > > Any pointers on what could be an issue here?
-> >
-> > Can you give me the exact version of the kernel you use? The trap
-> > addresses are vmalloc addresses, and a fix for those landed very late
-> > in the release cycle.
-> >
-> I am using next-20230906, Ive pushed a branch [1] for you to have a look.
->
-> [0] https://github.com/prabhakarlad/linux/tree/rzfive-debug
+Can you please only target Reviewers/Maintainers and mailinglists reported =
+by get_maintainers script?
 
-Great, thanks, I had to get rid of this possibility :)
-
-As-is, I have no idea, can you try to "bisect" the problem? I mean
-which patch in the series leads to those traps?
-
-Thanks!
-
-Alex
-
->
-> Cheers,
-> Prabhakar
+I have only sent patches for mediatek and did some tests=2E So i'm not int=
+erested in patches for hardware i do not have here :)=2E I guess i'm not al=
+one=2E=2E=2E
+regards Frank
