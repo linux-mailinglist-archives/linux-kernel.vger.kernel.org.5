@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0D77941D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F26E7941DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242676AbjIFRIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 13:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
+        id S242902AbjIFRJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 13:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235566AbjIFRIS (ORCPT
+        with ESMTP id S235566AbjIFRJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 13:08:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6024C1998;
-        Wed,  6 Sep 2023 10:08:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAB3AC433C8;
-        Wed,  6 Sep 2023 17:08:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694020095;
-        bh=Ig/k1GbgPg6OmKwwM82+oz8Y85Fx+ZiNym6sZhl4jLo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=E8Y+9zu0D6epCNqmp77C8CQepON8oe2SdWDbDV4CDY6YbQch+jYsszjI6/F3L2CAq
-         DXctAQ/Vze85y3ou3VMErzA7Z5NBCDlOVI+c34arIGqASvoiLPM+Ih+PwtgZly6fVc
-         KiWHgaOd2NIQnn1MoUWbwE5uCyYYk0blVifHCgfTHh05anZoT0t7Kgse647s0xR69Y
-         9A00kxSKk2uspn1BE1gNZ6QpCUazgDg+527Sa3tJHJRjbEndxm5MW7QtSILHAKemj2
-         B1q3K6Ja6DCAwETARlWeh9lzxN7X8y8U1rdQNh9xe6DW68v6j+w7Uyj3sbKqLvsuyM
-         OYerQsLMwKZEw==
-Date:   Wed, 6 Sep 2023 12:08:12 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     sharath.kumar.d.m@intel.com
-Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        dinguyen@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] PCI: altera: refactor driver for supporting new
- platform
-Message-ID: <20230906170812.GA230066@bhelgaas>
+        Wed, 6 Sep 2023 13:09:24 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A1FE70;
+        Wed,  6 Sep 2023 10:09:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FWpTCScDc2IJPu/rDmaKRD0AarJbVA3tXHEgvVajiw8=; b=n/uj6GHth4cEC9GY4xgf5OJGbG
+        TjRMmR2pg+2zx4CHFVi8+xhcCt12eeOXshBChESCaSkMQysn5OJ71LSBb/Vin1JsdVjIDpJm20Hvr
+        z03tpCgC/bLKfqAFHmq7MIaO2in43DarR0HhTccEeNnILMXC6XSee6ZTQLO1C1Af0wayfe5EEOuIp
+        LXCNco1EGVIJB7dZkMABbiALBVqUhApjm9T4jAOHcNGYX3PhkImf/nFYa2mLlGHOxnWhalX/aLPs7
+        1X7DttFFaPn9JBLrjLp3bux1CDtDji1Buu68DfqByfJd7F47xRnAHPxYzO0/A7s4czcomjBwqjL0u
+        EZkuLQeA==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qdw1Q-0040ad-0I;
+        Wed, 06 Sep 2023 17:08:56 +0000
+Date:   Wed, 6 Sep 2023 18:08:56 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Zdenek Kabelac <zkabelac@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Jan Kara <jack@suse.cz>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] fix writing to the filesystem after unmount
+Message-ID: <20230906170856.GA800259@ZenIV>
+References: <59b54cc3-b98b-aff9-14fc-dc25c61111c6@redhat.com>
+ <20230906-launenhaft-kinder-118ea59706c8@brauner>
+ <f5d63867-5b3e-294b-d1f5-a128817cfc7@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230906110918.1501376-2-sharath.kumar.d.m@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <f5d63867-5b3e-294b-d1f5-a128817cfc7@redhat.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Capitalize subject line to match history:
+On Wed, Sep 06, 2023 at 05:03:34PM +0200, Mikulas Patocka wrote:
 
-  PCI: altera: Refactor driver for supporting new platform
+> > IOW, you'd also hang on any umount of a bind-mount. IOW, every
+> > single container making use of this filesystems via bind-mounts would
+> > hang on umount and shutdown.
+> 
+> bind-mount doesn't modify "s->s_writers.frozen", so the patch does nothing 
+> in this case. I tried unmounting bind-mounts and there was no deadlock.
 
-On Wed, Sep 06, 2023 at 04:39:17PM +0530, sharath.kumar.d.m@intel.com wrote:
-> From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+You are making *any* mount destruction hang if the sucker is frozen.
+Which includes the things like exit(2) of the last process within
+a namespace, etc.
 
-Needs a commit log.  It's OK to repeat the subject line.  Also helpful
-if you can hint about why it needs to be refactored.  In this case, it
-looks like you'll need to have a different ISR for Agilex, and also
-something different about root bus vs downstream config accesses.
+And it does include the things like mount --bind /usr/bin/gcc /tmp/cc; umount /tmp/cc
+if /usr happened to be frozen at the moment.
 
-> @@ -100,10 +101,15 @@ struct altera_pcie_ops {
->  	void (*tlp_write_pkt)(struct altera_pcie *pcie, u32 *headers,
->  			      u32 data, bool align);
->  	bool (*get_link_status)(struct altera_pcie *pcie);
-> -	int (*rp_read_cfg)(struct altera_pcie *pcie, int where,
-> -			   int size, u32 *value);
-> +	int (*rp_read_cfg)(struct altera_pcie *pcie, u8 busno,
-> +			unsigned int devfn, int where, int size, u32 *value);
->  	int (*rp_write_cfg)(struct altera_pcie *pcie, u8 busno,
-> -			    int where, int size, u32 value);
-> +			unsigned int devfn, int where, int size, u32 value);
-> +	int (*ep_read_cfg)(struct altera_pcie *pcie, u8 busno,
-> +			unsigned int devfn, int where, int size, u32 *value);
-> +	int (*ep_write_cfg)(struct altera_pcie *pcie, u8 busno,
-> +			unsigned int devfn, int where, int size, u32 value);
+This is really not an option.
 
-"ep_read_cfg" isn't the ideal name because it suggests "endpoint", but
-it may be either an endpoint or a switch upstream port.  The rockchip
-driver uses "other", which isn't super descriptive either but might be
-better.
+> BTW. what do you think that unmount of a frozen filesystem should properly 
+> do? Fail with -EBUSY? Or, unfreeze the filesystem and unmount it? Or 
+> something else?
 
-> +	void (*rp_isr)(struct irq_desc *desc);
->  };
-
-> +static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
-> +				 unsigned int devfn, int where, int size,
-> +				 u32 *value)
-> +{
-> +	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_read_cfg)
-> +		return pcie->pcie_data->ops->rp_read_cfg(pcie, busno, devfn,
-> +							where, size, value);
-
-Several other drivers use pci_is_root_bus() instead of keeping track
-of root_bus_nr and watching for changes to it.  Maybe simpler and more
-reliable?  That would be best as a separate patch all by itself if you
-go that direction.
-
-> +
-> +	if (pcie->pcie_data->ops->ep_read_cfg)
-> +		return pcie->pcie_data->ops->ep_read_cfg(pcie, busno, devfn,
-> +							where, size, value);
-> +	return PCIBIOS_FUNC_NOT_SUPPORTED;
-> +}
+It's not just umount(2).  It's exit(2).  And close(2).  And AF_UNIX garbage
+collector taking out an undeliverable SCM_RIGHTS datagram that happens to
+contain a reference to the last opened file on lazy-umounted fs, etc.
