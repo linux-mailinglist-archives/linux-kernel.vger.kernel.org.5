@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A263793627
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432B9793629
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbjIFHYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 03:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51020 "EHLO
+        id S232259AbjIFHYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 03:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232192AbjIFHYA (ORCPT
+        with ESMTP id S232254AbjIFHYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 03:24:00 -0400
+        Wed, 6 Sep 2023 03:24:01 -0400
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CECCFF;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FF8E4D;
         Wed,  6 Sep 2023 00:23:56 -0700 (PDT)
 Received: from kwepemm600007.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RgYhF4C9lzTlrD;
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RgYhF5mTDzTlt7;
         Wed,  6 Sep 2023 15:21:17 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 6 Sep 2023 15:23:53 +0800
+ 15.1.2507.31; Wed, 6 Sep 2023 15:23:54 +0800
 From:   Jijie Shao <shaojijie@huawei.com>
 To:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
         <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
@@ -30,9 +30,9 @@ CC:     <shenjian15@huawei.com>, <wangjie125@huawei.com>,
         <liuyonglong@huawei.com>, <shaojijie@huawei.com>,
         <chenhao418@huawei.com>, <netdev@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH net 2/7] net: hns3: Support query tx timeout threshold by debugfs
-Date:   Wed, 6 Sep 2023 15:20:13 +0800
-Message-ID: <20230906072018.3020671-3-shaojijie@huawei.com>
+Subject: [PATCH net 3/7] net: hns3: fix byte order conversion issue in hclge_dbg_fd_tcam_read()
+Date:   Wed, 6 Sep 2023 15:20:14 +0800
+Message-ID: <20230906072018.3020671-4-shaojijie@huawei.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230906072018.3020671-1-shaojijie@huawei.com>
 References: <20230906072018.3020671-1-shaojijie@huawei.com>
@@ -52,35 +52,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-support query tx timeout threshold by debugfs
+From: Hao Chen <chenhao418@huawei.com>
 
+req1->tcam_data is defined as "u8 tcam_data[8]", and we convert it as
+(u32 *) without considerring byte order conversion,
+it may result in printing wrong data for tcam_data.
+
+Convert tcam_data to (__le32 *) first to fix it.
+
+Fixes: b5a0b70d77b9 ("net: hns3: refactor dump fd tcam of debugfs")
+Signed-off-by: Hao Chen <chenhao418@huawei.com>
 Signed-off-by: Jijie Shao <shaojijie@huawei.com>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-index f276b5ecb431..8086722a56c0 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
-@@ -1045,6 +1045,7 @@ hns3_dbg_dev_specs(struct hnae3_handle *h, char *buf, int len, int *pos)
- 	struct hnae3_ae_dev *ae_dev = pci_get_drvdata(h->pdev);
- 	struct hnae3_dev_specs *dev_specs = &ae_dev->dev_specs;
- 	struct hnae3_knic_private_info *kinfo = &h->kinfo;
-+	struct net_device *dev = kinfo->netdev;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+index f01a7a9ee02c..ff3f8f424ad9 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+@@ -1519,7 +1519,7 @@ static int hclge_dbg_fd_tcam_read(struct hclge_dev *hdev, bool sel_x,
+ 	struct hclge_desc desc[3];
+ 	int pos = 0;
+ 	int ret, i;
+-	u32 *req;
++	__le32 *req;
  
- 	*pos += scnprintf(buf + *pos, len - *pos, "dev_spec:\n");
- 	*pos += scnprintf(buf + *pos, len - *pos, "MAC entry num: %u\n",
-@@ -1087,6 +1088,9 @@ hns3_dbg_dev_specs(struct hnae3_handle *h, char *buf, int len, int *pos)
- 			  dev_specs->mc_mac_size);
- 	*pos += scnprintf(buf + *pos, len - *pos, "MAC statistics number: %u\n",
- 			  dev_specs->mac_stats_num);
-+	*pos += scnprintf(buf + *pos, len - *pos,
-+			  "TX timeout threshold: %d seconds\n",
-+			  dev->watchdog_timeo / HZ);
+ 	hclge_cmd_setup_basic_desc(&desc[0], HCLGE_OPC_FD_TCAM_OP, true);
+ 	desc[0].flag |= cpu_to_le16(HCLGE_COMM_CMD_FLAG_NEXT);
+@@ -1544,22 +1544,22 @@ static int hclge_dbg_fd_tcam_read(struct hclge_dev *hdev, bool sel_x,
+ 			 tcam_msg.loc);
+ 
+ 	/* tcam_data0 ~ tcam_data1 */
+-	req = (u32 *)req1->tcam_data;
++	req = (__le32 *)req1->tcam_data;
+ 	for (i = 0; i < 2; i++)
+ 		pos += scnprintf(tcam_buf + pos, HCLGE_DBG_TCAM_BUF_SIZE - pos,
+-				 "%08x\n", *req++);
++				 "%08x\n", le32_to_cpu(*req++));
+ 
+ 	/* tcam_data2 ~ tcam_data7 */
+-	req = (u32 *)req2->tcam_data;
++	req = (__le32 *)req2->tcam_data;
+ 	for (i = 0; i < 6; i++)
+ 		pos += scnprintf(tcam_buf + pos, HCLGE_DBG_TCAM_BUF_SIZE - pos,
+-				 "%08x\n", *req++);
++				 "%08x\n", le32_to_cpu(*req++));
+ 
+ 	/* tcam_data8 ~ tcam_data12 */
+-	req = (u32 *)req3->tcam_data;
++	req = (__le32 *)req3->tcam_data;
+ 	for (i = 0; i < 5; i++)
+ 		pos += scnprintf(tcam_buf + pos, HCLGE_DBG_TCAM_BUF_SIZE - pos,
+-				 "%08x\n", *req++);
++				 "%08x\n", le32_to_cpu(*req++));
+ 
+ 	return ret;
  }
- 
- static int hns3_dbg_dev_info(struct hnae3_handle *h, char *buf, int len)
 -- 
 2.30.0
 
