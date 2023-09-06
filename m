@@ -2,94 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA7579418D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC25794191
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242971AbjIFQhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 12:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46678 "EHLO
+        id S243051AbjIFQiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 12:38:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbjIFQhA (ORCPT
+        with ESMTP id S231196AbjIFQiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 12:37:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62F510F7;
-        Wed,  6 Sep 2023 09:36:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B087C433C8;
-        Wed,  6 Sep 2023 16:36:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694018217;
-        bh=CeZDExZ3JEeTA83YlOxkGWYuI1ZSMRsMF2DMHyG4XJQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kgo6HLo+U1CPRmH5TVketmasBXd6OpO0qoSIKvazMSeusYZwTebZN66NCPGoZQ6BR
-         RuLPnQBLDIQptWmXCX/nVqXSLrwmYIkpeAcwBrzsh8C6QumLmjNxht3m2vOvUzeKO0
-         9AWUuUPm6y7LpTtAAdCB3Ci0JAPN6t0zfORFs9/YYNtr5K95u+bt7ymCAbrGSkhiZW
-         BdCInhRL/iK7TCz9AD5B7MXTaluBpd6VaUpYDmNBlkBx5f0ch71pKLmi4f+WM/sAcA
-         7TFq+xQJ/x/deUADdptgMOrgajOdKnbr/BPpKti7AlhSrlY9K2Rsrp897z/6DUhm2o
-         9ywASMHnCiUHQ==
-Date:   Wed, 6 Sep 2023 17:36:52 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, Shuah Khan <shuah@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: selftests: user_events: Test terminated by assertion
-Message-ID: <9f8a7f98-1e07-402a-8967-ba8d7e3c2418@sirena.org.uk>
-References: <CA+G9fYuugZ0OMeS6HvpSS4nuf_A3s455ecipGBvER0LJHojKZg@mail.gmail.com>
- <ZPidKsNWH34Xt+r6@DESKTOP-4OLSCEK.>
- <e24daa53-d8c7-4c40-b04d-20b64ae220fa@sirena.org.uk>
- <20230906122822.0ecef430@gandalf.local.home>
+        Wed, 6 Sep 2023 12:38:13 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782BF10F7
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 09:38:05 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 386EKPQD028600;
+        Wed, 6 Sep 2023 11:37:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=PODMain02222019; bh=Atc7lVm5+/UL8Hp
+        opPWqch9yCPj8m1pY5oNSjJu5VSE=; b=gKv4coBn2ObW6k159xKHYvEN1sjVmYp
+        XfSg4byrcrlzWula7d8e3LqKivlg9xAtIlpX1wbT9E6k123DCdny0XLQL9IAkI2W
+        BMW/3IuCTUOtAmNouINulWD9goiX2YkdTITqojCLyF4Da2NKqs8+XzUgmJBvW70p
+        1v7PuNm6RTgG4LhhF3AYjJ9FABr+P6ssiKKDkB0PGKlTqlbbUpMx3FGiUux71GPN
+        BU5hthFqpFNsS4iSnBE/JjKRQwEEvA3a3U3a55dQfNNMAKL0UeiX/+xHRz1dXVhz
+        sQAHcZvw6jQWn1ErYVR4p80F1yj5cGKRKL0tV31rk68AJLp3Ab6TPmg==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sv2ex5eee-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Sep 2023 11:37:27 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 6 Sep
+ 2023 17:37:25 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Wed, 6 Sep 2023 17:37:25 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1553411AC;
+        Wed,  6 Sep 2023 16:37:25 +0000 (UTC)
+Date:   Wed, 6 Sep 2023 16:37:25 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+CC:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Stefan Binding" <sbinding@opensource.cirrus.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>, <kernel@collabora.com>
+Subject: Re: [PATCH 9/9] ASoC: cs35l41: Use devm_pm_runtime_enable()
+Message-ID: <20230906163725.GN103419@ediswmail.ad.cirrus.com>
+References: <20230902210621.1184693-1-cristian.ciocaltea@collabora.com>
+ <20230902210621.1184693-10-cristian.ciocaltea@collabora.com>
+ <20230905094535.GK103419@ediswmail.ad.cirrus.com>
+ <953eb242-4d52-4cdc-8f7d-71af003778c5@collabora.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5dKKrsabEw5/gFwi"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20230906122822.0ecef430@gandalf.local.home>
-X-Cookie: She blinded me with science!
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <953eb242-4d52-4cdc-8f7d-71af003778c5@collabora.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: 0CVpzE3oxNXbAvQuFrb5e9M92i5H-BPn
+X-Proofpoint-GUID: 0CVpzE3oxNXbAvQuFrb5e9M92i5H-BPn
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 05, 2023 at 10:15:46PM +0300, Cristian Ciocaltea wrote:
+> On 9/5/23 12:45, Charles Keepax wrote:
+> > On Sun, Sep 03, 2023 at 12:06:21AM +0300, Cristian Ciocaltea wrote:
+> >> Simplify runtime PM during probe by converting pm_runtime_enable() to
+> >> the managed version.
+> >>
+> >> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+> >> ---
+> >> @@ -1376,7 +1379,6 @@ void cs35l41_remove(struct cs35l41_private *cs35l41)
+> >>  	cancel_work_sync(&cs35l41->mdsync_up_work);
+> >>  
+> >>  	pm_runtime_get_sync(cs35l41->dev);
+> >> -	pm_runtime_disable(cs35l41->dev);
+> >>  
+> >>  	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1, 0xFFFFFFFF);
+> >>  	if (cs35l41->hw_cfg.bst_type == CS35L41_SHD_BOOST_PASS ||
+> > 
+> > Are we sure this is safe? The remove handler appears to be
+> > written to disable pm_runtime at the start presumably to stop the
+> > resume/suspend handler running during the remove callback.
+> > Whereas after this change the pm_runtime isn't disabled until
+> > after the remove callback has run. Does this open a window were
+> > we could get an erroneous pm_runtime suspend after the
+> > pm_runtime_put_noidle?
+> 
+> I've just made a test adding a 6s sleep before returning from the remove 
+> handler: 
+> 
+> [14444.894316] cs35l41 spi-VLV1776:00: Runtime resume
+> [14444.894469] cs35l41 spi-VLV1776:00: sleep 6s before return of cs35l41_remove()
+> [14448.338994] cs35l41 spi-VLV1776:00: Runtime suspend
+> [14451.079649] cs35l41 spi-VLV1776:00: return from cs35l41_remove()
+> [14451.080129] cs35l41 spi-VLV1776:00: Runtime resume
+> [14451.080165] cs35l41 spi-VLV1776:00: ASoC: Unregistered DAI 'cs35l41-pcm'
+> [14451.080181] cs35l41 spi-VLV1776:00: Runtime suspend
+> [14451.813639] acp5x_i2s_playcap acp5x_i2s_playcap.0: ASoC: Unregistered DAI 'acp5x_i2s_playcap.0'
+> 
+> As expected, suspend triggered, but a resume was issued later, before DAI
+> got unregistered.
+> 
+> I didn't notice any issues while repeating the test several times, hence 
+> I wonder what would be the reason to prevent getting suspend/resume events 
+> at this point?
 
---5dKKrsabEw5/gFwi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The enter/exit hibernate code might run, which at the very
+least might result in a bunch of unexpected and failing bus
+traffic. Having a bit of a poke through the code, I guess the
+most dangerous thing would if you actually got as far as an
+extra runtime resume. This might cause cs35l41_init_boost
+to run which would undo the work done by the call to
+cs35l41_safe_reset in remove, which could leave the boost in a
+dangerous state when we enable reset/power down the supplies,
+which I think was not considered good. But its just likely
+simpler/cleaner if we don't have to think about all the
+possible implications of such things by just not allowing
+it to happen.
 
-On Wed, Sep 06, 2023 at 12:28:22PM -0400, Steven Rostedt wrote:
-> Mark Brown <broonie@kernel.org> wrote:
-
-> > Yes, tests should skip if preconditions for running them aren't met.
-
-> Yep, see how the ftrace selftests run. If it is determined that the feature
-> is not present, it simple returns UNSUPPORTED and not FAILED.
-
-In KTAP terms that's specifically SKIP, generated by calling SKIP() if
-using kselftest_harness.h.
-
---5dKKrsabEw5/gFwi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmT4qqMACgkQJNaLcl1U
-h9DhrAf+J8BksLMv8NQLFFWVW8p3QI7SJEnsNEghMTSq7MCyjAlAHAkzFMCAAllL
-aYn0RBZ6IIE6+Nx/0i3zbe0ySiktg/cFv9J8YUYa0pcX6J9q/beNpUZnvUWjJuPq
-a80/Pl5hMeVEvztBgZpsKxvqr1Wo4Qk1+sxTUg4ufFGHTjgMbP7hj4qph8HsCJQC
-9lX7XZ9kaATUmOCwMe7UcXCSzBvmGnMmEkpjHBouvUsIrz4x3zqZ+ThYhQGLBokH
-oWWcWiXYkXarp1jusDEdRDlySBNtxIz6UW0hmTMbIpS3x+04LCkauIsYbcpQaLjP
-nLbSNafHMK71t4kmiU3IT1YAKk2eBQ==
-=Pbqx
------END PGP SIGNATURE-----
-
---5dKKrsabEw5/gFwi--
+Thanks,
+Charles
