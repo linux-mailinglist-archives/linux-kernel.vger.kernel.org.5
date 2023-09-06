@@ -2,103 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BFB794443
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7CE794446
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243667AbjIFUIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 16:08:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
+        id S244105AbjIFUJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 16:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbjIFUId (ORCPT
+        with ESMTP id S230473AbjIFUJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 16:08:33 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC25C1992
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 13:08:29 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-68bf123aca4so327704b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 13:08:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694030909; x=1694635709; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oBtIgZl1ms5fC0VvHcL+Q3mCBoxVdMVA1BmpLPYDsb8=;
-        b=hs69AfxoOPjmdGbfLu887VoPV0tR5f716UiQ7Lr4c5elll96tp80CJE2vha9rrehOr
-         oWDb3yKE7T092l9utTuyqtRlQQ/vFtySynDMyMLFwht2ATiE/LalWLrodNmFy229I2B2
-         8KbAFGoPRvrhO7NBm9x17DAgms3DEw3xVxAzMlsS//of34T1N6ZhWf7NBh+XUkVVPoiE
-         4K3gL+ZIIDlJvThJ+OMVGMaPbMWMyQFX5cOjNaUhmamtOQ3p1iHDsMuxtUwwgKXO6cHB
-         X28cUuKCNq/xC5er+y2/mYZhEdvfW54dx+AVXSoWIeKa8Oc/oSvpfedl0n7XpC3joT06
-         sfrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694030909; x=1694635709;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oBtIgZl1ms5fC0VvHcL+Q3mCBoxVdMVA1BmpLPYDsb8=;
-        b=P0irKYINxKVN8boa/8XgPQDDmG10Ouj4XaemmMDzboZlalallCPL9iyI/2ZplGYrxy
-         VT3yXzB8arS6fUcGya0tVGpEbYwxMluYJKhBAOFHo7PITifCEe+sDq3cI0BtU6TdJqeH
-         iTqMBID/OrPZOHCBs0IlNGyjJ7MvLRFzTczRSDNms6CCIgG6JpZ3t+3UH9XvflnPLCai
-         /IL7blV3nhQd20yruTyYEJL+yaY/cS5hbgkr8artK6ytgQxxFNKoVNX9jWEyEB/MbzuZ
-         MTB7JOIGFXa1V7JSOFc3t5MAJCCBefBqGjaMHCUAL5O53erHD1YEj3KR41eKto9sLE5I
-         MsTQ==
-X-Gm-Message-State: AOJu0YygWyP3oZLjkKaefaAmgsCQXYoByQf0VPcvHP0Mru6Wz4IN7NbD
-        SSusdlctfup/Yc8mF+GScOQ78CiReDQ=
-X-Google-Smtp-Source: AGHT+IFSk0M46Pz8MoaYiFpqpBPwiY5U6p475LaEet0bYsUgS14XKHdC+RnyK9LNko9huZyr4AB5W2XG1Lw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:4186:b0:68e:37ea:4f16 with SMTP id
- ca6-20020a056a00418600b0068e37ea4f16mr404435pfb.0.1694030909345; Wed, 06 Sep
- 2023 13:08:29 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 13:08:27 -0700
-In-Reply-To: <10bdaf6d-1c5c-6502-c340-db3f84bf74a1@intel.com>
-Mime-Version: 1.0
-References: <CAPm50aLd5ZbAqd8O03fEm6UhHB_svfFLA19zBfgpDEQsQUhoGw@mail.gmail.com>
- <10bdaf6d-1c5c-6502-c340-db3f84bf74a1@intel.com>
-Message-ID: <ZPjcO/N54pvhLjSz@google.com>
-Subject: Re: [PATCH] KVM: X86: Reduce calls to vcpu_load
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Hao Peng <flyingpenghao@gmail.com>, pbonzini@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Sep 2023 16:09:19 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB88198E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 13:09:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IWRauGgfrnnZLkU3oyZlz7GvuOrCS1ynxFHxzRGiEN8=; b=D3Sv0y3rc6sEcVHK2gNnmavfrm
+        s3V73rfzkB3M1Jv606Op8mnWArT7KtAsjK6A3HAsZLFa4vpb58MCWTfbptoHptDwb3lXD0c1/TR5o
+        4i9+yQ/MerWu+A0929nGza4BSDCrU3Qj3KDLmfD9UWV1aotHG3u4O1k3664S4qQjRqv9YZd3Ku+gs
+        bqkShLmW21pNNkvFxU1nH/4PJSb2JF1tnI8ZRmzY+f0adg+jaJX/5kBbHveDQOB9wtxtiMEhBXLYL
+        YY5bdo7RTVn1wxJWoixud+CUl1BHp4Am84Q1wvnGozxHTFbF1W1kacV60EC8asBYFC2+u1QufJYUy
+        mMhBCb/w==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qdypT-001Ft2-0z;
+        Wed, 06 Sep 2023 20:08:49 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5E295300422; Wed,  6 Sep 2023 22:08:48 +0200 (CEST)
+Date:   Wed, 6 Sep 2023 22:08:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Phil Auld <pauld@redhat.com>
+Subject: Re: [PATCH v4 6/7] sched/deadline: Deferrable dl server
+Message-ID: <20230906200848.GA35105@noisy.programming.kicks-ass.net>
+References: <cover.1693510979.git.bristot@kernel.org>
+ <754dab7f30695ca10a41613068bb63db3bfea003.1693510979.git.bristot@kernel.org>
+ <20230905134203.GA20703@noisy.programming.kicks-ass.net>
+ <b3b3a5c5-6688-966d-3d78-3e140730cb7b@redhat.com>
+ <20230906082952.GB38741@noisy.programming.kicks-ass.net>
+ <0ce80c5d-2433-13d5-33df-d110cf8faa9c@redhat.com>
+ <20230906200406.GF28278@noisy.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230906200406.GF28278@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023, Xiaoyao Li wrote:
-> On 9/6/2023 2:24 PM, Hao Peng wrote:
-> > From: Peng Hao <flyingpeng@tencent.com>
+On Wed, Sep 06, 2023 at 10:04:06PM +0200, Peter Zijlstra wrote:
+> On Wed, Sep 06, 2023 at 04:58:11PM +0200, Daniel Bristot de Oliveira wrote:
+> 
+> > > So one thing we could do is have update_curr_fair() decrement
+> > > fair_server's runtime and yield the period then it hits 0 (and capping
+> > > it at 0, not allowing it to go negative or so).
+> > > 
+> > > That way you only force the situation when FAIR hasn't had it's allotted
+> > > time this perio, and only for as much as to make up for the time it
+> > > lacks.
 > > 
-> > The call of vcpu_load/put takes about 1-2us. Each
-> > kvm_arch_vcpu_create will call vcpu_load/put
-> > to initialize some fields of vmcs, which can be
-> > delayed until the call of vcpu_ioctl to process
-> > this part of the vmcs field, which can reduce calls
-> > to vcpu_load.
+> > We can also decrease the runtime to a negative number while in
+> > defer/throttle state, and let the while in replenish_dl_entity() to
+> > replenish with the += runtime;
 > 
-> what if no vcpu ioctl is called after vcpu creation?
+> Yes, but my point was that fair_server gives a lower bound of runtime
+> per period, more -- if available -- is fine.
 > 
-> And will the first (it was second before this patch) vcpu_load() becomes
-> longer? have you measured it?
+> If we allow negative runtime, you'll affect future periods, and that is
+> not desired in this case.
+> 
+> Or am I still confused?
 
-I don't think the first vcpu_load() becomes longer, this avoids an entire
-load()+put() pair by doing the initialization in the first ioctl().
+That is, let update_curr_fair() decrement fair_server runtime
+*unconditionally* -- even if the task was not selected through the
+server.
 
-That said, the patch is obviously buggy, it hooks kvm_arch_vcpu_ioctl() instead
-of kvm_vcpu_ioctl(), e.g. doing KVM_RUN, KVM_SET_SREGS, etc. will cause explosions.
+Specifically, if the fair task is selected normally due to lack of
+deadline tasks, that runtime *still* counts towards the fair-server and
+have the server yield the period when zero.
 
-It will also break the TSC synchronization logic in kvm_arch_vcpu_postcreate(),
-which can "race" with ioctls() as the vCPU file descriptor is accessible by
-userspace the instant it's installed into the fd tables, i.e. userspace doesn't
-have to wait for KVM_CREATE_VCPU to complete.
+This means that fair_server is only effective IFF 'normal' execution
+doesn't match the fair_server.runtime execution.
 
-And I gotta imagine there are other interactions I haven't thought of off the
-top of my head, e.g. the vCPU is also reachable via kvm_for_each_vcpu().  All it
-takes is one path that touches a lazily initialized field for this to fall apart.
 
-> I don't think it worth the optimization unless a strong reason.
-
-Yeah, this is a lot of subtle complexity to shave 1-2us.
