@@ -2,53 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77754794514
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9C5794518
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244798AbjIFV2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 17:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37556 "EHLO
+        id S243117AbjIFV3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 17:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235806AbjIFV2U (ORCPT
+        with ESMTP id S233000AbjIFV3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 17:28:20 -0400
+        Wed, 6 Sep 2023 17:29:07 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023B319BB;
-        Wed,  6 Sep 2023 14:28:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 628A3C433C8;
-        Wed,  6 Sep 2023 21:28:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD91173B;
+        Wed,  6 Sep 2023 14:29:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27B0DC433C7;
+        Wed,  6 Sep 2023 21:29:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694035691;
-        bh=97KtZLFki8TYIdeuSt8RiztJLygVCH9CnWN8bj1BXpI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DgUoVWuBhBn5cDUBE7Kd5AczoOgQGiWzZmBVbqSMtB0k59yLwIB3tCUnZqhN5Zl/6
-         GWeWLkJXdiueV9biyBGWJLqBU9HREI9ZNbpRNmG20oWvV4i8/4Wv3qisShK92srKOc
-         9COjCv2WBoHT5q5Rsr3ft6aWQfSHjfAdSwi0Ec4Plr8y7eo4+/Drt/DiISeIFFRRb6
-         RiPLG+YrgIRW5v4YZME797MEZF2c/CQIljO1INuM6u06N8yi4GGh3RblMAFJTb/zvi
-         7oMe5ZmvxD8cieZj9KBd6nRTZlD7tZ+gd8Qbqb5zkGbLVnW5hyR8uWU9mR70fai9Wq
-         LWyOYRavyebeQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8524F403F4; Wed,  6 Sep 2023 18:28:08 -0300 (-03)
-Date:   Wed, 6 Sep 2023 18:28:08 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Subject: Re: [PATCHSET 0/5] perf lock contention: Add cgroup support (v2)
-Message-ID: <ZPju6GNFy3sALgRb@kernel.org>
-References: <20230906174903.346486-1-namhyung@kernel.org>
+        s=k20201202; t=1694035743;
+        bh=iDr3hDOf/Nx4Q5WWeR5P9LT2DKH42MO/Ymm5xBG/Jqs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=gzhI0wD+uv7ad1uUC3N9XixBwLoHXbtQv/TV4pqoIFoPsoRT0VPXDYtowH819fs5v
+         VyV8w0pYePqOxTXkpbAHfJefwiSaSQZybXN29lswuQ7ymxUsMU/ItDWmFP74wPej2e
+         mzjPWe2oCQzQzOJ2PL/4GOwPO1yJXB8OsO0CYDvUvJRuPCem13DexwFaWBMrLcFMB2
+         yqUp1b3+pblOiFtHKH2JNHI26qeAbfMDAoAbVpn0sWPAgILqzlC2OikpRWylzzogsc
+         D2J10Y8UCUKhhgpiwa+1wg4SJqrHkiWeLIYxgvrI9EleMk7eYfF9UlMEWzjwml5P2R
+         XKHhnGUm3cs9w==
+Message-ID: <58052e86-42fc-b444-cd32-344b520195d1@kernel.org>
+Date:   Thu, 7 Sep 2023 06:29:01 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230906174903.346486-1-namhyung@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3] ahci: libahci: clear pending interrupt status
+Content-Language: en-US
+To:     Szuying Chen <chensiying21@gmail.com>, Niklas.Cassel@wdc.com,
+        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jesse1_Chang@asmedia.com.tw, Richard_Hsu@asmedia.com.tw,
+        Chloe_Chen@asmedia.com.tw
+References: <20230906095334.10310-1-Chloe_Chen@asmedia.com.tw>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20230906095334.10310-1-Chloe_Chen@asmedia.com.tw>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,17 +54,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 06, 2023 at 10:48:58AM -0700, Namhyung Kim escreveu:
-> Hello,
-> 
-> The cgroup support comes with two flavors.  One is to aggregate the
-> result by cgroups and the other is to filter result for the given
-> cgroups.  For now, it only works in BPF mode.
-> 
-> * v2 changes
->  - fix compiler errors  (Arnaldo)
->  - add Reviewed-by from Ian
+On 9/6/23 18:53, Szuying Chen wrote:
+> Cleared PxIS and PxIE with error recovery when ISR handle interface fatal.
 
-Thanks, applied, tested, pushing to tmp.perf-tools-next.
+This sentence has no verb and is unclear. What exactly are you trying to say ?
 
-- Arnaldo
+> Then a SDB FIS with ERR (set PxIS.TFES) is received
+> before PxCMD.ST is set to 0.
+
+Then -> Then if ?
+Then what ? you are not saying what happen in this case.
+
+> When error recovery was finish and PxCMD.ST is set to 1.
+
+was finish -> finishes ?
+And ? what happen when that is true ?
+
+> The HBA can't issue any new commands.
+
+That is the issue, but given that all the sentences above are very unclear, it
+is hard to understand what conditions lead to this.
+
+> Because the PxIS.TFES bit is not cleared.
+
+Why split that as a different sentence ? Shouldn't this be:
+
+The HBA cannot issue any new command because the PxIS.TFES bit is not cleared.
+
+> To avoid this,
+> we adds the function to clear pending interrupt before COMRESET.
+> It follows the AHCI 1.3.1 - section 6.2.2.2 specification.
+
+To avoid this, introduce the function ahci_port_clear_pending_irq() to clear
+pending interrupts before executing a COMRESET. This follows the AHCI 1.3.1 -
+section 6.2.2.2 specification.
+
+> 
+> Signed-off-by: Szuying Chen <Chloe_Chen@asmedia.com.tw>
+> ---
+> V1->V2: On suggestion by Damien to renamed helper function and modified
+> ahci_port_init() to make use of the helper.
+> V2->V3: On suggestion by Niklas to modify commit log and delete the
+> extra describe.
+> 
+>  drivers/ata/libahci.c | 35 +++++++++++++++++++++++------------
+>  1 file changed, 23 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
+> index e2bacedf28ef..f1263364fa97 100644
+> --- a/drivers/ata/libahci.c
+> +++ b/drivers/ata/libahci.c
+> @@ -1256,6 +1256,26 @@ static ssize_t ahci_activity_show(struct ata_device *dev, char *buf)
+>  	return sprintf(buf, "%d\n", emp->blink_policy);
+>  }
+> 
+> +static void ahci_port_clear_pending_irq(struct ata_port *ap)
+> +{
+> +	struct ahci_host_priv *hpriv = ap->host->private_data;
+> +	void __iomem *port_mmio = ahci_port_base(ap);
+> +	u32 tmp;
+> +
+> +	/* clear SError */
+> +	tmp = readl(port_mmio + PORT_SCR_ERR);
+> +	dev_dbg(ap->host->dev, "PORT_SCR_ERR 0x%x\n", tmp);
+> +	writel(tmp, port_mmio + PORT_SCR_ERR);
+> +
+> +	/* clear port IRQ */
+> +	tmp = readl(port_mmio + PORT_IRQ_STAT);
+> +	dev_dbg(ap->host->dev, "PORT_IRQ_STAT 0x%x\n", tmp);
+> +	if (tmp)
+> +		writel(tmp, port_mmio + PORT_IRQ_STAT);
+> +
+> +	writel(1 << ap->port_no, hpriv->mmio + HOST_IRQ_STAT);
+> +}
+> +
+>  static void ahci_port_init(struct device *dev, struct ata_port *ap,
+>  			   int port_no, void __iomem *mmio,
+>  			   void __iomem *port_mmio)
+> @@ -1270,18 +1290,7 @@ static void ahci_port_init(struct device *dev, struct ata_port *ap,
+>  	if (rc)
+>  		dev_warn(dev, "%s (%d)\n", emsg, rc);
+> 
+> -	/* clear SError */
+> -	tmp = readl(port_mmio + PORT_SCR_ERR);
+> -	dev_dbg(dev, "PORT_SCR_ERR 0x%x\n", tmp);
+> -	writel(tmp, port_mmio + PORT_SCR_ERR);
+> -
+> -	/* clear port IRQ */
+> -	tmp = readl(port_mmio + PORT_IRQ_STAT);
+> -	dev_dbg(dev, "PORT_IRQ_STAT 0x%x\n", tmp);
+> -	if (tmp)
+> -		writel(tmp, port_mmio + PORT_IRQ_STAT);
+> -
+> -	writel(1 << port_no, mmio + HOST_IRQ_STAT);
+> +	ahci_port_clear_pending_irq(ap);
+> 
+>  	/* mark esata ports */
+>  	tmp = readl(port_mmio + PORT_CMD);
+> @@ -1603,6 +1612,8 @@ int ahci_do_hardreset(struct ata_link *link, unsigned int *class,
+>  	tf.status = ATA_BUSY;
+>  	ata_tf_to_fis(&tf, 0, 0, d2h_fis);
+> 
+> +	ahci_port_clear_pending_irq(ap);
+> +
+>  	rc = sata_link_hardreset(link, timing, deadline, online,
+>  				 ahci_check_ready);
+> 
+> --
+> 2.39.2
+> 
+
+-- 
+Damien Le Moal
+Western Digital Research
+
