@@ -2,169 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9C5794518
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E71794526
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243117AbjIFV3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 17:29:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39358 "EHLO
+        id S234739AbjIFVfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 17:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233000AbjIFV3H (ORCPT
+        with ESMTP id S231613AbjIFVfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 17:29:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD91173B;
-        Wed,  6 Sep 2023 14:29:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27B0DC433C7;
-        Wed,  6 Sep 2023 21:29:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694035743;
-        bh=iDr3hDOf/Nx4Q5WWeR5P9LT2DKH42MO/Ymm5xBG/Jqs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=gzhI0wD+uv7ad1uUC3N9XixBwLoHXbtQv/TV4pqoIFoPsoRT0VPXDYtowH819fs5v
-         VyV8w0pYePqOxTXkpbAHfJefwiSaSQZybXN29lswuQ7ymxUsMU/ItDWmFP74wPej2e
-         mzjPWe2oCQzQzOJ2PL/4GOwPO1yJXB8OsO0CYDvUvJRuPCem13DexwFaWBMrLcFMB2
-         yqUp1b3+pblOiFtHKH2JNHI26qeAbfMDAoAbVpn0sWPAgILqzlC2OikpRWylzzogsc
-         D2J10Y8UCUKhhgpiwa+1wg4SJqrHkiWeLIYxgvrI9EleMk7eYfF9UlMEWzjwml5P2R
-         XKHhnGUm3cs9w==
-Message-ID: <58052e86-42fc-b444-cd32-344b520195d1@kernel.org>
-Date:   Thu, 7 Sep 2023 06:29:01 +0900
+        Wed, 6 Sep 2023 17:35:21 -0400
+Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B034319A4
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 14:35:15 -0700 (PDT)
+Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1bf525c269cso3631485ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 14:35:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694036115; x=1694640915;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AF+QLvnv3Ner2dzu27pFKXA8E2NnGG2JZHcD6NYjSTI=;
+        b=NaLLF3EbVdff0J4M6gQa/MMKKpkI2ZsGNVc99eh2aVMRStQ4Qx2cht6T5/9O6kdpqt
+         TsR0ZMT707y/yUjgUOD+VFEcVgf9uWJCDC2VpEVn2La7MFfAv10E0nQK0oXcK+1PwWsp
+         uxIEDWP7a0ZG42BCnenhrJ9AZzmPrRrJqonjPCgmklKXjTKJPMJMfCG9tztNJ3AxrAuk
+         lzFgZapBw612W4J0TOhQdwzyCrTtGUnejJAiGF5j22+UbUmBJU1u+28PCfkNy1tWJEjC
+         tHJ9IGeGdS6c8WdxRN4rpmQTRUCaQmX97l5tEZrxf9VtUlYuYbslyk9bAvc6rK9LEgxg
+         cBmQ==
+X-Gm-Message-State: AOJu0Yww5i0nSS6/7KwgrbWUfFrg4vMIYqje62c9xJCiDWjLaQB2Jvri
+        P2MKNCK+cig0n+x4GrxrwUbb78F5TO2KCFFxDYIj1laZVCRX
+X-Google-Smtp-Source: AGHT+IH0jSaJ5gLdKHr1IhZJSXcBBHTZfRV9OrYpfiO+gssm8XYSHAYVpdiIXR6iEoGEJCxpEXIPZwNawlIAsLKG2kfYUYmzWVXN
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3] ahci: libahci: clear pending interrupt status
-Content-Language: en-US
-To:     Szuying Chen <chensiying21@gmail.com>, Niklas.Cassel@wdc.com,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jesse1_Chang@asmedia.com.tw, Richard_Hsu@asmedia.com.tw,
-        Chloe_Chen@asmedia.com.tw
-References: <20230906095334.10310-1-Chloe_Chen@asmedia.com.tw>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20230906095334.10310-1-Chloe_Chen@asmedia.com.tw>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:f686:b0:1c1:f00a:64d5 with SMTP id
+ l6-20020a170902f68600b001c1f00a64d5mr5936399plg.4.1694036115176; Wed, 06 Sep
+ 2023 14:35:15 -0700 (PDT)
+Date:   Wed, 06 Sep 2023 14:35:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e1c4c10604b7849d@google.com>
+Subject: [syzbot] [reiserfs?] BUG: unable to handle kernel paging request in mas_alloc_nodes
+From:   syzbot <syzbot+de4269ef04437bffcaa9@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, brauner@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/6/23 18:53, Szuying Chen wrote:
-> Cleared PxIS and PxIE with error recovery when ISR handle interface fatal.
+Hello,
 
-This sentence has no verb and is unclear. What exactly are you trying to say ?
+syzbot found the following issue on:
 
-> Then a SDB FIS with ERR (set PxIS.TFES) is received
-> before PxCMD.ST is set to 0.
+HEAD commit:    a47fc304d2b6 Add linux-next specific files for 20230831
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1709eb67a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6ecd2a74f20953b9
+dashboard link: https://syzkaller.appspot.com/bug?extid=de4269ef04437bffcaa9
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=103ea770680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13206d04680000
 
-Then -> Then if ?
-Then what ? you are not saying what happen in this case.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b2e8f4217527/disk-a47fc304.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ed6cdcc09339/vmlinux-a47fc304.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/bd9b2475bf5a/bzImage-a47fc304.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/2c0bbd58005c/mount_1.gz
 
-> When error recovery was finish and PxCMD.ST is set to 1.
+Bisection is inconclusive: the issue happens on the oldest tested release.
 
-was finish -> finishes ?
-And ? what happen when that is true ?
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=173b59afa80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=14bb59afa80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10bb59afa80000
 
-> The HBA can't issue any new commands.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+de4269ef04437bffcaa9@syzkaller.appspotmail.com
 
-That is the issue, but given that all the sentences above are very unclear, it
-is hard to understand what conditions lead to this.
+BUG: unable to handle page fault for address: 00000076000400c8
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 0 P4D 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 4494 Comm: udevd Not tainted 6.5.0-next-20230831-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:__kmem_cache_alloc_bulk mm/slub.c:3986 [inline]
+RIP: 0010:kmem_cache_alloc_bulk+0x16a/0x7c0 mm/slub.c:4049
+Code: 00 0f 85 1b 05 00 00 45 31 d2 4c 89 3c 24 65 48 8b 0c 25 c0 bc 03 00 4d 89 d7 48 89 4d 28 31 ed 48 89 4c 24 18 eb 2d 8b 43 28 <48> 8b 04 07 49 89 04 24 49 89 3b 0f 1f 44 00 00 4c 8b 1c 24 41 81
+RSP: 0018:ffffc900031af878 EFLAGS: 00010006
 
-> Because the PxIS.TFES bit is not cleared.
+RAX: 0000000000000080 RBX: ffff88801364d000 RCX: ffff88807d56bb80
+RDX: 0000000000000000 RSI: ffffffff8ae925a0 RDI: 0000007600040048
+RBP: 0000000000000000 R08: 0000000000000000 R09: fffffbfff1d9c40a
+R10: 0000000000000000 R11: ffff888073edee10 R12: ffff8880b9841830
+R13: 000000000000000e R14: ffff888073edee10 R15: 0000000000000000
+FS:  00007ff1acb30c80(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000076000400c8 CR3: 00000000290ce000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ mt_alloc_bulk lib/maple_tree.c:165 [inline]
+ mas_alloc_nodes+0x39c/0x830 lib/maple_tree.c:1271
+ mas_node_count_gfp+0x105/0x130 lib/maple_tree.c:1329
+ mas_node_count lib/maple_tree.c:1343 [inline]
+ mas_expected_entries+0x116/0x200 lib/maple_tree.c:5577
+ vma_iter_bulk_alloc include/linux/mm.h:985 [inline]
+ dup_mmap+0x4f8/0x1d80 kernel/fork.c:681
+ dup_mm kernel/fork.c:1686 [inline]
+ copy_mm kernel/fork.c:1735 [inline]
+ copy_process+0x6c11/0x7400 kernel/fork.c:2501
+ kernel_clone+0xfd/0x930 kernel/fork.c:2909
+ __do_sys_clone+0xba/0x100 kernel/fork.c:3052
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7ff1ac6fca12
+Code: 41 5d 41 5e 41 5f c3 64 48 8b 04 25 10 00 00 00 45 31 c0 31 d2 31 f6 bf 11 00 20 01 4c 8d 90 d0 02 00 00 b8 38 00 00 00 0f 05 <48> 3d 00 f0 ff ff 76 10 48 8b 15 e7 43 0f 00 f7 d8 64 89 02 48 83
+RSP: 002b:00007fffc6413228 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: ffffffffffffffda RBX: 0000562ccc95ee01 RCX: 00007ff1ac6fca12
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000001200011
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000562ccc94b910
+R10: 00007ff1acb30f50 R11: 0000000000000246 R12: 0000562ccc973450
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000562ccc94b910
+ </TASK>
+Modules linked in:
+CR2: 00000076000400c8
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__kmem_cache_alloc_bulk mm/slub.c:3986 [inline]
+RIP: 0010:kmem_cache_alloc_bulk+0x16a/0x7c0 mm/slub.c:4049
+Code: 00 0f 85 1b 05 00 00 45 31 d2 4c 89 3c 24 65 48 8b 0c 25 c0 bc 03 00 4d 89 d7 48 89 4d 28 31 ed 48 89 4c 24 18 eb 2d 8b 43 28 <48> 8b 04 07 49 89 04 24 49 89 3b 0f 1f 44 00 00 4c 8b 1c 24 41 81
+RSP: 0018:ffffc900031af878 EFLAGS: 00010006
+RAX: 0000000000000080 RBX: ffff88801364d000 RCX: ffff88807d56bb80
+RDX: 0000000000000000 RSI: ffffffff8ae925a0 RDI: 0000007600040048
+RBP: 0000000000000000 R08: 0000000000000000 R09: fffffbfff1d9c40a
+R10: 0000000000000000 R11: ffff888073edee10 R12: ffff8880b9841830
+R13: 000000000000000e R14: ffff888073edee10 R15: 0000000000000000
+FS:  00007ff1acb30c80(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000076000400c8 CR3: 00000000290ce000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	00 0f                	add    %cl,(%rdi)
+   2:	85 1b                	test   %ebx,(%rbx)
+   4:	05 00 00 45 31       	add    $0x31450000,%eax
+   9:	d2 4c 89 3c          	rorb   %cl,0x3c(%rcx,%rcx,4)
+   d:	24 65                	and    $0x65,%al
+   f:	48 8b 0c 25 c0 bc 03 	mov    0x3bcc0,%rcx
+  16:	00
+  17:	4d 89 d7             	mov    %r10,%r15
+  1a:	48 89 4d 28          	mov    %rcx,0x28(%rbp)
+  1e:	31 ed                	xor    %ebp,%ebp
+  20:	48 89 4c 24 18       	mov    %rcx,0x18(%rsp)
+  25:	eb 2d                	jmp    0x54
+  27:	8b 43 28             	mov    0x28(%rbx),%eax
+* 2a:	48 8b 04 07          	mov    (%rdi,%rax,1),%rax <-- trapping instruction
+  2e:	49 89 04 24          	mov    %rax,(%r12)
+  32:	49 89 3b             	mov    %rdi,(%r11)
+  35:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+  3a:	4c 8b 1c 24          	mov    (%rsp),%r11
+  3e:	41                   	rex.B
+  3f:	81                   	.byte 0x81
 
-Why split that as a different sentence ? Shouldn't this be:
 
-The HBA cannot issue any new command because the PxIS.TFES bit is not cleared.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> To avoid this,
-> we adds the function to clear pending interrupt before COMRESET.
-> It follows the AHCI 1.3.1 - section 6.2.2.2 specification.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-To avoid this, introduce the function ahci_port_clear_pending_irq() to clear
-pending interrupts before executing a COMRESET. This follows the AHCI 1.3.1 -
-section 6.2.2.2 specification.
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-> 
-> Signed-off-by: Szuying Chen <Chloe_Chen@asmedia.com.tw>
-> ---
-> V1->V2: On suggestion by Damien to renamed helper function and modified
-> ahci_port_init() to make use of the helper.
-> V2->V3: On suggestion by Niklas to modify commit log and delete the
-> extra describe.
-> 
->  drivers/ata/libahci.c | 35 +++++++++++++++++++++++------------
->  1 file changed, 23 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
-> index e2bacedf28ef..f1263364fa97 100644
-> --- a/drivers/ata/libahci.c
-> +++ b/drivers/ata/libahci.c
-> @@ -1256,6 +1256,26 @@ static ssize_t ahci_activity_show(struct ata_device *dev, char *buf)
->  	return sprintf(buf, "%d\n", emp->blink_policy);
->  }
-> 
-> +static void ahci_port_clear_pending_irq(struct ata_port *ap)
-> +{
-> +	struct ahci_host_priv *hpriv = ap->host->private_data;
-> +	void __iomem *port_mmio = ahci_port_base(ap);
-> +	u32 tmp;
-> +
-> +	/* clear SError */
-> +	tmp = readl(port_mmio + PORT_SCR_ERR);
-> +	dev_dbg(ap->host->dev, "PORT_SCR_ERR 0x%x\n", tmp);
-> +	writel(tmp, port_mmio + PORT_SCR_ERR);
-> +
-> +	/* clear port IRQ */
-> +	tmp = readl(port_mmio + PORT_IRQ_STAT);
-> +	dev_dbg(ap->host->dev, "PORT_IRQ_STAT 0x%x\n", tmp);
-> +	if (tmp)
-> +		writel(tmp, port_mmio + PORT_IRQ_STAT);
-> +
-> +	writel(1 << ap->port_no, hpriv->mmio + HOST_IRQ_STAT);
-> +}
-> +
->  static void ahci_port_init(struct device *dev, struct ata_port *ap,
->  			   int port_no, void __iomem *mmio,
->  			   void __iomem *port_mmio)
-> @@ -1270,18 +1290,7 @@ static void ahci_port_init(struct device *dev, struct ata_port *ap,
->  	if (rc)
->  		dev_warn(dev, "%s (%d)\n", emsg, rc);
-> 
-> -	/* clear SError */
-> -	tmp = readl(port_mmio + PORT_SCR_ERR);
-> -	dev_dbg(dev, "PORT_SCR_ERR 0x%x\n", tmp);
-> -	writel(tmp, port_mmio + PORT_SCR_ERR);
-> -
-> -	/* clear port IRQ */
-> -	tmp = readl(port_mmio + PORT_IRQ_STAT);
-> -	dev_dbg(dev, "PORT_IRQ_STAT 0x%x\n", tmp);
-> -	if (tmp)
-> -		writel(tmp, port_mmio + PORT_IRQ_STAT);
-> -
-> -	writel(1 << port_no, mmio + HOST_IRQ_STAT);
-> +	ahci_port_clear_pending_irq(ap);
-> 
->  	/* mark esata ports */
->  	tmp = readl(port_mmio + PORT_CMD);
-> @@ -1603,6 +1612,8 @@ int ahci_do_hardreset(struct ata_link *link, unsigned int *class,
->  	tf.status = ATA_BUSY;
->  	ata_tf_to_fis(&tf, 0, 0, d2h_fis);
-> 
-> +	ahci_port_clear_pending_irq(ap);
-> +
->  	rc = sata_link_hardreset(link, timing, deadline, online,
->  				 ahci_check_ready);
-> 
-> --
-> 2.39.2
-> 
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
--- 
-Damien Le Moal
-Western Digital Research
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
