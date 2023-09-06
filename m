@@ -2,130 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F1F796741
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 01:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C299A794721
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 01:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244366AbjIFXUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 19:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
+        id S242103AbjIFXRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 19:17:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233803AbjIFXUl (ORCPT
+        with ESMTP id S236302AbjIFXRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 19:20:41 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C3F173B;
-        Wed,  6 Sep 2023 16:20:37 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7D9881FD7B;
-        Wed,  6 Sep 2023 23:20:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694042435;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cgodE4ydDVlHm5Hs6I7NhySZqPHst/TeqSQFj1Ju8nE=;
-        b=Kq8LNuaY3Oy90JFbmYjlqaNWUn5+g3XXdtPF2zYYYkmKdX33XBaBATt4CCeh/9dswZapgl
-        5IWbjbmKXF1WZH/DkkK1x4hbzERML+QlID162osX9X2ZsTDXUxxCUOiTp84BQ4hzX30H6c
-        4fUbABxOQXP5xKBLCxRljYdrEekgQiM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694042435;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cgodE4ydDVlHm5Hs6I7NhySZqPHst/TeqSQFj1Ju8nE=;
-        b=g2uipkudF7rb0SEqoXrhLINDvxVMCEMIvZ/eQT593Hw/xMbemjrhAFe4LWRFkUKS4vdoKQ
-        aQRiOel/rWitVODQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 514921346C;
-        Wed,  6 Sep 2023 23:20:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id FDO8EkMJ+WR+MgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 06 Sep 2023 23:20:35 +0000
-Date:   Thu, 7 Sep 2023 01:13:54 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230906231354.GX14420@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
+        Wed, 6 Sep 2023 19:17:18 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8FBA172E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 16:17:13 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50098cc8967so495729e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 16:17:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1694042232; x=1694647032; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=amaeJ0Fab/jVgSejYsWbzXhmle5m64ntHUW0zCfkNPo=;
+        b=aPEgXuqR2GjFwgfvv7+ENSWuVIlXahEdbPIOvD3wA6UqUAncEeyeKpTYSvGeqwW27g
+         aHz1Ri1vsOAqEgoB3WwCMrhDpkS5JOyaPwIESMhCqIpLKxPDofQjV8iaZtIGrmhzITFF
+         VxKcPbYWdnJSqKC5icqa1HEiZwR6K43DJcPLM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694042232; x=1694647032;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=amaeJ0Fab/jVgSejYsWbzXhmle5m64ntHUW0zCfkNPo=;
+        b=Q0QEfyqIm9SfHmzJM+z95CmM2zvG4+irQWWz2oqpSMPSGeM/+DToilfpGcV63E6tt4
+         dsY7gF8/ip+FP0S43qOop3OPcOoLeaxclrYnRByITZIYZlhtepa+6jZHImk55UVwYFUj
+         sxjBHGkmpjY9aJXV5u1DotxMK8y5/Wgm3iGDyuTR2U5E7mNzB2RKVwaKJvYLEAxw3ewg
+         hp8evDRer8YJv7weE4Ow/5A/UAf8h0HYGzl4Bz1rvJKhvhagOflqIxTAW4JVYYP9hQXd
+         +l0n8c7oqi+dxTv/v330LGsQWmeuuvXs2eFEDbJEABzbjRHpOZTh2T7R3HE33gB+1BWX
+         KnaQ==
+X-Gm-Message-State: AOJu0YyOSeJ+0LkEkj+iWxHrg60bIQvdJB9CQE3YzMJ2jnqBzkQqDqQI
+        RGSZlxcBghSikx/i330nt8fLS7uaqJotLMomva/iCOsk
+X-Google-Smtp-Source: AGHT+IETbXUFoURXJCzIWqwcyeSQ/z/GY3LpUAe4SXW977y7FfXU3oaTdOZaFkmQ72Nh8qPJBVoksg==
+X-Received: by 2002:a05:6512:47c:b0:4fd:bdf8:930d with SMTP id x28-20020a056512047c00b004fdbdf8930dmr3513727lfd.22.1694042231815;
+        Wed, 06 Sep 2023 16:17:11 -0700 (PDT)
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
+        by smtp.gmail.com with ESMTPSA id i4-20020a170906264400b0099bcd1fa5b0sm9625961ejc.192.2023.09.06.16.17.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 16:17:10 -0700 (PDT)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-31dca134c83so365333f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 16:17:10 -0700 (PDT)
+X-Received: by 2002:a05:6000:1cc9:b0:31d:d977:4e3d with SMTP id
+ bf9-20020a0560001cc900b0031dd9774e3dmr3263064wrb.19.1694042229754; Wed, 06
+ Sep 2023 16:17:09 -0700 (PDT)
+MIME-Version: 1.0
 References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
  <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
  <CAHk-=whaiVhuO7W1tb8Yb-CuUHWn7bBnJ3bM7bvcQiEQwv_WrQ@mail.gmail.com>
- <CAHk-=wi6EAPRzYttb+qnZJuzinUnH9xXy-a1Y5kvx5Qs=6xDew@mail.gmail.com>
- <ZPj1WuwKKnvVEZnl@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+ <CAHk-=wi6EAPRzYttb+qnZJuzinUnH9xXy-a1Y5kvx5Qs=6xDew@mail.gmail.com> <ZPj1WuwKKnvVEZnl@kernel.org>
 In-Reply-To: <ZPj1WuwKKnvVEZnl@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 6 Sep 2023 16:16:52 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiy=JOAWvSLwPq-jHPBfq8EX5NjVkEoh+RUMZbVn+GuOg@mail.gmail.com>
+Message-ID: <CAHk-=wiy=JOAWvSLwPq-jHPBfq8EX5NjVkEoh+RUMZbVn+GuOg@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 06:55:38PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Sep 06, 2023 at 01:20:59PM -0700, Linus Torvalds escreveu:
-> > On Wed, 6 Sept 2023 at 13:02, Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > And guess what happens when you have (unsigned char)-1? It does *not*
-> > > cast back to -1.
-> > 
-> > Side note: again, this may be one of those "it works in practice",
-> > because if we have -fshort-enums, I think 'enum
-> > btree_node_locked_type' in turn ends up being represented as a 'signed
-> > char', because that's the smallest simple type that can fit all those
-> > values.
->  
+On Wed, 6 Sept 2023 at 14:55, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+>
 > > I don't think gcc ever uses less than that (ie while a six_lock_type
 > > could fit in two bits, it's still going to be considered at least a
 > > 8-bit value in practice).
-> 
+>
 > There are some cases where people stuff the enum into a bitfield, but
 > no, no simple type.
-> 
-> ⬢[acme@toolbox perf-tools-next]$ pahole | grep -w enum | grep :
-> 	enum btrfs_rsv_type        type:8;               /*    28:16  4 */
-> 	enum btrfs_delayed_item_type type:8;             /*   100: 0  4 */
 
-The simple grep might give a skewed view, in the above case there's also
+Note that I am talking about the types gcc uses natively.
 
-/* Bitfield combined with previous fields */
+To show what I'm talking about, build this (silly) code that has some
+of the same enum types that bcachefs has:
 
-in the full output, with adjacent bool struct members it's all packed
-into one int. I think I've always seen an int for enums, unless it was
-explicitly narrowed in the structure (:8) or by __packed attribute in
-the enum definition.
+    #include <stdio.h>
 
-> 	enum kernel_pkey_operation op:8;                 /*    40: 0  4 */
-> 	enum integrity_status      ima_file_status:4;    /*    96: 0  4 */
-> 	enum integrity_status      ima_mmap_status:4;    /*    96: 4  4 */
-> 	enum integrity_status      ima_bprm_status:4;    /*    96: 8  4 */
-> 	enum integrity_status      ima_read_status:4;    /*    96:12  4 */
-> 	enum integrity_status      ima_creds_status:4;   /*    96:16  4 */
-> 	enum integrity_status      evm_status:4;         /*    96:20  4 */
-> 	enum fs_context_purpose    purpose:8;            /*   152: 0  4 */
-> 	enum fs_context_phase      phase:8;              /*   152: 8  4 */
-> 	enum fs_value_type         type:8;               /*     8: 0  4 */
-> 	enum sgx_page_type         type:16;              /*     8: 8  4 */
-> 	enum nf_hook_ops_type      hook_ops_type:8;      /*    24: 8  4 */
-> 		enum resctrl_event_id evtid:8;         /*     0:10  4 */
-> 		enum _cache_type   type:5;             /*     0: 0  4 */
+    enum enum1 {
+        val1 = 0,
+        val2 = 1,
+        val3 = 2,
+    };
+
+    enum enum2 {
+        num1 = -1,
+        num2 = 0,
+        num3 = 1,
+        num4 = 2,
+    };
+
+    int main(int argc, char **argv)
+    {
+        printf("%d %d (%zu %zu)\n",
+                (enum enum1) num1,
+                (enum enum1) num1 == num1,
+                sizeof(enum enum1),
+                sizeof(enum enum2));
+        return 0;
+    }
+
+and run it. On x86 with no special options, you should get something like this:
+
+    -1 1 (4 4)
+
+ie both types have a four-byte size, and casting 'num1' to 'enum
+enum1' will in fact give you back -1, and will then compare equal to
+num1 in the end.
+
+Because both types are in practice just 'int'.
+
+But now do the same with -fshort-enums, and you instead get
+
+    255 0 (1 1)
+
+because both types are just a single byte, and casting 'num1' to 'enum
+enum1' will in fact result in 255 (because it's an _unsigned_ type),
+and then comparing with the original num1 value will no longer compare
+equal.
+
+(But casting it then further back to 'enum enum2' will in fact result
+in -1 again, because you're effectively casting it back to 'signed
+char', and then 255 and -1 are in fact the same in that type).
+
+End result: you can get some really unexpected behavior if you cast
+enums to other types.
+
+Which is, of course, exactly why the compiler is warning about the
+comparison and about passing in the wrong type of enum.
+
+Sadly, the compiler doesn't warn about the cast, so you can hide all
+of this by just adding casts. That doesn't make it *right*, of course.
+
+              Linus
