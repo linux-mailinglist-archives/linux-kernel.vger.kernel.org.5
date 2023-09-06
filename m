@@ -2,71 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9C8793BEF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9DF793BF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236546AbjIFL5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34414 "EHLO
+        id S240312AbjIFL5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231449AbjIFL5O (ORCPT
+        with ESMTP id S240326AbjIFL5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:57:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9E5199
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:57:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694001429; x=1725537429;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=jYtwMmRQI5kIZ/7B4HRqlgg7UlCbB50ODAsb951eppY=;
-  b=Cw1nddnYmhAZP/cVhLgNyv1Dj7eaAubY6PVbQHjtGNVjLQU8gtQe1xMm
-   9noDQrgmbVCTIdc2zMi+qORCWlQY517jM90LQTNTbFXsw/rse1LWUQwIT
-   ZRdgA28M9Peh/VWa1smBiEHIw3jZOd1R3r3EyAHHhNSwOqJ8m5AIPAnKH
-   xrCNAlMUgHqrNqxDGTkzEioEaaQVfOAHeTM4aYLvJUidLoBI2PuBiQbKg
-   cArX8vlaup2URxpZz0USan16/GKuf1G1z9Mzlp19xwQp+6p2p4Y9WHqaE
-   2NB4OaZyHgGleZp82Zd0XnIwPfU9dU7tRMYrFylztMC6hpQtV3pP4BgaH
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="356531816"
-X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
-   d="scan'208";a="356531816"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 04:57:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="770720359"
-X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
-   d="scan'208";a="770720359"
-Received: from yinbingc-mobl.ccr.corp.intel.com (HELO [10.249.254.11]) ([10.249.254.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 04:57:05 -0700
-Message-ID: <e44c93dd-68b2-b8af-6f9a-4d7c6370f105@linux.intel.com>
-Date:   Wed, 6 Sep 2023 13:57:03 +0200
+        Wed, 6 Sep 2023 07:57:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B7E1982
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:57:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5L9jRbf3MGLFy6llElxr7NI5BpVKqLXfVLQiwOD81wM=; b=tIIQJqCpC/PJh5TLFBMIWzCNW9
+        AyomvWu0PMpFok0TmLH0bkC0cgocq4wPelr8H90dqyNOWNX6L0v6z2Gf4vMCWi6ZpjgLBy5tB4lmi
+        dnZVXaKLtsTeaCw2GbPpwFa/gIvdfbtsVgvDh4mNLx16IO+X42AJnvbGVTu+IJvwiSD5Pi8WhtbBS
+        yVlPwVs5cFHnhSh0K10j4njBxadEmIJSH6bDNEd22No99wwdGYDPj9art402XvTdbTafDjnY0iSCh
+        rLt9AaCii85nu730qdnKhQzcSbOnSP8H8QGqvDtKxVaNY7f7So40zkNKEc9XdWdDQbmID0PPBurXm
+        x5tqDVbQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qdr9p-0025MI-7L; Wed, 06 Sep 2023 11:57:17 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D6D2B300472; Wed,  6 Sep 2023 13:57:16 +0200 (CEST)
+Date:   Wed, 6 Sep 2023 13:57:16 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "n.borisov.lkml@gmail.com" <n.borisov.lkml@gmail.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: Re: [PATCH v4 00/12] Unify TDCALL/SEAMCALL and TDVMCALL assembly
+Message-ID: <20230906115716.GF38741@noisy.programming.kicks-ass.net>
+References: <cover.1692096753.git.kai.huang@intel.com>
+ <0728094e1d8751355360987f17fcc2db18b43ce7.camel@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] Documentation/gpu: VM_BIND locking document
-Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Danilo Krummrich <dakr@redhat.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Francois Dugast <francois.dugast@intel.com>,
-        linux-kernel@vger.kernel.org, Oak Zeng <oak.zeng@intel.com>,
-        dri-devel@lists.freedesktop.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-xe@lists.freedesktop.org
-References: <20230816091547.2982-1-thomas.hellstrom@linux.intel.com>
- <ZPeGld0mBwbWptV9@cassiopeiae>
- <4e7a2b2e-1ab5-09b6-b2de-9b2a82a8a32e@linux.intel.com>
- <1c6cbf97-7e85-a48f-9e6a-ed716ab5b05d@redhat.com>
- <1a2965a4-943f-0ba7-b082-155d75b94d59@linux.intel.com>
- <20230906130929.74e3c6cc@collabora.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>
-In-Reply-To: <20230906130929.74e3c6cc@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0728094e1d8751355360987f17fcc2db18b43ce7.camel@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,122 +63,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Boris
+On Tue, Sep 05, 2023 at 11:01:28PM +0000, Huang, Kai wrote:
+> On Tue, 2023-08-15 at 23:01 +1200, Kai Huang wrote:
+> > Hi Peter, Kirill,
+> > 
+> > This series unifies the assembly code for TDCALL/SEAMCALL and TDVMCALL.
+> > Now all of them use one singe TDX_MODULE_CALL asm macro.  More
+> > information please see cover letter of v2 (see link below).
+> > 
+> > Tested by booting TDX guest, initializing TDX module, and running TDX
+> > guest successfully, all with this series applied.
+> > 
+> > 
+> 
+> Hi Peter,
+> 
+> Sorry to ping, but could you take a look whether you are OK with this series?
+> 
+> Basically Kirill has provided his Reviewed-by for all the patches except the
+> last one (Add unused registers to 'struct tdx_module_args' to optimize VP.ENTER
+> for KVM), which he didn't like.  But it is pretty much a standalone optimization
+> patch we either can have or drop when applying, so I'll leave to you.
+> 
+> Also feel free to let me know if I can help you on anything to offload part of
+> your load? :-)
 
-On 9/6/23 13:09, Boris Brezillon wrote:
-> On Wed, 6 Sep 2023 10:32:24 +0200
-> Thomas Hellström <thomas.hellstrom@linux.intel.com> wrote:
->
->
->>>>>> +Introducing external (or shared) buffer objects
->>>>>> +===============================================
->>>>>> +
->>>>>> +Since shared buffer objects may be shared by multiple gpu_vm's they
->>>>>> +can't share their reservation object with a single gpu_vm, but
->>>>>> will rather
->>>>>> +have a reservation object of their own. The shared objects bound to a
->>>>>> +gpu_vm using one or many
->>>>>> +gpu_vmas are therefore typically put on a per-gpu_vm list which is
->>>>>> +protected by the gpu_vm lock. One could in theory protect it also
->>>>>> with
->>>>>> +the ``gpu_vm->resv``, but since the list of dma_resvs to take is
->>>>>> typically
->>>>>> +built before the ``gpu_vm->resv`` is locked due to a limitation in
->>>>>> +the current locking helpers, that is typically not done. Also see
->>>>>> +below for userptr gpu_vmas.
->>>>>> +
->>>>>> +At eviction time we now need to invalidate *all* gpu_vmas of a shared
->>>>>> +object, but we can no longer be certain that we hold the gpu_vm's
->>>>>> +dma_resv of all the object's gpu_vmas. We can only be certain that we
->>>>> I need to think a bit more about locking of extobj and evicted
->>>>> object tracking
->>>>> in the case of processing 'drm_gpuva_ops' directly through callbacks
->>>>> within the
->>>>> fence signalling critical path as mentioend in [1].
->>>>>
->>>>> In order to support that, we'd need to protect extobjs with a
->>>>> separate lock,
->>>>> and while iterating extobjs to acquire the dma-resv lock drop the
->>>>> lock within
->>>>> the loop before we actually acquire the dma-resv lock. Maple tree
->>>>> supports that
->>>>> already and this can be fully done within the GPUVA manager; no need
->>>>> for the
->>>>> driver to care about that.
->>>> So do I understand correctly that this because you want to update the
->>>> gpuvm state while operations are progressing asynchronously?
->>>>
->>>> If so, I wonder whether that could really be done? For example to
->>>> allocate enough memory for page-tables etc, you need to know the
->>>> details of the operations at IOCTL execution time, and to know the
->>>> details you need to know the state from the previous operation?
->>>
->>> Right, sync and async bind can't run fully concurrently, but you could
->>> "inject" a
->>> sync one between two async ones such that the sync ones executed from
->>> the IOCTL
->>> directly while async execution is stalled meanwhile. This would be
->>> possible because
->>> the actual drm_gpuva_ops would be calculated within the async
->>> execution path rather
->>> than in the IOCTL. But yes, page-table management must be desinged to
->>> support that.
-> FWIW, the panthor driver is designed this way (note that I'm not
-> supporting GEM eviction yet, so there might be subtleties I missed).
+This looks good, thanks!
 
-The problem is that once you've published your VM_BIND out-fence, any 
-code path required to signal that fence may notallocate memory nor or 
-grab any locks that allows allocating memory while held including 
-dma_resv locks, and that means all required page-table memory needs to 
-be allocated synchronously in the IOCTL, and all evicted bos need to be 
-made resident in the IOCTL, and at least in the xe driver the amount of 
-memory we need to allocate depends on the vm state, so we can't really 
-update the vm state asynchronously either.
-
-But as long as any async binding work required for signalling the 
-VM_BIND out-fence is properly annotated with 
-dma_fence_begin_signalling() and dma_fence_end_signalling() and there 
-aren't any lockdep splats, things should be good. It would trigger on 
-both memory allocation and attempts to grab a dma_resv lock.
-
-
->
->> OK, well one of the main motivations for Xe is to be able to pipeline
->> interleaving binds and execs if needed, like so:
->>
->> - Bind vmas for scene 1.
->> - Submit scene 1.
->> - Unbind vmas for scene 1.
->> - Bind vmas for scene 2.
->> - Submit scene 2.
->> - Unbind vmas for scene 2.
->>
->> And being able to *submit* all of the above while the async binding of
->> vmas for scene (step 1) has not yet completed.
->> I can't really see how this could be done, while obeying dma-fence
->> rules, unless state is updated synchronously while submitting?
-> The idea in this case is to detect when a GPU job dependency is a
-> VM_BIND out-fence, turn drm_sched_fence->parent into an
-> xxx_vm_bind_job_fence object that's holding the GEM that's about to be
-> mapped (AFAICT, we don't need to do anything for unmap operations), and
-> then add our GPU job fence to this BO. This should not only guarantee
-> that the GEMs we depend on are mapped before the GPU job is executed
-> (the fence wait does that), but also that such yet-to-be-mapped GEMs
-> won't be evicted just after they've been mapped and before the GPU had
-> a chance to execute (unless I'm missing something, adding our GPU job
-> fence to the BO being targeted by a pending VM_BIND(async,map) operation
-> solves this problem).
-
-Yes, we're essentially doing the same. The issue here is that when we, 
-for example *submit* Bind vmas for scene 2,
-we need to know how much page-table memory to allocate, and what BOs to 
-make resident to be able to publish the out-fence. That means we need to 
-know what the VM state would look like at the end of "Unbind vmas for 
-scene 1". If the VM state is updated at submission time, that's all ok 
-but if it's updated at execution time, we'd have to guess what resources 
-to pre-allocate.
-
-/Thomas
-
-
-
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
