@@ -2,66 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA28793B74
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234ED793B82
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239911AbjIFLfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37746 "EHLO
+        id S240036AbjIFLgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238691AbjIFLfq (ORCPT
+        with ESMTP id S240024AbjIFLgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:35:46 -0400
-Received: from out-213.mta0.migadu.com (out-213.mta0.migadu.com [IPv6:2001:41d0:1004:224b::d5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A733A8
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:35:38 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694000135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gs94c93f9mGBHcmdFfOmKtB/Hx0HRcMLSqYaVf+X+yY=;
-        b=cW7QlpWiqZbKSn7zUSkmQ/P2HiDHpieb8cG+EuwqNrDGR9Hivy7r9eynNMglQ5JPdemsdB
-        Gqb4NSFLudZPI5YgDw4w/jHwd+dHhCP5G2/9wEFxlaihPvXZO68BmS/mpGzIVOgLPrDXKt
-        HOLrpq+E14aCd5sfED98ge0W2o5IDA4=
-Mime-Version: 1.0
-Subject: Re: [External] [PATCH v2 09/11] hugetlb: batch PMD split for bulk
- vmemmap dedup
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <ab9132b2-34bb-de9c-05d9-d927a435c99d@oracle.com>
-Date:   Wed, 6 Sep 2023 19:34:51 +0800
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <DCE299DE-2808-48A8-807A-2B01D538C525@linux.dev>
-References: <20230905214412.89152-1-mike.kravetz@oracle.com>
- <20230905214412.89152-10-mike.kravetz@oracle.com>
- <0b0609d8-bc87-0463-bafd-9613f0053039@linux.dev>
- <CAMZfGtU2HX4UR1T2HW75xY70ZMSOdzNZ2py=EggoBYqP_1+QFg@mail.gmail.com>
- <2e942706-5772-0a93-bab3-902644c578e7@oracle.com>
- <D58A4D84-A397-4283-BB24-D31A27809DF3@linux.dev>
- <ab9132b2-34bb-de9c-05d9-d927a435c99d@oracle.com>
-To:     Joao Martins <joao.m.martins@oracle.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Sep 2023 07:36:43 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B2B1733
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:36:33 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 386BRd6i008692;
+        Wed, 6 Sep 2023 11:36:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=8BDsM+mzKGJApuKokUWJXKkb2ugTNcQ2tvnixnI0/54=;
+ b=F6gOzGi/c9MqieOBM6kSfGGUH9L+QYkCHEZTUkh+HbXBKvoLmjuwcAXzqyOauuuQeVzN
+ xArZ/NOExpQyt6qHquPWTpwe/dJznlfADWKAb75qM8dtV6cVlamoIVY3lzXOKf0PUjbR
+ Iw++IRMBx6k5FM8g4/Uc4mFkdrOCLQ5dU3Zq3PJDq0uk+p326ZfmJ8iXRuuLFuiAOIXe
+ COQinqathyWHPVjoOp61Xv1JZ9A/A0JhuYQLuYyzxj6s63pGFYZ50jeblman1Hk6luWZ
+ mfU2WxXsAO6L1wbkmQxIEmlUGSLaDvWpnkx5TD2d5EixojmfL9MQtnRcvkPPVdodGtYt mw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sxrjj0fxj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Sep 2023 11:36:09 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 386BST4j011719;
+        Wed, 6 Sep 2023 11:35:43 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sxrjj0e26-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Sep 2023 11:35:42 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 386BUSWK006611;
+        Wed, 6 Sep 2023 11:35:19 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svgvkj91u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Sep 2023 11:35:19 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 386BZJ8Y1770034
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 6 Sep 2023 11:35:19 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0DF9F5805D;
+        Wed,  6 Sep 2023 11:35:19 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B1F9258052;
+        Wed,  6 Sep 2023 11:35:13 +0000 (GMT)
+Received: from [9.171.19.125] (unknown [9.171.19.125])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Wed,  6 Sep 2023 11:35:13 +0000 (GMT)
+Message-ID: <d2c945d6-c4f0-a096-0623-731b11484f51@linux.vnet.ibm.com>
+Date:   Wed, 6 Sep 2023 17:05:12 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2] sched/topology: remove sysctl_sched_energy_aware
+ depending on the architecture
+Content-Language: en-US
+To:     Pierre Gondois <pierre.gondois@arm.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     dietmar.eggemann@arm.com, vincent.guittot@linaro.org,
+        peterz@infradead.org, mingo@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
+        quentin.perret@arm.com, srikar@linux.vnet.ibm.com,
+        mgorman@techsingularity.net, mingo@kernel.org, yu.c.chen@intel.com
+References: <20230901065249.137242-1-sshegde@linux.vnet.ibm.com>
+ <b81e3d8f-88e3-e7b5-0dbc-78268193db7e@arm.com>
+From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+In-Reply-To: <b81e3d8f-88e3-e7b5-0dbc-78268193db7e@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: hKhJQc3FfjLYZwYs8z5jc0p6mOS6xG4g
+X-Proofpoint-GUID: n4bsvKChDnPkfK3oR5GLxbDe5gKDSSWj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-06_03,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 clxscore=1015 bulkscore=0 phishscore=0 adultscore=0
+ priorityscore=1501 mlxscore=0 suspectscore=0 impostorscore=0
+ malwarescore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2309060098
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -70,246 +102,88 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> On Sep 6, 2023, at 17:44, Joao Martins <joao.m.martins@oracle.com> =
-wrote:
->=20
-> On 06/09/2023 10:32, Muchun Song wrote:
->>> On Sep 6, 2023, at 17:26, Joao Martins <joao.m.martins@oracle.com> =
-wrote:
->>> On 06/09/2023 10:11, Muchun Song wrote:
->>>> On Wed, Sep 6, 2023 at 4:25=E2=80=AFPM Muchun Song =
-<muchun.song@linux.dev> wrote:
->>>>> On 2023/9/6 05:44, Mike Kravetz wrote:
->>>>>> From: Joao Martins <joao.m.martins@oracle.com>
->>>>>>=20
->>>>>> In an effort to minimize amount of TLB flushes, batch all PMD =
-splits
->>>>>> belonging to a range of pages in order to perform only 1 (global) =
-TLB
->>>>>> flush.
->>>>>>=20
->>>>>> Rebased and updated by Mike Kravetz
->>>>>>=20
->>>>>> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
->>>>>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
->>>>>> ---
->>>>>> mm/hugetlb_vmemmap.c | 72 =
-+++++++++++++++++++++++++++++++++++++++++---
->>>>>> 1 file changed, 68 insertions(+), 4 deletions(-)
->>>>>>=20
->>>>>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
->>>>>> index a715712df831..d956551699bc 100644
->>>>>> --- a/mm/hugetlb_vmemmap.c
->>>>>> +++ b/mm/hugetlb_vmemmap.c
->>>>>> @@ -37,7 +37,7 @@ struct vmemmap_remap_walk {
->>>>>>     struct list_head        *vmemmap_pages;
->>>>>> };
->>>>>>=20
->>>>>> -static int split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long =
-start)
->>>>>> +static int split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long =
-start, bool flush)
->>>>>> {
->>>>>>     pmd_t __pmd;
->>>>>>     int i;
->>>>>> @@ -80,7 +80,8 @@ static int split_vmemmap_huge_pmd(pmd_t *pmd, =
-unsigned long start)
->>>>>>             /* Make pte visible before pmd. See comment in =
-pmd_install(). */
->>>>>>             smp_wmb();
->>>>>>             pmd_populate_kernel(&init_mm, pmd, pgtable);
->>>>>> -             flush_tlb_kernel_range(start, start + PMD_SIZE);
->>>>>> +             if (flush)
->>>>>> +                     flush_tlb_kernel_range(start, start + =
-PMD_SIZE);
->>>>>>     } else {
->>>>>>             pte_free_kernel(&init_mm, pgtable);
->>>>>>     }
->>>>>> @@ -127,11 +128,20 @@ static int vmemmap_pmd_range(pud_t *pud, =
-unsigned long addr,
->>>>>>     do {
->>>>>>             int ret;
->>>>>>=20
->>>>>> -             ret =3D split_vmemmap_huge_pmd(pmd, addr & =
-PMD_MASK);
->>>>>> +             ret =3D split_vmemmap_huge_pmd(pmd, addr & =
-PMD_MASK,
->>>>>> +                             walk->remap_pte !=3D NULL);
->>>>>=20
->>>>> It is bettter to only make @walk->remap_pte indicate whether we =
-should go
->>>>> to the last page table level. I suggest reusing =
-VMEMMAP_NO_TLB_FLUSH
->>>>> to indicate whether we should flush the TLB at pmd level. It'll be =
-more
->>>>> clear.
->>>>>=20
->>>>>>             if (ret)
->>>>>>                     return ret;
->>>>>>=20
->>>>>>             next =3D pmd_addr_end(addr, end);
->>>>>> +
->>>>>> +             /*
->>>>>> +              * We are only splitting, not remapping the hugetlb =
-vmemmap
->>>>>> +              * pages.
->>>>>> +              */
->>>>>> +             if (!walk->remap_pte)
->>>>>> +                     continue;
->>>>>> +
->>>>>>             vmemmap_pte_range(pmd, addr, next, walk);
->>>>>>     } while (pmd++, addr =3D next, addr !=3D end);
->>>>>>=20
->>>>>> @@ -198,7 +208,8 @@ static int vmemmap_remap_range(unsigned long =
-start, unsigned long end,
->>>>>>                     return ret;
->>>>>>     } while (pgd++, addr =3D next, addr !=3D end);
->>>>>>=20
->>>>>> -     flush_tlb_kernel_range(start, end);
->>>>>> +     if (walk->remap_pte)
->>>>>> +             flush_tlb_kernel_range(start, end);
->>>>>>=20
->>>>>>     return 0;
->>>>>> }
->>>>>> @@ -297,6 +308,35 @@ static void vmemmap_restore_pte(pte_t *pte, =
-unsigned long addr,
->>>>>>     set_pte_at(&init_mm, addr, pte, mk_pte(page, pgprot));
->>>>>> }
->>>>>>=20
->>>>>> +/**
->>>>>> + * vmemmap_remap_split - split the vmemmap virtual address range =
-[@start, @end)
->>>>>> + *                      backing PMDs of the directmap into PTEs
->>>>>> + * @start:     start address of the vmemmap virtual address =
-range that we want
->>>>>> + *             to remap.
->>>>>> + * @end:       end address of the vmemmap virtual address range =
-that we want to
->>>>>> + *             remap.
->>>>>> + * @reuse:     reuse address.
->>>>>> + *
->>>>>> + * Return: %0 on success, negative error code otherwise.
->>>>>> + */
->>>>>> +static int vmemmap_remap_split(unsigned long start, unsigned =
-long end,
->>>>>> +                             unsigned long reuse)
->>>>>> +{
->>>>>> +     int ret;
->>>>>> +     struct vmemmap_remap_walk walk =3D {
->>>>>> +             .remap_pte      =3D NULL,
->>>>>> +     };
->>>>>> +
->>>>>> +     /* See the comment in the vmemmap_remap_free(). */
->>>>>> +     BUG_ON(start - reuse !=3D PAGE_SIZE);
->>>>>> +
->>>>>> +     mmap_read_lock(&init_mm);
->>>>>> +     ret =3D vmemmap_remap_range(reuse, end, &walk);
->>>>>> +     mmap_read_unlock(&init_mm);
->>>>>> +
->>>>>> +     return ret;
->>>>>> +}
->>>>>> +
->>>>>> /**
->>>>>>  * vmemmap_remap_free - remap the vmemmap virtual address range =
-[@start, @end)
->>>>>>  *                  to the page which @reuse is mapped to, then =
-free vmemmap
->>>>>> @@ -602,11 +642,35 @@ void hugetlb_vmemmap_optimize(const struct =
-hstate *h, struct page *head)
->>>>>>     free_vmemmap_page_list(&vmemmap_pages);
->>>>>> }
->>>>>>=20
->>>>>> +static void hugetlb_vmemmap_split(const struct hstate *h, struct =
-page *head)
->>>>>> +{
->>>>>> +     unsigned long vmemmap_start =3D (unsigned long)head, =
-vmemmap_end;
->>>>>> +     unsigned long vmemmap_reuse;
->>>>>> +
->>>>>> +     if (!vmemmap_should_optimize(h, head))
->>>>>> +             return;
->>>>>> +
->>>>>> +     vmemmap_end     =3D vmemmap_start + =
-hugetlb_vmemmap_size(h);
->>>>>> +     vmemmap_reuse   =3D vmemmap_start;
->>>>>> +     vmemmap_start   +=3D HUGETLB_VMEMMAP_RESERVE_SIZE;
->>>>>> +
->>>>>> +     /*
->>>>>> +      * Split PMDs on the vmemmap virtual address range =
-[@vmemmap_start,
->>>>>> +      * @vmemmap_end]
->>>>>> +      */
->>>>>> +     vmemmap_remap_split(vmemmap_start, vmemmap_end, =
-vmemmap_reuse);
->>>>>> +}
->>>>>> +
->>>>>> void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct =
-list_head *folio_list)
->>>>>> {
->>>>>>     struct folio *folio;
->>>>>>     LIST_HEAD(vmemmap_pages);
->>>>>>=20
->>>>>> +     list_for_each_entry(folio, folio_list, lru)
->>>>>> +             hugetlb_vmemmap_split(h, &folio->page);
->>>>>=20
->>>>> Maybe it is reasonable to add a return value to =
-hugetlb_vmemmap_split()
->>>>> to indicate whether it has done successfully, if it fails, it must =
-be
->>>>> OOM, in which case, there is no sense to continue to split the =
-page table
->>>>> and optimize the vmemmap pages subsequently, right?
->>>>=20
->>>> Sorry, it is reasonable to continue to optimize the vmemmap pages
->>>> subsequently since it should succeed because those vmemmap pages
->>>> have been split successfully previously.
->>>>=20
->>>> Seems we should continue to optimize vmemmap once =
-hugetlb_vmemmap_split()
->>>> fails, then we will have more memory to continue to split.=20
->>>=20
->>> Good point
->>>=20
->>>> But it will
->>>> make hugetlb_vmemmap_optimize_folios() a little complex. I'd like =
-to
->>>> hear you guys' opinions here.
->>>>=20
->>> I think it won't add that much complexity if we don't optimize too =
-much of the
->>> slowpath (when we are out of memory). In the batch freeing patch we =
-could
->>> additionally test the return value of __hugetlb_vmemmap_optimize() =
-for ENOMEM
->>> and free the currently stored vmemmap_pages (if any), and keep =
-iterating the
->>> optimize loop. Should be simple enough and make this a bit more =
-resilient to
->>> that scenario.
->>=20
->> Yep, we could try this.
->>=20
->>> But we would need to keep the earlier check you commented above
->>> (where we use @remap_pte to defer PMD flush).
->>=20
->> I think 2 flags will suitable for you, one is =
-VMEMMAP_REMAP_NO_TLB_FLUSH,
->> another is VMEMMAP_SPLIT_NO_TLB_FLUSH.
->=20
-> This means going back to the v1. I thought we agreed to =
-consolidate/simplify
-> into one flag, and use @remap_pte to differentiate between split and =
-remap.
+On 9/5/23 7:33 PM, Pierre Gondois wrote:
+> Hello Shrikanth,
+> I tried the patch (on a platform using the cppc_cpufreq driver). The
+> platform
+> normally has EAS enabled, but the patch removed the sched_energy_aware
+> sysctl.
+> It seemed the following happened (in the below order):
+> 
+> 1. sched_energy_aware_sysctl_init()
+> Doesn't set sysctl_sched_energy_aware as cpufreq_freq_invariance isn't set
+> and arch_scale_freq_invariant() returns false
+> 
+> 2. cpufreq_register_driver()
+> Sets cpufreq_freq_invariance during cpufreq initialization
+> sched_energy_set()
+> 
+> 3. sched_energy_set()
+> Is called with has_eas=0 since build_perf_domains() doesn't see the
+> platform
+> as EAS compatible. Indeed sysctl_sched_energy_aware=0.
+> So with sysctl_sched_energy_aware=0 and has_eas=0, sched_energy_aware
+> sysctl
+> is not enabled even though EAS should be possible.
+> 
+> 
+> On 9/1/23 08:52, Shrikanth Hegde wrote:
+>> Currently sysctl_sched_energy_aware doesn't alter the said behaviour on
+>> some of the architectures. IIUC its meant to either force rebuild the
+>> perf domains or cleanup the perf domains by echoing 1 or 0 respectively.
+> 
+> There is a definition of the sysctl at:
+> Documentation/admin-guide/sysctl/kernel.rst::sched_energy_aware
+[...]
+>>
+>>
+>> +static unsigned int sysctl_sched_energy_aware;
+>> +static struct ctl_table_header *sysctl_eas_header;
+> 
+> The variables around the presence/absence of EAS are:
+> - sched_energy_present:
+> EAS is up and running
+> 
+> - sysctl_sched_energy_aware:
+> The user wants to use EAS (or not). Doesn't mean EAS can run on the
+> platform.
+> 
+> - sched_energy_set/partition_sched_domains_locked's "has_eas":
+> Local variable. Represent whether EAS can run on the platform.
+> 
+> IMO it would be simpler to (un)register sched_energy_aware sysctl
+> in partition_sched_domains_locked(), based on the value of "has_eas".
+> This would allow to let all the logic as it is right now, inside
+> build_perf_domains(), and then advertise sched_energy_aware sysctl
+> if EAS can run on the platform.
+> sched_energy_aware_sysctl_init() would be deleted then.
+> 
+> 
+yes. that is true. and there is no variable which holds the info if the system
+is capable of EAS.
 
-But a little different, we use @remap_pte to indicate whether we should =
-go
-to the last level (e.g. do the remap), the flag is used to indicate =
-whether
-we should flush TLB when splitting is necessary (note that remap also =
-need
-split). It means split and non-TLB flush are not bound. Sorry, I just =
-want
-to keep the semantics clear.
+Retrospecting, the reason for starting this patch series was this,
+sysctl_sched_energy_aware didnt make sense on power10 platform since it
+has SMT and symmetric CPU capacities.  with current code writing 1 to
+it cause rebuild of sched domains but EAS wouldn't be possible.
 
-Thanks.
 
+Possible Approaches: 
+
+1. 
+Make this sysctl write as NOP if the platform doesn't has EAS capabilities at
+the moment.  Do those checks in sched_energy_aware_handler before handling  the
+change in value. Return EINVAL.  And Update sysctl description that on such
+platforms value change is NOP. Relatively simpler change.
+
+2. 
+Current patch approach, remove the sysctl completely on non supported
+architectures and re-enable it if the system becomes capable of doing EAS.
+With the current patch, instead of using sched_energy_update, use another
+variable called sched_energy_change_in_sysctl(maybe different name).  I think
+that would handle all the cases. Another variable can be avoided by encoding
+the info in sysctl_sched_energy_aware itself in the handler call, since it
+takes only 1 or 0 as the value. upper bits are free to use. update the sysctl
+as well with this behavior. plus minor cleanup to remove the init of sysctl. 
+
+Suggestions?
