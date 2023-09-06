@@ -2,151 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE46793579
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 08:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1720279357F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 08:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241896AbjIFGlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 02:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43552 "EHLO
+        id S241926AbjIFGp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 02:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241937AbjIFGlv (ORCPT
+        with ESMTP id S229913AbjIFGpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 02:41:51 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AF8E59
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 23:41:34 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-307d58b3efbso2589008f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 23:41:34 -0700 (PDT)
+        Wed, 6 Sep 2023 02:45:25 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E84CFC;
+        Tue,  5 Sep 2023 23:45:20 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fef56f7248so32082815e9.3;
+        Tue, 05 Sep 2023 23:45:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1693982493; x=1694587293; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=CDrXgceSRA6nWxSqvxXedEAqqqoYTPyIJVyrWo9VKf8=;
-        b=Lu+UYlga9SneyBsf/voQWHNOp476n6uzhXTP1EYiM5sCPq620kG69QXpZRE98j5Wrm
-         TN8fM/ocUylv4qjKC9AdZhBJkAT/pcL5TtlZb7liB5Np1mQaMUygeFCz3S0oq/rPjy/3
-         e5z6I6YrQEc06svLucP5y8i26FHIKUm0n+Xtwdq8715DB7Vp8AlJLRiBCLU3K71kFvno
-         B5Q63+AqILSNim4lIHxEiqbtImtlB/FNdSB7m9hRU/DS01sDZgJxgthVBuuFKrNPPyTs
-         g4TQCifUnlErVh5xWmKsdyHlhmEnRTu6Q+QDxxWGg/RfJkmV7QmGqgFMStQJAllAIZs5
-         IC/A==
+        d=gmail.com; s=20221208; t=1693982719; x=1694587519; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WbC+PTccFxw+0DVOTgccrbkscfu/JcAyQutBiCpNZyU=;
+        b=Y03sw9yhSF3zZ9Xpt6aMPoOlvUiYfNaUfXRL4qztQ6XYews7ehX2O6ODJPzGGAWgaJ
+         2ZHB/0BUfUP3Cd5qlPERChkIFthP/Mr6Uw40v0UwPH+yUdgJbjPcuSZ/qgJLuuFFvNcd
+         oB6l0AyH/OpHHrfeb+tdnBVcguiXt8t23YvWyKuo7qxIgW2U3BfrGX4qVJx2i2YofNy1
+         cnTtgRovilRVmYzbAMT7pdx69fOJD0IdA4Iq8RJ9T4mvvEvffQOTiXap3MFFD8iDic5a
+         hGJqCLzRXB85gwgZNitKHio4debPbYyfu57Ry/G35KW2hICsJcW74y1QjQrSR5S90Hje
+         1deA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693982493; x=1694587293;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20221208; t=1693982719; x=1694587519;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CDrXgceSRA6nWxSqvxXedEAqqqoYTPyIJVyrWo9VKf8=;
-        b=M2x8DqiJpTPdj9ctaIYfkj4ZRgNmI4qqO3+7XjC6w0f0kZMc3g5gsmJ8g1rmgtB3Lg
-         Z/F67Of+RZW5BkvwaU/TYU9IB+nPg0z+GUlCMOedZsAhTGRw7U+8nNmv7jBALUzRpGhp
-         uYSFGJ+O0S2EU8ib1dvc6f5Ow/OM9EtWVq/PKkX2Bsk2c/W9ROIEERC8D7Zv8JuxUQys
-         JzAv+dEu2dkcIbbFAwZjbsFq2vUAQCK3DRC9klLV4X8YkQ9XR7x1X1C6yN1kGzI/LtPr
-         TB0CgIYKRuGaHt33PoX4gYOQYpoVwKoFN+Iy9CisV9b7ZZ+EHtwqF9IPDrHwmf9MCVao
-         RpvQ==
-X-Gm-Message-State: AOJu0Yx6/sDTZ6FFzttn84yCOTCdSVup+iqMZzwUh+Qh3acHyOWyAMRB
-        ff1LwrWecLg/VaUjrQbJxLmMSQ==
-X-Google-Smtp-Source: AGHT+IGX0i5tAkcMDPeTKOwlfoH2ZHWjyq3skD2KqOfwczWV54QzQ/+ExzzCATYleUpKxouAAc9edA==
-X-Received: by 2002:a5d:6b49:0:b0:31a:ed75:75d6 with SMTP id x9-20020a5d6b49000000b0031aed7575d6mr1639449wrw.15.1693982493183;
-        Tue, 05 Sep 2023 23:41:33 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id m14-20020a056000174e00b0031f3b04e7cdsm11905338wrf.109.2023.09.05.23.41.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 23:41:32 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 08:41:31 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Haibo Xu <xiaobo55x@gmail.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Guo Ren <guoren@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Lei Wang <lei4.wang@intel.com>, Like Xu <likexu@tencent.com>,
-        Peter Gonda <pgonda@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Thomas Huth <thuth@redhat.com>,
-        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Michal Luczaj <mhal@rbox.co>, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 2/8] KVM: arm64: selftest: Split arch_timer test code
-Message-ID: <20230906-6996fca9840e6de7b75692ec@orel>
-References: <cover.1693659382.git.haibo1.xu@intel.com>
- <c87337cfd7fb135e2efed589360a78c26a402eac.1693659382.git.haibo1.xu@intel.com>
- <20230904-11e853ffe3d8e9cf9ec6079d@orel>
- <CAJve8onwjBQcbVy75qyOF3A51-T0WyBkmeCV_wOZvzaPcrBVFg@mail.gmail.com>
+        bh=WbC+PTccFxw+0DVOTgccrbkscfu/JcAyQutBiCpNZyU=;
+        b=UVnHoRP9lPJd3GVNPkLjUUGoer9d8SsAkSAsSuBNTVQ5EmuYXcMRX1R5osSZgmzFwd
+         dN7+qECAbcUIeAXk/HlurvN/DAxFVT8BBlKsyp1XoAwjCfD15srrO8515YyRGotTyOWJ
+         vEZoWp8GiiSHKnhvuoaU5wZM7EeDJoRLgpuryvDnFQ66hWtFtB04f175MC7Sl4A+ckSO
+         WBPzfAWwOaJtFo1huyBZJ4Edii6Qsufxdni2nD1fO5vHkiWv1gKqt/TIcfUj/OmOXHDk
+         OO36uQ7zbMmnfOBq5yuwvQcGY47vyb7exIekqOdw4daqxvZFc+fxBLv+XnYpbVuoeiYA
+         hL3A==
+X-Gm-Message-State: AOJu0YxM4626INDR+q6yCUgElTYfEKiAl6Ab/SouiZqfuSdncmAdhi5/
+        Yb3a0MYA+hPBv7d5vIaFBrk=
+X-Google-Smtp-Source: AGHT+IEjlomr6GhSa/peo2K0S5StXQRwjl6hxXlIzISB+VOeqKfc7FMbOl/xn6u/5EwAY+fXSbGWHg==
+X-Received: by 2002:a1c:7207:0:b0:401:cf0d:25cd with SMTP id n7-20020a1c7207000000b00401cf0d25cdmr1486233wmc.22.1693982718606;
+        Tue, 05 Sep 2023 23:45:18 -0700 (PDT)
+Received: from [10.254.108.106] (munvpn.amd.com. [165.204.72.6])
+        by smtp.gmail.com with ESMTPSA id o10-20020a1c750a000000b003fbb25da65bsm19248601wmc.30.2023.09.05.23.45.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Sep 2023 23:45:17 -0700 (PDT)
+Message-ID: <2adfa653-ac35-d560-be52-c92848a1eef5@gmail.com>
+Date:   Wed, 6 Sep 2023 08:45:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
+ to select the primary video adapter at boot time
+Content-Language: en-US
+To:     suijingfeng <suijingfeng@loongson.cn>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
+References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
+ <44ec8549-dc36-287e-4359-abd3ec8d22d6@suse.de>
+ <5afd2efb-f838-f9b7-02a9-2cf4d4fd2382@loongson.cn>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+In-Reply-To: <5afd2efb-f838-f9b7-02a9-2cf4d4fd2382@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJve8onwjBQcbVy75qyOF3A51-T0WyBkmeCV_wOZvzaPcrBVFg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 10:14:52AM +0800, Haibo Xu wrote:
-> On Mon, Sep 4, 2023 at 9:24 PM Andrew Jones <ajones@ventanamicro.com> wrote:
-> >
-> > On Sat, Sep 02, 2023 at 08:59:24PM +0800, Haibo Xu wrote:
-...
-> > > +
-> > > +#include "kvm_util.h"
-> > > +
-> > > +#define NR_VCPUS_DEF            4
-> > > +#define NR_TEST_ITERS_DEF       5
-> > > +#define TIMER_TEST_PERIOD_MS_DEF    10
-> > > +#define TIMER_TEST_ERR_MARGIN_US    100
-> > > +#define TIMER_TEST_MIGRATION_FREQ_MS    2
-> > > +
-> > > +#define msecs_to_usecs(msec)    ((msec) * 1000LL)
-> >
-> > I'd move the above to include/test_util.h
-> >
-> 
-> Yes, msecs_to_usecs() macro should be a common API for all the tests.
-> 
-> > > +
-> > > +#define GICD_BASE_GPA    0x8000000ULL
-> > > +#define GICR_BASE_GPA    0x80A0000ULL
-> >
-> > These defines belong in aarch64/arch_timer.c
-> >
-> 
-> These 2 defines were also defined in other test cases, shall we move them
-> to an aarch64 specific header file? Maybe
-> tools/testing/selftests/kvm/include/aarch64/gic.h?
+Am 05.09.23 um 15:30 schrieb suijingfeng:
+> Hi,
+>
+>
+> On 2023/9/5 18:45, Thomas Zimmermann wrote:
+>> Hi
+>>
+>> Am 04.09.23 um 21:57 schrieb Sui Jingfeng:
+>>> From: Sui Jingfeng <suijingfeng@loongson.cn>
+>>>
+>>> On a machine with multiple GPUs, a Linux user has no control over which
+>>> one is primary at boot time. This series tries to solve above mentioned
+>>
+>> If anything, the primary graphics adapter is the one initialized by 
+>> the firmware. I think our boot-up graphics also make this assumption 
+>> implicitly.
+>>
+>
+> Yes, but by the time of DRM drivers get loaded successfully,the 
+> boot-up graphics already finished.
 
-Even though currently all the aarch64 tests that use the gic are using
-these defines for the base addresses, each test is free to choose whatever
-base addresses it likes. I'd just move them back to aarch64/arch_timer.c
-for now. Consolidating them into shared, default base addresses, if done
-at all, is work for another series.
+This is an incorrect assumption.
 
-Thanks,
-drew
+drm_aperture_remove_conflicting_pci_framebuffers() and co don't kill the 
+framebuffer, they just remove the current framebuffer driver to avoid 
+further updates.
+
+So what happens (at least for amdgpu) is that we take over the 
+framebuffer, including both mode and it's contents, and provide a new 
+framebuffer interface until DRM masters like X or Wayland take over.
+
+> Firmware framebuffer device already get killed by the 
+> drm_aperture_remove_conflicting_pci_framebuffers()
+> function (or its siblings). So, this series is definitely not to 
+> interact with the firmware framebuffer
+> (or more intelligent framebuffer drivers).  It is for user space 
+> program, such as X server and Wayland
+> compositor. Its for Linux user or drm drivers testers, which allow 
+> them to direct graphic display server
+> using right hardware of interested as primary video card.
+>
+> Also, I believe that X server and Wayland compositor are the best test 
+> examples.
+> If a specific DRM driver can't work with X server as a primary,
+> then there probably have something wrong.
+>
+>
+>> But what's the use case for overriding this setting?
+>>
+>
+> On a specific machine with multiple GPUs mounted,
+> only the primary graphics get POST-ed (initialized) by the firmware.
+> Therefore, the DRM drivers for the rest video cards, have to choose to
+> work without the prerequisite setups done by firmware, This is called 
+> as POST.
+
+Well, you don't seem to understand the background here. This is 
+perfectly normal behavior.
+
+Secondary cards are posted after loading the appropriate DRM driver. At 
+least for amdgpu this is done by calling the appropriate functions in 
+the BIOS.
+
+>
+> One of the use cases of this series is to test if a specific DRM 
+> driver could works properly,
+> even though there is no prerequisite works have been done by firmware 
+> at all.
+> And it seems that the results is not satisfying in all cases.
+>
+> drm/ast is the first drm drivers which refused to work if not being 
+> POST-ed by the firmware.
+
+As far as I know this is expected as well. AST is a relatively simple 
+driver and when it's not the primary one during boot the assumption is 
+that it isn't used at all.
+
+Regards,
+Christian.
+
+>
+> Before apply this series, I was unable make drm/ast as the primary 
+> video card easily. On a
+> multiple video card configuration, the monitor connected with the 
+> AST2400 not light up.
+> While confusing, a naive programmer may suspect the PRIME is not working.
+>
+> After applied this series and passing ast.modeset=10 on the kernel cmd 
+> line,
+> I found that the monitor connected with my ast2400 video card still 
+> black,
+> It doesn't display and doesn't show image to me.
+>
+> While in the process of study drm/ast, I know that drm/ast driver has 
+> the POST code shipped.
+> See the ast_post_gpu() function, then, I was wondering why this 
+> function doesn't works.
+> After a short-time (hasty) debugging, I found that the the 
+> ast_post_gpu() function
+> didn't get run. Because it have something to do with the 
+> ast->config_mode.
+>
+> Without thinking too much, I hardcoded the ast->config_mode as 
+> ast_use_p2a to
+> force the ast_post_gpu() function get run.
+>
+> ```
+>
+> --- a/drivers/gpu/drm/ast/ast_main.c
+> +++ b/drivers/gpu/drm/ast/ast_main.c
+> @@ -132,6 +132,8 @@ static int ast_device_config_init(struct 
+> ast_device *ast)
+>                 }
+>         }
+>
+> +       ast->config_mode = ast_use_p2a;
+> +
+>         switch (ast->config_mode) {
+>         case ast_use_defaults:
+>                 drm_info(dev, "Using default configuration\n");
+>
+> ```
+>
+> Then, the monitor light up, it display the Ubuntu greeter to me.
+> Therefore, my patch is helpful, at lease for the Linux drm driver 
+> tester and developer.
+> It allow programmers to test the specific part of the specific drive
+> without changing a line of the source code and without the need of 
+> sudo authority.
+> It helps to improve efficiency of the testing and patch verification.
+>
+> I know the PrimaryGPU option of Xorg conf, but this approach will 
+> remember the setup
+> have been made, you need modify it with root authority each time you 
+> want to switch
+> the primary. But on rapid developing and/or testing multiple video 
+> drivers, with
+> only one computer hardware resource available. What we really want 
+> probably is a
+> one-shoot command as this series provide.
+>
+> So, this is the first use case. This probably also help to test full 
+> modeset,
+> PRIME and reverse PRIME on multiple video card machine.
+>
+>
+>> Best regards
+>> Thomas
+>>
+>
+
