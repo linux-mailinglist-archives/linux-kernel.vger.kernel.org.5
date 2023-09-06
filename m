@@ -2,58 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B28D479409D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F9C7940A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239014AbjIFPoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 11:44:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34516 "EHLO
+        id S241657AbjIFPpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 11:45:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjIFPoT (ORCPT
+        with ESMTP id S241241AbjIFPpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 11:44:19 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50341BC
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 08:44:15 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qduhM-0000sf-Ru; Wed, 06 Sep 2023 17:44:08 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qduhM-004SQS-Cz; Wed, 06 Sep 2023 17:44:08 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qduhK-00GuOy-Lp; Wed, 06 Sep 2023 17:44:06 +0200
-Date:   Wed, 6 Sep 2023 17:44:06 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Leif Middelschulte <leif.middelschulte@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-pwm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] pwm: imx27: return error, if clean PWM setup fails
-Message-ID: <20230906154406.efxdo4gpgl57n6l3@pengutronix.de>
-References: <20230310174517.rb7xxrougkse2lrc@pengutronix.de>
- <20230815104332.55044-1-Leif.Middelschulte@gmail.com>
- <20230815104332.55044-4-Leif.Middelschulte@gmail.com>
+        Wed, 6 Sep 2023 11:45:30 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF6411724;
+        Wed,  6 Sep 2023 08:45:26 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-501ce655fcbso568449e87.2;
+        Wed, 06 Sep 2023 08:45:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694015125; x=1694619925; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fQiQz3+I8vY7abxTdtpZH6nA7V1qCV7p78jA8rANmPQ=;
+        b=gzp8cybGh4kcFhSKABARyH74YGcXRlIhJwkjBtOAUiBUiP7M8ms/Hr5HrH/IkGf2fF
+         P6VqVTkmb78oA7uTiIljwcHbQnubGAv+MV5ijm7Uu656a3GYgaf9aqSfQxukoRgTODnb
+         CzTH7dySxB0yXjRvc5sgCyAcfouzzHMFmJvgcJ/9a+7oLb0eFpVRGI90pvTq97d7dDHE
+         lNGaKi8rvxQnsfFjdoCkYCfgki4YHQZDovY6fWyaaDTiTXS8hJadNTL075Qg2g65suft
+         5VcWhej2++KqejFYH5cXWNKn9FGGmSqJWKTmTzvNO+fQtULol5bYiqHru42s87ZNkaYv
+         bqHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694015125; x=1694619925;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fQiQz3+I8vY7abxTdtpZH6nA7V1qCV7p78jA8rANmPQ=;
+        b=RvH44m28HyvQdRWb5I33N/Sr9m4OiWsm0Za2HM+hV6r/RHHzdxRUdHFJTM7TDQIyjJ
+         Rms0huxn+4hbZJYEYGDOIFBgAelAeIFnujRHFjLGCtsKExYNCPAiZl8TVFBVeAi1nUye
+         koXkLDSfR0ZHgZQZlCd0SWRZEJTHwRzXkr7mZ1SiTxijOAjhzhmDWg3ubXa4DMLm6xzI
+         RWDhJsMwUA2aZaUg1Rpp6YtixxOAhpzxWHJS7cpLOE1b+j73prDf3g0R6mRncE8OhPmc
+         vTYRil/k2rpi3wLoxNrFcJ9yn98iubwCJKZ+tOqti8sTtRvzavHbqbLZn0E8kWnXOXW0
+         In8Q==
+X-Gm-Message-State: AOJu0YwqvCgCmPC+zxMMLsuQLV2Kfc1+hYTx9wVysI6kfNwNG+aM2PdX
+        CuuTFhW21bbzelK0AKyHdjXOGLIKqV5tazWCrN3evEnGiTI=
+X-Google-Smtp-Source: AGHT+IGm7N3BRJVcQSOdqp9OH33rDfjW6f4DnESXe0m8BhdERx7Qf1v1ZaMFytEvmwuINjsC95nv70MIL6kH97FuTAE=
+X-Received: by 2002:a05:6512:1115:b0:501:fe39:ee00 with SMTP id
+ l21-20020a056512111500b00501fe39ee00mr67264lfg.60.1694015124716; Wed, 06 Sep
+ 2023 08:45:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ul2hn5jfy4crdfgy"
-Content-Disposition: inline
-In-Reply-To: <20230815104332.55044-4-Leif.Middelschulte@gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+References: <20230826152111.13525-1-max@enpas.org> <20230826152111.13525-3-max@enpas.org>
+ <ec4d07de-4944-a7ea-2b74-c4162af75b16@enpas.org>
+In-Reply-To: <ec4d07de-4944-a7ea-2b74-c4162af75b16@enpas.org>
+From:   Roderick Colenbrander <thunderbird2k@gmail.com>
+Date:   Wed, 6 Sep 2023 08:45:12 -0700
+Message-ID: <CAEc3jaDoRESqJ_6KAa6FHvbF=R4ZRV0P+=4KY5pjYPCrwroqCQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] hid-sony: DS3: Report analog buttons for Sixaxis
+To:     Max Staudt <max@enpas.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Vicki Pfau <vi@endrift.com>,
+        Pavel Rojtberg <rojtberg@gmail.com>,
+        Roderick Colenbrander <roderick@gaikai.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,82 +75,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 29, 2023 at 12:12=E2=80=AFPM Max Staudt <max@enpas.org> wrote:
+>
+> On 8/27/23 00:21, Max Staudt wrote:
+> > This change exposes these buttons as axes in a way that is as backwards
+> > compatible and as close to the Linux gamepad spec as possible.
+> >
+> > [...]
+> >
+> >   - The D-Pad as ABS_HAT0X/ABS_HAT0Y, -255 to 255
+>
+>
+> One further idea:
+>
+> The DualShock 3 reports all 4 D-pad buttons separately, and hid-sony curr=
+ently reports them as discrete digital buttons to userspace.
+>
+>
+> Would it be better to do the same with the analog buttons, i.e. to report=
+ the 4 measurements as discrete axes, rather than the current patch's appro=
+ach of merging them into two logical axes?
+>
+> Of course, this would require 4 more axes, this would not fit into any ex=
+isting scheme, and since we've run out of ABS_MISC+n at this point, this co=
+uld be a further reason for officially reserving a range of axes for analog=
+ buttons. Something like:
+>
+>
+> #define ABS_BTN_SOUTH           0x40
+> #define ABS_BTN_A               ABS_BTN_SOUTH
+> #define ABS_BTN_EAST            0x41
+> #define ABS_BTN_B               ABS_BTN_EAST
+> #define ABS_BTN_C               0x42
+> #define ABS_BTN_NORTH           0x43
+> #define ABS_BTN_X               ABS_BTN_NORTH
+> #define ABS_BTN_WEST            0x44
+> #define ABS_BTN_Y               ABS_BTN_WEST
+> #define ABS_BTN_Z               0x45
+>
+> #define ABS_BTN_DPAD_UP         0x46
+> #define ABS_BTN_DPAD_DOWN       0x47
+> #define ABS_BTN_DPAD_LEFT       0x48
+> #define ABS_BTN_DPAD_RIGHT      0x49
+>
+> #define ABS_MAX                 0x4f
+> #define ABS_CNT                 (ABS_MAX+1)
+>
+>
+>
+> Max
+>
 
---ul2hn5jfy4crdfgy
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Max,
 
-On Tue, Aug 15, 2023 at 12:43:32PM +0200, Leif Middelschulte wrote:
-> Instead of issuing a warning, return an error (as adviced[0]), if the
-> FIFO cannot be cleanly set up.
->=20
-> [0] https://lore.kernel.org/lkml/20230310174517.rb7xxrougkse2lrc@pengutro=
-nix.de/T/#ec9560c1f613d9c0d7b77d72ad9051768812f80db
->=20
-> Signed-off-by: Leif Middelschulte <Leif.Middelschulte@gmail.com>
-> ---
->  drivers/pwm/pwm-imx27.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/pwm/pwm-imx27.c b/drivers/pwm/pwm-imx27.c
-> index 9673e809d212..5fd6d34a7722 100644
-> --- a/drivers/pwm/pwm-imx27.c
-> +++ b/drivers/pwm/pwm-imx27.c
-> @@ -133,14 +133,15 @@ static int pwm_imx27_wait_fifo_empty(struct pwm_chi=
-p *chip,
->  		sr =3D readl(imx->mmio_base + MX3_PWMSR);
->  		fifoav =3D FIELD_GET(MX3_PWMSR_FIFOAV, sr);
->  		if (fifoav =3D=3D MX3_PWMSR_FIFOAV_EMPTY)
-> -			return;
-> +			return 0;
->  		/* if the FIFO value does not decrease, there is another problem */
->  		if (previous_fifoav =3D=3D fifoav)
->  			break;
->  		previous_fifoav =3D fifoav;
->  		msleep(period_ms);
->  	}
-> -	dev_warn(dev, "FIFO has been refilled concurrently\n");
-> +
-> +	return -EAGAIN;
->  }
-> =20
->  static int pwm_imx27_get_state(struct pwm_chip *chip,
-> @@ -208,7 +209,9 @@ static int pwm_imx27_get_state(struct pwm_chip *chip,
->  		 * been supplied and a period expired between the call of the wait
->  		 * function and the subsequent readl.
->  		 */
-> -		pwm_imx27_wait_fifo_empty(chip, pwm);
-> +		ret =3D pwm_imx27_wait_fifo_empty(chip, pwm);
-> +		if (ret)
-> +			return ret;
->  		val =3D readl(imx->mmio_base + MX3_PWMSAR);
->  	} else {
->  		val =3D imx->duty_cycle;
+Sorry for the late response, but I have been on vacation and just got back.
 
-I'd squash this into the patch introducing pwm_imx27_wait_fifo_empty,
-too.
+Analog buttons are as you know, fairly common on game controllers. For
+this reason, I was working on this about 5 years ago as my company had
+a need for it, but the need died out. I did send a proposal at the
+time to linux-input, which I encourage you to look at ('Proposal to
+support pressure sensitive "analog" buttons in evdev' on linux-input).
+There are some good comments in there.
 
-Best regards
-Uwe
+The summary of the discussion and also my thoughts is not to simply
+reuse existing axes, but think of things in a bigger picture. In
+particular I brought the example of analog keyboards into the
+discussion at the time (Wooting made one) in which ALL buttons are
+analog. The landscape has probably changed and I haven't caught up.
+Quickly looking it looks like Razor now has one too and there are
+probably more.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+The key question is what are the similarities between these analog
+devices. It feels it are not 'just' axes. There might be some level of
+configurability (though not all of that) for example some keyboards
+seem to use it as a way to trigger digital key presses at configurable
+thresholds among others. Please look at the old discussion as there
+were some good suggestions there if I recall from Peter Hutterer among
+others.
 
---ul2hn5jfy4crdfgy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmT4nkUACgkQj4D7WH0S
-/k6XFQgAiVf4pkJzMu7XfVuxDzh6MuolGXMt3ilyzSVCfT1nVmQf6NX9cieoUOQ5
-XemQB2eAMC3vf660xSZgXUzl/yXHte4RRScZE+3NqCl8PcGvK8A5Lnqw9dz0DDPV
-dicT/37HSdF1XQ8d3is98mBSTZqnHJVyZ63Z3fvPXp0AeDHRxyDJreo9PCwsfrZg
-qSxN+ImAtpYlhxlY26edEdpUI5ZI313Bmf1F7L/UCBqdyqXeX9+JVGK0Vcez4B74
-te7fPIjLZ3MQY5Bjq7YA/g44JCK5aSDs9BkwoyDaCkxqnD/HfUK4LpoBwOe9p5GN
-Wsy1JHr6z1MTOFgm5y6ietBrxXxwQw==
-=Ke3K
------END PGP SIGNATURE-----
-
---ul2hn5jfy4crdfgy--
+Thanks,
+Roderick
