@@ -2,171 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1ED9793749
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D78579375C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235402AbjIFImG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 04:42:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44104 "EHLO
+        id S235755AbjIFIrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 04:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235063AbjIFImF (ORCPT
+        with ESMTP id S235428AbjIFIrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 04:42:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0369A128
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 01:42:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mzsEOIsbxzyfVGfAlsQ2OkrMap2oWKr8BXxAo4dJO5I=; b=gssM71fG+GSJ7NPRnlPvX9zlh7
-        1AdePOrBFB31bPh2GEYZEaCiJ10Aof4UmrlMAigKRRkpN2E0tZ2MH0Ae0IxMal1uiPTZzaYlUlrTD
-        DtxN1cew0O/H8zbi07oqexMXUOo9/7LBcEI5SZd3p7dMLtEMM34yoqn2oKgzzwQA2gkixeuHcN1wc
-        cS2TEYzsRuBObuDzmpFT65/fJeCHsOFu3I2ZY47ZVkHzaLDiF1fGCzgW06WTT1NSTRPbsWT1QIv7n
-        G/YVAQSn0HM7P3lrQS3fqYTRT7v1fRKy9k7gmnnOlIeoiLFRmoDaCBJndhsHOWZQItdXJXuUaz+44
-        azbmIqlg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qdo6c-000ktI-Be; Wed, 06 Sep 2023 08:41:46 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C571C3003F2; Wed,  6 Sep 2023 10:41:45 +0200 (CEST)
-Date:   Wed, 6 Sep 2023 10:41:45 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>, x86@kernel.org
-Subject: Re: [RFC PATCH 1/2] sched: Rate limit migrations to 1 per 2ms per
- task
-Message-ID: <20230906084145.GC38741@noisy.programming.kicks-ass.net>
-References: <20230905171105.1005672-1-mathieu.desnoyers@efficios.com>
- <20230905171105.1005672-2-mathieu.desnoyers@efficios.com>
+        Wed, 6 Sep 2023 04:47:32 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A7EE73;
+        Wed,  6 Sep 2023 01:47:11 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RgbbH5TgPz4f3lXn;
+        Wed,  6 Sep 2023 16:47:07 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgA3xqiKPPhkSK37CQ--.11064S4;
+        Wed, 06 Sep 2023 16:47:08 +0800 (CST)
+From:   linan666@huaweicloud.com
+To:     dlemoal@kernel.org, htejun@gmail.com
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linan122@huawei.com, yukuai3@huawei.com, yi.zhang@huawei.com,
+        houtao1@huawei.com, yangerkun@huawei.com
+Subject: [PATCH v4] ata: libata-eh: Honor all EH scheduling requests
+Date:   Wed,  6 Sep 2023 16:42:12 +0800
+Message-Id: <20230906084212.1016634-1-linan666@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905171105.1005672-2-mathieu.desnoyers@efficios.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgA3xqiKPPhkSK37CQ--.11064S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxuF45Zry3JFy5GrWUZr13Jwb_yoW5Wr1rpF
+        Z8Xw1qgryDtry0vr4DZF1rXryrGay8Ca42gFyDGw1fZr4qk34rt397CFZ0gFyakr97XF13
+        Za1qq3sxCF1kZrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487
+        Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aV
+        AFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4kE6xkIj40E
+        w7xC0wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1kpnJ
+        UUUUU==
+X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 01:11:04PM -0400, Mathieu Desnoyers wrote:
-> Rate limit migrations to 1 migration per 2 milliseconds per task. On a
-> kernel with EEVDF scheduler (commit b97d64c722598ffed42ece814a2cb791336c6679),
+From: Li Nan <linan122@huawei.com>
 
-This is not in any way related to the actual eevdf part, perhaps just
-call it fair.
+If a disk is removed and quickly inserted when an I/O error is processing,
+the disk may not be able to be re-added. The function call timeline is as
+follows:
 
+  interrupt                            scsi_eh
 
->  include/linux/sched.h |  2 ++
->  kernel/sched/core.c   |  1 +
->  kernel/sched/fair.c   | 14 ++++++++++++++
->  kernel/sched/sched.h  |  2 ++
->  4 files changed, 19 insertions(+)
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 177b3f3676ef..1111d04255cc 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -564,6 +564,8 @@ struct sched_entity {
->  
->  	u64				nr_migrations;
->  
-> +	u64				next_migration_time;
-> +
->  #ifdef CONFIG_FAIR_GROUP_SCHED
->  	int				depth;
->  	struct sched_entity		*parent;
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 479db611f46e..0d294fce261d 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -4510,6 +4510,7 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
->  	p->se.vruntime			= 0;
->  	p->se.vlag			= 0;
->  	p->se.slice			= sysctl_sched_base_slice;
-> +	p->se.next_migration_time	= 0;
->  	INIT_LIST_HEAD(&p->se.group_node);
->  
->  #ifdef CONFIG_FAIR_GROUP_SCHED
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d92da2d78774..24ac69913005 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -960,6 +960,14 @@ int sched_update_scaling(void)
->  
->  static void clear_buddies(struct cfs_rq *cfs_rq, struct sched_entity *se);
->  
-> +static bool should_migrate_task(struct task_struct *p, int prev_cpu)
-> +{
-> +	/* Rate limit task migration. */
-> +	if (sched_clock_cpu(prev_cpu) < p->se.next_migration_time)
-> +	       return false;
-> +	return true;
-> +}
-> +
->  /*
->   * XXX: strictly: vd_i += N*r_i/w_i such that: vd_i > ve_i
->   * this is probably good enough.
-> @@ -7897,6 +7905,9 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
->  		want_affine = !wake_wide(p) && cpumask_test_cpu(cpu, p->cpus_ptr);
->  	}
->  
-> +	if (want_affine && !should_migrate_task(p, prev_cpu))
-> +		return prev_cpu;
-> +
->  	rcu_read_lock();
->  	for_each_domain(cpu, tmp) {
->  		/*
-> @@ -7944,6 +7955,9 @@ static void migrate_task_rq_fair(struct task_struct *p, int new_cpu)
->  {
->  	struct sched_entity *se = &p->se;
->  
-> +	/* Rate limit task migration. */
-> +	se->next_migration_time = sched_clock_cpu(new_cpu) + SCHED_MIGRATION_RATELIMIT_WINDOW;
-> +
->  	if (!task_on_rq_migrating(p)) {
->  		remove_entity_load_avg(se);
->  
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index cf54fe338e23..c9b1a5976761 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -104,6 +104,8 @@ struct cpuidle_state;
->  #define TASK_ON_RQ_QUEUED	1
->  #define TASK_ON_RQ_MIGRATING	2
->  
-> +#define SCHED_MIGRATION_RATELIMIT_WINDOW	2000000		/* 2 ms */
-> +
->  extern __read_mostly int scheduler_running;
->  
->  extern unsigned long calc_load_update;
+  ahci_error_intr
+   ata_port_freeze
+    __ata_port_freeze
+     =>ahci_freeze (turn IRQ off)
+    ata_port_abort
+     ata_do_link_abort
+      ata_port_schedule_eh
+       =>ata_std_sched_eh
+        ata_eh_set_pending
+	 set EH_PENDING
+        scsi_schedule_eh
+         shost->host_eh_scheduled++ (=1)
+                                       scsi_error_handler
+                                        =>ata_scsi_error
+                                         ata_scsi_port_error_handler
+					  clear EH_PENDING
+                                          =>ahci_error_handler
+                                          . sata_pmp_error_handler
+                                          .  ata_eh_reset
+                                          .   ata_eh_thaw_port
+                                          .   . =>ahci_thaw (turn IRQ on)
+  ahci_error_intr			  .   .
+   ata_port_freeze			  .   .
+    __ata_port_freeze			  .   .
+     =>ahci_freeze (turn IRQ off)	  .   .
+    ...					  .   .
+        ata_eh_set_pending		  .   .
+	 set EH_PENDING			  .   .
+        scsi_schedule_eh		  .   .
+         shost->host_eh_scheduled++ (=2)  .   .
+					  .   clear EH_PENDING
+					  check EH_PENDING
+                                          =>ata_std_end_eh
+                                           host->host_eh_scheduled = 0;
 
-Urgh... so we already have much of this around task_hot() /
-can_migrate_task(). And I would much rather see we extend those things
-to this wakeup migration path, rather than build a whole new parallel
-thing.
+'host_eh_scheduled' is 0 and scsi eh thread will not be scheduled again.
+The ata port remains frozen and will never be enabled.
 
-Also:
+To fix this issue, decrease 'host_eh_scheduled' instead of setting it to 0
+so that EH is scheduled again to re-enable the port. Also move the update
+of 'nr_active_links' to 0 when 'host_eh_scheduled' is 0 to
+ata_scsi_port_error_handler().
 
-> I have noticed that in order to observe the speedup, the workload needs
-> to keep the CPUs sufficiently busy to cause runqueue lock contention,
-> but not so busy that they don't go idle.
+Cc: stable@vger.kernel.org
+Fixes: ad9e27624479 ("[PATCH] libata-eh-fw: update ata_scsi_error() for new EH")
+Reported-by: luojian <luojian5@huawei.com>
+Signed-off-by: Li Nan <linan122@huawei.com>
+Reviewed-by: Niklas Cassel <niklas.cassel@wdc.com>
+---
+Changes in v4:
+ - add fix tag and Cc stable
 
-This would suggest inhibiting pulling tasks based on rq statistics,
-instead of tasks stats. It doesn't matter when the task migrated last,
-what matter is that this rq doesn't want new tasks at this point.
+ drivers/ata/libata-eh.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-Them not the same thing.
+diff --git a/drivers/ata/libata-eh.c b/drivers/ata/libata-eh.c
+index 159ba6ba19eb..2d5ecd68b7e0 100644
+--- a/drivers/ata/libata-eh.c
++++ b/drivers/ata/libata-eh.c
+@@ -735,6 +735,12 @@ void ata_scsi_port_error_handler(struct Scsi_Host *host, struct ata_port *ap)
+ 	 */
+ 	ap->ops->end_eh(ap);
+ 
++	if (!ap->scsi_host->host_eh_scheduled) {
++		/* make sure nr_active_links is zero after EH */
++		WARN_ON(ap->nr_active_links);
++		ap->nr_active_links = 0;
++	}
++
+ 	spin_unlock_irqrestore(ap->lock, flags);
+ 	ata_eh_release(ap);
+ 
+@@ -946,9 +952,7 @@ EXPORT_SYMBOL_GPL(ata_std_sched_eh);
+  */
+ void ata_std_end_eh(struct ata_port *ap)
+ {
+-	struct Scsi_Host *host = ap->scsi_host;
+-
+-	host->host_eh_scheduled = 0;
++	ap->scsi_host->host_eh_scheduled--;
+ }
+ EXPORT_SYMBOL(ata_std_end_eh);
+ 
+@@ -3922,10 +3926,6 @@ void ata_eh_finish(struct ata_port *ap)
+ 			}
+ 		}
+ 	}
+-
+-	/* make sure nr_active_links is zero after EH */
+-	WARN_ON(ap->nr_active_links);
+-	ap->nr_active_links = 0;
+ }
+ 
+ /**
+-- 
+2.39.2
 
