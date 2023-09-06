@@ -2,151 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13EE0793CFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 170FD793D03
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239919AbjIFMs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49480 "EHLO
+        id S236492AbjIFMt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:49:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240292AbjIFMs4 (ORCPT
+        with ESMTP id S231200AbjIFMt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:48:56 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC85C1730
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:48:47 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d7f0048b042so2785555276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 05:48:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694004527; x=1694609327; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=92om2bQSNnR9D1DHhKVFZqGrlhplU+xlpPXmIDI9/fQ=;
-        b=eAl63feLAN+pM+7zZF69uNUhBuAMmDysKSpk39m0sh8b1uGAyXbxg5/DXt3fnceklW
-         h/1ZgBVNdUqkFaGOVRSXONHfvS50M3InlwiRqhNufroI5uLhTku9nnmUV9MF89bDI9mv
-         CfMmHECSCnYZacelP8GrGS5jerMm/RP3qbAKC+5f5N/NMMQJbmuJo+JpFGXjuRLJ8RWD
-         mlxdjvaJq7/XSPC7hZEporV8NOdYqytfSUEb1tydM69m0mH55g5ZGmOkyUtewGJyrdWP
-         R4k8JM/snhaKIFITilynq5Fyi0ocZqI33tFB4BWC3Ds5rrBlmINwl1bmdwhGayu8TEU3
-         Kv8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694004527; x=1694609327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=92om2bQSNnR9D1DHhKVFZqGrlhplU+xlpPXmIDI9/fQ=;
-        b=bUb+w2F5MdWLNvghp35KUcuARrSqg7WXJYxpMCxpaUC3FB3TMyLzsWXHBKO+dXC3CE
-         ajS+8hfBaw403izsmA/HSUgTVDgVD6fdrfVAoYRYMsQpdI58c8jluEhDujcXx5Ricji5
-         CCuqm14rWnpIAZjKwzMUomDuZOhdC7QIsMGumKEi3ATa0q/5Z01ghPF46YrQsMZHNGim
-         tac8TkOjyu0MTcmrbLBBfwhdC+xX1oS8SZNYKar0RFdcS5J220SSXCSGaRH3a0R4FLUP
-         GVn5Z4XpvNYyo1Z2Ni3hYjsXK9OZNOxqBl2X4FRl3jropJUspx8sWO7VjgSPX1cQ1bEM
-         ropA==
-X-Gm-Message-State: AOJu0YynSMBCTOsJ+Z5jGgeJqjxDsNRMkBxat3zVasx/W0SkEHn01Lp4
-        1XYUokwRka8fRvpKkdPJ0ldJPRhDvh6Emy/XrvnFDg==
-X-Google-Smtp-Source: AGHT+IG22IPQGRrf8eEKph8YYMyYOGggoX0BSU0gnlm3GqlA+rCxg8GxZJknwqypa88MgH+7q+/GwfJRCMq11nNuXqM=
-X-Received: by 2002:a25:81d2:0:b0:d74:5f61:15b1 with SMTP id
- n18-20020a2581d2000000b00d745f6115b1mr15250331ybm.26.1694004526735; Wed, 06
- Sep 2023 05:48:46 -0700 (PDT)
+        Wed, 6 Sep 2023 08:49:26 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 502CA10F8
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:49:22 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C72FE106F;
+        Wed,  6 Sep 2023 05:49:59 -0700 (PDT)
+Received: from [10.57.5.192] (unknown [10.57.5.192])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 63D583F7C5;
+        Wed,  6 Sep 2023 05:49:20 -0700 (PDT)
+Message-ID: <4f335dd2-8043-c60e-cf84-c2b01c4fee12@arm.com>
+Date:   Wed, 6 Sep 2023 13:49:16 +0100
 MIME-Version: 1.0
-References: <20230903214150.2877023-1-dmitry.baryshkov@linaro.org>
- <20230903214150.2877023-2-dmitry.baryshkov@linaro.org> <ZPbrtAlO2Y+bjDhf@kuha.fi.intel.com>
- <CAA8EJpqUg2-k7LLBL38RHU1sThkXB54ca68xEMd1yMnHQcQ++w@mail.gmail.com> <ZPh0Ps9UJ3HLzdeR@kuha.fi.intel.com>
-In-Reply-To: <ZPh0Ps9UJ3HLzdeR@kuha.fi.intel.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 6 Sep 2023 15:48:35 +0300
-Message-ID: <CAA8EJpratbBybgk8woD3maA=J_HuQis44Unq0n+c_UvaFs__AA@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 01/12] Revert "drm/sysfs: Link DRM connectors to
- corresponding Type-C connectors"
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Janne Grunau <j@jannau.net>, Simon Ser <contact@emersion.fr>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        freedreno@lists.freedesktop.org, Won Chung <wonchung@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: snd-cmipci oops during probe on arm64 (current mainline,
+ pre-6.6-rc1)
+Content-Language: en-GB
+To:     Takashi Iwai <tiwai@suse.de>,
+        Antonio Terceiro <antonio.terceiro@linaro.org>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <ZPelHaX/Lt++kkOm@linaro.org> <877cp3esse.wl-tiwai@suse.de>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <877cp3esse.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Sept 2023 at 15:44, Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> On Tue, Sep 05, 2023 at 01:56:59PM +0300, Dmitry Baryshkov wrote:
-> > Hi Heikki,
-> >
-> > On Tue, 5 Sept 2023 at 11:50, Heikki Krogerus
-> > <heikki.krogerus@linux.intel.com> wrote:
-> > >
-> > > Hi Dmitry,
-> > >
-> > > On Mon, Sep 04, 2023 at 12:41:39AM +0300, Dmitry Baryshkov wrote:
-> > > > The kdev->fwnode pointer is never set in drm_sysfs_connector_add(), so
-> > > > dev_fwnode() checks never succeed, making the respective commit NOP.
-> > >
-> > > That's not true. The dev->fwnode is assigned when the device is
-> > > created on ACPI platforms automatically. If the drm_connector fwnode
-> > > member is assigned before the device is registered, then that fwnode
-> > > is assigned also to the device - see drm_connector_acpi_find_companion().
-> > >
-> > > But please note that even if drm_connector does not have anything in
-> > > its fwnode member, the device may still be assigned fwnode, just based
-> > > on some other logic (maybe in drivers/acpi/acpi_video.c?).
-> > >
-> > > > And if drm_sysfs_connector_add() is modified to set kdev->fwnode, it
-> > > > breaks drivers already using components (as it was pointed at [1]),
-> > > > resulting in a deadlock. Lockdep trace is provided below.
-> > > >
-> > > > Granted these two issues, it seems impractical to fix this commit in any
-> > > > sane way. Revert it instead.
-> > >
-> > > I think there is already user space stuff that relies on these links,
-> > > so I'm not sure you can just remove them like that. If the component
-> > > framework is not the correct tool here, then I think you need to
-> > > suggest some other way of creating them.
-> >
-> > The issue (that was pointed out during review) is that having a
-> > component code in the framework code can lead to lockups. With the
-> > patch #2 in place (which is the only logical way to set kdev->fwnode
-> > for non-ACPI systems) probing of drivers which use components and set
-> > drm_connector::fwnode breaks immediately.
-> >
-> > Can we move the component part to the respective drivers? With the
-> > patch 2 in place, connector->fwnode will be copied to the created
-> > kdev's fwnode pointer.
-> >
-> > Another option might be to make this drm_sysfs component registration optional.
->
-> You don't need to use the component framework at all if there is
-> a better way of determining the connection between the DP and its
-> Type-C connector (I'm assuming that that's what this series is about).
-> You just need the symlinks, not the component.
-
-The problem is that right now this component registration has become
-mandatory. And if I set the kdev->fwnode manually (like in the patch
-2), the kernel hangs inside the component code.
-That's why I proposed to move the components to the place where they
-are really necessary, e.g. i915 and amd drivers.
-
--- 
-With best wishes
-Dmitry
+T24gMjAyMy0wOS0wNiAwNzoxMCwgVGFrYXNoaSBJd2FpIHdyb3RlOg0KPiBPbiBXZWQsIDA2
+IFNlcCAyMDIzIDAwOjAxOjAxICswMjAwLA0KPiBBbnRvbmlvIFRlcmNlaXJvIHdyb3RlOg0K
+Pj4NCj4+IEhpLA0KPj4NCj4+IEknbSB1c2luZyBhbiBhcm02NCB3b3Jrc3RhdGlvbiwgYW5k
+IHdhbnRlZCB0byBhZGQgYSBzb3VuZCBjYXJkIHRvIGl0LiBJIGJvdWdodA0KPj4gb25lIHdo
+byB3YXMgcHJldHR5IHBvcHVsYXIgYXJvdW5kIHdoZXJlIEkgbGl2ZSwgYW5kIGl0IGlzIHN1
+cHBvcnRlZCBieSB0aGUNCj4+IHNuZC1jbWlwY2kgZHJpdmVyLg0KPj4NCj4+IEl0J3MgdGhp
+cyBvbmU6DQo+Pg0KPj4gMDAwNTowMjowMC4wIE11bHRpbWVkaWEgYXVkaW8gY29udHJvbGxl
+cjogQy1NZWRpYSBFbGVjdHJvbmljcyBJbmMgQ01JODczOC9DTUk4NzY4IFBDSSBBdWRpbyAo
+cmV2IDEwKQ0KPj4NCj4+IEFmdGVyIGJ1aWxkaW5nIGEgbWFpbGluZSBrZXJuZWwgKHBvc3Qt
+djYuNSwgcHJlLXJjMSkgb24gRGViaWFuIHRlc3RpbmcgYXJtNjQNCj4+IHdpdGggbG9jYWxt
+b2Rjb25maWcgKyBDT05GSUdfU05EX0NNSVBDST1tLCBpdCBjcmFzaGVzIHdpdGggIlVuYWJs
+ZSB0byBoYW5kbGUNCj4+IGtlcm5lbCBwYWdpbmcgcmVxdWVzdCBhdCB2aXJ0dWFsIGFkZHJl
+c3MgZmZmZmZiZmZmZTgwMDAwYyIsIGFuZCB0aGUgc3lzdGVtDQo+PiBuZXZlciBmaW5pc2hl
+cyB0byBib290LiBUaGUgbG9naW4gbWFuYWdlciBuZXZlciBzaG93cyB1cCBhbmQgdGhlIHNl
+cmlhbCBjb25zb2xlDQo+PiBuZXZlciBnZXRzIHRvIGEgbG9naW4gcHJvbXB0LiBJIG9ic2Vy
+dmVkIHRoZSBzYW1lIGlzc3VlIG9uIGEgNi4zIERlYmlhbiBrZXJuZWwsDQo+PiBhZnRlciBy
+ZWJ1aWxkaW5nIHdpdGggQ09ORklHX1NORF9DTUlQQ0k9bS4NCj4+DQo+PiBJZiBJIHN0b3Ag
+dGhlIG1vZHVsZSBmcm9tIGJlaW5nIGF1dG9tYXRpY2FsbHkgbG9hZGVkIGJ5IGFkZGluZw0K
+Pj4gYGJsYWNrbGlzdCBzbmQtY21pcGNpYCB0byAvZXRjL21vZHByb2JlLmQvc25kLWNtaXBj
+aS5jb25mIChvciBpZiBJDQo+PiByZW1vdmUgdGhlIGNhcmQgZnJvbSB0aGUgUENJZSBzbG90
+KSwgSSBnZXQgdGhlIHN5c3RlbSB0byBib290LiBCdXQgdHJpbmcNCj4+IHRvIGxvYWQgdGhl
+IG1vZHVsZSBtYW51YWxseSBjYXVzZXMgdGhlIHNhbWUgY3Jhc2ggKEkgb25seSB0ZXN0ZWQg
+dGhpcw0KPj4gd2l0aCB0aGUgY2FyZCBvbik6DQo+Pg0KPj4gWyAgKzQsNTAxMDkzXSBzbmRf
+Y21pcGNpIDAwMDU6MDI6MDAuMDogc3RyZWFtIDUxMiBhbHJlYWR5IGluIHRyZWUNCj4+IFsg
+ICswLDAwMDE1NV0gVW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgcGFnaW5nIHJlcXVlc3QgYXQg
+dmlydHVhbCBhZGRyZXNzIGZmZmZmYmZmZmU4MDAwMGMNCj4+IFsgICswLDAwNzkyN10gTWVt
+IGFib3J0IGluZm86DQo+PiBbICArMCwwMDI3OTNdICAgRVNSID0gMHgwMDAwMDAwMDk2MDAw
+MDA2DQo+PiBbICArMCwwMDM3NDNdICAgRUMgPSAweDI1OiBEQUJUIChjdXJyZW50IEVMKSwg
+SUwgPSAzMiBiaXRzDQo+PiBbICArMCwwMDUzMDddICAgU0VUID0gMCwgRm5WID0gMA0KPj4g
+WyAgKzAsMDAzMDQ5XSAgIEVBID0gMCwgUzFQVFcgPSAwDQo+PiBbICArMCwwMDMxMzRdICAg
+RlNDID0gMHgwNjogbGV2ZWwgMiB0cmFuc2xhdGlvbiBmYXVsdA0KPj4gWyAgKzAsMDA0ODcy
+XSBEYXRhIGFib3J0IGluZm86DQo+PiBbICArMCwwMDI4NzNdICAgSVNWID0gMCwgSVNTID0g
+MHgwMDAwMDAwNiwgSVNTMiA9IDB4MDAwMDAwMDANCj4+IFsgICswLDAwNTQ3OV0gICBDTSA9
+IDAsIFduUiA9IDAsIFRuRCA9IDAsIFRhZ0FjY2VzcyA9IDANCj4+IFsgICswLDAwNTA0N10g
+ICBHQ1MgPSAwLCBPdmVybGF5ID0gMCwgRGlydHlCaXQgPSAwLCBYcyA9IDANCj4+IFsgICsw
+LDAwMDAwM10gc3dhcHBlciBwZ3RhYmxlOiA0ayBwYWdlcywgNDgtYml0IFZBcywgcGdkcD0w
+MDAwMDgwNTE5ZmU5MDAwDQo+PiBbICArMCwwMDAwMDRdIFtmZmZmZmJmZmZlODAwMDBjXSBw
+Z2Q9MDAwMDA4MDUxYTk3OTAwMywgcDRkPTAwMDAwODA1MWE5NzkwMDMsIHB1ZD0wMDAwMDgw
+NTFhOTdhMDAzLCBwbWQ9MDAwMDAwMDAwMDAwMDAwMA0KPj4gWyAgKzAsMDAwMDA5XSBJbnRl
+cm5hbCBlcnJvcjogT29wczogMDAwMDAwMDA5NjAwMDAwNiBbIzFdIFNNUA0KPj4gWyAgKzAs
+MDI4MTQyXSBNb2R1bGVzIGxpbmtlZCBpbjogc25kX2NtaXBjaSgrKSBzbmRfbXB1NDAxX3Vh
+cnQgc25kX29wbDNfbGliIHh0X2Nvbm50cmFjayB4dF9NQVNRVUVSQURFIG5mX2Nvbm50cmFj
+a19uZXRsaW5rIHhmcm1fdXNlciB4ZnJtX2FsZ28geHRfYWRkcnR5cGUgbmZ0X2NvbXBhdCBi
+cl9uZXRmaWx0ZXIgbmZ0X21hc3EgbmZ0X2NoYWluX25hdCBuZl9uYXQgbmZfY29ubnRyYWNr
+IG5mX2RlZnJhZ19pcHY2IG5mX2RlZnJhZ19pcHY0IGJyaWRnZSBzdHAgbGxjIG5mX3RhYmxl
+cyBuZm5ldGxpbmsgdXZjdmlkZW8gdmlkZW9idWYyX3ZtYWxsb2MgdmlkZW9idWYyX21lbW9w
+cyB1dmMgdmlkZW9idWYyX3Y0bDIgdmlkZW9kZXYgdmlkZW9idWYyX2NvbW1vbiBzbmRfc2Vx
+X2R1bW15IHNuZF9ocnRpbWVyIHNuZF9zZXEgcXJ0ciByZmtpbGwgb3ZlcmxheSBmdGRpX3Np
+byB1c2JzZXJpYWwgc25kX3VzYl9hdWRpbyBzbmRfdXNibWlkaV9saWIgc25kX3BjbSBhZXNf
+Y2VfYmxrIGFlc19jZV9jaXBoZXIgc25kX2h3ZGVwIHBvbHl2YWxfY2Ugc25kX3Jhd21pZGkg
+cG9seXZhbF9nZW5lcmljIHNuZF9zZXFfZGV2aWNlIGpveWRldiBzbmRfdGltZXIgZ2hhc2hf
+Y2UgaGlkX2dlbmVyaWMgZ2YxMjhtdWwgc25kIHVzYmhpZCBzaGEyX2NlIGlwbWlfc3NpZiBz
+b3VuZGNvcmUgaGlkIG1jIHNoYTI1Nl9hcm02NCBpcG1pX2RldmludGYgYXJtX3NwZV9wbXUg
+aXBtaV9tc2doYW5kbGVyIHNoYTFfY2Ugc2JzYV9nd2R0IGJpbmZtdF9taXNjIG5sc19hc2Np
+aSBubHNfY3A0MzcgdmZhdCBmYXQgeGdlbmVfaHdtb24gY3BwY19jcHVmcmVxIGFybV9jbW4g
+YXJtX2RzdV9wbXUgZXZkZXYgbmZzZCBhdXRoX3JwY2dzcyBuZnNfYWNsIGxvY2tkIGdyYWNl
+IGRtX21vZCBmdXNlIGxvb3AgZWZpX3BzdG9yZSBkYXggc3VucnBjIGNvbmZpZ2ZzIGlwX3Rh
+YmxlcyB4X3RhYmxlcyBhdXRvZnM0IGV4dDQgY3JjMTYgbWJjYWNoZSBqYmQyIGJ0cmZzIGVm
+aXZhcmZzIHJhaWQxMCByYWlkDQo+ICAgNDU2IGFzeW5jX3JhaWQ2X3JlY292IGFzeW5jX21l
+bWNweQ0KPj4gWyAgKzAsMDAwMTQyXSAgYXN5bmNfcHEgYXN5bmNfeG9yIGFzeW5jX3R4IGxp
+YmNyYzMyYyBjcmMzMmNfZ2VuZXJpYyB4b3IgeG9yX25lb24gcmFpZDZfcHEgcmFpZDEgcmFp
+ZDAgbXVsdGlwYXRoIGxpbmVhciBtZF9tb2QgbnZtZSBudm1lX2NvcmUgYXN0IHQxMF9waSBk
+cm1fc2htZW1faGVscGVyIHhoY2lfcGNpIGRybV9rbXNfaGVscGVyIHhoY2lfaGNkIGNyYzY0
+X3JvY2tzb2Z0IGNyYzY0IGRybSBjcmNfdDEwZGlmIHVzYmNvcmUgY3JjdDEwZGlmX2dlbmVy
+aWMgaWdiIGNyY3QxMGRpZl9jZSBjcmN0MTBkaWZfY29tbW9uIHVzYl9jb21tb24gaTJjX2Fs
+Z29fYml0IGkyY19kZXNpZ253YXJlX3BsYXRmb3JtIGkyY19kZXNpZ253YXJlX2NvcmUNCj4+
+IFsgICswLDEyMTY3MF0gQ1BVOiAwIFBJRDogNDQyIENvbW06IGt3b3JrZXIvMDo0IE5vdCB0
+YWludGVkIDYuNS4wKyAjMg0KPj4gWyAgKzAsMDA2MjU5XSBIYXJkd2FyZSBuYW1lOiBBRExJ
+TksgQVZBIERldmVsb3BlciBQbGF0Zm9ybS9BVkEgRGV2ZWxvcGVyIFBsYXRmb3JtLCBCSU9T
+IFRpYW5vQ29yZSAyLjA0LjEwMC4wNyAoU1lTOiAyLjA2LjIwMjIwMzA4KSAwOS8wOC8yMDIy
+DQo+PiBbICArMCwwMTI1MDZdIFdvcmtxdWV1ZTogZXZlbnRzIHdvcmtfZm9yX2NwdV9mbg0K
+Pj4gWyAgKzAsMDA0MzUzXSBwc3RhdGU6IDgwNDAwMDA5IChOemN2IGRhaWYgK1BBTiAtVUFP
+IC1UQ08gLURJVCAtU1NCUyBCVFlQRT0tLSkNCj4+IFsgICswLDAwNjk1M10gcGMgOiBsb2dp
+Y19pbmwrMHhhMC8weGQ4DQo+PiBbICArMCwwMDM1NzBdIGxyIDogc25kX2NtaXBjaV9wcm9i
+ZSsweDdhNC8weDExNDAgW3NuZF9jbWlwY2ldDQo+PiBbICArMCwwMDU1NzhdIHNwIDogZmZm
+ZjgwMDA4Mjg3YmM3MA0KPj4gWyAgKzAsMDAzMzAzXSB4Mjk6IGZmZmY4MDAwODI4N2JjNzAg
+eDI4OiBmZmZmMDgwMDhhZjlkNmEwIHgyNzogMDAwMDAwMDAwMDAwMDAwMA0KPj4gWyAgKzAs
+MDA3MTI4XSB4MjY6IGZmZmZjNDgxODI2M2MyMjggeDI1OiAwMDAwMDAwMDAwMDAwMDAwIHgy
+NDogMDAwMDAwMDAwMDAwMDAwMQ0KPj4gWyAgKzAsMDA3MTI3XSB4MjM6IGZmZmYwN2ZmODFh
+OWUwMDAgeDIyOiBmZmZmMDdmZjgxYTllMGMwIHgyMTogZmZmZjA4MDA4YWY5ZDA4MA0KPj4g
+WyAgKzAsMDA3MTI3XSB4MjA6IGZmZmZjNDgxODI2M2MwMDAgeDE5OiAwMDAwMDAwMDAwMDAw
+MDAwIHgxODogZmZmZmZmZmZmZmZmZmZmZg0KPj4gWyAgKzAsMDA3MTI3XSB4MTc6IDAwMDAw
+MDAwMDAwMDAwMDAgeDE2OiBmZmZmYzQ4MTlhYzNjZDM4IHgxNTogZmZmZjgwMDA4Mjg3YmE4
+MA0KPj4gWyAgKzAsMDA3MTI3XSB4MTQ6IDAwMDAwMDAwMDAwMDAwMDEgeDEzOiBmZmZmODAw
+MDgyODdiYmM0IHgxMjogMDAwMDAwMDAwMDAwMDAwMA0KPj4gWyAgKzAsMDA3MTI2XSB4MTE6
+IGZmZmYwN2ZmODM0NjE2ZDAgeDEwOiBmZmZmZmZmZmZmZmZmZmMwIHg5IDogZmZmZmM0ODE5
+YTYxZGQxOA0KPj4gWyAgKzAsMDA3MTI3XSB4OCA6IDAwMDAwMDAwMDAwMDAyMjggeDcgOiAw
+MDAwMDAwMDAwMDAwMDAxIHg2IDogMDAwMDAwMDAwMDAwMDBmZg0KPj4gWyAgKzAsMDA3MTI3
+XSB4NSA6IGZmZmZjNDgxOWFkYjc5OTggeDQgOiAwMDAwMDAwMDAwMDAwMDAwIHgzIDogMDAw
+MDAwMDAwMDAwMDBmZg0KPj4gWyAgKzAsMDA3MTI3XSB4MiA6IDAwMDAwMDAwMDBmZmJmZmUg
+eDEgOiAwMDAwMDAwMDAwMDAwMDBjIHgwIDogZmZmZmZiZmZmZTgwMDAwYw0KPj4gWyAgKzAs
+MDA3MTI2XSBDYWxsIHRyYWNlOg0KPj4gWyAgKzAsMDAyNDM2XSAgbG9naWNfaW5sKzB4YTAv
+MHhkOA0KPj4gWyAgKzAsMDAzMjIxXSAgbG9jYWxfcGNpX3Byb2JlKzB4NDgvMHhiOA0KPj4g
+WyAgKzAsMDAzNzQ0XSAgd29ya19mb3JfY3B1X2ZuKzB4MjQvMHg0MA0KPj4gWyAgKzAsMDAz
+NzQxXSAgcHJvY2Vzc19vbmVfd29yaysweDE3MC8weDNhOA0KPj4gWyAgKzAsMDA0MDAyXSAg
+d29ya2VyX3RocmVhZCsweDIzYy8weDQ2MA0KPj4gWyAgKzAsMDAzNzQyXSAga3RocmVhZCsw
+eGU4LzB4ZjgNCj4+IFsgICswLDAwMzA0N10gIHJldF9mcm9tX2ZvcmsrMHgxMC8weDIwDQo+
+PiBbICArMCwwMDM1NjldIENvZGU6IGQyYmZkMDAwIGYyZGY3ZmUwIGYyZmZmZmUwIDhiMDAw
+MDIwIChiOTQwMDAwMCkNCj4+IFsgICswLDAwNjA4M10gLS0tWyBlbmQgdHJhY2UgMDAwMDAw
+MDAwMDAwMDAwMCBdLS0tDQo+Pg0KPj4gQmVjYXVzZSB0aGlzIHNvdW5kIGNhcmQgY2hpcHNl
+dCBzZWVtcyB0byBiZSBwb3B1bGFyIChwcmV0dHkgbXVjaCBhbGwgUENJIGNhcmRzDQo+PiBJ
+IGNhbiBmaW5kIHRvIGJ1eSBsb2NhbGx5IHVzZSB0aGF0KSwgSSdtIHRoaW5raW5nIHRoaXMg
+bWlnaHQgYmUgc3BlY2lmaWMgdG8NCj4+IGFybTY0LCBvdGhlcndpc2Ugc29tZW9uZSB3b3Vs
+ZCBoYXZlIHNlZW4gdGhpcyBiZWZvcmUuDQo+IA0KPiBUaGVyZSBpcyBvbmx5IG9uZSBjaGFu
+Z2UgaW4gdGhpcyBkcml2ZXIgY29kZSBpdHNlbGYgc2luY2UgNi41IChjb21taXQNCj4gYjZi
+YTBhYTQ2MTM4KSwgYW5kIGp1ZGdpbmcgZnJvbSB0aGUgc3RhY2sgdHJhY2UsIGl0J3MgdW5y
+ZWxhdGVkIHdpdGgNCj4geW91ciBwcm9ibGVtLiAgIEl0J3MgbW9yZSBsaWtlbHkgYSByZWdy
+ZXNzaW9uIGluIHRoZSBsb3dlciBsZXZlbCBjb2RlLA0KPiBlLmcuIFBDSSBsYXllciBvciBh
+cmNoL2FybTY0IHN0dWZmLg0KPiANCj4gQ291bGQgeW91IHRyeSBnaXQgYmlzZWN0Pw0KDQpI
+bW0sIGJ1dCBoYXMgdGhpcyBjb21iaW5hdGlvbiBvZiBjYXJkIGFuZCBtYWNoaW5lICpldmVy
+KiBhY3R1YWxseSB3b3JrZWQ/DQoNCkl0J3MgYmxvd2luZyB1cCB0cnlpbmcgdG8gYWNjZXNz
+IFBDSSBJL08gc3BhY2UsIHdoaWNoIGhhcyBhcHBhcmVudGx5IA0KZW5kZWQgdXAgaW4gdGhl
+IGluZGlyZWN0IGFjY2VzcyBtZWNoYW5pc20gd2l0aG91dCB0aGF0IGJlaW5nIGNvbmZpZ3Vy
+ZWQgDQpjb3JyZWN0bHkuIFRoYXQgaXMgZGVmaW5pdGVseSBhbiBpc3N1ZSBkb3duIHNvbWV3
+aGVyZSBiZXR3ZWVuIHRoZSBQQ0kgDQpsYXllciBhbmQgdGhlIHN5c3RlbSBmaXJtd2FyZS4g
+RG9lcyB0aGUgc3lzdGVtIGV2ZW4gaGF2ZSBhbiBJL08gc3BhY2UgDQp3aW5kb3c/IFNvbWUg
+YXJtNjQgbWFjaGluZXMgZG9uJ3QuIEkgZ3Vlc3Mgd2UgbWlnaHQgbm90IGhhdmUgZ290IGFz
+IGZhciANCmFzIHByb2JpbmcgYSBkcml2ZXIgaWYgdGhlIEkvTyBCQVIgY291bGRuJ3QgYmUg
+YXNzaWduZWQgYXQgYWxsLCBidXQgDQplaXRoZXIgd2F5IHNvbWV0aGluZydzIG5vdCBnb25l
+IHJpZ2h0Lg0KDQpUaGFua3MsDQpSb2Jpbi4NCg==
