@@ -2,129 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FFCC79447A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE2979447D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244272AbjIFU0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 16:26:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36846 "EHLO
+        id S244323AbjIFU1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 16:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241877AbjIFU0W (ORCPT
+        with ESMTP id S240096AbjIFU06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 16:26:22 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE43FCE4
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 13:26:18 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5925f39aa5cso3085437b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 13:26:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694031978; x=1694636778; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WlTf+NVKt7dV5VShanUKxJ6eK2OVsTdMO/HD91r/E2o=;
-        b=zp9gTyizYH3AxdXzjJ6jZwmeTmbQk4CoL1PnzKeBgJARQuwE9tsHnWmIEgcy2694P4
-         qIA56/pdgDcKFn527/vgJB6VhssbOVrUuaO5hmoVBqYkbXEJD24mj9Z0Mm0Er4dCq4VI
-         iLVHBw6U90yzseXFjzSJpuMgLnkKmumxNqe03bobrXT9yfAEVjIOKwyIb3wCOD1LiBBs
-         h0MiiKOhsruklkzC/fJ9kiLZFGvf+9c/fMClwZRJck1fiyzmMmJp5DfwGO4sXpVxdvpL
-         Bee6RQIHa3KSqigx7CkEG1GZlY4AUWZnR/tay8E4mtD8pOiC+868e80UgTAO3GGlhwFv
-         YXVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694031978; x=1694636778;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WlTf+NVKt7dV5VShanUKxJ6eK2OVsTdMO/HD91r/E2o=;
-        b=H5aRM324SQ9B7Qh7SvB1moiJRaE6nD8hu/idka/eIMgLNLs5+yAaA0WkWxkfXRmaZR
-         Ggt34soK7eJeyueh89z1ryZC8F4nV30GG8Ft9f1AKONJhil391wDZ6kPqRdYfVG4T0Jo
-         stsct8Cb3V9DqWzPURbWA5YgmPHd3MONzVoEjx+JEmHBFHmNtpBhWx/a0wYxXcAkVo5i
-         E2FMVDPxcxq0FxK+vxrE76igP6RIB7i7p2Kh4O8i/o2yifMilvrt1MllKRDCx/JoC374
-         MYjvpbfjiVsUyKDaH6jCEspCW8L96bMbSRLxjnSnwHyBcmUiylVUi0t4UZP4Eor1OxEv
-         lH6Q==
-X-Gm-Message-State: AOJu0Yxdle4euiuJ5XK4yCXTlnpY+hvx2/PBz2CGPPn9RemaQHoHWv7t
-        SVuuU0VIFDhaWkuPB7tFouTiEv15Vn4=
-X-Google-Smtp-Source: AGHT+IGjJh1xM7/pZbUwcHONh3f/BbLtWMSpwQxYaUEI84cuhmjTSEPmq7OKhQen/xH81w4xWIhSD3h1+I8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:2990:b0:59b:3adb:f2e with SMTP id
- eh16-20020a05690c299000b0059b3adb0f2emr19163ywb.2.1694031978220; Wed, 06 Sep
- 2023 13:26:18 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 13:26:16 -0700
-In-Reply-To: <249694b0-2afd-f653-a443-124e510f4a4c@amd.com>
-Mime-Version: 1.0
-References: <20230906151449.18312-1-pgonda@google.com> <68a44c6d-21c9-30c2-b0cf-66f02f9d2f4e@amd.com>
- <ZPjc/PoBLPNNLukt@google.com> <249694b0-2afd-f653-a443-124e510f4a4c@amd.com>
-Message-ID: <ZPjgaKoF9jVS/ATx@google.com>
-Subject: Re: [PATCH V2] KVM: SEV: Update SEV-ES shutdown intercepts with more metadata
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Peter Gonda <pgonda@google.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Wed, 6 Sep 2023 16:26:58 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB651BC8;
+        Wed,  6 Sep 2023 13:26:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=vhu69JjbUEsaG2Fb6jcnk2JWuOJif2VvpPpIss2uZlA=; b=c7JKmV2QogHBKoCaJTnvhwO2PS
+        BoAdU38CgxwXiYHw2sqfCarzwSGUG26HyoAVQWPxtmSiP4j2dNPkUBnhPXKtZct6o9rRb4H0ZAkru
+        eSy3cuFcxGFJysxj98HlRe3it9ssVakvawe4bnKZDbysaVbjTByTYWfIIppqWuwc3LypsJS1u18/k
+        Xe/cFiNwELQ9W4ZUttoglQNXjDcdjFpkDSkJhWchyqoeQH40qJzy3dhvYrMrZ2kIt+07O5aZdXv9m
+        Kj+XjcgPp2T6ab96PIj1h4bLKvMNAT4KfyKpkMnnL3wGC/bGmXHPLI4TuWaDHLzwYG/Q+iaOsxWiF
+        zHnwHqgg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50600)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qdz6W-00011f-0q;
+        Wed, 06 Sep 2023 21:26:24 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qdz6V-00056o-Ec; Wed, 06 Sep 2023 21:26:23 +0100
+Date:   Wed, 6 Sep 2023 21:26:23 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 6/8] arm32, bpf: add support for 64 bit division
+ instruction
+Message-ID: <ZPjgb9LDbAZlw0cp@shell.armlinux.org.uk>
+References: <20230905210621.1711859-1-puranjay12@gmail.com>
+ <20230905210621.1711859-7-puranjay12@gmail.com>
+ <ZPein8oS5egqGwzp@shell.armlinux.org.uk>
+ <mb61po7if3b0w.fsf@amazon.com>
+ <ZPjLSHG7JToLWvmT@shell.armlinux.org.uk>
+ <mb61p8r9j2jop.fsf@amazon.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <mb61p8r9j2jop.fsf@amazon.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023, Tom Lendacky wrote:
-> On 9/6/23 15:11, Sean Christopherson wrote:
-> > On Wed, Sep 06, 2023, Tom Lendacky wrote:
-> > > On 9/6/23 10:14, Peter Gonda wrote:
-> > > > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> > > > index 956726d867aa..cecf6a528c9b 100644
-> > > > --- a/arch/x86/kvm/svm/svm.c
-> > > > +++ b/arch/x86/kvm/svm/svm.c
-> > > > @@ -2131,12 +2131,14 @@ static int shutdown_interception(struct kvm_vcpu *vcpu)
-> > > >    	 * The VM save area has already been encrypted so it
-> > > >    	 * cannot be reinitialized - just terminate.
-> > > >    	 */
-> > > > -	if (sev_es_guest(vcpu->kvm))
-> > > > -		return -EINVAL;
-> > > > +	if (sev_es_guest(vcpu->kvm)) {
-> > > > +		kvm_run->exit_reason = KVM_EXIT_SHUTDOWN;
-> > > > +		return 0;
-> > > > +	}
-> > > 
-> > > Just a nit... feel free to ignore, but, since KVM_EXIT_SHUTDOWN is also set
-> > > at the end of the function and I don't think kvm_vcpu_reset() clears the
-> > > value from kvm_run, you could just set kvm_run->exit_reason on entry and
-> > > just return 0 early for an SEV-ES guest.
-> > 
-> > kvm_run is writable by userspace though, so KVM can't rely on kvm_run->exit_reason
-> > for correctness.
-> > 
-> > And IIUC, the VMSA is also toast, i.e. doing anything other than marking the VM
-> > dead is futile, no?
+On Wed, Sep 06, 2023 at 07:19:50PM +0000, Puranjay Mohan wrote:
+> On Wed, Sep 06 2023, Russell King (Oracle) wrote:
 > 
-> I was just saying that "kvm_run->exit_reason = KVM_EXIT_SHUTDOWN;" is in the
-> shutdown_interception() function twice now (at both exit points of the
-> function) and can probably just be moved to the top of the function and be
-> common for both exit points, now, right?
+> > On Wed, Sep 06, 2023 at 09:29:19AM +0000, Puranjay Mohan wrote:
+> >> On Tue, Sep 05 2023, Russell King (Oracle) wrote:
+> >> 
+> >> > On Tue, Sep 05, 2023 at 09:06:19PM +0000, Puranjay Mohan wrote:
+> >> Actually, there can also be a situation where rd[1] != ARM_R0 && rd[1] != ARM_R2,
+> >> so should I do it like:
+> >> 
+> >>  	if (rd[1] != ARM_R0 && rd[1] != ARM_R2) {
+> >>  		emit(ARM_POP(BIT(ARM_R0) | BIT(ARM_R1)), ctx);
+> >>  		emit(ARM_POP(BIT(ARM_R2) | BIT(ARM_R3)), ctx);      
+> >>  	} else if (rd[1] != ARM_R0) {
+> >>  		emit(ARM_POP(BIT(ARM_R0) | BIT(ARM_R1)), ctx);
+> >>  		emit(ARM_ADD_I(ARM_SP, ARM_SP, 8), ctx);
+> >>  	} else if (rd[1] != ARM_R2) {
+> >>  		emit(ARM_ADD_I(ARM_SP, ARM_SP, 8), ctx);
+> >>  		emit(ARM_POP(BIT(ARM_R2) | BIT(ARM_R3)), ctx);
+> >>  	} else {
+> >>  		emit(ARM_ADD_I(ARM_SP, ARM_SP, 16), ctx);
+> >>  	}
+> >
+> > Are you sure all four states are possible?
 > 
-> I'm not saying to get rid of it, just set it sooner.
+> ohh!
+> 
+> I just realized that the last else will never run.
+> rd[1] can never be equal to both ARM_R0 and ARM_R2.
+> Will fix it in V3 as I already sent out the V2.
+> 
+> I need to learn to leave patches on the list for few days before re-spinning.
 
-Ah, I thought you were saying bail early from kvm_vcpu_reset().  I agree that not
-having completely split logic would be ideal.  What about this?
+The last comment on that is you can pop r0-r3 in one go, rather than
+using two instructions.
 
-	/*
-	 * VMCB is undefined after a SHUTDOWN intercept.  INIT the vCPU to put
-	 * the VMCB in a known good state.  Unfortuately, KVM doesn't have
-	 * KVM_MP_STATE_SHUTDOWN and can't add it without potentially breaking
-	 * userspace.  At a platform view, INIT is acceptable behavior as
-	 * there exist bare metal platforms that automatically INIT the CPU
-	 * in response to shutdown.
-	 *
-	 * The VM save area for SEV-ES guests has already been encrypted so it
-	 * cannot be reinitialized, i.e. synthesizing INIT is futile.
-	 */
-	if (!sev_es_guest(vcpu->kvm)) {
-		clear_page(svm->vmcb);
-		kvm_vcpu_reset(vcpu, true);
-	}
-
-	kvm_run->exit_reason = KVM_EXIT_SHUTDOWN;
-	return 0;
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
