@@ -2,67 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D17C793742
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD3D793746
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234759AbjIFIjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 04:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44184 "EHLO
+        id S234997AbjIFIlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 04:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234958AbjIFIjy (ORCPT
+        with ESMTP id S229640AbjIFIlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 04:39:54 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC10E47;
-        Wed,  6 Sep 2023 01:39:50 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 10:39:43 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693989588;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eFmqC5u50JG2Uz7+UhHXczfuq95iqOFCqYRyS0Rau4g=;
-        b=S0LHXA3JMiaUEwB8uG04Q81ozEhO8ik8P2a34nNdw8CXx01ELAeh1+ltrOIYFyZo1t+8DS
-        dVWZk9+IXIjZTG4S4Q3N8ECLtOEeFMaGQTkXP9m691jI53Y7KySxUSbnCGB69d1LSygJrm
-        XEW0rHUPtdzMhyrN1xhvsltYDqGYOHc5mbmpKi7lBXuCuU39szSOfEr6RAG5y/uFle10/v
-        uPllq0BkIX9+qAPqnun60k0v+bpHG7E2t1krt4QjfLaA47h+Xu3LzaopVHTv9G5J/NLyUv
-        +hI23jDAmMZt2//cWC2l3UyszMyXCls0IGc55F5ZaD2BhZcjiedxm9yZZhojzw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693989588;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eFmqC5u50JG2Uz7+UhHXczfuq95iqOFCqYRyS0Rau4g=;
-        b=G86I6RydyQAC2rrDCCBj6+x/pHC/5Yfx5aojMJmby041WNER9RVbJ3jOxmdZMQ1JzGKYDw
-        La9UfyeTeKsBZNBg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Ratheesh Kannoth <rkannoth@marvell.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "alexander.duyck@gmail.com" <alexander.duyck@gmail.com>,
-        "ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>,
-        "linyunsheng@huawei.com" <linyunsheng@huawei.com>
-Subject: Re: RE: [EXT] Re: [PATCH net v1] octeontx2-pf: Fix page pool cache
- index corruption.
-Message-ID: <20230906083943.BsCvyHew@linutronix.de>
-References: <20230906033926.3663659-1-rkannoth@marvell.com>
- <20230906080831.k5HXMqlN@linutronix.de>
- <MWHPR1801MB191826BCB156AB7ADA1F6AF3D3EFA@MWHPR1801MB1918.namprd18.prod.outlook.com>
+        Wed, 6 Sep 2023 04:41:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6C68F;
+        Wed,  6 Sep 2023 01:40:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D520CC433C9;
+        Wed,  6 Sep 2023 08:40:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693989656;
+        bh=33osJvMi9BkVlhAaa6FIokdBDnUZlNZzV6kbO/dmsVI=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=qXSpfDQOyB1xWgYrcNz+6QSgQyCR06Yj44CINKaWehowHXiUO73ng8lfQD0d2Jpoj
+         wqHa7F3iZl7r0mzZIOu8Npa4pa9ZU/Qqssm7fcr6nWHRkT1aH7RSDg7gUeKcVp7EH6
+         dZsxh/Paw9NOLeWCrgtA8ps8tS3Va+53HBzYUaQZA/oBzj/yg96aBdGgGATzXa4T/k
+         gUQE6g+sDDTpHu4E6sRzJHM3uRN0AhxEzO0JyCErPqdh8hkiuOvDyZGiBODWbN/DJQ
+         02E2qr4cQGvwmYdHBbfLNm9v8oxAd2hJXhmWOn8lAYZ9ALF7QU+T3QtYGQAdcK7uXt
+         3ErZC2knqhscA==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Ross Lagerwall <ross.lagerwall@cloud.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org,
+        regressions@lists.linux.dev
+Subject: Re: [regression v6.5-rc1] PCI: comm "swapper/0" leaking memory
+References: <878r9sga1t.fsf@kernel.org>
+        <CAG7k0Epk6KJvoDJKVc86sc_ems3DTbKvPLouBzOoVvn1tZwQ=w@mail.gmail.com>
+Date:   Wed, 06 Sep 2023 11:40:52 +0300
+In-Reply-To: <CAG7k0Epk6KJvoDJKVc86sc_ems3DTbKvPLouBzOoVvn1tZwQ=w@mail.gmail.com>
+        (Ross Lagerwall's message of "Tue, 5 Sep 2023 17:28:38 +0100")
+Message-ID: <87o7ifelt7.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <MWHPR1801MB191826BCB156AB7ADA1F6AF3D3EFA@MWHPR1801MB1918.namprd18.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,41 +52,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-06 08:24:53 [+0000], Ratheesh Kannoth wrote:
-> > From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > Subject: [EXT] Re: [PATCH net v1] octeontx2-pf: Fix page pool cache index
-> > corruption.
-> > 
-> > > +	napi_schedule(wrk->napi);
-> > 
-> > This will delay NAPI until "some random point in the future" for instance if an
-> > interrupt on _this_ CPU fires. You only set the softirq state and never enforce
-> > it here. This works as intended if invoked from an IRQ but this here a worker/
-> > process context.
-> ACK.  Do we need to be so precise here ? Anyway we are short of rx buffers and want to schedule NAPI after some time 
-> (in delayed workqueue) to recheck on rx buffers.  Softirq state will be checked even on timer interrupt returns, right ?.  I was thinking 
-> Case - what will happen if workqueue never got a chance to run if system is stressed with interrupts. 
+Ross Lagerwall <ross.lagerwall@cloud.com> writes:
 
-As of this patch, the timer will wake the worker and worker will
-schedule NAPI. (The timer CPU and the worker CPU can be different.)
-If nothing else happens the CPU, which run the worker, will go idle.
-With NO_HZ enabled you should see warning that the CPU is going idle
-with pending softirqs.
-I prefer to be precise what is going on so there are no surprises.
+> On Wed, Aug 30, 2023 at 10:21=E2=80=AFAM Kalle Valo <kvalo@kernel.org> wr=
+ote:
+>
+>>
+>> I noticed that starting from v6.5-rc1 my ath11k tests reported several
+>> memory leaks from swapper/0:
+>>
+>> unreferenced object 0xffff88810a02b7a8 (size 96):
+>>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
+>>   hex dump (first 32 bytes):
+>>     80 b8 02 0a 81 88 ff ff b8 72 07 00 00 c9 ff ff  .........r......
+>>     c8 b7 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+>>   backtrace:
+>> unreferenced object 0xffff88810a02b880 (size 96):
+>>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
+>>   hex dump (first 32 bytes):
+>>     58 b9 02 0a 81 88 ff ff a8 b7 02 0a 81 88 ff ff  X...............
+>>     a0 b8 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+>>   backtrace:
+>> unreferenced object 0xffff88810a02b958 (size 96):
+>>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
+>>   hex dump (first 32 bytes):
+>>     30 ba 02 0a 81 88 ff ff 80 b8 02 0a 81 88 ff ff  0...............
+>>     78 b9 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  x...............
+>>   backtrace:
+>> unreferenced object 0xffff88810a02ba30 (size 96):
+>>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
+>>   hex dump (first 32 bytes):
+>>     08 bb 02 0a 81 88 ff ff 58 b9 02 0a 81 88 ff ff  ........X.......
+>>     50 ba 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  P...............
+>>   backtrace:
+>> unreferenced object 0xffff88810a02bb08 (size 96):
+>>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
+>>   hex dump (first 32 bytes):
+>>     e0 bb 02 0a 81 88 ff ff 30 ba 02 0a 81 88 ff ff  ........0.......
+>>     28 bb 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  (...............
+>>   backtrace:
+>>
+>> I can easily reproduce this by doing a simple insmod and rmmod of ath11k
+>> and it's dependencies (mac80211, MHI etc). I can reliability reproduce
+>> the leaks but I only see them once after a boot, I need to reboot the
+>> host to see the leaks again. v6.4 has no leaks.
+>>
+>> I did a bisect and found the commit below. I verified reverting the
+>> commit makes the leaks go away.
+>>
+>> commit e54223275ba1bc6f704a6bab015fcd2ae4f72572
+>> Author:     Ross Lagerwall <ross.lagerwall@citrix.com>
+>> AuthorDate: Thu May 25 16:32:48 2023 +0100
+>> Commit:     Bjorn Helgaas <bhelgaas@google.com>
+>> CommitDate: Fri Jun 9 15:06:16 2023 -0500
+>>
+>>     PCI: Release resource invalidated by coalescing
+>
+> Hi Kalle,
+>
+> I can't reproduce the leak by loading/unloading the ath11k module. I susp=
+ect
+> that the leak is always there when PCI resources are coalesced but
+> kmemleak doesn't notice until ath11k is loaded.
+>
+> Can you please try the following to confirm it fixes it?
 
-If the CPU is stressed with interrupts then it is probably busy enough
-and not running the worker to ask for memory (which it did not have
-earlier) is probably the smallest problem.
+I run various tests with your patch and I don't see leaks anymore. I
+also veried that without your patch I see the leak immediately.
 
-I'm not against the worker (with the extra steps) but I prefer to have
-napi schedule done properly.
+Thanks for fixing this so quickly, it would good to have this fix in
+v6.6 if possible.
 
-> > You can either put local_bh_disable()/enable() around napi_schedule() or
-> > use it from a timer callback and skip the worker.
-> Switching to  a timer callback makes sense. 
+Tested-by: Kalle Valo <kvalo@kernel.org>
 
-oki.
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-> -Ratheesh
-
-Sebastian
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
