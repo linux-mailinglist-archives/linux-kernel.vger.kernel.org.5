@@ -2,123 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF32179429C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B7A7942A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243610AbjIFSAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 14:00:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44536 "EHLO
+        id S242007AbjIFSBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 14:01:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234426AbjIFSAq (ORCPT
+        with ESMTP id S242971AbjIFSBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 14:00:46 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E1119AA;
-        Wed,  6 Sep 2023 11:00:41 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-501be2d45e0so56765e87.3;
-        Wed, 06 Sep 2023 11:00:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694023240; x=1694628040; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=jBgTcuweOSdxAt78rjk31W7FbaJq9OxXi+LN0LW4j3I=;
-        b=Lv5V9z7uwmmlxTfYD4ZbjUpaw+YNtKchGAfdP+y4aQqb8eCVQTA71KUWQjzeqLBBdK
-         GUeDEh7kAYjo59ZcYfbDvXRz7pTQ97HnNdrf+9at75ajulwMcvfupD6WidABMXEBBNBN
-         oTEmLn9eJBOWZaSsidNxyqAHqvXfuypkP0E8ejQuwUYqEGRhETsXazJamhh/w0XH0E+J
-         OWh47+6imN2ytXGHgBKZDVZbBFcIzJ0XIpgk0PeGvLUVR8Hj5qdu4nohkfxUJl3NWAfR
-         /pb0wJZpBq+3NDh1NvFCSUmLkVZBbmCmJdwf4lQy0Jse8XhaUaQ/82K3gh2Ld84WYgyb
-         i4LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694023240; x=1694628040;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jBgTcuweOSdxAt78rjk31W7FbaJq9OxXi+LN0LW4j3I=;
-        b=jsencCDufSH8Zne3H3/llbllIE5oqemUmpnzS0vDGwtsmSvgdnNz8gY5ujAfsE1bsG
-         xz1YbUmTSuOIi7SzL29ey1KpiQfaJ+H6Jn5nurn7eu2uhE0kIUehx0Qt1xQyuDdNkR52
-         ZdD4G6HRWjPWp/ejzBREIQMeGYsooqPcCWK7OT4UBCX5PHfk+svjWKCjPs3/TmuFDCvH
-         edj1iMk6ZDoXW2nI2D7wK7Mie8sar6zqkNRZuo4ok47gSG5fxDJjKw/KilbysOJFG0xr
-         PRNziZbfZNb6fHRTdjkLozo8X99g/KLf4GHufG9teyYLsvzmvG0GjJ1G6pAhOEyjDmt7
-         feQw==
-X-Gm-Message-State: AOJu0YzSL+5BQF6a1H/c0k7Qe+gbLmUdRYsn3YKIvP5VRJAwUjTj0Ctn
-        1/hMsbMIP0/ASX2D37jpP5g=
-X-Google-Smtp-Source: AGHT+IFkyU7EgVhPjzf6MonOxLpVL2r9D5B+9nJyXSdu3smQNk5NapaZVQ+wMSlMQgeEvxexfLwn7w==
-X-Received: by 2002:a05:6512:324e:b0:500:94c3:8e3b with SMTP id c14-20020a056512324e00b0050094c38e3bmr2610126lfr.57.1694023239455;
-        Wed, 06 Sep 2023 11:00:39 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id ay9-20020a056402202900b0052a198d8a4dsm8715532edb.52.2023.09.06.11.00.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 11:00:38 -0700 (PDT)
-Message-ID: <c7f9db8879a9342080e74b9270e9925132b02f59.camel@gmail.com>
-Subject: Re: [syzbot] [bpf?] general protection fault in
- bpf_prog_offload_verifier_prep
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     syzbot <syzbot+291100dcb32190ec02a8@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
-        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
-        song@kernel.org, syzkaller-bugs@googlegroups.com,
-        yonghong.song@linux.dev
-Date:   Wed, 06 Sep 2023 21:00:37 +0300
-In-Reply-To: <20230906075730.6d61420a@kernel.org>
-References: <000000000000d97f3c060479c4f8@google.com>
-         <ef4b96a75ff8fa87a82a35d4d050338d0bd9cce1.camel@gmail.com>
-         <f3eacce9566d14141cb591dc8364123b809841cb.camel@gmail.com>
-         <20230906075730.6d61420a@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Wed, 6 Sep 2023 14:01:33 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2076.outbound.protection.outlook.com [40.107.243.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49681700
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 11:01:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EW2WME8B3hovsxlJtpD/IaTfUgVZzsx1yj1cBP7MhUsM9LWSbJlM9Yn1FV1onqIKtlT+FveCJnEOvdAbOrOYqA/TZ1/w5bGebv7k7e+hjnntZjihDd/yd9bYOGJ9kM2IA7NAs/d+5p6xKpO7DhXfv3ZM7zfn++boOVIa8EUhvp+v0hZJqhPObs9bQrYUeEhZRrbJbmqXWg94l/mC3RPsmAjKhquGDUbGvuS/AiQQhDWn6MJ8llwh3ItiDpOHd+snm5aaL0/cjzz42k/fMpL7n17oLXJywCl5PeT/1cnD7KnnwB31DEyiqIuDZgIfRI4sZFk0SBLNBzfGGWKuGA8vWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=01ZjELhBgAlBGabB30a4Kk9NpeXyWDXYUG3S5fUer7A=;
+ b=jEKkEbTGbG8qMMQ3NXVLM8+z5oFEsrXQXCQmOvjJDyCvXyuqYedLxJqVzhpzsRdJlaL/nMX2jbFxx4/eGqp3D7XuqRR6besAmMrUodDeIgmkvlL+gV5cYFXx9Q1A2fudSGoazwS/m2lQ9iBtUodV+l+RmmPDte67P/tm2BhMgVtT/78pNWQJFssdZmmdZDjyCW39dxiqYm332uYJ/No1cGHAiXbTIErbzUYWDf0hBjqhwwSexrkGKugxeZ0rfG7VWs9Jeo3tP/rJRCG/SSCnPs7QN3uh5aziFE+jocWx+yiVZ9ozr/eSIFVjh097ReQKvT+sGNbIboKc03lfMIroHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=01ZjELhBgAlBGabB30a4Kk9NpeXyWDXYUG3S5fUer7A=;
+ b=0YRlwr6Z+p8h3UTjAi67WlMhRGVRh8brF3Z7tZeKKJUtfXo1tOD9Z765jkrUWxNm4T77pJly9fb3mzw5afPpUw6mricElWgcpY8264PTF+mlHvZeBXJBpV0lDmO555liETgrwTKoVZq3VRyl+rjujoJaff7j5mBKe2w1me9rnh0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by SJ2PR12MB8718.namprd12.prod.outlook.com (2603:10b6:a03:540::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.30; Wed, 6 Sep
+ 2023 18:01:22 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::121e:5e68:c78a:1f2f]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::121e:5e68:c78a:1f2f%3]) with mapi id 15.20.6745.030; Wed, 6 Sep 2023
+ 18:01:22 +0000
+Message-ID: <75118b7b-5753-41b0-a9f1-8047d79fa4ad@amd.com>
+Date:   Wed, 6 Sep 2023 14:01:15 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 29/34] drm/amd/display: allow newer DC hardware to use
+ degamma ROM for PQ/HLG
+Content-Language: en-US
+To:     Melissa Wen <mwen@igalia.com>, amd-gfx@lists.freedesktop.org,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
+        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     Joshua Ashton <joshua@froggi.es>,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        Xaver Hugl <xaver.hugl@gmail.com>,
+        Shashank Sharma <Shashank.Sharma@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
+        linux-kernel@vger.kernel.org
+References: <20230810160314.48225-1-mwen@igalia.com>
+ <20230810160314.48225-30-mwen@igalia.com>
+From:   Harry Wentland <harry.wentland@amd.com>
+In-Reply-To: <20230810160314.48225-30-mwen@igalia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQBPR0101CA0245.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:66::17) To CO6PR12MB5427.namprd12.prod.outlook.com
+ (2603:10b6:5:358::13)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|SJ2PR12MB8718:EE_
+X-MS-Office365-Filtering-Correlation-Id: b1d7a761-3754-4711-3a4d-08dbaf034732
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wt/w5i9w/emmyJ3BFOHyvMkv+LRCUiPNCTbODpHNqHzCNYKF3lxSJaiL8QSBJm0ZgDyxUrUwj/jNebgKPQDQfQlH7c1RPKiHV1t3UO0K/GyfIImspYUxmNJ4YFzMghhfUnsHo+V7M0CunETRxweNSM5jp+knMIoepOrb8MEuZydRiNPh3mfrpyBV7grbqi27lVAY/KneCG1RC3/pYt3kL6kaP3yH27fEfcaMIEnlHvqnRYjOcPA/UeT5w2pmwzqzwW49UUNxmqCD90CI88Tsrp4vgKzGpGNN/r9EAntewgeIzd/DtUvGY+NLi/CM6WKyqbJer4Y2AWBUMgsfEXn3LhCQ3QEeKO+mflwNs4G4yWvL9MNbXX0fBQ5M6jAp6YWPcWKakcARqlwVCdO/8NQYqZ5TM9teB9BADjvVhNNznNnWxlShR93Bw80HQQSppo9oKC/Y5aJ3VHbP6lBhcPBMglNL8zts79migruF2LGZzFguNLK7KNiLUwT9cd4ni3wozmKVYkMQnIsU1D2NauidCAjoHUtwfpYUk4t0I4MC6ZVB8h/9R9ykti8kkD4Py/0dMgjHKC0QMn9OkNQ2ZyH+oWu6UCYwA3msXPZdVOUczHptzSHVsshnD8tnpYyHMONG+rAfnUAHXXsR/mGK4E357g+L0anGk1WvKGIjWBDlgAA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(366004)(396003)(136003)(186009)(451199024)(1800799009)(31686004)(86362001)(921005)(83380400001)(7416002)(36756003)(44832011)(5660300002)(31696002)(6486002)(41300700001)(38100700002)(66946007)(66556008)(478600001)(26005)(66476007)(6666004)(2616005)(110136005)(53546011)(4326008)(8936002)(8676002)(6512007)(6506007)(2906002)(316002)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YmZnL2lRTzQ1dGo0TFFGd1lSLzZoSVd4UU5xaGFyTDBWSUtvRTEzWC9lR29Q?=
+ =?utf-8?B?SlNrZHRiaUd0cVFZa3RVTHRpVS82SFFNdjAxVjNXSUpqblQ4YXN2R2lGV09I?=
+ =?utf-8?B?dnEzL1Urb0FYRVpHYzY1NGsxRUhmdFZkSWtiY0lUZ2RuY2d5emRFaVdXQ3pF?=
+ =?utf-8?B?RlJlMUp1SzY4ZllRTDlRSVc3Nkc0TVl5QUpvWmJTcUhFUnpEeGlTSkY1YzFt?=
+ =?utf-8?B?c09RVHlYYUNoM2QwcWl0UUMzUGdHeTlmeURxUkUvMkJJdzR0UkVtOEI1Y2J0?=
+ =?utf-8?B?K3BJWWZmZnVId1A2VEFXcHUrbEEzK09JMWNicTVzRW8rSXlGR1UyKzM4SmJ0?=
+ =?utf-8?B?QTYvM01wZmJsMjVQdWh0b1dPcEVUQSs2UUVZTVRjdTF2NFdmQnJ3L01VOHVL?=
+ =?utf-8?B?V0gxcU50TkxNWUxRWTl1bFpwb0tNUU82RzJCQytGUTVxbEIrY0NLam83N2dQ?=
+ =?utf-8?B?bnZudHpTNEZjLzlNRnB0S2ZFNzNqQURwNGl4SDRZZHUxMWZTNTBpK0RIeEhT?=
+ =?utf-8?B?Zm5LZWtueGd6dzVsTFlWUWhuZjRscTdvL3BuNnZqdlFnbS9LdFFkNk9ZMHJJ?=
+ =?utf-8?B?Y2dZcEJkMFhDT0ZFcFFmTmY4V09oM3l5UFgycGsvb0EvNXZycTdtaTVHYnlL?=
+ =?utf-8?B?d0xVVWJQc21NY2tWMzZYdHlEUm1jWVZITmhaaGdKZmJSVlJLai9UUm1EdldY?=
+ =?utf-8?B?WmVnaXVCRXdVU005L0Y5QVdTWVl0ZG42WExxUDlJSmsweFVSdmJpaXNNSmRC?=
+ =?utf-8?B?UHk3Qzd1N0tDVnZ1aGJjQXhlc0hQUjg3LzhsZmFXQVFTaEFyR3ZGYmRabi90?=
+ =?utf-8?B?WGljamNYMXZJRFlGY2xSeklxcDVMaUlnSUtQSDJPTDBrdkhzWWhxWlpveWxV?=
+ =?utf-8?B?U0w1UmR0UXA5RlBWVk9PWVFRRUlkblB2RGZrRFYzMjZML0VLRGdZQUNhMnl3?=
+ =?utf-8?B?M2ZNczNUWDRTUzZUOUxVMjFrQ0NGUlcvRWI4anNMQW1sWHBkb09qMll5L1g5?=
+ =?utf-8?B?NUNqWklockt5cHJNMkxpMlUwZkZHWktkTU84S01Fa2pWZGJUYUtqSUlTbEly?=
+ =?utf-8?B?azVRYkpHdFk1RGpZbjNSSnV3Ui9tVWlMdlhvQjYxNlRVbUQ5SEVIWU1RT0pz?=
+ =?utf-8?B?NnEyeGNzWWE5RDBUcGdYNzlxUk8zQWwvbEVrUEttMFZUN2dhUmNYOVJld3ZK?=
+ =?utf-8?B?MVZYWDQ4OVRIbnB4S0VJeXpkUlVjL3Uvb1JLWi9KVmQ0UVMvMG8rVW9nZXlx?=
+ =?utf-8?B?LzMvZTlvakR2VVUxTXExbER6MDg3UFBxcFdGTGJJVlIzTU9OZVI0ZmVwNytB?=
+ =?utf-8?B?U1ZyS2YxcFpnSnZ3Z0R2QkhKWGZWUzV5amxyWEh0dDZZRGkyWk5IanVUQWV0?=
+ =?utf-8?B?cS9tM0h1ZjVRSzg2QmlZRysyS0NqNnNqTkphSm1adXgzTXJCR0Y1dDRZazBx?=
+ =?utf-8?B?UVZKU1RIZS9IYWQvbFcyaTBUOUIvOCtlQkFoNGk5VlRvUCtoQ253TUkvT1hj?=
+ =?utf-8?B?L0o1NGlzNkZQMktWdXA2QkcvR0RvclcxWlhZQ0FRQUdKYXFtVmRrZDR1YzVx?=
+ =?utf-8?B?MkZSbnNndXpFc2pIeHFtRW4rd1BkSUF0MlBPVzMrNStYNVB2TE1HVENsaXlY?=
+ =?utf-8?B?QW9FZ3pEQWR2ZEsva3ZjZ01WMW5MSndSVmxjRmJra2dVRjBPOTgzdWxqZjgr?=
+ =?utf-8?B?UTZhK05LVWcxcjZ6azNQVjhOYmxyMEJ6ZGMrQkFCeVZDU1RvbVhnT1ZSYjlK?=
+ =?utf-8?B?WVZRRnVmdDdpQUF1SjF3LzhWM2NjZjF5TmV5aFZkV2V5UjVVdWhibzhvZUtq?=
+ =?utf-8?B?aWRIOU1zTDBKNGRhM2NqMDRPK2pTeE9mbW5JMmVpS0orSDdMbVBjUmhqZDU1?=
+ =?utf-8?B?aS9RbUNoTUtxeWtqcCsvZVNFaUZVUFFBdnpWU3BNdHlVYnVDNWtPV2tNR25m?=
+ =?utf-8?B?UnR5MWM1dkF3aGV0Z2FPWDdLdlR4cFNSWjZrQ3V5YlRQK05mWmphSlpnTjcw?=
+ =?utf-8?B?UzVDQXF4Z3dRU2piaHNnMlFhZ24yYmgwUnkyMVZnWGdhbFA3Rll1bDFydjhl?=
+ =?utf-8?B?c2czMHpEQ0VhcGhWYmlzVmMwbjdocC9US0w3VEd2emhQTTc4RTVLZUI0VUlt?=
+ =?utf-8?Q?b65CgcUYasKtLRvAkKPOJVCJ0?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b1d7a761-3754-4711-3a4d-08dbaf034732
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 18:01:21.9488
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oLaH8s1VWMgyshC3mSb4jbXO9rI6u+iIc6lhDXE4LB0WaCWhKUCkSWn8+dm8mz1GPAxBvx4EuPVRw4ka+ivbFg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8718
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-09-06 at 07:57 -0700, Jakub Kicinski wrote:
-> On Wed, 06 Sep 2023 16:50:23 +0300 Eduard Zingerman wrote:
-> > diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-> > index 3e4f2ec1af06..302e38bffffa 100644
-> > --- a/kernel/bpf/offload.c
-> > +++ b/kernel/bpf/offload.c
-> > @@ -199,12 +199,11 @@ static int __bpf_prog_dev_bound_init(struct bpf_p=
-rog *prog, struct net_device *n
-> >         offload->netdev =3D netdev;
-> > =20
-> >         ondev =3D bpf_offload_find_netdev(offload->netdev);
-> > +       if (bpf_prog_is_offloaded(prog->aux) && (!ondev || !ondev->offd=
-ev)) {
-> > +               err =3D -EINVAL;
-> > +               goto err_free;
-> > +       }
-> >         if (!ondev) {
-> > -               if (bpf_prog_is_offloaded(prog->aux)) {
-> > -                       err =3D -EINVAL;
-> > -                       goto err_free;
-> > -               }
-> > -
-> >                 /* When only binding to the device, explicitly
-> >                  * create an entry in the hashtable.
-> >                  */
->=20
-> LGTM, FWIW.
 
-Thanks, I'll wrap it up as a proper patch with a test.
 
->=20
-> > With the following reasoning: for offloaded programs offload device
-> > should exist and it should not be a fake device create in !ondev branch=
-.
-> >=20
-> > Stanislav, could you please take a look? I think this is related to com=
-mit:
-> > 2b3486bc2d23 ("bpf: Introduce device-bound XDP programs")
+On 2023-08-10 12:03, Melissa Wen wrote:
+> From: Joshua Ashton <joshua@froggi.es>
+> 
+> Need to funnel the color caps through to these functions so it can check
+> that the hardware is capable.
+> 
+> v2:
+> - remove redundant color caps assignment on plane degamma map (Harry)
+> - pass color caps to degamma params
+> 
+> Signed-off-by: Joshua Ashton <joshua@froggi.es>
+> Signed-off-by: Melissa Wen <mwen@igalia.com>
+> ---
+>  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 35 ++++++++++++-------
+>  1 file changed, 22 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> index f638e5b3a70b..4356846a2bce 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> @@ -538,6 +538,7 @@ static int amdgpu_dm_set_atomic_regamma(struct dc_stream_state *stream,
+>  /**
+>   * __set_input_tf - calculates the input transfer function based on expected
+>   * input space.
+> + * @caps: dc color capabilities
+>   * @func: transfer function
+>   * @lut: lookup table that defines the color space
+>   * @lut_size: size of respective lut.
+> @@ -545,7 +546,7 @@ static int amdgpu_dm_set_atomic_regamma(struct dc_stream_state *stream,
+>   * Returns:
+>   * 0 in case of success. -ENOMEM if fails.
+>   */
+> -static int __set_input_tf(struct dc_transfer_func *func,
+> +static int __set_input_tf(struct dc_color_caps *caps, struct dc_transfer_func *func,
+>  			  const struct drm_color_lut *lut, uint32_t lut_size)
+>  {
+>  	struct dc_gamma *gamma = NULL;
+> @@ -562,7 +563,7 @@ static int __set_input_tf(struct dc_transfer_func *func,
+>  		__drm_lut_to_dc_gamma(lut, gamma, false);
+>  	}
+>  
+> -	res = mod_color_calculate_degamma_params(NULL, func, gamma, gamma != NULL);
+> +	res = mod_color_calculate_degamma_params(caps, func, gamma, gamma != NULL);
+>  
+>  	if (gamma)
+>  		dc_gamma_release(&gamma);
+> @@ -725,7 +726,7 @@ static int amdgpu_dm_atomic_blend_lut(const struct drm_color_lut *blend_lut,
+>  		func_blend->tf = tf;
+>  		func_blend->sdr_ref_white_level = SDR_WHITE_LEVEL_INIT_VALUE;
+>  
+> -		ret = __set_input_tf(func_blend, blend_lut, blend_size);
+> +		ret = __set_input_tf(NULL, func_blend, blend_lut, blend_size);
+>  	} else {
+>  		func_blend->type = TF_TYPE_BYPASS;
+>  		func_blend->tf = TRANSFER_FUNCTION_LINEAR;
+> @@ -950,7 +951,8 @@ int amdgpu_dm_update_crtc_color_mgmt(struct dm_crtc_state *crtc)
+>  
+>  static int
+>  map_crtc_degamma_to_dc_plane(struct dm_crtc_state *crtc,
+> -			     struct dc_plane_state *dc_plane_state)
+> +			     struct dc_plane_state *dc_plane_state,
+> +			     struct dc_color_caps *caps)
+>  {
+>  	const struct drm_color_lut *degamma_lut;
+>  	enum dc_transfer_func_predefined tf = TRANSFER_FUNCTION_SRGB;
+> @@ -1005,7 +1007,7 @@ map_crtc_degamma_to_dc_plane(struct dm_crtc_state *crtc,
+>  			dc_plane_state->in_transfer_func->tf =
+>  				TRANSFER_FUNCTION_LINEAR;
+>  
+> -		r = __set_input_tf(dc_plane_state->in_transfer_func,
+> +		r = __set_input_tf(caps, dc_plane_state->in_transfer_func,
+>  				   degamma_lut, degamma_size);
+>  		if (r)
+>  			return r;
+> @@ -1018,7 +1020,7 @@ map_crtc_degamma_to_dc_plane(struct dm_crtc_state *crtc,
+>  		dc_plane_state->in_transfer_func->tf = tf;
+>  
+>  		if (tf != TRANSFER_FUNCTION_SRGB &&
+> -		    !mod_color_calculate_degamma_params(NULL,
+> +		    !mod_color_calculate_degamma_params(caps,
+>  							dc_plane_state->in_transfer_func,
+>  							NULL, false))
+>  			return -ENOMEM;
+> @@ -1029,7 +1031,8 @@ map_crtc_degamma_to_dc_plane(struct dm_crtc_state *crtc,
+>  
+>  static int
+>  __set_dm_plane_degamma(struct drm_plane_state *plane_state,
+> -		       struct dc_plane_state *dc_plane_state)
+> +		       struct dc_plane_state *dc_plane_state,
+> +		       struct dc_color_caps *color_caps)
+>  {
+>  	struct dm_plane_state *dm_plane_state = to_dm_plane_state(plane_state);
+>  	const struct drm_color_lut *degamma_lut;
+> @@ -1060,7 +1063,7 @@ __set_dm_plane_degamma(struct drm_plane_state *plane_state,
+>  		dc_plane_state->in_transfer_func->type =
+>  			TF_TYPE_DISTRIBUTED_POINTS;
+>  
+> -		ret = __set_input_tf(dc_plane_state->in_transfer_func,
+> +		ret = __set_input_tf(color_caps, dc_plane_state->in_transfer_func,
+>  				     degamma_lut, degamma_size);
+>  		if (ret)
+>  			return ret;
+> @@ -1068,7 +1071,7 @@ __set_dm_plane_degamma(struct drm_plane_state *plane_state,
+>  		dc_plane_state->in_transfer_func->type =
+>  			TF_TYPE_PREDEFINED;
+>  
+> -		if (!mod_color_calculate_degamma_params(NULL,
+> +		if (!mod_color_calculate_degamma_params(color_caps,
+>  		    dc_plane_state->in_transfer_func, NULL, false))
+>  			return -ENOMEM;
+>  	}
+> @@ -1077,7 +1080,8 @@ __set_dm_plane_degamma(struct drm_plane_state *plane_state,
+>  
+>  static int
+>  amdgpu_dm_plane_set_color_properties(struct drm_plane_state *plane_state,
+> -				     struct dc_plane_state *dc_plane_state)
+> +				     struct dc_plane_state *dc_plane_state,
+> +				     struct dc_color_caps *color_caps)
+
+This seems unused.
+
+Harry
+
+>  {
+>  	struct dm_plane_state *dm_plane_state = to_dm_plane_state(plane_state);
+>  	enum amdgpu_transfer_function shaper_tf = AMDGPU_TRANSFER_FUNCTION_DEFAULT;
+> @@ -1147,6 +1151,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
+>  				      struct dc_plane_state *dc_plane_state)
+>  {
+>  	struct amdgpu_device *adev = drm_to_adev(crtc->base.state->dev);
+> +	struct dc_color_caps *color_caps = NULL;
+>  	bool has_crtc_cm_degamma;
+>  	int ret;
+>  
+> @@ -1156,6 +1161,9 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
+>  		return ret;
+>  	}
+>  
+> +	if (dc_plane_state->ctx && dc_plane_state->ctx->dc)
+> +		color_caps = &dc_plane_state->ctx->dc->caps.color;
+> +
+>  	/* Initially, we can just bypass the DGM block. */
+>  	dc_plane_state->in_transfer_func->type = TF_TYPE_BYPASS;
+>  	dc_plane_state->in_transfer_func->tf = TRANSFER_FUNCTION_LINEAR;
+> @@ -1163,7 +1171,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
+>  	/* After, we start to update values according to color props */
+>  	has_crtc_cm_degamma = (crtc->cm_has_degamma || crtc->cm_is_degamma_srgb);
+>  
+> -	ret = __set_dm_plane_degamma(plane_state, dc_plane_state);
+> +	ret = __set_dm_plane_degamma(plane_state, dc_plane_state, color_caps);
+>  	if (ret == -ENOMEM)
+>  		return ret;
+>  
+> @@ -1189,10 +1197,11 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
+>  		 * linearize (implicit degamma) from sRGB/BT709 according to
+>  		 * the input space.
+>  		 */
+> -		ret = map_crtc_degamma_to_dc_plane(crtc, dc_plane_state);
+> +		ret = map_crtc_degamma_to_dc_plane(crtc, dc_plane_state, color_caps);
+>  		if (ret)
+>  			return ret;
+>  	}
+>  
+> -	return amdgpu_dm_plane_set_color_properties(plane_state, dc_plane_state);
+> +	return amdgpu_dm_plane_set_color_properties(plane_state,
+> +						    dc_plane_state, color_caps);
+>  }
 
