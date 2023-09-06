@@ -2,94 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 441CF79337C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 03:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 128BA793381
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 03:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236271AbjIFBuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 21:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58982 "EHLO
+        id S234041AbjIFBys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 21:54:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232839AbjIFBuI (ORCPT
+        with ESMTP id S229575AbjIFBys (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 21:50:08 -0400
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50DD3CD2;
-        Tue,  5 Sep 2023 18:50:01 -0700 (PDT)
-X-UUID: 9e3770defd2a49d09c2b421257c58c5f-20230906
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:e80f1eb1-720b-45a1-a92a-0754ddea1d50,IP:15,
-        URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:0
-X-CID-INFO: VERSION:1.1.31,REQID:e80f1eb1-720b-45a1-a92a-0754ddea1d50,IP:15,UR
-        L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:61312920-33fd-4aaa-bb43-d3fd68d9d5ae,B
-        ulkID:230906094948VYPMASHI,BulkQuantity:0,Recheck:0,SF:24|17|19|44|102,TC:
-        nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OS
-        I:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 9e3770defd2a49d09c2b421257c58c5f-20230906
-X-User: oushixiong@kylinos.cn
-Received: from localhost.localdomain [(111.48.58.12)] by mailgw
-        (envelope-from <oushixiong@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 779420723; Wed, 06 Sep 2023 09:49:45 +0800
-From:   oushixiong <oushixiong@kylinos.cn>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Yishai Hadas <yishaih@nvidia.com>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Brett Creeley <brett.creeley@amd.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shixiong Ou <oushixiong@kylinos.cn>
-Subject: [PATCH] vfio/pds: Add missing PCI_IOV depends
-Date:   Wed,  6 Sep 2023 09:49:42 +0800
-Message-Id: <20230906014942.1658769-1-oushixiong@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 5 Sep 2023 21:54:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8522CE5
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 18:53:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693965237;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xk9RaIlRaxly3xfCOhiwU7el2VjWg2i8+fH/Clz644M=;
+        b=ihbNDE+38iiA/kuPPJoFa+XKlrCc6YKsPtAqiAirK8tt6HR8cKg8WvkYNNiJVkp6vZpOex
+        UC0KtSfpZqhaxkVhUzPEyDLk7/tkx4sgEFGq70WEblJ1UDD3TJ/U8X9zExji6mafKeqwxr
+        RrAH0Ymc67/b0izuVgenmmc+0aS28Rc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-679-O8N5UQziME6WLgEm9cJOkQ-1; Tue, 05 Sep 2023 21:53:54 -0400
+X-MC-Unique: O8N5UQziME6WLgEm9cJOkQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CA83D8279AA;
+        Wed,  6 Sep 2023 01:53:53 +0000 (UTC)
+Received: from [10.22.9.87] (unknown [10.22.9.87])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 314871121314;
+        Wed,  6 Sep 2023 01:53:53 +0000 (UTC)
+Message-ID: <362f96ba-ca87-8343-a139-626f8b167e78@redhat.com>
+Date:   Tue, 5 Sep 2023 21:53:52 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATH v2] cgroup: add cgroup_favordynmods= command-line option
+Content-Language: en-US
+To:     Luiz Capitulino <luizcap@amazon.com>, tj@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     lcapitulino@gmail.com
+References: <20230906005712.66461-1-luizcap@amazon.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230906005712.66461-1-luizcap@amazon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shixiong Ou <oushixiong@kylinos.cn>
 
-If PCI_ATS isn't set, then pdev->physfn is not defined.
-it causes a compilation issue:
-
-../drivers/vfio/pci/pds/vfio_dev.c:165:30: error: ‘struct pci_dev’ has no member named ‘physfn’; did you mean ‘is_physfn’?
-  165 |   __func__, pci_dev_id(pdev->physfn), pci_id, vf_id,
-      |                              ^~~~~~
-
-So adding PCI_IOV depends to select PCI_ATS.
-
-Signed-off-by: Shixiong Ou <oushixiong@kylinos.cn>
----
- drivers/vfio/pci/pds/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/vfio/pci/pds/Kconfig b/drivers/vfio/pci/pds/Kconfig
-index 407b3fd32733..6eceef7b028a 100644
---- a/drivers/vfio/pci/pds/Kconfig
-+++ b/drivers/vfio/pci/pds/Kconfig
-@@ -3,7 +3,7 @@
- 
- config PDS_VFIO_PCI
- 	tristate "VFIO support for PDS PCI devices"
--	depends on PDS_CORE
-+	depends on PDS_CORE && PCI_IOV
- 	select VFIO_PCI_CORE
- 	help
- 	  This provides generic PCI support for PDS devices using the VFIO
--- 
-2.25.1
+On 9/5/23 20:57, Luiz Capitulino wrote:
+> We have a need of using favordynmods with cgroup v1, which doesn't support
+> changing mount flags during remount. Enabling CONFIG_FAVOR_DYNMODS at
+> build-time is not an option because we want to be able to selectively
+> enable it for certain systems.
+>
+> This commit addresses this by introducing the cgroup_favordynmods=
+> command-line option. This option works for both cgroup v1 and v2 and
+> also allows for disabling favorynmods when the kernel built with
+> CONFIG_FAVOR_DYNMODS=y.
+>
+> Signed-off-by: Luiz Capitulino <luizcap@amazon.com>
+> ---
+>   Documentation/admin-guide/kernel-parameters.txt |  4 ++++
+>   kernel/cgroup/cgroup.c                          | 14 +++++++++++---
+>   2 files changed, 15 insertions(+), 3 deletions(-)
+>
+> o v2
+>   - Use __ro_after_init [Waiman]
+>
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 0a1731a0f0ef..8b744d39d393 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -580,6 +580,10 @@
+>   			named mounts. Specifying both "all" and "named" disables
+>   			all v1 hierarchies.
+>   
+> +	cgroup_favordynmods= [KNL] Enable or Disable favordynmods.
+> +			Format: { "true" | "false" }
+> +			Defaults to the value of CONFIG_CGROUP_FAVOR_DYNMODS.
+> +
+>   	cgroup.memory=	[KNL] Pass options to the cgroup memory controller.
+>   			Format: <string>
+>   			nosocket -- Disable socket memory accounting.
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index 1fb7f562289d..2b7d74304606 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -207,6 +207,8 @@ static u16 have_exit_callback __read_mostly;
+>   static u16 have_release_callback __read_mostly;
+>   static u16 have_canfork_callback __read_mostly;
+>   
+> +static bool have_favordynmods __ro_after_init = IS_ENABLED(CONFIG_CGROUP_FAVOR_DYNMODS);
+> +
+>   /* cgroup namespace for init task */
+>   struct cgroup_namespace init_cgroup_ns = {
+>   	.ns.count	= REFCOUNT_INIT(2),
+> @@ -2243,9 +2245,9 @@ static int cgroup_init_fs_context(struct fs_context *fc)
+>   	fc->user_ns = get_user_ns(ctx->ns->user_ns);
+>   	fc->global = true;
+>   
+> -#ifdef CONFIG_CGROUP_FAVOR_DYNMODS
+> -	ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
+> -#endif
+> +	if (have_favordynmods)
+> +		ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
+> +
+>   	return 0;
+>   }
+>   
+> @@ -6764,6 +6766,12 @@ static int __init enable_cgroup_debug(char *str)
+>   }
+>   __setup("cgroup_debug", enable_cgroup_debug);
+>   
+> +static int __init cgroup_favordynmods_setup(char *str)
+> +{
+> +	return (kstrtobool(str, &have_favordynmods) == 0);
+> +}
+> +__setup("cgroup_favordynmods=", cgroup_favordynmods_setup);
+> +
+>   /**
+>    * css_tryget_online_from_dir - get corresponding css from a cgroup dentry
+>    * @dentry: directory dentry of interest
+Reviewed-by: Waiman Long <longman@redhat.com>
 
