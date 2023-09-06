@@ -2,118 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 848D679446B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6792C79446E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 22:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244396AbjIFUVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 16:21:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46540 "EHLO
+        id S244279AbjIFUV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 16:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244275AbjIFUV2 (ORCPT
+        with ESMTP id S244385AbjIFUVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 16:21:28 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7EB51BCA
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 13:21:19 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4c0so374351a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 13:21:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694031678; x=1694636478; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=juvIBN8bH5nfyemIbaYqy2hi6dz3IfTdEON4xkDZyZg=;
-        b=LmO/AEN05xILKYsMLaoZsLbQGdc/6PcgAb5OerutYzUfm49tWSoRfaGS3YrE5+hmW2
-         o4HvizGFnU4GnuycWAduXHmqNQrAY39kDjLmQ4SKC2uqwdk8OpALf5UKxHqXRwPkkU+Z
-         4YnKK5dT2R4E1KsW8GHvtVBQ6plmYXY9r1Zns=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694031678; x=1694636478;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=juvIBN8bH5nfyemIbaYqy2hi6dz3IfTdEON4xkDZyZg=;
-        b=MpPRvRUKaSlqisB3mLUWp17wlVB16QBOQvYEK7hJ2yA1k4dV4y7uGUs84/1bDQ5A1N
-         mVG2Rba2SuepoRhNkUDBLXnvsKou8utrjj/Hd0+K58vHSzrRT48RAO6OC9wFPV/hvPeg
-         aHzqCGBF2lLTJriJSUqq9pAhtNe0v5tSYibnr5gkE2ou2U0JGszJPjVGlUHolUurOIel
-         YfP6fTjTrE7H3eoRAIMcIrUHcXLCsLtTFdRjK8gBaq/vqeUo9PfV6beLuCEXFwZo6JmK
-         lyw+O2LSvzi3SnVK1jqUeHl7BsFdux3gbv2u7O+HbcQO9ZVT3B0jtgOKxYqvzat73ITx
-         tR2w==
-X-Gm-Message-State: AOJu0YxTdpAMO9QxSrw98etvJQ06HYZECvMdNicvxKg7G6w/K9f6CTB9
-        W4jOYF35WBLhbwQkIlvX4Am2L8bjz8/cA6B4EhA1hg==
-X-Google-Smtp-Source: AGHT+IFJAsHemkZFuu/wD7GTfBhmNFO2kRm1qJ1NPd/NboDcvUbFyFODlQ0Wdmw7Dt3i7e9hEF/FqQ==
-X-Received: by 2002:aa7:d0ce:0:b0:522:582c:f427 with SMTP id u14-20020aa7d0ce000000b00522582cf427mr915211edo.14.1694031677970;
-        Wed, 06 Sep 2023 13:21:17 -0700 (PDT)
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com. [209.85.208.53])
-        by smtp.gmail.com with ESMTPSA id o21-20020aa7c515000000b0052576969ef8sm8754019edq.14.2023.09.06.13.21.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 13:21:17 -0700 (PDT)
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-51a52a7d859so2925850a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 13:21:17 -0700 (PDT)
-X-Received: by 2002:a05:6402:50ce:b0:521:ef0f:8ef9 with SMTP id
- h14-20020a05640250ce00b00521ef0f8ef9mr908145edb.19.1694031677181; Wed, 06 Sep
- 2023 13:21:17 -0700 (PDT)
+        Wed, 6 Sep 2023 16:21:55 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFA219A8
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 13:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=date:from:to:subject:message-id
+        :references:mime-version:content-type:in-reply-to; s=k1; bh=Yv67
+        0y/ikUzAQzPKatK8iaFIZc865ohGwHixJsvpd38=; b=On/rRZ2+A7nwIYp9sZWE
+        wflgBejnTlb7rip0HuhUtB8dOLWKcZR1iD2Q6ZDauKQXC4klQ0j1DJjThpqaF623
+        CGZwqBZ9jD1au/A5vyVgpstnsALYIYUtCwCEq8JYQOJRFR3uYChy+gIT66IduwTU
+        W7Uf6cIJ0cwXlu2H2dzD1nrCJbOjC8d4h6ozImlJh/NHVURDcD7UnaYJfkHK/HGk
+        zT4fSYT73It7TfwaQPdgDzciNp1H/mVkQ8Qdn9Jzl3l5Vjaq7KkYv63+GGNWkaSS
+        vghAQ2SO88NaswGh1uGhgDitrH+othx4vEMGhdC8mGKIW1VxMUy8jQlKfL1tijRO
+        1w==
+Received: (qmail 2934407 invoked from network); 6 Sep 2023 22:21:36 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 6 Sep 2023 22:21:36 +0200
+X-UD-Smtp-Session: l3s3148p1@gyt9fbYEmpEujnuj
+Date:   Wed, 6 Sep 2023 22:21:35 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-renesas-soc@vger.kernel.org,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] i2c: rcar: introduce Gen4 devices
+Message-ID: <ZPjfT3H42+5id0i+@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-renesas-soc@vger.kernel.org,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230904135852.12146-1-wsa+renesas@sang-engineering.com>
+ <20230904135852.12146-3-wsa+renesas@sang-engineering.com>
+ <CAMuHMdUJnKeLJu4-CuDEFty8oW0p9M-D5mcuDv+fFxo-fHvvaQ@mail.gmail.com>
+ <ZPhKxsj6VTmIlKUY@shikoro>
 MIME-Version: 1.0
-References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
- <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com> <CAHk-=whaiVhuO7W1tb8Yb-CuUHWn7bBnJ3bM7bvcQiEQwv_WrQ@mail.gmail.com>
-In-Reply-To: <CAHk-=whaiVhuO7W1tb8Yb-CuUHWn7bBnJ3bM7bvcQiEQwv_WrQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 6 Sep 2023 13:20:59 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi6EAPRzYttb+qnZJuzinUnH9xXy-a1Y5kvx5Qs=6xDew@mail.gmail.com>
-Message-ID: <CAHk-=wi6EAPRzYttb+qnZJuzinUnH9xXy-a1Y5kvx5Qs=6xDew@mail.gmail.com>
-Subject: Re: [GIT PULL] bcachefs
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4syRa1QPYYWNHiH5"
+Content-Disposition: inline
+In-Reply-To: <ZPhKxsj6VTmIlKUY@shikoro>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Sept 2023 at 13:02, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> And guess what happens when you have (unsigned char)-1? It does *not*
-> cast back to -1.
 
-Side note: again, this may be one of those "it works in practice",
-because if we have -fshort-enums, I think 'enum
-btree_node_locked_type' in turn ends up being represented as a 'signed
-char', because that's the smallest simple type that can fit all those
-values.
+--4syRa1QPYYWNHiH5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I don't think gcc ever uses less than that (ie while a six_lock_type
-could fit in two bits, it's still going to be considered at least a
-8-bit value in practice).
 
-So we may have 'enum six_lock_type' essentially being 'unsigned char',
-and when the code does
+> I was reluctant to add the reset too often because my measurements back
+> then showed that it costs around 5us every time. Annoying. Maybe I
+> should take it easy and follow the documentation. But then I am still
+> not sure if a large transfer with way more than two messages are OK
+> without reset? I will ask the HW team.
 
-    mark_btree_node_locked(trans, path, 0, BTREE_NODE_UNLOCKED);
+Stupid me, we are following the documentation. Except that we treat the
+reset property as optional while it should be mandatory for >= Gen3.
 
-that BTREE_NODE_UNLOCKED value might actually be 255.
 
-And then when it's cast to 'enum btree_node_locked_type' in the inline
-function, the 255 will be cast to 'signed char', and we'll end up
-compatible with '(enum btree_node_locked_type)-1' again.
+--4syRa1QPYYWNHiH5
+Content-Type: application/pgp-signature; name="signature.asc"
 
-So it's one of those things that are seriously wrong to do, but might
-generate the expected code anyway.
+-----BEGIN PGP SIGNATURE-----
 
-Unless the compiler adds any other sanity checks, like UBSAN or
-something, that actually uses the exact range of the enums.
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmT430sACgkQFA3kzBSg
+KbaiSg/8CmbA4HsS4DI2wE0sFgFrKf6x2ZptRRDXeoC4vxZxVoFbnW4WpbTA/c8X
+vwab4lX8xfSdQsuGjcakT1GU9SL3lf9uPPWlMELMv5f3RC8gkt1iVjj5K9NptNTY
+4JBWacfHJCKlaN1fEzHaeXe/xWeJYmBJZJ1NMjKNftxcLcpFfVUdDIrM/vMH5tcA
+XhoNNmFXG056fyXO6Up6n/DLx3lq/seHVx5dhu1UjZhb7LiIdaIINKTG0ThoSQN1
+o+R4ziNxKtTGiiFmmvWuMaPUfbILeQ6GQ0ERTSdIZLphJtq+Rtfz7aollGM4wofi
+0B0zqJhePbZHo+gF2XfISkHzOfBMch7Y2xIJ0R3y6iMYPB3bm2KE+1XUi5ctIs5W
+pwnsBbKP9FLpFj/yB3MhuMrqJTZ4esWcEsvZG7kRWgTnAcUXe7cg0kiy0uAsdbjD
+3F/Im0l6QUKsPzjO+W94dqmwHlgwlxRSdMhCi+lWizn42atY6SOxtSwyu479nqDI
+10M/pVfMix+ROjPRPSdW18dfimIQA0/f1maSmTGQa7JY5CX9ra/dLFX45nX5vDBy
+7CbMotH5lpdww6DpAIoXHkNX53ej9LH7LI//hVc2azk16TZ/TMxLyhX0fmS3rhIZ
+8ZSoyQNuZZRc+rJhE5ffQ2/sQsJ+/966+Ps4iIWaKodJnp5xXqs=
+=evcE
+-----END PGP SIGNATURE-----
 
-It could happen even without UBSAN, if the compiler ends up going "I
-can see that the original value came from a 'enum six_lock_type', so I
-know the original value can't be signed, so any comparison with
-BTREE_NODE_UNLOCKED can never be true.
-
-But again, I suspect that in practice this all just happens to work.
-That doesn't make it right.
-
-               Linus
+--4syRa1QPYYWNHiH5--
