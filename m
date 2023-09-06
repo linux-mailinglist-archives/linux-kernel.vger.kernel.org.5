@@ -2,125 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAD7793C08
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F039C793C16
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240354AbjIFL7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57896 "EHLO
+        id S236451AbjIFMCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbjIFL7s (ORCPT
+        with ESMTP id S236342AbjIFMCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:59:48 -0400
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1522B1A7
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:59:44 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id ffacd0b85a97d-317a84a3ebeso367170f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 04:59:44 -0700 (PDT)
+        Wed, 6 Sep 2023 08:02:14 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7FB1982
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:01:50 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-31977ace1c8so3175064f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 05:01:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694001582; x=1694606382; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qZ45QK6IZz6Y3HlhiHmijDorqTKf0Kc5k/F4bqv8ZPU=;
-        b=V9xQgZhC51/IccpfbhWJFiRXRLjcFHgbXvObSd82yob283xHadPHcY2wwOFJcntXUr
-         XA3exGZo7sE8GWCWESMw6Luo5+bMYY0svdAD3ue3w+e+06HybXIv59Sr3cFvff1/8tC7
-         gN8Hy/+nMKo4a+gvDn6h+Ghjias3hw70v2rOPzU1/7Q77TS7KdJPQHGcnK+ECCJJ5Y+L
-         TMSPVVHtePhXH15mc4XUQBv4wASg9iKqieB5aBKNx6PNYjWqH5VguAd4E25pnzWeGW9F
-         Jq5BWvc2VHe36DlbaRlhbAh1yMdOdaO+TwArejpAC5zs34kJeE66l6yKbqQlRjlK7SV1
-         251g==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694001709; x=1694606509; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Sp8EZRgwEyyTmPheARIzvhEwRO9ZLG7z8fbcdxO2Tiw=;
+        b=hU/AqF7GIRAB8oT4N9Ws4ccnyTADv9k8kqWFV0Mf6s9Zxi0gySh/EaTPSs6gWzEQUN
+         NGK3zKaxg/hHrMcYPRikzocElEvkKBExor3mWs+b8m6sy1KDc7AHhdsU/WlpmfnV10e1
+         5k6yw6TIxO/ZAfI+tqzp5VItPGZEk0zQgj46Tulk46AOC/wAQ3lJ82HGh4ahX0QwmGBW
+         JUtv/tnDwk4mkatfCt8shKVqepbqZldGX6FuljnsShWkeAIU8Zskcja0WXy1ahn55wAA
+         8+ELSOGdB4pPPPQF1bH80QIi0q58xeHoM29IXSujsqcBtWajvgUrI09T4PlZjSjLfiuZ
+         RtRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694001582; x=1694606382;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qZ45QK6IZz6Y3HlhiHmijDorqTKf0Kc5k/F4bqv8ZPU=;
-        b=bx6f8cpjgmaqhNXGjKYoL8xVYOhU1E5GaJEqz805yxsfeztUneNqLJtkKkWfNAeY86
-         blvgg9OZ1IZRHoda0mZYUOvtiP+jSmYv1ZjjIuFmsg/AoipZVYr/kZADqtPL0giXjzXn
-         GJ02vRPwN7NUwhyl2+b2d08+vdI6c2yaKBtcYPN3haJ+tBfDyxAzuGtJdF/4Pv7bzErs
-         C1i/0nH6bS2BnqsGI103wS0j7vFz7EZm0zgXuBfxRpw61NV/Qzqin6AVlRo/BSa7pm2f
-         urQZJ/1UbrjmsPSR/GCLEK1OmCLGVutnzKNdyBNXJSs8slWMnGVOERZGQ7d2RaUWmsso
-         LsLA==
-X-Gm-Message-State: AOJu0YxuHqkMJ6BY92Gf3g3B04BF4e1TBHxHH1s9HT5/gWYC7LA3b37r
-        6PEzcz4pcBjT+3l4DFQKNRITZB9H/w==
-X-Google-Smtp-Source: AGHT+IHyrWV8acPN9HP3oz5oz/0VQKRUGYP/4SMuhpP6WbUylN5q+J5bASQWA2/S0MVnVxpukdeBqvYYJQ==
-X-Received: from alpic.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1bf2])
- (user=alpic job=sendgmr) by 2002:adf:e195:0:b0:31a:d852:b6b2 with SMTP id
- az21-20020adfe195000000b0031ad852b6b2mr50983wrb.0.1694001582575; Wed, 06 Sep
- 2023 04:59:42 -0700 (PDT)
-Date:   Wed,  6 Sep 2023 13:59:27 +0200
-In-Reply-To: <20230906102557.3432236-1-alpic@google.com>
-Mime-Version: 1.0
-References: <20230906102557.3432236-1-alpic@google.com>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230906115928.3749928-1-alpic@google.com>
-Subject: [PATCH V2] SELinux: Check correct permissions for FS_IOC32_*
-From:   Alfred Piccioni <alpic@google.com>
-To:     Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>
-Cc:     stable@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alfred Piccioni <alpic@google.com>
+        d=1e100.net; s=20221208; t=1694001709; x=1694606509;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Sp8EZRgwEyyTmPheARIzvhEwRO9ZLG7z8fbcdxO2Tiw=;
+        b=ZGr+6YizAgUaqrJBTOKGaABXKirRST7QTnfDqcBv4UURSPLC3fTxCgXgzl2vcfwcTo
+         O0hti3VrgwxpXyqLIbD1Ivuk0kB7jCemaXrrwRR+5lsNdYozMhFvB/Kt2G7QGIahO8or
+         zNsXuslk9tp1HxNE5fLhTHlYrujTF1SFgp4IDuuXohj5Tsuk7jNDp6q4sU5M4nNG7mQZ
+         NxKE8ZNBPAsAvZ3e3o3+v3TqrYZ8rktWP7JpL8Mg0OLMskwXcXhdchXg+nwGQRX/rZOb
+         cAU1FdGq81RTbdq+3xgXTXu7yYQRIOF8yHIKsRxelQIJpPOeZ6LwyGKiz4aUbm0jsNzU
+         Dxmw==
+X-Gm-Message-State: AOJu0Yyjxk7sJ2+H0DVL+CwuuFoleqKfSvXFYgRzDTOt0sk7WkBAGHs+
+        uTL++tU+LTQ+5IxscoLP14v7/PxWFqye3G4RsPdbFg==
+X-Google-Smtp-Source: AGHT+IEhIllMnM0PjECRqiitAitNZCsEvGEterT8Gl6AxXRapewVRPWj9ivnFDU+enq8y+LvA5OL44z2Ha1PBTDFPVs=
+X-Received: by 2002:a5d:6e88:0:b0:319:6b5e:85e3 with SMTP id
+ k8-20020a5d6e88000000b003196b5e85e3mr1878514wrz.71.1694001708759; Wed, 06 Sep
+ 2023 05:01:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230801085402.1168351-1-alexghiti@rivosinc.com>
+ <20230801085402.1168351-5-alexghiti@rivosinc.com> <CA+V-a8t56xDqMTQfoKcsvPF8errkTMydaDz5V6nejLvVfJrW3g@mail.gmail.com>
+In-Reply-To: <CA+V-a8t56xDqMTQfoKcsvPF8errkTMydaDz5V6nejLvVfJrW3g@mail.gmail.com>
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+Date:   Wed, 6 Sep 2023 14:01:38 +0200
+Message-ID: <CAHVXubiENHt36LrcSBoNU0rAMQ8EoT6tde9M8vLP3Hw2nwMm8g@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] riscv: Improve flush_tlb_kernel_range()
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        Vincent Chen <vincent.chen@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Jones <ajones@ventanamicro.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some ioctl commands do not require ioctl permission, but are routed to
-other permissions such as FILE_GETATTR or FILE_SETATTR. This routing is
-done by comparing the ioctl cmd to a set of 64-bit flags (FS_IOC_*).
+Hi Prabhakar,
 
-However, if a 32-bit process is running on a 64-bit kernel, it emits
-32-bit flags (FS_IOC32_*) for certain ioctl operations. These flags are
-being checked erroneously, which leads to these ioctl operations being
-routed to the ioctl permission, rather than the correct file permissions.
+On Wed, Sep 6, 2023 at 1:49=E2=80=AFPM Lad, Prabhakar
+<prabhakar.csengg@gmail.com> wrote:
+>
+> Hi Alexandre,
+>
+> On Tue, Aug 1, 2023 at 9:58=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosin=
+c.com> wrote:
+> >
+> > This function used to simply flush the whole tlb of all harts, be more
+> > subtile and try to only flush the range.
+> >
+> > The problem is that we can only use PAGE_SIZE as stride since we don't =
+know
+> > the size of the underlying mapping and then this function will be impro=
+ved
+> > only if the size of the region to flush is < threshold * PAGE_SIZE.
+> >
+> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> > ---
+> >  arch/riscv/include/asm/tlbflush.h | 11 +++++-----
+> >  arch/riscv/mm/tlbflush.c          | 34 +++++++++++++++++++++++--------
+> >  2 files changed, 31 insertions(+), 14 deletions(-)
+> >
+> After applying this patch, I am seeing module load issues on RZ/Five
+> (complete log [0]). I am testing defconfig + [1] (rz/five related
+> configs).
+>
+> Any pointers on what could be an issue here?
 
-Two possible solutions exist:
+Can you give me the exact version of the kernel you use? The trap
+addresses are vmalloc addresses, and a fix for those landed very late
+in the release cycle.
 
-- Trim parameter "cmd" to a u16 so that only the last two bytes are
-  checked in the case statement.
-
-- Explicitly add the FS_IOC32_* codes to the case statement.
-
-Solution 2 was chosen because it is a minimal explicit change. Solution
-1 is a more elegant change, but is less explicit, as the switch
-statement appears to only check the FS_IOC_* codes upon first reading.
-
-Fixes: 0b24dcb7f2f7 ("Revert "selinux: simplify ioctl checking"")
-Signed-off-by: Alfred Piccioni <alpic@google.com>
-Cc: stable@vger.kernel.org
----
-V1->V2: Cleaned up some typos and added tag for -stable tree inclusion.
-
- security/selinux/hooks.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index d06e350fedee..bba83f437a1d 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -3644,11 +3644,15 @@ static int selinux_file_ioctl(struct file *file, unsigned int cmd,
- 	case FIGETBSZ:
- 	case FS_IOC_GETFLAGS:
- 	case FS_IOC_GETVERSION:
-+	case FS_IOC32_GETFLAGS:
-+	case FS_IOC32_GETVERSION:
- 		error = file_has_perm(cred, file, FILE__GETATTR);
- 		break;
- 
- 	case FS_IOC_SETFLAGS:
- 	case FS_IOC_SETVERSION:
-+	case FS_IOC32_SETFLAGS:
-+	case FS_IOC32_SETVERSION:
- 		error = file_has_perm(cred, file, FILE__SETATTR);
- 		break;
- 
-
-base-commit: 50a510a78287c15cee644f345ef8bac8977986a7
--- 
-2.42.0.283.g2d96d420d3-goog
-
+>
+> [0] https://paste.debian.net/1291116/
+> [1] https://paste.debian.net/1291118/
+>
+> Cheers,
+> Prabhakar
+>
+> > diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm=
+/tlbflush.h
+> > index f5c4fb0ae642..7426fdcd8ec5 100644
+> > --- a/arch/riscv/include/asm/tlbflush.h
+> > +++ b/arch/riscv/include/asm/tlbflush.h
+> > @@ -37,6 +37,7 @@ void flush_tlb_mm_range(struct mm_struct *mm, unsigne=
+d long start,
+> >  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
+> >  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+> >                      unsigned long end);
+> > +void flush_tlb_kernel_range(unsigned long start, unsigned long end);
+> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> >  #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
+> >  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long sta=
+rt,
+> > @@ -53,15 +54,15 @@ static inline void flush_tlb_range(struct vm_area_s=
+truct *vma,
+> >         local_flush_tlb_all();
+> >  }
+> >
+> > -#define flush_tlb_mm(mm) flush_tlb_all()
+> > -#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
+> > -#endif /* !CONFIG_SMP || !CONFIG_MMU */
+> > -
+> >  /* Flush a range of kernel pages */
+> >  static inline void flush_tlb_kernel_range(unsigned long start,
+> >         unsigned long end)
+> >  {
+> > -       flush_tlb_all();
+> > +       local_flush_tlb_all();
+> >  }
+> >
+> > +#define flush_tlb_mm(mm) flush_tlb_all()
+> > +#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
+> > +#endif /* !CONFIG_SMP || !CONFIG_MMU */
+> > +
+> >  #endif /* _ASM_RISCV_TLBFLUSH_H */
+> > diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> > index 0c955c474f3a..687808013758 100644
+> > --- a/arch/riscv/mm/tlbflush.c
+> > +++ b/arch/riscv/mm/tlbflush.c
+> > @@ -120,18 +120,27 @@ static void __flush_tlb_range(struct mm_struct *m=
+m, unsigned long start,
+> >                               unsigned long size, unsigned long stride)
+> >  {
+> >         struct flush_tlb_range_data ftd;
+> > -       struct cpumask *cmask =3D mm_cpumask(mm);
+> > -       unsigned int cpuid;
+> > +       struct cpumask *cmask, full_cmask;
+> >         bool broadcast;
+> >
+> > -       if (cpumask_empty(cmask))
+> > -               return;
+> > +       if (mm) {
+> > +               unsigned int cpuid;
+> > +
+> > +               cmask =3D mm_cpumask(mm);
+> > +               if (cpumask_empty(cmask))
+> > +                       return;
+> > +
+> > +               cpuid =3D get_cpu();
+> > +               /* check if the tlbflush needs to be sent to other CPUs=
+ */
+> > +               broadcast =3D cpumask_any_but(cmask, cpuid) < nr_cpu_id=
+s;
+> > +       } else {
+> > +               cpumask_setall(&full_cmask);
+> > +               cmask =3D &full_cmask;
+> > +               broadcast =3D true;
+> > +       }
+> >
+> > -       cpuid =3D get_cpu();
+> > -       /* check if the tlbflush needs to be sent to other CPUs */
+> > -       broadcast =3D cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
+> >         if (static_branch_unlikely(&use_asid_allocator)) {
+> > -               unsigned long asid =3D atomic_long_read(&mm->context.id=
+) & asid_mask;
+> > +               unsigned long asid =3D mm ? atomic_long_read(&mm->conte=
+xt.id) & asid_mask : 0;
+> >
+> >                 if (broadcast) {
+> >                         if (riscv_use_ipi_for_rfence()) {
+> > @@ -165,7 +174,8 @@ static void __flush_tlb_range(struct mm_struct *mm,=
+ unsigned long start,
+> >                 }
+> >         }
+> >
+> > -       put_cpu();
+> > +       if (mm)
+> > +               put_cpu();
+> >  }
+> >
+> >  void flush_tlb_mm(struct mm_struct *mm)
+> > @@ -196,6 +206,12 @@ void flush_tlb_range(struct vm_area_struct *vma, u=
+nsigned long start,
+> >
+> >         __flush_tlb_range(vma->vm_mm, start, end - start, stride_size);
+> >  }
+> > +
+> > +void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+> > +{
+> > +       __flush_tlb_range(NULL, start, end, PAGE_SIZE);
+> > +}
+> > +
+> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> >  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long sta=
+rt,
+> >                         unsigned long end)
+> > --
+> > 2.39.2
+> >
+> >
