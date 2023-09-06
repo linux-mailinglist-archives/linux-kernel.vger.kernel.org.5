@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28722793477
+	by mail.lfdr.de (Postfix) with ESMTP id 71E82793478
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 06:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237931AbjIFErQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 00:47:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
+        id S238137AbjIFErS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 00:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237710AbjIFErP (ORCPT
+        with ESMTP id S237827AbjIFErQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 00:47:15 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD11CE6
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 21:47:11 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c336f5b1ffso22707815ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 21:47:11 -0700 (PDT)
+        Wed, 6 Sep 2023 00:47:16 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3728CE9
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 21:47:12 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-68a529e1974so2148944b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 21:47:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1693975631; x=1694580431; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UkNf5DdEUVVxDR8Go3EaSMZ4c9q9d7OU7fzHFUYTbIk=;
-        b=MgVfVuDBg2qUnS6BzSgRn+245X0W7jqc4gFqKBvdn7KhM0dslcZzz0QiJKmsE6ykH1
-         W5xIUTc8np06OgfuPS+5k0zK57cD34tJueP/rE9y9jIN2E9RtuQ8nFBmiBQuaa+JoR3r
-         x79tVJTHDbYXGiKsECuARL9iWw8tmAiS3UZXj51o5duC2QtlONbNErUXJjyBTHNc2Hls
-         DDXzDbFlITsJ5sfcDrXNPfKgmc41GE1kvEmmmX1LnWD2LEG20tRLx/q5ddryzUgb0qBw
-         6GSqOcVBWZT/fUgtSpJeJHhpPaaOkXgNXmivh6oaz1hU32NtiqKK3a+Atbt/3Q53hBaZ
-         9dIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693975631; x=1694580431;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1693975632; x=1694580432; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=UkNf5DdEUVVxDR8Go3EaSMZ4c9q9d7OU7fzHFUYTbIk=;
-        b=OT0T/yjmF8qCcZMJTgAY6DL7uJDYhKvUWbPiCOuaM8LjYguVoU31qddibtFM8Ibx+o
-         49WT8beUx2LoKu1tr1UPns+yoWYYUWK1bYQYQyA9v11TP+9jLf6XErvE/+jmnbRFz0l9
-         4dTVuYwlnL+CappS6AO/4KCOdfhPXl9GzLWv4LKBHCwJt+N7/bqWRkraFxOk+j6Dg4fG
-         lXCZGv28R3jnBrulyrJdjygMKtds0fVsgd4gTB+DLFBzhMtU04x06FYrWoWDMqcCHVvP
-         W7wAUbLz8F84qfskSpYP3QeFK2VO3rRTBlxwqs2ajDcjz6V7vJ6/ybJP+ZY9lRFYevdO
-         DAlA==
-X-Gm-Message-State: AOJu0Yz87MNsE1TvWIDYs8MgeFJBOzm1kIY35D1J1PM5CxTHI4drVP+R
-        +/luIFinOy+MKLlWJnGlvZq8zw==
-X-Google-Smtp-Source: AGHT+IHhZFPSvGInMuLV9uwyB9cb85sco3sDZCIbQ1PubHTivGtMzOq6C5Q3wrQz1LDEvAi+2/NQBA==
-X-Received: by 2002:a17:902:ced0:b0:1bf:423:957b with SMTP id d16-20020a170902ced000b001bf0423957bmr18742552plg.26.1693975631109;
-        Tue, 05 Sep 2023 21:47:11 -0700 (PDT)
+        bh=hFV9eKDRL/UI9X8ku3j8I3nR0nMSzd2mz74uOzTK7yw=;
+        b=LhokdP04s6Ee4gHKKO2If38B2FH+H1b2fvE8Bz+AkNOL6ZCuXBAm4fBSZwb+v/MYR7
+         8H/Vm3xrFie4K5UwJSUaPztpQg5PjeLa55nkpgwN5WGTk+OKHWEptKOXyzlK1fYdPNS7
+         NEMNxc7OiIKwTfe6W4CBGEr/73920x18up3zTA2Krgv47Q1IeK/1vHUqhTo77nP7aQLo
+         cpJTJtCIHlafpPH7vNWObDyVhre01HCS3ZxPb+r5TFt++BwFjzPBTMzpbhdTkQar5pa3
+         AK0VK/r7I13AD0axXsQphbl0Djd1DwI5vs13pfpAMu0+Df7ILWFV1BJIIjxm4CzcWHMI
+         ZlDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693975632; x=1694580432;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hFV9eKDRL/UI9X8ku3j8I3nR0nMSzd2mz74uOzTK7yw=;
+        b=eEemKsNLTMb1HoWBHE6o1LhUo/bK7tTBZKyjTsUw0UyIsPHeze6dHCC3VrhtWUX7Uo
+         3uWrQx9H/8YrL+4D3D+ucZ4uI79v3L8TDKdOl433VARGGs1kBp+AHuENlBUnZ/N2jdOF
+         hdfqOD6XiayC1ETevS1HHKqCqBguusnfYTsHthf5Hh4AkxYUpPKzWUJp8IBaHs6VCTvY
+         YG0neYsi9YrXtrTKmDjnVRcTMnk8Zr7QwzkbJQDPoiiR7ysPOB9EjsJIZ9YqCeRnJ8k2
+         gLL1qQMLCM2awPxKTCdt/DL9zIx48xE3M3UAuv7pnnZES8PY59+/xV1NvNawZx1U7ZXh
+         RYLg==
+X-Gm-Message-State: AOJu0YzsGrEzCQfgB7PM5yItK7kA2V/5QDyhEpahkyDSgIamMTvSa42w
+        pql74Jj68yVxhFp5PHdCRVPLn63ZAXNDWx9uWXI=
+X-Google-Smtp-Source: AGHT+IGS9NkG+PXPovJpK4ZJ8/CvYTRAdbGX2XNpOJgee0lGFdDcWjhDajvCdKdYrutdpTp/c4tHpQ==
+X-Received: by 2002:a05:6a20:158e:b0:13e:9dba:ea52 with SMTP id h14-20020a056a20158e00b0013e9dbaea52mr15423327pzj.13.1693975632238;
+        Tue, 05 Sep 2023 21:47:12 -0700 (PDT)
 Received: from charlie.ba.rivosinc.com ([66.220.2.162])
-        by smtp.gmail.com with ESMTPSA id g11-20020a1709026b4b00b001bc56c1a384sm10087313plt.277.2023.09.05.21.47.10
+        by smtp.gmail.com with ESMTPSA id g11-20020a1709026b4b00b001bc56c1a384sm10087313plt.277.2023.09.05.21.47.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 21:47:10 -0700 (PDT)
+        Tue, 05 Sep 2023 21:47:11 -0700 (PDT)
 From:   Charlie Jenkins <charlie@rivosinc.com>
-Subject: [PATCH v2 0/5] riscv: Add fine-tuned checksum functions
-Date:   Tue, 05 Sep 2023 21:46:49 -0700
-Message-Id: <20230905-optimize_checksum-v2-0-ccd658db743b@rivosinc.com>
+Date:   Tue, 05 Sep 2023 21:46:50 -0700
+Subject: [PATCH v2 1/5] riscv: Checksum header
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIADkE+GQC/23NQQ6CMBCF4auQWVvTDqDVlfcwxEAZ7cTQkhYbl
- XB3K3Hp8n/JfDNDpMAU4VjMEChxZO9y4KYAY1t3I8F9bkCJpdSyEn6ceOA3XYwlc4+PQfSdqmr
- UujWoIN+Nga78XM1zk9tynHx4rS+S+q4/DXd/tKSEFIdyX0vVZRbbU+DkIzuzNX6AZlmWD72WV
- 8q1AAAA
+Message-Id: <20230905-optimize_checksum-v2-1-ccd658db743b@rivosinc.com>
+References: <20230905-optimize_checksum-v2-0-ccd658db743b@rivosinc.com>
+In-Reply-To: <20230905-optimize_checksum-v2-0-ccd658db743b@rivosinc.com>
 To:     Charlie Jenkins <charlie@rivosinc.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Conor Dooley <conor@kernel.org>,
@@ -77,59 +76,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each architecture generally implements fine-tuned checksum functions to
-leverage the instruction set. This patch adds the main checksum
-functions that are used in networking.
-
-Vector support is included in this patch to start a discussion on that,
-it can probably be optimized more. The vector patches still need some
-work as they rely on GCC vector intrinsics types which cannot work in
-the kernel since it requires C vector support rather than just assembler
-support. I have tested the vector patches as standalone algorithms in QEMU.
-
-This patch takes heavy use of the Zbb extension using alternatives
-patching.
-
-To test this patch, enable the configs for KUNIT, then CHECKSUM_KUNIT
-and RISCV_CHECKSUM_KUNIT.
-
-I have attempted to make these functions as optimal as possible, but I
-have not ran anything on actual riscv hardware. My performance testing
-has been limited to inspecting the assembly, running the algorithms on
-x86 hardware, and running in QEMU.
-
-ip_fast_csum is a relatively small function so even though it is
-possible to read 64 bits at a time on compatible hardware, the
-bottleneck becomes the clean up and setup code so loading 32 bits at a
-time is actually faster.
+Provide checksum algorithms that have been designed to leverage riscv
+instructions such as rotate. In 64-bit, can take advantage of the larger
+register to avoid some overflow checking.
 
 Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 ---
-Changes in v2:
-- After more benchmarking, rework functions to improve performance.
-- Remove tests that overlapped with the already existing checksum
-  tests and make tests more extensive.
-- Use alternatives to activate code with Zbb and vector extensions
-- Link to v1: https://lore.kernel.org/r/20230826-optimize_checksum-v1-0-937501b4522a@rivosinc.com
+ arch/riscv/include/asm/checksum.h | 96 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 96 insertions(+)
 
----
-Charlie Jenkins (5):
-      riscv: Checksum header
-      riscv: Add checksum library
-      riscv: Vector checksum header
-      riscv: Vector checksum library
-      riscv: Test checksum functions
+diff --git a/arch/riscv/include/asm/checksum.h b/arch/riscv/include/asm/checksum.h
+new file mode 100644
+index 000000000000..573714b9ea15
+--- /dev/null
++++ b/arch/riscv/include/asm/checksum.h
+@@ -0,0 +1,96 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * IP checksum routines
++ *
++ * Copyright (C) 2023 Rivos Inc.
++ */
++#ifndef __ASM_RISCV_CHECKSUM_H
++#define __ASM_RISCV_CHECKSUM_H
++
++#include <linux/in6.h>
++#include <linux/uaccess.h>
++
++#ifdef CONFIG_32BIT
++typedef unsigned int csum_t;
++#else
++typedef unsigned long csum_t;
++#endif
++
++/*
++ *	Fold a partial checksum without adding pseudo headers
++ */
++static inline __sum16 csum_fold(__wsum sum)
++{
++	sum += (sum >> 16) | (sum << 16);
++	return (__force __sum16)(~(sum >> 16));
++}
++
++#define csum_fold csum_fold
++
++/*
++ * Quickly compute an IP checksum with the assumption that IPv4 headers will
++ * always be in multiples of 32-bits, and have an ihl of at least 5.
++ * @ihl is the number of 32 bit segments and must be greater than or equal to 5.
++ * @iph is assumed to be word aligned.
++ */
++static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
++{
++	csum_t csum = 0;
++	int pos = 0;
++
++	do {
++		csum += ((const unsigned int *)iph)[pos];
++#ifdef CONFIG_32BIT
++		csum += csum < ((const unsigned int *)iph)[pos];
++#endif // !CONFIG_32BIT
++	} while (++pos < ihl);
++
++#ifdef CONFIG_RISCV_ISA_ZBB
++	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
++		csum_t fold_temp;
++
++		asm_volatile_goto(ALTERNATIVE("j %l[no_zbb]", "nop", 0,
++					      RISCV_ISA_EXT_ZBB, 1)
++		    :
++		    :
++		    :
++		    : no_zbb);
++#ifdef CONFIG_32BIT
++		asm(".option push				\n\
++		.option arch,+zbb				\n\
++			rori %[fold_temp],%[csum],16		\n\
++			add %[csum],%[fold_temp],%[csum]	\n\
++		.option pop"
++		: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
++#else // !CONFIG_32BIT
++		asm(".option push				\n\
++		.option arch,+zbb				\n\
++		    rori %[fold_temp], %[csum], 32		\n\
++		    add %[csum], %[fold_temp], %[csum]		\n\
++		    srli %[csum], %[csum], 32			\n\
++		    roriw %[fold_temp], %[csum], 16		\n\
++		    addw %[csum], %[fold_temp], %[csum]		\n\
++		.option pop"
++		: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
++#endif // !CONFIG_32BIT
++		return ~(csum >> 16);
++	}
++	/*
++	 * ZBB only saves three instructions on 32-bit and five on 64-bit so not
++	 * worth checking if supported without Alternatives.
++	 */
++no_zbb:
++#endif // CONFIG_RISCV_ISA_ZBB
++#ifdef CONFIG_32BIT
++#else // !CONFIG_32BIT
++	csum += (csum >> 32) | (csum << 32);
++	csum >>= 16;
++#endif // !CONFIG_32BIT
++	return csum_fold((__force __wsum)csum);
++}
++
++#define ip_fast_csum ip_fast_csum
++
++#include <asm-generic/checksum.h>
++
++#endif // __ASM_RISCV_CHECKSUM_H
 
- arch/riscv/Kconfig.debug              |   1 +
- arch/riscv/include/asm/checksum.h     | 194 ++++++++++++++++++++
- arch/riscv/lib/Kconfig.debug          |  31 ++++
- arch/riscv/lib/Makefile               |   3 +
- arch/riscv/lib/csum.c                 | 333 ++++++++++++++++++++++++++++++++++
- arch/riscv/lib/riscv_checksum_kunit.c | 330 +++++++++++++++++++++++++++++++++
- 6 files changed, 892 insertions(+)
----
-base-commit: 65d6e954e37872fd9afb5ef3fc0481bb3c2f20f4
-change-id: 20230804-optimize_checksum-db145288ac21
 -- 
-- Charlie
+2.42.0
 
