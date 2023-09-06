@@ -2,70 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D696D79372B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB947937E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 11:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235425AbjIFIap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 04:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40646 "EHLO
+        id S234941AbjIFJSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 05:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230337AbjIFIan (ORCPT
+        with ESMTP id S232647AbjIFJSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 04:30:43 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAFC4E6C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 01:30:31 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-44e86f3e4b6so984369137.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 01:30:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693989030; x=1694593830; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Y3qaHUpB3fswo9j8iqoOUfj4VcoKPrcYGCjIGR+vFLY=;
-        b=DZPwYK/nMX3Qp7QV0W4tEEytiWvs6zwLPJeojxn8MzaHtaBnzP/drtTrczVjt4dfby
-         Gb5Kfhn7AJGv81afM66MATJGgqsyr0SDGL98slxyCahMZtZ+4VH1TwUI12ZabXQpU/8F
-         cTSmvs7cd56GGhMMv8I5KJJEVkJ8jm2EMCQ63dCTDROrGyu/J33W1MZ6zku4tURhvkiV
-         qjTGZETcOIUZZKmTWR3O8z6dyDApAROWNvBG6PIQHxyQhdVY162nD+XI7KkJebCvdD0I
-         hlq/4C9MIJ8iiH2U4PqSZyveggisBpDBrzSOdShTY84epXdIUmC247tGbCzrUOmkjhD4
-         f2ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693989030; x=1694593830;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y3qaHUpB3fswo9j8iqoOUfj4VcoKPrcYGCjIGR+vFLY=;
-        b=RMFGfMhA6C9w1ifwbnTCc7ZIqCSVOAKr0Sma/dX1D044wJNO/yBOkfbSPGY1k7ySfx
-         0wEkvWg7XiMCedeypeTi5RuUXb0giG5kRwhPgA+fd/wEV0qnZLlyNoDLmo5vO6BgZF3g
-         iOvspZpmdY1McnbjpHSENJnUXtXMF7lz4d/5os99Dzy4YpLnI6bpecfHrKobVGyshvCb
-         RO5I5EtvHkN01pJb5f2A/RgKzPwnYEFxvDIYgIEo9x7mrGiJnG4VhNRqePLJaLUhHvIS
-         YC27P7rRDL/GtSkpT+zUBzaHDQ73xLXl86KHxPp5tO3iIq/ydo4wJQDpyxo2fzgz5Jlz
-         mntA==
-X-Gm-Message-State: AOJu0YyADSc/hSRDJgnHOQL0zqWjhCDxiblHNXwKj/vUCFhcORzOEA9b
-        GOtxilu/okVJ8P53aL/b+McXg9tl6xe/9P+gMZSyaYaUpuw7Lg==
-X-Google-Smtp-Source: AGHT+IHW7CkDpGhb8VSPuS3Md9CoY4UNIenUGugQxg2PUOc0g6reQYOnJKxMbU52nY+a995WkBfvVYEdbPoCGH3A4uI=
-X-Received: by 2002:a05:6102:1356:b0:44d:62a2:a397 with SMTP id
- j22-20020a056102135600b0044d62a2a397mr1767975vsl.28.1693989030451; Wed, 06
- Sep 2023 01:30:30 -0700 (PDT)
+        Wed, 6 Sep 2023 05:18:20 -0400
+X-Greylist: delayed 1817 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 06 Sep 2023 02:18:16 PDT
+Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 51831CFD
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 02:18:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=tmJhS
+        KuGPCps3pxGDV+8fu4pl00yW9H10nfqaenC7JE=; b=GrEg3Ib/QiFfcSBZD+X0Q
+        3eaealIG7jQSXv61MY4HU4sE1EI7DOoHoL+q+Drlr8wyqot6OqesH2GY/fmHUGuu
+        82wfXAuOUejiIwRhoZPZA8//bXz7npCuzAoNPfrY0yGzAlM+h+waDMIa0pxsdzaj
+        3JLB9lTHzCJDXwexPT3kMA=
+Received: from wangjingyang-redmi-book.. (unknown [223.160.128.242])
+        by zwqz-smtp-mta-g1-0 (Coremail) with SMTP id _____wBnN+X1OPhk9Rm5AQ--.29951S2;
+        Wed, 06 Sep 2023 16:31:50 +0800 (CST)
+From:   Jingyang Wang <wjy7717@126.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jingyang Wang <wjy7717@126.com>
+Subject: [PATCH] Bluetooth: Add support ITTIM PE50-M75C
+Date:   Wed,  6 Sep 2023 16:31:47 +0800
+Message-Id: <20230906083147.25298-1-wjy7717@126.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-From:   Ed Spiridonov <edo.rus@gmail.com>
-Date:   Wed, 6 Sep 2023 11:30:19 +0300
-Message-ID: <CACm0Nn0a-Dd7SX5r3cPmph_a_pnWBXCat81OEFGk5XogsuAzTA@mail.gmail.com>
-Subject: Re: [GIT PULL] x86/microcode for v6.6-rc1
-To:     bp@alien8.de
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wBnN+X1OPhk9Rm5AQ--.29951S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxCr1ftFWxtFyUJr43CF4UArb_yoW5Xr1rp3
+        Z5J3Z8Zr1Sgr1jg3sIkr18AayfW34xu342g3WDGw1fXFZ3Aan7JF1UArWfXr4vkr4fK3Z0
+        qFnru3yrKr1UtFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zinYFtUUUUU=
+X-Originating-IP: [223.160.128.242]
+X-CM-SenderInfo: 5zm1llirx6ij2wof0z/1tbiihrim1pEEuAerQAAs2
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From the commit message:
-> This part makes the loader core code as it is practically enabled on pretty much every baremetal machine
+-Device(35f5:7922) from /sys/kernel/debug/usb/devices
+P:  Vendor=35f5 ProdID=7922 Rev= 1.00
+S:  Manufacturer=MediaTek Inc.
+S:  Product=Wireless_Device
+S:  SerialNumber=000000000
+C:* #Ifs= 3 Cfg#= 1 Atr=e0 MxPwr=100mA
+A:  FirstIf#= 0 IfCount= 3 Cls=e0(wlcon) Sub=01 Prot=01
+I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
+E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+I:* If#= 2 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
+E:  Ad=8a(I) Atr=03(Int.) MxPS=  64 Ivl=125us
+E:  Ad=0a(O) Atr=03(Int.) MxPS=  64 Ivl=125us
+I:  If#= 2 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
+E:  Ad=8a(I) Atr=03(Int.) MxPS= 512 Ivl=125us
+E:  Ad=0a(O) Atr=03(Int.) MxPS= 512 Ivl=125us
 
-Hmm... I guess there are a lot more virtualized Linux instances than
-baremetal ones, why should the microcode boot code be mandatory?
+Signed-off-by: Jingyang Wang <wjy7717@126.com>
+---
+ drivers/bluetooth/btusb.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 499f4809fcdf..23590c9315ca 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -644,6 +644,9 @@ static const struct usb_device_id quirks_table[] = {
+ 	{ USB_DEVICE(0x04ca, 0x3804), .driver_info = BTUSB_MEDIATEK |
+ 						     BTUSB_WIDEBAND_SPEECH |
+ 						     BTUSB_VALID_LE_STATES },
++	{ USB_DEVICE(0x35f5, 0x7922), .driver_info = BTUSB_MEDIATEK |
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
+ 
+ 	/* Additional Realtek 8723AE Bluetooth devices */
+ 	{ USB_DEVICE(0x0930, 0x021d), .driver_info = BTUSB_REALTEK },
+-- 
+2.34.1
+
