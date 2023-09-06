@@ -2,98 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFC37936F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222147936F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234863AbjIFIN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 04:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59338 "EHLO
+        id S234908AbjIFIPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 04:15:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjIFIN6 (ORCPT
+        with ESMTP id S232339AbjIFIPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 04:13:58 -0400
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com [209.85.210.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E4112A
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 01:13:55 -0700 (PDT)
-Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-68a628f923dso3933476b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 01:13:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693988035; x=1694592835;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3PbqjKEyaIzdsHKKf1F1QtzondiO+nn2Sqodl0jr3k4=;
-        b=DF1fIae4QdPt6mjEUGo4Mt/U8tvE0BWgVy7RjDsspZGOANcoUVPfoWmFq7X6dNorIi
-         JbbZpV7/AOUn6kNOV90E78aF99rMw6p76t2GiPhlLwqjTIy2CVy//dnkFIPaUeMhN6Gp
-         cFMjyFEY8P5oJalArFjfQavM0+mDxKc1z7kVb9fTmFPHeAPyhAMtLiMqH8pPhw2kWhiD
-         dF08aWZ7lEElic2fTwL3Q6rvAVuviYpNqm0iIxm3TmBUeWE7iTx3zOshuHSJsuoALo2t
-         WhbRRKLsY7NSHl28MlPPKrFf/y38+NObf6yX6kSjrPy6UtYBd0qebUuPhjPUkqnaxUta
-         fTfQ==
-X-Gm-Message-State: AOJu0Yx0tVBjZvGZgsKItc45uh6C6YmHENKkYlrXtuqXlhi4gBGgp22w
-        Q/RRAd9tMjiJr3WBmw9RmBkheOZT8P2pvzvtdUokeAHWIyh/kg8=
-X-Google-Smtp-Source: AGHT+IE2czLZxJqEKo/LO9dSS9yTYcIjN7DvVjX29vz/b32umfrbalZ3L+eH+mm4dkz8BFuG+DV6Mw1+iEXMH+RxBN25oiIoo0Xi
+        Wed, 6 Sep 2023 04:15:07 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 086C5BF;
+        Wed,  6 Sep 2023 01:15:03 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (ftip006315900.acc1.colindale.21cn-nte.bt.net [81.134.214.249])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DC249AF2;
+        Wed,  6 Sep 2023 10:13:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1693988014;
+        bh=/0bTu6ntLw63tswqWG2jr5IbV1FKxhpcd5U0g6Hektk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KJABeteYF+2dqCxTb80URjTzcom0QzKorGHAp8OBslDrQ0aIXkJly7RUVlGLVRbMW
+         wNp7aisT5fVeX9+6OSf2UO965UVyseHEcsvEX5Qo3EoI1jvMO99bgPNaaRgrisDkpp
+         NUa+HocLXj21eyC9Y8SV1RFNVG6qvR58Ov6Uk5hE=
+Date:   Wed, 6 Sep 2023 11:15:13 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Paul Elder <paul.elder@ideasonboard.com>,
+        linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: media: Add THine THP7312 ISP
+Message-ID: <20230906081513.GK7971@pendragon.ideasonboard.com>
+References: <20230905233118.183140-1-paul.elder@ideasonboard.com>
+ <20230905233118.183140-2-paul.elder@ideasonboard.com>
+ <f023767c-aa74-87ca-d333-3dba8a481cb6@linaro.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:1d0f:b0:68e:351c:bf00 with SMTP id
- a15-20020a056a001d0f00b0068e351cbf00mr85435pfx.4.1693988034735; Wed, 06 Sep
- 2023 01:13:54 -0700 (PDT)
-Date:   Wed, 06 Sep 2023 01:13:54 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001073df0604ac53e0@google.com>
-Subject: [syzbot] Monthly media report (Sep 2023)
-From:   syzbot <syzbot+list941f1f91826499cb3685@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f023767c-aa74-87ca-d333-3dba8a481cb6@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello media maintainers/developers,
+On Wed, Sep 06, 2023 at 09:18:30AM +0200, Krzysztof Kozlowski wrote:
+> On 06/09/2023 01:31, Paul Elder wrote:
+> > Add bindings for the THine THP7312 ISP.
+> > 
+> > Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+> > ---
+> > Since the THP7312 supports multiple sensors, thine,rx-data-lanes alone
+> > might not be enough. I was consdering using sensor nodes like what the
+> > AP1302 does [1]. This way we can also move the power supplies that only
+> > concern the sensor in there as well. I was wondering what to do about
+> > the model name, though, as the thp7312 completely isolates that from the 
+> > rest of the system.
+> > 
+> > I'm planning to add sensor nodes in somehow in a v2.
+> > 
+> > [1] https://lore.kernel.org/linux-media/20211006113254.3470-2-anil.mamidala@xilinx.com/
+> > 
+> >  .../bindings/media/thine,thp7312.yaml         | 170 ++++++++++++++++++
+> >  1 file changed, 170 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/media/thine,thp7312.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/media/thine,thp7312.yaml b/Documentation/devicetree/bindings/media/thine,thp7312.yaml
+> > new file mode 100644
+> > index 000000000000..e8d203dcda81
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/media/thine,thp7312.yaml
+> > @@ -0,0 +1,170 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +# Copyright (c) 2023 Ideas on Board
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/media/thine,thp7312.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: THine THP7312
+> > +
+> > +maintainers:
+> > +  - Paul Elder <paul.elder@@ideasonboard.com>
+> > +
+> > +description:
+> > +  The THP7312 is a standalone ISP controlled over i2c, and is capable of
+> > +  various image processing and correction functions, including 3A control. It
+> > +  can be connected to CMOS image sensors from various vendors, supporting both
+> > +  MIPI CSI-2 and parallel interfaces. It can also output on either MIPI CSI-2
+> > +  or parallel. The hardware is capable of transmitting and receiving MIPI
+> > +  interlaved data strams with data types or multiple virtual channel
+> > +  identifiers.
+> > +
+> > +allOf:
+> > +  - $ref: ../video-interface-devices.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: thine,thp7312
+> > +
+> > +  reg:
+> > +    description: I2C device address
+> 
+> You can skip description. It is obvious.
+> 
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    maxItems: 1
+> > +      - description: CLKI clock input
+> 
+> This was absolutely never tested.
 
-This is a 31-day syzbot report for the media subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/media
+Paul, before sending DT bindings, please test them. The procedure
+involves running `make dt_binding_check` as described towards the end of
+Documentation/devicetree/bindings/writing-schema.rst. There's an
+environment variable that you can use to restrict the test to a
+particular binding file.
 
-During the period, 3 new issues were detected and 0 were fixed.
-In total, 19 issues are still open and 83 have been fixed so far.
+> > +
+> > +  reset-gpios:
+> > +    maxItems: 1
+> > +    description: |-
+> > +      Reference to the GPIO connected to the RESET_N pin, if any.
+> > +      Must be released (set high) after all supplies are applied.
+> > +
+> > +  vddcore-supply:
+> > +    description:
+> > +      1.2V supply for core, PLL, MIPI rx and MIPI tx.
+> > +
+> > +  vhtermnx-supply:
+> > +    description:
+> > +      Supply for input (rx). 1.8V for MIPI, or 1.8/2.8/3.3V for parallel.
+> > +
+> > +  vddtx-supply:
+> > +    description:
+> > +      Supply for output (tx). 1.8V for MIPI, or 1.8/2.8/3.3V for parallel.
+> > +
+> > +  vddhost-supply:
+> > +    description:
+> > +      Supply for host interface. 1.8V, 2.8V, or 3.3V.
+> > +
+> > +  vddcmos-supply:
+> > +    description:
+> > +      Supply for sensor interface. 1.8V, 2.8V, or 3.3V.
+> > +
+> > +  vddgpio_0-supply:
+> 
+> No, underscores are not allowed in names.
+> 
+> > +    description:
+> > +      Supply for GPIO_0. 1.8V, 2.8V, or 3.3V.
+> > +
+> > +  vddgpio_1-supply:
+> > +    description:
+> > +      Supply for GPIO_1. 1.8V, 2.8V, or 3.3V.
+> > +
+> > +  DOVDD-supply:
+> 
+> lowercase. Look at your other supplies. VDD is spelled there "vdd", so
+> do not introduce random style.
+> 
+> > +    description:
+> > +      Digital I/O (1.8V) supply for image sensor.
+> > +
+> > +  AVDD-supply:
+> 
+> lowercase
+> 
+> > +    description:
+> > +      Analog (2.8V) supply for image sensor.
+> > +
+> > +  DVDD-supply:
+> 
+> lowercase
+> 
+> > +    description:
+> > +      Digital Core (1.2V) supply for image sensor.
 
-Some of the still happening issues:
+Are those three supplies required ? It looks like the vdd* supplies are
+all you need.
 
-Ref Crashes Repro Title
-<1> 1535    Yes   WARNING in get_vaddr_frames
-                  https://syzkaller.appspot.com/bug?extid=59a71007ccac79e8bb69
-<2> 530     Yes   general protection fault in ir_raw_event_store_with_filter
-                  https://syzkaller.appspot.com/bug?extid=34008406ee9a31b13c73
-<3> 304     Yes   KASAN: use-after-free Read in v4l2_fh_init
-                  https://syzkaller.appspot.com/bug?extid=c025d34b8eaa54c571b8
-<4> 95      Yes   WARNING in media_create_pad_link
-                  https://syzkaller.appspot.com/bug?extid=dd320d114deb3f5bb79b
-<5> 83      Yes   WARNING in smsusb_start_streaming/usb_submit_urb
-                  https://syzkaller.appspot.com/bug?extid=12002a39b8c60510f8fb
-<6> 50      Yes   KASAN: use-after-free Read in send_packet
-                  https://syzkaller.appspot.com/bug?extid=f1a69784f6efe748c3bf
-<7> 5       Yes   WARNING in imon_probe
-                  https://syzkaller.appspot.com/bug?extid=1c41b2e045dc086f58be
-<8> 3       Yes   KASAN: use-after-free Read in v4l2_fh_open
-                  https://syzkaller.appspot.com/bug?extid=b2391895514ed9ef4a8e
-<9> 2       Yes   KASAN: slab-out-of-bounds Read in imon_probe
-                  https://syzkaller.appspot.com/bug?extid=59875ffef5cb9c9b29e9
+> > +
+> > +  orientation: true
+> > +  rotation: true
+> > +
+> > +  thine,rx,data-lanes:
+> 
+> Why are you duplicating properties? With wrong name? No, that's not a
+> property of a device node, but endpoint.
+> 
+> > +    minItems: 4
+> > +    maxItems: 4
+> > +    $ref: /schemas/media/video-interfaces.yaml#data-lanes
+> > +    description: |-
+> 
+> Drop |- where not needed.
+> 
+> > +      This property is for lane reordering between the THP7312 and the imaging
+> > +      sensor that it is connected to.
+> > +
+> > +  port:
+> > +    $ref: /schemas/graph.yaml#/$defs/port-base
+> > +    additionalProperties: false
+> > +
+> > +    properties:
+> > +      endpoint:
+> > +        $ref: /schemas/media/video-interfaces.yaml#
+> > +        unevaluatedProperties: false
+> > +
+> > +        properties:
+> > +          data-lanes:
+> > +            description: |-
+> > +              The sensor supports either two-lane, or four-lane operation.
+> > +              This property is for lane reordering between the THP7312 and
+> > +              the SoC. If this property is omitted four-lane operation is
+> > +              assumed. For two-lane operation the property must be set to <1 2>.
+> > +            minItems: 2
+> > +            maxItems: 4
+> > +            items:
+> > +              maximum: 4
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - reset-gpios
+> > +  - clocks
+> > +  - vddcore-supply
+> > +  - vhtermrx-supply
+> > +  - vddtx-supply
+> > +  - vddhost-supply
+> > +  - vddcmos-supply
+> > +  - vddgpio_0-supply
+> > +  - vddgpio_1-supply
+> > +  - DOVDD-supply
+> > +  - AVDD-supply
+> > +  - DVDD-supply
+> > +  - thine,rx,data-lanes
+> > +  - port
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/gpio/gpio.h>
+> > +
+> > +    i2c {
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        camera@61 {
+> > +            compatible = "thine,thp7312";
+> > +            reg = <0x61>;
+> > +
+> > +            pinctrl-names = "default";
+> > +            pinctrl-0 = <&cam1_pins_default>;
+> > +
+> > +            reset-gpios = <&pio 119 GPIO_ACTIVE_LOW>;
+> > +            clocks = <&camera61_clk>;
+> > +
+> > +            vddcore-supply = <&vsys_v4p2>;
+> > +            AVDD-supply = <&vsys_v4p2>;
+> > +            DVDD-supply = <&vsys_v4p2>;
+> 
+> Srlsy, test it before sending. Look how many supplies you require and
+> what is provided here. How any of this could possibly work?
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+-- 
+Regards,
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Laurent Pinchart
