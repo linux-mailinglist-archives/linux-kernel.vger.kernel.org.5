@@ -2,93 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7169A79453B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A036C794548
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244704AbjIFVj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 17:39:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51510 "EHLO
+        id S244039AbjIFVpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 17:45:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233528AbjIFVj5 (ORCPT
+        with ESMTP id S232067AbjIFVpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 17:39:57 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BF8CFD
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 14:39:54 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d7e741729a2so305048276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 14:39:54 -0700 (PDT)
+        Wed, 6 Sep 2023 17:45:44 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E35E19AD
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 14:45:38 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fef56f7248so3413935e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 14:45:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694036393; x=1694641193; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FcDV32V1hF3ggpML6CN2PmzNf2BZA2lkSDMi12uE+II=;
-        b=VO++EKVOBPjO1Juz4K6GcAquceF7DxFz+2QrMxVnAz7DdhxJAMJ+PZPAUlPffkjDOZ
-         Iaj0EsnCTWgVmrVjUF7CpqLKSBgvkiA20b9cuhDMClc+mX0N6M7Q/81KdgIvyS2YEIsW
-         6gyg3UnkWMLQc1kEMphVz44w6O5I28KVTuQ+VOxq+DliBAH/J+bfWVcRWmlfpskQY024
-         DFbmdje1tf8RRj2X+jdJSJMvaroX2D1600tVA0TRGANOcC+Y06c/XyV67KBKQ7lPiRu4
-         V3NVmQax3ALBw4MgsSnud3cQEiUZQIQOZzAUg4ZSM60Quamg5A2AvVheSwLiHqUVb8k2
-         7nOw==
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1694036737; x=1694641537; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KyCVp/F/ThCRbj27KuhajP5SpO/oz50VxcPxPw4wux4=;
+        b=GzVJX2PWRml7fmw5TI6M9xxcDZdfszs/udq/0Gy8dL/AxCB+MoQrTf4zdQXPwmMv+Y
+         91QWoVDb9GFZch2UzqxDx5/zICSdp9pHijX8d8tOQYNReXuuNpeIM96S3VlgJPgwQpPt
+         3ItJwB0zRH2Y+ymO7HNhIZwobgH1QNX0Rwedk/vD9hj2INr+K1uW1lqSj50rJ4r/qeOE
+         /3t/atiYOQI5LtQGgGYVijbLYnFQ05rtnhy/VS3LykDVVd260m0AVsmibwDCubDia7Si
+         MD4xBvalOKIYuXKvAYyPCMI5tE7HAPHVA22WwbHRCsp2SPDT9oLDrVuzN0WzPvxq6yoJ
+         A+GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694036393; x=1694641193;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FcDV32V1hF3ggpML6CN2PmzNf2BZA2lkSDMi12uE+II=;
-        b=IsEKFMavUiJC4BnQU3PiMXyaTjDH9OYhmpXc73Qk7tjXyDfGLdPCzZZAINWJW9bhBr
-         nVrx6kYrFdE9eWukKCr8S2oGJbJrqr9ts+GXUFMjoD+H0KZ/rkuT95Gb+g95GlcDLw18
-         /+3Y2imMHgoGq6gMlRi7OuSzZ+iVW47BJZVw7D24XvGEV7yE40srpcnDN4ubTVcJOEig
-         QIJ/V7+PCIfncOE17iuwsFC+VUPLm2+MlWo81BRStOk+M05b+lCd5r0yKO2xaWIe4r2X
-         RqLAkZ9i41TyfrNHvGFF0YKGWqNDeXrwogbVnRVJaEYUwgn9FQz8wG7N1qDMmaq4+JDH
-         VXeg==
-X-Gm-Message-State: AOJu0YwbHmCyA33jhyvrkksJJ/y73jXsaz48swq7Dm5SKYfGUqCKRMng
-        b8EseHAd9NxjqgTKyf9iDl0aSh3Mgg+7gkjsEGDDvg==
-X-Google-Smtp-Source: AGHT+IGobIYkzFxPB1Z9kAA6+sAomQ6tP9CX+LnzMT/FtbPDy1FjubFYI/ZCy9prGJEvpkT0rCOGyCLh2O8UwHr1YYo=
-X-Received: by 2002:a25:37cd:0:b0:d78:3f9c:138e with SMTP id
- e196-20020a2537cd000000b00d783f9c138emr16362377yba.37.1694036393559; Wed, 06
- Sep 2023 14:39:53 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1694036737; x=1694641537;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KyCVp/F/ThCRbj27KuhajP5SpO/oz50VxcPxPw4wux4=;
+        b=KppIAq8prghm85/w90+DcPflOf9p/W4YJsy4VetkDXpcgFypPPc/BR3JAB294S5GzR
+         OrrS1Pv/TwGBKeBpZozrYAJDVHgyKnraEmrggeXbuBCBrfb0B/9DF8lTjVISaKfqnAfA
+         ONf11sLqnSBGPveLSdIAWwRMcO/Eq77w4wm5ynTedUj+DlQYdUD679M+onYYBQkOfyE8
+         jvJUhJQuMdZhjwcpic95PS0q8t/WkF2IBzLMTEp1eyFiiSo868Jcd19vqbwx9izDat/d
+         e2lYGR/iv8uobgvL3U94bEN/iTGEVJaasRstZIMBo3QXKR46l+zKBBESih5iWYCE0wDN
+         GgOg==
+X-Gm-Message-State: AOJu0YzMYn1iNunRST/8DtqjxZ2ubtUf5z1bDg4lMfn0ohYGqQUV4uiS
+        1Xd/nRacU/+LnWrAso8RN8Zuvw==
+X-Google-Smtp-Source: AGHT+IEU2jMMGX4tq3chgsn92r65KmTUDSy4JiT6I83180aiFG4Va4GStd7rV9oCBMLRwsuqZcTcPA==
+X-Received: by 2002:a05:600c:2986:b0:401:aa8f:7562 with SMTP id r6-20020a05600c298600b00401aa8f7562mr3308615wmd.11.1694036736712;
+        Wed, 06 Sep 2023 14:45:36 -0700 (PDT)
+Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
+        by smtp.gmail.com with ESMTPSA id p13-20020a05600c204d00b00402d7105035sm640601wmg.26.2023.09.06.14.45.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 14:45:36 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 22:45:35 +0100
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Lukasz Luba <lukasz.luba@arm.com>
+Subject: Re: [RFC PATCH 3/7] sched/fair: Remove magic margin in
+ fits_capacity()
+Message-ID: <20230906214535.y4m5rtmi6zz24wvx@airbuntu>
+References: <20230827233203.1315953-1-qyousef@layalina.io>
+ <20230827233203.1315953-4-qyousef@layalina.io>
+ <e2c161dc-381a-4cd6-9b46-6810fab58222@arm.com>
 MIME-Version: 1.0
-References: <20230904073410.5880-1-brgl@bgdev.pl> <20230904073410.5880-2-brgl@bgdev.pl>
- <ZPWjAUzqeAwF1wro@smile.fi.intel.com> <CAMRc=MeMYi0KbK=1RYGX2zbUjVZyQp-Y_aXfy6+EZcEtUSEU0A@mail.gmail.com>
-In-Reply-To: <CAMRc=MeMYi0KbK=1RYGX2zbUjVZyQp-Y_aXfy6+EZcEtUSEU0A@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 6 Sep 2023 23:39:41 +0200
-Message-ID: <CACRpkdYO=uzzP8JMgdci=qkvGP=1AcrqD3PSBm9vkJYsFqX_gQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] gpiolib: rename gpio_chip_hwgpio() for consistency
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e2c161dc-381a-4cd6-9b46-6810fab58222@arm.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 5, 2023 at 10:37=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
+On 09/06/23 16:38, Dietmar Eggemann wrote:
+> On 28/08/2023 01:31, Qais Yousef wrote:
+> > 80% margin is a magic value that has served its purpose for now, but it
+> > no longer fits the variety of systems exist today. If a system is over
+> > powered specifically, this 80% will mean we leave a lot of capacity
+> > unused before we decide to upmigrate on HMP system.
+> > 
+> > The upmigration behavior should rely on the fact that a bad decision
+> > made will need load balance to kick in to perform misfit migration. And
+> > I think this is an adequate definition for what to consider as enough
+> > headroom to consider whether a util fits capacity or not.
+> > 
+> > Use the new approximate_util_avg() function to predict the util if the
+> > task continues to run for TICK_US. If the value is not strictly less
+> > than the capacity, then it must not be placed there, ie considered
+> > misfit.
+> > 
+> > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> > ---
+> >  kernel/sched/fair.c | 21 ++++++++++++++++++---
+> >  1 file changed, 18 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 0b7445cd5af9..facbf3eb7141 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -109,16 +109,31 @@ int __weak arch_asym_cpu_priority(int cpu)
+> >  }
+> >  
+> >  /*
+> > - * The margin used when comparing utilization with CPU capacity.
+> > + * The util will fit the capacity if it has enough headroom to grow within the
+> > + * next tick - which is when any load balancing activity happens to do the
+> > + * correction.
+> >   *
+> > - * (default: ~20%)
+> > + * If util stays within the capacity before tick has elapsed, then it should be
+> > + * fine. If not, then a correction action must happen shortly after it starts
+> > + * running, hence we treat it as !fit.
+> > + *
+> > + * TODO: TICK is not actually accurate enough. balance_interval is the correct
+> > + * one to use as the next load balance doesn't not happen religiously at tick.
+> > + * Accessing balance_interval might be tricky and will require some refactoring
+> > + * first.
+> >   */
+> 
+> I understand that you want to have a more intelligent margin (depending
+> on the util value) but why you want to use the time value of TICK_USEC
+> (or the balance_interval)?
+> 
+> We call fits_capacity() e.g. in wakeup and the next lb can just happen
+> immediately after it.
 
-> gpio_chip_hwgpio() is a
-> terrible name and if I didn't know, I couldn't tell you what it does
-> just from looking at the name.
+If it happens immediately, then current values we're considering without margin
+are enough to make a correct decision. But worst case scenario if the task
+doesn't go to sleep shortly after and continues to run, then we'll have to wait
+for TICK_USEC for lb to kick off again and handle a misfit lb.
 
-Probably my fault.
+So we only need to add margin (or headroom which I think is a better word) to
+account for the fact that a worst case scenario is that the task will run for
+a full tick on this CPU. And what I'm trying to say/do here is that as long as
+the task doesn't grow beyond the capacity of the CPU within tick, then it's
+fine for it to run there as it won't cause misfit or require misfit lb to run.
 
-"For the chip containing this desc obtain the corresponding
-hardware GPIO number/offset" is what I would put in kerneldoc.
-(Which is by the way also horrible.)
+If the value goes beyond capacity of the CPU before the end of the tick, then
+this means the task had to run at lower capacity for sometime. Which is what
+we're trying to avoid IIUC.
 
-Let's rename it to something that says clearly what it does.
-(Rusty Russell's API design hierarchy.)
 
-I guess I would just name it something like *_get_chip_hw_offset()
-or *_get_chip_hwgpio_offset() but it gets a bit long, maybe it is a bit
-talkative but easy to understand. (I stay off the prefix discussion.)
+Thanks!
 
-Yours,
-Linus Walleij
+--
+Qais Yousef
+
+> 
+> > -#define fits_capacity(cap, max)	((cap) * 1280 < (max) * 1024)
+> > +static inline bool fits_capacity(unsigned long util, unsigned long capacity)
+> > +{
+> > +	return approximate_util_avg(util, TICK_USEC) < capacity;
+> > +}
+> 
+> [...]
+> 
