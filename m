@@ -2,140 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4269793E09
+	by mail.lfdr.de (Postfix) with ESMTP id 56821793E08
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233750AbjIFNtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 09:49:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
+        id S240854AbjIFNtm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Sep 2023 09:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233423AbjIFNt3 (ORCPT
+        with ESMTP id S237379AbjIFNtk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 09:49:29 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C1E10D3;
-        Wed,  6 Sep 2023 06:49:24 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qdsuI-0002DX-9q; Wed, 06 Sep 2023 15:49:22 +0200
-Message-ID: <6406fb2e-afb2-461d-9bac-aa157cf6d16f@leemhuis.info>
-Date:   Wed, 6 Sep 2023 15:49:21 +0200
+        Wed, 6 Sep 2023 09:49:40 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B06171C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 06:49:32 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-270-TszICoJsPNy4wKpDdJ2-ow-1; Wed, 06 Sep 2023 14:49:30 +0100
+X-MC-Unique: TszICoJsPNy4wKpDdJ2-ow-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 6 Sep
+ 2023 14:49:24 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Wed, 6 Sep 2023 14:49:24 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Noah Goldstein' <goldstein.w.n@gmail.com>,
+        "x86@kernel.org" <x86@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "hpa@zytor.com" <hpa@zytor.com>
+Subject: RE: x86/csum: Remove unnecessary odd handling
+Thread-Topic: x86/csum: Remove unnecessary odd handling
+Thread-Index: AQHZ3SKcfs4a8+P0bkWBCjHsrqR0abAN10lQ
+Date:   Wed, 6 Sep 2023 13:49:24 +0000
+Message-ID: <3883a2c481dc4facb4e732a4e46fe2a4@AcuMS.aculab.com>
+References: <20230628020657.957880-1-goldstein.w.n@gmail.com>
+ <20230901222100.1027371-1-goldstein.w.n@gmail.com>
+In-Reply-To: <20230901222100.1027371-1-goldstein.w.n@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] gpio: zynq: restore
- zynq_gpio_irq_reqres/zynq_gpio_irq_relres callbacks
-Content-Language: en-US, de-DE
-To:     Daniel Mack <daniel@zonque.org>, linux-gpio@vger.kernel.org,
-        manikanta.guntupalli@amd.com
-Cc:     linux-kernel@vger.kernel.org, stable@kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux kernel regressions list <regressions@lists.linux.dev>
-References: <20230901122424.247070-1-daniel@zonque.org>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <20230901122424.247070-1-daniel@zonque.org>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1694008164;3b961e7f;
-X-HE-SMSGID: 1qdsuI-0002DX-9q
+Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CCing Arnd (wrote the culprit), Linus (reviewed it), Bartosz (applied
-it), and the regressions mailing list
-
-On 01.09.23 14:24, Daniel Mack wrote:
-> Commit f56914393537 ("gpio: zynq: fix zynqmp_gpio not an immutable chip
-> warning") ditched the open-coded resource allocation handlers in favor
-> of the generic ones. These generic handlers don't maintain the PM
-> runtime anymore, which causes a regression in that level IRQs are no
-> longer reported.
+From: Noah Goldstein
+> Sent: 01 September 2023 23:21
 > 
-> Restore the original handlers to fix this.
+> The special case for odd aligned buffers is unnecessary and mostly
+> just adds overhead. Aligned buffers is the expectations, and even for
+> unaligned buffer, the only case that was helped is if the buffer was
+> 1-byte from word aligned which is ~1/7 of the cases. Overall it seems
+> highly unlikely to be worth to extra branch.
 > 
-> Signed-off-by: Daniel Mack <daniel@zonque.org>
-> Fixes: f56914393537 ("gpio: zynq: fix zynqmp_gpio not an immutable chip warning")
-> Cc: stable@kernel.org
+> It was left in the previous perf improvement patch because I was
+> erroneously comparing the exact output of `csum_partial(...)`, but
+> really we only need `csum_fold(csum_partial(...))` to match so its
+> safe to remove.
 
-This seems to be a regression report that comes straight with a fix, but
-there wasn't a single reply yet afaics. :-/ Maybe the extended list of
-recipients will get things moving. But to ensure this doesn't fall
-through the cracks, I'll add it to the list of tracked regressions.
+This is pretty much the same patch I send in Dec 2021...
 
-#regzbot ^introduced f56914393537
-#regzbot title gpio: zynq: in that level IRQs are no longer reported
-#regzbot fix: gpio: zynq: restore
-zynq_gpio_irq_reqres/zynq_gpio_irq_relres callbacks
-#regzbot ignore-activity
+Reviewed-by: David Laight <david.laight@aculab.com>
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
-
+> 
+> All csum kunit tests pass.
+> 
+> Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
 > ---
->  drivers/gpio/gpio-zynq.c | 26 ++++++++++++++++++++++++--
->  1 file changed, 24 insertions(+), 2 deletions(-)
+>  arch/x86/lib/csum-partial_64.c | 37 ++--------------------------------
+>  1 file changed, 2 insertions(+), 35 deletions(-)
 > 
-> diff --git a/drivers/gpio/gpio-zynq.c b/drivers/gpio/gpio-zynq.c
-> index 0a7264aabe48..324e942c0650 100644
-> --- a/drivers/gpio/gpio-zynq.c
-> +++ b/drivers/gpio/gpio-zynq.c
-> @@ -575,6 +575,26 @@ static int zynq_gpio_set_wake(struct irq_data *data, unsigned int on)
->  	return 0;
+> diff --git a/arch/x86/lib/csum-partial_64.c b/arch/x86/lib/csum-partial_64.c
+> index cea25ca8b8cf..d06112e98893 100644
+> --- a/arch/x86/lib/csum-partial_64.c
+> +++ b/arch/x86/lib/csum-partial_64.c
+> @@ -11,28 +11,6 @@
+>  #include <asm/checksum.h>
+>  #include <asm/word-at-a-time.h>
+> 
+> -static inline unsigned short from32to16(unsigned a)
+> -{
+> -	unsigned short b = a >> 16;
+> -	asm("addw %w2,%w0\n\t"
+> -	    "adcw $0,%w0\n"
+> -	    : "=r" (b)
+> -	    : "0" (b), "r" (a));
+> -	return b;
+> -}
+> -
+> -static inline __wsum csum_tail(u64 temp64, int odd)
+> -{
+> -	unsigned int result;
+> -
+> -	result = add32_with_carry(temp64 >> 32, temp64 & 0xffffffff);
+> -	if (unlikely(odd)) {
+> -		result = from32to16(result);
+> -		result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
+> -	}
+> -	return (__force __wsum)result;
+> -}
+> -
+>  /*
+>   * Do a checksum on an arbitrary memory area.
+>   * Returns a 32bit checksum.
+> @@ -47,17 +25,6 @@ static inline __wsum csum_tail(u64 temp64, int odd)
+>  __wsum csum_partial(const void *buff, int len, __wsum sum)
+>  {
+>  	u64 temp64 = (__force u64)sum;
+> -	unsigned odd;
+> -
+> -	odd = 1 & (unsigned long) buff;
+> -	if (unlikely(odd)) {
+> -		if (unlikely(len == 0))
+> -			return sum;
+> -		temp64 = ror32((__force u32)sum, 8);
+> -		temp64 += (*(unsigned char *)buff << 8);
+> -		len--;
+> -		buff++;
+> -	}
+> 
+>  	/*
+>  	 * len == 40 is the hot case due to IPv6 headers, but annotating it likely()
+> @@ -73,7 +40,7 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
+>  		    "adcq $0,%[res]"
+>  		    : [res] "+r"(temp64)
+>  		    : [src] "r"(buff), "m"(*(const char(*)[40])buff));
+> -		return csum_tail(temp64, odd);
+> +		return add32_with_carry(temp64 >> 32, temp64 & 0xffffffff);
+>  	}
+>  	if (unlikely(len >= 64)) {
+>  		/*
+> @@ -143,7 +110,7 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
+>  		    : [res] "+r"(temp64)
+>  		    : [trail] "r"(trail));
+>  	}
+> -	return csum_tail(temp64, odd);
+> +	return add32_with_carry(temp64 >> 32, temp64 & 0xffffffff);
 >  }
->  
-> +static int zynq_gpio_irq_reqres(struct irq_data *d)
-> +{
-> +	struct gpio_chip *chip = irq_data_get_irq_chip_data(d);
-> +	int ret;
-> +
-> +	ret = pm_runtime_resume_and_get(chip->parent);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return gpiochip_reqres_irq(chip, d->hwirq);
-> +}
-> +
-> +static void zynq_gpio_irq_relres(struct irq_data *d)
-> +{
-> +	struct gpio_chip *chip = irq_data_get_irq_chip_data(d);
-> +
-> +	gpiochip_relres_irq(chip, d->hwirq);
-> +	pm_runtime_put(chip->parent);
-> +}
-> +
->  /* irq chip descriptor */
->  static const struct irq_chip zynq_gpio_level_irqchip = {
->  	.name		= DRIVER_NAME,
-> @@ -584,9 +604,10 @@ static const struct irq_chip zynq_gpio_level_irqchip = {
->  	.irq_unmask	= zynq_gpio_irq_unmask,
->  	.irq_set_type	= zynq_gpio_set_irq_type,
->  	.irq_set_wake	= zynq_gpio_set_wake,
-> +	.irq_request_resources = zynq_gpio_irq_reqres,
-> +	.irq_release_resources = zynq_gpio_irq_relres,
->  	.flags		= IRQCHIP_EOI_THREADED | IRQCHIP_EOI_IF_HANDLED |
->  			  IRQCHIP_MASK_ON_SUSPEND | IRQCHIP_IMMUTABLE,
-> -	GPIOCHIP_IRQ_RESOURCE_HELPERS,
->  };
->  
->  static const struct irq_chip zynq_gpio_edge_irqchip = {
-> @@ -597,8 +618,9 @@ static const struct irq_chip zynq_gpio_edge_irqchip = {
->  	.irq_unmask	= zynq_gpio_irq_unmask,
->  	.irq_set_type	= zynq_gpio_set_irq_type,
->  	.irq_set_wake	= zynq_gpio_set_wake,
-> +	.irq_request_resources = zynq_gpio_irq_reqres,
-> +	.irq_release_resources = zynq_gpio_irq_relres,
->  	.flags		= IRQCHIP_MASK_ON_SUSPEND | IRQCHIP_IMMUTABLE,
-> -	GPIOCHIP_IRQ_RESOURCE_HELPERS,
->  };
->  
->  static void zynq_gpio_handle_bank_irq(struct zynq_gpio *gpio,
+>  EXPORT_SYMBOL(csum_partial);
+> 
+> --
+> 2.34.1
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
