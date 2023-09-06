@@ -2,136 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0F2793F29
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DDAC793F2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbjIFOoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42026 "EHLO
+        id S241859AbjIFOpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:45:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238908AbjIFOoZ (ORCPT
+        with ESMTP id S237678AbjIFOpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:44:25 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAF7F9
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:44:21 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c08a15fcf4so41744805ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 07:44:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694011461; x=1694616261; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SSTiKL7WWCo51b+iExLvIaKWw3Z08VsIyzSrL3/Ne10=;
-        b=YNY47AudHlnoEtwGMp3p0O/J43zt2FZgeep8TEp0qJhNaqeNecUuH9VUI0ZObp7r1A
-         ztvX0VvHdhsT3i0HHwCiYJ3ccUtJ8YiBKOobKsBbwXEzV0KjOlgiSExRHGDr0VLbLX5/
-         mtk9Rx1PgYQYSwuhCv7X/Lp+mWMciViGeHg0w+OBykp8S7bfrWgrXGSanXtpu5zeDgmB
-         q8YhNj+Smi+bFLHeg4FDRitXQ3fzq0q6R+QFZK1JTr5sZXwj4/nTKFBk2WyuLbI0qIGE
-         SXR1d+B4u8JXE3/hEo1xVEiT2OluJJ5Lo144usBxgg8L9jwJWzjVb9bsDZcoSCRxcYzk
-         i4iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694011461; x=1694616261;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SSTiKL7WWCo51b+iExLvIaKWw3Z08VsIyzSrL3/Ne10=;
-        b=P+zMoy75T8WpFbpEZTKtGfr1NUbft3edG06l+MX9FDsnR9CKTauurwWRuqiiyJTnqT
-         LQNvTFz5dJwUMGN8D6oxrMOuDZP8eUUoOt43OVz1mqC3AVUR2AvwbN2mj+xRYT11y2R7
-         Kv9SvNhQt4rIxPGvToEFSXMoKooR9iDKjCp+Y7OLxFGMlpg7WcszejllUslsCmQ/qfDy
-         edOvRVfZlJoDdVJ0Z72XWljOQzJjBJowwVcnsNp7cSOtAuBHNsuGhl0iaIQGy99Pq1zg
-         A+yTRFgGn+cp/52IzIuth1uYZAqH4lsxJnqW/RlC7F/irHUNhk6ocpElmg5Ts26uXyop
-         5GfA==
-X-Gm-Message-State: AOJu0YwgVCVnbfd326rsFEKNgH7eoMQ9J5RoHQs8sfe0uyCXZVTMYhsY
-        NiTvAdD7chExhJgNCyjKYMTcNpYzyWg=
-X-Google-Smtp-Source: AGHT+IFj9NCYL1vWVS35pRCYY8NqINJEP03nOf/Bp5WA8N+2YUIJEI/6471Uli0EjqFcCGVeG3StcK5OIQw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:e88b:b0:1b8:8c7:31e6 with SMTP id
- w11-20020a170902e88b00b001b808c731e6mr5385581plg.1.1694011461320; Wed, 06 Sep
- 2023 07:44:21 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 07:44:19 -0700
-In-Reply-To: <5ff1591c-d41c-331f-84a6-ac690c48ff5d@arm.com>
-Mime-Version: 1.0
-References: <20230808085056.14644-1-yan.y.zhao@intel.com> <ZN0S28lkbo6+D7aF@google.com>
- <ZN1jBFBH4C2bFjzZ@yzhao56-desk.sh.intel.com> <ZN5elYQ5szQndN8n@google.com>
- <ZN9FQf343+kt1YsX@yzhao56-desk.sh.intel.com> <ZPWBM5DDC6MKINUe@yzhao56-desk.sh.intel.com>
- <ZPd6Y9KJ0FfbCa0Q@google.com> <5ff1591c-d41c-331f-84a6-ac690c48ff5d@arm.com>
-Message-ID: <ZPiQQ0OANuaOYdIS@google.com>
-Subject: Re: [PATCH 0/2] KVM: x86/mmu: .change_pte() optimization in TDP MMU
-From:   Sean Christopherson <seanjc@google.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Yan Zhao <yan.y.zhao@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Sep 2023 10:45:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26769172C;
+        Wed,  6 Sep 2023 07:45:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694011511; x=1725547511;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=HKIKo8gJxS6xNqAxkMxzWOKQ5+W7pcHDwu58cyKSvBQ=;
+  b=OOuPPinN4LxTy7L0QxtKdAySp8/EiQe3KsxeBqvNZ4pYOObCfFXJVc9B
+   dZpxbTWTNjEh0PvN54sMULJmc6lXBdVHI5ZCSP7Y+sOT4KCxglAK2kGZF
+   2HjQPUsmgsj/ZyUdu4sTIBAq5BqFSKE36RpUoHFrymA8gfaxlSTmq3sYP
+   67uid6ayaMNcqgpTyvDH8+zPoXChcIS91y5fJPCZS9mK1d8Gw9+cqt2uv
+   BA4bipRwXIQ5N+I/RKGea4iyuSLtJijMhobzHfNDLH0wH0CUguIIGn8M+
+   nv+ZjiKqlkt3I/IecfWUxJPpwWkYlTuQN3CsWxEV2sAUFA9Kc+Ihd2CMM
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="357393634"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="357393634"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 07:45:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="770777884"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="770777884"
+Received: from lmgabald-mobl2.amr.corp.intel.com (HELO [10.212.242.149]) ([10.212.242.149])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 07:45:09 -0700
+Message-ID: <d0d30ad4-7837-b0c4-39f4-3e317e35a41b@intel.com>
+Date:   Wed, 6 Sep 2023 07:45:09 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 3/8] arch/x86: Remove sentinel elem from ctl_table arrays
+Content-Language: en-US
+To:     j.granados@samsung.com, Luis Chamberlain <mcgrof@kernel.org>,
+        willy@infradead.org, josh@joshtriplett.org,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Guo Ren <guoren@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-csky@vger.kernel.org
+References: <20230906-jag-sysctl_remove_empty_elem_arch-v1-0-3935d4854248@samsung.com>
+ <20230906-jag-sysctl_remove_empty_elem_arch-v1-3-3935d4854248@samsung.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <20230906-jag-sysctl_remove_empty_elem_arch-v1-3-3935d4854248@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023, Robin Murphy wrote:
-> On 2023-09-05 19:59, Sean Christopherson wrote:
-> > And if the driver *doesn't* initialize the data, then the copy is at best pointless,
-> > and possibly even worse than leaking stale swiotlb data.
+On 9/6/23 03:03, Joel Granados via B4 Relay wrote:
+> This commit comes at the tail end of a greater effort to remove the
+> empty elements at the end of the ctl_table arrays (sentinels) which
+> will reduce the overall build time size of the kernel and run time
+> memory bloat by ~64 bytes per sentinel (further information Link :
+> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
 > 
-> Other than the overhead, done right it can't be any worse than if SWIOTLB
-> were not involved at all.
+> Remove sentinel element from sld_sysctl and itmt_kern_table.
 
-Yep.
+There's a *LOT* of content to read for a reviewer to figure out what's
+going on here between all the links.  I would have appreciated one more
+sentence here, maybe:
 
-> > Looking at commit ddbd89deb7d3 ("swiotlb: fix info leak with DMA_FROM_DEVICE"),
-> > IIUC the data leak was observed with a synthetic test "driver" that was developed
-> > to verify a real data leak fixed by commit a45b599ad808 ("scsi: sg: allocate with
-> > __GFP_ZERO in sg_build_indirect()").  Which basically proves my point: copying
-> > from the source only adds value absent a bug in the owning driver.
-> 
-> Huh? IIUC the bug there was that the SCSI layer failed to sanitise
-> partially-written buffers. That bug was fixed, and the scrutiny therein
-> happened to reveal that SWIOTLB *also* had a lower-level problem with
-> partial writes, in that it was corrupting DMA-mapped memory which was not
-> updated by the device. Partial DMA writes are not in themselves indicative
-> of a bug, they may well be a valid and expected behaviour.
+	This is now safe because the sysctl registration code
+	(register_sysctl()) implicitly uses ARRAY_SIZE() in addition
+	to checking for a sentinel.
 
-The problem is that the comment only talks about leaking data to userspace, and
-doesn't say anything about data corruption or the "swiotlb needs to match hardware"
-justification that Linus pointed out.  I buy both of those arguments for copying
-data from the original page, but the "may prevent leaking swiotlb content" is IMO
-completely nonsensical, because if preventing leakage is the only goal, then
-explicitly initializing the memory is better in every way.
+That needs to be more prominent _somewhere_.  Maybe here, or maybe in
+the cover letter, but _somewhere_.
 
-If no one objects, I'll put together a patch to rewrite the comment in terms of
-mimicking hardware and not corrupting the caller's data.
+That said, feel free to add this to the two x86 patches:
 
-> > IMO, rather than copying from the original memory, swiotlb_tbl_map_single() should
-> > simply zero the original page(s) when establishing the mapping.  That would harden
-> > all usage of swiotlb and avoid the read-before-write behavior that is problematic
-> > for KVM.
-> 
-> Depends on one's exact definition of "harden"... Corrupting memory with
-> zeros is less bad than corrupting memory with someone else's data if you
-> look at it from an information security point of view, but from a
-> not-corrupting-memory point of view it's definitely still corrupting memory
-> :/
-> 
-> Taking a step back, is there not an argument that if people care about
-> general KVM performance then they should maybe stop emulating obsolete PC
-> hardware from 30 years ago, and at least emulate obsolete PC hardware from
-> 20 years ago that supports 64-bit DMA?
-
-Heh, I don't think there's an argument per se, people most definitely shouldn't
-be emulating old hardware if they care about performance.  I already told Yan as
-much.
-
-> Even non-virtualised, SWIOTLB is pretty horrible for I/O performance by its
-> very nature - avoiding it if at all possible should always be preferred.
-
-Yeah.  The main reason I didn't just sweep this under the rug is the confidential
-VM use case, where SWIOTLB is used to bounce data from guest private memory into
-shread buffers.  There's also a good argument that anyone that cares about I/O
-performance in confidential VMs should put in the effort to enlighten their device
-drivers to use shared memory directly, but practically speaking that's easier said
-than done.
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com> # for x86
