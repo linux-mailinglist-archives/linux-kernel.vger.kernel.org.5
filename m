@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A435796DA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 01:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394E4796DA4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 01:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243272AbjIFXeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 19:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34814 "EHLO
+        id S244891AbjIFXe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 19:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240901AbjIFXeL (ORCPT
+        with ESMTP id S240901AbjIFXe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 19:34:11 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC1EE66;
-        Wed,  6 Sep 2023 16:34:06 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 916C65C00E3;
-        Wed,  6 Sep 2023 19:34:03 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 06 Sep 2023 19:34:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jcline.org; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1694043243; x=1694129643; bh=vBTjdMfz1C
-        O5+QvldXBB+2bQ59B3jeU81T91GJRZKcc=; b=lCbZbYYS3BAZ5uNKthMk1f2xTa
-        Fai2IZ8aUGUTKsBa07bR8OklHlqG2i35GZqaBndYGzq2G+s6q+wh3gpiypHMHkv0
-        VgUeQbWrCOuMtmTlFY+iWtQhvgGiwunlAghInQvPUhsdvRQkEtCVsU+dw/9oieLG
-        DcmrWC7/mZ3exbfVNeXuPpO9FoLprv+YZTmtxWll8OTgpdUBMEPNXrWjLRtwYWot
-        dGnDJibx0k/kIXpr5WDpT37RWKJGjQg1ciEiTB19qgb8lqRMstyk2xgz7FHODibE
-        eq9X79czzYlxXsF7+WMVQbdS9i/SuC8TDgOC5qYNahPRBugZr8WP7uUGvgJQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1694043243; x=1694129643; bh=vBTjdMfz1CO5+
-        QvldXBB+2bQ59B3jeU81T91GJRZKcc=; b=gJHjU750+HzSv7RYPPkd3G/rLMEs+
-        obWwwh3TAzL5rtFQUCV16ciho2lwUcRbnM8Kf20i+iX4PPyN/AI9exx7FKFV5Wxe
-        1O5I9QMItyY4P4L88Pz5ndQ8iojAMB0PpD3ugJDL4iFVTxeWFk7Shd88cND8j9SA
-        5qWHdHVeGUK9kIIvUxxuDWRbyJhqASjjvcIOF7ieJSY1rJKS05O3LUFJ9AB0KSDE
-        k+nEwnR4zJAiyeslbr5OkrHZflH91oTKfp54dv+wEnBBhy4ZL1Zv7ity0qhjZNZg
-        RvvDAxP4hBcmA98u70lmdCYzEFjN6PU6NEgiIIYawfUImSYTzbJ2mmbCw==
-X-ME-Sender: <xms:awz5ZHVaOqD9lcWDPTi_5fWYXVXlWA5za_46Oh_wEfwGB5P1-jbfNA>
-    <xme:awz5ZPm978cA7CcbVMSmnyxDr6pSJ_uY7GZQQ5K5J8Nn6MPsmbYTSY75MI74qzC_6
-    qyDYDJW_cl1IDwegFI>
-X-ME-Received: <xmr:awz5ZDbxrYyWYpBt4jKImwjtBwyuJ8dKXYddV3RAKMhDrMXe38FsrWa_k0ffxqyuSrsMFKYAzCL7VEYTBCJWGAzkAD8858VBgjTM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehgedgvdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomheplfgvrhgvmhih
-    ucevlhhinhgvuceojhgvrhgvmhihsehjtghlihhnvgdrohhrgheqnecuggftrfgrthhtvg
-    hrnhepveelveefheeuhffhieduvefgudefiedvfeduteejlefflefggfekvdeuhffgteev
-    necuffhomhgrihhnpehshiiikhgrlhhlvghrrdgrphhpshhpohhtrdgtohhmnecuvehluh
-    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhgvrhgvmhihsehj
-    tghlihhnvgdrohhrgh
-X-ME-Proxy: <xmx:awz5ZCWkcaO4bFiFIqcNguTg5QVtNZpml3xrudyffiVQANXvJ6TGIw>
-    <xmx:awz5ZBnmO1WZbve-7Kao0jbyCz3doiZDJlqaqU_H9Gf3lLNT8MW5Lw>
-    <xmx:awz5ZPcKLml0D4C33e2VA_h6ck9VTOOUnhfolkO4_S0oYZDd2hVUbg>
-    <xmx:awz5ZHW4mAojt2U5mb3yGZm_1dDMnahEI9etx0iBQEMIACpmSQtelw>
-Feedback-ID: i7a7146c5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 6 Sep 2023 19:34:02 -0400 (EDT)
-From:   Jeremy Cline <jeremy@jcline.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeremy Cline <jeremy@jcline.org>,
-        syzbot+0839b78e119aae1fec78@syzkaller.appspotmail.com
-Subject: [PATCH] nfc: nci: assert requested protocol is valid
-Date:   Wed,  6 Sep 2023 19:33:47 -0400
-Message-ID: <20230906233347.823171-1-jeremy@jcline.org>
-X-Mailer: git-send-email 2.41.0
+        Wed, 6 Sep 2023 19:34:57 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B1F183
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 16:34:53 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so67776466b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 16:34:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1694043292; x=1694648092; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qp8O0CMBmeOIHtiFssMdoCJLtqwjaGXGbc+VERwFhw0=;
+        b=V/N519qu5JazzkeIdURw3oC3QCLO89U+78Gj0dcE68QhkUt5J/oK+MgsRLdUSgur9h
+         gRqNckES2b/vaaGdkFH4Q3nirBMILsS86OhpQKBLKwNsehdDcdzpwiR8K+Jo7VscWl3S
+         /XP9fFTiOvy9MeAfWhN1rWAgv8v24n7yHvQ/U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694043292; x=1694648092;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qp8O0CMBmeOIHtiFssMdoCJLtqwjaGXGbc+VERwFhw0=;
+        b=dunBaeFUo6YcXcKsTTwqkTQhcx4pPdWrllz8bIz1Nlot98sYLu/KXRIap1QetROB71
+         fm/KKWOGZMqU9OGT2TK980/1djk80ZE4OJ0/XV0013By/euOChShWPerAWhQl2qfuuuJ
+         7SLTOLkfjuksOC3iPpsg/cMy6EZtGe2LWrHRJUwyxdpjttSJBslRGywmioBuD0cOBGpI
+         B7PLQeDuzD4qIpU3qrwn5niaBKPLWwRln8F10aS50218VETJANLaohAUpR43L0wX9/u4
+         ztskI7jjZ3brPTppWm0zAPN1Y6nXzFVYw1WJY3zKiBK5z4ja6Y8Bha9eeKTdOzR7JJEG
+         irtw==
+X-Gm-Message-State: AOJu0YzISSVbaabysZ8eDIrljakqwu7FU5sYyWVCbP1us7YXtb0H8ESy
+        G6/ljr0V+dWbaYfGg1nJlG4ZFfgt2KJJV/3fUh/FEXp+
+X-Google-Smtp-Source: AGHT+IG8XwZ/WMAsFd9d/zYpTJMP4oQjGdFMVM/aT1T7gv3JQu8K95ke+xuwqBfheRj8P+DLhzSpXw==
+X-Received: by 2002:a17:906:6a07:b0:9a5:c38d:6b75 with SMTP id qw7-20020a1709066a0700b009a5c38d6b75mr1470266ejc.15.1694043291868;
+        Wed, 06 Sep 2023 16:34:51 -0700 (PDT)
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
+        by smtp.gmail.com with ESMTPSA id e7-20020a170906248700b00982cfe1fe5dsm9623575ejb.65.2023.09.06.16.34.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 16:34:50 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5298e43bb67so638067a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 16:34:49 -0700 (PDT)
+X-Received: by 2002:a05:6402:4405:b0:52e:83d0:203e with SMTP id
+ y5-20020a056402440500b0052e83d0203emr1287353eda.10.1694043289719; Wed, 06 Sep
+ 2023 16:34:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
+ <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
+ <CAHk-=whaiVhuO7W1tb8Yb-CuUHWn7bBnJ3bM7bvcQiEQwv_WrQ@mail.gmail.com>
+ <CAHk-=wi6EAPRzYttb+qnZJuzinUnH9xXy-a1Y5kvx5Qs=6xDew@mail.gmail.com>
+ <ZPj1WuwKKnvVEZnl@kernel.org> <20230906231354.GX14420@twin.jikos.cz>
+In-Reply-To: <20230906231354.GX14420@twin.jikos.cz>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 6 Sep 2023 16:34:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh+RRhqgmpNN=WMz-4kkkcyNF0-a6NpRvxH9DjSTy9Ccg@mail.gmail.com>
+Message-ID: <CAHk-=wh+RRhqgmpNN=WMz-4kkkcyNF0-a6NpRvxH9DjSTy9Ccg@mail.gmail.com>
+Subject: Re: [GIT PULL] bcachefs
+To:     dsterba@suse.cz
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The protocol is used in a bit mask to determine if the protocol is
-supported. Assert the provided protocol is less than the maximum
-defined so it doesn't potentially perform a shift-out-of-bounds and
-provide a clearer error for undefined protocols vs unsupported ones.
+On Wed, 6 Sept 2023 at 16:20, David Sterba <dsterba@suse.cz> wrote:
+>
+>     I think I've always seen an int for enums, unless it was
+> explicitly narrowed in the structure (:8) or by __packed attribute in
+> the enum definition.
 
-Fixes: 6a2968aaf50c ("NFC: basic NCI protocol implementation")
-Reported-and-tested-by: syzbot+0839b78e119aae1fec78@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=0839b78e119aae1fec78
-Signed-off-by: Jeremy Cline <jeremy@jcline.org>
----
- net/nfc/nci/core.c | 5 +++++
- 1 file changed, 5 insertions(+)
+'int' is definitely the default (and traditional) behavior.
 
-diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
-index fff755dde30d..6c9592d05120 100644
---- a/net/nfc/nci/core.c
-+++ b/net/nfc/nci/core.c
-@@ -909,6 +909,11 @@ static int nci_activate_target(struct nfc_dev *nfc_dev,
- 		return -EINVAL;
- 	}
- 
-+	if (protocol >= NFC_PROTO_MAX) {
-+		pr_err("the requested nfc protocol is invalid\n");
-+		return -EINVAL;
-+	}
-+
- 	if (!(nci_target->supported_protocols & (1 << protocol))) {
- 		pr_err("target does not support the requested protocol 0x%x\n",
- 		       protocol);
--- 
-2.41.0
+But exactly because enums can act very differently depending on
+compiler options (and some of those may have different defaults on
+different architectures), we should never ever have a bare 'enum' as
+part of a structure in any UAPI.
 
+In fact, having an enum as a bitfield is much better for that case.
+
+Doing a quick grep shows that sadly people haven't realized that.
+
+Now: using -fshort-enum can break a _lot_ of libraries exactly for
+this kind of reason, so the kernel isn't unusual, and I don't know of
+anybody who actually uses -fshort-enum. I'm mentioning -fshort-enum
+not because it's likely to be used, but mainly because it's an easy
+way to show some issues.
+
+You can get very similar issues by just having unusual enum values.  Doing
+
+   enum mynum { val = 0x80000000 };
+
+does something special too.
+
+I leave it to the reader to figure out, but as a hint it's basically
+exactly the same issue as I was trying to show with my crazy
+-fshort-enum example.
+
+              Linus
