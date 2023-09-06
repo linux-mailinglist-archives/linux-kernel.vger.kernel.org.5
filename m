@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E56D7942BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDF27942BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 20:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241416AbjIFSGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 14:06:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49088 "EHLO
+        id S243644AbjIFSGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 14:06:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239064AbjIFSGJ (ORCPT
+        with ESMTP id S233808AbjIFSGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 14:06:09 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8966CE9
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 11:06:03 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68c0d4cc3a4so116509b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 11:06:03 -0700 (PDT)
+        Wed, 6 Sep 2023 14:06:49 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36FECE9
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 11:06:45 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-5712b68dbc0so55716eaf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 11:06:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694023563; x=1694628363; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O40bo/gxfF03whhMFXEqEedi7R6NFirN94zwY0Dca7U=;
-        b=ldH5bOXPn4zFGDFzW5RJ6cSXi53LCn7GKh/nbeYhWXeP7hvXu5WhUNCM0XmyfWo0GQ
-         z2JACE9BK5jYzyURVNCafSdVcfi/iFTDyny2gmSFPEITZTpwSgX0gWjJH0QoGIv7bjyD
-         72fDzimiSxi5I/4TSKrcfJIUjNAWBW6vO8qTw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694023563; x=1694628363;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1694023605; x=1694628405; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=O40bo/gxfF03whhMFXEqEedi7R6NFirN94zwY0Dca7U=;
-        b=XHLneWldZqVSfqdpM1MaHuL8dgF0yU+tdGCu2LfFpmyLwE6HE0tbfdckVRFbLx4kSj
-         TXszCc1F1+fmYmdl1k1RSNy/tbTt4VsGJU5P/JT159FOSpf7UHnfppzExi/v4IOeOKpy
-         GuhT3BIZqaTVjA7b26s0+jFa+pb6EkbSm8u3bKE8FCE9xOmBSaw1ms3eXhuJY2zn0H+B
-         GVrSwxeGOaDhlkcSGFl9zAhQtImHSc2zqlsEZ/+J1nqbt/tQaePak9H51GS4PUv95WVm
-         zovf1aJVau/5tIlEA3JDCjzJfH1bmWL3K/tvi1Z5sHiulGC7lSlw6R4PZLwxbnQxH5VJ
-         3Exw==
-X-Gm-Message-State: AOJu0YyFpW+/ZcbjFMZG0VbzPxRag+VXNJLOw/XCVhDNr0sYENOqaZuW
-        5EEyGdBajUz1JdG+jQakzq/Q0g==
-X-Google-Smtp-Source: AGHT+IFVidGBv05UhqX2YIvVWb0IhPX+FPDQhL5+tVhZ0nsxBP5ZEoBlEwgCMn0DOZzFYA3QvqJ9WQ==
-X-Received: by 2002:a05:6a00:80c:b0:68a:55ff:3a02 with SMTP id m12-20020a056a00080c00b0068a55ff3a02mr17550041pfk.18.1694023563375;
-        Wed, 06 Sep 2023 11:06:03 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id fm14-20020a056a002f8e00b0068c6889e146sm11398521pfb.98.2023.09.06.11.06.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 11:06:02 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 11:06:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Song Liu <song@kernel.org>, Fangrui Song <maskray@google.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com, x86@kernel.org,
-        clang-built-linux <llvm@lists.linux.dev>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] x86/vmlinux: Fix linker fill bytes for ld.lld
-Message-ID: <202309061102.DB794AD295@keescook>
-References: <20230906175215.2236033-1-song@kernel.org>
+        bh=xnjUXTs6pn0ju4mRyE2WoYS0dp5/lgNA0GigOa0IJOE=;
+        b=JJjJp8iN5iYBayQNzOEqsXfYcRs9IGPqp/ea7uoegT2LBTyZDvQZgAZstwQYaRR6mA
+         AY/eebxPnK50rFUJmuNAoBEO9AHfMadLs45DfArcgEHYeCJeFhjjiXXegTj25ujXUJvC
+         D1r/BqK4o5262aB3SY0TqkzD5f/MkH79Ze2EFFuIFf1CkoAKgJYR2I74nz3owm4YfTdy
+         6uHmKpuD4sBBG1vgaUuWP/+zxvP4qQ3iqFVvJa5/7ufKgLEjVsOB5yknBWXlYEFF00vj
+         TITC7Av9jbMe1dUYj9cjNWQlbfjIc4Uipvw3vSksuZGLURhzgo1ywXixq2iffUB0c1Ii
+         +SmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694023605; x=1694628405;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xnjUXTs6pn0ju4mRyE2WoYS0dp5/lgNA0GigOa0IJOE=;
+        b=Ivf787Fc8qGaWjFFLfi+748UPJMSW6vhV6wH+cgpn77HAXkJB0pF7fFaZNAN3axLhA
+         xBzciDs8xZmMuLtQlCvSP30n970/OSNBF4CmP14DYS/9Zs4Car9RM1AFrgdfkMINoQ8F
+         scHgPcGyyiQ2N698oKCUrh6BYU3YZ8YflZSrgJOyTwM7ecdeis1MBpUaV9Hzr3DMzj6A
+         tyrZFIIIDUpRm9To/rs2XewuuR2Mc1OtAQ9e74jgg5q7lZNfu2XbsiLoTzgBRcV5fvD1
+         8yqDuLFHrJ51VTB6f1Xf8TAEUuUOFsj/enmP84AM867rANkicab78kwl9ujsrkhb9e6E
+         OmUg==
+X-Gm-Message-State: AOJu0Yy5rLE8s15TKQwRGbWJ3qAZ4/YVOs9SBJOMVDd8Z9xWl24QK2I3
+        +6lb7ewaENp4xj+Dz5+5AjFXNoL0LgXxUBjil/A=
+X-Google-Smtp-Source: AGHT+IHnL4YXufn9orOCAMqeVB24UhQCchcrVK0uam4MUJbJywzc+ivZOogndzFAOBRpb/+5dkxeUeS0OnRV6OQuMLI=
+X-Received: by 2002:a05:6808:3089:b0:39c:93ba:cb92 with SMTP id
+ bl9-20020a056808308900b0039c93bacb92mr21643536oib.8.1694023605202; Wed, 06
+ Sep 2023 11:06:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230906175215.2236033-1-song@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+References: <20230903184607.272198-1-jim.cromie@gmail.com> <20230903184607.272198-4-jim.cromie@gmail.com>
+ <ZPV6CMBlDWriMyva@ashyti-mobl2.lan> <ZPir+7VYXcKv117q@intel.com>
+In-Reply-To: <ZPir+7VYXcKv117q@intel.com>
+From:   jim.cromie@gmail.com
+Date:   Wed, 6 Sep 2023 12:06:18 -0600
+Message-ID: <CAJfuBxyRn_FQtGmSiJjtOuJDs+40TPWcjW+JA5u8K-FSrDTHUA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/6] drm_dbg: add trailing newlines to msgs
+To:     Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     Andi Shyti <andi.shyti@linux.intel.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, daniel.vetter@ffwll.ch,
+        daniel@ffwll.ch, jani.nikula@intel.com,
+        ville.syrjala@linux.intel.com, seanpaul@chromium.org,
+        robdclark@gmail.com, Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Imre Deak <imre.deak@intel.com>,
+        Radhakrishna Sripada <radhakrishna.sripada@intel.com>,
+        Mika Kahola <mika.kahola@intel.com>,
+        =?UTF-8?Q?Jos=C3=A9_Roberto_de_Souza?= <jose.souza@intel.com>,
+        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Matthew Auld <matthew.auld@intel.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Fei Yang <fei.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,38 +89,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 10:52:15AM -0700, Song Liu wrote:
-> With ":text =0xcccc", ld.lld fills unused text area with 0xcccc0000.
-> Example objdump -D output:
-> 
-> ffffffff82b04203:       00 00                   add    %al,(%rax)
-> ffffffff82b04205:       cc                      int3
-> ffffffff82b04206:       cc                      int3
-> ffffffff82b04207:       00 00                   add    %al,(%rax)
-> ffffffff82b04209:       cc                      int3
-> ffffffff82b0420a:       cc                      int3
-> 
-> Replace it with ":text =0xcccccccc", so we get the following instead:
-> 
-> ffffffff82b04203:       cc                      int3
-> ffffffff82b04204:       cc                      int3
-> ffffffff82b04205:       cc                      int3
-> ffffffff82b04206:       cc                      int3
-> ffffffff82b04207:       cc                      int3
-> ffffffff82b04208:       cc                      int3
-> 
-> gcc/ld doesn't seem to have the same issue. The generated code stays the
-> same for gcc/ld.
-> 
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: x86@kernel.org
-> Signed-off-by: Song Liu <song@kernel.org>
+On Wed, Sep 6, 2023 at 10:42=E2=80=AFAM Rodrigo Vivi <rodrigo.vivi@intel.co=
+m> wrote:
+>
+> On Mon, Sep 04, 2023 at 08:32:40AM +0200, Andi Shyti wrote:
+> > Hi Jim,
+> >
+> > On Sun, Sep 03, 2023 at 12:46:00PM -0600, Jim Cromie wrote:
+> > > By at least strong convention, a print-buffer's trailing newline says
+> > > "message complete, send it".  The exception (no TNL, followed by a ca=
+ll
+> > > to pr_cont) proves the general rule.
+> > >
+> > > Most DRM.debug calls already comport with this: 207 DRM_DEV_DEBUG,
+> > > 1288 drm_dbg.  Clean up the remainders, in maintainer sized chunks.
+> > >
+> > > No functional changes.
+> > >
+> > > Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> >
+> > Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com>
+>
+> I pushed this i915 one to our drm-intel-next.
+> While doing it I have changed the subject to make it clear
+> this is 'drm/i915:'.
+>
+> I believe you should do similar change to all the other patches
+> to make it clear in the subject about which domain that commit
+> is touching... instead of only 'drm_dbg'.
+>
 
-Ah! Thanks for the catch... I wonder if ld.lld should be fixed too? My
-understanding was that ":text =...." was defined as being explicitly
-u16?
+I will do that, and drop the one you've already pushed.
+Thank you both.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
 
--- 
-Kees Cook
+> i.e.: 183670347b06 ("drm/i915: add trailing newlines to msgs")
+> https://cgit.freedesktop.org/drm-intel/commit/?h=3Ddrm-intel-next&id=3D18=
+3670347b060521920a81f84ff7f10e227ebe05
+>
+> Thanks for the patch,
+> Rodrigo.
+>
+> >
+> > Andi
