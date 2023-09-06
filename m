@@ -2,268 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD86793D4C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E14793D55
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240928AbjIFNAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 09:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
+        id S241002AbjIFNCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 09:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240985AbjIFNAq (ORCPT
+        with ESMTP id S240989AbjIFNCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 09:00:46 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4641739
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 06:00:42 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D66AC66003B2;
-        Wed,  6 Sep 2023 14:00:40 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694005241;
-        bh=YqANrmzT0fsOV1NhzZb9MY3bXARvZq5K0v7+4viG1aU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FzSnaH5Q3MsBpRDDuUQW2p9Vh41d3artnJEp8aiSySBC0XM5b36VA/Sn9wsH0u6rN
-         JcZTKtQyWG+Ywzg+Qje8Y60bNWnpNx51Y+ol8UUsziRjFBvS25dY0VOtEmbCyFlSGu
-         zz9hZN0j+6u4cGXem+TSzqUiigdfD15aVlxP29GNTgVn6/LXcVmfXjf3c45giytCZ5
-         knUy94AtJwO7mgFLing/pTrkGxt7npkaEA4W1AYnDzCB28QLzDAM5DFIDWtXPwElhJ
-         1EPuiSY/7F7fkfsehLgrY4QkY4Eli+zqwZpH89OXlJj6EHGrgzDjhw7UCzAvtkXXNz
-         I0VERbRgzlsNg==
-Date:   Wed, 6 Sep 2023 15:00:38 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Thomas =?UTF-8?B?SGVsbHN0csO2bQ==?= 
-        <thomas.hellstrom@linux.intel.com>
-Cc:     Danilo Krummrich <dakr@redhat.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Francois Dugast <francois.dugast@intel.com>,
-        linux-kernel@vger.kernel.org, Oak Zeng <oak.zeng@intel.com>,
-        dri-devel@lists.freedesktop.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-xe@lists.freedesktop.org
-Subject: Re: [PATCH v2] Documentation/gpu: VM_BIND locking document
-Message-ID: <20230906150038.30936ae2@collabora.com>
-In-Reply-To: <e44c93dd-68b2-b8af-6f9a-4d7c6370f105@linux.intel.com>
-References: <20230816091547.2982-1-thomas.hellstrom@linux.intel.com>
-        <ZPeGld0mBwbWptV9@cassiopeiae>
-        <4e7a2b2e-1ab5-09b6-b2de-9b2a82a8a32e@linux.intel.com>
-        <1c6cbf97-7e85-a48f-9e6a-ed716ab5b05d@redhat.com>
-        <1a2965a4-943f-0ba7-b082-155d75b94d59@linux.intel.com>
-        <20230906130929.74e3c6cc@collabora.com>
-        <e44c93dd-68b2-b8af-6f9a-4d7c6370f105@linux.intel.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Wed, 6 Sep 2023 09:02:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4769510E2
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 06:01:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694005271;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jq+8PcpSaMIH109h2ms6Ch2qLkD8AvXLZTAK4J2Qqds=;
+        b=gpG3GYLKxZWy5y+MjNCsey6HvRT3Bmv/E6O9c6IIK3GixbWDSMVL8aGrMRoV3nU5Voqhgb
+        Z6uH8/Z6bpwNHy/AP9Lp/BMWPhKFXUBpPI8etBBoQcwSQLPMTYXpIIjpnvU21Hm/2P8qfI
+        euvOqf2a2jyemW/T/n3nTisQrdtJuwY=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-528-c94FuLPiOuWQhAHQnIAIpA-1; Wed, 06 Sep 2023 09:01:06 -0400
+X-MC-Unique: c94FuLPiOuWQhAHQnIAIpA-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2bd09fdec5cso41830981fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 06:01:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694005262; x=1694610062;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jq+8PcpSaMIH109h2ms6Ch2qLkD8AvXLZTAK4J2Qqds=;
+        b=UyHdSd/lOHPd9fK9wciXAjQwn7jJzd7/VLoQTxNsGgalcj3BW1HHfdDIMTRPbsIFF+
+         MGPZhI9GbQCgoTB1OfanLtydXVTskuQUJAQCjHLG+yXOajxit3tr6nxjk9x+xuicY7YY
+         uhbqIFqFKSaPGqThbvdV6VFWNlSgkZAEpcR3yLjM7wC6UtqpgxCV9QQkpO/NBUny8Mwc
+         ebk5Peg2UyOaLv7qgJ4w3D1nYqLQCbiPZrHSWgoS7I0VkpaVGTK6YZeEXXl3xEFK6X4x
+         bjsH0t7koEbaRIaQUMUoXj1fA7wtcGAtPqeQrT9QVcpmRc3eDIGtYs2/K1f9+xu3xUFi
+         tvPw==
+X-Gm-Message-State: AOJu0YxGx71FH8zmtEAMmNO6m4a9HZPCYzaZd7liuD43H1epathOKmOJ
+        1GN9wAkittx4IKBYVdfrJWMEj0oRZE/L0OluYASu/ecPXpGmNWvZK7Fd/1MIV+Rbcguh+OQmjRd
+        eA9gEZ+YT5uf8GpEpdwmoDD5L
+X-Received: by 2002:a2e:a177:0:b0:2b9:f27f:e491 with SMTP id u23-20020a2ea177000000b002b9f27fe491mr2127407ljl.42.1694005262178;
+        Wed, 06 Sep 2023 06:01:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFoCrhgQkmlwcuKUAbvs9N0/AF1rSZUAm6EpcuVxlW1DjMIUJBTwNx+XHFiQUv6PYKtfefkVg==
+X-Received: by 2002:a2e:a177:0:b0:2b9:f27f:e491 with SMTP id u23-20020a2ea177000000b002b9f27fe491mr2127375ljl.42.1694005261682;
+        Wed, 06 Sep 2023 06:01:01 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id t1-20020a170906268100b00993150e5325sm9058355ejc.60.2023.09.06.06.01.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 06:01:01 -0700 (PDT)
+Message-ID: <8f51b4a8-bb9c-4918-61a8-4ab402da1ed0@redhat.com>
+Date:   Wed, 6 Sep 2023 15:01:00 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFT PATCH 11/21] platform: x86: android-tablets: don't access
+ GPIOLIB private members
+Content-Language: en-US, nl
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dipen Patel <dipenp@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Gross <markgross@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
+        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20230905185309.131295-1-brgl@bgdev.pl>
+ <20230905185309.131295-12-brgl@bgdev.pl>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230905185309.131295-12-brgl@bgdev.pl>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Sep 2023 13:57:03 +0200
-Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
+Hi Bartosz,
 
-> Hi, Boris
->=20
-> On 9/6/23 13:09, Boris Brezillon wrote:
-> > On Wed, 6 Sep 2023 10:32:24 +0200
-> > Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
-> >
-> > =20
-> >>>>>> +Introducing external (or shared) buffer objects
-> >>>>>> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> >>>>>> +
-> >>>>>> +Since shared buffer objects may be shared by multiple gpu_vm's th=
-ey
-> >>>>>> +can't share their reservation object with a single gpu_vm, but
-> >>>>>> will rather
-> >>>>>> +have a reservation object of their own. The shared objects bound =
-to a
-> >>>>>> +gpu_vm using one or many
-> >>>>>> +gpu_vmas are therefore typically put on a per-gpu_vm list which is
-> >>>>>> +protected by the gpu_vm lock. One could in theory protect it also
-> >>>>>> with
-> >>>>>> +the ``gpu_vm->resv``, but since the list of dma_resvs to take is
-> >>>>>> typically
-> >>>>>> +built before the ``gpu_vm->resv`` is locked due to a limitation in
-> >>>>>> +the current locking helpers, that is typically not done. Also see
-> >>>>>> +below for userptr gpu_vmas.
-> >>>>>> +
-> >>>>>> +At eviction time we now need to invalidate *all* gpu_vmas of a sh=
-ared
-> >>>>>> +object, but we can no longer be certain that we hold the gpu_vm's
-> >>>>>> +dma_resv of all the object's gpu_vmas. We can only be certain tha=
-t we =20
-> >>>>> I need to think a bit more about locking of extobj and evicted
-> >>>>> object tracking
-> >>>>> in the case of processing 'drm_gpuva_ops' directly through callbacks
-> >>>>> within the
-> >>>>> fence signalling critical path as mentioend in [1].
-> >>>>>
-> >>>>> In order to support that, we'd need to protect extobjs with a
-> >>>>> separate lock,
-> >>>>> and while iterating extobjs to acquire the dma-resv lock drop the
-> >>>>> lock within
-> >>>>> the loop before we actually acquire the dma-resv lock. Maple tree
-> >>>>> supports that
-> >>>>> already and this can be fully done within the GPUVA manager; no need
-> >>>>> for the
-> >>>>> driver to care about that. =20
-> >>>> So do I understand correctly that this because you want to update the
-> >>>> gpuvm state while operations are progressing asynchronously?
-> >>>>
-> >>>> If so, I wonder whether that could really be done? For example to
-> >>>> allocate enough memory for page-tables etc, you need to know the
-> >>>> details of the operations at IOCTL execution time, and to know the
-> >>>> details you need to know the state from the previous operation? =20
-> >>>
-> >>> Right, sync and async bind can't run fully concurrently, but you could
-> >>> "inject" a
-> >>> sync one between two async ones such that the sync ones executed from
-> >>> the IOCTL
-> >>> directly while async execution is stalled meanwhile. This would be
-> >>> possible because
-> >>> the actual drm_gpuva_ops would be calculated within the async
-> >>> execution path rather
-> >>> than in the IOCTL. But yes, page-table management must be desinged to
-> >>> support that. =20
-> > FWIW, the panthor driver is designed this way (note that I'm not
-> > supporting GEM eviction yet, so there might be subtleties I missed). =20
->=20
-> The problem is that once you've published your VM_BIND out-fence, any=20
-> code path required to signal that fence may notallocate memory nor or=20
-> grab any locks that allows allocating memory while held including=20
-> dma_resv locks, and that means all required page-table memory needs to=20
-> be allocated synchronously in the IOCTL,
+On 9/5/23 20:52, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> We're slowly removing cases of abuse of the GPIOLIB public API. One of
+> the biggest issues is looking up and accessing struct gpio_chip whose
+> life-time is tied to the provider and which can disappear from under any
+> user at any given moment. We have provided new interfaces that use the
+> opaque struct gpio_device which is reference counted and will soon be
+> thorougly protected with appropriate locking.
+> 
+> Stop using old interfaces in this driver and switch to safer
+> alternatives.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Yep, that's already what I do, by over-provisioning for the worst case
-scenario (page table tree is empty), and returning unused pages after
-the operation is done.
+First of all sorry for the issues this hack-ish kernel module
+is causing for cleaning up gpiolib APIs.
 
-> and all evicted bos need to be=20
-> made resident in the IOCTL,
+I don't know how close a look you took at the code, so first of
+all let me try to briefly explain what this hackish kernel module
+is for:
 
-Yep, I'm pinning memory to BOs in that path too.
+There are some x86_64/ACPI tablets which shipped with Android as
+factory OS. On these tablets the device-specific (BSP style)
+kernel has things like the touchscreen driver simply having
+a hardcoded I2C bus-number + I2C client address. Combined
+with also hardcoded GPIO numbers (using the old number base APIs)
+for any GPIOs it needs.
 
-> and at least in the xe driver the amount of=20
-> memory we need to allocate depends on the vm state, so we can't really=20
-> update the vm state asynchronously either.
+So the original Android kernels do not need the devices
+to be properly described in ACPI and the ACPI tables are
+just one big copy and paste job from some BSP which do
+not accurately describe the hardware at all.
 
-For Mali, we can calculate the maximum amount of pages we'll need for a
-MAP operation, by assuming the page table is empty. Then it's just a
-matter of returning unused pages to a fast-alloc pool so we can
-speed-up further page table allocations (we're using a kmem_cache here,
-since the page table update is done by the CPU and memory is shared on
-Arm, but there's no reason you can't have your own cache
-implementation).
+x86-android-tablets.ko identifies affected models by their
+DMI strings and then manually instantiates things like
+i2c-clients for the touchscreen, accelerometer and also
+other stuff. Yes this is ugly but it allows mainline kernels
+to run pretty well on these devices since other then
+the messed up ACPI tables these are pretty standard x86/ACPI
+tablets.
 
->=20
-> But as long as any async binding work required for signalling the=20
-> VM_BIND out-fence is properly annotated with=20
-> dma_fence_begin_signalling() and dma_fence_end_signalling() and there=20
-> aren't any lockdep splats, things should be good. It would trigger on=20
-> both memory allocation and attempts to grab a dma_resv lock.
+I hope this explains the hacks, now on to the problems
+these are causing:
 
-I have dma_fence_{begin,end}_signalling() annotations in the
-::run_job() path, and no lockdep complaint spotted so far.
+> ---
+>  .../platform/x86/x86-android-tablets/core.c   | 38 ++++++++++---------
+>  1 file changed, 20 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/x86-android-tablets/core.c b/drivers/platform/x86/x86-android-tablets/core.c
+> index 2fd6060a31bb..687f84cd193c 100644
+> --- a/drivers/platform/x86/x86-android-tablets/core.c
+> +++ b/drivers/platform/x86/x86-android-tablets/core.c
+> @@ -12,6 +12,7 @@
+>  
+>  #include <linux/acpi.h>
+>  #include <linux/dmi.h>
+> +#include <linux/gpio/consumer.h>
+>  #include <linux/gpio/driver.h>
+>  #include <linux/gpio/machine.h>
+>  #include <linux/irq.h>
+> @@ -21,27 +22,28 @@
+>  #include <linux/string.h>
+>  
+>  #include "x86-android-tablets.h"
+> -/* For gpiochip_get_desc() which is EXPORT_SYMBOL_GPL() */
+> -#include "../../../gpio/gpiolib.h"
+> -#include "../../../gpio/gpiolib-acpi.h"
+> -
+> -static int gpiochip_find_match_label(struct gpio_chip *gc, void *data)
+> -{
+> -	return gc->label && !strcmp(gc->label, data);
+> -}
+>  
+>  int x86_android_tablet_get_gpiod(const char *label, int pin, struct gpio_desc **desc)
+>  {
+> +	struct gpio_device *gdev;
+>  	struct gpio_desc *gpiod;
+> -	struct gpio_chip *chip;
+>  
+> -	chip = gpiochip_find((void *)label, gpiochip_find_match_label);
+> -	if (!chip) {
+> -		pr_err("error cannot find GPIO chip %s\n", label);
+> +	/*
+> +	 * FIXME: handle GPIOs correctly! This driver should really use struct
+> +	 * device and GPIO lookup tables.
+> +	 *
+> +	 * WONTDO: We do leak this reference, but the whole approach to getting
+> +	 * GPIOs in this driver is such an abuse of the GPIOLIB API that it
+> +	 * doesn't make it much worse and it's the only way to keep the
+> +	 * interrupt requested later functional...
+> +	 */
+> +	gdev = gpio_device_find_by_label(label);
+> +	if (!gdev) {
+> +		pr_err("error cannot find GPIO device %s\n", label);
+>  		return -ENODEV;
+>  	}
+>  
+> -	gpiod = gpiochip_get_desc(chip, pin);
+> +	gpiod = gpio_device_get_desc(gdev, pin);
+>  	if (IS_ERR(gpiod)) {
+>  		pr_err("error %ld getting GPIO %s %d\n", PTR_ERR(gpiod), label, pin);
+>  		return PTR_ERR(gpiod);
 
->=20
->=20
-> > =20
-> >> OK, well one of the main motivations for Xe is to be able to pipeline
-> >> interleaving binds and execs if needed, like so:
-> >>
-> >> - Bind vmas for scene 1.
-> >> - Submit scene 1.
-> >> - Unbind vmas for scene 1.
-> >> - Bind vmas for scene 2.
-> >> - Submit scene 2.
-> >> - Unbind vmas for scene 2.
-> >>
-> >> And being able to *submit* all of the above while the async binding of
-> >> vmas for scene (step 1) has not yet completed.
-> >> I can't really see how this could be done, while obeying dma-fence
-> >> rules, unless state is updated synchronously while submitting? =20
-> > The idea in this case is to detect when a GPU job dependency is a
-> > VM_BIND out-fence, turn drm_sched_fence->parent into an
-> > xxx_vm_bind_job_fence object that's holding the GEM that's about to be
-> > mapped (AFAICT, we don't need to do anything for unmap operations), and
-> > then add our GPU job fence to this BO. This should not only guarantee
-> > that the GEMs we depend on are mapped before the GPU job is executed
-> > (the fence wait does that), but also that such yet-to-be-mapped GEMs
-> > won't be evicted just after they've been mapped and before the GPU had
-> > a chance to execute (unless I'm missing something, adding our GPU job
-> > fence to the BO being targeted by a pending VM_BIND(async,map) operation
-> > solves this problem).
 
-It's not exactly that, because we'd need to add a GEMs of all the
-pending VM_BIND(map) jobs that come before the expressed dependency, not
-just the one attached to the dependency itself. But after chatting with
-Danilo, I realized we might not even need to track the GEMs being
-mapped at the fence level if we call drm_gpuva_extobj_insert() in the
-ioctl(VM_BIND) path:
+So rather then the above I think what needs to happen here
+(and I can hopefully make some time for that this weekend) is:
 
-- drm_gpuva_extobj_insert() will make sure the GEM is added to
-  the ext-object map even before it's actually mapped to the VM (for
-  private GEMs, it doesn't matter, because they are using the VM resv,
-  so any private GEM mapped will automatically receive the VM resv
-  updates).
+1. Have the x86-android-tablets code instantiate a
+   "x86-android-tablets" platform-dev
+2. Have the code generate a gpiod_lookup_table for all GPIOs
+   for which it currently uses x86_android_tablet_get_gpiod()
+   with the .dev_id set to "x86-android-tablets"
+3. Use regular gpiod_get() on the "x86-android-tablets" pdev
+   to get the desc.
 
-Now, when a GPU job is queued, we do all the VM GEM preparation, which
-includes the following steps:
+I think this should solve all the issues with 
+x86_android_tablet_get_gpiod() poking inside
+gpiolib external since now it is only using
+public gpiolib APIs, right ?
 
-- drm_gpuva_manager_validate() will make already-bound-but-evicted GEMs
-  resident
-- Iterate over all ext-objs to add our fence (I'm skipping the slot
-  reservation step that's implied). Because drm_gpuva_extobj_insert()
-  was called early, we also get all the GEMs that are not yet mapped,
-  but are about to be mapped. This means they won't be evicted until
-  after our job is done
-- add our fence to the VM resv
+One question about 2. there are 2 ways to do this:
 
-Unless I'm missing something, this should guarantee that all GEMs are
-resident and mapped when the job is executed.
+i. Have the module_init() function loop over all
+x86_dev_info members which will result in calling
+x86_android_tablet_get_gpiod() and have it generate
+one big gpiod_lookup_table for all GPIOs needed
+in one go. At which point x86_android_tablet_get_gpiod()
+goes away and can be directly replaced with gpiod_get()
+calls on the pdev.
 
->=20
-> Yes, we're essentially doing the same. The issue here is that when we,=20
-> for example *submit* Bind vmas for scene 2,
-> we need to know how much page-table memory to allocate,
+ii. Keep x86_android_tablet_get_gpiod() and have it
+generate a gpiod_lookup_table with just 1 entry for
+the GPIO which its caller wants. Register the lookup
+table, do the gpiod_get() and then immediately
+unregister the lookup table again.
 
-This is solved with over-provisioning in our case.
+ii. Would be easier for me to implement, especially
+since there is also some custom (board specific)
+init code calling x86_android_tablet_get_gpiod()
+which would require some special handling for i.
 
-> and what BOs to=20
-> make resident to be able to publish the out-fence.
+OTOH I guess some people will consider ii. somewhat
+ugly, although AFAICT it is perfectly ok to use
+the gpiolib lookup APIs this way.
 
-That's basically what Danilo's latest gpuva_mgr patchset tries to
-provide generic helpers for, by exposing functions to iterate over all
-evicted GEMs (so we can make them resident) and adding a way to add
-fences to all GEMs currently bound to the VM. That leaves external GEMs
-that are about to be mapped, which, I think, is addressed by the
-solution detailed above.
+Can you please let me known if you are ok with ii,
+or if you would prefer me going with solution i. ?
 
-> That means we need to=20
-> know what the VM state would look like at the end of "Unbind vmas for=20
-> scene 1".
+That way when I can make some time to start working
+on this I can pick the preferred solution right away.
 
-Not necessarily, as long as you know all the GEMs that are currently
-mapped and those that are about to be mapped. The extobj set provides
-exactly that for external GEMs.
 
-> If the VM state is updated at submission time, that's all ok=20
-> but if it's updated at execution time, we'd have to guess what resources=
-=20
-> to pre-allocate.
 
-As long as you have enough resources pre-allocated to do the VM update
-(not saying this is easy to guess on Intel, but it's doable on Mali,
-and the page table caching makes over-provisioning not too bad, as long
-as we limit the number of in-flight VM_BIND jobs).
+> @@ -257,9 +259,9 @@ static void x86_android_tablet_cleanup(void)
+>  
+>  static __init int x86_android_tablet_init(void)
+>  {
+> +	struct gpio_device *gdev __free(gpio_device_put) = NULL;
+>  	const struct x86_dev_info *dev_info;
+>  	const struct dmi_system_id *id;
+> -	struct gpio_chip *chip;
+>  	int i, ret = 0;
+>  
+>  	id = dmi_first_match(x86_android_tablet_ids);
+> @@ -273,13 +275,13 @@ static __init int x86_android_tablet_init(void)
+>  	 * _AEI (ACPI Event Interrupt) handlers, disable these.
+>  	 */
+>  	if (dev_info->invalid_aei_gpiochip) {
+> -		chip = gpiochip_find(dev_info->invalid_aei_gpiochip,
+> -				     gpiochip_find_match_label);
+> -		if (!chip) {
+> +		gdev = gpio_device_find_by_label(
+> +				dev_info->invalid_aei_gpiochip);
+> +		if (!gdev) {
+>  			pr_err("error cannot find GPIO chip %s\n", dev_info->invalid_aei_gpiochip);
+>  			return -ENODEV;
+>  		}
+> -		acpi_gpiochip_free_interrupts(chip);
+> +		acpi_gpio_device_free_interrupts(gdev);
+>  	}
+>  
+>  	/*
+
+After some recent improvements there is only 1 board left which sets
+dev_info->invalid_aei_gpiochip and that can easily be replaced with
+with adding 1 extra entry to gpiolib_acpi_quirks[] inside
+drivers/gpio/gpiolib-acpi.c .
+
+So I believe the right solution here is to just remove
+dev_info->invalid_aei_gpiochip support for x86-android-tablets
+all together and then at least x86-android-tablets will no
+longer be making any hackish acpi_gpiochip_free_interrupts() calls.
+
+I don't want to make any promises wrt the timing, but I should
+be able to prepare a set of patches which simply removes all
+the private gpiolib API use from x86-android-tablets, so that
+you don't need to workaround that in this patch series.
+
+With some luck I can have an immutable branch with 6.6-rc1 +
+such a patch-series ready for you soon after 6.6-rc1 is
+released.
+
+Regards,
+
+Hans
+
+
+
