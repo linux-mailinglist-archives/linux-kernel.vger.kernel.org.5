@@ -2,215 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E18793E00
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4323F793E05
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239811AbjIFNsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 09:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57256 "EHLO
+        id S240380AbjIFNtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 09:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235308AbjIFNsA (ORCPT
+        with ESMTP id S233423AbjIFNtS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 09:48:00 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B3DB19A4
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 06:47:38 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-31c4d5bd69cso3266828f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 06:47:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1694008056; x=1694612856; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Y8t/IGzui+H5qdVxzJl2s3G8bPpmqSY5irt+QEZLU50=;
-        b=kkQWLbQf2mCKgOQxQpEWZFKPQpeqBJ4siVkeJihhVSlYQZ3rAm6P1u1mnOjd1zpCQ3
-         yoZn+IzZEILCyP/lOnZI0xGkxAPH5pMjeby2/ZiosygyqJC4DFrldhV5nxEQMswmiSEf
-         VOaSUe1e4fOFaaeTgh2r7OiOgz7fiXEIhNDDn3cACCUWGydSsbZ27PrK9qMK7a6jmTwE
-         pjvqYZylw1GBWKt2SmbbYhzWv3bviSrXTdDT0Y/jNduT/YNC9m1uCq7dncGLSQGJFqAK
-         TpYiekqr/C4serhSuQhzHYa3A4SgkFqhgJVKimIbIDWH44g7cf48AS/edCQhd1fEP+4f
-         LbTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694008056; x=1694612856;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y8t/IGzui+H5qdVxzJl2s3G8bPpmqSY5irt+QEZLU50=;
-        b=UV7nNx3C5FvBCq8d+d4vmw5lXbfvBq5oOAsKqrPuiTO0LcPYLUcO1GTkSpdlV2D2jz
-         WR4C2mnooqrvMXp1xk4NzaySr8uhDHxNR1AgkpKMu9PCAPOzPiBOuev0EIbF0PjYmdrn
-         rXO7N6jsN+1qbeqz8dvH5mLk6LuS/Jo5ithcM1rZWZCBHV2/PKkhgca/XURUirYtBTgn
-         265d3zlg7/kHzeof5fvJEt2vLOVmodIi+AfCvZkkELqPQnrCsxPaoEI+ZEJBEOlJMuDB
-         LTkxFQkqzAtfVr2Z4NkZzMCbv24ixhOL93L7PI74Vu+XuiqOr9VBT0R8oXPTP+HtwCrI
-         iHSQ==
-X-Gm-Message-State: AOJu0YzJddsPTgk1rUmHsQO9gjHNBwOBeT3o8GvEKiFKbBGguGB+16Nh
-        qZ6UtpfX7m+NQfoEF05vVrRPQg==
-X-Google-Smtp-Source: AGHT+IH2baeDANzYLEU+6JGXtK6JPZZwhj4Y9FCTJIRzFumqNrzyHLa/aBqci+k9LlX/9np1HUfmTQ==
-X-Received: by 2002:a5d:5087:0:b0:317:ef76:b773 with SMTP id a7-20020a5d5087000000b00317ef76b773mr2318629wrt.45.1694008056476;
-        Wed, 06 Sep 2023 06:47:36 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id x12-20020a05600c21cc00b003fed78b03b4sm19716726wmj.20.2023.09.06.06.47.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 06:47:34 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 15:47:31 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Haibo Xu <xiaobo55x@gmail.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Guo Ren <guoren@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-        wchen <waylingii@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Lei Wang <lei4.wang@intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Peter Gonda <pgonda@google.com>,
-        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        Thomas Huth <thuth@redhat.com>, Like Xu <likexu@tencent.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Michal Luczaj <mhal@rbox.co>,
-        zhang songyi <zhang.songyi@zte.com.cn>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 3/8] tools: riscv: Add header file csr.h
-Message-ID: <20230906-11348d34e52289c8f52be8f9@orel>
-References: <cover.1693659382.git.haibo1.xu@intel.com>
- <8173daae52720dbdabbd88a5d412f653e6706de1.1693659382.git.haibo1.xu@intel.com>
- <20230904-06f09083d5190fd50e53b1ea@orel>
- <CAJve8on7Yi7cDuXOVznuRdTvfUhig2hZy8g72nvnHkM7omoVAw@mail.gmail.com>
- <20230906-c35fdc0e07d2cc0f9cb93203@orel>
- <CAJve8ok-Z6VCziFj5t0=BoouZ-VLyGaqEng-dYGTFnP-CR36kw@mail.gmail.com>
+        Wed, 6 Sep 2023 09:49:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBCA6E6B;
+        Wed,  6 Sep 2023 06:49:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694008154; x=1725544154;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KPAWd+TFJubxnsFyigdchHUcDBQpqpD8+pHOHcoO3b0=;
+  b=XZHZ1CbgBXi+5lttrawwmm9HRfdiGHXOkY05Ej3OOJiQdjSVrPPkgOlZ
+   OLqNHhba/9kH6rwnQGrjjhIQ0IhWfPGwXm4ToMyvpru9nEzT1NIGPAU3u
+   ryxvoPD0O/81IMasDFliWHbyNczYPnIwm2CEjLR7z10agZe9sfr8KZFGu
+   JC1XRkIJkwAffLhIA88DL9gcwh2tql7yt2R+Vaad7XBoNybbOdT7yHiZx
+   5OgGkGrxldBjweKZYdrEw87Ic0CqIGO7djKQJLnXNTZJ0MuyIYkg941dG
+   /ysha4isczNxEAl3s/dTy4AHZ09v2+XU05G/4LOjvbs1sLt3SA6lAlPW4
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="379784344"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="379784344"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 06:49:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="856436984"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="856436984"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 06 Sep 2023 06:49:11 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qdsu5-0000Gd-2D;
+        Wed, 06 Sep 2023 13:49:09 +0000
+Date:   Wed, 6 Sep 2023 21:48:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Martino Fontana <tinozzo123@gmail.com>, djogorchock@gmail.com,
+        jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Martino Fontana <tinozzo123@gmail.com>
+Subject: Re: [PATCH v2 RESEND] HID: nintendo: cleanup LED code
+Message-ID: <202309062140.CiSKWeEO-lkp@intel.com>
+References: <20230906102831.16734-2-tinozzo123@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJve8ok-Z6VCziFj5t0=BoouZ-VLyGaqEng-dYGTFnP-CR36kw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230906102831.16734-2-tinozzo123@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 05:09:20PM +0800, Haibo Xu wrote:
-> On Wed, Sep 6, 2023 at 3:13 PM Andrew Jones <ajones@ventanamicro.com> wrote:
-> >
-> > On Wed, Sep 06, 2023 at 02:35:42PM +0800, Haibo Xu wrote:
-> > > On Mon, Sep 4, 2023 at 9:33 PM Andrew Jones <ajones@ventanamicro.com> wrote:
-> > > >
-> > > > On Sat, Sep 02, 2023 at 08:59:25PM +0800, Haibo Xu wrote:
-> > > > > Borrow the csr definitions and operations from kernel's
-> > > > > arch/riscv/include/asm/csr.h to tools/ for riscv.
-> > > > >
-> > > > > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> > > > > ---
-> > > > >  tools/arch/riscv/include/asm/csr.h | 521 +++++++++++++++++++++++++++++
-> > > > >  1 file changed, 521 insertions(+)
-> > > > >  create mode 100644 tools/arch/riscv/include/asm/csr.h
-> > > > >
-> > > > > diff --git a/tools/arch/riscv/include/asm/csr.h b/tools/arch/riscv/include/asm/csr.h
-> > > > > new file mode 100644
-> > > > > index 000000000000..4e86c82aacbd
-> > > > > --- /dev/null
-> > > > > +++ b/tools/arch/riscv/include/asm/csr.h
-> > > > > @@ -0,0 +1,521 @@
-> > > > > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > > > > +/*
-> > > > > + * Copyright (C) 2015 Regents of the University of California
-> > > > > + */
-> > > > > +
-> > > > > +#ifndef _ASM_RISCV_CSR_H
-> > > > > +#define _ASM_RISCV_CSR_H
-> > > > > +
-> > > > > +#include <linux/bits.h>
-> > > > > +
-> > > > > +/* Status register flags */
-> > > > > +#define SR_SIE               _AC(0x00000002, UL) /* Supervisor Interrupt Enable */
-> > > > > +#define SR_MIE               _AC(0x00000008, UL) /* Machine Interrupt Enable */
-> > > > > +#define SR_SPIE              _AC(0x00000020, UL) /* Previous Supervisor IE */
-> > > > > +#define SR_MPIE              _AC(0x00000080, UL) /* Previous Machine IE */
-> > > > > +#define SR_SPP               _AC(0x00000100, UL) /* Previously Supervisor */
-> > > > > +#define SR_MPP               _AC(0x00001800, UL) /* Previously Machine */
-> > > > > +#define SR_SUM               _AC(0x00040000, UL) /* Supervisor User Memory Access */
-> > > > > +
-> > > > > +#define SR_FS                _AC(0x00006000, UL) /* Floating-point Status */
-> > > > > +#define SR_FS_OFF    _AC(0x00000000, UL)
-> > > > > +#define SR_FS_INITIAL        _AC(0x00002000, UL)
-> > > > > +#define SR_FS_CLEAN  _AC(0x00004000, UL)
-> > > > > +#define SR_FS_DIRTY  _AC(0x00006000, UL)
-> > > > > +
-> > > > > +#define SR_VS                _AC(0x00000600, UL) /* Vector Status */
-> > > > > +#define SR_VS_OFF    _AC(0x00000000, UL)
-> > > > > +#define SR_VS_INITIAL        _AC(0x00000200, UL)
-> > > > > +#define SR_VS_CLEAN  _AC(0x00000400, UL)
-> > > > > +#define SR_VS_DIRTY  _AC(0x00000600, UL)
-> > > > > +
-> > > > > +#define SR_XS                _AC(0x00018000, UL) /* Extension Status */
-> > > > > +#define SR_XS_OFF    _AC(0x00000000, UL)
-> > > > > +#define SR_XS_INITIAL        _AC(0x00008000, UL)
-> > > > > +#define SR_XS_CLEAN  _AC(0x00010000, UL)
-> > > > > +#define SR_XS_DIRTY  _AC(0x00018000, UL)
-> > > > > +
-> > > > > +#define SR_FS_VS     (SR_FS | SR_VS) /* Vector and Floating-Point Unit */
-> > > > > +
-> > > > > +#ifndef CONFIG_64BIT
-> > > >
-> > > > How do we ensure CONFIG_64BIT is set?
-> > > >
-> > >
-> > > Currently, no explicit checking for this.
-> > > Shall we add a gatekeeper in this file to ensure it is set?
-> >
-> > Not in this file, since this file is shared by all the tools and...
-> >
-> > >
-> > > #ifndef CONFIG_64BIT
-> > > #error "CONFIG_64BIT was not set"
-> > > #endif
-> >
-> > ...we'll surely hit this error right now since nothing is setting
-> > CONFIG_64BIT when compiling KVM selftests.
-> >
-> > We need to define CONFIG_64BIT in the build somewhere prior to any
-> > headers which depend on it being included. Maybe we can simply
-> > add -DCONFIG_64BIT to CFLAGS, since all KVM selftests supported
-> > architectures are 64-bit.
-> >
-> 
-> Make sense! Another option can be just add "#define CONFIG_64BIT" at
-> the begin of csr.h
+Hi Martino,
 
-Nope, other tools/tests may want to include csr.h someday and they may or
-may not be targeting 64-bit. They'll need to appropriately set
-CONFIG_64BIT themselves. We could require
+kernel test robot noticed the following build errors:
 
-#define CONFIG_64BIT
-#include <asm/csr.h>
+[auto build test ERROR on hid/for-next]
+[also build test ERROR on linus/master v6.5 next-20230906]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-everywhere we include it, but that's error prone since it'll get forgotten
-and nothing will complain unless a define which isn't also present in
-!CONFIG_64BIT is used.
+url:    https://github.com/intel-lab-lkp/linux/commits/Martino-Fontana/HID-nintendo-cleanup-LED-code/20230906-183111
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-next
+patch link:    https://lore.kernel.org/r/20230906102831.16734-2-tinozzo123%40gmail.com
+patch subject: [PATCH v2 RESEND] HID: nintendo: cleanup LED code
+config: parisc-randconfig-r011-20230906 (https://download.01.org/0day-ci/archive/20230906/202309062140.CiSKWeEO-lkp@intel.com/config)
+compiler: hppa-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230906/202309062140.CiSKWeEO-lkp@intel.com/reproduce)
 
-Thanks,
-drew
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309062140.CiSKWeEO-lkp@intel.com/
+
+All error/warnings (new ones prefixed by >>):
+
+   drivers/hid/hid-nintendo.c: In function 'joycon_leds_create':
+>> drivers/hid/hid-nintendo.c:1954:17: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+    1954 |                 if (ret)
+         |                 ^~
+   drivers/hid/hid-nintendo.c:1956:25: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+    1956 |                         return ret;
+         |                         ^~~~~~
+   drivers/hid/hid-nintendo.c:1986:17: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+    1986 |                 if (ret)
+         |                 ^~
+   drivers/hid/hid-nintendo.c:1988:25: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+    1988 |                         return ret
+         |                         ^~~~~~
+>> drivers/hid/hid-nintendo.c:1988:35: error: expected ';' before '}' token
+    1988 |                         return ret
+         |                                   ^
+         |                                   ;
+    1989 |         }
+         |         ~                          
+
+
+vim +1988 drivers/hid/hid-nintendo.c
+
+  1906	
+  1907	static DEFINE_SPINLOCK(joycon_input_num_spinlock);
+  1908	static int joycon_leds_create(struct joycon_ctlr *ctlr)
+  1909	{
+  1910		struct hid_device *hdev = ctlr->hdev;
+  1911		struct device *dev = &hdev->dev;
+  1912		const char *d_name = dev_name(dev);
+  1913		struct led_classdev *led;
+  1914		char *name;
+  1915		int ret;
+  1916		int i;
+  1917		unsigned long flags;
+  1918		int player_led_number;
+  1919		static int input_num;
+  1920	
+  1921		/* Set the player leds based on controller number */
+  1922		spin_lock_irqsave(&joycon_input_num_spinlock, flags);
+  1923		player_led_number = input_num++ % JC_NUM_LEDS;
+  1924		spin_unlock_irqrestore(&joycon_input_num_spinlock, flags);
+  1925	
+  1926		/* configure the player LEDs */
+  1927		for (i = 0; i < JC_NUM_LEDS; i++) {
+  1928			name = devm_kasprintf(dev, GFP_KERNEL, "%s:%s:%s",
+  1929					      d_name,
+  1930					      "green",
+  1931					      joycon_player_led_names[i]);
+  1932			if (!name)
+  1933				return -ENOMEM;
+  1934	
+  1935			led = &ctlr->leds[i];
+  1936			led->name = name;
+  1937			led->brightness = (i == player_led_number) ? 1 : 0;
+  1938			led->max_brightness = 1;
+  1939			led->brightness_set_blocking =
+  1940						joycon_player_led_brightness_set;
+  1941			led->flags = LED_CORE_SUSPENDRESUME | LED_HW_PLUGGABLE;
+  1942		}
+  1943		mutex_lock(&ctlr->output_mutex);
+  1944		ret = joycon_set_player_leds(ctlr, 0, 0x1 << player_led_number);
+  1945		mutex_unlock(&ctlr->output_mutex);
+  1946		if (ret) {
+  1947			hid_warn(hdev, "Failed to set players LEDs, skipping registration; ret=%d\n", ret);
+  1948			goto home_led;
+  1949		}
+  1950	
+  1951		for (i = 0; i < JC_NUM_LEDS; i++) {
+  1952			led = &ctlr->leds[i];
+  1953			ret = devm_led_classdev_register(&hdev->dev, led);
+> 1954			if (ret)
+  1955				hid_err(hdev, "Failed to register player %d LED; ret=%d\n", i + 1, ret);
+> 1956				return ret;
+  1957		}
+  1958	
+  1959	home_led:
+  1960		/* configure the home LED */
+  1961		if (jc_type_has_right(ctlr)) {
+  1962			name = devm_kasprintf(dev, GFP_KERNEL, "%s:%s:%s",
+  1963					      d_name,
+  1964					      "blue",
+  1965					      LED_FUNCTION_PLAYER5);
+  1966			if (!name)
+  1967				return -ENOMEM;
+  1968	
+  1969			led = &ctlr->home_led;
+  1970			led->name = name;
+  1971			led->brightness = 0;
+  1972			led->max_brightness = 0xF;
+  1973			led->brightness_set_blocking = joycon_home_led_brightness_set;
+  1974			led->flags = LED_CORE_SUSPENDRESUME | LED_HW_PLUGGABLE;
+  1975	
+  1976			/* Set the home LED to 0 as default state */
+  1977			mutex_lock(&ctlr->output_mutex);
+  1978			ret = joycon_set_home_led(ctlr, 0);
+  1979			mutex_unlock(&ctlr->output_mutex);
+  1980			if (ret) {
+  1981				hid_warn(hdev, "Failed to set home LED, skipping registration; ret=%d\n", ret);
+  1982				return 0;
+  1983			}
+  1984	
+  1985			ret = devm_led_classdev_register(&hdev->dev, led);
+  1986			if (ret)
+  1987				hid_err(hdev, "Failed to register home LED; ret=%d\n", ret);
+> 1988				return ret
+  1989		}
+  1990	
+  1991		return 0;
+  1992	}
+  1993	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
