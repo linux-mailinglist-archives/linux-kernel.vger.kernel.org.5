@@ -2,87 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D37AF793571
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 08:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DE8793574
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 08:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241779AbjIFGkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 02:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
+        id S241861AbjIFGlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 02:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234784AbjIFGkz (ORCPT
+        with ESMTP id S235180AbjIFGlN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 02:40:55 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B654BCF6;
-        Tue,  5 Sep 2023 23:40:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=lEKa32vDz9dRLHtkiqwBJfqS+z/ud40G6jgqmrjZXvA=; b=Yvk14RBqPGC7nXQfcqb7XiHuZi
-        eb3DC2GRdqxshCc+KqXsoouVITXuQ6FUZKqwatwkrHm8dvS2XMzCjva0xt3kij2fS06x8Ngi0zMH5
-        HsAhHlA5mzGgnywW593Ukc8DPPyGUrsbk7BqUFpP47K4hua6U2rxg/IuZ6nldsC1v7BwW1vsLasSD
-        CjiCIsbm4VzSEtnPxt/dsRb7dZRyKUN9wuE5vyFY7YZ9qUBDbgsmKfSc+37l5Qx7rI4/6RuSpW3gz
-        d1msfTMk9d/Aqy0RC+fkL6hixKC3dejD9ly7MLQBr+KhV3ia0loqT/lBRR/tX8YNBK0uzngUvxTmu
-        sL1T4XXg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52998)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qdmD8-0000Fd-38;
-        Wed, 06 Sep 2023 07:40:23 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qdmD6-0004Xt-8o; Wed, 06 Sep 2023 07:40:20 +0100
-Date:   Wed, 6 Sep 2023 07:40:20 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Lukasz Majewski <lukma@denx.de>, Tristram.Ha@microchip.com,
-        Eric Dumazet <edumazet@google.com>,
-        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net v4] net: phy: Provide Module 4 KSZ9477 errata (DS80000754C)
-Message-ID: <ZPge1LuqIRk9N2P0@shell.armlinux.org.uk>
-References: <20230905093315.784052-1-lukma@denx.de>
- <20230905222945.h7tuzlraxdp5imbh@skbuf>
+        Wed, 6 Sep 2023 02:41:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A32CFC;
+        Tue,  5 Sep 2023 23:41:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693982464; x=1725518464;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=RsYbEoQMorIDKJhNn8tK8oAOQZCO4LcPFT+r0555VJo=;
+  b=mACK08PcQZ6QFb8DTYnjGCTiegS0UssxdBC6Z5gOIZ28NLj62CCCzMC7
+   hiyZPcTgXFzvInKJ/tGdGqfEckpShzcjktnOFdx5wXFqKQZYrDjoj5om3
+   iBmYWPW/aMxWSrcFMSJzGe4tMqbaMpvord20TYij1Nxzyg+y1G9xc4zgp
+   cA/lISdYgmSi3zOKapi747+IsbybdBho5yWB0oPm6oHehdzw05OnaYbBi
+   +KsBZcUZt9cO3lZwdOP6eji9usPeUIhgWhFipb/FQoguwVGpGJBaInIhZ
+   8cFHPOmfBOfKhupTPULrETn6RyyTIs/bDcL3bMN/zVKsy21FFALrrNEyH
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="375890324"
+X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
+   d="scan'208";a="375890324"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 23:41:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="691192510"
+X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
+   d="scan'208";a="691192510"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.11.250]) ([10.93.11.250])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 23:41:02 -0700
+Message-ID: <10bdaf6d-1c5c-6502-c340-db3f84bf74a1@intel.com>
+Date:   Wed, 6 Sep 2023 14:40:59 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905222945.h7tuzlraxdp5imbh@skbuf>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.0
+Subject: Re: [PATCH] KVM: X86: Reduce calls to vcpu_load
+To:     Hao Peng <flyingpenghao@gmail.com>, pbonzini@redhat.com
+Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <CAPm50aLd5ZbAqd8O03fEm6UhHB_svfFLA19zBfgpDEQsQUhoGw@mail.gmail.com>
+Content-Language: en-US
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <CAPm50aLd5ZbAqd8O03fEm6UhHB_svfFLA19zBfgpDEQsQUhoGw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 01:29:45AM +0300, Vladimir Oltean wrote:
-> It's probably not causing practical harm, but currently, we tell
-> genphy_config_eee_advert() to include reserved bits of the MMD EEE
-> Advertising Register (MMD 0x07 : 0x3C) into its modification mask.
+On 9/6/2023 2:24 PM, Hao Peng wrote:
+> From: Peng Hao <flyingpeng@tencent.com>
+> 
+> The call of vcpu_load/put takes about 1-2us. Each
+> kvm_arch_vcpu_create will call vcpu_load/put
+> to initialize some fields of vmcs, which can be
+> delayed until the call of vcpu_ioctl to process
+> this part of the vmcs field, which can reduce calls
+> to vcpu_load.
 
-Ah, you've fallen into that trap. genphy_config_eee_advert() is
-obsolete and redundant. Nothing calls it, and it should be removed.
+what if no vcpu ioctl is called after vcpu creation?
 
-What's actually used is genphy_c45_an_config_eee_aneg() and
-genphy_c45_write_eee_adv(). The latter will not modify any reserved
-bits in the register.
+And will the first (it was second before this patch) vcpu_load() becomes 
+longer? have you measured it?
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+I don't think it worth the optimization unless a strong reason.
+
+> Signed-off-by: Peng Hao <flyingpeng@tencent.com>
+> ---
+>   arch/x86/include/asm/kvm_host.h |  1 +
+>   arch/x86/kvm/x86.c              | 21 ++++++++++++++++-----
+>   2 files changed, 17 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 9320019708f9..2f2dcd283788 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -984,6 +984,7 @@ struct kvm_vcpu_arch {
+>          /* Flush the L1 Data cache for L1TF mitigation on VMENTER */
+>          bool l1tf_flush_l1d;
+> 
+> +       bool initialized;
+>          /* Host CPU on which VM-entry was most recently attempted */
+>          int last_vmentry_cpu;
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 4fd08a5e0e98..a3671a54e850 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -317,7 +317,20 @@ const struct kvm_stats_header kvm_vcpu_stats_header = {
+>   u64 __read_mostly host_xcr0;
+> 
+>   static struct kmem_cache *x86_emulator_cache;
+> +static int kvm_set_tsc_khz(struct kvm_vcpu *vcpu, u32 user_tsc_khz);
+> 
+> +static inline bool kvm_vcpu_initialized(struct kvm_vcpu *vcpu)
+> +{
+> +       return vcpu->arch.initialized;
+> +}
+> +
+> +static void kvm_vcpu_initial_reset(struct kvm_vcpu *vcpu)
+> +{
+> +       kvm_set_tsc_khz(vcpu, vcpu->kvm->arch.default_tsc_khz);
+> +       kvm_vcpu_reset(vcpu, false);
+> +       kvm_init_mmu(vcpu);
+> +       vcpu->arch.initialized = true;
+> +}
+>   /*
+>    * When called, it means the previous get/set msr reached an invalid msr.
+>    * Return true if we want to ignore/silent this failed msr access.
+> @@ -5647,6 +5660,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+> 
+>          vcpu_load(vcpu);
+> 
+> +       if (!kvm_vcpu_initialized(vcpu))
+> +               kvm_vcpu_initial_reset(vcpu);
+> +
+>          u.buffer = NULL;
+>          switch (ioctl) {
+>          case KVM_GET_LAPIC: {
+> @@ -11930,11 +11946,6 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+>          vcpu->arch.msr_platform_info = MSR_PLATFORM_INFO_CPUID_FAULT;
+>          kvm_xen_init_vcpu(vcpu);
+>          kvm_vcpu_mtrr_init(vcpu);
+> -       vcpu_load(vcpu);
+> -       kvm_set_tsc_khz(vcpu, vcpu->kvm->arch.default_tsc_khz);
+> -       kvm_vcpu_reset(vcpu, false);
+> -       kvm_init_mmu(vcpu);
+> -       vcpu_put(vcpu);
+>          return 0;
+> 
+>   free_guest_fpu:
+> --
+> 2.31.1
+
