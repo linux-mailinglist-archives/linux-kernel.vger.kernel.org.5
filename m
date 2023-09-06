@@ -2,69 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E30E5793DBD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A011C793DB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237647AbjIFNdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 09:33:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
+        id S240842AbjIFNdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 09:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236376AbjIFNdb (ORCPT
+        with ESMTP id S232598AbjIFNdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 09:33:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90FFE6B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 06:32:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694007171;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XCpIrP65/3nTEPon1JRD3ISd+XlrrDIC3wEjklFq6gE=;
-        b=W3hR24UoHtU2mfiHO0HMxOGYVtRdF5UsUU0wstEvpk08Auf7turOhFRlfGeojRX/9ysg92
-        Gw00inb+tzQznEWAm5Ycr1pIyHWr34Yux7Sg89/EoE1zTYln72yJY6vK4ZLEbLr/HFBa4A
-        b7eaGOiCZQrKEnvz7Swk/Jx0+ywXIes=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-475-OCD-ndfMNSWE3vkR3V2dwA-1; Wed, 06 Sep 2023 09:32:46 -0400
-X-MC-Unique: OCD-ndfMNSWE3vkR3V2dwA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 243771825488;
-        Wed,  6 Sep 2023 13:32:46 +0000 (UTC)
-Received: from [10.22.32.253] (unknown [10.22.32.253])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BD7B7202869C;
-        Wed,  6 Sep 2023 13:32:45 +0000 (UTC)
-Message-ID: <9578a3a7-4151-6b60-3241-d883afe08bc1@redhat.com>
-Date:   Wed, 6 Sep 2023 09:32:45 -0400
+        Wed, 6 Sep 2023 09:33:23 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A5710CA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 06:33:19 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-68cc1b70e05so692753b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 06:33:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1694007199; x=1694611999; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+d1AVNOFHn3CVQlqf+iRc3+VoRUq4zvMLJvgQBKxvDg=;
+        b=Jt7mcQ7IhF/DJgXtjWDb+uyNBOWMANCt47hePVfclaKDOu/Oi+1uxlYifbjY5D/96B
+         VDNghZ+i/sRiHDBMDFaWHceHRmrbBEnYyQ8xJkrcSH8ed7fDVsl4y/+QIrbCbZciNAWh
+         EdZiEMPWqo8Y+iTAd6BV13C86yybTv7LQFc2qVnJdi5qyq2/TJibUoyHTsUEnsayECTr
+         IGG1Val3hypMCGEHW3ouKqfe15sN9WCsAASE0Ac5EeDXW1FUx3W6lvsV5mn3hZ3jFTry
+         h0il9AcnELKa26e55cvxogAdQs8OTrrXBZavx3lGuubEV7bkxbtwCEy/NswJqftIrayA
+         QiiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694007199; x=1694611999;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+d1AVNOFHn3CVQlqf+iRc3+VoRUq4zvMLJvgQBKxvDg=;
+        b=i4EJU7hePyD3mei9MZhwobSRG9Jd0oGoctG2ANIPs0UiImlc81631MtyiMiLo+/rO1
+         Df88luCmUu5jqWGKWSytcjW7JLMbwpbF6yAqNVL2yFujRcL6DeSpRTE7VRaNxhOCkYUo
+         +KIfWhwXSUFC7gNqVvQEiRXt8dePoci+eOu5F7q9xhIaeW5oQufZLPvAriDfZEC0xiTo
+         ow3cjqpoJb1+raBQcPFIrsdOte6MIF9dTN+ifa6BDOu6T4OzJ157UOVgyTcq5PM+3EAw
+         tBoLaQaCeJ9xwgPH88owQYRhlebwzd2RcGifdOe76+ain0QVb8cPhwL0LS0LRn2WvohW
+         pjlA==
+X-Gm-Message-State: AOJu0YxyZDLH9LJp7WekiTdzPhLjRVuHUeokrMjJSEOTzvCg5AmuhQc1
+        2qq+ZClPj8ifQbKn6CCUh+/coARYP3BTw4fd3fXJ3A==
+X-Google-Smtp-Source: AGHT+IGi5OBROtUZu1lj7ctF+BKO/WjvIApR6wS2hhjSxwyTHuQMfAXh945M7deKizfytAdi93Ewcw==
+X-Received: by 2002:a05:6a20:8f15:b0:13d:7aa3:aa6c with SMTP id b21-20020a056a208f1500b0013d7aa3aa6cmr21240577pzk.0.1694007199312;
+        Wed, 06 Sep 2023 06:33:19 -0700 (PDT)
+Received: from [127.0.0.1] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id b22-20020aa78116000000b0068c10187dc3sm10726107pfi.168.2023.09.06.06.33.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 06:33:18 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     =?utf-8?q?Christoph_B=C3=B6hmwalder?= 
+        <christoph.boehmwalder@linbit.com>
+Cc:     drbd-dev@lists.linbit.com, linux-kernel@vger.kernel.org,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        linux-block@vger.kernel.org,
+        Linux regression tracking <regressions@leemhuis.info>,
+        Serguei Ivantsov <manowar@gsc-game.com>,
+        David Howells <dhowells@redhat.com>, stable@vger.kernel.org
+In-Reply-To: <20230906133034.948817-1-christoph.boehmwalder@linbit.com>
+References: <20230906133034.948817-1-christoph.boehmwalder@linbit.com>
+Subject: Re: [PATCH] drbd: swap bvec_set_page len and offset
+Message-Id: <169400719806.700937.1715411703006180940.b4-ty@kernel.dk>
+Date:   Wed, 06 Sep 2023 07:33:18 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 1/2] Revert "locking/rwsem: Remove reader optimistic
- spinning"
-Content-Language: en-US
-To:     Bongkyu Kim <bongkyu7.kim@samsung.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
-        will@kernel.org, boqun.feng@gmail.com,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-References: <20230901010704.18493-1-bongkyu7.kim@samsung.com>
- <CGME20230901010734epcas2p1a0d3698e76590637f9175fca40ad9eaf@epcas2p1.samsung.com>
- <20230901010704.18493-2-bongkyu7.kim@samsung.com>
- <20230904151008.GA25717@noisy.programming.kicks-ass.net>
- <94764456-c4d4-03eb-81ef-df402f4916f6@redhat.com>
- <20230906112741.GA18415@KORCO045595.samsungds.net>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230906112741.GA18415@KORCO045595.samsungds.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -72,44 +79,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 9/6/23 07:27, Bongkyu Kim wrote:
-> On Mon, Sep 04, 2023 at 03:56:56PM -0400, Waiman Long wrote:
->> On 9/4/23 11:10, Peter Zijlstra wrote:
->>> On Fri, Sep 01, 2023 at 10:07:03AM +0900, Bongkyu Kim wrote:
->>>> This reverts commit 617f3ef95177840c77f59c2aec1029d27d5547d6.
->>>>
->>>> In mobile environment, reader optimistic spinning is still useful
->>>> because there're not many readers. In my test result at android device,
->>>> it improves application startup time about 3.8%
->>>> App startup time is most important factor for android user expriences.
->>>> So, re-enable reader optimistic spinning by this commit. And,
->>>> the later patch will make it optional feature by cmdline.
->>> I'm not seeing any mention on how this interacts with all the rwsem work
->>> that has been done since that commit, like the handoff rework.
->>>
->>> Why is a straight revert a sane thing at this point?
->> I also agree that a revert is not the best way to reintroduce the feature.
->> It should document the reason why reader optimistic spinning is not the
->> default as discussed in commit 617f3ef9517 ("locking/rwsem: Remove reader
->> optimistic spinning") and under what condition should reader optimistic
->> spinning can be turned back on.
->>
->> Besides, I now think we may not really need 2 separate nonspinnable bits. We
->> can go with one that is set by writer timing out when spinning on reader.
->>
->> Cheers,
->> Longman
-> Should I modify like the below?
-> - Title to "locking/rwsem: Reintroduce reader optimistic spinning"
-> - Add more document like Longman's comment
-> - Reconsidering about 2 separate nonspinnable bits to one
+On Wed, 06 Sep 2023 15:30:34 +0200, Christoph Böhmwalder wrote:
+> bvec_set_page has the following signature:
+> 
+> static inline void bvec_set_page(struct bio_vec *bv, struct page *page,
+> 		unsigned int len, unsigned int offset)
+> 
+> However, the usage in DRBD swaps the len and offset parameters. This
+> leads to a bvec with length=0 instead of the intended length=4096, which
+> causes sock_sendmsg to return -EIO.
+> 
+> [...]
 
-Besides the above, Peter also ask to verify that it won't affect handoff 
-handling which requires that an unlocker see the lock will be free and 
-wake up the head of the wait queue. Given the fact that the simple 
-heuristic of skipping optimistic spinning if the lock is reader owned is 
-kept, that shouldn't be a problem, but you still need to document that.
+Applied, thanks!
 
-Cheers,
-Longman
+[1/1] drbd: swap bvec_set_page len and offset
+      commit: 4b9c2edaf7282d60e069551b4b28abc2932cd3e3
+
+Best regards,
+-- 
+Jens Axboe
+
+
 
