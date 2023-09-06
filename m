@@ -2,57 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BB3794093
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D872E79409A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240866AbjIFPm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 11:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59646 "EHLO
+        id S241429AbjIFPnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 11:43:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbjIFPm3 (ORCPT
+        with ESMTP id S230271AbjIFPm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 11:42:29 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750C2172C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 08:42:25 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qdufa-0000GX-7L; Wed, 06 Sep 2023 17:42:18 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qdufZ-004SQC-3x; Wed, 06 Sep 2023 17:42:17 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qdufY-00GuOl-36; Wed, 06 Sep 2023 17:42:16 +0200
-Date:   Wed, 6 Sep 2023 17:42:15 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Leif Middelschulte <leif.middelschulte@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Leif Middelschulte <Leif.Middelschulte@klsmartin.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] pwm: imx27: fix race condition .apply,.get_state
-Message-ID: <20230906154215.4ikrrbx4xgx2nmu5@pengutronix.de>
-References: <20230310174517.rb7xxrougkse2lrc@pengutronix.de>
- <20230815104332.55044-1-Leif.Middelschulte@gmail.com>
+        Wed, 6 Sep 2023 11:42:56 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84F91724
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 08:42:52 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99c93638322so238665366b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 08:42:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694014970; x=1694619770; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w/MJXhHq22hXwGov3L8E3lwBxOOyN2+wzo2q2f2Z9Pw=;
+        b=htm3ScMb7k9ZdzgaBX3Hucep4LCdH1lF+FhTqifvY8CRkNOq/bNCOsw8tBMnA3zdL9
+         jSNUjOlIdNskAC2S2G53BGNX5sYJ1cAfypgDf2Zo53cyQ3jsaxjd+oM2s1/N0ABcu7QN
+         rfTFo9g6qk1B4cEfKBQUOWfabTKWr3NpjXfg4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694014970; x=1694619770;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=w/MJXhHq22hXwGov3L8E3lwBxOOyN2+wzo2q2f2Z9Pw=;
+        b=kmetblQeQQNo/iq0MiynaEZnlfNz+L30xpak4DessrI0WFSRS5W2c3fDADx1w1TKM/
+         zu2TQ+itdYO6g6y4aUMOV/2S2c7CLTtYu5ukdZdikZ6sgQ9aw5rlLo6tmhhoYA5frTFf
+         OwapDCGo+EOtC9L3ge6DMxOX0gmt/cB6lOwhWxIm3gIp0P6cMm1wCPbZRcHnGvAja2KO
+         dwY16myzuEcKjajd8iKCpDHrUFogufJcsyrXyLEbaPC5FbNyzvgK946V7HErS0De2zSh
+         XEtWM5Py5C4bMzmNtjpH6HViIImQa2zzbdSOR55nhuCcujOoet12KoKmYVkglojQ4hAs
+         rOOg==
+X-Gm-Message-State: AOJu0YxKhPqj2cWzDNF8U+CeEfKdUQ4S2gc0/3UB7bNALFgkwRPjkZiN
+        X+YXm5cJoUv7yENSkeNxqatUIjYfKRWfHunbkS++Kv2s
+X-Google-Smtp-Source: AGHT+IGx17GizNKtiflhO8R9lyTygY46/UcJ1kRVQf6/zoxGsfVVRCVmiPjA+4YI1u/jehT6lolpjw==
+X-Received: by 2002:a17:907:9619:b0:9a1:e0b1:e919 with SMTP id gb25-20020a170907961900b009a1e0b1e919mr3419121ejc.4.1694014970747;
+        Wed, 06 Sep 2023 08:42:50 -0700 (PDT)
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
+        by smtp.gmail.com with ESMTPSA id gf16-20020a170906e21000b0098669cc16b2sm9118261ejb.83.2023.09.06.08.42.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 08:42:50 -0700 (PDT)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-521e046f6c7so13417a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 08:42:50 -0700 (PDT)
+X-Received: by 2002:a50:a6de:0:b0:528:ef2:7613 with SMTP id
+ f30-20020a50a6de000000b005280ef27613mr163805edc.7.1694014949290; Wed, 06 Sep
+ 2023 08:42:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hl2w5zzvfrzbn5au"
-Content-Disposition: inline
-In-Reply-To: <20230815104332.55044-1-Leif.Middelschulte@gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+References: <20230831080938.47454-1-biju.das.jz@bp.renesas.com> <20230831080938.47454-4-biju.das.jz@bp.renesas.com>
+In-Reply-To: <20230831080938.47454-4-biju.das.jz@bp.renesas.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 6 Sep 2023 08:42:15 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XRZz8W91U=9krOsKgtNmK_PAEg4c6OXtbJiLJcstSvYA@mail.gmail.com>
+Message-ID: <CAD=FV=XRZz8W91U=9krOsKgtNmK_PAEg4c6OXtbJiLJcstSvYA@mail.gmail.com>
+Subject: Re: [PATCH v6 3/4] drm/bridge: Drop CONFIG_OF conditionals around
+ of_node pointers
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Zhu Wang <wangzhu9@huawei.com>,
+        =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>,
+        Thierry Reding <treding@nvidia.com>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Guillaume BRUN <the.cheaterman@gmail.com>,
+        Rob Herring <robh@kernel.org>, Sandor Yu <Sandor.yu@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Ondrej Jirman <megi@xff.cz>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,137 +93,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---hl2w5zzvfrzbn5au
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Aug 15, 2023 at 12:43:29PM +0200, Leif Middelschulte wrote:
-> From: Leif Middelschulte <Leif.Middelschulte@klsmartin.com>
->=20
-> With CONFIG_PWM_DEBUG=3Dy after writing a value to the PWMSAR
-> register in .apply(), the register is read in .get_state().
-> Unless a period completed in the meantime, this read yields the
-> previously used duty cycle configuration. As the PWM_DEBUG code
-> applies the read out configuration for testing purposes this
-> effectively undoes the intended effect by rewriting the previous
-> hardware state.
->=20
-> Note that this change merely implements a sensible heuristic.
-> The i.MX has a 4 slot FIFO to configure the duty cycle. This FIFO
-> cannot be read back in its entirety. The "write x then read back
-> x from hw" semantics are therefore not easily applicable.
-> With this change, the .get_state() function tries to wait for some
-> stabilization in the FIFO (empty state). In this state it keeps
-> applying the last value written to the sample register.
->=20
-> Signed-off-by: Leif Middelschulte <Leif.Middelschulte@klsmartin.com>
+On Thu, Aug 31, 2023 at 1:10=E2=80=AFAM Biju Das <biju.das.jz@bp.renesas.co=
+m> wrote:
+>
+> Having conditional around the of_node pointers turns out to make driver
+> code use ugly #ifdef and #if blocks. So drop the conditionals.
+>
+> Suggested-by: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 > ---
->  drivers/pwm/pwm-imx27.c | 50 ++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 47 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/pwm/pwm-imx27.c b/drivers/pwm/pwm-imx27.c
-> index 29a3089c534c..32389ca2da3e 100644
-> --- a/drivers/pwm/pwm-imx27.c
-> +++ b/drivers/pwm/pwm-imx27.c
-> @@ -75,6 +75,7 @@
->  						   (x)) + 1)
-> =20
->  #define MX3_PWM_SWR_LOOP		5
-> +#define MX3_PWM_FIFOAV_EMPTY_LOOP	4
-> =20
->  /* PWMPR register value of 0xffff has the same effect as 0xfffe */
->  #define MX3_PWMPR_MAX			0xfffe
-> @@ -118,8 +119,28 @@ static void pwm_imx27_clk_disable_unprepare(struct p=
-wm_imx27_chip *imx)
->  	clk_disable_unprepare(imx->clk_ipg);
->  }
-> =20
-> +static int pwm_imx27_wait_fifo_empty(struct pwm_chip *chip,
-> +				     struct pwm_device *pwm)
-> +{
-> +	struct pwm_imx27_chip *imx =3D to_pwm_imx27_chip(chip);
-> +	struct device *dev =3D chip->dev;
-> +	unsigned int period_ms =3D DIV_ROUND_UP_ULL(pwm_get_period(pwm), NSEC_P=
-ER_MSEC);
-> +	int tries =3D MX3_PWM_FIFOAV_EMPTY_LOOP;
-> +	int fifoav;
-> +	u32 sr;
-> +
-> +	while (tries--) {
-> +		sr =3D readl(imx->mmio_base + MX3_PWMSR);
-> +		fifoav =3D FIELD_GET(MX3_PWMSR_FIFOAV, sr);
-> +		if (fifoav =3D=3D MX3_PWMSR_FIFOAV_EMPTY)
-> +			return;
-> +		msleep(period_ms);
-> +	}
-> +	dev_warn(dev, "FIFO has been refilled concurrently\n");
-> +}
-> +
->  static int pwm_imx27_get_state(struct pwm_chip *chip,
-> -			       struct pwm_device *pwm, struct pwm_state *state)
-> +				struct pwm_device *pwm, struct pwm_state *state)
+> v5->v6:
+>  * Added Rb tag from Douglas Anderson.
+>  * Dropped conditionals from remaining drm/bridge drivers.
+> v5:
+>  * Split from patch#2
+> ---
+>  drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c | 2 --
+>  drivers/gpu/drm/bridge/panel.c                     | 2 --
+>  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c          | 2 --
+>  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c      | 2 --
+>  4 files changed, 8 deletions(-)
 
-This looks wrong. Aligning at the opening ( was right.
+I think this has had enough time to marinate, so landed to drm-misc-next:
 
->  {
->  	struct pwm_imx27_chip *imx =3D to_pwm_imx27_chip(chip);
->  	u32 period, prescaler, pwm_clk, val;
-> @@ -161,10 +182,33 @@ static int pwm_imx27_get_state(struct pwm_chip *chi=
-p,
->  	 * PWMSAR can be read only if PWM is enabled. If the PWM is disabled,
->  	 * use the cached value.
->  	 */
-> -	if (state->enabled)
-> +	if (state->enabled) {
-> +		/*
-> +		 * From the i.MX PWM reference manual:
-> +		 * "A read on the sample register yields the current FIFO value that
-> +		 *  is being used, or will be used, by the PWM for generation on the
-> +		 *  output signal. Therefore, a write and a subsequent read on the
-> +		 *  sample register may result in different values being obtained."
-> +		 * Furthermore:
-> +		 * "When a new value is written, the duty cycle changes after the
-> +		 *  current period is over."
-> +		 * Note "changes" vs. "changes to the given value"!
-> +		 * Finally:
-> +		 * "The PWM will run at the last set duty-cycle setting if all the
-> +		 *  values of the FIFO has been utilized, until the FIFO is reloaded
-> +		 *  or the PWM is disabled."
-> +		 * Try to be at least a bit more deterministic about which value is
-> +		 * read by waiting until the FIFO is empty. In this state the last/most
-> +		 * recently pushed sample (duty cycle) value is continuously applied.
-> +		 * Beware that this approach is still racy, as a new value could have
-> +		 * been supplied and a period expired between the call of the wait
-> +		 * function and the subsequent readl.
-
-this would only happen if there are concurrent calls into the driver,
-wouldn't it? I think it's safe to assume this doesn't happen.
-
-Patch 3 of this series improves the function that is only introduced
-here. I suggest to squash these together.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---hl2w5zzvfrzbn5au
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmT4ndcACgkQj4D7WH0S
-/k5AewgAneAr+gtglxSR8kLRkr3TEstpVP7ZpAmE5J+11sF3/DRDeY/8XxxGCGbh
-5Vx395M9bZ6GdoZ9SKcW+iwCm4VFepI3p8jpp19wHzqOCvTGPVOcS9CStQcDlUWF
-VhyHT13ZQlojOxoxs3bboiO9fcEJPUJLcSzSpMt9VJTGO/08KEa5QfnmIGyD6Dm+
-cNUIcGNkeyWddvJ+JaxowcfgeQ4YcWCh9NGfOJuUEjjwLDSAMGgwJD9zADSmooge
-Oauz7Mo294sM9XQoCXBTgTz/Br612bVl0MZpqjokZFPAm63D80OtR463K9GLHz7l
-EBRwDJbX+T5mewhA06XWvTd32YgkeQ==
-=RsEN
------END PGP SIGNATURE-----
-
---hl2w5zzvfrzbn5au--
+481fc9e7e11d drm/bridge: Drop CONFIG_OF conditionals around of_node pointer=
+s
