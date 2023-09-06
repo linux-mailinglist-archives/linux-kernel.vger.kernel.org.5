@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEACC7941F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799527941F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 19:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243270AbjIFRSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 13:18:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
+        id S240648AbjIFRUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 13:20:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241187AbjIFRSQ (ORCPT
+        with ESMTP id S236562AbjIFRUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 13:18:16 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993D21998;
-        Wed,  6 Sep 2023 10:18:11 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bcb89b476bso1881961fa.1;
-        Wed, 06 Sep 2023 10:18:11 -0700 (PDT)
+        Wed, 6 Sep 2023 13:20:35 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DE2199B
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 10:20:31 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4009fdc224dso2995e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 10:20:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694020690; x=1694625490; darn=vger.kernel.org;
+        d=google.com; s=20221208; t=1694020829; x=1694625629; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pfI7yf43ET624hBFUVSQTNKbTQVCOa1P5ykThzOMYn0=;
-        b=h69HQbtaW/exEs5hnksH5QynXuluwXaEEUYNTe4BVdDmmNQDSxr1aQP/tqa7K23Bh6
-         kQf2xFOK7UQ1ToAJUVUpGNrJtXx5m8dAMmqNZdeuOt0ho3hHtSZkMU2zioS3V95h7Ukr
-         Ug+9bOp7BcirV5NEWdNeEk0cdzCiiB1KwI4VYwY13RvIlGdpLr591TDdAqPQkTfUOe8z
-         J6abzrPVliw/gKbq5lvmE78WjP6jsK1r/7VI2qfG4JBgaxqktbKP+yoED4uXkMlPrYkY
-         j8QgEfReSsLsWGUGS30Yn8eW5LX7xxIsv87D2X0vi565KFSBhaq0hBAx4DMcQDrhBluX
-         z8HA==
+        bh=+N77K5asCDO6mBYz5WiqLrKnSl+GRx2Mp7esKxryFKg=;
+        b=JPaT1r8pE9HPBtg8REXgkXnKxr5Ayegv3Gc0uDjdEM8QytYnCd89LtVafVMPBF4AIH
+         nblGcEQlwet2fsw4nrf9UD7JubSJEGlfhJw8Uvjg5LQp3jocKNBYr9vISD4FC5mfjqgz
+         w41PGZifJ/vMVr/H/0DkjOsOb5au/xy46QVi9E2sSCYmyPwNb7rrpD9eTYD6+bit43ty
+         8i/DCJQ/lDE/Qs+KVby7z7D6YkGt+iw7cW6QaVBbuJP3Hsmp9A9L/BCb0IY73W67HMbg
+         x+MK+mkBrApyMKuzishgaubdpcQ+cq6S7XN0jqzJ3wGZX0Ya+kUYB7/ezM7n6VMPwkdZ
+         hBGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694020690; x=1694625490;
+        d=1e100.net; s=20221208; t=1694020829; x=1694625629;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pfI7yf43ET624hBFUVSQTNKbTQVCOa1P5ykThzOMYn0=;
-        b=RcwGTYgJ8Za7Qj8zf05d2lKjHK54OwN1vZKz6rg7WZLhQBhPW9cOIrw1lTqK3ygOkm
-         FTP2LaeA4owMnkzqwyZ/dNeULBJ7YWhD6Dre/ovTGZ5PGFRubmz4+lMUhIqT9Piw1Wly
-         HCZ3OZt2DqPFWamEwxfksP0uP1iW41WAAe9Yj37D8Of2JrIK630lxE++VhNAfIH4izQH
-         Uaps1+U+gO8xKmHahRzCPFIoWUdWgbn/f0gI9jn+HlBf5zHM0ZCYNfAQxDPNGJgSdo/z
-         Kvfn4GmDrq7Ceir8SzfDQUU5fa4yF9nMzG+eR/TsBUK2/pqpxZl0mmlr2eXEwRT0XtDB
-         GK0A==
-X-Gm-Message-State: AOJu0YworAEg7EXvix3SCHCAV99Xo3k2m5rZv0vDBg0iBNevTd2DG202
-        15923NJ85URNTBRtrGqPZYFmF/FS8tF5mZicnxk=
-X-Google-Smtp-Source: AGHT+IHD4DYumYFCdjNLjF17I5NUhBT5IsnI3QSr+gxh0BVtcDdFsPs8sHyeBZKBYZNYeeu/PAbo0Kqq90jvZsMCXg8=
-X-Received: by 2002:a2e:8195:0:b0:2b7:3656:c594 with SMTP id
- e21-20020a2e8195000000b002b73656c594mr2544980ljg.3.1694020689414; Wed, 06 Sep
- 2023 10:18:09 -0700 (PDT)
+        bh=+N77K5asCDO6mBYz5WiqLrKnSl+GRx2Mp7esKxryFKg=;
+        b=UD08S0qwNCARew5xJU+KJJAbkmN4VCWind0+RHx/UpSDMLlVx8f1eH2tmWwNbiLQFX
+         75SKpFWQGVcoUhWQifKUfGQkbVNImA6ufJ3+ywwEmesFqrcQjJnDlvmBZ1SJ88Gn7e/Q
+         c+QFWAKI9BvbYoy8+nIpmND5qPv1bYDOTWIcnZhxuYyPy4NEuA+D1hpFXQfW/VZpIQlO
+         H98xRRiu4rCYPaF5Ih+qq4EFTJ5B+PKYqmwcbYMFFpbGI2lI+mGCLG0dcwRb8YRJrBsd
+         +efDr0eciGcSJ3WXtylRpsEfk6MJMYWhGX7gGv//9OgWy6onfQetDS2FATvcviuYyDmt
+         07ow==
+X-Gm-Message-State: AOJu0Yw3aaJCY9KTTK8/h/xPvQ1Cnro/XKPIDLY7i+tFmM8E9D9vIRJ9
+        dICKLfYgRi7RDViQIpM5xLbF4xkjnZXSo4L/Az23TQ==
+X-Google-Smtp-Source: AGHT+IHCatey3yZfUTLwMWiUTqgPKUuT5WGhxakTu7ICjfYTxwE/a5hvT0i+XMS+mYt0wXPp6Y3Y1PhDsYZjAluMKl8=
+X-Received: by 2002:a05:600c:46cc:b0:3fe:f32f:c57f with SMTP id
+ q12-20020a05600c46cc00b003fef32fc57fmr6328wmo.0.1694020829456; Wed, 06 Sep
+ 2023 10:20:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230827072057.1591929-1-zhouchuyi@bytedance.com>
- <20230827072057.1591929-3-zhouchuyi@bytedance.com> <CAADnVQLKytNcAF_LkMgMJ1sq9Tv8QMNc3En7Psuxg+=FXP+B-A@mail.gmail.com>
- <e5e986a0-0bb9-6611-77f0-f8472346965e@bytedance.com>
-In-Reply-To: <e5e986a0-0bb9-6611-77f0-f8472346965e@bytedance.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 6 Sep 2023 10:17:57 -0700
-Message-ID: <CAADnVQL-ZGV6C7VWdQpX64f0+gokE5MLBO3F2J3WyMoq-_NCPg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 2/4] bpf: Introduce process open coded
- iterator kfuncs
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <000000000000e534bb0604959011@google.com> <ZPeaH+K75a0nIyBk@dread.disaster.area>
+In-Reply-To: <ZPeaH+K75a0nIyBk@dread.disaster.area>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Wed, 6 Sep 2023 19:20:15 +0200
+Message-ID: <CANp29Y4AK9dzmpMj4E9iz3gqTwhG=-_7DfA8knrWYaHy4QxrEg@mail.gmail.com>
+Subject: Re: [syzbot] [xfs?] INFO: task hung in clean_bdev_aliases
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     syzbot <syzbot+1fa947e7f09e136925b8@syzkaller.appspotmail.com>,
+        djwong@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, linux-block@vger.kernel.org,
+        hch@lst.de
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,166 +73,194 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 5:38=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.com>=
- wrote:
+On Tue, Sep 5, 2023 at 11:14=E2=80=AFPM 'Dave Chinner' via syzkaller-bugs
+<syzkaller-bugs@googlegroups.com> wrote:
 >
-> Hello, Alexei.
+> [cc linux-block, Christoph]
 >
-> =E5=9C=A8 2023/9/6 04:09, Alexei Starovoitov =E5=86=99=E9=81=93:
-> > On Sun, Aug 27, 2023 at 12:21=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedanc=
-e.com> wrote:
-> >>
-> >> This patch adds kfuncs bpf_iter_process_{new,next,destroy} which allow
-> >> creation and manipulation of struct bpf_iter_process in open-coded ite=
-rator
-> >> style. BPF programs can use these kfuncs or through bpf_for_each macro=
- to
-> >> iterate all processes in the system.
-> >>
-> >> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> >> ---
-> >>   include/uapi/linux/bpf.h       |  4 ++++
-> >>   kernel/bpf/helpers.c           |  3 +++
-> >>   kernel/bpf/task_iter.c         | 31 +++++++++++++++++++++++++++++++
-> >>   tools/include/uapi/linux/bpf.h |  4 ++++
-> >>   tools/lib/bpf/bpf_helpers.h    |  5 +++++
-> >>   5 files changed, 47 insertions(+)
-> >>
-> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> >> index 2a6e9b99564b..cfbd527e3733 100644
-> >> --- a/include/uapi/linux/bpf.h
-> >> +++ b/include/uapi/linux/bpf.h
-> >> @@ -7199,4 +7199,8 @@ struct bpf_iter_css_task {
-> >>          __u64 __opaque[1];
-> >>   } __attribute__((aligned(8)));
-> >>
-> >> +struct bpf_iter_process {
-> >> +       __u64 __opaque[1];
-> >> +} __attribute__((aligned(8)));
-> >> +
-> >>   #endif /* _UAPI__LINUX_BPF_H__ */
-> >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> >> index cf113ad24837..81a2005edc26 100644
-> >> --- a/kernel/bpf/helpers.c
-> >> +++ b/kernel/bpf/helpers.c
-> >> @@ -2458,6 +2458,9 @@ BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER=
-_DESTROY)
-> >>   BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW)
-> >>   BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET_NUL=
-L)
-> >>   BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
-> >> +BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
-> >> +BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET_NULL)
-> >> +BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
-> >>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
-> >>   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
-> >>   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
-> >> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> >> index b1bdba40b684..a6717a76c1e0 100644
-> >> --- a/kernel/bpf/task_iter.c
-> >> +++ b/kernel/bpf/task_iter.c
-> >> @@ -862,6 +862,37 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct=
- bpf_iter_css_task *it)
-> >>          kfree(kit->css_it);
-> >>   }
-> >>
-> >> +struct bpf_iter_process_kern {
-> >> +       struct task_struct *tsk;
-> >> +} __attribute__((aligned(8)));
-> >> +
-> >> +__bpf_kfunc int bpf_iter_process_new(struct bpf_iter_process *it)
-> >> +{
-> >> +       struct bpf_iter_process_kern *kit =3D (void *)it;
-> >> +
-> >> +       BUILD_BUG_ON(sizeof(struct bpf_iter_process_kern) !=3D sizeof(=
-struct bpf_iter_process));
-> >> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_process_kern) !=3D
-> >> +                                       __alignof__(struct bpf_iter_pr=
-ocess));
-> >> +
-> >> +       rcu_read_lock();
-> >> +       kit->tsk =3D &init_task;
-> >> +       return 0;
-> >> +}
-> >> +
-> >> +__bpf_kfunc struct task_struct *bpf_iter_process_next(struct bpf_iter=
-_process *it)
-> >> +{
-> >> +       struct bpf_iter_process_kern *kit =3D (void *)it;
-> >> +
-> >> +       kit->tsk =3D next_task(kit->tsk);
-> >> +
-> >> +       return kit->tsk =3D=3D &init_task ? NULL : kit->tsk;
-> >> +}
-> >> +
-> >> +__bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *it=
-)
-> >> +{
-> >> +       rcu_read_unlock();
-> >> +}
+> Another iomap-blockdev related issue.
+>
+> #syz set subsystems: block
+>
+> syzbot developers: Please review how you are classifying subsystems,
+> this is the third false XFS classification in 24 hours.
+
+The reason why syzbot marked this report as xfs is that, per
+MAINTAINERS, fs/iomap/ points to linux-xfs@vger.kernel.org. I can
+adjust the rules syzbot uses so that these are routed to "block".
+
+But should MAINTAINERS actually also not relate IOMAP FILESYSTEM
+LIBRARY with xfs in this case?
+
+--=20
+Aleksandr
+
+>
+> -Dave.
+>
+> On Mon, Sep 04, 2023 at 10:04:47PM -0700, syzbot wrote:
+> > Hello,
 > >
-> > This iter can be used in all ctx-s which is nice, but let's
-> > make the verifier enforce rcu_read_lock/unlock done by bpf prog
-> > instead of doing in the ctor/dtor of iter, since
-> > in sleepable progs the verifier won't recognize that body is RCU CS.
-> > We'd need to teach the verifier to allow bpf_iter_process_new()
-> > inside in_rcu_cs() and make sure there is no rcu_read_unlock
-> > while BPF_ITER_STATE_ACTIVE.
-> > bpf_iter_process_destroy() would become a nop.
->
-> Thanks for your review!
->
-> I think bpf_iter_process_{new, next, destroy} should be protected by
-> bpf_rcu_read_lock/unlock explicitly whether the prog is sleepable or
-> not, right?
-
-Correct. By explicit bpf_rcu_read_lock() in case of sleepable progs
-or just by using them in normal bpf progs that have implicit rcu_read_lock(=
-)
-done before calling into them.
-
-> I'm not very familiar with the BPF verifier, but I believe
-> there is still a risk in directly calling these kfuns even if
-> in_rcu_cs() is true.
->
-> Maby what we actually need here is to enforce BPF verifier to check
-> env->cur_state->active_rcu_lock is true when we want to call these kfuncs=
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    92901222f83d Merge tag 'f2fs-for-6-6-rc1' of git://git.=
+ker..
+> > git tree:       upstream
+> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D1485e78fa80=
+000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D3bd57a1ac08=
+277b0
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D1fa947e7f09e1=
+36925b8
+> > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for=
+ Debian) 2.40
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D13fcf7386=
+80000
+> >
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/ee486d884228/d=
+isk-92901222.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/b5187db0b1d1/vmli=
+nux-92901222.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/82c4e42d693e=
+/bzImage-92901222.xz
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the co=
+mmit:
+> > Reported-by: syzbot+1fa947e7f09e136925b8@syzkaller.appspotmail.com
+> >
+> > INFO: task syz-executor.5:10017 blocked for more than 143 seconds.
+> >       Not tainted 6.5.0-syzkaller-11075-g92901222f83d #0
+> > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this messag=
+e.
+> > task:syz-executor.5  state:D stack:27624 pid:10017 ppid:5071   flags:0x=
+00004006
+> > Call Trace:
+> >  <TASK>
+> >  context_switch kernel/sched/core.c:5382 [inline]
+> >  __schedule+0xee1/0x59f0 kernel/sched/core.c:6695
+> >  schedule+0xe7/0x1b0 kernel/sched/core.c:6771
+> >  io_schedule+0xbe/0x130 kernel/sched/core.c:9026
+> >  folio_wait_bit_common+0x3d2/0x9b0 mm/filemap.c:1304
+> >  folio_lock include/linux/pagemap.h:1042 [inline]
+> >  clean_bdev_aliases+0x56b/0x610 fs/buffer.c:1725
+> >  clean_bdev_bh_alias include/linux/buffer_head.h:219 [inline]
+> >  __block_write_begin_int+0x8d6/0x1470 fs/buffer.c:2115
+> >  iomap_write_begin+0x5be/0x17b0 fs/iomap/buffered-io.c:772
+> >  iomap_write_iter fs/iomap/buffered-io.c:907 [inline]
+> >  iomap_file_buffered_write+0x3d6/0x9a0 fs/iomap/buffered-io.c:968
+> >  blkdev_buffered_write block/fops.c:634 [inline]
+> >  blkdev_write_iter+0x572/0xca0 block/fops.c:688
+> >  call_write_iter include/linux/fs.h:1985 [inline]
+> >  do_iter_readv_writev+0x21e/0x3c0 fs/read_write.c:735
+> >  do_iter_write+0x17f/0x830 fs/read_write.c:860
+> >  vfs_iter_write+0x7a/0xb0 fs/read_write.c:901
+> >  iter_file_splice_write+0x698/0xbf0 fs/splice.c:736
+> >  do_splice_from fs/splice.c:933 [inline]
+> >  direct_splice_actor+0x118/0x180 fs/splice.c:1142
+> >  splice_direct_to_actor+0x347/0xa30 fs/splice.c:1088
+> >  do_splice_direct+0x1af/0x280 fs/splice.c:1194
+> >  do_sendfile+0xb88/0x1390 fs/read_write.c:1254
+> >  __do_sys_sendfile64 fs/read_write.c:1322 [inline]
+> >  __se_sys_sendfile64 fs/read_write.c:1308 [inline]
+> >  __x64_sys_sendfile64+0x1d6/0x220 fs/read_write.c:1308
+> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+> >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > RIP: 0033:0x7fdb8ca7cae9
+> > RSP: 002b:00007ffcd642da18 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+> > RAX: ffffffffffffffda RBX: 00007fdb8cb9bf80 RCX: 00007fdb8ca7cae9
+> > RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000003
+> > RBP: 00007fdb8cac847a R08: 0000000000000000 R09: 0000000000000000
+> > R10: 0100000000000042 R11: 0000000000000246 R12: 0000000000000000
+> > R13: 0000000000000be7 R14: 00007fdb8cb9bf80 R15: 00007fdb8cb9bf80
+> >  </TASK>
+> > INFO: lockdep is turned off.
+> > NMI backtrace for cpu 1
+> > CPU: 1 PID: 29 Comm: khungtaskd Not tainted 6.5.0-syzkaller-11075-g9290=
+1222f83d #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
+ Google 07/26/2023
+> > Call Trace:
+> >  <TASK>
+> >  __dump_stack lib/dump_stack.c:88 [inline]
+> >  dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+> >  nmi_cpu_backtrace+0x277/0x380 lib/nmi_backtrace.c:113
+> >  nmi_trigger_cpumask_backtrace+0x299/0x300 lib/nmi_backtrace.c:62
+> >  trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+> >  check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
+> >  watchdog+0xfac/0x1230 kernel/hung_task.c:379
+> >  kthread+0x33a/0x430 kernel/kthread.c:388
+> >  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+> >  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+> >  </TASK>
+> > Sending NMI from CPU 1 to CPUs 0:
+> > NMI backtrace for cpu 0
+> > CPU: 0 PID: 17 Comm: rcu_preempt Not tainted 6.5.0-syzkaller-11075-g929=
+01222f83d #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
+ Google 07/26/2023
+> > RIP: 0010:load_balance+0x10a/0x3130 kernel/sched/fair.c:10983
+> > Code: 4a 8d 3c f5 40 aa 5c 8c 48 ba 00 00 00 00 00 fc ff df 48 89 f9 48=
+ c1 e9 03 80 3c 11 00 0f 85 2f 2e 00 00 31 c0 b9 0c 00 00 00 <4e> 8b 1c f5 =
+40 aa 5c 8c 4c 89 94 24 f8 00 00 00 48 8d bc 24 00 01
+> > RSP: 0018:ffffc900001676c8 EFLAGS: 00000046
+> > RAX: 0000000000000000 RBX: ffff8880b983c700 RCX: 000000000000000c
+> > RDX: dffffc0000000000 RSI: ffffffff8ae90360 RDI: ffffffff8c5caa40
+> > RBP: ffffc90000167898 R08: ffffc90000167960 R09: 0000000000000000
+> > R10: ffff88801525ac00 R11: 0000000000000000 R12: 00000000000287d8
+> > R13: ffffc90000167960 R14: 0000000000000000 R15: 0000000100004d48
+> > FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:00000000000=
+00000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000000020000240 CR3: 000000000c976000 CR4: 0000000000350ef0
+> > Call Trace:
+> >  <NMI>
+> >  </NMI>
+> >  <TASK>
+> >  newidle_balance+0x710/0x1210 kernel/sched/fair.c:12059
+> >  pick_next_task_fair+0x87/0x1200 kernel/sched/fair.c:8234
+> >  __pick_next_task kernel/sched/core.c:6004 [inline]
+> >  pick_next_task kernel/sched/core.c:6079 [inline]
+> >  __schedule+0x493/0x59f0 kernel/sched/core.c:6659
+> >  schedule+0xe7/0x1b0 kernel/sched/core.c:6771
+> >  schedule_timeout+0x157/0x2c0 kernel/time/timer.c:2167
+> >  rcu_gp_fqs_loop+0x1ec/0xa50 kernel/rcu/tree.c:1613
+> >  rcu_gp_kthread+0x249/0x380 kernel/rcu/tree.c:1812
+> >  kthread+0x33a/0x430 kernel/kthread.c:388
+> >  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+> >  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+> >  </TASK>
+> >
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> >
+> > If the bug is already fixed, let syzbot know by replying with:
+> > #syz fix: exact-commit-title
+> >
+> > If you want syzbot to run the reproducer, reply with:
+> > #syz test: git://repo/address.git branch-or-commit-hash
+> > If you attach or paste a git patch, syzbot will apply it before testing=
 .
-
-active_rcu_lock means explicit bpf_rcu_read_lock.
-Currently we do allow bpf_rcu_read_lock in non-sleepable, but it's pointles=
-s.
-
-Technically we can extend the check:
-                if (in_rbtree_lock_required_cb(env) && (rcu_lock ||
-rcu_unlock)) {
-                        verbose(env, "Calling
-bpf_rcu_read_{lock,unlock} in unnecessary rbtree callback\n");
-                        return -EACCES;
-                }
-to discourage their use in all non-sleepable, but it will break some progs.
-
-I think it's ok to check in_rcu_cs() to allow bpf_iter_process_*().
-If bpf prog adds explicit and unnecessary bpf_rcu_read_lock() around
-the iter ops it won't do any harm.
-Just need to make sure that rcu unlock logic:
-                } else if (rcu_unlock) {
-                        bpf_for_each_reg_in_vstate(env->cur_state,
-state, reg, ({
-                                if (reg->type & MEM_RCU) {
-                                        reg->type &=3D ~(MEM_RCU |
-PTR_MAYBE_NULL);
-                                        reg->type |=3D PTR_UNTRUSTED;
-                                }
-                        }));
-clears iter state that depends on rcu.
-
-I thought about changing mark_stack_slots_iter() to do
-st->type =3D PTR_TO_STACK | MEM_RCU;
-so that the above clearing logic kicks in,
-but it might be better to have something iter specific.
-is_iter_reg_valid_init() should probably be changed to
-make sure reg->type is not UNTRUSTED.
-
-Andrii,
-do you have better suggestions?
+> >
+> > If you want to overwrite bug's subsystems, reply with:
+> > #syz set subsystems: new-subsystem
+> > (See the list of subsystem names on the web dashboard)
+> >
+> > If the bug is a duplicate of another bug, reply with:
+> > #syz dup: exact-subject-of-another-report
+> >
+> > If you want to undo deduplication, reply with:
+> > #syz undup
+> >
+>
+> --
+> Dave Chinner
+> david@fromorbit.com
+>
