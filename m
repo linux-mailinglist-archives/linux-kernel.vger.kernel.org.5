@@ -2,144 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B975079339E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 04:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC867933A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 04:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239310AbjIFCOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 22:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
+        id S240006AbjIFCOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 22:14:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjIFCOI (ORCPT
+        with ESMTP id S229575AbjIFCOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 22:14:08 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CE9CDB;
-        Tue,  5 Sep 2023 19:14:02 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2bcb0b973a5so49761871fa.3;
-        Tue, 05 Sep 2023 19:14:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693966439; x=1694571239; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SsoSK8mqixYZcXU+h+UPvRzmoQG63kmRlk1cTNnSgj8=;
-        b=n24rgR/khhBl+IAzR6DOzp81oHCpF28l0hR0yHwd6TedbritHC9pmZSyLAwpkgoRWu
-         /CfS0AITqcpDKk4dhdjPY6KGZh967HCVbmUP5ical/ApK1lK53Mn6mwUvyZU/85iEigO
-         q+hOlkz1KG5y2hC+J5eTbfu0PI/fXzK1D0OxPSadeJTFNNhyQ+RNdRLCsfuWiAgTKXDZ
-         Vrqkmi8Zn0ErGqhGn6ZeHDf7TebkBnnMJ9iv/vCJFSSIqYn9+Y4KhzwdIuz8VxBlws4V
-         dWAX+1oqqqi3dmK+QGHe184qMo6/2N51p/+BSpFNxw1BIMUoWkhIPKetGcBeHtOoLLZK
-         HPCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693966439; x=1694571239;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SsoSK8mqixYZcXU+h+UPvRzmoQG63kmRlk1cTNnSgj8=;
-        b=f/DGYAZydUUKP+MNMBdgqj934qbwQquz8IbAFhah29XHp32yqi6mM+DkjJXrla3nB9
-         YlE7CSrOH01nOQxm0HZsU/7hzkTPVxN0l99G3vEdMvsAJm2US9iAe9yjROTx2RW2cwHI
-         lK2yVLVEwJeDp4wx1GwzPEsNzx51sXbyv7YSJQOaXiP5QfSvg1+JzPYEXvrf7fWpifD4
-         Gq7k2QhokeHe6Ph9D5vbPoP1XIr3QeSu5ST07RLhtkTF7c2v/IZmS/MU7LB5wo5Pfnd/
-         j+4nOxlk7CCVlUMbr9wPnS7BVuts1qzJkdz60e3l7ZNqH1+NwqIYhTKvPOKlNnHwQFYD
-         luFg==
-X-Gm-Message-State: AOJu0Ywv+T4nb+/b5a2pznL/6JNHmjWweTxYwPqCyGTVN57WVcqVj8o1
-        rXrALBuWLTjTvdlGYs528p9HgTRZjpwT/Hdtk1s=
-X-Google-Smtp-Source: AGHT+IH7RM3cY3iOqro2snTJovOGvM5NPQfVguZF/MJFFyi8KcVMBzz/x6XogQ5hLmNj34gjfzOxrgtUb7MRt0B8N+g=
-X-Received: by 2002:a19:5002:0:b0:4ff:8f44:834f with SMTP id
- e2-20020a195002000000b004ff8f44834fmr991849lfb.38.1693966439082; Tue, 05 Sep
- 2023 19:13:59 -0700 (PDT)
+        Tue, 5 Sep 2023 22:14:42 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B9256ED;
+        Tue,  5 Sep 2023 19:14:37 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8BxuOiK4Pdk5QUgAA--.28684S3;
+        Wed, 06 Sep 2023 10:14:34 +0800 (CST)
+Received: from [0.0.0.0] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx5syE4PdknuBtAA--.47306S3;
+        Wed, 06 Sep 2023 10:14:29 +0800 (CST)
+Message-ID: <42c907fe-a8c3-5a07-a792-737e45f8134e@loongson.cn>
+Date:   Wed, 6 Sep 2023 10:14:28 +0800
 MIME-Version: 1.0
-References: <20230830030503.13349-1-jyanchou@realtek.com> <CACT4zj-nRyAhtasV-gZW9Ja_FWNwvELnkuyPcq4SyDuGuEM8jA@mail.gmail.com>
- <d171e2279da847fa81022f6fd23869fb@realtek.com>
-In-Reply-To: <d171e2279da847fa81022f6fd23869fb@realtek.com>
-From:   Ben Chuang <benchuanggli@gmail.com>
-Date:   Wed, 6 Sep 2023 10:13:29 +0800
-Message-ID: <CACT4zj8yP0DPRfQ9_=gxaM+paZLW_86b5YVyGse-WiWK_KszPw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: Add Synopsys DesignWare mmc cmdq host driver
-To:     =?UTF-8?B?SnlhbiBDaG91IFvlkajoirflrold?= <jyanchou@realtek.com>
-Cc:     "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
+ to select the primary video adapter at boot time
+Content-Language: en-US
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
+References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
+ <44ec8549-dc36-287e-4359-abd3ec8d22d6@suse.de>
+ <5afd2efb-f838-f9b7-02a9-2cf4d4fd2382@loongson.cn>
+ <773be4c6-0b3d-be39-7857-b3e2942007d9@suse.de>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <773be4c6-0b3d-be39-7857-b3e2942007d9@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Dx5syE4PdknuBtAA--.47306S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7Aw4kKr4xGF13Aw4ruFyrZrc_yoW8ZFy8pF
+        W5K3W29w4kKw1Yq34xZrnakF45Gws5AFyrC348KwnruFsxu340g34DtFW5Wa47J34FvF15
+        tF98G3WvgF4UJabCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcApnDU
+        UUU
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jyan,
-
-On Thu, Aug 31, 2023 at 3:47=E2=80=AFPM Jyan Chou [=E5=91=A8=E8=8A=B7=E5=AE=
-=89] <jyanchou@realtek.com> wrote:
->
-> Hi Ben,
-> Thanks for your suggestion.
->
-> > The patch includes two parts: a dw_mmc_cqe driver and dw_mmc_cqe-rtk dr=
-iver.
-> > Adrian and Ulf's comments[1][2] don't seem to be addressed.
->
-> [1] The reason why we added many changes was because we found
-> out that synopsys IP data book's register and user guide with cmdq
-> support were different from non cmdq's , so we referred to dw_mmc.c
-> coding style and push dw_mmc_cqe.c to support version after 5.1 JEDEC Sta=
-ndard.
->
-
-Apart from the difference in register definitions and the addition of cmdq,
-is there any other behavior that is different from dw_mmc.c?
-I recommend using a patch series and describing the differences from
-dw_mmc in your cover letter, for an example as follows
-  [00/04] cover letter - Add DesignWare Mobile mmc driver
-  [01/04] Introduce a setup_tran_desc ops ...
-  [02/04] Add dw mobile_mmc driver .....
-  [03/04] Add command queue to dw mobile_mmc driver .....
-  [04/04] Add dw mobile mmc rtk driver .....
-And please read patiently
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html.
-
->>---
->> drivers/mmc/host/Kconfig          |   22 +
-
-Do you forget to add dw_mmc_cqe.o and dw_mmc_cqe-rtk.o to Makefile?
-
->> drivers/mmc/host/cqhci-core.c     |    5 +
->> drivers/mmc/host/cqhci.h          |    2 +
->> drivers/mmc/host/dw_mmc_cqe-rtk.c |  999 ++++++++++++++++++
->> drivers/mmc/host/dw_mmc_cqe-rtk.h |  160 +++
->> drivers/mmc/host/dw_mmc_cqe.c     | 1633 +++++++++++++++++++++++++++++
->> drivers/mmc/host/dw_mmc_cqe.h     |  442 ++++++++
->> 7 files changed, 3263 insertions(+)
+Hi,
 
 
-And some compile complains for your reference,
----
-drivers/mmc/host/dw_mmc_cqe.c: In function 'dw_mci_cqe_err_handle':
-drivers/mmc/host/dw_mmc_cqe.c:723:41: warning: this 'if' clause does
-not guard... [-Wmisleading-indentation]
-  723 |                                         if (err =3D=3D -DW_MCI_NOT_=
-READY)
-      |                                         ^~
-drivers/mmc/host/dw_mmc_cqe.c:726:49: note: ...this statement, but the
-latter is misleadingly indented as if it were guarded by the 'if'
-  726 |                                                 break;
-      |                                                 ^~~~~
-----
-In file included from drivers/mmc/host/dw_mmc_cqe-rtk.c:23:
-drivers/mmc/host/dw_mmc_cqe-rtk.h:155:5: error: conflicting types for
-'mmc_hw_reset'; have 'int(struct mmc_host *)'
-  155 | int mmc_hw_reset(struct mmc_host *host);
-      |     ^~~~~~~~~~~~
-In file included from drivers/mmc/host/dw_mmc_cqe-rtk.c:11:
-./include/linux/mmc/core.h:178:5: note: previous declaration of
-'mmc_hw_reset' with type 'int(struct mmc_card *)'
-  178 | int mmc_hw_reset(struct mmc_card *card);
-----
+On 2023/9/5 23:05, Thomas Zimmermann wrote:
+> However, on modern Linux systems the primary display does not really 
+> exist.
 
-Best regards,
-Ben Chuang
+
+No, it do exist.  X server need to know which one is the primary GPU.
+The '*' character at the of (4@0:0:0) PCI device is the Primary.
+The '*' denote primary, see the log below.
+
+(II) xfree86: Adding drm device (/dev/dri/card2)
+(II) xfree86: Adding drm device (/dev/dri/card0)
+(II) Platform probe for 
+/sys/devices/pci0000:00/0000:00:1c.5/0000:003:00.0/0000:04:00.0/drm/card0
+(II) xfree86: Adding drm device (/dev/dri/card3)
+(II) Platform probe for 
+/sys/devices/pci0000:00/0000:00:1c.6/0000:005:00.0/drm/card3
+(--) PCI: (0@0:2:0) 8086:3e91:8086:3e91 rev 0, Mem @ 
+0xdb000000/167777216, 0xa0000000/536870912, I/O @ 0x0000f000/64, BIOS @ 
+0x????????/131072
+(--) PCI: (1@0:0:0) 1002:6771:1043:8636 rev 0, Mem @ 
+0xc0000000/2688435456, 0xdf220000/131072, I/O @ 0x0000e000/256, BIOS @ 
+0x????????/131072
+(--) PCI:*(4@0:0:0) 1a03:2000:1a03:2000 rev 48, Mem @ 
+0xde000000/166777216, 0xdf020000/131072, I/O @ 0x0000c000/128, BIOS @ 
+0x????????/131072
+(--) PCI: (5@0:0:0) 10de:1288:174b:b324 rev 161, Mem @ 
+0xdc000000/116777216, 0xd0000000/134217728, 0xd8000000/33554432, I/O @ 
+0x0000b000/128, BIOS @@0x????????/524288
+
+The modesetting driver of X server will create framebuffer on the primary video adapter.
+If a 2D video adapter (like the aspeed BMC) is not the primary, then it probably will not
+be used. The only chance to be able to display something is to functional as a output slave.
+But the output slave technology need the PRIME support for cross driver buffer sharing.
+
+So, there do have some difference between the primary and non-primary video adapters.
+
+
+> 'Primary' is the device that is available via VGA, VESA or EFI. Our 
+> drivers don't use these interfaces, but the native registers. As you 
+> said yourself, these firmware devices (VGA, VESA, EFI) are removed 
+> ASAP by the native drivers. 
+
