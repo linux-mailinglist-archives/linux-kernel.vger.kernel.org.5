@@ -2,251 +2,512 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9047935E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7097935E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbjIFHGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 03:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60736 "EHLO
+        id S229920AbjIFHHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 03:07:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjIFHGq (ORCPT
+        with ESMTP id S229820AbjIFHHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 03:06:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5D183;
-        Wed,  6 Sep 2023 00:06:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7F5DC433C7;
-        Wed,  6 Sep 2023 07:06:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693984002;
-        bh=QlKqOiuJcXJ+UJetTjnpr9pfdN0x0FuCwfVIo5GBkBs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KK4BDgGIlXB8No81pdYiryeL5qSOuHM8UAEsMZ15KODIa4tk0ksko4ZINc6iuSlQr
-         Q7KjjPWJSXq1MHoNb/bU8xEe3qTkoONvukVR9b4pQiph4fPYkE0hW2VmmFP2CYsese
-         0j30XdQybX1QPbw5M0wkV81FLXedOwQZYZGsL6KY/ixYEgfN+Bd1jPS5e7UAu/vnfq
-         5h71ZPj4dcidFJcw4oBpDXPVSg9wRx9k4kXx3eoDefQZm8ct3E6e6PEkg/h+eWhrPw
-         k0/WoreWZzpibWgeYCR2LpXMg5sRCVZGg0QTBxIP4/Tw+yZQzOFF/okf+G4pstOCXe
-         7h7mEqORy3LaA==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5008d16cc36so5546403e87.2;
-        Wed, 06 Sep 2023 00:06:42 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzT7Is/r8pLjy+HkhVHYfdMF+TUREpYeN1Pua6gFlBsoaAJED5L
-        VoIC3tBGHNmKgkyIDzSAjdnIiJrZt8k//aobS54=
-X-Google-Smtp-Source: AGHT+IE841z3r8oL+9aJtgeVSdQWFQn+moBKacdcuvomzpmaDTDBpnpeNr+fPTUhJfMtvvPI04QZFav6gQMzTsLegXg=
-X-Received: by 2002:a05:6512:220f:b0:4fb:7cea:882a with SMTP id
- h15-20020a056512220f00b004fb7cea882amr1943544lfu.3.1693984000686; Wed, 06 Sep
- 2023 00:06:40 -0700 (PDT)
+        Wed, 6 Sep 2023 03:07:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC3783
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:07:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693984055; x=1725520055;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=T+2WrSQGoPmLypqFpzNoupoQAcGX/Ad0RuKwtLseWGw=;
+  b=NOWOuz05hq1cTqmzMQMOtdfnRbmSUU8lAiz4C4UO33RvuzdPo/HsqfzI
+   k3nmP7A26pAxRSIyMrH8wHDZjjqmE2Xifu/FYUWg3UIxV5Ohii0Uv0Jcz
+   Tve9bTo02+BUSef+3yL74JHF8Q5XkZHXwB7XTxOD0w9Y+2AiKJCtWP0QA
+   ZfwMDGS4BL7m2y2VuooABWPcMGCzMnS/PgzSk4uDrxIHqV4M5RKSy4SQd
+   G8T6YxNe6xr+YipdV1TJJVDPe2Vc523A9pWsljNwjxGVTQUP0wkiD14Dp
+   GMHn77eL9KhaCc3iTGKj81EX/AqIJxwENYQCxOr9FN6XCCngHstRLWFy7
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="374384008"
+X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
+   d="scan'208";a="374384008"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 00:06:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="884579935"
+X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
+   d="scan'208";a="884579935"
+Received: from igorhaza-mobl1.ger.corp.intel.com (HELO [10.249.254.161]) ([10.249.254.161])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 00:06:30 -0700
+Message-ID: <4e7a2b2e-1ab5-09b6-b2de-9b2a82a8a32e@linux.intel.com>
+Date:   Wed, 6 Sep 2023 09:06:37 +0200
 MIME-Version: 1.0
-References: <20230831153108.2021554-1-jiaozhou@google.com> <20230904-erben-coachen-7ca9a30cdc05@brauner>
- <CAFyYRf0xyZSLypcHvpzCXQ5dUztTXbE4Ea1xAcQLfbP4+9N9sQ@mail.gmail.com>
-In-Reply-To: <CAFyYRf0xyZSLypcHvpzCXQ5dUztTXbE4Ea1xAcQLfbP4+9N9sQ@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 6 Sep 2023 09:06:29 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFRaMgPi1X-WRMkunBhBqfVFyDZu6f7CdCh6mU5Mtqh1A@mail.gmail.com>
-Message-ID: <CAMj1kXFRaMgPi1X-WRMkunBhBqfVFyDZu6f7CdCh6mU5Mtqh1A@mail.gmail.com>
-Subject: Re: [PATCH] kernel: Add Mount Option For Efivarfs
-To:     Jiao Zhou <jiaozhou@google.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Linux FS Development <linux-fsdevel@vger.kernel.org>,
-        Jeremy Kerr <jk@ozlabs.org>, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        kernel test robot <oliver.sang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] Documentation/gpu: VM_BIND locking document
+Content-Language: en-US
+To:     Danilo Krummrich <dakr@redhat.com>
+Cc:     intel-xe@lists.freedesktop.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Oak Zeng <oak.zeng@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Francois Dugast <francois.dugast@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230816091547.2982-1-thomas.hellstrom@linux.intel.com>
+ <ZPeGld0mBwbWptV9@cassiopeiae>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>
+In-Reply-To: <ZPeGld0mBwbWptV9@cassiopeiae>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Sept 2023 at 20:05, Jiao Zhou <jiaozhou@google.com> wrote:
+Hi, Danilo,
+
+Thanks for taking a look. Comments inline.
+
+On 9/5/23 21:50, Danilo Krummrich wrote:
+> On Wed, Aug 16, 2023 at 11:15:47AM +0200, Thomas Hellström wrote:
+>> Add the first version of the VM_BIND locking document which is
+>> intended to be part of the xe driver upstreaming agreement.
+>>
+>> The document describes and discuss the locking used during exec-
+>> functions, evicton and for userptr gpu-vmas. Intention is to be using the
+>> same nomenclature as the drm-vm-bind-async.rst.
+>>
+>> v2:
+>> - s/gvm/gpu_vm/g (Rodrigo Vivi)
+>> - Clarify the userptr seqlock with a pointer to mm/mmu_notifier.c
+>>    (Rodrigo Vivi)
+>> - Adjust commit message accordingly.
+>> - Add SPDX license header.
+>>
+>> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+>> Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
+>> ---
+>>   Documentation/gpu/drm-vm-bind-locking.rst | 351 ++++++++++++++++++++++
+>>   1 file changed, 351 insertions(+)
+>>   create mode 100644 Documentation/gpu/drm-vm-bind-locking.rst
+>>
+>> diff --git a/Documentation/gpu/drm-vm-bind-locking.rst b/Documentation/gpu/drm-vm-bind-locking.rst
+>> new file mode 100644
+>> index 000000000000..b813961a9ec2
+>> --- /dev/null
+>> +++ b/Documentation/gpu/drm-vm-bind-locking.rst
+>> @@ -0,0 +1,351 @@
+>> +.. SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+>> +
+>> +===============
+>> +VM_BIND locking
+>> +===============
+>> +
+>> +This document attempts to describe what's needed to get VM_BIND locking right,
+>> +including the userptr mmu_notifier locking and it will also discuss some
+>> +optimizations to get rid of the looping through of all userptr mappings and
+>> +external / shared object mappings that is needed in the simplest
+>> +implementation. It will also discuss some implications for faulting gpu_vms.
+>> +
+>> +Nomenclature
+>> +============
+>> +
+>> +* ``Context``: GPU execution context.
+>> +* ``gpu_vm``: Abstraction of a virtual GPU address space with
+>> +  meta-data. Typically one per client (DRM file-private), or one per
+>> +  context.
+>> +* ``gpu_vma``: Abstraction of a GPU address range within a gpu_vm with
+> The same nomenclature was used within the VM_BIND async document as well. I
+> wonder if it would make sense to align the naming with the GPUVA manager, such
+> that ('drm_gpuva_manager' -> 'drm_gpuvm'). This would also result into better
+> function names, such as drm_gpuvm_resv_lock() or drm_gpuvm_prepare_objects() and
+> potentially way better naming for the VM_BO abstraction 'drm_gpuvm_bo'.
 >
-> Hi Christian,
->
-> Thanks for your reply, will adding a guid and uid check like the below be=
- sufficient? I saw this is how most file systems check their gid and uid. I=
- am not quite sure about how to send fd back to init_user_ns. Can you pleas=
-e clarify a little bit? Thank you so much.
-...
+> However, I'd like to keep 'drm_gpuva' rather than 'drm_gpu_vma', but I think
+> this is close enough anyway.
 
->
-
-Please don't top post and please only send plaintext email to the mailing l=
-ists.
-
-Please consult Documentation/process/submitting-patches.rst in the
-Linux source tree if you are unfamiliar with the upstream contribution
-process (and since you appear to be at Google, you might want to
-consult go/kernel-upstream as well)
-
-Thanks,
-Ard.
+I don't have a strong opinion about the naming here and aligning with 
+the GPUVA manager make sense, although perhaps the "drm_" prefix which 
+makes sense for the function- and struct names may not make sense in a 
+more generic document like this. What about gpuva and gpuvm?
 
 
 >
+>> +  associated meta-data. The backing storage of a gpu_vma can either be
+>> +  a gem buffer object or anonymous pages mapped also into the CPU
+>> +  address space for the process.
+>> +* ``userptr gpu_vma or just userptr``: A gpu_vma, the backing store of
+>> +  which is anonymous pages as described above.
+>> +* ``revalidating``: Revalidating a gpu_vma means making the latest version
+>> +  of the backing store resident and making sure the gpu_vma's
+>> +  page-table entries point to that backing store.
+>> +* ``dma_fence``: A struct dma_fence that is similar to a struct completion
+>> +  and which tracks GPU activity. When the GPU activity is finished,
+>> +  the dma_fence signals.
+>> +* ``dma_resv``: A struct dma_resv (AKA reservation object) that is used
+>> +  to track GPU activity in the form of multiple dma_fences on a
+>> +  gpu_vm or a gem buffer object. The dma_resv contains an array / list
+>> +  of dma_fences and a lock that needs to be held when adding
+>> +  additional dma_fences to the dma_resv. The lock is of a type that
+>> +  allows deadlock-safe locking of multiple dma_resvs in arbitrary order.
+>> +* ``exec function``: An exec function is a function that revalidates all
+>> +  affected gpu_vmas, submits a GPU command batch and registers the
+>> +  dma_fence representing the GPU command's activity with all affected
+>> +  dma_resvs. For completeness, although not covered by this document,
+>> +  it's worth mentioning that an exec function may also be the
+>> +  revalidation worker that is used by some drivers in compute /
+>> +  long-running mode.
+>> +* ``local object``: A GEM object which is local to a gpu_vm. Shared gem
+>> +  objects also share the gpu_vm's dma_resv.
+>> +* ``shared object``: AKA external object: A GEM object which may be shared
+>> +  by multiple gpu_vms and whose backing storage may be shared with
+>> +  other drivers.
+>> +
+>> +
+>> +Introducing the locks
+>> +=====================
+>> +
+>> +One of the benefits of VM_BIND is that local GEM objects share the gpu_vm's
+>> +dma_resv object and hence the dma_resv lock. So even with a huge
+>> +number of local GEM objects, only one lock is needed to make the exec
+>> +sequence atomic.
+>> +
+>> +The following locks and locking orders are used:
+>> +
+>> +* The ``gpu_vm->lock`` (optionally an rwsem). Protects how the gpu_vm is
+>> +  partitioned into gpu_vmas, protects the gpu_vm's list of external objects,
+>> +  and can also with some simplification protect the gpu_vm's list of
+>> +  userptr gpu_vmas. With the CPU mm analogy this would correspond to the
+>> +  mmap_lock.
+>> +* The ``userptr_seqlock``. This lock is taken in read mode for each
+>> +  userptr gpu_vma on the gpu_vm's userptr list, and in write mode during mmu
+>> +  notifier invalidation. This is not a real seqlock but described in
+>> +  ``mm/mmu_notifier.c` as a "Collision-retry read-side/write-side
+>> +  'lock' a lot like a seqcount, however this allows multiple
+>> +  write-sides to hold it at once...". The read side critical section
+>> +  is enclosed by ``mmu_interval_read_begin() /
+>> +  mmu_interval_read_retry()`` with ``mmu_interval_read_begin()``
+>> +  sleeping uninterruptibly if the write side is held.
+>> +  The write side is held by the core mm while calling mmu interval
+>> +  invalidation notifiers.
+>> +* The ``gpu_vm->resv`` lock. Protects the gpu_vm's list of gpu_vmas needing
+>> +  rebinding, and also the residency of all the gpu_vm's local GEM object.
+>> +* The ``gpu_vm->userptr_notifier_lock``. This is an rwsem that is taken in read
+>> +  mode during exec and write mode during a mmu notifier invalidation. In
+>> +  the absence of a separate page-table lock, this lock can serve
+>> +  together with the gpu_vm's dma_resv lock as a page-table lock. More on
+>> +  this below. The userptr notifier lock is per gpu_vm.
+>> +* The ``gpu_vm->page_table_lock``. Protects the gpu_vm's page-table updates. For
+>> +  simplicity the gpu_vm's dma_resv lock can be reused as page-table lock.
+>> +
+>> +There are certain optimizations described below that require
+>> +additional locks. More on that later.
+>> +
+>> +.. code-block:: C
+>> +
+>> +   dma_resv_lock(&gpu_vm->resv);
+>> +
+>> +   for_each_gpu_vma_on_revalidate_list(gpu_vm, &gpu_vma) {
+>> +		revalidate_gpu_vma(&gpu_vma);
+>> +		remove_from_revalidate_list(&gpu_vma);
+>> +   }
+>> +
+>> +   add_dependencies(&gpu_job, &gpu_vm->resv);
+>> +   job_dma_fence = gpu_submit(&gpu_job));
+>> +
+>> +   add_dma_fence(job_dma_fence, &gpu_vm->resv);
+>> +   dma_resv_unlock(&gpu_vm->resv);
+>> +
+>> +Eviction of one of these local objects will then be something like the
+>> +following:
+>> +
+>> +.. code-block:: C
+>> +
+>> +   obj = get_object_from_lru();
+>> +
+>> +   dma_resv_lock(obj->resv);
+>> +   for_each_gpu_vma_of_obj(obj, &gpu_vma);
+>> +		put_gpu_vma_on_revalidate_list(&gpu_vma);
+>> +
+>> +   add_dependencies(&eviction_job, &obj->resv);
+>> +   job_dma_fence = gpu_submit(&eviction_job);
+>> +   add_dma_fence(&obj->resv, job_dma_fence);
+>> +
+>> +   dma_resv_unlock(&obj->resv);
+>> +   put_object(obj);
+>> +
+>> +Note that since the object is local to the gpu_vm, it will share the gpu_vm's
+>> +``dma_resv`` lock so that ``obj->resv == gpu_vm->resv``. Invalidated gpu_vmas are put
+>> +on the gpu_vm's revalidation list, which is protected by ``gpu_vm->resv``, which
+>> +is always locked while evicting, due to the above equality.
+>> +
+>> +For VM_BIND gpu_vms, gpu_vmas don't need to be unbound before eviction,
+>> +Since the eviction blit or copy will wait for GPU idle, any attempt by
+>> +the GPU to access freed memory through the gpu_vma will be preceded by
+>> +a new exec function, which will make sure the gpu_vma is
+>> +revalidated. The eviction code holding the object's dma_resv while
+>> +revalidating will ensure a new exec function may not race with the eviction.
+>> +
+>> +Introducing external (or shared) buffer objects
+>> +===============================================
+>> +
+>> +Since shared buffer objects may be shared by multiple gpu_vm's they
+>> +can't share their reservation object with a single gpu_vm, but will rather
+>> +have a reservation object of their own. The shared objects bound to a
+>> +gpu_vm using one or many
+>> +gpu_vmas are therefore typically put on a per-gpu_vm list which is
+>> +protected by the gpu_vm lock. One could in theory protect it also with
+>> +the ``gpu_vm->resv``, but since the list of dma_resvs to take is typically
+>> +built before the ``gpu_vm->resv`` is locked due to a limitation in
+>> +the current locking helpers, that is typically not done. Also see
+>> +below for userptr gpu_vmas.
+>> +
+>> +At eviction time we now need to invalidate *all* gpu_vmas of a shared
+>> +object, but we can no longer be certain that we hold the gpu_vm's
+>> +dma_resv of all the object's gpu_vmas. We can only be certain that we
+> I need to think a bit more about locking of extobj and evicted object tracking
+> in the case of processing 'drm_gpuva_ops' directly through callbacks within the
+> fence signalling critical path as mentioend in [1].
 >
-> On Mon, Sep 4, 2023 at 1:17=E2=80=AFPM Christian Brauner <brauner@kernel.=
-org> wrote:
+> In order to support that, we'd need to protect extobjs with a separate lock,
+> and while iterating extobjs to acquire the dma-resv lock drop the lock within
+> the loop before we actually acquire the dma-resv lock. Maple tree supports that
+> already and this can be fully done within the GPUVA manager; no need for the
+> driver to care about that.
+
+So do I understand correctly that this because you want to update the 
+gpuvm state while operations are progressing asynchronously?
+
+If so, I wonder whether that could really be done? For example to 
+allocate enough memory for page-tables etc, you need to know the details 
+of the operations at IOCTL execution time, and to know the details you 
+need to know the state from the previous operation?
+
+>
+> While, as already mentioned, I'd really love to support that, I noticed that we
+> have a similar issue with tracking evicted objects. There are (similar) ways to
+> deal with that, however, it drastically increases complexity.
+>
+> Hence, I'd like to reconsider whether it's worth supporting it in the first
+> place. Most of the arguments in order to support it are for decreasing
+> complexity. However, if it increases complexity elsewhere, it's probably not
+> worth. The only argument left would be for synchronous bind jobs which could
+> be injected at any point of time without the need to be queued up in the
+> scheduler to preserve ordering. However, I'm not yet sure how important this
+> would be. For Xe it doesn't really seem to be a concern I guess?
+Xe supports that functionality via separate bind queues. If you queue 
+most of the operations using one queue, you can inject synchronous bind 
+jobs using another. Ideally they execute separately, but they are not 
+guaranteed to do that.
+>
+> [1] https://lore.kernel.org/dri-devel/202308221050.kTj8uFMA-lkp@intel.com/T/#m7f3b5a7ff70723332adeea32671578cb95c62f7c
+>
+>> +hold the object's private dma_resv. We can trylock the dma_resvs for
+>> +the affected gpu_vm's but that might be unnecessarily complex. If we
+>> +have a ww_acquire context at hand at eviction time we can also perform
+>> +sleeping locks of those dma_resvs but that could cause expensive
+>> +rollbacks. One option is to just mark the invalidated gpu_vmas with a bool
+>> +which is inspected on the next exec function, when the gpu_vm's
+>> +dma_resv and the object's dma_resv is held, and the invalidated
+>> +gpu_vmas could then be put on the gpu_vm's list of invalidated
+>> +gpu_vmas. That bool would then, although being per-gpu_vma formally be
+>> +protected by the object's dma_resv.
+>> +
+>> +The exec function would then look something like the following:
+>> +
+>> +.. code-block:: C
+>> +
+>> +   read_lock(&gpu_vm->lock);
+>> +
+>> +   dma_resv_lock(&gpu_vm->resv);
+>> +
+>> +   // Shared object list is protected by the gpu_vm->lock.
+>> +   for_each_shared_obj(gpu_vm, &obj) {
+>> +		dma_resv_lock(&obj->resv);
+>> +		move_marked_gpu_vmas_to_revalidate_gpu_vma_list(obj, &gpu_vm);
+>> +   }
+>> +
+>> +   for_each_gpu_vma_to_revalidate(gpu_vm, &gpu_vma) {
+>> +		revalidate_gpu_vma(&gpu_vma);
+>> +		remove_from_revalidate_list(&gpu_vma);
+>> +   }
+>> +
+>> +   add_dependencies(&gpu_job, &gpu_vm->resv);
+>> +   job_dma_fence = gpu_submit(&gpu_job));
+>> +
+>> +   add_dma_fence(job_dma_fence, &gpu_vm->resv);
+>> +   for_each_shared_obj(gpu_vm, &obj)
+>> +          add_dma_fence(job_dma_fence, &obj->resv);
+>> +   dma_resv_unlock_all_resv_locks();
+>> +
+>> +   read_unlock(&gpu_vm->lock);
+>> +
+>> +And the corresponding shared-object aware eviction would look like:
+>> +
+>> +.. code-block:: C
+>> +
+>> +   obj = get_object_from_lru();
+>> +
+>> +   dma_resv_lock(obj->resv);
+>> +   for_each_gpu_vma_of_obj(obj, &gpu_vma);
+>> +		if (object_is_vm_local(obj))
+>> +		             put_gpu_vma_on_revalidate_list(&gpu_vma, &gpu_vm);
+>> +		else
+>> +		             mark_gpu_vma_for_revalidation(&gpu_vma);
+>> +
+>> +   add_dependencies(&eviction_job, &obj->resv);
+>> +   job_dma_fence = gpu_submit(&eviction_job);
+>> +   add_dma_fence(&obj->resv, job_dma_fence);
+>> +
+>> +   dma_resv_unlock(&obj->resv);
+>> +   put_object(obj);
+>> +
+>> +Yet another option is to put the gpu_vmas to be invalidated on a separate
+>> +gpu_vm list protected by a lower level lock that can be taken both at eviction
+>> +time and at transfer-to-revalidate list time. The details are not in
+>> +this document, but this for reference implemented in the Intel xe
+>> +driver.
+>> +
+>> +Introducing userptr gpu_vmas
+>> +============================
+>> +
+>> +A userptr gpu_vma is a gpu_vma that, instead of mapping a buffer object to a
+>> +GPU virtual address range, directly maps a CPU mm range of anonymous-
+>> +or file page-cache pages.
+>> +A very simple approach would be to just pin the pages using
+>> +pin_user_pages() at bind time and unpin them at unbind time, but this
+>> +creates a Denial-Of-Service vector since a single user-space process
+>> +would be able to pin down all of system memory, which is not
+>> +desirable. (For special use-cases and with proper accounting pinning might
+>> +still be a desirable feature, though). What we need to do in the general case is
+>> +to obtain a reference to the desired pages, make sure we are notified
+>> +using a MMU notifier just before the CPU mm unmaps the pages, dirty
+>> +them if they are not mapped read-only to the GPU, and then drop the reference.
+>> +When we are notified by the MMU notifier that CPU mm is about to drop the
+>> +pages, we need to stop GPU access to the pages,
+>> +GPU page-table and make sure that before the next time the GPU tries to access
+>> +whatever is now present in the CPU mm range, we unmap the old pages
+>> +from the GPU page tables and repeat the process of obtaining new page
+>> +references. Note that when the core mm decides to laundry pages, we get such
+>> +an unmap MMU notification and can mark the pages dirty again before the
+>> +next GPU access. We also get similar MMU notifications for NUMA accounting
+>> +which the GPU driver doesn't really need to care about, but so far
+>> +it's proven difficult to exclude certain notifications.
+>> +
+>> +Using a MMU notifier for device DMA (and other methods) is described in
+>> +`this document
+>> +<https://docs.kernel.org/core-api/pin_user_pages.html#case-3-mmu-notifier-registration-with-or-without-page-faulting-hardware>`_.
+>> +
+>> +Now the method of obtaining struct page references using
+>> +get_user_pages() unfortunately can't be used under a dma_resv lock
+>> +since that would violate the locking order of the dma_resv lock vs the
+>> +mmap_lock that is grabbed when resolving a CPU pagefault. This means the gpu_vm's
+>> +list of userptr gpu_vmas needs to be protected by an outer lock, and this
+>> +is the first time we strictly need the gpu_vm->lock. While it was
+>> +previously used also to protect the list of the gpu_vm's shared objects,
+>> +we could in theory have used the gpu_vm->resv for that.
+>> +
+>> +The MMU interval seqlock for a userptr gpu_vma is used in the following
+>> +way:
+>> +
+>> +.. code-block:: C
+>> +
+>> +   down_read(&gpu_vm->lock);
+>> +
+>> +   retry:
+>> +
+>> +   // Note: mmu_interval_read_begin() blocks until there is no
+>> +   // invalidation notifier running anymore.
+>> +   seq = mmu_interval_read_begin(&gpu_vma->userptr_interval);
+>> +   if (seq != gpu_vma->saved_seq) {
+>> +           obtain_new_page_pointers(&gpu_vma);
+>> +	   dma_resv_lock(&gpu_vm->resv);
+>> +	   put_gpu_vma_on_revalidate_list(&gpu_vma, &gpu_vm);
+>> +	   dma_resv_unlock(&gpu_vm->resv);
+>> +	   gpu_vma->saved_seq = seq;
+>> +   }
+>> +
+>> +   // The usual revalidation goes here.
+>> +
+>> +   // Final userptr sequence validation may not happen before the
+>> +   // submission dma_fence is added to the gpu_vm's resv, from the POW
+>> +   // of the MMU invalidation notifier. Hence the
+>> +   // userptr_notifier_lock that will make them appear atomic.
+>> +
+>> +   add_dependencies(&gpu_job, &gpu_vm->resv);
+>> +   down_read(&gpu_vm->userptr_notifier_lock);
+>> +   if (mmu_interval_read_retry(&gpu_vma->userptr_interval, gpu_vma->saved_seq)) {
+>> +          up_read(&gpu_vm->userptr_notifier_lock);
+>> +	  goto retry;
+>> +   }
+>> +
+>> +   job_dma_fence = gpu_submit(&gpu_job));
+>> +
+>> +   add_dma_fence(job_dma_fence, &gpu_vm->resv);
+>> +
+>> +   for_each_shared_obj(gpu_vm, &obj)
+>> +          add_dma_fence(job_dma_fence, &obj->resv);
+>> +
+>> +   dma_resv_unlock_all_resv_locks();
+>> +   up_read(&gpu_vm->userptr_notifier_lock);
+>> +   up_read(&gpu_vm->lock);
+>> +
+>> +The code between ``mmu_interval_read_begin()`` and the
+>> +``mmu_interval_read_retry()`` marks the read side critical section of
+>> +what we call the ``userptr_seqlock``. In reality the gpu_vm's userptr
+>> +gpu_vma list is looped through, and the check is done for *all* of its
+>> +userptr gpu_vmas, although we only show a single one here.
+>> +
+>> +The userptr gpu_vma MMU invalidation notifier might be called from
+>> +reclaim context and, again to avoid locking order violations, we can't
+>> +take any dma_resv lock nor the gpu_vm->lock from within it.
+>> +
+>> +.. code-block:: C
+>> +
+>> +  bool gpu_vma_userptr_invalidate(userptr_interval, cur_seq)
+>> +  {
+>> +          // Make sure the exec function either sees the new sequence
+>> +	  // and backs off or we wait for the dma-fence:
+>> +
+>> +          down_write(&gpu_vm->userptr_notifier_lock);
+>> +	  mmu_interval_set_seq(userptr_interval, cur_seq);
+>> +	  up_write(&gpu_vm->userptr_notifier_lock);
+>> +
+>> +	  dma_resv_wait_timeout(&gpu_vm->resv, DMA_RESV_USAGE_BOOKKEEP,
+>> +		                false, MAX_SCHEDULE_TIMEOUT);
+>> +	  return true;
+>> +  }
+>> +
+>> +When this invalidation notifier returns, the GPU can no longer be
+>> +accessing the old pages of the userptr gpu_vma and needs to redo the page-binding
+>> +before a new GPU submission can succeed.
+>> +
+>> +Optimizing gpu_vma iteration
+>> +----------------------------
+>> +
+>> +Iterating through all of a gpu_vm's userptr gpu_vmas to check the validity
+>> +on each exec function may be very costly. There is a scheme to avoid
+>> +this and only iterate through the userptr gpu_vmas that actually saw an
+>> +invalidation notifier call since the last exec. T
+>> +
+>> +TODO: describe that scheme here. It's implemented in the xe driver.
+>> +
+>> +Locking for page-table updates at bind- and unbind time
+>> +=======================================================
+>> +
+>> +TODO.
+>> +
+>> +Recoverable page-fault implications
+>> +===================================
+>> +
+>> +TODO.
+>> -- 
+>> 2.41.0
 >>
->> On Thu, Aug 31, 2023 at 03:31:07PM +0000, Jiao Zhou wrote:
->> > Add uid and gid in efivarfs's mount option, so that
->> > we can mount the file system with ownership. This approach
->> >  is used by a number of other filesystems that don't have
->> > native support for ownership.
->> >
->> > TEST=3DFEATURES=3Dtest emerge-reven chromeos-kernel-5_15
->> >
->> > Signed-off-by: Jiao Zhou <jiaozhou@google.com>
->> > Reported-by: kernel test robot <oliver.sang@intel.com>
->> > Closes: https://lore.kernel.org/oe-lkp/202308291443.ea96ac66-oliver.sa=
-ng@intel.com
->> > ---
->> >  fs/efivarfs/inode.c    |  4 +++
->> >  fs/efivarfs/internal.h |  9 ++++++
->> >  fs/efivarfs/super.c    | 65 +++++++++++++++++++++++++++++++++++++++++=
-+
->> >  3 files changed, 78 insertions(+)
->> >
->> > diff --git a/fs/efivarfs/inode.c b/fs/efivarfs/inode.c
->> > index 939e5e242b98..de57fb6c28e1 100644
->> > --- a/fs/efivarfs/inode.c
->> > +++ b/fs/efivarfs/inode.c
->> > @@ -20,9 +20,13 @@ struct inode *efivarfs_get_inode(struct super_block=
- *sb,
->> >                               const struct inode *dir, int mode,
->> >                               dev_t dev, bool is_removable)
->> >  {
->> > +     struct efivarfs_fs_info *fsi =3D sb->s_fs_info;
->> >       struct inode *inode =3D new_inode(sb);
->> > +     struct efivarfs_mount_opts *opts =3D &fsi->mount_opts;
->> >
->> >       if (inode) {
->> > +             inode->i_uid =3D opts->uid;
->> > +             inode->i_gid =3D opts->gid;
->> >               inode->i_ino =3D get_next_ino();
->> >               inode->i_mode =3D mode;
->> >               inode->i_atime =3D inode->i_mtime =3D inode->i_ctime =3D=
- current_time(inode);
->> > diff --git a/fs/efivarfs/internal.h b/fs/efivarfs/internal.h
->> > index 30ae44cb7453..57deaf56d8e2 100644
->> > --- a/fs/efivarfs/internal.h
->> > +++ b/fs/efivarfs/internal.h
->> > @@ -8,6 +8,15 @@
->> >
->> >  #include <linux/list.h>
->> >
->> > +struct efivarfs_mount_opts {
->> > +     kuid_t uid;
->> > +     kgid_t gid;
->> > +};
->> > +
->> > +struct efivarfs_fs_info {
->> > +     struct efivarfs_mount_opts mount_opts;
->> > +};
->> > +
->> >  extern const struct file_operations efivarfs_file_operations;
->> >  extern const struct inode_operations efivarfs_dir_inode_operations;
->> >  extern bool efivarfs_valid_name(const char *str, int len);
->> > diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
->> > index 15880a68faad..d67b0d157ff5 100644
->> > --- a/fs/efivarfs/super.c
->> > +++ b/fs/efivarfs/super.c
->> > @@ -8,6 +8,7 @@
->> >  #include <linux/efi.h>
->> >  #include <linux/fs.h>
->> >  #include <linux/fs_context.h>
->> > +#include <linux/fs_parser.h>
->> >  #include <linux/module.h>
->> >  #include <linux/pagemap.h>
->> >  #include <linux/ucs2_string.h>
->> > @@ -23,10 +24,27 @@ static void efivarfs_evict_inode(struct inode *ino=
-de)
->> >       clear_inode(inode);
->> >  }
->> >
->> > +static int efivarfs_show_options(struct seq_file *m, struct dentry *r=
-oot)
->> > +{
->> > +     struct super_block *sb =3D root->d_sb;
->> > +     struct efivarfs_fs_info *sbi =3D sb->s_fs_info;
->> > +     struct efivarfs_mount_opts *opts =3D &sbi->mount_opts;
->> > +
->> > +     /* Show partition info */
->> > +     if (!uid_eq(opts->uid, GLOBAL_ROOT_UID))
->> > +             seq_printf(m, ",uid=3D%u",
->> > +                             from_kuid_munged(&init_user_ns, opts->ui=
-d));
->> > +     if (!gid_eq(opts->gid, GLOBAL_ROOT_GID))
->> > +             seq_printf(m, ",gid=3D%u",
->> > +                             from_kgid_munged(&init_user_ns, opts->gi=
-d));
->> > +     return 0;
->> > +}
->> > +
->> >  static const struct super_operations efivarfs_ops =3D {
->> >       .statfs =3D simple_statfs,
->> >       .drop_inode =3D generic_delete_inode,
->> >       .evict_inode =3D efivarfs_evict_inode,
->> > +     .show_options   =3D efivarfs_show_options,
->> >  };
->> >
->> >  /*
->> > @@ -190,6 +208,41 @@ static int efivarfs_destroy(struct efivar_entry *=
-entry, void *data)
->> >       return 0;
->> >  }
->> >
->> > +enum {
->> > +     Opt_uid, Opt_gid,
->> > +};
->> > +
->> > +static const struct fs_parameter_spec efivarfs_parameters[] =3D {
->> > +     fsparam_u32("uid",                      Opt_uid),
->> > +     fsparam_u32("gid",                      Opt_gid),
->> > +     {},
->> > +};
->> > +
->> > +static int efivarfs_parse_param(struct fs_context *fc, struct fs_para=
-meter *param)
->> > +{
->> > +     struct efivarfs_fs_info *sbi =3D fc->s_fs_info;
->> > +     struct efivarfs_mount_opts *opts =3D &sbi->mount_opts;
->> > +     struct fs_parse_result result;
->> > +     int opt;
->> > +
->> > +     opt =3D fs_parse(fc, efivarfs_parameters, param, &result);
->> > +     if (opt < 0)
->> > +             return opt;
->> > +
->> > +     switch (opt) {
->> > +     case Opt_uid:
->> > +             opts->uid =3D make_kuid(current_user_ns(), result.uint_3=
-2);
->> > +             break;
->> > +     case Opt_gid:
->> > +             opts->gid =3D make_kgid(current_user_ns(), result.uint_3=
-2);
->> > +             break;
->>
->> This will allow the following:
->>
->> # initial user namespace
->> fd_fs =3D fsopen("efivarfs")
->>
->> # switch to some unprivileged userns
->> fsconfig(fd_fs, FSCONFIG_SET_STRING, "uid", "1000")
->> =3D=3D> This now resolves within the caller's user namespace which might
->>     have an idmapping where 1000 cannot be resolved causing sb->{g,u}id
->>     to be set to INVALID_{G,U}ID.
->>
->>     In fact this is also possible in your patch right now without the
->>     namespace switching. The caller could just pass -1 and that would
->>     cause inodes with INVALID_{G,U}ID to be created.
->>     So you want a check for {g,u}id_valid().
->>
->> # send fd back to init_user_ns
->> fsconfig(fd_fs, FSCONFIG_CMD_CREATE)
->> fd_mnt =3D fsmount(fd_fs, ...)
->> move_mount(fd_fs, "", -EBADF, "/somehwere", ...)
