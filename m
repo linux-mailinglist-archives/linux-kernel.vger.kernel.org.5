@@ -2,79 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B40F793DE9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BA9793DED
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233888AbjIFNmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 09:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59766 "EHLO
+        id S241173AbjIFNoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 09:44:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240377AbjIFNmy (ORCPT
+        with ESMTP id S232463AbjIFNoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 09:42:54 -0400
+        Wed, 6 Sep 2023 09:44:17 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94F210D7;
-        Wed,  6 Sep 2023 06:42:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72E8EC433C7;
-        Wed,  6 Sep 2023 13:42:46 +0000 (UTC)
-Date:   Wed, 6 Sep 2023 09:43:06 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Zheng Yejian <zhengyejian1@huawei.com>
-Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Ajay Kaher <akaher@vmware.com>, <shuah@kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Ye Weihua <yeweihua4@huawei.com>
-Subject: Re: [PATCH] selftests/ftrace: Correctly enable event in
- instance-event.tc
-Message-ID: <20230906094306.67a51feb@gandalf.local.home>
-In-Reply-To: <fcc5d688-9d58-3b4c-58de-472330160142@huawei.com>
-References: <20230626001144.2635956-1-zhengyejian1@huawei.com>
-        <20230626191114.8c5a66fbaa28af3c303923bd@kernel.org>
-        <20230626191255.53baab4ed48d7111dcd44cad@kernel.org>
-        <20230710183741.78f04c68@gandalf.local.home>
-        <1cb3aee2-19af-c472-e265-05176fe9bd84@huawei.com>
-        <20230905183638.2b539fae@gandalf.local.home>
-        <9cad73cd-1f8b-2f3f-cda4-99b89a87b931@huawei.com>
-        <20230906072759.4e8bee1c@gandalf.local.home>
-        <2667182e-691e-2ab4-4c2d-a47d76f38107@huawei.com>
-        <20230906085621.6e20db28@gandalf.local.home>
-        <20230906090252.36219543@gandalf.local.home>
-        <fcc5d688-9d58-3b4c-58de-472330160142@huawei.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A30CF1;
+        Wed,  6 Sep 2023 06:44:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A297DC433C7;
+        Wed,  6 Sep 2023 13:44:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694007853;
+        bh=CsO1YYcv1agmiKj1lvn7Vyw9BRK3mJRnLWMt81bd6zE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=jCrby6kqmYBZdvtcg893fAjXQG7kbAeelqwwsRWhntVdAb5XUetNC2lXET5xBcq9v
+         AGUTnyb8DfydPnS1Bgw8eJa9ZbmcMnRNmeZUNyNp0o/ZF3yFw6dlTDVDltbr8OJeNH
+         qz+IV+bF6KU6AmSk41ccahqmvxUIyWn51xPh+ASBq6lYiOCzzd8/YquayZ8S62sfNy
+         4Wb+RJmOVuQuLEzElTivkei5lz2zK8dBT7cW0f2IZQLAogxQoCBaJJSWd45f9s6C/A
+         46694S+W/vRNQHCJeV6ekkP8B82+D8DUKdqodD6m1y7uVlbyz3UzFJLzObsQJ+UPIm
+         sVuH5jaPGgYHw==
+Message-ID: <bfe9768b-a67e-170d-8130-c2e3cd6357a9@kernel.org>
+Date:   Wed, 6 Sep 2023 15:44:06 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] tools/verification/dot2/dot2k: Delete duplicate imports
+Content-Language: en-US, pt-BR, it-IT
+To:     "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230906103356.3916844-1-alessandro.carminati@gmail.com>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20230906103356.3916844-1-alessandro.carminati@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Sep 2023 21:31:32 +0800
-Zheng Yejian <zhengyejian1@huawei.com> wrote:
+Hi Alessandro,
 
-> > Also, which branch are you testing? What's the sha of the code you are testing?
-> >  
+Do you mind changing the subject to:
+
+verification/dot2k: Delete duplicate imports
+
+
+On 9/6/23 12:33, Alessandro Carminati (Red Hat) wrote:
+> The presence of duplicate import lines appears to be a typo.
+> Removing them.
 > 
-> I think it can be reproduced after any commit after commit
-> 27152bceea1d ("eventfs: Move tracing/events to eventfs")
-> 
-> also can be reproduced with the newest:
-> 65d6e954e378 ("Merge tag 'gfs2-v6.5-rc5-fixes' of 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2")
-> 
-> And revert commit 27152bceea1d ("eventfs: Move tracing/events to
-> eventfs"), the issue just seems gone.
+> Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
 
-The reason I'm asking is that there could be something added that fixes it.
-I'm testing Linus's tree at: cbb557ba92f08b945e2cb20b7ab37ef49ab53cdd
+and adding the Fixes: tag?
 
-Can you add the patch to that and see if you can still reproduce it?
-
--- Steve
+-- Daniel
