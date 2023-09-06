@@ -2,167 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFDB97943B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233597943BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244167AbjIFTRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 15:17:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60690 "EHLO
+        id S243745AbjIFTSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 15:18:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232778AbjIFTRc (ORCPT
+        with ESMTP id S241774AbjIFTSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 15:17:32 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643DA19BF;
-        Wed,  6 Sep 2023 12:17:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC0C5C433C8;
-        Wed,  6 Sep 2023 19:17:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694027828;
-        bh=4LgyGhq8iagQ4sz9xEdZcAhHzFXcboF+cVMQCFHAaXA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=thuEjicEpXufK/L0GLX6eCUFH69d5LtVzixndjzTnWnxN6ZfXS3R2NE7ufC70uvgI
-         cU63EJ/b7I7JkS31wigVqhjC8vrDrWz6mQzSOnBjuVz4RR+TtiN9dnj8i6LlQdUaF3
-         Qj5fljEAUpjU7TYMQTPz9i/cRP3p6ti12o51wB8B45tdH00V121m+qzrU9xr9TaDtp
-         b/DdCOw8KKIkoaSlul41QWbu14gjOwCnCAZ+mMbrV4Moo0p+9pl0I4fL07gJJ0ip4K
-         rWujLyqtveZfdslomog9aVf34DxRq2WOtDo06GrKj0fqDb4DSviHaEEoJ1HxF8dKmX
-         3cxXeBmMn6RXA==
-Date:   Wed, 6 Sep 2023 14:17:06 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        bhelgaas@google.com, Shyam-sundar.S-k@amd.com,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v16 0/3] Avoid PCIe D3 for AMD PCIe root ports
-Message-ID: <20230906191706.GA235406@bhelgaas>
+        Wed, 6 Sep 2023 15:18:32 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2072.outbound.protection.outlook.com [40.107.243.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F6B1993;
+        Wed,  6 Sep 2023 12:18:26 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SprWjnbj5Jo4dlU2oAEYKwEHx+gm5hfTTYNbtkFWDopSefO2xrEiH9hpIS2Bem3qFIq2aIg6G05tzjSZTdGg7D/KdGbhQBCvW1TUxAiUBQ/9VmcUidriAtDGwoMgvKT647XDdDaFBRTgDq/FTtFhzcvGSozNoDchTqC4dJ5bKu/7WnNP7M4XPc+3EXQhZ4xqU6EAYxjjLHRdGNhmuxgYEmO1+8Sb+BzdhG08zVAf4pq7izSwkCiKVa3YhrMddgYThtukMOR8bTa587cSiL64XItFIsTvOS950CiONHf+KnI+Om1JyTmz4wmKSCgGosz9iqrFh9bxoAVhNixPtjAuPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dwaT+EYqNDKGFfJN4Z60heoFv5zxPYiXs0SjcZKyf9A=;
+ b=gwf1dc3b4cyoHIw29dhlOrcqSEl2Il7OOSiiv5UMW1/ZS/Wmc0oO33s6WJig7LeYhGQbOs6rnTCBcFlcp9kp7GYXT8BLL1WcTET8dcYioPJf7s7gS3xpdcrvv/voVr0NQW4A6oKc1CILIclWpfIpzowUBigYrSXJLA7lFiC4tmLcZybB+B19CuwjniTGYImN70wVFksACpiTbI2zS9LekGhWJOhvxv6+YLErxcKQrwXVUe+VuTc+Cphtic/NyEvNF0MjISLWM3ZcsqF2RAnZCT2cr/SoGM7aCjob+q7p/0vM6wniosqTnV/AETroh4TBbmiA9cSGXxuVy1xijblIHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dwaT+EYqNDKGFfJN4Z60heoFv5zxPYiXs0SjcZKyf9A=;
+ b=sXkZpFOEsHcJto2PnKf90UqZfhSmjlbXIeQY3O2KxZQPzDPCcB0yaJ1CgokxwtRthlZaQTZ+zIa+r7qegyxnUAz4aD+pErFvVL1YBzlRt/mQq/yTF9tdWHA3eo2JragNHluwaoTQewRAd8oVbsBEAZO5uNv/fxg3GS7fUTiISlQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
+ by LV2PR12MB5965.namprd12.prod.outlook.com (2603:10b6:408:172::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Wed, 6 Sep
+ 2023 19:18:23 +0000
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::d267:7b8b:844f:8bcd]) by DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::d267:7b8b:844f:8bcd%7]) with mapi id 15.20.6745.030; Wed, 6 Sep 2023
+ 19:18:23 +0000
+Message-ID: <68a44c6d-21c9-30c2-b0cf-66f02f9d2f4e@amd.com>
+Date:   Wed, 6 Sep 2023 14:18:21 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH V2] KVM: SEV: Update SEV-ES shutdown intercepts with more
+ metadata
+Content-Language: en-US
+To:     Peter Gonda <pgonda@google.com>, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20230906151449.18312-1-pgonda@google.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+In-Reply-To: <20230906151449.18312-1-pgonda@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN7PR04CA0106.namprd04.prod.outlook.com
+ (2603:10b6:806:122::21) To DM4PR12MB5229.namprd12.prod.outlook.com
+ (2603:10b6:5:398::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0gSUwysQChe1K7CZSZhMbD0m3S27HFe7HwXSdfrMoNq6Q@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5229:EE_|LV2PR12MB5965:EE_
+X-MS-Office365-Filtering-Correlation-Id: c922162d-4946-468c-b492-08dbaf0e09f2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7sGamFmNj9RgOnsMevwAHtVpwrU2JdIjk8qUvzoflsY7FoxkwppewbnUPK+GAVylYdZgco77X07X7QBVLfoEAjFrUVG5OnEHJHS3XWpmE0tU0oGkhTyITk61pEsXS0dDxE2Wr+p69G+peyv2EKAWTFz7BA/TQLqVTKr9xnbfX6Dr+RdMU7lzGQFQMOnsExv73QLQi/nLirdb6IJ9xhmvDFyMxxiyzKHAuc8D9t9zoHOtRPtAYzE3phG9BhuCMNesRXdayz77hv2MTvvArqMag7K1DsN6oW7ju/1HsVZfHaq5U33FGDJoH8lQlyKNFI+OO8/E617eJk7pBi0ltM7uxQGZPDeYvOotsqjCPZ5i3hvAcp5F0mLgSYUTr47w4WBQsdAMp5nYSL+C+kTWJIDEHwlrXDPlnynmi4dwxsQWjUX1/n09iVsHkL2lrZMKa0K5tI0gGdwTRxDYIqYAaXoig56aWVHoq+5EvTp7a+Ifjt7mR+oz6I9oe1CfvTAFjH4iEwDTPsGF6OAuky02xF/qF1l72MbDzEnvfv45+Xo/lPlPDzcCasH7ET/Wn3oQtSyCWO2riZ/xStit3SZ0lb5pSsZbDawv59IC1wSMYwe3qf2ga96vw26VKakjyNfrSW94MvngrRBNvJDJHxQrCm1VUg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(376002)(366004)(39860400002)(451199024)(186009)(1800799009)(6486002)(6506007)(53546011)(6512007)(478600001)(83380400001)(26005)(2616005)(2906002)(15650500001)(66476007)(66556008)(316002)(66946007)(54906003)(41300700001)(5660300002)(4326008)(8676002)(8936002)(38100700002)(31696002)(86362001)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TEpaaW53cnQ1NkFZdHFVdjMyNTczZ1ZwSVZoc0QzZ2FmMEhYcVp6Y2orZWFq?=
+ =?utf-8?B?eW5kTlBFODQydE4xMlc5L0FxRTFJNTBMOWVDcFIwd0dBQWlMdjR6WTF5ZDN6?=
+ =?utf-8?B?Ti9mMkVjVGVRdTlJL1lNREFYY3hDTjdyQ2tPSURhNGJ4dkFFZE5SeGhOQllv?=
+ =?utf-8?B?QkZBYkRqRTZIZnlsNCtUNCtIUkpxRmdFWmVQbDNTKzFod04veGVPOXhDRFVw?=
+ =?utf-8?B?QXFkNTdYVFg4dkN0NjE5b0JPeDNpNHNkY1FtWFdoa2xKMWl5TW45NU5rTkhX?=
+ =?utf-8?B?d0Y5VU95TGgrNWZRWEF6bm1mL2NLZVBGVTZjYVUxZGFadC8ydUgzY3lSbGVy?=
+ =?utf-8?B?Uk1OcDNTN0duWWJUQUNvcGs5cnF3Y1Q0NFpuK3I0R1diNHZMalFWVUJJWkNC?=
+ =?utf-8?B?OXhIY053Q0prN2pJQjB6Z3Y0ZVVmQk5yS29pNTdrRVlmUDBuUlZhQ0VWVEt2?=
+ =?utf-8?B?MTZMMjZscDg0RWtLVjR4K3Y2Z0dlM2NGSTZrOWVlZ1YrVXpQYS9PLy8xdzdr?=
+ =?utf-8?B?TTV6cHJ4M0RLd3RMS05oRnl6S21iVGp4UFZqeml5aGpVMVA0YWZ0b1ZLcFJT?=
+ =?utf-8?B?SXJNalp2VkFuV3d0K09CLzd4eVRLNzdPMmkvNFJlZmtBMnhyYkpGZ3kxWWNC?=
+ =?utf-8?B?cXQ0TVo4dGNJYk41L2U0Rmg2Y3RJME41Nms5cGhZTE5UWlU3aThWTGRMRGRG?=
+ =?utf-8?B?OUpHaUxwejhPaE1OelBWR2krZCtCK3NVaFFXUXVRMGRiamhpQjBJdVlEajFk?=
+ =?utf-8?B?dE5OcEE0bWNIL2hxZ1dwT3BnUkd3NlI4QnY2WVhXbGZNYkg0RGY0YUJjRno4?=
+ =?utf-8?B?eEdmZkQ0ZEsxcTNualkvTGxLZUdBU1RRMVIxTmkyQVpZTnV4RDN1VVh1Sk1P?=
+ =?utf-8?B?M3VjaWg3MXRxQTlxQTJPTWwwcHJFOXdyTVVHYWF0ZWhhQkdQQkI0WGJnMHRj?=
+ =?utf-8?B?ajYxMkFscU1ibjVGR2ZtZi8xeCtYNEpqNWhPUms4YyszRHpPWTV3QnVhQkNX?=
+ =?utf-8?B?aFExcXM3ZW1NN0V4aW9YK1c5L2lRUC9LQUllQVZ3SWllZ3hVbUliUzNsVG5B?=
+ =?utf-8?B?K3ZTb0hCWXd3YUhtc29FOFhJYUF5SkFpRDA4cUR6bFJJTzhnbEJVV3U1T2NE?=
+ =?utf-8?B?UVRPNGFUWW9qaFFPd2xDYnpXY01QRFBBNjNCQzArU2FMTTdkakhoNXF2a1lv?=
+ =?utf-8?B?UE9NWjJsS3dVVnlXRGRmZVdvWHowOWV4OFZXZi9EbC96dUl1UE5TRHN6Q0ND?=
+ =?utf-8?B?eEIwNDMxTVFrNUhLb2NyWVZaT0hvU0kxV2VlcmVUZjNmc05RRURVMWFEWmNO?=
+ =?utf-8?B?dmMyUGY3Tm1qeTdZRGhBcmUrWkdHU1BmQksyU3kxSWIrRzkrSjVZYUsrSVZR?=
+ =?utf-8?B?Ly9YSDBPYTZWOEhoUVNQKzdVYjRXVHYwSkY4V1Y5a0ZiSXdpdUpVNmhCS1Jm?=
+ =?utf-8?B?d3RwZTVuRWZwdVNlQmZ0T3NyVS9ObEpteGxSbzlCYjU2TEFEejFobTY0cEhF?=
+ =?utf-8?B?a3RtOTJ0UlZTdVB5QUdlTjVYMlIvT0t0Y0pvWTE3bWlwTmdyeUc3eVlmRDRx?=
+ =?utf-8?B?bHhOeWsxMmJpTlNwLzZoZVU3RW0wKzhTVzQwZCtUNVVUeFZEelpLRm5RMEpi?=
+ =?utf-8?B?WS9QRVNLdjBRK2lmNFY3bU1ZL2x5TVhpTzZkTmc2TGtvNCsrQVEvNXJRV29Y?=
+ =?utf-8?B?NnFtbHAvWSt4MHg2NHVRUWNoZzJ0Y2JUNFo4cjAyaWFkZWgxRTVEaVYzYkpZ?=
+ =?utf-8?B?aGZFc3U0TG43YnlvU05wbE03WFBMYVErSHZVUmlMQ1lsOFlxWWxxSWtweDJQ?=
+ =?utf-8?B?Nkx0M1hHWDhEWmdUKzJDcE9OMkVsNitTTTlGNVV3ajBLbVM1ZDVoWTh5aktR?=
+ =?utf-8?B?VmV4MjB3Q1diUkNCWGdOWXR4U0FsMVNGYVNaemhPSlJlM1FHcXhyVXU0RkdF?=
+ =?utf-8?B?cks4Zjlrd1pnanpTOW1Lc3FiQ2ZpaHJWSGhxejgrVnpETzJFREhtczk1MzNj?=
+ =?utf-8?B?ZGpDZDRtK29PMWdIdmU2b25rWGdsVHowbU81T0M5VHVCQjcxaUE4Y2ZpUU8w?=
+ =?utf-8?B?dUR6N1psc0hlSk9FdC9aSEtaVkV5NkpKYU9mcFNTbjQxMGcxOW9UUWo3TmN4?=
+ =?utf-8?Q?RhjNg3yiOCnbRqdhstgwRd8+X?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c922162d-4946-468c-b492-08dbaf0e09f2
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 19:18:23.5950
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TJcqRce6evtsNKrD3B/H7GrJGjjn4CC91lQVyyrsmDmYxONpQb7+c3RxbsbFIxBt1S1mdhesD7KyaR3Sf7T0lQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5965
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 08:56:29PM +0200, Rafael J. Wysocki wrote:
-> On Wed, Sep 6, 2023 at 2:24 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> > On 9/5/23 14:45, Mario Limonciello wrote:
-> > > On 9/5/2023 05:13, Hans de Goede wrote:
-> > >> On 8/29/23 19:12, Mario Limonciello wrote:
-> > >>> D3 on PCIe root ports isn't used on Windows systems in Modern Standby.
-> > >>> This series adjusts the amd-pmc driver to choose the same strategy
-> > >>> for Rembrandt and Phoenix platforms in Linux with s2idle.
-> > >>>
-> > >>> LPS0 constraints are the basis for it; which if they are added for
-> > >>> Windows would also apply for Linux as well.
-> > >>>
-> > >>> This version doesn't incorporate a callback, as it's pending feedback
-> > >>> from Bjorn if that approach is amenable.
-> > >>>
-> > >>> NOTE:
-> > >>> This series relies upon changes that are both in linux-pm.git and
-> > >>> platform-x86.git. So it won't be able to apply to either maintainer's
-> > >>> tree until later.
-> > >>>
-> > >>> Mario Limonciello (3):
-> > >>>    ACPI: x86: s2idle: Export symbol for fetching constraints for module
-> > >>>      use
-> > >>>    platform/x86/amd: pmc: Adjust workarounds to be part of a switch/case
-> > >>>    platform/x86/amd: pmc: Don't let PCIe root ports go into D3
-> > >>
-> > >> Thank you for the new version.
-> > >>
-> > >> I understand you wanted to get this new approach "out there" but
-> > >> this does not address my remarks on v15:
-> > >>
-> > >> https://lore.kernel.org/platform-driver-x86/53d26a63-64f3-e736-99f5-32bf4b5ba31d@redhat.com/
-> > >>
-> > >
-> > > Right; I called out in the cover letter this is pending feedback from Bjorn.
-> > >
-> > >> Bjorn, I suggest to allow platform code to register a callback
-> > >> to influence pci_bridge_d3_possible() results there. Can you
-> > >> take a look at this and let us know what you think of this
-> > >> suggestion ?
-> > >>
-> > >> Looking at this problem again and rereading the commit message
-> > >> of "platform/x86/amd: pmc: Don't let PCIe root ports go into D3"
-> > >>
-> > >> I see that the problem is that the PCIe root ports to which
-> > >> the USB controllers connect should not be allowed to go
-> > >> into D3 when an USB child of them is configured to wakeup
-> > >> the system.
-> > >>
-> > >> It seems to me that given that problem description,
-> > >> we should not be directly messing with the bridge_d3
-> > >> setting at all.
-> > >>
-> > >> Instead the XHCI code should have an AMD specific quirk
-> > >> where it either unconditionally calls pci_d3cold_disable()
-> > >> on the XHCI PCIe device; or it could even try to be smart
-> > >> and call pci_d3cold_enable() / pci_d3cold_disable()
-> > >> from its (runtime)suspend handler depending on if any
-> > >> USB child is configured as a system wakeup source.
-> > >>
-> > >> Note that it is safe to repeatedly call pci_d3cold_enable()
-> > >> / _disable() there is no need to balance the calls.
-> > >>
-> > >
-> > > It's only the PCIe root port that is used for XHCI tunneling that has this issue.  This specific problem is NOT for the root port of "any" AMD XHCI controllers.  There is no problem with any of the XHCI controllers
-> > > going into D3hot.
-> >
-> > "XHCI tunneling" is an unfamiliar term for me. Are we talking about a XHCI controller inside a USB4/thunderbold dock here which is connected to the laptop over PCIe tunneling over thunderbolt ?
-> >
-> > Or do you mean the XHCI controller inside the laptop which is connected to a USB4/thunderbolt capable Type-C port which is used when that port is in USB3/USB2 mode ?
-> >
-> > As long as the XHCI controller is inside the laptop (and not in the dock), presumably you can identify it by say a set of PCI device-ids of the "tunneling" XHCI controllers on affected AMD platforms. So you could then still call pci_d3cold_disable() from the XHCI driver on only those controllers.
-> >
-> > Note I'm not saying this is the best solution. I'm just trying to understand what you mean with " the PCIe root port that is used for XHCI tunneling" .
-> >
-> > I also see that Rafael has said elsewhere in the thread that he needs to think a bit about how to best handle this ...
-> 
-> Yes, I have, and that's because of the realization that the
-> requirements may differ depending on whether or not there is a device
-> (USB or other) enabled to wake up the system from sleep under the Root
-> Port in question.
-> 
-> Essentially, the problem is that wakeup doesn't work and the
-> investigation led to the Root Port's power state when suspended, but
-> that power state only appears to be too deep for the wakeup to work
-> and not in general.
-> 
-> IIUC, the port can be safely programmed into D3hot and then back to D0
-> and that works as long as there are no wakeup devices under it (Mario,
-> please correct me if that's not the case).
-> 
-> Now, when a USB device on the bus segment under the port is configured
-> for system wakeup, it needs to be able to trigger a wake interrupt
-> when the system is in the sleep state.  That wake interrupt is not
-> generated by the USB wakeup device itself, but by the USB controller
-> handling it.  The USB controller is a PCIe device, so in order to
-> generate a wake interrupt it needs the link to its parent port to be
-> up unless it is capable of generating PMEs from D3cold (which only is
-> the case when it is connected to a separate wake power source and that
-> is indicated by setting the corresponding bit in its PM Capabilities
-> Register).
+On 9/6/23 10:14, Peter Gonda wrote:
+> Currently if an SEV-ES VM shuts down userspace sees KVM_RUN struct with
 
-> If that is not the case, and its parent port is programmed
-> into D3hot, that may cause the link between them to go down and so the
-> wake interrupt cannot be generated.
+s/down userspace/down, userspace/
 
-If both the USB adapter and the parent port are in D3hot, the link
-should stay up, shouldn't it?  It should go to L1 (if enabled), but
-still be usable for wake interrupts.  I'm looking at PCIe r6.0, sec
-5.2, Table 5-1.
+> only the INVALID_ARGUMENT. This is a very limited amount of information
+> to debug the situation. Instead KVM can return a
+> KVM_EXIT_SHUTDOWN to alert userspace the VM is shutting down and
+> is not usable any further.
+> 
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: x86@kernel.org
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> 
+> ---
+>   arch/x86/kvm/svm/svm.c | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 956726d867aa..cecf6a528c9b 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -2131,12 +2131,14 @@ static int shutdown_interception(struct kvm_vcpu *vcpu)
+>   	 * The VM save area has already been encrypted so it
+>   	 * cannot be reinitialized - just terminate.
+>   	 */
+> -	if (sev_es_guest(vcpu->kvm))
+> -		return -EINVAL;
+> +	if (sev_es_guest(vcpu->kvm)) {
+> +		kvm_run->exit_reason = KVM_EXIT_SHUTDOWN;
+> +		return 0;
+> +	}
 
-> This means that the port which is generally allowed to go into D3hot
-> (because why not), may not be allowed to do so if system wakeup
-> devices are present under it and that appears to be the missing
-> piece to me.
+Just a nit... feel free to ignore, but, since KVM_EXIT_SHUTDOWN is also 
+set at the end of the function and I don't think kvm_vcpu_reset() clears 
+the value from kvm_run, you could just set kvm_run->exit_reason on entry 
+and just return 0 early for an SEV-ES guest.
+
+Overall, though:
+
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+
+Thanks,
+Tom
+
+>   
+>   	/*
+>   	 * VMCB is undefined after a SHUTDOWN intercept.  INIT the vCPU to put
+> -	 * the VMCB in a known good state.  Unfortuately, KVM doesn't have
+> +	 * the VMCB in a known good state.  Unfortunately, KVM doesn't have
+>   	 * KVM_MP_STATE_SHUTDOWN and can't add it without potentially breaking
+>   	 * userspace.  At a platform view, INIT is acceptable behavior as
+>   	 * there exist bare metal platforms that automatically INIT the CPU
