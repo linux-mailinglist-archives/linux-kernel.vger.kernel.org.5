@@ -2,113 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 804E2793E6C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F5D793E75
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236867AbjIFOMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34654 "EHLO
+        id S233523AbjIFONf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:13:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231316AbjIFOMc (ORCPT
+        with ESMTP id S231316AbjIFONe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:12:32 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E72E4C;
-        Wed,  6 Sep 2023 07:12:24 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-34e2be5679dso12618565ab.1;
-        Wed, 06 Sep 2023 07:12:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694009544; x=1694614344; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=E88Kne0Q5T1jKsknm9/oaNAHcgaUsB/igz0cwVMhvJQ=;
-        b=imMRWXIB9PwGYgw2j2e/JCXgb8es1YVM5gw03kD+E24rPEYqEkgAJV/50FSksLO52H
-         tuHgThuxS4KuIbvr0bg1MvZsLaMQItF2vdMoIMbPFL5jlvLEtvoQiZEFmh4q/SRU/QCa
-         jTQGdSZ4Q04dQgFI9GtM8MmOZ+C6VUReQz8uYbNKA29aTm0VZCWZCUqfXYZ4NYJxj7il
-         HwtoS2/Q0PhlOmqvl1HB+WeT5hefx+JyDX3u0973fg6IhGwqOsxtZWRcuLTpqKI4isRl
-         i+quGgTNephbMUTq1mqqidIyIAZjLi+MQEQXbcse/iFztqcjO7S+160ioQpITknT1H4c
-         lVSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694009544; x=1694614344;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E88Kne0Q5T1jKsknm9/oaNAHcgaUsB/igz0cwVMhvJQ=;
-        b=GE5IQD7UlNHsPTLc7Ph0xWJR0Il479l7bDDEL78USKUCIjPpWxKjxUD7glXaJkITSD
-         orcncdzJ0d8a2neq3h9+DA5O9Wqp3O82cgQ1THlCPD0FibSJRJIRTJYvq14iejl7ZvON
-         bK8ebfuWEhySslGJ5C+G8EiizkB7XjE7iZbfIF4UMjQw3UJyINk99x+iAK8xyQwVQHBg
-         rHqzEv5JPlAwLwKykdX9DL9yH+IwFo+RgHYi9WM47f4TXUhthInp+iEYkMBO5dAfTR6p
-         mOTkQcE7ISPZzD6xrSdyyF3OmeeQOF1TeqPorQpFzyi+RcMfdvs8MXT7XgfhUXJrJ+w/
-         1YUA==
-X-Gm-Message-State: AOJu0Yz20SQLtReopd35RCKsdsj74bM2IlkwVBhA/xBy5eOUSOX3HwTt
-        q+RfI64VaCvfo9qNEWIkD6Q=
-X-Google-Smtp-Source: AGHT+IEfDR7qDd6fFD0sYtFXrp+w2sHhZKM6vgkvCwKx2RlcHYu8LPBhShjreX3dfCSGtFDg1V8Yjw==
-X-Received: by 2002:a92:c74f:0:b0:34f:2484:64ce with SMTP id y15-20020a92c74f000000b0034f248464cemr5063515ilp.23.1694009544213;
-        Wed, 06 Sep 2023 07:12:24 -0700 (PDT)
-Received: from Laptop-X1 ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id t20-20020a17090b019400b002682392506bsm10992274pjs.50.2023.09.06.07.12.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 07:12:22 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 22:12:18 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>
-Cc:     jiri@resnulli.us, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v3] team: fix null-ptr-deref when team device type is
- changed
-Message-ID: <ZPiIwruO1vgw4RfH@Laptop-X1>
-References: <20230905081056.3365013-1-william.xuanziyang@huawei.com>
+        Wed, 6 Sep 2023 10:13:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18813CF;
+        Wed,  6 Sep 2023 07:13:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694009611; x=1725545611;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IDnUPIn2SR7PPT+yx17NZwjwnlF2gGHn7F4nZ5dZw5o=;
+  b=d1PJl3crDFtjg+1l7gfERvFHqUrCbx19ZjEckQ7CMzt1W12sz++PRDWM
+   HQ9yltzbi41BuxsDLn/sUzBWpKtw5XMkmppEQV9/EsI9cI6UnTSZ10W8x
+   O7yUn4wc83oT1LDepdX8z6JOQkuCMMkZobpMUZh34pLxNlgqp8Zlp1rOd
+   WbsPc+TptO73CGiD9ULLVVLeCddNaVLVIOXqSyfhIEv0MAMkVnRx0YkAB
+   X7T4IxnUZiwgzDB0m8Szsm4oMnYUXVXpcQIp6SEabcxhFXuFm3TTdKkIW
+   Rq/zbYA67XIvFMu9CAF81vW0+ntZUMYApfLdi0Avj3GUFSJHAbuTTxiQf
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="362106876"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="362106876"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 07:13:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="831679120"
+X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
+   d="scan'208";a="831679120"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 07:13:24 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qdtHU-006xaj-2B;
+        Wed, 06 Sep 2023 17:13:20 +0300
+Date:   Wed, 6 Sep 2023 17:13:20 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dipen Patel <dipenp@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
+        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 03/21] gpiolib: provide gpio_device_find_by_label()
+Message-ID: <ZPiJAHj3T9yhWXRG@smile.fi.intel.com>
+References: <20230905185309.131295-1-brgl@bgdev.pl>
+ <20230905185309.131295-4-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230905081056.3365013-1-william.xuanziyang@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230905185309.131295-4-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 04:10:56PM +0800, Ziyang Xuan wrote:
-> ---
->  drivers/net/team/team.c | 5 ++++-
->  net/ethernet/eth.c      | 1 +
->  2 files changed, 5 insertions(+), 1 deletion(-)
+On Tue, Sep 05, 2023 at 08:52:51PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> diff --git a/drivers/net/team/team.c b/drivers/net/team/team.c
-> index d3dc22509ea5..12fb5f4cff06 100644
-> --- a/drivers/net/team/team.c
-> +++ b/drivers/net/team/team.c
-> @@ -2127,7 +2127,10 @@ static const struct ethtool_ops team_ethtool_ops = {
->  static void team_setup_by_port(struct net_device *dev,
->  			       struct net_device *port_dev)
->  {
-> -	dev->header_ops	= port_dev->header_ops;
-> +	if (port_dev->type == ARPHRD_ETHER)
-> +		dev->header_ops	= &eth_header_ops;
-> +	else
-> +		dev->header_ops	= port_dev->header_ops;
->  	dev->type = port_dev->type;
->  	dev->hard_header_len = port_dev->hard_header_len;
->  	dev->needed_headroom = port_dev->needed_headroom;
-> diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
-> index 2edc8b796a4e..157833509adb 100644
-> --- a/net/ethernet/eth.c
-> +++ b/net/ethernet/eth.c
-> @@ -347,6 +347,7 @@ const struct header_ops eth_header_ops ____cacheline_aligned = {
->  	.cache_update	= eth_header_cache_update,
->  	.parse_protocol	= eth_header_parse_protocol,
->  };
-> +EXPORT_SYMBOL(eth_header_ops);
->  
->  /**
->   * ether_setup - setup Ethernet network device
-> -- 
-> 2.25.1
-> 
+> By far the most common way of looking up GPIO devices is using their
+> label. Provide a helpers for that to avoid every user implementing their
+> own matching function.
 
-Reviewed-by: Hangbin Liu <liuhangbin@gmail.com>
+...
+
+> +/**
+> + * gpio_device_find_by_label() - wrapper around gpio_device_find() finding the
+> + *                               GPIO device by its backing chip's label
+> + * @label: Label to lookup
+> + *
+> + * Returns:
+> + * Reference to the GPIO device or NULL. Reference must be released with
+
+> + * ``gpio_device_put``.
+
+Out of a sudden different format to refer the function.
+Should be gpio_device_put(), so kernel-doc makes a hyperlink.
+
+> + */
+
+So, please, render all your kernel docs and look at the end result.
+
+...
+
+> +	return gpio_device_find((void *)label, gpio_chip_match_by_label);
+
+This casting is a bit awkward... But I have no good proposal for a change.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
