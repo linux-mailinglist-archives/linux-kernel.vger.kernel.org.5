@@ -2,179 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E182C793F38
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D47A0793F3A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241862AbjIFOqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33312 "EHLO
+        id S235214AbjIFOq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235214AbjIFOqr (ORCPT
+        with ESMTP id S241885AbjIFOq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:46:47 -0400
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2118.outbound.protection.outlook.com [40.107.114.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B0D172C;
-        Wed,  6 Sep 2023 07:46:42 -0700 (PDT)
+        Wed, 6 Sep 2023 10:46:56 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2054.outbound.protection.outlook.com [40.107.93.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53D71736
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:46:50 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U82CprMjs9ADaQpFEAk7n7HlgcNgj3CC3Aw02YX/KaKoc5U/EOJUN5DxiGywG5HW0JRhNNwyBnuS96Hr0PTK6XCuS48SCX3Qo1VfxMnTZqjh18HZr0LCd03In2FoLtWdFwv03af84QJASu57fPhHiVnbEOEW3tbKbmqbBUsZeikqp2s6T1RrB93XPT08d3+h0ETIXP04VVo+VKUx9H9LgqmS0PE4HDNIURRZ008fangL7ikGFJYKLpB4ZU8RZMWc+aRPtR6aC6HxqdWt/DZblyKe/VxI1P85z9iWBuAa+JrLz9lqdgjojQmTpLhpkjpm+liUFk7BnD3DqAXCbzvF2Q==
+ b=hsRYQeOdkg/i/kJFUdM6UFJPO6yyH5SBUp8DeTWiVOExOp+DI07OknpMBdNldPkOdlC4FyeqAYNp7WI/Ek/NjKsJyyvQn+fc0Xs9qrMeheALysouS+gkCfHmBfXxVMJN/Q5FpDSYldjOQLdJM7J74CSaKSc3AMorEg98+KKtqVuqyPUjTBl7EBEiypATOt01s9zYZ0yz704oPvMUAMnELi/Ys8/Ar3PruTx+rYDOaQlfLV6bWL/6yLVQNeMoyghWyuIB0OeIbVOs+g8uX0+fnm4y+mXrHUdFEHjjmL7hodDcYOb72SUgyVfFuiFPceuYkxqWADq6jvRE2d08kV3AiQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JCOflL9qYf1Eo5YWtL2dZ13FkDrwyOKKDxLPgi94kiY=;
- b=Dk5uU2GQrgOrELR+5dxTDXHA5v2Sv9iNX3JhUBIbWNN54s1xI3+CvDO8MeZ3Uz6yZP/unGJBTK3UPaOgD/sxeOiDX4wzwJ90oGme4bX7qXmdiksG9FD8NQG+CCjcJCFuaASZ/63cnJELZEGjCkHqIEEfTMaybpBaI8u3XR9Iwhyz1+Y+ebRoQT5JPP1P9jjbG4g8rEh68a/YE8w0wEGcKFWhUyA7WkkElOF29iQayx4fqNNOeGhp3vugRA7WqIuYLWbbwk7JLtfiAGdbH05+cswAytcwvS+Ygq8BS8V4x0K5HDq3qKSEMmGIhgARJVBBPS4jlV5wzPhEBgZD0I2MRQ==
+ bh=+7Hzf0ZA3Kba9JHl8tuF9iFl6P5cLRD/JuduYFLNNA0=;
+ b=X6W9pwVOk3LDbPWiQprllV6Pmu6Ne/RwJSz5qi6qESrCAz3ygWVyYeiHhfKn9EAaCVgbk5+IIJcnLJCHBcWJj858oWI3a9z0Ktwhg3L6ZT1/3aJLJdKt62njSB4yHo9PT2/3ooLNbOmnmovNNvXGNxj3L29NzETOvM2sTHNmbeEGvi2pVT7WH1fRaL5cVBlELhYNL1QRSnuSdAUAkSsZE5+HSFBq8W+rXHCSyy7IMd4Xt2b2xbGQZfIxM4r+xY1XoIvXGFzqFfV2wc+0GWn1v9jTb04nDw7kizm22aLg9VW1E7fF5u4DJvlgnzydkVnQVzwRtpJU8s2+cDwB8RMvuA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JCOflL9qYf1Eo5YWtL2dZ13FkDrwyOKKDxLPgi94kiY=;
- b=Epj3fWzJUo/cLGn2wUq1gPIXF7qjWisFm0oOy9mp1xGjVMtYnWuteAP7MQ00BJGzKRGEsZZK8Tj0XacS8GqBaBdfeq7XH7OjcJMLUyNdVDQmgVZl1vo1dXb4bxyhFIMiwG5D+4a8W8h8c+HY4BNFIZFQ6FmU3N6Sm73esvD/wOw=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by TYAPR01MB6297.jpnprd01.prod.outlook.com (2603:1096:402:3d::10) with
+ bh=+7Hzf0ZA3Kba9JHl8tuF9iFl6P5cLRD/JuduYFLNNA0=;
+ b=xnaDt7M8RXGqrjTnmh5Xa3QJMD4rFfptdGHjYx6qNSWsWhB2OuvetTqTv/2/FG8Pbfy2gBMkNwjwZzKLDCC8xtFZE7JZvC1SfdBQJf+uxkXd0VLN9JhkpQ5SPR1xz3evI9Yyin03uhJFvETrSbG5dUTYz9lDCrhSuWEkGD8kgxM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by DM4PR12MB5344.namprd12.prod.outlook.com (2603:10b6:5:39a::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Wed, 6 Sep
- 2023 14:46:37 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706%5]) with mapi id 15.20.6745.034; Wed, 6 Sep 2023
- 14:46:37 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Eric Tremblay <etremblay@distech-controls.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.au@gmail.com>
-Subject: RE: [PATCH v4 1/2] hwmon: tmp513: Add max_channels variable to struct
- tmp51x_data
-Thread-Topic: [PATCH v4 1/2] hwmon: tmp513: Add max_channels variable to
- struct tmp51x_data
-Thread-Index: AQHZ4CjM8VnLqJ3pO0KFHHbA6IgPirAN386AgAAAiUA=
-Date:   Wed, 6 Sep 2023 14:46:37 +0000
-Message-ID: <OS0PR01MB592218CADC2F90290B0B727D86EFA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20230905184252.222742-1-biju.das.jz@bp.renesas.com>
- <20230905184252.222742-2-biju.das.jz@bp.renesas.com>
- <ZPiPVZKXeDfLsU64@smile.fi.intel.com>
-In-Reply-To: <ZPiPVZKXeDfLsU64@smile.fi.intel.com>
-Accept-Language: en-GB, en-US
+ 2023 14:46:48 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::121e:5e68:c78a:1f2f]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::121e:5e68:c78a:1f2f%3]) with mapi id 15.20.6745.030; Wed, 6 Sep 2023
+ 14:46:48 +0000
+Message-ID: <3f08ec28-7b8b-436d-ba3d-afb0cedea016@amd.com>
+Date:   Wed, 6 Sep 2023 10:46:42 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 19/34] drm/amd/display: decouple steps for mapping CRTC
+ degamma to DC plane
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TYAPR01MB6297:EE_
-x-ms-office365-filtering-correlation-id: ade956f6-233a-44ab-feba-08dbaee812f1
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vBApxlAdIUBK8uy7S1qhdQCLyWkTJ874KM+75NzisRPyYsYfkPfdnNIsh43kuBSDX6CgD04M9uK6ipH7ycwb8OtJoIV2zwC5JYbcNekBGCiDhdxY1D9l8E/h3o/NZJb9RHzmQFNuMnRDt8o+9tMFKza0cz1gRyU+OhYOolnyMcazO5C4blOO2MtpA3U/wnGp6UF+LzTVI/ptE8wqt2S8GIsvu09jbZTTkK3L6lLqhCdyvEmJSlMzEdXKDS5IHPX2U9gFwsey46SOPTgUGQxnjXnwylwp6lv0xiFH1sInTS6BDxkjBgyWI0GebcVAeRXfZ+cJ2ncPJt+RA7O3nT23GZrovSKPyxvnoWEXpbXpko2Vxt1Mm8idjGqVAndwPfsvg06eJDCXP29XctC9bLBH/Q/Gv6J2qM8nguE07boHQxomzuVOjwCnmQWzv2/zVt5683jBGgL8M6A1qKoBbWP6j25aXdfJHeSvd8sQeIIfopXavl+YpKJgWzj4rz/CzaitCm0O9AkzFsNrC2+jLnMld51/vUEaz+5ygoFw12OU7juXyosRDiteG+Gggcfn6GBJw1rNAAJXva8zpWRGAloJxK50pEAQrpIWj4JTELnRjBU/SyHQtCBc05SYsC7JqB17
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(396003)(376002)(346002)(366004)(186009)(1800799009)(451199024)(7696005)(6506007)(9686003)(55016003)(83380400001)(26005)(76116006)(54906003)(122000001)(6916009)(38070700005)(38100700002)(66446008)(64756008)(66556008)(66476007)(66946007)(52536014)(5660300002)(316002)(33656002)(86362001)(41300700001)(8676002)(8936002)(4326008)(2906002)(71200400001)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?GrKD2GJ5O9W33atW09QWDqURP2IkUrdih23G5ot77yTq4qKWhu8sfmGii/QE?=
- =?us-ascii?Q?ibHq3Mm1Y8/ilwPXj/yGtpwN/HQA4NVjwQ6PnzEITAKU/m7aHt+Rq3Cl0S6R?=
- =?us-ascii?Q?UBTMnmrlSjdvBjU9Iz7eKlIxbuS10tAVzsHCDUs7tGZDLKqRDcNCg7U1Z+Qz?=
- =?us-ascii?Q?pfLyYQJL1rDnjKYrMn0bLs9vOHb8IPt5EDuLwmU9kb2ED4qLG+A8MzNIfskL?=
- =?us-ascii?Q?ET5ov9HzqIKX3znXA9UJBMJChTJMYK1eOwEozgFwp6D0TjLkO4AdU8pKm3UD?=
- =?us-ascii?Q?Su+uAOntSVMBWI+7QiZbIMowVvY7rbz8DwdfBQm95gIWQqobKyrTLU/oiyD3?=
- =?us-ascii?Q?Go6ZoNvTYoxDxqnSgMeyZ16Ne6gzkUH8KmQYdaNSktd+2R7iwi9si6NPcayC?=
- =?us-ascii?Q?VmsJMZkZs5Yt/XK2csRrH7iwoxIaiELctTGJB5QeBAccXSET8u/pTLed4cqr?=
- =?us-ascii?Q?A51wAH+y1DnKWY9my9rPKftz1Qac8T1g8J66V6n/pizy2qbQ+ecdnfTxKpD+?=
- =?us-ascii?Q?pMCAHOFxWYaBMZpZQ8emcrZEgtLxe2+2egizlU6mAfjKwHpHOq7Tmphjh5eh?=
- =?us-ascii?Q?MWHA6R+GnSquwPkPEpr9ewAOAyX/xmGKwqA+oCrW/58sWH1eeMquj5jem2KC?=
- =?us-ascii?Q?2bPWwckUHnTvD/vUNJrihVkNXuZPQlbP7NFRC612gDA6zs25Xd8Td7eWSACz?=
- =?us-ascii?Q?H/jT7cBe9hGIE+WbLlGP96h9XWlYscv0T14i2L7kw1aoNiBdkjF7PFsBZolc?=
- =?us-ascii?Q?7uJvJQ1Atc7i6W/knhlziyovMQR9nVaWr3i4rUg9MmNTHZGHtg4Ln173yRO2?=
- =?us-ascii?Q?mTCdmXzDBt+F2Yz37YHntOSRNewIUlFfBSAX7UtOpquKTO+/I3wrx7eY3ldh?=
- =?us-ascii?Q?7a05aKOqXhkhXdml3ESRPmr9z+qAesZ+IsPyRy4XKk66qekp2SXPFNclVTfZ?=
- =?us-ascii?Q?E3cxnrQuQcviOT5NOvt9JSOHCKjGlJkgs+8yxxZZmyZLQrHpnrUXG3GMsbF8?=
- =?us-ascii?Q?gjg6UHWLIPJDSy8KMY2ewSHE7v3KqVEL3eZMhyu2hSmNcsSWUDg4JaJZ5llV?=
- =?us-ascii?Q?yqG8SleHx/YKIGT3/9MnAb5holLEiq46Bq5gO6cm08IZTTmfGFE9aNRP3972?=
- =?us-ascii?Q?jBRuo4eclzQ+5F30hSTysDnCUPg3QrZIORtO4NyCwgJmYyuuwIzBNHY7C4WY?=
- =?us-ascii?Q?TdEn3Mv8N7U9/8TyBuRyjVkxDPBETHVtsR4fcTcrtVOcIRzGZ1hTRSEFGEW6?=
- =?us-ascii?Q?gWZG/IlVsf9/PAPoigwCfPlePs40V+qOGIbb9XXFDPBvrSW6EmADGOw+l7lN?=
- =?us-ascii?Q?b4vHtq1HiD8/KIBqwxvScelJzZbG9exgNuZv+kScuI06SNHqDg4ICxP6cJyy?=
- =?us-ascii?Q?kOgo+LdyMYB1S2S50NgCD7Ve4mZkulV2mecs0O/kQcaWpjo2qXMZ3Hvvn/Cu?=
- =?us-ascii?Q?SnHLs3sYQ6QUf1Eo8+SJ6gmEQyfUo/qIkJnjPn8kuR4R23gdFlEmkBqYtzn6?=
- =?us-ascii?Q?Jpkxh3YC0VjiFFgYvMbWJa7MB+B0lJ8f4vX0XOp5JXW1RsPaZ2tTHfmMA+g9?=
- =?us-ascii?Q?538/N8yCC4sj68pjB+D4W/NEmULODMdxshx9Nz/AxEbfDf8bLUmbrc1UAxQ0?=
- =?us-ascii?Q?KA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+To:     Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Melissa Wen <mwen@igalia.com>
+Cc:     amd-gfx@lists.freedesktop.org,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
+        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        Joshua Ashton <joshua@froggi.es>,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        Xaver Hugl <xaver.hugl@gmail.com>,
+        Shashank Sharma <Shashank.Sharma@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
+        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
+        linux-kernel@vger.kernel.org
+References: <20230810160314.48225-1-mwen@igalia.com>
+ <20230810160314.48225-20-mwen@igalia.com>
+ <20230822151110.3107b745.pekka.paalanen@collabora.com>
+ <20230825142944.3jkibtz54f4utwuq@mail.igalia.com>
+ <20230828111726.0a39b73b.pekka.paalanen@collabora.com>
+From:   Harry Wentland <harry.wentland@amd.com>
+In-Reply-To: <20230828111726.0a39b73b.pekka.paalanen@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YT4PR01CA0057.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:111::13) To CO6PR12MB5427.namprd12.prod.outlook.com
+ (2603:10b6:5:358::13)
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|DM4PR12MB5344:EE_
+X-MS-Office365-Filtering-Correlation-Id: fc17ec2c-c557-4c0b-e0b8-08dbaee81944
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fk4RemUvCmBb4UJhMDREJU+o0hMkTBH8+YtdjVSdojFIALz+h3z8C8DUoyymlI8ol+svht8/yzSUP092oTBZv3TyVmC1pAY0Kxg+vzttTmwoLbnEHfGuCFOavObN/uBBHmvScFr0ThmwJWzOB6eJm1S27qQ4nNJDMNNg93ZC6dNsK5Lfdsd8bQC+08nz+is+/IPo3tiQImjH6/Wl3wl5BukE2p1oFpKZmovrKCRNb+BsKnSroq2DNg+8UURXtQrolAisbhV6r57NyCiG2UCRuKtPhJ3lS531xc+xFAhY6ym8cZdEe6vsk2nDUZB/ffs1qYxprUosDxr0p8Rvqi7u7HXG2QDIa7Cu7MXKUY+cfqXtWD/wvneHpIDJiOIzPD/xL6jN1CHasLG9MRiMs0MPXbxCVog+VwpxAoS7P+dJZUrhrBblL1T42GCI/dJEBkDzJnJ+934sfWa0Ba5QcfSRI89W1Y6ZgidTD50Y1SAv1KqtollvNVhQLG/bYO8HJkYXQw9oIxs0VEZapr3UxYDyCCjRec6ygMlw8SpCZuEQVGP0fy24YXvkWW7G/LdV7l76ox47WhG4949c0VAkU7BCYEUqw0qCyzZ9d8vxXBY/b149mQC0nDGO61nWhlnyLiXXL/vKIBv6uPHM5S8It73U1qDcapLfYZ9hK6ilBey4QyY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(39860400002)(396003)(376002)(1800799009)(186009)(451199024)(8936002)(4326008)(8676002)(83380400001)(966005)(478600001)(66556008)(66476007)(110136005)(54906003)(66946007)(6512007)(2616005)(26005)(6486002)(6506007)(6666004)(53546011)(41300700001)(2906002)(316002)(38100700002)(5660300002)(44832011)(31696002)(86362001)(7416002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RzQwRWE5OTJNMEpZOGFMR1VhTDlLL2tjaXVQOWZjOEZZdERzTlRudDk0a3da?=
+ =?utf-8?B?eUtGTzNyRXo5eUx1ZXB1M2NleVo1VThTZ3RKUWhhMTdOTXd6YnJObk9NVzJY?=
+ =?utf-8?B?aDl1bWoyM3VNdjhxZ29LaHNoOFpKWERxZ0x4aitBak5DN3FSVVd0ZUNhSlZF?=
+ =?utf-8?B?blhtdGRKT0VUNEdCRy9LUjM3TUYrRUgvREpJMjdGWUs2L3BGYXpiNW1FaDhQ?=
+ =?utf-8?B?eS9oemp2YmJkdDM3ZWNYb2NYK01LazZhc0piQUNZSkljUXJTUWZoRWlDQllE?=
+ =?utf-8?B?SVBlTTRPdDJlTGtyQkllNzhaZDY3c1FXcHE2QXpYQndPSnd1YWtyOFJXSmNu?=
+ =?utf-8?B?RU1hUTY1d1d0RlVvMU1VVWFnK0UrV2R3aEYrYmdwc1R2OVcyUE5XSFl5eEpm?=
+ =?utf-8?B?TnJ6TFhNR0liMkhMRjB4MFB5RjBIZ2NVcHRRSHFaQmhxelZ6VjJXZVNmTUxz?=
+ =?utf-8?B?bVAxczUxM2FYbjN2cU9kS21vODh0TG0yOFMzc1kwcGFWd2NmOE4yd3drNVl5?=
+ =?utf-8?B?b0VKeUxKMTQ5a2RWK0FDa3JhVHFuNzdQd3VEcUpieUx3aVE2cG1rZWVFRVI3?=
+ =?utf-8?B?N2tjU2FPdGFhVHBEbVI2cnFFZHpxTjlkU1BXRjlMRXZKeU55MHhEMWtTcElo?=
+ =?utf-8?B?Y0FvVHN4K21ycnBvbTJXa0doZDZtVHM4Rk1JZUs0S2RMTmdjOGV5Tmd1c1cr?=
+ =?utf-8?B?dWhqOE43MFR4NDJuZTl3Mjg3SmIwL0ZXUEtSL0tWYmFhaENVNDlGZ2p2M3FE?=
+ =?utf-8?B?ODY0U2JtZ2JrSUNUUTZrVTRwWUtBMWIrL2lHMEVxVEFkeU8vUkRxbStpRzJI?=
+ =?utf-8?B?U0MrMzBhbVNDV1NqSGNCRXEzM0tmMDM1aGgwYTZwekJ0cXF3ekNkZVc5cGo2?=
+ =?utf-8?B?aFJVMk1Ca01oREI4WjBkUDM1akhVbi9CUFN1clFwNmhkb1pIT0VFUkhEMEgz?=
+ =?utf-8?B?RE9GRlFOV3A1Wm1ENzBtdGNCLzYzaE1ZSVpQWXNpd2M3ZUd2dU1wZXZvTGFT?=
+ =?utf-8?B?bTZpL0c3VERIaDExc1dwb0tFbFNxRkFrZlZLRzBpK0lWR0MxeFE3TzZYZWpS?=
+ =?utf-8?B?NlovcGZ1MXV0c1FoOGFwNEVZcElIRDVHeHZacktYVGw1Wkw5cXJCZ1pDVm9z?=
+ =?utf-8?B?WEFvMkxzN25pMzEyUEJjSjJhdFVGR2lOc0Rod2d6SzZtbVFKK2FkRHcwekE0?=
+ =?utf-8?B?RFBCYURmME1OSmVIeHhsTmdYVUZtL0F0dGZ0OUZKZjhsUzZLd1F4eXB3WEo0?=
+ =?utf-8?B?blBML1ByMmZFTU5wcTl6VzNPSDdaV1AxdWJIQ2FwWHN4WDU1TVlMeExGeld6?=
+ =?utf-8?B?dzVrNG1GTXJjSEVmUzgzZ3YxSnBrc1lJRTNWMzRQUllDU0dITkVLcnR6dFlh?=
+ =?utf-8?B?YkZMWGI4OThRczBlNTYzV0QyTnAzemp6MEZYcTFNd3JYR0xtVlo4YmhlU0hS?=
+ =?utf-8?B?bkUwR2kyTHdaNldGaGZTZjdERVNTUUxDYmg4RmVwNTVkZ1V4VDJ2L1ZtQWtB?=
+ =?utf-8?B?MUUrSUdWS0tldDFBWDAwMWYwTEx0TzBNNU5Qb1ZqeUFTZ1ppZVBDZUFMYjU3?=
+ =?utf-8?B?WnVzdXlIbi8yajd5M3NRMHdLZWQwNmR1eGt0dnBOb05mWWJkQUdCSDFWOGxP?=
+ =?utf-8?B?ZFpneHkvUzFlTXBhcUhIT0RjZ3JsWU5YSFgrTEFyMGZRT1h1bzY5bisyaGF6?=
+ =?utf-8?B?ZnYyNE41S08rOTB3bmdpa05mTWFTU0tZNnZBYTFCbDdpOXllbUxvQUYxVmNM?=
+ =?utf-8?B?OXZqdiswQklKQU5tMnZBS0NPOG5BaHVhLzcyT2hmQnVJNlI4aWk0a0pKbExE?=
+ =?utf-8?B?Nm9HK08zdW1rYmcySldzYmkwZUM1amN2WnFtK1o3anRoQjlWVEI5RUE5K1Fx?=
+ =?utf-8?B?MnVGOXZuakJISUVuYUNhNER1QnlNazQvcnNkOEw5WmZmS1o5amw3WGZ0aCtB?=
+ =?utf-8?B?SlpMK1pZUzg4UjB0dE52Q0NiN2VFajIxT3cvQTJ2Ylp3bU4xUlFNZGZkSUY5?=
+ =?utf-8?B?UE84QXNMbngxU1UvQ1dWY3ZqM2gzaVdNL1VFT1YweG5oWkdMYlJKT1g2TU5o?=
+ =?utf-8?B?V09tT2VNaUc1azlwTWxFQUt4WHRpR0EzMDQ2N2FYYTdDU1h4QnRYUkxqWmxQ?=
+ =?utf-8?Q?FEdhVG5jpcvDtiT9Y+orSyg59?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc17ec2c-c557-4c0b-e0b8-08dbaee81944
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ade956f6-233a-44ab-feba-08dbaee812f1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Sep 2023 14:46:37.6261
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 14:46:48.5266
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7I6xAAshWnf/qMJUd1H7iPkzv1VyriBRIs8CCh92q+KPsOSArnNrf4OcwIBLCk/Hvk+i3OICcz4aH7Gv5eajI8MxymWcypG51JfyANnwS1g=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB6297
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y4KTWTTcgyd4mTwNvT1fJ/rkoIhprMrajTwSolphR4XW3Mz7TMZgxqZJCb3lr6ulczxvfGha8Ha2kCnHB5Ix7A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5344
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
 
-> Subject: Re: [PATCH v4 1/2] hwmon: tmp513: Add max_channels variable to
-> struct tmp51x_data
->=20
-> On Tue, Sep 05, 2023 at 07:42:51PM +0100, Biju Das wrote:
-> > The tmp512 chip has 3 channels whereas tmp513 has 4 channels. Avoid
-> > using tmp51x_ids for this HW difference by replacing OF/ID table data
-> > with maximum channels supported by the device.
-> >
-> > Replace id->max_channels variable from struct tmp51x_data and drop the
-> > macros TMP51{2,3}_TEMP_CONFIG_DEFAULT as it can be derived from the
-> > macro TMP51X_TEMP_CONFIG_DEFAULT and update the logic in
-> > tmp51x_is_visible(),
-> > tmp51x_read_properties() and tmp51x_init() using max_channels.
-> >
-> > While at it, drop enum tmp51x_ids as there is no user and remove
-> > trailing comma in the terminator entry for OF table.
->=20
-> ...
->=20
-> > +#define TMP51X_TEMP_CONFIG_CONV_RATE	FIELD_PREP(GENMASK(9, 7), 0x7)
-> > +#define TMP51X_TEMP_CONFIG_RC		BIT(10)
-> > +#define TMP51X_TEMP_CHANNEL_MASK(n)	FIELD_PREP(GENMASK(14, 11), \
-> > +						   GENMASK((n) - 1, 0))
->=20
-> Why do you need FIELD_PREP() for the pure constants here? Why can you
-> simply define the constants in the proper place?
 
-I think one can clearly understand the bit definitions and value from FIELD=
-_PREP.
+On 2023-08-28 04:17, Pekka Paalanen wrote:
+> On Fri, 25 Aug 2023 13:29:44 -0100
+> Melissa Wen <mwen@igalia.com> wrote:
+> 
+>> On 08/22, Pekka Paalanen wrote:
+>>> On Thu, 10 Aug 2023 15:02:59 -0100
+>>> Melissa Wen <mwen@igalia.com> wrote:
+>>>   
+>>>> The next patch adds pre-blending degamma to AMD color mgmt pipeline, but
+>>>> pre-blending degamma caps (DPP) is currently in use to provide DRM CRTC
+>>>> atomic degamma or implict degamma on legacy gamma. Detach degamma usage
+>>>> regarging CRTC color properties to manage plane and CRTC color
+>>>> correction combinations.
+>>>>
+>>>> Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+>>>> Signed-off-by: Melissa Wen <mwen@igalia.com>
+>>>> ---
+>>>>  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 59 +++++++++++++------
+>>>>  1 file changed, 41 insertions(+), 18 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+>>>> index 68e9f2c62f2e..74eb02655d96 100644
+>>>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+>>>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+>>>> @@ -764,20 +764,9 @@ int amdgpu_dm_update_crtc_color_mgmt(struct dm_crtc_state *crtc)
+>>>>  	return 0;
+>>>>  }
+>>>>  
+>>>> -/**
+>>>> - * amdgpu_dm_update_plane_color_mgmt: Maps DRM color management to DC plane.
+>>>> - * @crtc: amdgpu_dm crtc state
+>>>> - * @dc_plane_state: target DC surface
+>>>> - *
+>>>> - * Update the underlying dc_stream_state's input transfer function (ITF) in
+>>>> - * preparation for hardware commit. The transfer function used depends on
+>>>> - * the preparation done on the stream for color management.
+>>>> - *
+>>>> - * Returns:
+>>>> - * 0 on success. -ENOMEM if mem allocation fails.
+>>>> - */
+>>>> -int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
+>>>> -				      struct dc_plane_state *dc_plane_state)
+>>>> +static int
+>>>> +map_crtc_degamma_to_dc_plane(struct dm_crtc_state *crtc,
+>>>> +			     struct dc_plane_state *dc_plane_state)
+>>>>  {
+>>>>  	const struct drm_color_lut *degamma_lut;
+>>>>  	enum dc_transfer_func_predefined tf = TRANSFER_FUNCTION_SRGB;
+>>>> @@ -800,8 +789,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
+>>>>  						 &degamma_size);
+>>>>  		ASSERT(degamma_size == MAX_COLOR_LUT_ENTRIES);
+>>>>  
+>>>> -		dc_plane_state->in_transfer_func->type =
+>>>> -			TF_TYPE_DISTRIBUTED_POINTS;
+>>>> +		dc_plane_state->in_transfer_func->type = TF_TYPE_DISTRIBUTED_POINTS;
+>>>>  
+>>>>  		/*
+>>>>  		 * This case isn't fully correct, but also fairly
+>>>> @@ -837,7 +825,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
+>>>>  				   degamma_lut, degamma_size);
+>>>>  		if (r)
+>>>>  			return r;
+>>>> -	} else if (crtc->cm_is_degamma_srgb) {
+>>>> +	} else {
+>>>>  		/*
+>>>>  		 * For legacy gamma support we need the regamma input
+>>>>  		 * in linear space. Assume that the input is sRGB.
+>>>> @@ -847,8 +835,43 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
+>>>>  
+>>>>  		if (tf != TRANSFER_FUNCTION_SRGB &&
+>>>>  		    !mod_color_calculate_degamma_params(NULL,
+>>>> -			    dc_plane_state->in_transfer_func, NULL, false))
+>>>> +							dc_plane_state->in_transfer_func,
+>>>> +							NULL, false))
+>>>>  			return -ENOMEM;
+>>>> +	}
+>>>> +
+>>>> +	return 0;
+>>>> +}
+>>>> +
+>>>> +/**
+>>>> + * amdgpu_dm_update_plane_color_mgmt: Maps DRM color management to DC plane.
+>>>> + * @crtc: amdgpu_dm crtc state
+>>>> + * @dc_plane_state: target DC surface
+>>>> + *
+>>>> + * Update the underlying dc_stream_state's input transfer function (ITF) in
+>>>> + * preparation for hardware commit. The transfer function used depends on
+>>>> + * the preparation done on the stream for color management.
+>>>> + *
+>>>> + * Returns:
+>>>> + * 0 on success. -ENOMEM if mem allocation fails.
+>>>> + */
+>>>> +int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
+>>>> +				      struct dc_plane_state *dc_plane_state)
+>>>> +{
+>>>> +	bool has_crtc_cm_degamma;
+>>>> +	int ret;
+>>>> +
+>>>> +	has_crtc_cm_degamma = (crtc->cm_has_degamma || crtc->cm_is_degamma_srgb);
+>>>> +	if (has_crtc_cm_degamma){
+>>>> +		/* AMD HW doesn't have post-blending degamma caps. When DRM
+>>>> +		 * CRTC atomic degamma is set, we maps it to DPP degamma block
+>>>> +		 * (pre-blending) or, on legacy gamma, we use DPP degamma to
+>>>> +		 * linearize (implicit degamma) from sRGB/BT709 according to
+>>>> +		 * the input space.  
+>>>
+>>> Uhh, you can't just move degamma before blending if KMS userspace
+>>> wants it after blending. That would be incorrect behaviour. If you
+>>> can't implement it correctly, reject it.
+>>>
+>>> I hope that magical unexpected linearization is not done with atomic,
+>>> either.
+>>>
+>>> Or maybe this is all a lost cause, and only the new color-op pipeline
+>>> UAPI will actually work across drivers.  
+>>
+>> I agree that crtc degamma is an optional property and should be not
+>> exposed if not available.  I did something in this line for DCE that has
+>> no degamma block[1].  Then, AMD DDX driver stopped to advertise atomic
+>> API for DCE, that was not correct too[2].
+> 
+> Did AMD go through all the trouble of making their Xorg DDX use KMS
+> atomic, even after the kernel took it away from X due to modesetting
+> DDX screwing it up? I'm surprised, what did that achieve?
+> 
+> I saw that between 5.15 and 6.1 amdgpu stopped advertising CRTC DEGAMMA
+> on my card, which seems like the right thing to do if there is no
+> hardware for it.
+> 
+>> But I see it as a lost cause that will only be fixed in a new generic
+>> color API. I don't think we should change it using the current DRM CRTC
+>> API with driver-specific props.
+>>
+>> [1] https://lore.kernel.org/amd-gfx/20221103184500.14450-1-mwen@igalia.com/
+>> [2] https://gitlab.freedesktop.org/xorg/driver/xf86-video-amdgpu/-/issues/67
+> 
+> Oh well.
+> 
+> Is the old CRTC GAMMA property still "safe" to use in that it is
+> definitely always after blending?
+> 
 
-For eg:
-GENMASK(14, 11)--> bits 11..14
-GENMASK((n) - 1, 0)--> value 15 for 4 channels and 7 for 3 channels.
+CRTC GAMMA is always post-blending. DEGAMMA and CTM are not always
+post-blending and need to be fixed (or removed).
 
->=20
-> ...
->=20
-> > +#define TMP51X_TEMP_CONFIG_DEFAULT(n)	(TMP51X_TEMP_CONFIG_CONT | \
-> > +			TMP51X_TEMP_CHANNEL_MASK(n) | \
-> > +			TMP51X_TEMP_CONFIG_CONV_RATE | TMP51X_TEMP_CONFIG_RC)
->=20
-> This is better to read in a form of
->=20
-> #define TMP51X_TEMP_CONFIG_DEFAULT(n)					\
-> 	(TMP51X_TEMP_CHANNEL_MASK(n) | TMP51X_TEMP_CONFIG_CONT |	\
-> 	 TMP51X_TEMP_CONFIG_CONV_RATE | TMP51X_TEMP_CONFIG_RC)
->=20
+Harry
 
-I just used the indentation suggested by Guenter.
+> 
+> Thanks,
+> pq
+> 
+>>>> +		 */
+>>>> +		ret = map_crtc_degamma_to_dc_plane(crtc, dc_plane_state);
+>>>> +		if (ret)
+>>>> +			return ret;
+>>>>  	} else {
+>>>>  		/* ...Otherwise we can just bypass the DGM block. */
+>>>>  		dc_plane_state->in_transfer_func->type = TF_TYPE_BYPASS;  
+>>>   
+> 
 
-Cheers,
-Biju
