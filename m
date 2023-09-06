@@ -2,54 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 959F3793ECC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BF3793ECF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241580AbjIFOaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:30:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
+        id S241596AbjIFObQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbjIFOai (ORCPT
+        with ESMTP id S231896AbjIFObP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:30:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECF510F8;
-        Wed,  6 Sep 2023 07:30:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC886C433C7;
-        Wed,  6 Sep 2023 14:30:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694010633;
-        bh=H4b49p0G1N+ERPiFWvG+J6lGuqxVEeIg8/rtSnFhxeQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iN1dOangqLf1JXRqNgHyvVHqJRL0+HG5TSmQn4IPTG74f+nn6iSF52el4z5Ltpu3D
-         USWhhFu746FOskth5cYghrx4bacdnEPSgoAGnxFsvy06OXNOmKuTLHK8K42NhtGnzc
-         1rBy/zXRy/nWSg/8ElUk1ohRGzQJbf3QYae1l7PHM1IcYgkza+RxJO5eocu1ak+jjv
-         FK91XWB3widwPXKnfljJnN4wljVOPnfHuy11Ron39To4Om+lJxSw4I67Q91QX+l4FX
-         Vys1gwHGozCfxLSVLSbbhxcrAiEtRlVrW5FtNBqK/s4B+JBeYJAdziK0wqocAHTvhz
-         j7jlxHB6nGpBw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A7306403F4; Wed,  6 Sep 2023 11:30:30 -0300 (-03)
-Date:   Wed, 6 Sep 2023 11:30:30 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] perf stat: Fix aggr mode initialization
-Message-ID: <ZPiNBk/m+vcsP+rz@kernel.org>
-References: <20230906003912.3317462-1-irogers@google.com>
- <CAM9d7cgBZufrSWQhSeipV35_y3Kb1EWSoqtXMvLBnCFaoS9Atg@mail.gmail.com>
+        Wed, 6 Sep 2023 10:31:15 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFABA10E9
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:31:09 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5280ef23593so5045862a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 07:31:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694010667; x=1694615467; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G+7p6NMsxOjRyL4QMAB/bB/PBWKoduMJyy2zj/3BYKM=;
+        b=OyMW80fA8axA2Pme+Y3acL9wJ7W4CFc84Jie1J/UcM8+7xyII/R5wlYuURzQ9Z29bl
+         7He38PQn173IQeTn+F9lcOGM4Nn5GKPNsYyz/MhcAeJkbRUcupUpz5cM/Y8iwWvAt9AP
+         27nfPhJbXuE/QiBIN9dM6Lb2vtNhV/QLtajcw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694010667; x=1694615467;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G+7p6NMsxOjRyL4QMAB/bB/PBWKoduMJyy2zj/3BYKM=;
+        b=MAZ5lxV+zwwg/Mf0+6VJBtUVg6jyFNFWd3rE1lPjXXjN0bwv/U0XCp/OzZ/KQNa8eP
+         kCctnTX1gSw1h/Ij2p+WElqbUq4cPtwgX4kvNItcSS6wrTwq+UcTP4ZMtYHs4cc3n2U4
+         kWqQfSw8r4VOGNZAnxaIHc9bHDkMUqBLwk8z1xpztEJglqhXP9/W2PWJ2x4ZTUi2dQC4
+         J9Xxirq3r7fm68ZaOH43HnLagSlnSje/F2kwdzcS83CCK9b9kPhwmpityEcspm5jMTEf
+         PDxhHmCCqxpujiuLzq3tskDMbqb0yPKaXqNHO0qosR0scdKiUELonRtT3/y9wHVmzoLn
+         fvDA==
+X-Gm-Message-State: AOJu0YwzDAmtzz6yCuae4AwbNys2lVsW+EAlAjwTc8/lHDPxr4RT0kiN
+        0+CA3O1btcF/D82F8UX6XrktfduspxVAgy16R+Uwix2b
+X-Google-Smtp-Source: AGHT+IGr1S4xJdqSXyXKJFr3x/gw9mVojjc5gyUAs75HnQtUbJi1zSBkqAJsU0Qp0QIGav6HV1HCDg==
+X-Received: by 2002:a05:6402:124c:b0:523:364b:e6a9 with SMTP id l12-20020a056402124c00b00523364be6a9mr2561159edw.38.1694010667241;
+        Wed, 06 Sep 2023 07:31:07 -0700 (PDT)
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
+        by smtp.gmail.com with ESMTPSA id w25-20020aa7cb59000000b005222c6fb512sm8521690edt.1.2023.09.06.07.31.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 07:31:06 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-402c80b71ecso95895e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 07:31:06 -0700 (PDT)
+X-Received: by 2002:a05:600c:5493:b0:3fe:eb42:7ec with SMTP id
+ iv19-20020a05600c549300b003feeb4207ecmr115838wmb.1.1694010665909; Wed, 06 Sep
+ 2023 07:31:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7cgBZufrSWQhSeipV35_y3Kb1EWSoqtXMvLBnCFaoS9Atg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <20230901234202.566951-1-dianders@chromium.org>
+ <20230901164111.RFT.13.I0a9940ff6f387d6acf4e71d8c7dbaff8c42e3aaa@changeid>
+ <32186b941d6228a102b5e799aadf34206b58ac15.camel@pengutronix.de>
+ <CAD=FV=WLw3cAU0nuNuKXiu=Zbv4tVa3aa35GFaxsjO880T0pmw@mail.gmail.com> <d56dfb568711b4b932edc9601010feda020c2c22.camel@pengutronix.de>
+In-Reply-To: <d56dfb568711b4b932edc9601010feda020c2c22.camel@pengutronix.de>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 6 Sep 2023 07:30:48 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XJ=O5oMKcBSh0qD=ZXUpRgvV8HCheABL7s-T_u+6TsHg@mail.gmail.com>
+Message-ID: <CAD=FV=XJ=O5oMKcBSh0qD=ZXUpRgvV8HCheABL7s-T_u+6TsHg@mail.gmail.com>
+Subject: Re: [RFT PATCH 13/15] drm/imx/ipuv3: Call drm_atomic_helper_shutdown()
+ at shutdown/unbind time
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     dri-devel@lists.freedesktop.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>, airlied@gmail.com,
+        daniel@ffwll.ch, festevam@gmail.com, kernel@pengutronix.de,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, shawnguo@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -60,24 +84,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Sep 05, 2023 at 07:58:20PM -0700, Namhyung Kim escreveu:
-> On Tue, Sep 5, 2023 at 5:39 PM Ian Rogers <irogers@google.com> wrote:
-> > The issue was the use of testing a cpumap with NULL rather than using
-> > empty, as a map containing the dummy value isn't NULL and the -1
-> > results in an empty aggr map being allocated which legitimately
-> > overflows when any member is accessed.
-> 
-> Right, evlist__create_maps() set it to non-NULL.
-> 
+Hi,
+
+On Tue, Sep 5, 2023 at 10:47=E2=80=AFPM Philipp Zabel <p.zabel@pengutronix.=
+de> wrote:
+>
+> Hi,
+>
+> On Di, 2023-09-05 at 13:29 -0700, Doug Anderson wrote:
+> > Hi,
 > >
-> > Fixes: 8a96f454f566 ("perf stat: Avoid SEGV if core.cpus isn't set")
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> > On Mon, Sep 4, 2023 at 1:30=E2=80=AFAM Philipp Zabel <p.zabel@pengutron=
+ix.de> wrote:
+> > >
+> > > On Fr, 2023-09-01 at 16:41 -0700, Douglas Anderson wrote:
+> > > > Based on grepping through the source code this driver appears to be
+> > > > missing a call to drm_atomic_helper_shutdown() at system shutdown t=
+ime
+> > > > and at driver unbind time. Among other things, this means that if a
+> > > > panel is in use that it won't be cleanly powered off at system
+> > > > shutdown time.
+> > > >
+> > > > The fact that we should call drm_atomic_helper_shutdown() in the ca=
+se
+> > > > of OS shutdown/restart and at driver remove (or unbind) time comes
+> > > > straight out of the kernel doc "driver instance overview" in
+> > > > drm_drv.c.
+> > > >
+> > > > A few notes about this fix:
+> > > > - When adding drm_atomic_helper_shutdown() to the unbind path, I ad=
+ded
+> > > >   it after drm_kms_helper_poll_fini() since that's when other drive=
+rs
+> > > >   seemed to have it.
+> > > > - Technically with a previous patch, ("drm/atomic-helper:
+> > > >   drm_atomic_helper_shutdown(NULL) should be a noop"), we don't
+> > > >   actually need to check to see if our "drm" pointer is NULL before
+> > > >   calling drm_atomic_helper_shutdown(). We'll leave the "if" test i=
+n,
+> > > >   though, so that this patch can land without any dependencies. It
+> > > >   could potentially be removed later.
+> > > > - This patch also makes sure to set the drvdata to NULL in the case=
+ of
+> > > >   bind errors to make sure that shutdown can't access freed data.
+> > > >
+> > > > Suggested-by: Maxime Ripard <mripard@kernel.org>
+> > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > >
+> > > Thank you,
+> > > Tested-by: Philipp Zabel <p.zabel@pengutronix.de>
+> >
+> > Thanks! I notice that:
+> >
+> > ./scripts/get_maintainer.pl --scm -f drivers/gpu/drm/imx/ipuv3/imx-drm-=
+core.c
+> >
+> > Doesn't say drm-misc but also when I look at the MAINTAINERS file and
+> > find the section for "DRM DRIVERS FOR FREESCALE IMX"
+>
+> That should probably say "IMX5/6" nowadays. There are a lot more i.MX
+> that do not use IPUv3 than those that do.
+>
+> > it doesn't explicitly list a different git tree.
+>
+> I used to send pull requests from git.pengutronix.de/git/pza/linux,
+> same as for the reset controller framework. I might still have to do
+> that for changes in drivers/gpu/ipu-v3 that need coordination between
+> drm and v4l2, but usually pure drm/imx/ipuv3 changes are pushed to drm-
+> misc.
+>
+> > I guess the "shawnguo" git tree listed by get_maintainer.pl is just
+> > from regex matching?
+>
+> The "N: imx" pattern in "ARM/FREESCALE IMX / MXC ARM ARCHITECTURE", I
+> think.
+>
+> > Would you expect this to go through drm-misc? If so, I'll probably
+> > land it sooner rather than later. I can also post up a patch making it
+> > obvious that "DRM DRIVERS FOR FREESCALE IMX" goes through drm-misc if
+> > you don't object.
+>
+> Yes, both would be great.
 
-Thanks, applied.
+Maintainers update posted at:
 
-- Arnaldo
- 
-> Thanks,
-> Namhyung
+https://lore.kernel.org/r/20230906072803.1.Idef7e77e8961cbeb8625183eec9db03=
+56b2eccd0@changeid
+
+I'll aim to land ${SUBJECT} patch early next week unless there are any
+objections.
+
+-Doug
