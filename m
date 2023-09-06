@@ -2,152 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E7C793B93
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D81C2793B96
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237248AbjIFLmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:42:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36990 "EHLO
+        id S238560AbjIFLno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233793AbjIFLmQ (ORCPT
+        with ESMTP id S232976AbjIFLnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:42:16 -0400
-Received: from mail-pj1-f77.google.com (mail-pj1-f77.google.com [209.85.216.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938F9CA
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:42:12 -0700 (PDT)
-Received: by mail-pj1-f77.google.com with SMTP id 98e67ed59e1d1-26ecc4795a4so3959776a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 04:42:12 -0700 (PDT)
+        Wed, 6 Sep 2023 07:43:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECC8CA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:42:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694000573;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bv8FRcBYInuJYLkwqfgxJID/HzOrFldgc8979yDFysA=;
+        b=jE4aJHewa6rvXXIthtBIHkX+4mQGedv4NSpPLZ1eTYHnlZ/sOZJphGQcBv+6IgtShqDcB4
+        UnnTTcARY6MdEZZh9Vs1Ha5MHcKakOf5cTBxRiERMcGGGbb2YyjYEpLJvq/MCSdSMfpOK1
+        utk8IHgpp73ILv1mhdhUINwAgliRhbY=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-683-ZSRj29IvMh-IVyXe7T2ZoQ-1; Wed, 06 Sep 2023 07:42:51 -0400
+X-MC-Unique: ZSRj29IvMh-IVyXe7T2ZoQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9a6501f1dd5so239240566b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 04:42:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694000532; x=1694605332;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mgm4FvWa3BKSRlLi2OGqzTICf6l825wM16V78xPPAuI=;
-        b=lpVT0dPtB4cHKY05qfpPzmlrcVRhF2UBaElCR2K3zXBKfxnGkOtBAdSAMYiS5bSlHm
-         HFe0t30Rl7n4myagR44zJkG69pENePZn07QYQI4dsJh/1aXUldH7S4rZbmU/RiI1citn
-         7sw+cd2xtJ00wspDBMFnJiqLB2jFhLYB3mhdrp3HbIAEg5z3/MNlskMuhrYGLdM/Km9y
-         E/opxxKafCJeN2mElYQmOpjOQreBzmoapSLmHfJjeukeehbMgTAXZVSVb/IJngRWmNv6
-         3qeLKlhivl4U5PQhIJ48XAuJKlPjK+aOpLzn9xpkJLO4EnEu+6Dv5UHW8R1ToFsMGTxB
-         T9VA==
-X-Gm-Message-State: AOJu0YznJ4zdn3BFtjb82wHwEy67V54GTTBm2HxBNYlAO2jE494/zm69
-        +gOX2M3Cx7gTM/WIOTkRCcWGdAxvSr1LbPwaF2k+dXgeMTrW
-X-Google-Smtp-Source: AGHT+IHQYLZtz6vLjN0KeGAyveKhAq6Q0dCa+xbTebR1FxdE03KP0paQKULbcKxiqtdNz+wFxUM88ytkroo+z7iduvzlXH6UaEqx
+        d=1e100.net; s=20221208; t=1694000570; x=1694605370;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bv8FRcBYInuJYLkwqfgxJID/HzOrFldgc8979yDFysA=;
+        b=VAK29/5eFOV09YeFJo2POStE/csmB3ZCoWXMQK7Xoc8VsrICf4wyDHDWHZDnatHZEZ
+         PXUFJ7kSweBjfagDiuyxq08zREH6cGlLTohcNEmNLWECYcvcmf/Pm2+L5GTfRR5F4MY5
+         pNtwL5K5Kx6hBNMKutnIVd5GHzlqmN/vJAwnuNcUlbU8H5DhE5JNg/tWb4OQMHFCBPmI
+         iXoouSWHPXJjQ7ObusV3JDsjYSmSMegEFWq7mnbwC40yW0qbWdpxXFr8uOcYIWTcCrx4
+         glb+28vmnotOW53irCbKRoLa9aaBQmUuWkQQPlJq1MwNdJe59DMdmzXjOqlveUcWFx8B
+         Td+Q==
+X-Gm-Message-State: AOJu0YzDf1IveFVWfElmDKeKO4Rs4+TcLdaG95B9JIGkW98SvD7E4kA/
+        2eisVqbNKlIi90RZeJYpFO0CpnxatI6czvjAW4xF9Xx/agkXzNW4rQV7x0aEvA+4JaYqDaJyDfk
+        R+4pfEKqkZApOAR4Go7OGylzn
+X-Received: by 2002:a17:906:70d6:b0:9a4:88af:b82 with SMTP id g22-20020a17090670d600b009a488af0b82mr1852936ejk.77.1694000569978;
+        Wed, 06 Sep 2023 04:42:49 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE1vMN1CVC5tjxitjd3WxVaM3mu/drrsRgRkHZMQh2TL0v6oo8YChJo7cIX3ahLFpg12WsSMQ==
+X-Received: by 2002:a17:906:70d6:b0:9a4:88af:b82 with SMTP id g22-20020a17090670d600b009a488af0b82mr1852925ejk.77.1694000569684;
+        Wed, 06 Sep 2023 04:42:49 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id f2-20020a1709064dc200b0099c53c4407dsm8903902ejw.78.2023.09.06.04.42.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 04:42:48 -0700 (PDT)
+Message-ID: <ddd2a7f7-be50-4256-20de-0392d0cd539f@redhat.com>
+Date:   Wed, 6 Sep 2023 13:42:48 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:d48e:b0:1bc:1189:16d with SMTP id
- c14-20020a170902d48e00b001bc1189016dmr5569688plg.3.1694000532076; Wed, 06 Sep
- 2023 04:42:12 -0700 (PDT)
-Date:   Wed, 06 Sep 2023 04:42:11 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f6bf6d0604af3b95@google.com>
-Subject: [syzbot] [dri?] WARNING in drm_syncobj_array_find
-From:   syzbot <syzbot+95416f957d84e858b377@syzkaller.appspotmail.com>
-To:     airlied@gmail.com, christian.koenig@amd.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        sumit.semwal@linaro.org, syzkaller-bugs@googlegroups.com,
-        tzimmermann@suse.de
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3] x86/platform/uv: refactor deprecated strcpy and
+ strncpy
+To:     Justin Stitt <justinstitt@google.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20230905-strncpy-arch-x86-platform-uv-uv_nmi-v3-1-3efd6798b569@google.com>
+Content-Language: en-US, nl
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230905-strncpy-arch-x86-platform-uv-uv_nmi-v3-1-3efd6798b569@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+On 9/5/23 23:54, Justin Stitt wrote:
+> Both `strncpy` and `strcpy` are deprecated for use on NUL-terminated
+> destination strings [1].
+> 
+> We can see that `arg` and `uv_nmi_action` are expected to be
+> NUL-terminated strings due to their use within `strcmp()` and format
+> strings respectively.
+> 
+> With this in mind, a suitable replacement is `strscpy` [2] due to the
+> fact that it guarantees NUL-termination on its destination buffer
+> argument which is _not_ the case for `strncpy` or `strcpy`!
+> 
+> In this case, we can drop both the forced NUL-termination and the `... -1` from:
+> |       strncpy(arg, val, ACTION_LEN - 1);
+> as `strscpy` implicitly has this behavior.
+> 
+> Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Changes in v3:
+> - Use sizeof instead of strlen (thanks Andy and Dimitri)
+> - Drop unrelated changes regarding strnchrnul (thanks Hans)
+> - Link to v2: https://lore.kernel.org/r/20230824-strncpy-arch-x86-platform-uv-uv_nmi-v2-1-e16d9a3ec570@google.com
 
-HEAD commit:    0468be89b3fa Merge tag 'iommu-updates-v6.6' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13571367a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=39744401c57166fc
-dashboard link: https://syzkaller.appspot.com/bug?extid=95416f957d84e858b377
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111c39a8680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1267d83fa80000
+Thanks, patch looks good to me:
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-0468be89.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7feba36779de/vmlinux-0468be89.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b1cdc0506491/bzImage-0468be89.xz
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+95416f957d84e858b377@syzkaller.appspotmail.com
+Regards,
 
-------------[ cut here ]------------
-WARNING: CPU: 2 PID: 5141 at mm/page_alloc.c:4415 __alloc_pages+0x3ab/0x4a0 mm/page_alloc.c:4415
-Modules linked in:
-CPU: 2 PID: 5141 Comm: syz-executor127 Not tainted 6.5.0-syzkaller-10885-g0468be89b3fa #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:__alloc_pages+0x3ab/0x4a0 mm/page_alloc.c:4415
-Code: ff ff 00 0f 84 2f fe ff ff 80 ce 01 e9 27 fe ff ff 83 fe 0a 0f 86 3a fd ff ff 80 3d c9 37 e6 0c 00 75 09 c6 05 c0 37 e6 0c 01 <0f> 0b 45 31 f6 e9 97 fe ff ff e8 b6 10 9e ff 84 c0 0f 85 8a fe ff
-RSP: 0018:ffffc900030b7a18 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000040cc0 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000016 RDI: 0000000000040cc0
-RBP: 1ffff92000616f44 R08: 0000000000000005 R09: 0000000000000000
-R10: 00000000ffffff1f R11: 0000000000000000 R12: 0000000000000016
-R13: 0000000000000000 R14: ffffffff84b4e215 R15: ffff888013722000
-FS:  00005555555a4380(0000) GS:ffff88806b800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200001c0 CR3: 000000002accd000 CR4: 0000000000350ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __alloc_pages_node include/linux/gfp.h:237 [inline]
- alloc_pages_node include/linux/gfp.h:260 [inline]
- __kmalloc_large_node+0x87/0x1c0 mm/slab_common.c:1164
- __do_kmalloc_node mm/slab_common.c:1011 [inline]
- __kmalloc.cold+0xb/0xe0 mm/slab_common.c:1036
- kmalloc_array include/linux/slab.h:636 [inline]
- drm_syncobj_array_find+0x35/0x3c0 drivers/gpu/drm/drm_syncobj.c:1246
- drm_syncobj_timeline_signal_ioctl+0x21f/0x860 drivers/gpu/drm/drm_syncobj.c:1533
- drm_ioctl_kernel+0x280/0x4c0 drivers/gpu/drm/drm_ioctl.c:789
- drm_ioctl+0x5cb/0xbf0 drivers/gpu/drm/drm_ioctl.c:892
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7ff62d53f129
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe7c669ea8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffe7c66a078 RCX: 00007ff62d53f129
-RDX: 0000000020000500 RSI: 00000000c01864cd RDI: 0000000000000003
-RBP: 00007ff62d5b2610 R08: 0023647261632f69 R09: 00007ffe7c66a078
-R10: 000000000000001f R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffe7c66a068 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
+Hans
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> Changes in v2:
+> - use `sizeof` on destination string instead of `strlen` (thanks Andy, Kees and Dimitri)
+> - refactor code to remove potential new-line chars (thanks Yang Yang and Andy)
+> - Link to v1: https://lore.kernel.org/r/20230822-strncpy-arch-x86-platform-uv-uv_nmi-v1-1-931f2943de0d@google.com
+> ---
+> Note: build-tested only
+> ---
+>  arch/x86/platform/uv/uv_nmi.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
+> index a60af0230e27..dd30fb2baf6c 100644
+> --- a/arch/x86/platform/uv/uv_nmi.c
+> +++ b/arch/x86/platform/uv/uv_nmi.c
+> @@ -205,8 +205,7 @@ static int param_set_action(const char *val, const struct kernel_param *kp)
+>  	char arg[ACTION_LEN], *p;
+>  
+>  	/* (remove possible '\n') */
+> -	strncpy(arg, val, ACTION_LEN - 1);
+> -	arg[ACTION_LEN - 1] = '\0';
+> +	strscpy(arg, val, sizeof(arg));
+>  	p = strchr(arg, '\n');
+>  	if (p)
+>  		*p = '\0';
+> @@ -216,7 +215,7 @@ static int param_set_action(const char *val, const struct kernel_param *kp)
+>  			break;
+>  
+>  	if (i < n) {
+> -		strcpy(uv_nmi_action, arg);
+> +		strscpy(uv_nmi_action, arg, sizeof(uv_nmi_action));
+>  		pr_info("UV: New NMI action:%s\n", uv_nmi_action);
+>  		return 0;
+>  	}
+> @@ -959,7 +958,7 @@ static int uv_handle_nmi(unsigned int reason, struct pt_regs *regs)
+>  
+>  		/* Unexpected return, revert action to "dump" */
+>  		if (master)
+> -			strncpy(uv_nmi_action, "dump", strlen(uv_nmi_action));
+> +			strscpy(uv_nmi_action, "dump", sizeof(uv_nmi_action));
+>  	}
+>  
+>  	/* Pause as all CPU's enter the NMI handler */
+> 
+> ---
+> base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+> change-id: 20230822-strncpy-arch-x86-platform-uv-uv_nmi-474e5295c2c1
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
