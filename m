@@ -2,153 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 981D679363E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287B679363D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232887AbjIFH2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 03:28:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
+        id S232842AbjIFH2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 03:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230361AbjIFH2V (ORCPT
+        with ESMTP id S230361AbjIFH2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 03:28:21 -0400
-Received: from out-227.mta1.migadu.com (out-227.mta1.migadu.com [95.215.58.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2611792
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:28:16 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693985294;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=938feFunuVXrcQFgTRaCo4N0Cd13MIgXYg/3Qnd6T7g=;
-        b=OlHVPoQNIIWLajc/u/NPrn8F8+xDKk2SY0BWtBkfBz3Xn51WktNbj5XpWZ2IR0/aWW+Bdy
-        jy/sSX7uz3wVfm18fYS6eGuqhqgA1fboaTlV1sFtW1IjCQBUyLBdLhiRI0OpGpWtWlxn8p
-        Jqn11zt98CKVXa7uQBPeG2D5JWZMnSQ=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     anthony.l.nguyen@intel.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH] i40e: Add rx_missed_errors for buffer exhaustion
-Date:   Wed,  6 Sep 2023 15:27:57 +0800
-Message-Id: <20230906072757.3929754-1-yajun.deng@linux.dev>
+        Wed, 6 Sep 2023 03:28:09 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AD48E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:28:05 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-317c3ac7339so2863981f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 00:28:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693985284; x=1694590084; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9bMJBXttHvX9K+/BKiatIe6dYjJgBiOa9KYUzMQlv8I=;
+        b=ubnj4CAkJMuAG7uGpD9fNTN+7MJPz5JE2txjtcPMrPcFwEeHDCdZJthZLsU5KytCoS
+         DJlkd+McfzgXnY6CwL0a04EsVrDP+jjg4+xUojd1MAFNyy+Q2u8iiqb++ph1hkNG7A2k
+         pYa3kfT9Y9SqM80Vi4XlIBFYaiHOjhGjnwE++6hTO/78OUxjRMnnFYgdIguceKdVaeKP
+         6EvQ+mEJ3nhCsnmfxOmg4FrND0g4AvLfSCkstVnBLK3vDzGHogWvX1PAVKBxQroPqmzb
+         pyPqQBSCNfof2zjpTIfPsQDzvGZsLvQlSYKxNbGHCjDajM3nkAJENBbVyiGnI24FS9Kz
+         Sywg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693985284; x=1694590084;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9bMJBXttHvX9K+/BKiatIe6dYjJgBiOa9KYUzMQlv8I=;
+        b=OHpprX3F84CD5a/hgVLTEbAvOYbKvBjTwS9gBhA3ceA83+Qhw+xR0cjqeAVNGr+Cgg
+         lw778sXOLklhZWUo89WctY8KMO4mmLbs6ZG+S7VHZ3hmf0uHc9Gn7VOSvNZgpG7TYS9s
+         wNaA3K28NF59WNMHB+xF76mVgi25aV+Zb8xZjG7Kay00pQcCrU6UfZYbJNIZ72cwaugF
+         Lq3NZ5srwTgsE3czg2SruRCk5jMVtOIPEHiHdHffIUT5t/TsndTnnJiTLwN4edEfql8h
+         eSwlV3KwobO4AnZS4Djx9TrbNVI3HYI9MDTNoZAXyQfYFlTzg7YcBeAUE/ShyXmnoePa
+         XP4g==
+X-Gm-Message-State: AOJu0YzHIPui44+PCMIRJ/+OwB6KmJW03aGMXn17ZaKpLqiKK88stw0W
+        cL+NufSWZSkxXRGrSYlAEyrpxfNQyE8wyXl2JLU=
+X-Google-Smtp-Source: AGHT+IESEKh+11MBHDIR/LJxJuSsWfHYFkkQFFN6Z0HotRF5rCUy1y4iVUbnOMUtvc2XvCpzMZP+9g==
+X-Received: by 2002:adf:ed88:0:b0:31a:e3ad:f30e with SMTP id c8-20020adfed88000000b0031ae3adf30emr1607176wro.68.1693985284438;
+        Wed, 06 Sep 2023 00:28:04 -0700 (PDT)
+Received: from [192.168.0.173] ([79.115.63.137])
+        by smtp.gmail.com with ESMTPSA id x9-20020adfdd89000000b003196b1bb528sm19688413wrl.64.2023.09.06.00.28.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 00:28:04 -0700 (PDT)
+Message-ID: <863ba1a1-ebd0-b544-705c-72295316140c@linaro.org>
+Date:   Wed, 6 Sep 2023 10:28:02 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 15/41] mtd: spi-nor: add SNOR_ID() and SNOR_OTP()
+Content-Language: en-US
+To:     Michael Walle <mwalle@kernel.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
+ <20230807-mtd-flash-info-db-rework-v2-15-291a0f39f8d8@kernel.org>
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-15-291a0f39f8d8@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the comment in struct rtnl_link_stats64, rx_dropped should not
-include packets dropped by the device due to buffer exhaustion.
-They are counted in rx_missed_errors, procfs folds those two counters
-together.
 
-Add rx_missed_errors for buffer exhaustion, rx_missed_errors corresponds
-to rx_discards, rx_dropped corresponds to rx_discards_other.
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
- drivers/net/ethernet/intel/i40e/i40e_ethtool.c |  3 ++-
- drivers/net/ethernet/intel/i40e/i40e_main.c    | 18 +++++++-----------
- .../net/ethernet/intel/i40e/i40e_virtchnl_pf.c |  2 +-
- 3 files changed, 10 insertions(+), 13 deletions(-)
+On 22.08.2023 10:09, Michael Walle wrote:
+> After all the preparation, it is now time to introduce the new macros to
+> specify flashes in our database: SNOR_ID() and SNOR_OTP(). An flash_info
+> entry might now look like:
+>     {
+>         .id = SNOR_ID(0xef, 0x60, 0x16),
+>         .otp = SNOR_OTP(256, 3, 0x1000, 0x1000),
+>         .flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
+>     }
+> 
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-index bd1321bf7e26..77e4ac103866 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-@@ -245,6 +245,7 @@ static const struct i40e_stats i40e_gstrings_net_stats[] = {
- 	I40E_NETDEV_STAT(rx_errors),
- 	I40E_NETDEV_STAT(tx_errors),
- 	I40E_NETDEV_STAT(rx_dropped),
-+	I40E_NETDEV_STAT(rx_missed_errors),
- 	I40E_NETDEV_STAT(tx_dropped),
- 	I40E_NETDEV_STAT(collisions),
- 	I40E_NETDEV_STAT(rx_length_errors),
-@@ -321,7 +322,7 @@ static const struct i40e_stats i40e_gstrings_stats[] = {
- 	I40E_PF_STAT("port.rx_broadcast", stats.eth.rx_broadcast),
- 	I40E_PF_STAT("port.tx_broadcast", stats.eth.tx_broadcast),
- 	I40E_PF_STAT("port.tx_errors", stats.eth.tx_errors),
--	I40E_PF_STAT("port.rx_dropped", stats.eth.rx_discards),
-+	I40E_PF_STAT("port.rx_discards", stats.eth.rx_discards),
- 	I40E_PF_STAT("port.tx_dropped_link_down", stats.tx_dropped_link_down),
- 	I40E_PF_STAT("port.rx_crc_errors", stats.crc_errors),
- 	I40E_PF_STAT("port.illegal_bytes", stats.illegal_bytes),
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index de7fd43dc11c..290c011168c2 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -489,6 +489,7 @@ static void i40e_get_netdev_stats_struct(struct net_device *netdev,
- 	stats->tx_dropped	= vsi_stats->tx_dropped;
- 	stats->rx_errors	= vsi_stats->rx_errors;
- 	stats->rx_dropped	= vsi_stats->rx_dropped;
-+	stats->rx_missed_errors	= vsi_stats->rx_missed_errors;
- 	stats->rx_crc_errors	= vsi_stats->rx_crc_errors;
- 	stats->rx_length_errors	= vsi_stats->rx_length_errors;
- }
-@@ -680,17 +681,13 @@ i40e_stats_update_rx_discards(struct i40e_vsi *vsi, struct i40e_hw *hw,
- 			      struct i40e_eth_stats *stat_offset,
- 			      struct i40e_eth_stats *stat)
- {
--	u64 rx_rdpc, rx_rxerr;
--
- 	i40e_stat_update32(hw, I40E_GLV_RDPC(stat_idx), offset_loaded,
--			   &stat_offset->rx_discards, &rx_rdpc);
-+			   &stat_offset->rx_discards, &stat->rx_discards);
- 	i40e_stat_update64(hw,
- 			   I40E_GL_RXERR1H(i40e_compute_pci_to_hw_id(vsi, hw)),
- 			   I40E_GL_RXERR1L(i40e_compute_pci_to_hw_id(vsi, hw)),
- 			   offset_loaded, &stat_offset->rx_discards_other,
--			   &rx_rxerr);
--
--	stat->rx_discards = rx_rdpc + rx_rxerr;
-+			   &stat->rx_discards_other);
- }
- 
- /**
-@@ -712,9 +709,6 @@ void i40e_update_eth_stats(struct i40e_vsi *vsi)
- 	i40e_stat_update32(hw, I40E_GLV_TEPC(stat_idx),
- 			   vsi->stat_offsets_loaded,
- 			   &oes->tx_errors, &es->tx_errors);
--	i40e_stat_update32(hw, I40E_GLV_RDPC(stat_idx),
--			   vsi->stat_offsets_loaded,
--			   &oes->rx_discards, &es->rx_discards);
- 	i40e_stat_update32(hw, I40E_GLV_RUPP(stat_idx),
- 			   vsi->stat_offsets_loaded,
- 			   &oes->rx_unknown_protocol, &es->rx_unknown_protocol);
-@@ -971,8 +965,10 @@ static void i40e_update_vsi_stats(struct i40e_vsi *vsi)
- 	ns->tx_errors = es->tx_errors;
- 	ons->multicast = oes->rx_multicast;
- 	ns->multicast = es->rx_multicast;
--	ons->rx_dropped = oes->rx_discards;
--	ns->rx_dropped = es->rx_discards;
-+	ons->rx_dropped = oes->rx_discards_other;
-+	ns->rx_dropped = es->rx_discards_other;
-+	ons->rx_missed_errors = oes->rx_discards;
-+	ns->rx_missed_errors = es->rx_discards;
- 	ons->tx_dropped = oes->tx_discards;
- 	ns->tx_dropped = es->tx_discards;
- 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-index 8ea1a238dcef..3b514abfaa1e 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-@@ -4914,7 +4914,7 @@ int i40e_get_vf_stats(struct net_device *netdev, int vf_id,
- 	vf_stats->tx_bytes   = stats->tx_bytes;
- 	vf_stats->broadcast  = stats->rx_broadcast;
- 	vf_stats->multicast  = stats->rx_multicast;
--	vf_stats->rx_dropped = stats->rx_discards;
-+	vf_stats->rx_dropped = stats->rx_discards + stats->rx_discards_other;
- 	vf_stats->tx_dropped = stats->tx_discards;
- 
- 	return 0;
--- 
-2.25.1
 
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+
+
+> ---
+>  drivers/mtd/spi-nor/core.h | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index c22f5cf65a58..420e5ca2cfe1 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -559,6 +559,20 @@ struct flash_info {
+>  	const struct spi_nor_fixups *fixups;
+>  };
+>  
+> +#define SNOR_ID(...)							\
+> +	(&(const struct spi_nor_id){					\
+> +		.bytes = (const u8[]){ __VA_ARGS__ },			\
+> +		.len = sizeof((u8[]){ __VA_ARGS__ }),			\
+> +	})
+> +
+> +#define SNOR_OTP(_len, _n_regions, _base, _offset)			\
+> +	(&(const struct spi_nor_otp_organization){			\
+> +		.len = (_len),						\
+> +		.base = (_base),					\
+> +		.offset = (_offset),					\
+> +		.n_regions = (_n_regions),				\
+> +	})
+> +
+>  #define SPI_NOR_ID_2ITEMS(_id) ((_id) >> 8) & 0xff, (_id) & 0xff
+>  #define SPI_NOR_ID_3ITEMS(_id) ((_id) >> 16) & 0xff, SPI_NOR_ID_2ITEMS(_id)
+>  
+> 
