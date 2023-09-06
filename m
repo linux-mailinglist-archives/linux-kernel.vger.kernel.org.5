@@ -2,127 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EAAB793DB4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E30E5793DBD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240518AbjIFNbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 09:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40288 "EHLO
+        id S237647AbjIFNdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 09:33:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238136AbjIFNbr (ORCPT
+        with ESMTP id S236376AbjIFNdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 09:31:47 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1C910D7;
-        Wed,  6 Sep 2023 06:31:34 -0700 (PDT)
-Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RgjqC6vNQzNmjm;
-        Wed,  6 Sep 2023 21:27:51 +0800 (CST)
-Received: from [10.67.110.218] (10.67.110.218) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 6 Sep 2023 21:31:32 +0800
-Message-ID: <fcc5d688-9d58-3b4c-58de-472330160142@huawei.com>
-Date:   Wed, 6 Sep 2023 21:31:32 +0800
+        Wed, 6 Sep 2023 09:33:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90FFE6B
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 06:32:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694007171;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XCpIrP65/3nTEPon1JRD3ISd+XlrrDIC3wEjklFq6gE=;
+        b=W3hR24UoHtU2mfiHO0HMxOGYVtRdF5UsUU0wstEvpk08Auf7turOhFRlfGeojRX/9ysg92
+        Gw00inb+tzQznEWAm5Ycr1pIyHWr34Yux7Sg89/EoE1zTYln72yJY6vK4ZLEbLr/HFBa4A
+        b7eaGOiCZQrKEnvz7Swk/Jx0+ywXIes=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-475-OCD-ndfMNSWE3vkR3V2dwA-1; Wed, 06 Sep 2023 09:32:46 -0400
+X-MC-Unique: OCD-ndfMNSWE3vkR3V2dwA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 243771825488;
+        Wed,  6 Sep 2023 13:32:46 +0000 (UTC)
+Received: from [10.22.32.253] (unknown [10.22.32.253])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BD7B7202869C;
+        Wed,  6 Sep 2023 13:32:45 +0000 (UTC)
+Message-ID: <9578a3a7-4151-6b60-3241-d883afe08bc1@redhat.com>
+Date:   Wed, 6 Sep 2023 09:32:45 -0400
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH] selftests/ftrace: Correctly enable event in
- instance-event.tc
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 1/2] Revert "locking/rwsem: Remove reader optimistic
+ spinning"
 Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Ajay Kaher <akaher@vmware.com>, <shuah@kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Ye Weihua <yeweihua4@huawei.com>
-References: <20230626001144.2635956-1-zhengyejian1@huawei.com>
- <20230626191114.8c5a66fbaa28af3c303923bd@kernel.org>
- <20230626191255.53baab4ed48d7111dcd44cad@kernel.org>
- <20230710183741.78f04c68@gandalf.local.home>
- <1cb3aee2-19af-c472-e265-05176fe9bd84@huawei.com>
- <20230905183638.2b539fae@gandalf.local.home>
- <9cad73cd-1f8b-2f3f-cda4-99b89a87b931@huawei.com>
- <20230906072759.4e8bee1c@gandalf.local.home>
- <2667182e-691e-2ab4-4c2d-a47d76f38107@huawei.com>
- <20230906085621.6e20db28@gandalf.local.home>
- <20230906090252.36219543@gandalf.local.home>
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-In-Reply-To: <20230906090252.36219543@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Bongkyu Kim <bongkyu7.kim@samsung.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
+        will@kernel.org, boqun.feng@gmail.com,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+References: <20230901010704.18493-1-bongkyu7.kim@samsung.com>
+ <CGME20230901010734epcas2p1a0d3698e76590637f9175fca40ad9eaf@epcas2p1.samsung.com>
+ <20230901010704.18493-2-bongkyu7.kim@samsung.com>
+ <20230904151008.GA25717@noisy.programming.kicks-ass.net>
+ <94764456-c4d4-03eb-81ef-df402f4916f6@redhat.com>
+ <20230906112741.GA18415@KORCO045595.samsungds.net>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230906112741.GA18415@KORCO045595.samsungds.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.218]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/6 21:02, Steven Rostedt wrote:
-> On Wed, 6 Sep 2023 08:56:21 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
->> On Wed, 6 Sep 2023 19:57:24 +0800
->> Zheng Yejian <zhengyejian1@huawei.com> wrote:
->>
->>> BTW, I do reproduce with following testcase fix, then just run:
->>> ./ftracetest test.d/instances/instance-event.tc
->>> diff --git
->>> a/tools/testing/selftests/ftrace/test.d/instances/instance-event.tc
->>> b/tools/testing/selftests/ftrace/test.d/instances/instance-event.tc
->>> index 0eb47fbb3f44..42422e425107 100644
->>> --- a/tools/testing/selftests/ftrace/test.d/instances/instance-event.tc
->>> +++ b/tools/testing/selftests/ftrace/test.d/instances/instance-event.tc
->>> @@ -39,7 +39,7 @@ instance_read() {
+
+On 9/6/23 07:27, Bongkyu Kim wrote:
+> On Mon, Sep 04, 2023 at 03:56:56PM -0400, Waiman Long wrote:
+>> On 9/4/23 11:10, Peter Zijlstra wrote:
+>>> On Fri, Sep 01, 2023 at 10:07:03AM +0900, Bongkyu Kim wrote:
+>>>> This reverts commit 617f3ef95177840c77f59c2aec1029d27d5547d6.
+>>>>
+>>>> In mobile environment, reader optimistic spinning is still useful
+>>>> because there're not many readers. In my test result at android device,
+>>>> it improves application startup time about 3.8%
+>>>> App startup time is most important factor for android user expriences.
+>>>> So, re-enable reader optimistic spinning by this commit. And,
+>>>> the later patch will make it optional feature by cmdline.
+>>> I'm not seeing any mention on how this interacts with all the rwsem work
+>>> that has been done since that commit, like the handoff rework.
 >>>
->>>    instance_set() {
->>>            while :; do
->>> -                echo 1 > foo/events/sched/sched_switch
->>> +                echo 1 > foo/events/sched/sched_switch/enable
->>>            done 2> /dev/null
->>>    }
+>>> Why is a straight revert a sane thing at this point?
+>> I also agree that a revert is not the best way to reintroduce the feature.
+>> It should document the reason why reader optimistic spinning is not the
+>> default as discussed in commit 617f3ef9517 ("locking/rwsem: Remove reader
+>> optimistic spinning") and under what condition should reader optimistic
+>> spinning can be turned back on.
 >>
->> Ah thanks. I didn't have that on my test box :-p
+>> Besides, I now think we may not really need 2 separate nonspinnable bits. We
+>> can go with one that is set by writer timing out when spinning on reader.
 >>
->> Although I'm still having issues reproducing it. Do you have anything
->> special on your kernel command line?
->>
+>> Cheers,
+>> Longman
+> Should I modify like the below?
+> - Title to "locking/rwsem: Reintroduce reader optimistic spinning"
+> - Add more document like Longman's comment
+> - Reconsidering about 2 separate nonspinnable bits to one
 
-I can reproduce it on qemu, boot command seems nothing special (replace
-${kernel} with bzImage path and replace ${rootfs} with a ubuntu image):
+Besides the above, Peter also ask to verify that it won't affect handoff 
+handling which requires that an unlocker see the lock will be free and 
+wake up the head of the wait queue. Given the fact that the simple 
+heuristic of skipping optimistic spinning if the lock is reader owned is 
+kept, that shouldn't be a problem, but you still need to document that.
 
-qemu-system-x86_64 -M pc -m 8G -enable-kvm -smp cpus=12 -kernel 
-${kernel} -drive file=${rootfs},if=virtio,format=raw,id=hd0 -fsdev 
-local,security_model=passthrough,id=fsdev0,path=/home/test -nographic 
--append "rootwait root=/dev/vda rw console=ttyS0 rodata=off"
-
-> 
-> Also, which branch are you testing? What's the sha of the code you are testing?
->
-
-I think it can be reproduced after any commit after commit
-27152bceea1d ("eventfs: Move tracing/events to eventfs")
-
-also can be reproduced with the newest:
-65d6e954e378 ("Merge tag 'gfs2-v6.5-rc5-fixes' of 
-git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2")
-
-And revert commit 27152bceea1d ("eventfs: Move tracing/events to
-eventfs"), the issue just seems gone.
-
---
-
-Thanks,
-Zheng Yejian
-
-> -- Steve
-> 
+Cheers,
+Longman
 
