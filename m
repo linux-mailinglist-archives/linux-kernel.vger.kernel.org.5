@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE581794120
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818C0794122
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242552AbjIFQG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 12:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34336 "EHLO
+        id S242616AbjIFQGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 12:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242407AbjIFQG1 (ORCPT
+        with ESMTP id S235039AbjIFQGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 12:06:27 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E7619B2
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 09:06:07 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c0d5b16aacso26273795ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 09:06:07 -0700 (PDT)
+        Wed, 6 Sep 2023 12:06:34 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1EA11BC8
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 09:06:09 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bee82fad0fso26228755ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 09:06:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694016366; x=1694621166; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1694016369; x=1694621169; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=75Al5ao5WDqui4OmFiH4pa1bGdzkgKG2d24XEXDdpOo=;
-        b=JlgeA7Dez1PBnk3Dux0cwGa9jjT3O021qBcCWlHBpZcV6A+n3HjiKVHm0JaBMHxJLz
-         3w1xKauoNUzlheGOLfXSCEnXU6UqA8M+DcvdyJhxb0wi30mIfNycscbAR6D6z4S7YXsl
-         ztJgnBABt5VbACwNmoFo9vuEopAruHxI6DBT4=
+        bh=MyIbVYjdm8EansRWG0rd4SK/QJLZXQgZh1OKIeURT3k=;
+        b=PWwcf+D/pAMM3leykuZTAlFjU82ojjqu9Gs/tNekZBIFRnmEONHYlg9HXQnImJXZ8X
+         lDS4GEqvybguHGWaj3pJIf/6IFxphz10916Q9QGxLA4HnzKT3x2KXmIzajDTh/hruKv+
+         7sXnQ52s1UiZ8EUPuW19lu+RxDc/kr8uYXD6A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694016366; x=1694621166;
+        d=1e100.net; s=20221208; t=1694016369; x=1694621169;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=75Al5ao5WDqui4OmFiH4pa1bGdzkgKG2d24XEXDdpOo=;
-        b=RVwFv6NRe6Yj1BT1+BX0w0zwVKr7z0FMXP1wSFIae01qPuI9NIq+D8VSNf1lqatIib
-         P0Kmhlrczxyixc+hUN6DotvsO1EWZpeTlD2e95SGalSePpAHS99WKYXozuzYCvUT0H/O
-         thC79cfPdiZaf+5jB2Y0oKl8535cKED1oQf2zSWLGEQ0IHiWxqocN+e/GhpGkTM6arj7
-         RO2ZBI0KO8YqHMZYyy0lrgzTSJHr/Xq8JBd/Ni1nZZ+FxIvYmVgtm9ef0SjInmoi7eiw
-         oGJpgMTPX/RBev0TKs1LowA4+XW0zucQE2KySOMzuAWinRinkq161MpMAGW+zCuGZWg5
-         CILw==
-X-Gm-Message-State: AOJu0YxOzObKC5uRQEJ3nF/5k6cCbhejs1CsBWTVXeThO3DYXfpuNl60
-        ZO1wYGfbTh20ECrOXQn0YA6FPw==
-X-Google-Smtp-Source: AGHT+IFaCX4dzk7MQ4n11lP2A0zTWCxziDQ4gl6uWPxHEa+/LvA96OgqNZMwWgUuk5iyV1hMWWWj0Q==
-X-Received: by 2002:a17:902:c40a:b0:1c2:811:2cee with SMTP id k10-20020a170902c40a00b001c208112ceemr18484732plk.23.1694016365967;
-        Wed, 06 Sep 2023 09:06:05 -0700 (PDT)
+        bh=MyIbVYjdm8EansRWG0rd4SK/QJLZXQgZh1OKIeURT3k=;
+        b=UBvj5ucKZmlb6TsvuW6y0Jo6/rG3ze8gEtsr/tn5AM/BIsSgO+ldnsA68qrKiiW/sJ
+         a0y9IQCBSJFkkmdjzIH51FhTJ6MDnB5XQ/hNYiVcg/tOxdzi8q2m8VHEqM3D4/C+Rwn5
+         yEKqdjniQCwHRsytNmD9Y+vzg5G11R2wMaJljAB58XF4UZkz5EjbXAdx+hUdF+hb0QeA
+         60ISFxYjvDxMEfWF7KS6Ng4el8aEVLEONhXgymmEVzMsREWna/Rm/dUYDPcu/uID9uR9
+         QFhTrmldE0qnUyUFBKrJqHK7QHFahVv/9vWsZM6ZZTz5Bbd2V6LgJ4TnM9vulhkGFE7C
+         sT7w==
+X-Gm-Message-State: AOJu0YzrtNZiB+zmGQlk7AOrKM2r2aFf1Y+8ve18TXa1yCDkWIwqj9C3
+        q5LtqW8htPwsay4WzFzcpiSyxw==
+X-Google-Smtp-Source: AGHT+IHBOzwGCN1gob2rhZMmJllirhmpvE9flMi/XjhR2fFc1HxWfkbuUqj5+w9Lzr8xqvJ3kR927w==
+X-Received: by 2002:a17:903:2348:b0:1c3:1ceb:97a4 with SMTP id c8-20020a170903234800b001c31ceb97a4mr15346596plh.24.1694016369207;
+        Wed, 06 Sep 2023 09:06:09 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:4a07:e00a:fdae:750b])
-        by smtp.gmail.com with ESMTPSA id ju19-20020a170903429300b001b8c689060dsm11338859plb.28.2023.09.06.09.06.03
+        by smtp.gmail.com with ESMTPSA id ju19-20020a170903429300b001b8c689060dsm11338859plb.28.2023.09.06.09.06.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 09:06:05 -0700 (PDT)
+        Wed, 06 Sep 2023 09:06:08 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Mark Rutland <mark.rutland@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -67,12 +67,14 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         Stephen Boyd <swboyd@chromium.org>,
         linux-perf-users@vger.kernel.org,
         Thomas Gleixner <tglx@linutronix.de>, ito-yuichi@fujitsu.com,
-        Douglas Anderson <dianders@chromium.org>,
-        Chen-Yu Tsai <wenst@chromium.org>, gautham.shenoy@amd.com,
-        linux-kernel@vger.kernel.org, mingo@kernel.org
-Subject: [PATCH v13 2/7] arm64: idle: Tag the arm64 idle functions as __cpuidle
-Date:   Wed,  6 Sep 2023 09:02:57 -0700
-Message-ID: <20230906090246.v13.2.I4baba13e220bdd24d11400c67f137c35f07f82c7@changeid>
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>, jpoimboe@kernel.org,
+        keescook@chromium.org, linux-kernel@vger.kernel.org,
+        philmd@linaro.org, samitolvanen@google.com,
+        scott@os.amperecomputing.com, vschneid@redhat.com
+Subject: [PATCH v13 3/7] arm64: smp: Remove dedicated wakeup IPI
+Date:   Wed,  6 Sep 2023 09:02:58 -0700
+Message-ID: <20230906090246.v13.3.I7209db47ef8ec151d3de61f59005bbc59fe8f113@changeid>
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 In-Reply-To: <20230906160505.2431857-1-dianders@chromium.org>
 References: <20230906160505.2431857-1-dianders@chromium.org>
@@ -87,75 +89,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per the (somewhat recent) comment before the definition of
-`__cpuidle`, the tag is like `noinstr` but also marks a function so it
-can be identified by cpu_in_idle(). Let's add these markings to arm64
-cpuidle functions
+From: Mark Rutland <mark.rutland@arm.com>
 
-With this change we get useful backtraces like:
+To enable NMI backtrace and KGDB's NMI cpu roundup, we need to free up
+at least one dedicated IPI.
 
-  NMI backtrace for cpu N skipped: idling at cpu_do_idle+0x94/0x98
+On arm64 the IPI_WAKEUP IPI is only used for the ACPI parking protocol,
+which itself is only used on some very early ARMv8 systems which
+couldn't implement PSCI.
 
-instead of useless backtraces when dumping all processors using
-nmi_cpu_backtrace().
+Remove the IPI_WAKEUP IPI, and rely on the IPI_RESCHEDULE IPI to wake
+CPUs from the parked state. This will cause a tiny amonut of redundant
+work to check the thread flags, but this is miniscule in relation to the
+cost of taking and handling the IPI in the first place. We can safely
+handle redundant IPI_RESCHEDULE IPIs, so there should be no functional
+impact as a result of this change.
 
-NOTE: this patch won't make cpu_in_idle() work perfectly for arm64,
-but it doesn't hurt and does catch some cases. Specifically an example
-that wasn't caught in my testing looked like this:
-
- gic_cpu_sys_reg_init+0x1f8/0x314
- gic_cpu_pm_notifier+0x40/0x78
- raw_notifier_call_chain+0x5c/0x134
- cpu_pm_notify+0x38/0x64
- cpu_pm_exit+0x20/0x2c
- psci_enter_idle_state+0x48/0x70
- cpuidle_enter_state+0xb8/0x260
- cpuidle_enter+0x44/0x5c
- do_idle+0x188/0x30c
-
-Acked-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Acked-by: Sumit Garg <sumit.garg@linaro.org>
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
 Tested-by: Chen-Yu Tsai <wenst@chromium.org>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Will Deacon <will@kernel.org>
 ---
+I have no idea how to test this. I just took Mark's patch and jammed
+it into my series. Logicially the patch seems reasonable to me.
 
 (no changes since v11)
 
 Changes in v11:
-- Updated commit message as per Stephen.
+- arch_send_wakeup_ipi() now takes an unsigned int.
 
-Changes in v9:
-- Added to commit message that this doesn't catch all cases.
+Changes in v10:
+- ("arm64: smp: Remove dedicated wakeup IPI") new for v10.
 
-Changes in v8:
-- "Tag the arm64 idle functions as __cpuidle" new for v8
+ arch/arm64/include/asm/smp.h              |  4 ++--
+ arch/arm64/kernel/acpi_parking_protocol.c |  2 +-
+ arch/arm64/kernel/smp.c                   | 28 +++++++++--------------
+ 3 files changed, 14 insertions(+), 20 deletions(-)
 
- arch/arm64/kernel/idle.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/kernel/idle.c b/arch/arm64/kernel/idle.c
-index c1125753fe9b..05cfb347ec26 100644
---- a/arch/arm64/kernel/idle.c
-+++ b/arch/arm64/kernel/idle.c
-@@ -20,7 +20,7 @@
-  *	ensure that interrupts are not masked at the PMR (because the core will
-  *	not wake up if we block the wake up signal in the interrupt controller).
-  */
--void noinstr cpu_do_idle(void)
-+void __cpuidle cpu_do_idle(void)
- {
- 	struct arm_cpuidle_irq_context context;
+diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
+index 9b31e6d0da17..efb13112b408 100644
+--- a/arch/arm64/include/asm/smp.h
++++ b/arch/arm64/include/asm/smp.h
+@@ -89,9 +89,9 @@ extern void arch_send_call_function_single_ipi(int cpu);
+ extern void arch_send_call_function_ipi_mask(const struct cpumask *mask);
  
-@@ -35,7 +35,7 @@ void noinstr cpu_do_idle(void)
- /*
-  * This is our default idle handler.
-  */
--void noinstr arch_cpu_idle(void)
-+void __cpuidle arch_cpu_idle(void)
+ #ifdef CONFIG_ARM64_ACPI_PARKING_PROTOCOL
+-extern void arch_send_wakeup_ipi_mask(const struct cpumask *mask);
++extern void arch_send_wakeup_ipi(unsigned int cpu);
+ #else
+-static inline void arch_send_wakeup_ipi_mask(const struct cpumask *mask)
++static inline void arch_send_wakeup_ipi(unsigned int cpu)
  {
- 	/*
- 	 * This should do all the clock switching and wait for interrupt
+ 	BUILD_BUG();
+ }
+diff --git a/arch/arm64/kernel/acpi_parking_protocol.c b/arch/arm64/kernel/acpi_parking_protocol.c
+index b1990e38aed0..e1be29e608b7 100644
+--- a/arch/arm64/kernel/acpi_parking_protocol.c
++++ b/arch/arm64/kernel/acpi_parking_protocol.c
+@@ -103,7 +103,7 @@ static int acpi_parking_protocol_cpu_boot(unsigned int cpu)
+ 		       &mailbox->entry_point);
+ 	writel_relaxed(cpu_entry->gic_cpu_id, &mailbox->cpu_id);
+ 
+-	arch_send_wakeup_ipi_mask(cpumask_of(cpu));
++	arch_send_wakeup_ipi(cpu);
+ 
+ 	return 0;
+ }
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index 960b98b43506..a5848f1ef817 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -72,7 +72,6 @@ enum ipi_msg_type {
+ 	IPI_CPU_CRASH_STOP,
+ 	IPI_TIMER,
+ 	IPI_IRQ_WORK,
+-	IPI_WAKEUP,
+ 	NR_IPI
+ };
+ 
+@@ -764,7 +763,6 @@ static const char *ipi_types[NR_IPI] __tracepoint_string = {
+ 	[IPI_CPU_CRASH_STOP]	= "CPU stop (for crash dump) interrupts",
+ 	[IPI_TIMER]		= "Timer broadcast interrupts",
+ 	[IPI_IRQ_WORK]		= "IRQ work interrupts",
+-	[IPI_WAKEUP]		= "CPU wake-up interrupts",
+ };
+ 
+ static void smp_cross_call(const struct cpumask *target, unsigned int ipinr);
+@@ -797,13 +795,6 @@ void arch_send_call_function_single_ipi(int cpu)
+ 	smp_cross_call(cpumask_of(cpu), IPI_CALL_FUNC);
+ }
+ 
+-#ifdef CONFIG_ARM64_ACPI_PARKING_PROTOCOL
+-void arch_send_wakeup_ipi_mask(const struct cpumask *mask)
+-{
+-	smp_cross_call(mask, IPI_WAKEUP);
+-}
+-#endif
+-
+ #ifdef CONFIG_IRQ_WORK
+ void arch_irq_work_raise(void)
+ {
+@@ -897,14 +888,6 @@ static void do_handle_IPI(int ipinr)
+ 		break;
+ #endif
+ 
+-#ifdef CONFIG_ARM64_ACPI_PARKING_PROTOCOL
+-	case IPI_WAKEUP:
+-		WARN_ONCE(!acpi_parking_protocol_valid(cpu),
+-			  "CPU%u: Wake-up IPI outside the ACPI parking protocol\n",
+-			  cpu);
+-		break;
+-#endif
+-
+ 	default:
+ 		pr_crit("CPU%u: Unknown IPI message 0x%x\n", cpu, ipinr);
+ 		break;
+@@ -979,6 +962,17 @@ void arch_smp_send_reschedule(int cpu)
+ 	smp_cross_call(cpumask_of(cpu), IPI_RESCHEDULE);
+ }
+ 
++#ifdef CONFIG_ARM64_ACPI_PARKING_PROTOCOL
++void arch_send_wakeup_ipi(unsigned int cpu)
++{
++	/*
++	 * We use a scheduler IPI to wake the CPU as this avoids the need for a
++	 * dedicated IPI and we can safely handle spurious scheduler IPIs.
++	 */
++	arch_smp_send_reschedule(cpu);
++}
++#endif
++
+ #ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
+ void tick_broadcast(const struct cpumask *mask)
+ {
 -- 
 2.42.0.283.g2d96d420d3-goog
 
