@@ -2,82 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 578FC793C5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4492793C5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240579AbjIFMLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:11:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47542 "EHLO
+        id S240597AbjIFMLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231842AbjIFMLA (ORCPT
+        with ESMTP id S231842AbjIFMLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:11:00 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8952E71;
-        Wed,  6 Sep 2023 05:10:56 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fef56f7248so34617485e9.3;
-        Wed, 06 Sep 2023 05:10:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694002255; x=1694607055; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZN27Bg97nR8cwg/8zgt3sa8MoXJh4UkwGr5wouU/s0Q=;
-        b=bXPiwUUzNXyBwXnxsxgsQsVsFvDRVWgEp0SXlGeYJuxUNx4T4IfZSeBg1kVNRp8P0e
-         cKN5yLJKZ8/AzT+Pfq0Nndof98/3o+3o2DyKP2AIVqFd4ZD4KBPnucjU0XjVBptlBNq4
-         32+kP4pbFrYlNx3K4Ts4C05jMCOJRZsf9KMsiUwKPCHNnNQ+fLzMmi7QU0flD/rJOCwe
-         L5mJkLEXDGt8476DHnWEjlsAhMsd+tmoDsN5/XEbyHJwOw+Wg3jpTQZnO/Zewy7YTYrA
-         87lON5I3rRIdkSeHfO4ao/TuizLKGkui7qRP1WNUa9YxUvjI9MiafraztffzeiPGHe9P
-         9S2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694002255; x=1694607055;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZN27Bg97nR8cwg/8zgt3sa8MoXJh4UkwGr5wouU/s0Q=;
-        b=You4i5HVeXkpMke92wayKGGyvKV7ZlYVol2apa2GossdT/ZvIMB7SZGlFXoBoHjdFv
-         nS9IR7Jxql5ZUgcBK4XWEFmx/NJGZroP0cxBZ0fflbcQjBf9M6X93WsuTzNp4sOk7uS8
-         1KfN9C8Lr+UWxoGZT/6ebXqF3gzob/M0QzgWngGIsKn6PyVQ1aqlM/GrHvnYrYoIc20p
-         yiwVD/xWNorbGk17p8ba9wUiEKXtAA29aZBhLL8LzNcIW8KqJeWCe3Ft4WBw7iEDNx0T
-         EEzU4houlcFCid9NIP2Xj6vOLSZpFNnMNxTO0q61hDgTXTaXGTQJm5uZe21ETA2OLKmo
-         iqnQ==
-X-Gm-Message-State: AOJu0Yx4r/8G/LHHsoP7Ekwgg+D2EARZWiZ6B3PG6JXZ422eUnCqD95Z
-        kOS83B33RO4Op60IJE44zK8=
-X-Google-Smtp-Source: AGHT+IG5C0lhFrctMwXr9Vg+5WMKgqS3JMG7vBWZCaKhkzljbpHE5oNPHkp0U+DO5Ew8yG4OdwvwBg==
-X-Received: by 2002:adf:ee08:0:b0:317:5e73:7594 with SMTP id y8-20020adfee08000000b003175e737594mr2300292wrn.28.1694002254719;
-        Wed, 06 Sep 2023 05:10:54 -0700 (PDT)
-Received: from gmail.com (1F2EF6A2.nat.pool.telekom.hu. [31.46.246.162])
-        by smtp.gmail.com with ESMTPSA id f4-20020adfdb44000000b0031984b370f2sm20261025wrj.47.2023.09.06.05.10.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 05:10:54 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 6 Sep 2023 14:10:51 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Steve Wahl <steve.wahl@hpe.com>, Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v3] x86/platform/uv: refactor deprecated strcpy and
- strncpy
-Message-ID: <ZPhsSzHG6YMViOSk@gmail.com>
-References: <20230905-strncpy-arch-x86-platform-uv-uv_nmi-v3-1-3efd6798b569@google.com>
+        Wed, 6 Sep 2023 08:11:11 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2120F1726
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:11:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=date:from:to:cc:subject:message-id
+        :references:mime-version:content-type:in-reply-to; s=k1; bh=YyKx
+        SEw64CuPDiuCgGzAN3A6ofWzKjxmBcED81gY0A4=; b=UhLN09bTV7ehGrr8oh43
+        6VjNiIRbx6EIwC9zNWj8NGxat5pG4ldrNJ/f7YxGhemcwJNC75/ofWoZhowrlQr1
+        hRS3lt9v+IJR6o6wuKlInAinV4PWfHQdWsDUgGfBrq1131jEQSbFJUaya05Ffyt/
+        WDdSSrvwbfFo55Kf2MMWTvnBStuU2dpiV6A/lZhvmNsSaLSwMwsQom8qWvefPR2w
+        Yxnp8pDdqMQ0DGJPOidtfbD0rAE4nKXG44qAtSex4erOXPI/JZ8RTwQl9y5nr5yI
+        mcPMdfN4SmqEcyTSL9hK5c42Wn/fudwNqQdjMHOOFpaQ1g2X/DQPGKX8Qkhe7n2+
+        Dg==
+Received: (qmail 2814613 invoked from network); 6 Sep 2023 14:11:01 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 6 Sep 2023 14:11:01 +0200
+X-UD-Smtp-Session: l3s3148p1@hTsJo68EPRQucrGD
+Date:   Wed, 6 Sep 2023 14:11:00 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] i2c: rcar: add FastMode+ support
+Message-ID: <ZPhsVLiGck+XF5T7@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-renesas-soc@vger.kernel.org,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230904135852.12146-1-wsa+renesas@sang-engineering.com>
+ <20230904135852.12146-4-wsa+renesas@sang-engineering.com>
+ <CAMuHMdW3nGaCHU2GeO3=MHDvZskmXd17GJwj=xBp_ZVawAtniA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="T7IJSgVMdsFtcOK6"
 Content-Disposition: inline
-In-Reply-To: <20230905-strncpy-arch-x86-platform-uv-uv_nmi-v3-1-3efd6798b569@google.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <CAMuHMdW3nGaCHU2GeO3=MHDvZskmXd17GJwj=xBp_ZVawAtniA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -85,59 +60,158 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-* Justin Stitt <justinstitt@google.com> wrote:
+--T7IJSgVMdsFtcOK6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Both `strncpy` and `strcpy` are deprecated for use on NUL-terminated
-> destination strings [1].
-> 
-> We can see that `arg` and `uv_nmi_action` are expected to be
-> NUL-terminated strings due to their use within `strcmp()` and format
-> strings respectively.
-> 
-> With this in mind, a suitable replacement is `strscpy` [2] due to the
-> fact that it guarantees NUL-termination on its destination buffer
-> argument which is _not_ the case for `strncpy` or `strcpy`!
-> 
-> In this case, we can drop both the forced NUL-termination and the `... -1` from:
-> |       strncpy(arg, val, ACTION_LEN - 1);
-> as `strscpy` implicitly has this behavior.
-> 
-> Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+Hi Geert,
 
->  arch/x86/platform/uv/uv_nmi.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
+> > -       u32 icccr;
+> > +       u32 clock_val;
+>=20
+> Perhaps use a union to store either icccr or smd?
 
-Note that this commit is already upstream:
+Yup, can do.
 
-  1e6f01f72855 ("x86/platform/uv: Refactor code using deprecated strcpy()/strncpy() interfaces to use strscpy()")
+>=20
+> >         u8 recovery_icmcr;      /* protected by adapter lock */
+> >         enum rcar_i2c_type devtype;
+> >         struct i2c_client *slave;
+> > @@ -217,7 +228,17 @@ static void rcar_i2c_init(struct rcar_i2c_priv *pr=
+iv)
+> >         rcar_i2c_write(priv, ICMCR, MDBS);
+> >         rcar_i2c_write(priv, ICMSR, 0);
+> >         /* start clock */
+> > -       rcar_i2c_write(priv, ICCCR, priv->icccr);
+> > +       if (priv->flags & ID_P_FMPLUS) {
+> > +               rcar_i2c_write(priv, ICCCR, 0);
+> > +               rcar_i2c_write(priv, ICMPR, priv->clock_val);
+> > +               rcar_i2c_write(priv, ICHPR, 3 * priv->clock_val);
+> > +               rcar_i2c_write(priv, ICLPR, 3 * priv->clock_val);
+> > +               rcar_i2c_write(priv, ICCCR2, FMPE | CDFD | HLSE | SME);
+>=20
+> ICCCR2 note 1: "ICCCR2 should be written to prior to writing ICCCR."
 
-Below is the delta your v3 patch has compared to what is upstream - is it 
-really necessary to open code it, instead of using strnchrnul() as your 
-original patch did? Am I missing anything here?
+Eeks, I remembered it the other way around :/
+
+> >         ick =3D rate / (cdf + 1);
+>=20
+> In case of FM+, cdf will be zero, and ick =3D=3D rate?
+
+Yes.
+
+>=20
+> > @@ -292,34 +324,55 @@ static int rcar_i2c_clock_calculate(struct rcar_i=
+2c_priv *priv)
+> >         round =3D (ick + 500000) / 1000000 * sum;
+>=20
+> ick =3D=3D rate if FM+
+
+Yes, does this induce a change here?
+
+> >         round =3D (round + 500) / 1000;
+>=20
+> DIV_ROUND_UP()
+
+DIV_ROUND_CLOSEST() I'd say, but I have a seperate patch for that.
+
+> > +       if (priv->flags & ID_P_FMPLUS) {
+>=20
+> IIUIC, on R-ar Gen3 and later you can use ICCCR2 without FM+, for
+> improved accuracy, too?
+
+Yeah, we could do that. It indeed improves accuracy:
+
+	old		new
+100kHz:	97680/100000	99950/100000
+400kHz: 373482/400000	399201/400000
+
+Caring about regressions here is a bit over the top, or?
+
+> > +               /*
+> > +                * SMD should be smaller than SCLD and SCHD, we arbitra=
+rily set
+> > +                * the ratio 1:3. SCHD:SCLD ratio is 1:1, thus:
+> > +                * SCL  =3D clkp / (8 + SMD * 2 + SCLD + SCHD + F[(ticf=
+ + tr + intd) * clkp])
+> > +                * SCL  =3D clkp / (8 + SMD * 2 + SMD * 3 + SMD * 3 + F=
+[...])
+> > +                * SCL  =3D clkp / (8 + SMD * 8 + F[...])
+> > +                */
+> > +               smd =3D DIV_ROUND_UP(ick / t.bus_freq_hz - 8 - round, 8=
+);
+>=20
+> Perhaps use rate instead of ick?
+
+That's probably cleaner.
+
+> DIV_ROUND_UP(ick, 8 * (t.bus_freq_hz - 8 - round));
+
+This looks like you assumed "ick / (t.bus_freq_hz - 8 - round)" but it
+is "(ick / t.bus_freq_hz) - 8 - round"?
+
+> > +               scl =3D ick / (8 + 8 * smd + round);
+>=20
+> DIV_ROUND_UP()?
+
+Okay.
+
+> > +               if (smd > 0xff) {
+> > +                       dev_err(dev, "it is impossible to calculate bes=
+t SCL\n");
+> > +                       return -EINVAL;
+>=20
+> Perhaps some "goto error", to share with the error handling for non-FM+?
+
+I will check with the refactored code.
+
+> > -       dev_dbg(dev, "clk %d/%d(%lu), round %u, CDF:0x%x, SCGD: 0x%x\n",
+> > -               scl, t.bus_freq_hz, rate, round, cdf, scgd);
+> > +               dev_dbg(dev, "clk %d/%d(%lu), round %u, SMD:0x%x, SCHD:=
+ 0x%x\n",
+>=20
+> %u/%u
+>=20
+> Perhaps it makes more sense to print SMD and SCHD in decimal?
+>=20
+> This also applies to the existing code (CDF/SCGD) you moved into
+> the else branch.
+
+Can do. I don't care it is debug output.
+
+> > +               if (scgd =3D=3D 0x40) {
+> > +                       dev_err(dev, "it is impossible to calculate bes=
+t SCL\n");
+> > +                       return -EINVAL;
+>=20
+> This was -EIO before.
+
+I'll squash this into a seperate cleanup patch I have.
 
 Thanks,
 
-	Ingo
+   Wolfram
 
---- a/arch/x86/platform/uv/uv_nmi.c
-+++ b/arch/x86/platform/uv/uv_nmi.c
-@@ -202,10 +202,13 @@ static int param_set_action(const char *val, const struct kernel_param *kp)
- {
- 	int i;
- 	int n = ARRAY_SIZE(valid_acts);
--	char arg[ACTION_LEN];
-+	char arg[ACTION_LEN], *p;
- 
- 	/* (remove possible '\n') */
--	strscpy(arg, val, strnchrnul(val, sizeof(arg)-1, '\n') - val + 1);
-+	strscpy(arg, val, sizeof(arg));
-+	p = strchr(arg, '\n');
-+	if (p)
-+		*p = '\0';
- 
- 	for (i = 0; i < n; i++)
- 		if (!strcmp(arg, valid_acts[i].action))
+
+--T7IJSgVMdsFtcOK6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmT4bFAACgkQFA3kzBSg
+KbZv3A//X40G/mXBVIsm9A1xDul1E9P+P8XuhKQwaefee1bYOvOQVv1r+a+LayVq
+nV2zSyH4l5Ec4oXubwPO2+hdgxYLpZRl4aejjtaUrTlRvEHLb/xCI7Hn3OQ1G/yc
+G5CFBP3Etnhk7y9uNo7Et/3Oy5X2AlwDRR9c01WPw/BY9GobnY3x09A6YTm5TtT2
+jBBx9TPFGmwhulGt1JXBFBEifPJfOvjR34yAubRAulwTGdbOVvufvULZIIJrXlku
+Y/hOQZbklOLu/M6/3Te6/pZYg2BzFcUM8S/g5uDYx2dC1RvOrlLnlcZb0L5WrhsM
+10lnU1qwYDQqNTdwChuXepMsg90UpFLCwzrcH8nayLzaaCHjYmv/oV9ft1rpxZxj
+14v8/BgO9zCWhe9hBAdcVPH+npHs6yAD/fyUmsppbsN6WVP+NCd8apKpUAhuPdVY
+5oVfW02a8jkw9WLo2tjzqhRNFHG2JiRXRdd4Ej+OH1DcdV9ytEURiw8ztmAothfG
+GoGH8CjZjn2xHNTvPEY4A+3kbAgVe9a/pB3vXpIRjf0DYr8OSI5mUvx/oZwTk4qw
+VBVeLFihA3TuOwMU0PtoLw9ioDmzfaETOLqrpJL0Pij82WtAz20i45D4lDZ/Jcgi
+vGeCWVbZeLwOzivXDFQYZ1GPpxSDUqdwPRHTCurQPv8GFm9AKFI=
+=iUx3
+-----END PGP SIGNATURE-----
+
+--T7IJSgVMdsFtcOK6--
