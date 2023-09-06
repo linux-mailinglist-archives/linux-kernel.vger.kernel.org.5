@@ -2,93 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 479FA793F0C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F9B793EC9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241739AbjIFOhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49250 "EHLO
+        id S241570AbjIFO2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231714AbjIFOhw (ORCPT
+        with ESMTP id S230467AbjIFO2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:37:52 -0400
-Received: from pv50p00im-ztdg10011201.me.com (pv50p00im-ztdg10011201.me.com [17.58.6.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63927172C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:37:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=claudiocambra.com;
-        s=sig1; t=1694010494;
-        bh=AaRc3mMsr8uRyqgPIujCCQ/LoqhOzGj7mkw/qGVUYvo=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version;
-        b=qot7WPymvuwFj+OlrVZyZC3DoY/FRwqfQ+3WxcbIL4cUTbkakJbzTcB/bp1eXozZg
-         X9pntqH13fcOurFqD4hv0+jpnt/ZBK9pbAferowtlVkAe+kpLqcm9dkavK/pFvC6N0
-         lnOwdoGh5OgvlD8NPqK3W7HX3uwHg4JDktU5TswWJJgzbcobGzf8efvVd+eQh8cxHZ
-         R1AQZTTvW5rUoeF8zH2rGmlkWN7d2g6hpF6m6gRk5do+6rTDMZ7hPrOv3EXdbvgXJ2
-         ZBOMtoOaI9WT/gQAJqcHekt1ddPEndVeqogOAMKhEOVeWRflLD7dWnksyMqSYFhXzh
-         1SSWihFQurA5Q==
-Received: from localhost.localdomain (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
-        by pv50p00im-ztdg10011201.me.com (Postfix) with ESMTPSA id 896356801FC;
-        Wed,  6 Sep 2023 14:28:10 +0000 (UTC)
-From:   Claudio Cambra <developer@claudiocambra.com>
-To:     skhan@linuxfoundation.org, ivan.orlov0322@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
+        Wed, 6 Sep 2023 10:28:41 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B792410E9
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:28:37 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68a3ced3ec6so3076814b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 07:28:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694010517; x=1694615317; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=N6HeleQWw0Y9XHoQUK3nM3UW0QTq3DvRuCxNVLyqk2w=;
+        b=Z2q+hMxYG7IJ/T7s52U2e/6oyZQbztQNtxXIlzJ6ipxrdROg7x3Hz4RTQOHD50lZ1p
+         4zZai7YJ0ijdKoqHg2QorZ/lFAHh8tP3UR3LBVFdeLij8NqHdNMP9O2mASRjyqk1wG3T
+         T9/A1CtYH+KU0CAQt9aBIvoDeVmN+0Ldk39BU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694010517; x=1694615317;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N6HeleQWw0Y9XHoQUK3nM3UW0QTq3DvRuCxNVLyqk2w=;
+        b=YmN07oD54PuzPUrfNzPqnM5cXnLTIq51XGPhSed56i9rydM893QyAB/5dXJMdr/Kco
+         cIdlcBmpzttCREUe2gu3aVZSAgGA3jPYYZrm4yWI43OET2gdE/HegbHNi0JwW4h5Z7lj
+         240aAdVyCX0vbY7UM9Rd9ocBBVouy5YCj7BF2z6OyPtkDHuzfNZoj8jNrmpCGdyNBRa5
+         BITpn7XcU2a1mxsN6jwHVRsU/BIrnaKpgaJm1/3AtZLO657deMXSiXhQNWFRR/qdNw1w
+         0DbZvy77yIBTUCquQiObJUIrN/RdPsvuMXQeVpW4GEaZy7nvvRSc9mGIkEGQihOhR3UM
+         7ERw==
+X-Gm-Message-State: AOJu0YybbLLyIxoyNPaH+EiFg7JJcFW2WwWI3Vu4X5aoXFS4HHZk86hb
+        ksREaSx1ZH2mqTuyPbM78QkZFQ==
+X-Google-Smtp-Source: AGHT+IF7mOxXDB0NXRxhuQI4L0nXdWHrGcl43+W7501XqvJ8gv9aJTJWLtT8+XHIqibH5Q0caQSQgg==
+X-Received: by 2002:a05:6a00:330f:b0:68e:290b:bb57 with SMTP id cq15-20020a056a00330f00b0068e290bbb57mr3498614pfb.18.1694010516829;
+        Wed, 06 Sep 2023 07:28:36 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:4a07:e00a:fdae:750b])
+        by smtp.gmail.com with ESMTPSA id p20-20020a637414000000b005703a63836esm11393807pgc.57.2023.09.06.07.28.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 07:28:35 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     dri-devel@lists.freedesktop.org,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
         linux-kernel@vger.kernel.org
-Cc:     Claudio Cambra <developer@claudiocambra.com>
-Subject: [PATCH] docs/gpu: fix docs compile error for i915
-Date:   Wed,  6 Sep 2023 22:27:47 +0800
-Message-ID: <20230906142746.93411-2-developer@claudiocambra.com>
-X-Mailer: git-send-email 2.42.0
+Subject: [PATCH] MAINTAINERS: Update DRM DRIVERS FOR FREESCALE IMX entry
+Date:   Wed,  6 Sep 2023 07:28:03 -0700
+Message-ID: <20230906072803.1.Idef7e77e8961cbeb8625183eec9db0356b2eccd0@changeid>
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: kGJWdrJrYEXPy6-Q0WNuhlvTyFeG0nx7
-X-Proofpoint-ORIG-GUID: kGJWdrJrYEXPy6-Q0WNuhlvTyFeG0nx7
-X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
- =?UTF-8?Q?2903e8d5c8f:6.0.517,18.0.883,17.0.605.474.0000000_definitions?=
- =?UTF-8?Q?=3D2022-06-21=5F08:2022-06-21=5F01,2022-06-21=5F08,2020-01-23?=
- =?UTF-8?Q?=5F02_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 spamscore=0
- mlxlogscore=613 mlxscore=0 clxscore=1030 adultscore=0 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2309060125
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compile error was caused by improper doc comment whitespacing
+As per the discussion on the lists [1], changes to this driver
+generally flow through drm-misc. If they need to be coordinated with
+v4l2 they sometimes go through Philipp Zabel's tree instead. List both
+trees in MAINTAINERS. Also update the title of this driver to specify
+that it's just for IMX 5/6 since, as per Philipp "There are a lot more
+i.MX that do not use IPUv3 than those that do."
 
-Extra task for "Documentation task"
-Linux kernel Bug Fixing Fall Unpaid 2023
+[1] https://lore.kernel.org/r/d56dfb568711b4b932edc9601010feda020c2c22.camel@pengutronix.de
 
-Signed-off-by: Claudio Cambra <developer@claudiocambra.com>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
- drivers/gpu/drm/i915/gt/uc/intel_huc.c | 2 ++
- 1 file changed, 2 insertions(+)
+I'd expect this MAINTAINERS update to go through drm-misc.
 
-diff --git a/drivers/gpu/drm/i915/gt/uc/intel_huc.c b/drivers/gpu/drm/i915/gt/uc/intel_huc.c
-index ddd146265beb..fa70defcb5b2 100644
---- a/drivers/gpu/drm/i915/gt/uc/intel_huc.c
-+++ b/drivers/gpu/drm/i915/gt/uc/intel_huc.c
-@@ -26,6 +26,7 @@
-  * The kernel driver is only responsible for loading the HuC firmware and
-  * triggering its security authentication. This is done differently depending
-  * on the platform:
-+ *
-  * - older platforms (from Gen9 to most Gen12s): the load is performed via DMA
-  *   and the authentication via GuC
-  * - DG2: load and authentication are both performed via GSC.
-@@ -33,6 +34,7 @@
-  *   not-DG2 older platforms), while the authentication is done in 2-steps,
-  *   a first auth for clear-media workloads via GuC and a second one for all
-  *   workloads via GSC.
-+ *
-  * On platforms where the GuC does the authentication, to correctly do so the
-  * HuC binary must be loaded before the GuC one.
-  * Loading the HuC is optional; however, not using the HuC might negatively
+ MAINTAINERS | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0a6b229b820a..ea69720f1552 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6899,10 +6899,12 @@ F:	Documentation/devicetree/bindings/display/fsl,dcu.txt
+ F:	Documentation/devicetree/bindings/display/fsl,tcon.txt
+ F:	drivers/gpu/drm/fsl-dcu/
+ 
+-DRM DRIVERS FOR FREESCALE IMX
++DRM DRIVERS FOR FREESCALE IMX 5/6
+ M:	Philipp Zabel <p.zabel@pengutronix.de>
+ L:	dri-devel@lists.freedesktop.org
+ S:	Maintained
++T:	git git://anongit.freedesktop.org/drm/drm-misc
++T:	git git://git.pengutronix.de/git/pza/linux
+ F:	Documentation/devicetree/bindings/display/imx/
+ F:	drivers/gpu/drm/imx/ipuv3/
+ F:	drivers/gpu/ipu-v3/
 -- 
-2.41.0
+2.42.0.283.g2d96d420d3-goog
 
