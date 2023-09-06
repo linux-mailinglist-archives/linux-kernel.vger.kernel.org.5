@@ -2,140 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04116793C01
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DAD7793C08
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240373AbjIFL7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:59:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
+        id S240354AbjIFL7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240340AbjIFL7K (ORCPT
+        with ESMTP id S229716AbjIFL7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:59:10 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF22CE6
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:59:06 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-52c88a03f99so4793427a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 04:59:06 -0700 (PDT)
+        Wed, 6 Sep 2023 07:59:48 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1522B1A7
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:59:44 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id ffacd0b85a97d-317a84a3ebeso367170f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 04:59:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694001545; x=1694606345; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0eY60L1vqLhFNroIzfX3ZIdyRPyMgbcLJxNulph+C5w=;
-        b=fKGWI9W7wR8TmAcC645SaibNfSyqdUgmlqU4euQ81IsKDcrWCDl2qjx1XsRxDHRZl0
-         ZAUiUb6jxFuZCjBKCqM//9iBMqfEWifFG4X+hCHouAYpJaMuiNQ9Q8lNl4Os9xZc5wov
-         axw5qbpfV/cBJaTASEqeZS0o1cUMqa2Nsmu3FuVmXX7rKV872JqkmbLGf75XfOi5Jk0Q
-         2dI9G04cha8bcREqaD8HX8k8l8u9rK+0lTfSbr+YlzdZroc3Zgt460aD+KAk67krOpXV
-         XdbQqQWfxBve+quffrB8AOqjS1Q0jHgyqh84oTomHeWXdTrj7sZ/64OVl2yBoTR66HgE
-         jmOQ==
+        d=google.com; s=20221208; t=1694001582; x=1694606382; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qZ45QK6IZz6Y3HlhiHmijDorqTKf0Kc5k/F4bqv8ZPU=;
+        b=V9xQgZhC51/IccpfbhWJFiRXRLjcFHgbXvObSd82yob283xHadPHcY2wwOFJcntXUr
+         XA3exGZo7sE8GWCWESMw6Luo5+bMYY0svdAD3ue3w+e+06HybXIv59Sr3cFvff1/8tC7
+         gN8Hy/+nMKo4a+gvDn6h+Ghjias3hw70v2rOPzU1/7Q77TS7KdJPQHGcnK+ECCJJ5Y+L
+         TMSPVVHtePhXH15mc4XUQBv4wASg9iKqieB5aBKNx6PNYjWqH5VguAd4E25pnzWeGW9F
+         Jq5BWvc2VHe36DlbaRlhbAh1yMdOdaO+TwArejpAC5zs34kJeE66l6yKbqQlRjlK7SV1
+         251g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694001545; x=1694606345;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0eY60L1vqLhFNroIzfX3ZIdyRPyMgbcLJxNulph+C5w=;
-        b=P5cOIDCSIruDrIYBs6INbh6BBRP4RvAkjBKYKnFvX8U/iZylMNEQa47afohnRrBg6i
-         rVPJuOye89lnChNd0Wz9TYIAv0NQ7lq+9MRGDhfCZH/y2rvUov2qJfJ56rsWyAhJtdf3
-         QRU7anmh/BFNnRqrINhOWEUF0ZmqaHioM4jLexbUssGtXpxn0tr+mxCVWjVKW7jlpdIY
-         oJv2CJuqPVUwrveqe74xyVvd2xN2iP0vUmz2zBkY0bCLgSH39JajZeP3s3KaBmGh8blL
-         PFgRckHfM+s2icpEr0Oy9q3DY3j/BvEpM2h5UcZbg3xYZslGn0pu8pGtqpdK4EvptBQO
-         umiw==
-X-Gm-Message-State: AOJu0Yyxe5KCPDHvGNyqiNsehdMJkNxyO6mbm0QzrmruNQnNd0k0eIrL
-        gJzktAIBQO6Va9gCCTbJhzzI4w==
-X-Google-Smtp-Source: AGHT+IF9sAT+cjxkgPNsf+QIwIxOAoiZdeDBevNhm3tks4xh9tnp+4JXd0PrPwEP3hqmdZltjlbETg==
-X-Received: by 2002:aa7:dace:0:b0:523:40d0:34d1 with SMTP id x14-20020aa7dace000000b0052340d034d1mr2179204eds.4.1694001545044;
-        Wed, 06 Sep 2023 04:59:05 -0700 (PDT)
-Received: from [192.168.37.154] (178235177204.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.204])
-        by smtp.gmail.com with ESMTPSA id a9-20020aa7d749000000b005257da6be23sm8448955eds.75.2023.09.06.04.59.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 04:59:04 -0700 (PDT)
-Message-ID: <168d4136-7382-481a-9c4d-f43b1f95f987@linaro.org>
-Date:   Wed, 6 Sep 2023 13:59:02 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: sc7180: Add ADSP
-Content-Language: en-US
-To:     Nikita Travkin <nikita@trvn.ru>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org
-Cc:     David Wronek <davidwronek@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-References: <20230905-sc7180-adsp-rproc-v2-0-8ab7f299600a@trvn.ru>
- <20230905-sc7180-adsp-rproc-v2-4-8ab7f299600a@trvn.ru>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230905-sc7180-adsp-rproc-v2-4-8ab7f299600a@trvn.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1694001582; x=1694606382;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qZ45QK6IZz6Y3HlhiHmijDorqTKf0Kc5k/F4bqv8ZPU=;
+        b=bx6f8cpjgmaqhNXGjKYoL8xVYOhU1E5GaJEqz805yxsfeztUneNqLJtkKkWfNAeY86
+         blvgg9OZ1IZRHoda0mZYUOvtiP+jSmYv1ZjjIuFmsg/AoipZVYr/kZADqtPL0giXjzXn
+         GJ02vRPwN7NUwhyl2+b2d08+vdI6c2yaKBtcYPN3haJ+tBfDyxAzuGtJdF/4Pv7bzErs
+         C1i/0nH6bS2BnqsGI103wS0j7vFz7EZm0zgXuBfxRpw61NV/Qzqin6AVlRo/BSa7pm2f
+         urQZJ/1UbrjmsPSR/GCLEK1OmCLGVutnzKNdyBNXJSs8slWMnGVOERZGQ7d2RaUWmsso
+         LsLA==
+X-Gm-Message-State: AOJu0YxuHqkMJ6BY92Gf3g3B04BF4e1TBHxHH1s9HT5/gWYC7LA3b37r
+        6PEzcz4pcBjT+3l4DFQKNRITZB9H/w==
+X-Google-Smtp-Source: AGHT+IHyrWV8acPN9HP3oz5oz/0VQKRUGYP/4SMuhpP6WbUylN5q+J5bASQWA2/S0MVnVxpukdeBqvYYJQ==
+X-Received: from alpic.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1bf2])
+ (user=alpic job=sendgmr) by 2002:adf:e195:0:b0:31a:d852:b6b2 with SMTP id
+ az21-20020adfe195000000b0031ad852b6b2mr50983wrb.0.1694001582575; Wed, 06 Sep
+ 2023 04:59:42 -0700 (PDT)
+Date:   Wed,  6 Sep 2023 13:59:27 +0200
+In-Reply-To: <20230906102557.3432236-1-alpic@google.com>
+Mime-Version: 1.0
+References: <20230906102557.3432236-1-alpic@google.com>
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
+Message-ID: <20230906115928.3749928-1-alpic@google.com>
+Subject: [PATCH V2] SELinux: Check correct permissions for FS_IOC32_*
+From:   Alfred Piccioni <alpic@google.com>
+To:     Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>
+Cc:     stable@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alfred Piccioni <alpic@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5.09.2023 12:41, Nikita Travkin wrote:
-> sc7180 has an ADSP remoteproc that exclusively controls the audio
-> hardware on devices that use Qualcomm firmware.
-> 
-> Add it along with the relevant audio services.
-> 
-> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-> ---
-> v2: rename service nodes according to the schema, reorder properties
-> ---
-remoteproc@62400000: glink-edge:apr: 'qcom,domain' is a required property
-remoteproc@62400000: glink-edge: Unevaluated properties are not allowed
-('apr' was unexpected)
-remoteproc@62400000: Unevaluated properties are not allowed ('glink-edge',
-'qcom,smem-state-names', 'qcom,smem-states' were unexpected)
-apr: 'qcom,domain' is a required property
-service@4: Unevaluated properties are not allowed ('cc' was unexpected)
+Some ioctl commands do not require ioctl permission, but are routed to
+other permissions such as FILE_GETATTR or FILE_SETATTR. This routing is
+done by comparing the ioctl cmd to a set of 64-bit flags (FS_IOC_*).
 
-you need to enable the node to get all the warnings
+However, if a 32-bit process is running on a 64-bit kernel, it emits
+32-bit flags (FS_IOC32_*) for certain ioctl operations. These flags are
+being checked erroneously, which leads to these ioctl operations being
+routed to the ioctl permission, rather than the correct file permissions.
 
-Konrad
+Two possible solutions exist:
+
+- Trim parameter "cmd" to a u16 so that only the last two bytes are
+  checked in the case statement.
+
+- Explicitly add the FS_IOC32_* codes to the case statement.
+
+Solution 2 was chosen because it is a minimal explicit change. Solution
+1 is a more elegant change, but is less explicit, as the switch
+statement appears to only check the FS_IOC_* codes upon first reading.
+
+Fixes: 0b24dcb7f2f7 ("Revert "selinux: simplify ioctl checking"")
+Signed-off-by: Alfred Piccioni <alpic@google.com>
+Cc: stable@vger.kernel.org
+---
+V1->V2: Cleaned up some typos and added tag for -stable tree inclusion.
+
+ security/selinux/hooks.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index d06e350fedee..bba83f437a1d 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -3644,11 +3644,15 @@ static int selinux_file_ioctl(struct file *file, unsigned int cmd,
+ 	case FIGETBSZ:
+ 	case FS_IOC_GETFLAGS:
+ 	case FS_IOC_GETVERSION:
++	case FS_IOC32_GETFLAGS:
++	case FS_IOC32_GETVERSION:
+ 		error = file_has_perm(cred, file, FILE__GETATTR);
+ 		break;
+ 
+ 	case FS_IOC_SETFLAGS:
+ 	case FS_IOC_SETVERSION:
++	case FS_IOC32_SETFLAGS:
++	case FS_IOC32_SETVERSION:
+ 		error = file_has_perm(cred, file, FILE__SETATTR);
+ 		break;
+ 
+
+base-commit: 50a510a78287c15cee644f345ef8bac8977986a7
+-- 
+2.42.0.283.g2d96d420d3-goog
+
