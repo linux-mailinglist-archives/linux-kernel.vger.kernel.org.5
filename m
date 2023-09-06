@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8A8793B81
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D146B793B7A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239996AbjIFLgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:36:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34284 "EHLO
+        id S237727AbjIFLgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239986AbjIFLgg (ORCPT
+        with ESMTP id S235315AbjIFLgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:36:36 -0400
-Received: from out-228.mta0.migadu.com (out-228.mta0.migadu.com [IPv6:2001:41d0:1004:224b::e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E182210D0
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:36:27 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694000186;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cLC3ilm6nlwMIg5uGKAYYbeBdxr5BpYXfFOBlWtkXh8=;
-        b=s2+X3QCSIeUe4ujttwJ6scy83JEMzyyuNCLpoDzYNkBUcMUXnhwlVYotVLRbFgPXvRZ1n/
-        X1CwCZqTTldwabTkI+kKLKHjuYJnp28rqkNDh98Ha/teuofnJR/h0EyAU5IIPP2oqaHkgG
-        dhobFpuHaxWuTX74xPq3rIlPmCYOXQE=
-Mime-Version: 1.0
-Subject: Re: [v4 3/4] memblock: introduce MEMBLOCK_RSRV_NOINIT flag
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230906112605.2286994-4-usama.arif@bytedance.com>
-Date:   Wed, 6 Sep 2023 19:35:52 +0800
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        fam.zheng@bytedance.com, liangma@liangbit.com,
-        punit.agrawal@bytedance.com
+        Wed, 6 Sep 2023 07:36:13 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E7F1987;
+        Wed,  6 Sep 2023 04:36:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A7FBC433C8;
+        Wed,  6 Sep 2023 11:36:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694000162;
+        bh=XvZQw/D6OS4nurgc67PWjQY0smNSqPLGy1z+2Y7iLEE=;
+        h=Date:From:To:Subject:In-Reply-To:References:Cc:From;
+        b=qAbNrWUfTm6JFrqriekyq9HXVlp5/O/Kyhggcyf6moJCv8OjJVkjl90iQaGT5FVUb
+         PIKhM7545DtydKwRk8SZQu2LVPjeoFBxj9VD0DhFl0jc3lKeNgB9hHLgeKZFAXB1Mh
+         Orh1iB/4Za+xNq7vly8Y3LSeSrgrxXGEc+yCj6r4VYkUsO25AG6+HEyBTCkPPqJSvd
+         POQPjLajrsSSScEkcG4O2JR+2Hnox1onqoXzsyUpdaHCOHGyCQfz627MBi8T/WRdTT
+         LotE6Ozif+HT4R1YRUnKEjZh0gvK+ZKg7jd0kLWxjb8CV8j3/yINYSsv3yuUEd43PG
+         w9is3v6yibUxw==
+Message-ID: <c8360c51a96a457a8b9341a9918f0c52.mripard@kernel.org>
+Date:   Wed, 06 Sep 2023 11:36:00 +0000
+From:   "Maxime Ripard" <mripard@kernel.org>
+To:     "Sarah Walker" <sarah.walker@imgtec.com>
+Subject: Re: [PATCH v6 03/20] dt-bindings: gpu: Add Imagination Technologies
+ PowerVR/IMG GPU
+In-Reply-To: <20230906095542.3280699-4-sarah.walker@imgtec.com>
+References: <20230906095542.3280699-4-sarah.walker@imgtec.com>
+Cc:     afd@ti.com, airlied@gmail.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, conor+dt@kernel.org, corbet@lwn.net,
+        dakr@redhat.com, daniel@ffwll.ch, devicetree@vger.kernel.org,
+        donald.robson@imgtec.com, dri-devel@lists.freedesktop.org,
+        faith.ekstrand@collabora.com, frank.binns@imgtec.com,
+        hns@goldelico.com, krzysztof.kozlowski+dt@linaro.org,
+        linus.walleij@linaro.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luben.tuikov@amd.com,
+        maarten.lankhorst@linux.intel.com, matt.coster@imgtec.com,
+        matthew.brost@intel.com, mripard@kernel.org, robh+dt@kernel.org,
+        tzimmermann@suse.de
 Content-Transfer-Encoding: 7bit
-Message-Id: <05DA93DB-84E5-48C3-AA16-F1F2525C8CC8@linux.dev>
-References: <20230906112605.2286994-1-usama.arif@bytedance.com>
- <20230906112605.2286994-4-usama.arif@bytedance.com>
-To:     Usama Arif <usama.arif@bytedance.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On Sep 6, 2023, at 19:26, Usama Arif <usama.arif@bytedance.com> wrote:
+On Wed, 6 Sep 2023 10:55:25 +0100, Sarah Walker wrote:
+> Add the device tree binding documentation for the IMG AXE GPU used in
+> TI AM62 SoCs.
 > 
-> For reserved memory regions marked with this flag,
-> reserve_bootmem_region is not called during memmap_init_reserved_pages.
-> This can be used to avoid struct page initialization for
-> regions which won't need them, for e.g. hugepages with
-> HVO enabled.
+> Co-developed-by: Frank Binns <frank.binns@imgtec.com>
+> Signed-off-by: Frank Binns <frank.binns@imgtec.com>
 > 
-> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+> [ ... ]
 
-Acked-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Maxime Ripard <mripard@kernel.org>
 
-
+Thanks!
+Maxime
