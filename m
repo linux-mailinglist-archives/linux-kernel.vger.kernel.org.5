@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD1F793B1C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F22793B2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233429AbjIFL1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 07:27:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59716 "EHLO
+        id S239698AbjIFL2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:28:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235254AbjIFL1n (ORCPT
+        with ESMTP id S239677AbjIFL2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 07:27:43 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAAF19AB
+        Wed, 6 Sep 2023 07:28:05 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D19F199C
         for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:26:59 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-501bef6e0d3so2771904e87.1
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-401ec23be82so36702505e9.0
         for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 04:26:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1693999575; x=1694604375; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1693999576; x=1694604376; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HvAW5HglNzFFKY02dQL2QCkQguw1CPVi9WQHfYQdWVQ=;
-        b=F/LmyV5XT3asg5nV83+0hPDnPzGaG4y2A38iHqkIFdMMLv2GM7SAC5L7lLJiKg07oj
-         AECMS9OVo9+ssAxtPQWjNtIEZkHcnKBovdf7mwmf/3z7jcEQ7wGA7ZquiYRe2PKNgW1n
-         oRpeIrKRAZvlq1ugzSOBJD+1/W+hxsozWh8rIbQCnlVN7WztAo3UC9Jqj81Ovqn+HPuP
-         4xx3SyTwoiZGml8tQMUraLfMcAzzP26PSjdNmbpDTgO60EkJmeERafLu7n0bfv/sYsvW
-         TuyzKvYd9lYjjHjChpq7wgOKftdFtfI5WItTDurFPee3YX84R0MvoeQpnuhitgSGKpdk
-         MTiQ==
+        bh=iQ+4wrvPpGZ5a1nklWsXWLvy3+iTY75RmIyUz7pfkEI=;
+        b=hg+HWA6x7AUaGc7r9e+u+i8RJ0/TYgJhXY7d9ySaCeUxU3YRWAy3hi70H3etEjdgcH
+         6vK4UE2wg9/HejvqWWUcFEY5VxQxt+th8uM/OclYJzfZxQ6w8M2cLuf52PJY2poeKTbx
+         fy9HmJ1W6iHFRe/1izQAx/R7W2QhEVENfmDT58kUCSh9xzLXrVaXUyYXpWF3huNWeT31
+         hc8pwYFoVKwzYeELYdEFoezwDon1oJbEuhU95yNEezenv/FFj3lFrT3xeIN/7KevrMQf
+         rZPkKzgR/2nyU3T6NXK6oBR1xN+dj5kDM/1KMFQw9y3pCuJZeZL83e5N7cfmkqyD6Eck
+         JeOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693999575; x=1694604375;
+        d=1e100.net; s=20221208; t=1693999576; x=1694604376;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HvAW5HglNzFFKY02dQL2QCkQguw1CPVi9WQHfYQdWVQ=;
-        b=Hfm2BkRYDBRjm/5pKEU9dDJTdzGEhMbBkQQ8XbEBMVGpNhGSdiepHFT98/cEdKh4nK
-         TcDkAEB4zUElssb5RXdlwjw2FTE82LR5CvA9SJsr1N+A7Z9xOMa1V51KSh4HR2Y4n3mr
-         uknt5utuBa8a1/umZ4MUlp4254LF94b8Afme9bBuPgB2yPDQLcC7zmNwmoRPy7doBiyc
-         x/2eUNMbXaWFeFMEjYsoNY0f93Ne2xhNMUJtWspD3aXQOsnJxP5PoWCDCw+5uzhIMKuX
-         fjEry9lYlSib4FnvYoH+5BReO92C/eUZZcDBDQ/43CUXZfaBGmN/9vCRbfgSnOR7OSF8
-         W1Kg==
-X-Gm-Message-State: AOJu0Yy5BpZjx7Ewr/10on8wLuYL3/8969wvzcnUbYARrif6D7aKhk6O
-        vl/2xKijoCiKbNvMsWxBzlG2bw==
-X-Google-Smtp-Source: AGHT+IELbss0QLtzg1jVEelmiCJSpw2y8Xgxgu0g1ZmM4E+wM/cWOJ04LOlpRaDfgoONu1e0+ddNrg==
-X-Received: by 2002:a2e:701a:0:b0:2b9:4413:864e with SMTP id l26-20020a2e701a000000b002b94413864emr2071899ljc.53.1693999575193;
-        Wed, 06 Sep 2023 04:26:15 -0700 (PDT)
+        bh=iQ+4wrvPpGZ5a1nklWsXWLvy3+iTY75RmIyUz7pfkEI=;
+        b=cz64ZgD60SgaL0pQU5LJOK2D8QNhd6CSUoFly6Or1Sn5iXNxKjFvXZEPPY6fDsSHQZ
+         BWI29j5xriOdd2o4hGWrPkNdSsp/ph2HmSO+otEUxxFk/60VrsbXL8fWLSX5Lss0ULVA
+         21YCtKDAfQ5uKancYOFYCIesaATDxEm3zX3K2/+9nykqglFFAot4WoSbSVZ/L9i4ZWiA
+         kCespiV9xVJ0a1RHDn4bcN72FdPCppD86LFSmM7YAxi+uRT4a4bwK6vTyrbIldizRCxC
+         aj74lQQqYVDlM+YB9XnxZ5ZvDD8CK91HJLRUG8L9IUfeRyjfg+kV5xu1Vy1waf1+Kr6+
+         9OZA==
+X-Gm-Message-State: AOJu0YzTgZz2YkHxNWJfvw8SQbtYHC0+WB2Sf3xEYZlVeV+l/a0+hWhn
+        /jorjl0qfUo1nqNKPIC9JMkAUw==
+X-Google-Smtp-Source: AGHT+IFKTigEzECohyKXcbSiG234lo0AYUo/LW5o7o0IXxyKMwkwe7Dz6DDQAswIExRg7WA4d/Alpg==
+X-Received: by 2002:a05:600c:ada:b0:3f9:b8df:26ae with SMTP id c26-20020a05600c0ada00b003f9b8df26aemr1895949wmr.34.1693999576050;
+        Wed, 06 Sep 2023 04:26:16 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:6b6a:b5c7:0:6dce:31d8:efb1:5d81])
-        by smtp.gmail.com with ESMTPSA id n9-20020a05600c294900b003feff926fc5sm19517038wmd.17.2023.09.06.04.26.14
+        by smtp.gmail.com with ESMTPSA id n9-20020a05600c294900b003feff926fc5sm19517038wmd.17.2023.09.06.04.26.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 04:26:14 -0700 (PDT)
+        Wed, 06 Sep 2023 04:26:15 -0700 (PDT)
 From:   Usama Arif <usama.arif@bytedance.com>
 To:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
         rppt@kernel.org
 Cc:     linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
         fam.zheng@bytedance.com, liangma@liangbit.com,
         punit.agrawal@bytedance.com, Usama Arif <usama.arif@bytedance.com>
-Subject: [v4 2/4] memblock: pass memblock_type to memblock_setclr_flag
-Date:   Wed,  6 Sep 2023 12:26:03 +0100
-Message-Id: <20230906112605.2286994-3-usama.arif@bytedance.com>
+Subject: [v4 3/4] memblock: introduce MEMBLOCK_RSRV_NOINIT flag
+Date:   Wed,  6 Sep 2023 12:26:04 +0100
+Message-Id: <20230906112605.2286994-4-usama.arif@bytedance.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230906112605.2286994-1-usama.arif@bytedance.com>
 References: <20230906112605.2286994-1-usama.arif@bytedance.com>
@@ -73,80 +73,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows setting flags to both memblock types and is in preparation for
-setting flags (for e.g. to not initialize struct pages) on reserved
-memory region.
+For reserved memory regions marked with this flag,
+reserve_bootmem_region is not called during memmap_init_reserved_pages.
+This can be used to avoid struct page initialization for
+regions which won't need them, for e.g. hugepages with
+HVO enabled.
 
 Signed-off-by: Usama Arif <usama.arif@bytedance.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
-Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
 ---
- mm/memblock.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ include/linux/memblock.h |  9 +++++++++
+ mm/memblock.c            | 33 ++++++++++++++++++++++++++++-----
+ 2 files changed, 37 insertions(+), 5 deletions(-)
 
+diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+index 1c1072e3ca06..ae3bde302f70 100644
+--- a/include/linux/memblock.h
++++ b/include/linux/memblock.h
+@@ -40,6 +40,8 @@ extern unsigned long long max_possible_pfn;
+  * via a driver, and never indicated in the firmware-provided memory map as
+  * system RAM. This corresponds to IORESOURCE_SYSRAM_DRIVER_MANAGED in the
+  * kernel resource tree.
++ * @MEMBLOCK_RSRV_NOINIT: memory region for which struct pages are
++ * not initialized (only for reserved regions).
+  */
+ enum memblock_flags {
+ 	MEMBLOCK_NONE		= 0x0,	/* No special request */
+@@ -47,6 +49,7 @@ enum memblock_flags {
+ 	MEMBLOCK_MIRROR		= 0x2,	/* mirrored region */
+ 	MEMBLOCK_NOMAP		= 0x4,	/* don't add to kernel direct mapping */
+ 	MEMBLOCK_DRIVER_MANAGED = 0x8,	/* always detected via a driver */
++	MEMBLOCK_RSRV_NOINIT	= 0x10,	/* don't initialize struct pages */
+ };
+ 
+ /**
+@@ -125,6 +128,7 @@ int memblock_clear_hotplug(phys_addr_t base, phys_addr_t size);
+ int memblock_mark_mirror(phys_addr_t base, phys_addr_t size);
+ int memblock_mark_nomap(phys_addr_t base, phys_addr_t size);
+ int memblock_clear_nomap(phys_addr_t base, phys_addr_t size);
++int memblock_reserved_mark_noinit(phys_addr_t base, phys_addr_t size);
+ 
+ void memblock_free_all(void);
+ void memblock_free(void *ptr, size_t size);
+@@ -259,6 +263,11 @@ static inline bool memblock_is_nomap(struct memblock_region *m)
+ 	return m->flags & MEMBLOCK_NOMAP;
+ }
+ 
++static inline bool memblock_is_reserved_noinit(struct memblock_region *m)
++{
++	return m->flags & MEMBLOCK_RSRV_NOINIT;
++}
++
+ static inline bool memblock_is_driver_managed(struct memblock_region *m)
+ {
+ 	return m->flags & MEMBLOCK_DRIVER_MANAGED;
 diff --git a/mm/memblock.c b/mm/memblock.c
-index 913b2520a9a0..a49efbaee7e0 100644
+index a49efbaee7e0..8f7a0cb668d4 100644
 --- a/mm/memblock.c
 +++ b/mm/memblock.c
-@@ -901,10 +901,9 @@ int __init_memblock memblock_physmem_add(phys_addr_t base, phys_addr_t size)
-  *
-  * Return: 0 on success, -errno on failure.
-  */
--static int __init_memblock memblock_setclr_flag(phys_addr_t base,
--				phys_addr_t size, int set, int flag)
-+static int __init_memblock memblock_setclr_flag(struct memblock_type *type,
-+				phys_addr_t base, phys_addr_t size, int set, int flag)
- {
--	struct memblock_type *type = &memblock.memory;
- 	int i, ret, start_rgn, end_rgn;
- 
- 	ret = memblock_isolate_range(type, base, size, &start_rgn, &end_rgn);
-@@ -933,7 +932,7 @@ static int __init_memblock memblock_setclr_flag(phys_addr_t base,
-  */
- int __init_memblock memblock_mark_hotplug(phys_addr_t base, phys_addr_t size)
- {
--	return memblock_setclr_flag(base, size, 1, MEMBLOCK_HOTPLUG);
-+	return memblock_setclr_flag(&memblock.memory, base, size, 1, MEMBLOCK_HOTPLUG);
+@@ -996,6 +996,24 @@ int __init_memblock memblock_clear_nomap(phys_addr_t base, phys_addr_t size)
+ 	return memblock_setclr_flag(&memblock.memory, base, size, 0, MEMBLOCK_NOMAP);
  }
  
- /**
-@@ -945,7 +944,7 @@ int __init_memblock memblock_mark_hotplug(phys_addr_t base, phys_addr_t size)
-  */
- int __init_memblock memblock_clear_hotplug(phys_addr_t base, phys_addr_t size)
- {
--	return memblock_setclr_flag(base, size, 0, MEMBLOCK_HOTPLUG);
-+	return memblock_setclr_flag(&memblock.memory, base, size, 0, MEMBLOCK_HOTPLUG);
- }
- 
- /**
-@@ -962,7 +961,7 @@ int __init_memblock memblock_mark_mirror(phys_addr_t base, phys_addr_t size)
- 
- 	system_has_some_mirror = true;
- 
--	return memblock_setclr_flag(base, size, 1, MEMBLOCK_MIRROR);
-+	return memblock_setclr_flag(&memblock.memory, base, size, 1, MEMBLOCK_MIRROR);
- }
- 
- /**
-@@ -982,7 +981,7 @@ int __init_memblock memblock_mark_mirror(phys_addr_t base, phys_addr_t size)
-  */
- int __init_memblock memblock_mark_nomap(phys_addr_t base, phys_addr_t size)
- {
--	return memblock_setclr_flag(base, size, 1, MEMBLOCK_NOMAP);
-+	return memblock_setclr_flag(&memblock.memory, base, size, 1, MEMBLOCK_NOMAP);
- }
- 
- /**
-@@ -994,7 +993,7 @@ int __init_memblock memblock_mark_nomap(phys_addr_t base, phys_addr_t size)
-  */
- int __init_memblock memblock_clear_nomap(phys_addr_t base, phys_addr_t size)
- {
--	return memblock_setclr_flag(base, size, 0, MEMBLOCK_NOMAP);
-+	return memblock_setclr_flag(&memblock.memory, base, size, 0, MEMBLOCK_NOMAP);
- }
- 
++/**
++ * memblock_reserved_mark_noinit - Mark a reserved memory region with flag
++ * MEMBLOCK_RSRV_NOINIT which results in the struct pages not being initialized
++ * for this region.
++ * @base: the base phys addr of the region
++ * @size: the size of the region
++ *
++ * struct pages will not be initialized for reserved memory regions marked with
++ * %MEMBLOCK_RSRV_NOINIT.
++ *
++ * Return: 0 on success, -errno on failure.
++ */
++int __init_memblock memblock_reserved_mark_noinit(phys_addr_t base, phys_addr_t size)
++{
++	return memblock_setclr_flag(&memblock.reserved, base, size, 1,
++				    MEMBLOCK_RSRV_NOINIT);
++}
++
  static bool should_skip_region(struct memblock_type *type,
+ 			       struct memblock_region *m,
+ 			       int nid, int flags)
+@@ -2112,13 +2130,18 @@ static void __init memmap_init_reserved_pages(void)
+ 		memblock_set_node(start, end, &memblock.reserved, nid);
+ 	}
+ 
+-	/* initialize struct pages for the reserved regions */
++	/*
++	 * initialize struct pages for reserved regions that don't have
++	 * the MEMBLOCK_RSRV_NOINIT flag set
++	 */
+ 	for_each_reserved_mem_region(region) {
+-		nid = memblock_get_region_node(region);
+-		start = region->base;
+-		end = start + region->size;
++		if (!memblock_is_reserved_noinit(region)) {
++			nid = memblock_get_region_node(region);
++			start = region->base;
++			end = start + region->size;
+ 
+-		reserve_bootmem_region(start, end, nid);
++			reserve_bootmem_region(start, end, nid);
++		}
+ 	}
+ }
+ 
 -- 
 2.25.1
 
