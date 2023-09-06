@@ -2,84 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A374793765
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8DF79376C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 10:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235874AbjIFIsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 04:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42086 "EHLO
+        id S236103AbjIFItI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 04:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235685AbjIFIsu (ORCPT
+        with ESMTP id S235918AbjIFItC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 04:48:50 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F041715
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 01:48:26 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-52a5c0d949eso4685467a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 01:48:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693990105; x=1694594905; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RrCIcjF1rY1mMD/Gu+r4tbPGrpOuOBfXe5P30B5qf1Q=;
-        b=gjd3AsiRvJZVpqXBjKKj4V23wJK37HZxuiRhYiR7YhEGsOElHNV3fd/X9IVNNr0Ypt
-         bGGZd4fyi7r9EOZiFPl8QHWPSRfCQl1xoD+Y7ecOoY53m1ueuJJb7WRvpR9wotBVL1pc
-         YSS9C3fUQ/9RJUN8tPAhtbMeeVQxyrSAy4a5/dsQjDNf/b7ueu2XwSwLd+M6pFPvjaGZ
-         w3SDLoKbBa04PLbLbgsv2VZRQYkI90jPNrvOaRSUQ1txLmK0bEKDjbMG8zFOKhIh2wv4
-         ch3lS4s9eUlDVAJxVxipVR5hWxCjwzJSJB9nUcZAPS/GsB824pwZcMkQbJb+Z/Fn6eB9
-         vTvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693990105; x=1694594905;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RrCIcjF1rY1mMD/Gu+r4tbPGrpOuOBfXe5P30B5qf1Q=;
-        b=ReZxs5MqWLHnse98x/ycEcPEPGodg7bSlTT6Ym6c45gZ1DIVAIfLnQeswcMUoOhRqG
-         L2OmhGWJrhnRK6p+6lBlN+OkaBCVUpr5vIHhAPb2aR+VVDefVeSQ+g1+4PQZByUQgye1
-         6C8SyByw2t6+aEu3gmdin3M+HXgb64ZcFvEZA/Yz77pdiP2mRra49DkAG8nijB/AF5hg
-         mrdHWGUW6JUE7CFW2cqrvAen0vgVkncgGzyXI7Xay9HzZzZBFvowlon7Jqx6yhVe9FD2
-         StTCWbiskNYksvnbOqjLX4TADHpDlcqBzRIVgtE73pFRKi+vGEkr8ZtTMUVZhT6NUP6r
-         S4XQ==
-X-Gm-Message-State: AOJu0Yzv/+877LJpJ6oW62W5Ut/g70C8J12pYhwxzghK/0svn81f+0eq
-        LbVe0GFcwNYEugtL+GLtWuDnCg==
-X-Google-Smtp-Source: AGHT+IH8UP4xS9z1tEun/6EHP9/nk72OwvNjGqpg0zwCljUObKiMg7WpCrPYbEl9OzalF7MYJfPYtA==
-X-Received: by 2002:a17:906:cc4e:b0:9a2:292d:ea63 with SMTP id mm14-20020a170906cc4e00b009a2292dea63mr1570271ejb.37.1693990105263;
-        Wed, 06 Sep 2023 01:48:25 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id ov22-20020a170906fc1600b00992c92af6f4sm8841374ejb.144.2023.09.06.01.48.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 01:48:24 -0700 (PDT)
-Message-ID: <a3ed9856-a87b-5cf6-26b5-ff2b19234a8a@linaro.org>
-Date:   Wed, 6 Sep 2023 10:48:23 +0200
+        Wed, 6 Sep 2023 04:49:02 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2080.outbound.protection.outlook.com [40.107.255.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5B7E6C;
+        Wed,  6 Sep 2023 01:48:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hg6xhDJsb6e3AAiRcNkWk0vyqyx+CRAz4ZQNDlm83kt19q1hExAWxQFHF8rUJ8FcB4p0p3GBsES5j/bHxo7cWSC42OT5T+MJ7aMlWltkHq1z2gDVgixxu53zljkGLmAMxcU3a9U+jbY8vmFe1+0/UlKNJi18eAGnaOuk8JfsbRFF9sLRZcIPvABtRxu79noOBGWF46FzBOuUbB6ZTd7xvElrn4FdGEw8PVw4ZO1SGqY6w9x5rOV0Kd/04wxgdhwL47XfdfO0GIwDVRP3Ieh4hzi36Qr5Qa3H95dQg018RQi7dGlM3y1O1Nl/UKM+b8RBwxzpfNf5DqdAPWdcnpFRaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MKOe+ZzWxhMdEmAjJEm3tY4Cae77kCt6hxxiXzaoHT8=;
+ b=TMSZo22iyHsRoCHQAAThad9fqeWYPHwraaicmz88Uz32BLZhg/vGTyi2Yt3T3EZUsxa6r2bnG+gPhGQDbVWk+kUk0H7KTy476RmYZtkSqdxW9cGqp6D4t0IeV8xEtW0KZXvXjqvP1LS6MTL4eg311Tv7PWTxXg/U3NRVy0rsMbsGJKl7P8g8nHPULQCxa7RSWgzNsxpSV0YJxCzMNdWnYdm2ZNrYeLgtYK/e8Gv8HILPEqz0Ew8JCy+YGrJHvS/yADkW9cLwzSlfUfUQMv4HibCP+2SQZR+QxwKBkJ2GGVhcmbCNgOPevt+EtePuZXv+joYKElmEXqopJmp88EdqbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
+ (p=quarantine sp=quarantine pct=100) action=quarantine
+ header.from=wiwynn.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MKOe+ZzWxhMdEmAjJEm3tY4Cae77kCt6hxxiXzaoHT8=;
+ b=ZLp0Qw3P982Wkm8ZzP+NceIBh8bQ28/ji0EgRyOWESm5T4MZdRXBa7J9TDh54o8+ytmaNBl3AZJcmz+SnibZR1wh+ip7Ojq3c8tdc8FrQ6X/0NSRLrhJ5WLimTeYLDgIcgy40hrFas8L7tOQmarncoxIMOhwoPl97xnsI+hN4h4N62PIkHI7YFJL1RPz2RkREfEktqWsTxGWTYpOVZN+YTrLWlm+RfKa3GEHcoHxQeGShAaM3ixdrfz02pg9vt/hIFviT9gpJCWBKEROfSrzKr56m10+yN1aFJwLI25VKSEBOs94vXlwfwrfhG4/i27ZfUZiwGb/VRfS8k9Cue00uA==
+Received: from SI1PR02CA0051.apcprd02.prod.outlook.com (2603:1096:4:1f5::6) by
+ SI2PR04MB5869.apcprd04.prod.outlook.com (2603:1096:4:1e8::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6745.33; Wed, 6 Sep 2023 08:48:42 +0000
+Received: from HK2PEPF00006FB4.apcprd02.prod.outlook.com
+ (2603:1096:4:1f5:cafe::39) by SI1PR02CA0051.outlook.office365.com
+ (2603:1096:4:1f5::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34 via Frontend
+ Transport; Wed, 6 Sep 2023 08:48:42 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
+ smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
+Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
+ designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.20.1.79; helo=localhost.localdomain;
+Received: from localhost.localdomain (211.20.1.79) by
+ HK2PEPF00006FB4.mail.protection.outlook.com (10.167.8.10) with Microsoft SMTP
+ Server id 15.20.6768.25 via Frontend Transport; Wed, 6 Sep 2023 08:48:41
+ +0000
+From:   Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+To:     patrick@stwcx.xyz
+Cc:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/1] hwmon: max31790: support to config PWM as TACH
+Date:   Wed,  6 Sep 2023 16:48:34 +0800
+Message-Id: <20230906084837.3043030-1-Delphine_CC_Chiu@wiwynn.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 3/3] arm64: dts: mediatek: mt8365-pumpkin: Add overlays
- for thp7312 cameras
-Content-Language: en-US
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Paul Elder <paul.elder@ideasonboard.com>,
-        linux-media@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230905233118.183140-1-paul.elder@ideasonboard.com>
- <20230905233118.183140-4-paul.elder@ideasonboard.com>
- <502fc7b1-a32d-6901-3a45-d2aa0e0c3849@linaro.org>
- <20230906083237.GL7971@pendragon.ideasonboard.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230906083237.GL7971@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HK2PEPF00006FB4:EE_|SI2PR04MB5869:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 9330ecdb-f820-43fc-9f93-08dbaeb61273
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ErcwTW8XrpWKPEUV+If+kbJ5X9Qb+QOE1Wc+rbev7ifQXmh6q++QvbZqyXBpGgRCN9STY3VhVmWEKsY9rrmCU68mbciBvEUqy0edZtavMf2l6dws2rz+xfO6V0YQenZVRe2lqEBE58Nt55/DmnJdDOw5GVFNpjgDYX3gR4fKP2HmIl/pbwf8zAXG53asBRQ4cL9UGap9XCyJTzYMfnMvdLFq8EUAYzwgCzEDy6Op/r8g2mE+RKaAlsIykuJcWtAVKQhGBDQ0K7c4DRTbQhFsYp5DclO09J5SjAx983ZGNWzrNBeIbbrvfJEi7/VVkf6p6cxA9qU+23DZShEZ2m+bnMN8crygrfQoH6NHwh4Dj9o5Awnx2V5/nO85L1EdFfKEF/o161Cn43EEAPykpm6q3lr6ApL2Pp0ix2+5abxGiHNjOqRl0jKFRT5ff6cbwVH14x1O3A2yPh6p2T5XWfSkX5yh0ymjXENlRfFzGNe8BLGNa8B9sdfl5CWwR0KitwnumEXtrvk74tga8WE42vgHth/ThrDWh+e4j8H8e3uUiO15chMPYrtnjzRnPvdBFfW4abTC51pdwP8m8WbnD/3xpW39dY55kArajh6aa4BBc9zDnuCo3HUQXvV6WBF3pFBOsBZpZjzPVomjglNfL4cIRAmcHFWYrlyECHcHSNYUGNPHWKsRLkLW4JzeYdBG4Zutq/ctd73Toe9WuyviClzLqw==
+X-Forefront-Antispam-Report: CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(396003)(346002)(39860400002)(136003)(376002)(82310400011)(1800799009)(186009)(451199024)(46966006)(36840700001)(40480700001)(6666004)(81166007)(47076005)(2906002)(36860700001)(356005)(6916009)(6486002)(70206006)(54906003)(316002)(6506007)(70586007)(36736006)(478600001)(1076003)(5660300002)(26005)(6512007)(8936002)(4326008)(956004)(8676002)(41300700001)(2616005)(336012)(9316004)(558084003)(36756003)(86362001)(82740400003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: wiwynn.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 08:48:41.8499
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9330ecdb-f820-43fc-9f93-08dbaeb61273
+X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
+X-MS-Exchange-CrossTenant-AuthSource: HK2PEPF00006FB4.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR04MB5869
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,92 +93,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/09/2023 10:32, Laurent Pinchart wrote:
-> Hi Krzysztof,
-> 
-> On Wed, Sep 06, 2023 at 09:27:07AM +0200, Krzysztof Kozlowski wrote:
->> On 06/09/2023 01:31, Paul Elder wrote:
->>> Add overlays for the Pumpkin i350 to support THP7312 cameras.
->>>
->>> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
->>> ---
->>>  arch/arm64/boot/dts/mediatek/Makefile         |  4 +
->>>  .../mt8365-pumpkin-common-thp7312.dtsi        | 23 ++++++
->>>  .../mt8365-pumpkin-csi0-thp7312-imx258.dtso   | 73 +++++++++++++++++++
->>>  .../mt8365-pumpkin-csi1-thp7312-imx258.dtso   | 73 +++++++++++++++++++
->>>  4 files changed, 173 insertions(+)
->>>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
->>>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi0-thp7312-imx258.dtso
->>>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi1-thp7312-imx258.dtso
->>>
->>> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
->>> index 20570bc40de8..ceaf24105001 100644
->>> --- a/arch/arm64/boot/dts/mediatek/Makefile
->>> +++ b/arch/arm64/boot/dts/mediatek/Makefile
->>> @@ -56,4 +56,8 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-evk.dtb
->>>  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-pumpkin.dtb
->>>  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8516-pumpkin.dtb
->>>  
->>> +mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-csi0-thp7312-imx258.dtbo
->>> +mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-csi1-thp7312-imx258.dtbo
->>>  mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-ethernet-usb.dtbo
->>> +
->>> +dtb-$(CONFIG_ARCH_MEDIATEK) += mtk-mt8365-pumpkin.dtb
->>> diff --git a/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
->>> new file mode 100644
->>> index 000000000000..478697552617
->>> --- /dev/null
->>> +++ b/arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
->>> @@ -0,0 +1,23 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/*
->>> + * Copyright (c) 2023 Ideas on Board
->>> + * Author: Paul Elder <paul.elder@ideasonboard.com>
->>> + */
->>> +
->>> +/dts-v1/;
->>> +/plugin/;
->>> +
->>> +&{/} {
->>> +	vsys_v4p2: regulator@0 {
->>
->> Hm? Is this a bus?
-> 
-> There are multiple instances of "numbered" regulators in upstream DT
-> files, for instance arch/arm/boot/dts/nxp/imx/imx6qdl-nitrogen6_max.dtsi
+v1 - Support to config PWM as TACH in max31790 driver
 
-That's the only example I saw... I fixed it now.
+Delphine CC Chiu (1):
+  hwmon: max31790: support to config PWM as TACH
 
-> has a regulator@0. There are similar instances for clocks.
-> 
-> I understand why it may not be a good idea, and how the root node is
-> indeed not a bus. In some cases, those regulators and clocks are grouped
-> in a regulators or clocks node that has a "simple-bus" compatible. I'm
-> not sure if that's a good idea, but at least it should validate.
-> 
-> What's the best practice for discrete board-level clocks and regulators
-> in overlays ? How do we ensure that their node name will not conflict
-> with the board to which the overlay is attached ?
+ drivers/hwmon/max31790.c | 50 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
-Top-level nodes (so under /) do not have unit addresses. If they have -
-it's an error, because it is not a bus. Also, unit address requires reg.
-No reg? No unit address. DTC reports this as warnings as well.
-
-
->>> +		orientation = <0>;
->>> +		rotation = <0>;
->>> +
->>> +		thine,rx,data-lanes = <4 1 3 2>;
->>
->> NAK for this property.
-> 
-> Please explain why. You commented very briefly in the bindings review,
-> and it wasn't clear to me if you were happy or not with the property,
-> and if not, why.
-
-Because it is duplicating endpoint. At least from the description.
-
-
-Best regards,
-Krzysztof
+-- 
+2.25.1
 
