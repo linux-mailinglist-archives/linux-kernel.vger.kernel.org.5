@@ -2,63 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9EB793E3C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 15:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEF7793E46
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241361AbjIFN71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 09:59:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46918 "EHLO
+        id S241395AbjIFOBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241291AbjIFN71 (ORCPT
+        with ESMTP id S230080AbjIFOBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 09:59:27 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8BBD7;
-        Wed,  6 Sep 2023 06:59:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1694008763; x=1725544763;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=y9lRs6u125Ju9s0lSOQYqjZMLCQm5SbnBhb3xgQcXDA=;
-  b=Z5JbRNAxzpgEyl4UlTwsstartDVptGZLyOIhQ6D3/UxJsVyZjlhXhXuZ
-   TnjcjlFhe/FjPgG0YXGbi8R9qsLkt/3Vm0G15bv+tWBy6E+D1qv08zJge
-   C/hL9pgkKJQGLF5JaWZ6rkYQspPz8rPRJb9zQwQMdMrCyHhCNXU9H5GS/
-   LEEMMtkWIexRUw7bpJABF/XojZ76kAFU5tfvjU4IhnTPgLkZHEpnHMFzh
-   5Ix2nzNRXnqyuNh1fwH+TSWTkkfjVA7AxDyLH0yM32gskbo/oQ7zrOYHd
-   ReA7ZedQ/D3rjSusY02UF64scRNWVWf56FRqcSoVX1W5aTDkUQ7iD6zcF
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
-   d="scan'208";a="3331868"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Sep 2023 06:59:22 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 6 Sep 2023 06:58:59 -0700
-Received: from ROU-LT-M43238L.mchp-main.com (10.10.85.11) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Wed, 6 Sep 2023 06:58:58 -0700
-From:   <nicolas.ferre@microchip.com>
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        <linux-kernel@vger.kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski@canonical.com>,
-        <devicetree@vger.kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: [PATCH] ARM: dts: at91/trivial: fix typo in crypto DT naming
-Date:   Wed, 6 Sep 2023 15:58:38 +0200
-Message-ID: <20230906135838.59247-1-nicolas.ferre@microchip.com>
-X-Mailer: git-send-email 2.39.2
+        Wed, 6 Sep 2023 10:01:32 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9C410C6;
+        Wed,  6 Sep 2023 07:01:27 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 64C85E0014;
+        Wed,  6 Sep 2023 14:01:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1694008886;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/Cc3GDyhTJkNnRyDhyOHbwZd++EIJkpgVHFot9WD1+s=;
+        b=R+wgsfOVdpCFKot7c1YUEADgmYoIQ5/WhpjKIOe4kdT91hMjPded5ljT30TGF1L07Lv016
+        yYGyZlJt8zlfWFWju4AA5RuLB2RR0riAlJMGtB00OOUgr4lB6xpjxcmRY0R9k+wVb9wuvS
+        4o8MBGd9hdZra+NgmUC3ThYFm7L80D4E8fogwPbAHC5wtKdlGfvU/DKJklONQFx2EsN99s
+        mGDeeh/nDAlZxfNVAgne3rtD55H1l4hv0S1bwx/5ZcCrEc45LJadW2DMJSguM6giJ6Vxot
+        AyFJZXCIzVFCzvFKJNgoQwFICvDSffmtNGSnsbi2tFRwnr48NosQxI9qBskj5Q==
+Date:   Wed, 6 Sep 2023 16:01:23 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Mining Lin <mimi05633@gmail.com>
+Cc:     avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        a.zummo@towertech.it, KWLIU@nuvoton.com, JJLIU0@nuvoton.com,
+        KFLIN@nuvoton.com, mylin1@nuvoton.com, openbmc@lists.ozlabs.org,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/1] rtc: nuvoton: Compatible with NCT3015Y-R and
+ NCT3018Y-R
+Message-ID: <20230906140123dd8ffac4@mail.local>
+References: <202309050635059ecd17a2@mail.local>
+ <D6734DA5-839E-40A6-9085-F25BB8D70022@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <D6734DA5-839E-40A6-9085-F25BB8D70022@gmail.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,29 +56,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
+On 06/09/2023 09:19:29+0800, Mining Lin wrote:
+> >> static int nct3018y_set_alarm_mode(struct i2c_client *client, bool on)
+> >> {
+> >>    int err, flags;
+> >> @@ -55,7 +59,7 @@ static int nct3018y_set_alarm_mode(struct i2c_client *client, bool on)
+> >>    flags =  i2c_smbus_read_byte_data(client, NCT3018Y_REG_CTRL);
+> >>    if (flags < 0) {
+> >>        dev_dbg(&client->dev,
+> >> -            "Failed to read NCT3018Y_REG_CTRL\n");
+> >> +            "%s: Failed to read ctrl reg.\n", __func__);
+> > 
+> > If you really insist on this change, what about:
+> > 
+> > #define pr_fmt(fmt) "%s: " fmt, __func__
+> [Mia] Do you mean to replace dev_dbg with pr_debug? If yes, for consistency, I'm going to refine all messages via pr_debug. Thank you for your suggestion.
 
-Fix typo in DT name for TDES node.
+No, I mean that instead of adding __func__ to all the messages just
+define pr_fmt, this should achieve what you want.
 
-Fixes: 4b6140b96dfe ("ARM: dts: at91: Use the generic "crypto" node name for the crypto IPs")
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
----
- arch/arm/boot/dts/microchip/sama5d4.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/microchip/sama5d4.dtsi b/arch/arm/boot/dts/microchip/sama5d4.dtsi
-index 41284e013f53..cbfc60fed37c 100644
---- a/arch/arm/boot/dts/microchip/sama5d4.dtsi
-+++ b/arch/arm/boot/dts/microchip/sama5d4.dtsi
-@@ -694,7 +694,7 @@ aes: crypto@fc044000 {
- 				clock-names = "aes_clk";
- 			};
- 
--			tdes: crpyto@fc04c000 {
-+			tdes: crypto@fc04c000 {
- 				compatible = "atmel,at91sam9g46-tdes";
- 				reg = <0xfc04c000 0x100>;
- 				interrupts = <14 IRQ_TYPE_LEVEL_HIGH 0>;
 -- 
-2.39.2
-
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
