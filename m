@@ -2,135 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AA7793F20
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0F2793F29
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241817AbjIFOmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:42:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36342 "EHLO
+        id S230085AbjIFOoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233118AbjIFOmB (ORCPT
+        with ESMTP id S238908AbjIFOoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:42:01 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56396199B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:41:45 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-68becf931bfso2538856b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 07:41:45 -0700 (PDT)
+        Wed, 6 Sep 2023 10:44:25 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAF7F9
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:44:21 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c08a15fcf4so41744805ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 07:44:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura.hr; s=sartura; t=1694011305; x=1694616105; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kol0pgf/fC9MIuMDVXfOTORheiJFWAU3O+8xMDqfAis=;
-        b=vsESHGL3z5IUN08mGbgNj3x61nq8xZpd4LKoTQVoNRgaZSiRhYAU09adjHzXbYzJyp
-         1EqNyaOjqiLTiXF9Puv0TpHA8Z+Oexlb4Z5V0HuRN5Hu1Nq2rUK8C2q0MWgo+55xYHbg
-         JAPC8uv/bbCj49DN9DpRN5qnHvuHxvWXN4o29YiYkMfwV03cWP4mr81KXf7lpRs9fMsN
-         WEc8Jda5+p2w6SMcBcIrrljGtJ8Ip4Kkc9fBC/PlxjimPG7CdCsk1YfwRscHO76cNXTD
-         6IzaFuWb4tC0vXfBUBD+odTPmBPc7OE7Ul5bIyYAT7s2dIiFTJqJd8joyGWNm2P3b7+Z
-         5iCQ==
+        d=google.com; s=20221208; t=1694011461; x=1694616261; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SSTiKL7WWCo51b+iExLvIaKWw3Z08VsIyzSrL3/Ne10=;
+        b=YNY47AudHlnoEtwGMp3p0O/J43zt2FZgeep8TEp0qJhNaqeNecUuH9VUI0ZObp7r1A
+         ztvX0VvHdhsT3i0HHwCiYJ3ccUtJ8YiBKOobKsBbwXEzV0KjOlgiSExRHGDr0VLbLX5/
+         mtk9Rx1PgYQYSwuhCv7X/Lp+mWMciViGeHg0w+OBykp8S7bfrWgrXGSanXtpu5zeDgmB
+         q8YhNj+Smi+bFLHeg4FDRitXQ3fzq0q6R+QFZK1JTr5sZXwj4/nTKFBk2WyuLbI0qIGE
+         SXR1d+B4u8JXE3/hEo1xVEiT2OluJJ5Lo144usBxgg8L9jwJWzjVb9bsDZcoSCRxcYzk
+         i4iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694011305; x=1694616105;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kol0pgf/fC9MIuMDVXfOTORheiJFWAU3O+8xMDqfAis=;
-        b=VCe1CrSGxi4Fm+ia/MqryFG5vYP1p0cpzFcoL7JOH7d5lSWX4BUwUOvy8Ng6wouKFz
-         4qNQPB2HqunoLgoQTtMpRLuEMjjxuo0sXK+8SRipnRB/8FrnFdYZCxy6GlsVJrAm1G+6
-         AxWIr82n6oz7RNQ4zWt6WPc2WRdyEzJMt4IynWg8ZVklrNbx/kk2iTZEhleff+EDWd5a
-         sSWU6Gt0s2hxt/BCJdRKiGBfcOu+mQ10yF0kX2pRbR3R+WydGCnb5UrCX9uhiR3Sk5wc
-         LhycUleTlBc11qlnmtAmsV1DUHdywwa31/lbhvn4oD7NNKSBl3GGsUj9OjaMujYwegxq
-         0NBg==
-X-Gm-Message-State: AOJu0Yx8VRgeoE2wpIB5GtlmGjxnTRfYXui2kYjGHcOLnrp+kUiMPXRu
-        5RaIOoUGnCDfGcweK9xr5wC5sEIW3rUSQWp6czrmYw==
-X-Google-Smtp-Source: AGHT+IEstA5WJj6AG+b4Jsx4Dj1n3k4DsxsVVKT3jrtoERP3wwKRdTsMu6Dhyw0G7cOqZlPmHsgifKo64KKsSBsiI9Y=
-X-Received: by 2002:aa7:9196:0:b0:68e:2ef2:3379 with SMTP id
- x22-20020aa79196000000b0068e2ef23379mr1978180pfa.15.1694011304721; Wed, 06
- Sep 2023 07:41:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230901114936.1319844-1-robert.marko@sartura.hr>
-In-Reply-To: <20230901114936.1319844-1-robert.marko@sartura.hr>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Wed, 6 Sep 2023 16:41:33 +0200
-Message-ID: <CA+HBbNEM6AfwX87DLRNAuJSWPKboGuuJJDRK_E+G3sJDF73oZA@mail.gmail.com>
-Subject: Re: [RFC PATCH] i2c: core: dont change pinmux state to GPIO during
- recovery setup
-To:     wsa@kernel.org, codrin.ciubotariu@microchip.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     luka.perkov@sartura.hr, rmk+kernel@armlinux.org.uk
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SPF_TEMPERROR
-        autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1694011461; x=1694616261;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SSTiKL7WWCo51b+iExLvIaKWw3Z08VsIyzSrL3/Ne10=;
+        b=P+zMoy75T8WpFbpEZTKtGfr1NUbft3edG06l+MX9FDsnR9CKTauurwWRuqiiyJTnqT
+         LQNvTFz5dJwUMGN8D6oxrMOuDZP8eUUoOt43OVz1mqC3AVUR2AvwbN2mj+xRYT11y2R7
+         Kv9SvNhQt4rIxPGvToEFSXMoKooR9iDKjCp+Y7OLxFGMlpg7WcszejllUslsCmQ/qfDy
+         edOvRVfZlJoDdVJ0Z72XWljOQzJjBJowwVcnsNp7cSOtAuBHNsuGhl0iaIQGy99Pq1zg
+         A+yTRFgGn+cp/52IzIuth1uYZAqH4lsxJnqW/RlC7F/irHUNhk6ocpElmg5Ts26uXyop
+         5GfA==
+X-Gm-Message-State: AOJu0YwgVCVnbfd326rsFEKNgH7eoMQ9J5RoHQs8sfe0uyCXZVTMYhsY
+        NiTvAdD7chExhJgNCyjKYMTcNpYzyWg=
+X-Google-Smtp-Source: AGHT+IFj9NCYL1vWVS35pRCYY8NqINJEP03nOf/Bp5WA8N+2YUIJEI/6471Uli0EjqFcCGVeG3StcK5OIQw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:e88b:b0:1b8:8c7:31e6 with SMTP id
+ w11-20020a170902e88b00b001b808c731e6mr5385581plg.1.1694011461320; Wed, 06 Sep
+ 2023 07:44:21 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 07:44:19 -0700
+In-Reply-To: <5ff1591c-d41c-331f-84a6-ac690c48ff5d@arm.com>
+Mime-Version: 1.0
+References: <20230808085056.14644-1-yan.y.zhao@intel.com> <ZN0S28lkbo6+D7aF@google.com>
+ <ZN1jBFBH4C2bFjzZ@yzhao56-desk.sh.intel.com> <ZN5elYQ5szQndN8n@google.com>
+ <ZN9FQf343+kt1YsX@yzhao56-desk.sh.intel.com> <ZPWBM5DDC6MKINUe@yzhao56-desk.sh.intel.com>
+ <ZPd6Y9KJ0FfbCa0Q@google.com> <5ff1591c-d41c-331f-84a6-ac690c48ff5d@arm.com>
+Message-ID: <ZPiQQ0OANuaOYdIS@google.com>
+Subject: Re: [PATCH 0/2] KVM: x86/mmu: .change_pte() optimization in TDP MMU
+From:   Sean Christopherson <seanjc@google.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Yan Zhao <yan.y.zhao@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 1, 2023 at 1:49=E2=80=AFPM Robert Marko <robert.marko@sartura.h=
-r> wrote:
->
-> Ever since PXA I2C driver was moved to the generic I2C recovery, I2C has
-> stopped working completely on Armada 3720 if the pins are specified in DT=
-S.
->
-> After a while it was traced down to the only difference being that PXA
-> driver did not change the pinmux state to GPIO before trying to acquire t=
-he
-> GPIO pins.
-> And indeed as soon as this call is removed I2C starts working.
->
-> To me it seems that this call is not required at all as devm_gpiod_get()
-> will result in the pinmux state being changed to GPIO via the pinmux
-> set_mux() op.
->
-> Fixes: 0b01392c18b9 ("i2c: pxa: move to generic GPIO recovery")
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> ---
-> I am aware this probably isnt the correct fix, so I am sending it as RFC
-> cause I have ran out of ideas.
+On Wed, Sep 06, 2023, Robin Murphy wrote:
+> On 2023-09-05 19:59, Sean Christopherson wrote:
+> > And if the driver *doesn't* initialize the data, then the copy is at best pointless,
+> > and possibly even worse than leaking stale swiotlb data.
+> 
+> Other than the overhead, done right it can't be any worse than if SWIOTLB
+> were not involved at all.
 
-CC-ing Russel as well since I forgot him.
+Yep.
 
-Regards,
-Robert
->
->  drivers/i2c/i2c-core-base.c | 7 -------
->  1 file changed, 7 deletions(-)
->
-> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-> index 60746652fd52..b34d939078a1 100644
-> --- a/drivers/i2c/i2c-core-base.c
-> +++ b/drivers/i2c/i2c-core-base.c
-> @@ -359,13 +359,6 @@ static int i2c_gpio_init_generic_recovery(struct i2c=
-_adapter *adap)
->         if (bri->recover_bus && bri->recover_bus !=3D i2c_generic_scl_rec=
-overy)
->                 return 0;
->
-> -       /*
-> -        * pins might be taken as GPIO, so we should inform pinctrl about
-> -        * this and move the state to GPIO
-> -        */
-> -       if (bri->pinctrl)
-> -               pinctrl_select_state(bri->pinctrl, bri->pins_gpio);
-> -
->         /*
->          * if there is incomplete or no recovery information, see if gene=
-ric
->          * GPIO recovery is available
-> --
-> 2.41.0
->
+> > Looking at commit ddbd89deb7d3 ("swiotlb: fix info leak with DMA_FROM_DEVICE"),
+> > IIUC the data leak was observed with a synthetic test "driver" that was developed
+> > to verify a real data leak fixed by commit a45b599ad808 ("scsi: sg: allocate with
+> > __GFP_ZERO in sg_build_indirect()").  Which basically proves my point: copying
+> > from the source only adds value absent a bug in the owning driver.
+> 
+> Huh? IIUC the bug there was that the SCSI layer failed to sanitise
+> partially-written buffers. That bug was fixed, and the scrutiny therein
+> happened to reveal that SWIOTLB *also* had a lower-level problem with
+> partial writes, in that it was corrupting DMA-mapped memory which was not
+> updated by the device. Partial DMA writes are not in themselves indicative
+> of a bug, they may well be a valid and expected behaviour.
 
+The problem is that the comment only talks about leaking data to userspace, and
+doesn't say anything about data corruption or the "swiotlb needs to match hardware"
+justification that Linus pointed out.  I buy both of those arguments for copying
+data from the original page, but the "may prevent leaking swiotlb content" is IMO
+completely nonsensical, because if preventing leakage is the only goal, then
+explicitly initializing the memory is better in every way.
 
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+If no one objects, I'll put together a patch to rewrite the comment in terms of
+mimicking hardware and not corrupting the caller's data.
+
+> > IMO, rather than copying from the original memory, swiotlb_tbl_map_single() should
+> > simply zero the original page(s) when establishing the mapping.  That would harden
+> > all usage of swiotlb and avoid the read-before-write behavior that is problematic
+> > for KVM.
+> 
+> Depends on one's exact definition of "harden"... Corrupting memory with
+> zeros is less bad than corrupting memory with someone else's data if you
+> look at it from an information security point of view, but from a
+> not-corrupting-memory point of view it's definitely still corrupting memory
+> :/
+> 
+> Taking a step back, is there not an argument that if people care about
+> general KVM performance then they should maybe stop emulating obsolete PC
+> hardware from 30 years ago, and at least emulate obsolete PC hardware from
+> 20 years ago that supports 64-bit DMA?
+
+Heh, I don't think there's an argument per se, people most definitely shouldn't
+be emulating old hardware if they care about performance.  I already told Yan as
+much.
+
+> Even non-virtualised, SWIOTLB is pretty horrible for I/O performance by its
+> very nature - avoiding it if at all possible should always be preferred.
+
+Yeah.  The main reason I didn't just sweep this under the rug is the confidential
+VM use case, where SWIOTLB is used to bounce data from guest private memory into
+shread buffers.  There's also a good argument that anyone that cares about I/O
+performance in confidential VMs should put in the effort to enlighten their device
+drivers to use shared memory directly, but practically speaking that's easier said
+than done.
