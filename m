@@ -2,77 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A4F794400
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DA1794405
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241865AbjIFT4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 15:56:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42730 "EHLO
+        id S243284AbjIFT44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 15:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240806AbjIFT4F (ORCPT
+        with ESMTP id S242904AbjIFT4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 15:56:05 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4DA95
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 12:56:02 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5924b2aac52so2548037b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 12:56:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694030161; x=1694634961; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Op44xSZ18T8lyHwRCrYU4O2AD6VMTohVe5tEwcZQ8PA=;
-        b=Zj01IHhRpMb54nSiAFiV2XFNau9q3QVhxr6qq2Z7O8aauullFtg12IT9qJ4DQ0EP0K
-         //F+CSzIm4eFcejdZMLjLc+C+ZB8jORSn6jOYMilI1PF/S0RGrnkvnjRmF8+VfDau/cc
-         NZzRPGizPjozqvQeJAdbyTodqj4R19y7XKXBtqBabVkHhAkm1cMtdWOYahsT2JCLM4Gf
-         QHX3m3ES3VgyAm6VqgyEiRpzb62jJbS7XQlWsJOrqDZ+0WVikB0ZNu8yuQi/Ll9wDNcJ
-         Kf8DX+dcUW/knoO3+1hsUyawL9tNlb+Zyh77HO7MbrqplKfFgj0xXZckYhY3mhcFYsVF
-         TbGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694030161; x=1694634961;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Op44xSZ18T8lyHwRCrYU4O2AD6VMTohVe5tEwcZQ8PA=;
-        b=TZtqlkDH/3rYcNjKTO7T37bNea/qMhXTqa0Wxdeg5k53aRxAHbsmQO1xsTnlIkDkcr
-         i6TXuiw/4Fd5bPDFAc+iGI3/V+hFmNTcJc1ex0DSgUvgyhBA5taFLfoS0tTwZXL5HjKD
-         nDtU55FpbeYYXFuPR2zNWboIouwmgP8qQuMiBPA0TMYvCMgiFc80f1WiEO282lzaWiQo
-         XuHV1cPxt3azq7MOsAVmLVatWtVr15YjQCvz1gUZAr4K1fS3v0K9AXIEupFLL2RghBTu
-         PTpjZS4Os8vZUkPnPWZ4J0B86t0v+0aMT/hpL7MX5BhfEV7+IX26pNfBB1uo9mKut9tH
-         se9A==
-X-Gm-Message-State: AOJu0YwrVUU8g5haleLpM/XLVr2C4TtaKYxpShW2dauEWTZlvOet4FhO
-        71XCMNsZIaAkYT8BxylU72FHpu/a7Fc=
-X-Google-Smtp-Source: AGHT+IElmezyAZuhMQzTl/Sk7vPNTCNoUPzlYa2syrQ7BTn8+o6eKVIx89oi4Cuo7O2wkISUyMw/EFo9ef0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:e40b:0:b0:592:8069:540a with SMTP id
- r11-20020a81e40b000000b005928069540amr420956ywl.8.1694030161662; Wed, 06 Sep
- 2023 12:56:01 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 19:56:00 +0000
-Mime-Version: 1.0
-Message-ID: <ZPjZUE2qmXhb7So8@google.com>
-Subject: [ANNOUNCE] KVM LPC Microconference Call for Abstracts closing on
- Friday, September 8th
-From:   Sean Christopherson <seanjc@google.com>
-To:     kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Sep 2023 15:56:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5727F171A;
+        Wed,  6 Sep 2023 12:56:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694030210; x=1725566210;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bTfo7kz2LXmpr32HaWGS1Sx15Bua+NE3xKYiot9REO8=;
+  b=n3VhyupGJ00lpfZBxYUmPZC1xEdAplKvMwgNiQoIHhCNMiGqtdZuzcFz
+   XizE8sXAPNeX2Rlb7XFG4GocE9Bp1q3XcZSgVFqwgcpC+zM99wbWEVm21
+   OjFv8w34V2MZBv4Ra/epbSX/8s/q8KSat5390IwD2O4Rmhrwi1rTTs9Y3
+   3cQ6AYlzbNoFJ6lf75LiZi/4hM+zSnCAngNy0e5P6ET7iCrcVI3nCanv0
+   n1/bM71u5Syn381T8UOy1exmBYfmeiwmslvU1l+yyaBqoHGW85YoZv8T4
+   yvp4Pgw1aB6WRxG1BWw0VF0d3rGfERAhVE6uH0LDlUunk70lSScHOAakn
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="356650796"
+X-IronPort-AV: E=Sophos;i="6.02,233,1688454000"; 
+   d="scan'208";a="356650796"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 12:56:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="856593052"
+X-IronPort-AV: E=Sophos;i="6.02,233,1688454000"; 
+   d="scan'208";a="856593052"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 12:56:47 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qdydp-0078zK-0H;
+        Wed, 06 Sep 2023 22:56:45 +0300
+Date:   Wed, 6 Sep 2023 22:56:44 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Eric Tremblay <etremblay@distech-controls.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.au@gmail.com>
+Subject: Re: [PATCH v5 1/2] hwmon: tmp513: Add max_channels variable to
+ struct tmp51x_data
+Message-ID: <ZPjZfK7+4jW3AFEB@smile.fi.intel.com>
+References: <20230906180837.284743-1-biju.das.jz@bp.renesas.com>
+ <20230906180837.284743-2-biju.das.jz@bp.renesas.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230906180837.284743-2-biju.das.jz@bp.renesas.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The call for abstracts for the KVM Microconference will "officially" close this
-Friday, September 8th.  We will review submissions next week and publish the
-schedule no later than September 15th.
- 
-Apologies for the short notice, I was originally thinking we'd wait to publish
-the schedule until October 1st, but we ultimately decided to go with September 15th
-to give everyone more time to prepare, book travel, etc.
+On Wed, Sep 06, 2023 at 07:08:36PM +0100, Biju Das wrote:
+> The tmp512 chip has 3 channels whereas tmp513 has 4 channels. Avoid
+> using tmp51x_ids for this HW difference by replacing OF/ID table
+> data with maximum channels supported by the device.
+> 
+> Replace id->max_channels variable from struct tmp51x_data and drop the
+> macros TMP51{2,3}_TEMP_CONFIG_DEFAULT as it can be derived from the macro
+> TMP51X_TEMP_CONFIG_DEFAULT and update the logic in tmp51x_is_visible(),
+> tmp51x_read_properties() and tmp51x_init() using max_channels.
+> 
+> While at it, drop enum tmp51x_ids as there is no user and remove
+> trailing comma in the terminator entry for OF table.
 
-Thanks!
+...
+
+> +#define TMP51X_TEMP_CONFIG_CONV_RATE	FIELD_PREP(GENMASK(9, 7), 0x7)
+
+I also commented on this one. Any explanation why you didn't accept recommended
+variant?
+
+...
+
+Otherwise looks good to me.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
