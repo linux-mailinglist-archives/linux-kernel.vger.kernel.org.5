@@ -2,138 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77543794601
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 00:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D635D794607
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 00:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244990AbjIFWLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 18:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
+        id S244949AbjIFWNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 18:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236369AbjIFWLR (ORCPT
+        with ESMTP id S236369AbjIFWNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 18:11:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F9D19B3
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 15:10:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694038227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Wed, 6 Sep 2023 18:13:44 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93AEB19B5;
+        Wed,  6 Sep 2023 15:13:40 -0700 (PDT)
+Date:   Wed, 06 Sep 2023 22:13:38 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694038419;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2sW5n0U9nqfDRjI4qbYKErrgizSRaxysFjpyGkvRHBg=;
-        b=Pg99Aw0dhrjssfj+plRZ73iAzmz80+t6FzoooYMo5YOjDFkLKZv62XF4FxljMbibakqOrb
-        gWlugmjp43pbB5CdnXYoQls8seJQWvdY++J14P9i7h5PP0X9VcuRGlwMkKJAy4kV+FVodZ
-        XQCAdiOokbHqs1rtsWQOjmjv9FyPDWo=
-Received: from mail-ua1-f69.google.com (mail-ua1-f69.google.com
- [209.85.222.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-44-Uef_PYPbP02ANXCf4Fa7-A-1; Wed, 06 Sep 2023 18:10:25 -0400
-X-MC-Unique: Uef_PYPbP02ANXCf4Fa7-A-1
-Received: by mail-ua1-f69.google.com with SMTP id a1e0cc1a2514c-7a2c1ae776bso96351241.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 15:10:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694038225; x=1694643025;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2sW5n0U9nqfDRjI4qbYKErrgizSRaxysFjpyGkvRHBg=;
-        b=hVQcGWrkz2MrKFDtjaJZd1RAOEXJ7uPCuBnnG2xMf67BfwrkI3yTf65b7BuA+d5BgK
-         vO+03/0o6i3ywNC1ONxAIBC/fs1cJbJ1/zHZ8Pffl1MBKMsZXVFsiSWED9PTaDkoQa2X
-         b0LOsa94dT0cDO1jP+Kh6niIAgwmF6euL2DY64lUGdbCRr3hULHUG19BcbjPSWAqPpQA
-         8QCK4+53FbAyZwK6iVo0gknr2rhyZwbSWplAGPONsKGHDWGCU1Tb4a/+qCZIkntp2xEV
-         UcC6zBPl/uOsbIQ/HX18MYHE6qRxRYh281Z8K4onjIFXgd++piFYcWcDaMIjhOYlOUl0
-         2itQ==
-X-Gm-Message-State: AOJu0YzXzMBL2c7/FfVYy/zxCw6Q7PxjkAkPmMI1dlYZBxTnxmcgnHZO
-        KUd3FBDN89yQdhlcTS+7E15Q2WLV8s3Bb5GqcE4FnysMng0Fd6KMUH+QGg8bcvegcY8CwOzMfju
-        p2IXw5tQonQ5IKMwG4T9LTI0OonbyIhxe/IBbZROd
-X-Received: by 2002:a67:ee4d:0:b0:444:17aa:df60 with SMTP id g13-20020a67ee4d000000b0044417aadf60mr4110665vsp.13.1694038225083;
-        Wed, 06 Sep 2023 15:10:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHp5n1WB8R1og/NcZaTM8SckALAeHpMUrTVBDu8TXyXcr3qI/pIRPsrfv30I89brgsoG52emGtevyCvY1jn784=
-X-Received: by 2002:a67:ee4d:0:b0:444:17aa:df60 with SMTP id
- g13-20020a67ee4d000000b0044417aadf60mr4110646vsp.13.1694038224758; Wed, 06
- Sep 2023 15:10:24 -0700 (PDT)
+        bh=XMhoqF5R02gP1aEj7OMzAoNpaCLUGjyaEAfsQAdUsok=;
+        b=GZKFWhNcQT/SAJMwdwN0gJC42m8DyM3hYD/pYLUhZ265Hg2zoKEWvYB6fmBVag4Q+4jWb6
+        tAlH1Uqd4/9XKUOJkH0s+Rnx8wQdyfh+kcdV+wyIMc56gFdYUGLDGgQ5HG/sN/T+RQR5xe
+        vY3JevnhooVPcCvV3nou9o2lNTLsqdlL3tDNFeJGjUPKLrZ2dPAAXTOfSCRb1H6UodWh2o
+        YlNVynVoniEoWhgXBILCd6paS48+FxyygxBeIZZyXNDbC1lfTWsdDDO8D6X5mOAY0u/ZS9
+        TlQjUeIZ8LtSfhhxo57gV84sw/Io2vhbn5b62xTzrB/TJb9cXbzNikLJLAMPtg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694038419;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XMhoqF5R02gP1aEj7OMzAoNpaCLUGjyaEAfsQAdUsok=;
+        b=EmK/S1O0AthPV+Pw+7xx6kvSdT1OsPdpiiUPue9maaaEnexP9/tW4QaZl+oVE9NW1bR9nK
+        FbfhPtkJi6T6h3AQ==
+From:   "tip-bot2 for Nick Desaulniers" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/asm] x86/asm/bitops: Use __builtin_clz{l|ll} to evaluate
+ constant expressions
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230828-x86_fls-v1-1-e6a31b9f79c3@google.com>
+References: <20230828-x86_fls-v1-1-e6a31b9f79c3@google.com>
 MIME-Version: 1.0
-References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-14-seanjc@google.com>
- <84a908ae-04c7-51c7-c9a8-119e1933a189@redhat.com> <ZLq8ylTsFQ1s4BAZ@google.com>
-In-Reply-To: <ZLq8ylTsFQ1s4BAZ@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Date:   Thu, 7 Sep 2023 00:10:13 +0200
-Message-ID: <CABgObfYLuRx5oAfOKM1fNuyRw5BNhe127sbRYhmpoT9MsjMYQQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v11 13/29] KVM: Add transparent hugepage support for
- dedicated guest memory
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Message-ID: <169403841804.27769.15355528156114088162.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 7:13=E2=80=AFPM Sean Christopherson <seanjc@google.=
-com> wrote:
-> On Fri, Jul 21, 2023, Paolo Bonzini wrote:
-> > On 7/19/23 01:44, Sean Christopherson wrote:
-> > > @@ -413,6 +454,9 @@ int kvm_gmem_create(struct kvm *kvm, struct kvm_c=
-reate_guest_memfd *args)
-> > >     u64 flags =3D args->flags;
-> > >     u64 valid_flags =3D 0;
-> > > +   if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE))
-> > > +           valid_flags |=3D KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
-> > > +
-> >
-> > I think it should be always allowed.  The outcome would just be "never =
-have
-> > a hugepage" if thp is not enabled in the kernel.
->
-> I don't have a strong preference.  My thinking was that userspace would p=
-robably
-> rather have an explicit error, as opposed to silently running with a misc=
-onfigured
-> setup.
+The following commit has been merged into the x86/asm branch of tip:
 
-Considering that is how madvise(MADV_HUGEPAGE) behaves, your patch is
-good. I disagree but consistency is better.
+Commit-ID:     3dae5c43badf285e22f6d88388e8a232a83bdfec
+Gitweb:        https://git.kernel.org/tip/3dae5c43badf285e22f6d88388e8a232a83bdfec
+Author:        Nick Desaulniers <ndesaulniers@google.com>
+AuthorDate:    Mon, 28 Aug 2023 11:53:57 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 07 Sep 2023 00:05:50 +02:00
 
-Paolo
+x86/asm/bitops: Use __builtin_clz{l|ll} to evaluate constant expressions
 
+Micro-optimize the bitops code some more, similar to commits:
+
+  fdb6649ab7c1 ("x86/asm/bitops: Use __builtin_ctzl() to evaluate constant expressions")
+  2fcff790dcb4 ("powerpc: Use builtin functions for fls()/__fls()/fls64()")
+
+>From a recent discussion, I noticed that x86 is lacking an optimization
+that appears in arch/powerpc/include/asm/bitops.h related to constant
+folding.  If you add a BUILD_BUG_ON(__builtin_constant_p(param)) to
+these functions, you'll find that there were cases where the use of
+inline asm pessimized the compiler's ability to perform constant folding
+resulting in runtime calculation of a value that could have been
+computed at compile time.
+
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20230828-x86_fls-v1-1-e6a31b9f79c3@google.com
+---
+ arch/x86/include/asm/bitops.h |  9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/x86/include/asm/bitops.h b/arch/x86/include/asm/bitops.h
+index 2edf684..50e5ebf 100644
+--- a/arch/x86/include/asm/bitops.h
++++ b/arch/x86/include/asm/bitops.h
+@@ -293,6 +293,9 @@ static __always_inline unsigned long variable_ffz(unsigned long word)
+  */
+ static __always_inline unsigned long __fls(unsigned long word)
+ {
++	if (__builtin_constant_p(word))
++		return BITS_PER_LONG - 1 - __builtin_clzl(word);
++
+ 	asm("bsr %1,%0"
+ 	    : "=r" (word)
+ 	    : "rm" (word));
+@@ -360,6 +363,9 @@ static __always_inline int fls(unsigned int x)
+ {
+ 	int r;
+ 
++	if (__builtin_constant_p(x))
++		return x ? 32 - __builtin_clz(x) : 0;
++
+ #ifdef CONFIG_X86_64
+ 	/*
+ 	 * AMD64 says BSRL won't clobber the dest reg if x==0; Intel64 says the
+@@ -401,6 +407,9 @@ static __always_inline int fls(unsigned int x)
+ static __always_inline int fls64(__u64 x)
+ {
+ 	int bitpos = -1;
++
++	if (__builtin_constant_p(x))
++		return x ? 64 - __builtin_clzll(x) : 0;
+ 	/*
+ 	 * AMD64 says BSRQ won't clobber the dest reg if x==0; Intel64 says the
+ 	 * dest reg is undefined if x==0, but their CPU architect says its
