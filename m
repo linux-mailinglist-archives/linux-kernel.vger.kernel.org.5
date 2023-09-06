@@ -2,152 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D23A794584
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F6179458A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 23:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244890AbjIFV50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 17:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
+        id S244912AbjIFV7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 17:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243865AbjIFV5Y (ORCPT
+        with ESMTP id S235690AbjIFV7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 17:57:24 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B66B19AD;
-        Wed,  6 Sep 2023 14:57:20 -0700 (PDT)
-Date:   Wed, 06 Sep 2023 21:57:17 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694037437;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CUjeZkDnUC3aX8jLsaRvyeViLKg3OUTcSt981IJnyq4=;
-        b=GrP9vqMHp+RvOb9bbOAqVN9wPWJJsmxQlfszovpWAjCvL83E2M7XeWJJjzrbrqL1BR03aW
-        FNd95JY6it5Ssb02m8NaFQ0/n6ltHMxYcP/EXCPmBs20gEey+OW9O8Dm2rfuXLHKqM1JCu
-        0W+RIOU5Pn8BBAJzCX7qCeprh5VM7EkFA0TnN2Y8E+mbQoGTyppgUtNFSSuXTSwSyd5eNJ
-        2zYiefIebIQ2HuhPXamfoyoCPr4BXv36P4FpI5amw4kiJX8UlpSX2b6oxMAYIMteRrSrn4
-        a+AHqrVJgJpPOI9jUDGrOYD+KF4NroYcecUrId7yurIDH823hL25NgCH3DGvWA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694037437;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CUjeZkDnUC3aX8jLsaRvyeViLKg3OUTcSt981IJnyq4=;
-        b=v/FsiB9im0oe5cVy3UZ9u0YIbSyad02FgAKlcueKusKRxTJ7ZbsyalwHYxY2q8R+JulZvQ
-        YJtnM3N91l0nBAAw==
-From:   "tip-bot2 for Thomas Huth" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86: Remove the arch_calc_vm_prot_bits() macro from
- the UAPI
-Cc:     Thomas Huth <thuth@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230906162658.142511-1-thuth@redhat.com>
-References: <20230906162658.142511-1-thuth@redhat.com>
+        Wed, 6 Sep 2023 17:59:00 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051E1172E;
+        Wed,  6 Sep 2023 14:58:57 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31c5cac3ae2so305517f8f.3;
+        Wed, 06 Sep 2023 14:58:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694037535; x=1694642335; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fUEsUDVRFl9we3IvMz1iDQ5wrm80qIsR/HrhiCU8qwU=;
+        b=kQYYj8qGkAuKLI7d7WD/+tivDtKxDqsaxAp5uA1cWYaszSsU8X4wq7G/BRiEfObbIM
+         Mla4HSaUaYMxmefL4xy4/uRsxwItsqUPonRO8CoIDEd/WJbwkdTjWXCks1DNeEa9g3nU
+         5kvQnDvM92aoYi5Io67y37m26h+eV5mHTh5DlVdDxj99/asYPAVJXk+8XBJYGANIYUBl
+         YHtySgm9W2Z8G9YZnUANJysNaozE+kj6hdVaJC/hZVh1LgEqW9Z41R8EKrhtj783uRop
+         1B7PHOk6L0ueIJ5lTEt4GCDk8QlmrQMEUt5nhEQM0uIx8hWq29k7oQAglztfmGg3HShx
+         0NNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694037535; x=1694642335;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fUEsUDVRFl9we3IvMz1iDQ5wrm80qIsR/HrhiCU8qwU=;
+        b=YUSbc0rTygLZ5FnH359Jl2n7x6o8ySCb3SC+UIV7tZH+u7g1ieJE7zLPFgbNBN5D9P
+         JEBM7Fz+7FZRFg0t1IuWZSHwEFgTIFw2/dqBNScAtidirPlhiKkTt9eI4/xnUiteJPoU
+         4IT/Yg0VKrrUihcMJyG+qMVRgIDf+KneYPDYRiPdBiGAj3g1VK5y/XuulsadfR8TM/xN
+         UXTxr/l1lq7qybRL6cQhWVPcosIgLFrN1AXXQ4OSLXf9UlXUWYF2Xa/JtN0yEAyhhAJ/
+         tss50SZf3X1eXlTNjNdtXs1kgP/D8gGFlNy/f6SzXHsEkPMtdT0fOnwzeR0YBsATViZp
+         THcA==
+X-Gm-Message-State: AOJu0YxTzhFXU/yPUb9ksfDR0viFF1k19UA7AV2BwowdaryM9O7jAAKV
+        H0A2fCl2unEJ2EvuxWKFJ4Q=
+X-Google-Smtp-Source: AGHT+IG5nMeuL/VoGmcwCLwFLhOfCIhRsiIb9391lHp1yY958vfciaCR4r3uuUZhhDYYQHGkLNQJgQ==
+X-Received: by 2002:a5d:604b:0:b0:30e:3da5:46e5 with SMTP id j11-20020a5d604b000000b0030e3da546e5mr3830642wrt.59.1694037535283;
+        Wed, 06 Sep 2023 14:58:55 -0700 (PDT)
+Received: from gmail.com (1F2EF6A2.nat.pool.telekom.hu. [31.46.246.162])
+        by smtp.gmail.com with ESMTPSA id n10-20020adffe0a000000b003140f47224csm21447397wrr.15.2023.09.06.14.58.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 14:58:50 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 6 Sep 2023 23:58:47 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     j.granados@samsung.com, Luis Chamberlain <mcgrof@kernel.org>,
+        willy@infradead.org, josh@joshtriplett.org,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Guo Ren <guoren@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-csky@vger.kernel.org
+Subject: Re: [PATCH 3/8] arch/x86: Remove sentinel elem from ctl_table arrays
+Message-ID: <ZPj2F4retSgg3vAj@gmail.com>
+References: <20230906-jag-sysctl_remove_empty_elem_arch-v1-0-3935d4854248@samsung.com>
+ <20230906-jag-sysctl_remove_empty_elem_arch-v1-3-3935d4854248@samsung.com>
+ <d0d30ad4-7837-b0c4-39f4-3e317e35a41b@intel.com>
 MIME-Version: 1.0
-Message-ID: <169403743706.27769.33130108048902877.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d0d30ad4-7837-b0c4-39f4-3e317e35a41b@intel.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     659df86a7b2fe98feb5f4ec880e694caaebd27ae
-Gitweb:        https://git.kernel.org/tip/659df86a7b2fe98feb5f4ec880e694caaebd27ae
-Author:        Thomas Huth <thuth@redhat.com>
-AuthorDate:    Wed, 06 Sep 2023 18:26:58 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 06 Sep 2023 23:50:46 +02:00
+* Dave Hansen <dave.hansen@intel.com> wrote:
 
-x86: Remove the arch_calc_vm_prot_bits() macro from the UAPI
+> On 9/6/23 03:03, Joel Granados via B4 Relay wrote:
+> > This commit comes at the tail end of a greater effort to remove the
+> > empty elements at the end of the ctl_table arrays (sentinels) which
+> > will reduce the overall build time size of the kernel and run time
+> > memory bloat by ~64 bytes per sentinel (further information Link :
+> > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+> > 
+> > Remove sentinel element from sld_sysctl and itmt_kern_table.
+> 
+> There's a *LOT* of content to read for a reviewer to figure out what's
+> going on here between all the links.  I would have appreciated one more
+> sentence here, maybe:
+> 
+> 	This is now safe because the sysctl registration code
+> 	(register_sysctl()) implicitly uses ARRAY_SIZE() in addition
+> 	to checking for a sentinel.
+> 
+> That needs to be more prominent _somewhere_.  Maybe here, or maybe in
+> the cover letter, but _somewhere_.
+> 
+> That said, feel free to add this to the two x86 patches:
+> 
+> Acked-by: Dave Hansen <dave.hansen@linux.intel.com> # for x86
 
-The arch_calc_vm_prot_bits() macro uses VM_PKEY_BIT0 etc. which are
-not part of the UAPI, so the macro is completely useless for userspace.
+Absolutely needs to be in the title as well, something like:
 
-It is also hidden behind the CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
-config switch which we shouldn't expose to userspace. Thus let's move
-this macro into a new internal header instead.
+   arch/x86: Remove now superfluous sentinel elem from ctl_table arrays
 
-Fixes: 8f62c883222c ("x86/mm/pkeys: Add arch-specific VMA protection bits")
-Signed-off-by: Thomas Huth <thuth@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
-Acked-by: Dave Hansen <dave.hansen@intel.com>
-Link: https://lore.kernel.org/r/20230906162658.142511-1-thuth@redhat.com
----
- arch/x86/include/asm/mman.h      | 15 +++++++++++++++
- arch/x86/include/uapi/asm/mman.h |  8 --------
- scripts/headers_install.sh       |  1 -
- 3 files changed, 15 insertions(+), 9 deletions(-)
- create mode 100644 arch/x86/include/asm/mman.h
+With that propagated into the whole series:
 
-diff --git a/arch/x86/include/asm/mman.h b/arch/x86/include/asm/mman.h
-new file mode 100644
-index 0000000..12b8202
---- /dev/null
-+++ b/arch/x86/include/asm/mman.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_MMAN_H__
-+#define __ASM_MMAN_H__
-+
-+#ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
-+#define arch_calc_vm_prot_bits(prot, key) (		\
-+		((key) & 0x1 ? VM_PKEY_BIT0 : 0) |      \
-+		((key) & 0x2 ? VM_PKEY_BIT1 : 0) |      \
-+		((key) & 0x4 ? VM_PKEY_BIT2 : 0) |      \
-+		((key) & 0x8 ? VM_PKEY_BIT3 : 0))
-+#endif
-+
-+#include <uapi/asm/mman.h>
-+
-+#endif /* __ASM_MMAN_H__ */
-diff --git a/arch/x86/include/uapi/asm/mman.h b/arch/x86/include/uapi/asm/mman.h
-index 8148bdd..46cdc94 100644
---- a/arch/x86/include/uapi/asm/mman.h
-+++ b/arch/x86/include/uapi/asm/mman.h
-@@ -5,14 +5,6 @@
- #define MAP_32BIT	0x40		/* only give out 32bit addresses */
- #define MAP_ABOVE4G	0x80		/* only map above 4GB */
- 
--#ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
--#define arch_calc_vm_prot_bits(prot, key) (		\
--		((key) & 0x1 ? VM_PKEY_BIT0 : 0) |      \
--		((key) & 0x2 ? VM_PKEY_BIT1 : 0) |      \
--		((key) & 0x4 ? VM_PKEY_BIT2 : 0) |      \
--		((key) & 0x8 ? VM_PKEY_BIT3 : 0))
--#endif
--
- /* Flags for map_shadow_stack(2) */
- #define SHADOW_STACK_SET_TOKEN	(1ULL << 0)	/* Set up a restore token in the shadow stack */
- 
-diff --git a/scripts/headers_install.sh b/scripts/headers_install.sh
-index afdddc8..56d3c33 100755
---- a/scripts/headers_install.sh
-+++ b/scripts/headers_install.sh
-@@ -81,7 +81,6 @@ arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_NO
- arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_SUPPORT
- arch/x86/include/uapi/asm/auxvec.h:CONFIG_IA32_EMULATION
- arch/x86/include/uapi/asm/auxvec.h:CONFIG_X86_64
--arch/x86/include/uapi/asm/mman.h:CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
- "
- 
- for c in $configs
+   Reviewed-by: Ingo Molnar <mingo@kernel.org>
+
+Thanks,
+
+	Ingo
