@@ -2,62 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC0E793CF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25FEF793CF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237040AbjIFMsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53582 "EHLO
+        id S239402AbjIFMs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:48:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbjIFMsP (ORCPT
+        with ESMTP id S238324AbjIFMs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:48:15 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EC510CC;
-        Wed,  6 Sep 2023 05:48:11 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 386Cm0cs108094;
-        Wed, 6 Sep 2023 07:48:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694004480;
-        bh=XK/SwLICaCLfc0se6GRlvgadAXfN7ZXJHwFWx0+Eq/w=;
-        h=From:To:Subject:Date;
-        b=IZMTUeTMGJGMTEjc98SWcpnrv4Hm5Owso049zLCiqsFxXODJSEonz2sM+z/iIvXOG
-         6ex0RimJJ4uou+ffUEDiy7s5X3rNsME94Fcct6ycYs7qzkWQfz77FCmVPVxHz2F0q9
-         BEPBzdqXg/yfyGXSEomuI4tfJBAE2r3uMzBNyle4=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 386Cm0ck055300
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 6 Sep 2023 07:48:00 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 6
- Sep 2023 07:48:00 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 6 Sep 2023 07:48:00 -0500
-Received: from TI.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 386ClvQh022881;
-        Wed, 6 Sep 2023 07:47:57 -0500
-From:   Apurva Nandan <a-nandan@ti.com>
-To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suman Anna <s-anna@ti.com>, <linux-remoteproc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Devarsh Thakkar <devarsht@ti.com>,
-        Hari Nagalla <hnagalla@ti.com>, Udit Kumar <u-kumar1@ti.com>
-Subject: [PATCH] remoteproc: k3-r5: Wait for core0 power-up before powering up core1
-Date:   Wed, 6 Sep 2023 18:17:56 +0530
-Message-ID: <20230906124756.3480579-1-a-nandan@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 6 Sep 2023 08:48:26 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3450E1733;
+        Wed,  6 Sep 2023 05:48:20 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-52bcb8b199aso5207240a12.3;
+        Wed, 06 Sep 2023 05:48:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694004498; x=1694609298; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rsE1sJuhI3+vAPSDY8OreHubYHG2pVwPaUCCeIf6A3c=;
+        b=Cf14bEvLFIrit+rPL20H1ksAD5qcSkzUPjjRg6t025knet9SkvDCvihXPRO35C9aBu
+         hPoL0seiy0YwKILr51I4AzrKnEaSmgr1gaVtoMthvwqPDeVTvGpiwewdgIm6cs6ftFJM
+         U21BhgyiNv5ArSyyyIWSk9i9j29EVJycm5vLTAg7+KNNwJTa1iYRMNpEdxk12u/ZM5U6
+         35GRrCnlHrFDCjicT4sXGz6VHLgKnLgr5DhfDZd3B+1r38jiS5Lp7DFnb8hyoS5tf+sp
+         3wCtjwUbv8i/Qxj7A19L1GklMx7X/+qqpgtqTH4euJiRlL5AAMEadWvIAQqp9mBmfFxB
+         zGkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694004498; x=1694609298;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rsE1sJuhI3+vAPSDY8OreHubYHG2pVwPaUCCeIf6A3c=;
+        b=IqL8h7409RT2dWL5v18SZ4Syi54iNeNVD0KMUumjBwfcQ02m3td8pHQ6o0RXLhLR5w
+         CXQXsU2kZoeU1llUxOmrwg/I0oEgSbqNyz9KuGm4tnS+nP2sClYtdIWZoI31uD3CYk6J
+         1/ubksLyjsc6KoPR1DR99NsGPOE0XhO81jm5vk1sWbZHh6nxmAYsrozY7FfRAMeDS+GH
+         7Ll2N+Dxqmoct52nfPydFOPK117jujh4+rS8KBkFWSgkNYiK95GF2foMskHNKGam8Ogl
+         C+0XZkdXymvQHatQBjzjjCxwywQZaDwhxVkxeQU6sOqf596ye7DQnTD1sT0oXfAeADbn
+         zMNg==
+X-Gm-Message-State: AOJu0Yx+knYeGoRM/jGclV+DLm+QFXoSCK0WYjBW+D5mwvvK2Vw32iPQ
+        muQxWKI/eJx0utDwKn6yUqs=
+X-Google-Smtp-Source: AGHT+IGUTzqcn12Bjvfufbj0dyXJDiPt8h1wWAslBvMpwzaDQMx7ryWqXpsFVbPl48RjKNUgVQIl3w==
+X-Received: by 2002:a17:906:4e:b0:9a5:a0c6:9e8d with SMTP id 14-20020a170906004e00b009a5a0c69e8dmr2273405ejg.5.1694004498166;
+        Wed, 06 Sep 2023 05:48:18 -0700 (PDT)
+Received: from [127.0.1.1] (2a02-8389-41b4-ce80-9ba7-86a5-b5ba-d267.cable.dynamic.v6.surfer.at. [2a02:8389:41b4:ce80:9ba7:86a5:b5ba:d267])
+        by smtp.gmail.com with ESMTPSA id se22-20020a170906ce5600b009a1dbf55665sm8972496ejb.161.2023.09.06.05.48.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 05:48:17 -0700 (PDT)
+From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Date:   Wed, 06 Sep 2023 14:48:16 +0200
+Subject: [PATCH v2] dt-bindings: rtc: mcp795: move to trivial-rtc
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230906-topic-rtc_mcp795_yaml-v2-1-f9bef40c99b9@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAA91+GQC/4WNSwrCMBQAryJZG0laYowr7yGl5PNsH+RTklosp
+ Xc39gIuZ2CYjRTICIXcTxvJsGDBFCs05xOxo44DUHSVScOalil2pXOa0NI82z7YSSrRrzp4yjk
+ TN1DKOe1IbY0uQE3W0Y61jm/vq5wyvPBzzJ5d5RHLnPJ6vBf+s/82C6ecOpDCtlIaYdhjCBr9x
+ aZAun3fv6orsHfPAAAA
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Emil Bartczak <emilbart@gmail.com>,
+        Josef Gajdusek <atx@atx.name>
+Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694004496; l=2370;
+ i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
+ bh=zChXtySttk/deFixIOur9hQARtSdvouNz1smwQEmocY=;
+ b=mcXKZze19ECtyzc8zDaf3IGATW+DWDRMVd79bz1zHSdn9SlujT1Bs4ACgBuYPHvNyHxXwmU1u
+ RS56uMwiUr4BbeE5jFqQZUxFYCn711TbxhgsP8Cl/u3Fii8pd0VRHRr
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,109 +88,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PSC controller has a limitation that it can only power-up the second core
-when the first core is in ON state. Power-state for core0 should be equal
-to or higher than core1, else the kernel is seen hanging during rproc
-loading.
+The current mcp795 bindings in text format do not support validation and
+are missing the optional interrupt property that is currently supported.
 
-Make the powering up of cores sequential, by waiting for the current core
-to power-up before proceeding to the next core, with a timeout of 2sec.
-Add a wait queue event in k3_r5_cluster_rproc_init call, that will wait
-for the current core to be released from reset before proceeding with the
-next core.
+Adding the missing property makes the bindings identical to the existing
+trivial-rtc bindings.
 
-Fixes: 6dedbd1d5443 ("remoteproc: k3-r5: Add a remoteproc driver for R5F subsystem")
+Add maxim,mcp795 to the trivial-rtc bindings and delete current .txt
+bindings
 
-Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
+The current mcp795 bindings in text format do not support validation and
+are missing the optional interrupt property that is currently supported.
 
- kpv report: https://gist.githubusercontent.com/apurvanandan1997/feb3b304121c265b7827be43752b7ae8/raw
+Adding the missing property makes the bindings identical to the existing
+trivial-rtc bindings.
 
- drivers/remoteproc/ti_k3_r5_remoteproc.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+Add maxim,mcp795 to the trivial-rtc bindings and delete current .txt
+bindings
+---
+Changes in v2:
+- Move mcp795 to trivial-rtc
+- Link to v1: https://lore.kernel.org/r/20230906-topic-rtc_mcp795_yaml-v1-1-de75c377b5b0@gmail.com
+---
+ Documentation/devicetree/bindings/rtc/maxim,mcp795.txt | 11 -----------
+ Documentation/devicetree/bindings/rtc/trivial-rtc.yaml |  2 ++
+ 2 files changed, 2 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/remoteproc/ti_k3_r5_remoteproc.c b/drivers/remoteproc/ti_k3_r5_remoteproc.c
-index ad3415a3851b..ba5e503f7c9c 100644
---- a/drivers/remoteproc/ti_k3_r5_remoteproc.c
-+++ b/drivers/remoteproc/ti_k3_r5_remoteproc.c
-@@ -103,12 +103,14 @@ struct k3_r5_soc_data {
-  * @dev: cached device pointer
-  * @mode: Mode to configure the Cluster - Split or LockStep
-  * @cores: list of R5 cores within the cluster
-+ * @core_transition: wait queue to sync core state changes
-  * @soc_data: SoC-specific feature data for a R5FSS
-  */
- struct k3_r5_cluster {
- 	struct device *dev;
- 	enum cluster_mode mode;
- 	struct list_head cores;
-+	wait_queue_head_t core_transition;
- 	const struct k3_r5_soc_data *soc_data;
- };
- 
-@@ -128,6 +130,7 @@ struct k3_r5_cluster {
-  * @atcm_enable: flag to control ATCM enablement
-  * @btcm_enable: flag to control BTCM enablement
-  * @loczrama: flag to dictate which TCM is at device address 0x0
-+ * @released_from_reset: flag to signal when core is out of reset
-  */
- struct k3_r5_core {
- 	struct list_head elem;
-@@ -144,6 +147,7 @@ struct k3_r5_core {
- 	u32 atcm_enable;
- 	u32 btcm_enable;
- 	u32 loczrama;
-+	bool released_from_reset;
- };
- 
- /**
-@@ -460,6 +464,8 @@ static int k3_r5_rproc_prepare(struct rproc *rproc)
- 			ret);
- 		return ret;
- 	}
-+	core->released_from_reset = true;
-+	wake_up_interruptible(&cluster->core_transition);
- 
- 	/*
- 	 * Newer IP revisions like on J7200 SoCs support h/w auto-initialization
-@@ -1140,6 +1146,7 @@ static int k3_r5_rproc_configure_mode(struct k3_r5_rproc *kproc)
- 		return ret;
- 	}
- 
-+	core->released_from_reset = c_state;
- 	ret = ti_sci_proc_get_status(core->tsp, &boot_vec, &cfg, &ctrl,
- 				     &stat);
- 	if (ret < 0) {
-@@ -1280,6 +1287,21 @@ static int k3_r5_cluster_rproc_init(struct platform_device *pdev)
- 		    cluster->mode == CLUSTER_MODE_SINGLECPU ||
- 		    cluster->mode == CLUSTER_MODE_SINGLECORE)
- 			break;
-+
-+		/* R5 cores require to be powered on sequentially, core0
-+		 * should be in higher power state than core1 in a cluster
-+		 * So, wait for current core to power up before proceeding
-+		 * to next core and put timeout of 2sec for each core.
-+		 */
-+		ret = wait_event_interruptible_timeout(cluster->core_transition,
-+						       core->released_from_reset,
-+						       msecs_to_jiffies(2000));
-+		if (ret <= 0) {
-+			dev_err(dev,
-+				"Timed out waiting for %s core to power up!\n",
-+				rproc->name);
-+			return ret;
-+		}
- 	}
- 
- 	return 0;
-@@ -1709,6 +1731,7 @@ static int k3_r5_probe(struct platform_device *pdev)
- 	cluster->dev = dev;
- 	cluster->soc_data = data;
- 	INIT_LIST_HEAD(&cluster->cores);
-+	init_waitqueue_head(&cluster->core_transition);
- 
- 	ret = of_property_read_u32(np, "ti,cluster-mode", &cluster->mode);
- 	if (ret < 0 && ret != -EINVAL) {
+diff --git a/Documentation/devicetree/bindings/rtc/maxim,mcp795.txt b/Documentation/devicetree/bindings/rtc/maxim,mcp795.txt
+deleted file mode 100644
+index a59fdd8c236d..000000000000
+--- a/Documentation/devicetree/bindings/rtc/maxim,mcp795.txt
++++ /dev/null
+@@ -1,11 +0,0 @@
+-* Maxim MCP795		SPI Serial Real-Time Clock
+-
+-Required properties:
+-- compatible: Should contain "maxim,mcp795".
+-- reg: SPI address for chip
+-
+-Example:
+-	mcp795: rtc@0 {
+-		compatible = "maxim,mcp795";
+-		reg = <0>;
+-	};
+diff --git a/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml b/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
+index 9af77f21bb7f..ae4792bbde92 100644
+--- a/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
++++ b/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
+@@ -49,6 +49,8 @@ properties:
+       - isil,isl12022
+       # Real Time Clock Module with I2C-Bus
+       - microcrystal,rv3029
++      # SPI-BUS INTERFACE REAL TIME CLOCK MODULE
++      - maxim,mcp795
+       # Real Time Clock
+       - microcrystal,rv8523
+       # Real-time Clock Module
+
+---
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+change-id: 20230906-topic-rtc_mcp795_yaml-11058e99ddad
+
+Best regards,
 -- 
-2.34.1
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
