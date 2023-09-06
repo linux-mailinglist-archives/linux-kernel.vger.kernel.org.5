@@ -2,177 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43C807941A9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97087941AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 18:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239018AbjIFQqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 12:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59106 "EHLO
+        id S239064AbjIFQqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 12:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbjIFQqU (ORCPT
+        with ESMTP id S236925AbjIFQqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 12:46:20 -0400
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01olkn2036.outbound.protection.outlook.com [40.92.65.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74B21A7
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 09:46:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MzANdwbPKRSBfYL+hG/DM8kXvSwm0PttYIQI3rkbNz3KSyPRpR3bjzPV2w2ywTqWKpVJRpUg6Ruu+X3LZhY+syNGuBXhBM1/JDYC2wUY4SMfpl8rWKGfHNeFqTEhtkQLpWnzd624sYUlrQmGEPZ1MXW8Ow189inx97ZWmlIEgK10W4EhomSyILQhS44nmN3xW100xw25IP4Fr+sr3w0kHsje2gtxDj6Oz7NELHIUrL/v+nlDlTyhubmaMCoAFajIItr9EZB7GGJclkni7+XX+hUbzS5YX7Pbq3cC3pFDa9Nx1zjh6LVCuCUxPx/WBJdcn2Z8EufbWLN+Ql4pcamxlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=R21wmXrAFmFt8rpghQT+7WZnFnA7+/WDKyI2f2deSN8=;
- b=Sg6tnVHECtB2NwGX9JepRobcxufJX6OiZVBib3XZlgB4e6vo1iB0hRmT+7TN81w4ZYjwXE0gjDVBTyjazIsfR39SeU3WqX+P0IPF+jAHDIdwiij/9fzANYgbGcnxX3/WnvSPt4w5u3BjmnuviMklQk+WaBt5oyI5zNPSYsSRxqg1XPkl7ZGT4aOMNxIvRNGX5O0Ab9jDNwRXp8YQwLaC00x9v7Gx7UyHcioNe64GnlnLCD9sVFITHdXh7T0P7LXWzlWzyFz4R9yqCrgNDoD0zteQ6J4J2AaH7gnf8fqv7z6Um0nW4gVF9zXhJNapY+kCbB6eUdJ/O3hwkh+x+bmDkg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R21wmXrAFmFt8rpghQT+7WZnFnA7+/WDKyI2f2deSN8=;
- b=QkFNIdlCMy06QLAqKG0Be8Eo3DdZVGFeHFJzU7FWG+BGo4NKP3b1nrFSjwuwi0nmyP1LRzx1J2Qox//B7IQiUucXPr8FHJm/MX3RcTM6LZ1udtu3QlnShxxongx6EH6qYeLAi5KmdGdrw48amKRVu0PtF1gx3AK3DGar7FHz5ZPtP0nRhdUiHPrv5l1lAhEbM4yVhoMEOBEmfFPBIVOqGBaIS1XF9Z2FDCeuf8bhgmeJ+iENUk84JB16a9CV0e9Iwo0W3VE11h5BwYRtRXe8qO9aZ999WWrTIEe8b9BybjsfAkJnbJi8rKCxhFGaYmzsBecLcalhfQwzlcdkNrfUiw==
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
- by DB9P193MB1900.EURP193.PROD.OUTLOOK.COM (2603:10a6:10:24a::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Wed, 6 Sep
- 2023 16:46:13 +0000
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::3d3c:61f2:146f:b3b4]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::3d3c:61f2:146f:b3b4%7]) with mapi id 15.20.6745.034; Wed, 6 Sep 2023
- 16:46:13 +0000
-From:   Juntong Deng <juntong.deng@outlook.com>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        zackr@vmware.com, linux-graphics-maintainer@vmware.com
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] drm: Rename drm_ioctl_flags() to eliminate duplicate declaration warning
-Date:   Thu,  7 Sep 2023 00:45:47 +0800
-Message-ID: <VI1P193MB0752635EE197F2BB14A2D87499EFA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [JT1n74E14+jD+T8Xjlx0+O2voZOfgrR3]
-X-ClientProxiedBy: AM8P191CA0006.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:20b:21a::11) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:800:32::19)
-X-Microsoft-Original-Message-ID: <20230906164547.13873-1-juntong.deng@outlook.com>
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|DB9P193MB1900:EE_
-X-MS-Office365-Filtering-Correlation-Id: 281b9519-29aa-4509-0c8d-08dbaef8c7b4
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wiq1gzUhQ7999Bffa8+BerDIG7iSgK5t8g0tfgjXQwPz5vysVZYB1GMx6uL1FtwyA/R2rTDaRoqIqbm29eDCMVvWNHco0QRWEIaY7zVRmxQ+K0n3NBZU/idXhmacIwCQCmq3pZn5amsM5P0z5S6UWsgvlUvxM8YMvNZDxC3p9t5T4aIUjtb1OrjkHTKHHR30uqNtoCOYgBWu1Jg27cWx8bc59dEjz8F5LCqOcaxCkdT9GsJt2WWufxMKinjveIumF7mD3tVUmEc4iKGuXrgFcgnXQwDrbTU0yjT/dHsQHg2xvYWcW3F6lRWkCn/TjBeFDRSB7UJD+OrlXNV5N/UJtAb9+LP4HBbXCVSGX4K6JXkGJ84udUND+G+TTwb1dXRas1JowmELB44unwvs0cx2wlyXFgygMIWGAMWuzj9+mO1cyIWA4/UFW56kOJc50EIp7yqQU1uJxDc/RwePhwC+YO7S9NhXBf5ZBZhzARTadyRo4vu8PiienpIC2ZxiNjvQ/ZXyyJ0rz+Ngbl2G9uDXwHJClcqqWZcQYi63UKE0zizDTSyYxt8LNUYY8RBpvIfe
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KPgo6GiFPm+QoTKVrz6PD+l56CBMKaIBh9t2mykCHA8tzZzYD/m4UJPCGAE9?=
- =?us-ascii?Q?304jX62S1jxjLb7kYym2YWNr7tLpcEIo4yEatXfX+fS+V/Cz+V6LjQjnzabx?=
- =?us-ascii?Q?V38HGO483XgUWBpnIiokQeoXLLPv4jeDd34nmpT4MEKoWtuGyJFLMEFXv8iv?=
- =?us-ascii?Q?7+GHTvRk8PbvC7yuqaPjnine+TsmVw3VGDKtkUJZ74ejIbSlNlgDPiSbCOSy?=
- =?us-ascii?Q?pB5nafZc9MnzscRFhTV5Bu7feNAvXCSLZl2v0NnnbM0QqJwJ93p0IAA0+wKX?=
- =?us-ascii?Q?sQol+qVWpXl4PgmtiZHhafo9RwTEwcPmH6exqaqneUpmBw1yYH5N/DPBqrAp?=
- =?us-ascii?Q?dYPbnIEnjZc+KH1I0OEgJlAv5V2ONhoP71MmC80TcP4EltsiCNSZi1x9nX7f?=
- =?us-ascii?Q?Pv8OxCieUV2cdJYpts/DxmHLgGuL5tuXdppoH8y2GnBO29TIt/xxYXB4L06D?=
- =?us-ascii?Q?TKT+4sdITbGpGf8/a2X4QVHOuxvGEvl+vss/bnu0B2IESnVYuGFYrXRQLlBp?=
- =?us-ascii?Q?+25Ez0Neoq2bPfzMdbpsNGYFHM3SjVDvZ/KwYQTF1Wxj1PljAzbTxVRDTemX?=
- =?us-ascii?Q?y3ZQ8unN4yuypbNqb1C9HWOrK9bGE4HE3qbb6p1eTmL7f1SFsiYjpaF9eD63?=
- =?us-ascii?Q?V/8lV0mcyA+XFxgBTJG3EaAKR+JfpnOa09Gm2rpOixakaqO4xK9iSvVEQ7e9?=
- =?us-ascii?Q?jUIRgJjuMrIAHdkxBdVeAGVCVGYRfas5MabCUV58rWjhG+8n1goavxJzqQoo?=
- =?us-ascii?Q?L+0UKefRNvosyJ7U5DCFZZnUdTWU9aGE6ZQLocu0X66DZ/iLeamSIOMwJ4Vs?=
- =?us-ascii?Q?YM4uL1GaSs8ef+COoilsfQPRr9LpZqioJCkx/HAk52FdR9j1BsvudBQLRPmZ?=
- =?us-ascii?Q?hR33oa/+hegKTGGAh+bu9MS7DBljaL7kbKBp4uZrJfmayhhVzJ4Rg4drUCBo?=
- =?us-ascii?Q?fZKOD3UEcWSKOAJarL0pTvLDPCCj6m0wCvkOuZgkSUQNuYNQfH5B9CUKAlq9?=
- =?us-ascii?Q?erPz69kNInNrpT3BqF16b3wM2YN+e3RHMVbhvJq1wgiGhDEQ7JZMehgmNB6C?=
- =?us-ascii?Q?5U/2JPmEWxrdK0XR6RhJGNjqMp3S2NY5Ghuo7C6Z1Bl7eOitkvVwoEDUxvd6?=
- =?us-ascii?Q?/EZLlT5QyuiboVjvWgqS9lS6RcbzsRNQ1XVYi2bZDV26G2PQ8iamvZVYW6Wl?=
- =?us-ascii?Q?yE+7yGH+OI5MVJfehctZp3qGfKvNM1X9Yab83laK/P34RIOhozFNgV8UrQI?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 281b9519-29aa-4509-0c8d-08dbaef8c7b4
-X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 16:46:13.0340
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9P193MB1900
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Sep 2023 12:46:46 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B214419A9
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 09:46:37 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d74829dd58fso6357276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 09:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1694018797; x=1694623597; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kEa2f2r5+8Ye+Y3Rea4IpiSzc5RRjFLgk939Csd8Y4M=;
+        b=Yg24c9SNOTTkFvibF8PFkt7lW4a8rdTwsJwHSCCSBU0Uk/wah0KNuFyiURaL0BZncs
+         r9Umtta4njNB5/A/CUTZitx7/s3hScOxiTavoSJgvifhsQd2X8766hmPidYmqcZ24Uei
+         ahS7a4CFvwyTix78Vr8SYPVjy3jmlKRJPoNCerMP0rhepbWtT4hyN29tbHN6hSOAMfs3
+         PvZvMH/409+1SXWrjMWYDK3rkj6UpT3v/qINVB9Mpe55I9uPXTJnxxyeGgjC9ZBKwl0i
+         KSq3CYSEOW9SQFQ6u9M3PvbzwN032MR8YR8lxBKq92m4I8IUqU00ev6clfeSAgl5bCxo
+         SlHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694018797; x=1694623597;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kEa2f2r5+8Ye+Y3Rea4IpiSzc5RRjFLgk939Csd8Y4M=;
+        b=aZywyw/vusIX/E0KnKHSkc3qOZHTk3XD6XYMrq1cyc8bead9DWsUq+nlZEBEfYJgRD
+         YlOpoQDL+GXt17/K3mVuwBlFdH1ErLUx5whsXJx065GZ4WDJxh0UrV2IaBuU6VWcG8+5
+         Ek1WqHSfFI3pBnUvlem+WLSHMTZYW2kty2gnkOpsLCmo/LhFkup8ejmkvQZFsQHOZt0w
+         IcUrZriNv0EOoJ3RHnA0aPGHrtQOTiJyTTnQH/YAqSawvWFoLJV3BED1E+R0Db3n8BjZ
+         +EJ/Bgsik7oKkQp/nMNUASIagDyQOmwkN1L3HTAB7KfFWgqC6ekEshVZZ8232rKtJdyS
+         5pJA==
+X-Gm-Message-State: AOJu0YywTsYjHhjkCKSmQ83qsHEm9tEfMC+xxPAbP8AYpqh9etSrYUpM
+        vHUoA+1c4tME1yhQTgdDLJXhuMTSYZg=
+X-Google-Smtp-Source: AGHT+IEZlBFSJ9GJjDT/u5X8GlcTwrb4NN4jBAxF5f8C8zTwvYzgAueDPpLQsRb43imu0XVwrhKVQbKCp+k=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1804:b0:d7a:c85c:725b with SMTP id
+ cf4-20020a056902180400b00d7ac85c725bmr375293ybb.7.1694018796920; Wed, 06 Sep
+ 2023 09:46:36 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 09:46:35 -0700
+In-Reply-To: <5d81a9cd-f96d-bcdb-7878-74c2ead26cfb@arm.com>
+Mime-Version: 1.0
+References: <20230808085056.14644-1-yan.y.zhao@intel.com> <ZN0S28lkbo6+D7aF@google.com>
+ <ZN1jBFBH4C2bFjzZ@yzhao56-desk.sh.intel.com> <ZN5elYQ5szQndN8n@google.com>
+ <ZN9FQf343+kt1YsX@yzhao56-desk.sh.intel.com> <ZPWBM5DDC6MKINUe@yzhao56-desk.sh.intel.com>
+ <ZPd6Y9KJ0FfbCa0Q@google.com> <5ff1591c-d41c-331f-84a6-ac690c48ff5d@arm.com>
+ <ZPiQQ0OANuaOYdIS@google.com> <5d81a9cd-f96d-bcdb-7878-74c2ead26cfb@arm.com>
+Message-ID: <ZPis61o4lkjr0mMU@google.com>
+Subject: Re: [PATCH 0/2] KVM: x86/mmu: .change_pte() optimization in TDP MMU
+From:   Sean Christopherson <seanjc@google.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Yan Zhao <yan.y.zhao@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are 'enum drm_ioctl_flags' and 'bool drm_ioctl_flags(...)' with the
-same name, which is not a problem in C, but it can lead to
-'WARNING: Duplicate C declaration' when generating documentation.
+On Wed, Sep 06, 2023, Robin Murphy wrote:
+> On 2023-09-06 15:44, Sean Christopherson wrote:
+> > On Wed, Sep 06, 2023, Robin Murphy wrote:
+> > > Even non-virtualised, SWIOTLB is pretty horrible for I/O performance by its
+> > > very nature - avoiding it if at all possible should always be preferred.
+> > 
+> > Yeah.  The main reason I didn't just sweep this under the rug is the confidential
+> > VM use case, where SWIOTLB is used to bounce data from guest private memory into
+> > shread buffers.  There's also a good argument that anyone that cares about I/O
+> > performance in confidential VMs should put in the effort to enlighten their device
+> > drivers to use shared memory directly, but practically speaking that's easier said
+> > than done.
+> 
+> Indeed a bunch of work has gone into SWIOTLB recently trying to make it a
+> bit more efficient for such cases where it can't be avoided, so it is
+> definitely still interesting to learn about impacts at other levels like
+> this. Maybe there's a bit of a get-out for confidential VMs though, since
+> presumably there's not much point COW-ing encrypted private memory, so
+> perhaps KVM might end up wanting to optimise that out and thus happen to end
+> up less sensitive to unavoidable SWIOTLB behaviour anyway?
 
-According to the purpose of the function, rename 'drm_ioctl_flags(...)' to
-'drm_check_ioctl_flags(...)' to eliminate the warning.
+CoW should be a non-issue for confidential VMs, at least on x86.  SEV and SEV-ES
+are effectively forced to pin memory as writable before it can be mapped into the
+guest.  TDX and SNP and will have a different implementation, but similar behavior.
 
-Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
----
- drivers/gpu/drm/drm_ioctl.c         | 6 +++---
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c | 2 +-
- include/drm/drm_ioctl.h             | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
-index f03ffbacfe9b..30699a0a10bc 100644
---- a/drivers/gpu/drm/drm_ioctl.c
-+++ b/drivers/gpu/drm/drm_ioctl.c
-@@ -911,7 +911,7 @@ long drm_ioctl(struct file *filp,
- EXPORT_SYMBOL(drm_ioctl);
- 
- /**
-- * drm_ioctl_flags - Check for core ioctl and return ioctl permission flags
-+ * drm_check_ioctl_flags - Check for core ioctl and return ioctl permission flags
-  * @nr: ioctl number
-  * @flags: where to return the ioctl permission flags
-  *
-@@ -922,7 +922,7 @@ EXPORT_SYMBOL(drm_ioctl);
-  * Returns:
-  * True if the @nr corresponds to a DRM core ioctl number, false otherwise.
-  */
--bool drm_ioctl_flags(unsigned int nr, unsigned int *flags)
-+bool drm_check_ioctl_flags(unsigned int nr, unsigned int *flags)
- {
- 	if (nr >= DRM_COMMAND_BASE && nr < DRM_COMMAND_END)
- 		return false;
-@@ -934,4 +934,4 @@ bool drm_ioctl_flags(unsigned int nr, unsigned int *flags)
- 	*flags = drm_ioctls[nr].flags;
- 	return true;
- }
--EXPORT_SYMBOL(drm_ioctl_flags);
-+EXPORT_SYMBOL(drm_check_ioctl_flags);
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-index 8b24ecf60e3e..9615104451b3 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-@@ -1287,7 +1287,7 @@ static long vmw_generic_ioctl(struct file *filp, unsigned int cmd,
- 			goto out_io_encoding;
- 
- 		flags = ioctl->flags;
--	} else if (!drm_ioctl_flags(nr, &flags))
-+	} else if (!drm_check_ioctl_flags(nr, &flags))
- 		return -EINVAL;
- 
- 	return ioctl_func(filp, cmd, arg);
-diff --git a/include/drm/drm_ioctl.h b/include/drm/drm_ioctl.h
-index 6ed61c371f6c..2fc5fc86f711 100644
---- a/include/drm/drm_ioctl.h
-+++ b/include/drm/drm_ioctl.h
-@@ -175,7 +175,7 @@ long drm_compat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg);
- /* Let drm_compat_ioctl be assigned to .compat_ioctl unconditionally */
- #define drm_compat_ioctl NULL
- #endif
--bool drm_ioctl_flags(unsigned int nr, unsigned int *flags);
-+bool drm_check_ioctl_flags(unsigned int nr, unsigned int *flags);
- 
- int drm_noop(struct drm_device *dev, void *data,
- 	     struct drm_file *file_priv);
--- 
-2.39.2
-
+Confidential VMs would benefit purely by either eliminating or reducing the cost
+of "initializing" memory, i.e. by eliminating the memcpy() or replacing it with a
+memset().  I most definitely don't care enough about confidential VM I/O performance
+to try and micro-optimize that behavior, their existence was simply what made me
+look more closely instead of just telling Yan to stop using IDE :-)
