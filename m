@@ -2,114 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C26793C58
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 578FC793C5C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 14:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240549AbjIFMKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 08:10:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54340 "EHLO
+        id S240579AbjIFMLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 08:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231842AbjIFMKc (ORCPT
+        with ESMTP id S231842AbjIFMLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 08:10:32 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CBCE6A
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 05:10:27 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-414dff0a8ecso294061cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 05:10:27 -0700 (PDT)
+        Wed, 6 Sep 2023 08:11:00 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8952E71;
+        Wed,  6 Sep 2023 05:10:56 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fef56f7248so34617485e9.3;
+        Wed, 06 Sep 2023 05:10:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694002227; x=1694607027; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wzpHQf+mGoHPzHCO81lnNai9VS234FR5seRfGQ95fZ8=;
-        b=FMC7moAqzB5jWy1jJre6TjYp9SJCjLzWVRz50RVOo1Cn33/EIjppPGGRiiLzsyAuL1
-         2i/KhoRnuVUF+dLNBVCdKR4w0+MrG2o+LSYDBNSekEVx0GMD5Z3o4aRXdoEIIlh5jEph
-         0jn9ir40Mh2ykMu/wzfYveJjD1JFql5ns3GnOg15o8PA7q3LQBjTXtgCVtZqCtgGrK4p
-         6OzsybCI2Q7fyszy4lAvkA1itLAzQPRxx8WvEit68rRaZxzRoDObH0Ix4av0yhf9UZxq
-         wqFLiPIqswNKsPoag7bSw6UIT8gakUQyXetH9Dp3PAsFHUrX9fSYJaKBAalVBwtLo48e
-         5QwA==
+        d=gmail.com; s=20221208; t=1694002255; x=1694607055; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZN27Bg97nR8cwg/8zgt3sa8MoXJh4UkwGr5wouU/s0Q=;
+        b=bXPiwUUzNXyBwXnxsxgsQsVsFvDRVWgEp0SXlGeYJuxUNx4T4IfZSeBg1kVNRp8P0e
+         cKN5yLJKZ8/AzT+Pfq0Nndof98/3o+3o2DyKP2AIVqFd4ZD4KBPnucjU0XjVBptlBNq4
+         32+kP4pbFrYlNx3K4Ts4C05jMCOJRZsf9KMsiUwKPCHNnNQ+fLzMmi7QU0flD/rJOCwe
+         L5mJkLEXDGt8476DHnWEjlsAhMsd+tmoDsN5/XEbyHJwOw+Wg3jpTQZnO/Zewy7YTYrA
+         87lON5I3rRIdkSeHfO4ao/TuizLKGkui7qRP1WNUa9YxUvjI9MiafraztffzeiPGHe9P
+         9S2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694002227; x=1694607027;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1694002255; x=1694607055;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wzpHQf+mGoHPzHCO81lnNai9VS234FR5seRfGQ95fZ8=;
-        b=MnEZ7w6H1AryM8w1w6xbj4wTd4g/32TRTJb10wGLEH5erKadNHFQtlRHJD7NRcheyb
-         IYPwmgHTo9pV99uW+Cz7Qb6D54Kn2M22x3ec1h8u4olF5YgmQJ7HduKPvKWvzaO6bZVb
-         SvCFlapWRXH9oWGuswnEzD+c/FxDROM4aJzFX8ulHEVxmHqXjuc76Q8iadcj4OVr7Ae+
-         t6QAqsNLERHON98pIhDGucjNF4ptwCjCV9o2ZVEt6VgRNshpl7DF9gV+oG8Aki7ewDNV
-         +pWD7ecBQqOn+JC+YTVo1U4BtUW3WYPT6AsBil1EK26R22QhpkRkahldowmNSIrju42M
-         QeUQ==
-X-Gm-Message-State: AOJu0Yx/WkzkAaCdCKRuI+JbIqMwi1LV5wj+734uZOWDYCjbtBrAXi5w
-        yvXVgedu9xWgKMMBoYmvz02ucKqn4HHmCl+TC8TQuA==
-X-Google-Smtp-Source: AGHT+IHRXgWgSo6cz6W5xPaolS5qAt/vQ98dA72JmwsOvEv8pqdqQUJaFUHCM0dnrf+DxgYN/IrKy+fyWRf3Xso/FQQ=
-X-Received: by 2002:a05:622a:110:b0:3fa:3c8f:3435 with SMTP id
- u16-20020a05622a011000b003fa3c8f3435mr156232qtw.27.1694002226865; Wed, 06 Sep
- 2023 05:10:26 -0700 (PDT)
+        bh=ZN27Bg97nR8cwg/8zgt3sa8MoXJh4UkwGr5wouU/s0Q=;
+        b=You4i5HVeXkpMke92wayKGGyvKV7ZlYVol2apa2GossdT/ZvIMB7SZGlFXoBoHjdFv
+         nS9IR7Jxql5ZUgcBK4XWEFmx/NJGZroP0cxBZ0fflbcQjBf9M6X93WsuTzNp4sOk7uS8
+         1KfN9C8Lr+UWxoGZT/6ebXqF3gzob/M0QzgWngGIsKn6PyVQ1aqlM/GrHvnYrYoIc20p
+         yiwVD/xWNorbGk17p8ba9wUiEKXtAA29aZBhLL8LzNcIW8KqJeWCe3Ft4WBw7iEDNx0T
+         EEzU4houlcFCid9NIP2Xj6vOLSZpFNnMNxTO0q61hDgTXTaXGTQJm5uZe21ETA2OLKmo
+         iqnQ==
+X-Gm-Message-State: AOJu0Yx4r/8G/LHHsoP7Ekwgg+D2EARZWiZ6B3PG6JXZ422eUnCqD95Z
+        kOS83B33RO4Op60IJE44zK8=
+X-Google-Smtp-Source: AGHT+IG5C0lhFrctMwXr9Vg+5WMKgqS3JMG7vBWZCaKhkzljbpHE5oNPHkp0U+DO5Ew8yG4OdwvwBg==
+X-Received: by 2002:adf:ee08:0:b0:317:5e73:7594 with SMTP id y8-20020adfee08000000b003175e737594mr2300292wrn.28.1694002254719;
+        Wed, 06 Sep 2023 05:10:54 -0700 (PDT)
+Received: from gmail.com (1F2EF6A2.nat.pool.telekom.hu. [31.46.246.162])
+        by smtp.gmail.com with ESMTPSA id f4-20020adfdb44000000b0031984b370f2sm20261025wrj.47.2023.09.06.05.10.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 05:10:54 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 6 Sep 2023 14:10:51 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Steve Wahl <steve.wahl@hpe.com>, Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v3] x86/platform/uv: refactor deprecated strcpy and
+ strncpy
+Message-ID: <ZPhsSzHG6YMViOSk@gmail.com>
+References: <20230905-strncpy-arch-x86-platform-uv-uv_nmi-v3-1-3efd6798b569@google.com>
 MIME-Version: 1.0
-References: <ZPhpfMjSiHVjQkTk@localhost.localdomain>
-In-Reply-To: <ZPhpfMjSiHVjQkTk@localhost.localdomain>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 6 Sep 2023 14:10:15 +0200
-Message-ID: <CANn89iJFyqckr3x=nwbExs3B1u=MXv9izL=2ByxOf20su2fhhg@mail.gmail.com>
-Subject: Re: Question on tw_timer TIMER_PINNED
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        netdev <netdev@vger.kernel.org>,
-        Valentin Schneider <vschneid@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230905-strncpy-arch-x86-platform-uv-uv_nmi-v3-1-3efd6798b569@google.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 1:58=E2=80=AFPM Juri Lelli <juri.lelli@redhat.com> w=
-rote:
->
-> Hi Eric,
->
-> I'm bothering you with a question about timewait_sock tw_timer, as I
-> believe you are one of the last persons touching it sometime ago. Please
-> feel free to redirect if I failed to git blame it correctly.
->
-> At my end, latency spikes (entering the kernel) have been reported when
-> running latency sensitive applications in the field (essentially a
-> polling userspace application that doesn't want any interruption at
-> all). I think I've been able to track down one of such interruptions to
-> the servicing of tw_timer_handler. This system isolates application CPUs
-> dynamically, so what I think it happens is that at some point tw_timer
-> is armed on a CPU, and it is PINNED to that CPU, meanwhile (before the
-> 60s timeout) such CPU is 'isolated' and the latency sensitive app
-> started on it. After 60s the timer fires and interrupts the app
-> generating a spike.
->
-> I'm not very familiar with this part of the kernel and from staring
-> at code for a while I had mixed feeling about the need to keep tw_timer
-> as TIMER_PINNED. Could you please shed some light on it? Is it a strict
-> functional requirement or maybe a nice to have performance (locality I'd
-> guess) improvement? Could we in principle make it !PINNED (so that it
-> can be moved/queued away and prevent interruptions)?
->
 
-It is a functional requirement in current implementation.
+* Justin Stitt <justinstitt@google.com> wrote:
 
-cfac7f836a71 ("tcp/dccp: block bh before arming time_wait timer")
-changelog has some details about it.
+> Both `strncpy` and `strcpy` are deprecated for use on NUL-terminated
+> destination strings [1].
+> 
+> We can see that `arg` and `uv_nmi_action` are expected to be
+> NUL-terminated strings due to their use within `strcmp()` and format
+> strings respectively.
+> 
+> With this in mind, a suitable replacement is `strscpy` [2] due to the
+> fact that it guarantees NUL-termination on its destination buffer
+> argument which is _not_ the case for `strncpy` or `strcpy`!
+> 
+> In this case, we can drop both the forced NUL-termination and the `... -1` from:
+> |       strncpy(arg, val, ACTION_LEN - 1);
+> as `strscpy` implicitly has this behavior.
+> 
+> Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-Can this be changed to non pinned ? Probably, but with some care.
+>  arch/x86/platform/uv/uv_nmi.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
 
-You could simply disable tw completely, it is a best effort mechanism.
+Note that this commit is already upstream:
 
+  1e6f01f72855 ("x86/platform/uv: Refactor code using deprecated strcpy()/strncpy() interfaces to use strscpy()")
 
-> Thanks a lot in advance!
-> Juri
->
+Below is the delta your v3 patch has compared to what is upstream - is it 
+really necessary to open code it, instead of using strnchrnul() as your 
+original patch did? Am I missing anything here?
+
+Thanks,
+
+	Ingo
+
+--- a/arch/x86/platform/uv/uv_nmi.c
++++ b/arch/x86/platform/uv/uv_nmi.c
+@@ -202,10 +202,13 @@ static int param_set_action(const char *val, const struct kernel_param *kp)
+ {
+ 	int i;
+ 	int n = ARRAY_SIZE(valid_acts);
+-	char arg[ACTION_LEN];
++	char arg[ACTION_LEN], *p;
+ 
+ 	/* (remove possible '\n') */
+-	strscpy(arg, val, strnchrnul(val, sizeof(arg)-1, '\n') - val + 1);
++	strscpy(arg, val, sizeof(arg));
++	p = strchr(arg, '\n');
++	if (p)
++		*p = '\0';
+ 
+ 	for (i = 0; i < n; i++)
+ 		if (!strcmp(arg, valid_acts[i].action))
