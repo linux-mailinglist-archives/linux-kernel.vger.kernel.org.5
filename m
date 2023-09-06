@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 815A179397F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FD3793982
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232673AbjIFKHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 06:07:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58020 "EHLO
+        id S233796AbjIFKHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 06:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235686AbjIFKHT (ORCPT
+        with ESMTP id S238639AbjIFKHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 06:07:19 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDC21BC6
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 03:06:46 -0700 (PDT)
-X-QQ-mid: bizesmtp77t1693994304tbs1f5fp
-Received: from localhost.localdomain ( [221.226.144.218])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 06 Sep 2023 17:58:20 +0800 (CST)
-X-QQ-SSF: 01200000000000B0B000000A0000000
-X-QQ-FEAT: 1OQ4fzPuJwa4CnM18ZyX6sw3+4M5cE1N93fmTWEuCPfoL34gU/m35awvJ+qzy
-        KEqeeZow+/+yU3bTEtcEr9fDxqGOyP/Id1CRKrwzXmRu+b306s+jgkT1KMo9eSKQ1ys7ZYI
-        urhLlokF4HwS5LjITI3zbGJCZNoLYmX7mzFkDDgz2ej2f6tSHy9jqukP6u0lm+MritL4lVX
-        ZL0u0tFwmWGAN9cPaA4UdtahEf+9w0pY/zwajuTcZC4gzS/TfB0o+LXTTBaNN/sIrkZEfSD
-        Ipt8tVlpKrwhhcdYWJcEUcsnUO2AzHZQ4V266iSYWbOLuO1UQQ8CE1BUlMVa2eO/OMQHyl8
-        TyNs2jb4vxhzrA3Lvrww02GZS+eVRMI016bb6svEfr6OcqaTZ4=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 9162341374277156945
-From:   Song Shuai <songshuaishuai@tinylab.org>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, lihuafei1@huawei.com,
-        conor.dooley@microchip.com, liaochang1@huawei.com,
-        songshuaishuai@tinylab.org, lizhengyu3@huawei.com
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH -fixes] riscv: kexec: Align the kexeced kernel entry
-Date:   Wed,  6 Sep 2023 17:58:17 +0800
-Message-Id: <20230906095817.364390-1-songshuaishuai@tinylab.org>
-X-Mailer: git-send-email 2.20.1
+        Wed, 6 Sep 2023 06:07:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E09170E;
+        Wed,  6 Sep 2023 03:07:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4F05C433C8;
+        Wed,  6 Sep 2023 09:59:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693994359;
+        bh=32oaGrTGMGPijXh2U6clQsX0cT1y9TDGOJiUR+PtnLE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ut6X/waLoHK5qufwDK+m89ZkCL0v8dHC5oSylAY58+rWLIspJsDqzo7gxdyYROgfs
+         VVEB4uGRR5OEgoXU/SSbCm/JtZ5mhip2b5rZRvVO1N1QTvkuy5duZ26MWVnol8Ns6f
+         5CrxPJX71SuDi0qgmNKX5BV0yrG7rfe/ZnZc+mpveRPl/rC5NMclV+OkeFDi0nHLia
+         9OVTqH3zjJ0/UA3HdHW/5xLzvtCNS4+x/iLBKISOkmBjq8YqpUJl45O8C0pNTloW5q
+         AfiGjiG8e1w6+FvLGmGJ9MAYzs0C7eYSlCxsg8AASR0x5en0cArqHi2DN/8pkV7E3e
+         M185A9rozsXtw==
+Message-ID: <608ddca9-4ab8-1aef-767f-92a90e7e0970@kernel.org>
+Date:   Wed, 6 Sep 2023 11:59:14 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v4 2/3] greybus: Add BeaglePlay Linux Driver
+Content-Language: en-US
+To:     Ayush Singh <ayushdevel1325@gmail.com>,
+        greybus-dev@lists.linaro.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org,
+        Vaishnav M A <vaishnav@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Nishanth Menon <nm@ti.com>
+References: <20230902182845.1840620-1-ayushdevel1325@gmail.com>
+ <20230902182845.1840620-3-ayushdevel1325@gmail.com>
+ <27a445d6-d904-244f-266c-ffb2d68d0e27@kernel.org>
+ <1bbe7772-09f4-6c5a-8c4d-c88988b34c99@gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <1bbe7772-09f4-6c5a-8c4d-c88988b34c99@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrsz:qybglogicsvrsz4a-0
-X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_PBL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current riscv boot protocol requires 2MB alignment for RV64
-and 4MB alignment for RV32.
+On 05/09/2023 18:27, Ayush Singh wrote:
+>>> +static void hdlc_handle_rx_frame(struct gb_beagleplay *bg)
+>>> +{
+>>> +	u8 address = bg->rx_buffer[0];
+>>> +	char *buffer = &bg->rx_buffer[2];
+>>> +	size_t buffer_len = bg->rx_buffer_len - 4;
+>>> +
+>>> +	switch (address) {
+>>> +	case ADDRESS_DBG:
+>>> +		hdlc_handle_dbg_frame(bg, buffer, buffer_len);
+>>> +		break;
+>>> +	case ADDRESS_GREYBUS:
+>>> +		hdlc_handle_greybus_frame(bg, buffer, buffer_len);
+>>> +		break;
+>>> +	default:
+>>> +		dev_warn(&bg->serdev->dev, "Got Unknown Frame %u", address);
+>> ratelimit
+>> Probably as well in several places with possible flooding.
+> 
+> I don't think `hdlc_handle_rx_frame` is the correct place since it only 
+> processes a single completed HDLC frame.  The more appropriate place 
+> would be `hdlc_rx` if we want to limit based on the number of HDLC 
+> frames or `gb_beagleplay_tty_receive` to limit based on the number of bytes.
+> 
+> I would like to ask, though, why is rate limiting required here? Won't 
+> `serdev_device_ops->receive_buf` already rate limit the number of bytes 
+> somewhat? Or is it related to blocking in the 
+> `serdev_device_ops->receive_buf` callback? In the case of latter, it 
+> would probably make sense to ratelimit based on number of frames, I think.
 
-In KEXEC_FILE path, the elf_find_pbase() function should align
-the kexeced kernel entry according to the requirement, otherwise
-the kexeced kernel would silently BUG at the setup_vm().
+My comment might not be accurate, so I do not insist. The name of the
+function suggested something being called very often (on every frame),
+thus you would print warning also very often.
 
-Fixes: 8acea455fafa ("RISC-V: Support for kexec_file on panic")
-Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
----
-You can use my kexec-tools[1] to test the kexec-file-syscall and this patch.
-
-[1]: https://github.com/sugarfillet/kexec-tools/tree/fix-riscv 
----
- arch/riscv/kernel/elf_kexec.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/arch/riscv/kernel/elf_kexec.c b/arch/riscv/kernel/elf_kexec.c
-index 5372b708fae2..9a81d6926ac6 100644
---- a/arch/riscv/kernel/elf_kexec.c
-+++ b/arch/riscv/kernel/elf_kexec.c
-@@ -98,7 +98,13 @@ static int elf_find_pbase(struct kimage *image, unsigned long kernel_len,
- 	kbuf.image = image;
- 	kbuf.buf_min = lowest_paddr;
- 	kbuf.buf_max = ULONG_MAX;
--	kbuf.buf_align = PAGE_SIZE;
-+
-+	/*
-+	 * Current riscv boot protocol requires 2MB alignment for
-+	 * RV64 and 4MB alignment for RV32
-+	 *
-+	 */
-+	kbuf.buf_align = PMD_SIZE;
- 	kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
- 	kbuf.memsz = ALIGN(kernel_len, PAGE_SIZE);
- 	kbuf.top_down = false;
--- 
-2.20.1
+Best regards,
+Krzysztof
 
