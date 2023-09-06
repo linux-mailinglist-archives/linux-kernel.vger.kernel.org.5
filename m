@@ -2,193 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B1579360F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 768F0793617
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbjIFHS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 03:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50442 "EHLO
+        id S231901AbjIFHSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 03:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbjIFHSZ (ORCPT
+        with ESMTP id S229927AbjIFHSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 03:18:25 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8731DE43;
-        Wed,  6 Sep 2023 00:18:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0AE1522390;
-        Wed,  6 Sep 2023 07:18:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1693984699; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UZ/2jtuCcGDbvtZZ1dSSULsDv2WRriEDMyd1X3EatRQ=;
-        b=NC8MQufTiva+CvxLTwMZmFIxSBpCB8zyHTIWrWoN3fBCjGgHgZwTi0WtKqAA5SdsV1S0hw
-        z/yLv0NRH0U9ZeGpAj+QKpsIhrER5MpPh8yTJ1qHJA66gU/8UiBffBOCsT1Pva0al7MwgU
-        8Wl8d2+AWEQqZB9YLvG3z2W7rsyjgu8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1693984699;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UZ/2jtuCcGDbvtZZ1dSSULsDv2WRriEDMyd1X3EatRQ=;
-        b=UlQ4KpQQ3SbpVQkpfXPQel7q/y9d4ELRhaXSXLXoKBW2H0ZiLprI0nsrCEvujWhv2/wlD5
-        a+EO6hOUHYCPWODg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BED9C1346C;
-        Wed,  6 Sep 2023 07:18:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id XcZ0Lbon+GQ6PgAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Wed, 06 Sep 2023 07:18:18 +0000
-Message-ID: <0ace21b2-f0ce-0b14-529f-c0ee2adf972f@suse.de>
-Date:   Wed, 6 Sep 2023 09:18:17 +0200
+        Wed, 6 Sep 2023 03:18:44 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B55AE6E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:18:33 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99357737980so506925066b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 00:18:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693984712; x=1694589512; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oLm2367PlhquFXyjm9J/YZ+I5YhSOsfpDD/zxOTDh8g=;
+        b=ao8XhLS3nUQD9s0CyP8+KvqoCXylpsv6MMBCvNXMBJqusNr/bgWA8e+DmuD6lnUXsc
+         zjsDDpum9EWNUh075RgjDkfyNK5sQP/aHfqOtdM6jkY5CILrpmq+TrZ/KbILGE5QOzO0
+         fI09NiLIco+sJ4lMfm+XdzB7h262ko71gc17iPAodF1IWUotsSzqzuZnNvh9Nz+S7iWA
+         1GVq0LM1kAEYZEaIRhFs5bMBr3zNxCCv9tPgeMVleAKamhGL2vPKowaTfqeHmWp5kydZ
+         HXh/5df36CxZiOnSGb1q1uKStQDx3EvG0OIYJ8AYKkKG0zydLX1HhGU0gaBAxGIloEkI
+         77Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693984712; x=1694589512;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oLm2367PlhquFXyjm9J/YZ+I5YhSOsfpDD/zxOTDh8g=;
+        b=TUXTebhXtBbHZ/jtG1TFXxQ0ViENbn0wwruDGvew6MVzRwmnugPg9aV38gjxdBsudV
+         0oOdGK4czHH545lBp6pmPiPygGc4nS7KRvkgP1JiBhgArQ0GQpIXRV1J6Rp+3VA6fbHv
+         7ung/Oi53BrOgmM5KY9iTFt2b6/Cs7aN7d9cJelg2RzL+d4SGrrgg719DrJUUNnR4iFL
+         caLqPgv8qPQAa38MARPZu7D07q2AgD5PCV71juLmQxyG/bRsS7hlbe9ph1ZW+lvzudqc
+         W9bBEtowAbgMTUMJDFCuopVDfdjs9sj6bT8IXtO1Ngr9z1XfFL1P8ZjiqF7mMvLMC0f9
+         9EwQ==
+X-Gm-Message-State: AOJu0Ywn8MHX8TsBmA8LiUgXZiFt2LzPhbb6S3ce2OuwP3PrWA7086zj
+        8/au/Hg/p97yB1H2yhSK3WzXimEK1VZnxn0MLmE=
+X-Google-Smtp-Source: AGHT+IEvxoAnhF13chZ5o/eiquJE4qnqbe1HVkX75JuWXAOxtXn742h0McKt1VlcDCa6KNR2xMRZOA==
+X-Received: by 2002:a17:906:30c1:b0:99c:a2ca:4f54 with SMTP id b1-20020a17090630c100b0099ca2ca4f54mr1678013ejb.34.1693984711657;
+        Wed, 06 Sep 2023 00:18:31 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id la20-20020a170906ad9400b0099caf5bed64sm8616547ejb.57.2023.09.06.00.18.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 00:18:31 -0700 (PDT)
+Message-ID: <f023767c-aa74-87ca-d333-3dba8a481cb6@linaro.org>
+Date:   Wed, 6 Sep 2023 09:18:30 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
- to select the primary video adapter at boot time
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 1/3] dt-bindings: media: Add THine THP7312 ISP
+To:     Paul Elder <paul.elder@ideasonboard.com>,
+        linux-media@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230905233118.183140-1-paul.elder@ideasonboard.com>
+ <20230905233118.183140-2-paul.elder@ideasonboard.com>
 Content-Language: en-US
-To:     suijingfeng <suijingfeng@loongson.cn>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
-References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
- <44ec8549-dc36-287e-4359-abd3ec8d22d6@suse.de>
- <5afd2efb-f838-f9b7-02a9-2cf4d4fd2382@loongson.cn>
- <773be4c6-0b3d-be39-7857-b3e2942007d9@suse.de>
- <6d1d8acc-5140-f710-ac00-cb423d7fce78@loongson.cn>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <6d1d8acc-5140-f710-ac00-cb423d7fce78@loongson.cn>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------ykBaykporxCxc0GQqibW6Qp3"
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230905233118.183140-2-paul.elder@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------ykBaykporxCxc0GQqibW6Qp3
-Content-Type: multipart/mixed; boundary="------------a4MEPrnaSak0MDOJHnwhylRP";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: suijingfeng <suijingfeng@loongson.cn>,
- Sui Jingfeng <sui.jingfeng@linux.dev>, Bjorn Helgaas <bhelgaas@google.com>,
- "Koenig, Christian" <Christian.Koenig@amd.com>,
- Jani Nikula <jani.nikula@linux.intel.com>, Daniel Vetter <daniel@ffwll.ch>,
- "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc: nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
-Message-ID: <0ace21b2-f0ce-0b14-529f-c0ee2adf972f@suse.de>
-Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
- to select the primary video adapter at boot time
-References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
- <44ec8549-dc36-287e-4359-abd3ec8d22d6@suse.de>
- <5afd2efb-f838-f9b7-02a9-2cf4d4fd2382@loongson.cn>
- <773be4c6-0b3d-be39-7857-b3e2942007d9@suse.de>
- <6d1d8acc-5140-f710-ac00-cb423d7fce78@loongson.cn>
-In-Reply-To: <6d1d8acc-5140-f710-ac00-cb423d7fce78@loongson.cn>
+On 06/09/2023 01:31, Paul Elder wrote:
+> Add bindings for the THine THP7312 ISP.
+> 
+> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+> ---
+> Since the THP7312 supports multiple sensors, thine,rx-data-lanes alone
+> might not be enough. I was consdering using sensor nodes like what the
+> AP1302 does [1]. This way we can also move the power supplies that only
+> concern the sensor in there as well. I was wondering what to do about
+> the model name, though, as the thp7312 completely isolates that from the 
+> rest of the system.
+> 
+> I'm planning to add sensor nodes in somehow in a v2.
+> 
+> [1] https://lore.kernel.org/linux-media/20211006113254.3470-2-anil.mamidala@xilinx.com/
+> 
+>  .../bindings/media/thine,thp7312.yaml         | 170 ++++++++++++++++++
+>  1 file changed, 170 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/thine,thp7312.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/thine,thp7312.yaml b/Documentation/devicetree/bindings/media/thine,thp7312.yaml
+> new file mode 100644
+> index 000000000000..e8d203dcda81
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/thine,thp7312.yaml
+> @@ -0,0 +1,170 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (c) 2023 Ideas on Board
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/thine,thp7312.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: THine THP7312
+> +
+> +maintainers:
+> +  - Paul Elder <paul.elder@@ideasonboard.com>
+> +
+> +description:
+> +  The THP7312 is a standalone ISP controlled over i2c, and is capable of
+> +  various image processing and correction functions, including 3A control. It
+> +  can be connected to CMOS image sensors from various vendors, supporting both
+> +  MIPI CSI-2 and parallel interfaces. It can also output on either MIPI CSI-2
+> +  or parallel. The hardware is capable of transmitting and receiving MIPI
+> +  interlaved data strams with data types or multiple virtual channel
+> +  identifiers.
+> +
+> +allOf:
+> +  - $ref: ../video-interface-devices.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: thine,thp7312
+> +
+> +  reg:
+> +    description: I2C device address
 
---------------a4MEPrnaSak0MDOJHnwhylRP
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+You can skip description. It is obvious.
 
-SGkNCg0KQW0gMDYuMDkuMjMgdW0gMDQ6MzQgc2NocmllYiBzdWlqaW5nZmVuZzoNCj4gDQo+
-IE9uIDIwMjMvOS81IDIzOjA1LCBUaG9tYXMgWmltbWVybWFubiB3cm90ZToNCj4+IEhpDQo+
-Pg0KPj4gQW0gMDUuMDkuMjMgdW0gMTU6MzAgc2NocmllYiBzdWlqaW5nZmVuZzoNCj4+PiBI
-aSwNCj4+Pg0KPj4+DQo+Pj4gT24gMjAyMy85LzUgMTg6NDUsIFRob21hcyBaaW1tZXJtYW5u
-IHdyb3RlOg0KPj4+PiBIaQ0KPj4+Pg0KPj4+PiBBbSAwNC4wOS4yMyB1bSAyMTo1NyBzY2hy
-aWViIFN1aSBKaW5nZmVuZzoNCj4+Pj4+IEZyb206IFN1aSBKaW5nZmVuZyA8c3VpamluZ2Zl
-bmdAbG9vbmdzb24uY24+DQo+Pj4+Pg0KPj4+Pj4gT24gYSBtYWNoaW5lIHdpdGggbXVsdGlw
-bGUgR1BVcywgYSBMaW51eCB1c2VyIGhhcyBubyBjb250cm9sIG92ZXIgDQo+Pj4+PiB3aGlj
-aA0KPj4+Pj4gb25lIGlzIHByaW1hcnkgYXQgYm9vdCB0aW1lLiBUaGlzIHNlcmllcyB0cmll
-cyB0byBzb2x2ZSBhYm92ZSANCj4+Pj4+IG1lbnRpb25lZA0KPj4+Pg0KPj4+PiBJZiBhbnl0
-aGluZywgdGhlIHByaW1hcnkgZ3JhcGhpY3MgYWRhcHRlciBpcyB0aGUgb25lIGluaXRpYWxp
-emVkIGJ5IA0KPj4+PiB0aGUgZmlybXdhcmUuIEkgdGhpbmsgb3VyIGJvb3QtdXAgZ3JhcGhp
-Y3MgYWxzbyBtYWtlIHRoaXMgYXNzdW1wdGlvbiANCj4+Pj4gaW1wbGljaXRseS4NCj4+Pj4N
-Cj4+Pg0KPj4+IFllcywgYnV0IGJ5IHRoZSB0aW1lIG9mIERSTSBkcml2ZXJzIGdldCBsb2Fk
-ZWQgc3VjY2Vzc2Z1bGx5LHRoZSANCj4+PiBib290LXVwIGdyYXBoaWNzIGFscmVhZHkgZmlu
-aXNoZWQuDQo+Pj4gRmlybXdhcmUgZnJhbWVidWZmZXIgZGV2aWNlIGFscmVhZHkgZ2V0IGtp
-bGxlZCBieSB0aGUgDQo+Pj4gZHJtX2FwZXJ0dXJlX3JlbW92ZV9jb25mbGljdGluZ19wY2lf
-ZnJhbWVidWZmZXJzKCkNCj4+PiBmdW5jdGlvbiAob3IgaXRzIHNpYmxpbmdzKS4gU28sIHRo
-aXMgc2VyaWVzIGlzIGRlZmluaXRlbHkgbm90IHRvIA0KPj4+IGludGVyYWN0IHdpdGggdGhl
-IGZpcm13YXJlIGZyYW1lYnVmZmVyDQo+Pg0KPj4gWWVzIGFuZCBuby4gVGhlIGhlbHBlcnMg
-eW91IG1lbnRpb24gd2lsbCBhdHRlbXB0IHRvIHJlbW92ZSB0aGUgDQo+PiBmaXJtd2FyZSBm
-cmFtZWJ1ZmZlciBvbiB0aGUgZ2l2ZW4gUENJIGRldmljZS4gSWYgeW91IGhhdmUgbXVsdGlw
-bGUgUENJIA0KPj4gZGV2aWNlcywgdGhlIG90aGVyIGRldmljZXMgd291bGQgbm90IGJlIGFm
-ZmVjdGVkLg0KPj4NCj4gWWVzIGFuZCBuby4NCj4gDQo+IA0KPiBGb3IgdGhlIHllcyBwYXJ0
-OiBkcm1fYXBlcnR1cmVfcmVtb3ZlX2NvbmZsaWN0aW5nX3BjaV9mcmFtZWJ1ZmZlcnMoKSAN
-Cj4gb25seSBraWxsIHRoZSBjb25mbGljdCBvbmUuDQo+IEJ1dCBmb3IgYSBzcGVjaWZpYyBt
-YWNoaW5lIHdpdGggdGhlIG1vZGVybiBVRUZJIGZpcm13YXJlLA0KPiB0aGVyZSBzaG91bGQg
-YmUgb25seSBvbmUgZmlybXdhcmUgZnJhbWVidWZmZXIgZHJpdmVyLg0KPiBUaGF0IHNob3Vk
-ZCBiZSB0aGUgRUZJRkIoVUVGSSBHT1ApLiBJIGRvIGhhdmUgbXVsdGlwbGUgUENJIGRldmlj
-ZXMsDQo+IGJ1dCBJIGRvbid0IHVuZGVyc3RhbmQgd2hlbiBhbmQgd2h5IGEgc3lzdGVtIHdp
-bGwgaGF2ZSBtb3JlIHRoYW4gb25lIA0KPiBmaXJtd2FyZSBmcmFtZWJ1ZmZlci4NCg0KTWF5
-YmUgc29tZXdoYXQgdW5yZWxhdGVkIHRvIHRoZSBhY3R1YWwgZGlzY3Vzc2lvbiwgYnV0IGl0
-J3Mgbm90IGFzIA0Kc2ltcGxlIGFzIHlvdSBhc3N1bWUuIE1hbnkgbm9uLVg4NiBzeXN0ZW1z
-IHVzZSBEZXZpY2VUcmVlLiBPbiBTcGFyYyANCklJUkMsIHRoZXJlJ3MgdGhlIGNhc2Ugb2Yg
-aGF2aW5nIG11bHRpcGxlIGZpcm13YXJlIGZyYW1lYnVmZmVycyBsaXN0ZWQgDQppbiB0aGUg
-RFQuIFdlIGNyZWF0ZSBhbiBkZXZpY2UgZm9yIGVhY2ggYW5kIGF0dGFjaCBhIERSTSBmaXJt
-d2FyZSANCmRyaXZlcjsgb2Zkcm0gaW4gdGhpcyBjYXNlLiBJIGhhdmVuJ3Qgc2VlbiB0aGlz
-IGluIHRoZSB3aWxkLCBidXQgDQpub24tU3BhcmMgc3lzdGVtcyBjb3VsZCBhbHNvIGJlaGF2
-ZSBsaWtlIHRoYXQuDQoNCkFuZCBpbiBhZGRpdGlvbiB0byB0aGF0LCBBUk0tYmFzZWQgc3lz
-dGVtcyBvZnRlbiB1c2VzIFVFRkkgYm9vdCBzdHViIA0KY29kZSB0aGF0IHByb3ZpZGVzIGEg
-c2ltcGxlIFVFRkkgZW52aXJvbm1lbnQgdG8gdGhlIGtlcm5lbC4gRm9yIGdyYXBoaWNzIA0K
-d2UndmUgaGFkIGNhc2VzIHdoZXJlIHdlIHJlY2VpdmVkIHRoZSBzYW1lIGZpcm13YXJlIGZy
-YW1lYnVmZmVyIGZyb20gdGhlIA0KRFQgYW5kIGZyb20gdGhlIFVFRkkgYm9vdCBzdHViLiBX
-ZSBoYXZlIHRvIGRldGVjdCBhbmQgaGFuZGxlIHN1Y2ggDQpkdXBsaWNhdGlvbiBpbiB0aGUg
-a2VybmVsLg0KDQpCZXN0IHJlZ2FyZHMNClRob21hcw0KDQo+IA0KPiBFdmVuIGZvciB0aGUg
-bWFjaGluZXMgd2l0aCB0aGUgbGVnYWN5IEJJT1MsIHRoZSBmaXhlZCBWR0EgYXBlcnR1cmUg
-DQo+IGFkZHJlc3MgcmFuZ2UNCj4gY2FuIG9ubHkgYmUgb3duZWQgYnkgb25lIGZpcm13YXJl
-IGRyaXZlci4gSXQgaXMganVzdCB0aGF0IHdlIG5lZWQgdG8gDQo+IGhhbmRsZSB0aGUNCj4g
-cm91dGluZywgdGhlIC0+c2V0X2RlY29kZSgpIGNhbGxiYWNrIG9mIHZnYV9jbGllbnRfcmVn
-aXN0ZXIoKSBpcyB1c2VkIHRvIA0KPiBkbyBzdWNoDQo+IHdvcmsuIEFtIEkgY29ycmVjdD8N
-Cj4gDQo+IA0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2
-ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCkZyYW5rZW5z
-dHJhc3NlIDE0NiwgOTA0NjEgTnVlcm5iZXJnLCBHZXJtYW55DQpHRjogSXZvIFRvdGV2LCBB
-bmRyZXcgTXllcnMsIEFuZHJldyBNY0RvbmFsZCwgQm91ZGllbiBNb2VybWFuDQpIUkIgMzY4
-MDkgKEFHIE51ZXJuYmVyZykNCg==
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +      - description: CLKI clock input
 
---------------a4MEPrnaSak0MDOJHnwhylRP--
+This was absolutely never tested.
 
---------------ykBaykporxCxc0GQqibW6Qp3
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +    description: |-
+> +      Reference to the GPIO connected to the RESET_N pin, if any.
+> +      Must be released (set high) after all supplies are applied.
+> +
+> +  vddcore-supply:
+> +    description:
+> +      1.2V supply for core, PLL, MIPI rx and MIPI tx.
+> +
+> +  vhtermnx-supply:
+> +    description:
+> +      Supply for input (rx). 1.8V for MIPI, or 1.8/2.8/3.3V for parallel.
+> +
+> +  vddtx-supply:
+> +    description:
+> +      Supply for output (tx). 1.8V for MIPI, or 1.8/2.8/3.3V for parallel.
+> +
+> +  vddhost-supply:
+> +    description:
+> +      Supply for host interface. 1.8V, 2.8V, or 3.3V.
+> +
+> +  vddcmos-supply:
+> +    description:
+> +      Supply for sensor interface. 1.8V, 2.8V, or 3.3V.
+> +
+> +  vddgpio_0-supply:
 
------BEGIN PGP SIGNATURE-----
+No, underscores are not allowed in names.
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmT4J7oFAwAAAAAACgkQlh/E3EQov+D1
-NhAAz+snccKaUIpfbyPULYBFWMbjaedyU2E3h8Q5+8dNBnF/92JnszZVeKioqCszd+SH72svNE7Y
-YgawacdjXNZh+oykUKJvRzkTDjrmLayykiF3q+3s7ZjVUGh1EwQjF9RgghIryKCLC3okhFaiGs+Z
-Mp7mFx1oPIDnNSyDOqMJdhRnlyBmRKWTqB+m3UY4D1Dy48TdZVZKafIEU5gE/4Bb8lDxhW89SBtl
-gse0NzgWz+anzLLrUCq9zUJxm0ZPHdJp93URTaldQXv9hVwN5VQTLuEwnMwyW4MCgZARoYGJ1Y5/
-wMKR1xD+179WQ/JE15fXZADZ/NkDcs27c1Rwm1eQkCEdj4Ok307y5Eb01h41b3tB87sTnP6Z+oih
-6NvqoKtET9xG9kl/kthG4T8hyxFrPPC5soyXSNQyEfbA+T0d0M31bCgAI/nTQi1POqDVwRTbL5wc
-IU65k3C+dg9Mt26hquE2v+MTyZ204Uy1DUqZvvrzi7JvCiAb+WVRifsZRXQMnxo3XNchQkS3ZW7/
-1MlYC/HD2PfLHXRXaX0ySiddBSL+nbTl446toF0nHRc1kdefYIe9BwnFdceIWjVWlc6TG3V897n5
-OaDkKJQZxRpTA3O0XNw3O1U7ctrz1mUIu0PX109V5NzjYFg9n+vT2vNk0sB3J8qTMxyWE4nV8Q5P
-1BU=
-=S4ZG
------END PGP SIGNATURE-----
+> +    description:
+> +      Supply for GPIO_0. 1.8V, 2.8V, or 3.3V.
+> +
+> +  vddgpio_1-supply:
+> +    description:
+> +      Supply for GPIO_1. 1.8V, 2.8V, or 3.3V.
+> +
+> +  DOVDD-supply:
 
---------------ykBaykporxCxc0GQqibW6Qp3--
+lowercase. Look at your other supplies. VDD is spelled there "vdd", so
+do not introduce random style.
+
+
+> +    description:
+> +      Digital I/O (1.8V) supply for image sensor.
+> +
+> +  AVDD-supply:
+
+lowercase
+
+> +    description:
+> +      Analog (2.8V) supply for image sensor.
+> +
+> +  DVDD-supply:
+
+lowercase
+
+> +    description:
+> +      Digital Core (1.2V) supply for image sensor.
+> +
+> +  orientation: true
+> +  rotation: true
+> +
+> +  thine,rx,data-lanes:
+
+Why are you duplicating properties? With wrong name? No, that's not a
+property of a device node, but endpoint.
+
+> +    minItems: 4
+> +    maxItems: 4
+> +    $ref: /schemas/media/video-interfaces.yaml#data-lanes
+> +    description: |-
+
+Drop |- where not needed.
+
+> +      This property is for lane reordering between the THP7312 and the imaging
+> +      sensor that it is connected to.
+> +
+> +  port:
+> +    $ref: /schemas/graph.yaml#/$defs/port-base
+> +    additionalProperties: false
+> +
+> +    properties:
+> +      endpoint:
+> +        $ref: /schemas/media/video-interfaces.yaml#
+> +        unevaluatedProperties: false
+> +
+> +        properties:
+> +          data-lanes:
+> +            description: |-
+> +              The sensor supports either two-lane, or four-lane operation.
+> +              This property is for lane reordering between the THP7312 and
+> +              the SoC. If this property is omitted four-lane operation is
+> +              assumed. For two-lane operation the property must be set to <1 2>.
+> +            minItems: 2
+> +            maxItems: 4
+> +            items:
+> +              maximum: 4
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reset-gpios
+> +  - clocks
+> +  - vddcore-supply
+> +  - vhtermrx-supply
+> +  - vddtx-supply
+> +  - vddhost-supply
+> +  - vddcmos-supply
+> +  - vddgpio_0-supply
+> +  - vddgpio_1-supply
+> +  - DOVDD-supply
+> +  - AVDD-supply
+> +  - DVDD-supply
+> +  - thine,rx,data-lanes
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        camera@61 {
+> +            compatible = "thine,thp7312";
+> +            reg = <0x61>;
+> +
+> +            pinctrl-names = "default";
+> +            pinctrl-0 = <&cam1_pins_default>;
+> +
+> +            reset-gpios = <&pio 119 GPIO_ACTIVE_LOW>;
+> +            clocks = <&camera61_clk>;
+> +
+> +            vddcore-supply = <&vsys_v4p2>;
+> +            AVDD-supply = <&vsys_v4p2>;
+> +            DVDD-supply = <&vsys_v4p2>;
+
+Srlsy, test it before sending. Look how many supplies you require and
+what is provided here. How any of this could possibly work?
+
+
+
+Best regards,
+Krzysztof
+
