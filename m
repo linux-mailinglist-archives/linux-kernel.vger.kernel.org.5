@@ -2,114 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 776D97939F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 520877939F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239167AbjIFKcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 06:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36974 "EHLO
+        id S234982AbjIFKdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 06:33:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239146AbjIFKcP (ORCPT
+        with ESMTP id S229927AbjIFKdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 06:32:15 -0400
-Received: from out-225.mta0.migadu.com (out-225.mta0.migadu.com [91.218.175.225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD35610C7
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 03:32:06 -0700 (PDT)
-Message-ID: <873b331a-d0ce-658c-6daa-02bf816e92d1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693996324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H72jsdb7U3rNb35/ic0Uk5LDLM+1lISVY4eiaaElZ2c=;
-        b=rO55bXhvqRITklhqNkZjQSkPpG1KsVHaGfMYcafTrMftK6rWTx5/eJVCt7+EedNgadJO9K
-        gvLY4Zuh1Ca38KxnhsMFebVtH4d4slIDl1wZL5rmNlnhVv6XScdRwizbDvUn1siUGjrHuq
-        qr12MxtQNmef3fK4PG/rdaAdq1P3P6Q=
-Date:   Wed, 6 Sep 2023 18:31:50 +0800
+        Wed, 6 Sep 2023 06:33:19 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E00CE2;
+        Wed,  6 Sep 2023 03:33:12 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-26fe4997871so1902570a91.3;
+        Wed, 06 Sep 2023 03:33:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693996392; x=1694601192; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dZQ8wt1OcjisCZpLbfzFz5n18+5fQLoWCA+NTtpxCgE=;
+        b=YSrPFXclH1rEG9v5awuCgn0YvzkOfdFj9Hjp+eFbzFtqWPq/yQS2CnkyL0DAj1ibOC
+         YUxHP2KYCdIV/OgAZ2btxH+vFW6VpjAccR/YnYANF2R6TM8zKM0Ng+D09U39cKqyL2lC
+         ZH9mbctLFpyKiL4M4ORlX377picL7RodKnCAlH+JXUH+ayVgbaZsBw+sq1ecxhnU1IUB
+         rvGXL/H2+hWMZtTXitypp0U81mw2rwdX1MMDeTxxIcvRKZZkbbMFoV8LbhhRBiQT/Gq4
+         NzpXRhFIJW10sAxgH57jo6zo347HtfOX/fj08Kv3p50p1tRbgyx68Y/rb7eeUgEX7an+
+         C4yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693996392; x=1694601192;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dZQ8wt1OcjisCZpLbfzFz5n18+5fQLoWCA+NTtpxCgE=;
+        b=OiSr0sr0BWmUFRUX0GsMhNnkLO8MnGWYEcHrWQaZSugZU+CWiELaQXXhTRDHQdq1YR
+         MwYirH/Cm0BZl68arBSZIph5USb+sxQLj4ybaQSMzu+1dY2YQn1QbRvpbu4RQNGJCUar
+         MKVBC5mYMyh//Zgpx8lQzCZ0GLe6vI59esdRfjk3WaM1VSkMbGhN4SySVVhvVkJoAZBN
+         XIcJivlXyLNAS8T/Qgp8UczdYmYbg3m5fvFHraH+DB6Pfr3k9c8QvbqLfas33Yq9TvER
+         v3q6t/eKA8i1OSQkvk1zUd/BSPK8BNph2P7L+r+c/qsUz+2q99B8cKgtUdaHdlzMwUcb
+         fmZw==
+X-Gm-Message-State: AOJu0Yyqe/LXBGkrFd/ofSU9DW+tabyuYZ1+wDf6XcHEmQ/7LhYSPSWc
+        cxX492Rhzcqw+MnEK2hXNZg=
+X-Google-Smtp-Source: AGHT+IEvmMcrChGZLiPN933WjYKZmL8PyeTwmMitOCF5itYlCF4stuJmLKQ1uC6Qg+XXTvzQWSo3dw==
+X-Received: by 2002:a17:90b:11d1:b0:26d:1986:f7ec with SMTP id gv17-20020a17090b11d100b0026d1986f7ecmr12223211pjb.1.1693996392056;
+        Wed, 06 Sep 2023 03:33:12 -0700 (PDT)
+Received: from [172.16.116.58] ([103.15.228.93])
+        by smtp.gmail.com with ESMTPSA id l19-20020a17090aec1300b0026b26181ac9sm12167302pjy.14.2023.09.06.03.33.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 03:33:11 -0700 (PDT)
+Message-ID: <2746d50a-5658-5058-4369-1a1b34f85710@gmail.com>
+Date:   Wed, 6 Sep 2023 16:03:06 +0530
 MIME-Version: 1.0
-Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
- to select the primary video adapter at boot time
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        suijingfeng <suijingfeng@loongson.cn>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
-References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
- <44ec8549-dc36-287e-4359-abd3ec8d22d6@suse.de>
- <5afd2efb-f838-f9b7-02a9-2cf4d4fd2382@loongson.cn>
- <2adfa653-ac35-d560-be52-c92848a1eef5@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v4 2/3] greybus: Add BeaglePlay Linux Driver
 Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <2adfa653-ac35-d560-be52-c92848a1eef5@gmail.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>, greybus-dev@lists.linaro.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org,
+        Vaishnav M A <vaishnav@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Nishanth Menon <nm@ti.com>
+References: <20230902182845.1840620-1-ayushdevel1325@gmail.com>
+ <20230902182845.1840620-3-ayushdevel1325@gmail.com>
+ <27a445d6-d904-244f-266c-ffb2d68d0e27@kernel.org>
+ <1bbe7772-09f4-6c5a-8c4d-c88988b34c99@gmail.com>
+ <608ddca9-4ab8-1aef-767f-92a90e7e0970@kernel.org>
+From:   Ayush Singh <ayushdevel1325@gmail.com>
+In-Reply-To: <608ddca9-4ab8-1aef-767f-92a90e7e0970@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 9/6/23 15:29, Krzysztof Kozlowski wrote:
 
-On 2023/9/6 14:45, Christian König wrote:
->> Firmware framebuffer device already get killed by the 
->> drm_aperture_remove_conflicting_pci_framebuffers()
->> function (or its siblings). So, this series is definitely not to 
->> interact with the firmware framebuffer
->> (or more intelligent framebuffer drivers).  It is for user space 
->> program, such as X server and Wayland
->> compositor. Its for Linux user or drm drivers testers, which allow 
->> them to direct graphic display server
->> using right hardware of interested as primary video card.
+> On 05/09/2023 18:27, Ayush Singh wrote:
+>>>> +static void hdlc_handle_rx_frame(struct gb_beagleplay *bg)
+>>>> +{
+>>>> +	u8 address = bg->rx_buffer[0];
+>>>> +	char *buffer = &bg->rx_buffer[2];
+>>>> +	size_t buffer_len = bg->rx_buffer_len - 4;
+>>>> +
+>>>> +	switch (address) {
+>>>> +	case ADDRESS_DBG:
+>>>> +		hdlc_handle_dbg_frame(bg, buffer, buffer_len);
+>>>> +		break;
+>>>> +	case ADDRESS_GREYBUS:
+>>>> +		hdlc_handle_greybus_frame(bg, buffer, buffer_len);
+>>>> +		break;
+>>>> +	default:
+>>>> +		dev_warn(&bg->serdev->dev, "Got Unknown Frame %u", address);
+>>> ratelimit
+>>> Probably as well in several places with possible flooding.
+>> I don't think `hdlc_handle_rx_frame` is the correct place since it only
+>> processes a single completed HDLC frame.  The more appropriate place
+>> would be `hdlc_rx` if we want to limit based on the number of HDLC
+>> frames or `gb_beagleplay_tty_receive` to limit based on the number of bytes.
 >>
->> Also, I believe that X server and Wayland compositor are the best 
->> test examples.
->> If a specific DRM driver can't work with X server as a primary,
->> then there probably have something wrong.
->>
->>
->>> But what's the use case for overriding this setting?
->>>
->>
->> On a specific machine with multiple GPUs mounted,
->> only the primary graphics get POST-ed (initialized) by the firmware.
->> Therefore, the DRM drivers for the rest video cards, have to choose to
->> work without the prerequisite setups done by firmware, This is called 
->> as POST.
+>> I would like to ask, though, why is rate limiting required here? Won't
+>> `serdev_device_ops->receive_buf` already rate limit the number of bytes
+>> somewhat? Or is it related to blocking in the
+>> `serdev_device_ops->receive_buf` callback? In the case of latter, it
+>> would probably make sense to ratelimit based on number of frames, I think.
+> My comment might not be accurate, so I do not insist. The name of the
+> function suggested something being called very often (on every frame),
+> thus you would print warning also very often.
 >
-> Well, you don't seem to understand the background here. This is 
-> perfectly normal behavior.
+> Best regards,
+> Krzysztof
 >
-> Secondary cards are posted after loading the appropriate DRM driver. 
-> At least for amdgpu this is done by calling the appropriate functions 
-> in the BIOS. 
+Rate limiting the logs is not a bad idea. Initially I was not aware you 
+meant about logging, hence the question. With proper firmware in CC1352, 
+the warning will never be printed. But maybe it can cause problem with 
+improper firmware.
 
 
-Well, thanks for you tell me this. You know more than me and definitely have a better understanding.
-
-Are you telling me that the POST function for AMDGPU reside in the BIOS?
-The kernel call into the BIOS?
-Does the BIOS here refer to the UEFI runtime or ATOM BIOS or something else?
-
-But the POST function for the drm ast, reside in the kernel space (in other word, in ast.ko).
-Is this statement correct?
-
-I means that for ASpeed BMC chip, if the firmware not POST the display controller.
-Then we have to POST it at the kernel space before doing various modeset option.
-We can only POST this chip by directly operate the various registers.
-Am I correct for the judgement about ast drm driver?
-
-Thanks for your reviews.
+Ayush Singh
 
