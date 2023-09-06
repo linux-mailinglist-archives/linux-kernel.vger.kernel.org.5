@@ -2,159 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D337935C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 08:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFD37935C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 08:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235941AbjIFG5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 02:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46638 "EHLO
+        id S240780AbjIFG6C convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Sep 2023 02:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjIFG5L (ORCPT
+        with ESMTP id S229649AbjIFG6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 02:57:11 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F893CC3;
-        Tue,  5 Sep 2023 23:57:07 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2bd0d135ca3so56073511fa.3;
-        Tue, 05 Sep 2023 23:57:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693983426; x=1694588226; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zlJV3YrVhcDgjJFnq8JrFHKjW/deWsGxcZLe+DpQPlY=;
-        b=IdISELx4D7SkYZ4DrW+yN4qELLd+SqBUZ8WrC3j5G+EsxCTTjQH3hiZWRGMij2XpaE
-         QsTYw92BhMyG6whAkAHIvYcCLeSGOP4UXgTrFtJ0Mcd518PqV+tchzfp4Ajb3lPOSY+H
-         RS/ZvreFMszz99HACj3H+3X90xTWa9cxvzNkHdgi49Ir5XTaHNV7TAHybgSZYkDlMCAJ
-         bS2s30pO66ofzsvFreW/ghDrZ3rVRRxfA6cigY4VVJSyaQPaHFmsDam0yo3ygN4OdnkG
-         fer2i22rmjL3h1K3whh89x712cn2cWuF6JSK6mdxSpR4ESM1aSnR9817CTQho73dqT87
-         8Z/g==
+        Wed, 6 Sep 2023 02:58:02 -0400
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F020CFA;
+        Tue,  5 Sep 2023 23:57:57 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-d7bae413275so887143276.0;
+        Tue, 05 Sep 2023 23:57:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693983426; x=1694588226;
+        d=1e100.net; s=20221208; t=1693983476; x=1694588276;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zlJV3YrVhcDgjJFnq8JrFHKjW/deWsGxcZLe+DpQPlY=;
-        b=l0s1WhuiRe3TCSTTpAXAal9nJzT2S/lyPU4fUbUX7n8I0gQvKYd5jQ7n10nABdHdHT
-         CYARlPAUCA/TkgHNmqwPSuYoy0SxO6142QMZlYIiulf5NEaaSvOjHMH3HY/XjmLuiDGj
-         nJfZ2Ks9D8imdPA8ECE0ucUbdNiD7k33EirioqBxe33QPgFu7bL6vZ/Ll5knEw+iw4qa
-         TXgBlMGcPp9/rtO0RcHClEEM90cM6/REUzmEn6mC6gz8fjoC/h9b/403XLm6QNA3nlFc
-         uDfSB21SZIG3k93uCCEvKgANbVgc0JqJTU1tXT9FCYeJP3hZ8fPa4BmTiL7AOAcEgmEL
-         Egvg==
-X-Gm-Message-State: AOJu0YwIsrV1XI9DdvzeRC7pazlLE4NJh+KfBWPPm23zeuQTk+u2px3q
-        Hw9y+Y6tiYTqxUIVF72RqgL+VZDuFhoGVYbFczE=
-X-Google-Smtp-Source: AGHT+IE2wohgSgl/gZUM1LzzLcCwq5kIveaGhSl1JWbsEVX+uMGhnRmRqbVkQ36vSc6Xb8HN2ND74xdMHJJ7AowqLIU=
-X-Received: by 2002:a2e:b051:0:b0:2bc:e1a3:fbaa with SMTP id
- d17-20020a2eb051000000b002bce1a3fbaamr1470233ljl.22.1693983425421; Tue, 05
- Sep 2023 23:57:05 -0700 (PDT)
+        bh=lKAX/Cl8B+QFuR8jwwAccCXa8j+76FDvzTqnRpcle2U=;
+        b=bAbqO+85rn3O/x110BS1/mPen5C/3nwqIjB/auxHBRkBCwgETBrrKXQ15mo/K+GWEl
+         6glBUYKD65z20LaxS3AMS5K8VwT8PfYwwmvoDfJnaJtuOzzzwzOYG6YRBfyuQ1LqEIKI
+         /OEG4U8q+YbQecYnFeY2ABkJXhX4XBQ0NMTbRmkbODcou+3Y0BSsXV+CWjrOLdsxsAnN
+         o7GKixVsZdfouskZ8yGrZHwsRNZHAqORrLdedWUod1txR8RVJeKqGoXRJ/jWP1k3aGsx
+         d2Ngj/epwM0Vogi7JmY3zVjdcu/sck43T+thP3QCbMhCUQth5bEfsZzU/k/1XM1qr5u2
+         wB8g==
+X-Gm-Message-State: AOJu0Yxwwh4CSqeHN7JBAkHEFTZsZZsjgir9IMkrO9xgtUK4TAio9CtK
+        SmkOi1wsmZ1JXHLt9BfaieiQ2RPCuWmBzw==
+X-Google-Smtp-Source: AGHT+IFeNPSEJvuJXlJCtsheRWdv4vh18NHbyNAIltOcVrh4kIVoYz+dmJsQoXRfic2FpkIicrXzYw==
+X-Received: by 2002:a25:cb8e:0:b0:d7f:71cb:7280 with SMTP id b136-20020a25cb8e000000b00d7f71cb7280mr5546572ybg.24.1693983476427;
+        Tue, 05 Sep 2023 23:57:56 -0700 (PDT)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id c198-20020a25c0cf000000b00d71855984b5sm3193661ybf.18.2023.09.05.23.57.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Sep 2023 23:57:56 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-d74a012e613so874002276.1;
+        Tue, 05 Sep 2023 23:57:56 -0700 (PDT)
+X-Received: by 2002:a25:1184:0:b0:cb2:7e6:191c with SMTP id
+ 126-20020a251184000000b00cb207e6191cmr16400897ybr.20.1693983475941; Tue, 05
+ Sep 2023 23:57:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1693659382.git.haibo1.xu@intel.com> <ee4e518cbed9ff4210b74a22c5af21c410fab85d.1693659382.git.haibo1.xu@intel.com>
- <20230904-d35320b23119ee97737e8a74@orel>
-In-Reply-To: <20230904-d35320b23119ee97737e8a74@orel>
-From:   Haibo Xu <xiaobo55x@gmail.com>
-Date:   Wed, 6 Sep 2023 14:56:54 +0800
-Message-ID: <CAJve8om7Rmp-gbyT7DfHQVPrpkrgA95pbLVrTh=-S2HegkuXpQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/8] KVM: riscv: selftests: Switch to use macro from csr.h
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Guo Ren <guoren@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        wchen <waylingii@gmail.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Peter Gonda <pgonda@google.com>, Like Xu <likexu@tencent.com>,
-        =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>,
-        Thomas Huth <thuth@redhat.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Michal Luczaj <mhal@rbox.co>, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
+References: <20230904135852.12146-1-wsa+renesas@sang-engineering.com> <20230904135852.12146-2-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20230904135852.12146-2-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 6 Sep 2023 08:57:44 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWWTHaMK=-rWM7XAHisjFQykqCF_K_ji5C8XibB3eH2eA@mail.gmail.com>
+Message-ID: <CAMuHMdWWTHaMK=-rWM7XAHisjFQykqCF_K_ji5C8XibB3eH2eA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] i2c: rcar: avoid non-standard use of goto
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 4, 2023 at 9:31=E2=80=AFPM Andrew Jones <ajones@ventanamicro.co=
-m> wrote:
+On Tue, Sep 5, 2023 at 6:22 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> Kernel functions goto somewhere on error conditions. Using goto for the
+> default path is irritating. Let's bail out on error instead.
 >
-> On Sat, Sep 02, 2023 at 08:59:26PM +0800, Haibo Xu wrote:
-> > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> > ---
-> >  tools/testing/selftests/kvm/include/riscv/processor.h | 5 +----
-> >  1 file changed, 1 insertion(+), 4 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/kvm/include/riscv/processor.h b/to=
-ols/testing/selftests/kvm/include/riscv/processor.h
-> > index 5b62a3d2aa9b..6810c887fadc 100644
-> > --- a/tools/testing/selftests/kvm/include/riscv/processor.h
-> > +++ b/tools/testing/selftests/kvm/include/riscv/processor.h
-> > @@ -8,6 +8,7 @@
-> >  #define SELFTEST_KVM_PROCESSOR_H
-> >
-> >  #include "kvm_util.h"
-> > +#include <asm/csr.h>
-> >  #include <linux/stringify.h>
-> >
-> >  static inline uint64_t __kvm_reg_id(uint64_t type, uint64_t idx,
-> > @@ -95,12 +96,8 @@ static inline uint64_t __kvm_reg_id(uint64_t type, u=
-int64_t idx,
-> >  #define PGTBL_PAGE_SIZE                              PGTBL_L0_BLOCK_SI=
-ZE
-> >  #define PGTBL_PAGE_SIZE_SHIFT                        PGTBL_L0_BLOCK_SH=
-IFT
-> >
-> > -#define SATP_PPN                             _AC(0x00000FFFFFFFFFFF, U=
-L)
-> >  #define SATP_MODE_39                         _AC(0x8000000000000000, U=
-L)
-> >  #define SATP_MODE_48                         _AC(0x9000000000000000, U=
-L)
->
-> SATP_MODE_39/48 are also in csr.h
->
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Good catch! These 2 should also be removed. Will fix it in the next version=
-.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> > -#define SATP_ASID_BITS                               16
-> > -#define SATP_ASID_SHIFT                              44
-> > -#define SATP_ASID_MASK                               _AC(0xFFFF, UL)
-> >
-> >  #define SBI_EXT_EXPERIMENTAL_START           0x08000000
-> >  #define SBI_EXT_EXPERIMENTAL_END             0x08FFFFFF
-> > --
-> > 2.34.1
-> >
->
-> Thanks,
-> drew
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
