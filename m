@@ -2,107 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1627935D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF3F7935D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbjIFHCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 03:02:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51698 "EHLO
+        id S242225AbjIFHC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 03:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbjIFHCA (ORCPT
+        with ESMTP id S229676AbjIFHCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 03:02:00 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E4DE43
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:01:55 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31c93d2a24fso2596037f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 00:01:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1693983713; x=1694588513; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=7a/rYlLL01jELhspFfU/LX4lJTwK+IpYr9KpIjgxodg=;
-        b=CXDgB5fIUUXU9JDvrWiRksAZXazJ3wpi4PixjFkGD0V3IKnzrS3y4qCs+Cguox/kXB
-         0qlKVtEtVxeAIP5AXbtx7AB3rjY3iFEJRcFuaFLugqGOj24qHF/gRMsVIE8Oj0+b1PT8
-         v62168zbbc8DzKFNEXPd9soU3UyjMAmpr3c+gbai7SFGkgjrkxENgGsIs0DZFtZDE1u4
-         mJqW1MmqA5N7HvpJ10n8iSMUy5ZDnOMFklWbDIi4h73lizQLD0NvLNGoTdVzCXHS1INe
-         EMPG3GzTp1Ja0+z8OF5W6FCegJqKdHOIc7S2oZgMp62/9tNTszzhUt9rXc03xeHhWL7a
-         Rf3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693983713; x=1694588513;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7a/rYlLL01jELhspFfU/LX4lJTwK+IpYr9KpIjgxodg=;
-        b=R9XnDHfRFU8OHjV+r2FBtZoH+cCg4lEop8EW+bdTsTi0fRNk+jKJceccH0YXzfEbGK
-         jx4AqBR53eThZ0JQc6qnbVAu/GkUzKgRz7EEtcHNcc865pdNSQEIstsPXExjHI/clcfX
-         3pDJrALoGhtNtUG0ODPiij//orSnItrjra0AgcCG2pvi2zYeK8IRk1BkhV9OVfmDuXuV
-         nKbTh1HiyVYtBw2bGqQE97slc5JJyL9JAWNj4roOVIPvTUKEjJloA8mWtkSwIHna/H7o
-         62scELc4VrwFym2MoXQlC1gf1wMLZJPet1ZxCTZH4WkH08k9UIsjZYeiYFptBCAP/iuD
-         0V5A==
-X-Gm-Message-State: AOJu0YxRRWt3EjxnJetpeAG2PDwWmxpga6VSg1vEKvCor+Cg631vmEmp
-        VIManpjxkw28zFN/568iDyYlxA==
-X-Google-Smtp-Source: AGHT+IH5D+U+nZV7Ok6E7RGjtfz50olmDnpckxh8umsRSqUfH3ZIM1q14NQMvG0C714ykQWhmjyeJw==
-X-Received: by 2002:adf:e7d0:0:b0:31c:8151:86a9 with SMTP id e16-20020adfe7d0000000b0031c815186a9mr1273125wrn.67.1693983713483;
-        Wed, 06 Sep 2023 00:01:53 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id l5-20020a5d4805000000b003197c7d08ddsm19530729wrq.71.2023.09.06.00.01.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 00:01:52 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 09:01:51 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Haibo Xu <xiaobo55x@gmail.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Guo Ren <guoren@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Lei Wang <lei4.wang@intel.com>, Like Xu <likexu@tencent.com>,
-        Peter Gonda <pgonda@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Thomas Huth <thuth@redhat.com>,
-        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Michal Luczaj <mhal@rbox.co>, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 2/8] KVM: arm64: selftest: Split arch_timer test code
-Message-ID: <20230906-3f0318fa20365f9211998bae@orel>
-References: <cover.1693659382.git.haibo1.xu@intel.com>
- <c87337cfd7fb135e2efed589360a78c26a402eac.1693659382.git.haibo1.xu@intel.com>
- <20230904-11e853ffe3d8e9cf9ec6079d@orel>
- <CAJve8onwjBQcbVy75qyOF3A51-T0WyBkmeCV_wOZvzaPcrBVFg@mail.gmail.com>
- <CAJve8ok-zZAG7T3t5XD-CtJn47tTE867Xaaw_YHYy1XmUL41rw@mail.gmail.com>
+        Wed, 6 Sep 2023 03:02:25 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050:0:465::102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0B9E52
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:02:20 -0700 (PDT)
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4RgYGJ4r1Jz9srY;
+        Wed,  6 Sep 2023 09:02:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
+        t=1693983736;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+k6V4wqFBDUDmAoXXrgivFUiDnLDqDPZixBVs4Okvc0=;
+        b=axjflxjjQczY8egvFtzzgesPxnSG7/OdfTxt1w+gRuqEQlDkl2JT7E87FOvC2NkU1HDkRI
+        VJiseGMcOZmgF9C8fTugmODhsAkGgU6eCc/5AjVtN78+CUdvPe/gx1+oncm8wGZOpeGXZD
+        lsS6mfWiF939YuO2xzXdlPVEBDH3LczRl4/WwMwjP7H4zYkwwcbtvRnhx8gPCoM7nnUsCR
+        95m+Jsx0OxMQoQepURR0MN/yh8USZIFqDZ8jN5nWRyghaM4XmjJsI7vW/BZUZGFJFxzufF
+        f/ERqSQiNWigESMW2Edt86WEzBCPW0pXzAcVRS+ftvl7ukrLlu5mwKeNtCh08Q==
+From:   Aleksa Sarai <cyphar@cyphar.com>
+Date:   Wed, 06 Sep 2023 17:02:06 +1000
+Subject: [PATCH] memfd: drop warning for missing exec-related flags
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJve8ok-zZAG7T3t5XD-CtJn47tTE867Xaaw_YHYy1XmUL41rw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230906-memfd-reduce-spam-v1-1-1f0d35facd95@cyphar.com>
+X-B4-Tracking: v=1; b=H4sIAO0j+GQC/x3MQQ5AMBBG4avIrE1SBOUqYkH7l1kUaUMk4u4ay
+ 2/x3kMRQRCpzx4KuCTKviUUeUZmnbYFLDaZSlVWqlMNe3hnOcCeBhyPybNutXZGzV1dgFJ3BDi
+ 5/+cwvu8HzWgnpmMAAAA=
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Damian Tometzki <dtometzki@fedoraproject.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Daniel Verkamp <dverkamp@chromium.org>,
+        Jeff Xu <jeffxu@google.com>, Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1924; i=cyphar@cyphar.com;
+ h=from:subject:message-id; bh=/VYfd7Di0058KXgnpDZddvw9amq+11iEgviQ8j3mDio=;
+ b=owGbwMvMwCWmMf3Xpe0vXfIZT6slMaT8UP7ke1mce8aJR8pOrj82Kj9gsVOZ3FrsYyo7xbvcK
+ 9J92+57HaUsDGJcDLJiiizb/DxDN81ffCX500o2mDmsTCBDGLg4BWAiSzczMlx6xZdaVcfxxsbF
+ J+V2SWl6ncbK7Q5fTRb4H8qbplyZpMfwP37uhNqcH2ZJyVtl/SpCZNPDZF18m5iEcufHc0letl7
+ HDAA=
+X-Developer-Key: i=cyphar@cyphar.com; a=openpgp;
+ fpr=C9C370B246B09F6DBCFC744C34401015D1D2D386
+X-Rspamd-Queue-Id: 4RgYGJ4r1Jz9srY
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -110,53 +68,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 11:44:26AM +0800, Haibo Xu wrote:
-> On Wed, Sep 6, 2023 at 10:14 AM Haibo Xu <xiaobo55x@gmail.com> wrote:
-> >
-> > On Mon, Sep 4, 2023 at 9:24 PM Andrew Jones <ajones@ventanamicro.com> wrote:
-...
-> > > > +
-> > > > +enum guest_stage {
-> > > > +     GUEST_STAGE_VTIMER_CVAL=1,
-> > > > +     GUEST_STAGE_VTIMER_TVAL,
-> > > > +     GUEST_STAGE_PTIMER_CVAL,
-> > > > +     GUEST_STAGE_PTIMER_TVAL,
-> > > > +     GUEST_STAGE_MAX,
-> > > > +};
-> > >
-> > > This enum also belongs in aarch64/arch_timer.c
-> > >
-> >
-> > Yes, it should be in aarch64/arch_timer.c
-> >
-> 
-> After moving the above enum definition to aarch64/arch_timer.c, the
-> below errors was reported
-> while compiling kvm/arch_timer.o
-> 
-> include/timer_test.h:37:26: error: field ‘guest_stage’ has incomplete type
->    37 |         enum guest_stage guest_stage;
->         |                                        ^~~~~~~~~~~
-> 
-> Since kvm/arch_timer.c was independent of kvm/aarch64/arch_timer.c
-> during OBJ compiling,
-> I think it may be not possible to move the enum definition to
-> aarch64/arch_timer.c
-> 
-> If we keep the definition in this header file, we can enclose it with
-> #ifdef __aarch64__ for aarch64 only.
->
+Commit 434ed3350f57 ("memfd: improve userspace warnings for missing
+exec-related flags") attempted to make these warnings more useful (so
+they would work as an incentive to get users to switch to specifying
+these flags -- as intended by the original MFD_NOEXEC_SEAL patchset).
+Unfortunately, it turns out that even INFO-level logging is too extreme
+to enable by default and alternative solutions to the spam issue (such
+as doing more extreme rate-limiting per-task) are either too ugly or
+overkill for something as simple as emitting a log as a developer aid.
 
-Let's change struct test_vcpu_shared_data to
+Given that the flags are new and there is no harm to not specifying them
+(after all, we maintain backwards compatibility) we can just drop the
+warnings for now until some time in the future when most programs have
+migrated and distributions start using vm.memfd_noexec=1 (where failing
+to pass the flag would result in unexpected errors for programs that use
+executable memfds).
 
- struct test_vcpu_shared_data {
-        int nr_iter;
-        int guest_stage;
-        uint64_t xcnt;
- };
+Fixes: 434ed3350f57 ("memfd: improve userspace warnings for missing exec-related flags")
+Reported-by: Damian Tometzki <dtometzki@fedoraproject.org>
+Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
+---
+ mm/memfd.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-and then let the aarch64 code treat guest_stage as an enum and the riscv
-code can completely ignore it (no need to create an unused enum).
+diff --git a/mm/memfd.c b/mm/memfd.c
+index 1cad1904fc26..d3a1ba4208c9 100644
+--- a/mm/memfd.c
++++ b/mm/memfd.c
+@@ -315,12 +315,6 @@ SYSCALL_DEFINE2(memfd_create,
+ 	if ((flags & MFD_EXEC) && (flags & MFD_NOEXEC_SEAL))
+ 		return -EINVAL;
+ 
+-	if (!(flags & (MFD_EXEC | MFD_NOEXEC_SEAL))) {
+-		pr_info_ratelimited(
+-			"%s[%d]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set\n",
+-			current->comm, task_pid_nr(current));
+-	}
+-
+ 	error = check_sysctl_memfd_noexec(&flags);
+ 	if (error < 0)
+ 		return error;
 
-Thanks,
-drew
+---
+base-commit: 2374b401b0e0b9ab6d91eead30f9a049f8d620cf
+change-id: 20230906-memfd-reduce-spam-8788fc0b951e
+
+Best regards,
+-- 
+Aleksa Sarai <cyphar@cyphar.com>
+
