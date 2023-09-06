@@ -2,227 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F664793EBD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 083F2793EC5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 16:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241484AbjIFO1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 10:27:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
+        id S238297AbjIFO1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 10:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230367AbjIFO1F (ORCPT
+        with ESMTP id S233285AbjIFO1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 10:27:05 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF5CE4C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:27:00 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-573d52030fbso1500254a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 07:27:00 -0700 (PDT)
+        Wed, 6 Sep 2023 10:27:31 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42EAF10F5
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 07:27:26 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7a294a4ee4bso604150241.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 07:27:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694010420; x=1694615220; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694010445; x=1694615245; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FkYPPMvm9lTySqP5AoLVg+Epxe3nnL99UArCEyOtUwI=;
-        b=wRAjhb70jI8fbG6sfqsHAn7tjTRvYLwOWadPIo6RTc3+mee5eVVo5iAIC15Ky19UK4
-         OjEbVFuPVc1MaNZpW5IvhrMuqBRQHh7YflN7wctVZb7s9rDvvLuz9SH11GrHisZdmKDb
-         BYuLYSzTrcPMF1G5fZXwZ1Kj+LlCUVwq4i+RzgvpHjiyFUvwnky50KPm/w8X1qZCTGai
-         ZiQhtR1AZ0UHMJd8Ve3N9tOav9ou5lDYjxhZIzxU37pf9Kr7Va/iGgTb5dCYwKE0pTIH
-         P1pKGXyCrwx1mQhT1MSqp2AHWiVaX6If2QRbcvoU44ybumRuEHBP89tk8KD3xN5R/X10
-         KMOw==
+        bh=pW/0ftx44nuZvnIVfoBb4IXQmDJJsfiAnE8tMNiYS4g=;
+        b=O9xhEB3Plkxv5dvcADeOe1tj7cOcbLoR2NDbG5kcwLAOeK3P4tA4+sJm6a03eNZ0d/
+         vRjfL7g6VlDq4GsMpFGGnreKG9aqsTwcEWVN+49kZZzj12SusOUAPjHHdrtWZWqb/5n9
+         MfhqV1ShoTknqadFy6QQNyaD5SebwwdzChO9l5cxdylXiYyr/qI+qGl08fJeg6zGOlO9
+         aEZdGyaBc5jD47p+ioo+jhnohFgVZVjuIhm978HlZUQ5B5FP45R70X5BOUEhK0BSAa1K
+         g3iBH+uPGjOWixtNEYIu/6UxV9lITjIWm1ytCAiEjs4+5BaXRc6+PNa31GyqUDn2aZYa
+         vacw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694010420; x=1694615220;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1694010445; x=1694615245;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FkYPPMvm9lTySqP5AoLVg+Epxe3nnL99UArCEyOtUwI=;
-        b=G95S2+YL1iNmgnR1HUZhHQt0AnjuZ6FYafLFFXu/C96TZbLPhhh7ubSkqmSF3EQRaY
-         MnLmOy6C1wd6Qp7B6ZJqYBEYJI4kDuObU44I00/yh/MXac1UKpzZMP6p4Asx68BroC4K
-         33FQvVagLzG1e+x1HRAbcT3VyfYmrplMoYsGqlXccw+wUTeotDTT2Nd18n4YSwaPARSw
-         qjfpZ6NHXUt2OgddcFa204Z4g1XnLhmuxvUAZXjZ82DNoo4gLsPqDAbZPMz7slqem1cz
-         QwQ5tJNQPbVml1BnFtHAwj1HdSVuxMif6S7csl7N/IBwcxXzBJOjOCkf8i+0Tch8AoRm
-         8LPg==
-X-Gm-Message-State: AOJu0Ywad6UPc0L1RGsDflpuC57jn5H2DFwvw+RiPDgL/jpZeL8Tz5dq
-        1t3rTiFD0mT69z+Ar28qtJZTpg==
-X-Google-Smtp-Source: AGHT+IEb32TAPc51QHG1JFcbFx4AA1HqUDEQFc9Vj6Z1f5/7KOGSh4ul9OjBrZ+mt+5uYL48PdssHw==
-X-Received: by 2002:a17:90a:6096:b0:262:ceaa:1720 with SMTP id z22-20020a17090a609600b00262ceaa1720mr12846158pji.5.1694010420166;
-        Wed, 06 Sep 2023 07:27:00 -0700 (PDT)
-Received: from localhost.localdomain ([2409:40f0:103d:c30:bd8e:47ef:2f92:dee0])
-        by smtp.gmail.com with ESMTPSA id fa22-20020a17090af0d600b0026b6d0a68c5sm11037508pjb.18.2023.09.06.07.26.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 07:26:59 -0700 (PDT)
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-To:     zhengyejian1@huawei.com
-Cc:     akaher@vmware.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
-        rostedt@goodmis.org, shuah@kernel.org, skhan@linuxfoundation.org,
-        yeweihua4@huawei.com
-Subject: "[PATCH] selftests/ftrace: Correctly enable event in instance-event.tc"
-Date:   Wed,  6 Sep 2023 19:56:52 +0530
-Message-Id: <20230906142652.191866-1-naresh.kamboju@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <b62e6539-7b25-c8ab-6b6c-47e723023297@huawei.com>
-References: <b62e6539-7b25-c8ab-6b6c-47e723023297@huawei.com>
+        bh=pW/0ftx44nuZvnIVfoBb4IXQmDJJsfiAnE8tMNiYS4g=;
+        b=DoZuVorje8EaWGR+8JE6/HhlLBswuyNVmLs29N9vfqQwXbCB50xKv9FInbEADPXN9V
+         VG/rOPb747MwVTNHaunUIJSkUNogU8R+DipQiukeaFAH8ggm+Yrx4E2H6lDfCsAKbpZX
+         nQYQTL77eGdNg8lRXROHhTJyzVbncy7zY2HW/7KqreB8mF560JUBfyrGFbfDVtuoplaV
+         RDL2Siy1PMHJiF+3gLAtdTvCePCqrw9y7LfO7wRlPuN+xMHRnkn+l89p9P+z15X6sNct
+         A/CgqOYgOIREPawdHkUHpujBtWLsUmA8Oo95zDUzXr7SkTJ3u3etWRjfEYWs00v/Rau/
+         HKng==
+X-Gm-Message-State: AOJu0Yxau6N7utbmbjiG09rWkFCTYrUwD44yWeo5Ht6nZzX2uZ/Lpp8w
+        goGl4RXJyCDGSv6K/MMU0pGWoqwxN/RF1hevVvznog==
+X-Google-Smtp-Source: AGHT+IHoZDtEvlafSlOtaL3eIj2H5vP48KL4yKOmxNr5WPPA1hwUKpDDD/YvuNOyFoHGnvDWIVi1aWHPf6UcXmEixBk=
+X-Received: by 2002:a05:6102:3003:b0:44d:acfd:6f0a with SMTP id
+ s3-20020a056102300300b0044dacfd6f0amr1975222vsa.16.1694010445227; Wed, 06 Sep
+ 2023 07:27:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230905185309.131295-1-brgl@bgdev.pl> <20230905185309.131295-12-brgl@bgdev.pl>
+ <8f51b4a8-bb9c-4918-61a8-4ab402da1ed0@redhat.com>
+In-Reply-To: <8f51b4a8-bb9c-4918-61a8-4ab402da1ed0@redhat.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 6 Sep 2023 16:27:14 +0200
+Message-ID: <CAMRc=Mfmp3Nd5jwNWr=kc8RFO-arFDwEvLxj5Qu9_1OOXR2gHQ@mail.gmail.com>
+Subject: Re: [RFT PATCH 11/21] platform: x86: android-tablets: don't access
+ GPIOLIB private members
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dipen Patel <dipenp@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
+        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[my two cents]
+On Wed, Sep 6, 2023 at 3:01=E2=80=AFPM Hans de Goede <hdegoede@redhat.com> =
+wrote:
+>
+> Hi Bartosz,
+>
+> On 9/5/23 20:52, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > We're slowly removing cases of abuse of the GPIOLIB public API. One of
+> > the biggest issues is looking up and accessing struct gpio_chip whose
+> > life-time is tied to the provider and which can disappear from under an=
+y
+> > user at any given moment. We have provided new interfaces that use the
+> > opaque struct gpio_device which is reference counted and will soon be
+> > thorougly protected with appropriate locking.
+> >
+> > Stop using old interfaces in this driver and switch to safer
+> > alternatives.
+> >
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> First of all sorry for the issues this hack-ish kernel module
+> is causing for cleaning up gpiolib APIs.
+>
+> I don't know how close a look you took at the code, so first of
+> all let me try to briefly explain what this hackish kernel module
+> is for:
+>
+> There are some x86_64/ACPI tablets which shipped with Android as
+> factory OS. On these tablets the device-specific (BSP style)
+> kernel has things like the touchscreen driver simply having
+> a hardcoded I2C bus-number + I2C client address. Combined
+> with also hardcoded GPIO numbers (using the old number base APIs)
+> for any GPIOs it needs.
+>
+> So the original Android kernels do not need the devices
+> to be properly described in ACPI and the ACPI tables are
+> just one big copy and paste job from some BSP which do
+> not accurately describe the hardware at all.
+>
+> x86-android-tablets.ko identifies affected models by their
+> DMI strings and then manually instantiates things like
+> i2c-clients for the touchscreen, accelerometer and also
+> other stuff. Yes this is ugly but it allows mainline kernels
+> to run pretty well on these devices since other then
+> the messed up ACPI tables these are pretty standard x86/ACPI
+> tablets.
+>
+> I hope this explains the hacks, now on to the problems
+> these are causing:
 
-I do see similar kernel panic while running ftrace testing on today's
-Linux next-20230906 tag. This crash is from qemu-arm64.
+This makes sense! Maybe we'd need a good-old board file setting up all
+non-described devices using the driver model?
 
-Here I am providing steps to reproduced link and scripts by using tuxrun tool.
-  - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2V0OqxEZUXIPNqWhQnnsuFOGYxR/reproducer
-  
-Script details,
-=============
-# To install tuxrun to your home directory at ~/.local/bin:
-# pip3 install -U --user tuxrun==0.49.0
-#
-# Or install a deb/rpm depending on the running distribution
-# See https://tuxmake.org/install-deb/ or
-# https://tuxmake.org/install-rpm/
-#
-# See https://tuxrun.org/ for complete documentation.
-#
-#
+>
+> > ---
+> >  .../platform/x86/x86-android-tablets/core.c   | 38 ++++++++++---------
+> >  1 file changed, 20 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/drivers/platform/x86/x86-android-tablets/core.c b/drivers/=
+platform/x86/x86-android-tablets/core.c
+> > index 2fd6060a31bb..687f84cd193c 100644
+> > --- a/drivers/platform/x86/x86-android-tablets/core.c
+> > +++ b/drivers/platform/x86/x86-android-tablets/core.c
+> > @@ -12,6 +12,7 @@
+> >
+> >  #include <linux/acpi.h>
+> >  #include <linux/dmi.h>
+> > +#include <linux/gpio/consumer.h>
+> >  #include <linux/gpio/driver.h>
+> >  #include <linux/gpio/machine.h>
+> >  #include <linux/irq.h>
+> > @@ -21,27 +22,28 @@
+> >  #include <linux/string.h>
+> >
+> >  #include "x86-android-tablets.h"
+> > -/* For gpiochip_get_desc() which is EXPORT_SYMBOL_GPL() */
+> > -#include "../../../gpio/gpiolib.h"
+> > -#include "../../../gpio/gpiolib-acpi.h"
+> > -
+> > -static int gpiochip_find_match_label(struct gpio_chip *gc, void *data)
+> > -{
+> > -     return gc->label && !strcmp(gc->label, data);
+> > -}
+> >
+> >  int x86_android_tablet_get_gpiod(const char *label, int pin, struct gp=
+io_desc **desc)
+> >  {
+> > +     struct gpio_device *gdev;
+> >       struct gpio_desc *gpiod;
+> > -     struct gpio_chip *chip;
+> >
+> > -     chip =3D gpiochip_find((void *)label, gpiochip_find_match_label);
+> > -     if (!chip) {
+> > -             pr_err("error cannot find GPIO chip %s\n", label);
+> > +     /*
+> > +      * FIXME: handle GPIOs correctly! This driver should really use s=
+truct
+> > +      * device and GPIO lookup tables.
+> > +      *
+> > +      * WONTDO: We do leak this reference, but the whole approach to g=
+etting
+> > +      * GPIOs in this driver is such an abuse of the GPIOLIB API that =
+it
+> > +      * doesn't make it much worse and it's the only way to keep the
+> > +      * interrupt requested later functional...
+> > +      */
+> > +     gdev =3D gpio_device_find_by_label(label);
+> > +     if (!gdev) {
+> > +             pr_err("error cannot find GPIO device %s\n", label);
+> >               return -ENODEV;
+> >       }
+> >
+> > -     gpiod =3D gpiochip_get_desc(chip, pin);
+> > +     gpiod =3D gpio_device_get_desc(gdev, pin);
+> >       if (IS_ERR(gpiod)) {
+> >               pr_err("error %ld getting GPIO %s %d\n", PTR_ERR(gpiod), =
+label, pin);
+> >               return PTR_ERR(gpiod);
+>
+>
+> So rather then the above I think what needs to happen here
+> (and I can hopefully make some time for that this weekend) is:
+>
+> 1. Have the x86-android-tablets code instantiate a
+>    "x86-android-tablets" platform-dev
+> 2. Have the code generate a gpiod_lookup_table for all GPIOs
+>    for which it currently uses x86_android_tablet_get_gpiod()
+>    with the .dev_id set to "x86-android-tablets"
+> 3. Use regular gpiod_get() on the "x86-android-tablets" pdev
+>    to get the desc.
+>
+> I think this should solve all the issues with
+> x86_android_tablet_get_gpiod() poking inside
+> gpiolib external since now it is only using
+> public gpiolib APIs, right ?
+>
+> One question about 2. there are 2 ways to do this:
+>
+> i. Have the module_init() function loop over all
+> x86_dev_info members which will result in calling
+> x86_android_tablet_get_gpiod() and have it generate
+> one big gpiod_lookup_table for all GPIOs needed
+> in one go. At which point x86_android_tablet_get_gpiod()
+> goes away and can be directly replaced with gpiod_get()
+> calls on the pdev.
+>
+> ii. Keep x86_android_tablet_get_gpiod() and have it
+> generate a gpiod_lookup_table with just 1 entry for
+> the GPIO which its caller wants. Register the lookup
+> table, do the gpiod_get() and then immediately
+> unregister the lookup table again.
+>
+> ii. Would be easier for me to implement, especially
+> since there is also some custom (board specific)
+> init code calling x86_android_tablet_get_gpiod()
+> which would require some special handling for i.
+>
+> OTOH I guess some people will consider ii. somewhat
+> ugly, although AFAICT it is perfectly ok to use
+> the gpiolib lookup APIs this way.
+>
+> Can you please let me known if you are ok with ii,
+> or if you would prefer me going with solution i. ?
+>
 
-tuxrun --runtime podman --device qemu-arm64 --boot-args rw --kernel https://storage.tuxsuite.com/public/linaro/lkft/builds/2V0OpMYBZhVvxapElfcyFHdaNlO/Image.gz --modules https://storage.tuxsuite.com/public/linaro/lkft/builds/2V0OpMYBZhVvxapElfcyFHdaNlO/modules.tar.xz --rootfs https://storage.tuxboot.com/debian/bookworm/arm64/rootfs.ext4.xz --parameters SKIPFILE=skipfile-lkft.yaml --parameters KSELFTEST=https://storage.tuxsuite.com/public/linaro/lkft/builds/2V0OpMYBZhVvxapElfcyFHdaNlO/kselftest.tar.xz --image docker.io/linaro/tuxrun-dispatcher:v0.49.0 --tests kselftest-ftrace --timeouts boot=30 kselftest-ftrace=40
+I am fine with ii. I have recently sent a patch that does exactly that
+in one of the SPI drivers. It's ugly but it's better than what we have
+now.
 
+> That way when I can make some time to start working
+> on this I can pick the preferred solution right away.
+>
+>
+>
+> > @@ -257,9 +259,9 @@ static void x86_android_tablet_cleanup(void)
+> >
+> >  static __init int x86_android_tablet_init(void)
+> >  {
+> > +     struct gpio_device *gdev __free(gpio_device_put) =3D NULL;
+> >       const struct x86_dev_info *dev_info;
+> >       const struct dmi_system_id *id;
+> > -     struct gpio_chip *chip;
+> >       int i, ret =3D 0;
+> >
+> >       id =3D dmi_first_match(x86_android_tablet_ids);
+> > @@ -273,13 +275,13 @@ static __init int x86_android_tablet_init(void)
+> >        * _AEI (ACPI Event Interrupt) handlers, disable these.
+> >        */
+> >       if (dev_info->invalid_aei_gpiochip) {
+> > -             chip =3D gpiochip_find(dev_info->invalid_aei_gpiochip,
+> > -                                  gpiochip_find_match_label);
+> > -             if (!chip) {
+> > +             gdev =3D gpio_device_find_by_label(
+> > +                             dev_info->invalid_aei_gpiochip);
+> > +             if (!gdev) {
+> >                       pr_err("error cannot find GPIO chip %s\n", dev_in=
+fo->invalid_aei_gpiochip);
+> >                       return -ENODEV;
+> >               }
+> > -             acpi_gpiochip_free_interrupts(chip);
+> > +             acpi_gpio_device_free_interrupts(gdev);
+> >       }
+> >
+> >       /*
+>
+> After some recent improvements there is only 1 board left which sets
+> dev_info->invalid_aei_gpiochip and that can easily be replaced with
+> with adding 1 extra entry to gpiolib_acpi_quirks[] inside
+> drivers/gpio/gpiolib-acpi.c .
+>
+> So I believe the right solution here is to just remove
+> dev_info->invalid_aei_gpiochip support for x86-android-tablets
+> all together and then at least x86-android-tablets will no
+> longer be making any hackish acpi_gpiochip_free_interrupts() calls.
+>
+> I don't want to make any promises wrt the timing, but I should
+> be able to prepare a set of patches which simply removes all
+> the private gpiolib API use from x86-android-tablets, so that
+> you don't need to workaround that in this patch series.
+>
+> With some luck I can have an immutable branch with 6.6-rc1 +
+> such a patch-series ready for you soon after 6.6-rc1 is
+> released.
+>
 
+That would be awesome, thanks a lot!
 
-Log details,
--------------
-# ok 45 ftrace - test tracing error log support
-<47>[ 1373.662292] systemd-journald[90]: Sent WATCHDOG=1 notification.
-# ok 46 Test creation and deletion of trace instances while setting an event
-<1>[ 1382.873224] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000030
-<1>[ 1382.873223] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000030
-<1>[ 1382.873426] Mem abort info:
-<1>[ 1382.874414] Mem abort info:
-<1>[ 1382.874449]   ESR = 0x0000000097820004
-<1>[ 1382.876291]   ESR = 0x0000000097820004
-<1>[ 1382.876385]   EC = 0x25: DABT (current EL), IL = 32 bits
-<1>[ 1382.877319]   SET = 0, FnV = 0
-<1>[ 1382.877370]   EA = 0, S1PTW = 0
-<1>[ 1382.878795]   EC = 0x25: DABT (current EL), IL = 32 bits
-<1>[ 1382.879182]   SET = 0, FnV = 0
-<1>[ 1382.879447]   EA = 0, S1PTW = 0
-<1>[ 1382.879729]   FSC = 0x04: level 0 translation fault
-<1>[ 1382.879967] Data abort info:
-<1>[ 1382.880240]   Access size = 4 byte(s)
-<1>[ 1382.880562]   SSE = 0, SRT = 2
-<1>[ 1382.880849]   SF = 0, AR = 0
-<1>[ 1382.881071]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-<1>[ 1382.881442]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-<1>[ 1382.881934] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000109bd6000
-<1>[ 1382.882268] [0000000000000030] pgd=0000000000000000, p4d=0000000000000000
-<0>[ 1382.883777] Internal error: Oops: 0000000097820004 [#1] PREEMPT SMP
-<4>[ 1382.884325] Modules linked in: crct10dif_ce sm3_ce sm3 sha3_ce sha512_ce sha512_arm64 fuse drm backlight dm_mod ip_tables x_tables [last unloaded: trace_printk]
-<4>[ 1382.886127] CPU: 1 PID: 3241 Comm: ls Not tainted 6.5.0-next-20230906 #1
-<1>[ 1382.886539]   FSC = 0x04: level 0 translation fault
-<1>[ 1382.891731] Data abort info:
-<1>[ 1382.891995]   Access size = 4 byte(s)
-<1>[ 1382.892315]   SSE = 0, SRT = 2
-<1>[ 1382.892603]   SF = 0, AR = 0
-<1>[ 1382.892878]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-<1>[ 1382.893291]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-<1>[ 1382.893719] user pgtable: 4k pages, 48-bit VAs, pgdp=000000010962a000
-<1>[ 1382.894229] [0000000000000030] pgd=0000000000000000, p4d=0000000000000000
-<4>[ 1382.897391] Hardware name: linux,dummy-virt (DT)
-<4>[ 1382.898217] pstate: 824000c9 (Nzcv daIF +PAN -UAO +TCO -DIT -SSBS BTYPE=--)
-<4>[ 1382.899653] pc : trace_event_buffer_reserve+0x78/0xc0
-<4>[ 1382.900902] lr : trace_event_buffer_reserve+0x60/0xc0
-<4>[ 1382.902127] sp : ffff800080e43ac0
-<4>[ 1382.903181] x29: ffff800080e43ac0 x28: ffff0000c5833348 x27: 0000000000000001
-<4>[ 1382.904708] x26: 0000000000000000 x25: 0000000000000000 x24: ffff0000c5832dc0
-<4>[ 1382.906141] x23: ffff0000c5834c40 x22: 0000000000000000 x21: 0000000000000040
-<4>[ 1382.907736] x20: ffff0000c8ff6a20 x19: ffff800080e43b38 x18: 0000000000000000
-<4>[ 1382.909777] x17: ffff5068c5eb0000 x16: ffff800080008000 x15: 00001e8480000000
-<4>[ 1382.910696] x14: 000000000003d090 x13: 0000000000000000 x12: 000010a6a8ef4568
-<4>[ 1382.912214] x11: 0042c616304c5adc x10: 000000000000b67e x9 : ffffaf98378ee6f8
-<4>[ 1382.913698] x8 : 01fd405aa4bf7a00 x7 : 0000000000000009 x6 : 0000000000000081
-<4>[ 1382.915755] x5 : 000000000000000f x4 : 0000000000010002 x3 : 0000000000000040
-<4>[ 1382.916645] x2 : 0000000000000003 x1 : ffff0000c8ff6a20 x0 : ffff800080e43b38
-<4>[ 1382.918912] Call trace:
-<4>[ 1382.919358]  trace_event_buffer_reserve+0x78/0xc0
-<4>[ 1382.920703]  trace_event_raw_event_sched_switch+0x68/0x158
-<4>[ 1382.922509]  __schedule+0x5ac/0xb38
-<4>[ 1382.923027]  preempt_schedule_irq+0x44/0xa8
-<4>[ 1382.924169]  el1_interrupt+0x4c/0x68
-<4>[ 1382.925259]  el1h_64_irq_handler+0x18/0x28
-<4>[ 1382.926943]  el1h_64_irq+0x64/0x68
-<4>[ 1382.927415]  iterate_dir+0x0/0x198
-<4>[ 1382.928505]  invoke_syscall+0x50/0x120
-<4>[ 1382.930141]  el0_svc_common.constprop.0+0x48/0xf0
-<4>[ 1382.930761]  do_el0_svc+0x24/0x38
-<4>[ 1382.931907]  el0_svc+0x48/0xf8
-<4>[ 1382.932906]  el0t_64_sync_handler+0x120/0x130
-<4>[ 1382.934044]  el0t_64_sync+0x190/0x198
-<0>[ 1382.936061] Code: b9002264 aa1503e3 aa1403e1 aa1303e0 (b94032c2) 
-<4>[ 1382.937767] ---[ end trace 0000000000000000 ]---
-<0>[ 1382.939168] Internal error: Oops: 0000000097820004 [#2] PREEMPT SMP
-<6>[ 1382.939221] note: ls[3241] exited with irqs disabled
-<4>[ 1382.939699] Modules linked in: crct10dif_ce sm3_ce sm3 sha3_ce sha512_ce sha512_arm64 fuse drm backlight dm_mod ip_tables x_tables [last unloaded: trace_printk]
-<4>[ 1382.940174] CPU: 0 PID: 3233 Comm: mkdir Tainted: G      D            6.5.0-next-20230906 #1
-<4>[ 1382.940237] Hardware name: linux,dummy-virt (DT)
-<4>[ 1382.940267] pstate: 824000c9 (Nzcv daIF +PAN -UAO +TCO -DIT -SSBS BTYPE=--)
-<4>[ 1382.940310] pc : trace_event_buffer_reserve+0x78/0xc0
-<4>[ 1382.944728] lr : trace_event_buffer_reserve+0x60/0xc0
-<4>[ 1382.945364] sp : ffff800080ddb800
-<4>[ 1382.946351] x29: ffff800080ddb800 x28: ffff0000c2444288 x27: 0000000000000001
-<4>[ 1382.947882] x26: 0000000000000000 x25: ffffaf9838b57e00 x24: ffff0000c2443d00
-<4>[ 1382.949375] x23: ffff0000c02ceac0 x22: 0000000000000000 x21: 0000000000000040
-<4>[ 1382.951442] x20: ffff0000c8ff6a20 x19: ffff800080ddb878 x18: ffff800080e3bc48
-<4>[ 1382.952347] x17: ffff5068c5e91000 x16: ffff800080000000 x15: 000000000000000c
-<4>[ 1382.954391] x14: 0000000000000001 x13: 006b7361745f6465 x12: 00000e73fb208dc2
-<4>[ 1382.955303] x11: 0039fa6a50d119f8 x10: 000000000000b67e x9 : ffffaf98378ee6f8
-<4>[ 1382.956810] x8 : ffff0000ff7b1400 x7 : 0000000000000009 x6 : 0000000000000081
-<4>[ 1382.958316] x5 : 000000000000000f x4 : 0000000000010002 x3 : 0000000000000040
-<4>[ 1382.959846] x2 : 0000000000000003 x1 : ffff0000c8ff6a20 x0 : ffff800080ddb878
-<4>[ 1382.961396] Call trace:
-<4>[ 1382.962391]  trace_event_buffer_reserve+0x78/0xc0
-<4>[ 1382.963637]  trace_event_raw_event_sched_switch+0x68/0x158
-<4>[ 1382.964913]  __schedule+0x5ac/0xb38
-<4>[ 1382.966018]  preempt_schedule_irq+0x44/0xa8
-<4>[ 1382.967055]  el1_interrupt+0x4c/0x68
-<4>[ 1382.967816]  el1h_64_irq_handler+0x18/0x28
-<4>[ 1382.968607]  el1h_64_irq+0x64/0x68
-<4>[ 1382.969353]  __kmalloc_node_track_caller+0x0/0x1b8
-<4>[ 1382.970204]  eventfs_prepare_ef.constprop.0+0x5c/0xf0
-<4>[ 1382.971094]  eventfs_add_file+0x38/0xb0
-<4>[ 1382.971872]  event_create_dir+0x120/0x4b0
-<4>[ 1382.972751]  event_trace_add_tracer+0xac/0x120
-<4>[ 1382.973564]  trace_array_create_dir+0x3c/0xc8
-<4>[ 1382.974382]  trace_array_create+0x11c/0x1e8
-<4>[ 1382.975221]  instance_mkdir+0x78/0xb8
-<4>[ 1382.975987]  tracefs_syscall_mkdir+0x50/0x90
-<4>[ 1382.976798]  vfs_mkdir+0x198/0x230
-<4>[ 1382.977549]  do_mkdirat+0x9c/0x168
-<4>[ 1382.978289]  __arm64_sys_mkdirat+0x58/0x90
-<4>[ 1382.979106]  invoke_syscall+0x50/0x120
-<4>[ 1382.979893]  el0_svc_common.constprop.0+0x48/0xf0
-<4>[ 1382.980735]  do_el0_svc+0x24/0x38
-<4>[ 1382.981475]  el0_svc+0x48/0xf8
-<4>[ 1382.982194]  el0t_64_sync_handler+0x120/0x130
-<4>[ 1382.983021]  el0t_64_sync+0x190/0x198
-<0>[ 1382.983830] Code: b9002264 aa1503e3 aa1403e1 aa1303e0 (b94032c2) 
-<4>[ 1382.984710] ---[ end trace 0000000000000000 ]---
-<6>[ 1382.985490] note: mkdir[3233] exited with irqs disabled
+> Regards,
+>
+> Hans
+>
+>
+>
 
-Links:
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230906/testrun/19720390/suite/log-parser-test/test/check-kernel-oops/log
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230906/testrun/19720390/suite/log-parser-test/test/check-kernel-oops-4c803c9937c892dbabb910d9e3c7b9e9ac9cf45dd3a5af9b07caf0f1291e772b/details/
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2V0OqxEZUXIPNqWhQnnsuFOGYxR
- 
---
-Linaro LKFT
-https://lkft.linaro.org
+Bart
+
+[1] https://lore.kernel.org/lkml/d57a99ce-77eb-409f-8371-95f2658fa0c0@siren=
+a.org.uk/T/
