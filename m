@@ -2,125 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE94794057
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D95E179405C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242568AbjIFP1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 11:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54054 "EHLO
+        id S242593AbjIFP1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 11:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbjIFP1R (ORCPT
+        with ESMTP id S242620AbjIFP1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 11:27:17 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8259E5C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 08:27:13 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c0d0bf18d7so23655895ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 08:27:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694014033; x=1694618833; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/zC3sGldpjzeO9CMTZXERQUoaHDgQlu9tqCa3BrGgAE=;
-        b=ZTBwdQ+WF35PHzUSDLhLhN3NBH3Vd/FMyx/RQ919NWpeYm5JmPBiVdJ55MpOpApon4
-         kYQzR9P1JjswUF6RKp0DyG8N84y1Yy52aCxsgPH/cXan4yQZ7Dx9t5KdJaKr6U+N1mlW
-         uQauYp88I6jedPTXOEejxe6oS204Vj9rzr3SSqAJjsRxYDNLOJxXXK2hx1u1mU0IYJG/
-         PXa10A6iye4Y/64Z5HbrZqPbYUW0uI48+GV//DO4po9bXgvVAWTcyv7GnETkT9JQp20N
-         t5bRfV2GRyDsg5Q6SkPVNIrXNGJAMFWuJm5iEd11imVp8XaNVimOrhMj3e/DJ8KOo0Aa
-         64yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694014033; x=1694618833;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/zC3sGldpjzeO9CMTZXERQUoaHDgQlu9tqCa3BrGgAE=;
-        b=Kxnw2/cHphm2Pg9RnTL8j5ZsO1vippoTqYSB4dTDfnpNgejF9aq8u6iuslnlzCXZee
-         1aXWhAXJxXWkzB86bitZTHF/uvm5zAMM04/FFfUfp6AKecO2vC6lTGu2RcVf+cnRCJEu
-         vEa9sKQNpUOqqt315auAlfgJV2xn34XF8jebvRdCRwhTNrABjg0FMNrTIItSouvdrfVN
-         YPWmia3qlQxg2dXT+wDBJqezg8FYmnCHmJVYNlflMsNjUZBrMEPJtaPmsXD0MTm9/ZuC
-         N3/KhXMx+7CiLwlNVuR3SnTXGB6D3aWfyx8ZPFeZvTAHG1lrLe6f3GobOvm621tIHI/A
-         PFsw==
-X-Gm-Message-State: AOJu0YyOhxmp0MghJSy0z6fslXz/PlHS2CDVZg0X55zNYtw3xZBEIRzX
-        fsMjfvCO4dndnTD9zi9vC/zf
-X-Google-Smtp-Source: AGHT+IG3+CorsfPvIhXCthxDyrsclXr1JANLccL0UeFE1jZA2vIkElTgbVbw6jVva0tUGoKzfeesBA==
-X-Received: by 2002:a17:903:4296:b0:1bd:ca21:c85 with SMTP id ju22-20020a170903429600b001bdca210c85mr12134409plb.69.1694014033186;
-        Wed, 06 Sep 2023 08:27:13 -0700 (PDT)
-Received: from thinkpad ([120.138.12.139])
-        by smtp.gmail.com with ESMTPSA id 19-20020a170902ee5300b001bb99ea5d02sm11265261plo.4.2023.09.06.08.27.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 08:27:12 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 20:57:04 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Frank Li <Frank.li@nxp.com>
-Cc:     tglx@linutronix.de, aisheng.dong@nxp.com, bhelgaas@google.com,
-        devicetree@vger.kernel.org, festevam@gmail.com,
-        imx@lists.linux.dev, jdmason@kudzu.us, kernel@pengutronix.de,
-        kishon@ti.com, krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
-        ntb@lists.linux.dev, peng.fan@nxp.com, robh+dt@kernel.org,
-        s.hauer@pengutronix.de, shawnguo@kernel.org
-Subject: Re: [PATCH 1/3] PCI: endpoint: Add RC-to-EP doorbell support using
- platform MSI controller
-Message-ID: <20230906152704.GD5930@thinkpad>
-References: <20230426203436.1277307-1-Frank.Li@nxp.com>
- <20230426203436.1277307-2-Frank.Li@nxp.com>
- <20230902045214.GA2913@thinkpad>
- <20230902045328.GB2913@thinkpad>
- <ZPf/EkffMC51iLQ/@lizhi-Precision-Tower-5810>
- <20230906122605.GB5930@thinkpad>
- <ZPiNwQg3rDQMRA/6@lizhi-Precision-Tower-5810>
- <20230906145227.GC5930@thinkpad>
- <ZPiT/LJGpNbCRDZk@lizhi-Precision-Tower-5810>
+        Wed, 6 Sep 2023 11:27:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81805199C;
+        Wed,  6 Sep 2023 08:27:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=h6ulJViuQWjxq6lzZiww+qH62G6UOtP0FWuJOUQoXnY=; b=Wkyzg8fTRw+lBBs5qTiqPbv5NZ
+        T26Uh5rTUzeBrJhKKfW6R0Y+KmrRdvY8e9gdOIaKTHbg+r96r2emSzcQWOz84u0P7PGPHp2hIStg4
+        sAWIBE4T5THlWxLChO0xPty//leBMdnWIPlBUZPYjmjwK37k3gqdV6ZDTh2otlyWbRPgkhbULr1hM
+        8EukQND8SLa6zbzVYZcARQsm4pXNE4Q0Fw7czVPNEztJ4eM/p0rbNW/JvATDMnSEhXlHKReScVQvN
+        y07BTOmY2vbzuJADAUmi+rp+pFl3F4/Dgs+mLM/oLzRuqksOCB6ljA7/6/Aa89WJlq0Pg6fFngwaz
+        ZB+/PYow==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qduRG-003RqM-MP; Wed, 06 Sep 2023 15:27:30 +0000
+Date:   Wed, 6 Sep 2023 16:27:30 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Bernd Schubert <bernd.schubert@fastmail.fm>
+Cc:     Mateusz Guzik <mjguzik@gmail.com>, brauner@kernel.org,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH] vfs: add inode lockdep assertions
+Message-ID: <ZPiaYjcTMyuM0JL5@casper.infradead.org>
+References: <20230831151414.2714750-1-mjguzik@gmail.com>
+ <ZPiYp+t6JTUscc81@casper.infradead.org>
+ <b0434328-01f9-dc5c-fe25-4a249130a81d@fastmail.fm>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZPiT/LJGpNbCRDZk@lizhi-Precision-Tower-5810>
+In-Reply-To: <b0434328-01f9-dc5c-fe25-4a249130a81d@fastmail.fm>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 11:00:12AM -0400, Frank Li wrote:
-> On Wed, Sep 06, 2023 at 08:22:27PM +0530, Manivannan Sadhasivam wrote:
-> > > > 
-> > > > Can't you assign it in the EPF driver itself? I do not want any OF reference in
-> > > > the EPF core since it has no OF support.
-> > > 
-> > > If that, Each EPF driver need do duplicate work. 
-> > > 
-> > 
-> > Yes, and that's how it should be. EPF core has no job in supplying the of_node.
-> > It is the responsibility of the EPF drivers as they depend on OF for platform
-> > support.
+On Wed, Sep 06, 2023 at 05:23:42PM +0200, Bernd Schubert wrote:
 > 
-> EPF driver still not depend on OF. such pci-epf-test, which was probed by
-> configfs.
 > 
-
-Hmm, yeah. Then it should be part of the EPC driver.
-
-Sorry for the confusion.
-
-- Mani
-
-> Frank 
+> On 9/6/23 17:20, Matthew Wilcox wrote:
+> > On Thu, Aug 31, 2023 at 05:14:14PM +0200, Mateusz Guzik wrote:
+> > > +++ b/include/linux/fs.h
+> > > @@ -842,6 +842,16 @@ static inline void inode_lock_shared_nested(struct inode *inode, unsigned subcla
+> > >   	down_read_nested(&inode->i_rwsem, subclass);
+> > >   }
+> > > +static inline void inode_assert_locked(struct inode *inode)
+> > > +{
+> > > +	lockdep_assert_held(&inode->i_rwsem);
+> > > +}
+> > > +
+> > > +static inline void inode_assert_write_locked(struct inode *inode)
+> > > +{
+> > > +	lockdep_assert_held_write(&inode->i_rwsem);
+> > > +}
+> > 
+> > This mirrors what we have in mm, but it's only going to trigger on
+> > builds that have lockdep enabled.  Lockdep is very expensive; it
+> > easily doubles the time it takes to run xfstests on my laptop, so
+> > I don't generally enable it.  So what we also have in MM is:
+> > 
+> > static inline void mmap_assert_write_locked(struct mm_struct *mm)
+> > {
+> >          lockdep_assert_held_write(&mm->mmap_lock);
+> >          VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
+> > }
+> > 
+> > Now if you have lockdep enabled, you get the lockdep check which
+> > gives you all the lovely lockdep information, but if you don't, you
+> > at least get the cheap check that someone is holding the lock at all.
+> > 
+> > ie I would make this:
+> > 
+> > +static inline void inode_assert_write_locked(struct inode *inode)
+> > +{
+> > +	lockdep_assert_held_write(&inode->i_rwsem);
+> > +	WARN_ON_ONCE(!inode_is_locked(inode));
+> > +}
+> > 
+> > Maybe the locking people could give us a rwsem_is_write_locked()
+> > predicate, but until then, this is the best solution we came up with.
 > 
-> > 
-> > - Mani
-> > 
-> > > IMS will support per-device MSI domain, then we can implement customized
-> > > MSI irq allocated. But so far, it is simplest solution, we can update it
-> > > after IMS implementation at kernel. Only one place need be changed.
-> > > 
-> > மணிவண்ணன் சதாசிவம்
+> 
+> Which is exactly what I had suggested in the other thread :)
 
--- 
-மணிவண்ணன் சதாசிவம்
+Yes, but apparently comments in that thread don't count :eyeroll:
