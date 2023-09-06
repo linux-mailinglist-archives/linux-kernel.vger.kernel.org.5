@@ -2,207 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFBD7943C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 193357943CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 21:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244181AbjIFTXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 15:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59450 "EHLO
+        id S244195AbjIFTaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 15:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244101AbjIFTXg (ORCPT
+        with ESMTP id S230152AbjIFT37 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 15:23:36 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CF51990;
-        Wed,  6 Sep 2023 12:23:30 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-573ccec985dso171073a12.2;
-        Wed, 06 Sep 2023 12:23:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694028210; x=1694633010; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZikwxwV5OUPtPOXuowNsFclCwHU3dah79qe2K+yR5dQ=;
-        b=siy/7ni49PoKCppR47a/dCxOhi6B4u7VFfChFvUeH+3BLcaKbEn4U04pZs+BZe6tFG
-         ZxddLXKR4tdJFGQ7ikPgOOw8dorvz5spsnVL9yu7zLSsWQ7pLv6nDpxVFKVx3LGd5Xrk
-         VifJhyqre9lGk22iPJ2QEVcSJPY7hSOLxHeXkUSgU5JoIqVM31rgfzaiJKYLLxR3BTm/
-         ry11lzmZNOjeo1YAEzaw+VatxCgpRy+lLwsghy5v9rax2K+zDXTSa4HkGl7WxEAKtRA9
-         zzj5T02af03mNjnyiqc3unFgfVckZinynZm6IvUNqrUvqdDlCZtCdNG9hB31ep1vlvMk
-         R9Eg==
+        Wed, 6 Sep 2023 15:29:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263911724
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 12:29:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694028550;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BkNqqrFNSye+85FOkqcxyjqr5JGuixiZESeFlYs5s54=;
+        b=RsS+b1gC6lb/jCqDvFmx7oMn69TRTpCzi7M5svc9bPSpmmZzpnYAAQl0UcWGUqYndRP2Pk
+        nHsHp2ETZE5Aoh4JrjRj5gRKfQdHLMrPofa1abpnNVxAG4u1rwkoQWDI956mVs0LPzCKFq
+        CtKGq+3RabGNQO34WEckxZuyD44wVvs=
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
+ [209.85.166.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-60-IRsdDpOsMfaKYL6vR76CAA-1; Wed, 06 Sep 2023 15:29:07 -0400
+X-MC-Unique: IRsdDpOsMfaKYL6vR76CAA-1
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-34f1d8e4ec6so1399715ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 12:29:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694028210; x=1694633010;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZikwxwV5OUPtPOXuowNsFclCwHU3dah79qe2K+yR5dQ=;
-        b=NrPhgzfGUtNAfCWHeUd35Wm7EHXmzL5O45feuflNSalzyEnPDnX5d8T4DsuN9GzjkO
-         1uPiHqhk8sNaUTr/WCESj7EE9RFHwLTqBfq8RJqJlajAO3Qh44xwOGhFyPxWobkeel00
-         DyUp8kJL02gIB+9srSn/70Gct28/PJ8q3k6Hpr31Y1CaPxHKp+Mpi4yI2yVNV/Y9TJlj
-         0yUpoDOrpbPuXmeZ7lJTzVAEFpk21mEcPj+i0NiRr1qTIGFhhbzXxrch538hXAaHH460
-         HHMrzx7bs8Zm15AThWF842QwR901Ie1h7cbEXFbfYH2yi8ObQvAECdSO/VdEo9N1S9mX
-         0CSw==
-X-Gm-Message-State: AOJu0Yyhe7gaW2OHSX7m13LYWoP524p92YymkUiGg+dDy/wH3Rj6MzUD
-        DWC0qBWfQLUEfxbDQXq4AhQZiVQeHdOY6d4kj/A=
-X-Google-Smtp-Source: AGHT+IGnviK2d0b1xWwIrS7FexAWR6yZvrg5Gplwuz5Tq21PdCFksCodt7+vh6io+9iy1mO1TT9B7BRlZKXqfR5VFok=
-X-Received: by 2002:a17:90a:d58d:b0:268:b7a2:62e8 with SMTP id
- v13-20020a17090ad58d00b00268b7a262e8mr16476118pju.7.1694028209835; Wed, 06
- Sep 2023 12:23:29 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1694028546; x=1694633346;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BkNqqrFNSye+85FOkqcxyjqr5JGuixiZESeFlYs5s54=;
+        b=h+MeFSraphrhJKp/IdFnSss3w/h81I0936K1Vy0uBPtljFcFuGFhkR+fW37VrylaAP
+         s+DWz1KhLuMQQfemY+LFRLbkoqJX3VxKtEkNR0twe9P3ddq72i+ROlMezgh4yMMLu1H3
+         Ybq7S/vftiN0btgSMqrQJARaWUaRTsHHb2tuZIJmV7w4v8fAKbm30z46sMBomNvaGIYw
+         wCw9d+hi4iL0VN6iwRJtfblUI09D7IzgNHCvah98dVBszKzC8vFIS+pGNMZwD3u8DuOw
+         QGyArIYozkhKvOHaLWztjuPvV7am+jQ8mKt3+q928dcL6ZTKHi5eY7HqrTB8sy3wBc5N
+         2YVQ==
+X-Gm-Message-State: AOJu0Yzvinb5RkS46CTbnEH6sd8ANk0ovwMG91f1ood0VOZczJi8mP3z
+        w8UDioRIJmu4I22ynZ3eVk9Qw+ZvX9tMKYkavA7ChKb6VfYoGFfwX8h7VkYL9B5FvltwmITLs/r
+        JcEtmrG5mnmoS02KePL1SJB0C
+X-Received: by 2002:a05:6e02:1d11:b0:347:6b30:5bd3 with SMTP id i17-20020a056e021d1100b003476b305bd3mr21867129ila.13.1694028546536;
+        Wed, 06 Sep 2023 12:29:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEyKFIvkN7zuLMbU6PvggO334g+2dgeQZvJcZ8JKJqA6E6EEEA4iTKmp69E/q99AN/ZBKFIOQ==
+X-Received: by 2002:a05:6e02:1d11:b0:347:6b30:5bd3 with SMTP id i17-20020a056e021d1100b003476b305bd3mr21867112ila.13.1694028546213;
+        Wed, 06 Sep 2023 12:29:06 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id m11-20020a92710b000000b0034e28100d1csm3233596ilc.58.2023.09.06.12.29.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 12:29:05 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 13:29:04 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc:     Sui Jingfeng <suijingfeng@loongson.cn>,
+        nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>
+Subject: Re: [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user to
+ select the primary video adapter at boot time
+Message-ID: <20230906132904.4e49e269.alex.williamson@redhat.com>
+In-Reply-To: <a6337007-b6fa-2ce9-d0cd-46465b540205@linux.dev>
+References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
+        <20230905085243.4b22725e.alex.williamson@redhat.com>
+        <a6337007-b6fa-2ce9-d0cd-46465b540205@linux.dev>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20230904180806.1002832-1-joel@joelfernandes.org>
- <571d4a4a-0674-4c84-b714-8e7582699e30@lucifer.local> <20230905114709.GA3881391@google.com>
-In-Reply-To: <20230905114709.GA3881391@google.com>
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-Date:   Wed, 6 Sep 2023 20:23:18 +0100
-Message-ID: <CAA5enKbvrvTx=d6MgLZjupnsEuoCnRN8e9p+ffnJV1rJS+HkXA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] mm/vmalloc: Add a safer version of find_vm_area()
- for debug
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Zhen Lei <thunder.leizhen@huaweicloud.com>,
-        rcu@vger.kernel.org, Zqiang <qiang.zhang1211@gmail.com>,
-        stable@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Sept 2023 at 12:47, Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> On Tue, Sep 05, 2023 at 08:09:16AM +0100, Lorenzo Stoakes wrote:
-> > On Mon, Sep 04, 2023 at 06:08:04PM +0000, Joel Fernandes (Google) wrote:
-> > > It is unsafe to dump vmalloc area information when trying to do so from
-> > > some contexts. Add a safer trylock version of the same function to do a
-> > > best-effort VMA finding and use it from vmalloc_dump_obj().
-> >
-> > It'd be nice to have more details as to precisely which contexts and what this
-> > resolves.
->
-> True. I was hoping the 'trylock' mention would be sufficient (example hardirq
-> context interrupting a lock-held region) but you're right.
->
-> > > [applied test robot feedback on unused function fix.]
-> > > [applied Uladzislau feedback on locking.]
-> > >
-> > > Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
-> > > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > > Cc: rcu@vger.kernel.org
-> > > Cc: Zqiang <qiang.zhang1211@gmail.com>
-> > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > ---
-> > >  mm/vmalloc.c | 26 ++++++++++++++++++++++----
-> > >  1 file changed, 22 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > > index 93cf99aba335..2c6a0e2ff404 100644
-> > > --- a/mm/vmalloc.c
-> > > +++ b/mm/vmalloc.c
-> > > @@ -4274,14 +4274,32 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
-> > >  #ifdef CONFIG_PRINTK
-> > >  bool vmalloc_dump_obj(void *object)
-> > >  {
-> > > -   struct vm_struct *vm;
-> > >     void *objp = (void *)PAGE_ALIGN((unsigned long)object);
-> > > +   const void *caller;
-> > > +   struct vm_struct *vm;
-> > > +   struct vmap_area *va;
-> > > +   unsigned long addr;
-> > > +   unsigned int nr_pages;
-> > >
-> > > -   vm = find_vm_area(objp);
-> > > -   if (!vm)
-> > > +   if (!spin_trylock(&vmap_area_lock))
-> > > +           return false;
-> >
-> > It'd be good to have a comment here explaining why we must trylock here. I am
-> > also concerned that in the past this function would return false only if the
-> > address was not a vmalloc one, but now it might just return false due to lock
-> > contention and the user has no idea which it is?
-> >
-> > I'd want to at least output "vmalloc region cannot lookup lock contention"
-> > vs. the below cannot find case.
->
-> In the patch 2/2 we do print if the address looks like a vmalloc address even
-> if the vmalloc look up fails.
+On Wed, 6 Sep 2023 11:51:59 +0800
+Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
 
-No, you output exactly what was output before, only changing what it
-means and in no way differentiating between couldn't find vmalloc
-area/couldn't get lock.
+> Hi,
+>=20
+>=20
+> On 2023/9/5 22:52, Alex Williamson wrote:
+> > On Tue,  5 Sep 2023 03:57:15 +0800
+> > Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+> > =20
+> >> From: Sui Jingfeng <suijingfeng@loongson.cn>
+> >>
+> >> On a machine with multiple GPUs, a Linux user has no control over which
+> >> one is primary at boot time. This series tries to solve above mentioned
+> >> problem by introduced the ->be_primary() function stub. The specific
+> >> device drivers can provide an implementation to hook up with this stub=
+ by
+> >> calling the vga_client_register() function.
+> >>
+> >> Once the driver bound the device successfully, VGAARB will call back to
+> >> the device driver. To query if the device drivers want to be primary or
+> >> not. Device drivers can just pass NULL if have no such needs.
+> >>
+> >> Please note that:
+> >>
+> >> 1) The ARM64, Loongarch, Mips servers have a lot PCIe slot, and I would
+> >>     like to mount at least three video cards.
+> >>
+> >> 2) Typically, those non-86 machines don't have a good UEFI firmware
+> >>     support, which doesn't support select primary GPU as firmware stag=
+e.
+> >>     Even on x86, there are old UEFI firmwares which already made undes=
+ired
+> >>     decision for you.
+> >>
+> >> 3) This series is attempt to solve the remain problems at the driver l=
+evel,
+> >>     while another series[1] of me is target to solve the majority of t=
+he
+> >>     problems at device level.
+> >>
+> >> Tested (limited) on x86 with four video card mounted, Intel UHD Graphi=
+cs
+> >> 630 is the default boot VGA, successfully override by ast2400 with
+> >> ast.modeset=3D10 append at the kernel cmd line.
+> >>
+> >> $ lspci | grep VGA
+> >>
+> >>   00:02.0 VGA compatible controller: Intel Corporation CoffeeLake-S GT=
+2 [UHD Graphics 630] =20
+> > In all my previous experiments with VGA routing and IGD I found that
+> > IGD can't actually release VGA routing and Intel confirmed the hardware
+> > doesn't have the ability to do so. =20
+>=20
+> Which model of the IGD you are using?=C2=A0even for the IGD in Atom D2550,
+> the legacy 128KB VGA memory range can be=C2=A0tuned to be mapped to IGD
+> or to the DMI Interface. See the 1.7.3.2 section of the N2000 datasheet[1=
+].
 
->
-> Also the reporter's usecase is not a common one. We only attempt to dump
-> information if there was a debug objects failure (example if somebody did a
-> double call_rcu). In such a situation, the patch will prevent a deadlock and
-> still print something about the address.
+I believe it's the VGA I/O that can't be disabled, there's no means to
+do so other than the I/O enable bit in the command register and iirc
+the driver depends on this for other features.  The history of this is
+pretty old, but here are some links:
 
-Right, but the function still purports to do X but does Y.
+https://lore.kernel.org/all/1376486637.31494.19.camel@ul30vt.home/
+https://bbs.archlinux.org/viewtopic.php?pid=3D1400212#p1400212
+https://lore.kernel.org/all/20130815223917.27890.28003.stgit@bling.home/
+https://lore.kernel.org/all/20130824144701.23370.42110.stgit@bling.home/
+https://lore.kernel.org/all/20140509201655.2849.97478.stgit@bling.home/
 
->
-> > Under heavy lock contention aren't you potentially breaking the ability to
-> > introspect vmalloc addresses? Wouldn't it be better to explicitly detect the
-> > contexts under which acquiring this spinlock is not appropriate?
->
-> Yes this is a good point, but there's another case as well: PREEMPT_RT can
-> sleep on lock contention (as spinlocks are sleeping) and we can't sleep from
-> call_rcu() as it may be called in contexts that cannot sleep. So we handle
-> that also using trylock.
+I think the issue was that i915 doesn't claim to the VGA arbiter to be
+controlling legacy VGA ranges, but in fact the hardware does claim
+those ranges.  We can "fix" i915 to report that VGA MMIO space is
+owned and can be controlled, but then Xorg likely sees multiple VGA
+arbiter clients and disables DRI because it wants to mmap VGA MMIO
+space.
 
-Right so somebody now has to find this email to realise that. I hate
-implicit knowledge like this, it needs a comment. It also furthers the
-point that it'd be useful to differentiate between the two.
+Therefore unless something has changed in the past 10yrs, i915 owns but
+does not advertise ownership of the VGA address spaces and therefore
+the arbiter can't and doesn't know to change VGA routing to enable a
+"be_primary" path to another device.
+=20
+> If a specific model of Intel has a bug in the VGA routing hardware logic =
+unit,
+> I would like to ignore it. Or switch to the UEFI firmware on such hardwar=
+e.
 
->
-> Thanks for the review!
+That's a convenient and impractical approach.  I expect all Intel HD
+graphics has this issue.  Unknown for Xe.
 
-This got merged despite my outstanding comments so I guess I'll have
-to follow up with a patch.
+> It is the hardware engineer's responsibility, I will not worry about it.
 
->
->  - Joel
->
->
-> >
-> > > +   va = __find_vmap_area((unsigned long)objp, &vmap_area_root);
-> > > +   if (!va) {
-> > > +           spin_unlock(&vmap_area_lock);
-> > >             return false;
-> > > +   }
-> > > +
-> > > +   vm = va->vm;
-> > > +   if (!vm) {
-> > > +           spin_unlock(&vmap_area_lock);
-> > > +           return false;
-> > > +   }
-> > > +   addr = (unsigned long)vm->addr;
-> > > +   caller = vm->caller;
-> > > +   nr_pages = vm->nr_pages;
-> > > +   spin_unlock(&vmap_area_lock);
-> > >     pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
-> > > -           vm->nr_pages, (unsigned long)vm->addr, vm->caller);
-> > > +           nr_pages, addr, caller);
-> > >     return true;
-> > >  }
-> > >  #endif
-> > > --
-> > > 2.42.0.283.g2d96d420d3-goog
-> > >
+We often need to deal with broken hardware in the kernel.
 
-This reads like another 'nice review and I agree but I won't change
-anything!'...
+> Thanks for you tell this.
+>=20
+> [1] https://www.intel.com/content/dam/doc/datasheet/atom-d2000-n2000-vol-=
+2-datasheet.pdf
+>=20
+>=20
+> >   It will always be primary from a
+> > VGA routing perspective.  Was this actually tested with non-UEFI? =20
+>=20
+>=20
+> As you already said,=C2=A0the generous Intel already have confirmed that =
+the hardware defect.
+> So probably this is a good chance to switch to UEFI to solve the problem.=
+ Then, no
+> testing for legacy is needed.
 
+Then why are we hacking on VGA arbitration in this series at all?
 
--- 
-Lorenzo Stoakes
-https://ljs.io
+> > I suspect it might only work in UEFI mode where we probably don't
+> > actually have a dependency on VGA routing.  This is essentially why
+> > vfio requires UEFI ROMs when assigning GPUs to VMs, VGA routing is too
+> > broken to use on Intel systems with IGD.  Thanks, =20
+>=20
+> Thanks for you tell me this.
+>=20
+> To be honest, I have only tested my patch on machines with UEFI=C2=A0firm=
+ware.
+> Since UEFI because the main stream, but if this patch is really useful for
+> majority machine, I'm satisfied. The results is not too bad.
+
+This looks like a pretty significant scoping issue if you're proposing
+changes to the VGA arbiter which specifically handles the routing of
+legacy VGA address spaces but are not willing to commit to testing
+legacy configurations.  Thanks,
+
+Alex
+
