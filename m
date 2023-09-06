@@ -2,129 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 334567935EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC747935F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 09:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbjIFHKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 03:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36716 "EHLO
+        id S230320AbjIFHKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 03:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbjIFHKe (ORCPT
+        with ESMTP id S230155AbjIFHKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 03:10:34 -0400
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D826CFA
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 00:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        sang-engineering.com; h=date:from:to:cc:subject:message-id
-        :references:mime-version:content-type:in-reply-to; s=k1; bh=yHql
-        SmIWAIOx9D8wRvMGi5pEa9tjuw5WUujgb0WYc9w=; b=SuEmTjgsB+FCgm97qFkG
-        r7dUiEgQJrQeQIhx6ESn0NPMKFCYvA2SW2TIdDoMyayYEksjG/aYHihTcLPzo5PV
-        8IgSnC/0iZHMdNIcFeVbH+0O2bU+YubpGuEoEIFuEleIBdDu8JGdScZGFG9XP7+K
-        mcazVCy0OtHodPRYpvJPcRxC7SrM56hi6ZNlaUZnpe8VrW8aYYg2aflukJJbbPX4
-        545SufDN/bO0SITDKf7TOMlXYd/G92DzCMziZyOk/6RWkXpJqR1OFmZzzo5RValC
-        3SfTrBO8qXU25MHVnc0vJsrliaTtqgKyzlvsRctTZPotVTeqaV5lFpuOyqqDLAGf
-        Tw==
-Received: (qmail 2724785 invoked from network); 6 Sep 2023 09:10:25 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 6 Sep 2023 09:10:25 +0200
-X-UD-Smtp-Session: l3s3148p1@Z4UGcKsEUKEgAwDPXx78AHsOvgc204Bb
-Date:   Wed, 6 Sep 2023 09:10:25 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Andi Shyti <andi.shyti@kernel.org>
-Cc:     linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] i2c: rcar: add FastMode+ support
-Message-ID: <ZPgl4eLYTyDFXiyC@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230904135852.12146-1-wsa+renesas@sang-engineering.com>
- <20230904135852.12146-4-wsa+renesas@sang-engineering.com>
- <20230905213710.3dv5h6zvwu4tpnby@zenone.zhora.eu>
+        Wed, 6 Sep 2023 03:10:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CDDE4F;
+        Wed,  6 Sep 2023 00:10:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693984240; x=1725520240;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CzVsvBBCQyE6nmVgfBDTPc4IJEBFPNuhlR6CIA56RSY=;
+  b=jh/OGLjnnh+SnvwGZL7DuwN60omR4cuAf2PX0vJQ7p/CET3lBGgpZJR5
+   7rjsb1HNryP1TBaRL/jk98Y422kNMsKrOVWp7KOOZosizmmytsIDyYmxf
+   UQqbe0mltBJ4CM564EqEsMh/4fubF0TZ//RsrvAFbfgjKcdz6h9N0R/an
+   F+lCVtfGBuzhnmh6DLJ/3+26qxG9Jx7cjiK4hSrVR9l2C+C3lY/wmowZb
+   HuzC2ExpL/6BzIntGnhIca6vkn6qCvVoaU9XJTDTIrgVzcYKik44HxU+B
+   vA0UOJgeBpPVy7bFaVQmyIT9RYibrXr1qW++ahSFmQ5ksD3eYTVpfLkRC
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="407993429"
+X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
+   d="scan'208";a="407993429"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 00:10:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="734933655"
+X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
+   d="scan'208";a="734933655"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 06 Sep 2023 00:10:33 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 1DF7F30D; Wed,  6 Sep 2023 10:10:32 +0300 (EEST)
+Date:   Wed, 6 Sep 2023 10:10:32 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dipen Patel <dipenp@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
+        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 08/21] gpio: acpi: provide
+ acpi_gpio_device_free_interrupts()
+Message-ID: <20230906071032.GA1599918@black.fi.intel.com>
+References: <20230905185309.131295-1-brgl@bgdev.pl>
+ <20230905185309.131295-9-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7Ts7kpPtQHL+6LUF"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230905213710.3dv5h6zvwu4tpnby@zenone.zhora.eu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230905185309.131295-9-brgl@bgdev.pl>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---7Ts7kpPtQHL+6LUF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Sep 05, 2023 at 08:52:56PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> We're moving away from public functions that take struct gpio_chip as
+> argument as the chip - unlike struct gpio_device - is owned by its
+> provider and tied to its lifetime.
+> 
+> Provide an alternative to acpi_gpiochip_free_interrupts().
 
-Hi Andi,
+Looks good to me, few minor comments below.
 
-> > @@ -217,7 +228,17 @@ static void rcar_i2c_init(struct rcar_i2c_priv *pr=
-iv)
-> >  	rcar_i2c_write(priv, ICMCR, MDBS);
-> >  	rcar_i2c_write(priv, ICMSR, 0);
-> >  	/* start clock */
-> > -	rcar_i2c_write(priv, ICCCR, priv->icccr);
-> > +	if (priv->flags & ID_P_FMPLUS) {
-> > +		rcar_i2c_write(priv, ICCCR, 0);
-> > +		rcar_i2c_write(priv, ICMPR, priv->clock_val);
-> > +		rcar_i2c_write(priv, ICHPR, 3 * priv->clock_val);
-> > +		rcar_i2c_write(priv, ICLPR, 3 * priv->clock_val);
-> > +		rcar_i2c_write(priv, ICCCR2, FMPE | CDFD | HLSE | SME);
-> > +	} else {
-> > +		rcar_i2c_write(priv, ICCCR, priv->clock_val);
-> > +		if (priv->devtype >=3D I2C_RCAR_GEN3)
-> > +			rcar_i2c_write(priv, ICCCR2, 0);
->=20
-> is this last bit part of the FM+ enabling or is it part of the
-> GEN4 support?
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-It is "disabling FM+" for lower speeds. Since we never used ICCCR2
-before FM+, we need to make sure it is cleared properly.
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-> > +		for (scgd =3D 0; scgd < 0x40; scgd++) {
-> > +			scl =3D ick / (20 + (scgd * 8) + round);
-> > +			if (scl <=3D t.bus_freq_hz)
-> > +				break;
-> > +		}
-> > +
-> > +		if (scgd =3D=3D 0x40) {
->=20
-> would be nice to give a meaning to this 0x40 constant... either
-> having it in a define or a comment, at least.
+> ---
+>  drivers/gpio/gpiolib-acpi.c | 29 +++++++++++++++++++++++------
+>  include/linux/gpio/driver.h | 12 ++++++++++++
+>  2 files changed, 35 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+> index fbda452fb4d6..5633e39396bc 100644
+> --- a/drivers/gpio/gpiolib-acpi.c
+> +++ b/drivers/gpio/gpiolib-acpi.c
+> @@ -558,12 +558,9 @@ void acpi_gpiochip_request_interrupts(struct gpio_chip *chip)
+>  }
+>  EXPORT_SYMBOL_GPL(acpi_gpiochip_request_interrupts);
+>  
+> -/**
+> - * acpi_gpiochip_free_interrupts() - Free GPIO ACPI event interrupts.
+> - * @chip:      GPIO chip
+> - *
+> - * Free interrupts associated with GPIO ACPI event method for the given
+> - * GPIO chip.
+> +/*
+> + * This function is deprecated, use acpi_gpio_device_free_interrupts()
+> + * instead.
+>   */
+>  void acpi_gpiochip_free_interrupts(struct gpio_chip *chip)
+>  {
+> @@ -604,6 +601,26 @@ void acpi_gpiochip_free_interrupts(struct gpio_chip *chip)
+>  }
+>  EXPORT_SYMBOL_GPL(acpi_gpiochip_free_interrupts);
+>  
+> +/**
+> + * acpi_gpio_device_free_interrupts() - Free GPIO ACPI event interrupts.
+> + * @chip	GPIO device
 
-This code existed before and was just moved into an if-body. It will be
-updated in another series following this one.
+Should be:
 
-Thanks for the review,
+@chip: GPIO device
 
-   Wolfram
+> + *
+> + * Free interrupts associated with GPIO ACPI event method for the given
+> + * GPIO device.
+> + */
+> +void acpi_gpio_device_free_interrupts(struct gpio_device *gdev)
+> +{
+> +	struct gpio_chip *gc;
+> +
+> +	/* TODO: protect gdev->chip once SRCU is in place in GPIOLIB. */
+> +	gc = gdev->chip;
+> +	if (!gc)
+> +		return;
+> +
+> +	acpi_gpiochip_free_interrupts(gc);
+> +}
+> +EXPORT_SYMBOL_GPL(acpi_gpio_device_free_interrupts);
+> +
+>  int acpi_dev_add_driver_gpios(struct acpi_device *adev,
+>  			      const struct acpi_gpio_mapping *gpios)
+>  {
+> diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
+> index b68b3493b29d..47906bc56b3d 100644
+> --- a/include/linux/gpio/driver.h
+> +++ b/include/linux/gpio/driver.h
+> @@ -835,4 +835,16 @@ static inline struct fwnode_handle *gpiochip_node_get_first(struct device *dev)
+>  	return NULL;
+>  }
+>  
+> +/*
+> + * FIXME: Remove this once the only driver that uses it - android tablets -
+> + * becomes a good citizen and stops abusing GPIOLIB.
 
+There are a acouple of more when grepping for acpi_gpiochip_free_interrupts().
 
---7Ts7kpPtQHL+6LUF
-Content-Type: application/pgp-signature; name="signature.asc"
+I'm not entirely sure why these functions are exposed to the drivers in
+the first place. IMHO GPIOLIB should deal with these but perhaps there
+is some good reason these drivers do it...
 
------BEGIN PGP SIGNATURE-----
+> + */
+> +#ifdef CONFIG_ACPI
+> +void acpi_gpio_device_free_interrupts(struct gpio_device *gdev);
+> +#else
+> +static inline void acpi_gpio_device_free_interrupts(struct gpio_device *gdev)
+> +{
+> +}
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmT4Jd0ACgkQFA3kzBSg
-KbbPFw//cLOkD7C5M5BdquUYTxjpHocQ6wE20W1KvIThySFmulLTXe4hsH8uctBG
-SB5t9GTEuHlTitT24OxIPwu5foG1sDa9V0rSilU3wEG3ckjDjCi6f9zOB44eEPTK
-gtpANt1uLmTppCQL8Mt8M1aUGqKAqxfEoBTFrc0Duk7axEeMhYeQjc7ZA6XFtxU8
-wA2wEkF1DjijEIiQqB5qTKVMYPu4w+5uUZQf/WQ9t/6+cestm4DurIawKlHg4IKc
-AHHqLgK4fNC+NGB1YR/fK48ezBfaVkQkdRacgyA4Q+Cc7pWQ5sW8BPPvGUdEYRFo
-s8RZYX2AZhZmF7aaLA9q8IN598l74AOm7lznoASvEu9UfIP2A+BfPWjIjHTlIZn5
-ygUVaZIYQL8ooXdwyD/eIkGLvko5UCMbg1DlRnDhIaZRxL8VHbpFkWBkTrK3Geqa
-OvDLU+yvVfR/rUsrL1/9B9lBYXtwBxA0ENutilfI+89CXLlS8iczvKFEXA6HAUoy
-Z5b11GlZ/uyVl0/IjsXFtcLZwy/6bGBSRB1h+vPdZXdfOsM65uPDbmLtn7509g8j
-nOrXXZ6ljhyp6ywx2Gf1ctS0uYGH1q1/lA/doSEjAu7+36HeuaFazJL3jUsMGNCV
-ZY6qWBEi7SyOEwCSDsSeA1fym3rTnKpYLtARXe9MOdxInw0iIv8=
-=wxPe
------END PGP SIGNATURE-----
+I would put these {} to the same line:
 
---7Ts7kpPtQHL+6LUF--
+static inline void acpi_gpio_device_free_interrupts(struct gpio_device *gdev) { }
+
+> +#endif
+> +
+>  #endif /* __LINUX_GPIO_DRIVER_H */
+> -- 
+> 2.39.2
