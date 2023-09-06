@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB24279345E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 06:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A39793460
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 06:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237542AbjIFETC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 00:19:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51526 "EHLO
+        id S237646AbjIFETX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 00:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjIFETB (ORCPT
+        with ESMTP id S237582AbjIFETW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 00:19:01 -0400
+        Wed, 6 Sep 2023 00:19:22 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3233CF4;
-        Tue,  5 Sep 2023 21:18:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0C3E76;
+        Tue,  5 Sep 2023 21:19:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693973937; x=1725509937;
+  t=1693973948; x=1725509948;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Vkq0HJpPBcsTFGWnVfPGl7DiFWHsoRcOaXJVkK422Ic=;
-  b=n7Dd1lSyRjlE8EcIFq2XpDDtNLyTtIFlMqmZQ9XTAmVT8TVgC2cGXBlh
-   bDwL2BF8RgO8bqwaaKLZWoNJ5HYbwQZ9SDhb1HTHXmaf22YtG96TfLhBf
-   /kenUN7FAfpDjPe89q4y28xWiT30fz2DBLXnkVrRoojaU5je0KhNJwR1V
-   ciHhvJuhjghdn4OxgtZN1Tvj9k/jGVB00HqtB/sAT+tGpc63QDRhsxkel
-   ggUZymujQjzV1yR6zhyKApN39aEJ97BrCf3AX6nvJxoI3WTqvt9LV/klw
-   X9MxiDIaTRhz7KQmYBtSx/HFJqbNxT6rTYNhMWIo5dt9xtvGfs+bAMwVy
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="407967853"
+  bh=Pc90S/c8932uAvyiduvyGa0QXXHWXOrYk20HoKH2IDo=;
+  b=feETVDyHD1D2CnQumpm0VqR/3oqAKPZPnYHOSkfggD0bp7zbkPygqh1E
+   +QZdr8y1yJuGSjowjFsWLHA1REnPRKyoI8yihFo6gsgSCnd0VUbx7gJkv
+   Oc205fpKyDryCjOrARja65o4xV8lXDYmA0q48V1QmmVshaUoW49timV9T
+   HPa06IKu4paIZ3X1sDLq6SSivf+aOFk4+Flzr+4S9EXO5rTRs9gGLEkl5
+   BMfa1WRe43RycXVbqxsVevobhCj1q1zNlrfOWjUSwW5cP8dA1m3sphfSq
+   GwjDgeLips6xKsBE6UKT9jz4HChQWh1wDpRtPe8o7LCz1glvNSdY5X8bW
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="407967868"
 X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
-   d="scan'208";a="407967853"
+   d="scan'208";a="407967868"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 21:18:57 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 21:19:07 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="831483444"
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="831483471"
 X-IronPort-AV: E=Sophos;i="6.02,231,1688454000"; 
-   d="scan'208";a="831483444"
+   d="scan'208";a="831483471"
 Received: from chenyu-dev.sh.intel.com ([10.239.62.164])
-  by FMSMGA003.fm.intel.com with ESMTP; 05 Sep 2023 21:18:55 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 05 Sep 2023 21:19:05 -0700
 From:   Chen Yu <yu.c.chen@intel.com>
 To:     "Rafael J. Wysocki" <rafael@kernel.org>,
         Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
 Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Chenzhou Feng <chenzhoux.feng@intel.com>,
         Pengfei Xu <pengfei.xu@intel.com>,
-        Chen Yu <yu.c.chen@intel.com>
-Subject: [PATCH v2 1/2] PM: hibernate: Rename the function parameter from snapshot_test to exclusive
-Date:   Wed,  6 Sep 2023 12:18:41 +0800
-Message-Id: <636a8cc785b35bff4f3e03ae8c6a71c05b4841dc.1693972725.git.yu.c.chen@intel.com>
+        Chen Yu <yu.c.chen@intel.com>,
+        syzbot+38d04642cea49f3a3d2e@syzkaller.appspotmail.com
+Subject: [PATCH v2 2/2] PM: hibernate: Fix the exclusive get block device in test_resume mode
+Date:   Wed,  6 Sep 2023 12:18:52 +0800
+Message-Id: <e2279c339fcf919cffa4802b4e32974dc8950513.1693972725.git.yu.c.chen@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1693972725.git.yu.c.chen@intel.com>
 References: <cover.1693972725.git.yu.c.chen@intel.com>
@@ -64,81 +65,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Several functions reply on snapshot_test to decide whether to
-open the resume device exclusively. However there is no strict
-connection between the snapshot_test and the open mode. Rename
-the 'snapshot_test' input parameter to 'exclusive' to better reflect
-the use case.
+commit 5904de0d735b ("PM: hibernate: Do not get block device exclusively
+in test_resume mode") fixes a hibernation issue under test_resume mode.
+That commit is supposed to open the block device in non-exclusive mode
+when in test_resume. However the code did the opposite, which is against
+its description.
 
-No functional change is expected.
+In summary, the swap device is only opened exclusively by swsusp_check()
+with its corresponding *close(), and must be in non test_resume mode.
+This is to avoid the race condition that different processes scribble the
+device at the same time. All the other cases should use non-exclusive mode.
 
+Fix it by really disabling exclusive mode under test_resume.
+
+Fixes: 5904de0d735b ("PM: hibernate: Do not get block device exclusively in test_resume mode")
+Reported-by: syzbot+38d04642cea49f3a3d2e@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/lkml/000000000000761f5f0603324129@google.com/
+Reported-by: Pengfei Xu <pengfei.xu@intel.com>
 Signed-off-by: Chen Yu <yu.c.chen@intel.com>
 ---
- kernel/power/power.h |  4 ++--
- kernel/power/swap.c  | 14 ++++++++------
- 2 files changed, 10 insertions(+), 8 deletions(-)
+ kernel/power/hibernate.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/power/power.h b/kernel/power/power.h
-index 46eb14dc50c3..a98f95e309a3 100644
---- a/kernel/power/power.h
-+++ b/kernel/power/power.h
-@@ -168,11 +168,11 @@ extern int swsusp_swap_in_use(void);
- #define SF_HW_SIG		8
+diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+index 2b4a946a6ff5..8d35b9f9aaa3 100644
+--- a/kernel/power/hibernate.c
++++ b/kernel/power/hibernate.c
+@@ -786,9 +786,9 @@ int hibernate(void)
+ 	unlock_device_hotplug();
+ 	if (snapshot_test) {
+ 		pm_pr_dbg("Checking hibernation image\n");
+-		error = swsusp_check(snapshot_test);
++		error = swsusp_check(false);
+ 		if (!error)
+-			error = load_image_and_restore(snapshot_test);
++			error = load_image_and_restore(false);
+ 	}
+ 	thaw_processes();
  
- /* kernel/power/hibernate.c */
--int swsusp_check(bool snapshot_test);
-+int swsusp_check(bool exclusive);
- extern void swsusp_free(void);
- extern int swsusp_read(unsigned int *flags_p);
- extern int swsusp_write(unsigned int flags);
--void swsusp_close(bool snapshot_test);
-+void swsusp_close(bool exclusive);
- #ifdef CONFIG_SUSPEND
- extern int swsusp_unmark(void);
- #endif
-diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-index f6ebcd00c410..74edbce2320b 100644
---- a/kernel/power/swap.c
-+++ b/kernel/power/swap.c
-@@ -1513,12 +1513,13 @@ int swsusp_read(unsigned int *flags_p)
- static void *swsusp_holder;
+@@ -945,14 +945,14 @@ static int software_resume(void)
+ 	pm_pr_dbg("Looking for hibernation image.\n");
  
- /**
-- *      swsusp_check - Check for swsusp signature in the resume device
-+ * swsusp_check - Check for swsusp signature in the resume device
-+ * @exclusive: Open the resume device exclusively.
-  */
+ 	mutex_lock(&system_transition_mutex);
+-	error = swsusp_check(false);
++	error = swsusp_check(true);
+ 	if (error)
+ 		goto Unlock;
  
--int swsusp_check(bool snapshot_test)
-+int swsusp_check(bool exclusive)
- {
--	void *holder = snapshot_test ? &swsusp_holder : NULL;
-+	void *holder = exclusive ? &swsusp_holder : NULL;
- 	int error;
- 
- 	hib_resume_bdev = blkdev_get_by_dev(swsusp_resume_device, BLK_OPEN_READ,
-@@ -1563,17 +1564,18 @@ int swsusp_check(bool snapshot_test)
- }
- 
- /**
-- *	swsusp_close - close swap device.
-+ * swsusp_close - close swap device.
-+ * @exclusive: Close the resume device which is exclusively opened.
-  */
- 
--void swsusp_close(bool snapshot_test)
-+void swsusp_close(bool exclusive)
- {
- 	if (IS_ERR(hib_resume_bdev)) {
- 		pr_debug("Image device not initialised\n");
- 		return;
+ 	/* The snapshot device should not be opened while we're running */
+ 	if (!hibernate_acquire()) {
+ 		error = -EBUSY;
+-		swsusp_close(false);
++		swsusp_close(true);
+ 		goto Unlock;
  	}
  
--	blkdev_put(hib_resume_bdev, snapshot_test ? &swsusp_holder : NULL);
-+	blkdev_put(hib_resume_bdev, exclusive ? &swsusp_holder : NULL);
+@@ -973,7 +973,7 @@ static int software_resume(void)
+ 		goto Close_Finish;
+ 	}
+ 
+-	error = load_image_and_restore(false);
++	error = load_image_and_restore(true);
+ 	thaw_processes();
+  Finish:
+ 	pm_notifier_call_chain(PM_POST_RESTORE);
+@@ -987,7 +987,7 @@ static int software_resume(void)
+ 	pm_pr_dbg("Hibernation image not present or could not be loaded.\n");
+ 	return error;
+  Close_Finish:
+-	swsusp_close(false);
++	swsusp_close(true);
+ 	goto Finish;
  }
  
- /**
 -- 
 2.25.1
 
