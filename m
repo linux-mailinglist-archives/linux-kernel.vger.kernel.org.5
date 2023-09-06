@@ -2,135 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF5A793FE9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BF7793FEF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 17:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232889AbjIFPG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 11:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57872 "EHLO
+        id S240437AbjIFPHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 11:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjIFPG0 (ORCPT
+        with ESMTP id S242358AbjIFPHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 11:06:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4C7E49
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 08:06:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694012782; x=1725548782;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Gw9VPFGulL9SMj3bg/qb7UVUBLhbdyxQTjG8dgwPDs4=;
-  b=W/14AjnFVDlx6Pa3iXGLLMcPWd89kfeHRkz6latxXV8riuXskAbbg29q
-   YD6FSV8oA/kEX+4fL8upw58DyFIsWVi4laNQdyh9m0RW+v/Owl7bKs+Pm
-   wIcIPKC00rP3gDP8BzFFO2O74UHntltoG7pkzzS0QiQlEJCoXr7cR87XA
-   UAwiMVJefpWq68z7U+SUVE3baZqBburVNA+H5Bt5mz26+PNeI5GIIZfIr
-   LQl1g1ZWhWSGSWcrTqJ5rtmYpITahA9fP7oc5ZeAq31vx66t2LaSxs24i
-   7KhG7xeW+1yoGoRTM05plqT2GkmebXWMh1I8pfjG7CjvoEEsI5rYlZtQf
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="443478255"
-X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
-   d="scan'208";a="443478255"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 08:06:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="865171164"
-X-IronPort-AV: E=Sophos;i="6.02,232,1688454000"; 
-   d="scan'208";a="865171164"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 06 Sep 2023 08:06:15 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qdu6f-0000Jb-1I;
-        Wed, 06 Sep 2023 15:06:13 +0000
-Date:   Wed, 6 Sep 2023 23:05:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bibo Mao <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, WANG Xuerui <kernel@xen0n.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] LoongArch: Clear invalid tlb when set huge page PTE entry
-Message-ID: <202309062224.jKf5JY7H-lkp@intel.com>
-References: <20230905044828.1460721-1-maobibo@loongson.cn>
+        Wed, 6 Sep 2023 11:07:02 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B941990;
+        Wed,  6 Sep 2023 08:06:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F7DDC433CD;
+        Wed,  6 Sep 2023 15:06:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694012811;
+        bh=8R4kzh3nTSqACHjy9Igl6y50DXqOQIL6KrU6Xizd5vw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AhWcnUbZ+xiAHtObPOonQ+/3NaC1cqET1bOPJgIMdhVZyxeUDtximhNM1VeLq7jJO
+         WnDoh+ChzesxUgRi5ykHRvVdLBWFOGdUWnPjrryEYomWsbfusvvHlA1i83vtKsTuVf
+         O9w2nvS6DEojbkdATDQsk/fE7QZ8yg6rLJjsOdcn+4cUcL+aYiqxqzckDGluhSe99a
+         d3rXta069sDO3orkisIZR+unsGClW+oAJbgSUvK6bVcgm2R1EMAsl+d6bMKRwTnDbZ
+         cC6SL+MhYSdCQdGMILC4dnTWs52jBbJdujfzVSsSW+qQSiBENhmxlL+D8S6lijxtlS
+         y3yvYICVYFdVw==
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5733bcf6eb6so2049257eaf.0;
+        Wed, 06 Sep 2023 08:06:51 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yx+PRNKN3vmGnmbPuw3OUU3liDjPr3gWw1SCkP0vepCz8YMS/Cm
+        w/YhrAI0IhWNWADed5g6K407AVgkS3ltjVqL968=
+X-Google-Smtp-Source: AGHT+IHs9MYVYX/hL5BllUuyFYnsWzXobUhMf+WTR4jpf255UF4qgkKxgbZrXP3NqiWFcMlEU6SXSZNicl0p1mJq7Xo=
+X-Received: by 2002:a4a:6c11:0:b0:573:4e21:5d25 with SMTP id
+ q17-20020a4a6c11000000b005734e215d25mr12858374ooc.9.1694012810670; Wed, 06
+ Sep 2023 08:06:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905044828.1460721-1-maobibo@loongson.cn>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230828080423.3539686-1-alessandro.carminati@gmail.com>
+ <CAK7LNATf5zQH=qOX3HCcAoaccK1KTjoGNuXc-d2-FM-japABoQ@mail.gmail.com> <CAPp5cGQgn0kfxPc+pmLMEJmHzOJ2HQQbsWSE0LFsxi4bigHOdQ@mail.gmail.com>
+In-Reply-To: <CAPp5cGQgn0kfxPc+pmLMEJmHzOJ2HQQbsWSE0LFsxi4bigHOdQ@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 7 Sep 2023 00:06:14 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATRCcQ7yBjoBiq8remJtVA0hfSr=yW-oY1_m9WneQuvQQ@mail.gmail.com>
+Message-ID: <CAK7LNATRCcQ7yBjoBiq8remJtVA0hfSr=yW-oY1_m9WneQuvQQ@mail.gmail.com>
+Subject: Re: [PATCH v3] scripts/link-vmlinux.sh: Add alias to duplicate
+ symbols for kallsyms
+To:     Alessandro Carminati <alessandro.carminati@gmail.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Nick Alcock <nick.alcock@oracle.com>,
+        Kris Van Hees <kris.van.hees@oracle.com>,
+        Eugene Loh <eugene.loh@oracle.com>,
+        Francis Laniel <flaniel@linux.microsoft.com>,
+        Viktor Malik <vmalik@redhat.com>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bibo,
+On Wed, Sep 6, 2023 at 7:09=E2=80=AFPM Alessandro Carminati
+<alessandro.carminati@gmail.com> wrote:
+>
+> Hello Masahiro,
+>
+> Thank you for your suggestions,
+> Il giorno sab 2 set 2023 alle ore 08:36 Masahiro Yamada
+> <masahiroy@kernel.org> ha scritto:
+> >
+> > On Mon, Aug 28, 2023 at 8:45=E2=80=AFPM Alessandro Carminati (Red Hat)
+> > <alessandro.carminati@gmail.com> wrote:
+> > >
+> > > From: Alessandro Carminati <alessandro.carminati@gmail.com>
+> > >
+> > > It is not uncommon for drivers or modules related to similar peripher=
+als
+> > > to have symbols with the exact same name.
+> > > While this is not a problem for the kernel's binary itself, it become=
+s an
+> > > issue when attempting to trace or probe specific functions using
+> > > infrastructure like ftrace or kprobe.
+> > >
+> > > The tracing subsystem relies on the `nm -n vmlinux` output, which pro=
+vides
+> > > symbol information from the kernel's ELF binary. However, when multip=
+le
+> > > symbols share the same name, the standard nm output does not differen=
+tiate
+> > > between them. This can lead to confusion and difficulty when trying t=
+o
+> > > probe the intended symbol.
+> > >
+> > >  ~ # cat /proc/kallsyms | grep " name_show"
+> > >  ffffffff8c4f76d0 t name_show
+> > >  ffffffff8c9cccb0 t name_show
+> > >  ffffffff8cb0ac20 t name_show
+> > >  ffffffff8cc728c0 t name_show
+> > >  ffffffff8ce0efd0 t name_show
+> > >  ffffffff8ce126c0 t name_show
+> > >  ffffffff8ce1dd20 t name_show
+> > >  ffffffff8ce24e70 t name_show
+> > >  ffffffff8d1104c0 t name_show
+> > >  ffffffff8d1fe480 t name_show
+> > >
+> > > **kas_alias** addresses this challenge by extending the symbol names =
+with
+> > > unique suffixes during the kernel build process.
+> > > The newly created aliases for these duplicated symbols are unique nam=
+es
+> > > that can be fed to the ftracefs interface. By doing so, it enables
+> > > previously unreachable symbols to be probed.
+> > >
+> > >  ~ # cat /proc/kallsyms | grep " name_show"
+> > >  ffffffff974f76d0 t name_show
+> > >  ffffffff974f76d0 t name_show__alias__6340
+> > >  ffffffff979cccb0 t name_show
+> > >  ffffffff979cccb0 t name_show__alias__6341
+> > >  ffffffff97b0ac20 t name_show
+> > >  ffffffff97b0ac20 t name_show__alias__6342
+> > >  ffffffff97c728c0 t name_show
+> > >  ffffffff97c728c0 t name_show__alias__6343
+> > >  ffffffff97e0efd0 t name_show
+> > >  ffffffff97e0efd0 t name_show__alias__6344
+> > >  ffffffff97e126c0 t name_show
+> > >  ffffffff97e126c0 t name_show__alias__6345
+> > >  ffffffff97e1dd20 t name_show
+> > >  ffffffff97e1dd20 t name_show__alias__6346
+> > >  ffffffff97e24e70 t name_show
+> > >  ffffffff97e24e70 t name_show__alias__6347
+> > >  ffffffff981104c0 t name_show
+> > >  ffffffff981104c0 t name_show__alias__6348
+> > >  ffffffff981fe480 t name_show
+> > >  ffffffff981fe480 t name_show__alias__6349
+> > >  ~ # echo "p:kprobes/evnt1 name_show__alias__6349" \
+> > >  > >/sys/kernel/tracing/kprobe_events
+> > >  ~ # cat /sys/kernel/tracing/kprobe_events
+> > >  p:kprobes/evnt1 name_show__alias__6349
+> > >
+> > > Changes from v1:
+> > > - Integrated changes requested by Masami to exclude symbols with pref=
+ixes
+> > >   "_cfi" and "_pfx".
+> > > - Introduced a small framework to handle patterns that need to be exc=
+luded
+> > >   from the alias production.
+> > > - Excluded other symbols using the framework.
+> > > - Introduced the ability to discriminate between text and data symbol=
+s.
+> > > - Added two new config symbols in this version: CONFIG_KALLSYMS_ALIAS=
+_DATA,
+> > >   which allows data for data, and CONFIG_KALLSYMS_ALIAS_DATA_ALL, whi=
+ch
+> > >   excludes all filters and provides an alias for each duplicated symb=
+ol.
+> > >
+> > > https://lore.kernel.org/all/20230711151925.1092080-1-alessandro.carmi=
+nati@gmail.com/
+> > >
+> > > Changes from v2:
+> > > - Alias tags are created by querying DWARF information from the vmlin=
+ux.
+> > > - The filename + line number is normalized and appended to the origin=
+al name.
+> > > - The tag begins with '@' to indicate the symbol source.
+> > > - Not a change, but worth mentioning, since the alias is added to the=
+ existing
+> > >   list, the old duplicated name is preserved, and the livepatch way o=
+f dealing
+> > >   with duplicates is maintained.
+> > > - Acknowledging the existence of scenarios where inlined functions de=
+clared in
+> > >   header files may result in multiple copies due to compiler behavior=
+, though
+> > >    it is not actionable as it does not pose an operational issue.
+> > > - Highlighting a single exception where the same name refers to diffe=
+rent
+> > >   functions: the case of "compat_binfmt_elf.c," which directly includ=
+es
+> > >   "binfmt_elf.c" producing identical function copies in two separate
+> > >   modules.
+> > >
+> > > sample from new v3
+> > >
+> > >  ~ # cat /proc/kallsyms | grep gic_mask_irq
+> > >  ffffd0b03c04dae4 t gic_mask_irq
+> > >  ffffd0b03c04dae4 t gic_mask_irq@_drivers_irqchip_irq-gic_c_167
+> > >  ffffd0b03c050960 t gic_mask_irq
+> > >  ffffd0b03c050960 t gic_mask_irq@_drivers_irqchip_irq-gic-v3_c_404
+> > >  ~ #
+> > >
+> > > https://lore.kernel.org/all/20230714150326.1152359-1-alessandro.carmi=
+nati@gmail.com/
+> > >
+> > > Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@g=
+mail.com>
+> > > ---
+> > >  init/Kconfig                        |  36 ++++
+> > >  scripts/Makefile                    |   4 +
+> > >  scripts/kas_alias/Makefile          |   4 +
+> > >  scripts/kas_alias/a2l.c             | 268 ++++++++++++++++++++++++++=
+++
+> > >  scripts/kas_alias/a2l.h             |  32 ++++
+> > >  scripts/kas_alias/duplicates_list.c |  70 ++++++++
+> > >  scripts/kas_alias/duplicates_list.h |  15 ++
+> > >  scripts/kas_alias/item_list.c       | 230 ++++++++++++++++++++++++
+> > >  scripts/kas_alias/item_list.h       |  26 +++
+> > >  scripts/kas_alias/kas_alias.c       | 217 ++++++++++++++++++++++
+> > >  scripts/link-vmlinux.sh             |  11 +-
+> > >  11 files changed, 910 insertions(+), 3 deletions(-)
+> >
+> >
+> > I added some review comments in another thread, but
+> > one of the biggest concerns might be "910 insertions".
+> >
+> >
+> > What this program does is quite simple,
+> > "find duplicated names, and call addr2line".
+> >
+> >
+> >
+> > You wrote a lot of code to self-implement these:
+> >
+> >  - sort function
+> >  - parse PATH env variable to find addr2line
+> >  - fork addr2line to establish pipe communications
+> >
+> >
+> >
+> > Have you considered writing the code in Python (or Perl)?
+> > Is it too slow?
+>
+> I have attempted to incorporate all your suggestions.
+> I refactored the C code to utilize hashing instead of sorting, and I
+> completely re-implemented the entire thing in Python for the purpose of
+> comparison.
+>
+> You are correct;
+> the C version is indeed faster, but the difference is negligible when
+> considering the use case and code maintainability.
 
-kernel test robot noticed the following build errors:
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on linus/master v6.5 next-20230906]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Nice. Then, I prefer shorter code.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Bibo-Mao/LoongArch-Clear-invalid-tlb-when-set-huge-page-PTE-entry/20230906-013753
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230905044828.1460721-1-maobibo%40loongson.cn
-patch subject: [PATCH] LoongArch: Clear invalid tlb when set huge page PTE entry
-config: loongarch-allnoconfig (https://download.01.org/0day-ci/archive/20230906/202309062224.jKf5JY7H-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230906/202309062224.jKf5JY7H-lkp@intel.com/reproduce)
+The Python implementation is 0.2 sec slower
+(given the script is executed three times, 0.6 sec cost in total)
+but it is not a big issue, I think.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309062224.jKf5JY7H-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> arch/loongarch/mm/tlb.c:204:6: error: redefinition of 'set_huge_pte_at'
-     204 | void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
-         |      ^~~~~~~~~~~~~~~
-   In file included from arch/loongarch/mm/tlb.c:9:
-   include/linux/hugetlb.h:1175:20: note: previous definition of 'set_huge_pte_at' with type 'void(struct mm_struct *, long unsigned int,  pte_t *, pte_t)'
-    1175 | static inline void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
-         |                    ^~~~~~~~~~~~~~~
-   arch/loongarch/mm/tlb.c: In function 'set_huge_pte_at':
->> arch/loongarch/mm/tlb.c:215:29: error: implicit declaration of function 'huge_pte_none'; did you mean 'huge_pte_lock'? [-Werror=implicit-function-declaration]
-     215 |         if (!cpu_has_ptw && huge_pte_none(*ptep))
-         |                             ^~~~~~~~~~~~~
-         |                             huge_pte_lock
-   arch/loongarch/mm/tlb.c: At top level:
-   arch/loongarch/mm/tlb.c:281:6: warning: no previous prototype for 'setup_tlb_handler' [-Wmissing-prototypes]
-     281 | void setup_tlb_handler(int cpu)
-         |      ^~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+Thanks.
 
 
-vim +/set_huge_pte_at +204 arch/loongarch/mm/tlb.c
 
-   203	
- > 204	void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
-   205			pte_t *ptep, pte_t pte)
-   206	{
-   207		/*
-   208		 * If huge pte entry is none, tlb entry with normal page size is filled
-   209		 * for machines which does not support hardware page walking.
-   210		 *
-   211		 * Thread maybe migrates to other CPUs after page fault happends and
-   212		 * migrates back again after hugepage pte is set, tlbs with normal page
-   213		 * about invalid_pte_table need be flushed
-   214		 */
- > 215		if (!cpu_has_ptw && huge_pte_none(*ptep))
-   216			flush_tlb_mm(mm);
-   217	
-   218		set_pte_at(mm, addr, ptep, pte);
-   219	}
-   220	
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+
+
+
+
+>
+> Here's a direct comparison of the two.
+> ```
+> ~ $ time ./kas_alias.py -a /usr/bin/aarch64-linux-gnu-addr2line \
+>                       -n linux-6.5/.tmp_vmlinux.kallsyms1.syms \
+>                       -v linux-6.5/.tmp_vmlinux.kallsyms1 \
+>                       -o output_py
+>
+> real    0m1.626s
+> user    0m1.436s
+> sys     0m0.185s
+> $ cat kas_alias.py | wc -l
+> 133
+> ~ $ time ./kas_alias -a /usr/bin/aarch64-linux-gnu-addr2line \
+>                    -v linux-6.5/.tmp_vmlinux.kallsyms1 \
+>                    -n linux-6.5/.tmp_vmlinux.kallsyms1.syms \
+>                    -o output_c
+>
+> real    0m1.418s
+> user    0m1.262s
+> sys     0m0.162s
+> ~ $ cat a2l.c a2l.h conf.c conf.h item_list.c item_list.h kas_alias.c | w=
+c -l
+> 742
+> ~ $ diff output_py output_c
+> ~ $
+> ```
+> C version is 7/10% faster but is more than 5 times in terms of code size.
+>
+> >
+> > Most of the functions you implemented are already
+> > available in script languages.
+> >
+> >
+> >
+> > I am not sure if "@<file-path>" is a good solution,
+> > but the amount of the added code looks too much to me.
+>
+> I followed Francis's suggestion and made the separator between
+> <symbol name> and <normalized filename> an argument that you can select
+> using the command line. Since I'm not aware of a better choice, I set the
+> default value to '@'.
+>
+> >
+> >
+> >
+> >
+> > --
+> > Best Regards
+> > Masahiro Yamada
+>
+> Best regards
+> Alessandro Carminati
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
