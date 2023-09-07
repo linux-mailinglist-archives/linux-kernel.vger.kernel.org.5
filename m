@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD233796EED
+	by mail.lfdr.de (Postfix) with ESMTP id F33D9796EEE
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 04:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245064AbjIGC34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 22:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33394 "EHLO
+        id S245076AbjIGC36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 22:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243488AbjIGC3q (ORCPT
+        with ESMTP id S241928AbjIGC3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 22:29:46 -0400
+        Wed, 6 Sep 2023 22:29:48 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7474F19A8
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 19:29:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E90E7C433D9;
-        Thu,  7 Sep 2023 02:29:42 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B621BCC
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 19:29:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86713C433CB;
+        Thu,  7 Sep 2023 02:29:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1694053783;
-        bh=ey6ldgAd6VTxnRDoPtCtQlr0A3IAnRC6k78ku2lztFc=;
+        bh=vRYmypXxVu4qyBFRsVgWGOXy10baQDAbK4q5Co5NXh8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o5w62vS3iAkNVuzYgY9bfNL4wHOb5z8v2SB71t6EVqtoa8SA11fQws6liGofafFMo
-         p8YQONgSgi2PrcMcx4kRPKTnnkIXVq+T1F6uLipVw79Q83LbAwU6y0a0xAjmmGBI3a
-         Qy/07A+eOLSlFgEP0sKXQqwPmigbHXrm0JGjzBbAuJbX2SriKrQ8PW+HGJDuIDIalY
-         G+kkyD7yTeSglfm6B5Wt3S064RhYrOztpWqbp1us/4OowA0TWkqW/8E63Ooa6Hxefr
-         66k8OkJbNqIzn+YiAzcNVQcfgU1rLO034hJIKGrtYOYB0QvlE4wLe6a4gGRCytSnCj
-         Mhm23vrRe1GgQ==
+        b=qlP28eTvxlZIfTv787ShyqGqsODexay16ibiTx1Diaxx+5FsRbtNpcWuURBIEOMiI
+         MVGKGITV1obC+0nnb1wK5BP+LzyRRcd22VUneG4Do06WAlT3yR5Cd4F5A9REjPyqBs
+         37dj2ZaxtE7cCscAaXS3ulztigwpy2rxfNIB/MP1lbmzWgDIRBSYzFZ5uX3duR5pRS
+         34mSNwMpDpPDvZaq1aJb+hbu3YNtVwi4x9LJOwcXDyF89pA615ep4hmc4QbMa62sh/
+         HR+4gHtb2WSAAsdQ53ZSq8MRmZsVIpt6LNlSWFJHAhzOnHHSDJPv6qce6YRagf/g2j
+         OkLTbEuTqmVSA==
 From:   SeongJae Park <sj@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     SeongJae Park <sj@kernel.org>, damon@lists.linux.dev,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 08/11] mm/damon/core: fix a comment about damon_set_attrs() call timings
-Date:   Thu,  7 Sep 2023 02:29:26 +0000
-Message-Id: <20230907022929.91361-9-sj@kernel.org>
+Subject: [PATCH 09/11] mm/damon/core: add more comments for nr_accesses
+Date:   Thu,  7 Sep 2023 02:29:27 +0000
+Message-Id: <20230907022929.91361-10-sj@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230907022929.91361-1-sj@kernel.org>
 References: <20230907022929.91361-1-sj@kernel.org>
@@ -48,33 +48,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The comment on damon_set_attrs() says it should not be called while the
-kdamond is running, but now some DAMON modules like sysfs interface and
-DAMON_RECLAIM call it from after_aggregation() and/or
-after_wmarks_check() callbacks for online tuning.  Update the comment.
+The comment on struct damon_region about nr_accesses field looks not
+sufficient.  Many people actually used to ask what nr_accesses mean.
+There is more detailed explanation of the mechanism on the comment for
+struct damon_attrs, but it is also ambiguous, as it doesn't specify the
+name of the counter for aggregating the access check results.  Make
+those more detailed.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- mm/damon/core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ include/linux/damon.h | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index 28c7c49882d3..1ce483a3c2b5 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -570,7 +570,11 @@ static void damon_update_monitoring_results(struct damon_ctx *ctx,
-  * @ctx:		monitoring context
-  * @attrs:		monitoring attributes
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index ae2664d1d5f1..266f92b34dd2 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -43,6 +43,10 @@ struct damon_addr_range {
+  * @list:		List head for siblings.
+  * @age:		Age of this region.
   *
-- * This function should not be called while the kdamond is running.
-+ * This function should be called while the kdamond is not running, or an
-+ * access check results aggregation is not ongoing (e.g., from
-+ * &struct damon_callback->after_aggregation or
-+ * &struct damon_callback->after_wmarks_check callbacks).
++ * @nr_accesses is reset to zero for every &damon_attrs->aggr_interval and be
++ * increased for every &damon_attrs->sample_interval if an access to the region
++ * during the last sampling interval is found.
 + *
-  * Every time interval is in micro-seconds.
+  * @age is initially zero, increased for each aggregation interval, and reset
+  * to zero again if the access frequency is significantly changed.  If two
+  * regions are merged into a new region, both @nr_accesses and @age of the new
+@@ -472,13 +476,14 @@ struct damon_callback {
+  *				regions.
   *
-  * Return: 0 on success, negative error code otherwise.
+  * For each @sample_interval, DAMON checks whether each region is accessed or
+- * not.  It aggregates and keeps the access information (number of accesses to
+- * each region) for @aggr_interval time.  DAMON also checks whether the target
+- * memory regions need update (e.g., by ``mmap()`` calls from the application,
+- * in case of virtual memory monitoring) and applies the changes for each
+- * @ops_update_interval.  All time intervals are in micro-seconds.
+- * Please refer to &struct damon_operations and &struct damon_callback for more
+- * detail.
++ * not during the last @sample_interval.  If such access is found, DAMON
++ * aggregates the information by increasing &damon_region->nr_accesses for
++ * @aggr_interval time.  For each @aggr_interval, the count is reset.  DAMON
++ * also checks whether the target memory regions need update (e.g., by
++ * ``mmap()`` calls from the application, in case of virtual memory monitoring)
++ * and applies the changes for each @ops_update_interval.  All time intervals
++ * are in micro-seconds.  Please refer to &struct damon_operations and &struct
++ * damon_callback for more detail.
+  */
+ struct damon_attrs {
+ 	unsigned long sample_interval;
 -- 
 2.25.1
 
