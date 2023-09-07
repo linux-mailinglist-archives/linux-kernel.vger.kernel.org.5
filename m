@@ -2,229 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE205797643
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52371797863
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235251AbjIGQFc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Sep 2023 12:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37428 "EHLO
+        id S242341AbjIGQqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:46:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbjIGQEe (ORCPT
+        with ESMTP id S236693AbjIGQqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:04:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB936EA1;
-        Thu,  7 Sep 2023 08:53:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C42ABC32783;
-        Thu,  7 Sep 2023 12:13:53 +0000 (UTC)
-Date:   Thu, 7 Sep 2023 08:14:08 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Tze-nan Wu (=?UTF-8?B?5ZCz5r6k5Y2X?=)" <Tze-nan.Wu@mediatek.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-trace-kernel@vger.kernel.org" 
-        <linux-trace-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "Cheng-Jui Wang (=?UTF-8?B?546L5q2j552/?=)" 
-        <Cheng-Jui.Wang@mediatek.com>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        "Bobule Chang (=?UTF-8?B?5by1?= =?UTF-8?B?5byY576p?=)" 
-        <bobule.chang@mediatek.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH] ring-buffer: Do not read at &event->array[0] if it
- across the page
-Message-ID: <20230907081408.6156b6f0@gandalf.local.home>
-In-Reply-To: <0944a5f3e10c0eba8b32e51fb941e0dd98ec086d.camel@mediatek.com>
-References: <20230905141245.26470-1-Tze-nan.Wu@mediatek.com>
-        <20230905123953.3c0b3d7a@gandalf.local.home>
-        <3a89d49ae0da6378de83bc68690cf6664d97cb24.camel@mediatek.com>
-        <0944a5f3e10c0eba8b32e51fb941e0dd98ec086d.camel@mediatek.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 7 Sep 2023 12:46:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AEF7683;
+        Thu,  7 Sep 2023 09:20:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694103600; x=1725639600;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=DBrL4mS557cxBvRouvwV9QF+iy39q5mSe7MPFfBAAyY=;
+  b=lfdlF99KklkzalsqntVN6PKzyH0ow+w0VQACqIar0NT6NHtTXD9DM89u
+   y4/rNSXkpy7fnGUQb+gEXAOrp0rLGDajdtaV+SJW9eXAVoG5KlzA/OmeJ
+   CztiZMrVmqnEA3cQgIyJlj+RpIB6exyUvDjoiM3Q3gpDJ/eVr5qIo7txc
+   kdIFkreJGQD0nOhXfdweFSh0LJRWm9Q4/ywY1k3xUbus2dgycbJ+8HCnf
+   lJKafiXQGZJ4xVLQ2Qb9uJRsNAEx9HmvnEQhL3eq4tycCVi4g6d4qslDH
+   WWFL8hwaE4hp4b/sUIUHVb2M93dB3GaYnOTKBLXb+Jx7KXJBDWgSGsgMB
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="441323679"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="441323679"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 05:14:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="807515912"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="807515912"
+Received: from jnikula-mobl4.fi.intel.com (HELO localhost) ([10.237.66.162])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 05:14:16 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Sarah Walker <sarah.walker@imgtec.com>,
+        dri-devel@lists.freedesktop.org
+Cc:     linux-doc@vger.kernel.org, hns@goldelico.com,
+        krzysztof.kozlowski+dt@linaro.org, matthew.brost@intel.com,
+        corbet@lwn.net, luben.tuikov@amd.com, dakr@redhat.com,
+        donald.robson@imgtec.com, devicetree@vger.kernel.org,
+        conor+dt@kernel.org, mripard@kernel.org, matt.coster@imgtec.com,
+        robh+dt@kernel.org, faith.ekstrand@collabora.com,
+        linux-kernel@vger.kernel.org, afd@ti.com,
+        boris.brezillon@collabora.com, tzimmermann@suse.de,
+        christian.koenig@amd.com
+Subject: Re: [PATCH v6 02/20] drm/gpuva_mgr: Helper to get range of unmap
+ from a remap op.
+In-Reply-To: <20230906095542.3280699-3-sarah.walker@imgtec.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230906095542.3280699-1-sarah.walker@imgtec.com>
+ <20230906095542.3280699-3-sarah.walker@imgtec.com>
+Date:   Thu, 07 Sep 2023 15:14:14 +0300
+Message-ID: <87a5tygoyx.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Sep 2023 10:10:57 +0000
-Tze-nan Wu (吳澤南) <Tze-nan.Wu@mediatek.com> wrote:
+On Wed, 06 Sep 2023, Sarah Walker <sarah.walker@imgtec.com> wrote:
+> From: Donald Robson <donald.robson@imgtec.com>
+>
+> Signed-off-by: Donald Robson <donald.robson@imgtec.com>
+> ---
+>  include/drm/drm_gpuva_mgr.h | 27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+>
+> diff --git a/include/drm/drm_gpuva_mgr.h b/include/drm/drm_gpuva_mgr.h
+> index ed8d50200cc3..be7b3a6d7e67 100644
+> --- a/include/drm/drm_gpuva_mgr.h
+> +++ b/include/drm/drm_gpuva_mgr.h
+> @@ -703,4 +703,31 @@ void drm_gpuva_remap(struct drm_gpuva *prev,
+>  
+>  void drm_gpuva_unmap(struct drm_gpuva_op_unmap *op);
+>  
+> +/**
+> + * drm_gpuva_op_remap_get_unmap_range() - Helper to get the start and range of
+> + * the unmap stage of a remap op.
+> + * @op: Remap op.
+> + * @start_addr: Output pointer for the start of the required unmap.
+> + * @range: Output pointer for the length of the required unmap.
+> + *
+> + * These parameters can then be used by the caller to unmap memory pages that
+> + * are no longer required.
+> + */
+> +static __always_inline void
 
-> > Same as my thought,
-> > since every time the reader try to access the address in next page,
-> > the below condition hold in rb_iter_head_event function:
-> > 
-> >         if (iter->page_stamp != iter_head_page->page->time_stamp ||
-> >                 commit > rb_page_commit(iter_head_page))
-> >                         goto reset;
-> > 
-> > I observe the result by the debug patch provided below:
-> > 
-> >         @@ -2378,6 +2378,19 @@ rb_iter_head_event(struct
-> > ring_buffer_iter *iter)
-> >                 commit = rb_page_commit(iter_head_page);
-> >                 smp_rmb();
-> >         +       if ((iter->head >= 0xFECUL) && commit == 0xFF0UL) {
-> >         +               pr_info("rbdbg: cpu = %d, event = 0x%lx,
-> > iter-  
-> > > head = 0x%lx,\  
-> > 
-> >         +                       commit = 0xFF0, type = 0x%x, ts =
-> > 0x%x,
-> > array addr = 0x%lx\n",\
-> >         +                       iter->cpu_buffer->cpu, (unsigned
-> > long)event, iter->head,\
-> >         +                       event->type_len, event->time_delta,
-> > (unsigned long)(&(event->array[0])));
-> >         +               mdelay(500);
-> >         +               pr_info("rbdbg2: cpu = %d, event = 0x%lx,
-> > iter-  
-> > > head = 0x%lx,\  
-> > 
-> >         +                       commit = 0xFF0, type = 0x%x, ts =
-> > 0x%x,
-> > array addr = 0x%lx\n",\
-> >         +                       iter->cpu_buffer->cpu, (unsigned
-> > long)event, iter->head,\
-> >         +                       event->type_len, event->time_delta,
-> > (unsigned long)(&(event->array[0])));
-> >         +               if (iter->page_stamp != iter_head_page->page-  
-> > > time_stamp || commit > rb_page_commit(iter_head_page))  
-> > 
-> >         +                       pr_info("rbdbg: writer corrupt
-> > reader\n");
-> >         +       }
-> >                 event = __rb_page_index(iter_head_page, iter->head);
-> >                 length = rb_event_length(event);
-> > 
-> > Note that the mdelay(500) in the debug patch can reproduce the issue
-> > easier with same test in my environmnet,
-> > I am now able to reproduce the issue within 15 minutes if the debug
-> > patch on.
-> >   
-> 
-> The debug patch may give something similar to the below log just before
-> the invalid access happened, for me it looks like the padding event had
-> just corrupted by the writer before the reader invoke rb_event_length
-> function on it.
-> 
-> [  338.156772] cat: [name:ring_buffer&]rbdbg: cpu = 0, event =
-> 0x????????????dffc, iter->head = 0xfec, commit = 0xFF0, type = 0x1d, ts
-> = 0x0, array addr = 0x????????????e000
-> [  338.656796] cat: [name:ring_buffer&]rbdbg2: cpu = 0, event =
-> 0x????????????dffc, iter->head = 0xfec, commit = 0xFF0, type = 0x0, ts
-> = 0x0, array addr = 0x????????????e000
-> [  338.656803] cat: [name:ring_buffer&]rbdbg: writer corrupt reader
-> [  338.656810] cat:
-> [name:report&]=========================================================
-> =========
-> [  338.656819] cat: [name:report&]BUG: KASAN: invalid-access in
-> rb_event_length
-> 
-> 
-> > > > Since the content data start at address 0x71FFFF8111A17FFC are  
-> > > 
-> > > 0xFFFFFFC0.  
-> > > > event->type will be interpret as 0x0, than the reader will try to  
-> > > 
-> > > get the  
-> > > > length by accessing event->array[0], which is an invalid address:
-> > > >     &event->array[0] = 0x71FFFF8111A18000
-> > > > 
-> > > > Signed-off-by: Tze-nan Wu <Tze-nan.Wu@mediatek.com>
-> > > > ---
-> > > > Following patch may not become a solution, it merely checks if
-> > > > the  
-> > > 
-> > > address  
-> > > > to be accessed is valid or not within the rb_event_length before  
-> > > 
-> > > access.  
-> > > > And not sure if there is any side-effect it can lead to.
-> > > > 
-> > > > I am curious about what a better solution for this issue would
-> > > > look  
-> > > 
-> > > like.  
-> > > > Should we address the problem from the writer or the reader?
-> > > > 
-> > > > Also I wonder if the cause of the issue is exactly as I
-> > > > suspected.
-> > > > Any Suggestion will be appreciated.  
-> > > 
-> > > I guess this depends on if you have the fixes or not?
-> > >   
-> > 
-> > yes, I could try to pick the patches that only included in mainline
-> > but
-> > not in kernel-6.1.52 for ring_buffer.c file,
-> > and do the same test to see if the issue is still reproducible.
-> >   
-> > > > 
-> > > > Test below can reproduce the issue in 2 hours on kernel-6.1.24:
-> > > >     $cd /sys/kernel/tracing/
-> > > >     # make the reader and writer race more through resize the  
-> > > 
-> > > buffer to 8kb  
-> > > >     $echo 8 > buffer_size_kn
-> > > >     # enable all events
-> > > >     $echo 1 > event/enable
-> > > >     # enable trace
-> > > >     $echo 1 > tracing_on
-> > > >  
-> > > >     # write and run a script that keep reading trace
-> > > >     $./read_trace.sh
-> > > > 
-> > > >     ``` read_trace.sh
-> > > >        while :
-> > > >        do
-> > > >            cat /sys/kernel/tracing/trace > /dev/null
-> > > >        done
-> > > > 
-> > > >     ```  
-> > > 
-> > > Thanks, I'll look at that when I finish debugging the eventfs bug.
-> > > 
-> > > -- Steve  
-> > 
-> > Also thank for your reply,
-> >   
-> 
-> And the temporary fix patch in my first mail should have some modified
-> as shown below.
-> +               if (((unsigned long)event & 0xfffUL) >= PAGE_SIZE - 4)
->                                              ^^^^^^
->                                             PAGE_SIZE-1
-> +                       return -1;
+IMO __always_inline *always* requires a justification in the commit
+message.
+
+BR,
+Jani.
 
 
-Your email is getting really hard to read due to the line wrap formatting.
+> +drm_gpuva_op_remap_get_unmap_range(const struct drm_gpuva_op_remap *op,
+> +				   u64 *start_addr, u64 *range)
+> +{
+> +	const u64 va_start = op->prev ?
+> +			     op->prev->va.addr + op->prev->va.range :
+> +			     op->unmap->va->va.addr;
+> +	const u64 va_end = op->next ?
+> +			   op->next->va.addr :
+> +			   op->unmap->va->va.addr + op->unmap->va->va.range;
+> +
+> +	if (start_addr)
+> +		*start_addr = va_start;
+> +	if (range)
+> +		*range = va_end - va_start;
+> +}
+> +
+>  #endif /* __DRM_GPUVA_MGR_H__ */
 
-Anyway, can you try this patch?
-
--- Steve
-
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 72ccf75defd0..5b0653378089 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -2390,6 +2390,10 @@ rb_iter_head_event(struct ring_buffer_iter *iter)
- 	 */
- 	commit = rb_page_commit(iter_head_page);
- 	smp_rmb();
-+	/* An event needs to be at least 8 bytes in size */
-+	if (iter->head > commit - 8)
-+		goto reset;
-+
- 	event = __rb_page_index(iter_head_page, iter->head);
- 	length = rb_event_length(event);
- 
+-- 
+Jani Nikula, Intel Open Source Graphics Center
