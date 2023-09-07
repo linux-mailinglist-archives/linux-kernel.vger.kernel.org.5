@@ -2,106 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4A57974AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01955797374
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbjIGPka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43122 "EHLO
+        id S239865AbjIGPYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232761AbjIGPf6 (ORCPT
+        with ESMTP id S236114AbjIGPXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:35:58 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CEE1FE5;
-        Thu,  7 Sep 2023 08:35:40 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 387BqcSv004599;
-        Thu, 7 Sep 2023 06:52:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694087558;
-        bh=bWY1RuEHL7dDVaurleK0OpioaUNLzckRAcBV5QqpkMQ=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=slh/sbR7ojLMPfLuxbIXPrn62OD10NvnrDPddrCTJtt8jHcmTWQfOvYkTfSAbTxN1
-         CwDDxdeiG+gr04s/nuDlbzom4vshv8Ia4a0un7yCZHFzuPuoFbIRCOyWuhiTo3O6x2
-         C99NJo8UBwPykP5x3sN6ksogh+GZ1WDHrePV/QjE=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 387BqcMP078762
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 7 Sep 2023 06:52:38 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 7
- Sep 2023 06:52:37 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 7 Sep 2023 06:52:37 -0500
-Received: from localhost.localdomain (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 387BqFVj129423;
-        Thu, 7 Sep 2023 06:52:34 -0500
-From:   Keerthy <j-keerthy@ti.com>
-To:     <robh+dt@kernel.org>, <nm@ti.com>, <vigneshr@ti.com>,
-        <conor+dt@kernel.org>, <kristo@kernel.org>,
-        <rzysztof.kozlowski+dt@linaro.org>
-CC:     <j-keerthy@ti.com>, <u-kumar1@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 5/7] arm64: dts: ti: k3-j784s4-mcu: Add the main domain watchdog instances
-Date:   Thu, 7 Sep 2023 17:22:08 +0530
-Message-ID: <20230907115210.28082-6-j-keerthy@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230907115210.28082-1-j-keerthy@ti.com>
-References: <20230907115210.28082-1-j-keerthy@ti.com>
+        Thu, 7 Sep 2023 11:23:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC19135;
+        Thu,  7 Sep 2023 08:23:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OI476zBUwqc76nvniBbxYuu0lwS1B+BEzNEeiMb9prM=; b=YWBUFZDlCLXGhIHhep3kUss7WX
+        58SpxA+obyk9Yr50WkV8w6pYdrJcBO9nIVzcW1H9sUd8rqojPW6cAD75eRMtNw+zYwv3NGqsm0/7C
+        mQES2ZWgNpF+Vos54yYoMjqM2ZiJZQ2MNYxtd060vYxy9eTL5vgc2AxiXoIiwLXdk3o3TXZTUk+lz
+        3mdDX2kYgSAW/9gYFpgDgPF6B0I6VJYfuCWAmyg7Vb+t5jXk5FZiwSX0BdDtwAy9l3HiAt1FHTHla
+        Px+XUieyhSyG0q0UNnOWUrhkKMBRfAmGuYuCJoSv3et79OAFOpm8oMG2I5vMz0MB6noWPDi8Yo9mA
+        5nmk/Djg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qeDZL-00Aen9-SW; Thu, 07 Sep 2023 11:53:08 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 830C7300687; Thu,  7 Sep 2023 13:53:07 +0200 (CEST)
+Date:   Thu, 7 Sep 2023 13:53:07 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Qais Yousef <qyousef@layalina.io>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [RFC PATCH 0/7] sched: cpufreq: Remove magic margins
+Message-ID: <20230907115307.GD10955@noisy.programming.kicks-ass.net>
+References: <20230827233203.1315953-1-qyousef@layalina.io>
+ <a6365f63-4669-15e5-b843-f4bfb1bd5e68@arm.com>
+ <20230906211850.zyvk6qtt6fvpxaf3@airbuntu>
+ <6011d8bb-9a3b-1435-30b0-d75b39bf5efa@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6011d8bb-9a3b-1435-30b0-d75b39bf5efa@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are totally 2 instances of watchdog module in MCU domain.
+On Thu, Sep 07, 2023 at 08:48:08AM +0100, Lukasz Luba wrote:
 
-Signed-off-by: Keerthy <j-keerthy@ti.com>
----
- .../boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi     | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
+> > Hehe. That's because they're not really periodic ;-)
+> 
+> They are periodic in a sense, they wake up every 16ms, but sometimes
+> they have more work. It depends what is currently going in the game
+> and/or sometimes the data locality (might not be in cache).
+> 
+> Although, that's for games, other workloads like youtube play or this
+> one 'Yahoo browser' (from your example) are more 'predictable' (after
+> the start up period). And I really like the potential energy saving
+> there :)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-index f1dfa4144168..91c15744dd8b 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-@@ -712,4 +712,24 @@
- 		reg = <0x00 0x42080000 0x00 0x1000>;
- 		ti,esm-pins = <63>;
- 	};
-+
-+	mcu_watchdog0: watchdog@40600000 {
-+		compatible = "ti,j7-rti-wdt";
-+		reg = <0x00 0x40600000 0x00 0x100>;
-+		clocks = <&k3_clks 367 1>;
-+		power-domains = <&k3_pds 367 TI_SCI_PD_EXCLUSIVE>;
-+		assigned-clocks = <&k3_clks 367 0>;
-+		assigned-clock-parents = <&k3_clks 367 4>;
-+		status = "disabled";
-+	};
-+
-+	mcu_watchdog1: watchdog@40610000 {
-+		compatible = "ti,j7-rti-wdt";
-+		reg = <0x00 0x40610000 0x00 0x100>;
-+		clocks = <&k3_clks 368 1>;
-+		power-domains = <&k3_pds 368 TI_SCI_PD_EXCLUSIVE>;
-+		assigned-clocks = <&k3_clks 368 0>;
-+		assigned-clock-parents = <&k3_clks 368 4>;
-+		status = "disabled";
-+	};
- };
--- 
-2.17.1
+So everything media is fundamentally periodic, you're hard tied to the
+framerate / audio-buffer size etc..
 
+Also note that the traditional periodic task model from the real-time
+community has the notion of WCET, which completely covers this
+fluctuation in frame-to-frame work, it only considers the absolute worst
+case.
+
+Now, practically, that stinks, esp. when you care about batteries, but
+it does not mean these tasks are not periodic.
+
+Many extentions to the periodic task model are possible, including
+things like average runtime with bursts etc.. all have their trade-offs.
