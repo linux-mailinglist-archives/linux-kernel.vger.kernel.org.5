@@ -2,103 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98898797AFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E557879763D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245687AbjIGR6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:58:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34470 "EHLO
+        id S237076AbjIGQFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245646AbjIGR6m (ORCPT
+        with ESMTP id S236859AbjIGQEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:58:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2AF1997
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:58:19 -0700 (PDT)
+        Thu, 7 Sep 2023 12:04:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD8F6A76;
+        Thu,  7 Sep 2023 08:53:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694109499; x=1725645499;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=O6ZhqWgwoI8MAxW6/N8+5IhjZO91cgxHuTDSEqgn/Ok=;
-  b=B0ZzDYdZYhPPaOulHfUOYFVDtRfbnphvUiXKj1irmz8DrottntMelvMx
-   g+JFut2Lyefg3hffp172x9/VmqStMS/dv/0nlH3IWUbLiyhJI2Ndwgr/e
-   8ssMsLsJuMPAOn3Ch2AVS7WVSWMfgS0JUWwcOx1xGWYTEfV4QkGkL48px
-   V0K4ExyfmrYLbWobyVBO+06/SRw2ofKhYGNWmB2BzH0f7BiKqfoibAGgG
-   IKB58eMg3ZDwGwAnv/BlhN5SgsmGXqlp8cP04dJgP7xEqWQ1actsHL8WW
-   Cus4k73mmcZz/oGVQs1Rxqbi4fr28PMfyDKkDTvv0P+Z/etzo3SBiivr8
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="367579634"
+  t=1694102023; x=1725638023;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=4Zc2NSQczgzpNCTjAeZ+vgoDDV24z7zZmEzSqmTWoV8=;
+  b=UdfaggH2VB5SmzXi54f6JDs0yVt0a/jKfSP4xHqye9vADx4Kr3u8pl4e
+   2s3kgggxgOE9fiEerRwc/BjSXHuvhgvg+h71NJKRD6jpIR7bkzi7QymOp
+   jfqlPN/rn57HrUVze4IQDcGiFuNopiowLupxs8uV8FQDWGVHJdi4Snvu6
+   gbwVQ+f7nkW1HpaoZ3mM2ViWukJZq6GrjhLuyv90WrFiSEg+wDDJaQ1WM
+   +yCPNGZaZqlC7A+kTSTKR67A6fp7aU5yoB+y0jLmFoySzrqD2cbbkcZ32
+   FkFQZQpPe59/A0o0/FiFfUi5NXd1tp7AJ60NvGjlE5oYIs+cQJh94ZWhm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="356825430"
 X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="367579634"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 06:14:14 -0700
+   d="scan'208";a="356825430"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 06:16:06 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="885141188"
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="691782245"
 X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="885141188"
-Received: from oshragax-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.215.248])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 06:13:58 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 73345104860; Thu,  7 Sep 2023 16:14:09 +0300 (+03)
-Date:   Thu, 7 Sep 2023 16:14:09 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Aaron Lu <aaron.lu@intel.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-Subject: Re: kexec reboot failed due to commit 75d090fd167ac
-Message-ID: <20230907131409.masxz42ik6u456qp@box.shutemov.name>
-References: <20230829114816.GA508985@ziqianlu-dell>
- <ZO3hQ0rbr8QuUjVI@debian.me>
- <20230829125134.GA509331@ziqianlu-dell>
- <20230829125939.bcg2r6hwqf45npko@box.shutemov.name>
- <20230829140451.GA509854@ziqianlu-dell>
+   d="scan'208";a="691782245"
+Received: from jnikula-mobl4.fi.intel.com (HELO localhost) ([10.237.66.162])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 06:16:00 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Donald Robson <Donald.Robson@imgtec.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Sarah Walker <Sarah.Walker@imgtec.com>
+Cc:     "corbet@lwn.net" <corbet@lwn.net>,
+        "luben.tuikov@amd.com" <luben.tuikov@amd.com>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "mripard@kernel.org" <mripard@kernel.org>,
+        "matthew.brost@intel.com" <matthew.brost@intel.com>,
+        "afd@ti.com" <afd@ti.com>, "hns@goldelico.com" <hns@goldelico.com>,
+        Matt Coster <Matt.Coster@imgtec.com>,
+        "boris.brezillon@collabora.com" <boris.brezillon@collabora.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "dakr@redhat.com" <dakr@redhat.com>,
+        "faith.ekstrand@collabora.com" <faith.ekstrand@collabora.com>
+Subject: Re: [PATCH v6 02/20] drm/gpuva_mgr: Helper to get range of unmap
+ from a remap op.
+In-Reply-To: <5b7f431f26eea296193d9e49ea85e0377e6ebcf0.camel@imgtec.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230906095542.3280699-1-sarah.walker@imgtec.com>
+ <20230906095542.3280699-3-sarah.walker@imgtec.com>
+ <87a5tygoyx.fsf@intel.com>
+ <5b7f431f26eea296193d9e49ea85e0377e6ebcf0.camel@imgtec.com>
+Date:   Thu, 07 Sep 2023 16:15:57 +0300
+Message-ID: <877cp2gm42.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230829140451.GA509854@ziqianlu-dell>
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 10:04:51PM +0800, Aaron Lu wrote:
-> > Could you show dmesg of the first kernel before kexec?
-> 
-> Attached.
-> 
-> BTW, kexec is invoked like this:
-> kver=6.4.0-rc5-00009-g75d090fd167a
-> kdir=$HOME/kernels/$kver
-> sudo kexec -l $kdir/vmlinuz-$kver --initrd=$kdir/initramfs-$kver.img --append="root=UUID=4381321e-e01e-455a-9d46-5e8c4c5b2d02 ro net.ifnames=0 acpi_rsdp=0x728e8014 no_hash_pointers sched_verbose selinux=0"
+On Thu, 07 Sep 2023, Donald Robson <Donald.Robson@imgtec.com> wrote:
+> On Thu, 2023-09-07 at 15:14 +0300, Jani Nikula wrote:
+>> On Wed, 06 Sep 2023, Sarah Walker <sarah.walker@imgtec.com> wrote:
+>> > From: Donald Robson <donald.robson@imgtec.com>
+>> > 
+>> > Signed-off-by: Donald Robson <donald.robson@imgtec.com>
+>> > ---
+>> >  include/drm/drm_gpuva_mgr.h | 27 +++++++++++++++++++++++++++
+>> >  1 file changed, 27 insertions(+)
+>> > 
+>> > diff --git a/include/drm/drm_gpuva_mgr.h b/include/drm/drm_gpuva_mgr.h
+>> > index ed8d50200cc3..be7b3a6d7e67 100644
+>> > --- a/include/drm/drm_gpuva_mgr.h
+>> > +++ b/include/drm/drm_gpuva_mgr.h
+>> > @@ -703,4 +703,31 @@ void drm_gpuva_remap(struct drm_gpuva *prev,
+>> >  
+>> >  void drm_gpuva_unmap(struct drm_gpuva_op_unmap *op);
+>> >  
+>> > +/**
+>> > + * drm_gpuva_op_remap_get_unmap_range() - Helper to get the start and range of
+>> > + * the unmap stage of a remap op.
+>> > + * @op: Remap op.
+>> > + * @start_addr: Output pointer for the start of the required unmap.
+>> > + * @range: Output pointer for the length of the required unmap.
+>> > + *
+>> > + * These parameters can then be used by the caller to unmap memory pages that
+>> > + * are no longer required.
+>> > + */
+>> > +static __always_inline void
+>> 
+>> IMO __always_inline *always* requires a justification in the commit
+>> message.
+>> 
+>> BR,
+>> Jani.
+>
+> Hi Jani,
+> I went with __always_inline because I can't see this being used more than once per driver.
+> I can add that to the commit message, but is that suitable justification? I could move
+> it to the source file or make it a macro if you prefer.
 
-I don't understand why it happens.
+My personal opinion is that static inlines in general should always have
+a performance justification. If there isn't one, it should be a regular
+function. Static inlines leak the abstractions and often make the header
+dependencies worse.
 
-Could you check if this patch changes anything:
+Not everyone agrees, of course.
 
-diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/misc.c
-index 94b7abcf624b..172c476ff6f3 100644
---- a/arch/x86/boot/compressed/misc.c
-+++ b/arch/x86/boot/compressed/misc.c
-@@ -456,10 +456,12 @@ asmlinkage __visible void *extract_kernel(void *rmode, memptr heap,
- 
- 	debug_putstr("\nDecompressing Linux... ");
- 
-+#if 0
- 	if (init_unaccepted_memory()) {
- 		debug_putstr("Accepting memory... ");
- 		accept_memory(__pa(output), __pa(output) + needed_size);
- 	}
-+#endif
- 
- 	__decompress(input_data, input_len, NULL, NULL, output, output_len,
- 			NULL, error);
+More than anything I was looking for justification on __always_inline
+rather than just inline, though.
+
+
+BR,
+Jani.
+
+
+
+> Thanks,
+> Donald
+>> 
+>> 
+>> > +drm_gpuva_op_remap_get_unmap_range(const struct drm_gpuva_op_remap *op,
+>> > +				   u64 *start_addr, u64 *range)
+>> > +{
+>> > +	const u64 va_start = op->prev ?
+>> > +			     op->prev->va.addr + op->prev->va.range :
+>> > +			     op->unmap->va->va.addr;
+>> > +	const u64 va_end = op->next ?
+>> > +			   op->next->va.addr :
+>> > +			   op->unmap->va->va.addr + op->unmap->va->va.range;
+>> > +
+>> > +	if (start_addr)
+>> > +		*start_addr = va_start;
+>> > +	if (range)
+>> > +		*range = va_end - va_start;
+>> > +}
+>> > +
+>> >  #endif /* __DRM_GPUVA_MGR_H__ */
+
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Jani Nikula, Intel Open Source Graphics Center
