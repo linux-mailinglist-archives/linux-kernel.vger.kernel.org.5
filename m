@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97480797977
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01A979794A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbjIGRP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
+        id S241089AbjIGRJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbjIGRPY (ORCPT
+        with ESMTP id S240852AbjIGRJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:15:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7E8B2
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:14:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694106895; x=1725642895;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to;
-  bh=9ZZkTEqlH0Qw0Ksag2UQ8FZGRyx63ReWeP4PizplmOQ=;
-  b=bUtmZMGKVhyKsl0XHymIe/qan6f/77+feMiA0VhnH6/HEFv/c9TFoAs9
-   E6zFmnm5YVHzzWvI1OwwVxz9uN5zvl0uDiolE68ckTSETg/WPzbC2uDH7
-   gjXoS/zkPgWYD1E86Iy51PJQO4l6o4Ne2nnBor2B1XqE8mc0773Fp08HX
-   Xvun9HhQ70zr3eXK2C0Q366X/HaC0ugSHJhjIZbUC1H3myo8oo8/k78pu
-   LTejCE7/dlETMbJEp39h87RH5PoGZ8vyAg8UbH8SP8/TdOGg4P83ekyMK
-   zmUGx0Z7hrIYNvEtcApKh86TeA9wG/3VdrTRtXr3dfnoMq/FKKE5WwGYp
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="376321868"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="376321868"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 10:04:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="885285316"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="885285316"
-Received: from ningle-mobl2.amr.corp.intel.com (HELO [10.209.13.77]) ([10.209.13.77])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 10:04:02 -0700
-Content-Type: multipart/mixed; boundary="------------Y9D6LFKBxPpGhCqj5khk0TSE"
-Message-ID: <cb958f57-6a3a-d626-da51-53ad0e61870c@intel.com>
-Date:   Thu, 7 Sep 2023 10:04:16 -0700
+        Thu, 7 Sep 2023 13:09:53 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E7151717;
+        Thu,  7 Sep 2023 10:09:21 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-57354433a7dso689481eaf.1;
+        Thu, 07 Sep 2023 10:09:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694106504; x=1694711304; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QiLf3uNcgpAG/VlEyrfKIhMwh6HWTY51ql5QMlDoomc=;
+        b=IjkkyQxZNLhbX2MbbuZ1MoN1jJOAxAjLGSD0y+szqHEnmKxFCD6/zE9FkvIWzI+LZh
+         iV1FeBo3j684RuTCaGUBuwwOoBPCGMR4uXikaKiOptNspec8Yt4FMOVzyfH00IGDgO4J
+         t04nBcMBOzje5JHNQIjKBNsiym8uacYSy5VHxvRJWuZh5BDUSZr0cs57jW1k4IC/39M3
+         ucfBwiMTmKrzBfL8emAHqF5EfNw1vGYfL5srnOG0JbLXM2sIdJprmAMyV2s2muhprzGe
+         tyqMfWThNedlgR/Mv5FVYYkRuDcDJyIQw/aNqSl3bSKDvkJOWcvKaJGdEUDafJQ2uZ8z
+         k/dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694106504; x=1694711304;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QiLf3uNcgpAG/VlEyrfKIhMwh6HWTY51ql5QMlDoomc=;
+        b=XLKUDDy3RPOGX+r7ZOC8+nP1kHBtDXe0SBsp1+UxFE48nLW+kgHg1i72a2B3m4jLoB
+         MggfjWqh8dnwPJ0+9hwbVkeNkjdiCRINfCMgmDHumhb++PEqY4r2D+/BZboEhm9YNNoa
+         1FoFeck9zvyANz66yk+9f3RLJKmBQT8npEWlsA3fzGnVhcDRdcGC2Xj8//t06LIYqlj2
+         JDY3V06J2qA6ZQU60g3jusZ1bQ6zlrUL5mYuG7k2kFmr/feOC3LObJ2TV6p9BAeCV2Kg
+         PhNITC7Um/SBTOfQU13mTkK52djv/jbt3/P5vXD90XtlEU1+UFRzW0KDTjyUVRgA9gnY
+         K5yw==
+X-Gm-Message-State: AOJu0Yzt7zYHoXPy8pzJauJrcMcdonv6rQDmDdSOxJNcfGtzORi8uxB3
+        aw7G/FI6FS6qvHdFo3MmJIuZDNpM3c1Yu1SXzj0=
+X-Google-Smtp-Source: AGHT+IFK9cveQPqw6uw7m0RaAlVH54NgqS7eB/Xf2/i7HYl5lAD2mx7mV1DCJ7P3cb8TLnN7G3v8hGn5vDHx3AT62p4=
+X-Received: by 2002:a05:6808:2394:b0:3a9:e8e2:57a7 with SMTP id
+ bp20-20020a056808239400b003a9e8e257a7mr198349oib.53.1694106503725; Thu, 07
+ Sep 2023 10:08:23 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] x86/sev-es: Do not use copy_from_kernel_nofault in early
- #VC handler
-Content-Language: en-US
-To:     Adam Dunlap <acdunlap@google.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nikunj A Dadhania <nikunj@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>, Jacob Xu <jacobhxu@google.com>
-References: <20230906224541.2778523-1-acdunlap@google.com>
- <e037f1c0-aaf6-7951-04ea-6d27e557b61b@intel.com>
- <CAMBK9=b9V6WxYZNrVPNV5vzBZ-mT_noBAxod=ijqrV3bUXAUyA@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <CAMBK9=b9V6WxYZNrVPNV5vzBZ-mT_noBAxod=ijqrV3bUXAUyA@mail.gmail.com>
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <CAEwN+MCorDCS7EhN40Qgja_nY+SFc3G61Zd6yntqAS+w26YO9Q@mail.gmail.com>
+ <ZPnR4Cx6_Hh3weEl@debian.me> <ZPnWb15ucCotffav@shell.armlinux.org.uk> <CAJX_Q+0-v=oadJ697VDawyEhDSPBAS_oqakZFHWVUfsnbCanMA@mail.gmail.com>
+In-Reply-To: <CAJX_Q+0-v=oadJ697VDawyEhDSPBAS_oqakZFHWVUfsnbCanMA@mail.gmail.com>
+From:   Raul Piper <raulpblooper@gmail.com>
+Date:   Thu, 7 Sep 2023 22:38:10 +0530
+Message-ID: <CAEwN+MAtQSSwDLiERG4uEhv5YpS6EZrL4FER3wxVx+e3paxz4w@mail.gmail.com>
+Subject: Re: Debugging i2c : i2cdetect cant detect a device on i2c line
+To:     tanure@linux.com
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Devicetree <devicetree@vger.kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,66 +80,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------Y9D6LFKBxPpGhCqj5khk0TSE
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+On Thu, Sep 7, 2023 at 9:47=E2=80=AFPM Lucas Tanure <tanure@linux.com> wrot=
+e:
+>
+>
+>
+> On Thu, 7 Sept 2023, 14:56 Russell King (Oracle), <linux@armlinux.org.uk>=
+ wrote:
+>>
+>> On Thu, Sep 07, 2023 at 08:36:32PM +0700, Bagas Sanjaya wrote:
+>> > [also Cc: devicetree and ARM folks]
+>> >
+>> > On Thu, Sep 07, 2023 at 08:21:44AM +0530, Raul Piper wrote:
+>> > > Hello ,
+>> > > I am trying to detect an i2c device A on i2c1 line on  one of the Ar=
+m
+>> > > Cortex A7 platform but not able to see any device on a given address=
+ (
+>> > > 0x3d) .
+>> > >
+>> > > Is there any parameters of i2c which i can change like rise/fall tim=
+e
+>> > > , timeout etc in a device tree or kernel source and re test it?
+>> > > I have tried changing the i2c speed from 100KHz to 400 KHz  but no s=
+uccess.
+>> > > I have even tried removing the 1.5K pull ups on the i2c lines but no=
+ result.
+>>
+>> Honestly, from this description, I'm wondering if this posting is a joke=
+.
+>>
+>> I2C is entirely _reliant_ on pull-ups. It's a wire-or bus, and the
+>> logic 1 state is created by no device pulling the signal low, thereby
+>> allowing the pull-up resistor to pull the line to the logic 1 state.
+>>
+>> The pull-up must be the correct strength for the devices on the bus.
+>> If it is too strong, then a driver may not be able to pull the signal
+>> sufficiently low for other devices to register it as a logic 0.
+>>
+>> Conversely, the pull-up must be strong enough so that the rise-time
+>> of the signal is sufficient to register as a logic 1.
+>>
+>> If it's a problem with the rise time, then increasing the clock rate
+>> will just make the situation worse.
 
-On 9/6/23 16:25, Adam Dunlap wrote:
->> Usually, we'll add some gunk in arch/x86/boot/compressed/misc.h to
->> override the troublesome implementation.  In this case, it would make a
->> lot of sense to somehow avoid touching boot_cpu_data.x86_virt_bits in
->> the first place.
-> Thanks for the comment. I realize this patch is doing something a bit misleading
-> here. In this case, "early" does not refer to the compressed kernel, but
-> actually the regular kernel but in the stage with this early #VC handler
-> vc_boot_ghcb (instead of the usual vc_raw_handle_exception). This #VC handler
-> triggers for the first time on a cpuid instruction in secondary_startup_64, but
-> boot_cpu_data.x86_virt_bits is not initialized until setup_arch inside of
-> start_kernel, which is at the end of secondary_startup_64.
+Where can I change this time? Can you please provide example of some
+device/device tree?
 
-How about something like the attached patch?
+>>
+>> So, if other devices work on the bus, it could be that the Vil
+>> threshold of this device is not being achieved, whereas the other
+>> devices are happy. Therefore, I would suggest you study the data
+>> sheets of the device that isn't being detected.
+What Vil threshold? I checked the power supply to this device and it
+is ~3.3 V as expected.
 
-It avoids passing around 'is_early' everywhere, which I'm sure we'll get
-wrong at some point.  If we get it wrong, we lose *ALL* the checking
-that copy_from_kernel*() does in addition to the canonical checks.
+>>
+>> Lastly, if the undetectable device has a reset line, it's possible
+>> that the device isn't responding because it's being held in reset.
+The device is fine, I am sure about it. As the device provides data on
+USART as well and I am getting it.
+>
+> Please try to use an logic analyser like saleae logic.
+> Probe the i2c bus, reset line, power lines, pins that set the i2c address=
+ for the device.
+> Can tell us which device it is?
 
-The attached patch at least preserves the userspace address checks.
+Its a GPS sensor(still under development) .Logic Analyser gives NACK
+on the given address.
+I may be using the wrong pull ups value which i am checking.But from
+software point of view is there a Device tree setting to enable the
+internal pull ups or adjust the rise/fall time as said above.
 
-This also makes me wonder how much other code is called via the early
-exception handlers that's subtly broken.  I scanned a function or two
-deep and the instruction decoding was the most guilty looking thing.
-But a closer look would be appreciated.
-
-Also, what's the root cause here?  What's causing the early exception?
-It is some silly CPUID leaf?  Should we be more careful to just avoid
-these exceptions?
---------------Y9D6LFKBxPpGhCqj5khk0TSE
-Content-Type: text/x-patch; charset=UTF-8; name="xvb.patch"
-Content-Disposition: attachment; filename="xvb.patch"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtLWdpdCBhL2FyY2gveDg2L21tL21hY2Nlc3MuYyBiL2FyY2gveDg2L21tL21hY2Nl
-c3MuYwppbmRleCA1YTUzYzJjYzE2OWMuLjRmNzZjMzRkNzBhMiAxMDA2NDQKLS0tIGEvYXJj
-aC94ODYvbW0vbWFjY2Vzcy5jCisrKyBiL2FyY2gveDg2L21tL21hY2Nlc3MuYwpAQCAtNywx
-NCArNywyNCBAQAogYm9vbCBjb3B5X2Zyb21fa2VybmVsX25vZmF1bHRfYWxsb3dlZChjb25z
-dCB2b2lkICp1bnNhZmVfc3JjLCBzaXplX3Qgc2l6ZSkKIHsKIAl1bnNpZ25lZCBsb25nIHZh
-ZGRyID0gKHVuc2lnbmVkIGxvbmcpdW5zYWZlX3NyYzsKKwlib29sIHJldDsKIAogCS8qCi0J
-ICogUmFuZ2UgY292ZXJpbmcgdGhlIGhpZ2hlc3QgcG9zc2libGUgY2Fub25pY2FsIHVzZXJz
-cGFjZSBhZGRyZXNzCi0JICogYXMgd2VsbCBhcyBub24tY2Fub25pY2FsIGFkZHJlc3MgcmFu
-Z2UuIEZvciB0aGUgY2Fub25pY2FsIHJhbmdlCi0JICogd2UgYWxzbyBuZWVkIHRvIGluY2x1
-ZGUgdGhlIHVzZXJzcGFjZSBndWFyZCBwYWdlLgorCSAqIERvIG5vdCBhbGxvdyB1c2Vyc3Bh
-Y2UgYWRkcmVzc2VzLiAgVGhpcyBkaXNhbGxvd3MKKwkgKiBub3JtYWwgdXNlcnNwYWNlIGFu
-ZCB0aGUgdXNlcnNwYWNlIGd1YXJkIHBhZ2U6CiAJICovCi0JcmV0dXJuIHZhZGRyID49IFRB
-U0tfU0laRV9NQVggKyBQQUdFX1NJWkUgJiYKLQkgICAgICAgX19pc19jYW5vbmljYWxfYWRk
-cmVzcyh2YWRkciwgYm9vdF9jcHVfZGF0YS54ODZfdmlydF9iaXRzKTsKKwlpZiAodmFkZHIg
-PCBUQVNLX1NJWkVfTUFYICsgUEFHRV9TSVpFKQorCQlyZXR1cm4gZmFsc2U7CisKKwkvKgor
-CSAqIEFsbG93IGV2ZXJ5dGhpbmcgZHVyaW5nIGVhcmx5IGJvb3QgYmVmb3JlICd4ODZfdmly
-dF9iaXRzJworCSAqIGlzIGluaXRpYWxpemVkLiAgTmVlZGVkIGZvciBpbnN0cnVjdGlvbiBk
-ZWNvZGluZyBpbiBlYXJseQorCSAqIGV4Y2VwdGlvbiBoYW5kbGVycy4KKwkgKi8KKwlpZiAo
-IWJvb3RfY3B1X2RhdGEueDg2X3ZpcnRfYml0cykKKwkJcmV0dXJuIHRydWU7CisKKwlyZXR1
-cm4gX19pc19jYW5vbmljYWxfYWRkcmVzcyh2YWRkciwgYm9vdF9jcHVfZGF0YS54ODZfdmly
-dF9iaXRzKTsKIH0KICNlbHNlCiBib29sIGNvcHlfZnJvbV9rZXJuZWxfbm9mYXVsdF9hbGxv
-d2VkKGNvbnN0IHZvaWQgKnVuc2FmZV9zcmMsIHNpemVfdCBzaXplKQo=
-
---------------Y9D6LFKBxPpGhCqj5khk0TSE--
+>
+>
+>
+>> --
+>> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+>> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+>>
+>> _______________________________________________
+>> Kernelnewbies mailing list
+>> Kernelnewbies@kernelnewbies.org
+>> https://lists.kernelnewbies.org/mailman/listinfo/kernelnewbies
