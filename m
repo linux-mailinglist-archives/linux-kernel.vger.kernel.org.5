@@ -2,115 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FCD579738A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD79B7973CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241434AbjIGP0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51884 "EHLO
+        id S245527AbjIGPaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:30:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242602AbjIGPYu (ORCPT
+        with ESMTP id S245334AbjIGP2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:24:50 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5701BF2;
-        Thu,  7 Sep 2023 08:24:32 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3878cQU1000733;
-        Thu, 7 Sep 2023 08:51:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=fJTpsIq+wH0+3ox3kqJA6Hnx5aFY/FIBfaKD7qgThbI=;
- b=CNxc4Rg/FziXKrAmAX9b17mRW5qa3qbczx7XylObPkLT8so50YN5p8IrZiDA1EQUPAbL
- 8ZwYN09z/JXvrqUg03mhYGFqDn1XeNIajYTna00yLknCffFtPgy7lBaN11x+jFOvoRtX
- DnqsV3Bzp3skHmj4/LWkjHBF2xPO1HR17j8dU0rRXYe+DOLk5yEBr2wpTw5yglj7XWYh
- wiZ8CiepLf3OZpjTyQ980DNX9I/DoCCB9LXQK4+ibY+88IpcuC9yJS98LVfuMJqc3Y4U
- nCnG1b5VJFzVnhj/Yzu8oJzb9rgccEZIloYRHmoDZebSjed5MfWNIFkHzzD5LZXhi7L3 Dg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3syay10gst-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Sep 2023 08:51:29 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3878dY8b005926;
-        Thu, 7 Sep 2023 08:51:28 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3syay10gs5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Sep 2023 08:51:28 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3877rAYs021360;
-        Thu, 7 Sep 2023 08:51:27 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svfrytgtj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Sep 2023 08:51:27 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3878pN6X62652826
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 7 Sep 2023 08:51:24 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D842720040;
-        Thu,  7 Sep 2023 08:51:23 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EF02720043;
-        Thu,  7 Sep 2023 08:51:22 +0000 (GMT)
-Received: from osiris (unknown [9.152.212.60])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Thu,  7 Sep 2023 08:51:22 +0000 (GMT)
-Date:   Thu, 7 Sep 2023 10:51:19 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     j.granados@samsung.com
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Guo Ren <guoren@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-ia64@vger.kernel.org, linux-csky@vger.kernel.org
-Subject: Re: [PATCH 1/8] S390: Remove sentinel elem from ctl_table arrays
-Message-ID: <20230907085119.6134-A-hca@linux.ibm.com>
-References: <20230906-jag-sysctl_remove_empty_elem_arch-v1-0-3935d4854248@samsung.com>
- <20230906-jag-sysctl_remove_empty_elem_arch-v1-1-3935d4854248@samsung.com>
+        Thu, 7 Sep 2023 11:28:38 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B381BF0;
+        Thu,  7 Sep 2023 08:28:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694100491; x=1725636491;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9RBRiFY3vB7fzj4b5KuQkX2LlrLmbM4nRtsKuZEBuqA=;
+  b=Pbp6pS9KiO5G187GzHhSRR93LfGSTGeKRIMqVZmOAXhaEKXg3qKCrvfV
+   TWQ4JEcEQuy+Zmamcpu0dP7j5/7HnCYaj+TvtFacnqhjNvqmLdz3A4yXr
+   xPhCyUzGGllpjzTI0cn+w9XTFEmaRP9v1QxierxYANojVpXF2lWUCKMRs
+   sbevC8o8RbRfPmK3YUJdhaHhlbgfFjSfRSq7JVRHcAUmKJo+zHtkwLxv7
+   BXwJ50SS2NsLY0lLB/4KjKQFpTma8A4xBWCvMrwqmpY/aLuW8WPPHitBr
+   jhDTlYNdNv3vGz3UAbjFuVotzTAG4TkeE74EbQNe17mp1O1EQjAOOfk/q
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="381084933"
+X-IronPort-AV: E=Sophos;i="6.02,234,1688454000"; 
+   d="scan'208";a="381084933"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 01:52:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="807440610"
+X-IronPort-AV: E=Sophos;i="6.02,234,1688454000"; 
+   d="scan'208";a="807440610"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 07 Sep 2023 01:51:56 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qeAjy-00013h-2e;
+        Thu, 07 Sep 2023 08:51:54 +0000
+Date:   Thu, 7 Sep 2023 16:51:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Varadarajan Narayanan <quic_varada@quicinc.com>,
+        ilia.lin@kernel.org, agross@kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, rafael@kernel.org,
+        viresh.kumar@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        quic_kathirav@quicinc.com, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Varadarajan Narayanan <quic_varada@quicinc.com>
+Subject: Re: [PATCH v1 04/10] clk: qcom: apss-ipq6018: ipq5332: add safe
+ source switch for a53pll
+Message-ID: <202309071656.f4IVOEO6-lkp@intel.com>
+References: <5e3c29df2b42cceb8072b00546a78e1b99b2d374.1693996662.git.quic_varada@quicinc.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230906-jag-sysctl_remove_empty_elem_arch-v1-1-3935d4854248@samsung.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: MpEEAkP1vgr2ZFXBjpilhxpWoREunUug
-X-Proofpoint-GUID: 9vYERwk7Ox9_cC-DaXYkOIKd1FOzxdpR
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-06_12,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=720
- lowpriorityscore=0 bulkscore=0 adultscore=0 phishscore=0 spamscore=0
- malwarescore=0 clxscore=1011 priorityscore=1501 suspectscore=0
- impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309070074
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <5e3c29df2b42cceb8072b00546a78e1b99b2d374.1693996662.git.quic_varada@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -118,27 +74,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 12:03:22PM +0200, Joel Granados via B4 Relay wrote:
-> From: Joel Granados <j.granados@samsung.com>
-> 
-> This commit comes at the tail end of a greater effort to remove the
-> empty elements at the end of the ctl_table arrays (sentinels) which
-> will reduce the overall build time size of the kernel and run time
-> memory bloat by ~64 bytes per sentinel (further information Link :
-> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> 
-> Remove the sentinel element from appldata_table, s390dbf_table,
-> topology_ctl_table, cmm_table and page_table_sysctl. Reduced the
-> memory allocation in appldata_register_ops by 1 effectively removing the
-> sentinel from ops->ctl_table.
-> 
-> Signed-off-by: Joel Granados <j.granados@samsung.com>
-> ---
->  arch/s390/appldata/appldata_base.c | 6 ++----
->  arch/s390/kernel/debug.c           | 3 +--
->  arch/s390/kernel/topology.c        | 3 +--
->  arch/s390/mm/cmm.c                 | 3 +--
->  arch/s390/mm/pgalloc.c             | 3 +--
->  5 files changed, 6 insertions(+), 12 deletions(-)
+Hi Varadarajan,
 
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.5 next-20230907]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Varadarajan-Narayanan/clk-qcom-clk-alpha-pll-introduce-stromer-plus-ops/20230907-132537
+base:   linus/master
+patch link:    https://lore.kernel.org/r/5e3c29df2b42cceb8072b00546a78e1b99b2d374.1693996662.git.quic_varada%40quicinc.com
+patch subject: [PATCH v1 04/10] clk: qcom: apss-ipq6018: ipq5332: add safe source switch for a53pll
+config: s390-randconfig-r031-20230907 (https://download.01.org/0day-ci/archive/20230907/202309071656.f4IVOEO6-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230907/202309071656.f4IVOEO6-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309071656.f4IVOEO6-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from drivers/clk/qcom/apss-ipq6018.c:10:
+   In file included from include/linux/regmap.h:20:
+   In file included from include/linux/iopoll.h:14:
+   In file included from include/linux/io.h:13:
+   In file included from arch/s390/include/asm/io.h:78:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __raw_readb(PCI_IOBASE + addr);
+                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+                                                           ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/big_endian.h:37:59: note: expanded from macro '__le16_to_cpu'
+   #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
+                                                             ^
+   include/uapi/linux/swab.h:102:54: note: expanded from macro '__swab16'
+   #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
+                                                        ^
+   In file included from drivers/clk/qcom/apss-ipq6018.c:10:
+   In file included from include/linux/regmap.h:20:
+   In file included from include/linux/iopoll.h:14:
+   In file included from include/linux/io.h:13:
+   In file included from arch/s390/include/asm/io.h:78:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+                                                           ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/big_endian.h:35:59: note: expanded from macro '__le32_to_cpu'
+   #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
+                                                             ^
+   include/uapi/linux/swab.h:115:54: note: expanded from macro '__swab32'
+   #define __swab32(x) (__u32)__builtin_bswap32((__u32)(x))
+                                                        ^
+   In file included from drivers/clk/qcom/apss-ipq6018.c:10:
+   In file included from include/linux/regmap.h:20:
+   In file included from include/linux/iopoll.h:14:
+   In file included from include/linux/io.h:13:
+   In file included from arch/s390/include/asm/io.h:78:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writeb(value, PCI_IOBASE + addr);
+                               ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+                                                         ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+                                                         ~~~~~~~~~~ ^
+   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           readsb(PCI_IOBASE + addr, buffer, count);
+                  ~~~~~~~~~~ ^
+   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           readsw(PCI_IOBASE + addr, buffer, count);
+                  ~~~~~~~~~~ ^
+   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           readsl(PCI_IOBASE + addr, buffer, count);
+                  ~~~~~~~~~~ ^
+   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           writesb(PCI_IOBASE + addr, buffer, count);
+                   ~~~~~~~~~~ ^
+   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           writesw(PCI_IOBASE + addr, buffer, count);
+                   ~~~~~~~~~~ ^
+   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+           writesl(PCI_IOBASE + addr, buffer, count);
+                   ~~~~~~~~~~ ^
+>> drivers/clk/qcom/apss-ipq6018.c:94:11: error: use of undeclared identifier 'P_GPLL0'
+                   index = P_GPLL0;
+                           ^
+   12 warnings and 1 error generated.
+
+
+vim +/P_GPLL0 +94 drivers/clk/qcom/apss-ipq6018.c
+
+    86	
+    87	static int cpu_clk_notifier_fn(struct notifier_block *nb, unsigned long action,
+    88					void *data)
+    89	{
+    90		u8 index;
+    91		int err;
+    92	
+    93		if (action == PRE_RATE_CHANGE)
+  > 94			index = P_GPLL0;
+    95		else if (action == POST_RATE_CHANGE)
+    96			index = P_APSS_PLL_EARLY;
+    97		else
+    98			return 0;
+    99	
+   100		err = clk_rcg2_mux_closest_ops.set_parent(&apcs_alias0_clk_src.clkr.hw,
+   101							  index);
+   102	
+   103		return notifier_from_errno(err);
+   104	}
+   105	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
