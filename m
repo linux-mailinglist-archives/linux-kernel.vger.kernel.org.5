@@ -2,138 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B962C797F48
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 01:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FEB797F49
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 01:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240086AbjIGXkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 19:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55470 "EHLO
+        id S240203AbjIGXlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 19:41:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231601AbjIGXkM (ORCPT
+        with ESMTP id S231601AbjIGXlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 19:40:12 -0400
-Received: from out-210.mta0.migadu.com (out-210.mta0.migadu.com [91.218.175.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A799F1BD2
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 16:40:07 -0700 (PDT)
-Date:   Thu, 7 Sep 2023 19:40:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694130005;
+        Thu, 7 Sep 2023 19:41:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EF91BD3
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 16:40:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694130052;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RWoDi3uV46oY7SIh3m0rhGAD6sZcLL9xJq9LF0bY/sg=;
-        b=XWMTynq1Bzwny1usLjn4Le2XylzeIFJpbafRMoAau0HyAlZ0bjSgMCYyHv2yE2hPP61svM
-        jM16YJWJSslPWvh2/wNy9fciQOSqw8VchwqBilx7YOqI0GJNvCZXU4o2IEahN7AgZB+7Pz
-        yFuWLDf6zgAk8Tg5sNVu95XrKOX9lHM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0oM1ssWxMjgdk1YS4u11+h65Kummyok+rDsO3Fg0IQw=;
+        b=X17/LaSIFNZpRmq0RAnDKFU9dAZGAEfbWADNpA1h8Unn/M583b23QvBFDrVeVoxRZuZc3p
+        3uwz6vreDJd2Ty0cwNQfX0GkoMhf/e5nWMK+ejYKb7VvR23o+AmYnTux+B96lL3CPrWNAb
+        gA8F4veepkBDj/z6yaZ360zCNWcUUYo=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-126-6NQ9vefGMWyv6XydIaa9ag-1; Thu, 07 Sep 2023 19:40:50 -0400
+X-MC-Unique: 6NQ9vefGMWyv6XydIaa9ag-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8775C948C02;
+        Thu,  7 Sep 2023 23:40:50 +0000 (UTC)
+Received: from pasta.redhat.com (unknown [10.45.224.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2DD1C412F2CF;
+        Thu,  7 Sep 2023 23:40:49 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230907234001.oe4uypp6anb5vqem@moria.home.lan>
-References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
- <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC] kthread: Add kthread_stop_put
+Date:   Fri,  8 Sep 2023 01:40:48 +0200
+Message-Id: <20230907234048.2499820-1-agruenba@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 12:36:18PM -0700, Linus Torvalds wrote:
-> So I'm starting to look at this because I have most other pull
-> requests done, and while I realize there's no universal support for it
-> I suspect any further changes are better done in-tree. The out-of-tree
-> thing has been done.
-> 
-> However, while I'll continue to look at it in this form, I just
-> realized that it's completely unacceptable for one very obvious
-> reason:
-> 
-> On Sat, 2 Sept 2023 at 20:26, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> >   https://evilpiepirate.org/git/bcachefs.git bcachefs-for-upstream
-> 
-> No way am I pulling that without a signed tag and a pgp key with a
-> chain of trust. You've been around for long enough that having such a
-> key shouldn't be a problem for you, so make it happen.
-> 
-> There are a few other issues that I have with this, and Christoph did
-> mention a big one: it's not been in linux-next. I don't know why I
-> thought it had been, it's just such an obvious thing for any new "I
-> want this merged upstream" tree.
-> 
-> So these kinds of "I'll just ignore _all_ basic rules" kinds of issues
-> do annoy me.
-> 
-> I need to know that you understand that if you actually want this
-> upstream, you need to work with upstream.
-> 
-> That very much means *NOT* continuing this "I'll just do it my way".
-> You need to show that you can work with others, that you can work
-> within the framework of upstream, and that not every single thread you
-> get into becomes an argument.
-> 
-> This, btw, is not negotiable.  If you feel uncomfortable with that
-> basic notion, you had better just continue doing development outside
-> the main kernel tree for another decade.
-> 
-> The fact that I only now notice that you never submitted this to
-> linux-next is obviously on me. My bad.
-> 
-> But at the same time it worries me that it might be a sign of you just
-> thinking that your way is special.
-> 
->                 Linus
+Add a kthread_stop_put() helper that stops a thread and puts its task
+struct.  Use it to replace the various instances of kthread_stop()
+followed by put_task_struct().
 
-Honestly, though, this process is getting entirely kafkaesque.
+Remove the kthread_stop_put() macro in usbip that is similar but
+doesn't return the result of kthread_stop().
 
-I've been spending the past month or two working laying the groundwork
-for putting together a team to work on this, because god knows we need
-fresh blood in filesystem land - but that's on hold. Getting blindsided
-by another three month delay hurts, but that's not even the main thing.
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 
-The biggest thing has just been the non stop hostility and accusations -
-everything from "fracturing the community" too "ignoring all the rules"
-and my favorite, "is this the hill Kent wants to die on?" - when I'm
-just trying to get work done.
+diff --git a/drivers/accel/ivpu/ivpu_job.c b/drivers/accel/ivpu/ivpu_job.c
+index de9e69f70af7..76f468c9f761 100644
+--- a/drivers/accel/ivpu/ivpu_job.c
++++ b/drivers/accel/ivpu/ivpu_job.c
+@@ -618,6 +618,5 @@ int ivpu_job_done_thread_init(struct ivpu_device *vdev)
+ 
+ void ivpu_job_done_thread_fini(struct ivpu_device *vdev)
+ {
+-	kthread_stop(vdev->job_done_thread);
+-	put_task_struct(vdev->job_done_thread);
++	kthread_stop_put(vdev->job_done_thread);
+ }
+diff --git a/drivers/dma-buf/st-dma-fence-chain.c b/drivers/dma-buf/st-dma-fence-chain.c
+index c0979c8049b5..9c2a0c082a76 100644
+--- a/drivers/dma-buf/st-dma-fence-chain.c
++++ b/drivers/dma-buf/st-dma-fence-chain.c
+@@ -476,10 +476,9 @@ static int find_race(void *arg)
+ 	for (i = 0; i < ncpus; i++) {
+ 		int ret;
+ 
+-		ret = kthread_stop(threads[i]);
++		ret = kthread_stop_put(threads[i]);
+ 		if (ret && !err)
+ 			err = ret;
+-		put_task_struct(threads[i]);
+ 	}
+ 	kfree(threads);
+ 
+@@ -591,8 +590,7 @@ static int wait_forward(void *arg)
+ 	for (i = 0; i < fc.chain_length; i++)
+ 		dma_fence_signal(fc.fences[i]);
+ 
+-	err = kthread_stop(tsk);
+-	put_task_struct(tsk);
++	err = kthread_stop_put(tsk);
+ 
+ err:
+ 	fence_chains_fini(&fc);
+@@ -621,8 +619,7 @@ static int wait_backward(void *arg)
+ 	for (i = fc.chain_length; i--; )
+ 		dma_fence_signal(fc.fences[i]);
+ 
+-	err = kthread_stop(tsk);
+-	put_task_struct(tsk);
++	err = kthread_stop_put(tsk);
+ 
+ err:
+ 	fence_chains_fini(&fc);
+@@ -669,8 +666,7 @@ static int wait_random(void *arg)
+ 	for (i = 0; i < fc.chain_length; i++)
+ 		dma_fence_signal(fc.fences[i]);
+ 
+-	err = kthread_stop(tsk);
+-	put_task_struct(tsk);
++	err = kthread_stop_put(tsk);
+ 
+ err:
+ 	fence_chains_fini(&fc);
+diff --git a/drivers/dma-buf/st-dma-fence.c b/drivers/dma-buf/st-dma-fence.c
+index fb6e0a6ae2c9..b7c6f7ea9e0c 100644
+--- a/drivers/dma-buf/st-dma-fence.c
++++ b/drivers/dma-buf/st-dma-fence.c
+@@ -548,11 +548,9 @@ static int race_signal_callback(void *arg)
+ 		for (i = 0; i < ARRAY_SIZE(t); i++) {
+ 			int err;
+ 
+-			err = kthread_stop(t[i].task);
++			err = kthread_stop_put(t[i].task);
+ 			if (err && !ret)
+ 				ret = err;
+-
+-			put_task_struct(t[i].task);
+ 		}
+ 	}
+ 
+diff --git a/drivers/gpu/drm/i915/gt/selftest_migrate.c b/drivers/gpu/drm/i915/gt/selftest_migrate.c
+index 3def5ca72dec..0fb07f073baa 100644
+--- a/drivers/gpu/drm/i915/gt/selftest_migrate.c
++++ b/drivers/gpu/drm/i915/gt/selftest_migrate.c
+@@ -719,11 +719,9 @@ static int threaded_migrate(struct intel_migrate *migrate,
+ 		if (IS_ERR_OR_NULL(tsk))
+ 			continue;
+ 
+-		status = kthread_stop(tsk);
++		status = kthread_stop_put(tsk);
+ 		if (status && !err)
+ 			err = status;
+-
+-		put_task_struct(tsk);
+ 	}
+ 
+ 	kfree(thread);
+diff --git a/drivers/net/xen-netback/interface.c b/drivers/net/xen-netback/interface.c
+index f3f2c07423a6..33c8143619f0 100644
+--- a/drivers/net/xen-netback/interface.c
++++ b/drivers/net/xen-netback/interface.c
+@@ -672,8 +672,7 @@ int xenvif_connect_ctrl(struct xenvif *vif, grant_ref_t ring_ref,
+ static void xenvif_disconnect_queue(struct xenvif_queue *queue)
+ {
+ 	if (queue->task) {
+-		kthread_stop(queue->task);
+-		put_task_struct(queue->task);
++		kthread_stop_put(queue->task);
+ 		queue->task = NULL;
+ 	}
+ 
+diff --git a/drivers/usb/usbip/usbip_common.h b/drivers/usb/usbip/usbip_common.h
+index d8cbd2dfc2c2..282efca64a01 100644
+--- a/drivers/usb/usbip/usbip_common.h
++++ b/drivers/usb/usbip/usbip_common.h
+@@ -298,12 +298,6 @@ struct usbip_device {
+ 	__k;								   \
+ })
+ 
+-#define kthread_stop_put(k)		\
+-	do {				\
+-		kthread_stop(k);	\
+-		put_task_struct(k);	\
+-	} while (0)
+-
+ /* usbip_common.c */
+ void usbip_dump_urb(struct urb *purb);
+ void usbip_dump_header(struct usbip_header *pdu);
+diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
+index 33ca04733e93..ecf789b7168c 100644
+--- a/fs/gfs2/ops_fstype.c
++++ b/fs/gfs2/ops_fstype.c
+@@ -1126,8 +1126,7 @@ static int init_threads(struct gfs2_sbd *sdp)
+ 	return 0;
+ 
+ fail:
+-	kthread_stop(sdp->sd_logd_process);
+-	put_task_struct(sdp->sd_logd_process);
++	kthread_stop_put(sdp->sd_logd_process);
+ 	sdp->sd_logd_process = NULL;
+ 	return error;
+ }
+@@ -1135,13 +1134,11 @@ static int init_threads(struct gfs2_sbd *sdp)
+ void gfs2_destroy_threads(struct gfs2_sbd *sdp)
+ {
+ 	if (sdp->sd_logd_process) {
+-		kthread_stop(sdp->sd_logd_process);
+-		put_task_struct(sdp->sd_logd_process);
++		kthread_stop_put(sdp->sd_logd_process);
+ 		sdp->sd_logd_process = NULL;
+ 	}
+ 	if (sdp->sd_quotad_process) {
+-		kthread_stop(sdp->sd_quotad_process);
+-		put_task_struct(sdp->sd_quotad_process);
++		kthread_stop_put(sdp->sd_quotad_process);
+ 		sdp->sd_quotad_process = NULL;
+ 	}
+ }
+diff --git a/include/linux/kthread.h b/include/linux/kthread.h
+index 2c30ade43bc8..b11f53c1ba2e 100644
+--- a/include/linux/kthread.h
++++ b/include/linux/kthread.h
+@@ -86,6 +86,7 @@ void free_kthread_struct(struct task_struct *k);
+ void kthread_bind(struct task_struct *k, unsigned int cpu);
+ void kthread_bind_mask(struct task_struct *k, const struct cpumask *mask);
+ int kthread_stop(struct task_struct *k);
++int kthread_stop_put(struct task_struct *k);
+ bool kthread_should_stop(void);
+ bool kthread_should_park(void);
+ bool kthread_should_stop_or_park(void);
+diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+index d309ba84e08a..1782f90cd8c6 100644
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -1852,15 +1852,13 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
+ 		struct task_struct *t = new->thread;
+ 
+ 		new->thread = NULL;
+-		kthread_stop(t);
+-		put_task_struct(t);
++		kthread_stop_put(t);
+ 	}
+ 	if (new->secondary && new->secondary->thread) {
+ 		struct task_struct *t = new->secondary->thread;
+ 
+ 		new->secondary->thread = NULL;
+-		kthread_stop(t);
+-		put_task_struct(t);
++		kthread_stop_put(t);
+ 	}
+ out_mput:
+ 	module_put(desc->owner);
+@@ -1971,12 +1969,9 @@ static struct irqaction *__free_irq(struct irq_desc *desc, void *dev_id)
+ 	 * the same bit to a newly requested action.
+ 	 */
+ 	if (action->thread) {
+-		kthread_stop(action->thread);
+-		put_task_struct(action->thread);
+-		if (action->secondary && action->secondary->thread) {
+-			kthread_stop(action->secondary->thread);
+-			put_task_struct(action->secondary->thread);
+-		}
++		kthread_stop_put(action->thread);
++		if (action->secondary && action->secondary->thread)
++			kthread_stop_put(action->secondary->thread);
+ 	}
+ 
+ 	/* Last action releases resources */
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index c46128ec0c0a..99ee8d11bfcc 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -715,6 +715,30 @@ int kthread_stop(struct task_struct *k)
+ }
+ EXPORT_SYMBOL(kthread_stop);
+ 
++/**
++ * kthread_stop_put - stop a thread and put its task struct
++ *
++ * Stops a kthread and put its task_struct.  This is meant for callers
++ * that are holding an extra reference on the task struct, for example:
++ *
++ *   t = kthread_create(...);
++ *   if (!IS_ERR(t)) {
++ *     get_task_struct(t);
++ *     wake_up_process(t);
++ *   }
++ *
++ * Returns the result of kthread_stop().
++ */
++int kthread_stop_put(struct task_struct *k)
++{
++	int ret;
++
++	ret = kthread_stop(k);
++	put_task_struct(k);
++	return ret;
++}
++EXPORT_SYMBOL(kthread_stop_put);
++
+ int kthreadd(void *unused)
+ {
+ 	struct task_struct *tsk = current;
+diff --git a/kernel/smpboot.c b/kernel/smpboot.c
+index f47d8f375946..1992b62e980b 100644
+--- a/kernel/smpboot.c
++++ b/kernel/smpboot.c
+@@ -272,8 +272,7 @@ static void smpboot_destroy_threads(struct smp_hotplug_thread *ht)
+ 		struct task_struct *tsk = *per_cpu_ptr(ht->store, cpu);
+ 
+ 		if (tsk) {
+-			kthread_stop(tsk);
+-			put_task_struct(tsk);
++			kthread_stop_put(tsk);
+ 			*per_cpu_ptr(ht->store, cpu) = NULL;
+ 		}
+ 	}
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index bcd2bd9d6c10..2f54f153d7f5 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -699,8 +699,7 @@ static int __damon_stop(struct damon_ctx *ctx)
+ 	if (tsk) {
+ 		get_task_struct(tsk);
+ 		mutex_unlock(&ctx->kdamond_lock);
+-		kthread_stop(tsk);
+-		put_task_struct(tsk);
++		kthread_stop_put(tsk);
+ 		return 0;
+ 	}
+ 	mutex_unlock(&ctx->kdamond_lock);
+diff --git a/net/core/pktgen.c b/net/core/pktgen.c
+index f56b8d697014..826250a0f5b1 100644
+--- a/net/core/pktgen.c
++++ b/net/core/pktgen.c
+@@ -3982,8 +3982,7 @@ static void __net_exit pg_net_exit(struct net *net)
+ 	list_for_each_safe(q, n, &list) {
+ 		t = list_entry(q, struct pktgen_thread, th_list);
+ 		list_del(&t->th_list);
+-		kthread_stop(t->tsk);
+-		put_task_struct(t->tsk);
++		kthread_stop_put(t->tsk);
+ 		kfree(t);
+ 	}
+ 
 
-I don't generally think of myself as being particularly difficult to
-work with, I get along fine with most of the filesystem developers I
-interact with - regularly sharing ideas back and forth with the XFS
-people - but these review discussions have been entirely dominated by
-the most divisive people in our community, and I'm being told it's
-entirely on me to work with the guy whos one constant in the past 15
-years has been to try and block everything I submit?
-
-I'm just trying to get work done here. I'm not trying to ignore the
-rules. I'm trying to work with people who are willing to have reasonable
-discussions.
-
--------------------
-
-When I was a teenager, I wanted nothing more than to be a Linux kernel
-programmer. I thought it utterly amazing that this huge group of people
-from around the world were working together over the internet, and that
-anyone could take part if they had the chops.
-
-That was my escape from a shitty family situation and the assholes in my
-life.
-
-But my life is different now; I have new and better people in my life,
-and I have to be thinking about them, and if merging bcachefs means I
-have to spend a lot more time in interactions like this then it's going
-to make me a shitty person to be around; and I don't want to do that to
-myself and I definitely don't want to do that to the people I care
-about.
-
-I'm going to go offline for awhile and think about what I want to do
-next.
