@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA314797B31
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FE6797C20
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343590AbjIGSIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 14:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
+        id S1344226AbjIGSlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343806AbjIGSIM (ORCPT
+        with ESMTP id S242616AbjIGSlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:08:12 -0400
-Received: from gauss.telenet-ops.be (gauss.telenet-ops.be [195.130.132.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B201BDA
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:07:48 -0700 (PDT)
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by gauss.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D0jMHz4x5vT
+        Thu, 7 Sep 2023 14:41:50 -0400
+Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [IPv6:2a02:1800:110:4::f00:10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A10180
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:41:45 -0700 (PDT)
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D04mpz4x1nk
         for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 15:43:00 +0200 (CEST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
-        by laurent.telenet-ops.be with bizsmtp
-        id j1hx2A00C2mGBSJ011hxtf; Thu, 07 Sep 2023 15:41:59 +0200
+        by xavier.telenet-ops.be with bizsmtp
+        id j1hx2A00G2mGBSJ011hxwo; Thu, 07 Sep 2023 15:41:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGQ-002m8U-9a;
+        id 1qeFGQ-002m8w-G8;
         Thu, 07 Sep 2023 15:41:57 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGf-00CMfy-Hb;
+        id 1qeFGf-00CMgX-NW;
         Thu, 07 Sep 2023 15:41:57 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -41,9 +41,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 12/52] m68k: mm: Move paging_init() to common <asm/pgtable.h>
-Date:   Thu,  7 Sep 2023 15:41:13 +0200
-Message-Id: <58e3cf7b890aa8ef578b3de60f4929fd2a3d3075.1694093327.git.geert@linux-m68k.org>
+Subject: [PATCH 19/52] m68k: atari: Make ikbd_reset() static
+Date:   Thu,  7 Sep 2023 15:41:20 +0200
+Message-Id: <5a3c56d3dc8f23b1b2fec61a6553e5f301a80497.1694093327.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
 References: <cover.1694093327.git.geert@linux-m68k.org>
@@ -61,68 +61,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/mm/motorola.c:414:13: warning: no previous prototype for ‘paging_init’ [-Wmissing-prototypes]
-      414 | void __init paging_init(void)
-	  |             ^~~~~~~~~~~
-    arch/m68k/mm/sun3mmu.c:36:13: warning: no previous prototype for ‘paging_init’ [-Wmissing-prototypes]
-       36 | void __init paging_init(void)
-	  |             ^~~~~~~~~~~
+    arch/m68k/atari/atakeyb.c:335:6: warning: no previous prototype for ‘ikbd_reset’ [-Wmissing-prototypes]
+      335 | void ikbd_reset(void)
+	  |      ^~~~~~~~~~
 
-Fix this by consolidating the multiple prototypes into the common
-<asm/pgtable.h>.
+Fix this by making ikbd_reset() static.
+There was never a user outside arch/m68k/atari/atakey.c.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/pgtable.h    | 9 +++++++++
- arch/m68k/include/asm/pgtable_no.h | 1 -
- arch/m68k/kernel/setup_mm.c        | 2 --
- 3 files changed, 9 insertions(+), 3 deletions(-)
+ arch/m68k/atari/atakeyb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/include/asm/pgtable.h b/arch/m68k/include/asm/pgtable.h
-index ad15d655a9bfb3b5..27525c6a12fd0c7f 100644
---- a/arch/m68k/include/asm/pgtable.h
-+++ b/arch/m68k/include/asm/pgtable.h
-@@ -1,6 +1,15 @@
- /* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __M68K_PGTABLE_H
-+#define __M68K_PGTABLE_H
-+
- #ifdef __uClinux__
- #include <asm/pgtable_no.h>
- #else
- #include <asm/pgtable_mm.h>
- #endif
-+
-+#ifndef __ASSEMBLY__
-+extern void paging_init(void);
-+#endif
-+
-+#endif /* __M68K_PGTABLE_H */
-diff --git a/arch/m68k/include/asm/pgtable_no.h b/arch/m68k/include/asm/pgtable_no.h
-index fc044df52b96c149..1a86c15b9008f03d 100644
---- a/arch/m68k/include/asm/pgtable_no.h
-+++ b/arch/m68k/include/asm/pgtable_no.h
-@@ -28,7 +28,6 @@
- #define PAGE_READONLY	__pgprot(0)
- #define PAGE_KERNEL	__pgprot(0)
+diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
+index 5e0e682f9c61a60e..49a9a459bdf4ccbd 100644
+--- a/arch/m68k/atari/atakeyb.c
++++ b/arch/m68k/atari/atakeyb.c
+@@ -332,7 +332,7 @@ void ikbd_write(const char *str, int len)
+ }
  
--extern void paging_init(void);
- #define swapper_pg_dir ((pgd_t *) 0)
- 
- /*
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 6f1ae01f322cf231..10310b04f77d8d79 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -107,8 +107,6 @@ EXPORT_SYMBOL(isa_sex);
- 
- #define MASK_256K 0xfffc0000
- 
--extern void paging_init(void);
--
- static void __init m68k_parse_bootinfo(const struct bi_record *record)
+ /* Reset (without touching the clock) */
+-void ikbd_reset(void)
++static void ikbd_reset(void)
  {
- 	const struct bi_record *first_record = record;
+ 	static const char cmd[2] = { 0x80, 0x01 };
+ 
 -- 
 2.34.1
 
