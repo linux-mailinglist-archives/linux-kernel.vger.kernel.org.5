@@ -2,202 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49333797B53
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 425CD797B66
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343653AbjIGSMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 14:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44484 "EHLO
+        id S239316AbjIGSQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:16:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343646AbjIGSMa (ORCPT
+        with ESMTP id S235658AbjIGSQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:12:30 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CC61703;
-        Thu,  7 Sep 2023 11:12:15 -0700 (PDT)
+        Thu, 7 Sep 2023 14:16:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E3A199
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:16:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1694110336; x=1725646336;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=b63IABeKe7vJF70MajKgryc8Lw5+jTlNC7m3AMt+fm0=;
-  b=TFO72M44CAjDSsW+vQsscfauIbp869JYnQOtVHhQQZizJTw5revK1k0K
-   WK+aT4U0OhtN/UTwnzyZxRE+8hZXf6LftThQnfGB4cCBSj9hzgjOUWoFp
-   y4lomaaGZbgmGV5zxq9BkMdNWT/ziHArwv7mdfKzZHXMcsZLw7zDYMuaj
-   i4eQGHr91KUeJYzFnDcs0wsyg3VIRqjeGUnWf8xanExn4NiamDg2jBSoB
-   8/X2nqUFNesw2j/CpWnd1u6cUOIKIuMyIv6YcqPdBpfoKslXW0SzJ673K
-   LbXij0HCcShNW/okr4nG1k0Hu/AMj2xei/W9qTAeC1/pxP6qDJWDJQ1+R
-   g==;
-X-CSE-ConnectionGUID: 8TXbNvv1RE2Z2dTjWv6RCw==
-X-CSE-MsgGUID: uq+0TiPpRPuxlaYCf4D1Ww==
-X-ThreatScanner-Verdict: Negative
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694110560; x=1725646560;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=87vHIboGfb/xcRF81uFJzzuwFQhSnV6hkKGfpT8v0MU=;
+  b=iPRmKfOF0b5qd1P0be3VSIbF4WfTTT3VW07q3JU2qNSmWQbrusfHP9bC
+   EtpGyr22ilL5MxUpkYsj4V+2esi76Pk+M9DsqB/UQsPe3rCLTrBf4mf9B
+   ET1SyB/AA9SCS2N1OOsQZ/599CQTb7TBKyFmdb0xAl7hMvuj6YYHvhbRo
+   ML3N+2aH6gNcCKzKRwTrhWxC4rlwUi+Qy0tSsFk4aWK1cPPHpTWDaYQjg
+   YE4yeYwwkKEHD+TEpaLS3xUlS03izkAFJqSKZk/IrkxHv7FpfUuy/9viw
+   TgU4BNlpYIjutiPtSlt+GA6C0/rZRvLPi6oNohMUcP6O9lxXj2ePSzOgV
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="374817265"
 X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="233980425"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Sep 2023 10:36:26 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 7 Sep 2023 10:35:47 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Thu, 7 Sep 2023 10:35:47 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Kdiex0AtqJTR8wbFugnfRGnDrCYwL/eOn6EWQXRH+dvAu7i12O1mHk2nyp7l/jamZagzCyrRH7bD6UGYKCrZ7Z38h5HBAICIZDkrXLocVaYdqZiffRkgZasqbbCVwDq5+F8YitINcdLCpMGBj9BkWwh99giWlujbsFBPqk4cDo0J3eGVKnhYdLh6X7aRv8x++LVVdx0BQX5ZLJgM8/TCnh2A+iXRsT1wBGch87jpc5NUQT+zc6MgSbMq8WxWPk/ynICb5zqrDN5Z4P7vvJ6hWTFbaVMu3D6EnCcFRs3zuneNhJ4JtM/PC9xkFYkaAwxzSVxXbTlvDVVtzJBtUd9ZOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b63IABeKe7vJF70MajKgryc8Lw5+jTlNC7m3AMt+fm0=;
- b=P+E16bx4wuK76Pj3T5S762O31uRwm95WVTSN5Ndk+CkrBfAHJopCYcjnlwrsKlY4wzk9F8/pTfg74y9TuS+XwLnA1FFIZ/z9FDU6Py3iV1EdJGN8lAsfMxHcZhZSiIBFg+HgxtWGB4GO7IZ0He9qbxKYrki9zK1f3Uc9zgYGBLn0iySsh1LbtRM9edeZdUO6q2xE74p/ouxbS5UZTAmubhNqKKss4bWIfeZstMvhZf/Bng1mp8ZKS1ZIvDBnsooyxG3IFSsg6tjvrAW7PJZmCE+vHOwdejsZgF/2EFxBdl8Dn6zZ++P87pmjm1C44n37HtzAUePoir/VzealAEPdgw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b63IABeKe7vJF70MajKgryc8Lw5+jTlNC7m3AMt+fm0=;
- b=GEOebAhMdVEGMFu+QLeUPWuQF9nVcPBedvtmqYbJu+w5T+ENUw5uMgDo603vEqmmmCxmk1r8LDjPjcq10LdsBwulgnLFPaU6BA8F6E/10464NKtaUNzTC462MsdivW3Xps1jxu8xXLD4eBHX0dW+OO6pP05lQfsadgRgLl26n5g=
-Received: from BL0PR11MB2913.namprd11.prod.outlook.com (2603:10b6:208:79::29)
- by PH0PR11MB4789.namprd11.prod.outlook.com (2603:10b6:510:38::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Thu, 7 Sep
- 2023 17:35:45 +0000
-Received: from BL0PR11MB2913.namprd11.prod.outlook.com
- ([fe80::fe40:34af:443b:5809]) by BL0PR11MB2913.namprd11.prod.outlook.com
- ([fe80::fe40:34af:443b:5809%6]) with mapi id 15.20.6768.029; Thu, 7 Sep 2023
- 17:35:45 +0000
-From:   <Woojung.Huh@microchip.com>
-To:     <o.rempel@pengutronix.de>, <davem@davemloft.net>, <andrew@lunn.ch>,
-        <edumazet@google.com>, <f.fainelli@gmail.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <olteanv@gmail.com>,
-        <Arun.Ramadoss@microchip.com>, <conor+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>
-CC:     <kernel@pengutronix.de>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <UNGLinuxDriver@microchip.com>,
-        <linux@armlinux.org.uk>, <devicetree@vger.kernel.org>,
-        <John.MacKay@microchip.com>, <Brigham.Steele@microchip.com>
-Subject: RE: [RFC net-next v2 0/2] net: dsa: microchip: add drive strength
- support 
-Thread-Topic: [RFC net-next v2 0/2] net: dsa: microchip: add drive strength
- support 
-Thread-Index: AQHZ4LFOsC3lKa1Y6kuvmX31i+J9OLAPoXlg
-Date:   Thu, 7 Sep 2023 17:35:45 +0000
-Message-ID: <BL0PR11MB29132964F3D56FD2F555FB7DE7EEA@BL0PR11MB2913.namprd11.prod.outlook.com>
-References: <20230906105904.1477021-1-o.rempel@pengutronix.de>
-In-Reply-To: <20230906105904.1477021-1-o.rempel@pengutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL0PR11MB2913:EE_|PH0PR11MB4789:EE_
-x-ms-office365-filtering-correlation-id: 2393a3be-0f34-4dd3-c49d-08dbafc8dde1
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: r35AK0OahQ+kjBYZynMyqq9X5SgQu9br/3VryjaDCkxn8xPgeYTNpOK1B8l//n1UG4uBwJiP29HcatY52zN98d1n4/yMsDUI7YPdY4V2uxb+7M0R5Sj2A01Ys7nQ58nTSG5yeLvRZ2SgBkq9tMY0tfGNcxLkW91FJ8a0X85qhRaSjvF2dWenUvfhnqOqsb/p0v+b2BESoBk67+XtUUCw5Y8mixqUTFJ7OWkF7kO3Y290j39H+NDJtkr6s1Tc7WvcjsYwwMfpB7AjAyDQNTBinzfBn43GB+FQVAcCriQqG5MSRJoDsZwWbBjaSsGrSjGAwTq7AWZcXAzDKmA6bcduOMMM57nhLoFsNKIdH2PNjgp/RjNPBCw94B6ZkgYpCoBuk2svJ38/H4pREmVUbqulcNozjX7yPL3esjtv3293DR7XNc6BkCaJlKvSKptGWt/i5egFnYCXlmx0pjlkbG8reXCqaznvcdS/8xrQ9SnVvkFKsdRu/EOVIoGEsQJzuFYzNg+Wka5TDWdmbPqjofrwvBMqri9taKk06renmPZFsudX4si89DBqye4URStsMuUYl0dblBaEwkzDKZg6/8JIYf1roM8AU3fpm9jU9CVOW46ydHsUwGAiFEArW/+Mb1+o5Xuw8r2y4A7tTSKFZc9ooA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB2913.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(366004)(396003)(346002)(136003)(451199024)(1800799009)(186009)(52536014)(64756008)(66946007)(54906003)(66556008)(316002)(66446008)(76116006)(66476007)(107886003)(8676002)(8936002)(110136005)(4326008)(921005)(55016003)(122000001)(6506007)(53546011)(7696005)(9686003)(41300700001)(478600001)(26005)(7416002)(83380400001)(71200400001)(5660300002)(4743002)(2906002)(86362001)(33656002)(38100700002)(38070700005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bnVjMjVha2x0QWF1OFhldkpON2JRZXZ1dU9BbjBHMlZBemhoYmVKTm5XLzlI?=
- =?utf-8?B?aDNJUjRCQmFsK1lJZ1JJelFrZllaT0tBMDVOSDd1dGRtUmNodm5GU2l6SDBI?=
- =?utf-8?B?WFpJUmhMMkNWZjRvanFVcWxRaEpLbkgvajFua010bk9CWHhGbWo0R2hweFpH?=
- =?utf-8?B?Uk1wVzJlM0VZUXR6Z0FHcSt1TVNFMitKMkJscmNKN2dqbW5icWJlcmI1bVFi?=
- =?utf-8?B?QkVLRi9vMnNBZGJ4WENCWWVkZmZvQTJmZlhlc0FrMjM0RVdveHEwemQyQXg4?=
- =?utf-8?B?WVVDSXJoY0Jvc0dUTUoxemtvUzd3UzF3Z0Mrb0RYZzFhZ2FYdXRseWNGK0s1?=
- =?utf-8?B?aWZiN0cxenpia2tZRzdkRHNOTytaY1R6eVhUMW5tcUs1d2RDUVBFVWVvSWow?=
- =?utf-8?B?MGs5VnpkbWpuQ21qS0lhczZXZnVoV0dzNmhiNFdVNklGUGN3ZVIyTHorTXJv?=
- =?utf-8?B?c0VHYyszenVJQXA3dHpWVTlzT2FPR3ZpOWtnOWNEMkhxVzN5bWllRXIrM0F6?=
- =?utf-8?B?N2dCY2JLcmdzK3NsWjR3MnBjUFd4YnNFSXR4N0wrMldNWTAyZFFJdXlrdERO?=
- =?utf-8?B?bTRqb1QzYkJMMGFmRWhmelJsanBkZ3FYRDlHRnhwOVVLeTdRTkJBMkFmL2s2?=
- =?utf-8?B?TUdxdWV2YTk0dWcyMFBoL2c2di82RGE1K2RaTG9RSnBmMWJ2UHRwTEZmbkhH?=
- =?utf-8?B?MmdlWW8xUktlRm1OV0x0OERvaFV4UVI3WHVnK3hSMWloKzNIdmR3LzNWOVJx?=
- =?utf-8?B?cHpHRnVjOFhjeWM0aVdIVHE5MWhVSGoxL0s1QXgzNXR2UFd0ckJ5L2IyZ1Bj?=
- =?utf-8?B?L2VBSE5wYXBndElDdzVKaHVZUmNqNE8yUGMzUURNU2ltc2pVa2NRS1NpejlW?=
- =?utf-8?B?b3EyaTFNM29ZZjRJL0dBaG4ramlFcGhwZEh2c0pGelJ6NFhydGhYd05BVm9N?=
- =?utf-8?B?RFpLSVVGV21ia1hJVlVnUytXOUJGa2JseGlDMEM1K1pkaGVscUY4aUtuMjZ1?=
- =?utf-8?B?T05JL1JYUVREMGZFVjJhQXBiQklkbU11MmJPeWpVbm00a0E1WGpDTnJ0N1lj?=
- =?utf-8?B?ZXlKVHJoMXl5WVhFYTV5NElzYWtoNTNaeFpRUzhQN2tIT1FDVjR5dkI1SlJK?=
- =?utf-8?B?bkpGa2tlcjNEN29DV1FxMGNCY3I4R2phbVNOY1d1enhkMmFFUnk4Rkxlb1Y1?=
- =?utf-8?B?YmpmczlCS0tuVmh5dUlORktOaGN2WSszWTVkOWEvOFBud3FQRW1sbWVQQWVT?=
- =?utf-8?B?RnIvdHZ6KytrTkZvbFVnK3ZyS29DR1VrelpZd0IxT3A4NUR2ZGU3QXByZFhy?=
- =?utf-8?B?dktvdjhvT1NZa0E5MWp3ZEk5ZUZIdGtuNEFpT3VaQWpmRlBLakk2ZkJ0UWxp?=
- =?utf-8?B?RldSWXZITm0xWXVxQ2VsdDRiUDZpU3dCT3pTZjFXeTRXWlYzQzMraGtsTTYz?=
- =?utf-8?B?Q21Vdjd2M3pPQzZGRytqRmUwUVVCQ2RTUlZhT0g3VjY5bWpCUVZKd09PclIw?=
- =?utf-8?B?azVaWEFFRVpsWklZNEdmdlVYN0FxcnFCcGFVQi9mMWJLMGVDV0l4NVVpY0Fv?=
- =?utf-8?B?bXdpeWQzVi8zR3ZBWGFoZmJCUVRCS2plNUtSSyt1bnpmODJUZi9lN1dWUnpV?=
- =?utf-8?B?dXBPdlBkNC9Md3RKdGR6c3lKY3p0am0rYXN6YVl1cTNIaG9xbTVhVGpSZ1RY?=
- =?utf-8?B?bGtMTnUrb2VVajYrdGRIWmpxai81bjd0QzZWYmRhQUl1SE03L2Vma1RuRVBh?=
- =?utf-8?B?WU9LTjVNOG5VVEIrT2RTQ0dTZEN0YU1teGdxcytPTW1sdmNuV2ZETnZsTG9n?=
- =?utf-8?B?bXpoUVBSMjFXcmozbVlGbE1GT2pKMzZkUTNRaUdqQlhMeVJ2UG9FWThkelZV?=
- =?utf-8?B?TGY0bUErNFpvaDRuczFmWkgvSFpZbE12MWxXcStWbEswcnpzelFvSnlrU202?=
- =?utf-8?B?LzdwNGVKeHRJNXM1YUhwWGM3S3ZmTmJPZ1llYUczaCtUYk1wR0tUeXpUcTEz?=
- =?utf-8?B?QmwxYzdsVUEzQUh2dUhaalBpRnU0TElQb24wc2w1MHFrMkN4SnFQTWcvRnVC?=
- =?utf-8?B?V2JlQklCVE1Rd0F2VElPVkZkS04xbmIwc29rLyszTVZFdnU0YU55ZVpBa2w0?=
- =?utf-8?Q?fAgll8Roi0ML0RrzFfxhQJ+L2?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+   d="scan'208";a="374817265"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 10:42:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="807631223"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="807631223"
+Received: from ayushgup-mobl.amr.corp.intel.com (HELO [10.209.118.125]) ([10.209.118.125])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 10:42:22 -0700
+Message-ID: <6cd1633036bb6b651af575c32c2a9608a106702c.camel@linux.intel.com>
+Subject: Re: [PATCH] sched/fair: Add SMT4 group_smt_balance handling
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
+        hdanton@sina.com, ionela.voinescu@arm.com, juri.lelli@redhat.com,
+        len.brown@intel.com, linux-kernel@vger.kernel.org, mgorman@suse.de,
+        naveen.n.rao@linux.vnet.ibm.com, rafael.j.wysocki@intel.com,
+        ravi.v.shankar@intel.com, ricardo.neri@intel.com,
+        rostedt@goodmis.org, srikar@linux.vnet.ibm.com,
+        srinivas.pandruvada@linux.intel.com, v-songbaohua@oppo.com,
+        vincent.guittot@linaro.org, vschneid@redhat.com, x86@kernel.org,
+        yangyicong@hisilicon.com, yu.c.chen@intel.com
+Date:   Thu, 07 Sep 2023 10:42:21 -0700
+In-Reply-To: <882ed331-4345-014b-d06f-9b3a3a6f688f@linux.vnet.ibm.com>
+References: <20230717133718.GJ4253@hirez.programming.kicks-ass.net>
+         <20230717145823.1531759-1-sshegde@linux.vnet.ibm.com>
+         <804548a12363479d41dee19bb843002d9e105afd.camel@linux.intel.com>
+         <6b20e0c0cd82d0d1aafc2a7fb14d9456e19c2c85.camel@linux.intel.com>
+         <4118c2e3-fd34-2ebe-3faa-1c6ac9cbbac2@linux.vnet.ibm.com>
+         <61cb0511b15612f43f390c750d2e9325bd7af4dd.camel@linux.intel.com>
+         <2428a381-1587-2beb-711f-3fab6d773975@linux.vnet.ibm.com>
+         <dee7575cc9d3c42c9705348151a1453ff084d4f3.camel@linux.intel.com>
+         <882ed331-4345-014b-d06f-9b3a3a6f688f@linux.vnet.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB2913.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2393a3be-0f34-4dd3-c49d-08dbafc8dde1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Sep 2023 17:35:45.3675
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wSN0DtLDG3+DQ0XEhZRIWlzXnDf/HZWXcWKwVGLsI/IymbPCuck46T1ubuaaFzfzHSkWvfxfXKXutHlKd9ljkWaRloEfmPTxoVBRDRE6MY4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4789
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgT2xla3NpaiwNCg0KVGhhbmtzIGZvciB0aGUgc2VyaWVzLg0KTWljcm9jaGlwIGNhbiBjb25m
-aXJtIHRoYXQgS1NaIFN3aXRjaCBzZXJpZXMgb2YgS1NaOTQ3NywgS1NaOTU2NywgS1NaODU2Nywg
-S1NaOTg5NywgS1NaOTg5NiwgS1NaOTU2MywgS1NaOTg5MyBhbmQgS1NaODU2MyBpcyB1c2luZyBz
-YW1lIHJlZ2lzdGVyIChkcml2ZSBzdHJlbmd0aCkgc2V0dGluZ3MgZXZlbiB0aG91Z2ggbm90IGRv
-Y3VtZW50ZWQuDQoNCkJlc3QgcmVnYXJkcywNCldvb2p1bmcNCg0KDQo+IC0tLS0tT3JpZ2luYWwg
-TWVzc2FnZS0tLS0tDQo+IEZyb206IE9sZWtzaWogUmVtcGVsIDxvLnJlbXBlbEBwZW5ndXRyb25p
-eC5kZT4NCj4gU2VudDogV2VkbmVzZGF5LCBTZXB0ZW1iZXIgNiwgMjAyMyA2OjU5IEFNDQo+IFRv
-OiBEYXZpZCBTLiBNaWxsZXIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+OyBBbmRyZXcgTHVubg0KPiA8
-YW5kcmV3QGx1bm4uY2g+OyBFcmljIER1bWF6ZXQgPGVkdW1hemV0QGdvb2dsZS5jb20+OyBGbG9y
-aWFuIEZhaW5lbGxpDQo+IDxmLmZhaW5lbGxpQGdtYWlsLmNvbT47IEpha3ViIEtpY2luc2tpIDxr
-dWJhQGtlcm5lbC5vcmc+OyBQYW9sbyBBYmVuaQ0KPiA8cGFiZW5pQHJlZGhhdC5jb20+OyBWbGFk
-aW1pciBPbHRlYW4gPG9sdGVhbnZAZ21haWwuY29tPjsgV29vanVuZyBIdWgNCj4gLSBDMjE2OTkg
-PFdvb2p1bmcuSHVoQG1pY3JvY2hpcC5jb20+OyBBcnVuIFJhbWFkb3NzIC0gSTE3NzY5DQo+IDxB
-cnVuLlJhbWFkb3NzQG1pY3JvY2hpcC5jb20+OyBDb25vciBEb29sZXkgPGNvbm9yK2R0QGtlcm5l
-bC5vcmc+Ow0KPiBLcnp5c3p0b2YgS296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpK2R0QGxp
-bmFyby5vcmc+OyBSb2IgSGVycmluZw0KPiA8cm9iaCtkdEBrZXJuZWwub3JnPg0KPiBDYzogT2xl
-a3NpaiBSZW1wZWwgPG8ucmVtcGVsQHBlbmd1dHJvbml4LmRlPjsga2VybmVsQHBlbmd1dHJvbml4
-LmRlOw0KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwu
-b3JnOyBVTkdMaW51eERyaXZlcg0KPiA8VU5HTGludXhEcml2ZXJAbWljcm9jaGlwLmNvbT47IFJ1
-c3NlbGwgS2luZyAoT3JhY2xlKQ0KPiA8bGludXhAYXJtbGludXgub3JnLnVrPjsgZGV2aWNldHJl
-ZUB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogW1JGQyBuZXQtbmV4dCB2MiAwLzJdIG5ldDog
-ZHNhOiBtaWNyb2NoaXA6IGFkZCBkcml2ZSBzdHJlbmd0aCBzdXBwb3J0DQo+IA0KPiBFWFRFUk5B
-TCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlv
-dSBrbm93IHRoZQ0KPiBjb250ZW50IGlzIHNhZmUNCj4gDQo+IGNoYW5nZXMgdjI6DQo+IC0gbWFr
-ZSBpdCB3b3JrIG9uIGFsbCBrbm93IEtTWsOcIHZhcmlhbnRzIGV4Y2VwdCBvZiB1bmRvY3VtZW50
-ZWQgTEFOKg0KPiAgIHN3aXRjaGVzDQo+IC0gYWRkIGlvLWRyaXZlLXN0cmVuZ3RoIGNvbXBhdGli
-bGUgZm9yIGtzejg4eHggY2hpcHMNCj4gLSB0ZXN0IGV4YWN0IGRyaXZlIHN0cmVuZ3RoIGluc3Rl
-YWQgb2YgbmVhcmVzdCBjbG9zZXN0Lg0KPiAtIGFkZCBjb21tZW50IGFuZCByZWZhY3RvciB0aGUg
-Y29kZQ0KPiANCj4gT2xla3NpaiBSZW1wZWwgKDIpOg0KPiAgIGR0LWJpbmRpbmdzOiBuZXQ6IGRz
-YTogbWljcm9jaGlwOiBVcGRhdGUga3N6IGRldmljZSB0cmVlIGJpbmRpbmdzIGZvcg0KPiAgICAg
-ZHJpdmUgc3RyZW5ndGgNCj4gICBuZXQ6IGRzYTogbWljcm9jaGlwOiBBZGQgZHJpdmUgc3RyZW5n
-dGggY29uZmlndXJhdGlvbg0KPiANCj4gIC4uLi9iaW5kaW5ncy9uZXQvZHNhL21pY3JvY2hpcCxr
-c3oueWFtbCAgICAgICB8ICAyMyArKw0KPiAgZHJpdmVycy9uZXQvZHNhL21pY3JvY2hpcC9rc3o4
-Nzk1X3JlZy5oICAgICAgIHwgIDE0IC0NCj4gIGRyaXZlcnMvbmV0L2RzYS9taWNyb2NoaXAva3N6
-OTQ3N19yZWcuaCAgICAgICB8ICAxMyAtDQo+ICBkcml2ZXJzL25ldC9kc2EvbWljcm9jaGlwL2tz
-el9jb21tb24uYyAgICAgICAgfCAyODYgKysrKysrKysrKysrKysrKysrDQo+ICBkcml2ZXJzL25l
-dC9kc2EvbWljcm9jaGlwL2tzel9jb21tb24uaCAgICAgICAgfCAgMjAgKysNCj4gIDUgZmlsZXMg
-Y2hhbmdlZCwgMzI5IGluc2VydGlvbnMoKyksIDI3IGRlbGV0aW9ucygtKQ0KPiANCj4gLS0NCj4g
-Mi4zOS4yDQo+IA0KDQo=
+On Thu, 2023-09-07 at 14:28 +0530, Shrikanth Hegde wrote:
+> >=20
+> > You mean simplify the patch as below?  I think that should be fine.  Ca=
+n you
+> > make sure it works for SMT4?  And I can update the patch once you confi=
+rm it
+> > works properly.
+> >=20
+> > Tim
+> >=20
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 6e7ee2efc1ba..48e9ab7f8a87 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -9764,16 +9764,9 @@ static bool update_sd_pick_busiest(struct lb_env=
+ *env,
+> > =20
+> >         case group_smt_balance:
+> >                 /* no idle cpus on both groups handled by group_fully_b=
+usy below */
+> > -               if (sgs->idle_cpus !=3D 0 || busiest->idle_cpus !=3D 0)=
+ {
+> > -                       if (sgs->idle_cpus > busiest->idle_cpus)
+> > -                               return false;
+> > -                       if (sgs->idle_cpus < busiest->idle_cpus)
+> > -                               return true;
+> > -                       if (sgs->sum_nr_running <=3D busiest->sum_nr_ru=
+nning)
+> > -                               return false;
+> > -                       else
+> > -                               return true;
+> > -               }
+> > +               if (sgs->idle_cpus !=3D 0 || busiest->idle_cpus !=3D 0)
+> > +                       goto has_spare;
+> > +
+> >                 goto fully_busy;
+> > =20
+> >         case group_fully_busy:
+> > @@ -9809,6 +9802,7 @@ static bool update_sd_pick_busiest(struct lb_env =
+*env,
+> >                  * as we do not want to pull task off SMT core with one=
+ task
+> >                  * and make the core idle.
+> >                  */
+> > +has_spare:
+> >                 if (smt_vs_nonsmt_groups(sds->busiest, sg)) {
+> >                         if (sg->flags & SD_SHARE_CPUCAPACITY && sgs->su=
+m_h_nr_running <=3D 1)
+> >                                 return false;
+> >=20
+> >=20
+> >=20
+>=20
+> Hi Tim,
+>=20
+> In case you were waiting for my reply as inferred from other email.=20
+> The above change looks fine as well. This would avoid duplication of
+> code for group_smt_balance.=20
+>=20
+> Acked-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+
+Peter,
+
+Here's the updated patch.  Please consider it for inclusion.
+
+Thanks.
+
+Tim
+
+From 979e261fed6e3765316a4de794f595f93c02cef0 Mon Sep 17 00:00:00 2001
+From: Tim Chen <tim.c.chen@linux.intel.com>
+Subject: [PATCH] sched/fair: Fix SMT4 group_smt_balance handling
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@li=
+naro.org>, Ricardo Neri <ricardo.neri@intel.com>, Ravi V. Shankar <ravi.v.s=
+hankar@intel.com>, Ben Segall
+<bsegall@google.com>, Daniel Bristot de Oliveira <bristot@redhat.com>, Diet=
+mar Eggemann <dietmar.eggemann@arm.com>, Len Brown <len.brown@intel.com>, M=
+el Gorman <mgorman@suse.de>, Rafael J. Wysocki
+<rafael.j.wysocki@intel.com>, Srinivas Pandruvada <srinivas.pandruvada@linu=
+x.intel.com>, Steven Rostedt <rostedt@goodmis.org>, Tim Chen <tim.c.chen@li=
+nux.intel.com>, Valentin Schneider
+<vschneid@redhat.com>, Ionela Voinescu <ionela.voinescu@arm.com>, x86@kerne=
+l.org, linux-kernel@vger.kernel.org, Shrikanth Hegde <sshegde@linux.vnet.ib=
+m.com>, Srikar Dronamraju
+<srikar@linux.vnet.ibm.com>, naveen.n.rao@linux.vnet.ibm.com, Yicong Yang <=
+yangyicong@hisilicon.com>, Barry Song <v-songbaohua@oppo.com>, Chen Yu <yu.=
+c.chen@intel.com>, Hillf Danton <hdanton@sina.com>
+
+For SMT4, any group with more than 2 tasks will be marked as
+group_smt_balance. Retain the behaviour of group_has_spare by marking
+the busiest group as the group which has the least number of idle_cpus.
+
+Also, handle rounding effect of adding (ncores_local + ncores_busy) when
+the local is fully idle and busy group imbalance is less than 2 tasks.
+Local group should try to pull at least 1 task in this case so imbalance
+should be set to 2 instead.
+
+Fixes: fee1759e4f04 ("sched/fair: Determine active load balance for SMT sch=
+ed groups")
+Acked-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+---
+ kernel/sched/fair.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 0b7445cd5af9..fd9e594b5623 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -9575,7 +9575,7 @@ static inline long sibling_imbalance(struct lb_env *e=
+nv,
+ 	imbalance /=3D ncores_local + ncores_busiest;
+=20
+ 	/* Take advantage of resource in an empty sched group */
+-	if (imbalance =3D=3D 0 && local->sum_nr_running =3D=3D 0 &&
++	if (imbalance <=3D 1 && local->sum_nr_running =3D=3D 0 &&
+ 	    busiest->sum_nr_running > 1)
+ 		imbalance =3D 2;
+=20
+@@ -9763,6 +9763,15 @@ static bool update_sd_pick_busiest(struct lb_env *en=
+v,
+ 		break;
+=20
+ 	case group_smt_balance:
++		/*
++		 * Check if we have spare CPUs on either SMT group to
++		 * choose has spare or fully busy handling.
++		 */
++		if (sgs->idle_cpus !=3D 0 || busiest->idle_cpus !=3D 0)
++			goto has_spare;
++
++		fallthrough;
++
+ 	case group_fully_busy:
+ 		/*
+ 		 * Select the fully busy group with highest avg_load. In
+@@ -9802,6 +9811,7 @@ static bool update_sd_pick_busiest(struct lb_env *env=
+,
+ 			else
+ 				return true;
+ 		}
++has_spare:
+=20
+ 		/*
+ 		 * Select not overloaded group with lowest number of idle cpus
+--=20
+2.32.0
+
+
