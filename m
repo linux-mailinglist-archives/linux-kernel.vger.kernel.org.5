@@ -2,230 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4A7797BFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2651797B5C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242998AbjIGSfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 14:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
+        id S1343648AbjIGSNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbjIGSfA (ORCPT
+        with ESMTP id S1343672AbjIGSNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:35:00 -0400
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95955A1;
-        Thu,  7 Sep 2023 11:34:56 -0700 (PDT)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230907082450euoutp0268091ba27c96f23d766e7e9b2b1c7f90~CkFGkfjh00383803838euoutp02D;
-        Thu,  7 Sep 2023 08:24:50 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230907082450euoutp0268091ba27c96f23d766e7e9b2b1c7f90~CkFGkfjh00383803838euoutp02D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1694075090;
-        bh=K84mrKgpu7Gp7E1wsEfRvrKyh+s/n5grmyvysB575oA=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=QRQUlIzLacORSoSMsDwibDDr1BYQ+HS+FZVCFjc/Qbf/tYBTdXwdI0BeuBfcHwnS7
-         dgfJVTShj9tf7mLW9YogkqachsUyS5kITxIW5Jsf2UjiUeTBPWh8c4OL1hAZoj5hTE
-         TME64QTDO5rYgaiDPVClOhPNf+28jEa6gIb0BlEY=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20230907082449eucas1p1e9bd7758045a0dff6a5f3886ea3ad042~CkFGUyCEr2852928529eucas1p1_;
-        Thu,  7 Sep 2023 08:24:49 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id B7.B6.37758.1D889F46; Thu,  7
-        Sep 2023 09:24:49 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20230907082449eucas1p19f0c5e38ee9aff84758df55c1a8f58a4~CkFFvjSM33088230882eucas1p1C;
-        Thu,  7 Sep 2023 08:24:49 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230907082449eusmtrp1855d35a183294fcf6b365f66261d5f30~CkFFuaZY40859808598eusmtrp1C;
-        Thu,  7 Sep 2023 08:24:49 +0000 (GMT)
-X-AuditID: cbfec7f5-815ff7000002937e-b1-64f988d1d890
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 7F.E1.14344.1D889F46; Thu,  7
-        Sep 2023 09:24:49 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20230907082448eusmtip1943ff4b432cd8a78ff577b90ad37c58e~CkFFaVBft1824118241eusmtip1c;
-        Thu,  7 Sep 2023 08:24:48 +0000 (GMT)
-Received: from localhost (106.210.248.249) by CAMSVWEXC02.scsc.local
-        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Thu, 7 Sep 2023 09:24:48 +0100
-Date:   Thu, 7 Sep 2023 10:24:46 +0200
-From:   Joel Granados <j.granados@samsung.com>
-To:     Ingo Molnar <mingo@kernel.org>
-CC:     Dave Hansen <dave.hansen@intel.com>,
-        Luis Chamberlain <mcgrof@kernel.org>, <willy@infradead.org>,
-        <josh@joshtriplett.org>, Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Guo Ren <guoren@kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-s390@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-ia64@vger.kernel.org>, <linux-csky@vger.kernel.org>
-Subject: Re: [PATCH 3/8] arch/x86: Remove sentinel elem from ctl_table
- arrays
-Message-ID: <20230907082446.a4o46vka2vtes3h4@localhost>
+        Thu, 7 Sep 2023 14:13:48 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33DF1BFB
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:13:25 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bce552508fso21830361fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 11:13:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694110403; x=1694715203; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jrJxxgqMDIlX40G2ZHPAdOSiHgl3iXSpX7T+iydVbUo=;
+        b=Ql7yxF5M5KrJEwoAvEI40tklOIQT5Bu71uI2q8dZHX7Az66Hq8AkzuexxEHY7/9uap
+         HSTo+JzG32/QbW68S+QMhBZkP7OJc5hxdBRyQMq1+KmCXBbN1FsIzVNs9j11LIUsFdzj
+         r/gR9lInH9/97tu6CrHGjCCcSsp7/rPQ6XadOvHpC6FV4+82vR6tTIV8H64gpbrWoQo8
+         qq3w9OtU1ShRAekHRmgs2zboZfK62+38u9GPUt0f118zaE9NdIm5X/cXVkeJ6rqtJod3
+         Q1Ial2a/mm8hz9adGRjsNa0f1eXI/Xtq1evZufXClxV+FILupTZ0qoFv8Jfc8X1mu56/
+         JCMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694110403; x=1694715203;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jrJxxgqMDIlX40G2ZHPAdOSiHgl3iXSpX7T+iydVbUo=;
+        b=cC4i76FC6vMalEWDZDe0yjKNcQ1zZ49ILjwljkCOgU7C5dvof0UOncpsd9DFfUBRcj
+         oLRebiSQt2rt0pb7Fho5gSjSRctkMBcRUsZ/R/+rSeXFi076XOvdWFJN5mGN/hE2UQhR
+         YCV9mxkMhNZCj+EHTMYaw/YXO1mofhZV6Rwto9rMu5RBASIDoyowRqCfRTAOmFOMaAoV
+         txg2DpocEcJOSfD9tGps1pK0gCauLplX5fR/RvYsb1pRMM6bq/Rf/m80RqD5UzJX5E7Z
+         x6FIA0oskn/bU+SX+qWw11Ogybx4obXMxoEd+X1gpHVuHlmCqJSrb90VrrOcYey/719w
+         21rA==
+X-Gm-Message-State: AOJu0Yz/3UnmxQcfu11Uq5UvkK4qm1iz88IU9cTTjqz4e4rTft9I7nZ4
+        0+JUiRwscpBLHquAtj4o45vjJQjcrh6lun5lWhI=
+X-Google-Smtp-Source: AGHT+IHfOlZoBHNbQ4z9MAlkM2JnSNSn7D8E6L5HvvLEK81m48vwy7orP4FvgLozLADf+b/PMIAqmg==
+X-Received: by 2002:a1c:7c0e:0:b0:3fe:d7c8:e0d with SMTP id x14-20020a1c7c0e000000b003fed7c80e0dmr3962212wmc.34.1694075277988;
+        Thu, 07 Sep 2023 01:27:57 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:56f5:e2d4:1e04:b28e])
+        by smtp.gmail.com with ESMTPSA id 17-20020a05600c029100b003fee6e170f9sm1781804wmk.45.2023.09.07.01.27.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 01:27:57 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v4] gpio: sim: don't fiddle with GPIOLIB private members
+Date:   Thu,  7 Sep 2023 10:27:51 +0200
+Message-Id: <20230907082751.22996-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="xetpjh2dyeh26jbv"
-Content-Disposition: inline
-In-Reply-To: <ZPj2F4retSgg3vAj@gmail.com>
-X-Originating-IP: [106.210.248.249]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTa0xTZxzG9/ac9hzqqseW0DdoRlaZTGWoDOe7ANvM2HbkgxI+LG5xkwbO
-        kA0KaS3zMpIyOiiChIAMVhnhMlpuOi6lDJRBugEiW6EiDB3gIl4oIBQoSiGUtTu4mezb7//8
-        n+fN8//wkpiwmPAm42SnGLlMGi/h8XFjt8P8mkXjiNlXUxSAGvqsPNS8qiXQxJqJhxbrnTw0
-        p8sGaDTvEYEWrH8BNFmfAdBc2qdoQPuEiybbU3E0XVID0LcNYrRemoh+y0pAjRPDXGSsVHPQ
-        tfZeHNk0s1w02FbMQ8ZFNQ/llqVhyFTQDtDqUycX9bdd5qLKPywcNJL7AKBa5w2AbnaWcpBB
-        5argmBzBkXUwG0Pp2i1I9+NlAjU1FmBIPXoArS67nlyun+AiXeuRd/zop9/k4HRdSR2gB4ct
-        GH1JZcHppdtmDj1jteL0Lxo7QZdbVTjdqh0j6NJGJd1UtZuuuGbl0HemQ+nGmkwePWs2E3Ru
-        eSeIEH/MD4lh4uOSGfnet6L4J7UFQ9ykIs/T800vq8AadR54kJAKgubeFnAe8EkhVQXg1PjK
-        xmAHsF+lwdlhEcDyKgP+LDKmuctlF3oAayrrwb+uHkv2xmAAUFfdSrgjOOULH2fmAzfzKH/Y
-        PzOKudmTksAK+/w/Hoyy8+GvZVFuFlFH4aI2k+tmAXUQXurMBCxvhb3f3cdZ/2k4dnfGpZMu
-        3gb1TtIte1C7YHpzB49tugN2XxjdaJ0CbxjucNzdINWxCTqamrnsIgzm6bs2WASnegwEy9th
-        X342zgbyAexw2gh2qHVdlrrEYV3BUH3r/kbiEFzVPMTdjSC1GY483soW3QzzjIUYKwugJl3I
-        unfC2vEZPBfs0D53mva507T/ncbK/rD06gLvf/IeqCubxlgOhVeuzOGlgKgBYkapSIhlFK/L
-        mC8DFNIEhVIWGxCdmNAIXJ+mz9mz9BOompoPMAEOCUzA1xW+V187ALxxWaKMkXgKZn2exAgF
-        MdIzZxl54gm5Mp5RmMA2EpeIBXtCe6OFVKz0FPMFwyQx8mdbDunhreL4vagfTj3s8dXPH74k
-        El3AjPvxz0XiziP+ynup2z86sPdhxVB+cuwwv+qHhvUZr1cewNCA40PjKUUyaiCoNk7o/6ft
-        mK26a+e79rzIImfqWVufzePNoC5SXXise8HUI79p50+Ei/hCvY8uLXyL9JNRuTw6q66FGoo4
-        MZ03NbJur8iRRpWr8TObbG2vXh+/jbdi69VJJd8ftfqah6aXmz+wCgJ77RmV72UN+/WMF7/Q
-        IglM0V8UO7wyciQhhwWHdrUlB600hHRd/ex4/xth5xIGCyczvCquRxyMNKyskYHGwJxyZbD6
-        /RafiKh9pGXqUeTbGZLlonPhjt/Tm8JuURNfB0twxUnp/t2YXCH9G3HexbOvBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTe0xTVxzHPbe3t4VIdgdlnIACKQwnzkqBwmE8nAljdy449o9ZmMI6enlE
-        aEkf6MwW6gQpz6CAC8URwFCQl1CxAsLsmLoBjocMhoTHNuTRoSAPoYxRVmiWmey/z/n9ft9P
-        fjk5h82wbSMc2QliOS0VCxO5hDXeY/px/PCAakPkVa3CUVOPgUC3N9UsNLXVSaCVRhOBFjU5
-        AI1dmWWhZcNvAM01ZgC0eDEK9avXmGiu4wKO5ktrALra5IC2yyToUXYS0k4NM5GuMg1D7R1d
-        OHqhWmCiwbZrBNKtpBEov/wiA3UWdQC0uW5ior62eiaq/HUAQyP50wDVmroBeqwvw1Cz0rzC
-        xtwIjgyDOQx0Sf0a0tysZ6Fb2iIGShsToE2jWWlsnGIiTeuJdw9Q6+l5OFVXWgeoweEBBlWi
-        HMCpl096MeqZwYBTP6hWWVSFQYlTrepxFlWmVVC3qj2p6+0GjBqdD6a0NZkEtdDby6LyK/Qg
-        wiGSFySVKOS0a7xEJg/mfspH3jx+AOJ5+wbw+D7+p9/xFnCPhASJ6MSEFFp6JOQzXryu7xEz
-        +SrnnKG9nqkEm2QWsGJD0heOqyaZWcCabUtWApi9/gRYGvtg0+oQ08J28O/hLMIytARg4XA2
-        bjk0A5j/+9f4zhROusPnmQW7aYJ8G/Y9G2PsMIfkwuurS6ydAINctYYbxvJdrR0ZDocmtlk7
-        bEP6wxJ9JrBYuzCYV/gAtzReh13FT3eZQabArZxZs5VtZidYZWLvlK3Ig/DS7XuEZVU3+DB3
-        DLfwV3BlawbkAzv1Kyb1Kyb1fyZL2ROOmAzY/8qHoKZ8nmHhYNjQsIiXAVYN4NAKWVJcksyb
-        JxMmyRTiOF6MJEkLzA9X93CjuQXc+HOJ1wkwNugE7ubkH421/cARF0vENJdjs+CyJrK1EQm/
-        OE9LJdFSRSIt6wQC8zVeZjjax0jMv0Asj+b7eQn4vn4BXoIAPx+ug80HySqhLRknlNNnaDqZ
-        lv6bw9hWjkospsytyic1MHColX9OLsk9GWZYH2o5ce3OjUV3kTKl7qfuQ3lu+m+xj6JPT+yP
-        0XTXyY6L1/yj7v11bOWu9fdLR11jjdsZ1cb9Xa7uNg2jrafm9yizNBGJX4ZG9Z8VNPVFckJH
-        HxftqTz/SQ5x+MPvQnPfdz77S2B662zae1WzMudNxZ19Lw8Wh/zc0v28D8y0+By/uYUxRbET
-        vEL3oM9nnNiXB6Ns0XRthJMwnJid7HFePumSpwun72phqvTUXu43JTGUQ29pU+AEx8P1gX2F
-        /v6bZ6bz7Q8cbV4J9/54+Y3i+zq+R2ZC2NMXG6UjF1L1bm/FemSEGQuuTHoei9zr5lKQHsrF
-        ZfFCvidDKhP+AyiHiRBNBAAA
-X-CMS-MailID: 20230907082449eucas1p19f0c5e38ee9aff84758df55c1a8f58a4
-X-Msg-Generator: CA
-X-RootMTR: 20230906215901eucas1p27ce4a12bd251bde56d50568ac3ed1cf9
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20230906215901eucas1p27ce4a12bd251bde56d50568ac3ed1cf9
-References: <20230906-jag-sysctl_remove_empty_elem_arch-v1-0-3935d4854248@samsung.com>
-        <20230906-jag-sysctl_remove_empty_elem_arch-v1-3-3935d4854248@samsung.com>
-        <d0d30ad4-7837-b0c4-39f4-3e317e35a41b@intel.com>
-        <CGME20230906215901eucas1p27ce4a12bd251bde56d50568ac3ed1cf9@eucas1p2.samsung.com>
-        <ZPj2F4retSgg3vAj@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---xetpjh2dyeh26jbv
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-On Wed, Sep 06, 2023 at 11:58:47PM +0200, Ingo Molnar wrote:
->=20
-> * Dave Hansen <dave.hansen@intel.com> wrote:
->=20
-> > On 9/6/23 03:03, Joel Granados via B4 Relay wrote:
-> > > This commit comes at the tail end of a greater effort to remove the
-> > > empty elements at the end of the ctl_table arrays (sentinels) which
-> > > will reduce the overall build time size of the kernel and run time
-> > > memory bloat by ~64 bytes per sentinel (further information Link :
-> > > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org=
-/)
-> > >=20
-> > > Remove sentinel element from sld_sysctl and itmt_kern_table.
-> >=20
-> > There's a *LOT* of content to read for a reviewer to figure out what's
-> > going on here between all the links.  I would have appreciated one more
-> > sentence here, maybe:
-> >=20
-> > 	This is now safe because the sysctl registration code
-> > 	(register_sysctl()) implicitly uses ARRAY_SIZE() in addition
-> > 	to checking for a sentinel.
-> >=20
-> > That needs to be more prominent _somewhere_.  Maybe here, or maybe in
-> > the cover letter, but _somewhere_.
-> >=20
-> > That said, feel free to add this to the two x86 patches:
-> >=20
-> > Acked-by: Dave Hansen <dave.hansen@linux.intel.com> # for x86
->=20
-> Absolutely needs to be in the title as well, something like:
->=20
->    arch/x86: Remove now superfluous sentinel elem from ctl_table arrays
-Done. Will wait to see if other ppl have more comments to send out V2
+We access internals of struct gpio_device and struct gpio_desc because
+it's easier but it can actually be avoided and we're working towards a
+better encapsulation of GPIO data structures across the kernel so let's
+start at home.
 
-Thx.
->=20
-> With that propagated into the whole series:
->=20
->    Reviewed-by: Ingo Molnar <mingo@kernel.org>
->=20
-> Thanks,
->=20
-> 	Ingo
+Instead of checking gpio_desc flags, let's just track the requests of
+GPIOs in the driver. We also already store the information about
+direction of simulated lines.
 
---=20
+For kobjects needed by sysfs callbacks: we can iterate over the children
+devices of the top-level platform device and compare their fwnodes
+against the one passed to the init function from probe.
 
-Joel Granados
+While at it: fix one line break and remove the untrue part about
+configfs callbacks using dev_get_drvdata() from a comment.
 
---xetpjh2dyeh26jbv
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+v1 -> v2:
+- use get_dev_from_fwnode() instead of dereferencing fwnode directly
 
------BEGIN PGP SIGNATURE-----
+v2 -> v3:
+- don't use fwnode internal fields, instead: iterate over the platform
+  device's children and locate the GPIO device
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmT5iM0ACgkQupfNUreW
-QU8bUwv/fHvrxw5jNdVywGXfBd7e+5oIULa8H+WaPDRFBqcXRCiP5e+Lm2mdytxR
-6Qy5bFl4klUIDRa6aQR6Rz02E0hmsNe+VsgDTRi0PWWF3407VH4E1wjmOj5aT2VG
-PLGzd4HXCHLQbzQeC11Io/4nlEYU75Dd4gnkaRucqUKcXPrOlkb9hy0xySwAw7D8
-5uzagt62DQOKNRhztEgNmWIIqaDojwCT6XT9JLtXXuCMuiTQF7S2nTKPKGzUqWVg
-S8uigDN5928T19ra+u4tLjCEP8/Cdmqp5jSZdV2RDpPp/iANEtWK+S4iSMq+P86D
-kZDrtJfMxSPx9I+TPaNrf0/FJwrU9fvVvuyx/SnF4Hl2K+10RRgMiBQxV9zMStAt
-vyVqngOs646y+02tKZ/Z3xfJeZ5W/DiHoOk1kBI0/EYBXuHbM5W2OUfz4rNWHw/a
-b43A8zoLfRKBzp9mKJixlprQk0sHv9jm8Y7RIbM2R6OkLgUJTDvwGX08WPDBA/ao
-HEVK/mlZ
-=aiqw
------END PGP SIGNATURE-----
+v3 -> v4:
+- use device_find_child() (not bus_device_find_by_fwnode() as it's
+  pointless to iterate over all platform devices)
+- use device_match_fwnode() for matching the device by fwnode
 
---xetpjh2dyeh26jbv--
+ drivers/gpio/gpio-sim.c | 75 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 56 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
+index 271db3639a78..a58387f2cdc6 100644
+--- a/drivers/gpio/gpio-sim.c
++++ b/drivers/gpio/gpio-sim.c
+@@ -12,6 +12,8 @@
+ #include <linux/completion.h>
+ #include <linux/configfs.h>
+ #include <linux/device.h>
++#include <linux/device/bus.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/gpio/driver.h>
+ #include <linux/gpio/machine.h>
+ #include <linux/idr.h>
+@@ -30,8 +32,6 @@
+ #include <linux/string_helpers.h>
+ #include <linux/sysfs.h>
+ 
+-#include "gpiolib.h"
+-
+ #define GPIO_SIM_NGPIO_MAX	1024
+ #define GPIO_SIM_PROP_MAX	4 /* Max 3 properties + sentinel. */
+ #define GPIO_SIM_NUM_ATTRS	3 /* value, pull and sentinel */
+@@ -40,6 +40,8 @@ static DEFINE_IDA(gpio_sim_ida);
+ 
+ struct gpio_sim_chip {
+ 	struct gpio_chip gc;
++	struct device *dev;
++	unsigned long *request_map;
+ 	unsigned long *direction_map;
+ 	unsigned long *value_map;
+ 	unsigned long *pull_map;
+@@ -63,16 +65,11 @@ static int gpio_sim_apply_pull(struct gpio_sim_chip *chip,
+ 			       unsigned int offset, int value)
+ {
+ 	int irq, irq_type, ret;
+-	struct gpio_desc *desc;
+-	struct gpio_chip *gc;
+-
+-	gc = &chip->gc;
+-	desc = &gc->gpiodev->descs[offset];
+ 
+ 	guard(mutex)(&chip->lock);
+ 
+-	if (test_bit(FLAG_REQUESTED, &desc->flags) &&
+-	    !test_bit(FLAG_IS_OUT, &desc->flags)) {
++	if (test_bit(offset, chip->request_map) &&
++	    test_bit(offset, chip->direction_map)) {
+ 		if (value == !!test_bit(offset, chip->value_map))
+ 			goto set_pull;
+ 
+@@ -99,8 +96,8 @@ static int gpio_sim_apply_pull(struct gpio_sim_chip *chip,
+ 
+ set_value:
+ 	/* Change the value unless we're actively driving the line. */
+-	if (!test_bit(FLAG_REQUESTED, &desc->flags) ||
+-	    !test_bit(FLAG_IS_OUT, &desc->flags))
++	if (!test_bit(offset, chip->request_map) ||
++	    test_bit(offset, chip->direction_map))
+ 		__assign_bit(offset, chip->value_map, value);
+ 
+ set_pull:
+@@ -180,8 +177,8 @@ static int gpio_sim_get_direction(struct gpio_chip *gc, unsigned int offset)
+ 	return direction ? GPIO_LINE_DIRECTION_IN : GPIO_LINE_DIRECTION_OUT;
+ }
+ 
+-static int gpio_sim_set_config(struct gpio_chip *gc,
+-				  unsigned int offset, unsigned long config)
++static int gpio_sim_set_config(struct gpio_chip *gc, unsigned int offset,
++			       unsigned long config)
+ {
+ 	struct gpio_sim_chip *chip = gpiochip_get_data(gc);
+ 
+@@ -204,13 +201,25 @@ static int gpio_sim_to_irq(struct gpio_chip *gc, unsigned int offset)
+ 	return irq_create_mapping(chip->irq_sim, offset);
+ }
+ 
++static int gpio_sim_request(struct gpio_chip *gc, unsigned int offset)
++{
++	struct gpio_sim_chip *chip = gpiochip_get_data(gc);
++
++	scoped_guard(mutex, &chip->lock)
++		__set_bit(offset, chip->request_map);
++
++	return 0;
++}
++
+ static void gpio_sim_free(struct gpio_chip *gc, unsigned int offset)
+ {
+ 	struct gpio_sim_chip *chip = gpiochip_get_data(gc);
+ 
+-	scoped_guard(mutex, &chip->lock)
++	scoped_guard(mutex, &chip->lock) {
+ 		__assign_bit(offset, chip->value_map,
+ 			     !!test_bit(offset, chip->pull_map));
++		__clear_bit(offset, chip->request_map);
++	}
+ }
+ 
+ static ssize_t gpio_sim_sysfs_val_show(struct device *dev,
+@@ -282,6 +291,13 @@ static void gpio_sim_mutex_destroy(void *data)
+ 	mutex_destroy(lock);
+ }
+ 
++static void gpio_sim_put_device(void *data)
++{
++	struct device *dev = data;
++
++	put_device(dev);
++}
++
+ static void gpio_sim_dispose_mappings(void *data)
+ {
+ 	struct gpio_sim_chip *chip = data;
+@@ -295,7 +311,7 @@ static void gpio_sim_sysfs_remove(void *data)
+ {
+ 	struct gpio_sim_chip *chip = data;
+ 
+-	sysfs_remove_groups(&chip->gc.gpiodev->dev.kobj, chip->attr_groups);
++	sysfs_remove_groups(&chip->dev->kobj, chip->attr_groups);
+ }
+ 
+ static int gpio_sim_setup_sysfs(struct gpio_sim_chip *chip)
+@@ -352,14 +368,22 @@ static int gpio_sim_setup_sysfs(struct gpio_sim_chip *chip)
+ 		chip->attr_groups[i] = attr_group;
+ 	}
+ 
+-	ret = sysfs_create_groups(&chip->gc.gpiodev->dev.kobj,
+-				  chip->attr_groups);
++	ret = sysfs_create_groups(&chip->dev->kobj, chip->attr_groups);
+ 	if (ret)
+ 		return ret;
+ 
+ 	return devm_add_action_or_reset(dev, gpio_sim_sysfs_remove, chip);
+ }
+ 
++static int gpio_sim_dev_match_fwnode(struct device *dev, void *data)
++{
++	/*
++	 * We can't pass this directly to device_find_child() due to pointer
++	 * type mismatch.
++	 */
++	return device_match_fwnode(dev, data);
++}
++
+ static int gpio_sim_add_bank(struct fwnode_handle *swnode, struct device *dev)
+ {
+ 	struct gpio_sim_chip *chip;
+@@ -387,6 +411,10 @@ static int gpio_sim_add_bank(struct fwnode_handle *swnode, struct device *dev)
+ 	if (!chip)
+ 		return -ENOMEM;
+ 
++	chip->request_map = devm_bitmap_zalloc(dev, num_lines, GFP_KERNEL);
++	if (!chip->request_map)
++		return -ENOMEM;
++
+ 	chip->direction_map = devm_bitmap_alloc(dev, num_lines, GFP_KERNEL);
+ 	if (!chip->direction_map)
+ 		return -ENOMEM;
+@@ -432,6 +460,7 @@ static int gpio_sim_add_bank(struct fwnode_handle *swnode, struct device *dev)
+ 	gc->get_direction = gpio_sim_get_direction;
+ 	gc->set_config = gpio_sim_set_config;
+ 	gc->to_irq = gpio_sim_to_irq;
++	gc->request = gpio_sim_request;
+ 	gc->free = gpio_sim_free;
+ 	gc->can_sleep = true;
+ 
+@@ -439,8 +468,16 @@ static int gpio_sim_add_bank(struct fwnode_handle *swnode, struct device *dev)
+ 	if (ret)
+ 		return ret;
+ 
+-	/* Used by sysfs and configfs callbacks. */
+-	dev_set_drvdata(&gc->gpiodev->dev, chip);
++	chip->dev = device_find_child(dev, swnode, gpio_sim_dev_match_fwnode);
++	if (!chip->dev)
++		return -ENODEV;
++
++	ret = devm_add_action_or_reset(dev, gpio_sim_put_device, chip->dev);
++	if (ret)
++		return ret;
++
++	/* Used by sysfs callbacks. */
++	dev_set_drvdata(chip->dev, chip);
+ 
+ 	return gpio_sim_setup_sysfs(chip);
+ }
+-- 
+2.39.2
+
