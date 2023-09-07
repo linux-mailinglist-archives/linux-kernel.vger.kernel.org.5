@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BD1797AC8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E10A797AC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237749AbjIGRsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:48:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41892 "EHLO
+        id S237396AbjIGRs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:48:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245662AbjIGRsA (ORCPT
+        with ESMTP id S245657AbjIGRsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Sep 2023 13:48:00 -0400
 Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CBE1FCD;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B1A1FCA;
         Thu,  7 Sep 2023 10:47:40 -0700 (PDT)
 Received: from authenticated-user (box.trvn.ru [194.87.146.52])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id D924541787;
-        Thu,  7 Sep 2023 15:03:05 +0500 (+05)
+        by box.trvn.ru (Postfix) with ESMTPSA id 9C77442458;
+        Thu,  7 Sep 2023 15:03:06 +0500 (+05)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1694080986; bh=pm8ZM7bBeQBKsa4OPWQEylcBIFC5Xf4nYLFzqlL388I=;
+        t=1694080987; bh=FNIibyarmPCAlhz6Ut7njgzIVJSbI2KFycVZdOK+Y8k=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=s0gM2fxjGfV+St9BdOloZLMaExEG3oFKdIQPxV3SDoIF/xO2VkKGVz7xXeABJA95Q
-         eQkgyYYAoKrtI7DS828LCItiiz/Mmj8wlMZnwQe7i+geaEoTHpcsV2Z3bgtot2u7Jy
-         bkxBTZjYn5/0JysIV1s23iS7TPVZZvQ3F96piotFPgEUFQyEQXlR9bKEprZg2aYAD/
-         6pDyScLpfWt4xkrK0/VyaRWg+ZLEIw0Fa03LzGKta4YfMGgsWt2jnJOqtJJ1zRMn1U
-         SZYe9iAS/bVOzMBYatPPdJhbXtDMGotXzagY9Y5CGoQPWWp3ue0fhUh0OKL2E+7J0y
-         jD784KC7lmqEw==
+        b=hHanS4TA/Iznd0l18LShVGXLxevYyPmWfjmxKJNP+QCwba+tWrL1LDH5KospReRel
+         Zod6gB3MSGX7gbpHMv0qIe8Ki8BV8E0RlDaeYODC9HDbGFpo+twJWqFbotzWSpx9B9
+         BqEumZCcTJYGTZ7MJI0JPif5oEgZ0uUaffe9atkd5fdTX4hDXbkBm9EM7iwCm5ufFA
+         uM2BlqJxGnQd9kjr/oD+1SCVxA5gM0ygWQx40Wbi9s7AMHrRZI/99JjAx9EFAvGX8f
+         cff8vJfgpcGfO/vnnfilFuAh/P492FRBzOXt3kcVIFsDEyx3E4tz2jr4l4x66NkdVY
+         U9Dnggsob9Q+Q==
 From:   Nikita Travkin <nikita@trvn.ru>
-Date:   Thu, 07 Sep 2023 15:02:34 +0500
-Subject: [PATCH v3 1/4] dt-bindings: remoteproc: qcom: sc7180-pas: Add ADSP
- compatible
+Date:   Thu, 07 Sep 2023 15:02:35 +0500
+Subject: [PATCH v3 2/4] remoteproc: qcom: pas: Add sc7180 adsp
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230907-sc7180-adsp-rproc-v3-1-6515c3fbe0a3@trvn.ru>
+Message-Id: <20230907-sc7180-adsp-rproc-v3-2-6515c3fbe0a3@trvn.ru>
 References: <20230907-sc7180-adsp-rproc-v3-0-6515c3fbe0a3@trvn.ru>
 In-Reply-To: <20230907-sc7180-adsp-rproc-v3-0-6515c3fbe0a3@trvn.ru>
 To:     Andy Gross <agross@kernel.org>,
@@ -52,22 +51,21 @@ Cc:     David Wronek <davidwronek@gmail.com>,
         linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         ~postmarketos/upstreaming@lists.sr.ht,
-        Nikita Travkin <nikita@trvn.ru>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3285; i=nikita@trvn.ru;
- h=from:subject:message-id; bh=pm8ZM7bBeQBKsa4OPWQEylcBIFC5Xf4nYLFzqlL388I=;
- b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBk+Z/XJ/vTxCamBOQhP7BjTybQrgkfYGsTLkJ7D
- mpFwKj0olmJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZPmf1wAKCRBDHOzuKBm/
- dQnID/9Ah/OuJD2tpbhNR6p0WjG2sRU9vxP7wYChZDk6ASgsLgUfl7W21G3nGa3R/aIg76tz/49
- 1MUNTeI/MBvj56B1npedqFiKNvzPBBseMc2u9Hcgn0N8mD5zVhf9tgybKmqBQygKHyC+384x3JA
- FTQJ9cDonOjqL8fUpK01Cl1c9nskRvavBwb5AuVUWwzPL/IoIDY3ekNsv0AiJchpsHPIMO973ZZ
- qKGNLnUP3khjyh3AYi8254uQs5SH5ea3hiriraxQUqnPnPSS5vuClH1Oz40SJnU5vDJd8+nlScS
- Xw3v+3VJqMW576TCf5t0ASy2e/Mr+sgzZXNBN/jG8FZEAsR5uZ86I3r182IUw/f5rwI6nhHAbc2
- kpIscD7YXb9BjfxURulmGauBw9KUoctpcoDrcgauaLdd/d8G/1w8ZSBnPv5hF6tMznWRFR54ykm
- 5DXSVyrP4ibNyrHbt6ALodDwXTfUjsH2mAjdcnbR1tJ2OORJS9gbWWXUTzg/R36PV1NibNlupFf
- U38BJDjI3BUXeURP0zmTTDHas893POMv+za/kf7Wu2iyb6yLG2H9fRf0dyz82Kf4ARDUK9EXFhe
- Xfd743tL3ZueWfFYL6mg2M+q7mp6FSUW+nkqGSb4Sv9Xp6s/rIKqxktIZSRo6CtKHzqoyW1X/da
- Qy4G534+Rsu6Zag==
+        Nikita Travkin <nikita@trvn.ru>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1130; i=nikita@trvn.ru;
+ h=from:subject:message-id; bh=FNIibyarmPCAlhz6Ut7njgzIVJSbI2KFycVZdOK+Y8k=;
+ b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBk+Z/XWGIHKV9LtS/kaJFlmhh9V6OSlR4C636Cj
+ 6LqFciJPx6JAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZPmf1wAKCRBDHOzuKBm/
+ dWqiD/wKDJvYnFP+A/getQteeoWbURpaqo/5aKW8AOtEo/CsT6UA/ZgP49NNXSLPnhM9Fet8QPB
+ Z+rDe2ATJigMcxuT14NJuhe4UlPFpWpzIcn54H691eXriRnpmC+CVNmxJll5IFMUYbeFj/c7stq
+ j5PIg/aDmQ3lUmhpusvSOYnnJdK/SrbzXDwhdT8/kQehr1WqSW03m14Pf8JQ4/So2YzkXCN7KQI
+ ZwURZFwO2uQdw0s775ofXERFOAa/cm2qBmmcq7r7+Mgp/fnmj+SHDKIKbF7Ctpo/uOHlkWlvUwz
+ aLGa3gGgRnGkEFl9AWS6HzH5XUwSxnFDnPHuDSzw+QLpB0YV/CSPTrC/pc0jyu6hhyrvcEr/bMC
+ +etPPEZnDKNO2s886+toVyxy5vSLE8inWBZZuEPUaEIDN+PsA0miSiDCyI5o+ITv66aR5q+Qkbr
+ HZ8E/1nIlG2QhT76afM3OY9TNRha/MSTkUaHQRknZL5dseOpLsDhbBM9QHWs38FHjifJgTxV+KO
+ vH3cKllPJSVFYod6TzvYKL+G5+lSRjlQuvnQhzU2gooUS0UJhJVYF/tKypK1+84ZHZsOP9uB6Hu
+ z3o8nvGtHrcWPgtWgOfXqaYT3166XBEELZ9ARTNOOzPbuyucyajr4n9pYT+v/wOK9InROIH799y
+ yw5alrt1fAXzXJg==
 X-Developer-Key: i=nikita@trvn.ru; a=openpgp;
  fpr=C084AF54523FAA837E2EC547431CECEE2819BF75
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,134 +77,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SC7180 has an ADSP remoteproc. Add it's compatible to the bindings and
-refactor the schema conditionals to fit the ADSP.
+sc7180 has a dedicated ADSP similar to the one found in sm8250.
+Add it's compatible to the driver reusing the existing config so
+the devices that use the adsp can probe it.
 
 Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
-v2: Refactor similar to qcom,sm8150-pas.yaml
----
- .../bindings/remoteproc/qcom,sc7180-pas.yaml       | 81 +++++++++++++++-------
- 1 file changed, 56 insertions(+), 25 deletions(-)
+ drivers/remoteproc/qcom_q6v5_pas.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,sc7180-pas.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,sc7180-pas.yaml
-index 689d5d535331..f10f329677d8 100644
---- a/Documentation/devicetree/bindings/remoteproc/qcom,sc7180-pas.yaml
-+++ b/Documentation/devicetree/bindings/remoteproc/qcom,sc7180-pas.yaml
-@@ -16,6 +16,7 @@ description:
- properties:
-   compatible:
-     enum:
-+      - qcom,sc7180-adsp-pas
-       - qcom,sc7180-mpss-pas
-       - qcom,sc7280-mpss-pas
- 
-@@ -30,26 +31,6 @@ properties:
-     items:
-       - const: xo
- 
--  interrupts:
--    minItems: 6
--
--  interrupt-names:
--    minItems: 6
--
--  power-domains:
--    minItems: 2
--    items:
--      - description: CX power domain
--      - description: MX power domain
--      - description: MSS power domain
--
--  power-domain-names:
--    minItems: 2
--    items:
--      - const: cx
--      - const: mx
--      - const: mss
--
-   memory-region:
-     maxItems: 1
-     description: Reference to the reserved-memory for the Hexagon core
-@@ -71,6 +52,40 @@ required:
- 
- allOf:
-   - $ref: /schemas/remoteproc/qcom,pas-common.yaml#
-+  - if:
-+      properties:
-+        compatible:
-+          enum:
-+            - qcom,sc7180-adsp-pas
-+    then:
-+      properties:
-+        interrupts:
-+          maxItems: 5
-+        interrupt-names:
-+          maxItems: 5
-+    else:
-+      properties:
-+        interrupts:
-+          minItems: 6
-+        interrupt-names:
-+          minItems: 6
-+
-+  - if:
-+      properties:
-+        compatible:
-+          enum:
-+            - qcom,sc7180-adsp-pas
-+    then:
-+      properties:
-+        power-domains:
-+          items:
-+            - description: LCX power domain
-+            - description: LMX power domain
-+        power-domain-names:
-+          items:
-+            - const: lcx
-+            - const: lmx
-+
-   - if:
-       properties:
-         compatible:
-@@ -79,15 +94,31 @@ allOf:
-     then:
-       properties:
-         power-domains:
--          minItems: 3
-+          items:
-+            - description: CX power domain
-+            - description: MX power domain
-+            - description: MSS power domain
-         power-domain-names:
--          minItems: 3
--    else:
-+          items:
-+            - const: cx
-+            - const: mx
-+            - const: mss
-+
-+  - if:
-+      properties:
-+        compatible:
-+          enum:
-+            - qcom,sc7280-mpss-pas
-+    then:
-       properties:
-         power-domains:
--          maxItems: 2
-+          items:
-+            - description: CX power domain
-+            - description: MX power domain
-         power-domain-names:
--          maxItems: 2
-+          items:
-+            - const: cx
-+            - const: mx
- 
- unevaluatedProperties: false
- 
+diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
+index b5447dd2dd35..55fafc68200e 100644
+--- a/drivers/remoteproc/qcom_q6v5_pas.c
++++ b/drivers/remoteproc/qcom_q6v5_pas.c
+@@ -1161,6 +1161,7 @@ static const struct of_device_id adsp_of_match[] = {
+ 	{ .compatible = "qcom,qcs404-adsp-pas", .data = &adsp_resource_init },
+ 	{ .compatible = "qcom,qcs404-cdsp-pas", .data = &cdsp_resource_init },
+ 	{ .compatible = "qcom,qcs404-wcss-pas", .data = &wcss_resource_init },
++	{ .compatible = "qcom,sc7180-adsp-pas", .data = &sm8250_adsp_resource},
+ 	{ .compatible = "qcom,sc7180-mpss-pas", .data = &mpss_resource_init},
+ 	{ .compatible = "qcom,sc7280-mpss-pas", .data = &mpss_resource_init},
+ 	{ .compatible = "qcom,sc8180x-adsp-pas", .data = &sm8150_adsp_resource},
 
 -- 
 2.41.0
