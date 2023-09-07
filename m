@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB00A79746F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C2F7973E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237401AbjIGPiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
+        id S240965AbjIGPbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:31:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345018AbjIGPeU (ORCPT
+        with ESMTP id S1343599AbjIGPag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:34:20 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88FFF1BFA
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:34:01 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-76ef935abaeso62585185a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694100813; x=1694705613; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LlmQ0g0rcR8jIM0YGYnNYLZ2qWdNbYZUYP0dv1VJcEc=;
-        b=aHCEjBJWJSQNChfwrTn4UWO8SdmfStA8/4kExuw2efaKTmYiVsg24/zEcVn4wz80x5
-         Bn6F7MmjuGjY04WMjruwDapZYaZyMmB1PCBBj/Gx+sLqYwNrZtAsaFMrcl4sjsn45ZEf
-         ZMEI0JBT2XnJZFWnI/huypHGZG3yW28LzyIELwDB6Xp5ggfVRfipCeq8FTytzYhNprXr
-         WoGlV/KEV43WPCBaJ6j996DNTp6Y1K9KbrVyDFxG2LYngTIjVskuuWIQMl6mnFcCLxTq
-         Q/cQNPnE3E8JdujInYM9grIl0inY4Nhw2+P6VcElMaopJM9SrBxyfCekclRWVVIGgxJ0
-         Czzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694100813; x=1694705613;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=LlmQ0g0rcR8jIM0YGYnNYLZ2qWdNbYZUYP0dv1VJcEc=;
-        b=JEZ+TSE8/SG0p3mux9H+etzE1+HK9R40N1gftUwjtyGgYcAYPiyBZ6dVsFCXGso3mE
-         YzbAv0fvmgPStvGTH/9JRRTO44tALJ5Ln4R8vqBHdqhaPOylWPdmVdWORhkIxyHZui7l
-         tkGgFvGt5QfwziaFnLA5oMEJi2F9PA9ls+mzfv4Krj35+k+7/DKqfxpF5sq04MduNyya
-         Q+4XAyHd7de4YSZxDI/alCh9aUzCgG3EzyeaF02e21XxW3QytRDL7ltfrkO5g7jNPgVj
-         1ns8/a3UtM179M2asUdz0IO5TDh9GQRazfPP+rzCCoo+o/0VtIm98NK6NxjX3D2OEu42
-         kdog==
-X-Gm-Message-State: AOJu0Yx260iePead3/yvnsiMNvge7EqRUa3hC7JQFoGmI41alH5vRWBX
-        iCiLK6o1SJMyZwK7f866deKMctxVImo=
-X-Google-Smtp-Source: AGHT+IErairZ9yBTSt2kN6hRRi4u5s+turR2d2XrvcJUpHHW7n53nfz3i2uJ5+X8D5O10AqLjMSI7Q==
-X-Received: by 2002:a17:902:bd45:b0:1c0:c0af:ba59 with SMTP id b5-20020a170902bd4500b001c0c0afba59mr16388444plx.34.1694086628392;
-        Thu, 07 Sep 2023 04:37:08 -0700 (PDT)
-Received: from [192.168.0.106] ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id t11-20020a170902bc4b00b0019ee045a2b3sm12601833plz.308.2023.09.07.04.37.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 04:37:08 -0700 (PDT)
-Message-ID: <9a28c2fc-d769-4802-a1f2-77ba2cb34d25@gmail.com>
-Date:   Thu, 7 Sep 2023 18:37:00 +0700
+        Thu, 7 Sep 2023 11:30:36 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552181BCA;
+        Thu,  7 Sep 2023 08:30:10 -0700 (PDT)
+Received: from [100.126.43.34] (fooishbar.org [176.58.101.62])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: daniels)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9191A6607303;
+        Thu,  7 Sep 2023 12:40:05 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694086806;
+        bh=x7HmtDk+/L753kx6qpsqNqd9JfrlYkvhjpKDB4v0o3c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=VLmN0SF/LLpdCPr1G0Ibp2FEoaOVF19k5YefjGDuziOHGFNwwbZFk8fMTlInzwtEr
+         qCVv5V09tVupfFpgYIXCE2Oi9J3a2E21gdIT2MLR5BB6gSHXUPkn8laGzk2hj0VdWn
+         nIW89OkP9Th2PNol0U7Ob93GDqOTF2l8vBs/wqnWfhQDUc9Taiv0dkycu0qYwmynq+
+         7JVIaARIbQX1bPe4h7bxH0iyVIeFeEBINAMhFtFOU619IdM9OW1so+s1X3g32Ptd5d
+         mxzEnmAMZGjAp3sfxgfJBqN60iBixl3ohnBYi3a4nE9cidbR7CP61qMIqbRFkOXWAl
+         upKAuATZbxFWA==
+Message-ID: <9a2b1ad8-4359-4f12-b4f9-c1de477bc440@collabora.com>
+Date:   Thu, 7 Sep 2023 13:40:02 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11] drm: Add initial ci/ subdirectory
 Content-Language: en-US
-To:     Andres Salomon <dilinger@queued.net>,
-        "Timur I. Davletshin" <timur.davletshin@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux AMD GEODE <linux-geode@lists.infradead.org>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: AMD Geode LX hardware RNG driver produces regular patterns
- (geode-rng.c)
-Content-Type: text/plain; charset=UTF-8
+To:     Daniel Vetter <daniel@ffwll.ch>,
+        Helen Koike <helen.koike@collabora.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, emma@anholt.net,
+        linux-doc@vger.kernel.org, vignesh.raman@collabora.com,
+        dri-devel@lists.freedesktop.org, alyssa@rosenzweig.io,
+        jbrunet@baylibre.com, robdclark@google.com, corbet@lwn.net,
+        khilman@baylibre.com, sergi.blanch.torne@collabora.com,
+        david.heidelberg@collabora.com, linux-rockchip@lists.infradead.org,
+        martin.blumenstingl@googlemail.com, robclark@freedesktop.org,
+        anholt@google.com, linux-mediatek@lists.infradead.org,
+        matthias.bgg@gmail.com, linux-amlogic@lists.infradead.org,
+        gustavo.padovan@collabora.com,
+        linux-arm-kernel@lists.infradead.org,
+        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
+        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
+        tzimmermann@suse.de
+References: <20230811171953.176431-1-helen.koike@collabora.com>
+ <ZOTFfhtzzWkrQ23Y@phenom.ffwll.local>
+ <zorvxwffshrsqx5cy76pe3gn52qrqav7qusz5acav2un2ydvwr@fwjd56qg2xve>
+ <87bkeo23vs.fsf@intel.com>
+ <4rpsqk4tgrdcxtxtfoum6o4oyglwkirmkh3jj4y5tays2ivb5p@uwqdf3snshkv>
+ <25df6189-7b0a-b13d-e93d-c2a388fd45e3@collabora.com>
+ <zmq7pz7rtz6h765azg5kl2qgjd264yafctx4q474t5tqai57og@cajbcub4yuwr>
+ <5fdf9d29-3f8d-0ee0-027f-57ff3a5cecb8@collabora.com>
+ <CAKMK7uGg6n322UugJwErqF_Dvsbqceqae6SVWV3ZWEOR7x36rQ@mail.gmail.com>
+From:   Daniel Stone <daniels@collabora.com>
+In-Reply-To: <CAKMK7uGg6n322UugJwErqF_Dvsbqceqae6SVWV3ZWEOR7x36rQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -78,28 +78,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-I notice a regression report on Bugzilla [1]. Quoting from it:
+On 04/09/2023 09:54, Daniel Vetter wrote:
+> On Wed, 30 Aug 2023 at 17:14, Helen Koike <helen.koike@collabora.com>  > wrote: >> >> On 30/08/2023 11:57, Maxime Ripard wrote: >>> >>> I 
+agree that we need a baseline, but that baseline should be >>> defined 
+by the tests own merits, not their outcome on a >>> particular platform. 
+ >>> >>> In other words, I want all drivers to follow that baseline, and 
+ >>> if they don't it's a bug we should fix, and we should be vocal >>> 
+about it. We shouldn't ignore the test because it's broken. >>> >>> 
+Going back to the example I used previously, >>> 
+kms_hdmi_inject@inject-4k shouldn't fail on mt8173, ever. That's >>> a 
+bug. Ignoring it and reporting that "all tests are good" isn't >>> ok. 
+There's something wrong with that driver and we should fix >>> it. >>> 
+ >>> Or at the very least, explain in much details what is the >>> 
+breakage, how we noticed it, why we can't fix it, and how to >>> 
+reproduce it. >>> >>> Because in its current state, there's no chance 
+we'll ever go >>> over that test list and remove some of them. Or even 
+know if, if >>> we ever fix a bug somewhere, we should remove a flaky or 
+failing >>> test. >>> >>> [...] >>> >>>> we need to have a clear view 
+about which tests are not >>>> corresponding to it, so we can start 
+fixing. First we need to >>>> be aware of the issues so we can start 
+fixing them, otherwise >>>> we will stay in the "no tests no failures" 
+ground :) >>> >>> I think we have somewhat contradicting goals. You want 
+to make >>> regression testing, so whatever test used to work in the 
+past >>> should keep working. That's fine, but it's different from >>> 
+"expectations about what the DRM drivers are supposed to pass in >>> the 
+IGT test suite" which is about validation, ie "all KMS >>> drivers must 
+behave this way". >> >> [...] >> >> >> We could have some policy: if you 
+want to enable a certain device >> in the CI, you need to make sure it 
+passes all tests first to force >> people to go fix the issues, but 
+maybe it would be a big barrier. >> >> I'm afraid that, if a test fail 
+(and it is a clear bug), people >> would just say "work for most of the 
+cases, this is not a priority >> to fix" and just start ignoring the CI, 
+this is why I think >> regression tests is a good way to start with. > > 
+I think eventually we need to get to both goals, but currently > driver 
+and test quality just isn't remotely there. > > I think a good approach 
+would be if CI work focuses on the pure sw > tests first, so kunit and 
+running igt against vgem/vkms. And then we > could use that to polish a 
+set of must-pass igt testcases, which > also drivers in general are 
+supposed to pass. Plus ideally weed out > the bad igts that aren't 
+reliable enough or have bad assumptions. > > For hardware I think it 
+will take a very long time until we get to a > point where CI can work 
+without a test result list, we're nowhere > close to that. But for 
+virtual driver this really should be > achievable, albeit with a huge 
+amount of effort required to get > there I think.
+Yeah, this is what our experience with Mesa (in particular) has taught us.
 
-> System: Alix board 2d13 (AMD Geode LX800) running OpenWrt 23.05.0-rc3 (kernel 5.15.127)
-> 
-> Steps to reproduce:
-> 
-> cat /dev/hwrng and see output. Output in console shows regular pattern, rngd daemon (from rng-tools) refuses to run because of low entropy from /dev/hwrng. Pattern doesn't change until I reboot system.
-> 
-> Important notice: This problem started somewhere between 4.14.267 (kernel used in OpenWrt 19.07.9) and my current 5.15.127.
-> 
-> OpenWrt developers recommended addressing this problem upstream since they did not alter this driver in any way.
+Having 100% of the tests pass 100% of the time on 100% of the platforms 
+is a great goal that everyone should aim for. But it will also never happen.
 
-See Bugzilla for the full thread.
+Firstly, we're just not there yet today. Every single GPU-side DRM 
+driver has userspace-triggerable faults which cause occasional errors in 
+GL/Vulkan tests. Every single one. We deal with these in Mesa by 
+retrying; if we didn't retry, across the breadth of hardware we test, 
+I'd expect 99% of should-succeed merges to fail because of these 
+intermittent bugs in the DRM drivers. We don't have the same figure for 
+KMS - because we don't test it - but I'd be willing to bet no driver is 
+100% if you run tests often enough.
 
-Anyway, I'm adding it to regzbot:
+Secondly, we will never be there. If we could pause for five years and 
+sit down making all the current usecases for all the current hardware on 
+the current kernel run perfectly, we'd probably get there. But we can't: 
+there's new hardware, new userspace, and hundreds of new kernel trees. 
+Even without the first two, what happens when the Arm SMMU maintainers 
+(choosing a random target to pick on, sorry Robin) introduce subtle 
+breakage which makes a lot of tests fail some of the time? Do we refuse 
+to backmerge Linus into DRM until it's fixed, or do we disable all 
+testing on Arm until it's fixed? When we've done that, what happens when 
+we re-enable testing, and discover that a bunch of tests get broken 
+because we haven't been testing?
 
-#regzbot ^introduced: v4.14.267..v5.15.127
-#regzbot title: predictable urandom output on Alix 2d13
+Thirdly, hardware is capricious. 'This board doesn't make it to u-boot' 
+is a clear infrastructure error, but if you test at sufficient scale, 
+cold solder or failing caps surface way more often than you might think. 
+And you can't really pick those out by any other means than running at 
+scale, dealing with non-binary results, and looking at the trends over 
+time. (Again this is something we do in Mesa - we graph test failures 
+per DUT, look for outliers, and pull DUTs out of the rotation when 
+they're clearly defective. But that only works if you actually run 
+enough tests on them in the first place to discover trends - if you stop 
+at the first failed test, it's impossible to tell the difference between 
+'infuriatingly infrequent kernel/test bug?' and 'cracked main board 
+maybe?'.)
 
-Thanks.
+What we do know is that we _can_ classify tests four ways in 
+expectations. Always-passing tests should always pass. Always-failing 
+tests should always fail (and update the expectations if you make them 
+pass). Flaking tests work often enough that they'll always pass if you 
+run them a couple/few times, but fail often enough that you can't rely 
+on them. Then you just skip tests which exhibit catastrophic failure 
+i.e. local DoS which affects the whole test suite.
 
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217882
+By keeping those sets of expectations, we've been able to keep Mesa 
+pretty clear of regressions, whilst having a very clear set of things 
+that should be fixed to point to. It would be great if those set of 
+things were zero, but it just isn't. Having that is far better than the 
+two alternatives: either not testing at all (obviously bad), or having 
+the test always be red so it's always ignored (might as well just not test).
 
--- 
-An old man doll... just what I always wanted! - Clara
+
+Cheers,
+
+Daniel
+
+
