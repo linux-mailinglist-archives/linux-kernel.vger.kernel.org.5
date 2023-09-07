@@ -2,77 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55669796E4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 03:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE46796E53
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 03:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245027AbjIGBEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 21:04:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56902 "EHLO
+        id S237314AbjIGBGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 21:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245013AbjIGBEn (ORCPT
+        with ESMTP id S231300AbjIGBGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 21:04:43 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26AC219BD
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 18:04:37 -0700 (PDT)
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com [209.85.210.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id EB9293F12F
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 01:04:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1694048674;
-        bh=ft5o/B3DP4eFDUaywXFGkm/OnZfQctTMhkbEcktXXfY=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=GQkZl80p7IZJULJVeE9+m//B/rcRv8+cHMr/ag1YxIcg+aElkd+zan/f7oPmkEnwe
-         WEccS5nS7a3qyW5PtEK1hsIj6Ss4IOE95HIXUXUQEwArevOJdJTm+LNxbUmx6vmMiM
-         5iSItCu17/yiS3//UDJeHwvoaKAZa/aFNa1thF2Cu5vG8siK44wIpjsSqZb3lAe3jx
-         YjEblqXWVEaHo0kSJv/AfQsDvX1Qb8jlXLNAL1co1We7oQI+RKN8rj4nSgm7i5Xqgv
-         8qoTh9ESTfBhmL17gNlPyPSv8mRuleUu/JV9vUzoPHQQ3wLy55Th1W5mneT5vLs9SJ
-         ReFu2HCpdT+Ug==
-Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-68a3de043b7so600341b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 18:04:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694048673; x=1694653473;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ft5o/B3DP4eFDUaywXFGkm/OnZfQctTMhkbEcktXXfY=;
-        b=X4KdwvsymIHdXrs4d5VB1KjaglPE7UHFWRQyEPq2W2a6N4dWB4JmwL/ut/aJCcPyKv
-         xrIy3ZEYDha2wNo56jGClxB0EpuxcmEAxYe3SR/qcRsuLiE8v+wZaAhJoPu6lEksZTjf
-         FSlL+so6AUKIX2P8S5Eki5Mbbji+JlSsqTb6JW4nojEydB6W3P0IPcuy4fnUyZwuEwqV
-         AuidxPUbzZTqk1OJW76xZ26+4wDBRxUaaoWSAlCcP3NKU301V892ao0fM7KzWGUR+LU9
-         7TcyY0HVnRX6fStaJJpaiY2YDr8iKss8JOliRJaIAbx9llf6UOld/cHTtNaH6uBSf3LB
-         1Zaw==
-X-Gm-Message-State: AOJu0YxoYKu0tyw7zdV0sWcVgt/VI2kRAVZRUXmrMPmGEqM43rrwiXCo
-        +uMdAs49grskMmN8rwkgytqKb9mARaVdJSJwJxTwExXg7kkJOF+Uty61Ar/3IwAT4/iPGTzkdFj
-        dL9GSh6zOfKkWcRxIxscQmY3qoMz7DMTYBpkZX8SsQDXzgN/gP5BnmGradg==
-X-Received: by 2002:a05:6a00:1d1f:b0:68e:3c2b:20b9 with SMTP id a31-20020a056a001d1f00b0068e3c2b20b9mr708730pfx.31.1694048673092;
-        Wed, 06 Sep 2023 18:04:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGCgxuHroCYv49GX4roxYaNeyWiZr6YuzQ/rSVig7pwb/kb9IRoyICScWKEzxySAQ4JL8kUYTNeAaJdNRxBX94=
-X-Received: by 2002:a05:6a00:1d1f:b0:68e:3c2b:20b9 with SMTP id
- a31-20020a056a001d1f00b0068e3c2b20b9mr708717pfx.31.1694048672760; Wed, 06 Sep
- 2023 18:04:32 -0700 (PDT)
+        Wed, 6 Sep 2023 21:06:34 -0400
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2042.outbound.protection.outlook.com [40.107.14.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A258911B;
+        Wed,  6 Sep 2023 18:06:29 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lJDOnU4tDY0eUEq0ieT/Wr6id9sSJwWiWSKpCgtRB7p+neL1h2l7NeYALiNOeXc4neQDllqup+TWhmoj8KpebrpPdWcFi6O3+U5PqdivcWPOq9UqwhAQRev/AEMtrNStsnxsXYMxRDDWnf5VgBRzHVeMmvWK3wELdk8IniChxJYkBwM7L+SdYE4Pv7Ky5KaT69mNwuHk1aja7jWjXjjTWPwEVanZhhbeiCLFxCgcdC7wUTo8kGlny5y0CdWrhles2IV99eAbhWizCbOS2qnxxCXaRob3wsTdP29qkhRem75D3p5PTrrSNOoMsVBQ9oyxIU6H3Qe/lXAdEP91k3YW/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jP2mBxCcR16jkbGXryEF/X7CXtxDCTZtf1B2XBERk24=;
+ b=i05GKA2mRzOfyCc7r2CFlUfgoxSiVFAQ83ETsBJMsYBx8qZgbhU5mWYlygIkE7FcIYO+KFLurNuToBdpIEXpqBjg0pY8LDpMuPDYor9Mgrrc8dEBZeLbmA+RcPMiW4l0dPboM//M6vvukw96P7/476pSNMJEu83XyVj3HfsA7Ha6Vs0UrNaSDruHqMSQwInwEPqmGWmu3uU33JG4udKAOSRWvk6FZOeh92mKv0E4JMve9mrhV1rXTVPHepdKPSvL4Vu1XcLFRNNafGuJwjGIfgoG14geic+s6/AWS5gogBxFUUpog4oZ0LDpNB0S3lFWoIHcgWlf5xw0uqmlNFpF1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jP2mBxCcR16jkbGXryEF/X7CXtxDCTZtf1B2XBERk24=;
+ b=rDFZGwTucZJJefqApQwElb0zddD+6PB6TjSMpzvBKC+DRhskwDCEEiu1yJ1zvo4kbScjwvDChPH37NLgBOgwdbLIi8jXo2PPFp5bAfavDcDS67Tv4k4oVEWTXI1bTz85f5PicPfp2UDnINpg+haMffwzlCb6uhRa5LNdG1Ih0Xc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9448.eurprd04.prod.outlook.com (2603:10a6:102:2b1::21)
+ by AM0PR04MB6802.eurprd04.prod.outlook.com (2603:10a6:208:184::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.30; Thu, 7 Sep
+ 2023 01:06:26 +0000
+Received: from PAXPR04MB9448.eurprd04.prod.outlook.com
+ ([fe80::3505:c499:96d4:1429]) by PAXPR04MB9448.eurprd04.prod.outlook.com
+ ([fe80::3505:c499:96d4:1429%4]) with mapi id 15.20.6745.034; Thu, 7 Sep 2023
+ 01:06:26 +0000
+From:   Sandor Yu <Sandor.yu@nxp.com>
+To:     andrzej.hajda@intel.com, neil.armstrong@linaro.org,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        vkoul@kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com, Sandor.yu@nxp.com,
+        oliver.brown@nxp.com, alexander.stein@ew.tq-group.com,
+        sam@ravnborg.org
+Subject: [PATCH v9 0/7] Initial support Cadence MHDP8501(HDMI/DP) for i.MX8MQ
+Date:   Thu,  7 Sep 2023 09:05:27 +0800
+Message-Id: <cover.1694047629.git.Sandor.yu@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG3P274CA0003.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::15)
+ To PAXPR04MB9448.eurprd04.prod.outlook.com (2603:10a6:102:2b1::21)
 MIME-Version: 1.0
-References: <2ce258f371234b1f8a1a470d5488d00e@realtek.com>
-In-Reply-To: <2ce258f371234b1f8a1a470d5488d00e@realtek.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 7 Sep 2023 09:04:19 +0800
-Message-ID: <CAAd53p4LVL3uuNDCHPxteqM+jYD8E4atVyQvkt-HRhGKBVMoFg@mail.gmail.com>
-Subject: Re: [PATCH] misc: rtsx: Fix an error access Page fault
-To:     Ricky WU <ricky_wu@realtek.com>
-Cc:     "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9448:EE_|AM0PR04MB6802:EE_
+X-MS-Office365-Filtering-Correlation-Id: 60a0bb16-3d18-4657-a3b4-08dbaf3ea8f8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Zn5Tlc/OgJQmsZMDL+p3gTcMxSX/oX4hUmXe+z3q6dLpVF+bqrefT8GsFYrpd8SEXedyP7YMKHIBLJeoVhz17qeqGMOJI96JDp+o0sIL2uY9A7Q+8p6GvWwX2N8eB2qzyN50IWik/4+2yuntQqTP3mzOzBljOBo4YlWBRl/qKWK2PV0bfOKRjftEzW0Z6J6gjBPJ2F7wUsC5BmhjgQxMdEYW5KmPagQlocXnVsEL7jsHijnQs3JBjkKOE8HjnUst1bzsiLxzb0t/e//5oSGt0dincMFbD+dtwrcp4r1mfWCv4hFCTQWM/cfEUHYczbx5IvPLYIej5Re3CFKlNVsYYjlOGC4z2GElTh/J13HGqauBhjeTlQ3H1KqiTen4FBrai2yeP1SHKoMIQj71P9Vsbm12qkebAAw1Nr9l8SbUie+iXHYASvsNUE8f1USg6F9xBlvPnviOgrJk1izXuZBLYds+AHskwZkg5kKiiS/yYPBEtWv8Wv/XF6QWCksVmVT75AFK1Nihl7Yx+zKYkl4f8wzEaaocrtt2U/6vCjMJNyJn0xPChz9Ucnx0u7UtRfkgKg7EyBTE0il+MKFU3igW9g305DGCefUy5tMb+QgJbPKOG0AlWpAgDUn61JMEios5
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9448.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(136003)(376002)(346002)(396003)(1800799009)(186009)(451199024)(921005)(66476007)(966005)(66946007)(26005)(66556008)(478600001)(2616005)(6486002)(6512007)(52116002)(8936002)(4326008)(8676002)(316002)(5660300002)(86362001)(83380400001)(38350700002)(38100700002)(7416002)(36756003)(41300700001)(6506007)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Sm9yTVh4TDl0M1VBOVh5cUkySk1TV2RqbmJDa0pYVUJGRHZBRjJUMjJYb0Jl?=
+ =?utf-8?B?OHNKSXQ1SWtBc0VSWGZpZDVtcmkwdis1ZEhyRmtLZkcxK3ZySWdEbVVPMWxY?=
+ =?utf-8?B?ZW5lMXhrTjB4U1YrTGJxaW5yTXpyU0dJRkVsRDJGYzkzK0Y5VHphM3RxNkpS?=
+ =?utf-8?B?V3ZndGVJZjhOcGxyMEVaZ3kxNVZmdGk4WUs2cGkwUFlmRm9mbTVlUUFjUVNt?=
+ =?utf-8?B?ay9nZVdaTUdHZ1hhWldxSng2UzNNYVpNTElsMXpVdGE2aUQrZTlVbVdwY0dq?=
+ =?utf-8?B?NkV1LzY3K3dvUjNLVmVvcm5qSGlrQ3pWT2Z2ZzhrVXJhaVJxUE9VUk9SRWFU?=
+ =?utf-8?B?cUFXQVhGTGd4UjhHcUc0UkhmWG9iTjgvSHhGVjZqcEFyZjNsMXVNRmk5b0c5?=
+ =?utf-8?B?TkJ3d0puVDBadzk1cXVWaE44VG51VUh3YnJRMTNteVJjYnNhYisvWE1MaDRT?=
+ =?utf-8?B?RVkwWW1FS0VhbmRiQmZxamR4cVZsVGxIWmVObm5YdW9nMEY4MzdUSlZIdC9V?=
+ =?utf-8?B?cHErM2M3SU16UFlWT0xteC9WMEtEcDd2QWlwUkFyZG9tZjQ0dEVTVkF0Ylo1?=
+ =?utf-8?B?RUVRdU0raDRRYUp5SW9DR1hBMUZLMUVPSmxsdHhNemkwYThXSGRvcFVRUFl5?=
+ =?utf-8?B?R29zN3piejllVFVoRDBjblBUUUhPOURJQVR2OHNlOW1jaHdYYWFwcllRamRI?=
+ =?utf-8?B?blcwM1NIZkJ6R0VDK1JzdjdpNUw4NWd4Q0RKL1VCMjhCUktidzB1V0pVeFpB?=
+ =?utf-8?B?TGx2bTJIREpXcVdTU2Q0RGRpdzJZYmt6cS9waFdGQmxLVXB5aXpCU1dZalRX?=
+ =?utf-8?B?QVN2VHZ0RVNRYmE3Szc2OGVZN0RYTWN4NVE3RC9CM0hlMzVuTnEraDhaZGs0?=
+ =?utf-8?B?bFZFQTAxTXhhbWszMm5nYmtpakI1T0tERDkvYU15UHYrV2o2Z3g1b0tuUFVO?=
+ =?utf-8?B?Qkt4TFN2dkVMR0VySTA3cHJIQXBReHpmRmprTGZrWlRLSzA0dFV1cFc4N0VM?=
+ =?utf-8?B?OFRVMUpQclFwUENJbS8weklBT2ZuZHBmU3F2QnVWL0RkTWxjRXg3amNzbU9X?=
+ =?utf-8?B?ZnVEZE8wT0MrMXBWbWpRT3ZFV28xSlZ6SU42QWVrYW8rWlR0aERQaWNIb2Iz?=
+ =?utf-8?B?UXZUZ0NLcXBLblZtUkNoTVBjMVZrdURiNDJUNHM0ak9hYzZRckEzcW5RSmtQ?=
+ =?utf-8?B?OXFmbHBkRHo4eTNUTGhrTklPVjdNckFhYlErS2xvaFoxaHNwaUdRT0VLK0la?=
+ =?utf-8?B?S3pCOVdHdnpwNTF6ZjdBQ1RmSFB0VVdVRzMxdnNjd3RlTGE0S1liTmN1Y2dV?=
+ =?utf-8?B?ZWZ2VSt1M1cvcks2ZzdqUWhzVU9NVzVGU1NiOFFFOC81MWZNVlNIVkNBaUR0?=
+ =?utf-8?B?dTFZclcyM251R3BPR0c4d0xPWHhIcFNZcE5teDBKUVNVQ0wxTHFVZXh0OVlh?=
+ =?utf-8?B?N2RGbzB6cDZwNFQvVDAxUXI1Q1pTVTN0bktMU2hkMkF6eFhDdFpRRlJWM2c2?=
+ =?utf-8?B?UVRMSndJZ3pwUkE1UGx5ZnIyc2Y5eThVNHJHS1FZQnZWUElndGRVMDU4dko4?=
+ =?utf-8?B?a2doRkNHZ1I4SmdGeUZNY2ZLd3BSaG41bGc1Nlh4UWIwQ0dGTldqNDJ0R0JG?=
+ =?utf-8?B?Y2RhYThPNkNadEl0S3ordFBnS2hwajZKUFAxRWlSc3NzdFgrcVg3OVdnaWMz?=
+ =?utf-8?B?MTlKc3RTUklYTEhGM0YwU2FoaWd4WUk3SWZvN1FseUFnejdVOHRnNHhydWs1?=
+ =?utf-8?B?dVdTb1Nuek0xejdBcHYvSXJyK0kzR3NNaHdDL20zbFVyNkxBUGVmUUR6Ty94?=
+ =?utf-8?B?Y0V5a01CK1c1VElOa1BIN0EzQ2J0dDJPd2FXRUVpMjZFRHRCcW9FcENDRGFU?=
+ =?utf-8?B?Y08yT2dpalVTM3ZGSWswYnFsOG1LdFZNSHB4M2hqZjUwNlI4azlTbjA3SVlQ?=
+ =?utf-8?B?QyszQ2hyVHFkZ1dSbEloVkpvK3hOd1Q0MmRkZ2t4aHdwM09CVUp3RGZLMjFH?=
+ =?utf-8?B?RGFhYjVrZy9kdURWZHUrcmFSdnlsRGVtL04zRVovZkR5WmVvdW5CbWV2ZjlZ?=
+ =?utf-8?B?aUtKR0NlYmVLbFdTdTU4V2JKeThpYUpaTjhjdDd1S1ZudjFEN2lGeC9zS1d2?=
+ =?utf-8?Q?hKlnb/QitYb0GL5OzbAblyHcx?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60a0bb16-3d18-4657-a3b4-08dbaf3ea8f8
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9448.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 01:06:26.4502
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ke+qs66dVnDqfz0MzgmaD7GJyFUwS6Uu/4tWNvfLZKVIWPxz+QIP3nuniF/4gRgHcvtMF1SmlO7MpkEyrRyuAQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6802
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,92 +127,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricky,
+The patch set initial support Cadence MHDP8501(HDMI/DP) DRM bridge
+drivers and Cadence HDP-TX PHY(HDMI/DP) drivers for Freescale i.MX8MQ.
 
-On Wed, Sep 6, 2023 at 4:03=E2=80=AFPM Ricky WU <ricky_wu@realtek.com> wrot=
-e:
->
-> an error occurs on insert SD7.0 card.
-> The pci slot of rtsx_pci will Link Down when the SD7.0 card inserted,
-> but the rtsx_pci not exit from runtime_idle at that time,
-> then do the power_saving function to access the wrong resource
+The patch set compose of DRM bridge drivers and PHY drivers.
 
-Is it possible to attach full dmesg? Maybe the issue is coming from PCI sid=
-e?
+Both of them need the followed two patches to pass build.
+  drm: bridge: Cadence: convert mailbox functions to macro functions
+  phy: Add HDMI configuration options
 
-Kai-Heng
+DRM bridges driver patches:
+  dt-bindings: display: bridge: Add Cadence MHDP850
+  drm: bridge: Cadence: Add MHDP8501 DP/HDMI driver
 
->
-> Fixes: 597568e8df04 ("misc: rtsx: Rework runtime power management flow")
-> Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
-> ---
->  drivers/misc/cardreader/rtsx_pcr.c | 14 ++++++++------
->  drivers/mmc/host/rtsx_pci_sdmmc.c  |  1 +
->  include/linux/rtsx_pci.h           |  1 +
->  3 files changed, 10 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader=
-/rtsx_pcr.c
-> index a3f4b52bb159..536a3681fd5e 100644
-> --- a/drivers/misc/cardreader/rtsx_pcr.c
-> +++ b/drivers/misc/cardreader/rtsx_pcr.c
-> @@ -1526,6 +1526,7 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
->         pcr->host_sg_tbl_addr =3D pcr->rtsx_resv_buf_addr + HOST_CMDS_BUF=
-_LEN;
->         pcr->card_inserted =3D 0;
->         pcr->card_removed =3D 0;
-> +       pcr->is_sd_express =3D false;
->         INIT_DELAYED_WORK(&pcr->carddet_work, rtsx_pci_card_detect);
->
->         pcr->msi_en =3D msi_en;
-> @@ -1735,12 +1736,13 @@ static int rtsx_pci_runtime_idle(struct device *d=
-evice)
->
->         pcr->state =3D PDEV_STAT_IDLE;
->
-> -       if (pcr->ops->disable_auto_blink)
-> -               pcr->ops->disable_auto_blink(pcr);
-> -       if (pcr->ops->turn_off_led)
-> -               pcr->ops->turn_off_led(pcr);
-> -
-> -       rtsx_pm_power_saving(pcr);
-> +       if (!pcr->is_sd_express) {
-> +               if (pcr->ops->disable_auto_blink)
-> +                       pcr->ops->disable_auto_blink(pcr);
-> +               if (pcr->ops->turn_off_led)
-> +                       pcr->ops->turn_off_led(pcr);
-> +               rtsx_pm_power_saving(pcr);
-> +       }
->
->         mutex_unlock(&pcr->pcr_mutex);
->
-> diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pc=
-i_sdmmc.c
-> index 87d78432a1e0..80b2f2a31fdc 100644
-> --- a/drivers/mmc/host/rtsx_pci_sdmmc.c
-> +++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
-> @@ -1393,6 +1393,7 @@ static int sdmmc_init_sd_express(struct mmc_host *m=
-mc, struct mmc_ios *ios)
->                 RTS5261_MCU_BUS_SEL_MASK | RTS5261_MCU_CLOCK_SEL_MASK
->                 | RTS5261_DRIVER_ENABLE_FW,
->                 RTS5261_MCU_CLOCK_SEL_16M | RTS5261_DRIVER_ENABLE_FW);
-> +       pcr->is_sd_express =3D true;
->         host->eject =3D true;
->         return 0;
->  }
-> diff --git a/include/linux/rtsx_pci.h b/include/linux/rtsx_pci.h
-> index 534038d962e4..295e92224fd0 100644
-> --- a/include/linux/rtsx_pci.h
-> +++ b/include/linux/rtsx_pci.h
-> @@ -1262,6 +1262,7 @@ struct rtsx_pcr {
->         u8                      ocp_stat;
->         u8                      ocp_stat2;
->         u8                      rtd3_en;
-> +       bool                    is_sd_express;
->  };
->
->  #define PID_524A       0x524A
-> --
-> 2.25.1
->
+PHY driver patches:
+  dt-bindings: phy: Add Freescale iMX8MQ DP and HDMI PHY
+  phy: freescale: Add DisplayPort PHY driver for i.MX8MQ
+  phy: freescale: Add HDMI PHY driver for i.MX8MQ
+
+v8->v9:
+- Remove compatible string "cdns,mhdp8501" that had removed
+  from dt-bindings file in v8.
+- Add Dmitry's R-b tag to patch #2
+- Add Krzysztof's R-b tag to patch #3
+
+v7->v8:
+MHDP8501 HDMI/DP:
+- Correct DT node name to "display-bridge".
+- Remove "cdns,mhdp8501" from mhdp8501 dt-binding doc.
+
+HDMI/DP PHY:
+- Introduced functions `wait_for_ack` and `wait_for_ack_clear` to handle
+  waiting with acknowledgment bits set and cleared respectively.
+- Use FIELD_PRE() to set bitfields for both HDMI and DP PHY.
+
+v6->v7:
+MHDP8501 HDMI/DP:
+- Combine HDMI and DP driver into one mhdp8501 driver.
+  Use the connector type to load the corresponding functions.
+- Remove connector init functions.
+- Add <linux/hdmi.h> in phy_hdmi.h to reuse ‘enum hdmi_colorspace’.
+
+HDMI/DP PHY:
+- Lowercase hex values
+- Fix parameters indent issue on some functions
+- Replace ‘udelay’ with ‘usleep_range’
+
+v5->v6:
+HDMI/DP bridge driver
+- 8501 is the part number of Cadence MHDP on i.MX8MQ.
+  Use MHDP8501 to name hdmi/dp drivers and files. 
+- Add compatible "fsl,imx8mq-mhdp8501-dp" for i.MX8MQ DP driver
+- Add compatible "fsl,imx8mq-mhdp8501-hdmi" for i.MX8MQ HDMI driver
+- Combine HDMI and DP dt-bindings into one file cdns,mhdp8501.yaml
+- Fix HDMI scrambling is not enable issue when driver working in 4Kp60
+  mode.
+- Add HDMI/DP PHY API mailbox protect.
+
+HDMI/DP PHY driver:
+- Rename DP and HDMI PHY files and move to folder phy/freescale/
+- Remove properties num_lanes and link_rate from DP PHY driver.
+- Combine HDMI and DP dt-bindings into one file fsl,imx8mq-dp-hdmi-phy.yaml
+- Update compatible string to "fsl,imx8mq-dp-phy".
+- Update compatible string to "fsl,imx8mq-hdmi-phy".
+
+v4->v5:
+- Drop "clk" suffix in clock name.
+- Add output port property in the example of hdmi/dp.
+
+v3->v4:
+dt-bindings:
+- Correct dt-bindings coding style and address review comments.
+- Add apb_clk description.
+- Add output port for HDMI/DP connector
+PHY:
+- Alphabetically sorted in Kconfig and Makefile for DP and HDMI PHY
+- Remove unused registers define from HDMI and DP PHY drivers.
+- More description in phy_hdmi.h.
+- Add apb_clk to HDMI and DP phy driver.
+HDMI/DP:
+- Use get_unaligned_le32() to replace hardcode type conversion
+  in HDMI AVI infoframe data fill function.
+- Add mailbox mutex lock in HDMI/DP driver for phy functions
+  to reslove race conditions between HDMI/DP and PHY drivers.
+- Add apb_clk to both HDMI and DP driver.
+- Rename some function names and add prefix with "cdns_hdmi/cdns_dp".
+- Remove bpc 12 and 16 optional that not supported.
+
+v2->v3:
+Address comments for dt-bindings files.
+- Correct dts-bindings file names 
+  Rename phy-cadence-hdptx-dp.yaml to cdns,mhdp-imx8mq-dp.yaml
+  Rename phy-cadence-hdptx-hdmi.yaml to cdns,mhdp-imx8mq-hdmi.yaml
+- Drop redundant words and descriptions.
+- Correct hdmi/dp node name.
+
+v2 is a completely different version compared to v1.
+Previous v1 can be available here [1].
+
+v1->v2:
+- Reuse Cadence mailbox access functions from mhdp8546 instead of
+  rockchip DP.
+- Mailbox access functions be convert to marco functions
+  that will be referenced by HDP-TX PHY(HDMI/DP) driver too.
+- Plain bridge instead of component driver.
+- Standalone Cadence HDP-TX PHY(HDMI/DP) driver.
+- Audio driver are removed from the patch set, it will be add in another
+  patch set later.
+
+[1] https://patchwork.kernel.org/project/linux-rockchip/cover/cover.1590982881.git.Sandor.yu@nxp.com/
+
+Sandor Yu (7):
+  drm: bridge: Cadence: convert mailbox functions to macro functions
+  phy: Add HDMI configuration options
+  dt-bindings: display: bridge: Add Cadence MHDP850
+  drm: bridge: Cadence: Add MHDP8501 DP/HDMI driver
+  dt-bindings: phy: Add Freescale iMX8MQ DP and HDMI PHY
+  phy: freescale: Add DisplayPort PHY driver for i.MX8MQ
+  phy: freescale: Add HDMI PHY driver for i.MX8MQ
+
+ .../display/bridge/cdns,mhdp8501.yaml         | 104 ++
+ .../bindings/phy/fsl,imx8mq-dp-hdmi-phy.yaml  |  53 +
+ drivers/gpu/drm/bridge/cadence/Kconfig        |  15 +
+ drivers/gpu/drm/bridge/cadence/Makefile       |   2 +
+ .../drm/bridge/cadence/cdns-mhdp8501-core.c   | 312 ++++++
+ .../drm/bridge/cadence/cdns-mhdp8501-core.h   | 410 ++++++++
+ .../gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c | 780 ++++++++++++++
+ .../drm/bridge/cadence/cdns-mhdp8501-hdmi.c   | 674 ++++++++++++
+ .../drm/bridge/cadence/cdns-mhdp8546-core.c   | 195 +---
+ .../drm/bridge/cadence/cdns-mhdp8546-core.h   |   1 -
+ drivers/phy/freescale/Kconfig                 |  18 +
+ drivers/phy/freescale/Makefile                |   2 +
+ drivers/phy/freescale/phy-fsl-imx8mq-dp.c     | 714 +++++++++++++
+ drivers/phy/freescale/phy-fsl-imx8mq-hdmi.c   | 955 ++++++++++++++++++
+ include/drm/bridge/cdns-mhdp-mailbox.h        | 240 +++++
+ include/linux/phy/phy-hdmi.h                  |  24 +
+ include/linux/phy/phy.h                       |   7 +-
+ 17 files changed, 4310 insertions(+), 196 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/cdns,mhdp8501.yaml
+ create mode 100644 Documentation/devicetree/bindings/phy/fsl,imx8mq-dp-hdmi-phy.yaml
+ create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-core.c
+ create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-core.h
+ create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c
+ create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-hdmi.c
+ create mode 100644 drivers/phy/freescale/phy-fsl-imx8mq-dp.c
+ create mode 100644 drivers/phy/freescale/phy-fsl-imx8mq-hdmi.c
+ create mode 100644 include/drm/bridge/cdns-mhdp-mailbox.h
+ create mode 100644 include/linux/phy/phy-hdmi.h
+
+-- 
+2.34.1
+
