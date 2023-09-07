@@ -2,232 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6BC8797B3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F48C797CD3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 21:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244065AbjIGSKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 14:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53712 "EHLO
+        id S235816AbjIGTfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 15:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239762AbjIGSKi (ORCPT
+        with ESMTP id S229977AbjIGTfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:10:38 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0361810F1;
-        Thu,  7 Sep 2023 11:10:05 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-64c2e2572f7so7123506d6.1;
-        Thu, 07 Sep 2023 11:10:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694110203; x=1694715003; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=brKbRdx1kpGoO2Y9NjS4SFjuuPU0IFk1738Z4hW7QPE=;
-        b=rrd4PrDWVv2jjTdtd6O8xCq4EHwQOoFejM4fR38BvLRDotce54HnzQOhBRlumlmTuP
-         n7vLi29D93/GGBcdbOJU/x6HrGn/bzAxY9voU+K4fpd3Zgk8XAya2AHATDw0YR4zPYUc
-         3SkXsIWQJT6WqHlLL34Rm44pml0yAVJMqjj7T5gO/9GLAZVIO22u+ygTU+teFR86UR8U
-         AGTAuUOIrV+0C7EFXEVJ2VE+FDiBe7VjOax6FEZcrv8HcFDr55yP2qPbJ0FbUrf+1mvq
-         xboq46V8/txGqUym1lMqSodhg4pOtFaL7lcSnn+AUG8/bxgFxOVMkHXzRD3N/bS47M6F
-         k8/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694110203; x=1694715003;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=brKbRdx1kpGoO2Y9NjS4SFjuuPU0IFk1738Z4hW7QPE=;
-        b=pzDWyfssVPXQO+wTMLWBByj/y1zhxl+D1G1Lyo4Ng1qZfCyVAoWk/LC85XrNNfE5Up
-         uyDLSWYRHjO2GmXDWL5bv3XPsvZG73T9JN9wfeoGvJgCIHzSNWS03vd0qdD0Pnyyzjgl
-         KZ5ewjzdQDORvXWh6g73X8qZXawFAxBOn+uO3smo6XZresRBalkuZ9JPjOUV7uQlbxD6
-         8sA8fJLS6PFy797dkz8Lc4pOvwMh+r4AmWeo12bSrC8bYXMZIg1tR2rK9VQ9Ap2Wsrc3
-         fPgdUJJ/sdOwH7JxWoDVR/veVc4/IY9Sa4Z8fMw8YTlHRxIgfAX1Rs1EXLle/LX02h9Q
-         dOpA==
-X-Gm-Message-State: AOJu0YwTBDU3/MFGnztDAVE/vSjuXW3GLkBncxakSGWsdFW8wJrtuj99
-        X7VY3bdU75R27Xo65gd9c+uDCPh/zM2VyV8pucDjiM4bkXE=
-X-Google-Smtp-Source: AGHT+IEB2hO+TGGIAGO65G3+5LgFgJwUd0dqMX6Dw9arpoFxlY11pB1Z3e5xVZisoM3mAw7p9kKP6mypD/66ucf4p3s=
-X-Received: by 2002:a6b:d315:0:b0:787:ff98:c38c with SMTP id
- s21-20020a6bd315000000b00787ff98c38cmr21570759iob.10.1694083805330; Thu, 07
- Sep 2023 03:50:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230801085402.1168351-1-alexghiti@rivosinc.com>
- <20230801085402.1168351-5-alexghiti@rivosinc.com> <CA+V-a8t56xDqMTQfoKcsvPF8errkTMydaDz5V6nejLvVfJrW3g@mail.gmail.com>
- <CAHVXubiENHt36LrcSBoNU0rAMQ8EoT6tde9M8vLP3Hw2nwMm8g@mail.gmail.com>
- <CA+V-a8vJJFCKy3pCL2Qp1NogL-K5s9moGDbv3tTvx+z1FeKarw@mail.gmail.com>
- <CAHVXubhLB9Pw51C1ed1Youp9k0qTJKrokUAqf=Xnr+m3BoN5=g@mail.gmail.com>
- <CA+V-a8s0i=VMSbMa6WvOiZpqe_idAhq4cZ0inSdCNy39-rQeAg@mail.gmail.com>
- <CAHVXubjgjAwMOi0J5zZJkuX8RKwgfKp-_=tVTLDvKN=tBBdxNQ@mail.gmail.com>
- <CA+V-a8uxe=sT7oX4Dk4zppCbYzWdZgWt9Xh4m+pA2+3t8kfnjg@mail.gmail.com> <CAHVXubitpk9RxMPc9+ss0y=ZmpOrfv0ocP+UDQktR=TM+gy=KQ@mail.gmail.com>
-In-Reply-To: <CAHVXubitpk9RxMPc9+ss0y=ZmpOrfv0ocP+UDQktR=TM+gy=KQ@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Thu, 7 Sep 2023 11:49:03 +0100
-Message-ID: <CA+V-a8tGGR8q1Wv=dJJKLkbAsfmH8p8Fn9Ycns7+1LCSzxvpZA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] riscv: Improve flush_tlb_kernel_range()
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Thu, 7 Sep 2023 15:35:01 -0400
+X-Greylist: delayed 4200 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Sep 2023 12:34:55 PDT
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF37E47;
+        Thu,  7 Sep 2023 12:34:55 -0700 (PDT)
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by bee.tesarici.cz (Postfix) with ESMTPSA id EA87A18CBB2;
+        Thu,  7 Sep 2023 13:12:24 +0200 (CEST)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+        t=1694085145; bh=fbplRXoTU4SArEuqSCeWcBdBKDzKAfUk7UIh+zzJ294=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UeWu1Ze8yhdkAQSYLwMwA5Evs8is8jd9+WRDve9QstEAJCVJk4EyPrZUvt2GlulJO
+         Acv8RNSZT4NRo56VbHVjN1Qces1eN30pA/Z8XXCRCYRiG42VIaxfqRB+JiaUWDiSNI
+         7vNLYKFtmaNGH7exnrZYJl77SUb4GDfp5VfGRbajxxQjYFEMgAhMtBIGZd04dwv9py
+         LsW5QNMFeGMU27vzeZa8jYcSznJj+rq7+myvFYGpQ5xn1ltALy9BQiZ0pdCtmt5J0/
+         dC6nWffmW3QcD4g/Ya4kxdbnZOi4vIJaCWhouPtZgmgytg1/Um76VBACnHThhWcUwa
+         sohl8kzvr6NyA==
+Date:   Thu, 7 Sep 2023 13:12:23 +0200
+From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Petr Tesarik <petrtesarik@huaweicloud.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Jones <ajones@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Petr Tesarik <petr.tesarik.ext@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        James Seo <james@equiv.tech>,
+        James Clark <james.clark@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "moderated list:XEN HYPERVISOR ARM" <xen-devel@lists.xenproject.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:XEN SWIOTLB SUBSYSTEM" <iommu@lists.linux.dev>,
+        "open list:SLAB ALLOCATOR" <linux-mm@kvack.org>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>
+Subject: Re: [PATCH v7 9/9] swiotlb: search the software IO TLB only if the
+ device makes use of it
+Message-ID: <20230907131223.587c1a88@meshulam.tesarici.cz>
+In-Reply-To: <87il8wr348.fsf@meer.lwn.net>
+References: <cover.1690871004.git.petr.tesarik.ext@huawei.com>
+        <adea71bd1fa8660d4c3157a562431ad8127016d4.1690871004.git.petr.tesarik.ext@huawei.com>
+        <87a5uz3ob8.fsf@meer.lwn.net>
+        <87il8wr348.fsf@meer.lwn.net>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
+Hi all,
 
-On Thu, Sep 7, 2023 at 10:06=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosinc=
-.com> wrote:
->
-> Hi Prabhakar,
->
-> On Wed, Sep 6, 2023 at 3:55=E2=80=AFPM Lad, Prabhakar
-> <prabhakar.csengg@gmail.com> wrote:
+sorry for my late reply; I've been away from my work setup for a
+month...
+
+On Wed, 30 Aug 2023 08:55:51 -0600
+Jonathan Corbet <corbet@lwn.net> wrote:
+
+> So it seems this code got merged without this question ever being
+> answered.  Sorry if it's a dumb one, but I don't think this
+> functionality works as advertised...
+
+Yes, I believe the check was originally in is_swiotlb_buffer(), but it
+got lost during one of the numerous rebases of this patch set. Let me
+send a follow-up patch after making sure it actually works.
+
+Petr T
+
+> Thanks,
+> 
+> jon
+> 
+> Jonathan Corbet <corbet@lwn.net> writes:
+> 
+> > Petr Tesarik <petrtesarik@huaweicloud.com> writes:
+> >  
+> >> From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+> >>
+> >> Skip searching the software IO TLB if a device has never used it,
+> >> making sure these devices are not affected by the introduction of
+> >> multiple IO TLB memory pools.
+> >>
+> >> Additional memory barrier is required to ensure that the new value
+> >> of the flag is visible to other CPUs after mapping a new bounce
+> >> buffer. For efficiency, the flag check should be inlined, and then
+> >> the memory barrier must be moved to is_swiotlb_buffer(). However,
+> >> it can replace the existing barrier in swiotlb_find_pool(),
+> >> because all callers use is_swiotlb_buffer() first to verify that
+> >> the buffer address belongs to the software IO TLB.
+> >>
+> >> Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+> >> ---  
 > >
-> > Hi Alexandre,
+> > Excuse me if this is a silly question, but I'm not able to figure
+> > it out on my own...
+> >  
+> >>  include/linux/device.h  |  2 ++
+> >>  include/linux/swiotlb.h |  7 ++++++-
+> >>  kernel/dma/swiotlb.c    | 14 ++++++--------
+> >>  3 files changed, 14 insertions(+), 9 deletions(-)
+> >>
+> >> diff --git a/include/linux/device.h b/include/linux/device.h
+> >> index 5fd89c9d005c..6fc808d22bfd 100644
+> >> --- a/include/linux/device.h
+> >> +++ b/include/linux/device.h
+> >> @@ -628,6 +628,7 @@ struct device_physical_location {
+> >>   * @dma_io_tlb_mem: Software IO TLB allocator.  Not for driver
+> >> use.
+> >>   * @dma_io_tlb_pools:	List of transient swiotlb memory
+> >> pools.
+> >>   * @dma_io_tlb_lock:	Protects changes to the list of
+> >> active pools.
+> >> + * @dma_uses_io_tlb: %true if device has used the software IO TLB.
+> >>   * @archdata:	For arch-specific additions.
+> >>   * @of_node:	Associated device tree node.
+> >>   * @fwnode:	Associated device node supplied by platform
+> >> firmware. @@ -737,6 +738,7 @@ struct device {
+> >>  #ifdef CONFIG_SWIOTLB_DYNAMIC
+> >>  	struct list_head dma_io_tlb_pools;
+> >>  	spinlock_t dma_io_tlb_lock;
+> >> +	bool dma_uses_io_tlb;  
 > >
-> > On Wed, Sep 6, 2023 at 1:43=E2=80=AFPM Alexandre Ghiti <alexghiti@rivos=
-inc.com> wrote:
-> > >
-> > > On Wed, Sep 6, 2023 at 2:24=E2=80=AFPM Lad, Prabhakar
-> > > <prabhakar.csengg@gmail.com> wrote:
-> > > >
-> > > > Hi Alexandre,
-> > > >
-> > > > On Wed, Sep 6, 2023 at 1:18=E2=80=AFPM Alexandre Ghiti <alexghiti@r=
-ivosinc.com> wrote:
-> > > > >
-> > > > > On Wed, Sep 6, 2023 at 2:09=E2=80=AFPM Lad, Prabhakar
-> > > > > <prabhakar.csengg@gmail.com> wrote:
-> > > > > >
-> > > > > > Hi Alexandre,
-> > > > > >
-> > > > > > On Wed, Sep 6, 2023 at 1:01=E2=80=AFPM Alexandre Ghiti <alexghi=
-ti@rivosinc.com> wrote:
-> > > > > > >
-> > > > > > > Hi Prabhakar,
-> > > > > > >
-> > > > > > > On Wed, Sep 6, 2023 at 1:49=E2=80=AFPM Lad, Prabhakar
-> > > > > > > <prabhakar.csengg@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > Hi Alexandre,
-> > > > > > > >
-> > > > > > > > On Tue, Aug 1, 2023 at 9:58=E2=80=AFAM Alexandre Ghiti <ale=
-xghiti@rivosinc.com> wrote:
-> > > > > > > > >
-> > > > > > > > > This function used to simply flush the whole tlb of all h=
-arts, be more
-> > > > > > > > > subtile and try to only flush the range.
-> > > > > > > > >
-> > > > > > > > > The problem is that we can only use PAGE_SIZE as stride s=
-ince we don't know
-> > > > > > > > > the size of the underlying mapping and then this function=
- will be improved
-> > > > > > > > > only if the size of the region to flush is < threshold * =
-PAGE_SIZE.
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > > > > > > > > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> > > > > > > > > ---
-> > > > > > > > >  arch/riscv/include/asm/tlbflush.h | 11 +++++-----
-> > > > > > > > >  arch/riscv/mm/tlbflush.c          | 34 +++++++++++++++++=
-++++++--------
-> > > > > > > > >  2 files changed, 31 insertions(+), 14 deletions(-)
-> > > > > > > > >
-> > > > > > > > After applying this patch, I am seeing module load issues o=
-n RZ/Five
-> > > > > > > > (complete log [0]). I am testing defconfig + [1] (rz/five r=
-elated
-> > > > > > > > configs).
-> > > > > > > >
-> > > > > > > > Any pointers on what could be an issue here?
-> > > > > > >
-> > > > > > > Can you give me the exact version of the kernel you use? The =
-trap
-> > > > > > > addresses are vmalloc addresses, and a fix for those landed v=
-ery late
-> > > > > > > in the release cycle.
-> > > > > > >
-> > > > > > I am using next-20230906, Ive pushed a branch [1] for you to ha=
-ve a look.
-> > > > > >
-> > > > > > [0] https://github.com/prabhakarlad/linux/tree/rzfive-debug
-> > > > >
-> > > > > Great, thanks, I had to get rid of this possibility :)
-> > > > >
-> > > > > As-is, I have no idea, can you try to "bisect" the problem? I mea=
-n
-> > > > > which patch in the series leads to those traps?
-> > > > >
-> > > > Oops sorry for not mentioning earlier, this is the offending patch
-> > > > which leads to the issues seen on rz/five.
-> > >
-> > > Ok, so at least I found the following problem, but I don't see how
-> > > that could fix your issue: can you give a try anyway? I keep looking
-> > > into this, thanks
-> > >
-> > > diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> > > index df2a0838c3a1..b5692bc6c76a 100644
-> > > --- a/arch/riscv/mm/tlbflush.c
-> > > +++ b/arch/riscv/mm/tlbflush.c
-> > > @@ -239,7 +239,7 @@ void flush_tlb_range(struct vm_area_struct *vma,
-> > > unsigned long start,
-> > >
-> > >  void flush_tlb_kernel_range(unsigned long start, unsigned long end)
-> > >  {
-> > > -       __flush_tlb_range(NULL, start, end, PAGE_SIZE);
-> > > +       __flush_tlb_range(NULL, start, end - start, PAGE_SIZE);
-> > >  }
-> > >
-> > I am able to reproduce the issue with the above change too.
->
-> I can't reproduce the problem on my Unmatched or Qemu, so it is not
-> easy to debug. But I took another look at your traces and something is
-> weird to me. In the following trace (and there is another one), the
-> trap is taken at 0xffffffff015ca034, which is the beginning of
-> rz_ssi_probe(): that's a page fault, so no translation was found (or
-> an invalid one is cached).
->
-> [   16.586527] Unable to handle kernel paging request at virtual
-> address ffffffff015ca034
-> [   16.594750] Oops [#3]
-> ...
-> [   16.622000] epc : rz_ssi_probe+0x0/0x52a [snd_soc_rz_ssi]
-> ...
-> [   16.708697] status: 0000000200000120 badaddr: ffffffff015ca034
-> cause: 000000000000000c
-> [   16.716580] [<ffffffff015ca034>] rz_ssi_probe+0x0/0x52a
-> [snd_soc_rz_ssi]
-> ...
->
-> But then here we are able to read the code at this same address:
-> [   16.821620] Code: 0109 6597 0000 8593 5f65 7097 7f34 80e7 7aa0 b7a9
-> (7139) f822
->
-> So that looks like a "transient" error. Do you know if you uarch
-> caches invalid TLB entries? If you don't know, I have just written
-> some piece of code to determine if it does, let me know.
->
-No I dont, can you please share the details so that I can pass on the
-information to you.
+> > You add this new member here, fine...
+> >  
+> >>  #endif
+> >>  	/* arch specific additions */
+> >>  	struct dev_archdata	archdata;
+> >> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> >> index 8371c92a0271..b4536626f8ff 100644
+> >> --- a/include/linux/swiotlb.h
+> >> +++ b/include/linux/swiotlb.h
+> >> @@ -172,8 +172,13 @@ static inline bool is_swiotlb_buffer(struct
+> >> device *dev, phys_addr_t paddr) if (!mem)
+> >>  		return false;
+> >>  
+> >> -	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC))
+> >> +	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC)) {
+> >> +		/* Pairs with smp_wmb() in swiotlb_find_slots()
+> >> and
+> >> +		 * swiotlb_dyn_alloc(), which modify the RCU
+> >> lists.
+> >> +		 */
+> >> +		smp_rmb();
+> >>  		return swiotlb_find_pool(dev, paddr);
+> >> +	}
+> >>  	return paddr >= mem->defpool.start && paddr <
+> >> mem->defpool.end; }
+> >>  
+> >> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> >> index adf80dec42d7..d7eac84f975b 100644
+> >> --- a/kernel/dma/swiotlb.c
+> >> +++ b/kernel/dma/swiotlb.c
+> >> @@ -730,7 +730,7 @@ static void swiotlb_dyn_alloc(struct
+> >> work_struct *work) 
+> >>  	add_mem_pool(mem, pool);
+> >>  
+> >> -	/* Pairs with smp_rmb() in swiotlb_find_pool(). */
+> >> +	/* Pairs with smp_rmb() in is_swiotlb_buffer(). */
+> >>  	smp_wmb();
+> >>  }
+> >>  
+> >> @@ -764,11 +764,6 @@ struct io_tlb_pool *swiotlb_find_pool(struct
+> >> device *dev, phys_addr_t paddr) struct io_tlb_mem *mem =
+> >> dev->dma_io_tlb_mem; struct io_tlb_pool *pool;
+> >>  
+> >> -	/* Pairs with smp_wmb() in swiotlb_find_slots() and
+> >> -	 * swiotlb_dyn_alloc(), which modify the RCU lists.
+> >> -	 */
+> >> -	smp_rmb();
+> >> -
+> >>  	rcu_read_lock();
+> >>  	list_for_each_entry_rcu(pool, &mem->pools, node) {
+> >>  		if (paddr >= pool->start && paddr < pool->end)
+> >> @@ -813,6 +808,7 @@ void swiotlb_dev_init(struct device *dev)
+> >>  #ifdef CONFIG_SWIOTLB_DYNAMIC
+> >>  	INIT_LIST_HEAD(&dev->dma_io_tlb_pools);
+> >>  	spin_lock_init(&dev->dma_io_tlb_lock);
+> >> +	dev->dma_uses_io_tlb = false;  
+> >
+> > ...here you initialize it, fine...
+> >  
+> >>  #endif
+> >>  }
+> >>  
+> >> @@ -1157,9 +1153,11 @@ static int swiotlb_find_slots(struct device
+> >> *dev, phys_addr_t orig_addr, list_add_rcu(&pool->node,
+> >> &dev->dma_io_tlb_pools);
+> >> spin_unlock_irqrestore(&dev->dma_io_tlb_lock, flags); 
+> >> -	/* Pairs with smp_rmb() in swiotlb_find_pool(). */
+> >> -	smp_wmb();
+> >>  found:
+> >> +	dev->dma_uses_io_tlb = true;
+> >> +	/* Pairs with smp_rmb() in is_swiotlb_buffer() */
+> >> +	smp_wmb();
+> >> +  
+> >
+> > ...and here you set it if swiotlb is used.
+> >
+> > But, as far as I can tell, you don't actually *use* this field
+> > anywhere. What am I missing?
+> >
+> > Thanks,
+> >
+> > jon  
 
-> Do those errors always happen?
->
-Yes they do.
-
-Cheers,
-Prabhakar
