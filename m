@@ -2,254 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A86D797481
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56841797351
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238763AbjIGPjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:39:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55468 "EHLO
+        id S236683AbjIGPXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:23:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345339AbjIGPf2 (ORCPT
+        with ESMTP id S234710AbjIGPWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:35:28 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DE1171F
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:35:04 -0700 (PDT)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3878pHj9027889;
-        Thu, 7 Sep 2023 08:58:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=0Dr7Wv8CzljgZR/li9i58jhN7nkO6uYqGT/YUKfRNBg=;
- b=W88iQyyfeeCRFCMjiKzg8Bmm1yLraHNNkcjDP9fRO9Vp0t+yA+ncZUY2fBsuhinPNTS7
- 4khMQU9aCDHbCb1zjElflbMkP8RvqGbvsN7oMfjqMfXL9NYzBBKvr7yqKbxCEcfX/2KW
- bT6SV0II6m7aWYFfzRyrtrYDH70FkdfSCWfvIg3f7R2URyhQumUzGNVn0GwYJ+/rRkhP
- ej6MhI2evgrX1z3xsHXoWfgQnmFZBClBaVY7nMfzfP4X1BlZFs55vIWW8Ol1gsDdb7ar
- ZIqQGhNhzpRMKc8uUq3PfVxibmTNuqbJ0m67YuihUa8vZqfc2DYEM6n2MES9CcE+phNO IQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sybcfg5he-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Sep 2023 08:58:19 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3878rAjP001502;
-        Thu, 7 Sep 2023 08:58:18 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sybcfg5h1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Sep 2023 08:58:18 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38778LUB011145;
-        Thu, 7 Sep 2023 08:58:17 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3svj321u4b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Sep 2023 08:58:17 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3878wG2R56558026
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 7 Sep 2023 08:58:16 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 702B158056;
-        Thu,  7 Sep 2023 08:58:16 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7997D58052;
-        Thu,  7 Sep 2023 08:58:09 +0000 (GMT)
-Received: from [9.109.201.126] (unknown [9.109.201.126])
-        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  7 Sep 2023 08:58:09 +0000 (GMT)
-Message-ID: <882ed331-4345-014b-d06f-9b3a3a6f688f@linux.vnet.ibm.com>
-Date:   Thu, 7 Sep 2023 14:28:07 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] sched/fair: Add SMT4 group_smt_balance handling
+        Thu, 7 Sep 2023 11:22:49 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2081.outbound.protection.outlook.com [40.107.93.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AFD170F
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:22:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AL8m0ZJvqFrRbpXQCBQmKKVS+hV585b3ULctioo+5tXlR4TGCaGjS8AAaUA3zeJwFDkpIZfbCbIcPjFgJCxKMKmIbOF4phKmTEP8VzIvQcaq39YvCaoAOvA3tiisnlGa2w5ypRXCjj4q69+sIVrKTE5vrc99jkH4UQli4caM1raekWKu9kPda1TS60dDi75gKQTfSRION0DE6Wa6DCcRnjy4XPwPuQfZaVsDQLLagAhBqBFuNyfwSHv3qObG1/g6OV6iuB0W0Q6unC/HJgpQMYRKlP7h7ReroQ9k+zcPEVs7uMBaki8xLP9nytXW4umkezHZVl+to5nBe1WAC+0uyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EGs5yLcbAo4GPEGyP7Ppsec87ZHfxMeaR3L8wIB/swg=;
+ b=EvW7cHcXA5ENj53Z4FN/LZaDrUl6Q+DnmfpB8vSMBhwFgq+38RFYzOg0TLtLKrMyT7w/G39VguZlXup2n11VTI19ZyiWYnJ7NKjwiF4MOPCYAvx0PoKaTCXZMNZO+EIndZTYL+dypMHEP5ncHYEd47LzrWhJlONqXT9lsJPYC14Cm4vyuYwHK2eGXqLgCwyXFo/quFj5gTZOHHWL2MBVVCggLNV/DeUQ6eH+yuiEG3O6o5w3AFy5+2qxMtqkHTT6pl8QBh0TVGb6cdSJu9UEivqm8lZ3WZIgCQUAMMnOc+Nz1BvYv/pmfGFHy/yJxW9z/NCr66+V4aHg2v2yRF3Cxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EGs5yLcbAo4GPEGyP7Ppsec87ZHfxMeaR3L8wIB/swg=;
+ b=kiIvgH1RzPoU37n6cjTtj5UBMKm0tCBMk4m0nJJT76jqZek1WqPtlyEJGzb4ONo7LKXddEH106Pc9CPxDdqNWZHEN52NqxKz8DFEqeArQCRLZn6z292rSkoiSbX6buhdCR0ypW9zLj6UUyJ8Dc+XtPhUJ/q5XlW3eguJ5etcrbk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB2810.namprd12.prod.outlook.com (2603:10b6:5:41::21) by
+ IA0PR12MB8714.namprd12.prod.outlook.com (2603:10b6:208:488::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Thu, 7 Sep
+ 2023 08:59:26 +0000
+Received: from DM6PR12MB2810.namprd12.prod.outlook.com
+ ([fe80::9760:1a6e:8715:e4cb]) by DM6PR12MB2810.namprd12.prod.outlook.com
+ ([fe80::9760:1a6e:8715:e4cb%6]) with mapi id 15.20.6745.035; Thu, 7 Sep 2023
+ 08:59:26 +0000
+Message-ID: <7bd6bbbb-25d1-c74a-b5df-6cc914430690@amd.com>
+Date:   Thu, 7 Sep 2023 10:59:20 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 4/5] mm/slab: Add __free() support for kvfree
 Content-Language: en-US
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
-        hdanton@sina.com, ionela.voinescu@arm.com, juri.lelli@redhat.com,
-        len.brown@intel.com, linux-kernel@vger.kernel.org, mgorman@suse.de,
-        naveen.n.rao@linux.vnet.ibm.com, rafael.j.wysocki@intel.com,
-        ravi.v.shankar@intel.com, ricardo.neri@intel.com,
-        rostedt@goodmis.org, srikar@linux.vnet.ibm.com,
-        srinivas.pandruvada@linux.intel.com, v-songbaohua@oppo.com,
-        vincent.guittot@linaro.org, vschneid@redhat.com, x86@kernel.org,
-        yangyicong@hisilicon.com, yu.c.chen@intel.com,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20230717133718.GJ4253@hirez.programming.kicks-ass.net>
- <20230717145823.1531759-1-sshegde@linux.vnet.ibm.com>
- <804548a12363479d41dee19bb843002d9e105afd.camel@linux.intel.com>
- <6b20e0c0cd82d0d1aafc2a7fb14d9456e19c2c85.camel@linux.intel.com>
- <4118c2e3-fd34-2ebe-3faa-1c6ac9cbbac2@linux.vnet.ibm.com>
- <61cb0511b15612f43f390c750d2e9325bd7af4dd.camel@linux.intel.com>
- <2428a381-1587-2beb-711f-3fab6d773975@linux.vnet.ibm.com>
- <dee7575cc9d3c42c9705348151a1453ff084d4f3.camel@linux.intel.com>
-From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-In-Reply-To: <dee7575cc9d3c42c9705348151a1453ff084d4f3.camel@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Dan Williams <dan.j.williams@intel.com>, linux-coco@lists.linux.dev
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de
+References: <169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com>
+ <169342401666.3934343.5520453508283712955.stgit@dwillia2-xfh.jf.intel.com>
+From:   "Gupta, Pankaj" <pankaj.gupta@amd.com>
+In-Reply-To: <169342401666.3934343.5520453508283712955.stgit@dwillia2-xfh.jf.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: IwV-wAWyf4ldC7A8jLHpKaLkwv_LL7eb
-X-Proofpoint-GUID: vruC597RC81VWR_iyCVVjO3GmyQ1ljlV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-06_12,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- impostorscore=0 bulkscore=0 adultscore=0 spamscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309070074
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: FR0P281CA0188.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:ab::9) To DM6PR12MB2810.namprd12.prod.outlook.com
+ (2603:10b6:5:41::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2810:EE_|IA0PR12MB8714:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7c6eecd1-77ab-45f4-0a6c-08dbaf80bcaa
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Bg3sEyZFSQSMovtwAqpSBu7CDLoN22l33aKJ1Lrje+COU+hctU+5FLR6QDHis8Q00rXW1RKtkv4ZiAc7goO2BJiVzFZO4TrZNF/V9DUwqn1VL2PM+8pr1RtoaobCc5x5diB7R4p+1ZqvxO5TPSx2r4wnDN/9l/wQhaq0c0XlRCqP5a8kRXuT/XidTC88BIT67f5MAf6SdByR6IcAskxwN7U7JRQR0t3WKADyO3ShG4JWScZQvrMNk/SFvX/ZpJwgukQR9Sk/KixVs/YXpmPzF/CO3Nzzjqgobot+ML9HnLSGGJNsV4wNVg9ShKxU2Ktd8wpZaKu7vAkguA6HkxPuT+1KhLc0D6e9nqkkKxV4Zw2AHAngR9AOezRvlfRo3OAESD+9zIY0RuNzdyGrxDwmHTOXO+6e7F+JvMu5P9aUQcK4/rs26Ifw4NY0p8DOUYnFIsZSnr67f1kFRzvY+FpxFs1Zpnum/YyJ5lEPwYt+lS4x1sM8PKDI55fhUfZg19klrCpsG+Vnr1JQKkOMnryZx5LFlpUHeDVYtkRzs6u7nzTeK4Zpxo9k6aawEHnoTl/S4+RygY5xYIBP1P0clUJoPwR5bT5hQmhfwsWne9AQ+5/+1zYUo13x8ewwTHJ36yRWvqXw+BozFJK9O1bodMDjTQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB2810.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(396003)(366004)(136003)(451199024)(1800799009)(186009)(2616005)(66946007)(53546011)(66476007)(6512007)(6506007)(316002)(54906003)(41300700001)(66556008)(8676002)(6666004)(4326008)(8936002)(5660300002)(478600001)(31686004)(26005)(6486002)(966005)(2906002)(86362001)(31696002)(38100700002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VDZsYXBPZUlMSlVRcnlPL1o3cmhmcUxmRXY0KyszZnJXT1g3Zy9ReTFiaTNO?=
+ =?utf-8?B?aXFXdVdiQlpmc0hiNUp4Qkt3Uks2dVJXMmt4RUhtRWRtNndDZEtaVTF3K01N?=
+ =?utf-8?B?VkpMU0RGd29XL2M5VjhrRHZNcEs3eHVEWXNSa0tlbkJwQzVwY3d3aHg0TXhB?=
+ =?utf-8?B?V0wzeHkzTEJiandhV2wzMDkzY0l3amVCSERDYkpESlNtV1dnZTRKTjZ4VXRo?=
+ =?utf-8?B?VDBLRUQzcldkd0J5b3ZOaThkOEk5WHA0ODNudVhrNzJoaitMRitIQzZNODRv?=
+ =?utf-8?B?WXRnYW4zeG5FRWI5NGJVR3c0d3ZGaFB2NHNnUEVsSTVUaGlHZDIyclp2ZXpJ?=
+ =?utf-8?B?eEk5SzBmZU9lOTQzdFgxdEJTRjNPcVVQWXNhemQzZG5sRHdQTHY4MjhyZzNl?=
+ =?utf-8?B?MmJwR0NBVnZjS1FRU2dxRjRmVnc5Q01WNWIxaFpLWnNUMzNOc1lDaEZWRWZy?=
+ =?utf-8?B?Qk11S3NZMEdLazQrZmd5cENTbnhVVXNCeUJFeUpTdS9ZS2RsQjRWRGI0aHU0?=
+ =?utf-8?B?eTJTbXhFMFBWTEFyZitkVXkyQzVreGRrMnc2T1hxTnA2WVc0YThMMllMSDI0?=
+ =?utf-8?B?bHJnaVBaZFg1bmZMSFlWUi9pRU02UlA1WUlTdk5kTm1jbjdaYTZRc1NPb2o2?=
+ =?utf-8?B?WlFMRUJNNG14eVdqUnNwRzlWaVNkeGJBNVREeDVJL0JWT1RjQUo3S0YraUVr?=
+ =?utf-8?B?NkN0SERRbHZkWVkxODFrdG1tUVNZUDN2amxaSWJmRHNyTjJrYTNVQmVSMlV4?=
+ =?utf-8?B?c0dKRTNRUlhwZy9yMU9sakROSkI2RnM0MjRxeUJFSmdEV25PQVRyZmtjOVFz?=
+ =?utf-8?B?cTlWQm8rdFhZK2x5U3llL3gyaC81SG5iZUhHdkNia0ZYZys0dW52cFlhbmFj?=
+ =?utf-8?B?dCs1bzZxSEF1NkJWNDRHRjRDM3RQWDBzVkRVVFFjem4zUmwrMmI4NnlQZUFS?=
+ =?utf-8?B?bHZDSVlCOU9uaythcGhTM05xY2lwNmRJVDRhK0M5QlBzS1NhQU84RFJKa3pp?=
+ =?utf-8?B?S0R5YW5FeEFOMSs2Rks2djd4Nkd5bFA3VVN2aW5MKzVwY2dnMXEwM09LUVRj?=
+ =?utf-8?B?cGdMc3VNOVFHeGFidjg0WWpZR2xVN1NXS2FPN3BWRzIraTFKNlpqSVZGTmdG?=
+ =?utf-8?B?ekNZK0xFdFVZaVFYNmJwYXZtd0tjKzVrSWx1SnNSOThiTzh4dnJtbWR2OUFB?=
+ =?utf-8?B?VHEzSmFiZkhpdlVKRmJzNzIvWjcyNU9zendMT0doTWFTb282RUZUV0FUd2Vt?=
+ =?utf-8?B?L1R1aEVxQ3Y5OUtQVGg5YUE0R0VuL3VKUmhuQXRURTFZT0VHM0F0Y2VGS2VK?=
+ =?utf-8?B?Rm1wMWZpeTMvRUkxd0diUTNhNElRemZ2MWQvTWVyZkVZTzVTTktoYWxaWG53?=
+ =?utf-8?B?WGhIaExMQmVnbkZGVGNQY2xpVnFDVjQvdlJEOFBBeHZWZjdmNjdzYnNKTTFh?=
+ =?utf-8?B?RGprS3RuL1FSVjdqZHZxYjV4VGxWWmxoYmIvcm9ORitFU3M0V3NKbUEzVFlP?=
+ =?utf-8?B?SDZGL2p1TFNYUWJVMG1vdk12WTQrOE9sRmM2TGpKa05TREhFdk5BOWdrN0pj?=
+ =?utf-8?B?V3lsTWhMSndHYmpQOXNSa05CSnplVytaN3JKWUZsWG1JclhkajRDQThhaTBj?=
+ =?utf-8?B?ZXcvN1orWllKVnB1S3cvcDJmUkdobk5kZTloUFJBSjVDZ0ZTY3Z0S0I2Y01B?=
+ =?utf-8?B?dWFzZVJ4VFpiNWtzeVZSalZYZEc5LzFKSGdUR3R1U013b1YzMWRZbU1MME1w?=
+ =?utf-8?B?a09IZjU1V2Fxa1dkVkpMVW9SNDFIdXpmRGFodFdNclpsTERDRHhndDN0dy9Q?=
+ =?utf-8?B?RkJWUVVCYTRHZkdpc2ZQRzFQK0xOaHFZQ1ZzVTJ5dkZIN1YyOVArTU1UNVhO?=
+ =?utf-8?B?aDNuZlZRVGplVExQclBNc00yQm1LbFZsbVV6b3FxaGF2UEJGajFIRWhsKzhn?=
+ =?utf-8?B?YkZ0aXRVN1RYM0hUeDFHdkN1c3lVMnZDZHgvVi8xNWNQUWJ4S0tOQzRzVTM1?=
+ =?utf-8?B?dnBIY1dTc1Rjem5QN2o2MCtnaHhOU055WEs5K3FYTmhjMm9LUGZ6RkFjN3N2?=
+ =?utf-8?B?UU9iaTBpY3FYQS9FdFlrVjdMME5PY1NzVHhSSkl3VFpqRlFNUjJuWjJIVmhW?=
+ =?utf-8?Q?A6YMErGk/c84OnTv8ZTwLG0a/?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7c6eecd1-77ab-45f4-0a6c-08dbaf80bcaa
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB2810.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 08:59:26.1755
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CcG7m+dfIqLNjoVoKQBqV+rkZZ6s5JT/mxA1UU85++q6LoyWS8eAcbWojH/9CIJjk/VrLXizwXDKyy8WQZcJQQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8714
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/6/23 12:07 AM, Tim Chen wrote:
-> On Tue, 2023-09-05 at 13:33 +0530, Shrikanth Hegde wrote:
->>
->> On 8/22/23 12:49 AM, Tim Chen wrote:
->>> On Mon, 2023-08-07 at 15:06 +0530, Shrikanth Hegde wrote:
->>>>>
->>>>> From: Tim Chen <tim.c.chen@linux.intel.com>
->>>>> Date: Fri, 14 Jul 2023 16:09:30 -0700
->>>>> Subject: [PATCH] sched/fair: Add SMT4 group_smt_balance handling
->>>>>
->>>>> For SMT4, any group with more than 2 tasks will be marked as
->>>>> group_smt_balance. Retain the behaviour of group_has_spare by marking
->>>>> the busiest group as the group which has the least number of idle_cpus.
->>>>>
->>>>> Also, handle rounding effect of adding (ncores_local + ncores_busy)
->>>>> when the local is fully idle and busy group has more than 2 tasks.
->>>>> Local group should try to pull at least 1 task in this case.
->>>>>
->>>>> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
->>>>> ---
->>>>>  kernel/sched/fair.c | 18 ++++++++++++++++--
->>>>>  1 file changed, 16 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->>>>> index a87988327f88..566686c5f2bd 100644
->>>>> --- a/kernel/sched/fair.c
->>>>> +++ b/kernel/sched/fair.c
->>>>> @@ -9563,7 +9563,7 @@ static inline long sibling_imbalance(struct lb_env *env,
->>>>>  	imbalance /= ncores_local + ncores_busiest;
->>>>>  
->>>>>  	/* Take advantage of resource in an empty sched group */
->>>>> -	if (imbalance == 0 && local->sum_nr_running == 0 &&
->>>>> +	if (imbalance <= 1 && local->sum_nr_running == 0 &&
->>>>>  	    busiest->sum_nr_running > 1)
->>>>>  		imbalance = 2;
->>>>>  
->>>>> @@ -9751,6 +9751,20 @@ static bool update_sd_pick_busiest(struct lb_env *env,
->>>>>  		break;
->>>>>  
->>>>>  	case group_smt_balance:
->>>>> +		/* no idle cpus on both groups handled by group_fully_busy below */
->>>>> +		if (sgs->idle_cpus != 0 || busiest->idle_cpus != 0) {
->>>>> +			if (sgs->idle_cpus > busiest->idle_cpus)
->>>>> +				return false;
->>>>> +			if (sgs->idle_cpus < busiest->idle_cpus)
->>>>> +				return true;
->>>>> +			if (sgs->sum_nr_running <= busiest->sum_nr_running)
->>>>> +				return false;
->>>>> +			else
->>>>> +				return true;
->>>>> +		}
->>>>> +		goto fully_busy;
->>>>> +		break;
->>>>> +
->>>>>  	case group_fully_busy:
->>>>>  		/*
->>>>>  		 * Select the fully busy group with highest avg_load. In
->>>>> @@ -9763,7 +9777,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
->>>>>  		 * select the 1st one, except if @sg is composed of SMT
->>>>>  		 * siblings.
->>>>>  		 */
->>>>> -
->>>>> +fully_busy:
->>>>>  		if (sgs->avg_load < busiest->avg_load)
->>>>>  			return false;
->>>>>  
->>>>
->>>> Hi Tim, Peter. 
->>>>
->>>> group_smt_balance(cluster scheduling), patches are in tip/sched/core. I dont 
->>>> see this above patch there yet. Currently as is, this can cause function difference 
->>>> in SMT4 systems( such as Power10). 
->>>>
->>>> Can we please have the above patch as well in tip/sched/core?
->>>>
->>>> Acked-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
->>>
->>> Hi Peter,
->>>
->>> Just back from my long vacation.  Wonder if you have any comments on the above patch
->>> for fixing the SMT4 case?
->>>
->>> Tim
->>
->> Hi Tim, Peter. 
->>
->> are there any concerns with the above patch for fixing the SMT4 case. 
->> Currently the behavior is group_smt_balance is set for having even 2 tasks in 
->> SMT4, ideally it should be same as the group_has_spare. 
->>
->> The above patch copies the same behavior to group_smt_balance. 
->>>
+On 8/30/2023 9:33 PM, Dan Williams wrote:
+> Allow for the declaration of variables that trigger kvfree() when they
+> go out of scope. The check for NULL and call to kvfree() can be elided
+> by the compiler in most cases, otherwise without the NULL check an
+> unnecessary call to kvfree() may be emitted. Peter proposed a comment
+> for this detail [1].
 > 
-> You mean simplify the patch as below?  I think that should be fine.  Can you
-> make sure it works for SMT4?  And I can update the patch once you confirm it
-> works properly.
+> Link: http://lore.kernel.org/r/20230816103102.GF980931@hirez.programming.kicks-ass.net [1]
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+>   include/linux/slab.h |    2 ++
+>   1 file changed, 2 insertions(+)
 > 
-> Tim
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 6e7ee2efc1ba..48e9ab7f8a87 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -9764,16 +9764,9 @@ static bool update_sd_pick_busiest(struct lb_env *env,
->  
->         case group_smt_balance:
->                 /* no idle cpus on both groups handled by group_fully_busy below */
-> -               if (sgs->idle_cpus != 0 || busiest->idle_cpus != 0) {
-> -                       if (sgs->idle_cpus > busiest->idle_cpus)
-> -                               return false;
-> -                       if (sgs->idle_cpus < busiest->idle_cpus)
-> -                               return true;
-> -                       if (sgs->sum_nr_running <= busiest->sum_nr_running)
-> -                               return false;
-> -                       else
-> -                               return true;
-> -               }
-> +               if (sgs->idle_cpus != 0 || busiest->idle_cpus != 0)
-> +                       goto has_spare;
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index 848c7c82ad5a..241025367943 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -746,6 +746,8 @@ static inline __alloc_size(1, 2) void *kvcalloc(size_t n, size_t size, gfp_t fla
+>   extern void *kvrealloc(const void *p, size_t oldsize, size_t newsize, gfp_t flags)
+>   		      __realloc_size(3);
+>   extern void kvfree(const void *addr);
+> +DEFINE_FREE(kvfree, void *, if (_T) kvfree(_T))
 > +
->                 goto fully_busy;
->  
->         case group_fully_busy:
-> @@ -9809,6 +9802,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
->                  * as we do not want to pull task off SMT core with one task
->                  * and make the core idle.
->                  */
-> +has_spare:
->                 if (smt_vs_nonsmt_groups(sds->busiest, sg)) {
->                         if (sg->flags & SD_SHARE_CPUCAPACITY && sgs->sum_h_nr_running <= 1)
->                                 return false;
+>   extern void kvfree_sensitive(const void *addr, size_t len);
+>   
+>   unsigned int kmem_cache_size(struct kmem_cache *s);
 > 
 > 
-> 
+Liked this patch and use in the patch5. Still cannot comment on the 
+attestation part of things. So, for this patch:
 
-Hi Tim,
+Acked-by: Pankaj Gupta <pankaj.gupta@amd.com>
 
-In case you were waiting for my reply as inferred from other email. 
-The above change looks fine as well. This would avoid duplication of
-code for group_smt_balance. 
-
-Acked-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
