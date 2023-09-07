@@ -2,105 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 559F97978ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D3A79780E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236594AbjIGQ6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36728 "EHLO
+        id S236402AbjIGQlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:41:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232754AbjIGQ6w (ORCPT
+        with ESMTP id S239879AbjIGQk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:58:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DC9E57;
-        Thu,  7 Sep 2023 09:58:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34C74C43395;
-        Thu,  7 Sep 2023 16:38:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694104717;
-        bh=doH2Ipa+K30k1xtAqDsX27JKiStd1k7S5/DQ0ZIzSjk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=byj3V30uebT2aqsPOpUIcbMHDdf8k+FFiC/OpNOxjPqZdoBrm18qozEfNP3xVbSMT
-         rtLWA3im2nzeChLUmdMV/ZOzuUsjHOSxQtohcKxeA4FPNxaqzvpun81yKhD6hgrite
-         enypqZyGHGftZFf8xmWZ1iCD7BW34YHrAwvadt0T4Sa8SgMTfDnjnfiYxq1qGwLMXG
-         MDEvNx97paTGEktB7oc+StyXTxks755mV7A6uNLfoxJ8NYUgmCJJoANHcMOki11D/R
-         QLWQfFNHYORmYEm4C2lD0MXH9fzMqwGtyQeehP5By8UJS5e650TiemlbT0VfD42Q6L
-         fKkXRxJzFZ2Pw==
-Date:   Thu, 7 Sep 2023 09:38:36 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        nic_swsd <nic_swsd@realtek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH net v2] r8152: avoid the driver drops a lot of packets
-Message-ID: <20230907093836.3253c0d5@kernel.org>
-In-Reply-To: <7f8b32a91f5849c99609f78520b23535@realtek.com>
-References: <20230906031148.16774-421-nic_swsd@realtek.com>
-        <20230906172847.2b3b749a@kernel.org>
-        <7f8b32a91f5849c99609f78520b23535@realtek.com>
+        Thu, 7 Sep 2023 12:40:57 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E375E2726
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:40:11 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6bf58009a8dso814363a34.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1694104739; x=1694709539; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CAiBvTcyRsOXkihjAXwijX2b79d/6jZ/7uZYgdQjwfg=;
+        b=PY8e4lLEZBkPnIrHFcR7YbHdMS75Wossa4ltOxhxr8Kl3HprCx5QuX0YFcCTOrJyqg
+         uoInfP/uyE7pPVFXzDt6btMI5TlDEF6vcaBKYEdCdfVs1LC5WWx67GWexPGHt8o6CNTv
+         FkhFoz9+94b0ntqnHlL6CIpyNUhsi7lkzk2IznnSefhD90GxfbY6rj2rHnI5lOc//g56
+         xMzJUJltPuthTpAmGdGSO3+gkkLRg8wTTeZLo1/xBhigtMqoesJx877PussWcqW682BT
+         BA3epdJMJmSug2TXoAh98A7HCvH0W7myPChq6f0MpAWCkPl+iUcCBXmI+5OawQnQRD7S
+         VGkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694104739; x=1694709539;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CAiBvTcyRsOXkihjAXwijX2b79d/6jZ/7uZYgdQjwfg=;
+        b=TceBcGv8KZFY5aHxZ/phXKMCQ6Fws1KGF68iBDAUaQw2i/OEq6Zchu3/TAAUtTGatC
+         /6kpBRcO/wLUjREPne8u7pVs6o2F/6ArfjK9K/KuEdtnJzDQ/QB4HT+XjgBZUzw+Mthj
+         +595IgD6uGg5KmwZDvLfMYIO0efkTz9vERk8VV5MMVWzSCCcOSQ4hFJVPMqDxrjEYf5s
+         szBDwsDLHYv9bUdShpnFKi6N2INqPJI8KVvGHCwc380WL9WFEP8yutGY6KueAqPSbkBk
+         Ap1O2FfCutzU58n1TuMHxlz+h1vMZnM/QpVQgNfvxY61dpQJ/Lw3OGyLmq5zQaEmIuWV
+         2T1A==
+X-Gm-Message-State: AOJu0Yw4PugYQLLr9kRC6dKIYdOE0dcmVe0lPMUvefxo2dCEq43M07B3
+        tW5RZfKSSSdRoySh0ELHeqEYIA==
+X-Google-Smtp-Source: AGHT+IEuRWnwHgc+ZBKdtmJS94abNZCPgqRUkNRZbk5rlBgeJt8BMHp1bCJwoTQZQ3OLP1WMH8+BQg==
+X-Received: by 2002:a05:6358:7e42:b0:135:69d5:1b13 with SMTP id p2-20020a0563587e4200b0013569d51b13mr21167rwm.0.1694104737828;
+        Thu, 07 Sep 2023 09:38:57 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-134-41-202-196.dhcp-dynamic.fibreop.ns.bellaliant.net. [134.41.202.196])
+        by smtp.gmail.com with ESMTPSA id u12-20020a0cdd0c000000b0064f5d312babsm6510838qvk.46.2023.09.07.09.38.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 09:38:57 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qeI1w-0017Sj-R3;
+        Thu, 07 Sep 2023 13:38:56 -0300
+Date:   Thu, 7 Sep 2023 13:38:56 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bo Liu <liubo03@inspur.com>
+Cc:     joro@8bytes.org, will@kernel.org, robin.murphy@arm.com,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu/omap: Use helper function IS_ERR_OR_NULL()
+Message-ID: <ZPn8oKc2s0HeBw1A@ziepe.ca>
+References: <20230907071409.3805-1-liubo03@inspur.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230907071409.3805-1-liubo03@inspur.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Sep 2023 07:16:50 +0000 Hayes Wang wrote:
-> > Before we tweak the heuristics let's make sure rx_bottom() behaves
-> > correctly. Could you make sure that
-> >  - we don't perform _any_ rx processing when budget is 0
-> >    (see the NAPI documentation under Documentation/networking)  
+On Thu, Sep 07, 2023 at 03:14:09AM -0400, Bo Liu wrote:
+> Use IS_ERR_OR_NULL() to detect an error pointer or a null pointer
+> open-coding to simplify the code.
 > 
-> The work_done would be 0, and napi_complete_done() wouldn't be called.
-> However, skb_queue_len(&tp->rx_queue) may be increased. I think it is
-> not acceptable, right?
+> Signed-off-by: Bo Liu <liubo03@inspur.com>
+> ---
+>  drivers/iommu/omap-iommu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-If budget is 0 we got called by netconsole, meaning we may be holding
-arbitrary locks. And we can't use napi_alloc_skb() which is for
-softirq/bh context only. We should only try to complete Tx in that
-case, since r8152_poll() doesn't handle any Tx the right thing seems
-to be to add if (!budget) return 0;
+Please no, IS_ERR_OR_NULL is an abomination.
 
-> >  - finish the current aggregate even if budget run out, return
-> >    work_done = budget in that case.
-> >    With this change the rx_queue thing should be gone completely.  
-> 
-> Excuse me. I don't understand this part. I know that when the packets are
-> more than budget, the maximum packets which could be handled is budget.
-> That is, return work_done = budget. However, the extra packets would be queued
-> to rx_queue. I don't understand what you mean about " the rx_queue thing
-> should be gone completely". I think the current driver would return
-> work_done = budget, and queue the other packets. I don't sure what you
-> want me to change.
+There are only two callers:
 
-Nothing will explode if we process a few more packets than budget
-(assuming budget > 0). If we already do allocations and prepare
-those skbs - there's no point holding onto them in the driver.
-Just sent them up the stack (and then we won't need the local rx_queue).
+	for (i = 0; i < omap_domain->num_iommus; i++, iommu--, arch_data--) {
+		oiommu = iommu->iommu_dev;
+		iopgtable_clear_entry_all(oiommu);
 
-> >  - instead of copying the head use napi_get_frags() + napi_gro_frags()
-> >    it gives you an skb, you just attach the page to it as a frag and
-> >    hand it back to GRO. This makes sure you never pull data into head
-> >    rather than just headers.  
-> 
-> I would study about them. Thanks.
-> 
-> Should I include above changes for this patch?
-> I think I have to submit another patches for above.
-> 
-> > Please share the performance results with those changes.  
-> 
-> I couldn't reproduce the problem, so I couldn't provide the result
-> with the differences.
+		omap_iommu_detach(oiommu);
 
-Hm, if you can't repro my intuition would be to only take the patch for
-budget=0 handling into net, and the rest as improvements into net-next.
+Obviously oiommu is not NULL or ERR since we derefed it
+
+The second:
+
+attach_fail:
+	while (i--) {
+		iommu--;
+		arch_data--;
+		oiommu = iommu->iommu_dev;
+		omap_iommu_detach(oiommu);
+		iommu->iommu_dev = NULL;
+		oiommu->domain = NULL;
+
+And here I don't see how iomm->iommu_dev can ever be NULL or
+ERR_PTR. The i-- follows this:
+
+	iommu = omap_domain->iommus;
+	for (i = 0; i < omap_domain->num_iommus; i++, iommu++, arch_data++) {
+		/* configure and enable the omap iommu */
+		oiommu = arch_data->iommu_dev;
+		ret = omap_iommu_attach(oiommu, iommu->pgtable);
+		if (ret) {
+			dev_err(dev, "can't get omap iommu: %d\n", ret);
+			goto attach_fail;
+		}
+
+		oiommu->domain = domain;
+		iommu->iommu_dev = oiommu;
+
+And again we have always deref'd iommu->iommu_dev.
+
+It is just wrong defensive coding, remove it.
+
+Jason
