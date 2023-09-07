@@ -2,231 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6208279741B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53B2797473
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242425AbjIGPff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36222 "EHLO
+        id S240384AbjIGPig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344493AbjIGPdK (ORCPT
+        with ESMTP id S1345305AbjIGPfX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:33:10 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6B6BB1FC2;
-        Thu,  7 Sep 2023 08:32:50 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DC4CC1042;
-        Thu,  7 Sep 2023 00:48:11 -0700 (PDT)
-Received: from [10.57.92.126] (unknown [10.57.92.126])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 507E33F7B4;
-        Thu,  7 Sep 2023 00:47:32 -0700 (PDT)
-Message-ID: <6011d8bb-9a3b-1435-30b0-d75b39bf5efa@arm.com>
-Date:   Thu, 7 Sep 2023 08:48:08 +0100
+        Thu, 7 Sep 2023 11:35:23 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C7410CF
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:34:51 -0700 (PDT)
+Received: from eldfell (unknown [194.136.85.206])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pq)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id ADBAC66072A2;
+        Thu,  7 Sep 2023 08:49:28 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694072969;
+        bh=ZIJfnKxyJrhwkA3M7TnSs0WqP7fDyFYDHeph5tlVMs4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DXvLz2MUXdEMqPC6l/y3xU/OTFWRDEOy44e5xL3B/gBqep+Ay1ORAvlnj0GnDTP4Q
+         ZKSyFVmUcfBWx4agGpkuHnG++BfD2hH+Aee/jz4DoJeoQzNFA9RDlPESN+TsY8zdDQ
+         92K08kX9V2epWmNApf0f3qPp85qC9H7RTXaoQxiA2eAOmWRfjf6jAJXbEMLlXUhcdz
+         /a0wTXNJKJXbCaEYjhI7ptB75jL1f8WDfVZ+WBG8QB9I1IJZ8gl1pAVZurxgRGD/X8
+         nmE7X5Eczift4uWCLec2QfVRA2OrQ1jLoXcDDe00GLzHcaZkNwQJ7TYDyE3Huju9zM
+         BVz9KUzY7vnMw==
+Date:   Thu, 7 Sep 2023 10:49:17 +0300
+From:   Pekka Paalanen <pekka.paalanen@collabora.com>
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     Melissa Wen <mwen@igalia.com>, amd-gfx@lists.freedesktop.org,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
+        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        Joshua Ashton <joshua@froggi.es>,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        Xaver Hugl <xaver.hugl@gmail.com>,
+        Shashank Sharma <Shashank.Sharma@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
+        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 07/34] drm/amd/display: explicitly define EOTF and
+ inverse EOTF
+Message-ID: <20230907104917.7cf8e22e.pekka.paalanen@collabora.com>
+In-Reply-To: <40f1fabe-69ce-4b23-aed8-9f0837fe9988@amd.com>
+References: <20230810160314.48225-1-mwen@igalia.com>
+        <20230810160314.48225-8-mwen@igalia.com>
+        <20230822140242.162a843a.pekka.paalanen@collabora.com>
+        <20230825141639.vurga52ysal37n2m@mail.igalia.com>
+        <40f1fabe-69ce-4b23-aed8-9f0837fe9988@amd.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [RFC PATCH 0/7] sched: cpufreq: Remove magic margins
-To:     Qais Yousef <qyousef@layalina.io>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20230827233203.1315953-1-qyousef@layalina.io>
- <a6365f63-4669-15e5-b843-f4bfb1bd5e68@arm.com>
- <20230906211850.zyvk6qtt6fvpxaf3@airbuntu>
-Content-Language: en-US
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20230906211850.zyvk6qtt6fvpxaf3@airbuntu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/_KsfrGyb4A/tYnFSiA2jZGF";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/_KsfrGyb4A/tYnFSiA2jZGF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 6 Sep 2023 16:15:10 -0400
+Harry Wentland <harry.wentland@amd.com> wrote:
+
+> On 2023-08-25 10:18, Melissa Wen wrote:
+> > On 08/22, Pekka Paalanen wrote: =20
+> >> On Thu, 10 Aug 2023 15:02:47 -0100
+> >> Melissa Wen <mwen@igalia.com> wrote:
+> >> =20
+> >>> Instead of relying on color block names to get the transfer function
+> >>> intention regarding encoding pixel's luminance, define supported
+> >>> Electro-Optical Transfer Functions (EOTFs) and inverse EOTFs, that
+> >>> includes pure gamma or standardized transfer functions.
+> >>>
+> >>> Suggested-by: Harry Wentland <harry.wentland@amd.com>
+> >>> Signed-off-by: Melissa Wen <mwen@igalia.com>
+> >>> ---
+> >>>  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h | 19 +++--
+> >>>  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 69 +++++++++++++++--=
+--
+> >>>  2 files changed, 67 insertions(+), 21 deletions(-)
+> >>>
+> >>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/driv=
+ers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+> >>> index c749c9cb3d94..f6251ed89684 100644
+> >>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+> >>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+> >>> @@ -718,14 +718,21 @@ extern const struct amdgpu_ip_block_version dm_=
+ip_block;
+> >>> =20
+> >>>  enum amdgpu_transfer_function {
+> >>>  	AMDGPU_TRANSFER_FUNCTION_DEFAULT,
+> >>> -	AMDGPU_TRANSFER_FUNCTION_SRGB,
+> >>> -	AMDGPU_TRANSFER_FUNCTION_BT709,
+> >>> -	AMDGPU_TRANSFER_FUNCTION_PQ,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_SRGB_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_BT709_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_PQ_EOTF,
+> >>>  	AMDGPU_TRANSFER_FUNCTION_LINEAR,
+> >>>  	AMDGPU_TRANSFER_FUNCTION_UNITY,
+> >>> -	AMDGPU_TRANSFER_FUNCTION_GAMMA22,
+> >>> -	AMDGPU_TRANSFER_FUNCTION_GAMMA24,
+> >>> -	AMDGPU_TRANSFER_FUNCTION_GAMMA26,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_GAMMA22_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_GAMMA24_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_GAMMA26_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_SRGB_INV_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_BT709_INV_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_PQ_INV_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_GAMMA22_INV_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_GAMMA24_INV_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_GAMMA26_INV_EOTF,
+> >>> +        AMDGPU_TRANSFER_FUNCTION_COUNT
+> >>>  };
+> >>> =20
+> >>>  struct dm_plane_state {
+> >>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c =
+b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> >>> index 56ce008b9095..cc2187c0879a 100644
+> >>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> >>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> >>> @@ -85,18 +85,59 @@ void amdgpu_dm_init_color_mod(void)
+> >>>  }
+> >>> =20
+> >>>  #ifdef AMD_PRIVATE_COLOR
+> >>> -static const struct drm_prop_enum_list amdgpu_transfer_function_enum=
+_list[] =3D {
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_DEFAULT, "Default" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_SRGB, "sRGB" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_BT709, "BT.709" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_PQ, "PQ (Perceptual Quantizer)" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_LINEAR, "Linear" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_UNITY, "Unity" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_GAMMA22, "Gamma 2.2" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_GAMMA24, "Gamma 2.4" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_GAMMA26, "Gamma 2.6" },
+> >>> +static const char * const
+> >>> +amdgpu_transfer_function_names[] =3D {
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_DEFAULT]		=3D "Default",
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_LINEAR]		=3D "Linear", =20
+> >>
+> >> Hi,
+> >>
+> >> if the below is identity, then what is linear? Is there a coefficient
+> >> (multiplier) somewhere? Offset?
+> >> =20
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_UNITY]		=3D "Unity", =20
+> >>
+> >> Should "Unity" be called "Identity"? =20
+> >=20
+> > AFAIU, AMD treats Linear and Unity as the same: Identity. So, IIUC,
+> > indeed merging both as identity sounds the best approach.    =20
+>=20
+> Agreed.
+>=20
+> >>
+> >> Doesn't unity mean that the output is always 1.0 regardless of input?
+> >> =20
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_SRGB_EOTF]		=3D "sRGB EOTF",
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_BT709_EOTF]		=3D "BT.709 EOTF", =20
+> >>
+> >> BT.709 says about "Overall opto-electronic transfer characteristics at
+> >> source":
+> >>
+> >> 	In typical production practice the encoding function of image
+> >> 	sources is adjusted so that the final picture has the desired
+> >> 	look, as viewed on a reference monitor having the reference
+> >> 	decoding function of Recommendation ITU-R BT.1886, in the
+> >> 	reference viewing environment defined in Recommendation ITU-R
+> >> 	BT.2035.
+> >>
+> >> IOW, typically people tweak the encoding function instead of using
+> >> BT.709 OETF as is, which means that inverting the BT.709 OETF produces
+> >> something slightly unknown. The note about BT.1886 means that that
+> >> something is also not quite how it's supposed to be turned into light.
+> >>
+> >> Should this enum item be "BT.709 inverse OETF" and respectively below a
+> >> "BT.709 OETF"?
+> >>
+> >> What curve does the hardware actually implement? =20
+> >=20
+> > Hmmmm.. I think I got confused in using OETF here since it's done within
+> > a camera. Looking at the coefficients used by AMD color module when not
+> > using ROM but build encoding and decoding curves[1] on pre-defined TF
+> > setup, I understand it's using OETF parameters for building both sRGB
+> > and BT 709:
+> >=20
+> > ```
+> > /*sRGB     709     2.2 2.4 P3*/
+> > static const int32_t numerator01[] =3D { 31308,   180000, 0,  0,  0};
+> > static const int32_t numerator02[] =3D { 12920,   4500,   0,  0,  0};
+> > static const int32_t numerator03[] =3D { 55,      99,     0,  0,  0};
+> > static const int32_t numerator04[] =3D { 55,      99,     0,  0,  0};
+> > static const int32_t numerator05[] =3D { 2400,    2222,   2200, 2400, 2=
+600};
+> > ```
+> >  =20
+>=20
+> The first column here looks like the sRGB coefficients in Skia:
+> https://skia.googlesource.com/skia/+/19936eb1b23fef5187b07fb2e0e67dcf605c=
+0672/include/core/SkColorSpace.h#46
+>=20
+> The color module uses the same coefficients to calculate the transform
+> to linear space and from linear space. So it would support a TF and its
+> inverse.
+>=20
+> From what I understand for sRGB and PQ its the EOTF and its inverse.
+>=20
+> For BT.709 we should probably call it BT.709 inverse OETF (instead of
+> EOTF) and BT.709 OETF (instead of inverse EOTF).
+>=20
+> While I'm okay to move ahead with these AMD driver-specific properties
+> without IGT tests (since they're not enabled and not UABI) we really
+> need IGT tests once they become UABI with the Color Pipeline API. And we
+> need more than just CRC testing. We'll need to do pixel-by-pixel comparis=
+on
+> so we can verify that the KMS driver behaves exactly how we expect for a
+> large range of values.
+
+Yes, please, very much, about the generic color UAPI.
+
+I believe IGT should contain the reference curve for all named fixed
+curves computed with standard libc math functions in double precision,
+and compute error statistics between that and hardware results.
+The actual test image would iterate through e.g. 1024 (all 10-bit
+values for integer format framebuffer) different values - 1024 is
+nothing as a number of pixels. Then we decide on acceptable error
+thresholds.
+
+It should also be tested with a floating-point framebuffer format, FP16
+or FP32, with a value distribution designed to be sensitive to typical
+numerical problems. For example, an inverse EOTF should be carefully
+tested with values near zero, since those are the most problematic and
+likely cause the most visible errors.
+
+Once all that is done, we can be very sure of what curve any hardware
+actually implements.
+
+I might even go far enough to suggest that any generic color UAPI with
+named fixed curves cannot land without such tests.
 
 
-On 9/6/23 22:18, Qais Yousef wrote:
-> Hi Lukasz
-> 
-> On 09/06/23 10:18, Lukasz Luba wrote:
->> Hi Qais,
->>
->> On 8/28/23 00:31, Qais Yousef wrote:
->>> Since the introduction of EAS and schedutil, we had two magic 0.8 and 1.25
->>> margins applied in fits_capacity() and apply_dvfs_headroom().
->>>
->>> As reported two years ago in
->>>
->>> 	https://lore.kernel.org/lkml/1623855954-6970-1-git-send-email-yt.chang@mediatek.com/
->>>
->>> these values are not good fit for all systems and people do feel the need to
->>> modify them regularly out of tree.
->>
->> That is true, in Android kernel those are known 'features'. Furthermore,
->> in my game testing it looks like higher margins do help to shrink
->> number of dropped frames, while on other types of workloads (e.g.
->> those that you have in the link above) the 0% shows better energy.
-> 
-> Do you keep margins high for all types of CPU? I think the littles are the
-> problematic ones which higher margins helps as this means you move away from
-> them quickly.
+Thanks,
+pq
 
-That's true, for the Littles higher margins helps to evacuate tasks
-sooner. I have experiments showing good results with 60% margin on
-Littles, while on Big & Mid 20%, 30%. The Littles still have also
-tasks in cgroups cpumask which are quite random, so they cannot
-migrate, but have a bit higher 'idle time' headroom.
+>=20
+> Harry
+>=20
+> > Then EOTF and inverse EOTF for PQ [2], and OETF and it seems an inverse
+> > OETF but called EOTF for HLG[3]. But I'm an external dev, better if
+> > Harry can confirm.
+> >=20
+> > Thank you for pointing it out.
+> >=20
+> > [1] https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/amd/=
+display/modules/color/color_gamma.c#n55
+> > [2] https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/amd/=
+display/modules/color/color_gamma.c#n106
+> > [3] https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/amd/=
+display/modules/color/color_gamma.c#n174
+> >  =20
+> >>
+> >> The others seem fine to me.
+> >>
+> >>
+> >> Thanks,
+> >> pq
 
+--Sig_/_KsfrGyb4A/tYnFSiA2jZGF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> 
->>
->> I remember also the results from MTK regarding the PELT HALF_LIFE
->>
->> https://lore.kernel.org/all/0f82011994be68502fd9833e499749866539c3df.camel@mediatek.com/
->>
->> The numbers for 8ms half_life where showing really nice improvement
->> for the 'min fps' metric. I got similar with higher margin.
->>
->> IMO we can derive quite important information from those different
->> experiments:
->> More sustainable workloads like "Yahoo browser" don't need margin.
->> More unpredictable workloads like "Fortnite" (shooter game with 'open
->> world') need some decent margin.
-> 
-> Yeah. So the point is that while we should have a sensible default, but there
-> isn't a one size fits all. But the question is how the user/sysadmin should
-> control this? This series is what I propose of course :)
-> 
-> I also think the current forced/fixed margin values enforce a policy that is
-> clearly not a good default on many systems. With no alternative in hand but to
-> hack their own solutions.
+-----BEGIN PGP SIGNATURE-----
 
-I see.
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmT5gH0ACgkQI1/ltBGq
+qqeLqQ/+NRS9c9EMovhxJR3p9HNdz39dMuBaG/jf6bHcp68pQ4uVblMFj11v2uuV
+vEY70YxZS0hiqjHb3NEq3P/FCyH7tss3lFOvMtAkOL/wT0f2CN4367WMKtpXrbEG
+WcYyPi68uHvn0vLVxQ1n/F1xblI5HJL6U5ZzhsKo9LkGGzLoieKIL476PeWy3yxx
+YKefUzfPgPlx2zOe04PLMYOM0fky2GugMTa8goQcGaj0MAd2DWVjV2JpdGzIBXr4
+9iqN1siqMHudL43UnRLQISpTnYUsGHdaFapUDYso1F7UhBVS2kKpw8ouItTMmPBH
+Vzu3jGZQD8G348QsacBU3+em6MNre93tRWxIibV/GLC1g5+pWtED7gGxZ9VLB7HW
+/sFF/VGY4mvVi6uStwL8McHdQyzBHLeEeZdHVXnut8AGhJ6A7PSOn8AH1Bb7W6cQ
+8lnptyeIpTdqjl1H18WaIpATsEoW2hx9PdM/czqz/Ds6/dd/YmExBOUeq0cz4vEW
+hGO3xh6E1RnI2Dr+VcVpDrE257h0qBYfaVALYqM0VCCiaybG+1VhXxF/rM5yzbDw
+8519JALkomQS915gacrBcjs1fl8KEOgPveCyoX+AOrneVGF19Yj/TJgmZaeceuHG
+YvKP3Oc9LyEK93QCRpSAvvN1ekQC1l6RdmTRMV2Pq59qUUohfLg=
+=0EKb
+-----END PGP SIGNATURE-----
 
-> 
->>
->> The problem is that the periodic task can be 'noisy'. The low-pass
-> 
-> Hehe. That's because they're not really periodic ;-)
-
-They are periodic in a sense, they wake up every 16ms, but sometimes
-they have more work. It depends what is currently going in the game
-and/or sometimes the data locality (might not be in cache).
-
-Although, that's for games, other workloads like youtube play or this
-one 'Yahoo browser' (from your example) are more 'predictable' (after
-the start up period). And I really like the potential energy saving
-there :)
-
-> 
-> I think the model of a periodic task is not suitable for most workloads. All
-> of them are dynamic and how much they need to do at each wake up can very
-> significantly over 10s of ms.
-
-Might be true, the model was built a few years ago when there wasn't
-such dynamic game scenario with high FPS on mobiles. This could still
-be tuned with your new design IIUC (no need extra hooks in Android).
-
-> 
->> filter which is our exponentially weighted moving avg PELT will
->> 'smooth' the measured values. It will block sudden 'spikes' since
->> they are high-frequency changes. Those sudden 'spikes' are
->> the task activations where we need to compute a bit longer, e.g.
->> there was explosion in the game. The 25% margin helps us to
->> be ready for this 'noisy' task - the CPU frequency is higher
->> (and capacity). So if a sudden need for longer computation
->> is seen, then we have enough 'idle time' (~25% idle) to serve this
->> properly and not loose the frame.
->>
->> The margin helps in two ways for 'noisy' workloads:
->> 1. in fits_capacity() to avoid a CPU which couldn't handle it
->>     and prefers CPUs with higher capacity
->> 2. it asks for longer 'idle time' e.g. 25-40% (depends on margin) to
->>     serve sudden computation need
->>
->> IIUC, your proposal is to:
->> 1. extend the low-pass filter to some higher frequency, so we
->>     could see those 'spikes' - that's the PELT HALF_LIFE boot
->>     parameter for 8ms
-> 
-> That's another way to look at it, yes. We can control how reactive we'd like
-> the system to be for changes.
-
-Which make sense in context to what I said above (newer gaming).
-
-> 
->> 1.1. You are likely to have a 'gift' from the Util_est
->>       which picks the max util_avg values and maintains them
->>       for a while. That's why the 8ms PELT information can last longer
->>       and you can get higher frequency and longer idle time.
-> 
-> This is probably controversial statement. But I am not in favour of util_est.
-> I need to collect the data, but I think we're better with 16ms PELT HALFLIFE as
-> default instead. But I will need to do a separate investigation on that.
-
-I like util_est, sometimes it helps ;)
-
-> 
->> 2. Plumb in this new idea of dvfs_update_delay as the new
->>     'margin' - this I don't understand
->>
->> For the 2. I don't see that the dvfs HW characteristics are best
->> for this problem purpose. We can have a really fast DVFS HW,
->> but we need some decent spare idle time in some workloads, which
->> are two independent issues IMO. You might get the higher
->> idle time thanks to 1.1. but this is a 'side effect'.
->>
->> Could you explain a bit more why this dvfs_update_delay is
->> crucial here?
-> 
-> I'm not sure why you relate this to idle time. And the word margin is a bit
-> overloaded here. so I suppose you're referring to the one we have in
-> map_util_perf() or apply_dvfs_headroom(). And I suppose you assume this extra
-> headroom will result in idle time, but this is not necessarily true IMO.
-> 
-> My rationale is simply that DVFS based on util should follow util_avg as-is.
-> But as pointed out in different discussions happened elsewhere, we need to
-> provide a headroom for this util to grow as if we were to be exact and the task
-> continues to run, then likely the util will go above the current OPP before we
-> get a chance to change it again. If we do have an ideal hardware that takes
-
-Yes, this is another requirement to have +X% margin. When the tasks are
-growing, we don't know their final util_avg and we give them a bit more
-cycles.
-IMO we have to be ready always for such situation in the scheduler,
-haven't we?
-
-> 0 time to change frequency, then this headroom IMO is not needed because
-> frequency will follow us as util grows. Assuming here that util updates
-> instantaneously as the task continues to run.
-> 
-> So instead of a constant 25% headroom; I redefine this to be a function of the
-> hardware delay. If we take a decision now to choose which OPP, then it should
-> be based on util_avg value after taking into account how much it'll grow before
-> we take the next decision (which the dvfs_update_delay). We don't need any more
-> than that.
-> 
-> Maybe we need to take into account how often we call update_load_avg(). I'm not
-> sure about this yet.
-> 
-> If the user wants to have faster response time, then the new knobs are the way
-> to control that. But the headroom should be small enough to make sure we don't
-> overrun until the next decision point. Not less, and not more.
-
-For ideal workloads (rt-app) or those 'calm' yes, we could save energy
-(as you pointed for this 0% margin energy values). I do like this 10%
-energy saving in some DoU scenarios. I couldn't catch the idea with
-feeding the dvfs response information into this equation. We might
-discuss this offline ;)
-
-Cheers,
-Lukasz
+--Sig_/_KsfrGyb4A/tYnFSiA2jZGF--
