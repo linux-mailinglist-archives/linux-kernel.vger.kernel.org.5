@@ -2,75 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD1C797CFE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 21:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 874E8797D0B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 21:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235691AbjIGTuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 15:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47994 "EHLO
+        id S231405AbjIGTzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 15:55:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbjIGTuE (ORCPT
+        with ESMTP id S229612AbjIGTzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 15:50:04 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61BBCE9;
-        Thu,  7 Sep 2023 12:50:00 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 387F7qxN020114;
-        Thu, 7 Sep 2023 14:49:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        content-type:mime-version:subject:from:in-reply-to:date:cc
-        :content-transfer-encoding:message-id:references:to; s=
-        PODMain02222019; bh=Db0NqmTGuh52sxm5Jkky1R2+22W8xh7Z98LTGOLaCj8=; b=
-        QnGFebaoLc7aoJtnat6cJLSJTAmmDrvOtSVfgDOBXTR3DmC6f56uw+zp32TZTAFl
-        VX8rJDUZaJI8MFUXE92oXvUbdvtubq3vzinCwQiHIVGZIk1g5X9xJIGa29qoKUKp
-        5gdXdTFuZKGr06CjzCfautU3hknle3L2UwMPvZ4PuZe8QDVgrAWQzRRTpgKQlSgz
-        zWqwtJyP3BMI6Ay5MG6SgvruiNs5KNvv2Vt1SZJD76Sbk/AWj1YJx1UUqiZ1q+NC
-        SHm0VV05VhELqAPJHUsiGyBPmVldeBPyn6Qq31GxgcZEQJh2tNDJs1CsSO/zdX7c
-        E3MzQt7KfMrbYGPPUKBglw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sv2ex766c-1
+        Thu, 7 Sep 2023 15:55:48 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4094CE9;
+        Thu,  7 Sep 2023 12:55:44 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 387Ja3Jt016621;
+        Thu, 7 Sep 2023 19:55:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=eM8+fdx712iK+YuWVyhpnJIOJmY8bqc7qlBMEOGWAZA=;
+ b=aKUiIoKiGWTMvZTgGMnzrXfLVUUKrzrQnltmH2Z2n6w3u8kROGkSqGkAiT6PCJu99kLV
+ MyVzpkidolspOMY9B8K4O4/Kmt/iVyJmYz7mmuX2N7PYo9ZzTuQnYFLetwklXusHHDNK
+ vLJvoljtmOpNPVL2oHZckJiX7FmYKG5y8dEHxcqK5LisFRbaRaZQsYGYCV9hjTRYkB55
+ OFFMIf0SJsPOEbe7lS3IfcIP7++ZckdCDJbHCAMwBigGkWwRTgHBW0lZGcHshu5S+jwR
+ 7ZqDS1LvizocytBFGeIJQ+0hOADi3BIiZNMDrwoV0eMQ1q8ovO/twoiU44rO4/4jcP/h iA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sy50da3dw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Sep 2023 14:49:43 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 7 Sep
- 2023 20:49:40 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Thu, 7 Sep 2023 20:49:40 +0100
-Received: from smtpclient.apple (macC02FN0GLMD6T.ad.cirrus.com [141.131.156.171])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B5841458;
-        Thu,  7 Sep 2023 19:49:38 +0000 (UTC)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
-Subject: Re: [PATCH v3 4/4] ASoC: cs35l45: Add AMP Enable Switch control
-From:   "Rivera-Matos, Ricardo" <rriveram@opensource.cirrus.com>
-In-Reply-To: <20230901085039.GC103419@ediswmail.ad.cirrus.com>
-Date:   Thu, 7 Sep 2023 14:49:28 -0500
-CC:     Vlad Karpovich <vkarpovi@opensource.cirrus.com>,
-        James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        "Richard Fitzgerald" <rf@opensource.cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        "Takashi Iwai" <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-ID: <199C31E4-1154-4C60-A846-6B8D12598D8D@opensource.cirrus.com>
-References: <20230831162042.471801-1-vkarpovi@opensource.cirrus.com>
- <20230831162042.471801-4-vkarpovi@opensource.cirrus.com>
- <20230901085039.GC103419@ediswmail.ad.cirrus.com>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-X-Mailer: Apple Mail (2.3731.700.6)
-X-Proofpoint-ORIG-GUID: mNrc0qiF602fbNMlKB0D6J6hgn5SWA31
-X-Proofpoint-GUID: mNrc0qiF602fbNMlKB0D6J6hgn5SWA31
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 07 Sep 2023 19:55:09 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 387Jt7Ce029599
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 7 Sep 2023 19:55:07 GMT
+Received: from [10.110.111.18] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 7 Sep
+ 2023 12:54:46 -0700
+Message-ID: <ca451c20-57c1-6fb4-8c8e-b3446944a0f6@quicinc.com>
+Date:   Thu, 7 Sep 2023 12:54:38 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH v4 5/7] leds: rgb: leds-qcom-lpg: Update PMI632 lpg_data
+ to support PPG
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <pavel@ucw.cz>,
+        <lee@kernel.org>, <thierry.reding@gmail.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>
+CC:     <luca.weiss@fairphone.com>, <u.kleine-koenig@pengutronix.de>,
+        <quic_subbaram@quicinc.com>, <quic_gurus@quicinc.com>,
+        <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-pwm@vger.kernel.org>, <kernel@quicinc.com>
+References: <20230830180600.1865-2-quic_amelende@quicinc.com>
+ <20230830180600.1865-8-quic_amelende@quicinc.com>
+ <951a2f24-931a-4a25-a3b7-c3009e135d7d@linaro.org>
+From:   Anjelique Melendez <quic_amelende@quicinc.com>
+In-Reply-To: <951a2f24-931a-4a25-a3b7-c3009e135d7d@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 2AjBp-j2PA1W6lXAf0Gn41ZC8I6PFUpZ
+X-Proofpoint-GUID: 2AjBp-j2PA1W6lXAf0Gn41ZC8I6PFUpZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-07_12,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ spamscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=898 adultscore=0
+ suspectscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309070175
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -79,20 +89,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> On Sep 1, 2023, at 3:50 AM, Charles Keepax =
-<ckeepax@opensource.cirrus.com> wrote:
->=20
-> On Thu, Aug 31, 2023 at 11:20:42AM -0500, Vlad Karpovich wrote:
->> The "AMP Enable Switch" is useful in systems with multiple
->> amplifiers connected to the same audio bus
->> but not all of them are needed for all use cases.
->>=20
->> Signed-off-by: Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+On 8/30/2023 11:34 AM, Konrad Dybcio wrote:
+> On 30.08.2023 20:06, Anjelique Melendez wrote:
+>> Update the pmi632 lpg_data struct so that pmi632 devices use PPG
+>> for LUT pattern.
+>>
+>> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
 >> ---
->=20
-> Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
->=20
-> Thanks,
-> Charles
-
-Acked-by: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>=
+>>  drivers/leds/rgb/leds-qcom-lpg.c | 9 ++++++---
+>>  1 file changed, 6 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
+>> index 90dc27d5eb7c..0b37d3b539f8 100644
+>> --- a/drivers/leds/rgb/leds-qcom-lpg.c
+>> +++ b/drivers/leds/rgb/leds-qcom-lpg.c
+>> @@ -1672,11 +1672,14 @@ static const struct lpg_data pm8994_lpg_data = {
+>>  static const struct lpg_data pmi632_lpg_data = {
+>>  	.triled_base = 0xd000,
+>>  
+>> +	.lut_size = 64,
+>> +	.lut_sdam_base = 0x80,
+> Is that a predefined space for use with LPG?
+> 
+> Or can it be reclaimed for something else?
+> 
+> Konrad
+Yes, this is a predefined space for use with LPG
