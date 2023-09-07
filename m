@@ -2,102 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4436B797EB6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 00:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27CF797EB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 00:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237489AbjIGWcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 18:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58974 "EHLO
+        id S237646AbjIGWdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 18:33:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbjIGWck (ORCPT
+        with ESMTP id S230195AbjIGWdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 18:32:40 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4DA1BC7;
-        Thu,  7 Sep 2023 15:32:36 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 387MMhcw007068;
-        Thu, 7 Sep 2023 22:32:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=6F+DQoDUe0Wh4jBEZEoSBtB0wVZJMrv7jHU5op/krs4=;
- b=PQIUSmLWA6CpyCvjt7Mtv4GO+c4J8USmf4abzh9m2imkmtjsk9o4plIlGrVsy954IYkh
- nAOlubAiOPHt6YQC4KFTBG5GdSIX80AjPGE62g0u9VkcN2qJc8b9KrjHUxhCD8F0l4zi
- 99D16TYeWEWNP0NuoLJ8t9rRyiLQ5gIbXZobzpO5qdiq9Jbl2znYTvB3dh0Yr9DFU7VR
- xInBpihc7sBlo9VKVz5EA2jw0USx7dPum8JU+Sjq3xugLVThxKa7GyGd4w7X0WUaJiOv
- i+pNQJjpk34Pr5OogcV049y+9468C5kdAl64hXLi7+Ve6+HRJMpqqehKOkuLjv2hlpUw ng== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sy951j2ch-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Sep 2023 22:32:24 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 387MWN12020795
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 7 Sep 2023 22:32:23 GMT
-Received: from [10.110.56.75] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 7 Sep
- 2023 15:32:22 -0700
-Message-ID: <73b91770-f7f4-3a04-77a9-86eb3332d202@quicinc.com>
-Date:   Thu, 7 Sep 2023 15:32:22 -0700
+        Thu, 7 Sep 2023 18:33:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643141BC7;
+        Thu,  7 Sep 2023 15:33:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0154FC433C7;
+        Thu,  7 Sep 2023 22:33:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694126008;
+        bh=11OxPGs4D8TG3RACZZ9X30xzAuDPKXdLvJllCq6fnTo=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=A9CB1+8hr6VRvzDP+b4+8UmSv+gg1cQtjVgTQLSreTgDVuN3TsxSV8iw3Neljvbus
+         Kr+EiccofWyyWM/0+UPpajzV8JRcNi2VBidD9cKl74APIVZBj7+9H5kBc9v1VmfJ9D
+         +N0l48ppypPbnTuJ4CRKkhJZgOsPvxe3uUL/A8pdt39iYL2fWlp2q9VkOo5+7SIdaH
+         2E9yAbvowEqBtvye++5wCPbtIeiSLsRtRUeqc4lz9YpQsU+eBTZcbFrwr5L07wcxEL
+         K+H9WVjahsSaoFLQNpO6uhDa4WZoumTTd06OMNvryDVDlty/hOJiyeMAUZrWkKuBp1
+         dEmlOLpRceqbA==
+Message-ID: <fc8023b435f78e02c96fecbe8e7599ee.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH 0/2] Add qcom hvc/shmem transport
-To:     Konrad Dybcio <konradybcio@kernel.org>, <sudeep.holla@arm.com>
-CC:     <cristian.marussi@arm.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <3cc438c8-295e-461b-a842-c6d0f268fe9e@kernel.org>
-Content-Language: en-US
-From:   Nikunj Kela <quic_nkela@quicinc.com>
-In-Reply-To: <3cc438c8-295e-461b-a842-c6d0f268fe9e@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: NEfPHLwN3_sCrmO36fO53jQaXl9oZJXE
-X-Proofpoint-ORIG-GUID: NEfPHLwN3_sCrmO36fO53jQaXl9oZJXE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-07_13,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
- adultscore=0 impostorscore=0 phishscore=0 lowpriorityscore=0
- suspectscore=0 mlxscore=0 mlxlogscore=977 priorityscore=1501 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309070200
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAPp5cGTshQJ3aLeLqv=CbaVeg9GnK_k9nsoaWrBKs1dcXzNZow@mail.gmail.com>
+References: <20230822134849.3352329-1-alessandro.carminati@gmail.com> <CAPp5cGTshQJ3aLeLqv=CbaVeg9GnK_k9nsoaWrBKs1dcXzNZow@mail.gmail.com>
+Subject: Re: [PATCH] Sanitize possible_parent_show to Handle Return Value of of_clk_get_parent_name
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Philip Daly <pdaly@redhat.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Alessandro Carminati <alessandro.carminati@gmail.com>
+Date:   Thu, 07 Sep 2023 15:33:25 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Alessandro Carminati (2023-09-07 07:15:36)
+> this is a gentle ping
+>=20
 
-On 9/7/2023 9:16 AM, Konrad Dybcio wrote:
-> On 18.07.2023 18:08, Nikunj Kela wrote:
->> This change introduce a new transport channel for Qualcomm virtual
->> platforms. The transport is mechanically similar to ARM_SCMI_TRANSPORT_SMC.
->> The difference between the two transports is that a parameter is passed in
->> the hypervisor call to identify which doorbell to assert. This parameter is
->> dynamically generated at runtime on the device and insuitable to pass via
->> the devicetree.
->>
->> The function ID and parameter are stored by firmware in the shmem region.
->>
->> This has been tested on ARM64 virtual Qualcomm platform.
-> What can we test it on?
->
-> Konrad
-This is being developed for SA8775p platform.
+I couldn't read your email because it was sent to nobody
+(unlisted-recipients). Can you resend with a proper To: line?=20
+
+>=20
+> Il giorno mar 22 ago 2023 alle ore 15:49 Alessandro Carminati
+> <alessandro.carminati@gmail.com> ha scritto:
+> >
+> > In the possible_parent_show function, ensure proper handling of the ret=
+urn
+> > value from of_clk_get_parent_name to prevent potential issues arising f=
+rom
+> > a NULL return.
+> > The current implementation invokes seq_puts directly on the result of
+> > of_clk_get_parent_name without verifying the return value, which can le=
+ad
+> > to kernel panic if the function returns NULL.
+> >
+> > This patch addresses the concern by introducing a check on the return
+> > value of of_clk_get_parent_name. If the return value is not NULL, the
+
+Use of_clk_get_parent_name() to signify that it is a function.
+
+> > function proceeds to call seq_puts, providing the returned value as
+> > argument.
+> > However, if of_clk_get_parent_name returns NULL, the function provides a
+> > static string as argument, avoiding the panic.
+> >
+> > Reported-by: Philip Daly <pdaly@redhat.com>
+> > Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gma=
+il.com>
+> > ---
+
+It needs a Fixes tag.
+
+> >  drivers/clk/clk.c | 11 ++++++-----
+> >  1 file changed, 6 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+> > index c249f9791ae8..ab999644e185 100644
+> > --- a/drivers/clk/clk.c
+> > +++ b/drivers/clk/clk.c
+> > @@ -3416,6 +3416,7 @@ static void possible_parent_show(struct seq_file =
+*s, struct clk_core *core,
+> >                                  unsigned int i, char terminator)
+> >  {
+> >         struct clk_core *parent;
+> > +       const char *tmp;
+> >
+> >         /*
+> >          * Go through the following options to fetch a parent's name.
+> > @@ -3436,12 +3437,12 @@ static void possible_parent_show(struct seq_fil=
+e *s, struct clk_core *core,
+> >                 seq_puts(s, core->parents[i].name);
+> >         else if (core->parents[i].fw_name)
+> >                 seq_printf(s, "<%s>(fw)", core->parents[i].fw_name);
+> > -       else if (core->parents[i].index >=3D 0)
+> > -               seq_puts(s,
+> > -                        of_clk_get_parent_name(core->of_node,
+> > -                                               core->parents[i].index)=
+);
+> > -       else
+> > +       else if (core->parents[i].index >=3D 0) {
+> > +               tmp =3D of_clk_get_parent_name(core->of_node, core->par=
+ents[i].index);
+> > +               seq_puts(s, tmp ? tmp : "(none)");
+
+How about using seq_printf("%s", ...) instead? That should print out
+"(null)" in the case that it is NULL, instead of "(none)" and it is a
+one line change.
