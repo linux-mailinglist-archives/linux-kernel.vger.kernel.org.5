@@ -2,317 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A044E797AF9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5CA6797685
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245682AbjIGR6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46038 "EHLO
+        id S233527AbjIGQME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245621AbjIGR6k (ORCPT
+        with ESMTP id S232069AbjIGQLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:58:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3951700;
-        Thu,  7 Sep 2023 10:58:08 -0700 (PDT)
+        Thu, 7 Sep 2023 12:11:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84364173B;
+        Thu,  7 Sep 2023 09:08:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694109488; x=1725645488;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HrqTxAusmEEEmb/UjBv9mKHXzcO8mYCUsE/3XcRzihM=;
-  b=POdSJ9OE1zC3zySWsUCEH1dx8J9Hr7gXKr1tw/jPmx+q2Jryqe6R2ojQ
-   5uJ0Vgz34yM10ji1D5frev7SBxN8v4MSAnURSy6fYglp5QzZId1wbCqwP
-   fo04xL9PtZqT9bk3VGZEouuIyHnnaFu6X7p/6WI5h04g6SDHwgsvX2/SC
-   pZJENebpDUXZQHwTQ1wK4cYumcllb+nnncktIt2tWkxxwc6JcMtvOP306
-   sy+FFAADuMvXe9YNxLvY3PDFLsNnd7k+/Lrw6s75JDlxgOmbVeTnV8B22
-   FlgBKHss0t3lbbs/Lyid3xAVnKYz0KYZfiNnqE46POo/Dl2mZfutsH0eC
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="367569482"
+  t=1694102904; x=1725638904;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=m1P2baN8nZyjCiL3ndEL0JEwwmsFBewjlIFZhg/7h2g=;
+  b=lIiBsYuDAvkCYLJ1jlO7VrjtTxAxe/S2FHQMKDrXRSKItJWOoXRlQJYg
+   gZbt2jteE2iLWeZCv4IPft+wYu+ptRcBkTO3uhWbEtcIgnja+VVUog+Em
+   PxRdROYGbb8Z5F3FA0XsyVJvtexojKxa5YsRIP6Nu0oU02rHK/8/O6QK4
+   bXYwLi7A0XlkVm43uOS+xSqANVc8guNhIowjgG7RoUXT4mKe0GwClmxa9
+   mOabdeSWsWhuo4gUoYLIHIE3Ne9hcx4oz/Mx5jnXv7nV+KjW5qfrkdwlU
+   iSwGwFzLSR1aPcYU51QOp4Tgb5/0z6xZDr65YWyABLXamrtnP2Shn78Mb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="380061965"
 X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="367569482"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 05:42:02 -0700
+   d="scan'208";a="380061965"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 05:42:29 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="865619074"
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="832150751"
 X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="865619074"
-Received: from mtkaczyk-mobl.ger.corp.intel.com (HELO localhost) ([10.249.139.35])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 05:41:58 -0700
-Date:   Thu, 7 Sep 2023 14:41:53 +0200
-From:   Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     AceLan Kao <acelan@gmail.com>, Song Liu <song@kernel.org>,
-        Guoqing Jiang <guoqing.jiang@linux.dev>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux RAID <linux-raid@vger.kernel.org>,
-        "yangerkun@huawei.com" <yangerkun@huawei.com>,
-        "yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: Infiniate systemd loop when power off the machine with multiple
- MD RAIDs
-Message-ID: <20230907144153.00002492@linux.intel.com>
-In-Reply-To: <3e7edf0c-cadd-59b0-4e10-dffdb86b93b7@huaweicloud.com>
-References: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
-        <20230822083923.00007fb6@linux.intel.com>
-        <CAMz9Wg8KE1rDkSaQnUTJ5ikzH7YGGYbkLM3AcrVue3=JgK+14w@mail.gmail.com>
-        <35130b3f-c0fd-e2d6-e849-a5ceb6a2895f@linux.dev>
-        <CAMz9Wg_zKSJ2vL=r2zAtLBOv4GSMT63+ZQGXfYTjVJsE+DLQGA@mail.gmail.com>
-        <CAPhsuW6W0XgFjH1zNC+EFYjujd4smEiWs+-nYCWQ+KaFmbuvkg@mail.gmail.com>
-        <CAMz9Wg9y52iuxJRSQFC2N5Katt72v-o=JvEjegJt-MwORmw9tQ@mail.gmail.com>
-        <CAPhsuW7XEy4q3XR389F7CUvXvJ=0JR0QkMOr4LU03avT0erAfg@mail.gmail.com>
-        <354004ce-ad4e-5ad5-8fe6-303216647e0c@huaweicloud.com>
-        <03b79ab0-0bb0-ac29-4a70-37d902f9a05b@huaweicloud.com>
-        <20230831085057.00001795@linux.intel.com>
-        <CAMz9Wg8bhCG=qSLia943dwr=LV7Kum=bZPq2s_2coV6a_bmDeA@mail.gmail.com>
-        <20230906122751.00001e5b@linux.intel.com>
-        <43b0b2f4-17c0-61d2-9c41-0595fb6f2efc@huaweicloud.com>
-        <20230907121819.00005a15@linux.intel.com>
-        <cffca94f-5729-622d-9327-632b3ff2891a@huaweicloud.com>
-        <3e7edf0c-cadd-59b0-4e10-dffdb86b93b7@huaweicloud.com>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+   d="scan'208";a="832150751"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Sep 2023 05:42:29 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 7 Sep 2023 05:42:28 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 7 Sep 2023 05:42:28 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.172)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Thu, 7 Sep 2023 05:42:28 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IJ5bp9vl+enxV3V0e3So/zpY5phpppfYUrVPgJU+cyWUW3YLq6O1AHRTyvWBHCR1zcuGRMg5jUQ6Jx3+U59Uib90Vskezw3ScNof0Jr4PQYkjzzSlaNaXDQ2ZZ7jkyrHFXc133Yi2bildzlQGX96WRwKmAwglav4scZUDCDKkXwmHspEopLARdp/WjgtfOMHniyU12AqH9X1p2hMWVUPyX4Va60gVL0eiy3i40mNpgOxDUajWf/smlvCpA6MyN6ZrDZXKOnbxRsZnxSalps/ywGdRBMoydDdZ6wuruZDF4JndG0yzkfb1m5dYlRRnm4llNlLllhDzRf+lxQ3NJp3lQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=R9cm6eYZWUJSD9mzkvQALkKAwbtYcl43t0aSOo8uWoU=;
+ b=adL5W4f6M93+q4YyjrXPmRhpfOwvmBT5SD1nICBRlkQKiSEg52KlyAh/o4WO8CWBOg8Vnsqxvg4O07/24XpQVpaU7zByzxr8sLT3ezjsKbPhAvkUIoTSXWJ5Abte5o2dpbSm2ay5GUZjxVdYa4YWGPzKkjQQN2BfJJUGO4rCcZltD8Jr59tKkWuUSCzcpB39hcMos3QjkJZE3864ZjDaH+Fmycfl/eNH6l8BD03ljTP1sq8h5PGGM5jD9kIOngOOQlbnqKmKVpa1BtVE591PnqGbLAYsX3CAj8aOzFzk/kEI0LSijDQy0ID9vKJX1GBLkY05JYAV0gPu3pkHx2k3/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SN7PR11MB7420.namprd11.prod.outlook.com (2603:10b6:806:328::20)
+ by LV2PR11MB6000.namprd11.prod.outlook.com (2603:10b6:408:17c::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.32; Thu, 7 Sep
+ 2023 12:42:25 +0000
+Received: from SN7PR11MB7420.namprd11.prod.outlook.com
+ ([fe80::3e89:54d7:2c3b:d1b0]) by SN7PR11MB7420.namprd11.prod.outlook.com
+ ([fe80::3e89:54d7:2c3b:d1b0%6]) with mapi id 15.20.6745.030; Thu, 7 Sep 2023
+ 12:42:25 +0000
+Message-ID: <c4838e77-5688-10a0-8a3e-cf1dda12237c@intel.com>
+Date:   Thu, 7 Sep 2023 06:42:17 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [Intel-wired-lan] [PATCH net 1/2] iavf: add
+ iavf_schedule_aq_request() helper
+Content-Language: en-US
+To:     <poros@redhat.com>, <netdev@vger.kernel.org>
+CC:     <ivecera@redhat.com>, <intel-wired-lan@lists.osuosl.org>,
+        <jesse.brandeburg@intel.com>, <linux-kernel@vger.kernel.org>,
+        <edumazet@google.com>, <anthony.l.nguyen@intel.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>, <davem@davemloft.net>
+References: <20230906141411.121142-1-poros@redhat.com>
+ <bbb51ddd-ceb1-63a8-a06a-f365da5ac4b7@intel.com>
+ <e461ea2d6134c0f3cfd765d53d6a2228c1bb3677.camel@redhat.com>
+From:   Ahmed Zaki <ahmed.zaki@intel.com>
+In-Reply-To: <e461ea2d6134c0f3cfd765d53d6a2228c1bb3677.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR3P281CA0103.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a1::19) To SN7PR11MB7420.namprd11.prod.outlook.com
+ (2603:10b6:806:328::20)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR11MB7420:EE_|LV2PR11MB6000:EE_
+X-MS-Office365-Filtering-Correlation-Id: 59e127c9-3a7f-4175-c545-08dbaf9fe393
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BbauTf2XGMpbmCsTF41WcpX6haMo7nSBNSr2c44EU9bEqmKNARcQ7XdgL5TcFF83Wl+vLYLnzzuGLCeikmhNDQuw1gHnNciNxUe5R0HHu/1JvQ2zMZ6C3hAFNoUN3nfKeXIzZ8sEgZTtp1MfXNV2rSN0B0eGAkIAOP+6nWBm1wJK83bjxTGZdU7ZGwtRBhmRSLmhVgjvbetrR42L/Bff+H/DWs6IfJSl+RxE2Vn0xZ+yodLs8JHU1Dyc1S9kcc+yzV9/olaWjU35akkSRbKonHh4J6n0dKdDH4AemIfP8AybUZcIafEV4Rs2WOe2e/ezev959so2nzRWSlsy7qqD6y3zoukAcqnxEMtOXoabyyb77XfVROXZbWMU/OCfVgRTXGte/UbraclzT5DVd5kr1Q+2qcICSwMXcyBqSjr1xXxDXglv4BUKc3OB4NPIl/z8QaapOwN9fyJmR+r/OVXJGGPJdoDXmlr1QJoguAkTZqVi+0KOpWu/hmfPo8k1RBHmF13r7t2H13vb/+VFJMLJdZNFCZ9rfPLh8CRY3bw7zyjdsr3Q2G44uilz7GgCCjKx3HGVZJvSmxX8bNMeL6uZM4SxCM3s5qs2rxZWb3eXnL8wSeLNsSp6v5XEXKW0a9jGNHNutu0zVR2tuORBNVn7KA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7420.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(396003)(39860400002)(136003)(346002)(1800799009)(186009)(451199024)(41300700001)(6486002)(53546011)(6666004)(6506007)(82960400001)(83380400001)(38100700002)(2616005)(6512007)(26005)(31696002)(66556008)(2906002)(36756003)(86362001)(316002)(66476007)(66946007)(478600001)(31686004)(44832011)(5660300002)(8676002)(4326008)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TFQ1MTA2NktrVXl2QkJPbjVKZ3dUKzBSTzUzbURHUEdVSDlMTGM5OUlKU2hm?=
+ =?utf-8?B?YW0yTGFza1NCRzRaRDc5cmhSejg1bEl0TXBqa0w1cmFWQWprb3lPeTQvZHpG?=
+ =?utf-8?B?b0g0aWQxZlQ2RGg1eWVvbE5UQWJIdUY2TTFRUGo3b0N2UnFRaFlwbytvOGtR?=
+ =?utf-8?B?eTBWTVMzblFZcE91QkthK3l3TWNqc1djU0dMVUx1TTNxcFo0SDlkNitDZDQx?=
+ =?utf-8?B?aFZ6dVJkSDRDTVN2cXFlc0hyZm8vYU1nK1ZxMGx4ZEdXSUJsY2I4TEVkTlFW?=
+ =?utf-8?B?SEN3cGVMNEhjNzdubTB2L1NvTzhBUU5vVDZWM3hqc0VlL0FOMnpCM3JjUDZs?=
+ =?utf-8?B?aEJvUDk0VUtuQTkxd1h1WmdLaWxzaFQ2bXVuRVBZN0MzL1gvR21EWEhIUlc3?=
+ =?utf-8?B?RVlMa01vY1V0UlZFc1RNMjhJUGtpbFpRdjlSUTZoMk1HcTJRSVpJajA2VHZ0?=
+ =?utf-8?B?am10ZURFbUpseUFuV3J3NlhINFNhSmpLZzRnUk04RDM2MkVmbzdjMzRoa3Ar?=
+ =?utf-8?B?S0RWeDJiUjRES3IyWXhxeitGMGt6YWJNZlF3OEhzWFlKNHlLN0oxZDc5R3Bj?=
+ =?utf-8?B?ZEpRVHY5alVGU0hXWmRYTGVTM2Z6VnBHcnNFeXBXTUpTbWZ1dnMvMnc1WWxR?=
+ =?utf-8?B?cDZNRGlrd284dVoyQW80cERPLy9uVzMxRFJuL0I5Z0QwOERXK0RqR1VhaWJv?=
+ =?utf-8?B?dFIzZzk3a1JsOGRZdVN5WkZlc2hOZnFpN2ViNUpxUW8rN0pLK25mWkpVS0pz?=
+ =?utf-8?B?STFUWW1SMVMyNzdMY0lqdXVFeDJtNzlvelpORXVpUlBvWFZPTDc2UVlFL2Qy?=
+ =?utf-8?B?QWhQY2pXQXhPQ2RWeU04VDAyQkNJc0xzWjFTRzlMRlhnZlg3Z05oUThwSGtB?=
+ =?utf-8?B?UTNGeFpTZHVURzE4YWlyUTZaL0Q0NmQ3WnhMSEFrVlJOWXcrd1hIc1FKWkkz?=
+ =?utf-8?B?RUdyV29yUGlKa21ybFJYdUdTL1VEUjRlcjhwRjkxa2ZnT0Y0OEVEV1ZxZE0y?=
+ =?utf-8?B?Tzk3V1pNYTdrTDQwTzRHTUFSazNUK0F1QmF0Rm1OZGZjVmJueUtJRkl3SHZq?=
+ =?utf-8?B?VWJ1aWVtSFIxYlpGclU3UmpPbXd3RURMLzZYWnFPL3ErOG9iUmlBNTNOM3Q4?=
+ =?utf-8?B?eEZvUk56NENuS1ZLTG1WWW9SK2d0L3JJK1RqRWdZK3dwSVhVMEJLcXFUVEgx?=
+ =?utf-8?B?Sk5YSVg5ZWpaK0lzMTFqSElUTUZqMTBPblBZSkVDdGcxMncyOXN6RjRsZTht?=
+ =?utf-8?B?d2VlVms3ZnRJLzhEQjJXTk1hNWlLMjRmS01WRU90TlhMRTVjTWVCWXlueUxF?=
+ =?utf-8?B?QmMyc0wxSlpRTCtva1FoWEFUZFdzaDlsNVhjQnVFNGdvTmUxNEtWUnpIaDdZ?=
+ =?utf-8?B?cVJSMGp2S2RoY0xJbm1xUUJxZVJzUHJjVGF6UnREaGVuK2tncURRY3JNSkZE?=
+ =?utf-8?B?UWUzYVNPRm54Nk40aUQ5OEFTT25ESWJIdDgwdG1jSmtYdkpaUGw3NjZwclFq?=
+ =?utf-8?B?Umpiakd6NVdhWmRvUkJCYmFUWFZ6MEpJZmdQbjRVUzNic2pZS3FzZ0pXYmlB?=
+ =?utf-8?B?eTVaeGxLeDd6T0k2SVl0UmhoeVVhMFhmUm9WNzNzZ0NFdG1rNGpQQ3psOUxP?=
+ =?utf-8?B?WkgxSHl1ZjdCNHY0amJ4WStCcFFFTTlrZnpseUw5dXBMa29UeUZrNWlkRWJm?=
+ =?utf-8?B?ZWs5Rm5QSHZ4eG5VU3lsUG5INnlRcjF5RmpMNlNod0RoQlRacjZmeGd2WTBO?=
+ =?utf-8?B?dkVycUdzRHFaUnFMaERJUk9VM3VFNTl5WjZRSWZEWlF1cTJWVFBBd2FjblFQ?=
+ =?utf-8?B?bnB3SXJiemNSYzhpVTRwVjBYcFhlTVlzb3RSb3h6dXptd1dhSHZkZmdaTXN0?=
+ =?utf-8?B?K3IyZjRTdG1jdUdDU3A5WVZRSzFwa1FPRnJSdUw2aWkxMTJtL1U0UUJSRlZh?=
+ =?utf-8?B?cWtiUG1sdVJ5NEJaQ1g2RlBmeEo1SzhqN3VRN1dHS3NHMjgycFNzZXVQM2pr?=
+ =?utf-8?B?WHN5bUJ1YlJkTStJUUFCV2ZVa0IxdGtGcml0N0ZRSTA0SEdGV0lrWlJxTFR6?=
+ =?utf-8?B?bnN6ek9RL1JLbGNYc0hIT1N1ejhpQUlGU2hCWlp4NXR2ak51aSs2bWJKaFpx?=
+ =?utf-8?B?MXdoWjgvbHA3Zi9WOXd2VTBJVzd0bi9qN1JUY0JBQ2lUTE9ndEpTMTJQcm9Y?=
+ =?utf-8?B?U1E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59e127c9-3a7f-4175-c545-08dbaf9fe393
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7420.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 12:42:25.8249
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tVZx/3FJQVMRS+irRv/qnTAiyazPIn0n2rXk9+IpvNNeMVHFnHW1MR1UmDBmdFDZlNdcNF8jpzjykABIkqdpdw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR11MB6000
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Sep 2023 20:14:03 +0800
-Yu Kuai <yukuai1@huaweicloud.com> wrote:
 
-> Hi,
->=20
-> =E5=9C=A8 2023/09/07 19:26, Yu Kuai =E5=86=99=E9=81=93:
-> > Hi,
-> >=20
-> > =E5=9C=A8 2023/09/07 18:18, Mariusz Tkaczyk =E5=86=99=E9=81=93: =20
-> >> On Thu, 7 Sep 2023 10:04:11 +0800
-> >> Yu Kuai <yukuai1@huaweicloud.com> wrote:
-> >> =20
-> >>> Hi,
-> >>>
-> >>> =E5=9C=A8 2023/09/06 18:27, Mariusz Tkaczyk =E5=86=99=E9=81=93: =20
-> >>>> On Wed, 6 Sep 2023 14:26:30 +0800
-> >>>> AceLan Kao <acelan@gmail.com> wrote: =20
-> >>>>> =C2=A0 From previous testing, I don't think it's an issue in system=
-d, so I
-> >>>>> did a simple test and found the issue is gone.
-> >>>>> You only need to add a small delay in md_release(), then the issue
-> >>>>> can't be reproduced.
-> >>>>>
-> >>>>> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> >>>>> index 78be7811a89f..ef47e34c1af5 100644
-> >>>>> --- a/drivers/md/md.c
-> >>>>> +++ b/drivers/md/md.c
-> >>>>> @@ -7805,6 +7805,7 @@ static void md_release(struct gendisk *disk)
-> >>>>> {
-> >>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct mddev *mdde=
-v =3D disk->private_data;
-> >>>>>
-> >>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 msleep(10);
-> >>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BUG_ON(!mddev);
-> >>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 atomic_dec(&mddev-=
->openers);
-> >>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mddev_put(mddev); =
-=20
-> >>>>
-> >>>> I have repro and I tested it on my setup. It is not working for me.
-> >>>> My setup could be more "advanced" to maximalize chance of reproducti=
-on:
-> >>>>
-> >>>> # cat /proc/mdstat
-> >>>> Personalities : [raid1] [raid6] [raid5] [raid4] [raid10] [raid0]
-> >>>> md121 : active raid0 nvme2n1[1] nvme5n1[0]
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 7126394880 blocks super e=
-xternal:/md127/0 128k chunks
-> >>>>
-> >>>> md122 : active raid10 nvme6n1[3] nvme4n1[2] nvme1n1[1] nvme7n1[0]
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 104857600 blocks super ex=
-ternal:/md126/0 64K chunks 2=20
-> >>>> near-copies
-> >>>> [4/4] [UUUU]
-> >>>>
-> >>>> md123 : active raid5 nvme6n1[3] nvme4n1[2] nvme1n1[1] nvme7n1[0]
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2655765504 blocks super e=
-xternal:/md126/1 level 5, 32k chunk,
-> >>>> algorithm 0 [4/4] [UUUU]
-> >>>>
-> >>>> md124 : active raid1 nvme0n1[1] nvme3n1[0]
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 99614720 blocks super ext=
-ernal:/md125/0 [2/2] [UU]
-> >>>>
-> >>>> md125 : inactive nvme3n1[1](S) nvme0n1[0](S)
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 10402 blocks super extern=
-al:imsm
-> >>>>
-> >>>> md126 : inactive nvme7n1[3](S) nvme1n1[2](S) nvme6n1[1](S)=20
-> >>>> nvme4n1[0](S)
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20043 blocks super extern=
-al:imsm
-> >>>>
-> >>>> md127 : inactive nvme2n1[1](S) nvme5n1[0](S)
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 10402 blocks super extern=
-al:imsm
-> >>>>
-> >>>> I have almost 99% repro ratio, slowly moving forward..
-> >>>>
-> >>>> It is endless loop because systemd-shutdown sends ioctl "stop_array"=
-=20
-> >>>> which
-> >>>> is successful but array is not stopped. For that reason it sets=20
-> >>>> "changed =3D
-> >>>> true". =20
-> >>>
-> >>> How does systemd-shutdown judge if array is stopped? cat /proc/mdstat=
- or
-> >>> ls /dev/md* or other way? =20
-> >>
-> >> Hi Yu,
-> >>
-> >> It trusts return result, I confirmed that 0 is returned.
-> >> The most weird is we are returning 0 but array is still there, and it =
-is
-> >> stopped again in next systemd loop. I don't understand why yet..
-> >> =20
-> >>>> Systemd-shutdown see the change and retries to check if there is=20
-> >>>> something
-> >>>> else which can be stopped now, and again, again...
-> >>>>
-> >>>> I will check what is returned first, it could be 0 or it could be=20
-> >>>> positive
-> >>>> errno (nit?) because systemd cares "if(r < 0)". =20
-> >>>
-> >>> I do noticed that there are lots of log about md123 stopped:
-> >>>
-> >>> [ 1371.834034] md122:systemd-shutdow bd_prepare_to_claim return -16
-> >>> [ 1371.840294] md122:systemd-shutdow blkdev_get_by_dev return -16
-> >>> [ 1371.846845] md: md123 stopped.
-> >>> [ 1371.850155] md122:systemd-shutdow bd_prepare_to_claim return -16
-> >>> [ 1371.856411] md122:systemd-shutdow blkdev_get_by_dev return -16
-> >>> [ 1371.862941] md: md123 stopped.
-> >>>
-> >>> And md_ioctl->do_md_stop doesn't have error path after printing this
-> >>> log, hence 0 will be returned to user.
-> >>>
-> >>> The normal case is that:
-> >>>
-> >>> open md123
-> >>> ioctl STOP_ARRAY -> all rdev should be removed from array
-> >>> close md123 -> mddev will finally be freed by:
-> >>> =C2=A0=C2=A0=C2=A0=C2=A0md_release
-> >>> =C2=A0=C2=A0=C2=A0=C2=A0 mddev_put
-> >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set_bit(MD_DELETED, &mddev->flags) -> =
-user shound not see this=20
-> >>> mddev
-> >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 queue_work(md_misc_wq, &mddev->del_wor=
-k)
-> >>>
-> >>> =C2=A0=C2=A0=C2=A0=C2=A0mddev_delayed_delete
-> >>> =C2=A0=C2=A0=C2=A0=C2=A0 kobject_put(&mddev->kobj)
-> >>>
-> >>> =C2=A0=C2=A0=C2=A0=C2=A0md_kobj_release
-> >>> =C2=A0=C2=A0=C2=A0=C2=A0 del_gendisk
-> >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 md_free_disk
-> >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mddev_free
-> >>> =20
-> >> Ok thanks, I understand that md_release is called on descriptor=20
-> >> closing, right?
-> >> =20
-> >=20
-> > Yes, normally close md123 should drop that last reference. =20
-> >> =20
-> >>> Now that you can reporduce this problem 99%, can you dig deeper and f=
-ind
-> >>> out what is wrong? =20
-> >>
-> >> Yes, working on it!
-> >>
-> >> My first idea was that mddev_get and mddev_put are missing on=20
-> >> md_ioctl() path
-> >> but it doesn't help for the issue. My motivation here was that=20
-> >> md_attr_store and
-> >> md_attr_show are using them.
-> >>
-> >> Systemd regenerates list of MD arrays on every loop and it is always
-> >> there, systemd is able to open file descriptor (maybe inactive?). =20
-> >=20
-> > md123 should not be opended again, ioctl(STOP_ARRAY) already set the
-> > flag 'MD_CLOSING' to prevent that. Are you sure that systemd-shutdown do
-> > open and close the array in each loop? =20
->=20
-> I realized that I'm wrong here. 'MD_CLOSING' is cleared before ioctl
-> return by commit 065e519e71b2 ("md: MD_CLOSING needs to be cleared after
-> called md_set_readonly or do_md_stop").
->=20
-> I'm confused here, commit message said 'MD_CLOSING' shold not be set for
-> the case STOP_ARRAY_RO, but I don't understand why it's cleared for
-> STOP_ARRAY as well.
->=20
-Not related with your findings but:
-
-I replaced if (!atomic_dec_and_lock(&mddev->active, &all_mddevs_lock))
-because that is the way to exit without queuing work:
-
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 0fe7ab6e8ab9..80bd7446be94 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -618,8 +618,7 @@ static void mddev_delayed_delete(struct work_struct *ws=
-);
-
-=20
-
-void mddev_put(struct mddev *mddev)
-{
--       if (!atomic_dec_and_lock(&mddev->active, &all_mddevs_lock))
--               return;
-+       spin_lock(&all_mddevs_lock);
-        if (!mddev->raid_disks && list_empty(&mddev->disks) &&
-            mddev->ctime =3D=3D 0 && !mddev->hold_active) {
-                /* Array is not configured at all, and not held active,
-@@ -634,6 +633,7 @@ void mddev_put(struct mddev *mddev)
-                INIT_WORK(&mddev->del_work, mddev_delayed_delete);
-                queue_work(md_misc_wq, &mddev->del_work);
-        }
-+       atomic_dec(&mddev->active);
-        spin_unlock(&all_mddevs_lock);
-}
-
-After that I got kernel panic but it seems that workqueue is scheduled:
-
- 51.535103] BUG: kernel NULL pointer dereference, address: 0000000000000008
-[   51.539115] ------------[ cut here ]------------
-[   51.543867] #PF: supervisor read access in kernel mode
-1;[3 9 m S5t1a.r5tPF: error_code(0x0000) - not-present page
-[   51.543875] PGD 0 P4D 0
-.k[ 0 m5.1
- 54ops: 0000 [#1] PREEMPT SMP NOPTI
-[   51.552207] refcount_t: underflow; use-after-free.
-[   51.556820] CPU: 19 PID: 368 Comm: kworker/19:1 Not tainted 6.5.0+ #57
-[   51.556825] Hardware name: Intel Corporation WilsonCity/WilsonCity, BIOS
-WLYDCRB1.SYS.0027.P82.2204080829 04/08/2022 [   51.561979] WARNING: CPU: 26
-PID: 376 at lib/refcount.c:28 refcount_warn_saturate+0x99/0xe0 [   51.56727=
-3]
-Workqueue:  mddev_delayed_delete [md_mod] [   51.569822] Modules linked in:
-[   51.574351]  (events)
-[   51.574353] RIP: 0010:process_one_work+0x10f/0x3d0
-[   51.579155]  configfs
-
-In my case, it seems to be IMSM container device is stopped in loop, which =
-is an
-inactive from the start. It is not something I'm totally sure but it could =
-lead
-us to the root cause. So far I know, the original reported uses IMSM arrays=
- too.
+On 2023-09-07 01:01, Petr Oros wrote:
+> Ahmed Zaki píše v St 06. 09. 2023 v 09:32 -0600:
+>> On 2023-09-06 08:14, Petr Oros wrote:
+>>> Add helper for set iavf aq request AVF_FLAG_AQ_* and imediately
+>>> schedule watchdog_task. Helper will be used in cases where it is
+>>> necessary to run aq requests asap
+>>>
+>>> Signed-off-by: Petr Oros <poros@redhat.com>
+>>> Co-developed-by: Michal Schmidt <mschmidt@redhat.com>
+>>> Signed-off-by: Michal Schmidt <mschmidt@redhat.com>
+>>> Co-developed-by: Ivan Vecera <ivecera@redhat.com>
+>>> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+>>> ---
+>>>    drivers/net/ethernet/intel/iavf/iavf.h         |  2 +-
+>>>    drivers/net/ethernet/intel/iavf/iavf_ethtool.c |  2 +-
+>>>    drivers/net/ethernet/intel/iavf/iavf_main.c    | 10 ++++------
+>>>    3 files changed, 6 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/drivers/net/ethernet/intel/iavf/iavf.h
+>>> b/drivers/net/ethernet/intel/iavf/iavf.h
+>>> index 85fba85fbb232b..e110ba3461857b 100644
+>>> --- a/drivers/net/ethernet/intel/iavf/iavf.h
+>>> +++ b/drivers/net/ethernet/intel/iavf/iavf.h
+>>> @@ -521,7 +521,7 @@ void iavf_down(struct iavf_adapter *adapter);
+>>>    int iavf_process_config(struct iavf_adapter *adapter);
+>>>    int iavf_parse_vf_resource_msg(struct iavf_adapter *adapter);
+>>>    void iavf_schedule_reset(struct iavf_adapter *adapter, u64
+>>> flags);
+>>> -void iavf_schedule_request_stats(struct iavf_adapter *adapter);
+>>> +void iavf_schedule_aq_request(struct iavf_adapter *adapter, u64
+>>> flags);
+>>>    void iavf_schedule_finish_config(struct iavf_adapter *adapter);
+>>>    void iavf_reset(struct iavf_adapter *adapter);
+>>>    void iavf_set_ethtool_ops(struct net_device *netdev);
+>>> diff --git a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
+>>> b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
+>>> index a34303ad057d00..90397293525f71 100644
+>>> --- a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
+>>> +++ b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
+>>> @@ -362,7 +362,7 @@ static void iavf_get_ethtool_stats(struct
+>>> net_device *netdev,
+>>>          unsigned int i;
+>>>    
+>>>          /* Explicitly request stats refresh */
+>>> -       iavf_schedule_request_stats(adapter);
+>>> +       iavf_schedule_aq_request(adapter,
+>>> IAVF_FLAG_AQ_REQUEST_STATS);
+>>>    
+>>>          iavf_add_ethtool_stats(&data, adapter,
+>>> iavf_gstrings_stats);
+>>>    
+>>> diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c
+>>> b/drivers/net/ethernet/intel/iavf/iavf_main.c
+>>> index 7b300c86ceda73..86d472dfdbc10c 100644
+>>> --- a/drivers/net/ethernet/intel/iavf/iavf_main.c
+>>> +++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
+>>> @@ -314,15 +314,13 @@ void iavf_schedule_reset(struct iavf_adapter
+>>> *adapter, u64 flags)
+>>>    }
+>>>    
+>>>    /**
+>>> - * iavf_schedule_request_stats - Set the flags and schedule
+>>> statistics request
+>>> + * iavf_schedule_aq_request - Set the flags and schedule aq
+>>> request
+>>>     * @adapter: board private structure
+>>> - *
+>>> - * Sets IAVF_FLAG_AQ_REQUEST_STATS flag so iavf_watchdog_task()
+>>> will explicitly
+>>> - * request and refresh ethtool stats
+>>> + * @flags: requested aq flags
+>>>     **/
+>>> -void iavf_schedule_request_stats(struct iavf_adapter *adapter)
+>>> +void iavf_schedule_aq_request(struct iavf_adapter *adapter, u64
+>>> flags)
+>>>    {
+>>> -       adapter->aq_required |= IAVF_FLAG_AQ_REQUEST_STATS;
+>>> +       adapter->aq_required |= flags;
+>>>          mod_delayed_work(adapter->wq, &adapter->watchdog_task, 0);
+>>>    }
+>>>    
+>> There are other places where the helper can be used without
+>> functional
+>> changes, e.g. iavf_add_fdir_ethtool() , iavf_replace_primary_mac()
+>> and
+>> couple of other places. In all of them, mod_delayed_work() is called
+>> after setting the AQ flag. For the sake of consistency, can you use
+>> the
+>> helper there too?
+> These two commits is fixes for issue -> net. But on
+> iavf_add_fdir_ethtool and iavf_replace_primary_mac is mod_delayed_work
+> called after spin_unlock_bh ->
+> looks like no functional chages but i would like be sure and better
+> will send this to net-next. Are you ok with this?
+>
+It is usually better to use the helper in the same commit that 
+introduces it, but no problem. I am OK with sending this later to next.
 
 Thanks,
-Mariusz
+
+Ahmed
+
+
