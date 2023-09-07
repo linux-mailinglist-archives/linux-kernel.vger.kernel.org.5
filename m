@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 830B67977E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC63F7976FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241720AbjIGQgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44392 "EHLO
+        id S239685AbjIGQTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240717AbjIGQgg (ORCPT
+        with ESMTP id S229963AbjIGQRb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:36:36 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE824C05
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:40:06 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99bcf2de59cso137004166b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:40:06 -0700 (PDT)
+        Thu, 7 Sep 2023 12:17:31 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ADE53584
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:56:34 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bcc846fed0so19433321fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:56:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694101154; x=1694705954; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694102124; x=1694706924; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=y7Y6zFmhlb8oBiHulr6SNzDGIOTaQJEEOwxmUItsSBI=;
-        b=BB4CXCsm1cyjr7swlhzgTBgZ8tMTjP42yfWIv2+pjHkw8Oi/hWhaELGnnp9s6hM1ob
-         p00Xwnv3wCFxdpHfUezFYuxtGXGNeXrmvLjfFoxQD2DpmzE6XWk5pkDD059RtRfgkt3s
-         6cV0DxGVZzBd18mRF/8MF4LLwIPNkpdt9mm4BQDMB+BkuwC+S4QgBtqOmmunO6wJjFC8
-         RluLVYiiXhTbOiyjd+jmqCy4Wg5N2iesL6zRoB2nlHMyKS1stQaA5qBSnI2s5xKyPyhe
-         qQhaEHozTz1UqNGSewfvvscBrWbwbOGqeBVkVkMKUX0p+/sdcUhr5bUhTPOlLCW6aKGV
-         rbTQ==
+        bh=vpHIUYmzApKmGGiHZZpnMSxi31KSn/xZKBPfgME94EA=;
+        b=DqymKHAEv9IZOuCrbcaO5LZ4elHJIgrHqbzN9Q1y1ibxxJMnZOuW1ymNVtQO49pCYM
+         i/Sam3SpXeyqfzF9QKboGp1Ct4eWhbtHP4efhlrKN3DoIJ7f2ZWLpXS+aGzRRCNxD3tq
+         10xexlEgbiYIm344ck/iSGvW94DL2m4JBc3nUDTrKI+FMD45ybf+rdpVXHIxcrjNqTsf
+         PuVNeX+TX8jNJLWeClgtKjsashGx4isCmTY6zyXAOKMKpDhNLkO3cHGuL+sMWa2HTu4p
+         B4rKC53IMqwrIqmFfAh7/a9SvVM9nz81GIXAa5/+YPJbesakju2FV3MpZwtf+CfWqVDE
+         y9Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694101154; x=1694705954;
+        d=1e100.net; s=20221208; t=1694102124; x=1694706924;
         h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y7Y6zFmhlb8oBiHulr6SNzDGIOTaQJEEOwxmUItsSBI=;
-        b=RZeWvWa5JudSdqZFjkLUqcfJZnPwH51/e3FzrDRqZ90D637tdbniyriV6AMhJOeeW3
-         QBlpY26oqOfpPCbV0u8EQIYf0WMQUhBSt+yBnYWaYv6lkKWGz8EehYQpwQxp9b8ajrEU
-         Sp8NCcPuNCuzUpJvPxrtAuGcBHRAFWsRuBEAl0Ru4cFkV8RiD8etEZNFiGiEAN9IdUFs
-         M878KFcol+tkC/jhhkEwJP0B3TXHqMAgWxsqzYyvZuuWP6Tfqk+7l/YsOkcraHV8u0q9
-         QhMGSKdHY98zeFdbSy64f5guWmpHXLK435pEU189cPImcZoqDW3U94/9jqaGsV5cCOFH
-         a3yA==
-X-Gm-Message-State: AOJu0YyWT02jkXSd504KOtFH4PZMUUVE8l7xGA/kIhv62v/+6ECoUS2Z
-        CT2BaMwh4Wu+b+XptqtkGCED0Y8mLlncA3fboWU=
-X-Google-Smtp-Source: AGHT+IEKmnSNSlUtiCWpMx5epfLO+Rm4w2bJrzAa6Be3omHD0KXp967h3WlCKIuq9OnSAsdvXE+3AA==
-X-Received: by 2002:a05:6402:3c2:b0:522:2dcc:afb6 with SMTP id t2-20020a05640203c200b005222dccafb6mr3798766edw.7.1694066597001;
-        Wed, 06 Sep 2023 23:03:17 -0700 (PDT)
+        bh=vpHIUYmzApKmGGiHZZpnMSxi31KSn/xZKBPfgME94EA=;
+        b=eUzck87C0Z20RkGrHJuBgfGfK6rPoyTFzCpyjb3nb0SVMtiHawSvaR7iMCHA0si/iP
+         MQEQmNhxxmKzXFSleOKYsUA2nt8eJjvfh2QiCUbIs1Kmixjbwh4rYuJ58z6tu6OeW8Bl
+         /p3K+9VdpOm8R7muYFVsW0qT+j8XuS/4I0ZrBuerd1tFRveQ/Cj05KkvU+gM6oEIOFLW
+         1BEnWMCP8s+VB/5vHPwo3tkFBUvTUTO5X37fyio0Ac2g0T9cwveFHVKRX6XVoVCLGByy
+         XZ30iTCC1ksul9I/IHpROK0Mtp3gX3dODfWpmTRntMLUmuNLYC++CwwH/1nQhHAqaEMp
+         qQzg==
+X-Gm-Message-State: AOJu0YyePTsZeHhzW7fGHroAaJqpny7/qFgooHv8DcpzuO5jHJOANA2c
+        td1I5HpB9QJ1Ioda3PfZb4Uk5yXaCFpNinn+hfcLQQ==
+X-Google-Smtp-Source: AGHT+IE6rP7AS4FnGxp/huXUuWImGW5DpdIfQDtTj/sIRkZFOXfhElTxhQiu10RgpaNZRjIoSI51Qg==
+X-Received: by 2002:a17:906:5c:b0:9a5:db06:4264 with SMTP id 28-20020a170906005c00b009a5db064264mr3607933ejg.72.1694066638936;
+        Wed, 06 Sep 2023 23:03:58 -0700 (PDT)
 Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id t3-20020aa7d4c3000000b0051bed21a635sm9237337edr.74.2023.09.06.23.03.15
+        by smtp.gmail.com with ESMTPSA id g2-20020a1709064e4200b009a5f7fb51d5sm9928020ejw.21.2023.09.06.23.03.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 23:03:16 -0700 (PDT)
-Message-ID: <3f68d3bf-3273-2339-ea41-3362ced3c91b@linaro.org>
-Date:   Thu, 7 Sep 2023 08:03:14 +0200
+        Wed, 06 Sep 2023 23:03:58 -0700 (PDT)
+Message-ID: <4f882fa1-8174-2816-71c4-a2941372aa19@linaro.org>
+Date:   Thu, 7 Sep 2023 08:03:56 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH v1 05/10] dt-bindings: cpufreq: qcom-cpufreq-nvmem:
- document IPQ5332
+Subject: Re: [PATCH v1 10/10] arm64: dts: qcom: ipq9574: populate the opp
+ table based on the eFuse
 Content-Language: en-US
 To:     Varadarajan Narayanan <quic_varada@quicinc.com>,
         ilia.lin@kernel.org, agross@kernel.org, andersson@kernel.org,
@@ -68,9 +68,9 @@ To:     Varadarajan Narayanan <quic_varada@quicinc.com>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
 References: <cover.1693996662.git.quic_varada@quicinc.com>
- <8fe23b5401362e214078648926a00f7ceefaa542.1693996662.git.quic_varada@quicinc.com>
+ <1512a94f8fe1f8fe22cef2bf8498a6ac27989633.1693996662.git.quic_varada@quicinc.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <8fe23b5401362e214078648926a00f7ceefaa542.1693996662.git.quic_varada@quicinc.com>
+In-Reply-To: <1512a94f8fe1f8fe22cef2bf8498a6ac27989633.1693996662.git.quic_varada@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,12 +84,24 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 07/09/2023 07:21, Varadarajan Narayanan wrote:
-> Document IPQ5332 compatible for Qcom NVMEM CPUFreq driver.
+> IPQ95xx SoCs have different OPPs available for the CPU based on
+> SoC variant. This can be determined from an eFuse register
+> present in the silicon.
 > 
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> ---
+> Add support to read the eFuse and populate the OPPs based on it.
+> 
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+...
+
+>  	};
+> @@ -223,6 +254,11 @@
+>  			reg = <0x000a4000 0x5a1>;
+>  			#address-cells = <1>;
+>  			#size-cells = <1>;
+> +
+> +			cpu_speed_bin: cpu_speed_bin@15 {
+
+No underscores in node names
 
 Best regards,
 Krzysztof
