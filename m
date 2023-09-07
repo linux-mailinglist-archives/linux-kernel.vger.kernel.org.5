@@ -2,314 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C011679740D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F91C797357
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344689AbjIGPdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:33:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
+        id S235404AbjIGPXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343770AbjIGPbN (ORCPT
+        with ESMTP id S231245AbjIGPVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:31:13 -0400
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on0614.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe1f::614])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B711FD8;
-        Thu,  7 Sep 2023 08:30:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A8ofcB2wNNgHWX+O2UA4tvi2/D0CjMCmU3sxhIXfhXo3EC5073LWEWHOZHvHo1nN5ccKNtYYEUZvUnAplWyqxrKJNblMPM6BhF4Q/fbQLDczhcyoJw8FJrtUDmUi7fKB6WZDpx5NLxRXETFnFx2gpLrw24Q/QfU0f3V9Twug7obejG0/PhEA0YA4qkP5I9DXEoZo7vN/mKUUtFdqEyITN16WX4mkZxP10UBsfbiBeJBGz2IQ4Krj3VlcwMICGZjw6SZnkN7wPl8kqNx8r8gVUq1QzGss0hMDRORo2VfgIF6HaPw9Kjwd69PdxOP4ekUL6THPfLgDBt3xi0LnAHNkFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cR9unmMY1PvkRy8NUmpdnm4mle/Uwv67QLUUL3khaUM=;
- b=Kt81S4Mua379ObNDApzaqOMjhi0M/nHa0ns4XSz4FhXTVklT4t6TYPazz/AU51MRzr3rwOjxPZlbtDlaXPwA4fC2DRdKIIk6n4I1J0qIlrLsfRRM7T60C6GFaik7YYvGkiEbITfVr/NFzpDu021aH10VHAFYj3hAtLet3dwAD+5XSDNnqryNJ8ixhsqy8BkpQT408W4VJ4wEeLxidZeUyzn+mpwtU2Q1lwJl3sApJ/VBc3r/RplVuN0i7c1cZAyYwQrVEmEhUi2BMPd9SG1uNKAXvDpcPg98Kt8dQAtzvWKxvLckEAwMwKt0W3CVMhnRh+aaB5CmSnBny7DDlfL1Ig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cR9unmMY1PvkRy8NUmpdnm4mle/Uwv67QLUUL3khaUM=;
- b=Jky38k6fGjI6Nmts3LBMEVV45I2ZMguo91eHc/U8DOLE2IW4gR5x63crzX1tLNAHAAbJYbLnIfrRlRO9Ox2zM+HKb59zjKQxFwy9jdLO+DDbZy6yKcu0cZFSFrJXGTCDmwaMyFRGDRVX02fXBHmBu2ZAi0xbc4E3Xs38qQ3d7dpnweMVuIaCz8RETiOhdeW1/o5/9gipSXi0fEVRISFvS5Z0s86+7WNxbunzv4c+PPL/1UJ3oOF8fzDxUkWfxu6KGOm2507fY9zIFytARqPhXWPu64L+zMiUv/MXchZ00N/f6dl4DM4hmliZpl3TJXZosvFbITXke+Fh47TiO0uL1w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
- by DB9PR04MB9645.eurprd04.prod.outlook.com (2603:10a6:10:309::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Thu, 7 Sep
- 2023 12:45:38 +0000
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::274c:c30b:ac8c:2361]) by PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::274c:c30b:ac8c:2361%2]) with mapi id 15.20.6745.034; Thu, 7 Sep 2023
- 12:45:38 +0000
-Message-ID: <7523faad-23f0-2fcb-30e3-b0207d71e63f@suse.com>
-Date:   Thu, 7 Sep 2023 15:45:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Kai Huang <kai.huang@intel.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     x86@kernel.org, dave.hansen@intel.com,
-        kirill.shutemov@linux.intel.com, tony.luck@intel.com,
-        peterz@infradead.org, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
-        pbonzini@redhat.com, david@redhat.com, dan.j.williams@intel.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        reinette.chatre@intel.com, len.brown@intel.com, ak@linux.intel.com,
-        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, bagasdotme@gmail.com,
-        sagis@google.com, imammedo@redhat.com
-References: <cover.1692962263.git.kai.huang@intel.com>
- <3b9ddfb377a944393b2a93f963cd902232a5ee33.1692962263.git.kai.huang@intel.com>
-From:   Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [PATCH v13 06/22] x86/virt/tdx: Add SEAMCALL error printing for
- module initialization
-In-Reply-To: <3b9ddfb377a944393b2a93f963cd902232a5ee33.1692962263.git.kai.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: VI1PR04CA0074.eurprd04.prod.outlook.com
- (2603:10a6:802:2::45) To PA4PR04MB7790.eurprd04.prod.outlook.com
- (2603:10a6:102:cc::8)
+        Thu, 7 Sep 2023 11:21:44 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031E3121;
+        Thu,  7 Sep 2023 08:21:18 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RhK182Bwhz4f3pCG;
+        Thu,  7 Sep 2023 20:53:32 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgDHVqnLx_lk6IRbCg--.35707S3;
+        Thu, 07 Sep 2023 20:53:32 +0800 (CST)
+Subject: Re: Infiniate systemd loop when power off the machine with multiple
+ MD RAIDs
+To:     Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>,
+        Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     AceLan Kao <acelan@gmail.com>, Song Liu <song@kernel.org>,
+        Guoqing Jiang <guoqing.jiang@linux.dev>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux RAID <linux-raid@vger.kernel.org>,
+        "yangerkun@huawei.com" <yangerkun@huawei.com>,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
+ <CAMz9Wg8KE1rDkSaQnUTJ5ikzH7YGGYbkLM3AcrVue3=JgK+14w@mail.gmail.com>
+ <35130b3f-c0fd-e2d6-e849-a5ceb6a2895f@linux.dev>
+ <CAMz9Wg_zKSJ2vL=r2zAtLBOv4GSMT63+ZQGXfYTjVJsE+DLQGA@mail.gmail.com>
+ <CAPhsuW6W0XgFjH1zNC+EFYjujd4smEiWs+-nYCWQ+KaFmbuvkg@mail.gmail.com>
+ <CAMz9Wg9y52iuxJRSQFC2N5Katt72v-o=JvEjegJt-MwORmw9tQ@mail.gmail.com>
+ <CAPhsuW7XEy4q3XR389F7CUvXvJ=0JR0QkMOr4LU03avT0erAfg@mail.gmail.com>
+ <354004ce-ad4e-5ad5-8fe6-303216647e0c@huaweicloud.com>
+ <03b79ab0-0bb0-ac29-4a70-37d902f9a05b@huaweicloud.com>
+ <20230831085057.00001795@linux.intel.com>
+ <CAMz9Wg8bhCG=qSLia943dwr=LV7Kum=bZPq2s_2coV6a_bmDeA@mail.gmail.com>
+ <20230906122751.00001e5b@linux.intel.com>
+ <43b0b2f4-17c0-61d2-9c41-0595fb6f2efc@huaweicloud.com>
+ <20230907121819.00005a15@linux.intel.com>
+ <cffca94f-5729-622d-9327-632b3ff2891a@huaweicloud.com>
+ <3e7edf0c-cadd-59b0-4e10-dffdb86b93b7@huaweicloud.com>
+ <20230907144153.00002492@linux.intel.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <513ea05e-cc2e-e0c8-43cc-6636b0631cdf@huaweicloud.com>
+Date:   Thu, 7 Sep 2023 20:53:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|DB9PR04MB9645:EE_
-X-MS-Office365-Filtering-Correlation-Id: d8960e50-0fcf-43ad-37b5-08dbafa055f8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zDaQW83YkI/Itjzo5t3B+oiC3zrSP5Af8qKTrb/HKuKqr2wEnwM3/hWCq2wf05GFv5B6qTBjuH78BcJEnPj20msv3lvdw5AL+961GdB+Kwa2JriI2kF05Pn1ioazyzM0JWdY26HEnxE9Vbx+nldxBsHUK1jYuJscnmFr8JQqVEuaG6Pb8Ek3OYCQntjrWbxZZP110fJKU50DMLZKiSUNEmYeDHac4/CUrjVZfdoULvsGUnF33mTiS3LTyktfy2i720NBqSe2YQwhYFNmB4QlYMa02CeK+eoQ9DcH7J+VKU/XSghVdpgigmWBC+hyTkAljRhDmNWT/rZnafNKkwXbVIlGG1QywF9lv8Kz0hb154Bn0jlSef2qyq7lJsQ/lhFum/p316WY14zPkKMyr2WXYx6CAqyuYdWD3sJSPDJ9hPAijdjYgJsRmyCX9lireiTVdWEHe0jaV8jSSAadcpRjwaovWeLBMIJJHR0rFYZuP5FifmnSJwW0apBadjfvYF8JANBo1yW17Px/tH2QqZutVJ/i+0kALMh/xUrxLBrgWdLFF1TdsJjc5Bg0P83T7Sb0H7QAzDjxnDC9uWSXDPSqpHRfR56PHVMjgMpNpu48Xx4Ema80sbtiBByIerRWJ0C7uLrDbskNh33m8EQRBncjvw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(346002)(376002)(39860400002)(451199024)(1800799009)(186009)(6506007)(478600001)(6486002)(86362001)(26005)(31696002)(5660300002)(6512007)(83380400001)(31686004)(6666004)(2906002)(38100700002)(66556008)(36756003)(2616005)(316002)(66476007)(66946007)(8676002)(4326008)(8936002)(41300700001)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QTA3b2h2STVEaU0rTk5OV3FtclB5L2VtdExVOGU5R0JBNEE0ZHRVV0dvZlJo?=
- =?utf-8?B?WnMrN01tSmFEWmFOT2U0dVpvVzJ0ZUZzL1hzUmlHcE5BK1JMMitUVHhiY2NH?=
- =?utf-8?B?aVNLaEVVS3VmM0ZlZXd6WmZiZTVDbkJ4QU4zbDlLbHBXM2tPSUJiYVErdGxs?=
- =?utf-8?B?RnlPYWY4Y2hjMTR2T2lqSS94aWdWbkJQRGxrR2xFeUhZMnFLVVoya3RaYldx?=
- =?utf-8?B?RFNtejVLQTZsQVkzQzVzOVZoMC9ObW5BYUZzRmliTWdtT3lmWHpiR3NZd0tl?=
- =?utf-8?B?UThLbGwyMjNCclkzQ1lsSnhSNXRSWUt6NzU3N2J1Mml1NkhaaWVVR2VzTys0?=
- =?utf-8?B?NnBYVUNNUkVtTm84Q0xnL09uZ2xMZURqSTlNWGNhMklIVXBoSmF2ZkpDbFJt?=
- =?utf-8?B?NFFaZ0NrRmJSdkRFR1VGT2g3NTlieU0wMUFhOXdsbmZ5Tkw3cXU2UmZVNGMy?=
- =?utf-8?B?S0FCSEhOYzZxRnhBcG4rb014V2JjR09rVG5hQWxYUCt2elJSUGg5N2lMODFR?=
- =?utf-8?B?RWkvblcvNHNLZStVTGl5UGdxUVA2RUxOamx5Tmhoa01rVXdBdjZic0N5Si9I?=
- =?utf-8?B?S2lLdGNkSEl1cWlKcW5xQ0tQenJVTStDNXhCY0VPcUp1MDRxbzJhUDBmRDBG?=
- =?utf-8?B?QmpTTHR5MWNDcmtnUHhCQkNPK1NicG44OGlKd0F6QzZjMVQ0d0RhWXVHa0w1?=
- =?utf-8?B?TXBPM0I3Rk0wVEZOKzJwOGl2dTZVN2VjeEpFNERBTzRYZkFReVlEYlY4VDR0?=
- =?utf-8?B?OEhQdmg0SWJyVng4Z3BHbVlMYzJPaG9kTUo1SUFDNVdNSXoyejduaStRSXpH?=
- =?utf-8?B?UDFYR3EydHkvVW5pamtXMzRxc3dHSjVDOCtFRnNxTXhpTUFCazh5b1EvYUxv?=
- =?utf-8?B?Y2ZLWjlrNzBuNk9NNnA2UEg4cjJBSThSaEg1cHhDWTNHUE1zMCt3NmdzREgy?=
- =?utf-8?B?bmpYTWxtMmFjaExYT2gzRGJ2YWF5b2ZSQXZFZUNuZzJxZW85Q3k0VXMrY0l1?=
- =?utf-8?B?OGxkMklWVjhybHd0ZkxtTWJ3ZXhuenY5Sk9adFB5MWwveXI5cjl3dTF0VmNz?=
- =?utf-8?B?WTlBa3RkNzNTUExoY0ExdlJEN09IOXRQYjFteXdDVHdqMVFXZjRTQy9SUGtF?=
- =?utf-8?B?NXJFdUlTTkZrRWhHOWRTY2dzRytOZW51cVRleThGMWtDbC9IZmZCSXNPdWxD?=
- =?utf-8?B?amJkT0cwYVUvWEp6elNZUnRBbzFvZ1UrQVN1NVhqeFo1bmVycUFXNTlqRk9n?=
- =?utf-8?B?MTZSY1hZUnEyZUFUbTJzL1dpWk16a3V0WGxsY0VaSWc3R0NqeWpiRXVvVDA1?=
- =?utf-8?B?V0Z0Si9nWndiQ0hFbmIrY2FQUnJVUDMwWlorS0JVVTkxVit5U21qTStYOXNX?=
- =?utf-8?B?aFBEVXEyamYvZGx1MGNOa04rV1piNkZLUHcwcExCZ0ZkZnJ3eHdBV3gzV2hB?=
- =?utf-8?B?NjdZemhTUmc2Z3lsMzJ6bmtWbysxUDJmdFFFK0tWVXM4N3ZXUVZGZXE0bVRp?=
- =?utf-8?B?bFlwbENveXZsS0ZnMGdXZmxuaTArbkl1VjRzSVBOWFhMdFVIYzlxb3RjYTV0?=
- =?utf-8?B?UGVqN3RxU001aTBVdjJrbUJTdnEyN1JqRW9uQU5DTUVqK3RQdlFIRXNxK2dI?=
- =?utf-8?B?NTFiYmdCQmFPL1FxenRlZk40ejF0Wjl4RHUxcWl3Mm9oa0t0MUxKZkFLbEZv?=
- =?utf-8?B?N3p4T0dMZ2s2allraCtZaUEvRlVGQXB0WXdnSWF4QWZVNWd5V2wwTGpveGdn?=
- =?utf-8?B?cXJCa2J1cnZyNFd6d2VPVEFpL0J6TmdydkgvOTJrbXViTDVaeWJLN252cEhx?=
- =?utf-8?B?UWRDcTJhbXNOWkl0bktDOCtpeGVxeVlzSG9qckp0NnRDOGRtZ28xWldPSHJT?=
- =?utf-8?B?U2txSDVVbzc4VzYzYjNXdlJncGtWS3BMdG1QL3dKUXJ1MzRaN0c4dlV2MmJn?=
- =?utf-8?B?S3NyejRLb2tPNXJuM2hSVjhZU0x3RWtWMzJkc0k3aW84UWI3UEpYMDZkWkky?=
- =?utf-8?B?dzhBSE44NlN2WjZxYUdMbElzQ2VRQSt1MGhzLzBHZ0tGKzBBYjBBNHdvYTRz?=
- =?utf-8?B?eHMyUEJMenZISERxZVlBTjFUOTNab1lySUNSVStXV0VjbmRaaEQ2U2JEUW5I?=
- =?utf-8?Q?ZBAXR7uWGbt7kkozFKj+JoI4s?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8960e50-0fcf-43ad-37b5-08dbafa055f8
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 12:45:37.7461
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1v7kBG8N4Z37dpmmDMHU2+zaF9OuApkDphKALD+6RUO61zNgADlOZ4zDU0wdsdxbl2N5M20CyCh9iW2NjP9B4g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9645
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230907144153.00002492@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgDHVqnLx_lk6IRbCg--.35707S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxtF15Xr13Ww1UGF18try8AFb_yoWfXFy5pF
+        W8JF4YkrWUGw18Jw4jqw1UXa45twnFyayDXry3Jas3A34vyryjgw15Xr4j9ryDGr4rCr1j
+        qw1UtF47Zr1UtwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3
+        Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+        sGvfC2KfnxnUUI43ZEXa7VUb0D73UUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.5 required=5.0 tests=NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+在 2023/09/07 20:41, Mariusz Tkaczyk 写道:
+> On Thu, 7 Sep 2023 20:14:03 +0800
+> Yu Kuai <yukuai1@huaweicloud.com> wrote:
+> 
+>> Hi,
+>>
+>> 在 2023/09/07 19:26, Yu Kuai 写道:
+>>> Hi,
+>>>
+>>> 在 2023/09/07 18:18, Mariusz Tkaczyk 写道:
+>>>> On Thu, 7 Sep 2023 10:04:11 +0800
+>>>> Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>>>   
+>>>>> Hi,
+>>>>>
+>>>>> 在 2023/09/06 18:27, Mariusz Tkaczyk 写道:
+>>>>>> On Wed, 6 Sep 2023 14:26:30 +0800
+>>>>>> AceLan Kao <acelan@gmail.com> wrote:
+>>>>>>>    From previous testing, I don't think it's an issue in systemd, so I
+>>>>>>> did a simple test and found the issue is gone.
+>>>>>>> You only need to add a small delay in md_release(), then the issue
+>>>>>>> can't be reproduced.
+>>>>>>>
+>>>>>>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>>>>>>> index 78be7811a89f..ef47e34c1af5 100644
+>>>>>>> --- a/drivers/md/md.c
+>>>>>>> +++ b/drivers/md/md.c
+>>>>>>> @@ -7805,6 +7805,7 @@ static void md_release(struct gendisk *disk)
+>>>>>>> {
+>>>>>>>           struct mddev *mddev = disk->private_data;
+>>>>>>>
+>>>>>>> +       msleep(10);
+>>>>>>>           BUG_ON(!mddev);
+>>>>>>>           atomic_dec(&mddev->openers);
+>>>>>>>           mddev_put(mddev);
+>>>>>>
+>>>>>> I have repro and I tested it on my setup. It is not working for me.
+>>>>>> My setup could be more "advanced" to maximalize chance of reproduction:
+>>>>>>
+>>>>>> # cat /proc/mdstat
+>>>>>> Personalities : [raid1] [raid6] [raid5] [raid4] [raid10] [raid0]
+>>>>>> md121 : active raid0 nvme2n1[1] nvme5n1[0]
+>>>>>>          7126394880 blocks super external:/md127/0 128k chunks
+>>>>>>
+>>>>>> md122 : active raid10 nvme6n1[3] nvme4n1[2] nvme1n1[1] nvme7n1[0]
+>>>>>>          104857600 blocks super external:/md126/0 64K chunks 2
+>>>>>> near-copies
+>>>>>> [4/4] [UUUU]
+>>>>>>
+>>>>>> md123 : active raid5 nvme6n1[3] nvme4n1[2] nvme1n1[1] nvme7n1[0]
+>>>>>>          2655765504 blocks super external:/md126/1 level 5, 32k chunk,
+>>>>>> algorithm 0 [4/4] [UUUU]
+>>>>>>
+>>>>>> md124 : active raid1 nvme0n1[1] nvme3n1[0]
+>>>>>>          99614720 blocks super external:/md125/0 [2/2] [UU]
+>>>>>>
+>>>>>> md125 : inactive nvme3n1[1](S) nvme0n1[0](S)
+>>>>>>          10402 blocks super external:imsm
+>>>>>>
+>>>>>> md126 : inactive nvme7n1[3](S) nvme1n1[2](S) nvme6n1[1](S)
+>>>>>> nvme4n1[0](S)
+>>>>>>          20043 blocks super external:imsm
+>>>>>>
+>>>>>> md127 : inactive nvme2n1[1](S) nvme5n1[0](S)
+>>>>>>          10402 blocks super external:imsm
+>>>>>>
+>>>>>> I have almost 99% repro ratio, slowly moving forward..
+>>>>>>
+>>>>>> It is endless loop because systemd-shutdown sends ioctl "stop_array"
+>>>>>> which
+>>>>>> is successful but array is not stopped. For that reason it sets
+>>>>>> "changed =
+>>>>>> true".
+>>>>>
+>>>>> How does systemd-shutdown judge if array is stopped? cat /proc/mdstat or
+>>>>> ls /dev/md* or other way?
+>>>>
+>>>> Hi Yu,
+>>>>
+>>>> It trusts return result, I confirmed that 0 is returned.
+>>>> The most weird is we are returning 0 but array is still there, and it is
+>>>> stopped again in next systemd loop. I don't understand why yet..
+>>>>   
+>>>>>> Systemd-shutdown see the change and retries to check if there is
+>>>>>> something
+>>>>>> else which can be stopped now, and again, again...
+>>>>>>
+>>>>>> I will check what is returned first, it could be 0 or it could be
+>>>>>> positive
+>>>>>> errno (nit?) because systemd cares "if(r < 0)".
+>>>>>
+>>>>> I do noticed that there are lots of log about md123 stopped:
+>>>>>
+>>>>> [ 1371.834034] md122:systemd-shutdow bd_prepare_to_claim return -16
+>>>>> [ 1371.840294] md122:systemd-shutdow blkdev_get_by_dev return -16
+>>>>> [ 1371.846845] md: md123 stopped.
+>>>>> [ 1371.850155] md122:systemd-shutdow bd_prepare_to_claim return -16
+>>>>> [ 1371.856411] md122:systemd-shutdow blkdev_get_by_dev return -16
+>>>>> [ 1371.862941] md: md123 stopped.
+>>>>>
+>>>>> And md_ioctl->do_md_stop doesn't have error path after printing this
+>>>>> log, hence 0 will be returned to user.
+>>>>>
+>>>>> The normal case is that:
+>>>>>
+>>>>> open md123
+>>>>> ioctl STOP_ARRAY -> all rdev should be removed from array
+>>>>> close md123 -> mddev will finally be freed by:
+>>>>>      md_release
+>>>>>       mddev_put
+>>>>>        set_bit(MD_DELETED, &mddev->flags) -> user shound not see this
+>>>>> mddev
+>>>>>        queue_work(md_misc_wq, &mddev->del_work)
+>>>>>
+>>>>>      mddev_delayed_delete
+>>>>>       kobject_put(&mddev->kobj)
+>>>>>
+>>>>>      md_kobj_release
+>>>>>       del_gendisk
+>>>>>        md_free_disk
+>>>>>         mddev_free
+>>>>>   
+>>>> Ok thanks, I understand that md_release is called on descriptor
+>>>> closing, right?
+>>>>   
+>>>
+>>> Yes, normally close md123 should drop that last reference.
+>>>>   
+>>>>> Now that you can reporduce this problem 99%, can you dig deeper and find
+>>>>> out what is wrong?
+>>>>
+>>>> Yes, working on it!
+>>>>
+>>>> My first idea was that mddev_get and mddev_put are missing on
+>>>> md_ioctl() path
+>>>> but it doesn't help for the issue. My motivation here was that
+>>>> md_attr_store and
+>>>> md_attr_show are using them.
+>>>>
+>>>> Systemd regenerates list of MD arrays on every loop and it is always
+>>>> there, systemd is able to open file descriptor (maybe inactive?).
+>>>
+>>> md123 should not be opended again, ioctl(STOP_ARRAY) already set the
+>>> flag 'MD_CLOSING' to prevent that. Are you sure that systemd-shutdown do
+>>> open and close the array in each loop?
+>>
+>> I realized that I'm wrong here. 'MD_CLOSING' is cleared before ioctl
+>> return by commit 065e519e71b2 ("md: MD_CLOSING needs to be cleared after
+>> called md_set_readonly or do_md_stop").
+>>
+>> I'm confused here, commit message said 'MD_CLOSING' shold not be set for
+>> the case STOP_ARRAY_RO, but I don't understand why it's cleared for
+>> STOP_ARRAY as well.
+>>
 
-On 25.08.23 г. 15:14 ч., Kai Huang wrote:
-> TDX module initialization is essentially to make a set of SEAMCALL leafs
-> to complete a state machine involving multiple states.  These SEAMCALLs
-> are not expected to fail.  In fact, they are not expected to return any
-> non-zero code (except the "running out of entropy error", which can be
-> handled internally already).
+Can you try the following patch?
+
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 3afd57622a0b..31b9cec7e4c0 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -7668,7 +7668,8 @@ static int md_ioctl(struct block_device *bdev, 
+fmode_t mode,
+                         err = -EBUSY;
+                         goto out;
+                 }
+-               did_set_md_closing = true;
++               if (cmd == STOP_ARRAY_RO)
++                       did_set_md_closing = true;
+                 mutex_unlock(&mddev->open_mutex);
+                 sync_blockdev(bdev);
+         }
+
+I think prevent array to be opened again after STOP_ARRAY might fix
+this.
+
+Thanks,
+Kuai
+
+> Not related with your findings but:
 > 
-> Add yet another layer of SEAMCALL wrappers, which treats all non-zero
-> return code as error, to support printing SEAMCALL error upon failure
-> for module initialization.
+> I replaced if (!atomic_dec_and_lock(&mddev->active, &all_mddevs_lock))
+> because that is the way to exit without queuing work:
 > 
-> Other SEAMCALLs may treat some specific error codes as legal (e.g., some
-> can return BUSY legally and expect the caller to retry).  The caller can
-> use the wrappers w/o error printing for those cases.  The new wrappers
-> can also be improved to suit those cases.  Leave this as future work.
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 0fe7ab6e8ab9..80bd7446be94 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -618,8 +618,7 @@ static void mddev_delayed_delete(struct work_struct *ws);
 > 
-> SEAMCALL can also return kernel defined error codes for three special
-> cases: 1) TDX isn't enabled by the BIOS; 2) TDX module isn't loaded; 3)
-> CPU isn't in VMX operation.  The first case isn't expected (unless BIOS
-> bug, etc) because SEAMCALL is only expected to be made when the kernel
-> detects TDX is enabled.  The second case is only expected to be legal
-> for the very first SEAMCALL during module initialization.  The third
-> case can be legal for any SEAMCALL leaf because VMX can be disabled due
-> to emergency reboot.
-> 
-> Also add wrappers to convert the SEAMCALL error code to the kernel error
-> code so that each caller doesn't have to repeat.  Blindly print error
-> for the above special cases to save the effort to optimize them.
-> 
-> TDX module can only be initialized once during its life cycle, but the
-> module can be runtime updated by the kernel (not yet supported).  After
-> module runtime update, the kernel needs to initialize it again.  Use
-> pr_err() to print SEAMCALL error for module initialization, because if
-> using pr_err_once() the SEAMCALL error during module initialization
-> won't be printed after module runtime update.
-> 
-> At last, for now implement those wrappers in tdx.c but they can be moved
-> to <asm/tdx.h> when needed.  They are implemented with intention to be
-> shared by other kernel components.  After all, in most cases, SEAMCALL
-> failure is unexpected and the caller just wants to print.
-> 
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
-> ---
-> 
-> v12 -> v13:
->   - New implementation due to TDCALL assembly series.
-> 
-> ---
->   arch/x86/include/asm/tdx.h  |  1 +
->   arch/x86/virt/vmx/tdx/tdx.c | 84 +++++++++++++++++++++++++++++++++++++
->   2 files changed, 85 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-> index cfae8b31a2e9..3b248c94a4a4 100644
-> --- a/arch/x86/include/asm/tdx.h
-> +++ b/arch/x86/include/asm/tdx.h
-> @@ -27,6 +27,7 @@
->   /*
->    * TDX module SEAMCALL leaf function error codes
->    */
-> +#define TDX_SUCCESS		0ULL
->   #define TDX_RND_NO_ENTROPY	0x8000020300000000ULL
 >   
->   #ifndef __ASSEMBLY__
-> diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
-> index 908590e85749..bb63cb7361c8 100644
-> --- a/arch/x86/virt/vmx/tdx/tdx.c
-> +++ b/arch/x86/virt/vmx/tdx/tdx.c
-> @@ -16,6 +16,90 @@
->   #include <asm/msr.h>
->   #include <asm/tdx.h>
->   
-> +#define seamcall_err(__fn, __err, __args, __prerr_func)			\
-> +	__prerr_func("SEAMCALL (0x%llx) failed: 0x%llx\n",		\
-> +			((u64)__fn), ((u64)__err))
-> +
-> +#define SEAMCALL_REGS_FMT						\
-> +	"RCX 0x%llx RDX 0x%llx R8 0x%llx R9 0x%llx R10 0x%llx R11 0x%llx\n"
-> +
-> +#define seamcall_err_ret(__fn, __err, __args, __prerr_func)		\
-> +({									\
-> +	seamcall_err((__fn), (__err), (__args), __prerr_func);		\
-> +	__prerr_func(SEAMCALL_REGS_FMT,					\
-> +			(__args)->rcx, (__args)->rdx, (__args)->r8,	\
-> +			(__args)->r9, (__args)->r10, (__args)->r11);	\
-> +})
-> +
-> +#define SEAMCALL_EXTRA_REGS_FMT	\
-> +	"RBX 0x%llx RDI 0x%llx RSI 0x%llx R12 0x%llx R13 0x%llx R14 0x%llx R15 0x%llx"
-> +
-> +#define seamcall_err_saved_ret(__fn, __err, __args, __prerr_func)	\
-> +({									\
-> +	seamcall_err_ret(__fn, __err, __args, __prerr_func);		\
-> +	__prerr_func(SEAMCALL_EXTRA_REGS_FMT,				\
-> +			(__args)->rbx, (__args)->rdi, (__args)->rsi,	\
-> +			(__args)->r12, (__args)->r13, (__args)->r14,	\
-> +			(__args)->r15);					\
-> +})
-> +
-> +static __always_inline bool seamcall_err_is_kernel_defined(u64 err)
-> +{
-> +	/* All kernel defined SEAMCALL error code have TDX_SW_ERROR set */
-> +	return (err & TDX_SW_ERROR) == TDX_SW_ERROR;
-> +}
-> +
-> +#define __SEAMCALL_PRERR(__seamcall_func, __fn, __args, __seamcall_err_func,	\
-> +			__prerr_func)						\
-> +({										\
-> +	u64 ___sret = __seamcall_func((__fn), (__args));			\
-> +										\
-> +	/* Kernel defined error code has special meaning, leave to caller */	\
-> +	if (!seamcall_err_is_kernel_defined((___sret)) &&			\
-> +			___sret != TDX_SUCCESS)					\
-> +		__seamcall_err_func((__fn), (___sret), (__args), __prerr_func);	\
-> +										\
-> +	___sret;								\
-> +})
-> +
-> +#define SEAMCALL_PRERR(__seamcall_func, __fn, __args, __seamcall_err_func)	\
-> +({										\
-> +	u64 ___sret = __SEAMCALL_PRERR(__seamcall_func, __fn, __args,		\
-> +			__seamcall_err_func, pr_err);	
+> 
+> void mddev_put(struct mddev *mddev)
+> {
+> -       if (!atomic_dec_and_lock(&mddev->active, &all_mddevs_lock))
+> -               return;
+> +       spin_lock(&all_mddevs_lock);
+>          if (!mddev->raid_disks && list_empty(&mddev->disks) &&
+>              mddev->ctime == 0 && !mddev->hold_active) {
+>                  /* Array is not configured at all, and not held active,
+> @@ -634,6 +633,7 @@ void mddev_put(struct mddev *mddev)
+>                  INIT_WORK(&mddev->del_work, mddev_delayed_delete);
+>                  queue_work(md_misc_wq, &mddev->del_work);
+>          }
+> +       atomic_dec(&mddev->active);
+>          spin_unlock(&all_mddevs_lock);
+> }
+> 
+> After that I got kernel panic but it seems that workqueue is scheduled:
+> 
+>   51.535103] BUG: kernel NULL pointer dereference, address: 0000000000000008
+> [   51.539115] ------------[ cut here ]------------
+> [   51.543867] #PF: supervisor read access in kernel mode
+> 1;[3 9 m S5t1a.r5tPF: error_code(0x0000) - not-present page
+> [   51.543875] PGD 0 P4D 0
+> .k[ 0 m5.1
+>   54ops: 0000 [#1] PREEMPT SMP NOPTI
+> [   51.552207] refcount_t: underflow; use-after-free.
+> [   51.556820] CPU: 19 PID: 368 Comm: kworker/19:1 Not tainted 6.5.0+ #57
+> [   51.556825] Hardware name: Intel Corporation WilsonCity/WilsonCity, BIOS
+> WLYDCRB1.SYS.0027.P82.2204080829 04/08/2022 [   51.561979] WARNING: CPU: 26
+> PID: 376 at lib/refcount.c:28 refcount_warn_saturate+0x99/0xe0 [   51.567273]
+> Workqueue:  mddev_delayed_delete [md_mod] [   51.569822] Modules linked in:
+> [   51.574351]  (events)
+> [   51.574353] RIP: 0010:process_one_work+0x10f/0x3d0
+> [   51.579155]  configfs
+> 
+> In my case, it seems to be IMSM container device is stopped in loop, which is an
+> inactive from the start. It is not something I'm totally sure but it could lead
+> us to the root cause. So far I know, the original reported uses IMSM arrays too.
+> 
+> Thanks,
+> Mariusz
+> 
+> .
+> 
 
-__SEAMCALL_PRERR seems to only ever be called with pr_err for as the 
-error function, can you just kill off that argument and always call pr_err.
-			\
-> +	int ___ret;								\
-> +										\
-> +	switch (___sret) {							\
-> +	case TDX_SUCCESS:							\
-> +		___ret = 0;							\
-> +		break;								\
-> +	case TDX_SEAMCALL_VMFAILINVALID:					\
-> +		pr_err("SEAMCALL failed: TDX module not loaded.\n");		\
-> +		___ret = -ENODEV;						\
-> +		break;								\
-> +	case TDX_SEAMCALL_GP:							\
-> +		pr_err("SEAMCALL failed: TDX disabled by BIOS.\n");		\
-> +		___ret = -EOPNOTSUPP;						\
-> +		break;								\
-> +	case TDX_SEAMCALL_UD:							\
-> +		pr_err("SEAMCALL failed: CPU not in VMX operation.\n");		\
-> +		___ret = -EACCES;						\
-> +		break;								\
-> +	default:								\
-> +		___ret = -EIO;							\
-> +	}									\
-> +	___ret;									\
-> +})
-> +
-> +#define seamcall_prerr(__fn, __args)						\
-> +	SEAMCALL_PRERR(seamcall, (__fn), (__args), seamcall_err)
-> +
-> +#define seamcall_prerr_ret(__fn, __args)					\
-> +	SEAMCALL_PRERR(seamcall_ret, (__fn), (__args), seamcall_err_ret)
-> +
-> +#define seamcall_prerr_saved_ret(__fn, __args)					\
-> +	SEAMCALL_PRERR(seamcall_saved_ret, (__fn), (__args),			\
-> +			seamcall_err_saved_ret)
-
-
-The level of indirection which you add with those seamcal_err* function 
-is just mind boggling:
-
-
-SEAMCALL_PRERR -> __SEAMCALL_PRERR -> __seamcall_err_func -> 
-__prerr_func and all of this so you can have a standardized string 
-printing. I see no value in having __SEAMCALL_PRERR as a separate macro, 
-simply inline it into SEAMCALL_PRERR, replace the prerr_func argument 
-with a direct call to pr_err.
-
-
-> +
->   static u32 tdx_global_keyid __ro_after_init;
->   static u32 tdx_guest_keyid_start __ro_after_init;
->   static u32 tdx_nr_guest_keyids __ro_after_init;
