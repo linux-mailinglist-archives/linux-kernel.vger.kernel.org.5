@@ -2,130 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E182796EC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 04:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A89796EC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 04:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244527AbjIGCA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 22:00:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
+        id S238087AbjIGCBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 22:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242800AbjIGCAY (ORCPT
+        with ESMTP id S240770AbjIGCBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 22:00:24 -0400
-Received: from out203-205-221-242.mail.qq.com (out203-205-221-242.mail.qq.com [203.205.221.242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498E119BA;
-        Wed,  6 Sep 2023 19:00:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1694052015;
-        bh=Lhf4n1nBq4VAEDet52XCaOndkj8vQcHGv7waBa1OZl0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=FIEJ3zpYI4S8inuU9KR9pB889EB393rB1TF8hOOFUfkmFtcFIz9cs6VQbkA4hE776
-         eONwKcLvBQbIZTyUTS/ZbVMmtxPQHWQuAhhTw8wpvYKGmPhhl1o+hAuw/a/f+WRYly
-         pOEI2jZRnNN2fIvk4wYZQyffPGmW3aX5WcOMF5wk=
-Received: from RT-NUC.. ([39.156.73.12])
-        by newxmesmtplogicsvrszc2-0.qq.com (NewEsmtp) with SMTP
-        id EEB27808; Thu, 07 Sep 2023 09:59:43 +0800
-X-QQ-mid: xmsmtpt1694052001t6cwiynfr
-Message-ID: <tencent_5D0A837E219E2CFDCB0495DAD7D5D1204407@qq.com>
-X-QQ-XMAILINFO: NQR8mRxMnur9GVejZOqymyOCfTJKiLGmBPL7+7quQyquwS3OB2Gq/OewjNcZQa
-         R3UmyCZo5Q1bz9iL/9q5RpvMvv/uWpt0ZY4mNaaQEQlqJ1plAMs4Y8okMUK1FFfRqp9rgx5lhcOQ
-         k1N7nMMXe6ZG7OZKFmSRKsaE24N8BGGkoTmMfVrMYfwjCOfTfyCn8tSgzKca7MR4palCrkZk+L8h
-         5azCXhUrb28MpbEcbt86qGaIZJtWgP7R1AymBcVyVaJOgSRq0RgAdIyNcxB/fry2nEiv7qfxjRUN
-         kzFfxTR6Rj+N7j8bsoC31krlbyUpmK3YBbyulMOF8Oy20H6/o658+DWsE+vySGOa++4OGyhyVRRx
-         6YBPAbYu+3sz+7ceWTCTN8C4Sen3vjcwoJfRHRhXAfHXGNP4eJAOtU+LQaxrcwZkBag9c3Pv4NyG
-         O4DjGMgBg2UUzN6WsGNJnhwo9b3Q4vURldACPNGHIQ3CiMTpTuTr2l6lsh+NFhu6ZXZ72TAojscq
-         L+9gJkTE/5QCpuwsfDfhYtB9jcbtOhXy4ms43Ll76rSo+ZYsIghKEUijqpllCUaYXHrm3s7GnFnD
-         vpfyGA+mlRe8n7Q4xKHw4qe01LKUbBDxX8nh0N34VwFhFannpTTneQ9tLuS2Mq33q63jz3gBin6q
-         b8Bz4SPvBtfsgZnkX3jSibCJ7FMR4JQFUi8gqFSXSnZR6iOd5xlxPvS8lca86br+fZHd9PjJedO1
-         bHgCyKlugrYH+Y4hpIor4soYylEJPksG833jeAfNV7Vw5qycDsqCcPNaqVwdkkSs7vhNTI0t231d
-         7+/we2ZLeX7QlfmzbsdlbcUZ13ZtKzMa5GvLFXnNFDZtVyk97ve6ZfB2c+MnXI/fELPJJmAADVCK
-         mtuNlioTc29T4+MnwbMrgiARcOURhupGt2BNumJXBqcuTkdm3/wLwz2Zv23Z+QZ0HZ1on0xYG0oe
-         L58wBOAYye2i1rJgmYRUnL9khIWydDgS6a/kkpjo3a2g0M9c/yEjC1aXuF/zQZUb65yOQmENs=
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-From:   Rong Tao <rtoax@foxmail.com>
-To:     olsajiri@gmail.com, andrii@kernel.org, daniel@iogearbox.net
-Cc:     Rong Tao <rongtao@cestc.cn>, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
-        Tools)), linux-kernel@vger.kernel.org (open list),
-        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
-        linux-stm32@st-md-mailman.stormreply.com (moderated list:ARM/STM32
-        ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/STM32
-        ARCHITECTURE)
-Subject: [PATCH bpf-next v12 2/2] selftests/bpf: trace_helpers.c: Add a global ksyms initialization mutex
-Date:   Thu,  7 Sep 2023 09:59:14 +0800
-X-OQ-MSGID: <f1088b90f525d4a0a46d77c2e5bfcc3854015714.1694051654.git.rongtao@cestc.cn>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1694051654.git.rongtao@cestc.cn>
-References: <cover.1694051654.git.rongtao@cestc.cn>
+        Wed, 6 Sep 2023 22:01:13 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6612D19A8
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 19:01:02 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-68a3e943762so455086b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 19:01:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694052061; x=1694656861; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1vewNX7v9Jsogj+AcffyXezNkGsw817ei7jyYCtcy/M=;
+        b=Kh7SgQuF2L0DolvS8HG3UzZBSY2hVmkPnqDluPpBiZS3+Ee4PNbxL43c1qYi59Usbw
+         vF5VG5kT8NCiioUoVSuuMF3ztLUy5c8BR//qvTfJsfmnZZSmVluxkz6VT191fpkaaPjZ
+         yAxByLZZNi+WwPVMZxC2RKVZRlrxMxogcVYxh73ydiAX+kBLFtztb57fD0G/APVLJyJO
+         B587HuLM8ec0ybc0ZJt7djPXs1QA++Omoa7XaD/iwCtwCYezc6VY1c/IMAhMOhwiGKK/
+         uSSTnSK0eJSccinERBJCJAULSqHju1CC0nIQYj7nY8TpFIKUxiYYJ+8zaTSqTjREvvF2
+         4AOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694052061; x=1694656861;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1vewNX7v9Jsogj+AcffyXezNkGsw817ei7jyYCtcy/M=;
+        b=HQw8otxZYI5zYHycjs7cgpbw1dX8PwHk9nIlvI076xYAa0WT91ygbuZGknHNxk2/R+
+         NrKOA7BWXp6gtubiH2dUrxJ38Ch1EGgMJlYrFsybg104KOML0ibIb9UW9PGhLBBsfQax
+         ogW0EhVlN7ERxHwvxO3vtuDajMkMMJ1ZL4wkEDnPfA/8dZYW8FvJ2Qs5Ctfay/1g7EAA
+         ImQD/C9ZaGSbsPiE823lpDsGWnq8+KrcLgikwByh3sMPQVrUWwgh3ic581OB3hylBYpU
+         p8Ec08zfhMZ9pV67VPopTiKrc/m9VKAYjG8q+29x2PA2lyuaxC6oM/351xNbHZZFRxNh
+         8BSw==
+X-Gm-Message-State: AOJu0YzchvIsiiOyqNmyN0j07bq1C3l+hpMIiGdf+N7P0LAklsUZHZFr
+        tL5wzWOIJG7TK5HuTAk7wikfvl3Ia20=
+X-Google-Smtp-Source: AGHT+IHceUUoZG5LCctYCX8aJdipsimumNOe8uKkWOWovio35NejQo4+wc0xoeEkmmog5fgmMJGyog==
+X-Received: by 2002:a05:6a21:71cb:b0:13e:e053:1050 with SMTP id ay11-20020a056a2171cb00b0013ee0531050mr19528449pzc.56.1694052061501;
+        Wed, 06 Sep 2023 19:01:01 -0700 (PDT)
+Received: from midnight ([2001:8003:6434:b000:c30f:d88d:412c:6e9a])
+        by smtp.gmail.com with ESMTPSA id fm14-20020a056a002f8e00b0068c6889e146sm11685890pfb.98.2023.09.06.19.00.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 19:01:00 -0700 (PDT)
+Date:   Thu, 7 Sep 2023 12:00:57 +1000
+From:   Angus Gardner <angusg778@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] Staging: wlan-ng: Removed unnecessary parentheses in wlan-ng
+ driver cfg80211.
+Message-ID: <ZPku2UC5g99ILEI3@midnight>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
-
-As Jirka said [0], we just need to make sure that global ksyms
-initialization won't race.
-
-[0] https://lore.kernel.org/lkml/ZPCbAs3ItjRd8XVh@krava/
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
+Signed-off-by: Angus Gardner <angusg778@gmail.com>
 ---
- tools/testing/selftests/bpf/trace_helpers.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/staging/wlan-ng/cfg80211.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-index dc4efaf538ae..4faa898ff7fc 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -7,6 +7,7 @@
- #include <errno.h>
- #include <fcntl.h>
- #include <poll.h>
-+#include <pthread.h>
- #include <unistd.h>
- #include <linux/perf_event.h>
- #include <sys/mman.h>
-@@ -26,6 +27,7 @@ struct ksyms {
- };
+diff --git a/drivers/staging/wlan-ng/cfg80211.c b/drivers/staging/wlan-ng/cfg80211.c
+index 471bb310176f..d7d8a99adf52 100644
+--- a/drivers/staging/wlan-ng/cfg80211.c
++++ b/drivers/staging/wlan-ng/cfg80211.c
+@@ -351,8 +351,8 @@ static int prism2_scan(struct wiphy *wiphy,
+ 		msg2->bssindex.data = i;
  
- static struct ksyms *ksyms;
-+static pthread_mutex_t ksyms_mutex = PTHREAD_MUTEX_INITIALIZER;
- 
- static int ksyms__add_symbol(struct ksyms *ksyms, const char *name,
- 			     unsigned long addr)
-@@ -109,8 +111,10 @@ struct ksyms *load_kallsyms_local(void)
- 
- int load_kallsyms(void)
- {
-+	pthread_mutex_lock(&ksyms_mutex);
- 	if (!ksyms)
- 		ksyms = load_kallsyms_local();
-+	pthread_mutex_unlock(&ksyms_mutex);
- 	return ksyms ? 0 : 1;
- }
+ 		result = p80211req_dorequest(wlandev, (u8 *)&msg2);
+-		if ((result != 0) ||
+-		    (msg2->resultcode.data != P80211ENUM_resultcode_success)) {
++		if (result != 0 ||
++		    msg2->resultcode.data != P80211ENUM_resultcode_success) {
+ 			break;
+ 		}
  
 -- 
-2.41.0
+2.40.1
 
