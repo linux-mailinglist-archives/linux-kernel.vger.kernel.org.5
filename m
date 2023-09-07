@@ -2,97 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0CA797763
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14107976D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229455AbjIGQZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
+        id S232911AbjIGQRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244981AbjIGQXp (ORCPT
+        with ESMTP id S236685AbjIGQQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:23:45 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75385A5FD
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:14:44 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-502934c88b7so1420812e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:14:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694103216; x=1694708016; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HpIRckm+wlKPG4865Y0AKN4K9nVyXpI6Pdl7EWBzfrE=;
-        b=AJUv8RhJvDldMv66xU5kUly4vYQDkQzA/GJNGCRT40YLPkPZhVEOGGFp1cDcoddnqR
-         x0tHK/V8C35wkUPnPFpRnu0LCz3EkqZqKxJpYlBO5LB03EcZ1BfRY2g5otSklhgEXoIz
-         WANw27/FBR7aemyT4rScX5dlar3j+YlFnD/oGdzrWrTbrCAtHrMTdBSxO6cyrR1X1RGd
-         S8RQE7Ddl34Ld3i2JJPWnqSnO3j+Lx6cIf3T1ZvYVbk06NhPRN91297lphkyNwh91GrB
-         Qqj5w0Rv/OyEBiYtOd6ZAMHTY09JkSRAiCZ6vgCmomEkrAhpwAbZzhR9kcsFSYMn/J2M
-         RXSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694103216; x=1694708016;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HpIRckm+wlKPG4865Y0AKN4K9nVyXpI6Pdl7EWBzfrE=;
-        b=RQyvlo8/Y547nSaq6vMxm1n+i4DSlthT+1lpsxjXmAIlRTn6FtcvwPxEbniWVxYe2e
-         gVmNry9EmZ9z6t7cb5jRvQ2kOKxHp3kcHpzSXVBC5L08a++EWwhdQIrhQGVgkDjWY7li
-         KPUq0xSZoyNnXe8jfNXlp/Q8kXU61iINLEPjOAcdbBeeR6Ln43E3z2BppgijN/j3nX1o
-         aqhenavYmIuH9pcH54aN6bsLSqpnjpo1yE1rY+Ecz7yds31aAyAZUkFnqcMmfuuTayq4
-         RZ0MbkWv12/kP1/Roey7EVC+US7VMOofN1C11U36L5vsjQDlJhJHlsP4do/tsmgYo97x
-         MM6g==
-X-Gm-Message-State: AOJu0YwsIoULgid2FD7I9lJ2AivOnoxjvRcHKn4jQt7Pf/PaysZwkjm+
-        6Y8HiZKRnS8xjxqytlNKAEAbOQUfaQ+QyoPjKLHJWT1kCJFEE4zHOFM=
-X-Google-Smtp-Source: AGHT+IFmLWgZp5Q2SDD27ttHJ6ry0qaiGdpravXN90uYPS+vLCslFsUFRRI6GqJeGd4wBCjPav+DjkI12vLXHAZSa+Y=
-X-Received: by 2002:a5d:43d0:0:b0:319:82c9:8e7d with SMTP id
- v16-20020a5d43d0000000b0031982c98e7dmr4700503wrr.31.1694088951761; Thu, 07
- Sep 2023 05:15:51 -0700 (PDT)
+        Thu, 7 Sep 2023 12:16:28 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C298551A2;
+        Thu,  7 Sep 2023 09:15:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58B19C32784;
+        Thu,  7 Sep 2023 12:16:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694089010;
+        bh=bZ4uLbhRoZOPWAEmsqNOnRz9+u/PupzleFxvX2AobWs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ghoNWzMkYYeE0rUfRIj004rJCEncEEyUTO5LYa1DBfOsgluQFHHealltp3/Hx4K/E
+         0G4AW80xlHB+UBd84Nn90nFRRfwu5fmmGkRLtGFh/hBwrnXuK+T0HRJ7CrUvY/q+Pk
+         aSF7LCNEJncPplg3MIIExgCXiPYh6IW8QWuU0F7Ip+BfAu9OKkZYjgdZWIHRc9x05K
+         U6qhyt85rBUkEgOfI9ecb9ZMmt6s3XUVgP9CC2N+xuoboYyD5w8i9GAR2wDt0rPFwH
+         EnN16SRpz+J/qjpTxFMyR9Lf1RHMXFC0Lz6Tv1PSVm1Cac1QL+Ll4kMQ5Tx6g1lf/9
+         unufpWzVTbKAw==
+Message-ID: <f4431158-c177-8d09-4125-3fb01062f1fd@kernel.org>
+Date:   Thu, 7 Sep 2023 15:16:43 +0300
 MIME-Version: 1.0
-References: <CAMj1kXFZren0Q19DimwQaETCLz64D4bZQC5B2N=i3SAWHygkTQ@mail.gmail.com>
- <mhng-b66b085a-eb15-4c9b-b2aa-93ddf16ec7aa@palmer-ri-x1c9a>
- <CAP6exYKwZG=_47r0jAUFYNL5-P-SS==k6vWdKiMJ9nB0upH5Zw@mail.gmail.com>
- <20230707-attach-conjuror-306d967347ce@wendy> <ZKfsSsdiso0W8mW6@sunil-laptop>
- <CAN3iYbMhQU5Ng4r6_rQDnLmit1GCmheC5T49rsUP5NgHFEXsHA@mail.gmail.com>
- <ZKgLKvBoWKSxzm6r@sunil-laptop> <CAN3iYbOe+i4jVhz0sSQwVQ2PMB7UvaTPyN_sLtZj0uiOD2emDA@mail.gmail.com>
- <20230707-gargle-enjoyable-f9f7f87fc7ea@spud> <DBAPR08MB5783AED8329E38D840B7015D9C2DA@DBAPR08MB5783.eurprd08.prod.outlook.com>
- <CAMj1kXEkL0gF8uGcy2AjJvD-yZHmyLX9jiVVDtR+uBAYf+BfUg@mail.gmail.com> <CAN3iYbMsUNMH27kdtwPwLeBSUfH0gTvyqjZ8ExZaoGcuv8CBdA@mail.gmail.com>
-In-Reply-To: <CAN3iYbMsUNMH27kdtwPwLeBSUfH0gTvyqjZ8ExZaoGcuv8CBdA@mail.gmail.com>
-From:   yunhui cui <cuiyunhui@bytedance.com>
-Date:   Thu, 7 Sep 2023 20:15:40 +0800
-Message-ID: <CAEEQ3w=N+Ey++XWPkseSZTc-GiD6bRXAotw-XyF5iDCWPBkpLg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v3 0/4] Obtain SMBIOS and ACPI entry from FFI
-To:     =?UTF-8?B?6JGb5aOr5bu6?= <geshijian@bytedance.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Dong Wei <Dong.Wei@arm.com>,
-        Conor Dooley <conor@kernel.org>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        ron minnich <rminnich@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "jrtc27@jrtc27.com" <jrtc27@jrtc27.com>,
-        "kernel@esmil.dk" <kernel@esmil.dk>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "yc.hung@mediatek.com" <yc.hung@mediatek.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "allen-kh.cheng@mediatek.com" <allen-kh.cheng@mediatek.com>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "tinghan.shen@mediatek.com" <tinghan.shen@mediatek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "weidong.wd@bytedance.com" <weidong.wd@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [RFC PATCH net-next 1/2] dt-bindings: net: Add documentation for
+ Half duplex support.
+Content-Language: en-US
+To:     Md Danish Anwar <a0501179@ti.com>, Rob Herring <robh@kernel.org>,
+        MD Danish Anwar <danishanwar@ti.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Simon Horman <horms@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, srk@ti.com, r-gunasekaran@ti.com
+References: <20230830113134.1226970-1-danishanwar@ti.com>
+ <20230830113134.1226970-2-danishanwar@ti.com>
+ <20230831181636.GA2484338-robh@kernel.org>
+ <90669794-2fc1-bff1-104b-cf1daa2e9998@ti.com>
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <90669794-2fc1-bff1-104b-cf1daa2e9998@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -100,92 +67,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor,
 
 
-On Tue, Jul 11, 2023 at 12:03=E2=80=AFAM =E8=91=9B=E5=A3=AB=E5=BB=BA <geshi=
-jian@bytedance.com> wrote:
->
-> On Sat, Jul 8, 2023 at 4:45=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org> w=
-rote:
-> >
-> > On Fri, 7 Jul 2023 at 18:21, Dong Wei <Dong.Wei@arm.com> wrote:
-> > >
-> > > On Arm systems today, the ACPI RSDP is found using the UEFI Configura=
-tion Table. This is true for all Arm SystemReady compliant systems: 1) Syst=
-emReady LS: LBBRv1 is using a minimal UEFI FW to load LinuxBoot, that minim=
-al UEFI FW is producing the UEFI Configuration Table. We are working on LBB=
-Rv2. LBBRv2 is based on Coreboot loading LinuxBoot. But we do not have a wa=
-y today to get CoreBoot to produce this pointer to ACPI RSDP. Arm does not =
-support x86 E820 BIOS interface. 2) SystemReady IR: this solution uses DT r=
-ather than ACPI. 3) SystemReady ES: this solution can use UBoot or EDK2, an=
-d it requires ACPI. Since both UBoot and EDK2 support UEFI now, so ACPI RSD=
-P can be found using the UEFI Configuration Table. 4) SystemReady SR: this =
-solution typically uses EDK2 and requires ACPI, so no issue finding RSDP vi=
-a UEFI Configuration Table.
-> > >
-> > >
-> > >
-> > > So the ACPI RSDP issue only exist if we want to remove the minimum UE=
-FI FW and go to CoreBoot completely to load LinuxBoot. We are currently exp=
-loring how to solve that issue=E2=80=A6
-> > >
-> >
-> > Hello Dong,
-> >
-> > This fixes the RSDP issue perhaps, but that is not the only problem. I
-> > have mentioned this many times already, but let me mention it again
-> > for completeness:
-> >
-> > ACPI does not have a memory map, and ARM is much more finicky about
-> > mapping memory regions with the right attributes, given that uncached
-> > accesses don't snoop the caches like they do on x86. This means it is
-> > essential that memory mappings constructed from AML code (which
-> > doesn't provide any context pertaining to the memory type either) are
-> > created with the right memory type.
-> >
-> > Currently, the Linux/arm64 glue code for the ACPI core
-> > cross-references every memory mapping created from a SystemMemory
-> > OpRegion by AML code against the EFI memory map, and uses the EFI
-> > memory type and attributes to infer the memory type to program into
-> > the page tables. So simply providing the RSDP is *not* sufficient: on
-> > arm64, more work is needed and currently, booting ACPI without a EFI
-> > memory map results in SystemMemory OpRegions not working at all.
-> >
-> > Of course, we might be able to work around that by providing a
-> > 'coreboot' memory map for doing ACPI on arm64, but that results in
-> > more fragmentation and an inflated validation matrix, which puts the
-> > burden on the Linux subsystem maintainers to make sure that all these
-> > different combinations remain supported.
-> >
-> > AIUI, this memory type issue does not exist for RISC-V today, but I'd
-> > suggest to the RISC-V maintainers to take a careful look at arm64's
-> > acpi_os_ioremap() implementation and decide whether or not RISC-V
-> > needs similar logic.
->
-> Thanks Ard and Sunil,
->
-> You are right, we need to work out a coreboot memory map for doing
-> ACPI on ARM64.
-> BTW, I don't suggest binding ACPI and UEFI together. On RISC-V,  the
-> current solution works well based on our experience, anyway, we will
-> study memory with DTS and update later.
->
-> Thanks,
-> -Nill
+On 01/09/2023 08:21, Md Danish Anwar wrote:
+> Hi Rob,
+> 
+> On 31/08/23 11:46 pm, Rob Herring wrote:
+>> On Wed, Aug 30, 2023 at 05:01:33PM +0530, MD Danish Anwar wrote:
+>>> In order to support half-duplex operation at 10M and 100M link speeds, the
+>>> PHY collision detection signal (COL) should be routed to ICSSG
+>>> GPIO pin (PRGx_PRU0/1_GPI10) so that firmware can detect collision signal
+>>> and apply the CSMA/CD algorithm applicable for half duplex operation. A DT
+>>> property, "ti,half-duplex-capable" is introduced for this purpose. If
+>>> board has PHY COL pin conencted to PRGx_PRU1_GPIO10, this DT property can
+>>> be added to eth node of ICSSG, MII port to support half duplex operation at
+>>> that port.
+>>
+>> I take it the GPIO here is not visble to the OS and that's why it's not 
+>> described in DT?
+>>  
+> 
+> Yes the GPIO here is not visible in the OS and we need to indicate whether the
+> PHY COL signal is routed to PRGx_PRU0/1_GPI10 pin or not by setting the
+> property "ti,half-duplex-capable" as true.
+> 
+>>>
+>>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml | 7 +++++++
+>>>  1 file changed, 7 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml b/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
+>>> index 13371159515a..59da9aeaee7e 100644
+>>> --- a/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
+>>> +++ b/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
+>>> @@ -107,6 +107,13 @@ properties:
+>>>                phandle to system controller node and register offset
+>>>                to ICSSG control register for RGMII transmit delay
+>>>  
+>>> +          ti,half-duplex-capable:
+>>
+>> capable or...
+>>
+>>> +            type: boolean
+>>> +            description:
+>>> +              Enable half duplex operation on ICSSG MII port. This requires
+>>
+>> enable the mode?
+>>
+> 
+> I think capable is good here. The property "ti,half-duplex-capable" indicates
+> that the board is capable of half duplex operation. This doesn't necessarily
+> means we have to enable the half duplex mode. The user can modify the duplex
+> settings from ethtool and enable / disable is controlled by the user. This
+> property basically let's the driver know that it can support half duplex
+> operations and when user enables half duplex mode through ethtool, the driver
+> can do the necessary configurations.
+> 
+> When this property is false, half duplex is not supported. If user still wants
+> to change the duplex mode, it will get an error saying half duplex is not
+> supported.
+> 
+> So the property "ti,half-duplex-capable" let's the driver know whether half
+> duplex is supported or not. Enable / disable is controlled by user through ethtool.
+> 
+>> Maybe too late if it's already been assumed not supported, but shouldn't 
+>> supporting half duplex be the default? I guess half duplex isn't too 
+>> common any more.
+>>
+> 
+> Unfortunately ICSSG doesn't support half duplex by default. Routing the PHY COL
+> signal is necessary.
 
-Let's move on to this patchset,
-Regarding the so-called risc-v spec
-(https://github.com/riscv/riscv-platform-specs/blob/main/riscv-platform-spe=
-c.adoc#32-boot-process)
-that we discussed before, it is outdated , the patchset is not
-constrained by the spec.
-See:
-https://github.com/riscv/riscv-platform-specs/pull/91#issuecomment-17090442=
-15
+But the half-duplex advertising is always enabled by default. Whether it gets
+used or not will depend on negotiation with link partner.
 
-So please help to review this patchset, thank you!
+That's why you had to explicitly disable them in your next patch with
 
++	if (!emac->half_duplex) {
++		dev_dbg(prueth->dev, "half duplex mode is not supported\n");
++		phy_remove_link_mode(ndev->phydev, ETHTOOL_LINK_MODE_10baseT_Half_BIT);
++		phy_remove_link_mode(ndev->phydev, ETHTOOL_LINK_MODE_100baseT_Half_BIT);
++	}
 
-Thanks,
-Yunhui
+-- 
+cheers,
+-roger
