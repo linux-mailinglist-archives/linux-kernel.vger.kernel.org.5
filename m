@@ -2,114 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7387977DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B632D7977E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241651AbjIGQgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:36:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
+        id S241017AbjIGQgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238790AbjIGQgJ (ORCPT
+        with ESMTP id S239573AbjIGQgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:36:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C82E49E6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:23:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76AA4C3278E;
-        Thu,  7 Sep 2023 14:16:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694096168;
-        bh=8JrzSlPOHU42GkQamw58PH/veXFBL+Cm8CkXRD1KyBs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aDRHKrZszzGp/6+LOcfk9eZT8hKdqPBDm5GWZU8g9kZIgK2Yjnc1ufry1hSWZgstG
-         aK6gQnBBm6C+Wbv+9fncPONMT5VcYt0fdjp71vEZADzucV5uXCc4DFjyjg+og/Wn81
-         J497F5KUv2CKlV/uiYBHPga47FLQqObrIuC8gOvxfGY8b/0OuMEtxKa0e7BOetzecu
-         8GLFbbjjG5C/2+kg6zKONPV9itQ0dkYZS/a016VIAgAH4yHwUttlDL6mvhZzY1jjmi
-         VhD2FnUdJQQsD+WNL8I3CyB1O4CGo08Q0V5aaaQARs9Y6+QzJAPPMD2RRXFE4ytRLj
-         N3uP4SxNexslA==
-Date:   Thu, 7 Sep 2023 16:16:06 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
+        Thu, 7 Sep 2023 12:36:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEE13A87
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:35:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694104446;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6pBZs/c9Y6NCYTrCpyNIhqrYSKpcMzWZkZzIdnppgZc=;
+        b=MN+m3cmMuS6LHGLRJs5W9K3X98EBYIDGgJybqEwWFtu2WUqvTYtZIbbvHIg7TZCAguGOM5
+        SglytvkDVxjTosL4c8Tr+puF0W+ziPh+ODMxRRtUXJQ9PeU+xiDyP63xOe3ODKQaV8OYAA
+        9VXN4dlReeMwiWMpw9GVkdQPUnQxHwk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-595-z7u1wnX4NvKaT5Syx2brzA-1; Thu, 07 Sep 2023 10:17:11 -0400
+X-MC-Unique: z7u1wnX4NvKaT5Syx2brzA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 743C694B521;
+        Thu,  7 Sep 2023 14:17:10 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.39.194.251])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7C7111460FE5;
+        Thu,  7 Sep 2023 14:17:06 +0000 (UTC)
+Date:   Thu, 7 Sep 2023 10:17:03 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Hao Jia <jiahao.os@bytedance.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, mingo@kernel.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
         linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 04/10] drm/panel_helper: Introduce drm_panel_helper
-Message-ID: <5lumjodqq4r5ycy3ch4bo476as6wzztuokounc554x55ds3j4t@olco7idlqyvv>
-References: <CAD=FV=XUhzguFCC=aKzHFMV0bBnZzkHXP_tx+P=PNkVr=8SnTA@mail.gmail.com>
- <mumiep5q7x7qj7k64h3cyodxrgk737iy5rum5keguquwymf2gy@3qruwfrqjgy7>
- <CAD=FV=VEene+nr1us87iA+bomxzQ039r-E+wqvizvFGbxXjDvA@mail.gmail.com>
- <wwzbd7dt5qyimshnd7sbgkf5gxk7tq5dxtrerz76uw5p6s7tzt@cbiezkfeuqqn>
- <CAD=FV=XcUVvg5Om__dD=i9zu7ZtQmvWicms9yN7w0c2nWGhqYg@mail.gmail.com>
- <p7okuysh442hulqls3ekbaar2bguqv67fum3gsb2cj75kjvdpx@uebwlgvf46sy>
- <CAD=FV=Xr4nZUeHY-FdiedcV=BuP5szNBEHPKjdRnA7c+3MADqg@mail.gmail.com>
- <nahwibpea2akyg7swbdb3f6xyv7fqs35v5spqbjfzfchxnoqqz@glgg5core75d>
- <CAD=FV=UKSc4mNjWcvLCXT9Tdeok=xRjA0oVoLKVkq+kQ9-4M0A@mail.gmail.com>
- <CAD=FV=UZOxT58=jx4=iAyjXGnON_qROy4puosT0WfB5yy+2Ndw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Fix nohz_full vs rt bandwidth
+Message-ID: <20230907141703.GA441901@lorien.usersys.redhat.com>
+References: <20230821094927.51079-1-jiahao.os@bytedance.com>
+ <1823b6fd-037f-38dc-2d33-0879d77768c3@bytedance.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5nfgr3jzpbtcxkrl"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAD=FV=UZOxT58=jx4=iAyjXGnON_qROy4puosT0WfB5yy+2Ndw@mail.gmail.com>
+In-Reply-To: <1823b6fd-037f-38dc-2d33-0879d77768c3@bytedance.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Hao,
 
---5nfgr3jzpbtcxkrl
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Sep 05, 2023 at 12:12:58PM -0700, Doug Anderson wrote:
-> Hi,
->=20
-> On Tue, Sep 5, 2023 at 9:45=E2=80=AFAM Doug Anderson <dianders@chromium.o=
-rg> wrote:
+On Wed, Sep 06, 2023 at 02:45:39PM +0800 Hao Jia wrote:
+> 
+> Friendly ping...
+> 
+> On 2023/8/21 Hao Jia wrote:
+> > Since the commit 88c56cfeaec4 ("sched/fair: Block nohz tick_stop
+> > when cfs bandwidth in use") was merged, it handles conflicts between
+> > NOHZ full and cfs_bandwidth well, and the scheduler feature HZ_BW
+> > allows us to choose which one to prefer.
+> > 
+> > This conflict also exists between NOHZ full and rt_bandwidth,
+> > these two patches try to handle it in a similar way.
 > >
-> > As per our discussion, in V2 we will make drm_panel_remove() actually
-> > unprepare / disable a panel if it was left enabled. This would
-> > essentially fold in the drm_panel_helper_shutdown() from my RFC patch.
-> > This would make tdo_tl070wsh30_panel_remove() behave the same as it
-> > did before. Ugh, though I may have to think about this more when I get
-> > to implementation since I don't think there's a guarantee of the
-> > ordering of shutdown calls between the DRM driver and the panel.
-> > Anyway, something to discuss later.
->=20
-> Ugh, ignore the above paragraph. I managed to confuse myself and was
-> thinking about shutdown but talking about remove. Sigh. :( Instead,
-> pretend the above paragraph said:
->=20
-> As per our discussion, in V2 we will make drm_panel_remove() actually
-> unprepare / disable a panel (and print a warning) if it was left
-> enabled. This would essentially fold in the
-> drm_panel_helper_shutdown() from my RFC patch (but add a warning).
-> This would make tdo_tl070wsh30_panel_remove() behave the same as it
-> did before with the addition of a warning if someone tries to remove a
-> currently powered panel.
 
-Ok, that works for me :)
+Are you actually hitting this in the real world?
 
-Maxime
+We, for example, no longer enable RT_GROUP_SCHED so this is a non-issue
+for our use cases.  I'd recommend considering that. (Does it even
+work with cgroup2?)
 
---5nfgr3jzpbtcxkrl
-Content-Type: application/pgp-signature; name="signature.asc"
+In some ways what you have is a simplification of code, but it also
+obfuscates the stop_tick conditions by hiding them all in the class
+specific functions.  It was easier to see why the tick didn't stop
+looking at the original code.
 
------BEGIN PGP SIGNATURE-----
+It would be better to do this only if it is really needed, in my opinion.
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZPnbJgAKCRDj7w1vZxhR
-xYdXAQDS1cue4E9OGS5pb/O++U6pd9L1ArAFEFEdqpxuMiBe3gEAiNmyCk2ECIUW
-yQIGM7RiEMhRg+3HAkhmIIFKRYuv9AI=
-=kxSy
------END PGP SIGNATURE-----
 
---5nfgr3jzpbtcxkrl--
+Cheers,
+Phil
+
+> > patch1: Extracts a can_stop_tick() callback function for each
+> > sched_class from sched_can_stop_tick(), it will make things clearer
+> > and also convenient to handle the conflict between NOHZ full
+> > and rt_bandwidth.
+> > 
+> > patch2: If the HZ_BW scheduler feature is enabled, and the RT task
+> > to be run is constrained by rt_bandwidth runtime. Then it will
+> > prevent NO_HZ full from stopping tick.
+> > 
+> > Hao Jia (2):
+> >    sched/core: Introduce sched_class::can_stop_tick()
+> >    sched/rt: Block nohz tick_stop when rt bandwidth in use
+> > 
+> >   kernel/sched/core.c     | 67 +++++--------------------------
+> >   kernel/sched/deadline.c | 16 ++++++++
+> >   kernel/sched/fair.c     | 56 +++++++++++++++++++++++---
+> >   kernel/sched/rt.c       | 89 ++++++++++++++++++++++++++++++++++++++++-
+> >   kernel/sched/sched.h    |  5 ++-
+> >   5 files changed, 168 insertions(+), 65 deletions(-)
+> > 
+> 
+
+-- 
+
