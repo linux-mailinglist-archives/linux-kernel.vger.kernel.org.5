@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AAE79740B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A498797401
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344655AbjIGPdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40322 "EHLO
+        id S1344190AbjIGPcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343715AbjIGPa5 (ORCPT
+        with ESMTP id S1343704AbjIGPax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:30:57 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on20600.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eae::600])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4474A1BF4;
-        Thu,  7 Sep 2023 08:30:35 -0700 (PDT)
+        Thu, 7 Sep 2023 11:30:53 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2089.outbound.protection.outlook.com [40.107.93.89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C0F1BE4;
+        Thu,  7 Sep 2023 08:30:28 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HqU4fRZ8f1krhHIV5xjAHNFnxavQVXHEPA6xVgDtT31Kluiq94DVsLzWjbJG9pXj77Uwr8K9vwoL5uJm6heAqfh/Rtcll1wUF0jZqAcKno5vJjWVCvu2Q/4EU+GT6ktHSkIO6j2h7jTEx8inXUJTp6JVdssA8P1gcxYKlCa+XmH55FmYel1UyFKqe2GCW0ltvOmYYbl/xnOVR52aj5siQCymECCk2SgD26GB0Cv/XGZxqDvdju5Y9F8oJT8nWw/lHRhwQK4PqZe+IKD23YmcjHM98btp48U2FRQMO6ZosD9PfYmYote2aFnyQzafuAGDNsSnqxtUt6uAdSUVFyjJWg==
+ b=K0GQiYjyCBfteWehSCBzBXcMfFFzl/C4/xfrc2un7nZyhntI8QJODRf+zVxMciuNtYAoSD/iTYEV6TOztp0Ef3C6JuTKTq9wh83QtJpQVeA5IyF3HVI0EkHWwMPUOYSnQNkOqhYdYtbAcutIDdspB7aInxckdwDsIVoWd6wiqnU6BqLIbi75O57Wg0UgB0ObMZSUoPb3OCgZh7Ym1lHr36+yu9qJzh+OQ9YGVmXDIx+Jek3AaSqhrtNU8WsomTyoFM1S6OWX8V7FR6LSzRiqxHDuVzQbUskhA816NQgUz7weDtQ3quAKrIYTuaC430qgBPCzlG1mVK771lnvprOnwQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Re29ps3AiOSg4y0WBx8YIBQJTME/7AeggREHZrD4b44=;
- b=PBZC/rJs46a5hd13wsPAFAs97MUqAgIDLKEaDEHaEJEP45BjJQZtQWqHGEFkMwTg0t8kwaAwALXfAMnxW0QJzFfk4pxCTwe6bnkjB50iZzCXOoGiVhhLLr1trnzRIvcbCXkOwUg2UK2GRH+1eL0/MmKNiXwrld5wFTSib1Hk47MtGtRnYblXDOQ5Sy5zZUcIFyihUvDEcP5+nowe+RtiScfVogUtXvYRbms+Qmv6jEoiEc/YCjLRq2m+vw/i2jv0rTDPsQf8mw+S2zlA89BF/kKZH+Ri6FZrT5U/pCJs5vj3iIn+3WxaHjrtTaIHjf6mn2ppGuHoryuRn6F4eG64kw==
+ bh=H+Fro14rgalH/06qabhLwOLhxQnp+Tg6JsjLLk27Cig=;
+ b=d8nouGHqxgY5DP9hCzICDOUxt4AZ9eCSNGMNPQrEA1AYLu2YLMkalPX+YxOXoqZug9zIyFAYjx6j+YUnK+AwBT6Ydj2Ex/AEpacqJHKHAgNqBj9QqxBm4uez1ozyF9jJ7xCOTBmS3kjgbIqm8prZiCyjGgrg9X6nUaQ4k5H6MeBolma0+BMAQqbzUvBg+ZWy9mT0CcvXqCMOuYkuJ97RyzxFN0EOP9Ag2wibosIsdbm865urqio8GRh6a3fIy+jgDrdUJLzywUslOUOmtXDgcT8T0tJsdym7bjK+QVGA38au/7D9TPErejDFmc1mxD6UqsL9hwbWLQy+n+4vUjZJ9A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.161) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -29,18 +29,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Re29ps3AiOSg4y0WBx8YIBQJTME/7AeggREHZrD4b44=;
- b=PvJow/Si+HdYK2tQ0Sm+AznTclWummtYTV9F9OdDG0dwHIW/5WOsSCqf0JyeeG7oDcilz1H1JhH4QwiXPtv7R0JsZ6mZrqa3tjRG/1VtEbr2kg6jisgKz2UXPU7036bLDwnu1Q5zFuhZWR8UWsS9E2itkUFGRUXYzdaJQ2owfY0FPUxYATDXRGGHC7aYVVbrpaAgnyrevmuyghXH1fDoVIUdkt+Gxz0xkSw9vlhFwS929XKCgu19wAyk73kC0hLPc4yU3jX83TOqWviOjZzH/2BWJHUqXsa1GiTmG0bksV/owbYR+tDAZYjAwZYOfSzDfQ+Vpc6ImJBu2mRXKjqzkg==
-Received: from MW4PR04CA0358.namprd04.prod.outlook.com (2603:10b6:303:8a::33)
- by LV2PR12MB5848.namprd12.prod.outlook.com (2603:10b6:408:173::18) with
+ bh=H+Fro14rgalH/06qabhLwOLhxQnp+Tg6JsjLLk27Cig=;
+ b=FI5YYvmynlRfLsdhPPkDOvw+w8Q0HwcD/+tmBHl4/MDC8iHl+48iM47nCFrCZJluKYBjrq87jhaXixd5SXOkqvkaVWn5idknyEQ4hDzDsQAO8YBOuYNgztCkSvVJrqS7u1s3rWuaM62UJL1YB1CSV+ZAe9pmE3cH7PZcaT7o2uQ5NSD5zHvoukjumXgGmItHzYs5LgdJFdAi1WDTq5sqYp4eXcpnH8ynFvRou4PHYLDU/sANfkRtpRpzZUQoCV70S3TTK5pkGZAYe33tkMP5+niCFa8IccHWQmbH8EGG71AEshBXRcyEQhYawvnwURq+unReRBEyZqnFvbcNgN+dwA==
+Received: from MW4PR04CA0039.namprd04.prod.outlook.com (2603:10b6:303:6a::14)
+ by BL3PR12MB6619.namprd12.prod.outlook.com (2603:10b6:208:38e::5) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Thu, 7 Sep
- 2023 07:11:22 +0000
-Received: from CO1PEPF000044FD.namprd21.prod.outlook.com
- (2603:10b6:303:8a:cafe::cb) by MW4PR04CA0358.outlook.office365.com
- (2603:10b6:303:8a::33) with Microsoft SMTP Server (version=TLS1_2,
+ 2023 07:11:26 +0000
+Received: from CO1PEPF000044FB.namprd21.prod.outlook.com
+ (2603:10b6:303:6a:cafe::db) by MW4PR04CA0039.outlook.office365.com
+ (2603:10b6:303:6a::14) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.36 via Frontend
- Transport; Thu, 7 Sep 2023 07:11:22 +0000
+ Transport; Thu, 7 Sep 2023 07:11:26 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -48,20 +48,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.117.161 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.117.161) by
- CO1PEPF000044FD.mail.protection.outlook.com (10.167.241.203) with Microsoft
+ CO1PEPF000044FB.mail.protection.outlook.com (10.167.241.201) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6792.1 via Frontend Transport; Thu, 7 Sep 2023 07:11:22 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ 15.20.6792.1 via Frontend Transport; Thu, 7 Sep 2023 07:11:26 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
  (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 7 Sep 2023
- 00:11:09 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ 00:11:14 -0700
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Thu, 7 Sep 2023
- 00:11:09 -0700
+ 00:11:13 -0700
 Received: from localhost.localdomain (10.127.8.10) by mail.nvidia.com
  (10.129.68.6) with Microsoft SMTP Server id 15.2.986.37 via Frontend
- Transport; Thu, 7 Sep 2023 00:11:04 -0700
+ Transport; Thu, 7 Sep 2023 00:11:09 -0700
 From:   Kartik <kkartik@nvidia.com>
 To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
         <sumitg@nvidia.com>, <arnd@arndb.de>, <pshete@nvidia.com>,
@@ -70,115 +70,183 @@ To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
         <frank.li@vivo.com>, <robh@kernel.org>, <stefank@nvidia.com>,
         <pdeschrijver@nvidia.com>, <linux-tegra@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 1/6] soc/tegra: fuse: Refactor resource mapping
-Date:   Thu, 7 Sep 2023 12:40:47 +0530
-Message-ID: <20230907071052.3906-2-kkartik@nvidia.com>
+Subject: [PATCH v3 2/6] soc/tegra: fuse: Add tegra_acpi_init_apbmisc()
+Date:   Thu, 7 Sep 2023 12:40:48 +0530
+Message-ID: <20230907071052.3906-3-kkartik@nvidia.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230907071052.3906-1-kkartik@nvidia.com>
 References: <20230907071052.3906-1-kkartik@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 X-NVConfidentiality: public
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044FD:EE_|LV2PR12MB5848:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3ca7ce1d-c3f9-4770-f496-08dbaf71a422
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044FB:EE_|BL3PR12MB6619:EE_
+X-MS-Office365-Filtering-Correlation-Id: d2395b22-e498-47ca-3d45-08dbaf71a688
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 925nd17JBPO//ArRLMuE9xtO1k0zUnvgD0hV78svJrx2tknjPFkPXxQSAvcb5oC0nx2OvTQTomVNKQ8SreA2cc/9HYtuGnaqt161bsCo3V3om+FWEG+UWnVPxMTy3A7tsoyHYiOXOsD/AQH6AeVSDHXMF12GHCJxEx0fGZ2Fc4UyILK+axkVyi/hdlDJQFGmqfR6qQ4qMzzYcgGN4Kx7i7/6Gs1JT5NBn1qto7iD0e+gViJ9pIWoswM1qW+97HcKMAqqglvEd9BoMZatO0Mg5A6i/wEJ8o5NRuDe7yFLkHLFVKje6Hsp+UScgxb39tmgpmwetXdejVK+97yRRBO+7DphmfKxmkxqLWxLGdQjkCRRhYHljPuLr/BmYCnuY6ZlSmGZ3WcvZnuH5YdqK7eEgGC/DPJOyJMw6arpaE5FNlGAWcl07ctszk79sRhkYGSIWkBh/XWjbYaXK8zuX/gmYt/6dyB4sZQCqUo9gJrSkdTA4cqm6LRqBpmZqp6DjiDhqwRaUNMEiCKS3AtPq4phT1rGneef6PYX02NHf1YvxhjokhFDaFHO698jDH1z9uGuY9toK8ewJNsROvQ8o+Q1A2Jwr85saJCYNbcP83B7WW7Vy5UdYITeb46SUJTEndtsymA10E/J/IwFMOGc4DaCBM3H+eGSNnbcN1iyfxMZm5MDK2COLSblYon3tbyI3wClWOYzC18hGASXs3GhGzOpIivunDcuQ8bj3kZ1C82taR834TiJXKznYKpqCtTALvqkiHh0bfkj018Lya+VVrSd4Q==
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(376002)(396003)(136003)(186009)(451199024)(1800799009)(82310400011)(46966006)(40470700004)(36840700001)(356005)(7636003)(921005)(6666004)(40460700003)(86362001)(36756003)(36860700001)(82740400003)(40480700001)(47076005)(1076003)(2616005)(2906002)(336012)(426003)(26005)(83380400001)(478600001)(70586007)(110136005)(70206006)(41300700001)(8936002)(5660300002)(8676002)(316002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 1gcPo/qZ2JRywCWbO/45FR5FLceWjT9gcwgkNam/u2iduH4sJSK7rTRrzNMRgsaB55NAOQlaxQH+h4238rGkXFqcKc1K0CVhwBN9KFGmVUX2GDDVimVb1nc0mPiNcY1fHwC75wGFBpchy09BklVfSHuHP+cA0bNPTxkrWCNaWVdjIa9kqQH51+yNnZwr7eJ5KGy49YexQ1XqvZxTbnwrZat5nemiyFXockX4HWszni4gnSqa/IpBEU8hf3f5wCEGHfxeYhdvWKb3TDJA7dQT7yRXCXSNokjnFKLh1Z6d2hDGDLkL1Txfgx9aj3LnSkbuU35jtEyarwc3TaEGvcVuT60FHFEUDfcYry2+yhXfxE745ceya4FOM74eZXA6ANmyL2e2xKM67/iReeKYAlN8DoSfNMj99V1mK64nejAViakS7OIm3nkWEbdYteKNEFVh89ZqKx9xBR9eZ+fzklUD/gONKSvQCi1yFDZnuFDcv8rXFsaqDni9eESPFUYCse9LrOT9/Lee2kUOJCpmBvrUW8vT6xlU4BXNn3T+sLDlIofri4BdLlO1DKqB0idFYi5DhWhyISy6qmjlYd/vFhbejEe9YosWM0c2FfRsj+VmiujymBlEckis27y/McSlzjWwwEC6uKp27X6YYh5SqCOsFk4huCBBSoeJEQr0WCocYceDOaM/3vw98aQlVnMhzbe0LZaVZznZBVQOXipPMwwrFvsuehxAyXml8XOUBjG8py8ZbcHCcQ3DeYDUqMxK5gQV
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(136003)(396003)(39860400002)(451199024)(1800799009)(186009)(82310400011)(36840700001)(46966006)(40470700004)(478600001)(6666004)(110136005)(316002)(2616005)(41300700001)(8676002)(8936002)(26005)(336012)(426003)(5660300002)(83380400001)(2906002)(1076003)(36860700001)(47076005)(356005)(70586007)(82740400003)(921005)(70206006)(7636003)(36756003)(86362001)(40460700003)(40480700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 07:11:22.1570
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 07:11:26.1606
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ca7ce1d-c3f9-4770-f496-08dbaf71a422
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2395b22-e498-47ca-3d45-08dbaf71a688
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044FD.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044FB.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5848
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6619
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To prepare for adding ACPI support to the tegra-apbmisc driver,
-relocate the code responsible for mapping memory resources from
-the function ‘tegra_init_apbmisc’ to the function
-‘tegra_init_apbmisc_resources.’ This adjustment will allow the
-code to be shared between ‘tegra_init_apbmisc’ and the upcoming
-‘tegra_acpi_init_apbmisc’ function.
+In preparation to ACPI support in Tegra fuse driver add function
+tegra_acpi_init_apbmisc() to initialize tegra-apbmisc driver.
+Also, document the reason of calling tegra_init_apbmisc() at early init.
+
+Note that function tegra_acpi_init_apbmisc() is not placed in the __init
+section, because it will be called during probe.
 
 Signed-off-by: Kartik <kkartik@nvidia.com>
 ---
- drivers/soc/tegra/fuse/tegra-apbmisc.c | 37 +++++++++++++++-----------
- 1 file changed, 21 insertions(+), 16 deletions(-)
+v2 -> v3:
+	* Fix build warnings seen when CONFIG_ACPI is disabled by moving
+	  tegra_init_apbmisc table inside #ifdef CONFIG_ACPI block.
 
+v1 -> v2:
+	* Update ACPI ID table 'tegra_init_apbmisc'.
+	* Add comment to document the reason to call tegra_init_apbmisc
+	  at early init.
+	* Fix an issue where acpi_dev_free_resource_list() and
+	* acpi_dev_put() were not called if
+	  acpi_dev_get_memory_resources() returned 1.
+	* Update logic to fetch memory resources in
+	  tegra_acpi_init_apbmisc().
+	* Fix build errors seen when CONFIG_ACPI is disabled.
+---
+ drivers/soc/tegra/fuse/fuse.h          |  1 +
+ drivers/soc/tegra/fuse/tegra-apbmisc.c | 72 ++++++++++++++++++++++++++
+ 2 files changed, 73 insertions(+)
+
+diff --git a/drivers/soc/tegra/fuse/fuse.h b/drivers/soc/tegra/fuse/fuse.h
+index 90f23be73894..a41e9f85281a 100644
+--- a/drivers/soc/tegra/fuse/fuse.h
++++ b/drivers/soc/tegra/fuse/fuse.h
+@@ -69,6 +69,7 @@ struct tegra_fuse {
+ 
+ void tegra_init_revision(void);
+ void tegra_init_apbmisc(void);
++void tegra_acpi_init_apbmisc(void);
+ 
+ u32 __init tegra_fuse_read_spare(unsigned int spare);
+ u32 __init tegra_fuse_read_early(unsigned int offset);
 diff --git a/drivers/soc/tegra/fuse/tegra-apbmisc.c b/drivers/soc/tegra/fuse/tegra-apbmisc.c
-index da970f3dbf35..06c1b3a2c7ec 100644
+index 06c1b3a2c7ec..e2ca93de6c1f 100644
 --- a/drivers/soc/tegra/fuse/tegra-apbmisc.c
 +++ b/drivers/soc/tegra/fuse/tegra-apbmisc.c
-@@ -160,9 +160,28 @@ void __init tegra_init_revision(void)
- 	tegra_sku_info.platform = tegra_get_platform();
+@@ -3,9 +3,11 @@
+  * Copyright (c) 2014-2023, NVIDIA CORPORATION.  All rights reserved.
+  */
+ 
++#include <linux/acpi.h>
+ #include <linux/export.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+ 
+@@ -180,6 +182,12 @@ static void tegra_init_apbmisc_resources(struct resource *apbmisc,
+ 	}
  }
  
--void __init tegra_init_apbmisc(void)
-+static void tegra_init_apbmisc_resources(struct resource *apbmisc,
-+					 struct resource *straps)
++/**
++ * tegra_init_apbmisc - Initializes Tegra APBMISC and Strapping registers.
++ *
++ * This is called during early init as some of the old 32-bit ARM code needs
++ * information from the APBMISC registers very early during boot.
++ */
+ void __init tegra_init_apbmisc(void)
  {
- 	void __iomem *strapping_base;
-+
-+	apbmisc_base = ioremap(apbmisc->start, resource_size(apbmisc));
-+	if (apbmisc_base)
-+		chipid = readl_relaxed(apbmisc_base + 4);
-+	else
-+		pr_err("failed to map APBMISC registers\n");
-+
-+	strapping_base = ioremap(straps->start, resource_size(straps));
-+	if (strapping_base) {
-+		strapping = readl_relaxed(strapping_base);
-+		iounmap(strapping_base);
-+	} else {
-+		pr_err("failed to map strapping options registers\n");
-+	}
-+}
-+
-+void __init tegra_init_apbmisc(void)
-+{
  	struct resource apbmisc, straps;
- 	struct device_node *np;
- 
-@@ -219,21 +238,7 @@ void __init tegra_init_apbmisc(void)
- 		}
- 	}
- 
--	apbmisc_base = ioremap(apbmisc.start, resource_size(&apbmisc));
--	if (!apbmisc_base) {
--		pr_err("failed to map APBMISC registers\n");
--	} else {
--		chipid = readl_relaxed(apbmisc_base + 4);
--	}
--
--	strapping_base = ioremap(straps.start, resource_size(&straps));
--	if (!strapping_base) {
--		pr_err("failed to map strapping options registers\n");
--	} else {
--		strapping = readl_relaxed(strapping_base);
--		iounmap(strapping_base);
--	}
--
-+	tegra_init_apbmisc_resources(&apbmisc, &straps);
- 	long_ram_code = of_property_read_bool(np, "nvidia,long-ram-code");
- 
+@@ -244,3 +252,67 @@ void __init tegra_init_apbmisc(void)
  put:
+ 	of_node_put(np);
+ }
++
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id apbmisc_acpi_match[] = {
++	{ "NVDA2010" },
++	{ /* sentinel */ }
++};
++
++void tegra_acpi_init_apbmisc(void)
++{
++	struct resource *resources[2] = { NULL };
++	struct resource_entry *rentry, *tmp;
++	struct acpi_device *adev = NULL;
++	struct list_head resource_list;
++	int rcount = 0;
++	int ret;
++
++	adev = acpi_dev_get_first_match_dev(apbmisc_acpi_match[0].id, NULL, -1);
++	if (!adev)
++		return;
++
++	INIT_LIST_HEAD(&resource_list);
++
++	ret = acpi_dev_get_memory_resources(adev, &resource_list);
++	if (ret < 0) {
++		pr_err("failed to get APBMISC memory resources");
++		goto out_put_acpi_dev;
++	}
++
++	/*
++	 * Get required memory resources.
++	 *
++	 * resources[0]: apbmisc.
++	 * resources[1]: straps.
++	 */
++	resource_list_for_each_entry_safe(rentry, tmp, &resource_list) {
++		if (rcount >= ARRAY_SIZE(resources))
++			break;
++
++		resources[rcount++] = rentry->res;
++	}
++
++	if (!resources[0]) {
++		pr_err("failed to get APBMISC registers\n");
++		goto out_free_resource_list;
++	}
++
++	if (!resources[1]) {
++		pr_err("failed to get strapping options registers\n");
++		goto out_free_resource_list;
++	}
++
++	tegra_init_apbmisc_resources(resources[0], resources[1]);
++
++out_free_resource_list:
++	acpi_dev_free_resource_list(&resource_list);
++
++out_put_acpi_dev:
++	acpi_dev_put(adev);
++}
++#else
++void tegra_acpi_init_apbmisc(void)
++{
++}
++#endif
 -- 
 2.34.1
 
