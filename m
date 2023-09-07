@@ -2,64 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 691CC7975AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F859797372
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232772AbjIGPxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:53:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50866 "EHLO
+        id S239472AbjIGPYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234866AbjIGPq6 (ORCPT
+        with ESMTP id S230192AbjIGPXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:46:58 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807FF448D
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:39:10 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6b9e478e122so768391a34.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:39:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694101094; x=1694705894; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gb8EYqnyASMqqsnZ2iLYAah6l2OQpOCqu3iuHke0P/0=;
-        b=KHkopzpOLMUp0vg19H7P46Q4WK1i0bpyeU5qJgsapb6/Tj9+oCS3gLRGs8xzHIhs1Y
-         VZ8yUTM2h4eioYvawygEhKYzBk9nAGWQbpd+liRed1PTQNyjA5AxjE58NRXITkCxbSY+
-         Q1MQ2H2BaIR/Pixdpo0KVowY7F8WyKxtdQYeYNeBPDyqeuIGhGvCvknJvOqNVFwt2HJT
-         +HcuSTW93or/gigOJEOn51shRZ6wFHvJYU2MAwPQF4EIt6x5ovnwjQw1TDCELtxmkXCZ
-         wylATumU4LWbjxH1PxuGmximgXI39RUn+/Rz98pOWFxx+b+JoFG7EL9sz5tUBwyseZFQ
-         snAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694101094; x=1694705894;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Gb8EYqnyASMqqsnZ2iLYAah6l2OQpOCqu3iuHke0P/0=;
-        b=BEUbTy0vHYz1WpFaj1X3NMH80R3ZHhh8+XOYNh2ukGPTnQ3/j0mgJOsYl9ExZr9ONY
-         ARjamNqaxSRnQSpkONddYOQd+S+dr0NitlMaBcAtFB+rpgRnvUaIBgI2j9QnThZQxyV7
-         LDLYQgedfqT/aiwuNA0SWohx3GOPCkNPEMbtKKJrXbmFDgxKF7/re9j1iSIwjEOTQ2VW
-         6RqvNFbcdTnwAEY3cYmAoR+eZ7dBoel89ddX+d1EPrM8crqt/nuAtPd3p/Luf67Au4nY
-         rKS7OKt8QNyByxLvQv2LE2rHfNpYR/1Gpdyr7IBVbRAZJcQVnYv0VeDXV4mXNq+Mla16
-         wOVw==
-X-Gm-Message-State: AOJu0YwZOjUXq0lRhKnTJuEIxx0rPi1lfejkCf0mOYc14qqSOfxHUAEU
-        XDZu5kxrMcvmxsA/JF6THaH9DDhktHM7b2LtioBjXA==
-X-Google-Smtp-Source: AGHT+IHq9zupsfJmVjaj0Q6U+++liIcrHH5PBFa/Uec0t8DPMoJUynQPWH8/OnfYyZAhvgd1JzqsDg==
-X-Received: by 2002:a05:6a20:974f:b0:14c:f4e1:d9e9 with SMTP id hs15-20020a056a20974f00b0014cf4e1d9e9mr15072708pzc.45.1694073771758;
-        Thu, 07 Sep 2023 01:02:51 -0700 (PDT)
-Received: from localhost.localdomain ([124.123.167.146])
-        by smtp.gmail.com with ESMTPSA id y19-20020a62b513000000b00689f1ce7dacsm11778001pfe.23.2023.09.07.01.02.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 01:02:50 -0700 (PDT)
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-To:     linux-kselftest@vger.kernel.org
-Cc:     skhan@linuxfoundation.org, beaub@linux.microsoft.com,
-        linux-kernel@vger.kernel.org,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: [PATCH] selftests: user_events: create test-specific Kconfig fragments
-Date:   Thu,  7 Sep 2023 13:32:09 +0530
-Message-Id: <20230907080209.223478-1-naresh.kamboju@linaro.org>
-X-Mailer: git-send-email 2.30.2
+        Thu, 7 Sep 2023 11:23:03 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53AB3CC
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:22:49 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38780LF5017722;
+        Thu, 7 Sep 2023 08:04:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=qcppdkim1;
+ bh=0b/Ncc9rDmXZwstAdB+GapOrVFd5IDTpsgog17FZjn8=;
+ b=E7JjmbuQc6XUJDK0Nm8SVh6a+AnHMFAefyikW4CRhKUMGvswY04sWuCZ4q6rY4ceL/Wq
+ w3ubTZqz1VHWAgThkQ1iD9wbQZU/2ikzv9y0EOOAcek+s+sKbJmXvBlpz1E0Misj+DD5
+ bjjWmg8CXN0USgIXSXFaMvsrSsvJBCEL7pihgaY6GB0kA7rFbeiCuK8cozBiP0xAhL65
+ W2MwcC+yTC9hUzJ0DfS4EuHlGzhpsod6TN+2dSTxuMATqxYynAa9efoumUae1a6oCyZ0
+ K1lIWXrn39ic/Fn6wheeRS3KxHPPHLoIH/rDjTq49+7auiL57E/g0l/xJOu2H2+VPYLH ng== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sxwes1fca-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Sep 2023 08:04:14 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38784Drh028944
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 7 Sep 2023 08:04:13 GMT
+Received: from zhenhuah-gv.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Thu, 7 Sep 2023 01:04:10 -0700
+From:   Zhenhua Huang <quic_zhenhuah@quicinc.com>
+To:     <hch@lst.de>, <m.szyprowski@samsung.com>, <robin.murphy@arm.com>
+CC:     Zhenhua Huang <quic_zhenhuah@quicinc.com>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
+        <quic_tingweiz@quicinc.com>
+Subject: [PATCH] Revert "dma-contiguous: check for memory region overlap"
+Date:   Thu, 7 Sep 2023 16:03:56 +0800
+Message-ID: <1694073836-5125-1-git-send-email-quic_zhenhuah@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: m7cNjHTLLMLwmkPeAVp6f1rfxRIXNZw0
+X-Proofpoint-GUID: m7cNjHTLLMLwmkPeAVp6f1rfxRIXNZw0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-06_12,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 clxscore=1011 phishscore=0 adultscore=0
+ spamscore=0 impostorscore=0 suspectscore=0 mlxscore=0 mlxlogscore=882
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309070069
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -69,42 +75,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create the config file in user_events directory of testcase which
-need more kernel configuration than the default defconfig. User
-could use these configs with merge_config.sh script:
+This reverts commit 3fa6456ebe13adab3ba1817c8e515a5b88f95dce.
 
-The Kconfig CONFIG_USER_EVENTS=y is needed for the test to read
-data from the following files,
-  - "/sys/kernel/tracing/user_events_data"
-  - "/sys/kernel/tracing/user_events_status"
-  - "/sys/kernel/tracing/events/user_events/*"
+The Commit broke the CMA region creation through DT on arm64,
+as showed below logs with "memblock=debug":
+[    0.000000] memblock_phys_alloc_range: 41943040 bytes align=0x200000
+from=0x0000000000000000 max_addr=0x00000000ffffffff
+early_init_dt_alloc_reserved_memory_arch+0x34/0xa0
+[    0.000000] memblock_reserve: [0x00000000fd600000-0x00000000ffdfffff]
+memblock_alloc_range_nid+0xc0/0x19c
+[    0.000000] Reserved memory: overlap with other memblock reserved region
 
-Enable config for specific testcase:
-(export ARCH=xxx #for cross compiling)
-./scripts/kconfig/merge_config.sh .config \
-                tools/testing/selftests/user_events/config
+From call flow, region we defined in DT was always reserved before entering
+into rmem_cma_setup. Also, rmem_cma_setup has one routine cma_init_reserved_mem
+to ensure the region was reserved. Checking the region not reserved here seems
+not correct.
 
-Enable configs for all testcases:
-(export ARCH=xxx #for cross compiling)
-./scripts/kconfig/merge_config.sh .config \
-                tools/testing/selftests/*/config
+early_init_fdt_scan_reserved_mem:
+    fdt_scan_reserved_mem
+        __reserved_mem_reserve_reg
+		early_init_dt_reserve_memory
+			memblock_reserve(using “reg” prop case)
+        fdt_init_reserved_mem
+		__reserved_mem_alloc_size
+			*early_init_dt_alloc_reserved_memory_arch*
+				memblock_reserve(dynamic alloc case)
+        __reserved_mem_init_node
+		rmem_cma_setup(region overlap check here should always fail)
 
-Cc: Beau Belgrave <beaub@linux.microsoft.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Example DT can be used to reproduce issue:
+
+    dump_mem: mem_dump_region {
+            compatible = "shared-dma-pool";
+            alloc-ranges = <0x0 0x00000000 0x0 0xffffffff>;
+            reusable;
+            size = <0 0x2800000>;
+    };
+
+Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
 ---
- tools/testing/selftests/user_events/config | 1 +
- 1 file changed, 1 insertion(+)
- create mode 100644 tools/testing/selftests/user_events/config
+ kernel/dma/contiguous.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/tools/testing/selftests/user_events/config b/tools/testing/selftests/user_events/config
-new file mode 100644
-index 0000000000000..64f7a9a90cec4
---- /dev/null
-+++ b/tools/testing/selftests/user_events/config
-@@ -0,0 +1 @@
-+CONFIG_USER_EVENTS=y
+diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
+index 88c595e..f005c66 100644
+--- a/kernel/dma/contiguous.c
++++ b/kernel/dma/contiguous.c
+@@ -473,11 +473,6 @@ static int __init rmem_cma_setup(struct reserved_mem *rmem)
+ 		return -EBUSY;
+ 	}
+ 
+-	if (memblock_is_region_reserved(rmem->base, rmem->size)) {
+-		pr_info("Reserved memory: overlap with other memblock reserved region\n");
+-		return -EBUSY;
+-	}
+-
+ 	if (!of_get_flat_dt_prop(node, "reusable", NULL) ||
+ 	    of_get_flat_dt_prop(node, "no-map", NULL))
+ 		return -EINVAL;
 -- 
-2.30.2
+2.7.4
 
