@@ -2,86 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 391D67973EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A44797402
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbjIGPcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54898 "EHLO
+        id S1344219AbjIGPcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245700AbjIGPaE (ORCPT
+        with ESMTP id S1343699AbjIGPax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:30:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5E410F6;
-        Thu,  7 Sep 2023 08:29:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694100578; x=1725636578;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Urz8J26AUOtbbaftdYy1+eG3zzf8pqaVITlpJ9CGDIc=;
-  b=YhvGGj5CvyyNG216/Z4G+A95eboUQknTiX7U0W3gNb187lX7HBdocvBe
-   wgbwEnG9ELZpf04Es38HdSDtdNhLF9MqLtBliqx1ZZ1tD3mkz5mvI7dxB
-   hFAgSi4KC47IJ0We7vG6hPPSnQ+dYQg/TLIEiqxVuLkWN99rVkyQB2xBR
-   ZVn4tNzHRHj0YinXByN8BW9gsovZgY3d6CgmmbByB1tS2s9eZy7MEVNIW
-   FQtTh9yNsfMJsVmKOBpNWMRQIhjap6AdQdcdWTrYbQskph1sKbZUUWg2N
-   ZwY4RorfJ4uk4pk1TIOOBw5VkmgV8BzNNrdA+Y4AOKVHuoW+/TmgOV6ob
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="357676568"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="357676568"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 07:15:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="735516999"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="735516999"
-Received: from ningle-mobl2.amr.corp.intel.com (HELO [10.209.13.77]) ([10.209.13.77])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 07:15:21 -0700
-Message-ID: <9ffb7a3b-cf20-617a-e4f1-8a6a8a2c5972@intel.com>
-Date:   Thu, 7 Sep 2023 07:15:21 -0700
+        Thu, 7 Sep 2023 11:30:53 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B1619B4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:30:27 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-412091b9035so7619331cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:30:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694100581; x=1694705381; darn=vger.kernel.org;
+        h=cc:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=J4f41YsSBkx4jVRvXl4Nds903quY9STr5t2ZITBPCIU=;
+        b=HNQQQaBSTzzoQ8XwYUAV0D+JnfGTu0QX8gSp5UE0uo2vwW0yr2truVl29K9fX+nZYn
+         HDM87GoXQRgw8aymukebwajJqDWECm57O7QefJHGs3VgSqn87ofYva9bJx68jmPiYFU4
+         XZsb4tJwFGp2rvXKhb6ASV/315xLs/uI9UuJIDA8TP4/6JS7e7h17C1sOfePt3FMMjfQ
+         Z9kS3uD4hZqi0gPtJH2RMgPMUFNaY+JyeGD+mhpiIZ9XFZDRBBVuxJNGADvPV9Ala61H
+         1fSkXDrJyOXFtSCCSPnPsloE2yKKxBn/5hEwV6RQKao2o0ykUCbzNNPcbFPB2feA5ZyU
+         WefA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694100581; x=1694705381;
+        h=cc:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=J4f41YsSBkx4jVRvXl4Nds903quY9STr5t2ZITBPCIU=;
+        b=D4ncqh4w5cz7dTnIvsXzc5xiNDDoQXy0U5gmptNUWdFpnF9onPBXWELP8299DQwdbw
+         WlZcPAbYh2ZBmha7xy1UaTZUhyeF4o3gD3WPE26c8fPJaCkvwzIKtXYotiS8KXUAyoc/
+         e7iBn+VhT8IzcW6NhnuuxZozJsOTRpS5S9i/Q1/Kwlb97jnDWUbwvLm0PPGMFeOm7nRp
+         GLLTyx2uq/cbf6TMyCf4eRMhX46C52LZF7Q9LcamfPdrDCezoFg5QyoSKixAKTZBNkgV
+         bkyCm8mlOH3LO4fcw26MChKc2sh6dQsrDFAPcYsWDescH9b8w90e2CD1hTxr/8U5bBbD
+         XXFw==
+X-Gm-Message-State: AOJu0YznaQ4gvYzPcGvR4doIPXv6fLJ55yYOEyxnLJVL4TVJA2G2tdOO
+        HHVzvRHvwCcyZ8K7HKthRN9Xu+xXeL+bxQgALdHgcMZPdo3wiA==
+X-Received: by 2002:a05:622a:110d:b0:411:7212:bd66 with SMTP id
+ e13-20020a05622a110d00b004117212bd66mt28124185qty.66.1694096172656; Thu, 07
+ Sep 2023 07:16:12 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 3/3] /dev/mem: Do not map unaccepted memory
-Content-Language: en-US
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-coco@lists.linux.dev, linux-efi@vger.kernel.org,
-        kexec@lists.infradead.org
-References: <20230906073902.4229-1-adrian.hunter@intel.com>
- <20230906073902.4229-4-adrian.hunter@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <20230906073902.4229-4-adrian.hunter@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <20230822134849.3352329-1-alessandro.carminati@gmail.com>
+In-Reply-To: <20230822134849.3352329-1-alessandro.carminati@gmail.com>
+From:   Alessandro Carminati <alessandro.carminati@gmail.com>
+Date:   Thu, 7 Sep 2023 16:15:36 +0200
+Message-ID: <CAPp5cGTshQJ3aLeLqv=CbaVeg9GnK_k9nsoaWrBKs1dcXzNZow@mail.gmail.com>
+Subject: Re: [PATCH] Sanitize possible_parent_show to Handle Return Value of of_clk_get_parent_name
+Cc:     Philip Daly <pdaly@redhat.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,MISSING_HEADERS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/6/23 00:39, Adrian Hunter wrote:
-> Support for unaccepted memory was added recently, refer commit
-> dcdfdd40fa82 ("mm: Add support for unaccepted memory"), whereby
-> a virtual machine may need to accept memory before it can be used.
-> 
-> Do not map unaccepted memory because it can cause the guest to fail.
+this is a gentle ping
 
-Doesn't /dev/mem already provide a billion ways for someone to shoot
-themselves in the foot?  TDX seems to have added the 1,000,000,001st.
-Is this really worth patching?
+thank you
+Alessandro Carminati
+
+Il giorno mar 22 ago 2023 alle ore 15:49 Alessandro Carminati
+<alessandro.carminati@gmail.com> ha scritto:
+>
+> In the possible_parent_show function, ensure proper handling of the return
+> value from of_clk_get_parent_name to prevent potential issues arising from
+> a NULL return.
+> The current implementation invokes seq_puts directly on the result of
+> of_clk_get_parent_name without verifying the return value, which can lead
+> to kernel panic if the function returns NULL.
+>
+> This patch addresses the concern by introducing a check on the return
+> value of of_clk_get_parent_name. If the return value is not NULL, the
+> function proceeds to call seq_puts, providing the returned value as
+> argument.
+> However, if of_clk_get_parent_name returns NULL, the function provides a
+> static string as argument, avoiding the panic.
+>
+> Reported-by: Philip Daly <pdaly@redhat.com>
+> Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
+> ---
+>  drivers/clk/clk.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+> index c249f9791ae8..ab999644e185 100644
+> --- a/drivers/clk/clk.c
+> +++ b/drivers/clk/clk.c
+> @@ -3416,6 +3416,7 @@ static void possible_parent_show(struct seq_file *s, struct clk_core *core,
+>                                  unsigned int i, char terminator)
+>  {
+>         struct clk_core *parent;
+> +       const char *tmp;
+>
+>         /*
+>          * Go through the following options to fetch a parent's name.
+> @@ -3436,12 +3437,12 @@ static void possible_parent_show(struct seq_file *s, struct clk_core *core,
+>                 seq_puts(s, core->parents[i].name);
+>         else if (core->parents[i].fw_name)
+>                 seq_printf(s, "<%s>(fw)", core->parents[i].fw_name);
+> -       else if (core->parents[i].index >= 0)
+> -               seq_puts(s,
+> -                        of_clk_get_parent_name(core->of_node,
+> -                                               core->parents[i].index));
+> -       else
+> +       else if (core->parents[i].index >= 0) {
+> +               tmp = of_clk_get_parent_name(core->of_node, core->parents[i].index);
+> +               seq_puts(s, tmp ? tmp : "(none)");
+> +       } else {
+>                 seq_puts(s, "(missing)");
+> +       }
+>
+>         seq_putc(s, terminator);
+>  }
+> --
+> 2.34.1
+>
