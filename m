@@ -2,50 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDC8797935
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B964797644
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239915AbjIGRGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37790 "EHLO
+        id S231715AbjIGQFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241707AbjIGRGY (ORCPT
+        with ESMTP id S231593AbjIGQEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:06:24 -0400
-Received: from gauss.telenet-ops.be (gauss.telenet-ops.be [IPv6:2a02:1800:120:4::f00:11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E1110E9
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:01:08 -0700 (PDT)
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by gauss.telenet-ops.be (Postfix) with ESMTPS id 4RhLyj0hPKz4x5w2
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 16:21:33 +0200 (CEST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
-        by laurent.telenet-ops.be with bizsmtp
-        id j2MX2A00S2mGBSJ012MXea; Thu, 07 Sep 2023 16:21:32 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qeFsi-002mG9-FE;
-        Thu, 07 Sep 2023 16:21:31 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qeFsx-00CNCC-NO;
-        Thu, 07 Sep 2023 16:21:31 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 2/2] powerpc: Replace GPL 2.0+ README.legal boilerplate by SPDX
-Date:   Thu,  7 Sep 2023 16:21:30 +0200
-Message-Id: <2349faf484969a86be141f6d90e45657e692d3a5.1694095086.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1694095086.git.geert@linux-m68k.org>
-References: <cover.1694095086.git.geert@linux-m68k.org>
+        Thu, 7 Sep 2023 12:04:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C477172A5;
+        Thu,  7 Sep 2023 08:54:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694102046; x=1725638046;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=fwMh7jGaSk7TxhZscMBGj1gykagFIBBeWuQIBEDbtjk=;
+  b=W4J7mW+GbYXPlCRHCTJKn7frTmZEdS0K80dG9kjpocbVpzofWtDe33im
+   Atn1s7S6EM6E4vDyRM6SOu6E+Tu5wTiRqyW5YCrFjDWxAwrx1xybC9tXU
+   Xralmr7qIr29v+/cWnoPaVaKDHjlHxzX1s798IdgJbdwgWg5RFPzY95Pq
+   vN+dx0agTSzz4i1fnNSrHc6WMeIIlZYtFEAPg+zRSK3yirsYUGoe2J3h1
+   h1lgkQvGM7XZDGhT15/hPJQwClZdIa5gP7ua9pjLSSGpo+1GqyWsgoEzG
+   J+Jtmcw+ntV4+HEErByG95CrIGEifSmTMeMAdbzneM0Tqk9+JPfQOTqZC
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="356841205"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="356841205"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 07:25:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="718711806"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="718711806"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 07:25:50 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qeFx5-007Kdm-0y;
+        Thu, 07 Sep 2023 17:25:47 +0300
+Date:   Thu, 7 Sep 2023 17:25:47 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Kartik <kkartik@nvidia.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com, sumitg@nvidia.com,
+        arnd@arndb.de, pshete@nvidia.com, digetx@gmail.com,
+        petlozup@nvidia.com, windhl@126.com, frank.li@vivo.com,
+        robh@kernel.org, stefank@nvidia.com, pdeschrijver@nvidia.com,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/6] soc/tegra: fuse: Refactor resource mapping
+Message-ID: <ZPnda7q0Af8ud74v@smile.fi.intel.com>
+References: <20230907071052.3906-1-kkartik@nvidia.com>
+ <20230907071052.3906-2-kkartik@nvidia.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+In-Reply-To: <20230907071052.3906-2-kkartik@nvidia.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,76 +70,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Upstream Linux never had a "README.legal" file, but it was present
-in early source releases of Linux/m68k.  It contained a simple copyright
-notice and a link to a version of the "COPYING" file that predated the
-addition of the "only valid GPL version is v2" clause.
+On Thu, Sep 07, 2023 at 12:40:47PM +0530, Kartik wrote:
+> To prepare for adding ACPI support to the tegra-apbmisc driver,
+> relocate the code responsible for mapping memory resources from
+> the function ‘tegra_init_apbmisc’ to the function
+> ‘tegra_init_apbmisc_resources.’ This adjustment will allow the
+> code to be shared between ‘tegra_init_apbmisc’ and the upcoming
+> ‘tegra_acpi_init_apbmisc’ function.
 
-Get rid of the references to non-existant files by replacing the
-boilerplate with SPDX license identifiers.
+...
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/powerpc/kernel/ptrace/ptrace.c | 5 +----
- arch/powerpc/kernel/signal.c        | 5 +----
- arch/powerpc/kernel/signal.h        | 7 ++-----
- 3 files changed, 4 insertions(+), 13 deletions(-)
+> -void __init tegra_init_apbmisc(void)
+> +static void tegra_init_apbmisc_resources(struct resource *apbmisc,
+> +					 struct resource *straps)
+>  {
 
-diff --git a/arch/powerpc/kernel/ptrace/ptrace.c b/arch/powerpc/kernel/ptrace/ptrace.c
-index 5d7a72b41ae71158..727ed4a145451356 100644
---- a/arch/powerpc/kernel/ptrace/ptrace.c
-+++ b/arch/powerpc/kernel/ptrace/ptrace.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  *  PowerPC version
-  *    Copyright (C) 1995-1996 Gary Thomas (gdt@linuxppc.org)
-@@ -9,10 +10,6 @@
-  *
-  * Modified by Cort Dougan (cort@hq.fsmlabs.com)
-  * and Paul Mackerras (paulus@samba.org).
-- *
-- * This file is subject to the terms and conditions of the GNU General
-- * Public License.  See the file README.legal in the main directory of
-- * this archive for more details.
-  */
- 
- #include <linux/regset.h>
-diff --git a/arch/powerpc/kernel/signal.c b/arch/powerpc/kernel/signal.c
-index 68a91e553e14cea2..aa17e62f37547a79 100644
---- a/arch/powerpc/kernel/signal.c
-+++ b/arch/powerpc/kernel/signal.c
-@@ -1,12 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Common signal handling code for both 32 and 64 bits
-  *
-  *    Copyright (c) 2007 Benjamin Herrenschmidt, IBM Corporation
-  *    Extracted from signal_32.c and signal_64.c
-- *
-- * This file is subject to the terms and conditions of the GNU General
-- * Public License.  See the file README.legal in the main directory of
-- * this archive for more details.
-  */
- 
- #include <linux/resume_user_mode.h>
-diff --git a/arch/powerpc/kernel/signal.h b/arch/powerpc/kernel/signal.h
-index a429c57ed4331805..58ecea1cdc27ae80 100644
---- a/arch/powerpc/kernel/signal.h
-+++ b/arch/powerpc/kernel/signal.h
-@@ -1,10 +1,7 @@
--/*
-+/* SPDX-License-Identifier: GPL-2.0-or-later
-+ *
-  *    Copyright (c) 2007 Benjamin Herrenschmidt, IBM Corporation
-  *    Extracted from signal_32.c and signal_64.c
-- *
-- * This file is subject to the terms and conditions of the GNU General
-- * Public License.  See the file README.legal in the main directory of
-- * this archive for more details.
-  */
- 
- #ifndef _POWERPC_ARCH_SIGNAL_H
+> +}
+> +
+> +void __init tegra_init_apbmisc(void)
+
+Looks like the patches can be improved by using --patience when you format
+patches before sending.
+
 -- 
-2.34.1
+With Best Regards,
+Andy Shevchenko
+
 
