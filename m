@@ -2,82 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1218B7979A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6D97976F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241168AbjIGRRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:17:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
+        id S236804AbjIGQS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:18:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242780AbjIGRRi (ORCPT
+        with ESMTP id S242985AbjIGQSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:17:38 -0400
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4DA10F9;
-        Thu,  7 Sep 2023 10:17:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=uSXuGn3O+qqWl5LwJxGEkPc7y1T0Fvv+zmkZqiAv3bo=;
-  b=Hx88vk+kZ/st88XSOfMxLqrNvqFC5gz0Rjsu9FnmuxDb6Ey9n9iNx7X3
-   5mvlWqUzb578CukZIhvBvScfv1YGt5HhmEmohAMwtUhRjDPRCDgZnwHdn
-   65YFgxzTg0Odnf7stkK+lMg7TbECQQOmUA50DEcI4rbfx/H5A9Ng9f7GJ
-   w=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=Julia.Lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.02,234,1688421600"; 
-   d="scan'208";a="65324671"
-Received: from i80.paris.inria.fr (HELO i80.paris.inria.fr.) ([128.93.90.48])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 11:55:32 +0200
-From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     kernel-janitors@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH 11/11] media: platform: mtk-mdp3: add missing of_node_put
-Date:   Thu,  7 Sep 2023 11:55:21 +0200
-Message-Id: <20230907095521.14053-12-Julia.Lawall@inria.fr>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230907095521.14053-1-Julia.Lawall@inria.fr>
-References: <20230907095521.14053-1-Julia.Lawall@inria.fr>
+        Thu, 7 Sep 2023 12:18:15 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DF059F3;
+        Thu,  7 Sep 2023 09:04:03 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3879swWG020769;
+        Thu, 7 Sep 2023 09:56:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=JJN2an9C7cmZNdVoHcnWUPhZpuiuA4IshU4Q+93acDg=;
+ b=krTLe3BVzK1kwTO4z/hdANOSKIW7Wnt8yVUzH5P+yZl6MK040hpCyHCvGCvd3rkxoZgw
+ CuGyuIENjG4CNA8ssmIaWcjNOw/9vrIDK2EChJyIGgHiOeU3P/4y9dkMs2FsV4U+Up7A
+ 8WHmAYERTgVsevoY/PBagE4KVxByQbS7HX4pH+XFXDSEbgYvKdhMNqkTOWEbYL9Case5
+ 6TjMF5pnczV0TbV6hjL7/oHgB2/+sh2AN6eRALFKfJmB7O/v6Q+WrKS8Devj+lCRpUpI
+ 67v3ArK0HBrAjiaNft7vCCMWsaftQvpaFgfpn9Wxsf4WSPLMK4ki1UaKfLmsb5vclKsO uQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3syaad087m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Sep 2023 09:56:58 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3879uudp008519
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 7 Sep 2023 09:56:57 GMT
+Received: from [10.216.2.98] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 7 Sep
+ 2023 02:56:48 -0700
+Message-ID: <347293d1-15e5-5412-9695-01be768283ad@quicinc.com>
+Date:   Thu, 7 Sep 2023 15:26:45 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v5 2/5] arm64: dts: qcom: sm8450: Add opp table support to
+ PCIe
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <vireshk@kernel.org>, <nm@ti.com>,
+        <sboyd@kernel.org>, <mani@kernel.org>
+CC:     <lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
+        <bhelgaas@google.com>, <rafael@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_parass@quicinc.com>
+References: <1694066433-8677-1-git-send-email-quic_krichai@quicinc.com>
+ <1694066433-8677-3-git-send-email-quic_krichai@quicinc.com>
+ <38f64349-5139-4207-91eb-cd39fabd4496@linaro.org>
+From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <38f64349-5139-4207-91eb-cd39fabd4496@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: zu2wqzDPrSeflYuDgfDtMYFS5isYnDnA
+X-Proofpoint-GUID: zu2wqzDPrSeflYuDgfDtMYFS5isYnDnA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-07_02,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 suspectscore=0 clxscore=1015 mlxlogscore=634
+ adultscore=0 phishscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309070087
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-for_each_child_of_node performs an of_node_get on each
-iteration, so a break out of the loop requires an
-of_node_put.
 
-This was done using the Coccinelle semantic patch
-iterators/for_each_child.cocci
+On 9/7/2023 2:34 PM, Konrad Dybcio wrote:
+> On 7.09.2023 08:00, Krishna chaitanya chundru wrote:
+>> PCIe needs to choose the appropriate performance state of RPMH power
+>> domain based up on the PCIe gen speed.
+>>
+>> So let's add the OPP table support to specify RPMH performance states.
+>>
+>> Use opp-level for the PCIe gen speed for easier use.
+>>
+>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>> ---
+> [...]
+>
+>> +
+>> +			pcie1_opp_table: opp-table {
+>> +				compatible = "operating-points-v2";
+>> +
+>> +				opp-1 {
+>> +					opp-level = <1>;
+>> +					required-opps = <&rpmhpd_opp_low_svs>;
+>> +				};
+>> +
+>> +				opp-2 {
+>> +					opp-level = <2>;
+>> +					required-opps = <&rpmhpd_opp_low_svs>;
+>> +				};
+>> +
+>> +				opp-3 {
+>> +					opp-level = <3>;
+>> +					required-opps = <&rpmhpd_opp_low_svs>;
+> Is gen3 not supposed to require nom like on pcie0?
+This particular controller instance can operate at low svs for GEN3.
+> Also, can all non-maximum OPPs run at just low_svs?
+This depends on the hardware capability, for this instance expect GEN4 
+remaining can operate in LOW svs. It varies from controller instance to 
+instance and also from target to target.
+> Konrad
 
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-
----
- drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c |    1 +
- 1 file changed, 1 insertion(+)
-
-diff -u -p a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
-@@ -1137,6 +1137,7 @@ int mdp_comp_config(struct mdp_dev *mdp)
- 		comp = mdp_comp_create(mdp, node, id);
- 		if (IS_ERR(comp)) {
- 			ret = PTR_ERR(comp);
-+			of_node_put(node);
- 			goto err_init_comps;
- 		}
- 
+- KC
 
