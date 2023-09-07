@@ -2,219 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D297973F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7FC79759D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245098AbjIGPdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:33:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33488 "EHLO
+        id S237233AbjIGPwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239456AbjIGPbb (ORCPT
+        with ESMTP id S245405AbjIGPvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:31:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0EE71FCF;
-        Thu,  7 Sep 2023 08:30:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694100659; x=1725636659;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=aHVqwOrO+75etqT56c3Qz8PRUggG+wPxnNaCzndSWqw=;
-  b=mFBT2I8SE7JHcDrKy82GW+e5DPTZX0QxA6Lo0p2XlUf1AsHiLL+lgm9y
-   PvrWsB6qmuUCr2QVF3iIejzTp0rvTHCteUQ2L8xBW+RSifSyiNOE64RGD
-   NLd34/Qmn65h+W3pYQtHC1tvXOpTfjqsIfo3vu19Vlh8MT7vWDchKaGh8
-   EFxJqibNyjFBfbApD+c6HU2FZ8dC1wgjMRzVSVlLdF9TXHzDUTWzhT0a4
-   dosBGqTaFlQJYxilfXefdTLrprqfoimIBzXLXF5fFVdshAMmIXKEslCBZ
-   MV/P2RrgCdxt251fygv4TbCsd8xFKXxMeWbXdtH4ZwaOWov3KXD7I5/ee
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="463693111"
-X-IronPort-AV: E=Sophos;i="6.02,234,1688454000"; 
-   d="scan'208";a="463693111"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 03:18:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="807488492"
-X-IronPort-AV: E=Sophos;i="6.02,234,1688454000"; 
-   d="scan'208";a="807488492"
-Received: from mtkaczyk-mobl.ger.corp.intel.com (HELO localhost) ([10.249.139.35])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 03:18:23 -0700
-Date:   Thu, 7 Sep 2023 12:18:19 +0200
-From:   Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     AceLan Kao <acelan@gmail.com>, Song Liu <song@kernel.org>,
-        Guoqing Jiang <guoqing.jiang@linux.dev>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux RAID <linux-raid@vger.kernel.org>,
-        "yukuai (C)" <yukuai3@huawei.com>,
-        "yangerkun@huawei.com" <yangerkun@huawei.com>
-Subject: Re: Infiniate systemd loop when power off the machine with multiple
- MD RAIDs
-Message-ID: <20230907121819.00005a15@linux.intel.com>
-In-Reply-To: <43b0b2f4-17c0-61d2-9c41-0595fb6f2efc@huaweicloud.com>
-References: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
-        <20230818101630.000027f4@linux.intel.com>
-        <b0488ff7-10c8-4b4e-28b8-01809133c297@linux.dev>
-        <CAPhsuW6cSLqwRVO_EpFyimvc7hgi1rb3T8-NA+stHdwrqrScBA@mail.gmail.com>
-        <20230822083923.00007fb6@linux.intel.com>
-        <CAMz9Wg8KE1rDkSaQnUTJ5ikzH7YGGYbkLM3AcrVue3=JgK+14w@mail.gmail.com>
-        <35130b3f-c0fd-e2d6-e849-a5ceb6a2895f@linux.dev>
-        <CAMz9Wg_zKSJ2vL=r2zAtLBOv4GSMT63+ZQGXfYTjVJsE+DLQGA@mail.gmail.com>
-        <CAPhsuW6W0XgFjH1zNC+EFYjujd4smEiWs+-nYCWQ+KaFmbuvkg@mail.gmail.com>
-        <CAMz9Wg9y52iuxJRSQFC2N5Katt72v-o=JvEjegJt-MwORmw9tQ@mail.gmail.com>
-        <CAPhsuW7XEy4q3XR389F7CUvXvJ=0JR0QkMOr4LU03avT0erAfg@mail.gmail.com>
-        <354004ce-ad4e-5ad5-8fe6-303216647e0c@huaweicloud.com>
-        <03b79ab0-0bb0-ac29-4a70-37d902f9a05b@huaweicloud.com>
-        <20230831085057.00001795@linux.intel.com>
-        <CAMz9Wg8bhCG=qSLia943dwr=LV7Kum=bZPq2s_2coV6a_bmDeA@mail.gmail.com>
-        <20230906122751.00001e5b@linux.intel.com>
-        <43b0b2f4-17c0-61d2-9c41-0595fb6f2efc@huaweicloud.com>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Thu, 7 Sep 2023 11:51:06 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB546A59
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:42:09 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-34e169874dbso712695ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:42:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694101267; x=1694706067; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RCgeZHNY/DlNrnLkKkluN6xg5KeAlPieZsIE6jFbPVc=;
+        b=w4N+F48gsQDGW3KmaCsEasMZUYfmFppU/RnfvK2b11k2TrrDX35whtN5uQtMidI37n
+         qZ24nZgnLiqJ64KCchZ0T28Owv/5d0Rp7RIEgG/787n4k7QHj3NBaJjOcFYgsopm6Maf
+         qe5QqL4GBZyd9FbJh7Co5JmWuPR54B+bzVd3PyA1ngNs3cqdb0gVhlK7Qcui9lnc0vso
+         HvCrIr03W5CajuQjPZwaEZLo/TlrIccOu512Z2E9gwQbrrYuOHQV09bhtXtpkU+WnEkh
+         ZaxOr9rmA9XxwCdfkKVMcuTr6E8b2FFb6Poub88sAuzZ+hRhs9dMyoX/p4hy2y5lO/R8
+         QXVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694101267; x=1694706067;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RCgeZHNY/DlNrnLkKkluN6xg5KeAlPieZsIE6jFbPVc=;
+        b=Cy2rkYNVw6gdmEMAauRv9t07wjCv0CZrESCzjF27ovnHGBUcji9Pv9838e2bQU3iph
+         6OSGdmy/9ZaJHSj/d6bsN6Oa9gPmhpjjYO+izL06fl1aqkQQACZViUAngGbEgtMLEfwl
+         6pnpRFoEASzZSA/OLYGm/D4mrAE5/NcU8k3M+etJpAXbzo5laKqkFk6XKvdZEarb82E/
+         zUdEt1+DzS6ggLJwxbFEiMSGSa4PY0ZuI1sO/jCJxo8WNHYC/vSKzG34YBuTUkbimWx9
+         eA7V4PlM0grK1MUgW/8OAgoANPR9/KA7uji9UktcI+eG9A09ReZmXfx/OYJPYfgAJrQv
+         Ifeg==
+X-Gm-Message-State: AOJu0YwGMuVqcCTNnY/w6bAM6KKhIQMgMzyBReSFU+d3YaR/CV9S4fgR
+        FDRUe5lojmFDivQ/rsY1S0H8yQPQVssbYZjQveInxw==
+X-Google-Smtp-Source: AGHT+IFZ8rAMkndFAe9nk36Eotx+d5nxbthNhzZ4DS5IlxlT8T8Od24Sm3zFo4dnTgB8luNvNyYScg==
+X-Received: by 2002:a17:902:d48f:b0:1c0:cbaf:6939 with SMTP id c15-20020a170902d48f00b001c0cbaf6939mr21706846plg.3.1694082193128;
+        Thu, 07 Sep 2023 03:23:13 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:999:a3a0:ef65:d0f:73cf:bc3c? ([2a01:e0a:999:a3a0:ef65:d0f:73cf:bc3c])
+        by smtp.gmail.com with ESMTPSA id b19-20020a170902ed1300b001b9de39905asm12485964pld.59.2023.09.07.03.23.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Sep 2023 03:23:12 -0700 (PDT)
+Message-ID: <ff6302ae-a114-4ef0-be87-a5fa34c3aab5@rivosinc.com>
+Date:   Thu, 7 Sep 2023 12:22:55 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gbk
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 2/4] irqchip/riscv-intc: Support large non-standard
+ hwirq number
+Content-Language: en-US
+To:     Yu Chien Peter Lin <peterlin@andestech.com>,
+        linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu,
+        conor.dooley@microchip.com, atishp@atishpatra.org,
+        anup@brainfault.org, prabhakar.mahadev-lad.rj@bp.renesas.com
+Cc:     ajones@ventanamicro.com, heiko@sntech.de, samuel@sholland.org,
+        geert+renesas@glider.be, n.shubin@yadro.com, dminus@andestech.com,
+        ycliang@andestech.com, tim609@andestech.com, locus84@andestech.com,
+        dylan@andestech.com
+References: <20230907021635.1002738-1-peterlin@andestech.com>
+ <20230907021635.1002738-3-peterlin@andestech.com>
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <20230907021635.1002738-3-peterlin@andestech.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Sep 2023 10:04:11 +0800
-Yu Kuai <yukuai1@huaweicloud.com> wrote:
 
-> Hi,
+
+On 07/09/2023 04:16, Yu Chien Peter Lin wrote:
+> Currently, the implementation of the RISC-V INTC driver uses the
+> interrupt cause as hwirq and has a limitation of supporting a
+> maximum of 64 hwirqs. However, according to the privileged spec,
+> interrupt cause >= 16 are defined for platform use.
 > 
-> ÔÚ 2023/09/06 18:27, Mariusz Tkaczyk Ð´µÀ:
-> > On Wed, 6 Sep 2023 14:26:30 +0800
-> > AceLan Kao <acelan@gmail.com> wrote:
-> >   
-> >>  From previous testing, I don't think it's an issue in systemd, so I
-> >> did a simple test and found the issue is gone.
-> >> You only need to add a small delay in md_release(), then the issue
-> >> can't be reproduced.
-> >>
-> >> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> >> index 78be7811a89f..ef47e34c1af5 100644
-> >> --- a/drivers/md/md.c
-> >> +++ b/drivers/md/md.c
-> >> @@ -7805,6 +7805,7 @@ static void md_release(struct gendisk *disk)
-> >> {
-> >>         struct mddev *mddev = disk->private_data;
-> >>
-> >> +       msleep(10);
-> >>         BUG_ON(!mddev);
-> >>         atomic_dec(&mddev->openers);
-> >>         mddev_put(mddev);  
-> > 
-> > I have repro and I tested it on my setup. It is not working for me.
-> > My setup could be more "advanced" to maximalize chance of reproduction:
-> > 
-> > # cat /proc/mdstat
-> > Personalities : [raid1] [raid6] [raid5] [raid4] [raid10] [raid0]
-> > md121 : active raid0 nvme2n1[1] nvme5n1[0]
-> >        7126394880 blocks super external:/md127/0 128k chunks
-> > 
-> > md122 : active raid10 nvme6n1[3] nvme4n1[2] nvme1n1[1] nvme7n1[0]
-> >        104857600 blocks super external:/md126/0 64K chunks 2 near-copies
-> > [4/4] [UUUU]
-> > 
-> > md123 : active raid5 nvme6n1[3] nvme4n1[2] nvme1n1[1] nvme7n1[0]
-> >        2655765504 blocks super external:/md126/1 level 5, 32k chunk,
-> > algorithm 0 [4/4] [UUUU]
-> > 
-> > md124 : active raid1 nvme0n1[1] nvme3n1[0]
-> >        99614720 blocks super external:/md125/0 [2/2] [UU]
-> > 
-> > md125 : inactive nvme3n1[1](S) nvme0n1[0](S)
-> >        10402 blocks super external:imsm
-> > 
-> > md126 : inactive nvme7n1[3](S) nvme1n1[2](S) nvme6n1[1](S) nvme4n1[0](S)
-> >        20043 blocks super external:imsm
-> > 
-> > md127 : inactive nvme2n1[1](S) nvme5n1[0](S)
-> >        10402 blocks super external:imsm
-> > 
-> > I have almost 99% repro ratio, slowly moving forward..
-> > 
-> > It is endless loop because systemd-shutdown sends ioctl "stop_array" which
-> > is successful but array is not stopped. For that reason it sets "changed =
-> > true".  
+> This limitation prevents us from fully utilizing the available
+> local interrupt sources. Additionally, the hwirqs used on RISC-V
+> are sparse, with only interrupt numbers 1, 5 and 9 (plus Sscofpmf
+> or T-Head's PMU irq) being currently used for supervisor mode.
 > 
-> How does systemd-shutdown judge if array is stopped? cat /proc/mdstat or
-> ls /dev/md* or other way?
+> The patch switches to using irq_domain_create_tree() which
+> creates the radix tree map, allowing us to handle a larger
+> number of hwirqs.
+> 
+> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+> Reviewed-by: Charles Ci-Jyun Wu <dminus@andestech.com>
+> Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+> 
+> ---
+> There are 3 hwirqs of local interrupt source exceed 64 defined in
+> AX45MP datasheet [1] Table 56: AX45MP-1C scause Value After Trap:
+> - 256+16 Slave port ECC error interrupt (S-mode)
+> - 256+17 Bus write transaction error interrupt (S-mode)
+> - 256+18 Performance monitor overflow interrupt(S-mode)
+> 
+> [1] http://www.andestech.com/wp-content/uploads/AX45MP-1C-Rev.-5.0.0-Datasheet.pdf
+> ---
+>  drivers/irqchip/irq-riscv-intc.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+> index 4adeee1bc391..76e1229c45de 100644
+> --- a/drivers/irqchip/irq-riscv-intc.c
+> +++ b/drivers/irqchip/irq-riscv-intc.c
+> @@ -24,8 +24,8 @@ static asmlinkage void riscv_intc_irq(struct pt_regs *regs)
+>  {
+>  	unsigned long cause = regs->cause & ~CAUSE_IRQ_FLAG;
+>  
+> -	if (unlikely(cause >= BITS_PER_LONG))
+> -		panic("unexpected interrupt cause");
+> +	if (!irq_find_mapping(intc_domain, cause))
+> +		panic("unexpected interrupt cause: %ld", cause);
 
 Hi Yu,
 
-It trusts return result, I confirmed that 0 is returned.
-The most weird is we are returning 0 but array is still there, and it is
-stopped again in next systemd loop. I don't understand why yet..
+It seems like generic_handle_domain_irq() returns -EINVAL if provided
+with NULL (which will happen if the interrupt does not have a mapping
+due to __irq_resolve_mapping returning NULL) so maybe it is possible to
+remove this check (since __irq_resolve_mapping() is also called by
+generic_handle_domain_irq()) and panic if generic_handle_domain_irq()
+returns -EINVAL ? That would avoid calling __irq_resolve_mapping() twice
+for really rare cases.
 
-> > Systemd-shutdown see the change and retries to check if there is something
-> > else which can be stopped now, and again, again...
-> > 
-> > I will check what is returned first, it could be 0 or it could be positive
-> > errno (nit?) because systemd cares "if(r < 0)".  
-> 
-> I do noticed that there are lots of log about md123 stopped:
-> 
-> [ 1371.834034] md122:systemd-shutdow bd_prepare_to_claim return -16
-> [ 1371.840294] md122:systemd-shutdow blkdev_get_by_dev return -16
-> [ 1371.846845] md: md123 stopped.
-> [ 1371.850155] md122:systemd-shutdow bd_prepare_to_claim return -16
-> [ 1371.856411] md122:systemd-shutdow blkdev_get_by_dev return -16
-> [ 1371.862941] md: md123 stopped.
-> 
-> And md_ioctl->do_md_stop doesn't have error path after printing this
-> log, hence 0 will be returned to user.
-> 
-> The normal case is that:
-> 
-> open md123
-> ioctl STOP_ARRAY -> all rdev should be removed from array
-> close md123 -> mddev will finally be freed by:
-> 	md_release
-> 	 mddev_put
-> 	  set_bit(MD_DELETED, &mddev->flags) -> user shound not see this mddev
-> 	  queue_work(md_misc_wq, &mddev->del_work)
-> 
-> 	mddev_delayed_delete
-> 	 kobject_put(&mddev->kobj)
-> 
-> 	md_kobj_release
-> 	 del_gendisk
-> 	  md_free_disk
-> 	   mddev_free
-> 
-Ok thanks, I understand that md_release is called on descriptor closing, right?
+ClÃ©ment
 
-
-> Now that you can reporduce this problem 99%, can you dig deeper and find
-> out what is wrong?
-
-Yes, working on it!
-
-My first idea was that mddev_get and mddev_put are missing on md_ioctl() path
-but it doesn't help for the issue. My motivation here was that md_attr_store and
-md_attr_show are using them.
-
-Systemd regenerates list of MD arrays on every loop and it is always
-there, systemd is able to open file descriptor (maybe inactive?).
-My fix with checking mddev_get and mddev_put should address that so it seems to
-be something different.
-
-BTW. I opened a discussion on slack proposed by Paul. I'm adding updates there
-more frequently. If you are interested please join. I can see that you were
-invited as:
-Email Address
-yukuai1@huaweicloud.com
-Perhaps, that is the reason you can't join. Let me know, I will add you.
-
-Thanks,
-Mariusz
-
+>  
+>  	generic_handle_domain_irq(intc_domain, cause);
+>  }
+> @@ -117,8 +117,8 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn)
+>  {
+>  	int rc;
+>  
+> -	intc_domain = irq_domain_create_linear(fn, BITS_PER_LONG,
+> -					       &riscv_intc_domain_ops, NULL);
+> +	intc_domain = irq_domain_create_tree(fn, &riscv_intc_domain_ops,
+> +					     NULL);
+>  	if (!intc_domain) {
+>  		pr_err("unable to add IRQ domain\n");
+>  		return -ENXIO;
+> @@ -132,8 +132,6 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn)
+>  
+>  	riscv_set_intc_hwnode_fn(riscv_intc_hwnode);
+>  
+> -	pr_info("%d local interrupts mapped\n", BITS_PER_LONG);
+> -
+>  	return 0;
+>  }
+>  
