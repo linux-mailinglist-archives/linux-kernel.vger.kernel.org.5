@@ -2,129 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A53797635
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A4F797681
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbjIGQEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37444 "EHLO
+        id S237055AbjIGQLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236509AbjIGQEM (ORCPT
+        with ESMTP id S237868AbjIGQLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:04:12 -0400
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [IPv6:2001:4b98:dc4:8::240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C327B6186;
-        Thu,  7 Sep 2023 08:53:02 -0700 (PDT)
-Received: from relay2-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::222])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id 42C44D6698;
-        Thu,  7 Sep 2023 09:24:36 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 02F3B40026;
-        Thu,  7 Sep 2023 09:24:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1694078655;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ST8KCiLU18FjuUXI8eVuo27uXYnock5GYqmWCIa1nR4=;
-        b=B2uw1Xqtxyilb1NMs7Uhht7byGCRw7f08saTX5jUXL6y5d0gY7TKxRGBqLUAPoaBf6YwDi
-        7pjdAbtXIqssI1GJYFCjf7QtruKngEEstFCK/IivQYK40uqf18v9lXf0UhCLKparrCGcZ9
-        wB0JqLFK3oAiloALLvPY6zWfqVX/cPoQTlurkR6P8N+RwxE5LEsrPt5LUcueQ+a2KllPu+
-        abxq7tOVJXTscBXSVh6bXXZh7NZNz0Ol+8rowJBNoQK4uVqIpav6+w/RDWp4mcpbQNvlPC
-        fJ4oKTcfxharYTBg8OyXDE2ZrGT5zHikDt7A/Lt1/qmbYNEq5Y0GyNw10rGEyw==
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     davem@davemloft.net
-Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        =?UTF-8?q?Nicol=C3=B2=20Veronese?= <nicveronese@gmail.com>,
-        thomas.petazzoni@bootlin.com,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [RFC PATCH net-next 2/7] net: sfp: pass the phy_device when disconnecting an sfp module's PHY
-Date:   Thu,  7 Sep 2023 11:24:00 +0200
-Message-ID: <20230907092407.647139-3-maxime.chevallier@bootlin.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230907092407.647139-1-maxime.chevallier@bootlin.com>
-References: <20230907092407.647139-1-maxime.chevallier@bootlin.com>
+        Thu, 7 Sep 2023 12:11:11 -0400
+Received: from mail-yb1-xb45.google.com (mail-yb1-xb45.google.com [IPv6:2607:f8b0:4864:20::b45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267B335A1
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:07:36 -0700 (PDT)
+Received: by mail-yb1-xb45.google.com with SMTP id 3f1490d57ef6-d782a2ba9f9so4230344276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:07:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694102732; x=1694707532;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3uorYgBy/vSzGATNXjGaFcQjl0zqUtF7P8rETQPdQ6s=;
+        b=HRuwgFAsp2eXGjIv3kw2//8J26hJGSd4DavZ+FTN4YPQc6MadptYOllnAZu9WF9xYS
+         /1nhdlX16Fc0xp1qKOornfIXeiRIDVqBA/ajMYWquft2++dQAMIeauo7V4bPMA9sDLI0
+         qRmA74PoalOGR9VRtFaU72gYVC+4QzJyZDwVUqwvIbVNgBcBNLM0Dknk9IJBbuqA4gvb
+         S2Buu9uyhuLWjBdFbu2Krk52xlX/T5iNpHyIg0iiBL4Qu4TBsXGpKoetERahK3KbaG+p
+         VLY9OVTHTiTkQv0JLpgzJTDV2HQmG1Pd173ux4+AqKElez5XAEV+kdcwvewfT2GWmAY0
+         3GBw==
+X-Gm-Message-State: AOJu0YzUxGgcLwhyMTfxjpenH6HcRfwTy3+jBjx7Bj/j0aifL/wePw5+
+        WYR0y9GK4880vhMbpUXlKBUtYLh8UMePl3aAxsNfI22sZ8jS
+X-Google-Smtp-Source: AGHT+IFv5RoDlYTTHNTZRVCYgdQ3cCvXQcVZJdqAENmmBoZNBWPCxhGShggp718Md5FgEKnzPNCIe8409SLooz2fwa7VgMNc/OBG
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:903:32c2:b0:1c2:2485:ad7 with SMTP id
+ i2-20020a17090332c200b001c224850ad7mr587578plr.4.1694078749617; Thu, 07 Sep
+ 2023 02:25:49 -0700 (PDT)
+Date:   Thu, 07 Sep 2023 02:25:49 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000017b6b90604c17266@google.com>
+Subject: [syzbot] Monthly block report (Sep 2023)
+From:   syzbot <syzbot+list4766b5991d014e82a610@syzkaller.appspotmail.com>
+To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pass the phy_device as a parameter to the sfp upstream .disconnect_phy
-operation. This is preparatory work to help track phy devices across
-a net_device's link.
+Hello block maintainers/developers,
 
-Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+This is a 31-day syzbot report for the block subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/block
+
+During the period, 5 new issues were detected and 0 were fixed.
+In total, 31 issues are still open and 85 have been fixed so far.
+
+Some of the still happening issues:
+
+Ref  Crashes Repro Title
+<1>  1987    Yes   WARNING in copy_page_from_iter
+                   https://syzkaller.appspot.com/bug?extid=63dec323ac56c28e644f
+<2>  407     Yes   INFO: task hung in blkdev_put (4)
+                   https://syzkaller.appspot.com/bug?extid=9a29d5e745bd7523c851
+<3>  252     No    KMSAN: kernel-infoleak in copy_page_to_iter (4)
+                   https://syzkaller.appspot.com/bug?extid=17a061f6132066e9fb95
+<4>  95      Yes   INFO: task hung in blkdev_fallocate
+                   https://syzkaller.appspot.com/bug?extid=39b75c02b8be0a061bfc
+<5>  36      Yes   KASAN: use-after-free Read in __dev_queue_xmit (5)
+                   https://syzkaller.appspot.com/bug?extid=b7be9429f37d15205470
+<6>  25      Yes   INFO: task hung in blkdev_get_by_dev (5)
+                   https://syzkaller.appspot.com/bug?extid=6229476844294775319e
+<7>  24      Yes   WARNING in blk_register_tracepoints
+                   https://syzkaller.appspot.com/bug?extid=c54ded83396afee31eb1
+<8>  16      Yes   WARNING in wait_til_done (2)
+                   https://syzkaller.appspot.com/bug?extid=9bc4da690ee5334f5d15
+<9>  8       Yes   WARNING in floppy_interrupt (2)
+                   https://syzkaller.appspot.com/bug?extid=aa45f3927a085bc1b242
+<10> 5       Yes   WARNING in get_probe_ref
+                   https://syzkaller.appspot.com/bug?extid=8672dcb9d10011c0a160
+
 ---
- drivers/net/phy/phylink.c | 3 ++-
- drivers/net/phy/sfp-bus.c | 4 ++--
- include/linux/sfp.h       | 2 +-
- 3 files changed, 5 insertions(+), 4 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
-index 0d7354955d62..97e8019adad8 100644
---- a/drivers/net/phy/phylink.c
-+++ b/drivers/net/phy/phylink.c
-@@ -3325,7 +3325,8 @@ static int phylink_sfp_connect_phy(void *upstream, struct phy_device *phy)
- 	return ret;
- }
- 
--static void phylink_sfp_disconnect_phy(void *upstream)
-+static void phylink_sfp_disconnect_phy(void *upstream,
-+				       struct phy_device *phydev)
- {
- 	phylink_disconnect_phy(upstream);
- }
-diff --git a/drivers/net/phy/sfp-bus.c b/drivers/net/phy/sfp-bus.c
-index 208a9393c2df..f42e9a082935 100644
---- a/drivers/net/phy/sfp-bus.c
-+++ b/drivers/net/phy/sfp-bus.c
-@@ -486,7 +486,7 @@ static void sfp_unregister_bus(struct sfp_bus *bus)
- 			bus->socket_ops->stop(bus->sfp);
- 		bus->socket_ops->detach(bus->sfp);
- 		if (bus->phydev && ops && ops->disconnect_phy)
--			ops->disconnect_phy(bus->upstream);
-+			ops->disconnect_phy(bus->upstream, bus->phydev);
- 	}
- 	bus->registered = false;
- }
-@@ -742,7 +742,7 @@ void sfp_remove_phy(struct sfp_bus *bus)
- 	const struct sfp_upstream_ops *ops = sfp_get_upstream_ops(bus);
- 
- 	if (ops && ops->disconnect_phy)
--		ops->disconnect_phy(bus->upstream);
-+		ops->disconnect_phy(bus->upstream, bus->phydev);
- 	bus->phydev = NULL;
- }
- EXPORT_SYMBOL_GPL(sfp_remove_phy);
-diff --git a/include/linux/sfp.h b/include/linux/sfp.h
-index 9346cd44814d..0573e53b0c11 100644
---- a/include/linux/sfp.h
-+++ b/include/linux/sfp.h
-@@ -544,7 +544,7 @@ struct sfp_upstream_ops {
- 	void (*link_down)(void *priv);
- 	void (*link_up)(void *priv);
- 	int (*connect_phy)(void *priv, struct phy_device *);
--	void (*disconnect_phy)(void *priv);
-+	void (*disconnect_phy)(void *priv, struct phy_device *);
- };
- 
- #if IS_ENABLED(CONFIG_SFP)
--- 
-2.41.0
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
