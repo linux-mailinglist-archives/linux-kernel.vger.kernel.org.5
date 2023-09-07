@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 559D8797AA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9187B797AC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245499AbjIGRsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49062 "EHLO
+        id S245399AbjIGRsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245444AbjIGRrp (ORCPT
+        with ESMTP id S245527AbjIGRru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:47:45 -0400
+        Thu, 7 Sep 2023 13:47:50 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD861990;
-        Thu,  7 Sep 2023 10:47:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D261FF3;
+        Thu,  7 Sep 2023 10:47:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=ykzxARVy4uCl6EJxalPtEu7KNDbQwm8SXBvTZkNjJPY=; b=Njpcz/IyQT0fdTQWkzaJwynKDt
-        grfkwXy3awyPXJF2veO4UspVoBdf27UlM1dayYrxsB7RWqjm/4wW0bVokj3a0NfREiAqZuD+7JDod
-        ScEIUkk8Y85CrX4Xtl1GdJH+R3GfOe6dpsa+8PPxQGtMdeOuEex8hcbGDH0+6h1cll2+MwNfpPq8y
-        1Yn7d1t5yrWkwrY321FIn/1Voclkp/cF9kfNfa/OiVG2qmhQDxiJRn2ysBx8aT4CNYBGuA8bKO5b0
-        +aI1t/4evcLGsE4QMu6NkKrbXezfOVVkVjA4u5A3aq96G/1NCyspCs2LiZRAs6Efbh39ks4he24eK
-        TUww7iug==;
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=LLFJT9lhOndsodIHfPQ9LEtDlXX6YGclPNMO2t1USgU=; b=jAKEfKshiWNUs4KA27DrmnJak0
+        fotEfuCnFgJxrpNUy54FTDDByW/E9sBz1SE2zakIlZJhp1hvXQ/JrczFhZlH5vBtzyTCrBEViEZ1r
+        rD2XlLJb/lmeXQvvhgAR1iFsykO9s7L/WtUzp4faEt4pLZWRXY68YIibxqDRTv/VmZzG6Z/HQjVcK
+        WuDOyAggJnPFYDxeVSPWQmtmGsGIvkM67ia+qMuyl1Axj3bfOOoVGq16Elsg7Un3O2gVO45V950KH
+        Cs5NbUja00oSR1Ep8FiYLK7eeJGKRtDPUrjGr35KP12gtU4KJaIFuyWbCHsCgPd1jB3NrkeDddkYO
+        lp9gc8kQ==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qeJ5v-00CUFH-Ai; Thu, 07 Sep 2023 17:47:07 +0000
+        id 1qeJ5v-00CUFJ-Uv; Thu, 07 Sep 2023 17:47:07 +0000
 From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
@@ -35,10 +35,12 @@ Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         Chandan Babu R <chandan.babu@oracle.com>,
         "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org
-Subject: [PATCH 0/5] Remove the XFS mrlock
-Date:   Thu,  7 Sep 2023 18:47:00 +0100
-Message-Id: <20230907174705.2976191-1-willy@infradead.org>
+Subject: [PATCH 1/5] locking: Add rwsem_is_write_locked()
+Date:   Thu,  7 Sep 2023 18:47:01 +0100
+Message-Id: <20230907174705.2976191-2-willy@infradead.org>
 X-Mailer: git-send-email 2.37.1
+In-Reply-To: <20230907174705.2976191-1-willy@infradead.org>
+References: <20230907174705.2976191-1-willy@infradead.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -50,36 +52,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-XFS has an mrlock wrapper around the rwsem which adds only the
-functionality of knowing whether the rwsem is currently held in read
-or write mode.  Both regular rwsems and rt-rwsems know this, they just
-don't expose it as an API.  By adding that, we can remove the XFS mrlock
-as well as improving the debug assertions for the mmap_lock when lockdep
-is disabled.
+Several places want to know whether the lock is held by a writer, instead
+of just whether it's held.  We can implement this for both normal and
+rt rwsems.  RWSEM_WRITER_LOCKED is declared in rwsem.c and exposing
+it outside that file might tempt other people to use it, so just use
+a comment to note that's what the 1 means, and help anybody find it if
+they're looking to change the implementation.
 
-I'd like acks from the locking people, then it probably should go upstream
-through the XFS tree since that's where the patch series touches the
-most code.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ include/linux/rwbase_rt.h |  5 +++++
+ include/linux/rwsem.h     | 10 ++++++++++
+ 2 files changed, 15 insertions(+)
 
-Matthew Wilcox (Oracle) (5):
-  locking: Add rwsem_is_write_locked()
-  mm: Use rwsem_is_write_locked in mmap_assert_write_locked
-  xfs: Use rwsem_is_write_locked()
-  xfs: Remove mrlock wrapper
-  xfs: Stop using lockdep to assert that locks are held
-
- fs/xfs/mrlock.h           | 78 ---------------------------------------
- fs/xfs/xfs_inode.c        | 61 ++++++++++--------------------
- fs/xfs/xfs_inode.h        |  2 +-
- fs/xfs/xfs_iops.c         |  4 +-
- fs/xfs/xfs_linux.h        |  2 +-
- fs/xfs/xfs_super.c        |  4 +-
- include/linux/mmap_lock.h |  2 +-
- include/linux/rwbase_rt.h |  5 +++
- include/linux/rwsem.h     | 10 +++++
- 9 files changed, 40 insertions(+), 128 deletions(-)
- delete mode 100644 fs/xfs/mrlock.h
-
+diff --git a/include/linux/rwbase_rt.h b/include/linux/rwbase_rt.h
+index 1d264dd08625..3c25b14edc05 100644
+--- a/include/linux/rwbase_rt.h
++++ b/include/linux/rwbase_rt.h
+@@ -31,6 +31,11 @@ static __always_inline bool rw_base_is_locked(struct rwbase_rt *rwb)
+ 	return atomic_read(&rwb->readers) != READER_BIAS;
+ }
+ 
++static __always_inline bool rw_base_is_write_locked(struct rwbase_rt *rwb)
++{
++	return atomic_read(&rwb->readers) == WRITER_BIAS;
++}
++
+ static __always_inline bool rw_base_is_contended(struct rwbase_rt *rwb)
+ {
+ 	return atomic_read(&rwb->readers) > 0;
+diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
+index 1dd530ce8b45..0f78b8d2e653 100644
+--- a/include/linux/rwsem.h
++++ b/include/linux/rwsem.h
+@@ -72,6 +72,11 @@ static inline int rwsem_is_locked(struct rw_semaphore *sem)
+ 	return atomic_long_read(&sem->count) != 0;
+ }
+ 
++static inline int rwsem_is_write_locked(struct rw_semaphore *sem)
++{
++	return atomic_long_read(&sem->count) & 1 /* RWSEM_WRITER_LOCKED */;
++}
++
+ #define RWSEM_UNLOCKED_VALUE		0L
+ #define __RWSEM_COUNT_INIT(name)	.count = ATOMIC_LONG_INIT(RWSEM_UNLOCKED_VALUE)
+ 
+@@ -157,6 +162,11 @@ static __always_inline int rwsem_is_locked(struct rw_semaphore *sem)
+ 	return rw_base_is_locked(&sem->rwbase);
+ }
+ 
++static __always_inline int rwsem_is_write_locked(struct rw_semaphore *sem)
++{
++	return rw_base_is_write_locked(&sem->rwbase);
++}
++
+ static __always_inline int rwsem_is_contended(struct rw_semaphore *sem)
+ {
+ 	return rw_base_is_contended(&sem->rwbase);
 -- 
 2.40.1
 
