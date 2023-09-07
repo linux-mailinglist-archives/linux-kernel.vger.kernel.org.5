@@ -2,123 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 050A4797883
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5492F79788F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243734AbjIGQr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37952 "EHLO
+        id S243190AbjIGQtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244035AbjIGQrC (ORCPT
+        with ESMTP id S242173AbjIGQs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:47:02 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2108F2113
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:46:33 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4013454fa93so13403765e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:46:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694105134; x=1694709934; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FIu4eWCkEOSVtI8FoLJRLwwONGivM5mrULXtY5Z5HVI=;
-        b=giVOdMQ5IFjGJzsdDzRayfgwzcrcsDWHJznCZqtaMO8/65Ed1aLt3F3l1EiNniW7tF
-         DGq9snYMVFFSTE+QWHjPYAsZvrDyFkCKsHvyDoNN21bSyHM8SLi0uVtM9dY879VoeNrH
-         eIC9yNGOS4J1+JlRIxOkppaP6OXAP3eR8M4i68t32dJjaDkBsRfIAaQMEcm6lpZdx8yo
-         r8qBoJaf1JbAAiedblCvPzNDbmaVYZ919peP70SSQAgIevOtKDvrpvRVhdTEVkTiGXHk
-         sfxS+UlGCr5xX/CnlKYJayJ11lYgNn4XSnJPBaOjnwcezNzTx6LMrIdqUNDXYmcOzO+i
-         fmEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694105134; x=1694709934;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FIu4eWCkEOSVtI8FoLJRLwwONGivM5mrULXtY5Z5HVI=;
-        b=CgTdDEalDQ8XSMYQdBhqNKwfFKPztXVSGMQ07GxpfzO3Q0dKC+2DB4bBwc0LliPN0c
-         bgv4ExDgCK0BQRUHbxn+ZFu3M6i2ErDuJXvYGPtM6sxYV9pKD8ODRs74aqUYxVPHMFZw
-         FXBmEkYoVppT6AJWRu2/piwpXQKOjZuJQ47Y7SvaEpyYx0WveJiN03vDSLrMdEb8y2/f
-         zvQAIsYqgPmS7q+El4gDqgH0rkTZOqiFgWNVpD4mzU4p3Pz3ojnWu1+H1cVDoPjr2Xq8
-         4pOSSiDYQoKpN69Z+XM40OM85n3ZujXMr6QBcRMrK6vPsPO8PI7ke5wd+QU9lWCTn2si
-         N5TQ==
-X-Gm-Message-State: AOJu0YxafaGobTSA9tgTP01NTM5abqWhzoUbnHbX0qXGDRqKxXA4hGJz
-        z2zOGDRizJLb/9kytbscnZ1NTcgmz74pzrJHxro=
-X-Google-Smtp-Source: AGHT+IHYQm/x1ttHvlb4nOLzsoqtQcWa1sflGXM/+Y5olsT43jMQsj+a+Uw0WpuUCkC0LtSmUtNegg==
-X-Received: by 2002:adf:d0ca:0:b0:317:e1fb:d56a with SMTP id z10-20020adfd0ca000000b00317e1fbd56amr5095651wrh.40.1694105077152;
-        Thu, 07 Sep 2023 09:44:37 -0700 (PDT)
-Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id d15-20020adffd8f000000b00317ab75748bsm23822145wrr.49.2023.09.07.09.44.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 09:44:36 -0700 (PDT)
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 17/17] media: qcom: camss: Comment CSID dt_id field
-Date:   Thu,  7 Sep 2023 17:44:10 +0100
-Message-ID: <20230907164410.36651-18-bryan.odonoghue@linaro.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230907164410.36651-1-bryan.odonoghue@linaro.org>
-References: <20230907164410.36651-1-bryan.odonoghue@linaro.org>
+        Thu, 7 Sep 2023 12:48:58 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C03DF1BFD;
+        Thu,  7 Sep 2023 09:48:34 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ECB891042;
+        Thu,  7 Sep 2023 09:48:17 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2540E3F67D;
+        Thu,  7 Sep 2023 09:47:38 -0700 (PDT)
+Message-ID: <b34a6196-6c24-a664-611b-6055480880ee@arm.com>
+Date:   Thu, 7 Sep 2023 17:47:33 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/3] dt-bindings: pinctrl: rockchip: Add io domain
+ properties
+Content-Language: en-GB
+To:     Sascha Hauer <s.hauer@pengutronix.de>,
+        Quentin Schulz <quentin.schulz@theobroma-systems.com>
+Cc:     linux-rockchip@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+        kernel@pengutronix.de,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+References: <20230904115816.1237684-1-s.hauer@pengutronix.de>
+ <20230904115816.1237684-3-s.hauer@pengutronix.de>
+ <b4017947-9e16-7d97-a7b1-3e6964a1f7a9@arm.com>
+ <5166ca75-5454-8f64-4f61-fcc0f7a4c235@theobroma-systems.com>
+ <20230906101909.GB492117@pengutronix.de>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20230906101909.GB492117@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Digging into the documentation we find that the DT_ID bitfield is used to
-map the six bit DT to a two bit ID code. This value is concatenated to the
-VC bitfield to create a CID value. DT_ID is the two least significant bits
-of CID and VC the most significant bits.
+On 06/09/2023 11:19 am, Sascha Hauer wrote:
+> On Wed, Sep 06, 2023 at 10:20:26AM +0200, Quentin Schulz wrote:
+>> Sascha, Robin,
+>>
+>> On 9/5/23 11:03, Robin Murphy wrote:
+>>> [You don't often get email from robin.murphy@arm.com. Learn why this is
+>>> important at https://aka.ms/LearnAboutSenderIdentification ]
+>>>
+>>>> +ï¿œï¿œï¿œï¿œï¿œï¿œï¿œ type: boolean
+>>>> +ï¿œï¿œï¿œï¿œï¿œï¿œï¿œ description:
+>>>> +ï¿œï¿œï¿œï¿œï¿œï¿œï¿œï¿œï¿œ If true assume that the io domain needed for this pin
+>>>> group has been
+>>>> +ï¿œï¿œï¿œï¿œï¿œï¿œï¿œï¿œï¿œ configured correctly by the bootloader. This is needed to
+>>>> break cyclic
+>>>> +ï¿œï¿œï¿œï¿œï¿œï¿œï¿œï¿œï¿œ dependencies introduced when a io domain needs a
+>>>> regulator that can be
+>>>> +ï¿œï¿œï¿œï¿œï¿œï¿œï¿œï¿œï¿œ accessed through pins configured here.
+>>>
+>>> This is describing a Linux implementation detail, not the binding
+>>> itself. There's no technical reason a DT consumer couldn't already
+>>> figure this much out from the existing topology (by observing that the
+>>> pinctrl consumer is a grandparent of the I/O domain's supply).
+>>>
+>>
+>> I am guessing you're suggesting to have some complex handling in the driver
+>> to detect those cyclic dependencies and ignore the IO domain dependency for
+>> the pinctrl pins where this happens?
+> 
+> I haven't read this as a suggestion, but only as an argument to make it
+> clear that I should describe the binding rather than anticipating
+> how it should be used.
+> 
+> I may have misunderstood it though.
 
-Originally we set dt_id = vc * 4 in and then subsequently set dt_id = vc.
+Indeed it was more about the definition itself - an extra property isn't 
+*needed* to break the cycle since the cycle is already fully described 
+in DT, so anyone who can parse parents and phandles already has 
+sufficient information to detect it and break it at any point they 
+choose. However, as mentioned subsequently, breaking the cycle alone 
+isn't enough to guarantee that things will actually work in general.
 
-commit 3c4ed72a16bc ("media: camss: sm8250: Virtual channels for CSID")
-silently fixed the multiplication by four which would give a better
-value for the generated CID without mentioning what was being done or why.
+AFAICS what we fundamentally need to know is the initial voltage of the 
+supply regulator, to be able to short-circuit requiring the I/O domain 
+in order to query it from the regulator itself, and instead just 
+initialise the I/O domain directly. However that would still represent a 
+bunch of fiddly extra DT parsing, so for practical purposes it seems 
+reasonable to then short-cut that into directly describing the initial 
+setting of the I/O domain on the node itself, such that the consumer of 
+the binding can easily handle it all in a self-contained manner.
 
-Next up I haplessly changed the value back to "dt_id = vc * 4" since there
-didn't appear to be any logic behind it.
+Cheers,
+Robin
 
-Hans asked what the change was for and I honestly couldn't remember the
-provenance of it, so I dug in.
-
-Link: https://lore.kernel.org/linux-arm-msm/edd4bf9b-0e1b-883c-1a4d-50f4102c3924@xs4all.nl/
-
-Add a comment so the next hapless programmer doesn't make this same
-mistake.
-
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
- drivers/media/platform/qcom/camss/camss-csid-gen2.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/media/platform/qcom/camss/camss-csid-gen2.c b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-index 6ba2b10326444..cee50fc87e9de 100644
---- a/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-+++ b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-@@ -352,6 +352,11 @@ static void __csid_configure_stream(struct csid_device *csid, u8 enable, u8 vc)
- 		phy_sel = csid->phy.csiphy_id;
- 
- 	if (enable) {
-+		/*
-+		 * A value caled 'CID' gets generated internal to CAMSS logic
-+		 * which is a concatenation of [vc:6 | dt_id:2] hence we reuse
-+		 * the least significant two bits of the VC to 'stuff' the CID value.
-+		 */
- 		u8 dt_id = vc;
- 
- 		if (tg->enabled) {
--- 
-2.41.0
-
+>> One of the issues we're having here too is that we lose granularity. There
+>> are multiple domains inside an IO domain device and here we make the whole
+>> pinctrl device depend on all domains from one IO domain device (there can be
+>> multiple ones) while it is factually (on the HW level) only dependent on one
+>> domain. Considering (if I remember correctly) Heiko highly suggested we
+>> think about adding child nodes to the IO domain devices to have a DT node
+>> per domain in the IO domain device, how would this work with the suggested
+>> DT binding?
+> 
+> I started implementing that. I have moved the IO domains into subnodes
+> of the IO domain controller and started adding phandles from the pin
+> groups in rk3568-pinctrl.dtsi to the corresponding IO domains. After a
+> couple of hours I had phandles for around a quarter of the existing
+> groups of only one SoC, so doing this for all SoCs would really be a
+> cumbersome job.
+> 
+> In the end I realized this doesn't solve any problem. Also adding the
+> properties I suggested doesn't prevent us from adding the more specific
+> dependencies from the pins to their actual IO domains later.
+> 
+> Sascha
+> 
