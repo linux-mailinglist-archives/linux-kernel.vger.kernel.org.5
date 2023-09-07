@@ -2,54 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 545D9797BA0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26811797B51
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343884AbjIGSWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 14:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
+        id S1343643AbjIGSM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:12:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343856AbjIGSWD (ORCPT
+        with ESMTP id S235619AbjIGSM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:22:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F4A91
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:21:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71426C32794;
-        Thu,  7 Sep 2023 14:41:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694097676;
-        bh=GDw8VcMskclm+z/Az+gbb9bJJ9NFigeZLKwb7dJCYD0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JUtOwsEakxNgYZg8/7yCyRCOCoJXBzqIzBIEXEGJoa/K+MKI+vq9vDNe4effsQsXY
-         KSTGLcCpkwag5S7RHWoxdc1DT+Uc1/pDbBLDcdlbgGwCVsn3FnryV05Jt2QotuaEys
-         QRckSwD3xX+Rashoi55NASmCWSngZP1gYFttRusrO5WauwhHXmlFgV5F9gUCvPO21j
-         X0Hnxv5xA1XMz6wvKnIg7RheUuvwaGjvZ2+kLGB4+QyhYaRbeFm0wd6w3lHpkCOD2A
-         PXtcy88k9EwaCMwLv8mxy0kEgCM32V7BzzfdqkpEG1POqKCjpZQ6bmVEOafRBqxSbS
-         eUJEgQkGTkZnw==
-Date:   Thu, 7 Sep 2023 16:41:12 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Jeremy Cline <jeremy@jcline.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+0839b78e119aae1fec78@syzkaller.appspotmail.com,
-        "John W. Linville" <linville@tuxdriver.com>,
-        Ilan Elias <ilane@ti.com>, Dmitry Vyukov <dvyukov@google.com>,
-        Lin Ma <linma@zju.edu.cn>
-Subject: Re: [PATCH] nfc: nci: assert requested protocol is valid
-Message-ID: <20230907144112.GB434333@kernel.org>
-References: <20230906233347.823171-1-jeremy@jcline.org>
+        Thu, 7 Sep 2023 14:12:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A505170E
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:12:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694110330; x=1725646330;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=qBRbozEnLOq5XmQ4Git0Ti/wkjQhsqE+lyDpH5OsLnI=;
+  b=Ej8Bpt4uCQrCKwJHwL8juw3iW0v3IGugK5zuG9AzEMt3Hpcb2qf1M1J9
+   r9GXAVHmChTnCOKJoL0aC4Ed0qXsYYGtILOAEGTlnIFslReoGM4rwfLDJ
+   6YPFTkv+SXxVvpM300zzXrDhZVEHCxpok3Cg3yPNRj66wxHLCB9TH5JXI
+   tTQHWu7O3qdF1Ljf1yGBlvg6J/uE5LR0TlmSJUh/Fs7gOjlbVfceanQF2
+   SoP/Fr78QYF3Cc0KsLSKdTGvLVHrcA1yonrnr7L3gHcZrtykrudoBX3un
+   i92We9m4KZkTfNIWbL7Bv2OOzIwtZMPE9bvb96DlyZSrgn8oO6E1GcaNs
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="374758981"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="374758981"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 07:44:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="1072912158"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="1072912158"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 07 Sep 2023 07:44:07 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qeGEm-0001I0-2k;
+        Thu, 07 Sep 2023 14:44:04 +0000
+Date:   Thu, 7 Sep 2023 22:43:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        WANG Xuerui <git@xen0n.name>,
+        Jianmin Lv <lvjianmin@loongson.cn>
+Subject: drivers/pci/controller/pcie-mediatek.c:400:40: sparse: sparse:
+ incorrect type in argument 1 (different address spaces)
+Message-ID: <202309072237.9zxMv4MZ-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230906233347.823171-1-jeremy@jcline.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,62 +64,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc "John W. Linville" <linville@tuxdriver.com>
-   Ilan Elias <ilane@ti.com>
-   Dmitry Vyukov <dvyukov@google.com>
-   Lin Ma <linma@zju.edu.cn>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   7ba2090ca64ea1aa435744884124387db1fac70f
+commit: 57fc7323a8e7c2e7c1d5795ab63cb3ffea3cfdfb LoongArch: Add PCI controller support
+date:   1 year, 1 month ago
+config: loongarch-randconfig-r122-20230906 (https://download.01.org/0day-ci/archive/20230907/202309072237.9zxMv4MZ-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230907/202309072237.9zxMv4MZ-lkp@intel.com/reproduce)
 
-On Wed, Sep 06, 2023 at 07:33:47PM -0400, Jeremy Cline wrote:
-> The protocol is used in a bit mask to determine if the protocol is
-> supported. Assert the provided protocol is less than the maximum
-> defined so it doesn't potentially perform a shift-out-of-bounds and
-> provide a clearer error for undefined protocols vs unsupported ones.
-> 
-> Fixes: 6a2968aaf50c ("NFC: basic NCI protocol implementation")
-> Reported-and-tested-by: syzbot+0839b78e119aae1fec78@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=0839b78e119aae1fec78
-> Signed-off-by: Jeremy Cline <jeremy@jcline.org>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309072237.9zxMv4MZ-lkp@intel.com/
 
-Hi Jeremy,
+sparse warnings: (new ones prefixed by >>)
+>> drivers/pci/controller/pcie-mediatek.c:400:40: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile *address @@     got void [noderef] __iomem * @@
+   drivers/pci/controller/pcie-mediatek.c:400:40: sparse:     expected void volatile *address
+   drivers/pci/controller/pcie-mediatek.c:400:40: sparse:     got void [noderef] __iomem *
+   drivers/pci/controller/pcie-mediatek.c:523:44: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile *address @@     got void [noderef] __iomem * @@
+   drivers/pci/controller/pcie-mediatek.c:523:44: sparse:     expected void volatile *address
+   drivers/pci/controller/pcie-mediatek.c:523:44: sparse:     got void [noderef] __iomem *
+--
+   drivers/uio/uio_aec.c:44:49: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void [noderef] __iomem *int_flag @@     got void * @@
+   drivers/uio/uio_aec.c:44:49: sparse:     expected void [noderef] __iomem *int_flag
+   drivers/uio/uio_aec.c:44:49: sparse:     got void *
+>> drivers/uio/uio_aec.c:50:49: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/uio/uio_aec.c:50:49: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/uio/uio_aec.c:50:49: sparse:     got void *
+   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/uio/uio_aec.c:59:9: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/uio/uio_aec.c:59:9: sparse:     got void *
+   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/uio/uio_aec.c:59:9: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/uio/uio_aec.c:59:9: sparse:     got void *
+   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/uio/uio_aec.c:59:9: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/uio/uio_aec.c:59:9: sparse:     got void *
+   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/uio/uio_aec.c:59:9: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/uio/uio_aec.c:59:9: sparse:     got void *
+   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/uio/uio_aec.c:59:9: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/uio/uio_aec.c:59:9: sparse:     got void *
+   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/uio/uio_aec.c:59:9: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/uio/uio_aec.c:59:9: sparse:     got void *
+   drivers/uio/uio_aec.c:88:20: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *priv @@     got void [noderef] __iomem * @@
+   drivers/uio/uio_aec.c:88:20: sparse:     expected void *priv
+   drivers/uio/uio_aec.c:88:20: sparse:     got void [noderef] __iomem *
+>> drivers/uio/uio_aec.c:104:42: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/uio/uio_aec.c:104:42: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/uio/uio_aec.c:104:42: sparse:     got void *
+   drivers/uio/uio_aec.c:105:43: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/uio/uio_aec.c:105:43: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/uio/uio_aec.c:105:43: sparse:     got void *
+   drivers/uio/uio_aec.c:106:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/uio/uio_aec.c:106:34: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/uio/uio_aec.c:106:34: sparse:     got void *
+   drivers/uio/uio_aec.c:115:31: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem * @@     got void *priv @@
+   drivers/uio/uio_aec.c:115:31: sparse:     expected void [noderef] __iomem *
+   drivers/uio/uio_aec.c:115:31: sparse:     got void *priv
+   drivers/uio/uio_aec.c:128:42: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/uio/uio_aec.c:128:42: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/uio/uio_aec.c:128:42: sparse:     got void *
+   drivers/uio/uio_aec.c:129:43: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/uio/uio_aec.c:129:43: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/uio/uio_aec.c:129:43: sparse:     got void *
+   drivers/uio/uio_aec.c:131:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
+   drivers/uio/uio_aec.c:131:28: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/uio/uio_aec.c:131:28: sparse:     got void *
+   drivers/uio/uio_aec.c:136:31: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem * @@     got void *priv @@
+   drivers/uio/uio_aec.c:136:31: sparse:     expected void [noderef] __iomem *
+   drivers/uio/uio_aec.c:136:31: sparse:     got void *priv
 
-As a bug fix, with a Fixes tag, I'm assuming that this targets 'net'.
-As opposed to 'net-next'.
+vim +400 drivers/pci/controller/pcie-mediatek.c
 
-There is probably no need to repost for this, but in future please
-bear in mind the practice of specifying the target tree in
-the subject of Networking patches.
+b099631df160ec drivers/pci/host/pcie-mediatek.c Ryder Lee     2017-08-10  393  
+42fe2f91b4ebc0 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  394  static void mtk_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+43e6409db64dda drivers/pci/host/pcie-mediatek.c Honghui Zhang 2017-08-14  395  {
+42fe2f91b4ebc0 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  396  	struct mtk_pcie_port *port = irq_data_get_irq_chip_data(data);
+42fe2f91b4ebc0 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  397  	phys_addr_t addr;
+43e6409db64dda drivers/pci/host/pcie-mediatek.c Honghui Zhang 2017-08-14  398  
+42fe2f91b4ebc0 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  399  	/* MT2712/MT7622 only support 32-bit MSI addresses */
+42fe2f91b4ebc0 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04 @400  	addr = virt_to_phys(port->base + PCIE_MSI_VECTOR);
+42fe2f91b4ebc0 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  401  	msg->address_hi = 0;
+42fe2f91b4ebc0 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  402  	msg->address_lo = lower_32_bits(addr);
+42fe2f91b4ebc0 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  403  
+42fe2f91b4ebc0 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  404  	msg->data = data->hwirq;
+43e6409db64dda drivers/pci/host/pcie-mediatek.c Honghui Zhang 2017-08-14  405  
+42fe2f91b4ebc0 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  406  	dev_dbg(port->pcie->dev, "msi#%d address_hi %#x address_lo %#x\n",
+42fe2f91b4ebc0 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  407  		(int)data->hwirq, msg->address_hi, msg->address_lo);
+43e6409db64dda drivers/pci/host/pcie-mediatek.c Honghui Zhang 2017-08-14  408  }
+43e6409db64dda drivers/pci/host/pcie-mediatek.c Honghui Zhang 2017-08-14  409  
 
-   Subject: [PATCH net] ...
+:::::: The code at line 400 was first introduced by commit
+:::::: 42fe2f91b4ebc07c815fb334ea1262e6dc23bf77 PCI: mediatek: Implement chained IRQ handling setup
 
-Also, please include addresses indicated by the following in the CC list.
+:::::: TO: Honghui Zhang <honghui.zhang@mediatek.com>
+:::::: CC: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 
-   get_maintainer.pl --min-percent 25 x.patch
-
-The above notwithstanding, this looks good to me.
-
-Reviewed-by: Simon Horman <horms@kernel.org>
-
-> ---
->  net/nfc/nci/core.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
-> index fff755dde30d..6c9592d05120 100644
-> --- a/net/nfc/nci/core.c
-> +++ b/net/nfc/nci/core.c
-> @@ -909,6 +909,11 @@ static int nci_activate_target(struct nfc_dev *nfc_dev,
->  		return -EINVAL;
->  	}
->  
-> +	if (protocol >= NFC_PROTO_MAX) {
-> +		pr_err("the requested nfc protocol is invalid\n");
-> +		return -EINVAL;
-> +	}
-> +
->  	if (!(nci_target->supported_protocols & (1 << protocol))) {
->  		pr_err("target does not support the requested protocol 0x%x\n",
->  		       protocol);
-> -- 
-> 2.41.0
-> 
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
