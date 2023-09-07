@@ -2,123 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B3E797A45
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 517FA797A6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244346AbjIGRfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49858 "EHLO
+        id S245371AbjIGRkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:40:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231401AbjIGRfT (ORCPT
+        with ESMTP id S245224AbjIGRjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:35:19 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85541990;
-        Thu,  7 Sep 2023 10:34:51 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 387EUMEN012475;
-        Thu, 7 Sep 2023 09:30:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694097022;
-        bh=iizL7oHkzdtUKafgy+23NXIf5F01F0/spqcKBDyXeVQ=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=ByyPNf+GgYBrJIgydC7bWdsAj4rOO6PTcSDl88YbvbE3oTr4so4jvcAfYbrISRyrX
-         Bb+SnLGUlkGuerf3azo87d6eemLLqf+/yeLrO2akFC1qv2tb2HPUfqzFkXiwrXmK5U
-         ltt8ZIpAhFo7PeTcuqfXuC511zp1ZGyEXA1hFpek=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 387EUM7L016064
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 7 Sep 2023 09:30:22 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 7
- Sep 2023 09:30:21 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 7 Sep 2023 09:30:21 -0500
-Received: from [10.249.131.134] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 387EUHim010301;
-        Thu, 7 Sep 2023 09:30:18 -0500
-Message-ID: <e0b6ddeb-7129-d76f-0584-112d79e3a1fb@ti.com>
-Date:   Thu, 7 Sep 2023 20:00:16 +0530
+        Thu, 7 Sep 2023 13:39:35 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FCABC
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:39:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23823C4AF6A;
+        Thu,  7 Sep 2023 14:32:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694097167;
+        bh=LjOKbvV/82aSzI3htAHPz7uDv9ANVHELjK+4PnKTL/g=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=gKP9BeFsQt7ozkUWNv4n1BdlBM/7y3ZALc00V4LDGWwsmx7F82Axgp6ULm+bEvfg1
+         ddzmCnh+C039DfFl3VLi7GD4EZQpfjqABJj7/GZSPTihl0nuUHRU31KdKfBRQNR1C4
+         tUAxmQk+9tOwmtZT+nCERD4tPgSUjzrLzvxJ6ATDqggOSF+6r5Q4H/wp1HIz4iqhpo
+         wKOZ8b1k6AHHMn0LJFh5J9zp82durlushh3KtncNhv6NsYSB0W9H25btgRZfUVnTaY
+         6dD9r7q3U5KpMQz1Nxo8nkdzT5cxuLE5i8eQ4L7hk4YeLsMBVg1/u8HoDcY2M9rjO9
+         QW57Z8X3VnZfw==
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230906-topic-drm_connector_doc-v2-1-1f2dcaa43269@gmail.com>
+References: <20230906-topic-drm_connector_doc-v2-1-1f2dcaa43269@gmail.com>
+Subject: Re: (subset) [PATCH v2] drm/connector: document
+ DRM_MODE_COLORIMETRY_COUNT
+Message-Id: <169409716450.2201230.1132363284756871897.b4-ty@kernel.org>
+Date:   Thu, 07 Sep 2023 16:32:44 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 4/7] arm64: dts: ti: k3-j784s4-main: Add the main
- domain watchdog instances
-Content-Language: en-US
-To:     "Kumar, Udit" <u-kumar1@ti.com>, <robh+dt@kernel.org>, <nm@ti.com>,
-        <vigneshr@ti.com>, <conor+dt@kernel.org>, <kristo@kernel.org>,
-        <rzysztof.kozlowski+dt@linaro.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230907115210.28082-1-j-keerthy@ti.com>
- <20230907115210.28082-5-j-keerthy@ti.com>
- <19f9895f-0975-713e-f2eb-fd5e16d6fb98@ti.com>
-From:   "J, KEERTHY" <j-keerthy@ti.com>
-In-Reply-To: <19f9895f-0975-713e-f2eb-fd5e16d6fb98@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 06 Sep 2023 22:47:38 +0200, Javier Carrasco wrote:
+> The drm_colorspace enum member DRM_MODE_COLORIMETRY_COUNT has been
+> properly documented by moving the description out of the enum to the
+> member description list to get rid of an additional warning and improve
+> documentation clarity.
+> 
+> 
 
+Applied to drm/drm-misc (drm-misc-next).
 
-On 9/7/2023 7:44 PM, Kumar, Udit wrote:
-> Thanks Keerthy,
-> 
-> On 9/7/2023 5:22 PM, Keerthy wrote:
->> There are totally 19 instances of watchdog module. One each for the
->> 8 A72 cores, one each for the 4 C7x cores, 1 for the GPU, 1 each
->> for the 6 R5F cores in the main domain. Keeping only the A72 instances
->> enabled and disabling the rest by default.
->>
->> Signed-off-by: Keerthy <j-keerthy@ti.com>
->> ---
->>   arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 182 +++++++++++++++++++++
->>   1 file changed, 182 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi 
->> b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
->> index 7f7eab348520..66ab947a1081 100644
->> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
->> @@ -1574,4 +1574,186 @@
->>           reg = <0x00 0x700000 0x00 0x1000>;
->>           ti,esm-pins = <688>, <689>;
->>       };
->> +
->> +    watchdog0: watchdog@2200000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x2200000 0x00 0x100>;
->> +        clocks = <&k3_clks 348 1>;
->> +        power-domains = <&k3_pds 348 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 348 0>;
->> +        assigned-clock-parents = <&k3_clks 348 4>;
->> +    };
-> 
-> In ESM, patch I see only output of 2 watchdog in cascaded for reset.
-> 
-> if you want to keep enable other wdt, then IMO they should be able to 
-> reset the core/SOC
-> 
-> on timeout
+Thanks!
+Maxime
 
-I can add the other ESM events to the ESM node to enable that. I will 
-wait if there are more comments. If this is the only one comment i will 
-post a v3 of the esm patch.
-
-- Keerthy
-> 
-> 
->> +
->> +    [..]};
