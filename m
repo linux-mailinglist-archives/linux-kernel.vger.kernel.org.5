@@ -2,133 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E54E3797DE9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 23:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27450797DEC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 23:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235117AbjIGV01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 17:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
+        id S240130AbjIGV10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 17:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230415AbjIGV00 (ORCPT
+        with ESMTP id S230092AbjIGV1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 17:26:26 -0400
-Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73F9B4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 14:26:21 -0700 (PDT)
-Received: from pps.filterd (m0134425.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 387KXi63011851;
-        Thu, 7 Sep 2023 21:25:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pps0720; bh=Gw2Iox6OnwCegnV7a8roAHvWg68M10HO+zn9hkvI+zM=;
- b=L9+lFd504catNEZT1L8TBrMi+5fi4w60Eu3mdIVtQi2lRwCJlUzCz6PSpgDRTzanNaO3
- q3EhxViMHOl71PXo5zbymYxOl6gb7fQMyx/G+gkDsi1FZ0FoMNmPBmjhWcCaX6NFlR5j
- HnA5Hw6eAifB386dSnmptHZ/mtoAi1tQTJsC1C4ffBKWz1egtdobhEYqXjLmSI57JabH
- TvMqVHr+YVXyG9wiNxBgoA2y6r9EHeEFIEHhmrRrcpdrZZbmVmGlxQB9YjaZy3e/Lgs2
- YJhpssqTtE1T0WlKLRpO1ttt/U+avqjvDlODwLkYEa1yFsX+SPpRsZ+0Uxk3lmh8nqYH JQ== 
-Received: from p1lg14881.it.hpe.com ([16.230.97.202])
-        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3sy5wm14n6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Sep 2023 21:25:39 +0000
-Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by p1lg14881.it.hpe.com (Postfix) with ESMTPS id C60FD805E48;
-        Thu,  7 Sep 2023 21:25:38 +0000 (UTC)
-Received: from swahl-home.5wahls.com (unknown [16.231.227.39])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTPS id C4B3680CE74;
-        Thu,  7 Sep 2023 21:25:36 +0000 (UTC)
-Date:   Thu, 7 Sep 2023 16:25:35 -0500
-From:   Steve Wahl <steve.wahl@hpe.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/platform/uv: Use alternate source for socket to node
- data
-Message-ID: <ZPo/z0TaWahjgglT@swahl-home.5wahls.com>
-References: <20230807141730.1117278-1-steve.wahl@hpe.com>
- <ad1ff365-4160-87b9-4199-ace5ff1250e1@intel.com>
- <ZPI1IP38l/X7K/k9@swahl-home.5wahls.com>
- <ZPdC2OxhPznQuYk8@swahl-home.5wahls.com>
- <29cd0ee1-c638-9d8e-8a1c-8c2aa2e167e7@intel.com>
+        Thu, 7 Sep 2023 17:27:25 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD3311BCD
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 14:27:20 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b89b0c73d7so2497585ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 14:27:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1694122040; x=1694726840; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kfkT0bUg5dFL0RmzhNpX1DLqx8M5IR6kOY1LkXY1afw=;
+        b=g+XOWtoIE/ibQn0FJrDND5KU+PZ+xvyvKBTF8F6zDEh0ZO/huL491G2Gdqw6qQ0XUs
+         yqdV6uDNI297dy5k7eO1RMj6NIhQnTy7AXrwWNRwh/WEy1xPRKnJ5d7dx0iuRvtNHIx8
+         obCLpvhPnbj08xzy2CTkeo6ToOW/vfFLPeECkg5ib0FOm4akEF5eCSml6EkWCn5bfF9U
+         LwG8hHrNjWDeFVY7+hGWCUp4XWbD+LhPNeb8MJUd+fz2S9L/M14k3ZdeEU4ILqiUuwaR
+         gvrBqqOrWfvLkdV1fvcih25QRWvRdXoIGC7/sNVVNbmcUZh3zN6yVX59UB2dY2uF4j7I
+         GvPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694122040; x=1694726840;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kfkT0bUg5dFL0RmzhNpX1DLqx8M5IR6kOY1LkXY1afw=;
+        b=I7lEnRKeVr3JUvC2UfFWK17TdwmANxpQ3kIWXLndRaXk5ojV4URjNc6Xxt+CRowyru
+         uXbhoHANWqKCJqFiQUf6WwY7M2Hh0QJQbKBIJA0bMcShXB8kaoKu4u+sg6ngA10xKxfA
+         IrtUtTO/g24CLAYT1seQjzEnQRakUitToRtJL/UdsgodCb8zLiVP8nPkR31YtrGmtXh1
+         N8G8JtblxkBaGom5bZIDzBvJ03dDBJDBd+lKGv0HsGZc6fxn1H/s21xkyjrG1CcFTg+C
+         DJuXJObqtRu9OM53tBLRpOxizoBIWYCcD7zpHLyl7ljsSw2DzZCQyJTuAy2bX8PjDqOy
+         y4/w==
+X-Gm-Message-State: AOJu0YwjIJdqupD77d1W9E2FoNR6vMOGaqNfARqQUOXMK8Rg8XGL7Ysw
+        hv1RizZq1DeyPQWMw2cEkqXvWw==
+X-Google-Smtp-Source: AGHT+IHR7HofpF9T2MmNlZB6esIBkpsiTRR+T3BVuKS/LfV0XwDwnA7XryRIc9xRtzRHN5bkByOCfw==
+X-Received: by 2002:a17:902:ced1:b0:1b8:a469:53d8 with SMTP id d17-20020a170902ced100b001b8a46953d8mr889000plg.0.1694122040232;
+        Thu, 07 Sep 2023 14:27:20 -0700 (PDT)
+Received: from ?IPV6:2600:380:7457:42ac:56e5:c632:552:f5e0? ([2600:380:7457:42ac:56e5:c632:552:f5e0])
+        by smtp.gmail.com with ESMTPSA id jh2-20020a170903328200b001bc35b14c99sm188752plb.212.2023.09.07.14.27.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Sep 2023 14:27:19 -0700 (PDT)
+Message-ID: <7df3e30a-aa31-495c-9d59-cb6080364f61@kernel.dk>
+Date:   Thu, 7 Sep 2023 15:27:15 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <29cd0ee1-c638-9d8e-8a1c-8c2aa2e167e7@intel.com>
-X-Proofpoint-ORIG-GUID: v3YLW1u11QWC_ZPq3ElKlYnkG3l9DC3U
-X-Proofpoint-GUID: v3YLW1u11QWC_ZPq3ElKlYnkG3l9DC3U
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-07_13,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 priorityscore=1501 malwarescore=0 mlxscore=0
- phishscore=0 spamscore=0 impostorscore=0 mlxlogscore=650 suspectscore=0
- bulkscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309070189
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: WARNING in __floppy_read_block_0
+Content-Language: en-US
+To:     Sanan Hasanov <Sanan.Hasanov@ucf.edu>,
+        "efremov@linux.com" <efremov@linux.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
+        "contact@pgazz.com" <contact@pgazz.com>
+References: <BL0PR11MB310616FC87790EFFEDCC7CD0E1EEA@BL0PR11MB3106.namprd11.prod.outlook.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <BL0PR11MB310616FC87790EFFEDCC7CD0E1EEA@BL0PR11MB3106.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 01:57:16PM -0700, Dave Hansen wrote:
-> On 9/5/23 08:01, Steve Wahl wrote:
-> > On Fri, Sep 01, 2023 at 02:01:52PM -0500, Steve Wahl wrote:
-> >> On Fri, Sep 01, 2023 at 10:18:20AM -0700, Dave Hansen wrote:
-> >>> On 8/7/23 07:17, Steve Wahl wrote:
-> >>>> When nr_cpus is set to a smaller number than actually present, the
-> >>>> cpu_to_node() mapping information for unused CPUs is not available to
-> >>>> build_socket_tables().  This results in an incomplete table and will
-> >>>> later cause use of a -1 value for some array indexing, and eventual
-> >>>> kernel page faults.
-> >>>>
-> >>>> Switch to using the __apicid_to_node array, which still contains all
-> >>>> the information mapping apicids to nodes, even for CPUs disabled with
-> >>>> a reduced nr_cpus setting.
-> >>> Before, the lookup went:
-> >>>
-> >>> 	CPU => APICID => SOCKET
-> >>>
-> >>> But when the CPU wasn't present, there wasn't a way to start this lookup.
-> >>>
-> >>> So, instead of looping over all CPUs, looking up their APICIDs and
-> >>> mapping those to sockets, just take CPUs out of the equation entirely.
-> >>>
-> >>> Loop over all APICIDs which are mapped to a valid NUMA node.  Then just
-> >>> extract the socket-id from the APICID.
-> >>>
-> >>> Right?
-> >>>
-> >>> That seems sane enough.  It's also way less code than the previous approach.
-> >> Yes.  That's it precisely.  And, yes, way less code.
-> > Are you willling to give a "Reviewed-by:"?
+On 9/7/23 3:21 PM, Sanan Hasanov wrote:
+> Good day, dear maintainers,
 > 
-> Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
-> 
-> Does this need a stable@ tag when it gets applied?
+> We found a bug using a modified kernel configuration file used by syzbot.
 
-I hadn't thought about that.  I think it meets the requirements in
-stable-kernel-rules.rst.  And it looks like it should apply without
-conflicts or prerequisites.  So it probably should.  Is there a way to
-add a cc:stable tag at this point?
+[snip]
 
-Thank you, 
+To the best of my knowledge, nobody cares about floppy enough to tend to
+any of the syzbot reports. I would strongly suggest that any testing of
+floppy by syzbot gets disabled until such time that a) the driver is
+either re-written to not be a piece of XXX, or b) someone motivated
+starts tackling these reports.
 
---> Steve Wahl
+As it stands, it's just noise in the block syzbot reports.
 
 -- 
-Steve Wahl, Hewlett Packard Enterprise
+Jens Axboe
+
