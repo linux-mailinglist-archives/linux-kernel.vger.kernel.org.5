@@ -2,264 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F77D7979C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97480797977
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbjIGRUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
+        id S231693AbjIGRP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243144AbjIGRUa (ORCPT
+        with ESMTP id S230310AbjIGRPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:20:30 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113DA2685
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:20:06 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id af79cd13be357-770538a2946so135159285a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 10:20:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694107139; x=1694711939; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=T/WqaSkwJ/wvgxciY6xG5yXoKMXUwDNF7ZMhyjAl3dg=;
-        b=sKfVXSAO8+tVFs/JKnSUF10ddieWjad38VpvF1F9+l0umnexb2P9PI2299tUhZApoV
-         yks2/MthWEqtTlWWif9ApuATuYSpXAyxEPdzaDrYrB1vSl+7OEQQff04C6G+9ZHoWn0S
-         sLMJ+e7uHNSnvxcis43PC8Oqs25Nef4bgRqVqZs3Hmk230FDaEy4qfulNoY5xjOtOwpW
-         crx9mGCvKZTY71rc2T+xr+MENLNtXhFjj2D+WpmVO44f3AsicKwynJnoclmlrodpJZS8
-         NbTVA/VtpGgKw9nNUlV1HA1FPNCdFFV8zz2TP/3jGgttDIFUFtCgP9OApe2Ds6R0mVVe
-         VKeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694107139; x=1694711939;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=T/WqaSkwJ/wvgxciY6xG5yXoKMXUwDNF7ZMhyjAl3dg=;
-        b=B11l0VflIRfNbis/UzgxWa4Gh3/aM3AHoFCrYQPRWqNelqVHPqPiNdavtqTkWkJw0m
-         9UU6TthJxmiTsCCC8iM+HTbcUQWlSQL8BkYMIOtL9FoOG9yLSV/VDwEZv1+NlgFI0qFO
-         Unk0bBJ5P4Ktvgn40Gux/GRpNbTW20Si/QpdUZMIajhdU3zITDH7jWn/DlVRLhttDbWH
-         vXrjI7IxTeAFclMZ8H1aMAEMGW3R37wLOtWMOkBzN4S0xZGnc7FGO4Z75HIhGYk9K2Y6
-         /HQ+SJC2jloacxOJWMtlGQwlfZlPk7Rmmsfk/zYjTqnyA2SrTtQfKbP2yojUltVUGvLT
-         44Yg==
-X-Gm-Message-State: AOJu0Yz7LSp1dQLJgV+6BencW+lpvcCpJs3jLiALK4FCb85DuVHt+0AU
-        /fpKgnyl1BdXMUekC0plkYqcOwSovKNEtA==
-X-Google-Smtp-Source: AGHT+IE2Uit7N3S9SR5qftU0oDHFbdy+GAjL3k4RaTzFuKFUAbWpfVTvea/hgEAbk4PmwL4jjFvknP/BCQlIsg==
-X-Received: from jiao.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:10f3])
- (user=jiaozhou job=sendgmr) by 2002:a81:b708:0:b0:573:8316:8d04 with SMTP id
- v8-20020a81b708000000b0057383168d04mr5076ywh.4.1694106108565; Thu, 07 Sep
- 2023 10:01:48 -0700 (PDT)
-Date:   Thu,  7 Sep 2023 17:01:46 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230907170146.1055954-1-jiaozhou@google.com>
-Subject: [PATCH v5] efivarfs: Add uid/gid mount options
-From:   Jiao Zhou <jiaozhou@google.com>
-To:     Linux FS Development <linux-fsdevel@vger.kernel.org>
-Cc:     Jiao Zhou <jiaozhou@google.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Jeremy Kerr <jk@ozlabs.org>, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mjg59@srcf.ucam.org,
-        Matthew Garrett <mgarrett@aurora.tech>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Thu, 7 Sep 2023 13:15:24 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7E8B2
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:14:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694106895; x=1725642895;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to;
+  bh=9ZZkTEqlH0Qw0Ksag2UQ8FZGRyx63ReWeP4PizplmOQ=;
+  b=bUtmZMGKVhyKsl0XHymIe/qan6f/77+feMiA0VhnH6/HEFv/c9TFoAs9
+   E6zFmnm5YVHzzWvI1OwwVxz9uN5zvl0uDiolE68ckTSETg/WPzbC2uDH7
+   gjXoS/zkPgWYD1E86Iy51PJQO4l6o4Ne2nnBor2B1XqE8mc0773Fp08HX
+   Xvun9HhQ70zr3eXK2C0Q366X/HaC0ugSHJhjIZbUC1H3myo8oo8/k78pu
+   LTejCE7/dlETMbJEp39h87RH5PoGZ8vyAg8UbH8SP8/TdOGg4P83ekyMK
+   zmUGx0Z7hrIYNvEtcApKh86TeA9wG/3VdrTRtXr3dfnoMq/FKKE5WwGYp
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="376321868"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="376321868"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 10:04:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="885285316"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="885285316"
+Received: from ningle-mobl2.amr.corp.intel.com (HELO [10.209.13.77]) ([10.209.13.77])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 10:04:02 -0700
+Content-Type: multipart/mixed; boundary="------------Y9D6LFKBxPpGhCqj5khk0TSE"
+Message-ID: <cb958f57-6a3a-d626-da51-53ad0e61870c@intel.com>
+Date:   Thu, 7 Sep 2023 10:04:16 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] x86/sev-es: Do not use copy_from_kernel_nofault in early
+ #VC handler
+Content-Language: en-US
+To:     Adam Dunlap <acdunlap@google.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nikunj A Dadhania <nikunj@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>, Jacob Xu <jacobhxu@google.com>
+References: <20230906224541.2778523-1-acdunlap@google.com>
+ <e037f1c0-aaf6-7951-04ea-6d27e557b61b@intel.com>
+ <CAMBK9=b9V6WxYZNrVPNV5vzBZ-mT_noBAxod=ijqrV3bUXAUyA@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <CAMBK9=b9V6WxYZNrVPNV5vzBZ-mT_noBAxod=ijqrV3bUXAUyA@mail.gmail.com>
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow UEFI variables to be modified by non-root processes
-in order to run sandboxed code. This doesn't change the behavior 
-of mounting efivarfs unless uid/gid are specified; 
-by default both are set to root.
+This is a multi-part message in MIME format.
+--------------Y9D6LFKBxPpGhCqj5khk0TSE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Jiao Zhou <jiaozhou@google.com>
-Acked-by: Matthew Garrett <mgarrett@aurora.tech>
----
-Changelog since v1:
-- Add missing sentinel entry in fs_parameter_spec[] array.
-- Fix a NULL pointer dereference.
+On 9/6/23 16:25, Adam Dunlap wrote:
+>> Usually, we'll add some gunk in arch/x86/boot/compressed/misc.h to
+>> override the troublesome implementation.  In this case, it would make a
+>> lot of sense to somehow avoid touching boot_cpu_data.x86_virt_bits in
+>> the first place.
+> Thanks for the comment. I realize this patch is doing something a bit misleading
+> here. In this case, "early" does not refer to the compressed kernel, but
+> actually the regular kernel but in the stage with this early #VC handler
+> vc_boot_ghcb (instead of the usual vc_raw_handle_exception). This #VC handler
+> triggers for the first time on a cpuid instruction in secondary_startup_64, but
+> boot_cpu_data.x86_virt_bits is not initialized until setup_arch inside of
+> start_kernel, which is at the end of secondary_startup_64.
 
-Changelog since v2:
-- Format the patch description.
+How about something like the attached patch?
 
-Changelog since v3:
-- Add gid and uid check to make sure that ids are valid.
-- Drop the indentation for one block.
-- Use sizeof(*sfi) to allocate memory to avoids future problems if sfi ever changes type.
+It avoids passing around 'is_early' everywhere, which I'm sure we'll get
+wrong at some point.  If we get it wrong, we lose *ALL* the checking
+that copy_from_kernel*() does in addition to the canonical checks.
 
-Changelog since v4:
-- Fix the use of sizeof.
+The attached patch at least preserves the userspace address checks.
 
----
- fs/efivarfs/inode.c    |  4 +++
- fs/efivarfs/internal.h |  9 +++++
- fs/efivarfs/super.c    | 74 ++++++++++++++++++++++++++++++++++++++++--
- 3 files changed, 84 insertions(+), 3 deletions(-)
+This also makes me wonder how much other code is called via the early
+exception handlers that's subtly broken.  I scanned a function or two
+deep and the instruction decoding was the most guilty looking thing.
+But a closer look would be appreciated.
 
-diff --git a/fs/efivarfs/inode.c b/fs/efivarfs/inode.c
-index db9231f0e77b..06dfc73fda04 100644
---- a/fs/efivarfs/inode.c
-+++ b/fs/efivarfs/inode.c
-@@ -20,9 +20,13 @@ struct inode *efivarfs_get_inode(struct super_block *sb,
- 				const struct inode *dir, int mode,
- 				dev_t dev, bool is_removable)
- {
-+	struct efivarfs_fs_info *fsi = sb->s_fs_info;
- 	struct inode *inode = new_inode(sb);
-+	struct efivarfs_mount_opts *opts = &fsi->mount_opts;
- 
- 	if (inode) {
-+		inode->i_uid = opts->uid;
-+		inode->i_gid = opts->gid;
- 		inode->i_ino = get_next_ino();
- 		inode->i_mode = mode;
- 		inode->i_atime = inode->i_mtime = inode_set_ctime_current(inode);
-diff --git a/fs/efivarfs/internal.h b/fs/efivarfs/internal.h
-index 8ebf3a6a8aa2..c66647f5c0bd 100644
---- a/fs/efivarfs/internal.h
-+++ b/fs/efivarfs/internal.h
-@@ -9,6 +9,15 @@
- #include <linux/list.h>
- #include <linux/efi.h>
- 
-+struct efivarfs_mount_opts {
-+	kuid_t uid;
-+	kgid_t gid;
-+};
-+
-+struct efivarfs_fs_info {
-+	struct efivarfs_mount_opts mount_opts;
-+};
-+
- struct efi_variable {
- 	efi_char16_t  VariableName[EFI_VAR_NAME_LEN/sizeof(efi_char16_t)];
- 	efi_guid_t    VendorGuid;
-diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
-index e028fafa04f3..ba14736ebae0 100644
---- a/fs/efivarfs/super.c
-+++ b/fs/efivarfs/super.c
-@@ -8,6 +8,7 @@
- #include <linux/efi.h>
- #include <linux/fs.h>
- #include <linux/fs_context.h>
-+#include <linux/fs_parser.h>
- #include <linux/module.h>
- #include <linux/pagemap.h>
- #include <linux/ucs2_string.h>
-@@ -24,6 +25,21 @@ static void efivarfs_evict_inode(struct inode *inode)
- 	clear_inode(inode);
- }
- 
-+static int efivarfs_show_options(struct seq_file *m, struct dentry *root)
-+{
-+	struct super_block *sb = root->d_sb;
-+	struct efivarfs_fs_info *sbi = sb->s_fs_info;
-+	struct efivarfs_mount_opts *opts = &sbi->mount_opts;
-+
-+	if (!uid_eq(opts->uid, GLOBAL_ROOT_UID))
-+		seq_printf(m, ",uid=%u",
-+				from_kuid_munged(&init_user_ns, opts->uid));
-+	if (!gid_eq(opts->gid, GLOBAL_ROOT_GID))
-+		seq_printf(m, ",gid=%u",
-+				from_kgid_munged(&init_user_ns, opts->gid));
-+	return 0;
-+}
-+
- static int efivarfs_statfs(struct dentry *dentry, struct kstatfs *buf)
- {
- 	const u32 attr = EFI_VARIABLE_NON_VOLATILE |
-@@ -64,6 +80,7 @@ static const struct super_operations efivarfs_ops = {
- 	.statfs = efivarfs_statfs,
- 	.drop_inode = generic_delete_inode,
- 	.evict_inode = efivarfs_evict_inode,
-+	.show_options = efivarfs_show_options,
- };
- 
- /*
-@@ -225,6 +242,45 @@ static int efivarfs_destroy(struct efivar_entry *entry, void *data)
- 	return 0;
- }
- 
-+enum {
-+	Opt_uid, Opt_gid,
-+};
-+
-+static const struct fs_parameter_spec efivarfs_parameters[] = {
-+	fsparam_u32("uid",			Opt_uid),
-+	fsparam_u32("gid",			Opt_gid),
-+	{},
-+};
-+
-+static int efivarfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
-+{
-+	struct efivarfs_fs_info *sbi = fc->s_fs_info;
-+	struct efivarfs_mount_opts *opts = &sbi->mount_opts;
-+	struct fs_parse_result result;
-+	int opt;
-+
-+	opt = fs_parse(fc, efivarfs_parameters, param, &result);
-+	if (opt < 0)
-+		return opt;
-+
-+	switch (opt) {
-+	case Opt_uid:
-+		opts->uid = make_kuid(current_user_ns(), result.uint_32);
-+		if (!uid_valid(opts->uid))
-+			return -EINVAL;
-+		break;
-+	case Opt_gid:
-+		opts->gid = make_kgid(current_user_ns(), result.uint_32);
-+		if (!gid_valid(opts->gid))
-+			return -EINVAL;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int efivarfs_fill_super(struct super_block *sb, struct fs_context *fc)
- {
- 	struct inode *inode = NULL;
-@@ -270,11 +326,22 @@ static int efivarfs_get_tree(struct fs_context *fc)
- }
- 
- static const struct fs_context_operations efivarfs_context_ops = {
--	.get_tree	= efivarfs_get_tree,
-+	.get_tree = efivarfs_get_tree,
-+	.parse_param = efivarfs_parse_param,
- };
- 
- static int efivarfs_init_fs_context(struct fs_context *fc)
- {
-+	struct efivarfs_fs_info *sfi;
-+
-+	sfi = kzalloc(sizeof(*sfi), GFP_KERNEL);
-+	if (!sfi)
-+		return -ENOMEM;
-+
-+	sfi->mount_opts.uid = GLOBAL_ROOT_UID;
-+	sfi->mount_opts.gid = GLOBAL_ROOT_GID;
-+
-+	fc->s_fs_info = sfi;
- 	fc->ops = &efivarfs_context_ops;
- 	return 0;
- }
-@@ -291,10 +358,11 @@ static void efivarfs_kill_sb(struct super_block *sb)
- }
- 
- static struct file_system_type efivarfs_type = {
--	.owner   = THIS_MODULE,
--	.name    = "efivarfs",
-+	.owner = THIS_MODULE,
-+	.name = "efivarfs",
- 	.init_fs_context = efivarfs_init_fs_context,
- 	.kill_sb = efivarfs_kill_sb,
-+	.parameters	= efivarfs_parameters,
- };
- 
- static __init int efivarfs_init(void)
--- 
-2.42.0.283.g2d96d420d3-goog
+Also, what's the root cause here?  What's causing the early exception?
+It is some silly CPUID leaf?  Should we be more careful to just avoid
+these exceptions?
+--------------Y9D6LFKBxPpGhCqj5khk0TSE
+Content-Type: text/x-patch; charset=UTF-8; name="xvb.patch"
+Content-Disposition: attachment; filename="xvb.patch"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL2FyY2gveDg2L21tL21hY2Nlc3MuYyBiL2FyY2gveDg2L21tL21hY2Nl
+c3MuYwppbmRleCA1YTUzYzJjYzE2OWMuLjRmNzZjMzRkNzBhMiAxMDA2NDQKLS0tIGEvYXJj
+aC94ODYvbW0vbWFjY2Vzcy5jCisrKyBiL2FyY2gveDg2L21tL21hY2Nlc3MuYwpAQCAtNywx
+NCArNywyNCBAQAogYm9vbCBjb3B5X2Zyb21fa2VybmVsX25vZmF1bHRfYWxsb3dlZChjb25z
+dCB2b2lkICp1bnNhZmVfc3JjLCBzaXplX3Qgc2l6ZSkKIHsKIAl1bnNpZ25lZCBsb25nIHZh
+ZGRyID0gKHVuc2lnbmVkIGxvbmcpdW5zYWZlX3NyYzsKKwlib29sIHJldDsKIAogCS8qCi0J
+ICogUmFuZ2UgY292ZXJpbmcgdGhlIGhpZ2hlc3QgcG9zc2libGUgY2Fub25pY2FsIHVzZXJz
+cGFjZSBhZGRyZXNzCi0JICogYXMgd2VsbCBhcyBub24tY2Fub25pY2FsIGFkZHJlc3MgcmFu
+Z2UuIEZvciB0aGUgY2Fub25pY2FsIHJhbmdlCi0JICogd2UgYWxzbyBuZWVkIHRvIGluY2x1
+ZGUgdGhlIHVzZXJzcGFjZSBndWFyZCBwYWdlLgorCSAqIERvIG5vdCBhbGxvdyB1c2Vyc3Bh
+Y2UgYWRkcmVzc2VzLiAgVGhpcyBkaXNhbGxvd3MKKwkgKiBub3JtYWwgdXNlcnNwYWNlIGFu
+ZCB0aGUgdXNlcnNwYWNlIGd1YXJkIHBhZ2U6CiAJICovCi0JcmV0dXJuIHZhZGRyID49IFRB
+U0tfU0laRV9NQVggKyBQQUdFX1NJWkUgJiYKLQkgICAgICAgX19pc19jYW5vbmljYWxfYWRk
+cmVzcyh2YWRkciwgYm9vdF9jcHVfZGF0YS54ODZfdmlydF9iaXRzKTsKKwlpZiAodmFkZHIg
+PCBUQVNLX1NJWkVfTUFYICsgUEFHRV9TSVpFKQorCQlyZXR1cm4gZmFsc2U7CisKKwkvKgor
+CSAqIEFsbG93IGV2ZXJ5dGhpbmcgZHVyaW5nIGVhcmx5IGJvb3QgYmVmb3JlICd4ODZfdmly
+dF9iaXRzJworCSAqIGlzIGluaXRpYWxpemVkLiAgTmVlZGVkIGZvciBpbnN0cnVjdGlvbiBk
+ZWNvZGluZyBpbiBlYXJseQorCSAqIGV4Y2VwdGlvbiBoYW5kbGVycy4KKwkgKi8KKwlpZiAo
+IWJvb3RfY3B1X2RhdGEueDg2X3ZpcnRfYml0cykKKwkJcmV0dXJuIHRydWU7CisKKwlyZXR1
+cm4gX19pc19jYW5vbmljYWxfYWRkcmVzcyh2YWRkciwgYm9vdF9jcHVfZGF0YS54ODZfdmly
+dF9iaXRzKTsKIH0KICNlbHNlCiBib29sIGNvcHlfZnJvbV9rZXJuZWxfbm9mYXVsdF9hbGxv
+d2VkKGNvbnN0IHZvaWQgKnVuc2FmZV9zcmMsIHNpemVfdCBzaXplKQo=
+
+--------------Y9D6LFKBxPpGhCqj5khk0TSE--
