@@ -2,47 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2189F79786D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF3C79777E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243751AbjIGQqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38278 "EHLO
+        id S235677AbjIGQ0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242532AbjIGQqZ (ORCPT
+        with ESMTP id S239575AbjIGQ0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:46:25 -0400
-Received: from imap5.colo.codethink.co.uk (imap5.colo.codethink.co.uk [78.40.148.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFC3211B;
-        Thu,  7 Sep 2023 09:45:48 -0700 (PDT)
-Received: from [134.238.52.102] (helo=rainbowdash)
-        by imap5.colo.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
-        id 1qeHce-0052RG-DY; Thu, 07 Sep 2023 17:12:48 +0100
-Received: from ben by rainbowdash with local (Exim 4.96)
-        (envelope-from <ben@rainbowdash>)
-        id 1qeHcd-000HUv-2c;
-        Thu, 07 Sep 2023 17:12:47 +0100
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-To:     linux-pwm@vger.kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.dooks@codethink.co.uk, u.kleine-koenig@pengutronix.de,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        jarkko.nikula@linux.intel.com,
-        William Salmon <william.salmon@sifive.com>,
-        Jude Onyenegecha <jude.onyenegecha@sifive.com>
-Subject: [PATCH v9 2/6] pwm: dwc: make timer clock configurable
-Date:   Thu,  7 Sep 2023 17:12:38 +0100
-Message-Id: <20230907161242.67190-3-ben.dooks@codethink.co.uk>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230907161242.67190-1-ben.dooks@codethink.co.uk>
-References: <20230907161242.67190-1-ben.dooks@codethink.co.uk>
+        Thu, 7 Sep 2023 12:26:20 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD09F46A9;
+        Thu,  7 Sep 2023 09:23:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A911C433C9;
+        Thu,  7 Sep 2023 16:16:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694103379;
+        bh=FoAGFCr9du8GZdsxYZ79Z15sdeHUYWMrj5BE0Jr4WIg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=LMWZeGfzBdgQIj+MP1F7vvYmJ6tNU73iYiF1QUxiNQNCqIVWzld+XcqJLScJEyZI/
+         vYzh9aSDGMHnu33jsBA+DlQhVd3WpTr9/c6yVFf7KbQGrt7b5zlAj5guUPf1S6H/Mk
+         Vm6SzWlGbdj+VDu7Vx1rnDFWUpfrgmbXCZPZm3Ir7X6yqcQCfvFs5rb97iItOWgt9H
+         eeY5nTlWhiiiarcWa42RcqxFg3Namr77yPs3sVjiL3YEkwDK1dT3+16OQnZcZV83yU
+         mrAVrRKgiYoqc8ifxNkEeFCna9raGHxWxzqDxBmFQLNh9qE9dTv9btV0TI8rAT5seb
+         UdGGoa2c9pCfQ==
+Message-ID: <3cc438c8-295e-461b-a842-c6d0f268fe9e@kernel.org>
+Date:   Thu, 7 Sep 2023 18:16:11 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] Add qcom hvc/shmem transport
+Content-Language: en-US
+To:     Nikunj Kela <quic_nkela@quicinc.com>, sudeep.holla@arm.com
+Cc:     cristian.marussi@arm.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        agross@kernel.org, andersson@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
+From:   Konrad Dybcio <konradybcio@kernel.org>
+In-Reply-To: <20230718160833.36397-1-quic_nkela@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,92 +54,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a configurable clock base rate for the pwm as when being built
-for non-PCI the block may be sourced from an internal clock.
+On 18.07.2023 18:08, Nikunj Kela wrote:
+> This change introduce a new transport channel for Qualcomm virtual
+> platforms. The transport is mechanically similar to ARM_SCMI_TRANSPORT_SMC.
+> The difference between the two transports is that a parameter is passed in
+> the hypervisor call to identify which doorbell to assert. This parameter is
+> dynamically generated at runtime on the device and insuitable to pass via
+> the devicetree.
+> 
+> The function ID and parameter are stored by firmware in the shmem region.
+> 
+> This has been tested on ARM64 virtual Qualcomm platform.
+What can we test it on?
 
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
-Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-v9:
- - moved email to codethink from sifive
-v8:
- - add reviewed by, fixed issue with previous renames.
-v7:
- - remove the "struct clk *" clk field from dwc_pwm_ctx, not used here,
-v6:
- - removed DWC_CLK_PERIOD_NS as it is now not needed
-v4:
- - moved earlier before the of changes to make the of changes one patch
-v2:
-  - removed the ifdef and merged the other clock patch in here
----
- drivers/pwm/pwm-dwc-core.c | 9 +++++----
- drivers/pwm/pwm-dwc.h      | 2 +-
- 2 files changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/pwm/pwm-dwc-core.c b/drivers/pwm/pwm-dwc-core.c
-index b693cb7fa812..4b4b7b9e1d82 100644
---- a/drivers/pwm/pwm-dwc-core.c
-+++ b/drivers/pwm/pwm-dwc-core.c
-@@ -49,13 +49,13 @@ static int __dwc_pwm_configure_timer(struct dwc_pwm *dwc,
- 	 * periods and check are the result within HW limits between 1 and
- 	 * 2^32 periods.
- 	 */
--	tmp = DIV_ROUND_CLOSEST_ULL(state->duty_cycle, DWC_CLK_PERIOD_NS);
-+	tmp = DIV_ROUND_CLOSEST_ULL(state->duty_cycle, dwc->clk_ns);
- 	if (tmp < 1 || tmp > (1ULL << 32))
- 		return -ERANGE;
- 	low = tmp - 1;
- 
- 	tmp = DIV_ROUND_CLOSEST_ULL(state->period - state->duty_cycle,
--				    DWC_CLK_PERIOD_NS);
-+				    dwc->clk_ns);
- 	if (tmp < 1 || tmp > (1ULL << 32))
- 		return -ERANGE;
- 	high = tmp - 1;
-@@ -130,12 +130,12 @@ static int dwc_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
- 
- 	duty = dwc_pwm_readl(dwc, DWC_TIM_LD_CNT(pwm->hwpwm));
- 	duty += 1;
--	duty *= DWC_CLK_PERIOD_NS;
-+	duty *= dwc->clk_ns;
- 	state->duty_cycle = duty;
- 
- 	period = dwc_pwm_readl(dwc, DWC_TIM_LD_CNT2(pwm->hwpwm));
- 	period += 1;
--	period *= DWC_CLK_PERIOD_NS;
-+	period *= dwc->clk_ns;
- 	period += duty;
- 	state->period = period;
- 
-@@ -160,6 +160,7 @@ struct dwc_pwm *dwc_pwm_alloc(struct device *dev)
- 	if (!dwc)
- 		return NULL;
- 
-+	dwc->clk_ns = 10;
- 	dwc->chip.dev = dev;
- 	dwc->chip.ops = &dwc_pwm_ops;
- 	dwc->chip.npwm = DWC_TIMERS_TOTAL;
-diff --git a/drivers/pwm/pwm-dwc.h b/drivers/pwm/pwm-dwc.h
-index 56deab4e28ec..64795247c54c 100644
---- a/drivers/pwm/pwm-dwc.h
-+++ b/drivers/pwm/pwm-dwc.h
-@@ -24,7 +24,6 @@ MODULE_IMPORT_NS(dwc_pwm);
- #define DWC_TIMERS_COMP_VERSION	0xac
- 
- #define DWC_TIMERS_TOTAL	8
--#define DWC_CLK_PERIOD_NS	10
- 
- /* Timer Control Register */
- #define DWC_TIM_CTRL_EN		BIT(0)
-@@ -43,6 +42,7 @@ struct dwc_pwm_ctx {
- struct dwc_pwm {
- 	struct pwm_chip chip;
- 	void __iomem *base;
-+	unsigned int clk_ns;
- 	struct dwc_pwm_ctx ctx[DWC_TIMERS_TOTAL];
- };
- #define to_dwc_pwm(p)	(container_of((p), struct dwc_pwm, chip))
--- 
-2.40.1
-
+Konrad
