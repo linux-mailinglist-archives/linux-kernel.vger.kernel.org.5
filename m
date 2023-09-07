@@ -2,66 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9032B7976D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8CE79773C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240003AbjIGQRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:17:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
+        id S229717AbjIGQXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:23:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239024AbjIGQQX (ORCPT
+        with ESMTP id S241673AbjIGQWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:16:23 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8CD49E1
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:15:23 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 692EB6607313;
-        Thu,  7 Sep 2023 13:33:31 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694090012;
-        bh=jc2UvrrZDMDCN5bgnaY8vkhBi8ZpUIWYdaEXMG6s9sU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Ui7b2zrJo+ssZiDi9E0vSrxlBE+DazJqtVv8lC++DLGn3kP2QFt9S0NBGWTCFsDBV
-         wfAd0PoXN9vSyq0IzSvVYYSe4fa9owZ7t9H3JvmZGJiQr0W2DK0Nd4Yaqkms5lhcVk
-         TY6nYQ65XHqIEvcYUQ7C+gQW09HtuPCtw+Hz7+eQZ8b4BO7eVlQkPUFNQS1r8100eQ
-         SnNPPmmuVL8ABKvtEV8jwCqkiz2yIS0bboCiCofOsU9w6A8bAXK4nkUU0uDXW7D2VG
-         UEeggcXvChnEazxC5AetBiLaFE+xIem71kWye8nN0LsAec+EoUeKLgQ1/WXtvYzSPV
-         CueDkq31ZquCw==
-Message-ID: <d43e0d7b-1e93-f9ae-df3f-cbf8a3381a70@collabora.com>
-Date:   Thu, 7 Sep 2023 14:33:29 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 13/15] drm/mediatek: Add missing plane settings when async
- update
-Content-Language: en-US
-To:     Hsiao Chien Sung <shawn.sung@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Jason-JH Lin <jason-jh.lin@mediatek.com>
-References: <20230823151332.28811-1-shawn.sung@mediatek.com>
- <20230823151332.28811-14-shawn.sung@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230823151332.28811-14-shawn.sung@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        Thu, 7 Sep 2023 12:22:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92CF76A6E
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:19:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 042F8C4936D;
+        Thu,  7 Sep 2023 12:34:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694090080;
+        bh=ZzIB6F7PZKrp44QS70ZLsfQS7NOVHl+IkMIXv6FGCHM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KRTcxKY8HpH5zZ1QqJCfVjX+OWAxca3Nsgg8X79av1GpYL9PGJxbWuGDat8Gew92n
+         Z6PUVxfdquqdl6Vu65RlH0YbONjbvbWcytzMnSr387jenuFC4hJ9kC0imAxTCqjHDY
+         jmKDqKKlP2LlahzIJAqDjU9OGVLMP0vmlmocQKZlqq+IaQveriQI/mnNiZtiVZWSt/
+         +ylCcFSZgTNTyPXlMH+PodICAwm3fpHj6Z3Uim2O1Fnbn3l+8MI4scKDvjNz7FGuaP
+         WLQtOALM13CBQX5DVKpFN5TvRxUfGMHTYHWJosCeDf86K9qY0mE8udcHR+hCbQcX0w
+         s+Wt1xPVX7zEA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] regulator fixes for v6.6-merge-window
+Date:   Thu, 07 Sep 2023 13:34:30 +0100
+Message-Id: <20230907123440.042F8C4936D@smtp.kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,36 +44,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 23/08/23 17:13, Hsiao Chien Sung ha scritto:
-> Fix an issue that plane coordinate was not saved when
-> calling async update.
-> 
-> Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
+The following changes since commit b96c22476ff4bc3459933f87ba52cbb7910ffc6b:
 
- From what I understand, this is a fix for an issue that was present before
-your newly introduced code.
+  regulator: userspace-consumer: Drop event support for this cycle (2023-08-24 23:58:34 +0100)
 
-This means that you want to add a Fixes tag, and that you should also send
-this commit separately from the IGT series. Please do that.
+are available in the Git repository at:
 
-Thanks,
-Angelo
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v6.6-merge-window
 
-> ---
->   drivers/gpu/drm/mediatek/mtk_drm_plane.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-> index ca22d02375d5..dc19827f6927 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-> @@ -210,6 +210,8 @@ static void mtk_plane_atomic_async_update(struct drm_plane *plane,
->   	plane->state->src_y = new_state->src_y;
->   	plane->state->src_h = new_state->src_h;
->   	plane->state->src_w = new_state->src_w;
-> +	plane->state->dst.x1 = new_state->dst.x1;
-> +	plane->state->dst.y1 = new_state->dst.y1;
->   	swap(plane->state->fb, new_state->fb);
->   
->   	mtk_plane_update_new_state(new_state, new_plane_state);
+for you to fetch changes up to ca0e36e3e39a4e8b5a4b647dff8c5938ca6ccbec:
 
+  regulator: tps6594-regulator: Fix random kernel crash (2023-09-05 20:58:41 +0100)
+
+----------------------------------------------------------------
+regulator: Fixes for v6.6
+
+A couple of fixes that came in during the merge window, both driver
+specific - one for a bug that came up in testing, one for a bug due to a
+misreading of the datasheet.
+
+----------------------------------------------------------------
+Jerome Neanne (1):
+      regulator: tps6594-regulator: Fix random kernel crash
+
+Vincent Whitchurch (1):
+      regulator: tps6287x: Fix n_voltages
+
+ drivers/regulator/tps6287x-regulator.c |  2 +-
+ drivers/regulator/tps6594-regulator.c  | 31 +++++++++++++++----------------
+ 2 files changed, 16 insertions(+), 17 deletions(-)
