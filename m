@@ -2,53 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1098797371
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F747973CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236976AbjIGPYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50162 "EHLO
+        id S243970AbjIGPaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231776AbjIGPXH (ORCPT
+        with ESMTP id S241011AbjIGP24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:23:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5533710DF;
-        Thu,  7 Sep 2023 08:22:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B04C7C433AD;
-        Thu,  7 Sep 2023 09:25:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694078718;
-        bh=ofrREB+XRbUYVS5Sh20JAfhhFAJ49iPxwIALV7BFZUU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hzRT/Gb9kx8nzgECyIcfiRkD2AdsyIVnMTBz9cQ27fJUfdlg1iooQk7r/6WpR34t0
-         HCDlqYGGyBjosugpXaUcBnJ+eeS4r1PAa+L5iTtN962KVlv5C3P2bCjfBAjCMGzBCm
-         u32uZQTdd2mBdzStbWxHi3rwHmb8OVb3jNeLZ0x6yMpHhOkSYKQO1mALmcpyfA2Aoh
-         7uSvAF/GdMZu34z4xCcMxqNEqfFofBGxJ7gTx2BGggBqwt4ECDXuw6wYp+uWDCAjJt
-         cHoiuOWo3YhSdk67dQQXUmY15b+IwwOnd/j+VM/Bn/rjSA1KXHBpl7ge3JOl0gWa/6
-         e8cuMErprpgNA==
-Date:   Thu, 7 Sep 2023 10:25:13 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     syzbot <syzbot+4a9f9820bd8d302e22f7@syzkaller.appspotmail.com>,
-        catalin.marinas@arm.com, fw@strlen.de, kadlec@netfilter.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [arm?] [netfilter?] KASAN: slab-out-of-bounds Read in
- do_csum
-Message-ID: <20230907092511.GB5731@willie-the-truck>
-References: <000000000000e0e94c0603f8d213@google.com>
- <20230905143711.GB3322@willie-the-truck>
- <0dea99d9-3334-3fd3-3776-074ecace0259@arm.com>
+        Thu, 7 Sep 2023 11:28:56 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC501FF3
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:28:30 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-76ef935abaeso62289785a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:28:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694100455; x=1694705255; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aycCTyJOheIDKo1ZgbnwW6zsxD+FQHxnfjQ1uwRRryI=;
+        b=OgvSFXkE1sh1JKfS/yNyFPiXPNOc/nRIrXJ5yqEmZlmbkJjONb+SVJUhGaIJg+P2jn
+         Ob1E5Z71vGtLkv0gZgVYaeSCBydYME6pUaYwJ+D2Uc0o+wANVSl/rJ9eIMHd91zD6dd6
+         U36hQb3S0jRZPjDwiUokR58qLO27Sc8FMnPE4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694100455; x=1694705255;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aycCTyJOheIDKo1ZgbnwW6zsxD+FQHxnfjQ1uwRRryI=;
+        b=HG6yKZHkvelvN2mPXGbJ0sxA07Cya4iWlaaR0SjjaxsaTPyTtJHklDyvFZAx/N/Xtn
+         kHlnpEgiWN+oRVo4rax3TC0i/NumRUf+hx/iL3AWVvQ/2lpZH2LtKXod2xVXHE02v8s4
+         z7p14A+Kk8ecbZXRHzR9a17MuIboDEYXOYE8od94XL0EIXMCGBDv0ROejxB+iulYsZ8s
+         2Scd/QcFdbVHnx6dE2hFefbPP1WoVhyW+cX5v6LgAMPT0aajzOcrQq9PxYXQK3a5psNf
+         Egr6w1XvhQy9t6NaaYqluRxi4Ni8z0eqiQQP+Ww0gqSyG1gooC6DzT7ELYVa7Oj6hn6L
+         GRiw==
+X-Gm-Message-State: AOJu0Yw3KfI7y5g//R6CDRTcbZdGDy2jBm+sK5Q0UaE0nK/LxgW7YGKU
+        2DPYt5wba0fIZuHORsq9ScrbojLoFcCwfQLZ+FEcrbep9pOxGnqw
+X-Google-Smtp-Source: AGHT+IFj2FlIKXoMOrdA8m6h1SxwqJEdWc5x6fTQOPsL29IpibzHq4rNR/U1JI7AAj1ZLriuWigLzvMPJRO0C0GjGD0=
+X-Received: by 2002:a92:cc82:0:b0:34d:f026:7aa1 with SMTP id
+ x2-20020a92cc82000000b0034df0267aa1mr18419028ilo.26.1694078781179; Thu, 07
+ Sep 2023 02:26:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0dea99d9-3334-3fd3-3776-074ecace0259@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230906102940.1120269-1-treapking@chromium.org> <CABRiz0r8qHgx-4b7QdCj6iz9FDsyChznEHOn5eByVoUYuLa-PQ@mail.gmail.com>
+In-Reply-To: <CABRiz0r8qHgx-4b7QdCj6iz9FDsyChznEHOn5eByVoUYuLa-PQ@mail.gmail.com>
+From:   Pin-yen Lin <treapking@chromium.org>
+Date:   Thu, 7 Sep 2023 17:26:10 +0800
+Message-ID: <CAEXTbpdqhxWVMSHz-8+=50_qd1UViKvD5YZY08=RFMBu5E6b2A@mail.gmail.com>
+Subject: Re: [PATCH] wifi: mwifiex: Fix oob check condition in mwifiex_process_rx_packet
+To:     Matthew Wang <matthewmwang@chromium.org>
+Cc:     linux-wireless@vger.kernel.org,
+        Brian Norris <briannorris@chromium.org>,
+        Polaris Pi <pinkperfect2021@gmail.com>,
+        linux-kernel@vger.kernel.org, Kalle Valo <kvalo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,50 +68,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 04:02:19PM +0100, Robin Murphy wrote:
-> On 05/09/2023 3:37 pm, Will Deacon wrote:
-> > On Mon, Aug 28, 2023 at 03:04:44AM -0700, syzbot wrote:
-> > > HEAD commit:    908f31f2a05b Merge branch 'for-next/core', remote-tracking..
-> > > git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=155e0463280000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=c1058fe68f4b7b2c
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=4a9f9820bd8d302e22f7
-> > > compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-> > > userspace arch: arm64
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16bc548d280000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=135bba3b280000
-> > > 
-> > > Downloadable assets:
-> > > disk image: https://storage.googleapis.com/syzbot-assets/87d095820229/disk-908f31f2.raw.xz
-> > > vmlinux: https://storage.googleapis.com/syzbot-assets/a1bf67af9675/vmlinux-908f31f2.xz
-> > > kernel image: https://storage.googleapis.com/syzbot-assets/7784a88b37e8/Image-908f31f2.gz.xz
-> > > 
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+4a9f9820bd8d302e22f7@syzkaller.appspotmail.com
-> > > 
-> > > netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
-> > > netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
-> > > ==================================================================
-> > > BUG: KASAN: slab-out-of-bounds in do_csum+0x44/0x254 arch/arm64/lib/csum.c:39
-> > > Read of size 4294966928 at addr ffff0000d7ac0170 by task syz-executor412/5975
-> 
-> Yup, that looks suspiciously "-368"-shaped...
-> 
-> > Judging by the UBSAN errors:
-> > 
-> > | shift exponent 3008 is too large for 64-bit type 'u64' (aka 'unsigned long long')
-> > 
-> > We're probably being passed a negative 'len' argument. It looks like the
-> > generic version in lib/checksum.c rejects that early, so maybe we should
-> > do the same in the arch code?
-> 
-> Hmm, indeed I can offer no explanation as to why I put "if (len == 0)" there
-> rather than "if (len <= 0)" like literally every other C implementation* :/
+Hi Matthew,
 
-I've made that change:
+On Thu, Sep 7, 2023 at 5:10=E2=80=AFPM Matthew Wang <matthewmwang@chromium.=
+org> wrote:
+>
+> > -       if ((!memcmp(&rx_pkt_hdr->rfc1042_hdr, bridge_tunnel_header,
+> > -                    sizeof(bridge_tunnel_header))) ||
+> > -           (!memcmp(&rx_pkt_hdr->rfc1042_hdr, rfc1042_header,
+> > -                    sizeof(rfc1042_header)) &&
+> > -            ntohs(rx_pkt_hdr->rfc1042_hdr.snap_type) !=3D ETH_P_AARP &=
+&
+> > -            ntohs(rx_pkt_hdr->rfc1042_hdr.snap_type) !=3D ETH_P_IPX)) =
+{
+> > +       if (sizeof(rx_pkt_hdr) + rx_pkt_off <=3D skb->len &&
+>
+> sizeof(*rx_pkt_hdr)?
 
-https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/commit/?h=for-next/fixes&id=8bd795fedb8450ecbef18eeadbd23ed8fc7630f5
+Thanks for catching this. I'll upload a v2 for this.
 
-Cheers,
-
-Will
+Best,
+Pin-yen
