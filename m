@@ -2,64 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 543A3797BA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75EAD797C26
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343941AbjIGSWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 14:22:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33462 "EHLO
+        id S1344280AbjIGSmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343862AbjIGSWF (ORCPT
+        with ESMTP id S1344267AbjIGSmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:22:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BE9A1;
-        Thu,  7 Sep 2023 11:22:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22BB3C3278A;
-        Thu,  7 Sep 2023 13:44:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694094288;
-        bh=/OVUfzDp4Xrk04AuhCWrPrCSSYysDp+76lOBSLs7QAY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dK7kJJoJDugC1umsl2LyMqRHpfNLFg1ODJMVQ2KVo7ElBQlDvMXaq/ayUKEIwqun9
-         abmEEeJQdi39m9rKOFzQTmj46er5xlCEtQy7DhZ/8UPllBWeluIv2tHH1soLMUcHa5
-         beUXjpywPfna1UeS6T/h2iZUQomZeJ/6ymn+T0j6k0Xi8syCTi+/RdxI5pHxpiAtCf
-         nDWWRU7WB23GQ7y/WtWVFEfE89v43QMjqxaHyke/fb/VZ/Gdrt88Hljo0Uxzy9eyVn
-         GCztCgddem1L+RZfp342AfPzWZpBu9Tw6tdfaY8zOm5av2l7VE0E6JAXxd2s5Ka0Td
-         3zemXCtHfB55w==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5008faf4456so1618449e87.3;
-        Thu, 07 Sep 2023 06:44:48 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxT7GB7cu1P72xjej6PewGsB2ChUWqQzgJIBPZii8lN9wlKnUgD
-        AwPYLQF7zHMPZCP6pGGrToh/bwaRrH/RvyS647g=
-X-Google-Smtp-Source: AGHT+IEN9THZbUbfOjvw8QWsthDcHarkRsqofbzn2/8JnFB7hKNt3JSr+VUqqRpHaWGaEwP/nd+nfCz/yxgyKANE0Hk=
-X-Received: by 2002:a05:6512:3b95:b0:501:bee7:487b with SMTP id
- g21-20020a0565123b9500b00501bee7487bmr6016781lfv.11.1694094286129; Thu, 07
- Sep 2023 06:44:46 -0700 (PDT)
+        Thu, 7 Sep 2023 14:42:00 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5B11D1700;
+        Thu,  7 Sep 2023 11:41:55 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 838661762;
+        Thu,  7 Sep 2023 06:45:34 -0700 (PDT)
+Received: from [10.57.92.126] (unknown [10.57.92.126])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A0C7E3F766;
+        Thu,  7 Sep 2023 06:44:54 -0700 (PDT)
+Message-ID: <8657cc7c-169b-3479-5919-72bd39335b15@arm.com>
+Date:   Thu, 7 Sep 2023 14:45:30 +0100
 MIME-Version: 1.0
-References: <20230818134422.380032-16-ardb@kernel.org> <98D635CA-43D4-4A0B-8791-2FDC1DC695B3@posteo.de>
-In-Reply-To: <98D635CA-43D4-4A0B-8791-2FDC1DC695B3@posteo.de>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 7 Sep 2023 15:44:34 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGhM+jqL8fZjjrPeoaC7Qc5tRDfRmmia5x-UVpB-uH_Xw@mail.gmail.com>
-Message-ID: <CAMj1kXGhM+jqL8fZjjrPeoaC7Qc5tRDfRmmia5x-UVpB-uH_Xw@mail.gmail.com>
-Subject: Re: [PATCH 15/17] x86/boot: Split off PE/COFF .data section
-To:     =?UTF-8?Q?Marvin_H=C3=A4user?= <mhaeuser@posteo.de>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Evgeniy Baskov <baskov@ispras.ru>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Jones <pjones@redhat.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [RFC PATCH 0/7] sched: cpufreq: Remove magic margins
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Qais Yousef <qyousef@layalina.io>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>, bristot@redhat.com,
+        juri.lelli@redhat.com
+References: <20230827233203.1315953-1-qyousef@layalina.io>
+ <a6365f63-4669-15e5-b843-f4bfb1bd5e68@arm.com>
+ <20230906211850.zyvk6qtt6fvpxaf3@airbuntu>
+ <6011d8bb-9a3b-1435-30b0-d75b39bf5efa@arm.com>
+ <20230907115307.GD10955@noisy.programming.kicks-ass.net>
+ <89067f71-9b83-e647-053e-07f7d55b6529@arm.com>
+ <20230907132906.GG10955@noisy.programming.kicks-ass.net>
+ <5616e50d-b827-4547-5b16-9131ace98419@arm.com>
+ <20230907133840.GH10955@noisy.programming.kicks-ass.net>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20230907133840.GH10955@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,100 +58,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Aug 2023 at 16:35, Marvin H=C3=A4user <mhaeuser@posteo.de> wrote=
-:
->
-> Hi Ard,
->
-> Thanks for your effort! Not sure what the documentation policies are, but=
- might it be worth mentioning that we cannot have .rdata at this time, beca=
-use current-gen EFI will map it as RW?
->
-
-Yeah I'll mention this in the next version.
 
 
-> Best regards,
-> Marvin
->
-> > On Aug 18, 2023, at 15:45, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > =EF=BB=BFDescribe the code and data of the decompressor binary using se=
-parate
-> > .text and .data PE/COFF sections, so that we will be able to map them
-> > using restricted permissions once we increase the section and file
-> > alignment sufficiently. This avoids the need for memory mappings that
-> > are writable and executable at the same time, which is something that
-> > is best avoided for security reasons.
-> >
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > ---
-> > arch/x86/boot/Makefile |  2 +-
-> > arch/x86/boot/header.S | 19 +++++++++++++++----
-> > 2 files changed, 16 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/arch/x86/boot/Makefile b/arch/x86/boot/Makefile
-> > index b26e30a2d865f72d..50c50fce646e2417 100644
-> > --- a/arch/x86/boot/Makefile
-> > +++ b/arch/x86/boot/Makefile
-> > @@ -90,7 +90,7 @@ $(obj)/vmlinux.bin: $(obj)/compressed/vmlinux FORCE
-> >
-> > SETUP_OBJS =3D $(addprefix $(obj)/,$(setup-y))
-> >
-> > -sed-zoffset :=3D -e 's/^\([0-9a-fA-F]*\) [a-zA-Z] \(startup_32\|efi.._=
-stub_entry\|efi\(32\)\?_pe_entry\|input_data\|kernel_info\|_end\|_ehead\|_t=
-ext\|_edata\|z_.*\)$$/\#define ZO_\2 0x\1/p'
-> > +sed-zoffset :=3D -e 's/^\([0-9a-fA-F]*\) [a-zA-Z] \(startup_32\|efi.._=
-stub_entry\|efi\(32\)\?_pe_entry\|input_data\|kernel_info\|_end\|_ehead\|_t=
-ext\|_e\?data\|z_.*\)$$/\#define ZO_\2 0x\1/p'
-> >
-> > quiet_cmd_zoffset =3D ZOFFSET $@
-> >       cmd_zoffset =3D $(NM) $< | sed -n $(sed-zoffset) > $@
-> > diff --git a/arch/x86/boot/header.S b/arch/x86/boot/header.S
-> > index ccfb7a7d8c29275e..25dda40dacb52292 100644
-> > --- a/arch/x86/boot/header.S
-> > +++ b/arch/x86/boot/header.S
-> > @@ -79,9 +79,9 @@ optional_header:
-> >    .byte    0x02                # MajorLinkerVersion
-> >    .byte    0x14                # MinorLinkerVersion
-> >
-> > -    .long    setup_size + ZO__end - 0x200    # SizeOfCode
-> > +    .long    ZO__data            # SizeOfCode
-> >
-> > -    .long    0                # SizeOfInitializedData
-> > +    .long    ZO__end - ZO__data        # SizeOfInitializedData
-> >    .long    0                # SizeOfUninitializedData
-> >
-> >    .long    setup_size + ZO_efi_pe_entry    # AddressOfEntryPoint
-> > @@ -182,9 +182,9 @@ section_table:
-> >    .byte    0
-> >    .byte    0
-> >    .byte    0
-> > -    .long    ZO__end
-> > +    .long    ZO__data
-> >    .long    setup_size
-> > -    .long    ZO__edata            # Size of initialized data
-> > +    .long    ZO__data            # Size of initialized data
-> >                        # on disk
-> >    .long    setup_size
-> >    .long    0                # PointerToRelocations
-> > @@ -195,6 +195,17 @@ section_table:
-> >        IMAGE_SCN_MEM_READ        | \
-> >        IMAGE_SCN_MEM_EXECUTE        # Characteristics
-> >
-> > +    .ascii    ".data\0\0\0"
-> > +    .long    ZO__end - ZO__data        # VirtualSize
-> > +    .long    setup_size + ZO__data        # VirtualAddress
-> > +    .long    ZO__edata - ZO__data        # SizeOfRawData
-> > +    .long    setup_size + ZO__data        # PointerToRawData
-> > +
-> > +    .long    0, 0, 0
-> > +    .long    IMAGE_SCN_CNT_INITIALIZED_DATA    | \
-> > +        IMAGE_SCN_MEM_READ        | \
-> > +        IMAGE_SCN_MEM_WRITE        # Characteristics
-> > +
-> >    .set    section_count, (. - section_table) / 40
-> > #endif /* CONFIG_EFI_STUB */
-> >
-> > --
-> > 2.39.2
->
+On 9/7/23 14:38, Peter Zijlstra wrote:
+> On Thu, Sep 07, 2023 at 02:33:49PM +0100, Lukasz Luba wrote:
+>>
+>>
+>> On 9/7/23 14:29, Peter Zijlstra wrote:
+>>> On Thu, Sep 07, 2023 at 02:06:15PM +0100, Lukasz Luba wrote:
+>>>
+>>>>> Many extentions to the periodic task model are possible, including
+>>>>> things like average runtime with bursts etc.. all have their trade-offs.
+>>>>
+>>>> Was that maybe proposed somewhere on LKML (the other models)?
+>>>
+>>> RT literatur mostly methinks. Replacing WCET with a statistical model of
+>>> sorts is not uncommon, the argument goes that not everybody will have
+>>> their worst case at the same time and lows and highs can commonly cancel
+>>> out and this way we can cram a little more on the system.
+>>>
+>>> Typically this is proposed in the context of soft-realtime systems.
+>>
+>> Thanks Peter, I will dive into some books...
+> 
+> I would look at academic papers, not sure any of that ever made it to
+> books, Daniel would know I suppose.
+
+Good hint, thanks!
