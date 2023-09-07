@@ -2,173 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 779F9797807
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC21797887
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241450AbjIGQkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
+        id S231866AbjIGQsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:48:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239587AbjIGQjl (ORCPT
+        with ESMTP id S242820AbjIGQrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:39:41 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2AC146BD
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:37:26 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2bcb89b4767so20191321fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:37:26 -0700 (PDT)
+        Thu, 7 Sep 2023 12:47:40 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4422E1BF
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:47:15 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-502934c88b7so1477208e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:47:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1694104575; x=1694709375; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=SUKo+1CllhDiFuk8e5kRvChp7TbG5sdYIOTqTfNiyNA=;
-        b=W/uNJx0gEVpL1lyZsb+2CYMoeh+M3cwXUDF2RXF65wxNvZ+atCoVrTVUbSGr/sMhsp
-         ErumCmWOzwYZt9vrig793BMntnS4wF1pDThT9IHmlI3423mItX01yu4UJ0g6KOmRWMk7
-         mQLoMT9Pon//j15SV8gfEhJryC+QKKck4FrWaCHVIrbTqsmI/EuBY6iK5yoB4gqRue6A
-         vL1dwjbg9QUrNYU0zzp0qa6vWSA+30NKsfyDV6OTGrDPrgX7pn5uAqWjNid8Q4FxcAGS
-         bWxfxWdUTWkTdj+royRj59M2ZUYYxAEDh48Z/Khu7yEFfU2FqbMnMsrlFEDqkJeCNKB/
-         dctA==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1694105170; x=1694709970; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oJVDYEmcYMvyDAvrM+W+a0XTM8UX7gM4MKMeEwWok1U=;
+        b=c7Swf8Q6t9ILiU/PwIien134c7SQJZti/0DOPt9fLs2SYFLzBdb+WnNq+aiBPuPFiG
+         iuXwropEGB5oUnMaijPYQVh3k3DcRm6C6UJImLJ2Pzdcwwl52eZo50h89JdKoq0yDSXv
+         uYb5JMtDjtiuXHSMUF1VJrapvOWxHEWtpFTKgrRD4xUHsrUa8VVQorielKPf4WgforhB
+         sbSTVCes7qshwcUdHtKu7/P66kxRUX0/60djHEqhBToG2NILcU8oSW+35K2fmo1jE1WH
+         M/nIyV3q3sZxgqHgu4qf6eXB/jvxUtiHCjWv+u7PA552m0tBlYIqvkhGn7UonRPc1RhB
+         k/0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694104575; x=1694709375;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SUKo+1CllhDiFuk8e5kRvChp7TbG5sdYIOTqTfNiyNA=;
-        b=JD17mYiJbZOVEmPIauI60Jh0EJCBsFyaRr2XcFEp2IGc/mquDK1axjzGlXo3NPcUs/
-         Gf7blcFq0Gk+I4UHaS7OiX8imB9qrDvrCAhBdAk4+ZGm25zdsc4KPsOISToeymQ6Z/v1
-         VF/5dBLp01Xfh8TZYmX2/5QWdorgQvgB1XJT0eQ5sVwR3UCJsOxN8kUSzDHUB8GFEUIg
-         BZ/T3Qc5DB5xVxY9+3uvM6L8uFBjXI9HP9/R+VtQmXXoZ/q/Td0I6+EuftJPlk4miEUp
-         CQq5mwPh0HIqj6Y+GWFu8gvscyTgTGrO39TSwPY6XoVVIGC8V3rXqiRpi6iwBT+qcVuK
-         aDsA==
-X-Gm-Message-State: AOJu0Yyjg29qlBdneG/Tf4EQmqJdGoeESP0bui7afTqgNPLYmgEAva2G
-        r89dE/aVwjhb4jyJpyMrzgEHD6h/1QhR4JNEr2E=
-X-Google-Smtp-Source: AGHT+IFpt5OHjqn8E5AQWQ3lRTTwlRHl603sQrss7nLMvcblN8lMTU9C4YqIhqBmSU5t7umjGBWQQA==
-X-Received: by 2002:a7b:c414:0:b0:3fe:f74c:b4f6 with SMTP id k20-20020a7bc414000000b003fef74cb4f6mr4055831wmi.17.1694077304089;
-        Thu, 07 Sep 2023 02:01:44 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id s13-20020a7bc38d000000b003fe24441e23sm1882132wmj.24.2023.09.07.02.01.43
+        d=1e100.net; s=20221208; t=1694105170; x=1694709970;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oJVDYEmcYMvyDAvrM+W+a0XTM8UX7gM4MKMeEwWok1U=;
+        b=ILOkg7Uic8B91f0jMz+tmEJJPMxSyJ+AE8seAM+k4wgW9slQslavnEAiCiCwadQeBm
+         t+zA7fp4NyXnX9VxtGQYPrKtYBO/0dYjvHw+Ww5s/ZNOnnca2icAzhz9pUA/zB9ehmH8
+         pVHMphxJdMaPxt+oy1henLAZSpIBiAemeFgj6i0vq90FNHmJ0l+RW/YGpbbTvA9WvTVb
+         GO14kNojGKm0Bw5pEgYeigKqIjrzHXuXwrNcU/UQWdfnec6tA2a5/jje6/zAZnmO3HKf
+         mKyOf0mQp8GPxo/38qr+EVxwaBhy7+49VQCHLlmFCbch3O8LG5lFrTAE4zh0KF3+q24p
+         hjTA==
+X-Gm-Message-State: AOJu0YxJ/JYRCQxTRAezdWpncypx4eBSpsFxF9uDY1U1IXtEBEnmDGzB
+        Hm5U4bIZwuaC9KjGUBYG0/tA7bsOia3WDTRwaHc=
+X-Google-Smtp-Source: AGHT+IEOvCH7hNTHOrZSew7AYc5GcTyZgtrMkRHjYNSp10f3yfgk8FqXZw9ThISAuSrWLWwP/dk53Q==
+X-Received: by 2002:a05:600c:2986:b0:401:73b2:f039 with SMTP id r6-20020a05600c298600b0040173b2f039mr4140033wmd.7.1694077516289;
+        Thu, 07 Sep 2023 02:05:16 -0700 (PDT)
+Received: from toaster.lan ([2a01:e0a:3c5:5fb1:5be9:5575:c6f4:d478])
+        by smtp.googlemail.com with ESMTPSA id r5-20020adfe685000000b003143867d2ebsm22767439wrm.63.2023.09.07.02.05.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 02:01:43 -0700 (PDT)
-Date:   Thu, 7 Sep 2023 11:01:42 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Haibo Xu <xiaobo55x@gmail.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Guo Ren <guoren@kernel.org>,
-        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-        wchen <waylingii@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Lei Wang <lei4.wang@intel.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Like Xu <likexu@tencent.com>, Peter Gonda <pgonda@google.com>,
-        Thomas Huth <thuth@redhat.com>,
-        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Michal Luczaj <mhal@rbox.co>, Paul Durrant <paul@xen.org>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 7/8] KVM: riscv: selftest: Change vcpu_has_ext to a
- common function
-Message-ID: <20230907-bde62d037a3aaeedfe31f964@orel>
-References: <cover.1693659382.git.haibo1.xu@intel.com>
- <b6ef1b031e3a581f481cf19a26623388163444b4.1693659382.git.haibo1.xu@intel.com>
- <20230904-aa8b0d8d23d391586686038a@orel>
- <CAJve8ok5cU+h1K+WJ+aDpB+u+PBo8XosUyyVbMGy-xR0XiWFdw@mail.gmail.com>
- <CAJve8om+dLcG+4trDfG1yx8vhj52RhPZrJoF-emWDX+OPM088A@mail.gmail.com>
+        Thu, 07 Sep 2023 02:05:15 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
+Subject: [PATCH] ASoC: meson: spdifin: start hw on dai probe
+Date:   Thu,  7 Sep 2023 11:05:04 +0200
+Message-Id: <20230907090504.12700-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJve8om+dLcG+4trDfG1yx8vhj52RhPZrJoF-emWDX+OPM088A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 11:57:00AM +0800, Haibo Xu wrote:
-> On Wed, Sep 6, 2023 at 6:10 PM Haibo Xu <xiaobo55x@gmail.com> wrote:
-> >
-> > On Mon, Sep 4, 2023 at 10:04 PM Andrew Jones <ajones@ventanamicro.com> wrote:
-> > >
-> > > On Sat, Sep 02, 2023 at 08:59:29PM +0800, Haibo Xu wrote:
-> > > > diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > > > index d8ecacd03ecf..c4028bf32e3f 100644
-> > > > --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > > > +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > > > @@ -44,20 +44,6 @@ bool check_reject_set(int err)
-> > > >       return err == EINVAL;
-> > > >  }
-> > > >
-> > > > -static inline bool vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
-> > > > -{
-> > > > -     int ret;
-> > > > -     unsigned long value;
-> > > > -
-> > > > -     ret = __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
-> > > > -     if (ret) {
-> > > > -             printf("Failed to get ext %d", ext);
-> > > > -             return false;
-> > > > -     }
-> > > > -
-> > > > -     return !!value;
-> > >
-> > > get-reg-list will now assert on get-reg when an extension isn't present,
-> > > rather than failing the __TEST_REQUIRE(), which would do a skip instead.
-> > > We need both the return false version and the assert version.
-> > >
-> >
-> > Ok, Will keep this one for get-reg-list and add another one for
-> > arch-timer specific usage.
-> >
-> 
-> Just thought about it again, maybe we only need the "return false"
-> version for both get-reg-list
-> and arch-timer tests since if an extension was not available, the test
-> can be skipped with a message.
-> 
-> bool vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
-> {
->        unsigned long value = 0;
-> 
->        __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
-> 
->        return !!value;
-> }
+For spdif input to report the locked rate correctly, even when no capture
+is running, the HW and reference clock must be started as soon as
+the dai is probed.
 
-Yup, I had actually seen that when reviewing a later patch in this series,
-but I wasn't concerned if we added the assert type anyway, since we
-frequently end up with the two function types for KVM queries. If we don't
-have a need for an assert type yet, then we don't need to introduce it.
-However, we should introduce the non-assert type as __vcpu_has_ext(),
-reserving the vcpu_has_ext() name for the assert type, per the kvm
-selftests naming convention.
+Fixes: 5ce5658375e6 ("ASoC: meson: add axg spdif input")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ sound/soc/meson/axg-spdifin.c | 49 ++++++++++++-----------------------
+ 1 file changed, 17 insertions(+), 32 deletions(-)
 
-Thanks,
-drew
+diff --git a/sound/soc/meson/axg-spdifin.c b/sound/soc/meson/axg-spdifin.c
+index d86880169075..bc2f2849ecfb 100644
+--- a/sound/soc/meson/axg-spdifin.c
++++ b/sound/soc/meson/axg-spdifin.c
+@@ -112,34 +112,6 @@ static int axg_spdifin_prepare(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int axg_spdifin_startup(struct snd_pcm_substream *substream,
+-			       struct snd_soc_dai *dai)
+-{
+-	struct axg_spdifin *priv = snd_soc_dai_get_drvdata(dai);
+-	int ret;
+-
+-	ret = clk_prepare_enable(priv->refclk);
+-	if (ret) {
+-		dev_err(dai->dev,
+-			"failed to enable spdifin reference clock\n");
+-		return ret;
+-	}
+-
+-	regmap_update_bits(priv->map, SPDIFIN_CTRL0, SPDIFIN_CTRL0_EN,
+-			   SPDIFIN_CTRL0_EN);
+-
+-	return 0;
+-}
+-
+-static void axg_spdifin_shutdown(struct snd_pcm_substream *substream,
+-				 struct snd_soc_dai *dai)
+-{
+-	struct axg_spdifin *priv = snd_soc_dai_get_drvdata(dai);
+-
+-	regmap_update_bits(priv->map, SPDIFIN_CTRL0, SPDIFIN_CTRL0_EN, 0);
+-	clk_disable_unprepare(priv->refclk);
+-}
+-
+ static void axg_spdifin_write_mode_param(struct regmap *map, int mode,
+ 					 unsigned int val,
+ 					 unsigned int num_per_reg,
+@@ -251,17 +223,32 @@ static int axg_spdifin_dai_probe(struct snd_soc_dai *dai)
+ 	ret = axg_spdifin_sample_mode_config(dai, priv);
+ 	if (ret) {
+ 		dev_err(dai->dev, "mode configuration failed\n");
+-		clk_disable_unprepare(priv->pclk);
+-		return ret;
++		goto pclk_err;
+ 	}
+ 
++	ret = clk_prepare_enable(priv->refclk);
++	if (ret) {
++		dev_err(dai->dev,
++			"failed to enable spdifin reference clock\n");
++		goto pclk_err;
++	}
++
++	regmap_update_bits(priv->map, SPDIFIN_CTRL0, SPDIFIN_CTRL0_EN,
++			   SPDIFIN_CTRL0_EN);
++
+ 	return 0;
++
++pclk_err:
++	clk_disable_unprepare(priv->pclk);
++	return ret;
+ }
+ 
+ static int axg_spdifin_dai_remove(struct snd_soc_dai *dai)
+ {
+ 	struct axg_spdifin *priv = snd_soc_dai_get_drvdata(dai);
+ 
++	regmap_update_bits(priv->map, SPDIFIN_CTRL0, SPDIFIN_CTRL0_EN, 0);
++	clk_disable_unprepare(priv->refclk);
+ 	clk_disable_unprepare(priv->pclk);
+ 	return 0;
+ }
+@@ -270,8 +257,6 @@ static const struct snd_soc_dai_ops axg_spdifin_ops = {
+ 	.probe		= axg_spdifin_dai_probe,
+ 	.remove		= axg_spdifin_dai_remove,
+ 	.prepare	= axg_spdifin_prepare,
+-	.startup	= axg_spdifin_startup,
+-	.shutdown	= axg_spdifin_shutdown,
+ };
+ 
+ static int axg_spdifin_iec958_info(struct snd_kcontrol *kcontrol,
+-- 
+2.40.1
+
