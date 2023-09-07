@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A7A797619
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BC479761B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234080AbjIGQBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39182 "EHLO
+        id S234787AbjIGQB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:01:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241371AbjIGP7P (ORCPT
+        with ESMTP id S241705AbjIGP7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:59:15 -0400
+        Thu, 7 Sep 2023 11:59:19 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6295F4216;
-        Thu,  7 Sep 2023 08:48:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93042C4E66D;
-        Thu,  7 Sep 2023 15:44:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33B04236;
+        Thu,  7 Sep 2023 08:48:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 786F9C4E66F;
+        Thu,  7 Sep 2023 15:44:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694101474;
-        bh=JwCsZY+aK9pAUlYWX5Rn6KecM6QTIyDLKxTgJbzclmY=;
+        s=k20201202; t=1694101482;
+        bh=fTnjjyGSt3qHdzUXYLFRQafrAkrjo/LylaMxUatY+qA=;
         h=From:To:Cc:Subject:Date:From;
-        b=NYWl03+ifD0uqdC5uCyneLDbXX2siUjb9sZW9Xw+4yTIMh1tJddCthn51QFGNl/eW
-         Q8B1XyaCRV585/glIoSfGYCZuvZRByAQ05AutuDKIHhrbdTeR4AK1FxFblfx2XmCNd
-         8/meXbwsWzTLBrPL96aOc4dkQan6+WEBuN/ragRyjvpD2HcMgcEZhwdT/+E2sQp+dE
-         HCI2stlFN/Xm5BI02TL+cisDXOiQ+BAsLfx447MKq7R+zRauP7Btu1Gthiju0Oq1by
-         rF1XQWs8jmRIXP/77KHy+2REx/sy3geYhOXVvrPoQvf1AnLdf8JRzzmVXuvWmbxx0w
-         FAVLPpCVH/Bpg==
+        b=p/7qav2Bi4JQf3OF0lat4l4zuvXmuPvNJYZBvdH7pf1jVOXiipNLypItH6k4pEhwl
+         mVBXYKj7AJH/0X2LEtwoBiqR5IW0OX5JKbSi9iKe6im/gnuUdmozkl/VmTZJ2v6Euf
+         x8cXlS7kRKviGWPxWh56XrPJq0kHcRq/zBagZ5ssYZ9xJ5K3kpAfmdSpUT9tZ/ieKM
+         Vw+Xv9fwVZZVuouw0RYRHTCk5aRt5y75tc5ZAP9n6cR0o+hyBOUsDNjBfHbUUGHJPU
+         8uLMV0EaDpV1LYn3CjnoitFMfZqnW5dlgYfRU+6xf+P9F0cC/pdStHloihfxQOHAHS
+         UaUBTsopNg0Dg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Fedor Pchelkin <pchelkin@ispras.ru>,
@@ -38,14 +38,14 @@ Cc:     Fedor Pchelkin <pchelkin@ispras.ru>,
         Andrei Vagin <avagin@gmail.com>, autofs@vger.kernel.org,
         Christian Brauner <brauner@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 1/2] autofs: fix memory leak of waitqueues in autofs_catatonic_mode
-Date:   Thu,  7 Sep 2023 11:44:29 -0400
-Message-Id: <20230907154430.3422062-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 1/2] autofs: fix memory leak of waitqueues in autofs_catatonic_mode
+Date:   Thu,  7 Sep 2023 11:44:35 -0400
+Message-Id: <20230907154438.3422099-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.294
+X-stable-base: Linux 4.14.325
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -137,14 +137,14 @@ Message-Id: <169112719161.7590.6700123246297365841.stgit@donald.themaw.net>
 Signed-off-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/autofs/waitq.c | 3 ++-
+ fs/autofs4/waitq.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/autofs/waitq.c b/fs/autofs/waitq.c
-index f6385c6ef0a56..44ba0cd4ebc4f 100644
---- a/fs/autofs/waitq.c
-+++ b/fs/autofs/waitq.c
-@@ -35,8 +35,9 @@ void autofs_catatonic_mode(struct autofs_sb_info *sbi)
+diff --git a/fs/autofs4/waitq.c b/fs/autofs4/waitq.c
+index 961a12dc6dc81..5863532675e3c 100644
+--- a/fs/autofs4/waitq.c
++++ b/fs/autofs4/waitq.c
+@@ -42,8 +42,9 @@ void autofs4_catatonic_mode(struct autofs_sb_info *sbi)
  		wq->status = -ENOENT; /* Magic is gone - report failure */
  		kfree(wq->name.name);
  		wq->name.name = NULL;
