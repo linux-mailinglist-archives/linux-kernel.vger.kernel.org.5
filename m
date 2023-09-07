@@ -2,69 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DD7797705
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFFC797762
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235537AbjIGQT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:19:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
+        id S238200AbjIGQYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240303AbjIGQTj (ORCPT
+        with ESMTP id S242796AbjIGQWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:19:39 -0400
-Received: from mail-qt1-f202.google.com (mail-qt1-f202.google.com [209.85.160.202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7F14C2F
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:00:11 -0700 (PDT)
-Received: by mail-qt1-f202.google.com with SMTP id d75a77b69052e-414c43a48fdso13873891cf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:00:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694102025; x=1694706825; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FgzAJvMWabKSg+Fs2ABIxLNoYDB74sHy1tmQmF1BFrA=;
-        b=5XA3nCMqUM6qS8z8uVPlKi3mToDKtyIfODlZ79tP3IR4X9OdcwL9+xvNmPS9Pkbws8
-         B0A7xeBV8A6fKXlvYR4+8T0jEHJONzu/Yc5OtDKMEBuCPxmREpOMa9uDVNiN8m7VIBUE
-         M/w4J6dkafUQ7MJAzbRreP5svMoYYZ0EEE6tlyyXo+y1tFxJgkNfjwcesbBTyzC+GdKW
-         G423gPOjaYsRAVktX6IUixu5a/SEZlf2YA1ReNVvkuoJ0AMSPL4Ezduas3CwjRZOinD1
-         8EApinrUYHwwY/T/K2ycw+RLnDiXi1E6GT4bTILBpAWI8VV6J7/7rU0ZpnxqZzSI9ohX
-         efqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694102025; x=1694706825;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FgzAJvMWabKSg+Fs2ABIxLNoYDB74sHy1tmQmF1BFrA=;
-        b=G2IVCnxasKBRZ1rkh0shuHyeAXHHJFTwaRYliJb6Xl4LNhce7mCXwdj8tqR1TWuE3Y
-         MwEOU1CiRE8KbQdWmr76BGmODD7tn7TvcMhQ+Nwu7s2q2TZ/pOVv2xIQLuEPerfogfoL
-         YpovfxXhk3qsqJFzB/EcdNluThHJikJyhwlsjXEUSp81I/HD2T5WIjUWh08X32dwyHDE
-         LdxcdgDYEvHhJiVWZnDnKo/HmGtNZXTU6CAQsNcMG+lrlcCcy2UdBfVBHPs7PGsijxKi
-         19CNmxhTfDlL1/LvmJEg1xotaB5gNNz0BUzcdgEwRjdDs5zCfgs+VS8B9TXiwQwJWGWQ
-         OqQA==
-X-Gm-Message-State: AOJu0YxvsaMKNLdPDRQjJzQ2/tcOVMeyR7O5RJgISRTT2TaCvtIZ1Psk
-        X7MfyM/yvD6yJu6CL2FZzlhhn32cH5w=
-X-Google-Smtp-Source: AGHT+IFZD8rMKqtrUZuxadapb0kMDmHCmcHSIKx2uaonJiqykBzMJVL+4SXojH5SnWKxOUNiBkjxt5kZ8C0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1cc:b0:d07:e80c:412e with SMTP id
- u12-20020a05690201cc00b00d07e80c412emr228078ybh.12.1694097933191; Thu, 07 Sep
- 2023 07:45:33 -0700 (PDT)
-Date:   Thu, 7 Sep 2023 07:45:31 -0700
-In-Reply-To: <68859513bc0fb4eda4e3e62ec073dd2a58f7676b.camel@intel.com>
-Mime-Version: 1.0
-References: <20230825020733.2849862-1-seanjc@google.com> <20230825020733.2849862-3-seanjc@google.com>
- <68859513bc0fb4eda4e3e62ec073dd2a58f7676b.camel@intel.com>
-Message-ID: <ZPniC2JCOPMK1JQb@google.com>
-Subject: Re: [PATCH 2/2] KVM: x86/mmu: Retry fault before acquiring mmu_lock
- if mapping is changing
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Yan Y Zhao <yan.y.zhao@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        Thu, 7 Sep 2023 12:22:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309BD6194;
+        Thu,  7 Sep 2023 09:20:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694103632; x=1725639632;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=QrIByt2sivOlThJJJuIm95tWasheU6Saudv9SUBPsTs=;
+  b=WjvgFgQXWEPcAc2ETpIDyNS++ukCOrY1L3t9RubhePtbNagh8EdAE6lx
+   GRRKzFHul8N+V+s3v+QVeRSSuLCoi5jA+HFi5cLDMOrHfQOYdlQb2i6V0
+   frnCN+GVnMoZlg1/nZt95lP0EZaEQZOve2aY8ZM+BEjAsiO2kzEhTslLR
+   uah6bcYkWm4PrCMSIkQZiRSQeboNz7uAquj5NOTcXlTgdynyo03Z2Yzaw
+   ccWOyFoaGe3Yvp8+5tvUSXqBbQ7gBtO8+5Fc/Rr3Lo6uYUDPk/aUWmOgq
+   l8f6sg9BEAcwYz+qFlvopB/k0ARsd7WpbDz7lS4BXc2muNhlxG9VCgAkr
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="441379006"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="441379006"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 07:46:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="856885283"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="856885283"
+Received: from ningle-mobl2.amr.corp.intel.com (HELO [10.209.13.77]) ([10.209.13.77])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 07:46:55 -0700
+Message-ID: <7a50d04f-63ee-a901-6f39-7d341e423a77@intel.com>
+Date:   Thu, 7 Sep 2023 07:46:54 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 3/3] /dev/mem: Do not map unaccepted memory
+Content-Language: en-US
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-coco@lists.linux.dev, linux-efi@vger.kernel.org,
+        kexec@lists.infradead.org
+References: <20230906073902.4229-1-adrian.hunter@intel.com>
+ <20230906073902.4229-4-adrian.hunter@intel.com>
+ <9ffb7a3b-cf20-617a-e4f1-8a6a8a2c5972@intel.com>
+ <20230907142510.vcj57cvnewqt4m37@box.shutemov.name>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <20230907142510.vcj57cvnewqt4m37@box.shutemov.name>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,41 +77,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023, Kai Huang wrote:
-> On Thu, 2023-08-24 at 19:07 -0700, Sean Christopherson wrote:
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 1a5a1e7d1eb7..8e2e07ed1a1b 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -4334,6 +4334,9 @@ static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
-> >  	if (unlikely(!fault->slot))
-> >  		return kvm_handle_noslot_fault(vcpu, fault, access);
-> >  
-> > +	if (mmu_invalidate_retry_hva(vcpu->kvm, fault->mmu_seq, fault->hva))
-> > +		return RET_PF_RETRY;
-> > +
-> 
-> ... Perhaps a comment saying this is to avoid unnecessary MMU lock contention
-> would be nice.  Otherwise we have is_page_fault_stale() called later within the
-> MMU lock.  I suppose people only tend to use git blamer when they cannot find
-> answer in the code :-)
+On 9/7/23 07:25, Kirill A. Shutemov wrote:
+> On Thu, Sep 07, 2023 at 07:15:21AM -0700, Dave Hansen wrote:
+>> On 9/6/23 00:39, Adrian Hunter wrote:
+>>> Support for unaccepted memory was added recently, refer commit
+>>> dcdfdd40fa82 ("mm: Add support for unaccepted memory"), whereby
+>>> a virtual machine may need to accept memory before it can be used.
+>>>
+>>> Do not map unaccepted memory because it can cause the guest to fail.
+>> Doesn't /dev/mem already provide a billion ways for someone to shoot
+>> themselves in the foot?  TDX seems to have added the 1,000,000,001st.
+>> Is this really worth patching?
+> Is it better to let TD die silently? I don't think so.
 
-Agreed, will add.
+First, let's take a look at all of the distro kernels that folks will
+run under TDX.  Do they have STRICT_DEVMEM set?
 
-> >  	return RET_PF_CONTINUE;
-> >  }
-> >  
-> 
-> Btw, currently fault->mmu_seq is set in kvm_faultin_pfn(), which happens after
-> fast_page_fault().  Conceptually, should we move this to even before
-> fast_page_fault() because I assume the range zapping should also apply to the
-> cases that fast_page_fault() handles?
+> config STRICT_DEVMEM
+...
+>           If this option is switched on, and IO_STRICT_DEVMEM=n, the /dev/mem
+>           file only allows userspace access to PCI space and the BIOS code and
+>           data regions.  This is sufficient for dosemu and X and all common
+>           users of /dev/mem.
 
-Nope, fast_page_fault() doesn't need to "manually" detect invalidated SPTEs because
-it only modifies shadow-present SPTEs and does so with an atomic CMPXCHG.  If a
-SPTE is zapped by an mmu_notifier event (or anything else), the CMPXCHG will fail
-and fast_page_fault() will see the !PRESENT SPTE on the next retry and bail.
+Can a line of code in this patch even run in the face of IO_STRICT_DEVMEM=y?
+
+I think basically everybody sets that option and has for over a decade.
+If there are any distros out there _not_ setting this, we should
+probably have a chat with them to find out more.
+
+I suspect any practical use of this patch is limited to folks who:
+
+1. Compile sensible security-related options out of their kernel
+2. Go and reads random pages with /dev/mem in their "secure" VM
+
+They get to hold the pieces, and they can and will get a notification
+from their VMM that the VM did something nasty.
+
+BTW, Ubuntu at least also sets HARDENED_USERCOPY which will *also*
+enable STRICT_DEVMEM.  So someone would have to _really_ go to some
+trouble to shoot themselves in the foot here.  If they're _that_
+determined, it would be a shame to thwart their efforts with this patch.
