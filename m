@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E96B0797376
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524FB79736C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240336AbjIGPYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40312 "EHLO
+        id S238407AbjIGPXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237140AbjIGPXZ (ORCPT
+        with ESMTP id S237019AbjIGPXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:23:25 -0400
+        Thu, 7 Sep 2023 11:23:24 -0400
 Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2116.outbound.protection.outlook.com [40.107.113.116])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECDFC135;
-        Thu,  7 Sep 2023 08:23:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C88ACA;
+        Thu,  7 Sep 2023 08:23:20 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EDWxnuwc40BrstHsgY8DcE0xPXVv5Dhi9+4Bbo1hejODz+tEw9SY7G0r2TVoz4/atPR0d0w0UmpwQ/lUZkzIU0lNn0b1eUMHhGLD5afY7PrE1B45hwL8mNUOsVbScmJ2QKh9kqKoQqwAT02hH4XtvfSYLGJ11/jnQl1ieU9eIZ8ZQXkf0ONogx5jqlr3JDpeOfHyRSGHOvNZwZYWwgNuP1Rk6l94Wpfcuv8qvaNvwBVTzH6CYkNtIvaCd1rYykxMfVGDHmB+Hfm8/irkS8xwr3ySZBJSclxXB+yms1KSnhQQEb5UPcAveTvZVXzCzOyzS5WgtgQX93vJHwvtCF6rxw==
+ b=Mcy1rWc7luXI+9el4kzgFaJDIWuXJOXLXzaiInKQh+/nQeslK6KwoI/0rdFacuf3RiAfPkfPJc0xLQxlUhx7zemiEOHZWwX4k0Urof3uDvBfN7LHFV4idrgvMbIbDe5Yo4hxFui106ZaD83cU7+oxv6G/fzOWSv/xjZWM8Sn0QiQtMPySplXCnM6XaZMnD4YWAwdMEnIFnDEMSOApKXc3Zzej2P3Cl39qBalL3Fkas3clEhUKXscF88gHyQ5pd0K8pbix2yKN+aQ0WHDEgZQBYrOg+hxUoT9ViqXel7tNfPjQbxN7f7CNqd2dQQBYpWireOFgNYDbvO3GxLJNpwjSw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZXOtvf4kUvf5fl58KX+m7kY0C9xXDMhp9IrYnQZ1sss=;
- b=j+g4bj+gBtBv0UGn7Zbpb6hvl4ejTuwM0ZY2Y6xkT35sW9eOWo7OKrK/Aky+Yny21bopwn2moNgbXR6xRFMOm4UJwjbAaHPI1B8Og6iqlatP06rnyY6Mg5kyK3eEYe1uXHtuwel1fozx0n3YW4WrbXllNakplzL0XnGhBh+8/FGJB4aMJxdpPHJUySVpG4XJc6KfSu7flpj8bXsVZUrSXj0ZlN8rqN+ZfkIo6F+aTKFAs/8SizFQ/5xmmmM4PIIcPuxtTN4qpHXjx+fEOf5syR29dPT6L6yawXy/mxr9SpUSgrDN36RAF/65IHwMVDJ8PyGGAOwUrqslKk4xpsRlvw==
+ bh=uSx6t3bT4KimUzRI1hhDLWFcuwdhoukQNP2Snqrq8eU=;
+ b=KolSDC4oO7xPLLxgcyyV2hb6ZkjwL8NtmSMEkSZjqSSX4awWfVejccOMqRJ7QCGGret/Rxleufj1GFp/yQceOl/ln2LIhpa1mZIs4OY223/hysSkxppKHIx1wN4M1MXTlWgsvyjBer3YdAPkK59niMeaavECnqyl3wDzXH8Hq50AUOHA7Txrf0ztdyie8Dgj7m0eGI7wPYnFe6BztJ6klwcaMNyz2o/LIebR6gS5gmg+BUSZFaibMrN2LPhWJEYNvu7NHMUSPxZiAkuzPMVqJe9CYcdqYEaYdJuRS+q0sbMzBSUQcHTLQ/Dgt0dQMvQLbzhIiIANCvMZdq+NSbModQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
  header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZXOtvf4kUvf5fl58KX+m7kY0C9xXDMhp9IrYnQZ1sss=;
- b=to1I9HQ/tIBY1kiop7rA2P9JJRvWLqRKGj2GH13dv6PV8WqHfFjrRkPTOXRr+fsxhT2AJCql98SIf13XCzpUfNMs01eUbvoyR0nrMu9YnUWSDDwGioDBONBv7/WH9bHPdC7m7+xvFwCKHoPwb3PWs5kRrvlDbtIkc6K/NJI+tUc=
+ bh=uSx6t3bT4KimUzRI1hhDLWFcuwdhoukQNP2Snqrq8eU=;
+ b=uT7yBUJ9RqLISjDzMKFR16MgLu5FkGd4PgZOvaKIvavF518vZTV8sm/AIqh+bl8qHqyE6G6HUE9OEoL8mzZm/RvDmMs4BA6fKUAeFocqpqTMrN7NrjdGMKh4nVsB1/SYks2WkgVCVGqPAkNweXv/QgNTd+PSKYEHTpKVYhVvcI0=
 Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
  by TYBPR01MB5328.jpnprd01.prod.outlook.com (2603:1096:404:801f::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Thu, 7 Sep
- 2023 06:44:20 +0000
+ 2023 06:46:09 +0000
 Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
  ([fe80::9d23:32f5:9325:3706]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
  ([fe80::9d23:32f5:9325:3706%5]) with mapi id 15.20.6745.035; Thu, 7 Sep 2023
- 06:44:20 +0000
+ 06:46:09 +0000
 From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>
-CC:     Chris Brandt <Chris.Brandt@renesas.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 5/5] i2c: riic: avoid potential division by zero
-Thread-Topic: [PATCH 5/5] i2c: riic: avoid potential division by zero
-Thread-Index: AQHZ4Pzpegqncf7PEU+giQkC/rdzgrAO6hPQgAABOhA=
-Date:   Thu, 7 Sep 2023 06:44:20 +0000
-Message-ID: <OS0PR01MB592244BACC65607AA0E3C3E486EEA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20230906200024.5305-1-wsa+renesas@sang-engineering.com>
- <20230906200024.5305-6-wsa+renesas@sang-engineering.com>
- <OS0PR01MB59221A1F4614F30669F3448D86EEA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-In-Reply-To: <OS0PR01MB59221A1F4614F30669F3448D86EEA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Eric Tremblay <etremblay@distech-controls.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.au@gmail.com>
+Subject: RE: [PATCH v5 1/2] hwmon: tmp513: Add max_channels variable to struct
+ tmp51x_data
+Thread-Topic: [PATCH v5 1/2] hwmon: tmp513: Add max_channels variable to
+ struct tmp51x_data
+Thread-Index: AQHZ4O0u2EbbAKg7d0mHQloM6sSWybAONqsAgAC1SqA=
+Date:   Thu, 7 Sep 2023 06:46:09 +0000
+Message-ID: <OS0PR01MB59225E213906BF426C3AC98686EEA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+References: <20230906180837.284743-1-biju.das.jz@bp.renesas.com>
+ <20230906180837.284743-2-biju.das.jz@bp.renesas.com>
+ <ZPjZfK7+4jW3AFEB@smile.fi.intel.com>
+In-Reply-To: <ZPjZfK7+4jW3AFEB@smile.fi.intel.com>
 Accept-Language: en-GB, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -64,53 +66,53 @@ authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=bp.renesas.com;
 x-ms-publictraffictype: Email
 x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TYBPR01MB5328:EE_
-x-ms-office365-filtering-correlation-id: e2d95459-8201-4fc1-1db3-08dbaf6ddd35
+x-ms-office365-filtering-correlation-id: 19975214-305e-47a1-7eef-08dbaf6e1ea8
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jnNRL4F4yUKrldtncvV5dvvjvQFT1RiwCOTZoUeU3WJP7xZeNBP8M4BZehHYJ1+2Cz3mbV8BsCL0c5ZOjH7gmLBpkZJHTqSi0fNhBmp92FA6gLbZ1RZE8cCfY0m2b16mNu1fM0xX5LEWCDFFhajkPxyCzN0S7Ibqe2wqqHMsO/Grq563jWcSxIZEfhsiW95MkOmM49iuQxzyg3fIboBcN4PjDZDPIJzB/QRO3JNiYvnMPiK2XgaxpupWKDuXozXuk8GjSMJGygeVdmk9i+0d52a+zNTibgUeS+V0GWNRxmb2fI/+JMne0TCKjbaNS1Ns+XEyxT3IMeZRJYq/DmpCY98CUJTW9l+5lCDez4xiqhmSIvAZ0RkKduNJUZRBjC9kdmc/5nOzy50Y4o997urVAG6WrgJQtunuRkP54KhMqD9A0gvm/ETnDVprGvcI83UGXlbXvMKULaxOmIdUaQktmmMz5e9frP30CNUELUP1fBnsZokG2XljRHZdkgupVAHlyJLBoFFMUgpv5Ph17tnP1VHri672AlhKWfQbcDr97mic26mg5LEF8FFcH0j/uLxZEpHVGQPUqw4YnY+tPxBH9R7+Y+aDBVYI6dgCj7HswSConU8DJLVQoPbnvC4UcPXW
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(136003)(39860400002)(346002)(451199024)(1800799009)(186009)(122000001)(6506007)(7696005)(9686003)(8936002)(71200400001)(33656002)(55016003)(86362001)(2940100002)(38070700005)(38100700002)(478600001)(4744005)(26005)(2906002)(83380400001)(52536014)(110136005)(4326008)(41300700001)(54906003)(316002)(8676002)(5660300002)(66476007)(76116006)(64756008)(66556008)(66446008)(66946007);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: YOEX6YEohNZ9b97PY/4DaaAWXdW+ZxO+0MNGmKZh21Z+PFqWYDJWNdtiIsv3QfsIQn5Y8hraIbdQ1CSSvv43cW8DytsWQyP03g9W0GpsStKtvP0XekmQhvRpt/r7XakwGmikpzTUeJbrcyhG/Nx83TTx5BIvdJnbY962qSON1NfVNA0icMgTWmzOOU9XMn74Xf45EauzngWN/xwNEDw3gywsRxoK7O7b7+6RtRZwRkYjpyj+zRyLJKl2cVXUAQzOJgpo+SRIhMYYmOZPRDJd2j8x0WmDNd2L0Oz0RFFhTvMEDe1Rwrm/3KcyBDIX2a91nNtqt7Hof1gOSKWPCCHff4GdAcliTEzY+RbmFd4LVPAuroeStP6lTaAkztBmB+tMN89sCiGMOHGsfo3DvrL5JJTWQ7nqO8m+VOvkwRrg6P+pY58nIVDglR18U2Clz1LtKBNTJ+D/zrfzhRupAObQEsvHv5fUJSR0sCUSVSl0oZhCW6VmfEP88RmvkGLRtfQEMuByWE0O7Adqxlo2CPhYC2cqD6KnlmRZkYneqIZBujr0CH9kNzbtMmGRgwogx1wvDpwrN3oHJNojii3DiJAtUbrYScxAJzlACVCPWb1bqVhcSjB7m6dYgAgBGL68aez4
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(136003)(39860400002)(346002)(451199024)(1800799009)(186009)(122000001)(6506007)(7696005)(9686003)(8936002)(71200400001)(33656002)(55016003)(86362001)(38070700005)(38100700002)(478600001)(26005)(2906002)(83380400001)(52536014)(4326008)(41300700001)(54906003)(316002)(8676002)(5660300002)(66476007)(6916009)(76116006)(64756008)(66556008)(66446008)(66946007);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?stwchnTxyaHL5P4IAuZK2ch4G6Pm0E3yLKj+wugeqMquf9VST8i2GfDwod/H?=
- =?us-ascii?Q?vj+1WgqHSV9sBroRyurkLX9qSM+uRP+Tm9x+RpijynUjY02MuvM9T04TdDdV?=
- =?us-ascii?Q?jn4tWSrKH75AMBLfesgFeCqrjC2k4uDJArQrdFVUSRpWgrWu54qq3SE49eQR?=
- =?us-ascii?Q?aldHIFzs95MDHj9CUK8oR6Jx1t5Hr4PqLuoU8fDjz6/rkewus8vw38aC+yBP?=
- =?us-ascii?Q?hPLXcRXuLdCcQTsT8wfXIeNCt39x4WmatdkzXLEFdPo6AnFnhqZ0EPDYOpuI?=
- =?us-ascii?Q?UTwwb71W579sAAMCcGDdQDUng/35jIQmO5PQUpynKNEHBKT/g2twDfLbUGaQ?=
- =?us-ascii?Q?gyfItoJP7C4LdtlzwTJMcs0BaGyEYW5K9k7r3IOHhd+3OAKVNNveEoNmo0ad?=
- =?us-ascii?Q?t/OOlkyf/QWvOQcmrWkLlNN6NpIv6uAVnMIPVhSyIOVBON2G4+mPAGwB9NMH?=
- =?us-ascii?Q?lKVJoLGEdNFGJsFSR9j4xQqcsuV6dqB7ze9EAYmYMXdW/QGEKLKFvggWp8jX?=
- =?us-ascii?Q?J9s58YaikMUQO4HSMsKJu6DtimhbiWZ70nVrXkjMM/JNvRI3GXiZeNcmZsFJ?=
- =?us-ascii?Q?3eP8GeRYo2YI8HEP2b30tAhpRJcYOAbMPjSgPKCGKDHGvJX61+JBzS4rUmkP?=
- =?us-ascii?Q?8LeQ6YJctn2ACwj2l6GJnZmquVUgh/ZjR8JdaPQTx4DcnCUcVC58alWp/s5S?=
- =?us-ascii?Q?PCwqh3W4+IJHjiQQUcWeXforqITwUEvbrq2QbECFP8XyoXJ7QDiwsNkxANlh?=
- =?us-ascii?Q?1mYcZZkvho57ZjBG1kfc8sQjMNhmZc+gORM8x0gAts6T5IOI/nlQb2+vaaWn?=
- =?us-ascii?Q?ezPLAWy0DtL+XHYiI8066BMLMKtdpiId9C/gj266kUN0tYnzynMw8I9H1Tlw?=
- =?us-ascii?Q?wrtPXi5K8Izri97k4FtfYLilfEjq2Q4Ru1FORLM7FgybQ06tZUkj0YZ3nrUg?=
- =?us-ascii?Q?putjkzzzMuEWH8gta1AoD+tCp+ylzqQwCplPQuVLhb0MvivRXaxPHyJIrxjo?=
- =?us-ascii?Q?cYMx4iafGxnGpJpw+HpQtvm/TKNaooxCrQ8NWnCU9t2uVUpnvFU3yTmUYTjF?=
- =?us-ascii?Q?DMS9pNRIQFeXu5JvrQkBBMNTPeA06WQ7FnY1+61O8LE+KM7dw1JxIqRkhM2H?=
- =?us-ascii?Q?08HsNEdj7VY6jzZd5gwb+p7qoHzzTkKaRyBgM4sKcjTeTD625Ynfkz+ECaHb?=
- =?us-ascii?Q?XVQ1wJ2xTH/yAw/xVkoMWaG2eSE7iihjFkYmhStisfcRueWYAlT0pWazKSr6?=
- =?us-ascii?Q?0fsPWDaam+6qleoBY6jzOY57QF1C7Lq0M8B+BSmKEAibo+CTf7Z6BIr4yUNz?=
- =?us-ascii?Q?vAZRzYmRr4N7mhzncZNdb9+ohiOT0/7GgWhT7ttofTxfkY5U6dFi7AsLzsBB?=
- =?us-ascii?Q?JjT0vj/MqSViumqFSp68Fh0ppXq4nGyT1xFBc4VKuc+Two6xKEauA/+avius?=
- =?us-ascii?Q?oMMQWYxzC+w57Co4P3wwJgllapXUnLLZuAhvjD4CMfkUUU2RECvHVgcpmwTs?=
- =?us-ascii?Q?9CD4Ka0GNBDPAbhEXmyMA/3fNy6rzRPfzd23mgW2qGCTGMjM95LOnKWUEm78?=
- =?us-ascii?Q?qTNPXmnM80G8Naoi6wEE+YyAIMCwU1TlP5V8gS5K1MnYCG7D28VSF4gWD8SS?=
- =?us-ascii?Q?Dw=3D=3D?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?lQ9UmJOa5NO2qUcs8XcMdfurhLK5cxyNnJNyq6Y9sYQv+3tlXLA020MK3Zud?=
+ =?us-ascii?Q?Ph2p/xmB8slVtkqy1b12qiKIGaFSSPup0nzOlzY8c5mQ6H6H6RXoTHIwJd95?=
+ =?us-ascii?Q?A3Cyr+wBTAUyPtNEmoMRPyf3do3meM01T+hAiP8pCUPRBahxqrQFjX8NLotw?=
+ =?us-ascii?Q?1be8Dr3UaK5j0MjoratGjIMG/OBGizuccT62uuulVYc7b6kVs8hw9rwjs9rw?=
+ =?us-ascii?Q?9geQvVi/enczP6Ix5aMvAKvmFZQLVKdTUeFndQRv97C5NyEeDAJShBoBpQCI?=
+ =?us-ascii?Q?/hF2SBRiKkkDVYzjMWmx07kUBgLhcg0EqQGXh/N9djmVqvElbJVarFhTtxAg?=
+ =?us-ascii?Q?8Mg3RvXPib+rdKQeT8SwvqlVW/dtmcxuYxYq156gZnZQ0tEt2pPlT0mY4kKK?=
+ =?us-ascii?Q?F/DY15ZrMynCtmWjahVeKUse1yqPfBZCK4gNlRlhPb5levPSdqHAfv/sEYVX?=
+ =?us-ascii?Q?uR9i3ciI3YXHY+qEnaz0mYmR//eGzVGCNCs3hmv+WVwX0ukelcFMkk4nM32V?=
+ =?us-ascii?Q?elFQ1RCCjSGgaEcdlMLMwqqdpYBhsizg0M54aTDSrv0i3aMO8WCp5HnvyD8J?=
+ =?us-ascii?Q?tCM3pplRo3Nnk7g/x0UXkDCA735cEFo/Ga8n/qhwws2AJSGH6vTLYA2XOSF7?=
+ =?us-ascii?Q?Nr+G/0b1xkFXQEz3A2cKYKLAL5IU6KJufkiyP9hM6KYWHchh4qNdWXFqCJTM?=
+ =?us-ascii?Q?QEEdPxLAU54DjFdrZ2MyFZBgciLdg4EtMgqfgapmmaviM9Opt00qjYRECnWT?=
+ =?us-ascii?Q?4XoNa+oCSefpPSC8d7LAzQffBilKa8uxFmN8ntL1UKCsH3hdA4Gx1tlEW38I?=
+ =?us-ascii?Q?LIjPfSRCxLlkCs/UOuotlj4xIUyG+xBVHiI+4uPGgGAVZXbFOSmzNiI9hahc?=
+ =?us-ascii?Q?2X6fKCfjU1lA9LlmwOM5TyCQQ/AWKheMe8Y4lhsewGd25M5V1IQElryrvSvT?=
+ =?us-ascii?Q?xSe0oQ2UsSa6kgNCbGQkzoKkMouJwNmPSewmmhe35qzsvrQYU81VSwIbN89I?=
+ =?us-ascii?Q?ZiRiDYlHy1aF2ClMPFP0bX+/UXzUOmZ2V5CbWc8gfFzF7Zh9OCBVJMCJ/SwO?=
+ =?us-ascii?Q?rg0xXsEd9k5xO+7dSE91JTqdVhomNDxySGHFEJWoMvil65pCj2cUSgy0fcH1?=
+ =?us-ascii?Q?dzLeBK8nkvACAEfD0DSPseLf85MnHnKGZDIgBr/ztbOmsx2qsONiwm3dbXX3?=
+ =?us-ascii?Q?t+eVCp9wpVMbMw94teArKjiURM9tScFo+O17tJAlCAzTqyaIwi+lNtec/1sn?=
+ =?us-ascii?Q?CwGQB02oV7Ww36p6B4ryLM0+h7igPaAp/gL8zyFlHIzJRAxuDKNc7kV9FcJB?=
+ =?us-ascii?Q?PlAGlkdNtGlIcsITULKWm6MH/unR/oYF5umrWfrjMD+/XW5jYR68Qg6fbKgk?=
+ =?us-ascii?Q?3y4SJOeh9sTy6HI3x+Y9NqxjTCJiKmwt/0n+Yfk3EwBt3/N0j9CYVX17XcHS?=
+ =?us-ascii?Q?Ip2wOADVMQ8BEwRxVwqoDrXkdBTO6mr8pq2/tGAcDJPAJVg2z9100yjqyWsf?=
+ =?us-ascii?Q?I+h7hxLiuuYK3PBjpOx+OF0T43PAwTWI3pGBg6Z6b1qvHyLowezD+GdBg1/I?=
+ =?us-ascii?Q?LKJbic+5YiQzwyYuTQSaHsd9G90ghTBbeCWZXwC35MxNvkwr3uzdNBmfkxEn?=
+ =?us-ascii?Q?oQ=3D=3D?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e2d95459-8201-4fc1-1db3-08dbaf6ddd35
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Sep 2023 06:44:20.0543
+X-MS-Exchange-CrossTenant-Network-Message-Id: 19975214-305e-47a1-7eef-08dbaf6e1ea8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Sep 2023 06:46:09.8083
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OavGnzruBfYm/p37FC1wLMGXLvETM30I3jsd9K0dfvWXQ+7rVwm3YMwvY6SRQgPeVMo2YfmpabHEBv9tJEaZDW9448yq6e43FSndhMiWm4M=
+X-MS-Exchange-CrossTenant-userprincipalname: RTk+zRbrXLLrlw/KsNZ+d/t29KFXFar1Iq71bGUMMFvsAhcJ2MqRqgseL9XKwYdVKVTZlHLU3agmFmJH11gQLWijt57NzzFEBCuvHbvHmIc=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYBPR01MB5328
 X-OriginatorOrg: bp.renesas.com
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -122,32 +124,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: RE: [PATCH 5/5] i2c: riic: avoid potential division by zero
->=20
-> Hi Wolfram Sang,
->=20
-> > Subject: [PATCH 5/5] i2c: riic: avoid potential division by zero
-> >
-> > Value comes from DT, so it could be 0. Unlikely, but could be.
-> >
-> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> > ---
-> >  drivers/i2c/busses/i2c-riic.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/i2c/busses/i2c-riic.c
-> > b/drivers/i2c/busses/i2c-riic.c index f0ee8871d5ae..e43ff483c56e
-> > 100644
-> > --- a/drivers/i2c/busses/i2c-riic.c
-> > +++ b/drivers/i2c/busses/i2c-riic.c
-> > @@ -313,7 +313,7 @@ static int riic_init_hw(struct riic_dev *riic,
-> > struct i2c_timings *t)
-> >  	 * frequency with only 62 clock ticks max (31 high, 31 low).
-> >  	 * Aim for a duty of 60% LOW, 40% HIGH.
-> >  	 */
-> > -	total_ticks =3D DIV_ROUND_UP(rate, t->bus_freq_hz);
-> > +	total_ticks =3D DIV_ROUND_UP(rate, t->bus_freq_hz ?: 1);
->=20
-> Not sure clamping function min_t/min(t->bus_freq_hz, 1)=20
+Hi Andy Shevchenko,
 
-Typo min->max.
+> Subject: Re: [PATCH v5 1/2] hwmon: tmp513: Add max_channels variable to
+> struct tmp51x_data
+>=20
+> On Wed, Sep 06, 2023 at 07:08:36PM +0100, Biju Das wrote:
+> > The tmp512 chip has 3 channels whereas tmp513 has 4 channels. Avoid
+> > using tmp51x_ids for this HW difference by replacing OF/ID table data
+> > with maximum channels supported by the device.
+> >
+> > Replace id->max_channels variable from struct tmp51x_data and drop the
+> > macros TMP51{2,3}_TEMP_CONFIG_DEFAULT as it can be derived from the
+> > macro TMP51X_TEMP_CONFIG_DEFAULT and update the logic in
+> > tmp51x_is_visible(),
+> > tmp51x_read_properties() and tmp51x_init() using max_channels.
+> >
+> > While at it, drop enum tmp51x_ids as there is no user and remove
+> > trailing comma in the terminator entry for OF table.
+>=20
+> ...
+>=20
+> > +#define TMP51X_TEMP_CONFIG_CONV_RATE	FIELD_PREP(GENMASK(9, 7), 0x7)
+>=20
+> I also commented on this one. Any explanation why you didn't accept
+> recommended variant?
+
+I missed it. Will send v6.
+
+Cheers,
+Biju
