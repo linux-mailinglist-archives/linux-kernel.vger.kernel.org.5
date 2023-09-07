@@ -2,51 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6330F797A3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81C3797AB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244113AbjIGRev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
+        id S245603AbjIGRsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235776AbjIGRet (ORCPT
+        with ESMTP id S245480AbjIGRrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:34:49 -0400
+        Thu, 7 Sep 2023 13:47:47 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560DD1717
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:34:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CDCCFC433AD;
-        Thu,  7 Sep 2023 17:32:39 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D8B1BF7;
+        Thu,  7 Sep 2023 10:47:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92B46C43395;
+        Thu,  7 Sep 2023 17:36:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694107959;
-        bh=/7fYH3Y0LZhswgcm57+IQIf6ouCwqmKcs0oP3ZAss10=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=HiEfZt7L1UaD35I4QVIbhGgaKmX2+KnsiGPmgCxlwfYd1hkhWXa7RI7LAMIRwSD9H
-         DBAzMYuPOEtcEWxuz8WRErYeKrL1xbswrmHQ0U5m9vEDI2dKv6Y9eILXWp1gd54GjZ
-         c4NvSXlo+yT3i/lvawVFr1AbtBRLtKkzwmnDcXOs7xVAe8z7d9e+4kwn7BLSvEezpm
-         P5cSWVED8eS50nS8TJlqPjr2pLLCaVi0rN865Yc9VnmroP9UkRdtDgCm9qunQypPSC
-         TeyIUeftVKAPsotKff+2KrPZQ28gSnUYu4o5FCvVxsnKessm/cZoY78H1zZ8sKOc0F
-         3WxWOTQ+D0Hdg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B8E8FE22AFB;
-        Thu,  7 Sep 2023 17:32:39 +0000 (UTC)
-Subject: Re: [PULL 0/2] xtensa updates for v6.6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230905200559.2824671-1-jcmvbkbc@gmail.com>
-References: <20230905200559.2824671-1-jcmvbkbc@gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230905200559.2824671-1-jcmvbkbc@gmail.com>
-X-PR-Tracked-Remote: https://github.com/jcmvbkbc/linux-xtensa.git tags/xtensa-20230905
-X-PR-Tracked-Commit-Id: 03ce34cf8f50e4c62f9a4b62caffdba1165ca977
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: dd1386dd3c4f4bc55456c88180f9f39697bb95c0
-Message-Id: <169410795974.539.16789039728160268229.pr-tracker-bot@kernel.org>
-Date:   Thu, 07 Sep 2023 17:32:39 +0000
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>
+        s=k20201202; t=1694108214;
+        bh=Eiz6SK/GqpmCoXTlpi6rkM1vG/IzusgKaLu2J8ONxZc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=lNmwdK0igINXgKTUlE2M5AL8aAcwBLGL82xBc092o9SE8QeG66ueU70gN9x3wzaWj
+         7QVF1N2SAwkrvnPeRjiN/Ncs2oFKV80LqfhPi6waSgUaY7jwDNBNnMkaNrCCupKWJG
+         iOB+mAGaBLEzOTXygDVuQSHWP9afZu1ESP6FCwCUaGHliCdPjd5rDlnTdOnQ2ynmkg
+         xNE8UwfSkfxl0wlcSP138wN7JOF/wudkT1n2VeQw1WMAspSFxi/2so0nXUepTJD5CA
+         Dj5Zky56qn34Zk2YnuKmBvj+RviuXBnU35mOTeAasBvKGzpPPom4cosPC+EMDbAE6Q
+         LMc5umqDShYoA==
+Message-ID: <f08f590a-df05-4d83-984f-41b4d60af971@kernel.org>
+Date:   Thu, 7 Sep 2023 19:36:50 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] arm64/sysreg: refactor deprecated strncpy
+Content-Language: en-US
+To:     Justin Stitt <justinstitt@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mostafa Saleh <smostafa@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org
+References: <20230905-strncpy-arch-arm64-v4-1-bc4b14ddfaef@google.com>
+From:   Konrad Dybcio <konradybcio@kernel.org>
+In-Reply-To: <20230905-strncpy-arch-arm64-v4-1-bc4b14ddfaef@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -57,15 +55,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue,  5 Sep 2023 13:05:59 -0700:
 
-> https://github.com/jcmvbkbc/linux-xtensa.git tags/xtensa-20230905
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/dd1386dd3c4f4bc55456c88180f9f39697bb95c0
+On 5.09.2023 22:10, Justin Stitt wrote:
+> strncpy is deprecated [1] and should not be used if the src string is
+> not NUL-terminated.
+> 
+> When dealing with `cmdline` we are counting the number of characters
+> until a space then copying these over into `buf`. Let's not use any of
+> the str*() functions since the src string is not necessarily NUL-terminated.
+> 
+> Prefer `memcpy()` alongside a forced NUL-termination as it more
+> accurately describes what is going on within this function, i.e: copying
+> from non NUL-terminated buffer into a NUL-terminated buffer.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+Hi,
 
-Thank you!
+some form of this patch [1] went into -next and it broke booting
+on at least the Qualcomm SC8280XP-based Lenovo Thinkpad X13S.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Konrad
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=d232606773a0b09ec7f1ffc25f63abe801d011fd
