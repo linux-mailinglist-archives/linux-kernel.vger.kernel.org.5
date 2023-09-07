@@ -2,64 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B53796E3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 02:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA04C796E43
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 03:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244870AbjIGAyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 20:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
+        id S236731AbjIGBBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 21:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjIGAyU (ORCPT
+        with ESMTP id S229563AbjIGBBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 20:54:20 -0400
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3FC5173B;
-        Wed,  6 Sep 2023 17:54:16 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VrV82ym_1694048053;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VrV82ym_1694048053)
-          by smtp.aliyun-inc.com;
-          Thu, 07 Sep 2023 08:54:14 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH -next] scsi: ufs: core: Simplify bool conversion
-Date:   Thu,  7 Sep 2023 08:54:13 +0800
-Message-Id: <20230907005413.100804-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+        Wed, 6 Sep 2023 21:01:37 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE4EE8;
+        Wed,  6 Sep 2023 18:01:33 -0700 (PDT)
+Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Rh19V427qz1M8v6;
+        Thu,  7 Sep 2023 08:59:42 +0800 (CST)
+Received: from [10.67.110.218] (10.67.110.218) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 7 Sep 2023 09:01:30 +0800
+Message-ID: <eb050960-b2bb-4dbe-7879-a0dd3935556e@huawei.com>
+Date:   Thu, 7 Sep 2023 09:01:30 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: "[PATCH] selftests/ftrace: Correctly enable event in
+ instance-event.tc"
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+CC:     <akaher@vmware.com>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <mhiramat@kernel.org>,
+        <shuah@kernel.org>, <skhan@linuxfoundation.org>,
+        <yeweihua4@huawei.com>
+References: <b62e6539-7b25-c8ab-6b6c-47e723023297@huawei.com>
+ <20230906142652.191866-1-naresh.kamboju@linaro.org>
+ <20230906103718.0405ccb4@gandalf.local.home>
+ <20230906173706.7aeb8716@gandalf.local.home>
+From:   Zheng Yejian <zhengyejian1@huawei.com>
+In-Reply-To: <20230906173706.7aeb8716@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.110.218]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-./drivers/ufs/core/ufshcd.c:2307:26-31: WARNING: conversion to bool not needed here
+On 2023/9/7 05:37, Steven Rostedt wrote:
+> On Wed, 6 Sep 2023 10:37:18 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+>>> Log details,
+>>> -------------
+>>> # ok 45 ftrace - test tracing error log support
+>>> <47>[ 1373.662292] systemd-journald[90]: Sent WATCHDOG=1 notification.
+>>> # ok 46 Test creation and deletion of trace instances while setting an event
+>>
+>> It's definitely a race with the creation and deletion of instances.
+>>
+>> I'm going to run it on my laptop VM and see if that reproduces it. My other
+>> VM is on a pretty powerful machine, and perhaps that's keeping it from
+>> hitting the race.
+> 
+> Putting in a while loop of:
+> 
+>    # while :; do ./ftracetest test.d/instances/instance-event.tc ; done
+> 
 
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/ufs/core/ufshcd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In test.d/instances/instance-event.tc, concurrently create/delete/access
+intances just about 1 second and then killed them, it may cause missing
+the race.
 
-diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index c2df07545f96..04bbe38ffd87 100644
---- a/drivers/ufs/core/ufshcd.c
-+++ b/drivers/ufs/core/ufshcd.c
-@@ -2304,7 +2304,7 @@ static inline bool ufshcd_ready_for_uic_cmd(struct ufs_hba *hba)
- 	int ret = read_poll_timeout(ufshcd_readl, val, val & UIC_COMMAND_READY,
- 				    500, UIC_CMD_TIMEOUT * 1000, false, hba,
- 				    REG_CONTROLLER_STATUS);
--	return ret == 0 ? true : false;
-+	return ret == 0;
- }
- 
- /**
--- 
-2.20.1.7.g153144c
+No longer sleep and kill, following testcase can also reproduce:
+```
+#!/bin/bash
+
+cd /sys/kernel/tracing/instances
+
+instance_slam() {
+   while :; do
+           mkdir foo 2> /dev/null
+           rmdir foo 2> /dev/null
+   done
+}
+
+instance_set() {
+         while :; do
+                 echo 1 > foo/events/sched/sched_switch/enable
+         done 2> /dev/null
+}
+
+instance_slam &
+p1=$!
+echo $p1
+
+instance_set &
+p2=$!
+echo $p2
+```
+
+--
+
+Thanks,
+Zheng Yejian
+
+> eventually triggered the bug. Looks like this is really an existing bug not
+> related to the eventfs, but the eventfs code actually opened up the window
+> of this race.
+> 
+> Hopefully I'll have a fix shortly.
+> 
+> -- Steve
+> 
 
