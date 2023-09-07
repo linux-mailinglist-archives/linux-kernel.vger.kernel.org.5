@@ -2,113 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0284C7975DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0E2797369
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236281AbjIGQA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41536 "EHLO
+        id S237664AbjIGPXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:23:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241548AbjIGP7P (ORCPT
+        with ESMTP id S229495AbjIGPXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:59:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B764620918
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:45:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694101461;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jWCCEttxvodDZdaM3WlXXA7tEL4YbcEdc+RVAa5fFGI=;
-        b=O5j8hdNChdzEoWnFddgZrVqu6/q+NaixjhGzB2megTg6BHvk2oUOf/5WAtEiw06t94jcPX
-        namvvaJYVyosXTDdR3qIH4oDrcNm7DDIyvYJfR9TcTpkxHVjotEtqJxX+rrh9Zl8ncDqOs
-        KfF62wfZSpmRoa/frxFzEzVnhkOxnzs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-589-wmTAwmDAMhqIRDWar89JEQ-1; Thu, 07 Sep 2023 11:05:22 -0400
-X-MC-Unique: wmTAwmDAMhqIRDWar89JEQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7DF6E93F421;
-        Thu,  7 Sep 2023 15:02:55 +0000 (UTC)
-Received: from swamp.redhat.com (unknown [10.45.225.164])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BBDDF6B595;
-        Thu,  7 Sep 2023 15:02:53 +0000 (UTC)
-From:   Petr Oros <poros@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, intel-wired-lan@lists.osuosl.org,
-        linux-kernel@vger.kernel.org, mschmidt@redhat.com,
-        ivecera@redhat.com, ahmed.zaki@intel.com, horms@kernel.org
-Subject: [PATCH net v2 2/2] iavf: schedule a request immediately after add/delete vlan
-Date:   Thu,  7 Sep 2023 17:02:51 +0200
-Message-ID: <20230907150251.224931-2-poros@redhat.com>
-In-Reply-To: <20230907150251.224931-1-poros@redhat.com>
-References: <20230907150251.224931-1-poros@redhat.com>
+        Thu, 7 Sep 2023 11:23:00 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3BD219A9;
+        Thu,  7 Sep 2023 08:22:42 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (ftip006315900.acc1.colindale.21cn-nte.bt.net [81.134.214.249])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B32F12CE1;
+        Thu,  7 Sep 2023 17:02:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1694098947;
+        bh=Mn1DzFplHiBq8ejqQ2yJAbBIICsOc165Jqw6Kub7OiU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tLxPhoanBVn3d3nkZ8jaIznfcfbRYFdDgBvjh+EF6gSwkXFgWPmbJ4NwRuR/RlAjo
+         366yttkSBiEYj38E625bs/itwgMHWApUIc44tDKm4bQdayC6tzc5N8BwveqjAk7zIA
+         GUstIOX8pRx4OLUs2fqLytdk1A2JAKH+Y2yG3rVs=
+Date:   Thu, 7 Sep 2023 18:04:08 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Paul Elder <paul.elder@ideasonboard.com>
+Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 3/3] arm64: dts: mediatek: mt8365-pumpkin: Add overlays
+ for thp7312 cameras
+Message-ID: <20230907150408.GC17610@pendragon.ideasonboard.com>
+References: <20230905233118.183140-4-paul.elder@ideasonboard.com>
+ <502fc7b1-a32d-6901-3a45-d2aa0e0c3849@linaro.org>
+ <20230906083237.GL7971@pendragon.ideasonboard.com>
+ <a3ed9856-a87b-5cf6-26b5-ff2b19234a8a@linaro.org>
+ <20230906090058.GB17308@pendragon.ideasonboard.com>
+ <59e07c6a-6f1b-0cc7-dddc-96d2a4050843@linaro.org>
+ <20230906093531.GO7971@pendragon.ideasonboard.com>
+ <169399810391.277971.691693692840899613@ping.linuxembedded.co.uk>
+ <20230906111429.GC17308@pendragon.ideasonboard.com>
+ <ZPnkUVmDZYb0ysu0@pyrite.rasen.tech>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZPnkUVmDZYb0ysu0@pyrite.rasen.tech>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the iavf driver wants to reconfigure the VLAN filters
-(iavf_add_vlan, iavf_del_vlan), it sets a flag in
-aq_required:
-  adapter->aq_required |= IAVF_FLAG_AQ_ADD_VLAN_FILTER;
-or:
-  adapter->aq_required |= IAVF_FLAG_AQ_DEL_VLAN_FILTER;
+On Thu, Sep 07, 2023 at 11:55:13PM +0900, Paul Elder wrote:
+> On Wed, Sep 06, 2023 at 02:14:29PM +0300, Laurent Pinchart wrote:
+> > On Wed, Sep 06, 2023 at 12:01:43PM +0100, Kieran Bingham wrote:
+> > > Quoting Laurent Pinchart (2023-09-06 10:35:31)
+> > > > On Wed, Sep 06, 2023 at 11:21:31AM +0200, Krzysztof Kozlowski wrote:
+> > > > > On 06/09/2023 11:00, Laurent Pinchart wrote:
+> > > > > >>> has a regulator@0. There are similar instances for clocks.
+> > > > > >>>
+> > > > > >>> I understand why it may not be a good idea, and how the root node is
+> > > > > >>> indeed not a bus. In some cases, those regulators and clocks are grouped
+> > > > > >>> in a regulators or clocks node that has a "simple-bus" compatible. I'm
+> > > > > >>> not sure if that's a good idea, but at least it should validate.
+> > > > > >>>
+> > > > > >>> What's the best practice for discrete board-level clocks and regulators
+> > > > > >>> in overlays ? How do we ensure that their node name will not conflict
+> > > > > >>> with the board to which the overlay is attached ?
+> > > > > >>
+> > > > > >> Top-level nodes (so under /) do not have unit addresses. If they have -
+> > > > > >> it's an error, because it is not a bus. Also, unit address requires reg.
+> > > > > >> No reg? No unit address. DTC reports this as warnings as well.
+> > > > > > 
+> > > > > > I agree with all that, but what's the recommended practice to add
+> > > > > > top-level clocks and regulators in overlays, in a way that avoids
+> > > > > > namespace clashes with the base board ?
+> > > > > 
+> > > > > Whether you use regulator@0 or regulator-0, you have the same chances of
+> > > > > clash.
+> > > > 
+> > > > No disagreement there. My question is whether there's a recommended
+> > > > practice to avoid clashes, or if it's an unsolved problem that gets
+> > > > ignored for now because there's only 36h in a day and there are more
+> > > > urgent things to do.
+> > > 
+> > > Should an overlay add these items to a simple-bus specific to that
+> > > overlay/device that is being supported?
+> > > 
+> > > That would 'namespace' the added fixed-clocks/fixed-regulators etc...
+> > > 
+> > > But maybe it's overengineering or mis-using the simple-bus.
+> > 
+> > You would still need to name the node that groups the regulators and
+> > clocks in a way that wouldn't clash between multiple overlays and the
+> > base board. It would be nice to have nodes that are "private" to an
+> > overlay.
+> 
+> What's the best solution to this then :/
 
-This is later processed by the watchdog_task, but it runs periodically
-every 2 seconds, so it can be a long time before it processes the request.
+It seems we don't have a good solution. For now, I'd recommend just
+picking a name for the regulator that has a high chance to be unique,
+like reg-thp7312-1v2 for instance.
 
-In the worst case, the interface is unable to receive traffic for more
-than 2 seconds for no objective reason.
+> > > And the items are still not on a 'bus' with an address - they just exist
+> > > on a presumably externally provided board....
 
-Signed-off-by: Petr Oros <poros@redhat.com>
-Co-developed-by: Michal Schmidt <mschmidt@redhat.com>
-Signed-off-by: Michal Schmidt <mschmidt@redhat.com>
-Co-developed-by: Ivan Vecera <ivecera@redhat.com>
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
-Reviewed-by: Ahmed Zaki <ahmed.zaki@intel.com>
----
- drivers/net/ethernet/intel/iavf/iavf_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
-index 86d472dfdbc10c..d9f8ac1d57fd62 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_main.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
-@@ -821,7 +821,7 @@ iavf_vlan_filter *iavf_add_vlan(struct iavf_adapter *adapter,
- 		list_add_tail(&f->list, &adapter->vlan_filter_list);
- 		f->state = IAVF_VLAN_ADD;
- 		adapter->num_vlan_filters++;
--		adapter->aq_required |= IAVF_FLAG_AQ_ADD_VLAN_FILTER;
-+		iavf_schedule_aq_request(adapter, IAVF_FLAG_AQ_ADD_VLAN_FILTER);
- 	}
- 
- clearout:
-@@ -843,7 +843,7 @@ static void iavf_del_vlan(struct iavf_adapter *adapter, struct iavf_vlan vlan)
- 	f = iavf_find_vlan(adapter, vlan);
- 	if (f) {
- 		f->state = IAVF_VLAN_REMOVE;
--		adapter->aq_required |= IAVF_FLAG_AQ_DEL_VLAN_FILTER;
-+		iavf_schedule_aq_request(adapter, IAVF_FLAG_AQ_DEL_VLAN_FILTER);
- 	}
- 
- 	spin_unlock_bh(&adapter->mac_vlan_list_lock);
 -- 
-2.42.0
+Regards,
 
+Laurent Pinchart
