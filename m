@@ -2,124 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FD17973E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C09797400
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243434AbjIGPb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
+        id S1344177AbjIGPci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343668AbjIGPaq (ORCPT
+        with ESMTP id S1343684AbjIGPaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:30:46 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F26F19A8
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:30:19 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 7 Sep 2023 11:30:52 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267D3E49
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:30:25 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 88F731F88D;
+        Thu,  7 Sep 2023 08:22:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694074953; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tzgoDD/bHhxHsVR5uf1gKe91bvDoRy0Td5lufA5XW4o=;
+        b=EiLJXKR6BlyGqAK9GeYYVS4++O0v5ZIVWFoX1WQebvNNT7K9fgIpU89W3Q3TII1fbZzSyh
+        GuoP+un48Lmp5I8ZyQ7ZZgNUeo+RnPf6MtWj0CiHuHxMhkEu4e0rhMyHYxubXlr2OeC8Z1
+        TZm6G4ml+s1XvjoOntnw1Hp1RVGmlmo=
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 95C2566072BE;
-        Thu,  7 Sep 2023 09:22:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694074934;
-        bh=0QQVv6jlMc3BXhzBHqUu8xLqyScvz33I/+GvzdQguMU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=g4NZCvLeUZCbl/IEdNcZBmNQtxVQUqWVm3hFjqIfmd1kifIQvSsgonlPl8Mu8TQyX
-         3J2qi/yywlOtky+59zLO+SDWIWtxSrgC1TdHZxoGkz0F0v7ApBYtE+p6tmp9V/TAte
-         nt3AmylDPwnKOh3YGg+yy+8wBLdMgTFvPxFb45EuV1zF+Ody5zNbBCCEFs2dePBbO/
-         0fsInLcpoybezFl/JlTlaaO7PQCfXNvj/P34sXSLIajcRJoPTmMo/jm88fGsDhxmM2
-         +d5HQ7CbZQV8b/vKC6W8L4HQcqWv85IJKEYp4LkWcR52h89R0uDVgfNW/w4w3JxqE7
-         LA18ulLzj6Fyw==
-Message-ID: <21e6631e-a99c-0b09-feb4-23407465ea55@collabora.com>
-Date:   Thu, 7 Sep 2023 10:22:10 +0200
+        by relay2.suse.de (Postfix) with ESMTPS id 2ED062C142;
+        Thu,  7 Sep 2023 08:22:33 +0000 (UTC)
+Date:   Thu, 7 Sep 2023 10:22:32 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH printk v3 6/7] printk: nbcon: Add emit function and
+ callback function for atomic printing
+Message-ID: <ZPmISE9olpOkPOM8@alley>
+References: <20230903150539.245076-1-john.ogness@linutronix.de>
+ <20230903150539.245076-7-john.ogness@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] iommu/mediatek: Fix share pgtable for iova over 4GB
-To:     Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Laura Nao <laura.nao@collabora.com>
-References: <20230819081443.8333-1-yong.wu@mediatek.com>
-Content-Language: en-US
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230819081443.8333-1-yong.wu@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230903150539.245076-7-john.ogness@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 19/08/23 10:14, Yong Wu ha scritto:
-> In mt8192/mt8186, there is only one MM IOMMU that supports 16GB iova
-> space, which is shared by display, vcodec and camera. These two SoC use
-> one pgtable and have not the flag SHARE_PGTABLE, we should also keep
-> share pgtable for this case.
+On Sun 2023-09-03 17:11:38, John Ogness wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
 > 
-> In mtk_iommu_domain_finalise, MM IOMMU always share pgtable, thus remove
-> the flag SHARE_PGTABLE checking. Infra IOMMU always uses independent
-> pgtable.
+> Implement an emit function for nbcon consoles to output printk
+> messages. It utilizes the lockless printk_get_next_message() and
+> console_prepend_dropped() functions to retrieve/build the output
+> message. The emit function includes the required safety points to
+> check for handover/takeover and calls a new write_atomic callback
+> of the console driver to output the message. It also includes
+> proper handling for updating the nbcon console sequence number.
 > 
-> Fixes: cf69ef46dbd9 ("iommu/mediatek: Fix two IOMMU share pagetable issue")
-> Reported-by: Laura Nao <laura.nao@collabora.com>
-> Closes: https://lore.kernel.org/linux-iommu/20230818154156.314742-1-laura.nao@collabora.com/
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
-This is urgent. Fixes multiple machines.
-
-> ---
-> Base on next-20230818.
-> ---
->   drivers/iommu/mtk_iommu.c | 9 ++++-----
->   1 file changed, 4 insertions(+), 5 deletions(-)
+> A new nbcon_write_context struct is introduced. This is provided
+> to the write_atomic callback and includes only the information
+> necessary for performing atomic writes.
 > 
-> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-> index b17d3e7288a7..b5fcba305d2a 100644
-> --- a/drivers/iommu/mtk_iommu.c
-> +++ b/drivers/iommu/mtk_iommu.c
-> @@ -262,7 +262,7 @@ struct mtk_iommu_data {
->   	struct device			*smicomm_dev;
->   
->   	struct mtk_iommu_bank_data	*bank;
-> -	struct mtk_iommu_domain		*share_dom; /* For 2 HWs share pgtable */
-> +	struct mtk_iommu_domain		*share_dom;
->   
->   	struct regmap			*pericfg;
->   	struct mutex			mutex; /* Protect m4u_group/m4u_dom above */
-> @@ -643,8 +643,8 @@ static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom,
->   	struct mtk_iommu_domain	*share_dom = data->share_dom;
->   	const struct mtk_iommu_iova_region *region;
->   
-> -	/* Always use share domain in sharing pgtable case */
-> -	if (MTK_IOMMU_HAS_FLAG(data->plat_data, SHARE_PGTABLE) && share_dom) {
-> +	/* Share pgtable when 2 MM IOMMU share the pgtable or one IOMMU use multiple iova ranges */
-> +	if (share_dom) {
->   		dom->iop = share_dom->iop;
->   		dom->cfg = share_dom->cfg;
->   		dom->domain.pgsize_bitmap = share_dom->cfg.pgsize_bitmap;
-> @@ -677,8 +677,7 @@ static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom,
->   	/* Update our support page sizes bitmap */
->   	dom->domain.pgsize_bitmap = dom->cfg.pgsize_bitmap;
->   
-> -	if (MTK_IOMMU_HAS_FLAG(data->plat_data, SHARE_PGTABLE))
-> -		data->share_dom = dom;
-> +	data->share_dom = dom;
->   
->   update_iova_region:
->   	/* Update the iova region for this domain */
+> Co-developed-by: John Ogness <john.ogness@linutronix.de>
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> Signed-off-by: Thomas Gleixner (Intel) <tglx@linutronix.de>
 
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
+Well, I would prefer one small change, see below.
+
+> --- a/kernel/printk/nbcon.c
+> +++ b/kernel/printk/nbcon.c
+> @@ -732,6 +756,102 @@ static bool nbcon_context_update_unsafe(struct nbcon_context *ctxt, bool unsafe)
+>  	return nbcon_context_can_proceed(ctxt, &cur);
+>  }
+>  
+> +/**
+> + * nbcon_emit_next_record - Emit a record in the acquired context
+> + * @wctxt:	The write context that will be handed to the write function
+> + *
+> + * Return:	True if this context still owns the console. False if
+> + *		ownership was handed over or taken.
+> + *
+> + * When this function returns false then the calling context no longer owns
+> + * the console and is no longer allowed to go forward. In this case it must
+> + * back out immediately and carefully. The buffer content is also no longer
+> + * trusted since it no longer belongs to the calling context. If the caller
+> + * wants to do more it must reacquire the console first.
+> + *
+> + * When true is returned, @wctxt->ctxt.backlog indicates whether there are
+> + * still records pending in the ringbuffer,
+> + */
+> +__maybe_unused
+> +static bool nbcon_emit_next_record(struct nbcon_write_context *wctxt)
+> +{
+> +	struct nbcon_context *ctxt = &ACCESS_PRIVATE(wctxt, ctxt);
+> +	struct console *con = ctxt->console;
+> +	bool is_extended = console_srcu_read_flags(con) & CON_EXTENDED;
+> +	struct printk_message pmsg = {
+> +		.pbufs = ctxt->pbufs,
+> +	};
+> +	unsigned long con_dropped;
+> +	struct nbcon_state cur;
+> +	unsigned long dropped;
+> +	bool done;
+[...]
+> +update_con:
+> +	/*
+> +	 * The dropped count and the sequence number are updated within an
+> +	 * unsafe section. This limits update races to the panic context and
+> +	 * allows the panic context to win.
+> +	 */
+> +
+> +	if (!nbcon_context_update_unsafe(ctxt, true))
+> +		return false;
+
+I would prefer to use nbcon_enter_unsafe(). It is more self-explaining.
+And it will make it easier to see the "all" enter/exit points using cscope.
+
+> +
+> +	if (dropped != con_dropped) {
+> +		/* Counterpart to the READ_ONCE() above. */
+> +		WRITE_ONCE(con->dropped, dropped);
+> +	}
+> +
+> +	nbcon_seq_try_update(ctxt, pmsg.seq + 1);
+> +
+> +	return nbcon_context_update_unsafe(ctxt, false);
+> +}
+
+Best Regards,
+Petr
