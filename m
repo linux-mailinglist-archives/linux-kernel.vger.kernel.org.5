@@ -2,49 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A64797388
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1795797384
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236066AbjIGP0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
+        id S238107AbjIGPZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241420AbjIGPZT (ORCPT
+        with ESMTP id S242498AbjIGPYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:25:19 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F30170E
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:25:03 -0700 (PDT)
-Received: from nazgul.tnic (unknown [93.123.97.133])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 7 Sep 2023 11:24:48 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919AF1BCA;
+        Thu,  7 Sep 2023 08:24:30 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8132D1EC0513;
-        Thu,  7 Sep 2023 17:06:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1694099190;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Ge1IQDq1JvnTEAM/MidB0daQSkz6y0NbUvHmMjQT8jU=;
-        b=jssZumBzvCN8jHsr0NYxwaF6c5U5a6XnotcHYcshS2I8r9NKQzDyaxhKpq1BVdRXfMYF5n
-        N4Hptgzj56xhxj4PFwq3bDtHuDwi5JsRcygiKq518cP2yCYOQNO8ryhzTy5US5UxqNGvK+
-        OJnnnKHrg9zSKGytdSmdUb0ZUKdRbDY=
-Date:   Thu, 7 Sep 2023 17:06:32 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
-        gregkh@linuxfoundation.org, nik.borisov@suse.com
-Subject: Re: [PATCH v2 10/11] x86/alternatives: Simplify ALTERNATIVE_n()
-Message-ID: <20230907150632.GAZPnm+Ly+Vyt8VPYr@fat_crate.local>
-References: <20230814114426.057251214@infradead.org>
- <20230814121149.176244760@infradead.org>
- <20230907083158.GBZPmKfjarnaQk1ofB@fat_crate.local>
- <20230907110917.GA10955@noisy.programming.kicks-ass.net>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 69FCF1F8B3;
+        Thu,  7 Sep 2023 15:06:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694099209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jlk2aVZRvC2y/qKDlLstKtfgf2Vh9rUftT3QduXr7LQ=;
+        b=og32zLaWxL+nBMJpNev005pWzlZ8xcaftNekvoDckFB9fNls3DMj51BpD/mL6rsum2WDqk
+        NI5Ut9JSRIAYoaRE1XOVzik/fl02jwg7IJvJk3CEKtKN+eWkxj2NTEZTnXLanV5OO58CH1
+        eIfOHGCTdrycY4aDYbYpUKJ3cccECMM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3D716138FA;
+        Thu,  7 Sep 2023 15:06:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id qo7GDQnn+WRNcgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 07 Sep 2023 15:06:49 +0000
+Date:   Thu, 7 Sep 2023 17:06:48 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Luiz Capitulino <luizcap@amazon.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        longman@redhat.com, lcapitulino@gmail.com
+Subject: Re: [PATH v2] cgroup: add cgroup_favordynmods= command-line option
+Message-ID: <lqcl5cblo3s45afvtgqjkbz2an3zwccsckglhpe3ufyffqavjk@ui45m6itz4ne>
+References: <20230906005712.66461-1-luizcap@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fb522kinagxi363h"
 Content-Disposition: inline
-In-Reply-To: <20230907110917.GA10955@noisy.programming.kicks-ass.net>
+In-Reply-To: <20230906005712.66461-1-luizcap@amazon.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -54,95 +62,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 01:09:17PM +0200, Peter Zijlstra wrote:
-> If you flip the 3 and 2 byte instructions the result is the same. No
-> extra padding.
->
-> And no, I had not actually tested this before, because clearly this is
-> all obvious ;-)
 
-IKR.
+--fb522kinagxi363h
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-So I take that extra padding thing back - we actually *must* have that
-padding so that it actually works correctly. I just did a silly example
-but nothing says one cannot do one like that today:
+On Wed, Sep 06, 2023 at 12:57:12AM +0000, Luiz Capitulino <luizcap@amazon.com> wrote:
+> We have a need of using favordynmods with cgroup v1, which doesn't support
+> changing mount flags during remount. Enabling CONFIG_FAVOR_DYNMODS at
+> build-time is not an option because we want to be able to selectively
+> enable it for certain systems.
 
-		alternative_2("", "pop %%rax", X86_FEATURE_ALWAYS,
-			      "call clear_page_orig", X86_FEATURE_ALWAYS);
+Could this be implemented by a utility that would read /proc/cmdline
+(while kernel ignores the arg) and remount respective hierarchies
+accordingly? Or what do I miss?
 
-An order of insns which grows in size: 0, then 1, then 5.
+Thanks,
+Michal
 
-It turns into:
+--fb522kinagxi363h
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> # arch/x86/mm/init.c:163: 		alternative_2("", "pop %%rax", X86_FEATURE_ALWAYS,
-> # 163 "arch/x86/mm/init.c" 1
-> 	# ALT: oldnstr
-> 661:
-> 	# ALT: oldnstr
-> 661:
-> 	
-> 662:
-> # ALT: padding
-> .skip -(((665f-664f)-(662b-661b)) > 0) * ((665f-664f)-(662b-661b)),0x90
+-----BEGIN PGP SIGNATURE-----
 
-IINM, this turns into:
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZPnnBQAKCRAGvrMr/1gc
+jkAPAP97oDuOi9qLFPYmLAYQvF0zxgwO1uM7BUMdlLfLcLl5cQEAqUN0ZTNPFM6f
+W8z+8KTpA6lbp2Cn/PVij8rH1I/V3wA=
+=YGWh
+-----END PGP SIGNATURE-----
 
-.skip 1 * (1 - 0) = 1.
-
-because "pop %rax" is one byte. The original insn is of size 0.
-
-So we end up with a 0x90 here.
-
-> 663:
-> .pushsection .altinstructions,"a"
->  .long 661b - .
->  .long 664f - .
->  .4byte ( 3*32+21)
->  .byte 663b-661b
->  .byte 665f-664f
-> .popsection
-> .pushsection .altinstr_replacement, "ax"
-> # ALT: replacement 
-> 664:
-> 	pop %rax
->  665:
-> .popsection
-> 
-> 662:
-
-<--- X
-
-> # ALT: padding
-> .skip -(((665f-664f)-(662b-661b)) > 0) * ((665f-664f)-(662b-661b)),0x90
-
-Now the second guy comes in. That turns into:
-
-.skip 1 * (5 - 1) = 4
-
-Because, IINM, the 662 label above is the *second* one at marker X (we
-go backwards) and the 661 is the second one too.
-
-So between those two labels you have the 0x90 - one byte padding from
-the first .skip.
-
-And now it adds 4 more bytes to accomodate the CALL.
-
-So we need to have that padding back-to-back in case the second
-replacement is longer.
-
-Ok, I guess the only thing that's bothering me is:
-
->       # ALT: oldnstr
-> 661:
->       # ALT: oldnstr 
-> 661:
-
-I'll keep on playing with this.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--fb522kinagxi363h--
