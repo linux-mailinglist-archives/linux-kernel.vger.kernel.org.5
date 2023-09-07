@@ -2,112 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 132E9797CBE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 21:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1762F797B22
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237121AbjIGTba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 15:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
+        id S1343547AbjIGSFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244281AbjIGR15 (ORCPT
+        with ESMTP id S1343517AbjIGSE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:27:57 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491731710;
-        Thu,  7 Sep 2023 10:27:26 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31f737b8b69so645300f8f.3;
-        Thu, 07 Sep 2023 10:27:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694107597; x=1694712397; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=26DcFGzDOHLTIiLeHWKpfXHidOy7/CEGyz2eAxmSs7g=;
-        b=qQONLOK4TWURG9P9wA/Zu6HpecZhSeybNYUZnJf65mlMjDs9nijGzryCayf1uDoyb6
-         rQWmt9rE/KgGvQ7Y95E7QyIIZUp29GEl9JcbRiO6CRyc7raEXdHnATlDl53RyqLKqWOA
-         OxPWIPJ6Xux9wMRpNXmD0KoZ+DGfwmJCksPIlh7VhS2NrlwSjKdI5ansB02iQBlQx2YI
-         m1d2imOEWwmlywCBI/uk9JVy2uFz/sCSNSsv1icrXqu1/4NjR3JVzaMxwX54uBdGGSyO
-         xyhx3gRAb8zVCSdG6ehhYUF0S0PwjxRkYs8TELezXumz53XwfTB8myIcQOcyaixCj8Gt
-         06Mw==
+        Thu, 7 Sep 2023 14:04:59 -0400
+Received: from mail-yw1-x114e.google.com (mail-yw1-x114e.google.com [IPv6:2607:f8b0:4864:20::114e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B90B8CF
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:04:36 -0700 (PDT)
+Received: by mail-yw1-x114e.google.com with SMTP id 00721157ae682-592210fe8easo14192907b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 11:04:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694107597; x=1694712397;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=26DcFGzDOHLTIiLeHWKpfXHidOy7/CEGyz2eAxmSs7g=;
-        b=NdY2Cv79lXqVtXyZIhlMe/9G5iRkqytQfbmaTrz5ST2V4IJ0H6nYCL77di6xcvX2lh
-         MoJlwa8T1BKP8T7Aeg8JBRjEj5YGUbjMpDgi2axWNMBiohWe0pRv0Jyk65Gse/0FrmYu
-         RcE68UdW/7zmslz/iPXyLmI9bEv+WYZZA7MbI8Q85QMi+ut0MjJjY/I2UGVI7bfX2pw5
-         wRBD+KvEvV+79KQ9uOBw6pUpnHWw4IvXvtheizg1cLQWyh1Xo79ACbE1scwJ2sXfBn8b
-         BfHpW1UejoW2nuhWwtjSxu2R9YY8GB9ZXB14l1nMJAYmrlWlsv2Qz3W9ZeVZpmQjiMCL
-         LN/Q==
-X-Gm-Message-State: AOJu0YyE8LfaX5DnyCVS6EYxySSJRVqbG0yk4a82Br//jfzYlO6aTPwV
-        ZvK2Cp9GOuPoD6O27X1owm7gx7eaJfyKMK9s
-X-Google-Smtp-Source: AGHT+IGmdbnP2IiRkh2YShm8FU8AlrM8Iy3LYwqc2f08IbVFyuZjViTL76t1BpmUinhyYoKIpv2l/g==
-X-Received: by 2002:adf:dd86:0:b0:317:5e55:f06f with SMTP id x6-20020adfdd86000000b003175e55f06fmr4617335wrl.10.1694074839361;
-        Thu, 07 Sep 2023 01:20:39 -0700 (PDT)
-Received: from PCBABN.skidata.net ([91.230.2.244])
-        by smtp.gmail.com with ESMTPSA id n10-20020adfe78a000000b0031aca6cc69csm22772438wrm.2.2023.09.07.01.20.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 01:20:38 -0700 (PDT)
-From:   Benjamin Bara <bbara93@gmail.com>
-To:     lee@kernel.org
-Cc:     bbara93@gmail.com, benjamin.bara@skidata.com,
-        dmitry.osipenko@collabora.com, jonathanh@nvidia.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, nm@ti.com, peterz@infradead.org,
-        rafael.j.wysocki@intel.com, richard.leitner@linux.dev,
-        stable@vger.kernel.org, treding@nvidia.com,
-        wsa+renesas@sang-engineering.com, wsa@kernel.org
-Subject: Re: [PATCH v7 0/5] mfd: tps6586x: register restart handler
-Date:   Thu,  7 Sep 2023 10:20:32 +0200
-Message-Id: <20230907082032.478027-1-bbara93@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230728103446.GK8175@google.com>
-References: <20230728103446.GK8175@google.com>
+        d=1e100.net; s=20230601; t=1694109568; x=1694714368;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zW5qhnjQmXuAaFU5fKwA/lEli7GsBu/PGJfxRXG3SHY=;
+        b=jlIlWUGaNM2+5rsVxtmZhHpUsuNismMp2W34wQHwg4tq7Ms0OFJK8Odjfj/J1/XcMS
+         3erEb9pwY0jxLTPcVzskKCVIx/yLKnMiLyF5+Ub7dUQ5wlcnevINK8qOoNxxFQAX3e4z
+         reqVMDzwtnguRj4KC/z5y+9YkfJVYYYOggZIz4Gp3stiSELp32ybB3VSVzZc5+D4VSnU
+         KTP53PNtH8FdRSY/jb2TWXiJAFsKwHKi8Inbv+HaPmgsPsIyw1dKDUOn5STQ/eA4WPwU
+         bLmdYet+ZxtJCP7L5dbKipQoTIx+DEKexHeQJhGy+awxEKlQgru1pgaw/4rMC5s6pWQh
+         YO+Q==
+X-Gm-Message-State: AOJu0Yzp4TlfU7S2TwDhza9zlpR7EGSArVsTiKhILlj4JboDittwQGkv
+        kzNfvDoFJPWKGMKPCelzZkJICldpy9NQI1Opop+BVisE/jqu
+X-Google-Smtp-Source: AGHT+IG5wTTGmmZiHOULSKMs/aQJzNoUO7ZR1DHaaynqV/kIsxBQ60kNClLJ4OvCsCznerNQ8nbBG5G2Y/WjgpejAQ1X+NCllgum
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:7d03:0:b0:569:356c:f365 with SMTP id
+ y3-20020a637d03000000b00569356cf365mr3738671pgc.12.1694075041155; Thu, 07 Sep
+ 2023 01:24:01 -0700 (PDT)
+Date:   Thu, 07 Sep 2023 01:24:01 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000d1dbf0604c09577@google.com>
+Subject: [syzbot] [wireless?] [net?] memory leak in restore_regulatory_settings
+From:   syzbot <syzbot+68849d5e4a6e74f32c06@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com,
+        johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=2.4 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+Hello,
 
-On Fri, 28 Jul 2023 at 12:34, Lee Jones <lee@kernel.org> wrote:
-> On Fri, 28 Jul 2023, Lee Jones wrote:
-> > On Sat, 15 Jul 2023 09:53:22 +0200, Benjamin Bara wrote:
-> > > The Tegra20 requires an enabled VDE power domain during startup. As the
-> > > VDE is currently not used, it is disabled during runtime.
-> > > Since 8f0c714ad9be, there is a workaround for the "normal restart path"
-> > > which enables the VDE before doing PMC's warm reboot. This workaround is
-> > > not executed in the "emergency restart path", leading to a hang-up
-> > > during start.
-> > >
-> > > [...]
-> >
-> > Applied, thanks!
-> >
-> > [1/5] kernel/reboot: emergency_restart: set correct system_state
-> >       commit: 60466c067927abbcaff299845abd4b7069963139
-> > [2/5] i2c: core: run atomic i2c xfer when !preemptible
-> >       commit: aa49c90894d06e18a1ee7c095edbd2f37c232d02
-> > [3/5] kernel/reboot: add device to sys_off_handler
-> >       commit: db2d6038c5e795cab4f0a8d3e86b4f7e33338629
-> > [4/5] mfd: tps6586x: use devm-based power off handler
-> >       commit: 8bd141b17cedcbcb7d336df6e0462e4f4a528ab1
-> > [5/5] mfd: tps6586x: register restart handler
-> >       commit: 510f276df2b91efd73f6c53be62b7e692ff533c1
->
-> Pull-request to follow after built tests have completed.
+syzbot found the following issue on:
 
-What's the current state of this series?
+HEAD commit:    92901222f83d Merge tag 'f2fs-for-6-6-rc1' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17c340b8680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3544ee7492950dd3
+dashboard link: https://syzkaller.appspot.com/bug?extid=68849d5e4a6e74f32c06
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13fe378fa80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11bf6f7ba80000
 
-Thanks & regards
-Benjamin
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/7b5db23b3ecc/disk-92901222.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/135d82cfd540/vmlinux-92901222.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6e1b0da81493/bzImage-92901222.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+68849d5e4a6e74f32c06@syzkaller.appspotmail.com
+
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+BUG: memory leak
+unreferenced object 0xffff88810f8a4e80 (size 64):
+  comm "kworker/0:1", pid 9, jiffies 4294945857 (age 8.050s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    ff ff ff ff 00 00 00 00 00 00 00 00 30 30 00 00  ............00..
+  backtrace:
+    [<ffffffff815739f5>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1114
+    [<ffffffff84739940>] kmalloc include/linux/slab.h:599 [inline]
+    [<ffffffff84739940>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff84739940>] regulatory_hint_core net/wireless/reg.c:3218 [inline]
+    [<ffffffff84739940>] restore_regulatory_settings+0x820/0xa80 net/wireless/reg.c:3552
+    [<ffffffff84739d71>] crda_timeout_work+0x21/0x30 net/wireless/reg.c:540
+    [<ffffffff812c8f1d>] process_one_work+0x23d/0x530 kernel/workqueue.c:2630
+    [<ffffffff812c9ac7>] process_scheduled_works kernel/workqueue.c:2703 [inline]
+    [<ffffffff812c9ac7>] worker_thread+0x327/0x590 kernel/workqueue.c:2784
+    [<ffffffff812d6f9b>] kthread+0x12b/0x170 kernel/kthread.c:388
+    [<ffffffff81149875>] ret_from_fork+0x45/0x50 arch/x86/kernel/process.c:147
+    [<ffffffff81002be1>] ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
