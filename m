@@ -2,119 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 087B1797CC7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 21:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D91A797B30
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239018AbjIGTbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 15:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58132 "EHLO
+        id S243563AbjIGSIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343627AbjIGSHs (ORCPT
+        with ESMTP id S231890AbjIGSHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:07:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB201FC4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:06:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694109959;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=A17IvpynFGjRTpzvVbSGwFNvsNOOnGzpHwVnCuCCR08=;
-        b=hZOuqZtS6qoSF853p9bAOt9J2EMw34wHVNuX4fX7naC60FnkunH9gFQdrYg7ckk7V7iEm4
-        eZQgKzr/i2QOx6pAqrFxyfvpmxJxpkJgaaWWdPHAlBsdD71JlJilet8ZmnVBBHodfJ2oDh
-        Xlr32ZHM/M12Oji4Fjk2VBxNn8gQqbw=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-421-ddqwgDxDN9-rV5Fnng-Qpw-1; Thu, 07 Sep 2023 14:05:56 -0400
-X-MC-Unique: ddqwgDxDN9-rV5Fnng-Qpw-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 98FCA3C19385;
-        Thu,  7 Sep 2023 18:05:55 +0000 (UTC)
-Received: from [10.22.16.164] (unknown [10.22.16.164])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 34BA2493112;
-        Thu,  7 Sep 2023 18:05:55 +0000 (UTC)
-Message-ID: <2cd975ec-f868-f180-350f-b1b704118777@redhat.com>
-Date:   Thu, 7 Sep 2023 14:05:54 -0400
+        Thu, 7 Sep 2023 14:07:41 -0400
+Received: from mail-pf1-f205.google.com (mail-pf1-f205.google.com [209.85.210.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66FE0CC
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:07:21 -0700 (PDT)
+Received: by mail-pf1-f205.google.com with SMTP id d2e1a72fcca58-68bec4f6a64so1561850b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 11:07:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694110018; x=1694714818;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zqIHP5Atx4E10XOKrkLhp5j/znUfTqtEUAaZEP+CeQw=;
+        b=TyMHFXMBd6KCn3Z71op6Qs+KIM8JLPBbV2oSDQqHEdAprgN1t5htoDN5Lu6WvUhmeA
+         TbRbmD6FEzWMjfi3NCvrDGFMdpByB4asrI2n8d0j+jXVnWs8Ifwi0b3QLdfncKTfsJSY
+         xXmPAj/9N0Be5A1/TZqVwDucKOnbn4t6dzi5jmvMFQQTDPQYyTS+7CtDildCQIbuq2j+
+         I47fRHh8xSsR17wCJc0wD9VpquMhFbrOqU8EfZauvUA74/WIp3A7eysgPv+W8MzAk4XX
+         MGSIkA6I1GgvQydWQ10iO5wLbtUl1TWWX5RXKg9Hc+rLDKBesaG/Zqq5SJhPl73NKil8
+         DItQ==
+X-Gm-Message-State: AOJu0YzROwoCDolVaXslcuahe5qHf7xrlt506O//K6VLljQlLoEnmLbn
+        8NnNqxubV56KBUrctKurI+ZAt6G9swybVMEVUMaN4CFScaIh
+X-Google-Smtp-Source: AGHT+IFjPvYdL6yJ0T9RSw8wXgbzzm4aQgq4yAZjXwtG6lh8tmWk/dSQvsey2Cq+JzMdkY6lBH1o5i38YWcZcU9ohInMvFejN3az
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/5] locking: Add rwsem_is_write_locked()
-Content-Language: en-US
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org
-References: <20230907174705.2976191-1-willy@infradead.org>
- <20230907174705.2976191-2-willy@infradead.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230907174705.2976191-2-willy@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6a00:1989:b0:68b:a137:3738 with SMTP id
+ d9-20020a056a00198900b0068ba1373738mr33354pfl.5.1694110018575; Thu, 07 Sep
+ 2023 11:06:58 -0700 (PDT)
+Date:   Thu, 07 Sep 2023 11:06:58 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000de219d0604c8b9b0@google.com>
+Subject: [syzbot] [usb?] WARNING in wdm_rxwork/usb_submit_urb
+From:   syzbot <syzbot+44a9ac69913e0758fbc1@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/23 13:47, Matthew Wilcox (Oracle) wrote:
-> Several places want to know whether the lock is held by a writer, instead
-> of just whether it's held.  We can implement this for both normal and
-> rt rwsems.  RWSEM_WRITER_LOCKED is declared in rwsem.c and exposing
-> it outside that file might tempt other people to use it, so just use
-> a comment to note that's what the 1 means, and help anybody find it if
-> they're looking to change the implementation.
->
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->   include/linux/rwbase_rt.h |  5 +++++
->   include/linux/rwsem.h     | 10 ++++++++++
->   2 files changed, 15 insertions(+)
->
-> diff --git a/include/linux/rwbase_rt.h b/include/linux/rwbase_rt.h
-> index 1d264dd08625..3c25b14edc05 100644
-> --- a/include/linux/rwbase_rt.h
-> +++ b/include/linux/rwbase_rt.h
-> @@ -31,6 +31,11 @@ static __always_inline bool rw_base_is_locked(struct rwbase_rt *rwb)
->   	return atomic_read(&rwb->readers) != READER_BIAS;
->   }
->   
-> +static __always_inline bool rw_base_is_write_locked(struct rwbase_rt *rwb)
-> +{
-> +	return atomic_read(&rwb->readers) == WRITER_BIAS;
-> +}
-> +
->   static __always_inline bool rw_base_is_contended(struct rwbase_rt *rwb)
->   {
->   	return atomic_read(&rwb->readers) > 0;
-> diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
-> index 1dd530ce8b45..0f78b8d2e653 100644
-> --- a/include/linux/rwsem.h
-> +++ b/include/linux/rwsem.h
-> @@ -72,6 +72,11 @@ static inline int rwsem_is_locked(struct rw_semaphore *sem)
->   	return atomic_long_read(&sem->count) != 0;
->   }
->   
-> +static inline int rwsem_is_write_locked(struct rw_semaphore *sem)
-> +{
-> +	return atomic_long_read(&sem->count) & 1 /* RWSEM_WRITER_LOCKED */;
-> +}
+Hello,
 
-I would prefer you move the various RWSEM_* count bit macros from 
-kernel/locking/rwsem.c to under the !PREEMPT_RT block and directly use 
-RWSEM_WRITER_LOCKED instead of hardcoding a value of 1.
+syzbot found the following issue on:
 
-Cheers,
-Longman
+HEAD commit:    0468be89b3fa Merge tag 'iommu-updates-v6.6' of git://git.k..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=161a0924680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=89dc1df75beb4d84
+dashboard link: https://syzkaller.appspot.com/bug?extid=44a9ac69913e0758fbc1
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1079f65481a7/disk-0468be89.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7eb3c6765fda/vmlinux-0468be89.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/92e68aa81913/bzImage-0468be89.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+44a9ac69913e0758fbc1@syzkaller.appspotmail.com
+
+WARNING: CPU: 1 PID: 5266 at drivers/usb/core/urb.c:379 usb_submit_urb+0x14cb/0x1720 drivers/usb/core/urb.c:379
+Modules linked in:
+CPU: 1 PID: 5266 Comm: kworker/1:4 Not tainted 6.5.0-syzkaller-10885-g0468be89b3fa #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Workqueue: events wdm_rxwork
+RIP: 0010:usb_submit_urb+0x14cb/0x1720 drivers/usb/core/urb.c:379
+Code: 27 4b fe eb cb bb fe ff ff ff e9 ca f3 ff ff e8 4b f6 4b fd 48 89 de 48 c7 c7 e0 f1 ee 86 c6 05 45 85 25 05 01 e8 95 af 15 fd <0f> 0b e9 ba fe ff ff bb f8 ff ff ff e9 9e f3 ff ff 48 89 ef e8 6c
+RSP: 0018:ffffc90001f57c40 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffff88810efe6b00 RCX: 0000000000000000
+RDX: ffff88811e413a00 RSI: ffffffff811725a6 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 205d363632355420 R12: 0000000000000293
+R13: ffff8881013c7090 R14: ffff8881013c7050 R15: ffff8881f673acc0
+FS:  0000000000000000(0000) GS:ffff8881f6700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f89395c0c98 CR3: 00000001405e6000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ wdm_rxwork+0xf3/0x200 drivers/usb/class/cdc-wdm.c:989
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
