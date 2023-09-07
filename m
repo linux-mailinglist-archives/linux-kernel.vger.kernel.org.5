@@ -2,116 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F7579798C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A965797646
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242372AbjIGRQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52196 "EHLO
+        id S236692AbjIGQFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242256AbjIGRQc (ORCPT
+        with ESMTP id S236811AbjIGQFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:16:32 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105ADE65
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:16:05 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-98273ae42d0so31873466b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 10:16:04 -0700 (PDT)
+        Thu, 7 Sep 2023 12:05:17 -0400
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A1233136;
+        Thu,  7 Sep 2023 08:55:29 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1bee82fad0fso9376055ad.2;
+        Thu, 07 Sep 2023 08:55:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694106920; x=1694711720; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hn2uDmjOOXu6fIxxN8+ualmECQ/DiaKNpRYaCI67NFc=;
-        b=cSROyOWi+YB2465EjwzjRh8QKm5pxaLKeeZRVQxlBaqEYN6k0JNZmZoaslU7cafw8I
-         qZxADbZyjgBncILgt2TZiOV0+Bs4Vx2ytZnXDvf/9RKcSF+AXlVo9/5GtN6FhxmFSCjA
-         nU2bFvQ9Wc0ZLLsgY9gHpw3kTebb0Xtfl6r4U6bCUEF+MnhqahbEDBNgdLNQGVSWGuwT
-         LZgxb/8kgK9AYeZeFzJKrpbdRCV2IRSf9Wm0JxkMRrwNHH3jJaoEDS3MvyCE8u65re+V
-         8OrrTHQVoe28j8AbbaEgd+HSh3Qor0kF4c2OyJR1d1pIBrqlouXNe91W5JMzhCRAcAVH
-         ykoA==
+        d=gmail.com; s=20221208; t=1694102003; x=1694706803; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=68ien6P8EjWPgIgg6+cN/j6LlnAbZ2VKZ0DZlOp5E4Y=;
+        b=c4BbTeHH+WMIHOf15HGBpiSF7SH3A/TufNuq/vqGFb1F7RLNEFWEiLhCyG8uU+JWjm
+         abO5H7EEUwRu1759JtTSlJ8QgaQrBs92ur6LgVdLvvAZ7w1BPnkzMONVlwg41BZhBPgY
+         z5TeumX0DTmj/p/3tjd3R+v2U6UciuOjrn3Fs6lN7/eWXVP0+YH4lFUel1LkSZwcWPaL
+         UDrqdb2EfJW3sm85qYiGhGWMoJaIC7uLNrOpwBRrqna8drxjNQRYZ8PXtk1DdxlOx2aa
+         uPJOfX5wrFoo4vQCkwWo79uxRBNjei1ABuDBr+IYQQYteM3aU4ohTphzObOMDm6ZgVm9
+         8SRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694106920; x=1694711720;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1694102003; x=1694706803;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hn2uDmjOOXu6fIxxN8+ualmECQ/DiaKNpRYaCI67NFc=;
-        b=bK5+hELYPMKzhWbyMCbcaAwPRyP9wdBYMX7p7GkKE/aBBitRSnyr0No0GfGpU40Nke
-         THeho0mgLIlmbGkBaEm2V72Qq7dzN2VljHlQGGY01jOabfMsKBabPT0qCZVqoTeqd0/Q
-         aSqVuNeiL5w2uZeov8R41Uj13PyKzTfuVjTxMbUxXz8rOXj5dJBIsFsoL53NFqiIu98W
-         cbYZf9t6AsmaIiSQLDngOcKvUsPyKXF2MK6TRlRv+PFItO/hAq+hiBu2iPNUZGukeeIL
-         EBdT28g6BjhtrYpFbPPRTighBnI1WMFSgtTLNI1y8xyCW9UJfC8WwaLTW9XTJpoH2JJC
-         Twrw==
-X-Gm-Message-State: AOJu0YxLJ35YYkTxcFaed69t686NlJpMLa7jtBzuVKXm+Ddh7sYZLZkU
-        DI547njv5m3IXRbk9y508nzaDYfSJlKmVQ==
-X-Google-Smtp-Source: AGHT+IFnHGLb3wX8hiYQ6tqvPReQabYj+GoY6alyacmcc5c8OcdRZufgIb42eLrUhf90NY6IY9RlHg==
-X-Received: by 2002:a05:600c:1c8f:b0:3fe:21a6:a18 with SMTP id k15-20020a05600c1c8f00b003fe21a60a18mr15226116wms.3.1694090951606;
-        Thu, 07 Sep 2023 05:49:11 -0700 (PDT)
-Received: from [192.168.0.102] (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id u3-20020a05600c210300b003fe601a7d46sm2406390wml.45.2023.09.07.05.49.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 05:49:11 -0700 (PDT)
-Message-ID: <f872ed00-f474-b217-ed78-8612242d448b@gmail.com>
-Date:   Thu, 7 Sep 2023 14:49:10 +0200
+        bh=68ien6P8EjWPgIgg6+cN/j6LlnAbZ2VKZ0DZlOp5E4Y=;
+        b=kX6X7+QyIR1O1r7TlWni7wD2/rHhHikNE0V8I6QO+aI+Akk/PNEUIXigPY7MDeXUDt
+         or0Ql/Ep57n1+qIr2iUISEog/Pu1iz/He7PQ14z+MvB2owWlKj2adYzj3HU9Iuj52Shi
+         l0xRfYMw0P6YeddUd5ucr/chVOm5SDsXXrNXRaHLnNLCowi/LMVJhunxByCGC1aoyJRK
+         B78P73NWgpfl9Q3Cef34fn7n0aNf+6WDLMcK6dJAq49yAOAhwsHWHIbavf1m+fx2cZ+y
+         E8CJqvHzLp+Sty85pESmLA+dhx15AfFkqm0Ufok82RNVK8/EH0wivP+Sk3NWNHad+gEt
+         r2Sw==
+X-Gm-Message-State: AOJu0YyNX4nZzGBcFfBgDAgn+EFOJehkUPCUyxeGeu7c0Qk8LvQNztP/
+        6pJPaUeeSzJsh9cTmOc3cHM6jTOxfo8=
+X-Google-Smtp-Source: AGHT+IEsPigsaCPMfm4kXxqxwZDH1m2Obx1qY9653d+G+QaYngXT5/XWvrkj8yqDbz8ukOLWnMv2sw==
+X-Received: by 2002:a05:620a:2982:b0:76d:f544:3426 with SMTP id r2-20020a05620a298200b0076df5443426mr23268417qkp.28.1694091541805;
+        Thu, 07 Sep 2023 05:59:01 -0700 (PDT)
+Received: from Gentoo ([154.16.192.36])
+        by smtp.gmail.com with ESMTPSA id e20-20020a05620a12d400b0076d9e298928sm5766763qkl.66.2023.09.07.05.58.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 05:59:01 -0700 (PDT)
+Date:   Thu, 7 Sep 2023 18:28:53 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jesper.juhl@gmail.com
+Subject: Re: [PATCH] Documentation: Process: Add a note about git way of
+ applying patch
+Message-ID: <ZPnJDTcKb5Wf30Zl@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jesper.juhl@gmail.com
+References: <20230907115420.28642-1-unixbhaskar@gmail.com>
+ <87bkee40ac.fsf@meer.lwn.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2] staging: vt6655: array names updated as per kernel
- coding guidelines
-Content-Language: en-US
-To:     Pavan Bobba <opensource206@gmail.com>,
-        Forest Bond <forest@alittletooquiet.net>,
-        Michael Straube <straube.linux@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <ZPnA0Pra2HK30nBu@ubuntu.myguest.virtualbox.org>
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-In-Reply-To: <ZPnA0Pra2HK30nBu@ubuntu.myguest.virtualbox.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="K0i0x7Q1WPm/S9JY"
+Content-Disposition: inline
+In-Reply-To: <87bkee40ac.fsf@meer.lwn.net>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/23 14:23, Pavan Bobba wrote:
-> Below array names updated as per coding guidelines:
-> 
->     1.byVT3253B0_AGC4_RFMD2959
->     2.byVT3253B0_AIROHA2230
->     3.byVT3253B0_UW2451
->     4.byVT3253B0_AGC
-> 
->     Conversions performed:
->     a.type encoding info dropped from names
->     b.names replaced by snakecase
-> 
->     Issue found by checkpatch
-> 
-> Signed-off-by: Pavan Bobba<opensource206@gmail.com>
-> ---
->    v1 -> v2: 1.subject name modified to more meaningful detail
->              2.name of the tool added in body of explanation,
-> 	      which found this issue
 
-Hi Pavan,
+--K0i0x7Q1WPm/S9JY
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-you did not fullfil what Greg wrote:
+On 06:48 Thu 07 Sep 2023, Jonathan Corbet wrote:
+>Bhaskar Chowdhury <unixbhaskar@gmail.com> writes:
+>
+>> cc: jesper.juhl@gmail.com
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>>  Documentation/process/applying-patches.rst | 7 +++++++
+>>  1 file changed, 7 insertions(+)
+>>
+>> diff --git a/Documentation/process/applying-patches.rst b/Documentation/process/applying-patches.rst
+>> index c269f5e1a0a3..201b9900bffe 100644
+>> --- a/Documentation/process/applying-patches.rst
+>> +++ b/Documentation/process/applying-patches.rst
+>> @@ -6,6 +6,13 @@ Applying Patches To The Linux Kernel
+>>  Original by:
+>>  	Jesper Juhl, August 2005
+>>
+>> +
+>> +.. applying patch by Git::
+>> +
+>> +    You can use the below syntax to patch in git repository
+>> +    git-apply --whitespace=error-all <patchfile>
+>> +
+>> +
+>>  .. note::
+>>
+>>     This document is obsolete.  In most cases, rather than using ``patch``
+>
+>So why are you sending a patch ... with no changelog
 
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-   and everyone else, to know what this patch is all about.  Please read
-   the section entitled "The canonical patch format" in the kernel file,
-   Documentation/process/submitting-patches.rst for what a proper
-   Subject: line should look like.
+My bad. Realized it once send it.
 
-The issue is that hundreds of patches could have this title: "array 
-names updated as per kernel coding guidelines" Make it more unique.
 
-Rename CamelCase variable starting with byVT3253B0_
+>to a document that is explicitly marked as being obsolete?
 
-Always consider that Greg reads a lot of patches per day.
+I thought if people visit that page , that note might help.
 
-Bye Philipp
+Are we taking out that page from the doc? Why that page is still there?
+
+
+>jon
+
+--
+Thanks,
+Bhaskar
+
+"Here's looking at you kid"-- Casablanca
+https://about.me/unixbhaskar
+
+--K0i0x7Q1WPm/S9JY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmT5yQ0ACgkQsjqdtxFL
+KRX2DAf+I8IZr0j+AMDxxdMnRNECiZQBaAaKvCssIKADPSyXaMlfV5809rCbuEIT
+v6pv9siThkZ8oIADhTjumfLgWTPxc+1vAEqkSvLXVP6Al2EEGzofc3/+9MtyGQr7
+geHwBRopaOlp+vdWFlSzkQHc68Y1QQsPKXXEQdbD4WD3Ps8jD7h/fOhB3L4D+WZ0
+8ODxp6olt16xArLSYc4/fw5d+Jf0LSDh4Zz80WFtgvRFcvpGGX4zsC0hy/+qTJd+
+Bw2FIhmmRxL51aK+t+1Su8PQh88Jngl5LJwjdKRoMqQulemc63gPkvMLAGVe3bZU
+I8l0k3rbKUBdVL+QNOqZjmXKT+KyFg==
+=n5Yg
+-----END PGP SIGNATURE-----
+
+--K0i0x7Q1WPm/S9JY--
