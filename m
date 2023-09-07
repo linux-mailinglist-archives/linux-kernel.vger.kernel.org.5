@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD12796EEB
+	by mail.lfdr.de (Postfix) with ESMTP id D1276796EEC
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 04:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245042AbjIGC3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 22:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33348 "EHLO
+        id S244906AbjIGC3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 22:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243060AbjIGC3p (ORCPT
+        with ESMTP id S243335AbjIGC3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 22:29:45 -0400
+        Wed, 6 Sep 2023 22:29:46 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336F51BC1;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A2A171F;
         Wed,  6 Sep 2023 19:29:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73D10C433CC;
-        Thu,  7 Sep 2023 02:29:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34969C433CA;
+        Thu,  7 Sep 2023 02:29:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1694053782;
-        bh=nX+lBCNxvHlh2Hd6gi4Ol2YBYOd7nIVtVx3JTRH4uq0=;
+        bh=M64Pfxcjf04QA6IY4mZMjdI8QQdmOQDItlzxRcwz4LQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I9w1kxv9RA186Id0zHiS1zj+BAWURWAM5lFzFwxGnAFkbOzT+alc0bJOmHHWt8jct
-         Q4jtNAkHhp+5IA6yHicRT3lr/mvEFKowHjn869YNnj4WhXTR6m9pryGxMT2+ME1DTC
-         DMptSU91rd7c6N4zVxIIoXhw+QDzsyi0AO1xQdEgloEG1ovEnYjbJyUsoo6s74QWSp
-         beuyoPPwVNVq+pc8howL9hkKWIUO3KAdpEzIpzs3Hhu0WBQMaGsAOnUtSDLvDS21uK
-         qwRvMdnKNG7PeimG83FzH02OCX+LD3nmd+vZ0CUO8eRiFMPYGbJ+Ekra1waYsgazYV
-         Kr6xv4L++j1iw==
+        b=MVm2PfWXGzcgo0kBxY/8/P25MQuwXf2YFzHZmudczea0VOOSzggdox8oqOLX3u4Nr
+         ZlZHTblD7l+UcOvhoYenzWvOLWWxJslj5dYbFGfNz0oN3B81Pcxt+aPPDKmI6jrtMo
+         YllggfJnHAK1A1kkPPl/wWO7P2zWYpBc1Pe//JP9NYo6K6Q70bKcUnlzBrImIpv2NS
+         izprI02tEPyUMz1Hfpctj6gMDM09k49HVu5q+X2frB82M8+ahs+8gOQpnkbrxSw5zm
+         Qkvh9AomlCBXMtNeaCR/vzEj0YIX85F7RxK58U3UuYr+LD8Mxn/OkeIaAZNfHgvaPS
+         MjJ6rWY4ilFKQ==
 From:   SeongJae Park <sj@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     SeongJae Park <sj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
         damon@lists.linux.dev, linux-mm@kvack.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 06/11] Docs/mm/damon/design: add a section for kdamond and DAMON context
-Date:   Thu,  7 Sep 2023 02:29:24 +0000
-Message-Id: <20230907022929.91361-7-sj@kernel.org>
+Subject: [PATCH 07/11] Docs/admin-guide/mm/damon/usage: link design doc for details of kdamond and context
+Date:   Thu,  7 Sep 2023 02:29:25 +0000
+Message-Id: <20230907022929.91361-8-sj@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230907022929.91361-1-sj@kernel.org>
 References: <20230907022929.91361-1-sj@kernel.org>
@@ -49,34 +49,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The design document is not explaining about the concept of kdamond and
-the DAMON context, while usage document does.  Those concept explanation
-should be in the design document, and usage document should link those.
-Add a section for those.
+The explanation of kdamond and context is duplicated in the design and
+the usage documents.  Replace that in the usage with links to those in
+the design document.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- Documentation/mm/damon/design.rst | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ Documentation/admin-guide/mm/damon/usage.rst | 19 +++++++++----------
+ Documentation/mm/damon/design.rst            |  2 ++
+ 2 files changed, 11 insertions(+), 10 deletions(-)
 
+diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
+index 758575d33ab6..282062b6f134 100644
+--- a/Documentation/admin-guide/mm/damon/usage.rst
++++ b/Documentation/admin-guide/mm/damon/usage.rst
+@@ -105,14 +105,12 @@ having the root permission could use this directory.
+ kdamonds/
+ ---------
+ 
+-The monitoring-related information including request specifications and results
+-are called DAMON context.  DAMON executes each context with a kernel thread
+-called kdamond, and multiple kdamonds could run in parallel.
+-
+ Under the ``admin`` directory, one directory, ``kdamonds``, which has files for
+-controlling the kdamonds exist.  In the beginning, this directory has only one
+-file, ``nr_kdamonds``.  Writing a number (``N``) to the file creates the number
+-of child directories named ``0`` to ``N-1``.  Each directory represents each
++controlling the kdamonds (refer to
++:ref:`design <damon_design_execution_model_and_data_structures>` for more
++details) exists.  In the beginning, this directory has only one file,
++``nr_kdamonds``.  Writing a number (``N``) to the file creates the number of
++child directories named ``0`` to ``N-1``.  Each directory represents each
+ kdamond.
+ 
+ kdamonds/<N>/
+@@ -150,9 +148,10 @@ kdamonds/<N>/contexts/
+ 
+ In the beginning, this directory has only one file, ``nr_contexts``.  Writing a
+ number (``N``) to the file creates the number of child directories named as
+-``0`` to ``N-1``.  Each directory represents each monitoring context.  At the
+-moment, only one context per kdamond is supported, so only ``0`` or ``1`` can
+-be written to the file.
++``0`` to ``N-1``.  Each directory represents each monitoring context (refer to
++:ref:`design <damon_design_execution_model_and_data_structures>` for more
++details).  At the moment, only one context per kdamond is supported, so only
++``0`` or ``1`` can be written to the file.
+ 
+ .. _sysfs_contexts:
+ 
 diff --git a/Documentation/mm/damon/design.rst b/Documentation/mm/damon/design.rst
-index 51aab9b0621a..ee099d45fea8 100644
+index ee099d45fea8..18e9b42673f8 100644
 --- a/Documentation/mm/damon/design.rst
 +++ b/Documentation/mm/damon/design.rst
-@@ -476,3 +476,13 @@ modules for proactive reclamation and LRU lists manipulation are provided.  For
- more detail, please read the usage documents for those
- (:doc:`/admin-guide/mm/damon/reclaim` and
+@@ -478,6 +478,8 @@ more detail, please read the usage documents for those
  :doc:`/admin-guide/mm/damon/lru_sort`).
+ 
+ 
++.. _damon_design_execution_model_and_data_structures:
 +
-+
-+Execution Model and Data Structures
-+===================================
-+
-+The monitoring-related information including the monitoring request
-+specification and DAMON-based operation schemes are stored in a data structure
-+called DAMON ``context``.  DAMON executes each context with a kernel thread
-+called ``kdamond``.  Multiple kdamonds could run in parallel, for different
-+types of monitoring.
+ Execution Model and Data Structures
+ ===================================
+ 
 -- 
 2.25.1
 
