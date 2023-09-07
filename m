@@ -2,207 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA9979769B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE4B797674
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237493AbjIGQNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
+        id S234539AbjIGQKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238141AbjIGQMa (ORCPT
+        with ESMTP id S237677AbjIGQJw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:12:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40981AD20;
-        Thu,  7 Sep 2023 09:09:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694102977; x=1725638977;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KiWWo5ZdTxhRmlpWM3C4+Ct7kECXOtwevYtY5xYN8cE=;
-  b=e6XcuZlL9UViTu2QNuwoqsNp8p3WlbygM6LxaXPShQRnlOPHz9vSUW4p
-   asTZY4QuNiBypi5G+Tu9uzc+a7bH8KIrQ//BdoEtgzItHz2jAq8ZT6HW3
-   icbztfGVrUfmRx4v5fyqK6bUukNDi8pobofbm7NC6isMDLhJg2dW8YzO8
-   D/pkwt1zKy1w1Ufj8GKGBNkCuAhf4VAHPR3hvaFLx/dY9eP08axInAQTo
-   zk5DtZIXxhP1QPPNmpI5jTBTjTlL7XnD2CCXxmt5wixj4DwPC6hrZ83S1
-   gFuEooC4590FOruRAMSQ6gchE/m3dAHeAzpNrmI2GowqEZVgCgxZW0LrU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="362448233"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="362448233"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 08:46:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="777113375"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="777113375"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.251.29.163])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 08:46:05 -0700
-Date:   Thu, 7 Sep 2023 08:46:04 -0700
-From:   Alison Schofield <alison.schofield@intel.com>
-To:     ira.weiny@intel.com
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Navneet Singh <navneet.singh@intel.com>,
-        Fan Ni <fan.ni@samsung.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 03/18] cxl/mem: Read Dynamic capacity
- configuration from the device
-Message-ID: <ZPnwPDZrKYT7hp6X@aschofie-mobl2>
-References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
- <20230604-dcd-type2-upstream-v2-3-f740c47e7916@intel.com>
+        Thu, 7 Sep 2023 12:09:52 -0400
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A508F14009
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:04:14 -0700 (PDT)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so1494168a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:04:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nexus-software-ie.20230601.gappssmtp.com; s=20230601; t=1694102256; x=1694707056; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3bdZT/P5i9roSR1VJ+gDQAVNmAdt/Lg6cRS5QQmxk30=;
+        b=hl98PXE8+cU4M/bwADjpr3X/BIQi6T9s2CtsblvC3iiFcM4HHD8wkR0xaICl7HtGZv
+         lhS3nIlWrRUFFA7ac9hgJcxGlfySMkrfjluwqN3sSdbUiYM376bh8w3WsP3gR3uwRnI1
+         aGwbcMd/Z2RKlOgwG3V0wgyNa4+y9VpGl85/jw6qObieZ7/DlJ8t4W1ORZSvtNzS0I1i
+         ph4kjzguf56uEVmXbgwFAJIhkSlM0j2WyjtDrENcQkM/toVya1dNy1MfyImI/ngep3TN
+         cezUi4R8ku8BDGPbOQVGSuFHXxhoe7mrzDsIfcEys/eVTSuDHbAoj2y7xYD2ErpGQolS
+         YNJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694102256; x=1694707056;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3bdZT/P5i9roSR1VJ+gDQAVNmAdt/Lg6cRS5QQmxk30=;
+        b=DQNTlwwYRySH62aljjH2UEh65xgyZqon3OWcF2LJxu2xNgga70u6dAPOdJ730AKLv6
+         XEMEr4ayqBVc+VOwUrsyR0ZxVat8tNQNQW4uICqnGo3ETZHEI+DuUt2877LVqIgPN3Ls
+         NIZzOK/seZRY4Y6r/0gcBQlcZKxCz2bdiUHSz7tfD7zja4mb+vE7Z/Pq36fK7LSFbwx7
+         ZndFrgd6J3nws2sOwQ/1+a2Kjm9kEb4NV3/JCX8yqlUJjYbiZ77RRB319c+wTYXmKdw2
+         K1dNcFEjilCO970qqyhRZk7lEdwAuBzCEp9TrvMndQIBPd34mkIUH8OUHs9zMAt6+MbD
+         DHOg==
+X-Gm-Message-State: AOJu0Yy6rXCGkZ565bNT/89FU7IZLBI4aoTEJyxUy0MVm/ZH+uA4HJeg
+        2t+42LkNm8KpT12QqsBlQ8OT3fi0oKAktcC5nD4=
+X-Google-Smtp-Source: AGHT+IH1TORyo9IVD8YJbPjark9XxX164XsbE1Fj1Er0RV9L0lX3ZrqKV8Iz1cdwRYWEAf8bPv+06g==
+X-Received: by 2002:adf:fe0d:0:b0:31a:e89a:df0a with SMTP id n13-20020adffe0d000000b0031ae89adf0amr5196749wrr.45.1694101581068;
+        Thu, 07 Sep 2023 08:46:21 -0700 (PDT)
+Received: from [192.168.0.163] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id a3-20020a056000050300b003179d5aee67sm23560976wrf.94.2023.09.07.08.46.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Sep 2023 08:46:19 -0700 (PDT)
+Message-ID: <8eed8cb9-9034-4162-b7bc-958811fb9056@nexus-software.ie>
+Date:   Thu, 7 Sep 2023 16:46:18 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230604-dcd-type2-upstream-v2-3-f740c47e7916@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 06/10] cpufreq: qti: Enable cpufreq for ipq53xx
+Content-Language: en-US
+To:     Varadarajan Narayanan <quic_varada@quicinc.com>,
+        ilia.lin@kernel.org, agross@kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, rafael@kernel.org,
+        viresh.kumar@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        quic_kathirav@quicinc.com, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+References: <cover.1693996662.git.quic_varada@quicinc.com>
+ <558c6b70090ea7220bfb0b6e7d81828025018376.1693996662.git.quic_varada@quicinc.com>
+From:   Bryan O'Donoghue <pure.logic@nexus-software.ie>
+In-Reply-To: <558c6b70090ea7220bfb0b6e7d81828025018376.1693996662.git.quic_varada@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 10:20:54PM -0700, Ira Weiny wrote:
-> From: Navneet Singh <navneet.singh@intel.com>
+On 07/09/2023 06:21, Varadarajan Narayanan wrote:
+> IPQ53xx have different OPPs available for the CPU based on
+> SoC variant. This can be determined through use of an eFuse
+> register present in the silicon.
 > 
-> Devices can optionally support Dynamic Capacity (DC).  These devices are
-> known as Dynamic Capacity Devices (DCD).
-
-snip
-
+> Added support for ipq53xx on nvmem driver which helps to
+> determine OPPs at runtime based on the eFuse register which
+> has the CPU frequency limits. opp-supported-hw dt binding
+> can be used to indicate the available OPPs for each limit.
 > 
-> +static enum cxl_region_mode
-> +cxl_decoder_to_region_mode(enum cxl_decoder_mode mode)
-> +{
-> +	switch (mode) {
-> +	case CXL_DECODER_NONE:
-> +		return CXL_REGION_NONE;
-> +	case CXL_DECODER_RAM:
-> +		return CXL_REGION_RAM;
-> +	case CXL_DECODER_PMEM:
-> +		return CXL_REGION_PMEM;
-> +	case CXL_DECODER_DEAD:
-> +		return CXL_REGION_DEAD;
-> +	case CXL_DECODER_MIXED:
-> +	default:
-> +		return CXL_REGION_MIXED;
-> +	}
-> +
-> +	return CXL_REGION_MIXED;
+> nvmem driver also creates the "cpufreq-dt" platform_device after
+> passing the version matching data to the OPP framework so that the
+> cpufreq-dt handles the actual cpufreq implementation.
+> 
+> Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
+> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> ---
+>   drivers/cpufreq/cpufreq-dt-platdev.c |  1 +
+>   drivers/cpufreq/qcom-cpufreq-nvmem.c | 15 +++++++++++++++
+>   2 files changed, 16 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
+> index 02ec58a..f0c45d4 100644
+> --- a/drivers/cpufreq/cpufreq-dt-platdev.c
+> +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
+> @@ -178,6 +178,7 @@ static const struct of_device_id blocklist[] __initconst = {
+>   	{ .compatible = "ti,am625", },
+>   	{ .compatible = "ti,am62a7", },
+>   
+> +	{ .compatible = "qcom,ipq5332", },
+>   	{ .compatible = "qcom,ipq8064", },
+>   	{ .compatible = "qcom,apq8064", },
+>   	{ .compatible = "qcom,msm8974", },
+> diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+> index 84d7033..49d21b0 100644
+> --- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
+> +++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+> @@ -146,6 +146,20 @@ static int qcom_cpufreq_kryo_name_version(struct device *cpu_dev,
+>   		return PTR_ERR(speedbin);
+>   
+>   	switch (msm_id) {
+> +	case QCOM_ID_IPQ5332:
+> +	case QCOM_ID_IPQ5322:
+> +	case QCOM_ID_IPQ5312:
+> +	case QCOM_ID_IPQ5302:
+> +	case QCOM_ID_IPQ5300:
+> +		/* Fuse Value    Freq    BIT to set
+> +		 * ---------------------------------
+> +		 *   2’b00     No Limit     BIT(0)
+> +		 *   2’b01     1.5 GHz      BIT(1)
+> +		 *   2’b10     1.2 Ghz      BIT(2)
+> +		 *   2’b11     1.0 GHz      BIT(3)
+> +		 */
+> +		drv->versions = 1 << (unsigned int)(*speedbin);
+> +		break;
 
-Can the paths to return _MIXED be simplified here?
+I like that you've included a comment however, the switch is an ordered 
+list and these values should come after QCOM_ID_APQ8096SG
 
+#define QCOM_ID_MSM8996                 246
+#define QCOM_ID_APQ8096                 291
+#define QCOM_ID_MSM8996SG               305
+#define QCOM_ID_APQ8096SG               312
+#define QCOM_ID_IPQ5332                 592
+...
+#define QCOM_ID_IPQ5300                 624
 
-> +}
-> +
-snip
-
-> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> index cd4a9ffdacc7..ed282dcd5cf5 100644
-> --- a/drivers/cxl/cxl.h
-> +++ b/drivers/cxl/cxl.h
-> @@ -374,6 +374,28 @@ static inline const char *cxl_decoder_mode_name(enum cxl_decoder_mode mode)
->  	return "mixed";
->  }
->  
-> +enum cxl_region_mode {
-> +	CXL_REGION_NONE,
-> +	CXL_REGION_RAM,
-> +	CXL_REGION_PMEM,
-> +	CXL_REGION_MIXED,
-> +	CXL_REGION_DEAD,
-> +};
-
-I'm concerned about _DEAD.
-At first I was going to say name these as CXL_REGION_MODE_*, but it's
-pretty obvious that these are mode words...except for DEAD. Is that 
-an actual mode or is it some type of status? I don't think I see it
-used yet.
-
-> +
-> +static inline const char *cxl_region_mode_name(enum cxl_region_mode mode)
-> +{
-> +	static const char * const names[] = {
-> +		[CXL_REGION_NONE] = "none",
-> +		[CXL_REGION_RAM] = "ram",
-> +		[CXL_REGION_PMEM] = "pmem",
-> +		[CXL_REGION_MIXED] = "mixed",
-> +	};
-> +
-> +	if (mode >= CXL_REGION_NONE && mode <= CXL_REGION_MIXED)
-> +		return names[mode];
-> +	return "mixed";
-> +}
-
-snip
-
-> +
->  /**
->   * struct cxl_memdev_state - Generic Type-3 Memory Device Class driver data
->   *
-> @@ -449,6 +464,8 @@ struct cxl_dev_state {
->   * @enabled_cmds: Hardware commands found enabled in CEL.
->   * @exclusive_cmds: Commands that are kernel-internal only
->   * @total_bytes: sum of all possible capacities
-> + * @static_cap: Sum of RAM and PMEM capacities
-> + * @dynamic_cap: Complete DPA range occupied by DC regions
-
-Wondering about renaming RAM and PMEM caps as 'static'.
-They are changeable via set partition commands.
+>   	case QCOM_ID_MSM8996:
+>   	case QCOM_ID_APQ8096:
+>   		drv->versions = 1 << (unsigned int)(*speedbin);
 
 
->   * @volatile_only_bytes: hard volatile capacity
->   * @persistent_only_bytes: hard persistent capacity
->   * @partition_align_bytes: alignment size for partition-able capacity
-> @@ -456,6 +473,10 @@ struct cxl_dev_state {
->   * @active_persistent_bytes: sum of hard + soft persistent
->   * @next_volatile_bytes: volatile capacity change pending device reset
->   * @next_persistent_bytes: persistent capacity change pending device reset
-> + * @nr_dc_region: number of DC regions implemented in the memory device
-> + * @dc_region: array containing info about the DC regions
-> + * @dc_event_log_size: The number of events the device can store in the
-> + * Dynamic Capacity Event Log before it overflows
->   * @event: event log driver state
->   * @poison: poison driver state info
->   * @fw: firmware upload / activation state
-> @@ -473,7 +494,10 @@ struct cxl_memdev_state {
->  	DECLARE_BITMAP(dcd_cmds, CXL_DCD_ENABLED_MAX);
->  	DECLARE_BITMAP(enabled_cmds, CXL_MEM_COMMAND_ID_MAX);
->  	DECLARE_BITMAP(exclusive_cmds, CXL_MEM_COMMAND_ID_MAX);
-> +
->  	u64 total_bytes;
-> +	u64 static_cap;
-> +	u64 dynamic_cap;
->  	u64 volatile_only_bytes;
->  	u64 persistent_only_bytes;
->  	u64 partition_align_bytes;
-> @@ -481,6 +505,11 @@ struct cxl_memdev_state {
->  	u64 active_persistent_bytes;
->  	u64 next_volatile_bytes;
->  	u64 next_persistent_bytes;
-> +
-> +	u8 nr_dc_region;
-> +	struct cxl_dc_region_info dc_region[CXL_MAX_DC_REGION];
-> +	size_t dc_event_log_size;
-> +
->  	struct cxl_event_state event;
->  	struct cxl_poison_state poison;
->  	struct cxl_security_state security;
-> @@ -587,6 +616,7 @@ struct cxl_mbox_identify {
->  	__le16 inject_poison_limit;
->  	u8 poison_caps;
->  	u8 qos_telemetry_caps;
-> +	__le16 dc_event_log_size;
->  } __packed;
->  
+> @@ -359,6 +373,7 @@ static const struct of_device_id qcom_cpufreq_match_list[] __initconst = {
+>   	{ .compatible = "qcom,apq8096", .data = &match_data_kryo },
+>   	{ .compatible = "qcom,msm8996", .data = &match_data_kryo },
+>   	{ .compatible = "qcom,qcs404", .data = &match_data_qcs404 },
+> +	{ .compatible = "qcom,ipq5332", .data = &match_data_kryo },
+>   	{ .compatible = "qcom,ipq8064", .data = &match_data_krait },
+>   	{ .compatible = "qcom,apq8064", .data = &match_data_krait },
+>   	{ .compatible = "qcom,msm8974", .data = &match_data_krait },
 
-snip
+Other than that.
 
->  /*
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+
+---
+bod
