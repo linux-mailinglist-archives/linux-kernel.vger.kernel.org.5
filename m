@@ -2,49 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D536E7977D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C2A79771E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239455AbjIGQgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60122 "EHLO
+        id S241371AbjIGQVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239206AbjIGQgH (ORCPT
+        with ESMTP id S241301AbjIGQVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:36:07 -0400
+        Thu, 7 Sep 2023 12:21:13 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047547A96
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:22:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C1E5CC433B6;
-        Thu,  7 Sep 2023 09:20:24 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E9065A0
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:18:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2028C433AB;
+        Thu,  7 Sep 2023 09:21:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694078424;
-        bh=eg664JVvulepbuVjHAcVo26wcKMFi3AZs+ECL6A2lJg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=MdYgErh4Wt+yJh5kMNG7AQFPaLDSGy07WNqg1sC7QaBHIPXnqw7gWzJiEVVaOPBqI
-         tDs9G8mkXdWFa/zFUpzk04JmoNwW8f1bEu1EV6NnvgjVdA98bhr5zPChUmLynCGR39
-         9TIunO8NZokRxmlEGPBdU9B+oBNX7DE2s5Q7iSn5fNDnAExGSY+jVyX7O8Yy5LW+lV
-         7jS+fxb34c2LP+kOrstAqFSBDmvmfIg6HSOyarQ1/jPgGU0EJ/2jVe5o/p6w0p8XSy
-         JF02rEoYNcaAYL6wSExYS8KejoKneLtij+JNvsmknW/sQYpONyCV4CFpllPHGhgnyP
-         dHkOtIPwltsNg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A6344C4166F;
-        Thu,  7 Sep 2023 09:20:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1694078483;
+        bh=/GS1WwYYzNZinEQSmtBBhJz/YUvo1u0JiMvkD09lhto=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hLGGR9u26RiI01krmX9vBDimL0Lxm9Fb1+00GbFy9eMyD0781Yn1ssVROhCWIbObg
+         bJtsbYG+P02WGz2QsZ5jcfD6pa3DwJDaRmGiKDnEhHWGknZmw1pBg48RJTZDnTQG0u
+         M1scnrJJQKMqHyZOitKjt9pukCr202LcOkjUxjXwrO1Em773MbAJASU1Gri/YJR/KP
+         fyNxw0KLR8Nwp2L6R1rN9s2Ocu+uwmyoBhOFZqW8SiqE8x5FDi+eXi038+FSF2hsLN
+         DZ6xi0fSHkn3WaYGrgyBOoUkR99X0jPl6/E48ooQxalzJelR/kT3HGkzR/v9BdZNnl
+         ML2o5x+e73GEA==
+Date:   Thu, 7 Sep 2023 10:21:17 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Easwar Hariharan <eahariha@linux.microsoft.com>,
+        zhurui <zhurui3@huawei.com>, Nicolin Chen <nicolinc@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Tomas Krcka <krckatom@amazon.de>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: Re: [PATCH v2 1/1] iommu/arm-smmu-v3: Fix error case of range command
+Message-ID: <20230907092116.GA5731@willie-the-truck>
+References: <661a7bb5-99e1-de16-d860-0cd17f7a0470@arm.com>
+ <20230808162409.GB2890@willie-the-truck>
+ <80ead8ee-4dbe-7b3c-44f5-944073a2a39d@arm.com>
+ <412886be-644a-5b46-9bfa-1c9a358f9a5d@huawei.com>
+ <280d0be7-7d41-ed78-bf4b-3db6c0076e22@arm.com>
+ <197e87cd-91a2-dce8-716c-488b379abbaf@arm.com>
+ <20230818162114.GB16216@willie-the-truck>
+ <d05378c0-5b85-caaf-ae0d-49576adf7d86@huawei.com>
+ <dafbccb4-f7be-838f-c037-91ff2dc324e4@linux.microsoft.com>
+ <a71e17d8-f5c2-113b-b1ca-e2c011630850@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/7] There are some bugfix for the HNS3 ethernet driver
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169407842467.2177.2525780122496274621.git-patchwork-notify@kernel.org>
-Date:   Thu, 07 Sep 2023 09:20:24 +0000
-References: <20230906072018.3020671-1-shaojijie@huawei.com>
-In-Reply-To: <20230906072018.3020671-1-shaojijie@huawei.com>
-To:     Jijie Shao <shaojijie@huawei.com>
-Cc:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, shenjian15@huawei.com, wangjie125@huawei.com,
-        liuyonglong@huawei.com, chenhao418@huawei.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a71e17d8-f5c2-113b-b1ca-e2c011630850@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -55,42 +66,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Wed, 6 Sep 2023 15:20:11 +0800 you wrote:
-> There are some bugfix for the HNS3 ethernet driver
+On Wed, Sep 06, 2023 at 01:59:55PM +0100, Robin Murphy wrote:
+> On 2023-09-06 06:05, Easwar Hariharan wrote:
+> > Could you please send out this patch since ZhuRui has confirmed it fixes
+> > their issue and CC it to stable for v5.15+? Or if Will is willing to
+> > pick it up off this thread, I can do the backport to stable.
 > 
-> Hao Chen (2):
->   net: hns3: fix byte order conversion issue in hclge_dbg_fd_tcam_read()
->   net: hns3: fix debugfs concurrency issue between kfree buffer and read
-> 
-> Jian Shen (1):
->   net: hns3: fix tx timeout issue
-> 
-> [...]
+> I can resend after -rc1 if Will would prefer that. It's tagged as a fix so
+> should hopefully get picked for stable automatically once it hits mainline.
 
-Here is the summary with links:
-  - [net,1/7] net: hns3: fix tx timeout issue
-    https://git.kernel.org/netdev/net/c/61a1deacc3d4
-  - [net,2/7] net: hns3: Support query tx timeout threshold by debugfs
-    https://git.kernel.org/netdev/net/c/dd2bbc2ef69a
-  - [net,3/7] net: hns3: fix byte order conversion issue in hclge_dbg_fd_tcam_read()
-    https://git.kernel.org/netdev/net/c/efccf655e99b
-  - [net,4/7] net: hns3: fix debugfs concurrency issue between kfree buffer and read
-    https://git.kernel.org/netdev/net/c/c295160b1d95
-  - [net,5/7] net: hns3: fix invalid mutex between tc qdisc and dcb ets command issue
-    https://git.kernel.org/netdev/net/c/fa5564945f7d
-  - [net,6/7] net: hns3: fix the port information display when sfp is absent
-    https://git.kernel.org/netdev/net/c/674d9591a32d
-  - [net,7/7] net: hns3: remove GSO partial feature bit
-    https://git.kernel.org/netdev/net/c/60326634f6c5
+Yes, please! Then I can queue it next week and send it to Joerg as a fix.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Will
