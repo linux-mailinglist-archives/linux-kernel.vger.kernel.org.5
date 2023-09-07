@@ -2,79 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAF3797986
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FB57978D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240982AbjIGRQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51174 "EHLO
+        id S244675AbjIGQzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242174AbjIGRQW (ORCPT
+        with ESMTP id S230180AbjIGQzm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:16:22 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B90C41FF6;
-        Thu,  7 Sep 2023 10:15:56 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1174)
-        id A8211212B5B7; Thu,  7 Sep 2023 09:52:43 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A8211212B5B7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1694105563;
-        bh=TnGfHgFY2Wfj2kjLKNZBPWtx90U/cn7fzLxE5pjtgEg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LykX1xyY1FrqxXvWRblMUan79w9CJexO5EW1rLHes1keB3oypqLlC4BGtfVFrfl5w
-         F8kff+mOMAGdTI24vkiPWQoEIm4xWlDXpYo/NzyL94sSG0EZRmjf7v/WjqH6IMFaxW
-         sEVz5W+uY4jJxrOr6JbG4I+QqL4wtkjABuezPBkQ=
-From:   sharmaajay@linuxonhyperv.com
-To:     Long Li <longli@microsoft.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+        Thu, 7 Sep 2023 12:55:42 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D3B1FE3;
+        Thu,  7 Sep 2023 09:55:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694105716; x=1725641716;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+iwrlHM9sEqkTS/xqbLYSOyW5pmPupLwx5GnE3Vj2HE=;
+  b=d/qCOvRCglu9qhJNMyyGUHVG06nQJhvopbpZIfU3OG/yOkCSKkZHGj8Q
+   h/3z6fE+nv26Xo6NSCP/4kzSDT8RO+mgE2oQb6iF40OG2mZy4FR49Lxmh
+   mdnbdw1kFrt7N92y5TssjjdNcZa90IBLe0l52vJnYOpETsdWIfRU15Fah
+   Pi3Klr+/RJ3oV/6HnfrFmJ37S4zcqB71nrnG+eWWlJ5yfEZwl/q0kdsxr
+   DA9DmDFyfFTkjWcY38gEKQcV392aAMnxPp82JPvvsBZNabW1dNT5cDUmz
+   WFQvMbbyWe8u3arn+/TIR8BmnsWxx2pR+zUWgdsP8NdStlC8JLlKmfsdO
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="463794473"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="463794473"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 09:54:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="691862512"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="691862512"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 07 Sep 2023 09:54:17 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qeIGk-0001P0-2T;
+        Thu, 07 Sep 2023 16:54:14 +0000
+Date:   Fri, 8 Sep 2023 00:53:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daniel Golle <daniel@makrotopia.org>,
+        Dan Carpenter <error27@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ajay Sharma <sharmaajay@microsoft.com>
-Subject: [Patch v5 0/5] RDMA/mana_ib
-Date:   Thu,  7 Sep 2023 09:52:34 -0700
-Message-Id: <1694105559-9465-1-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org
+Subject: Re: [PATCH net] net: ethernet: mtk_eth_soc: fix uninitialized
+ variable
+Message-ID: <202309080027.e4rJ0o2x-lkp@intel.com>
+References: <51d1ae238aecde07b2b4fe02cdab0dc87287cd96.1694099183.git.daniel@makrotopia.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <51d1ae238aecde07b2b4fe02cdab0dc87287cd96.1694099183.git.daniel@makrotopia.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ajay Sharma <sharmaajay@microsoft.com>
+Hi Daniel,
 
-Change from v4:
-Send qp fatal error event to the context that
-created the qp. Add lookup table for qp.
+kernel test robot noticed the following build warnings:
 
-Ajay Sharma (5):
-  RDMA/mana_ib : Rename all mana_ib_dev type variables to mib_dev
-  RDMA/mana_ib : Register Mana IB  device with Management SW
-  RDMA/mana_ib : Create adapter and Add error eq
-  RDMA/mana_ib : Query adapter capabilities
-  RDMA/mana_ib : Send event to qp
+[auto build test WARNING on net/main]
 
- drivers/infiniband/hw/mana/cq.c               |  12 +-
- drivers/infiniband/hw/mana/device.c           |  81 +++--
- drivers/infiniband/hw/mana/main.c             | 288 +++++++++++++-----
- drivers/infiniband/hw/mana/mana_ib.h          | 102 ++++++-
- drivers/infiniband/hw/mana/mr.c               |  42 ++-
- drivers/infiniband/hw/mana/qp.c               |  86 +++---
- drivers/infiniband/hw/mana/wq.c               |  21 +-
- .../net/ethernet/microsoft/mana/gdma_main.c   | 152 +++++----
- drivers/net/ethernet/microsoft/mana/mana_en.c |   3 +
- include/net/mana/gdma.h                       |  16 +-
- 10 files changed, 545 insertions(+), 258 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Golle/net-ethernet-mtk_eth_soc-fix-uninitialized-variable/20230907-234141
+base:   net/main
+patch link:    https://lore.kernel.org/r/51d1ae238aecde07b2b4fe02cdab0dc87287cd96.1694099183.git.daniel%40makrotopia.org
+patch subject: [PATCH net] net: ethernet: mtk_eth_soc: fix uninitialized variable
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20230908/202309080027.e4rJ0o2x-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230908/202309080027.e4rJ0o2x-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309080027.e4rJ0o2x-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from include/uapi/linux/posix_types.h:5,
+                    from include/uapi/linux/types.h:14,
+                    from include/linux/types.h:6,
+                    from include/linux/of.h:14,
+                    from drivers/net/ethernet/mediatek/mtk_eth_soc.c:9:
+   drivers/net/ethernet/mediatek/mtk_eth_soc.c: In function 'mtk_poll_rx':
+>> include/linux/stddef.h:8:14: warning: initialization of 'dma_addr_t' {aka 'long long unsigned int'} from 'void *' makes integer from pointer without a cast [-Wint-conversion]
+       8 | #define NULL ((void *)0)
+         |              ^
+   drivers/net/ethernet/mediatek/mtk_eth_soc.c:2008:31: note: in expansion of macro 'NULL'
+    2008 |         dma_addr_t dma_addr = NULL;
+         |                               ^~~~
+
+
+vim +8 include/linux/stddef.h
+
+^1da177e4c3f41 Linus Torvalds   2005-04-16  6  
+^1da177e4c3f41 Linus Torvalds   2005-04-16  7  #undef NULL
+^1da177e4c3f41 Linus Torvalds   2005-04-16 @8  #define NULL ((void *)0)
+6e218287432472 Richard Knutsson 2006-09-30  9  
 
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
