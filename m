@@ -2,76 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA49797A39
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B7A797A17
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244085AbjIGRdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:33:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34882 "EHLO
+        id S239739AbjIGRaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244526AbjIGRdr (ORCPT
+        with ESMTP id S239233AbjIGRaB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:33:47 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E841FD0
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:33:20 -0700 (PDT)
-Received: from [192.168.1.90] (unknown [81.18.92.207])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: cristicc)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5383166072AC;
-        Thu,  7 Sep 2023 18:27:45 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694107666;
-        bh=MFE5K+P4IhknlSmSkjj7+xOGLPAgQT1claj8SyoDnFk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=GOKaypOV/j/n+/0toUVJ/SHi05O7Axsa/ErPuOJuml3iQIVLqxC3imWHX6u36G9RI
-         fUio+fpPws58e4/yzuC/wAsBWrzmAwI4MSD9pLAePjvYLeihPf8eu6JUJYfprUruWM
-         UKWzk2k6GTR5cW8ishITcNKzcXXZZOqxmX4nt/sUw++Blx9+lEiAfp54sAdQPMLKQH
-         NuiDHId92y0rAL85mc6xH+cKzSLl4pUAr5jlhRRtFs59E0x4JwpguC/Z0awwo8n/7m
-         tTOphWqf9hOBSvXovokeLDgrqNlyQM7xaY8ON05zFOe0MMUy6/9eVLkEK++dM+eY+i
-         LZOu6eHEt4/IQ==
-Message-ID: <2b7a8897-05dc-4856-bb1a-a38b1e41b447@collabora.com>
-Date:   Thu, 7 Sep 2023 20:27:42 +0300
+        Thu, 7 Sep 2023 13:30:01 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D33D71FFA;
+        Thu,  7 Sep 2023 10:29:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=e3sbmtikRY69TAsDKmcau5vqebtKawBbX+Q/ivAEisE=; b=c62wQh3PD8tyy7+OJkND0FuxVp
+        vSB9FeWWP4sx22lnqZyGTp4BBpE/GfPpIW+KAe2blgEiFXYhKlKBLviCpWELJ1+ZhPO2Dw3ngklcd
+        QYa+bv+euVRKyifDj68xQVQM7K3wQYTYK3wDL67jVRalBMAuMwfby+NfQ6OjiVj8LlvZsGrFDwnTr
+        ixtnax2jPcZpJ8vKd8Qr3BAMQaI8zTikVljgjMZ1Ix5DiixDPIr8Oc1mj4hB/7SR+S+fvrM+Rha9M
+        A+l7si4YlKTFOoTV27KRvKgTiUl6Vw2Sw70LwLBZ/WMEZrT6MvSMUZFYEa/HmU2ZREYk5BkXyXphp
+        Sx/BFMFQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:42468)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qeIna-00049j-35;
+        Thu, 07 Sep 2023 18:28:10 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qeIna-00061L-Ok; Thu, 07 Sep 2023 18:28:10 +0100
+Date:   Thu, 7 Sep 2023 18:28:10 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Lucas Tanure <tanure@linux.com>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Devicetree <devicetree@vger.kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Raul Piper <raulpblooper@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Debugging i2c : i2cdetect cant detect a device on i2c line
+Message-ID: <ZPoIKhytmUQqtONp@shell.armlinux.org.uk>
+References: <CAEwN+MCorDCS7EhN40Qgja_nY+SFc3G61Zd6yntqAS+w26YO9Q@mail.gmail.com>
+ <ZPnR4Cx6_Hh3weEl@debian.me>
+ <ZPnWb15ucCotffav@shell.armlinux.org.uk>
+ <CAJX_Q+0-v=oadJ697VDawyEhDSPBAS_oqakZFHWVUfsnbCanMA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/11] Improve CS35l41-based audio codec drivers
-Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>
-Cc:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Stefan Binding <sbinding@opensource.cirrus.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-References: <20230907171010.1447274-1-cristian.ciocaltea@collabora.com>
- <4a658238-b5cf-44fc-802b-f09f8d5e0ad1@sirena.org.uk>
-From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-In-Reply-To: <4a658238-b5cf-44fc-802b-f09f8d5e0ad1@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJX_Q+0-v=oadJ697VDawyEhDSPBAS_oqakZFHWVUfsnbCanMA@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/23 20:21, Mark Brown wrote:
-> On Thu, Sep 07, 2023 at 08:09:59PM +0300, Cristian Ciocaltea wrote:
+On Thu, Sep 07, 2023 at 05:17:47PM +0100, Lucas Tanure wrote:
+> On Thu, 7 Sept 2023, 14:56 Russell King (Oracle), <linux@armlinux.org.uk>
+> wrote:
 > 
->>  - Added 3 new patches providing some HDA related fixes
-> 
-> Do these have any interaction with the rest of the series?
+> > On Thu, Sep 07, 2023 at 08:36:32PM +0700, Bagas Sanjaya wrote:
+> > > [also Cc: devicetree and ARM folks]
+> > >
+> > > On Thu, Sep 07, 2023 at 08:21:44AM +0530, Raul Piper wrote:
+> > > > Hello ,
+> > > > I am trying to detect an i2c device A on i2c1 line on  one of the Arm
+> > > > Cortex A7 platform but not able to see any device on a given address (
+> > > > 0x3d) .
+> > > >
+> > > > Is there any parameters of i2c which i can change like rise/fall time
+> > > > , timeout etc in a device tree or kernel source and re test it?
+> > > > I have tried changing the i2c speed from 100KHz to 400 KHz  but no
+> > success.
+> > > > I have even tried removing the 1.5K pull ups on the i2c lines but no
+> > result.
+> >
+> > Honestly, from this description, I'm wondering if this posting is a joke.
+> >
+> > I2C is entirely _reliant_ on pull-ups. It's a wire-or bus, and the
+> > logic 1 state is created by no device pulling the signal low, thereby
+> > allowing the pull-up resistor to pull the line to the logic 1 state.
+> >
+> > The pull-up must be the correct strength for the devices on the bus.
+> > If it is too strong, then a driver may not be able to pull the signal
+> > sufficiently low for other devices to register it as a logic 0.
+> >
+> > Conversely, the pull-up must be strong enough so that the rise-time
+> > of the signal is sufficient to register as a logic 1.
+> >
+> > If it's a problem with the rise time, then increasing the clock rate
+> > will just make the situation worse.
+> >
+> > So, if other devices work on the bus, it could be that the Vil
+> > threshold of this device is not being achieved, whereas the other
+> > devices are happy. Therefore, I would suggest you study the data
+> > sheets of the device that isn't being detected.
+> >
+> > Lastly, if the undetectable device has a reset line, it's possible
+> > that the device isn't responding because it's being held in reset.
+> >
+> Please try to use an logic analyser like saleae logic.
+> Probe the i2c bus, reset line, power lines, pins that set the i2c address
+> for the device.
+> Can tell us which device it is?
 
-Yes, PATCH v2 04/11 changed the signature of cs35l41_global_enable()
-function which is also used by HDA - this is how I noticed the
-additional issues.
+I assume you are replying to Bagas? Please me it clear in future.
+Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
