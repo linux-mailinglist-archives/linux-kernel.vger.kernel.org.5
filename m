@@ -2,101 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9969A796F6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 05:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 825CF796F75
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 06:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237521AbjIGD5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 23:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45310 "EHLO
+        id S238104AbjIGEAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 00:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232726AbjIGD5S (ORCPT
+        with ESMTP id S229743AbjIGEA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 23:57:18 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C908E41;
-        Wed,  6 Sep 2023 20:57:14 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b974031aeaso9504891fa.0;
-        Wed, 06 Sep 2023 20:57:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694059032; x=1694663832; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3UQs6noN/LuXhMaxtbcJru+m5+v+IlSKIcqynK+aM9Y=;
-        b=fDxrT+lGMq39XKjj0KXPz9tLGKvx+OLZzhBNbX/fCD3TCPiNk+uJWvOCAy1aLhnjRS
-         H0O3gkiCnj0RSPsKFJedJYK/cxirktn8hnfb84y8HrEEMtIhrzea95j9iHfEErY3mJIU
-         CTSeh+4K4anxvtQBxbKCFfWRIbta3FYCr5/6Rz2l+5N6EBNAxvjxuIB8kRW6ELHAyF+P
-         /fh9cRJMzSSOinvTY4lAZD4WudDIWB5dC6Iqe4t5YHDflfHPN8ZPYmqgz6f20+oiQwo2
-         40gx0Urv2OqthbO5PO1Y6tQ0gLQQ3huvrgfpSszuyl8OBr5eLavDcAPyim+mLUibNxZb
-         540g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694059032; x=1694663832;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3UQs6noN/LuXhMaxtbcJru+m5+v+IlSKIcqynK+aM9Y=;
-        b=BRN0aV9DOQHNiRqpP7U0Dlt7yCI7BlOhpT38eZ8Yy2810rQ4LoMHXcgrxoZi2dP+VT
-         pxGnBxh0XgMqNJKiNMzuPlk5uU7tEW5VFgctB0rKuj0Z9NICNCh0NlQifbd6LQRTdcJo
-         DtVjm+jsxYfJARbJGaTW/vIUha/5eENrE7Ii+q0Feq8kK+jCgBVMVTKnOBmy7sqf+yq1
-         hJ5wiyJMxD+PjpyA18nl8fphk1cO/FerqxeUdZAeV4abbZkI8V/99o67kHwyuYKLUMTc
-         WUNI98nTQuPjfjHQS7SY0wF6gPwsOzDEZ0U461nU2GeGrCVnzVtucD5wngcKDBJaydzC
-         dW6w==
-X-Gm-Message-State: AOJu0YwkIxJePRs3I604lQFJHAfVsZaxvK8OGPBISxBITfcIAnvF9+Cb
-        Y/jYQGf+GOOa58pmJaLusZqu+VUw6gjocbsYAKo=
-X-Google-Smtp-Source: AGHT+IGI6qgIYSsAicMI6I+r6ioP3/2vp5QnhFlwnPmei3QJDcCP4J/D9Z4FZEYYhTF0QZ1jr8qCxHSm6ZraniakZgA=
-X-Received: by 2002:a2e:9c10:0:b0:2bc:b70d:9cb5 with SMTP id
- s16-20020a2e9c10000000b002bcb70d9cb5mr3530939lji.33.1694059032084; Wed, 06
- Sep 2023 20:57:12 -0700 (PDT)
+        Thu, 7 Sep 2023 00:00:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30063199A
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 21:00:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8E174C433C9;
+        Thu,  7 Sep 2023 04:00:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694059222;
+        bh=NADXZdSMWL5mBGyP7H8DbhP5et9pbjydx3mogHSjfZI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ixWBjpyOyL/fidDlAQKwflDQv21LcuaSMop0UKFV52oSpjYN8zS5AhfFyJmjmwzxQ
+         Yq+tmDRnRKZGNaGju/3wKfMzM8oIxAuJzLAF0rGadBbsDQHdpW7nv8nnSDgZSY4BG/
+         O5RIAC0a5JgbwNzt70mwHm1z/OaYQqCFhS0Leyo0mTKh36iYYEn4sFCIvbfYEsNzCd
+         8fXFIy7rXmOEyJ3uBlg0IhN8sWroq0qqoUAK6fZNKKoCe2Xkjfw4a+T5mILF1oifq1
+         ZvPQFAcDh3wgO29lA4W1wL/7tuy4vAlC/22wv9rdAxikik04jVTE8PsJGL6gc72O69
+         jGAhQHfQI/bsA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 70768E22AFC;
+        Thu,  7 Sep 2023 04:00:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <cover.1693659382.git.haibo1.xu@intel.com> <b6ef1b031e3a581f481cf19a26623388163444b4.1693659382.git.haibo1.xu@intel.com>
- <20230904-aa8b0d8d23d391586686038a@orel> <CAJve8ok5cU+h1K+WJ+aDpB+u+PBo8XosUyyVbMGy-xR0XiWFdw@mail.gmail.com>
-In-Reply-To: <CAJve8ok5cU+h1K+WJ+aDpB+u+PBo8XosUyyVbMGy-xR0XiWFdw@mail.gmail.com>
-From:   Haibo Xu <xiaobo55x@gmail.com>
-Date:   Thu, 7 Sep 2023 11:57:00 +0800
-Message-ID: <CAJve8om+dLcG+4trDfG1yx8vhj52RhPZrJoF-emWDX+OPM088A@mail.gmail.com>
-Subject: Re: [PATCH v2 7/8] KVM: riscv: selftest: Change vcpu_has_ext to a
- common function
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Guo Ren <guoren@kernel.org>,
-        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-        wchen <waylingii@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Lei Wang <lei4.wang@intel.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Like Xu <likexu@tencent.com>, Peter Gonda <pgonda@google.com>,
-        Thomas Huth <thuth@redhat.com>,
-        =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Michal Luczaj <mhal@rbox.co>, Paul Durrant <paul@xen.org>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net v4] net: phy: Provide Module 4 KSZ9477 errata (DS80000754C)
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169405922245.5293.2774617542441865085.git-patchwork-notify@kernel.org>
+Date:   Thu, 07 Sep 2023 04:00:22 +0000
+References: <20230905093315.784052-1-lukma@denx.de>
+In-Reply-To: <20230905093315.784052-1-lukma@denx.de>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Tristram.Ha@microchip.com, edumazet@google.com, andrew@lunn.ch,
+        davem@davemloft.net, woojung.huh@microchip.com, olteanv@gmail.com,
+        o.rempel@pengutronix.de, f.fainelli@gmail.com, kuba@kernel.org,
+        pabeni@redhat.com, UNGLinuxDriver@microchip.com,
+        linux@armlinux.org.uk, hkallweit1@gmail.com, michael@walle.cc,
+        horatiu.vultur@microchip.com, arun.ramadoss@microchip.com,
+        linux@rempel-privat.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -105,68 +58,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 6:10=E2=80=AFPM Haibo Xu <xiaobo55x@gmail.com> wrote=
-:
->
-> On Mon, Sep 4, 2023 at 10:04=E2=80=AFPM Andrew Jones <ajones@ventanamicro=
-.com> wrote:
-> >
-> > On Sat, Sep 02, 2023 at 08:59:29PM +0800, Haibo Xu wrote:
-> > > diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools=
-/testing/selftests/kvm/riscv/get-reg-list.c
-> > > index d8ecacd03ecf..c4028bf32e3f 100644
-> > > --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > > +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> > > @@ -44,20 +44,6 @@ bool check_reject_set(int err)
-> > >       return err =3D=3D EINVAL;
-> > >  }
-> > >
-> > > -static inline bool vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
-> > > -{
-> > > -     int ret;
-> > > -     unsigned long value;
-> > > -
-> > > -     ret =3D __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
-> > > -     if (ret) {
-> > > -             printf("Failed to get ext %d", ext);
-> > > -             return false;
-> > > -     }
-> > > -
-> > > -     return !!value;
-> >
-> > get-reg-list will now assert on get-reg when an extension isn't present=
-,
-> > rather than failing the __TEST_REQUIRE(), which would do a skip instead=
-.
-> > We need both the return false version and the assert version.
-> >
->
-> Ok, Will keep this one for get-reg-list and add another one for
-> arch-timer specific usage.
->
+Hello:
 
-Just thought about it again, maybe we only need the "return false"
-version for both get-reg-list
-and arch-timer tests since if an extension was not available, the test
-can be skipped with a message.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-bool vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
-{
-       unsigned long value =3D 0;
+On Tue,  5 Sep 2023 11:33:15 +0200 you wrote:
+> The KSZ9477 errata points out (in 'Module 4') the link up/down problems
+> when EEE (Energy Efficient Ethernet) is enabled in the device to which
+> the KSZ9477 tries to auto negotiate.
+> 
+> The suggested workaround is to clear advertisement of EEE for PHYs in
+> this chip driver.
+> 
+> [...]
 
-       __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
+Here is the summary with links:
+  - [net,v4] net: phy: Provide Module 4 KSZ9477 errata (DS80000754C)
+    https://git.kernel.org/netdev/net/c/08c6d8bae48c
 
-       return !!value;
-}
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-> > > -}
-> > > -
-> > >  void finalize_vcpu(struct kvm_vcpu *vcpu, struct vcpu_reg_list *c)
-> > >  {
-> > >       struct vcpu_reg_sublist *s;
-> > > --
-> > > 2.34.1
-> > >
-> >
-> > Thanks,
-> > drew
+
