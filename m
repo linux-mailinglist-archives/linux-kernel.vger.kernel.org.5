@@ -2,139 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AECF797670
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20FB7977FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237645AbjIGQJL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Sep 2023 12:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46722 "EHLO
+        id S242065AbjIGQi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:38:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241692AbjIGQIa (ORCPT
+        with ESMTP id S244125AbjIGQiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:08:30 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC91F2729
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:02:25 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-251-8f0ph68FMmGbI3MMsr5Spg-1; Thu, 07 Sep 2023 13:42:24 +0100
-X-MC-Unique: 8f0ph68FMmGbI3MMsr5Spg-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 7 Sep
- 2023 13:42:20 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 7 Sep 2023 13:42:20 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Vlastimil Babka' <vbabka@suse.cz>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "'linux-mm@kvack.org'" <linux-mm@kvack.org>
-CC:     'Kees Cook' <keescook@chromium.org>,
-        'Christoph Lameter' <cl@linux.com>,
-        'Pekka Enberg' <penberg@kernel.org>,
-        'David Rientjes' <rientjes@google.com>,
-        'Joonsoo Kim' <iamjoonsoo.kim@lge.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        'Eric Dumazet' <edumazet@google.com>,
-        "Hyeonggon Yoo" <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Subject: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return 0
- for non-zero size
-Thread-Topic: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return
- 0 for non-zero size
-Thread-Index: Adnhh8rbtLpHk7QBQE+HpPR0NWDZ5g==
-Date:   Thu, 7 Sep 2023 12:42:20 +0000
-Message-ID: <4d31a2bf7eb544749023cf491c0eccc8@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 7 Sep 2023 12:38:20 -0400
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB264694;
+        Thu,  7 Sep 2023 09:26:29 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::646])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id F19E12E0;
+        Thu,  7 Sep 2023 12:48:11 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net F19E12E0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1694090892; bh=JysPJRxXrczQoAPmvqIYhM9DcAdktvVPirtxUtRrSuU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=gq1rdGWSBptK8bB4PeNqahqtX1h9qLqu+1xycBkYyqsLa4s2keClWk6Y2GMOTUJx3
+         /4TUy131r9C92oxQ9pcn9PAmArhMmEE6h3ANtn+nx6bTAwu2KCGdBPSXvltnsLKev5
+         WRjrdoqmsi6U+YAfOww83Z4m9Mj803LQhWu9aaGZDeWL09HBFquwqIfwtpVfJj+nmM
+         3orype6boAO/OJSe38ttkzvGjXPa+hk1wRP0lTs2PRBz5eZrjo/ZOnqJD/wyxm9iaV
+         eHeJAHoUIT3J8xMWyecyLz+LdemPc9Ku8+En66auar1NkZUVrk8XmacEkblgQranzJ
+         gdfvZWjzzwyBg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, jesper.juhl@gmail.com
+Subject: Re: [PATCH] Documentation: Process: Add a note about git way of
+ applying patch
+In-Reply-To: <20230907115420.28642-1-unixbhaskar@gmail.com>
+References: <20230907115420.28642-1-unixbhaskar@gmail.com>
+Date:   Thu, 07 Sep 2023 06:48:11 -0600
+Message-ID: <87bkee40ac.fsf@meer.lwn.net>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The typical use of kmalloc_size_roundup() is:
-	ptr = kmalloc(sz = kmalloc_size_roundup(size), ...);
-	if (!ptr) return -ENOMEM.
-This means it is vitally important that the returned value isn't
-less than the argument even if the argument is insane.
-In particular if kmalloc_slab() fails or the value is above
-(MAX_ULONG - PAGE_SIZE) zero is returned and kmalloc() will return
-it's single zero-length buffer.
+Bhaskar Chowdhury <unixbhaskar@gmail.com> writes:
 
-Fix by returning the input size on error or if the size exceeds
-a 'sanity' limit.
-kmalloc() will then return NULL is the size really is too big.
+> cc: jesper.juhl@gmail.com
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  Documentation/process/applying-patches.rst | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/Documentation/process/applying-patches.rst b/Documentation/process/applying-patches.rst
+> index c269f5e1a0a3..201b9900bffe 100644
+> --- a/Documentation/process/applying-patches.rst
+> +++ b/Documentation/process/applying-patches.rst
+> @@ -6,6 +6,13 @@ Applying Patches To The Linux Kernel
+>  Original by:
+>  	Jesper Juhl, August 2005
+>
+> +
+> +.. applying patch by Git::
+> +
+> +    You can use the below syntax to patch in git repository
+> +    git-apply --whitespace=error-all <patchfile>
+> +
+> +
+>  .. note::
+>
+>     This document is obsolete.  In most cases, rather than using ``patch``
 
+So why are you sending a patch ... with no changelog ... adding a
+useless label ... and Sphinx syntax errors ... to a document that is
+explicitly marked as being obsolete?
 
-Signed-off-by: David Laight <david.laight@aculab.com>
-Fixes: 05a940656e1eb ("slab: Introduce kmalloc_size_roundup()")
----
-v2:
-    - Use KMALLOC_MAX_SIZE for upper limit.
-      (KMALLOC_MAX_SIZE + 1 may give better code on some archs!)
-    - Invert test for overlarge for consistency.
-    - Put a likely() on result of kmalloc_slab().
-
- mm/slab_common.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
-
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index cd71f9581e67..0fb7c7e19bad 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -747,22 +747,22 @@ size_t kmalloc_size_roundup(size_t size)
- {
- 	struct kmem_cache *c;
- 
--	/* Short-circuit the 0 size case. */
--	if (unlikely(size == 0))
--		return 0;
--	/* Short-circuit saturated "too-large" case. */
--	if (unlikely(size == SIZE_MAX))
--		return SIZE_MAX;
-+	if (size && size <= KMALLOC_MAX_CACHE_SIZE) {
-+		/*
-+		 * The flags don't matter since size_index is common to all.
-+		 * Neither does the caller for just getting ->object_size.
-+		 */
-+		c = kmalloc_slab(size, GFP_KERNEL, 0);
-+		return likely(c) ? c->object_size : size;
-+	}
-+
- 	/* Above the smaller buckets, size is a multiple of page size. */
--	if (size > KMALLOC_MAX_CACHE_SIZE)
-+	if (size && size <= KMALLOC_MAX_SIZE)
- 		return PAGE_SIZE << get_order(size);
- 
--	/*
--	 * The flags don't matter since size_index is common to all.
--	 * Neither does the caller for just getting ->object_size.
--	 */
--	c = kmalloc_slab(size, GFP_KERNEL, 0);
--	return c ? c->object_size : 0;
-+	/* Return 'size' for 0 and very large - kmalloc() may fail. */
-+	return size;
-+
- }
- EXPORT_SYMBOL(kmalloc_size_roundup);
- 
--- 
-2.17.1
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+jon
