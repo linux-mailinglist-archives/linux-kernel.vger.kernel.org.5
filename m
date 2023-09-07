@@ -2,285 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1DFF79745F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4768879742C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232898AbjIGPhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37476 "EHLO
+        id S239739AbjIGPgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344792AbjIGPdu (ORCPT
+        with ESMTP id S1344220AbjIGPcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:33:50 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26D51BF;
-        Thu,  7 Sep 2023 08:33:22 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31c5a2e8501so1052311f8f.0;
-        Thu, 07 Sep 2023 08:33:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694100767; x=1694705567; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=W8ZbMBxHSKUFb4LWza138ts8LT1OgHugv/+Ktfy9rpw=;
-        b=JKVWHKksbpFZ3uHVqil9ImC/7UZydrbU5nJwb27qJDsmxox6D608J/iqRHtcMaqY1k
-         MlTZpQUdEHz77H3ATNHadTv8wrHqpORQJialU/vxxvIgb/Mu97Qh02X9UaDmDP08tGGE
-         XTzZezLF9/E0u3mu5Rv6Th4ufM/Gdgl2EHIkJR+dZ5YUifOMMUTp5NKcGuwOMFBD/MNh
-         XdetNCZDjLTS5egONO8eUOn7uPCigp4XXk0KJPqEgfA1twm4cg4iwR63p5To1WjYFOLk
-         ha18zSfO8P+k0G5hEHFwiXqQpRX3WC9vHEqSJu/oRKcadGmoTyijBEN+EsiFJisgT5US
-         tYCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694100767; x=1694705567;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W8ZbMBxHSKUFb4LWza138ts8LT1OgHugv/+Ktfy9rpw=;
-        b=VfZhunKY9VnSxUSNGaIDIfsoGDoU1yVZBCTn6eUckEU1BwE9c1GHTvKbTS9lQyhFqp
-         ZYJ7m5/lt4pMCzkvvhKhaqDeEyhZ6DTbkmIh8BNmZo/1rCebtSA5rTHjGVDbzJaZv94k
-         buDE6i4Kr0pU56NU51c6v0UfwpRm/ILxIURN8dh4CDW0tGU/hAt29/abbjV0ydjE0Zis
-         SO1fFCv6iWwQPJ730UlsEoJdlhKYyhpGKL4KKAcCHCBV/Z8CYyxdieK+0QsQ4Qwi6lK5
-         ff412wfuEkIVJ7sUZbIxHXabPiWZi4NZJzYOLlOoSBdhjnet+0PtNIqx9NTPux+fRBfd
-         qzsA==
-X-Gm-Message-State: AOJu0YzzMN4xJXSGWSlh3cMRfZLqZH4hsIB9z9cVLw5FMBOGk9M3kTsd
-        IK6yp4Ik3XRljcnuNRnkvoVDZOjK2UA=
-X-Google-Smtp-Source: AGHT+IEQDQdq3XESEPBE/V7+6OKrbU5Om9XjvaZzCyVN3J1Y2iN1rOvZqR+qIlxLMKY937YvMDtj0g==
-X-Received: by 2002:a05:600c:b57:b0:401:b908:85a2 with SMTP id k23-20020a05600c0b5700b00401b90885a2mr3624279wmr.23.1694070710479;
-        Thu, 07 Sep 2023 00:11:50 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id f13-20020a7bcd0d000000b00402bda974ddsm1616156wmj.6.2023.09.07.00.11.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 00:11:49 -0700 (PDT)
-Date:   Thu, 7 Sep 2023 08:11:48 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Zhen Lei <thunder.leizhen@huaweicloud.com>,
-        rcu@vger.kernel.org, Zqiang <qiang.zhang1211@gmail.com>,
-        stable@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3 1/2] mm/vmalloc: Add a safer version of find_vm_area()
- for debug
-Message-ID: <499537a7-3380-4355-ae34-df7f5c0f41bd@lucifer.local>
-References: <20230904180806.1002832-1-joel@joelfernandes.org>
- <571d4a4a-0674-4c84-b714-8e7582699e30@lucifer.local>
- <20230905114709.GA3881391@google.com>
- <CAA5enKbvrvTx=d6MgLZjupnsEuoCnRN8e9p+ffnJV1rJS+HkXA@mail.gmail.com>
- <20230906224608.GB1646335@google.com>
+        Thu, 7 Sep 2023 11:32:42 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2071c.outbound.protection.outlook.com [IPv6:2a01:111:f400:feae::71c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4717D1BC9;
+        Thu,  7 Sep 2023 08:32:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hh69poRUVIAktMtH+ZwKoMdyPVk2TVa3Lr0iO1MPpX/ggtxhazSd6YCn5j4iMEXcOXxzpGKYlsDuuEuFEyXp02UEu14FedlLwKEfS2AljTSjw+4PsTDgxEakMssu6CTlbpHn9wMs50mKVsLkhnVyUHwfrBUulAuEaq5szvqAY4dz2DwUW/XKt4041OvOMwXLRgsgHPctyXmsW4djMZ59bhKIBVLNi8m3BQZNlwWHxPZBa6Z7jwqEo5dxTUmlAE2Z0d62nB/Y8RhU1/SRG9J09In8moMaDI51AlEwyIfZRMnf8GNn2R7YgyyLQoMLkwcvqlfv5LB2VrtMmGTxwitbjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ILdyH+y3Ag8MQ5/OU0a8nDvQT8qItD7SrbA7qWiTn3Q=;
+ b=eFT5iPgK+zNHhHX4MN1za1LqwITCwpPGzM725B+bIAPcUrYb3GqNMLj2THzsDmS1Glep/IzYTQhdfkf7Z2WXPKNojjGhtHrPPJRQqdD4yL1vNNHaG4GUftrZAIUuU2lT81Pw+SM+EXMCud6s8xr467+fSzooiqgCKkb8P3IaLvVcWa5tjE2Rrjj4uaKA4G35rElljVibvooMuZls3/vfILjxeccp5/m2EPK/fHsZ4z1Ddgyo3OQ7W8dF0CvfTHiRTUochXnYvHe8c7wGAGkDS1snz57p9BtWx5Yvl0AHEGUSfQ2/nkkwzNqDj4TY4p4m9TMiqGi9FSbhS8nnkZD7xQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ILdyH+y3Ag8MQ5/OU0a8nDvQT8qItD7SrbA7qWiTn3Q=;
+ b=TIT80aqnx1oav1pXJdD6mq8zgsPlgj117pgQPILSZw8uxjtA9xaxFVwmj7loWAbvxuxE4chi0EMacAXB71bs2hkTjej/i8ScT3gov0E8kId1mgbn7KsJlSsFiy1rMBKEEiMQr7pGD2oO9ZSlep1opb45aJp+sK7Omz8V0cKS4heHeIK/x3Z3YdqY3HQCfx5Wf7ZmVLTFxGbKszmHmcSiO8cOZbZNtibhBrQY4Jq3dIMx8GtKLNZ+gUW6lB57NOjYgraqI0eCVjv1kyYOW3C1AzP0FLhOE3aHCU6ZB+m8F+djkE/ZUq74itbITI3RyisC+T5J3RUBxetMCWNNhooq9A==
+Received: from SG2PR06MB3365.apcprd06.prod.outlook.com (2603:1096:4:69::12) by
+ SEZPR06MB6198.apcprd06.prod.outlook.com (2603:1096:101:f1::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6745.34; Thu, 7 Sep 2023 07:17:56 +0000
+Received: from SG2PR06MB3365.apcprd06.prod.outlook.com
+ ([fe80::791a:38e8:18cf:d205]) by SG2PR06MB3365.apcprd06.prod.outlook.com
+ ([fe80::791a:38e8:18cf:d205%5]) with mapi id 15.20.6745.030; Thu, 7 Sep 2023
+ 07:17:55 +0000
+From:   Billy Tsai <billy_tsai@aspeedtech.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "naresh.solanki@9elements.com" <naresh.solanki@9elements.com>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>,
+        "patrick@stwcx.xyz" <patrick@stwcx.xyz>
+Subject: Re: [PATCH v8 1/3] dt-bindings: hwmon: fan: Add fan binding to schema
+Thread-Topic: [PATCH v8 1/3] dt-bindings: hwmon: fan: Add fan binding to
+ schema
+Thread-Index: AQHZ2z4C+uKKem1S50iGi7OYH9WEnLAMfl8AgAKBk6I=
+Date:   Thu, 7 Sep 2023 07:17:55 +0000
+Message-ID: <SG2PR06MB336567E43537C7F4947E342F8BEEA@SG2PR06MB3365.apcprd06.prod.outlook.com>
+References: <20230830123202.3408318-1-billy_tsai@aspeedtech.com>
+ <20230830123202.3408318-2-billy_tsai@aspeedtech.com>
+ <20230905170010.GA3505375-robh@kernel.org>
+In-Reply-To: <20230905170010.GA3505375-robh@kernel.org>
+Accept-Language: en-US, zh-TW
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=aspeedtech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SG2PR06MB3365:EE_|SEZPR06MB6198:EE_
+x-ms-office365-filtering-correlation-id: 0feb26c9-7fdd-4aae-70a0-08dbaf728eba
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: gjadcIWuvkP37pgM56WRpO2Jn6eLPzrv69Z7uYUYI2p61PEBBfmiqsrBzJV+riJN7Xf9umG4wJsKy5z9gQZ27hkYri5Sfm87KhjtMtDT83yeS2qjqYSBLbxA65YU+qC86LBJlwAbRTAK7yT7EkVMbZEpjEZKJSQI/BzcRI/EsmAdfZp14D6lriG18LdOl5xiy1UIjmAOx6bZKsvxq4amto8MKaypE4pDxBg7J+CnPw887O+U5Ec8Oao2UrjW8heHCfNJk6twrwlsra/+nVs+kAEvT2XzcaYEGrq/7+vDwcCaW8woFHB6mYg/mQtwQfVxRqAjqbKh/MLNgB/L23obES9mfTDML3qPDz8qJXyJiiOq/EMgAxLgAH/NgUYCmhOH3rq0449vFEe6NCAV4jnOyturcJYa2IxuYJChl8R0YN7Swze6YkOHNLSQLwEPWmusKBWBU1Vu5IbWEtQaANChhpSYLqAso9ILWHVpmuxsmWHDd/Zwaoo9m+dhWgq3NN5zzlXL9Zo2L9c0FeTmDZ4bz3uU9tnwcMPouOfahoSMssqmfQGz75K+g1liadu+y0UEzdZ14F13git/NGyBncZoKo5jUXONrmZoDZqCyXB77Ak=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3365.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(366004)(346002)(396003)(136003)(376002)(186009)(1800799009)(451199024)(6506007)(7696005)(9686003)(55236004)(55016003)(83380400001)(26005)(122000001)(91956017)(64756008)(54906003)(52536014)(66946007)(38070700005)(38100700002)(76116006)(66446008)(6916009)(66556008)(66476007)(5660300002)(7416002)(316002)(33656002)(41300700001)(86362001)(8676002)(8936002)(4326008)(2906002)(71200400001)(966005)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?uq8qgk4rMOm3HKcl/zSWqwPMKP+ZvhjefiHO6IWQ1VJbiP1RGFYTt45WtE?=
+ =?iso-8859-1?Q?Y2JttAbiyZluub6uNRg1Ix9G7HXFRfjGdqiJb/Sz4nRUTw/ayLn384w3XT?=
+ =?iso-8859-1?Q?T4SLsgUg7HaJClkfXsj7kd8S5cr4/Op5mVecKZ5OSEQQDeQe1jHwVFhEy/?=
+ =?iso-8859-1?Q?qixBQsxufAZmDEi9qda9DYVv77P4ZELokqoXuL0QvLbrYCkHSW9UpyVBvr?=
+ =?iso-8859-1?Q?+6twoQbBH3mVM2sI6goSkN+TWXGRD2ZHAwDfNZqZwLcnGfrmuta9QluUvb?=
+ =?iso-8859-1?Q?50sdZTB+gBuO+1hDUdd66iMY/fz0fLCg5RGKwQFwYLZMmqF5CeFH8bkHEZ?=
+ =?iso-8859-1?Q?caYLhzRVBKfJqPF4JoiJXrb3Cpv5UL4ywC/g6UJlHTnbyyiM+eFyzVeWHf?=
+ =?iso-8859-1?Q?OedUHtpB2KuAXZUujz1nqlsG74Dg3PGb0Bb1hn9SQv/9/fm+GjJ2Jl6epY?=
+ =?iso-8859-1?Q?iZRE/TZnGz686+BZY0+X69du9m0lHJBEtBz9pDzTGC+ap4u5RmvtUd6rYg?=
+ =?iso-8859-1?Q?zQWFLBRDcfIo7iCva+AEuFucyJwDV06r5XqhcUNTggRqCGijLFw5ffHP2k?=
+ =?iso-8859-1?Q?yIVZ546Ickjthbe0v64l2JKw2Em7UB1K164kj2aduroYkyvnd70XnhCD+2?=
+ =?iso-8859-1?Q?S44mjV1nYRvD1vu3KzsIpm9fNwHJjEW+KpQTIHc5wiRUXRUFn+62DGj+9+?=
+ =?iso-8859-1?Q?jeo/yNA8di/3/6FQsEJrBR7+0pX2SnWTGiDaSBpY6qSCT0e7NkhiKferDM?=
+ =?iso-8859-1?Q?vCbLhS3dOONQpNCxd4qdu7IKCLQCnlFWUZo1UtQjUZvqQpp0D3UPv3Qn2c?=
+ =?iso-8859-1?Q?Dv1mKziE1ZJg1AotH210odX7vPypv1zXRXFowbrpv4/UVYk2iCCE9Il1/6?=
+ =?iso-8859-1?Q?r6UQIfdU6ARRusGz7d5Nfvg1ossngANkYEZV1OS5j2PrPzIpY6Y6DjLhtD?=
+ =?iso-8859-1?Q?/LzJDubwlJfXfpQqM8diePEgHXgCg+zdY83cpFxRZmx0gW+pgT2QBKOAWC?=
+ =?iso-8859-1?Q?pufGZOqj+vYIkhB1w1LP97SwPFogv+WDhe8gyZoBn1LDFkggJm0gnJL0vb?=
+ =?iso-8859-1?Q?T0RrgqNe1PSwZcf2Fj/XqVGL0kLdHNE4UvvN3x5jsBGQINFyji+FPkDNrK?=
+ =?iso-8859-1?Q?fEtktG6yorIBT8+0qgZB0xASXeKXKfryFGRZIZobOt9DvjEACWnClPd60F?=
+ =?iso-8859-1?Q?DxdIlJ1OSfON+ZKr5bEc7ifZtxiDVQe2mzNuyGA4yszsVuwKXqhIDnYgcn?=
+ =?iso-8859-1?Q?VccLbKTe7Ekz/a86x3vMN+FChnTkA/dmgqsQkpP8+mZ/u2+JlI/nzxXa0J?=
+ =?iso-8859-1?Q?ATjQTTXna9Xc+4J88yP+q8dGnioO4vBAKDcOGyqFqVGABLCyYl7RovTvTP?=
+ =?iso-8859-1?Q?1zuwJTIKb4zbCcXX73ylCGFqelJDw/hBRnjvfFKRKtuH9HkNV/cjOfgkTI?=
+ =?iso-8859-1?Q?kNfO6ppIsMhKUWZGaXoeTBPtdO2SIq/3hi8MAUVCtYPpEzsVfj2RHd+ym4?=
+ =?iso-8859-1?Q?nfm9V823kgjPa2R/nh+Eg0U39/8/TdPAZ3LV+F+uQUJ2RAlTXAWnnsjgZE?=
+ =?iso-8859-1?Q?WM4WpPe1vQbJUY40bz35MO/ozV8yaAXAI9ejNR7wAqvSwiLjJGOMa+juUv?=
+ =?iso-8859-1?Q?BbFGAKwpTQSHbT2LtwWpPfyJHoBXi8Ju8m?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230906224608.GB1646335@google.com>
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3365.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0feb26c9-7fdd-4aae-70a0-08dbaf728eba
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Sep 2023 07:17:55.8712
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zcK5GmglR+3MXi2qIIq1nHTdHr6oevqtBYy47RKg3qcXJpuqNzf4Q5AjQYW07hTw/GFt9L3fMCEUzLBiZsTYcUrYyNaEywETx9eMH9xIi/0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB6198
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 10:46:08PM +0000, Joel Fernandes wrote:
-> On Wed, Sep 06, 2023 at 08:23:18PM +0100, Lorenzo Stoakes wrote:
-> > On Tue, 5 Sept 2023 at 12:47, Joel Fernandes <joel@joelfernandes.org> wrote:
-> > >
-> > > On Tue, Sep 05, 2023 at 08:09:16AM +0100, Lorenzo Stoakes wrote:
-> > > > On Mon, Sep 04, 2023 at 06:08:04PM +0000, Joel Fernandes (Google) wrote:
-> > > > > It is unsafe to dump vmalloc area information when trying to do so from
-> > > > > some contexts. Add a safer trylock version of the same function to do a
-> > > > > best-effort VMA finding and use it from vmalloc_dump_obj().
-> > > >
-> > > > It'd be nice to have more details as to precisely which contexts and what this
-> > > > resolves.
-> > >
-> > > True. I was hoping the 'trylock' mention would be sufficient (example hardirq
-> > > context interrupting a lock-held region) but you're right.
-> > >
-> > > > > [applied test robot feedback on unused function fix.]
-> > > > > [applied Uladzislau feedback on locking.]
-> > > > >
-> > > > > Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
-> > > > > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > > > > Cc: rcu@vger.kernel.org
-> > > > > Cc: Zqiang <qiang.zhang1211@gmail.com>
-> > > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > > Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
-> > > > > Cc: stable@vger.kernel.org
-> > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > > ---
-> > > > >  mm/vmalloc.c | 26 ++++++++++++++++++++++----
-> > > > >  1 file changed, 22 insertions(+), 4 deletions(-)
-> > > > >
-> > > > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > > > > index 93cf99aba335..2c6a0e2ff404 100644
-> > > > > --- a/mm/vmalloc.c
-> > > > > +++ b/mm/vmalloc.c
-> > > > > @@ -4274,14 +4274,32 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
-> > > > >  #ifdef CONFIG_PRINTK
-> > > > >  bool vmalloc_dump_obj(void *object)
-> > > > >  {
-> > > > > -   struct vm_struct *vm;
-> > > > >     void *objp = (void *)PAGE_ALIGN((unsigned long)object);
-> > > > > +   const void *caller;
-> > > > > +   struct vm_struct *vm;
-> > > > > +   struct vmap_area *va;
-> > > > > +   unsigned long addr;
-> > > > > +   unsigned int nr_pages;
-> > > > >
-> > > > > -   vm = find_vm_area(objp);
-> > > > > -   if (!vm)
-> > > > > +   if (!spin_trylock(&vmap_area_lock))
-> > > > > +           return false;
-> > > >
-> > > > It'd be good to have a comment here explaining why we must trylock here. I am
-> > > > also concerned that in the past this function would return false only if the
-> > > > address was not a vmalloc one, but now it might just return false due to lock
-> > > > contention and the user has no idea which it is?
-> > > >
-> > > > I'd want to at least output "vmalloc region cannot lookup lock contention"
-> > > > vs. the below cannot find case.
-> > >
-> > > In the patch 2/2 we do print if the address looks like a vmalloc address even
-> > > if the vmalloc look up fails.
-> >
-> > No, you output exactly what was output before, only changing what it
-> > means and in no way differentiating between couldn't find vmalloc
-> > area/couldn't get lock.
->
-> 2/2 does this:
->                          -     if (virt_addr_valid(object))
->                          +     if (is_vmalloc_addr(object))
->                          +             type = "vmalloc memory";
->                          +     else if (virt_addr_valid(object))
->                                        type = "non-slab/vmalloc memory";
->
-> This code is executed only if vmalloc_dump_obj() returns false. The
-> is_vmalloc_addr() was added by 2/2 which is newly added right?
->
-> You are right we are not differentiating between trylock failure and failure to
-> find the vmalloc area. I was just saying, even though we don't differentiate,
-> we do print "vmalloc memory" right? That wasn't being printed before.
->
-> > > Also the reporter's usecase is not a common one. We only attempt to dump
-> > > information if there was a debug objects failure (example if somebody did a
-> > > double call_rcu). In such a situation, the patch will prevent a deadlock and
-> > > still print something about the address.
-> >
-> > Right, but the function still purports to do X but does Y.
-> >
-> > >
-> > > > Under heavy lock contention aren't you potentially breaking the ability to
-> > > > introspect vmalloc addresses? Wouldn't it be better to explicitly detect the
-> > > > contexts under which acquiring this spinlock is not appropriate?
-> > >
-> > > Yes this is a good point, but there's another case as well: PREEMPT_RT can
-> > > sleep on lock contention (as spinlocks are sleeping) and we can't sleep from
-> > > call_rcu() as it may be called in contexts that cannot sleep. So we handle
-> > > that also using trylock.
-> >
-> > Right so somebody now has to find this email to realise that. I hate
-> > implicit knowledge like this, it needs a comment. It also furthers the
-> > point that it'd be useful to differentiate between the two.
->
-> This is a valid point, and I acknowledged it in last email. A code comment could
-> indeed be useful.
-
-Thanks, yeah this may seem trivial, but I am quite sensitive about things
-being added to the code base that are neither described in commit msg nor
-in a comment or elsewhere and become 'implicit' in a sense.
-
-So just a simple comment here would be helpful, and I'm glad we're in
-agreement on that, will leave to you to do a follow up patch.
-
->
-> So I guess from an agreement standpoint, I agree:
->
-> 1/2 could use an additional comment explaining why we need trylock (sighting
-> the RT sleeping lock issue).
->
-> 2/2 could update the existing code to convert "non-slab/vmalloc" to
-> "non-slab/non-vmalloc". Note: that's an *existing* issue.
-
-Yeah sorry this whole thing was rather confusing, it did indeed (unclearly)
-specify non-/non- in the past (on assumption dumping function would work),
-addition of vmalloc check now makes that correct again, the phrasing is the
-issue.
-
-You can leave this as-is as yeah, you're right, this was a pre-existing issue.
-
-virt_addr_valid() returns true for a slab addr, but kmem_valid_obj() is
-checked above so already been ruled out, now you ruled out vmalloc.
-
-Just a bit tricksy.
-
->
-> The issue in 2/2 is not a new one so that can certainly be a separate patch.
-> And while at it, we could update the comment in that patch as well.
->
-> But the whole differentiating between trylock vs vmalloc area lookup failure
-> is not that useful -- just my opinion fwiw! I honestly feel differentiating
-> between trylock vs vmalloc area lookup failure complicates the code because
-> it will require passing this information down from vmalloc_dump_obj() to the
-> caller AFAICS and I am not sure if the person reading the debug will really
-> care much. But I am OK with whatever the -mm community wants and I am happy
-> to send out a new patch on top with the above that I agree on since Andrew
-> took these 2 (but for the stuff I don't agree, I would appreciate if you
-> could send a patch for review and I am happy to review it!).
-
-Ah right, I think maybe I wasn't clear, all I meant to suggest is to output
-log output rather than feed anything back to caller, something like:-
-
-if (!spin_trylock(&vmap_area_lock)) {
-        pr_cont(" [couldn't acquire vmap lock]\n");
-	...
-}
-
-My concern is that in the past this function would only return false if it
-couldn't find the address in a VA, now it returns false also if you happen
-to call it when the spinlock is locked, which might be confusing for
-somebody debugging this.
-
-HOWEVER, since you now indicate that the address is vmalloc anyway, and you
-_absolutely cannot_ give any further details safely, perhaps this
-additional information is indeed not that usful.
-
-My concern was just feeling antsy that we suddenly don't do something
-because a lock happens to be applied but as you say that cannot be helped
-in certain contexts.
-
-So actually, leave this.
-
->
-> As you mentioned, this series is a stability fix and we can put touch-ups on
-> top of it if needed, and there is also plenty of time till the next merge
-> window. Allow me a few days and I'll do the new patch on top (I'd say dont
-> bother to spend your time on it, I'll do it).
-
-Ack, I was just a little frustrated we didn't reach a resolution on review
-(either deciding things could be deferred or having changes) before
-merge. Obviously fine to prioritise, but would be good to have that
-explicitly stated.
-
->
-> thanks,
->
->  - Joel
->
->
-> >
-> >
-
-Anyway, so TL;DR:-
-
-1. As we both agree, add a comment to explain why you need the spin trylock.
-(there are no further steps :P)
-
-And I don't believe this actually needs any further changes after this
-discussion*, so if you fancy doing a follow up to that effect that will
-suffice for me thanks!
-
-* Though I strongly feel vmalloc as a whole needs top-to-bottom
-  refactoring, but that's another story...
+On Wed, Aug 30, 2023 at 08:32:00PM +0800, Billy Tsai wrote:=0A=
+>> From: Naresh Solanki <naresh.solanki@9elements.com>=0A=
+>> =0A=
+>> Add common fan properties bindings to a schema.=0A=
+>> =0A=
+>> Bindings for fan controllers can reference the common schema for the=0A=
+>> fan=0A=
+>> =0A=
+>> child nodes:=0A=
+>> =0A=
+>>   patternProperties:=0A=
+>>     "^fan@[0-2]":=0A=
+>>       type: object=0A=
+>>       $ref: fan-common.yaml#=0A=
+=0A=
+>        unevaluatedProperties: false=0A=
+=0A=
+OK, I will add this.=0A=
+=0A=
+>> =0A=
+>> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>=0A=
+>> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>=0A=
+>> ---=0A=
+>>  .../devicetree/bindings/hwmon/fan-common.yaml | 63 +++++++++++++++++++=
+=0A=
+>>  1 file changed, 63 insertions(+)=0A=
+>>  create mode 100644 Documentation/devicetree/bindings/hwmon/fan-common.y=
+aml=0A=
+>> =0A=
+>> diff --git a/Documentation/devicetree/bindings/hwmon/fan-common.yaml b/D=
+ocumentation/devicetree/bindings/>hwmon/fan-common.yaml=0A=
+>> new file mode 100644=0A=
+>> index 000000000000..a69b4d553e45=0A=
+>> --- /dev/null=0A=
+>> +++ b/Documentation/devicetree/bindings/hwmon/fan-common.yaml=0A=
+>> @@ -0,0 +1,63 @@=0A=
+>> +# SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause=0A=
+=0A=
+> Drop 'or-later'. It's GPL2 only.=0A=
+=0A=
+OK, I will fix it.=0A=
+=0A=
+>> +%YAML 1.2=0A=
+>> +---=0A=
+>> +$id: http://devicetree.org/schemas/hwmon/fan-common.yaml#=0A=
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#=0A=
+>> +=0A=
+>> +title: Common Fan Properties=0A=
+>> +=0A=
+>> +maintainers:=0A=
+>> +  - Naresh Solanki <naresh.solanki@9elements.com>=0A=
+>> +  - Billy Tsai <billy_tsai@aspeedtech.com>=0A=
+>> +=0A=
+>> +properties:=0A=
+>> +  max-rpm:=0A=
+>> +    description:=0A=
+>> +      Max RPM supported by fan.=0A=
+>> +    $ref: /schemas/types.yaml#/definitions/uint32=0A=
+=0A=
+> Physics will limit this to something much less than 2^32. Add some =0A=
+> constraints. 10000?=0A=
+=0A=
+=0A=
+>> +=0A=
+>> +  min-rpm:=0A=
+>> +    description:=0A=
+>> +      Min RPM supported by fan.=0A=
+>> +    $ref: /schemas/types.yaml#/definitions/uint32=0A=
+=0A=
+> ditto=0A=
+=0A=
+>> +=0A=
+>> +  pulses-per-revolution:=0A=
+>> +    description:=0A=
+>> +      The number of pulse from fan sensor per revolution.=0A=
+>> +    $ref: /schemas/types.yaml#/definitions/uint32=0A=
+=0A=
+>Needs constraints. I assume this is never more than 4 (or 2 even)?=0A=
+=0A=
+Do you think we should add the contraint in the common binding?=0A=
+In my option, the limit of the max/min rpm should be declared by=0A=
+the binding if necessary, because the usage of each fan monitor is=0A=
+based on the connection of the tach pin.=0A=
+=0A=
+=0A=
+>> +  div:=0A=
+=0A=
+> Too generic of a name.=0A=
+=0A=
+>> +    description:=0A=
+>> +      Fan clock divisor=0A=
+=0A=
+> But what is a fan clock?=0A=
+=0A=
+This is the divisor for the tachometer sampling clock, which determines the=
+ sensitivity of the tach pin.=0A=
+So, if the name of the property changes to 'tach-div,' is it acceptable to =
+you?=0A=
+=0A=
+=0A=
+>> +    $ref: /schemas/types.yaml#/definitions/uint32=0A=
+>> +=0A=
+>> +  target-rpm:=0A=
+>> +    description:=0A=
+>> +      Target RPM the fan should be configured during driver probe.=0A=
+=0A=
+> What driver? By the time the OS driver runs, a bunch of other boot =0A=
+> software has already run on modern systems. So this value would likely =
+=0A=
+> be used much earlier. The point is that when exactly is outside the =0A=
+> scope of DT. This is "what RPM do I use in case of no other information =
+=0A=
+> (e.g. temperature)".=0A=
+=0A=
+So, the description should be changed to 'The default desired fan speed in =
+RPM,'=0A=
+and we shouldn't mention the timing of the property's operation in the DT, =
+is that correct?=0A=
+=0A=
+>> +    $ref: /schemas/types.yaml#/definitions/uint32=0A=
+>> +=0A=
+>> +  mode:=0A=
+=0A=
+> Too generic.=0A=
+=0A=
+>> +    description:=0A=
+>> +      Select the operational mode of the fan.=0A=
+=0A=
+> What are modes? Spin and don't spin?=0A=
+=0A=
+The mode is used to indicate the driving mode of the fan (DC, PWM and so on=
+).=0A=
+So, if the name of the property changes to 'fan-driving-mode,' is it accept=
+able to you?=0A=
+=0A=
+>> +    $ref: /schemas/types.yaml#/definitions/uint32=0A=
+>> +=0A=
+>> +  pwms:=0A=
+>> +    description:=0A=
+>> +      PWM provider.=0A=
+=0A=
+> maxItems: 1=0A=
+=0A=
+> I don't think there are fans with more than 1 PWM input?=0A=
+=0A=
+Ok, I will add the constraint for the pwm input.=0A=
+=0A=
+>> +=0A=
+>> +  tach-ch:=0A=
+>> +    description:=0A=
+>> +      The tach channel used for the fan.=0A=
+>> +    $ref: /schemas/types.yaml#/definitions/uint32=0A=
+=0A=
+> The existing ASpeed version of this property allows more than 1 entry. I =
+=0A=
+> don't understand how a fan would have 2 tach signals, but if so, the =0A=
+> generic property should allow for that.=0A=
+=0A=
+Ok, I will modify it to the uint32-array=0A=
+=0A=
+> Perhaps 'reg' should be defined in here with some text saying 'reg' =0A=
+> corresponds to the fan controller specific id which may be the PWM+TACH =
+=0A=
+> channel, PWM channel (deprecated), or TACH channel. I think there are =0A=
+> examples of all 3 of these cases.=0A=
+=0A=
+I don't think it's necessary for the 'reg' because the case you mentioned i=
+s=0A=
+already covered by the property 'tach-ch' and the 'pwms'.=0A=
+=0A=
+> +=0A=
+> +  label:=0A=
+> +    description:=0A=
+> +      Optional fan label=0A=
+> +=0A=
+> +  fan-supply:=0A=
+> +    description:=0A=
+> +      Power supply for fan.=0A=
+> +=0A=
+> +additionalProperties: true=0A=
+> +=0A=
+> +...=0A=
+> -- =0A=
+> 2.25.1=0A=
+> =0A=
