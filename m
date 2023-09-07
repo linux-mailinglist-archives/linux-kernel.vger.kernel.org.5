@@ -2,147 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 216BA797B7C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4A7797BFA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343692AbjIGSSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 14:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45516 "EHLO
+        id S242998AbjIGSfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235649AbjIGSSm (ORCPT
+        with ESMTP id S229960AbjIGSfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:18:42 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A101BCC
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:18:17 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-31f2f43d5a0so1252398f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 11:18:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694110688; x=1694715488; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9cqyTbMBftf/joQMRKfMkLzU0Opm2y7wHA3eqP28zpI=;
-        b=O514eLZSw6yOdJSm/ukynp0HSGWthLsXjv5FblMT2OKKdzEJYyI9KFV17Ol7tXminB
-         68H/3tpbSeoC7RvvPdsSOucZCKDW4ia/mBTdn2+c5hqUGPy6FYspF2W99WISAg5d0giE
-         sK9geJs2u5r4rqBjlEtQNOkpyjpCRhKihveWB2wvGsENJJWSZhzgGtaSFuG9jswbYjGl
-         MVIEKeMXb7SYm7q9tVot2ROY/kujboqWC4fNgSOCphfEvyOWoujpoR25dO4TiVZFNhKN
-         dlTOHrlATGnFxQhGX8r71O+RdMj4HsZpHPtyc3/ipHH08dnqrOJs5zpgLm6/mrzJ9urZ
-         xswA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694110688; x=1694715488;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9cqyTbMBftf/joQMRKfMkLzU0Opm2y7wHA3eqP28zpI=;
-        b=KHSKT6ZFwcVqWmQ4RqkuH0Fzm7+Y6bgUjdRie4hIPAJsDAZLBdv++U1Jig9cSN0iK+
-         a7LmI2ZSlm4RA/yYgt+s4pMAa+wSnP8XqxM+64Z6krRSNSRPymT81I1i+mtY9S65akLl
-         VS9vMsR8i6rYaRZVTRU0zKCJCO/b7u2jrnEZwO/PJZFQ7OPi0nq5xnWnXEd0nre6alh6
-         /f6iOlEzbq/fTeeFfv4lwe0ZnvCi4S1zUoEAr9EKZP1jiwubUCPt4qgKRM2wFWsh8KMI
-         y9l2qYf8nY0atAs3HfA8B7zo8ahxZCoqL8K8OV97E72lqEbnZdlCciwu7qghlro1sei6
-         T64A==
-X-Gm-Message-State: AOJu0YwsXJCmElrT9FGNNSkltXf34zmmFO5aJ1TImtidVmNR/EZVh8+M
-        Aj4OtTgyKU1xfuHweqsiuwPC+bm5PWDvGodszE3xNQ==
-X-Google-Smtp-Source: AGHT+IElMhH6SZyz3Q6I00GiHi9+hHjfTot2J8HBhVaHsG4aeOjUaubp+sXD76/MBLaMZ8727VrnoQ==
-X-Received: by 2002:a17:906:73ce:b0:9a1:edb0:2a8c with SMTP id n14-20020a17090673ce00b009a1edb02a8cmr3878447ejl.39.1694075088243;
-        Thu, 07 Sep 2023 01:24:48 -0700 (PDT)
-Received: from [192.168.37.232] (178235177204.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.204])
-        by smtp.gmail.com with ESMTPSA id lu7-20020a170906fac700b00992e14af9b9sm9949024ejb.134.2023.09.07.01.24.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 01:24:47 -0700 (PDT)
-Message-ID: <4f51bd22-0f7d-4e94-8d84-98091fc2dd53@linaro.org>
-Date:   Thu, 7 Sep 2023 10:24:44 +0200
+        Thu, 7 Sep 2023 14:35:00 -0400
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95955A1;
+        Thu,  7 Sep 2023 11:34:56 -0700 (PDT)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230907082450euoutp0268091ba27c96f23d766e7e9b2b1c7f90~CkFGkfjh00383803838euoutp02D;
+        Thu,  7 Sep 2023 08:24:50 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230907082450euoutp0268091ba27c96f23d766e7e9b2b1c7f90~CkFGkfjh00383803838euoutp02D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1694075090;
+        bh=K84mrKgpu7Gp7E1wsEfRvrKyh+s/n5grmyvysB575oA=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=QRQUlIzLacORSoSMsDwibDDr1BYQ+HS+FZVCFjc/Qbf/tYBTdXwdI0BeuBfcHwnS7
+         dgfJVTShj9tf7mLW9YogkqachsUyS5kITxIW5Jsf2UjiUeTBPWh8c4OL1hAZoj5hTE
+         TME64QTDO5rYgaiDPVClOhPNf+28jEa6gIb0BlEY=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20230907082449eucas1p1e9bd7758045a0dff6a5f3886ea3ad042~CkFGUyCEr2852928529eucas1p1_;
+        Thu,  7 Sep 2023 08:24:49 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id B7.B6.37758.1D889F46; Thu,  7
+        Sep 2023 09:24:49 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20230907082449eucas1p19f0c5e38ee9aff84758df55c1a8f58a4~CkFFvjSM33088230882eucas1p1C;
+        Thu,  7 Sep 2023 08:24:49 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230907082449eusmtrp1855d35a183294fcf6b365f66261d5f30~CkFFuaZY40859808598eusmtrp1C;
+        Thu,  7 Sep 2023 08:24:49 +0000 (GMT)
+X-AuditID: cbfec7f5-815ff7000002937e-b1-64f988d1d890
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 7F.E1.14344.1D889F46; Thu,  7
+        Sep 2023 09:24:49 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20230907082448eusmtip1943ff4b432cd8a78ff577b90ad37c58e~CkFFaVBft1824118241eusmtip1c;
+        Thu,  7 Sep 2023 08:24:48 +0000 (GMT)
+Received: from localhost (106.210.248.249) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Thu, 7 Sep 2023 09:24:48 +0100
+Date:   Thu, 7 Sep 2023 10:24:46 +0200
+From:   Joel Granados <j.granados@samsung.com>
+To:     Ingo Molnar <mingo@kernel.org>
+CC:     Dave Hansen <dave.hansen@intel.com>,
+        Luis Chamberlain <mcgrof@kernel.org>, <willy@infradead.org>,
+        <josh@joshtriplett.org>, Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Guo Ren <guoren@kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-s390@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-ia64@vger.kernel.org>, <linux-csky@vger.kernel.org>
+Subject: Re: [PATCH 3/8] arch/x86: Remove sentinel elem from ctl_table
+ arrays
+Message-ID: <20230907082446.a4o46vka2vtes3h4@localhost>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 01/10] clk: qcom: clk-alpha-pll: introduce stromer plus
- ops
-Content-Language: en-US
-To:     Varadarajan Narayanan <quic_varada@quicinc.com>,
-        ilia.lin@kernel.org, agross@kernel.org, andersson@kernel.org,
-        rafael@kernel.org, viresh.kumar@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        quic_kathirav@quicinc.com, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-References: <cover.1693996662.git.quic_varada@quicinc.com>
- <18a3bc0c5b371deec5c4bbe6ceacf8afcf0bc640.1693996662.git.quic_varada@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <18a3bc0c5b371deec5c4bbe6ceacf8afcf0bc640.1693996662.git.quic_varada@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="xetpjh2dyeh26jbv"
+Content-Disposition: inline
+In-Reply-To: <ZPj2F4retSgg3vAj@gmail.com>
+X-Originating-IP: [106.210.248.249]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTa0xTZxzG9/ac9hzqqseW0DdoRlaZTGWoDOe7ANvM2HbkgxI+LG5xkwbO
+        kA0KaS3zMpIyOiiChIAMVhnhMlpuOi6lDJRBugEiW6EiDB3gIl4oIBQoSiGUtTu4mezb7//8
+        n+fN8//wkpiwmPAm42SnGLlMGi/h8XFjt8P8mkXjiNlXUxSAGvqsPNS8qiXQxJqJhxbrnTw0
+        p8sGaDTvEYEWrH8BNFmfAdBc2qdoQPuEiybbU3E0XVID0LcNYrRemoh+y0pAjRPDXGSsVHPQ
+        tfZeHNk0s1w02FbMQ8ZFNQ/llqVhyFTQDtDqUycX9bdd5qLKPywcNJL7AKBa5w2AbnaWcpBB
+        5argmBzBkXUwG0Pp2i1I9+NlAjU1FmBIPXoArS67nlyun+AiXeuRd/zop9/k4HRdSR2gB4ct
+        GH1JZcHppdtmDj1jteL0Lxo7QZdbVTjdqh0j6NJGJd1UtZuuuGbl0HemQ+nGmkwePWs2E3Ru
+        eSeIEH/MD4lh4uOSGfnet6L4J7UFQ9ykIs/T800vq8AadR54kJAKgubeFnAe8EkhVQXg1PjK
+        xmAHsF+lwdlhEcDyKgP+LDKmuctlF3oAayrrwb+uHkv2xmAAUFfdSrgjOOULH2fmAzfzKH/Y
+        PzOKudmTksAK+/w/Hoyy8+GvZVFuFlFH4aI2k+tmAXUQXurMBCxvhb3f3cdZ/2k4dnfGpZMu
+        3gb1TtIte1C7YHpzB49tugN2XxjdaJ0CbxjucNzdINWxCTqamrnsIgzm6bs2WASnegwEy9th
+        X342zgbyAexw2gh2qHVdlrrEYV3BUH3r/kbiEFzVPMTdjSC1GY483soW3QzzjIUYKwugJl3I
+        unfC2vEZPBfs0D53mva507T/ncbK/rD06gLvf/IeqCubxlgOhVeuzOGlgKgBYkapSIhlFK/L
+        mC8DFNIEhVIWGxCdmNAIXJ+mz9mz9BOompoPMAEOCUzA1xW+V187ALxxWaKMkXgKZn2exAgF
+        MdIzZxl54gm5Mp5RmMA2EpeIBXtCe6OFVKz0FPMFwyQx8mdbDunhreL4vagfTj3s8dXPH74k
+        El3AjPvxz0XiziP+ynup2z86sPdhxVB+cuwwv+qHhvUZr1cewNCA40PjKUUyaiCoNk7o/6ft
+        mK26a+e79rzIImfqWVufzePNoC5SXXise8HUI79p50+Ei/hCvY8uLXyL9JNRuTw6q66FGoo4
+        MZ03NbJur8iRRpWr8TObbG2vXh+/jbdi69VJJd8ftfqah6aXmz+wCgJ77RmV72UN+/WMF7/Q
+        IglM0V8UO7wyciQhhwWHdrUlB600hHRd/ex4/xth5xIGCyczvCquRxyMNKyskYHGwJxyZbD6
+        /RafiKh9pGXqUeTbGZLlonPhjt/Tm8JuURNfB0twxUnp/t2YXCH9G3HexbOvBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTe0xTVxzHPbe3t4VIdgdlnIACKQwnzkqBwmE8nAljdy449o9ZmMI6enlE
+        aEkf6MwW6gQpz6CAC8URwFCQl1CxAsLsmLoBjocMhoTHNuTRoSAPoYxRVmiWmey/z/n9ft9P
+        fjk5h82wbSMc2QliOS0VCxO5hDXeY/px/PCAakPkVa3CUVOPgUC3N9UsNLXVSaCVRhOBFjU5
+        AI1dmWWhZcNvAM01ZgC0eDEK9avXmGiu4wKO5ktrALra5IC2yyToUXYS0k4NM5GuMg1D7R1d
+        OHqhWmCiwbZrBNKtpBEov/wiA3UWdQC0uW5ior62eiaq/HUAQyP50wDVmroBeqwvw1Cz0rzC
+        xtwIjgyDOQx0Sf0a0tysZ6Fb2iIGShsToE2jWWlsnGIiTeuJdw9Q6+l5OFVXWgeoweEBBlWi
+        HMCpl096MeqZwYBTP6hWWVSFQYlTrepxFlWmVVC3qj2p6+0GjBqdD6a0NZkEtdDby6LyK/Qg
+        wiGSFySVKOS0a7xEJg/mfspH3jx+AOJ5+wbw+D7+p9/xFnCPhASJ6MSEFFp6JOQzXryu7xEz
+        +SrnnKG9nqkEm2QWsGJD0heOqyaZWcCabUtWApi9/gRYGvtg0+oQ08J28O/hLMIytARg4XA2
+        bjk0A5j/+9f4zhROusPnmQW7aYJ8G/Y9G2PsMIfkwuurS6ydAINctYYbxvJdrR0ZDocmtlk7
+        bEP6wxJ9JrBYuzCYV/gAtzReh13FT3eZQabArZxZs5VtZidYZWLvlK3Ig/DS7XuEZVU3+DB3
+        DLfwV3BlawbkAzv1Kyb1Kyb1fyZL2ROOmAzY/8qHoKZ8nmHhYNjQsIiXAVYN4NAKWVJcksyb
+        JxMmyRTiOF6MJEkLzA9X93CjuQXc+HOJ1wkwNugE7ubkH421/cARF0vENJdjs+CyJrK1EQm/
+        OE9LJdFSRSIt6wQC8zVeZjjax0jMv0Asj+b7eQn4vn4BXoIAPx+ug80HySqhLRknlNNnaDqZ
+        lv6bw9hWjkospsytyic1MHColX9OLsk9GWZYH2o5ce3OjUV3kTKl7qfuQ3lu+m+xj6JPT+yP
+        0XTXyY6L1/yj7v11bOWu9fdLR11jjdsZ1cb9Xa7uNg2jrafm9yizNBGJX4ZG9Z8VNPVFckJH
+        HxftqTz/SQ5x+MPvQnPfdz77S2B662zae1WzMudNxZ19Lw8Wh/zc0v28D8y0+By/uYUxRbET
+        vEL3oM9nnNiXB6Ns0XRthJMwnJid7HFePumSpwun72phqvTUXu43JTGUQ29pU+AEx8P1gX2F
+        /v6bZ6bz7Q8cbV4J9/54+Y3i+zq+R2ZC2NMXG6UjF1L1bm/FemSEGQuuTHoei9zr5lKQHsrF
+        ZfFCvidDKhP+AyiHiRBNBAAA
+X-CMS-MailID: 20230907082449eucas1p19f0c5e38ee9aff84758df55c1a8f58a4
+X-Msg-Generator: CA
+X-RootMTR: 20230906215901eucas1p27ce4a12bd251bde56d50568ac3ed1cf9
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230906215901eucas1p27ce4a12bd251bde56d50568ac3ed1cf9
+References: <20230906-jag-sysctl_remove_empty_elem_arch-v1-0-3935d4854248@samsung.com>
+        <20230906-jag-sysctl_remove_empty_elem_arch-v1-3-3935d4854248@samsung.com>
+        <d0d30ad4-7837-b0c4-39f4-3e317e35a41b@intel.com>
+        <CGME20230906215901eucas1p27ce4a12bd251bde56d50568ac3ed1cf9@eucas1p2.samsung.com>
+        <ZPj2F4retSgg3vAj@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7.09.2023 07:21, Varadarajan Narayanan wrote:
-> Stromer plus APSS PLL does not support dynamic frequency scaling.
-> To switch between frequencies, we have to shut down the PLL,
-> configure the L and ALPHA values and turn on again. So introduce the
-> separate set of ops for Stromer Plus PLL.
-> 
-> Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> ---
-[...]
+--xetpjh2dyeh26jbv
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +
-> +	/* Wait five micro seconds or more */
-> +	udelay(5);
-> +	regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_RESET_N,
-> +			   PLL_RESET_N);
-> +
-> +	/* The lock time should be less than 50 micro seconds worst case */
-> +	udelay(50);
-https://www.kernel.org/doc/Documentation/timers/timers-howto.txt
+On Wed, Sep 06, 2023 at 11:58:47PM +0200, Ingo Molnar wrote:
+>=20
+> * Dave Hansen <dave.hansen@intel.com> wrote:
+>=20
+> > On 9/6/23 03:03, Joel Granados via B4 Relay wrote:
+> > > This commit comes at the tail end of a greater effort to remove the
+> > > empty elements at the end of the ctl_table arrays (sentinels) which
+> > > will reduce the overall build time size of the kernel and run time
+> > > memory bloat by ~64 bytes per sentinel (further information Link :
+> > > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org=
+/)
+> > >=20
+> > > Remove sentinel element from sld_sysctl and itmt_kern_table.
+> >=20
+> > There's a *LOT* of content to read for a reviewer to figure out what's
+> > going on here between all the links.  I would have appreciated one more
+> > sentence here, maybe:
+> >=20
+> > 	This is now safe because the sysctl registration code
+> > 	(register_sysctl()) implicitly uses ARRAY_SIZE() in addition
+> > 	to checking for a sentinel.
+> >=20
+> > That needs to be more prominent _somewhere_.  Maybe here, or maybe in
+> > the cover letter, but _somewhere_.
+> >=20
+> > That said, feel free to add this to the two x86 patches:
+> >=20
+> > Acked-by: Dave Hansen <dave.hansen@linux.intel.com> # for x86
+>=20
+> Absolutely needs to be in the title as well, something like:
+>=20
+>    arch/x86: Remove now superfluous sentinel elem from ctl_table arrays
+Done. Will wait to see if other ppl have more comments to send out V2
 
-> +
-> +	ret = wait_for_pll_enable_lock(pll);
-> +	if (ret) {
-> +		pr_err("alpha pll running in 800 MHz with source GPLL0\n");
-> +		return ret;
-> +	}
-Would that not be SoC-specific information?
+Thx.
+>=20
+> With that propagated into the whole series:
+>=20
+>    Reviewed-by: Ingo Molnar <mingo@kernel.org>
+>=20
+> Thanks,
+>=20
+> 	Ingo
 
-Konrad
+--=20
+
+Joel Granados
+
+--xetpjh2dyeh26jbv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmT5iM0ACgkQupfNUreW
+QU8bUwv/fHvrxw5jNdVywGXfBd7e+5oIULa8H+WaPDRFBqcXRCiP5e+Lm2mdytxR
+6Qy5bFl4klUIDRa6aQR6Rz02E0hmsNe+VsgDTRi0PWWF3407VH4E1wjmOj5aT2VG
+PLGzd4HXCHLQbzQeC11Io/4nlEYU75Dd4gnkaRucqUKcXPrOlkb9hy0xySwAw7D8
+5uzagt62DQOKNRhztEgNmWIIqaDojwCT6XT9JLtXXuCMuiTQF7S2nTKPKGzUqWVg
+S8uigDN5928T19ra+u4tLjCEP8/Cdmqp5jSZdV2RDpPp/iANEtWK+S4iSMq+P86D
+kZDrtJfMxSPx9I+TPaNrf0/FJwrU9fvVvuyx/SnF4Hl2K+10RRgMiBQxV9zMStAt
+vyVqngOs646y+02tKZ/Z3xfJeZ5W/DiHoOk1kBI0/EYBXuHbM5W2OUfz4rNWHw/a
+b43A8zoLfRKBzp9mKJixlprQk0sHv9jm8Y7RIbM2R6OkLgUJTDvwGX08WPDBA/ao
+HEVK/mlZ
+=aiqw
+-----END PGP SIGNATURE-----
+
+--xetpjh2dyeh26jbv--
