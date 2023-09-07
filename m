@@ -2,155 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 524FB79736C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FB3797468
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238407AbjIGPXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40288 "EHLO
+        id S232467AbjIGPhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:37:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237019AbjIGPXY (ORCPT
+        with ESMTP id S1344895AbjIGPeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:23:24 -0400
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2116.outbound.protection.outlook.com [40.107.113.116])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C88ACA;
-        Thu,  7 Sep 2023 08:23:20 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mcy1rWc7luXI+9el4kzgFaJDIWuXJOXLXzaiInKQh+/nQeslK6KwoI/0rdFacuf3RiAfPkfPJc0xLQxlUhx7zemiEOHZWwX4k0Urof3uDvBfN7LHFV4idrgvMbIbDe5Yo4hxFui106ZaD83cU7+oxv6G/fzOWSv/xjZWM8Sn0QiQtMPySplXCnM6XaZMnD4YWAwdMEnIFnDEMSOApKXc3Zzej2P3Cl39qBalL3Fkas3clEhUKXscF88gHyQ5pd0K8pbix2yKN+aQ0WHDEgZQBYrOg+hxUoT9ViqXel7tNfPjQbxN7f7CNqd2dQQBYpWireOFgNYDbvO3GxLJNpwjSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uSx6t3bT4KimUzRI1hhDLWFcuwdhoukQNP2Snqrq8eU=;
- b=KolSDC4oO7xPLLxgcyyV2hb6ZkjwL8NtmSMEkSZjqSSX4awWfVejccOMqRJ7QCGGret/Rxleufj1GFp/yQceOl/ln2LIhpa1mZIs4OY223/hysSkxppKHIx1wN4M1MXTlWgsvyjBer3YdAPkK59niMeaavECnqyl3wDzXH8Hq50AUOHA7Txrf0ztdyie8Dgj7m0eGI7wPYnFe6BztJ6klwcaMNyz2o/LIebR6gS5gmg+BUSZFaibMrN2LPhWJEYNvu7NHMUSPxZiAkuzPMVqJe9CYcdqYEaYdJuRS+q0sbMzBSUQcHTLQ/Dgt0dQMvQLbzhIiIANCvMZdq+NSbModQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uSx6t3bT4KimUzRI1hhDLWFcuwdhoukQNP2Snqrq8eU=;
- b=uT7yBUJ9RqLISjDzMKFR16MgLu5FkGd4PgZOvaKIvavF518vZTV8sm/AIqh+bl8qHqyE6G6HUE9OEoL8mzZm/RvDmMs4BA6fKUAeFocqpqTMrN7NrjdGMKh4nVsB1/SYks2WkgVCVGqPAkNweXv/QgNTd+PSKYEHTpKVYhVvcI0=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by TYBPR01MB5328.jpnprd01.prod.outlook.com (2603:1096:404:801f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Thu, 7 Sep
- 2023 06:46:09 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706%5]) with mapi id 15.20.6745.035; Thu, 7 Sep 2023
- 06:46:09 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Eric Tremblay <etremblay@distech-controls.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.au@gmail.com>
-Subject: RE: [PATCH v5 1/2] hwmon: tmp513: Add max_channels variable to struct
- tmp51x_data
-Thread-Topic: [PATCH v5 1/2] hwmon: tmp513: Add max_channels variable to
- struct tmp51x_data
-Thread-Index: AQHZ4O0u2EbbAKg7d0mHQloM6sSWybAONqsAgAC1SqA=
-Date:   Thu, 7 Sep 2023 06:46:09 +0000
-Message-ID: <OS0PR01MB59225E213906BF426C3AC98686EEA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20230906180837.284743-1-biju.das.jz@bp.renesas.com>
- <20230906180837.284743-2-biju.das.jz@bp.renesas.com>
- <ZPjZfK7+4jW3AFEB@smile.fi.intel.com>
-In-Reply-To: <ZPjZfK7+4jW3AFEB@smile.fi.intel.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TYBPR01MB5328:EE_
-x-ms-office365-filtering-correlation-id: 19975214-305e-47a1-7eef-08dbaf6e1ea8
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: YOEX6YEohNZ9b97PY/4DaaAWXdW+ZxO+0MNGmKZh21Z+PFqWYDJWNdtiIsv3QfsIQn5Y8hraIbdQ1CSSvv43cW8DytsWQyP03g9W0GpsStKtvP0XekmQhvRpt/r7XakwGmikpzTUeJbrcyhG/Nx83TTx5BIvdJnbY962qSON1NfVNA0icMgTWmzOOU9XMn74Xf45EauzngWN/xwNEDw3gywsRxoK7O7b7+6RtRZwRkYjpyj+zRyLJKl2cVXUAQzOJgpo+SRIhMYYmOZPRDJd2j8x0WmDNd2L0Oz0RFFhTvMEDe1Rwrm/3KcyBDIX2a91nNtqt7Hof1gOSKWPCCHff4GdAcliTEzY+RbmFd4LVPAuroeStP6lTaAkztBmB+tMN89sCiGMOHGsfo3DvrL5JJTWQ7nqO8m+VOvkwRrg6P+pY58nIVDglR18U2Clz1LtKBNTJ+D/zrfzhRupAObQEsvHv5fUJSR0sCUSVSl0oZhCW6VmfEP88RmvkGLRtfQEMuByWE0O7Adqxlo2CPhYC2cqD6KnlmRZkYneqIZBujr0CH9kNzbtMmGRgwogx1wvDpwrN3oHJNojii3DiJAtUbrYScxAJzlACVCPWb1bqVhcSjB7m6dYgAgBGL68aez4
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(136003)(39860400002)(346002)(451199024)(1800799009)(186009)(122000001)(6506007)(7696005)(9686003)(8936002)(71200400001)(33656002)(55016003)(86362001)(38070700005)(38100700002)(478600001)(26005)(2906002)(83380400001)(52536014)(4326008)(41300700001)(54906003)(316002)(8676002)(5660300002)(66476007)(6916009)(76116006)(64756008)(66556008)(66446008)(66946007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?lQ9UmJOa5NO2qUcs8XcMdfurhLK5cxyNnJNyq6Y9sYQv+3tlXLA020MK3Zud?=
- =?us-ascii?Q?Ph2p/xmB8slVtkqy1b12qiKIGaFSSPup0nzOlzY8c5mQ6H6H6RXoTHIwJd95?=
- =?us-ascii?Q?A3Cyr+wBTAUyPtNEmoMRPyf3do3meM01T+hAiP8pCUPRBahxqrQFjX8NLotw?=
- =?us-ascii?Q?1be8Dr3UaK5j0MjoratGjIMG/OBGizuccT62uuulVYc7b6kVs8hw9rwjs9rw?=
- =?us-ascii?Q?9geQvVi/enczP6Ix5aMvAKvmFZQLVKdTUeFndQRv97C5NyEeDAJShBoBpQCI?=
- =?us-ascii?Q?/hF2SBRiKkkDVYzjMWmx07kUBgLhcg0EqQGXh/N9djmVqvElbJVarFhTtxAg?=
- =?us-ascii?Q?8Mg3RvXPib+rdKQeT8SwvqlVW/dtmcxuYxYq156gZnZQ0tEt2pPlT0mY4kKK?=
- =?us-ascii?Q?F/DY15ZrMynCtmWjahVeKUse1yqPfBZCK4gNlRlhPb5levPSdqHAfv/sEYVX?=
- =?us-ascii?Q?uR9i3ciI3YXHY+qEnaz0mYmR//eGzVGCNCs3hmv+WVwX0ukelcFMkk4nM32V?=
- =?us-ascii?Q?elFQ1RCCjSGgaEcdlMLMwqqdpYBhsizg0M54aTDSrv0i3aMO8WCp5HnvyD8J?=
- =?us-ascii?Q?tCM3pplRo3Nnk7g/x0UXkDCA735cEFo/Ga8n/qhwws2AJSGH6vTLYA2XOSF7?=
- =?us-ascii?Q?Nr+G/0b1xkFXQEz3A2cKYKLAL5IU6KJufkiyP9hM6KYWHchh4qNdWXFqCJTM?=
- =?us-ascii?Q?QEEdPxLAU54DjFdrZ2MyFZBgciLdg4EtMgqfgapmmaviM9Opt00qjYRECnWT?=
- =?us-ascii?Q?4XoNa+oCSefpPSC8d7LAzQffBilKa8uxFmN8ntL1UKCsH3hdA4Gx1tlEW38I?=
- =?us-ascii?Q?LIjPfSRCxLlkCs/UOuotlj4xIUyG+xBVHiI+4uPGgGAVZXbFOSmzNiI9hahc?=
- =?us-ascii?Q?2X6fKCfjU1lA9LlmwOM5TyCQQ/AWKheMe8Y4lhsewGd25M5V1IQElryrvSvT?=
- =?us-ascii?Q?xSe0oQ2UsSa6kgNCbGQkzoKkMouJwNmPSewmmhe35qzsvrQYU81VSwIbN89I?=
- =?us-ascii?Q?ZiRiDYlHy1aF2ClMPFP0bX+/UXzUOmZ2V5CbWc8gfFzF7Zh9OCBVJMCJ/SwO?=
- =?us-ascii?Q?rg0xXsEd9k5xO+7dSE91JTqdVhomNDxySGHFEJWoMvil65pCj2cUSgy0fcH1?=
- =?us-ascii?Q?dzLeBK8nkvACAEfD0DSPseLf85MnHnKGZDIgBr/ztbOmsx2qsONiwm3dbXX3?=
- =?us-ascii?Q?t+eVCp9wpVMbMw94teArKjiURM9tScFo+O17tJAlCAzTqyaIwi+lNtec/1sn?=
- =?us-ascii?Q?CwGQB02oV7Ww36p6B4ryLM0+h7igPaAp/gL8zyFlHIzJRAxuDKNc7kV9FcJB?=
- =?us-ascii?Q?PlAGlkdNtGlIcsITULKWm6MH/unR/oYF5umrWfrjMD+/XW5jYR68Qg6fbKgk?=
- =?us-ascii?Q?3y4SJOeh9sTy6HI3x+Y9NqxjTCJiKmwt/0n+Yfk3EwBt3/N0j9CYVX17XcHS?=
- =?us-ascii?Q?Ip2wOADVMQ8BEwRxVwqoDrXkdBTO6mr8pq2/tGAcDJPAJVg2z9100yjqyWsf?=
- =?us-ascii?Q?I+h7hxLiuuYK3PBjpOx+OF0T43PAwTWI3pGBg6Z6b1qvHyLowezD+GdBg1/I?=
- =?us-ascii?Q?LKJbic+5YiQzwyYuTQSaHsd9G90ghTBbeCWZXwC35MxNvkwr3uzdNBmfkxEn?=
- =?us-ascii?Q?oQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 7 Sep 2023 11:34:02 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCCD3CE7;
+        Thu,  7 Sep 2023 08:33:41 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3875qMYa021714;
+        Thu, 7 Sep 2023 06:48:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=tGFC/H+QVFSqX4jvoN2a0DvydoXYUiFjGa7AQvTYEc0=;
+ b=UFy2YqeLY4tezBFcVmvVNghUFgKYE8d4U947GSY6cKzbj44JQeN+TM3DZ8MtbtM6E6k7
+ FKMHs75EmlBGGdRQvhiwrN2SExm1xc3IF0yjYsis5xxVFpAtwp/p38Nl0+TaeRh0NWwG
+ qDEtLtXrkFhGoa8607PbnMh3x81AKaA4bWNnFZT8rX2yVhyG/8PNUzEaP6UMygSB4kbh
+ xxHPzpZQ5WcoUmpXjdgJi+A/48iDLJ1SDGJP0bHopbtKimUSldy8r9Px/x19wO3LnPHA
+ aCKub16oZJUGteo3Sp5xvphYhTanQFWeFNIAaNTwx4br94mCAqV8Xs3DaaNDJJBytgyB ng== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sy4bqgjsn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Sep 2023 06:48:21 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3876mLFs012062
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 7 Sep 2023 06:48:21 GMT
+Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 6 Sep
+ 2023 23:47:45 -0700
+Message-ID: <2fa491d6-2a1c-8263-f36a-81131adad51f@quicinc.com>
+Date:   Thu, 7 Sep 2023 14:47:42 +0800
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 19975214-305e-47a1-7eef-08dbaf6e1ea8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Sep 2023 06:46:09.8083
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RTk+zRbrXLLrlw/KsNZ+d/t29KFXFar1Iq71bGUMMFvsAhcJ2MqRqgseL9XKwYdVKVTZlHLU3agmFmJH11gQLWijt57NzzFEBCuvHbvHmIc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYBPR01MB5328
-X-OriginatorOrg: bp.renesas.com
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v8 09/13] coresight-tpdm: Add nodes for dsb edge control
+Content-Language: en-US
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC:     Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Hao Zhang <quic_hazha@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <andersson@kernel.org>
+References: <1692681973-20764-1-git-send-email-quic_taozha@quicinc.com>
+ <1692681973-20764-10-git-send-email-quic_taozha@quicinc.com>
+ <167f1869-9b73-f56a-f6aa-7587e23fc582@arm.com>
+ <27042351-ba5d-7048-adc1-f58955c6d116@quicinc.com>
+ <4370a34d-e36f-421c-aa02-48dd96c0af77@arm.com>
+From:   Tao Zhang <quic_taozha@quicinc.com>
+In-Reply-To: <4370a34d-e36f-421c-aa02-48dd96c0af77@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: H2ValitOd7GsK0n2q1LEAxvKAhrWjZUz
+X-Proofpoint-ORIG-GUID: H2ValitOd7GsK0n2q1LEAxvKAhrWjZUz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-06_12,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ phishscore=0 spamscore=0 mlxlogscore=999 mlxscore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309070058
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy Shevchenko,
 
-> Subject: Re: [PATCH v5 1/2] hwmon: tmp513: Add max_channels variable to
-> struct tmp51x_data
->=20
-> On Wed, Sep 06, 2023 at 07:08:36PM +0100, Biju Das wrote:
-> > The tmp512 chip has 3 channels whereas tmp513 has 4 channels. Avoid
-> > using tmp51x_ids for this HW difference by replacing OF/ID table data
-> > with maximum channels supported by the device.
-> >
-> > Replace id->max_channels variable from struct tmp51x_data and drop the
-> > macros TMP51{2,3}_TEMP_CONFIG_DEFAULT as it can be derived from the
-> > macro TMP51X_TEMP_CONFIG_DEFAULT and update the logic in
-> > tmp51x_is_visible(),
-> > tmp51x_read_properties() and tmp51x_init() using max_channels.
-> >
-> > While at it, drop enum tmp51x_ids as there is no user and remove
-> > trailing comma in the terminator entry for OF table.
->=20
-> ...
->=20
-> > +#define TMP51X_TEMP_CONFIG_CONV_RATE	FIELD_PREP(GENMASK(9, 7), 0x7)
->=20
-> I also commented on this one. Any explanation why you didn't accept
-> recommended variant?
+On 9/5/2023 5:36 PM, Suzuki K Poulose wrote:
+> On 01/09/2023 17:01, Tao Zhang wrote:
+>>
+>> On 9/1/2023 10:07 PM, Suzuki K Poulose wrote:
+>>> On 22/08/2023 06:26, Tao Zhang wrote:
+>>>> Add the nodes to set value for DSB edge control and DSB edge
+>>>> control mask. Each DSB subunit TPDM has maximum of n(n<16) EDCR
+>>>> resgisters to configure edge control. DSB edge detection control
+>>>> 00: Rising edge detection
+>>>> 01: Falling edge detection
+>>>> 10: Rising and falling edge detection (toggle detection)
+>>>> And each DSB subunit TPDM has maximum of m(m<8) ECDMR registers to
+>>>> configure mask. Eight 32 bit registers providing DSB interface
+>>>> edge detection mask control.
+>>>>
+>>>> Add the nodes to configure DSB edge control and DSB edge control
+>>>> mask. Each DSB subunit TPDM maximum of 256 edge detections can be
+>>>> configured. The index and value sysfs files need to be paired and
+>>>> written to order. The index sysfs file is to set the index number
+>>>> of the edge detection which needs to be configured. And the value
+>>>> sysfs file is to set the control or mask for the edge detection.
+>>>> DSB edge detection control should be set as the following values.
+>>>> 00: Rising edge detection
+>>>> 01: Falling edge detection
+>>>> 10: Rising and falling edge detection (toggle detection)
+>>>> And DSB edge mask should be set as 0 or 1.
+>>>> Each DSB subunit TPDM has maximum of n(n<16) EDCR resgisters to
+>>>> configure edge control. And each DSB subunit TPDM has maximum of
+>>>> m(m<8) ECDMR registers to configure mask.
+>>>>
+>>>> Add the nodes to read a set of the edge control value and mask
+>>>> of the DSB in TPDM.
+>>>>
+>>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>>>> ---
+>>>>   .../ABI/testing/sysfs-bus-coresight-devices-tpdm   |  51 ++++++
+>>>>   drivers/hwtracing/coresight/coresight-tpdm.c       | 177 
+>>>> ++++++++++++++++++++-
+>>>>   drivers/hwtracing/coresight/coresight-tpdm.h       |  63 ++++++++
+>>>>   3 files changed, 288 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git 
+>>>> a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm 
+>>>> b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>> index e17d1b4..097fdc4 100644
+>>>> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>>> @@ -57,3 +57,54 @@ Description:
+>>>>           Bit[3] : Set to 0 for low performance mode.
+>>>>                    Set to 1 for high performance mode.
+>>>>           Bit[4:8] : Select byte lane for high performance mode.
+>>>> +
+>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/dsb_edge/ctrl_idx
+>>>> +Date:        March 2023
+>>>> +KernelVersion    6.5
+>>>
+>>> s/6.5/6.7
+>> Sure, I will update this in the next patch series.
+>>>
+>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
+>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
+>>>> +Description:
+>>>> +        (RW) Set/Get the index number of the edge detection for 
+>>>> the DSB
+>>>> +        subunit TPDM. Since there are at most 256 edge detections, 
+>>>> this
+>>>> +        value ranges from 0 to 255.
+>>>> +
+>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/dsb_edge/ctrl_val
+>>>> +Date:        March 2023
+>>>> +KernelVersion    6.5
+>>>
+>>> same as above
+>>>
+>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
+>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
+>>>> +Description:
+>>>> +        Write a data to control the edge detection corresponding to
+>>>> +        the index number. Before writing data to this sysfs file,
+>>>> +        "ctrl_idx" should be written first to configure the index
+>>>> +        number of the edge detection which needs to be controlled.
+>>>> +
+>>>> +        Accepts only one of the following values.
+>>>> +        0 - Rising edge detection
+>>>> +        1 - Falling edge detection
+>>>> +        2 - Rising and falling edge detection (toggle detection)
+>>>> +
+>>>> +
+>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/dsb_edge/ctrl_mask
+>>>> +Date:        March 2023
+>>>> +KernelVersion    6.5
+>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
+>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
+>>>> +Description:
+>>>> +        Write a data to mask the edge detection corresponding to 
+>>>> the index
+>>>> +        number. Before writing data to this sysfs file, "ctrl_idx" 
+>>>> should
+>>>> +        be written first to configure the index number of the edge 
+>>>> detection
+>>>> +        which needs to be masked.
+>>>> +
+>>>> +        Accepts only one of the 2 values -  0 or 1.
+>>>> +
+>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/dsb_edge/edcr[0:15]
+>>>> +Date:        March 2023
+>>>> +KernelVersion    6.5
+>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
+>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
+>>>> +Description:
+>>>> +        Read a set of the edge control value of the DSB in TPDM.
+>>>
+>>> Read edge control register n for edcr<n>.
+>>
+>> In fact, we don't read the register directly through this sysfs file, 
+>> but read the value
+>>
+>> we set to be written to the registers. Do I still need to modify it 
+>> here?
+>
+> thats fine.
+>
+>>
+>>>
+>>>> +
+>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/dsb_edge/edcmr[0:7]
+>>>> +Date:        March 2023
+>>>> +KernelVersion    6.5
+>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao 
+>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
+>>>> +Description:
+>>>> +        Read a set of the edge control mask of the DSB in TPDM.
+>>>> \ No newline at end of file
+>>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c 
+>>>> b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>> index 2424eb7..ba61e6a 100644
+>>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>>> @@ -21,6 +21,29 @@
+>>>>     DEFINE_CORESIGHT_DEVLIST(tpdm_devs, "tpdm");
+>>>>   +/* Read dataset array member with the index number */
+>>>> +static ssize_t tpdm_simple_dataset_show(struct device *dev,
+>>>> +               struct device_attribute *attr, char *buf)
+>>>> +{
+>>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>>> +    struct tpdm_dataset_attribute *tpdm_attr =
+>>>> +        container_of(attr, struct tpdm_dataset_attribute, attr);
+>>>> +
+>>>> +    if (tpdm_attr->idx >= tpdm_attr->max)
+>>>
+>>> minor nit: See my comment on max below. We could skip max.
+>> I will update this in the next patch series.
+>>>
+>>>> +        return -EINVAL;
+>>>> +
+>>>> +    switch (tpdm_attr->mem) {
+>>>> +    case DSB_EDGE_CTRL:
+>>>         if (tmp_attr->idx > TPDM_DSB_MAX_EDCR)
+>>>             break;
+>>>
+>>>> +        return sysfs_emit(buf, "0x%x\n",
+>>>> + drvdata->dsb->edge_ctrl[tpdm_attr->idx]);
+>>>> +    case DSB_EDGE_CTRL_MASK:
+>>>         if (tmp_attr->idx > TPDM_DSB_MAX_EDCMR)
+>>>             break;
+>>>
+>>>> +        return sysfs_emit(buf, "0x%x\n",
+>>>> + drvdata->dsb->edge_ctrl_mask[tpdm_attr->idx]);
+>>>     }
+>>>
+>>>     return -EINVAL;
+>> Why do we need to return this error code here?
+>>>
+>
+>
+> The whole block would look like :
+>
+>     switch (tpdm->attr->mem) {
+>     case DSB_EDGE_CTRL:
+>         if (tmp_attr->idx > TPDM_DSB_MAX_EDCR)
+>             break;
+>         return sysfs_...
+>     case DSB_EDGE_CTRL_MASK:
+>         if (tmp_attr->idx > TPDM_DSB_MAX_EDCMR)
+>             break;
+>         return sysfs_...
+>     }
+>
+>     return -EINVAL;
 
-I missed it. Will send v6.
+Sure, I will update this in the next patch series.
 
-Cheers,
-Biju
+
+Best,
+
+Tao
+
+>
+> Suzuki
+>
