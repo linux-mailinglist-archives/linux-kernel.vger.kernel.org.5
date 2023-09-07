@@ -2,86 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3958F7979AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BF5797AB0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236024AbjIGRSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:18:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36380 "EHLO
+        id S245510AbjIGRsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231201AbjIGRSb (ORCPT
+        with ESMTP id S245492AbjIGRrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:18:31 -0400
+        Thu, 7 Sep 2023 13:47:47 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B311700;
-        Thu,  7 Sep 2023 10:18:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59BB1C433C8;
-        Thu,  7 Sep 2023 16:28:05 +0000 (UTC)
-Date:   Thu, 7 Sep 2023 12:28:20 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Tze-nan Wu <Tze-nan.Wu@mediatek.com>
-Subject: [PATCH] ring-buffer: Do not attempt to read past "commit"
-Message-ID: <20230907122820.0899019c@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C311FD5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:47:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0F3FC433C9;
+        Thu,  7 Sep 2023 16:28:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694104122;
+        bh=kKCZnmdvlWAjdrTU0JnWgVFWVm2CYeepMuQakkeoZIE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=md4gqdddSO75KH0T47TDmNEOdTf41rhUx525zBO7wDx1GSSi0sr7xkqy8MuFHqauP
+         nhO2VHtsMeUCqKmw6eisy7vq0/5xR3u8jrC//uvr9EQrNk5kytuUbHUTRUk9ugyxgx
+         3gSbAEWD3u0Gyz0dh6NI7flXZNoypzJYi6Gwh5BJytM2We8AibqAKNUG9IW6roAbGo
+         0iuC0r5m6jjPnx8Jz0nyh7UBwT6nHV95FkZREvvqPBzaQY9EVBGGqiFE7xX7NryX5W
+         gHXkYEawONiYhIBWoTKMA6cRhR+J9S4N6Op3eOlZLgdJnPGnXDWljlFl2qIEwtAXJp
+         mYOMEcrY/9RNQ==
+Date:   Thu, 7 Sep 2023 17:28:30 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Joerg Schambacher <joerg.hifiberry@gmail.com>
+Cc:     a-krasser@ti.com, joerg@hifiberry.com,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] ASoC: Adds support for TAS575x to the pcm512x driver
+Message-ID: <bb3e5ccf-6eb5-4a36-9af0-b33f2db68445@sirena.org.uk>
+References: <20230907161207.14426-1-joerg.hifiberry@gmail.com>
+ <a9c3d43a-af26-44a0-9352-4666107f9f56@sirena.org.uk>
+ <ZPn4nsypsSXdB3J7@ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hUcgJYAhcs+B7VEy"
+Content-Disposition: inline
+In-Reply-To: <ZPn4nsypsSXdB3J7@ubuntu>
+X-Cookie: In the next world, you're on your own.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-When iterating over the ring buffer while the ring buffer is active, the
-writer can corrupt the reader. There's barriers to help detect this and
-handle it, but that code missed the case where the last event was at the
-very end of the page and has only 4 bytes left.
+--hUcgJYAhcs+B7VEy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The checks to detect the corruption by the writer to reads needs to see the
-length of the event. If the length in the first 4 bytes is zero then the
-length is stored in the second 4 bytes. But if the writer is in the process
-of updating that code, there's a small window where the length in the first
-4 bytes could be zero even though the length is only 4 bytes. That will
-cause rb_event_length() to read the next 4 bytes which could happen to be off the
-allocated page.
+On Thu, Sep 07, 2023 at 06:21:50PM +0200, Joerg Schambacher wrote:
 
-To protect against this, fail immediately if the next event pointer is
-less than 8 bytes from the end of the commit (last byte of data), as all
-events must be a minimum of 8 bytes anyway.
+> And yes, we cannot be sure that future devices may require different
+> settings, but I can hardly imagine anything completely different than
+> this approach with the usual audio MCLK frequencies.
 
-Link: https://lore.kernel.org/all/20230905141245.26470-1-Tze-nan.Wu@mediatek.com/
+They may for example be restricted and just not the the incoming MCLK
+divider, or require a higher frequency for some fancy processing.  In
+any case tas_device is just an obviously bad name here - there should be
+a flag per quirk, not a flag per entire class of devices.
 
-Reported-by: Tze-nan Wu <Tze-nan.Wu@mediatek.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/trace/ring_buffer.c | 5 +++++
- 1 file changed, 5 insertions(+)
+> > This is probably a separate quirk?  I'm a bit concerned about what's
+> > turning the PLL off here...
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 72ccf75defd0..a1651edc48d5 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -2390,6 +2390,11 @@ rb_iter_head_event(struct ring_buffer_iter *iter)
- 	 */
- 	commit = rb_page_commit(iter_head_page);
- 	smp_rmb();
-+
-+	/* An event needs to be at least 8 bytes in size */
-+	if (iter->head > commit - 8)
-+		goto reset;
-+
- 	event = __rb_page_index(iter_head_page, iter->head);
- 	length = rb_event_length(event);
- 
--- 
-2.40.1
+> The PLL should not be used in this specific case where all divisions are
+> just divide-by-2's. Your original code does reflect that and turns the
+> PLL off. It improves jitter and finally audio performance.
 
+> But in the case of the TAS-devices we even then need the PLL to
+> drive the AMP clocks.
+
+That's definitely a separate quirk, and does sound like it should be
+driven from the bias management or DAPM more than hw_params.
+
+--hUcgJYAhcs+B7VEy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmT5+i4ACgkQJNaLcl1U
+h9CZ+Qf+J2f6CIl+3kQOLAmv4SLapcB47o1g840CoC/9/uJ/sk2TlngPfsjmLttb
+uW+Sv7yC6pLMtzMHz8kwbnjhapJTJLlrQKhL4u7OPQtX2S5Dm9xbjO3ZXX+MxQX5
+wPn/HpF2qDdA/cp/TdBycJcM9zJ+1jjMKBMneCqEPGXJZCRz0mEl9XTaIQLKk9Cq
+4fIjWXyyPLf8j+kvqzIBKItMIYkPXABMnjJ7f8jYox9LyigjW306+rCxOJaU1qL5
+ZKOiWeZqBWwWI1TEkQQd3i3n6pzmNSAHK0KhlGR1qDaYdjkkyFBhKe5wKsOZeE1w
+6WbW/o4djQkLPhrAIoQ7eVyuV0WQuA==
+=I+kL
+-----END PGP SIGNATURE-----
+
+--hUcgJYAhcs+B7VEy--
