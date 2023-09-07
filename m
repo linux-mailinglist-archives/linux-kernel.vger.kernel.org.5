@@ -2,138 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE4F79746E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F3D797487
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236953AbjIGPiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
+        id S239996AbjIGPj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:39:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344934AbjIGPeG (ORCPT
+        with ESMTP id S1345353AbjIGPfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:34:06 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCA410F6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:33:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Qgrgn9s7l8ObAsLHcje7VYjW9U+wKT0erkRENFGEoLE=; b=kXboqueiUbdIEhnPid5YXObigw
-        YTtn3OQS5MPCxPgIsl+kemxhb0poAhwjcsiMB4jThWW5YD03KifRD8rigLUcvHT2fRG1mtslLj3PG
-        I0zdpgtH8raMrctEO6Lo9voehgMB5j+B0dfpVfVWZgleuX2pAG1M1dxi2azHsrW6ypCXFqDSTvuz+
-        C/VZYIgyNDLi/mCt0BuPj5D09hAen1I3VJz6Sa7N5zAkzB/z97WvaRAb3Us3inQ90T/+xEejpQUMM
-        Um1qSOc7wddbvs/isvj1/aAMQ8bJUsEml9JFXC10WgGVwo7rtFjP4GHkp995MIk/sRQjVkHHxGh1X
-        EsvXlmKQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qeCzm-001lSi-3C;
-        Thu, 07 Sep 2023 11:16:24 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 18B09300687; Thu,  7 Sep 2023 13:16:24 +0200 (CEST)
-Date:   Thu, 7 Sep 2023 13:16:24 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
-        gregkh@linuxfoundation.org, nik.borisov@suse.com
-Subject: Re: [PATCH v2 10/11] x86/alternatives: Simplify ALTERNATIVE_n()
-Message-ID: <20230907111624.GB29900@noisy.programming.kicks-ass.net>
-References: <20230814114426.057251214@infradead.org>
- <20230814121149.176244760@infradead.org>
- <20230907083158.GBZPmKfjarnaQk1ofB@fat_crate.local>
- <20230907110917.GA10955@noisy.programming.kicks-ass.net>
- <20230907111100.GA29900@noisy.programming.kicks-ass.net>
+        Thu, 7 Sep 2023 11:35:31 -0400
+Received: from mxout1.routing.net (mxout1.routing.net [IPv6:2a03:2900:1:a::a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658B71FC9;
+        Thu,  7 Sep 2023 08:35:08 -0700 (PDT)
+Received: from mxbox3.masterlogin.de (unknown [192.168.10.78])
+        by mxout1.routing.net (Postfix) with ESMTP id 04FFB4081B;
+        Thu,  7 Sep 2023 11:20:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1694085635;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=bmzyT3vhoavJV5YD/9bjCpBgNAP4o0u/rneto0+CusE=;
+        b=w2FAf1f6NYSPYwdHbMqEXFMlOVdC4HmF1Q212UWEGrvaarckAZKkNtvCHUdLCSOkVipCza
+        Ooe2QjKtAInOu1Qw0vq5sGegkzD3DyUtuvitA1FJ0oYh0f41J0DtoO6oUXy+UblT8QEd0e
+        daPaIchb0Lp+CpS0c9Icp9+HxKt+47Y=
+Received: from frank-G5.. (fttx-pool-217.61.150.154.bambit.de [217.61.150.154])
+        by mxbox3.masterlogin.de (Postfix) with ESMTPSA id 0FBA2360465;
+        Thu,  7 Sep 2023 11:20:34 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Daniel Golle <daniel@makrotopia.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        stable@vger.kernel.org
+Subject: [PATCH] thermal/drivers/mediatek: Fix control buffer enablement on MT7896
+Date:   Thu,  7 Sep 2023 13:20:18 +0200
+Message-Id: <20230907112018.52811-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230907111100.GA29900@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Mail-ID: e7eeb8e1-00de-41f6-a5df-ce2e9164136e
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 01:11:00PM +0200, Peter Zijlstra wrote:
-> On Thu, Sep 07, 2023 at 01:09:17PM +0200, Peter Zijlstra wrote:
-> 
-> > Anyway, the 1,3,2 variant spelled out reads like:
-> > 
-> > #APP
-> > # 1563 "../arch/x86/kernel/alternative.c" 1
-> > # ALT: oldnstr
-> > 661:
-> > # ALT: oldnstr
-> > 661:
-> > push %rbp
-> > 662:
-> > # ALT: padding
-> > .skip -(((665f-664f)-(662b-661b)) > 0) * ((665f-664f)-(662b-661b)),0x90
-> > 
-> >  #   Which evaluates like:
-> >  #     665f-664f = 3
-> >  #     662b-661b = 1
-> >  #     3-1 > 0 = -1
-> >  #     --1 * (3-1) = 2
-> >  #
-> >  #   so two single byte nops get emitted here.
-> > 
-> > 663:
-> > .pushsection .altinstructions,"a"
-> > .long 661b - .
-> > .long 664f - .
-> > .4byte ( 3*32+21)
-> > .byte 663b-661b
-> > .byte 665f-664f
-> > .popsection
-> > .pushsection .altinstr_replacement, "ax"
-> > # ALT: replacement
-> > 664:
-> > mov %rsp,%rbp
-> > 665:
-> > .popsection
-> > 
-> > 662:
-> > # ALT: padding
-> > .skip -(((665f-664f)-(662b-661b)) > 0) * ((665f-664f)-(662b-661b)),0x90
-> > 
-> >  #   And this evaluates to:
-> >  #     665f-664f = 2
-> >  #     662b-661b = 3 (because it includes the original 1 byte instruction and 2 bytes padding)
-> >  #     3-1 > 0 = 0
-> >  #     0 * (3-1) = 0
-> 
-> copy-paste fail, that needs to read:
-> 
-> 	3-3 > 0 = 0
-> 	0 * (3-3) = 0
+From: Frank Wunderlich <frank-w@public-files.de>
 
-I'm a moron ofcourse:
+Reading thermal sensor on mt7986 devices returns invalid temperature:
 
-	2-3
+bpi-r3 ~ # cat /sys/class/thermal/thermal_zone0/temp
+ -274000
 
-> 
-> >  #
-> >  #   so no extra padding
-> > 
-> > 663:
-> > .pushsection .altinstructions,"a"
-> > .long 661b - .
-> > .long 664f - .
-> > .4byte ( 3*32+21)
-> > .byte 663b-661b
-> > .byte 665f-664f
-> > .popsection
-> > .pushsection .altinstr_replacement, "ax"
-> > # ALT: replacement
-> > 664:
-> > push %r12
-> > 665:
-> > .popsection
-> > 
-> > # 0 "" 2
-> > # ../arch/x86/kernel/alternative.c:1569:        int3_selftest();
-> > #NO_APP
+Fix this by adding missing members in mtk_thermal_data struct which were
+used in mtk_thermal_turn_on_buffer after commit 33140e668b10.
+
+Cc: stable@vger.kernel.org
+Fixes: 33140e668b10 ("thermal/drivers/mediatek: Control buffer enablement tweaks")
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+---
+ drivers/thermal/mediatek/auxadc_thermal.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/thermal/mediatek/auxadc_thermal.c b/drivers/thermal/mediatek/auxadc_thermal.c
+index 843214d30bd8..967b9a1aead4 100644
+--- a/drivers/thermal/mediatek/auxadc_thermal.c
++++ b/drivers/thermal/mediatek/auxadc_thermal.c
+@@ -690,6 +690,9 @@ static const struct mtk_thermal_data mt7986_thermal_data = {
+ 	.adcpnp = mt7986_adcpnp,
+ 	.sensor_mux_values = mt7986_mux_values,
+ 	.version = MTK_THERMAL_V3,
++	.apmixed_buffer_ctl_reg = APMIXED_SYS_TS_CON1,
++	.apmixed_buffer_ctl_mask = GENMASK(31, 6) | BIT(3),
++	.apmixed_buffer_ctl_set = BIT(0),
+ };
+ 
+ static bool mtk_thermal_temp_is_valid(int temp)
+-- 
+2.34.1
+
