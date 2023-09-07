@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B43DE797ED3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 00:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540ED797ED5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 00:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241202AbjIGWxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 18:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52006 "EHLO
+        id S241616AbjIGWx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 18:53:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236163AbjIGWxs (ORCPT
+        with ESMTP id S236568AbjIGWxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 18:53:48 -0400
+        Thu, 7 Sep 2023 18:53:54 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C73D1BDA;
-        Thu,  7 Sep 2023 15:53:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C8E65C433C8;
-        Thu,  7 Sep 2023 22:53:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256A51BD7
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 15:53:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BD828C433C7;
+        Thu,  7 Sep 2023 22:53:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694127223;
-        bh=FQg5MGMUUhHyWsbcSzaL+Xz2wFkrfIbAdHUGu+3PPsg=;
+        s=k20201202; t=1694127226;
+        bh=rgbMNq8tN0bVmMD6FjtQYZi+zsUYCMLP0Q+zIZrtTd0=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=sKX+pBkFPgDNuJSlsJUI454Lwj9++bmuXhfOrhGDnylhrfIzTeFZhGoL+y8AicIOz
-         THMQcqwNhuPLIvDFKgSX8AH7c3FMQqdMER9jC/DhKF/EzV8H7sqPG7bu4UiVnZlSl7
-         FVmsQoZkqucL62NDrqqARuMijLcC8RmpeAcDWCr2fpiGjJBjbWdb60QxdYCSOxtmIa
-         De61NINmpEG0oF/TQRqzVU+lxfKQWpZLGXfRUYMnJ7Q9ns1m0XlmP/A1meHMFa6+TH
-         exI9Tc1CslKKlhDtmcSPVwxdPqDoD2qbUGXI3R+jWKAPBMrPfKWYcaeLPhwrmyjrRw
-         mdCLlXlSTqAow==
+        b=Olqs1TTzgQ+t+SwuWSlTfwyBKTQR7Hnw8pUFtofqCaNfzOPnpg+gxpdaATKzlVK5T
+         QjB03jDdzzCBF3NBtzfjPcGTOi3R5SjspFaVfagGD+HDIhUamI/pyi76Odffqce/q3
+         dqqyt5T7QOGAwvc8FNkToW672HnEwqj7wZJ+J1jE0w6DcofmBxdm40ACau89SQUy3B
+         F3EhaP3hnqYDQymtbKZ7p/Xb6jE82a1TF0RCxxMphEaf13CnmHyxdk6e+FjyPV91Qj
+         czSdM9izRXk4muXQEwfa/STOahR868s4Rih9JYcFKYuSiAAoDa0GwXcrXFnXugPBOh
+         exvCcT+C9S9DQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B8E52C4166F;
-        Thu,  7 Sep 2023 22:53:43 +0000 (UTC)
-Subject: Re: [GIT PULL] KVM changes for 6.6 merge window
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id ACE8AE22AFB;
+        Thu,  7 Sep 2023 22:53:46 +0000 (UTC)
+Subject: Re: [GIT PULL] regulator fixes for v6.6-merge-window
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230906174846.234274-1-pbonzini@redhat.com>
-References: <20230906174846.234274-1-pbonzini@redhat.com>
-X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230906174846.234274-1-pbonzini@redhat.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-X-PR-Tracked-Commit-Id: d011151616e73de20c139580b73fa4c7042bd861
+In-Reply-To: <20230907123440.042F8C4936D@smtp.kernel.org>
+References: <20230907123440.042F8C4936D@smtp.kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230907123440.042F8C4936D@smtp.kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v6.6-merge-window
+X-PR-Tracked-Commit-Id: ca0e36e3e39a4e8b5a4b647dff8c5938ca6ccbec
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0c02183427b4d2002992f26d4917c1263c5d4a7f
-Message-Id: <169412722375.28163.4459184427658337590.pr-tracker-bot@kernel.org>
-Date:   Thu, 07 Sep 2023 22:53:43 +0000
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+X-PR-Merge-Commit-Id: d9b9ea589b47ba603acf18bbbbb44b1a662c61f5
+Message-Id: <169412722670.28163.16928383695319786886.pr-tracker-bot@kernel.org>
+Date:   Thu, 07 Sep 2023 22:53:46 +0000
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -55,12 +56,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed,  6 Sep 2023 13:48:46 -0400:
+The pull request you sent on Thu, 07 Sep 2023 13:34:30 +0100:
 
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v6.6-merge-window
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0c02183427b4d2002992f26d4917c1263c5d4a7f
+https://git.kernel.org/torvalds/c/d9b9ea589b47ba603acf18bbbbb44b1a662c61f5
 
 Thank you!
 
