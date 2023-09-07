@@ -2,69 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0B8797B21
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 087B1797CC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 21:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343569AbjIGSFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 14:05:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59290 "EHLO
+        id S239018AbjIGTbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 15:31:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343514AbjIGSE5 (ORCPT
+        with ESMTP id S1343627AbjIGSHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:04:57 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A979CE7;
-        Thu,  7 Sep 2023 11:04:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4D131C116A2;
-        Thu,  7 Sep 2023 18:03:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694109819;
-        bh=PkJrGNosxNonTMud4l92BUtKxeaLkMXMssFWdpDkhjU=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ubB4rTJL91tgPKAWQQjwzsX83U4Xu54q+4YHABd46niC4DJj1xPGggvSk8JVkknaG
-         5jf5j/QkDrcxNjykFTRQpzOH1YG0xxKA2qG3csEYKbKXSebzTQat/RQdlBns0nAMG4
-         YNrzaWSKuuITICktMlsfmuyCzXujttQoDx8f336LklK1Mb1Q/Hz+LY7NWqyON0V87W
-         Exock+ddrXsxqBVlYL537F0twlMVAaTmifJSrpM+A/BEE9PonmVo4BtfLNZNd2DVWC
-         Rtc6IhO7feaa/fVKZA0GG4chuJPq6ycfAEuQJ2cRJpM6RmqPND1HUZiGsd2QT2gUNg
-         OLknXupG8oWiA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3C82EE22AFB;
-        Thu,  7 Sep 2023 18:03:39 +0000 (UTC)
-Subject: Re: [GIT PULL] MIPS changes for v6.6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZPjnFLtq9OK+UxZ2@alpha.franken.de>
-References: <ZPjnFLtq9OK+UxZ2@alpha.franken.de>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZPjnFLtq9OK+UxZ2@alpha.franken.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_6.6
-X-PR-Tracked-Commit-Id: e7513eccb7d7f82e28f4730210b42da71edaa6a6
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ac2224a467b499730057525924f6be3f4fdb0da5
-Message-Id: <169410981924.20847.11216314988911628772.pr-tracker-bot@kernel.org>
-Date:   Thu, 07 Sep 2023 18:03:39 +0000
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 7 Sep 2023 14:07:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB201FC4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:06:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694109959;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A17IvpynFGjRTpzvVbSGwFNvsNOOnGzpHwVnCuCCR08=;
+        b=hZOuqZtS6qoSF853p9bAOt9J2EMw34wHVNuX4fX7naC60FnkunH9gFQdrYg7ckk7V7iEm4
+        eZQgKzr/i2QOx6pAqrFxyfvpmxJxpkJgaaWWdPHAlBsdD71JlJilet8ZmnVBBHodfJ2oDh
+        Xlr32ZHM/M12Oji4Fjk2VBxNn8gQqbw=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-421-ddqwgDxDN9-rV5Fnng-Qpw-1; Thu, 07 Sep 2023 14:05:56 -0400
+X-MC-Unique: ddqwgDxDN9-rV5Fnng-Qpw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 98FCA3C19385;
+        Thu,  7 Sep 2023 18:05:55 +0000 (UTC)
+Received: from [10.22.16.164] (unknown [10.22.16.164])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 34BA2493112;
+        Thu,  7 Sep 2023 18:05:55 +0000 (UTC)
+Message-ID: <2cd975ec-f868-f180-350f-b1b704118777@redhat.com>
+Date:   Thu, 7 Sep 2023 14:05:54 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/5] locking: Add rwsem_is_write_locked()
+Content-Language: en-US
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org
+References: <20230907174705.2976191-1-willy@infradead.org>
+ <20230907174705.2976191-2-willy@infradead.org>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230907174705.2976191-2-willy@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 6 Sep 2023 22:54:44 +0200:
+On 9/7/23 13:47, Matthew Wilcox (Oracle) wrote:
+> Several places want to know whether the lock is held by a writer, instead
+> of just whether it's held.  We can implement this for both normal and
+> rt rwsems.  RWSEM_WRITER_LOCKED is declared in rwsem.c and exposing
+> it outside that file might tempt other people to use it, so just use
+> a comment to note that's what the 1 means, and help anybody find it if
+> they're looking to change the implementation.
+>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>   include/linux/rwbase_rt.h |  5 +++++
+>   include/linux/rwsem.h     | 10 ++++++++++
+>   2 files changed, 15 insertions(+)
+>
+> diff --git a/include/linux/rwbase_rt.h b/include/linux/rwbase_rt.h
+> index 1d264dd08625..3c25b14edc05 100644
+> --- a/include/linux/rwbase_rt.h
+> +++ b/include/linux/rwbase_rt.h
+> @@ -31,6 +31,11 @@ static __always_inline bool rw_base_is_locked(struct rwbase_rt *rwb)
+>   	return atomic_read(&rwb->readers) != READER_BIAS;
+>   }
+>   
+> +static __always_inline bool rw_base_is_write_locked(struct rwbase_rt *rwb)
+> +{
+> +	return atomic_read(&rwb->readers) == WRITER_BIAS;
+> +}
+> +
+>   static __always_inline bool rw_base_is_contended(struct rwbase_rt *rwb)
+>   {
+>   	return atomic_read(&rwb->readers) > 0;
+> diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
+> index 1dd530ce8b45..0f78b8d2e653 100644
+> --- a/include/linux/rwsem.h
+> +++ b/include/linux/rwsem.h
+> @@ -72,6 +72,11 @@ static inline int rwsem_is_locked(struct rw_semaphore *sem)
+>   	return atomic_long_read(&sem->count) != 0;
+>   }
+>   
+> +static inline int rwsem_is_write_locked(struct rw_semaphore *sem)
+> +{
+> +	return atomic_long_read(&sem->count) & 1 /* RWSEM_WRITER_LOCKED */;
+> +}
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_6.6
+I would prefer you move the various RWSEM_* count bit macros from 
+kernel/locking/rwsem.c to under the !PREEMPT_RT block and directly use 
+RWSEM_WRITER_LOCKED instead of hardcoding a value of 1.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ac2224a467b499730057525924f6be3f4fdb0da5
+Cheers,
+Longman
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
