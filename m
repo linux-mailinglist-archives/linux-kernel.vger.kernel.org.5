@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 587967978B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01FBC797A4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244475AbjIGQxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
+        id S244516AbjIGRfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244476AbjIGQws (ORCPT
+        with ESMTP id S231727AbjIGRfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:52:48 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1D41FCF
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:52:15 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-402c1407139so13453885e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:52:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694105476; x=1694710276; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=g0UjxBFHJdpbfokvZNtbG8hLH/h565oIkcGkrz9vwfg=;
-        b=rmMn+YLYHSULzeCY2c7PbEPWKtslP/rYB9oD7BVJq970aX68ELjiUgCTreM3vfuyhR
-         i3TlJiP3k2qWPPcwVWWXmd/ZzEHCa1aIrmiktoVUj9KkyuMCAnL7iQWDTbeowgXBQBXe
-         emC6h32r1xxiUFvdLohrUUIcbu3/oXk4cS714DIjH7CYMVCFZijaXw1AwdJIEDKOcsvo
-         0AozrZvdvOsfSP0iJB8rwJqvreqweJ8AserRJE/7CQS9Ncjb0gWST8wUH4vaHNWV9GzV
-         iJSmZLpdp8p6iSfFsRcysgPpyZyL2WMG2oD+hVXyo3+OxQqXJSslXmPCfL/o8aIR4tBb
-         qlGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694105476; x=1694710276;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g0UjxBFHJdpbfokvZNtbG8hLH/h565oIkcGkrz9vwfg=;
-        b=Jcc03eTAetV277gjEmRRwA/kSEjpWQZfPsZ2IE91HHHg4AHeGus3JEXRACkdLLd/qf
-         jRNTIusmK/ZwtZ7akRBf2nZbTbSDcYUPcX7EKIgmrJ+4Ch+f1OV9R2yRbupojyrV1d8b
-         g5qXhvg36w4yHM1dGM61q3EPAwq9oz+42qDBuu2oEhDrbFn7y5v+TfPzCLnstok31j0w
-         KMZnY9eq3GBQQ2yautS0YBqIwFa2PV0m8Tow6RzygOfNbBOi6HMbqmBRJZsh4aVdefMg
-         aI9ZYOAvvBlcl09SNCxO64SlE3XTwi6UmVvJdWSijloes2vohVvdEbjlI0DO7mRFcG/j
-         ev5g==
-X-Gm-Message-State: AOJu0Yx5iqXNP8+jw3e3sKFzqQqZkOYpIKHsCWiTcLueSt90YHt+cq5i
-        uNPIv+CEeFPloI1iRxVxA90CbCHSLo6RLtdtLIrnrw==
-X-Google-Smtp-Source: AGHT+IEalu9zCtoYR2Ui9Q1qU9PRb8tCGZA9hsrK25jqKWgWWlg25b2SfOAY9X9gMnN6g7j+XEme9Q==
-X-Received: by 2002:a7b:ce8a:0:b0:401:b0f2:88b4 with SMTP id q10-20020a7bce8a000000b00401b0f288b4mr3852711wmj.26.1694073858569;
-        Thu, 07 Sep 2023 01:04:18 -0700 (PDT)
-Received: from vermeer ([2a01:cb1d:81a9:dd00:b570:b34c:ffd4:c805])
-        by smtp.gmail.com with ESMTPSA id q20-20020a056000137400b003142c85fbcdsm22695767wrz.11.2023.09.07.01.04.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 01:04:17 -0700 (PDT)
-Date:   Thu, 7 Sep 2023 10:04:15 +0200
-From:   Samuel Ortiz <sameo@rivosinc.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
-        linux-coco@lists.linux.dev, Brijesh Singh <brijesh.singh@amd.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Peter Gonda <pgonda@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dionna Amalie Glaze <dionnaglaze@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, lukas@wunner.de
-Subject: Re: [PATCH v3 0/5] configfs-tsm: Attestation Report ABI
-Message-ID: <ZPmD/xJic2QrfIf5@vermeer>
-References: <169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com>
- <080d834d-9ca0-437f-8f18-b7a311af0060@linux.microsoft.com>
- <64f2169e5c381_4c1f329451@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+        Thu, 7 Sep 2023 13:35:53 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A0ACF;
+        Thu,  7 Sep 2023 10:35:32 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EBE3B1F88C;
+        Thu,  7 Sep 2023 08:06:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694073991; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jevjVCyb8VagHsqKJkzCUKGGkbaXB8mZNS25TIrybjE=;
+        b=JtBm/ROc0o5WYZkKvGbkGK7rtCH7iyOxcFVi74/vLweQ2jgUn3brhvRmGHjzA3iaqHad/e
+        yNDpaYu2Uyesuik7vmtds2vIvzxM+0CvkEhZwKg/1L+klpGqlo4JR7vIy9gYqb7HvU5ho8
+        OEsHqimzTuvW/Ko9OYF6OwFsBiJOBnA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694073991;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jevjVCyb8VagHsqKJkzCUKGGkbaXB8mZNS25TIrybjE=;
+        b=h8M/uegszXSJcfHVF2EqQMDGmge+KBZKySD0/FO6VUvfjBWQbqKXfLhaTenfAPJB2zxx7l
+        N5jC6aU1BVcmR+Aw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B96DD13AD5;
+        Thu,  7 Sep 2023 08:06:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id m1JiLISE+WQ6CgAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Thu, 07 Sep 2023 08:06:28 +0000
+Message-ID: <a34d8e85-38cd-c64b-9698-e0b9d4195620@suse.de>
+Date:   Thu, 7 Sep 2023 10:06:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64f2169e5c381_4c1f329451@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 5/7] fbdev/core: Build fb_logo iff CONFIG_LOGO has been
+ selected
+Content-Language: en-US
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+To:     Helge Deller <deller@gmx.de>, daniel@ffwll.ch, javierm@redhat.com,
+        sam@ravnborg.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20230829142109.4521-1-tzimmermann@suse.de>
+ <20230829142109.4521-6-tzimmermann@suse.de>
+ <bf8e8402-2def-a365-18be-3b426cb1830a@gmx.de>
+ <a0f9f34f-0c4f-9fc8-83ef-899a8f368529@suse.de>
+In-Reply-To: <a0f9f34f-0c4f-9fc8-83ef-899a8f368529@suse.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------83VqkkgoLHZLC0YE3Esn64Ch"
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,83 +78,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 01, 2023 at 09:51:42AM -0700, Dan Williams wrote:
-> [ Add Lukas since 'SPDM' was mentioned ]
-> 
-> Jeremi Piotrowski wrote:
-> [..]
-> > > An attestation report is signed evidence of how a Trusted Virtual
-> > > Machine (TVM) was launched and its current state. A verifying party uses
-> > > the report to make judgements of the confidentiality and integrity of
-> > > that execution environment. Upon successful attestation the verifying
-> > > party may, for example, proceed to deploy secrets to the TVM to carry
-> > > out a workload. Multiple confidential computing platforms share this
-> > > similar flow.
-> > 
-> > Besides the platform (cpu) attestation report, there are also attestation
-> > reports from individual secure PCIe devices that we'd want to fetch. This
-> > uses the SPDM protocol[1]. There is a CHALLENGE command which (too me)
-> > roughly maps to an attestation request, but also separate interfaces to
-> > fetch individual measurements and certificates (like the SNP extended
-> > report interface allows).
-> 
-> Yes, but I am not yet convinced this configfs-tsm interface would get
-> involved there.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------83VqkkgoLHZLC0YE3Esn64Ch
+Content-Type: multipart/mixed; boundary="------------GmuOlb1GKUyW2IrHE6ZaqG0o";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Helge Deller <deller@gmx.de>, daniel@ffwll.ch, javierm@redhat.com,
+ sam@ravnborg.org, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org
+Cc: linux-kernel@vger.kernel.org
+Message-ID: <a34d8e85-38cd-c64b-9698-e0b9d4195620@suse.de>
+Subject: Re: [PATCH 5/7] fbdev/core: Build fb_logo iff CONFIG_LOGO has been
+ selected
+References: <20230829142109.4521-1-tzimmermann@suse.de>
+ <20230829142109.4521-6-tzimmermann@suse.de>
+ <bf8e8402-2def-a365-18be-3b426cb1830a@gmx.de>
+ <a0f9f34f-0c4f-9fc8-83ef-899a8f368529@suse.de>
+In-Reply-To: <a0f9f34f-0c4f-9fc8-83ef-899a8f368529@suse.de>
 
-User space will want to get those devices attestation reports, and those
-would be carried through the TSM. It would be nice to be able to use a
-common ABI for this. A CPU/platform attestation report is not that
-different from a device one.
+--------------GmuOlb1GKUyW2IrHE6ZaqG0o
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-> > 
-> > If this is to become the one attestation interface then we'll need to
-> > consider that. That will probably require adding a second level
-> > directory: /sys/kernel/config/tsm/<device path>.
-> 
-> The SPDM situation is different in my mind in that the kernel has an
-> interest in being able to attest a device itself. Think of cases like
-> power management where userspace is frozen, but the kernel needs to
-> validate the device in the resume flow.
-> 
-> For TVMs the kernel would validate devices
+DQpBbSAwNC4wOS4yMyB1bSAwOTowOCBzY2hyaWViIFRob21hcyBaaW1tZXJtYW5uOg0KPiBI
+aQ0KPiANCj4gQW0gMDEuMDkuMjMgdW0gMTA6MjIgc2NocmllYiBIZWxnZSBEZWxsZXI6DQo+
+PiBPbiA4LzI5LzIzIDE2OjE1LCBUaG9tYXMgWmltbWVybWFubiB3cm90ZToNCj4+PiBPbmx5
+IGJ1aWxkIGZiX2xvZ28uYyBpZiBDT05GSUdfTE9HTyBoYXMgYmVlbiBzZWxlY3RlZC4gT3Ro
+ZXJ3aXNlDQo+Pj4gcHJvdmlkZSBlbXB0eSBpbXBsZW1lbnRhdGlvbnMgb2YgdGhlIGNvbnRh
+aW5lZCBpbnRlcmZhY2VzIGFuZCBhdm9pZA0KPj4+IHVzaW5nIHRoZSBleHBvcnRlZCB2YXJp
+YWJsZXMuDQo+Pj4NCj4+PiBTaWduZWQtb2ZmLWJ5OiBUaG9tYXMgWmltbWVybWFubiA8dHpp
+bW1lcm1hbm5Ac3VzZS5kZT4NCj4+IC4uLg0KPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Zp
+ZGVvL2ZiZGV2L2NvcmUvZmJjb24uYyANCj4+PiBiL2RyaXZlcnMvdmlkZW8vZmJkZXYvY29y
+ZS9mYmNvbi5jDQo+Pj4gaW5kZXggZjE1N2E1YTFkZmZjLi4yNGIwMzg1MTBhNzEgMTAwNjQ0
+DQo+Pj4gLS0tIGEvZHJpdmVycy92aWRlby9mYmRldi9jb3JlL2ZiY29uLmMNCj4+PiArKysg
+Yi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L2NvcmUvZmJjb24uYw0KPj4+IEBAIC00NzQsMTUgKzQ3
+NCwxOSBAQCBzdGF0aWMgaW50IF9faW5pdCBmYl9jb25zb2xlX3NldHVwKGNoYXIgKnRoaXNf
+b3B0KQ0KPj4+DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGlmICghc3RybmNtcChvcHRpb25z
+LCAibG9nby1wb3M6IiwgOSkpIHsNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBv
+cHRpb25zICs9IDk7DQo+Pj4gKyNpZmRlZiBDT05GSUdfTE9HTw0KPj4+IMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIGlmICghc3RyY21wKG9wdGlvbnMsICJjZW50ZXIiKSkNCj4+PiDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGZiX2NlbnRlcl9sb2dvID0gdHJ1
+ZTsNCj4+PiArI2VuZGlmDQo+Pg0KPj4gSU1ITywgKnNvbWV0aW1lcyogaXQgbWFrZXMgc2Vu
+c2UgdG8gbm90IHVzZSAjaWZkZWYgYW5kIGNvZGUgaXQgaW5zdGVhZCANCj4+IGxpa2UgdGhp
+czoNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKElTX0VOQUJMRUQoQ09O
+RklHX0xPR08pICYmDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAhc3Ry
+Y21wKG9wdGlvbnMsICJjZW50ZXIiKSkNCj4+IC4uLg0KPj4gVGhhdCB3YXkgdGhlIGNvbXBp
+bGVyIHdpbGwgb3B0aW1pemUgdGhhdCBjb2RlIGF3YXkgYXMgd2VsbCwgYnV0IGluDQo+PiBh
+ZGRpdGlvbiBpdCB3aWxsIGNvbXBpbGUtY2hlY2sgdGhhdCB5b3UgaGF2ZSBjb3JyZWN0IGNv
+ZGluZyBpbmRlcGVuZGVuZA0KPj4gaWYgQ09ORklHX0xPR08gaXMgc2V0IG9yIG5vdC4NCj4g
+DQo+IEdvb2QgaWRlYS4gSSdsbCBjaGFuZ2UgaXQuIFRoZSBJU19FTkFCTEVEIGNvZGUgaXMg
+YWxzbyBlYXNpZXIgdG8gcmVhZCBJTUhPLg0KDQpJJ2xsIGtlZXAgdGhlIGN1cnJlbnQgYXBw
+cm9hY2gsIGJ1dCBpbiBhIHNpbXBsaWZpZWQgZm9ybS4NCg0KPiANCj4gQmVzdCByZWdhcmRz
+DQo+IFRob21hcw0KPiANCj4+DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29u
+dGludWU7DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIH0NCj4+Pg0KPj4+IMKgwqDCoMKgwqDC
+oMKgwqDCoCBpZiAoIXN0cm5jbXAob3B0aW9ucywgImxvZ28tY291bnQ6IiwgMTEpKSB7DQo+
+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgb3B0aW9ucyArPSAxMTsNCj4+PiArI2lm
+ZGVmIENPTkZJR19MT0dPDQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKCpv
+cHRpb25zKQ0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZmJfbG9n
+b19jb3VudCA9IHNpbXBsZV9zdHJ0b2wob3B0aW9ucywgJm9wdGlvbnMsIDApOw0KPj4+ICsj
+ZW5kaWYNCj4+DQo+PiBzYW1lIGhlcmUuDQo+Pg0KPj4gSGVsZ2UNCj4gDQoNCi0tIA0KVGhv
+bWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29mdHdh
+cmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2LCA5MDQ2MSBO
+dWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVycywgQW5kcmV3
+IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVlcm5iZXJnKQ0K
 
-That means the TVM kernel would be provisioned with reference values and
-policies that are likely to be tenant specific. The same TVM kernel,
-running the same user space stack, getting the same PCIe device
-attached, could either accept or reject such device, depending on the
-tenant/workload owner policies and acceptable reference values. That
-means each tenant would have to build its own guest images, and maintain
-and update them with potentially each new device or new device stack it
-wants to support.
-Keeping most of the device attestation stack (similar to where the
-platform attestation stack lives today) in user space seems more
-flexible to me, and allows for tenant to use single guest images.
 
-> and the verifying party would
-> validate the kernel as part of the guest measurement.
-> 
-> The main difficulty again here is evidence format differentiation. My
-> hope is that there is some standardization
+--------------GmuOlb1GKUyW2IrHE6ZaqG0o--
 
-FWIW there are IETF driven standardization efforts like e.g. EAT [1]
-that go into the right directions imho. The latest CC implementations
-(CCA, CoVE) follow those specs (EAT, CWT/JWT).
+--------------83VqkkgoLHZLC0YE3Esn64Ch
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-DMTF (driving the SPDM spec) defines also its own format, through its
-measurement format spec. Device vendors may choose to implement that or
-to e.g. add their EAT formatted attestation report in the reported
-certificate chain. Realistically, we'll have to support all of those
-flows.
+-----BEGIN PGP SIGNATURE-----
 
-> or otherwise a way to update
-> the kernel's verification logic for per-device evidence-formats.  Maybe
-> eBPF has a role to play in that story, but that's a converstation for a
-> different patch set.
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmT5hIMFAwAAAAAACgkQlh/E3EQov+C9
+JRAAyVsIVuoW2zowfQG0TA89CrPzDvh64zoaeA2iO1xVE3LJo9LnHla78PjtSAQiuqGUKNuxtDz+
+eNk4aGsHC/5/VILjDwtX3MvB8wJ9UHCMbH986m/+v6l8xJWsd8E0Q9Fui43i5jWzXpyiT8navZZs
+ipKH54hJR0M5LeplSshSeCBKtcYNLkMTFNy1haxkAnC+YBU2T53Gp5swCQB93mdJjSRfka+95ly4
+BUnonVqXyu1Pi9qLDeuGraLxhVXYUNggzAS7Dbhx/MUaxrd/vhgCKl5xbpIA0LAFE6z/sem6C2yB
+0OJlLLlkPrzyt6ic6fM71aW+kIxVjh3ubrLISwiG1rkDODw8FhKnKGpKqWF11ClYB0spsf+PlRjQ
+JOy1vywwxO+Fh+F17iLAYuRdXab9pVRWis8mLmZx0295JcUz7BsG0Asank+fOOdyyzGPJlJl4zPA
+NkhzZuRr3Jeasl9smjX2I+qwI3x4GX7FQO+vNowJLR66S+3VMnEj1eji+uV8Xh3S3UTI+6uI8C98
+8JjI8yfLPsX/+E5sD/A/sb8PAXPg4OI9FDIJzPotxx4ytAi30lmsWbaaS5aOe3RIzoRtlGrr+e+h
+Ycey8OchZ4Gz2MpsDHOd5Rgq9bu0Hw80iKfsjxPfn6mTKnLx+gqTguVVP1wJOw6KXTP4dFQheBoW
+tZc=
+=A55L
+-----END PGP SIGNATURE-----
 
-This conversation will hopefully include a user space architecture.
-Potentially something we could talk about at the CC LPC microconference?
-
-Cheers,
-Samuel.
-
-[1] https://datatracker.ietf.org/doc/draft-ietf-rats-eat/
+--------------83VqkkgoLHZLC0YE3Esn64Ch--
