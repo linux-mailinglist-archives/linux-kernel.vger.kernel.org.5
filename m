@@ -2,90 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4BC796ED2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 04:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C341796EFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 04:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239974AbjIGCNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 22:13:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
+        id S231534AbjIGCd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 22:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjIGCNk (ORCPT
+        with ESMTP id S237109AbjIGCdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 22:13:40 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3CE173B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 19:13:35 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6befdb1f545so374606a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 19:13:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694052814; x=1694657614; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lx3iU3GdjmywZiYlfPlbzfKFyv4f5XdEJqpK3WfigeU=;
-        b=c54Ovn7aZXODk3F9XiuOi43+Jeg9DIG74BDfxyTC1FqC08fmTNKJIK4RA41QU3a8bj
-         IIL6FaqZpFIf6Qg8aSYvtlm4HwQfAGouqwvDpf6QXPFntsUoEkQLbZOicD+UOEjwUljg
-         hNDHcfuEjafl4w8K/gs5Z8BJzM1wJEq+/V9IUc8FA/pUogEsHB7mmctMpV5rQLOnz0ac
-         L4cP3gBGbRfuKJ8mTHRbWyrDkAsSHmbfJPGIuTitbZ+X+tkC1qqJQdm/AV4DIfM0AOUV
-         FzEh1ipnawJolzpze86bmssdmgQxnGRyrnWixvCtFszzPt7kaQcj5BVk/Mm8MJvxglHC
-         /2Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694052814; x=1694657614;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lx3iU3GdjmywZiYlfPlbzfKFyv4f5XdEJqpK3WfigeU=;
-        b=hFPRketrKJfcTG6cYlSEr3NuVCsAbGLK6Vhvhw1YDMNTQfAfWvlGuM8QtX/KXUuqDV
-         mDbIfakhZ+ph/wUYpbASGBxGRIxssFLQUb4sI62cDgwLhDpSu/C3aLvvvx4HaJkPVKh/
-         vL3N/zEFU44m/RmtJKnbI9PPwK0Q7oSChp2WwPPvanNSWXszivTIBo2HOj6E2EHBvbNq
-         /Znve/j0WsJh3qUElZFBBrJDQEXY91RzCsckVKNaRsn0AWXokwmRALik1YNTfAI6HsGO
-         TBg78gkrmJZmmnVtxmAI91PkeZxFaAW4lDPVfgyAyBpHPgqoZUnseSwyCtPGlw1/4SeM
-         cUpA==
-X-Gm-Message-State: AOJu0Yxj0RNf2dpUTC5qD/Q9fMKrdXEKRQ66MhLNF7dbMo/SRpqcbalI
-        iNCp4BXmjwWLVh6JpekW2sxp86IpB1sFaheuWyI=
-X-Google-Smtp-Source: AGHT+IGzJwHTwgXqBrqhCE8SkDqpry9q8CocOi2kmFZTEN5/XzR7H2yswHq7LTXFXJA51bSghkSaMxoAAvr7m8qgQaA=
-X-Received: by 2002:a05:6358:9924:b0:132:d078:9a05 with SMTP id
- w36-20020a056358992400b00132d0789a05mr5286951rwa.14.1694052814440; Wed, 06
- Sep 2023 19:13:34 -0700 (PDT)
+        Wed, 6 Sep 2023 22:33:24 -0400
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FDB19B5;
+        Wed,  6 Sep 2023 19:33:19 -0700 (PDT)
+Received: from Atcsqr.andestech.com (localhost [127.0.0.2] (may be forged))
+        by Atcsqr.andestech.com with ESMTP id 3872JA7c025828;
+        Thu, 7 Sep 2023 10:19:10 +0800 (+08)
+        (envelope-from peterlin@andestech.com)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+        by Atcsqr.andestech.com with ESMTP id 3872I5eM024097;
+        Thu, 7 Sep 2023 10:18:05 +0800 (+08)
+        (envelope-from peterlin@andestech.com)
+Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS16.andestech.com
+ (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Thu, 7 Sep 2023
+ 10:18:00 +0800
+From:   Yu Chien Peter Lin <peterlin@andestech.com>
+To:     <linux-riscv@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <conor.dooley@microchip.com>,
+        <atishp@atishpatra.org>, <anup@brainfault.org>,
+        <prabhakar.mahadev-lad.rj@bp.renesas.com>
+CC:     <ajones@ventanamicro.com>, <heiko@sntech.de>,
+        <samuel@sholland.org>, <geert+renesas@glider.be>,
+        <n.shubin@yadro.com>, <dminus@andestech.com>,
+        <ycliang@andestech.com>, <tim609@andestech.com>,
+        <locus84@andestech.com>, <dylan@andestech.com>,
+        Yu Chien Peter Lin <peterlin@andestech.com>
+Subject: [PATCH 0/4] Support Andes PMU extension
+Date:   Thu, 7 Sep 2023 10:16:31 +0800
+Message-ID: <20230907021635.1002738-1-peterlin@andestech.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230902115026.13460-1-qiang.zhang1211@gmail.com>
- <ZPd4yKqbvBNGV7cL@slm.duckdns.org> <CALm+0cVf+E_Y41AdEwLjm2gZAjzeKaZev1Tu1hUS-VpYH0eEHQ@mail.gmail.com>
- <ZPiwaaZaDPVexezn@slm.duckdns.org>
-In-Reply-To: <ZPiwaaZaDPVexezn@slm.duckdns.org>
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Thu, 7 Sep 2023 10:13:23 +0800
-Message-ID: <CALm+0cUytR3-0mcW3t24gcyP27UW3rpP5_+vpLVC3w70+0n6oQ@mail.gmail.com>
-Subject: Re: [PATCH] workqueue: Fix UAF report by KASAN in pwq_release_workfn()
-To:     Tejun Heo <tj@kernel.org>
-Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.0.15.183]
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: Atcsqr.andestech.com 3872JA7c025828
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> On Wed, Sep 06, 2023 at 10:12:34AM +0800, Z qiang wrote:
-> > Flush the pwq_release_worker is insufficient, the call_rcu() is
-> > invoked to release wq
-> > in pwq_release_workfn(), this is also asynchronous.
->
-> But rcu_free_pwq() doesn't access wq or anything. The last access is from
-> the work function.
+This patch series introduces the Andes PMU errata, which
+adds support for perf sampling and mode filtering with
+the Andes PMU extension. 
 
-The rcu_free_wq() will access wq->cpu_pwq or unbound_attrs,
-but  at this time, the kfree(wq) may have been called in alloc_workqueue().
+The custom PMU extension serves the same purpose as Sscofpmf.
+Its non-standard local interrupt is assigned to bit 18 in the
+custom S-mode local interrupt pending CSR (slip), while the
+interrupt cause is (256 + 18).
 
-Thanks
-Zqiang
+This series is dependent on the series from Prabhakar,
+- https://patchwork.kernel.org/project/linux-riscv/cover/20230818135723.80612-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
 
+The feature needs the PMU device callbacks in OpenSBI.
+The OpenSBI and Linux patches can be found on Andes Technology GitHub
+- https://github.com/andestech/opensbi/commits/andes-pmu-support
+- https://github.com/andestech/linux/commits/andes-pmu-support
 
->
-> Thanks.
->
-> --
-> tejun
+The PMU device tree node of AX45MP:
+- https://github.com/andestech/opensbi/blob/andes-pmu-support/docs/pmu_support.md#example-3
+
+Tested hardware:
+- ASUS  Tinker-V (RZ/Five, AX45MP single core)
+- Andes AE350    (AX45MP quad core)
+
+Locus Wei-Han Chen (1):
+  riscv: andes: Support symbolic FW and HW raw events
+
+Yu Chien Peter Lin (3):
+  riscv: errata: Rename defines for Andes
+  irqchip/riscv-intc: Support large non-standard hwirq number
+  riscv: errata: Add Andes PMU errata
+
+ arch/riscv/Kconfig.errata                     |  13 ++
+ arch/riscv/errata/andes/errata.c              |  55 +++++++-
+ arch/riscv/include/asm/errata_list.h          |  45 ++++++-
+ arch/riscv/include/asm/vendorid_list.h        |   2 +-
+ arch/riscv/kernel/alternative.c               |   2 +-
+ drivers/irqchip/irq-riscv-intc.c              |  10 +-
+ drivers/perf/riscv_pmu_sbi.c                  |  20 ++-
+ .../arch/riscv/andes/ax45/firmware.json       |  68 ++++++++++
+ .../arch/riscv/andes/ax45/instructions.json   | 127 ++++++++++++++++++
+ .../arch/riscv/andes/ax45/memory.json         |  57 ++++++++
+ .../arch/riscv/andes/ax45/microarch.json      |  77 +++++++++++
+ tools/perf/pmu-events/arch/riscv/mapfile.csv  |   1 +
+ 12 files changed, 453 insertions(+), 24 deletions(-)
+ create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/firmware.json
+ create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/instructions.json
+ create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/memory.json
+ create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/microarch.json
+
+-- 
+2.34.1
+
