@@ -2,116 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CFF79734D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7059F7973CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233269AbjIGPW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50062 "EHLO
+        id S245733AbjIGPaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:30:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbjIGPVV (ORCPT
+        with ESMTP id S241462AbjIGP27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:21:21 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386EE199
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:21:07 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-68e4700c931so255350b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:21:07 -0700 (PDT)
+        Thu, 7 Sep 2023 11:28:59 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECFAB1FF9;
+        Thu,  7 Sep 2023 08:28:30 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-77058512c18so63496885a.1;
+        Thu, 07 Sep 2023 08:28:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694100067; x=1694704867; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CdG/yEmvsuQjOBoALKvigFMhVG4ZkbJlbNCVNFCW95k=;
-        b=hFOYkRmmoIHO9n9MuKwUf0WLl6jMhh1INbgRHXwdw14pUsq5FUQylWcx9x8Xmh3/as
-         jj/onsC61P9yAKaa66tu9QUR3zu1jsa+U9Ou1thc27maynS+IRsomqAAJ4aE4tlb0gyc
-         54sm3bJQBOu048bTwVKcAmdFNq1JFTpinlhmzmETDijw7dkqIpueeOITLbU/i9D/eN3u
-         n98Mw/3Dar4NWkneUTi8Lrfv76zgItVKjVnl1CYIEJf6XRG9mQXMGh6UkpvCLUOcuAwq
-         yC7oJvS5v2FC5iO+V+pL96L2IS5378BtwlqS3Ax81Gnv14PUiZriwT3LYl4yRYqEmQ6i
-         2H5g==
+        d=gmail.com; s=20221208; t=1694100455; x=1694705255; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5xAG8vAki6OKzGSmwZKwpc8XIZTasbZNRXeMNLWYhYg=;
+        b=FthdpiOuGVKFl9W1bCgm4BkLjLtGl7JI7tf0hq2I763cBf5ThKzy+eR82yvcwXoTTZ
+         xRUCeEQPJqiExU1o8zwHdBT7MmUzEf5WcTiDqKIPAzc7FGyk2Jvhr4PkgyeaqkroCVii
+         WqaPwtMus0cAXnFZQUlBddKRggVc/A7n+MjEz27lXd9Xc7M0lfGWc7EIpaMo7w8B6paj
+         UHVLdmTAv7XYFuSMxx0pEgYGdzSg0EHWyhpViRL4lRhiXPZWPB77aJp6tlIMt5gpKjM2
+         jmRvyVnUBt0txLnGPWOkbIx+r9eFrbKXOEDdbd0DwdJoSzW71TxyzdEYZRJ0nRx/oPAo
+         rWeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694100067; x=1694704867;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CdG/yEmvsuQjOBoALKvigFMhVG4ZkbJlbNCVNFCW95k=;
-        b=Xhj9V2FeorHfDwL+liD7aK9kA93euwU+JXJDwI0nknWMiX3MC5Jb1/7l9LGyXZyL/j
-         zgLFdvss1Xh6eSP/yc3z5KAEaEnzoLpvVI5iSn7lmubqdCSQhH2SAXRSjXIS1bN/MuiY
-         8hyuS0BP++/Qfo+YxeHNvXtTpkPaYRCOYWVqQo2RFXde/If2q93No5UvkeCu8KCqsmY8
-         l6cDNMIAkjtQ7h6eLK9lLn55v0Lsfwl/kM5wY8QJvxEamIrnjc5bmZNbYbsyKmUL4p7C
-         /VC/kCt7Wf5jrT7IoE0rgIAE9duExOqq6n9ZoQPRrveDl8Ks3rEXTjQUtazLqyX42gOU
-         Bu9Q==
-X-Gm-Message-State: AOJu0YxEjiHV7RsKH6LrWSSGr6/iojEpqMOF+yLiCG1iKMa4D3nwI4bI
-        9x2zipN8luZBKKYWxHpKn9pwCLMmzoexW+FTA/eFBj4ctVCl+X3XQwogsg==
-X-Google-Smtp-Source: AGHT+IHvJa/7FkPw5UU4MQhoWrNN0JeNEpF4NYmZOKhJtjjWQqdbyDvw0AaJBhSfLDJ+K7NB4oYLX/Nq50B/h5Hi3tI=
-X-Received: by 2002:a05:6122:9a9:b0:493:7c76:bbac with SMTP id
- g41-20020a05612209a900b004937c76bbacmr2374358vkd.2.1694093097716; Thu, 07 Sep
- 2023 06:24:57 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1694100455; x=1694705255;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=5xAG8vAki6OKzGSmwZKwpc8XIZTasbZNRXeMNLWYhYg=;
+        b=Uw3S+RnQhNHoZoJUsOINNBgc6fcs3HEgPhDhbChev5hNfImk1ZJkvN2mIqhSP6f8kE
+         SQcZ5OASP2PkbH98Gz6zrQY0LjdeSFcPeKTY7o/PSYlq1+m1suRfChjB/k6OAT+ioG07
+         nQRHneIgLtXAjMACRyur/OFeaiapGOTjpFT1nXL7rrqAb6FBY49ToJ85OGmjNtuxg5Pz
+         T1loE90094e8tCKKxbQ5U7XQo59746JpsHw6UpCZXpZDbVO+gbKlmxLvsmZ+dZs+IQTn
+         VZiRBQ4gemoSYnvXQETXWm/Rbbq/vEv/h8Z4S3Mth+7hrP3nun1Kxg0w5kXEOpaDNvpP
+         eezA==
+X-Gm-Message-State: AOJu0YwbIXmbqP8hzxO7slh43LMYOLAqW8hkxvbs3telQZQ/qsEBCW19
+        6TuTT3wKqRjrqbPNNv6WfQRbz/a0Vk0=
+X-Google-Smtp-Source: AGHT+IH0oluWC/uZc5YWidmp8znrZ8ZfkiAQICtKAN+RZbG6DRdaEMFt4bVn9WEICH5+t1I9GRJ9dA==
+X-Received: by 2002:a17:902:ecc8:b0:1bc:7001:6e5e with SMTP id a8-20020a170902ecc800b001bc70016e5emr23293177plh.32.1694093109112;
+        Thu, 07 Sep 2023 06:25:09 -0700 (PDT)
+Received: from [192.168.0.106] ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id jl1-20020a170903134100b001c32fd9e412sm8148306plb.58.2023.09.07.06.25.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Sep 2023 06:25:08 -0700 (PDT)
+Message-ID: <5011708f-b0ae-2853-0f87-a3b59845a2cc@gmail.com>
+Date:   Thu, 7 Sep 2023 20:25:04 +0700
 MIME-Version: 1.0
-References: <20230907024710.866917011@goodmis.org>
-In-Reply-To: <20230907024710.866917011@goodmis.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 7 Sep 2023 18:54:46 +0530
-Message-ID: <CA+G9fYt1dC7=pggtwX2D3jibbLweg+a2LnvYtxfF1nCnqELZSg@mail.gmail.com>
-Subject: Re: [PATCH 0/6] tracing: Fix removing instances while reading/writing
- to their files
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zheng Yejian <zhengyejian1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Content-Language: en-US
+To:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russell.h.weight@intel.com>,
+        Marcus Seyfarth <m.seyfarth@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Integrity <linux-integrity@vger.kernel.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: Slow boot and shutdown/reboot problems with 6.5.0+
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Sept 2023 at 08:17, Steven Rostedt <rostedt@goodmis.org> wrote:
->
->
-> It appears that the dynamic code of eventfs has caused a race window
-> to open up a bit more and showed that several files were not protected
-> by the trace array ref count. This means that a task could open one
-> of the files in an instance, remove the instance, and still be able to
-> read or write to that file. That access will then cause a "use-after-free"
-> bug.
->
-> Close those holes!
->
-> Also, fix a left over unused variable in the eventfs dput fix.
+Hi,
 
-This patch set applied on top of Linux next master branch and
-tested selftests ftrace tests [1]. The test run to complete and not
-found any crashes.
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> I've observed a slow boot and shutdown/reboot problems that have been verified on the stock Arch 6.5.1, CachyOS 6.5.0-2 and a custom-compiled 6.5.1 Kernel. I originally had seen a RCU-related trace which I thought to be the cause for these problems as well and reported it in https://bugzilla.kernel.org/show_bug.cgi?id=217864. However that specific trace turned out to be caused by an old patch that I carried around with me since 2022.
+> 
+> systemd-analyze with my custom compiled 6.5.1 shows a suspiciously long firmware time:
+> Startup finished in 2min 42.000s (firmware) + 4.201s (loader) + 6.895s (kernel) + 1.541s (userspace) = 2min 54.640s  
+> graphical.target reached after 1.539s in userspace.
+> 
+> For comparison, 6.4.14 starts in 16 seconds and doesn't even show a firmware section.
+> 
+> System:
+>   Host: klx99 Kernel: 6.5.1-3.1-cachyos-lto arch: x86_64 bits: 64
+>     Desktop: KDE Plasma v: 5.27.7 Distro: CachyOS
+> Machine:
+>   Mobo: Lenovo model: X99-TF Gaming v: G368J V1.1, NALEX
+>     serial: <superuser required> UEFI: American Megatrends v: CX99DE26
+>     date: 10/10/2020
+> CPU:
+>   Info: 18-core model: Intel Xeon E5-2696 v3 bits: 64 type: MT MCP cache:
+>     L2: 4.5 MiB
+> Graphics:
+>   Device-1: AMD Navi 21 [Radeon RX 6950 XT] driver: amdgpu v: kernel
+>   Display: x11 server: X.Org v: 21.1.99 with: Xwayland v: 23.2.0 driver: X:
+>     loaded: amdgpu unloaded: modesetting dri: radeonsi gpu: amdgpu
+>     resolution: 2560x1440~165Hz
+>   API: OpenGL v: 4.6 Mesa 23.3.0-devel (git-8a32614a18) renderer: AMD
+>     Radeon RX 6950 XT (navi21 LLVM 16.0.6 DRM 3.54 6.5.1-3.1-cachyos-lto)
 
->
-> Steven Rostedt (Google) (6):
->       tracefs/eventfs: Use dput to free the toplevel events directory
->       tracing: Increase trace array ref count on enable and filter files
->       tracing: Have tracing_max_latency inc the trace array ref count
->       tracing: Have current_trace inc the trace array ref count
->       tracing: Have option files inc the trace array ref count
->       tracing: Have event inject files inc the trace array ref count
->
-> ----
->  fs/tracefs/event_inode.c           | 17 +++++++---
->  fs/tracefs/inode.c                 |  2 +-
->  fs/tracefs/internal.h              |  5 +--
->  kernel/trace/trace.c               | 68 ++++++++++++++++++++++++++++++++++----
->  kernel/trace/trace.h               |  2 ++
->  kernel/trace/trace_events.c        |  6 ++--
->  kernel/trace/trace_events_inject.c |  3 +-
->  7 files changed, 85 insertions(+), 18 deletions(-)
+See Bugzilla for the full thread.
 
-[1] https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/naresh/tests/2V4IYQhAHrFXjwQvHLc2w3mKhXs
+FYI, it seems like this regression is related to systemd boot loop
+reported earlier [2].
 
---
-Linaro LKFT
-https://lkft.linaro.org
+To Marcus: On Bugzilla, Artem had asked you to bisect. Do you have
+any conclusion on it?
+
+Anyway, I'm adding this regression to be tracked by regzbot:
+
+#regzbot introduced: v6.4..v6.5 https://bugzilla.kernel.org/show_bug.cgi?id=217874
+#regzbot title: slow boot possibly due to firmware (TPM?) issues
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217874
+[2]: https://lore.kernel.org/all/028a21df-4397-80aa-c2a5-7c754560f595@gmail.com/
+
+-- 
+An old man doll... just what I always wanted! - Clara
