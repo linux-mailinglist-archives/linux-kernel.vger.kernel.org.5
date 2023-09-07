@@ -2,85 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 663A4797D97
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 22:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB0D797D9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 22:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238215AbjIGUwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 16:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
+        id S234345AbjIGUyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 16:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237271AbjIGUwI (ORCPT
+        with ESMTP id S230091AbjIGUye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 16:52:08 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B0E1990;
-        Thu,  7 Sep 2023 13:52:04 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-401f503b529so15490485e9.0;
-        Thu, 07 Sep 2023 13:52:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694119923; x=1694724723; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fae/gCSVi75yE6BXyO3fHmQGcGUFv46AyaLFONrZHGs=;
-        b=LIvS49O8d/1hIBo1v5JHOxMx0IPeGGLMARKhF8NYt/gjH74APCIrhMt/dY+FwWfyjD
-         uTlaxvQdT5VTAJgYFsnltwVy9fjknzbMjAeV1J7oQWAc3NlB87VeKXRqE7ev+lwzb2kP
-         9JyZ785owC8WRuCUfdpKeVTttYUovQVVDzBXh/wYPURvnsSJO46KAt43+KtWG/jEuAKL
-         jPgv1FsjNERnCBxPFnCK/c8guJLVuZrBMuYXcLi91l+9Lx17ufrW/Km3jWRmemdD0noa
-         PFx2fWTTgMoOJe7eRkcqw+uWB2R6/trPCuDEXyBSpTyOG3NNP8ICHqPpPRaSLnGC3Ka0
-         4CvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694119923; x=1694724723;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fae/gCSVi75yE6BXyO3fHmQGcGUFv46AyaLFONrZHGs=;
-        b=RIloqEQJ852hqz+CoY0CR4ltPTyZFLJtvdusUYCF2TSWnzZgefOFwX9Fp987FzbW6U
-         sQvN3a1BmIa1FYfmTXuwP2FeXNIu4PbpGK99Ac8fMf5wbiQY5c16F2odq72MzixGepuz
-         MPtkUYQ02w6Zw/h1ydh2jIoVsrQ1yCfm0no7cvLPyMuLkL9mq8G+UlklKZ2VFE90YKMR
-         EItfPY/nAtU25GUSI0YV1W3UGHZzMOJmyMh6Td62UOZp3A22BQrwsThO+vnpRxFX/oi6
-         P+gZHQsnOJFdpimvEc/y7yeuJ47n0NrZ1e8bl3aAYkAgFIPQAYXGp3et/r3g1ulLFgBy
-         gFlg==
-X-Gm-Message-State: AOJu0YyJiIcLwS1CfWJ0w9NWr0RLGPUY5/YAPsGeklfe+uC1KIYn1xS4
-        dOOxrCUh96zUJ/k2ikb0Sn1o8eteWPo=
-X-Google-Smtp-Source: AGHT+IGLBPPp3D3+qgyYnIHrOU7yvISt/AEl4NuYlOhEm585Zb3+yJTzO4nr6HpzIlzPAGBN4bweLw==
-X-Received: by 2002:a7b:cb94:0:b0:401:b0f2:88cc with SMTP id m20-20020a7bcb94000000b00401b0f288ccmr641368wmi.41.1694119922569;
-        Thu, 07 Sep 2023 13:52:02 -0700 (PDT)
-Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
-        by smtp.gmail.com with ESMTPSA id x6-20020a5d54c6000000b0031c855d52efsm292232wrv.87.2023.09.07.13.52.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 13:52:02 -0700 (PDT)
-Message-ID: <5487e816-f30c-468f-b860-a4cac30fba36@gmail.com>
-Date:   Thu, 7 Sep 2023 22:52:00 +0200
+        Thu, 7 Sep 2023 16:54:34 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D261990
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 13:54:30 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qeM1F-0000v9-A8; Thu, 07 Sep 2023 22:54:29 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qeM1E-004jKK-HG; Thu, 07 Sep 2023 22:54:28 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qeM1D-00HHCn-Tg; Thu, 07 Sep 2023 22:54:27 +0200
+Date:   Thu, 7 Sep 2023 22:54:27 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Dhruva Gole <d-gole@ti.com>
+Cc:     Nishanth Menon <nm@ti.com>, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Tero Kristo <kristo@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>, vibhore@ti.com
+Subject: Re: [PATCH] firmware: ti_sci: Mark driver as non removable
+Message-ID: <20230907205427.tilwp6fk2q7hpfof@pengutronix.de>
+References: <20230907171700.1922453-1-d-gole@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 3/3] firmware: Add support for Qualcomm UEFI Secure
- Application
-To:     Trilok Soni <quic_tsoni@quicinc.com>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Johan Hovold <johan@kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>
-References: <20230827211408.689076-1-luzmaximilian@gmail.com>
- <20230827211408.689076-4-luzmaximilian@gmail.com>
- <0d7697fd-11b3-1d4a-78da-7e5eb293d186@quicinc.com>
- <072b3df6-09fb-98a8-2b58-41dfcabd98c0@gmail.com>
- <89294acf-501f-5c2c-1619-cfc2b3dc893a@quicinc.com>
-Content-Language: en-US
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-In-Reply-To: <89294acf-501f-5c2c-1619-cfc2b3dc893a@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eqnbnfzxrnfhtna3"
+Content-Disposition: inline
+In-Reply-To: <20230907171700.1922453-1-d-gole@ti.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,37 +55,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/23 23:59, Trilok Soni wrote:
-> On 8/27/2023 2:53 PM, Maximilian Luz wrote:
->> On 8/27/23 23:26, Trilok Soni wrote:
->>> On 8/27/2023 2:14 PM, Maximilian Luz wrote:
->>>>    +config QCOM_QSEECOM_UEFISECAPP
->>>> +    bool "Qualcomm SEE UEFI Secure App client driver"
->>>
->>> Why not "tristate"? This driver can be a loadable module, right?
->>
->> As I understand, modular efivars have still not been fully sorted out in
->> the kernel. For example, userspace could try and mount efivarfs before
->> the module has been loaded and by that erroneously determine that the
->> system doesn't support efivars. So requiring it to be built in for now
->> is more of a workaround (which has been suggested by Johan Hovold).
->>
->> There is no technical limitation in this part of the code itself, so
->> enabling it (and QCOM_QSEECOM for that matter) to be built as module
->> should be fairly straightforward once that's been sorted out.
-> 
-> If not this application I would atleast like the QSEECOM driver to be a loadable module due to GKI (Generic Kernel Image) needs. Can we mark QSEECOM as "tristate" please? If not then there is a problem which we are not solving right now as you are documenting above and just moving it it for future and downstream vendors will keep having their additional changes to make it fit for loadable module needs.
 
-Could you elaborate a bit on why/how switching to a tristate would help
-here? I'm afraid I don't quite follow. Do you mean that this would make
-it easier for downstream vendors to patch the module as opposed to
-create their own new thing? IMHO if they already need to patch it they
-can just as well modify it to be buildable as a module.
+--eqnbnfzxrnfhtna3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Generally I'm not opposed to have both loadable as modules, but I don't
-quite see the point as it would not be usable as such in upstream at
-the moment (at least not reliably, so to avoid those headaches I think
-it's better to just stick to bool for now).
+Hello,
 
-Regards,
-Max
+On Thu, Sep 07, 2023 at 10:47:00PM +0530, Dhruva Gole wrote:
+> The TI-SCI message protocol provides a way to communicate between
+> various compute processors with a central system controller entity. It
+> provides the fundamental device management capability and clock control
+> in the SOCs that it's used in.
+>=20
+
+Maybe add:
+
+	The remove function failed to do all the necessary cleanup if
+	there are registered users. Some things are freed however which
+	likely results in an oops later on.
+
+> Ensure that the driver isn't unbound by suppressing its bind and unbind
+> sysfs attributes. As the driver is built-in there is no way to remove
+> device once bound.
+>=20
+> We can also remove the ti_sci_remove call along with the
+> ti_sci_debugfs_destroy as there are no callers for it any longer.
+>=20
+> Fixes: aa276781a64a ("firmware: Add basic support for TI System Control I=
+nterface (TI-SCI) protocol")
+> Suggested-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Dhruva Gole <d-gole@ti.com>
+
+While this isn't the most elegant solution, this is probably the most
+feasible one.
+
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+(with or without the suggested addition to the commit log above).
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--eqnbnfzxrnfhtna3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmT6OIIACgkQj4D7WH0S
+/k7uigf9Fy8T7gOB8S67eFUtrBxEwOgLrSnRVjGZhrTS3UeJlOQ7evLsrZc4kRcW
+qwmGgBvPh3hoTo0gdMaamwUM8QGzxhv4LHHHkRUnv6jWyJ/u/x76oCqbWG48WmKt
+ueOcYNhYhy9L/EU6hI/GbnUzJ+aG9T0SzhqNjIGpM6v3BmzpJXdDSMK66f3Wb8t5
++8dafVVNdWjVFot/2f9s4se4lS2aVgXPJUkMeWpa88BlW8ufzQW4p7SsIh7fwqut
+lomS3u5bL6WWB3nVkV12urlhDzMIZtxmnkyFf4aYBtPgdvAmO0Tb02WMRjuWE0zN
+RmYk2GC9MDS+lDWAbfQSSWVYT282Kg==
+=b4Jr
+-----END PGP SIGNATURE-----
+
+--eqnbnfzxrnfhtna3--
