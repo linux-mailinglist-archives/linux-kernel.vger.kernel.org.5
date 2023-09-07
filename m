@@ -2,54 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 825CF796F75
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 06:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D81796F76
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 06:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238104AbjIGEAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 00:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
+        id S239347AbjIGECi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 00:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjIGEA1 (ORCPT
+        with ESMTP id S229743AbjIGECg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 00:00:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30063199A
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 21:00:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8E174C433C9;
-        Thu,  7 Sep 2023 04:00:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694059222;
-        bh=NADXZdSMWL5mBGyP7H8DbhP5et9pbjydx3mogHSjfZI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ixWBjpyOyL/fidDlAQKwflDQv21LcuaSMop0UKFV52oSpjYN8zS5AhfFyJmjmwzxQ
-         Yq+tmDRnRKZGNaGju/3wKfMzM8oIxAuJzLAF0rGadBbsDQHdpW7nv8nnSDgZSY4BG/
-         O5RIAC0a5JgbwNzt70mwHm1z/OaYQqCFhS0Leyo0mTKh36iYYEn4sFCIvbfYEsNzCd
-         8fXFIy7rXmOEyJ3uBlg0IhN8sWroq0qqoUAK6fZNKKoCe2Xkjfw4a+T5mILF1oifq1
-         ZvPQFAcDh3wgO29lA4W1wL/7tuy4vAlC/22wv9rdAxikik04jVTE8PsJGL6gc72O69
-         jGAhQHfQI/bsA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 70768E22AFC;
-        Thu,  7 Sep 2023 04:00:22 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 7 Sep 2023 00:02:36 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E22199A
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 21:02:10 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-26f7f71b9a7so433079a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 21:02:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1694059330; x=1694664130; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vzFWzXBGnRsqCwKpysfeip0HHkXxYeCESv6nHyFM/J4=;
+        b=Je8rI4ZArDTmLyXuUJQwTNGoeEz0f8DnhrIr5GYX6kwBMsIPAm2t2Idyshqc3KwfPB
+         /Qms1HfmYl1pdEzSwS3Q2qbnFv93eZ8N5EY+cUy3FBVAYtGdhXAEP+SjX356jGoUVqdv
+         clCUFJci8aQrhe8i+GoynicTLT1fvtwjeVqkDCdqxroiP6C/LW7TOgrh98bJdhM3XGgP
+         wnhimVQeFKvJwC2Vq8JRRRptB2bGetVcHwdh4NSUxTQMnsZXgQ/3Pvp1nJqJRHGnKl0Y
+         NF9TVw0fc7jHXsXdc92vG4ewJbVNSGKj8aEd19oR2HOgonB04wM2tIC8Fkp46sJnnC5+
+         se9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694059330; x=1694664130;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=vzFWzXBGnRsqCwKpysfeip0HHkXxYeCESv6nHyFM/J4=;
+        b=GUbkst+vepGTeSFu+obBO5iQ5rCmFiOKZug7u7neLm+trhxJF2LH3nmd+W1I1q878j
+         cCpqC+VpKMVEeT5OaVNkwtX+XqGj/KfgCD5BYv1B6tp+D4Um9IDYdqHftkf0L8bGW3BG
+         FFLSJwLoyX0hGGDj4p4Pw6qe6CnnsTGa0WTWcb5bqFv4eFzicX+9HfQVp9P3BxS9Pu0D
+         BSsKrPSFi2ZJGS/P+tbkWb5Qoe4HJgVAj8X1Q25iivUBax0nz5mZdJ1u3iHg1j+ju8n6
+         lFek3scoczohvcACvTy4VU9fe4F/6hVpUmT9JLmQnCkMqZA11tIiHfAzNCkqomHxp2Ez
+         EAqg==
+X-Gm-Message-State: AOJu0YzL8jSimXnNQ0flId51FxtNqjlbod8DnVp7fzen352A8fXoTIvo
+        fwtIq6TF2OqSeNkTjbsRiDus8rwIQGUZr2dnc70=
+X-Google-Smtp-Source: AGHT+IFOlS/qO02By0FEw5WBsVOJHDcayiHSdTZSugKq+WRiptU3rjt9Ug9e15oU0Ue9crbFsMQceA==
+X-Received: by 2002:a17:90b:1e4a:b0:26d:5049:cf48 with SMTP id pi10-20020a17090b1e4a00b0026d5049cf48mr16282352pjb.40.1694059329986;
+        Wed, 06 Sep 2023 21:02:09 -0700 (PDT)
+Received: from [10.254.232.87] ([139.177.225.246])
+        by smtp.gmail.com with ESMTPSA id r10-20020a17090a2e8a00b00262d079720bsm511582pjd.29.2023.09.06.21.02.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 21:02:09 -0700 (PDT)
+Message-ID: <06a8624e-00bb-a332-4271-860847faf4a3@bytedance.com>
+Date:   Thu, 7 Sep 2023 12:02:02 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: [PATCH] maple_tree: use GFP_KERNEL on mas_node_count
+To:     =?UTF-8?B?7Ius7J6s7ISg?= <jason.sim@samsung.com>
+Cc:     "liam.howlett@oracle.com" <liam.howlett@oracle.com>,
+        "surenb@google.com" <surenb@google.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jaewon31.kim@gmail.com" <jaewon31.kim@gmail.com>,
+        "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
+        Matthew Wilcox <willy@infradead.org>
+References: <CGME20230907033914epcms1p61c5eed4d34d5c4212436c201f33292b3@epcms1p6>
+ <20230907033914epcms1p61c5eed4d34d5c4212436c201f33292b3@epcms1p6>
+ <ZPlIShWJWt+Kxt8x@casper.infradead.org>
+From:   Peng Zhang <zhangpeng.00@bytedance.com>
+In-Reply-To: <ZPlIShWJWt+Kxt8x@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [net v4] net: phy: Provide Module 4 KSZ9477 errata (DS80000754C)
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169405922245.5293.2774617542441865085.git-patchwork-notify@kernel.org>
-Date:   Thu, 07 Sep 2023 04:00:22 +0000
-References: <20230905093315.784052-1-lukma@denx.de>
-In-Reply-To: <20230905093315.784052-1-lukma@denx.de>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     Tristram.Ha@microchip.com, edumazet@google.com, andrew@lunn.ch,
-        davem@davemloft.net, woojung.huh@microchip.com, olteanv@gmail.com,
-        o.rempel@pengutronix.de, f.fainelli@gmail.com, kuba@kernel.org,
-        pabeni@redhat.com, UNGLinuxDriver@microchip.com,
-        linux@armlinux.org.uk, hkallweit1@gmail.com, michael@walle.cc,
-        horatiu.vultur@microchip.com, arun.ramadoss@microchip.com,
-        linux@rempel-privat.de, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,28 +81,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
 
-On Tue,  5 Sep 2023 11:33:15 +0200 you wrote:
-> The KSZ9477 errata points out (in 'Module 4') the link up/down problems
-> when EEE (Energy Efficient Ethernet) is enabled in the device to which
-> the KSZ9477 tries to auto negotiate.
+在 2023/9/7 11:49, Matthew Wilcox 写道:
+> On Thu, Sep 07, 2023 at 12:39:14PM +0900, 심재선 wrote:
+>> Use GFP_KERNEL on mas_node_count instead of GFP_NOWAIT | __GFP_NOWARN
+>> in order to allow memory reclaim.
+There are many paths that call maple tree's mas_node_count(). Some paths
+cannot reclaim memory.
 > 
-> The suggested workaround is to clear advertisement of EEE for PHYs in
-> this chip driver.
+> What testing did you do of this patch?  In particular, did you try it
+> with lockdep enabled?
 > 
-> [...]
-
-Here is the summary with links:
-  - [net,v4] net: phy: Provide Module 4 KSZ9477 errata (DS80000754C)
-    https://git.kernel.org/netdev/net/c/08c6d8bae48c
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
