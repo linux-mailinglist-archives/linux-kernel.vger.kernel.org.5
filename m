@@ -2,135 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAE2796F51
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 05:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC9F796F55
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 05:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236212AbjIGDjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 23:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42716 "EHLO
+        id S237190AbjIGDkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 23:40:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbjIGDjY (ORCPT
+        with ESMTP id S229782AbjIGDkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 23:39:24 -0400
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6CD6CA
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 20:39:18 -0700 (PDT)
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20230907033915epoutp02b8811b327ec6ce501f5daeb461985093~CgLxBhvHV1995019950epoutp02d
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 03:39:15 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20230907033915epoutp02b8811b327ec6ce501f5daeb461985093~CgLxBhvHV1995019950epoutp02d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1694057955;
-        bh=t6O+sJV1CtCCVqO0k7CtCzBiHCIGrrRUSroD6WVLr+A=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=TROmi+Y03W8aIL+v7pMlrIrfSsDvOCZi6Yl/4KAcf6kYPDg/GR+6cYF1bcxRKt1NG
-         w3WVflr1nH0Kt3tfzWlLjmFSBDzafJHuYy2wOhMfFIoGg2lR0ekTIfNbpsMTvKz1Zf
-         Uyzk/iSBKlmKZIJYBGCMDEQhXBs4uT3SIJeZU0KI=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20230907033915epcas1p16d8a604545c2129f6601035750634685~CgLw1BmJG2828928289epcas1p1X;
-        Thu,  7 Sep 2023 03:39:15 +0000 (GMT)
-Received: from epsmgec1p1.samsung.com (unknown [182.195.38.249]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4Rh4jb28vsz4x9Pp; Thu,  7 Sep
-        2023 03:39:15 +0000 (GMT)
-X-AuditID: b6c32a33-749fa700000021d1-34-64f945e365a5
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmgec1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0E.E9.08657.3E549F46; Thu,  7 Sep 2023 12:39:15 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH] maple_tree: use GFP_KERNEL on mas_node_count
-Reply-To: jason.sim@samsung.com
-Sender: =?UTF-8?B?7Ius7J6s7ISg?= <jason.sim@samsung.com>
-From:   =?UTF-8?B?7Ius7J6s7ISg?= <jason.sim@samsung.com>
-To:     "liam.howlett@oracle.com" <liam.howlett@oracle.com>
-CC:     "surenb@google.com" <surenb@google.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jaewon31.kim@gmail.com" <jaewon31.kim@gmail.com>,
-        "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20230907033914epcms1p61c5eed4d34d5c4212436c201f33292b3@epcms1p6>
-Date:   Thu, 07 Sep 2023 12:39:14 +0900
-X-CMS-MailID: 20230907033914epcms1p61c5eed4d34d5c4212436c201f33292b3
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCKsWRmVeSWpSXmKPExsWy7bCmru5j158pBrf28Ft0b57JaLG94QG7
-        xeVdc9gs7q35z2qxYWUDk8XkSwvYHNg8ds66y+6xYFOpx6ZPk9g9Ni+p9/j49BaLx+dNcgFs
-        Udk2GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUBHKCmU
-        JeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVILUnIKzAr0ihNzi0vz0vXyUkusDA0MjEyBChOy
-        M6bfOcNU8JWjovXjMvYGxknsXYycHBICJhKtG3uYQWwhgR2MEo+35HcxcnDwCghK/N0hDBIW
-        FrCV2Ll4ChtEibzE2S0NjBBxC4muV8+ZQGw2ATOJCQsXMYK0igiYS7w8JQ8SZhaYzCRx5lQm
-        xCZeiRntT1kgbGmJ7cu3MkLYohI3V79lh7HfH5sPFReRaL13lhnCFpR48HM3VFxK4kzbEqg5
-        xRLr11xngrBrJI4+2Q8VN5doeLsS7GReAV+JFXuvgs1nEVCVOPHyBytEjYvEoyXnGSHulJfY
-        /nYOM8j5zAKaEut36UOUKErs/D0XqoRP4t3XHlaYV3bMewK1Vlni47cLYJ9LCEhKTNhlDmF6
-        SHT8NoGEWaDEhUMrmCYwys9ChOwsJGtnIaxdwMi8ilEstaA4Nz012bDAEB6Xyfm5mxjByU/L
-        eAfj5fn/9A4xMnEwHmKU4GBWEuF9J/8tRYg3JbGyKrUoP76oNCe1+BCjKdDDE5mlRJPzgek3
-        ryTe0MTSwMTMyMTC2NLYTEmcV3HC7BQhgfTEktTs1NSC1CKYPiYOTqkGppSuV5zMVrFqE+c2
-        t61aI7ZSkSNpsqnf7tYOeZYGb3ul1mtax3+adyspyWjNZ3shayKT3dHKkriiLmRKwvwTZ5+L
-        Pp/tfy3d66Pe3jqLytCPLkpTFmTuLU+9yrylYveJQ8umnr9U/vDdnCNqcbO/rzNJ1naN/u9f
-        qZjY8MtEJPy5ytFFF4Njkk9c+Sd7ybuMxyc7h13+zJJjwcwfg1dEPRKOvpWeXLstf9ZeN/t/
-        gXydmU8NhH7qvj0lcsi+n0Vxy7SHinaKSnUmjXMauzUrLyfybtv0+Njdw/NWRW2/8KrW53Iy
-        S8JRwai5Zzdey2EpbMiqYV/7eanzntCrf33kLwTG391Uf2bpjKyykhYNJZbijERDLeai4kQA
-        G//BKwcEAAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230907033914epcms1p61c5eed4d34d5c4212436c201f33292b3
-References: <CGME20230907033914epcms1p61c5eed4d34d5c4212436c201f33292b3@epcms1p6>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Sep 2023 23:40:41 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A3811B;
+        Wed,  6 Sep 2023 20:40:37 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qe5sg-0001c0-SR; Thu, 07 Sep 2023 05:40:34 +0200
+Message-ID: <f8588a24-85aa-405e-bd4d-7a570f69fe4c@leemhuis.info>
+Date:   Thu, 7 Sep 2023 05:40:34 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Possible bug report: kernel 6.5.0/6.5.1 high load when CIFS share
+ is mounted (cifsd-cfid-laundromat in"D" state)
+Content-Language: en-US, de-DE
+To:     Linux CIFS <linux-cifs@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
+References: <CAO+kfxTwOvaxYV0ZRESxZB-4LHsF9b_VBjAKahhwUm5a1_c4ug@mail.gmail.com>
+ <ZPfPfyIoVxw5L6El@debian.me>
+ <CAO+kfxQgXOsx6u+xLKGJe0KDiFsRAGstSpnrwxjQF6udgz5HFQ@mail.gmail.com>
+From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <CAO+kfxQgXOsx6u+xLKGJe0KDiFsRAGstSpnrwxjQF6udgz5HFQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1694058037;6fb4caec;
+X-HE-SMSGID: 1qe5sg-0001c0-SR
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use GFP_KERNEL on mas_node_count instead of GFP_NOWAIT | __GFP_NOWARN
-in order to allow memory reclaim.
+[TLDR: This mail in primarily relevant for Linux kernel regression
+tracking. See link in footer if these mails annoy you.]
 
-Currently, fork errors occur on low free memory as follows:
+On 06.09.23 23:03, Brian Pardy wrote:
+> Added committer Ronnie Sahlberg to CC.
+> 
+> On Tue, Sep 5, 2023 at 9:01 PM Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+>> On Tue, Sep 05, 2023 at 01:09:05PM -0400, Brian Pardy wrote:
+>>> I've noticed an issue with the CIFS client in kernel 6.5.0/6.5.1 that
+>>> does not exist in 6.4.12 or other previous kernels (I have not tested
+>>> 6.4.13). Almost immediately after mounting a CIFS share, the reported
+>>> load average on my system goes up by 2. At the time this occurs I see
+>>> two [cifsd-cfid-laundromat] kernel threads running the "D" state,
+>>> where they remain for the entire time the CIFS share is mounted. The
+>>> load will remain stable at 2 (otherwise idle) until the share is
+>>> unmounted, at which point the [cifsd-cfid-laundromat] threads
+>>> disappear and load drops back down to 0. This is easily reproducible
+>>> on my system, but I am not sure what to do to retrieve more useful
+>>> debugging information. If I mount two shares from this server, I get
+>>> four laundromat threads in "D" state and a sustained load average of
+>>> 4.
+> [...]
+> 
+> Thank you for directing me to the bug-bisect documentation. Results below:
+> 
+> # git bisect bad
+> d14de8067e3f9653cdef5a094176d00f3260ab20 is the first bad commit
+>
 
- Zygote  : Failed to fork child process: Out of memory (12)
+#regzbot ^introduced: d14de8067e3f9653cdef5a094176d00f3260a
+#regzbot ignore-activity
 
--ENOMEM was returned as following path:
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
 
- mas_node_count
- mas_expected_entries
- dup_mmap
- dup_mm
- copy_mm
- copy_process
-
-Signed-off-by: jason.sim <jason.sim@samsung.com>
----
- lib/maple_tree.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/lib/maple_tree.c b/lib/maple_tree.c
-index ee1ff0c59fd7..076798f83baa 100644
---- a/lib/maple_tree.c
-+++ b/lib/maple_tree.c
-@@ -1336,11 +1336,11 @@ static void mas_node_count_gfp(struct ma_state *mas, int count, gfp_t gfp)
-  * @mas: The maple state
-  * @count: The number of nodes needed
-  *
-- * Note: Uses GFP_NOWAIT | __GFP_NOWARN for gfp flags.
-+ * Note: Uses GFP_KERNEL for gfp flags.
-  */
- static void mas_node_count(struct ma_state *mas, int count)
- {
--       return mas_node_count_gfp(mas, count, GFP_NOWAIT | __GFP_NOWARN);
-+       return mas_node_count_gfp(mas, count, GFP_KERNEL);
- }
- 
- /*
--- 
-2.17.1
