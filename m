@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5735F797AA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE85F797AC1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245441AbjIGRro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:47:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50288 "EHLO
+        id S245414AbjIGRsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245369AbjIGRrk (ORCPT
+        with ESMTP id S245516AbjIGRrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:47:40 -0400
+        Thu, 7 Sep 2023 13:47:49 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61BCBD;
-        Thu,  7 Sep 2023 10:47:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F541FEC;
+        Thu,  7 Sep 2023 10:47:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=VXFBeiZYZLxdE1EgCNB8C70Cr3AOFx9IwJaa1llihbg=; b=DV83kF/eITv9Kv5OQQmtmcXh4s
-        aLB2PI2hxlu4An2NjCFMYLMGM0Yuq/dEbT1Zmb9aJ4Xc9KSmRjqtBtstT/W86jThMfVSYimGMHEBG
-        RpTPu//7Bm/ZI/jY6/+Mdekr4QY8VSy2YQChZKQFh3JEyNgS06MTdLvu4t4UQY09KSLfv7PsS6NoW
-        Ksxmeb8/rMLRtMuq8/2lhgreBwJdoa1fxIrLHb51vg+QFQj2yu2nqRD025IPMcZM31nfpA53D+F8V
-        A+5xrl872htBCCIDaIg+jApOm9GX39pCayQ6NfVTrWvrExjy2cfEd/jc5XIW3Rrih2yROq4N02YA9
-        LNCPCoDA==;
+        bh=wD6jndt8wbHj+DL+KkiwehRezl2XHcQmRoPgvfO+F4I=; b=nF26xSCABiPufnNgK3G2trN8Zm
+        15ekZrNYw2ptW9dbui8bV+AHuMNUASEcvB5o1xmBMGDWlFSCSX0C5wAj/svU/64WCqMG5XQ9K+tvj
+        EYN10+S4ZDVeKfrKGbK/HyNHnzL509E2KUjoiBr8rEyDoxk3s1ie3fda6OIL+WD7qTFg/2IxxjK7Q
+        U/3tHfGX4klo3XbKbbvi/aFGhGAiO7HckY8AwXoRANtBsxk4K+scpYQJ4NYQIvbAe9ocTPbszSS1L
+        kyQLCkX0txtmHtVJUcG6kiR4BCbB6Rj6griCoOTUOy1OoPPO1Z1zynUfx0vwTpeNi7JRe4nfQ0pN2
+        GEq9iA8w==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qeJ5w-00CUFM-0r; Thu, 07 Sep 2023 17:47:08 +0000
+        id 1qeJ5w-00CUFP-3W; Thu, 07 Sep 2023 17:47:08 +0000
 From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
@@ -35,9 +35,9 @@ Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         Chandan Babu R <chandan.babu@oracle.com>,
         "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org
-Subject: [PATCH 2/5] mm: Use rwsem_is_write_locked in mmap_assert_write_locked
-Date:   Thu,  7 Sep 2023 18:47:02 +0100
-Message-Id: <20230907174705.2976191-3-willy@infradead.org>
+Subject: [PATCH 3/5] xfs: Use rwsem_is_write_locked()
+Date:   Thu,  7 Sep 2023 18:47:03 +0100
+Message-Id: <20230907174705.2976191-4-willy@infradead.org>
 X-Mailer: git-send-email 2.37.1
 In-Reply-To: <20230907174705.2976191-1-willy@infradead.org>
 References: <20230907174705.2976191-1-willy@infradead.org>
@@ -52,26 +52,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This slightly strengthens our checks when lockdep is disabled.
+This avoids using the mr_writer field to check the XFS ILOCK is held
+for write.  It also improves the checking we do when lockdep is disabled.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- include/linux/mmap_lock.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/xfs/xfs_inode.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-index 8d38dcb6d044..0258b06668e8 100644
---- a/include/linux/mmap_lock.h
-+++ b/include/linux/mmap_lock.h
-@@ -69,7 +69,7 @@ static inline void mmap_assert_locked(struct mm_struct *mm)
- static inline void mmap_assert_write_locked(struct mm_struct *mm)
+diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+index 360fe83a334f..e58d84d23f49 100644
+--- a/fs/xfs/xfs_inode.c
++++ b/fs/xfs/xfs_inode.c
+@@ -339,8 +339,11 @@ __xfs_rwsem_islocked(
+ 	struct rw_semaphore	*rwsem,
+ 	bool			shared)
  {
- 	lockdep_assert_held_write(&mm->mmap_lock);
--	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
-+	VM_BUG_ON_MM(!rwsem_is_write_locked(&mm->mmap_lock), mm);
- }
+-	if (!debug_locks)
++	if (!debug_locks) {
++		if (!shared)
++			return rwsem_is_write_locked(rwsem);
+ 		return rwsem_is_locked(rwsem);
++	}
  
- #ifdef CONFIG_PER_VMA_LOCK
+ 	if (!shared)
+ 		return lockdep_is_held_type(rwsem, 0);
+@@ -359,12 +362,10 @@ xfs_isilocked(
+ 	struct xfs_inode	*ip,
+ 	uint			lock_flags)
+ {
+-	if (lock_flags & (XFS_ILOCK_EXCL|XFS_ILOCK_SHARED)) {
+-		if (!(lock_flags & XFS_ILOCK_SHARED))
+-			return !!ip->i_lock.mr_writer;
++	if (lock_flags & XFS_ILOCK_SHARED)
+ 		return rwsem_is_locked(&ip->i_lock.mr_lock);
+-	}
+-
++	if (lock_flags & XFS_ILOCK_EXCL)
++		return rwsem_is_write_locked(&ip->i_lock.mr_lock);
+ 	if (lock_flags & (XFS_MMAPLOCK_EXCL|XFS_MMAPLOCK_SHARED)) {
+ 		return __xfs_rwsem_islocked(&VFS_I(ip)->i_mapping->invalidate_lock,
+ 				(lock_flags & XFS_MMAPLOCK_SHARED));
 -- 
 2.40.1
 
