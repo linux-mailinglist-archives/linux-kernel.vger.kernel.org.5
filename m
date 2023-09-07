@@ -2,114 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B13F79779F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 779F9797807
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239845AbjIGQaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49346 "EHLO
+        id S241450AbjIGQkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240204AbjIGQ3x (ORCPT
+        with ESMTP id S239587AbjIGQjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:29:53 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DF17698
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:26:59 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c09673b006so8590445ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:26:59 -0700 (PDT)
+        Thu, 7 Sep 2023 12:39:41 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2AC146BD
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:37:26 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2bcb89b4767so20191321fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:37:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694103963; x=1694708763; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l1CUVSUE/g7AfxRwMSaLzU3EKx7ahKOV7VYgsEDqqhY=;
-        b=hpjVAO9DyqJbzzyu9zLrSmKgC0TKBxAKbEHHoPiBONW0EOZuB8DFA9REV9VP2atn0M
-         v8JOAJh3VnNQ8bmbFBvnf7hrcQB+wpxot9mdVp7t0kThQN+ILU0/q4mGVakXr//T+HTu
-         C1htG9Tjd9Ux3U8j9Rq+YB7oo6diuQJeMCC/kqS5HbAaaaQ4UgSf7vgd+Pn6xXiq5xwz
-         TeNPIWeb3EUoN+FaQdPESczMC2N4dPJ6vM3rEMsY7uyDJGv2iX/45p6YjUJv/E2hNFWg
-         stENtIccwewhzYBIlz5lLIvTj6BkPvT3CdKC6wO7KLRHgoBDiDGvCpBuehTbNAKdKb6u
-         /hHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694103963; x=1694708763;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+        d=ventanamicro.com; s=google; t=1694104575; x=1694709375; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=l1CUVSUE/g7AfxRwMSaLzU3EKx7ahKOV7VYgsEDqqhY=;
-        b=PYVDu7UpXIqzIySKh2VHPzcRm1ZutZYsN0dLr8s2wg6mx+TYzCIafeGs49FXcyllcT
-         08Wy8rJO+Pd36PmkdTUup3fVDHPF26hx5HR3JffTTaoNxO7HYHA7oUwDCsHiQMaE0J6I
-         D6SSWKhprClFjQebqSxQnz2lXrzbD4n7V7E590MgAWF+euasjDorGdrljYlwIbnH0r7P
-         uJmf+8vDjUEPh7HGI9UQgjgB7kssrqJvijm0o2awbHmC0H3xMPMDJj3txY3O/+io6W9X
-         mpOEbwZcjI7adCTrTFzKYTbsqVto+YNbQczLq+te4m2jYLTXYVPNFwHOdOvUAdspqdZs
-         csdg==
-X-Gm-Message-State: AOJu0YxwG3Iohj1xyahn9VCjSaBzbXaIgNyQ4sHFkzUGmbo9YzCTBSF4
-        x4PUhqzpZVPcUH6UWjUQRymnx/4O1dCpeWnNmGM=
-X-Google-Smtp-Source: AGHT+IEhSwixRwMFJ/PEPA+HuSWv/jCCwwmhpvjeHTvgxdJeu9Oz8P1U41uftIqVJn6ThXvamkVttA==
-X-Received: by 2002:a05:6a21:7889:b0:153:a00b:dca0 with SMTP id bf9-20020a056a21788900b00153a00bdca0mr4104800pzc.11.1694077170404;
-        Thu, 07 Sep 2023 01:59:30 -0700 (PDT)
-Received: from [10.84.158.67] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id t23-20020a1709028c9700b001bdb85291casm12313579plo.208.2023.09.07.01.59.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 01:59:29 -0700 (PDT)
-Message-ID: <3544d5e3-3070-9ddc-fa6c-a05ed35dfd14@bytedance.com>
-Date:   Thu, 7 Sep 2023 16:59:22 +0800
+        bh=SUKo+1CllhDiFuk8e5kRvChp7TbG5sdYIOTqTfNiyNA=;
+        b=W/uNJx0gEVpL1lyZsb+2CYMoeh+M3cwXUDF2RXF65wxNvZ+atCoVrTVUbSGr/sMhsp
+         ErumCmWOzwYZt9vrig793BMntnS4wF1pDThT9IHmlI3423mItX01yu4UJ0g6KOmRWMk7
+         mQLoMT9Pon//j15SV8gfEhJryC+QKKck4FrWaCHVIrbTqsmI/EuBY6iK5yoB4gqRue6A
+         vL1dwjbg9QUrNYU0zzp0qa6vWSA+30NKsfyDV6OTGrDPrgX7pn5uAqWjNid8Q4FxcAGS
+         bWxfxWdUTWkTdj+royRj59M2ZUYYxAEDh48Z/Khu7yEFfU2FqbMnMsrlFEDqkJeCNKB/
+         dctA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694104575; x=1694709375;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SUKo+1CllhDiFuk8e5kRvChp7TbG5sdYIOTqTfNiyNA=;
+        b=JD17mYiJbZOVEmPIauI60Jh0EJCBsFyaRr2XcFEp2IGc/mquDK1axjzGlXo3NPcUs/
+         Gf7blcFq0Gk+I4UHaS7OiX8imB9qrDvrCAhBdAk4+ZGm25zdsc4KPsOISToeymQ6Z/v1
+         VF/5dBLp01Xfh8TZYmX2/5QWdorgQvgB1XJT0eQ5sVwR3UCJsOxN8kUSzDHUB8GFEUIg
+         BZ/T3Qc5DB5xVxY9+3uvM6L8uFBjXI9HP9/R+VtQmXXoZ/q/Td0I6+EuftJPlk4miEUp
+         CQq5mwPh0HIqj6Y+GWFu8gvscyTgTGrO39TSwPY6XoVVIGC8V3rXqiRpi6iwBT+qcVuK
+         aDsA==
+X-Gm-Message-State: AOJu0Yyjg29qlBdneG/Tf4EQmqJdGoeESP0bui7afTqgNPLYmgEAva2G
+        r89dE/aVwjhb4jyJpyMrzgEHD6h/1QhR4JNEr2E=
+X-Google-Smtp-Source: AGHT+IFpt5OHjqn8E5AQWQ3lRTTwlRHl603sQrss7nLMvcblN8lMTU9C4YqIhqBmSU5t7umjGBWQQA==
+X-Received: by 2002:a7b:c414:0:b0:3fe:f74c:b4f6 with SMTP id k20-20020a7bc414000000b003fef74cb4f6mr4055831wmi.17.1694077304089;
+        Thu, 07 Sep 2023 02:01:44 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id s13-20020a7bc38d000000b003fe24441e23sm1882132wmj.24.2023.09.07.02.01.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 02:01:43 -0700 (PDT)
+Date:   Thu, 7 Sep 2023 11:01:42 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Haibo Xu <xiaobo55x@gmail.com>
+Cc:     Haibo Xu <haibo1.xu@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Guo Ren <guoren@kernel.org>,
+        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+        wchen <waylingii@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Lei Wang <lei4.wang@intel.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Like Xu <likexu@tencent.com>, Peter Gonda <pgonda@google.com>,
+        Thomas Huth <thuth@redhat.com>,
+        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Michal Luczaj <mhal@rbox.co>, Paul Durrant <paul@xen.org>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        kvm-riscv@lists.infradead.org
+Subject: Re: [PATCH v2 7/8] KVM: riscv: selftest: Change vcpu_has_ext to a
+ common function
+Message-ID: <20230907-bde62d037a3aaeedfe31f964@orel>
+References: <cover.1693659382.git.haibo1.xu@intel.com>
+ <b6ef1b031e3a581f481cf19a26623388163444b4.1693659382.git.haibo1.xu@intel.com>
+ <20230904-aa8b0d8d23d391586686038a@orel>
+ <CAJve8ok5cU+h1K+WJ+aDpB+u+PBo8XosUyyVbMGy-xR0XiWFdw@mail.gmail.com>
+ <CAJve8om+dLcG+4trDfG1yx8vhj52RhPZrJoF-emWDX+OPM088A@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [External] Re: Fwd: WARNING: CPU: 13 PID: 3837105 at
- kernel/sched/sched.h:1561 __cfsb_csd_unthrottle+0x149/0x160
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Benjamin Segall <bsegall@google.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Igor Raits <igor.raits@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Stable <stable@vger.kernel.org>
-References: <a5dd536d-041a-2ce9-f4b7-64d8d85c86dc@gmail.com>
- <xm26cyz4ibnb.fsf@google.com>
- <55e2861e-9722-08f8-2c49-966035ff4218@bytedance.com>
- <20230904222351.GC2568@noisy.programming.kicks-ass.net>
-From:   Hao Jia <jiahao.os@bytedance.com>
-In-Reply-To: <20230904222351.GC2568@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJve8om+dLcG+4trDfG1yx8vhj52RhPZrJoF-emWDX+OPM088A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/9/5 Peter Zijlstra wrote:
-> On Thu, Aug 31, 2023 at 04:48:29PM +0800, Hao Jia wrote:
+On Thu, Sep 07, 2023 at 11:57:00AM +0800, Haibo Xu wrote:
+> On Wed, Sep 6, 2023 at 6:10 PM Haibo Xu <xiaobo55x@gmail.com> wrote:
+> >
+> > On Mon, Sep 4, 2023 at 10:04 PM Andrew Jones <ajones@ventanamicro.com> wrote:
+> > >
+> > > On Sat, Sep 02, 2023 at 08:59:29PM +0800, Haibo Xu wrote:
+> > > > diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> > > > index d8ecacd03ecf..c4028bf32e3f 100644
+> > > > --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> > > > +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
+> > > > @@ -44,20 +44,6 @@ bool check_reject_set(int err)
+> > > >       return err == EINVAL;
+> > > >  }
+> > > >
+> > > > -static inline bool vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
+> > > > -{
+> > > > -     int ret;
+> > > > -     unsigned long value;
+> > > > -
+> > > > -     ret = __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
+> > > > -     if (ret) {
+> > > > -             printf("Failed to get ext %d", ext);
+> > > > -             return false;
+> > > > -     }
+> > > > -
+> > > > -     return !!value;
+> > >
+> > > get-reg-list will now assert on get-reg when an extension isn't present,
+> > > rather than failing the __TEST_REQUIRE(), which would do a skip instead.
+> > > We need both the return false version and the assert version.
+> > >
+> >
+> > Ok, Will keep this one for get-reg-list and add another one for
+> > arch-timer specific usage.
+> >
 > 
->> If I understand correctly, rq->clock_update_flags may be set to
->> RQCF_ACT_SKIP after __schedule() holds the rq lock, and sometimes the rq
->> lock may be released briefly in __schedule(), such as newidle_balance(). At
->> this time Other CPUs hold this rq lock, and then calling
->> rq_clock_start_loop_update() may trigger this warning.
->>
->> This warning check might be wrong. We need to add assert_clock_updated() to
->> check that the rq clock has been updated before calling
->> rq_clock_start_loop_update().
->>
->> Maybe some things can be like this?
+> Just thought about it again, maybe we only need the "return false"
+> version for both get-reg-list
+> and arch-timer tests since if an extension was not available, the test
+> can be skipped with a message.
 > 
-> Urgh, aside from it being white space mangled, I think this is entirely
-> going in the wrong direction.
+> bool vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
+> {
+>        unsigned long value = 0;
 > 
-> Leaking ACT_SKIP is dodgy as heck.. it's entirely too late to think
-> clearly though, I'll have to try again tomorrow.
+>        __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
+> 
+>        return !!value;
+> }
 
-Hi Peter,
-
-Do you think this fix method is correct? Or should we go back to the 
-beginning and move update_rq_clock() from unthrottle_cfs_rq()?
+Yup, I had actually seen that when reviewing a later patch in this series,
+but I wasn't concerned if we added the assert type anyway, since we
+frequently end up with the two function types for KVM queries. If we don't
+have a need for an assert type yet, then we don't need to introduce it.
+However, we should introduce the non-assert type as __vcpu_has_ext(),
+reserving the vcpu_has_ext() name for the assert type, per the kvm
+selftests naming convention.
 
 Thanks,
-Hao
+drew
