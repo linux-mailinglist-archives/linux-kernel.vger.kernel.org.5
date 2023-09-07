@@ -2,99 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A94AB797DF7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 23:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A9D797DFD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 23:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241173AbjIGVct convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Sep 2023 17:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
+        id S241333AbjIGVef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 17:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241274AbjIGVcm (ORCPT
+        with ESMTP id S232305AbjIGVee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 17:32:42 -0400
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53AF1BEB;
-        Thu,  7 Sep 2023 14:32:34 -0700 (PDT)
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3aa139a0ab2so1004404b6e.2;
-        Thu, 07 Sep 2023 14:32:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694122354; x=1694727154;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KsHh3VUmRRLaCQcOu1L+EjQxG84poDmbYiq9LJBKwWc=;
-        b=eSRwr50JvA/murg/vSg4+8oLvZdIEPT4YQFFyq0CXp5fmDuV71X0nkMerhMsLj+Obe
-         yBBDRqwk8m4HaH2pRb8L36kzZ/ArTqefEaL4s00TF5uEjeOhYpkwUdRos+VIzTkLb6J0
-         XJ952dYA/LK1jpGxtQgLzaxaEUZp7uthcXwZR6S3xSHbVmenyW7QF9oui7tqv+K6PXjP
-         w751IdrdTjn1mhtXa8t6lix7873GI2pNOVXWilkq/wi2Mb/TMYal2s2YluunUXaehTWU
-         UHDv2rD0ackbDkC3Qz8QOGEdg72HEPezm+CV7RkfX37bpFH0Bvlor5cxq529zleXJHD4
-         ePkg==
-X-Gm-Message-State: AOJu0YyRAUtUM/2Rhv6h+RR4M7VqXdVZTPixM8FjWOM4OOVu8hzwsKya
-        GbGXmraE0bkivRJ36Hc29SDjZ2E4SReSGbdlKtM=
-X-Google-Smtp-Source: AGHT+IGNN+hHWcAvfnDsxe5XI0uw6Li7uHgQl2eQUdsEwo0B7bhLmmGwMVtEzRqfIqwMde7/ivw43OAyrnTr/cqdLDM=
-X-Received: by 2002:a05:6808:b1a:b0:3a7:3ab9:e589 with SMTP id
- s26-20020a0568080b1a00b003a73ab9e589mr748165oij.35.1694122353849; Thu, 07 Sep
- 2023 14:32:33 -0700 (PDT)
+        Thu, 7 Sep 2023 17:34:34 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E39B4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 14:34:30 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qeMdr-0005EZ-G6; Thu, 07 Sep 2023 23:34:23 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qeMdp-004jog-A9; Thu, 07 Sep 2023 23:34:21 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qeMdo-00HHky-6P; Thu, 07 Sep 2023 23:34:20 +0200
+Date:   Thu, 7 Sep 2023 23:34:19 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        jarkko.nikula@linux.intel.com
+Subject: Re: [PATCH v9 4/6] pwm: dwc: use clock rate in hz to avoid rounding
+ issues
+Message-ID: <20230907213419.aqzwoppznj5tx7w6@pengutronix.de>
+References: <20230907161242.67190-1-ben.dooks@codethink.co.uk>
+ <20230907161242.67190-5-ben.dooks@codethink.co.uk>
 MIME-Version: 1.0
-References: <20230903114721.190733-1-adityag@linux.ibm.com> <20230903114721.190733-4-adityag@linux.ibm.com>
-In-Reply-To: <20230903114721.190733-4-adityag@linux.ibm.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 7 Sep 2023 14:32:22 -0700
-Message-ID: <CAM9d7chkvhnfhZo+Whypg40Vik3XiuvbKWZ_3jF0Zpsj+6JfqA@mail.gmail.com>
-Subject: Re: [PATCH 3/4] perf tests task_analyzer: use perf check for
- libtraceevent support
-To:     Aditya Gupta <adityag@linux.ibm.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, irogers@google.com,
-        linux-perf-users@vger.kernel.org, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, kjain@linux.ibm.com,
-        disgoel@linux.vnet.ibm.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fylg3yqaihsqt5zo"
+Content-Disposition: inline
+In-Reply-To: <20230907161242.67190-5-ben.dooks@codethink.co.uk>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 3, 2023 at 4:47 AM Aditya Gupta <adityag@linux.ibm.com> wrote:
->
-> Currently we use output of 'perf version --build-options', to check whether
-> perf was built with libtraceevent support.
->
-> Instead, use 'perf check --feature libtraceevent' to check for
-> libtraceevent support.
->
-> Signed-off-by: Aditya Gupta <adityag@linux.ibm.com>
+
+--fylg3yqaihsqt5zo
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+[Dropped William Salmon and Jude Onyenegecha from the list of recipents,
+their email addresses don't seem to work any more.]
+
+On Thu, Sep 07, 2023 at 05:12:40PM +0100, Ben Dooks wrote:
+> As noted, the clock-rate when not a nice multiple of ns is probably
+> going to end up with inacurate calculations, as well as on a non pci
+> system the rate may change (although we've not put a clock rate
+> change notifier in this code yet) so we also add some quick checks
+> of the rate when we do any calculations with it.
+>=20
+> Signed-off-by; Ben Dooks <ben.dooks@codethink.co.uk>
+> Reported-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 > ---
->  tools/perf/tests/shell/test_task_analyzer.sh | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/tests/shell/test_task_analyzer.sh b/tools/perf/tests/shell/test_task_analyzer.sh
-> index 92d15154ba79..8fbc33c95025 100755
-> --- a/tools/perf/tests/shell/test_task_analyzer.sh
-> +++ b/tools/perf/tests/shell/test_task_analyzer.sh
-> @@ -52,8 +52,8 @@ find_str_or_fail() {
->
->  # check if perf is compiled with libtraceevent support
->  skip_no_probe_record_support() {
-> -       perf version --build-options | grep -q " OFF .* HAVE_LIBTRACEEVENT" && return 2
-> -       return 0
-> +       perf check --feature libtraceevent >/dev/null && return 0
+> v9:
+>  - fixed commit spelling
+>  - changed to use codethink email instead of sifive
+> v8:
+>  - fixup post rename
+>  - move to earlier in series
+> ---
+>  drivers/pwm/pwm-dwc-core.c | 24 +++++++++++++++---------
+>  drivers/pwm/pwm-dwc.h      |  2 +-
+>  2 files changed, 16 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/drivers/pwm/pwm-dwc-core.c b/drivers/pwm/pwm-dwc-core.c
+> index 3fc281a78c9a..3b856685029d 100644
+> --- a/drivers/pwm/pwm-dwc-core.c
+> +++ b/drivers/pwm/pwm-dwc-core.c
+> @@ -49,13 +49,14 @@ static int __dwc_pwm_configure_timer(struct dwc_pwm *=
+dwc,
+>  	 * periods and check are the result within HW limits between 1 and
+>  	 * 2^32 periods.
+>  	 */
+> -	tmp =3D DIV_ROUND_CLOSEST_ULL(state->duty_cycle, dwc->clk_ns);
+> +	tmp =3D state->duty_cycle * dwc->clk_rate;
 
-Maybe we can add -q/--quiet option to silent messages.
+This might overflow. You can prevent this by asserting that clk_rate is
+<=3D NSEC_PER_SEC and using mul_u64_u64_div_u64.
 
-Thanks,
-Namhyung
+> +	tmp =3D DIV_ROUND_CLOSEST_ULL(tmp, NSEC_PER_SEC);
+>  	if (tmp < 1 || tmp > (1ULL << 32))
+>  		return -ERANGE;
+>  	low =3D tmp - 1;
+> =20
+> -	tmp =3D DIV_ROUND_CLOSEST_ULL(state->period - state->duty_cycle,
+> -				    dwc->clk_ns);
+> +	tmp =3D (state->period - state->duty_cycle) * dwc->clk_rate;
+> +	tmp =3D DIV_ROUND_CLOSEST_ULL(tmp, NSEC_PER_SEC);
+>  	if (tmp < 1 || tmp > (1ULL << 32))
+>  		return -ERANGE;
+>  	high =3D tmp - 1;
+> @@ -121,11 +122,14 @@ static int dwc_pwm_get_state(struct pwm_chip *chip,=
+ struct pwm_device *pwm,
+>  			     struct pwm_state *state)
+>  {
+>  	struct dwc_pwm *dwc =3D to_dwc_pwm(chip);
+> +	unsigned long clk_rate;
+>  	u64 duty, period;
+>  	u32 ctrl, ld, ld2;
+> =20
+>  	pm_runtime_get_sync(chip->dev);
+> =20
+> +	clk_rate =3D dwc->clk_rate;
+> +
+>  	ctrl =3D dwc_pwm_readl(dwc, DWC_TIM_CTRL(pwm->hwpwm));
+>  	ld =3D dwc_pwm_readl(dwc, DWC_TIM_LD_CNT(pwm->hwpwm));
+>  	ld2 =3D dwc_pwm_readl(dwc, DWC_TIM_LD_CNT2(pwm->hwpwm));
+> @@ -137,17 +141,19 @@ static int dwc_pwm_get_state(struct pwm_chip *chip,=
+ struct pwm_device *pwm,
+>  	 * based on the timer load-count only.
+>  	 */
+>  	if (ctrl & DWC_TIM_CTRL_PWM) {
+> -		duty =3D (ld + 1) * dwc->clk_ns;
+> -		period =3D (ld2 + 1)  * dwc->clk_ns;
+> +		duty =3D ld + 1;
+> +		period =3D ld2 + 1;
+>  		period +=3D duty;
+>  	} else {
+> -		duty =3D (ld + 1) * dwc->clk_ns;
+> +		duty =3D ld + 1;
+>  		period =3D duty * 2;
+>  	}
+> =20
+> +	duty *=3D NSEC_PER_SEC;
+> +	period *=3D NSEC_PER_SEC;
 
+A comment that/why this cannot overflow would be nice. (I didn't check,
+maybe it can?)
 
-> +       return 2
->  }
->
->  prepare_perf_data() {
-> --
-> 2.41.0
->
+> +	state->period =3D DIV_ROUND_CLOSEST_ULL(period, clk_rate);
+> +	state->duty_cycle =3D DIV_ROUND_CLOSEST_ULL(duty, clk_rate);
+
+Without having thought deeply about this, I think you need to round up
+here. Hmm, but given that .apply() uses round-closest, too, this needs
+to be addressed separately.
+
+(The ugly thing about round-closest is that .apply(mypwm,
+=2Eget_state(mypwm)) isn't idempotent in general. Consider a PWM that can
+implement period =3D 41.7ns and period =3D 42.4 ns. If it's configured with
+42.4, .get_state will return period =3D 42. Reapplying this will configure
+for 41.7ns. This won't happen with the PCI clkrate, but it might in the
+of case. Another reason to use rounding-down in .apply is that
+mul_u64_u64_div_u64 doesn't have a round-nearest variant.)
+
+>  	state->polarity =3D PWM_POLARITY_INVERSED;
+> -	state->period =3D period;
+> -	state->duty_cycle =3D duty;
+> =20
+>  	pm_runtime_put_sync(chip->dev);
+> =20
+> @@ -168,7 +174,7 @@ struct dwc_pwm *dwc_pwm_alloc(struct device *dev)
+>  	if (!dwc)
+>  		return NULL;
+> =20
+> -	dwc->clk_ns =3D 10;
+> +	dwc->clk_rate =3D NSEC_PER_SEC / 10;
+>  	dwc->chip.dev =3D dev;
+>  	dwc->chip.ops =3D &dwc_pwm_ops;
+>  	dwc->chip.npwm =3D DWC_TIMERS_TOTAL;
+> diff --git a/drivers/pwm/pwm-dwc.h b/drivers/pwm/pwm-dwc.h
+> index 64795247c54c..e0a940fd6e87 100644
+> --- a/drivers/pwm/pwm-dwc.h
+> +++ b/drivers/pwm/pwm-dwc.h
+> @@ -42,7 +42,7 @@ struct dwc_pwm_ctx {
+>  struct dwc_pwm {
+>  	struct pwm_chip chip;
+>  	void __iomem *base;
+> -	unsigned int clk_ns;
+> +	unsigned long clk_rate;
+
+Given that clk_ns was only introduced in patch #2 I think it would be
+cleaner to squash these two patches together.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--fylg3yqaihsqt5zo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmT6QdsACgkQj4D7WH0S
+/k4AIQf+JZmJsb6OqTEes8nOE/gzUhjTk0OENM36x/+mWqYs6cIfm7nLt60+6SJO
+rnMBydxdOINrMlczgT/gx9CuyL/WNPp+qUvGDSv4KGPkUX7jH6Y7QUcfm7VOh7/N
+E1MhQXzREeKMgNVZ3INTZsCL/0JEArNodNTKLoe8IyYSU3a3Okp+AuIyceO7TSC4
+nfsGeaOr5TZgTIqvqDKlOkbBaWTGdUH2q7lijWnymx0V2op97kbSSRYxfcsWdTMw
+csKu0nYdjaAGGCqhTeHZH175iK2X2e2tpyrCwttpacdp0prMBaq6BJVJEAhps00W
+RCdJiJBuaM2+3eIERYLXh5fA/Dc4sQ==
+=crh7
+-----END PGP SIGNATURE-----
+
+--fylg3yqaihsqt5zo--
