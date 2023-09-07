@@ -2,209 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CEE797CAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 21:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773F0797CCE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 21:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235690AbjIGTYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 15:24:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56058 "EHLO
+        id S235999AbjIGTeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 15:34:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjIGTYh (ORCPT
+        with ESMTP id S230447AbjIGTeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 15:24:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A93B2
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 12:24:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694114672; x=1725650672;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=gmdJv9k5Hlrl7l+9ky7dngBQQOJTQs48s9FRH3s0wNI=;
-  b=fRv5h/U/CPxelSwtBQVsJEVc3APtoLzMN8WEiOKnt98WB14Njsgn5zVf
-   h7Flh3DzqVQuOPtMFoFENwuS18S0nfRyG7Ehw5VrzbhInlGxS3dzpxfLS
-   DrOkd2hrm8Mp90h5Kz30XXXG6GOxK5vwBdAIVQcanW21csRcECs2o5noe
-   xYX8ZeZBQvANrMzF2kO5cWQ85XwrpPa7BmLflcd+JRZbS19+EOo/wbobP
-   IYPiaYDo3ra8NClruaAr7Z1Hqfkm9B4gPbf+yHkh9c1HBU2/F3pshUAH6
-   IGEeZPaIB1qtwCdz7B4X2EnsefQHGeT8BVy3mLy6qYBfjGrEjjYRo9u5n
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="362517230"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="362517230"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 12:24:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="691911846"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="691911846"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 07 Sep 2023 12:24:29 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qeKc7-0001V9-1Z;
-        Thu, 07 Sep 2023 19:24:27 +0000
-Date:   Fri, 8 Sep 2023 03:23:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        =?iso-8859-1?Q?P=E9ter?= Ujfalusi 
-        <peter.ujfalusi@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: sound/soc/soc-pcm.c:1082:1: warning: the frame size of 1324 bytes is
- larger than 1024 bytes
-Message-ID: <202309080339.rbPMLUjl-lkp@intel.com>
+        Thu, 7 Sep 2023 15:34:01 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335D3CE9;
+        Thu,  7 Sep 2023 12:33:57 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 387J9fa8031321;
+        Thu, 7 Sep 2023 19:33:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=lIkq2Vsmc9nbPO7dwP8I1nL/xnlH+h0IPn+JOTf6bI4=;
+ b=rmSDXr3gC99wD4yvbgDD+bfCDIjzGBcF6p2BTyhGSxvmh0LGiSf+5XQqKN89Hwcxgodi
+ zdva7qKjmlQaPOc25Fmu/jZyqT4JckoMoS6WdVMI4J4IG6wwVcVbA8Q+9oly8jYwkj+A
+ UJfgD+BQW9PE4vg59xDABQG+JB872vdvtpVIidRvX6kmguk9C1LU33fia79kH2N+eEVz
+ fTKuArBl0Xnam+Ee4u5zh4l1PfLPUHpBFAJ5Z266q3SRWyV7a8iN3bky5hsGk8DWSkRI
+ 9JUnYTtupAHjyQzCeaUlFRIedYoa/z4E5OV1ZvUwGQd+a2LCWlgYHGZPvqg9N50jvR0f zA== 
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3syh6enu72-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Sep 2023 19:33:49 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 387IQGx4006710;
+        Thu, 7 Sep 2023 19:33:48 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svgvkx566-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Sep 2023 19:33:48 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 387JXkuS17433310
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 Sep 2023 19:33:46 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A7AAA20043;
+        Thu,  7 Sep 2023 19:33:46 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 306F220040;
+        Thu,  7 Sep 2023 19:33:44 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.39.37])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Thu,  7 Sep 2023 19:33:43 +0000 (GMT)
+Date:   Fri, 8 Sep 2023 01:03:35 +0530
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/1] ext4: Mark buffer new if it is unwritten to avoid
+ stale data exposure
+Message-ID: <ZPolj/36lDyd9+8R@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <cover.1693909504.git.ojaswin@linux.ibm.com>
+ <c307579df7e109eb4eedaaf07ebdc98b15d8b7ff.1693909504.git.ojaswin@linux.ibm.com>
+ <20230905135629.wdjl2b6s3pzh7idg@quack3>
+ <ZPl9gAImu85zEbXP@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <20230907114630.2y3kxm5vkr3bun5q@quack3>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230907114630.2y3kxm5vkr3bun5q@quack3>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: mM5L1TadqQ_441XMaRLxIUQ3-e3XQ_F2
+X-Proofpoint-GUID: mM5L1TadqQ_441XMaRLxIUQ3-e3XQ_F2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-07_11,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ clxscore=1015 lowpriorityscore=0 mlxlogscore=999 priorityscore=1501
+ impostorscore=0 suspectscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309070168
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   4a0fc73da97efd23a383ca839e6fe86410268f6b
-commit: ac950278b0872c87bcef6153fd9c119265c8ba83 ASoC: add N cpus to M codecs dai link support
-date:   3 months ago
-config: i386-buildonly-randconfig-006-20230908 (https://download.01.org/0day-ci/archive/20230908/202309080339.rbPMLUjl-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230908/202309080339.rbPMLUjl-lkp@intel.com/reproduce)
+On Thu, Sep 07, 2023 at 01:46:30PM +0200, Jan Kara wrote:
+> On Thu 07-09-23 13:06:56, Ojaswin Mujoo wrote:
+> > On Tue, Sep 05, 2023 at 03:56:29PM +0200, Jan Kara wrote:
+> > > On Tue 05-09-23 15:58:01, Ojaswin Mujoo wrote:
+> > > > ** Short Version **
+> > > > 
+> > > > In ext4 with dioread_nolock, we could have a scenario where the bh returned by
+> > > > get_blocks (ext4_get_block_unwritten()) in __block_write_begin_int() has
+> > > > UNWRITTEN and MAPPED flag set. Since such a bh does not have NEW flag set we
+> > > > never zero out the range of bh that is not under write, causing whatever stale
+> > > > data is present in the folio at that time to be written out to disk. To fix this
+> > > > mark the buffer as new in _ext4_get_block(), in case it is unwritten.
+> > > > 
+> > > > -----
+> > > > ** Long Version **
+> > > > 
+> > > > The issue mentioned above was resulting in two different bugs:
+> > > > 
+> > > > 1. On block size < page size case in ext4, generic/269 was reliably
+> > > > failing with dioread_nolock. The state of the write was as follows:
+> > > > 
+> > > >   * The write was extending i_size.
+> > > >   * The last block of the file was fallocated and had an unwritten extent
+> > > >   * We were near ENOSPC and hence we were switching to non-delayed alloc
+> > > >     allocation.
+> > > > 
+> > > > In this case, the back trace that triggers the bug is as follows:
+> > > > 
+> > > >   ext4_da_write_begin()
+> > > >     /* switch to nodelalloc due to low space */
+> > > >     ext4_write_begin()
+> > > >       ext4_should_dioread_nolock() // true since mount flags still have delalloc
+> > > >       __block_write_begin(..., ext4_get_block_unwritten)
+> > > >         __block_write_begin_int()
+> > > >           for(each buffer head in page) {
+> > > >             /* first iteration, this is bh1 which contains i_size */
+> > > >             if (!buffer_mapped)
+> > > >               get_block() /* returns bh with only UNWRITTEN and MAPPED */
+> > > >             /* second iteration, bh2 */
+> > > >               if (!buffer_mapped)
+> > > >                 get_block() /* we fail here, could be ENOSPC */
+> > > >           }
+> > > >           if (err)
+> > > >             /*
+> > > >              * this would zero out all new buffers and mark them uptodate.
+> > > >              * Since bh1 was never marked new, we skip it here which causes
+> > > >              * the bug later.
+> > > >              */
+> > > >             folio_zero_new_buffers();
+> > > >       /* ext4_wrte_begin() error handling */
+> > > >       ext4_truncate_failed_write()
+> > > >         ext4_truncate()
+> > > >           ext4_block_truncate_page()
+> > > >             __ext4_block_zero_page_range()
+> > > 	>               if(!buffer_uptodate())
+> > > >                 ext4_read_bh_lock()
+> > > >                   ext4_read_bh() -> ... ext4_submit_bh_wbc()
+> > > >                     BUG_ON(buffer_unwritten(bh)); /* !!! */
+> > > > 
+> > > > 2. The second issue is stale data exposure with page size >= blocksize
+> > > > with dioread_nolock. The conditions needed for it to happen are same as
+> > > > the previous issue ie dioread_nolock around ENOSPC condition. The issue
+> > > > is also similar where in __block_write_begin_int() when we call
+> > > > ext4_get_block_unwritten() on the buffer_head and the underlying extent
+> > > > is unwritten, we get an unwritten and mapped buffer head. Since it is
+> > > > not new, we never zero out the partial range which is not under write,
+> > > > thus writing stale data to disk. This can be easily observed with the
+> > > > following reporducer:
+> > > > 
+> > > >  fallocate -l 4k testfile
+> > > >  xfs_io -c "pwrite 2k 2k" testfile
+> > > >  # hexdump output will have stale data in from byte 0 to 2k in testfile
+> > > >  hexdump -C testfile
+> > > > 
+> > > > NOTE: To trigger this, we need dioread_nolock enabled and write
+> > > > happening via ext4_write_begin(), which is usually used when we have -o
+> > > > nodealloc. Since dioread_nolock is disabled with nodelalloc, the only
+> > > > alternate way to call ext4_write_begin() is to fill make sure dellayed
+> > > > alloc switches to nodelalloc (ext4_da_write_begin() calls
+> > > > ext4_write_begin()).  This will usually happen when FS is almost full
+> > > > like the way generic/269 was triggering it in Issue 1 above. This might
+> > > > make this issue harder to replicate hence for reliable replicate, I used
+> > > > the below patch to temporarily allow dioread_nolock with nodelalloc and
+> > > > then mount the disk with -o nodealloc,dioread_nolock. With this you can
+> > > > hit the stale data issue 100% of times:
+> > > > 
+> > > > @@ -508,8 +508,8 @@ static inline int ext4_should_dioread_nolock(struct inode *inode)
+> > > >   if (ext4_should_journal_data(inode))
+> > > >     return 0;
+> > > >   /* temporary fix to prevent generic/422 test failures */
+> > > > - if (!test_opt(inode->i_sb, DELALLOC))
+> > > > -   return 0;
+> > > > + // if (!test_opt(inode->i_sb, DELALLOC))
+> > > > + //  return 0;
+> > > >   return 1;
+> > > >  }
+> > > > 
+> > > > -------
+> > > > 
+> > > > After applying this patch to mark buffer as NEW, both the above issues are
+> > > > fixed.
+> > > > 
+> > > > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> > 
+> > Hi Jan, thanks for the review.
+> > 
+> > > 
+> > > Good catch! But I'm wondering whether this is really the right fix. For
+> > > example in ext4_block_truncate_page() shouldn't we rather be checking
+> > > whether the buffer isn't unwritten and if yes then bail because there's
+> > > nothing to zero out in the block? That would seem like a more logical
+> > > and robust solution of the first problem to me.
+> > 
+> > Right, I agree. I will look into it and prepare a patch for this in v2.
+> > 
+> > > 
+> > > Regarding the second issue I agree that using buffer_new flag makes the
+> > > most sense. But it would make most sense to me to put this special logic
+> > > directly into ext4_get_block_unwritten() because it is really special logic
+> > > when preparing buffered write via unwritten extent (and it relies on
+> > > __block_write_begin_int() logic to interpret buffer_new flag in the right
+> > > way). Putting in _ext4_get_block() seems confusing to me because it raises
+> > > questions like why should we set it for reads? And why not set it already
+> > > in ext4_map_blocks() which is also used by iomap?
+> > 
+> > Originally I had kept it there because it didn't seem to affect any read
+> > related paths, and marking an unwritten buffer as new for zero'ing out
+> > seemed like the right thing to do irrespective of which code path we
+> > were coming from. However, I think its okay to move it
+> > ext4_get_block_unwritten() it seems to be the only place where we need
+> > to explicitly mark it as such.
+> > 
+> > That being said, I also had an alternate solution that marked the map
+> > flag as NEW in ext4_map_blocks() -> ext4_ext4_map_blocks() ->
+> > ext4_ext_handle_unwritten_extents(). Do you think it makes more
+> > sense to handle this issue in ext4 map layer instead of relying on special
+> > handling of buffer head?
+> > 
+> > Yesterday I looked into this a bit more and it seems that all the other
+> > code paths in ext4, except ext4_da_get_block_prep(), rely on
+> > ext4_map_blocks() setting the NEW flag correctly in map->m_flags
+> > whenever the buffer might need to be zeroed out (this is true for dio
+> > write via iomap as well). Now this makes me incline towards fixing the
+> > issue in ext4_map_blocks layer, which might be better in the longer for
+> > eg when we eventually move to iomap.
+> 
+> I was also thinking about this and I'm concerned about the following:
+> __block_write_begin_int() does:
+> 
+>                 if (buffer_new(bh))
+>                         clear_buffer_new(bh);
+> 
+> before checking for buffer_mapped() flag. So if we mapped the buffer e.g.
+> in the read path and marked it as new there, then __block_write_begin_int()
+> will happily clear the new flag and because the buffer is mapped it will
+> just not bother with calling get_block() again. The buffer_new flag is not
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309080339.rbPMLUjl-lkp@intel.com/
+So a question here, if we mark a buffer mapped while reading, then we
+don't really need the new flag on it right? Since it'll already have
+valid data, in which case it shouldn't matter if
+__block_write_begin_int() clears the flag.
 
-All warnings (new ones prefixed by >>):
+> really a buffer state flag but just a special side-band communication
+> between the ->get_block handler and __block_write_begin_int(). We have
+> similar communication happening through other bits of b_state in the legacy
+> direct IO code.
+> 
+> So this mess is specific to __block_write_begin_int() and its handling of
+> buffer heads. In iomap code we have iomap_block_needs_zeroing() used in
+> __iomap_write_begin() and unwritten extents do end up being zeroed
+> automatically regardless of the IOMAP_F_NEW flag.
 
-   sound/soc/soc-pcm.c: In function '__soc_pcm_hw_params':
->> sound/soc/soc-pcm.c:1082:1: warning: the frame size of 1324 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-    }
-    ^
+So basically when to zero out is communicated to
+__block_write_begin_int() via the buffer head new flag irrespective of
+whether the extent itself is "new" or not (that is map flags has new).
+Hence, the buffer being new (needing zeroing) is really something
+get_blocks should figure out and communicate to buffer handling layer. 
 
+Thanks for explaining this. Going through all this makes me feel the
+whole interaction between __block_write_begin_int() -> get_blocks() ->
+ext4_map_blocks() is kinda confusing/fragile and each layer has several
+implicit assumptions about how the others will behave.
 
-vim +1082 sound/soc/soc-pcm.c
+Also, just bouncing some ideas here. Why is it that
+__block_write_begin_int() only considers buffer_new() when deciding to
+zero out? Shouldn't we zero out when the buffer is unwritten as well?
+That way we could avoid all the special logic of marking the buffer as
+new whenever it is unwritten, as seen in this patch and in
+ext4_da_get_block_prep().
 
-4662c59688b8db Kuninori Morimoto 2020-09-29   975  
-ddee627cf6bb60 Liam Girdwood     2011-06-09   976  /*
-ddee627cf6bb60 Liam Girdwood     2011-06-09   977   * Called by ALSA when the hardware params are set by application. This
-ddee627cf6bb60 Liam Girdwood     2011-06-09   978   * function can also be called multiple times and can allocate buffers
-ddee627cf6bb60 Liam Girdwood     2011-06-09   979   * (using snd_pcm_lib_* ). It's non-atomic.
-ddee627cf6bb60 Liam Girdwood     2011-06-09   980   */
-b7898396f4bbe1 Takashi Iwai      2021-12-07   981  static int __soc_pcm_hw_params(struct snd_soc_pcm_runtime *rtd,
-b7898396f4bbe1 Takashi Iwai      2021-12-07   982  			       struct snd_pcm_substream *substream,
-ddee627cf6bb60 Liam Girdwood     2011-06-09   983  			       struct snd_pcm_hw_params *params)
-ddee627cf6bb60 Liam Girdwood     2011-06-09   984  {
-19bdcc7aeed416 Shreyas NC        2020-02-25   985  	struct snd_soc_dai *cpu_dai;
-0b7990e38971da Kuninori Morimoto 2018-09-03   986  	struct snd_soc_dai *codec_dai;
-244e293690a6e0 Charles Keepax    2018-06-19   987  	int i, ret = 0;
-ddee627cf6bb60 Liam Girdwood     2011-06-09   988  
-b7898396f4bbe1 Takashi Iwai      2021-12-07   989  	snd_soc_dpcm_mutex_assert_held(rtd);
-5cca59516de5df Shengjiu Wang     2019-11-12   990  
-5cca59516de5df Shengjiu Wang     2019-11-12   991  	ret = soc_pcm_params_symmetry(substream, params);
-5cca59516de5df Shengjiu Wang     2019-11-12   992  	if (ret)
-5cca59516de5df Shengjiu Wang     2019-11-12   993  		goto out;
-5cca59516de5df Shengjiu Wang     2019-11-12   994  
-7cf3c5b4a04f4b Kuninori Morimoto 2020-05-25   995  	ret = snd_soc_link_hw_params(substream, params);
-a5e6c1090001b8 Kuninori Morimoto 2020-05-25   996  	if (ret < 0)
-ddee627cf6bb60 Liam Girdwood     2011-06-09   997  		goto out;
-ddee627cf6bb60 Liam Girdwood     2011-06-09   998  
-a4be4187b2bfc6 Kuninori Morimoto 2020-03-09   999  	for_each_rtd_codec_dais(rtd, i, codec_dai) {
-2e5894d73789ee Benoit Cousson    2014-07-08  1000  		struct snd_pcm_hw_params codec_params;
-e15ff262e21238 Kuninori Morimoto 2023-01-31  1001  		unsigned int tdm_mask = snd_soc_dai_tdm_mask_get(codec_dai, substream->stream);
-2e5894d73789ee Benoit Cousson    2014-07-08  1002  
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1003  		/*
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1004  		 * Skip CODECs which don't support the current stream type,
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1005  		 * the idea being that if a CODEC is not used for the currently
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1006  		 * set up transfer direction, it should not need to be
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1007  		 * configured, especially since the configuration used might
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1008  		 * not even be supported by that CODEC. There may be cases
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1009  		 * however where a CODEC needs to be set up although it is
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1010  		 * actually not being used for the transfer, e.g. if a
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1011  		 * capture-only CODEC is acting as an LRCLK and/or BCLK master
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1012  		 * for the DAI link including a playback-only CODEC.
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1013  		 * If this becomes necessary, we will have to augment the
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1014  		 * machine driver setup with information on how to act, so
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1015  		 * we can do the right thing here.
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1016  		 */
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1017  		if (!snd_soc_dai_stream_valid(codec_dai, substream->stream))
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1018  			continue;
-cde79035c6cf57 Ricard Wanderlof  2015-08-24  1019  
-2e5894d73789ee Benoit Cousson    2014-07-08  1020  		/* copy params for each codec */
-2e5894d73789ee Benoit Cousson    2014-07-08  1021  		codec_params = *params;
-2e5894d73789ee Benoit Cousson    2014-07-08  1022  
-2e5894d73789ee Benoit Cousson    2014-07-08  1023  		/* fixup params based on TDM slot masks */
-e15ff262e21238 Kuninori Morimoto 2023-01-31  1024  		if (tdm_mask)
-e15ff262e21238 Kuninori Morimoto 2023-01-31  1025  			soc_pcm_codec_params_fixup(&codec_params, tdm_mask);
-2e5894d73789ee Benoit Cousson    2014-07-08  1026  
-aa6166c2ac2839 Kuninori Morimoto 2019-07-22  1027  		ret = snd_soc_dai_hw_params(codec_dai, substream,
-aa6166c2ac2839 Kuninori Morimoto 2019-07-22  1028  					    &codec_params);
-93e6958a3674d2 Benoit Cousson    2014-07-08  1029  		if(ret < 0)
-4662c59688b8db Kuninori Morimoto 2020-09-29  1030  			goto out;
-ddee627cf6bb60 Liam Girdwood     2011-06-09  1031  
-2805b8bd3e0bdd Kuninori Morimoto 2020-12-11  1032  		soc_pcm_set_dai_params(codec_dai, &codec_params);
-078a85f2806f0f Charles Keepax    2019-01-31  1033  		snd_soc_dapm_update_dai(substream, &codec_params, codec_dai);
-ddee627cf6bb60 Liam Girdwood     2011-06-09  1034  	}
-ddee627cf6bb60 Liam Girdwood     2011-06-09  1035  
-a4be4187b2bfc6 Kuninori Morimoto 2020-03-09  1036  	for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
-ac950278b0872c Bard Liao         2023-06-07  1037  		struct snd_pcm_hw_params cpu_params;
-ac950278b0872c Bard Liao         2023-06-07  1038  		unsigned int ch_mask = 0;
-ac950278b0872c Bard Liao         2023-06-07  1039  		int j;
-ac950278b0872c Bard Liao         2023-06-07  1040  
-0e9cf4c452ad7e Bard Liao         2020-02-25  1041  		/*
-0e9cf4c452ad7e Bard Liao         2020-02-25  1042  		 * Skip CPUs which don't support the current stream
-0e9cf4c452ad7e Bard Liao         2020-02-25  1043  		 * type. See soc_pcm_init_runtime_hw() for more details
-0e9cf4c452ad7e Bard Liao         2020-02-25  1044  		 */
-0e9cf4c452ad7e Bard Liao         2020-02-25  1045  		if (!snd_soc_dai_stream_valid(cpu_dai, substream->stream))
-0e9cf4c452ad7e Bard Liao         2020-02-25  1046  			continue;
-0e9cf4c452ad7e Bard Liao         2020-02-25  1047  
-ac950278b0872c Bard Liao         2023-06-07  1048  		/* copy params for each cpu */
-ac950278b0872c Bard Liao         2023-06-07  1049  		cpu_params = *params;
-ac950278b0872c Bard Liao         2023-06-07  1050  
-ac950278b0872c Bard Liao         2023-06-07  1051  		if (!rtd->dai_link->codec_ch_maps)
-ac950278b0872c Bard Liao         2023-06-07  1052  			goto hw_params;
-ac950278b0872c Bard Liao         2023-06-07  1053  		/*
-ac950278b0872c Bard Liao         2023-06-07  1054  		 * construct cpu channel mask by combining ch_mask of each
-ac950278b0872c Bard Liao         2023-06-07  1055  		 * codec which maps to the cpu.
-ac950278b0872c Bard Liao         2023-06-07  1056  		 */
-ac950278b0872c Bard Liao         2023-06-07  1057  		for_each_rtd_codec_dais(rtd, j, codec_dai) {
-ac950278b0872c Bard Liao         2023-06-07  1058  			if (rtd->dai_link->codec_ch_maps[j].connected_cpu_id == i)
-ac950278b0872c Bard Liao         2023-06-07  1059  				ch_mask |= rtd->dai_link->codec_ch_maps[j].ch_mask;
-ac950278b0872c Bard Liao         2023-06-07  1060  		}
-ac950278b0872c Bard Liao         2023-06-07  1061  
-ac950278b0872c Bard Liao         2023-06-07  1062  		/* fixup cpu channel number */
-ac950278b0872c Bard Liao         2023-06-07  1063  		if (ch_mask)
-ac950278b0872c Bard Liao         2023-06-07  1064  			soc_pcm_codec_params_fixup(&cpu_params, ch_mask);
-ac950278b0872c Bard Liao         2023-06-07  1065  
-ac950278b0872c Bard Liao         2023-06-07  1066  hw_params:
-ac950278b0872c Bard Liao         2023-06-07  1067  		ret = snd_soc_dai_hw_params(cpu_dai, substream, &cpu_params);
-93e6958a3674d2 Benoit Cousson    2014-07-08  1068  		if (ret < 0)
-4662c59688b8db Kuninori Morimoto 2020-09-29  1069  			goto out;
-ddee627cf6bb60 Liam Girdwood     2011-06-09  1070  
-19bdcc7aeed416 Shreyas NC        2020-02-25  1071  		/* store the parameters for each DAI */
-ac950278b0872c Bard Liao         2023-06-07  1072  		soc_pcm_set_dai_params(cpu_dai, &cpu_params);
-ac950278b0872c Bard Liao         2023-06-07  1073  		snd_soc_dapm_update_dai(substream, &cpu_params, cpu_dai);
-19bdcc7aeed416 Shreyas NC        2020-02-25  1074  	}
-ca58221d2212af Kuninori Morimoto 2019-05-13  1075  
-3a36a64a2de469 Kuninori Morimoto 2020-09-29  1076  	ret = snd_soc_pcm_component_hw_params(substream, params);
-ddee627cf6bb60 Liam Girdwood     2011-06-09  1077  out:
-041107289c5ceb Kuninori Morimoto 2022-08-30  1078  	if (ret < 0)
-b7898396f4bbe1 Takashi Iwai      2021-12-07  1079  		soc_pcm_hw_clean(rtd, substream, 1);
-ddee627cf6bb60 Liam Girdwood     2011-06-09  1080  
-041107289c5ceb Kuninori Morimoto 2022-08-30  1081  	return soc_pcm_ret(rtd, ret);
-ddee627cf6bb60 Liam Girdwood     2011-06-09 @1082  }
-ddee627cf6bb60 Liam Girdwood     2011-06-09  1083  
-
-:::::: The code at line 1082 was first introduced by commit
-:::::: ddee627cf6bb601aa980104fc17d4f84201380be ASoC: core - Separate out PCM operations into new file.
-
-:::::: TO: Liam Girdwood <lrg@ti.com>
-:::::: CC: Mark Brown <broonie@opensource.wolfsonmicro.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+ojaswin
