@@ -2,47 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6146479735D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2397973DB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236347AbjIGPXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:23:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36806 "EHLO
+        id S238396AbjIGPbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232817AbjIGPWY (ORCPT
+        with ESMTP id S240265AbjIGPaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:22:24 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BDFB71BF7;
-        Thu,  7 Sep 2023 08:21:53 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8F381576;
-        Thu,  7 Sep 2023 03:37:01 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CBA573F67D;
-        Thu,  7 Sep 2023 03:36:21 -0700 (PDT)
-Date:   Thu, 7 Sep 2023 11:36:19 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Nikunj Kela <quic_nkela@quicinc.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        cristian.marussi@arm.com, Sudeep Holla <sudeep.holla@arm.com>,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] Add qcom hvc/shmem transport
-Message-ID: <20230907103619.2kqh7tfivwdfm5rd@bogus>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <20230811175719.28378-1-quic_nkela@quicinc.com>
- <3342d8bf-5281-c082-cb9a-7a027b413237@quicinc.com>
- <f5b05cfa-f12c-4f4d-a801-3aa76d843d6d@linaro.org>
+        Thu, 7 Sep 2023 11:30:35 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B26D1700;
+        Thu,  7 Sep 2023 08:30:09 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id B2EEE66072BA;
+        Thu,  7 Sep 2023 11:43:14 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694083395;
+        bh=AtNfCg0ORcDFoK5Walc1Hu3UGCme85N5dgstHaeabAc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=NejBNi91GDBi0Au8P24t4H4LZjQGG9Ryf1BpDJdsXgET3EkPKMCZFUG7BCYuxsp0A
+         L5J666GBfK2HyOu6yTaz/Zdt9srJi+5RKfsPZV35jTt1DuIjOV5nERNjqPd61FOF9M
+         1HiviQkDD472ch4zIdW+FtQekf0Fqf3SaP8d0MbPWgZ0QpNRuBKobGhS7xydNgFhgX
+         uUE0F5MmxWTv8He1c0FXyZ6t8nMYMInIUVo0N72Mqo1KXMOA4MxZJJvh5lfKIFp7+p
+         X7z5G8hFmmvlxMnVt4LcbxoOqjM8OW9eDq+vbWzlIYRdMbQnJ7STxw4HIqlaHsKBtK
+         d2YAIXSKPE/tQ==
+Message-ID: <cd6eea67-df0f-08b1-61cd-57a3b4f9cf0d@collabora.com>
+Date:   Thu, 7 Sep 2023 12:43:12 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f5b05cfa-f12c-4f4d-a801-3aa76d843d6d@linaro.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] power: supply: mt6370: Fix missing error code in
+ mt6370_chg_toggle_cfo()
+Content-Language: en-US
+To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        ChiaEn Wu <chiaen_wu@richtek.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com
+References: <20230906084815.2827930-1-harshit.m.mogalapalli@oracle.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230906084815.2827930-1-harshit.m.mogalapalli@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,71 +65,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 06:37:14PM +0200, Krzysztof Kozlowski wrote:
-> On 05/09/2023 18:06, Nikunj Kela wrote:
-> > 
-> > On 8/11/2023 10:57 AM, Nikunj Kela wrote:
-> >> This change introduce a new transport channel for Qualcomm virtual
-> >> platforms. The transport is mechanically similar to ARM_SCMI_TRANSPORT_SMC.
-> >> The difference between the two transports is that a parameter is passed in
-> >> the hypervisor call to identify which doorbell to assert. This parameter is
-> >> dynamically generated at runtime on the device and insuitable to pass via
-> >> the devicetree.
-> >>
-> >> The function ID and parameter are stored by firmware in the shmem region.
-> >>
-> >> This has been tested on ARM64 virtual Qualcomm platform.
-> >>
-> >> ---
-> >> v3 -> fix the compilation error reported by the test bot,
-> >>        add support for polling based instances
-> >>
-> >> v2 -> use allOf construct in dtb schema,
-> >>        remove wrappers from mutexes,
-> >>        use architecture independent channel layout
-> >>
-> >> v1 -> original patches
-> >>
-> >> Nikunj Kela (3):
-> >>    dt-bindings: arm: convert nested if-else construct to allOf
-> >>    dt-bindings: arm: Add qcom specific hvc transport for SCMI
-> >>    firmware: arm_scmi: Add qcom hvc/shmem transport
-> >>
-> >>   .../bindings/firmware/arm,scmi.yaml           |  67 ++---
-> >>   drivers/firmware/arm_scmi/Kconfig             |  13 +
-> >>   drivers/firmware/arm_scmi/Makefile            |   2 +
-> >>   drivers/firmware/arm_scmi/common.h            |   3 +
-> >>   drivers/firmware/arm_scmi/driver.c            |   4 +
-> >>   drivers/firmware/arm_scmi/qcom_hvc.c          | 232 ++++++++++++++++++
-> >>   6 files changed, 293 insertions(+), 28 deletions(-)
-> >>   create mode 100644 drivers/firmware/arm_scmi/qcom_hvc.c
-> > Gentle Ping!
+Il 06/09/23 10:48, Harshit Mogalapalli ha scritto:
+> When mt6370_chg_field_get() suceeds, ret is set to zero and returning
+> zero when flash led is still in strobe mode looks incorrect.
+> 
+> Fixes: 233cb8a47d65 ("power: supply: mt6370: Add MediaTek MT6370 charger driver")
+> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+> ---
+> This is based on static analysis with smatch, only compile tested.
+> ---
+>   drivers/power/supply/mt6370-charger.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/power/supply/mt6370-charger.c b/drivers/power/supply/mt6370-charger.c
+> index f27dae5043f5..a9641bd3d8cf 100644
+> --- a/drivers/power/supply/mt6370-charger.c
+> +++ b/drivers/power/supply/mt6370-charger.c
+> @@ -324,7 +324,7 @@ static int mt6370_chg_toggle_cfo(struct mt6370_priv *priv)
+>   
+>   	if (fl_strobe) {
+>   		dev_err(priv->dev, "Flash led is still in strobe mode\n");
+> -		return ret;
+> +		return -EINVAL;
 
-Pong !
+I think that returning 0 here was intentional, but I agree on a return ret
+here being both confusing and wrong.
 
->
-> It's third ping these two weeks from Qualcomm. Folks, it is merge
-> window. What do you think will happen with your ping during this time?
->
+That's how I get this logic:
 
-+1
+The function is enabling strobe mode, but if the flash led is *already* in
+strobe mode, the function exits cleanly because there's nothing to do, as
+the enablement is already done.
 
-Okay, here is the deal with this patch set. As you are aware that a previous
-merged solution was abandoned by Qcom in a single kernel release cycle. So
-I decided to ignore this for one or 2 kernel release cycle to make sure
-Qcom makes up their mind on the design and then we can see how to proceed.
-Qcom must understand upstream kernel is not a playground to push their
-design which they might decided to drop support for in such short period.
-Please understand the upstream kernel supports platforms that are more than
-few decades old. It is not like the mobile platforms that are hardly supported
-for couple of years. And similarly, we push core support if and only if we
-know for sure it will be used on some platform. I trusted Qcom with the
-previous extension of SMC/HVC transport but I was proven wrong.
+Hence.... I believe that the right fix is not to return -EINVAL, but rather
+to change that to `return 0` instead.
 
-Also, I definitely don't like the way you have copied the whole smc.c
-and changed it to Qcom's need and made it qcom_hvc.c. Just add the required
-changes in smc.c.
+ChiaEn, can you please confirm, or deny my statement?
 
---
 Regards,
-Sudeep
+Angelo
+
+>   	}
+>   
+>   	/* cfo off */
+
+
