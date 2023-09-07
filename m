@@ -2,110 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CC7797490
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B837974C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbjIGPjy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Sep 2023 11:39:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43030 "EHLO
+        id S231712AbjIGPk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245291AbjIGPfn (ORCPT
+        with ESMTP id S233951AbjIGPgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:35:43 -0400
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5DA210F7;
-        Thu,  7 Sep 2023 08:35:25 -0700 (PDT)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-58df8cab1f2so11411847b3.3;
-        Thu, 07 Sep 2023 08:35:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694100892; x=1694705692;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xKxGpUXWeZzW+0YA5pXdJ3qjlQA5sUeEL9TtCazkU90=;
-        b=JpyFx4n3vIgWRg6rhpO+aqoIz0X1CrXc6qSFqlo/vPjFuqk+T7qGOduKgiMfQH8/r8
-         Gn4HFMVy6oTcpYsB9N2F/+Eiv/32L7BUjQeWkaFz0Of9mD9VwnapvQJ/1AP5n8SkFgAc
-         NqcMMMB6SMriXcQhDKhPJo/dbVA8E+NOiIiaNsUQ0i1MEg2nIxYNUCUbY7t2l5w63QNa
-         c8vz7D0K3zTEXUHKyZrQlr+LLk1HlgS58UwmmjzmGjv7RnqUzD4YnDcOUz6HsW7EFYNB
-         epxoveqfivyHYw9HRJQ8qp3HPXaoE81cZd5BNT6D8i5KFDTvLRfsydbeU1Bka4/WRDkZ
-         uqSA==
-X-Gm-Message-State: AOJu0YxhtQY8kEvFXwglD8jN8rHLfizPIN1YSvwWj7eCfYJwrknaRwqM
-        CVI23Ndh9F25neQxqpKYHoHkEfNiJhzM3A==
-X-Google-Smtp-Source: AGHT+IHkEf+1YxgAH2quovVvqouMHG1+J8m9ks9Z8SfgxsdhGMwmT+08B6msM5dOia2K1Qq+M5i3ZA==
-X-Received: by 2002:a05:6808:f8b:b0:3a7:77ff:63a3 with SMTP id o11-20020a0568080f8b00b003a777ff63a3mr21672948oiw.30.1694070571435;
-        Thu, 07 Sep 2023 00:09:31 -0700 (PDT)
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com. [209.85.210.41])
-        by smtp.gmail.com with ESMTPSA id w15-20020a056808090f00b003a9a35349b1sm5251157oih.24.2023.09.07.00.09.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 00:09:31 -0700 (PDT)
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6b9a2416b1cso488726a34.2;
-        Thu, 07 Sep 2023 00:09:31 -0700 (PDT)
-X-Received: by 2002:a05:6830:1096:b0:6b9:1af3:3307 with SMTP id
- y22-20020a056830109600b006b91af33307mr19067127oto.17.1694070571016; Thu, 07
- Sep 2023 00:09:31 -0700 (PDT)
+        Thu, 7 Sep 2023 11:36:14 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B282123;
+        Thu,  7 Sep 2023 08:35:52 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 45D511F86C;
+        Thu,  7 Sep 2023 07:10:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694070639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DbVdXW/jNFCFxdW+0x/LfhB7YMcuH/QmkF6mZXOuaLE=;
+        b=3AkW0YDdz/+le3pX62tW9FtHTG97hy9+xiaxNkWWz4qd/7IKfwRUqLtZprB3fdgW9GDEDY
+        LFrgg0Ur4ZlsksnUNEJSaKDkYlfsXc5aiAFCaFJyN9VMpHwJHaZbazm8EnzYx2tb3XR+im
+        I1yAN+SQOBtwGyrpofbtRLJlgDUO2lU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694070639;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DbVdXW/jNFCFxdW+0x/LfhB7YMcuH/QmkF6mZXOuaLE=;
+        b=vWb+l5pOCouADD9LzFATDdCF4CBnb8ZVlVUDrX4mn6q2mcJltWbN3YfD6sYkyMILlMzFBp
+        ADdgkcIN+z9Pz/AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 118381358B;
+        Thu,  7 Sep 2023 07:10:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id RUqJA293+WRdBgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 07 Sep 2023 07:10:39 +0000
+Message-ID: <737d399d-c83a-3e66-ceb7-4ae7ba4acfb4@suse.cz>
+Date:   Thu, 7 Sep 2023 09:10:38 +0200
 MIME-Version: 1.0
-References: <20230904135852.12146-1-wsa+renesas@sang-engineering.com>
- <20230904135852.12146-4-wsa+renesas@sang-engineering.com> <20230905213710.3dv5h6zvwu4tpnby@zenone.zhora.eu>
- <ZPgl4eLYTyDFXiyC@shikoro>
-In-Reply-To: <ZPgl4eLYTyDFXiyC@shikoro>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 7 Sep 2023 09:09:18 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdV3Ka9fh6fmyYj7j5xdm3LEYsMjgXDk90be3AC7gDFozA@mail.gmail.com>
-Message-ID: <CAMuHMdV3Ka9fh6fmyYj7j5xdm3LEYsMjgXDk90be3AC7gDFozA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] i2c: rcar: add FastMode+ support
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 2/2] rcu: Dump vmalloc memory info safely
+Content-Language: en-US
+To:     Lorenzo Stoakes <lstoakes@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Zhen Lei <thunder.leizhen@huaweicloud.com>,
+        rcu@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        stable@vger.kernel.org, linux-mm@kvack.org
+References: <20230904180806.1002832-1-joel@joelfernandes.org>
+ <20230904180806.1002832-2-joel@joelfernandes.org>
+ <9e329429-73a5-4926-af4f-edcf9e547101@lucifer.local>
+ <20230905114841.GB3881391@google.com>
+ <CAA5enKafgfqNE0DWg7tcd-iNGeE0Aud5VcmmWzdguK9Psq0uhQ@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <CAA5enKafgfqNE0DWg7tcd-iNGeE0Aud5VcmmWzdguK9Psq0uhQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+On 9/6/23 21:18, Lorenzo Stoakes wrote:
+> On Tue, 5 Sept 2023 at 12:48, Joel Fernandes <joel@joelfernandes.org> wrote:
+>>
+>> On Tue, Sep 05, 2023 at 08:00:44AM +0100, Lorenzo Stoakes wrote:
+>> > On Mon, Sep 04, 2023 at 06:08:05PM +0000, Joel Fernandes (Google) wrote:
+>> > > From: Zqiang <qiang.zhang1211@gmail.com>
+>> > >
+>> > > Currently, for double invoke call_rcu(), will dump rcu_head objects
+>> > > memory info, if the objects is not allocated from the slab allocator,
+>> > > the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
+>> > > need to be held, since the call_rcu() can be invoked in interrupt context,
+>> > > therefore, there is a possibility of spinlock deadlock scenarios.
+>> > >
+>> > > And in Preempt-RT kernel, the rcutorture test also trigger the following
+>> > > lockdep warning:
+>> > >
+>> > > BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
+>> > > in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
+>> > > preempt_count: 1, expected: 0
+>> > > RCU nest depth: 1, expected: 1
+>> > > 3 locks held by swapper/0/1:
+>> > >  #0: ffffffffb534ee80 (fullstop_mutex){+.+.}-{4:4}, at: torture_init_begin+0x24/0xa0
+>> > >  #1: ffffffffb5307940 (rcu_read_lock){....}-{1:3}, at: rcu_torture_init+0x1ec7/0x2370
+>> > >  #2: ffffffffb536af40 (vmap_area_lock){+.+.}-{3:3}, at: find_vmap_area+0x1f/0x70
+>> > > irq event stamp: 565512
+>> > > hardirqs last  enabled at (565511): [<ffffffffb379b138>] __call_rcu_common+0x218/0x940
+>> > > hardirqs last disabled at (565512): [<ffffffffb5804262>] rcu_torture_init+0x20b2/0x2370
+>> > > softirqs last  enabled at (399112): [<ffffffffb36b2586>] __local_bh_enable_ip+0x126/0x170
+>> > > softirqs last disabled at (399106): [<ffffffffb43fef59>] inet_register_protosw+0x9/0x1d0
+>> > > Preemption disabled at:
+>> > > [<ffffffffb58040c3>] rcu_torture_init+0x1f13/0x2370
+>> > > CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-rc4-rt2-yocto-preempt-rt+ #15
+>> > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+>> > > Call Trace:
+>> > >  <TASK>
+>> > >  dump_stack_lvl+0x68/0xb0
+>> > >  dump_stack+0x14/0x20
+>> > >  __might_resched+0x1aa/0x280
+>> > >  ? __pfx_rcu_torture_err_cb+0x10/0x10
+>> > >  rt_spin_lock+0x53/0x130
+>> > >  ? find_vmap_area+0x1f/0x70
+>> > >  find_vmap_area+0x1f/0x70
+>> > >  vmalloc_dump_obj+0x20/0x60
+>> > >  mem_dump_obj+0x22/0x90
+>> > >  __call_rcu_common+0x5bf/0x940
+>> > >  ? debug_smp_processor_id+0x1b/0x30
+>> > >  call_rcu_hurry+0x14/0x20
+>> > >  rcu_torture_init+0x1f82/0x2370
+>> > >  ? __pfx_rcu_torture_leak_cb+0x10/0x10
+>> > >  ? __pfx_rcu_torture_leak_cb+0x10/0x10
+>> > >  ? __pfx_rcu_torture_init+0x10/0x10
+>> > >  do_one_initcall+0x6c/0x300
+>> > >  ? debug_smp_processor_id+0x1b/0x30
+>> > >  kernel_init_freeable+0x2b9/0x540
+>> > >  ? __pfx_kernel_init+0x10/0x10
+>> > >  kernel_init+0x1f/0x150
+>> > >  ret_from_fork+0x40/0x50
+>> > >  ? __pfx_kernel_init+0x10/0x10
+>> > >  ret_from_fork_asm+0x1b/0x30
+>> > >  </TASK>
+>> > >
+>> > > The previous patch fixes this by using the deadlock-safe best-effort
+>> > > version of find_vm_area. However, in case of failure print the fact that
+>> > > the pointer was a vmalloc pointer so that we print at least something.
+>> > >
+>> > > Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
+>> > > Cc: Paul E. McKenney <paulmck@kernel.org>
+>> > > Cc: rcu@vger.kernel.org
+>> > > Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+>> > > Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
+>> > > Cc: stable@vger.kernel.org
+>> > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+>> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>> > > ---
+>> > >  mm/util.c | 4 +++-
+>> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+>> > >
+>> > > diff --git a/mm/util.c b/mm/util.c
+>> > > index dd12b9531ac4..406634f26918 100644
+>> > > --- a/mm/util.c
+>> > > +++ b/mm/util.c
+>> > > @@ -1071,7 +1071,9 @@ void mem_dump_obj(void *object)
+>> > >     if (vmalloc_dump_obj(object))
+>> > >             return;
+>> > >
+>> > > -   if (virt_addr_valid(object))
+>> > > +   if (is_vmalloc_addr(object))
+>> > > +           type = "vmalloc memory";
+>> > > +   else if (virt_addr_valid(object))
+>> > >             type = "non-slab/vmalloc memory";
+>> >
+>> > I think you should update this to say non-slab/non-vmalloc memory (as much
+>> > as that description sucks!) as this phrasing in the past meant to say
+>> > 'non-slab or vmalloc memory' (already confusing phrasing) so better to be
+>> > clear.
+>>
+>> True, though the issue you mentioned it is in existing code, a respin of this
+>> patch could update it to say non-vmalloc. Good point, thanks for reviewing!
+> 
+> No it's not, you're changing the meaning, because you changed the code
+> that determines the output...
 
-On Thu, Sep 7, 2023 at 7:39 AM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> > > @@ -217,7 +228,17 @@ static void rcar_i2c_init(struct rcar_i2c_priv *priv)
-> > >     rcar_i2c_write(priv, ICMCR, MDBS);
-> > >     rcar_i2c_write(priv, ICMSR, 0);
-> > >     /* start clock */
-> > > -   rcar_i2c_write(priv, ICCCR, priv->icccr);
-> > > +   if (priv->flags & ID_P_FMPLUS) {
-> > > +           rcar_i2c_write(priv, ICCCR, 0);
-> > > +           rcar_i2c_write(priv, ICMPR, priv->clock_val);
-> > > +           rcar_i2c_write(priv, ICHPR, 3 * priv->clock_val);
-> > > +           rcar_i2c_write(priv, ICLPR, 3 * priv->clock_val);
-> > > +           rcar_i2c_write(priv, ICCCR2, FMPE | CDFD | HLSE | SME);
-> > > +   } else {
-> > > +           rcar_i2c_write(priv, ICCCR, priv->clock_val);
-> > > +           if (priv->devtype >= I2C_RCAR_GEN3)
-> > > +                   rcar_i2c_write(priv, ICCCR2, 0);
-> >
-> > is this last bit part of the FM+ enabling or is it part of the
-> > GEN4 support?
->
-> It is "disabling FM+" for lower speeds. Since we never used ICCCR2
-> before FM+, we need to make sure it is cleared properly.
+I think it has always meant (but clearly it's not unambiguously worded) "not
+slab && not vmalloc", that is before and after this patch. Only in case
+patch 1 is applied and patch 2 not, can the output be wrong in that a
+vmalloc pointer will (in case of trylock fail) be classified as "not slab &&
+not vmalloc", but seems fine to me after patch 2.
 
-This may become clearer if you first introduce support for ICCCR2
-on R-Car Gen3 and later, to improve i2c rate accuracy, and add
-support for FM+ in a separate patch?
+I guess if we wanted, we could also rewrite it to be more like the kmem
+check in the beginning of mem_dump_obj(), so there would be:
 
-Gr{oetje,eeting}s,
+if (is_vmalloc_addr(...)) {
+    vmalloc_dump_obj(...);
+    return;
+}
 
-                        Geert
+where vmalloc_dump_obj() itself would print at least "vmalloc memory" with
+no further details in case of trylock failure.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+that assumes is_vmalloc_addr() is guaranteed to be true for all addresses
+that __find_vmap_area resolves, otherwise it could miss something compared
+to current code. Is it guaranteed?
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> This has been merged now despite my outstanding comments (!) so I
+> guess I'll have to send a follow up patch to address this.
+> 
+>>
+>>  - Joel
+>>
+> 
+> 
+> 
+> --
+> Lorenzo Stoakes
+> https://ljs.io
+
