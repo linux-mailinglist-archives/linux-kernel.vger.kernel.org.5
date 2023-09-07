@@ -2,101 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD1F797866
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE0D797702
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbjIGQql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
+        id S229497AbjIGQTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242946AbjIGQqV (ORCPT
+        with ESMTP id S239024AbjIGQSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:46:21 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F713AA6;
-        Thu,  7 Sep 2023 09:21:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A29C3C4E684;
-        Thu,  7 Sep 2023 15:44:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694101483;
-        bh=mV70Cn1O6GxelLkejgcT/F5+bEGe4b38w9qaFFojAYU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fm9WQSH4yha+y0taIU4Rw5bFMV+FSsGUDuwG5vfiFSIel98GS5LXaDgqm/jQ/Rx8m
-         2xj5GmTHRvhq3k0goMOZVLwdQ31D/ImGk+SK3D2EHFID+RaizPY9QZ4JGveeDgBks7
-         peuC+HOPC7ZRFBvzuJ9Wi4zxM6vL5f6VriBrDyTIkeO4GxjBL0th+MIuQP5k0Fd+Nj
-         lak9BUs8nzQ/JsSEgbC96adroMBUiYFeOUumhcc2AFIBmC2Qhr47PbugcHh8iFGk5g
-         IxCJXp+W2jV8Ic1CpBhLfmJgbagZXy1nKJYwEho/M0HDTszEs6YaB5msb+h7yZB8EQ
-         J79UtDpx67DVw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, clm@fb.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 2/2] btrfs: output extra debug info if we failed to find an inline backref
-Date:   Thu,  7 Sep 2023 11:44:36 -0400
-Message-Id: <20230907154438.3422099-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230907154438.3422099-1-sashal@kernel.org>
-References: <20230907154438.3422099-1-sashal@kernel.org>
+        Thu, 7 Sep 2023 12:18:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A563A67891
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:46:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694101505;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7+VK+VR2m38+xEZzYiAj3ASuAJ4XHaCJV5htNfCsfmI=;
+        b=Qseivbu7hKhFpDT1wb6/wbr2E0ayf7TjEaFmY4qgxHMh+MqhOmphW2TNZHGF59t2GtDAcV
+        8r4T7Mm+kFaoRzfQ3fpwk1g2g93rP9NKrcnJoOiv4vg6HS9vskp0j8/QBcei1ulfcY9YkE
+        0LpywTxg6/u/kvkM+gFlu1EJTocfStg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-563-EPwSvFjgNLWT4x29tG7TyQ-1; Thu, 07 Sep 2023 11:45:01 -0400
+X-MC-Unique: EPwSvFjgNLWT4x29tG7TyQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3B8B090B242;
+        Thu,  7 Sep 2023 15:45:00 +0000 (UTC)
+Received: from p1.luc.cera.cz (unknown [10.45.226.90])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4548C493112;
+        Thu,  7 Sep 2023 15:44:58 +0000 (UTC)
+From:   Ivan Vecera <ivecera@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Catherine Sullivan <catherine.sullivan@intel.com>,
+        Greg Rose <gregory.v.rose@intel.com>,
+        intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net] i40e: Fix VF VLAN offloading when port VLAN is configured
+Date:   Thu,  7 Sep 2023 17:44:57 +0200
+Message-ID: <20230907154457.3861711-1-ivecera@redhat.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.325
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+If port VLAN is configured on a VF then any other VLANs on top of this VF
+are broken.
 
-[ Upstream commit 7f72f50547b7af4ddf985b07fc56600a4deba281 ]
+During i40e_ndo_set_vf_port_vlan() call the i40e driver reset the VF and
+iavf driver asks PF (using VIRTCHNL_OP_GET_VF_RESOURCES) for VF capabilities
+but this reset occurs too early, prior setting of vf->info.pvid field
+and because this field can be zero during i40e_vc_get_vf_resources_msg()
+then VIRTCHNL_VF_OFFLOAD_VLAN capability is reported to iavf driver.
 
-[BUG]
-Syzbot reported several warning triggered inside
-lookup_inline_extent_backref().
+This is wrong because iavf driver should not report VLAN offloading
+capability when port VLAN is configured as i40e does not support QinQ
+offloading.
 
-[CAUSE]
-As usual, the reproducer doesn't reliably trigger locally here, but at
-least we know the WARN_ON() is triggered when an inline backref can not
-be found, and it can only be triggered when @insert is true. (I.e.
-inserting a new inline backref, which means the backref should already
-exist)
+Fix the issue by moving VF reset after setting of vf->port_vlan_id
+field.
 
-[ENHANCEMENT]
-After the WARN_ON(), dump all the parameters and the extent tree
-leaf to help debug.
+Without this patch:
+$ echo 1 > /sys/class/net/enp2s0f0/device/sriov_numvfs
+$ ip link set enp2s0f0 vf 0 vlan 3
+$ ip link set enp2s0f0v0 up
+$ ip link add link enp2s0f0v0 name vlan4 type vlan id 4
+$ ip link set vlan4 up
+...
+$ ethtool -k enp2s0f0v0 | grep vlan-offload
+rx-vlan-offload: on
+tx-vlan-offload: on
+$ dmesg -l err | grep iavf
+[1292500.742914] iavf 0000:02:02.0: Failed to add VLAN filter, error IAVF_ERR_INVALID_QP_ID
 
-Link: https://syzkaller.appspot.com/bug?extid=d6f9ff86c1d804ba2bc6
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+With this patch:
+$ echo 1 > /sys/class/net/enp2s0f0/device/sriov_numvfs
+$ ip link set enp2s0f0 vf 0 vlan 3
+$ ip link set enp2s0f0v0 up
+$ ip link add link enp2s0f0v0 name vlan4 type vlan id 4
+$ ip link set vlan4 up
+...
+$ ethtool -k enp2s0f0v0 | grep vlan-offload
+rx-vlan-offload: off [requested on]
+tx-vlan-offload: off [requested on]
+$ dmesg -l err | grep iavf
+
+Fixes: f9b4b6278d51ff ("i40e: Reset the VF upon conflicting VLAN configuration")
+Signed-off-by: Ivan Vecera <ivecera@redhat.com>
 ---
- fs/btrfs/extent-tree.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index e59987385673f..deb01e59da027 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -1703,6 +1703,11 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
- 		err = -ENOENT;
- 		goto out;
- 	} else if (WARN_ON(ret)) {
-+		btrfs_print_leaf(path->nodes[0]);
-+		btrfs_err(fs_info,
-+"extent item not found for insert, bytenr %llu num_bytes %llu parent %llu root_objectid %llu owner %llu offset %llu",
-+			  bytenr, num_bytes, parent, root_objectid, owner,
-+			  offset);
- 		err = -EIO;
- 		goto out;
- 	}
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+index 8ea1a238dcefe1..d3d6415553ed67 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+@@ -4475,9 +4475,7 @@ int i40e_ndo_set_vf_port_vlan(struct net_device *netdev, int vf_id,
+ 		goto error_pvid;
+ 
+ 	i40e_vlan_stripping_enable(vsi);
+-	i40e_vc_reset_vf(vf, true);
+-	/* During reset the VF got a new VSI, so refresh a pointer. */
+-	vsi = pf->vsi[vf->lan_vsi_idx];
++
+ 	/* Locked once because multiple functions below iterate list */
+ 	spin_lock_bh(&vsi->mac_filter_hash_lock);
+ 
+@@ -4563,6 +4561,10 @@ int i40e_ndo_set_vf_port_vlan(struct net_device *netdev, int vf_id,
+ 	 */
+ 	vf->port_vlan_id = le16_to_cpu(vsi->info.pvid);
+ 
++	i40e_vc_reset_vf(vf, true);
++	/* During reset the VF got a new VSI, so refresh a pointer. */
++	vsi = pf->vsi[vf->lan_vsi_idx];
++
+ 	ret = i40e_config_vf_promiscuous_mode(vf, vsi->id, allmulti, alluni);
+ 	if (ret) {
+ 		dev_err(&pf->pdev->dev, "Unable to config vf promiscuous mode\n");
 -- 
-2.40.1
+2.41.0
 
