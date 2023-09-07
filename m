@@ -2,110 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2F679761A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877BA797411
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbjIGQBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55880 "EHLO
+        id S1344780AbjIGPds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241844AbjIGP7U (ORCPT
+        with ESMTP id S243385AbjIGPb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:59:20 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F4A1FFC;
-        Thu,  7 Sep 2023 08:48:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=v3uvxlhpyVywOeCKfN58HL4kywyDPvCRWTa4uTmYA0Q=; b=cMBALboLcZQB/DNbVCwH0r0KjF
-        FKs6pkrAoiU6XIpNGn6ZT3ykUCQ+Ce5ru2X0LJN/wi1zO4BFrFy21XM5xRndzViVJHmSjNc23KM3N
-        3tHi+R6HNKVPol+fFZa4SUU5JmE19W1F8uRQb4sBvD8S6qVOGhJkdmL6rX/MYhPu1mT0Zt525MV9j
-        eQSsMWb9eZ/3yo6lAKWimBG3nTiy46dA0Vtoz8gVCUe0LTXe+6kaVdpkOeMBO8TclVjgR+WTH2Za/
-        2mE5feR0C2jb11Owc26U78mi0p48ztIJuDaE635wnsqQdt0kRDvrdA7s0FDVSpDB14sWBKXvW2n9w
-        vEI7gVwQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57708)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qeFUF-0003KZ-1Y;
-        Thu, 07 Sep 2023 14:55:59 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qeFUF-0005tY-7p; Thu, 07 Sep 2023 14:55:59 +0100
-Date:   Thu, 7 Sep 2023 14:55:59 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Raul Piper <raulpblooper@gmail.com>,
-        kernelnewbies@kernelnewbies.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux Devicetree <devicetree@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Subject: Re: Debugging i2c : i2cdetect cant detect a device on i2c line
-Message-ID: <ZPnWb15ucCotffav@shell.armlinux.org.uk>
-References: <CAEwN+MCorDCS7EhN40Qgja_nY+SFc3G61Zd6yntqAS+w26YO9Q@mail.gmail.com>
- <ZPnR4Cx6_Hh3weEl@debian.me>
+        Thu, 7 Sep 2023 11:31:59 -0400
+Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7070CE45
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:31:31 -0700 (PDT)
+Received: from relay5-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::225])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id 2C278CB493
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 14:04:16 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4755E1C0002;
+        Thu,  7 Sep 2023 14:03:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1694095434;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5FVoeRE07rZmVlLkQmIs3J1N4DqM7HTxwYCfMm6OyDk=;
+        b=QW7cMRFbQRMMJiDTBaUTA7BYmlHH363PbQOFES3rnFU29o1Excsxwm8HF4X9kri0S56as1
+        N+trm+HAQa+L0X1eN5RAiTGsm+LvDSXqA9BMFNNmycfKuH0YKC1dTmNfad8Ei5nbPxijVy
+        y8XDCBSetog4MiulF4Nf3I1agrjkgTFtThFhss+2syQK+yiM1yrPt9YZxfgByeWQfVXDg7
+        72v0tg4284rNOpysKK6n3NvQA45kehFEWFWNKj8sKxgmcmQTUXvLapCsoP2y9lrOmWNVyc
+        NV96qdPjeYQbrGNtXJ3CCCtV3d91lJvWxE6iz0OzY83CBpzPvusS4DfCwFZwGA==
+Date:   Thu, 7 Sep 2023 16:03:53 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] I3C changes for 6.6
+Message-ID: <202309071403530b8897e7@mail.local>
+References: <20230906220710e64b2b71@mail.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZPnR4Cx6_Hh3weEl@debian.me>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230906220710e64b2b71@mail.local>
+X-GND-Sasl: alexandre.belloni@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 08:36:32PM +0700, Bagas Sanjaya wrote:
-> [also Cc: devicetree and ARM folks]
+Hello,
+
+On 07/09/2023 00:07:11+0200, Alexandre Belloni wrote:
+> Hello Linus,
 > 
-> On Thu, Sep 07, 2023 at 08:21:44AM +0530, Raul Piper wrote:
-> > Hello ,
-> > I am trying to detect an i2c device A on i2c1 line on  one of the Arm
-> > Cortex A7 platform but not able to see any device on a given address (
-> > 0x3d) .
-> > 
-> > Is there any parameters of i2c which i can change like rise/fall time
-> > , timeout etc in a device tree or kernel source and re test it?
-> > I have tried changing the i2c speed from 100KHz to 400 KHz  but no success.
-> > I have even tried removing the 1.5K pull ups on the i2c lines but no result.
+> Here is the i3c subsytem pull request for 6.6. There are mostly small
+> fixes as people ar finally starting to have access to actual hardware.
+> 
 
-Honestly, from this description, I'm wondering if this posting is a joke.
+I forgot to add that I extended my signing key expiration date so you
+should updated my keyto be able to verify the tag signature.
 
-I2C is entirely _reliant_ on pull-ups. It's a wire-or bus, and the
-logic 1 state is created by no device pulling the signal low, thereby
-allowing the pull-up resistor to pull the line to the logic 1 state.
-
-The pull-up must be the correct strength for the devices on the bus.
-If it is too strong, then a driver may not be able to pull the signal
-sufficiently low for other devices to register it as a logic 0.
-
-Conversely, the pull-up must be strong enough so that the rise-time
-of the signal is sufficient to register as a logic 1.
-
-If it's a problem with the rise time, then increasing the clock rate
-will just make the situation worse.
-
-So, if other devices work on the bus, it could be that the Vil
-threshold of this device is not being achieved, whereas the other
-devices are happy. Therefore, I would suggest you study the data
-sheets of the device that isn't being detected.
-
-Lastly, if the undetectable device has a reset line, it's possible
-that the device isn't responding because it's being held in reset.
+> The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+> 
+>   Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux.git tags/i3c/for-6.6
+> 
+> for you to fetch changes up to 6e13d6528be2f7e801af63c8153b87293f25d736:
+> 
+>   i3c: master: svc: fix probe failure when no i3c device exist (2023-09-06 01:21:47 +0200)
+> 
+> ----------------------------------------------------------------
+> I3C for 6.6
+> 
+> Core:
+>  - Fix SETDASA when static and dynamic adress are equal
+>  - Fix cmd_v1 DAA exit criteria
+> 
+> Drivers:
+>  - svc: allow probing without any device
+> 
+> ----------------------------------------------------------------
+> Aniket (2):
+>       dt-bindings: i3c: Fix description for assigned-address
+>       i3c: master: Fix SETDASA process
+> 
+> Billy Tsai (1):
+>       i3c/master: cmd_v1: Fix the exit criteria for the daa procedure
+> 
+> Frank Li (1):
+>       i3c: master: svc: fix probe failure when no i3c device exist
+> 
+> Miquel Raynal (1):
+>       i3c: master: svc: Describe member 'saved_regs'
+> 
+> Rob Herring (1):
+>       i3c: Explicitly include correct DT includes
+> 
+> Ruan Jinjie (1):
+>       i3c: master: svc: Do not check for 0 return after calling platform_get_irq()
+> 
+>  Documentation/devicetree/bindings/i3c/i3c.yaml | 15 +++++++++++----
+>  drivers/i3c/master.c                           |  6 +++++-
+>  drivers/i3c/master/ast2600-i3c-master.c        |  1 -
+>  drivers/i3c/master/i3c-master-cdns.c           |  1 -
+>  drivers/i3c/master/mipi-i3c-hci/cmd_v1.c       |  2 +-
+>  drivers/i3c/master/svc-i3c-master.c            | 19 +++++++++++++++----
+>  6 files changed, 32 insertions(+), 12 deletions(-)
+> 
+> -- 
+> Alexandre Belloni, co-owner and COO, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
