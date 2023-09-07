@@ -2,165 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7FC79759D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 597CB797425
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237233AbjIGPwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38388 "EHLO
+        id S240559AbjIGPgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245405AbjIGPvG (ORCPT
+        with ESMTP id S1344161AbjIGPcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:51:06 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB546A59
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:42:09 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-34e169874dbso712695ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:42:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694101267; x=1694706067; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RCgeZHNY/DlNrnLkKkluN6xg5KeAlPieZsIE6jFbPVc=;
-        b=w4N+F48gsQDGW3KmaCsEasMZUYfmFppU/RnfvK2b11k2TrrDX35whtN5uQtMidI37n
-         qZ24nZgnLiqJ64KCchZ0T28Owv/5d0Rp7RIEgG/787n4k7QHj3NBaJjOcFYgsopm6Maf
-         qe5QqL4GBZyd9FbJh7Co5JmWuPR54B+bzVd3PyA1ngNs3cqdb0gVhlK7Qcui9lnc0vso
-         HvCrIr03W5CajuQjPZwaEZLo/TlrIccOu512Z2E9gwQbrrYuOHQV09bhtXtpkU+WnEkh
-         ZaxOr9rmA9XxwCdfkKVMcuTr6E8b2FFb6Poub88sAuzZ+hRhs9dMyoX/p4hy2y5lO/R8
-         QXVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694101267; x=1694706067;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RCgeZHNY/DlNrnLkKkluN6xg5KeAlPieZsIE6jFbPVc=;
-        b=Cy2rkYNVw6gdmEMAauRv9t07wjCv0CZrESCzjF27ovnHGBUcji9Pv9838e2bQU3iph
-         6OSGdmy/9ZaJHSj/d6bsN6Oa9gPmhpjjYO+izL06fl1aqkQQACZViUAngGbEgtMLEfwl
-         6pnpRFoEASzZSA/OLYGm/D4mrAE5/NcU8k3M+etJpAXbzo5laKqkFk6XKvdZEarb82E/
-         zUdEt1+DzS6ggLJwxbFEiMSGSa4PY0ZuI1sO/jCJxo8WNHYC/vSKzG34YBuTUkbimWx9
-         eA7V4PlM0grK1MUgW/8OAgoANPR9/KA7uji9UktcI+eG9A09ReZmXfx/OYJPYfgAJrQv
-         Ifeg==
-X-Gm-Message-State: AOJu0YwGMuVqcCTNnY/w6bAM6KKhIQMgMzyBReSFU+d3YaR/CV9S4fgR
-        FDRUe5lojmFDivQ/rsY1S0H8yQPQVssbYZjQveInxw==
-X-Google-Smtp-Source: AGHT+IFZ8rAMkndFAe9nk36Eotx+d5nxbthNhzZ4DS5IlxlT8T8Od24Sm3zFo4dnTgB8luNvNyYScg==
-X-Received: by 2002:a17:902:d48f:b0:1c0:cbaf:6939 with SMTP id c15-20020a170902d48f00b001c0cbaf6939mr21706846plg.3.1694082193128;
-        Thu, 07 Sep 2023 03:23:13 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:999:a3a0:ef65:d0f:73cf:bc3c? ([2a01:e0a:999:a3a0:ef65:d0f:73cf:bc3c])
-        by smtp.gmail.com with ESMTPSA id b19-20020a170902ed1300b001b9de39905asm12485964pld.59.2023.09.07.03.23.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 03:23:12 -0700 (PDT)
-Message-ID: <ff6302ae-a114-4ef0-be87-a5fa34c3aab5@rivosinc.com>
-Date:   Thu, 7 Sep 2023 12:22:55 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 2/4] irqchip/riscv-intc: Support large non-standard
- hwirq number
+        Thu, 7 Sep 2023 11:32:36 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on20618.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eaa::618])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA82C1739;
+        Thu,  7 Sep 2023 08:32:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JeAlRWHu/aNukUybtpjXuq+UsdMcRGsewgzChWOQO/nJ6UrEhH1P2xB8JgN+vilKom1X29NKR6WVjRtK89CaWcqkyeFvhA8FQh0Jh+AgMqEKf7WbGXfVTFfAFeBYhWimCb507e5z1QbJjmljW/oZTy+h1GYugUKGL/K4l+sdTJ5vW87VjjRh6oyYG0z46UYmmbWiKNQ4kPTvQaZ3IzjPY+lOpRw7DO6FrvlcXfHZX2ZJihru/Y0qC8DmY3KhbmyO6DxojJmlLvhFi7fn8dStjn/EY+lhDX5/svG/4iMRTKUbhu3T6czgA1+OaChMei/4XASO1dP/i0VwWcegprHhWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tSovdzbRAPE3j+pzKCVHVRAQ4AtnQaD0dILMNynw5Zo=;
+ b=XR12v8kFA4S2p9nNKMh+rDPg/IC3cJiL8qnEfSyJwOViSV5p55AkmPYlrK2kmcu5wsu5bFnk2XxMr6jtiD/wymP2bv2TdjLlJ1fYm6WYlrQniGUvOgUmBrHLmGeG55RV+1Th+mQ+Zbkpa3SbasGF/ghDUifARBwFo2gsjJzpAywqtp7H8e/p5edg3ssr0Pp9Vj28doDFvBs9YM2Nft+23aENSs7/i+7TzAYB2/5XqaA+olhK05fqYy3/H9WThMveZKbGG66fcHVxr5jaivUW06QUvWpNCSznB3xDmEdXibvW9GwSjkzM78hMSmX8n7pvAWRfPbmt4fMumsL0d2fflA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tSovdzbRAPE3j+pzKCVHVRAQ4AtnQaD0dILMNynw5Zo=;
+ b=L1X0tkyUhBNI0O+TgwGlL4DypjlqA30bgW10liVC6w4Teo+mz7QTAEA6TK1n8QWGQDp9EBh3aM1rSBQQpZTxplUYfcwA/rn45y5+Qt7IaOufkCP8xQ+zoYhwSmBX4//qNO8t12LxgKjGdnyOBnDc969qYDHkWDShnrn6cNpaTTM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM8PR12MB5445.namprd12.prod.outlook.com (2603:10b6:8:24::7) by
+ PH7PR12MB5656.namprd12.prod.outlook.com (2603:10b6:510:13b::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Thu, 7 Sep
+ 2023 10:31:55 +0000
+Received: from DM8PR12MB5445.namprd12.prod.outlook.com
+ ([fe80::12ec:a62b:b286:d309]) by DM8PR12MB5445.namprd12.prod.outlook.com
+ ([fe80::12ec:a62b:b286:d309%7]) with mapi id 15.20.6768.029; Thu, 7 Sep 2023
+ 10:31:55 +0000
+Message-ID: <657e86cb-76b2-ab2b-5ce3-f53ec4341f08@amd.com>
+Date:   Thu, 7 Sep 2023 17:31:35 +0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH RFC v9 47/51] iommu/amd: Add IOMMU_SNP_SHUTDOWN support
 Content-Language: en-US
-To:     Yu Chien Peter Lin <peterlin@andestech.com>,
-        linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu,
-        conor.dooley@microchip.com, atishp@atishpatra.org,
-        anup@brainfault.org, prabhakar.mahadev-lad.rj@bp.renesas.com
-Cc:     ajones@ventanamicro.com, heiko@sntech.de, samuel@sholland.org,
-        geert+renesas@glider.be, n.shubin@yadro.com, dminus@andestech.com,
-        ycliang@andestech.com, tim609@andestech.com, locus84@andestech.com,
-        dylan@andestech.com
-References: <20230907021635.1002738-1-peterlin@andestech.com>
- <20230907021635.1002738-3-peterlin@andestech.com>
-From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <20230907021635.1002738-3-peterlin@andestech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
+Cc:     linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        bp@alien8.de, vbabka@suse.cz, kirill@shutemov.name,
+        ak@linux.intel.com, tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        dgilbert@redhat.com, jarkko@kernel.org, ashish.kalra@amd.com,
+        nikunj.dadhania@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com
+References: <20230612042559.375660-1-michael.roth@amd.com>
+ <20230612042559.375660-48-michael.roth@amd.com>
+From:   "Suthikulpanit, Suravee" <suravee.suthikulpanit@amd.com>
+In-Reply-To: <20230612042559.375660-48-michael.roth@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR03CA0090.apcprd03.prod.outlook.com
+ (2603:1096:4:7c::18) To DM8PR12MB5445.namprd12.prod.outlook.com
+ (2603:10b6:8:24::7)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM8PR12MB5445:EE_|PH7PR12MB5656:EE_
+X-MS-Office365-Filtering-Correlation-Id: 508a5eb1-dd64-4fb6-475b-08dbaf8da7e7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hDPly98E4WIV0WGEJM9NIWFNObX+Aday+l8qUZ5nqHmBBi+rFi+l6FwFkl7lBz4CeeA7y44LhO/p/BXIfgNlKEGer0/s2MzTqwnNMVzmg1wWF2hiuVnMUembldszX2hepvtvpX04By+q40/wCq8q1wQeivBis3zGxB9lo0qbUxWuTqla1XdK3m7DaWsv7zQ0cChhbsHW9aSQQozQohrYll5PZYtL8HQKmWmVyhba/hS5lZqBb5UJzaJWjKok/f83sdONQC1w6KQLJIHI2+xVG6yPFIPzusAfWosF1S00CL6AeT5A3XoQCblg3C5x78s+V0VtxyzIUu7VyNZhkIM/8fqrlFi20leQnfDF8uYHy+3ggGGjob88seT11o/S7OWQtkObRYHWaEpmejXluzZW7ci5qrUDsAJjSryJUV7dnlIwM81MpePdWQgoJr1crgLjOgImoj0vRDWekCl+iAFzJVWQ77LFRvnw1aPSZEcU8G7EppssjMWICAUEZosW/UTTFvX4xTB6Ba6Cj7EasU1X4Bk7/R3lBBH6wNVkvKJE3zBWvx6eOvwDb/YTn7iEm1IIs52kx81p37DkhsQWvu2Bw/jJGSuj2kO1HA3PvayU7wVhwy1giM/CuZZbbrX9kKb7K1uE6gmQGsesWyR5o1VB+w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR12MB5445.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(396003)(346002)(366004)(186009)(451199024)(1800799009)(38100700002)(53546011)(6666004)(6506007)(6486002)(26005)(6512007)(478600001)(2616005)(966005)(4744005)(2906002)(7406005)(7416002)(41300700001)(66476007)(8676002)(66946007)(5660300002)(66556008)(4326008)(316002)(8936002)(36756003)(86362001)(31696002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RHczNjRmMSs3TjBUSTJhemdiYk1oWlV0cXIrSktaalBOM1pZaDN2QTBkL0Iw?=
+ =?utf-8?B?YUI0RVRkelRwQlF6M3lQMmJ0ZE9iSFdWaFZBRXIzdkxLK1c4WVdFYWdpd0Z1?=
+ =?utf-8?B?ZUdlVnRMa3AxaXlaajlNak9NbFNIYXdNa0V4eGNZYzlLdTNKSEdwY1hGUnhS?=
+ =?utf-8?B?UzcwZ3R2MHJmUUtSUDZvWnVIME5vSFR3OWlXanpDMWkvamU0UmZJZHBqRGdN?=
+ =?utf-8?B?ajEwZ2FhR2kycGdqdnBqQ0lPQlpCWHExaFMrL3NxZFVuNWs2bVpQVFo5NTF6?=
+ =?utf-8?B?K0MrcncvY202c2wrUGdHNVVWRENrdmNrbFhxRUNKbzJ4THNWZXhVZ0JYWjlG?=
+ =?utf-8?B?Zjh5bzFFVXRTT3BVMi85bmpiYVo5ZU5ZR3RFZXF0ZkY4VFZZYUxOVHlmMGVD?=
+ =?utf-8?B?YndSTEVIaS9aVU1mQ0tLbFJmSGpSNG9JU24wMmRtWFAvT0tscG5kVHFMMlo2?=
+ =?utf-8?B?MEZXb0RZeTBlWExzKytpVlA1emRrL1pPcjZ2aTFjdWd4UTVRRExlQktCd1VD?=
+ =?utf-8?B?YUI5TTZmcEVKVDhudno0dk8zUnRMaEMwYXMxVTZZYlN5Wjd4WjVGTE1kelZa?=
+ =?utf-8?B?b0hnM3UxZHA1bXJPUWMvdzB6aHhPRnRlN3FvdTdzWVMrYTVFQ2k4d2tvTVBT?=
+ =?utf-8?B?a3BhcXhxaHo2ZXNVUlJkZVFMRExlenVUbVllcEIxZmhkNFo0UGI3bEJsTnpy?=
+ =?utf-8?B?NCtEVTI1Ymk3TWZpYVhJMGFXUnFKZm1QU2RiR0JhTW10VUl0TXA0VXpTeFBF?=
+ =?utf-8?B?QjNvTHUrNElzU0dCeThZSjV5L3Z6QzRKVmRUcWFJQmhZVnM4SDB4eXRwYXU3?=
+ =?utf-8?B?SmNVRHVzcmdQR0h4R2tGd2t2RjdzeXFBak1DSlFhWjJ4QjZNRHJzMU0zaVJ6?=
+ =?utf-8?B?RlJ0NkZOeFJzeitDS0EvZ09ob1JqdTZTR0wralpCWG5XTFpmN0p1VC90enRO?=
+ =?utf-8?B?ZE41VHUvR0pFQzEyUDQyeVhvWit3SHY2KzRtK2l6U3JBMW95dUpPc2lZb0hk?=
+ =?utf-8?B?QlZsTXBkT013RkZySVZmV0svaWVCVUJaTlZtS1c4d3NQT2FCT2NMci9BckVM?=
+ =?utf-8?B?cmxGTzNHM2daekpDOWZTUFF3dGpQdXNodTgwQTVGT3BhWlpRU1NvRUhuNUFJ?=
+ =?utf-8?B?elMyRGpjeDJGK2YvVXhQaDZKb3RDcTIzSFZ2SnFHZ2Z0dVdOU3c4TUU5OHZ1?=
+ =?utf-8?B?dUkwZFA5Vzlrb2JnQkt5ODQ2eDdOd0ttZXMxenN1RDJuV0ZENVlwWkgwWHRM?=
+ =?utf-8?B?UzMvcjZlY3NzNmN4LzNMRG93eFpKOUNsUHZMR2phZUJIOStOUms3Y29HdmJE?=
+ =?utf-8?B?UmlhR2tZS3o4VFZIMTd1cFlNQnZoc00wdytEQ1VhMlhRVitTVUY3UVFtOVc5?=
+ =?utf-8?B?S2dZL2tPNzJ6QldNejZMaUc5eHJnTk1oL3UyN1BVR2l4T1pNN3IremgvSm04?=
+ =?utf-8?B?RFlaWTNYWmJYaUJPZGNSendza1JmMVV2ZDVESUp2QmRLTmlIaW9sb2x6emRI?=
+ =?utf-8?B?aldrS3ZXa0YzaUo2Nm5OYlY4c09ybkdOby9qMTNIZjhacUV1TFZ1SUZNbFZu?=
+ =?utf-8?B?THBmRW9wVExyQld4d1RSU1NaSVM3ZnBLZXBqUEU0NHpDcHJ2d1pZYkRKd2di?=
+ =?utf-8?B?OFcrMjFqcDNaUkZFUzgrVEtpbnE4OTExb04rcUxlSVc0ZFlkaHRDSW41d1Zr?=
+ =?utf-8?B?Y3dXbU5wMGx6UHBta0N0OXVzYVEwcEp6bStsOEhFM3ZWMy9jSVhZMXplVW1a?=
+ =?utf-8?B?aWJxNjdCd1pYdFVzVGdROU95alFJaEg4d2laWUMvcElkTG1HYS9kOFdlK0wr?=
+ =?utf-8?B?dTBDdFU4RFVId2VWTkdzL3ljbjMrRVIyWFpsV3R6aGxFa0thazV0aS9adkd5?=
+ =?utf-8?B?WnR2MW03V1A1UEdmM3RPMHl1TGRLSHNNWXdMZUk3R3NYT0lNSzZXcDl6ZzBa?=
+ =?utf-8?B?d0pYZWxGbXBLK3BMMGpDcE5zYUttMkc2NG1vRWV0RnpEQlJBMlJGWmpGMm1l?=
+ =?utf-8?B?WlVESnNMazdXNjZmQmdWb3ozQ3JSMEdESnU3VGhjV0dMS0J6WHkwenN6Tm5T?=
+ =?utf-8?B?ZjEyWnYyNjlRL0VabExLdXJ1dlhHeXFqTTNPMk05TkQwVWpoL2VFOUc3RWFJ?=
+ =?utf-8?Q?YUD4Jjlb1dm5tlYSrCicdNTUP?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 508a5eb1-dd64-4fb6-475b-08dbaf8da7e7
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR12MB5445.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 10:31:54.9018
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xOuG9z9ULsZspiOYXAzpHc+AkcZfGsspVUns/TQ2mR63sXUYi5f/EXC7OcXF7hPc/ZS3yWa4yuPhq8IshMmZ+A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5656
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Mike / Ashish
 
+FYI, you might need to start including the change from this patch
 
-On 07/09/2023 04:16, Yu Chien Peter Lin wrote:
-> Currently, the implementation of the RISC-V INTC driver uses the
-> interrupt cause as hwirq and has a limitation of supporting a
-> maximum of 64 hwirqs. However, according to the privileged spec,
-> interrupt cause >= 16 are defined for platform use.
-> 
-> This limitation prevents us from fully utilizing the available
-> local interrupt sources. Additionally, the hwirqs used on RISC-V
-> are sparse, with only interrupt numbers 1, 5 and 9 (plus Sscofpmf
-> or T-Head's PMU irq) being currently used for supervisor mode.
-> 
-> The patch switches to using irq_domain_create_tree() which
-> creates the radix tree map, allowing us to handle a larger
-> number of hwirqs.
-> 
-> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
-> Reviewed-by: Charles Ci-Jyun Wu <dminus@andestech.com>
-> Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
-> 
-> ---
-> There are 3 hwirqs of local interrupt source exceed 64 defined in
-> AX45MP datasheet [1] Table 56: AX45MP-1C scause Value After Trap:
-> - 256+16 Slave port ECC error interrupt (S-mode)
-> - 256+17 Bus write transaction error interrupt (S-mode)
-> - 256+18 Performance monitor overflow interrupt(S-mode)
-> 
-> [1] http://www.andestech.com/wp-content/uploads/AX45MP-1C-Rev.-5.0.0-Datasheet.pdf
-> ---
->  drivers/irqchip/irq-riscv-intc.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
-> index 4adeee1bc391..76e1229c45de 100644
-> --- a/drivers/irqchip/irq-riscv-intc.c
-> +++ b/drivers/irqchip/irq-riscv-intc.c
-> @@ -24,8 +24,8 @@ static asmlinkage void riscv_intc_irq(struct pt_regs *regs)
->  {
->  	unsigned long cause = regs->cause & ~CAUSE_IRQ_FLAG;
->  
-> -	if (unlikely(cause >= BITS_PER_LONG))
-> -		panic("unexpected interrupt cause");
-> +	if (!irq_find_mapping(intc_domain, cause))
-> +		panic("unexpected interrupt cause: %ld", cause);
+https://lore.kernel.org/linux-iommu/ZPiAUx9Qysw0AKNq@ziepe.ca/T/
 
-Hi Yu,
+in this series since Christoph would like to remove the code from the 
+current upstream, and re-introduce the change within this series instead.
 
-It seems like generic_handle_domain_irq() returns -EINVAL if provided
-with NULL (which will happen if the interrupt does not have a mapping
-due to __irq_resolve_mapping returning NULL) so maybe it is possible to
-remove this check (since __irq_resolve_mapping() is also called by
-generic_handle_domain_irq()) and panic if generic_handle_domain_irq()
-returns -EINVAL ? That would avoid calling __irq_resolve_mapping() twice
-for really rare cases.
+Regards,
+Suravee
 
-Clément
-
->  
->  	generic_handle_domain_irq(intc_domain, cause);
->  }
-> @@ -117,8 +117,8 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn)
->  {
->  	int rc;
->  
-> -	intc_domain = irq_domain_create_linear(fn, BITS_PER_LONG,
-> -					       &riscv_intc_domain_ops, NULL);
-> +	intc_domain = irq_domain_create_tree(fn, &riscv_intc_domain_ops,
-> +					     NULL);
->  	if (!intc_domain) {
->  		pr_err("unable to add IRQ domain\n");
->  		return -ENXIO;
-> @@ -132,8 +132,6 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn)
->  
->  	riscv_set_intc_hwnode_fn(riscv_intc_hwnode);
->  
-> -	pr_info("%d local interrupts mapped\n", BITS_PER_LONG);
-> -
->  	return 0;
->  }
->  
+On 6/12/2023 11:25 AM, Michael Roth wrote:
+> From: Ashish Kalra<ashish.kalra@amd.com>
+> 
+> Add a new IOMMU API interface amd_iommu_snp_disable() to transition
+> IOMMU pages to Hypervisor state from Reclaim state after SNP_SHUTDOWN_EX
+> command. Invoke this API from the CCP driver after SNP_SHUTDOWN_EX
+> command.
+> 
+> Signed-off-by: Ashish Kalra<ashish.kalra@amd.com>
+> Signed-off-by: Michael Roth<michael.roth@amd.com>
