@@ -2,170 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0B7797EDC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 00:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5163E797EDF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 00:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241501AbjIGWzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 18:55:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58876 "EHLO
+        id S239743AbjIGW4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 18:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241510AbjIGWzA (ORCPT
+        with ESMTP id S231207AbjIGW4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 18:55:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D3B1BD7;
-        Thu,  7 Sep 2023 15:54:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93B1AC433C7;
-        Thu,  7 Sep 2023 22:54:54 +0000 (UTC)
-Date:   Thu, 7 Sep 2023 18:55:07 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     shuah@kernel.org, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        broonie@kernel.org, naresh.kamboju@linaro.org,
-        anders.roxell@linaro.org, arnd@arndb.de
-Subject: Re: [PATCH] selftests/user_events: Fix failures when user_events is
- not installed
-Message-ID: <20230907185507.7928b589@gandalf.local.home>
-In-Reply-To: <20230907223536.731-1-beaub@linux.microsoft.com>
-References: <20230907223536.731-1-beaub@linux.microsoft.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 7 Sep 2023 18:56:03 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6301BCD;
+        Thu,  7 Sep 2023 15:56:00 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 76EA35C01B0;
+        Thu,  7 Sep 2023 18:55:59 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 07 Sep 2023 18:55:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        cc:content-transfer-encoding:content-type:content-type:date:date
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1694127359; x=1694213759; bh=JY/3pWUgixeq4U1xcB+vQrecNNcreqKmHuv
+        TvHPoKks=; b=hZOKZyDUc7+j+CIPweGtI9KhmXyOpFpT1Q2Iwr/a2WroAjm8/Hs
+        yCJo/vqmL3zCuf3sFLp18W+gMXndqIYJ6ANDdu3V2nW/4PzGleSLbxE8ndfBwVIS
+        Ml8hp+d/GHmNqeW0g9Z1RgSHWVVeFhVORjfR/JLVzxyV7y7b9ykyZw9xxJU0RFz8
+        /Dnv8KqpdNboELMioNvZczDtKxZAF0xWjkj1E8IiawKISGAN0+gZaH+qD6GuQzYj
+        k6FWa+lKtaQ96cMdwKfujoD271d9s1JmPW5+tiVgiDC28xpsFHPdEw2x0ICDaY7a
+        5xXYrO74Ufn89edqOHlCEDJNj23zPicl9gg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1694127359; x=
+        1694213759; bh=JY/3pWUgixeq4U1xcB+vQrecNNcreqKmHuvTvHPoKks=; b=p
+        LfEGCr84wsFOW85Yq/WxTzsZddhj3yvExc3WX3BZEBMEDb2rPfEe3CaEU6BU+r8C
+        M/zRB5DiVJF9vqh3muvVQyMhEf7TgpPMLGOjiEG2/q7UN0HJ+SHppAifIyMkxkH/
+        fLJ6EzDUYhgeosOEHyj2et49RjFq51t97r3bfRgFDiqghbJMWtjz7IXU65xY84B0
+        Zz8Odi5SrI+M3NwFWfs2RXHKWFh8Jefl7jaEc7UyMFWf59Nea3n4cBjn0glyWaFV
+        IwAJyiMVGrz3xj5rsculPRKuVXjX04QJlbGRIotOY7yaPVc5lTrtkGeFQaFYfuUu
+        pew9Um6dY7EGq4tti8guA==
+X-ME-Sender: <xms:_1T6ZLx2FwowYebnfnvo55HF8J_2z_sFEKH7JlaUjXyKa4MgL4JJmA>
+    <xme:_1T6ZDSS8CWGyMZKdtvQXZmZjjgmeUwvVowBS9EIsUxY0MAxiIIUZCKEM0Db2bEMi
+    BZtD1_s08tfnMWH>
+X-ME-Received: <xmr:_1T6ZFVQGSKfEKrJW3QxUUxSM8cjWKj17PbOQBsEVuqQLJWjmWtm6c8unBiER4SH72wXlAhB5-SGrRUQO9-M4JA32vpD0pYzmTgTUyhpXFB1g89eBcPJ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehiedgudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvfhfhjggtgfesthejredttdefjeenucfhrhhomhepuegvrhhn
+    ugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilh
+    drfhhmqeenucggtffrrghtthgvrhhnpeegffdutdegiefgteelleeggeeuueduteefiedu
+    vedvueefieejledvjeeuhfefgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegsvghrnhgurdhstghhuhgsvghrthesfhgrshhtmhgrihhlrdhf
+    mh
+X-ME-Proxy: <xmx:_1T6ZFj-MkyBfHK6T5mQaW8NRVKir97boN_9nX7fVsrAZwkbDI6YGg>
+    <xmx:_1T6ZNAfnUf8_ET-7WGWjeGPvo0ksNI4kUAug8Yyt8GWaWp1fjOEqQ>
+    <xmx:_1T6ZOIHIt38Q_D3UyDOFXujiK43Ccekd8lYsVDq2JHy0h5qiUBhaA>
+    <xmx:_1T6ZANX3lfmCQNPpypX-6pMCkT2DIPwXFRGCj8wJUjWOfxpaRkLAQ>
+Feedback-ID: id8a24192:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 7 Sep 2023 18:55:58 -0400 (EDT)
+Message-ID: <633750a9-bd94-df4b-0112-1e1e15a6b47b@fastmail.fm>
+Date:   Fri, 8 Sep 2023 00:55:57 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 3/3] fuse: move fuse_put_request a bit to remove forward
+ declaration
+Content-Language: en-US, de-DE
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, miklos@szeredi.hu,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230904143018.5709-1-shikemeng@huaweicloud.com>
+ <20230904143018.5709-4-shikemeng@huaweicloud.com>
+From:   Bernd Schubert <bernd.schubert@fastmail.fm>
+In-Reply-To: <20230904143018.5709-4-shikemeng@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  7 Sep 2023 22:35:36 +0000
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-> diff --git a/tools/testing/selftests/user_events/user_events_selftests.h b/tools/testing/selftests/user_events/user_events_selftests.h
-> new file mode 100644
-> index 000000000000..72692e62c709
-> --- /dev/null
-> +++ b/tools/testing/selftests/user_events/user_events_selftests.h
-> @@ -0,0 +1,103 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef _USER_EVENTS_SELFTESTS_H
-> +#define _USER_EVENTS_SELFTESTS_H
-> +
-> +#include <sys/types.h>
-> +#include <sys/mount.h>
-> +#include <unistd.h>
-> +#include <errno.h>
-> +
-> +#include "../kselftest.h"
-> +
-> +static inline bool tracefs_enabled(char **message, bool *fail)
-> +{
-> +	int fd;
-> +
-> +	*message = "";
-> +	*fail = false;
-> +
-> +	/* Ensure tracefs is installed */
-> +	fd = open("/sys/kernel/tracing", O_RDONLY);
 
-Instead of opening the directory, I believe that "stat()" is the preferred
-method of testing existence.
-
-> +
-> +	if (fd == -1) {
-> +		*message = "Tracefs is not installed";
-> +		return false;
-> +	}
-> +
-> +	close(fd);
-> +
-> +	/* Ensure mounted tracefs */
-> +	fd = open("/sys/kernel/tracing/README", O_RDONLY);
-> +
-> +	if (fd == -1 && errno == ENOENT) {
-> +		if (mount(NULL, "/sys/kernel/tracing", "tracefs", 0, NULL) != 0) {
-> +			*message = "Cannot mount tracefs";
-> +			*fail = true;
-> +			return false;
-> +		}
-> +
-> +		fd = open("/sys/kernel/tracing/README", O_RDONLY);
-
-Same here, unless you want to make sure you can also read it.
-
-> +	}
-> +
-> +	if (fd == -1) {
-> +		*message = "Cannot access tracefs";
-> +		*fail = true;
-> +		return false;
-> +	}
-> +
-> +	close(fd);
-> +
-> +	return true;
-> +}
-> +
-> +static inline bool user_events_enabled(char **message, bool *fail)
-> +{
-> +	int fd;
-> +
-> +	*message = "";
-> +	*fail = false;
-> +
-> +	if (getuid() != 0) {
-> +		*message = "Must be run as root";
-> +		*fail = true;
-> +		return false;
-> +	}
-> +
-> +	if (!tracefs_enabled(message, fail))
-> +		return false;
-> +
-> +	/* Ensure user_events is installed */
-> +	fd = open("/sys/kernel/tracing/user_events_data", O_RDONLY);
-
-ditto.
-
--- Steve
-
-> +
-> +	if (fd == -1) {
-> +		switch (errno) {
-> +		case ENOENT:
-> +			*message = "user_events is not installed";
-> +			return false;
-> +
-> +		default:
-> +			*message = "Cannot access user_events_data";
-> +			*fail = true;
-> +			return false;
-> +		}
-> +	}
-> +
-> +	close(fd);
-> +
-> +	return true;
-> +}
-> +
-> +#define USER_EVENT_FIXTURE_SETUP(statement) do { \
-> +	char *message; \
-> +	bool fail; \
-> +	if (!user_events_enabled(&message, &fail)) { \
-> +		if (fail) { \
-> +			TH_LOG("Setup failed due to: %s", message); \
-> +			ASSERT_FALSE(fail); \
-> +		} \
-> +		SKIP(statement, "Skipping due to: %s", message); \
-> +	} \
-> +} while (0)
-> +
-> +#endif /* _USER_EVENTS_SELFTESTS_H */
+On 9/4/23 16:30, Kemeng Shi wrote:
+> Move fuse_put_request before fuse_get_req to remove forward declaration.
 > 
-> base-commit: 9b1db732866bee060b9bca9493e5ebf5e8874c48
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>   fs/fuse/dev.c | 42 ++++++++++++++++++++----------------------
+>   1 file changed, 20 insertions(+), 22 deletions(-)
+> 
+> diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
+> index 4f49b1946635..deda8b036de7 100644
+> --- a/fs/fuse/dev.c
+> +++ b/fs/fuse/dev.c
+> @@ -101,7 +101,26 @@ static void fuse_drop_waiting(struct fuse_conn *fc)
+>   	}
+>   }
+>   
+> -static void fuse_put_request(struct fuse_req *req);
+> +static void fuse_put_request(struct fuse_req *req)
+> +{
+> +	struct fuse_conn *fc = req->fm->fc;
+> +
+> +	if (refcount_dec_and_test(&req->count)) {
+> +		if (test_bit(FR_BACKGROUND, &req->flags)) {
+> +			/*
+> +			 * We get here in the unlikely case that a background
+> +			 * request was allocated but not sent
+> +			 */
+> +			spin_lock(&fc->bg_lock);
+> +			if (!fc->blocked)
+> +				wake_up(&fc->blocked_waitq);
+> +			spin_unlock(&fc->bg_lock);
+> +		}
+> +
+> +		fuse_drop_waiting(fc);
+> +		fuse_request_free(req);
+> +	}
+> +}
+>   
+>   static struct fuse_req *fuse_get_req(struct fuse_mount *fm, bool for_background)
+>   {
+> @@ -154,27 +173,6 @@ static struct fuse_req *fuse_get_req(struct fuse_mount *fm, bool for_background)
+>   	return ERR_PTR(err);
+>   }
+>   
+> -static void fuse_put_request(struct fuse_req *req)
+> -{
+> -	struct fuse_conn *fc = req->fm->fc;
+> -
+> -	if (refcount_dec_and_test(&req->count)) {
+> -		if (test_bit(FR_BACKGROUND, &req->flags)) {
+> -			/*
+> -			 * We get here in the unlikely case that a background
+> -			 * request was allocated but not sent
+> -			 */
+> -			spin_lock(&fc->bg_lock);
+> -			if (!fc->blocked)
+> -				wake_up(&fc->blocked_waitq);
+> -			spin_unlock(&fc->bg_lock);
+> -		}
+> -
+> -		fuse_drop_waiting(fc);
+> -		fuse_request_free(req);
+> -	}
+> -}
+> -
+>   unsigned int fuse_len_args(unsigned int numargs, struct fuse_arg *args)
+>   {
+>   	unsigned nbytes = 0;
 
+Hmm yeah, but it makes it harder to get history with git annotate/blame?
+
+Thanks,
+Bernd
