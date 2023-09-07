@@ -2,73 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27450797DEC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 23:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C369E797DE7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 23:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240130AbjIGV10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 17:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43152 "EHLO
+        id S239599AbjIGVX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 17:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbjIGV1Z (ORCPT
+        with ESMTP id S231612AbjIGVX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 17:27:25 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD3311BCD
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 14:27:20 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b89b0c73d7so2497585ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 14:27:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1694122040; x=1694726840; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kfkT0bUg5dFL0RmzhNpX1DLqx8M5IR6kOY1LkXY1afw=;
-        b=g+XOWtoIE/ibQn0FJrDND5KU+PZ+xvyvKBTF8F6zDEh0ZO/huL491G2Gdqw6qQ0XUs
-         yqdV6uDNI297dy5k7eO1RMj6NIhQnTy7AXrwWNRwh/WEy1xPRKnJ5d7dx0iuRvtNHIx8
-         obCLpvhPnbj08xzy2CTkeo6ToOW/vfFLPeECkg5ib0FOm4akEF5eCSml6EkWCn5bfF9U
-         LwG8hHrNjWDeFVY7+hGWCUp4XWbD+LhPNeb8MJUd+fz2S9L/M14k3ZdeEU4ILqiUuwaR
-         gvrBqqOrWfvLkdV1fvcih25QRWvRdXoIGC7/sNVVNbmcUZh3zN6yVX59UB2dY2uF4j7I
-         GvPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694122040; x=1694726840;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kfkT0bUg5dFL0RmzhNpX1DLqx8M5IR6kOY1LkXY1afw=;
-        b=I7lEnRKeVr3JUvC2UfFWK17TdwmANxpQ3kIWXLndRaXk5ojV4URjNc6Xxt+CRowyru
-         uXbhoHANWqKCJqFiQUf6WwY7M2Hh0QJQbKBIJA0bMcShXB8kaoKu4u+sg6ngA10xKxfA
-         IrtUtTO/g24CLAYT1seQjzEnQRakUitToRtJL/UdsgodCb8zLiVP8nPkR31YtrGmtXh1
-         N8G8JtblxkBaGom5bZIDzBvJ03dDBJDBd+lKGv0HsGZc6fxn1H/s21xkyjrG1CcFTg+C
-         DJuXJObqtRu9OM53tBLRpOxizoBIWYCcD7zpHLyl7ljsSw2DzZCQyJTuAy2bX8PjDqOy
-         y4/w==
-X-Gm-Message-State: AOJu0YwjIJdqupD77d1W9E2FoNR6vMOGaqNfARqQUOXMK8Rg8XGL7Ysw
-        hv1RizZq1DeyPQWMw2cEkqXvWw==
-X-Google-Smtp-Source: AGHT+IHR7HofpF9T2MmNlZB6esIBkpsiTRR+T3BVuKS/LfV0XwDwnA7XryRIc9xRtzRHN5bkByOCfw==
-X-Received: by 2002:a17:902:ced1:b0:1b8:a469:53d8 with SMTP id d17-20020a170902ced100b001b8a46953d8mr889000plg.0.1694122040232;
-        Thu, 07 Sep 2023 14:27:20 -0700 (PDT)
-Received: from ?IPV6:2600:380:7457:42ac:56e5:c632:552:f5e0? ([2600:380:7457:42ac:56e5:c632:552:f5e0])
-        by smtp.gmail.com with ESMTPSA id jh2-20020a170903328200b001bc35b14c99sm188752plb.212.2023.09.07.14.27.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 14:27:19 -0700 (PDT)
-Message-ID: <7df3e30a-aa31-495c-9d59-cb6080364f61@kernel.dk>
-Date:   Thu, 7 Sep 2023 15:27:15 -0600
+        Thu, 7 Sep 2023 17:23:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F9A1BD2;
+        Thu,  7 Sep 2023 14:23:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFF02C433C7;
+        Thu,  7 Sep 2023 21:23:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694121832;
+        bh=rCuPsdLQufVpLwMAqTh9+q8pTfYjnuRBRZ8mkaCuqTo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IMQSV40VEDZPZFdNzkvj7TREKfIyuN/vANgoRRDi3kify60cuG2oUUZCqrKXpHyLg
+         syQiuZIx5OvFHRtARkSLAFYuztV6uXP8k20FZ8N0cD4+l19C/q7epzKssrz5Fv7XLe
+         e2QsvLIxkjg6BLTnConCHO8s+ii8MZhOjtCai9dGLHGw9RNX0jN2Di9OwC4vVir2J2
+         MoZ0XlT06PR6q/g33kR3lG9uFoV1WMpZmByGHUZYcHYGFk+XjXLsK54wYXXfunYHLy
+         yMP0ACKGNd2aJEqJN4oXb8U63oIsOrRjuRQ2VoYpIvE5M/qJLVIeMdaVeXjDhA6Vrs
+         KaDUf18n0zhiA==
+Date:   Thu, 7 Sep 2023 14:28:05 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Justin Stitt <justinstitt@google.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        Konrad Dybcio <konradybcio@kernel.org>
+Subject: Re: [PATCH v2] arm64/sysreg: refactor deprecated strncpy
+Message-ID: <amh6pp2mkmn22jcvz5tva7c4aaqxaq7zaz6v5u6rb7emsqp6p2@nxd7ynj524sx>
+References: <20230811-strncpy-arch-arm64-v2-1-ba84eabffadb@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: WARNING in __floppy_read_block_0
-Content-Language: en-US
-To:     Sanan Hasanov <Sanan.Hasanov@ucf.edu>,
-        "efremov@linux.com" <efremov@linux.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
-        "contact@pgazz.com" <contact@pgazz.com>
-References: <BL0PR11MB310616FC87790EFFEDCC7CD0E1EEA@BL0PR11MB3106.namprd11.prod.outlook.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <BL0PR11MB310616FC87790EFFEDCC7CD0E1EEA@BL0PR11MB3106.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811-strncpy-arch-arm64-v2-1-ba84eabffadb@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,21 +53,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/23 3:21 PM, Sanan Hasanov wrote:
-> Good day, dear maintainers,
+On Fri, Aug 11, 2023 at 04:33:51PM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1]. Which seems to be the case here due to the forceful setting of `buf`'s
+> tail to 0.
 > 
-> We found a bug using a modified kernel configuration file used by syzbot.
+> A suitable replacement is `strscpy` [2] due to the fact that it
+> guarantees NUL-termination on its destination buffer argument which is
+> _not_ the case for `strncpy`!
+> 
+> In this case, we can simplify the logic and also check for any silent
+> truncation by using `strscpy`'s return value.
+> 
+> This should have no functional change and yet uses a more robust and
+> less ambiguous interface whilst reducing code complexity.
+> 
 
-[snip]
+I'm sorry, but this patch is wrong.
 
-To the best of my knowledge, nobody cares about floppy enough to tend to
-any of the syzbot reports. I would strongly suggest that any testing of
-floppy by syzbot gets disabled until such time that a) the driver is
-either re-written to not be a piece of XXX, or b) someone motivated
-starts tackling these reports.
+__parse_cmdline() is supposed to match the command line against a set of
+keywords, one word at a time. The new implementation ignores the
+word-boundaries and matches the whole command line once and then breaks
+the loop, typically without having found a match. (See below)
 
-As it stands, it's just noise in the block syzbot reports.
+Can we please have this patch dropped, Will?
 
--- 
-Jens Axboe
 
+
+Also, the commit message is a blanket statement about why strscpy is
+better than stncpy, but I don't see how this is applicable to the code
+it attempts to "fix". Afaict the code already handled these cases.
+
+> Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Changes in v2:
+> - Utilize return value from strscpy and check for truncation (thanks Kees)
+> - Link to v1: https://lore.kernel.org/r/20230810-strncpy-arch-arm64-v1-1-f67f3685cd64@google.com
+> ---
+> For reference, see a part of `strscpy`'s implementation here:
+> 
+> |	/* Hit buffer length without finding a NUL; force NUL-termination. */
+> |	if (res)
+> |		dest[res-1] = '\0';
+> 
+> Note: compile tested
+> ---
+>  arch/arm64/kernel/idreg-override.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
+> index 2fe2491b692c..aee12c75b738 100644
+> --- a/arch/arm64/kernel/idreg-override.c
+> +++ b/arch/arm64/kernel/idreg-override.c
+> @@ -262,9 +262,9 @@ static __init void __parse_cmdline(const char *cmdline, bool parse_aliases)
+>  		if (!len)
+>  			return;
+>  
+> -		len = min(len, ARRAY_SIZE(buf) - 1);
+
+Here "len" was either the number of bytes to the first space, the end of
+the string, or the last byte in "buf".
+
+> -		strncpy(buf, cmdline, len);
+
+So this will copy one word, or the rest of the string.
+
+> -		buf[len] = 0;
+
+And it will NUL-terminate the word, which is then matched upon below.
+
+> +		len = strscpy(buf, cmdline, ARRAY_SIZE(buf));
+
+In this new implementation, the code copies the rest of the command line
+to "buf", makes an attempt to match with with the keywords, and then
+breaks the loop (as cmdline + len is the end of the string).
+
+Regards,
+Bjorn
