@@ -2,72 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8AAB797A92
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6FA797A96
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245304AbjIGRpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55766 "EHLO
+        id S237144AbjIGRpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245317AbjIGRpI (ORCPT
+        with ESMTP id S245327AbjIGRph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:45:08 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FE81FEC
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:44:37 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-68e403bb448so587477b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 10:44:37 -0700 (PDT)
+        Thu, 7 Sep 2023 13:45:37 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC731FF7
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:45:14 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-7926a450a0aso49920639f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 10:45:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694108675; x=1694713475; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pCtqJ2v90gtNEyhzR2bE+oo8HzdMCZa9CshpcYdMP5Q=;
-        b=BUq6ztAa8NQ+SndwmqcXAU48MQEvB26zONT/GQ4z2iS/yODLs4y/ftgQel4/R2eiYM
-         TbUE747pcKCTKSIsu2nQLSNnb9tJSQW/a4OaKU1EB5A4Z7ZbN/3FHaJsNdEHzVbTGKTE
-         lyiyb4z1SwCsm+BBP0hghKuJsBZ+7TnWSfWu1EBCY16II/fM1TlZy+BotLfFFu+B139Q
-         /OxzqzIW1+ZiR7Qe3KXin+bOkbyvq0VwcKOxrZNusHOvp2Nw9nF6PreaDZ0CPjpco7Jp
-         L2XUdQHKoXNtdC55z3PtKkfsnKxZof2CBqYea2nvBT9qxm/xWWrSJ4BnkbU8WDHMRPil
-         XpvA==
+        d=gmail.com; s=20221208; t=1694108710; x=1694713510; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GKEBIhsBuPMIFoNFrg7e7FdSYJiWl4JlzcAiWAe6P/4=;
+        b=qMcoXbUlBkzrQNzV53tCFs+sSo2LWMAt+zBICQd/xU5CwvPD61LcfwnRJP9iHQYc6l
+         ldZUPVKrbrCNL4wn/HNyjACsJBqm+75zZLvQsAoRQ+2lb2dHF/LnYeGtQMsobNoBiC/I
+         adkVV3swWvXQRJ1z8tVscMXIKLj5rcyoGJ63l1rIk4ewQ1NrC1/ZiCAJezEkXHTeYdxu
+         uWuYCiMtCyMDOyaj02Kf56T27aufoj+Kl7I7/awmO2li8KQO6i7aSzeP4XlMdUD5KUxC
+         eM9QxnYY99YwlJMtVpT/iL7/U99wdeMtVFvuj5T16hng3VNqzZjNq+/jlQbs1tVfwWiP
+         vivg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694108675; x=1694713475;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pCtqJ2v90gtNEyhzR2bE+oo8HzdMCZa9CshpcYdMP5Q=;
-        b=qN5q+vooBkD+U6zpj0nNagSzfL98RmwJeYxMp/Cqv0xhUk2X5HsCUWx+5jUE5gwE0I
-         SbSmHZ6aRpg78S1s25XdqbXZCbP73JemKpWUWZxzCyRS3LMMj7qh5jwDSN1mkboG9iom
-         1rfIb0XxLGPUDi3I6NgsdBm4eJqOMF0aSJrjoIcEdwdQ7LESH7lCYl5pAw9nfNv+CJd/
-         G0Z1xE7TOZifecwr+kz/wg7pmR+VY4KRFhAnRKGE2VAkN2xYfv6RK3UIAmuCWenImQaL
-         BYj59uqrey/WIMHu4E/ntAxozl63b7/kNmmTvXpKIVV1FLlDpdM7bGcHnhj6ELUgmXee
-         n1fg==
-X-Gm-Message-State: AOJu0YxsIG1Fq8fwSFrL4i5dDXEvDyc2g9SlQ7AKE1e+U5uN4dTPB2D0
-        0hzClfkT6KvWumRPpl+UlxfT5Q==
-X-Google-Smtp-Source: AGHT+IGKlJ3xnjimABZZjw0izpcyGAzZhRB7XVrLYIALIqu7KjiK8LMDFOXECqHizN0cOMXuOlhPvA==
-X-Received: by 2002:a05:6a00:14c2:b0:68b:e8b8:b9ee with SMTP id w2-20020a056a0014c200b0068be8b8b9eemr141311pfu.11.1694108675570;
-        Thu, 07 Sep 2023 10:44:35 -0700 (PDT)
-Received: from ghost ([2601:647:5700:6860:84f6:5055:9180:822])
-        by smtp.gmail.com with ESMTPSA id c14-20020aa781ce000000b00687dde8ae5dsm5944pfn.154.2023.09.07.10.44.34
+        d=1e100.net; s=20230601; t=1694108710; x=1694713510;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GKEBIhsBuPMIFoNFrg7e7FdSYJiWl4JlzcAiWAe6P/4=;
+        b=nd8+grO1h6vqEZU12fzQFrxJgPRP8ECb/ZqcdQMQEriU7f8B89XEM3Rfrzu1MGpUCv
+         fuoC72jXvsBzNyNPELN4N7vxh0u829pZuxgzz/XZwtx6NC1i7/aSBmu7wx/O+5TjeTtQ
+         1d3waV0eTe4WL5EFed+2NcFTkxf3BY+V1XUpb9tgbPkXfFw57vDtP4nSlZhRXeMBg5fW
+         H90N4kzbzRE5r4CXnW3SosnZSZ0mkNHYgN3QyHlMiiEzaR56VfRuABo9oXaG3UJ16tpr
+         ChQA4fyaITiVsOJLFSjYeLRxlcxmtJhuckEp0BfdCE9F+MngEq+wtuB3twB7wG4r/nzr
+         5qmQ==
+X-Gm-Message-State: AOJu0Yz5J4j7TAqG6SU4bZwpGlezlSx/GEoYTQB+wIZxfxi17Y48OUD4
+        aMZu6oqxDTisWCWjJ5gM0I4b2Ob5wAjNXQ==
+X-Google-Smtp-Source: AGHT+IHc+0aLZ2pC5b5XOj3At31tdt6+PUmNAXXs+nXSU+GgA8eM07yfJVw4IAcRVVLAQdSnm7WK+Q==
+X-Received: by 2002:a5e:de43:0:b0:783:5fd9:3789 with SMTP id e3-20020a5ede43000000b007835fd93789mr473337ioq.1.1694108710305;
+        Thu, 07 Sep 2023 10:45:10 -0700 (PDT)
+Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
+        by smtp.googlemail.com with ESMTPSA id b19-20020a5ea713000000b00783737db8ebsm5915154iod.38.2023.09.07.10.45.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 10:44:35 -0700 (PDT)
-Date:   Thu, 7 Sep 2023 10:44:32 -0700
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v2 1/5] riscv: Checksum header
-Message-ID: <ZPoMAGYlIxPZsE7+@ghost>
-References: <20230905-optimize_checksum-v2-0-ccd658db743b@rivosinc.com>
- <20230905-optimize_checksum-v2-1-ccd658db743b@rivosinc.com>
- <20230907-f8c8993dbeb24d5ea5310ec7@fedora>
+        Thu, 07 Sep 2023 10:45:09 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, Jim Cromie <jim.cromie@gmail.com>,
+        apw@canonical.com, joe@perches.com,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 2/2] checkpatch: reword long-line warning about commit-msg
+Date:   Thu,  7 Sep 2023 11:45:06 -0600
+Message-ID: <20230907174506.593889-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230907-f8c8993dbeb24d5ea5310ec7@fedora>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,151 +70,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 10:40:54AM +0100, Conor Dooley wrote:
-> Hey Charlie,
-> 
-> Just a passing thought that I can't really test since I am meant to be
-> on holidays...
-> 
-> On Tue, Sep 05, 2023 at 09:46:50PM -0700, Charlie Jenkins wrote:
-> > Provide checksum algorithms that have been designed to leverage riscv
-> > instructions such as rotate. In 64-bit, can take advantage of the larger
-> > register to avoid some overflow checking.
-> > 
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > ---
-> >  arch/riscv/include/asm/checksum.h | 96 +++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 96 insertions(+)
-> > 
-> > diff --git a/arch/riscv/include/asm/checksum.h b/arch/riscv/include/asm/checksum.h
-> > new file mode 100644
-> > index 000000000000..573714b9ea15
-> > --- /dev/null
-> > +++ b/arch/riscv/include/asm/checksum.h
-> > @@ -0,0 +1,96 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * IP checksum routines
-> > + *
-> > + * Copyright (C) 2023 Rivos Inc.
-> > + */
-> > +#ifndef __ASM_RISCV_CHECKSUM_H
-> > +#define __ASM_RISCV_CHECKSUM_H
-> > +
-> > +#include <linux/in6.h>
-> > +#include <linux/uaccess.h>
-> > +
-> > +#ifdef CONFIG_32BIT
-> > +typedef unsigned int csum_t;
-> > +#else
-> > +typedef unsigned long csum_t;
-> > +#endif
-> > +
-> > +/*
-> > + *	Fold a partial checksum without adding pseudo headers
-> > + */
-> > +static inline __sum16 csum_fold(__wsum sum)
-> > +{
-> > +	sum += (sum >> 16) | (sum << 16);
-> > +	return (__force __sum16)(~(sum >> 16));
-> > +}
-> > +
-> > +#define csum_fold csum_fold
-> > +
-> > +/*
-> > + * Quickly compute an IP checksum with the assumption that IPv4 headers will
-> > + * always be in multiples of 32-bits, and have an ihl of at least 5.
-> > + * @ihl is the number of 32 bit segments and must be greater than or equal to 5.
-> > + * @iph is assumed to be word aligned.
-> > + */
-> > +static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
-> > +{
-> > +	csum_t csum = 0;
-> > +	int pos = 0;
-> > +
-> > +	do {
-> > +		csum += ((const unsigned int *)iph)[pos];
-> > +#ifdef CONFIG_32BIT
-> > +		csum += csum < ((const unsigned int *)iph)[pos];
-> > +#endif // !CONFIG_32BIT
-> 
-> Some of this ifdeffery really should become IS_ENABLED(), there's
-> nothing in some of them that can't just get removed by the compiler.
-> 
-> > +	} while (++pos < ihl);
-> > +
-> > +#ifdef CONFIG_RISCV_ISA_ZBB
-> 
-> This here I can't test since I'm supposed to be AFK, but can this also
-> be an IS_ENABLED()? I know it is guarding code that the toolchain may
-> not support, but does it get removed before that matters?
-> 
-> I mainly ask because there's a host of ifdeffery here & the code would
-> be a lot easier to understand if we could cut it down to a minimum.
-> 
-> > +	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
-> > +		csum_t fold_temp;
-> > +
-> > +		asm_volatile_goto(ALTERNATIVE("j %l[no_zbb]", "nop", 0,
-> > +					      RISCV_ISA_EXT_ZBB, 1)
-> > +		    :
-> > +		    :
-> > +		    :
-> > +		    : no_zbb);
-> > +#ifdef CONFIG_32BIT
-> > +		asm(".option push				\n\
-> > +		.option arch,+zbb				\n\
-> > +			rori %[fold_temp],%[csum],16		\n\
-> > +			add %[csum],%[fold_temp],%[csum]	\n\
-> > +		.option pop"
-> > +		: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
-> > +#else // !CONFIG_32BIT
-> > +		asm(".option push				\n\
-> > +		.option arch,+zbb				\n\
-> > +		    rori %[fold_temp], %[csum], 32		\n\
-> > +		    add %[csum], %[fold_temp], %[csum]		\n\
-> > +		    srli %[csum], %[csum], 32			\n\
-> > +		    roriw %[fold_temp], %[csum], 16		\n\
-> > +		    addw %[csum], %[fold_temp], %[csum]		\n\
-> > +		.option pop"
-> > +		: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp));
-> > +#endif // !CONFIG_32BIT
-> 
-> These 3 I think are pretty easy to follow immediately, but...
-> 
-> > +		return ~(csum >> 16);
-> > +	}
-> > +	/*
-> > +	 * ZBB only saves three instructions on 32-bit and five on 64-bit so not
-> > +	 * worth checking if supported without Alternatives.
-> > +	 */
-> > +no_zbb:
-> > +#endif // CONFIG_RISCV_ISA_ZBB
-> > +#ifdef CONFIG_32BIT
-> > +#else // !CONFIG_32BIT
-> > +	csum += (csum >> 32) | (csum << 32);
-> > +	csum >>= 16;
-> > +#endif // !CONFIG_32BIT
-> 
-> ...these ones here could be converted too, afaict.
-> 
-> Thanks,
-> Conor.
-> 
-That should make it look much cleaner, I will switch over to IS_ENABLED.
+The COMMIT_LOG_LONG_LINE warning complains about:
+ 1- possible unwrapped commit description
+ 2- line too long
 
-- Charlie
-> > +	return csum_fold((__force __wsum)csum);
-> > +}
-> > +
-> > +#define ip_fast_csum ip_fast_csum
-> > +
-> > +#include <asm-generic/checksum.h>
-> > +
-> > +#endif // __ASM_RISCV_CHECKSUM_H
-> > 
-> > -- 
-> > 2.42.0
-> > 
+The actual test is #2, so reword it to say that 1st.
+This could reduce potential confusion for newbie users.
 
+Cc: apw@canonical.com
+Cc: joe@perches.com
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+---
+ scripts/checkpatch.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 6aabcc1f66c1..6e789dc07420 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3272,7 +3272,7 @@ sub process {
+ 					# A Fixes:, link or signature tag line
+ 		      $commit_log_possible_stack_dump)) {
+ 			WARN("COMMIT_LOG_LONG_LINE",
+-			     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
++			     "Prefer a maximum 75 chars per line (possible unwrapped commit description?)\n" . $herecurr);
+ 			$commit_log_long_line = 1;
+ 		}
+ 
+-- 
+2.41.0
 
