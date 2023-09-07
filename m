@@ -2,64 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD9E797C13
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37614797C2E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343694AbjIGSjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 14:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37936 "EHLO
+        id S1344283AbjIGSoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237151AbjIGSjM (ORCPT
+        with ESMTP id S1344279AbjIGSom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:39:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC7191;
-        Thu,  7 Sep 2023 11:39:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=X5fOGT6hnTJK573IuD04yd9SOfXqDxni4NBVfuWn3og=; b=URkMsGtMOgbMrLCeg5aGtFhgaQ
-        HoJkeJMg/8gWZue+hLZeLEtaMqzN9ocM80wUv+Y0ygL/F3J/vu29d2mRkALYnqJutDlg2MX3bbUo5
-        dah4NrZBIViKX+Ly/N55bo9koRN5Qnx8ehIEFqRJjUAVEf8yOru+8NI3VxszKjSbn8LuDopj1WhpQ
-        JS9Iysm/xk2a38vON3CSp5AflVVHdANw7Jn699kvHEuDyhGQXs99dVzDLYMf59syhFVftJM2Pjiug
-        IZisVZF66njVhUspIIQmR5U3NT48aNO2M93xMjvRLG3+hD8tDRiExDnSQ90Gk1VTAXElPavBsgUYs
-        qA/KobBw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qeJtv-00CZ21-28;
-        Thu, 07 Sep 2023 18:38:47 +0000
-Date:   Thu, 7 Sep 2023 11:38:47 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Nitesh Shetty <nj.shetty@samsung.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        martin.petersen@oracle.com, gost.dev@samsung.com,
-        Hannes Reinecke <hare@suse.de>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        Anuj Gupta <anuj20.g@samsung.com>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v15 01/12] block: Introduce queue limits and sysfs for
- copy-offload support
-Message-ID: <ZPoYtx2CfmYaG3UO@bombadil.infradead.org>
-References: <20230906163844.18754-1-nj.shetty@samsung.com>
- <CGME20230906164253epcas5p32862e8384bdd566881d2c155757cb056@epcas5p3.samsung.com>
- <20230906163844.18754-2-nj.shetty@samsung.com>
+        Thu, 7 Sep 2023 14:44:42 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4FA132;
+        Thu,  7 Sep 2023 11:44:37 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1qeJzS-0001hz-Iq; Thu, 07 Sep 2023 20:44:30 +0200
+Date:   Thu, 7 Sep 2023 20:44:30 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     David Wang <00107082@163.com>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] uapi/netfilter: Change netfilter hook verdict code
+ definition from macro to enum
+Message-ID: <20230907184430.GF20947@breakpoint.cc>
+References: <20230904130201.14632-1-00107082@163.com>
+ <cc6e3tukgqhi5y4uhepntrpf272o652pytuynj4nijsf5bkgjq@rgnbhckr3p4w>
+ <19d2362f.5c85.18a6647817b.Coremail.00107082@163.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230906163844.18754-2-nj.shetty@samsung.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+In-Reply-To: <19d2362f.5c85.18a6647817b.Coremail.00107082@163.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,20 +46,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 10:08:26PM +0530, Nitesh Shetty wrote:
-> Add device limits as sysfs entries,
-> 	- copy_max_bytes (RW)
-> 	- copy_max_hw_bytes (RO)
+David Wang <00107082@163.com> wrote:
+> At 2023-09-06 00:38:02, "Daniel Xu" <dxu@dxuuu.xyz> wrote:
+> >Hi David,
+> >
+> >On Mon, Sep 04, 2023 at 09:02:02PM +0800, David Wang wrote:
 > 
-> Above limits help to split the copy payload in block layer.
-> copy_max_bytes: maximum total length of copy in single payload.
-> copy_max_hw_bytes: Reflects the device supported maximum limit.
+> >>  #include <linux/in6.h>
+> >>  
+> >>  /* Responses from hook functions. */
+> >> -#define NF_DROP 0
+> >> -#define NF_ACCEPT 1
+> >> -#define NF_STOLEN 2
+> >> -#define NF_QUEUE 3
+> >> -#define NF_REPEAT 4
+> >> -#define NF_STOP 5	/* Deprecated, for userspace nf_queue compatibility. */
+> >> -#define NF_MAX_VERDICT NF_STOP
+> >> +enum {
+> >> +	NF_DROP        = 0,
+> >> +	NF_ACCEPT      = 1,
+> >> +	NF_STOLEN      = 2,
+> >> +	NF_QUEUE       = 3,
+> >> +	NF_REPEAT      = 4,
+> >> +	NF_STOP        = 5,	/* Deprecated, for userspace nf_queue compatibility. */
+> >> +	NF_MAX_VERDICT = NF_STOP,
+> >> +};
+> >
+> >Switching from macro to enum works for almost all use cases, but not
+> >all. If someone if #ifdefing the symbols (which is plausible) this
+> >change would break them.
+> >
+> >I think I've seen some other networking code define both enums and
+> >macros. But it was a little ugly. Not sure if that is acceptable here or
+> >not.
+> >
+> >[...]
+> >
+> >Thanks,
+> >Daniel
 > 
-> Reviewed-by: Hannes Reinecke <hare@suse.de>
-> Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
-> Signed-off-by: Kanchan Joshi <joshi.k@samsung.com>
-> Signed-off-by: Anuj Gupta <anuj20.g@samsung.com>
+> 
+> Thanks for the review~
+> I do not have a strong reasoning to deny the possibility of breaking unexpected usage of this macros,
+> 
+> but I also agree that it is ugly to use both enum and macro at the same time.
+> 
+> Kind of don't know how to proceed from here now...
 
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+I don't see anyone doing #ifdef tests on these, so I suggest we
+give your patch a try and see if anything breaks.
 
-  Luis
+Technically only ACCEPT and DROP can be used by bpf
+programs but splitting it in
+enum-for-accept-drop-and-define-for-the-rest looks even more silly.
