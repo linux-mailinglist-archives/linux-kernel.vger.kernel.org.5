@@ -2,177 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 470B5796F04
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 04:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66CB796F06
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 04:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236826AbjIGCk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 22:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46388 "EHLO
+        id S238119AbjIGCma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 22:42:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbjIGCk5 (ORCPT
+        with ESMTP id S229507AbjIGCm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 22:40:57 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A801997;
-        Wed,  6 Sep 2023 19:40:52 -0700 (PDT)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Rh3LJ54FwzMlBb;
-        Thu,  7 Sep 2023 10:37:28 +0800 (CST)
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 7 Sep 2023 10:40:48 +0800
-Subject: Re: [PATCH v8 0/6] perf record: Track sideband events for all CPUs
- when tracing selected CPUs
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
-        <namhyung@kernel.org>, <irogers@google.com>,
-        <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
-        <james.clark@arm.com>, <tmricht@linux.ibm.com>,
-        <ak@linux.intel.com>, <anshuman.khandual@arm.com>,
-        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
-References: <20230904023340.12707-1-yangjihong1@huawei.com>
- <ZPij6XjhdUW3nIqU@kernel.org>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <31449397-cbee-5c51-859d-887b6455c886@huawei.com>
-Date:   Thu, 7 Sep 2023 10:40:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Wed, 6 Sep 2023 22:42:29 -0400
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3391A1997;
+        Wed,  6 Sep 2023 19:42:24 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0VrVXchl_1694054538;
+Received: from 30.221.145.55(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VrVXchl_1694054538)
+          by smtp.aliyun-inc.com;
+          Thu, 07 Sep 2023 10:42:20 +0800
+Message-ID: <3563c30f-eaa1-8bb4-fa6c-2f41c2b30f7d@linux.alibaba.com>
+Date:   Thu, 7 Sep 2023 10:42:17 +0800
 MIME-Version: 1.0
-In-Reply-To: <ZPij6XjhdUW3nIqU@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.205]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v7 0/8] perf vendor events: Add JSON metrics for Arm CMN
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     John Garry <john.g.garry@oracle.com>,
+        Ian Rogers <irogers@google.com>, Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+References: <1692606977-92009-1-git-send-email-renyu.zj@linux.alibaba.com>
+ <ZPijMsM7GsHYtPse@kernel.org>
+From:   Jing Zhang <renyu.zj@linux.alibaba.com>
+In-Reply-To: <ZPijMsM7GsHYtPse@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On 2023/9/7 0:08, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Sep 04, 2023 at 02:33:34AM +0000, Yang Jihong escreveu:
->> User space tasks can migrate between CPUs, track sideband events for all
->> CPUs.
->>
->> The specific scenarios are as follows:
->>
->>           CPU0                                 CPU1
->>    perf record -C 0 start
->>                                taskA starts to be created and executed
->>                                  -> PERF_RECORD_COMM and PERF_RECORD_MMAP
->>                                     events only deliver to CPU1
->>                                ......
->>                                  |
->>                            migrate to CPU0
->>                                  |
->>    Running on CPU0    <----------/
->>    ...
->>
->>    perf record -C 0 stop
->>
->> Now perf samples the PC of taskA. However, perf does not record the
->> PERF_RECORD_COMM and PERF_RECORD_COMM events of taskA.
->> Therefore, the comm and symbols of taskA cannot be parsed.
->>
->> The sys_perf_event_open invoked is as follows:
->>
->>    # perf --debug verbose=3 record -e cpu-clock -C 1 true
->>    <SNIP>
->>    Opening: cpu-clock
->>    ------------------------------------------------------------
->>    perf_event_attr:
->>      type                             1 (PERF_TYPE_SOFTWARE)
->>      size                             136
->>      config                           0 (PERF_COUNT_SW_CPU_CLOCK)
->>      { sample_period, sample_freq }   4000
->>      sample_type                      IP|TID|TIME|CPU|PERIOD|IDENTIFIER
->>      read_format                      ID|LOST
->>      disabled                         1
->>      inherit                          1
->>      freq                             1
->>      sample_id_all                    1
->>      exclude_guest                    1
->>    ------------------------------------------------------------
->>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 5
->>    Opening: dummy:u
->>    ------------------------------------------------------------
->>    perf_event_attr:
->>      type                             1 (PERF_TYPE_SOFTWARE)
->>      size                             136
->>      config                           0x9 (PERF_COUNT_SW_DUMMY)
->>      { sample_period, sample_freq }   1
->>      sample_type                      IP|TID|TIME|CPU|IDENTIFIER
->>      read_format                      ID|LOST
->>      inherit                          1
->>      exclude_kernel                   1
->>      exclude_hv                       1
->>      mmap                             1
->>      comm                             1
->>      task                             1
->>      sample_id_all                    1
->>      exclude_guest                    1
->>      mmap2                            1
->>      comm_exec                        1
->>      ksymbol                          1
->>      bpf_event                        1
->>    ------------------------------------------------------------
->>    sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 6
->>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 7
->>    sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 9
->>    sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 10
->>    sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 11
->>    sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 12
->>    sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 13
->>    sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 14
->>    <SNIP>
->>
->> Changes since_v7:
->>   - The condition for requiring system_wide sideband is changed to
->>     "as long as a non-dummy event exists" (patch4).
->>   - Modify the corresponding test case to record only dummy event (patch6).
->>   - Thanks to tested-by tag from Ravi, but because the solution is modified,
->>     the tested-by tag of Ravi is not added to this version.
->>
->> Changes since_v6:
->>   - Patch1:
->>      1. No change.
->>      2. Keep Acked-by tag from Adrian.
->>   - Patch2:
->>      1. Update commit message as suggested by Ian.
->>      2. Keep Acked-by tag from Adrian because code is not modified.
->>   - Patch3:
->>      1. Update comment as suggested by Ian.
->>      2. Merge original patch5 ("perf test: Update base-record & system-wide-dummy attr") as suggested by Ian.
->>      3. Only merge commit, keep Acked-by tag from Adrian.
->>   - Patch4:
->>      1. No change. Because Adrian recommends not changing the function name.
->>      2. Keep Acked-by tag from Adrian.
->>   - Patch5:
->>      1. Add cleanup on trap function as suggested by Ian.
->>      2. Remove Tested-by tag from Adrian because the script is modified.
->>   - Patch6:
->>      1. Add Reviewed-by tag from Ian.
+
+在 2023/9/7 上午12:05, Arnaldo Carvalho de Melo 写道:
+> Em Mon, Aug 21, 2023 at 04:36:09PM +0800, Jing Zhang escreveu:
+>> Changes since v6:
+>> - Supplement the omitted EventCode;
+>> - Keep the original way of ConfigCode;
+>> - Supplement the test in empty-pmu-events.c, so that the pmu event test
+>>   can succeed when build with NO_JEVENT=1.
+>> - Link: https://lore.kernel.org/all/1691394685-61240-1-git-send-email-renyu.zj@linux.alibaba.com/
 > 
-> I'm in doubt about these Acked-by/Reviewed-by tags, do they still stand? They are
-> not in the latest series, can you please check?
+> Waiting for a v8, from what I saw there are several more review comments
+> to address, right?
+> 
 
-Uh, uh. Because several reviewers have different opinions on the 
-solution,  I modified it several times.
-Now v8 patchset is different from the previous versions.
-I only keep the  Acked-by/Reviewed-by tags of patches that are not 
-modified. For patches that have modified the code, I remove the tags.
-Therefore, please refer to the v8 series for Acked-by/Reviewed-by tags.
-This version needs to be confirmed by reviewers.
+Yes, I will send v8 soon.
 
 Thanks,
-Yang
+Jing
+
+> - Arnaldo
+>  
+>> Jing Zhang (8):
+>>   perf pmu: "Compat" supports matching multiple identifiers
+>>   perf metric: "Compat" supports matching multiple identifiers
+>>   perf vendor events: Supplement the omitted EventCode
+>>   perf jevents: Support more event fields
+>>   perf test: Make matching_pmu effective
+>>   perf test: Add pmu-event test for "Compat" and new event_field.
+>>   perf jevents: Add support for Arm CMN PMU aliasing
+>>   perf vendor events: Add JSON metrics for Arm CMN
+>>
+>>  .../pmu-events/arch/arm64/arm/cmn/sys/cmn.json     | 266 +++++++++++++++++++++
+>>  .../pmu-events/arch/arm64/arm/cmn/sys/metric.json  |  74 ++++++
+>>  .../pmu-events/arch/test/test_soc/sys/uncore.json  |   8 +
+>>  .../pmu-events/arch/x86/alderlake/pipeline.json    |   9 +
+>>  .../pmu-events/arch/x86/alderlaken/pipeline.json   |   3 +
+>>  .../pmu-events/arch/x86/broadwell/pipeline.json    |   4 +
+>>  .../pmu-events/arch/x86/broadwellde/pipeline.json  |   4 +
+>>  .../arch/x86/broadwellde/uncore-cache.json         |   2 +
+>>  .../arch/x86/broadwellde/uncore-interconnect.json  |   1 +
+>>  .../arch/x86/broadwellde/uncore-memory.json        |   1 +
+>>  .../arch/x86/broadwellde/uncore-power.json         |   1 +
+>>  .../pmu-events/arch/x86/broadwellx/pipeline.json   |   4 +
+>>  .../arch/x86/broadwellx/uncore-cache.json          |   2 +
+>>  .../arch/x86/broadwellx/uncore-interconnect.json   |  13 +
+>>  .../arch/x86/broadwellx/uncore-memory.json         |   2 +
+>>  .../arch/x86/broadwellx/uncore-power.json          |   1 +
+>>  .../pmu-events/arch/x86/cascadelakex/pipeline.json |   4 +
+>>  .../arch/x86/cascadelakex/uncore-cache.json        |   2 +
+>>  .../arch/x86/cascadelakex/uncore-interconnect.json |   1 +
+>>  .../arch/x86/cascadelakex/uncore-io.json           |   1 +
+>>  .../arch/x86/cascadelakex/uncore-memory.json       |   1 +
+>>  .../arch/x86/cascadelakex/uncore-power.json        |   1 +
+>>  .../pmu-events/arch/x86/elkhartlake/pipeline.json  |   2 +
+>>  .../pmu-events/arch/x86/goldmont/pipeline.json     |   3 +
+>>  .../pmu-events/arch/x86/goldmontplus/pipeline.json |   3 +
+>>  .../pmu-events/arch/x86/grandridge/pipeline.json   |   3 +
+>>  .../arch/x86/graniterapids/pipeline.json           |   4 +
+>>  .../perf/pmu-events/arch/x86/haswell/pipeline.json |   4 +
+>>  .../pmu-events/arch/x86/haswellx/pipeline.json     |   4 +
+>>  .../pmu-events/arch/x86/haswellx/uncore-cache.json |   2 +
+>>  .../arch/x86/haswellx/uncore-interconnect.json     |  14 ++
+>>  .../arch/x86/haswellx/uncore-memory.json           |   2 +
+>>  .../pmu-events/arch/x86/haswellx/uncore-power.json |   1 +
+>>  .../perf/pmu-events/arch/x86/icelake/pipeline.json |   4 +
+>>  .../pmu-events/arch/x86/icelakex/pipeline.json     |   4 +
+>>  .../pmu-events/arch/x86/icelakex/uncore-cache.json |   1 +
+>>  .../arch/x86/icelakex/uncore-interconnect.json     |   1 +
+>>  .../arch/x86/icelakex/uncore-memory.json           |   1 +
+>>  .../pmu-events/arch/x86/icelakex/uncore-power.json |   1 +
+>>  .../pmu-events/arch/x86/ivybridge/pipeline.json    |   3 +
+>>  .../perf/pmu-events/arch/x86/ivytown/pipeline.json |   4 +
+>>  .../pmu-events/arch/x86/ivytown/uncore-cache.json  |   2 +
+>>  .../arch/x86/ivytown/uncore-interconnect.json      |  11 +
+>>  .../pmu-events/arch/x86/ivytown/uncore-memory.json |   1 +
+>>  .../pmu-events/arch/x86/ivytown/uncore-power.json  |   1 +
+>>  .../pmu-events/arch/x86/jaketown/pipeline.json     |   4 +
+>>  .../pmu-events/arch/x86/jaketown/uncore-cache.json |   2 +
+>>  .../arch/x86/jaketown/uncore-interconnect.json     |  12 +
+>>  .../arch/x86/jaketown/uncore-memory.json           |   1 +
+>>  .../pmu-events/arch/x86/jaketown/uncore-power.json |   2 +
+>>  .../arch/x86/knightslanding/pipeline.json          |   3 +
+>>  .../arch/x86/knightslanding/uncore-cache.json      |   1 +
+>>  .../arch/x86/knightslanding/uncore-memory.json     |   4 +
+>>  .../pmu-events/arch/x86/meteorlake/pipeline.json   |   8 +
+>>  .../pmu-events/arch/x86/sandybridge/pipeline.json  |   4 +
+>>  .../arch/x86/sapphirerapids/pipeline.json          |   5 +
+>>  .../pmu-events/arch/x86/sierraforest/pipeline.json |   4 +
+>>  .../pmu-events/arch/x86/silvermont/pipeline.json   |   3 +
+>>  .../perf/pmu-events/arch/x86/skylake/pipeline.json |   4 +
+>>  .../pmu-events/arch/x86/skylakex/pipeline.json     |   4 +
+>>  .../pmu-events/arch/x86/skylakex/uncore-cache.json |   2 +
+>>  .../arch/x86/skylakex/uncore-interconnect.json     |   1 +
+>>  .../pmu-events/arch/x86/skylakex/uncore-io.json    |   1 +
+>>  .../arch/x86/skylakex/uncore-memory.json           |   1 +
+>>  .../pmu-events/arch/x86/skylakex/uncore-power.json |   1 +
+>>  .../pmu-events/arch/x86/snowridgex/pipeline.json   |   2 +
+>>  .../arch/x86/snowridgex/uncore-cache.json          |   1 +
+>>  .../arch/x86/snowridgex/uncore-interconnect.json   |   1 +
+>>  .../arch/x86/snowridgex/uncore-memory.json         |   1 +
+>>  .../arch/x86/snowridgex/uncore-power.json          |   1 +
+>>  .../pmu-events/arch/x86/tigerlake/pipeline.json    |   5 +
+>>  tools/perf/pmu-events/empty-pmu-events.c           |   8 +
+>>  tools/perf/pmu-events/jevents.py                   |  21 +-
+>>  tools/perf/tests/pmu-events.c                      |  64 ++++-
+>>  tools/perf/util/metricgroup.c                      |   2 +-
+>>  tools/perf/util/pmu.c                              |  33 ++-
+>>  tools/perf/util/pmu.h                              |   1 +
+>>  77 files changed, 679 insertions(+), 9 deletions(-)
+>>  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json
+>>  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/cmn/sys/metric.json
+>>
+>> -- 
+>> 1.8.3.1
+>>
+> 
