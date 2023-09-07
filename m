@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D579A797C43
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C73797C44
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344338AbjIGStp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 14:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44882 "EHLO
+        id S1344333AbjIGStr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344324AbjIGStg (ORCPT
+        with ESMTP id S1344322AbjIGSth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:49:36 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2051.outbound.protection.outlook.com [40.107.92.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87942B2;
+        Thu, 7 Sep 2023 14:49:37 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CFCA8;
         Thu,  7 Sep 2023 11:49:32 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=diX4bKg9F8hkpxuVVtDiNDG9BG1n4uK/Dt0cZu55JpJy+TjFHz7qI82cOsv1Y1HIfxlemGyCPA4r6Onxd3I/lKkyQRBzgUCMf5t+vIh81WeCnoyoSLymWm0urjAdAShkWje/+/NrOLkNJjlbvPkb4Z5srs4TlYX6HTWAwkhdyiwo7MRznYs5pWDLWrWU/F/N4lf3RkHGo42vhEfckqa6bNtPRdVqzlBvhiXmTxma6kHBYmA2bEcsbsb7qjQ8FjFajFhcOjkjagtNs/L4ZtaV82rlrefDwwoGCqpV0Plm+nsoXclZDLK549L5iW2nYUDteWZZmHQe8LxYCJQcYKlnaA==
+ b=FJbVfnUJ8szoEwwxXYhecxR4jN1ZrGVw1DdWtIWwhi9lStzWq9oIcAzcEEYiDPsY/XS17J079O8mHD8l+opsZJbSR/PhsrJk/dmxLaOnc4cc2PmT3ze/dhw608lXEnhC033xIGU8oOLn4CyDO1GP6TqCV83ArPCD52cBIzr2RJ7k4pFbT8gBufaHxssdh7xjL96lHwMtCfmV+WBeCd5b+5sOCS7/1R4Pu47DjfZ0f+Kx5RSJ1YxMs/xO3po1UIZu+MAZ9N89hOGIP00vsQgZyp6ddk1mz3Tl8MTYzPxGfxxOijQxeDcyFwuGkr1dlyOUefS/Oq+OmE8VVYb5C1hn3g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TdJiPbUYQtU9W2j49ud60rcC0m8WFcBFMQB8d9GdwjU=;
- b=QxuYdwUg38ZVnpsB0ZCS07bG/vNUub3P0FlT3asnXbp2FOF98uNkAgb1RvTm/SvQe9Ih9kUkkG0e+9sWOW3Z5jPZ7NDhAq6oTY6t7NurqqKe3IWxjIX9FZAiXS6UfQjdxY6BS9ylcQmoSex2AA/PQ1AYZhl7ULEp6YReWEcDBzoiWHp+C/8372vrzhEOhJYobcOxolPXKk882PC7ukvagUiT0GnUJAeLQwb01kA18JzE0c4ywwjymRa1m9VjJySJQsqD+dfDFYGOc6asLt8Stn2S5sR7GsfsG+pLVbPr09wHl0FoA5DnFpLedDPripBJQ1yTXL8n92S9boke/jW31w==
+ bh=Q2IQE27SmdlUxxU+s78EsdDT5y+56ChsQ7AYlGt0Jao=;
+ b=UFOMba9tcJIeOKVgkeJHjbwpH5BKfX/0/srD01Ajy3ZcxJxL892CWP91c14Sl3VY8DuMMhyuvpLL20+bbhSbk8l7aZPKHgSeq/DgQUkN9yzBZPFfRfx5/mjWgRqPwyeqHDePab0HrlRQKCUoR0Ibt51FAUrFaCYT+w0HUu2W54ZpEy7FjoeuiPs1QhOlb4hbWFGw7fjUBIrk3w0yfHxbcp6C+A93zkA+XL5xkQj0mAGwZsVRPTVTZx9hYMs7l5UR0Zm0xRfxf8IR7vEmCu2Ddc1YSUag1/nrKNoSd/5Hr07H977m7ZMHn2gAhi4IA7Z8kgFJgLdQJGHc2nubT3RqnA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=gondor.apana.org.au smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TdJiPbUYQtU9W2j49ud60rcC0m8WFcBFMQB8d9GdwjU=;
- b=ySxdVlA+v9+qWV6NM4QASNnP4R4UjeGLm2G86iEHbTY94twJVmDhW7OkSG11HZQXX8Omuwz+U8KPMXsivRc5Rb5JLWdQRHWi8KDBlAr2YG+WhwwfTm70j1QfIQI6JdVmQmeeA+XAEVfnzHgrgul/sYUkQNvbeqTx6DBe4cDZt/I=
+ bh=Q2IQE27SmdlUxxU+s78EsdDT5y+56ChsQ7AYlGt0Jao=;
+ b=IycHoL5Gaq34cdKO5xsL1cZtoldQfsRiVhfXoVw8JY+5KNYLrj4/mx+l8yUctt6YZ5/bvwBT8DuHE8mA40WvC+JG9nQLtidWGA0LCXLe4gjhZAHkhsriMAy/agHsQOSzQI8jjaFCF9E7wEfNo8vWamTUMX4UXsiBzt59at3Wc9s=
 Received: from CH2PR12CA0017.namprd12.prod.outlook.com (2603:10b6:610:57::27)
- by CY8PR12MB7634.namprd12.prod.outlook.com (2603:10b6:930:9d::16) with
+ by CY8PR12MB7100.namprd12.prod.outlook.com (2603:10b6:930:60::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.30; Thu, 7 Sep
- 2023 18:49:29 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Thu, 7 Sep
+ 2023 18:49:30 +0000
 Received: from DS2PEPF00003447.namprd04.prod.outlook.com
- (2603:10b6:610:57:cafe::3) by CH2PR12CA0017.outlook.office365.com
+ (2603:10b6:610:57:cafe::8a) by CH2PR12CA0017.outlook.office365.com
  (2603:10b6:610:57::27) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30 via Frontend
  Transport; Thu, 7 Sep 2023 18:49:29 +0000
@@ -53,16 +53,16 @@ Received: from SATLEXMB04.amd.com (165.204.84.17) by
 Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 7 Sep
- 2023 13:49:26 -0500
+ 2023 13:49:27 -0500
 From:   Mario Limonciello <mario.limonciello@amd.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC:     <thomas.lendacky@amd.com>, <john.allen@amd.com>,
         <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <Rijo-john.Thomas@amd.com>,
         Mario Limonciello <mario.limonciello@amd.com>
-Subject: [PATCH 2/5] crypto: ccp: Add support for extended PSP mailbox commands
-Date:   Thu, 7 Sep 2023 13:48:43 -0500
-Message-ID: <20230907184846.47598-3-mario.limonciello@amd.com>
+Subject: [PATCH 3/5] crypto: ccp: Add a communication path abstraction for DBC
+Date:   Thu, 7 Sep 2023 13:48:44 -0500
+Message-ID: <20230907184846.47598-4-mario.limonciello@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230907184846.47598-1-mario.limonciello@amd.com>
 References: <20230907184846.47598-1-mario.limonciello@amd.com>
@@ -74,23 +74,23 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003447:EE_|CY8PR12MB7634:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2be53ce6-04f9-4d14-b866-08dbafd32aae
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003447:EE_|CY8PR12MB7100:EE_
+X-MS-Office365-Filtering-Correlation-Id: 489059d0-98cf-4002-c71d-08dbafd32b1e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4k3B/JU91fFvPkaH7XJjItrxr+MLxxV/nQfiqRFc0WbijhIH8P/tPlAy/myA9OiVSeJXDwzY7v56VEPKY+omLyWj40WlpzvYUdwRuGQTYj2ND5cFK+TdV/bYfymZflWXKU5haM++lp6jJRQW6ukclI47eAXh0DVvJdyKD9h7beuy2v+L3P3JBR3Gnoic+WVfFooVdsGh3QSEp7FzV0Ua9DUay5NQYP7cLZr/gd+NTAE+52sXEYCAHbHj/yxGMgbJILvg3Nj4zK3Z7AGO088W+EampNzsUVMwXrrNYANV7MONWEuaAkh/VLNkH4GwSg1ybhV8hkI61+qhTO9nx7iE2TPkK3LyH25mZz9xp7HflGwv4Lsf2S2rbrUbHgJupKn+ycQXErt1u0Ai4KQ50kfc0hiltmFbfM+HYhKMnUbnon1VtqsHEEk/q4DbQKw6+3g68LKpFenwA+03gg1uKFXx2sjkVznTnzo1/drb7TUoLA469i96x+o/YRkgR7hoVV3EZIRW3CeoccyrFP3AHJQL7csVUd8bioAIM0Ursl63VrVlP2xZmClEeNKFwF6Dmx/iwAdC/E6V5fq8nUIuvjy0OWQc5qqJus+ZxlMTpG2vVctFbIoDpAcBxu8E9B17JHO4uqyf+vv7R3+9rfGjZdn3qeCSfGXMmH5Ukjb4F3inY7lZIsiD2xH77sR/Xnpy3N8LHl12THD78tljrJCZsUP/Cw+vS5PdwIm5EBq80NTUDgMVRVqOkoYMHshhE7M5xRv8gsvXFU8N1XJY+jPxgvDW9w==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(376002)(39860400002)(136003)(82310400011)(451199024)(1800799009)(186009)(36840700001)(40470700004)(46966006)(44832011)(8676002)(5660300002)(316002)(110136005)(36756003)(70206006)(2906002)(70586007)(54906003)(8936002)(4326008)(41300700001)(40460700003)(16526019)(336012)(1076003)(36860700001)(7696005)(47076005)(26005)(40480700001)(426003)(15650500001)(6666004)(81166007)(356005)(478600001)(83380400001)(2616005)(86362001)(82740400003)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: hBhQi5c4VK+LV+fCthf51tVLSnwPFiAkj2/qoB4PLgC/EQmfxinhlgWJoxVQ+3Nl9I9IZS1pcaeOp81V3+aD4EHGpZDSzYaAB0oU9NnnrTGjVb78ORh1mZkylmhH4Y9IFuSEL7SzihW96ImQITiIoxKQasvxu/U/L1e2MHUa9T6IgElTEB0MxolZoQkAi9mERUY0n85kEXwg0V6GpKI4+i/BEWX1UA5mD6fVNw8UmXDv1EynWOFxAGS/kvlhxd3Hmb5bKpGa3IlLJZwCXkB7D+td1zk6Jv7SHqo8A/cUoH7t0HifOlnDm6hfgL/SX9ZLH0a1+BN6xKrEbClqVD+GMj7knM5tTvGN2U0RN5V+BcjaKaomWmmlsvu4GAIOoVKGNzGcQnX6E5uurxZTx3OY1nJ6NE34A1HH7z/5YYVPkR7jDg2AokkZjuLw/oJwEJ+73V5gSqnedChUCaNNZz14wVbkyR7igyFUctBrG6J2SSMUnTcVmGsjXbvJuybyqY/myEKdLimFVRebucj+DGOlPHOQp6+ECUkt8OXcOgOP9zzoxg6umV5U6YR85nt24hfRbXuB69BeHgvjDAytB6cdFgFXjbAXJZ8cuisgtM1Rs6pq5ry4TS8/i/BY+MNwoJ30tHrJZ4Aqqk0pvnro8jk9pH6O73NnCdsRlp0SQKP5kSeMnQK2aLqt8rBrJDw83lkjJTbN5Yp3BJVAUzYvLUWzMTvPWWAqPvJH+HDaEMT9pf2/pPc8t6w99vURUZOAa8gdVyGoEdDvMWjqzN4WaDQoSg==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(396003)(346002)(376002)(186009)(1800799009)(82310400011)(451199024)(40470700004)(46966006)(36840700001)(83380400001)(1076003)(16526019)(26005)(6666004)(44832011)(5660300002)(2616005)(426003)(4326008)(336012)(47076005)(36860700001)(86362001)(8936002)(40480700001)(40460700003)(8676002)(7696005)(41300700001)(81166007)(478600001)(82740400003)(70586007)(36756003)(54906003)(356005)(110136005)(316002)(2906002)(70206006)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 18:49:29.1329
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 18:49:29.8673
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2be53ce6-04f9-4d14-b866-08dbafd32aae
+X-MS-Exchange-CrossTenant-Network-Message-Id: 489059d0-98cf-4002-c71d-08dbafd32b1e
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003447.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7634
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7100
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
@@ -101,91 +101,177 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PSP mailbox supports a number of extended sub-commands.  These
-subcommands are placed in the header of the buffer sent to the mailbox.
+DBC is currently accessed only from the platform access mailbox and
+a lot of that implementation's communication path is intertwined
+with DBC. Add an abstraction layer for pointers into the mailbox.
+
+No intended functional changes.
 
 Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 ---
- drivers/crypto/ccp/psp-dev.c | 24 ++++++++++++++++++++++++
- drivers/crypto/ccp/psp-dev.h | 21 +++++++++++++++++++++
- 2 files changed, 45 insertions(+)
+ drivers/crypto/ccp/dbc.c | 37 ++++++++++++++++++-------------------
+ drivers/crypto/ccp/dbc.h | 27 ++++++++-------------------
+ 2 files changed, 26 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/crypto/ccp/psp-dev.c b/drivers/crypto/ccp/psp-dev.c
-index 3258c4612e14..f9f3b3404f87 100644
---- a/drivers/crypto/ccp/psp-dev.c
-+++ b/drivers/crypto/ccp/psp-dev.c
-@@ -78,6 +78,30 @@ int psp_mailbox_command(struct psp_device *psp, enum psp_cmd cmd, void *cmdbuff,
- 	return ret;
- }
- 
-+int psp_extended_mailbox_cmd(struct psp_device *psp, unsigned int timeout_msecs,
-+			     struct psp_ext_request *req)
-+{
-+	unsigned int reg;
-+	int ret;
-+
-+	print_hex_dump_debug("->psp ", DUMP_PREFIX_OFFSET, 16, 2, req,
-+			     req->header.payload_size, false);
-+
-+	ret = psp_mailbox_command(psp, PSP_CMD_TEE_EXTENDED_CMD, (void *)req,
-+				  timeout_msecs, &reg);
-+	if (ret) {
-+		return ret;
-+	} else if (FIELD_GET(PSP_CMDRESP_STS, reg)) {
-+		req->header.status = FIELD_GET(PSP_CMDRESP_STS, reg);
-+		return -EIO;
-+	}
-+
-+	print_hex_dump_debug("<-psp ", DUMP_PREFIX_OFFSET, 16, 2, req,
-+			     req->header.payload_size, false);
-+
-+	return 0;
-+}
-+
- static struct psp_device *psp_alloc_struct(struct sp_device *sp)
+diff --git a/drivers/crypto/ccp/dbc.c b/drivers/crypto/ccp/dbc.c
+index 6f33149ef80d..ebd7279d4001 100644
+--- a/drivers/crypto/ccp/dbc.c
++++ b/drivers/crypto/ccp/dbc.c
+@@ -42,17 +42,17 @@ static int send_dbc_cmd(struct psp_dbc_device *dbc_dev,
  {
- 	struct device *dev = sp->dev;
-diff --git a/drivers/crypto/ccp/psp-dev.h b/drivers/crypto/ccp/psp-dev.h
-index d917657c6085..396a80d846c0 100644
---- a/drivers/crypto/ccp/psp-dev.h
-+++ b/drivers/crypto/ccp/psp-dev.h
-@@ -78,15 +78,36 @@ struct psp_device *psp_get_master_device(void);
-  * enum psp_cmd - PSP mailbox commands
-  * @PSP_CMD_TEE_RING_INIT:	Initialize TEE ring buffer
-  * @PSP_CMD_TEE_RING_DESTROY:	Destroy TEE ring buffer
-+ * @PSP_CMD_TEE_EXTENDED_CMD:	Extended command
-  * @PSP_CMD_MAX:		Maximum command id
-  */
- enum psp_cmd {
- 	PSP_CMD_TEE_RING_INIT		= 1,
- 	PSP_CMD_TEE_RING_DESTROY	= 2,
-+	PSP_CMD_TEE_EXTENDED_CMD	= 14,
- 	PSP_CMD_MAX			= 15,
+ 	int ret;
+ 
+-	dbc_dev->mbox->req.header.status = 0;
++	*dbc_dev->result = 0;
+ 	ret = psp_send_platform_access_msg(msg, (struct psp_request *)dbc_dev->mbox);
+ 	if (ret == -EIO) {
+ 		int i;
+ 
+ 		dev_dbg(dbc_dev->dev,
+ 			 "msg 0x%x failed with PSP error: 0x%x\n",
+-			 msg, dbc_dev->mbox->req.header.status);
++			 msg, *dbc_dev->result);
+ 
+ 		for (i = 0; error_codes[i].psp; i++) {
+-			if (dbc_dev->mbox->req.header.status == error_codes[i].psp)
++			if (*dbc_dev->result == error_codes[i].psp)
+ 				return error_codes[i].ret;
+ 		}
+ 	}
+@@ -64,7 +64,7 @@ static int send_dbc_nonce(struct psp_dbc_device *dbc_dev)
+ {
+ 	int ret;
+ 
+-	dbc_dev->mbox->req.header.payload_size = sizeof(dbc_dev->mbox->dbc_nonce);
++	*dbc_dev->payload_size = dbc_dev->header_size + sizeof(struct dbc_user_nonce);
+ 	ret = send_dbc_cmd(dbc_dev, PSP_DYNAMIC_BOOST_GET_NONCE);
+ 	if (ret == -EAGAIN) {
+ 		dev_dbg(dbc_dev->dev, "retrying get nonce\n");
+@@ -76,9 +76,9 @@ static int send_dbc_nonce(struct psp_dbc_device *dbc_dev)
+ 
+ static int send_dbc_parameter(struct psp_dbc_device *dbc_dev)
+ {
+-	dbc_dev->mbox->req.header.payload_size = sizeof(dbc_dev->mbox->dbc_param);
++	struct dbc_user_param *user_param = (struct dbc_user_param *)dbc_dev->payload;
+ 
+-	switch (dbc_dev->mbox->dbc_param.user.msg_index) {
++	switch (user_param->msg_index) {
+ 	case PARAM_SET_FMAX_CAP:
+ 	case PARAM_SET_PWR_CAP:
+ 	case PARAM_SET_GFX_MODE:
+@@ -125,8 +125,7 @@ static long dbc_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 
+ 	switch (cmd) {
+ 	case DBCIOCNONCE:
+-		if (copy_from_user(&dbc_dev->mbox->dbc_nonce.user, argp,
+-				   sizeof(struct dbc_user_nonce))) {
++		if (copy_from_user(dbc_dev->payload, argp, sizeof(struct dbc_user_nonce))) {
+ 			ret = -EFAULT;
+ 			goto unlock;
+ 		}
+@@ -135,43 +134,39 @@ static long dbc_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 		if (ret)
+ 			goto unlock;
+ 
+-		if (copy_to_user(argp, &dbc_dev->mbox->dbc_nonce.user,
+-				 sizeof(struct dbc_user_nonce))) {
++		if (copy_to_user(argp, dbc_dev->payload, sizeof(struct dbc_user_nonce))) {
+ 			ret = -EFAULT;
+ 			goto unlock;
+ 		}
+ 		break;
+ 	case DBCIOCUID:
+-		dbc_dev->mbox->req.header.payload_size = sizeof(dbc_dev->mbox->dbc_set_uid);
+-		if (copy_from_user(&dbc_dev->mbox->dbc_set_uid.user, argp,
+-				   sizeof(struct dbc_user_setuid))) {
++		if (copy_from_user(dbc_dev->payload, argp, sizeof(struct dbc_user_setuid))) {
+ 			ret = -EFAULT;
+ 			goto unlock;
+ 		}
+ 
++		*dbc_dev->payload_size = dbc_dev->header_size + sizeof(struct dbc_user_setuid);
+ 		ret = send_dbc_cmd(dbc_dev, PSP_DYNAMIC_BOOST_SET_UID);
+ 		if (ret)
+ 			goto unlock;
+ 
+-		if (copy_to_user(argp, &dbc_dev->mbox->dbc_set_uid.user,
+-				 sizeof(struct dbc_user_setuid))) {
++		if (copy_to_user(argp, dbc_dev->payload, sizeof(struct dbc_user_setuid))) {
+ 			ret = -EFAULT;
+ 			goto unlock;
+ 		}
+ 		break;
+ 	case DBCIOCPARAM:
+-		if (copy_from_user(&dbc_dev->mbox->dbc_param.user, argp,
+-				   sizeof(struct dbc_user_param))) {
++		if (copy_from_user(dbc_dev->payload, argp, sizeof(struct dbc_user_param))) {
+ 			ret = -EFAULT;
+ 			goto unlock;
+ 		}
+ 
++		*dbc_dev->payload_size = dbc_dev->header_size + sizeof(struct dbc_user_param);
+ 		ret = send_dbc_parameter(dbc_dev);
+ 		if (ret)
+ 			goto unlock;
+ 
+-		if (copy_to_user(argp, &dbc_dev->mbox->dbc_param.user,
+-				 sizeof(struct dbc_user_param)))  {
++		if (copy_to_user(argp, dbc_dev->payload, sizeof(struct dbc_user_param)))  {
+ 			ret = -EFAULT;
+ 			goto unlock;
+ 		}
+@@ -213,6 +208,10 @@ int dbc_dev_init(struct psp_device *psp)
+ 
+ 	psp->dbc_data = dbc_dev;
+ 	dbc_dev->dev = dev;
++	dbc_dev->payload_size = &dbc_dev->mbox->pa_req.header.payload_size;
++	dbc_dev->result = &dbc_dev->mbox->pa_req.header.status;
++	dbc_dev->payload = &dbc_dev->mbox->pa_req.buf;
++	dbc_dev->header_size = sizeof(struct psp_req_buffer_hdr);
+ 
+ 	ret = send_dbc_nonce(dbc_dev);
+ 	if (ret == -EACCES) {
+diff --git a/drivers/crypto/ccp/dbc.h b/drivers/crypto/ccp/dbc.h
+index e963099ca38e..184646ee55bb 100644
+--- a/drivers/crypto/ccp/dbc.h
++++ b/drivers/crypto/ccp/dbc.h
+@@ -26,28 +26,17 @@ struct psp_dbc_device {
+ 	struct mutex ioctl_mutex;
+ 
+ 	struct miscdevice char_dev;
+-};
+-
+-struct dbc_nonce {
+-	struct psp_req_buffer_hdr	header;
+-	struct dbc_user_nonce		user;
+-} __packed;
+ 
+-struct dbc_set_uid {
+-	struct psp_req_buffer_hdr	header;
+-	struct dbc_user_setuid		user;
+-} __packed;
+-
+-struct dbc_param {
+-	struct psp_req_buffer_hdr	header;
+-	struct dbc_user_param		user;
+-} __packed;
++	/* used to abstract communication path */
++	bool	use_ext;
++	u32	header_size;
++	u32	*payload_size;
++	u32	*result;
++	void	*payload;
++};
+ 
+ union dbc_buffer {
+-	struct psp_request		req;
+-	struct dbc_nonce		dbc_nonce;
+-	struct dbc_set_uid		dbc_set_uid;
+-	struct dbc_param		dbc_param;
++	struct psp_request		pa_req;
  };
  
- int psp_mailbox_command(struct psp_device *psp, enum psp_cmd cmd, void *cmdbuff,
- 			unsigned int timeout_msecs, unsigned int *cmdresp);
- 
-+/**
-+ * struct psp_ext_req_buffer_hdr - Structure of the extended command header
-+ * @payload_size: total payload size
-+ * @sub_cmd_id: extended command ID
-+ * @status: status of command execution (out)
-+ */
-+struct psp_ext_req_buffer_hdr {
-+	u32 payload_size;
-+	u32 sub_cmd_id;
-+	u32 status;
-+} __packed;
-+
-+struct psp_ext_request {
-+	struct psp_ext_req_buffer_hdr header;
-+	void *buf;
-+} __packed;
-+
-+int psp_extended_mailbox_cmd(struct psp_device *psp, unsigned int timeout_msecs,
-+			     struct psp_ext_request *req);
- #endif /* __PSP_DEV_H */
+ void dbc_dev_destroy(struct psp_device *psp);
 -- 
 2.34.1
 
