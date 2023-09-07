@@ -2,129 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2AFC797906
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B67797805
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241202AbjIGRAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:00:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38222 "EHLO
+        id S229810AbjIGQjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:39:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240428AbjIGRAQ (ORCPT
+        with ESMTP id S242115AbjIGQjd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:00:16 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E522101
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:59:40 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d7eed15ad69so1115737276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:59:40 -0700 (PDT)
+        Thu, 7 Sep 2023 12:39:33 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2314230
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:36:58 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bceca8a41aso19645411fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:36:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694105886; x=1694710686; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BYCw6MjcMH0VBXX64k2n7JI1Ap28j06fLMRRfYT33EM=;
-        b=KmPP3oAPMlxXBw9sKucj0/OXQEmMr6/7jAyDliojreBfORDo0FQSWFNbV/Gnr7ZI3/
-         W8qGRo4cXDJe9gnwaVaZNeP1Gh5/6C947nuuVQK9DM6y+or3igV0fwC9WvawqoiP+5cY
-         DcF0EqoCIJx3+rJJjBS/vtt7W9c8G5MIVYgVewYSqS0erXx6IB7Jmgn4gyKYldS9Q6P0
-         0lnTr7Cd5z7Vna7BCGbFAR95mfC1YgFsFUdrfPOwIV07lfvPuqH0ZRBYSjdTlNQsKzm7
-         IKS2M+K3LGUXn3lMhXiINTzxi/h4i9Cw8Cvk7E5PM5pdJn5f22WwENoHZ+QemsKXc0/z
-         blhQ==
+        d=linaro.org; s=google; t=1694104553; x=1694709353; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V84DA78dtZTuXZKZG/wAWIhizdAr3uJpJC1Bj2uoDd0=;
+        b=Gj36XS98vfORf93YmLS68y7dv9T666iLgJYaPWHPlAYSPP1rvRKB8et1AIH1tDoooB
+         NOTs7Yw0qemyENELIpmpqCIIMglxngYmMUpwlIoMfiwga5gOxexD2IhiyI0lWXT+5uHW
+         ZCuKR20TlZca0vmKumtBKcvH6l5wXmUwciyOov88eOi/ukmYIJPktZNXdfLoahS/p09H
+         yFfAEGjzzhjuE7T3udLopblh1IEzWjWnbdLdWXfV5TWIjAOuHlqRyBURkhKUjrbwQbx7
+         huyztDBgHpDiIlWoKoXokOD9REIBaeFa/gPU+CLgZt1L9f29GYBuHQJI1reZxJ+cHvL3
+         6fHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694105886; x=1694710686;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BYCw6MjcMH0VBXX64k2n7JI1Ap28j06fLMRRfYT33EM=;
-        b=CHjUkee8qH+FVNWXG8kVrYpyIcboaztWiqieWLFx9t4ZnvbhHMDptHOGc7MP/GxLDa
-         eww154+xjzp5gdyn5b7vAO0miCAxulli+qvq4xFsvumn648SihL4J/jes4Bfj7kdiEe6
-         YujUXkulBtUyrXrmWH0HHgT+peQNb3100sULbw0YkJQtI+hEDdvTATiu/BgQIYlBSfmg
-         DALOYrVxb7tGuh6xoGuYe3Bbjkduzl5zf0vsXz4ikcTjVC5F4+DRelbu+EK6JN74zXLO
-         SOf/t9Nkji0/gU/PjDFzBg6hopWgRQjGsnK+9NMxoXRi/RftIHh6dayc1K67L2ZtDW/P
-         zE6Q==
-X-Gm-Message-State: AOJu0YzCOPuOmDUpK39Gf3ua3zBq/yZMcp7BcTRLYJQhjA6k2jJOHtN2
-        /DHw4dxt6bNl3u2iFe4++/UiKsaXnMGk0pV2dm9PjsNdpJMvuDlp
-X-Google-Smtp-Source: AGHT+IEKK3pIZHt2QRqcId7nWRc2DLGZhZ7BIVl+nPAXJnwX2Sf45+9R0pQFVmMx9pkduIAsjCSxAhDM52WNmcfhZPQ=
-X-Received: by 2002:a67:fa11:0:b0:44d:6290:e422 with SMTP id
- i17-20020a67fa11000000b0044d6290e422mr4850316vsq.35.1694073434785; Thu, 07
- Sep 2023 00:57:14 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1694104553; x=1694709353;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=V84DA78dtZTuXZKZG/wAWIhizdAr3uJpJC1Bj2uoDd0=;
+        b=UpyusocljJB+yB8fjK5gVNiH3vAbDHXAlM6+D4ZrwcezLwpFrd4ICfH4lMAYddm1fP
+         E0hcwavz/lqFY4yQc78dhWhaOc/5kq5fTRXWgbCtZXOBHq289a1jItlcNbm9vmWKDXoA
+         ggsTrCy7sIbzP91bJXJi8+H/X05kEX1wMBxdoIaVxSTHxB23T+ctKT2e405KPxbzGtqc
+         GjPhl5XMJSeqhW3i9OxgXjHlYJSaoGECAzJduhQm10WlgCKMuCLhgTxWCnDavRQvqxSN
+         iqxjX7hZ/4ppjMZKNccLLJVQ1nBUSZRHYp+ImeTyyVa8cTj0fuoi5K9vqIQZH4pREqSq
+         4t5Q==
+X-Gm-Message-State: AOJu0YxYh4NH3p7XRt054pEptGUtyCBZDN5fpV1IxQthvbzfmh4OcqXa
+        feE89T0UWnvo5JBDgM4c8C5R9V+1WVeDaievnSbcvHtO
+X-Google-Smtp-Source: AGHT+IE35UZ3oDSKDs4eDo034ZR//TkueBwcC+n7RKXhfWjT87LfVsZlV7e+LXPDTn9qBHwjjzcskw==
+X-Received: by 2002:a2e:3019:0:b0:2bc:c4af:36b9 with SMTP id w25-20020a2e3019000000b002bcc4af36b9mr3715304ljw.52.1694073427086;
+        Thu, 07 Sep 2023 00:57:07 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:86b3:b829:fa6a:1a8d? ([2a01:e0a:982:cbb0:86b3:b829:fa6a:1a8d])
+        by smtp.gmail.com with ESMTPSA id p7-20020a05600c204700b003fed630f560sm1708756wmg.36.2023.09.07.00.57.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Sep 2023 00:57:06 -0700 (PDT)
+Message-ID: <47bc9843-bb40-4c4f-a6c9-6b43b15a78c7@linaro.org>
+Date:   Thu, 7 Sep 2023 09:57:05 +0200
 MIME-Version: 1.0
-References: <20230905185309.131295-1-brgl@bgdev.pl> <20230905185309.131295-8-brgl@bgdev.pl>
- <CACRpkdbdcPv1LHL2W-enKBJ2OARpduoOJkQ64oL6GSOfmmD3qQ@mail.gmail.com>
-In-Reply-To: <CACRpkdbdcPv1LHL2W-enKBJ2OARpduoOJkQ64oL6GSOfmmD3qQ@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 7 Sep 2023 09:57:03 +0200
-Message-ID: <CAMRc=McSBBeHi5jDVYOF6s1etfQzYRNLo25LeY+DWG_2tEf7=w@mail.gmail.com>
-Subject: Re: [PATCH 07/21] gpiolib: provide gpio_device_get_base()
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Dipen Patel <dipenp@nvidia.com>
-Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
-        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v4 1/2] irqchip/qcom-pdc: Add support for v3.2 HW
+Content-Language: en-US, fr
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     "Maulik Shah (mkshah)" <quic_mkshah@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+References: <20230905-topic-sm8x50-upstream-pdc-ver-v4-0-fc633c7df84b@linaro.org>
+ <20230905-topic-sm8x50-upstream-pdc-ver-v4-1-fc633c7df84b@linaro.org>
+ <e3af689b-5e37-49f6-84b0-ea8649d1943d@linaro.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <e3af689b-5e37-49f6-84b0-ea8649d1943d@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 7, 2023 at 9:17=E2=80=AFAM Linus Walleij <linus.walleij@linaro.=
-org> wrote:
->
-> On Tue, Sep 5, 2023 at 8:53=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
->
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Let's start adding getters for the opaque struct gpio_device. Start wit=
-h
-> > a function allowing to retrieve the base GPIO number.
-> >
-> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> I guess you have a solid usecase for drivers needing to do this
-> crazy thing, because I suppose you feel as much as me that
-> this should rather be gpiolib-internal and confined to
-> drivers/gpio/gpiolib.h?
->
-> If you add a valid reason for making this globally visible outside
-> of drivers/[gpio|pinctrl] to the commit message I guess I can live
-> with it because we need to think of the bigger picture:
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
->
-> It brings to mind the now confusing "base" inside of
-> struct gpio_chip. We all know it should go away, but since it
-> is never used during the lifetime of the gpio_chip - or SHOULD
-> never be used - it should rather be an argument to
-> [devm_]gpiochip_add_data( .... int base);...
->
-> Maybe something we should add to our TODO file.
->
-> Yours,
-> Linus Walleij
+Hi,
 
-For this series it's the HTE driver that uses it and I don't have a
-good idea about how to change it. Dipen?
+On 06/09/2023 18:55, Konrad Dybcio wrote:
+> On 5.09.2023 15:19, Neil Armstrong wrote:
+>> Starting from HW version 3.2 the IRQ_ENABLE bit has moved to the
+>> IRQ_i_CFG register and requires a change of the driver to avoid
+>> writing into an undefined register address.
+>>
+>> Get the HW version from registers and set the IRQ_ENABLE bit to the
+>> correct register depending on the HW version.
+>>
+>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>> Reviewed-by: Maulik Shah <quic_mkshah@quicinc.com>
+>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>> ---
+> [...]
+> 
+>> +	if (pdc_version < PDC_VERSION_3_2) {
+>> +		u32 index, mask;
+>> +
+>> +		index = pin_out / 32;
+>> +		mask = pin_out % 32;
+> I get that you're moving around existing code, but would that
+> not be equal to FIELD_GET() with GENMASK(31, 5) and GENMASK(4, 0)?
+> Perhaps it'd be clearer to read. But don't worry about it in this
+> series.
 
-I would also love to make pinctrl not use the internal GPIOLIB header
-so it'll be another user, unless you can figure out a way to not use
-gc->base? :)
+Yes it would, I took the best implementation of the two :-p
 
-I think we're stuck with it for now.
+I will probably send a cleanup serie afterwards because there's some
+cleanup to do all over the code.
 
-Bart
+Neil
+
+> 
+> Otherwise:
+> 
+> Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> 
+> Konrad
+
