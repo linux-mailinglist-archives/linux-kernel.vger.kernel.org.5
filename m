@@ -2,78 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4577973C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A81C79735A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242592AbjIGP3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
+        id S235896AbjIGPXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242523AbjIGP1c (ORCPT
+        with ESMTP id S233567AbjIGPWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:27:32 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB3BCA;
-        Thu,  7 Sep 2023 08:27:03 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-52683da3f5cso1454216a12.3;
-        Thu, 07 Sep 2023 08:27:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694100391; x=1694705191; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nn8Z/jGqRZ9itG0RlqprNFY2blvA+oxqrFjdAqCBlzs=;
-        b=C3Im3a1ra+SVZXOORLDjh0gSoxXefDvj21uWXq630Papi55WqXtKk36YcHl5eJoi0+
-         hPI6Yedce9COjtaC3Yee8WU5inAIj9NORagshY9+sbsYCwxO7zo5KXmbAXN7agwiebhD
-         nubasRkNpik9zECiiQ4xnxuhvNyglfgIEUDAIEERB8MZ6seow/fdcSGnOmuqrOcU0shk
-         hgdIzByyar2tp30r8cQT0baK1PgLEzzfzSNuJ4uWkfiQMvhRIQwXzUYGvbCM6IP8vUYc
-         VNKrkxrxRYJHGIF/ojAFq1FIcv0meciRVRs56YZKeVu7bDuglixZIuvJiGdaajQ4c2ZV
-         vBOQ==
+        Thu, 7 Sep 2023 11:22:30 -0400
+Received: from mail-pf1-f206.google.com (mail-pf1-f206.google.com [209.85.210.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6465B10FF
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:22:01 -0700 (PDT)
+Received: by mail-pf1-f206.google.com with SMTP id d2e1a72fcca58-68a4175e8c3so1480671b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:22:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694100391; x=1694705191;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nn8Z/jGqRZ9itG0RlqprNFY2blvA+oxqrFjdAqCBlzs=;
-        b=VcqUqpXNjxAkmS5IlIhBwXKNRWtraXfnC+EGW/VyeHSTf5XaK45+1rM1R4gqp+ws8+
-         /fjDemPPIwVvDbnUi3cAukkPI3PR23uOitY4JSFcHoTuGlyyxWmKQnorquagCn612ghC
-         2F77di5PP8GR5JS68G54+Eh/P8oss9HU1b520J6+SDioOqjc+TnqPiZ8QnFMGu+6Tbaq
-         Mrp8wZ/glQaHEeib6ub3FH6cu5JUv/EaxtOniW6a+3EliDhy2cDy04xeCQXbqK0r9tv/
-         ppzTIzrL3Nxh0Tm76qMdIzSo4HZOJXzaBeTWPnacDLdlUEISQGrb4mjtNbbwXhqdnWO3
-         nSSg==
-X-Gm-Message-State: AOJu0Yzd8fSHZyjTQ1KfT2CQesZ5FlwfhOWyW5W0zcTEM1zJoBBUytIf
-        rXSw/rFBS6U647AsZz/be//o8gKzNCMx3Q==
-X-Google-Smtp-Source: AGHT+IGwqB/QeKYr78Cb/wkxyZKiPbzH4gGpc1Z9STFRTx1jV4gSJPT2SnI8z4IiTAFD941kik9PbQ==
-X-Received: by 2002:a5d:4105:0:b0:314:3740:7f69 with SMTP id l5-20020a5d4105000000b0031437407f69mr4401146wrp.37.1694099897397;
-        Thu, 07 Sep 2023 08:18:17 -0700 (PDT)
-Received: from opti3050-1.lan (ip092042140082.rev.nessus.at. [92.42.140.82])
-        by smtp.gmail.com with ESMTPSA id l16-20020adfe9d0000000b00317e77106dbsm23511973wrn.48.2023.09.07.08.18.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 08:18:17 -0700 (PDT)
-From:   Jakob Unterwurzacher <jakobunt@gmail.com>
-X-Google-Original-From: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>,
-        Ermin Sunj <ermin.sunj@theobroma-systems.com>,
-        Quentin Schulz <quentin.schulz@theobroma-systems.com>
-Cc:     stable@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] arm64: dts: rockchip: set codec system-clock-fixed on px30-ringneck-haikou
-Date:   Thu,  7 Sep 2023 17:17:16 +0200
-Message-Id: <20230907151725.198347-2-jakob.unterwurzacher@theobroma-systems.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230907151725.198347-1-jakob.unterwurzacher@theobroma-systems.com>
-References: <20230907151725.198347-1-jakob.unterwurzacher@theobroma-systems.com>
+        d=1e100.net; s=20221208; t=1694100121; x=1694704921;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ETTpdSI14BQREpOUwYzQRF8PwciHKTs4Os9GJbbc4Qw=;
+        b=LeB7Plg4CK3XVdz4Va75G69CupfX1Ml/wQQ1pMOkpAOOUx+xQktpEC3GZl4tYqNWnD
+         YSfoXtUTc1pW+2PG4KLlJU2Y/EXfDMkYuLDPaRs5/5qikJ81RuALXAZO9Wrt0gzNz6Mc
+         HLf8ZWsYSqiR+puFu533EtIuPIJMr+marf4+T78AvLmzo5VQGODcG1KRRyTCcUA85U0f
+         9ACMgnLiQhZ7C1rrronlrfKt4f3VYgjWvMlJGfIaRGjl2Lu1ID/HUDX5myjX2cLPuyKt
+         91Lo03Lg4o5pG+A2AFzbRGMGtkmAvupMXXeNvKFyHdGcm9UkUhbU1pi68QshJ8zYFhxE
+         mdCg==
+X-Gm-Message-State: AOJu0YxDZ7wJwXwQ8o+1ZHAYTuToENxMh2jvdtC43uO1ZSKK2LqsEyUo
+        uxF0V5lvovHRA1MHct61oMasG1TTAGGxt4yFnUHgFQ9COlS4
+X-Google-Smtp-Source: AGHT+IFu/VO3anqAQpp7eGZjr3Is/xRa1yxLsb0E3ZwUVpoXMXbTWTWMHX1ZtuWoRmZfaWIDgkA8U4Zqp4MVIL5z1axTqed+HI6E
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a05:6a00:1d0f:b0:68e:351c:bf00 with SMTP id
+ a15-20020a056a001d0f00b0068e351cbf00mr1161578pfx.4.1694100120421; Thu, 07 Sep
+ 2023 08:22:00 -0700 (PDT)
+Date:   Thu, 07 Sep 2023 08:22:00 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e44e4a0604c66b67@google.com>
+Subject: [syzbot] [net?] KASAN: slab-use-after-free Read in team_device_event
+From:   syzbot <syzbot+44ae022028805f4600fc@syzkaller.appspotmail.com>
+To:     ap420073@gmail.com, davem@davemloft.net, edumazet@google.com,
+        jiri@resnulli.us, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,44 +56,205 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Having sgtl5000_clk defines as "fixed-clock" is not enough to prevent
-the dai subsystem from overwriting the frequency via sgtl5000_set_dai_sysclk.
+Hello,
 
-Setting system-clock-fixed does the job, and now a 1kHz sine wave
-comes out as actually 1kHz, no matter the sample rate of the source.
+syzbot found the following issue on:
 
-Testcase: These should sound the same:
+HEAD commit:    f8fdd54ee6a1 Merge branch 'sja1105-fixes'
+git tree:       net
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=15476748680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=634e05b4025da9da
+dashboard link: https://syzkaller.appspot.com/bug?extid=44ae022028805f4600fc
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12838914680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=117e54dc680000
 
- speaker-test -r 48000 -t sine -f 1000
- speaker-test -r 24000 -t sine -f 1000
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3e90dbfb0a87/disk-f8fdd54e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ca3cbcaceef2/vmlinux-f8fdd54e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a57b5f1bd614/bzImage-f8fdd54e.xz
 
-Also remove the clock link here as having it in sgtl5000 and
-sgtl5000_codec causes duplicate clock unprepares with associated
-backtrace.
+The issue was bisected to:
 
-Cc: stable@vger.kernel.org
-Fixes: c484cf93f61b ("arm64: dts: rockchip: add PX30-µQ7 (Ringneck) SoM with Haikou baseboard")
-Signed-off-by: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
+commit 39285e124edbc752331e98ace37cc141a6a3747a
+Author: Taehee Yoo <ap420073@gmail.com>
+Date:   Tue Sep 5 08:46:10 2023 +0000
+
+    net: team: do not use dynamic lockdep key
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16f177f4680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15f177f4680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11f177f4680000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+44ae022028805f4600fc@syzkaller.appspotmail.com
+Fixes: 39285e124edb ("net: team: do not use dynamic lockdep key")
+
+8021q: adding VLAN 0 to HW filter on device bond1
+==================================================================
+BUG: KASAN: slab-out-of-bounds in team_device_event+0xa3b/0xad0 drivers/net/team/team.c:3021
+Read of size 8 at addr ffff888143fdc1a8 by task syz-executor133/5151
+
+CPU: 0 PID: 5151 Comm: syz-executor133 Not tainted 6.5.0-syzkaller-04043-gf8fdd54ee6a1 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ team_device_event+0xa3b/0xad0 drivers/net/team/team.c:3021
+ notifier_call_chain+0xb6/0x3b0 kernel/notifier.c:93
+ call_netdevice_notifiers_info+0xb9/0x130 net/core/dev.c:1970
+ call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
+ call_netdevice_notifiers net/core/dev.c:2022 [inline]
+ netdev_features_change net/core/dev.c:1333 [inline]
+ netdev_update_features net/core/dev.c:9874 [inline]
+ netdev_update_features net/core/dev.c:9871 [inline]
+ dev_disable_lro+0x224/0x3e0 net/core/dev.c:1606
+ team_port_add drivers/net/team/team.c:1248 [inline]
+ team_add_slave+0x1a4d/0x2310 drivers/net/team/team.c:1977
+ do_set_master+0x1bc/0x220 net/core/rtnetlink.c:2674
+ do_setlink+0xa07/0x3fa0 net/core/rtnetlink.c:2873
+ __rtnl_newlink+0xc1d/0x1940 net/core/rtnetlink.c:3671
+ rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3718
+ rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6444
+ netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2545
+ netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+ netlink_unicast+0x536/0x810 net/netlink/af_netlink.c:1368
+ netlink_sendmsg+0x93c/0xe40 net/netlink/af_netlink.c:1910
+ sock_sendmsg_nosec net/socket.c:728 [inline]
+ sock_sendmsg+0xd9/0x180 net/socket.c:751
+ ____sys_sendmsg+0x6ac/0x940 net/socket.c:2539
+ ___sys_sendmsg+0x135/0x1d0 net/socket.c:2593
+ __sys_sendmsg+0x117/0x1e0 net/socket.c:2622
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7ff3deaf85d9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd3e202a18 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007ff3deaf85d9
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000007
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+
+Allocated by task 5151:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+ kasan_kmalloc include/linux/kasan.h:196 [inline]
+ __do_kmalloc_node mm/slab_common.c:985 [inline]
+ __kmalloc_node_track_caller+0x5e/0x100 mm/slab_common.c:1005
+ kstrdup+0x3c/0x70 mm/util.c:62
+ kstrdup_const+0x5f/0x70 mm/util.c:85
+ __kernfs_new_node+0x9c/0x8a0 fs/kernfs/dir.c:607
+ kernfs_new_node+0x94/0x110 fs/kernfs/dir.c:675
+ kernfs_create_link+0xcc/0x230 fs/kernfs/symlink.c:39
+ sysfs_do_create_link_sd+0x90/0x140 fs/sysfs/symlink.c:44
+ sysfs_do_create_link fs/sysfs/symlink.c:80 [inline]
+ sysfs_create_link+0x61/0xc0 fs/sysfs/symlink.c:92
+ netdev_adjacent_sysfs_add net/core/dev.c:7481 [inline]
+ __netdev_adjacent_dev_insert+0x751/0xb40 net/core/dev.c:7537
+ __netdev_adjacent_dev_link_lists net/core/dev.c:7619 [inline]
+ __netdev_adjacent_dev_link_neighbour net/core/dev.c:7643 [inline]
+ __netdev_upper_dev_link+0x410/0x840 net/core/dev.c:7703
+ netdev_upper_dev_link+0x92/0xc0 net/core/dev.c:7749
+ macsec_newlink+0x800/0x1a30 drivers/net/macsec.c:4087
+ rtnl_newlink_create net/core/rtnetlink.c:3485 [inline]
+ __rtnl_newlink+0x1177/0x1940 net/core/rtnetlink.c:3705
+ rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3718
+ rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6444
+ netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2545
+ netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+ netlink_unicast+0x536/0x810 net/netlink/af_netlink.c:1368
+ netlink_sendmsg+0x93c/0xe40 net/netlink/af_netlink.c:1910
+ sock_sendmsg_nosec net/socket.c:728 [inline]
+ sock_sendmsg+0xd9/0x180 net/socket.c:751
+ ____sys_sendmsg+0x6ac/0x940 net/socket.c:2539
+ ___sys_sendmsg+0x135/0x1d0 net/socket.c:2593
+ __sys_sendmsg+0x117/0x1e0 net/socket.c:2622
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+The buggy address belongs to the object at ffff888143fdc1a0
+ which belongs to the cache kmalloc-16 of size 16
+The buggy address is located 8 bytes inside of
+ allocated 12-byte region [ffff888143fdc1a0, ffff888143fdc1ac)
+
+The buggy address belongs to the physical page:
+page:ffffea00050ff700 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x143fdc
+flags: 0x57ff00000000200(slab|node=1|zone=2|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 057ff00000000200 ffff8880128413c0 dead000000000100 dead000000000122
+raw: 0000000000000000 0000000080800080 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 1, tgid 1 (swapper/0), ts 10509138456, free_ts 0
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2d2/0x350 mm/page_alloc.c:1570
+ prep_new_page mm/page_alloc.c:1577 [inline]
+ get_page_from_freelist+0x10a9/0x31e0 mm/page_alloc.c:3221
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4477
+ alloc_page_interleave+0x1e/0x250 mm/mempolicy.c:2131
+ alloc_pages+0x22a/0x270 mm/mempolicy.c:2293
+ alloc_slab_page mm/slub.c:1862 [inline]
+ allocate_slab+0x24e/0x380 mm/slub.c:2009
+ new_slab mm/slub.c:2062 [inline]
+ ___slab_alloc+0x8bc/0x1570 mm/slub.c:3215
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3314
+ __slab_alloc_node mm/slub.c:3367 [inline]
+ slab_alloc_node mm/slub.c:3460 [inline]
+ __kmem_cache_alloc_node+0x137/0x350 mm/slub.c:3509
+ __do_kmalloc_node mm/slab_common.c:984 [inline]
+ __kmalloc_node_track_caller+0x4d/0x100 mm/slab_common.c:1005
+ kstrdup+0x3c/0x70 mm/util.c:62
+ kstrdup_const+0x5f/0x70 mm/util.c:85
+ __kernfs_new_node+0x9c/0x8a0 fs/kernfs/dir.c:607
+ kernfs_new_node fs/kernfs/dir.c:675 [inline]
+ kernfs_create_dir_ns+0x9a/0x210 fs/kernfs/dir.c:1036
+ sysfs_create_dir_ns+0x13b/0x2a0 fs/sysfs/dir.c:59
+ create_dir lib/kobject.c:65 [inline]
+ kobject_add_internal+0x2c8/0x990 lib/kobject.c:233
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff888143fdc080: 00 04 fc fc fb fb fc fc fb fb fc fc fb fb fc fc
+ ffff888143fdc100: 00 04 fc fc 00 04 fc fc 00 00 fc fc 00 00 fc fc
+>ffff888143fdc180: 00 00 fc fc 00 04 fc fc 00 07 fc fc 00 04 fc fc
+                                  ^
+ ffff888143fdc200: 00 04 fc fc 00 04 fc fc 00 00 fc fc 00 00 fc fc
+ ffff888143fdc280: fa fb fc fc fa fb fc fc 00 00 fc fc 00 07 fc fc
+==================================================================
+
+
 ---
- arch/arm64/boot/dts/rockchip/px30-ringneck-haikou.dts | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/arm64/boot/dts/rockchip/px30-ringneck-haikou.dts b/arch/arm64/boot/dts/rockchip/px30-ringneck-haikou.dts
-index 8792fae50257..de0a1f2af983 100644
---- a/arch/arm64/boot/dts/rockchip/px30-ringneck-haikou.dts
-+++ b/arch/arm64/boot/dts/rockchip/px30-ringneck-haikou.dts
-@@ -72,8 +72,10 @@ i2s0-sound {
- 		simple-audio-card,bitclock-master = <&sgtl5000_codec>;
- 
- 		sgtl5000_codec: simple-audio-card,codec {
--			clocks = <&sgtl5000_clk>;
- 			sound-dai = <&sgtl5000>;
-+			// Prevent the dai subsystem from overwriting the clock
-+			// frequency. We are using a fixed-frequency oscillator.
-+			system-clock-fixed;
- 		};
- 
- 		simple-audio-card,cpu {
--- 
-2.39.2
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
