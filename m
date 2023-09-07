@@ -2,128 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCE7797407
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DFF79745F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344533AbjIGPdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:33:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33720 "EHLO
+        id S232898AbjIGPhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343927AbjIGPbl (ORCPT
+        with ESMTP id S1344792AbjIGPdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:31:41 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E6C1FD3;
-        Thu,  7 Sep 2023 08:31:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h7W9IaYz0n+Fi5k+ILT1wsRO3jGn2UGyfBJ7t8lDjUNnmMI1EJpgI1KgqZc/5uwmpeBuaAk362d2f6Y/VBZTpvV2B6lrjuJ/e9u5dHySk8GixxpXhDj45Q5pnMiWc2QtdUo8nRbc3H+1Bzf6u6lw9szE7mktUv5H3U0Mw7PdukBTwmllDxgkDHYLaAjPBgDWGq4gvtxBb/XhUjQ91eQJVF8kAZgLjRbiSrNX3xASwjUnKlYULOjMljWGx3dZFBqeAgbyENFHe16sKfUObb4txzpGWbilz7ZKVvyFdx83E3cf4io1ruMZLFCuoJxSMu3Y8RavpkwwDuXXOTxpw+XU8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=khmazL8FMs5x5kHt879GALiZFyoiqcR+DbnF6JEhzBk=;
- b=e860lL00grJMDuhr/8fd7fPp/5Y9Ym+xCrO+RctZ3CV6GqP/fWNL/8Z9Z1d/Q3Tzbukhv1h0KCdiDoUCQ/g0sUVnHF1/21xAK7c8UD2J6cAQBNElfyIGajxSJFc7cI2YthvF4kSUZQabxXU2/Es0vCTeRd7YIK7+J9o0OxeggGeKHwGA0waXu+G94Vnbmbi0dSbVotu9ZxPgKDFa+ANvF07JILDbQnZkrqtJSye5/NBsz8EOQxyyHuZ25va9Pcm1O5mryohviOhXE+sbJ0PGJN12edI+oUyeYeKSIAyBo+gqvaqJtOL3Owd9J/5mhl/HrwbWUFkDNE/yi48fCbfETw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=linux.intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=khmazL8FMs5x5kHt879GALiZFyoiqcR+DbnF6JEhzBk=;
- b=QLBFR87bkAUcjj5YDxD08yiuvVormiONTuN0/5kvtz3PcB+5w5Yylj+R0DL4FJh6l/EqHlHKszsT2yPlKRjAvcXmRlzf88cu3tTNVRS18pCwGjUnppReJ6hHLpTppxI385J1K4hvB2zrvHOquX0huugD7wsPBPKTPAy8jbk2X5Hpj6OBkqLtR/DXqajy6Zy26/gT1OKjFEw9XUvrrVlRd5VMfIRTLDAfsWRH4ru/cTir5wcv74Qz+ZwfWqQ/Wtxa9nTqpPah6JIL1ijFHOJbqn9BXukT5uC5i2WL/vkWny1NJT3D9ah507o8Pv5Rz0027IiWH0/0iVqbOQI1vzL9uA==
-Received: from SA9PR11CA0025.namprd11.prod.outlook.com (2603:10b6:806:6e::30)
- by MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Thu, 7 Sep
- 2023 07:11:59 +0000
-Received: from SN1PEPF0002BA4F.namprd03.prod.outlook.com
- (2603:10b6:806:6e:cafe::42) by SA9PR11CA0025.outlook.office365.com
- (2603:10b6:806:6e::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.36 via Frontend
- Transport; Thu, 7 Sep 2023 07:11:59 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- SN1PEPF0002BA4F.mail.protection.outlook.com (10.167.242.72) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6768.26 via Frontend Transport; Thu, 7 Sep 2023 07:11:58 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 7 Sep 2023
- 00:11:45 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Thu, 7 Sep 2023 00:11:44 -0700
-Received: from localhost.localdomain (10.127.8.10) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server id 15.2.986.37 via Frontend
- Transport; Thu, 7 Sep 2023 00:11:40 -0700
-From:   Kartik <kkartik@nvidia.com>
-To:     <andriy.shevchenko@linux.intel.com>
-CC:     <arnd@arndb.de>, <digetx@gmail.com>, <frank.li@vivo.com>,
-        <jonathanh@nvidia.com>, <kkartik@nvidia.com>,
-        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <pdeschrijver@nvidia.com>, <petlozup@nvidia.com>,
-        <pshete@nvidia.com>, <robh@kernel.org>, <stefank@nvidia.com>,
-        <sumitg@nvidia.com>, <thierry.reding@gmail.com>, <windhl@126.com>
-Subject: Re: [PATCH v2 0/6] soc/tegra: fuse: Add ACPI support
-Date:   Thu, 7 Sep 2023 12:41:33 +0530
-Message-ID: <20230907071133.3936-1-kkartik@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <ZPiTFXa0/D2UN1SE@smile.fi.intel.com>
-References: <ZPiTFXa0/D2UN1SE@smile.fi.intel.com>
+        Thu, 7 Sep 2023 11:33:50 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26D51BF;
+        Thu,  7 Sep 2023 08:33:22 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31c5a2e8501so1052311f8f.0;
+        Thu, 07 Sep 2023 08:33:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694100767; x=1694705567; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=W8ZbMBxHSKUFb4LWza138ts8LT1OgHugv/+Ktfy9rpw=;
+        b=JKVWHKksbpFZ3uHVqil9ImC/7UZydrbU5nJwb27qJDsmxox6D608J/iqRHtcMaqY1k
+         MlTZpQUdEHz77H3ATNHadTv8wrHqpORQJialU/vxxvIgb/Mu97Qh02X9UaDmDP08tGGE
+         XTzZezLF9/E0u3mu5Rv6Th4ufM/Gdgl2EHIkJR+dZ5YUifOMMUTp5NKcGuwOMFBD/MNh
+         XdetNCZDjLTS5egONO8eUOn7uPCigp4XXk0KJPqEgfA1twm4cg4iwR63p5To1WjYFOLk
+         ha18zSfO8P+k0G5hEHFwiXqQpRX3WC9vHEqSJu/oRKcadGmoTyijBEN+EsiFJisgT5US
+         tYCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694100767; x=1694705567;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W8ZbMBxHSKUFb4LWza138ts8LT1OgHugv/+Ktfy9rpw=;
+        b=VfZhunKY9VnSxUSNGaIDIfsoGDoU1yVZBCTn6eUckEU1BwE9c1GHTvKbTS9lQyhFqp
+         ZYJ7m5/lt4pMCzkvvhKhaqDeEyhZ6DTbkmIh8BNmZo/1rCebtSA5rTHjGVDbzJaZv94k
+         buDE6i4Kr0pU56NU51c6v0UfwpRm/ILxIURN8dh4CDW0tGU/hAt29/abbjV0ydjE0Zis
+         SO1fFCv6iWwQPJ730UlsEoJdlhKYyhpGKL4KKAcCHCBV/Z8CYyxdieK+0QsQ4Qwi6lK5
+         ff412wfuEkIVJ7sUZbIxHXabPiWZi4NZJzYOLlOoSBdhjnet+0PtNIqx9NTPux+fRBfd
+         qzsA==
+X-Gm-Message-State: AOJu0YzzMN4xJXSGWSlh3cMRfZLqZH4hsIB9z9cVLw5FMBOGk9M3kTsd
+        IK6yp4Ik3XRljcnuNRnkvoVDZOjK2UA=
+X-Google-Smtp-Source: AGHT+IEQDQdq3XESEPBE/V7+6OKrbU5Om9XjvaZzCyVN3J1Y2iN1rOvZqR+qIlxLMKY937YvMDtj0g==
+X-Received: by 2002:a05:600c:b57:b0:401:b908:85a2 with SMTP id k23-20020a05600c0b5700b00401b90885a2mr3624279wmr.23.1694070710479;
+        Thu, 07 Sep 2023 00:11:50 -0700 (PDT)
+Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
+        by smtp.gmail.com with ESMTPSA id f13-20020a7bcd0d000000b00402bda974ddsm1616156wmj.6.2023.09.07.00.11.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 00:11:49 -0700 (PDT)
+Date:   Thu, 7 Sep 2023 08:11:48 +0100
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Zhen Lei <thunder.leizhen@huaweicloud.com>,
+        rcu@vger.kernel.org, Zqiang <qiang.zhang1211@gmail.com>,
+        stable@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 1/2] mm/vmalloc: Add a safer version of find_vm_area()
+ for debug
+Message-ID: <499537a7-3380-4355-ae34-df7f5c0f41bd@lucifer.local>
+References: <20230904180806.1002832-1-joel@joelfernandes.org>
+ <571d4a4a-0674-4c84-b714-8e7582699e30@lucifer.local>
+ <20230905114709.GA3881391@google.com>
+ <CAA5enKbvrvTx=d6MgLZjupnsEuoCnRN8e9p+ffnJV1rJS+HkXA@mail.gmail.com>
+ <20230906224608.GB1646335@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA4F:EE_|MN2PR12MB4192:EE_
-X-MS-Office365-Filtering-Correlation-Id: 53d44317-9f0c-410f-975d-08dbaf71b9f7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eLtnNzHxUXzss6JUvgdj7wzwmDtb/1vbG9Mf2OBnRKOsn4QzYNEZt05enSHjj5h4jRcaIFhB0uiNx6VgKLii1hrWVJ18tXHqqbtiNonf3X0CrIe8aDAPFsgDaisyes9IMMHrwJrQe/uiP6TciqVP5XrrNPLPwfLJuIbYVYUEeS4VH5pGGAJcMZBg86bW1vn12acliAFLLUCVlDO0RBVDOA0l3fM7PhuAwA3bzBs6SfG/bJsZnxJyuVPpGU9OzKDsxHcS5Bz+gZgX1l7XOBnQHs2P2t7q9/1Z3bTTsvV9FNgVubj+XWbCXKB3imuCM1Ra3UjHpxoamiys8FQO6txpz61yhXMDcDr0s5R2QGCtEc0MAljsiJZ+qWkQ3zxbNrT4Fw+qJuYjlqNmvMy2tMIJK/zhPEOOmXzJ9B6L5igMvnorbApjve9MpseaTdgxQUnbTDsypujXp1T5sGq+3+T6DwY6kHyZ8m884W1YBoSIt3Xv2dLpfjyA9oL4jSzkRFppL/qeBDUMOuqou0frbqy5S/6YJlpk+d8PSlt/LvRFnbZzPvnfnKCp+vrMaqGKJLDmk5uvjt+L0ViHfeBEggziXW59vpDFW4HlrrYbfxmYUzkD6yz7jYNpSh5vIkkEoHi2BcJiwfk9rz2J6MOaxuShUQVLq0VpT6lraFQ/0bc5urEEWjsE0pAabEkWB0INQ6jt/gw+Yvlwlurw1QhpI2ipqceN+ePPslZWRdh48nkXIp4ov2gnFraMJiOT2cp93hKP
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(136003)(376002)(346002)(186009)(451199024)(1800799009)(82310400011)(40470700004)(36840700001)(46966006)(36756003)(316002)(2906002)(41300700001)(4744005)(40460700003)(82740400003)(86362001)(40480700001)(356005)(5660300002)(7636003)(2616005)(36860700001)(426003)(8936002)(4326008)(8676002)(47076005)(26005)(1076003)(336012)(6666004)(54906003)(478600001)(70206006)(70586007)(6916009);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 07:11:58.7983
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 53d44317-9f0c-410f-975d-08dbaf71b9f7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002BA4F.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4192
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_PASS,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230906224608.GB1646335@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-09-06 at 17:56 +0300, Andy Shevchenko wrote:
->On Tue, Sep 05, 2023 at 06:28:18PM +0530, Kartik wrote:
->> This series of patches add ACPI support for Tegra194 and Tegra234 in
->> Tegra fuse and apbmisc drivers. It also adds support for Tegra241
->> which uses ACPI boot.
+On Wed, Sep 06, 2023 at 10:46:08PM +0000, Joel Fernandes wrote:
+> On Wed, Sep 06, 2023 at 08:23:18PM +0100, Lorenzo Stoakes wrote:
+> > On Tue, 5 Sept 2023 at 12:47, Joel Fernandes <joel@joelfernandes.org> wrote:
+> > >
+> > > On Tue, Sep 05, 2023 at 08:09:16AM +0100, Lorenzo Stoakes wrote:
+> > > > On Mon, Sep 04, 2023 at 06:08:04PM +0000, Joel Fernandes (Google) wrote:
+> > > > > It is unsafe to dump vmalloc area information when trying to do so from
+> > > > > some contexts. Add a safer trylock version of the same function to do a
+> > > > > best-effort VMA finding and use it from vmalloc_dump_obj().
+> > > >
+> > > > It'd be nice to have more details as to precisely which contexts and what this
+> > > > resolves.
+> > >
+> > > True. I was hoping the 'trylock' mention would be sufficient (example hardirq
+> > > context interrupting a lock-held region) but you're right.
+> > >
+> > > > > [applied test robot feedback on unused function fix.]
+> > > > > [applied Uladzislau feedback on locking.]
+> > > > >
+> > > > > Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
+> > > > > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > > > > Cc: rcu@vger.kernel.org
+> > > > > Cc: Zqiang <qiang.zhang1211@gmail.com>
+> > > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > > Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
+> > > > > Cc: stable@vger.kernel.org
+> > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > > ---
+> > > > >  mm/vmalloc.c | 26 ++++++++++++++++++++++----
+> > > > >  1 file changed, 22 insertions(+), 4 deletions(-)
+> > > > >
+> > > > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > > > > index 93cf99aba335..2c6a0e2ff404 100644
+> > > > > --- a/mm/vmalloc.c
+> > > > > +++ b/mm/vmalloc.c
+> > > > > @@ -4274,14 +4274,32 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+> > > > >  #ifdef CONFIG_PRINTK
+> > > > >  bool vmalloc_dump_obj(void *object)
+> > > > >  {
+> > > > > -   struct vm_struct *vm;
+> > > > >     void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+> > > > > +   const void *caller;
+> > > > > +   struct vm_struct *vm;
+> > > > > +   struct vmap_area *va;
+> > > > > +   unsigned long addr;
+> > > > > +   unsigned int nr_pages;
+> > > > >
+> > > > > -   vm = find_vm_area(objp);
+> > > > > -   if (!vm)
+> > > > > +   if (!spin_trylock(&vmap_area_lock))
+> > > > > +           return false;
+> > > >
+> > > > It'd be good to have a comment here explaining why we must trylock here. I am
+> > > > also concerned that in the past this function would return false only if the
+> > > > address was not a vmalloc one, but now it might just return false due to lock
+> > > > contention and the user has no idea which it is?
+> > > >
+> > > > I'd want to at least output "vmalloc region cannot lookup lock contention"
+> > > > vs. the below cannot find case.
+> > >
+> > > In the patch 2/2 we do print if the address looks like a vmalloc address even
+> > > if the vmalloc look up fails.
+> >
+> > No, you output exactly what was output before, only changing what it
+> > means and in no way differentiating between couldn't find vmalloc
+> > area/couldn't get lock.
 >
->Neither here, nor in the individual patches I do _not_ see the changelog.
->What's going on?
+> 2/2 does this:
+>                          -     if (virt_addr_valid(object))
+>                          +     if (is_vmalloc_addr(object))
+>                          +             type = "vmalloc memory";
+>                          +     else if (virt_addr_valid(object))
+>                                        type = "non-slab/vmalloc memory";
 >
->--
->With Best Regards,
->Andy Shevchenko
+> This code is executed only if vmalloc_dump_obj() returns false. The
+> is_vmalloc_addr() was added by 2/2 which is newly added right?
+>
+> You are right we are not differentiating between trylock failure and failure to
+> find the vmalloc area. I was just saying, even though we don't differentiate,
+> we do print "vmalloc memory" right? That wasn't being printed before.
+>
+> > > Also the reporter's usecase is not a common one. We only attempt to dump
+> > > information if there was a debug objects failure (example if somebody did a
+> > > double call_rcu). In such a situation, the patch will prevent a deadlock and
+> > > still print something about the address.
+> >
+> > Right, but the function still purports to do X but does Y.
+> >
+> > >
+> > > > Under heavy lock contention aren't you potentially breaking the ability to
+> > > > introspect vmalloc addresses? Wouldn't it be better to explicitly detect the
+> > > > contexts under which acquiring this spinlock is not appropriate?
+> > >
+> > > Yes this is a good point, but there's another case as well: PREEMPT_RT can
+> > > sleep on lock contention (as spinlocks are sleeping) and we can't sleep from
+> > > call_rcu() as it may be called in contexts that cannot sleep. So we handle
+> > > that also using trylock.
+> >
+> > Right so somebody now has to find this email to realise that. I hate
+> > implicit knowledge like this, it needs a comment. It also furthers the
+> > point that it'd be useful to differentiate between the two.
+>
+> This is a valid point, and I acknowledged it in last email. A code comment could
+> indeed be useful.
 
-Apologies for the confusion. I've posted v3 of this series with changelogs.
+Thanks, yeah this may seem trivial, but I am quite sensitive about things
+being added to the code base that are neither described in commit msg nor
+in a comment or elsewhere and become 'implicit' in a sense.
 
-Regards,
-Kartik
+So just a simple comment here would be helpful, and I'm glad we're in
+agreement on that, will leave to you to do a follow up patch.
+
+>
+> So I guess from an agreement standpoint, I agree:
+>
+> 1/2 could use an additional comment explaining why we need trylock (sighting
+> the RT sleeping lock issue).
+>
+> 2/2 could update the existing code to convert "non-slab/vmalloc" to
+> "non-slab/non-vmalloc". Note: that's an *existing* issue.
+
+Yeah sorry this whole thing was rather confusing, it did indeed (unclearly)
+specify non-/non- in the past (on assumption dumping function would work),
+addition of vmalloc check now makes that correct again, the phrasing is the
+issue.
+
+You can leave this as-is as yeah, you're right, this was a pre-existing issue.
+
+virt_addr_valid() returns true for a slab addr, but kmem_valid_obj() is
+checked above so already been ruled out, now you ruled out vmalloc.
+
+Just a bit tricksy.
+
+>
+> The issue in 2/2 is not a new one so that can certainly be a separate patch.
+> And while at it, we could update the comment in that patch as well.
+>
+> But the whole differentiating between trylock vs vmalloc area lookup failure
+> is not that useful -- just my opinion fwiw! I honestly feel differentiating
+> between trylock vs vmalloc area lookup failure complicates the code because
+> it will require passing this information down from vmalloc_dump_obj() to the
+> caller AFAICS and I am not sure if the person reading the debug will really
+> care much. But I am OK with whatever the -mm community wants and I am happy
+> to send out a new patch on top with the above that I agree on since Andrew
+> took these 2 (but for the stuff I don't agree, I would appreciate if you
+> could send a patch for review and I am happy to review it!).
+
+Ah right, I think maybe I wasn't clear, all I meant to suggest is to output
+log output rather than feed anything back to caller, something like:-
+
+if (!spin_trylock(&vmap_area_lock)) {
+        pr_cont(" [couldn't acquire vmap lock]\n");
+	...
+}
+
+My concern is that in the past this function would only return false if it
+couldn't find the address in a VA, now it returns false also if you happen
+to call it when the spinlock is locked, which might be confusing for
+somebody debugging this.
+
+HOWEVER, since you now indicate that the address is vmalloc anyway, and you
+_absolutely cannot_ give any further details safely, perhaps this
+additional information is indeed not that usful.
+
+My concern was just feeling antsy that we suddenly don't do something
+because a lock happens to be applied but as you say that cannot be helped
+in certain contexts.
+
+So actually, leave this.
+
+>
+> As you mentioned, this series is a stability fix and we can put touch-ups on
+> top of it if needed, and there is also plenty of time till the next merge
+> window. Allow me a few days and I'll do the new patch on top (I'd say dont
+> bother to spend your time on it, I'll do it).
+
+Ack, I was just a little frustrated we didn't reach a resolution on review
+(either deciding things could be deferred or having changes) before
+merge. Obviously fine to prioritise, but would be good to have that
+explicitly stated.
+
+>
+> thanks,
+>
+>  - Joel
+>
+>
+> >
+> >
+
+Anyway, so TL;DR:-
+
+1. As we both agree, add a comment to explain why you need the spin trylock.
+(there are no further steps :P)
+
+And I don't believe this actually needs any further changes after this
+discussion*, so if you fancy doing a follow up to that effect that will
+suffice for me thanks!
+
+* Though I strongly feel vmalloc as a whole needs top-to-bottom
+  refactoring, but that's another story...
