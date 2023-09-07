@@ -2,97 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFD7797BBE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FC6797C0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343970AbjIGS1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 14:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56656 "EHLO
+        id S1343607AbjIGSgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:36:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242238AbjIGS1B (ORCPT
+        with ESMTP id S1344180AbjIGSgy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:27:01 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18497A8;
-        Thu,  7 Sep 2023 11:26:45 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D8A122188E;
-        Thu,  7 Sep 2023 13:39:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694093971; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ONVEnMgIAJoISYkHQWGBUujCSKf8Jj5CBHejZD3NRXU=;
-        b=Ot0ZXYMhWCH6YrumHfZiW5d4VcULsXKDoxYDDRVHhWb+YW+KLnxNJ1C2oNJDwyaZx/r4Pw
-        /GJGebh124YT69EwqpgvEc7crQXbH28M7qjq81GvSzdc02qgJq23n/+yErFgwZdeMop3af
-        0Q8VGt9jSCyPm05SHapVX+ro4caQ054=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694093971;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ONVEnMgIAJoISYkHQWGBUujCSKf8Jj5CBHejZD3NRXU=;
-        b=18OV6yQBF1R5JpYOREwYfAmKOyHd9KlXkRL+pvtMKbYq7skR6jRkCj4FT3ETDdd2lVPQLl
-        TatBCGsOhqUH0GDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4C674138FA;
-        Thu,  7 Sep 2023 13:39:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ckGRD5PS+WQCQwAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Thu, 07 Sep 2023 13:39:31 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id c734c5a8;
-        Thu, 7 Sep 2023 13:39:30 +0000 (UTC)
-From:   =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
-To:     Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Milind Changire <mchangir@redhat.com>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: [PATCH] ceph: remove unnecessary check for NULL in parse_longname()
-Date:   Thu,  7 Sep 2023 14:39:28 +0100
-Message-Id: <20230907133928.11126-1-lhenriques@suse.de>
+        Thu, 7 Sep 2023 14:36:54 -0400
+Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [IPv6:2a02:1800:110:4::f00:10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69DAA92
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:36:44 -0700 (PDT)
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D04Qrz4x1hY
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 15:43:00 +0200 (CEST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
+        by xavier.telenet-ops.be with bizsmtp
+        id j1hx2A0022mGBSJ011hxwj; Thu, 07 Sep 2023 15:41:59 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qeFGQ-002m7r-0n;
+        Thu, 07 Sep 2023 15:41:57 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qeFGf-00CMfG-8q;
+        Thu, 07 Sep 2023 15:41:57 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Philip Blundell <philb@gnu.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        Laurent Vivier <laurent@vivier.eu>,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 03/52] m68k: kernel: Make bad_super_trap() static
+Date:   Thu,  7 Sep 2023 15:41:04 +0200
+Message-Id: <cf7cd354d1698ea553a289e9d8441c865cd4471f.1694093327.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
+References: <cover.1694093327.git.geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function ceph_get_inode() never returns NULL; instead it returns an
-ERR_PTR() if something fails.  Thus, the check for NULL in
-parse_longname() useless and can be dropped.
+When building with W=1:
 
-Fixes: dd66df0053ef ("ceph: add support for encrypted snapshot names")
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Luís Henriques <lhenriques@suse.de>
+    arch/m68k/kernel/traps.c:968:6: warning: no previous prototype for ‘bad_super_trap’ [-Wmissing-prototypes]
+      968 | void bad_super_trap (struct frame *fp)
+	  |      ^~~~~~~~~~~~~~
+
+Fix this by making bad_super_trap() static.
+There was never a user outside arch/m68k/kernel/traps.c.
+
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- fs/ceph/crypto.c | 2 --
- 1 file changed, 2 deletions(-)
+ arch/m68k/kernel/traps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ceph/crypto.c b/fs/ceph/crypto.c
-index e4d5cd56a80b..7d0b9b5ccfc6 100644
---- a/fs/ceph/crypto.c
-+++ b/fs/ceph/crypto.c
-@@ -249,8 +249,6 @@ static struct inode *parse_longname(const struct inode *parent,
- 	if (!dir) {
- 		/* This can happen if we're not mounting cephfs on the root */
- 		dir = ceph_get_inode(parent->i_sb, vino, NULL);
--		if (!dir)
--			dir = ERR_PTR(-ENOENT);
- 	}
- 	if (IS_ERR(dir))
- 		dout("Can't find inode %s (%s)\n", inode_number, name);
+diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+index a700807c9b6d9999..b3fee39f8f518c6e 100644
+--- a/arch/m68k/kernel/traps.c
++++ b/arch/m68k/kernel/traps.c
+@@ -965,7 +965,7 @@ void show_stack(struct task_struct *task, unsigned long *stack,
+  * real 68k parts, but it won't hurt either.
+  */
+ 
+-void bad_super_trap (struct frame *fp)
++static void bad_super_trap(struct frame *fp)
+ {
+ 	int vector = (fp->ptregs.vector >> 2) & 0xff;
+ 
+-- 
+2.34.1
+
