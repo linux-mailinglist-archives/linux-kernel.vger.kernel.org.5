@@ -2,89 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 753A3797730
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B921679769C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240801AbjIGQWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
+        id S238453AbjIGQNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241540AbjIGQVv (ORCPT
+        with ESMTP id S241162AbjIGQNH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:21:51 -0400
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A5F7DB4;
-        Thu,  7 Sep 2023 09:19:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1694103549; x=1725639549;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=YauVF01CGBBHBYehJqzxf4f2JW+5DIf+1r8++cg5PLM=;
-  b=P3QAX8zLOfeNlSVYnBk8O4LKH1ZDrrYYpF7e5PWyUIqFknEMHKC+gYga
-   X84diM7Dk2gbtoCGXb6REJd4vyV+MHnc34nVKwcSA65wAwYGeBDizqPML
-   1Vcv/VNfXx/WGrSyHxxdk9memcIdxNSV4jeJi4m2QchDIFctqwQm09Pkz
-   4=;
-X-IronPort-AV: E=Sophos;i="6.02,235,1688428800"; 
-   d="scan'208";a="362200815"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-83883bdb.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 15:17:01 +0000
-Received: from EX19MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2a-m6i4x-83883bdb.us-west-2.amazon.com (Postfix) with ESMTPS id DB24460DBE;
-        Thu,  7 Sep 2023 15:17:00 +0000 (UTC)
-Received: from EX19D028UEC003.ant.amazon.com (10.252.137.159) by
- EX19MTAUEA001.ant.amazon.com (10.252.134.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Thu, 7 Sep 2023 15:16:45 +0000
-Received: from [192.168.204.203] (10.252.141.11) by
- EX19D028UEC003.ant.amazon.com (10.252.137.159) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Thu, 7 Sep 2023 15:16:44 +0000
-Message-ID: <236f84be-26b0-758d-3d3f-380e536f72c2@amazon.com>
-Date:   Thu, 7 Sep 2023 11:16:41 -0400
+        Thu, 7 Sep 2023 12:13:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60204BE6C
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:48:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B26EFC433C9;
+        Thu,  7 Sep 2023 15:32:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694100728;
+        bh=4/JKnKNExLGNGv2sCb9eyK1f+7iv+45LcWMfCPifJOo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FzYu7q8H4km5gUF2N5v5Qpvt7O6xn42LrO9Ej8XfTRaq8JkQJKQ75LZkXZVh58LG7
+         RzIz3zz3ZbNBhqr9HTBXuW9FbN5XmRSl8hVVbNuCf+f8mJQEXPU0eFp4iMl4ew3uhU
+         9yeUW3oXtWsHEbt296hRUkZz6LRPPqfKoH0qzUXuq9eLbWsgFop44ZtBtTRNaCfKdy
+         eQbqd3AOP+9s4tvT/w9Thd1wg8lg6mieUoeBh837n2k8GPM3efEr4tcHd90JL6nD5a
+         M1HmY+xEUMOPRBVkJ9dG5/DbzQugBVdocLuA58kTpUOab7JR7G2NclEhm0hB+xbEXG
+         rOR99XJ7ZB1vg==
+Date:   Thu, 7 Sep 2023 17:31:56 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Petr Oros <poros@redhat.com>
+Cc:     netdev@vger.kernel.org, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+        mschmidt@redhat.com, ivecera@redhat.com, ahmed.zaki@intel.com
+Subject: Re: [PATCH net v2 2/2] iavf: schedule a request immediately after
+ add/delete vlan
+Message-ID: <20230907153156.GJ434333@kernel.org>
+References: <20230907150251.224931-1-poros@redhat.com>
+ <20230907150251.224931-2-poros@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATH v2] cgroup: add cgroup_favordynmods= command-line option
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-CC:     <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <longman@redhat.com>, <lcapitulino@gmail.com>
-References: <20230906005712.66461-1-luizcap@amazon.com>
- <lqcl5cblo3s45afvtgqjkbz2an3zwccsckglhpe3ufyffqavjk@ui45m6itz4ne>
-From:   Luiz Capitulino <luizcap@amazon.com>
-In-Reply-To: <lqcl5cblo3s45afvtgqjkbz2an3zwccsckglhpe3ufyffqavjk@ui45m6itz4ne>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.252.141.11]
-X-ClientProxiedBy: EX19D036UWC001.ant.amazon.com (10.13.139.233) To
- EX19D028UEC003.ant.amazon.com (10.252.137.159)
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230907150251.224931-2-poros@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023-09-07 11:06, Michal Koutný wrote:
-> On Wed, Sep 06, 2023 at 12:57:12AM +0000, Luiz Capitulino <luizcap@amazon.com> wrote:
->> We have a need of using favordynmods with cgroup v1, which doesn't support
->> changing mount flags during remount. Enabling CONFIG_FAVOR_DYNMODS at
->> build-time is not an option because we want to be able to selectively
->> enable it for certain systems.
+On Thu, Sep 07, 2023 at 05:02:51PM +0200, Petr Oros wrote:
+> When the iavf driver wants to reconfigure the VLAN filters
+> (iavf_add_vlan, iavf_del_vlan), it sets a flag in
+> aq_required:
+>   adapter->aq_required |= IAVF_FLAG_AQ_ADD_VLAN_FILTER;
+> or:
+>   adapter->aq_required |= IAVF_FLAG_AQ_DEL_VLAN_FILTER;
 > 
-> Could this be implemented by a utility that would read /proc/cmdline
-> (while kernel ignores the arg) and remount respective hierarchies
-> accordingly? Or what do I miss?
+> This is later processed by the watchdog_task, but it runs periodically
+> every 2 seconds, so it can be a long time before it processes the request.
+> 
+> In the worst case, the interface is unable to receive traffic for more
+> than 2 seconds for no objective reason.
+> 
+> Signed-off-by: Petr Oros <poros@redhat.com>
+> Co-developed-by: Michal Schmidt <mschmidt@redhat.com>
+> Signed-off-by: Michal Schmidt <mschmidt@redhat.com>
+> Co-developed-by: Ivan Vecera <ivecera@redhat.com>
+> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+> Reviewed-by: Ahmed Zaki <ahmed.zaki@intel.com>
 
-Yeah, this works for cgroup v2 but my understanding is that cgroup v1
-doesn't support changing flags in remount, take a look at
-cgroup1_reconfigure().
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-- Luiz
