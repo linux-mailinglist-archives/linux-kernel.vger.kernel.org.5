@@ -2,55 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EAD797C26
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3480797C22
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344280AbjIGSmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 14:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50300 "EHLO
+        id S1344262AbjIGSl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:41:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344267AbjIGSmA (ORCPT
+        with ESMTP id S1344213AbjIGSlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:42:00 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5B11D1700;
-        Thu,  7 Sep 2023 11:41:55 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 838661762;
-        Thu,  7 Sep 2023 06:45:34 -0700 (PDT)
-Received: from [10.57.92.126] (unknown [10.57.92.126])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A0C7E3F766;
-        Thu,  7 Sep 2023 06:44:54 -0700 (PDT)
-Message-ID: <8657cc7c-169b-3479-5919-72bd39335b15@arm.com>
-Date:   Thu, 7 Sep 2023 14:45:30 +0100
+        Thu, 7 Sep 2023 14:41:51 -0400
+Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [195.130.137.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE26AE43
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:41:45 -0700 (PDT)
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4RhLym1WjFz4x2gQ
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 16:21:36 +0200 (CEST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
+        by xavier.telenet-ops.be with bizsmtp
+        id j2MX2A00Z2mGBSJ012MXpJ; Thu, 07 Sep 2023 16:21:32 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qeFsi-002mG8-Ed;
+        Thu, 07 Sep 2023 16:21:31 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qeFsx-00CNC9-Mi;
+        Thu, 07 Sep 2023 16:21:31 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 1/2] m68k: Replace GPL 2.0+ README.legal boilerplate by SPDX
+Date:   Thu,  7 Sep 2023 16:21:29 +0200
+Message-Id: <db6225d078aae61474ccbde322851758d02e94a9.1694095086.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1694095086.git.geert@linux-m68k.org>
+References: <cover.1694095086.git.geert@linux-m68k.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [RFC PATCH 0/7] sched: cpufreq: Remove magic margins
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Qais Yousef <qyousef@layalina.io>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>, bristot@redhat.com,
-        juri.lelli@redhat.com
-References: <20230827233203.1315953-1-qyousef@layalina.io>
- <a6365f63-4669-15e5-b843-f4bfb1bd5e68@arm.com>
- <20230906211850.zyvk6qtt6fvpxaf3@airbuntu>
- <6011d8bb-9a3b-1435-30b0-d75b39bf5efa@arm.com>
- <20230907115307.GD10955@noisy.programming.kicks-ass.net>
- <89067f71-9b83-e647-053e-07f7d55b6529@arm.com>
- <20230907132906.GG10955@noisy.programming.kicks-ass.net>
- <5616e50d-b827-4547-5b16-9131ace98419@arm.com>
- <20230907133840.GH10955@noisy.programming.kicks-ass.net>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20230907133840.GH10955@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,30 +54,205 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Upstream Linux never had a "README.legal" file, but it was present
+in early source releases of Linux/m68k.  It contained a simple copyright
+notice and a link to a version of the "COPYING" file that predated the
+addition of the "only valid GPL version is v2" clause.
 
+Get rid of the references to non-existant files by replacing the
+boilerplate with SPDX license identifiers.
 
-On 9/7/23 14:38, Peter Zijlstra wrote:
-> On Thu, Sep 07, 2023 at 02:33:49PM +0100, Lukasz Luba wrote:
->>
->>
->> On 9/7/23 14:29, Peter Zijlstra wrote:
->>> On Thu, Sep 07, 2023 at 02:06:15PM +0100, Lukasz Luba wrote:
->>>
->>>>> Many extentions to the periodic task model are possible, including
->>>>> things like average runtime with bursts etc.. all have their trade-offs.
->>>>
->>>> Was that maybe proposed somewhere on LKML (the other models)?
->>>
->>> RT literatur mostly methinks. Replacing WCET with a statistical model of
->>> sorts is not uncommon, the argument goes that not everybody will have
->>> their worst case at the same time and lows and highs can commonly cancel
->>> out and this way we can cram a little more on the system.
->>>
->>> Typically this is proposed in the context of soft-realtime systems.
->>
->> Thanks Peter, I will dive into some books...
-> 
-> I would look at academic papers, not sure any of that ever made it to
-> books, Daniel would know I suppose.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/68000/entry.S     | 7 ++-----
+ arch/m68k/bvme6000/config.c | 5 +----
+ arch/m68k/coldfire/entry.S  | 7 ++-----
+ arch/m68k/ifpsp060/Makefile | 6 ++----
+ arch/m68k/kernel/entry.S    | 7 ++-----
+ arch/m68k/kernel/head.S     | 8 ++------
+ arch/m68k/mvme147/config.c  | 5 +----
+ arch/m68k/mvme16x/config.c  | 5 +----
+ arch/m68k/q40/config.c      | 5 +----
+ 9 files changed, 14 insertions(+), 41 deletions(-)
 
-Good hint, thanks!
+diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
+index 7d63e2f1555a03dc..72e95663b62ffd54 100644
+--- a/arch/m68k/68000/entry.S
++++ b/arch/m68k/68000/entry.S
+@@ -1,12 +1,9 @@
+-/*
++/* SPDX-License-Identifier: GPL-2.0-or-later
++ *
+  *  entry.S -- non-mmu 68000 interrupt and exception entry points
+  *
+  *  Copyright (C) 1991, 1992  Linus Torvalds
+  *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file README.legal in the main directory of this archive
+- * for more details.
+- *
+  * Linux/m68k support by Hamish Macdonald
+  */
+ 
+diff --git a/arch/m68k/bvme6000/config.c b/arch/m68k/bvme6000/config.c
+index e604fe6602461334..8a2ee69a09f6659c 100644
+--- a/arch/m68k/bvme6000/config.c
++++ b/arch/m68k/bvme6000/config.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  *  arch/m68k/bvme6000/config.c
+  *
+@@ -8,10 +9,6 @@
+  *  linux/amiga/config.c
+  *
+  *  Copyright (C) 1993 Hamish Macdonald
+- *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file README.legal in the main directory of this archive
+- * for more details.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/arch/m68k/coldfire/entry.S b/arch/m68k/coldfire/entry.S
+index 35104c5417ff4d07..4ea08336e2fb0aae 100644
+--- a/arch/m68k/coldfire/entry.S
++++ b/arch/m68k/coldfire/entry.S
+@@ -1,4 +1,5 @@
+-/*
++/* SPDX-License-Identifier: GPL-2.0-or-later
++ *
+  *  entry.S  -- interrupt and exception processing for ColdFire
+  *
+  *  Copyright (C) 1999-2007, Greg Ungerer (gerg@snapgear.com)
+@@ -13,10 +14,6 @@
+  *
+  *  Copyright (C) 1991, 1992  Linus Torvalds
+  *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file README.legal in the main directory of this archive
+- * for more details.
+- *
+  * Linux/m68k support by Hamish Macdonald
+  *
+  * 68060 fixes by Jesper Skov
+diff --git a/arch/m68k/ifpsp060/Makefile b/arch/m68k/ifpsp060/Makefile
+index 56b530a96c2f33b5..00d0621f547ccb93 100644
+--- a/arch/m68k/ifpsp060/Makefile
++++ b/arch/m68k/ifpsp060/Makefile
+@@ -1,7 +1,5 @@
+-# Makefile for 680x0 Linux 68060 integer/floating point support package
++# SPDX-License-Identifier: GPL-2.0-or-later
+ #
+-# This file is subject to the terms and conditions of the GNU General Public
+-# License.  See the file "README.legal" in the main directory of this archive
+-# for more details.
++# Makefile for 680x0 Linux 68060 integer/floating point support package
+ 
+ obj-y := fskeleton.o iskeleton.o os.o
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 4dd2fd7acba9ea07..3bcdd32a6b36613d 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -1,13 +1,10 @@
+-/* -*- mode: asm -*-
++/* SPDX-License-Identifier: GPL-2.0-or-later
++ * -*- mode: asm -*-
+  *
+  *  linux/arch/m68k/kernel/entry.S
+  *
+  *  Copyright (C) 1991, 1992  Linus Torvalds
+  *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file README.legal in the main directory of this archive
+- * for more details.
+- *
+  * Linux/m68k support by Hamish Macdonald
+  *
+  * 68060 fixes by Jesper Skov
+diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
+index 9e812d8606be8301..852255cf60dec132 100644
+--- a/arch/m68k/kernel/head.S
++++ b/arch/m68k/kernel/head.S
+@@ -1,4 +1,5 @@
+-/* -*- mode: asm -*-
++/* SPDX-License-Identifier: GPL-2.0-or-later
++** -*- mode: asm -*-
+ **
+ ** head.S -- This file contains the initial boot code for the
+ **	     Linux/68k kernel.
+@@ -25,11 +26,6 @@
+ **            for linux-2.1.115
+ ** 1999/02/11  Richard Zidlicky: added Q40 support (initial version 99/01/01)
+ ** 2004/05/13 Kars de Jong: Finalised HP300 support
+-**
+-** This file is subject to the terms and conditions of the GNU General Public
+-** License. See the file README.legal in the main directory of this archive
+-** for more details.
+-**
+ */
+ 
+ /*
+diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
+index 7dfacd0b207a9750..8b5dc07f0811f2fc 100644
+--- a/arch/m68k/mvme147/config.c
++++ b/arch/m68k/mvme147/config.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  *  arch/m68k/mvme147/config.c
+  *
+@@ -7,10 +8,6 @@
+  * Based on:
+  *
+  *  Copyright (C) 1993 Hamish Macdonald
+- *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file README.legal in the main directory of this archive
+- * for more details.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
+index 9bb9a33e43c246c4..d1fbd1704d65822f 100644
+--- a/arch/m68k/mvme16x/config.c
++++ b/arch/m68k/mvme16x/config.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  *  arch/m68k/mvme16x/config.c
+  *
+@@ -8,10 +9,6 @@
+  *  linux/amiga/config.c
+  *
+  *  Copyright (C) 1993 Hamish Macdonald
+- *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file README.legal in the main directory of this archive
+- * for more details.
+  */
+ 
+ #include <linux/types.h>
+diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
+index 2c51c2b4a4fbbf79..de7870ad2a30620d 100644
+--- a/arch/m68k/q40/config.c
++++ b/arch/m68k/q40/config.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  *  arch/m68k/q40/config.c
+  *
+@@ -6,10 +7,6 @@
+  * originally based on:
+  *
+  *  linux/bvme/config.c
+- *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file README.legal in the main directory of this archive
+- * for more details.
+  */
+ 
+ #include <linux/errno.h>
+-- 
+2.34.1
+
