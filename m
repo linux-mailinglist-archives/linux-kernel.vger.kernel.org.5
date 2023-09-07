@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F777978FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB9E7978AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238411AbjIGQ7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52256 "EHLO
+        id S244229AbjIGQvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233666AbjIGQ7a (ORCPT
+        with ESMTP id S230474AbjIGQvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:59:30 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2BA1FD2
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:59:03 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bceca8a41aso19981441fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:59:03 -0700 (PDT)
+        Thu, 7 Sep 2023 12:51:36 -0400
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5E1E57
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:51:10 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-401b0d97850so13256105e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:51:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694105872; x=1694710672; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694105074; x=1694709874; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3IGORlEL+j7QOCTKX6XyQpE4GsPUdQpP3Lht2awpSqA=;
-        b=dvpnDOAGqyIulgWWS55DvTHqts2W7Vm9HF5zs+1NFwr6WiOfTFU4Njysu850kgnyBO
-         kVqGoYvY63vnzOZhtdV7cFOJNQAVRwBIRB82JjM5O7xKV0imazrBuZE/CQvqohUvCsTW
-         AwbrVN9FIajQTcPUeNGJDo6lJRt71fEE9sY4M39khZ0KYecqszrTyVo+HHusSE3ZKYH2
-         Qhizx+2Y9U/DvjVTUPD2bCIbgZ/ykclR/1IX62fvJkyH+9xZTYECKli4gdIpA6v/j8I1
-         LQfF9dgklmpOrqKsFl7I7LF4k4EPDfSpkQ/Muw/D2huEcm53VA2rFWKu567ekYdKq24h
-         i1nQ==
+        bh=fsf1mehY1EU1JR1nmS7E45I2Zeglu1yJCbPwjJvU1uU=;
+        b=qDmJ6X12zgGqpS1mkKoD1zIF9B6XzCL8acxY5pD9iR5CVtQKWvqxaTXPK4KXtYKzbX
+         Or3959BlEmENDTlBwQ21MD13Ivg8X9H0nyQ0gXrgWCiSZ23+KnDGSmIEnvFEhLekYiRJ
+         h50ArjBHiw73riL50oRAMDjGm0WFrfiogxKSdWzmIIi1JrKlTukUJ0kNBdo0epXliaLi
+         F0y3q+Mo06Ty6oxclW+wB4s5jSh36TW7rSEILKQSWFVJnlfcVckZUrWdADVOWW7Yci64
+         mt7k7973gkcFw9gACzYS4BHN+hc4hkjrMkPNFPYOuIHS1Qo5DAmB7YZ7qaCysEOcHDF9
+         9BZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694105872; x=1694710672;
+        d=1e100.net; s=20221208; t=1694105074; x=1694709874;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3IGORlEL+j7QOCTKX6XyQpE4GsPUdQpP3Lht2awpSqA=;
-        b=W7VqYrQZ0hybCKP1KgO4p4C/vdYXKgueWX+7yAO/K3caCmaPD+lsn/f/yLPwyq81ce
-         7ndDOOVzMVqlf3wplohsFAZdiHklQAqNCX0gYtB2RNE/t8/w3tLVuA4SYc8qXjI+XopY
-         5meBdHktoob13KuKHmUjJ3RLvgz28Kt9TV7gFd0mXBcS+faLpFqcPcdyyayLH8mDWNJh
-         HERRJIjpvlJMuXEFS1ycjafx+KuMBLbmwe+0VzW4m5gvq8ImGQ34ldSZn3djpla9bRbz
-         wlRcyxjK5zphLB43YIInehMrH0IZyX9He2dRewGlDCREacssxYTqfMhzpzIfKnup+9PI
-         Ek+A==
-X-Gm-Message-State: AOJu0YxU2oF48F0NK0I3h+2CvLSsv9Mw6BQFGgrzxIy0diOEtC7T3svy
-        H/Ot0UamK0s0h/tOEI4lUpQ2L/QaBb1KzqBqdes=
-X-Google-Smtp-Source: AGHT+IFFhtFOfyjIUjTQaoISN3ahU3GulYsY3a4nJuObsLIa20hRbGZNlKWDpuep8zKWObREFaQEoQ==
-X-Received: by 2002:a5d:6504:0:b0:31a:d4a9:bdac with SMTP id x4-20020a5d6504000000b0031ad4a9bdacmr948wru.11.1694105072392;
-        Thu, 07 Sep 2023 09:44:32 -0700 (PDT)
+        bh=fsf1mehY1EU1JR1nmS7E45I2Zeglu1yJCbPwjJvU1uU=;
+        b=QHcXKkYEHxrXxd84CboUob3GG/FCl+IPdEQ2mXvsFeS/JrSPZZgq3n8jlOEIlf2Sv8
+         EqAmFO7/38FnmZ1SH+Rt1O/z4tOxSwGj1qVkhvDAWrfdOgLFbZhdBoRCKUAERvrczm6x
+         lk761i0EyJo03mYI4t1IiJd+fyQn6BolqcDeqbyjzeeuJFkGHcH8aZxds0EZp+Y8EXMY
+         /actUmbOBQ+bXD+uh1+drmV4Hie0TlGu8Ec1/GRWqTQMEGE3FjWUrLQEF+M62u92ILXR
+         x2mFwUEdUhfliN0DsA0Wo4f1fBR877OfQC1giINoBA4kO0AAPtmThyqv3t5NQMHmc1k5
+         60mg==
+X-Gm-Message-State: AOJu0YxIgJX+/W9SlKgDfv+q+bArJU9Tc/+87oJ081WD2vKEG94Sl4X7
+        3QEN0yWz90v8ZwJ8xfjGJczamQ==
+X-Google-Smtp-Source: AGHT+IG3BWilOJ+YfKjw7ZTqC8wbsZGwXEa01yDeLkkclOQHDpZHzPugldVac3UjZ9qjBCmK/nJTAA==
+X-Received: by 2002:a5d:4d84:0:b0:319:85e2:6972 with SMTP id b4-20020a5d4d84000000b0031985e26972mr4850999wru.42.1694105073885;
+        Thu, 07 Sep 2023 09:44:33 -0700 (PDT)
 Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id d15-20020adffd8f000000b00317ab75748bsm23822145wrr.49.2023.09.07.09.44.30
+        by smtp.gmail.com with ESMTPSA id d15-20020adffd8f000000b00317ab75748bsm23822145wrr.49.2023.09.07.09.44.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 09:44:31 -0700 (PDT)
+        Thu, 07 Sep 2023 09:44:33 -0700 (PDT)
 From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
         agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
@@ -58,9 +58,9 @@ To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
         andrey.konovalov@linaro.org
 Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 13/17] media: qcom: camss: Fix support for setting CSIPHY clock name csiphyX
-Date:   Thu,  7 Sep 2023 17:44:06 +0100
-Message-ID: <20230907164410.36651-14-bryan.odonoghue@linaro.org>
+Subject: [PATCH v4 14/17] media: qcom: camss: Support RDI3 for VFE 17x
+Date:   Thu,  7 Sep 2023 17:44:07 +0100
+Message-ID: <20230907164410.36651-15-bryan.odonoghue@linaro.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230907164410.36651-1-bryan.odonoghue@linaro.org>
 References: <20230907164410.36651-1-bryan.odonoghue@linaro.org>
@@ -68,49 +68,73 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Several of our upstream and soon-to-be upstream SoC CAMSS dtsi declare
-csiphyX as opposed to the older clock name csiX_phy.
+Some VFEs have four RDIs apiece. Right now the ISR code has a hard-coded
+value which tops-out at RDI2 meaning only three RDIs can be utilised in
+practice.
 
-Right now the CAMSS code will fail to set the csiphyX clock even if we have
-declared it in our list of clocks. For sdm845 and sm8250 we appear to "get
-away" with this error, however on sc8280xp we don't.
-
-The right approach here is to set the clock when it is declared. If a SoC
-doesn't require or a SoC driver implementer doesn't think we need, then the
-clock ought to simply be omitted from the clock list.
-
-Include csiphyX in the set of permissible strings which will subsequently
-lead to the csiphyX clock being set during csiphy_set_clock_rates() phase.
-
-sdm845 and sm8250 will work with the code as-is so I've omitted this from a
-suggested Fixes list.
+Extend out the various routines in camss-vfe-17x.c to support the higher
+RDI count.
 
 Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 ---
- drivers/media/platform/qcom/camss/camss-csiphy.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/media/platform/qcom/camss/camss-vfe-170.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
-index 87d6d65aa90cf..5202bfcdbc35a 100644
---- a/drivers/media/platform/qcom/camss/camss-csiphy.c
-+++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
-@@ -677,6 +677,10 @@ int msm_csiphy_subdev_init(struct camss *camss,
- 				if (csiphy->rate_set[i])
- 					break;
- 			}
-+
-+			csiphy->rate_set[i] = csiphy_match_clock_name(clock->name, "csiphy%d", k);
-+			if (csiphy->rate_set[i])
-+				break;
- 		}
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe-170.c b/drivers/media/platform/qcom/camss/camss-vfe-170.c
+index 2ba7160b3bd1e..a5aa799501861 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe-170.c
++++ b/drivers/media/platform/qcom/camss/camss-vfe-170.c
+@@ -209,7 +209,8 @@ static void vfe_global_reset(struct vfe_device *vfe)
+ 			 GLOBAL_RESET_CMD_IDLE_CGC	|
+ 			 GLOBAL_RESET_CMD_RDI0		|
+ 			 GLOBAL_RESET_CMD_RDI1		|
+-			 GLOBAL_RESET_CMD_RDI2;
++			 GLOBAL_RESET_CMD_RDI2		|
++			 GLOBAL_RESET_CMD_RDI3;
+ 
+ 	writel_relaxed(BIT(31), vfe->base + VFE_IRQ_MASK_0);
+ 
+@@ -343,7 +344,7 @@ static void vfe_violation_read(struct vfe_device *vfe)
+ static irqreturn_t vfe_isr(int irq, void *dev)
+ {
+ 	struct vfe_device *vfe = dev;
+-	u32 status0, status1, vfe_bus_status[3];
++	u32 status0, status1, vfe_bus_status[VFE_LINE_NUM_MAX];
+ 	int i, wm;
+ 
+ 	status0 = readl_relaxed(vfe->base + VFE_IRQ_STATUS_0);
+@@ -352,7 +353,7 @@ static irqreturn_t vfe_isr(int irq, void *dev)
+ 	writel_relaxed(status0, vfe->base + VFE_IRQ_CLEAR_0);
+ 	writel_relaxed(status1, vfe->base + VFE_IRQ_CLEAR_1);
+ 
+-	for (i = VFE_LINE_RDI0; i <= VFE_LINE_RDI2; i++) {
++	for (i = VFE_LINE_RDI0; i < vfe->line_num; i++) {
+ 		vfe_bus_status[i] = readl_relaxed(vfe->base + VFE_BUS_IRQ_STATUS(i));
+ 		writel_relaxed(vfe_bus_status[i], vfe->base + VFE_BUS_IRQ_CLEAR(i));
  	}
+@@ -366,11 +367,11 @@ static irqreturn_t vfe_isr(int irq, void *dev)
+ 	if (status0 & STATUS_0_RESET_ACK)
+ 		vfe->isr_ops.reset_ack(vfe);
+ 
+-	for (i = VFE_LINE_RDI0; i <= VFE_LINE_RDI2; i++)
++	for (i = VFE_LINE_RDI0; i < vfe->line_num; i++)
+ 		if (status0 & STATUS_0_RDI_REG_UPDATE(i))
+ 			vfe->isr_ops.reg_update(vfe, i);
+ 
+-	for (i = VFE_LINE_RDI0; i <= VFE_LINE_RDI2; i++)
++	for (i = VFE_LINE_RDI0; i < vfe->line_num; i++)
+ 		if (status0 & STATUS_1_RDI_SOF(i))
+ 			vfe->isr_ops.sof(vfe, i);
  
 -- 
 2.41.0
