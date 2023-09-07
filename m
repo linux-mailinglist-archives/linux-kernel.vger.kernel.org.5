@@ -2,127 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B7A797A17
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C654797A22
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239739AbjIGRaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33624 "EHLO
+        id S241767AbjIGRbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:31:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239233AbjIGRaB (ORCPT
+        with ESMTP id S231783AbjIGRbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:30:01 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D33D71FFA;
-        Thu,  7 Sep 2023 10:29:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=e3sbmtikRY69TAsDKmcau5vqebtKawBbX+Q/ivAEisE=; b=c62wQh3PD8tyy7+OJkND0FuxVp
-        vSB9FeWWP4sx22lnqZyGTp4BBpE/GfPpIW+KAe2blgEiFXYhKlKBLviCpWELJ1+ZhPO2Dw3ngklcd
-        QYa+bv+euVRKyifDj68xQVQM7K3wQYTYK3wDL67jVRalBMAuMwfby+NfQ6OjiVj8LlvZsGrFDwnTr
-        ixtnax2jPcZpJ8vKd8Qr3BAMQaI8zTikVljgjMZ1Ix5DiixDPIr8Oc1mj4hB/7SR+S+fvrM+Rha9M
-        A+l7si4YlKTFOoTV27KRvKgTiUl6Vw2Sw70LwLBZ/WMEZrT6MvSMUZFYEa/HmU2ZREYk5BkXyXphp
-        Sx/BFMFQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:42468)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qeIna-00049j-35;
-        Thu, 07 Sep 2023 18:28:10 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qeIna-00061L-Ok; Thu, 07 Sep 2023 18:28:10 +0100
-Date:   Thu, 7 Sep 2023 18:28:10 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Lucas Tanure <tanure@linux.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Devicetree <devicetree@vger.kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Raul Piper <raulpblooper@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: Debugging i2c : i2cdetect cant detect a device on i2c line
-Message-ID: <ZPoIKhytmUQqtONp@shell.armlinux.org.uk>
-References: <CAEwN+MCorDCS7EhN40Qgja_nY+SFc3G61Zd6yntqAS+w26YO9Q@mail.gmail.com>
- <ZPnR4Cx6_Hh3weEl@debian.me>
- <ZPnWb15ucCotffav@shell.armlinux.org.uk>
- <CAJX_Q+0-v=oadJ697VDawyEhDSPBAS_oqakZFHWVUfsnbCanMA@mail.gmail.com>
+        Thu, 7 Sep 2023 13:31:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0BF171C
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:31:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694107871; x=1725643871;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=SNKXIdBqJmVcRywNeYh+7V2th6o8qWnDFUSv41r0efo=;
+  b=nd//cTz5BA+eyaITwr0KotvDnCtEWMgPVUaqCvruCmfKRSwaAHVteF/1
+   +43v99gRLCDiZakDloN+l+c3b/+fg+Yt4mXHttKjaEh3fp9pck0OQX/Pt
+   SS6Yvb1rUjRSw3FBTjfCQpquXOyX8YK2cNwctOmKdHF8O/tj9xC06rfuh
+   A35cVANPxmIMnA2mAz24NhE9lHgJvWTxtPkE/Oh7uzkpzwMcgZDinGXhh
+   lDbVatA5Lk2b4ZzV5lgcLVx7ioRVH8U2Yj1dipoXUkSQuILp2Qngi1JiK
+   PxKeU4OYSSwGa3i0z1caFKjByDX6Y5dzpqT1rYpxz76BOrWxjFQaQHdoX
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="380159010"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="380159010"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 10:29:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="742103116"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="742103116"
+Received: from zeweiwan-mobl1.amr.corp.intel.com (HELO [10.212.62.199]) ([10.212.62.199])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 10:29:50 -0700
+Message-ID: <6d39eac7-06c7-45f0-0318-72be1753641f@linux.intel.com>
+Date:   Thu, 7 Sep 2023 13:29:49 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJX_Q+0-v=oadJ697VDawyEhDSPBAS_oqakZFHWVUfsnbCanMA@mail.gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.0
+Subject: Re: [PATCH v4 01/11] ASoC: SOF: core: add 'no_wq' probe and remove
+ callbacks
+Content-Language: en-US
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To:     =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+References: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
+ <20230830153652.217855-2-maarten.lankhorst@linux.intel.com>
+ <alpine.DEB.2.22.394.2309011509200.3532114@eliteleevi.tm.intel.com>
+ <4252a4dc-0cf3-4ff2-aa55-c03e56345276@linux.intel.com>
+ <4d84a799-c07e-e917-7c82-2f24456e3ac2@linux.intel.com>
+In-Reply-To: <4d84a799-c07e-e917-7c82-2f24456e3ac2@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 05:17:47PM +0100, Lucas Tanure wrote:
-> On Thu, 7 Sept 2023, 14:56 Russell King (Oracle), <linux@armlinux.org.uk>
-> wrote:
+
+
+On 9/5/23 08:37, Pierre-Louis Bossart wrote:
 > 
-> > On Thu, Sep 07, 2023 at 08:36:32PM +0700, Bagas Sanjaya wrote:
-> > > [also Cc: devicetree and ARM folks]
-> > >
-> > > On Thu, Sep 07, 2023 at 08:21:44AM +0530, Raul Piper wrote:
-> > > > Hello ,
-> > > > I am trying to detect an i2c device A on i2c1 line on  one of the Arm
-> > > > Cortex A7 platform but not able to see any device on a given address (
-> > > > 0x3d) .
-> > > >
-> > > > Is there any parameters of i2c which i can change like rise/fall time
-> > > > , timeout etc in a device tree or kernel source and re test it?
-> > > > I have tried changing the i2c speed from 100KHz to 400 KHz  but no
-> > success.
-> > > > I have even tried removing the 1.5K pull ups on the i2c lines but no
-> > result.
-> >
-> > Honestly, from this description, I'm wondering if this posting is a joke.
-> >
-> > I2C is entirely _reliant_ on pull-ups. It's a wire-or bus, and the
-> > logic 1 state is created by no device pulling the signal low, thereby
-> > allowing the pull-up resistor to pull the line to the logic 1 state.
-> >
-> > The pull-up must be the correct strength for the devices on the bus.
-> > If it is too strong, then a driver may not be able to pull the signal
-> > sufficiently low for other devices to register it as a logic 0.
-> >
-> > Conversely, the pull-up must be strong enough so that the rise-time
-> > of the signal is sufficient to register as a logic 1.
-> >
-> > If it's a problem with the rise time, then increasing the clock rate
-> > will just make the situation worse.
-> >
-> > So, if other devices work on the bus, it could be that the Vil
-> > threshold of this device is not being achieved, whereas the other
-> > devices are happy. Therefore, I would suggest you study the data
-> > sheets of the device that isn't being detected.
-> >
-> > Lastly, if the undetectable device has a reset line, it's possible
-> > that the device isn't responding because it's being held in reset.
-> >
-> Please try to use an logic analyser like saleae logic.
-> Probe the i2c bus, reset line, power lines, pins that set the i2c address
-> for the device.
-> Can tell us which device it is?
+> 
+> On 9/1/23 08:44, Péter Ujfalusi wrote:
+>>
+>>
+>> On 01/09/2023 15:15, Kai Vehmanen wrote:
+>>> Hi,
+>>>
+>>> On Wed, 30 Aug 2023, Maarten Lankhorst wrote:
+>>>
+>>>> With the upcoming changes for i915/Xe driver relying on the
+>>>> -EPROBE_DEFER mechanism, we need to have a first pass of the probe
+>>>> which cannot be pushed to a workqueue. Introduce 2 new optional
+>>>> callbacks.
+>>> [...]
+>>>> diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+>>>> index 30db685cc5f4b..54c384a5d6140 100644
+>>>> --- a/sound/soc/sof/core.c
+>>>> +++ b/sound/soc/sof/core.c
+>>>> @@ -327,8 +327,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+>>>>  dsp_err:
+>>>>  	snd_sof_remove(sdev);
+>>>>  probe_err:
+>>>> -	sof_ops_free(sdev);
+>>>> -
+>>>
+>>> this seems a bit out-of-place in this patch. It seems a valid change,
+>>> but not really related to this patch, right?
+>>
+>> The ops needs to be preserved even if the wq fails since the patch wants
+>> to call snd_sof_remove_no_wq() unconditionally on remove.
+>>
+>>> We seem to have a related fix waiting to be sent to alsa-devel, by
+>>> Peter:
+>>> "ASoC: SOF: core: Only call sof_ops_free() on remove if the probe wa"
+>>> https://github.com/thesofproject/linux/pull/4515
+>>
+>> I guess we can revert that in sof-dev, if this is the preferred way?
+>>
+>>> ... not yet in Mark's tree.
+>>>
+>>> Otherwise patch looks good to me.
+>>
+>> I would have not created the snd_sof_remove_no_wq() as it makes not much
+>> functional sense.
+>> It might be even better if the remove in the wq would do the
+>> hda_codec_i915_exit() as the module will remain in there until the user
+>> removes it.
+> 
+> I think find all this very confusing, because there is no workqueue used
+> in the remove steps. The workqueue is only used ONCE during the probe.
 
-I assume you are replying to Bagas? Please me it clear in future.
-Thanks.
+Maybe we should just remove any references to workqueues, and have
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+probe_start (cannot run in a wq)
+probe (may run in a wq)
+remove (cannot run in a wq, needs to call cancel_work_sync() if the
+probe runs in a wq)
+remove_last (cannot run in a wq, releases all resources acquired in
+probe_start)
+
+Or something similar that shows the symmetry between steps and when the
+wq is allowed.
