@@ -2,132 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6CF797EED
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 01:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7703B797EF5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 01:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234258AbjIGXEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 19:04:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41712 "EHLO
+        id S237533AbjIGXGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 19:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231969AbjIGXEI (ORCPT
+        with ESMTP id S235448AbjIGXGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 19:04:08 -0400
-Received: from mail-pl1-f205.google.com (mail-pl1-f205.google.com [209.85.214.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA1BCF3
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 16:04:04 -0700 (PDT)
-Received: by mail-pl1-f205.google.com with SMTP id d9443c01a7336-1bf08cf3365so18645885ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 16:04:04 -0700 (PDT)
+        Thu, 7 Sep 2023 19:06:00 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCBDCF3;
+        Thu,  7 Sep 2023 16:05:53 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-401da71b85eso15739785e9.1;
+        Thu, 07 Sep 2023 16:05:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694127952; x=1694732752; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XaMCKcMEdBViAjXTUruxNbmmXo7b8BJjzaE2vXfuL7c=;
+        b=Aen0OE+3b8k26kFKDvqCncpzj30K0gljpnopV/MHBzKhwW/Ldkz5PzHSoLM2Blp3ln
+         yEevJi/8MIoeD0fmJnK31fk5c3GEDzB5HnKKrgRBSBxNfIxAuVHpMZ+uHpwdREvmDtnx
+         2gP3oUDNL5BjaNSG6YoGcaVgaD/o/P/1peEbqEsRtUN4ZkTqBIhuuf30Fp9qlL4rCukj
+         IdWlYvFw5gnP25s/aTJqZ5XrixWHV5B8G9TTb3XiR0+3L72GAhIuuUyg89szu0aOkVMB
+         iFJ1egZEH3GTdmCBTUxbMwrZq/jsy683RuCa/sNOUeioSIS8jRNDlOVGCWY1xuOBjZ3S
+         TlNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694127844; x=1694732644;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6qIVdRmDrLBZvUQgIhZ+mgd7I9aUWm7XLJQ2fXiufrs=;
-        b=ifT6REBKdhp25HtqQGUq0+L8VZqoki/KUdzcZEIjmKw3lsd2hPwbzI26Tc6GJfgv6X
-         7l3CdM5CNq97uxXf9yfVgdzomCRs9fLmybzMUMaO7hY2iSrPoKNQBRCY7O45cG1sPDYg
-         mNfjbnCk9wfbAfzlrjria4cbofL7MoOR0PfzVqn19nqnDOotN0+GSPsCHTDYa9K/H29R
-         VOT6yRWT7LGPj+VHyq1L+JfX5RrT7rADDiP8NFaBmgesLt5F6b82N8sWDwN9LjvGWAST
-         CfepDElu4fJmc18k29ozR98frSkyeh0gJNmkXMVSPrhg9cD0c1nedpYFhW8dr630HKNT
-         EfBw==
-X-Gm-Message-State: AOJu0YwxM51aIMI9/q8Fko/0mMaZFewkPsUR73JI0FR/PWIOO3CtQtFi
-        4Ga6ng5dg8NdMI3jffFldXGtHSMNKtFTA5yq5hnSeCcIlVZY
-X-Google-Smtp-Source: AGHT+IGjFM79VIw0E5WUJx5G1zVppF7bce/T74F7G7tTulEu1jqtVclFnpL+a50hmITRN9O2pAiGamjUDwI3vodd28iu3mpnxdk+
+        d=1e100.net; s=20230601; t=1694127952; x=1694732752;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XaMCKcMEdBViAjXTUruxNbmmXo7b8BJjzaE2vXfuL7c=;
+        b=lsOsudNG0M3q4s62HW4Kpnjxve/h0kpVFST3FKxECxvvddeui+jP7aFujy1qUuT8yT
+         eVr4w6uJjShOcs4azUmwajTNuE9BEQzeCLSAjvQCpsb35QPGv5YMsEUGF/fmqfkFeQTd
+         tsU10D/CA0vBIJwfhKMrQ/cswDjIyFMQMo+hPyIpmDv2JEz+3+SeHDTU8wo+TDw7AOek
+         rz+WNT4xzf5UPJgt04lrLx6ND8Op+QGTr739x+9DpCytYbFlamXZuGTqiZkRKlFwReex
+         ttf3VpZmqm6F7UO9nyBmhR2+2NBajdByTEqrJtcRQpSTRZodQBo6YtV3OblWgbBS+8RB
+         RVfA==
+X-Gm-Message-State: AOJu0YxjCSxalKcDFzvYnEAC24Sl93xF1kM9nJFkHewCkgcnzPxT4VhV
+        VyBW41chMk3LbhaGOxGCkuF934+o1OaqDnMMoQfo7Q==
+X-Google-Smtp-Source: AGHT+IGzF/mixcpVmnJ5BgydJj3Jf0JAILARrNe+xCuOmg5UNZm40LUB2Jdx6KOQwm22+RrSEL1MGQ==
+X-Received: by 2002:a5d:42c1:0:b0:317:51da:83b9 with SMTP id t1-20020a5d42c1000000b0031751da83b9mr449002wrr.49.1694127952054;
+        Thu, 07 Sep 2023 16:05:52 -0700 (PDT)
+Received: from ip-172-31-30-46.eu-west-1.compute.internal (ec2-3-249-32-32.eu-west-1.compute.amazonaws.com. [3.249.32.32])
+        by smtp.gmail.com with ESMTPSA id n13-20020a5d484d000000b0031f3b04e7cdsm491358wrs.109.2023.09.07.16.05.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 16:05:51 -0700 (PDT)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     puranjay12@gmail.com
+Subject: [PATCH bpf-next v3 0/9] arm32, bpf: add support for cpuv4 insns
+Date:   Thu,  7 Sep 2023 23:05:41 +0000
+Message-Id: <20230907230550.1417590-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:ea0a:b0:1c3:5d5b:e294 with SMTP id
- s10-20020a170902ea0a00b001c35d5be294mr368960plg.7.1694127844341; Thu, 07 Sep
- 2023 16:04:04 -0700 (PDT)
-Date:   Thu, 07 Sep 2023 16:04:04 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005dc3d00604cce08d@google.com>
-Subject: [syzbot] [gfs2?] memory leak in gfs2_trans_begin
-From:   syzbot <syzbot+45a7939b6f493f374ee1@syzkaller.appspotmail.com>
-To:     agruenba@redhat.com, cluster-devel@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rpeterso@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Changes in V2 -> V3
+- Added comments at places where there could be confustion.
+- In the patch for DIV64, fix the if-else case that would never run.
+- In the same patch use a single instruction to POP caller saved regs.
+- Add a patch to change maintainership of ARM32 BPF JIT.
 
-syzbot found the following issue on:
+Changes in V1 -> V2:
+- Fix coding style issues.
+- Don't use tmp variable for src in emit_ldsx_r() as it is redundant.
+- Optimize emit_ldsx_r() when offset can fit in immediate.
 
-HEAD commit:    3f86ed6ec0b3 Merge tag 'arc-6.6-rc1' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12cda4e7a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fe0cf825f8fbc075
-dashboard link: https://syzkaller.appspot.com/bug?extid=45a7939b6f493f374ee1
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16f3a658680000
+Add the support for cpuv4 instructions for ARM32 BPF JIT. 64-bit division
+was not supported earlier so this series adds 64-bit DIV, SDIV, MOD, SMOD
+instructions as well.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0a6ca0af2bd5/disk-3f86ed6e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ba67b3d88c83/vmlinux-3f86ed6e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4a64bda3d2e5/bzImage-3f86ed6e.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/6406b55aec21/mount_0.gz
+This series needs any one of the patches from [1] to disable zero-extension
+for BPF_MEMSX to support ldsx.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+45a7939b6f493f374ee1@syzkaller.appspotmail.com
+The relevant selftests have passed expect ldsx_insn which needs fentry:
 
-2023/09/05 14:30:51 executed programs: 30
-BUG: memory leak
-unreferenced object 0xffff8881214cbc60 (size 144):
-  comm "syz-executor.7", pid 5069, jiffies 4294970978 (age 14.110s)
-  hex dump (first 32 bytes):
-    ae 04 1f 82 ff ff ff ff 02 00 00 00 00 00 00 00  ................
-    08 00 00 00 00 00 00 00 06 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff821f3e39>] kmem_cache_zalloc include/linux/slab.h:710 [inline]
-    [<ffffffff821f3e39>] gfs2_trans_begin+0x29/0xa0 fs/gfs2/trans.c:115
-    [<ffffffff821f04ae>] gfs2_statfs_sync+0x1ae/0x250 fs/gfs2/super.c:298
-    [<ffffffff821f0d01>] gfs2_make_fs_ro+0x1b1/0x430 fs/gfs2/super.c:566
-    [<ffffffff821f14ac>] gfs2_put_super+0x2bc/0x2d0 fs/gfs2/super.c:623
-    [<ffffffff8168f43e>] generic_shutdown_super+0x9e/0x170 fs/super.c:693
-    [<ffffffff8168f58d>] kill_block_super+0x1d/0x50 fs/super.c:1646
-    [<ffffffff821d4a7f>] gfs2_kill_sb+0x1bf/0x1f0 fs/gfs2/ops_fstype.c:1795
-    [<ffffffff8169065a>] deactivate_locked_super+0x4a/0x110 fs/super.c:481
-    [<ffffffff816907bc>] deactivate_super fs/super.c:514 [inline]
-    [<ffffffff816907bc>] deactivate_super+0x9c/0xb0 fs/super.c:510
-    [<ffffffff816cd041>] cleanup_mnt+0x121/0x210 fs/namespace.c:1254
-    [<ffffffff812d2b5f>] task_work_run+0x8f/0xe0 kernel/task_work.c:179
-    [<ffffffff81361556>] resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
-    [<ffffffff81361556>] exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
-    [<ffffffff81361556>] exit_to_user_mode_prepare+0x116/0x140 kernel/entry/common.c:204
-    [<ffffffff84b29c41>] __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
-    [<ffffffff84b29c41>] syscall_exit_to_user_mode+0x21/0x50 kernel/entry/common.c:296
-    [<ffffffff84b25fb4>] do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+Tested on BeagleBone Black (ARMv7-A):
 
+[root@alarm del]# echo 1 > /proc/sys/net/core/bpf_jit_enable
+[root@alarm del]# ./test_progs -a verifier_sdiv,verifier_movsx,verifier_ldsx,verifier_gotol,verifier_bswap
+#337/1   verifier_bswap/BSWAP, 16:OK
+#337/2   verifier_bswap/BSWAP, 16 @unpriv:OK
+#337/3   verifier_bswap/BSWAP, 32:OK
+#337/4   verifier_bswap/BSWAP, 32 @unpriv:OK
+#337/5   verifier_bswap/BSWAP, 64:OK
+#337/6   verifier_bswap/BSWAP, 64 @unpriv:OK
+#337     verifier_bswap:OK
+#351/1   verifier_gotol/gotol, small_imm:OK
+#351/2   verifier_gotol/gotol, small_imm @unpriv:OK
+#351     verifier_gotol:OK
+#359/1   verifier_ldsx/LDSX, S8:OK
+#359/2   verifier_ldsx/LDSX, S8 @unpriv:OK
+#359/3   verifier_ldsx/LDSX, S16:OK
+#359/4   verifier_ldsx/LDSX, S16 @unpriv:OK
+#359/5   verifier_ldsx/LDSX, S32:OK
+#359/6   verifier_ldsx/LDSX, S32 @unpriv:OK
+#359/7   verifier_ldsx/LDSX, S8 range checking, privileged:OK
+#359/8   verifier_ldsx/LDSX, S16 range checking:OK
+#359/9   verifier_ldsx/LDSX, S16 range checking @unpriv:OK
+#359/10  verifier_ldsx/LDSX, S32 range checking:OK
+#359/11  verifier_ldsx/LDSX, S32 range checking @unpriv:OK
+#359     verifier_ldsx:OK
+#370/1   verifier_movsx/MOV32SX, S8:OK
+#370/2   verifier_movsx/MOV32SX, S8 @unpriv:OK
+#370/3   verifier_movsx/MOV32SX, S16:OK
+#370/4   verifier_movsx/MOV32SX, S16 @unpriv:OK
+#370/5   verifier_movsx/MOV64SX, S8:OK
+#370/6   verifier_movsx/MOV64SX, S8 @unpriv:OK
+#370/7   verifier_movsx/MOV64SX, S16:OK
+#370/8   verifier_movsx/MOV64SX, S16 @unpriv:OK
+#370/9   verifier_movsx/MOV64SX, S32:OK
+#370/10  verifier_movsx/MOV64SX, S32 @unpriv:OK
+#370/11  verifier_movsx/MOV32SX, S8, range_check:OK
+#370/12  verifier_movsx/MOV32SX, S8, range_check @unpriv:OK
+#370/13  verifier_movsx/MOV32SX, S16, range_check:OK
+#370/14  verifier_movsx/MOV32SX, S16, range_check @unpriv:OK
+#370/15  verifier_movsx/MOV32SX, S16, range_check 2:OK
+#370/16  verifier_movsx/MOV32SX, S16, range_check 2 @unpriv:OK
+#370/17  verifier_movsx/MOV64SX, S8, range_check:OK
+#370/18  verifier_movsx/MOV64SX, S8, range_check @unpriv:OK
+#370/19  verifier_movsx/MOV64SX, S16, range_check:OK
+#370/20  verifier_movsx/MOV64SX, S16, range_check @unpriv:OK
+#370/21  verifier_movsx/MOV64SX, S32, range_check:OK
+#370/22  verifier_movsx/MOV64SX, S32, range_check @unpriv:OK
+#370/23  verifier_movsx/MOV64SX, S16, R10 Sign Extension:OK
+#370/24  verifier_movsx/MOV64SX, S16, R10 Sign Extension @unpriv:OK
+#370     verifier_movsx:OK
+#382/1   verifier_sdiv/SDIV32, non-zero imm divisor, check 1:OK
+#382/2   verifier_sdiv/SDIV32, non-zero imm divisor, check 1 @unpriv:OK
+#382/3   verifier_sdiv/SDIV32, non-zero imm divisor, check 2:OK
+#382/4   verifier_sdiv/SDIV32, non-zero imm divisor, check 2 @unpriv:OK
+#382/5   verifier_sdiv/SDIV32, non-zero imm divisor, check 3:OK
+#382/6   verifier_sdiv/SDIV32, non-zero imm divisor, check 3 @unpriv:OK
+#382/7   verifier_sdiv/SDIV32, non-zero imm divisor, check 4:OK
+#382/8   verifier_sdiv/SDIV32, non-zero imm divisor, check 4 @unpriv:OK
+#382/9   verifier_sdiv/SDIV32, non-zero imm divisor, check 5:OK
+#382/10  verifier_sdiv/SDIV32, non-zero imm divisor, check 5 @unpriv:OK
+#382/11  verifier_sdiv/SDIV32, non-zero imm divisor, check 6:OK
+#382/12  verifier_sdiv/SDIV32, non-zero imm divisor, check 6 @unpriv:OK
+#382/13  verifier_sdiv/SDIV32, non-zero imm divisor, check 7:OK
+#382/14  verifier_sdiv/SDIV32, non-zero imm divisor, check 7 @unpriv:OK
+#382/15  verifier_sdiv/SDIV32, non-zero imm divisor, check 8:OK
+#382/16  verifier_sdiv/SDIV32, non-zero imm divisor, check 8 @unpriv:OK
+#382/17  verifier_sdiv/SDIV32, non-zero reg divisor, check 1:OK
+#382/18  verifier_sdiv/SDIV32, non-zero reg divisor, check 1 @unpriv:OK
+#382/19  verifier_sdiv/SDIV32, non-zero reg divisor, check 2:OK
+#382/20  verifier_sdiv/SDIV32, non-zero reg divisor, check 2 @unpriv:OK
+#382/21  verifier_sdiv/SDIV32, non-zero reg divisor, check 3:OK
+#382/22  verifier_sdiv/SDIV32, non-zero reg divisor, check 3 @unpriv:OK
+#382/23  verifier_sdiv/SDIV32, non-zero reg divisor, check 4:OK
+#382/24  verifier_sdiv/SDIV32, non-zero reg divisor, check 4 @unpriv:OK
+#382/25  verifier_sdiv/SDIV32, non-zero reg divisor, check 5:OK
+#382/26  verifier_sdiv/SDIV32, non-zero reg divisor, check 5 @unpriv:OK
+#382/27  verifier_sdiv/SDIV32, non-zero reg divisor, check 6:OK
+#382/28  verifier_sdiv/SDIV32, non-zero reg divisor, check 6 @unpriv:OK
+#382/29  verifier_sdiv/SDIV32, non-zero reg divisor, check 7:OK
+#382/30  verifier_sdiv/SDIV32, non-zero reg divisor, check 7 @unpriv:OK
+#382/31  verifier_sdiv/SDIV32, non-zero reg divisor, check 8:OK
+#382/32  verifier_sdiv/SDIV32, non-zero reg divisor, check 8 @unpriv:OK
+#382/33  verifier_sdiv/SDIV64, non-zero imm divisor, check 1:OK
+#382/34  verifier_sdiv/SDIV64, non-zero imm divisor, check 1 @unpriv:OK
+#382/35  verifier_sdiv/SDIV64, non-zero imm divisor, check 2:OK
+#382/36  verifier_sdiv/SDIV64, non-zero imm divisor, check 2 @unpriv:OK
+#382/37  verifier_sdiv/SDIV64, non-zero imm divisor, check 3:OK
+#382/38  verifier_sdiv/SDIV64, non-zero imm divisor, check 3 @unpriv:OK
+#382/39  verifier_sdiv/SDIV64, non-zero imm divisor, check 4:OK
+#382/40  verifier_sdiv/SDIV64, non-zero imm divisor, check 4 @unpriv:OK
+#382/41  verifier_sdiv/SDIV64, non-zero imm divisor, check 5:OK
+#382/42  verifier_sdiv/SDIV64, non-zero imm divisor, check 5 @unpriv:OK
+#382/43  verifier_sdiv/SDIV64, non-zero imm divisor, check 6:OK
+#382/44  verifier_sdiv/SDIV64, non-zero imm divisor, check 6 @unpriv:OK
+#382/45  verifier_sdiv/SDIV64, non-zero reg divisor, check 1:OK
+#382/46  verifier_sdiv/SDIV64, non-zero reg divisor, check 1 @unpriv:OK
+#382/47  verifier_sdiv/SDIV64, non-zero reg divisor, check 2:OK
+#382/48  verifier_sdiv/SDIV64, non-zero reg divisor, check 2 @unpriv:OK
+#382/49  verifier_sdiv/SDIV64, non-zero reg divisor, check 3:OK
+#382/50  verifier_sdiv/SDIV64, non-zero reg divisor, check 3 @unpriv:OK
+#382/51  verifier_sdiv/SDIV64, non-zero reg divisor, check 4:OK
+#382/52  verifier_sdiv/SDIV64, non-zero reg divisor, check 4 @unpriv:OK
+#382/53  verifier_sdiv/SDIV64, non-zero reg divisor, check 5:OK
+#382/54  verifier_sdiv/SDIV64, non-zero reg divisor, check 5 @unpriv:OK
+#382/55  verifier_sdiv/SDIV64, non-zero reg divisor, check 6:OK
+#382/56  verifier_sdiv/SDIV64, non-zero reg divisor, check 6 @unpriv:OK
+#382/57  verifier_sdiv/SMOD32, non-zero imm divisor, check 1:OK
+#382/58  verifier_sdiv/SMOD32, non-zero imm divisor, check 1 @unpriv:OK
+#382/59  verifier_sdiv/SMOD32, non-zero imm divisor, check 2:OK
+#382/60  verifier_sdiv/SMOD32, non-zero imm divisor, check 2 @unpriv:OK
+#382/61  verifier_sdiv/SMOD32, non-zero imm divisor, check 3:OK
+#382/62  verifier_sdiv/SMOD32, non-zero imm divisor, check 3 @unpriv:OK
+#382/63  verifier_sdiv/SMOD32, non-zero imm divisor, check 4:OK
+#382/64  verifier_sdiv/SMOD32, non-zero imm divisor, check 4 @unpriv:OK
+#382/65  verifier_sdiv/SMOD32, non-zero imm divisor, check 5:OK
+#382/66  verifier_sdiv/SMOD32, non-zero imm divisor, check 5 @unpriv:OK
+#382/67  verifier_sdiv/SMOD32, non-zero imm divisor, check 6:OK
+#382/68  verifier_sdiv/SMOD32, non-zero imm divisor, check 6 @unpriv:OK
+#382/69  verifier_sdiv/SMOD32, non-zero reg divisor, check 1:OK
+#382/70  verifier_sdiv/SMOD32, non-zero reg divisor, check 1 @unpriv:OK
+#382/71  verifier_sdiv/SMOD32, non-zero reg divisor, check 2:OK
+#382/72  verifier_sdiv/SMOD32, non-zero reg divisor, check 2 @unpriv:OK
+#382/73  verifier_sdiv/SMOD32, non-zero reg divisor, check 3:OK
+#382/74  verifier_sdiv/SMOD32, non-zero reg divisor, check 3 @unpriv:OK
+#382/75  verifier_sdiv/SMOD32, non-zero reg divisor, check 4:OK
+#382/76  verifier_sdiv/SMOD32, non-zero reg divisor, check 4 @unpriv:OK
+#382/77  verifier_sdiv/SMOD32, non-zero reg divisor, check 5:OK
+#382/78  verifier_sdiv/SMOD32, non-zero reg divisor, check 5 @unpriv:OK
+#382/79  verifier_sdiv/SMOD32, non-zero reg divisor, check 6:OK
+#382/80  verifier_sdiv/SMOD32, non-zero reg divisor, check 6 @unpriv:OK
+#382/81  verifier_sdiv/SMOD64, non-zero imm divisor, check 1:OK
+#382/82  verifier_sdiv/SMOD64, non-zero imm divisor, check 1 @unpriv:OK
+#382/83  verifier_sdiv/SMOD64, non-zero imm divisor, check 2:OK
+#382/84  verifier_sdiv/SMOD64, non-zero imm divisor, check 2 @unpriv:OK
+#382/85  verifier_sdiv/SMOD64, non-zero imm divisor, check 3:OK
+#382/86  verifier_sdiv/SMOD64, non-zero imm divisor, check 3 @unpriv:OK
+#382/87  verifier_sdiv/SMOD64, non-zero imm divisor, check 4:OK
+#382/88  verifier_sdiv/SMOD64, non-zero imm divisor, check 4 @unpriv:OK
+#382/89  verifier_sdiv/SMOD64, non-zero imm divisor, check 5:OK
+#382/90  verifier_sdiv/SMOD64, non-zero imm divisor, check 5 @unpriv:OK
+#382/91  verifier_sdiv/SMOD64, non-zero imm divisor, check 6:OK
+#382/92  verifier_sdiv/SMOD64, non-zero imm divisor, check 6 @unpriv:OK
+#382/93  verifier_sdiv/SMOD64, non-zero imm divisor, check 7:OK
+#382/94  verifier_sdiv/SMOD64, non-zero imm divisor, check 7 @unpriv:OK
+#382/95  verifier_sdiv/SMOD64, non-zero imm divisor, check 8:OK
+#382/96  verifier_sdiv/SMOD64, non-zero imm divisor, check 8 @unpriv:OK
+#382/97  verifier_sdiv/SMOD64, non-zero reg divisor, check 1:OK
+#382/98  verifier_sdiv/SMOD64, non-zero reg divisor, check 1 @unpriv:OK
+#382/99  verifier_sdiv/SMOD64, non-zero reg divisor, check 2:OK
+#382/100 verifier_sdiv/SMOD64, non-zero reg divisor, check 2 @unpriv:OK
+#382/101 verifier_sdiv/SMOD64, non-zero reg divisor, check 3:OK
+#382/102 verifier_sdiv/SMOD64, non-zero reg divisor, check 3 @unpriv:OK
+#382/103 verifier_sdiv/SMOD64, non-zero reg divisor, check 4:OK
+#382/104 verifier_sdiv/SMOD64, non-zero reg divisor, check 4 @unpriv:OK
+#382/105 verifier_sdiv/SMOD64, non-zero reg divisor, check 5:OK
+#382/106 verifier_sdiv/SMOD64, non-zero reg divisor, check 5 @unpriv:OK
+#382/107 verifier_sdiv/SMOD64, non-zero reg divisor, check 6:OK
+#382/108 verifier_sdiv/SMOD64, non-zero reg divisor, check 6 @unpriv:OK
+#382/109 verifier_sdiv/SMOD64, non-zero reg divisor, check 7:OK
+#382/110 verifier_sdiv/SMOD64, non-zero reg divisor, check 7 @unpriv:OK
+#382/111 verifier_sdiv/SMOD64, non-zero reg divisor, check 8:OK
+#382/112 verifier_sdiv/SMOD64, non-zero reg divisor, check 8 @unpriv:OK
+#382/113 verifier_sdiv/SDIV32, zero divisor:OK
+#382/114 verifier_sdiv/SDIV32, zero divisor @unpriv:OK
+#382/115 verifier_sdiv/SDIV64, zero divisor:OK
+#382/116 verifier_sdiv/SDIV64, zero divisor @unpriv:OK
+#382/117 verifier_sdiv/SMOD32, zero divisor:OK
+#382/118 verifier_sdiv/SMOD32, zero divisor @unpriv:OK
+#382/119 verifier_sdiv/SMOD64, zero divisor:OK
+#382/120 verifier_sdiv/SMOD64, zero divisor @unpriv:OK
+#382     verifier_sdiv:OK
+Summary: 5/163 PASSED, 0 SKIPPED, 0 FAILED
 
+As the selftests don't compile for 32-bit architectures without
+modifications due to long being 32-bit,
+I have added new tests to lib/test_bpf.c for cpuv4 insns, all are passing:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+test_bpf: Summary: 1052 PASSED, 0 FAILED, [891/1040 JIT'ed]
+test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
+test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+[1] https://lore.kernel.org/all/mb61p5y4u3ptd.fsf@amazon.com/
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Puranjay Mohan (9):
+  arm32, bpf: add support for 32-bit offset jmp instruction
+  arm32, bpf: add support for sign-extension load instruction
+  arm32, bpf: add support for sign-extension mov instruction
+  arm32, bpf: add support for unconditional bswap instruction
+  arm32, bpf: add support for 32-bit signed division
+  arm32, bpf: add support for 64 bit division instruction
+  selftest, bpf: enable cpu v4 tests for arm32
+  bpf/tests: add tests for cpuv4 instructions
+  MAINTAINERS: Add myself for ARM32 BPF JIT maintainer.
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+ MAINTAINERS                                   |   5 +-
+ arch/arm/net/bpf_jit_32.c                     | 280 ++++++++++++-
+ arch/arm/net/bpf_jit_32.h                     |   4 +
+ include/linux/filter.h                        |  50 ++-
+ lib/test_bpf.c                                | 371 ++++++++++++++++++
+ .../selftests/bpf/progs/verifier_bswap.c      |   3 +-
+ .../selftests/bpf/progs/verifier_gotol.c      |   3 +-
+ .../selftests/bpf/progs/verifier_ldsx.c       |   3 +-
+ .../selftests/bpf/progs/verifier_movsx.c      |   3 +-
+ .../selftests/bpf/progs/verifier_sdiv.c       |   3 +-
+ 10 files changed, 694 insertions(+), 31 deletions(-)
 
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+-- 
+2.39.2
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
