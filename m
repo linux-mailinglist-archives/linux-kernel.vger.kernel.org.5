@@ -2,182 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8B6797B01
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88BD27977C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239155AbjIGR7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46024 "EHLO
+        id S235174AbjIGQdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:33:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242624AbjIGR7I (ORCPT
+        with ESMTP id S241001AbjIGQcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:59:08 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738831BDA
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:58:28 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2bceb02fd2bso20925981fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 10:58:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694109503; x=1694714303; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6arKeyrgPphWsjC9458pVzLHkvbc4JWeWn+IPDbctQc=;
-        b=ZQu+Btx0EJQgGVUUszz8I1FSmFBWHMYySQedkZzHBD4m53z7ibBLx2YPCgAVolSiNc
-         Ia1ID5Ml49q/vhghmcBkMwnr+ReAI3haI2hKYH4lDKWtTVnyFjzMKbsMwjfSOX3wwEVH
-         XdjBZ4Xw68Bk2oYev0OAEbYchlVP9TCuQ0Q90x+Q8EauzbbWM+b9PvBkXErJ9eh+I7pj
-         1pPd8HEjVqv1DesDQE9FDaLDeU4YoHvWs5XQrTP6nBICScp5x+4jQ1JuLa6oSmijrqlt
-         terZnr8wDWnfjgVTY3ruDg2YXFx5l4FstyxpWX6YaHQU8cWjOaqnx/8sX0NySmbbivQy
-         rqaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694109503; x=1694714303;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6arKeyrgPphWsjC9458pVzLHkvbc4JWeWn+IPDbctQc=;
-        b=byEXSuSmvUwmHWktssX+29tFCb2cq84WTgBnmagxv6hVk0dyJmtWxJWM1+co4Q7ojN
-         Vj2+XoF8dH6LYVe+oVRkDsSoyW3G5y5cDfLMXp4FrBrnikeM0Enic2J+b12oHSaz+CR1
-         zcpMAdhKzhOtkFevyv+rlIPlLp4M8R2vIRk2lF1kiobT2qMctLpWbE0ItoNxLBuaBa7A
-         n80ocOKSOlPa10GS7+LEdfILaJYkPys3xIQy8MXde/59QKuruTsE9JKfm+kyEn3r+ogv
-         CsNjQhQyECs6nH2z5kteuO0SSWc6VVcl2ePR6Iu6Q3gERm1A100fkUb3orMaIECu92N+
-         mdFA==
-X-Gm-Message-State: AOJu0YxSYOvb64cbgP+3PKAMSjieYNVaEpTD+c59JAb5w4vayhbcixzW
-        Gi8CkMAF7QbC+22egbVCxLjlJy5l506rGrV7zz4=
-X-Google-Smtp-Source: AGHT+IFRpPPukBi6IZmLBxS+OzDEd3MJR8tvOwTtzfl4T9BzPzahKmMP5ZhCH3GcpMSc+xkpdZfRGg==
-X-Received: by 2002:a05:600c:20d1:b0:401:b53e:6c3b with SMTP id y17-20020a05600c20d100b00401b53e6c3bmr4434672wmm.6.1694081680521;
-        Thu, 07 Sep 2023 03:14:40 -0700 (PDT)
-Received: from ?IPV6:2a02:6b6a:b5c7:0:6274:c7ab:26e2:b113? ([2a02:6b6a:b5c7:0:6274:c7ab:26e2:b113])
-        by smtp.gmail.com with ESMTPSA id n10-20020adffe0a000000b003140f47224csm22815249wrr.15.2023.09.07.03.14.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 03:14:40 -0700 (PDT)
-Message-ID: <92fc88ba-3e3a-2648-4232-1d3f9bed5bb6@bytedance.com>
-Date:   Thu, 7 Sep 2023 11:14:38 +0100
+        Thu, 7 Sep 2023 12:32:47 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06EA61FD4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:32:17 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5A47D5C00CC;
+        Thu,  7 Sep 2023 06:16:07 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Thu, 07 Sep 2023 06:16:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+         h=cc:cc:content-type:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1694081767; x=
+        1694168167; bh=E61v5F+OnpaiU4fxshVV4wXKb0uGpSwJ4z5TdXTl2B8=; b=V
+        9Tdu0mqkTUCpeIdAOTke/Nm0JkmgrVHbYny+MVLwHVcc7SXZLmys+e+mNE0L2T26
+        /mnWawPZQLRUvb84EBfUsgExlMrVaQH2+Tl9QTKbAd1qQjiNqqxedlUDf0wGDpFh
+        ZGCumzx6qu8/qAY7UM0JlrAwqVpvWbWV2tar3KZSpATcjDvwNFsaTYoUFsPUj838
+        5Dwvg6/5fstIN/jBowEOwB9P1vX+P/lrtuB56qmPxapGGWgsNGtjScBmg7GmrLVj
+        onStIVZ4h2jPY9rUXIzbM1X/k5hQaKgGsQURnzMRR+C5AJ9Q2XfId0hJO2kTSgCq
+        ENGNTOYFM3sUajD+T2nBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1694081767; x=1694168167; bh=E61v5F+OnpaiU
+        4fxshVV4wXKb0uGpSwJ4z5TdXTl2B8=; b=vw5fbmpli2yenuXkithQ2bTAVYvVu
+        jEukvn7mzwnPCEE2z+stsG9Ge7XrJYgW7Wkep8yYDO3GIQH+1Pjkynt1mp1aN0Mi
+        ylRVzuQXMwTrQrCGM4Ksg69j8q2H7wT4p+hmdOd+B4vEbcRH4y4wpjL2Gaoumb0M
+        wsZRNyU5/5JNe8BZfX6jmF7qiUuWqr8eMVFe5tQpRiuPJdUsBstDlf2UzawNuCbs
+        XUcBi6wTDtq0Ln0kWE70nQgk/mqdPf2bohFENKvvvgPMH3SJmqewWMQeKjLExGDA
+        SPFwGlShAfKGQ3JiXVRhqAOdmu5nuFbAC3QRL0CORmgpQS8W5hau9qFDw==
+X-ME-Sender: <xms:5qL5ZGC1VEbswvhTXElk8r8_bVvG-HpQmhKurTlx9lHrJcqOyFlpnA>
+    <xme:5qL5ZAiWe8mTmgK-irbfLf3H1pPX6TyK-qDXYe0Ixe1yvhJEh2E73FW1ryUlaaCj-
+    eLUrl2gT65S8dHc5vY>
+X-ME-Received: <xmr:5qL5ZJlpKgmldxEMjRwhrqvov6ilQlTphD5MYpyLCXJIrCGrm6fQsGk55byV6BX-Z2ho-q2032_PYUVA9EH2lYM2tSAgaxrBnjc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehhedgvdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
+    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
+    hjpheqnecuggftrfgrthhtvghrnhephefhhfettefgkedvieeuffevveeufedtlefhjeei
+    ieetvdelfedtgfefuedukeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:5qL5ZEzY3U03QYdlLINNaTVEEh8XP5DP38tjfb1AAoqn29YBlg8gPA>
+    <xmx:5qL5ZLQkHQIFD_YaiM3OXIy-PQKUZizJEeLSIr7UnyND_95_BBCHGQ>
+    <xmx:5qL5ZPb0OIS0tOZCAtBU5iFnXM2BFKuh0kbg-PC3kS4ohFjRmcETng>
+    <xmx:56L5ZCIhQ2W3ownx00Wz7ouB19tHuTA9XrfaLesqi9iCtt13VFAv-Q>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 7 Sep 2023 06:16:05 -0400 (EDT)
+Date:   Thu, 7 Sep 2023 19:16:01 +0900
+From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firewire: allow deactivating the IEEE1394 menuconfig
+ section at once
+Message-ID: <20230907101601.GA33589@workstation.local>
+Mail-Followup-To: Jan Engelhardt <jengelh@inai.de>,
+        linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <20230906081216.22849-1-jengelh@inai.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [External] Re: [v4 4/4] mm: hugetlb: Skip initialization of
- gigantic tail struct pages if freed by HVO
-Content-Language: en-US
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, muchun.song@linux.dev, rppt@kernel.org,
-        linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
-        fam.zheng@bytedance.com, liangma@liangbit.com,
-        punit.agrawal@bytedance.com
-References: <20230906112605.2286994-1-usama.arif@bytedance.com>
- <20230906112605.2286994-5-usama.arif@bytedance.com>
- <20230906181016.GA3612@monkey>
- <57c8dd7f-d1a0-37c4-1d3b-d6374e92ffa1@bytedance.com>
- <20230906215927.GE3612@monkey>
-From:   Usama Arif <usama.arif@bytedance.com>
-In-Reply-To: <20230906215927.GE3612@monkey>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230906081216.22849-1-jengelh@inai.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On 06/09/2023 22:59, Mike Kravetz wrote:
-> On 09/06/23 22:27, Usama Arif wrote:
->>
->>
->> On 06/09/2023 19:10, Mike Kravetz wrote:
->>> On 09/06/23 12:26, Usama Arif wrote:
->>>> The new boot flow when it comes to initialization of gigantic pages
->>>> is as follows:
->>>> - At boot time, for a gigantic page during __alloc_bootmem_hugepage,
->>>> the region after the first struct page is marked as noinit.
->>>> - This results in only the first struct page to be
->>>> initialized in reserve_bootmem_region. As the tail struct pages are
->>>> not initialized at this point, there can be a significant saving
->>>> in boot time if HVO succeeds later on.
->>>> - Later on in the boot, the head page is prepped and the first
->>>> HUGETLB_VMEMMAP_RESERVE_SIZE / sizeof(struct page) - 1 tail struct pages
->>>> are initialized.
->>>> - HVO is attempted. If it is not successful, then the rest of the
->>>> tail struct pages are initialized. If it is successful, no more
->>>> tail struct pages need to be initialized saving significant boot time.
->>>
->>> Code looks reasonable.  Quick question.
->>>
->>> On systems where HVO is disabled, we will still go through this new boot
->>> flow and init hugetlb tail pages later in boot (gather_bootmem_prealloc).
->>> Correct?
->>> If yes, will there be a noticeable change in performance from the current
->>> flow with HVO disabled?  My concern would be allocating a large number of
->>> gigantic pages at boot (TB or more).
->>>
->>
->> Thanks for the review.
->>
->> The patch moves the initialization of struct pages backing hugepage from
->> reserve_bootmem_region to a bit later on in the boot to
->> gather_bootmem_prealloc. When HVO is disabled, there will be no difference
->> in time taken to boot with or without this patch series, as 262144 struct
->> pages per gigantic page (for x86) are still going to be initialized, just in
->> a different place.
+On Wed, Sep 06, 2023 at 10:12:16AM +0200, Jan Engelhardt wrote:
+> Presently, one needs to enter "FireWire (IEEE 1394) subsystem --->",
+> then deselect all options individually. Speed up that process by
+> making the "--->" line be togglable in its own right.
 > 
-> I seem to recall that 'normal' deferred struct page initialization was
-> done in parallel as the result of these series:
-> https://lore.kernel.org/linux-mm/20171013173214.27300-1-pasha.tatashin@oracle.com/
-> https://lore.kernel.org/linux-mm/20200527173608.2885243-1-daniel.m.jordan@oracle.com/#t
-> and perhaps others.
-> 
-> My thought is that we lose that parallel initialization when it is being
-> done as part of hugetlb fall back initialization.
-> 
-> Does that make sense?  Or am I missing something?  I do not have any proof
-> that things will be slower.  That is just something I was thinking about.
+> Signed-off-by: Jan Engelhardt <jengelh@inai.de>
+> ---
+>  drivers/firewire/Kconfig | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
 
-The patches for deferring struct page initialization did not cover the 
-struct pages for gigantic pages.
+We are at the second half of merge window for v6.6 kernel, while the patch
+looks good to me. I applied it to for-next branch and will send it to Linus
+within a few days, after it passes check by for-next integration.
 
-With CONFIG_DEFERRED_STRUCT_PAGE_INIT enabled, the function call taken 
-during boot without these patches is:
-
-[A1] mm_core_init-> mem_init-> memblock_free_all-> 
-free_low_memory_core_early-> memmap_init_reserved_pages-> 
-reserve_bootmem_region-> initialize *all* struct pages of a gigantic 
-page serially (DEFERRED_STRUCT_PAGE_INIT is enabled).
-The pfn of the struct pages > NODE_DATA(nid)->first_deferred_pfn which 
-means this cannot be deferred.
-
-then later on in the boot:
-
-[A2] hugetlb_init-> gather_bootmem_prealloc-> 
-prep_compound_gigantic_folio-> prepare *all* the struct pages to be part 
-of a gigantic page (freezing page ref count, setting compound head, etc 
-for all struct pages)
-
-With CONFIG_DEFERRED_STRUCT_PAGE_INIT enabled, the function call taken 
-during boot with these patches is:
-
-[B1] mm_core_init->...reserve_bootmem_region-> initialize head struct 
-page only.
-
-then later on in the boot:
-
-[B2] hugetlb_init-> gather_bootmem_prealloc-> [B21] initialize only 64 
-tail struct pages if HVO passes. [B22] If HVO fails initialize all tail 
-struct pages.
+> diff --git a/drivers/firewire/Kconfig b/drivers/firewire/Kconfig
+> index 0a6596b027db..be1a9e685782 100644
+> --- a/drivers/firewire/Kconfig
+> +++ b/drivers/firewire/Kconfig
+> @@ -1,8 +1,18 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -menu "IEEE 1394 (FireWire) support"
+> +menuconfig FIREWIRE_SUPPORT
+> +	bool "IEEE 1394 (FireWire) support"
+> +	default y
+>  	depends on PCI || COMPILE_TEST
+>  	# firewire-core does not depend on PCI but is
+>  	# not useful without PCI controller driver
+> +	help
+> +	  Support for FireWire.
+> +
+> +	  The answer to this question will not directly affect the
+> +	  kernel: saying N will just cause the configurator to skip all
+> +	  the questions about FireWire.
+> +
+> +if FIREWIRE_SUPPORT
+>  
+>  config FIREWIRE
+>  	tristate "FireWire driver stack"
+> @@ -96,4 +106,4 @@ config FIREWIRE_NOSY
+>  
+>  	  If unsure, say N.
+>  
+> -endmenu
+> +endif # FIREWIRE_SUPPORT
+> -- 
+> 2.42.0
 
 
-Each of A1, A2 and B22 are for loops going over 262144 struct pages per 
-hugepage. So without these patches, the work done is 262144*2 (A1+A2) 
-per hugepage during boot, even with CONFIG_DEFERRED_STRUCT_PAGE_INIT as 
-its not deferred. With these patches, the work done is either 1 + 64 
-(B1+B21) if HVO is enabled or 1 + 262144 (B1+B22) if HVO is disabled.
+Thanks
 
-With CONFIG_DEFERRED_STRUCT_PAGE_INIT enabled, the times taken to boot 
-till init process when allocating 500 1G hugeppages are:
-- with these patches, HVO enabled: 1.32 seconds [B1 + B21]
-- with patches, HVO disabled: 2.15 seconds [B1 + B22]
-- without patches, HVO enabled: 3.90  seconds [A1 + A2 + HVO]
-- without patches, HVO disabled: 3.58 seconds [A1 + A2]
+Takashi Sakamoto
