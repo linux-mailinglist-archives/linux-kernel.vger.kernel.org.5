@@ -2,95 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C0B797EF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 01:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAD6797EF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 01:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235586AbjIGXF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 19:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
+        id S236073AbjIGXGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 19:06:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231969AbjIGXF6 (ORCPT
+        with ESMTP id S234220AbjIGXF7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 19:05:58 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A891BD2
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 16:05:54 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-58d41109351so36206947b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 16:05:54 -0700 (PDT)
+        Thu, 7 Sep 2023 19:05:59 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B3B1BD7;
+        Thu,  7 Sep 2023 16:05:54 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-4018af1038cso15841095e9.0;
+        Thu, 07 Sep 2023 16:05:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1694127953; x=1694732753; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1694127953; x=1694732753; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ISjcm/XAVmNIHdzglOwc4PmVKiJwUPJydrTms3Jl6eg=;
-        b=V+cYoJjSOo0+cVER+pLtXFHxL4gpwBiZPAnXuIDNDI/D9tadCcGltM7Gpn37mRxZyI
-         4tgJfGHWOJ5hQuzTtPIG2QAgldx3iOq2cwgr/kD858ME5b8wOMTyarbrZeD+JATul5F9
-         ZdneCGx6zafxCTiMnAmmcB7fm1FtyyNjDUmba/WjvJGAa99EdAtgM9n//ddztrTMMU8I
-         UPd9sr9rolSrW0nTovwbtCIgm/9I/oi9RRPsMuup5I5EBDsO+HavzFM5oBUhC+TzbIcq
-         xN9XDrcDZf7Y8hULAyflbVWI1WvlIRPP3RbcggXeIXZKcAYUN8CnbE8/yE4gNibIIEk9
-         y93A==
+        bh=E7MCer4dzNlIUrYZ4qbOCKZtdgoy8+2fUxF9mWt007c=;
+        b=q0oJiv6kUlZZBamRG/jI6Tw1Tx7+9469Vqmk9WobzkYjGAa64oWlKX+6ZM5gOJRn36
+         2zb26Dqavz/JVMi2kiDH7jbbM4ke2dxUgCUygpcPH0RI7rpFf1+YTSPEBQbK3OmneE3b
+         s7l3b2d31Me+T6fKAe7u5JQrYEb5n4r19UiO9l4BgoDQIpnSrexyurF86b0cBFEhobki
+         C9Kb40XMCDEGczde4eTG3CCEFEy5WanPQ0qszOw/dP2pbGLFqhscAudJUxdQJrXasFRu
+         ec6gPyt+hPfh2mA+7nygpDQuGnbmUZejZ0K0db11wmQwryXbltwo8/6sMzZpOKhmm22v
+         RjXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1694127953; x=1694732753;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ISjcm/XAVmNIHdzglOwc4PmVKiJwUPJydrTms3Jl6eg=;
-        b=WqQ3974YdiebG96ieyqzSghO9KlEnxDPnRcBjn5pMKe7ot4G5sJ90FV6dzm34I7BcH
-         +yNox8NYK2XdTWQlndaUFGNJ+rTctxPdco4xv5BW9jpccx8l8E7TRAXBhyYm59uNswqW
-         5vPRxLswEMbtPm8fGO/oMinx+DPsHqLVgqCgcRHQXbKe4MHI280ejQ3sn1DPWAQsh3YN
-         kowVn99W05Z5R9WUxKiQcmqX67FHnlMEEDYyFN8qFgm6Zhodf4TSnr+RZqGQEDCRVU69
-         +VEJRQHb0Se19B3N5NEXYb8H1xUs3xmouMEvxJDBMT8jg0ymrH9VyQZ9Ts3z7t5BQyBS
-         JWZA==
-X-Gm-Message-State: AOJu0Yxc09RNcq+ob3YSm/elvd5Ngo88rJ3mSDUDRsXJ9kZwwJ9bLWVa
-        ij6y9oI0sSPN698Kl6CHVOs8ogActsHBZSONS0m2
-X-Google-Smtp-Source: AGHT+IG0HEX4ZGpo0hD4MHng6c+DEbD0YlWxaMovTIzbA3/W8ZnDLQi0HsEjlGcfgzt/69nt84jTXPqcVJSfyieNFCU=
-X-Received: by 2002:a81:450f:0:b0:59b:50ed:82e5 with SMTP id
- s15-20020a81450f000000b0059b50ed82e5mr2377444ywa.22.1694127953340; Thu, 07
- Sep 2023 16:05:53 -0700 (PDT)
+        bh=E7MCer4dzNlIUrYZ4qbOCKZtdgoy8+2fUxF9mWt007c=;
+        b=umL7pMyaU13QvyeTxIdXo2FCUi8+s8KNkD0kwAzmDPd8nh7lZusgJcnJEVPoyd50hv
+         OzQDsGxRhvTjwa7WnAKX18SZWjSkjA4xIspKGaZJjE21wUPYjOEq+1kJGMTTylmBPsg9
+         aWnu16IRXvM6x0hu9HBXWdrYbzlbpEW8W9Pb/crTt45dMc5LIjForguCY0oGbpw99iTN
+         ASJnrHhcT4jROSI3np/Oa270Dzxii6dXbrS0+nTdjbXz20H7bythgPhrT7OtPAVbXcH9
+         kcRTO7yAwwYyOXBrMKvURbpCFPhuHcxs8Y7PUACousPFnJf6EDZbYRy1J0P178Y11wLY
+         mDFQ==
+X-Gm-Message-State: AOJu0YzUHpLix15K+NFe8W5bcqiN71+nchCShQ3X/1P0xZuEoo7ruslw
+        Fz6XLKlUPXSOguo2k0GcM7o=
+X-Google-Smtp-Source: AGHT+IH9o2UfFc+G8/B5qOhq5Vk/ilA/8Z9RngR6VQ+AS57swmupXMZktoFeNyX6dUzwShmKqH2HRQ==
+X-Received: by 2002:a7b:c456:0:b0:401:cc0b:29c8 with SMTP id l22-20020a7bc456000000b00401cc0b29c8mr757013wmi.29.1694127953347;
+        Thu, 07 Sep 2023 16:05:53 -0700 (PDT)
+Received: from ip-172-31-30-46.eu-west-1.compute.internal (ec2-3-249-32-32.eu-west-1.compute.amazonaws.com. [3.249.32.32])
+        by smtp.gmail.com with ESMTPSA id n13-20020a5d484d000000b0031f3b04e7cdsm491358wrs.109.2023.09.07.16.05.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 16:05:52 -0700 (PDT)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     puranjay12@gmail.com
+Subject: [PATCH bpf-next v3 1/9] arm32, bpf: add support for 32-bit offset jmp instruction
+Date:   Thu,  7 Sep 2023 23:05:42 +0000
+Message-Id: <20230907230550.1417590-2-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230907230550.1417590-1-puranjay12@gmail.com>
+References: <20230907230550.1417590-1-puranjay12@gmail.com>
 MIME-Version: 1.0
-References: <20230828195802.135055-5-casey@schaufler-ca.com>
- <6bdfc1b73926b16fc4eea848f25275ed.paul@paul-moore.com> <fd1981c0-3f64-adb5-dece-a25494119992@schaufler-ca.com>
- <CAHC9VhT-GVq1D-AKMv_R3uKNm_iDV8uA3pB1ky5ScBnEdoPuvg@mail.gmail.com> <159ad121-e7e7-7d5a-c208-983c7a2b8d6e@schaufler-ca.com>
-In-Reply-To: <159ad121-e7e7-7d5a-c208-983c7a2b8d6e@schaufler-ca.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 7 Sep 2023 19:05:42 -0400
-Message-ID: <CAHC9VhQpQUPeL3G7F-QjYZdSvzZUsdd2uc9DYddgWvbQKUitjA@mail.gmail.com>
-Subject: Re: [PATCH v14 4/11] LSM: syscalls for current process attributes
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     linux-security-module@vger.kernel.org, jmorris@namei.org,
-        serge@hallyn.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, mic@digikod.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 7, 2023 at 6:15=E2=80=AFPM Casey Schaufler <casey@schaufler-ca.=
-com> wrote:
-> On 9/7/2023 8:42 AM, Paul Moore wrote:
-> > ...
-> >> Yes. I have a fix ready. There are a couple other touch-ups, too.
-> > Great.  Since you are doing another revision, can you double check all
-> > of the patch subject lines to ensure you don't have any double spaces?
-> >  I see at least one, possibly two more.
->
-> Where do you see that? I'm not finding it.
+The cpuv4 adds unconditional jump with 32-bit offset where the immediate
+field of the instruction is to be used to calculate the jump offset.
 
-It's possible it may be part of the tooling I'm using.  I checked that
-this morning against the raw archives in lore and thought I still saw
-at least one patch with that issue, but now that I go back I'm not
-seeing it.  My apologies for the confusion.
+BPF_JA | BPF_K | BPF_JMP32 => gotol +imm => PC += imm.
 
-Regardless, I have updated my scripts so if it is on my end it
-shouldn't happen again.
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+---
+ arch/arm/net/bpf_jit_32.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---=20
-paul-moore.com
+diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+index 6a1c9fca5260..c03600fe86f6 100644
+--- a/arch/arm/net/bpf_jit_32.c
++++ b/arch/arm/net/bpf_jit_32.c
+@@ -1761,10 +1761,15 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx)
+ 		break;
+ 	/* JMP OFF */
+ 	case BPF_JMP | BPF_JA:
++	case BPF_JMP32 | BPF_JA:
+ 	{
+-		if (off == 0)
++		if (BPF_CLASS(code) == BPF_JMP32 && imm != 0)
++			jmp_offset = bpf2a32_offset(i + imm, i, ctx);
++		else if (BPF_CLASS(code) == BPF_JMP && off != 0)
++			jmp_offset = bpf2a32_offset(i + off, i, ctx);
++		else
+ 			break;
+-		jmp_offset = bpf2a32_offset(i+off, i, ctx);
++
+ 		check_imm24(jmp_offset);
+ 		emit(ARM_B(jmp_offset), ctx);
+ 		break;
+-- 
+2.39.2
+
