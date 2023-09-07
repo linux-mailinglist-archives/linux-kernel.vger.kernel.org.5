@@ -2,190 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D055797A4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7527979CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231727AbjIGRgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
+        id S242975AbjIGRVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241851AbjIGRgf (ORCPT
+        with ESMTP id S243105AbjIGRUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:36:35 -0400
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBF81BF
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:36:11 -0700 (PDT)
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230907080925epoutp03a976c6c31f1390520a8101a1fda78699~Cj3pS8MAm0989109891epoutp03a
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:09:25 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230907080925epoutp03a976c6c31f1390520a8101a1fda78699~Cj3pS8MAm0989109891epoutp03a
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1694074165;
-        bh=h8gqoFx6xNIOvMD5d4nEGAFaFhXVokzLtPrZZOAlYAw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZlUrBoVoLL4dvsA98AKzuzHGSpCE305ls+m0bjK1BnWnZL/Y816K6haTTsRUtvHXr
-         1c014WK47WnWBj1AubImZZ9GYX2GxwbPXv9RPr3HHahTBDE9Sr7F2vFs8RQnUFUDzG
-         izeBwTHyBtB5MUdEQgQDVPFri5S5f3f9ePCv2L2I=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20230907080924epcas5p3c38899748366c9c27ecce9c419bec540~Cj3oiMSin3264132641epcas5p3W;
-        Thu,  7 Sep 2023 08:09:24 +0000 (GMT)
-Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.176]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4RhBjG0bdKz4x9Q0; Thu,  7 Sep
-        2023 08:09:22 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-        epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D3.79.19094.13589F46; Thu,  7 Sep 2023 17:09:21 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20230907071253epcas5p1f5c14bd39502dc980bd22fed521c94d0~CjGSiXLlN2713127131epcas5p1o;
-        Thu,  7 Sep 2023 07:12:53 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20230907071253epsmtrp23626d0ed0e460c4c5673ed1cc934dc7b~CjGShgjV01800518005epsmtrp2q;
-        Thu,  7 Sep 2023 07:12:53 +0000 (GMT)
-X-AuditID: b6c32a50-39fff70000004a96-a4-64f9853158fe
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        78.9C.18916.5F779F46; Thu,  7 Sep 2023 16:12:53 +0900 (KST)
-Received: from green245 (unknown [107.99.41.245]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20230907071249epsmtip1209314c69eb6489050c39289ccb1650c~CjGPFXsSQ2992529925epsmtip1M;
-        Thu,  7 Sep 2023 07:12:49 +0000 (GMT)
-Date:   Thu, 7 Sep 2023 12:39:24 +0530
-From:   Nitesh Shetty <nj.shetty@samsung.com>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        martin.petersen@oracle.com, mcgrof@kernel.org,
-        gost.dev@samsung.com, Anuj Gupta <anuj20.g@samsung.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v15 02/12] Add infrastructure for copy offload in block
- and request layer.
-Message-ID: <20230907070924.mtsydl6oqj6uxjql@green245>
+        Thu, 7 Sep 2023 13:20:55 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7A41BF1;
+        Thu,  7 Sep 2023 10:20:31 -0700 (PDT)
+Date:   Thu, 7 Sep 2023 09:09:55 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694070597;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uIT9Xuhbk14VJ0zyJUrybkF4mAQdzknKv/CgR0FkJGw=;
+        b=g5Mv+7zaP+i2El3XQgqNJMVFfUYY12W+IFev7OYLnxzl5qCvqqXy+RJqoXV7+sv7RVgcdP
+        PddiT8DRGjA1dK96RNyyt7hpMscuoHF0Zg55cq31VhfkheWQzGDh/78NJ4oRgzBhvZd0fq
+        t3nFL6vP6ruoilWWyB8V8KLvZzw8m1oNacRx1clkGKgNTIjz5zeYRWSq+ql/chmSLOuV+Y
+        avi8zviQsoP5Vupr+3gK8Sfpr1urCNW0Dj3hqxJdNVW1NVwPQdiXyPm32iBaIMuTxqRRSk
+        d3fkQqry8d6yMD7PzaBk9VqAav10IlY595vKcgAEnh9lc7wd4sw+UCGmBIO65w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694070597;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uIT9Xuhbk14VJ0zyJUrybkF4mAQdzknKv/CgR0FkJGw=;
+        b=t2Jf6L8XqYLZBFzvsoCbEmUUYl0tcrjK7pV5efW6dU6O4UAeDnmiQ5u4owzSPxQvHGwNO2
+        GiHfMXZrX76B6sDQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Ratheesh Kannoth <rkannoth@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+        hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, hawk@kernel.org,
+        alexander.duyck@gmail.com, ilias.apalodimas@linaro.org,
+        linyunsheng@huawei.com
+Subject: Re: [PATCH net v2] octeontx2-pf: Fix page pool cache index
+ corruption.
+Message-ID: <20230907070955.0kdmjXbB@linutronix.de>
+References: <20230907014711.3869840-1-rkannoth@marvell.com>
 MIME-Version: 1.0
-In-Reply-To: <d2c3a257-0505-4d3e-ae71-28015952cef6@suse.de>
-User-Agent: NeoMutt/20171215
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Te1BUdRTH+e3dx11yl8si9AtK4drEKIEsLctFgVSQbpONUFQjY+Id7h2W
-        gX10dzd6zNQKLCiJIsYYi4DkA4F4rYCALNEy8hxxGsSQIbVkmYpAHmNMJtI+wPrvc76/8z3n
-        /M5vfigiyRX4oukqHcOqqEyc785t690aGCw1/k2H5v0ZQTQO9SFEdtEKQtT9fJJPzPQuAmKq
-        Jx8QlrkyHnGnp4NDdH1bzCFq6q5ziGLrbUDYxkwcwjIRRFTlXeASXZZBLjHaeZZPVF6yCYjq
-        /qccYrzIBoiGmYdcYmDCj7i50s/b5U3evNvMJUdv6Elz7TE+eeXCl+S1OwY+ef7EaR5ZmDPH
-        JxdsE1zyYfcYnzzRUgvIK8Ofk0vmTaR5apaTIErOiFIwFM2w/owqVU2nq9Ki8bfeTYlNCZeH
-        SoOlkUQE7q+ilEw0HrcvITg+PdN+X9z/YypTb5cSKK0W3x4Txar1OsZfodbqonFGQ2dqZJoQ
-        LaXU6lVpISpGt0MaGhoWbk88nKFYHc0HmgHJJyWVl4EB1HgUACEKMRk0VY2AAuCOSrAuAM+W
-        LvJdwSKAHe1VnGfB4INmzrrlaH0H13XQAWB3Rf2aZRrAnrYj9gBFudjLsLMlxoF8LAgOr6IO
-        70YMhwv5VoEjHcGMPPi4btFZ1As7DEcaup0swuSwva9J4GJPOFg6xXWwENsJV6stTt0bexF+
-        c/ER4igEsdNCWH7+InA0g1gcHMoNdA3qBf/obxG42BcuzVn4Ls6CNV9f5ru8uQCafjIB18Hr
-        0Dh0EnHUQTAFzGt7xSW/BEuGGpyzIZgYFv4ztbYIEWyvWOct8LvGc2v1X4C3l4+sMQkr7o2u
-        LWsewK7JPF4R2Gz6391M/7UzOVvsgMfms3ku2Q9WP0VduBU2dm4/B3i1wJfRaJVpTGq4Rhqs
-        YrKePXiqWmkGzu+wLaEd1DWthFgBBwVWAFEE3yia2/wXLRHR1KefMaw6hdVnMlorCLc/1SnE
-        1ztVbf9PKl2KVBYZKpPL5bLI1+RS/HnRjLGclmBplI7JYBgNw677OKjQ18AR73u7GQj2tA6d
-        CbG1hSXR9R9suRQVkMweLa38cNLHK6y149Z7bvPvK8OsXxk9p5Mj71sGDon3q2JyEqU23Uev
-        9pXFJ/VmHyi+b4r3g1cf3a32KTq0N1mv5y71Xd0t6XsS4pdYbrix1ONX2TCpiQvbzabn35od
-        3Xmm0Bj7/X5NfJXBUGJIOp7wzrLslFA0LVbIH2+4zkZT3b/GjTMH7v2ek4G0f5GxJ1EkEIwH
-        ULSP57KZHone1PtbLC3buxzRiXvEzAYpnrBLg7ty39jAFlrM1T8ed09u+8GDeq4XDxAWKHRj
-        6fMP3A7+UqOnr2WJlWVvzraIWwPZY6qFEZ7bwaZhnKtVUNJtCKul/gX7fUEDlwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEIsWRmVeSWpSXmKPExsWy7bCSnO7X8p8pBs8PKFisP3WM2aJpwl9m
-        i9V3+9ksXh/+xGjx5EA7o8Xed7NZLW4e2MlksWfRJCaLlauPMllMOnSN0eLp1VlMFntvaVss
-        bFvCYrFn70kWi8u75rBZzF/2lN1i+fF/TBY3JjxltFj3+j2LxYlb0hbn/x5ndRD1OH9vI4vH
-        5bOlHptWdbJ5bF5S77H7ZgObx+K+yawevc3v2Dw+Pr3F4vF+31U2j74tqxg9Np+u9vi8Sc5j
-        05O3TAG8UVw2Kak5mWWpRfp2CVwZDz7tZS/4xV/xsfMxSwPjV54uRk4OCQETiY61O1m6GLk4
-        hAS2M0q86J3MApGQlFj29wgzhC0ssfLfc3aIoieMEnu+TWftYuTgYBFQkdi1xQ7EZBPQljj9
-        nwOkXERASeJj+yGwcmaBdlaJ/gWvGEESwgIJEufW7WMCsXkFzCR2HNsANfMDo8SX5tusEAlB
-        iZMzn4AdwQxUNG/zQ2aQBcwC0hLL/4Et4BSwlvi/fC87iC0qICMxY+lX5gmMgrOQdM9C0j0L
-        oXsBI/MqRtHUguLc9NzkAkO94sTc4tK8dL3k/NxNjOBo1grawbhs/V+9Q4xMHIyHGCU4mJVE
-        eN/Jf0sR4k1JrKxKLcqPLyrNSS0+xCjNwaIkzquc05kiJJCeWJKanZpakFoEk2Xi4JRqYBL9
-        M2Huixl/Jxhr7Mrp0WN16NocaKLu8sskUuro/X8WE/9V/fjcvZDxtU2hT+6cj71sZW36L3Se
-        tjsF/ZoSufDE9Cmf54bwTN9UvyA7rWdJSNCixurT/x9WP241svycZvJDIGOFo5T0YW+t1xMW
-        cYZfYE/fon1EYMY7hWxe/cXcfmJpWeGPV926eu9XimtMrj3zKiuG2a5FsdFKr+MnbXj2T/u/
-        uOzqGs62NZdq8xYznulrZmX/tP/X6zDJpXfC+Vecn3wiwf7GxTBJpmaHhntSXIdyV5RIuSSf
-        45CuaXgccEOoxNZualJOukvam6Vms6O53+cd6sw/njWr5cME7ylHrLt5o0TF0njfXDropMRS
-        nJFoqMVcVJwIAMN+l0tVAwAA
-X-CMS-MailID: 20230907071253epcas5p1f5c14bd39502dc980bd22fed521c94d0
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-        boundary="----Ax27aEWlRRTyCTKvLJGz44CsYuK4yEI58Kfkn8Ic_yMAot59=_cace7_"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230906164303epcas5p1c2d3ec21feac347f0f1d68adc97c61f5
-References: <20230906163844.18754-1-nj.shetty@samsung.com>
-        <CGME20230906164303epcas5p1c2d3ec21feac347f0f1d68adc97c61f5@epcas5p1.samsung.com>
-        <20230906163844.18754-3-nj.shetty@samsung.com>
-        <d2c3a257-0505-4d3e-ae71-28015952cef6@suse.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230907014711.3869840-1-rkannoth@marvell.com>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-------Ax27aEWlRRTyCTKvLJGz44CsYuK4yEI58Kfkn8Ic_yMAot59=_cace7_
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Disposition: inline
+On 2023-09-07 07:17:11 [+0530], Ratheesh Kannoth wrote:
+> The access to page pool `cache' array and the `count' variable
+> is not locked. Page pool cache access is fine as long as there
+> is only one consumer per pool.
+>=20
+> octeontx2 driver fills in rx buffers from page pool in NAPI context.
+> If system is stressed and could not allocate buffers, refiiling work
+> will be delegated to a delayed workqueue. This means that there are
+> two cosumers to the page pool cache.
+>=20
+> Either workqueue or IRQ/NAPI can be run on other CPU. This will lead
+> to lock less access, hence corruption of cache pool indexes.
+>=20
+> To fix this issue, NAPI is rescheduled from workqueue context to refill
+> rx buffers.
+>=20
+> Fixes: b2e3406a38f0 ("octeontx2-pf: Add support for page pool")
+> Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
 
-On 07/09/23 07:39AM, Hannes Reinecke wrote:
->On 9/6/23 18:38, Nitesh Shetty wrote:
->>We add two new opcode REQ_OP_COPY_SRC, REQ_OP_COPY_DST.
->>Since copy is a composite operation involving src and dst sectors/lba,
->>each needs to be represented by a separate bio to make it compatible
->>with device mapper.
->>We expect caller to take a plug and send bio with source information,
->>followed by bio with destination information.
->>Once the src bio arrives we form a request and wait for destination
->>bio. Upon arrival of destination we merge these two bio's and send
->>corresponding request down to device driver.
->>
->>Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
->>Signed-off-by: Anuj Gupta <anuj20.g@samsung.com>
->>---
->>  block/blk-core.c          |  7 +++++++
->>  block/blk-merge.c         | 41 +++++++++++++++++++++++++++++++++++++++
->>  block/blk.h               | 16 +++++++++++++++
->>  block/elevator.h          |  1 +
->>  include/linux/bio.h       |  6 +-----
->>  include/linux/blk_types.h | 10 ++++++++++
->>  6 files changed, 76 insertions(+), 5 deletions(-)
->>
->Having two separate bios is okay, and what one would expect.
->What is slightly strange is the merging functionality;
->That could do with some more explanation why this approach was taken.
+Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Combining the two bios is necessary to form a single copy command.
-And that's what we do by putting two bios in the single request, and send
-this down to the driver.
-This helps to avoid putting payload (token) in the request.
-This change came as a feedback, as sending payload that is not data to the
-device is considered a bad idea [1].
-Current approach is similar to bio merging in discard.
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/d=
+rivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+> index 8511906cb4e2..997fedac3a98 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+>  static void otx2_pool_refill_task(struct work_struct *work)
+>  {
+>  	struct otx2_cq_queue *cq;
+> -	struct otx2_pool *rbpool;
+>  	struct refill_work *wrk;
+> -	int qidx, free_ptrs =3D 0;
+>  	struct otx2_nic *pfvf;
+> -	dma_addr_t bufptr;
+> +	int qidx;
+> =20
+>  	wrk =3D container_of(work, struct refill_work, pool_refill_work.work);
+>  	pfvf =3D wrk->pf;
+>  	qidx =3D wrk - pfvf->refill_wrk;
+>  	cq =3D &pfvf->qset.cq[qidx];
+=E2=80=A6
+>  	cq->refill_task_sched =3D false;
+> +
+> +	local_bh_disable();
+> +	napi_schedule(wrk->napi);
+> +	local_bh_enable();
 
->And also some checks in the merging code to avoid merging non-copy 
->offload  bios.
-blk_copy_offload_mergable takes care of this, as this checks REQ_OP_COPY_SRC
-and REQ_OP_COPY_DST
+This is a nitpick since I haven't look how it works exactly: Is it
+possible that the wrk->napi pointer gets overwritten by
+otx2_napi_handler() since you cleared cq->refill_task_sched() earlier?
 
-[1] https://lore.kernel.org/lkml/20230605121732.28468-1-nj.shetty@samsung.com/T/#mfa7104c5f5f8579cd20f668a9d5e83b4ac8bc58a
- 
-Thank You,
-Nitesh Shetty
+>  }
+> =20
+>  int otx2_config_nix_queues(struct otx2_nic *pfvf)
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/dri=
+vers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> index e369baf11530..b778ed366f81 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> @@ -561,9 +565,24 @@ int otx2_napi_handler(struct napi_struct *napi, int =
+budget)
+>  				otx2_config_irq_coalescing(pfvf, i);
+>  		}
+> =20
+> -		/* Re-enable interrupts */
+> -		otx2_write64(pfvf, NIX_LF_CINTX_ENA_W1S(cq_poll->cint_idx),
+> -			     BIT_ULL(0));
+> +		if (unlikely(!filled_cnt)) {
+> +			struct refill_work *work;
+> +			struct delayed_work *dwork;
+> +
+> +			work =3D &pfvf->refill_wrk[cq->cq_idx];
+> +			dwork =3D &work->pool_refill_work;
+> +			/* Schedule a task if no other task is running */
+> +			if (!cq->refill_task_sched) {
+> +				work->napi =3D napi;
+> +				cq->refill_task_sched =3D true;
+> +				schedule_delayed_work(dwork,
+> +						      msecs_to_jiffies(100));
+> +			}
+> +		} else {
+> +			/* Re-enable interrupts */
+> +			otx2_write64(pfvf, NIX_LF_CINTX_ENA_W1S(cq_poll->cint_idx),
+> +				     BIT_ULL(0));
+> +		}
+>  	}
+>  	return workdone;
+>  }
 
-
-------Ax27aEWlRRTyCTKvLJGz44CsYuK4yEI58Kfkn8Ic_yMAot59=_cace7_
-Content-Type: text/plain; charset="utf-8"
-
-
-------Ax27aEWlRRTyCTKvLJGz44CsYuK4yEI58Kfkn8Ic_yMAot59=_cace7_--
+Sebastian
