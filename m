@@ -2,128 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D3A79780E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C927978EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236402AbjIGQlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60424 "EHLO
+        id S245042AbjIGQ6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239879AbjIGQk5 (ORCPT
+        with ESMTP id S236814AbjIGQ6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:40:57 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E375E2726
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:40:11 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6bf58009a8dso814363a34.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1694104739; x=1694709539; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CAiBvTcyRsOXkihjAXwijX2b79d/6jZ/7uZYgdQjwfg=;
-        b=PY8e4lLEZBkPnIrHFcR7YbHdMS75Wossa4ltOxhxr8Kl3HprCx5QuX0YFcCTOrJyqg
-         uoInfP/uyE7pPVFXzDt6btMI5TlDEF6vcaBKYEdCdfVs1LC5WWx67GWexPGHt8o6CNTv
-         FkhFoz9+94b0ntqnHlL6CIpyNUhsi7lkzk2IznnSefhD90GxfbY6rj2rHnI5lOc//g56
-         xMzJUJltPuthTpAmGdGSO3+gkkLRg8wTTeZLo1/xBhigtMqoesJx877PussWcqW682BT
-         BA3epdJMJmSug2TXoAh98A7HCvH0W7myPChq6f0MpAWCkPl+iUcCBXmI+5OawQnQRD7S
-         VGkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694104739; x=1694709539;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CAiBvTcyRsOXkihjAXwijX2b79d/6jZ/7uZYgdQjwfg=;
-        b=TceBcGv8KZFY5aHxZ/phXKMCQ6Fws1KGF68iBDAUaQw2i/OEq6Zchu3/TAAUtTGatC
-         /6kpBRcO/wLUjREPne8u7pVs6o2F/6ArfjK9K/KuEdtnJzDQ/QB4HT+XjgBZUzw+Mthj
-         +595IgD6uGg5KmwZDvLfMYIO0efkTz9vERk8VV5MMVWzSCCcOSQ4hFJVPMqDxrjEYf5s
-         szBDwsDLHYv9bUdShpnFKi6N2INqPJI8KVvGHCwc380WL9WFEP8yutGY6KueAqPSbkBk
-         Ap1O2FfCutzU58n1TuMHxlz+h1vMZnM/QpVQgNfvxY61dpQJ/Lw3OGyLmq5zQaEmIuWV
-         2T1A==
-X-Gm-Message-State: AOJu0Yw4PugYQLLr9kRC6dKIYdOE0dcmVe0lPMUvefxo2dCEq43M07B3
-        tW5RZfKSSSdRoySh0ELHeqEYIA==
-X-Google-Smtp-Source: AGHT+IEuRWnwHgc+ZBKdtmJS94abNZCPgqRUkNRZbk5rlBgeJt8BMHp1bCJwoTQZQ3OLP1WMH8+BQg==
-X-Received: by 2002:a05:6358:7e42:b0:135:69d5:1b13 with SMTP id p2-20020a0563587e4200b0013569d51b13mr21167rwm.0.1694104737828;
-        Thu, 07 Sep 2023 09:38:57 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-134-41-202-196.dhcp-dynamic.fibreop.ns.bellaliant.net. [134.41.202.196])
-        by smtp.gmail.com with ESMTPSA id u12-20020a0cdd0c000000b0064f5d312babsm6510838qvk.46.2023.09.07.09.38.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 09:38:57 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qeI1w-0017Sj-R3;
-        Thu, 07 Sep 2023 13:38:56 -0300
-Date:   Thu, 7 Sep 2023 13:38:56 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bo Liu <liubo03@inspur.com>
-Cc:     joro@8bytes.org, will@kernel.org, robin.murphy@arm.com,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu/omap: Use helper function IS_ERR_OR_NULL()
-Message-ID: <ZPn8oKc2s0HeBw1A@ziepe.ca>
-References: <20230907071409.3805-1-liubo03@inspur.com>
+        Thu, 7 Sep 2023 12:58:54 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8897110CF;
+        Thu,  7 Sep 2023 09:58:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F4AFC116A2;
+        Thu,  7 Sep 2023 16:41:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694104882;
+        bh=TcXlCdBwAdhvSY29Gk4U6YRFj3oqsCMGTaUu7DO7ABc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ER06lwSM/j1xnFBQOrUJerziPgcpI5gDKNTqDixQjhU0k8PiCru4SwlOiLg0ImvO/
+         kEl2QkM+/7urjlYrzxPn1a8a1ZCkKhzzM8HypyK/+JghUgI3OsD+X4qRpOf9w0w2ud
+         K9Dp7IOFdNfiBgJcfKNJsRDaKud6Z9tI6+OY2bZa7Y0P6V8dNJpLmHShL8JqTYeGoW
+         mOODtbz272BFtKswS1WP6lEktZ106QkwAwa+Ag4bzzUqiM0KMPvw/7g9cUlUzd6iyd
+         kt9RhoKcdRgV5l2w4Q9WhMRyEXIhDJHAr9j4tVqUCpFDNWVtVVTW6jLSnZrRJfkwKk
+         2NJKmzlChFiyA==
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2b974031aeaso21275601fa.0;
+        Thu, 07 Sep 2023 09:41:22 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxbHfliM/B982PbsbV5AnwcW3HBXR2UZ3IYfDzwyr4OKSpHe1H9
+        GXArBySVwkE79+ixzrAcXTHzMTBJaDu5bh9EnA==
+X-Google-Smtp-Source: AGHT+IG23bFGvQrEWMPrUuiNiXfBfSQ2nV8yCIxtgarBdJYaaWK6UgdiyOScuIdqPU/mpa09cy/VQ6TL5hv239G+U08=
+X-Received: by 2002:a2e:3a18:0:b0:2bc:bdbd:1542 with SMTP id
+ h24-20020a2e3a18000000b002bcbdbd1542mr5251425lja.11.1694104880149; Thu, 07
+ Sep 2023 09:41:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230907071409.3805-1-liubo03@inspur.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230830231758.2561402-1-sjg@chromium.org>
+In-Reply-To: <20230830231758.2561402-1-sjg@chromium.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 7 Sep 2023 11:41:07 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJFyuHfJ1t1gKfDFp1yGuNB_FhVCnY1Tk9iBzvchHwEOw@mail.gmail.com>
+Message-ID: <CAL_JsqJFyuHfJ1t1gKfDFp1yGuNB_FhVCnY1Tk9iBzvchHwEOw@mail.gmail.com>
+Subject: Re: [PATCH v5 1/4] Add reserved-memory
+To:     Simon Glass <sjg@chromium.org>
+Cc:     devicetree@vger.kernel.org,
+        Maximilian Brune <maximilian.brune@9elements.com>,
+        ron minnich <rminnich@gmail.com>,
+        Tom Rini <trini@konsulko.com>,
+        Dhaval Sharma <dhaval@rivosinc.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Yunhui Cui <cuiyunhui@bytedance.com>,
+        linux-acpi@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Gua Guo <gua.guo@intel.com>,
+        Lean Sheng Tan <sheng.tan@9elements.com>,
+        Guo Dong <guo.dong@intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Chiu Chasel <chasel.chiu@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 03:14:09AM -0400, Bo Liu wrote:
-> Use IS_ERR_OR_NULL() to detect an error pointer or a null pointer
-> open-coding to simplify the code.
-> 
-> Signed-off-by: Bo Liu <liubo03@inspur.com>
+On Wed, Aug 30, 2023 at 6:18=E2=80=AFPM Simon Glass <sjg@chromium.org> wrot=
+e:
+>
+> Bring in this file from Linux v6.5
+>
+> Signed-off-by: Simon Glass <sjg@chromium.org>
 > ---
->  drivers/iommu/omap-iommu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> (no changes since v4)
+>
+> Changes in v4:
+> - New patch
+>
+>  .../reserved-memory/reserved-memory.yaml      | 181 ++++++++++++++++++
+>  1 file changed, 181 insertions(+)
+>  create mode 100644 dtschema/schemas/reserved-memory/reserved-memory.yaml
 
-Please no, IS_ERR_OR_NULL is an abomination.
+I've applied this one and patch 2.
 
-There are only two callers:
-
-	for (i = 0; i < omap_domain->num_iommus; i++, iommu--, arch_data--) {
-		oiommu = iommu->iommu_dev;
-		iopgtable_clear_entry_all(oiommu);
-
-		omap_iommu_detach(oiommu);
-
-Obviously oiommu is not NULL or ERR since we derefed it
-
-The second:
-
-attach_fail:
-	while (i--) {
-		iommu--;
-		arch_data--;
-		oiommu = iommu->iommu_dev;
-		omap_iommu_detach(oiommu);
-		iommu->iommu_dev = NULL;
-		oiommu->domain = NULL;
-
-And here I don't see how iomm->iommu_dev can ever be NULL or
-ERR_PTR. The i-- follows this:
-
-	iommu = omap_domain->iommus;
-	for (i = 0; i < omap_domain->num_iommus; i++, iommu++, arch_data++) {
-		/* configure and enable the omap iommu */
-		oiommu = arch_data->iommu_dev;
-		ret = omap_iommu_attach(oiommu, iommu->pgtable);
-		if (ret) {
-			dev_err(dev, "can't get omap iommu: %d\n", ret);
-			goto attach_fail;
-		}
-
-		oiommu->domain = domain;
-		iommu->iommu_dev = oiommu;
-
-And again we have always deref'd iommu->iommu_dev.
-
-It is just wrong defensive coding, remove it.
-
-Jason
+Rob
