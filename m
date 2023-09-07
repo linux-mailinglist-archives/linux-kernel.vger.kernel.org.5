@@ -2,113 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5014C797F06
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 01:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1DB797F10
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 01:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240719AbjIGXG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 19:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40700 "EHLO
+        id S234228AbjIGXIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 19:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240873AbjIGXGT (ORCPT
+        with ESMTP id S229614AbjIGXIo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 19:06:19 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A3E1BFC;
-        Thu,  7 Sep 2023 16:06:03 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-401d10e3e54so15627185e9.2;
-        Thu, 07 Sep 2023 16:06:03 -0700 (PDT)
+        Thu, 7 Sep 2023 19:08:44 -0400
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A53F2105
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 16:08:08 -0700 (PDT)
+Received: by mail-vk1-xa2c.google.com with SMTP id 71dfb90a1353d-49334907238so519275e0c.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 16:08:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694127962; x=1694732762; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1694128084; x=1694732884; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=q1A01Vb7M9/CvOvvy/tRz9MhOl+QjbGTZcIw1h515GI=;
-        b=mKWtIaKrBaVznTA8yFnY5c71MiCJRUdeFo6YRqHkMbPGnAIuPBg+TbPlQBdOWDcj9A
-         apy7GX6GSY7em99Ozk3Lwignh52BosRnsoGXKHCqrIgZFnazVbwpspRYtx2BG0QmF29f
-         UXORV0jrNZ4opmGPWACoVtX5cNQfAYma2ztsfyj4YCSDhHO3PrOofDTyvt71ZiDHNMdJ
-         rNlXm7w9ygAne5EDj+g8JdGBze+7T+juPCvKw3L60rASlHHuqBdChHMa5QYsCdHjZRCu
-         BXChlvfCUmN+RHhyVaQWKtT7aIln+sBMWgRIaloMpAN+6TZChio+o/TLrfDeSfLpm3ev
-         fN0A==
+        bh=8EGrTs9IEoHVg0i1V0nP1EnGrXTJSERh0Kb4udXyvr8=;
+        b=Yo7G8osoMXN74dEzdA7tFZruRZ49LlrAQsL+SBbVHSj7edau0p8zcDnuNAbIVXIQwO
+         mPpYOlHYwgfuz8fJ8olke6WzixxXutSpzMlAmLptvyW6igvJjxRX13QNiKKavsCDaoey
+         TPhYIFcUtN8kn9ZBxmoKbT/oURAiXQKXkpsl5oU5Gb4uatH1c/cGVL7TxQmT6/j4+5jS
+         tJLhRtZ/vz7teGpG1rAG7co4/uFTg7xW27qiXgD9gOS7090mqck57zvG3MPhjiYdsRYI
+         hsMhlc+4GNsZ/SjN5lSW3oCCeSmcl67ti/JIhtu5wCdbE/PHNSULif8ovyb76DLSOXS2
+         R1kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694127962; x=1694732762;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1694128084; x=1694732884;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=q1A01Vb7M9/CvOvvy/tRz9MhOl+QjbGTZcIw1h515GI=;
-        b=RzhnxM1vDTIoJ7VFu1wO0dTx0lhYFCTXd/QYPKzVRvLuo4rTLvOlY1qnVlwHv2AcvO
-         MmHnjgPZi1DBf0Pfb+/ZRF962Dl5siLDUfd/UOYkZHeyBNI0FyOGA0FSDAOfeuJrZbOv
-         MmPEfMN1MDCSKCFu1V9PNa7U6VhFNJQ+Bci1YjbviDLf6pgfJB7r9ozzOhpyrSqwFHBg
-         K7E4F/3ypN8a3UCVeYQV7KXklcBftwBnq8oQVnzyDpIZGCKxtWcZBPaC5TmSEGzPfCyr
-         vkfcFg78rmmfh0DHcSHVxAryUamzogq4aGFqMszeSnw+sJ7g4HctATNmPH+PjwmTpIqS
-         EBEQ==
-X-Gm-Message-State: AOJu0YwTiURgEIJPsju7ZZD5Xnwys+hD8hlCNkxSmLJZqfI/KdTlUzcY
-        ZU+o6h3eEOoRHntHxwlCYsM=
-X-Google-Smtp-Source: AGHT+IEpV5PqBqA3OEVDFiT2Vm2tbW+TW3MN5AIhRzxdbQ8A3vlFQuu/IE9Jn54Y4o4unYmMHZiyag==
-X-Received: by 2002:adf:f709:0:b0:317:69d2:35be with SMTP id r9-20020adff709000000b0031769d235bemr518704wrp.30.1694127962041;
-        Thu, 07 Sep 2023 16:06:02 -0700 (PDT)
-Received: from ip-172-31-30-46.eu-west-1.compute.internal (ec2-3-249-32-32.eu-west-1.compute.amazonaws.com. [3.249.32.32])
-        by smtp.gmail.com with ESMTPSA id n13-20020a5d484d000000b0031f3b04e7cdsm491358wrs.109.2023.09.07.16.06.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 16:06:01 -0700 (PDT)
-From:   Puranjay Mohan <puranjay12@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     puranjay12@gmail.com
-Subject: [PATCH bpf-next v3 9/9] MAINTAINERS: Add myself for ARM32 BPF JIT maintainer.
-Date:   Thu,  7 Sep 2023 23:05:50 +0000
-Message-Id: <20230907230550.1417590-10-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230907230550.1417590-1-puranjay12@gmail.com>
-References: <20230907230550.1417590-1-puranjay12@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        bh=8EGrTs9IEoHVg0i1V0nP1EnGrXTJSERh0Kb4udXyvr8=;
+        b=JZLiIC6vPhB0ufcs4Ijd3dfYo4z3sYVDlGxJqQYmLN24lIodHdn63bcXTXXOzXUZNe
+         dxhUkqDMGx7xYz3XPo81ypL0AnASeb7h0jg63IXfPUZCCB4YphI9/enAnn51C2EnGk4e
+         Lc1FPJNIdD8nxg6N6xOvPLc3HkxsggDQryMpmfuXB+5oqoH07748ydWImXPSZtuJuTVE
+         kXYdNHZLcPPluOMRnCIeV+PosKZNI981R9RKnkO4np4jaETi9OL9Qp3rPh9sPcP6GkXG
+         kOVTI7UvFmbutAIJLNlGVit/XZpo8xPv9KM9L6Ho2O0zj6kpmOfM6V4iuQRPh55mOWcv
+         Ffvg==
+X-Gm-Message-State: AOJu0Yx8weEHJIQ1//QR52YSi6kAwSq76kFHmM5RkU3HEOW6+xnbL086
+        ustr/kGmjBZ4s2LtPNxUduc=
+X-Google-Smtp-Source: AGHT+IF+P2oV641MbPBzfVdFETip/2bu98aLkTXgK+0LrlYZPtpnaBuAXeWNHNgzWqWtEJpnZ60igA==
+X-Received: by 2002:a1f:cac7:0:b0:48d:3983:24b3 with SMTP id a190-20020a1fcac7000000b0048d398324b3mr1105726vkg.8.1694128084118;
+        Thu, 07 Sep 2023 16:08:04 -0700 (PDT)
+Received: from smtpclient.apple ([2601:189:8480:9a90:e176:8006:767b:ffee])
+        by smtp.gmail.com with ESMTPSA id f27-20020ac86edb000000b00403cc36f318sm201061qtv.6.2023.09.07.16.08.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 07 Sep 2023 16:08:03 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
+Subject: Re: Memory protection keys: Signal handlers crash if pkey0 is
+ write-disabled
+From:   Robert Kueffner <r.m.kueffner@gmail.com>
+In-Reply-To: <c0159d08-e69d-0329-5ca9-68fd26cab0c8@intel.com>
+Date:   Thu, 7 Sep 2023 19:07:52 -0400
+Cc:     Kyle Huey <me@kylehuey.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Robert Kueffner <r.m.kueffner@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E821837A-22AD-420C-A290-8511344E7EAF@gmail.com>
+References: <FF299375-B46F-46D0-90A9-333959FE9380@gmail.com>
+ <c0159d08-e69d-0329-5ca9-68fd26cab0c8@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+X-Mailer: Apple Mail (2.3731.600.7)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As Shubham has been inactive since 2017, Add myself for ARM32 BPF JIT.
+> I assume that *something* is trying to access pkey-0-protected memory.
+> Any idea what that is?  Which entity is doing that access and what are
+> they accessing?  The page fault tracepoints might come in handy.
 
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
- MAINTAINERS | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+If I understand correctly, the kernel (a) pushes the processor state =
+onto the stack and (b) resets PKRU=3D0x55555554 some time before =
+switching to the signal handler. And may try between (a) and (b) to =
+write pkey-0-protected memory.=20
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 612d6d1dbf36..c241856819bd 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3602,9 +3602,10 @@ F:	Documentation/devicetree/bindings/iio/accel/bosch,bma400.yaml
- F:	drivers/iio/accel/bma400*
- 
- BPF JIT for ARM
--M:	Shubham Bansal <illusionist.neo@gmail.com>
-+M:	Puranjay Mohan <puranjay12@gmail.com>
-+R:	Shubham Bansal <illusionist.neo@gmail.com>
- L:	bpf@vger.kernel.org
--S:	Odd Fixes
-+S:	Maintained
- F:	arch/arm/net/
- 
- BPF JIT for ARM64
--- 
-2.39.2
+This would be compatible with what I see when my user code causes a FPE, =
+upon which there is a SEGV before the kernel switches to my signal =
+handler.=20
 
+If the user code causes SEGV my signal handler actually executes and =
+only fails later when returning from syscall 14 in sigprocmask(), i.e. =
+sigprocmask() =3D> __GI___sigprocmask =3D> __GI___pthread_sigmask =3D> =
+syscall 14
+
+I will look into tracepoints - but that would be diagnostic rather
+
+As a farfetched solution, would there be a way, perhaps via a kernel =
+hook, to reset PKRU before the kernel actually starts processing the =
+signal?=
