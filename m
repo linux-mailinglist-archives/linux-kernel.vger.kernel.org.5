@@ -2,84 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06272797DF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 23:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A94AB797DF7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 23:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240249AbjIGVcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 17:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48058 "EHLO
+        id S241173AbjIGVct convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Sep 2023 17:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbjIGVcX (ORCPT
+        with ESMTP id S241274AbjIGVcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 17:32:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134031BE6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 14:32:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694122333; x=1725658333;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=uOFHji2mp0FYCt27UDl4aADtHaHkYEgXUonNnF8B460=;
-  b=PyVKVmhfPZy9UhFIjQI1z0kpdmv6QO/oiCWB6KLNGwfnEN04TUJkifBv
-   T0tMmvIrcBX/ksgKil/eNP/cte9b+q3bc4MJkqubKwcCzaXbBHIBAO0KA
-   yCByHrhKqSHGy5+Jb3d1/Ssv4z/06osx+bsiACBPdT1gLAKuI+T4ChdV4
-   mFzzzluk2dGqdy8a+Fz9/y90EjxYt2ciUlNB8nyjkV9FFKUmHlcsRdGoj
-   +T9RHYWXUDENDuElh6tawncLZP2fMG30Nps3YAoBtmimKFMon/qKObnej
-   g18IxyEgBV52Uko2nd1W5pKccgz1XYIjuzm89XyKK2Q0IU/Krb/ocEr3Y
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="408474038"
-X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
-   d="scan'208";a="408474038"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 14:32:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="771451547"
-X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
-   d="scan'208";a="771451547"
-Received: from ningle-mobl2.amr.corp.intel.com (HELO [10.209.13.77]) ([10.209.13.77])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 14:32:11 -0700
-Message-ID: <81ee91fa-5546-4ca8-e8bc-765174938fc5@intel.com>
-Date:   Thu, 7 Sep 2023 14:32:11 -0700
+        Thu, 7 Sep 2023 17:32:42 -0400
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53AF1BEB;
+        Thu,  7 Sep 2023 14:32:34 -0700 (PDT)
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3aa139a0ab2so1004404b6e.2;
+        Thu, 07 Sep 2023 14:32:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694122354; x=1694727154;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KsHh3VUmRRLaCQcOu1L+EjQxG84poDmbYiq9LJBKwWc=;
+        b=eSRwr50JvA/murg/vSg4+8oLvZdIEPT4YQFFyq0CXp5fmDuV71X0nkMerhMsLj+Obe
+         yBBDRqwk8m4HaH2pRb8L36kzZ/ArTqefEaL4s00TF5uEjeOhYpkwUdRos+VIzTkLb6J0
+         XJ952dYA/LK1jpGxtQgLzaxaEUZp7uthcXwZR6S3xSHbVmenyW7QF9oui7tqv+K6PXjP
+         w751IdrdTjn1mhtXa8t6lix7873GI2pNOVXWilkq/wi2Mb/TMYal2s2YluunUXaehTWU
+         UHDv2rD0ackbDkC3Qz8QOGEdg72HEPezm+CV7RkfX37bpFH0Bvlor5cxq529zleXJHD4
+         ePkg==
+X-Gm-Message-State: AOJu0YyRAUtUM/2Rhv6h+RR4M7VqXdVZTPixM8FjWOM4OOVu8hzwsKya
+        GbGXmraE0bkivRJ36Hc29SDjZ2E4SReSGbdlKtM=
+X-Google-Smtp-Source: AGHT+IGNN+hHWcAvfnDsxe5XI0uw6Li7uHgQl2eQUdsEwo0B7bhLmmGwMVtEzRqfIqwMde7/ivw43OAyrnTr/cqdLDM=
+X-Received: by 2002:a05:6808:b1a:b0:3a7:3ab9:e589 with SMTP id
+ s26-20020a0568080b1a00b003a73ab9e589mr748165oij.35.1694122353849; Thu, 07 Sep
+ 2023 14:32:33 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] x86/platform/uv: Use alternate source for socket to node
- data
-Content-Language: en-US
-To:     Steve Wahl <steve.wahl@hpe.com>
-Cc:     Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-References: <20230807141730.1117278-1-steve.wahl@hpe.com>
- <ad1ff365-4160-87b9-4199-ace5ff1250e1@intel.com>
- <ZPI1IP38l/X7K/k9@swahl-home.5wahls.com>
- <ZPdC2OxhPznQuYk8@swahl-home.5wahls.com>
- <29cd0ee1-c638-9d8e-8a1c-8c2aa2e167e7@intel.com>
- <ZPo/z0TaWahjgglT@swahl-home.5wahls.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <ZPo/z0TaWahjgglT@swahl-home.5wahls.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230903114721.190733-1-adityag@linux.ibm.com> <20230903114721.190733-4-adityag@linux.ibm.com>
+In-Reply-To: <20230903114721.190733-4-adityag@linux.ibm.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 7 Sep 2023 14:32:22 -0700
+Message-ID: <CAM9d7chkvhnfhZo+Whypg40Vik3XiuvbKWZ_3jF0Zpsj+6JfqA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] perf tests task_analyzer: use perf check for
+ libtraceevent support
+To:     Aditya Gupta <adityag@linux.ibm.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, irogers@google.com,
+        linux-perf-users@vger.kernel.org, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, kjain@linux.ibm.com,
+        disgoel@linux.vnet.ibm.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/23 14:25, Steve Wahl wrote:
->> Does this need a stable@ tag when it gets applied?
-> I hadn't thought about that.  I think it meets the requirements in
-> stable-kernel-rules.rst.  And it looks like it should apply without
-> conflicts or prerequisites.  So it probably should.  Is there a way to
-> add a cc:stable tag at this point?
+On Sun, Sep 3, 2023 at 4:47 AM Aditya Gupta <adityag@linux.ibm.com> wrote:
+>
+> Currently we use output of 'perf version --build-options', to check whether
+> perf was built with libtraceevent support.
+>
+> Instead, use 'perf check --feature libtraceevent' to check for
+> libtraceevent support.
+>
+> Signed-off-by: Aditya Gupta <adityag@linux.ibm.com>
+> ---
+>  tools/perf/tests/shell/test_task_analyzer.sh | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/perf/tests/shell/test_task_analyzer.sh b/tools/perf/tests/shell/test_task_analyzer.sh
+> index 92d15154ba79..8fbc33c95025 100755
+> --- a/tools/perf/tests/shell/test_task_analyzer.sh
+> +++ b/tools/perf/tests/shell/test_task_analyzer.sh
+> @@ -52,8 +52,8 @@ find_str_or_fail() {
+>
+>  # check if perf is compiled with libtraceevent support
+>  skip_no_probe_record_support() {
+> -       perf version --build-options | grep -q " OFF .* HAVE_LIBTRACEEVENT" && return 2
+> -       return 0
+> +       perf check --feature libtraceevent >/dev/null && return 0
 
-I can do it when I apply it.  I just wanted to make sure there wasn't a
-good reason you left off the cc:stable.
+Maybe we can add -q/--quiet option to silent messages.
+
+Thanks,
+Namhyung
+
+
+> +       return 2
+>  }
+>
+>  prepare_perf_data() {
+> --
+> 2.41.0
+>
