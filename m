@@ -2,136 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF5B7973E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E29797419
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243181AbjIGPb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
+        id S238840AbjIGPfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:35:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343667AbjIGPaq (ORCPT
+        with ESMTP id S1344480AbjIGPdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:30:46 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB091BFF;
-        Thu,  7 Sep 2023 08:30:19 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C905F1F898;
-        Thu,  7 Sep 2023 08:54:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694076851; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aawKCKKwk4neSGVDzo2vKyR/qAgiaU0o0fBQ2B3exmA=;
-        b=y3qnyyeqLd39yhqyvmYTvaWFkrDCKhjSO/1a2wudRsyAAL08EwhR8cRb6R+DTiAuWh6cZf
-        JAxBjhp/PBl/aiODVRhnNIZnLv/VCCnWYAPmbiutvlmG5VpHJrCe8kB/LwodinTdsWzWlM
-        Wf7AVCTRnGHQ87+5/AD91WffkqIH1H0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694076851;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aawKCKKwk4neSGVDzo2vKyR/qAgiaU0o0fBQ2B3exmA=;
-        b=kV/QoUNiJniOA3dz0zN+UZ+vmykt87ewwahuvA4GIAnmRduduf39xBTDWTt3IFZnSf43DX
-        sAACmKTV9lCbhqDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9AD8813ADD;
-        Thu,  7 Sep 2023 08:54:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2KPmJLOP+WT6JgAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 07 Sep 2023 08:54:11 +0000
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-To:     deller@gmx.de, daniel@ffwll.ch, javierm@redhat.com,
-        sam@ravnborg.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH v2 6/7] fbdev/core: Remove empty internal helpers from fb_logo.c
-Date:   Thu,  7 Sep 2023 10:52:05 +0200
-Message-ID: <20230907085408.9354-7-tzimmermann@suse.de>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230907085408.9354-1-tzimmermann@suse.de>
-References: <20230907085408.9354-1-tzimmermann@suse.de>
+        Thu, 7 Sep 2023 11:33:09 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7832A1BF8
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:32:49 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 386EA139F;
+        Thu,  7 Sep 2023 01:57:51 -0700 (PDT)
+Received: from [10.57.30.76] (unknown [10.57.30.76])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 28B5B3F64C;
+        Thu,  7 Sep 2023 01:57:12 -0700 (PDT)
+Message-ID: <d2c93c6c-86d8-1a1f-e58c-8e9d29e9ddb0@arm.com>
+Date:   Thu, 7 Sep 2023 09:57:02 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] Revert "dma-contiguous: check for memory region overlap"
+Content-Language: en-GB
+To:     Zhenhua Huang <quic_zhenhuah@quicinc.com>, hch@lst.de,
+        m.szyprowski@samsung.com
+Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_tingweiz@quicinc.com
+References: <1694073836-5125-1-git-send-email-quic_zhenhuah@quicinc.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <1694073836-5125-1-git-send-email-quic_zhenhuah@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the two empty helpers for the case the CONFIG_FB_LOGO_EXTRA
-has not been set. They are internal functions and only called once.
-Providing empty replacements seems like overkill. Instead protect
-the call sites with a test for CONFIG_FB_LOGO_EXTRA.
+On 2023-09-07 09:03, Zhenhua Huang wrote:
+> This reverts commit 3fa6456ebe13adab3ba1817c8e515a5b88f95dce.
+> 
+> The Commit broke the CMA region creation through DT on arm64,
+> as showed below logs with "memblock=debug":
+> [    0.000000] memblock_phys_alloc_range: 41943040 bytes align=0x200000
+> from=0x0000000000000000 max_addr=0x00000000ffffffff
+> early_init_dt_alloc_reserved_memory_arch+0x34/0xa0
+> [    0.000000] memblock_reserve: [0x00000000fd600000-0x00000000ffdfffff]
+> memblock_alloc_range_nid+0xc0/0x19c
+> [    0.000000] Reserved memory: overlap with other memblock reserved region
+> 
+>  From call flow, region we defined in DT was always reserved before entering
+> into rmem_cma_setup. Also, rmem_cma_setup has one routine cma_init_reserved_mem
+> to ensure the region was reserved. Checking the region not reserved here seems
+> not correct.
+> 
+> early_init_fdt_scan_reserved_mem:
+>      fdt_scan_reserved_mem
+>          __reserved_mem_reserve_reg
+> 		early_init_dt_reserve_memory
+> 			memblock_reserve(using “reg” prop case)
+>          fdt_init_reserved_mem
+> 		__reserved_mem_alloc_size
+> 			*early_init_dt_alloc_reserved_memory_arch*
+> 				memblock_reserve(dynamic alloc case)
+>          __reserved_mem_init_node
+> 		rmem_cma_setup(region overlap check here should always fail)
+> 
+> Example DT can be used to reproduce issue:
+> 
+>      dump_mem: mem_dump_region {
+>              compatible = "shared-dma-pool";
+>              alloc-ranges = <0x0 0x00000000 0x0 0xffffffff>;
+>              reusable;
+>              size = <0 0x2800000>;
+>      };
+> 
+> Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+> ---
+>   kernel/dma/contiguous.c | 5 -----
+>   1 file changed, 5 deletions(-)
+> 
+> diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
+> index 88c595e..f005c66 100644
+> --- a/kernel/dma/contiguous.c
+> +++ b/kernel/dma/contiguous.c
+> @@ -473,11 +473,6 @@ static int __init rmem_cma_setup(struct reserved_mem *rmem)
+>   		return -EBUSY;
+>   	}
+>   
+> -	if (memblock_is_region_reserved(rmem->base, rmem->size)) {
+> -		pr_info("Reserved memory: overlap with other memblock reserved region\n");
+> -		return -EBUSY;
+> -	}
 
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Acked-by: Javier Martinez Canillas <javierm@redhat.com>
----
- drivers/video/fbdev/core/fb_logo.c | 22 ++++++----------------
- 1 file changed, 6 insertions(+), 16 deletions(-)
+Um, indeed... failing to process a reserved memory region if it is 
+reserved is clearly nonsensical. I mean, a few steps later we reach 
+cma_init_reserved_mem() which already relies on the exact opposite check:
 
-diff --git a/drivers/video/fbdev/core/fb_logo.c b/drivers/video/fbdev/core/fb_logo.c
-index 6897f7a898fc..0bab8352b684 100644
---- a/drivers/video/fbdev/core/fb_logo.c
-+++ b/drivers/video/fbdev/core/fb_logo.c
-@@ -413,21 +413,6 @@ static int fb_show_extra_logos(struct fb_info *info, int y, int rotate)
- 
- 	return y;
- }
--
--#else /* !CONFIG_FB_LOGO_EXTRA */
--
--static inline int fb_prepare_extra_logos(struct fb_info *info,
--					 unsigned int height,
--					 unsigned int yres)
--{
--	return height;
--}
--
--static inline int fb_show_extra_logos(struct fb_info *info, int y, int rotate)
--{
--	return y;
--}
--
- #endif /* CONFIG_FB_LOGO_EXTRA */
- 
- int fb_prepare_logo(struct fb_info *info, int rotate)
-@@ -498,8 +483,11 @@ int fb_prepare_logo(struct fb_info *info, int rotate)
- 	height = fb_logo.logo->height;
- 	if (fb_center_logo)
- 		height += (yres - fb_logo.logo->height) / 2;
-+#ifdef CONFIG_FB_LOGO_EXTRA
-+	height = fb_prepare_extra_logos(info, height, yres);
-+#endif
- 
--	return fb_prepare_extra_logos(info, height, yres);
-+	return height;
- }
- 
- int fb_show_logo(struct fb_info *info, int rotate)
-@@ -512,7 +500,9 @@ int fb_show_logo(struct fb_info *info, int rotate)
- 
- 	count = fb_logo_count < 0 ? num_online_cpus() : fb_logo_count;
- 	y = fb_show_logo_line(info, rotate, fb_logo.logo, 0, count);
-+#ifdef CONFIG_FB_LOGO_EXTRA
- 	y = fb_show_extra_logos(info, y, rotate);
-+#endif
- 
- 	return y;
- }
--- 
-2.42.0
+	if (!size || !memblock_is_region_reserved(base, size))
+		return -EINVAL;
 
+There's no way 3fa6456ebe13 could have worked or been properly tested :/
+
+Thanks,
+Robin.
+
+> -
+>   	if (!of_get_flat_dt_prop(node, "reusable", NULL) ||
+>   	    of_get_flat_dt_prop(node, "no-map", NULL))
+>   		return -EINVAL;
