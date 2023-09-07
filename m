@@ -2,107 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC63F7976FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D89E9797AEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239685AbjIGQTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:19:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46170 "EHLO
+        id S234789AbjIGR53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbjIGQRb (ORCPT
+        with ESMTP id S234034AbjIGR51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:17:31 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ADE53584
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:56:34 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bcc846fed0so19433321fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:56:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694102124; x=1694706924; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vpHIUYmzApKmGGiHZZpnMSxi31KSn/xZKBPfgME94EA=;
-        b=DqymKHAEv9IZOuCrbcaO5LZ4elHJIgrHqbzN9Q1y1ibxxJMnZOuW1ymNVtQO49pCYM
-         i/Sam3SpXeyqfzF9QKboGp1Ct4eWhbtHP4efhlrKN3DoIJ7f2ZWLpXS+aGzRRCNxD3tq
-         10xexlEgbiYIm344ck/iSGvW94DL2m4JBc3nUDTrKI+FMD45ybf+rdpVXHIxcrjNqTsf
-         PuVNeX+TX8jNJLWeClgtKjsashGx4isCmTY6zyXAOKMKpDhNLkO3cHGuL+sMWa2HTu4p
-         B4rKC53IMqwrIqmFfAh7/a9SvVM9nz81GIXAa5/+YPJbesakju2FV3MpZwtf+CfWqVDE
-         y9Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694102124; x=1694706924;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vpHIUYmzApKmGGiHZZpnMSxi31KSn/xZKBPfgME94EA=;
-        b=eUzck87C0Z20RkGrHJuBgfGfK6rPoyTFzCpyjb3nb0SVMtiHawSvaR7iMCHA0si/iP
-         MQEQmNhxxmKzXFSleOKYsUA2nt8eJjvfh2QiCUbIs1Kmixjbwh4rYuJ58z6tu6OeW8Bl
-         /p3K+9VdpOm8R7muYFVsW0qT+j8XuS/4I0ZrBuerd1tFRveQ/Cj05KkvU+gM6oEIOFLW
-         1BEnWMCP8s+VB/5vHPwo3tkFBUvTUTO5X37fyio0Ac2g0T9cwveFHVKRX6XVoVCLGByy
-         XZ30iTCC1ksul9I/IHpROK0Mtp3gX3dODfWpmTRntMLUmuNLYC++CwwH/1nQhHAqaEMp
-         qQzg==
-X-Gm-Message-State: AOJu0YyePTsZeHhzW7fGHroAaJqpny7/qFgooHv8DcpzuO5jHJOANA2c
-        td1I5HpB9QJ1Ioda3PfZb4Uk5yXaCFpNinn+hfcLQQ==
-X-Google-Smtp-Source: AGHT+IE6rP7AS4FnGxp/huXUuWImGW5DpdIfQDtTj/sIRkZFOXfhElTxhQiu10RgpaNZRjIoSI51Qg==
-X-Received: by 2002:a17:906:5c:b0:9a5:db06:4264 with SMTP id 28-20020a170906005c00b009a5db064264mr3607933ejg.72.1694066638936;
-        Wed, 06 Sep 2023 23:03:58 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id g2-20020a1709064e4200b009a5f7fb51d5sm9928020ejw.21.2023.09.06.23.03.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 23:03:58 -0700 (PDT)
-Message-ID: <4f882fa1-8174-2816-71c4-a2941372aa19@linaro.org>
-Date:   Thu, 7 Sep 2023 08:03:56 +0200
+        Thu, 7 Sep 2023 13:57:27 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4665170C;
+        Thu,  7 Sep 2023 10:56:55 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3875ea8L030697;
+        Thu, 7 Sep 2023 06:04:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=mZTbIBpUd9iXC5m5eQrkVF6qpnr7KXC2jM0o5fpM0RQ=;
+ b=Cfabf4gAtq5ZJUNPjlaBrrXzZNiTjiQcl7L4KTYdFqB94KjiMgiI/Q3sN8Ge0MP7sMo6
+ CPhQzTSa6J5KKyCoUOLQ7A6tFVogn4kbbd3MpG4rrXopIYuu2ugdvShTzWoJPm+OAmeS
+ rKB6ZmM7Ji+Fu4BYFN4jInTXSbZxST+lRinA6L9nKuIe510Twg4kJCDrGw9WPeeJrlQe
+ VBR+cKGNrF2IgcQolmwQC/5mfX0TllcHzlsR1bSVFODfyqBEEOSRoDyuEQZzYfbgO9//
+ /9fMUpatrn3FeG2Dz1ImOmwMLddszYUI4ukbNalWhSA/1YIzuyARvHrqgwz3S/rGpM/z fw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sxgsqubjw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Sep 2023 06:04:53 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38764pvE018083
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 7 Sep 2023 06:04:51 GMT
+Received: from [10.216.2.98] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 6 Sep
+ 2023 23:04:45 -0700
+Message-ID: <a43e5d7d-9254-03d4-3899-08dd23a6347a@quicinc.com>
+Date:   Thu, 7 Sep 2023 11:34:40 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v1 10/10] arm64: dts: qcom: ipq9574: populate the opp
- table based on the eFuse
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v4 3/4] OPP: Add api to retrieve opps which is at most the
+ provided level
 Content-Language: en-US
-To:     Varadarajan Narayanan <quic_varada@quicinc.com>,
-        ilia.lin@kernel.org, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        quic_kathirav@quicinc.com, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-References: <cover.1693996662.git.quic_varada@quicinc.com>
- <1512a94f8fe1f8fe22cef2bf8498a6ac27989633.1693996662.git.quic_varada@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1512a94f8fe1f8fe22cef2bf8498a6ac27989633.1693996662.git.quic_varada@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     Pavan Kondeti <quic_pkondeti@quicinc.com>
+CC:     <manivannan.sadhasivam@linaro.org>, <helgaas@kernel.org>,
+        <linux-pci@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_parass@quicinc.com>,
+        <krzysztof.kozlowski@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Nishanth Menon" <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "open list:OPERATING PERFORMANCE POINTS (OPP)" 
+        <linux-pm@vger.kernel.org>
+References: <1692717141-32743-1-git-send-email-quic_krichai@quicinc.com>
+ <1692717141-32743-4-git-send-email-quic_krichai@quicinc.com>
+ <20c40635-0ad9-4de3-b18b-ccbcc2fd3779@quicinc.com>
+From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <20c40635-0ad9-4de3-b18b-ccbcc2fd3779@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ylCDB2iUxcWj3nXhFWPZQuv-HIiSs6PT
+X-Proofpoint-ORIG-GUID: ylCDB2iUxcWj3nXhFWPZQuv-HIiSs6PT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-06_12,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ lowpriorityscore=0 adultscore=0 impostorscore=0 phishscore=0 bulkscore=0
+ suspectscore=0 priorityscore=1501 malwarescore=0 clxscore=1015 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309070052
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/09/2023 07:21, Varadarajan Narayanan wrote:
-> IPQ95xx SoCs have different OPPs available for the CPU based on
-> SoC variant. This can be determined from an eFuse register
-> present in the silicon.
-> 
-> Add support to read the eFuse and populate the OPPs based on it.
-> 
 
-...
+On 8/23/2023 6:35 AM, Pavan Kondeti wrote:
+> On Tue, Aug 22, 2023 at 08:42:20PM +0530, Krishna chaitanya chundru wrote:
+>> Add dev_pm_opp_find_level_floor() for searching a lesser match or
+>> operating on OPP in the order of decreasing level.
+>>
+> "OPP: Add api to retrieve opps which is at most the provided level". Pls
+> change this to "opp: Add dev_pm_opp_find_level_floor()". The API name
+> conveys the message.
+>
+> In the description, you can give a use case. i.e voting for the max
+> level during initialization of a driver.
+>
+Done
+>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>> ---
+>>   drivers/opp/core.c     | 26 ++++++++++++++++++++++++++
+>>   include/linux/pm_opp.h |  4 ++++
+>>   2 files changed, 30 insertions(+)
+>>
+>> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+>> index 954c948..e668cf2 100644
+>> --- a/drivers/opp/core.c
+>> +++ b/drivers/opp/core.c
+>> @@ -727,6 +727,32 @@ struct dev_pm_opp *dev_pm_opp_find_level_ceil(struct device *dev,
+>>   }
+>>   EXPORT_SYMBOL_GPL(dev_pm_opp_find_level_ceil);
+>>   
+>> +
+>> +/**
+>> + * dev_pm_opp_find_level_floor() - Search for a rounded floor freq
+>> + * @dev:	device for which we do this operation
+>> + * @freq:	Start level
+>> + *
+> %s/freq/level
+>
+> Run make W=1 so that kerneldoc is tested.
+Done
+>> + * Search for the matching floor *available* OPP from a starting level
+>> + * for a device.
+>> + *
+>> + * Return: matching *opp and refreshes *level accordingly, else returns
+>> + * ERR_PTR in case of error and should be handled using IS_ERR. Error return
+>> + * values can be:
+> What do you mean by refresh here?
 
->  	};
-> @@ -223,6 +254,11 @@
->  			reg = <0x000a4000 0x5a1>;
->  			#address-cells = <1>;
->  			#size-cells = <1>;
-> +
-> +			cpu_speed_bin: cpu_speed_bin@15 {
+Level  argument will be updated by this API with the opp level being 
+returned here,
 
-No underscores in node names
+I was trying to use same terminology used in other API's
 
-Best regards,
-Krzysztof
+>> + * EINVAL:	for bad pointer
+>> + * ERANGE:	no match found for search
+>> + * ENODEV:	if device not found in list of registered devices
+>> + *
+>> + * The callers are required to call dev_pm_opp_put() for the returned OPP after
+>> + * use.
+>> + */
+>> +struct dev_pm_opp *dev_pm_opp_find_level_floor(struct device *dev,
+>> +					      unsigned long *level)
+>> +{
+>> +	return _find_key_floor(dev, level, 0, true, _read_level, NULL);
+>> +}
+>> +EXPORT_SYMBOL_GPL(dev_pm_opp_find_level_floor);
+>> +
+>>   /**
+>>    * dev_pm_opp_find_bw_ceil() - Search for a rounded ceil bandwidth
+>>    * @dev:	device for which we do this operation
+>> diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+>> index dc1fb58..a3bc386 100644
+>> --- a/include/linux/pm_opp.h
+>> +++ b/include/linux/pm_opp.h
+>> @@ -128,6 +128,8 @@ struct dev_pm_opp *dev_pm_opp_find_level_exact(struct device *dev,
+>>   					       unsigned int level);
+>>   struct dev_pm_opp *dev_pm_opp_find_level_ceil(struct device *dev,
+>>   					      unsigned int *level);
+>> +struct dev_pm_opp *dev_pm_opp_find_level_floor(struct device *dev,
+>> +					      unsigned long *level);
+>>   
+>>   struct dev_pm_opp *dev_pm_opp_find_freq_ceil(struct device *dev,
+>>   					     unsigned long *freq);
+>> @@ -285,6 +287,8 @@ static inline struct dev_pm_opp *dev_pm_opp_find_bw_ceil(struct device *dev,
+>>   
+>>   static inline struct dev_pm_opp *dev_pm_opp_find_bw_floor(struct device *dev,
+>>   					unsigned int *bw, int index)
+>> +static inline struct dev_pm_opp *dev_pm_opp_find_level_floor(struct device *dev,
+>> +					unsigned long *level)
+>>   {
+>>   	return ERR_PTR(-EOPNOTSUPP);
+>>   }
+>>
+> Please run ./scripts/checkpatch.pl --strict <your patch> and fix the
+> indentation warnings from this patch.
+>
+> Thanks,
+> Pavan
+
+Done
+
+- KC
 
