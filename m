@@ -2,303 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A1B796EB6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 03:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C344796EAF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 03:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240631AbjIGB7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 21:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
+        id S242124AbjIGBva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 21:51:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234979AbjIGB7f (ORCPT
+        with ESMTP id S230271AbjIGBv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 21:59:35 -0400
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9183619A0
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 18:59:29 -0700 (PDT)
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230907015927epoutp0382e36857b5fbf5778aab0c1b4cd81d44~Ce0oLFvwa1564515645epoutp03v
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 01:59:27 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230907015927epoutp0382e36857b5fbf5778aab0c1b4cd81d44~Ce0oLFvwa1564515645epoutp03v
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1694051967;
-        bh=DNJJ1OytfW755Q77Ddf8MGHEt9FiJitFL4Jj1PUMvuU=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=cSbQsq5xFSniRzS1xG17Kn1EI5zLGsm9PV5vzlsaFayps3Y36C0J2VQqMxFWnexMI
-         SK5foa4MJVy7Q2tTbkJn66Zhl1xPAXRHGtgzmODWzon++jpyMrw/h2fBY2XQig8vcq
-         xkduHN5aqO9aNI8Ds2FFPeQlmfM3c2ruKnBwiH7M=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20230907015927epcas2p40eb32c1f77160943ed1460b27ccf6055~Ce0ncRM4a3251232512epcas2p4a;
-        Thu,  7 Sep 2023 01:59:27 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.36.70]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4Rh2VQ0J4Tz4x9Px; Thu,  7 Sep
-        2023 01:59:26 +0000 (GMT)
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        37.09.09649.D7E29F46; Thu,  7 Sep 2023 10:59:25 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20230907015925epcas2p3b9850bb03126e9caa43530e164884ae8~Ce0mAU8Bi0386603866epcas2p35;
-        Thu,  7 Sep 2023 01:59:25 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230907015925epsmtrp1e7e856445819f2b2e225f54619cad90e~Ce0l-bC-C2578225782epsmtrp1p;
-        Thu,  7 Sep 2023 01:59:25 +0000 (GMT)
-X-AuditID: b6c32a46-b9ffa700000025b1-2a-64f92e7d8d61
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6F.B9.08788.D7E29F46; Thu,  7 Sep 2023 10:59:25 +0900 (KST)
-Received: from ubuntu.dsn.sec.samsung.com (unknown [10.229.95.128]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20230907015925epsmtip24ffc8da5764d90c4092974328dfb3e58~Ce0lxBjgC2709427094epsmtip2D;
-        Thu,  7 Sep 2023 01:59:25 +0000 (GMT)
-From:   Kiwoong Kim <kwmad.kim@samsung.com>
-To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, beanhuo@micron.com,
-        adrian.hunter@intel.com, sc.suh@samsung.com, hy50.seo@samsung.com,
-        sh425.lee@samsung.com, kwangwon.min@samsung.com,
-        junwoo80.lee@samsung.com, wkon.kim@samsung.com
-Cc:     Kiwoong Kim <kwmad.kim@samsung.com>
-Subject: [PATCH v4] ufs: poll pmc until another pa request is completed
-Date:   Thu,  7 Sep 2023 10:48:26 +0900
-Message-Id: <1694051306-172962-1-git-send-email-kwmad.kim@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgk+LIzCtJLcpLzFFi42LZdljTVLdW72eKQdcNc4uTT9awWTyYt43N
-        4uXPq2wWBx92slhM+/CT2WL14gcsFotubGOy2PW3mcli642dLBY3txxlsbi8aw6bRff1HWwW
-        y4//Y7LounuD0WLpv7csFpsvfWNxEPC4fMXbY/Gel0weExYdYPT4vr6DzePj01ssHn1bVjF6
-        fN4k59F+oJspgCMq2yYjNTEltUghNS85PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnF
-        J0DXLTMH6AMlhbLEnFKgUEBicbGSvp1NUX5pSapCRn5xia1SakFKToF5gV5xYm5xaV66Xl5q
-        iZWhgYGRKVBhQnbGiiPbmAu6TSoWnH3P2sB4T6uLkZNDQsBE4v6dU0xdjFwcQgI7GCVe3/3K
-        DpIQEvjEKPHvhSBE4hujxJ62VnaYjvnH70N17GWUOHFtJguE84NRYsKLxywgVWwCmhJPb04F
-        qxIR+MAk8X/5NkaQBLOAusSuCSeYQGxhAXeJ7QvuM4PYLAKqErvvvQKr4RVwk/h+5APUOjmJ
-        m+c6mSHsTg6Jm6v0IGwXiRnfVzFB2MISr45vgaqXknjZ3wZkcwDZ2RJ7FopBhCskFk97ywJh
-        G0vMetbOCFLCDHTn+l36ENXKEkdusUAcySfRcfgv1BBeiY42IYhGZYlfkyYzQtiSEjNv3oHa
-        6SHRc+ssCyTcYiU+H5/NMoFRdhbC/AWMjKsYxVILinPTU4uNCozgUZScn7uJEZwktdx2ME55
-        +0HvECMTB+MhRgkOZiUR3nfy31KEeFMSK6tSi/Lji0pzUosPMZoCA2sis5Rocj4wTeeVxBua
-        WBqYmJkZmhuZGpgrifPea52bIiSQnliSmp2aWpBaBNPHxMEp1cC0d8WKP5kLtHstT5y9pWmo
-        4H8z+iAjg0Zt4s2urW//uoZrBc738jgR/z1d4GXfAec2Tenj33UtPBlUMowfBHotvC4473RF
-        ka5uwlbDnXnS7NGxDjJdnX0TvkoqlOx6GldytfMiz26jaenXf96KFrgm9kifffrUMMO4DObi
-        hhhG4fhdB2IcdT49eaKv333O8Nrl0PKMu5feXq4U3mCgecm5Wfjbm9xpHr6PjMLTJjDzcDwO
-        K5Y5UJ38KHPGHJ00zvc+36PZ5EWbLdb1bJRa8LGW1epBxIsq2SurrcV4/gRvPb01sYqZ2eHQ
-        vl9Fi5Km3At4KCRzRlNxs73ejojPzHrMG1QvbXF6tOeNr6q9thJLcUaioRZzUXEiAI8lWWgb
-        BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrNLMWRmVeSWpSXmKPExsWy7bCSvG6t3s8UgxVLRS1OPlnDZvFg3jY2
-        i5c/r7JZHHzYyWIx7cNPZovVix+wWCy6sY3JYtffZiaLrTd2sljc3HKUxeLyrjlsFt3Xd7BZ
-        LD/+j8mi6+4NRoul/96yWGy+9I3FQcDj8hVvj8V7XjJ5TFh0gNHj+/oONo+PT2+xePRtWcXo
-        8XmTnEf7gW6mAI4oLpuU1JzMstQifbsErowVR7YxF3SbVCw4+561gfGeVhcjJ4eEgInE/OP3
-        mboYuTiEBHYzSuxceIARIiEpcWLncyhbWOJ+yxFWiKJvjBJ/DkxgAUmwCWhKPL05FaxbRKCJ
-        WeLS7OlgCWYBdYldE04wgdjCAu4S2xfcZwaxWQRUJXbfewU2lVfATeL7kQ/sEBvkJG6e62Se
-        wMizgJFhFaNkakFxbnpusWGBUV5quV5xYm5xaV66XnJ+7iZGcPhqae1g3LPqg94hRiYOxkOM
-        EhzMSiK87+S/pQjxpiRWVqUW5ccXleakFh9ilOZgURLn/fa6N0VIID2xJDU7NbUgtQgmy8TB
-        KdXAlL/erPhTVqbYsp3zDnbo//pmyrZ7/vcJoS5lSW+bNL4Y7V50JH3a8pbNVYlLOHY9/dR7
-        Q9B60uQL5y3mfQ05zpO9Vnl10/eY2/6efhxh4Vu8HNQFb//tFY+NXTu77phhvSrHQ3mpdJGD
-        XFULlDKDvq8tebtV8tIcgyihz3Fb131el7TkAOOzHyrKLtFR+gXeEt8NbzWv+c++NGve1nJb
-        76tSrW7vG5bfN3rBmr7c6MuyT9p7UuZFvNijzbspcIaGVvUt61t7V67ZdpxnvcyNqMjJsRna
-        b4wmuRmuuuvSt6Ntx0zLaWezL67nPPg6WqAtwrzWJN/4rmHco+Sn06WeHA29ovZX92jE9pOH
-        b+eX3FdiKc5INNRiLipOBAAVqN8izgIAAA==
-X-CMS-MailID: 20230907015925epcas2p3b9850bb03126e9caa43530e164884ae8
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230907015925epcas2p3b9850bb03126e9caa43530e164884ae8
-References: <CGME20230907015925epcas2p3b9850bb03126e9caa43530e164884ae8@epcas2p3.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Sep 2023 21:51:28 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2042.outbound.protection.outlook.com [40.107.6.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B33E73;
+        Wed,  6 Sep 2023 18:51:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mrUh+TdSJMMu/8kZh2sKc6UGppvJNGxBIMlyxhSn7sDtZoovLRwyB21jEI02G7Jhgg7yWR0g6vY9a0t1xGqBjwjkQsdMnSOJVDCrPdxYA2ZL55GuRAUEY3Dy3TCyhpFIpNIg3E1lyQo+g/HzUqvWRu6DrURRX5tEzrfATaWJe17vOC6dcXMnP8U+BSzucb/bAFxQLmMZ/66Q9FsqUCblCVZ7Zv6FNQgFmvPUJOWCoY93X99WDkzSfVa/jAbw6w4+NgQ5xSOwYmv+/5HQfZC51tAUyYJyCMQ4pgusndmKEqyE/WrPua9gLp3fa2YepAzdaD33J9Wa4MNZhhmsZQm37Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hp5GYzMlqIYvvXcN3F9wAnd9/VUoH+9Aq3Vyf15109o=;
+ b=jQ8VvJfAsKsm9CxE7KSVfBAsl+YtfXQMi0Aj3L3iJ4kOLxdLvH+drrAet5NZ+/C4kyJ7ZvVR4H2dt2Q7CIeAJfOuxsdTYSgHHzDynlwuX8seIb++hzXELKtYSt8XaUsOBoe7VezfqKstSz+a1NwgFdhaXn5ih5i6E4EDEC/9BcNrEK95uIZj6oq63AOj5EOEYOr4Oe+gL/SiHWWKv6oPBxCzHl6jXDoZTg+e6mvGTuWWLbFXlGs2TxcRxNRso8LoZDcSwgncboUBThwFpo2LjvSbWcw2JopBPU5NIu8phaOhovQ1GpTrzGEI7lesf5HEO/J2oKb9F0djZdqr8/6BQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hp5GYzMlqIYvvXcN3F9wAnd9/VUoH+9Aq3Vyf15109o=;
+ b=rNyJhghq8H0nL5AmxlSU+vBF7GuDcm6cWqQac/PvRfcCqI7/54gPogIp8lAvsGrP5UnjPiDCp0ZN7lvHRNb/Tx/Bqge0J5eoz2/Qluii73TAUo+sWaLAX79xS4u3ePNVV9qt/a/9hiJB3SHj+8OVlQLHuALOMkCDtJfnHp5YoFw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB6341.eurprd04.prod.outlook.com (2603:10a6:20b:d8::14)
+ by AS8PR04MB8388.eurprd04.prod.outlook.com (2603:10a6:20b:3f8::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Thu, 7 Sep
+ 2023 01:51:21 +0000
+Received: from AM6PR04MB6341.eurprd04.prod.outlook.com
+ ([fe80::613b:e94b:4ccd:f55a]) by AM6PR04MB6341.eurprd04.prod.outlook.com
+ ([fe80::613b:e94b:4ccd:f55a%4]) with mapi id 15.20.6745.034; Thu, 7 Sep 2023
+ 01:51:21 +0000
+From:   Ming Qian <ming.qian@nxp.com>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl
+Cc:     shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v3] media: amphion: handle firmware debug message
+Date:   Thu,  7 Sep 2023 09:51:00 +0800
+Message-Id: <20230907015100.22881-1-ming.qian@nxp.com>
+X-Mailer: git-send-email 2.38.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI1PR02CA0038.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::15) To AM6PR04MB6341.eurprd04.prod.outlook.com
+ (2603:10a6:20b:d8::14)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB6341:EE_|AS8PR04MB8388:EE_
+X-MS-Office365-Filtering-Correlation-Id: daa4209d-a07a-4724-ab92-08dbaf44ef92
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: W/OJ8lUEzK9PcH8P0qQ6RuOo9gWJAy+EnXTk0g4pJAj4B4cb+FEmkNHVSl4XHpOHl0kdGnAO38GPQmIpRZ3GYXdAoa35GgGtzNpHktJhBl+8LVJ99Qk+/XtJR6NWFYLCYwFeQy4pwz2jPxfOkZvJCxHqAJWN606PKjOV2Wuhn6KZ/vofjmji9EKHPUdwd2pnNrmVcwl+XA/2ltCH2PX7kZ0BIcqDDMH+kcWdI0TQJsvZAiE9kTZO5tjgbVKvqA8M2HrsdupluGsF7htRtll979pa11I3nVWMlnEk+duwtF7+jE67t+cbZrbxDHHeIqS1KN3rA6pBqOfDl2Vd835YhWt5Mc6TsE7C4g+q/jrSZZCse2/35/2qstJ5rcgpz0Z9L/r3GCEorW1Jwq6AegNybz7UdMIWw6BtRxTmxfZ0srTh02W0p3vdjEPpNNotFbot0jXshU0hm5j7vcgT3zUx6YfWLOL7bAeWLOQofDkBAFsi7t7hrhQXqRXkgIp9NOXBWYu8FLJU/gm9VnzmVpjft0ozhaZdMjFWmhuzSWWdqQfKzF2uRMLMTQe6DmZCzoLZTSIC2qMzCdAGJUY0NTAl+wAXtevu7UJkVOIeyTsdG/a/dHp7yeRwqY3rowI/a71G
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6341.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(366004)(136003)(346002)(396003)(186009)(451199024)(1800799009)(6666004)(6486002)(6506007)(52116002)(8936002)(36756003)(86362001)(38350700002)(38100700002)(478600001)(7416002)(1076003)(15650500001)(2906002)(26005)(83380400001)(6512007)(2616005)(41300700001)(4326008)(8676002)(316002)(5660300002)(66476007)(66556008)(66946007)(44832011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fQkvrbdFC63qVfY0J48M16CFnKOtPyyVwxBEkIcTvXMxiLuf20xZL8bVcoMc?=
+ =?us-ascii?Q?uOOH8aNkyJolLehoLZCl1mjWvTFkcnW6U/Q58CqNSRw0TT7FElKqtsY9+J5k?=
+ =?us-ascii?Q?l9jy9PoVUwVW8vgfCSALiGCRRNA07/3UCczRYxlP7OYDqcQ5XH8X7ZN75i7r?=
+ =?us-ascii?Q?1xkEsMLUiZGBpWTpM1CHalrGdJADO0LAfNsTFsTmvRyadoNm2N4pi/warqEt?=
+ =?us-ascii?Q?JdDw0b1y7r17g7ViUcxhU8HofJ7j9K3dYGx48EquzK1PB0mDI7qMsLelzg3I?=
+ =?us-ascii?Q?p72C5oyhqNnO/BjCcNKJ/waMDwS193tWisvgLUUqgjYa3mjyDPshe/lObq9B?=
+ =?us-ascii?Q?2ETVftkmi8Rfux1rbUG/Gf7U4LY++8Uh0LTPF/wVc++X/5NGZ1guP4WoalGt?=
+ =?us-ascii?Q?l6xiAPe7KaXmwRyEIeNnfXpMEBFSCb32CJ18kFDNBUJpKys08vrmIVCQD+rs?=
+ =?us-ascii?Q?srWPtXhtxcYhn5le8LiyiEsbbXwuQaEE9nD/UEPuV9zf3KKsbQX1Nr13WpVb?=
+ =?us-ascii?Q?ncLE0T4B/YQ0XKnU8/D1w1tRCqaXpk9aqfW+vfZ8U1v6zqhvA/BC03h658+f?=
+ =?us-ascii?Q?9DCEmv3zSXSESE1KrzXQMmpRHzlSWACnAkizOhoF/ihkuSMWGOIV1X2mHvxW?=
+ =?us-ascii?Q?XVSFlkV4GnEww3zNcrcRKuPCj5c4asWNqCehadXo/yFZ3oaCn11BJ/t8Oltu?=
+ =?us-ascii?Q?s2TP6d+3eQNfRpZtlwlZHa6guZEjAe/gi+BuoDY2CWHz1ZgV9HRMXH/m7rwf?=
+ =?us-ascii?Q?mXYEVlB55tHBMveQp4WinsKB6PSpiXxsTvIQ7PyPUcuqXe95wqmB6Ew5oU8D?=
+ =?us-ascii?Q?4JRIlylOysyYxr1tA18C0TksEMNKBi4LiAiHhCByxzmjJ5gDFIUs8VUDnUuD?=
+ =?us-ascii?Q?pbdeiUDPDKniOZZGMrP0zOUqsxDOFmMiQxR+7JBH+0c5+DzqsR2i+7DgzRTs?=
+ =?us-ascii?Q?vpkoAE4QiW6j7WZccZjEJr3mlCLbVN57EpGsRiE/iI8+nunS0nT77O9BvBvp?=
+ =?us-ascii?Q?GOXH8EmvABuCeM06c/WrGUavzbOX7xrB2O8tL6VkzVa0ouMJ8/EyNbRb+C31?=
+ =?us-ascii?Q?pXomtR4OUwZDVJ7/hT4aNTcE1BuQfZEHaiao4BEdg8bEgNfwHvmzjINMB0At?=
+ =?us-ascii?Q?MM8NmGqJVoJTWhXT3WUBAfx9NV4FK+RikQw7loctpZpPHaX+cPT8aCviEEYi?=
+ =?us-ascii?Q?WQZLPvtU98yflij28BfaDe76VIKn3PAoDWD0TrJg7C2aaxsGaAM92YxYKLmR?=
+ =?us-ascii?Q?p3tuqNM/OMuUmOhnkl629aJe1X0K95+orqdN0kVnhfWk9sE1qZ93gDlQqDpQ?=
+ =?us-ascii?Q?Qi5XuR8HnR5smk8+6iCZqqb3n/w7Nd+mzXBn2JetJ7/BqB4YwstFVp/bHQPP?=
+ =?us-ascii?Q?H42RMkjcpcukKO/au6AVymOC/vMQ7MgoREsVa2W6cKgL+OhrOO+HPh/6hHGI?=
+ =?us-ascii?Q?Wcm9ahC9PoJZfrzjyOj0kZMDgpfMzGBMftIj2BprfspThSWhVl0GLI5HLNvQ?=
+ =?us-ascii?Q?HwmI8k/mur+k87Zp4CdO8zGNdzOMc1VAofhSHIkW4cMN1+8uaf5dnM4EOHhk?=
+ =?us-ascii?Q?bNEjBrgqC9Hjctus/mU/BLSzG5JfATIfMmFXVYYo?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: daa4209d-a07a-4724-ab92-08dbaf44ef92
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6341.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 01:51:21.7013
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CjB2m0kcROrEscHaT/X0b0dr0zUWnMBeODeI8cQA4juyu4J3PSRSpORRLzYWsh2l5y5FDuE5Xl2OEOTmRwyj8w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8388
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Regarding 5.7.12.1.1 in Unipro v1.8, PA rejects sebsequent
-requests following the first request from upper layer or remote.
-In this situation, PA responds w/ BUSY in cases
-when they come from upper layer and does nothing for
-the requests. So HCI doesn't receive ind, a.k.a. indicator
-for its requests and an interrupt, IS.UPMS isn't generated.
+decoder firmware may notify host some debug message,
+it can help analyze the state of the firmware in case of error
 
-When LINERESET occurs, the error handler issues PMC which is
-recognized as a request for PA. If a host's PA gets or raises
-LINERESET, and a request for PMC, this could be a concurrent
-situation mentioned above. And I found that situation w/ my
-environment.
-
-[  222.929539]I[0:DefaultDispatch:20410] exynos-ufs 13500000.ufs: ufshcd_update_uic_error: uecdl : 0x80000002
-[  222.999009]I[0: arch_disk_io_1:20413] exynos-ufs 13500000.ufs: ufshcd_update_uic_error: uecpa : 0x80000010
-[  222.999200] [6:  kworker/u16:2:  132] exynos-ufs 13500000.ufs: ufs_pwr_mode_restore_needed : mode = 0x15, pwr_rx = 1, pwr_tx = 1
-[  223.002876]I[0: arch_disk_io_3:20422] exynos-ufs 13500000.ufs: ufshcd_update_uic_error: uecpa : 0x80000010
-[  223.501050] [4:  kworker/u16:2:  132] exynos-ufs 13500000.ufs: pwr ctrl cmd 0x2 with mode 0x11 completion timeout
-[  223.502305] [4:  kworker/u16:2:  132] exynos-ufs 13500000.ufs: ufshcd_change_power_mode: power mode change failed -110
-[  223.502312] [4:  kworker/u16:2:  132] exynos-ufs 13500000.ufs: ufshcd_err_handler: Failed to restore power mode, err = -110
-[  223.502392] [4:  kworker/u16:2:  132] exynos-ufs 13500000.ufs: ufshcd_is_pwr_mode_restore_needed : mode = 0x11, pwr_rx = 1, pwr_tx = 1
-
-This patch is to poll PMC's result w/o checking its ind until
-the result is not busy, i.e. 09h, to avoid the rejection.
-
-And this patch requires the following patch because it assumes
-__ufshcd_send_uic_cmd doesn't require host_lock.
-https://lore.kernel.org/linux-scsi/bec84ee1ce8f5c5971b98d8e501aeabb9b5b26d1.1686716811.git.kwmad.kim@samsung.com/
-
-Signed-off-by: Kiwoong Kim <kwmad.kim@samsung.com>
-
+Fixes: 9f599f351e86 ("media: amphion: add vpu core driver")
+Signed-off-by: Ming Qian <ming.qian@nxp.com>
+Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
 ---
-v3 -> v4
-1) change description
+v3
+- set the last byte to 0 only for string message
+v2
+- force to terminate string message data
+ drivers/media/platform/amphion/vpu_defs.h    |  1 +
+ drivers/media/platform/amphion/vpu_helpers.c |  1 +
+ drivers/media/platform/amphion/vpu_malone.c  |  1 +
+ drivers/media/platform/amphion/vpu_msgs.c    | 31 ++++++++++++++++----
+ 4 files changed, 29 insertions(+), 5 deletions(-)
 
-v2 -> v3
-1) check time in the loop with jiffies, instead of miliseconds.
-2) change a variable's name and fix a typo and wrong alignment.
-
-v1 -> v2
-1) remove clearing hba->active_uic_cmd at the end of __ufshcd_poll_uic_pwr
-2) change commit message on the cited clause: 5.7.12.11 -> 5.7.12.1.1
-3) add mdelay to avoid too many issueing
-4) change the timeout for the polling to 100ms because I found it
-sometimes takes much longer than expected.
-
-Signed-off-by: Kiwoong Kim <kwmad.kim@samsung.com>
----
- drivers/ufs/core/ufshcd.c | 93 +++++++++++++++++++++++++++++++++--------------
- 1 file changed, 65 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index 7bc3fc4..f6b8659 100644
---- a/drivers/ufs/core/ufshcd.c
-+++ b/drivers/ufs/core/ufshcd.c
-@@ -98,6 +98,9 @@
- /* Polling time to wait for fDeviceInit */
- #define FDEVICEINIT_COMPL_TIMEOUT 1500 /* millisecs */
+diff --git a/drivers/media/platform/amphion/vpu_defs.h b/drivers/media/platform/amphion/vpu_defs.h
+index 667637eedb5d..7320852668d6 100644
+--- a/drivers/media/platform/amphion/vpu_defs.h
++++ b/drivers/media/platform/amphion/vpu_defs.h
+@@ -71,6 +71,7 @@ enum {
+ 	VPU_MSG_ID_TIMESTAMP_INFO,
+ 	VPU_MSG_ID_FIRMWARE_XCPT,
+ 	VPU_MSG_ID_PIC_SKIPPED,
++	VPU_MSG_ID_DBG_MSG,
+ };
  
-+/* Polling time to wait until PA is ready */
-+#define UIC_PA_RDY_TIMEOUT	100	/* millisecs */
-+
- /* UFSHC 4.0 compliant HC support this mode. */
- static bool use_mcq_mode = true;
- 
-@@ -4120,6 +4123,62 @@ int ufshcd_dme_get_attr(struct ufs_hba *hba, u32 attr_sel,
+ enum VPU_ENC_MEMORY_RESOURSE {
+diff --git a/drivers/media/platform/amphion/vpu_helpers.c b/drivers/media/platform/amphion/vpu_helpers.c
+index af3b336e5dc3..d12310af9ebc 100644
+--- a/drivers/media/platform/amphion/vpu_helpers.c
++++ b/drivers/media/platform/amphion/vpu_helpers.c
+@@ -489,6 +489,7 @@ const char *vpu_id_name(u32 id)
+ 	case VPU_MSG_ID_UNSUPPORTED: return "unsupported";
+ 	case VPU_MSG_ID_FIRMWARE_XCPT: return "exception";
+ 	case VPU_MSG_ID_PIC_SKIPPED: return "skipped";
++	case VPU_MSG_ID_DBG_MSG: return "debug msg";
+ 	}
+ 	return "<unknown>";
  }
- EXPORT_SYMBOL_GPL(ufshcd_dme_get_attr);
+diff --git a/drivers/media/platform/amphion/vpu_malone.c b/drivers/media/platform/amphion/vpu_malone.c
+index f771661980c0..d3425de7bccd 100644
+--- a/drivers/media/platform/amphion/vpu_malone.c
++++ b/drivers/media/platform/amphion/vpu_malone.c
+@@ -745,6 +745,7 @@ static struct vpu_pair malone_msgs[] = {
+ 	{VPU_MSG_ID_UNSUPPORTED, VID_API_EVENT_UNSUPPORTED_STREAM},
+ 	{VPU_MSG_ID_FIRMWARE_XCPT, VID_API_EVENT_FIRMWARE_XCPT},
+ 	{VPU_MSG_ID_PIC_SKIPPED, VID_API_EVENT_PIC_SKIPPED},
++	{VPU_MSG_ID_DBG_MSG, VID_API_EVENT_DBG_MSG_DEC},
+ };
  
-+static int __ufshcd_poll_uic_pwr(struct ufs_hba *hba, struct uic_command *cmd,
-+		struct completion *cnf)
+ static void vpu_malone_pack_fs_alloc(struct vpu_rpc_event *pkt,
+diff --git a/drivers/media/platform/amphion/vpu_msgs.c b/drivers/media/platform/amphion/vpu_msgs.c
+index d0ead051f7d1..b74a407a19f2 100644
+--- a/drivers/media/platform/amphion/vpu_msgs.c
++++ b/drivers/media/platform/amphion/vpu_msgs.c
+@@ -23,6 +23,7 @@
+ struct vpu_msg_handler {
+ 	u32 id;
+ 	void (*done)(struct vpu_inst *inst, struct vpu_rpc_event *pkt);
++	u32 is_str;
+ };
+ 
+ static void vpu_session_handle_start_done(struct vpu_inst *inst, struct vpu_rpc_event *pkt)
+@@ -154,7 +155,7 @@ static void vpu_session_handle_error(struct vpu_inst *inst, struct vpu_rpc_event
+ {
+ 	char *str = (char *)pkt->data;
+ 
+-	if (strlen(str))
++	if (*str)
+ 		dev_err(inst->dev, "instance %d firmware error : %s\n", inst->id, str);
+ 	else
+ 		dev_err(inst->dev, "instance %d is unsupported stream\n", inst->id);
+@@ -180,6 +181,21 @@ static void vpu_session_handle_pic_skipped(struct vpu_inst *inst, struct vpu_rpc
+ 	vpu_inst_unlock(inst);
+ }
+ 
++static void vpu_session_handle_dbg_msg(struct vpu_inst *inst, struct vpu_rpc_event *pkt)
 +{
-+	unsigned long flags;
-+	int ret;
-+	u32 mode = cmd->argument3;
-+	unsigned long deadline = jiffies +
-+		msecs_to_jiffies(UIC_PA_RDY_TIMEOUT);
++	char *str = (char *)pkt->data;
 +
-+	do {
-+		spin_lock_irqsave(hba->host->host_lock, flags);
-+		hba->active_uic_cmd = NULL;
-+		if (ufshcd_is_link_broken(hba)) {
-+			spin_unlock_irqrestore(hba->host->host_lock, flags);
-+			ret = -ENOLINK;
-+			goto out;
-+		}
-+		hba->uic_async_done = cnf;
-+		spin_unlock_irqrestore(hba->host->host_lock, flags);
-+
-+		cmd->argument2 = 0;
-+		cmd->argument3 = mode;
-+		ret = __ufshcd_send_uic_cmd(hba, cmd, true);
-+		if (ret) {
-+			dev_err(hba->dev,
-+				"pwr ctrl cmd 0x%x with mode 0x%x uic error %d\n",
-+				cmd->command, cmd->argument3, ret);
-+			goto out;
-+		}
-+
-+		/* This value is heuristic */
-+		if (!wait_for_completion_timeout(&cmd->done,
-+						 msecs_to_jiffies(5))) {
-+			ret = -ETIMEDOUT;
-+			dev_err(hba->dev,
-+				"pwr ctrl cmd 0x%x with mode 0x%x timeout\n",
-+				cmd->command, cmd->argument3);
-+			if (cmd->cmd_active)
-+				goto out;
-+
-+			dev_info(hba->dev, "%s: pwr ctrl cmd has already been completed\n", __func__);
-+		}
-+
-+		/* retry only for busy cases */
-+		ret = cmd->argument2 & MASK_UIC_COMMAND_RESULT;
-+		if (ret != UIC_CMD_RESULT_BUSY)
-+			break;
-+
-+		dev_info(hba->dev, "%s: PA is busy and can't handle a requeest, %d\n", __func__, ret);
-+		mdelay(1);
-+
-+	} while (time_before(jiffies, deadline));
-+out:
-+	return ret;
++	if (*str)
++		dev_info(inst->dev, "instance %d firmware dbg msg : %s\n", inst->id, str);
 +}
 +
- /**
-  * ufshcd_uic_pwr_ctrl - executes UIC commands (which affects the link power
-  * state) and waits for it to take effect.
-@@ -4142,33 +4201,13 @@ static int ufshcd_uic_pwr_ctrl(struct ufs_hba *hba, struct uic_command *cmd)
- 	unsigned long flags;
- 	u8 status;
- 	int ret;
--	bool reenable_intr = false;
++static void vpu_terminate_string_msg(struct vpu_rpc_event *pkt)
++{
++	if (pkt->hdr.num == ARRAY_SIZE(pkt->data))
++		pkt->hdr.num--;
++	pkt->data[pkt->hdr.num] = 0;
++}
++
+ static struct vpu_msg_handler handlers[] = {
+ 	{VPU_MSG_ID_START_DONE, vpu_session_handle_start_done},
+ 	{VPU_MSG_ID_STOP_DONE, vpu_session_handle_stop_done},
+@@ -193,9 +209,10 @@ static struct vpu_msg_handler handlers[] = {
+ 	{VPU_MSG_ID_PIC_DECODED, vpu_session_handle_pic_decoded},
+ 	{VPU_MSG_ID_DEC_DONE, vpu_session_handle_pic_done},
+ 	{VPU_MSG_ID_PIC_EOS, vpu_session_handle_eos},
+-	{VPU_MSG_ID_UNSUPPORTED, vpu_session_handle_error},
+-	{VPU_MSG_ID_FIRMWARE_XCPT, vpu_session_handle_firmware_xcpt},
++	{VPU_MSG_ID_UNSUPPORTED, vpu_session_handle_error, true},
++	{VPU_MSG_ID_FIRMWARE_XCPT, vpu_session_handle_firmware_xcpt, true},
+ 	{VPU_MSG_ID_PIC_SKIPPED, vpu_session_handle_pic_skipped},
++	{VPU_MSG_ID_DBG_MSG, vpu_session_handle_dbg_msg, true},
+ };
  
--	mutex_lock(&hba->uic_cmd_mutex);
--	ufshcd_add_delay_before_dme_cmd(hba);
--
--	spin_lock_irqsave(hba->host->host_lock, flags);
--	if (ufshcd_is_link_broken(hba)) {
--		ret = -ENOLINK;
--		goto out_unlock;
--	}
--	hba->uic_async_done = &uic_async_done;
--	if (ufshcd_readl(hba, REG_INTERRUPT_ENABLE) & UIC_COMMAND_COMPL) {
--		ufshcd_disable_intr(hba, UIC_COMMAND_COMPL);
--		/*
--		 * Make sure UIC command completion interrupt is disabled before
--		 * issuing UIC command.
--		 */
--		wmb();
--		reenable_intr = true;
--	}
--	spin_unlock_irqrestore(hba->host->host_lock, flags);
--	ret = __ufshcd_send_uic_cmd(hba, cmd, false);
-+	ret = __ufshcd_poll_uic_pwr(hba, cmd, &uic_async_done);
- 	if (ret) {
--		dev_err(hba->dev,
--			"pwr ctrl cmd 0x%x with mode 0x%x uic error %d\n",
--			cmd->command, cmd->argument3, ret);
--		goto out;
-+		if (ret == -ENOLINK)
-+			goto out_unlock;
-+		else
-+			goto out;
+ static int vpu_session_handle_msg(struct vpu_inst *inst, struct vpu_rpc_event *msg)
+@@ -219,8 +236,12 @@ static int vpu_session_handle_msg(struct vpu_inst *inst, struct vpu_rpc_event *m
+ 		}
  	}
  
- 	if (!wait_for_completion_timeout(hba->uic_async_done,
-@@ -4205,14 +4244,12 @@ static int ufshcd_uic_pwr_ctrl(struct ufs_hba *hba, struct uic_command *cmd)
- 	spin_lock_irqsave(hba->host->host_lock, flags);
- 	hba->active_uic_cmd = NULL;
- 	hba->uic_async_done = NULL;
--	if (reenable_intr)
--		ufshcd_enable_intr(hba, UIC_COMMAND_COMPL);
- 	if (ret) {
- 		ufshcd_set_link_broken(hba);
- 		ufshcd_schedule_eh_work(hba);
- 	}
--out_unlock:
- 	spin_unlock_irqrestore(hba->host->host_lock, flags);
-+out_unlock:
- 	mutex_unlock(&hba->uic_cmd_mutex);
+-	if (handler && handler->done)
+-		handler->done(inst, msg);
++	if (handler) {
++		if (handler->is_str)
++			vpu_terminate_string_msg(msg);
++		if (handler->done)
++			handler->done(inst, msg);
++	}
  
- 	return ret;
+ 	vpu_response_cmd(inst, msg_id, 1);
+ 
 -- 
-2.7.4
+2.38.1
 
