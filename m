@@ -2,234 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED15797AC6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 097F879766D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245638AbjIGRsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41894 "EHLO
+        id S237287AbjIGQJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245660AbjIGRsA (ORCPT
+        with ESMTP id S239466AbjIGQIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:48:00 -0400
-Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F1A1FFC;
-        Thu,  7 Sep 2023 10:47:40 -0700 (PDT)
-Received: from authenticated-user (box.trvn.ru [194.87.146.52])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Thu, 7 Sep 2023 12:08:04 -0400
+Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF8646A1;
+        Thu,  7 Sep 2023 09:01:15 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 1FD9920851;
+        Thu,  7 Sep 2023 12:02:42 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id T5jX2-1IB3fK; Thu,  7 Sep 2023 12:02:41 +0200 (CEST)
+Received: from mailout1.secunet.com (mailout1.secunet.com [62.96.220.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id DC57B4245A;
-        Thu,  7 Sep 2023 15:03:09 +0500 (+05)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1694080990; bh=StFemIF/2ACZvZh/Pxi85yeBz6CK2ME+JWLfl5kUCzw=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=f30AMxqbk0xdk+4TMKvlx5bJI2pcI93dY8gIwoTAdmuKrWOEPpCM3CngiMIIKVEJK
-         8mObrrMSKoMUr9kdiNJbQFijLj0qziTT5EIVYmOVYjN55NGOy4jycWx+1p7tuLSfbN
-         1oc+3SYWs3tlRpOGow2zT9UR+mTh47PPfLP+5uM2UxhGV0GaXHgvuvK3mf8pBzZwuB
-         Esy0UEmH15dAzSwRL1IwoNBGXvf+RFA7U4oDUv0F4pfs3e/utQUXL14fF41J6JXs8i
-         71I6uMOMRgEAgXV5R8MyvXoRJBc49kzLbcTmRnQ2b3IXpoQapDl+1Ka8GliaUwEp/I
-         YBZWvHVnxRwVg==
-From:   Nikita Travkin <nikita@trvn.ru>
-Date:   Thu, 07 Sep 2023 15:02:37 +0500
-Subject: [PATCH v3 4/4] arm64: dts: qcom: sc7180: Add ADSP
+        by a.mx.secunet.com (Postfix) with ESMTPS id 5A84A2070D;
+        Thu,  7 Sep 2023 12:02:41 +0200 (CEST)
+Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
+        by mailout1.secunet.com (Postfix) with ESMTP id 4FB3D80004A;
+        Thu,  7 Sep 2023 12:02:41 +0200 (CEST)
+Received: from mbx-essen-02.secunet.de (10.53.40.198) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 7 Sep 2023 12:02:41 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-02.secunet.de
+ (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Thu, 7 Sep
+ 2023 12:02:40 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 8D2D23182AA7; Thu,  7 Sep 2023 12:02:40 +0200 (CEST)
+Date:   Thu, 7 Sep 2023 12:02:40 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Dong Chenchen <dongchenchen2@huawei.com>
+CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <fw@strlen.de>, <leon@kernel.org>, <edumazet@google.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>, <timo.teras@iki.fi>,
+        <yuehaibing@huawei.com>, <weiyongjun1@huawei.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [Patch net v3] net: xfrm: skip policies marked as dead while
+ reinserting policies
+Message-ID: <ZPmfwE4yHCxSk+ks@gauss3.secunet.de>
+References: <20230815141834.1040646-1-dongchenchen2@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230907-sc7180-adsp-rproc-v3-4-6515c3fbe0a3@trvn.ru>
-References: <20230907-sc7180-adsp-rproc-v3-0-6515c3fbe0a3@trvn.ru>
-In-Reply-To: <20230907-sc7180-adsp-rproc-v3-0-6515c3fbe0a3@trvn.ru>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org
-Cc:     David Wronek <davidwronek@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Nikita Travkin <nikita@trvn.ru>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4341; i=nikita@trvn.ru;
- h=from:subject:message-id; bh=StFemIF/2ACZvZh/Pxi85yeBz6CK2ME+JWLfl5kUCzw=;
- b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBk+Z/XXACb1HQKlfdqcudVWbdURrRzfhFbQvUWq
- VfnEkqxIfqJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZPmf1wAKCRBDHOzuKBm/
- dbkMD/4hGWIxQrkM2fnC2ef1yMyx8LWMltMVgtwmULrymGHd76pRuIH1Ecra8sCFayqiV/Q5mFk
- /9XIxv/RMMlwtVuLD82MsAC+btLCWeELNhTyDMj2wD2nC4aab/sHGbLv3mwCw0rtGnN7ehB4aq5
- kzsgVMNBweT6ese3thUdNwSw9NPmbgnVkWDeGNMyj8AtNzl17697FYotkjS27CBcSp5Z34zFXEM
- HeRxrB9Fu/1TH66SPNvx8njJ9mWn2iDQ3oi4Ze5A6quXmJq+18nrkgj/yv99jR6eAclXDtF2n70
- eBF5iXoAPI95b9qDZH4Y6l3oRI5vZ4FihMlg2B/dfhpf3bRaJMyPv0RmK2q8nLAoWdYMGHKvozE
- dYBUCYh3TfB3VOC/rlz9wBfSQsqRjih6OKU5DLZAZq/xNh+GmlKv4GaLWXunet6tdoHBh2bQ1En
- JkNrUlQwNIwOihxpifpGU5VJ1VIIj+llSyrIyos3SSUKJwg6OrpM/zsAs/ahC5egRivDuiChV48
- Qta3QA6XRrHxMOyzuLFmnAtW0iT9FDAOlUk8B9G4QuaDfpwDY3k3BvkeyNHQ5e8lUlSUvOa7a4C
- 6gF8pdoY6TYQKjMLknZsfRM86d+rSgtyKRnThmYTANqI7oI6w+Wi+I7MjmMO3KKs2UblsWwh8Te
- qQ3xsLEZMhRxT5Q==
-X-Developer-Key: i=nikita@trvn.ru; a=openpgp;
- fpr=C084AF54523FAA837E2EC547431CECEE2819BF75
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230815141834.1040646-1-dongchenchen2@huawei.com>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-02.secunet.de (10.53.40.198)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sc7180 has an ADSP remoteproc that exclusively controls the audio
-hardware on devices that use Qualcomm firmware.
+On Tue, Aug 15, 2023 at 10:18:34PM +0800, Dong Chenchen wrote:
+> BUG: KASAN: slab-use-after-free in xfrm_policy_inexact_list_reinsert+0xb6/0x430
+> Read of size 1 at addr ffff8881051f3bf8 by task ip/668
+> 
+> CPU: 2 PID: 668 Comm: ip Not tainted 6.5.0-rc5-00182-g25aa0bebba72-dirty #64
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13 04/01/2014
+> Call Trace:
+>  <TASK>
+>  dump_stack_lvl+0x72/0xa0
+>  print_report+0xd0/0x620
+>  kasan_report+0xb6/0xf0
+>  xfrm_policy_inexact_list_reinsert+0xb6/0x430
+>  xfrm_policy_inexact_insert_node.constprop.0+0x537/0x800
+>  xfrm_policy_inexact_alloc_chain+0x23f/0x320
+>  xfrm_policy_inexact_insert+0x6b/0x590
+>  xfrm_policy_insert+0x3b1/0x480
+>  xfrm_add_policy+0x23c/0x3c0
+>  xfrm_user_rcv_msg+0x2d0/0x510
+>  netlink_rcv_skb+0x10d/0x2d0
+>  xfrm_netlink_rcv+0x49/0x60
+>  netlink_unicast+0x3fe/0x540
+>  netlink_sendmsg+0x528/0x970
+>  sock_sendmsg+0x14a/0x160
+>  ____sys_sendmsg+0x4fc/0x580
+>  ___sys_sendmsg+0xef/0x160
+>  __sys_sendmsg+0xf7/0x1b0
+>  do_syscall_64+0x3f/0x90
+>  entry_SYSCALL_64_after_hwframe+0x73/0xdd
+> 
+> The root cause is:
+> 
+> cpu 0			cpu1
+> xfrm_dump_policy
+> xfrm_policy_walk
+> list_move_tail
+> 			xfrm_add_policy
+> 			... ...
+> 			xfrm_policy_inexact_list_reinsert
+> 			list_for_each_entry_reverse
+> 				if (!policy->bydst_reinsert)
+> 				//read non-existent policy
+> xfrm_dump_policy_done
+> xfrm_policy_walk_done
+> list_del(&walk->walk.all);
+> 
+> If dump_one_policy() returns err (triggered by netlink socket),
+> xfrm_policy_walk() will move walk initialized by socket to list
+> net->xfrm.policy_all. so this socket becomes visible in the global
+> policy list. The head *walk can be traversed when users add policies
+> with different prefixlen and trigger xfrm_policy node merge.
+> 
+> The issue can also be triggered by policy list traversal while rehashing
+> and flushing policies.
+> 
+> It can be fixed by skip such "policies" with walk.dead set to 1.
+> 
+> Fixes: 9cf545ebd591 ("xfrm: policy: store inexact policies in a tree ordered by destination address")
+> Fixes: 12a169e7d8f4 ("ipsec: Put dumpers on the dump list")
+> Signed-off-by: Dong Chenchen <dongchenchen2@huawei.com>
 
-Add it along with the relevant audio services.
-
-Signed-off-by: Nikita Travkin <nikita@trvn.ru>
----
-v2: rename service nodes according to the schema, reorder properties
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 122 +++++++++++++++++++++++++++++++++++
- 1 file changed, 122 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 322fa478515f..eca1c34d2306 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -20,6 +20,8 @@
- #include <dt-bindings/reset/qcom,sdm845-aoss.h>
- #include <dt-bindings/reset/qcom,sdm845-pdc.h>
- #include <dt-bindings/soc/qcom,rpmh-rsc.h>
-+#include <dt-bindings/soc/qcom,apr.h>
-+#include <dt-bindings/sound/qcom,q6afe.h>
- #include <dt-bindings/thermal/thermal.h>
- 
- / {
-@@ -3781,6 +3783,126 @@ wifi: wifi@18800000 {
- 			status = "disabled";
- 		};
- 
-+		remoteproc_adsp: remoteproc@62400000 {
-+			compatible = "qcom,sc7180-adsp-pas";
-+			reg = <0 0x62400000 0 0x100>;
-+
-+			interrupts-extended = <&intc GIC_SPI 162 IRQ_TYPE_EDGE_RISING>,
-+					      <&adsp_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
-+					      <&adsp_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
-+					      <&adsp_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
-+					      <&adsp_smp2p_in 3 IRQ_TYPE_EDGE_RISING>;
-+			interrupt-names = "wdog",
-+					  "fatal",
-+					  "ready",
-+					  "handover",
-+					  "stop-ack";
-+
-+			clocks = <&rpmhcc RPMH_CXO_CLK>;
-+			clock-names = "xo";
-+
-+			power-domains = <&rpmhpd SC7180_LCX>,
-+					<&rpmhpd SC7180_LMX>;
-+			power-domain-names = "lcx", "lmx";
-+
-+			qcom,qmp = <&aoss_qmp>;
-+			qcom,smem-states = <&adsp_smp2p_out 0>;
-+			qcom,smem-state-names = "stop";
-+
-+			status = "disabled";
-+
-+			glink-edge {
-+				interrupts = <GIC_SPI 156 IRQ_TYPE_EDGE_RISING>;
-+				label = "lpass";
-+				qcom,remote-pid = <2>;
-+				mboxes = <&apss_shared 8>;
-+
-+				apr {
-+					compatible = "qcom,apr-v2";
-+					qcom,glink-channels = "apr_audio_svc";
-+					qcom,domain = <APR_DOMAIN_ADSP>;
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					service@3 {
-+						compatible = "qcom,q6core";
-+						reg = <APR_SVC_ADSP_CORE>;
-+						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
-+					};
-+
-+					q6afe: service@4 {
-+						compatible = "qcom,q6afe";
-+						reg = <APR_SVC_AFE>;
-+						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
-+
-+						q6afedai: dais {
-+							compatible = "qcom,q6afe-dais";
-+							#address-cells = <1>;
-+							#size-cells = <0>;
-+							#sound-dai-cells = <1>;
-+						};
-+
-+						q6afecc: clock-controller {
-+							compatible = "qcom,q6afe-clocks";
-+							#clock-cells = <2>;
-+						};
-+					};
-+
-+					q6asm: service@7 {
-+						compatible = "qcom,q6asm";
-+						reg = <APR_SVC_ASM>;
-+						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
-+
-+						q6asmdai: dais {
-+							compatible = "qcom,q6asm-dais";
-+							#address-cells = <1>;
-+							#size-cells = <0>;
-+							#sound-dai-cells = <1>;
-+							iommus = <&apps_smmu 0x1001 0x0>;
-+						};
-+					};
-+
-+					q6adm: service@8 {
-+						compatible = "qcom,q6adm";
-+						reg = <APR_SVC_ADM>;
-+						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
-+
-+						q6routing: routing {
-+							compatible = "qcom,q6adm-routing";
-+							#sound-dai-cells = <0>;
-+						};
-+					};
-+				};
-+
-+				fastrpc {
-+					compatible = "qcom,fastrpc";
-+					qcom,glink-channels = "fastrpcglink-apps-dsp";
-+					label = "adsp";
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					compute-cb@3 {
-+						compatible = "qcom,fastrpc-compute-cb";
-+						reg = <3>;
-+						iommus = <&apps_smmu 0x1003 0x0>;
-+					};
-+
-+					compute-cb@4 {
-+						compatible = "qcom,fastrpc-compute-cb";
-+						reg = <4>;
-+						iommus = <&apps_smmu 0x1004 0x0>;
-+					};
-+
-+					compute-cb@5 {
-+						compatible = "qcom,fastrpc-compute-cb";
-+						reg = <5>;
-+						iommus = <&apps_smmu 0x1005 0x0>;
-+						qcom,nsessions = <5>;
-+					};
-+				};
-+			};
-+		};
-+
- 		lpasscc: clock-controller@62d00000 {
- 			compatible = "qcom,sc7180-lpasscorecc";
- 			reg = <0 0x62d00000 0 0x50000>,
-
--- 
-2.41.0
-
+Applied, thanks a lot!
