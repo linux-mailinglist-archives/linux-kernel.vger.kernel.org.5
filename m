@@ -2,128 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E51B797455
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A64797388
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235953AbjIGPhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:37:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37446 "EHLO
+        id S236066AbjIGP0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344756AbjIGPdp (ORCPT
+        with ESMTP id S241420AbjIGPZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:33:45 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5623CE49;
-        Thu,  7 Sep 2023 08:33:21 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (ftip006315900.acc1.colindale.21cn-nte.bt.net [81.134.214.249])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DC01831B9;
-        Thu,  7 Sep 2023 17:03:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1694098987;
-        bh=Tu+mxxpH015oWyJsbCEuUxhFMyaqhb+/X6gaqeEsbwg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oOvU/38KLai0fMlQ+LtyaAWZAT/ZTbDaShtN+HYmdnM9UJCAherctnVcG4dY+shSf
-         5lfCWRyXTOMkthsUqE8/QPfwwyv596Xv6zntZ/ErZ8QcHM3p7c/wTFeaOZq4DkL+c3
-         iHzUolfCJeNpZcM4HSKBw56qOH0sYULK5VmhSPHE=
-Date:   Thu, 7 Sep 2023 18:04:48 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Paul Elder <paul.elder@ideasonboard.com>
-Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-media@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 3/3] arm64: dts: mediatek: mt8365-pumpkin: Add overlays
- for thp7312 cameras
-Message-ID: <20230907150448.GD17610@pendragon.ideasonboard.com>
-References: <502fc7b1-a32d-6901-3a45-d2aa0e0c3849@linaro.org>
- <20230906083237.GL7971@pendragon.ideasonboard.com>
- <a3ed9856-a87b-5cf6-26b5-ff2b19234a8a@linaro.org>
- <20230906090058.GB17308@pendragon.ideasonboard.com>
- <59e07c6a-6f1b-0cc7-dddc-96d2a4050843@linaro.org>
- <20230906093531.GO7971@pendragon.ideasonboard.com>
- <169399810391.277971.691693692840899613@ping.linuxembedded.co.uk>
- <20230906111429.GC17308@pendragon.ideasonboard.com>
- <ZPnkUVmDZYb0ysu0@pyrite.rasen.tech>
- <20230907150408.GC17610@pendragon.ideasonboard.com>
+        Thu, 7 Sep 2023 11:25:19 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F30170E
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:25:03 -0700 (PDT)
+Received: from nazgul.tnic (unknown [93.123.97.133])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8132D1EC0513;
+        Thu,  7 Sep 2023 17:06:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1694099190;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Ge1IQDq1JvnTEAM/MidB0daQSkz6y0NbUvHmMjQT8jU=;
+        b=jssZumBzvCN8jHsr0NYxwaF6c5U5a6XnotcHYcshS2I8r9NKQzDyaxhKpq1BVdRXfMYF5n
+        N4Hptgzj56xhxj4PFwq3bDtHuDwi5JsRcygiKq518cP2yCYOQNO8ryhzTy5US5UxqNGvK+
+        OJnnnKHrg9zSKGytdSmdUb0ZUKdRbDY=
+Date:   Thu, 7 Sep 2023 17:06:32 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
+        gregkh@linuxfoundation.org, nik.borisov@suse.com
+Subject: Re: [PATCH v2 10/11] x86/alternatives: Simplify ALTERNATIVE_n()
+Message-ID: <20230907150632.GAZPnm+Ly+Vyt8VPYr@fat_crate.local>
+References: <20230814114426.057251214@infradead.org>
+ <20230814121149.176244760@infradead.org>
+ <20230907083158.GBZPmKfjarnaQk1ofB@fat_crate.local>
+ <20230907110917.GA10955@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230907150408.GC17610@pendragon.ideasonboard.com>
+In-Reply-To: <20230907110917.GA10955@noisy.programming.kicks-ass.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 06:04:09PM +0300, Laurent Pinchart wrote:
-> On Thu, Sep 07, 2023 at 11:55:13PM +0900, Paul Elder wrote:
-> > On Wed, Sep 06, 2023 at 02:14:29PM +0300, Laurent Pinchart wrote:
-> > > On Wed, Sep 06, 2023 at 12:01:43PM +0100, Kieran Bingham wrote:
-> > > > Quoting Laurent Pinchart (2023-09-06 10:35:31)
-> > > > > On Wed, Sep 06, 2023 at 11:21:31AM +0200, Krzysztof Kozlowski wrote:
-> > > > > > On 06/09/2023 11:00, Laurent Pinchart wrote:
-> > > > > > >>> has a regulator@0. There are similar instances for clocks.
-> > > > > > >>>
-> > > > > > >>> I understand why it may not be a good idea, and how the root node is
-> > > > > > >>> indeed not a bus. In some cases, those regulators and clocks are grouped
-> > > > > > >>> in a regulators or clocks node that has a "simple-bus" compatible. I'm
-> > > > > > >>> not sure if that's a good idea, but at least it should validate.
-> > > > > > >>>
-> > > > > > >>> What's the best practice for discrete board-level clocks and regulators
-> > > > > > >>> in overlays ? How do we ensure that their node name will not conflict
-> > > > > > >>> with the board to which the overlay is attached ?
-> > > > > > >>
-> > > > > > >> Top-level nodes (so under /) do not have unit addresses. If they have -
-> > > > > > >> it's an error, because it is not a bus. Also, unit address requires reg.
-> > > > > > >> No reg? No unit address. DTC reports this as warnings as well.
-> > > > > > > 
-> > > > > > > I agree with all that, but what's the recommended practice to add
-> > > > > > > top-level clocks and regulators in overlays, in a way that avoids
-> > > > > > > namespace clashes with the base board ?
-> > > > > > 
-> > > > > > Whether you use regulator@0 or regulator-0, you have the same chances of
-> > > > > > clash.
-> > > > > 
-> > > > > No disagreement there. My question is whether there's a recommended
-> > > > > practice to avoid clashes, or if it's an unsolved problem that gets
-> > > > > ignored for now because there's only 36h in a day and there are more
-> > > > > urgent things to do.
-> > > > 
-> > > > Should an overlay add these items to a simple-bus specific to that
-> > > > overlay/device that is being supported?
-> > > > 
-> > > > That would 'namespace' the added fixed-clocks/fixed-regulators etc...
-> > > > 
-> > > > But maybe it's overengineering or mis-using the simple-bus.
-> > > 
-> > > You would still need to name the node that groups the regulators and
-> > > clocks in a way that wouldn't clash between multiple overlays and the
-> > > base board. It would be nice to have nodes that are "private" to an
-> > > overlay.
-> > 
-> > What's the best solution to this then :/
+On Thu, Sep 07, 2023 at 01:09:17PM +0200, Peter Zijlstra wrote:
+> If you flip the 3 and 2 byte instructions the result is the same. No
+> extra padding.
+>
+> And no, I had not actually tested this before, because clearly this is
+> all obvious ;-)
+
+IKR.
+
+So I take that extra padding thing back - we actually *must* have that
+padding so that it actually works correctly. I just did a silly example
+but nothing says one cannot do one like that today:
+
+		alternative_2("", "pop %%rax", X86_FEATURE_ALWAYS,
+			      "call clear_page_orig", X86_FEATURE_ALWAYS);
+
+An order of insns which grows in size: 0, then 1, then 5.
+
+It turns into:
+
+> # arch/x86/mm/init.c:163: 		alternative_2("", "pop %%rax", X86_FEATURE_ALWAYS,
+> # 163 "arch/x86/mm/init.c" 1
+> 	# ALT: oldnstr
+> 661:
+> 	# ALT: oldnstr
+> 661:
+> 	
+> 662:
+> # ALT: padding
+> .skip -(((665f-664f)-(662b-661b)) > 0) * ((665f-664f)-(662b-661b)),0x90
+
+IINM, this turns into:
+
+.skip 1 * (1 - 0) = 1.
+
+because "pop %rax" is one byte. The original insn is of size 0.
+
+So we end up with a 0x90 here.
+
+> 663:
+> .pushsection .altinstructions,"a"
+>  .long 661b - .
+>  .long 664f - .
+>  .4byte ( 3*32+21)
+>  .byte 663b-661b
+>  .byte 665f-664f
+> .popsection
+> .pushsection .altinstr_replacement, "ax"
+> # ALT: replacement 
+> 664:
+> 	pop %rax
+>  665:
+> .popsection
 > 
-> It seems we don't have a good solution. For now, I'd recommend just
-> picking a name for the regulator that has a high chance to be unique,
-> like reg-thp7312-1v2 for instance.
+> 662:
 
-Or reg-cam-1v2, or ... The name doesn't matter much really, as long as
-it's not extremely generic with a high risk of conflict.
+<--- X
 
-> > > > And the items are still not on a 'bus' with an address - they just exist
-> > > > on a presumably externally provided board....
+> # ALT: padding
+> .skip -(((665f-664f)-(662b-661b)) > 0) * ((665f-664f)-(662b-661b)),0x90
+
+Now the second guy comes in. That turns into:
+
+.skip 1 * (5 - 1) = 4
+
+Because, IINM, the 662 label above is the *second* one at marker X (we
+go backwards) and the 661 is the second one too.
+
+So between those two labels you have the 0x90 - one byte padding from
+the first .skip.
+
+And now it adds 4 more bytes to accomodate the CALL.
+
+So we need to have that padding back-to-back in case the second
+replacement is longer.
+
+Ok, I guess the only thing that's bothering me is:
+
+>       # ALT: oldnstr
+> 661:
+>       # ALT: oldnstr 
+> 661:
+
+I'll keep on playing with this.
+
+Thx.
 
 -- 
-Regards,
+Regards/Gruss,
+    Boris.
 
-Laurent Pinchart
+https://people.kernel.org/tglx/notes-about-netiquette
