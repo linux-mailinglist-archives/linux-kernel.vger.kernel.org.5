@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1290D797A8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B54BE797A8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245239AbjIGRok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:44:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57284 "EHLO
+        id S243159AbjIGRow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243159AbjIGRoj (ORCPT
+        with ESMTP id S245263AbjIGRop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:44:39 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B63BF10F1;
-        Thu,  7 Sep 2023 10:44:15 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bf58009a8dso861555a34.1;
-        Thu, 07 Sep 2023 10:44:15 -0700 (PDT)
+        Thu, 7 Sep 2023 13:44:45 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF0A1700
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:44:21 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-79536bc669dso50878839f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 10:44:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694108655; x=1694713455; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iMuPz+Z8VHaiaFn2Ii58q0kIyXx2k0/qmeW5JC5oah4=;
-        b=rLRW/VH1E9LSa0IuTq6+rkh4aLupgvqHqXuLnG1ibYTBlJzQQCoLb5QgtTnYnOY8Fj
-         FR/yVerUsuJzfC9tCeymEsxetKaP8fN7aL9NmT6dRHjQg6ecAEs6FkJ3lk4wyJZLg/x2
-         JWFvDPlzE0lj4nxwM1mtmNGqUwcCHVvrbLjBjGYKlFKWUDaUZ5Oe4lv9eVgszH28QIgS
-         qlEycxYeKW01ayCxTq9wljNM57+0MhIuwjIDasdQTe/P2d1++UmkRTo2aF/lN8XkBAd1
-         MfzWWb/9ILpRpPQQ6018HuBMSJxBPZR2elLusjSf05ALkjOvAcLs8wBFZQL+oRZPxXD/
-         Uh1g==
+        d=gmail.com; s=20221208; t=1694108659; x=1694713459; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aEzLFbcIiAVh5ftNySaU8V9gJpiW38T2myqFmqQaqUw=;
+        b=Orp9TZuL/tBDSaIa0LADh+MYud/CMKRtrZIbkpWpjIpxl0H0YgA60EYSokcTAiFNpa
+         HUqJLl0e5X7aIt8t0RbCFrMhiCYafAFSrIo//MNLV93CISs5azeKOaXIfK/CHRdb2YoB
+         bdvIk/hAoQhsMEluso1IQZNiHR/YgzGFNBNEnwjhesLfwTXYoFYz+Z31G59QOaJL8mR2
+         uYicCjsgkKZFWFpG5r4nUexjtqfKePndYbKjcU59QB+CcLFPTBcrXDozkZiBGUaNjl2J
+         qf0x8eDidu1r2UVU0HbYfhq6j0Jf9pvo+0G+TZnpWIjnYEvUhDPHCxqJVzgZvQkOske2
+         IVlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694108655; x=1694713455;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iMuPz+Z8VHaiaFn2Ii58q0kIyXx2k0/qmeW5JC5oah4=;
-        b=toGfHz8Nx0KDI+MyWu6FpMHbAT/OLGJxkTXkYTzxLKfxTjHAwpAFGTO0vpCmZTYMeg
-         k5UUUNjZr7oc6FQAYY5z5Eoj62r8IAJS1MTt2lr0+N3biLVRKNhkk7DX00E7hO2pe0wn
-         8Al37zLkeqxMp4leF36d0WrtZwuL3mOo7I5E2DtM0T23ixKBsycWmHWzl1A456/7Drcs
-         TZta1mX4pjvOYBmcj22xS9TZhUzLS6w170l7ln2KLmB3p+FcCnbzAUuLGAou5335O7mu
-         fI+jFsrujA1gcSL45RjVjGyL1SX7RNQJ5ZRZs1NkCoUlVX50xQ5OCacMXprl1wHVIWJP
-         e/Kw==
-X-Gm-Message-State: AOJu0Yw8+0BwcQkScW1Zio2sEFW4XhHgfI5RItVVyKr7Ei71gK3Yd9ob
-        s9dLqG1yNEgHaQOoPmlZPWhpb+eJoNXJ0+u2PSA=
-X-Google-Smtp-Source: AGHT+IEBqq0QGfiPYyYpcjuaYCPDOLD0ITz5tjyOTf4pd5s1iNr18iYFJk4aLMaGin9WQSfJK7HXm9buQbypUXECVtY=
-X-Received: by 2002:a9d:7b57:0:b0:6bd:b0c9:a89 with SMTP id
- f23-20020a9d7b57000000b006bdb0c90a89mr57776oto.2.1694108654848; Thu, 07 Sep
- 2023 10:44:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694108659; x=1694713459;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aEzLFbcIiAVh5ftNySaU8V9gJpiW38T2myqFmqQaqUw=;
+        b=urMNcPBXUGfJoZWOeBjuZR0WgawzS/N7VHI1bQ81Rl3N5cdWxgdSNualaEnb3IFIgJ
+         ia6oDhL4toJDlHlZg4xBaTTg1KcWuDASPnQIRxra05t1sbM41hnL+sKvHWG5di04zI75
+         Z/uJcz+2wyTrrbyNvePvVxHjdWKe/OvAHpUbGr1/T/4w1cLt+nvzSmiQhxZAeDEOeX05
+         mWKDc24BvoQ3ESz8hdHpviGI4nh2mpck1I+ldtZ1Ikm/ekKMMIUOXGisNgS/fsJs1rXC
+         TrBXlLYI4+xiiME+ucovtNfQRYW6POpA17Z3FTi1Dcs4R6sklQd4QL1hHIvQ5Xzf+SLl
+         cf7Q==
+X-Gm-Message-State: AOJu0Yw4TELOZ7NBV8qLAgOQDA5FFpN9RZYsNRdOz9aNLP0Z15DOzz04
+        SdavBWuP53ZUcxKQsFgbZS7Y6bAFePJ7vA==
+X-Google-Smtp-Source: AGHT+IHxQx/oYPcPJRi8g0n88K5ntMMpUrbAsfjsst+YxlwZnVqJLl3xT3JsrdPzkfO4ulQF0EXlUw==
+X-Received: by 2002:a05:6602:256d:b0:792:63d9:b6b4 with SMTP id dj13-20020a056602256d00b0079263d9b6b4mr362009iob.21.1694108658995;
+        Thu, 07 Sep 2023 10:44:18 -0700 (PDT)
+Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
+        by smtp.googlemail.com with ESMTPSA id dk21-20020a0566384bd500b0042b21e8853bsm5530512jab.36.2023.09.07.10.44.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 10:44:18 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, Jim Cromie <jim.cromie@gmail.com>,
+        apw@canonical.com, joe@perches.com,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 1/2] checkpatch: special case extern struct in .c
+Date:   Thu,  7 Sep 2023 11:44:14 -0600
+Message-ID: <20230907174415.593856-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230818151220.166215-1-cgzones@googlemail.com> <20230818151220.166215-5-cgzones@googlemail.com>
-In-Reply-To: <20230818151220.166215-5-cgzones@googlemail.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Thu, 7 Sep 2023 13:44:04 -0400
-Message-ID: <CAEjxPJ53LiT79=0L81QVgmfW+yKC6Fyq=sd0o1xF8ginCQjSew@mail.gmail.com>
-Subject: Re: [PATCH 6/6] selinux: improve symtab string hashing
-To:     =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
-Cc:     selinux@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,92 +70,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 11:12=E2=80=AFAM Christian G=C3=B6ttsche
-<cgzones@googlemail.com> wrote:
->
-> The number of buckets is calculated by performing a binary AND against
-> the mask of the hash table, which is one less than its size (which is a
-> power of two).  This leads to all top bits being discarded, requiring
-> for short or similar inputs a hash function with a good avalanche
-> effect.
->
-> Use djb2a:
->
->     # current
->     common prefixes:  7 entries and 5/8 buckets used, longest chain lengt=
-h 2, sum of chain length^2 11
->     classes:  134 entries and 100/256 buckets used, longest chain length =
-5, sum of chain length^2 234
->     roles:  15 entries and 6/16 buckets used, longest chain length 5, sum=
- of chain length^2 57
->     types:  4448 entries and 3016/8192 buckets used, longest chain length=
- 41, sum of chain length^2 14922
->     users:  7 entries and 3/8 buckets used, longest chain length 3, sum o=
-f chain length^2 17
->     bools:  306 entries and 221/512 buckets used, longest chain length 4,=
- sum of chain length^2 524
->     levels:  1 entries and 1/1 buckets used, longest chain length 1, sum =
-of chain length^2 1
->     categories:  1024 entries and 400/1024 buckets used, longest chain le=
-ngth 4, sum of chain length^2 2740
->
->     # patch
->     common prefixes:  7 entries and 5/8 buckets used, longest chain lengt=
-h 2, sum of chain length^2 11
->     classes:  134 entries and 101/256 buckets used, longest chain length =
-3, sum of chain length^2 210
->     roles:  15 entries and 9/16 buckets used, longest chain length 3, sum=
- of chain length^2 31
->     types:  4448 entries and 3459/8192 buckets used, longest chain length=
- 5, sum of chain length^2 6778
->     users:  7 entries and 5/8 buckets used, longest chain length 3, sum o=
-f chain length^2 13
->     bools:  306 entries and 236/512 buckets used, longest chain length 5,=
- sum of chain length^2 470
->     levels:  1 entries and 1/1 buckets used, longest chain length 1, sum =
-of chain length^2 1
->     categories:  1024 entries and 518/1024 buckets used, longest chain le=
-ngth 7, sum of chain length^2 2992
->
-> Signed-off-by: Christian G=C3=B6ttsche <cgzones@googlemail.com>
-> ---
->  security/selinux/ss/symtab.c | 18 ++++++++----------
->  1 file changed, 8 insertions(+), 10 deletions(-)
->
-> diff --git a/security/selinux/ss/symtab.c b/security/selinux/ss/symtab.c
-> index 43d7f0319ccd..b6761b96eee4 100644
-> --- a/security/selinux/ss/symtab.c
-> +++ b/security/selinux/ss/symtab.c
-> @@ -11,16 +11,14 @@
->
->  static unsigned int symhash(const void *key)
->  {
-> -       const char *p, *keyp;
-> -       unsigned int size;
-> -       unsigned int val;
-> -
-> -       val =3D 0;
-> -       keyp =3D key;
-> -       size =3D strlen(keyp);
-> -       for (p =3D keyp; (p - keyp) < size; p++)
-> -               val =3D (val << 4 | (val >> (8*sizeof(unsigned int)-4))) =
-^ (*p);
-> -       return val;
-> +       /* djb2a */
+The warning "externs should be avoided in .c files" wants an exception
+for linker symbols (named in vmlinux.lds.h etc), like those that mark
+the __start, __stop/__end symbols delimiting many kernel sections.
 
-Do we need/want something that specifies the author/license (I assume
-public domain) of this code?
+Since checkpatch already checks REALNAME to avoid looking at patch
+chunks changing vmlinux.lds.h, add a new else-if block to look at them
+instead.  As a simple heuristic, treat all words (in the + patch-lines)
+as candidate symbols, to screen later warnings about the same symbols
+being found in following chunks that change *.c files.
 
-> +       unsigned int hash =3D 5381;
-> +       unsigned char c;
-> +
-> +       while ((c =3D *(const unsigned char *)key++))
-> +               hash =3D ((hash << 5) + hash) ^ c;
-> +
-> +       return hash;
->  }
->
->  static int symcmp(const void *key1, const void *key2)
-> --
-> 2.40.1
->
+Where the "# check for new externs in .c files." is done, precede it
+with a new else-if block to isolate one common extern-in-c use case:
+"extern struct foo bar[]".  For this case, we can issue a more
+informative warning:
+
+  WARN("AVOID_EXTERNS",
+     "found a file-scoped extern type:$st_type name:$st_name in .c file\n"
+     . "is this a linker symbol ?\n" . $herecurr);
+
+NOTE: The "screening" is a regex match, not an exact match.  This
+accepts __start_foo and __stop_foo symbols found in a *.c file, if
+"foo" was found previously in a vmlinux.lds.h chunk.
+
+It does require that the patch adding "externs in .c's" also have the
+additions to vmlinux.lds.h.  And it requires vmlinux.lds.h chunks
+before .c chunks.
+
+Cc: apw@canonical.com
+Cc: joe@perches.com
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+---
+ scripts/checkpatch.pl | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 880fde13d9b8..6aabcc1f66c1 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -74,6 +74,8 @@ my $git_command ='export LANGUAGE=en_US.UTF-8; git';
+ my $tabsize = 8;
+ my ${CONFIG_} = "CONFIG_";
+ 
++my %maybe_linker_symbol; # for externs in c exceptions, when seen in *vmlinux.lds.h
++
+ sub help {
+ 	my ($exitcode) = @_;
+ 
+@@ -6051,6 +6053,9 @@ sub process {
+ 
+ # check for line continuations outside of #defines, preprocessor #, and asm
+ 
++		} elsif ($realfile =~ m@/vmlinux.lds.h$@) {
++		    $line =~ s/(\w+)/$maybe_linker_symbol{$1}++/ge;
++		    #print "REAL: $realfile\nln: $line\nkeys:", sort keys %maybe_linker_symbol;
+ 		} else {
+ 			if ($prevline !~ /^..*\\$/ &&
+ 			    $line !~ /^\+\s*\#.*\\$/ &&		# preprocessor
+@@ -7119,6 +7124,21 @@ sub process {
+ 				     "arguments for function declarations should follow identifier\n" . $herecurr);
+ 			}
+ 
++		} elsif ($realfile =~ /\.c$/ && defined $stat &&
++		    $stat =~ /^\+extern struct\s+(\w+)\s+(\w+)\[\];/)
++		{
++			my ($st_type, $st_name) = ($1, $2);
++
++			for my $s (keys %maybe_linker_symbol) {
++			    #print "Linker symbol? $st_name : $s\n";
++			    goto LIKELY_LINKER_SYMBOL
++				if $st_name =~ /$s/;
++			}
++			WARN("AVOID_EXTERNS",
++			     "found a file-scoped extern type:$st_type name:$st_name in .c file\n"
++			     . "is this a linker symbol ?\n" . $herecurr);
++		  LIKELY_LINKER_SYMBOL:
++
+ 		} elsif ($realfile =~ /\.c$/ && defined $stat &&
+ 		    $stat =~ /^.\s*extern\s+/)
+ 		{
+-- 
+2.41.0
+
