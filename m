@@ -2,157 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 592BF796EAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 03:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5C1796EA7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 03:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241783AbjIGBue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 21:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
+        id S240101AbjIGBqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 21:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjIGBue (ORCPT
+        with ESMTP id S231391AbjIGBq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 21:50:34 -0400
-X-Greylist: delayed 319 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 06 Sep 2023 18:50:28 PDT
-Received: from mail-m3191.qiye.163.com (mail-m3191.qiye.163.com [103.74.31.91])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46539E73;
-        Wed,  6 Sep 2023 18:50:27 -0700 (PDT)
-Received: from [0.0.0.0] (unknown [IPV6:240e:3b7:3271:d360:6019:3b45:b56:d340])
-        by mail-m15581.qiye.163.com (Hmail) with ESMTPA id 1EE3F72017C;
-        Thu,  7 Sep 2023 09:45:06 +0800 (CST)
-Message-ID: <77e3e206-fbc7-04ca-41f7-13d6b8435b45@sangfor.com.cn>
-Date:   Thu, 7 Sep 2023 09:45:03 +0800
+        Wed, 6 Sep 2023 21:46:29 -0400
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9EF4CE7
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 18:46:24 -0700 (PDT)
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230907014620epoutp03d8b5b76ccde4d40674d979193ae11409~CepLHqyss0283202832epoutp03I
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 01:46:20 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230907014620epoutp03d8b5b76ccde4d40674d979193ae11409~CepLHqyss0283202832epoutp03I
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1694051180;
+        bh=OkuoPtTpHJVB2fCg6+nOQpQ3udhh1o1CmNxCcKdiJLg=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=D827dadAG2MhEI1XXXvNOEaeFdYQjom/x6ehUVVTR4TvL5rJsdxWjDRo6AbeVS7PW
+         lNYfC56oDICyIjtm+5t+kjM95i0pyHr8AjdonGTAri4n2dl+HlCjW35jPbPiSqubVv
+         TYz/HVHkmNEXc2NtFhthcZuY9iOb6NUuRaysRi/c=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20230907014620epcas1p4c9f7f4f01a227409b1dfaf6d9322542f~CepKqLWIW1550515505epcas1p4X;
+        Thu,  7 Sep 2023 01:46:20 +0000 (GMT)
+Received: from epsmgec1p1.samsung.com (unknown [182.195.38.237]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4Rh2CH1WS7z4x9QH; Thu,  7 Sep
+        2023 01:46:19 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmgec1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        02.FF.09647.B6B29F46; Thu,  7 Sep 2023 10:46:19 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20230907014618epcas1p17b3301ecfe2bd09f105e905dfb9123b0~CepJRjORj1677416774epcas1p17;
+        Thu,  7 Sep 2023 01:46:18 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230907014618epsmtrp17856d09f45545919c829ce4e598640b1~CepJQyoXm1887018870epsmtrp1Z;
+        Thu,  7 Sep 2023 01:46:18 +0000 (GMT)
+X-AuditID: b6c32a36-0d9ff700000025af-25-64f92b6b02c4
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C8.D4.08649.A6B29F46; Thu,  7 Sep 2023 10:46:18 +0900 (KST)
+Received: from kson001 (unknown [10.102.7.58]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20230907014618epsmtip10aef9b5c4390bfa27ac9cfea01612cf6~CepI7sSey0225602256epsmtip1p;
+        Thu,  7 Sep 2023 01:46:18 +0000 (GMT)
+From:   "Kwanghoon Son" <k.son@samsung.com>
+To:     "'Philipp Zabel'" <p.zabel@pengutronix.de>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <jszhang@kernel.org>, <guoren@kernel.org>, <wefu@redhat.com>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <inki.dae@samsung.com>
+Cc:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>
+In-Reply-To: <a0894d3dece496f6d2d8bf4e5379794369d48a9e.camel@pengutronix.de>
+Subject: RE: [RFC PATCH 0/3] Introduce reset driver for T-HEAD th1520 SoC
+Date:   Thu, 7 Sep 2023 10:46:18 +0900
+Message-ID: <000701d9e12d$18774d70$4965e850$@samsung.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] scsi: scsi_dh_rdac: Avoid crash when a disk attach failed
-Content-Language: en-US
-To:     Mike Christie <michael.christie@oracle.com>,
-        Huang Cun <huangcun@sangfor.com.cn>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     pengdonglin@sangfor.com.cn
-References: <20230803112841.588822-1-huangcun@sangfor.com.cn>
- <d2f486dc-c987-4b8a-a694-825305f0cba0@oracle.com>
-From:   Ding Hui <dinghui@sangfor.com.cn>
-In-Reply-To: <d2f486dc-c987-4b8a-a694-825305f0cba0@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkZSRpNVh5KGR0fGUoaSEofGlUTARMWGhIXJBQOD1
-        lXWRgSC1lBWUlPSx5BSBlMQUhJTEpBH0hNS0FNS0pCQUgZT05BGU5NQR9IT0tZV1kWGg8SFR0UWU
-        FZT0tIVUpNT0lMTlVKS0tVSkJLS1kG
-X-HM-Tid: 0a8a6d507ed12e9ekusn1ee3f72017c
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NyI6FTo5Qz1OMx4aDgFLEg86
-        DysaCz5VSlVKTUJPS05KSktMS0hOVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
-        QVlJT0seQUgZTEFISUxKQR9ITUtBTUtKQkFIGU9OQRlOTUEfSE9LWVdZCAFZQU9CTkw3Bg++
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQGu9iCUenuWNo4+XXoKLIyFFtBzUQIKln6jAmvpzC+wQLeEMA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHJsWRmVeSWpSXmKPExsWy7bCmgW629s8UgwOH2C22/p7FbrFm7zkm
+        i/lHzrFavNjbyGIx6f4EFovmY+vZLPpePGS2uLxrDpvFts8tbBZ3751gsXh5uYfZom0Wv0Xr
+        3iPsFi37p7A48Hm8efmSxeNwxxd2j02rOtk87lzbw+axeUm9R/9fA4/3+66yefRtWcXocan5
+        OrvH501yAVxR2TYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkouPgG6
+        bpk5QPcrKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgpMC/SKE3OLS/PS9fJSS6wM
+        DQyMTIEKE7IzLu/ayVhwkaXi1+8/jA2MV5m7GDk5JARMJKbtfMPSxcjFISSwg1Hi5fa5zBDO
+        J0aJ2T+WglUJCXxjlPi3UBWmY9LsKWwQRXsZJVau+ABV9JhR4vjcVBCbTUBTYuG534wgtojA
+        SiaJHW8zQGxmgVSJo5fnsYHYnAI+Eh0/GsF6hQU8JTaunAsWZxFQkXi/7ixYL6+ApcSX201M
+        ELagxMmZT1gg5shLbH87B+oFBYmfT5exQuxyktjw7zUzRI2IxOzONrBvJAQ+cEicuP2cBaLB
+        ReLbw61sELawxKvjW9ghbCmJl/1tUHa2xNGPe6FqSiSuz1rECmEbS+xfOhnoIA6gBZoS63fp
+        Q4QVJXb+nssIsZdP4t3XHlaQEgkBXomONiEIU17iVmc5RLWoxJmnH9kmMCrNQvLYLCSPzULy
+        wCyEXQsYWVYxiqUWFOempxYbFhjBozo5P3cTIzhha5ntYJz09oPeIUYmDsZDjBIczEoivO/k
+        v6UI8aYkVlalFuXHF5XmpBYfYjQFBvVEZinR5HxgzsgriTc0sTQwMTMyNrEwNDNUEued87g3
+        RUggPbEkNTs1tSC1CKaPiYNTqoHJdzZ/30abHQ9LdYvYOZdEvouf6OW5zLFZ/0kWl/m003IR
+        14rfCmjEvnoxWyurfPK9TZe7qvfovbEyM1uv/GRhvGrtL8FnLzK/p/94+WRbhlWVZ5Xv/2PZ
+        szPtWFuCJFlZ3A85TVXSuPwoeVbo5xt7Cr408jKutQ0+Ht4QstuxvL022k0mTPSq1n3WybHX
+        Tcxq2ZZcnnTW3/qGU9rKpV+1E7cXzWE5lr5tVk5K3f+eyR02zP2iWdHywv9XNU7V3Jy4fEPI
+        2+zaFWvZDtwKvP9j7fPAIm1LlwnXpt2dtbRkm1csh8Ldblt93uVt89/4iK9ycizlYfO4YCT+
+        8vuKSpWsm5bMOy49Fl/9OuTl0Y1KLMUZiYZazEXFiQBsT+oeYQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDIsWRmVeSWpSXmKPExsWy7bCSnG6W9s8Ug9uPFS22/p7FbrFm7zkm
+        i/lHzrFavNjbyGIx6f4EFovmY+vZLPpePGS2uLxrDpvFts8tbBZ3751gsXh5uYfZom0Wv0Xr
+        3iPsFi37p7A48Hm8efmSxeNwxxd2j02rOtk87lzbw+axeUm9R/9fA4/3+66yefRtWcXocan5
+        OrvH501yAVxRXDYpqTmZZalF+nYJXBmXd+1kLLjIUvHr9x/GBsarzF2MnBwSAiYSk2ZPYeti
+        5OIQEtjNKPG08Q4TREJUouNyI2MXIweQLSxx+HAxSFhI4CGjxL/TIiA2m4CmxMJzvxlBekUE
+        tjJJvJ6xFmwos0C6xK3XZ1ghhp5ilHi24RIjSIJTwEei40cjWJGwgKfExpVz2UBsFgEViffr
+        zoLV8ApYSny53cQEYQtKnJz5hAViqLZE78NWRghbXmL72zlQHyhI/Hy6jBXEFhFwktjw7zXU
+        ESISszvbmCcwCs9CMmoWklGzkIyahaRlASPLKkbJ1ILi3PTcZMMCw7zUcr3ixNzi0rx0veT8
+        3E2M4AjW0tjBeG/+P71DjEwcjIcYJTiYlUR438l/SxHiTUmsrEotyo8vKs1JLT7EKM3BoiTO
+        azhjdoqQQHpiSWp2ampBahFMlomDU6qByXH+qRWtrXqFouV9fZUXNyxMajCZMn2G7Ty1zFKu
+        Q9czrixal7Vv7bk7URICmydeOMg2w0S9drK2WdjqHx+K5efdEBDS/f5w6oqJrflTi/y+fWjb
+        sHvmjtXN/PsevPSzjcw7tMZky4trH+f5uTDYPG5Pu6IucP7N3Be/TG5qVB8XbXy9dVV3cMC1
+        K5+eBFkxu67h3v6983OFw/HtdU8f+b2YvtwwaWrW/l/8C2/EN968FuBw7GKSTzXDQl+TyVt/
+        eU8VF/V1mpNTdE3LUfINY8vFz0Lp+97sFo97Pe3vNtEpeRPVaz6Y1iV9sCoqOLhBj53h9AbJ
+        b7zTnObpz86s+/C54XV78AwnG7mWRb9jppsosRRnJBpqMRcVJwIAws2zQk8DAAA=
+X-CMS-MailID: 20230907014618epcas1p17b3301ecfe2bd09f105e905dfb9123b0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230904042603epcas1p40f732a0ac7871371126d229945cc0849
+References: <CGME20230904042603epcas1p40f732a0ac7871371126d229945cc0849@epcas1p4.samsung.com>
+        <20230904042559.2322997-1-k.son@samsung.com>
+        <a0894d3dece496f6d2d8bf4e5379794369d48a9e.camel@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/6 23:51, Mike Christie wrote:
-> On 8/3/23 6:28 AM, Huang Cun wrote:
->> When a disk fails to attach, the struct rdac_dh_data is released,
->> but it is not removed from the ctlr->dh_list. When attaching another
->> disk, the released rdac_dh_data will be accessed and the following
->> BUG_ON() may be observed:
->>
->> [  414.696167] scsi 5:0:0:7: rdac: Attach failed (8)
->> ...
->> [  423.615364] kernel BUG at drivers/scsi/device_handler/scsi_dh_rdac.c:427!
->> [  423.615731] invalid opcode: 0000 [#1] SMP NOPTI
->> ...
->> [  423.623247] Call Trace:
->> [  423.623598]  rdac_bus_attach+0x203/0x4c0
->> [  423.623949]  ? scsi_dh_handler_attach+0x2d/0x90
->> [  423.624300]  scsi_dh_handler_attach+0x2d/0x90
->> [  423.624652]  scsi_sysfs_add_sdev+0x88/0x270
->> [  423.625004]  scsi_probe_and_add_lun+0xc47/0xd50
->> [  423.625354]  scsi_report_lun_scan+0x339/0x3b0
->> [  423.625705]  __scsi_scan_target+0xe9/0x220
->> [  423.626056]  scsi_scan_target+0xf6/0x100
->> [  423.626404]  fc_scsi_scan_rport+0xa5/0xb0
->> [  423.626757]  process_one_work+0x15e/0x3f0
->> [  423.627106]  worker_thread+0x4c/0x440
->> [  423.627453]  ? rescuer_thread+0x350/0x350
->> [  423.627804]  kthread+0xf8/0x130
->> [  423.628153]  ? kthread_destroy_worker+0x40/0x40
->> [  423.628509]  ret_from_fork+0x1f/0x40
->>
->> Fixes: 1a5dc166cd88 ("scsi_dh_rdac: update 'access_state' field")
->> Signed-off-by: Huang Cun <huangcun@sangfor.com.cn>
->> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
->> Cc: Donglin Peng <pengdonglin@sangfor.com.cn>
->> ---
->>   drivers/scsi/device_handler/scsi_dh_rdac.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/scsi/device_handler/scsi_dh_rdac.c b/drivers/scsi/device_handler/scsi_dh_rdac.c
->> index c5538645057a..9d487c2b7708 100644
->> --- a/drivers/scsi/device_handler/scsi_dh_rdac.c
->> +++ b/drivers/scsi/device_handler/scsi_dh_rdac.c
->> @@ -762,8 +762,10 @@ static int rdac_bus_attach(struct scsi_device *sdev)
->>   
->>   clean_ctlr:
->>   	spin_lock(&list_lock);
->> +	list_del_rcu(&h->node);
->>   	kref_put(&h->ctlr->kref, release_controller);
->>   	spin_unlock(&list_lock);
->> +	synchronize_rcu();
->>   
-> 
-> Should this be:
-> 
-> spin_lock(&list_lock);
-> list_del_rcu(&h->node);
-> spin_unlock(&list_lock);
-> 
-> synchronize_rcu();
-> 
-> kref_put(&h->ctlr->kref, release_controller);
-> 
-> 
-> ?
-> 
-> If you do the synchronize_rcu after the kref_put, then the kref_put
-> could free the rdac_dh_data, while check_ownership is still
-> accessing the rdac_dh_data, right?
-> 
+> what is meant by "initial support"? Are there just more resets than the
+> two watchdog resets, or is there other functionality that might require
+> describing in the device tree? Is the dt-binding document complete?
+> Is this the only reset controller on TH1520? In the thead-kernel.git it
+> looks like there are at least two different ones.
 
-You are right.
+True, in vendor kernel has more registers npu, vpsys reset.
+But since I can't test other reset so I only added few register (CPU reset)
+Also other reset can be added with same driver.
 
-But I think we should keep the kref_put() and release callback be protected by list_lock, and only free
-the ctlr after synchronize_rcu().
+Best regards,
+Kwang.
 
-So how about the additional modify (not yet tested):
-
---- a/drivers/scsi/device_handler/scsi_dh_rdac.c
-+++ b/drivers/scsi/device_handler/scsi_dh_rdac.c
-@@ -166,6 +166,7 @@ struct rdac_controller {
-  	struct scsi_device	*ms_sdev;
-  	struct list_head	ms_head;
-  	struct list_head	dh_list;
-+	struct rcu_head		rcu;
-  };
-  
-  struct c2_inquiry {
-@@ -320,7 +321,7 @@ static void release_controller(struct kref *kref)
-  	ctlr = container_of(kref, struct rdac_controller, kref);
-  
-  	list_del(&ctlr->node);
--	kfree(ctlr);
-+	kfree_rcu(ctlr, rcu);
-  }
-  
-  static struct rdac_controller *get_controller(int index, char *array_name,
-
-
--- 
-Thanks,
-- Ding Hui
+> 
+> regards
+> Philipp
 
