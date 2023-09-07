@@ -2,53 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFA5797739
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2DD7797705
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242132AbjIGQWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:22:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57218 "EHLO
+        id S235537AbjIGQT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242278AbjIGQWC (ORCPT
+        with ESMTP id S240303AbjIGQTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:22:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBC1901C;
-        Thu,  7 Sep 2023 09:19:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D23E2C32792;
-        Thu,  7 Sep 2023 14:35:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694097344;
-        bh=GY6/oA7SpWwIF/ML9jHKi31Aw6dDj+gK/Pfk0CzMgqw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=meYesdsY2uNTDb5EWe4281EIPUqP+ejVqDZt9LCkSfXPg4Irrz3V+aN6tNCzOlgc2
-         ahh8dLGQQAnbuiFUv6CfwEQdgMoQh2Us23Bv55rnXFCgCOLrOmRgckQmB49BCwBfNT
-         F3vJeT816sWqUt+PmdBvRs2D4bFdqQfjc1DO7pMD099Ku5mwQT/QLbNiAWJ/KW2x1x
-         2ft6mNiLln57pjQduAluykFZGPrhx+sfNSVVZRVaXjbIdi+4wugfRr70TqxfCMPe1l
-         Gbt/aytSPZ6Z7sQtswCgUTVlJunB/G6M+lsApHXzAaRfDmEyiemOTyTCnbq+vrNOO9
-         r6MAC/pLNbtjg==
-Date:   Thu, 7 Sep 2023 15:35:38 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 2/2] ASoC: tegra: Fix redundant PLLA and PLLA_OUT0 updates
-Message-ID: <262708f6-d25c-4734-834e-6a3959ad6c07@sirena.org.uk>
-References: <1694069533-7832-1-git-send-email-spujar@nvidia.com>
- <1694069533-7832-3-git-send-email-spujar@nvidia.com>
- <2c3371b7-3dae-48d7-8cc8-1acfd5bd267c@sirena.org.uk>
- <61ca531e-6138-7abe-74d1-357369134748@nvidia.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="1d4+VEBxjo3mBMnm"
-Content-Disposition: inline
-In-Reply-To: <61ca531e-6138-7abe-74d1-357369134748@nvidia.com>
-X-Cookie: In the next world, you're on your own.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Thu, 7 Sep 2023 12:19:39 -0400
+Received: from mail-qt1-f202.google.com (mail-qt1-f202.google.com [209.85.160.202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7F14C2F
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:00:11 -0700 (PDT)
+Received: by mail-qt1-f202.google.com with SMTP id d75a77b69052e-414c43a48fdso13873891cf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:00:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1694102025; x=1694706825; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FgzAJvMWabKSg+Fs2ABIxLNoYDB74sHy1tmQmF1BFrA=;
+        b=5XA3nCMqUM6qS8z8uVPlKi3mToDKtyIfODlZ79tP3IR4X9OdcwL9+xvNmPS9Pkbws8
+         B0A7xeBV8A6fKXlvYR4+8T0jEHJONzu/Yc5OtDKMEBuCPxmREpOMa9uDVNiN8m7VIBUE
+         M/w4J6dkafUQ7MJAzbRreP5svMoYYZ0EEE6tlyyXo+y1tFxJgkNfjwcesbBTyzC+GdKW
+         G423gPOjaYsRAVktX6IUixu5a/SEZlf2YA1ReNVvkuoJ0AMSPL4Ezduas3CwjRZOinD1
+         8EApinrUYHwwY/T/K2ycw+RLnDiXi1E6GT4bTILBpAWI8VV6J7/7rU0ZpnxqZzSI9ohX
+         efqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694102025; x=1694706825;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FgzAJvMWabKSg+Fs2ABIxLNoYDB74sHy1tmQmF1BFrA=;
+        b=G2IVCnxasKBRZ1rkh0shuHyeAXHHJFTwaRYliJb6Xl4LNhce7mCXwdj8tqR1TWuE3Y
+         MwEOU1CiRE8KbQdWmr76BGmODD7tn7TvcMhQ+Nwu7s2q2TZ/pOVv2xIQLuEPerfogfoL
+         YpovfxXhk3qsqJFzB/EcdNluThHJikJyhwlsjXEUSp81I/HD2T5WIjUWh08X32dwyHDE
+         LdxcdgDYEvHhJiVWZnDnKo/HmGtNZXTU6CAQsNcMG+lrlcCcy2UdBfVBHPs7PGsijxKi
+         19CNmxhTfDlL1/LvmJEg1xotaB5gNNz0BUzcdgEwRjdDs5zCfgs+VS8B9TXiwQwJWGWQ
+         OqQA==
+X-Gm-Message-State: AOJu0YxvsaMKNLdPDRQjJzQ2/tcOVMeyR7O5RJgISRTT2TaCvtIZ1Psk
+        X7MfyM/yvD6yJu6CL2FZzlhhn32cH5w=
+X-Google-Smtp-Source: AGHT+IFZD8rMKqtrUZuxadapb0kMDmHCmcHSIKx2uaonJiqykBzMJVL+4SXojH5SnWKxOUNiBkjxt5kZ8C0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1cc:b0:d07:e80c:412e with SMTP id
+ u12-20020a05690201cc00b00d07e80c412emr228078ybh.12.1694097933191; Thu, 07 Sep
+ 2023 07:45:33 -0700 (PDT)
+Date:   Thu, 7 Sep 2023 07:45:31 -0700
+In-Reply-To: <68859513bc0fb4eda4e3e62ec073dd2a58f7676b.camel@intel.com>
+Mime-Version: 1.0
+References: <20230825020733.2849862-1-seanjc@google.com> <20230825020733.2849862-3-seanjc@google.com>
+ <68859513bc0fb4eda4e3e62ec073dd2a58f7676b.camel@intel.com>
+Message-ID: <ZPniC2JCOPMK1JQb@google.com>
+Subject: Re: [PATCH 2/2] KVM: x86/mmu: Retry fault before acquiring mmu_lock
+ if mapping is changing
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Yan Y Zhao <yan.y.zhao@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,42 +72,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 06, 2023, Kai Huang wrote:
+> On Thu, 2023-08-24 at 19:07 -0700, Sean Christopherson wrote:
+> > ---
+> >  arch/x86/kvm/mmu/mmu.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index 1a5a1e7d1eb7..8e2e07ed1a1b 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -4334,6 +4334,9 @@ static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
+> >  	if (unlikely(!fault->slot))
+> >  		return kvm_handle_noslot_fault(vcpu, fault, access);
+> >  
+> > +	if (mmu_invalidate_retry_hva(vcpu->kvm, fault->mmu_seq, fault->hva))
+> > +		return RET_PF_RETRY;
+> > +
+> 
+> ... Perhaps a comment saying this is to avoid unnecessary MMU lock contention
+> would be nice.  Otherwise we have is_page_fault_stale() called later within the
+> MMU lock.  I suppose people only tend to use git blamer when they cannot find
+> answer in the code :-)
 
---1d4+VEBxjo3mBMnm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Agreed, will add.
 
-On Thu, Sep 07, 2023 at 07:51:13PM +0530, Sameer Pujar wrote:
-> On 07-09-2023 17:21, Mark Brown wrote:
-> > On Thu, Sep 07, 2023 at 12:22:13PM +0530, Sameer Pujar wrote:
+> >  	return RET_PF_CONTINUE;
+> >  }
+> >  
+> 
+> Btw, currently fault->mmu_seq is set in kvm_faultin_pfn(), which happens after
+> fast_page_fault().  Conceptually, should we move this to even before
+> fast_page_fault() because I assume the range zapping should also apply to the
+> cases that fast_page_fault() handles?
 
-> > > Fixes: 202e2f774543 ("ASoC: tegra: Add audio graph based card driver")
-> > > Cc: stable@vger.kernel.org
-
-> > This is just a performance improvement rather than a correctness fix as
-> > far as I can tell?
-
-> This was supposed to be a performance improvement. However this is found to
-> be resolving a DMIC clock discrepancy and suspect is it happens because of
-> back to back quick PLLA updates. Thought it would be safer to have this fix
-> in stable releases. May be I should mention these points to justify the
-> 'Fixes' and 'stable' tag?
-
-Yes, please - that does make sense as a fix.
-
---1d4+VEBxjo3mBMnm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmT537kACgkQJNaLcl1U
-h9Aybwf+PTHcefnbcaqpdAilafzxlBkq71oJqgpR14bRtbQXU4jEgToFVRwoEe2r
-eh7710aUYzNQatW+EVTp6OlxujcL/CmTLyjzdmVZDRViDZvVTtq1BwnEMBPVoDnm
-VQd2uTPqMq05uopzbCnq2s3Mv5gEcw1PPMnqAYvGBOJ+e1XvlBC4h7t3svkcHHku
-Y8QCOwyGF+Akq3Dl7WFvenZ0rGJ7z2/NXP//rD2TXeKorRSID19tupKL+i4KJPFV
-9RLhqpX/8CpXvo2EwlOSuWvtvN1Waqego6zmQ511uj90I1K24+dY9sgXk8JEE/6L
-gsWaQE4XT7wbfut/xeALndmOVrDk0g==
-=Ei6H
------END PGP SIGNATURE-----
-
---1d4+VEBxjo3mBMnm--
+Nope, fast_page_fault() doesn't need to "manually" detect invalidated SPTEs because
+it only modifies shadow-present SPTEs and does so with an atomic CMPXCHG.  If a
+SPTE is zapped by an mmu_notifier event (or anything else), the CMPXCHG will fail
+and fast_page_fault() will see the !PRESENT SPTE on the next retry and bail.
