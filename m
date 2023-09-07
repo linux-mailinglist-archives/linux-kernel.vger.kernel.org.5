@@ -2,103 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 631117976FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD17797634
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240566AbjIGQTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52090 "EHLO
+        id S232285AbjIGQEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243249AbjIGQSV (ORCPT
+        with ESMTP id S236306AbjIGQDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:18:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60B37A89;
-        Thu,  7 Sep 2023 08:54:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694102077; x=1725638077;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6EsGUJGhX1zT+Uyl+vPXWvJ0hitAvo76hypLco20y4Y=;
-  b=QAVH/3JsotwOgGZF9bAzPXDf12AHmfMFwMmPk+104kEl7ohFKdMdpjaF
-   Zsw0D3ZSNVOscn9h6giEbwnbsztAAecKcrNWUrNwHovBt413ss0DUA9uy
-   Ngwn7ztm1dO2W8UmY5peCg2BCfjCdNp+iEE7+aNk2OyjRnN9pYprAqsjh
-   F0TMB+gK1sS82REhttldmKTHIFZJgr8IbFtR7mCBSv3MPcLzzM+8dlQSU
-   w9XnFEtGssVVImkXVapKO/5HF2wsl4PsslwiDNAJH1E++s93vGqmSy6/y
-   Z5ufdmP0JtX613TLqB1eTnd1plcdXGnewI/LOS9teGC+nFFjEeTFRp0li
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="408388049"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="408388049"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 08:51:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="915793424"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="915793424"
-Received: from ningle-mobl2.amr.corp.intel.com (HELO [10.209.13.77]) ([10.209.13.77])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 08:51:06 -0700
-Message-ID: <5a188bb6-add4-0522-069f-18fbd34aff16@intel.com>
-Date:   Thu, 7 Sep 2023 08:51:06 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/3] proc/vmcore: Do not map unaccepted memory
-Content-Language: en-US
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-coco@lists.linux.dev, linux-efi@vger.kernel.org,
-        kexec@lists.infradead.org
-References: <20230906073902.4229-1-adrian.hunter@intel.com>
- <20230906073902.4229-2-adrian.hunter@intel.com>
- <21bf2e44-3316-2372-44cb-1488f88650f5@intel.com>
- <30d0cebb-13f9-572e-9baa-b7450fec9108@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <30d0cebb-13f9-572e-9baa-b7450fec9108@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 7 Sep 2023 12:03:54 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD795FD0;
+        Thu,  7 Sep 2023 08:52:44 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C27FE21862;
+        Thu,  7 Sep 2023 15:51:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694101893; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tk3J/weePsTr2+puEZaryztfMldIRsL7MjS11xHNPq4=;
+        b=MG/RWiixzRUD5n21QY2yXLKv/zxycwe2jvwvqsZhnjyl0H7FMWmzreTziH5v3xUpVO2ST2
+        yu4FWXTNDRNIKjs3oZrJrIlUYo9ByzoFJFbu7uGHWT000wzW87sPlE0S3X6h6mrCb2Poln
+        jyaxTpMKrnwUimNWsKjEy53luKAW7rc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694101893;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tk3J/weePsTr2+puEZaryztfMldIRsL7MjS11xHNPq4=;
+        b=PgTRAY/jSIOr1hyGZbPTqd+ID749qUOYH1g8gzONDoREaJFpp8MDUTuBDrtTkNFrVzvWF8
+        MQwXRemp0OfM7WCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4946E138FA;
+        Thu,  7 Sep 2023 15:51:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id gkbnEIXx+WQ+CwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Thu, 07 Sep 2023 15:51:33 +0000
+Date:   Thu, 07 Sep 2023 17:51:32 +0200
+Message-ID: <8734zqasmz.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Wesley Cheng <quic_wcheng@quicinc.com>
+Cc:     <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <agross@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <devicetree@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <quic_jackp@quicinc.com>, <quic_plai@quicinc.com>
+Subject: Re: [PATCH v5 18/32] sound: usb: Introduce QC USB SND offloading support
+In-Reply-To: <20230829210657.9904-19-quic_wcheng@quicinc.com>
+References: <20230829210657.9904-1-quic_wcheng@quicinc.com>
+        <20230829210657.9904-19-quic_wcheng@quicinc.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/23 08:44, Adrian Hunter wrote:
-> On 7/09/23 18:39, Dave Hansen wrote:
->> On 9/6/23 00:39, Adrian Hunter wrote:
->>> @@ -559,7 +567,8 @@ static int vmcore_remap_oldmem_pfn(struct vm_area_struct *vma,
->>>  	 * pages without a reason.
->>>  	 */
->>>  	idx = srcu_read_lock(&vmcore_cb_srcu);
->>> -	if (!list_empty(&vmcore_cb_list))
->>> +	if (!list_empty(&vmcore_cb_list) ||
->>> +	    range_contains_unaccepted_memory(paddr, paddr + size))
->>>  		ret = remap_oldmem_pfn_checked(vma, from, pfn, size, prot);
->>>  	else
->>>  		ret = remap_oldmem_pfn_range(vma, from, pfn, size, prot);
->> The whole callback mechanism which fs/proc/vmcore.c::pfn_is_ram()
->> implements seems to be in place to ensure that there aren't a billion
->> different "ram" checks in here.
->>
->> Is there a reason you can't register_vmcore_cb() a callback to check for
->> unaccepted memory?
-> Someone asked for the change to be in arch-independent code... 😉
+On Tue, 29 Aug 2023 23:06:43 +0200,
+Wesley Cheng wrote:
+> 
+> Several Qualcomm SoCs have a dedicated audio DSP, which has the ability to
+> support USB sound devices.  This vendor driver will implement the required
+> handshaking with the DSP, in order to pass along required resources that
+> will be utilized by the DSP's USB SW.  The communication channel used for
+> this handshaking will be using the QMI protocol.  Required resources
+> include:
+> - Allocated secondary event ring address
+> - EP transfer ring address
+> - Interrupter number
+> 
+> The above information will allow for the audio DSP to execute USB transfers
+> over the USB bus.  It will also be able to support devices that have an
+> implicit feedback and sync endpoint as well.  Offloading these data
+> transfers will allow the main/applications processor to enter lower CPU
+> power modes, and sustain a longer duration in those modes.
+> 
+> Audio offloading is initiated with the following sequence:
+> 1. Userspace configures to route audio playback to USB backend and starts
+> playback on the platform soundcard.
+> 2. The Q6DSP AFE will communicate to the audio DSP to start the USB AFE
+> port.
+> 3. This results in a QMI packet with a STREAM enable command.
+> 4. The QC audio offload driver will fetch the required resources, and pass
+> this information as part of the QMI response to the STREAM enable command.
+> 5. Once the QMI response is received the audio DSP will start queuing data
+> on the USB bus.
+> 
+> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> ---
+>  sound/usb/Kconfig                 |   15 +
+>  sound/usb/Makefile                |    2 +-
+>  sound/usb/qcom/Makefile           |    2 +
+>  sound/usb/qcom/qc_audio_offload.c | 1813 +++++++++++++++++++++++++++++
+>  4 files changed, 1831 insertions(+), 1 deletion(-)
+>  create mode 100644 sound/usb/qcom/Makefile
+>  create mode 100644 sound/usb/qcom/qc_audio_offload.c
+> 
+> diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
+> index 4a9569a3a39a..da5838656baa 100644
+> --- a/sound/usb/Kconfig
+> +++ b/sound/usb/Kconfig
+> @@ -176,6 +176,21 @@ config SND_BCD2000
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called snd-bcd2000.
+>  
+> +config QC_USB_AUDIO_OFFLOAD
 
-That doesn't really answer my question.  virtio_mem_init_kdump(), for
-instance, is in arch-independent code.
+Keep SND_ prefix for consistency.  And, at best, align with the module
+name.
+
+> +	tristate "Qualcomm Audio Offload driver"
+> +	depends on QCOM_QMI_HELPERS && SND_USB_AUDIO && USB_XHCI_SIDEBAND
+> +	select SND_PCM
+> +	help
+> +	  Say Y here to enable the Qualcomm USB audio offloading feature.
+> +
+> +	  This module sets up the required QMI stream enable/disable
+> +	  responses to requests generated by the audio DSP.  It passes the
+> +	  USB transfer resource references, so that the audio DSP can issue
+> +	  USB transfers to the host controller.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called qc-audio-offload.
+
+Hmm, you renamed it differently, no?  In the below:
+
+> --- /dev/null
+> +++ b/sound/usb/qcom/Makefile
+> @@ -0,0 +1,2 @@
+> +snd-usb-audio-qmi-objs := usb_audio_qmi_v01.o qc_audio_offload.o
+> +obj-$(CONFIG_QC_USB_AUDIO_OFFLOAD) += snd-usb-audio-qmi.o
+
+... it's called snd-usb-audio-qmi.
 
 
+thanks,
+
+Takashi
