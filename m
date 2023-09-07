@@ -2,112 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0371A79741F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7875797446
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245275AbjIGPfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
+        id S231308AbjIGPhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244756AbjIGPdO (ORCPT
+        with ESMTP id S1344589AbjIGPd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:33:14 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E75D7E47;
-        Thu,  7 Sep 2023 08:32:53 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 30655152B;
-        Thu,  7 Sep 2023 06:06:19 -0700 (PDT)
-Received: from [10.57.92.126] (unknown [10.57.92.126])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9DB333F7B4;
-        Thu,  7 Sep 2023 06:05:39 -0700 (PDT)
-Message-ID: <89067f71-9b83-e647-053e-07f7d55b6529@arm.com>
-Date:   Thu, 7 Sep 2023 14:06:15 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [RFC PATCH 0/7] sched: cpufreq: Remove magic margins
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Qais Yousef <qyousef@layalina.io>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Thu, 7 Sep 2023 11:33:28 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A031BF5;
+        Thu,  7 Sep 2023 08:33:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3WFJ/CyRLDbsGvdiQprNjEUyWtZ4FKis4fJnhduuJtU=; b=IEkvclf72qZHteRaWKJ/MXfSY0
+        LmiryMpgIAzo25gO9gHYKydzx65Qid+hYSB3Q3oM1zNWyft4SMa6M9HTtyxXP7up3IZUxx/px+8iC
+        jabr9E3MRzW5ravGFBh79Xa00aVU5kzxkf3kw6iwnI6PiwRsf66szEznCuIu3m3yLEclq95Zf7mOn
+        H85BKiSz80BsllZxErHmCO8UHTJyBe6R97WYjsxisoqb1PzElgdsvO5qUn4nyguqc8bZ/JKD1rQ0k
+        Arr1f5AcmfBsKdA49ZB0TtzJ2xUtdOCPbVO98Walrdnid/VhstKHk22SOVhs6FLTtz2VhsYyjTeSB
+        SZVxXsjg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qeEjs-001nr5-0Q;
+        Thu, 07 Sep 2023 13:08:06 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3DE62300687; Thu,  7 Sep 2023 15:08:05 +0200 (CEST)
+Date:   Thu, 7 Sep 2023 15:08:05 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Qais Yousef <qyousef@layalina.io>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Lukasz Luba <lukasz.luba@arm.com>
+Subject: Re: [RFC PATCH 0/7] sched: cpufreq: Remove magic margins
+Message-ID: <20230907130805.GE10955@noisy.programming.kicks-ass.net>
 References: <20230827233203.1315953-1-qyousef@layalina.io>
- <a6365f63-4669-15e5-b843-f4bfb1bd5e68@arm.com>
- <20230906211850.zyvk6qtt6fvpxaf3@airbuntu>
- <6011d8bb-9a3b-1435-30b0-d75b39bf5efa@arm.com>
- <20230907115307.GD10955@noisy.programming.kicks-ass.net>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20230907115307.GD10955@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230827233203.1315953-1-qyousef@layalina.io>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 28, 2023 at 12:31:56AM +0100, Qais Yousef wrote:
 
-
-On 9/7/23 12:53, Peter Zijlstra wrote:
-> On Thu, Sep 07, 2023 at 08:48:08AM +0100, Lukasz Luba wrote:
+> Equally recent discussion in PELT HALFLIFE thread highlighted the need for
+> a way to tune system response time to achieve better perf, power and thermal
+> characteristic for a given system
 > 
->>> Hehe. That's because they're not really periodic ;-)
->>
->> They are periodic in a sense, they wake up every 16ms, but sometimes
->> they have more work. It depends what is currently going in the game
->> and/or sometimes the data locality (might not be in cache).
->>
->> Although, that's for games, other workloads like youtube play or this
->> one 'Yahoo browser' (from your example) are more 'predictable' (after
->> the start up period). And I really like the potential energy saving
->> there :)
+> 	https://lore.kernel.org/lkml/20220829055450.1703092-1-dietmar.eggemann@arm.com/
 > 
-> So everything media is fundamentally periodic, you're hard tied to the
-> framerate / audio-buffer size etc..
 
-Agree
+> To further help tune the system, we introduce PELT HALFLIFE multiplier as
+> a boot time parameter. This parameter has an impact on how fast we migrate, so
+> should compensate for whoever needed to tune fits_capacity(); and it has great
+> impact on default response_time_ms. Particularly it gives a natural faster rise
+> time when the system gets busy, AND fall time when the system goes back to
+> idle. It is coarse grain response control that can be coupled with finer grain
+> control via schedutil's response_time_ms.
 
-> 
-> Also note that the traditional periodic task model from the real-time
-> community has the notion of WCET, which completely covers this
-> fluctuation in frame-to-frame work, it only considers the absolute worst
-> case.
+You're misrepresenting things... The outcome of that thread above was
+that PELT halftime was not the primary problem. Specifically:
 
-That's good point, the WCET here. IMO shorter PELT e.g. 8ms allows us
-to 'see' a bit more that information: the worst case in fluctuation of
-a particular task. Then this 'seen' value is maintained in util_est
-for a while. That's why (probably) I see a better 95-, 99-percentile
-numbers for frames rendering time.
+  https://lore.kernel.org/lkml/424e2c81-987d-f10e-106d-8b4c611768bc@arm.com/
 
-> 
-> Now, practically, that stinks, esp. when you care about batteries, but
-> it does not mean these tasks are not periodic.
+mentions that the only thing that gaming nonsense cares about is DVFS
+ramp-up.
 
-Totally agree they are periodic.
+None of the other PELT users mattered one bit.
 
-> 
-> Many extentions to the periodic task model are possible, including
-> things like average runtime with bursts etc.. all have their trade-offs.
+Also, ISTR a fair amount of this was workload dependent. So a solution
+that has per-task configurability -- like UTIL_EST_FASTER, seems more
+suitable.
 
-Was that maybe proposed somewhere on LKML (the other models)?
 
-I can recall one idea - WALT.
-IIRC ~2016/2017 the WALT proposal and some discussion/conferences, it
-didn't get positive feedback [2].
+I'm *really* hesitant on adding all these mostly random knobs -- esp.
+without strong justification -- which you don't present. You mostly seem
+to justify things with: people do random hack, we should legitimize them
+hacks.
 
-I don't know if you remember those numbers back than, e.g. video 1080p
-playback was using ~10% less energy... Those 10%-15% are still important
-for us ;)
-
-Regards,
-Lukasz
-
-[1] 
-https://lore.kernel.org/all/1477638642-17428-1-git-send-email-markivx@codeaurora.org/
+Like the last time around, I want the actual problem explained. The
+problem is not that random people on the internet do random things to
+their kernel.
