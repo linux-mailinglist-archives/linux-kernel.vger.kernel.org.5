@@ -2,227 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81871797D81
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 22:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D73797D8C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 22:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236351AbjIGUmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 16:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41176 "EHLO
+        id S234495AbjIGUqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 16:46:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232763AbjIGUmL (ORCPT
+        with ESMTP id S231601AbjIGUqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 16:42:11 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CBF1BCD
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 13:42:07 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99c93638322so284404266b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 13:42:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694119325; x=1694724125; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FcnB2B4JPj1CKIc94VubNtdCx3lpL4bBgiHUxMic53E=;
-        b=Lp9JCtqYlwOU0eFTFq83b3f+EjPidwlWMsZLuh0dlidVpCk0yTvVTyyZ/nrOSYk7BL
-         7jpEXx+TyDtNN6Ses08MtQ/gqBFGK5dGS7cJv4vRwRuMNGmQEvzM4ukNljombAvyWasX
-         sByDYgUmSM2gnNgi0t+KjogQpnuBGlXSx4CdNmKqk6vzVvJf3GpsODsucheFv/1OAr4D
-         p1QcpG3DaEC7pqBeG/+ocqo9NQflKRmKbN9tWUFmLEreFuUc8tHuxc7DLi3xcT8OTnjo
-         J/59ko5wxx9MylNrX3sYNBd/SM/5bY8zZU+gnwMfJW/4F4ZzgyvIQqQXbNBFDqISct3n
-         YuzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694119325; x=1694724125;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FcnB2B4JPj1CKIc94VubNtdCx3lpL4bBgiHUxMic53E=;
-        b=ep9BSVUBD8VSRBrulFpWIqbYDSQEQsMHCYUzZrPsT2xU9KKgcvNUq4OMrLeYRc/knF
-         0/lLdTN/rGjXdWZBq2cfvlpgguaB5AWDhgs/3KnZryow8MxhM7erfMDWH5ipEVmcB4TG
-         NsaHoBHxMKPhO9QbMTfDS126xZAv1rfNw/vvgyw7Gii4LgFP9ML4z7LZWqxeKTtOu+I3
-         lHQeJ83hdt/wYH07Bp+99D8uTzt/FvalcNFIx2b7IKjjXTxqnXwOjqKiBzGP1pQR/euH
-         m3iBgE+K3nfsG9Gpyp9ghf0OC9x0i0KwOICQ/fm8ZlczMRrIedLYHPHwuzuN7+nej0R2
-         h4gQ==
-X-Gm-Message-State: AOJu0Yx+ZnuqKz2M/47bfHVlzWN78RuPjEqXlbrwDOjVM2Ji79lIRTlF
-        R7Sjghi/YpR514EYrPFCHQfj+A==
-X-Google-Smtp-Source: AGHT+IEJOjclVL4SMD7dJtIieatsHU7cbE5c0/hhtQ4Fs9aaE7BXQqpts5EpBKXktYYen78H9OkvQA==
-X-Received: by 2002:a17:907:7604:b0:9a5:bceb:1cf8 with SMTP id jx4-20020a170907760400b009a5bceb1cf8mr521322ejc.3.1694119325610;
-        Thu, 07 Sep 2023 13:42:05 -0700 (PDT)
-Received: from [192.168.37.232] (178235177164.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.164])
-        by smtp.gmail.com with ESMTPSA id ck8-20020a170906c44800b009930c80b87csm93585ejb.142.2023.09.07.13.42.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 13:42:05 -0700 (PDT)
-Message-ID: <09109739-cb9c-42e2-80ab-e919774b4173@linaro.org>
-Date:   Thu, 7 Sep 2023 22:42:02 +0200
+        Thu, 7 Sep 2023 16:46:53 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0A11990;
+        Thu,  7 Sep 2023 13:46:48 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 49D621BF206;
+        Thu,  7 Sep 2023 20:46:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1694119606;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Fsrneogx9cLLBU5XROqIMVQkJeeWHh1Bnc6l8AutE/o=;
+        b=SCbSoKK9zHvP6xeuswxo9ClIj3BmrOHaSB0x/2MbkQIW41V9ODS8coUFyP4ZBv1sthyMhA
+        eSIWuo4Ul0NwAcEbBcowuMEwyuc07F5dy+jaGKrjnCtOMsQQEfRShU7u9hPUZXeAICED76
+        1rcERzCFAIbEGGHHckvB+HW5az5AtSaExQa2k7U9BWTa+LfmWFK1bLfmeVGB/NS9KssEab
+        bsEMy3ahzCyeYcvM275SFVFBLAOVk5AT+rN+jJKxdgLAFHiqsMYJl7Cv9jghM8n5PdY/aP
+        Kq8ADpMsBqWjj45DQ73qQ+H8/+c5vsFJdGraZZ2Y+w/NuK/cklHqLBviLRtxxw==
+Date:   Thu, 7 Sep 2023 22:46:45 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] RTC for 6.6
+Message-ID: <20230907204645b1480693@mail.local>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 4/7] leds: rgb: leds-qcom-lpg: Add support for PPG
- through single SDAM
-Content-Language: en-US
-To:     Anjelique Melendez <quic_amelende@quicinc.com>, pavel@ucw.cz,
-        lee@kernel.org, thierry.reding@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org
-Cc:     luca.weiss@fairphone.com, u.kleine-koenig@pengutronix.de,
-        quic_subbaram@quicinc.com, quic_gurus@quicinc.com,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, kernel@quicinc.com
-References: <20230830180600.1865-2-quic_amelende@quicinc.com>
- <20230830180600.1865-7-quic_amelende@quicinc.com>
- <3b6f6285-ec3b-4e12-aa65-d5f61937de6f@linaro.org>
- <a9aa7bd9-7d42-3897-443e-b3ef2d73d05c@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <a9aa7bd9-7d42-3897-443e-b3ef2d73d05c@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alexandre.belloni@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7.09.2023 21:55, Anjelique Melendez wrote:
-> 
-> 
-> On 8/30/2023 11:34 AM, Konrad Dybcio wrote:
->> On 30.08.2023 20:05, Anjelique Melendez wrote:
->>> In some PMICs like pmi632, the pattern look up table (LUT) and LPG
->>> configuration can be stored in a single SDAM module instead of LUT
->>> peripheral. This feature is called PPG. PPG uses Qualcomm Programmable
->>> Boot Sequencer (PBS) inorder to trigger pattern sequences for PMICs.
->> I still fail to understand what benefit this brings.
->>
->> Is this a "can be used", or "should be used", or maybe "must be used"?
->>
->> Are there any distinct advantages to using one over the other?
->> I see some limitations in the code below, but that's not being made
->> obvious.
->>
->> This all should be in the commit message, the current one includes
->> a lot of cryptic names that mean nothing to most people.
->>
->> [...]
-> This is a must be used if you would like to trigger patterns. Will update commit message to try and 
-> make that more clear for next patch.
-So essentially without this patchset, PM8350C and PMI632 are not capable
-of producing LED patterns. Is that correct?
+Hello Linus,
 
-[...]
+Here is the RTC subsystem pull request for 6.6. The pcf2127 driver was
+reworked heavily to add support for the pcf2131. This also introduces a
+way for drivers to report the alarm range which is going to be used to
+fix a related alarmtimer issue in the next release.
 
->>> @@ -860,14 +1043,21 @@ static int lpg_pattern_set(struct lpg_led *led, struct led_pattern *led_pattern,
->>>  	 * Validate that all delta_t in the pattern are the same, with the
->>>  	 * exception of the middle element in case of ping_pong.
->>>  	 */
->>> -	delta_t = pattern[1].delta_t;
->>> -	for (i = 2; i < len; i++) {
->>> +	if (lpg->lpg_chan_nvmem) {
->>> +		i = 1;
->>> +		delta_t = pattern[0].delta_t;
->>> +	} else {
->>> +		i = 2;
->>> +		delta_t = pattern[1].delta_t;
->>> +	}
->> Why?
->>
->> What's the rationale behind this change?
-> Patterns are required to have the same duration for each step of the pattern. Devices with LUT peripherals support low/high
-> pause which is when the first/last entry of the pattern can have a longer duration. This loop checks that the all of the
-> pattern durations are the same with the exception of the first and last entry for low/hi pause.
-That's the explanation I was looking for! :)
+I extended the expiration date of my signing subkey so you will have to
+update my key to be able to verify the tag signature.
 
-Things like these that are only known to inside folks should
-definitely be stated either as a comment, or inside the commit
-message. Since you're changing the code flow in a noticeable manner,
-this could probably be a good fit for a comment.
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
-> 
-> This change was made because devices that use single SDAM do not support low/high pause, so we must check every
-> single pattern duration. Instead of changing the loop arguments with an if statement I was thinking we could either:
-> 
-> a. keep the original loop arguments and when loop exits we can check first element for single SDAM devices
-> 
->    delta_t = pattern[1].delta_t;
->    for (i = 2; i < len; i++) {
-> 	if (pattern[i].delta_t != delta_t) {
-> + 		if (i != actual_len - 1 || lpg->lpg_chan_nvmem)
->   			goto out_free_pattern;
->   		}
->   	}
-> 
-> + if (lpg->lpg_chan_nvmem) {
-> +	if (delta_t != pattern[0].delta_t)
-> +		goto out_free_pattern
-> + }
-We assign hi/lo_pause a couple lines below. Moving these assignments
-a bit higher up could let us make this clearer:
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
 
-/* LPGs using SDAM for patterns require equal duration of all steps */
-if ((delta_t != lo_pause) && lpg->lpg_chan_nvmem)
-	goto out_free_pattern;
+are available in the Git repository at:
 
-Though I think that (in a separate patch, or perhaps series), it would
-be worth redoing the code such that hi/lo_pause expresses the deviation
-from the duration of the rest instead of the duration itself. Then we
-could just:
+  git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-6.6
 
-if ((lo_pause || hi_pause)) && lpg->lpg_chan_nvmem)
-	goto out_free_pattern;
+for you to fetch changes up to ce413486c9a0d735d86cc7d88660abeac99c2501:
 
-But that's just a suggestion from somebody that didn't work on this code.
+  dt-bindings: rtc: ds3231: Remove text binding (2023-09-06 01:28:24 +0200)
 
-Also, I think that using lpg_chan_nvmem interchangeably with SDAM is a
-bit confusing. Do we expect NVMEMs/SRAMs that aren't SDAM to make an
-appearence here?
+----------------------------------------------------------------
+RTC for 6.6
 
-> 
-> b. Change the loop argument to start with i=0 and for LUT device we could just skip checking first and last element duration
->   ** We would end up checking if pattern[1].delta_t == pattern[1].delta_t inside the loop when i == 1
-> 
->    delta_t = pattern[1].delta_t;
-> +  for (i = 0; i < len; i++) {
-> 	if (pattern[i].delta_t != delta_t) {
-> +		if (lpg->lut_base && (i == 0 || i == actual_len - 1)
-> +			continue;
-> +               else
-> +			goto out_free_pattern;
-Meh, too many magic literals for my liking
+Subsystem:
+ - Add a way for drivers to tell the core the supported alarm range is smaller
+   than the date range. This is not used yet but will be useful for the
+   alarmtimers in the next release.
+ - fix Wvoid-pointer-to-enum-cast warnings
+ - remove redundant of_match_ptr()
+ - stop warning for invalid alarms when the alarm is disabled
 
-Konrad
+Drivers:
+ - isl12022: allow setting the trip level for battery level detection
+ - pcf2127: add support for PCF2131 and multiple timestamps
+ - stm32: time precision improvement, many fixes
+ - twl: NVRAM support
+
+----------------------------------------------------------------
+Alexandre Belloni (5):
+      rtc: pcf2127: remove useless check
+      rtc: stop warning for invalid alarms when the alarm is disabled
+      rtc: sun6i: remove unnecessary message
+      rtc: twl: remove unnecessary messages
+      rtc: wm8350: remove unnecessary messages
+
+Andrej Picej (1):
+      rtc: rv3028: Add support for "aux-voltage-chargeable" property
+
+Antonio Borneo (2):
+      rtc: stm32: use the proper register sequence to read date/time
+      rtc: stm32: don't stop time counter if not needed
+
+Arnd Bergmann (2):
+      rtc: bq4802: add sparc dependency
+      rtc: stm32: remove incorrect #ifdef check
+
+Biju Das (4):
+      rtc: isl1208: Simplify probe()
+      rtc: pcf85063: Simplify probe()
+      rtc: pcf85063: Drop enum pcf85063_type and split pcf85063_cfg[]
+      rtc: isl1208: Fix incorrect logic in isl1208_set_xtoscb()
+
+Chen Jiahao (1):
+      rtc: sunplus: Clean up redundant dev_err_probe()
+
+Christophe Guibout (1):
+      rtc: stm32: improve rtc precision
+
+Dan Carpenter (1):
+      rtc: pcf2127: fix error code in pcf2127_enable_ts()
+
+Fabio Estevam (1):
+      dt-bindings: rtc: ds3231: Remove text binding
+
+Gabriel Fernandez (1):
+      rtc: stm32: change PM callbacks to "_noirq()"
+
+Guenter Roeck (6):
+      rtc: Add support for limited alarm timer offsets
+      rtc: cros-ec: Detect and report supported alarm window size
+      rtc: cmos: Report supported alarm limit to rtc infrastructure
+      rtc: tps6586x: Report maximum alarm limit to rtc core
+      rtc: ds1305: Report maximum alarm limit to rtc core
+      rtc: rzn1: Report maximum alarm limit to rtc core
+
+Hugo Villeneuve (19):
+      rtc: pcf2127: improve rtc_read_time() performance
+      rtc: pcf2127: improve timestamp reading performance
+      rtc: pcf2127: lower message severity if setting time fails
+      rtc: pcf2127: remove superfluous comments
+      rtc: pcf2127: add variant-specific configuration structure
+      rtc: pcf2127: adapt for time/date registers at any offset
+      rtc: pcf2127: adapt for alarm registers at any offset
+      rtc: pcf2127: adapt for WD registers at any offset
+      rtc: pcf2127: adapt for CLKOUT register at any offset
+      rtc: pcf2127: add support for multiple TS functions
+      rtc: pcf2127: add support for PCF2131 RTC
+      rtc: pcf2127: add support for PCF2131 interrupts on output INT_A
+      rtc: pcf2127: adapt time/date registers write sequence for PCF2131
+      rtc: pcf2127: support generic watchdog timing configuration
+      rtc: pcf2127: add flag for watchdog register value read support
+      rtc: pcf2127: add UIE support for PCF2131
+      dt-bindings: rtc: pcf2127: add PCF2131
+      rtc: pcf2127: add error checking when disabling POR0
+      rtc: pcf2127: remove unused function argument
+
+Krzysztof Kozlowski (4):
+      rtc: ds1307: fix Wvoid-pointer-to-enum-cast warning
+      rtc: rv8803: fix Wvoid-pointer-to-enum-cast warning
+      rtc: jz4740: fix Wvoid-pointer-to-enum-cast warning
+      rtc: rs5c372: fix Wvoid-pointer-to-enum-cast warning
+
+Ladislav Michl (1):
+      rtc: twl: add NVRAM support
+
+Linus Walleij (1):
+      rtc: ds2404: Convert to GPIO descriptors
+
+Lukas Bulwahn (1):
+      MAINTAINERS: remove obsolete pattern in RTC SUBSYSTEM section
+
+Mike Looijmans (1):
+      rtc: pcf85363: Allow to wake up system without IRQ
+
+Nathan Chancellor (1):
+      rtc: stm32: Use NOIRQ_SYSTEM_SLEEP_PM_OPS()
+
+Nikita Shubin (2):
+      dt-bindings: rtc: Add ST M48T86
+      rtc: m48t86: add DT support for m48t86
+
+Rasmus Villemoes (8):
+      rtc: isl12022: remove wrong warning for low battery level
+      dt-bindings: rtc: Move isil,isl12022 from trivial-rtc.yaml into own schema file
+      dt-bindings: rtc: isl12022: add bindings for battery alarm trip levels
+      rtc: isl12022: add support for trip level DT binding
+      rtc: isl12022: implement RTC_VL_READ ioctl
+      rtc: isl12022: trigger battery level detection during probe
+      dt-bindings: rtc: isl12022: add #clock-cells property
+      rtc: isl12022: implement support for the #clock-cells DT property
+
+Rob Herring (1):
+      rtc: Explicitly include correct DT includes
+
+Ruan Jinjie (2):
+      rtc: omap: Do not check for 0 return after calling platform_get_irq()
+      rtc: tps65910: Remove redundant dev_warn() and do not check for 0 return after calling platform_get_irq()
+
+Samuel Holland (1):
+      rtc: da9063: Mark the alarm IRQ as a wake IRQ
+
+Uwe Kleine-König (1):
+      rtc: isl12026: Drop "_new" from probe callback name
+
+Valentin Caron (3):
+      rtc: stm32: don't print an error on probe deferral
+      rtc: stm32: fix issues of stm32_rtc_valid_alrm function
+      rtc: stm32: fix unnecessary parentheses
+
+Varshini Rajendran (1):
+      dt-bindings: rtc: at91rm9200: add sam9x7 compatible
+
+Zhu Wang (1):
+      rtc: remove redundant of_match_ptr()
+
+ .../bindings/rtc/atmel,at91rm9200-rtc.yaml         |  18 +-
+ .../devicetree/bindings/rtc/intersil,isl12022.yaml |  64 ++
+ .../devicetree/bindings/rtc/maxim,ds3231.txt       |  38 -
+ .../devicetree/bindings/rtc/nxp,pcf2127.yaml       |   1 +
+ .../devicetree/bindings/rtc/st,m48t86.yaml         |  38 +
+ .../devicetree/bindings/rtc/trivial-rtc.yaml       |   2 -
+ MAINTAINERS                                        |   1 -
+ drivers/rtc/Kconfig                                |   5 +-
+ drivers/rtc/interface.c                            |   2 +-
+ drivers/rtc/rtc-abx80x.c                           |   2 +-
+ drivers/rtc/rtc-armada38x.c                        |   5 +-
+ drivers/rtc/rtc-aspeed.c                           |   2 +-
+ drivers/rtc/rtc-at91rm9200.c                       |   3 +-
+ drivers/rtc/rtc-at91sam9.c                         |   2 +-
+ drivers/rtc/rtc-cmos.c                             |  11 +
+ drivers/rtc/rtc-cros-ec.c                          |  38 +-
+ drivers/rtc/rtc-da9063.c                           |   7 +
+ drivers/rtc/rtc-ds1305.c                           |   5 +-
+ drivers/rtc/rtc-ds1307.c                           |   2 +-
+ drivers/rtc/rtc-ds1742.c                           |   1 -
+ drivers/rtc/rtc-ds2404.c                           | 169 ++--
+ drivers/rtc/rtc-fsl-ftm-alarm.c                    |   5 +-
+ drivers/rtc/rtc-isl12022.c                         | 126 ++-
+ drivers/rtc/rtc-isl12026.c                         |   5 +-
+ drivers/rtc/rtc-isl1208.c                          |  19 +-
+ drivers/rtc/rtc-jz4740.c                           |   4 +-
+ drivers/rtc/rtc-lpc24xx.c                          |   3 +-
+ drivers/rtc/rtc-m41t80.c                           |   2 +-
+ drivers/rtc/rtc-m48t86.c                           |   8 +
+ drivers/rtc/rtc-mpc5121.c                          |   4 +-
+ drivers/rtc/rtc-mt6397.c                           |   2 +-
+ drivers/rtc/rtc-mt7622.c                           |   4 +-
+ drivers/rtc/rtc-mxc.c                              |   1 -
+ drivers/rtc/rtc-nct3018y.c                         |   2 +-
+ drivers/rtc/rtc-omap.c                             |   8 +-
+ drivers/rtc/rtc-pcf2127.c                          | 872 ++++++++++++++++-----
+ drivers/rtc/rtc-pcf85063.c                         | 107 ++-
+ drivers/rtc/rtc-pcf85363.c                         |  31 +-
+ drivers/rtc/rtc-pxa.c                              |   1 -
+ drivers/rtc/rtc-rs5c372.c                          |   5 +-
+ drivers/rtc/rtc-rv3028.c                           |  82 +-
+ drivers/rtc/rtc-rv3032.c                           |   2 +-
+ drivers/rtc/rtc-rv8803.c                           |   5 +-
+ drivers/rtc/rtc-rx6110.c                           |   1 -
+ drivers/rtc/rtc-rx8581.c                           |   1 -
+ drivers/rtc/rtc-rzn1.c                             |   5 +-
+ drivers/rtc/rtc-s3c.c                              |   1 -
+ drivers/rtc/rtc-stm32.c                            | 143 ++--
+ drivers/rtc/rtc-stmp3xxx.c                         |   1 -
+ drivers/rtc/rtc-sun6i.c                            |   3 -
+ drivers/rtc/rtc-sunplus.c                          |   2 +-
+ drivers/rtc/rtc-sunxi.c                            |   2 -
+ drivers/rtc/rtc-ti-k3.c                            |   2 +-
+ drivers/rtc/rtc-tps6586x.c                         |   1 +
+ drivers/rtc/rtc-tps65910.c                         |   7 +-
+ drivers/rtc/rtc-twl.c                              |  43 +-
+ drivers/rtc/rtc-wm8350.c                           |   9 +-
+ include/linux/platform_data/rtc-ds2404.h           |  20 -
+ include/linux/rtc.h                                |   1 +
+ 59 files changed, 1337 insertions(+), 619 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/rtc/intersil,isl12022.yaml
+ delete mode 100644 Documentation/devicetree/bindings/rtc/maxim,ds3231.txt
+ create mode 100644 Documentation/devicetree/bindings/rtc/st,m48t86.yaml
+ delete mode 100644 include/linux/platform_data/rtc-ds2404.h
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
