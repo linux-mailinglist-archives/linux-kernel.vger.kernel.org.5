@@ -2,147 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EDB797C21
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D86797BD2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344239AbjIGSly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 14:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
+        id S1344073AbjIGS3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245229AbjIGSlv (ORCPT
+        with ESMTP id S1344084AbjIGS3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:41:51 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B231A8;
-        Thu,  7 Sep 2023 11:41:45 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7026C2185E;
-        Thu,  7 Sep 2023 06:56:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694069784; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZdpALMS9MEckS/XjTWoYzgCz9B+N4NdUqPbDlpcyLaw=;
-        b=vs+USKGGhjZpaHawDKSjdiCoweo3k5Fr8f/c9qrEV234o+z7MpRp90yBxPKv+f2URc6umO
-        xv7IEco3fTupmftaGfIsNeXb1+/vuuU9GztmW3SAE/GGxOj3LtY5K66Tkw90KYJFDYX132
-        Wxek0f2YzilVEceUUBowKvGaYlAJQdI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694069784;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZdpALMS9MEckS/XjTWoYzgCz9B+N4NdUqPbDlpcyLaw=;
-        b=0aay+d2s3fSsFLhpn6ZTQWzYs+wj525vROsjIkx+Ndzf3eKOCc/BUsVfWDHvkoeHUTXcDQ
-        nDl+0F6ZEaNzmfAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4AC7D1358B;
-        Thu,  7 Sep 2023 06:56:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id I4VDERh0+WTFfQAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 07 Sep 2023 06:56:24 +0000
-Message-ID: <1d001e59-be78-3de8-25a3-087dcd19d58a@suse.de>
-Date:   Thu, 7 Sep 2023 08:56:23 +0200
+        Thu, 7 Sep 2023 14:29:25 -0400
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 570C31704
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:29:03 -0700 (PDT)
+Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1d53ab187e8so1000518fac.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 11:29:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694111341; x=1694716141; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h2UPY8Ad0JyZ552HHQpe1k1G4pRk3wLhmWob6nvmGZM=;
+        b=W/lgDCwoSZ/h5cgIsuTvRlUORUbauZqh5DXS+kgzTemEVP/ooV8IM+P0tT+otxEBXG
+         tuyRBj9PUxFgrYmbRU41D31iZuh22YhA1P+9WjrYrTUZUc+L2NVUw6mgDspYrRnDmfD2
+         37JUFX6zAtugRJoXNZ+DEKuaVpQm9zgHMHeULk8NPlBaR+cOwpvrN+qGdNpnvajgEsUy
+         XhD7WAsDDjKo4Sz0AR9JmKVo5eQVrwtIMr4w+9ugHVr8xM9462w1RFGf+nUGFbB31sI+
+         vmtI5UkdW8AY/IDUYMVARpqwp2kAondbDELx/9zLowEHWp7fa0HLaByuO8ffCeiiYpMZ
+         zQmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694111341; x=1694716141;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h2UPY8Ad0JyZ552HHQpe1k1G4pRk3wLhmWob6nvmGZM=;
+        b=p+qtdyow1wIN6ezVkddhaE3tsx39ZeGj8T7QDARtkhXw+8tdIKR0PBvO/u/wcvDB1X
+         zpK/b7w3+mzJO8u8ph30n34TqWc/uMcmVvo10uNfIHWRFcFaqy+vBkrFkCIp2ED3ez7W
+         c6QABcqviznH26Hwseo4p3Z9SrrkEkOz55U8KvJSzEgWrsKmrRidi1f0rtg5BSfVHlRi
+         BcpWgC011UcIvPZh/kMX+wfZvTdUrrt8Z5FGOVJ+srEO5AVXC2VaKY/yGW7a6hENeNKC
+         tzBzKd8pgQP5A5udXtTZs6di5R1FH648xHZjbb24QA3xTbCRu5ESe/E+eAiNLz3zy6Fa
+         PGfw==
+X-Gm-Message-State: AOJu0YyhNjletN1W7xKpCv/nldH76JOf0x1SDR1bA9vgFmyYgdY52O8d
+        Hs6ty8Zi0c9j42DfIfyyl0d6C3MKsmYKjoiMlrrW/72EewwZHvsSbmA=
+X-Google-Smtp-Source: AGHT+IFxuGmnz6UhP+iDHBaAUw7EFN+gVZSw6nwdZwmmFMJ3XnkMU5k7fxCuPngY53Trr0s6Te5MkJ1CXk5K8y+Rwo4=
+X-Received: by 2002:a25:ce47:0:b0:d1d:514e:27c6 with SMTP id
+ x68-20020a25ce47000000b00d1d514e27c6mr18577035ybe.6.1694070485563; Thu, 07
+ Sep 2023 00:08:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 2/7] fbdev/mmp/mmpfb: Do not display boot-up logo
-Content-Language: en-US
-To:     Javier Martinez Canillas <javierm@redhat.com>, deller@gmx.de,
-        daniel@ffwll.ch, sam@ravnborg.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20230829142109.4521-1-tzimmermann@suse.de>
- <20230829142109.4521-3-tzimmermann@suse.de>
- <87ledj4og7.fsf@minerva.mail-host-address-is-not-set>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <87ledj4og7.fsf@minerva.mail-host-address-is-not-set>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------ZGdlOT3gOMcfm9RyxxfPW8an"
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230905185309.131295-1-brgl@bgdev.pl> <20230905185309.131295-5-brgl@bgdev.pl>
+In-Reply-To: <20230905185309.131295-5-brgl@bgdev.pl>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 7 Sep 2023 09:07:53 +0200
+Message-ID: <CACRpkdYCOVJZ6TUMQQHSaKZHMCx8tE8=3z=1BogYTkr52mFr8Q@mail.gmail.com>
+Subject: Re: [PATCH 04/21] gpiolib: provide gpio_device_get_desc()
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dipen Patel <dipenp@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
+        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------ZGdlOT3gOMcfm9RyxxfPW8an
-Content-Type: multipart/mixed; boundary="------------QgVRd7mUO2Fg82aUFcKk3qNQ";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Javier Martinez Canillas <javierm@redhat.com>, deller@gmx.de,
- daniel@ffwll.ch, sam@ravnborg.org, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org
-Cc: linux-kernel@vger.kernel.org
-Message-ID: <1d001e59-be78-3de8-25a3-087dcd19d58a@suse.de>
-Subject: Re: [PATCH 2/7] fbdev/mmp/mmpfb: Do not display boot-up logo
-References: <20230829142109.4521-1-tzimmermann@suse.de>
- <20230829142109.4521-3-tzimmermann@suse.de>
- <87ledj4og7.fsf@minerva.mail-host-address-is-not-set>
-In-Reply-To: <87ledj4og7.fsf@minerva.mail-host-address-is-not-set>
+On Tue, Sep 5, 2023 at 8:53=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl> =
+wrote:
 
---------------QgVRd7mUO2Fg82aUFcKk3qNQ
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> Getting the GPIO descriptor directly from the gpio_chip struct is
+> dangerous as we don't take the reference to the underlying GPIO device.
+> In order to start working towards removing gpiochip_get_desc(), let's
+> provide a safer variant that works with an existing reference to struct
+> gpio_device.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-SGkgSmF2aWVyDQoNCkFtIDA2LjA5LjIzIHVtIDExOjU0IHNjaHJpZWIgSmF2aWVyIE1hcnRp
-bmV6IENhbmlsbGFzOg0KPiBUaG9tYXMgWmltbWVybWFubiA8dHppbW1lcm1hbm5Ac3VzZS5k
-ZT4gd3JpdGVzOg0KPiANCj4+IFRoZSBmYmNvbiBtb2R1bGUgdGFrZXMgY2FyZSBvZiBkaXNw
-bGF5aW5nIHRoZSBsb2dvLCBpZiBhbnkuIFJlbW92ZQ0KPj4gdGhlIGNvZGUgZm9ybSBtbXBm
-Yi4gSWYgd2Ugd2FudCB0byBkaXNwbGF5IHRoZSBsb2dvIHdpdGhvdXQgZmJjb24sDQo+IA0K
-PiBzL2Zvcm0vZnJvbQ0KPiANCj4+IHdlIHNob3VsZCBpbXBsZW1lbnQgdGhpcyBpbiB0aGUg
-ZmJkZXYgY29yZSBjb2RlLg0KPj4NCj4gDQo+IFRoZSBjb21taXQgbWVzc2FnZSBzYXlzIHRo
-ZSBzYW1lIHRoYW4gcGF0Y2ggIzEgYnV0IHRoZSBkcml2ZXIgd2lsbCBiZWhhdmUNCj4gZGlm
-ZmVyZW50bHkgcmlnaHQ/IFRoYXQgaXMsIHdvbid0IG9ubHkgc2hvdyB0aGUgbG9nbyB3aGVu
-IGZiY29uIGlzIG5vdA0KPiBlbmFibGVkIGJ1dCB1bmNvbmRpdGlvbmFsbHk/IFNvIHRoZSBs
-b2dvIHdpbGwgYmUgZHVwbGljYXRlZCB3aGVuIGZiY29uIGlzDQo+IGVuYWJsZWQ/DQo+IA0K
-PiBJZiBJIHVuZGVyc3Rvb2QgdGhhdCBjb3JyZWN0bHksIHByb2JhYmx5IHlvdSBzaG91bGQg
-bWVudGlvbiB0aGF0IGluIHRoZQ0KPiBjb21taXQgbWVzc2FnZSBzaW5jZSByZW1vdmluZyB0
-aGUgZmJfc2hvd19sb2dvKCkgd2lsbCBtYWtlIHRoZSBkcml2ZXIgdG8NCj4gYmVoYXZlIGNv
-cnJlY3RseS4NCg0KVEJIIEkgZG9uJ3QgdW5kZXJzdGFuZCB3aGF0IGhhcHBlbnMgaGVyZSBp
-ZiB0aGUgY29uc29sZSBhbmQgdGhlIGxvZ28gaGFzIA0KYmVlbiBlbmFibGVkIGF0IHRoZSBz
-YW1lIHRpbWUuIEFGQUlLIGZiY29uIHJlc3BlY3RzIGRpc3BsYXkgcm90YXRpb24sIA0KYnV0
-IHRoaXMgZHJpdmVyIGRvZXNuJ3QuIFNvIHRoZSBsb2dvIHNob3dzIHVwIGluIHRoZSB3cm9u
-ZyBwbGFjZSB0aGVuPw0KDQo+IA0KPj4gU2lnbmVkLW9mZi1ieTogVGhvbWFzIFppbW1lcm1h
-bm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+DQo+PiAtLS0NCj4gDQo+IEFja2VkLWJ5OiBKYXZp
-ZXIgTWFydGluZXogQ2FuaWxsYXMgPGphdmllcm1AcmVkaGF0LmNvbT4NCj4gDQoNCi0tIA0K
-VGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29m
-dHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2LCA5MDQ2
-MSBOdWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVycywgQW5k
-cmV3IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVlcm5iZXJn
-KQ0K
+Andy had some good doc comments, with these addressed:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
---------------QgVRd7mUO2Fg82aUFcKk3qNQ--
-
---------------ZGdlOT3gOMcfm9RyxxfPW8an
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmT5dBcFAwAAAAAACgkQlh/E3EQov+B3
-1A/5AXno2YctCIpTMTjW7SZmyyM/Mkcz4CqcYnZt0+IqrRan8O2Pp/7rPqXVrVtTkuHV2M4f3u27
-E9Ps05pN4hjnIP9XUA6eMRaeKYN1tZ5OMS5YIqLDofbNw5gfrD7H0BKUSkj8Ovfq+C2NuN5eDVxh
-MTWd9maFZdQan1936sRqrnM1cBAPaAfhm4Rumi6xM4X6YHo2swAig8Swz4C1DR4e3ZymaHPrS2QN
-XZOD5MI4CsOBpXcDIMC+xF/dOuFobtsi7uHlX/lpuw8LdKG7TID5Q7i3bpAChP7GGFHSjSii2lhY
-c7OaMi0PvqX74Vs6fQyKoE+ihkfzRoj11yGmaQXpdxk/+SYROC68ZYYxwk1bveK0IiPclJn/F11d
-ynzuAFVXdWB3a4/dZe2rEF1S5kXdqQI1YKA1xoaSncH8jLcn8HFWMph0/K3KgDLihJ3L3API2YqH
-oo+zDtY1pYNDaP2zxp73W0tsdk+lMP4cT1xOAvvrknv7Kgn6IdhHeJagt2P0nc64PjSfDPltdmQ4
-bwuakOmUhvxL6IHrqX5OBgMXZV1qJc/dzRThGSNz1kE03F34FxQFgM6vFqFGK8fb2Ig97e0dx6ZP
-CCDP6yU8NxKSnEBr4omSguJcJ4YIdV0fbp4NYuTpjRyMwlFKW/+p3esYT/i7QiU/UPTJYe01fSOv
-dH0=
-=Kpnr
------END PGP SIGNATURE-----
-
---------------ZGdlOT3gOMcfm9RyxxfPW8an--
+Yours,
+Linus Walleij
