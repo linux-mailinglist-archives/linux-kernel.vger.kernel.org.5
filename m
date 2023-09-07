@@ -2,49 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA365797774
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9CB7979F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240935AbjIGQ0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37110 "EHLO
+        id S243278AbjIGRZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238949AbjIGQ0J (ORCPT
+        with ESMTP id S243345AbjIGRZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:26:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41DF6A74;
-        Thu,  7 Sep 2023 09:22:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A618C433CB;
-        Thu,  7 Sep 2023 06:00:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694066417;
-        bh=k6m1FrHgokNhY1DM/EuEPwGTEKfRg8usrhPLJuc9oiY=;
-        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-        b=rJ9eA+LQqXNJL/vMKBoi1qHHT7dufrHijo19qqi6yEa7+C7YYpL/huaJ3k7rW2pvr
-         3xdzybrxI0sXHNXn2P+qTjfe/r66AD0BMF6utFe8qrrLBvdo9eOZhulT1Qwl6NWfRE
-         gJQPd0QZXY80BVgHXN9Eb/eCc+wDdxNF4LBv33Goviyp/JiDBp6QgDUmWes3iv9Q02
-         UVwor99VEG4S64jFyz48PxuFiGJigaFIyhI238CJc1yWQvL+0hVNkFKTguMusTRf1H
-         slk6NZJc8JE+KRQ8Te792ig4masRNmknJhXKhuv4Z4c/UsCRo4Js/qZIPwKT8pnID/
-         eJ8cAsAt1v/vg==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] ssb: Fix division by zero issue in ssb_calc_clock_rate
-From:   Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20230904232346.34991-1-rand.sec96@gmail.com>
-References: <20230904232346.34991-1-rand.sec96@gmail.com>
-To:     Rand Deeb <rand.sec96@gmail.com>
-Cc:     Michael Buesch <m@bues.ch>, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, deeb.rand@confident.ru,
-        lvc-project@linuxtesting.org, voskresenski.stanislav@confident.ru,
-        Rand Deeb <rand.sec96@gmail.com>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <169406641403.3946078.14931132240535951245.kvalo@kernel.org>
-Date:   Thu,  7 Sep 2023 06:00:15 +0000 (UTC)
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        Thu, 7 Sep 2023 13:25:55 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B22CDE;
+        Thu,  7 Sep 2023 10:25:26 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3875npUj020188;
+        Thu, 7 Sep 2023 06:00:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=4UZ+9/d3SUM0emzxqN6v0bSiJxRg8md3/J0gazE6Jus=;
+ b=gm2rQaPdYM1dMA9hG4fC18hPDDutkM2tlypr2RULNAQ58tN/diNfKohTFxTdWH+ev6SF
+ i5AsQ5T0XIVvlVf5ozahoGGZO01ju4XPnX+pLqPRknpFCgGMrEcqWBmuvbCgs8WwbrU+
+ Ngu9f7U5g6Eew0mF81+XPk3TY6xQO+OYOiLoPxqbTAV02xXaVMy7TclQwV4+WUYIxS0I
+ oBg5dSbWQ1w1GJ/VfXe/SwM6oUVQEwveVWX/VsJLELtMEE+71S0ATT/lKju4XHAJ9EEH
+ NjNsYc0VYzySmGHx2dfPsmZOn0i8/IwwfvK464nQnwEOtbQh2UcR4JewyKmeI9XVctid iQ== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sxpt02m7x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Sep 2023 06:00:58 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 38760tdn011300;
+        Thu, 7 Sep 2023 06:00:55 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3sux4kjqum-1;
+        Thu, 07 Sep 2023 06:00:55 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38760sNR011295;
+        Thu, 7 Sep 2023 06:00:54 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-krichai-hyd.qualcomm.com [10.213.110.112])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 38760sRL011294;
+        Thu, 07 Sep 2023 06:00:54 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 4058933)
+        id E6FB513A9; Thu,  7 Sep 2023 11:30:53 +0530 (+0530)
+From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org, mani@kernel.org
+Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+        bhelgaas@google.com, rafael@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, quic_vbadigan@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_ramkri@quicinc.com, quic_parass@quicinc.com,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Subject: [PATCH v5 0/5] PCI: qcom: Add support for OPP
+Date:   Thu,  7 Sep 2023 11:30:28 +0530
+Message-Id: <1694066433-8677-1-git-send-email-quic_krichai@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 8W5aLJY1N9CQqKdZdvw0uQdbuFlbHFoH
+X-Proofpoint-GUID: 8W5aLJY1N9CQqKdZdvw0uQdbuFlbHFoH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-06_12,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
+ mlxscore=0 phishscore=0 impostorscore=0 suspectscore=0 mlxlogscore=815
+ adultscore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309070052
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,29 +84,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rand Deeb <rand.sec96@gmail.com> wrote:
+This patch adds support for OPP to vote for the performance state of RPMH
+power domain based upon GEN speed it PCIe got enumerated.
 
-> In ssb_calc_clock_rate(), there is a potential issue where the value of
-> m1 could be zero due to initialization using clkfactor_f6_resolv(). This
-> situation raised concerns about the possibility of a division by zero
-> error.
-> 
-> We fixed it by following the suggestions provided by Larry Finger
-> <Larry.Finger@lwfinger.net> and Michael Büsch <m@bues.ch>. The fix
-> involves returning a value of 1 instead of 0 in clkfactor_f6_resolv().
-> This modification ensures the proper functioning of the code and
-> eliminates the risk of division by zero errors.
-> 
-> Signed-off-by: Rand Deeb <rand.sec96@gmail.com>
-> Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
-> Acked-by: Michael Büsch <m@bues.ch>
+Before link up PCIe driver will vote for the maximum performance state.
 
-Patch applied to wireless-next.git, thanks.
+Add API dev_pm_opp_find_level_floor to find To find the highest opp for a device
+based on the level.
 
-e0b5127fa134 ssb: Fix division by zero issue in ssb_calc_clock_rate
+Changes from v4:
+	- Added a separate patch for returning error from the qcom_pcie_upadate
+	  and moved opp update logic to icc_update and used a bool variable to 
+	  update the opp.
+	- Addressed comments made by pavan.
+changes from v3:
+	- Removing the opp vote on suspend when the link is not up and link is not
+	  up and add debug prints as suggested by pavan.
+	- Added dev_pm_opp_find_level_floor API to find the highest opp to vote.
+changes from v2:
+	- Instead of using the freq based opp search use level based as suggested
+	  by Dmitry Baryshkov.
+Changes from v1:
+        - Addressed comments from Krzysztof Kozlowski.
+        - Added the rpmhpd_opp_xxx phandle as suggested by pavan.
+        - Added dev_pm_opp_set_opp API call which was missed on previous patch.
+
+Krishna chaitanya chundru (5):
+  dt-bindings: pci: qcom: Add opp table
+  arm64: dts: qcom: sm8450: Add opp table support to PCIe
+  opp: Add dev_pm_opp_find_level_floor()
+  PCI: qcom: Return error from 'qcom_pcie_icc_update'
+  PCI: qcom: Add OPP support to scale performance state of power domain
+
+ .../devicetree/bindings/pci/qcom,pcie.yaml         |  4 ++
+ arch/arm64/boot/dts/qcom/sm8450.dtsi               | 47 ++++++++++++++++
+ drivers/opp/core.c                                 | 25 +++++++++
+ drivers/pci/controller/dwc/pcie-qcom.c             | 63 ++++++++++++++++++----
+ include/linux/pm_opp.h                             |  9 ++++
+ 5 files changed, 137 insertions(+), 11 deletions(-)
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20230904232346.34991-1-rand.sec96@gmail.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.7.4
 
