@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F3979768F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1650C797A3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232698AbjIGQNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58428 "EHLO
+        id S237317AbjIGReO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:34:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237990AbjIGQMA (ORCPT
+        with ESMTP id S231908AbjIGReL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:12:00 -0400
-Received: from gauss.telenet-ops.be (gauss.telenet-ops.be [IPv6:2a02:1800:120:4::f00:11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51AE1525B
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:09:02 -0700 (PDT)
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by gauss.telenet-ops.be (Postfix) with ESMTPS id 4RhL535jwCz4x7f8
+        Thu, 7 Sep 2023 13:34:11 -0400
+Received: from cantor.telenet-ops.be (cantor.telenet-ops.be [IPv6:2a02:1800:120:4::f00:10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A9B197
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:33:46 -0700 (PDT)
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by cantor.telenet-ops.be (Postfix) with ESMTPS id 4RhL535hNsz4xVNf
         for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 15:41:59 +0200 (CEST)
 Received: from ramsan.of.borg ([84.195.187.55])
-        by andre.telenet-ops.be with bizsmtp
-        id j1hy2A00V1C8whw011hyGF; Thu, 07 Sep 2023 15:41:59 +0200
+        by albert.telenet-ops.be with bizsmtp
+        id j1hy2A00U1C8whw061hyaR; Thu, 07 Sep 2023 15:41:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGQ-002mA6-Te;
+        id 1qeFGQ-002mA9-UG;
         Thu, 07 Sep 2023 15:41:58 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGg-00CMhy-5d;
+        id 1qeFGg-00CMi3-6I;
         Thu, 07 Sep 2023 15:41:58 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -41,9 +41,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 37/52] m68k: sun3/3x: Include <asm/config.h> for config_sun3*()
-Date:   Thu,  7 Sep 2023 15:41:38 +0200
-Message-Id: <31d7b55e5a05a1d4261b808a3b801f7de3bfda99.1694093327.git.geert@linux-m68k.org>
+Subject: [PATCH 38/52] m68k: sun3: Improve Sun3/3x DVMA abstraction in <asm/dvma.h>
+Date:   Thu,  7 Sep 2023 15:41:39 +0200
+Message-Id: <df48190f1784b0d04a64a784839a987e5a56cd8b.1694093327.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
 References: <cover.1694093327.git.geert@linux-m68k.org>
@@ -61,46 +61,92 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/sun3/config.c:123:13: warning: no previous prototype for ‘config_sun3’ [-Wmissing-prototypes]
-      126 | void __init config_sun3(void)
-	  |             ^~~~~~~~~~~
-    arch/m68k/sun3x/config.c:42:13: warning: no previous prototype for ‘config_sun3x’ [-Wmissing-prototypes]
-       42 | void __init config_sun3x(void)
-	  |             ^~~~~~~~~~~~
+    arch/m68k/sun3/dvma.c:65:13: warning: no previous prototype for ‘sun3_dvma_init’ [-Wmissing-prototypes]
+       65 | void __init sun3_dvma_init(void)
+	  |             ^~~~~~~~~~~~~~
 
-Fix this by including <asm/config.h>
+    arch/m68k/sun3x/dvma.c:178:6: warning: no previous prototype for ‘dvma_unmap_iommu’ [-Wmissing-prototypes]
+      179 | void dvma_unmap_iommu(unsigned long baddr, int len)
+	  |      ^~~~~~~~~~~~~~~~
 
-Fixes: 91d7b75a5888c182 ("m68k: Add asm/config.h")
+Fix this by moving the declarations for sun3_dvma_init() and
+dvma_unmap_iommu() to <asm/dvma.h>.  Avoid #ifdefs in callers by
+providing dummy static inline functions.
+
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/sun3/config.c  | 1 +
- arch/m68k/sun3x/config.c | 1 +
- 2 files changed, 2 insertions(+)
+ arch/m68k/include/asm/dvma.h |  8 +++++++-
+ arch/m68k/sun3/sun3dvma.c    | 15 ---------------
+ 2 files changed, 7 insertions(+), 16 deletions(-)
 
-diff --git a/arch/m68k/sun3/config.c b/arch/m68k/sun3/config.c
-index 203f428a0344a735..b932250c9e7ffbae 100644
---- a/arch/m68k/sun3/config.c
-+++ b/arch/m68k/sun3/config.c
-@@ -32,6 +32,7 @@
- #include <asm/irq.h>
- #include <asm/sections.h>
- #include <asm/sun3ints.h>
-+#include <asm/config.h>
+diff --git a/arch/m68k/include/asm/dvma.h b/arch/m68k/include/asm/dvma.h
+index f609ec1de36d0d2c..d1d66d04844d3e1c 100644
+--- a/arch/m68k/include/asm/dvma.h
++++ b/arch/m68k/include/asm/dvma.h
+@@ -58,12 +58,16 @@ extern void dvma_free(void *vaddr);
+ #define dvma_vtob(x) dvma_vtop(x)
+ #define dvma_btov(x) dvma_ptov(x)
  
- char sun3_reserved_pmeg[SUN3_PMEGS_NUM];
++void sun3_dvma_init(void);
++
+ static inline int dvma_map_cpu(unsigned long kaddr, unsigned long vaddr,
+ 			       int len)
+ {
+ 	return 0;
+ }
  
-diff --git a/arch/m68k/sun3x/config.c b/arch/m68k/sun3x/config.c
-index 37121a0f12531fef..3a10cda636fc38fb 100644
---- a/arch/m68k/sun3x/config.c
-+++ b/arch/m68k/sun3x/config.c
-@@ -19,6 +19,7 @@
- #include <asm/sun3ints.h>
- #include <asm/setup.h>
- #include <asm/oplib.h>
-+#include <asm/config.h>
++static inline void dvma_unmap_iommu(unsigned long baddr, int len) { }
++
+ #else /* Sun3x */
  
- #include "time.h"
+ /* sun3x dvma page support */
+@@ -78,9 +82,11 @@ static inline int dvma_map_cpu(unsigned long kaddr, unsigned long vaddr,
+ #define dvma_vtob(x) ((unsigned long)(x) & 0x00ffffff)
+ #define dvma_btov(x) ((unsigned long)(x) | 0xff000000)
  
+-extern int dvma_map_cpu(unsigned long kaddr, unsigned long vaddr, int len);
++static inline void sun3_dvma_init(void) { }
+ 
++int dvma_map_cpu(unsigned long kaddr, unsigned long vaddr, int len);
+ 
++void dvma_unmap_iommu(unsigned long baddr, int len);
+ 
+ /* everything below this line is specific to dma used for the onboard
+    ESP scsi on sun3x */
+diff --git a/arch/m68k/sun3/sun3dvma.c b/arch/m68k/sun3/sun3dvma.c
+index 4b560f4d3960c2b5..f66b2413209069f2 100644
+--- a/arch/m68k/sun3/sun3dvma.c
++++ b/arch/m68k/sun3/sun3dvma.c
+@@ -20,18 +20,6 @@
+ 
+ #undef DVMA_DEBUG
+ 
+-#ifdef CONFIG_SUN3X
+-extern void dvma_unmap_iommu(unsigned long baddr, int len);
+-#else
+-static inline void dvma_unmap_iommu(unsigned long a, int b)
+-{
+-}
+-#endif
+-
+-#ifdef CONFIG_SUN3
+-extern void sun3_dvma_init(void);
+-#endif
+-
+ static unsigned long *iommu_use;
+ 
+ #define dvma_index(baddr) ((baddr - DVMA_START) >> DVMA_PAGE_SHIFT)
+@@ -274,10 +262,7 @@ void __init dvma_init(void)
+ 
+ 	dvma_unmap_iommu(DVMA_START, DVMA_SIZE);
+ 
+-#ifdef CONFIG_SUN3
+ 	sun3_dvma_init();
+-#endif
+-
+ }
+ 
+ unsigned long dvma_map_align(unsigned long kaddr, int len, int align)
 -- 
 2.34.1
 
