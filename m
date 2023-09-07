@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E27D27979E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B787979D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243319AbjIGRZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39228 "EHLO
+        id S242996AbjIGRWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243160AbjIGRZj (ORCPT
+        with ESMTP id S234777AbjIGRWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:25:39 -0400
+        Thu, 7 Sep 2023 13:22:30 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B0C1FCA
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:25:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020481FE5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:22:02 -0700 (PDT)
 Received: from localhost (unknown [81.18.92.207])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: cristicc)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 108A766072F2;
-        Thu,  7 Sep 2023 18:10:39 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 762F566072F4;
+        Thu,  7 Sep 2023 18:10:41 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694106639;
-        bh=cWhyxr36AR1ENWdvICbtj9KTZjepyfpK32OIZ3BkWNY=;
+        s=mail; t=1694106641;
+        bh=xCnO4kZnTTfiLFarcj0DdPXYKo5Wq4aT17BKxrFFaDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WtPR6rLopKNclAGAVCXqFCW9nGaB3Xb/6gDidhUwHzU52KEBQGLdxxAI5kHDAzSBU
-         /x603gTM7glnFUTXtS7wKnDTYlfX6YSpXlNm5/CxueuRjXmnRtFhc2D+2dP+P37WTA
-         +NsYeSpoIeBDrYsAJk9yQvZteniuRxdu7B1sY9YrDjEvX/5qKHMJBUicucpHMjoZmz
-         IkXbwnExBOKQT3ZAkYF211ybeixARg5n7B8bHPdncgobgU7l5KoC2ATgTam9X/LHO3
-         +CBOOCtOq9N9jg94LIKO+fdLAigcEFKwUYNiohNIPSQ8l91pXYI/jQD91zoTZVqp3m
-         cg0v7ncMNUO/Q==
+        b=HJgEtVCA+qN+J+SkwLyHkSm4H5oAXVS/ekNU9wN1B9xceWrjWmou6Pvolar4HkXIx
+         h0wqrPE689J78gw5/D4a5TCujAKYqrPRZ52bOt+WwU4wb7xrwPGB7qVJMAEcF1wuKw
+         kD0qvHC8W/EVxv/q/2VQ5bKXIdzbC/qQRq/FkbJF1n4zTt/iPv0JOiJpotAHizMIBx
+         q89D/uSpSRY8JSrDQDHPVfKdivzOpYrKuuQ4JzaRizqBBUcCigQuOCQhr29JrWtTD+
+         HD54bZ75JJb8NBgkLutoO8q0kq2ACU/e56+Ne70k0UNK5J1vv0grFP0g5y+m/BsLtC
+         9TKrUCS8BRCHg==
 From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To:     James Schulman <james.schulman@cirrus.com>,
         David Rhodes <david.rhodes@cirrus.com>,
@@ -45,9 +45,9 @@ To:     James Schulman <james.schulman@cirrus.com>,
         Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 Cc:     alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
         linux-kernel@vger.kernel.org, kernel@collabora.com
-Subject: [PATCH v2 08/11] ASoC: cs35l41: Use modern pm_ops
-Date:   Thu,  7 Sep 2023 20:10:07 +0300
-Message-ID: <20230907171010.1447274-9-cristian.ciocaltea@collabora.com>
+Subject: [PATCH v2 09/11] ALSA: hda: cs35l41: Fix unbalanced pm_runtime_get()
+Date:   Thu,  7 Sep 2023 20:10:08 +0300
+Message-ID: <20230907171010.1447274-10-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230907171010.1447274-1-cristian.ciocaltea@collabora.com>
 References: <20230907171010.1447274-1-cristian.ciocaltea@collabora.com>
@@ -62,129 +62,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the recently introduced EXPORT_GPL_DEV_PM_OPS() macro, to
-conditionally export the runtime/system PM functions.
+If component_add() fails, probe() returns without calling
+pm_runtime_put(), which leaves the runtime PM usage counter incremented.
 
-Replace the old SET_{RUNTIME,SYSTEM_SLEEP,NOIRQ_SYSTEM_SLEEP}_PM_OPS()
-helpers with their modern alternatives and get rid of the now
-unnecessary '__maybe_unused' annotations on all PM functions.
+Fix the issue by jumping to err_pm label and drop the now unnecessary
+pm_runtime_disable() call.
 
-Additionally, use the pm_ptr() macro to fix the following errors when
-building with CONFIG_PM disabled:
-
-ERROR: modpost: "cs35l41_pm_ops" [sound/soc/codecs/snd-soc-cs35l41-spi.ko] undefined!
-ERROR: modpost: "cs35l41_pm_ops" [sound/soc/codecs/snd-soc-cs35l41-i2c.ko] undefined!
-
+Fixes: 7b2f3eb492da ("ALSA: hda: cs35l41: Add support for CS35L41 in HDA systems")
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs35l41-i2c.c |  2 +-
- sound/soc/codecs/cs35l41-spi.c |  2 +-
- sound/soc/codecs/cs35l41.c     | 21 ++++++++++-----------
- 3 files changed, 12 insertions(+), 13 deletions(-)
+ sound/pci/hda/cs35l41_hda.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs35l41-i2c.c b/sound/soc/codecs/cs35l41-i2c.c
-index 9109203a7f25..96414ee35285 100644
---- a/sound/soc/codecs/cs35l41-i2c.c
-+++ b/sound/soc/codecs/cs35l41-i2c.c
-@@ -80,7 +80,7 @@ MODULE_DEVICE_TABLE(acpi, cs35l41_acpi_match);
- static struct i2c_driver cs35l41_i2c_driver = {
- 	.driver = {
- 		.name		= "cs35l41",
--		.pm		= &cs35l41_pm_ops,
-+		.pm		= pm_ptr(&cs35l41_pm_ops),
- 		.of_match_table = of_match_ptr(cs35l41_of_match),
- 		.acpi_match_table = ACPI_PTR(cs35l41_acpi_match),
- 	},
-diff --git a/sound/soc/codecs/cs35l41-spi.c b/sound/soc/codecs/cs35l41-spi.c
-index 28e9c9473e60..a6db44520c06 100644
---- a/sound/soc/codecs/cs35l41-spi.c
-+++ b/sound/soc/codecs/cs35l41-spi.c
-@@ -80,7 +80,7 @@ MODULE_DEVICE_TABLE(acpi, cs35l41_acpi_match);
- static struct spi_driver cs35l41_spi_driver = {
- 	.driver = {
- 		.name		= "cs35l41",
--		.pm		= &cs35l41_pm_ops,
-+		.pm		= pm_ptr(&cs35l41_pm_ops),
- 		.of_match_table = of_match_ptr(cs35l41_of_match),
- 		.acpi_match_table = ACPI_PTR(cs35l41_acpi_match),
- 	},
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index 7ddaa9bd8911..4bc64ba71cd6 100644
---- a/sound/soc/codecs/cs35l41.c
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -1368,7 +1368,7 @@ void cs35l41_remove(struct cs35l41_private *cs35l41)
- }
- EXPORT_SYMBOL_GPL(cs35l41_remove);
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index 09a9c135d9b6..6fd827093c92 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -1625,8 +1625,7 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
+ 	ret = component_add(cs35l41->dev, &cs35l41_hda_comp_ops);
+ 	if (ret) {
+ 		dev_err(cs35l41->dev, "Register component failed: %d\n", ret);
+-		pm_runtime_disable(cs35l41->dev);
+-		goto err;
++		goto err_pm;
+ 	}
  
--static int __maybe_unused cs35l41_runtime_suspend(struct device *dev)
-+static int cs35l41_runtime_suspend(struct device *dev)
- {
- 	struct cs35l41_private *cs35l41 = dev_get_drvdata(dev);
- 
-@@ -1385,7 +1385,7 @@ static int __maybe_unused cs35l41_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int __maybe_unused cs35l41_runtime_resume(struct device *dev)
-+static int cs35l41_runtime_resume(struct device *dev)
- {
- 	struct cs35l41_private *cs35l41 = dev_get_drvdata(dev);
- 	int ret;
-@@ -1414,7 +1414,7 @@ static int __maybe_unused cs35l41_runtime_resume(struct device *dev)
- 	return 0;
- }
- 
--static int __maybe_unused cs35l41_sys_suspend(struct device *dev)
-+static int cs35l41_sys_suspend(struct device *dev)
- {
- 	struct cs35l41_private *cs35l41 = dev_get_drvdata(dev);
- 
-@@ -1424,7 +1424,7 @@ static int __maybe_unused cs35l41_sys_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int __maybe_unused cs35l41_sys_suspend_noirq(struct device *dev)
-+static int cs35l41_sys_suspend_noirq(struct device *dev)
- {
- 	struct cs35l41_private *cs35l41 = dev_get_drvdata(dev);
- 
-@@ -1434,7 +1434,7 @@ static int __maybe_unused cs35l41_sys_suspend_noirq(struct device *dev)
- 	return 0;
- }
- 
--static int __maybe_unused cs35l41_sys_resume_noirq(struct device *dev)
-+static int cs35l41_sys_resume_noirq(struct device *dev)
- {
- 	struct cs35l41_private *cs35l41 = dev_get_drvdata(dev);
- 
-@@ -1444,7 +1444,7 @@ static int __maybe_unused cs35l41_sys_resume_noirq(struct device *dev)
- 	return 0;
- }
- 
--static int __maybe_unused cs35l41_sys_resume(struct device *dev)
-+static int cs35l41_sys_resume(struct device *dev)
- {
- 	struct cs35l41_private *cs35l41 = dev_get_drvdata(dev);
- 
-@@ -1454,13 +1454,12 @@ static int __maybe_unused cs35l41_sys_resume(struct device *dev)
- 	return 0;
- }
- 
--const struct dev_pm_ops cs35l41_pm_ops = {
--	SET_RUNTIME_PM_OPS(cs35l41_runtime_suspend, cs35l41_runtime_resume, NULL)
-+EXPORT_GPL_DEV_PM_OPS(cs35l41_pm_ops) = {
-+	RUNTIME_PM_OPS(cs35l41_runtime_suspend, cs35l41_runtime_resume, NULL)
- 
--	SET_SYSTEM_SLEEP_PM_OPS(cs35l41_sys_suspend, cs35l41_sys_resume)
--	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(cs35l41_sys_suspend_noirq, cs35l41_sys_resume_noirq)
-+	SYSTEM_SLEEP_PM_OPS(cs35l41_sys_suspend, cs35l41_sys_resume)
-+	NOIRQ_SYSTEM_SLEEP_PM_OPS(cs35l41_sys_suspend_noirq, cs35l41_sys_resume_noirq)
- };
--EXPORT_SYMBOL_GPL(cs35l41_pm_ops);
- 
- MODULE_DESCRIPTION("ASoC CS35L41 driver");
- MODULE_AUTHOR("David Rhodes, Cirrus Logic Inc, <david.rhodes@cirrus.com>");
+ 	dev_info(cs35l41->dev, "Cirrus Logic CS35L41 (%x), Revision: %02X\n", regid, reg_revid);
 -- 
 2.41.0
 
