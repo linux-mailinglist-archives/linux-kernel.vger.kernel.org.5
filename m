@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 718B3796F32
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 05:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F72796F33
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 05:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233459AbjIGDOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 23:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55932 "EHLO
+        id S231859AbjIGDOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 23:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231859AbjIGDOC (ORCPT
+        with ESMTP id S238038AbjIGDOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 23:14:02 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69D810CA
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 20:13:54 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68a42d06d02so459498b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 20:13:54 -0700 (PDT)
+        Wed, 6 Sep 2023 23:14:03 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9DF10F1
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 20:13:58 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bf11b1c7d0so11821585ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 20:13:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694056434; x=1694661234; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694056437; x=1694661237; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CweUPJL5xZp7oHDLbCdTD5dawMh3eCK/C8GrYfBGMCg=;
-        b=qN0a++KZHBr+sVJix91vyJ2s4vMbc0d4bdzT3J00KyV3s6jugHls+O2z3ZsbQWwcxs
-         0Xl3mXyQhTz+5tePPbMoXcz/4TbR0Z+kRSOwkq8YmGIAb2L+xz6O8wHgoHrkPDNG3ZZ2
-         ZQCObYis/cywvYueWLXEVOAbsJknl49qBqcHr1rei5UfM5XRra3eO38RsQ0iUCFWK7qb
-         /AGYKcUdVXJXQ95nq59Ppy08ujAk/bPWjLtXPihj4HGAb+w+LyuQSUqySzwn/fjv9Cwp
-         +CLrLr7MkCLYK8ncYd0nJ3Qnekzx/XWGfcNbYJ2zZR80neVa681tRgFXV/8Fd+yxsH0y
-         U5IQ==
+        bh=+DTEliymHGGsjHkf9gOQvp04Ee/X7GkoMiapI3zHqYg=;
+        b=Cw9YURglDcaFDIW2Ze25FDZcDgLOOu0iHKVXwxawE0HzVR/9k2oupphQNxX0V/d/Q9
+         QTbRpnJn/P7jcQdoQx/Na2g9ZzvzJDEHpaqFfcYv7dCSVBDyFM8JQ+Ul2SbMpexcgIsc
+         DOxBbQQvJ4E1n0f0HkIJn0wFJhLCycPqY8QjjUjhYmzAqWedxqRwWol36elzQDj5e8+6
+         mV8haMkrgsI9R8SrY1ZIENN+QvqWIT9dXEiFml9RWbwOG8dQeVxNPtbnB+TmVk7YOh9S
+         VU7GET/1YFCAtGGvOhTj7M/uc8fGeIMjuoTkdGXEXQePS7JZz3+x36LQy6AL4tOs9TEb
+         Mz0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694056434; x=1694661234;
+        d=1e100.net; s=20221208; t=1694056437; x=1694661237;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CweUPJL5xZp7oHDLbCdTD5dawMh3eCK/C8GrYfBGMCg=;
-        b=lL0HRwKVS8lESQ5BotGcrFBzJsI+ij95Ojdi0R8rVBmsox0lGOsRkzar8Czg0NqrSZ
-         NIo+8sxysJfMpObaDGoWatPxnKj/FQJXi4Q7lsQfiPVQIofXQeyzAuo6UG/5MaTDukYT
-         DecpltsrIvHNuMG8rFYeIP6UFckvfpIn5boYCIVw9zVsAsiJFUfk9rzKaLvz67gEFRi+
-         a0Ya42y8F9Po+vjACQS7jb0g4Zy+3VOB+QZpgRhuYfdys3x1dWA+S9MMR2eR51j1VxNv
-         ZuQqz8DvJ63yzcf7cqsX0MCWmuEk9NPsLeCTqvdson5xmpz2oHsmy9kSG4lnraj4hKvy
-         pKEA==
-X-Gm-Message-State: AOJu0YwhlX5F7twMR6QlYW+oajYuyXLJnGuj9t/exZD/zQQJm42CbQQl
-        Nuz+9GCbUBsnbCUfChTgWQyjtdCqNew=
-X-Google-Smtp-Source: AGHT+IEv25aOYkrH42w0Sz/YQbI/4HwNCkvmTUNVzZDeFV88oGcjNjaefx6ornLdu89dHPXko2bUAA==
-X-Received: by 2002:a05:6a20:9744:b0:14d:446f:7211 with SMTP id hs4-20020a056a20974400b0014d446f7211mr16211714pzc.53.1694056433896;
-        Wed, 06 Sep 2023 20:13:53 -0700 (PDT)
+        bh=+DTEliymHGGsjHkf9gOQvp04Ee/X7GkoMiapI3zHqYg=;
+        b=kfwn+LvPgX2/GhEVJPKaGZ4yNDV+u90acL2QDY0VNHM1XXua1O9+okVC97kJd1TkXi
+         m4+cPlev9QpQKzVCCnEO5K6lW6apZaI6QYhB8R3UmjbHfVCGCGixQ1p6hy9K2oVzRYSo
+         SXBJatKMjMI6WTnfDP8c57bNbZvMez3lzbpHuh0U8STGjFJa70cvxp+Yq8ck8FVrnKWE
+         k5od2NE+iFK5zFAfFnrEo9EDxdeJ3xbz4gBmn+kOpjpY7pYiRZxnvbgJciIUWnFE6WSa
+         n9YjyrWi+8+r/hQghlFfuUW0Ei1wUG4dnIlt49bS2z0KHsa+3ECj8PQJGyZB4sddmUGl
+         Izww==
+X-Gm-Message-State: AOJu0Yw8VjFtwgJ+EzW5NMoPxUIVZsXSYdU0TjC9Sn1Q86Rpza8Wz8Qf
+        3JAP4fe7v9BOYktjziPpTfkM9A49xKc=
+X-Google-Smtp-Source: AGHT+IH1GNIj5KngpiOl6YqNBSSwIdokF8UAu4o0Ra+cs7LfoXmoEGGWWjFmc55EspggbPXfFY2jlQ==
+X-Received: by 2002:a17:902:e54e:b0:1c0:bcbc:d67 with SMTP id n14-20020a170902e54e00b001c0bcbc0d67mr1716353plf.22.1694056437641;
+        Wed, 06 Sep 2023 20:13:57 -0700 (PDT)
 Received: from wenkaidev (118-163-147-182.hinet-ip.hinet.net. [118.163.147.182])
-        by smtp.gmail.com with ESMTPSA id o9-20020a170902bcc900b001c1f4edfb87sm11680361pls.92.2023.09.06.20.13.53
+        by smtp.gmail.com with ESMTPSA id j1-20020a170902c3c100b001bb9aadfb04sm11609943plj.220.2023.09.06.20.13.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 20:13:53 -0700 (PDT)
+        Wed, 06 Sep 2023 20:13:57 -0700 (PDT)
 From:   advantech.susiteam@gmail.com
 To:     advantech.susiteam@gmail.com
 Cc:     wenkai.chung@advantech.com.tw, Susi.Driver@advantech.com,
         Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] mfd: eiois200: Insert EIO-IS200 core driver to Kconfig
-Date:   Thu,  7 Sep 2023 11:13:15 +0800
-Message-Id: <20230907031320.6814-2-advantech.susiteam@gmail.com>
+Subject: [PATCH 2/4] mfd: eiois200: Insert EIO-IS200 core driver to Makefile
+Date:   Thu,  7 Sep 2023 11:13:16 +0800
+Message-Id: <20230907031320.6814-3-advantech.susiteam@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230907031320.6814-1-advantech.susiteam@gmail.com>
 References: <20230907031320.6814-1-advantech.susiteam@gmail.com>
@@ -76,44 +76,25 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 From: Wenkai <advantech.susiteam@gmail.com>
 
 This patch adds support for the Advantech EIO-IS200 Embedded
-Controller core driver to the Kconfig configuration menu. When
-configuring the kernel using tools like menuconfig, you can
-select M to build it as a module or select N to exclude it from
-being built-in.
+Controller core driver to the Makefile in the drivers/mfd directory.
 
 Signed-off-by: Wenkai <advantech.susiteam@gmail.com>
 ---
- drivers/mfd/Kconfig | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/mfd/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index aea95745c73f..85bcb8f95501 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -52,6 +52,23 @@ config MFD_ACT8945A
- 	  linear regulators, along with a complete ActivePath battery
- 	  charger.
- 
-+ config MFD_EIOIS200
-+	tristate "Advantech EIO-IS200 Embedded Controller core driver"
-+	depends on X86
-+	depends on m
-+	default m
-+	select MFD_CORE
-+	select REGMAP_MMIO
-+	help
-+	  This driver provides support for the Advantech EIO-IS200 EC and
-+	  activate its sub-drivers, including GPIO, watchdog, hardware
-+	  monitor, I2C, and thermal.
-+
-+	  This driver option only has two states: M and N. It cannot be
-+	  built-in. To compile this driver as a module, choose M here; the
-+	  module will be called eiois200_core. The system will force it to
-+	  M if any one of its sub-drivers is chosen.
-+
- config MFD_SUN4I_GPADC
- 	tristate "Allwinner sunxi platforms' GPADC MFD driver"
- 	select MFD_CORE
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index c66f07edcd0e..46dc303ddae4 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -16,6 +16,7 @@ obj-$(CONFIG_MFD_CROS_EC_DEV)	+= cros_ec_dev.o
+ obj-$(CONFIG_MFD_CS42L43)	+= cs42l43.o
+ obj-$(CONFIG_MFD_CS42L43_I2C)	+= cs42l43-i2c.o
+ obj-$(CONFIG_MFD_CS42L43_SDW)	+= cs42l43-sdw.o
++obj-$(CONFIG_MFD_EIOIS200)	+= eiois200_core.o
+ obj-$(CONFIG_MFD_ENE_KB3930)	+= ene-kb3930.o
+ obj-$(CONFIG_MFD_EXYNOS_LPASS)	+= exynos-lpass.o
+ obj-$(CONFIG_MFD_GATEWORKS_GSC)	+= gateworks-gsc.o
 -- 
 2.34.1
 
