@@ -2,120 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4EF797B82
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A45797B83
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238822AbjIGSTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 14:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44124 "EHLO
+        id S1343777AbjIGSTk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Sep 2023 14:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232978AbjIGSTP (ORCPT
+        with ESMTP id S1343715AbjIGSTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:19:15 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707EA1705;
-        Thu,  7 Sep 2023 11:18:59 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 567bb54194be6a4c; Thu, 7 Sep 2023 20:18:57 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id D03936636D6;
-        Thu,  7 Sep 2023 20:18:56 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>, linux-omap@vger.kernel.org,
-        Amit Kucheria <amitk@kernel.org>, Keerthy <j-keerthy@ti.com>
-Subject: [PATCH v1] thermal: Constify the trip argument of the .get_trend() zone callback
-Date:   Thu, 07 Sep 2023 20:18:56 +0200
-Message-ID: <5709115.DvuYhMxLoT@kreacher>
+        Thu, 7 Sep 2023 14:19:36 -0400
+Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEE5171C
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:19:21 -0700 (PDT)
+Received: from omf03.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay01.hostedemail.com (Postfix) with ESMTP id 760081CA3D9;
+        Thu,  7 Sep 2023 18:19:20 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id 64F5A6000D;
+        Thu,  7 Sep 2023 18:19:18 +0000 (UTC)
+Message-ID: <80524052652a85d2efdd3e2a01e7582baf9e545b.camel@perches.com>
+Subject: Re: [PATCH 2/2] checkpatch: reword long-line warning about
+ commit-msg
+From:   Joe Perches <joe@perches.com>
+To:     Jim Cromie <jim.cromie@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, apw@canonical.com,
+        Kees Cook <keescook@chromium.org>
+Date:   Thu, 07 Sep 2023 11:19:17 -0700
+In-Reply-To: <20230907174506.593889-1-jim.cromie@gmail.com>
+References: <20230907174506.593889-1-jim.cromie@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudehhedguddvfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeffffffkefgheehffelteeiveeffeevhfelteejvddvieejjeelvdeiheeuveeuffenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeelpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphht
- thhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=9 Fuz1=9 Fuz2=9
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Rspamd-Queue-Id: 64F5A6000D
+X-Stat-Signature: 4zzjrfkr75k8m579ao54tqawuq14eb53
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,UNPARSEABLE_RELAY autolearn=no
         autolearn_force=no version=3.4.6
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18JZC6zKE/u/Kl+kHU1TO7mg4gAwibi3BM=
+X-HE-Tag: 1694110758-500721
+X-HE-Meta: U2FsdGVkX1+WXzfEUpCFUAyWUw/pAfu7vt15dXDH37xMLastwvVS6HMuIJ0nRkv5DFgj2mzjdgarCPHKFZYnZrA68ry+2Dcw8nZi8SxhY7J51qTEIUCvAF6mHjRU2irCLBWPKEAzQSeXspNWT3x300yNDTGWWnY8W+UNlU0ipN33AIvD+T4/IZ6kWCT8NEigruNNmV0jCp87rA0ogoTZuTvVYfMpm88hhmoS5R4eGngHjKjTdmDUZzujrIRORDUgS0YUuaS4FZaWKgVV1z/b7aj5eFFiFzusJOfDpuL0nf9BWrlqX9hey/MVNSs9Jett4zpy2HJU2HC3dBfyvGkRtYT0x9lkigwuBhlqmWHvEZRPGVg5H0j9koneDAFCCOfzuiLUg9/KwrxPWVaHDPGypVatmYsN2B3VXMb6MTKqRhEOkZobaJ2T3SJ+cyi6rWiPFC9Tg+/fGphUG13qduhFiZO/gCafQ6kh6wOZ3lJIJxbNYjuEvMUnkRWycgkurIIT3qnPW3EHWZ0=
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Thu, 2023-09-07 at 11:45 -0600, Jim Cromie wrote:
+> The COMMIT_LOG_LONG_LINE warning complains about:
+>  1- possible unwrapped commit description
+>  2- line too long
+> 
+> The actual test is #2, so reword it to say that 1st.
+> This could reduce potential confusion for newbie users.
 
-Add 'const' to the definition of the 'trip' argument of the
-.get_trend() thermal zone callback to indicate that the trip point
-passed to it should not be modified by it and adjust the
-callback functions implementing it, thermal_get_trend() in the
-ACPI thermal driver and __ti_thermal_get_trend(), accordingly.
+I don't see this as valuable.
 
-No intentional functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/thermal.c                             |    2 +-
- drivers/thermal/ti-soc-thermal/ti-thermal-common.c |    3 ++-
- include/linux/thermal.h                            |    4 ++--
- 3 files changed, 5 insertions(+), 4 deletions(-)
-
-Index: linux-pm/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
-===================================================================
---- linux-pm.orig/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
-+++ linux-pm/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
-@@ -110,7 +110,8 @@ static inline int __ti_thermal_get_temp(
- }
- 
- static int __ti_thermal_get_trend(struct thermal_zone_device *tz,
--				  struct thermal_trip *trip, enum thermal_trend *trend)
-+				  const struct thermal_trip *trip,
-+				  enum thermal_trend *trend)
- {
- 	struct ti_thermal_data *data = thermal_zone_device_priv(tz);
- 	struct ti_bandgap *bgp;
-Index: linux-pm/include/linux/thermal.h
-===================================================================
---- linux-pm.orig/include/linux/thermal.h
-+++ linux-pm/include/linux/thermal.h
-@@ -80,8 +80,8 @@ struct thermal_zone_device_ops {
- 	int (*set_trip_hyst) (struct thermal_zone_device *, int, int);
- 	int (*get_crit_temp) (struct thermal_zone_device *, int *);
- 	int (*set_emul_temp) (struct thermal_zone_device *, int);
--	int (*get_trend) (struct thermal_zone_device *, struct thermal_trip *,
--			  enum thermal_trend *);
-+	int (*get_trend) (struct thermal_zone_device *,
-+			  const struct thermal_trip *, enum thermal_trend *);
- 	void (*hot)(struct thermal_zone_device *);
- 	void (*critical)(struct thermal_zone_device *);
- };
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -531,7 +531,7 @@ static int thermal_get_temp(struct therm
- }
- 
- static int thermal_get_trend(struct thermal_zone_device *thermal,
--			     struct thermal_trip *trip,
-+			     const struct thermal_trip *trip,
- 			     enum thermal_trend *trend)
- {
- 	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
-
-
+> 
+> Cc: apw@canonical.com
+> Cc: joe@perches.com
+> Cc: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> ---
+>  scripts/checkpatch.pl | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 6aabcc1f66c1..6e789dc07420 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3272,7 +3272,7 @@ sub process {
+>  					# A Fixes:, link or signature tag line
+>  		      $commit_log_possible_stack_dump)) {
+>  			WARN("COMMIT_LOG_LONG_LINE",
+> -			     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
+> +			     "Prefer a maximum 75 chars per line (possible unwrapped commit description?)\n" . $herecurr);
+>  			$commit_log_long_line = 1;
+>  		}
+>  
 
