@@ -2,170 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC5A797CD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 21:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB19797CDD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 21:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233992AbjIGTia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 15:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57490 "EHLO
+        id S237140AbjIGTix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 15:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbjIGTi0 (ORCPT
+        with ESMTP id S229977AbjIGTiw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 15:38:26 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7CECE9
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 12:38:23 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bf6ea270b2so10032525ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 12:38:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694115502; x=1694720302; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JyxUbnx4HZmUSdrV+kf8fnRGR8ocSxgjnGxLCSFgGG4=;
-        b=M6nR/xY/XqR/gQraOrcQhEs1yJoqiq9kmK9TF/QTKoaEYbkQgumtaVwDp1RFi6hph2
-         CZXL4XbB2ew1MqUSPUp2yF4/FNvudee1c959oie//WQ/IwcLUJNw5YUYcfe9UI7p+0R8
-         nAo90J6d5aWDlcWmCFWBBg4XTGNGQ8NPBIDdM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694115502; x=1694720302;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JyxUbnx4HZmUSdrV+kf8fnRGR8ocSxgjnGxLCSFgGG4=;
-        b=CR6FDAy/eIG5oq7gZKzmKSdMOFB6FU51oVEz/8GLVAIe0AjIPx6h1SeEeDdo/iuuqi
-         iOEaPWjffgpJIC6UCkRGmVLcf3j38ZUIb5TxkfVL6leBCofjBVcAfwGBbL039IhJNP8z
-         1iVEM9S15LhM+Ufxo7zT+mHfYKyPvNIMpkbKXzDUg08DzL6iNFFp2IZfVi5d3Ke7UjDg
-         /UFNt1s9IFbjmEs4i+4eSwUEJ6GrxhW2nY7ubv5YnI2hcnbffvZhHe/s2BPaAIzWms4y
-         4hU2uEpUwSmLKPFxGQ0bhzPF5n0P0xA0cpHQkkqXXwHxskmUik9+hpi8UY7HOEOL184d
-         fUlw==
-X-Gm-Message-State: AOJu0YyMIN37pfc8d2FWCRyhdh9Mxkj3fgojWjG/XymMwJcKMIP3MmrU
-        x61ojlxVQXCwo27vCiLMKX2Oaw==
-X-Google-Smtp-Source: AGHT+IG5Jr1XW8POkMawPbxQZk4DARRoztm3yclyrJHKWW2Ruzzn1M+lR/MFOnQpnMuPN1kSEcjZ0w==
-X-Received: by 2002:a17:903:2446:b0:1c3:7ed2:b54e with SMTP id l6-20020a170903244600b001c37ed2b54emr453742pls.57.1694115502592;
-        Thu, 07 Sep 2023 12:38:22 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id v10-20020a1709029a0a00b001b2069072ccsm131820plp.18.2023.09.07.12.38.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 12:38:21 -0700 (PDT)
-Date:   Thu, 7 Sep 2023 12:38:21 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'Vlastimil Babka' <vbabka@suse.cz>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "'linux-mm@kvack.org'" <linux-mm@kvack.org>,
-        'Christoph Lameter' <cl@linux.com>,
-        'Pekka Enberg' <penberg@kernel.org>,
-        'David Rientjes' <rientjes@google.com>,
-        'Joonsoo Kim' <iamjoonsoo.kim@lge.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        'Eric Dumazet' <edumazet@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Subject: Re: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return
- 0 for non-zero size
-Message-ID: <202309071235.CB4F6B2@keescook>
-References: <4d31a2bf7eb544749023cf491c0eccc8@AcuMS.aculab.com>
+        Thu, 7 Sep 2023 15:38:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E12CE9;
+        Thu,  7 Sep 2023 12:38:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AwM1VwlwVIqM+B74AtASZ+ELYU+JQssLPAE0LrOcF/E=; b=ZVZBOxkLzTDNwduftx2feJdr/p
+        ClCKXvMiMdqO9Xv57aM7SDVfJdMItDeRnmjJOuDhwWy9uIoaAWHsXN0Sl3DD9t9cyIflD517Hlxrv
+        tTautZR2yS2w/xvPInpZA9+87k268fWTFbUAXN4YHNUF60eNef2UBsZvLfkNpnHLIK3lmi8ul/PqB
+        WR3Y2sLgUGM9XqEMussOkvdUHSZCkC+5Xz092Ahu2oS/evQbKOoSR2RVU1Agj44veOdRnPkdmLsAV
+        QcB72+bZf3iTkJoIaMWBRavKMdM8I4AgT7xpHdGmB4+o0PNNFMiRAztRIPPXiTXb3ZlYaxl0384O2
+        bqWcy83Q==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qeKpq-00D2qG-KL; Thu, 07 Sep 2023 19:38:38 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 32FC4300687; Thu,  7 Sep 2023 21:38:38 +0200 (CEST)
+Date:   Thu, 7 Sep 2023 21:38:38 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 1/5] locking: Add rwsem_is_write_locked()
+Message-ID: <20230907193838.GB14243@noisy.programming.kicks-ass.net>
+References: <20230907174705.2976191-1-willy@infradead.org>
+ <20230907174705.2976191-2-willy@infradead.org>
+ <20230907190810.GA14243@noisy.programming.kicks-ass.net>
+ <ZPoift7B3UDQgmWB@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4d31a2bf7eb544749023cf491c0eccc8@AcuMS.aculab.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZPoift7B3UDQgmWB@casper.infradead.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 12:42:20PM +0000, David Laight wrote:
-> The typical use of kmalloc_size_roundup() is:
-> 	ptr = kmalloc(sz = kmalloc_size_roundup(size), ...);
-> 	if (!ptr) return -ENOMEM.
-> This means it is vitally important that the returned value isn't
-> less than the argument even if the argument is insane.
-> In particular if kmalloc_slab() fails or the value is above
-> (MAX_ULONG - PAGE_SIZE) zero is returned and kmalloc() will return
-> it's single zero-length buffer.
+On Thu, Sep 07, 2023 at 08:20:30PM +0100, Matthew Wilcox wrote:
+> On Thu, Sep 07, 2023 at 09:08:10PM +0200, Peter Zijlstra wrote:
+> > On Thu, Sep 07, 2023 at 06:47:01PM +0100, Matthew Wilcox (Oracle) wrote:
+> > > Several places want to know whether the lock is held by a writer, instead
+> > > of just whether it's held.  We can implement this for both normal and
+> > > rt rwsems.  RWSEM_WRITER_LOCKED is declared in rwsem.c and exposing
+> > > it outside that file might tempt other people to use it, so just use
+> > > a comment to note that's what the 1 means, and help anybody find it if
+> > > they're looking to change the implementation.
+> > 
+> > I'm presuming this is deep in a callchain where they know they hold the
+> > lock, but they lost in what capacity?
 > 
-> Fix by returning the input size on error or if the size exceeds
-> a 'sanity' limit.
-> kmalloc() will then return NULL is the size really is too big.
+> No, it's just assertions.  You can see that in patch 3 where it's
+> used in functions called things like "xfs_islocked".
+
+Right, but if you're not the lock owner, your answer to the question is
+a dice-roll, it might be locked, it might not be.
+
+> > In general I strongly dislike the whole _is_locked family, because it
+> > gives very poorly defined semantics if used by anybody but the owner.
+> > 
+> > If these new functions are indeed to be used only by lock holders to
+> > determine what kind of lock they hold, could we please put:
+> > 
+> > 	lockdep_assert_held()
+> > 
+> > in them?
 > 
-> 
-> Signed-off-by: David Laight <david.laight@aculab.com>
-> Fixes: 05a940656e1eb ("slab: Introduce kmalloc_size_roundup()")
-> ---
-> v2:
->     - Use KMALLOC_MAX_SIZE for upper limit.
->       (KMALLOC_MAX_SIZE + 1 may give better code on some archs!)
->     - Invert test for overlarge for consistency.
->     - Put a likely() on result of kmalloc_slab().
-> 
->  mm/slab_common.c | 26 +++++++++++++-------------
->  1 file changed, 13 insertions(+), 13 deletions(-)
-> 
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index cd71f9581e67..0fb7c7e19bad 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -747,22 +747,22 @@ size_t kmalloc_size_roundup(size_t size)
->  {
->  	struct kmem_cache *c;
->  
-> -	/* Short-circuit the 0 size case. */
-> -	if (unlikely(size == 0))
-> -		return 0;
+> Patch 2 shows it in use in the MM code.  We already have a
+> lockdep_assert_held_write(), but most people don't enable lockdep, so
 
-If we want to allow 0, let's just leave this case as-is: the compiler
-will optimize it against the other tests.
+Most devs should run with lockdep on when writing new code, and I know
+the sanitizer robots run with lockdep on.
 
-> -	/* Short-circuit saturated "too-large" case. */
-> -	if (unlikely(size == SIZE_MAX))
-> -		return SIZE_MAX;
-> +	if (size && size <= KMALLOC_MAX_CACHE_SIZE) {
-> +		/*
-> +		 * The flags don't matter since size_index is common to all.
-> +		 * Neither does the caller for just getting ->object_size.
-> +		 */
-> +		c = kmalloc_slab(size, GFP_KERNEL, 0);
-> +		return likely(c) ? c->object_size : size;
+In general there seems to be a ton of lockdep on coverage.
 
-I would like to have this fail "safe". c should never be NULL here, so
-let's return "KMALLOC_MAX_SIZE + 1" to force failures.
+> we also have VM_BUG_ON_MM(!rwsem_is_write_locked(&mm->mmap_lock), mm)
+> to give us a good assertion when lockdep is disabled.
 
-> +	}
-> +
->  	/* Above the smaller buckets, size is a multiple of page size. */
-> -	if (size > KMALLOC_MAX_CACHE_SIZE)
-> +	if (size && size <= KMALLOC_MAX_SIZE)
->  		return PAGE_SIZE << get_order(size);
->  
-> -	/*
-> -	 * The flags don't matter since size_index is common to all.
-> -	 * Neither does the caller for just getting ->object_size.
-> -	 */
-> -	c = kmalloc_slab(size, GFP_KERNEL, 0);
-> -	return c ? c->object_size : 0;
-> +	/* Return 'size' for 0 and very large - kmalloc() may fail. */
+Is that really worth it still? I mean, much of these assertions pre-date
+lockdep.
 
-I want to _be certain_ failure happens. If we get here we need to return
-"KMALLOC_MAX_SIZE + 1"
+> XFS has a problem with using lockdep in general, which is that a worker
+> thread can be spawned and use the fact that the spawner is holding the
+> lock.  There's no mechanism for the worker thread to ask "Does struct
+> task_struct *p hold the lock?".
 
--Kees
+Will be somewhat tricky to make happen -- but might be doable. It is
+however an interface that is *very* hard to use correctly. Basically I
+think you want to also assert that your target task 'p' is blocked,
+right?
 
-> +	return size;
-> +
->  }
->  EXPORT_SYMBOL(kmalloc_size_roundup);
->  
-> -- 
-> 2.17.1
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
-
--- 
-Kees Cook
+That is: assert @p is blocked and holds @lock.
