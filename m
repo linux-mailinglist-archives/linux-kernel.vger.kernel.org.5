@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9960A7979BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43232797945
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243183AbjIGRUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38100 "EHLO
+        id S241090AbjIGRJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:09:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243192AbjIGRUL (ORCPT
+        with ESMTP id S241089AbjIGRJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:20:11 -0400
-Received: from mail-lj1-x24a.google.com (mail-lj1-x24a.google.com [IPv6:2a00:1450:4864:20::24a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98DE2111
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:19:42 -0700 (PDT)
-Received: by mail-lj1-x24a.google.com with SMTP id 38308e7fff4ca-2bceb2b3024so13428871fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 10:19:42 -0700 (PDT)
+        Thu, 7 Sep 2023 13:09:18 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53334E65
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:08:46 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id d75a77b69052e-414c43a48fdso14709671cf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 10:08:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694107098; x=1694711898; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=pguS5nzVV0mhBjB/CrXM2tdNaYwlS7Rq+h24iaGnEBI=;
-        b=X4O3JEBwi2cYJSDeEWaEh4q5DR0cglGJlr0MlH/3vaXQUY5J+jQoPd8arNTOotE7Ca
-         tclzfCN8K/Q5a0/V0gbze30Xxj0PuLYTouhrDak+0N8BSb3aEX0XLil4zZlTZF5jfLhP
-         c3u7ASYGkND4mq+fPR/z6O267nwuHZ2s0Z3wFYN13cP9JtZDCy9/KhmCo/9oFd4rsFSW
-         EvjYDrMywXII4J4TZHUdcMBKmok2s8huvNq8UsyyKO9azycXe+Mj8h6E756xBmRMpWgs
-         bG+cMp51S1bBfLEOa2bwZ0fj5EOpTaSm7F4VHXNEMSGCTpUiWdl4puYMpTAFi45tJ3G7
-         NRMg==
+        d=google.com; s=20221208; t=1694106463; x=1694711263; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=s8i7Jhe9BViu4aMBPbLDU6gPTC4qxWjzqtUEiNX0CLE=;
+        b=iFhusV/WTm1dAY58O/80f9236uUuqY2U+TNUJC2Es5btU5tyrXQk0djiE71Ai0oDTy
+         Gm1LKlkNwuAKHdjXHdil+phhZmCa+wSV6MVbdNAOA1+c/qqjYEJ+sfGMTVsvJ5QFuF/Z
+         f3wK+GPh4JIbRgoYiLcX5B6mk7NOmj4LWcMhBERCZACkXMTPGiflTtjtv7EmAFztqcJ7
+         10Swx6xoyH+9ysMjHbDnHjmArX069lvzohz56HXedGZPVAEeCm55NhTXxtj5iNB8u5FP
+         PzuCLve8Ykb2gTdYOoDQUIR3YrD9z5MOP8YDOXy+X41HAFuOKyvnvOuzktIVlEHGRVCZ
+         9G0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694107098; x=1694711898;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pguS5nzVV0mhBjB/CrXM2tdNaYwlS7Rq+h24iaGnEBI=;
-        b=g0e3r77NHfdqYGkIjpK01qNdoAK3mctCuMq4i1LncctxOJ5mJYnIOvrQlZIuhl4Sr+
-         r7AHJnBW8LMfz12ardW8hzJB00/xlsb0+1Z+uLDgOVQesDGxDWFz7DzGqRNd/26rTb9W
-         lG72wiazN6lgx6onLNcYymBTwXTYWEUat8Gh9b5q+FfajCgqqNIuVOCxmA0498jJ99Ev
-         b4In3EghDhsnTjKGQPiQaQHmbJnG0zqAsm6D/50TbY0b8ufWN9ElJLUYAzkL8ZB6iX9u
-         laJCDloY3n5++CcyKh8jnF8RdiaYd7xuD3IDoI2/5t6I8795DX+Y+ATQCzuVfyb/cB+5
-         KZmA==
-X-Gm-Message-State: AOJu0YzAxBTSwhqKwCK/m+XfptlGHTBBMdB1JIwOhzkgRDQL/+xYylsz
-        bAwxF+Q8ebedkVlWUU1AWW+ya3f83Iw=
-X-Google-Smtp-Source: AGHT+IGBqXTREGTdC9uanYMcN82i8XIFX52t7L2XmvkIcAbdZnLizPEjhlk0WM1DzQMASN5p1z0+EuxsWCw=
+        d=1e100.net; s=20230601; t=1694106463; x=1694711263;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s8i7Jhe9BViu4aMBPbLDU6gPTC4qxWjzqtUEiNX0CLE=;
+        b=aKM7R2M7QtMFxR8d7VlS1NyB0JpDuY0H5MTFbQbPS+Uw/ynsfMT+k73GuML8hzzqUx
+         pdXkHQQtqMUnq64TSrG3j116ceBz+kO5ITJpEOYQIxfUmp63NxqHy6/olXIIzSkcqFrJ
+         rbBF6EaSIEVHhBqq41zi+9PrFP/AqFNtrU3ojBdNBcPBIeEm8A0cQXJ5r0sDVgAMgyRL
+         WZ+6sy6bbK+n878OlooyYi8gyYbz3ZYTgumt5KMBCoUOhCgY3XAa99FY/31vA4DqLdue
+         448vudCmAde3LkPyndmVkzujw3PE4rkaKjzYrPUTppqPXfK9unTT7UnnI0mnATsV66B+
+         9ECQ==
+X-Gm-Message-State: AOJu0Yyio0nvqP8Slq6hABSG4F0I9/hgboBKKtp23vr0mtmeGVvgxj28
+        35T3ENNSCg7StpE2SMHgmwfHuhaYqQ8=
+X-Google-Smtp-Source: AGHT+IEevIijC6sdQUSkGV/Z3VUPtyWQWTY5lHP0KbgSWdAqKt9EUNHzvlQ9r/pckae1MLXf3sJctovYv6g=
 X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:33dd:e36e:b6dc:1a69])
- (user=glider job=sendgmr) by 2002:a05:600c:2d84:b0:402:eacb:a797 with SMTP id
- i4-20020a05600c2d8400b00402eacba797mr47988wmg.4.1694092006816; Thu, 07 Sep
- 2023 06:06:46 -0700 (PDT)
-Date:   Thu,  7 Sep 2023 15:06:41 +0200
+ (user=glider job=sendgmr) by 2002:a25:d20f:0:b0:d78:215f:ba5f with SMTP id
+ j15-20020a25d20f000000b00d78215fba5fmr466389ybg.9.1694092010883; Thu, 07 Sep
+ 2023 06:06:50 -0700 (PDT)
+Date:   Thu,  7 Sep 2023 15:06:42 +0200
+In-Reply-To: <20230907130642.245222-1-glider@google.com>
 Mime-Version: 1.0
+References: <20230907130642.245222-1-glider@google.com>
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230907130642.245222-1-glider@google.com>
-Subject: [PATCH 1/2] kmsan: simplify kmsan_internal_memmove_metadata()
+Message-ID: <20230907130642.245222-2-glider@google.com>
+Subject: [PATCH 2/2] kmsan: prevent optimizations in memcpy tests
 From:   Alexander Potapenko <glider@google.com>
 To:     glider@google.com, dvyukov@google.com, elver@google.com,
         akpm@linux-foundation.org, linux-mm@kvack.org
@@ -66,235 +68,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmsan_internal_memmove_metadata() is the function that implements
-copying metadata every time memcpy()/memmove() is called.
-Because shadow memory stores 1 byte per each byte of kernel memory,
-copying the shadow is trivial and can be done by a single memmove()
-call.
-Origins, on the other hand, are stored as 4-byte values corresponding
-to every aligned 4 bytes of kernel memory. Therefore, if either the
-source or the destination of kmsan_internal_memmove_metadata() is
-unaligned, the number of origin slots corresponding to the source or
-destination may differ:
+Clang 18 learned to optimize away memcpy() calls of small uninitialized
+scalar values. To ensure that memcpy tests in kmsan_test.c still perform
+calls to memcpy() (which KMSAN replaces with __msan_memcpy()), declare a
+separate memcpy_noinline() function with volatile parameters, which
+won't be optimized.
 
-  1) memcpy(0xffff888080a00000, 0xffff888080900000, 4)
-     copies 1 origin slot into 1 origin slot:
-
-     src (0xffff888080900000): xxxx
-     src origins:              o111
-     dst (0xffff888080a00000): xxxx
-     dst origins:              o111
-
-  2) memcpy(0xffff888080a00001, 0xffff888080900000, 4)
-     copies 1 origin slot into 2 origin slots:
-
-     src (0xffff888080900000): xxxx
-     src origins:              o111
-     dst (0xffff888080a00000): .xxx x...
-     dst origins:              o111 o111
-
-  3) memcpy(0xffff888080a00000, 0xffff888080900001, 4)
-     copies 2 origin slots into 1 origin slot:
-
-     src (0xffff888080900000): .xxx x...
-     src origins:              o111 o222
-     dst (0xffff888080a00000): xxxx
-     dst origins:              o111
-                           (or o222)
-
-Previously, kmsan_internal_memmove_metadata() tried to solve this
-problem by copying min(src_slots, dst_slots) as is and cloning the
-missing slot on one of the ends, if needed.
-This was error-prone even in the simple cases where 4 bytes were copied,
-and did not account for situations where the total number of nonzero
-origin slots could have increased by more than one after copying:
-
-  memcpy(0xffff888080a00000, 0xffff888080900002, 8)
-
-  src (0xffff888080900002): ..xx .... xx..
-  src origins:              o111 0000 o222
-  dst (0xffff888080a00000): xx.. ..xx
-                            o111 0000
-                        (or 0000 o222)
-
-The new implementation simply copies the shadow byte by byte, and
-updates the corresponding origin slot, if the shadow byte is nonzero.
-This approach can handle complex cases with mixed initialized and
-uninitialized bytes. Similarly to KMSAN inline instrumentation, latter
-writes to bytes sharing the same origin slots take precedence.
+Also retire DO_NOT_OPTIMIZE(), as memcpy_noinline() is apparently
+enough.
 
 Signed-off-by: Alexander Potapenko <glider@google.com>
 ---
- mm/kmsan/core.c | 127 ++++++++++++------------------------------------
- 1 file changed, 31 insertions(+), 96 deletions(-)
+ mm/kmsan/kmsan_test.c | 37 ++++++++++++++-----------------------
+ 1 file changed, 14 insertions(+), 23 deletions(-)
 
-diff --git a/mm/kmsan/core.c b/mm/kmsan/core.c
-index 3adb4c1d3b193..c19f47af04241 100644
---- a/mm/kmsan/core.c
-+++ b/mm/kmsan/core.c
-@@ -83,131 +83,66 @@ depot_stack_handle_t kmsan_save_stack_with_flags(gfp_t flags,
- /* Copy the metadata following the memmove() behavior. */
- void kmsan_internal_memmove_metadata(void *dst, void *src, size_t n)
- {
-+	depot_stack_handle_t prev_old_origin = 0, prev_new_origin = 0;
-+	int i, iter, step, src_off, dst_off, oiter_src, oiter_dst;
- 	depot_stack_handle_t old_origin = 0, new_origin = 0;
--	int src_slots, dst_slots, i, iter, step, skip_bits;
- 	depot_stack_handle_t *origin_src, *origin_dst;
--	void *shadow_src, *shadow_dst;
--	u32 *align_shadow_src, shadow;
-+	u8 *shadow_src, *shadow_dst;
-+	u32 *align_shadow_dst;
- 	bool backwards;
- 
- 	shadow_dst = kmsan_get_metadata(dst, KMSAN_META_SHADOW);
- 	if (!shadow_dst)
- 		return;
- 	KMSAN_WARN_ON(!kmsan_metadata_is_contiguous(dst, n));
-+	align_shadow_dst =
-+		(u32 *)ALIGN_DOWN((u64)shadow_dst, KMSAN_ORIGIN_SIZE);
- 
- 	shadow_src = kmsan_get_metadata(src, KMSAN_META_SHADOW);
- 	if (!shadow_src) {
--		/*
--		 * @src is untracked: zero out destination shadow, ignore the
--		 * origins, we're done.
--		 */
--		__memset(shadow_dst, 0, n);
-+		/* @src is untracked: mark @dst as initialized. */
-+		kmsan_internal_unpoison_memory(dst, n, /*checked*/ false);
- 		return;
- 	}
- 	KMSAN_WARN_ON(!kmsan_metadata_is_contiguous(src, n));
- 
--	__memmove(shadow_dst, shadow_src, n);
--
- 	origin_dst = kmsan_get_metadata(dst, KMSAN_META_ORIGIN);
- 	origin_src = kmsan_get_metadata(src, KMSAN_META_ORIGIN);
- 	KMSAN_WARN_ON(!origin_dst || !origin_src);
--	src_slots = (ALIGN((u64)src + n, KMSAN_ORIGIN_SIZE) -
--		     ALIGN_DOWN((u64)src, KMSAN_ORIGIN_SIZE)) /
--		    KMSAN_ORIGIN_SIZE;
--	dst_slots = (ALIGN((u64)dst + n, KMSAN_ORIGIN_SIZE) -
--		     ALIGN_DOWN((u64)dst, KMSAN_ORIGIN_SIZE)) /
--		    KMSAN_ORIGIN_SIZE;
--	KMSAN_WARN_ON((src_slots < 1) || (dst_slots < 1));
--	KMSAN_WARN_ON((src_slots - dst_slots > 1) ||
--		      (dst_slots - src_slots < -1));
- 
- 	backwards = dst > src;
--	i = backwards ? min(src_slots, dst_slots) - 1 : 0;
--	iter = backwards ? -1 : 1;
--
--	align_shadow_src =
--		(u32 *)ALIGN_DOWN((u64)shadow_src, KMSAN_ORIGIN_SIZE);
--	for (step = 0; step < min(src_slots, dst_slots); step++, i += iter) {
--		KMSAN_WARN_ON(i < 0);
--		shadow = align_shadow_src[i];
--		if (i == 0) {
--			/*
--			 * If @src isn't aligned on KMSAN_ORIGIN_SIZE, don't
--			 * look at the first @src % KMSAN_ORIGIN_SIZE bytes
--			 * of the first shadow slot.
--			 */
--			skip_bits = ((u64)src % KMSAN_ORIGIN_SIZE) * 8;
--			shadow = (shadow >> skip_bits) << skip_bits;
-+	step = backwards ? -1 : 1;
-+	iter = backwards ? n - 1 : 0;
-+	src_off = (u64)src % KMSAN_ORIGIN_SIZE;
-+	dst_off = (u64)dst % KMSAN_ORIGIN_SIZE;
-+
-+	/* Copy shadow bytes one by one, updating the origins if necessary. */
-+	for (i = 0; i < n; i++, iter += step) {
-+		oiter_src = (iter + src_off) / KMSAN_ORIGIN_SIZE;
-+		oiter_dst = (iter + dst_off) / KMSAN_ORIGIN_SIZE;
-+		if (!shadow_src[iter]) {
-+			shadow_dst[iter] = 0;
-+			if (!align_shadow_dst[oiter_dst])
-+				origin_dst[oiter_dst] = 0;
-+			continue;
- 		}
--		if (i == src_slots - 1) {
--			/*
--			 * If @src + n isn't aligned on
--			 * KMSAN_ORIGIN_SIZE, don't look at the last
--			 * (@src + n) % KMSAN_ORIGIN_SIZE bytes of the
--			 * last shadow slot.
--			 */
--			skip_bits = (((u64)src + n) % KMSAN_ORIGIN_SIZE) * 8;
--			shadow = (shadow << skip_bits) >> skip_bits;
--		}
--		/*
--		 * Overwrite the origin only if the corresponding
--		 * shadow is nonempty.
--		 */
--		if (origin_src[i] && (origin_src[i] != old_origin) && shadow) {
--			old_origin = origin_src[i];
--			new_origin = kmsan_internal_chain_origin(old_origin);
-+		shadow_dst[iter] = shadow_src[iter];
-+		old_origin = origin_src[oiter_src];
-+		if (old_origin == prev_old_origin)
-+			new_origin = prev_new_origin;
-+		else {
- 			/*
- 			 * kmsan_internal_chain_origin() may return
- 			 * NULL, but we don't want to lose the previous
- 			 * origin value.
- 			 */
-+			new_origin = kmsan_internal_chain_origin(old_origin);
- 			if (!new_origin)
- 				new_origin = old_origin;
- 		}
--		if (shadow)
--			origin_dst[i] = new_origin;
--		else
--			origin_dst[i] = 0;
--	}
--	/*
--	 * If dst_slots is greater than src_slots (i.e.
--	 * dst_slots == src_slots + 1), there is an extra origin slot at the
--	 * beginning or end of the destination buffer, for which we take the
--	 * origin from the previous slot.
--	 * This is only done if the part of the source shadow corresponding to
--	 * slot is non-zero.
--	 *
--	 * E.g. if we copy 8 aligned bytes that are marked as uninitialized
--	 * and have origins o111 and o222, to an unaligned buffer with offset 1,
--	 * these two origins are copied to three origin slots, so one of then
--	 * needs to be duplicated, depending on the copy direction (@backwards)
--	 *
--	 *   src shadow: |uuuu|uuuu|....|
--	 *   src origin: |o111|o222|....|
--	 *
--	 * backwards = 0:
--	 *   dst shadow: |.uuu|uuuu|u...|
--	 *   dst origin: |....|o111|o222| - fill the empty slot with o111
--	 * backwards = 1:
--	 *   dst shadow: |.uuu|uuuu|u...|
--	 *   dst origin: |o111|o222|....| - fill the empty slot with o222
--	 */
--	if (src_slots < dst_slots) {
--		if (backwards) {
--			shadow = align_shadow_src[src_slots - 1];
--			skip_bits = (((u64)dst + n) % KMSAN_ORIGIN_SIZE) * 8;
--			shadow = (shadow << skip_bits) >> skip_bits;
--			if (shadow)
--				/* src_slots > 0, therefore dst_slots is at least 2 */
--				origin_dst[dst_slots - 1] =
--					origin_dst[dst_slots - 2];
--		} else {
--			shadow = align_shadow_src[0];
--			skip_bits = ((u64)dst % KMSAN_ORIGIN_SIZE) * 8;
--			shadow = (shadow >> skip_bits) << skip_bits;
--			if (shadow)
--				origin_dst[0] = origin_dst[1];
--		}
-+		origin_dst[oiter_dst] = new_origin;
-+		prev_new_origin = new_origin;
-+		prev_old_origin = old_origin;
- 	}
+diff --git a/mm/kmsan/kmsan_test.c b/mm/kmsan/kmsan_test.c
+index 312989aa2865c..0c32c917b489a 100644
+--- a/mm/kmsan/kmsan_test.c
++++ b/mm/kmsan/kmsan_test.c
+@@ -407,33 +407,25 @@ static void test_printk(struct kunit *test)
+ 	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
  }
  
+-/*
+- * Prevent the compiler from optimizing @var away. Without this, Clang may
+- * notice that @var is uninitialized and drop memcpy() calls that use it.
+- *
+- * There is OPTIMIZER_HIDE_VAR() in linux/compier.h that we cannot use here,
+- * because it is implemented as inline assembly receiving @var as a parameter
+- * and will enforce a KMSAN check. Same is true for e.g. barrier_data(var).
+- */
+-#define DO_NOT_OPTIMIZE(var) barrier()
++/* Prevent the compiler from inlining a memcpy() call. */
++static noinline void *memcpy_noinline(volatile void *dst,
++				      const volatile void *src, size_t size)
++{
++	return memcpy(dst, src, size);
++}
+ 
+-/*
+- * Test case: ensure that memcpy() correctly copies initialized values.
+- * Also serves as a regression test to ensure DO_NOT_OPTIMIZE() does not cause
+- * extra checks.
+- */
++/* Test case: ensure that memcpy() correctly copies initialized values. */
+ static void test_init_memcpy(struct kunit *test)
+ {
+ 	EXPECTATION_NO_REPORT(expect);
+ 	volatile int src;
+ 	volatile int dst = 0;
+ 
+-	DO_NOT_OPTIMIZE(src);
+ 	src = 1;
+ 	kunit_info(
+ 		test,
+ 		"memcpy()ing aligned initialized src to aligned dst (no reports)\n");
+-	memcpy((void *)&dst, (void *)&src, sizeof(src));
++	memcpy_noinline((void *)&dst, (void *)&src, sizeof(src));
+ 	kmsan_check_memory((void *)&dst, sizeof(dst));
+ 	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
+ }
+@@ -451,8 +443,7 @@ static void test_memcpy_aligned_to_aligned(struct kunit *test)
+ 	kunit_info(
+ 		test,
+ 		"memcpy()ing aligned uninit src to aligned dst (UMR report)\n");
+-	DO_NOT_OPTIMIZE(uninit_src);
+-	memcpy((void *)&dst, (void *)&uninit_src, sizeof(uninit_src));
++	memcpy_noinline((void *)&dst, (void *)&uninit_src, sizeof(uninit_src));
+ 	kmsan_check_memory((void *)&dst, sizeof(dst));
+ 	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
+ }
+@@ -474,8 +465,9 @@ static void test_memcpy_aligned_to_unaligned(struct kunit *test)
+ 	kunit_info(
+ 		test,
+ 		"memcpy()ing aligned uninit src to unaligned dst (UMR report)\n");
+-	DO_NOT_OPTIMIZE(uninit_src);
+-	memcpy((void *)&dst[1], (void *)&uninit_src, sizeof(uninit_src));
++	kmsan_check_memory(&uninit_src, sizeof(uninit_src));
++	memcpy_noinline((void *)&dst[1], (void *)&uninit_src,
++			sizeof(uninit_src));
+ 	kmsan_check_memory((void *)dst, 4);
+ 	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
+ }
+@@ -498,8 +490,8 @@ static void test_memcpy_aligned_to_unaligned2(struct kunit *test)
+ 	kunit_info(
+ 		test,
+ 		"memcpy()ing aligned uninit src to unaligned dst - part 2 (UMR report)\n");
+-	DO_NOT_OPTIMIZE(uninit_src);
+-	memcpy((void *)&dst[1], (void *)&uninit_src, sizeof(uninit_src));
++	memcpy_noinline((void *)&dst[1], (void *)&uninit_src,
++			sizeof(uninit_src));
+ 	kmsan_check_memory((void *)&dst[4], sizeof(uninit_src));
+ 	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
+ }
+@@ -513,7 +505,6 @@ static void test_memcpy_aligned_to_unaligned2(struct kunit *test)
+                                                                             \
+ 		kunit_info(test,                                            \
+ 			   "memset" #size "() should initialize memory\n"); \
+-		DO_NOT_OPTIMIZE(uninit);                                    \
+ 		memset##size((uint##size##_t *)&uninit, 0, 1);              \
+ 		kmsan_check_memory((void *)&uninit, sizeof(uninit));        \
+ 		KUNIT_EXPECT_TRUE(test, report_matches(&expect));           \
 -- 
 2.42.0.283.g2d96d420d3-goog
 
