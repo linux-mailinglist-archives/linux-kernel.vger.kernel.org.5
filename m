@@ -2,47 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A206797DA4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 23:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91864797D2A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 22:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237895AbjIGVAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 17:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48872 "EHLO
+        id S236798AbjIGUKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 16:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbjIGVAc (ORCPT
+        with ESMTP id S229827AbjIGUKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 17:00:32 -0400
-X-Greylist: delayed 8667 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Sep 2023 14:00:28 PDT
-Received: from imap4.hz.codethink.co.uk (imap4.hz.codethink.co.uk [188.40.203.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159B01BCD
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 14:00:27 -0700 (PDT)
-Received: from [134.238.52.102] (helo=rainbowdash)
-        by imap4.hz.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
-        id 1qeHcf-004U1S-Fc; Thu, 07 Sep 2023 17:12:49 +0100
-Received: from ben by rainbowdash with local (Exim 4.96)
-        (envelope-from <ben@rainbowdash>)
-        id 1qeHcd-000HVE-2x;
-        Thu, 07 Sep 2023 17:12:47 +0100
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-To:     linux-pwm@vger.kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.dooks@codethink.co.uk, u.kleine-koenig@pengutronix.de,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        jarkko.nikula@linux.intel.com,
-        William Salmon <william.salmon@sifive.com>,
-        Jude Onyenegecha <jude.onyenegecha@sifive.com>
-Subject: [PATCH v9 6/6] pwm: dwc: add of/platform support
-Date:   Thu,  7 Sep 2023 17:12:42 +0100
-Message-Id: <20230907161242.67190-7-ben.dooks@codethink.co.uk>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230907161242.67190-1-ben.dooks@codethink.co.uk>
-References: <20230907161242.67190-1-ben.dooks@codethink.co.uk>
+        Thu, 7 Sep 2023 16:10:44 -0400
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E92FE47;
+        Thu,  7 Sep 2023 13:10:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+        t=1694117437; bh=y3aQ4fqeZArk/RTTUb2yngK8cSBmJKP7RwqbJ7/mNwg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=LeQJTeD6V4CfDsPR14MtBIVpof7ociEm34u6REeTGdrHPqftgnf125302/GmAjpaA
+         MDK69Dk5Ujmh4Zl5VmqBF43XwXiveeUeSuMI39WW8+OvWBNgjCLBvt6UfstpGNMOAH
+         8wT/JnYhOdPeJp/HZKlHTZX0gid/qkeNCUg5NU+M=
+Received: from [192.168.9.172] (unknown [101.88.25.36])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 3781A6011C;
+        Fri,  8 Sep 2023 04:10:37 +0800 (CST)
+Message-ID: <925522e9-9be6-2545-4c4e-1608eaab523a@xen0n.name>
+Date:   Fri, 8 Sep 2023 04:10:36 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v20 28/30] LoongArch: KVM: Enable kvm config and add the
+ makefile
+Content-Language: en-US
+To:     Tianrui Zhao <zhaotianrui@loongson.cn>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
+        Mark Brown <broonie@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
+        Xi Ruoyao <xry111@xry111.site>,
+        kernel test robot <lkp@intel.com>
+References: <20230831083020.2187109-1-zhaotianrui@loongson.cn>
+ <20230831083020.2187109-29-zhaotianrui@loongson.cn>
+From:   WANG Xuerui <kernel@xen0n.name>
+In-Reply-To: <20230831083020.2187109-29-zhaotianrui@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,232 +62,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dwc pwm controller can be used in non-PCI systems, so allow
-either platform or OF based probing.
 
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
----
-v9:
- - add clk_rate_exclusive_get() to lock clock rate for now
- - fix email address from sifive to codethink
- - fix module namespace
-v8:
- - add compile test for of-case
- - add module namespace
- - move later in the series
-v7:
- - fixup kconfig from previous pcie changes
-v5:
- - fix missing " in kconfig
- - remove .remove method, devm already sorts this.
- - merge pwm-number code
- - split the of code out of the core
- - get bus clock
-v4:
- - moved the compile test code earlier
- - fixed review comments
- - used NS_PER_SEC
- - use devm_clk_get_enabled
- - ensure we get the bus clock
-v3:
- - changed compatible name
----
- drivers/pwm/Kconfig        | 10 ++++
- drivers/pwm/Makefile       |  1 +
- drivers/pwm/pwm-dwc-core.c |  6 +++
- drivers/pwm/pwm-dwc-of.c   | 93 ++++++++++++++++++++++++++++++++++++++
- drivers/pwm/pwm-dwc.c      |  1 +
- drivers/pwm/pwm-dwc.h      |  1 +
- 6 files changed, 112 insertions(+)
- create mode 100644 drivers/pwm/pwm-dwc-of.c
+On 8/31/23 16:30, Tianrui Zhao wrote:
+> Enable LoongArch kvm config and add the makefile to support build kvm
+> module.
+>
+> Reviewed-by: Bibo Mao <maobibo@loongson.cn>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/oe-kbuild-all/202304131526.iXfLaVZc-lkp@intel.com/
+> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+> ---
+>   arch/loongarch/Kbuild                      |  1 +
+>   arch/loongarch/Kconfig                     |  3 ++
+>   arch/loongarch/configs/loongson3_defconfig |  2 +
+>   arch/loongarch/kvm/Kconfig                 | 45 ++++++++++++++++++++++
+>   arch/loongarch/kvm/Makefile                | 22 +++++++++++
+>   5 files changed, 73 insertions(+)
+>   create mode 100644 arch/loongarch/kvm/Kconfig
+>   create mode 100644 arch/loongarch/kvm/Makefile
+>
+> diff --git a/arch/loongarch/Kbuild b/arch/loongarch/Kbuild
+> index b01f5cdb27..40be8a1696 100644
+> --- a/arch/loongarch/Kbuild
+> +++ b/arch/loongarch/Kbuild
+> @@ -2,6 +2,7 @@ obj-y += kernel/
+>   obj-y += mm/
+>   obj-y += net/
+>   obj-y += vdso/
+> +obj-y += kvm/
+Do we want to keep the list alphabetically sorted here?
+>   
+>   # for cleaning
+>   subdir- += boot
+> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+> index ecf282dee5..7f2f7ccc76 100644
+> --- a/arch/loongarch/Kconfig
+> +++ b/arch/loongarch/Kconfig
+> @@ -123,6 +123,7 @@ config LOONGARCH
+>   	select HAVE_KPROBES
+>   	select HAVE_KPROBES_ON_FTRACE
+>   	select HAVE_KRETPROBES
+> +	select HAVE_KVM
+>   	select HAVE_MOD_ARCH_SPECIFIC
+>   	select HAVE_NMI
+>   	select HAVE_PCI
+> @@ -650,3 +651,5 @@ source "kernel/power/Kconfig"
+>   source "drivers/acpi/Kconfig"
+>   
+>   endmenu
+> +
+> +source "arch/loongarch/kvm/Kconfig"
+> diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loongarch/configs/loongson3_defconfig
+> index d64849b4cb..7acb4ae7af 100644
+> --- a/arch/loongarch/configs/loongson3_defconfig
+> +++ b/arch/loongarch/configs/loongson3_defconfig
+> @@ -63,6 +63,8 @@ CONFIG_EFI_ZBOOT=y
+>   CONFIG_EFI_GENERIC_STUB_INITRD_CMDLINE_LOADER=y
+>   CONFIG_EFI_CAPSULE_LOADER=m
+>   CONFIG_EFI_TEST=m
+> +CONFIG_VIRTUALIZATION=y
+> +CONFIG_KVM=m
+>   CONFIG_MODULES=y
+>   CONFIG_MODULE_FORCE_LOAD=y
+>   CONFIG_MODULE_UNLOAD=y
+> diff --git a/arch/loongarch/kvm/Kconfig b/arch/loongarch/kvm/Kconfig
+> new file mode 100644
+> index 0000000000..bf7d6e7cde
+> --- /dev/null
+> +++ b/arch/loongarch/kvm/Kconfig
+> @@ -0,0 +1,45 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# KVM configuration
+> +#
+> +
+> +source "virt/kvm/Kconfig"
+> +
+> +menuconfig VIRTUALIZATION
+> +	bool "Virtualization"
+> +	help
+> +	  Say Y here to get to see options for using your Linux host to run
+> +	  other operating systems inside virtual machines (guests).
+> +	  This option alone does not add any kernel code.
+> +
+> +	  If you say N, all options in this submenu will be skipped and
+> +	  disabled.
+> +
+> +if VIRTUALIZATION
+> +
+> +config AS_HAS_LVZ_EXTENSION
+> +	def_bool $(as-instr,hvcl 0)
+> +
+> +config KVM
+> +	tristate "Kernel-based Virtual Machine (KVM) support"
+> +	depends on HAVE_KVM
+> +	depends on AS_HAS_LVZ_EXTENSION
+> +	select MMU_NOTIFIER
+> +	select ANON_INODES
+> +	select PREEMPT_NOTIFIERS
+> +	select KVM_MMIO
+> +	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
+> +	select KVM_GENERIC_HARDWARE_ENABLING
+> +	select KVM_XFER_TO_GUEST_WORK
+> +	select HAVE_KVM_DIRTY_RING_ACQ_REL
+> +	select HAVE_KVM_VCPU_ASYNC_IOCTL
+> +	select HAVE_KVM_EVENTFD
+> +	select SRCU
+Make the list of selects also alphabetically sorted?
+> +	help
+> +	  Support hosting virtualized guest machines using hardware
+> +	  virtualization extensions. You will need a fairly processor
+> +	  equipped with virtualization extensions.
 
-diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index 507c8b8547a5..22d58cb334e7 100644
---- a/drivers/pwm/Kconfig
-+++ b/drivers/pwm/Kconfig
-@@ -205,6 +205,16 @@ config PWM_DWC
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called pwm-dwc.
- 
-+config PWM_DWC_OF
-+	tristate "DesignWare PWM Controller (OF bus)"
-+	depends on HAS_IOMEM && (OF || COMPILE_TEST)
-+	select PWM_DWC_CORE
-+	help
-+	  PWM driver for Synopsys DWC PWM Controller on an OF bus.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called pwm-dwc-of.
-+
- config PWM_EP93XX
- 	tristate "Cirrus Logic EP93xx PWM support"
- 	depends on ARCH_EP93XX || COMPILE_TEST
-diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index c5ec9e168ee7..e3c867cb13d1 100644
---- a/drivers/pwm/Makefile
-+++ b/drivers/pwm/Makefile
-@@ -17,6 +17,7 @@ obj-$(CONFIG_PWM_CRC)		+= pwm-crc.o
- obj-$(CONFIG_PWM_CROS_EC)	+= pwm-cros-ec.o
- obj-$(CONFIG_PWM_DWC_CORE)	+= pwm-dwc-core.o
- obj-$(CONFIG_PWM_DWC)		+= pwm-dwc.o
-+obj-$(CONFIG_PWM_DWC_OF)	+= pwm-dwc-of.o
- obj-$(CONFIG_PWM_EP93XX)	+= pwm-ep93xx.o
- obj-$(CONFIG_PWM_FSL_FTM)	+= pwm-fsl-ftm.o
- obj-$(CONFIG_PWM_HIBVT)		+= pwm-hibvt.o
-diff --git a/drivers/pwm/pwm-dwc-core.c b/drivers/pwm/pwm-dwc-core.c
-index 6358e3345210..8b4d96d655c7 100644
---- a/drivers/pwm/pwm-dwc-core.c
-+++ b/drivers/pwm/pwm-dwc-core.c
-@@ -16,6 +16,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/clk.h>
- #include <linux/pm_runtime.h>
- #include <linux/pwm.h>
- 
-@@ -44,6 +45,9 @@ static int __dwc_pwm_configure_timer(struct dwc_pwm *dwc,
- 	u32 high;
- 	u32 low;
- 
-+	if (dwc->clk)
-+		dwc->clk_rate = clk_get_rate(dwc->clk);
-+
- 	/*
- 	 * Calculate width of low and high period in terms of input clock
- 	 * periods and check are the result within HW limits between 1 and
-@@ -128,6 +132,8 @@ static int dwc_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
- 
- 	pm_runtime_get_sync(chip->dev);
- 
-+	if (dwc->clk)
-+		dwc->clk_rate = clk_get_rate(dwc->clk);
- 	clk_rate = dwc->clk_rate;
- 
- 	ctrl = dwc_pwm_readl(dwc, DWC_TIM_CTRL(pwm->hwpwm));
-diff --git a/drivers/pwm/pwm-dwc-of.c b/drivers/pwm/pwm-dwc-of.c
-new file mode 100644
-index 000000000000..30b860484895
---- /dev/null
-+++ b/drivers/pwm/pwm-dwc-of.c
-@@ -0,0 +1,93 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * DesignWare PWM Controller driver OF
-+ *
-+ * Copyright (C) 2022 SiFive, Inc.
-+ */
-+
-+#define DEFAULT_MODULE_NAMESPACE dwc_pwm
-+
-+#include <linux/bitops.h>
-+#include <linux/export.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/clk.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/pwm.h>
-+#include <linux/io.h>
-+
-+#include "pwm-dwc.h"
-+
-+static int dwc_pwm_plat_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct dwc_pwm *dwc;
-+	struct clk *bus;
-+	u32 nr_pwm;
-+	int ret;
-+
-+	dwc = dwc_pwm_alloc(dev);
-+	if (!dwc)
-+		return -ENOMEM;
-+
-+	if (!device_property_read_u32(dev, "snps,pwm-number", &nr_pwm)) {
-+		if (nr_pwm > DWC_TIMERS_TOTAL)
-+			dev_err(dev, "too many PWMs (%d) specified, capping at %d\n",
-+				nr_pwm, dwc->chip.npwm);
-+		else
-+			dwc->chip.npwm = nr_pwm;
-+	}
-+
-+	dwc->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(dwc->base))
-+		return PTR_ERR(dwc->base);
-+
-+	bus = devm_clk_get_enabled(dev, NULL);
-+	if (IS_ERR(bus))
-+		return dev_err_probe(dev, PTR_ERR(bus),
-+				     "failed to get clock\n");
-+
-+	dwc->clk = devm_clk_get_enabled(dev, "timer");
-+	if (IS_ERR(dwc->clk))
-+		return dev_err_probe(dev, PTR_ERR(dwc->clk),
-+				     "failed to get timer clock\n");
-+
-+	ret = clk_rate_exclusive_get(dwc->clk);
-+	if (ret)
-+		return dev_err_probe(dev, ret,
-+				     "clk_rate_exclusive_get() failed\n");
-+
-+	dwc->clk_rate = clk_get_rate(dwc->clk);
-+	return devm_pwmchip_add(dev, &dwc->chip);
-+}
-+
-+static int dwc_pwm_plat_remove(struct platform_device *pdev)
-+{
-+	struct dwc_pwm *dwc = dev_get_drvdata(&pdev->dev);
-+
-+	clk_rate_exclusive_put(dwc->clk);
-+	return 0;
-+}
-+
-+static const struct of_device_id dwc_pwm_dt_ids[] = {
-+	{ .compatible = "snps,dw-apb-timers-pwm2" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, dwc_pwm_dt_ids);
-+
-+static struct platform_driver dwc_pwm_plat_driver = {
-+	.driver = {
-+		.name		= "dwc-pwm",
-+		.of_match_table  = dwc_pwm_dt_ids,
-+	},
-+	.probe	= dwc_pwm_plat_probe,
-+	.remove = dwc_pwm_plat_remove,
-+};
-+
-+module_platform_driver(dwc_pwm_plat_driver);
-+
-+MODULE_ALIAS("platform:dwc-pwm-of");
-+MODULE_AUTHOR("Ben Dooks <ben.dooks@codethink.co.uk>");
-+MODULE_DESCRIPTION("DesignWare PWM Controller");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/pwm/pwm-dwc.c b/drivers/pwm/pwm-dwc.c
-index bd9cadb497d7..7c32bd06ed33 100644
---- a/drivers/pwm/pwm-dwc.c
-+++ b/drivers/pwm/pwm-dwc.c
-@@ -20,6 +20,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/clk.h>
- #include <linux/pm_runtime.h>
- #include <linux/pwm.h>
- 
-diff --git a/drivers/pwm/pwm-dwc.h b/drivers/pwm/pwm-dwc.h
-index e0a940fd6e87..18e98c2c07d7 100644
---- a/drivers/pwm/pwm-dwc.h
-+++ b/drivers/pwm/pwm-dwc.h
-@@ -42,6 +42,7 @@ struct dwc_pwm_ctx {
- struct dwc_pwm {
- 	struct pwm_chip chip;
- 	void __iomem *base;
-+	struct clk *clk;
- 	unsigned long clk_rate;
- 	struct dwc_pwm_ctx ctx[DWC_TIMERS_TOTAL];
- };
+The word "fairly" seems extraneous here, and can be simply dropped.
+
+(I suppose you forgot to delete it after tweaking the original sentence, 
+that came from arch/x86/kvm: "You will need a fairly recent processor 
+..." -- all LoongArch processors are recent!)
+
+> +
+> +	  If unsure, say N.
+> +
+> +endif # VIRTUALIZATION
+> diff --git a/arch/loongarch/kvm/Makefile b/arch/loongarch/kvm/Makefile
+> new file mode 100644
+> index 0000000000..2335e873a6
+> --- /dev/null
+> +++ b/arch/loongarch/kvm/Makefile
+> @@ -0,0 +1,22 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Makefile for LOONGARCH KVM support
+"LoongArch" -- you may want to check the entire patch series for such 
+ALL-CAPS references to LoongArch in natural language paragraphs, they 
+all want to be spelled "LoongArch".
+> +#
+> +
+> +ccflags-y += -I $(srctree)/$(src)
+> +
+> +include $(srctree)/virt/kvm/Makefile.kvm
+> +
+> +obj-$(CONFIG_KVM) += kvm.o
+> +
+> +kvm-y += main.o
+> +kvm-y += vm.o
+> +kvm-y += vmid.o
+> +kvm-y += tlb.o
+> +kvm-y += mmu.o
+> +kvm-y += vcpu.o
+> +kvm-y += exit.o
+> +kvm-y += interrupt.o
+> +kvm-y += timer.o
+> +kvm-y += switch.o
+> +kvm-y += csr_ops.o
+I'd suggest sorting this list too to better avoid editing conflicts in 
+the future.
+
 -- 
-2.40.1
+WANG "xen0n" Xuerui
+
+Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
 
