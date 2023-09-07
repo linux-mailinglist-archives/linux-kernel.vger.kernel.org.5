@@ -2,172 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F32796E83
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 03:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2FC796E8B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 03:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234487AbjIGBWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 21:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56724 "EHLO
+        id S237010AbjIGB1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 21:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbjIGBWQ (ORCPT
+        with ESMTP id S230010AbjIGB1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 21:22:16 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D4DD11724
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 18:22:11 -0700 (PDT)
-Received: from loongson.cn (unknown [10.2.9.158])
-        by gateway (Coremail) with SMTP id _____8AxTevBJflkEfEgAA--.60389S3;
-        Thu, 07 Sep 2023 09:22:09 +0800 (CST)
-Received: from kvm-1-158.loongson.cn (unknown [10.2.9.158])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxHCPBJflkubtvAA--.51784S2;
-        Thu, 07 Sep 2023 09:22:09 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     WANG Xuerui <kernel@xen0n.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] LoongArch: Code cleanup with zero page
-Date:   Thu,  7 Sep 2023 09:22:09 +0800
-Message-Id: <20230907012209.2451090-1-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.27.0
+        Wed, 6 Sep 2023 21:27:49 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB3A172C;
+        Wed,  6 Sep 2023 18:27:45 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31f71b25a99so204f8f.2;
+        Wed, 06 Sep 2023 18:27:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694050064; x=1694654864; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YNvMZOUMF9nTFwos5xvMEitjVFFAuaJPfYqM/Mu6XNs=;
+        b=kyLSbsAP632wDrvkeRumRf2en/abGr724Wrri27qJgAQx4EHAPgtuwGw4uShSQ57TC
+         KzOIQeQtH9Wdf6/wqg/UVWx/5rQHcdUPO2HYpNvmSyxkj4nQtEGDkUXLk31rK6SbMk8N
+         aXOPJpZrXXjvMK075N0nbpmh5Spw4rcpfrtQ6W8ZLtlgWtLbCC3YKjuL/L9BRuFygU0v
+         GdogkrmORbcg/LNiKeV6xeN/abB7Emn5SNjDnww3K9DKnZWNElDvkTDyes+bExfv5z8E
+         1TMC1vyprzYvtvaHKEtYE4W7sfkb7kEXT2FQm8FhKD/rkEPe8AUVTUoW0ImtANIYrxUc
+         687w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694050064; x=1694654864;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YNvMZOUMF9nTFwos5xvMEitjVFFAuaJPfYqM/Mu6XNs=;
+        b=juKxJvsFLVBUnUnT834DeOOxGcF2dq1mYRlWXyVPA9zWtnMzxrV8g54yDklvPxZhi0
+         9rdK9A/mVcjWuCZfNQfG5yxij/+C1XHbYDWO15RGiIIwmdVV7a9Gi3sWJkMfmeHWrf5+
+         Fedn0RJF0IdoxQeqnfm1b8khlY74SDwH7pfuMDG4mhSgZhY2aVB7z3ZsgFntiiNaBQk+
+         Iih0gbC5M2VVrpHJkokX4Fog5gLDMz14iATC4jk0GR32FiQZJlZ70YPWMGYWB4xE0fsp
+         H4qYj5QPZ5rQetO1Wh7E0g5jvXYQEsVfowSQ70kZxZrJSyJdlQJp0ywdQRrQJGsRAUOz
+         8DUw==
+X-Gm-Message-State: AOJu0YxgE8IxOcycjzzyKNfZ25zgx1+fysOc98A14422jG5EwkHgGjKg
+        Zq/SpFToc1rZUZFj7373KsTn4jcZvXOj7IN3yCE=
+X-Google-Smtp-Source: AGHT+IE02oUSL28wAn0rBJmPST7T2NC/5UHQERs8/OSSjYlmdyHXVxLgDbIyjxSfxWXTZAzg3zzVRhVpMnq2QfsYL+I=
+X-Received: by 2002:a5d:6504:0:b0:317:6cd2:b90c with SMTP id
+ x4-20020a5d6504000000b003176cd2b90cmr3678988wru.13.1694050063527; Wed, 06 Sep
+ 2023 18:27:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxHCPBJflkubtvAA--.51784S2
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxWF1rGryUJw48Xr4kXF4kKrX_yoWrXrW3pF
-        9xAwn2gr4rGryfAr97t3s7Zr1kJanxKa1Igay2ya4kua42qr92vr1kKrykZFyjq3yxJFWI
-        qa1rJr1avF1DJwcCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
-        8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AK
-        xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG
-        67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMI
-        IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
-        14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
-        W8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j1WlkU
-        UUUU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <CAPm50aLd5ZbAqd8O03fEm6UhHB_svfFLA19zBfgpDEQsQUhoGw@mail.gmail.com>
+ <10bdaf6d-1c5c-6502-c340-db3f84bf74a1@intel.com> <ZPjcO/N54pvhLjSz@google.com>
+In-Reply-To: <ZPjcO/N54pvhLjSz@google.com>
+From:   Hao Peng <flyingpenghao@gmail.com>
+Date:   Thu, 7 Sep 2023 09:27:32 +0800
+Message-ID: <CAPm50aJjZhTWZVMj6FVtOP70ZuSVPrHPqFvVors1NmJ+8SYVQw@mail.gmail.com>
+Subject: Re: [PATCH] KVM: X86: Reduce calls to vcpu_load
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Xiaoyao Li <xiaoyao.li@intel.com>, pbonzini@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like other popular architectures, zero page is defined in kernel
-BSS data segment, rather than dynamically allocated. It is simpler.
-Also this patch removes macro __HAVE_COLOR_ZERO_PAGE and variable
-zero_page_mask since there is only one page for zeo_page usage.
-
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
-Changes in v2:
- 1. Combine two simple patches into one
- 2. Refine implementation about macro ZERO_PAGE(vaddr) 
-
----
- arch/loongarch/include/asm/mmzone.h  |  2 --
- arch/loongarch/include/asm/pgtable.h |  9 ++-------
- arch/loongarch/kernel/numa.c         |  1 -
- arch/loongarch/mm/init.c             | 28 +---------------------------
- 4 files changed, 3 insertions(+), 37 deletions(-)
-
-diff --git a/arch/loongarch/include/asm/mmzone.h b/arch/loongarch/include/asm/mmzone.h
-index fe67d0b4b33d..2b9a90727e19 100644
---- a/arch/loongarch/include/asm/mmzone.h
-+++ b/arch/loongarch/include/asm/mmzone.h
-@@ -13,6 +13,4 @@ extern struct pglist_data *node_data[];
- 
- #define NODE_DATA(nid)	(node_data[(nid)])
- 
--extern void setup_zero_pages(void);
--
- #endif /* _ASM_MMZONE_H_ */
-diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/include/asm/pgtable.h
-index 06963a172319..189156d8435c 100644
---- a/arch/loongarch/include/asm/pgtable.h
-+++ b/arch/loongarch/include/asm/pgtable.h
-@@ -69,13 +69,8 @@ struct vm_area_struct;
-  * ZERO_PAGE is a global shared page that is always zero; used
-  * for zero-mapped memory areas etc..
-  */
--
--extern unsigned long empty_zero_page;
--extern unsigned long zero_page_mask;
--
--#define ZERO_PAGE(vaddr) \
--	(virt_to_page((void *)(empty_zero_page + (((unsigned long)(vaddr)) & zero_page_mask))))
--#define __HAVE_COLOR_ZERO_PAGE
-+extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
-+#define ZERO_PAGE(vaddr)	(virt_to_page(empty_zero_page))
- 
- /*
-  * TLB refill handlers may also map the vmalloc area into xkvrange.
-diff --git a/arch/loongarch/kernel/numa.c b/arch/loongarch/kernel/numa.c
-index 708665895b47..6f464d49f0c2 100644
---- a/arch/loongarch/kernel/numa.c
-+++ b/arch/loongarch/kernel/numa.c
-@@ -470,7 +470,6 @@ void __init mem_init(void)
- {
- 	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
- 	memblock_free_all();
--	setup_zero_pages();	/* This comes from node 0 */
- }
- 
- int pcibus_to_node(struct pci_bus *bus)
-diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
-index 3b7d8129570b..628ebe42b519 100644
---- a/arch/loongarch/mm/init.c
-+++ b/arch/loongarch/mm/init.c
-@@ -35,33 +35,8 @@
- #include <asm/pgalloc.h>
- #include <asm/tlb.h>
- 
--/*
-- * We have up to 8 empty zeroed pages so we can map one of the right colour
-- * when needed.	 Since page is never written to after the initialization we
-- * don't have to care about aliases on other CPUs.
-- */
--unsigned long empty_zero_page, zero_page_mask;
-+unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)] __page_aligned_bss;
- EXPORT_SYMBOL(empty_zero_page);
--EXPORT_SYMBOL(zero_page_mask);
--
--void setup_zero_pages(void)
--{
--	unsigned int order, i;
--	struct page *page;
--
--	order = 0;
--
--	empty_zero_page = __get_free_pages(GFP_KERNEL | __GFP_ZERO, order);
--	if (!empty_zero_page)
--		panic("Oh boy, that early out of memory?");
--
--	page = virt_to_page((void *)empty_zero_page);
--	split_page(page, order);
--	for (i = 0; i < (1 << order); i++, page++)
--		mark_page_reserved(page);
--
--	zero_page_mask = ((PAGE_SIZE << order) - 1) & PAGE_MASK;
--}
- 
- void copy_user_highpage(struct page *to, struct page *from,
- 	unsigned long vaddr, struct vm_area_struct *vma)
-@@ -106,7 +81,6 @@ void __init mem_init(void)
- 	high_memory = (void *) __va(max_low_pfn << PAGE_SHIFT);
- 
- 	memblock_free_all();
--	setup_zero_pages();	/* Setup zeroed pages.  */
- }
- #endif /* !CONFIG_NUMA */
- 
--- 
-2.27.0
-
+On Thu, Sep 7, 2023 at 4:08=E2=80=AFAM Sean Christopherson <seanjc@google.c=
+om> wrote:
+>
+> On Wed, Sep 06, 2023, Xiaoyao Li wrote:
+> > On 9/6/2023 2:24 PM, Hao Peng wrote:
+> > > From: Peng Hao <flyingpeng@tencent.com>
+> > >
+> > > The call of vcpu_load/put takes about 1-2us. Each
+> > > kvm_arch_vcpu_create will call vcpu_load/put
+> > > to initialize some fields of vmcs, which can be
+> > > delayed until the call of vcpu_ioctl to process
+> > > this part of the vmcs field, which can reduce calls
+> > > to vcpu_load.
+> >
+> > what if no vcpu ioctl is called after vcpu creation?
+> >
+> > And will the first (it was second before this patch) vcpu_load() become=
+s
+> > longer? have you measured it?
+>
+> I don't think the first vcpu_load() becomes longer, this avoids an entire
+> load()+put() pair by doing the initialization in the first ioctl().
+>
+> That said, the patch is obviously buggy, it hooks kvm_arch_vcpu_ioctl() i=
+nstead
+> of kvm_vcpu_ioctl(), e.g. doing KVM_RUN, KVM_SET_SREGS, etc. will cause e=
+xplosions.
+>
+> It will also break the TSC synchronization logic in kvm_arch_vcpu_postcre=
+ate(),
+> which can "race" with ioctls() as the vCPU file descriptor is accessible =
+by
+> userspace the instant it's installed into the fd tables, i.e. userspace d=
+oesn't
+> have to wait for KVM_CREATE_VCPU to complete.
+>
+It works when there are many cores. The hook point problem mentioned
+above can still be adjusted,
+but the tsc synchronization problem is difficult to deal with.
+thanks.
+> And I gotta imagine there are other interactions I haven't thought of off=
+ the
+> top of my head, e.g. the vCPU is also reachable via kvm_for_each_vcpu(). =
+ All it
+> takes is one path that touches a lazily initialized field for this to fal=
+l apart.
+>
+> > I don't think it worth the optimization unless a strong reason.
+>
+> Yeah, this is a lot of subtle complexity to shave 1-2us.
