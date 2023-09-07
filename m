@@ -2,151 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B67797805
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 587967978B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbjIGQjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60424 "EHLO
+        id S244475AbjIGQxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242115AbjIGQjd (ORCPT
+        with ESMTP id S244476AbjIGQws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:39:33 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2314230
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:36:58 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bceca8a41aso19645411fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:36:58 -0700 (PDT)
+        Thu, 7 Sep 2023 12:52:48 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1D41FCF
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:52:15 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-402c1407139so13453885e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:52:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694104553; x=1694709353; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V84DA78dtZTuXZKZG/wAWIhizdAr3uJpJC1Bj2uoDd0=;
-        b=Gj36XS98vfORf93YmLS68y7dv9T666iLgJYaPWHPlAYSPP1rvRKB8et1AIH1tDoooB
-         NOTs7Yw0qemyENELIpmpqCIIMglxngYmMUpwlIoMfiwga5gOxexD2IhiyI0lWXT+5uHW
-         ZCuKR20TlZca0vmKumtBKcvH6l5wXmUwciyOov88eOi/ukmYIJPktZNXdfLoahS/p09H
-         yFfAEGjzzhjuE7T3udLopblh1IEzWjWnbdLdWXfV5TWIjAOuHlqRyBURkhKUjrbwQbx7
-         huyztDBgHpDiIlWoKoXokOD9REIBaeFa/gPU+CLgZt1L9f29GYBuHQJI1reZxJ+cHvL3
-         6fHA==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694105476; x=1694710276; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=g0UjxBFHJdpbfokvZNtbG8hLH/h565oIkcGkrz9vwfg=;
+        b=rmMn+YLYHSULzeCY2c7PbEPWKtslP/rYB9oD7BVJq970aX68ELjiUgCTreM3vfuyhR
+         i3TlJiP3k2qWPPcwVWWXmd/ZzEHCa1aIrmiktoVUj9KkyuMCAnL7iQWDTbeowgXBQBXe
+         emC6h32r1xxiUFvdLohrUUIcbu3/oXk4cS714DIjH7CYMVCFZijaXw1AwdJIEDKOcsvo
+         0AozrZvdvOsfSP0iJB8rwJqvreqweJ8AserRJE/7CQS9Ncjb0gWST8wUH4vaHNWV9GzV
+         iJSmZLpdp8p6iSfFsRcysgPpyZyL2WMG2oD+hVXyo3+OxQqXJSslXmPCfL/o8aIR4tBb
+         qlGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694104553; x=1694709353;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=V84DA78dtZTuXZKZG/wAWIhizdAr3uJpJC1Bj2uoDd0=;
-        b=UpyusocljJB+yB8fjK5gVNiH3vAbDHXAlM6+D4ZrwcezLwpFrd4ICfH4lMAYddm1fP
-         E0hcwavz/lqFY4yQc78dhWhaOc/5kq5fTRXWgbCtZXOBHq289a1jItlcNbm9vmWKDXoA
-         ggsTrCy7sIbzP91bJXJi8+H/X05kEX1wMBxdoIaVxSTHxB23T+ctKT2e405KPxbzGtqc
-         GjPhl5XMJSeqhW3i9OxgXjHlYJSaoGECAzJduhQm10WlgCKMuCLhgTxWCnDavRQvqxSN
-         iqxjX7hZ/4ppjMZKNccLLJVQ1nBUSZRHYp+ImeTyyVa8cTj0fuoi5K9vqIQZH4pREqSq
-         4t5Q==
-X-Gm-Message-State: AOJu0YxYh4NH3p7XRt054pEptGUtyCBZDN5fpV1IxQthvbzfmh4OcqXa
-        feE89T0UWnvo5JBDgM4c8C5R9V+1WVeDaievnSbcvHtO
-X-Google-Smtp-Source: AGHT+IE35UZ3oDSKDs4eDo034ZR//TkueBwcC+n7RKXhfWjT87LfVsZlV7e+LXPDTn9qBHwjjzcskw==
-X-Received: by 2002:a2e:3019:0:b0:2bc:c4af:36b9 with SMTP id w25-20020a2e3019000000b002bcc4af36b9mr3715304ljw.52.1694073427086;
-        Thu, 07 Sep 2023 00:57:07 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:86b3:b829:fa6a:1a8d? ([2a01:e0a:982:cbb0:86b3:b829:fa6a:1a8d])
-        by smtp.gmail.com with ESMTPSA id p7-20020a05600c204700b003fed630f560sm1708756wmg.36.2023.09.07.00.57.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 00:57:06 -0700 (PDT)
-Message-ID: <47bc9843-bb40-4c4f-a6c9-6b43b15a78c7@linaro.org>
-Date:   Thu, 7 Sep 2023 09:57:05 +0200
+        d=1e100.net; s=20221208; t=1694105476; x=1694710276;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g0UjxBFHJdpbfokvZNtbG8hLH/h565oIkcGkrz9vwfg=;
+        b=Jcc03eTAetV277gjEmRRwA/kSEjpWQZfPsZ2IE91HHHg4AHeGus3JEXRACkdLLd/qf
+         jRNTIusmK/ZwtZ7akRBf2nZbTbSDcYUPcX7EKIgmrJ+4Ch+f1OV9R2yRbupojyrV1d8b
+         g5qXhvg36w4yHM1dGM61q3EPAwq9oz+42qDBuu2oEhDrbFn7y5v+TfPzCLnstok31j0w
+         KMZnY9eq3GBQQ2yautS0YBqIwFa2PV0m8Tow6RzygOfNbBOi6HMbqmBRJZsh4aVdefMg
+         aI9ZYOAvvBlcl09SNCxO64SlE3XTwi6UmVvJdWSijloes2vohVvdEbjlI0DO7mRFcG/j
+         ev5g==
+X-Gm-Message-State: AOJu0Yx5iqXNP8+jw3e3sKFzqQqZkOYpIKHsCWiTcLueSt90YHt+cq5i
+        uNPIv+CEeFPloI1iRxVxA90CbCHSLo6RLtdtLIrnrw==
+X-Google-Smtp-Source: AGHT+IEalu9zCtoYR2Ui9Q1qU9PRb8tCGZA9hsrK25jqKWgWWlg25b2SfOAY9X9gMnN6g7j+XEme9Q==
+X-Received: by 2002:a7b:ce8a:0:b0:401:b0f2:88b4 with SMTP id q10-20020a7bce8a000000b00401b0f288b4mr3852711wmj.26.1694073858569;
+        Thu, 07 Sep 2023 01:04:18 -0700 (PDT)
+Received: from vermeer ([2a01:cb1d:81a9:dd00:b570:b34c:ffd4:c805])
+        by smtp.gmail.com with ESMTPSA id q20-20020a056000137400b003142c85fbcdsm22695767wrz.11.2023.09.07.01.04.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 01:04:17 -0700 (PDT)
+Date:   Thu, 7 Sep 2023 10:04:15 +0200
+From:   Samuel Ortiz <sameo@rivosinc.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
+        linux-coco@lists.linux.dev, Brijesh Singh <brijesh.singh@amd.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Peter Gonda <pgonda@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dionna Amalie Glaze <dionnaglaze@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, lukas@wunner.de
+Subject: Re: [PATCH v3 0/5] configfs-tsm: Attestation Report ABI
+Message-ID: <ZPmD/xJic2QrfIf5@vermeer>
+References: <169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com>
+ <080d834d-9ca0-437f-8f18-b7a311af0060@linux.microsoft.com>
+ <64f2169e5c381_4c1f329451@dwillia2-mobl3.amr.corp.intel.com.notmuch>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v4 1/2] irqchip/qcom-pdc: Add support for v3.2 HW
-Content-Language: en-US, fr
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     "Maulik Shah (mkshah)" <quic_mkshah@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-References: <20230905-topic-sm8x50-upstream-pdc-ver-v4-0-fc633c7df84b@linaro.org>
- <20230905-topic-sm8x50-upstream-pdc-ver-v4-1-fc633c7df84b@linaro.org>
- <e3af689b-5e37-49f6-84b0-ea8649d1943d@linaro.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <e3af689b-5e37-49f6-84b0-ea8649d1943d@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <64f2169e5c381_4c1f329451@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 06/09/2023 18:55, Konrad Dybcio wrote:
-> On 5.09.2023 15:19, Neil Armstrong wrote:
->> Starting from HW version 3.2 the IRQ_ENABLE bit has moved to the
->> IRQ_i_CFG register and requires a change of the driver to avoid
->> writing into an undefined register address.
->>
->> Get the HW version from registers and set the IRQ_ENABLE bit to the
->> correct register depending on the HW version.
->>
->> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->> Reviewed-by: Maulik Shah <quic_mkshah@quicinc.com>
->> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->> ---
-> [...]
+On Fri, Sep 01, 2023 at 09:51:42AM -0700, Dan Williams wrote:
+> [ Add Lukas since 'SPDM' was mentioned ]
 > 
->> +	if (pdc_version < PDC_VERSION_3_2) {
->> +		u32 index, mask;
->> +
->> +		index = pin_out / 32;
->> +		mask = pin_out % 32;
-> I get that you're moving around existing code, but would that
-> not be equal to FIELD_GET() with GENMASK(31, 5) and GENMASK(4, 0)?
-> Perhaps it'd be clearer to read. But don't worry about it in this
-> series.
-
-Yes it would, I took the best implementation of the two :-p
-
-I will probably send a cleanup serie afterwards because there's some
-cleanup to do all over the code.
-
-Neil
-
+> Jeremi Piotrowski wrote:
+> [..]
+> > > An attestation report is signed evidence of how a Trusted Virtual
+> > > Machine (TVM) was launched and its current state. A verifying party uses
+> > > the report to make judgements of the confidentiality and integrity of
+> > > that execution environment. Upon successful attestation the verifying
+> > > party may, for example, proceed to deploy secrets to the TVM to carry
+> > > out a workload. Multiple confidential computing platforms share this
+> > > similar flow.
+> > 
+> > Besides the platform (cpu) attestation report, there are also attestation
+> > reports from individual secure PCIe devices that we'd want to fetch. This
+> > uses the SPDM protocol[1]. There is a CHALLENGE command which (too me)
+> > roughly maps to an attestation request, but also separate interfaces to
+> > fetch individual measurements and certificates (like the SNP extended
+> > report interface allows).
 > 
-> Otherwise:
-> 
-> Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> 
-> Konrad
+> Yes, but I am not yet convinced this configfs-tsm interface would get
+> involved there.
 
+User space will want to get those devices attestation reports, and those
+would be carried through the TSM. It would be nice to be able to use a
+common ABI for this. A CPU/platform attestation report is not that
+different from a device one.
+
+> > 
+> > If this is to become the one attestation interface then we'll need to
+> > consider that. That will probably require adding a second level
+> > directory: /sys/kernel/config/tsm/<device path>.
+> 
+> The SPDM situation is different in my mind in that the kernel has an
+> interest in being able to attest a device itself. Think of cases like
+> power management where userspace is frozen, but the kernel needs to
+> validate the device in the resume flow.
+> 
+> For TVMs the kernel would validate devices
+
+That means the TVM kernel would be provisioned with reference values and
+policies that are likely to be tenant specific. The same TVM kernel,
+running the same user space stack, getting the same PCIe device
+attached, could either accept or reject such device, depending on the
+tenant/workload owner policies and acceptable reference values. That
+means each tenant would have to build its own guest images, and maintain
+and update them with potentially each new device or new device stack it
+wants to support.
+Keeping most of the device attestation stack (similar to where the
+platform attestation stack lives today) in user space seems more
+flexible to me, and allows for tenant to use single guest images.
+
+> and the verifying party would
+> validate the kernel as part of the guest measurement.
+> 
+> The main difficulty again here is evidence format differentiation. My
+> hope is that there is some standardization
+
+FWIW there are IETF driven standardization efforts like e.g. EAT [1]
+that go into the right directions imho. The latest CC implementations
+(CCA, CoVE) follow those specs (EAT, CWT/JWT).
+
+DMTF (driving the SPDM spec) defines also its own format, through its
+measurement format spec. Device vendors may choose to implement that or
+to e.g. add their EAT formatted attestation report in the reported
+certificate chain. Realistically, we'll have to support all of those
+flows.
+
+> or otherwise a way to update
+> the kernel's verification logic for per-device evidence-formats.  Maybe
+> eBPF has a role to play in that story, but that's a converstation for a
+> different patch set.
+
+This conversation will hopefully include a user space architecture.
+Potentially something we could talk about at the CC LPC microconference?
+
+Cheers,
+Samuel.
+
+[1] https://datatracker.ietf.org/doc/draft-ietf-rats-eat/
