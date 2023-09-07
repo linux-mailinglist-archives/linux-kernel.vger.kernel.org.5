@@ -2,65 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F11F797BF1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EB8797BEF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241633AbjIGSdb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Sep 2023 14:33:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46348 "EHLO
+        id S235166AbjIGSdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241110AbjIGSd2 (ORCPT
+        with ESMTP id S238181AbjIGSdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:33:28 -0400
-X-Greylist: delayed 1536 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Sep 2023 11:33:03 PDT
-Received: from rtits2.realtek.com.tw (211-75-126-66.hinet-ip.hinet.net [211.75.126.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 56D5F1BE6;
-        Thu,  7 Sep 2023 11:33:02 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 3877GN1m8002884, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 3877GN1m8002884
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 7 Sep 2023 15:16:23 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Thu, 7 Sep 2023 15:16:51 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Thu, 7 Sep 2023 15:16:50 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::7445:d92b:d0b3:f79c]) by
- RTEXMBS04.realtek.com.tw ([fe80::7445:d92b:d0b3:f79c%5]) with mapi id
- 15.01.2375.007; Thu, 7 Sep 2023 15:16:50 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        nic_swsd <nic_swsd@realtek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: RE: [PATCH net v2] r8152: avoid the driver drops a lot of packets
-Thread-Topic: [PATCH net v2] r8152: avoid the driver drops a lot of packets
-Thread-Index: AQHZ4G/uLCHLeDMawES5jAj/REiJSrAN/YuAgADpM2A=
-Date:   Thu, 7 Sep 2023 07:16:50 +0000
-Message-ID: <7f8b32a91f5849c99609f78520b23535@realtek.com>
-References: <20230906031148.16774-421-nic_swsd@realtek.com>
- <20230906172847.2b3b749a@kernel.org>
-In-Reply-To: <20230906172847.2b3b749a@kernel.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.228.6]
-x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Thu, 7 Sep 2023 14:33:02 -0400
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05356E47
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:32:37 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-791b8525b59so512602241.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 11:32:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694111552; x=1694716352; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wBdELFiF0kNq2P4ovxPr1G/v1B3B5Z0Pa4x1EdUn7xY=;
+        b=gAzHdIWdNVw5OyhAvmFFB4qgug2RGKFplflm15VRyiaBHXa/3M1B+AHadvDXfvoOfV
+         5tqhmXIq55X4LeDeWx3LdU6xNuJ2ECCYyft+IJk35IyqHB1/SBeWPTeM9zf6M921lYWP
+         3WRnQUo4lwvus2SKM1OGSElokwDLG4+0nHzpvf9TUw5RGxYUrcRjF3LZJEGdce2Hw8Oh
+         N2vSsD9FYihpgA+8QBLSTgl9mr/ioHC/HIQrusWtGSTPp1+sxIwOutqJsWOv8XofrGpf
+         ZzWK+Z+AR6xCx355B5tBhjC49M/91HMofMKYLbdnoJFsMh3CJDWvdlQzhHKp5annQu7V
+         S6fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694111552; x=1694716352;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wBdELFiF0kNq2P4ovxPr1G/v1B3B5Z0Pa4x1EdUn7xY=;
+        b=C6arK/BiTeq827Ja7Au4o5Lwq6PMhG09l0noTGfrk2AuqFbrgStEGbeuKBCI1HIZey
+         33VVmN50qSlH6PCO02MP/LHqKRV8QAlQCsgJdgYh7ydZPwfmqkjlJoBbXX2sBoa6gD26
+         4JMFIJVe3LbBBLrIj8bXm7ZpHK2PwmD5ai+FmpQbdtTSZWThXkPjgKrVmRX6TNVAT86x
+         WRPPez0U9QvVUhrIdkoRdMBAYU0YVza1GqWj7cDTbUNk2yXD5N2IIHYzOUdVsB4MIcEY
+         PLpgOnPW2ry8QGNH8Ja3ZIPLm87dIJsMLWnhhPO090TaR5rm0mTwNRLEg02S3y7zCjqg
+         hb8g==
+X-Gm-Message-State: AOJu0Yx7TpU/RZzd23ldDct/vIHLB9shk5vq1yow47qvUyTtzJhsksbX
+        1QJD0FUzd79sthJs4Y623mjO/XwcNUcTH3f13ZXTtgqS5xrCm939uPM=
+X-Google-Smtp-Source: AGHT+IGquAMmj4BV1IgcH+0hlmwrCPO8RvK5dDPIHBFPHMvw3mBi9yKQYdiyjPsOt1CRLSecOSiNHyNGSnbycipPFpA=
+X-Received: by 2002:a25:4057:0:b0:d7f:1ef3:66a9 with SMTP id
+ n84-20020a254057000000b00d7f1ef366a9mr10826771yba.15.1694071032928; Thu, 07
+ Sep 2023 00:17:12 -0700 (PDT)
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
+References: <20230905185309.131295-1-brgl@bgdev.pl> <20230905185309.131295-8-brgl@bgdev.pl>
+In-Reply-To: <20230905185309.131295-8-brgl@bgdev.pl>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 7 Sep 2023 09:17:01 +0200
+Message-ID: <CACRpkdbdcPv1LHL2W-enKBJ2OARpduoOJkQ64oL6GSOfmmD3qQ@mail.gmail.com>
+Subject: Re: [PATCH 07/21] gpiolib: provide gpio_device_get_base()
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dipen Patel <dipenp@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
+        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,50 +83,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jakub Kicinski <kuba@kernel.org>
-> Sent: Thursday, September 7, 2023 8:29 AM
-[...]
-> Good to see that you can repro the problem.
+On Tue, Sep 5, 2023 at 8:53=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl> =
+wrote:
 
-I don't reproduce the problem. I just find some information about it.
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> Let's start adding getters for the opaque struct gpio_device. Start with
+> a function allowing to retrieve the base GPIO number.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-> Before we tweak the heuristics let's make sure rx_bottom() behaves
-> correctly. Could you make sure that
->  - we don't perform _any_ rx processing when budget is 0
->    (see the NAPI documentation under Documentation/networking)
+I guess you have a solid usecase for drivers needing to do this
+crazy thing, because I suppose you feel as much as me that
+this should rather be gpiolib-internal and confined to
+drivers/gpio/gpiolib.h?
 
-The work_done would be 0, and napi_complete_done() wouldn't be called.
-However, skb_queue_len(&tp->rx_queue) may be increased. I think it is
-not acceptable, right?
+If you add a valid reason for making this globally visible outside
+of drivers/[gpio|pinctrl] to the commit message I guess I can live
+with it because we need to think of the bigger picture:
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
->  - finish the current aggregate even if budget run out, return
->    work_done = budget in that case.
->    With this change the rx_queue thing should be gone completely.
+It brings to mind the now confusing "base" inside of
+struct gpio_chip. We all know it should go away, but since it
+is never used during the lifetime of the gpio_chip - or SHOULD
+never be used - it should rather be an argument to
+[devm_]gpiochip_add_data( .... int base);...
 
-Excuse me. I don't understand this part. I know that when the packets are
-more than budget, the maximum packets which could be handled is budget.
-That is, return work_done = budget. However, the extra packets would be queued
-to rx_queue. I don't understand what you mean about " the rx_queue thing
-should be gone completely". I think the current driver would return
-work_done = budget, and queue the other packets. I don't sure what you
-want me to change.
+Maybe something we should add to our TODO file.
 
->  - instead of copying the head use napi_get_frags() + napi_gro_frags()
->    it gives you an skb, you just attach the page to it as a frag and
->    hand it back to GRO. This makes sure you never pull data into head
->    rather than just headers.
-
-I would study about them. Thanks.
-
-Should I include above changes for this patch?
-I think I have to submit another patches for above.
-
-> Please share the performance results with those changes.
-
-I couldn't reproduce the problem, so I couldn't provide the result
-with the differences.
-
-
-Best Regards,
-Hayes
-
+Yours,
+Linus Walleij
