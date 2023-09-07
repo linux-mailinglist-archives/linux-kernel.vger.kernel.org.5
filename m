@@ -2,119 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7963179766A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386897979E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbjIGQIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42298 "EHLO
+        id S243256AbjIGRZi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Sep 2023 13:25:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239702AbjIGQIH (ORCPT
+        with ESMTP id S238248AbjIGRZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:08:07 -0400
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455755273
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:01:27 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2bd0a5a5abbso19971071fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:01:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1694102378; x=1694707178; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XeBbVRtX/aIWzlXHiHUn4OCigEvkTh1dLDX2VajCG9M=;
-        b=UP5XyroKB0Y3e7lamt2PRAeVY7AuKb4R1unhykqUb6TzR2MrfUL9fRsan1cQZwqYqg
-         rjjtDD7YgXEn4l8M8UWxXYFe49RNwPII5D1qtroCGwvYfJVVsM/TOpziqVKcF6UmkUSm
-         La//BYI75jdPL2Cl+Z4V0kolecj8fMVE8nKaZDrOqbaBeP7uUtC4bBdsawdn2z/cSEGf
-         5ZVvI24v/rMonbor58wghOY3QcabbzJ8rqJm0Ufb4/a27kziboBECVQaZ4ZGv3CKkQEp
-         8i7zmJTdNVTHE3xQX5OgrspuhwDVEMLslZ4wYIC15l2fLnLn51SU1iWfvEy2o51TK0So
-         JDUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694102378; x=1694707178;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XeBbVRtX/aIWzlXHiHUn4OCigEvkTh1dLDX2VajCG9M=;
-        b=Lu1kseXjnvkire+4IhauLBlGaOPdS9AVLyWnPBCMW5XWGJlZELJ032V+CPZVQAv8wt
-         bhdz8gyzktxzY5J0yeZMkdtjSBlYpZy+pVQlGH1yC+ranZL7/7ygwWxcoftpaxu9pDyq
-         Br7PDcEz6wNYHMYxS5w7To7D4wJuaX5swem6J0SIkcE8ReOnMD7twR08D/woMxVoIsc8
-         m6o4FEbXbL5mbTf4ESj1NoAMI/xcE/cEi0n/KbEkIJcxON5XqVFQqHc1DwjX3NsEMPzm
-         LlnzEeh3lyG2mGPcYPhITEboFpVJ9mxdYXADyY6MJIWmsR1WVHY4HAcSqTkdzSI7eoxm
-         VGvg==
-X-Gm-Message-State: AOJu0YxskmwvzMi8LHgAgw+U6udWOtMf6YAheR5vm6HUpT03gC/k8iDQ
-        lE5jUDNWQuPAcvDz2+pGpzFH1p61iYczER6y1H8=
-X-Google-Smtp-Source: AGHT+IGEGmreaznUgLT0wco7186DbxtRAxnnEI6albp1jZXrz+2WijzMa2iZXNVK2n5/iINTQ0Yxlw==
-X-Received: by 2002:adf:fd4d:0:b0:316:fb57:26d1 with SMTP id h13-20020adffd4d000000b00316fb5726d1mr4496582wrs.8.1694076710917;
-        Thu, 07 Sep 2023 01:51:50 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id l21-20020a1c7915000000b003fef6881350sm1853914wme.25.2023.09.07.01.51.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 01:51:50 -0700 (PDT)
-Date:   Thu, 7 Sep 2023 10:51:49 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Charlie Jenkins <charlie@rivosinc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>, jrtc27@jrtc27.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        bpf@vger.kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, peterz@infradead.org, jpoimboe@kernel.org,
-        jbaron@akamai.com, rostedt@goodmis.org,
-        Ard Biesheuvel <ardb@kernel.org>, anup@brainfault.org,
-        atishp@atishpatra.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        bjorn@kernel.org, luke.r.nels@gmail.com, xi.wang@gmail.com,
-        namcaov@gmail.com
-Subject: Re: [PATCH 00/10] RISC-V: Refactor instructions
-Message-ID: <20230907-304f53e7de4e0386d04f4dcf@orel>
-References: <ZN5OJO/xOWUjLK2w@ghost>
- <mhng-7d609dde-ad47-42ed-a47b-6206e719020a@palmer-ri-x1c9a>
- <20230818-63347af7195b7385c146778d@orel>
- <ZPjKGd7VstwIKDV5@ghost>
+        Thu, 7 Sep 2023 13:25:33 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F13EE7F
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:25:07 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-142-mAsshBkwN4ycognTopktyQ-1; Thu, 07 Sep 2023 09:55:54 +0100
+X-MC-Unique: mAsshBkwN4ycognTopktyQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 7 Sep
+ 2023 09:55:51 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 7 Sep 2023 09:55:51 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Kees Cook' <keescook@chromium.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "'linux-mm@kvack.org'" <linux-mm@kvack.org>,
+        'Vlastimil Babka' <vbabka@suse.cz>,
+        'Christoph Lameter' <cl@linux.com>,
+        'Pekka Enberg' <penberg@kernel.org>,
+        'David Rientjes' <rientjes@google.com>,
+        'Joonsoo Kim' <iamjoonsoo.kim@lge.com>,
+        'Andrew Morton' <akpm@linux-foundation.org>,
+        "'Eric Dumazet'" <edumazet@google.com>
+Subject: RE: [PATCH] slab: kmalloc_size_roundup() must not return 0 for
+ non-zero size
+Thread-Topic: [PATCH] slab: kmalloc_size_roundup() must not return 0 for
+ non-zero size
+Thread-Index: AdngmrOo1jL765q1RK2Ib5JvSvHtFwASyysAACBZzlA=
+Date:   Thu, 7 Sep 2023 08:55:51 +0000
+Message-ID: <c7aa755a2155427ca4cca984efffc791@AcuMS.aculab.com>
+References: <fcfee37ead054de19871139167aca787@AcuMS.aculab.com>
+ <202309061106.C0690BDBB@keescook>
+In-Reply-To: <202309061106.C0690BDBB@keescook>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZPjKGd7VstwIKDV5@ghost>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 11:51:05AM -0700, Charlie Jenkins wrote:
-> On Fri, Aug 18, 2023 at 09:30:32AM +0200, Andrew Jones wrote:
-> > On Thu, Aug 17, 2023 at 10:52:22AM -0700, Palmer Dabbelt wrote:
-> > > On Thu, 17 Aug 2023 09:43:16 PDT (-0700), Charlie Jenkins wrote:
-> > ...
-> > > > It seems to me that it will be significantly more challenging to use
-> > > > riscv-opcodes than it would for people to just hand create the macros
-> > > > that they need.
-> > > 
-> > > Ya, riscv-opcodes is pretty custy.  We stopped using it elsewhere ages ago.
-> > 
-> > Ah, pity I didn't know the history of it or I wouldn't have suggested it,
-> > wasting Charlie's time (sorry, Charlie!). So everywhere that needs
-> > encodings are manually scraping them from the PDFs? Or maybe we can write
-> > our own parser which converts adoc/wavedrom files[1] to Linux C?
-> > 
-> > [1] https://github.com/riscv/riscv-isa-manual/tree/main/src/images/wavedrom
+From: Kees Cook
+> Sent: 06 September 2023 19:17
 > 
-> The problem with the wavedrom files is that there are no standard for
-> how each instruction is identified. The title of of the adoc gives some
-> insight and there is generally a funct3 or specific opcode that is
-> associated with the instruction but it would be kind of messy to write a
-> script to parse that. I think manually constructing the instructions is
-> fine. When somebody wants to add a new instruction they probably will
-> not need to add very many at a time, so it should be only a couple of
-> lines that they will be able to test.
->
+> On Wed, Sep 06, 2023 at 08:18:21AM +0000, David Laight wrote:
+> > The typical use of kmalloc_size_roundup() is:
+> > 	ptr = kmalloc(sz = kmalloc_size_roundup(size), ...);
+> > 	if (!ptr) return -ENOMEM.
+> > This means it is vitally important that the returned value isn't
+> > less than the argument even if the argument is insane.
+> > In particular if kmalloc_slab() fails or the value is above
+> > (MAX_ULONG - PAGE_SIZE) zero is returned and kmalloc() will return
+> > it's single zero-length buffer.
+> >
+> > Fix by returning the input size on error or if the size exceeds
+> > a 'sanity' limit.
+> > kmalloc() will then return NULL is the size really is too big.
+> >
+> > Signed-off-by: David Laight <david.laight@aculab.com>
+> > Fixes: 05a940656e1eb ("slab: Introduce kmalloc_size_roundup()")
+> > ---
+> > The 'sanity limit' value doesn't really matter (even if too small)
+> > It could be 'MAX_ORDER + PAGE_SHIFT' but one ppc64 has MAX_ORDER 16
+> > and I don't know if that also has large pages.
+> > Maybe it could be 1ul << 30 on 64bit, but it really doesn't matter
+> > if it is too big.
+> 
+> I agree that returning 0 for an (impossible to reach) non-zero
+> is wrong, but the problem seen in netdev was that a truncation happened
+> for a value returned by kmalloc_size_roundup().
+> 
+> So, for the first, it shouldn't be possible for "c" to ever be NULL here:
 
-OK, we'll just have to prop our eyelids open with toothpicks to get
-through the review of the initial mass conversion.
+If it isn't possible there is no need to check :-)
 
-Thanks,
-drew
+> 
+> 	c = kmalloc_slab(size, GFP_KERNEL, 0);
+> 	return c ? c->object_size : 0;
+> 
+> But sure, we can return KMALLOC_MAX_SIZE for that.
+
+Isn't KMALLOC_MAX_SIZE actually valid? - so would be wrong.
+Returning 'size' is always valid, the later kmalloc() will
+almost certainly fail, but it is also ok if it suceeds.
+
+> The pathological case was this:
+
+s/pathological/failing/
+
+> 
+> 	unsigned int truncated;
+> 	size_t fullsize = UINT_MAX + 1;
+> 
+>  	ptr = kmalloc(truncated = kmalloc_size_roundup(fullsize), ...);
+
+The actual pathological case is:
+	kmalloc(kmalloc_size_roundup(~0ULL - PAGESIZE/2), ...)
+which is kmalloc(0, ...) and suceeds.
+	
+> Should the logic be changed to return KMALLOC_MAX_SIZE for anything
+> larger than KMALLOC_MAX_SIZE? This seems like a different kind of
+> foot-gun.
+> 
+> Everything else in the allocator sanity checking (e.g. struct_size(),
+> etc) uses SIZE_MAX as the saturation value, which is why
+> kmalloc_size_roundup() did too.
+
+SIZE_MAX (aka ~0ull) seems far too large for sanity checking lengths.
+(Even without the issue of having no headroom.)
+
+A limit related to an upper bound for vmalloc() would probably
+be more appropriate, or maybe just a limit based on kernel VA.
+So for 32bit 2^30 is way too large for any kind of allocate.
+For 64bit you can go higher (even if the allocators can't
+support the values), maybe 2^48?
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
