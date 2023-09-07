@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B1379735B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CB57973A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236023AbjIGPXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
+        id S238549AbjIGP2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbjIGPWV (ORCPT
+        with ESMTP id S241096AbjIGP2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:22:21 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B651C1BEC
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:21:51 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bceb02fd2bso18371211fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:21:51 -0700 (PDT)
+        Thu, 7 Sep 2023 11:28:09 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA36198E
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:27:46 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bcb54226e7so12860851fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:27:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694100110; x=1694704910; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694100411; x=1694705211; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2ADDhL3Y9ChksGd5FuRK3cdw+MrzNNwwXAMmsBve8eY=;
-        b=GEHjmt64A6uG/CyH+6nVq+m0eBpkZrsgRMj5JoyhpLAg4t0EDD0/WyZY/EbvMygZSB
-         O6VR1YHCSNdquqfBu9hLzEiPE2+pxFb0nAxtGaEVlFIMlmVY43SgcnNnZVoGehnV83gI
-         AzXzf6UVvotJsYMqXiil1VO222EF9pyAhf6AThX8ZFkCOuK7gAMy0rxTLlGGQZ9dLEIC
-         u1g0i5CCpb1Cupz1yBWx6WW2fg+epIiMk9kms7nm/yIVdnVey7p4zY+ZRsZeCKutWMHR
-         fPxSaPAEqZVsvK5rGXTVxo8yOJYR6SZItFcIK7It9r6cjDsPrD35z+OEn2bK8OP7cICk
-         /ufQ==
+        bh=sWPps9q7CEJq96bHnOFu416k4mJ9kfxW5sLbFk5Yxo4=;
+        b=pbexbxd3pI+FtFeNFFIjOZiPyTpS1MDrc9Vp1gM3vheKICMgrd6nV1MRdV2qNijQSQ
+         htvq7zgeU6gmUDa0D89sUuc2Pj3oc4bqOZz9oXGeOjWrqIWNheZ2XyFt8ASIHy34RRk6
+         3CroJ+0QLqWHNV6vCPabfhQm6wBU09NlEXff5o/DLp8NCyB1WdytE5Lxs24hJ4/WnYIr
+         bguOLtisfIja6zQAPb6Ucy0yw9KyaibsIomVDHFKL7oZKmCCnG3jvwbBQP+9Ee18xSGq
+         ZCIJkzmY5H0Ib8IAyDDw807Bc2r+E6OmSeV0Nzdegt0lfYChis3RgbmvrO6nVPV/8D2m
+         aFHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694100110; x=1694704910;
+        d=1e100.net; s=20221208; t=1694100411; x=1694705211;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2ADDhL3Y9ChksGd5FuRK3cdw+MrzNNwwXAMmsBve8eY=;
-        b=RC6dJKNWU136bKMLq4srh8qIlOe0FilOMrqgqGlylC5qWpjcdtDL6QpyFVmoCZCv1o
-         iz07Edf0FGqdL/Tf6sUdoJEOpjW96HsVTdAJ/TVgsmr0xj2FZNvJSZg67XOfR6YihD6T
-         4AqfkDBlS/uIerqrALug8fFNNgUYWHNid0s/aH3+g8TS+T3faqBTJpRg405lDOgSYDd3
-         X5DXD6Kk4TJiSWOyiBTx7AITA1gYOidhTgCZJ9+nnmaRmtQLK4ZqrO3hkVBVvVlEk+/L
-         MVWuhI/vEtvVmE5Kdz5R7VHk4wya1Mdo5Rwq6a5wieedD08OqD0LVi+2Gt+at5Pdvyby
-         D8LQ==
-X-Gm-Message-State: AOJu0Yy5MAXitZE5miGHHsJNzBOQwGB50m9sl/gca8v7CFR0qxTU99dQ
-        E8+issLkNP1am5VgVg1UuNdaRP7uz8TjbkPATs8=
-X-Google-Smtp-Source: AGHT+IGYRLf7GpXbSfX9yL4OLNbiYEdnhHMAnQCxOV6DjnXOpS1Z/JCpHYk+r7prOvveef7RE/lcMg==
-X-Received: by 2002:a05:600c:2809:b0:3fe:dcd0:2e10 with SMTP id m9-20020a05600c280900b003fedcd02e10mr5150331wmb.17.1694098355761;
-        Thu, 07 Sep 2023 07:52:35 -0700 (PDT)
+        bh=sWPps9q7CEJq96bHnOFu416k4mJ9kfxW5sLbFk5Yxo4=;
+        b=bgQI9vtB2xxak2ZmgrUL29KwoBsf+hLQ1svh/AfkKg6OaSOa7cG8te06+9JQ1TbdjZ
+         /csQceJtDN8iuFdI2Eb0HVOpav+14yIMA61lCnKCv3Wq23BDYu2js99ZOUbnzQFrGhDJ
+         RwqDlQZwomVQg26G8ObKnS13PfvaEo1ANb/Wz+ChawByDXR3pvaYUhVXE0wGUbjwUzpd
+         xK4HsNRsz3JociUYJyqKKXYcFZpABSdIPeJnL4uU6Anu7uo4JIxnw/lBFdpyyw6HZkZR
+         yxrnSTdOccD/9izGtloDmoqzNpIfJcWjLJJOgvxCXZq9qoYK/1dy9ldV7R0vR6fWsDLl
+         XDqw==
+X-Gm-Message-State: AOJu0YyK4eqj6z50awZeylPLJodOkRVfPbsFPp1elf1s4m4RQ+NU6igA
+        CLu9P0Bn0VZ+oifYdE4zVzhQPSNMERt9O0BMv0w=
+X-Google-Smtp-Source: AGHT+IHSSQPay0nZxYl504c1/I5ZSMW+6yvqaJiKuZ+uWRiSAz+fxXCyqA+3MtRZRy/7Ggos7+QkOQ==
+X-Received: by 2002:adf:fd87:0:b0:318:416:a56a with SMTP id d7-20020adffd87000000b003180416a56amr2402815wrr.13.1694098356640;
+        Thu, 07 Sep 2023 07:52:36 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:56f5:e2d4:1e04:b28e])
         by smtp.gmail.com with ESMTPSA id 2-20020a05600c020200b003feef82bbefsm2757588wmi.29.2023.09.07.07.52.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 07:52:35 -0700 (PDT)
+        Thu, 07 Sep 2023 07:52:36 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Kent Gibson <warthog618@gmail.com>
 Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 4/5] gpio: mockup: simplify code by using cleanup helpers
-Date:   Thu,  7 Sep 2023 16:52:29 +0200
-Message-Id: <20230907145230.44085-4-brgl@bgdev.pl>
+Subject: [PATCH 5/5] gpio: mockup: don't access internal GPIOLIB structures
+Date:   Thu,  7 Sep 2023 16:52:30 +0200
+Message-Id: <20230907145230.44085-5-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230907145230.44085-1-brgl@bgdev.pl>
 References: <20230907145230.44085-1-brgl@bgdev.pl>
@@ -75,136 +75,136 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Use lock from linux/cleanup.h and simplify locking paths.
+Don't include gpiolib.h. Track the request status of lines locally
+instead. In order to retrieve the device name use the fact that
+gpio-mockup supports only a single GPIO device per platform device and
+call device_find_any_child().
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/gpio/gpio-mockup.c | 45 ++++++++++++++++++--------------------
- 1 file changed, 21 insertions(+), 24 deletions(-)
+ drivers/gpio/gpio-mockup.c | 39 +++++++++++++++++++++++++++++---------
+ 1 file changed, 30 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-index ff1a263f1b05..44684ff4462f 100644
+index 44684ff4462f..4870e267a402 100644
 --- a/drivers/gpio/gpio-mockup.c
 +++ b/drivers/gpio/gpio-mockup.c
-@@ -9,6 +9,7 @@
+@@ -11,6 +11,7 @@
  
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
-+#include <linux/cleanup.h>
+ #include <linux/cleanup.h>
  #include <linux/debugfs.h>
++#include <linux/device.h>
  #include <linux/gpio/driver.h>
  #include <linux/interrupt.h>
-@@ -92,9 +93,8 @@ static int gpio_mockup_get(struct gpio_chip *gc, unsigned int offset)
- 	struct gpio_mockup_chip *chip = gpiochip_get_data(gc);
- 	int val;
+ #include <linux/irq.h>
+@@ -25,8 +26,6 @@
+ #include <linux/string_helpers.h>
+ #include <linux/uaccess.h>
  
--	mutex_lock(&chip->lock);
--	val = __gpio_mockup_get(chip, offset);
--	mutex_unlock(&chip->lock);
-+	scoped_guard(mutex, &chip->lock)
-+		val = __gpio_mockup_get(chip, offset);
+-#include "gpiolib.h"
+-
+ #define GPIO_MOCKUP_MAX_GC	10
+ /*
+  * We're storing two values per chip: the GPIO base and the number
+@@ -42,11 +41,13 @@
+  * @value:     Configures status of the gpio as 0(low) or 1(high)
+  * @pull:      Configures the current pull of the GPIO as 0 (pull-down) or
+  *             1 (pull-up)
++ * @requested: Request status of this GPIO
+  */
+ struct gpio_mockup_line_status {
+ 	int dir;
+ 	int value;
+ 	int pull;
++	bool requested;
+ };
  
- 	return val;
- }
-@@ -105,12 +105,12 @@ static int gpio_mockup_get_multiple(struct gpio_chip *gc,
- 	struct gpio_mockup_chip *chip = gpiochip_get_data(gc);
- 	unsigned int bit, val;
- 
--	mutex_lock(&chip->lock);
--	for_each_set_bit(bit, mask, gc->ngpio) {
--		val = __gpio_mockup_get(chip, bit);
--		__assign_bit(bit, bits, val);
-+	scoped_guard(mutex, &chip->lock) {
-+		for_each_set_bit(bit, mask, gc->ngpio) {
-+			val = __gpio_mockup_get(chip, bit);
-+			__assign_bit(bit, bits, val);
-+		}
- 	}
--	mutex_unlock(&chip->lock);
- 
- 	return 0;
- }
-@@ -126,9 +126,9 @@ static void gpio_mockup_set(struct gpio_chip *gc,
- {
- 	struct gpio_mockup_chip *chip = gpiochip_get_data(gc);
- 
--	mutex_lock(&chip->lock);
-+	guard(mutex)(&chip->lock);
-+
- 	__gpio_mockup_set(chip, offset, value);
--	mutex_unlock(&chip->lock);
- }
- 
- static void gpio_mockup_set_multiple(struct gpio_chip *gc,
-@@ -137,10 +137,10 @@ static void gpio_mockup_set_multiple(struct gpio_chip *gc,
- 	struct gpio_mockup_chip *chip = gpiochip_get_data(gc);
- 	unsigned int bit;
- 
--	mutex_lock(&chip->lock);
-+	guard(mutex)(&chip->lock);
-+
- 	for_each_set_bit(bit, mask, gc->ngpio)
- 		__gpio_mockup_set(chip, bit, test_bit(bit, bits));
--	mutex_unlock(&chip->lock);
- }
- 
+ struct gpio_mockup_chip {
+@@ -146,14 +147,12 @@ static void gpio_mockup_set_multiple(struct gpio_chip *gc,
  static int gpio_mockup_apply_pull(struct gpio_mockup_chip *chip,
-@@ -150,7 +150,7 @@ static int gpio_mockup_apply_pull(struct gpio_mockup_chip *chip,
- 	struct gpio_desc *desc = gpiochip_get_desc(gc, offset);
+ 				  unsigned int offset, int value)
+ {
+-	struct gpio_chip *gc = &chip->gc;
+-	struct gpio_desc *desc = gpiochip_get_desc(gc, offset);
++	struct gpio_mockup_line_status *line = &chip->lines[offset];
  	int curr, irq, irq_type, ret = 0;
  
--	mutex_lock(&chip->lock);
-+	guard(mutex)(&chip->lock);
+ 	guard(mutex)(&chip->lock);
  
- 	if (test_bit(FLAG_REQUESTED, &desc->flags) &&
- 	    !test_bit(FLAG_IS_OUT, &desc->flags)) {
-@@ -187,7 +187,6 @@ static int gpio_mockup_apply_pull(struct gpio_mockup_chip *chip,
+-	if (test_bit(FLAG_REQUESTED, &desc->flags) &&
+-	    !test_bit(FLAG_IS_OUT, &desc->flags)) {
++	if (line->requested && line->dir == GPIO_LINE_DIRECTION_IN) {
+ 		curr = __gpio_mockup_get(chip, offset);
+ 		if (curr == value)
+ 			goto out;
+@@ -181,8 +180,7 @@ static int gpio_mockup_apply_pull(struct gpio_mockup_chip *chip,
+ 
+ set_value:
+ 	/* Change the value unless we're actively driving the line. */
+-	if (!test_bit(FLAG_REQUESTED, &desc->flags) ||
+-	    !test_bit(FLAG_IS_OUT, &desc->flags))
++	if (!line->requested || line->dir == GPIO_LINE_DIRECTION_IN)
+ 		__gpio_mockup_set(chip, offset, value);
  
  out:
- 	chip->lines[offset].pull = value;
--	mutex_unlock(&chip->lock);
- 	return ret;
+@@ -247,10 +245,23 @@ static int gpio_mockup_to_irq(struct gpio_chip *gc, unsigned int offset)
+ 	return irq_create_mapping(chip->irq_sim_domain, offset);
  }
  
-@@ -212,10 +211,10 @@ static int gpio_mockup_dirout(struct gpio_chip *gc,
++static int gpio_mockup_request(struct gpio_chip *gc, unsigned int offset)
++{
++	struct gpio_mockup_chip *chip = gpiochip_get_data(gc);
++
++	scoped_guard(mutex, &chip->lock)
++		chip->lines[offset].requested = true;
++
++	return 0;
++}
++
+ static void gpio_mockup_free(struct gpio_chip *gc, unsigned int offset)
  {
  	struct gpio_mockup_chip *chip = gpiochip_get_data(gc);
  
--	mutex_lock(&chip->lock);
--	chip->lines[offset].dir = GPIO_LINE_DIRECTION_OUT;
--	__gpio_mockup_set(chip, offset, value);
--	mutex_unlock(&chip->lock);
-+	scoped_guard(mutex, &chip->lock) {
-+		chip->lines[offset].dir = GPIO_LINE_DIRECTION_OUT;
-+		__gpio_mockup_set(chip, offset, value);
-+	}
- 
- 	return 0;
++	guard(mutex)(&chip->lock);
++
++	chip->lines[offset].requested = false;
+ 	__gpio_mockup_set(chip, offset, chip->lines[offset].pull);
  }
-@@ -224,9 +223,8 @@ static int gpio_mockup_dirin(struct gpio_chip *gc, unsigned int offset)
+ 
+@@ -343,6 +354,7 @@ static const struct file_operations gpio_mockup_debugfs_ops = {
+ static void gpio_mockup_debugfs_setup(struct device *dev,
+ 				      struct gpio_mockup_chip *chip)
  {
- 	struct gpio_mockup_chip *chip = gpiochip_get_data(gc);
++	struct device *child __free(put_device) = NULL;
+ 	struct gpio_mockup_dbgfs_private *priv;
+ 	struct gpio_chip *gc;
+ 	const char *devname;
+@@ -350,8 +362,16 @@ static void gpio_mockup_debugfs_setup(struct device *dev,
+ 	int i;
  
--	mutex_lock(&chip->lock);
--	chip->lines[offset].dir = GPIO_LINE_DIRECTION_IN;
--	mutex_unlock(&chip->lock);
-+	scoped_guard(mutex, &chip->lock)
-+		chip->lines[offset].dir = GPIO_LINE_DIRECTION_IN;
+ 	gc = &chip->gc;
+-	devname = dev_name(&gc->gpiodev->dev);
  
- 	return 0;
- }
-@@ -236,9 +234,8 @@ static int gpio_mockup_get_direction(struct gpio_chip *gc, unsigned int offset)
- 	struct gpio_mockup_chip *chip = gpiochip_get_data(gc);
- 	int direction;
++	/*
++	 * There can only be a single GPIO device per platform device in
++	 * gpio-mockup so using device_find_any_child() is OK.
++	 */
++	child = device_find_any_child(dev);
++	if (!child)
++		return;
++
++	devname = dev_name(child);
+ 	chip->dbg_dir = debugfs_create_dir(devname, gpio_mockup_dbg_dir);
  
--	mutex_lock(&chip->lock);
--	direction = chip->lines[offset].dir;
--	mutex_unlock(&chip->lock);
-+	scoped_guard(mutex, &chip->lock)
-+		direction = chip->lines[offset].dir;
+ 	for (i = 0; i < gc->ngpio; i++) {
+@@ -435,6 +455,7 @@ static int gpio_mockup_probe(struct platform_device *pdev)
+ 	gc->get_direction = gpio_mockup_get_direction;
+ 	gc->set_config = gpio_mockup_set_config;
+ 	gc->to_irq = gpio_mockup_to_irq;
++	gc->request = gpio_mockup_request;
+ 	gc->free = gpio_mockup_free;
  
- 	return direction;
- }
+ 	chip->lines = devm_kcalloc(dev, gc->ngpio,
 -- 
 2.39.2
 
