@@ -2,89 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF087977C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160B8797A36
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237458AbjIGQda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:33:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55142 "EHLO
+        id S244030AbjIGRdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233163AbjIGQd3 (ORCPT
+        with ESMTP id S244039AbjIGRdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:33:29 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C0F4697
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:32:57 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3aa1443858eso803537b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:32:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694104308; x=1694709108; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yT2zLt+lggSVzXUG2wimOweNQHus7+eb32MpOdUPep0=;
-        b=j9rzQ6vymJS7lcwmucZ5lbeaZsus7GQagHl+/hdDVolFADp6GeT/ofMBIzQ/H31J6d
-         TGI0D8NmwI8UjwXCIWbp9rAFLjNbbZTcdN7MhF9xa215e9earRNradEbZ/+juWcyn1S7
-         YnI9hVOvA/vQBovumObmQRO/RmbKCWutLXEHEtdnRX3QeUo90P8f51JuX5dKKAWrvpLm
-         MhUrrBAr2j/X7TNN8DpK6N43lO73PucGFZwmRODhbgDnYXGLATBVzwTGCr4KF8neFXIp
-         p9t9tz6ei6obvRBjOAsx2w6Z66FrXQQ1cqqMlZ8GXIjqmdhpYEbXM91QHZDVzrpK/lmO
-         SVfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694104308; x=1694709108;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yT2zLt+lggSVzXUG2wimOweNQHus7+eb32MpOdUPep0=;
-        b=Uu7b/p4wQ/g+x0RG4iVtn9N0dDFMqY5ROfwVvTKbiK6RneZAsn7k5OVmfE4vKf5uvo
-         p/Q/nqWvz3NjqDVqwauXEOvWijwq0FrO9KwB7SRzWJs76rAktN7rpwLihQnSZ+7y+X6M
-         cYNhqBR6sDlmyGaLj5w9PtvntVv6419pgVh01KTmQLZSGk6iv0JqfW5XCKUKH4S4rwQ/
-         KPholsuMJiCJxAsAdcNdQYu+YjB5DU4wueqpGfIsX5OJzXMnhDFeNNNhCFdTiKtonxBj
-         Q0uCwsoUfkU0UDX12+j4OECL9Ndb0epgzLT/CjW5Wj6EQ/DD+794I8SSSvtAHj637P+i
-         oV7w==
-X-Gm-Message-State: AOJu0YwgQJafxP7w2Hw1SDj8ww6W8PRqhkIQXY0J3bszAIUWUBWdy6Am
-        nOoIv6Aihrt/lLvH7bOw4c+J5JgwfWcnXmL4naEbR3/ifk8KQep0nxw=
-X-Google-Smtp-Source: AGHT+IEapBUe/2q4BqP1Fz3k3+uTpDMdMnbX48+PwRjLLwuQW6xXP+Kr1ttyV/Prp2f67wE2FiPm6I0EHEVM+H0MLdM=
-X-Received: by 2002:a25:8206:0:b0:d78:21e0:c06d with SMTP id
- q6-20020a258206000000b00d7821e0c06dmr18532493ybk.64.1694072708967; Thu, 07
- Sep 2023 00:45:08 -0700 (PDT)
+        Thu, 7 Sep 2023 13:33:23 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D6010F1
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:32:54 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 433D92183F;
+        Thu,  7 Sep 2023 07:45:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694072751; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XVitCV73IEm0U/wyQ7OOiYOL7wy9AT7hlb2FIBZpCK8=;
+        b=WisQYHIJRlfAWVGsPogQXOT0fM8ccBe3CEvgxsKZwhycCgOHtYX92xFzXY46Rk03Hs1UcO
+        CsQTV2j5Xp44kMDAzqK/j7yoLDLlxPgzVoQXWoJFz9JOWo9JhdVQzBejP87wJuBlc6zX/z
+        CIrgjgctWbykzxj6D/oIK44g1jybFNk=
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id EAD592C143;
+        Thu,  7 Sep 2023 07:45:50 +0000 (UTC)
+Date:   Thu, 7 Sep 2023 09:45:50 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH printk v3 5/7] printk: nbcon: Add sequence handling
+Message-ID: <ZPl_rvMGCg_u538g@alley>
+References: <20230903150539.245076-1-john.ogness@linutronix.de>
+ <20230903150539.245076-6-john.ogness@linutronix.de>
 MIME-Version: 1.0
-References: <20230901113458.13323-1-brgl@bgdev.pl>
-In-Reply-To: <20230901113458.13323-1-brgl@bgdev.pl>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 7 Sep 2023 09:44:57 +0200
-Message-ID: <CACRpkdbDkBUhP-ZaWaErr3MqjGgSyei0EUD7PR3URs6h_ZWMUQ@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: remove unnecessary extern specifiers from the
- driver header
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230903150539.245076-6-john.ogness@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 1, 2023 at 1:35=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl> =
-wrote:
+On Sun 2023-09-03 17:11:37, John Ogness wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> Add an atomic_long_t field @nbcon_seq to the console struct to
+> store the sequence number for nbcon consoles. For nbcon consoles
+> this will be used instead of the non-atomic @seq field. The new
+> field allows for safe atomic sequence number updates without
+> requiring any locking.
+> 
+> On 64bit systems the new field stores the full sequence number.
+> On 32bit systems the new field stores the lower 32 bits of the
+> sequence number, which are expanded to 64bit as needed by
+> folding the values based on the sequence numbers available in
+> the ringbuffer.
+> 
+> For 32bit systems, having a 32bit representation in the console
+> is sufficient. If a console ever gets more than 2^31 records
+> behind the ringbuffer then this is the least of the problems.
+> 
+> --- a/kernel/printk/nbcon.c
+> +++ b/kernel/printk/nbcon.c
+> +/**
+> + * nbcon_seq_try_update - Try to update the console sequence number
+> + * @ctxt:	Pointer to an acquire context that contains
+> + *		all information about the acquire mode
+> + * @new_seq:	The new sequence number to set
+> + *
+> + * @ctxt->seq is updated to the new value of @con::nbcon_seq. This could
+> + * be a different value than @new_seq if nbcon_seq_force() was used or the
+> + * current context no longer owns the console. In the later case, it will
+> + * stop printing anyway.
+> + */
+> +__maybe_unused
+> +static void nbcon_seq_try_update(struct nbcon_context *ctxt, u64 new_seq)
+> +{
+> +	unsigned long nbcon_seq = __seq_to_nbcon_seq(ctxt->seq);
+> +	struct console *con = ctxt->console;
+> +
+> +	if (atomic_long_try_cmpxchg(&ACCESS_PRIVATE(con, nbcon_seq), &nbcon_seq,
+> +				    __seq_to_nbcon_seq(new_seq))) {
+> +		ctxt->seq = new_seq;
+> +	} else {
+> +		ctxt->seq = atomic_long_read(&ACCESS_PRIVATE(con, nbcon_seq));
 
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> 'extern' doesn't do anything for function declarations. Remove it.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+This should be:
 
-Right I guess it should never be in headers, the one place
-where is makes sense is if you're suddenly exporting something
-in a C file, such as to expose it to assembly.
+		ctxt->seq = nbcon_seq_read(con);
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+so that it extends the 32-bit nbcon_seq to the full 64-bit seq on
+32-bit systems.
 
-Yours,
-Linus Walleij
+> +	}
+> +}
+> +
+>  /**
+>   * nbcon_context_try_acquire_direct - Try to acquire directly
+>   * @ctxt:	The context of the caller
+
+Otherwise, it looks good. With the above fix:
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
