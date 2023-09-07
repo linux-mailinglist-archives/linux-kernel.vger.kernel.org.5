@@ -2,126 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA04C796E43
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 03:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 280A7796E49
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 03:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236731AbjIGBBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 21:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
+        id S242879AbjIGBCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 21:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjIGBBh (ORCPT
+        with ESMTP id S234411AbjIGBCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 21:01:37 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE4EE8;
-        Wed,  6 Sep 2023 18:01:33 -0700 (PDT)
-Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Rh19V427qz1M8v6;
-        Thu,  7 Sep 2023 08:59:42 +0800 (CST)
-Received: from [10.67.110.218] (10.67.110.218) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 7 Sep 2023 09:01:30 +0800
-Message-ID: <eb050960-b2bb-4dbe-7879-a0dd3935556e@huawei.com>
-Date:   Thu, 7 Sep 2023 09:01:30 +0800
+        Wed, 6 Sep 2023 21:02:14 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363141BC1;
+        Wed,  6 Sep 2023 18:02:08 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-792726d3aeeso16366939f.0;
+        Wed, 06 Sep 2023 18:02:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694048527; x=1694653327; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uJHKtHFGdl4J2B/Oj4nlf+sDC7Tm9KEhrRJOXO+FSNY=;
+        b=RHfg6qA16x9a0Z3dE6/poG5qbPcwTPmVV9as3XP3BLTFhCD7AWYEqHPiCz6wQHHsaW
+         Vc8j9fGFeh98q9xp441NAIv3VedwytdWdNRFpAcE4jw8Uu2cEgZfkOPEw+36tdmltoQx
+         /SyXahJL2bZ7Y/hu+X5Ib962Ex3S6UTu1ArXubFdjWZkigZRDunCprL90b0hsucxBTrS
+         xL+TCaAXBoFJda0lptYzy96U43HBIPDJ9Pvc3J8/BHtFl2j0LWxqMgymluLDuEFTG6aF
+         YppxoVvjGs6pq61p4OoVVMX1OqxetA8hSgiX0+RZDYNr4HOEgK76avP5/hZljjoAciq+
+         /R3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694048527; x=1694653327;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uJHKtHFGdl4J2B/Oj4nlf+sDC7Tm9KEhrRJOXO+FSNY=;
+        b=DOYuiEGhGbQYUFJaXaB6G6DJZwrLsYRwdfCfGe5tjB/SeMvO9T8U/U1MlRm8RtHXbo
+         OI4SbHrv4HYUabzh1lpa3dvg3/GAA+19RgiUtA3L7ozbU0xjO4L3hujYuulxYfeOMKuT
+         XR5FkplxXDScUqQ47IrK89TKqc+mbHgUPShLCPlzg6nZ0QIXGXL8/r22CTJuD4fGTvgw
+         qPTs/1w0NxVJWlKBOQ8hU0IJzRBz7CHpN8CeMvKx6bB5e+Gs7XkRPFsM6PVmJIDLkDXf
+         DpUMTrzq7QajIXs1ZU5EhJaIYSFlu6e2cJiXd9Kh/lara0sjmLStrp3Wh5FFsgUB/N4h
+         ivKg==
+X-Gm-Message-State: AOJu0YyQLDBkzzJcMbiUXkwqpFisyViA79BGBYNZSsE4PVnyYx31S4FY
+        yVSZsRsVIn3T6Z57QgvrkBmjiE5QecM=
+X-Google-Smtp-Source: AGHT+IHENBuQoGUHLoA/1ZYjmHdz72K8X09e5hNVAkflc2Z9ft3AL221hOfzTKp99DllHav/9S01iA==
+X-Received: by 2002:a6b:4919:0:b0:795:2274:1f3f with SMTP id u25-20020a6b4919000000b0079522741f3fmr20115691iob.3.1694048527099;
+        Wed, 06 Sep 2023 18:02:07 -0700 (PDT)
+Received: from aford-B741.lan ([2601:447:d001:897f:c24d:eb45:b814:f30b])
+        by smtp.gmail.com with ESMTPSA id v6-20020a02b906000000b0042ff466c9bdsm5389796jan.127.2023.09.06.18.02.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 18:02:06 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-omap@vger.kernel.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "Derald D. Woods" <woods.technical@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] arm:dts: am3517-evm: Fix LED3/4 pinmux
+Date:   Wed,  6 Sep 2023 20:01:58 -0500
+Message-Id: <20230907010159.330555-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: "[PATCH] selftests/ftrace: Correctly enable event in
- instance-event.tc"
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-CC:     <akaher@vmware.com>, <linux-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <mhiramat@kernel.org>,
-        <shuah@kernel.org>, <skhan@linuxfoundation.org>,
-        <yeweihua4@huawei.com>
-References: <b62e6539-7b25-c8ab-6b6c-47e723023297@huawei.com>
- <20230906142652.191866-1-naresh.kamboju@linaro.org>
- <20230906103718.0405ccb4@gandalf.local.home>
- <20230906173706.7aeb8716@gandalf.local.home>
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-In-Reply-To: <20230906173706.7aeb8716@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.218]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/7 05:37, Steven Rostedt wrote:
-> On Wed, 6 Sep 2023 10:37:18 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
->>> Log details,
->>> -------------
->>> # ok 45 ftrace - test tracing error log support
->>> <47>[ 1373.662292] systemd-journald[90]: Sent WATCHDOG=1 notification.
->>> # ok 46 Test creation and deletion of trace instances while setting an event
->>
->> It's definitely a race with the creation and deletion of instances.
->>
->> I'm going to run it on my laptop VM and see if that reproduces it. My other
->> VM is on a pretty powerful machine, and perhaps that's keeping it from
->> hitting the race.
-> 
-> Putting in a while loop of:
-> 
->    # while :; do ./ftracetest test.d/instances/instance-event.tc ; done
-> 
+The pinmux for LED3 and LED4 are incorrectly attached to the
+omap3_pmx_core when they should be connected to the omap3_pmx_wkup
+pin mux.  This was likely masked by the fact that the bootloader
+used to do all the pinmuxing.
 
-In test.d/instances/instance-event.tc, concurrently create/delete/access
-intances just about 1 second and then killed them, it may cause missing
-the race.
+Fixes: 0dbf99542caf ("ARM: dts: am3517-evm: Add User LEDs and Pushbutton")
+Signed-off-by: Adam Ford <aford173@gmail.com>
+---
+This likely cannot apply to the original series, because the file has
+moved.  I can generate a separate patch for the pre-move device trees
+if necesssary.  The original location was:
+  arch/arm/boot/dts/am3517-evm.dts
 
-No longer sleep and kill, following testcase can also reproduce:
-```
-#!/bin/bash
-
-cd /sys/kernel/tracing/instances
-
-instance_slam() {
-   while :; do
-           mkdir foo 2> /dev/null
-           rmdir foo 2> /dev/null
-   done
-}
-
-instance_set() {
-         while :; do
-                 echo 1 > foo/events/sched/sched_switch/enable
-         done 2> /dev/null
-}
-
-instance_slam &
-p1=$!
-echo $p1
-
-instance_set &
-p2=$!
-echo $p2
-```
-
---
-
-Thanks,
-Zheng Yejian
-
-> eventually triggered the bug. Looks like this is really an existing bug not
-> related to the eventfs, but the eventfs code actually opened up the window
-> of this race.
-> 
-> Hopefully I'll have a fix shortly.
-> 
-> -- Steve
-> 
+diff --git a/arch/arm/boot/dts/ti/omap/am3517-evm.dts b/arch/arm/boot/dts/ti/omap/am3517-evm.dts
+index af9df15274be..738189ddc8d5 100644
+--- a/arch/arm/boot/dts/ti/omap/am3517-evm.dts
++++ b/arch/arm/boot/dts/ti/omap/am3517-evm.dts
+@@ -271,13 +271,6 @@ OMAP3_CORE1_IOPAD(0x21c4, PIN_INPUT_PULLUP | MUX_MODE0)  /* i2c3_sda */
+ 		>;
+ 	};
+ 
+-	leds_pins: leds-pins {
+-		pinctrl-single,pins = <
+-			OMAP3_WKUP_IOPAD(0x2a24, PIN_OUTPUT_PULLUP | MUX_MODE4)	/* jtag_emu0.gpio_11 */
+-			OMAP3_WKUP_IOPAD(0x2a26, PIN_OUTPUT_PULLUP | MUX_MODE4)	/* jtag_emu1.gpio_31 */
+-		>;
+-	};
+-
+ 	mmc1_pins: mmc1-pins {
+ 		pinctrl-single,pins = <
+ 			OMAP3_CORE1_IOPAD(0x2144, PIN_INPUT_PULLUP | MUX_MODE0)	/* sdmmc1_clk.sdmmc1_clk */
+@@ -355,3 +348,12 @@ OMAP3430_CORE2_IOPAD(0x25e2, PIN_INPUT | MUX_MODE3)	/* etk_d3.hsusb1_data7 */
+ 		>;
+ 	};
+ };
++
++&omap3_pmx_wkup {
++	leds_pins: pinmux_leds_pins {
++		pinctrl-single,pins = <
++			OMAP3_WKUP_IOPAD(0x2a24, PIN_OUTPUT_PULLUP | MUX_MODE4)	/* jtag_emu0.gpio_11 */
++			OMAP3_WKUP_IOPAD(0x2a26, PIN_OUTPUT_PULLUP | MUX_MODE4)	/* jtag_emu1.gpio_31 */
++		>;
++	};
++};
+-- 
+2.39.2
 
