@@ -2,74 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C2579784A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:45:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C677978D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234496AbjIGQps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59116 "EHLO
+        id S244982AbjIGQ4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234156AbjIGQpq (ORCPT
+        with ESMTP id S244074AbjIGQ4G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:45:46 -0400
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC09D1705
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:45:13 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-500b66f8b27so1981080e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:45:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694104737; x=1694709537; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JnMGoGgKemb+DDrSQzPTABi+a718THu1rk85qOkvFQg=;
-        b=xZ9I0Ip5+LJE765k6SPC8D8dVcss3y7fH3SN2y8AG0T/csRR09KLTQlwslXNOk0qGu
-         dmrJAGJ8d08hsc9LaR6s1tEJO2y0plOx7xCYds33f/k4A4CF3e/vpDvY3hK2jiP+dQQP
-         jcWmHareq5LDlu7Tj6lXci//851RWnP6UO/4bC5RTBYTt8pel7UktEj5N9CEbGKLv34E
-         hDjgWFnmk1PXf5+pMTzEHqhRjusmoFjR78nj1TN42o017A8nExARWJ6BiE+aiAYgfJzN
-         xpp+K3+3jRQdUm9ZR1emUSTLAAfiPQT2D2cMx1625TF2W1tSl73kMBoIXnpn7pnGHL8A
-         VC8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694104737; x=1694709537;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JnMGoGgKemb+DDrSQzPTABi+a718THu1rk85qOkvFQg=;
-        b=eSS9A1vIpgVhpPXsWQchWP9MRWtCBQYCSOBvmqwkce2T7JZCwceQrSbEzzE62zv67g
-         BaZX+tC1r3lgwtPlL1F3QYzBxT6lf48EXLJmjT1HgqtkxGexvid/8OhaoU6AVmUnaKXG
-         9+swkO5fEvbYh/J8Eo491V3c+Zvm9zoB0b/Od7T9Hbm93BIMSEwMDixwXC/9I9KUx3HT
-         j9ksV0FeGokMoA0VQ/SCrZtaOhNO1xxwQRDRqtgrMxBfTTb/IaYg8bAA7igDw6DVctHm
-         N4qJ0kl652DKXB8+LPDajPToBik/6CxgHglTcaLTQPHCCccvQwHoKiorvqoRcqeQk6GO
-         R9TQ==
-X-Gm-Message-State: AOJu0YxabkSeLdDuJnY4D3GKf7Htam8oYgtsXymd+W/PDk4F6+9Dnnx6
-        Jx4WCY+IcsFxiT1oLHiceQ4lDygUhF/wyHdWKT8=
-X-Google-Smtp-Source: AGHT+IGyPStu/4bGX3A398E8xixDQaUmGkOmIW0jf0T9gkQFvDYPcLVleJrm+vURQhH+rA2UwXThOQ==
-X-Received: by 2002:a05:600c:2246:b0:401:c297:affb with SMTP id a6-20020a05600c224600b00401c297affbmr4284944wmm.37.1694085336903;
-        Thu, 07 Sep 2023 04:15:36 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id y10-20020a05600c364a00b00401b242e2e6sm2208451wmq.47.2023.09.07.04.15.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 04:15:36 -0700 (PDT)
-Date:   Thu, 7 Sep 2023 14:15:33 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Longfang Liu <liulongfang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Zaibo Xu <xuzaibo@huawei.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] crypto: hisilicon/hpre - Fix a erroneous check after
- snprintf()
-Message-ID: <71bf9b84-462f-405e-91aa-fb21fc6ffbd5@moroto.mountain>
-References: <73534cb1713f58228d54ea53a8a137f4ef939bad.1693858632.git.christophe.jaillet@wanadoo.fr>
- <ZPaSCOX1F9b36rxV@gondor.apana.org.au>
- <00bdcfec-6cc1-e521-ceaa-d16d6341ca16@wanadoo.fr>
+        Thu, 7 Sep 2023 12:56:06 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382873AB6;
+        Thu,  7 Sep 2023 09:30:48 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 187F366072FF;
+        Thu,  7 Sep 2023 12:36:34 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694086594;
+        bh=Vhc77ifX7M3g+lCWDsu/+wMkglBynYFDlJsEf7eaeo0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=B8QYA3uZMulnxcm3a7jBXxbDn0D5I077mcoANx7R4rdo6NU6XKHmMtGawG9Hmhltu
+         ISSvZUUpQyd1jwCA2Z6psUES1HsTbsorsGGS5Ak0P7ZIaiRRn3OATiquZzXWRr8CgW
+         4e/VNJdBf46Aw6bewdBCb2fzvth1+ByvPYHXZPoYDRDvthWD2AI+WViSgQPj7jEjTC
+         5F0flJ78pRAG6lOta/sziXQ8u/TPnBg9jEYugz1Rokifx8RNpBpvMtgiUGZHbqu299
+         u5LdEPe5HkK0ceAmVckpm52ive1ZLhbf2GwGx+PGUwl7ZfMwlxCsMPLCWZBVHK5iQf
+         AyPbEDKS8HYJw==
+Message-ID: <f033e528-28da-9bbf-1112-9c0e9dd10a5b@collabora.com>
+Date:   Thu, 7 Sep 2023 13:36:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00bdcfec-6cc1-e521-ceaa-d16d6341ca16@wanadoo.fr>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] thermal/drivers/mediatek: Fix control buffer enablement
+ on MT7896
+Content-Language: en-US
+To:     Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Golle <daniel@makrotopia.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        stable@vger.kernel.org
+References: <20230907112018.52811-1-linux@fw-web.de>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230907112018.52811-1-linux@fw-web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,25 +67,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 07:27:47AM +0200, Marion & Christophe JAILLET wrote:
-> > 
-> > The other snprintf in the same file also looks suspect.
+Il 07/09/23 13:20, Frank Wunderlich ha scritto:
+> From: Frank Wunderlich <frank-w@public-files.de>
 > 
-> It looks correct to me.
+> Reading thermal sensor on mt7986 devices returns invalid temperature:
 > 
-> And HPRE_DBGFS_VAL_MAX_LEN being 20, it doesn't really matter. The string
-> can't be truncated with just a "%u\n".
+> bpi-r3 ~ # cat /sys/class/thermal/thermal_zone0/temp
+>   -274000
 > 
+> Fix this by adding missing members in mtk_thermal_data struct which were
+> used in mtk_thermal_turn_on_buffer after commit 33140e668b10.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 33140e668b10 ("thermal/drivers/mediatek: Control buffer enablement tweaks")
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 
-drivers/crypto/hisilicon/hpre/hpre_main.c
-   884          ret = snprintf(tbuf, HPRE_DBGFS_VAL_MAX_LEN, "%u\n", val);
-   885          return simple_read_from_buffer(buf, count, pos, tbuf, ret);
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-You can't pass the return value from snprintf() to simple_read_from_buffer().
-Otherwise the snprintf() checking turned a sprintf() write overflow into
-a read overflow, which is less bad but not ideal.  It needs to be
-scnprintf().
-
-regards,
-dan carpenter
 
