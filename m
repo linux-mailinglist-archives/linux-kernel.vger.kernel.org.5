@@ -2,78 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD2D797741
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0D9797A14
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239702AbjIGQYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:24:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57284 "EHLO
+        id S234130AbjIGR3o convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Sep 2023 13:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242470AbjIGQWr (ORCPT
+        with ESMTP id S231251AbjIGR3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:22:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7625590;
-        Thu,  7 Sep 2023 09:20:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694103625; x=1725639625;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=zNEMailIgyjBosQEtquAMy2L53kNHUSvhKExjYy6P7A=;
-  b=JSCaa2Tyf5AQDS30GUQJlOP3DapuBjrnOKgjAb/4VmgR1sysDI+nnN0g
-   mX8kQAz4I99gUWgMKH3BZrCVrSozvuS8tnZUmJjyrsm9L6u3OvOJyoZZg
-   FxUBstM4p/1HuffqRCc7bhlQPELf84osP/YtpUGxqtb3f93d3pRmxvbv3
-   UUJXpJnsGBiBX5RNPAWV0aqsUWHnJYFkfi3TQt+O/6k/2IKTnd9pwplib
-   QMSpkfGb73x4Defg6V3my9N+zvjEC+6tV4t3dC1tiOrAk9YhvbInl8Cq0
-   HPY6MZzaOM4qBePeWTnaVaGXpsWBaVUd0Ju2lVj8LlOaDSc8Zn/UTA0dy
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="441325204"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="441325204"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 05:24:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="1072875259"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="1072875259"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
-  by fmsmga005.fm.intel.com with ESMTP; 07 Sep 2023 05:24:24 -0700
-Message-ID: <ab235faf-1640-e231-bead-1301eebafc92@linux.intel.com>
-Date:   Thu, 7 Sep 2023 15:25:44 +0300
+        Thu, 7 Sep 2023 13:29:42 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D56A1716
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:29:14 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1qeE52-0003uW-22; Thu, 07 Sep 2023 14:25:52 +0200
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1qeE51-004eFm-Fz; Thu, 07 Sep 2023 14:25:51 +0200
+Received: from pza by lupine with local (Exim 4.96)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1qeE50-000AUQ-2p;
+        Thu, 07 Sep 2023 14:25:50 +0200
+Message-ID: <6ad4d61247365ead2f93c6ddb450de73d4be0ab2.camel@pengutronix.de>
+Subject: Re: [PATCH] MAINTAINERS: Update DRM DRIVERS FOR FREESCALE IMX entry
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Douglas Anderson <dianders@chromium.org>,
+        dri-devel@lists.freedesktop.org
+Cc:     Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org
+Date:   Thu, 07 Sep 2023 14:25:50 +0200
+In-Reply-To: <20230906072803.1.Idef7e77e8961cbeb8625183eec9db0356b2eccd0@changeid>
+References: <20230906072803.1.Idef7e77e8961cbeb8625183eec9db0356b2eccd0@changeid>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v11 03/13] usb: xhci: Move extcaps related macros to
- respective header file
-Content-Language: en-US
-To:     Krishna Kurapati <quic_kriskura@quicinc.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Johan Hovold <johan@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, ahalaney@redhat.com,
-        quic_shazhuss@quicinc.com
-References: <20230828133033.11988-1-quic_kriskura@quicinc.com>
- <20230828133033.11988-4-quic_kriskura@quicinc.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-In-Reply-To: <20230828133033.11988-4-quic_kriskura@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,13 +54,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.8.2023 16.30, Krishna Kurapati wrote:
-> DWC3 driver needs access to XHCI Extended Capabilities registers to
-> read number of usb2 ports and usb3 ports present on multiport controller.
-> Since the extcaps header is sufficient to parse this info, move port_count
-> related macros and structure from xhci.h to xhci-ext-caps.h.
+On Mi, 2023-09-06 at 07:28 -0700, Douglas Anderson wrote:
+> As per the discussion on the lists [1], changes to this driver
+> generally flow through drm-misc. If they need to be coordinated with
+> v4l2 they sometimes go through Philipp Zabel's tree instead. List both
+> trees in MAINTAINERS. Also update the title of this driver to specify
+> that it's just for IMX 5/6 since, as per Philipp "There are a lot more
+> i.MX that do not use IPUv3 than those that do."
 > 
-> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> [1] https://lore.kernel.org/r/d56dfb568711b4b932edc9601010feda020c2c22.camel@pengutronix.de
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-Acked-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Thank you,
+Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
 
+regards
+Philipp
