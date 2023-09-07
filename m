@@ -2,58 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F38C0797795
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD79797696
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbjIGQ1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
+        id S238178AbjIGQN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:13:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238169AbjIGQYw (ORCPT
+        with ESMTP id S240552AbjIGQND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:24:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCF24EE6;
-        Thu,  7 Sep 2023 09:21:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B29BC116AA;
-        Thu,  7 Sep 2023 10:20:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694082058;
-        bh=w08iyCZEv2y91XhjG6gytJX/08/uuFNdY7YRHOjrTKg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SVoOSJ9LefWstHF2hTnikgZ/UUNwtOUth5vPxYcufjsTjslUusP7MKDm091Ndjv1q
-         78kLUean1Oc8AnlV8LY0GWc6zu1Qfpc073Z1iT+MgtqAwnVLgMiQVVGnrYveCMxn/N
-         c8fhp/kCn/PoATsQH64OI+p5gHydwnV92anTt+1L3Elxd+AKcgSsInhDqyMS8P3IAo
-         TFybtf55GAyA7GLjEXjySR85zLpTch/rXP8HTvBJYw1rsE6xfhbUVn3q7hpySc9f44
-         CrPl1sz5GpTIM4eHWAMqSuN15v7QaGWsaiynG/2uDQdcBjUyvitKHO1de8bG15fFcr
-         46GOXc5xqg9XA==
-Date:   Thu, 7 Sep 2023 11:20:50 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Sarah Walker <sarah.walker@imgtec.com>
-Cc:     dri-devel@lists.freedesktop.org, frank.binns@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        airlied@gmail.com, daniel@ffwll.ch, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, corbet@lwn.net, christian.koenig@amd.com,
-        linus.walleij@linaro.org, matt.coster@imgtec.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-doc@vger.kernel.org, faith.ekstrand@collabora.com,
-        afd@ti.com, hns@goldelico.com, matthew.brost@intel.com,
-        luben.tuikov@amd.com, dakr@redhat.com
-Subject: Re: [PATCH v6 03/20] dt-bindings: gpu: Add Imagination Technologies
- PowerVR/IMG GPU
-Message-ID: <20230907-22495ffd0407dacc5cf1cd12@fedora>
-References: <20230906095542.3280699-1-sarah.walker@imgtec.com>
- <20230906095542.3280699-4-sarah.walker@imgtec.com>
+        Thu, 7 Sep 2023 12:13:03 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 39C18267D7
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:48:03 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D29A1570;
+        Thu,  7 Sep 2023 03:22:19 -0700 (PDT)
+Received: from [10.57.92.139] (unknown [10.57.92.139])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 33A253F67D;
+        Thu,  7 Sep 2023 03:21:38 -0700 (PDT)
+Message-ID: <26d82927-af2b-b1b8-d57e-3d94c98f9482@arm.com>
+Date:   Thu, 7 Sep 2023 12:21:27 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/PgLc/igXG8aid6c"
-Content-Disposition: inline
-In-Reply-To: <20230906095542.3280699-4-sarah.walker@imgtec.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2] sched/topology: remove sysctl_sched_energy_aware
+ depending on the architecture
+Content-Language: en-US
+To:     Chen Yu <yu.c.chen@intel.com>,
+        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
+        quentin.perret@arm.com, srikar@linux.vnet.ibm.com,
+        mgorman@techsingularity.net, mingo@kernel.org
+References: <20230901065249.137242-1-sshegde@linux.vnet.ibm.com>
+ <ZPGzxEVZhpyZuTvj@chenyu5-mobl2>
+From:   Pierre Gondois <pierre.gondois@arm.com>
+In-Reply-To: <ZPGzxEVZhpyZuTvj@chenyu5-mobl2>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,47 +51,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Chen,
 
---/PgLc/igXG8aid6c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 9/1/23 11:49, Chen Yu wrote:
+> Hi Shrikanth,
+> 
+> On 2023-09-01 at 12:22:49 +0530, Shrikanth Hegde wrote:
+>> Currently sysctl_sched_energy_aware doesn't alter the said behaviour on
+>> some of the architectures. IIUC its meant to either force rebuild the
+>> perf domains or cleanup the perf domains by echoing 1 or 0 respectively.
+>>
+>> perf domains are not built when there is SMT, or when there is no
+>> Asymmetric CPU topologies or when there is no frequency invariance.
+>> Since such cases EAS is not set and perf domains are not built. By
+>> changing the values of sysctl_sched_energy_aware, its not possible to
+>> force build the perf domains. Hence remove this sysctl on such platforms
+>> that dont support it. Some of the settings can be changed later
+>> such as smt_active by offlining the CPU's, In those cases if
+>> build_perf_domains returns true, re-enable the sysctl.
+>>
+>> Anytime, when sysctl_sched_energy_aware is changed sched_energy_update
+>> is set when building the perf domains. Making use of that to find out if
+>> the change is happening by sysctl or dynamic system change.
+>>
+>> Taking different cases:
+>> Case1. system while booting has EAS capability, sysctl will be set 1. Hence
+>> perf domains will be built if needed. On changing the sysctl to 0, since
+>> sched_energy_update is true, perf domains would be freed and sysctl will
+>> not be removed. later sysctl is changed to 1, enabling the perf domains
+>> rebuild again. Since sysctl is already there, it will skip register.
+>>
+>> Case2. System while booting doesn't have EAS Capability. Later after system
+>> change it becomes capable of EAS. sched_energy_update is false. Though
+>> sysctl is 0, will go ahead and try to enable eas. This is the current
+>> behaviour. if has_eas  is true, then sysctl will be registered. After
+>> that any sysctl change is same as Case1.
+>>
+> 
+> I think this change makes sense. Just one question for case 2,
+> sched_energy_update is not strictly tied with sysctl change, right?
+> sched_energy_update is true in rebuild_sched_domains_energy().
+> rebuild_sched_domains_energy() will not only be invoked by sysctl
+> path via sched_energy_aware_handler(), but also by other path, such
+> as update_scale_freq_invariant(). If the system boots with EAS capability
+> disabled, then it becomes EAS capable due to the frequency invariant
+> readiness(cpufreq policy change?), then
+> cpufreq_notifier(CPUFREQ_CREATE_POLICY) -> init_amu_fie_callback() ->
+> amu_fie_setup() -> opology_set_scale_freq_source() ->
+> update_scale_freq_invariant(true) -> rebuild_sched_domains_energy()
+> Since sched_energy_update is true, the rebuild of perf domain will be skipped(but
+> actually we want to create it) Please correct me if I miss something.
+> 
 
-Hey,
+I thought 'sched_energy_update' was here to force rebuilding the
+perf_domains instead. If sched_energy_update=1, then it prevents from finding
+a pre-existing perf_domain and skipping the perf_domain rebuild, unless I also
+missed something:
 
-On Wed, Sep 06, 2023 at 10:55:25AM +0100, Sarah Walker wrote:
 
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
-> +
-> +    gpu: gpu@fd00000 {
-
-This "gpu" label isn't used and can be dropped if you respin.
-Otherwise, this seems fine to me,
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
-> +        compatible = "ti,am62-gpu", "img,img-axe";
-> +        reg = <0x0fd00000 0x20000>;
-> +        clocks = <&k3_clks 187 0>;
-> +        clock-names = "core";
-> +        interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
-> +        power-domains = <&k3_pds 187 TI_SCI_PD_EXCLUSIVE>;
-> +    };
-
---/PgLc/igXG8aid6c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZPmkAgAKCRB4tDGHoIJi
-0nQkAP9uKeN6K/WPKUkM5yMV//ie+sobH7mqetqT7BiWIVUj3wD/V2onnXfHh+pl
-bVSIzTHnqcOZIQIgCDr+4Zw1Uj/lTAk=
-=7B7v
------END PGP SIGNATURE-----
-
---/PgLc/igXG8aid6c--
+#if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
+	/* Build perf. domains: */
+	for (i = 0; i < ndoms_new; i++) {
+		for (j = 0; j < n && !sched_energy_update; j++) {
+			if (cpumask_equal(doms_new[i], doms_cur[j]) &&
+			    cpu_rq(cpumask_first(doms_cur[j]))->rd->pd) {
+				has_eas = true;
+				goto match3;
+			}
+		}
+		/* No match - add perf. domains for a new rd */
+		has_eas |= build_perf_domains(doms_new[i]);
+match3:
+		;
+	}
+	sched_energy_set(has_eas);
+#endif
