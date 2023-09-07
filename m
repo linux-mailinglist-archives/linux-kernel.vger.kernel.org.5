@@ -2,160 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0997973D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1098797371
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343492AbjIGPaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42990 "EHLO
+        id S236976AbjIGPYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245465AbjIGP3f (ORCPT
+        with ESMTP id S231776AbjIGPXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:29:35 -0400
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32769CC;
-        Thu,  7 Sep 2023 08:29:07 -0700 (PDT)
-Received: from relay2-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::222])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id C6D36D67E2;
-        Thu,  7 Sep 2023 09:24:45 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 85E5140033;
-        Thu,  7 Sep 2023 09:24:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1694078664;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PP4qFU6v/2wbsuMME7GJXKWzRSZTU8obLf77vj2Y764=;
-        b=KqPlFH8SpLqr71N8Xu1HKLtjul2/9Zjh9V+XSbwUv+4bkMcaaxQgyK/zWNqrQmmEC1U31r
-        oTwSSBadbMkgeIe6Kh6NIuP0EFiQEAqDyCltAn3BwaSw6PBeTspPkn8PGURCXoMaOiA8LY
-        Ey0h4PsgDjnehE0cddYMXLOMwq0aTr+ww4YJCBh3LGcjm5vZy2WuHidQqEPKoFkYmVV+v1
-        Lu1VVhJWMBweukhP35zrcRzSzg7vhzDJGnbTy64T/Ugz4GPp6kgBAJg807ss4BF8njg8MV
-        M5DC0oH9L1hZlu/AgD8wbrRYn/cOwCWlG19EAEQ+uygoee5FhVGexPNyEXVh9w==
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     davem@davemloft.net
-Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        =?UTF-8?q?Nicol=C3=B2=20Veronese?= <nicveronese@gmail.com>,
-        thomas.petazzoni@bootlin.com,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [RFC PATCH net-next 7/7] netlink: specs: add command to show individual phy information
-Date:   Thu,  7 Sep 2023 11:24:05 +0200
-Message-ID: <20230907092407.647139-8-maxime.chevallier@bootlin.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230907092407.647139-1-maxime.chevallier@bootlin.com>
-References: <20230907092407.647139-1-maxime.chevallier@bootlin.com>
+        Thu, 7 Sep 2023 11:23:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5533710DF;
+        Thu,  7 Sep 2023 08:22:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B04C7C433AD;
+        Thu,  7 Sep 2023 09:25:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694078718;
+        bh=ofrREB+XRbUYVS5Sh20JAfhhFAJ49iPxwIALV7BFZUU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hzRT/Gb9kx8nzgECyIcfiRkD2AdsyIVnMTBz9cQ27fJUfdlg1iooQk7r/6WpR34t0
+         HCDlqYGGyBjosugpXaUcBnJ+eeS4r1PAa+L5iTtN962KVlv5C3P2bCjfBAjCMGzBCm
+         u32uZQTdd2mBdzStbWxHi3rwHmb8OVb3jNeLZ0x6yMpHhOkSYKQO1mALmcpyfA2Aoh
+         7uSvAF/GdMZu34z4xCcMxqNEqfFofBGxJ7gTx2BGggBqwt4ECDXuw6wYp+uWDCAjJt
+         cHoiuOWo3YhSdk67dQQXUmY15b+IwwOnd/j+VM/Bn/rjSA1KXHBpl7ge3JOl0gWa/6
+         e8cuMErprpgNA==
+Date:   Thu, 7 Sep 2023 10:25:13 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     syzbot <syzbot+4a9f9820bd8d302e22f7@syzkaller.appspotmail.com>,
+        catalin.marinas@arm.com, fw@strlen.de, kadlec@netfilter.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [arm?] [netfilter?] KASAN: slab-out-of-bounds Read in
+ do_csum
+Message-ID: <20230907092511.GB5731@willie-the-truck>
+References: <000000000000e0e94c0603f8d213@google.com>
+ <20230905143711.GB3322@willie-the-truck>
+ <0dea99d9-3334-3fd3-3776-074ecace0259@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0dea99d9-3334-3fd3-3776-074ecace0259@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the ETHTOOL_CMD_PHY_LIST_GET command, we can obtain a list of PHYs
-on a link, addressable through their phyindex. This index can be used to
-issue PHY-specific commands. The phy_get command allows querying per-PHY
-information. The information reported so-far is minimal (driver name,
-phy id (for C22), upstream PHY type (real PHY, SFP phy), but we can
-imagine extending this in the future to report PHY offloading
-capabilities, status, and much more.
+On Tue, Sep 05, 2023 at 04:02:19PM +0100, Robin Murphy wrote:
+> On 05/09/2023 3:37 pm, Will Deacon wrote:
+> > On Mon, Aug 28, 2023 at 03:04:44AM -0700, syzbot wrote:
+> > > HEAD commit:    908f31f2a05b Merge branch 'for-next/core', remote-tracking..
+> > > git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=155e0463280000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=c1058fe68f4b7b2c
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=4a9f9820bd8d302e22f7
+> > > compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+> > > userspace arch: arm64
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16bc548d280000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=135bba3b280000
+> > > 
+> > > Downloadable assets:
+> > > disk image: https://storage.googleapis.com/syzbot-assets/87d095820229/disk-908f31f2.raw.xz
+> > > vmlinux: https://storage.googleapis.com/syzbot-assets/a1bf67af9675/vmlinux-908f31f2.xz
+> > > kernel image: https://storage.googleapis.com/syzbot-assets/7784a88b37e8/Image-908f31f2.gz.xz
+> > > 
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+4a9f9820bd8d302e22f7@syzkaller.appspotmail.com
+> > > 
+> > > netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
+> > > netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
+> > > ==================================================================
+> > > BUG: KASAN: slab-out-of-bounds in do_csum+0x44/0x254 arch/arm64/lib/csum.c:39
+> > > Read of size 4294966928 at addr ffff0000d7ac0170 by task syz-executor412/5975
+> 
+> Yup, that looks suspiciously "-368"-shaped...
+> 
+> > Judging by the UBSAN errors:
+> > 
+> > | shift exponent 3008 is too large for 64-bit type 'u64' (aka 'unsigned long long')
+> > 
+> > We're probably being passed a negative 'len' argument. It looks like the
+> > generic version in lib/checksum.c rejects that early, so maybe we should
+> > do the same in the arch code?
+> 
+> Hmm, indeed I can offer no explanation as to why I put "if (len == 0)" there
+> rather than "if (len <= 0)" like literally every other C implementation* :/
 
-Example usage :
+I've made that change:
 
-./cli.py --spec specs/ethtool.yaml --schema genetlink-legacy.yaml \
-         --do phy-list-get --json '{"header" : {"dev-name" : "eth0"}}'
-{'header': {'dev-index': 2, 'dev-name': 'eth0'},
- 'phy-count': 2,
- 'phy-indices': b'\x02\x00\x00\x00\x01\x00\x00\x00'}
+https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/commit/?h=for-next/fixes&id=8bd795fedb8450ecbef18eeadbd23ed8fc7630f5
 
-./cli.py --spec specs/ethtool.yaml --schema genetlink-legacy.yaml \
-         --do phy-get \
-	 --json '{"header" : {"dev-name" : "eth0"}, "phy-index" : 1}'
-{'drvname': 'mv88x3310',
- 'header': {'dev-index': 2, 'dev-name': 'eth0'},
- 'phy-id': 0,
- 'phy-index': 1,
- 'phy-upstream-type': 0}
+Cheers,
 
-./cli.py --spec specs/ethtool.yaml --schema genetlink-legacy.yaml \
-	 --do phy-get \
-	 --json '{"header" : {"dev-name" : "eth0"}, "phy-index" : 2}'
-{'drvname': 'Marvell 88E1111',
- 'header': {'dev-index': 2, 'dev-name': 'eth0'},
- 'phy-id': 21040322,
- 'phy-index': 2,
- 'phy-upstream-type': 2}
-
-Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
----
- Documentation/netlink/specs/ethtool.yaml | 37 ++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
-
-diff --git a/Documentation/netlink/specs/ethtool.yaml b/Documentation/netlink/specs/ethtool.yaml
-index 1139c88ed65c..708a77423286 100644
---- a/Documentation/netlink/specs/ethtool.yaml
-+++ b/Documentation/netlink/specs/ethtool.yaml
-@@ -955,6 +955,25 @@ attribute-sets:
-       -
-         name: phy-indices
-         type: binary
-+  -
-+    name: phy
-+    attributes:
-+      -
-+        name: header
-+        type: nest
-+        nested-attributes: header
-+      -
-+        name: phy-index
-+        type: u32
-+      -
-+        name: drvname
-+        type: string
-+      -
-+        name: phy-upstream-type
-+        type: u8
-+      -
-+        name: phy-id
-+        type: u32
- 
- operations:
-   enum-model: directional
-@@ -1720,3 +1739,21 @@ operations:
-             - header
-             - phy-count
-             - phy-indices
-+    -
-+      name: phy-get
-+      doc: Get a PHY's information
-+
-+      attribute-set: phy
-+
-+      do: &phy-get-op
-+        request:
-+          attributes:
-+            - header
-+            - phy-index
-+        reply:
-+          attributes:
-+            - header
-+            - phy-index
-+            - drvname
-+            - phy-upstream-type
-+            - phy-id
--- 
-2.41.0
-
+Will
