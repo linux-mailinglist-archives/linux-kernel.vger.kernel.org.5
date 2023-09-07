@@ -2,191 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3BA797C9D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 21:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063EA797CA4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 21:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232898AbjIGTTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 15:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42936 "EHLO
+        id S234333AbjIGTUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 15:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjIGTTO (ORCPT
+        with ESMTP id S229562AbjIGTUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 15:19:14 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B924FB2
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 12:19:09 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bbbda48904so22716721fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 12:19:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694114348; x=1694719148; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fh9SxXdeDgiYefKxTuLt7vjL4MJYtZ0NR5+isE1gnSw=;
-        b=fX4JUpH98MaatGFwJvBCp+4YmTfB8eaQAbr97oz+F3sDVb8/dbWP2441ZMqP0fSGSe
-         gipKybCyp9rOqGoRtJ6RIsaOnzQkgU8Asf7233Wu0sAYtTq199RmuVM+ZTz/Etz/vm2U
-         cTIapli+2fr/waBWD9+hLZ04dEpvYk0QilhMea3uQGK6rYjQEL/Ju4M02RJRvRezSkA7
-         Ym5thSdN00R1d6768wQG4q2oLHTTR2zSL6GsM7G8rKyKBIp5GdLt+KHDaRZE4TXMpJsk
-         1vCyui5uSIIOWXXG/JFKuLKWM3F9s9jO+R7U7ON3jKRtriuMYjwfE9vUfi9awA/39igK
-         erjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694114348; x=1694719148;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fh9SxXdeDgiYefKxTuLt7vjL4MJYtZ0NR5+isE1gnSw=;
-        b=AX7xesktOztBplMN3S3phksl4BrcPPAXH3cAbV99qNE6nM2OnI5OtO3OBpYZG2XDO9
-         051aHZuAKmiujNzEK6RkcHVOsoWxAX44R6mfn31333NOxhHi9viZZtMske2YsMG3XUn0
-         nhYnXbgCy7yVJqQf1U9V8NR3lhUE7i5Rca5oLXkxa7YSUmAScBLVBssQT0QUE0XYd4sZ
-         KzhBpRvU3K9jt+Es2C7QLDd74xFTg9T0X3Jdauxv1QnFXpMaNZPjlXobHRS9mZC6umhW
-         ho5k9SVcZcvT80KuiKBOH3X3jg3d7XlFyvoESkR7DUL56Y1jMls5GV+Bu5ahXRTa2eRf
-         ys/Q==
-X-Gm-Message-State: AOJu0Yz46A83qoMeOix7Rv3hfNYIZ8bSs/MXqYf5/sPsXzy/N0v7uFdX
-        TxKlkW1RzB2oHkxibOD7VDHhkzsjuSsQ6Mq+omdWmA==
-X-Google-Smtp-Source: AGHT+IHrXpMuSwQQQ03SPRDxfKGtSaY06C8ng9QkYeonij74hOQ5lKt2eSklQHKaLviUpJ2Pf2FzYgAOrtQ2pDDzcSs=
-X-Received: by 2002:a2e:b0ee:0:b0:2be:4d40:f833 with SMTP id
- h14-20020a2eb0ee000000b002be4d40f833mr131512ljl.18.1694114347766; Thu, 07 Sep
- 2023 12:19:07 -0700 (PDT)
+        Thu, 7 Sep 2023 15:20:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9B8BC;
+        Thu,  7 Sep 2023 12:20:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jyPg3Zf+xWA86GrJDQxcoZElUyTYcGm8zB+eX1nJcNo=; b=A8ak4gnHSQ4167ncLrhIfEvOU+
+        a57iCkTDWTNV4MAZodsa022rI8szEnY5V2/B+QHeo/q6B5Yo/SNC5qiRr4zGdxRSAPPI8ZsSi4Snt
+        EgjBHEqzhbury8HNqUefbkI32Ut7rc12e4A1vT92JjNPnz7MAonKdcOrF9IKpJdhJmUgXkIJsr0Y2
+        F8AvqhIzCdHFebKKwu+oNmstk64bi8NL0aatFwFXQJbQeAY2l6Hzwfc9UXj6Qvz/u9o8nD9ss2Rdk
+        6zevCTRZ8pC2FVh6XPZw1grQZm/5l9ATc6KJEA/kvu97F1xgKKKEbis2GsMIxcw01Vvh+6inJr3az
+        QFdvpYtg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qeKYI-00Cwsk-7k; Thu, 07 Sep 2023 19:20:30 +0000
+Date:   Thu, 7 Sep 2023 20:20:30 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 1/5] locking: Add rwsem_is_write_locked()
+Message-ID: <ZPoift7B3UDQgmWB@casper.infradead.org>
+References: <20230907174705.2976191-1-willy@infradead.org>
+ <20230907174705.2976191-2-willy@infradead.org>
+ <20230907190810.GA14243@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20230905214235.320571-1-peterx@redhat.com>
-In-Reply-To: <20230905214235.320571-1-peterx@redhat.com>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Thu, 7 Sep 2023 12:18:29 -0700
-Message-ID: <CAJHvVcjQR95KVfu2qv3hepkLWkH5J8qRG_BazHKSXoGoGnUATg@mail.gmail.com>
-Subject: Re: [PATCH 0/7] mm/userfaultfd/poll: Scale userfaultfd wakeups
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Anish Moorthy <amoorthy@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Houghton <jthoughton@google.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230907190810.GA14243@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 5, 2023 at 2:42=E2=80=AFPM Peter Xu <peterx@redhat.com> wrote:
->
-> Userfaultfd is the type of file that doesn't need wake-all semantics: if
-> there is a message enqueued (for either a fault address, or an event), we
-> only need to wake up one service thread to handle it.  Waking up more
-> normally means a waste of cpu cycles.  Besides that, and more importantly=
-,
-> that just doesn't scale.
+On Thu, Sep 07, 2023 at 09:08:10PM +0200, Peter Zijlstra wrote:
+> On Thu, Sep 07, 2023 at 06:47:01PM +0100, Matthew Wilcox (Oracle) wrote:
+> > Several places want to know whether the lock is held by a writer, instead
+> > of just whether it's held.  We can implement this for both normal and
+> > rt rwsems.  RWSEM_WRITER_LOCKED is declared in rwsem.c and exposing
+> > it outside that file might tempt other people to use it, so just use
+> > a comment to note that's what the 1 means, and help anybody find it if
+> > they're looking to change the implementation.
+> 
+> I'm presuming this is deep in a callchain where they know they hold the
+> lock, but they lost in what capacity?
 
-Hi Peter,
+No, it's just assertions.  You can see that in patch 3 where it's
+used in functions called things like "xfs_islocked".
 
-I took a quick look over the series and didn't see anything
-objectionable. I was planning to actually test the series out and then
-send out R-b's, but it will take some additional time (next week).
+> In general I strongly dislike the whole _is_locked family, because it
+> gives very poorly defined semantics if used by anybody but the owner.
+> 
+> If these new functions are indeed to be used only by lock holders to
+> determine what kind of lock they hold, could we please put:
+> 
+> 	lockdep_assert_held()
+> 
+> in them?
 
-In the meantime, I was curious about the use case. A design I've seen
-for VM live migration is to have 1 thread reading events off the uffd,
-and then have many threads actually resolving the fault events that
-come in (e.g. fetching pages over the network, issuing UFFDIO_COPY or
-UFFDIO_CONTINUE, or whatever). In that design, since we only have a
-single reader anyway, I think this series doesn't help.
+Patch 2 shows it in use in the MM code.  We already have a
+lockdep_assert_held_write(), but most people don't enable lockdep, so
+we also have VM_BUG_ON_MM(!rwsem_is_write_locked(&mm->mmap_lock), mm)
+to give us a good assertion when lockdep is disabled.
 
-But, I'm curious if you have data indicating that > 1 reader is more
-performant overall? I suspect it might be the case that, with "enough"
-vCPUs, it makes sense to do so, but I don't have benchmark data to
-tell me what that tipping point is yet.
-
-OTOH, if one reader is plenty in ~all cases, optimizing this path is
-less important.
-
-
-
-
->
-> Andrea used to have one patch that made read() to be O(1) but never hit
-> upstream.  This is my effort to try upstreaming that (which is a
-> oneliner..), meanwhile on top of that I also made poll() O(1) on wakeup,
-> too (more or less bring EPOLLEXCLUSIVE to poll()), with some tests showin=
-g
-> that effect.
->
-> To verify this, I added a test called uffd-perf (leveraging the refactore=
-d
-> uffd selftest suite) that will measure the messaging channel latencies on
-> wakeups, and the waitqueue optimizations can be reflected by the new test=
-:
->
->         Constants: 40 uffd threads, on N_CPUS=3D40, memsize=3D512M
->         Units: milliseconds (to finish the test)
->         |-----------------+--------+-------+------------|
->         | test case       | before | after |   diff (%) |
->         |-----------------+--------+-------+------------|
->         | workers=3D8,poll  |   1762 |  1133 | -55.516328 |
->         | workers=3D8,read  |   1437 |   585 | -145.64103 |
->         | workers=3D16,poll |   1117 |  1097 | -1.8231541 |
->         | workers=3D16,read |   1159 |   759 | -52.700922 |
->         | workers=3D32,poll |   1001 |   973 | -2.8776978 |
->         | workers=3D32,read |    866 |   713 | -21.458626 |
->         |-----------------+--------+-------+------------|
->
-> The more threads hanging on the fd_wqh, a bigger difference will be there
-> shown in the numbers.  "8 worker threads" is the worst case here because =
-it
-> means there can be a worst case of 40-8=3D32 threads hanging idle on fd_w=
-qh
-> queue.
->
-> In real life, workers can be more than this, but small number of active
-> worker threads will cause similar effect.
->
-> This is currently based on Andrew's mm-unstable branch, but assuming this
-> is applicable to most of the not-so-old trees.
->
-> Comments welcomed, thanks.
->
-> Andrea Arcangeli (1):
->   mm/userfaultfd: Make uffd read() wait event exclusive
->
-> Peter Xu (6):
->   poll: Add a poll_flags for poll_queue_proc()
->   poll: POLL_ENQUEUE_EXCLUSIVE
->   fs/userfaultfd: Use exclusive waitqueue for poll()
->   selftests/mm: Replace uffd_read_mutex with a semaphore
->   selftests/mm: Create uffd_fault_thread_create|join()
->   selftests/mm: uffd perf test
->
->  drivers/vfio/virqfd.c                    |   4 +-
->  drivers/vhost/vhost.c                    |   2 +-
->  drivers/virt/acrn/irqfd.c                |   2 +-
->  fs/aio.c                                 |   2 +-
->  fs/eventpoll.c                           |   2 +-
->  fs/select.c                              |   9 +-
->  fs/userfaultfd.c                         |   8 +-
->  include/linux/poll.h                     |  25 ++-
->  io_uring/poll.c                          |   4 +-
->  mm/memcontrol.c                          |   4 +-
->  net/9p/trans_fd.c                        |   3 +-
->  tools/testing/selftests/mm/Makefile      |   2 +
->  tools/testing/selftests/mm/uffd-common.c |  65 +++++++
->  tools/testing/selftests/mm/uffd-common.h |   7 +
->  tools/testing/selftests/mm/uffd-perf.c   | 207 +++++++++++++++++++++++
->  tools/testing/selftests/mm/uffd-stress.c |  53 +-----
->  virt/kvm/eventfd.c                       |   2 +-
->  17 files changed, 337 insertions(+), 64 deletions(-)
->  create mode 100644 tools/testing/selftests/mm/uffd-perf.c
->
-> --
-> 2.41.0
->
+XFS has a problem with using lockdep in general, which is that a worker
+thread can be spawned and use the fact that the spawner is holding the
+lock.  There's no mechanism for the worker thread to ask "Does struct
+task_struct *p hold the lock?".
