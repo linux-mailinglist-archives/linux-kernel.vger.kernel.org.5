@@ -2,71 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C4F7976F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5E97979E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233351AbjIGQSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:18:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42538 "EHLO
+        id S243146AbjIGRZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242255AbjIGQSG (ORCPT
+        with ESMTP id S243246AbjIGRZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:18:06 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9661D2090C
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:45:35 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-55b0e7efb1cso844462a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:45:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694101489; x=1694706289; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yMRlMwN20QLTSRPs/jI5d8COnV1IkaL0AH6Bo1uSv5s=;
-        b=A0mF5RseBSiIXVefgCV7xTv+a1EU9P133IfDqxhtbIbMMekz9jsF7Z6SiLZbag+urq
-         ShogIgKrp2DSAJDTkeTBFdgksHWoqcTuQTlasKLkxjbBVlps6aAeIVeMvNh0Rv7tZvWP
-         xxChyYAIEz0O4z+wJcGWKRG59kh6dmNR0jOVpae/4uiVjGgRsD5F61DJs1yldR6hGyqm
-         wbolupI22vD7v1X+KeTASTc67myiM3PkuirY0SNnkI8snwrOHbGK4dQwxqb1d8UteYGo
-         osHKoDLAHtYJ+0ibtHPbDK55DkVJCQqU5ph/HQitgD0ruM+rP5LtRoRcac2wpKWaOBuR
-         Y0Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694101489; x=1694706289;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yMRlMwN20QLTSRPs/jI5d8COnV1IkaL0AH6Bo1uSv5s=;
-        b=fJa3h8FZjx4DnfvxkQVEpcKj4OL6lOiBFzpTd9l4QcjulVDr85cOcqt2UhYjJzongz
-         hJ/rh0424TImhOxlFxdzwIxvg3tBytv3uTpYgBcLAzezsbpdChue92bg0EeATz9bHcsI
-         3DM/F4IrN0Qo9KCxoH36NwoVCee8oUpBeEScyH/ddVfIonkfK1TIeDaoj4cfTsetYp1P
-         zXYnbapxbi20EdP8njUch/Ag8cjvu/ybjmHNPSzagQFWLMB5NKEG/oV5YVIHUh4lqwY+
-         VOi0gxVd8+RC7h/ShVtAjw0YJ/fOKebBbsMUernN6TwB2Dj64rmBbUtt8r4F45jYIPqV
-         3Zsg==
-X-Gm-Message-State: AOJu0Ywc7Cl4Klb4XNrDEMxz4PuO7vVbxBOb5g9LnslFzHvaq17GZQIf
-        OZ9i38cb9YcVHa7tbnatNY2ugRQzeaz9p9cIaWpyTe4/SmB1/+sp
-X-Google-Smtp-Source: AGHT+IFUuNXZQLnUGxYZ4nwOIc/1ZCmT/RBxdiDK6aXiF/foDyogFPcREcWU6P3R5YT2nx0jFgg2XzMsNGlNNM2BlgA=
-X-Received: by 2002:a25:a1e9:0:b0:d78:35cd:7f5c with SMTP id
- a96-20020a25a1e9000000b00d7835cd7f5cmr19661493ybi.46.1694093927719; Thu, 07
- Sep 2023 06:38:47 -0700 (PDT)
+        Thu, 7 Sep 2023 13:25:02 -0400
+X-Greylist: delayed 3981 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Sep 2023 10:24:36 PDT
+Received: from cantor.telenet-ops.be (cantor.telenet-ops.be [195.130.132.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169BF1FF5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:24:36 -0700 (PDT)
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by cantor.telenet-ops.be (Postfix) with ESMTPS id 4RhL534lcMz4x4qw
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 15:41:59 +0200 (CEST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
+        by michel.telenet-ops.be with bizsmtp
+        id j1hx2A00E2mGBSJ061hxtx; Thu, 07 Sep 2023 15:41:59 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qeFGP-002m7j-Ui;
+        Thu, 07 Sep 2023 15:41:57 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qeFGf-00CMf5-43;
+        Thu, 07 Sep 2023 15:41:57 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Philip Blundell <philb@gnu.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        Laurent Vivier <laurent@vivier.eu>,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 00/52] m68k: W=1 fixes
+Date:   Thu,  7 Sep 2023 15:41:01 +0200
+Message-Id: <cover.1694093327.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <cover.1693996662.git.quic_varada@quicinc.com> <00a5ca23101df1f8f20bdec03be20af9d39c64d1.1693996662.git.quic_varada@quicinc.com>
-In-Reply-To: <00a5ca23101df1f8f20bdec03be20af9d39c64d1.1693996662.git.quic_varada@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 7 Sep 2023 16:38:36 +0300
-Message-ID: <CAA8EJpqtXw1ukDZ1hXAc3G7LNDwjcduUdNaPHadfSqCuV3fxbg@mail.gmail.com>
-Subject: Re: [PATCH v1 02/10] clk: qcom: apss-ipq-pll: Use stromer plus ops
- for stromer plus pll
-To:     Varadarajan Narayanan <quic_varada@quicinc.com>
-Cc:     ilia.lin@kernel.org, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        quic_kathirav@quicinc.com, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,40 +59,181 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Sept 2023 at 08:22, Varadarajan Narayanan
-<quic_varada@quicinc.com> wrote:
->
-> The set rate and determine rate operations are different between
-> Stromer and Stromer Plus PLLs. Hence, use stromer plus ops for
-> ipq_pll_stromer_plus.
->
-> Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+	Hi all,
 
-Fixes tag?
+This patch series addresses the remaining (after [1]) warnings seen when
+building arch/m68k/ with W=1.  Perhaps surprisingly, this work has
+identified and fixes a genuine bug in the Sun-3 TLB handling (see [PATCH
+39/52]).
 
-> ---
->  drivers/clk/qcom/apss-ipq-pll.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/clk/qcom/apss-ipq-pll.c b/drivers/clk/qcom/apss-ipq-pll.c
-> index e170331..18c4ffe 100644
-> --- a/drivers/clk/qcom/apss-ipq-pll.c
-> +++ b/drivers/clk/qcom/apss-ipq-pll.c
-> @@ -68,7 +68,7 @@ static struct clk_alpha_pll ipq_pll_stromer_plus = {
->                                 .fw_name = "xo",
->                         },
->                         .num_parents = 1,
-> -                       .ops = &clk_alpha_pll_stromer_ops,
-> +                       .ops = &clk_alpha_pll_stromer_plus_ops,
->                 },
->         },
->  };
-> --
-> 2.7.4
->
+Most of the patches in these series are fairly trivial changes with a
+very low risk of introducing any regressions.  For the less trivial
+patches, I did look at the assembler output before and after.  As Arnd
+is working actively on enabling W=1 rather sooner than later, and if no
+one objects, I plan to rebase [1] and this series after the release of
+v6.6-rc1, and send it as a fixes pull request to Linus.
 
+Note that this series does not address warnings on Coldfire or MMU-less
+systems.
+
+Thanks for your comments!
+
+[1] "[PATCH 0/6] m68k: math-emu: Miscellaneous esthetical improvements"
+    https://lore.kernel.org/r/cover.1692283195.git.geert@linux-m68k.org
+
+Geert Uytterhoeven (52):
+  m68k: kernel: Add missing asmlinkage to do_notify_resume()
+  m68k: kernel: Include <linux/cpu.h> for trap_init()
+  m68k: kernel: Make bad_super_trap() static
+  m68k: kernel: Add and use <asm/syscalls.h>
+  m68k: kernel: Add and use "ints.h"
+  m68k: kernel: Add and use "process.h"
+  m68k: kernel: Add and use "ptrace.h"
+  m68k: kernel: Add and use "signal.h"
+  m68k: kernel: Add and use "traps.h"
+  m68k: kernel: Add and use "vectors.h"
+  m68k: mm: Include <asm/hwtest.h> for hwreg_()
+  m68k: mm: Move paging_init() to common <asm/pgtable.h>
+  m68k: mm: Add and use "fault.h"
+  m68k: emu: Remove unused vsnprintf() return value in nfprint()
+  m68k: emu: Mark version[] __maybe_unused
+  m68k: amiga: pcmcia: Replace set but not used variable by READ_ONCE()
+  m68k: amiga: Add and use "amiga.h"
+  m68k: atari: Document data parameter of stdma_try_lock()
+  m68k: atari: Make ikbd_reset() static
+  m68k: atari: Make atari_platform_init() static
+  m68k: atari: Make atari_stram_map_pages() static
+  m68k: atari: Add and use "atari.h"
+  m68k: apollo: Remove unused debug console functions
+  m68k: apollo: Make local reset, serial, and irq functions static
+  m68k: apollo: Replace set but not used variable by READ_ONCE()
+  m68k: apollo: Add and use "apollo.h"
+  m68k: bvme6000: Make bvme6000_abort_int() static
+  m68k: hp300: Include "time.h" for hp300_sched_init()
+  m68k: mac: Remove unused sine_data[]
+  m68k: mac: Remove unused yday in unmktime()
+  m68k: mac: Make mac_platform_init() static
+  m68k: mac: Add and use "mac.h"
+  m68k: mvme147: Make mvme147_init_IRQ() static
+  m68k: mvme16x: Remove unused sink in mvme16x_cons_write()
+  m68k: mvme16x: Add and use "mvme16x.h"
+  m68k: q40: Add and use "q40.h"
+  m68k: sun3/3x: Include <asm/config.h> for config_sun3*()
+  m68k: sun3: Improve Sun3/3x DVMA abstraction in <asm/dvma.h>
+  m68k: sun3: Fix context restore in flush_tlb_range()
+  m68k: sun3: Fix signature of sun3_get_model()
+  m68k: sun3: Add missing asmlinkage to sun3_init()
+  m68k: sun3: Remove unused orig_baddr in free_baddr()
+  m68k: sun3: Remove unused start_page in sun3_bootmem_alloc()
+  m68k: sun3: Remove unused vsprintf() return value in prom_printf()
+  m68k: sun3: Annotate prom_printf() with __printf()
+  m68k: sun3: Make print_pte() static
+  m68k: sun3: Make sun3_platform_init() static
+  m68k: sun3x: Fix signature of sun3_leds()
+  m68k: sun3x: Do not mark dvma_map_iommu() inline
+  m68k: sun3x: Make sun3x_halt() static
+  m68k: sun3x: Make dvma_print() static
+  m68k: sun3/3x: Add and use "sun3.h"
+
+ arch/m68k/amiga/amiga.h            |  5 ++++
+ arch/m68k/amiga/amisound.c         |  2 ++
+ arch/m68k/amiga/config.c           |  4 +--
+ arch/m68k/amiga/pcmcia.c           |  3 +-
+ arch/m68k/apollo/apollo.h          |  4 +++
+ arch/m68k/apollo/config.c          | 45 ++++++------------------------
+ arch/m68k/apollo/dn_ints.c         |  8 ++++--
+ arch/m68k/atari/ataints.c          |  3 +-
+ arch/m68k/atari/atakeyb.c          |  2 +-
+ arch/m68k/atari/atari.h            | 15 ++++++++++
+ arch/m68k/atari/atasound.c         |  1 +
+ arch/m68k/atari/config.c           | 13 ++-------
+ arch/m68k/atari/stdma.c            |  1 +
+ arch/m68k/atari/stram.c            |  2 +-
+ arch/m68k/atari/time.c             |  2 ++
+ arch/m68k/bvme6000/config.c        |  2 +-
+ arch/m68k/emu/natfeat.c            |  3 +-
+ arch/m68k/emu/nfeth.c              |  2 +-
+ arch/m68k/hp300/time.c             |  2 ++
+ arch/m68k/include/asm/dvma.h       |  8 +++++-
+ arch/m68k/include/asm/oplib.h      |  4 ++-
+ arch/m68k/include/asm/pgtable.h    |  9 ++++++
+ arch/m68k/include/asm/pgtable_no.h |  1 -
+ arch/m68k/include/asm/syscalls.h   | 20 +++++++++++++
+ arch/m68k/include/asm/tlbflush.h   |  1 +
+ arch/m68k/kernel/early_printk.c    |  4 +--
+ arch/m68k/kernel/ints.c            |  2 ++
+ arch/m68k/kernel/ints.h            |  7 +++++
+ arch/m68k/kernel/process.c         |  1 +
+ arch/m68k/kernel/process.h         |  8 ++++++
+ arch/m68k/kernel/ptrace.c          |  2 ++
+ arch/m68k/kernel/ptrace.h          |  6 ++++
+ arch/m68k/kernel/setup_mm.c        |  2 --
+ arch/m68k/kernel/signal.c          |  4 ++-
+ arch/m68k/kernel/signal.h          |  7 +++++
+ arch/m68k/kernel/sys_m68k.c        |  4 +--
+ arch/m68k/kernel/traps.c           | 11 ++++----
+ arch/m68k/kernel/traps.h           | 10 +++++++
+ arch/m68k/kernel/vectors.c         |  3 ++
+ arch/m68k/kernel/vectors.h         |  3 ++
+ arch/m68k/mac/baboon.c             |  2 ++
+ arch/m68k/mac/config.c             | 14 ++--------
+ arch/m68k/mac/iop.c                |  2 ++
+ arch/m68k/mac/mac.h                | 25 +++++++++++++++++
+ arch/m68k/mac/macboing.c           | 11 ++------
+ arch/m68k/mac/misc.c               |  5 ++--
+ arch/m68k/mac/oss.c                |  2 ++
+ arch/m68k/mac/psc.c                |  2 ++
+ arch/m68k/mac/via.c                |  2 ++
+ arch/m68k/mm/fault.c               |  2 ++
+ arch/m68k/mm/fault.h               |  7 +++++
+ arch/m68k/mm/hwtest.c              |  2 ++
+ arch/m68k/mm/sun3kmap.c            |  6 ++--
+ arch/m68k/mm/sun3mmu.c             |  2 +-
+ arch/m68k/mvme147/config.c         |  2 +-
+ arch/m68k/mvme16x/config.c         |  5 ++--
+ arch/m68k/mvme16x/mvme16x.h        |  6 ++++
+ arch/m68k/q40/config.c             |  6 ++--
+ arch/m68k/q40/q40.h                |  6 ++++
+ arch/m68k/q40/q40ints.c            |  2 ++
+ arch/m68k/sun3/config.c            | 13 ++++-----
+ arch/m68k/sun3/idprom.c            |  4 ++-
+ arch/m68k/sun3/intersil.c          |  1 +
+ arch/m68k/sun3/leds.c              |  2 ++
+ arch/m68k/sun3/mmu_emu.c           |  3 +-
+ arch/m68k/sun3/prom/printf.c       |  5 ++--
+ arch/m68k/sun3/sun3.h              | 22 +++++++++++++++
+ arch/m68k/sun3/sun3dvma.c          | 17 -----------
+ arch/m68k/sun3/sun3ints.c          |  2 +-
+ arch/m68k/sun3x/config.c           |  6 ++--
+ arch/m68k/sun3x/dvma.c             |  5 ++--
+ arch/m68k/sun3x/prom.c             |  2 +-
+ 72 files changed, 280 insertions(+), 149 deletions(-)
+ create mode 100644 arch/m68k/amiga/amiga.h
+ create mode 100644 arch/m68k/apollo/apollo.h
+ create mode 100644 arch/m68k/atari/atari.h
+ create mode 100644 arch/m68k/include/asm/syscalls.h
+ create mode 100644 arch/m68k/kernel/ints.h
+ create mode 100644 arch/m68k/kernel/process.h
+ create mode 100644 arch/m68k/kernel/ptrace.h
+ create mode 100644 arch/m68k/kernel/signal.h
+ create mode 100644 arch/m68k/kernel/traps.h
+ create mode 100644 arch/m68k/kernel/vectors.h
+ create mode 100644 arch/m68k/mac/mac.h
+ create mode 100644 arch/m68k/mm/fault.h
+ create mode 100644 arch/m68k/mvme16x/mvme16x.h
+ create mode 100644 arch/m68k/q40/q40.h
+ create mode 100644 arch/m68k/sun3/sun3.h
 
 -- 
-With best wishes
-Dmitry
+2.34.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
