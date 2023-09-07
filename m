@@ -2,104 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86806796EF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 04:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3DA796F03
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 04:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245070AbjIGCaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 22:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33354 "EHLO
+        id S232825AbjIGCf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 22:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245059AbjIGCaI (ORCPT
+        with ESMTP id S232772AbjIGCfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 22:30:08 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102191FC9
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 19:29:52 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6bd3317144fso392664a34.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 19:29:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694053791; x=1694658591; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jXVHSN9UH4yRS9yEiibVU5OrgopEwYQrywWZWB1MiJg=;
-        b=aY8UelKi5PnPJ76YUeGiMZLQjwXImNaEC3b/ls5agm//2DgOvK9S5TFI6dIWHy4YZq
-         EZA8EzsD2YdMzdKq6c6oAt0XEpd61dIQldFMVw4qaP6n3iwZ07f392G96SImPxYRsVZo
-         mnSKqrdNZWl12pPrwJcXo8IJ4HFxmpEcN8R3geJeY+W5bVM8U1B8g4TUprVjVxRer9Ld
-         il2hvP9u5Z2+5IDpNf/I8JHevz1iHAN4M57/zRzTqoZs5OfU4vRw6dWVAlcDMyh/kdzX
-         JryRh/nL6Y77fq9R+MdQHcAmXbUfFRdDdFlVDmGyxxb63lYhQdHtQU3ylgzaD1kGxbKI
-         4Gwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694053791; x=1694658591;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jXVHSN9UH4yRS9yEiibVU5OrgopEwYQrywWZWB1MiJg=;
-        b=AZcODN4zozhra/+j5mRzf23PIrbJ2a5NxBSmTyXGVg4CLecjLS3nNG7IriyispKhhR
-         aJEKrlkm/1TvJK0akqz3xUsPi1zi+fI25TXthcRnG9FTMJ4G9DTIoNERekVjIQ5iTDlJ
-         xBD/r1Kh2eh/2MnYX06UkyFqvSG5VEmVwqcH7IiFsHM7S6LGIcLbG59IFEXCmK0Hhp6t
-         NzVJAhvyjdLNd41Ylf8sRD/rXC6wzC6v7gg/7xTy3ooJq+IC1POldG6mxbV0wrZkWegq
-         +wT+NSTWwKrsbWP3Zt2jP0I0XG2e1EBBIRcHToXltGjg/wLTUCoIDDesDk6W0VoGm8qT
-         sMMg==
-X-Gm-Message-State: AOJu0Yx4NdFaankRMleLrNH585rCDsVT0yJ8NSbazJwkOT3eqpzlLenU
-        0Fq6Zc3Mz4pKnpX02gc/tio=
-X-Google-Smtp-Source: AGHT+IF4wgCwuS0FbyDPyPT9pWqQtGo78O11d/UR6tq+pxI1r5JzC97u4kA4pxEFFJwZA55yqfH1oQ==
-X-Received: by 2002:a05:6830:14d9:b0:6b9:8357:6150 with SMTP id t25-20020a05683014d900b006b983576150mr18467951otq.35.1694053791031;
-        Wed, 06 Sep 2023 19:29:51 -0700 (PDT)
-Received: from geday ([2804:7f2:8006:99ef:50e4:98e3:42a7:1619])
-        by smtp.gmail.com with ESMTPSA id l2-20020a05683004a200b006b8c6eb962esm6941477otd.52.2023.09.06.19.29.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Sep 2023 19:29:49 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 23:29:46 -0300
-From:   Geraldo Nascimento <geraldogabriel@gmail.com>
-To:     Antonio Terceiro <antonio.terceiro@linaro.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>, Takashi Iwai <tiwai@suse.de>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: snd-cmipci oops during probe on arm64 (current mainline,
- pre-6.6-rc1)
-Message-ID: <ZPk1mpbSeK7+eVs2@geday>
-References: <ZPelHaX/Lt++kkOm@linaro.org>
- <877cp3esse.wl-tiwai@suse.de>
- <4f335dd2-8043-c60e-cf84-c2b01c4fee12@arm.com>
- <ZPjGuCdmPgqznc5t@linaro.org>
+        Wed, 6 Sep 2023 22:35:25 -0400
+X-Greylist: delayed 130020 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 06 Sep 2023 19:35:21 PDT
+Received: from out-211.mta0.migadu.com (out-211.mta0.migadu.com [IPv6:2001:41d0:1004:224b::d3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D454C19A0
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 19:35:21 -0700 (PDT)
+Message-ID: <a9af88c5-4509-96ff-a7fd-a0f72d2f1e6a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1694053816;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zWKuDI3UfELqoaKOu5alhaGYIMfDF3Uc/CsxX8KNpcw=;
+        b=GgeP92P4/naoXz26vwG4GdsQK6IicmdS3p/1rSEio3gSFjQdIr414+XfvCVmk/THfA7ZKv
+        4z62dV1LCO5X2T+9nr7deC3FDvEwA8Rt+pc1TYHpt6j3guxm7EdgbMKutPbEWqVZwt5ffu
+        P1CoPAj1PHHuBRbiwyeoXcKFjbqv6Jk=
+Date:   Thu, 7 Sep 2023 10:30:05 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZPjGuCdmPgqznc5t@linaro.org>
+Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
+ to select the primary video adapter at boot time
+Content-Language: en-US
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        suijingfeng <suijingfeng@loongson.cn>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
+References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
+ <44ec8549-dc36-287e-4359-abd3ec8d22d6@suse.de>
+ <5afd2efb-f838-f9b7-02a9-2cf4d4fd2382@loongson.cn>
+ <2adfa653-ac35-d560-be52-c92848a1eef5@gmail.com>
+ <b51d49f3-e3de-6b8d-9cb4-df5c03f3cdc0@loongson.cn>
+ <10509692-ce04-e225-5a27-abc955554bdc@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <10509692-ce04-e225-5a27-abc955554bdc@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 03:36:40PM -0300, Antonio Terceiro wrote:
-> On Wed, Sep 06, 2023 at 01:49:16PM +0100, Robin Murphy wrote:
-> > It's blowing up trying to access PCI I/O space, which has apparently ended
-> > up in the indirect access mechanism without that being configured correctly.
-> > That is definitely an issue down somewhere between the PCI layer and the
-> > system firmware. Does the system even have an I/O space window? Some arm64
-> > machines don't. I guess we might not have got as far as probing a driver if
-> > the I/O BAR couldn't be assigned at all, but either way something's not gone
-> > right.
-> 
-> I'm pretty sure I saw reports of people using PCI GPUs on this machine,
-> but I would need to confirm.
-> 
-> What info would I need to gather from the machine in order to figure
-> this out?
+Hi,
 
-Antonio, please see:
-https://community.amperecomputing.com/t/amd-gpus-on-the-altra-devkit-and-other-altras-patches-available-now/336/11
 
-You have a quirky PCIe controller it seems. You'll have to go through
-the errata and then some.
+On 2023/9/6 17:40, Christian König wrote:
+> Am 06.09.23 um 11:08 schrieb suijingfeng:
+>> Well, welcome to correct me if I'm wrong.
+>
+> You seem to have some very basic misunderstandings here.
+>
+> The term framebuffer describes some VRAM memory used for scanout.
+>
+> This framebuffer is exposed to userspace through some framebuffer 
+> driver, on UEFI platforms that is usually efifb but can be quite a 
+> bunch of different drivers.
+>
+> When the DRM drivers load they remove the previous drivers using 
+> drm_aperture_remove_conflicting_pci_framebuffers() (or similar 
+> function), but this does not mean that the framebuffer or scanout 
+> parameters are modified in any way. It just means that the framebuffer 
+> is just no longer exposed through this driver.
+>
+> Take over is the perfectly right description here because that's 
+> exactly what's happening. The framebuffer configuration including the 
+> VRAM memory as well as the parameters for scanout are exposed by the 
+> newly loaded DRM driver.
+>
+> In other words userspace can query through the DRM interfaces which 
+> monitors already driven by the hardware and so in your terminology 
+> figure out which is the primary one.
+>
+I'm a little bit of not convinced about this idea, you might be correct.
+But there cases where three are multiple monitors and each video card
+connect one.
 
-Good Luck,
-Geraldo Nascimento
+It also quite common that no monitors is connected, let the machine boot
+first, then find a monitors to connect to a random display output. See
+which will display. I don't expect the primary shake with.
+The primary one have to be determined as early as possible, because of
+the VGA console and the framebuffer console may directly output the primary.
+Get the DDC and/or HPD involved may necessary complicated the problem.
+
+There are ASpeed BMC who add a virtual connector in order to able display remotely.
+There are also have commands to force a connector to be connected status.
+
+
+> It's just that as Thomas explained as well that this completely 
+> irrelevant to any modern desktop. Both X and Wayland both iterate the 
+> available devices and start rendering to them which one was used 
+> during boot doesn't really matter to them.
+>
+You may be correct, but I'm still not sure.
+I probably need more times to investigate.
+Me and my colleagues are mainly using X server,
+the version varies from 1.20.4 and 1.21.1.4.
+Even this is true, the problems still exist for non-modern desktops.
+
+> Apart from that ranting like this and trying to explain stuff to 
+> people who obviously have much better background in the topic is not 
+> going to help your patches getting upstream.
+>
+
+Thanks for you tell me so much knowledge,
+I'm realized where are the problems now.
+I will try to resolve the concerns at the next version.
+
+
+> Regards,
+> Christian.
+>
