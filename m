@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 827A3797919
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 909ED797731
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241740AbjIGRBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38208 "EHLO
+        id S241120AbjIGQWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:22:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239612AbjIGRBN (ORCPT
+        with ESMTP id S241382AbjIGQVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:01:13 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2982134
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:00:51 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id DF35066072E5;
-        Thu,  7 Sep 2023 09:42:54 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694076175;
-        bh=ujSXbKznRz3tzlgJmYQ+xHY46tCYhDlj4ODfbR8E2bw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MWueq0NpKkebmbf8XyKKAOD0+jqkv9PQUwXtXkeVMK3kAvVyBiJv+WLKtAlBALeD0
-         rn+4NBcyNB0JeNquDh0PcRxmbje+gFeu9uKPdm92fhffTg4eI8W+6MW15FW/IlZ3ef
-         ut8b0oEX47GpCpbhPhLehVQfHdjt54/n9b5pdGzHzgdVnS1//x5rKYn37dRZZJigFR
-         icCeavf0uIFoMi5u9GNJo1DaOoDB1PY/as+dJrOu9FKC660JRmoElT6A3wn5tku2VA
-         XdqWMhc/AymK1gKrVvDcCDUXd2xi5K4uIe6oiLsbN9M3/gAJHXD+zm8Zh5bUb7VsIJ
-         +gvmc04Ka0F8A==
-Date:   Thu, 7 Sep 2023 10:42:52 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, christian.koenig@amd.com,
-        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v2 5/7] drm/gpuvm: add an abstraction for
- a VM / BO combination
-Message-ID: <20230907104252.4e15acb9@collabora.com>
-In-Reply-To: <20230906214723.4393-6-dakr@redhat.com>
-References: <20230906214723.4393-1-dakr@redhat.com>
-        <20230906214723.4393-6-dakr@redhat.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 7 Sep 2023 12:21:34 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2517A8D;
+        Thu,  7 Sep 2023 09:18:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=HP99QBggKxWC0MQc67tYwL7MaK1GG61WU4HuRZHkIzI=; b=muHwqQU5vUMmckKwuGxOBCmlU3
+        Uv3bB7U+SixKIxPgm/TYAeL0J3O1bFS+U8XG3zHT7+Q+qVh0Q2aJ2cXukVxZeNc1jyvuc0SIbV70t
+        w+ySfFmlUKTHr5OWhCDucIeDJB6wajQdBvZ0aslcCaSmfFm86OAS9ICkipyJi8gqq+qFjFHugyisA
+        73LTIGMxjGZWkLEnDvHgGVpQOzPLZr6su0BOjeJbth0DKL2yDlmIv2WVveTtWCLcchSu6/G1OZ+9Y
+        Y782YEnxUjvmPog6Z6CkwZv0YmiTCIVs40iK6YemSt8W/y1JR8HIxIDSEJPgYPrvSt5zB2rLvq0c9
+        dz3xtGyA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:42484)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qeAcR-0001dd-03;
+        Thu, 07 Sep 2023 09:44:07 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qeAcQ-0005h0-Hr; Thu, 07 Sep 2023 09:44:06 +0100
+Date:   Thu, 7 Sep 2023 09:44:06 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 2/8] arm32, bpf: add support for
+ sign-extension load instruction
+Message-ID: <ZPmNVrXwJ1Q75CV+@shell.armlinux.org.uk>
+References: <20230906183320.1959008-1-puranjay12@gmail.com>
+ <20230906183320.1959008-3-puranjay12@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230906183320.1959008-3-puranjay12@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  6 Sep 2023 23:47:13 +0200
-Danilo Krummrich <dakr@redhat.com> wrote:
+On Wed, Sep 06, 2023 at 06:33:14PM +0000, Puranjay Mohan wrote:
+> The cpuv4 added the support of an instruction that is similar to load
+> but also sign-extends the result after the load.
+> 
+> BPF_MEMSX | <size> | BPF_LDX means dst = *(signed size *) (src + offset)
+> here <size> can be one of BPF_B, BPF_H, BPF_W.
+> 
+> ARM32 has instructions to load a byte or a half word with sign
+> extension into a 32bit register. As the JIT uses two 32 bit registers
+> to simulate a 64-bit BPF register, an extra instruction is emitted to
+> sign-extent the result up to the second register.
+> 
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 
-> +void drm_gpuvm_bo_destroy(struct kref *kref);
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-I usually keep kref's release functions private so people are not
-tempted to use them.
+but see below...
 
+Thanks!
+
+> +static inline void emit_ldsx_r(const s8 dst[], const s8 src,
+> +			       s16 off, struct jit_ctx *ctx, const u8 sz){
+> +	const s8 *tmp = bpf2a32[TMP_REG_1];
+> +	const s8 *rd = is_stacked(dst_lo) ? tmp : dst;
+> +	s8 rm = src;
+> +	int add_off;
 > +
-> +/**
-> + * drm_gpuvm_bo_get() - acquire a struct drm_gpuvm_bo reference
-> + * @vm_bo: the &drm_gpuvm_bo to acquire the reference of
-> + *
-> + * This function acquires an additional reference to @vm_bo. It is illegal to
-> + * call this without already holding a reference. No locks required.
-> + */
-> +static inline struct drm_gpuvm_bo *
-> +drm_gpuvm_bo_get(struct drm_gpuvm_bo *vm_bo)
-> +{
-> +	kref_get(&vm_bo->kref);
-> +	return vm_bo;
-> +}
-> +
-> +/**
-> + * drm_gpuvm_bo_put() - drop a struct drm_gpuvm_bo reference
-> + * @vm_bo: the &drm_gpuvm_bo to release the reference of
-> + *
-> + * This releases a reference to @vm_bo.
-> + */
-> +static inline void
-> +drm_gpuvm_bo_put(struct drm_gpuvm_bo *vm_bo)
-> +{
-> +	kref_put(&vm_bo->kref, drm_gpuvm_bo_destroy);
+> +	if (!is_ldst_imm8(off, sz)) {
 
-nit: can we have
+I think a comment here would be useful:
+		/* offset does not fit in the load/store immediate,
+		 * construct an ADD instruction to apply the offset.
+		 */
 
-	if (vm_bo)
-		kref_put(&vm_bo->kref, drm_gpuvm_bo_destroy);
+otherwise I'm sure someone will question why we aren't handling the zero
+case below... since zero will fit in the load/store immediate.
 
-so we don't have to bother testing the vm_bo value in the error/cleanup
-paths?
-
-> +}
-> +
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
