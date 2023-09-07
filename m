@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC1C79770F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50C2797687
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239851AbjIGQUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:20:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41792 "EHLO
+        id S230358AbjIGQMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239803AbjIGQUV (ORCPT
+        with ESMTP id S238054AbjIGQLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:20:21 -0400
-Received: from cantor.telenet-ops.be (cantor.telenet-ops.be [IPv6:2a02:1800:120:4::f00:10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1773585
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:16:15 -0700 (PDT)
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by cantor.telenet-ops.be (Postfix) with ESMTPS id 4RhL534xw3z4x8kN
+        Thu, 7 Sep 2023 12:11:47 -0400
+X-Greylist: delayed 1775 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Sep 2023 09:08:36 PDT
+Received: from gauss.telenet-ops.be (gauss.telenet-ops.be [IPv6:2a02:1800:120:4::f00:11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D3830EA
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:08:36 -0700 (PDT)
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by gauss.telenet-ops.be (Postfix) with ESMTPS id 4RhL534qBKz4x6x5
         for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 15:41:59 +0200 (CEST)
 Received: from ramsan.of.borg ([84.195.187.55])
-        by xavier.telenet-ops.be with bizsmtp
-        id j1hy2A00A1C8whw011hywq; Thu, 07 Sep 2023 15:41:59 +0200
+        by michel.telenet-ops.be with bizsmtp
+        id j1hy2A00n1C8whw061hyuv; Thu, 07 Sep 2023 15:41:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGQ-002m9y-SO;
+        id 1qeFGQ-002mA1-T2;
         Thu, 07 Sep 2023 15:41:58 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGg-00CMhp-4O;
+        id 1qeFGg-00CMhu-51;
         Thu, 07 Sep 2023 15:41:58 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -41,9 +42,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 35/52] m68k: mvme16x: Add and use "mvme16x.h"
-Date:   Thu,  7 Sep 2023 15:41:36 +0200
-Message-Id: <84050afd37df01b14804a51d08afa3837492eb30.1694093327.git.geert@linux-m68k.org>
+Subject: [PATCH 36/52] m68k: q40: Add and use "q40.h"
+Date:   Thu,  7 Sep 2023 15:41:37 +0200
+Message-Id: <16313fd669800e0e53d5aacdabd2405d6d4c99b1.1694093327.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
 References: <cover.1694093327.git.geert@linux-m68k.org>
@@ -61,61 +62,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/mvme16x/config.c:208:6: warning: no previous prototype for ‘mvme16x_cons_write’ [-Wmissing-prototypes]
-      208 | void mvme16x_cons_write(struct console *co, const char *str, unsigned count)
-	  |      ^~~~~~~~~~~~~~~~~~
+    arch/m68k/q40/q40ints.c:84:13: warning: no previous prototype for ‘q40_init_IRQ’ [-Wmissing-prototypes]
+       84 | void __init q40_init_IRQ(void)
+	  |             ^~~~~~~~~~~~
+    arch/m68k/q40/q40ints.c:112:6: warning: no previous prototype for ‘q40_mksound’ [-Wmissing-prototypes]
+      112 | void q40_mksound(unsigned int hz, unsigned int ticks)
+	  |      ^~~~~~~~~~~
+    arch/m68k/q40/q40ints.c:152:6: warning: no previous prototype for ‘q40_sched_init’ [-Wmissing-prototypes]
+      152 | void q40_sched_init (void)
+	  |      ^~~~~~~~~~~~~~
 
-Fix this by introducing a new header file "mvme16x.h" for holding the
-prototypes of functions implemented in arch/m68k/mvme16x/.
+Fix this by introducing a new header file "q40.h" for holding the
+prototypes of functions implemented in arch/m68k/q40/.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/kernel/early_printk.c | 4 ++--
- arch/m68k/mvme16x/config.c      | 2 ++
- arch/m68k/mvme16x/mvme16x.h     | 6 ++++++
- 3 files changed, 10 insertions(+), 2 deletions(-)
- create mode 100644 arch/m68k/mvme16x/mvme16x.h
+ arch/m68k/q40/config.c  | 6 ++----
+ arch/m68k/q40/q40.h     | 6 ++++++
+ arch/m68k/q40/q40ints.c | 2 ++
+ 3 files changed, 10 insertions(+), 4 deletions(-)
+ create mode 100644 arch/m68k/q40/q40.h
 
-diff --git a/arch/m68k/kernel/early_printk.c b/arch/m68k/kernel/early_printk.c
-index 7d3fe08a48eb0319..3cc944df04f65ef1 100644
---- a/arch/m68k/kernel/early_printk.c
-+++ b/arch/m68k/kernel/early_printk.c
-@@ -12,8 +12,8 @@
- #include <linux/string.h>
- #include <asm/setup.h>
- 
--extern void mvme16x_cons_write(struct console *co,
--			       const char *str, unsigned count);
-+
-+#include "../mvme16x/mvme16x.h"
- 
- asmlinkage void __init debug_cons_nputs(const char *s, unsigned n);
- 
-diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
-index b6833862ea6b1530..9bb9a33e43c246c4 100644
---- a/arch/m68k/mvme16x/config.c
-+++ b/arch/m68k/mvme16x/config.c
-@@ -38,6 +38,8 @@
- #include <asm/mvme16xhw.h>
+diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
+index c78ee709b45879c7..2c51c2b4a4fbbf79 100644
+--- a/arch/m68k/q40/config.c
++++ b/arch/m68k/q40/config.c
+@@ -36,16 +36,14 @@
+ #include <asm/q40_master.h>
  #include <asm/config.h>
  
-+#include "mvme16x.h"
+-extern void q40_init_IRQ(void);
++#include "q40.h"
 +
- extern t_bdid mvme_bdid;
+ static void q40_get_model(char *model);
+-extern void q40_sched_init(void);
  
- static MK48T08ptr_t volatile rtc = (MK48T08ptr_t)MVME_RTC_BASE;
-diff --git a/arch/m68k/mvme16x/mvme16x.h b/arch/m68k/mvme16x/mvme16x.h
+ static int q40_hwclk(int, struct rtc_time *);
+ static int q40_get_rtc_pll(struct rtc_pll_info *pll);
+ static int q40_set_rtc_pll(struct rtc_pll_info *pll);
+ 
+-extern void q40_mksound(unsigned int /*freq*/, unsigned int /*ticks*/);
+-
+ static void q40_mem_console_write(struct console *co, const char *b,
+ 				  unsigned int count);
+ 
+diff --git a/arch/m68k/q40/q40.h b/arch/m68k/q40/q40.h
 new file mode 100644
-index 0000000000000000..159c34b700394116
+index 0000000000000000..3146679bde0dab97
 --- /dev/null
-+++ b/arch/m68k/mvme16x/mvme16x.h
++++ b/arch/m68k/q40/q40.h
 @@ -0,0 +1,6 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +
-+struct console;
++/* q40ints.c */
++void q40_init_IRQ(void);
++void q40_mksound(unsigned int hz, unsigned int ticks);
++void q40_sched_init(void);
+diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
+index 127d7ecdbd49ecd9..10f1f294e91f9705 100644
+--- a/arch/m68k/q40/q40ints.c
++++ b/arch/m68k/q40/q40ints.c
+@@ -24,6 +24,8 @@
+ #include <asm/q40_master.h>
+ #include <asm/q40ints.h>
+ 
++#include "q40.h"
 +
-+/* config.c */
-+void mvme16x_cons_write(struct console *co, const char *str, unsigned count);
+ /*
+  * Q40 IRQs are defined as follows:
+  *            3,4,5,6,7,10,11,14,15 : ISA dev IRQs
 -- 
 2.34.1
 
