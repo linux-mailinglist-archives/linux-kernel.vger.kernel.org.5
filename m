@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFFF7978B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1626797918
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244386AbjIGQwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45320 "EHLO
+        id S238418AbjIGRBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244364AbjIGQwg (ORCPT
+        with ESMTP id S239200AbjIGRBC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:52:36 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30161FDC
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:52:09 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-501bd7711e8so2023556e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 09:52:09 -0700 (PDT)
+        Thu, 7 Sep 2023 13:01:02 -0400
+Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226E5210C;
+        Thu,  7 Sep 2023 10:00:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694105469; x=1694710269; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1wPPunoJweAisiG61XaqfURd25US3DbZZdoZ6G+g2JY=;
-        b=QHGVJwZJJyj2sSncwjntG3NvO7PbXtuwzJIg6DbRxWXcbOOUlEWHeUZO2BZwaAdxfv
-         rFbiiZ7K1hDtwhtm9UiyiO8FXhD6A1thwAIm3upxFcARsi20Xw4KT2lW8ZGf3okPTEyN
-         Vb1eFzYXIq95heEVapiNyAZzXqqOcAgrBaeXzd/YIZATwHIYnbPZetdJDythR7Nla7H9
-         DVZKsDqVmgK6wX8EaVECMAHkLNguyiN3IGXVy0Zs8XLwdSx+Fck62mkEyewm10HOJsct
-         Js6BJ6k6uVc5ivw6vdpSfzGYgzFUQZ+CyEWpTB0rZZSTGMdE+sdPkI/AbMqks5gjDTEV
-         TNCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694105469; x=1694710269;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1wPPunoJweAisiG61XaqfURd25US3DbZZdoZ6G+g2JY=;
-        b=grw91PcmP7CnE8WpqSc1xvF3e6NOvKioeeEAKdtog8RaP2uHNSyWpFEcZltXP8acUY
-         mJHfP+LyXsz7tryuemTYSNO2YIp+2v9eNfCIa5OrfCW/g6tAfJ+sdn+2O7nTqap8RoLh
-         EwKQPhEjEYADbv1umzkqIqTGXkmBsINS2I4JsXGXRkuVpxiuaKzbRzBJFB0U8Y1KDtjJ
-         7+CiYPOwxgRNel/CgjiBlQy/EMlVcrFJQvFKmlyMG6fhgDqP1+Fk+/5NC91F/WuQPMAO
-         C09zTw4PqQduNxtwz8HOR0qKYlclIf4/Co6gaNq5Nhh0xi6e5uf6gxO2rIAeMyv0dRCH
-         Nw7w==
-X-Gm-Message-State: AOJu0YyUUA3XXoeub9d93Ic4JX1+wLrbpURrOHARteac3I1RUWRHnHzQ
-        Xc+bTHyZsbnckTJ+UkaHn9jDDPpcW+ekFZsj080=
-X-Google-Smtp-Source: AGHT+IFkGoYeNhD80XRXiu4J3BySdBgX4kx7Q/cBAx337ZDivO9FJW07aVYeg6Jxv26gzJ+jFFW2XQ==
-X-Received: by 2002:adf:edc9:0:b0:31c:8c93:61e3 with SMTP id v9-20020adfedc9000000b0031c8c9361e3mr4104296wro.60.1694083970810;
-        Thu, 07 Sep 2023 03:52:50 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id l10-20020a5d4bca000000b003180155493esm22952369wrt.67.2023.09.07.03.52.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 03:52:50 -0700 (PDT)
-Date:   Thu, 7 Sep 2023 13:52:48 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     oe-kbuild@lists.linux.dev, Rob Herring <robh@kernel.org>
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: drivers/of/dynamic.c:935 of_changeset_action() warn: possible memory
- leak of 'ce'
-Message-ID: <eaa86211-436d-445b-80bd-84cea5745b5a@kadam.mountain>
+  d=axis.com; q=dns/txt; s=axis-central1; t=1694106039;
+  x=1725642039;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=0HShL49IKdWXDbTEKh+qaXy8Z/aZhrAVPA9VeReGrAc=;
+  b=lAB9g4T6hc+g4diDHVNgGPUx+74Bxe9oq5ZVmi7tpDaoovAg6bZ6g76e
+   JR5UQ3plUS4gZJfKPwzqRrm5j4RC0hc+Tc8LZQHd+DK1OvYhM3j1XoeHD
+   KQeOQDPzIs9n8k6+UGzXWzEWvKGIW1iaHymIFNCNFxV2RnIFBeXXtwhsz
+   34ghl0jwxaUWPUhQaIYK2qXelShM3HkVl1kYsGJfR6PuBsUCFFF4DQC4t
+   q99ej3KXYApDy4+ORwD6TTGPPuCLwhB4WXbNtW1W6fVEHoRtAB7ID2pvs
+   03Monjp46xgIPN9nQdJ6NaX9VIC6hQc+Vw0pzmb2lLfxL3LrujBLsEbBg
+   A==;
+From:   =?utf-8?q?M=C3=A5rten_Lindahl?= <marten.lindahl@axis.com>
+Date:   Thu, 7 Sep 2023 12:53:14 +0200
+Subject: [PATCH] iio: light: vcnl4000: Don't power on/off chip in config
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-ID: <20230907-vcnl4000-pm-fix-v1-1-58a11c1d5a6c@axis.com>
+X-B4-Tracking: v=1; b=H4sIAJmr+WQC/x2NywqDQAxFf0WybiC1Sh+/UrqYyWRqoE4lESmI/
+ 97R5eHcw13BxVQcHs0KJou6fkuF86kBHkJ5C2qqDC21F7rTFRcun46IcBox6w9jf0tMKefYM9Q
+ qBheMFgoPezcGn8V2MZnU/XH1fG3bHyqK8ox6AAAA
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+CC:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@axis.com>,
+        =?utf-8?q?M=C3=A5rten_Lindahl?= <marten.lindahl@axis.com>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694084004; l=1611;
+ i=marten.lindahl@axis.com; s=20230329; h=from:subject:message-id;
+ bh=H8tOJOL2nRLx5d0MtZXPuLd64FZ4lHUshLXSHdTT7Qk=;
+ b=ZZ+1HZwpikOf0sWcyA54MEu7XZG5ISi0v9ruQLLyqWNz48A3EUNTYHk+F6ZwfZ6kYIbN9m9Kn
+ 4IDrVezUB7jBXv3l7TltaIGXHUjEihgeenvdUEHF2sQV31qPuyX9Gtw
+X-Developer-Key: i=marten.lindahl@axis.com; a=ed25519;
+ pk=JfbjqFPJnIDIQOkJBeatC8+S3Ax3N0RIdmN+fL3wXgw=
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   99d99825fc075fd24b60cc9cf0fb1e20b9c16b0f
-commit: 914d9d831e6126a6e7a92e27fcfaa250671be42c of: dynamic: Refactor action prints to not use "%pOF" inside devtree_lock
-config: x86_64-randconfig-161-20230831 (https://download.01.org/0day-ci/archive/20230901/202309011059.EOdr4im9-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230901/202309011059.EOdr4im9-lkp@intel.com/reproduce)
+After enabling/disabling interrupts on the vcnl4040 chip the als and/or
+ps sensor is powered on or off depending on the interrupt enable bits.
+This is made as a last step in write_event_config.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202309011059.EOdr4im9-lkp@intel.com/
+But there is no reason to do this as the runtime PM handles the power
+state of the sensors. Interfering with this may impact sensor readings.
 
-smatch warnings:
-drivers/of/dynamic.c:935 of_changeset_action() warn: possible memory leak of 'ce'
+Consider the following:
+ 1. Userspace makes sensor data reading which triggers 2000ms RPM resume
+    (sensor powered on) timeout
+ 2. Userspace disables interrupts => powers sensor off
+ 3. Userspace reads sensor data = 0 because sensor is off and RPM didn't
+    power on the sensor as resume timeout is still active
+ 4. RPM resume timeout passed
 
-vim +/ce +935 drivers/of/dynamic.c
+Powering sensor off in (2) risks a time window of close to 2000ms where
+sensor data readings are disabled as in (3).
 
-201c910bd6898d Pantelis Antoniou 2014-07-04  925  int of_changeset_action(struct of_changeset *ocs, unsigned long action,
-201c910bd6898d Pantelis Antoniou 2014-07-04  926  		struct device_node *np, struct property *prop)
-201c910bd6898d Pantelis Antoniou 2014-07-04  927  {
-201c910bd6898d Pantelis Antoniou 2014-07-04  928  	struct of_changeset_entry *ce;
-201c910bd6898d Pantelis Antoniou 2014-07-04  929  
-201c910bd6898d Pantelis Antoniou 2014-07-04  930  	ce = kzalloc(sizeof(*ce), GFP_KERNEL);
-606ad42aa3b1fe Rob Herring       2016-06-15  931  	if (!ce)
-201c910bd6898d Pantelis Antoniou 2014-07-04  932  		return -ENOMEM;
-606ad42aa3b1fe Rob Herring       2016-06-15  933  
-914d9d831e6126 Rob Herring       2023-08-18  934  	if (WARN_ON(action >= ARRAY_SIZE(action_names)))
-914d9d831e6126 Rob Herring       2023-08-18 @935  		return -EINVAL;
+Skip setting power state when writing new event config.
 
-No kfree(ce).  Probably we move this check before the kmalloc()?
+Signed-off-by: Mårten Lindahl <marten.lindahl@axis.com>
+---
+ drivers/iio/light/vcnl4000.c | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/drivers/iio/light/vcnl4000.c b/drivers/iio/light/vcnl4000.c
+index 3a52b09c2823..fdf763a04b0b 100644
+--- a/drivers/iio/light/vcnl4000.c
++++ b/drivers/iio/light/vcnl4000.c
+@@ -1513,7 +1513,6 @@ static int vcnl4040_write_event_config(struct iio_dev *indio_dev,
+ 
+ out:
+ 	mutex_unlock(&data->vcnl4000_lock);
+-	data->chip_spec->set_power_state(data, data->ps_int || data->als_int);
+ 
+ 	return ret;
+ }
+
+---
+base-commit: 7ba2090ca64ea1aa435744884124387db1fac70f
+change-id: 20230907-vcnl4000-pm-fix-b58dc0dffb5c
+
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Mårten Lindahl <marten.lindahl@axis.com>
 
