@@ -2,210 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6447797470
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A76D4797406
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237830AbjIGPiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39364 "EHLO
+        id S1343931AbjIGPdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:33:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345107AbjIGPej (ORCPT
+        with ESMTP id S1343900AbjIGPbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:34:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7146B19B4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:33:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694100759;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LglCnmsSm9cwfpFlqnr7JUE1NH9ptGkqmJUAdBvVp8g=;
-        b=OkWl80waTV2LNHxfFIYkmzBF4kkG8Pr+cRQyZuR27b0l92hV1oJLEYV0NK7rcpBOhBPqww
-        x/EqkihQs2RoMntcA23HatByLtAdW2myHqCzBzM522WAcekJuJdyw6hYrcUcDFAGyUbHmf
-        ScruYbUyoQ/te2F+Or3saTTdpBTTNtk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-369-RLyOm8lNMGKJWDleATDsbw-1; Thu, 07 Sep 2023 10:21:24 -0400
-X-MC-Unique: RLyOm8lNMGKJWDleATDsbw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-31aea5cf0f5so697728f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 07:21:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694096482; x=1694701282;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LglCnmsSm9cwfpFlqnr7JUE1NH9ptGkqmJUAdBvVp8g=;
-        b=VpG50NKH06LMwHajVSglFIl3RWLth+uiaQaOyc0ZpM1yrVnkwPlhQXprEtcVO2IJN9
-         ioDhgZsHvwzr5wTnOTi4eCyhJtqT4H9BPSzawSrHMwMBL54sgb9fE70nrbWacPjVgDzR
-         eZHhMJ2S8ZA/DvR6utFN1xal5DqdICZp2J4T5fp3TTlxqudd+1yPiZnr+Dru2GbzRkIu
-         Bdz3aEV/JPQOjUtcON8aKWzBIcpyRJ2VNd52XX34/CjRIP0KcmGeImNMROYnTBMLbJyw
-         k4Iis2uDSH3c6KTopdJByY/zChL3I07+QU36gOGWXrnkxtQYY0QDrFgb6ql5Blbnr19G
-         4jFw==
-X-Gm-Message-State: AOJu0YxVT7F10/ScN9zV+YPv9GsfrCGIZAoMUqqYIBzDcIq7/ftxnCv3
-        dn/onEFgOfttSS+SNdjTBXPtMOg4ZsRDU22C6AcKBFY11R1y/7arVMsP2fTd3xBs25l4IKenV0b
-        JDnsfbACwzkHVbGBj6jyeYgRlJjS3qL4E
-X-Received: by 2002:a5d:654d:0:b0:317:1b08:b317 with SMTP id z13-20020a5d654d000000b003171b08b317mr4766224wrv.6.1694096482617;
-        Thu, 07 Sep 2023 07:21:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE+wAZoGUFZ5L33EjPRRR6PH6ZBIxSFyJkTnzLHNd+ONfr0VBusQvOVWFfA3E7tbWAyv3/9Nw==
-X-Received: by 2002:a5d:654d:0:b0:317:1b08:b317 with SMTP id z13-20020a5d654d000000b003171b08b317mr4766198wrv.6.1694096482246;
-        Thu, 07 Sep 2023 07:21:22 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id f12-20020adffccc000000b003143c9beeaesm23365778wrs.44.2023.09.07.07.21.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 07:21:21 -0700 (PDT)
-Message-ID: <e28cd056-9b54-1e5d-7602-c5acfc7f4ea7@redhat.com>
-Date:   Thu, 7 Sep 2023 16:21:19 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Reply-To: eric.auger@redhat.com
-Subject: Re: [PATCH 2/2] iommu/virtio: Add ops->flush_iotlb_all and enable
- deferred flush
-Content-Language: en-US
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        virtualization@lists.linux-foundation.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20230825-viommu-sync-map-v1-0-56bdcfaa29ec@linux.ibm.com>
- <20230825-viommu-sync-map-v1-2-56bdcfaa29ec@linux.ibm.com>
- <20230904153403.GB815284@myrica>
- <f1259993-2419-9c9e-30d3-0631ef938679@arm.com>
- <ba38b6d90e1f24f249ed8a18e65c403be6ff90e9.camel@linux.ibm.com>
- <20230906132031.GA1528947@myrica>
-From:   Eric Auger <eric.auger@redhat.com>
-In-Reply-To: <20230906132031.GA1528947@myrica>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 7 Sep 2023 11:31:33 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6278E1A8;
+        Thu,  7 Sep 2023 08:31:02 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 387E8rZB014032;
+        Thu, 7 Sep 2023 14:22:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : content-type :
+ content-transfer-encoding : mime-version : subject : message-id : date :
+ cc : to; s=pp1; bh=dUkAXyCyHItrF/WsrObVwTovymYudza/V3YjgbOmvic=;
+ b=Xy4f0H1OYDXpDdLvEM78QshUbSiNpHvXscBtkT3coNc5wJb+HCscw2p4YsJ4JcxqnYij
+ oTP4ejTIRMnXquKRSIg02zpH19QyGTuhfrMzDtT3Tqyr+x7C1jQwFI1yXWdsx72b/jNN
+ qEBHryvv0tMtqHEvfTCPEGyWwkua/zLzQW+Er//73hzzGA+s85MPdXghWJW4OaQ1ckoI
+ LrrXy0cRYAh9/+ABUPMeLKL/sKxHP484qCCs1AKSQSMUEkRnpV/p++D2R+su5aKMZyDN
+ Sr23GJyM6l9XymnenwmvjTZztdGLSefhmZHKOb73s5x73758tq9s9QXtUTIp80eERczF mw== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sye3fk9m2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Sep 2023 14:22:36 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 387CMXd0011145;
+        Thu, 7 Sep 2023 14:22:35 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3svj323qf6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Sep 2023 14:22:35 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 387EMYkZ44827044
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 Sep 2023 14:22:34 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 18D942004D;
+        Thu,  7 Sep 2023 14:22:34 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0209B20040;
+        Thu,  7 Sep 2023 14:22:33 +0000 (GMT)
+Received: from smtpclient.apple (unknown [9.43.34.62])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu,  7 Sep 2023 14:22:32 +0000 (GMT)
+From:   Sachin Sant <sachinp@linux.ibm.com>
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
+Subject: Kernel crash during ltp(min_free_kbytes) test run
+ (zone_reclaimable_pages)
+Message-Id: <F00144DE-2A3F-4463-8203-45E0D57E313E@linux.ibm.com>
+Date:   Thu, 7 Sep 2023 19:52:21 +0530
+Cc:     open list <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org
+To:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-mm@kvack.org,
+        liushixin2@huawei.com
+X-Mailer: Apple Mail (2.3731.700.6)
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: PQaPwk6xKlmw5QaV7EVWohlduXgRF9jr
+X-Proofpoint-GUID: PQaPwk6xKlmw5QaV7EVWohlduXgRF9jr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-07_07,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=759 phishscore=0 impostorscore=0 lowpriorityscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 spamscore=0 clxscore=1011
+ mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309070125
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+While running LTP tests (specifically min_free_kbytes) on a Power server
+booted with 6.5.0-next-20230906 following crash was encountered.
 
-On 9/6/23 15:20, Jean-Philippe Brucker wrote:
-> On Wed, Sep 06, 2023 at 09:55:49AM +0200, Niklas Schnelle wrote:
->> On Mon, 2023-09-04 at 17:33 +0100, Robin Murphy wrote:
->>> On 2023-09-04 16:34, Jean-Philippe Brucker wrote:
->>>> On Fri, Aug 25, 2023 at 05:21:26PM +0200, Niklas Schnelle wrote:
->>>>> Add ops->flush_iotlb_all operation to enable virtio-iommu for the
->>>>> dma-iommu deferred flush scheme. This results inn a significant increase
->>>> in
->>>>
->>>>> in performance in exchange for a window in which devices can still
->>>>> access previously IOMMU mapped memory. To get back to the prior behavior
->>>>> iommu.strict=1 may be set on the kernel command line.
->>>> Maybe add that it depends on CONFIG_IOMMU_DEFAULT_DMA_{LAZY,STRICT} as
->>>> well, because I've seen kernel configs that enable either.
->>> Indeed, I'd be inclined phrase it in terms of the driver now actually 
->>> being able to honour lazy mode when requested (which happens to be the 
->>> default on x86), rather than as if it might be some 
->>> potentially-unexpected change in behaviour.
->>>
->>> Thanks,
->>> Robin.
->> I kept running this series on a KVM guest on my private workstation
->> (QEMU v8.0.4) and while running iperf3 on a passed-through Intel 82599
->> VF. I got a bunch of IOMMU events similar to the following as well as
->> card resets in the host.
->>
->> ..
->> [ 5959.338214] vfio-pci 0000:04:10.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0037 address=0x7b657064 flags=0x0000]
->> [ 5963.353429] ixgbe 0000:03:00.0 enp3s0: Detected Tx Unit Hang
->>                  Tx Queue             <0>
->>                  TDH, TDT             <93>, <9d>
->>                  next_to_use          <9d>
->>                  next_to_clean        <93>
->>                tx_buffer_info[next_to_clean]
->>                  time_stamp           <10019e800>
->>                  jiffies              <10019ec80>
->> ...
->>
->> I retested on v6.5 vanilla (guest & host) and still get the above
->> errors so luckily for me it doesn't seem to be caused by the new code
->> but I can't reproduce it without virtio-iommu. Any idea what could
->> cause this?
-> Adding Eric in case this looks familiar.
-Unfortunately no idea of what could cause those page faults. On ther
-other hand I mostly test on ARM and INTEL.
+[ 3952.404936] __vm_enough_memory: pid: 440285, comm: min_free_kbytes, =
+not enough memory for the allocation
+[ 3956.895519] __vm_enough_memory: pid: 440286, comm: min_free_kbytes, =
+not enough memory for the allocation
+[ 3961.296168] __vm_enough_memory: pid: 440287, comm: min_free_kbytes, =
+not enough memory for the allocation
+[ 3982.202651] Kernel attempted to read user page (28) - exploit =
+attempt? (uid: 0)
+[ 3982.202669] BUG: Kernel NULL pointer dereference on read at =
+0x00000028
+[ 3982.202674] Faulting instruction address: 0xc000000000469660
+[ 3982.202679] Oops: Kernel access of bad area, sig: 11 [#1]
+[ 3982.202682] LE PAGE_SIZE=3D64K MMU=3DRadix SMP NR_CPUS=3D8192 NUMA =
+pSeries
+[ 3982.202688] Modules linked in: nfsv3 nfs_acl nfs lockd grace fscache =
+netfs brd overlay exfat vfat fat btrfs blake2b_generic xor raid6_pq =
+zstd_compress xfs loop sctp ip6_udp_tunnel udp_tunnel dm_mod =
+nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet =
+nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat =
+nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 bonding rfkill tls ip_set =
+nf_tables libcrc32c nfnetlink sunrpc pseries_rng vmx_crypto ext4 mbcache =
+jbd2 sd_mod t10_pi crc64_rocksoft crc64 sg ibmvscsi ibmveth =
+scsi_transport_srp fuse [last unloaded: init_module(O)]
+[ 3982.202756] CPU: 18 PID: 440288 Comm: min_free_kbytes Tainted: G O =
+6.5.0-next-20230906 #1
+[ 3982.202762] Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 =
+0xf000006 of:IBM,FW1030.20 (NH1030_058) hv:phyp pSeries
+[ 3982.202767] NIP: c000000000469660 LR: c0000000004694a8 CTR: =
+0000000000000000
+[ 3982.202771] REGS: c00000001d6af410 TRAP: 0300 Tainted: G O =
+(6.5.0-next-20230906)
+[ 3982.202776] MSR: 8000000000009033 <SF,EE,ME,IR,DR,RI,LE> CR: 24402444 =
+XER: 00000000
+[ 3982.202787] CFAR: c0000000004694fc DAR: 0000000000000028 DSISR: =
+40000000 IRQMASK: 0=20
+[ 3982.202787] GPR00: c0000000004696b8 c00000001d6af6b0 c000000001451100 =
+0000000000000080=20
+[ 3982.202787] GPR04: 0000000000000080 0000000000000081 0000000000000020 =
+0000000000000000=20
+[ 3982.202787] GPR08: 0000000000000080 00000000000048d9 0000000000000000 =
+00000000000014de=20
+[ 3982.202787] GPR12: 0000000000008000 c0000013ffab5300 c000000002f27238 =
+c000000002c9d4d8=20
+[ 3982.202787] GPR16: 0000000000000000 0000000000000000 c000000006924d40 =
+c000000002d174f8=20
+[ 3982.202787] GPR20: c000000002d17500 0000000000000002 60000000000000e0 =
+00000000000008c0=20
+[ 3982.202787] GPR24: 0000000000000000 0000000000000000 0000000000000000 =
+c000000002c9a7e8=20
+[ 3982.202787] GPR28: c000000002c9be10 c0000013ff1d1500 0000000000000488 =
+0000000000000950=20
+[ 3982.202839] NIP [c000000000469660] zone_reclaimable_pages+0x2a0/0x2c0
+[ 3982.202847] LR [c0000000004694a8] zone_reclaimable_pages+0xe8/0x2c0
+[ 3982.202852] Call Trace:
+[ 3982.202854] [c00000001d6af6b0] [5deadbeef0000122] 0x5deadbeef0000122 =
+(unreliable)
+[ 3982.202861] [c00000001d6af710] [c0000000004696b8] =
+allow_direct_reclaim.part.72+0x38/0x190
+[ 3982.202867] [c00000001d6af760] [c000000000469990] =
+throttle_direct_reclaim+0x180/0x400
+[ 3982.202873] [c00000001d6af7e0] [c00000000046de88] =
+try_to_free_pages+0xd8/0x2a0
+[ 3982.202879] [c00000001d6af8a0] [c0000000004e7370] =
+__alloc_pages_slowpath.constprop.92+0x490/0x1000
+[ 3982.202886] [c00000001d6afa50] [c0000000004e822c] =
+__alloc_pages+0x34c/0x3d0
+[ 3982.202893] [c00000001d6afad0] [c0000000004e8ce4] =
+__folio_alloc+0x34/0x90
+[ 3982.202898] [c00000001d6afb00] [c00000000051ba50] =
+vma_alloc_folio+0xe0/0x460
+[ 3982.202905] [c00000001d6afbc0] [c0000000004af108] =
+do_pte_missing+0x2a8/0xca0
+[ 3982.202912] [c00000001d6afc10] [c0000000004b3590] =
+__handle_mm_fault+0x3f0/0x1060
+[ 3982.202917] [c00000001d6afd20] [c0000000004b43c4] =
+handle_mm_fault+0x1c4/0x330
+[ 3982.202923] [c00000001d6afd70] [c000000000092a14] =
+___do_page_fault+0x2d4/0xaa0
+[ 3982.202930] [c00000001d6afe20] [c0000000000934d0] =
+do_page_fault+0xa0/0x2a0
+[ 3982.202936] [c00000001d6afe50] [c000000000008be0] =
+data_access_common_virt+0x210/0x220
+[ 3982.202943] --- interrupt: 300 at 0x7fffb3cc6360
+[ 3982.202946] NIP: 00007fffb3cc6360 LR: 0000000010005644 CTR: =
+0000000000001200
+[ 3982.202950] REGS: c00000001d6afe80 TRAP: 0300 Tainted: G O =
+(6.5.0-next-20230906)
+[ 3982.202955] MSR: 800000000200d033 <SF,VEC,EE,PR,ME,IR,DR,RI,LE> CR: =
+44002444 XER: 00000000
+[ 3982.202966] CFAR: 00007fffb3cc6384 DAR: 00007fea3bc70000 DSISR: =
+42000000 IRQMASK: 0=20
+[ 3982.202966] GPR00: 0000000000002000 00007fffd0497ae0 0000000010057f00 =
+00007fea3bc00000=20
+[ 3982.202966] GPR04: 0000000000000001 0000000000100000 00007fea3bc70000 =
+0000000000000000=20
+[ 3982.202966] GPR08: 1000000000000000 00007fea3bc00000 0000000000000000 =
+0000000000000000=20
+[ 3982.202966] GPR12: 00007fffb3cc62a0 00007fffb410b080 0000000000000000 =
+0000000000000000=20
+[ 3982.202966] GPR16: 0000000000000000 0000000000000000 0000000000000000 =
+0000000000000000=20
+[ 3982.202966] GPR20: 000000001002c260 000000001002c208 cccccccccccccccd =
+a3d70a3d70a3d70b=20
+[ 3982.202966] GPR24: 000000001002c2d0 000000001002c238 00007fffb3e01888 =
+000000001002c260=20
+[ 3982.202966] GPR28: 0000000000000000 000000001002c1f0 000000001002c218 =
+0000000000000000=20
+[ 3982.203016] NIP [00007fffb3cc6360] 0x7fffb3cc6360
+[ 3982.203020] LR [0000000010005644] 0x10005644
+[ 3982.203023] --- interrupt: 300
+[ 3982.203026] Code: eb21ffc8 eb81ffe0 eba1ffe8 ebc1fff0 7fffd214 =
+eb41ffd0 7c0803a6 7fe3fb78 ebe1fff8 4e800020 60000000 60000000 =
+<a12a0028> 3900ffff 7909782c b12a0028=20
+[ 3982.203044] ---[ end trace 0000000000000000 ]---
+[ 3982.299095] pstore: backend (nvram) writing error (-1)
+[ 3982.299105]=20
+[ 3983.299108] Kernel panic - not syncing: Fatal exception
+[ 3983.564309] Rebooting in 10 seconds..
 
-Thanks
+Git bisect point to the following patch
 
-Eric
->
-> I don't have hardware to test this but I guess QEMU system emulation may
-> be able to reproduce the issue since it has an AMD IOMMU (unmaintained)
-> and igb, I can give that a try.
->
-> Thanks,
-> Jean
->
->>>>> Link: https://lore.kernel.org/lkml/20230802123612.GA6142@myrica/
->>>>> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
->>>>> ---
->>>>>   drivers/iommu/virtio-iommu.c | 12 ++++++++++++
->>>>>   1 file changed, 12 insertions(+)
->>>>>
->>>>> diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
->>>>> index fb73dec5b953..1b7526494490 100644
->>>>> --- a/drivers/iommu/virtio-iommu.c
->>>>> +++ b/drivers/iommu/virtio-iommu.c
->>>>> @@ -924,6 +924,15 @@ static int viommu_iotlb_sync_map(struct iommu_domain *domain,
->>>>>   	return viommu_sync_req(vdomain->viommu);
->>>>>   }
->>>>>   
->>>>> +static void viommu_flush_iotlb_all(struct iommu_domain *domain)
->>>>> +{
->>>>> +	struct viommu_domain *vdomain = to_viommu_domain(domain);
->>>>> +
->>>>> +	if (!vdomain->nr_endpoints)
->>>>> +		return;
->>>> As for patch 1, a NULL check in viommu_sync_req() would allow dropping
->>>> this one
->>>>
->>>> Thanks,
->>>> Jean
->> Right, makes sense will move the check into viommu_sync_req() and add a
->> coment that it is there fore the cases where viommu_iotlb_sync() et al
->> get called before the IOMMU is set up.
->>
->>>>> +	viommu_sync_req(vdomain->viommu);
->>>>> +}
->>>>> +
->>>>>   static void viommu_get_resv_regions(struct device *dev, struct list_head *head)
->>>>>   {
->>>>>   	struct iommu_resv_region *entry, *new_entry, *msi = NULL;
->>>>> @@ -1049,6 +1058,8 @@ static bool viommu_capable(struct device *dev, enum iommu_cap cap)
->>>>>   	switch (cap) {
->>>>>   	case IOMMU_CAP_CACHE_COHERENCY:
->>>>>   		return true;
->>>>> +	case IOMMU_CAP_DEFERRED_FLUSH:
->>>>> +		return true;
->>>>>   	default:
->>>>>   		return false;
->>>>>   	}
->>>>> @@ -1069,6 +1080,7 @@ static struct iommu_ops viommu_ops = {
->>>>>   		.map_pages		= viommu_map_pages,
->>>>>   		.unmap_pages		= viommu_unmap_pages,
->>>>>   		.iova_to_phys		= viommu_iova_to_phys,
->>>>> +		.flush_iotlb_all	= viommu_flush_iotlb_all,
->>>>>   		.iotlb_sync		= viommu_iotlb_sync,
->>>>>   		.iotlb_sync_map		= viommu_iotlb_sync_map,
->>>>>   		.free			= viommu_domain_free,
->>>>>
->>>>> -- 
->>>>> 2.39.2
->>>>>
+commit 92039ae85e8d018e82b9ba2597ca22e9851447fe
+    mm: vmscan: try to reclaim swapcache pages if no swap space
+
+The system is configured with 60GB of memory and 4GB of swap.
+
+- Sachin
 
