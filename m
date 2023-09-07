@@ -2,74 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A496797F2C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 01:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B68797F35
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 01:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236315AbjIGXUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 19:20:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
+        id S238200AbjIGX16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 19:27:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbjIGXUr (ORCPT
+        with ESMTP id S234080AbjIGX14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 19:20:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4122BD;
-        Thu,  7 Sep 2023 16:20:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694128842; x=1725664842;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ggY/GKEgTVUk5ouzhz7rkBEZ4EGqRqpIw6ao6M925ew=;
-  b=IEeq6CAgg6hfote1py/xVUvVmVLDpBuZFyHPK8+lj869mN8GTeCE6P/B
-   +2fULnUcd90ekibjrQMfB1ABGJFN2LVWHGumXyTIe5aEv2IJ2nHYUsCRl
-   mrOQ/X9Pw+qYRIF1YSq2mebL8rGQLRQI/jQ60lezwKarc2VNBHp44Zx6Q
-   Z9cst//ZMSyDOZMFGVlL7V9UHsftt9xSnRsPrzeR9DJu9qIC8E0FZpcWk
-   caXwFVrsmLpoail3OjT+u6AGXKzpHGZSvNrbJbWAKfOQDewNLZdY52XEb
-   hnLqoL7ZEKungPs8CC/lzbcHf+3T+3z808doPlbra9xbdZGfBTM3UdGlK
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="362570430"
-X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
-   d="scan'208";a="362570430"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 16:20:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="718909750"
-X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
-   d="scan'208";a="718909750"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 07 Sep 2023 16:20:37 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qeOId-0001hP-1n;
-        Thu, 07 Sep 2023 23:20:35 +0000
-Date:   Fri, 8 Sep 2023 07:20:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Lu Hongfei <luhongfei@vivo.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Bean Huo <beanhuo@micron.com>,
-        Asutosh Das <quic_asutoshd@quicinc.com>,
-        "Bao D. Nguyen" <quic_nguyenb@quicinc.com>,
-        Arthur Simchaev <Arthur.Simchaev@wdc.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, opensource.kernel@vivo.com,
-        luhongfei@vivo.com
-Subject: Re: [PATCH 3/3] scsi: ufs: core: Add exception event handler to
- implicitly handle WB buffer resize event
-Message-ID: <202309080739.i8Muq8IT-lkp@intel.com>
-References: <20230907094517.1961-1-luhongfei@vivo.com>
+        Thu, 7 Sep 2023 19:27:56 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6E9B3CF3;
+        Thu,  7 Sep 2023 16:27:51 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 02945FEC;
+        Thu,  7 Sep 2023 16:28:29 -0700 (PDT)
+Received: from slackpad.lan (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14B893F64C;
+        Thu,  7 Sep 2023 16:27:47 -0700 (PDT)
+Date:   Fri, 8 Sep 2023 00:26:36 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Martin Botka <martin.botka@somainline.org>
+Cc:     Vasily Khoruzhick <anarsoul@gmail.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Alan Ma <tech@biqu3d.com>,
+        Luke Harrison <bttuniversity@biqu3d.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin@biqu3d.com>
+Subject: Re: [PATCH v2 2/3] thermal: sun8i: Add support for H616 THS
+ controller
+Message-ID: <20230908002035.4a2d9be0@slackpad.lan>
+In-Reply-To: <20230821-ths-h616-v2-2-cda60d556798@somainline.org>
+References: <20230821-ths-h616-v2-0-cda60d556798@somainline.org>
+        <20230821-ths-h616-v2-2-cda60d556798@somainline.org>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230907094517.1961-1-luhongfei@vivo.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -78,74 +65,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lu,
+On Mon, 21 Aug 2023 16:03:47 +0200
+Martin Botka <martin.botka@somainline.org> wrote:
 
-kernel test robot noticed the following build errors:
+Hi,
 
-[auto build test ERROR on mkp-scsi/for-next]
-[also build test ERROR on jejb-scsi/for-next linus/master v6.5 next-20230907]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> Add support for the thermal sensor found in H616 SoC
+> which slightly resembles the H6 thermal sensor
+> controller with few changes like 4 sensors.
+> 
+> Signed-off-by: Martin Botka <martin.botka@somainline.org>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Lu-Hongfei/scsi-ufs-core-allow-host-driver-to-enable-wb-buffer-resize-function/20230907-234105
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git for-next
-patch link:    https://lore.kernel.org/r/20230907094517.1961-1-luhongfei%40vivo.com
-patch subject: [PATCH 3/3] scsi: ufs: core: Add exception event handler to implicitly handle WB buffer resize event
-config: x86_64-randconfig-r036-20230908 (https://download.01.org/0day-ci/archive/20230908/202309080739.i8Muq8IT-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230908/202309080739.i8Muq8IT-lkp@intel.com/reproduce)
+So this doesn't work on both my OrangePi Zero3 and my X96 Mate, the
+values reported are way too high. The kernel gets immediately upset
+about the alleged >200C, and demands immediate shutdown.
+Those are the values from hwmon on the X96 Mate:
+/sys/class/hwmon/hwmon0/name:gpu_thermal
+/sys/class/hwmon/hwmon0/temp1_input:220301
+/sys/class/hwmon/hwmon1/name:ve_thermal
+/sys/class/hwmon/hwmon1/temp1_input:219734
+/sys/class/hwmon/hwmon2/name:cpu_thermal
+/sys/class/hwmon/hwmon2/temp1_input:220868
+/sys/class/hwmon/hwmon3/name:ddr_thermal
+/sys/class/hwmon/hwmon3/temp1_input:221354
+The raw values ranged from 0x273 till 0x294, with various values in
+between. The reported temperatures on the OPi Zero3 were a bit lower,
+but still around 200C.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309080739.i8Muq8IT-lkp@intel.com/
+The calibration data in the fuses seems to be meaningful, it says the
+raw values are 0xb0f, 0xb18, 0xb14, 0xb1d for the four sensors, at an
+ambient temperature of 27C. Those raw values would translate to about
+34C/42C, so not completely off the scale.
 
-All errors (new ones prefixed by >>):
+This is as far as I dug today, maybe the sampling procedure is skewed,
+so the ADC returns wrong values? Or the calibration write to the THS is
+broken? Skipping that doesn't change the outcome significantly, though.
 
-   drivers/ufs/core/ufshcd.c: In function 'ufshcd_configure_wb':
-   drivers/ufs/core/ufshcd.c:322:19: error: invalid type argument of '->' (have 'struct ufs_dev_info')
-     if (hba->dev_info->wspecversion >= 0x410
-                      ^~
-   drivers/ufs/core/ufshcd.c:323:22: error: invalid type argument of '->' (have 'struct ufs_dev_info')
-         && hba->dev_info->b_presrv_uspc_en
-                         ^~
-   drivers/ufs/core/ufshcd.c:326:3: error: implicit declaration of function 'ufshcd_enable_ee'; did you mean 'ufshcd_enable_irq'? [-Werror=implicit-function-declaration]
-      ufshcd_enable_ee(hba, mask);
-      ^~~~~~~~~~~~~~~~
-      ufshcd_enable_irq
-   drivers/ufs/core/ufshcd.c: At top level:
->> drivers/ufs/core/ufshcd.c:5642:19: error: conflicting types for 'ufshcd_enable_ee'
-    static inline int ufshcd_enable_ee(struct ufs_hba *hba, u16 mask)
-                      ^~~~~~~~~~~~~~~~
-   drivers/ufs/core/ufshcd.c:5643:1: note: an argument type that has a default promotion can't match an empty parameter name list declaration
-    {
-    ^
-   drivers/ufs/core/ufshcd.c:326:3: note: previous implicit declaration of 'ufshcd_enable_ee' was here
-      ufshcd_enable_ee(hba, mask);
-      ^~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+Open to any ideas or debugging suggestions!
 
+Cheers,
+Andre
 
-vim +/ufshcd_enable_ee +5642 drivers/ufs/core/ufshcd.c
+> ---
+>  drivers/thermal/sun8i_thermal.c | 74 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 74 insertions(+)
+> 
+> diff --git a/drivers/thermal/sun8i_thermal.c b/drivers/thermal/sun8i_thermal.c
+> index 195f3c5d0b38..cf96ab6a445b 100644
+> --- a/drivers/thermal/sun8i_thermal.c
+> +++ b/drivers/thermal/sun8i_thermal.c
+> @@ -278,6 +278,66 @@ static int sun50i_h6_ths_calibrate(struct ths_device *tmdev,
+>  	return 0;
+>  }
+>  
+> +static int sun50i_h616_ths_calibrate(struct ths_device *tmdev,
+> +				     u16 *caldata, int callen)
+> +{
+> +	struct device *dev = tmdev->dev;
+> +	int i, ft_temp;
+> +
+> +	if (!caldata[0])
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * h616 efuse THS calibration data layout:
+> +	 *
+> +	 * 0      11  16     27   32     43   48    57
+> +	 * +----------+-----------+-----------+-----------+
+> +	 * |  temp |  |sensor0|   |sensor1|   |sensor2|   |
+> +	 * +----------+-----------+-----------+-----------+
+> +	 *                      ^           ^           ^
+> +	 *                      |           |           |
+> +	 *                      |           |           sensor3[11:8]
+> +	 *                      |           sensor3[7:4]
+> +	 *                      sensor3[3:0]
+> +	 *
+> +	 * The calibration data on the H616 is the ambient temperature and
+> +	 * sensor values that are filled during the factory test stage.
+> +	 *
+> +	 * The unit of stored FT temperature is 0.1 degree celsius.
+> +	 */
+> +	ft_temp = caldata[0] & FT_TEMP_MASK;
+> +
+> +	for (i = 0; i < tmdev->chip->sensor_num; i++) {
+> +		int delta, cdata, offset, reg;
+> +
+> +		if (i == 3)
+> +			reg = (caldata[1] >> 12)
+> +			      | ((caldata[2] >> 12) << 4)
+> +			      | ((caldata[3] >> 12) << 8);
+> +		else
+> +			reg = (int)caldata[i + 1] & TEMP_CALIB_MASK;
+> +
+> +		int sensor_temp = tmdev->chip->calc_temp(tmdev, i, reg);
+> +
+> +		delta = (sensor_temp - ft_temp * 100) * 10;
+> +		delta /= tmdev->chip->scale;
+> +		cdata = CALIBRATE_DEFAULT - delta;
+> +		if (cdata & ~TEMP_CALIB_MASK) {
+> +			dev_warn(dev, "sensor%d is not calibrated.\n", i);
+> +
+> +			continue;
+> +		}
+> +
+> +		offset = (i % 2) * 16;
+> +		regmap_update_bits(tmdev->regmap,
+> +				   SUN50I_H6_THS_TEMP_CALIB + (i / 2 * 4),
+> +				   TEMP_CALIB_MASK << offset,
+> +				   cdata << offset);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int sun8i_ths_calibrate(struct ths_device *tmdev)
+>  {
+>  	struct nvmem_cell *calcell;
+> @@ -608,6 +668,19 @@ static const struct ths_thermal_chip sun50i_h6_ths = {
+>  	.calc_temp = sun8i_ths_calc_temp,
+>  };
+>  
+> +static const struct ths_thermal_chip sun50i_h616_ths = {
+> +	.sensor_num = 4,
+> +	.has_bus_clk_reset = true,
+> +	.ft_deviation = 8000,
+> +	.offset = 263655,
+> +	.scale = 810,
+> +	.temp_data_base = SUN50I_H6_THS_TEMP_DATA,
+> +	.calibrate = sun50i_h616_ths_calibrate,
+> +	.init = sun50i_h6_thermal_init,
+> +	.irq_ack = sun50i_h6_irq_ack,
+> +	.calc_temp = sun8i_ths_calc_temp,
+> +};
+> +
+>  static const struct of_device_id of_ths_match[] = {
+>  	{ .compatible = "allwinner,sun8i-a83t-ths", .data = &sun8i_a83t_ths },
+>  	{ .compatible = "allwinner,sun8i-h3-ths", .data = &sun8i_h3_ths },
+> @@ -616,6 +689,7 @@ static const struct of_device_id of_ths_match[] = {
+>  	{ .compatible = "allwinner,sun50i-a100-ths", .data = &sun50i_a100_ths },
+>  	{ .compatible = "allwinner,sun50i-h5-ths", .data = &sun50i_h5_ths },
+>  	{ .compatible = "allwinner,sun50i-h6-ths", .data = &sun50i_h6_ths },
+> +	{ .compatible = "allwinner,sun50i-h616-ths", .data = &sun50i_h616_ths },
+>  	{ /* sentinel */ },
+>  };
+>  MODULE_DEVICE_TABLE(of, of_ths_match);
+> 
 
-66ec6d59407baf drivers/scsi/ufs/ufshcd.c Sujit Reddy Thumma 2013-07-30  5631  
-66ec6d59407baf drivers/scsi/ufs/ufshcd.c Sujit Reddy Thumma 2013-07-30  5632  /**
-66ec6d59407baf drivers/scsi/ufs/ufshcd.c Sujit Reddy Thumma 2013-07-30  5633   * ufshcd_enable_ee - enable exception event
-66ec6d59407baf drivers/scsi/ufs/ufshcd.c Sujit Reddy Thumma 2013-07-30  5634   * @hba: per-adapter instance
-66ec6d59407baf drivers/scsi/ufs/ufshcd.c Sujit Reddy Thumma 2013-07-30  5635   * @mask: exception event to enable
-66ec6d59407baf drivers/scsi/ufs/ufshcd.c Sujit Reddy Thumma 2013-07-30  5636   *
-66ec6d59407baf drivers/scsi/ufs/ufshcd.c Sujit Reddy Thumma 2013-07-30  5637   * Enable corresponding exception event in the device to allow
-66ec6d59407baf drivers/scsi/ufs/ufshcd.c Sujit Reddy Thumma 2013-07-30  5638   * device to alert host in critical scenarios.
-66ec6d59407baf drivers/scsi/ufs/ufshcd.c Sujit Reddy Thumma 2013-07-30  5639   *
-3a17fefe0f1960 drivers/ufs/core/ufshcd.c Bart Van Assche    2023-07-27  5640   * Return: zero on success, non-zero error value on failure.
-66ec6d59407baf drivers/scsi/ufs/ufshcd.c Sujit Reddy Thumma 2013-07-30  5641   */
-cd4694756188dc drivers/scsi/ufs/ufshcd.c Adrian Hunter      2021-02-09 @5642  static inline int ufshcd_enable_ee(struct ufs_hba *hba, u16 mask)
-66ec6d59407baf drivers/scsi/ufs/ufshcd.c Sujit Reddy Thumma 2013-07-30  5643  {
-cd4694756188dc drivers/scsi/ufs/ufshcd.c Adrian Hunter      2021-02-09  5644  	return ufshcd_update_ee_drv_mask(hba, mask, 0);
-66ec6d59407baf drivers/scsi/ufs/ufshcd.c Sujit Reddy Thumma 2013-07-30  5645  }
-66ec6d59407baf drivers/scsi/ufs/ufshcd.c Sujit Reddy Thumma 2013-07-30  5646  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
