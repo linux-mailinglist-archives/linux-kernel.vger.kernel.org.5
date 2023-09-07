@@ -2,119 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8A679735E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A82979737D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236557AbjIGPXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:23:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
+        id S238963AbjIGPYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbjIGPWY (ORCPT
+        with ESMTP id S237693AbjIGPXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:22:24 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B68561BF6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:21:53 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0349D75;
-        Thu,  7 Sep 2023 05:22:52 -0700 (PDT)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7F2AD3F7B4;
-        Thu,  7 Sep 2023 05:22:13 -0700 (PDT)
-Message-ID: <15d1dd8f-a002-8b98-55ba-632427e621cf@arm.com>
-Date:   Thu, 7 Sep 2023 13:22:08 +0100
+        Thu, 7 Sep 2023 11:23:42 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE58A1A8
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:23:38 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-64c2e2572f7so6217206d6.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:23:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694100218; x=1694705018; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nru8i4bgjGam2s0eVDHGzt5BZMucVHF+hIDLNbT6b4E=;
+        b=BcHf+jepLqKlAx5HIfAH7o4iVStvqK78MyAZlawFh30vj6hdCdI80lsiMwGsU8HPHO
+         6+4vG7955Jfh3v5zpfZh5mMV8S3P+6FtI7MKgrxrZdiD6vpNAU8fDwWkhS1OYqFfsUaN
+         g9XChoeWof9Gblk81xWO058b76ZRXFA3Q7a3DpsxZ3jHRNCkQH1BINWAY75nJ5BLud1n
+         gBTJj5iMd8STdGdeBlbTOp+wZfA2z1FZc/VoCEBh6ytgbYrpEcL4q12cXayJRpWam2Re
+         4qoX+9a5IQ2dKt7HHBkjwJaYtyHOhegMMpnAnkNWGqBeZ+IeAqfREPVY8u9hvfrjk4uc
+         eB1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694100218; x=1694705018;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nru8i4bgjGam2s0eVDHGzt5BZMucVHF+hIDLNbT6b4E=;
+        b=JnuQznGQhhLF1MuSeZxGrJECQJlP9IR7qyfwR0ilJcMC6XRhIMAwR7tECYHsmV4UZU
+         5RRDTZRyXjhFV9VkLxJlSwM0tttckuYo3k8i1Q8BUvLsfFJDfgtZjrVlPSg9kDgQV4DG
+         nSsYW+xh13qWR7IXoDBifjXwRO2rI+MMlzrDYkEnxBFVB81iup5Iq4rPWIVhFKD0s8bo
+         9k96z2yinCE6fnRxWU3rt9gxXTXquYWiP/Tu4ktH2iiDPQsthAacZl7nwAN560RJQ2Em
+         IZLvgTIuzdD077tdGH67q4cfaCCzDrsdNNyJlvR6+FgogWLI2Ap5jHd8WhzSdtTEfep/
+         hmWQ==
+X-Gm-Message-State: AOJu0Yxjl1uajvEoVWv1N33meYrq9xQfUT8dTNxAktAiP/Ix0W5k8Gi7
+        DqBgbY1YbZSFAl7gFJdP5UZGB2PVUoQ=
+X-Google-Smtp-Source: AGHT+IFhCSc3IyOjLVb0sGvRbSDHFLGpOyNjFl+tTbEmTaH9vc5oAwVyigLfHtpR0V8LFgRy/gSLBw==
+X-Received: by 2002:a17:902:f802:b0:1c0:a417:ccb2 with SMTP id ix2-20020a170902f80200b001c0a417ccb2mr14397662plb.35.1694089430194;
+        Thu, 07 Sep 2023 05:23:50 -0700 (PDT)
+Received: from ubuntu.myguest.virtualbox.org ([223.178.252.251])
+        by smtp.gmail.com with ESMTPSA id jl1-20020a170903134100b001c32fd9e412sm8060207plb.58.2023.09.07.05.23.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 05:23:49 -0700 (PDT)
+Date:   Thu, 7 Sep 2023 17:53:44 +0530
+From:   Pavan Bobba <opensource206@gmail.com>
+To:     Forest Bond <forest@alittletooquiet.net>,
+        Michael Straube <straube.linux@gmail.com>,
+        Philipp Hortmann <philipp.g.hortmann@gmail.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] staging: vt6655: array names updated as per kernel coding
+ guidelines
+Message-ID: <ZPnA0Pra2HK30nBu@ubuntu.myguest.virtualbox.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: snd-cmipci oops during probe on arm64 (current mainline,
- pre-6.6-rc1)
-Content-Language: en-GB
-To:     Antonio Terceiro <antonio.terceiro@linaro.org>
-Cc:     Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <ZPelHaX/Lt++kkOm@linaro.org> <877cp3esse.wl-tiwai@suse.de>
- <4f335dd2-8043-c60e-cf84-c2b01c4fee12@arm.com> <ZPjGuCdmPgqznc5t@linaro.org>
- <43632d9d-722c-b14f-336a-eac402ef9362@arm.com> <ZPkcIayHbYJopT6n@linaro.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <ZPkcIayHbYJopT6n@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/09/2023 1:41 am, Antonio Terceiro wrote:
-> On Wed, Sep 06, 2023 at 08:52:40PM +0100, Robin Murphy wrote:
->> On 2023-09-06 19:36, Antonio Terceiro wrote:
->>> I'm pretty sure I saw reports of people using PCI GPUs on this machine,
->>> but I would need to confirm.
->>
->> GPUs and any other PCIe devices will be fine, since they will use memory
->> BARs - I/O space is pretty much deprecated in PCIe, and as mentioned some
->> systems don't even support it at all. I found a datasheet for CMI8738, and
->> they seem to be right at the other end of the scale as legacy PCI chips with
->> *only* an I/O BAR (and so I guess your card includes a PCIe-PCI bridge as
->> well), so are definitely going to be hitting paths that are less
->> well-exercised on arm64 in general.
-> 
-> OK, that makes sense. So If I'm able to find a card that is genuinely
-> PCIe¹, then it should work?
-> 
-> ¹ this one has a connector that looks like a PCIe x1, but it's not
->    really PCIe as the chipset was designed for legacy PCI?
+Below array names updated as per coding guidelines:
 
-Probably - native PCIe endpoints are still allowed to have I/O 
-resources, but they are required to be accessible as equivalent memory 
-resources as well, so most PCIe drivers are unlikely to care about I/O 
-BARs at all.
+   1.byVT3253B0_AGC4_RFMD2959
+   2.byVT3253B0_AIROHA2230
+   3.byVT3253B0_UW2451
+   4.byVT3253B0_AGC
 
->>> What info would I need to gather from the machine in order to figure
->>> this out?
->>
->> The first thing I'd try is rebuilding the kernel with CONFIG_INDIRECT_PIO
->> disabled and see what difference that makes. I'm not too familiar with that
->> area of the code, so the finer details of how to debug broken I/O space
->> beyond that would be more of a linux-pci question.
-> 
-> Tried that, didn't help.
+   Conversions performed:
+   a.type encoding info dropped from names
+   b.names replaced by snakecase
 
-OK, I managed to have a poke around on a full-fat Altra Mt.Jade system, 
-and indeed, at least on this one, the firmware is not describing any I/O 
-space windows at all:
+   Issue found by checkpatch
 
-[    8.657752] pci_bus 0001:00: root bus resource [bus 00-ff]
-[    8.663235] pci_bus 0001:00: root bus resource [mem 
-0x30000000-0x37ffffff window]
-[    8.670715] pci_bus 0001:00: root bus resource [mem 
-0x380000000000-0x3bffdfffffff window]
-[    8.678926] pci 0001:00:00.0: [1def:e100] type 00 class 0x060000
+Signed-off-by: Pavan Bobba <opensource206@gmail.com>
+---
+  v1 -> v2: 1.subject name modified to more meaningful detail
+            2.name of the tool added in body of explanation, 
+	      which found this issue  
 
-[and so on for all 11(!) PCI segments...]
+ drivers/staging/vt6655/baseband.c | 32 +++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-...which then leads to a lot of failing to configure I/O at the bridges:
+diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
+index 696d4dd03aa2..55224918794b 100644
+--- a/drivers/staging/vt6655/baseband.c
++++ b/drivers/staging/vt6655/baseband.c
+@@ -761,7 +761,7 @@ static const unsigned char vt3253b0_rfmd[CB_VT3253B0_INIT_FOR_RFMD][2] = {
+ #define CB_VT3253B0_AGC_FOR_RFMD2959 195
+ /* For RFMD2959 */
+ static
+-unsigned char byVT3253B0_AGC4_RFMD2959[CB_VT3253B0_AGC_FOR_RFMD2959][2] = {
++unsigned char vt3253b0_agc4_rfmd2959[CB_VT3253B0_AGC_FOR_RFMD2959][2] = {
+ 	{0xF0, 0x00},
+ 	{0xF1, 0x3E},
+ 	{0xF0, 0x80},
+@@ -962,7 +962,7 @@ unsigned char byVT3253B0_AGC4_RFMD2959[CB_VT3253B0_AGC_FOR_RFMD2959][2] = {
+ #define CB_VT3253B0_INIT_FOR_AIROHA2230 256
+ /* For AIROHA */
+ static
+-unsigned char byVT3253B0_AIROHA2230[CB_VT3253B0_INIT_FOR_AIROHA2230][2] = {
++unsigned char vt3253b0_airoha2230[CB_VT3253B0_INIT_FOR_AIROHA2230][2] = {
+ 	{0x00, 0x31},
+ 	{0x01, 0x00},
+ 	{0x02, 0x00},
+@@ -1223,7 +1223,7 @@ unsigned char byVT3253B0_AIROHA2230[CB_VT3253B0_INIT_FOR_AIROHA2230][2] = {
+ 
+ #define CB_VT3253B0_INIT_FOR_UW2451 256
+ /* For UW2451 */
+-static unsigned char byVT3253B0_UW2451[CB_VT3253B0_INIT_FOR_UW2451][2] = {
++static unsigned char vt3253b0_uw2451[CB_VT3253B0_INIT_FOR_UW2451][2] = {
+ 	{0x00, 0x31},
+ 	{0x01, 0x00},
+ 	{0x02, 0x00},
+@@ -1484,7 +1484,7 @@ static unsigned char byVT3253B0_UW2451[CB_VT3253B0_INIT_FOR_UW2451][2] = {
+ 
+ #define CB_VT3253B0_AGC 193
+ /* For AIROHA */
+-static unsigned char byVT3253B0_AGC[CB_VT3253B0_AGC][2] = {
++static unsigned char vt3253b0_agc[CB_VT3253B0_AGC][2] = {
+ 	{0xF0, 0x00},
+ 	{0xF1, 0x00},
+ 	{0xF0, 0x80},
+@@ -2010,8 +2010,8 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 
+ 			for (ii = 0; ii < CB_VT3253B0_AGC_FOR_RFMD2959; ii++)
+ 				result &= bb_write_embedded(priv,
+-					byVT3253B0_AGC4_RFMD2959[ii][0],
+-					byVT3253B0_AGC4_RFMD2959[ii][1]);
++					vt3253b0_agc4_rfmd2959[ii][0],
++					vt3253b0_agc4_rfmd2959[ii][1]);
+ 
+ 			iowrite32(0x23, iobase + MAC_REG_ITRTMSET);
+ 			vt6655_mac_reg_bits_on(iobase, MAC_REG_PAPEDELAY, BIT(0));
+@@ -2027,12 +2027,12 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 	} else if ((by_rf_type == RF_AIROHA) || (by_rf_type == RF_AL2230S)) {
+ 		for (ii = 0; ii < CB_VT3253B0_INIT_FOR_AIROHA2230; ii++)
+ 			result &= bb_write_embedded(priv,
+-				byVT3253B0_AIROHA2230[ii][0],
+-				byVT3253B0_AIROHA2230[ii][1]);
++				vt3253b0_airoha2230[ii][0],
++				vt3253b0_airoha2230[ii][1]);
+ 
+ 		for (ii = 0; ii < CB_VT3253B0_AGC; ii++)
+ 			result &= bb_write_embedded(priv,
+-				byVT3253B0_AGC[ii][0], byVT3253B0_AGC[ii][1]);
++				vt3253b0_agc[ii][0], vt3253b0_agc[ii][1]);
+ 
+ 		priv->abyBBVGA[0] = 0x1C;
+ 		priv->abyBBVGA[1] = 0x10;
+@@ -2045,13 +2045,13 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 	} else if (by_rf_type == RF_UW2451) {
+ 		for (ii = 0; ii < CB_VT3253B0_INIT_FOR_UW2451; ii++)
+ 			result &= bb_write_embedded(priv,
+-				byVT3253B0_UW2451[ii][0],
+-				byVT3253B0_UW2451[ii][1]);
++				vt3253b0_uw2451[ii][0],
++				vt3253b0_uw2451[ii][1]);
+ 
+ 		for (ii = 0; ii < CB_VT3253B0_AGC; ii++)
+ 			result &= bb_write_embedded(priv,
+-				byVT3253B0_AGC[ii][0],
+-				byVT3253B0_AGC[ii][1]);
++				vt3253b0_agc[ii][0],
++				vt3253b0_agc[ii][1]);
+ 
+ 		iowrite8(0x23, iobase + MAC_REG_ITRTMSET);
+ 		vt6655_mac_reg_bits_on(iobase, MAC_REG_PAPEDELAY, BIT(0));
+@@ -2067,12 +2067,12 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 	} else if (by_rf_type == RF_VT3226) {
+ 		for (ii = 0; ii < CB_VT3253B0_INIT_FOR_AIROHA2230; ii++)
+ 			result &= bb_write_embedded(priv,
+-				byVT3253B0_AIROHA2230[ii][0],
+-				byVT3253B0_AIROHA2230[ii][1]);
++				vt3253b0_airoha2230[ii][0],
++				vt3253b0_airoha2230[ii][1]);
+ 
+ 		for (ii = 0; ii < CB_VT3253B0_AGC; ii++)
+ 			result &= bb_write_embedded(priv,
+-				byVT3253B0_AGC[ii][0], byVT3253B0_AGC[ii][1]);
++				vt3253b0_agc[ii][0], vt3253b0_agc[ii][1]);
+ 
+ 		priv->abyBBVGA[0] = 0x1C;
+ 		priv->abyBBVGA[1] = 0x10;
+-- 
+2.34.1
 
-[    9.005653] pci 0000:00:01.0: BAR 13: no space for [io  size 0x1000]
-[    9.012006] pci 0000:00:01.0: BAR 13: failed to assign [io  size 0x1000]
-
-...but unfortunately what I don't then have is any endpoint with an I/O 
-BAR in that machine to see how that plays out. Either way, though, if 
-your machine looks the same as this (i.e. does not report any "root bus 
-resource [io ... window]" entries and fails to assign any I/O space), 
-then there's no way that card can work, and it would seem to indicate a 
-bug somewhere between the PCI layer and the driver that it's able to get 
-as far as making an access to something it has no means of accessing.
-
-If on the other hand your firmware is different and *does* claim to have 
-I/O windows as well, then something else is going screwy and I don't 
-know, sorry.
-
-Cheers,
-Robin.
