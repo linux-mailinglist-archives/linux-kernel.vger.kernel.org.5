@@ -2,75 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A51797F4D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 01:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36734797F51
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 01:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240463AbjIGXoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 19:44:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
+        id S231926AbjIGXs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 19:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231601AbjIGXoQ (ORCPT
+        with ESMTP id S230033AbjIGXsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 19:44:16 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC1F1BD2
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 16:44:12 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 550855C009E;
-        Thu,  7 Sep 2023 19:44:12 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 07 Sep 2023 19:44:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1694130252; x=1694216652; bh=q5gchdWfXi6gz
-        h8043+yIcq3FXTYfVp0J8SuZntpZm4=; b=FxPjoUcRadtqSeYFehso6rWtrz3SC
-        pnei1qqAH8luZIS3w/dEznGBdbQjPtR4oieFyJqDY+wmtA29Gm3FfxvmQptn0Pul
-        tu6LpEo4I6MWSGhRosuXZW5KBSQfLMXnXOJkDAChE2K5XMkZlQFKkXxBPnKPJHXO
-        vFkuR6t1OjhLnOt5i22yb3GJ60Ribz8FFtgBBPqGzZ+MkGEdJy99B83sgYQMbfPC
-        z7azGEjZwB8AvjFyRgt2jWY4WBQARAaiE8+xYmL6plM83fPqbzwNWKtV4qlCypYV
-        Q1bPKqAS9llA1pOgcg/Nb9k5impTG0UstWih127pg/QF+DHjPbC6IshvQ==
-X-ME-Sender: <xms:S2D6ZIr-oOoMaEp4AQCGknlXu253c0Mu5a3z88ut8e4_BDbXqJ_XbA>
-    <xme:S2D6ZOp4aiaNrv8PoKwT8cb_ekIffWNaadChXK45AMBpe5hTaM0_DRiDM9yb28Ohl
-    CXauIbb3fNnUQAP7KI>
-X-ME-Received: <xmr:S2D6ZNMPEF90lZisvvGIB0l9-XfU4nV8F7X8ezRgrJDSIELB7bDz5pM-9GBRue2izttAh0zl_OUXOfYNbuMdz_UbWIGYML7idGU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehiedgvdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:S2D6ZP66db3jVxyOd1lLgU-WclItNVAUtE5K2_qnbYBqr_94mu9rvg>
-    <xmx:S2D6ZH6WjFPLImbtGKLVGEUvV2MEsNVMASj8H_JrR7JALKyQ1LvDVQ>
-    <xmx:S2D6ZPjjH2P2oq9Nb1D_5_YS1JBG6S0-mBHDUpesdzzo5mg03ohy4w>
-    <xmx:TGD6ZKYRbBK5KoAPWLQuZEctNvtjDbESYcnY8kxVxK6mg8wvnKQPPA>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 7 Sep 2023 19:44:08 -0400 (EDT)
-Date:   Fri, 8 Sep 2023 09:44:21 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Philip Blundell <philb@gnu.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        Laurent Vivier <laurent@vivier.eu>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 32/52] m68k: mac: Add and use "mac.h"
-In-Reply-To: <e9f3da9b152b7d19b64d775d04e9e11b63dc35b6.1694093327.git.geert@linux-m68k.org>
-Message-ID: <1c7894fe-4cf4-1ad9-5ed2-aaab4351ff4c@linux-m68k.org>
-References: <cover.1694093327.git.geert@linux-m68k.org> <e9f3da9b152b7d19b64d775d04e9e11b63dc35b6.1694093327.git.geert@linux-m68k.org>
+        Thu, 7 Sep 2023 19:48:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1771B1BCB
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 16:47:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694130455;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q0DSZUVajRNBw/S+LqH8eIJWqxcuhAbEAg5nSMOQP+U=;
+        b=SyCLrB+Wkhiiisj4JXbizL40PgVh2FQSxdLnMczh6cP6SzJqawJ9QDWvgVGGAumBYJ8YNi
+        xO1C5Umptzdu/rSgbhdo/nxlbzb92n07wmmnBIM2yQc5Be0rtxzqMnz2++xGsbdyhN8VhU
+        9cx5oGQysgOKadok9h79Si872trh0bY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-358-VCCe6YDsPgyTRbBjYsc6Dw-1; Thu, 07 Sep 2023 19:47:32 -0400
+X-MC-Unique: VCCe6YDsPgyTRbBjYsc6Dw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6BB32181B542;
+        Thu,  7 Sep 2023 23:47:32 +0000 (UTC)
+Received: from [10.22.16.164] (unknown [10.22.16.164])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 056F82026D76;
+        Thu,  7 Sep 2023 23:47:31 +0000 (UTC)
+Message-ID: <c38847cb-92c9-139f-03cc-86d233297d58@redhat.com>
+Date:   Thu, 7 Sep 2023 19:47:31 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/5] locking: Add rwsem_is_write_locked()
+Content-Language: en-US
+From:   Waiman Long <longman@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org
+References: <20230907174705.2976191-1-willy@infradead.org>
+ <20230907174705.2976191-2-willy@infradead.org>
+ <2cd975ec-f868-f180-350f-b1b704118777@redhat.com>
+ <ZPolpUuCiGT/5PLO@casper.infradead.org>
+ <da1daacf-22b2-20da-b6c0-9b1362b8a901@redhat.com>
+In-Reply-To: <da1daacf-22b2-20da-b6c0-9b1362b8a901@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -78,182 +72,49 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Thu, 7 Sep 2023, Geert Uytterhoeven wrote:
+On 9/7/23 17:06, Waiman Long wrote:
+>
+> On 9/7/23 15:33, Matthew Wilcox wrote:
+>> On Thu, Sep 07, 2023 at 02:05:54PM -0400, Waiman Long wrote:
+>>> On 9/7/23 13:47, Matthew Wilcox (Oracle) wrote:
+>>>> +static inline int rwsem_is_write_locked(struct rw_semaphore *sem)
+>>>> +{
+>>>> +    return atomic_long_read(&sem->count) & 1 /* 
+>>>> RWSEM_WRITER_LOCKED */;
+>>>> +}
+>>> I would prefer you move the various RWSEM_* count bit macros from
+>>> kernel/locking/rwsem.c to under the !PREEMPT_RT block and directly use
+>>> RWSEM_WRITER_LOCKED instead of hardcoding a value of 1.
+>> Just to be clear, you want the ~50 lines from:
+>>
+>> /*
+>>   * On 64-bit architectures, the bit definitions of the count are:
+>> ...
+>> #define RWSEM_READ_FAILED_MASK (RWSEM_WRITER_MASK|RWSEM_FLAG_WAITERS|\
+>> RWSEM_FLAG_HANDOFF|RWSEM_FLAG_READFAIL)
+>>
+>> moved from rwsem.c to rwsem.h?
+>>
+>> Or just these four lines:
+>>
+>> #define RWSEM_WRITER_LOCKED     (1UL << 0)
+>> #define RWSEM_FLAG_WAITERS      (1UL << 1)
+>> #define RWSEM_FLAG_HANDOFF      (1UL << 2)
+>> #define RWSEM_FLAG_READFAIL     (1UL << (BITS_PER_LONG - 1))
+>
+> I think just the first 3 lines will be enough. Maybe a bit of comment 
+> about these bit flags in the count atomic_long value.
 
-> diff --git a/arch/m68k/mac/baboon.c b/arch/m68k/mac/baboon.c
-> index a7d280220662c747..5c97a7058bcdee2e 100644
-> --- a/arch/m68k/mac/baboon.c
-> +++ b/arch/m68k/mac/baboon.c
-> @@ -15,6 +15,8 @@
->  #include <asm/macints.h>
->  #include <asm/mac_baboon.h>
->  
-> +#include "mac.h"
-> +
->  int baboon_present;
->  static volatile struct baboon *baboon;
->  
-> diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-> index d56affefd5cabeb5..e324410ef239c09f 100644
-> --- a/arch/m68k/mac/config.c
-> +++ b/arch/m68k/mac/config.c
-> @@ -50,22 +50,14 @@
->  #include <asm/mac_psc.h>
->  #include <asm/config.h>
->  
-> +#include "mac.h"
-> +
->  /* Mac bootinfo struct */
->  struct mac_booter_data mac_bi_data;
->  
->  /* The phys. video addr. - might be bogus on some machines */
->  static unsigned long mac_orig_videoaddr;
->  
-> -extern int mac_hwclk(int, struct rtc_time *);
-> -extern void iop_init(void);
-> -extern void via_init(void);
-> -extern void via_init_clock(void);
-> -extern void oss_init(void);
-> -extern void psc_init(void);
-> -extern void baboon_init(void);
-> -
-> -extern void mac_mksound(unsigned int, unsigned int);
-> -
->  static void mac_get_model(char *str);
->  static void mac_identify(void);
->  static void mac_report_hardware(void);
-> diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
-> index 010b3b5ae8e8584a..a92740d530ac4fbe 100644
-> --- a/arch/m68k/mac/iop.c
-> +++ b/arch/m68k/mac/iop.c
-> @@ -119,6 +119,8 @@
->  #include <asm/macints.h>
->  #include <asm/mac_iop.h>
->  
-> +#include "mac.h"
-> +
->  #ifdef DEBUG
->  #define iop_pr_debug(fmt, ...) \
->  	printk(KERN_DEBUG "%s: " fmt, __func__, ##__VA_ARGS__)
-> diff --git a/arch/m68k/mac/mac.h b/arch/m68k/mac/mac.h
-> new file mode 100644
-> index 0000000000000000..d3d142cea3b4b911
-> --- /dev/null
-> +++ b/arch/m68k/mac/mac.h
-> @@ -0,0 +1,25 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +struct rtc_time;
-> +
+Actually, the old rwsem implementation won't allow you to reliably 
+determine if a rwsem is write locked because the xadd instruction is 
+used for write locking and the code had to back out the WRITER_BIAS if 
+the attempt failed. Maybe that is why XFS has its own code to check if a 
+rwsem is write locked which is needed with the old rwsem implementation.
 
-I don't think we need a new header file. Related function prototypes 
-already have homes in existing header files --
+The new implementation makes this check reliable. Still it is not easy 
+to check if a rwsem is read locked as the check will be rather 
+complicated and probably racy.
 
-> +/* baboon.c */
-> +void baboon_init(void);
-> +
+Cheers,
+Longman
 
-this could go into mac_baboon.h
-
-> +/* iop.c */
-> +void iop_init(void);
-> +
-
-mac_iop.h
-
-> +/* misc.c */
-> +int mac_hwclk(int op, struct rtc_time *t);
-> +
-
-macintosh.h
-
-> +/* macboing.c */
-> +void mac_mksound(unsigned int freq, unsigned int length);
-> +
-
-mac_asc.h
-
-> +/* oss.c */
-> +void oss_init(void);
-> +
-
-mac_oss.h
-
-> +/* psc.c */
-> +void psc_init(void);
-> +
-
-mac_psc.h
-
-> +/* via.c */
-> +void via_init(void);
-> +void via_init_clock(void);
-
-mac_via.h
-
-> diff --git a/arch/m68k/mac/macboing.c b/arch/m68k/mac/macboing.c
-> index 76431241347682fc..faea2265a540192d 100644
-> --- a/arch/m68k/mac/macboing.c
-> +++ b/arch/m68k/mac/macboing.c
-> @@ -16,6 +16,8 @@
->  #include <asm/macintosh.h>
->  #include <asm/mac_asc.h>
->  
-> +#include "mac.h"
-> +
->  static int mac_asc_inited;
->  /*
->   * dumb triangular wave table
-> diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
-> index 65107abc8848232c..4c8f8cbfa05f3404 100644
-> --- a/arch/m68k/mac/misc.c
-> +++ b/arch/m68k/mac/misc.c
-> @@ -25,6 +25,8 @@
->  
->  #include <asm/machdep.h>
->  
-> +#include "mac.h"
-> +
->  /*
->   * Offset between Unix time (1970-based) and Mac time (1904-based). Cuda and PMU
->   * times wrap in 2040. If we need to handle later times, the read_time functions
-> diff --git a/arch/m68k/mac/oss.c b/arch/m68k/mac/oss.c
-> index 921e6c092f2c6626..1641607f300d981c 100644
-> --- a/arch/m68k/mac/oss.c
-> +++ b/arch/m68k/mac/oss.c
-> @@ -27,6 +27,8 @@
->  #include <asm/mac_via.h>
->  #include <asm/mac_oss.h>
->  
-> +#include "mac.h"
-> +
->  int oss_present;
->  volatile struct mac_oss *oss;
->  
-> diff --git a/arch/m68k/mac/psc.c b/arch/m68k/mac/psc.c
-> index 0d0965b19c09b439..b4183cf66efef7f5 100644
-> --- a/arch/m68k/mac/psc.c
-> +++ b/arch/m68k/mac/psc.c
-> @@ -26,6 +26,8 @@
->  #include <asm/macints.h>
->  #include <asm/mac_psc.h>
->  
-> +#include "mac.h"
-> +
->  #define DEBUG_PSC
->  
->  volatile __u8 *psc;
-> diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-> index 3d11d6219cdd56da..01e6b0e37f8dd0e8 100644
-> --- a/arch/m68k/mac/via.c
-> +++ b/arch/m68k/mac/via.c
-> @@ -38,6 +38,8 @@
->  #include <asm/mac_psc.h>
->  #include <asm/mac_oss.h>
->  
-> +#include "mac.h"
-> +
->  volatile __u8 *via1, *via2;
->  int rbv_present;
->  int via_alt_mapping;
-> 
