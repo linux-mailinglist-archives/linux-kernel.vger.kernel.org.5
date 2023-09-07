@@ -2,58 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91864797D2A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 22:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98435797D2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 22:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236798AbjIGUKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 16:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47934 "EHLO
+        id S238850AbjIGULY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 16:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbjIGUKo (ORCPT
+        with ESMTP id S229827AbjIGULX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 16:10:44 -0400
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E92FE47;
-        Thu,  7 Sep 2023 13:10:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-        t=1694117437; bh=y3aQ4fqeZArk/RTTUb2yngK8cSBmJKP7RwqbJ7/mNwg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=LeQJTeD6V4CfDsPR14MtBIVpof7ociEm34u6REeTGdrHPqftgnf125302/GmAjpaA
-         MDK69Dk5Ujmh4Zl5VmqBF43XwXiveeUeSuMI39WW8+OvWBNgjCLBvt6UfstpGNMOAH
-         8wT/JnYhOdPeJp/HZKlHTZX0gid/qkeNCUg5NU+M=
-Received: from [192.168.9.172] (unknown [101.88.25.36])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 3781A6011C;
-        Fri,  8 Sep 2023 04:10:37 +0800 (CST)
-Message-ID: <925522e9-9be6-2545-4c4e-1608eaab523a@xen0n.name>
-Date:   Fri, 8 Sep 2023 04:10:36 +0800
+        Thu, 7 Sep 2023 16:11:23 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBAEE47
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 13:11:19 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-500b0f06136so2318302e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 13:11:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694117478; x=1694722278; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oEHxSDa9suqIfWb1cKERrinpzjakMUw8unQ7h6nJqSc=;
+        b=KcyGO8UDHPBTqkTpB7rbYnQU4oHg05FzIqvnAxFi90K5CWx6GQ/pH6Lp5ajpSkpRzQ
+         Sx5bh3eUTimnIj4eNOX15dWLrkLdLS0XSXLIskDkIM9gy+qggnWfR8Hem5qFzRdVxZeE
+         vmIYLYzO55kTEyL4aC305tLPXSvHNgu2EjEX4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694117478; x=1694722278;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oEHxSDa9suqIfWb1cKERrinpzjakMUw8unQ7h6nJqSc=;
+        b=mzBByAssbwKWZoBmfysRcQJUwMZsMxSfnIWLtlerO/ooHzwXuiNiRZMXgfVSBcweLD
+         NIzYQWjSZDwKDNqXV9lcMRQCwVog7hSVETENU9mxJc3ElAeDUN+qU5o2hHG2kdtzmP4P
+         kCTrUCu4v915Z44yz7RS94i/olViL+NPAeifMAKngSBOjsGIaTre+042CshTrnee2/vT
+         L5XIGZptx/slGmxy4zvXFFmQixOuKHiMsve1kbPOTEcFyErfAvWhxr0fNhNnM51n0kBF
+         Y0MtYASXG+MYDeOsIXYBGde4Q4+a5vCVL0Z04SuLmsXiTaH6hrObCPOOSMBVr5qULdIe
+         8YTg==
+X-Gm-Message-State: AOJu0YxfGjZAw/l7YpGxUm5W7hAu1Hn1L6tMfz3EmGnUGOjFBRl/L5fR
+        AMR4Fjc39dxEDy0Dxm7HsW6EFRW62RgDgoe/eiNXKvapku4Q06r7
+X-Google-Smtp-Source: AGHT+IGR5cMoVWwXVyWrK1LKM17/LRlIOSjJUog6feEzya5HRB58qZr2MIyqwOsYVySx4563NE0zbrLUR3k/No5bLKY=
+X-Received: by 2002:a05:6512:3a87:b0:4fb:9712:a717 with SMTP id
+ q7-20020a0565123a8700b004fb9712a717mr458584lfu.13.1694117477859; Thu, 07 Sep
+ 2023 13:11:17 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 7 Sep 2023 13:11:17 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v20 28/30] LoongArch: KVM: Enable kvm config and add the
- makefile
-Content-Language: en-US
-To:     Tianrui Zhao <zhaotianrui@loongson.cn>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
-        Mark Brown <broonie@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
-        Xi Ruoyao <xry111@xry111.site>,
-        kernel test robot <lkp@intel.com>
-References: <20230831083020.2187109-1-zhaotianrui@loongson.cn>
- <20230831083020.2187109-29-zhaotianrui@loongson.cn>
-From:   WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <20230831083020.2187109-29-zhaotianrui@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+In-Reply-To: <20230907053513.GH1599918@black.fi.intel.com>
+References: <20230906180944.2197111-1-swboyd@chromium.org> <20230906180944.2197111-2-swboyd@chromium.org>
+ <20230907053513.GH1599918@black.fi.intel.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date:   Thu, 7 Sep 2023 13:11:17 -0700
+Message-ID: <CAE-0n51Ut296M2ZetuzXGpX32pS11bbWzfcbaFfqNxgSjzafJw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] platform/x86: intel_scu_ipc: Check status after
+ timeout in busy_loop()
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        platform-driver-x86@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Prashant Malani <pmalani@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,164 +76,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 8/31/23 16:30, Tianrui Zhao wrote:
-> Enable LoongArch kvm config and add the makefile to support build kvm
-> module.
+Quoting Mika Westerberg (2023-09-06 22:35:13)
+> On Wed, Sep 06, 2023 at 11:09:41AM -0700, Stephen Boyd wrote:
+> > It's possible for the polling loop in busy_loop() to get scheduled away
+> > for a long time.
+> >
+> >   status = ipc_read_status(scu); // status = IPC_STATUS_BUSY
+> >   <long time scheduled away>
+> >   if (!(status & IPC_STATUS_BUSY))
+> >
+> > If this happens, then the status bit could change while the task is
+> > scheduled away and this function would never read the status again after
+> > timing out. Instead, the function will return -ETIMEDOUT when it's
+> > possible that scheduling didn't work out and the status bit was cleared.
+> > Bit polling code should always check the bit being polled one more time
+> > after the timeout in case this happens.
+> >
+> > Fix this by reading the status once more after the while loop breaks.
+> >
+> > Cc: Prashant Malani <pmalani@chromium.org>
+> > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Fixes: e7b7ab3847c9 ("platform/x86: intel_scu_ipc: Sleeping is fine when polling")
+> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > ---
+> >
+> > This is sufficiently busy so I didn't add any tags from previous round.
+> >
+> >  drivers/platform/x86/intel_scu_ipc.c | 11 +++++++----
+> >  1 file changed, 7 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/platform/x86/intel_scu_ipc.c b/drivers/platform/x86/intel_scu_ipc.c
+> > index 6851d10d6582..b2a2de22b8ff 100644
+> > --- a/drivers/platform/x86/intel_scu_ipc.c
+> > +++ b/drivers/platform/x86/intel_scu_ipc.c
+> > @@ -232,18 +232,21 @@ static inline u32 ipc_data_readl(struct intel_scu_ipc_dev *scu, u32 offset)
+> >  static inline int busy_loop(struct intel_scu_ipc_dev *scu)
+> >  {
+> >       unsigned long end = jiffies + IPC_TIMEOUT;
+> > +     u32 status;
+> >
+> >       do {
+> > -             u32 status;
+> > -
+> >               status = ipc_read_status(scu);
+> >               if (!(status & IPC_STATUS_BUSY))
+> > -                     return (status & IPC_STATUS_ERR) ? -EIO : 0;
+> > +                     goto not_busy;
+> >
+> >               usleep_range(50, 100);
+> >       } while (time_before(jiffies, end));
+> >
+> > -     return -ETIMEDOUT;
+> > +     status = ipc_read_status(scu);
 >
-> Reviewed-by: Bibo Mao <maobibo@loongson.cn>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/oe-kbuild-all/202304131526.iXfLaVZc-lkp@intel.com/
-> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
-> ---
->   arch/loongarch/Kbuild                      |  1 +
->   arch/loongarch/Kconfig                     |  3 ++
->   arch/loongarch/configs/loongson3_defconfig |  2 +
->   arch/loongarch/kvm/Kconfig                 | 45 ++++++++++++++++++++++
->   arch/loongarch/kvm/Makefile                | 22 +++++++++++
->   5 files changed, 73 insertions(+)
->   create mode 100644 arch/loongarch/kvm/Kconfig
->   create mode 100644 arch/loongarch/kvm/Makefile
+> Does the issue happen again if we get scheduled away here for a long
+> time? ;-)
+
+Given the smiley I'll assume you're making a joke. But to clarify, the
+issue can't happen again because we've already waited at least
+IPC_TIMEOUT jiffies, maybe quite a bit more, so if we get scheduled away
+again it's a non-issue. If the status is still busy here then it's a
+timeout guaranteed.
+
 >
-> diff --git a/arch/loongarch/Kbuild b/arch/loongarch/Kbuild
-> index b01f5cdb27..40be8a1696 100644
-> --- a/arch/loongarch/Kbuild
-> +++ b/arch/loongarch/Kbuild
-> @@ -2,6 +2,7 @@ obj-y += kernel/
->   obj-y += mm/
->   obj-y += net/
->   obj-y += vdso/
-> +obj-y += kvm/
-Do we want to keep the list alphabetically sorted here?
->   
->   # for cleaning
->   subdir- += boot
-> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-> index ecf282dee5..7f2f7ccc76 100644
-> --- a/arch/loongarch/Kconfig
-> +++ b/arch/loongarch/Kconfig
-> @@ -123,6 +123,7 @@ config LOONGARCH
->   	select HAVE_KPROBES
->   	select HAVE_KPROBES_ON_FTRACE
->   	select HAVE_KRETPROBES
-> +	select HAVE_KVM
->   	select HAVE_MOD_ARCH_SPECIFIC
->   	select HAVE_NMI
->   	select HAVE_PCI
-> @@ -650,3 +651,5 @@ source "kernel/power/Kconfig"
->   source "drivers/acpi/Kconfig"
->   
->   endmenu
-> +
-> +source "arch/loongarch/kvm/Kconfig"
-> diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loongarch/configs/loongson3_defconfig
-> index d64849b4cb..7acb4ae7af 100644
-> --- a/arch/loongarch/configs/loongson3_defconfig
-> +++ b/arch/loongarch/configs/loongson3_defconfig
-> @@ -63,6 +63,8 @@ CONFIG_EFI_ZBOOT=y
->   CONFIG_EFI_GENERIC_STUB_INITRD_CMDLINE_LOADER=y
->   CONFIG_EFI_CAPSULE_LOADER=m
->   CONFIG_EFI_TEST=m
-> +CONFIG_VIRTUALIZATION=y
-> +CONFIG_KVM=m
->   CONFIG_MODULES=y
->   CONFIG_MODULE_FORCE_LOAD=y
->   CONFIG_MODULE_UNLOAD=y
-> diff --git a/arch/loongarch/kvm/Kconfig b/arch/loongarch/kvm/Kconfig
-> new file mode 100644
-> index 0000000000..bf7d6e7cde
-> --- /dev/null
-> +++ b/arch/loongarch/kvm/Kconfig
-> @@ -0,0 +1,45 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# KVM configuration
-> +#
-> +
-> +source "virt/kvm/Kconfig"
-> +
-> +menuconfig VIRTUALIZATION
-> +	bool "Virtualization"
-> +	help
-> +	  Say Y here to get to see options for using your Linux host to run
-> +	  other operating systems inside virtual machines (guests).
-> +	  This option alone does not add any kernel code.
-> +
-> +	  If you say N, all options in this submenu will be skipped and
-> +	  disabled.
-> +
-> +if VIRTUALIZATION
-> +
-> +config AS_HAS_LVZ_EXTENSION
-> +	def_bool $(as-instr,hvcl 0)
-> +
-> +config KVM
-> +	tristate "Kernel-based Virtual Machine (KVM) support"
-> +	depends on HAVE_KVM
-> +	depends on AS_HAS_LVZ_EXTENSION
-> +	select MMU_NOTIFIER
-> +	select ANON_INODES
-> +	select PREEMPT_NOTIFIERS
-> +	select KVM_MMIO
-> +	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
-> +	select KVM_GENERIC_HARDWARE_ENABLING
-> +	select KVM_XFER_TO_GUEST_WORK
-> +	select HAVE_KVM_DIRTY_RING_ACQ_REL
-> +	select HAVE_KVM_VCPU_ASYNC_IOCTL
-> +	select HAVE_KVM_EVENTFD
-> +	select SRCU
-Make the list of selects also alphabetically sorted?
-> +	help
-> +	  Support hosting virtualized guest machines using hardware
-> +	  virtualization extensions. You will need a fairly processor
-> +	  equipped with virtualization extensions.
+> Regardless, I'm fine with this as is but if you make any changes, I
+> would prefer see readl_busy_timeout() used here instead (as was in the
+> previous version).
 
-The word "fairly" seems extraneous here, and can be simply dropped.
+We can't use readl_busy_timeout() (you mean readl_poll_timeout() right?)
+because that implements the timeout with timekeeping and we don't know
+if this is called from suspend paths after timekeeping is suspended or
+from early boot paths where timekeeping isn't started.
 
-(I suppose you forgot to delete it after tweaking the original sentence, 
-that came from arch/x86/kvm: "You will need a fairly recent processor 
-..." -- all LoongArch processors are recent!)
-
-> +
-> +	  If unsure, say N.
-> +
-> +endif # VIRTUALIZATION
-> diff --git a/arch/loongarch/kvm/Makefile b/arch/loongarch/kvm/Makefile
-> new file mode 100644
-> index 0000000000..2335e873a6
-> --- /dev/null
-> +++ b/arch/loongarch/kvm/Makefile
-> @@ -0,0 +1,22 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Makefile for LOONGARCH KVM support
-"LoongArch" -- you may want to check the entire patch series for such 
-ALL-CAPS references to LoongArch in natural language paragraphs, they 
-all want to be spelled "LoongArch".
-> +#
-> +
-> +ccflags-y += -I $(srctree)/$(src)
-> +
-> +include $(srctree)/virt/kvm/Makefile.kvm
-> +
-> +obj-$(CONFIG_KVM) += kvm.o
-> +
-> +kvm-y += main.o
-> +kvm-y += vm.o
-> +kvm-y += vmid.o
-> +kvm-y += tlb.o
-> +kvm-y += mmu.o
-> +kvm-y += vcpu.o
-> +kvm-y += exit.o
-> +kvm-y += interrupt.o
-> +kvm-y += timer.o
-> +kvm-y += switch.o
-> +kvm-y += csr_ops.o
-I'd suggest sorting this list too to better avoid editing conflicts in 
-the future.
-
--- 
-WANG "xen0n" Xuerui
-
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
-
+We could use readl_poll_timeout_atomic() and then the usleep would be
+changed to udelay. Not sure that is acceptable though to delay 50
+microseconds vs. intentionally schedule away like the usleep call is
+doing.
