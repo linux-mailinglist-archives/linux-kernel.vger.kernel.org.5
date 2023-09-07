@@ -2,174 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECB1797427
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D297973F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345430AbjIGPgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
+        id S245098AbjIGPdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344238AbjIGPco (ORCPT
+        with ESMTP id S239456AbjIGPbb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:32:44 -0400
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2071b.outbound.protection.outlook.com [IPv6:2a01:111:f403:704b::71b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322731BF0
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:32:20 -0700 (PDT)
-Received: from SI2PR06MB4611.apcprd06.prod.outlook.com (2603:1096:4:144::14)
- by KL1PR06MB6621.apcprd06.prod.outlook.com (2603:1096:820:f9::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Thu, 7 Sep
- 2023 15:25:53 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cB7LvAqrSB7JgxuOHSOL8zGVRS5H9IgHxFrq3xZqU4q0zFgvIGYaHJQYQ9hUpP35XZsoX7/MFy7SCOOSEq1/k7YIG9HS74mDXtoJdzAiE7E7bErMcqpEtFvyx0WkbV8zsF/aU46yLgVpVEGqTffF34nD43jogXLOB4pTRJ/newmHgXQ4UAkDgH2Rkg1/azdgIst7A0kA1+EKFrX7ggrXatIIcrV8qEk9Tq8A7DJrxN5HsOPbHw7OhtW/tSr7BCARNkkIAR2X7AT9LCduF350LWRTlvnZSV0I9oUtv8431C532KYlcyZTKvYPmHH4pP7WOLFvib0amcA+0hbIbb61xw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AJlUdLZHWLiINY4h+QshIeymsgrAoPH+3UZgJ4MDXZA=;
- b=hKPLoekMrM6f1WYr5E/dnNPg4d9MyAthYQTytRgUTztpMnrFNoRTpMz/X/eHUQTGPwE9muEJy9re4Waokv5dLpn6opQPbA/3l0Iz4fTIvvJ8AFPj0be0kxMGNnNyIZFYgITwLH07IIVbpnTlmT0+6h9JpJo2q2G728TKs4+n55hs3D4IzjS4GzT/zIpmJKkm6TRLo+J1zSE3PII+SHijMRUa82Nj38MEbYVaQ8LjhmSLcgt36whBeD7nlTWzPu+TPcAm1GgysidZYSRpy9D210bk+7B7bnO8hWy9k1dUCGW0fRafseX5Ik4sqctGEd764/SasvXmcL93tteViwru6g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AJlUdLZHWLiINY4h+QshIeymsgrAoPH+3UZgJ4MDXZA=;
- b=KkUD3sEfzLBX0fiNBckNT1yEtknM5L762it8XXe7fleiqPblKgG6pUjn/JLPrHzkCptlTyCWmZb3Y1OY6gcFNfRwbNvanzCo5lj8E72utKTkHDdD9AUi9ZDvfcydwvzahKT8qQ9UIQRlxW+fWvUKMHcWGsOE35fNBHjyCVhd7lyyHJ+v0/c+0m3QVtOY/llmhAUzhPF4k/DrCGoWlTRQZ0Ll7x6sb0hu9+J+IONY8ZBmlYgKmyifGfKr9plb7FQk8UDAW4ZUtWty4WGsuCUPo5b6ghc7TTf2kzCla9+unjwY8/gPEKZkMWFJipQQllydrPTupQunrOP+ydQnhKebkw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from TYZPR06MB6697.apcprd06.prod.outlook.com (2603:1096:400:451::6)
- by SI2PR06MB4611.apcprd06.prod.outlook.com (2603:1096:4:144::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Thu, 7 Sep
- 2023 10:16:44 +0000
-Received: from TYZPR06MB6697.apcprd06.prod.outlook.com
- ([fe80::5bef:53ac:2a7c:6f4e]) by TYZPR06MB6697.apcprd06.prod.outlook.com
- ([fe80::5bef:53ac:2a7c:6f4e%3]) with mapi id 15.20.6745.034; Thu, 7 Sep 2023
- 10:16:44 +0000
-From:   Lu Hongfei <luhongfei@vivo.com>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, Can Guo <quic_cang@quicinc.com>,
-        Asutosh Das <quic_asutoshd@quicinc.com>,
-        Arthur Simchaev <Arthur.Simchaev@wdc.com>,
-        Lu Hongfei <luhongfei@vivo.com>, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-Subject: [PATCH 1/3] ufs: add wb buffer resize related attr_idn and exception event mask values
-Date:   Thu,  7 Sep 2023 18:13:59 +0800
-Message-Id: <20230907101434.89-1-luhongfei@vivo.com>
-X-Mailer: git-send-email 2.27.0.windows.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI1PR02CA0022.apcprd02.prod.outlook.com
- (2603:1096:4:1f4::16) To TYZPR06MB6697.apcprd06.prod.outlook.com
- (2603:1096:400:451::6)
+        Thu, 7 Sep 2023 11:31:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0EE71FCF;
+        Thu,  7 Sep 2023 08:30:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694100659; x=1725636659;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=aHVqwOrO+75etqT56c3Qz8PRUggG+wPxnNaCzndSWqw=;
+  b=mFBT2I8SE7JHcDrKy82GW+e5DPTZX0QxA6Lo0p2XlUf1AsHiLL+lgm9y
+   PvrWsB6qmuUCr2QVF3iIejzTp0rvTHCteUQ2L8xBW+RSifSyiNOE64RGD
+   NLd34/Qmn65h+W3pYQtHC1tvXOpTfjqsIfo3vu19Vlh8MT7vWDchKaGh8
+   EFxJqibNyjFBfbApD+c6HU2FZ8dC1wgjMRzVSVlLdF9TXHzDUTWzhT0a4
+   dosBGqTaFlQJYxilfXefdTLrprqfoimIBzXLXF5fFVdshAMmIXKEslCBZ
+   MV/P2RrgCdxt251fygv4TbCsd8xFKXxMeWbXdtH4ZwaOWov3KXD7I5/ee
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="463693111"
+X-IronPort-AV: E=Sophos;i="6.02,234,1688454000"; 
+   d="scan'208";a="463693111"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 03:18:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10825"; a="807488492"
+X-IronPort-AV: E=Sophos;i="6.02,234,1688454000"; 
+   d="scan'208";a="807488492"
+Received: from mtkaczyk-mobl.ger.corp.intel.com (HELO localhost) ([10.249.139.35])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 03:18:23 -0700
+Date:   Thu, 7 Sep 2023 12:18:19 +0200
+From:   Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     AceLan Kao <acelan@gmail.com>, Song Liu <song@kernel.org>,
+        Guoqing Jiang <guoqing.jiang@linux.dev>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux RAID <linux-raid@vger.kernel.org>,
+        "yukuai (C)" <yukuai3@huawei.com>,
+        "yangerkun@huawei.com" <yangerkun@huawei.com>
+Subject: Re: Infiniate systemd loop when power off the machine with multiple
+ MD RAIDs
+Message-ID: <20230907121819.00005a15@linux.intel.com>
+In-Reply-To: <43b0b2f4-17c0-61d2-9c41-0595fb6f2efc@huaweicloud.com>
+References: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
+        <20230818101630.000027f4@linux.intel.com>
+        <b0488ff7-10c8-4b4e-28b8-01809133c297@linux.dev>
+        <CAPhsuW6cSLqwRVO_EpFyimvc7hgi1rb3T8-NA+stHdwrqrScBA@mail.gmail.com>
+        <20230822083923.00007fb6@linux.intel.com>
+        <CAMz9Wg8KE1rDkSaQnUTJ5ikzH7YGGYbkLM3AcrVue3=JgK+14w@mail.gmail.com>
+        <35130b3f-c0fd-e2d6-e849-a5ceb6a2895f@linux.dev>
+        <CAMz9Wg_zKSJ2vL=r2zAtLBOv4GSMT63+ZQGXfYTjVJsE+DLQGA@mail.gmail.com>
+        <CAPhsuW6W0XgFjH1zNC+EFYjujd4smEiWs+-nYCWQ+KaFmbuvkg@mail.gmail.com>
+        <CAMz9Wg9y52iuxJRSQFC2N5Katt72v-o=JvEjegJt-MwORmw9tQ@mail.gmail.com>
+        <CAPhsuW7XEy4q3XR389F7CUvXvJ=0JR0QkMOr4LU03avT0erAfg@mail.gmail.com>
+        <354004ce-ad4e-5ad5-8fe6-303216647e0c@huaweicloud.com>
+        <03b79ab0-0bb0-ac29-4a70-37d902f9a05b@huaweicloud.com>
+        <20230831085057.00001795@linux.intel.com>
+        <CAMz9Wg8bhCG=qSLia943dwr=LV7Kum=bZPq2s_2coV6a_bmDeA@mail.gmail.com>
+        <20230906122751.00001e5b@linux.intel.com>
+        <43b0b2f4-17c0-61d2-9c41-0595fb6f2efc@huaweicloud.com>
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZPR06MB6697:EE_|SI2PR06MB4611:EE_|KL1PR06MB6621:EE_
-X-MS-Office365-Filtering-Correlation-Id: ba5ea941-79bc-4d63-9f37-08dbaf8b890d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ntTEpAl5Mn7WkGG5sWkv5JD45KYRUEMFPT+8/eFeiTTxjAYrO8c2hY4LZkX5nyecxIxul4wykDeS27jM6xfdXrKOCjTUxbKcW1a9QW7RPXU5T/fIiMTfRwq5T6n2hwN5tobrqNT9sBG8r9K2rgukVA1ZO1fCCkT/H0+KRz9bGKdQJhLJUzIcTf+d6LsxTB23OVueYG+PYkRHm0ccw/OE0csY9o1Ri9qsFCTh2csGapezkBqz2+S8SuQigN298a0bXU2u4BS/hFl++xC8Q2naOXM131ooQ00KpBVLS1qHWix2SCRZEQR8bjhy9r/wO6BJPA6zOXYlZzLnc4keEek5l46B3pF3iAHn5Z0lv8EY5sgtaoTDBPwHMt2if1h7sRsYRjdHCT84OOXdeBVt2ZOUCIUmeNBc3lTFCgXf986h3221lNwD2kIsSiETPsq23I3swW5IO+4BhaGm+XR42oVb3SXhZy2vPL/eOgg0DGnow1jwZj+l/M6DRMWhYQpaUc8y0NBRR2NzUjfYTCvctm0TbUEV3yBOnH3kkMQgQVP4gwm4kvzAOxvhIw93PCuh1/3m5+symZDF8uRhgMh29mHExVy4i12eKOQn89T+BFUTd+6N+ZS61PNLRTLEOysYjMKf
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB6697.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(396003)(39860400002)(376002)(366004)(1800799009)(186009)(451199024)(6512007)(6506007)(6486002)(6666004)(52116002)(107886003)(83380400001)(478600001)(2616005)(26005)(2906002)(66556008)(41300700001)(66946007)(110136005)(8676002)(66476007)(316002)(5660300002)(4326008)(8936002)(38100700002)(36756003)(1076003)(38350700002)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tJe0TZdJUiOwhz7MtyOmmWcVNVzbmVzLY1r2dm8BAYAcL6k3eZ8n4ZZeJAXE?=
- =?us-ascii?Q?nejEmmsJkEqk0PjuDTgJLnaak7LscgJcO1zkJsNYawSqt4mfCQhpGUuT5I3h?=
- =?us-ascii?Q?t6x86T71Z61q4TIpOi8hzF7i8I7LjKwhryagB/kLi1gMZZsOZ9Tslz3JZ3q6?=
- =?us-ascii?Q?HdmPm7zuI3FfAAA9EwUlo80YZNAinpSp1CVW8SyZXFluQMZuBCeFaZmc9H7Q?=
- =?us-ascii?Q?rz1PD+ottLXG+XlTc7UW01075HmEoNU5qBYDYn3nVLU8Oyu9Vqh5r8t2eRoC?=
- =?us-ascii?Q?npYs+lVlmUpl/0a2w97wR5lFCIIOjsADkVV8YZUAozbOsNW2EubFSLhfNSZ2?=
- =?us-ascii?Q?PFPY/DxGQmZJrFo2tbFhCjrnuJiW/7pWgEaztc5qWPNdoCIernvqDo6t/rJw?=
- =?us-ascii?Q?Nm5RLi66nX0eNczAaQ88Nv6BeBqI79rAEN9CxtJ6Us4UkwWWgJOCJFC9Q7jQ?=
- =?us-ascii?Q?0Lkr2km729ZdNGmMt0HDbTY0VH0AA4C3OPo2syAHCXFlcejkmDIJf4BeGrxR?=
- =?us-ascii?Q?gkpVtFtAgBs3VatQISUu+yTc5h4l5m0i9qcwzzh4ThxPPOFqr7orgd0VWl/A?=
- =?us-ascii?Q?TvYoG08WKIXGZsoJz9I/RS4ifai6kEtK8OR820Y9rDEJOCK392bq4ernoXY+?=
- =?us-ascii?Q?l66W2ilpBmSEKAIVItQDckizvOqOYqkFzrqnUUrnNnQL0whzfDS9uTZX6UVc?=
- =?us-ascii?Q?NSnpcYi7Y+GgqWm/JJYP1JxJLcV6ylQSld/4lY30UB2ez1B//WF7wfXolvoa?=
- =?us-ascii?Q?gkAZwBwxsPwsWZrzWrHv4GIbZO9/wvvmr96D9y3+X3Wnk3+p2L4+wd6kum8V?=
- =?us-ascii?Q?ib2r088/J98yhRBHWpwzA1lnLmUEnuoVt7A+cBoZMT2jnR2GRWdWlumFhSvi?=
- =?us-ascii?Q?tiAFN5KVLMCiWQs658mMmKyCFAlTNaEBZ7hX7hVEPxF2id1sTJ3xd0czjuMS?=
- =?us-ascii?Q?zXLugY5OoPDViCMkY+dbk3HeF2tsP6/d3ghNk8EaE20aWljqyUSZ0JMOre32?=
- =?us-ascii?Q?jVKZifaO4HGBBiiKaGSlXxvVAeHJOr/aCn/YgBIxEyfc5lExU20ltuInjhEr?=
- =?us-ascii?Q?TZZpmuZL42Y/e1ToivH+XuzDpMfmCjYtrwyv/prUqeO8JrBJ6ahyOS2uqgbU?=
- =?us-ascii?Q?574VNMyrX7PlcD7mVw5p9lqdSGojhTwf2Syv+5IUoEglK4pXItiFMTqpF01K?=
- =?us-ascii?Q?+vJaiFrrngP5arTlRX+0y2Mp23RO5we//bRH+yTGXMKr3SU1vQke0oElkJiv?=
- =?us-ascii?Q?ssWKN9a2s793NzHWDEWLGVP6dxtfZlGJ/n/C3XZB0hjUVqiDCV2fbRwMNfN9?=
- =?us-ascii?Q?K6a5FzMB8idLEtdcF2U/xmv8JY2ew/zZsuc61PwerrrDKPIdt/ufh0FzpXDT?=
- =?us-ascii?Q?YxpXoD9W1x+R1E9KQcOoNzTzQn2gIfKS9rziI3rf2nSNbm4kTRQshPSnMi+i?=
- =?us-ascii?Q?P+cQzcKyGMP4jWhDHfyTKzeJW5phxBK/z1mXNFi/D8P2EpPgetHiun8upJ+H?=
- =?us-ascii?Q?cXedTqJGnAcEMKyEe4dYj1Zn4hXLG0wHFr/y0vR/iBkUv+Ojgh+uDeaUTveC?=
- =?us-ascii?Q?tDA+yItO+AROha6D53qG/jaESlMKZG1Ue5fL1F2K?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba5ea941-79bc-4d63-9f37-08dbaf8b890d
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB6697.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 10:16:43.9723
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: A/t6z6DhbGf1/qwE5Sr2qLZwRVEbVBVwZd5DpU35+yOVdMaS+GgylSblvlgBoVQnRq+aff/MF4EyDnHESe25IA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR06MB4611
-X-OriginatorOrg: vivo.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,UPPERCASE_50_75 autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UFS4.1 will support the WB buffer resize function, and UFS driver needs
-to add definitions for attr_idn and exception event mask values related
-to this function to support this feature.
+On Thu, 7 Sep 2023 10:04:11 +0800
+Yu Kuai <yukuai1@huaweicloud.com> wrote:
 
-Signed-off-by: Lu Hongfei <luhongfei@vivo.com>
----
- include/ufs/ufs.h | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+> Hi,
+> 
+> ÔÚ 2023/09/06 18:27, Mariusz Tkaczyk Ð´µÀ:
+> > On Wed, 6 Sep 2023 14:26:30 +0800
+> > AceLan Kao <acelan@gmail.com> wrote:
+> >   
+> >>  From previous testing, I don't think it's an issue in systemd, so I
+> >> did a simple test and found the issue is gone.
+> >> You only need to add a small delay in md_release(), then the issue
+> >> can't be reproduced.
+> >>
+> >> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> >> index 78be7811a89f..ef47e34c1af5 100644
+> >> --- a/drivers/md/md.c
+> >> +++ b/drivers/md/md.c
+> >> @@ -7805,6 +7805,7 @@ static void md_release(struct gendisk *disk)
+> >> {
+> >>         struct mddev *mddev = disk->private_data;
+> >>
+> >> +       msleep(10);
+> >>         BUG_ON(!mddev);
+> >>         atomic_dec(&mddev->openers);
+> >>         mddev_put(mddev);  
+> > 
+> > I have repro and I tested it on my setup. It is not working for me.
+> > My setup could be more "advanced" to maximalize chance of reproduction:
+> > 
+> > # cat /proc/mdstat
+> > Personalities : [raid1] [raid6] [raid5] [raid4] [raid10] [raid0]
+> > md121 : active raid0 nvme2n1[1] nvme5n1[0]
+> >        7126394880 blocks super external:/md127/0 128k chunks
+> > 
+> > md122 : active raid10 nvme6n1[3] nvme4n1[2] nvme1n1[1] nvme7n1[0]
+> >        104857600 blocks super external:/md126/0 64K chunks 2 near-copies
+> > [4/4] [UUUU]
+> > 
+> > md123 : active raid5 nvme6n1[3] nvme4n1[2] nvme1n1[1] nvme7n1[0]
+> >        2655765504 blocks super external:/md126/1 level 5, 32k chunk,
+> > algorithm 0 [4/4] [UUUU]
+> > 
+> > md124 : active raid1 nvme0n1[1] nvme3n1[0]
+> >        99614720 blocks super external:/md125/0 [2/2] [UU]
+> > 
+> > md125 : inactive nvme3n1[1](S) nvme0n1[0](S)
+> >        10402 blocks super external:imsm
+> > 
+> > md126 : inactive nvme7n1[3](S) nvme1n1[2](S) nvme6n1[1](S) nvme4n1[0](S)
+> >        20043 blocks super external:imsm
+> > 
+> > md127 : inactive nvme2n1[1](S) nvme5n1[0](S)
+> >        10402 blocks super external:imsm
+> > 
+> > I have almost 99% repro ratio, slowly moving forward..
+> > 
+> > It is endless loop because systemd-shutdown sends ioctl "stop_array" which
+> > is successful but array is not stopped. For that reason it sets "changed =
+> > true".  
+> 
+> How does systemd-shutdown judge if array is stopped? cat /proc/mdstat or
+> ls /dev/md* or other way?
 
-diff --git a/include/ufs/ufs.h b/include/ufs/ufs.h
-index 0cced88f4531..d9dca1b9eb08 100644
---- a/include/ufs/ufs.h
-+++ b/include/ufs/ufs.h
-@@ -179,7 +179,10 @@ enum attr_idn {
- 	QUERY_ATTR_IDN_WB_BUFF_LIFE_TIME_EST    = 0x1E,
- 	QUERY_ATTR_IDN_CURR_WB_BUFF_SIZE        = 0x1F,
- 	QUERY_ATTR_IDN_EXT_IID_EN		= 0x2A,
--	QUERY_ATTR_IDN_TIMESTAMP		= 0x30
-+	QUERY_ATTR_IDN_TIMESTAMP		= 0x30,
-+	QUERY_ATTR_IDN_WB_BUF_RESIZE_HINT	= 0x3C,
-+	QUERY_ATTR_IDN_WB_BUF_RESIZE_EN		= 0x3D,
-+	QUERY_ATTR_IDN_WB_BUF_RESIZE_STATUS	= 0x3E
- };
- 
- /* Descriptor idn for Query requests */
-@@ -411,14 +414,15 @@ enum power_desc_param_offset {
- 
- /* Exception event mask values */
- enum {
--	MASK_EE_STATUS			= 0xFFFF,
--	MASK_EE_DYNCAP_EVENT		= BIT(0),
--	MASK_EE_SYSPOOL_EVENT		= BIT(1),
--	MASK_EE_URGENT_BKOPS		= BIT(2),
--	MASK_EE_TOO_HIGH_TEMP		= BIT(3),
--	MASK_EE_TOO_LOW_TEMP		= BIT(4),
--	MASK_EE_WRITEBOOSTER_EVENT	= BIT(5),
--	MASK_EE_PERFORMANCE_THROTTLING	= BIT(6),
-+	MASK_EE_STATUS			 = 0xFFFF,
-+	MASK_EE_DYNCAP_EVENT		 = BIT(0),
-+	MASK_EE_SYSPOOL_EVENT		 = BIT(1),
-+	MASK_EE_URGENT_BKOPS		 = BIT(2),
-+	MASK_EE_TOO_HIGH_TEMP		 = BIT(3),
-+	MASK_EE_TOO_LOW_TEMP		 = BIT(4),
-+	MASK_EE_WRITEBOOSTER_EVENT	 = BIT(5),
-+	MASK_EE_PERFORMANCE_THROTTLING	 = BIT(6),
-+	MASK_EE_WRITEBOOSTER_RESIZE_HINT = BIT(8),
- };
- #define MASK_EE_URGENT_TEMP (MASK_EE_TOO_HIGH_TEMP | MASK_EE_TOO_LOW_TEMP)
- 
--- 
-2.39.0
+Hi Yu,
+
+It trusts return result, I confirmed that 0 is returned.
+The most weird is we are returning 0 but array is still there, and it is
+stopped again in next systemd loop. I don't understand why yet..
+
+> > Systemd-shutdown see the change and retries to check if there is something
+> > else which can be stopped now, and again, again...
+> > 
+> > I will check what is returned first, it could be 0 or it could be positive
+> > errno (nit?) because systemd cares "if(r < 0)".  
+> 
+> I do noticed that there are lots of log about md123 stopped:
+> 
+> [ 1371.834034] md122:systemd-shutdow bd_prepare_to_claim return -16
+> [ 1371.840294] md122:systemd-shutdow blkdev_get_by_dev return -16
+> [ 1371.846845] md: md123 stopped.
+> [ 1371.850155] md122:systemd-shutdow bd_prepare_to_claim return -16
+> [ 1371.856411] md122:systemd-shutdow blkdev_get_by_dev return -16
+> [ 1371.862941] md: md123 stopped.
+> 
+> And md_ioctl->do_md_stop doesn't have error path after printing this
+> log, hence 0 will be returned to user.
+> 
+> The normal case is that:
+> 
+> open md123
+> ioctl STOP_ARRAY -> all rdev should be removed from array
+> close md123 -> mddev will finally be freed by:
+> 	md_release
+> 	 mddev_put
+> 	  set_bit(MD_DELETED, &mddev->flags) -> user shound not see this mddev
+> 	  queue_work(md_misc_wq, &mddev->del_work)
+> 
+> 	mddev_delayed_delete
+> 	 kobject_put(&mddev->kobj)
+> 
+> 	md_kobj_release
+> 	 del_gendisk
+> 	  md_free_disk
+> 	   mddev_free
+> 
+Ok thanks, I understand that md_release is called on descriptor closing, right?
+
+
+> Now that you can reporduce this problem 99%, can you dig deeper and find
+> out what is wrong?
+
+Yes, working on it!
+
+My first idea was that mddev_get and mddev_put are missing on md_ioctl() path
+but it doesn't help for the issue. My motivation here was that md_attr_store and
+md_attr_show are using them.
+
+Systemd regenerates list of MD arrays on every loop and it is always
+there, systemd is able to open file descriptor (maybe inactive?).
+My fix with checking mddev_get and mddev_put should address that so it seems to
+be something different.
+
+BTW. I opened a discussion on slack proposed by Paul. I'm adding updates there
+more frequently. If you are interested please join. I can see that you were
+invited as:
+Email Address
+yukuai1@huaweicloud.com
+Perhaps, that is the reason you can't join. Let me know, I will add you.
+
+Thanks,
+Mariusz
 
