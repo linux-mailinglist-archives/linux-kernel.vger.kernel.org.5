@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 352E679737C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5E2797383
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235383AbjIGPYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59634 "EHLO
+        id S234774AbjIGPZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234517AbjIGPXh (ORCPT
+        with ESMTP id S240182AbjIGPYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:23:37 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 162831BF
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:23:33 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9a2a4a5472dso482297766b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:23:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694100211; x=1694705011; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ragyha6lBrnhd2E4z05r5Sz67SJVNmBsRmnvqyiefU0=;
-        b=yeFc3EYnOrz/JFx7nFhlQ9BUxPnYYeDFN9tN5eZLqDU1ZjzQBSwqpmHQV7O3Num/QZ
-         0QSFukvDNScT5ZjKQJ6zm+RAl+yZkbdP53kw6C1xKRzUK/C9/9D44wHJG4lXbK45XvjA
-         HwSUyQfWN2yNTFfPiIqvEKsFBU3sIygNXzVK2BG3rbLtqJnq/Wk3VocX+mul0JZnpoob
-         IrLEagH3jgHK+tXGPm/mEKxS/2a1NMcXWBZQnllcylRgHLOxnni9JcljFTef32f0rbTG
-         M5HwtZzc4XQ4D9ZbN0BVHIqeLCfO1TOUnX/4oD+jVVZ+t8R6jtoQQaGFbqzlcy26LRsL
-         YQhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694100211; x=1694705011;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ragyha6lBrnhd2E4z05r5Sz67SJVNmBsRmnvqyiefU0=;
-        b=Iej2YQ5AzHvTClTbfBs96/Bfd5s5jE7pmPRmowVptwOOTzBjlE7CFqaa8kkPYfp4t6
-         c+uzOylZ84p/098LDvA7ENwBvr5XILm2cElSWpI1X0vFobdLSIMTxxlcPGj/2evCNKeu
-         xuEte1fJDe7EDPF4LrYPZOktmeK3lnnnv8JZpUJMgUEXRbJIwH68fuCc1QNgE52CbQlH
-         vaPL4fo91Cec3q3HGptPF5UUeSrwOqe1GxeRtBdoVDahnV0GpB2RoiFDERrFboPVg7LV
-         1q+EnhwajNx9gIFoZ/kIcNnxBEwgyoYZdYTDX0OVg0YWvjwQTTPDGNGzECgFVuF1tL4C
-         o0HQ==
-X-Gm-Message-State: AOJu0YzZZfBe8kkp3PwruC9VQC4+dOZpczTupntSjBBo/X9N2ZLDAYnA
-        TtKD3yLjrmjldC+eMLsjo4l2riwEQYnmoGF6pEc=
-X-Google-Smtp-Source: AGHT+IEP5lHuo6K1dRgooEVKve4Q+c2iLkWlLM+qsv5lJAaTMcXKxc9v7sPbPiK8aU4DbGM8Si9Acg==
-X-Received: by 2002:a05:6402:26ca:b0:523:72fe:a3c4 with SMTP id x10-20020a05640226ca00b0052372fea3c4mr2255438edd.0.1694066304465;
-        Wed, 06 Sep 2023 22:58:24 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id bm26-20020a0564020b1a00b005288f0e547esm9343359edb.55.2023.09.06.22.58.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 22:58:24 -0700 (PDT)
-Message-ID: <07acf4c5-6a03-0196-335c-88f7c367a526@linaro.org>
-Date:   Thu, 7 Sep 2023 07:58:22 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm64: dts: mediatek: add mt8395-evk
- board
-To:     Macpaul Lin <macpaul.lin@mediatek.com>, frank-w@public-files.de,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
-        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     Bear Wang <bear.wang@mediatek.com>,
-        Pablo Sun <pablo.sun@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>
-References: <20230904092043.5157-1-macpaul.lin@mediatek.com>
- <20230906092527.18281-1-macpaul.lin@mediatek.com>
- <fbad941f-232b-9f56-5de3-98a16a8c4d89@linaro.org>
- <c3ddf00c-235a-2d23-db60-c998a67a3fcd@mediatek.com>
- <f343b6e2-6106-47eb-71cb-f391aff6cb7f@collabora.com>
- <50f7fbdd-8592-7a47-b2d8-a1af8ed93b92@linaro.org>
- <c951f693-b219-4745-be20-a8e1fee0099d@mediatek.com>
- <E3DEDA34-C203-4560-B07D-8BCB44204FF3@public-files.de>
- <8db8823d-8313-5515-78ca-effc8d6bc47f@mediatek.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <8db8823d-8313-5515-78ca-effc8d6bc47f@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Thu, 7 Sep 2023 11:24:14 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2F8E66;
+        Thu,  7 Sep 2023 08:24:09 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38740McB021542;
+        Thu, 7 Sep 2023 06:01:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references; s=qcppdkim1;
+ bh=J+y7Wak/6lSVL84og9A1a1Ald3OU+kiUXVx8BSzTJCU=;
+ b=Nv1OANp4eJSZz/AcaHsvyw/qEa+IESofZHFYxSv86mzZB1Kp/m9p8efOnFZmfOrCymKv
+ 5pf+NyouUZGvH+EZGCg7kL2uleZkX224OlCRllgKnCwc1tC8t+IUOob+z/Gtuwl7JLl9
+ JOarqR1OfkfN1DEINcMc9J+dNrEozJlAo69EPq4j5eEHMTUsGoiXEG9UHjvU4Ip7Mj4A
+ KYDKDuZHLFLADc6cQifgPyNz87S0/ubbkGVQvkmtVoGUJW1WNUA2hiZLI5miFY4Se1rg
+ pNjSoQF+evFyF1RxQ51qMEOpxNQnuK0JTzKOpcHXNKrQ/AWpIUkIx45wiIlRl/JEVFq4 vg== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sy4bqgg64-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Sep 2023 06:01:01 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 38760wIC011319;
+        Thu, 7 Sep 2023 06:00:58 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3sux4kjqut-1;
+        Thu, 07 Sep 2023 06:00:58 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38760wbf011314;
+        Thu, 7 Sep 2023 06:00:58 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-krichai-hyd.qualcomm.com [10.213.110.112])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 38760vbj011313;
+        Thu, 07 Sep 2023 06:00:58 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 4058933)
+        id 38A5913A9; Thu,  7 Sep 2023 11:30:57 +0530 (+0530)
+From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org, mani@kernel.org
+Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+        bhelgaas@google.com, rafael@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, quic_vbadigan@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_ramkri@quicinc.com, quic_parass@quicinc.com,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Subject: [PATCH v5 1/5] dt-bindings: pci: qcom: Add opp table
+Date:   Thu,  7 Sep 2023 11:30:29 +0530
+Message-Id: <1694066433-8677-2-git-send-email-quic_krichai@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1694066433-8677-1-git-send-email-quic_krichai@quicinc.com>
+References: <1694066433-8677-1-git-send-email-quic_krichai@quicinc.com>
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: YjE3EIyot4WZsOOo6uASrBAPS_8cc0Wr
+X-Proofpoint-ORIG-GUID: YjE3EIyot4WZsOOo6uASrBAPS_8cc0Wr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-06_12,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ phishscore=0 spamscore=0 mlxlogscore=913 mlxscore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309070052
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,49 +86,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/09/2023 06:07, Macpaul Lin wrote:
-> 
-> 
-> On 9/6/23 20:19, Frank Wunderlich wrote:
->> 	
->>
->> External email : Please do not click links or open attachments until you 
->> have verified the sender or the content.
->>
->> Can you please only target Reviewers/Maintainers and mailinglists reported by get_maintainers script?
->>
->> I have only sent patches for mediatek and did some tests. So i'm not interested in patches for hardware i do not have here :). I guess i'm not alone...
->> regards Frank
-> 
-> I'm sorry for bothering you and other contributors.
-> I've indeed run get_maintainers.sh script for these 2 patches.
-> Here's the result.
-> 
-> Rob Herring <robh+dt@kernel.org> (maintainer:OPEN FIRMWARE AND FLATTENED 
-> DEVICE TREE BINDINGS)
-> Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org> (maintainer:OPEN 
-> FIRMWARE AND FLATTENED DEVICE TREE BINDINGS,commit_signer:3/4=75%)
-> Conor Dooley <conor+dt@kernel.org> (maintainer:OPEN FIRMWARE AND 
-> FLATTENED DEVICE TREE BINDINGS)
-> Matthias Brugger <matthias.bgg@gmail.com> (maintainer:ARM/Mediatek SoC 
-> support,commit_signer:3/4=75%,in file)
-> ...
-> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com> 
-> (reviewer:ARM/Mediatek SoC 
-> support,commit_signer:2/4=50%,authored:1/4=25%,added_lines:1/12=8%)
-> Frank Wunderlich <frank-w@public-files.de> 
-> (commit_signer:1/4=25%,authored:1/4=25%,added_lines:1/12=8%)
-> ...
-> [striped...]
-> 
-> You've contributed the similar percentage as Angelo for these files.
-> So I think both of you could be important reviewers.
-> I'll try to skip contributors who add lines less then 10% next time and see
-> if this will help.
+PCIe needs to choose the appropriate performance state of RPMH power
+domain based upon the PCIe gen speed.
 
-No, commit_signer is 1. Don't cc people unrelated people. Unrelated is
-everyone which is not maintainer, reviewer, discussion list.
+Adding the Operating Performance Points table allows to adjust power domain
+performance state, depending on the PCIe gen speed.
 
-Best regards,
-Krzysztof
+Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ Documentation/devicetree/bindings/pci/qcom,pcie.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+index eadba38..ac5a167 100644
+--- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
++++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+@@ -122,6 +122,10 @@ properties:
+     description: GPIO controlled connection to WAKE# signal
+     maxItems: 1
+ 
++  operating-points-v2: true
++  opp-table:
++    type: object
++
+ required:
+   - compatible
+   - reg
+-- 
+2.7.4
 
