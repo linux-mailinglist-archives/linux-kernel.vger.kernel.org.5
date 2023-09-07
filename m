@@ -2,51 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10613797780
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7EE7976A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237370AbjIGQ0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52366 "EHLO
+        id S239537AbjIGQOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234616AbjIGQ0Q (ORCPT
+        with ESMTP id S238712AbjIGQNc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:26:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95357AA4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 09:22:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA035C4AF78;
-        Thu,  7 Sep 2023 15:01:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694098863;
-        bh=jMRaB1zToyVwAnrRSqUPWODNdMLHdXs6mibSqgmFpbk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s05r2K0QrK0edOGzCiGfwbFtY1VtHeYVcRkwk4JV665nIVdPCOIOshegPBP1dFcTp
-         fRQ6mXkeX88q4dkSbESsgjnUwHWPRJDFQ9t0tsd/2NuYV6kkGy/m0bnk8F/OCv4Q/3
-         /V26QVRLpyLP/Eu/LnnhQ304L+U9IfimH0dTbxmaqVS0TywOBewNPPe9Y27wP0W1e7
-         +DnfRWrBEhmqXr5Rx4+fXLtF2/f5Yc1UMJhav/1sCQ6NgXXG0egTQEXsD6aoE7iDH8
-         sbAScY+yeWpmG4ov6b/1dimV0dKNqy/ZHUCeW3ErJtY0DBtvq5IF1R6xHD5sNeKXdi
-         4g+RXzYnMwTzA==
-Date:   Thu, 7 Sep 2023 17:00:58 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, richardcochran@gmail.com, sd@queasysnail.net,
-        sebastian.tobuschat@nxp.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next v3 4/6] net: phy: nxp-c45-tja11xx: add MACsec
- support
-Message-ID: <20230907150058.GD434333@kernel.org>
-References: <20230906160134.311993-1-radu-nicolae.pirea@oss.nxp.com>
- <20230906160134.311993-5-radu-nicolae.pirea@oss.nxp.com>
+        Thu, 7 Sep 2023 12:13:32 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68DE284E3;
+        Thu,  7 Sep 2023 08:47:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694101665; x=1725637665;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=tegXt8H4GqIs9pd9JuwuDFIteUSWjZ+yfenTAdbahT8=;
+  b=D862hdPq1PRvyaivoBLoibxf3Lehjfmy+QAc5QeWj7KDZiDHvpA/1wo1
+   blAWsoVZq8cEE2IihX3pwW3PYTlgCOJ7YQh5aPyYmVarM/j0fERvmvBDV
+   w8D99tLNOg1AafUmwXc5WBwFUTrZsfwMhRZxCsbOhVk+MrKnLsU5395EN
+   d7PZ7LRliG7u8jk6/N4pze6nNN6wsFQ9IviIJpTXuMSiD6Vv6MnbXAvE0
+   XQNaJFNcz8SYxvWfX4Bx9Ygtv7H7X8NuYO/Qv/h8QrXMXLjacDp2VvCJ+
+   2sY6yUkfFqQhGU1gIoaAWxDpqWRNOLgQMB+3L+2Abjg3BHMAcZOkSs3jl
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="376286318"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="376286318"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 08:04:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="988806618"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="988806618"
+Received: from ningle-mobl2.amr.corp.intel.com (HELO [10.209.13.77]) ([10.209.13.77])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 08:04:37 -0700
+Message-ID: <81379d2d-4bb4-2384-5612-fdc82828cb0f@intel.com>
+Date:   Thu, 7 Sep 2023 08:04:36 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230906160134.311993-5-radu-nicolae.pirea@oss.nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 3/3] /dev/mem: Do not map unaccepted memory
+Content-Language: en-US
+From:   Dave Hansen <dave.hansen@intel.com>
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-coco@lists.linux.dev, linux-efi@vger.kernel.org,
+        kexec@lists.infradead.org
+References: <20230906073902.4229-1-adrian.hunter@intel.com>
+ <20230906073902.4229-4-adrian.hunter@intel.com>
+ <9ffb7a3b-cf20-617a-e4f1-8a6a8a2c5972@intel.com>
+ <20230907142510.vcj57cvnewqt4m37@box.shutemov.name>
+ <7a50d04f-63ee-a901-6f39-7d341e423a77@intel.com>
+In-Reply-To: <7a50d04f-63ee-a901-6f39-7d341e423a77@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,82 +78,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 07:01:32PM +0300, Radu Pirea (NXP OSS) wrote:
-> Add MACsec support.
-> The MACsec block has four TX SCs and four RX SCs. The driver supports up
-> to four SecY. Each SecY with one TX SC and one RX SC.
-> The RX SCs can have two keys, key A and key B, written in hardware and
-> enabled at the same time.
-> The TX SCs can have two keys written in hardware, but only one can be
-> active at a given time.
-> On TX, the SC is selected using the MAC source address. Due of this
-> selection mechanism, each offloaded netdev must have a unique MAC
-> address.
-> On RX, the SC is selected by SCI(found in SecTAG or calculated using MAC
-> SA), or using RX SC 0 as implicit.
-> 
-> Signed-off-by: Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
+On 9/7/23 07:46, Dave Hansen wrote:
+> Can a line of code in this patch even run in the face of IO_STRICT_DEVMEM=y?
 
-...
-
-> +static struct nxp_c45_sa *nxp_c45_find_sa(struct list_head *sa_list,
-> +					  enum nxp_c45_sa_type sa_type, u8 an)
-> +{
-> +	struct nxp_c45_sa *pos, *tmp;
-> +
-> +	list_for_each_entry_safe(pos, tmp, sa_list, list)
-> +		if (pos->an == an && pos->type == sa_type)
-> +			return pos;
-> +
-> +	return ERR_PTR(-EINVAL);
-> +}
-
-...
-
-> +void nxp_c45_handle_macsec_interrupt(struct phy_device *phydev,
-> +				     irqreturn_t *ret)
-> +{
-> +	struct nxp_c45_phy *priv = phydev->priv;
-> +	struct nxp_c45_secy *pos, *tmp;
-> +	struct nxp_c45_sa *sa;
-> +	u8 encoding_sa;
-> +	int secy_id;
-> +	u32 reg = 0;
-> +
-> +	if (!phydev->macsec_ops)
-> +		return;
-> +
-> +	do {
-> +		nxp_c45_macsec_read(phydev, MACSEC_EVR, &reg);
-> +		if (!reg)
-> +			return;
-> +
-> +		secy_id = MACSEC_REG_SIZE - ffs(reg);
-> +		list_for_each_entry_safe(pos, tmp, &priv->macsec->secy_list,
-> +					 list)
-> +			if (pos->secy_id == secy_id)
-> +				break;
-> +
-> +		encoding_sa = pos->secy->tx_sc.encoding_sa;
-> +		phydev_dbg(phydev, "pn_wrapped: TX SC %d, encoding_sa %u\n",
-> +			   pos->secy_id, encoding_sa);
-> +
-> +		sa = nxp_c45_find_sa(&pos->sa_list, TX_SA, encoding_sa);
-> +		if (!IS_ERR(sa))
-> +			macsec_pn_wrapped(pos->secy, sa->sa);
-> +		else
-> +			WARN_ON(!sa);
-
-Hi Radu,
-
-Smatch doesn't seem to think that sa can be NULL: it is either a valid
-pointer or an error pointer.
-
-> +
-> +		nxp_c45_macsec_write(phydev, MACSEC_EVR,
-> +				     TX_SC_BIT(pos->secy_id));
-> +		*ret = IRQ_HANDLED;
-> +	} while (reg);
-> +}
-
-...
+Gah, I meant plain old STRICT_DEVMEM=y.
