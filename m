@@ -2,68 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0604797AE1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DFA5797739
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239373AbjIGRyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55894 "EHLO
+        id S242132AbjIGQWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:22:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245487AbjIGRyk (ORCPT
+        with ESMTP id S242278AbjIGQWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:54:40 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DD71FFA
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:54:11 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-6490c2c4702so6934756d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 10:54:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694109245; x=1694714045; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YfgRO7mX/DO7BbGnDGP3r6jlXziqVhwRyC4fHRuMwY4=;
-        b=liEdsonkUFHs+0vL9YNA76r3SQUBUXvVoSd99CNCLVjn1H9RuQU3VJXA7yFDpzfqP4
-         f1GEtd+603tD6GiucJlIzcLvPweY/Pf8VfkQkdqzGwLJRKOpvq7Sud+afMenw7aVrFG6
-         1eZ+zQjW7iXi/lx/+RmKhbizDy/39fuFKCb+d8Az72r5iD1PgL4s2geNoI05vYxIUCh+
-         Q2TWc64iD2kDmKS9AhPN+rAMW666cbWgzgJ+s6yV6U0D2hL3jfgST/8Rw6/IPR7pXLkK
-         RtSL4o/OgIk6fMAPip8Waw0mLeCYeqRfuAVRWCTGHtdvr5hwq+ViiEM2jRZNnr/lqtVH
-         Q7Kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694109245; x=1694714045;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YfgRO7mX/DO7BbGnDGP3r6jlXziqVhwRyC4fHRuMwY4=;
-        b=ElZdSo+okiaraf0vWhjNMRpggu/xYjTQom/rEVoZNGyrZZbr0d9tXy1vrA5hdkcrJc
-         sQTsy6V3EyDpTF4xttvqo6sI9J3+LmvXfaL3r4plV6gJPKHB98vYMLMXqeSeoyJNCIAr
-         Lg72WoPIrJq2mnjGqX923iRITVphC9rPsXfb4ofaV8vXsLfTAYDs+NFqbZe+ZTPLH8Mr
-         aCChIqk8wKVdv+Xd0+iyt9Im49rLA+M9j+WJmTBTzwb/PpmL1dU3lE0beMcAJ8jqYCwg
-         +wcAbymnPcHf5OyG/r9xxTF1zJS8j4uuNdEkxN696PTTg0B1tWSQABYjYZofNdBDM51Q
-         onEg==
-X-Gm-Message-State: AOJu0YwwQ3MQ1Y4JNPMcAqVO2O0Is1ToMCJT03FxQEQfP9Y5zaRx7H0I
-        1716bdMf4E3vxeL9q+2FNJuOKLGK1BfnzVbOH4E=
-X-Google-Smtp-Source: AGHT+IFwqY6yWGRP5js7HsuyPsHlBJuvnZ8ps3dcUjD/I6KrKw5MNk0R91NZPddOPQvoezIZef4ZhA==
-X-Received: by 2002:a17:90b:1a8b:b0:25b:c454:a366 with SMTP id ng11-20020a17090b1a8b00b0025bc454a366mr19193226pjb.5.1694097216276;
-        Thu, 07 Sep 2023 07:33:36 -0700 (PDT)
-Received: from local.. ([104.193.10.236])
-        by smtp.gmail.com with ESMTPSA id z6-20020a17090a1fc600b00256799877ffsm1641733pjz.47.2023.09.07.07.33.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 07:33:35 -0700 (PDT)
-From:   Zhizhou Zhang <zhizhou.zh@gmail.com>
-To:     linux@armlinux.org.uk, rmk+kernel@armlinux.org.uk, rppt@kernel.org,
-        linus.walleij@linaro.org, akpm@linux-foundation.org,
-        vishal.moola@gmail.com, arnd@arndb.de, wangkefeng.wang@huawei.com,
-        willy@infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Zhizhou Zhang <zhizhouzhang@asrmicro.com>
-Subject: [PATCH] ARM: mm: fix stack corruption when CONFIG_ARM_PV_FIXUP=y
-Date:   Thu,  7 Sep 2023 22:33:02 +0800
-Message-Id: <20230907143302.4940-1-zhizhou.zh@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 7 Sep 2023 12:22:02 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBC1901C;
+        Thu,  7 Sep 2023 09:19:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D23E2C32792;
+        Thu,  7 Sep 2023 14:35:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694097344;
+        bh=GY6/oA7SpWwIF/ML9jHKi31Aw6dDj+gK/Pfk0CzMgqw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=meYesdsY2uNTDb5EWe4281EIPUqP+ejVqDZt9LCkSfXPg4Irrz3V+aN6tNCzOlgc2
+         ahh8dLGQQAnbuiFUv6CfwEQdgMoQh2Us23Bv55rnXFCgCOLrOmRgckQmB49BCwBfNT
+         F3vJeT816sWqUt+PmdBvRs2D4bFdqQfjc1DO7pMD099Ku5mwQT/QLbNiAWJ/KW2x1x
+         2ft6mNiLln57pjQduAluykFZGPrhx+sfNSVVZRVaXjbIdi+4wugfRr70TqxfCMPe1l
+         Gbt/aytSPZ6Z7sQtswCgUTVlJunB/G6M+lsApHXzAaRfDmEyiemOTyTCnbq+vrNOO9
+         r6MAC/pLNbtjg==
+Date:   Thu, 7 Sep 2023 15:35:38 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] ASoC: tegra: Fix redundant PLLA and PLLA_OUT0 updates
+Message-ID: <262708f6-d25c-4734-834e-6a3959ad6c07@sirena.org.uk>
+References: <1694069533-7832-1-git-send-email-spujar@nvidia.com>
+ <1694069533-7832-3-git-send-email-spujar@nvidia.com>
+ <2c3371b7-3dae-48d7-8cc8-1acfd5bd267c@sirena.org.uk>
+ <61ca531e-6138-7abe-74d1-357369134748@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1d4+VEBxjo3mBMnm"
+Content-Disposition: inline
+In-Reply-To: <61ca531e-6138-7abe-74d1-357369134748@nvidia.com>
+X-Cookie: In the next world, you're on your own.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,39 +56,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhizhou Zhang <zhizhouzhang@asrmicro.com>
 
-flush_cache_all() save registers to stack at function entry.
-If it's called after cache disabled, the data is written to
-memory directly. So the following clean cache operation corrupted
-registers saved by flush_cache_all(), including lr register.
-calling flush_cache_all() before turn off cache fixed the problem.
+--1d4+VEBxjo3mBMnm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Zhizhou Zhang <zhizhouzhang@asrmicro.com>
----
- arch/arm/mm/mmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Sep 07, 2023 at 07:51:13PM +0530, Sameer Pujar wrote:
+> On 07-09-2023 17:21, Mark Brown wrote:
+> > On Thu, Sep 07, 2023 at 12:22:13PM +0530, Sameer Pujar wrote:
 
-diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
-index 674ed71573a8..03fb0fe926f3 100644
---- a/arch/arm/mm/mmu.c
-+++ b/arch/arm/mm/mmu.c
-@@ -1675,6 +1675,7 @@ static void __init early_paging_init(const struct machine_desc *mdesc)
- 	/* Run the patch stub to update the constants */
- 	fixup_pv_table(&__pv_table_begin,
- 		(&__pv_table_end - &__pv_table_begin) << 2);
-+	flush_cache_all();
- 
- 	/*
- 	 * We changing not only the virtual to physical mapping, but also
-@@ -1690,7 +1691,6 @@ static void __init early_paging_init(const struct machine_desc *mdesc)
- 	asm("mrc p15, 0, %0, c2, c0, 2" : "=r" (ttbcr));
- 	asm volatile("mcr p15, 0, %0, c2, c0, 2"
- 		: : "r" (ttbcr & ~(3 << 8 | 3 << 10)));
--	flush_cache_all();
- 
- 	/*
- 	 * Fixup the page tables - this must be in the idmap region as
--- 
-2.34.1
+> > > Fixes: 202e2f774543 ("ASoC: tegra: Add audio graph based card driver")
+> > > Cc: stable@vger.kernel.org
 
+> > This is just a performance improvement rather than a correctness fix as
+> > far as I can tell?
+
+> This was supposed to be a performance improvement. However this is found to
+> be resolving a DMIC clock discrepancy and suspect is it happens because of
+> back to back quick PLLA updates. Thought it would be safer to have this fix
+> in stable releases. May be I should mention these points to justify the
+> 'Fixes' and 'stable' tag?
+
+Yes, please - that does make sense as a fix.
+
+--1d4+VEBxjo3mBMnm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmT537kACgkQJNaLcl1U
+h9Aybwf+PTHcefnbcaqpdAilafzxlBkq71oJqgpR14bRtbQXU4jEgToFVRwoEe2r
+eh7710aUYzNQatW+EVTp6OlxujcL/CmTLyjzdmVZDRViDZvVTtq1BwnEMBPVoDnm
+VQd2uTPqMq05uopzbCnq2s3Mv5gEcw1PPMnqAYvGBOJ+e1XvlBC4h7t3svkcHHku
+Y8QCOwyGF+Akq3Dl7WFvenZ0rGJ7z2/NXP//rD2TXeKorRSID19tupKL+i4KJPFV
+9RLhqpX/8CpXvo2EwlOSuWvtvN1Waqego6zmQ511uj90I1K24+dY9sgXk8JEE/6L
+gsWaQE4XT7wbfut/xeALndmOVrDk0g==
+=Ei6H
+-----END PGP SIGNATURE-----
+
+--1d4+VEBxjo3mBMnm--
