@@ -2,221 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1052797EE2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 00:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603FB797EE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 01:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233205AbjIGW5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 18:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49072 "EHLO
+        id S233364AbjIGXAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 19:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbjIGW5r (ORCPT
+        with ESMTP id S230385AbjIGXAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 18:57:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF5BCF3;
-        Thu,  7 Sep 2023 15:57:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694127463; x=1725663463;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NiD2jrGgGfQ6xnh6f7vp7lyP6csMdiSncB/f8Y5qcyU=;
-  b=AeroaSU/XnqCVOJYzXordGRRPYkjAjJ6l6rL70FDWFaNAGDxphKsbnX1
-   47s+BAVwzriGNH7jOZ/pI+zmNKYqHcqyj0Ep67NmBoaIqLyOb8+NReNvR
-   2+uOaf98bN7Nnb0yGi74uedXuzpqvbCknTd+UrXi45GbdZ3U2lOvddfK/
-   qgCZKV+nzdxHe6vduHix6V2JKgbwi6XE3+d9VcjDTlMufsDdh4Y3VMCrj
-   eJUPFdt477o22F582wpwhrncdu19qiU7omO8FzQT32jBbW3StkoA5jV8/
-   yZeOlUoQ/2uLZN63CuSIST4dD4rYs/oGF+SErgX10rANqxSrQDIjfbvdg
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="443927703"
-X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
-   d="scan'208";a="443927703"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 15:57:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="807721018"
-X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
-   d="scan'208";a="807721018"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 07 Sep 2023 15:57:37 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qeNwM-0001gT-2V;
-        Thu, 07 Sep 2023 22:57:34 +0000
-Date:   Fri, 8 Sep 2023 06:57:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Lu Hongfei <luhongfei@vivo.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Bean Huo <beanhuo@micron.com>,
-        Asutosh Das <quic_asutoshd@quicinc.com>,
-        "Bao D. Nguyen" <quic_nguyenb@quicinc.com>,
-        Arthur Simchaev <Arthur.Simchaev@wdc.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        opensource.kernel@vivo.com, luhongfei@vivo.com
-Subject: Re: [PATCH 3/3] scsi: ufs: core: Add exception event handler to
- implicitly handle WB buffer resize event
-Message-ID: <202309080646.NhYcVypx-lkp@intel.com>
-References: <20230907094517.1961-1-luhongfei@vivo.com>
+        Thu, 7 Sep 2023 19:00:17 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3A7CF3
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 16:00:13 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bee82fad0fso12773355ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 16:00:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1694127613; x=1694732413; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OQjB6U/O9n8tbnlyikl1SjX4EEA6NY7PMDL3dsEt8ag=;
+        b=3bBQ0f5+FM7dP0NsQ7PvV62cXfTqIPLk9Ypsi+BkIh/+CXVol/FLXlwUR4oc3Yd2GP
+         nwwe46vQt+eAXCoeR+2wOvmL1zvQzCw+QZnETOJP3IH8YY0ZuxUEiTNe2JcWk6IjLjVV
+         og+TcaY8v1ZAnAUy9UnFa+6TXvd1uJgpEtbqXtnRXKRShCK3EPbVYHnUh0/kBv5LvXft
+         zm/SCwLdVrGH/nEHgbMix/TTPXEQBLpq0mPpdfcEtT1laH1WiUQLK4TeyD/826h3VOaK
+         zZgdtnpMIZGWvKLzzgdJIYNKPQWyKM4RFLwO1vRfk8Fqa94tchKe28bmGNBTgBor7ZKE
+         6+Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694127613; x=1694732413;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OQjB6U/O9n8tbnlyikl1SjX4EEA6NY7PMDL3dsEt8ag=;
+        b=BAzP3yjS34Lk9BEmC0cQRbxwgFaba3i/yqQXrJ5NlQ4HnzjM2fUdgRkNQnmxaJA5Vy
+         RM/sJSdUPZ0rqwPFDjnRl+EhAlEinq2cchUK6OMzujdXd+zVD8GWAIivge+70S7UOsVF
+         f7CXpE7yyGkTj7dagRVhpSQ2zbUmYOmxthU1JEapiLll8a7Tp/GJHSQMWfZLCtSJIIdv
+         3HwjXfaGejqhslpE1ziW5KEMdJklHLKHv8caUHIoruBS9k/3gpa9q95HrVDnBsKxyILo
+         0zNdahbjbseoa/mL1TXGDcVIHDQ1fnmOhGzroLGBxayNEFlL9ihn9InGknZwRT12cYbN
+         776w==
+X-Gm-Message-State: AOJu0YzEtmuQv8QPxqA8TulnukNXT9zMEl4kVF5ih6QGANWBzkKK72jK
+        o6wa5Ll2OTJbIs8KgdPczcpVKw==
+X-Google-Smtp-Source: AGHT+IGsffnzD07F/Mr4xarHC2RsEQpoBGEzHLbPmvs8gys7LfOCUfvBMIv/aJDTbmnyZ0TH/dEdBw==
+X-Received: by 2002:a17:903:11c9:b0:1b9:e972:134d with SMTP id q9-20020a17090311c900b001b9e972134dmr972287plh.3.1694127612389;
+        Thu, 07 Sep 2023 16:00:12 -0700 (PDT)
+Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
+        by smtp.gmail.com with ESMTPSA id l5-20020a170902f68500b001bc0f974117sm265116plg.57.2023.09.07.16.00.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 16:00:11 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qeNyq-00CDqz-38;
+        Fri, 08 Sep 2023 09:00:08 +1000
+Date:   Fri, 8 Sep 2023 09:00:08 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 1/5] locking: Add rwsem_is_write_locked()
+Message-ID: <ZPpV+MeFqX6RHIYw@dread.disaster.area>
+References: <20230907174705.2976191-1-willy@infradead.org>
+ <20230907174705.2976191-2-willy@infradead.org>
+ <20230907190810.GA14243@noisy.programming.kicks-ass.net>
+ <ZPoift7B3UDQgmWB@casper.infradead.org>
+ <20230907193838.GB14243@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230907094517.1961-1-luhongfei@vivo.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230907193838.GB14243@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lu,
+On Thu, Sep 07, 2023 at 09:38:38PM +0200, Peter Zijlstra wrote:
+> On Thu, Sep 07, 2023 at 08:20:30PM +0100, Matthew Wilcox wrote:
+> > On Thu, Sep 07, 2023 at 09:08:10PM +0200, Peter Zijlstra wrote:
+> > > On Thu, Sep 07, 2023 at 06:47:01PM +0100, Matthew Wilcox (Oracle) wrote:
+> > > > Several places want to know whether the lock is held by a writer, instead
+> > > > of just whether it's held.  We can implement this for both normal and
+> > > > rt rwsems.  RWSEM_WRITER_LOCKED is declared in rwsem.c and exposing
+> > > > it outside that file might tempt other people to use it, so just use
+> > > > a comment to note that's what the 1 means, and help anybody find it if
+> > > > they're looking to change the implementation.
+> > > 
+> > > I'm presuming this is deep in a callchain where they know they hold the
+> > > lock, but they lost in what capacity?
+> > 
+> > No, it's just assertions.  You can see that in patch 3 where it's
+> > used in functions called things like "xfs_islocked".
+> 
+> Right, but if you're not the lock owner, your answer to the question is
+> a dice-roll, it might be locked, it might not be.
 
-kernel test robot noticed the following build errors:
+Except that the person writing the code knows the call chain that
+leads up to that code, and so they have a pretty good idea whether
+the object should be locked or not. If we are running that code, and
+the object is locked, then it's pretty much guaranteed that the
+owner of the lock is code that executed the check, because otherwise
+we have a *major lock implementation bug*.
 
-[auto build test ERROR on mkp-scsi/for-next]
-[also build test ERROR on jejb-scsi/for-next linus/master v6.5 next-20230907]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+i.e. if we get to a place where rwsem_is_write_locked() fires
+because some other task holds the lock, it almost always means we
+have *two* tasks holding the lock exclusively.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Lu-Hongfei/scsi-ufs-core-allow-host-driver-to-enable-wb-buffer-resize-function/20230907-234105
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git for-next
-patch link:    https://lore.kernel.org/r/20230907094517.1961-1-luhongfei%40vivo.com
-patch subject: [PATCH 3/3] scsi: ufs: core: Add exception event handler to implicitly handle WB buffer resize event
-config: hexagon-randconfig-002-20230908 (https://download.01.org/0day-ci/archive/20230908/202309080646.NhYcVypx-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230908/202309080646.NhYcVypx-lkp@intel.com/reproduce)
+Yes, it's these non-lockdep checks in XFS that have found rwsem
+implementation bugs in the past. We've had them fire when the lock
+was write locked when we know a few lines earlier it was taken as a
+read lock, or marked write locked when they should have been
+unlocked, etc because the rwsem code failed to enforce rw exclusion
+semantics correctly.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309080646.NhYcVypx-lkp@intel.com/
+So, really, these lock checks should be considered in the context of
+the code that is running them and what such a "false detection"
+would actually mean. In my experience, a false detection like you
+talk about above means "rwsems are broken", not that there is a
+problem with the code using the rwsems or the rwsem state check.
 
-All errors (new ones prefixed by >>):
+> > > In general I strongly dislike the whole _is_locked family, because it
+> > > gives very poorly defined semantics if used by anybody but the owner.
+> > > 
+> > > If these new functions are indeed to be used only by lock holders to
+> > > determine what kind of lock they hold, could we please put:
+> > > 
+> > > 	lockdep_assert_held()
+> > > 
+> > > in them?
+> > 
+> > Patch 2 shows it in use in the MM code.  We already have a
+> > lockdep_assert_held_write(), but most people don't enable lockdep, so
+> 
+> Most devs should run with lockdep on when writing new code, and I know
+> the sanitizer robots run with lockdep on.
+> 
+> In general there seems to be a ton of lockdep on coverage.
 
-   In file included from drivers/ufs/core/ufshcd.c:18:
-   In file included from include/linux/blkdev.h:9:
-   In file included from include/linux/blk_types.h:10:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:12:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:334:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     547 |         val = __raw_readb(PCI_IOBASE + addr);
-         |                           ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-         |                                                   ^
-   In file included from drivers/ufs/core/ufshcd.c:18:
-   In file included from include/linux/blkdev.h:9:
-   In file included from include/linux/blk_types.h:10:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:12:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:334:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-         |                                                   ^
-   In file included from drivers/ufs/core/ufshcd.c:18:
-   In file included from include/linux/blkdev.h:9:
-   In file included from include/linux/blk_types.h:10:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:12:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:334:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     584 |         __raw_writeb(value, PCI_IOBASE + addr);
-         |                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
->> drivers/ufs/core/ufshcd.c:322:19: error: member reference type 'struct ufs_dev_info' is not a pointer; did you mean to use '.'?
-     322 |         if (hba->dev_info->wspecversion >= 0x410
-         |             ~~~~~~~~~~~~~^~
-         |                          .
-   drivers/ufs/core/ufshcd.c:323:22: error: member reference type 'struct ufs_dev_info' is not a pointer; did you mean to use '.'?
-     323 |             && hba->dev_info->b_presrv_uspc_en
-         |                ~~~~~~~~~~~~~^~
-         |                             .
->> drivers/ufs/core/ufshcd.c:326:3: error: call to undeclared function 'ufshcd_enable_ee'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     326 |                 ufshcd_enable_ee(hba, mask);
-         |                 ^
-   drivers/ufs/core/ufshcd.c:326:3: note: did you mean 'ufshcd_enable_irq'?
-   drivers/ufs/core/ufshcd.c:291:20: note: 'ufshcd_enable_irq' declared here
-     291 | static inline void ufshcd_enable_irq(struct ufs_hba *hba)
-         |                    ^
->> drivers/ufs/core/ufshcd.c:5642:19: error: static declaration of 'ufshcd_enable_ee' follows non-static declaration
-    5642 | static inline int ufshcd_enable_ee(struct ufs_hba *hba, u16 mask)
-         |                   ^
-   drivers/ufs/core/ufshcd.c:326:3: note: previous implicit declaration is here
-     326 |                 ufshcd_enable_ee(hba, mask);
-         |                 ^
-   drivers/ufs/core/ufshcd.c:10216:44: warning: shift count >= width of type [-Wshift-count-overflow]
-    10216 |                 if (!dma_set_mask_and_coherent(hba->dev, DMA_BIT_MASK(64)))
-          |                                                          ^~~~~~~~~~~~~~~~
-   include/linux/dma-mapping.h:77:54: note: expanded from macro 'DMA_BIT_MASK'
-      77 | #define DMA_BIT_MASK(n) (((n) == 64) ? ~0ULL : ((1ULL<<(n))-1))
-         |                                                      ^ ~~~
-   7 warnings and 4 errors generated.
+*cough*
 
+Bit locks, semaphores, and all sorts of other constructs for IO
+serialisation (like inode_dio_wait()) have no lockdep coverage at
+all. IOWs, large chunks of many filesystems, the VFS and the VM have
+little to no lockdep coverage at all.
 
-vim +322 drivers/ufs/core/ufshcd.c
+> > we also have VM_BUG_ON_MM(!rwsem_is_write_locked(&mm->mmap_lock), mm)
+> > to give us a good assertion when lockdep is disabled.
+> 
+> Is that really worth it still? I mean, much of these assertions pre-date
+> lockdep.
 
-   306	
-   307	static void ufshcd_configure_wb(struct ufs_hba *hba)
-   308	{
-   309		u16 mask = 0;
-   310	
-   311		if (!ufshcd_is_wb_allowed(hba))
-   312			return;
-   313	
-   314		ufshcd_wb_toggle(hba, true);
-   315	
-   316		ufshcd_wb_toggle_buf_flush_during_h8(hba, true);
-   317	
-   318		if (ufshcd_is_wb_buf_flush_allowed(hba))
-   319			ufshcd_wb_toggle_buf_flush(hba, true);
-   320	
-   321		/* Enable the WRITEBOOSTER_RESIZE_HINT exception mechanism. */
- > 322		if (hba->dev_info->wspecversion >= 0x410
-   323		    && hba->dev_info->b_presrv_uspc_en
-   324		    && ufshcd_is_wb_buf_resize_allowed(hba)) {
-   325			mask |= MASK_EE_WRITEBOOSTER_RESIZE_HINT;
- > 326			ufshcd_enable_ee(hba, mask);
-   327		}
-   328	}
-   329	
+And we're trying to propagate them because lockdep isn't a viable
+option for day to day testing of filesystems because of it's
+overhead vs how infrequently it finds new problems.
 
+> > XFS has a problem with using lockdep in general, which is that a worker
+> > thread can be spawned and use the fact that the spawner is holding the
+> > lock.  There's no mechanism for the worker thread to ask "Does struct
+> > task_struct *p hold the lock?".
+> 
+> Will be somewhat tricky to make happen -- but might be doable. It is
+> however an interface that is *very* hard to use correctly. Basically I
+> think you want to also assert that your target task 'p' is blocked,
+> right?
+> 
+> That is: assert @p is blocked and holds @lock.
+
+That addresses the immediate symptom; it doesn't address the large
+problem with lockdep and needing non-owner rwsem semantics.
+
+i.e. synchronous task based locking models don't work for
+asynchronous multi-stage pipeline processing engines like XFS. The
+lock protects the data object and follows the data object through
+the processing pipeline, whilst the original submitter moves on to
+the next operation to processes without blocking.
+
+This is the non-blocking, async processing model that io_uring
+development is pushing filesystems towards, so assuming that we only
+hand a lock to a single worker task and then wait for it complete
+(i.e. synchronous operation) flies in the face of current
+development directions...
+
+-Dave.
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Dave Chinner
+david@fromorbit.com
