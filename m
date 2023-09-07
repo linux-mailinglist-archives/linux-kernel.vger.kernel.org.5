@@ -2,236 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E60797CF4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 21:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2727797CFA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 21:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233837AbjIGTn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 15:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46610 "EHLO
+        id S238231AbjIGTtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 15:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232173AbjIGTn6 (ORCPT
+        with ESMTP id S229954AbjIGTtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 15:43:58 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B373CE9;
-        Thu,  7 Sep 2023 12:43:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A5F7C433C7;
-        Thu,  7 Sep 2023 19:43:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694115834;
-        bh=XNJ6eaiy6oOw6b1KlAbPBrj8EtJk96f0FRUMDyQiiPw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LBkzCyN6TBJDyL3szlqcxnUz72Sedly9MEc8nJDUoDQRryvSruVBTgamW/W2No+3a
-         PP+prYSndor/ivzTvcAhKwJjvhGbQbfB+i/ROmxf5MjZZ6oZDEt9kg6NKR3k+zd89f
-         aPkYv6BJfJbgqJMlDCKSt/MSP2b83tJBOSL4vwEpHuVaVq8YO9o5oR991tFG+rf8Q5
-         YUD/zqAq8N9lkT0GyBdHvuAbeDH6IeBZA1GEhg5JRk9r+Xagqzv0bLjaMKnptFVG+T
-         qsx5821KeoE6/HPF+iR0oRIIuUj1FsMP2rUCKGh2xlT6BVfw5J8Qz/oHF7V5Q9Gm9e
-         E1HoIz9ceZQFQ==
-Received: (nullmailer pid 2204967 invoked by uid 1000);
-        Thu, 07 Sep 2023 19:43:51 -0000
-Date:   Thu, 7 Sep 2023 14:43:51 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "naresh.solanki@9elements.com" <naresh.solanki@9elements.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>,
-        "patrick@stwcx.xyz" <patrick@stwcx.xyz>
-Subject: Re: [PATCH v8 1/3] dt-bindings: hwmon: fan: Add fan binding to schema
-Message-ID: <20230907194351.GA2033402-robh@kernel.org>
-References: <20230830123202.3408318-1-billy_tsai@aspeedtech.com>
- <20230830123202.3408318-2-billy_tsai@aspeedtech.com>
- <20230905170010.GA3505375-robh@kernel.org>
- <SG2PR06MB336567E43537C7F4947E342F8BEEA@SG2PR06MB3365.apcprd06.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SG2PR06MB336567E43537C7F4947E342F8BEEA@SG2PR06MB3365.apcprd06.prod.outlook.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        Thu, 7 Sep 2023 15:49:14 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF2BCE9;
+        Thu,  7 Sep 2023 12:49:10 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 387IfbE1028366;
+        Thu, 7 Sep 2023 14:48:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        content-type:mime-version:subject:from:in-reply-to:date:cc
+        :content-transfer-encoding:message-id:references:to; s=
+        PODMain02222019; bh=wpcCB1XXiTxtp4A/yEkAREYNKjUpf9GsXoBRPflBxIs=; b=
+        GwXEOP0IuPbWhv8WisKYsokLHxAgdmsLEa1aTSvBOl5U8cbcnXnW/xN3IoxeuADs
+        27EnghnKGLjSchLLllPFe2Xd1xL7+skhzkxZMJsBpf9+UZ9+jVQ9GmTv5sPr5eqr
+        JudN1bpzFH4CtQRVvxe6nQCseHq0chmUEBTg7fva9H5trc/x2Ol/oeyaAxFxREBR
+        /4Ulc7f8roVFZHU6BreyXviCEJSfCiH8a160eYGreIStNBFGMnKrHuR9+BVuxFiX
+        divc9im+WVpgOTTbqjrufJJYBZ+aYnK+Wc7+BdcbK9xJv1ABg6ECxN35TBn6+DR4
+        m9mpcpY3g3T8o/sojKeSuw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3sv1fhx3mu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Sep 2023 14:48:49 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 7 Sep
+ 2023 20:48:48 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Thu, 7 Sep 2023 20:48:48 +0100
+Received: from smtpclient.apple (macC02FN0GLMD6T.ad.cirrus.com [141.131.156.171])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1FEDE458;
+        Thu,  7 Sep 2023 19:48:46 +0000 (UTC)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
+Subject: Re: [PATCH v3 3/4] ASoC: cs35l45: Connect DSP to the monitoring
+ signals
+From:   "Rivera-Matos, Ricardo" <rriveram@opensource.cirrus.com>
+In-Reply-To: <20230901085025.GB103419@ediswmail.ad.cirrus.com>
+Date:   Thu, 7 Sep 2023 14:48:35 -0500
+CC:     Vlad Karpovich <vkarpovi@opensource.cirrus.com>,
+        James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        "Richard Fitzgerald" <rf@opensource.cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        "Takashi Iwai" <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-ID: <3EEF7D10-C220-4D23-856B-249994084CF3@opensource.cirrus.com>
+References: <20230831162042.471801-1-vkarpovi@opensource.cirrus.com>
+ <20230831162042.471801-3-vkarpovi@opensource.cirrus.com>
+ <20230901085025.GB103419@ediswmail.ad.cirrus.com>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+X-Mailer: Apple Mail (2.3731.700.6)
+X-Proofpoint-ORIG-GUID: tP_D_MR_2ZRWMl8uKWjmus0j1vMGtdA9
+X-Proofpoint-GUID: tP_D_MR_2ZRWMl8uKWjmus0j1vMGtdA9
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 07:17:55AM +0000, Billy Tsai wrote:
-> On Wed, Aug 30, 2023 at 08:32:00PM +0800, Billy Tsai wrote:
-> >> From: Naresh Solanki <naresh.solanki@9elements.com>
-> >> 
-> >> Add common fan properties bindings to a schema.
-> >> 
-> >> Bindings for fan controllers can reference the common schema for the
-> >> fan
 
 
-> >> +properties:
-> >> +  max-rpm:
-> >> +    description:
-> >> +      Max RPM supported by fan.
-> >> +    $ref: /schemas/types.yaml#/definitions/uint32
-> 
-> > Physics will limit this to something much less than 2^32. Add some 
-> > constraints. 10000?
-> 
-> 
-> >> +
-> >> +  min-rpm:
-> >> +    description:
-> >> +      Min RPM supported by fan.
-> >> +    $ref: /schemas/types.yaml#/definitions/uint32
-> 
-> > ditto
-> 
-> >> +
-> >> +  pulses-per-revolution:
-> >> +    description:
-> >> +      The number of pulse from fan sensor per revolution.
-> >> +    $ref: /schemas/types.yaml#/definitions/uint32
-> 
-> >Needs constraints. I assume this is never more than 4 (or 2 even)?
-> 
-> Do you think we should add the contraint in the common binding?
-> In my option, the limit of the max/min rpm should be declared by
-> the binding if necessary, because the usage of each fan monitor is
-> based on the connection of the tach pin.
+> On Sep 1, 2023, at 3:50 AM, Charles Keepax =
+<ckeepax@opensource.cirrus.com> wrote:
+>=20
+> On Thu, Aug 31, 2023 at 11:20:41AM -0500, Vlad Karpovich wrote:
+>> Link VMON, IMON, TEMPMON, VDD_BSTMON and VDD_BATTMON
+>> to DSP1. The CSPL firmware uses them for the speaker calibration
+>> and monitoring.
+>>=20
+>> Signed-off-by: Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+>> ---
+>=20
+> Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+>=20
+> Thanks,
+> Charles
 
-Yes, I think we should have default limits.
-
-Unless we go as far as a schema for every specific fan model, then there 
-is actually no way we can have specific limits unless the fan 
-controllers have some limits.
-
-The most I see in tree for pulses-per-revolution is 2. There's no value 
-in more. So set the max to 4 and then if anyone needs more they can bump 
-the value.
-
-Or maybe there's some electrical/mechanical design reason fans are 1 or 
-2 pulses and we'll never see anything else? This document[1] seems to 
-indicate that is indeed the case. (First hit googling "fan tach signal 
-pulses")
-
-> 
-> 
-> >> +  div:
-> 
-> > Too generic of a name.
-> 
-> >> +    description:
-> >> +      Fan clock divisor
-> 
-> > But what is a fan clock?
-> 
-> This is the divisor for the tachometer sampling clock, which determines the sensitivity of the tach pin.
-> So, if the name of the property changes to 'tach-div,' is it acceptable to you?
-
-That sounds like a property of the controller, not the fan, so it 
-belongs in the controller binding. Is this really a common thing?
-
- 
-> >> +    $ref: /schemas/types.yaml#/definitions/uint32
-> >> +
-> >> +  target-rpm:
-> >> +    description:
-> >> +      Target RPM the fan should be configured during driver probe.
-> 
-> > What driver? By the time the OS driver runs, a bunch of other boot 
-> > software has already run on modern systems. So this value would likely 
-> > be used much earlier. The point is that when exactly is outside the 
-> > scope of DT. This is "what RPM do I use in case of no other information 
-> > (e.g. temperature)".
-> 
-> So, the description should be changed to 'The default desired fan speed in RPM,'
-> and we shouldn't mention the timing of the property's operation in the DT, is that correct?
-
-Correct.
-
-> 
-> >> +    $ref: /schemas/types.yaml#/definitions/uint32
-> >> +
-> >> +  mode:
-> 
-> > Too generic.
-> 
-> >> +    description:
-> >> +      Select the operational mode of the fan.
-> 
-> > What are modes? Spin and don't spin?
-> 
-> The mode is used to indicate the driving mode of the fan (DC, PWM and so on).
-> So, if the name of the property changes to 'fan-driving-mode,' is it acceptable to you?
-
-I tend to think that should be implied from the parent node and/or other 
-properties. PWM if "pwms" property is present. DC if the supply is 
-variable. We could also use compatible strings in the fan nodes if 
-there's a need.
-
-That reminds me, both of these modes probably need a table of 
-voltage/duty-cycle to RPMs. I imagine it's not always a linear response.  
-Naresh also privately sent me (don't do that) an updated common binding 
-which we discussed the need for this. I expect him to comment further 
-with details.
-
-
-> >> +    $ref: /schemas/types.yaml#/definitions/uint32
-> >> +
-> >> +  pwms:
-> >> +    description:
-> >> +      PWM provider.
-> 
-> > maxItems: 1
-> 
-> > I don't think there are fans with more than 1 PWM input?
-> 
-> Ok, I will add the constraint for the pwm input.
-> 
-> >> +
-> >> +  tach-ch:
-> >> +    description:
-> >> +      The tach channel used for the fan.
-> >> +    $ref: /schemas/types.yaml#/definitions/uint32
-> 
-> > The existing ASpeed version of this property allows more than 1 entry. I 
-> > don't understand how a fan would have 2 tach signals, but if so, the 
-> > generic property should allow for that.
-> 
-> Ok, I will modify it to the uint32-array
-
-Perhaps uint8-array to align with existing versions of the property.
-
-> 
-> > Perhaps 'reg' should be defined in here with some text saying 'reg' 
-> > corresponds to the fan controller specific id which may be the PWM+TACH 
-> > channel, PWM channel (deprecated), or TACH channel. I think there are 
-> > examples of all 3 of these cases.
-> 
-> I don't think it's necessary for the 'reg' because the case you mentioned is
-> already covered by the property 'tach-ch' and the 'pwms'.
-
-Yes, but when we have N child nodes of the same thing, we usually have 
-"reg" and its value corresponds to how the parent identifies each child. 
-We already have a mixture using PWM or tach channel. Yes, this can all 
-just be in the fan controllers binding, but putting it here would just 
-document the options.
-
-Rob
-
-
-[1] http://www.comairrotron.com/methods-monitoring-fan-performance
+Acked-by: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>=
