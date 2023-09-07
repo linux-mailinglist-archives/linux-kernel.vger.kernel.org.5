@@ -2,174 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2367973C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C011679740D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343565AbjIGPa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:30:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54764 "EHLO
+        id S1344689AbjIGPdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237061AbjIGPaC (ORCPT
+        with ESMTP id S1343770AbjIGPbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:30:02 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2080.outbound.protection.outlook.com [40.107.93.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902121FD6;
-        Thu,  7 Sep 2023 08:29:34 -0700 (PDT)
+        Thu, 7 Sep 2023 11:31:13 -0400
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on0614.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe1f::614])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B711FD8;
+        Thu,  7 Sep 2023 08:30:44 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FgwuCbWDnYtUVM1md6GviPpnqGRTfAVQO4H03mC3ForOsmoVmGjv+ZbYfgZBzEOP8IxMFIjIaJbCedjb4LNAx/HSJAUYR7Ec7qyrr9FWmD7GV/OGFG9ae5AHnH8ysSq7X2RKEmJvEGuSBm9/TWYVkHFZzr8VvsfRBT5f1GtLX4PvMgp3TKEjnaeOcM7+2HBakEqkF920mtBEHz87sLUGecAsNL90eFF2XE38Bxbz0CCCFfNA6IgZfQjhRWf3sThq/dd5rsugIrGnna6HSzDZP2gG+pKCzCLPsP0nx2U8rBCSlmdoXyETV1YPzPU4aY0MLQrp4LUba3coEIRFZe2Wrw==
+ b=A8ofcB2wNNgHWX+O2UA4tvi2/D0CjMCmU3sxhIXfhXo3EC5073LWEWHOZHvHo1nN5ccKNtYYEUZvUnAplWyqxrKJNblMPM6BhF4Q/fbQLDczhcyoJw8FJrtUDmUi7fKB6WZDpx5NLxRXETFnFx2gpLrw24Q/QfU0f3V9Twug7obejG0/PhEA0YA4qkP5I9DXEoZo7vN/mKUUtFdqEyITN16WX4mkZxP10UBsfbiBeJBGz2IQ4Krj3VlcwMICGZjw6SZnkN7wPl8kqNx8r8gVUq1QzGss0hMDRORo2VfgIF6HaPw9Kjwd69PdxOP4ekUL6THPfLgDBt3xi0LnAHNkFQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C2ofdhpSWS9+GZHGysvoXglLW1/JvT1Le9J/PUKFQrE=;
- b=XeR81X+zKkOQJmcD/uMmixAIqd8kdKip6Op2zkN9COXGyr1WW1kS5oUJi1g1+OtjaEFJjKTQmyt1FIAsq0HvmdB6mjtxMwdS0tIHVirN9X2GPF+4WJGYjkWETdDC+VgiSHoQh4AbEMK4hglATY31tV+i0VINBenzI0IlNXDjoZeNaEFGonFsG67XRng6xmusVoT1u8/vondC7i5Qc0Ya/buj6eSfu/FKIng6eThrddWaK6BDS7ywhj6t5uKdiBqkl+Xo6Ou9+UxafZ04XQBaA/h7xQTdMqdP6bc/P9wIMx8m+XE3Z7qzR1deLBfyv4WNAHa6V9h8wAJU5FiL79yZGg==
+ bh=cR9unmMY1PvkRy8NUmpdnm4mle/Uwv67QLUUL3khaUM=;
+ b=Kt81S4Mua379ObNDApzaqOMjhi0M/nHa0ns4XSz4FhXTVklT4t6TYPazz/AU51MRzr3rwOjxPZlbtDlaXPwA4fC2DRdKIIk6n4I1J0qIlrLsfRRM7T60C6GFaik7YYvGkiEbITfVr/NFzpDu021aH10VHAFYj3hAtLet3dwAD+5XSDNnqryNJ8ixhsqy8BkpQT408W4VJ4wEeLxidZeUyzn+mpwtU2Q1lwJl3sApJ/VBc3r/RplVuN0i7c1cZAyYwQrVEmEhUi2BMPd9SG1uNKAXvDpcPg98Kt8dQAtzvWKxvLckEAwMwKt0W3CVMhnRh+aaB5CmSnBny7DDlfL1Ig==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C2ofdhpSWS9+GZHGysvoXglLW1/JvT1Le9J/PUKFQrE=;
- b=2TP0274nv518Ac7PaBilwN3JpFHvqNmLlXCFdcDZst1/6JnzgzQ0sJc3KnZSgDUL2VJwTTI0lZ2QTG4KnuW9j178EddItNX6U5D7p2OkBz18OOcPeHv2k/K0dkJvZmBQd+s+uNlXzNCsOwnlLdYXyajNB28v088soRcKWYszUVs=
+ bh=cR9unmMY1PvkRy8NUmpdnm4mle/Uwv67QLUUL3khaUM=;
+ b=Jky38k6fGjI6Nmts3LBMEVV45I2ZMguo91eHc/U8DOLE2IW4gR5x63crzX1tLNAHAAbJYbLnIfrRlRO9Ox2zM+HKb59zjKQxFwy9jdLO+DDbZy6yKcu0cZFSFrJXGTCDmwaMyFRGDRVX02fXBHmBu2ZAi0xbc4E3Xs38qQ3d7dpnweMVuIaCz8RETiOhdeW1/o5/9gipSXi0fEVRISFvS5Z0s86+7WNxbunzv4c+PPL/1UJ3oOF8fzDxUkWfxu6KGOm2507fY9zIFytARqPhXWPu64L+zMiUv/MXchZ00N/f6dl4DM4hmliZpl3TJXZosvFbITXke+Fh47TiO0uL1w==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by SA3PR12MB7997.namprd12.prod.outlook.com (2603:10b6:806:307::16) with
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
+ by DB9PR04MB9645.eurprd04.prod.outlook.com (2603:10a6:10:309::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Thu, 7 Sep
- 2023 12:44:03 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::3d:c14:667a:1c81]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::3d:c14:667a:1c81%4]) with mapi id 15.20.6745.034; Thu, 7 Sep 2023
- 12:44:03 +0000
-Message-ID: <714d5ecf-f0dd-c099-0970-9ee765d35161@amd.com>
-Date:   Thu, 7 Sep 2023 14:43:56 +0200
+ 2023 12:45:38 +0000
+Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
+ ([fe80::274c:c30b:ac8c:2361]) by PA4PR04MB7790.eurprd04.prod.outlook.com
+ ([fe80::274c:c30b:ac8c:2361%2]) with mapi id 15.20.6745.034; Thu, 7 Sep 2023
+ 12:45:38 +0000
+Message-ID: <7523faad-23f0-2fcb-30e3-b0207d71e63f@suse.com>
+Date:   Thu, 7 Sep 2023 15:45:34 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
- to select the primary video adapter at boot time
+ Thunderbird/102.13.0
 Content-Language: en-US
-To:     suijingfeng <suijingfeng@loongson.cn>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
-References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
- <44ec8549-dc36-287e-4359-abd3ec8d22d6@suse.de>
- <5afd2efb-f838-f9b7-02a9-2cf4d4fd2382@loongson.cn>
- <2adfa653-ac35-d560-be52-c92848a1eef5@gmail.com>
- <b51d49f3-e3de-6b8d-9cb4-df5c03f3cdc0@loongson.cn>
- <10509692-ce04-e225-5a27-abc955554bdc@gmail.com>
- <a9af88c5-4509-96ff-a7fd-a0f72d2f1e6a@linux.dev>
- <127fab21-bc5c-f782-e42b-1092fbb8df34@amd.com>
- <5d9f9780-995f-33dc-e3db-3112aa085062@loongson.cn>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-In-Reply-To: <5d9f9780-995f-33dc-e3db-3112aa085062@loongson.cn>
+To:     Kai Huang <kai.huang@intel.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     x86@kernel.org, dave.hansen@intel.com,
+        kirill.shutemov@linux.intel.com, tony.luck@intel.com,
+        peterz@infradead.org, tglx@linutronix.de, bp@alien8.de,
+        mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
+        pbonzini@redhat.com, david@redhat.com, dan.j.williams@intel.com,
+        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
+        reinette.chatre@intel.com, len.brown@intel.com, ak@linux.intel.com,
+        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, bagasdotme@gmail.com,
+        sagis@google.com, imammedo@redhat.com
+References: <cover.1692962263.git.kai.huang@intel.com>
+ <3b9ddfb377a944393b2a93f963cd902232a5ee33.1692962263.git.kai.huang@intel.com>
+From:   Nikolay Borisov <nik.borisov@suse.com>
+Subject: Re: [PATCH v13 06/22] x86/virt/tdx: Add SEAMCALL error printing for
+ module initialization
+In-Reply-To: <3b9ddfb377a944393b2a93f963cd902232a5ee33.1692962263.git.kai.huang@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR3P281CA0112.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a3::15) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+X-ClientProxiedBy: VI1PR04CA0074.eurprd04.prod.outlook.com
+ (2603:10a6:802:2::45) To PA4PR04MB7790.eurprd04.prod.outlook.com
+ (2603:10a6:102:cc::8)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|SA3PR12MB7997:EE_
-X-MS-Office365-Filtering-Correlation-Id: ba80dea3-c906-4634-95cf-08dbafa01d89
+X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|DB9PR04MB9645:EE_
+X-MS-Office365-Filtering-Correlation-Id: d8960e50-0fcf-43ad-37b5-08dbafa055f8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wggq3wBpptVwkhWYyaTw5Q0yO1xBSe9KSyfSAFqjFUvQMqYNPDEBVCToQ2idOzNE75YgsHArcXYzhBb0xwkcvFvaSMZsc8Omv0VUmYThfDC057w+vgHDkIwne/IFFsLzTtp02Jl1f+ktcEsJ/JeoXQGJlJsHeQuIkqEe1mjhK6qcRlX7WFINsWg06AimPdXdyui63LRQsJQi794VVPjsl2wkIWWYTQa+/BUUzUyT+lwpOjXNn+Gs77fzSKJJ7bqsi5TETMZNrEzdHZYtDTpE6a3YmSKqbKrLLEBEdcUtw1/C5CD90pHLpXx2ua9k4k6y4zXSC+9NB9wK2gK4AhTNQy3b3VDlGJbO5rMn7GcnI+1VsL7OZK5ElsQLBNGfSDjt/x3YgdTzhiCXNu5YPpk2W6iO2kAayybmQ0tydd4sUOBsbfg4lQcfUxlAeswqNpTbTQdF7+g/dQds5HNChZbqFG5B/GcSX8WJLRW2tyuJJfTkZ2xeGDUMOOpKOqT+nrkv+YU5hZPs6PTP0/cvZ0J9JHtJiT335fzObWLyWJiDOhTc1uPLTHvCSQtYZBr99884BICW/1EVF3SoMzSJW3XCQniRDZAt5Qsoe0bzRIx0iJQOMYjYZ4wKnYCtJZvDXcmg
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(396003)(39860400002)(346002)(136003)(451199024)(186009)(1800799009)(966005)(8936002)(4744005)(8676002)(4326008)(478600001)(66476007)(66556008)(66946007)(110136005)(5660300002)(83380400001)(31686004)(7416002)(2906002)(41300700001)(31696002)(86362001)(316002)(6636002)(6666004)(6486002)(6506007)(53546011)(6512007)(26005)(2616005)(38100700002)(36756003)(66574015)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: zDaQW83YkI/Itjzo5t3B+oiC3zrSP5Af8qKTrb/HKuKqr2wEnwM3/hWCq2wf05GFv5B6qTBjuH78BcJEnPj20msv3lvdw5AL+961GdB+Kwa2JriI2kF05Pn1ioazyzM0JWdY26HEnxE9Vbx+nldxBsHUK1jYuJscnmFr8JQqVEuaG6Pb8Ek3OYCQntjrWbxZZP110fJKU50DMLZKiSUNEmYeDHac4/CUrjVZfdoULvsGUnF33mTiS3LTyktfy2i720NBqSe2YQwhYFNmB4QlYMa02CeK+eoQ9DcH7J+VKU/XSghVdpgigmWBC+hyTkAljRhDmNWT/rZnafNKkwXbVIlGG1QywF9lv8Kz0hb154Bn0jlSef2qyq7lJsQ/lhFum/p316WY14zPkKMyr2WXYx6CAqyuYdWD3sJSPDJ9hPAijdjYgJsRmyCX9lireiTVdWEHe0jaV8jSSAadcpRjwaovWeLBMIJJHR0rFYZuP5FifmnSJwW0apBadjfvYF8JANBo1yW17Px/tH2QqZutVJ/i+0kALMh/xUrxLBrgWdLFF1TdsJjc5Bg0P83T7Sb0H7QAzDjxnDC9uWSXDPSqpHRfR56PHVMjgMpNpu48Xx4Ema80sbtiBByIerRWJ0C7uLrDbskNh33m8EQRBncjvw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(346002)(376002)(39860400002)(451199024)(1800799009)(186009)(6506007)(478600001)(6486002)(86362001)(26005)(31696002)(5660300002)(6512007)(83380400001)(31686004)(6666004)(2906002)(38100700002)(66556008)(36756003)(2616005)(316002)(66476007)(66946007)(8676002)(4326008)(8936002)(41300700001)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TDhxUHQ0dm1Ud1k4RnpyZ3ZFWEpXcFZLc25Ua0NUYnVHZTVRdGxjR1hKMW5q?=
- =?utf-8?B?R0N3Tmt3NEFnTkFxaUIva2huc3QybFJLODIralZESFhHSTMyNHc4NGQvUjVI?=
- =?utf-8?B?LzBXZVNiNUc4bGpIMUtXK1FyM1JYNDIwNVZJaXlsMzByTm1YdWxOYzM0b2ox?=
- =?utf-8?B?M3NIN0VreXVvUmJ1bDRoWTc2aWYwS2FLcVZBMEN4MDJ1YU9JZjEzZnEvZElS?=
- =?utf-8?B?TWxSTEY5eGJPRWwvbnM3TmQ4YVQ5R3VHaTNwd3ZTeGtGK0kvMll6V2RPU0NJ?=
- =?utf-8?B?UWlTNVMrS0NWRlAzMlVEUkpXNm1QQm9KcVJ0NlBPdUNCUFhKaW5Kb1BDMHA3?=
- =?utf-8?B?OHlrdWdlR1B2Qm85dXlSbXlwRUo1bHE1WUdmYTFUOUE3eHBNNTZsck5peWtk?=
- =?utf-8?B?VjVCK1V0elJjY2Q5cEJXeTgxZFdJTVpma0hRNitETXhBLzVEbjZNKzlOWUpU?=
- =?utf-8?B?N3lmcWUwMzlXbzk4WWNwTzRnK25ySWhVT3RmM3BINmlsSnFSYjJRcTJNb0tw?=
- =?utf-8?B?ZXo4WTdxRXNicGpRdWs1eGhLS2ZLRmVpRjhSeXFteSt0UzRJS2h3TngvV2tU?=
- =?utf-8?B?M2dkTE5jREZaV3RoajlFN2ttUG1FVzRqUkxSelJ5alRCdi9Dd0Q0bld1MWIx?=
- =?utf-8?B?dkZaZTljODRkamkwTm85R0E3T1hlNmxkbTRIbmpzcTBmc09uMTBSdFBGbDgw?=
- =?utf-8?B?TUUvNWk0Vnp5Um5GMTltWlNwVkxCUEU2UXcvNHc3eDROR1JPQXNjOENacGpw?=
- =?utf-8?B?a0MxWnlQcEZGZCt3aHM2K052UWpQbHZxSmcwTWNzQ0NLUXNQTVo0S0hieVhO?=
- =?utf-8?B?eWgzYXpUMVcwMm9iZGR4N1hOU2lOSzhqQzQwaGJWNlNGOEJmZTREOGQ1cE5p?=
- =?utf-8?B?YlhUL0s5eUNrc2N3bUFsc2g0V0l2RFFMSyt4Vkp3aThBQ1oyb1Y5bDFza1VV?=
- =?utf-8?B?aHB2ZzRUekhTNklackt6V2UwNEVDMWhyNkYyUWpLMklVMlpwVTIvN1RmQnh4?=
- =?utf-8?B?MUlLZDNOdHpXK1QybWlJRTZCWkFqbTJyT1hMZzRTYW9PYUwzWThiMUk4M1Vi?=
- =?utf-8?B?Q1FUMnpCOTV6ckUzVVpxdGRxTXFzRmNzK1IrYUlqejVOV3ZYTzluYXl1ZlBl?=
- =?utf-8?B?N2FEbkQ1aCtvTGd2a2s5QVJqZE9Ra3RPUmJzQTg4a2ozU21mOC83U0p1b2No?=
- =?utf-8?B?TnFJQUJnKzVwdFlOZzRRUEdjYnpiYVl3MFpVNDduT0dyMkMrOThoOGU2cnpO?=
- =?utf-8?B?QVNpTGllcm9HS3JvZnBRaHhmNFZSSk1sU1BLVEo1TTVEUjdBYU5KNHREbWp5?=
- =?utf-8?B?VXp5NDBPL0lLcGMyZ3ZQbE8xUnFGYWcxOTl3cHlzV3l3QUQzclZ0aHpQS3hO?=
- =?utf-8?B?bGtUNS9oNXJLK0tTVytFa0VCZFlkK3hkbW5vOVg2alJnSG5NVkpJTE9VcERY?=
- =?utf-8?B?Tkc4eGZRK3pQSXVuVXN2MnhCQ1N4T2Q5RFJHbDJGQm1RcW1iY3hCcUlXSVpQ?=
- =?utf-8?B?OFFsemtWUXYxVzFNRjIrRXlXTkdDTFpUWTdxc0tJZjg4NjMwdTJNeExqS215?=
- =?utf-8?B?ZDlYdjlieElVSHFTcEpDYldTUFJQOXJHQklKbEhBMk1pc3laVEUxTnk0Wklz?=
- =?utf-8?B?d21BSERIMnc3TXhhZXZMZzJ5enEvNkx6MWZIdjd4REc2Q0h5Wm1wR09tb3lr?=
- =?utf-8?B?dWQwbGZwTG1sTWNCaVgrNEoxbmJjNnlMZXhCZjFVaVZmeWdodXhGT3BKaWpW?=
- =?utf-8?B?dkpDWU5JRE5MakpxUWR5TS93VkhPaTlSMElDMzJ6dGQ0R3dmZzNSTEVXWlBi?=
- =?utf-8?B?QW03bkZlMWkvVkcxTm5JN2J3MWczOVBjSlBYaG1OUm1WN2VGbEFsS1RDWmlP?=
- =?utf-8?B?ejZldUdmL3pXUTVna0dWVFY3b0hrVWlOazA4Z21GY1VOR0ZDL0ZhZnRQcVh5?=
- =?utf-8?B?M0VnbE1SK1JIQVFXQWhuZE95WkJlZDRuNkUxWVJVMkhzVDlvdFdwTHZsM2k2?=
- =?utf-8?B?NE05YlRmU3gxakxFNXZSZW5FaTlRSzFOYnpXTExRMnViMEI5SDBvYWV5eGZJ?=
- =?utf-8?B?ZzNPRzdOdnRlOEFwUS91alZzaXNVZ1NtWkRTdVlXZXJncWpnamxaR1V0ZlRW?=
- =?utf-8?Q?mPv+33G7ba+U3KiRnN5s3ZYkd?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba80dea3-c906-4634-95cf-08dbafa01d89
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QTA3b2h2STVEaU0rTk5OV3FtclB5L2VtdExVOGU5R0JBNEE0ZHRVV0dvZlJo?=
+ =?utf-8?B?WnMrN01tSmFEWmFOT2U0dVpvVzJ0ZUZzL1hzUmlHcE5BK1JMMitUVHhiY2NH?=
+ =?utf-8?B?aVNLaEVVS3VmM0ZlZXd6WmZiZTVDbkJ4QU4zbDlLbHBXM2tPSUJiYVErdGxs?=
+ =?utf-8?B?RnlPYWY4Y2hjMTR2T2lqSS94aWdWbkJQRGxrR2xFeUhZMnFLVVoya3RaYldx?=
+ =?utf-8?B?RFNtejVLQTZsQVkzQzVzOVZoMC9ObW5BYUZzRmliTWdtT3lmWHpiR3NZd0tl?=
+ =?utf-8?B?UThLbGwyMjNCclkzQ1lsSnhSNXRSWUt6NzU3N2J1Mml1NkhaaWVVR2VzTys0?=
+ =?utf-8?B?NnBYVUNNUkVtTm84Q0xnL09uZ2xMZURqSTlNWGNhMklIVXBoSmF2ZkpDbFJt?=
+ =?utf-8?B?NFFaZ0NrRmJSdkRFR1VGT2g3NTlieU0wMUFhOXdsbmZ5Tkw3cXU2UmZVNGMy?=
+ =?utf-8?B?S0FCSEhOYzZxRnhBcG4rb014V2JjR09rVG5hQWxYUCt2elJSUGg5N2lMODFR?=
+ =?utf-8?B?RWkvblcvNHNLZStVTGl5UGdxUVA2RUxOamx5Tmhoa01rVXdBdjZic0N5Si9I?=
+ =?utf-8?B?S2lLdGNkSEl1cWlKcW5xQ0tQenJVTStDNXhCY0VPcUp1MDRxbzJhUDBmRDBG?=
+ =?utf-8?B?QmpTTHR5MWNDcmtnUHhCQkNPK1NicG44OGlKd0F6QzZjMVQ0d0RhWXVHa0w1?=
+ =?utf-8?B?TXBPM0I3Rk0wVEZOKzJwOGl2dTZVN2VjeEpFNERBTzRYZkFReVlEYlY4VDR0?=
+ =?utf-8?B?OEhQdmg0SWJyVng4Z3BHbVlMYzJPaG9kTUo1SUFDNVdNSXoyejduaStRSXpH?=
+ =?utf-8?B?UDFYR3EydHkvVW5pamtXMzRxc3dHSjVDOCtFRnNxTXhpTUFCazh5b1EvYUxv?=
+ =?utf-8?B?Y2ZLWjlrNzBuNk9NNnA2UEg4cjJBSThSaEg1cHhDWTNHUE1zMCt3NmdzREgy?=
+ =?utf-8?B?bmpYTWxtMmFjaExYT2gzRGJ2YWF5b2ZSQXZFZUNuZzJxZW85Q3k0VXMrY0l1?=
+ =?utf-8?B?OGxkMklWVjhybHd0ZkxtTWJ3ZXhuenY5Sk9adFB5MWwveXI5cjl3dTF0VmNz?=
+ =?utf-8?B?WTlBa3RkNzNTUExoY0ExdlJEN09IOXRQYjFteXdDVHdqMVFXZjRTQy9SUGtF?=
+ =?utf-8?B?NXJFdUlTTkZrRWhHOWRTY2dzRytOZW51cVRleThGMWtDbC9IZmZCSXNPdWxD?=
+ =?utf-8?B?amJkT0cwYVUvWEp6elNZUnRBbzFvZ1UrQVN1NVhqeFo1bmVycUFXNTlqRk9n?=
+ =?utf-8?B?MTZSY1hZUnEyZUFUbTJzL1dpWk16a3V0WGxsY0VaSWc3R0NqeWpiRXVvVDA1?=
+ =?utf-8?B?V0Z0Si9nWndiQ0hFbmIrY2FQUnJVUDMwWlorS0JVVTkxVit5U21qTStYOXNX?=
+ =?utf-8?B?aFBEVXEyamYvZGx1MGNOa04rV1piNkZLUHcwcExCZ0ZkZnJ3eHdBV3gzV2hB?=
+ =?utf-8?B?NjdZemhTUmc2Z3lsMzJ6bmtWbysxUDJmdFFFK0tWVXM4N3ZXUVZGZXE0bVRp?=
+ =?utf-8?B?bFlwbENveXZsS0ZnMGdXZmxuaTArbkl1VjRzSVBOWFhMdFVIYzlxb3RjYTV0?=
+ =?utf-8?B?UGVqN3RxU001aTBVdjJrbUJTdnEyN1JqRW9uQU5DTUVqK3RQdlFIRXNxK2dI?=
+ =?utf-8?B?NTFiYmdCQmFPL1FxenRlZk40ejF0Wjl4RHUxcWl3Mm9oa0t0MUxKZkFLbEZv?=
+ =?utf-8?B?N3p4T0dMZ2s2allraCtZaUEvRlVGQXB0WXdnSWF4QWZVNWd5V2wwTGpveGdn?=
+ =?utf-8?B?cXJCa2J1cnZyNFd6d2VPVEFpL0J6TmdydkgvOTJrbXViTDVaeWJLN252cEhx?=
+ =?utf-8?B?UWRDcTJhbXNOWkl0bktDOCtpeGVxeVlzSG9qckp0NnRDOGRtZ28xWldPSHJT?=
+ =?utf-8?B?U2txSDVVbzc4VzYzYjNXdlJncGtWS3BMdG1QL3dKUXJ1MzRaN0c4dlV2MmJn?=
+ =?utf-8?B?S3NyejRLb2tPNXJuM2hSVjhZU0x3RWtWMzJkc0k3aW84UWI3UEpYMDZkWkky?=
+ =?utf-8?B?dzhBSE44NlN2WjZxYUdMbElzQ2VRQSt1MGhzLzBHZ0tGKzBBYjBBNHdvYTRz?=
+ =?utf-8?B?eHMyUEJMenZISERxZVlBTjFUOTNab1lySUNSVStXV0VjbmRaaEQ2U2JEUW5I?=
+ =?utf-8?Q?ZBAXR7uWGbt7kkozFKj+JoI4s?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8960e50-0fcf-43ad-37b5-08dbafa055f8
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 12:44:03.0049
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 12:45:37.7461
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NkZJ/IzFvhrbVUY+MC0sqjmYQrsfKilPMqlEPCaERxevnn5/AKWSFP9r/JpNyqLT
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7997
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1v7kBG8N4Z37dpmmDMHU2+zaF9OuApkDphKALD+6RUO61zNgADlOZ4zDU0wdsdxbl2N5M20CyCh9iW2NjP9B4g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9645
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 07.09.23 um 14:32 schrieb suijingfeng:
-> Hi,
->
->
-> On 2023/9/7 17:08, Christian König wrote:
->> Well, I have over 25 years of experience with display hardware and 
->> what you describe here was never an issue. 
->
-> I want to give you an example to let you know more.
->
-> I have a ASRock AD2550B-ITX board[1],
-> When another discrete video card is mounted into it mini PCIe slot or 
-> PCI slot,
-> The IGD cannot be the primary display adapter anymore. The display is 
-> totally black.
-> I have try to draft a few trivial patch to help fix this[2].
->
-> And I want to use the IGD as primary, does this count as an issue?
 
-No, this is completely expected behavior and a limitation of the 
-hardware design.
 
-As far as I know both AMD and Intel GPUs work the same here.
+On 25.08.23 г. 15:14 ч., Kai Huang wrote:
+> TDX module initialization is essentially to make a set of SEAMCALL leafs
+> to complete a state machine involving multiple states.  These SEAMCALLs
+> are not expected to fail.  In fact, they are not expected to return any
+> non-zero code (except the "running out of entropy error", which can be
+> handled internally already).
+> 
+> Add yet another layer of SEAMCALL wrappers, which treats all non-zero
+> return code as error, to support printing SEAMCALL error upon failure
+> for module initialization.
+> 
+> Other SEAMCALLs may treat some specific error codes as legal (e.g., some
+> can return BUSY legally and expect the caller to retry).  The caller can
+> use the wrappers w/o error printing for those cases.  The new wrappers
+> can also be improved to suit those cases.  Leave this as future work.
+> 
+> SEAMCALL can also return kernel defined error codes for three special
+> cases: 1) TDX isn't enabled by the BIOS; 2) TDX module isn't loaded; 3)
+> CPU isn't in VMX operation.  The first case isn't expected (unless BIOS
+> bug, etc) because SEAMCALL is only expected to be made when the kernel
+> detects TDX is enabled.  The second case is only expected to be legal
+> for the very first SEAMCALL during module initialization.  The third
+> case can be legal for any SEAMCALL leaf because VMX can be disabled due
+> to emergency reboot.
+> 
+> Also add wrappers to convert the SEAMCALL error code to the kernel error
+> code so that each caller doesn't have to repeat.  Blindly print error
+> for the above special cases to save the effort to optimize them.
+> 
+> TDX module can only be initialized once during its life cycle, but the
+> module can be runtime updated by the kernel (not yet supported).  After
+> module runtime update, the kernel needs to initialize it again.  Use
+> pr_err() to print SEAMCALL error for module initialization, because if
+> using pr_err_once() the SEAMCALL error during module initialization
+> won't be printed after module runtime update.
+> 
+> At last, for now implement those wrappers in tdx.c but they can be moved
+> to <asm/tdx.h> when needed.  They are implemented with intention to be
+> shared by other kernel components.  After all, in most cases, SEAMCALL
+> failure is unexpected and the caller just wants to print.
+> 
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
+> ---
+> 
+> v12 -> v13:
+>   - New implementation due to TDCALL assembly series.
+> 
+> ---
+>   arch/x86/include/asm/tdx.h  |  1 +
+>   arch/x86/virt/vmx/tdx/tdx.c | 84 +++++++++++++++++++++++++++++++++++++
+>   2 files changed, 85 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+> index cfae8b31a2e9..3b248c94a4a4 100644
+> --- a/arch/x86/include/asm/tdx.h
+> +++ b/arch/x86/include/asm/tdx.h
+> @@ -27,6 +27,7 @@
+>   /*
+>    * TDX module SEAMCALL leaf function error codes
+>    */
+> +#define TDX_SUCCESS		0ULL
+>   #define TDX_RND_NO_ENTROPY	0x8000020300000000ULL
+>   
+>   #ifndef __ASSEMBLY__
+> diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
+> index 908590e85749..bb63cb7361c8 100644
+> --- a/arch/x86/virt/vmx/tdx/tdx.c
+> +++ b/arch/x86/virt/vmx/tdx/tdx.c
+> @@ -16,6 +16,90 @@
+>   #include <asm/msr.h>
+>   #include <asm/tdx.h>
+>   
+> +#define seamcall_err(__fn, __err, __args, __prerr_func)			\
+> +	__prerr_func("SEAMCALL (0x%llx) failed: 0x%llx\n",		\
+> +			((u64)__fn), ((u64)__err))
+> +
+> +#define SEAMCALL_REGS_FMT						\
+> +	"RCX 0x%llx RDX 0x%llx R8 0x%llx R9 0x%llx R10 0x%llx R11 0x%llx\n"
+> +
+> +#define seamcall_err_ret(__fn, __err, __args, __prerr_func)		\
+> +({									\
+> +	seamcall_err((__fn), (__err), (__args), __prerr_func);		\
+> +	__prerr_func(SEAMCALL_REGS_FMT,					\
+> +			(__args)->rcx, (__args)->rdx, (__args)->r8,	\
+> +			(__args)->r9, (__args)->r10, (__args)->r11);	\
+> +})
+> +
+> +#define SEAMCALL_EXTRA_REGS_FMT	\
+> +	"RBX 0x%llx RDI 0x%llx RSI 0x%llx R12 0x%llx R13 0x%llx R14 0x%llx R15 0x%llx"
+> +
+> +#define seamcall_err_saved_ret(__fn, __err, __args, __prerr_func)	\
+> +({									\
+> +	seamcall_err_ret(__fn, __err, __args, __prerr_func);		\
+> +	__prerr_func(SEAMCALL_EXTRA_REGS_FMT,				\
+> +			(__args)->rbx, (__args)->rdi, (__args)->rsi,	\
+> +			(__args)->r12, (__args)->r13, (__args)->r14,	\
+> +			(__args)->r15);					\
+> +})
+> +
+> +static __always_inline bool seamcall_err_is_kernel_defined(u64 err)
+> +{
+> +	/* All kernel defined SEAMCALL error code have TDX_SW_ERROR set */
+> +	return (err & TDX_SW_ERROR) == TDX_SW_ERROR;
+> +}
+> +
+> +#define __SEAMCALL_PRERR(__seamcall_func, __fn, __args, __seamcall_err_func,	\
+> +			__prerr_func)						\
+> +({										\
+> +	u64 ___sret = __seamcall_func((__fn), (__args));			\
+> +										\
+> +	/* Kernel defined error code has special meaning, leave to caller */	\
+> +	if (!seamcall_err_is_kernel_defined((___sret)) &&			\
+> +			___sret != TDX_SUCCESS)					\
+> +		__seamcall_err_func((__fn), (___sret), (__args), __prerr_func);	\
+> +										\
+> +	___sret;								\
+> +})
+> +
+> +#define SEAMCALL_PRERR(__seamcall_func, __fn, __args, __seamcall_err_func)	\
+> +({										\
+> +	u64 ___sret = __SEAMCALL_PRERR(__seamcall_func, __fn, __args,		\
+> +			__seamcall_err_func, pr_err);	
 
-Regards,
-Christian.
+__SEAMCALL_PRERR seems to only ever be called with pr_err for as the 
+error function, can you just kill off that argument and always call pr_err.
+			\
+> +	int ___ret;								\
+> +										\
+> +	switch (___sret) {							\
+> +	case TDX_SUCCESS:							\
+> +		___ret = 0;							\
+> +		break;								\
+> +	case TDX_SEAMCALL_VMFAILINVALID:					\
+> +		pr_err("SEAMCALL failed: TDX module not loaded.\n");		\
+> +		___ret = -ENODEV;						\
+> +		break;								\
+> +	case TDX_SEAMCALL_GP:							\
+> +		pr_err("SEAMCALL failed: TDX disabled by BIOS.\n");		\
+> +		___ret = -EOPNOTSUPP;						\
+> +		break;								\
+> +	case TDX_SEAMCALL_UD:							\
+> +		pr_err("SEAMCALL failed: CPU not in VMX operation.\n");		\
+> +		___ret = -EACCES;						\
+> +		break;								\
+> +	default:								\
+> +		___ret = -EIO;							\
+> +	}									\
+> +	___ret;									\
+> +})
+> +
+> +#define seamcall_prerr(__fn, __args)						\
+> +	SEAMCALL_PRERR(seamcall, (__fn), (__args), seamcall_err)
+> +
+> +#define seamcall_prerr_ret(__fn, __args)					\
+> +	SEAMCALL_PRERR(seamcall_ret, (__fn), (__args), seamcall_err_ret)
+> +
+> +#define seamcall_prerr_saved_ret(__fn, __args)					\
+> +	SEAMCALL_PRERR(seamcall_saved_ret, (__fn), (__args),			\
+> +			seamcall_err_saved_ret)
 
->
-> [1] https://www.asrock.com/mb/Intel/AD2550-ITX/
-> [2] https://patchwork.freedesktop.org/series/123073/
->
 
+The level of indirection which you add with those seamcal_err* function 
+is just mind boggling:
+
+
+SEAMCALL_PRERR -> __SEAMCALL_PRERR -> __seamcall_err_func -> 
+__prerr_func and all of this so you can have a standardized string 
+printing. I see no value in having __SEAMCALL_PRERR as a separate macro, 
+simply inline it into SEAMCALL_PRERR, replace the prerr_func argument 
+with a direct call to pr_err.
+
+
+> +
+>   static u32 tdx_global_keyid __ro_after_init;
+>   static u32 tdx_guest_keyid_start __ro_after_init;
+>   static u32 tdx_nr_guest_keyids __ro_after_init;
