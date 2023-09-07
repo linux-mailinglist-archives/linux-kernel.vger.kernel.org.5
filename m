@@ -2,101 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FEE4797A76
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 834AC79796E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245279AbjIGRkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
+        id S237494AbjIGROJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245262AbjIGRk0 (ORCPT
+        with ESMTP id S234193AbjIGROG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:40:26 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F852128
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:39:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E202FC433BC;
-        Thu,  7 Sep 2023 09:52:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694080365;
-        bh=4NjL8K4R6fpztrR/Dgccj7AXRwKd3L0DWcJs2pDqGtE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=huYT4+giRmWYVqxUCb9V8Z4oo1OqM0S8aq9h96mmxlmVHzH+Y5cEl36UeRPZCWZKZ
-         DdkNYGG4JQkfTV6FDL1tayxgnHfpFXQb3YJCif1hAPMBF3VNUasz0Ir3+G0DL97rc6
-         dvyqbrePU+Tst4xzKAgYdaTopqurD9bdMR/OkDKZ8z74dzj3+DXUHFs+KfwbFlCoNq
-         44LUdtdmK8mmpA6rc5zhH8nDCHzpZ9cU3HMktWXLkYkIb4ejYIIFahQpZtqEtNc7+K
-         AaFZRjPUUV42/1RwGy/q4fe2woxpNyFPIey0qKbN8lGtfC+l6UVY0Y+G4UTpgwlkEW
-         a4uz4TvLf38dQ==
-Date:   Thu, 7 Sep 2023 10:52:35 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Charlie Jenkins <charlie@rivosinc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v2 2/5] riscv: Add checksum library
-Message-ID: <20230907-9d5d2e7ef2a20edd75514470@fedora>
-References: <20230905-optimize_checksum-v2-0-ccd658db743b@rivosinc.com>
- <20230905-optimize_checksum-v2-2-ccd658db743b@rivosinc.com>
+        Thu, 7 Sep 2023 13:14:06 -0400
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284301FD3;
+        Thu,  7 Sep 2023 10:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=EwZY3xeL8bPY6t3VJcawMd6VTgi15NEguqkiZW76ycY=;
+  b=bZpdL9BR4gaYR8qAvDNGS6JNT/SUo9NZFWkqZHorlhCZE0NQR0PPIJQ3
+   XucEFPUQ3ID+HyIa/eHP0fKNGC96kzlgz5GKuLBoEHspVQE+F/SpVzwtf
+   L9QvwawiciUWzBIPWYxgpiLrwkhWaxlk2NK59kkMHsLoRBvDXzhuVs7IH
+   c=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=Julia.Lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.02,234,1688421600"; 
+   d="scan'208";a="65324655"
+Received: from i80.paris.inria.fr (HELO i80.paris.inria.fr.) ([128.93.90.48])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 11:55:30 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org
+Subject: [PATCH 01/11] arm-cci: add missing of_node_put
+Date:   Thu,  7 Sep 2023 11:55:11 +0200
+Message-Id: <20230907095521.14053-2-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20230907095521.14053-1-Julia.Lawall@inria.fr>
+References: <20230907095521.14053-1-Julia.Lawall@inria.fr>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="u3Gz+z7jGL7ncD+4"
-Content-Disposition: inline
-In-Reply-To: <20230905-optimize_checksum-v2-2-ccd658db743b@rivosinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+for_each_available_child_of_node performs an of_node_get
+on each iteration, so a break out of the loop requires an
+of_node_put.
 
---u3Gz+z7jGL7ncD+4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This was done using the Coccinelle semantic patch
+iterators/for_each_child.cocci
 
-On Tue, Sep 05, 2023 at 09:46:51PM -0700, Charlie Jenkins wrote:
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
-> +#ifdef CONFIG_RISCV_ISA_ZBB
-> +	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
-> +		/*
-> +		 * Zbb is likely available when the kernel is compiled with Zbb
-> +		 * support, so nop when Zbb is available and jump when Zbb is
-> +		 * not available.
-> +		 */
-> +		asm_volatile_goto(ALTERNATIVE("j %l[no_zbb]", "nop",  0,
-> +					      RISCV_ISA_EXT_ZBB, 1)
-> +		    :
-> +		    :
-> +		    :
-> +		    : no_zbb);
-> +	} else {
-> +		if (!__riscv_isa_extension_available(NULL, RISCV_ISA_EXT_ZBB))
-> +			goto no_zbb;
-> +	}
+---
+ drivers/bus/arm-cci.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Again, do these constructs have an appreciable benefit over doing
-if (!riscv_has_extension_likely(<ZBB>)
-	goto no_zbb;
+diff -u -p a/drivers/bus/arm-cci.c b/drivers/bus/arm-cci.c
+--- a/drivers/bus/arm-cci.c
++++ b/drivers/bus/arm-cci.c
+@@ -461,8 +461,10 @@ static int cci_probe_ports(struct device
+ 
+ 		i = nb_ace + nb_ace_lite;
+ 
+-		if (i >= nb_cci_ports)
++		if (i >= nb_cci_ports) {
++			of_node_put(cp);
+ 			break;
++		}
+ 
+ 		if (of_property_read_string(cp, "interface-type",
+ 					&match_str)) {
 
-?
-
-That encaspulates the fallback to a non-alternative mechanism for you,
-in case you had not noticed.
-
---u3Gz+z7jGL7ncD+4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZPmdYwAKCRB4tDGHoIJi
-0gPaAQCWfaA4BsurBPCfNHsJ5cIRXgEUpRYKmdhLrs1tMc9gmgEAvioIEb04cNY2
-OYY8B8G9Z3xdn8bl0pskyuYYaS9NWQg=
-=KM80
------END PGP SIGNATURE-----
-
---u3Gz+z7jGL7ncD+4--
