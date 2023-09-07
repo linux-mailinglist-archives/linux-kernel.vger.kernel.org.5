@@ -2,52 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD687975A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7A1797367
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243110AbjIGPxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60620 "EHLO
+        id S235075AbjIGPXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:23:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237313AbjIGPl1 (ORCPT
+        with ESMTP id S235309AbjIGPW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:41:27 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CCAFC1739;
-        Thu,  7 Sep 2023 08:37:53 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C82D41764;
-        Thu,  7 Sep 2023 07:42:16 -0700 (PDT)
-Received: from [10.57.92.126] (unknown [10.57.92.126])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 464C43F766;
-        Thu,  7 Sep 2023 07:41:37 -0700 (PDT)
-Message-ID: <cf5c628a-e047-b5e0-b2a0-f2b280015d02@arm.com>
-Date:   Thu, 7 Sep 2023 15:42:13 +0100
+        Thu, 7 Sep 2023 11:22:58 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A171A8
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:22:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2462C32795;
+        Thu,  7 Sep 2023 14:43:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694097791;
+        bh=asy4IRLGIUtIK1mmhq7yfYHWP/QF8/QGkxEZfSNTPHU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nPMM0bEk8tVedHL2NUUtOQ9dC6b56CJ7hEE+42d3TOxUvhRK0t8P0ak2fkZ5RTlW1
+         WKHJii9K08AoG4FKi3q4rUsJlhYXBFaKuE8/RQMkkATjtnAzeKzJrVPG3jkhaIViEm
+         8Ilp7Si0q4m/EYU/KgmMfrn6FbRXICzlFGpq5uhA=
+Date:   Thu, 7 Sep 2023 15:43:08 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Philipp Hortmann <philipp.g.hortmann@gmail.com>
+Cc:     Pavan Bobba <opensource206@gmail.com>,
+        Forest Bond <forest@alittletooquiet.net>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: vt6655: array names updated as per kernel
+ coding guidelines
+Message-ID: <2023090742-urology-relieve-660a@gregkh>
+References: <ZPnA0Pra2HK30nBu@ubuntu.myguest.virtualbox.org>
+ <f872ed00-f474-b217-ed78-8612242d448b@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [RFC PATCH 0/7] sched: cpufreq: Remove magic margins
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Qais Yousef <qyousef@layalina.io>
-References: <20230827233203.1315953-1-qyousef@layalina.io>
- <a6365f63-4669-15e5-b843-f4bfb1bd5e68@arm.com>
- <20230906211850.zyvk6qtt6fvpxaf3@airbuntu>
- <20230907132631.GF10955@noisy.programming.kicks-ass.net>
- <8919ed14-8d19-d964-2278-3303a5bda8ee@arm.com>
- <20230907142923.GJ10955@noisy.programming.kicks-ass.net>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20230907142923.GJ10955@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f872ed00-f474-b217-ed78-8612242d448b@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,48 +50,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/7/23 15:29, Peter Zijlstra wrote:
-> On Thu, Sep 07, 2023 at 02:57:26PM +0100, Lukasz Luba wrote:
->>
->>
->> On 9/7/23 14:26, Peter Zijlstra wrote:
->>> On Wed, Sep 06, 2023 at 10:18:50PM +0100, Qais Yousef wrote:
->>>
->>>> This is probably controversial statement. But I am not in favour of util_est.
->>>> I need to collect the data, but I think we're better with 16ms PELT HALFLIFE as
->>>> default instead. But I will need to do a separate investigation on that.
->>>
->>> I think util_est makes perfect sense, where PELT has to fundamentally
->>> decay non-running / non-runnable tasks in order to provide a temporal
->>> average, DVFS might be best served with a termporal max filter.
->>>
->>>
->>
->> Since we are here...
->> Would you allow to have a configuration for
->> the util_est shifter: UTIL_EST_WEIGHT_SHIFT ?
->>
->> I've found other values than '2' better in some scenarios. That helps
->> to prevent a big task to 'down' migrate from a Big CPU (1024) to some
->> Mid CPU (~500-700 capacity) or even Little (~120-300).
+On Thu, Sep 07, 2023 at 02:49:10PM +0200, Philipp Hortmann wrote:
+> On 9/7/23 14:23, Pavan Bobba wrote:
+> > Below array names updated as per coding guidelines:
+> > 
+> >     1.byVT3253B0_AGC4_RFMD2959
+> >     2.byVT3253B0_AIROHA2230
+> >     3.byVT3253B0_UW2451
+> >     4.byVT3253B0_AGC
+> > 
+> >     Conversions performed:
+> >     a.type encoding info dropped from names
+> >     b.names replaced by snakecase
+> > 
+> >     Issue found by checkpatch
+> > 
+> > Signed-off-by: Pavan Bobba<opensource206@gmail.com>
+> > ---
+> >    v1 -> v2: 1.subject name modified to more meaningful detail
+> >              2.name of the tool added in body of explanation,
+> > 	      which found this issue
 > 
-> Larger values, I'm thinking you're after? Those would cause the new
-> contribution to weight less, making the function more smooth, right?
-
-Yes, more smooth, because we only use the 'ewma' goodness for decaying
-part (not the raising [1]).
-
+> Hi Pavan,
 > 
-> What task characteristic is tied to this? That is, this seems trivial to
-> modify per-task.
+> you did not fullfil what Greg wrote:
+> 
+> - You did not write a descriptive Subject: for the patch, allowing Greg,
+>   and everyone else, to know what this patch is all about.  Please read
+>   the section entitled "The canonical patch format" in the kernel file,
+>   Documentation/process/submitting-patches.rst for what a proper
+>   Subject: line should look like.
+> 
+> The issue is that hundreds of patches could have this title: "array names
+> updated as per kernel coding guidelines" Make it more unique.
+> 
+> Rename CamelCase variable starting with byVT3253B0_
+> 
+> Always consider that Greg reads a lot of patches per day.
 
-In particular Speedometer test and the main browser task, which reaches
-~900util, but sometimes vanish and waits for other background tasks
-to do something. In the meantime it can decay and wake-up on
-Mid/Little (which can cause a penalty to score up to 5-10% vs. if
-we pin the task to big CPUs). So, a longer util_est helps to avoid
-at least very bad down migration to Littles...
+Nor is the changelog written properly as per the documentation or the
+zillion past changes for this driver :)
 
-[1] https://elixir.bootlin.com/linux/v6.5.1/source/kernel/sched/fair.c#L4442
+thanks,
+
+greg k-h
