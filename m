@@ -2,85 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01955797374
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 921E97974D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239865AbjIGPYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57664 "EHLO
+        id S231816AbjIGPlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236114AbjIGPXT (ORCPT
+        with ESMTP id S245519AbjIGPgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:23:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC19135;
-        Thu,  7 Sep 2023 08:23:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OI476zBUwqc76nvniBbxYuu0lwS1B+BEzNEeiMb9prM=; b=YWBUFZDlCLXGhIHhep3kUss7WX
-        58SpxA+obyk9Yr50WkV8w6pYdrJcBO9nIVzcW1H9sUd8rqojPW6cAD75eRMtNw+zYwv3NGqsm0/7C
-        mQES2ZWgNpF+Vos54yYoMjqM2ZiJZQ2MNYxtd060vYxy9eTL5vgc2AxiXoIiwLXdk3o3TXZTUk+lz
-        3mdDX2kYgSAW/9gYFpgDgPF6B0I6VJYfuCWAmyg7Vb+t5jXk5FZiwSX0BdDtwAy9l3HiAt1FHTHla
-        Px+XUieyhSyG0q0UNnOWUrhkKMBRfAmGuYuCJoSv3et79OAFOpm8oMG2I5vMz0MB6noWPDi8Yo9mA
-        5nmk/Djg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qeDZL-00Aen9-SW; Thu, 07 Sep 2023 11:53:08 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 830C7300687; Thu,  7 Sep 2023 13:53:07 +0200 (CEST)
-Date:   Thu, 7 Sep 2023 13:53:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Qais Yousef <qyousef@layalina.io>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [RFC PATCH 0/7] sched: cpufreq: Remove magic margins
-Message-ID: <20230907115307.GD10955@noisy.programming.kicks-ass.net>
-References: <20230827233203.1315953-1-qyousef@layalina.io>
- <a6365f63-4669-15e5-b843-f4bfb1bd5e68@arm.com>
- <20230906211850.zyvk6qtt6fvpxaf3@airbuntu>
- <6011d8bb-9a3b-1435-30b0-d75b39bf5efa@arm.com>
+        Thu, 7 Sep 2023 11:36:42 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 367DD2689;
+        Thu,  7 Sep 2023 08:36:18 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 387Bv6IG005335;
+        Thu, 7 Sep 2023 06:57:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1694087826;
+        bh=YSTub1xEN2EDHPMmu49rIyouhuvuxts4V7o7iemTZ6w=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=UwO4bJfyYe1V/VTKDSHYMvK09XiMskguRYxhfYh8AY+PENhT/WOY720qfp9aLRDq/
+         yCic98HIcRTsqFg0+KPgMmk8cG6op1vNX4+g4ZCSxEb8jrsLMXuEnU/p6SRIuK/3DZ
+         V7HAox6MdAXo3wJCuMLgZs+cTHaxsN818cDje/BI=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 387Bv6bc082747
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 7 Sep 2023 06:57:06 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 7
+ Sep 2023 06:57:05 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 7 Sep 2023 06:57:05 -0500
+Received: from localhost.localdomain (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 387BusmS005696;
+        Thu, 7 Sep 2023 06:57:02 -0500
+From:   Keerthy <j-keerthy@ti.com>
+To:     <robh+dt@kernel.org>, <nm@ti.com>, <vigneshr@ti.com>,
+        <conor+dt@kernel.org>, <kristo@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>
+CC:     <j-keerthy@ti.com>, <u-kumar1@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH RESEND v2 2/7] arm64: dts: ti: k3-j784s4: Add ESM instances
+Date:   Thu, 7 Sep 2023 17:26:44 +0530
+Message-ID: <20230907115649.28289-3-j-keerthy@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230907115649.28289-1-j-keerthy@ti.com>
+References: <20230907115649.28289-1-j-keerthy@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6011d8bb-9a3b-1435-30b0-d75b39bf5efa@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 08:48:08AM +0100, Lukasz Luba wrote:
+Patch adds the ESM instances for j784s4. It has 3 instances.
+One in the main domain and two in the mcu-wakeup domian.
 
-> > Hehe. That's because they're not really periodic ;-)
-> 
-> They are periodic in a sense, they wake up every 16ms, but sometimes
-> they have more work. It depends what is currently going in the game
-> and/or sometimes the data locality (might not be in cache).
-> 
-> Although, that's for games, other workloads like youtube play or this
-> one 'Yahoo browser' (from your example) are more 'predictable' (after
-> the start up period). And I really like the potential energy saving
-> there :)
+Signed-off-by: Keerthy <j-keerthy@ti.com>
+---
+ arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi       |  6 ++++++
+ arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi | 12 ++++++++++++
+ 2 files changed, 18 insertions(+)
 
-So everything media is fundamentally periodic, you're hard tied to the
-framerate / audio-buffer size etc..
+diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+index efed2d683f63..7f7eab348520 100644
+--- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+@@ -1568,4 +1568,10 @@
+ 		firmware-name = "j784s4-c71_3-fw";
+ 		status = "disabled";
+ 	};
++
++	main_esm: esm@700000 {
++		compatible = "ti,j721e-esm";
++		reg = <0x00 0x700000 0x00 0x1000>;
++		ti,esm-pins = <688>, <689>;
++	};
+ };
+diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+index 4ab4018d3695..f1dfa4144168 100644
+--- a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+@@ -700,4 +700,16 @@
+ 			status = "disabled";
+ 		};
+ 	};
++
++	mcu_esm: esm@40800000 {
++		compatible = "ti,j721e-esm";
++		reg = <0x00 0x40800000 0x00 0x1000>;
++		ti,esm-pins = <95>;
++	};
++
++	wkup_esm: esm@42080000 {
++		compatible = "ti,j721e-esm";
++		reg = <0x00 0x42080000 0x00 0x1000>;
++		ti,esm-pins = <63>;
++	};
+ };
+-- 
+2.17.1
 
-Also note that the traditional periodic task model from the real-time
-community has the notion of WCET, which completely covers this
-fluctuation in frame-to-frame work, it only considers the absolute worst
-case.
-
-Now, practically, that stinks, esp. when you care about batteries, but
-it does not mean these tasks are not periodic.
-
-Many extentions to the periodic task model are possible, including
-things like average runtime with bursts etc.. all have their trade-offs.
