@@ -2,129 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C6B796FA7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 06:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75605796FB6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 06:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241423AbjIGEm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 00:42:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48638 "EHLO
+        id S241715AbjIGEus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 00:50:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240096AbjIGEm7 (ORCPT
+        with ESMTP id S236799AbjIGEuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 00:42:59 -0400
-Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7EB19B5
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 21:42:55 -0700 (PDT)
-Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1c08a15fcf4so7780435ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Sep 2023 21:42:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694061775; x=1694666575;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QO4jiycN6dbg6wkvNucUtETxjzNo8ws6A658O5yfUKs=;
-        b=cFTICBv9pB4DkSJfUGevWaRHtRd2rS2Dau1p542vBZiQogJSpQWOy2Ux0Xcxwi3Xgo
-         d2CASzQmeSo8skSQl8zVQzMyD43xnJHImK+8buOfc80nYL+XosZKY2Np+9sWdS00hDEU
-         3EhKy9CPbPZT04uBzpm4DgTZbWAnniZwR7fFxoPHwNIaQCtWP62CltehhdZwgIjJ6JIx
-         hyPP3sEbin+3WaEdOw4YJN1Lv+7m2/WGfJp0FrQu/+bZ/tjtkdw0wDwN4VtASl42FPJ+
-         IyECt9rbfkHmazuvWTSy12ZpHZDyUOn/wDwJc1ruWOqqsb4zjgpimvO+Eu3SSY7JStc6
-         LZHQ==
-X-Gm-Message-State: AOJu0YxXM9qBUKww2bvXKCoyXj8b1Xv0WD/7XVkZyffFXkRlJ9+65NZg
-        vOqIvNV3PIEMDGaKCMDeyjmie+1m7IYhxuaOsHr2VQB2VONn
-X-Google-Smtp-Source: AGHT+IGnUXfN5EzBjU00HtB0u2T/SapYwSUSYKMagEKr7olR9IlF0kcFbFNVMNrIeV8PScdj82MjHyRocM8u29RyAw1QEDvp/U7g
+        Thu, 7 Sep 2023 00:50:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B11219B5
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 21:50:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=agMaBjuOFtJtue/FbP/i4deiq5fFLhiBf3GHw58yzas=; b=D/6XY7fg3+OTdCcL78r6ouJI2a
+        j0nJKQ+qd28Vgv+PMWDEBtTCK+tZY0hOR5uHlnBAHjjglP2qVDHLYoXj/Vt3q/SknQGaPkf6TVszX
+        KrQztPoXiKWNJBij9WZHFNM3mHtf/fbFk9sGADOqlc3C5S3KTTTGfMaQofHQYX2M9xjgEQ5tzTdcW
+        jmf+VRuuWmb7o7yp9F9DE/hPpUqG3equByVOkb61Fflcn4EFtklrT2VaR9fLddfpsLVU7o5RSIGvV
+        /eq0T3G2n1E8QCqSgYDJvMs1rOqurAD5A6RlSVXxvXLmgbzuhcz2sxZCKMhvwWQBDqS+FpceWFbKY
+        6zSVKG7w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qe6yP-008I3S-1s; Thu, 07 Sep 2023 04:50:33 +0000
+Date:   Thu, 7 Sep 2023 05:50:33 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Zhiguo Jiang <justinjiang@vivo.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH] mm: vmscan: fix get_swappiness() return value type
+Message-ID: <ZPlWmbu+pLIPgyYC@casper.infradead.org>
+References: <20230907044045.709-1-justinjiang@vivo.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:e850:b0:1bd:dcdf:6179 with SMTP id
- t16-20020a170902e85000b001bddcdf6179mr6076952plg.2.1694061775253; Wed, 06 Sep
- 2023 21:42:55 -0700 (PDT)
-Date:   Wed, 06 Sep 2023 21:42:55 -0700
-In-Reply-To: <000000000000a13b2c06049391bf@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005777c90604bd7ef0@google.com>
-Subject: Re: [syzbot] [btrfs?] WARNING in __btrfs_run_delayed_items
-From:   syzbot <syzbot+90ad99829e4f013084b7@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230907044045.709-1-justinjiang@vivo.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Thu, Sep 07, 2023 at 12:40:45PM +0800, Zhiguo Jiang wrote:
+> Fix bool to int of the get_swappiness() return value type in
+> lruvec_is_sizable().
+> 
+> The get_swappiness() return value type is int, but the
+> get_swappiness() return value type is bool in lruvec_is_sizable().
+> So there is a possibility of value overflow.
 
-HEAD commit:    744a759492b5 Merge tag 'input-for-v6.6-rc0' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12c49cdc680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ed626705db308b2d
-dashboard link: https://syzkaller.appspot.com/bug?extid=90ad99829e4f013084b7
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=150173d0680000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/4cd3ef7a61fb/disk-744a7594.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/dfb7ed3ce6d6/vmlinux-744a7594.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e4c0866ee45c/bzImage-744a7594.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/2efc34fa9036/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+90ad99829e4f013084b7@syzkaller.appspotmail.com
-
-BTRFS info (device loop3): force zlib compression, level 3
-BTRFS info (device loop3): allowing degraded mounts
-BTRFS info (device loop3): using free space tree
-BTRFS info (device loop3): auto enabling async discard
-------------[ cut here ]------------
-BTRFS: Transaction aborted (error -17)
-WARNING: CPU: 1 PID: 5219 at fs/btrfs/delayed-inode.c:1158 __btrfs_run_delayed_items+0x3d3/0x430 fs/btrfs/delayed-inode.c:1158
-Modules linked in:
-CPU: 1 PID: 5219 Comm: syz-executor.3 Not tainted 6.5.0-syzkaller-12053-g744a759492b5 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:__btrfs_run_delayed_items+0x3d3/0x430 fs/btrfs/delayed-inode.c:1158
-Code: fe c1 38 c1 0f 8c b5 fc ff ff 48 89 ef e8 c5 31 42 fe e9 a8 fc ff ff e8 3b 48 e8 fd 48 c7 c7 60 3c 4c 8b 89 de e8 dd c2 ae fd <0f> 0b e9 69 ff ff ff f3 0f 1e fa e8 1d 48 e8 fd 48 8b 44 24 10 42
-RSP: 0018:ffffc90004d1f8f0 EFLAGS: 00010246
-RAX: c983e039b4061000 RBX: 00000000ffffffef RCX: ffff888021dd8000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffff888077a2f8b0 R08: ffffffff81541672 R09: 1ffff920009a3e88
-R10: dffffc0000000000 R11: fffff520009a3e89 R12: dffffc0000000000
-R13: ffff888077a2f888 R14: 0000000000000000 R15: ffff888077a2f8b0
-FS:  00007fbab9d0b6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ff8cad4b028 CR3: 0000000078e4d000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_commit_transaction+0xf44/0x2ff0 fs/btrfs/transaction.c:2393
- create_snapshot+0x4a5/0x7e0 fs/btrfs/ioctl.c:845
- btrfs_mksubvol+0x5d0/0x750 fs/btrfs/ioctl.c:995
- btrfs_mksnapshot+0xb5/0xf0 fs/btrfs/ioctl.c:1041
- __btrfs_ioctl_snap_create+0x344/0x460 fs/btrfs/ioctl.c:1294
- btrfs_ioctl_snap_create+0x13c/0x190 fs/btrfs/ioctl.c:1321
- btrfs_ioctl+0xbbf/0xd40
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fbab907cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fbab9d0b0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007fbab919bf80 RCX: 00007fbab907cae9
-RDX: 0000000020002180 RSI: 0000000050009401 RDI: 0000000000000009
-RBP: 00007fbab90c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fbab919bf80 R15: 00007ffd6831ff58
- </TASK>
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Have you looked at how the C spec defines int->bool conversion?
