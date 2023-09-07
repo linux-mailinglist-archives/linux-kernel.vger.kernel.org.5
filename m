@@ -2,52 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB0D797D9B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 22:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43474797DA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 22:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234345AbjIGUyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 16:54:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
+        id S238731AbjIGU5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 16:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbjIGUye (ORCPT
+        with ESMTP id S230091AbjIGU5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 16:54:34 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D261990
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 13:54:30 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qeM1F-0000v9-A8; Thu, 07 Sep 2023 22:54:29 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qeM1E-004jKK-HG; Thu, 07 Sep 2023 22:54:28 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qeM1D-00HHCn-Tg; Thu, 07 Sep 2023 22:54:27 +0200
-Date:   Thu, 7 Sep 2023 22:54:27 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Dhruva Gole <d-gole@ti.com>
-Cc:     Nishanth Menon <nm@ti.com>, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Tero Kristo <kristo@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>, vibhore@ti.com
-Subject: Re: [PATCH] firmware: ti_sci: Mark driver as non removable
-Message-ID: <20230907205427.tilwp6fk2q7hpfof@pengutronix.de>
-References: <20230907171700.1922453-1-d-gole@ti.com>
+        Thu, 7 Sep 2023 16:57:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6C01BCB
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 13:57:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694120238; x=1725656238;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=TnHPBK3JAQdjs+KKepwKfTroxYQD4ZTEDh4wzTbxXF0=;
+  b=LmOwvUw2ezlcrt7UJaQCGJj/0ailE8bKR5SWbycAWUaJUndqdgG6BL8i
+   L3OET/6sGPf0XxhFKnHy0cgEo4pd+NH2CoFA/QVRKiS47YJmmylccBbsx
+   kBHz/ySXUgn2N0dZl+ggPwjnk6OjaSqLi+gMqAIfYhiMROF/Xj9LY/h3j
+   A1ODCb8AUO9ij+8ZA7QNOo4Wj27vDJADhyjvZCHR6i7tm225VQrQe5k9O
+   0Jhtl1t3KEMJAJS+JBDEcs/XvIMJm0nZ1/SeRZP8XHRSTpJn3OVlv+d5M
+   CeF7RkfcPh7xmqJLZRL89YdAv7cUncrXQdwBcwJ31xPPHxQDFCwtX3lEq
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="441494705"
+X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
+   d="scan'208";a="441494705"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 13:57:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="857041985"
+X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
+   d="scan'208";a="857041985"
+Received: from ningle-mobl2.amr.corp.intel.com (HELO [10.209.13.77]) ([10.209.13.77])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 13:57:17 -0700
+Message-ID: <29cd0ee1-c638-9d8e-8a1c-8c2aa2e167e7@intel.com>
+Date:   Thu, 7 Sep 2023 13:57:16 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eqnbnfzxrnfhtna3"
-Content-Disposition: inline
-In-Reply-To: <20230907171700.1922453-1-d-gole@ti.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] x86/platform/uv: Use alternate source for socket to node
+ data
+Content-Language: en-US
+To:     Steve Wahl <steve.wahl@hpe.com>
+Cc:     Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+References: <20230807141730.1117278-1-steve.wahl@hpe.com>
+ <ad1ff365-4160-87b9-4199-ace5ff1250e1@intel.com>
+ <ZPI1IP38l/X7K/k9@swahl-home.5wahls.com>
+ <ZPdC2OxhPznQuYk8@swahl-home.5wahls.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <ZPdC2OxhPznQuYk8@swahl-home.5wahls.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,66 +72,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/5/23 08:01, Steve Wahl wrote:
+> On Fri, Sep 01, 2023 at 02:01:52PM -0500, Steve Wahl wrote:
+>> On Fri, Sep 01, 2023 at 10:18:20AM -0700, Dave Hansen wrote:
+>>> On 8/7/23 07:17, Steve Wahl wrote:
+>>>> When nr_cpus is set to a smaller number than actually present, the
+>>>> cpu_to_node() mapping information for unused CPUs is not available to
+>>>> build_socket_tables().  This results in an incomplete table and will
+>>>> later cause use of a -1 value for some array indexing, and eventual
+>>>> kernel page faults.
+>>>>
+>>>> Switch to using the __apicid_to_node array, which still contains all
+>>>> the information mapping apicids to nodes, even for CPUs disabled with
+>>>> a reduced nr_cpus setting.
+>>> Before, the lookup went:
+>>>
+>>> 	CPU => APICID => SOCKET
+>>>
+>>> But when the CPU wasn't present, there wasn't a way to start this lookup.
+>>>
+>>> So, instead of looping over all CPUs, looking up their APICIDs and
+>>> mapping those to sockets, just take CPUs out of the equation entirely.
+>>>
+>>> Loop over all APICIDs which are mapped to a valid NUMA node.  Then just
+>>> extract the socket-id from the APICID.
+>>>
+>>> Right?
+>>>
+>>> That seems sane enough.  It's also way less code than the previous approach.
+>> Yes.  That's it precisely.  And, yes, way less code.
+> Are you willling to give a "Reviewed-by:"?
 
---eqnbnfzxrnfhtna3
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
 
-Hello,
-
-On Thu, Sep 07, 2023 at 10:47:00PM +0530, Dhruva Gole wrote:
-> The TI-SCI message protocol provides a way to communicate between
-> various compute processors with a central system controller entity. It
-> provides the fundamental device management capability and clock control
-> in the SOCs that it's used in.
->=20
-
-Maybe add:
-
-	The remove function failed to do all the necessary cleanup if
-	there are registered users. Some things are freed however which
-	likely results in an oops later on.
-
-> Ensure that the driver isn't unbound by suppressing its bind and unbind
-> sysfs attributes. As the driver is built-in there is no way to remove
-> device once bound.
->=20
-> We can also remove the ti_sci_remove call along with the
-> ti_sci_debugfs_destroy as there are no callers for it any longer.
->=20
-> Fixes: aa276781a64a ("firmware: Add basic support for TI System Control I=
-nterface (TI-SCI) protocol")
-> Suggested-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Dhruva Gole <d-gole@ti.com>
-
-While this isn't the most elegant solution, this is probably the most
-feasible one.
-
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
-(with or without the suggested addition to the commit log above).
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---eqnbnfzxrnfhtna3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmT6OIIACgkQj4D7WH0S
-/k7uigf9Fy8T7gOB8S67eFUtrBxEwOgLrSnRVjGZhrTS3UeJlOQ7evLsrZc4kRcW
-qwmGgBvPh3hoTo0gdMaamwUM8QGzxhv4LHHHkRUnv6jWyJ/u/x76oCqbWG48WmKt
-ueOcYNhYhy9L/EU6hI/GbnUzJ+aG9T0SzhqNjIGpM6v3BmzpJXdDSMK66f3Wb8t5
-+8dafVVNdWjVFot/2f9s4se4lS2aVgXPJUkMeWpa88BlW8ufzQW4p7SsIh7fwqut
-lomS3u5bL6WWB3nVkV12urlhDzMIZtxmnkyFf4aYBtPgdvAmO0Tb02WMRjuWE0zN
-RmYk2GC9MDS+lDWAbfQSSWVYT282Kg==
-=b4Jr
------END PGP SIGNATURE-----
-
---eqnbnfzxrnfhtna3--
+Does this need a stable@ tag when it gets applied?
