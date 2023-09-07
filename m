@@ -2,164 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3ADD7974CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B92D7973F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236767AbjIGPl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35982 "EHLO
+        id S1344030AbjIGPcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:32:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234779AbjIGPga (ORCPT
+        with ESMTP id S245730AbjIGPaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:36:30 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B813510DF
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 08:36:06 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so820740a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 08:36:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694100966; x=1694705766; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bJnHQZI/YTk0Ikc8JOTRLoRDMwR3H4tHaJzcO7hfWr4=;
-        b=e7l08vp8lBr7n9lBB3fDvjSiPfzgyA3ieCJVt+0Kvgurd2+7kMyABlaNCVmL9Y63XR
-         WBhhyGhrvNK8rVCvkacx19YcsZaw2An6RqUPVVHBKD4ob0pkjSkm9UOYBqyn4IGLm2Qn
-         PyfzOEe6533k7cL90n8xz1wtTT48i1UTrsdPNisFmcNENW1FIqyPEpf2pVshiTW2BtNT
-         h+E50SeYQdurwdMLTl4yiPevlh4HvxPRNl5mhZibBW0sFt5WxkEVHqpLAqZIkjDQ4CGU
-         DsIwnofHVqwZ/XYADu4mvsocsuBIt5HjmG2okNXl0cxyXR67HdWjHvvgWuzo6aiz3zk+
-         Q+zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694100966; x=1694705766;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bJnHQZI/YTk0Ikc8JOTRLoRDMwR3H4tHaJzcO7hfWr4=;
-        b=XoMwFefWm+7+gGc11f9cSaOqTkMrgan3J+V5KLaQAysLng9ugk1z7OxvtXqdpbJb35
-         hu0rstjt8D/4GzGmfPKVzFVeiUbwTrgiN5OViC+P4fLA7yikQtKkbdl1yoLNT0eAU4VB
-         Fe8iUBvWEFExkHpf8oLY8JtJ7zt+bBkcyWCjjufoLTzeU3bQZO+lO4MYPnZYgOaAwmGJ
-         N8ibwfK9hJqvvx803UDguSDonXDD3sNCI07xnUOYhYguZecIshBQpP09EAAOGtTTuK5P
-         kqHNymxECAmkjTPViIRBFcapoH+7vl1Y/7HmgkSgRew8/PDeOTjMU968GvAMJbKpky5H
-         3A4Q==
-X-Gm-Message-State: AOJu0YyyVTor7c8c55CiKd8fkxwXTV3f4PZjhAZclCBW9yUI6Nz/z0uB
-        bUD14Zgl8/AHkrSMmcaLN1ce+t5EIpxXn8DxGmR2NsaDJ6sP+qqC
-X-Google-Smtp-Source: AGHT+IFDVeL1UmCZY05Tqcq76iXML1JvWmurH2xxHKxUGlpH6gpEztrZTplGKLfqwM2mDGTIO4vf6OxfxN/uzjAj4w8=
-X-Received: by 2002:a25:da84:0:b0:d80:1441:9010 with SMTP id
- n126-20020a25da84000000b00d8014419010mr109512ybf.26.1694096587639; Thu, 07
- Sep 2023 07:23:07 -0700 (PDT)
+        Thu, 7 Sep 2023 11:30:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AE0E45;
+        Thu,  7 Sep 2023 08:29:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694100594; x=1725636594;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lLkgQjdozZeu2blgME5D5x7Y7mxXeqbdwxTIXoD6yOY=;
+  b=HuSt7vXerTav1SVECOWGjx1WQRHwY9vXDokWeDddzmvx+oHdvYunDkfq
+   06De1hnvJOtDkeogmC3UpNLeVWXQ93UgNxkprqjUftfwgYuFMSGQWKTF4
+   oszRYEK00qtQC1tW1B6TZuHbH87dC8NqEBV0y1+jspLMJO1kODwQMHs4H
+   kk269B8v6woEI4yNRzx0zDC6DDYZVhCJ74eHVF5FWtj0KNTJn42FPaczt
+   G3qZ47kzD4KOY+5fUr3fm0DIa/OR1nwtFqmP6SLqCqP8gtAhGG0oxcsvG
+   69RT9msT9uZo8zA6QuVsb/18Faa1jFIyBuWCvqzpifYrg4/34s3k4j4VV
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="357679642"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="357679642"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 07:25:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="735520927"
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="735520927"
+Received: from oshragax-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.215.248])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 07:25:14 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 7882D104860; Thu,  7 Sep 2023 17:25:10 +0300 (+03)
+Date:   Thu, 7 Sep 2023 17:25:10 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-coco@lists.linux.dev, linux-efi@vger.kernel.org,
+        kexec@lists.infradead.org
+Subject: Re: [PATCH 3/3] /dev/mem: Do not map unaccepted memory
+Message-ID: <20230907142510.vcj57cvnewqt4m37@box.shutemov.name>
+References: <20230906073902.4229-1-adrian.hunter@intel.com>
+ <20230906073902.4229-4-adrian.hunter@intel.com>
+ <9ffb7a3b-cf20-617a-e4f1-8a6a8a2c5972@intel.com>
 MIME-Version: 1.0
-References: <cover.1693996662.git.quic_varada@quicinc.com> <f7d49397507e10423b87910e88c52d5a1681f128.1693996662.git.quic_varada@quicinc.com>
-In-Reply-To: <f7d49397507e10423b87910e88c52d5a1681f128.1693996662.git.quic_varada@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 7 Sep 2023 17:22:56 +0300
-Message-ID: <CAA8EJpqox=Ji3cf5iBgL_QvqNZFmikiNu7bBscBYi4AsCdt9CQ@mail.gmail.com>
-Subject: Re: [PATCH v1 09/10] cpufreq: qti: Introduce cpufreq for ipq95xx
-To:     Varadarajan Narayanan <quic_varada@quicinc.com>
-Cc:     ilia.lin@kernel.org, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        quic_kathirav@quicinc.com, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Praveenkumar I <ipkumar@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9ffb7a3b-cf20-617a-e4f1-8a6a8a2c5972@intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Sept 2023 at 08:24, Varadarajan Narayanan
-<quic_varada@quicinc.com> wrote:
->
-> IPQ95xx SoCs have different OPPs available for the CPU based on
-> the SoC variant. This can be determined from an eFuse register
-> present in the silicon.
->
-> Added support for ipq95xx on nvmem driver which helps to
-> determine OPPs at runtime based on the eFuse register which
-> has the CPU frequency limits. opp-supported-hw dt binding
-> can be used to indicate the available OPPs for each limit.
->
-> Signed-off-by: Praveenkumar I <ipkumar@codeaurora.org>
-> Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> ---
->  drivers/cpufreq/cpufreq-dt-platdev.c |  1 +
->  drivers/cpufreq/qcom-cpufreq-nvmem.c | 20 ++++++++++++++++++++
->  2 files changed, 21 insertions(+)
->
-> diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufr=
-eq-dt-platdev.c
-> index f0c45d4..4ab29c0 100644
-> --- a/drivers/cpufreq/cpufreq-dt-platdev.c
-> +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-> @@ -180,6 +180,7 @@ static const struct of_device_id blocklist[] __initco=
-nst =3D {
->
->         { .compatible =3D "qcom,ipq5332", },
->         { .compatible =3D "qcom,ipq8064", },
-> +       { .compatible =3D "qcom,ipq9574", },
->         { .compatible =3D "qcom,apq8064", },
->         { .compatible =3D "qcom,msm8974", },
->         { .compatible =3D "qcom,msm8960", },
-> diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-=
-cpufreq-nvmem.c
-> index 49d21b0..de70225 100644
-> --- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
-> +++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-> @@ -168,6 +168,25 @@ static int qcom_cpufreq_kryo_name_version(struct dev=
-ice *cpu_dev,
->         case QCOM_ID_APQ8096SG:
->                 drv->versions =3D 1 << ((unsigned int)(*speedbin) + 4);
->                 break;
-> +       case QCOM_ID_IPQ9514:
-> +       case QCOM_ID_IPQ9550:
-> +       case QCOM_ID_IPQ9554:
-> +       case QCOM_ID_IPQ9570:
-> +       case QCOM_ID_IPQ9574:
-> +               /* Fuse Value    Freq    BIT to set
-> +                * ---------------------------------
-> +                *   2=E2=80=99b00     No Limit     BIT(0)
-> +                *   2=E2=80=99b10     1.8 GHz      BIT(1)
-> +                *   2=E2=80=99b01     1.5 Ghz      BIT(2)
-> +                *   2=E2=80=99b11     1.2 GHz      BIT(3)
-> +                */
-> +               if ((unsigned int)(*speedbin) =3D=3D 2)
-> +                       drv->versions =3D BIT(1);
-> +               else if ((unsigned int)(*speedbin) =3D=3D 1)
-> +                       drv->versions =3D BIT(2);
-> +               else
-> +                       drv->versions =3D 1 << (unsigned int)(*speedbin);
+On Thu, Sep 07, 2023 at 07:15:21AM -0700, Dave Hansen wrote:
+> On 9/6/23 00:39, Adrian Hunter wrote:
+> > Support for unaccepted memory was added recently, refer commit
+> > dcdfdd40fa82 ("mm: Add support for unaccepted memory"), whereby
+> > a virtual machine may need to accept memory before it can be used.
+> > 
+> > Do not map unaccepted memory because it can cause the guest to fail.
+> 
+> Doesn't /dev/mem already provide a billion ways for someone to shoot
+> themselves in the foot?  TDX seems to have added the 1,000,000,001st.
+> Is this really worth patching?
 
-If you change the order of speedbins 1 and 2 in DT, you can use 1 <<
-speedbin for all the kinds,
+Is it better to let TD die silently? I don't think so.
 
-> +               break;
->         default:
->                 BUG();
->                 break;
-> @@ -375,6 +394,7 @@ static const struct of_device_id qcom_cpufreq_match_l=
-ist[] __initconst =3D {
->         { .compatible =3D "qcom,qcs404", .data =3D &match_data_qcs404 },
->         { .compatible =3D "qcom,ipq5332", .data =3D &match_data_kryo },
->         { .compatible =3D "qcom,ipq8064", .data =3D &match_data_krait },
-> +       { .compatible =3D "qcom,ipq9574", .data =3D &match_data_kryo },
->         { .compatible =3D "qcom,apq8064", .data =3D &match_data_krait },
->         { .compatible =3D "qcom,msm8974", .data =3D &match_data_krait },
->         { .compatible =3D "qcom,msm8960", .data =3D &match_data_krait },
-> --
-> 2.7.4
->
-
-
---=20
-With best wishes
-Dmitry
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
