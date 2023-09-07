@@ -2,131 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 050BC797DB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 23:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CA0797DC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 23:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235194AbjIGVFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 17:05:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34420 "EHLO
+        id S236262AbjIGVJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 17:09:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231843AbjIGVFn (ORCPT
+        with ESMTP id S237437AbjIGVJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 17:05:43 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D8892
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 14:05:38 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58c8cbf0a0dso45251647b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 14:05:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694120737; x=1694725537; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=dnyMsDgiX5vgIpgNk8THjYlZnq9260AQc9Onv7oS0O8=;
-        b=XPD77feUZ4xInmA0jtgTl8BMRlL8A99/aZ42tYalUhBIMur5rr8oGdTfHFrrp+dCOx
-         2p+CCrs0/k1eCnPvlH/FrRdi8ViYBG0BAQ7B4PpOsP6ebuuJODJ8EcoPvYLAdyxWPBrO
-         pR0F9Jt7zdyTIyL1aabh27GaBamVo/ju+l5fUq/u/8Bm7ReqJopKHQPMHkU3nazyp9AC
-         46FK2YCT24mZFaFluhb+acUhgL8OHl9ESGoFE6O3FTB8Cik/4aa13MdbKTDBFycuB/rR
-         IZ4DpxpZKGhIl/H8ADA9rCmmuXfBkFvO6RLlJS4+9HSkwIrQc8w4h13CqxUm+MT2SsMg
-         khVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694120737; x=1694725537;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dnyMsDgiX5vgIpgNk8THjYlZnq9260AQc9Onv7oS0O8=;
-        b=uV/sjQyg5/vciG6+9FfFjb0MMqxSa73mIywerfYMj51eWiecUhclJZ5S2bvyJcW4gG
-         UgQcAVrwWOu5dzZFpLn7MTTIsnCCb3M8PFlD0HteczySDX86a9f1ddpRG+HFFfX6uteq
-         QGy2Ym1hCgjzttxDS8shqxbedXKere9CzmWfti06uhXY8za+HAiDV6dLuXScScRXnKmA
-         xNIr8OUZh1UwVdAPrdRDhjq5kt4UrgSlhIu13u8/W/T2uBeQDa4u76lybnaR7+rVqsiL
-         qKZRhF0INSVPMA3RM0yIFk1bVPx5XIdthPxqo02uZON8hqBelRoMHOyVkNgVexakRbFm
-         vcxA==
-X-Gm-Message-State: AOJu0Ywjm+St+QbXkh3rCCm7dib7AQFl12QBy7U+qMdCibG/iQFwyl1g
-        8+ITJTBl1DYq07HXtaUqjgeSlx5X0Yt8
-X-Google-Smtp-Source: AGHT+IGTPbYEN9QntgCC8Qk74o1xFC3ceEtnfcYbnQvG1l9e5gI3/scYqclOQxzhCRBR5VqtB1seyJB6RyI7
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:e535:39a0:5730:b9dd])
- (user=irogers job=sendgmr) by 2002:a81:e244:0:b0:595:9e93:60c8 with SMTP id
- z4-20020a81e244000000b005959e9360c8mr108471ywl.1.1694120737296; Thu, 07 Sep
- 2023 14:05:37 -0700 (PDT)
-Date:   Thu,  7 Sep 2023 14:05:33 -0700
-Message-Id: <20230907210533.3712979-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Subject: [PATCH v1] perf parse-events: Avoid erange from hex numbers
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Thu, 7 Sep 2023 17:09:28 -0400
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C0992;
+        Thu,  7 Sep 2023 14:09:17 -0700 (PDT)
+Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
+        by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 387J2G3n019322;
+        Thu, 7 Sep 2023 21:09:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : subject :
+ date : message-id; s=pps0720;
+ bh=m6Gk2lhFU2fmbnv1QuYhU74BBf+VJwz1IrdICroLvYQ=;
+ b=HrHp1pVCaVCb+2Kq5sKyZdUGhRdklQQ6o3oI3lpcp6eGadxAUdLGklz/TsMGHuLlDf4H
+ jar13plzB6qmEmV+OjflS/ZBz0bEU4CHYoksJue2tuQwk5L748MLbncZwYfpqS2tLE2V
+ oQgaLhWohbCnqrYBQX2ZOyRKRvwnpPKaZNivKrhk96oVZ1K7PU4SrgNMqMSmaAN1/zYF
+ SzSsN/nNQzH7ugb3XBayigkTRH37nFfLELAX1FuYHodIbDLWdcOcQR5DGFq1+Ew9BzhO
+ mO5f1bawoyehcg8lf0KPtF0d43Vco6bc1SD+2srbSlPA/kkSXT9SvVFzhpRtZzwUlFu9 VA== 
+Received: from p1lg14879.it.hpe.com ([16.230.97.200])
+        by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3sy7xn87p1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Sep 2023 21:09:03 +0000
+Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by p1lg14879.it.hpe.com (Postfix) with ESMTPS id 29C381318D;
+        Thu,  7 Sep 2023 21:09:03 +0000 (UTC)
+Received: from hpe.com (unknown [16.231.227.39])
+        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTP id 2DB5C80B0D3;
+        Thu,  7 Sep 2023 21:09:01 +0000 (UTC)
+From:   richard.yu@hpe.com
+To:     verdun@hpe.com, nick.hawkins@hpe.com, gregkh@linuxfoundation.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, richard.yu@hpe.com, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] Add USB driver for HPE GXP Architecture
+Date:   Thu,  7 Sep 2023 16:05:58 -0500
+Message-Id: <20230907210601.25284-1-richard.yu@hpe.com>
+X-Mailer: git-send-email 2.17.1
+X-Proofpoint-ORIG-GUID: 3rzevSaTyOIjeLRdvpdy9c2HWYxyHb3A
+X-Proofpoint-GUID: 3rzevSaTyOIjeLRdvpdy9c2HWYxyHb3A
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-07_13,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 bulkscore=0 mlxscore=0 suspectscore=0 priorityscore=1501
+ impostorscore=0 adultscore=0 spamscore=0 clxscore=1011 malwarescore=0
+ mlxlogscore=516 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309070187
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We specify that a "num_hex" comprises 1 or more digits, however, that
-allows strtoull to fail with ERANGE. Limit the number of hex digits to
-being between 1 and 16.
+From: Richard Yu <richard.yu@hpe.com>
 
-Before:
-```
-$ perf stat -e 'cpu/rE7574c47490475745/' true
-perf: util/parse-events.c:215: fix_raw: Assertion `errno == 0' failed.
-Aborted (core dumped)
-```
+The GXP hub controller presents a four ports to host software.
+Each port is logically connected to one control endpoint and
+four generic endpoints.
 
-After:
-```
-$ perf stat -e 'cpu/rE7574c47490475745/' true
-event syntax error: 'cpu/rE7574c47490475745/'
-                         \___ Bad event or PMU
-
-Unable to find PMU or event on a PMU of 'cpu'
-
-Initial error:
-event syntax error: 'cpu/rE7574c47490475745/'
-                         \___ unknown term 'rE7574c47490475745' for pmu 'cpu'
-
-valid terms: event,pc,edge,offcore_rsp,ldlat,inv,umask,frontend,cmask,config,config1,config2,config3,name,period,percore,metric-id
-Run 'perf list' for a list of valid events
-
- Usage: perf stat [<options>] [<command>]
-
-    -e, --event <event>   event selector. use 'perf list' to list available events
-```
-
-Issue found through fuzz testing.
-
-Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/parse-events.l | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
-index 4ef4b6f171a0..f7df52b22c39 100644
---- a/tools/perf/util/parse-events.l
-+++ b/tools/perf/util/parse-events.l
-@@ -156,8 +156,8 @@ event_pmu	[^,{}/]+[/][^/]*[/][^,{}/]*
- event		[^,{}/]+
- 
- num_dec		[0-9]+
--num_hex		0x[a-fA-F0-9]+
--num_raw_hex	[a-fA-F0-9]+
-+num_hex		0x[a-fA-F0-9]{1,16}
-+num_raw_hex	[a-fA-F0-9]{1,16}
- name		[a-zA-Z_*?\[\]][a-zA-Z0-9_*?.\[\]!\-]*
- name_tag	[\'][a-zA-Z_*?\[\]][a-zA-Z0-9_*?\-,\.\[\]:=]*[\']
- name_minus	[a-zA-Z_*?][a-zA-Z0-9\-_*?.:]*
+Changes since v1:
+ *Renamed binding.
+ *Removed all unneeded include files.
+ *Using generic node name, usb-hub.
+ *Removed of_match_ptr().
+ *Using helper for both get resource and IO remap.
+ *Using dev_err_probe() return in probe routine.
+ *Used sizeof(*...) in the code instead of sizeof(struct...).
+ *Removed the term "virtual" as it is still a device.
+ *Removed the downstream port number and generic endpoints
+  number properties from device tree structure.
+
+Richard Yu (3):
+  dt-bindings: usb: Add HPE GXP HUB Controller
+  usb: gadget: udc: gxp-udc: add HPE GXP USB HUB support
+  MAINTAINERS: add USB HUB support for GXP
+
+ .../devicetree/bindings/usb/hpe,gxp-hub.yaml  |   53 +
+ MAINTAINERS                                   |    2 +
+ drivers/usb/gadget/udc/Kconfig                |   10 +
+ drivers/usb/gadget/udc/Makefile               |    1 +
+ drivers/usb/gadget/udc/gxp-udc.c              | 1371 +++++++++++++++++
+ 5 files changed, 1437 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/usb/hpe,gxp-hub.yaml
+ create mode 100644 drivers/usb/gadget/udc/gxp-udc.c
+
 -- 
-2.42.0.283.g2d96d420d3-goog
+2.17.1
 
