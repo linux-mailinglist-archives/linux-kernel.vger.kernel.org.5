@@ -2,116 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB5E797B39
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EDB797C21
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343613AbjIGSJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 14:09:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
+        id S1344239AbjIGSly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343556AbjIGSJ1 (ORCPT
+        with ESMTP id S245229AbjIGSlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 14:09:27 -0400
-X-Greylist: delayed 3650 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Sep 2023 11:09:03 PDT
-Received: from mail.as201155.net (mail.as201155.net [IPv6:2a05:a1c0:f001::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4DF1724
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 11:09:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=embedd.com;
-        s=dkim1; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:
-        To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=WpI7H1Gvt9lgGH2ycMO9T2GTxR9m0Eby2eQfvWe+3oI=; b=AdIuG8Oj4grTdZ0S72Aejf70Hi
-        Gr+KGGaWXlsttLj64O5F0ePtqpua+2PjT5MiWIoFG4cN4KYOk8nvlY9MPX8kHwRa1XqBWmrGAKuTD
-        XA2j518M+5yQJW/9/n9nmE+nhHqFEsBtGVHGNXQAskCeunmR8gSJxY/S629XH3N1+TBQzApsEaFYF
-        jrvFszXdB+D1EULPwaJmKy0D0dtKTIIncqBDWI5Z1SGw3Au2hl1r+M7K7PBi6zyVOoxN7KQpFl051
-        0S1OiN1N4ZzOT1zJD6gMCbGGaIeWksio2aCpo0D2gxn8lhnxuYaEJKGgQVLwdLjaO/SV83qLQN8TP
-        UZ4F4XNQ==;
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]:41570 helo=webmail.newmedia-net.de)
-        by mail.as201155.net with esmtps  (TLS1) tls TLS_RSA_WITH_AES_256_CBC_SHA
-        (Exim 4.96)
-        (envelope-from <dd@embedd.com>)
-        id 1qe8hd-0004qN-0c;
-        Thu, 07 Sep 2023 08:41:21 +0200
-X-SASI-Hits: BODYTEXTP_SIZE_3000_LESS 0.000000, BODY_SIZE_1000_LESS 0.000000,
-        BODY_SIZE_2000_LESS 0.000000, BODY_SIZE_5000_LESS 0.000000,
-        BODY_SIZE_500_599 0.000000, BODY_SIZE_7000_LESS 0.000000, CTE_8BIT 0.000000,
-        DKIM_ALIGNS 0.000000, DKIM_SIGNATURE 0.000000, HTML_00_01 0.050000,
-        HTML_00_10 0.050000, LEGITIMATE_SIGNS 0.000000, MULTIPLE_RCPTS 0.100000,
-        MULTIPLE_REAL_RCPTS 0.000000, NO_CTA_URI_FOUND 0.000000,
-        NO_FUR_HEADER 0.000000, NO_URI_HTTPS 0.000000, OUTBOUND 0.000000,
-        OUTBOUND_SOPHOS 0.000000, SENDER_NO_AUTH 0.000000, SUSP_DH_NEG 0.000000,
-        __ANY_URI 0.000000, __BODY_NO_MAILTO 0.000000, __BULK_NEGATE 0.000000,
-        __CC_NAME 0.000000, __CC_NAME_DIFF_FROM_ACC 0.000000,
-        __CC_REAL_NAMES 0.000000, __CTE 0.000000, __DKIM_ALIGNS_1 0.000000,
-        __DKIM_ALIGNS_2 0.000000, __DQ_NEG_DOMAIN 0.000000, __DQ_NEG_HEUR 0.000000,
-        __DQ_NEG_IP 0.000000, __FROM_DOMAIN_IN_ANY_CC1 0.000000,
-        __FROM_DOMAIN_IN_RCPT 0.000000, __FROM_NAME_NOT_IN_ADDR 0.000000,
-        __FUR_RDNS_SOPHOS 0.000000, __HAS_CC_HDR 0.000000, __HAS_FROM 0.000000,
-        __HAS_MSGID 0.000000, __HAS_X_MAILER 0.000000, __MIME_TEXT_ONLY 0.000000,
-        __MIME_TEXT_P 0.000000, __MIME_TEXT_P1 0.000000, __MIME_VERSION 0.000000,
-        __MULTIPLE_RCPTS_CC_X2 0.000000, __NO_HTML_TAG_RAW 0.000000,
-        __OUTBOUND_SOPHOS_FUR 0.000000, __OUTBOUND_SOPHOS_FUR_IP 0.000000,
-        __OUTBOUND_SOPHOS_FUR_RDNS 0.000000, __SANE_MSGID 0.000000,
-        __SUBJ_STARTS_S_BRACKETS 0.000000, __TO_MALFORMED_2 0.000000,
-        __TO_NO_NAME 0.000000, __URI_MAILTO 0.000000, __URI_NO_WWW 0.000000,
-        __URI_NS 0.000000, __X_MAILSCANNER 0.000000
-X-SASI-Probability: 8%
-X-SASI-RCODE: 200
-X-SASI-Version: Antispam-Engine: 5.1.4, AntispamData: 2023.9.7.61216
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=embedd.com; s=mikd;
-        h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To:From; bh=WpI7H1Gvt9lgGH2ycMO9T2GTxR9m0Eby2eQfvWe+3oI=;
-        b=Ux8IqIPQcmekkpNKzo79g6FfdmBGB2m4YNw/Syni7+ReHwfYuHawzpwAsNgAllFgWMXIewBtq3KALcSQwvri3uz4qCyD/LlmShsX1iYk5Jrujdh7DbnE4ZIsvZJBWeRoCA96fcU9Kby5h2mQynK4vz6ViRVPzmqr0eu1f5kaFb0=;
-From:   Daniel Danzberger <dd@embedd.com>
-To:     johan@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Daniel Danzberger <dd@embedd.com>
-Date:   Thu,  7 Sep 2023 08:44:13 +0200
-Message-Id: <20230907064413.1302336-1-dd@embedd.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 7 Sep 2023 14:41:51 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B231A8;
+        Thu,  7 Sep 2023 11:41:45 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7026C2185E;
+        Thu,  7 Sep 2023 06:56:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694069784; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZdpALMS9MEckS/XjTWoYzgCz9B+N4NdUqPbDlpcyLaw=;
+        b=vs+USKGGhjZpaHawDKSjdiCoweo3k5Fr8f/c9qrEV234o+z7MpRp90yBxPKv+f2URc6umO
+        xv7IEco3fTupmftaGfIsNeXb1+/vuuU9GztmW3SAE/GGxOj3LtY5K66Tkw90KYJFDYX132
+        Wxek0f2YzilVEceUUBowKvGaYlAJQdI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694069784;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZdpALMS9MEckS/XjTWoYzgCz9B+N4NdUqPbDlpcyLaw=;
+        b=0aay+d2s3fSsFLhpn6ZTQWzYs+wj525vROsjIkx+Ndzf3eKOCc/BUsVfWDHvkoeHUTXcDQ
+        nDl+0F6ZEaNzmfAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4AC7D1358B;
+        Thu,  7 Sep 2023 06:56:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id I4VDERh0+WTFfQAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Thu, 07 Sep 2023 06:56:24 +0000
+Message-ID: <1d001e59-be78-3de8-25a3-087dcd19d58a@suse.de>
+Date:   Thu, 7 Sep 2023 08:56:23 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 217.113.177.185
-X-SA-Exim-Mail-From: dd@embedd.com
-Subject: [PATCH] gnss/usb: Add U-blox 8/M8 device id
-X-SA-Exim-Version: 4.2.1 (built Thu, 26 May 2011 15:22:33 +0200)
-X-SA-Exim-Scanned: No (on webmail.newmedia-net.de); Unknown failure
-X-NMN-MailScanner-Information: Please contact the ISP for more information
-X-NMN-MailScanner-ID: 1qe8hY-00063e-Gg
-X-NMN-MailScanner: Found to be clean
-X-NMN-MailScanner-From: dd@embedd.com
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 2/7] fbdev/mmp/mmpfb: Do not display boot-up logo
+Content-Language: en-US
+To:     Javier Martinez Canillas <javierm@redhat.com>, deller@gmx.de,
+        daniel@ffwll.ch, sam@ravnborg.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20230829142109.4521-1-tzimmermann@suse.de>
+ <20230829142109.4521-3-tzimmermann@suse.de>
+ <87ledj4og7.fsf@minerva.mail-host-address-is-not-set>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <87ledj4og7.fsf@minerva.mail-host-address-is-not-set>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------ZGdlOT3gOMcfm9RyxxfPW8an"
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-X-Received:  from [217.113.177.185] (helo=am5build.newmedia-net.de)
-        by webmail.newmedia-net.de with esmtpa (Exim 4.72)
-        (envelope-from <dd@embedd.com>)
-        id 1qe8hY-00063e-Gg; Thu, 07 Sep 2023 08:41:19 +0200
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds support for U-Blox 8 GNSS devices
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------ZGdlOT3gOMcfm9RyxxfPW8an
+Content-Type: multipart/mixed; boundary="------------QgVRd7mUO2Fg82aUFcKk3qNQ";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Javier Martinez Canillas <javierm@redhat.com>, deller@gmx.de,
+ daniel@ffwll.ch, sam@ravnborg.org, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org
+Cc: linux-kernel@vger.kernel.org
+Message-ID: <1d001e59-be78-3de8-25a3-087dcd19d58a@suse.de>
+Subject: Re: [PATCH 2/7] fbdev/mmp/mmpfb: Do not display boot-up logo
+References: <20230829142109.4521-1-tzimmermann@suse.de>
+ <20230829142109.4521-3-tzimmermann@suse.de>
+ <87ledj4og7.fsf@minerva.mail-host-address-is-not-set>
+In-Reply-To: <87ledj4og7.fsf@minerva.mail-host-address-is-not-set>
 
-Signed-off-by: Daniel Danzberger <dd@embedd.com>
----
- drivers/gnss/usb.c | 1 +
- 1 file changed, 1 insertion(+)
+--------------QgVRd7mUO2Fg82aUFcKk3qNQ
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-diff --git a/drivers/gnss/usb.c b/drivers/gnss/usb.c
-index 028ce56b20ea..927f89a5b3f0 100644
---- a/drivers/gnss/usb.c
-+++ b/drivers/gnss/usb.c
-@@ -18,6 +18,7 @@
- 
- static const struct usb_device_id gnss_usb_id_table[] = {
- 	{ USB_DEVICE(0x1199, 0xb000) },		/* Sierra Wireless XM1210 */
-+	{ USB_DEVICE(0x1546, 0x01a8) },         /* U-blox 8/M8 GNSS Receiver */
- 	{ }
- };
- MODULE_DEVICE_TABLE(usb, gnss_usb_id_table);
--- 
-2.39.2
+SGkgSmF2aWVyDQoNCkFtIDA2LjA5LjIzIHVtIDExOjU0IHNjaHJpZWIgSmF2aWVyIE1hcnRp
+bmV6IENhbmlsbGFzOg0KPiBUaG9tYXMgWmltbWVybWFubiA8dHppbW1lcm1hbm5Ac3VzZS5k
+ZT4gd3JpdGVzOg0KPiANCj4+IFRoZSBmYmNvbiBtb2R1bGUgdGFrZXMgY2FyZSBvZiBkaXNw
+bGF5aW5nIHRoZSBsb2dvLCBpZiBhbnkuIFJlbW92ZQ0KPj4gdGhlIGNvZGUgZm9ybSBtbXBm
+Yi4gSWYgd2Ugd2FudCB0byBkaXNwbGF5IHRoZSBsb2dvIHdpdGhvdXQgZmJjb24sDQo+IA0K
+PiBzL2Zvcm0vZnJvbQ0KPiANCj4+IHdlIHNob3VsZCBpbXBsZW1lbnQgdGhpcyBpbiB0aGUg
+ZmJkZXYgY29yZSBjb2RlLg0KPj4NCj4gDQo+IFRoZSBjb21taXQgbWVzc2FnZSBzYXlzIHRo
+ZSBzYW1lIHRoYW4gcGF0Y2ggIzEgYnV0IHRoZSBkcml2ZXIgd2lsbCBiZWhhdmUNCj4gZGlm
+ZmVyZW50bHkgcmlnaHQ/IFRoYXQgaXMsIHdvbid0IG9ubHkgc2hvdyB0aGUgbG9nbyB3aGVu
+IGZiY29uIGlzIG5vdA0KPiBlbmFibGVkIGJ1dCB1bmNvbmRpdGlvbmFsbHk/IFNvIHRoZSBs
+b2dvIHdpbGwgYmUgZHVwbGljYXRlZCB3aGVuIGZiY29uIGlzDQo+IGVuYWJsZWQ/DQo+IA0K
+PiBJZiBJIHVuZGVyc3Rvb2QgdGhhdCBjb3JyZWN0bHksIHByb2JhYmx5IHlvdSBzaG91bGQg
+bWVudGlvbiB0aGF0IGluIHRoZQ0KPiBjb21taXQgbWVzc2FnZSBzaW5jZSByZW1vdmluZyB0
+aGUgZmJfc2hvd19sb2dvKCkgd2lsbCBtYWtlIHRoZSBkcml2ZXIgdG8NCj4gYmVoYXZlIGNv
+cnJlY3RseS4NCg0KVEJIIEkgZG9uJ3QgdW5kZXJzdGFuZCB3aGF0IGhhcHBlbnMgaGVyZSBp
+ZiB0aGUgY29uc29sZSBhbmQgdGhlIGxvZ28gaGFzIA0KYmVlbiBlbmFibGVkIGF0IHRoZSBz
+YW1lIHRpbWUuIEFGQUlLIGZiY29uIHJlc3BlY3RzIGRpc3BsYXkgcm90YXRpb24sIA0KYnV0
+IHRoaXMgZHJpdmVyIGRvZXNuJ3QuIFNvIHRoZSBsb2dvIHNob3dzIHVwIGluIHRoZSB3cm9u
+ZyBwbGFjZSB0aGVuPw0KDQo+IA0KPj4gU2lnbmVkLW9mZi1ieTogVGhvbWFzIFppbW1lcm1h
+bm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+DQo+PiAtLS0NCj4gDQo+IEFja2VkLWJ5OiBKYXZp
+ZXIgTWFydGluZXogQ2FuaWxsYXMgPGphdmllcm1AcmVkaGF0LmNvbT4NCj4gDQoNCi0tIA0K
+VGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29m
+dHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2LCA5MDQ2
+MSBOdWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVycywgQW5k
+cmV3IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVlcm5iZXJn
+KQ0K
 
+--------------QgVRd7mUO2Fg82aUFcKk3qNQ--
+
+--------------ZGdlOT3gOMcfm9RyxxfPW8an
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmT5dBcFAwAAAAAACgkQlh/E3EQov+B3
+1A/5AXno2YctCIpTMTjW7SZmyyM/Mkcz4CqcYnZt0+IqrRan8O2Pp/7rPqXVrVtTkuHV2M4f3u27
+E9Ps05pN4hjnIP9XUA6eMRaeKYN1tZ5OMS5YIqLDofbNw5gfrD7H0BKUSkj8Ovfq+C2NuN5eDVxh
+MTWd9maFZdQan1936sRqrnM1cBAPaAfhm4Rumi6xM4X6YHo2swAig8Swz4C1DR4e3ZymaHPrS2QN
+XZOD5MI4CsOBpXcDIMC+xF/dOuFobtsi7uHlX/lpuw8LdKG7TID5Q7i3bpAChP7GGFHSjSii2lhY
+c7OaMi0PvqX74Vs6fQyKoE+ihkfzRoj11yGmaQXpdxk/+SYROC68ZYYxwk1bveK0IiPclJn/F11d
+ynzuAFVXdWB3a4/dZe2rEF1S5kXdqQI1YKA1xoaSncH8jLcn8HFWMph0/K3KgDLihJ3L3API2YqH
+oo+zDtY1pYNDaP2zxp73W0tsdk+lMP4cT1xOAvvrknv7Kgn6IdhHeJagt2P0nc64PjSfDPltdmQ4
+bwuakOmUhvxL6IHrqX5OBgMXZV1qJc/dzRThGSNz1kE03F34FxQFgM6vFqFGK8fb2Ig97e0dx6ZP
+CCDP6yU8NxKSnEBr4omSguJcJ4YIdV0fbp4NYuTpjRyMwlFKW/+p3esYT/i7QiU/UPTJYe01fSOv
+dH0=
+=Kpnr
+-----END PGP SIGNATURE-----
+
+--------------ZGdlOT3gOMcfm9RyxxfPW8an--
