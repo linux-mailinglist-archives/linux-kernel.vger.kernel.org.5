@@ -2,101 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 376ED7973E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2F679761A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244345AbjIGPcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56420 "EHLO
+        id S231840AbjIGQBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 12:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244599AbjIGP3J (ORCPT
+        with ESMTP id S241844AbjIGP7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:29:09 -0400
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 162EEE7F;
-        Thu,  7 Sep 2023 08:28:38 -0700 (PDT)
-Received: from relay2-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::222])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id CA594C1BA0;
-        Thu,  7 Sep 2023 13:48:19 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1B6A040026;
-        Thu,  7 Sep 2023 13:47:52 +0000 (UTC)
-Message-ID: <4c4bb7ec-9ad8-6b6a-cea0-a4c779db6ac3@ghiti.fr>
-Date:   Thu, 7 Sep 2023 15:47:52 +0200
+        Thu, 7 Sep 2023 11:59:20 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F4A1FFC;
+        Thu,  7 Sep 2023 08:48:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=v3uvxlhpyVywOeCKfN58HL4kywyDPvCRWTa4uTmYA0Q=; b=cMBALboLcZQB/DNbVCwH0r0KjF
+        FKs6pkrAoiU6XIpNGn6ZT3ykUCQ+Ce5ru2X0LJN/wi1zO4BFrFy21XM5xRndzViVJHmSjNc23KM3N
+        3tHi+R6HNKVPol+fFZa4SUU5JmE19W1F8uRQb4sBvD8S6qVOGhJkdmL6rX/MYhPu1mT0Zt525MV9j
+        eQSsMWb9eZ/3yo6lAKWimBG3nTiy46dA0Vtoz8gVCUe0LTXe+6kaVdpkOeMBO8TclVjgR+WTH2Za/
+        2mE5feR0C2jb11Owc26U78mi0p48ztIJuDaE635wnsqQdt0kRDvrdA7s0FDVSpDB14sWBKXvW2n9w
+        vEI7gVwQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57708)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qeFUF-0003KZ-1Y;
+        Thu, 07 Sep 2023 14:55:59 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qeFUF-0005tY-7p; Thu, 07 Sep 2023 14:55:59 +0100
+Date:   Thu, 7 Sep 2023 14:55:59 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Raul Piper <raulpblooper@gmail.com>,
+        kernelnewbies@kernelnewbies.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux Devicetree <devicetree@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Subject: Re: Debugging i2c : i2cdetect cant detect a device on i2c line
+Message-ID: <ZPnWb15ucCotffav@shell.armlinux.org.uk>
+References: <CAEwN+MCorDCS7EhN40Qgja_nY+SFc3G61Zd6yntqAS+w26YO9Q@mail.gmail.com>
+ <ZPnR4Cx6_Hh3weEl@debian.me>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v3 4/4] riscv: Improve flush_tlb_kernel_range()
-Content-Language: en-US
-To:     Nadav Amit <nadav.amit@gmail.com>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>, linux-riscv@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>
-References: <20230801085402.1168351-1-alexghiti@rivosinc.com>
- <20230801085402.1168351-5-alexghiti@rivosinc.com>
- <CA+V-a8t56xDqMTQfoKcsvPF8errkTMydaDz5V6nejLvVfJrW3g@mail.gmail.com>
- <C92430BE-4DA3-487B-BFD2-58EE4A93396F@gmail.com>
-From:   Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <C92430BE-4DA3-487B-BFD2-58EE4A93396F@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alex@ghiti.fr
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPnR4Cx6_Hh3weEl@debian.me>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nadav,
+On Thu, Sep 07, 2023 at 08:36:32PM +0700, Bagas Sanjaya wrote:
+> [also Cc: devicetree and ARM folks]
+> 
+> On Thu, Sep 07, 2023 at 08:21:44AM +0530, Raul Piper wrote:
+> > Hello ,
+> > I am trying to detect an i2c device A on i2c1 line on  one of the Arm
+> > Cortex A7 platform but not able to see any device on a given address (
+> > 0x3d) .
+> > 
+> > Is there any parameters of i2c which i can change like rise/fall time
+> > , timeout etc in a device tree or kernel source and re test it?
+> > I have tried changing the i2c speed from 100KHz to 400 KHz  but no success.
+> > I have even tried removing the 1.5K pull ups on the i2c lines but no result.
 
-On 06/09/2023 22:22, Nadav Amit wrote:
->
->> On Sep 6, 2023, at 4:48 AM, Lad, Prabhakar <prabhakar.csengg@gmail.com> wrote:
->>
->> Hi Alexandre,
->>
->> On Tue, Aug 1, 2023 at 9:58 AM Alexandre Ghiti <alexghiti@rivosinc.com> wrote:
->>> This function used to simply flush the whole tlb of all harts, be more
->>> subtile and try to only flush the range.
->>>
->>> The problem is that we can only use PAGE_SIZE as stride since we don't know
->>> the size of the underlying mapping and then this function will be improved
->>> only if the size of the region to flush is < threshold * PAGE_SIZE.
->>>
->>> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
->>> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
->>> ---
->>> arch/riscv/include/asm/tlbflush.h | 11 +++++-----
->>> arch/riscv/mm/tlbflush.c          | 34 +++++++++++++++++++++++--------
->>> 2 files changed, 31 insertions(+), 14 deletions(-)
->>>
->> After applying this patch, I am seeing module load issues on RZ/Five
->> (complete log [0]). I am testing defconfig + [1] (rz/five related
->> configs).
->>
->> Any pointers on what could be an issue here?
-> None of my business, but looking at your code, it seems that you do not memory
-> barrier before reading mm_cpumask() in __flush_tlb_range(). I believe you
-> would want to synchronize __flush_tlb_range with switch_mm() similarly to the
-> way it is done in x86.
->
+Honestly, from this description, I'm wondering if this posting is a joke.
 
-Noted, I'll take a look at that, thanks for the advice!
+I2C is entirely _reliant_ on pull-ups. It's a wire-or bus, and the
+logic 1 state is created by no device pulling the signal low, thereby
+allowing the pull-up resistor to pull the line to the logic 1 state.
 
-Alex
+The pull-up must be the correct strength for the devices on the bus.
+If it is too strong, then a driver may not be able to pull the signal
+sufficiently low for other devices to register it as a logic 0.
 
+Conversely, the pull-up must be strong enough so that the rise-time
+of the signal is sufficient to register as a logic 1.
+
+If it's a problem with the rise time, then increasing the clock rate
+will just make the situation worse.
+
+So, if other devices work on the bus, it could be that the Vil
+threshold of this device is not being achieved, whereas the other
+devices are happy. Therefore, I would suggest you study the data
+sheets of the device that isn't being detected.
+
+Lastly, if the undetectable device has a reset line, it's possible
+that the device isn't responding because it's being held in reset.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
