@@ -2,81 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B837974C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8D67973FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 17:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbjIGPk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 11:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49108 "EHLO
+        id S1344090AbjIGPcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 11:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233951AbjIGPgO (ORCPT
+        with ESMTP id S1343643AbjIGPan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 11:36:14 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B282123;
-        Thu,  7 Sep 2023 08:35:52 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 45D511F86C;
-        Thu,  7 Sep 2023 07:10:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694070639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DbVdXW/jNFCFxdW+0x/LfhB7YMcuH/QmkF6mZXOuaLE=;
-        b=3AkW0YDdz/+le3pX62tW9FtHTG97hy9+xiaxNkWWz4qd/7IKfwRUqLtZprB3fdgW9GDEDY
-        LFrgg0Ur4ZlsksnUNEJSaKDkYlfsXc5aiAFCaFJyN9VMpHwJHaZbazm8EnzYx2tb3XR+im
-        I1yAN+SQOBtwGyrpofbtRLJlgDUO2lU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694070639;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DbVdXW/jNFCFxdW+0x/LfhB7YMcuH/QmkF6mZXOuaLE=;
-        b=vWb+l5pOCouADD9LzFATDdCF4CBnb8ZVlVUDrX4mn6q2mcJltWbN3YfD6sYkyMILlMzFBp
-        ADdgkcIN+z9Pz/AQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 118381358B;
-        Thu,  7 Sep 2023 07:10:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id RUqJA293+WRdBgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 07 Sep 2023 07:10:39 +0000
-Message-ID: <737d399d-c83a-3e66-ceb7-4ae7ba4acfb4@suse.cz>
-Date:   Thu, 7 Sep 2023 09:10:38 +0200
+        Thu, 7 Sep 2023 11:30:43 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on20626.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e88::626])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9961BFD;
+        Thu,  7 Sep 2023 08:30:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iVhFhKap7GRgyiHgLJWdvIQmlWtd6x0833QU2PDe1M/T/MHW3JCEVkrulfJQ4siENAZwOkTI8oYa57ti4l/wLtB28aSq0KKMMR4mAcY5Zr6Uan3giliOlw+hJCSe8V17WbBN4CO3dOVCHEP/6JbPa1KVtpA6UoVrhzBxtfhyzVKrpHYj8ZKXuTUmoatHz1WfY0p9G4uei5i/fFp7SPMXYm3nkSmiu918qRtML1Pu29GEsw5NewY8yBQshMUlv3YaTHScGYIJZQZymVjmeJmaD/O0W9b5Rja1aXrKqEkwP4S0qw4+BRp9mgbERt5NF3Iy1dotC4yJ2SOuYIiGWPSjMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6NBZQqsIaS+1Erhhm+urQssMC2v/wT0cdJmaOKgR9kc=;
+ b=BAEEU1cAzdGbaXw86fzVYGlI+KolTjNeSoFWVqUqBlsHHKeG8S+s28wiqkGUfPVDLpAjWSMq1OX+0TWB8fu+laW3TyKAAnt9JXIva463AJH0m/ueHubEzkhZ+eTDzPvjq3NYyO9RnkYapOfgGHaAJVlAnTuYoTqvaQcfRlzAowcbTS+9N9ViE6R2blJ9gNbAVUH7WscvP/EGgEttPjQ5ZDppBLA4rYsvLdFTjw1xlVYWuWd+UfW51sHV+PWYExchFZWqw3Anse9Xl0J82/6DEeTfS5+h+vPoFNf+F/M3mD8BvP3BhaJQYDWnjYMnBtSa0X8c7cYqbcBYgGqjZccrYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6NBZQqsIaS+1Erhhm+urQssMC2v/wT0cdJmaOKgR9kc=;
+ b=oYiQ3XjMpVROtWrKRr2E0A2aEUsjqbQ1UqSa7BQ7SouUhBDD4TVrPKDTrtHRdBaVbZfHn8CL3FDF0OG7AX0xDx3JaoPMHMNPLorRckFR4c+sffMKeIx1fHFYU8+dzC4nlM726Rtaz7BsLuczrO8i8C72xGfURx2TYe6D9ct0z8yQhgr+FDMXw3sZRDM36AU6vzniPhx3V90J/BPpuX2lNqUNLdSu9wiIZiobGDC8jXlUegRgqVvajKK2fBa2ss/rq50J+hUpWt3qWJoiP75WqD+NqM5A/y4S+2EzvA7Wo080LarXtdUZYnHhHbBVg5HVQRmaR5TGvyfrAv58jKW09g==
+Received: from SA1P222CA0095.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:35e::26)
+ by IA0PR12MB8894.namprd12.prod.outlook.com (2603:10b6:208:483::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Thu, 7 Sep
+ 2023 07:11:16 +0000
+Received: from SA2PEPF00001508.namprd04.prod.outlook.com
+ (2603:10b6:806:35e:cafe::e0) by SA1P222CA0095.outlook.office365.com
+ (2603:10b6:806:35e::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30 via Frontend
+ Transport; Thu, 7 Sep 2023 07:11:15 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ SA2PEPF00001508.mail.protection.outlook.com (10.167.242.40) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6768.25 via Frontend Transport; Thu, 7 Sep 2023 07:11:15 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 7 Sep 2023
+ 00:11:04 -0700
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Thu, 7 Sep 2023
+ 00:11:04 -0700
+Received: from localhost.localdomain (10.127.8.10) by mail.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server id 15.2.986.37 via Frontend
+ Transport; Thu, 7 Sep 2023 00:10:59 -0700
+From:   Kartik <kkartik@nvidia.com>
+To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <sumitg@nvidia.com>, <arnd@arndb.de>, <pshete@nvidia.com>,
+        <andriy.shevchenko@linux.intel.com>, <kkartik@nvidia.com>,
+        <digetx@gmail.com>, <petlozup@nvidia.com>, <windhl@126.com>,
+        <frank.li@vivo.com>, <robh@kernel.org>, <stefank@nvidia.com>,
+        <pdeschrijver@nvidia.com>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/6] soc/tegra: fuse: Add ACPI support
+Date:   Thu, 7 Sep 2023 12:40:46 +0530
+Message-ID: <20230907071052.3906-1-kkartik@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 2/2] rcu: Dump vmalloc memory info safely
-Content-Language: en-US
-To:     Lorenzo Stoakes <lstoakes@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Zhen Lei <thunder.leizhen@huaweicloud.com>,
-        rcu@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        stable@vger.kernel.org, linux-mm@kvack.org
-References: <20230904180806.1002832-1-joel@joelfernandes.org>
- <20230904180806.1002832-2-joel@joelfernandes.org>
- <9e329429-73a5-4926-af4f-edcf9e547101@lucifer.local>
- <20230905114841.GB3881391@google.com>
- <CAA5enKafgfqNE0DWg7tcd-iNGeE0Aud5VcmmWzdguK9Psq0uhQ@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAA5enKafgfqNE0DWg7tcd-iNGeE0Aud5VcmmWzdguK9Psq0uhQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham
+Content-Type: text/plain; charset="UTF-8"
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF00001508:EE_|IA0PR12MB8894:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5bf22d82-51c1-4518-2236-08dbaf71a057
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bkcg1hjPyPPSylPmcm8EenUkkLIaE0Do/2HFaqGff+PWjO77INBGBMJj9hDj8ad+pxT6VsgvfLFe2roE4YCO+nTUS+SBl7Mq+IV0pWdh7Op651Duk9bBEWeOHPmW4i8MuHvLjg6wxg7PKC4xUHRoaZeT44g9SnlaFrqIUV2Pzg9+4FEE1kO+BDacjSOhmSOUoIjh2vUXTzpONAs+P0rERZ2Ki0WQp7HBNw0TbUorHxSqEUOqumvl7FQgJAtMdfqemnzTr5IG+GW5TMG1fWw+pM3oqHUs2TRy8YppGhr/PTj8eJH2m/Ani2wSinrgNZKft/6e2uwF+L7HG49zySw7xN/GSHVMrGoltExnBIewjXKwQ2vnhrkalyOurplXTBTzWOx81qyhFsERnkaG0E8Vzkcy0zk5Wv92LdRrvCgNKVk3FSKlkQysJEzB+ImhKtg6gGwZshPQOHnH6YztJ+nVhqA04xx04GVyQVX0L0W0bCqyRweBrAdtcwW1MUWZsMr0Zw/Xa2ZtuHAoGPDj19wj47UfqfzTblY6QjCJKL4VeJ8wjOwZ7jXHccGbDNXb+epPVeqsdya8hPfC9rDa7tp12/Nzr4cNb0Yyj3ido82zdr28F1+2B8DYKLmErA/Y3+bWM0glsEKuyIRUHiaLKHrKHzdL4RKQeUADeI2W3unEss6286Xly3YGme3GD/61mqZjROCjea/2JGMsIRwzEfPwAW9ELI0T2qp385pR0eXwag7ucij8nhqtcs9S/SbocCy205vh2WkO+xatWlYz3N0N+g==
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(136003)(346002)(39860400002)(451199024)(186009)(82310400011)(1800799009)(46966006)(36840700001)(40470700004)(8936002)(8676002)(478600001)(70206006)(110136005)(70586007)(5660300002)(40480700001)(83380400001)(41300700001)(2906002)(316002)(86362001)(6666004)(40460700003)(82740400003)(2616005)(356005)(1076003)(26005)(921005)(7636003)(336012)(426003)(47076005)(36860700001)(36756003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 07:11:15.7881
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5bf22d82-51c1-4518-2236-08dbaf71a057
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF00001508.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8894
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,139 +108,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/6/23 21:18, Lorenzo Stoakes wrote:
-> On Tue, 5 Sept 2023 at 12:48, Joel Fernandes <joel@joelfernandes.org> wrote:
->>
->> On Tue, Sep 05, 2023 at 08:00:44AM +0100, Lorenzo Stoakes wrote:
->> > On Mon, Sep 04, 2023 at 06:08:05PM +0000, Joel Fernandes (Google) wrote:
->> > > From: Zqiang <qiang.zhang1211@gmail.com>
->> > >
->> > > Currently, for double invoke call_rcu(), will dump rcu_head objects
->> > > memory info, if the objects is not allocated from the slab allocator,
->> > > the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
->> > > need to be held, since the call_rcu() can be invoked in interrupt context,
->> > > therefore, there is a possibility of spinlock deadlock scenarios.
->> > >
->> > > And in Preempt-RT kernel, the rcutorture test also trigger the following
->> > > lockdep warning:
->> > >
->> > > BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
->> > > in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
->> > > preempt_count: 1, expected: 0
->> > > RCU nest depth: 1, expected: 1
->> > > 3 locks held by swapper/0/1:
->> > >  #0: ffffffffb534ee80 (fullstop_mutex){+.+.}-{4:4}, at: torture_init_begin+0x24/0xa0
->> > >  #1: ffffffffb5307940 (rcu_read_lock){....}-{1:3}, at: rcu_torture_init+0x1ec7/0x2370
->> > >  #2: ffffffffb536af40 (vmap_area_lock){+.+.}-{3:3}, at: find_vmap_area+0x1f/0x70
->> > > irq event stamp: 565512
->> > > hardirqs last  enabled at (565511): [<ffffffffb379b138>] __call_rcu_common+0x218/0x940
->> > > hardirqs last disabled at (565512): [<ffffffffb5804262>] rcu_torture_init+0x20b2/0x2370
->> > > softirqs last  enabled at (399112): [<ffffffffb36b2586>] __local_bh_enable_ip+0x126/0x170
->> > > softirqs last disabled at (399106): [<ffffffffb43fef59>] inet_register_protosw+0x9/0x1d0
->> > > Preemption disabled at:
->> > > [<ffffffffb58040c3>] rcu_torture_init+0x1f13/0x2370
->> > > CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-rc4-rt2-yocto-preempt-rt+ #15
->> > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
->> > > Call Trace:
->> > >  <TASK>
->> > >  dump_stack_lvl+0x68/0xb0
->> > >  dump_stack+0x14/0x20
->> > >  __might_resched+0x1aa/0x280
->> > >  ? __pfx_rcu_torture_err_cb+0x10/0x10
->> > >  rt_spin_lock+0x53/0x130
->> > >  ? find_vmap_area+0x1f/0x70
->> > >  find_vmap_area+0x1f/0x70
->> > >  vmalloc_dump_obj+0x20/0x60
->> > >  mem_dump_obj+0x22/0x90
->> > >  __call_rcu_common+0x5bf/0x940
->> > >  ? debug_smp_processor_id+0x1b/0x30
->> > >  call_rcu_hurry+0x14/0x20
->> > >  rcu_torture_init+0x1f82/0x2370
->> > >  ? __pfx_rcu_torture_leak_cb+0x10/0x10
->> > >  ? __pfx_rcu_torture_leak_cb+0x10/0x10
->> > >  ? __pfx_rcu_torture_init+0x10/0x10
->> > >  do_one_initcall+0x6c/0x300
->> > >  ? debug_smp_processor_id+0x1b/0x30
->> > >  kernel_init_freeable+0x2b9/0x540
->> > >  ? __pfx_kernel_init+0x10/0x10
->> > >  kernel_init+0x1f/0x150
->> > >  ret_from_fork+0x40/0x50
->> > >  ? __pfx_kernel_init+0x10/0x10
->> > >  ret_from_fork_asm+0x1b/0x30
->> > >  </TASK>
->> > >
->> > > The previous patch fixes this by using the deadlock-safe best-effort
->> > > version of find_vm_area. However, in case of failure print the fact that
->> > > the pointer was a vmalloc pointer so that we print at least something.
->> > >
->> > > Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
->> > > Cc: Paul E. McKenney <paulmck@kernel.org>
->> > > Cc: rcu@vger.kernel.org
->> > > Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
->> > > Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
->> > > Cc: stable@vger.kernel.org
->> > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
->> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->> > > ---
->> > >  mm/util.c | 4 +++-
->> > >  1 file changed, 3 insertions(+), 1 deletion(-)
->> > >
->> > > diff --git a/mm/util.c b/mm/util.c
->> > > index dd12b9531ac4..406634f26918 100644
->> > > --- a/mm/util.c
->> > > +++ b/mm/util.c
->> > > @@ -1071,7 +1071,9 @@ void mem_dump_obj(void *object)
->> > >     if (vmalloc_dump_obj(object))
->> > >             return;
->> > >
->> > > -   if (virt_addr_valid(object))
->> > > +   if (is_vmalloc_addr(object))
->> > > +           type = "vmalloc memory";
->> > > +   else if (virt_addr_valid(object))
->> > >             type = "non-slab/vmalloc memory";
->> >
->> > I think you should update this to say non-slab/non-vmalloc memory (as much
->> > as that description sucks!) as this phrasing in the past meant to say
->> > 'non-slab or vmalloc memory' (already confusing phrasing) so better to be
->> > clear.
->>
->> True, though the issue you mentioned it is in existing code, a respin of this
->> patch could update it to say non-vmalloc. Good point, thanks for reviewing!
-> 
-> No it's not, you're changing the meaning, because you changed the code
-> that determines the output...
+This series of patches add ACPI support for Tegra194 and Tegra234 in
+Tegra fuse and apbmisc drivers. It also adds support for Tegra241
+which uses ACPI boot.
 
-I think it has always meant (but clearly it's not unambiguously worded) "not
-slab && not vmalloc", that is before and after this patch. Only in case
-patch 1 is applied and patch 2 not, can the output be wrong in that a
-vmalloc pointer will (in case of trylock fail) be classified as "not slab &&
-not vmalloc", but seems fine to me after patch 2.
+Kartik (6):
+  soc/tegra: fuse: Refactor resource mapping
+  soc/tegra: fuse: Add tegra_acpi_init_apbmisc()
+  soc/tegra: fuse: Add function to add lookups
+  soc/tegra: fuse: Add function to print SKU info
+  soc/tegra: fuse: Add ACPI support for Tegra194 and Tegra234
+  soc/tegra: fuse: Add support for Tegra241
 
-I guess if we wanted, we could also rewrite it to be more like the kmem
-check in the beginning of mem_dump_obj(), so there would be:
+ drivers/soc/tegra/Kconfig              |   5 ++
+ drivers/soc/tegra/fuse/fuse-tegra.c    | 119 +++++++++++++++++++------
+ drivers/soc/tegra/fuse/fuse-tegra30.c  |  21 +++++
+ drivers/soc/tegra/fuse/fuse.h          |   5 ++
+ drivers/soc/tegra/fuse/tegra-apbmisc.c | 110 +++++++++++++++++++----
+ include/soc/tegra/fuse.h               |   1 +
+ 6 files changed, 217 insertions(+), 44 deletions(-)
 
-if (is_vmalloc_addr(...)) {
-    vmalloc_dump_obj(...);
-    return;
-}
+---
+v2 -> v3:
+	* Minor changes in following patches:
+	  soc/tegra: fuse: Add tegra_acpi_init_apbmisc()
+	  soc/tegra: fuse: Add ACPI support for Tegra194 and Tegra234
 
-where vmalloc_dump_obj() itself would print at least "vmalloc memory" with
-no further details in case of trylock failure.
-
-that assumes is_vmalloc_addr() is guaranteed to be true for all addresses
-that __find_vmap_area resolves, otherwise it could miss something compared
-to current code. Is it guaranteed?
-
-> This has been merged now despite my outstanding comments (!) so I
-> guess I'll have to send a follow up patch to address this.
-> 
->>
->>  - Joel
->>
-> 
-> 
-> 
-> --
-> Lorenzo Stoakes
-> https://ljs.io
+v1 -> v2:
+	* Used '--patience' while formatting patches.
+	* Added "soc/tegra: fuse: Refactor resource mapping" to share
+	  the common code between tegra_init_apbmisc() and
+	  tegra_acpi_init_apbmisc() functions.
+	* Dropped "soc/tegra: fuse: Add function to register nvmem"
+	  as ACPI and device-tree boot are sharing the same probe.
+	  So, no need to refactor the code here.
+---
+-- 
+2.34.1
 
