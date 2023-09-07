@@ -2,245 +2,399 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E7B797AFC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA98B797A60
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245623AbjIGR6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34552 "EHLO
+        id S232851AbjIGRir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:38:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245648AbjIGR6p (ORCPT
+        with ESMTP id S244831AbjIGRio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:58:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE70199
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 10:58:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694109507; x=1725645507;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=NJUrMM02TBPvll1h+V2AHia2gbjPL6Q6geA3kmPSEis=;
-  b=RjAYUz2ZnLAX27JIoTndPz8XVRLNtNHJ8hbLfmStUgZNzNqjRzAQ/RDf
-   SrgpNKlaQoL7tls35x9BRtLSVCrw3GUs5oOtgrQD0lncBxgxAXADW+eYG
-   DERwBp5ViQ/TZtmGbWN9YPFA6dhlP+Bb5pUmaboyBAEjEJxIaN6UkROsc
-   FRbrmheeEx+LbPt9RNowq0szWjijRMhNrmj/rAztwtLT/3ERuYBZPIGb0
-   Y9W1MD+bTY7ddy7Jm1ExWUXH2b11uhqCPtfdaf+1Bwc/eQC6CDuSS6LAv
-   g5fUFSEla3ekkyogYPpCkWaP9ALpYaO1hKJZsMpgbrEsR5l2IfZElKoiV
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="367627591"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="367627591"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 08:05:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="735539276"
-X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
-   d="scan'208";a="735539276"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Sep 2023 08:05:04 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 7 Sep 2023 08:05:04 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 7 Sep 2023 08:05:03 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Thu, 7 Sep 2023 08:05:03 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.172)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 7 Sep 2023 08:05:03 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZmkqSTd2UwYdDJlLNWxcinhSr4UnGJaz4yZ8jqjjg+yQ9TigiV1+POrRqAdWnx59D9wg0R3+YgqRValMXMYISh2rO3h7ql2fzYVZJoMlGv0C0vY2zysfJwX4e4lhgpZBM+rR5HSgUvsuE5O4hIyZYYnPF99uo9CqxBfpmqKv+9Gfofb6J2R7LJ+T39tOeL27z9+V1edo5dG2gPnJ4iCNxd0Mvmj2PZ8UcNr19owz44APciDrbVxvek9SMGoaajQ9PX29Tsf/wls3Okv/dFxEN4VvQt9OR4cVX/3zzAB51R6RFJU6zIEC5OMaqEcUMF0JFg2tcJ25ahb3FvUuMvp3vg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=03kwySeaOStXbqj4p8QiJ+DBC65nfEiB/Jty1YeVHzg=;
- b=iklBIyJEcdjWJ5fgIAnkUsLUfSZ1Nnah5KorZeVvJ/+stRxPqQoGMYwdvWfhMKiUDYmwDcGLPLzbsdIPIMqiaD/t3A7MonOT8bYQrGGFGjerKH3msNuMz+rETYHIzBp/SIfHqeBY+kgt/PTl3oExIWhiTnkjFggeDbRl/tiiBlCmnvr2oMpC8cDJtxfqgOCa6wxHxcCUwWWe5y1PL8ckfV779iWXOOOaZoocfMDlYuI+1W0hFI0PcODhzvjLRvBBK5XK+jqx58gksxuFFU2sPpSsZGH2Ca89QJhjCSS9nGx6Rz2pZXY01tGMOgQn1lBch1DJiie/FliH8q0osGvMJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6206.namprd11.prod.outlook.com (2603:10b6:208:3c6::8)
- by CY8PR11MB6986.namprd11.prod.outlook.com (2603:10b6:930:56::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Thu, 7 Sep
- 2023 15:05:00 +0000
-Received: from MN0PR11MB6206.namprd11.prod.outlook.com
- ([fe80::d9d9:1535:1180:603a]) by MN0PR11MB6206.namprd11.prod.outlook.com
- ([fe80::d9d9:1535:1180:603a%2]) with mapi id 15.20.6768.029; Thu, 7 Sep 2023
- 15:05:00 +0000
-Date:   Thu, 7 Sep 2023 23:04:45 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Pierre Gondois <pierre.gondois@arm.com>
-CC:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>, <mingo@redhat.com>,
-        <peterz@infradead.org>, <vincent.guittot@linaro.org>,
-        <dietmar.eggemann@arm.com>, <vschneid@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <ionela.voinescu@arm.com>,
-        <quentin.perret@arm.com>, <srikar@linux.vnet.ibm.com>,
-        <mgorman@techsingularity.net>, <mingo@kernel.org>
-Subject: Re: [PATCH v2] sched/topology: remove sysctl_sched_energy_aware
- depending on the architecture
-Message-ID: <ZPnmjZhBNCcHVVa7@chenyu5-mobl2>
-References: <20230901065249.137242-1-sshegde@linux.vnet.ibm.com>
- <ZPGzxEVZhpyZuTvj@chenyu5-mobl2>
- <26d82927-af2b-b1b8-d57e-3d94c98f9482@arm.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <26d82927-af2b-b1b8-d57e-3d94c98f9482@arm.com>
-X-ClientProxiedBy: SI2PR06CA0012.apcprd06.prod.outlook.com
- (2603:1096:4:186::13) To MN0PR11MB6206.namprd11.prod.outlook.com
- (2603:10b6:208:3c6::8)
+        Thu, 7 Sep 2023 13:38:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1DC5E73;
+        Thu,  7 Sep 2023 10:38:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8428FC4E683;
+        Thu,  7 Sep 2023 15:07:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694099252;
+        bh=cbtVUTODPSn+Y0OWPuZJbt78zkB0GSynU4+n0umgUb8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fIXIsAq4c9CLCuvW4tR34fUBBpEvdtl3V6RjxN2TT0N2joFpPF0IPm+rmwS8U3EHs
+         InVyt9GM8x6ObMaDHvJD2xXAFr5eyV00te+y1iW0fxaW6pJFJ2n53Kn7VpPSWWPlLw
+         /dBUu1cQX5parpS6MZ9sackGTt426uD8XmUPRkILW43DhI8gNRf6F3gz17bLL+f939
+         wYH1ZllEn+nzAEPW+etc51Q9mfDJHco0hNPU8UyKPid0WxVl/lUUiuR6Hfe7JOH1zW
+         URj6lCnlVZZ22wVhYyh1jIoUi01e6qUI5oTq76FXhygpvgQ3OdnAB5niq+hXYKfvJc
+         nDJjbyYKVJdTw==
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50079d148aeso1764101e87.3;
+        Thu, 07 Sep 2023 08:07:32 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxmfOr7APdKWPlx7mt927Ajrly/9KJTh8XqlUwjSUsyVZe9eDay
+        XOFwR+9pMAgetLbg2B/FrF3vww80CM6ASRm0NTg=
+X-Google-Smtp-Source: AGHT+IF/RO/eEPxFUMmGBROEY1W+ooT3PXUTG5InSg6sF/gBeP0mgjamO7iqAa/R6qmLRpF4TW5ARun4WG4eb7uJ29s=
+X-Received: by 2002:a19:e00e:0:b0:500:a41d:354c with SMTP id
+ x14-20020a19e00e000000b00500a41d354cmr4289022lfg.28.1694099250361; Thu, 07
+ Sep 2023 08:07:30 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6206:EE_|CY8PR11MB6986:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6120cf85-a021-4024-afe6-08dbafb3ce80
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4znP6xcyM0TklgkOq9YVO03BY1tjP38NGNAKph9AgzVT8tGqq1P2aEss02f45NLJGFQTAaLSGWIs1MuXKlHuvoQClG/au2+i/0pL/sTqFN52ssqYW2LxjTGQb2zv1maFXbKGayoj9Q2u/FZIetEjJ66rwfgeOPAxfisin8ByrbVrRdqlTWbCCA+EwfEX0Whtwv3qtERzfRNwPEc1u0JAPkoQp666dLsr07rDustqmAkVAkrQShS3tWE2BMN8lujwL1nkbP0L/lc+HcUfkX1Nktd8KQS9m382rZHbA7MA5196txtQgKnrXHj8T9zBUuz+DIBRgtWg2sS/H6iVrIvEWw8BhL8EbIQaeHsD4PEv8mgXvWK33EY0vJeQlCkqjtJM88WiEkYW7oV/qsoPH3Gq9AlqawhnMVKcHO0sbgSoPmWkhI7wA26Kh/ETzC2wlqOFrEaxbvU9lF67sExLdYm4Sw7MVRWxjE5SEO9pCS1AFkdasyPz58CmVCXWeN1GMrlOirOyt4FkvCKe12zIB0FGALSAlrsvKcLJRw1cZridZfHKt3HAxKL4EDiB9chRHzGl
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6206.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(346002)(39860400002)(136003)(396003)(376002)(451199024)(186009)(1800799009)(6486002)(41300700001)(7416002)(82960400001)(26005)(33716001)(6666004)(86362001)(6512007)(38100700002)(478600001)(83380400001)(9686003)(53546011)(6506007)(66476007)(6916009)(316002)(66946007)(66556008)(2906002)(8936002)(5660300002)(8676002)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zKDT+vMnzs2xlqFCA0NOrnL2cqmjX4lzo8BBl/OnLJSd17Nf33407A3RK0DL?=
- =?us-ascii?Q?YDanhlAwhG8YJD7zsncgmJcuZKDnMYBepcvwf/ClAkAU4Sf7wUnrb+Uv8uF9?=
- =?us-ascii?Q?LPWPr4btiGOkL1vjOV0vbCzPwCXgVDtXACP5mFzJX/II4SsF+IM8QoZzA9HS?=
- =?us-ascii?Q?RdAPH1F5kp62QNYEYoC1zrgsIpRTE7H81QE/pY9/Be12vTK2Si0pdt1ZHGqx?=
- =?us-ascii?Q?aMuwLJY9AAC8IgVHJ1Nqww0R10Y9obi3C4G0xObM/RYIK0/wNhDtTsx07Dnk?=
- =?us-ascii?Q?PHB+xAyv5bFCoz31A+QFF0tGxxUbi7uk8sziEJ6+AxCOquHQG276t8g0S3Z3?=
- =?us-ascii?Q?9bVJL1fX995By+dLKtwbetDQtdCHFEQF+qclazQu1Krm40R9xO2HIJi09E6z?=
- =?us-ascii?Q?MtXXi7CidM8+Cj2XFx2PD5EFrPgaFg5LANAjAdpUtyYuswuwj/sFNsGJGLdy?=
- =?us-ascii?Q?0irRLJHpYml8mzk49pGgsII7VsqVmQF/Rp2AVEgziLrKN2N+Sb06iYfJb6gE?=
- =?us-ascii?Q?CPdbuMXR0vnRtVRGQpMIwsY9e2xKliZ6nnhZPXUyTxfYDzVocldOHZM3ioK6?=
- =?us-ascii?Q?3Yq+1lRM9FSWubD8sUxDru25saptd59XPEU3wsxucDbGVmyXWLpzTDUcnv0k?=
- =?us-ascii?Q?6l0I39Yeq5mNh7bjyeqBhjJginphwgqA9qXw6z7SuAnAP3zu6lX2UVIVIilJ?=
- =?us-ascii?Q?0mcxhqcmj8ig8Sc+GU+J0h9XPTbM3SNNHVvzeITlPwvIUGMcOoT3xnLUQoN8?=
- =?us-ascii?Q?A1hrPOfS86/MU67mi0pucuqMTFcISOFIbMwsGdsKBD3ihCK7fdQV50JTW00K?=
- =?us-ascii?Q?S6hgvhESlCWGD0odu96sT76t4Ba41P86+ZCCKkGeMYm2aU1jk/0aoIq1HqXl?=
- =?us-ascii?Q?0UlZylgwEXnlG4gI9za8BAsWcFaUQvdj+At0vaPgVRJWzRi/lMbuCq7fMbcA?=
- =?us-ascii?Q?q78zbDkIS6NYtH31uR064JxDmW/1aaDTouyS8QWZ++aAFJYFKG8DgaljT+I4?=
- =?us-ascii?Q?H02/iyIq6fAne/kISKRLb9NziMZDsFi3kNqI9Y35TyY5FiGAJee7p8k0HLWj?=
- =?us-ascii?Q?uI62v4G1MkKxs6b6KcDbiH8VmOvOxGw25TuLn+7hzGCjZP3SoXKUt6WOGMfj?=
- =?us-ascii?Q?OVHwhdIgkrzaC6YoQj7jpyauTD4FP7FNWUa1UcWnett7lA8VljuKWfKEae+n?=
- =?us-ascii?Q?zZWllIqYkn2L+MXxqTYrkMRdfTZP18J0kMwtANqQ0jbToHUA8YaQBfTyI7jT?=
- =?us-ascii?Q?AcN5x28dj98hyQeVbVVKmdS2KUndtNOln2XaZ+6xJte14gh4uXlEKZfWggJM?=
- =?us-ascii?Q?bxpGzOqnk+7RQK3xbhjQk7IZjrWqgB7gMHJjeC9ZAEIgr0p3+zDob9vQSN45?=
- =?us-ascii?Q?g/WqYHdooLtq+ch3h/sf81i6ejCNioB9nLM5zx3are8Lb95kyDqhwlERYzCx?=
- =?us-ascii?Q?WUQqJN6bbPE/gFCex/pcIQXoiu1hMuBnT+T+BVfrumqMUDJB0PZrVL9wC/Qg?=
- =?us-ascii?Q?2ZTc0OjbVhH3pDX0XaMeOOrgvdmXLkC6TVmDSRXgwsrI5VhUR3VHGETRDLSn?=
- =?us-ascii?Q?k9GUc7Q3PfI8Ra6G5JMQP2otgHG1EphzMxQH2fgM?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6120cf85-a021-4024-afe6-08dbafb3ce80
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6206.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2023 15:05:00.3825
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k7xVGcwdoxc9SA2rRQRESglavZagm5sHMNRHgRdPjIy5eNZGBrTwSxqDO+5ngaU/MSsIzeRSaQrD3f+Mc/JgMQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6986
-X-OriginatorOrg: intel.com
+References: <20230830231758.2561402-1-sjg@chromium.org> <20230830231758.2561402-3-sjg@chromium.org>
+ <CAMj1kXG5-aqoOtKdPFEdm=_5SdvgUTOhcDOBP1zdARAvKphJtg@mail.gmail.com>
+ <CAL_JsqLx0KnXxFc8mFyT_RmA2qeBEutMXj_3nKo_g==cuSeYuQ@mail.gmail.com>
+ <CAPnjgZ1U+Gy0Q_Sc63p0ixkWF9iJEEBLhV8-N9-sh7OGNy-OmQ@mail.gmail.com>
+ <CAMj1kXG9vM0haSOu19j7ujQCBEN6CBeXVAH96nm+gixt9FmMrA@mail.gmail.com>
+ <CAPnjgZ1oGF0Ni3RhK4fv6mJk40YjqyFVJxt6FfS9AW2rkcs9iA@mail.gmail.com>
+ <CAMj1kXEZ4fDvbtgXKjF+L7si-=C-5E0XcjutoEF8pU9a-BGN-g@mail.gmail.com>
+ <CAPnjgZ0vv+s00xvY2FqP+Fxb12tHuVWg-nwyWTrvuG+Mo4PaWg@mail.gmail.com>
+ <CAMj1kXHGpCt8qkd6XYQF8mMdivQkTnEWjv6NzsFK=+N72LAn=Q@mail.gmail.com> <CAPnjgZ1vBaXfBa+FWvASi15=Py0DLbEK5XsRHLrJc02K2Yr_RQ@mail.gmail.com>
+In-Reply-To: <CAPnjgZ1vBaXfBa+FWvASi15=Py0DLbEK5XsRHLrJc02K2Yr_RQ@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 7 Sep 2023 17:07:19 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFjVPwnu226R8bHbo0i0LZ7jQE+vLPNQa6cvrCYqGD+YA@mail.gmail.com>
+Message-ID: <CAMj1kXFjVPwnu226R8bHbo0i0LZ7jQE+vLPNQa6cvrCYqGD+YA@mail.gmail.com>
+Subject: Re: [PATCH v5 3/4] schemas: Add some common reserved-memory usages
+To:     Simon Glass <sjg@chromium.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Devicetree Discuss <devicetree@vger.kernel.org>,
+        Maximilian Brune <maximilian.brune@9elements.com>,
+        ron minnich <rminnich@gmail.com>,
+        Tom Rini <trini@konsulko.com>,
+        Dhaval Sharma <dhaval@rivosinc.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Yunhui Cui <cuiyunhui@bytedance.com>,
+        linux-acpi@vger.kernel.org, Gua Guo <gua.guo@intel.com>,
+        Lean Sheng Tan <sheng.tan@9elements.com>,
+        Guo Dong <guo.dong@intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Chiu Chasel <chasel.chiu@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre,
+On Thu, 7 Sept 2023 at 16:50, Simon Glass <sjg@chromium.org> wrote:
+>
+> Hi Ard,
+>
+> On Thu, 7 Sept 2023 at 08:12, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Thu, 7 Sept 2023 at 15:56, Simon Glass <sjg@chromium.org> wrote:
+> > >
+> > > Hi Ard,
+> > >
+> > > On Thu, 7 Sept 2023 at 07:31, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > >
+> > > > On Wed, 6 Sept 2023 at 18:50, Simon Glass <sjg@chromium.org> wrote:
+> > > > >
+> > > > > Hi Ard,
+> > > > >
+> > > > > On Wed, Sep 6, 2023, 10:09 Ard Biesheuvel <ardb@kernel.org> wrote=
+:
+> > > > >>
+> > > > >> On Wed, 6 Sept 2023 at 16:54, Simon Glass <sjg@chromium.org> wro=
+te:
+> > > > >> >
+> > > > >> > Hi Rob, Ard,
+> > > > >> >
+> > > > >> > On Wed, 6 Sept 2023 at 08:34, Rob Herring <robh@kernel.org> wr=
+ote:
+> > > > >> > >
+> > > > >> > > On Tue, Sep 5, 2023 at 4:44=E2=80=AFPM Ard Biesheuvel <ardb@=
+kernel.org> wrote:
+> > > > >> > > >
+> > > > >> > > > On Thu, 31 Aug 2023 at 01:18, Simon Glass <sjg@chromium.or=
+g> wrote:
+> > > > >> > > > >
+> > > > >> > > > > The Devicetree specification skips over handling of a lo=
+gical view of
+> > > > >> > > > > the memory map, pointing users to the UEFI specification=
+.
+> > > > >> > > > >
+> > > > >> > > > > It is common to split firmware into 'Platform Init', whi=
+ch does the
+> > > > >> > > > > initial hardware setup and a "Payload" which selects the=
+ OS to be booted.
+> > > > >> > > > > Thus an handover interface is required between these two=
+ pieces.
+> > > > >> > > > >
+> > > > >> > > > > Where UEFI boot-time services are not available, but UEF=
+I firmware is
+> > > > >> > > > > present on either side of this interface, information ab=
+out memory usage
+> > > > >> > > > > and attributes must be presented to the "Payload" in som=
+e form.
+> > > > >> > > > >
+> > > > >> > > >
+> > > > >> > > > I don't think the UEFI references are needed or helpful he=
+re.
+> > > > >> > > >
+> > > > >> > > > > This aims to provide an small schema addition for this m=
+apping.
+> > > > >> > > > >
+> > > > >> > > > > For now, no attempt is made to create an exhaustive bind=
+ing, so there are
+> > > > >> > > > > some example types listed. More can be added later.
+> > > > >> > > > >
+> > > > >> > > > > The compatible string is not included, since the node na=
+me is enough to
+> > > > >> > > > > indicate the purpose of a node, as per the existing rese=
+rved-memory
+> > > > >> > > > > schema.
+> > > > >> > >
+> > > > >> > > Node names reflect the 'class', but not what's specifically =
+in the
+> > > > >> > > node. So really, all reserved-memory nodes should have the s=
+ame name,
+> > > > >> > > but that ship already sailed for existing users. 'compatible=
+' is the
+> > > > >> > > right thing here. As to what the node name should be, well, =
+we haven't
+> > > > >> > > defined that. I think we just used 'memory' on some platform=
+s.
+> > > > >> >
+> > > > >> > OK
+> > > > >> >
+> > > > >> > >
+> > > > >> > > > > This binding does not include a binding for the memory '=
+attribute'
+> > > > >> > > > > property, defined by EFI_BOOT_SERVICES.GetMemoryMap(). I=
+t may be useful
+> > > > >> > > > > to have that as well, but perhaps not as a bit mask.
+> > > > >> > > > >
+> > > > >> > > > > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > > > >> > > > > ---
+> > > > >> > > > >
+> > > > >> > > > > Changes in v5:
+> > > > >> > > > > - Drop the memory-map node (should have done that in v4)
+> > > > >> > > > > - Tidy up schema a bit
+> > > > >> > > > >
+> > > > >> > > > > Changes in v4:
+> > > > >> > > > > - Make use of the reserved-memory node instead of creati=
+ng a new one
+> > > > >> > > > >
+> > > > >> > > > > Changes in v3:
+> > > > >> > > > > - Reword commit message again
+> > > > >> > > > > - cc a lot more people, from the FFI patch
+> > > > >> > > > > - Split out the attributes into the /memory nodes
+> > > > >> > > > >
+> > > > >> > > > > Changes in v2:
+> > > > >> > > > > - Reword commit message
+> > > > >> > > > >
+> > > > >> > > > >  .../reserved-memory/common-reserved.yaml      | 53 ++++=
++++++++++++++++
+> > > > >> > > > >  1 file changed, 53 insertions(+)
+> > > > >> > > > >  create mode 100644 dtschema/schemas/reserved-memory/com=
+mon-reserved.yaml
+> > > > >> > > > >
+> > > > >> > > > > diff --git a/dtschema/schemas/reserved-memory/common-res=
+erved.yaml b/dtschema/schemas/reserved-memory/common-reserved.yaml
+> > > > >> > > > > new file mode 100644
+> > > > >> > > > > index 0000000..d1b466b
+> > > > >> > > > > --- /dev/null
+> > > > >> > > > > +++ b/dtschema/schemas/reserved-memory/common-reserved.y=
+aml
+> > > > >> > > > > @@ -0,0 +1,53 @@
+> > > > >> > > > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > > > >> > > > > +%YAML 1.2
+> > > > >> > > > > +---
+> > > > >> > > > > +$id: http://devicetree.org/schemas/reserved-memory/comm=
+on-reserved.yaml#
+> > > > >> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > >> > > > > +
+> > > > >> > > > > +title: Common memory reservations
+> > > > >> > > > > +
+> > > > >> > > > > +description: |
+> > > > >> > > > > +  Specifies that the reserved memory region can be used=
+ for the purpose
+> > > > >> > > > > +  indicated by its node name.
+> > > > >> > > > > +
+> > > > >> > > > > +  Clients may reuse this reserved memory if they unders=
+tand what it is for.
+> > > > >> > > > > +
+> > > > >> > > > > +maintainers:
+> > > > >> > > > > +  - Simon Glass <sjg@chromium.org>
+> > > > >> > > > > +
+> > > > >> > > > > +allOf:
+> > > > >> > > > > +  - $ref: reserved-memory.yaml
+> > > > >> > > > > +
+> > > > >> > > > > +properties:
+> > > > >> > > > > +  $nodename:
+> > > > >> > > > > +    enum:
+> > > > >> > > > > +      - acpi-reclaim
+> > > > >> > > > > +      - acpi-nvs
+> > > > >> > > > > +      - boot-code
+> > > > >> > > > > +      - boot-data
+> > > > >> > > > > +      - runtime-code
+> > > > >> > > > > +      - runtime-data
+> > > > >> > > > > +
+> > > > >> > > >
+> > > > >> > > > These types are used by firmware to describe the nature of=
+ certain
+> > > > >> > > > memory regions to the OS. Boot code and data can be discar=
+ded, as well
+> > > > >> > > > as ACPI reclaim after its contents have been consumed. Run=
+time code
+> > > > >> > > > and data need to be mapped for runtime features to work.
+> > > > >> > > >
+> > > > >> > > > When one firmware phase communicates the purpose of a cert=
+ain memory
+> > > > >> > > > reservation to another, it is typically not limited to whe=
+ther its
+> > > > >> > > > needs to be preserved and when it needs to be mapped (and =
+with which
+> > > > >> > > > attributes). I'd expect a memory reservation appearing und=
+er this node
+> > > > >> > > > to have a clearly defined purpose, and the subsequent phas=
+es need to
+> > > > >> > > > be able to discover this information.
+> > > > >> > > >
+> > > > >> > > > For example, a communication buffer for secure<->non-secur=
+e
+> > > > >> > > > communication or a page with spin tables used by PSCI. Non=
+e of the
+> > > > >> > > > proposed labels are appropriate for this, and I'd much rat=
+her have a
+> > > > >> > > > compatible string or some other property that clarifies th=
+e nature in
+> > > > >> > > > a more suitable way. Note that 'no-map' already exists to =
+indicate
+> > > > >> > > > that the CPU should not map this memory unless it does so =
+for the
+> > > > >> > > > specific purpose that the reservation was made for.
+> > > > >> > >
+> > > > >> > > I agree. I think compatible is the better approach. Some pro=
+perty like
+> > > > >> > > 'discard' may not be sufficient information if the OS needs =
+to consume
+> > > > >> > > the region first and then discard it. Better to state exactl=
+y what's
+> > > > >> > > there and then the OS can imply the rest.
+> > > > >> >
+> > > > >> > OK, so what sort of compatible strings?
+> > > > >> >
+> > > > >> > How about:
+> > > > >> > "acpi-reclaim" - holds ACPI tables; memory can be reclaimed on=
+ce the
+> > > > >> > tables are read and no-longer needed
+> > > > >>
+> > > > >> ACPI reclaim is a policy, not a purpose. This memory could conta=
+in
+> > > > >> many different things.
+> > > > >>
+> > > > >> > "boot-code" - holds boot code; memory can be reclaimed once th=
+e boot
+> > > > >> > phase is complete
+> > > > >> > "runtime-code" - holds runtime code; memory can be reclaimed o=
+nly if
+> > > > >> > this code will not be used from that point
+> > > > >> >
+> > > > >>
+> > > > >> These are also policies. They can be inferred from the purpose.
+> > > > >>
+> > > > >> > etc. We can then have more specific compatibles, like:
+> > > > >> >
+> > > > >> > "psci-spin-table" - holds PSCI spin tables
+> > > > >> >
+> > > > >> > so you could do:
+> > > > >> >
+> > > > >> > compatible =3D "runtime-code", "psci-spin-table";
+> > > > >> >
+> > > > >>
+> > > > >> I understand that this binding targets firmware<->firmware rathe=
+r than
+> > > > >> firmware<->OS, which makes it much more difficult to keep it bot=
+h
+> > > > >> generic and sufficiently descriptive.
+> > > > >>
+> > > > >> However, I still feel that all the overlap with UEFI memory type=
+s is
+> > > > >> not what we want here. UEFI knows how to manage its own memory m=
+ap,
+> > > > >> what it needs to know is what memory is already in use and for w=
+hich
+> > > > >> exact purpose. Whether or not that implies that the memory can b=
+e
+> > > > >> freed at some point or can be mapped or not should follow from t=
+hat.
+> > > > >
+> > > > >
+> > > > > Can you please make a suggestion? I am unsure what you are lookin=
+g for.
+> > > > >
+> > > >
+> > > > I'm happy to help flesh this out, but you still have not provided u=
+s
+> > > > with an actual use case, so I can only draw from my own experience
+> > > > putting together firmware for virtual and physical ARM machines.
+> > >
+> > > I did explain that this is needed when Tianocore is on both sides of
+> > > the interface, since Platform Init places some things in memory and
+> > > the Payload needs to preserve them there, and/or know where they are.
+> > >
+> > > I think the problem might be that you don't agree with that, but it
+> > > seems to be a fact, so I am not sure how I can alter it.
+> > >
+> > > Please can you clearly explain which part of the use case you are mis=
+sing.
+> > >
+> >
+> > 'Tianocore on both sides of the interface' means that Tianocore runs
+> > as the platform init code, and uses a bespoke DT based protocol to
+> > launch another instance of Tianocore as the payload, right?
+>
+> Not another instance, no. Just the other half of Tianocore. The first
+> half does platform init and the second half does the loading of the
+> OS.
+>
 
-On 2023-09-07 at 12:21:27 +0200, Pierre Gondois wrote:
-> Hello Chen,
-> 
-> On 9/1/23 11:49, Chen Yu wrote:
-> > Hi Shrikanth,
-> > 
-> > On 2023-09-01 at 12:22:49 +0530, Shrikanth Hegde wrote:
-> > > Currently sysctl_sched_energy_aware doesn't alter the said behaviour on
-> > > some of the architectures. IIUC its meant to either force rebuild the
-> > > perf domains or cleanup the perf domains by echoing 1 or 0 respectively.
-> > > 
-> > > perf domains are not built when there is SMT, or when there is no
-> > > Asymmetric CPU topologies or when there is no frequency invariance.
-> > > Since such cases EAS is not set and perf domains are not built. By
-> > > changing the values of sysctl_sched_energy_aware, its not possible to
-> > > force build the perf domains. Hence remove this sysctl on such platforms
-> > > that dont support it. Some of the settings can be changed later
-> > > such as smt_active by offlining the CPU's, In those cases if
-> > > build_perf_domains returns true, re-enable the sysctl.
-> > > 
-> > > Anytime, when sysctl_sched_energy_aware is changed sched_energy_update
-> > > is set when building the perf domains. Making use of that to find out if
-> > > the change is happening by sysctl or dynamic system change.
-> > > 
-> > > Taking different cases:
-> > > Case1. system while booting has EAS capability, sysctl will be set 1. Hence
-> > > perf domains will be built if needed. On changing the sysctl to 0, since
-> > > sched_energy_update is true, perf domains would be freed and sysctl will
-> > > not be removed. later sysctl is changed to 1, enabling the perf domains
-> > > rebuild again. Since sysctl is already there, it will skip register.
-> > > 
-> > > Case2. System while booting doesn't have EAS Capability. Later after system
-> > > change it becomes capable of EAS. sched_energy_update is false. Though
-> > > sysctl is 0, will go ahead and try to enable eas. This is the current
-> > > behaviour. if has_eas  is true, then sysctl will be registered. After
-> > > that any sysctl change is same as Case1.
-> > > 
-> > 
-> > I think this change makes sense. Just one question for case 2,
-> > sched_energy_update is not strictly tied with sysctl change, right?
-> > sched_energy_update is true in rebuild_sched_domains_energy().
-> > rebuild_sched_domains_energy() will not only be invoked by sysctl
-> > path via sched_energy_aware_handler(), but also by other path, such
-> > as update_scale_freq_invariant(). If the system boots with EAS capability
-> > disabled, then it becomes EAS capable due to the frequency invariant
-> > readiness(cpufreq policy change?), then
-> > cpufreq_notifier(CPUFREQ_CREATE_POLICY) -> init_amu_fie_callback() ->
-> > amu_fie_setup() -> opology_set_scale_freq_source() ->
-> > update_scale_freq_invariant(true) -> rebuild_sched_domains_energy()
-> > Since sched_energy_update is true, the rebuild of perf domain will be skipped(but
-> > actually we want to create it) Please correct me if I miss something.
-> > 
-> 
-> I thought 'sched_energy_update' was here to force rebuilding the
-> perf_domains instead. If sched_energy_update=1, then it prevents from finding
-> a pre-existing perf_domain and skipping the perf_domain rebuild, unless I also
-> missed something:
-> 
-> 
-> #if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
-> 	/* Build perf. domains: */
-> 	for (i = 0; i < ndoms_new; i++) {
-> 		for (j = 0; j < n && !sched_energy_update; j++) {
-> 			if (cpumask_equal(doms_new[i], doms_cur[j]) &&
-> 			    cpu_rq(cpumask_first(doms_cur[j]))->rd->pd) {
-> 				has_eas = true;
-> 				goto match3;
-> 			}
-> 		}
-> 		/* No match - add perf. domains for a new rd */
-> 		has_eas |= build_perf_domains(doms_new[i]);
-> match3:
-> 		;
-> 	}
-> 	sched_energy_set(has_eas);
-> #endif
+That doesn't make any sense to me.
 
-Yes, it enters build_perf_domains(), in which we have this:
+> >
+> > Tianocore/EDK2 already implements methods to reinvoke itself if needed
+> > (e.g., during a firmware update), and does so by launching a new DXE
+> > core. So the boot sequence looks like
+> >
+> > SEC -> PEI -> DXE -> BDS -> app that invokes UpdateCapsule() -> DXE ->
+> > firmware update
+> >
+> > So please elaborate on how this Tianocore on both sides of the
+> > interface is put together when it uses this DT based handover. We
+> > really need a better understanding of this in order to design a DT
+> > binding that meets its needs.
+>
+> Are you familiar with building Tianocore as a coreboot payload, for
+> example? That shows Tianocore running as just the Payload, with
+> coreboot doing the platform init. So the use case I am talking about
+> is similar to that.
+>
 
--	if (!sysctl_sched_energy_aware)
-+	if (!sysctl_sched_energy_aware && sched_energy_update)
- 		goto free;
+Yes I am familiar with that, and it is a completely different thing.
 
-and domain rebuild will be skipped.
+As i explained before, there is already prior art for this in
+Tianocore, i.e., launching a Tianocore build based on a DT description
+of the platform, including /memory and /reserved-memory nodes.
 
-thanks,
-Chenyu
+I argued that Tianocore never consumes memory reservations with UEFI
+semantics, given that it supplants whatever UEFI functionality the
+previous stage may have provided. But it shouldn't step on the code
+and data regions used by the previous stage if it is still running in
+the background (e.g., OS at EL1 and PSCI at EL2 on ARM)
+
+So this brings me back to the things I proposed in my previous reply:
+- memory reservations should be described in detail so the consumer
+knows what to do with it
+- memory reservations should have attributes that describe how the
+memory may be used if not for the described purpose
+
+I still don't see a reason for things like runtime-code and
+runtime-data etc based on the above. If stage N describes the memory
+it occupies itself as system memory, it should reserve it as well if
+it needs to be preserved after stage N+1 has taken over, so perhaps it
+should be described as a discardable memory reservation but I don't
+think it necessarily needs a type in that case.
