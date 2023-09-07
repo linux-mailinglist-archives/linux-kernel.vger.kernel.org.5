@@ -2,57 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6577977C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 18:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EBDB79790E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240805AbjIGQcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 12:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52888 "EHLO
+        id S240242AbjIGRBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:01:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237826AbjIGQbn (ORCPT
+        with ESMTP id S238598AbjIGRAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:31:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF37729D;
-        Thu,  7 Sep 2023 09:19:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47749C4163D;
-        Thu,  7 Sep 2023 10:43:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694083425;
-        bh=1vXm+N0KQAmOUF0rkbuYz8BuTT/Y/M1TZb80uOOLxBE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fe/+0m7vI5L4s3w22eRJ8BLMFELOVYkfJ6kVol8/cK8OppAeCZti0ensvkP99bj+f
-         1QSl3CbpRe45f1eNmENJTorrh4H0QwCcWyg+lxCHeKuFZGBEH1ehR4SaaDCqSnBiG9
-         f24bFSQEWhVFHR8DqY0zkiLdbsgj2F4+1NIFvR1Woiz7ewQrXiXyKYaS3ikRQIFBB8
-         0DCZ1Oz+VYuhHjOcsRLB9hEqeg5jV9TVDiVlOqMoo7H4mBfqqFxaiWX14fmovvjhoN
-         NEtp++Swq9pI8uVAotln55KmC4p/WG4yk48JoLonoWK64O6DZ4Rwy4afge8osS0LAw
-         g823czBcOE6RQ==
-Date:   Thu, 7 Sep 2023 12:43:40 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Mikulas Patocka <mpatocka@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Zdenek Kabelac <zkabelac@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Christoph Hellwig <hch@lst.de>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH] fix writing to the filesystem after unmount
-Message-ID: <20230907-abgrenzen-achtung-b17e9a1ad136@brauner>
-References: <59b54cc3-b98b-aff9-14fc-dc25c61111c6@redhat.com>
- <20230906-launenhaft-kinder-118ea59706c8@brauner>
- <f5d63867-5b3e-294b-d1f5-a128817cfc7@redhat.com>
- <20230906-aufheben-hagel-9925501b7822@brauner>
- <60f244be-803b-fa70-665e-b5cba15212e@redhat.com>
- <20230906-aufkam-bareinlage-6e7d06d58e90@brauner>
- <818a3cc0-c17b-22c0-4413-252dfb579cca@redhat.com>
- <20230907094457.vcvmixi23dk3pzqe@quack3>
+        Thu, 7 Sep 2023 13:00:46 -0400
+Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB25D1BD9;
+        Thu,  7 Sep 2023 10:00:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1694106016;
+  x=1725642016;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=diUzlnvHkwnFRUQDjEqQ8wBxKHMIU3epIc6mBh7MkYE=;
+  b=W88ZpTZX3ekEmNYyKpOaSrSKFPwOTJWkhsCzNGVZ6KXnhRxvcx8087QH
+   hMmvHAUrQYnUQJZSxkSdNSaWNYcAVgnM7IQLYvw1CfPqgKqvq3vxHu6JA
+   PSUDANw81BIJr2wx7CrgFRJIvP6SPurfikYtmf4GzStsLh0l+El8iNAVT
+   avgaI/4XhUeeQqtIHrLnTU20lA3Et3inuH379mcm8nBJ2ziPsPNXbq93t
+   ve8MpuvDbOb7AvjC6lS1sr0wlHcgoPNFYiVuvTABBg5kx6Op7d0oCzJa6
+   YsOtFfg9sUxF595SjzJVadqmZbfATYKIln+c9f1p7/Vgpjcs5qK5QK69t
+   Q==;
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+Date:   Thu, 7 Sep 2023 12:46:31 +0200
+Subject: [PATCH net v2] net: stmmac: fix handling of zero coalescing
+ tx-usecs
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230907094457.vcvmixi23dk3pzqe@quack3>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20230907-stmmac-coaloff-v2-1-38ccfac548b9@axis.com>
+X-B4-Tracking: v=1; b=H4sIAAaq+WQC/12Nyw7CIBREf6W5azEUa9O68j9MFzwu9iZSDBBS0
+ /DvEuLK5ZnJnDkgYiCMcOsOCJgpkt8qiFMHepXbExmZyiC4uPCZDywm56Rm2suXt5ZJLUeFVhk
+ xKKijd0BLexM+YMMESw1XismHTzvJfat+vuu/L/esZyjmSXCcrB3NXe4Uz9o7WEopX1DdP1mwA
+ AAA
+To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+CC:     Felix Fietkau <nbd@nbd.name>,
+        Maxim Mikityanskiy <maxtram95@gmail.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@axis.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,43 +65,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I think we've got too deep down into "how to fix things" but I'm not 100%
+Setting ethtool -C eth0 tx-usecs 0 is supposed to disable the use of the
+coalescing timer but currently it gets programmed with zero delay
+instead.
 
-We did.
+Disable the use of the coalescing timer if tx-usecs is zero by
+preventing it from being restarted.  Note that to keep things simple we
+don't start/stop the timer when the coalescing settings are changed, but
+just let that happen on the next transmit or timer expiry.
 
-> sure what the "bug" actually is. In the initial posting Mikulas writes "the
-> kernel writes to the filesystem after unmount successfully returned" - is
-> that really such a big issue? Anybody else can open the device and write to
-> it as well. Or even mount the device again. So userspace that relies on
-> this is kind of flaky anyway (and always has been).
+Fixes: 8fce33317023 ("net: stmmac: Rework coalesce timer and fix multi-queue races")
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+Changes in v2:
+- Rebased on current net/main.
+- Link to v1: https://lore.kernel.org/r/20230905-stmmac-coaloff-v1-1-e29820e8ff6d@axis.com
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Yeah, agreed.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 9a3182b9e767..2206789802bf 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -2704,9 +2704,7 @@ static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue)
+ 
+ 	/* We still have pending packets, let's call for a new scheduling */
+ 	if (tx_q->dirty_tx != tx_q->cur_tx)
+-		hrtimer_start(&tx_q->txtimer,
+-			      STMMAC_COAL_TIMER(priv->tx_coal_timer[queue]),
+-			      HRTIMER_MODE_REL);
++		stmmac_tx_timer_arm(priv, queue);
+ 
+ 	flags = u64_stats_update_begin_irqsave(&tx_q->txq_stats.syncp);
+ 	tx_q->txq_stats.tx_packets += tx_packets;
+@@ -2995,9 +2993,13 @@ static int stmmac_init_dma_engine(struct stmmac_priv *priv)
+ static void stmmac_tx_timer_arm(struct stmmac_priv *priv, u32 queue)
+ {
+ 	struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[queue];
++	u32 tx_coal_timer = priv->tx_coal_timer[queue];
++
++	if (!tx_coal_timer)
++		return;
+ 
+ 	hrtimer_start(&tx_q->txtimer,
+-		      STMMAC_COAL_TIMER(priv->tx_coal_timer[queue]),
++		      STMMAC_COAL_TIMER(tx_coal_timer),
+ 		      HRTIMER_MODE_REL);
+ }
+ 
 
-> namespaces etc. I'm not sure such behavior brings much value...
+---
+base-commit: 35494b0d61e44b517178aa1c6f5a69168b086940
+change-id: 20230904-stmmac-coaloff-aca6befbd24b
 
-It would in any case mean complicating our code for little gain imho.
-And as I showed in my initial reply the current patch would hang on any
-bind-mount unmount. IOW, any container. And Al correctly points out
-issues with exit(), close() and friends on top of that.
+Best regards,
+-- 
+Vincent Whitchurch <vincent.whitchurch@axis.com>
 
-But I also hate the idea of waiting on the last umount because that can
-also lead to new unexpected behavior when e.g., the system is shutdown
-and systemd goes on to unmount all things and then suddenly just hangs
-when before it was able to make progress.
-
-And returning EBUSY is tricky as well as we somehow would need to have a
-way to refcount in a manner that let's us differentiate between last-
-"user-visible"-superblock-reference" and
-last-active-superblock-reference which would complicate things even more.
-
-I propose we clearly document that unmounting a frozen filesystem will
-mean that the superblock stays active at least until the filesystem is
-unfrozen.
-
-And if userspace wants to make sure to not recycle such a frozen
-superblock they can now use FSCONFIG_CMD_CREATE_EXCL to detect that.
-
-What might be useful is to extend fanotify. Right now we have
-fsnotify_sb_delete() which lets you detect that a superblock has been
-destroyed (generic_shutdown_super()). It could be useful to also get
-notified when a superblock is frozen and unfrozen?
