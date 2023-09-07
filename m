@@ -2,98 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4358F797982
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB482797904
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 19:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234211AbjIGRQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 13:16:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53608 "EHLO
+        id S240353AbjIGRAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 13:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242144AbjIGRQK (ORCPT
+        with ESMTP id S240202AbjIGRAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 13:16:10 -0400
-Received: from out203-205-221-231.mail.qq.com (out203-205-221-231.mail.qq.com [203.205.221.231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D5694;
-        Thu,  7 Sep 2023 10:15:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1694106890;
-        bh=pgA+I/1UethBA3kTPM9wHgQdSRMpsBbEzyngE18JA8E=;
-        h=From:To:Cc:Subject:Date;
-        b=LBSt+mnZ8f++wfmzxHfkk+dD+BEVDr4oYqB6OUTqXBD/rv1eP8nlVRWFE9cKkOp24
-         Gdkej132D2SLAEjvZwREtm//QNk/6VMC/Wb0dgU33+eeOJYiSkurvH7gczLvaoZvPT
-         RLn0BAzWPNoIn56LVh60WbvtNux4j+TjrHCskA/I=
-Received: from localhost.localdomain.localdomain ([117.61.105.88])
-        by newxmesmtplogicsvrszc2-1.qq.com (NewEsmtp) with SMTP
-        id D722ECB4; Fri, 08 Sep 2023 00:53:50 +0800
-X-QQ-mid: xmsmtpt1694105630ti09a7drb
-Message-ID: <tencent_3373B90C5A9E646DDCF91C0D8CAD2184BC0A@qq.com>
-X-QQ-XMAILINFO: MBjwNRQMz5zUjCcz/6jhtF96ZPHh72CPUDwiLARk8gXh0pPNgvMiPCwmZKKMYd
-         eFuaCPEelFaBcCCA3CZzhdwuGJw/5vsHTl1t0QFq1S7YCRIJSGf/PGcNygBTIhPI6mOL+Vvj2VMl
-         Qj60MEdcQ9q0hK1pCtMbA5no+bdEPpmrNrygpdysatUHc2SBWHuoa5f2hq5C4wp+VIEGjTxWqCnD
-         SNFL5qjvPRYTVsH/r52P1mFeM4VyuAvSMHp3UCEOuY2VQp11VLZ5VZqaAQiM/uvXpBP6e1On540f
-         Goep+edpLiHyOG3CseXy2dsqsFmO59YQJ/CQiNcsmebme7/ONYaQ5g8A9F2vx4+S3DDfTQcP7dDP
-         CZB1DXdZdnSuMalfKF1LPoipnVUcqD1/0s+UkTZn/UvoEd1dFn6oDF7Anl1mx0Fyt2a/8ZNMqz4h
-         g2IfO0+MCIUAzvofsAsaYjb4igROkU+Krg6F71UiTqHQWM1KSo+2Vdp8SB96wjywNKmJPS3YP1it
-         ajbgHG6ORMpYjUvp0V+TX5JsepCRyPp3P+sI8cUsKSFsvS155LM07FWa50zn6tTvMLN+NWktWRVT
-         ZhJNUXz5TGKVY9cbLptn2CE56x7I1Pt4infc792+yXBumC4i00ynudvCol3WXAHTBbC6QGB3hb4I
-         rL1Hb9Kbque8/gYBCxX37cWjF/E3zhHDGjMrVvaf618VPlZ4srI8PJMO/yAW72H28KiD/ZcjU2CW
-         W0azm17BeyDgWLMgANQgXPT1T/wON5T0Oja+2ls7T0e+nCbWAGsH+gSxDkCeA8rz6rL3TpXFqSye
-         thdUx1arY77fr3CC9KL2h4wf2lYjIB6MiI1zHSUJuiFl6gbpdDL0MmqJ9YvYrxjrBmw5x55xfNFa
-         AAAJk7iS7p4U4qyB+PI0Gm3cYW2QVElvDYrFbByEdf3v71WjaS42MujLEnKizO2akuiwhnqXqVoE
-         jclVRj2DrylAF74pNde1PTlIs5R3HssAgu/W/RS+PBda6LyrygH0drDuMzIacot8kLFFRl4zZiIj
-         imCDRtt0M/LCV3loTA6it8PGRA95tm4kcSV5rFMA==
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-From:   Yan Zhu <zhuyan2015@foxmail.com>
-To:     zohar@linux.ibm.com
-Cc:     dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yan Zhu <zhuyan2015@foxmail.com>
-Subject: [PATCH] ima: fix return value of ima_restore_measurement_list
-Date:   Fri,  8 Sep 2023 00:53:49 +0800
-X-OQ-MSGID: <20230907165349.8770-1-zhuyan2015@foxmail.com>
-X-Mailer: git-send-email 2.33.0
+        Thu, 7 Sep 2023 13:00:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 663C51FFA;
+        Thu,  7 Sep 2023 09:59:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7020EC433BF;
+        Thu,  7 Sep 2023 16:58:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694105901;
+        bh=9H8krLtYfLzgGeA5i0zuj9qgIuh5eWibHtX4rliuuxQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HZSOww+G/B17lm44Q4pK901JIvTJ+z2HSd8QVDZnTmfMHtw4A/FdMMdg0G9fWUG8n
+         VgwoarbRzt5ypjQeRKWF1UtKEO/iIScBixMwuctbelX+fXPN7iNwDDQkBf/gnAUYkx
+         mf6r1j0bJ0GDOXTs7goJT5QasJ1jlDe/wPpJKZAcuzxHRagM7PMKEn32dCanO0a57H
+         BtndR0lM1QbhEN3hLC1d6wDNm0i/GQHtxpbo5HFx1mhzL5rO/aiEqNINT5VrCu3Wi8
+         xES8vBcm83QU9L+UKQa6B4ed3Ba6vkmpyDuJT0GGJXIAZvb3mgxws/PkYis79hfx4E
+         V0qByRzTyJTSg==
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so20219491fa.2;
+        Thu, 07 Sep 2023 09:58:21 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yw95Z9lY3YgVvxcddr3uL29CEkVHg8KuUKJ8n1JDUln1Rz0g6yB
+        asx6LKCtsna8AI/lpTpCt1CdsT+pyTtnaWMbfQ==
+X-Google-Smtp-Source: AGHT+IHLKsGi67L1BWMr0evQdFmmKrCxPICw4WCCL86IJN0XnEYKyZyPOVddUmJXTpGASiUH1k4Vzk7Q+KRVgc7tkH4=
+X-Received: by 2002:a2e:965a:0:b0:2bc:b815:d64d with SMTP id
+ z26-20020a2e965a000000b002bcb815d64dmr5383234ljh.30.1694105899386; Thu, 07
+ Sep 2023 09:58:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+References: <20230830231758.2561402-1-sjg@chromium.org> <20230830231758.2561402-4-sjg@chromium.org>
+In-Reply-To: <20230830231758.2561402-4-sjg@chromium.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 7 Sep 2023 11:58:07 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKEbqUtWHpHXmiDSZBY7-Nw4-fLs23BEqomBevSDNBprQ@mail.gmail.com>
+Message-ID: <CAL_JsqKEbqUtWHpHXmiDSZBY7-Nw4-fLs23BEqomBevSDNBprQ@mail.gmail.com>
+Subject: Re: [PATCH v5 4/4] memory: Add ECC properties
+To:     Simon Glass <sjg@chromium.org>
+Cc:     devicetree@vger.kernel.org,
+        Maximilian Brune <maximilian.brune@9elements.com>,
+        ron minnich <rminnich@gmail.com>,
+        Tom Rini <trini@konsulko.com>,
+        Dhaval Sharma <dhaval@rivosinc.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Yunhui Cui <cuiyunhui@bytedance.com>,
+        linux-acpi@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Gua Guo <gua.guo@intel.com>,
+        Lean Sheng Tan <sheng.tan@9elements.com>,
+        Guo Dong <guo.dong@intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Chiu Chasel <chasel.chiu@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the function restore_template_fmt returns NULL due to insufficient
-memory, the ima_restore_measurement_list function will exit and the IMA
-measurement list recovery fails. However, since the return value of
-ima_restore_measurement_list is 0, there will be no prompt for IMA
-measurement list recovery failure in ima_load_kexec_buffer, which can
-easily cause misunderstandings for users.
+On Wed, Aug 30, 2023 at 6:18=E2=80=AFPM Simon Glass <sjg@chromium.org> wrot=
+e:
+>
+> Some memories provide ECC detection and/or correction. For software which
+> wants to check memory, it is helpful to see which regions provide this
+> feature.
+>
+> Add this as a property of the /memory nodes, since it presumably follows
+> the hardware-level memory system.
+>
+> Signed-off-by: Simon Glass <sjg@chromium.org>
+> ---
+>
+> Changes in v5:
+> - Redo to make this property specific to ECC
+> - Provide properties both for detection and correction
+>
+> Changes in v3:
+> - Add new patch to update the /memory nodes
+>
+>  dtschema/schemas/memory.yaml | 30 ++++++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+>
+> diff --git a/dtschema/schemas/memory.yaml b/dtschema/schemas/memory.yaml
+> index 1d74410..944aa9f 100644
+> --- a/dtschema/schemas/memory.yaml
+> +++ b/dtschema/schemas/memory.yaml
+> @@ -34,7 +34,37 @@ patternProperties:
+>          description:
+>            For the purpose of identification, each NUMA node is associate=
+d with
+>            a unique token known as a node id.
+> +      ecc-detection:
+> +        $ref: /schemas/types.yaml#/definitions/string
+> +        enum:
+> +          - none
+> +          - single-bit
+> +          - multi-bit
+> +        description: |
+> +          If present, this inidcates the type of memory errors which can=
+ be
 
-Signed-off-by: Yan Zhu <zhuyan2015@foxmail.com>
----
- security/integrity/ima/ima_template.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+typo
 
-diff --git a/security/integrity/ima/ima_template.c b/security/integrity/ima/ima_template.c
-index 04c49f0..1b030cd 100644
---- a/security/integrity/ima/ima_template.c
-+++ b/security/integrity/ima/ima_template.c
-@@ -489,8 +489,10 @@ int ima_restore_measurement_list(loff_t size, void *buf)
- 		template_desc = lookup_template_desc(template_name);
- 		if (!template_desc) {
- 			template_desc = restore_template_fmt(template_name);
--			if (!template_desc)
-+			if (!template_desc) {
-+				ret = -ENOMEM;
- 				break;
-+			}
- 		}
- 
- 		/*
--- 
-2.33.0
+> +          detected and reported by the Error-Correction Code (ECC) memor=
+y
+> +          subsystem:
+>
+> +            none       - No error detection is possible
+> +            single-bit - Detects and reports single-bit ECC errors
+> +            multi-bit  - Detects and reports multiple-bit ECC errors
 
+I don't think 'multi' is specific enough. Perhaps this should be an
+int instead with how many bits. (And '-bits' is a standard unit suffix
+so a type isn't needed)
+
+> +
+> +          If not present, this is equivalent to 'none'.
+
+Can be expressed as schema:
+
+default: none
+
+Though if that's the default why have it as a value? (It's fine though)
+
+> +      ecc-correction:
+> +        $ref: /schemas/types.yaml#/definitions/string
+> +        enum:
+> +          - none
+> +          - single-bit
+> +          - multi-bit
+> +        description: |
+> +          If present, this inidcates the type of memory errors which can=
+ be
+
+typo
+
+> +          corrected by the Error-Correction Code (ECC) memory subsystem:
+> +
+> +            none       - No error correction is possible
+> +            single-bit - Corrects single-bit ECC errors
+> +            multi-bit  - Corrects multiple-bit ECC errors
+> +
+> +          If not present, this is equivalent to 'none'.
+
+One issue is with 2 properties nonsensical combinations are allowed.
+Not really any way to handle that in the schema though.
+
+Rob
