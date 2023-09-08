@@ -2,102 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDB4798820
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 15:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E2D798826
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 15:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243256AbjIHNug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 09:50:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
+        id S241732AbjIHNxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 09:53:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbjIHNuf (ORCPT
+        with ESMTP id S231410AbjIHNxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 09:50:35 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B361BC6
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 06:50:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=LbgxR6XC8LYMVBzfsv+O9qJkpfwcf2slpkIZbcLgfOw=; b=amB6TIzYbCI8yf9vGXczOH6gAb
-        Necd/KYkOmHfQ8ShgSY+zaCPtTpDolSDpVYcgB0Cxgc967lR9v0sUO0K1oyH3at2+B8T23Ty2llYU
-        qZalkl5ChML9LfUaG7ZDMjiUJFL7OTq/LrGs0Di+oblw2xGfDKfhCaymtM0ErZyPUcz27rf7oBn1A
-        GM1LrIzFPqsJQWTrrzwvc6IqnrF0pr2ZUJgtLG1fn3wkRvJVaN6Z6p5eBIsICRxIPSrLEdZCUSS0H
-        AMOV0UMv3c7zQY7CFUGDALXmUgOldxAa2fdUsX4UfJOcpU16jTr2s538brGD+AVocsrlL5c6h00bN
-        xrdiy3KA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36590)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qebs9-00050u-2n;
-        Fri, 08 Sep 2023 14:50:09 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qebs1-0006wF-Av; Fri, 08 Sep 2023 14:50:01 +0100
-Date:   Fri, 8 Sep 2023 14:50:01 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Zhizhou Zhang <zhizhou.zh@gmail.com>, rppt@kernel.org,
-        akpm@linux-foundation.org, vishal.moola@gmail.com, arnd@arndb.de,
-        wangkefeng.wang@huawei.com, willy@infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Zhizhou Zhang <zhizhouzhang@asrmicro.com>
-Subject: Re: [PATCH] ARM: mm: fix stack corruption when CONFIG_ARM_PV_FIXUP=y
-Message-ID: <ZPsmiV9I4qbqpAsO@shell.armlinux.org.uk>
-References: <20230907143302.4940-1-zhizhou.zh@gmail.com>
- <CACRpkdY=EYQfRrUaw5JL5e0x2p=KurYfwvfunJ+GF1PmupKNqg@mail.gmail.com>
+        Fri, 8 Sep 2023 09:53:47 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24321BF5
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 06:53:42 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bcbfb3705dso34813811fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 06:53:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1694181221; x=1694786021; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sk5RLnrnvhNAIkRA+BMVhrpIi3v+xSod2h+zzv+FwRU=;
+        b=E6FTV/ARJc1sPI9xs3Qz7wXyJCizcsvUj/Wqt9MiNd/8fi3EG1YvRDeDLltZ+AFy1K
+         Z2KENS9zv9mjSmuhv8Jws2d5an3r72iIMpyLeTY1bbe2u+HXIJIYitAqHBv2CLTd6PJh
+         VYW+0TSsh+ibTgejXdch2PBNU9ufU3gNCksdw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694181221; x=1694786021;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sk5RLnrnvhNAIkRA+BMVhrpIi3v+xSod2h+zzv+FwRU=;
+        b=H41C9Z53IkJl4q6kvmGxaHEgYQVz5guWSh5hFsJFGeU0gznPc2BpBMraMb5nt4ako7
+         FM6KUeWzeLLXB4H4tEIvChgoDIKm7x+dhITBmNKpSiZ7cY0B9MmRzDLs2GpQPwnd0FvY
+         SpCihOro3EoV4SjvSreT2RmekhKaZy0DVxB8nN5b+JKSBunw6dRVGfTJ2w11tSi0SfbX
+         eJx5t9aCBmEJGapkUIJgRRvz15nxYigCxERdto7ESUPbkTSyzAg4gi924K18qlf/cYKJ
+         VDQ8j3ssxKOL0MqwmH9U8539oWYEyekHfyRnMM6j8c9YIWTPE/xEyQoPG3QLQEbfO3fx
+         2CtQ==
+X-Gm-Message-State: AOJu0YwnHki6GV9xUVQRCjFlufFrvAdl4CXUrEg2mBplbPZJJ3B3NGb0
+        w/Z7ZUg7Be8FSrsypZ+lVHFwdrbxAWAeXHlsPn6RHw==
+X-Google-Smtp-Source: AGHT+IEIHTIzxn4/TggJPFsx2XF99VqeSdnxqqoXJAUrJV1HapjE/VT2B66m9pwyvnmkKIa4qoDwrI1qc7nClGYo53s=
+X-Received: by 2002:a2e:86c4:0:b0:2bd:beb:4aca with SMTP id
+ n4-20020a2e86c4000000b002bd0beb4acamr1950228ljj.13.1694181220873; Fri, 08 Sep
+ 2023 06:53:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdY=EYQfRrUaw5JL5e0x2p=KurYfwvfunJ+GF1PmupKNqg@mail.gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+References: <20230908033047.2537010-1-joel@joelfernandes.org> <df66924b-d484-457f-8c79-21aadc4c13ec@paulmck-laptop>
+In-Reply-To: <df66924b-d484-457f-8c79-21aadc4c13ec@paulmck-laptop>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 8 Sep 2023 09:53:30 -0400
+Message-ID: <CAEXW_YTjDM9LWKiupgOXwfsz7RnNT24UEQ=RZB+3n1VdJRNqvw@mail.gmail.com>
+Subject: Re: [PATCH v2] rcu/torture: Improve badness extraction from console logs
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 02:58:49PM +0200, Linus Walleij wrote:
-> Hi Zhizhou,
-> 
-> wow a great patch! I'm surprised no-one has been hit by this before.
-> I guess we were lucky.
-> 
-> On Thu, Sep 7, 2023 at 4:33 PM Zhizhou Zhang <zhizhou.zh@gmail.com> wrote:
-> 
-> > From: Zhizhou Zhang <zhizhouzhang@asrmicro.com>
+On Fri, Sep 8, 2023 at 8:08=E2=80=AFAM Paul E. McKenney <paulmck@kernel.org=
+> wrote:
+>
+> On Fri, Sep 08, 2023 at 03:30:46AM +0000, Joel Fernandes (Google) wrote:
+> > Currently console.log.diags contains an output like follows:
+> > [ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_t=
+asks_trace_pregp_step+0x4a/0x50
+> > [ 2457.542385] Call Trace:
 > >
-> > flush_cache_all() save registers to stack at function entry.
-> > If it's called after cache disabled, the data is written to
-> > memory directly. So the following clean cache operation corrupted
-> > registers saved by flush_cache_all(), including lr register.
-> > calling flush_cache_all() before turn off cache fixed the problem.
+> > This is not very useful and easier access to the call trace is desired.
+> > Improve the script by extracting more lines after each grep match.
+> > Provide a summary in the beginning like before, but also include detail=
+s
+> > below. Limit the total number of issues to a maximum of 10. And limit
+> > the lines included after each issue to a maximum of 20.
+>
+> Much better!
+>
+> The above commit log would be better something as follows:
+
+Looks good to me, I will update it to use your version, thanks.
+
+> ------------------------------------------------------------------------
+>
+> Plus please see one simplification below.
+>
+>                                                         Thanx, Paul
+>
+> > With these changes the output becomes:
 > >
-> > Signed-off-by: Zhizhou Zhang <zhizhouzhang@asrmicro.com>
-> 
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-> I would also add
-> Cc: stable@vger.kernel.org
-> 
-> Then please put this into Russell's patch tracker once review
-> is complete.
+> > Issues found:
+> > Line 6228: [ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h=
+:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
+> > Line 6245: [ 2457.542385] Call Trace:
+> >
+[...]
+> >
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> > v1->v2: Limit number of issues reported and include summary on the top.
+> >
+> >  .../rcutorture/bin/console-badness.sh         | 42 ++++++++++++++++++-
+> >  1 file changed, 41 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/rcutorture/bin/console-badness.sh =
+b/tools/testing/selftests/rcutorture/bin/console-badness.sh
+> > index aad51e7c0183..2612a4931723 100755
+> > --- a/tools/testing/selftests/rcutorture/bin/console-badness.sh
+> > +++ b/tools/testing/selftests/rcutorture/bin/console-badness.sh
+> > @@ -9,10 +9,50 @@
+> >  # Copyright (C) 2020 Facebook, Inc.
+> >  #
+> >  # Authors: Paul E. McKenney <paulmck@kernel.org>
+> > +INPUT_DATA=3D$(< /dev/stdin)
+>
+> Long runs can have extremely large console.log files, which might not
+> play well with shell variables.  So this really needs to go into a file.
 
-However, it makes a total nonsense of the comment, which explains
-precisely why the flush_cache_all() is where it is. Moving it before
-that comment means that the comment is now rediculous.
+Thanks a lot for this feedback. Just for completeness -- it is the
+grepped lines (containing bad strings) that go into a shell variable,
+not the whole file. That can still be quite large so your suggestion
+is well taken and I will make the changes as you suggested!
 
-So, please don't put it in the patch system.
+[...]
+> One issue here is that if a number of badness strings occur in console.lo=
+g
+> in quick succession, there will be overlapping output, as in a given line
+> from console.log might be printed many times.  For example, "WARNING"
+> is often almost immediately followed by "Call Trace".
+>
+> In that case, is there a nice way to print the lines starting with the
+> line containing "WARNING" though the 20 lines following "Call Trace"?
 
-The patch certainly needs to be tested on TI Keystone which is the
-primary user of this code.
+Yes, maybe I can coalesce them somehow since we do have the line
+numbers. Thanks for the suggestion! I did notice that too but now that
+you mention, I will improve on that.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Will post another version soon, thanks!
+
+ - Joel
