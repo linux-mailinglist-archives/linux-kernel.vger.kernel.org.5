@@ -2,74 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAF67985C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE5C7985E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243075AbjIHKYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 06:24:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48278 "EHLO
+        id S238610AbjIHKdO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Sep 2023 06:33:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232585AbjIHKYy (ORCPT
+        with ESMTP id S229686AbjIHKdM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 06:24:54 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60DB212D;
-        Fri,  8 Sep 2023 03:24:23 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3889kc3U027822;
-        Fri, 8 Sep 2023 10:22:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=9nZFEAV0AeHreRBRxKAyau56XXjNe94bEf0a+siu2Bk=;
- b=WGpGfZwZupSgW4T17hiV2WY0vpVOB9JZMXb96PQMhHr57qryniaIV4QpsvWhdRXVIpM1
- bKpKkNcxVOGosRxG05LpUTsWLM2WYYmu0p1qKiKw/dVF0unxJmoJfmAuy6zJp7udta5p
- hIJsklH0fQbwUOYsSP4lodguCy4VpXJMpayohxeX7Oiksm6prDIvby/mZPMLgESM0au3
- nUEsOWOlYm+IuScRyv2dKBboUHjscggjx5kluuOMfNsFLaiyWpheVfG5Lwy9ENYAGmiJ
- puEtS2MQrNqnmt3o+zkDsQJacujKkGZvA+xSSHhHUJasAeAU+4hA/q+7brEV1w91c49Y Kw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3syfj2jb3y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Sep 2023 10:22:48 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 388AMlh8003373
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 8 Sep 2023 10:22:47 GMT
-Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Fri, 8 Sep 2023 03:22:42 -0700
-Date:   Fri, 8 Sep 2023 15:52:39 +0530
-From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
-To:     Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-CC:     <mani@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>, <quic_charante@quicinc.com>,
-        <quic_kaushalk@quicinc.com>
-Subject: Re: [PATCH] mtd: nand: qcom: Fix the node for nand unmap resource
-Message-ID: <ff77c3ce-d635-4501-8348-5b7adff9a16c@quicinc.com>
-References: <20230907092854.11408-1-quic_bibekkum@quicinc.com>
+        Fri, 8 Sep 2023 06:33:12 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A618819A6;
+        Fri,  8 Sep 2023 03:33:08 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qeYe3-000myC-V2; Fri, 08 Sep 2023 12:23:23 +0200
+Received: from p5b13a40a.dip0.t-ipconnect.de ([91.19.164.10] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qeYe3-0026GM-Na; Fri, 08 Sep 2023 12:23:23 +0200
+Message-ID: <b07d08b4c120ffdbadba6fd341aca5c63ff3275e.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH 4/4] sh: machvec: remove custom ioport_{un,}map()
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-sh@vger.kernel.org, Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 08 Sep 2023 12:23:23 +0200
+In-Reply-To: <20230802184849.1019466-4-arnd@kernel.org>
+References: <20230802184849.1019466-1-arnd@kernel.org>
+         <20230802184849.1019466-4-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230907092854.11408-1-quic_bibekkum@quicinc.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: DYbq0Ijztn-nkGYiY9lrL4ApwxS6FMud
-X-Proofpoint-GUID: DYbq0Ijztn-nkGYiY9lrL4ApwxS6FMud
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-08_07,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- priorityscore=1501 clxscore=1011 impostorscore=0 spamscore=0 bulkscore=0
- malwarescore=0 lowpriorityscore=0 suspectscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309080095
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.164.10
+X-ZEDAT-Hint: PO
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,48 +55,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 02:58:54PM +0530, Bibek Kumar Patro wrote:
-> While unmapping the nand resource in case of err_core_clk
-> the dev node being passed is res_start instead of nand->dma_base
-
-It is not not dev not but addr argument.
-
-> (where the iova returned from map operation is stored) causing
-> failure in unmap operation. Hence modifying the unmap operation
-> to pass the nand->base_dma instead of res_start.
+On Wed, 2023-08-02 at 20:48 +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-
-Pls simplify this commit description. I think, it was a simple copy/paste
-mistake. I would write
-
-"Fix addr argument to dma_unmap_resource() in the error path of probe.
-The addr argument should be dma address not physical address."
-
-> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+> These functions were only used on the microdev
+> board that is now gone, so remove them to simplify
+> the ioport handling.
+> 
+> This could be further simplified to use the generic
+> I/O port accessors now.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/sh/include/asm/io.h      |  4 ++--
+>  arch/sh/include/asm/machvec.h |  5 -----
+>  arch/sh/kernel/ioport.c       | 13 +------------
+>  3 files changed, 3 insertions(+), 19 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> index f583022755a2..e085a0f588eb 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -3322,7 +3322,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
->  err_aon_clk:
->  	clk_disable_unprepare(nandc->core_clk);
->  err_core_clk:
-> -	dma_unmap_resource(dev, res->start, resource_size(res),
-> +	dma_unmap_resource(dev, nandc->base_dma, resource_size(res),
->  			   DMA_BIDIRECTIONAL, 0);
->  	dev_err(&pdev->dev, "DEBUG: probe failed for nandc module\n");
->  	return ret;
+> diff --git a/arch/sh/include/asm/io.h b/arch/sh/include/asm/io.h
+> index f2f38e9d489ac..ac521f287fa59 100644
+> --- a/arch/sh/include/asm/io.h
+> +++ b/arch/sh/include/asm/io.h
+> @@ -181,7 +181,7 @@ static inline void pfx##out##bwlq##p(type val, unsigned long port)	\
+>  {									\
+>  	volatile type *__addr;						\
+>  									\
+> -	__addr = __ioport_map(port, sizeof(type));			\
+> +	__addr = (void __iomem *)sh_io_port_base + port;		\
+>  	*__addr = val;							\
+>  	slow;								\
+>  }									\
+> @@ -191,7 +191,7 @@ static inline type pfx##in##bwlq##p(unsigned long port)			\
+>  	volatile type *__addr;						\
+>  	type __val;							\
+>  									\
+> -	__addr = __ioport_map(port, sizeof(type));			\
+> +	__addr = (void __iomem *)sh_io_port_base + port;		\
+>  	__val = *__addr;						\
+>  	slow;								\
+>  									\
+> diff --git a/arch/sh/include/asm/machvec.h b/arch/sh/include/asm/machvec.h
+> index 2b4b085e8f219..4e5314b921f19 100644
+> --- a/arch/sh/include/asm/machvec.h
+> +++ b/arch/sh/include/asm/machvec.h
+> @@ -19,11 +19,6 @@ struct sh_machine_vector {
+>  	int (*mv_irq_demux)(int irq);
+>  	void (*mv_init_irq)(void);
+>  
+> -#ifdef CONFIG_HAS_IOPORT_MAP
+> -	void __iomem *(*mv_ioport_map)(unsigned long port, unsigned int size);
+> -	void (*mv_ioport_unmap)(void __iomem *);
+> -#endif
+> -
+>  	int (*mv_clk_init)(void);
+>  	int (*mv_mode_pins)(void);
+>  
+> diff --git a/arch/sh/kernel/ioport.c b/arch/sh/kernel/ioport.c
+> index f39446a658bdb..c8aff8a20164d 100644
+> --- a/arch/sh/kernel/ioport.c
+> +++ b/arch/sh/kernel/ioport.c
+> @@ -12,15 +12,6 @@
+>  unsigned long sh_io_port_base __read_mostly = -1;
+>  EXPORT_SYMBOL(sh_io_port_base);
+>  
+> -void __iomem *__ioport_map(unsigned long addr, unsigned int size)
+> -{
+> -	if (sh_mv.mv_ioport_map)
+> -		return sh_mv.mv_ioport_map(addr, size);
+> -
+> -	return (void __iomem *)(addr + sh_io_port_base);
+> -}
+> -EXPORT_SYMBOL(__ioport_map);
+> -
+>  void __iomem *ioport_map(unsigned long port, unsigned int nr)
+>  {
+>  	void __iomem *ret;
+> @@ -29,13 +20,11 @@ void __iomem *ioport_map(unsigned long port, unsigned int nr)
+>  	if (ret)
+>  		return ret;
+>  
+> -	return __ioport_map(port, nr);
+> +	return (void __iomem *)(port + sh_io_port_base);
+>  }
+>  EXPORT_SYMBOL(ioport_map);
+>  
+>  void ioport_unmap(void __iomem *addr)
+>  {
+> -	if (sh_mv.mv_ioport_unmap)
+> -		sh_mv.mv_ioport_unmap(addr);
+>  }
+>  EXPORT_SYMBOL(ioport_unmap);
 
-Since you are fixing a bug introduced by a previous commit, you should
-add Fixes tag like below. Refer to Documentation [1].
+Reviewed-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 
-Fixes: 7330fc505af4 ("mtd: rawnand: qcom: stop using phys_to_dma()")
-
-[1] https://docs.kernel.org/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
-
-Thanks,
-Pavan
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
