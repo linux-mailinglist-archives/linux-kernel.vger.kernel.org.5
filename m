@@ -2,52 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A0F798C78
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9D5798C61
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343613AbjIHSQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:16:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60192 "EHLO
+        id S243106AbjIHSPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234868AbjIHSQd (ORCPT
+        with ESMTP id S231297AbjIHSPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:16:33 -0400
+        Fri, 8 Sep 2023 14:15:18 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED35B212C;
-        Fri,  8 Sep 2023 11:16:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25167C433B7;
-        Fri,  8 Sep 2023 18:03:47 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A642101;
+        Fri,  8 Sep 2023 11:14:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E1E8C433A9;
+        Fri,  8 Sep 2023 18:03:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196228;
-        bh=Z8jMNZqZI+xq24lkZ695Dl+JDwo18OcYpFoIJOVram0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pjite3g+uZwC2teNRMrOszjh/hIvfvk6ODMngGMPrW+ufDxzzpi4zYiluanDV/cYd
-         s3imFyVwG85HuXTFg9ikdVDgCnkSUDhxYSjfwf/rVgam/njhz7umDz+gRujoHgyYYP
-         F0ZNV1TXyFZP2N6Zf8/t9FG14sRgV8kyWyuOeWDfuuTLe6VuM5xA9/Zw7cywj3x4nY
-         vUu0ZELwXddlbJO6+7JZggTktxOixrqYS/6l84nh6oXkSXNpR+9gbUQaFXx4Cdoc9e
-         MkjY3Ry/MfL7LvdTJDH5vRwQQc4qKHeEkmspva4bCm6ZnMJ0S1+1LDUeE/pUT6Cmv9
-         HlbHEZDvUBd1w==
+        s=k20201202; t=1694196234;
+        bh=vZl+8phB6IeWXFM113V7Mpk0D1HiT3O6dryRdte61GU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VucLscmHwDi3ap8Tma3joGowZGHNP/mS2DCxHJiGmpNj6mW91JQlguDxxtCtIZB5u
+         B2AEu8EvtUfV5C1suzC5xvNkm/EtOGO+o9/63WY764X3L7H3Z9+M9A1PUEUifM4uBt
+         5S0IDXZda79rP9z1h8/4G2zpwZxAdkZykDnmYb1sEhPlNdevQ+aCvmVYqjEDAWZ8KT
+         vyod5gQFCN06fx0agxxSN1eMvZJj3qAEZbfjY0wz+KO1NY5EIlhoFTUNgCSa/m02PH
+         QoG2i4XV6Af1B5FL7ARmnspxWxBJOrQigUuo6eI1xI0rIBgN9HoSETMRRGPv+mM8uZ
+         8TUrqDKC6pjUA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tomislav Novak <tnovak@meta.com>,
-        Samuel Gosselin <sgosselin@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        mark.rutland@arm.com, linux@armlinux.org.uk, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 8/8] hw_breakpoint: fix single-stepping when using bpf_overflow_handler
-Date:   Fri,  8 Sep 2023 14:03:19 -0400
-Message-Id: <20230908180320.3458596-8-sashal@kernel.org>
+Cc:     Abhishek Mainkar <abmainkar@nvidia.com>,
+        Bob Moore <robert.moore@intel.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>, linux-acpi@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org
+Subject: [PATCH AUTOSEL 5.4 1/5] ACPICA: Add AML_NO_OPERAND_RESOLVE flag to Timer
+Date:   Fri,  8 Sep 2023 14:03:47 -0400
+Message-Id: <20230908180352.3458731-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908180320.3458596-1-sashal@kernel.org>
-References: <20230908180320.3458596-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.194
+X-stable-base: Linux 5.4.256
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -58,148 +52,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomislav Novak <tnovak@meta.com>
+From: Abhishek Mainkar <abmainkar@nvidia.com>
 
-[ Upstream commit d11a69873d9a7435fe6a48531e165ab80a8b1221 ]
+[ Upstream commit 3a21ffdbc825e0919db9da0e27ee5ff2cc8a863e ]
 
-Arm platforms use is_default_overflow_handler() to determine if the
-hw_breakpoint code should single-step over the breakpoint trigger or
-let the custom handler deal with it.
+ACPICA commit 90310989a0790032f5a0140741ff09b545af4bc5
 
-Since bpf_overflow_handler() currently isn't recognized as a default
-handler, attaching a BPF program to a PERF_TYPE_BREAKPOINT event causes
-it to keep firing (the instruction triggering the data abort exception
-is never skipped). For example:
+According to the ACPI specification 19.6.134, no argument is required to be passed for ASL Timer instruction. For taking care of no argument, AML_NO_OPERAND_RESOLVE flag is added to ASL Timer instruction opcode.
 
-  # bpftrace -e 'watchpoint:0x10000:4:w { print("hit") }' -c ./test
-  Attaching 1 probe...
-  hit
-  hit
-  [...]
-  ^C
+When ASL timer instruction interpreted by ACPI interpreter, getting error. After adding AML_NO_OPERAND_RESOLVE flag to ASL Timer instruction opcode, issue is not observed.
 
-(./test performs a single 4-byte store to 0x10000)
+=============================================================
+UBSAN: array-index-out-of-bounds in acpica/dswexec.c:401:12 index -1 is out of range for type 'union acpi_operand_object *[9]'
+CPU: 37 PID: 1678 Comm: cat Not tainted
+6.0.0-dev-th500-6.0.y-1+bcf8c46459e407-generic-64k
+HW name: NVIDIA BIOS v1.1.1-d7acbfc-dirty 12/19/2022 Call trace:
+ dump_backtrace+0xe0/0x130
+ show_stack+0x20/0x60
+ dump_stack_lvl+0x68/0x84
+ dump_stack+0x18/0x34
+ ubsan_epilogue+0x10/0x50
+ __ubsan_handle_out_of_bounds+0x80/0x90
+ acpi_ds_exec_end_op+0x1bc/0x6d8
+ acpi_ps_parse_loop+0x57c/0x618
+ acpi_ps_parse_aml+0x1e0/0x4b4
+ acpi_ps_execute_method+0x24c/0x2b8
+ acpi_ns_evaluate+0x3a8/0x4bc
+ acpi_evaluate_object+0x15c/0x37c
+ acpi_evaluate_integer+0x54/0x15c
+ show_power+0x8c/0x12c [acpi_power_meter]
 
-This patch replaces the check with uses_default_overflow_handler(),
-which accounts for the bpf_overflow_handler() case by also testing
-if one of the perf_event_output functions gets invoked indirectly,
-via orig_default_handler.
-
-Signed-off-by: Tomislav Novak <tnovak@meta.com>
-Tested-by: Samuel Gosselin <sgosselin@google.com> # arm64
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/linux-arm-kernel/20220923203644.2731604-1-tnovak@fb.com/
-Link: https://lore.kernel.org/r/20230605191923.1219974-1-tnovak@meta.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Link: https://github.com/acpica/acpica/commit/90310989
+Signed-off-by: Abhishek Mainkar <abmainkar@nvidia.com>
+Signed-off-by: Bob Moore <robert.moore@intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kernel/hw_breakpoint.c   |  8 ++++----
- arch/arm64/kernel/hw_breakpoint.c |  4 ++--
- include/linux/perf_event.h        | 22 +++++++++++++++++++---
- 3 files changed, 25 insertions(+), 9 deletions(-)
+ drivers/acpi/acpica/psopcode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/kernel/hw_breakpoint.c b/arch/arm/kernel/hw_breakpoint.c
-index b1423fb130ea4..8f1fa7aac31fb 100644
---- a/arch/arm/kernel/hw_breakpoint.c
-+++ b/arch/arm/kernel/hw_breakpoint.c
-@@ -626,7 +626,7 @@ int hw_breakpoint_arch_parse(struct perf_event *bp,
- 	hw->address &= ~alignment_mask;
- 	hw->ctrl.len <<= offset;
+diff --git a/drivers/acpi/acpica/psopcode.c b/drivers/acpi/acpica/psopcode.c
+index 43775c5ce17c5..2f9b226ec4f63 100644
+--- a/drivers/acpi/acpica/psopcode.c
++++ b/drivers/acpi/acpica/psopcode.c
+@@ -603,7 +603,7 @@ const struct acpi_opcode_info acpi_gbl_aml_op_info[AML_NUM_OPCODES] = {
  
--	if (is_default_overflow_handler(bp)) {
-+	if (uses_default_overflow_handler(bp)) {
- 		/*
- 		 * Mismatch breakpoints are required for single-stepping
- 		 * breakpoints.
-@@ -798,7 +798,7 @@ static void watchpoint_handler(unsigned long addr, unsigned int fsr,
- 		 * Otherwise, insert a temporary mismatch breakpoint so that
- 		 * we can single-step over the watchpoint trigger.
- 		 */
--		if (!is_default_overflow_handler(wp))
-+		if (!uses_default_overflow_handler(wp))
- 			continue;
- step:
- 		enable_single_step(wp, instruction_pointer(regs));
-@@ -811,7 +811,7 @@ static void watchpoint_handler(unsigned long addr, unsigned int fsr,
- 		info->trigger = addr;
- 		pr_debug("watchpoint fired: address = 0x%x\n", info->trigger);
- 		perf_bp_event(wp, regs);
--		if (is_default_overflow_handler(wp))
-+		if (uses_default_overflow_handler(wp))
- 			enable_single_step(wp, instruction_pointer(regs));
- 	}
+ /* 7E */ ACPI_OP("Timer", ARGP_TIMER_OP, ARGI_TIMER_OP, ACPI_TYPE_ANY,
+ 			 AML_CLASS_EXECUTE, AML_TYPE_EXEC_0A_0T_1R,
+-			 AML_FLAGS_EXEC_0A_0T_1R),
++			 AML_FLAGS_EXEC_0A_0T_1R | AML_NO_OPERAND_RESOLVE),
  
-@@ -886,7 +886,7 @@ static void breakpoint_handler(unsigned long unknown, struct pt_regs *regs)
- 			info->trigger = addr;
- 			pr_debug("breakpoint fired: address = 0x%x\n", addr);
- 			perf_bp_event(bp, regs);
--			if (is_default_overflow_handler(bp))
-+			if (uses_default_overflow_handler(bp))
- 				enable_single_step(bp, addr);
- 			goto unlock;
- 		}
-diff --git a/arch/arm64/kernel/hw_breakpoint.c b/arch/arm64/kernel/hw_breakpoint.c
-index 712e97c03e54c..e5a0c38f1b5ee 100644
---- a/arch/arm64/kernel/hw_breakpoint.c
-+++ b/arch/arm64/kernel/hw_breakpoint.c
-@@ -654,7 +654,7 @@ static int breakpoint_handler(unsigned long unused, unsigned int esr,
- 		perf_bp_event(bp, regs);
+ /* ACPI 5.0 opcodes */
  
- 		/* Do we need to handle the stepping? */
--		if (is_default_overflow_handler(bp))
-+		if (uses_default_overflow_handler(bp))
- 			step = 1;
- unlock:
- 		rcu_read_unlock();
-@@ -733,7 +733,7 @@ static u64 get_distance_from_watchpoint(unsigned long addr, u64 val,
- static int watchpoint_report(struct perf_event *wp, unsigned long addr,
- 			     struct pt_regs *regs)
- {
--	int step = is_default_overflow_handler(wp);
-+	int step = uses_default_overflow_handler(wp);
- 	struct arch_hw_breakpoint *info = counter_arch_bp(wp);
- 
- 	info->trigger = addr;
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 67a50c78232fe..93dffe2f3fff2 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -1069,15 +1069,31 @@ extern int perf_event_output(struct perf_event *event,
- 			     struct pt_regs *regs);
- 
- static inline bool
--is_default_overflow_handler(struct perf_event *event)
-+__is_default_overflow_handler(perf_overflow_handler_t overflow_handler)
- {
--	if (likely(event->overflow_handler == perf_event_output_forward))
-+	if (likely(overflow_handler == perf_event_output_forward))
- 		return true;
--	if (unlikely(event->overflow_handler == perf_event_output_backward))
-+	if (unlikely(overflow_handler == perf_event_output_backward))
- 		return true;
- 	return false;
- }
- 
-+#define is_default_overflow_handler(event) \
-+	__is_default_overflow_handler((event)->overflow_handler)
-+
-+#ifdef CONFIG_BPF_SYSCALL
-+static inline bool uses_default_overflow_handler(struct perf_event *event)
-+{
-+	if (likely(is_default_overflow_handler(event)))
-+		return true;
-+
-+	return __is_default_overflow_handler(event->orig_overflow_handler);
-+}
-+#else
-+#define uses_default_overflow_handler(event) \
-+	is_default_overflow_handler(event)
-+#endif
-+
- extern void
- perf_event_header__init_id(struct perf_event_header *header,
- 			   struct perf_sample_data *data,
 -- 
 2.40.1
 
