@@ -2,83 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D49B798E9E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7573798EC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244959AbjIHTFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50004 "EHLO
+        id S234845AbjIHTKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240371AbjIHTE7 (ORCPT
+        with ESMTP id S229985AbjIHTKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:04:59 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD281186;
-        Fri,  8 Sep 2023 12:04:53 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6c07e122a78so1651503a34.2;
-        Fri, 08 Sep 2023 12:04:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694199893; x=1694804693; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UgzEk2qkub3asCAutUtOqbBvRUsJGSuCfeMNtvAIVwM=;
-        b=FJOGCGCB1rWwgLejy1eJSrAKT7oaDlakCb7nrgR8fCQpE8Oj+FidKK8wWtkx8v3ckj
-         0Apz6lAqgf850DPPoPgDYz0ZPjV7jaRBeQ7f4tEH0xPG0Z3BMybgsLkL5bj0O4PZnlJw
-         goh55l+yx3/+O1fRRYg9SntvS1GF226cRbaJd5n7XauW8SqzakvR/K259dP8PqYV3QmA
-         Ya2rJ3dQejPQibZIkX0xRiqlSNVne3AuXsMYrXbenVT5DWM2GAbZX9mOlcqSIdp/UzZI
-         rPhULOdas/7Mrja7O5i2X79EUBm5mciX3pzPNEaK3619/J+pAyG5zXabyxy77UgXPjtY
-         ipGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694199893; x=1694804693;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UgzEk2qkub3asCAutUtOqbBvRUsJGSuCfeMNtvAIVwM=;
-        b=JwvET/DCgGcANtoGZaUP3F1uDxT47S2ENtDtBLMRlQ6SHMqGqza7hi5kP9S2Qzu3Ta
-         1Q4TSToy3FpJxHO9N114cPPUD6Eed+y0bXXiImHvJ/2vQJoAoG2uY7XR5513+8lMHSTP
-         XcPaK5UTyVRZA1LEeav+wzMqpq9s+VdBS2yAWYK/gjn84XZ/GN/joO1zb3R4dMS26sZT
-         iO2V0VQv7imueCDBkIrsEwMUQiB7C1EVGSHl1ILZj3/rOGVMNCFbyy0wujxdxzfrvzP3
-         hi+2K9C5hC1PkEGePQtZwScbnYKdzoX6Rwdz5C7gBzAptjDOBq73okMl3maPDthSN6GH
-         Nj2Q==
-X-Gm-Message-State: AOJu0YyWo5m9mkbJZVlmzd4Y/i1ObEkmyqCCws6EfMp/CapW3DHfsduH
-        ZZDp0VOSfyBRaiPrOZevHE/V/qSt98QIr8eNH4g=
-X-Google-Smtp-Source: AGHT+IEdu4UP7K8lWbLtvXhmHQxq55TJqdSAd8r/tdJ+ykZfzJ0WakRKnEo55G5CrGkVndvSpChRcFsGuP/Bjk6j0vk=
-X-Received: by 2002:a05:6830:10da:b0:6b9:2989:c261 with SMTP id
- z26-20020a05683010da00b006b92989c261mr3252569oto.21.1694199892969; Fri, 08
- Sep 2023 12:04:52 -0700 (PDT)
+        Fri, 8 Sep 2023 15:10:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F0FE6F;
+        Fri,  8 Sep 2023 12:10:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694200228; x=1725736228;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ySPdpojXv3pYoGATgCEGL+4UQycRD8t21NYMrxVzrrI=;
+  b=hiCIgb7uQjj6q3L60iXJmK4TM9reN8EFQPPEnD6XqSWuGXl93Z3rO1TJ
+   yta46OFd4L6Z3D68H67xI2HM3qX1a0SxSEfQDeAf44CJnXXjOVV7z/nht
+   mmkvZgs008u8YadoYxX0p9JX33/AS3SbC/KSpqAVJPXqoPVmZUz34zU5/
+   1vFLjASiAPVlT9AQf/bauS7SMk1at3HuRQvQOzVWFRCaEO/J28jRGHYc9
+   5RebRLbx1tijhpBQEQHUDsbWcsqJtni0oPOX0lg6CogZl5Iv4AHa/F4ft
+   aPHqoIlVH5mK8HngdCzqfD/rpPw/oECUziStHjtcE+kE476DBAJZ69mG0
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="377636102"
+X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
+   d="scan'208";a="377636102"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 12:10:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="742609214"
+X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
+   d="scan'208";a="742609214"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 08 Sep 2023 12:10:24 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qegs1-0002XK-36;
+        Fri, 08 Sep 2023 19:10:21 +0000
+Date:   Sat, 9 Sep 2023 03:09:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Gatien Chevallier <gatien.chevallier@foss.st.com>,
+        Olivia Mackall <olivia@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Lionel Debieve <lionel.debieve@foss.st.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Gatien Chevallier <gatien.chevallier@foss.st.com>
+Subject: Re: [PATCH 09/10] hwrng: stm32 - rework power management sequences
+Message-ID: <202309090255.4Ttcm8zy-lkp@intel.com>
+References: <20230908165120.730867-10-gatien.chevallier@foss.st.com>
 MIME-Version: 1.0
-References: <20230818152910.176044-1-cgzones@googlemail.com>
-In-Reply-To: <20230818152910.176044-1-cgzones@googlemail.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Fri, 8 Sep 2023 15:04:42 -0400
-Message-ID: <CAEjxPJ650OQ0VirNwhOiFnbNMR+w8kaxLF4wjY2QGLZ=1Ufgdg@mail.gmail.com>
-Subject: Re: [PATCH] selinux: reject invalid ebitmaps
-To:     =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
-Cc:     selinux@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908165120.730867-10-gatien.chevallier@foss.st.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 11:29=E2=80=AFAM Christian G=C3=B6ttsche
-<cgzones@googlemail.com> wrote:
->
-> Reject ebitmaps with a node containing an empty map or with an incorrect
-> highbit.  Both checks are already performed by userspace, the former
-> since 2008 (patch 13cd4c896068 ("initial import from svn trunk revision
-> 2950")), the latter since v2.7 in 2017 (patch 75b14a5de10a ("libsepol:
-> ebitmap: reject loading bitmaps with incorrect high bit")).
->
-> Signed-off-by: Christian G=C3=B6ttsche <cgzones@googlemail.com>
+Hi Gatien,
 
-Reviewed-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on atorgue-stm32/stm32-next]
+[also build test WARNING on robh/for-next herbert-crypto-2.6/master herbert-cryptodev-2.6/master linus/master v6.5 next-20230908]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Gatien-Chevallier/dt-bindings-rng-introduce-new-compatible-for-STM32MP13x/20230909-005611
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/atorgue/stm32.git stm32-next
+patch link:    https://lore.kernel.org/r/20230908165120.730867-10-gatien.chevallier%40foss.st.com
+patch subject: [PATCH 09/10] hwrng: stm32 - rework power management sequences
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230909/202309090255.4Ttcm8zy-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230909/202309090255.4Ttcm8zy-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309090255.4Ttcm8zy-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/char/hw_random/stm32-rng.c:403:12: warning: 'stm32_rng_runtime_resume' defined but not used [-Wunused-function]
+     403 | static int stm32_rng_runtime_resume(struct device *dev)
+         |            ^~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/char/hw_random/stm32-rng.c:371:12: warning: 'stm32_rng_runtime_suspend' defined but not used [-Wunused-function]
+     371 | static int stm32_rng_runtime_suspend(struct device *dev)
+         |            ^~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/stm32_rng_runtime_resume +403 drivers/char/hw_random/stm32-rng.c
+
+af0d4442dd6813 Lionel Debieve    2019-04-01  370  
+c6a97c42e399ad Daniel Thompson   2015-10-12 @371  static int stm32_rng_runtime_suspend(struct device *dev)
+c6a97c42e399ad Daniel Thompson   2015-10-12  372  {
+d6ba06b8b9a947 Daniel Thompson   2015-10-14  373  	struct stm32_rng_private *priv = dev_get_drvdata(dev);
+f81a08733f43ae Gatien Chevallier 2023-09-08  374  	u32 reg;
+c6a97c42e399ad Daniel Thompson   2015-10-12  375  
+d9494cfe524b05 Gatien Chevallier 2023-09-08  376  	reg = readl_relaxed(priv->base + RNG_CR);
+d9494cfe524b05 Gatien Chevallier 2023-09-08  377  	reg &= ~RNG_CR_RNGEN;
+d9494cfe524b05 Gatien Chevallier 2023-09-08  378  	writel_relaxed(reg, priv->base + RNG_CR);
+d9494cfe524b05 Gatien Chevallier 2023-09-08  379  	clk_disable_unprepare(priv->clk);
+c6a97c42e399ad Daniel Thompson   2015-10-12  380  
+c6a97c42e399ad Daniel Thompson   2015-10-12  381  	return 0;
+c6a97c42e399ad Daniel Thompson   2015-10-12  382  }
+c6a97c42e399ad Daniel Thompson   2015-10-12  383  
+f81a08733f43ae Gatien Chevallier 2023-09-08  384  static int __maybe_unused stm32_rng_suspend(struct device *dev)
+f81a08733f43ae Gatien Chevallier 2023-09-08  385  {
+f81a08733f43ae Gatien Chevallier 2023-09-08  386  	struct stm32_rng_private *priv = dev_get_drvdata(dev);
+f81a08733f43ae Gatien Chevallier 2023-09-08  387  
+f81a08733f43ae Gatien Chevallier 2023-09-08  388  	if (priv->data->has_cond_reset) {
+f81a08733f43ae Gatien Chevallier 2023-09-08  389  		priv->pm_conf.nscr = readl_relaxed(priv->base + RNG_NSCR);
+f81a08733f43ae Gatien Chevallier 2023-09-08  390  		priv->pm_conf.htcr = readl_relaxed(priv->base + RNG_HTCR);
+f81a08733f43ae Gatien Chevallier 2023-09-08  391  	}
+f81a08733f43ae Gatien Chevallier 2023-09-08  392  
+f81a08733f43ae Gatien Chevallier 2023-09-08  393  	/* Do not save that RNG is enabled as it will be handled at resume */
+f81a08733f43ae Gatien Chevallier 2023-09-08  394  	priv->pm_conf.cr = readl_relaxed(priv->base + RNG_CR) & ~RNG_CR_RNGEN;
+f81a08733f43ae Gatien Chevallier 2023-09-08  395  
+f81a08733f43ae Gatien Chevallier 2023-09-08  396  	writel_relaxed(priv->pm_conf.cr, priv->base + RNG_CR);
+f81a08733f43ae Gatien Chevallier 2023-09-08  397  
+f81a08733f43ae Gatien Chevallier 2023-09-08  398  	clk_disable_unprepare(priv->clk);
+f81a08733f43ae Gatien Chevallier 2023-09-08  399  
+f81a08733f43ae Gatien Chevallier 2023-09-08  400  	return 0;
+f81a08733f43ae Gatien Chevallier 2023-09-08  401  }
+f81a08733f43ae Gatien Chevallier 2023-09-08  402  
+c6a97c42e399ad Daniel Thompson   2015-10-12 @403  static int stm32_rng_runtime_resume(struct device *dev)
+c6a97c42e399ad Daniel Thompson   2015-10-12  404  {
+f81a08733f43ae Gatien Chevallier 2023-09-08  405  	struct stm32_rng_private *priv = dev_get_drvdata(dev);
+f81a08733f43ae Gatien Chevallier 2023-09-08  406  	int err;
+d9494cfe524b05 Gatien Chevallier 2023-09-08  407  	u32 reg;
+f81a08733f43ae Gatien Chevallier 2023-09-08  408  
+f81a08733f43ae Gatien Chevallier 2023-09-08  409  	err = clk_prepare_enable(priv->clk);
+f81a08733f43ae Gatien Chevallier 2023-09-08  410  	if (err)
+f81a08733f43ae Gatien Chevallier 2023-09-08  411  		return err;
+f81a08733f43ae Gatien Chevallier 2023-09-08  412  
+f81a08733f43ae Gatien Chevallier 2023-09-08  413  	/* Clean error indications */
+f81a08733f43ae Gatien Chevallier 2023-09-08  414  	writel_relaxed(0, priv->base + RNG_SR);
+f81a08733f43ae Gatien Chevallier 2023-09-08  415  
+f81a08733f43ae Gatien Chevallier 2023-09-08  416  	reg = readl_relaxed(priv->base + RNG_CR);
+f81a08733f43ae Gatien Chevallier 2023-09-08  417  	reg |= RNG_CR_RNGEN;
+f81a08733f43ae Gatien Chevallier 2023-09-08  418  	writel_relaxed(reg, priv->base + RNG_CR);
+f81a08733f43ae Gatien Chevallier 2023-09-08  419  
+f81a08733f43ae Gatien Chevallier 2023-09-08  420  	return 0;
+f81a08733f43ae Gatien Chevallier 2023-09-08  421  }
+f81a08733f43ae Gatien Chevallier 2023-09-08  422  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
