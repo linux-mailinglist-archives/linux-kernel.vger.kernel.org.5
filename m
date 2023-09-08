@@ -2,117 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 559457985B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 215867985B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241995AbjIHKWQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Sep 2023 06:22:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42114 "EHLO
+        id S243009AbjIHKW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 06:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242897AbjIHKWQ (ORCPT
+        with ESMTP id S241108AbjIHKWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 06:22:16 -0400
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B641FD2;
-        Fri,  8 Sep 2023 03:21:40 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-592976e5b6dso18624687b3.2;
-        Fri, 08 Sep 2023 03:21:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694168415; x=1694773215;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Yb3+O+9HoQty/bjuC5BsQ49hiae76RKopBV4SSGNotE=;
-        b=Ee4bysLZwv1VlOrZJ1ZEe2RAym5hE/jamayRQACOaDZxh9eZWq84sv9pu9II203jUn
-         65EaYYiMy9XasPVAlJKv4PKdum/m/ytNZ7yrKdjQ2nAx+ButXlb0i43HbYIlbBaI+usU
-         SPlisFVcwbBqrF/KDmfW8moQOnA+XlkToZoSJfB/3ir6bPJkT/G2VkUVZT7zUuulQqUH
-         +gzrRZ1z8pDz7U/klfxah6o5dswNYVEMPBB2hwiU4Yp/q3DJf5w4+xyz9Jb16qq7O/f6
-         WcV4l/Kfb1777VL9o4g3vWFYLYSBjWKZ9IopZimL+fxrhUHhbmhER5M1frGH+aTYs3qI
-         cN8Q==
-X-Gm-Message-State: AOJu0Ywbbs25r9B4t9APH/EL5Lfz+5Bi+GSlvreea5XET0vzacRFPkJ5
-        LY37AQDN+u2idgbwJn0Er/JOPICR89hHHrbY
-X-Google-Smtp-Source: AGHT+IHYarUqU18MEW4bkrb4z2WoTEZ9r0xfoLaAQ851V7n+9JmTjYaTzi1bQlexOjG1yIvtFZh2sg==
-X-Received: by 2002:a81:9195:0:b0:568:8fa1:7a3 with SMTP id i143-20020a819195000000b005688fa107a3mr1872421ywg.5.1694168415225;
-        Fri, 08 Sep 2023 03:20:15 -0700 (PDT)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id v72-20020a81484b000000b0059b085c4051sm353204ywa.85.2023.09.08.03.20.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Sep 2023 03:20:14 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-58fa51a0d97so18597727b3.3;
-        Fri, 08 Sep 2023 03:20:14 -0700 (PDT)
-X-Received: by 2002:a25:698f:0:b0:d7b:9d44:76dc with SMTP id
- e137-20020a25698f000000b00d7b9d4476dcmr1942085ybc.38.1694168413909; Fri, 08
- Sep 2023 03:20:13 -0700 (PDT)
+        Fri, 8 Sep 2023 06:22:25 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32102114;
+        Fri,  8 Sep 2023 03:21:50 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 98E171FD74;
+        Fri,  8 Sep 2023 10:20:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694168414; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pHN3xfOjSN7msOotMbXVATC0m3J8u3hzQBfy6gdfcY0=;
+        b=eYVYa34tDLRQWRMo1PVRkzYwd36FhRujgnd3mnpE+yoctMC3WVnCvSUOtHZPGGVi4hL6dh
+        1NsgJ6pJ2XREplIdGSYbu/zmBuk6uH1BIBpPSw/N4TFm1Q/A6i77AnTWWrLPgRDp5xXVLd
+        g/+5X7NNLg5NFp6br0dxJy0h/xwji64=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694168414;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pHN3xfOjSN7msOotMbXVATC0m3J8u3hzQBfy6gdfcY0=;
+        b=aBd629a13wa8umr+2+r2I/XdiwZ4QEcoDHYx3h6VawMxeM0Q8HXfbCLWifSlNrPy8E+tH0
+        ZZmhoFyQBP7XjlAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 89FAD131FD;
+        Fri,  8 Sep 2023 10:20:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id jqaKIV71+mSgcQAAMHmgww
+        (envelope-from <jack@suse.cz>); Fri, 08 Sep 2023 10:20:14 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 267B6A0774; Fri,  8 Sep 2023 12:20:14 +0200 (CEST)
+Date:   Fri, 8 Sep 2023 12:20:14 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Zdenek Kabelac <zkabelac@redhat.com>
+Cc:     Jan Kara <jack@suse.cz>, Mikulas Patocka <mpatocka@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: [PATCH] fix writing to the filesystem after unmount
+Message-ID: <20230908102014.xgtcf5wth2l2cwup@quack3>
+References: <f5d63867-5b3e-294b-d1f5-a128817cfc7@redhat.com>
+ <20230906-aufheben-hagel-9925501b7822@brauner>
+ <60f244be-803b-fa70-665e-b5cba15212e@redhat.com>
+ <20230906-aufkam-bareinlage-6e7d06d58e90@brauner>
+ <818a3cc0-c17b-22c0-4413-252dfb579cca@redhat.com>
+ <20230907094457.vcvmixi23dk3pzqe@quack3>
+ <20230907-abgrenzen-achtung-b17e9a1ad136@brauner>
+ <513f337e-d254-2454-6197-82df564ed5fc@redhat.com>
+ <20230908073244.wyriwwxahd3im2rw@quack3>
+ <86235d7a-a7ea-49da-968e-c5810cbf4a7b@redhat.com>
 MIME-Version: 1.0
-References: <20230802184849.1019466-1-arnd@kernel.org> <20230802184849.1019466-4-arnd@kernel.org>
- <d737e5a40f7e2009222d98de7696cc78740869e3.camel@physik.fu-berlin.de>
-In-Reply-To: <d737e5a40f7e2009222d98de7696cc78740869e3.camel@physik.fu-berlin.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 8 Sep 2023 12:20:02 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVf6pBn2O61ynkdk9MDj0WiMt-12ffvpzfgL51Kz4_Jfg@mail.gmail.com>
-Message-ID: <CAMuHMdVf6pBn2O61ynkdk9MDj0WiMt-12ffvpzfgL51Kz4_Jfg@mail.gmail.com>
-Subject: Re: [PATCH 4/4] sh: machvec: remove custom ioport_{un,}map()
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Arnd Bergmann <arnd@kernel.org>, linux-sh@vger.kernel.org,
-        Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <86235d7a-a7ea-49da-968e-c5810cbf4a7b@redhat.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrian,
+On Fri 08-09-23 11:29:40, Zdenek Kabelac wrote:
+> Dne 08. 09. 23 v 9:32 Jan Kara napsal(a):
+> > On Thu 07-09-23 14:04:51, Mikulas Patocka wrote:
+> > > 
+> > > On Thu, 7 Sep 2023, Christian Brauner wrote:
+> > > 
+> > > > > I think we've got too deep down into "how to fix things" but I'm not 100%
+> > > > We did.
+> > > > 
+> > > > > sure what the "bug" actually is. In the initial posting Mikulas writes "the
+> > > > > kernel writes to the filesystem after unmount successfully returned" - is
+> > > > > that really such a big issue?
+> > > I think it's an issue if the administrator writes a script that unmounts a
+> > > filesystem and then copies the underyling block device somewhere. Or a
+> > > script that unmounts a filesystem and runs fsck afterwards. Or a script
+> > > that unmounts a filesystem and runs mkfs on the same block device.
+> > Well, e.g. e2fsprogs use O_EXCL open so they will detect that the filesystem
+> > hasn't been unmounted properly and complain. Which is exactly what should
+> > IMHO happen.
+> > 
+> > > > > Anybody else can open the device and write to it as well. Or even
+> > > > > mount the device again. So userspace that relies on this is kind of
+> > > > > flaky anyway (and always has been).
+> > > It's admin's responsibility to make sure that the filesystem is not
+> > > mounted multiple times when he touches the underlying block device after
+> > > unmount.
+> > What I wanted to suggest is that we should provide means how to make sure
+> > block device is not being modified and educate admins and tool authors
+> > about them. Because just doing "umount /dev/sda1" and thinking this means
+> > that /dev/sda1 is unused now simply is not enough in today's world for
+> > multiple reasons and we cannot solve it just in the kernel.
+> > 
+> 
+> /me just wondering how do you then imagine i.e. safe removal of USB drive
+> when user shall not expect unmount really unmounts filesystem?
 
-On Fri, Sep 8, 2023 at 12:11â€¯PM John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
-> On Wed, 2023-08-02 at 20:48 +0200, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > These functions were only used on the microdev
-> > board that is now gone, so remove them to simplify
-> > the ioport handling.
-> >
-> > This could be further simplified to use the generic
-> > I/O port accessors now.
-> >
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Well, currently you click some "Eject / safely remove / whatever" button
+and then you get a "wait" dialog until everything is done after which
+you're told the stick is safe to remove. What I imagine is that the "wait"
+dialog needs to be there while there are any (or exclusive at minimum) openers
+of the device. Not until umount(2) syscall has returned. And yes, the
+kernel doesn't quite make that easy - the best you can currently probably
+do is to try opening the device with O_EXCL and if that fails, you know
+there's some other exclusive open.
 
-> >  void ioport_unmap(void __iomem *addr)
-> >  {
-> > -     if (sh_mv.mv_ioport_unmap)
-> > -             sh_mv.mv_ioport_unmap(addr);
-> >  }
-> >  EXPORT_SYMBOL(ioport_unmap);
->
-> Why aren't you removing the function ioport_unmap(void __iomem *addr) completely
-> and just turn it into stub? Is it still referenced somewhere?
+> IMHO  - unmount should detect some very suspicious state of block device if
+> it cannot correctly proceed - i.e. reporting 'warning/error' on such
+> commands...
 
-Because architectures are supposed to implement it (there is no
-__weak default).
+You seem to be concentrated too much on the simple case of a desktop with
+an USB stick you just copy data to & from. :) The trouble is, as Al wrote
+elsewhere in this thread that filesystem unmount can be for example a
+result of exit(2) or close(2) system call if you setup things in a nasty
+way. Do you want exit(2) to fail because the block device is frozen?
+Umount(2) has to work for all its users and changing the behavior has nasty
+corner-cases. So does the current behavior, I agree, but improving
+situation for one usecase while breaking another usecase isn't really a way
+forward...
 
-An alternative would be to provide a dummy static inline, like
-e.g. m68k does:
+> Main problem is - if the 'unmount' is successful in this case - the last
+> connection userspace had to this fileystem is lost - and user cannot get rid
+> of such filesystem anymore for a system.
 
-arch/m68k/include/asm/kmap.h:#define ioport_unmap ioport_unmap
-arch/m68k/include/asm/kmap.h:static inline void ioport_unmap(void __iomem *p)
-arch/m68k/include/asm/kmap.h-{
-arch/m68k/include/asm/kmap.h-}
+Well, the filesystem (struct superblock to be exact) is invisible in
+/proc/mounts (or whatever), that is true. But it is still very much
+associated with that block device and if you do 'mount <device>
+<mntpoint>', you'll get it back. But yes, the filesystem will not go away
+until all references to it are dropped and you cannot easily find who holds
+those references and how to get rid of them.
 
-Gr{oetje,eeting}s,
+> I'd likely propose in this particular state of unmounting of a frozen
+> filesystem to just proceed - and drop the frozen state together with release
+> filesystem and never issue any ioctl from such filelsystem to the device
+> below - so it would not be a 100% valid unmount - but since the freeze
+> should be nearly equivalent of having a proper 'unmount' being done -  it
+> shoudn't be causing any harm either - and  all resources associated could 
+> be 'released.  IMHO it's correct to 'drop' frozen state for filesystem
+> that is not going to exist anymore  (assuming it's the last  such user)
 
-                        Geert
+This option was also discussed in the past and it has nasty consequences as
+well. Cleanly shutting down a filesystem usually needs to write to the
+underlying device so either you allow the filesystem to write to the device
+on umount breaking assumptions of the user who froze the fs or you'd have
+to implement a special handling for this case for every filesystem to avoid
+the writes (and put up with the fact that the filesystem will appear as
+uncleanly shutdown on the next mount). Not particularly nice either...
 
+								Honza
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
