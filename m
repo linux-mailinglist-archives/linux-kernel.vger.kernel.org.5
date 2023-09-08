@@ -2,180 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB506798465
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89659798466
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238592AbjIHIsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 04:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
+        id S239511AbjIHIsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 04:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbjIHIsY (ORCPT
+        with ESMTP id S230413AbjIHIs2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 04:48:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0966A1BDA;
-        Fri,  8 Sep 2023 01:48:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 907CAC433C7;
-        Fri,  8 Sep 2023 08:48:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694162899;
-        bh=bJ7NhyJD9NHnfvbX3T+2HwcdtRMHnTXPcMy23isQEKs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bN+I+59/Sp8q4+wM/cbWgOQIf6I6bmKa4YUUBE3j8jip5uylr3YaGQ1YTGd25XFQ0
-         kYlcjIsFhgzpGTB6TDqGJpCocQXWYzWypwkyLiiS0TYpfkkCQWnJvVAxcEcDh0W58M
-         B612l/FV4ab4IJmRMSeS+9t5WB9WMPcGJHDUt/CwNcDdbbzui8PxyfBn39Ar69dzbk
-         l5f+PztbXfaFepj2nU0RnPRYOcTEGcW8OsLJC/idInpmOJEjOhP6k+iA266PIYRBDx
-         356qMvyVlyliW4MNaOB3hnRN6sZ/FK+jRhlmrykl3uKFyQa3NOTJ3c1Ckdoenvqf/Q
-         qMmAh5pJUszoQ==
-Date:   Fri, 8 Sep 2023 17:48:15 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ajay Kaher <akaher@vmware.com>,
-        Zheng Yejian <zhengyejian1@huawei.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [PATCH] tracefs/eventfs: Free top level files on removal
-Message-Id: <20230908174815.9700f5ad32821579d073c86c@kernel.org>
-In-Reply-To: <20230907175859.6fedbaa2@gandalf.local.home>
-References: <20230907175859.6fedbaa2@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 8 Sep 2023 04:48:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74A41BDA;
+        Fri,  8 Sep 2023 01:48:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694162903; x=1725698903;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YXPqcdjZjBhMpZ008VKqsqB49LxtWSQL32s0AgC6KRw=;
+  b=Q8pSad9XtSPyq8jk8hNiEXYakkD4lFllim45q/c+9+2cPK3QCZRFtbsV
+   pGSy/yx2c6ijDtPNVvcSnb6NVFn7sEw3iJyJVUfRVQajXtzKMK4NpIm7Y
+   1/6kUCORgrsiMGKmo9MOjOoZI0//sgbflGtpWE2ojcfKyIijyvojegVD5
+   pW/JOU+pyTmXI07ONs3d9a2kVGyH6dz8+7lDlGjCbd/DrdzyPJqlRTwOz
+   IeTjbDFXT3zLTpqwzLat+oQGOywOsiJwHfGDpMLsENdrSGo9JwHr4SmDy
+   tXmpf+5DrC9FcAD7SymqLXsLoMbESd0Ihd+00FchstNyDainrYkhrewzb
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="357062020"
+X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
+   d="scan'208";a="357062020"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 01:48:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="1073249357"
+X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
+   d="scan'208";a="1073249357"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga005.fm.intel.com with SMTP; 08 Sep 2023 01:48:20 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 08 Sep 2023 11:48:19 +0300
+Date:   Fri, 8 Sep 2023 11:48:19 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.au@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v3 2/5] usb: typec: tcpci_rt1711h: Convert enum->pointer
+ for data in the match tables
+Message-ID: <ZPrf07OpMD4iKVI+@kuha.fi.intel.com>
+References: <20230906080619.36930-1-biju.das.jz@bp.renesas.com>
+ <20230906080619.36930-3-biju.das.jz@bp.renesas.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230906080619.36930-3-biju.das.jz@bp.renesas.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Sep 2023 17:58:59 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Wed, Sep 06, 2023 at 09:06:16AM +0100, Biju Das wrote:
+> Currently did varaible is used for HW differences between the devices which
+> complicates the code by adding checks.
 > 
-> When an instance is removed, the top level files of the eventfs directory
-> are not cleaned up. Call the eventfs_remove() on each of the entries to
-> free them.
+> Therefore it is better to convert enum->pointer for data match and extend
+> match support for both ID and OF tables by using i2c_get_match_data().
 > 
-> This was found via kmemleak:
+> Add struct rt1711h_chip_info with did variable and replace did->info in
+> struct rt1711h_chip. Later patch will add more hw differences to
+> struct rt1711h_chip_info and avoid checking did for HW differences.
 > 
-> unreferenced object 0xffff8881047c1280 (size 96):
->   comm "mkdir", pid 924, jiffies 4294906489 (age 2013.077s)
->   hex dump (first 32 bytes):
->     18 31 ed 03 81 88 ff ff 00 31 09 24 81 88 ff ff  .1.......1.$....
->     00 00 00 00 00 00 00 00 98 19 7c 04 81 88 ff ff  ..........|.....
->   backtrace:
->     [<000000000fa46b4d>] kmalloc_trace+0x2a/0xa0
->     [<00000000e729cd0c>] eventfs_prepare_ef.constprop.0+0x3a/0x160
->     [<000000009032e6a8>] eventfs_add_events_file+0xa0/0x160
->     [<00000000fe968442>] create_event_toplevel_files+0x6f/0x130
->     [<00000000e364d173>] event_trace_add_tracer+0x14/0x140
->     [<00000000411840fa>] trace_array_create_dir+0x52/0xf0
->     [<00000000967804fa>] trace_array_create+0x208/0x370
->     [<00000000da505565>] instance_mkdir+0x6b/0xb0
->     [<00000000dc1215af>] tracefs_syscall_mkdir+0x5b/0x90
->     [<00000000a8aca289>] vfs_mkdir+0x272/0x380
->     [<000000007709b242>] do_mkdirat+0xfc/0x1d0
->     [<00000000c0b6d219>] __x64_sys_mkdir+0x78/0xa0
->     [<0000000097b5dd4b>] do_syscall_64+0x3f/0x90
->     [<00000000a3f00cfa>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> unreferenced object 0xffff888103ed3118 (size 8):
->   comm "mkdir", pid 924, jiffies 4294906489 (age 2013.077s)
->   hex dump (first 8 bytes):
->     65 6e 61 62 6c 65 00 00                          enable..
->   backtrace:
->     [<0000000010f75127>] __kmalloc_node_track_caller+0x51/0x160
->     [<000000004b3eca91>] kstrdup+0x34/0x60
->     [<0000000050074d7a>] eventfs_prepare_ef.constprop.0+0x53/0x160
->     [<000000009032e6a8>] eventfs_add_events_file+0xa0/0x160
->     [<00000000fe968442>] create_event_toplevel_files+0x6f/0x130
->     [<00000000e364d173>] event_trace_add_tracer+0x14/0x140
->     [<00000000411840fa>] trace_array_create_dir+0x52/0xf0
->     [<00000000967804fa>] trace_array_create+0x208/0x370
->     [<00000000da505565>] instance_mkdir+0x6b/0xb0
->     [<00000000dc1215af>] tracefs_syscall_mkdir+0x5b/0x90
->     [<00000000a8aca289>] vfs_mkdir+0x272/0x380
->     [<000000007709b242>] do_mkdirat+0xfc/0x1d0
->     [<00000000c0b6d219>] __x64_sys_mkdir+0x78/0xa0
->     [<0000000097b5dd4b>] do_syscall_64+0x3f/0x90
->     [<00000000a3f00cfa>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> 
-> Fixes: 5bdcd5f5331a2 eventfs: ("Implement removal of meta data from eventfs")
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Looks good to me.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thank you,
 > ---
+> v2->v3:
+>  * Added Rb tag from Andy.
+> v1->v2:
+>  * Updated commit description.
+> ---
+>  drivers/usb/typec/tcpm/tcpci_rt1711h.c | 30 ++++++++++++++++++--------
+>  1 file changed, 21 insertions(+), 9 deletions(-)
 > 
-> This is on top of:
-> 
->    https://lore.kernel.org/linux-trace-kernel/20230907024710.866917011@goodmis.org/
-> 
->  fs/tracefs/event_inode.c | 30 ++++++++++++++++++++++++++----
->  1 file changed, 26 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-> index 609ccb5b7cfc..f168aca45458 100644
-> --- a/fs/tracefs/event_inode.c
-> +++ b/fs/tracefs/event_inode.c
-> @@ -195,17 +195,39 @@ void eventfs_set_ef_status_free(struct tracefs_inode *ti, struct dentry *dentry)
->  {
->  	struct tracefs_inode *ti_parent;
->  	struct eventfs_inode *ei;
-> -	struct eventfs_file *ef;
-> -
-> -	mutex_lock(&eventfs_mutex);
-> +	struct eventfs_file *ef, *tmp;
+> diff --git a/drivers/usb/typec/tcpm/tcpci_rt1711h.c b/drivers/usb/typec/tcpm/tcpci_rt1711h.c
+> index 6146bca8e55f..2b7258d3cb4e 100644
+> --- a/drivers/usb/typec/tcpm/tcpci_rt1711h.c
+> +++ b/drivers/usb/typec/tcpm/tcpci_rt1711h.c
+> @@ -51,13 +51,17 @@
+>  /* 1b0 as fixed rx threshold of rd/rp 0.55V, 1b1 depends on RTCRTL4[0] */
+>  #define BMCIO_RXDZEN	BIT(0)
 >  
->  	/* The top level events directory may be freed by this */
->  	if (unlikely(ti->flags & TRACEFS_EVENT_TOP_INODE)) {
-> +		LIST_HEAD(ef_del_list);
+> +struct rt1711h_chip_info {
+> +	u16 did;
+> +};
 > +
-> +		mutex_lock(&eventfs_mutex);
-> +
->  		ei = ti->private;
-> +
-> +		/* Record all the top level files */
-> +		list_for_each_entry_srcu(ef, &ei->e_top_files, list,
-> +					 lockdep_is_held(&eventfs_mutex)) {
-> +			list_add_tail(&ef->del_list, &ef_del_list);
-> +		}
-> +
-> +		/* Nothing should access this, but just in case! */
-> +		ti->private = NULL;
-> +
-> +		mutex_unlock(&eventfs_mutex);
-> +
-> +		/* Now safely free the top level files and their children */
-> +		list_for_each_entry_safe(ef, tmp, &ef_del_list, del_list) {
-> +			list_del(&ef->del_list);
-> +			eventfs_remove(ef);
-> +		}
-> +
->  		kfree(ei);
-> -		goto out;
-> +		return;
+>  struct rt1711h_chip {
+>  	struct tcpci_data data;
+>  	struct tcpci *tcpci;
+>  	struct device *dev;
+>  	struct regulator *vbus;
+> +	const struct rt1711h_chip_info *info;
+>  	bool src_en;
+> -	u16 did;
+>  };
+>  
+>  static int rt1711h_read16(struct rt1711h_chip *chip, unsigned int reg, u16 *val)
+> @@ -105,7 +109,7 @@ static int rt1711h_init(struct tcpci *tcpci, struct tcpci_data *tdata)
+>  		return ret;
+>  
+>  	/* Enable PD30 extended message for RT1715 */
+> -	if (chip->did == RT1715_DID) {
+> +	if (chip->info->did == RT1715_DID) {
+>  		ret = regmap_update_bits(regmap, RT1711H_RTCTRL8,
+>  					 RT1711H_ENEXTMSG, RT1711H_ENEXTMSG);
+>  		if (ret < 0)
+> @@ -200,7 +204,7 @@ static inline int rt1711h_init_cc_params(struct rt1711h_chip *chip, u8 status)
+>  	if ((cc1 >= TYPEC_CC_RP_1_5 && cc2 < TYPEC_CC_RP_DEF) ||
+>  	    (cc2 >= TYPEC_CC_RP_1_5 && cc1 < TYPEC_CC_RP_DEF)) {
+>  		rxdz_en = BMCIO_RXDZEN;
+> -		if (chip->did == RT1715_DID)
+> +		if (chip->info->did == RT1715_DID)
+>  			rxdz_sel = RT1711H_BMCIO_RXDZSEL;
+>  		else
+>  			rxdz_sel = 0;
+> @@ -319,7 +323,7 @@ static int rt1711h_check_revision(struct i2c_client *i2c, struct rt1711h_chip *c
+>  	ret = i2c_smbus_read_word_data(i2c, TCPC_BCD_DEV);
+>  	if (ret < 0)
+>  		return ret;
+> -	if (ret != chip->did) {
+> +	if (ret != chip->info->did) {
+>  		dev_err(&i2c->dev, "did is not correct, 0x%04x\n", ret);
+>  		return -ENODEV;
 >  	}
+> @@ -336,7 +340,7 @@ static int rt1711h_probe(struct i2c_client *client)
+>  	if (!chip)
+>  		return -ENOMEM;
 >  
-> +	mutex_lock(&eventfs_mutex);
+> -	chip->did = (size_t)device_get_match_data(&client->dev);
+> +	chip->info = i2c_get_match_data(client);
+>  
+>  	ret = rt1711h_check_revision(client, chip);
+>  	if (ret < 0) {
+> @@ -391,17 +395,25 @@ static void rt1711h_remove(struct i2c_client *client)
+>  	tcpci_unregister_port(chip->tcpci);
+>  }
+>  
+> +static const struct rt1711h_chip_info rt1711h = {
+> +	.did = RT1711H_DID,
+> +};
 > +
->  	ti_parent = get_tracefs(dentry->d_parent->d_inode);
->  	if (!ti_parent || !(ti_parent->flags & TRACEFS_EVENT_INODE))
->  		goto out;
+> +static const struct rt1711h_chip_info rt1715 = {
+> +	.did = RT1715_DID,
+> +};
+> +
+>  static const struct i2c_device_id rt1711h_id[] = {
+> -	{ "rt1711h", 0 },
+> -	{ "rt1715", 0 },
+> +	{ "rt1711h", (kernel_ulong_t)&rt1711h },
+> +	{ "rt1715", (kernel_ulong_t)&rt1715 },
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(i2c, rt1711h_id);
+>  
+>  #ifdef CONFIG_OF
+>  static const struct of_device_id rt1711h_of_match[] = {
+> -	{ .compatible = "richtek,rt1711h", .data = (void *)RT1711H_DID },
+> -	{ .compatible = "richtek,rt1715", .data = (void *)RT1715_DID },
+> +	{ .compatible = "richtek,rt1711h", .data = &rt1711h },
+> +	{ .compatible = "richtek,rt1715", .data = &rt1715 },
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(of, rt1711h_of_match);
 > -- 
-> 2.40.1
-> 
-
+> 2.25.1
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+heikki
