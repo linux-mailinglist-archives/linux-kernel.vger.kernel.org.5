@@ -2,94 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1E3798BB1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A6C798BEE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241380AbjIHSAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60650 "EHLO
+        id S245733AbjIHSCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245484AbjIHSAQ (ORCPT
+        with ESMTP id S245757AbjIHSCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:00:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE00F1FCD
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 11:00:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694196011; x=1725732011;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=lJcDDd1iiAVsiZV2Yf1EraA6YBLwWFpJzpmN/FxXRqU=;
-  b=ZxnScoGiz8s/raedoaRDbkoZDPz+edlfX6vjhxpNNJoEPYrCOunWI8Xu
-   qIEXvLKMIbgI4IOmfJZxKl5nYwte2tb5BHSsiBXJo3t66QYOY1UebLFq3
-   ZcXZFlxzViY8jQA9+0FABcBE1woF7a6A9RetEpSCNA7tXPu/Va3zUoUob
-   pe98Mzy+TUd7u22EiAQpyNgtLwAmniTtQFJZeEwwnvBYDX2fu/wupDIlt
-   CISoScY1i6EcOR+CXFltDe91k1mb6dU8xOw+XtNoJQAxBbR6EL4w7lnf9
-   QW0zliotl9eDpQYNDddE3GRDmpiOviOY3ME+Ou72LTD8DNbErqyCQuMBs
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="381527330"
-X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
-   d="scan'208";a="381527330"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 11:00:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="832738267"
-X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
-   d="scan'208";a="832738267"
-Received: from fgilganx-mobl1.amr.corp.intel.com (HELO [10.209.17.195]) ([10.209.17.195])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 11:00:09 -0700
-Message-ID: <d08303a4-321b-419c-5b3b-11f05e4286ae@intel.com>
-Date:   Fri, 8 Sep 2023 11:00:08 -0700
+        Fri, 8 Sep 2023 14:02:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6164F26A8;
+        Fri,  8 Sep 2023 11:02:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 255A1C433A9;
+        Fri,  8 Sep 2023 18:01:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694196063;
+        bh=jAHtLt1B80Dvaw7l7CoJpQDseIGlrDLLCGLKy24S6gk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iNxMB+NWXTH/1vbu6Ndx6boP3IQtcIODPrRzc/ldHH5yoMY9XQGZ2UnEYbV0liAtC
+         47rm7tSWG7LirwpvCPWUTdttENvHfX0ZHvH72NztlwdFWtzQWe+DMF1KrSDEOZNGA3
+         Xp96i+tXRJtYFmSUkGFyHF1r13wj6/P6/TY4tRnaK2otruK0KH/AM8QobOEMZCo5D1
+         Yiz41DWE1rrFvwMwxXlN7aA+64Xy9hLe49D1utw7Lx9m6OqSXbBbXy4iyqx/9+219k
+         O7+mx49ZFCzp6yIeewlPnpCPg2JCLCpbaMcwUO8/snKsxTZRVzV5mivXjqFyICT5tY
+         gPcWFK9Fp9ftw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Abhishek Mainkar <abmainkar@nvidia.com>,
+        Bob Moore <robert.moore@intel.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>, linux-acpi@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org
+Subject: [PATCH AUTOSEL 6.4 01/13] ACPICA: Add AML_NO_OPERAND_RESOLVE flag to Timer
+Date:   Fri,  8 Sep 2023 14:00:47 -0400
+Message-Id: <20230908180100.3458151-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] x86/tdx: Allow extended topology CPUID leafs to be
- emulated by hypercall
-Content-Language: en-US
-To:     Sagi Shahar <sagis@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jun Nakajima <jun.nakajima@intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Vishal Annapurve <vannapurve@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230908175644.2478924-1-sagis@google.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <20230908175644.2478924-1-sagis@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.4.15
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/23 10:56, Sagi Shahar wrote:
-> The current TDX module does not handle extended topology leaves
-> explicitly and will generate a #VE but the current #VE handler
-> implementation blindly returns 0 for those CPUID leaves.
-> 
-> This currently causes TDX guests to see 0 values when querying the numa
-> topology leading to incorrect numa configurations.
-> 
-> This patch fixes this behavior by emulating the extended topology leaves
-> using the CPUID hypercall.
+From: Abhishek Mainkar <abmainkar@nvidia.com>
 
-... and thus acquires the data from the untrusted VMM.  Right?
+[ Upstream commit 3a21ffdbc825e0919db9da0e27ee5ff2cc8a863e ]
 
-What are the security implications of consuming this untrusted data?
+ACPICA commit 90310989a0790032f5a0140741ff09b545af4bc5
+
+According to the ACPI specification 19.6.134, no argument is required to be passed for ASL Timer instruction. For taking care of no argument, AML_NO_OPERAND_RESOLVE flag is added to ASL Timer instruction opcode.
+
+When ASL timer instruction interpreted by ACPI interpreter, getting error. After adding AML_NO_OPERAND_RESOLVE flag to ASL Timer instruction opcode, issue is not observed.
+
+=============================================================
+UBSAN: array-index-out-of-bounds in acpica/dswexec.c:401:12 index -1 is out of range for type 'union acpi_operand_object *[9]'
+CPU: 37 PID: 1678 Comm: cat Not tainted
+6.0.0-dev-th500-6.0.y-1+bcf8c46459e407-generic-64k
+HW name: NVIDIA BIOS v1.1.1-d7acbfc-dirty 12/19/2022 Call trace:
+ dump_backtrace+0xe0/0x130
+ show_stack+0x20/0x60
+ dump_stack_lvl+0x68/0x84
+ dump_stack+0x18/0x34
+ ubsan_epilogue+0x10/0x50
+ __ubsan_handle_out_of_bounds+0x80/0x90
+ acpi_ds_exec_end_op+0x1bc/0x6d8
+ acpi_ps_parse_loop+0x57c/0x618
+ acpi_ps_parse_aml+0x1e0/0x4b4
+ acpi_ps_execute_method+0x24c/0x2b8
+ acpi_ns_evaluate+0x3a8/0x4bc
+ acpi_evaluate_object+0x15c/0x37c
+ acpi_evaluate_integer+0x54/0x15c
+ show_power+0x8c/0x12c [acpi_power_meter]
+
+Link: https://github.com/acpica/acpica/commit/90310989
+Signed-off-by: Abhishek Mainkar <abmainkar@nvidia.com>
+Signed-off-by: Bob Moore <robert.moore@intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/acpi/acpica/psopcode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/acpi/acpica/psopcode.c b/drivers/acpi/acpica/psopcode.c
+index 09029fe545f14..39e31030e5f49 100644
+--- a/drivers/acpi/acpica/psopcode.c
++++ b/drivers/acpi/acpica/psopcode.c
+@@ -603,7 +603,7 @@ const struct acpi_opcode_info acpi_gbl_aml_op_info[AML_NUM_OPCODES] = {
+ 
+ /* 7E */ ACPI_OP("Timer", ARGP_TIMER_OP, ARGI_TIMER_OP, ACPI_TYPE_ANY,
+ 			 AML_CLASS_EXECUTE, AML_TYPE_EXEC_0A_0T_1R,
+-			 AML_FLAGS_EXEC_0A_0T_1R),
++			 AML_FLAGS_EXEC_0A_0T_1R | AML_NO_OPERAND_RESOLVE),
+ 
+ /* ACPI 5.0 opcodes */
+ 
+-- 
+2.40.1
+
