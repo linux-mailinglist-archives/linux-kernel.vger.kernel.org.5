@@ -2,142 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D925D7992C4
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 01:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B61397992CC
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 01:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345161AbjIHXVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 19:21:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
+        id S1345202AbjIHXWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 19:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345155AbjIHXVI (ORCPT
+        with ESMTP id S1345237AbjIHXWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 19:21:08 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A416C18E
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 16:21:04 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-26f49ad3b86so3423779a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 16:21:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694215264; x=1694820064; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=W4xItMDPGhESXDV62IMzztD/fCCrvJU426iFvnJNHE0=;
-        b=AyBQCJdqRo3+WnFfncj95nZmWiaRBdFC+Co1Upspk/g+eC/XdMxtBxcCDLlc4JhZFf
-         QuXDDSJFUHVCDhKUACPnNgCa10CeHS5mtPutN05mCvQwI+BpAHXvMr2BVwhQ8NMsKSr6
-         7vv+BEvvAvQN6jOsyOCz+BggkPYKiEDmBeG3hwcMxIDHVvYBuoDv83gNOoy0xX4/NhRw
-         f5S29j9u9qoBDiM2oWF9x/HH88CjSYl/22GYu2PPiutjhYvZvY7GmrQgJ3JhCBohciI6
-         2p2x3ERXAINtD3dkHMWoi52pBFKZ7foJR70wfa0Yw/LyDWUGUibF7MLGpf8JArX3KpOv
-         Hm1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694215264; x=1694820064;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W4xItMDPGhESXDV62IMzztD/fCCrvJU426iFvnJNHE0=;
-        b=T73vXulu/UaNRKf28/CJKGs3VevvJ4/A/V/n7fuDUW2MZFDLpdDgyvQQHkmSyxhITs
-         YlY54QdXeyu5jPR0AZDn5RJ13gneD0IfuhCoKUJ3IbfjK4iDYV+eCfiKPd+NmH03dFd7
-         TwrIfM6XwhGQsZVOtatbkLVoSxqZaDUZAizXoKZ6+3OCJgVQmujVWi5u+OLlPo9k6XG2
-         G7w7hRSwCD3UXZnJ6QrkVH0XJ8/fAfZXNz35wi9RPgpko3fQLzzjPlPBHBOaDlKUBFVu
-         pVZecCJimaMe0Jr2AwglKw2J5+FU2BFY6L2F/je5pyaSEUNTiBHqXyLhfMQrqN+kFLSM
-         /NZg==
-X-Gm-Message-State: AOJu0Yz0J0fLzuyOc2vLTrGIbN12ee6lHdPfrSKWO4HtI2cZMM4SpVds
-        uQfkXQmJkzYwDNvuNlhiBufu8XPEa28=
-X-Google-Smtp-Source: AGHT+IFE29B61dYuVGgDcCzRdTE92sPgyGY4OZA3lF+ePPYMCJhBGsToMJI0H0PYnq8jSzPgW010WXJkLlc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:dc82:b0:26d:2126:aa49 with SMTP id
- j2-20020a17090adc8200b0026d2126aa49mr994341pjv.2.1694215264138; Fri, 08 Sep
- 2023 16:21:04 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 16:21:02 -0700
-In-Reply-To: <170e3110-e4c6-8060-3238-d2296b4f0d88@rasmusvillemoes.dk>
-Mime-Version: 1.0
-References: <20230804120536.2339722-1-linux@rasmusvillemoes.dk>
- <ZPtlxmdIJXOe0sEy@google.com> <170e3110-e4c6-8060-3238-d2296b4f0d88@rasmusvillemoes.dk>
-Message-ID: <ZPusXvZwduHfxNnC@google.com>
-Subject: Re: [PATCH v2] scripts/setlocalversion: also consider annotated tags
- of the form vx.y.z-${file_localversion}
-From:   Sean Christopherson <seanjc@google.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 8 Sep 2023 19:22:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321FC1FFF
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 16:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694215313;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=F+MW0YycyfuvGIR5zmiQX89HyMyFCOfpYnvtqX4xsko=;
+        b=D0Tvyr+2P1gvZgVcvtPaANjSaLrxLjAvR/XLI6GNACqveO5hFQ9lVgBzs9s5GkFcCS8Ofj
+        2uOmiJH/pfAnjQc7ZOb7sohQF4ucyscK9zQ7MVGNqLl0HEyxYn/anSrYA8gfcpC6qh4MJd
+        V5O749M3QOC2lqKhL+Tb3Id/JKTXUqs=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-250-4Kp_58QdPEuXVXXpHHp0Yg-1; Fri, 08 Sep 2023 19:21:51 -0400
+X-MC-Unique: 4Kp_58QdPEuXVXXpHHp0Yg-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F127881653D;
+        Fri,  8 Sep 2023 23:21:50 +0000 (UTC)
+Received: from [10.22.33.35] (unknown [10.22.33.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9B078493112;
+        Fri,  8 Sep 2023 23:21:50 +0000 (UTC)
+Message-ID: <09b69257-afb0-af0a-a3c4-f227b0cf4292@redhat.com>
+Date:   Fri, 8 Sep 2023 19:21:50 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] mm/slab_common: fix slab_caches list corruption after
+ kmem_cache_destroy()
+Content-Language: en-US
+To:     Rafael Aquini <aquini@redhat.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rafael Aquini <raquini@redhat.com>, stable@vger.kernel.org
+References: <20230908230649.802560-1-aquini@redhat.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230908230649.802560-1-aquini@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 09, 2023, Rasmus Villemoes wrote:
-> On 08/09/2023 20.19, Sean Christopherson wrote:
-> > On Fri, Aug 04, 2023, Rasmus Villemoes wrote:
-> >> obviously asks if $tag is an annotated tag, but it does not actually
-> >> tell if the commit pointed to has any relation to HEAD. So remove both
-> >> uses of --exact-match, and instead just ask if the description
-> >> generated is identical to the tag we provided. Since we then already
-> >> have the result of
-> >>
-> >>   git describe --match=$tag
-> >>
-> >> we also end up reducing the number of times we invoke "git describe".
-> > 
-> > Dropping "--exact-match" is resulting in unnacceptable latencies for me.  I don't
-> > understand what this is trying to do well enough to make a suggestion, but something
-> > has to change.
-> 
-> Hm, that's quite unexpected. I mean, before that commit, I think that
-> setlocalversion, especially when run on some dev branch, would _also_
-> end up doing at least one 'git describe --match=v6.5'. <goes digging>
-> 
-> Ah, so I assume that in your case you always end up in the
-> 
->                 # If only the short version is requested, don't bother
->                 # running further git commands
->                 if $short; then
->                         echo "+"
->                         return
->                 fi
-> 
-> case, i.e. you do not have CONFIG_LOCALVERSION_AUTO=y. Can you confirm that?
+On 9/8/23 19:06, Rafael Aquini wrote:
+> After the commit in Fixes:, if a module that created a slab cache does not
+> release all of its allocated objects before destroying the cache (at rmmod
+> time), we might end up releasing the kmem_cache object without removing it
+> from the slab_caches list thus corrupting the list as kmem_cache_destroy()
+> ignores the return value from shutdown_cache(), which in turn never removes
+> the kmem_cache object from slabs_list in case __kmem_cache_shutdown() fails
+> to release all of the cache's slabs.
+>
+> This is easily observable on a kernel built with CONFIG_DEBUG_LIST=y
+> as after that ill release the system will immediately trip on list_add,
+> or list_del, assertions similar to the one shown below as soon as another
+> kmem_cache gets created, or destroyed:
+>
+>    [ 1041.213632] list_del corruption. next->prev should be ffff89f596fb5768, but was 52f1e5016aeee75d. (next=ffff89f595a1b268)
+>    [ 1041.219165] ------------[ cut here ]------------
+>    [ 1041.221517] kernel BUG at lib/list_debug.c:62!
+>    [ 1041.223452] invalid opcode: 0000 [#1] PREEMPT SMP PTI
+>    [ 1041.225408] CPU: 2 PID: 1852 Comm: rmmod Kdump: loaded Tainted: G    B   W  OE      6.5.0 #15
+>    [ 1041.228244] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS edk2-20230524-3.fc37 05/24/2023
+>    [ 1041.231212] RIP: 0010:__list_del_entry_valid+0xae/0xb0
+>
+> Another quick way to trigger this issue, in a kernel with CONFIG_SLUB=y,
+> is to set slub_debug to poison the released objects and then just run
+> cat /proc/slabinfo after removing the module that leaks slab objects,
+> in which case the kernel will panic:
+>
+>    [   50.954843] general protection fault, probably for non-canonical address 0xa56b6b6b6b6b6b8b: 0000 [#1] PREEMPT SMP PTI
+>    [   50.961545] CPU: 2 PID: 1495 Comm: cat Kdump: loaded Tainted: G    B   W  OE      6.5.0 #15
+>    [   50.966808] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS edk2-20230524-3.fc37 05/24/2023
+>    [   50.972663] RIP: 0010:get_slabinfo+0x42/0xf0
+>
+> This patch fixes this issue by properly checking shutdown_cache()'s
+> return value before taking the kmem_cache_release() branch.
+>
+> Fixes: 0495e337b703 ("mm/slab_common: Deleting kobject in kmem_cache_destroy() without holding slab_mutex/cpu_hotplug_lock")
+> Signed-off-by: Rafael Aquini <aquini@redhat.com>
+> Cc: stable@vger.kernel.org
+> ---
+>   mm/slab_common.c | 13 ++++++++-----
+>   1 file changed, 8 insertions(+), 5 deletions(-)
+>
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index cd71f9581e67..31e581dc6e85 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -479,7 +479,7 @@ void slab_kmem_cache_release(struct kmem_cache *s)
+>   
+>   void kmem_cache_destroy(struct kmem_cache *s)
+>   {
+> -	int refcnt;
+> +	int err;
+>   	bool rcu_set;
+>   
+>   	if (unlikely(!s) || !kasan_check_byte(s))
+> @@ -490,17 +490,20 @@ void kmem_cache_destroy(struct kmem_cache *s)
+>   
+>   	rcu_set = s->flags & SLAB_TYPESAFE_BY_RCU;
+>   
+> -	refcnt = --s->refcount;
+> -	if (refcnt)
+> +	s->refcount--;
+> +	if (s->refcount) {
+> +		err = -EBUSY;
+>   		goto out_unlock;
+> +	}
+>   
+> -	WARN(shutdown_cache(s),
+> +	err = shutdown_cache(s);
+> +	WARN(err,
+>   	     "%s %s: Slab cache still has objects when called from %pS",
+>   	     __func__, s->name, (void *)_RET_IP_);
+>   out_unlock:
+>   	mutex_unlock(&slab_mutex);
+>   	cpus_read_unlock();
+> -	if (!refcnt && !rcu_set)
+> +	if (!err && !rcu_set)
+>   		kmem_cache_release(s);
+>   }
+>   EXPORT_SYMBOL(kmem_cache_destroy);
 
-Yep, the configs I build most frequently have CONFIG_LOCALVERSION_AUTO=n, and
-I can induce the bad behavior before this patch by toggling that on.
+Thanks for fixing this corner case.
 
-> > E.g. on my build box, a single `git describe --match=v6.5` takes ~8.5 seconds,
-> 
-> That's a long time indeed. I don't really know why it can take that long.
+Reviewed-by: Waiman Long <longman@redhat.com>
 
-I can't figure that either.  It's not always slow, just almost always slow.  I
-assume it has something to do with the number of commits/objects/merges git has
-to trawl through, but I don't fully understand the behavior.
-
-E.g. if I do `git describe --match=v6.5-rc2` on a branch based on v6.5-rc2, it's
-basically instant.  But if take that same branch and merge it on top of v6.5,
-`git describe --match=v6.5` takes 8.5 seconds even though the number of delta
-commits is only one higher.
-
-> > whereas a complete from-scratch kernel build takes <30 seconds, and an incremental
-> > build takes <2 seconds.  When build testing to-be-applied changes, I compile each
-> > commit ~15 times (different x86 configs plus one for each other KVM architecture),
-> > which makes the ~8.5 second delay beyond painful.
-> 
-> Sorry about that. I agree something needs to be done, but the commit
-> above fixed a real problem with -rt kernels, and the refactoring just
-> made it much easier to follow the logic IMO - and, for the
-> CONFIG_LOCALVERSION_AUTO=y case, did reduce the number of times git
-> describe gets invoked.
-> 
-> Until I have a bit more time to think, could you try setting the env var
-> LOCALVERSION when building - it can be set to anything, including empty.
-> Then if I'm reading the script right, the scm_version() function won't
-> be called at all.
-
-Nice!  That does the trick.  Adding a useful LOCALVERSION is trivially easy for
-all my builds, and as a bonus it's useful info for my test kernels.
-
-So unless other people complain, I'm totally ok to leave this alone and not spend
-any more time on it.
-
-Thanks much!
