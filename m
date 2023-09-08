@@ -2,136 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DF9798025
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 03:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0803E798029
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 03:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239194AbjIHB04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 21:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45082 "EHLO
+        id S233739AbjIHB3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 21:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231469AbjIHB0y (ORCPT
+        with ESMTP id S230062AbjIHB3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 21:26:54 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C8D1BD7;
-        Thu,  7 Sep 2023 18:26:50 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3881CjQv003442;
-        Fri, 8 Sep 2023 01:26:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=mm5+MIf8ec1N7dZcJjcJXyLKRdnr/sX42C3UviovjGU=;
- b=VoubLACptmvylNboROHvqqamgcSo5rULvhhnB5NjQn405gmmaRLDVnRFUeIAAh0dPPeh
- vcUbEJc8MKgKEZli2Ic9XczidKEni2myWcSRkatAKdw8fxj6wtRxH3LCdpt4CJPrMIR5
- iUYrHNCwAnOJrrQAoM27Juq4Ypq+To7D6WvP8rt5sKkXGy6YuMDQxQH8kUexFv38KqRM
- CQ5rU6FlTdv9EuslSpcblwEvwxojFT15DTxz491EfcfE1gw2e5+2lTi33M537WKPSOeL
- PrxZBPzCCJ+Ph9pYAUUjus0mtSYsvzi1ElS0GwzWnfZG2I+H1TzzSyoN6tqVlbRIhstX hg== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sym368kge-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Sep 2023 01:26:34 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3881QWfM017260
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 8 Sep 2023 01:26:32 GMT
-Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Thu, 7 Sep 2023 18:26:32 -0700
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-To:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        Kalyan Thota <quic_kalyant@quicinc.com>
-CC:     <dri-devel@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
-        <quic_parellan@quicinc.com>, <nespera@igalia.com>,
-        Rob Clark <robdclark@chromium.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] drm/msm/dpu: change _dpu_plane_calc_bw() to use u64 to avoid overflow
-Date:   Thu, 7 Sep 2023 18:26:16 -0700
-Message-ID: <20230908012616.20654-1-quic_abhinavk@quicinc.com>
-X-Mailer: git-send-email 2.40.1
+        Thu, 7 Sep 2023 21:29:17 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 842A91BD7
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 18:29:10 -0700 (PDT)
+Received: from loongson.cn (unknown [10.2.9.158])
+        by gateway (Coremail) with SMTP id _____8AxV_HkePpkO9YhAA--.2420S3;
+        Fri, 08 Sep 2023 09:29:08 +0800 (CST)
+Received: from kvm-1-158.loongson.cn (unknown [10.2.9.158])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxfSPjePpkpqxxAA--.28198S2;
+        Fri, 08 Sep 2023 09:29:07 +0800 (CST)
+From:   Bibo Mao <maobibo@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] LoongArch: Add tlb_flush_threshold for tlb flush range
+Date:   Fri,  8 Sep 2023 09:29:07 +0800
+Message-Id: <20230908012907.2994001-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: zL33eVymXT6-HCyZ8F4hRA2DUIUzBuQ1
-X-Proofpoint-GUID: zL33eVymXT6-HCyZ8F4hRA2DUIUzBuQ1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-07_15,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- priorityscore=1501 spamscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0
- bulkscore=0 impostorscore=0 clxscore=1015 mlxlogscore=890 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309080011
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: AQAAf8DxfSPjePpkpqxxAA--.28198S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW3Gr4DXr45Kw43Wr1Utw1DJwc_yoW7XrW5pr
+        sa9w45trs5Gr93XrWftryFgrn8Jr1kK3Waga1aqFySvr43tr17urWkKa4rAFy5Xa93GrWf
+        ur9Iqr1aqFZ5J3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
+        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF0x
+        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
+        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+        kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jUsqXUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-_dpu_plane_calc_bw() uses integer variables to calculate the bandwidth
-used during plane bandwidth calculations. However for high resolution
-displays this overflows easily and leads to below errors
+There is calculation in function flush_tlb_range to decide flush tlb
+entries one by one or flush the whole tlbs. Instead the calculation can be
+done during cpu probe stage rather than runtime flush period.
 
-[dpu error]crtc83 failed performance check -7
+This patch adds percpu variable tlb_flush_threshold during cpu probe
+stage, and removes unused percpu variabled like tlbsizemtlb,
+tlbsizestlbsets/tlbsizestlbways etc.
 
-Promote the intermediate variables to u64 to avoid overflow.
+Also this patch fixes function __update_hugetlb, it should be
+effective for CONFIG_TRANSPARENT_HUGEPAGE also.
 
-changes in v2:
-	- change to u64 where actually needed in the math
-
-Fixes: c33b7c0389e1 ("drm/msm/dpu: add support for clk and bw scaling for display")
-Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/32
-Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Signed-off-by: Bibo Mao <maobibo@loongson.cn>
 ---
- drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/loongarch/include/asm/cpu-info.h |  4 +---
+ arch/loongarch/kernel/cpu-probe.c     | 31 ++++++++++++++++-----------
+ arch/loongarch/mm/tlb.c               | 11 +++-------
+ 3 files changed, 23 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-index c2aaaded07ed..98c1b22e9bca 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-@@ -119,6 +119,7 @@ static u64 _dpu_plane_calc_bw(const struct dpu_mdss_cfg *catalog,
- 	struct dpu_sw_pipe_cfg *pipe_cfg)
+diff --git a/arch/loongarch/include/asm/cpu-info.h b/arch/loongarch/include/asm/cpu-info.h
+index 900589cb159d..523827216c1b 100644
+--- a/arch/loongarch/include/asm/cpu-info.h
++++ b/arch/loongarch/include/asm/cpu-info.h
+@@ -47,9 +47,7 @@ struct cpuinfo_loongarch {
+ 	unsigned int		cputype;
+ 	int			isa_level;
+ 	int			tlbsize;
+-	int			tlbsizemtlb;
+-	int			tlbsizestlbsets;
+-	int			tlbsizestlbways;
++	int			tlb_flush_threshold;
+ 	int			cache_leaves_present; /* number of cache_leaves[] elements */
+ 	struct cache_desc	cache_leaves[CACHE_LEAVES_MAX];
+ 	int			core;   /* physical core number in package */
+diff --git a/arch/loongarch/kernel/cpu-probe.c b/arch/loongarch/kernel/cpu-probe.c
+index e925579c7a71..ffa0a1b1ae29 100644
+--- a/arch/loongarch/kernel/cpu-probe.c
++++ b/arch/loongarch/kernel/cpu-probe.c
+@@ -88,7 +88,7 @@ static void set_isa(struct cpuinfo_loongarch *c, unsigned int isa)
+ 
+ static void cpu_probe_common(struct cpuinfo_loongarch *c)
  {
- 	int src_width, src_height, dst_height, fps;
-+	u64 plane_pixel_rate, plane_bit_rate;
- 	u64 plane_prefill_bw;
- 	u64 plane_bw;
- 	u32 hw_latency_lines;
-@@ -136,13 +137,12 @@ static u64 _dpu_plane_calc_bw(const struct dpu_mdss_cfg *catalog,
- 	scale_factor = src_height > dst_height ?
- 		mult_frac(src_height, 1, dst_height) : 1;
+-	unsigned int config;
++	unsigned int config, stlbsets, stlbways, mtlbs;
+ 	unsigned long asid_mask;
  
--	plane_bw =
--		src_width * mode->vtotal * fps * fmt->bpp *
--		scale_factor;
-+	plane_pixel_rate = src_width * mode->vtotal * fps;
-+	plane_bit_rate = plane_pixel_rate * fmt->bpp;
+ 	c->options = LOONGARCH_CPU_CPUCFG | LOONGARCH_CPU_CSR |
+@@ -173,28 +173,35 @@ static void cpu_probe_common(struct cpuinfo_loongarch *c)
+ 	c->ksave_mask &= ~(EXC_KSAVE_MASK | PERCPU_KSAVE_MASK | KVM_KSAVE_MASK);
  
--	plane_prefill_bw =
--		src_width * hw_latency_lines * fps * fmt->bpp *
--		scale_factor * mode->vtotal;
-+	plane_bw = plane_bit_rate * scale_factor;
+ 	config = read_csr_prcfg3();
++	stlbsets = 0;
++	c->tlbsize = 0;
+ 	switch (config & CSR_CONF3_TLBTYPE) {
+ 	case 0:
+-		c->tlbsizemtlb = 0;
+-		c->tlbsizestlbsets = 0;
+-		c->tlbsizestlbways = 0;
++		mtlbs = 0;
++		stlbsets = 0;
++		stlbways = 0;
+ 		c->tlbsize = 0;
+ 		break;
+ 	case 1:
+-		c->tlbsizemtlb = ((config & CSR_CONF3_MTLBSIZE) >> CSR_CONF3_MTLBSIZE_SHIFT) + 1;
+-		c->tlbsizestlbsets = 0;
+-		c->tlbsizestlbways = 0;
+-		c->tlbsize = c->tlbsizemtlb + c->tlbsizestlbsets * c->tlbsizestlbways;
++		mtlbs = ((config & CSR_CONF3_MTLBSIZE) >> CSR_CONF3_MTLBSIZE_SHIFT) + 1;
++		stlbsets = 0;
++		stlbways = 0;
++		c->tlbsize = mtlbs + stlbsets * stlbways;
+ 		break;
+ 	case 2:
+-		c->tlbsizemtlb = ((config & CSR_CONF3_MTLBSIZE) >> CSR_CONF3_MTLBSIZE_SHIFT) + 1;
+-		c->tlbsizestlbsets = 1 << ((config & CSR_CONF3_STLBIDX) >> CSR_CONF3_STLBIDX_SHIFT);
+-		c->tlbsizestlbways = ((config & CSR_CONF3_STLBWAYS) >> CSR_CONF3_STLBWAYS_SHIFT) + 1;
+-		c->tlbsize = c->tlbsizemtlb + c->tlbsizestlbsets * c->tlbsizestlbways;
++		mtlbs = ((config & CSR_CONF3_MTLBSIZE) >> CSR_CONF3_MTLBSIZE_SHIFT) + 1;
++		stlbsets = 1 << ((config & CSR_CONF3_STLBIDX) >> CSR_CONF3_STLBIDX_SHIFT);
++		stlbways = ((config & CSR_CONF3_STLBWAYS) >> CSR_CONF3_STLBWAYS_SHIFT) + 1;
++		c->tlbsize = mtlbs + stlbsets * stlbways;
+ 		break;
+ 	default:
+ 		pr_warn("Warning: unknown TLB type\n");
+ 	}
 +
-+	plane_prefill_bw = plane_bw * hw_latency_lines;
++	if (stlbsets)
++		c->tlb_flush_threshold = c->tlbsize / 8;
++	else
++		c->tlb_flush_threshold = c->tlbsize / 2;
+ }
  
- 	if ((vbp+vpw) > hw_latency_lines)
- 		do_div(plane_prefill_bw, (vbp+vpw));
+ #define MAX_NAME_LEN	32
+diff --git a/arch/loongarch/mm/tlb.c b/arch/loongarch/mm/tlb.c
+index eb8572e201ea..d87627cb9e29 100644
+--- a/arch/loongarch/mm/tlb.c
++++ b/arch/loongarch/mm/tlb.c
+@@ -66,9 +66,7 @@ void local_flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ 		start = round_down(start, PAGE_SIZE << 1);
+ 		end = round_up(end, PAGE_SIZE << 1);
+ 		size = (end - start) >> (PAGE_SHIFT + 1);
+-		if (size <= (current_cpu_data.tlbsizestlbsets ?
+-			     current_cpu_data.tlbsize / 8 :
+-			     current_cpu_data.tlbsize / 2)) {
++		if (size <= current_cpu_data.tlb_flush_threshold) {
+ 			int asid = cpu_asid(cpu, mm);
+ 
+ 			while (start < end) {
+@@ -91,10 +89,7 @@ void local_flush_tlb_kernel_range(unsigned long start, unsigned long end)
+ 	local_irq_save(flags);
+ 	size = (end - start + (PAGE_SIZE - 1)) >> PAGE_SHIFT;
+ 	size = (size + 1) >> 1;
+-	if (size <= (current_cpu_data.tlbsizestlbsets ?
+-		     current_cpu_data.tlbsize / 8 :
+-		     current_cpu_data.tlbsize / 2)) {
+-
++	if (size <= current_cpu_data.tlb_flush_threshold) {
+ 		start &= (PAGE_MASK << 1);
+ 		end += ((PAGE_SIZE << 1) - 1);
+ 		end &= (PAGE_MASK << 1);
+@@ -136,7 +131,7 @@ void local_flush_tlb_one(unsigned long page)
+ 
+ static void __update_hugetlb(struct vm_area_struct *vma, unsigned long address, pte_t *ptep)
+ {
+-#ifdef CONFIG_HUGETLB_PAGE
++#if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+ 	int idx;
+ 	unsigned long lo;
+ 	unsigned long flags;
+
+base-commit: 744a759492b5c57ff24a6e8aabe47b17ad8ee964
 -- 
-2.40.1
+2.27.0
 
