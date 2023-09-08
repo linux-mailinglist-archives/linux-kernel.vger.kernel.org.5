@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E45798A44
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0CC798A45
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243909AbjIHP6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 11:58:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43710 "EHLO
+        id S244134AbjIHP6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 11:58:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242463AbjIHP6b (ORCPT
+        with ESMTP id S244128AbjIHP6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 11:58:31 -0400
+        Fri, 8 Sep 2023 11:58:49 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8481D1BF5
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 08:58:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 299861BF5
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 08:58:42 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 358281007;
-        Fri,  8 Sep 2023 08:59:04 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D145C150C;
+        Fri,  8 Sep 2023 08:59:19 -0700 (PDT)
 Received: from [10.57.5.217] (unknown [10.57.5.217])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 034FF3F7B4;
-        Fri,  8 Sep 2023 08:58:22 -0700 (PDT)
-Message-ID: <9d69d0ca-212d-9b1b-3001-9f56731e48fd@arm.com>
-Date:   Fri, 8 Sep 2023 16:58:20 +0100
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C2363F67D;
+        Fri,  8 Sep 2023 08:58:38 -0700 (PDT)
+Message-ID: <ecc96b20-db88-5a96-d99b-98d6d20030cb@arm.com>
+Date:   Fri, 8 Sep 2023 16:58:31 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH v5 14/24] x86/resctrl: Allow resctrl_arch_rmid_read() to
- sleep
+Subject: Re: [PATCH v5 10/24] tick/nohz: Move tick_nohz_full_mask declaration
+ outside the #ifdef
 Content-Language: en-US
 To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
@@ -45,12 +45,12 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
         dfustini@baylibre.com
 References: <20230728164254.27562-1-james.morse@arm.com>
- <20230728164254.27562-15-james.morse@arm.com>
- <4a0f777e-5dec-296e-c326-61e3630c3608@intel.com>
- <b842c00b-7537-a14a-1a2a-a9a17b98bbce@arm.com>
- <5c0a3df6-3b1c-ff99-194e-3c7901ffa716@intel.com>
+ <20230728164254.27562-11-james.morse@arm.com>
+ <989616c3-ea4c-1c9b-b857-6d8bcb4843bd@intel.com>
+ <fb244874-da8f-ac6f-511f-92861a340abe@arm.com>
+ <c9706a35-4a61-df51-2c70-d4bab62f9eab@intel.com>
 From:   James Morse <james.morse@arm.com>
-In-Reply-To: <5c0a3df6-3b1c-ff99-194e-3c7901ffa716@intel.com>
+In-Reply-To: <c9706a35-4a61-df51-2c70-d4bab62f9eab@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -64,98 +64,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Reinette,
 
-On 8/25/23 00:02, Reinette Chatre wrote:
-> On 8/24/2023 9:56 AM, James Morse wrote:
->> On 09/08/2023 23:36, Reinette Chatre wrote:
+On 8/25/23 01:43, Reinette Chatre wrote:
+> On 8/24/2023 9:55 AM, James Morse wrote:
+>> On 09/08/2023 23:34, Reinette Chatre wrote:
 >>> On 7/28/2023 9:42 AM, James Morse wrote:
->>>> MPAM's cache occupancy counters can take a little while to settle once
->>>> the monitor has been configured. The maximum settling time is described
->>>> to the driver via a firmware table. The value could be large enough
->>>> that it makes sense to sleep. To avoid exposing this to resctrl, it
->>>> should be hidden behind MPAM's resctrl_arch_rmid_read().
+>>>> tick_nohz_full_mask lists the CPUs that are nohz_full. This is only
+>>>> needed when CONFIG_NO_HZ_FULL is defined. tick_nohz_full_cpu() allows
+>>>> a specific CPU to be tested against the mask, and evaluates to false
+>>>> when CONFIG_NO_HZ_FULL is not defined.
 >>>>
->>>> resctrl_arch_rmid_read() may be called via IPI meaning it is unable
->>>> to sleep. In this case resctrl_arch_rmid_read() should return an error
->>>> if it needs to sleep. This will only affect MPAM platforms where
->>>> the cache occupancy counter isn't available immediately, nohz_full is
->>>> in use, and there are there are no housekeeping CPUs in the necessary
->>>> domain.
+>>>> The resctrl code needs to pick a CPU to run some work on, a new helper
+>>>> prefers housekeeping CPUs by examining the tick_nohz_full_mask. Hiding
+>>>> the declaration behind #ifdef CONFIG_NO_HZ_FULL forces all the users to
+>>>> be behind an ifdef too.
 >>>>
->>>> There are three callers of resctrl_arch_rmid_read():
->>>> __mon_event_count() and __check_limbo() are both called from a
->>>> non-migrateable context. mon_event_read() invokes __mon_event_count()
->>>> using smp_call_on_cpu(), which adds work to the target CPUs workqueue.
->>>> rdtgroup_mutex() is held, meaning this cannot race with the resctrl
->>>> cpuhp callback. __check_limbo() is invoked via schedule_delayed_work_on()
->>>> also adds work to a per-cpu workqueue.
+>>>> Move the tick_nohz_full_mask declaration, this lets callers drop the
+>>>> ifdef, and guard access to tick_nohz_full_mask with IS_ENABLED() or
+>>>> something like tick_nohz_full_cpu().
 >>>>
->>>> The remaining call is add_rmid_to_limbo() which is called in response
->>>> to a user-space syscall that frees an RMID. This opportunistically
->>>> reads the LLC occupancy counter on the current domain to see if the
->>>> RMID is over the dirty threshold. This has to disable preemption to
->>>> avoid reading the wrong domain's value. Disabling pre-emption here
->>>> prevents resctrl_arch_rmid_read() from sleeping.
->>>>
->>>> add_rmid_to_limbo() walks each domain, but only reads the counter
->>>> on one domain. If the system has more than one domain, the RMID will
->>>> always be added to the limbo list. If the RMIDs usage was not over the
->>>> threshold, it will be removed from the list when __check_limbo() runs.
->>>> Make this the default behaviour. Free RMIDs are always added to the
->>>> limbo list for each domain.
->>>>
->>>> The user visible effect of this is that a clean RMID is not available
->>>> for re-allocation immediately after 'rmdir()' completes, this behaviour
->>>> was never portable as it never happened on a machine with multiple
->>>> domains.
->>>>
->>>> Removing this path allows resctrl_arch_rmid_read() to sleep if its called
->>>> with interrupts unmasked. Document this is the expected behaviour, and
->>>> add a might_sleep() annotation to catch changes that won't work on arm64.
+>>>> The definition does not need to be moved as any callers should be
+>>>> removed at compile time unless CONFIG_NO_HZ_FULL is defined.
+
+>>> This is outside of the resctrl area. What is the upstreaming
+>>> plan for this patch?
 >>
->>
->>>> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
->>>> index 660752406174..f7311102e94c 100644
->>>> --- a/include/linux/resctrl.h
->>>> +++ b/include/linux/resctrl.h
->>>> @@ -245,6 +250,17 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
->>>>   			   u32 closid, u32 rmid, enum resctrl_event_id eventid,
->>>>   			   u64 *val);
->>>>   
->>>> +/**
->>>> + * resctrl_arch_rmid_read_context_check()  - warn about invalid contexts
->>>> + *
->>>> + * When built with CONFIG_DEBUG_ATOMIC_SLEEP generate a warning when
->>>> + * resctrl_arch_rmid_read() is called with preemption disabled.
->>>> + */
->>>> +static inline void resctrl_arch_rmid_read_context_check(void)
->>>> +{
->>>> +	if (!irqs_disabled())
->>>> +		might_sleep();
->>>> +}
->>
->>> Apologies but even after rereading the patch as well as your response to
->>> the previous patch version several times I am not able to understand why the
->>> code is looking like above. If, like according to the comment above, a
->>> warning should be generated with preemption disabled, then should it not
->>> just be "might_sleep()" without the "!irqs_disabled()" check?
->>
->> This would be simpler. But for NOHZ_FULL you wanted to keep the IPI, so the contract with
->> resctrl_arch_rmid_read() is that if interrupts are unmasked, it can sleep.
+>> Once you're happy with the rest of it - we can give the other folk on CC a poke.
+>> I'd assume changes to this file also go via tip. It would just need an ack from the
+>> relevant person.
 > 
-> Thank you. This appears to be the key. Could you please add this
-> information to resctrl_arch_rmid_read_context_check()'s description?
+> At the moment this change is buried within a pile of resctrl
+> changes so we need to make sure that folks are not surprised by this
+> thinking we are trying to sneak it in. Please note that
+> CC is currently missing Frederic Weisbecker.
 
-That comment now reads:
-  * resctrl_arch_rmid_read_context_check()  - warn about invalid contexts
-  *
-  * When built with CONFIG_DEBUG_ATOMIC_SLEEP generate a warning when
-  * resctrl_arch_rmid_read() is called with preemption disabled.
-  *
-  * The contract with resctrl_arch_rmid_read() is that if interrupts
-  * are unmasked, it can sleep. This allows NOHZ_FULL systems to use an
-  * IPI, (and fail if the call needed to sleep), while most of the time
-  * the work is scheduled, allowing the call to sleep.
+Oops, fixed.
 
+
+> I wonder if it may help to change cover letter to be something like
+> "x86/resctrl and tick/nohz: Monitor ..." Just an idea.
+
+I think that would be excessive - the subject of the patch already matches what is normal for that file. I'll move the patch to the top of the series as that makes it clearer that there is no dependency on the rest of the series.
 
 
 Thanks,
