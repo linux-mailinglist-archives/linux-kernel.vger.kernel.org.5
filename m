@@ -2,56 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 776A57990FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82047799102
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243609AbjIHUaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 16:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41144 "EHLO
+        id S242836AbjIHUeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 16:34:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235365AbjIHUaR (ORCPT
+        with ESMTP id S231203AbjIHUeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 16:30:17 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36AD8E;
-        Fri,  8 Sep 2023 13:30:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34CC8C433C9;
-        Fri,  8 Sep 2023 20:30:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694205013;
-        bh=UBZzVIWBiQ4B80C/9DQ9Ox8AvmoOm/T3gLFsaf19zZs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iLoOfmHXxNNwVVf2qphHX8MXI4dKegtEkIKseIl1C4RcXahodPnJgeooRZRP9n5jR
-         rhec8E1IGYW9EtCasxaFDVZ6qlzt/jzbcuOajph2c0h36gLR+32q3ZJ+k7SNyZtPvN
-         TQZqVZWHqjM+5DujPcZXNHbEO1l3OmjdrD6XjbSqnC4sa4DCezKiv44xiAq3ut+14T
-         fvnZ7uoJG6x4MjsVGVPTGWNPnngpfh/2oFlIpPGoT1KJEzilA2geBl7BDBEumVHulk
-         2KwahNyBY3Mws8mjqmqjtIJqGAPmtYSQqtULC2VA9+0NUu0//BEORywuQBQxKy6g2H
-         hQ52wrsEFwJcg==
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-501b9f27eb2so4396889e87.0;
-        Fri, 08 Sep 2023 13:30:13 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwbxY7909ZUx1uJzyO6JF8ghnBS0yUTrXxonG00Dsl3yHjOsxoc
-        NgV1F0FxU+NDJ2Qfu2GarESKHlrC1QG4BUr+wzU=
-X-Google-Smtp-Source: AGHT+IG84feGJ719OKNXJC70DM/+7y+vFk1L1QqAZu4eCHVvSr6aA0o2BbV+76w80o1f96Tt138l/0tn802rn29qPbA=
-X-Received: by 2002:a05:6512:2033:b0:4fe:3724:fdb6 with SMTP id
- s19-20020a056512203300b004fe3724fdb6mr1014010lfs.30.1694205011415; Fri, 08
- Sep 2023 13:30:11 -0700 (PDT)
+        Fri, 8 Sep 2023 16:34:36 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D808E;
+        Fri,  8 Sep 2023 13:34:30 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::646])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id E0603732;
+        Fri,  8 Sep 2023 20:34:29 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E0603732
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1694205270; bh=MDqJnX+WbR6SonVUJc2b/jr2kB7zjQHa9+7BCtZ8K2A=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=HTkoomFfydhscycwnKd3Cy9JPJ+BEWU99bVy1XpLrFCnWKMW1CV4/tdC2XtjtbO5t
+         PTIgn9ZaMnT3Z7S7TkMeMYa+93uHTfbD725swExTm//fZ4BlPmpgp9EbCjgFTyHzUB
+         KLZ1QEbzihpL7c7/ol1uYdiwqIFSWHTaLmyX/sHE3ALPXiYSRxdIwAzwxY311wXcRL
+         hebiJpl7KFKV3t+IHOqNSFjOF7nDLjy3SahLBRBUBR23vWG/uVpo0DY0z7J6EPHGzw
+         +IVmmMZqnaz7CAOuB/RXy9VY0qDIk2GVU/2jMyU2fYYPsKZLlTkzLhYsCSEMhQtvML
+         Ck7Co0a4wQR/w==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Michal Clapinski <mclapinski@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Yi Liu <yi.l.liu@intel.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Steve French <stfrench@microsoft.com>,
+        Simon Ser <contact@emersion.fr>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Luca Vizzarro <Luca.Vizzarro@arm.com>,
+        Jeff Xu <jeffxu@google.com>, Aleksa Sarai <cyphar@cyphar.com>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Verkamp <dverkamp@chromium.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Cc:     Michal Clapinski <mclapinski@google.com>
+Subject: Re: [PATCH v2 0/2] mm/memfd: add ioctl(MEMFD_CHECK_IF_ORIGINAL)
+In-Reply-To: <20230908175738.41895-1-mclapinski@google.com>
+References: <20230908175738.41895-1-mclapinski@google.com>
+Date:   Fri, 08 Sep 2023 14:34:29 -0600
+Message-ID: <87tts4z9nu.fsf@meer.lwn.net>
 MIME-Version: 1.0
-References: <20230906084401.1027358-1-linan122@huawei.com> <e2befbc6-dfc4-f469-78f0-b648d0ad205d@huaweicloud.com>
-In-Reply-To: <e2befbc6-dfc4-f469-78f0-b648d0ad205d@huaweicloud.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 8 Sep 2023 13:29:59 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4FjWohGYzWGocF+zxMcLRk7N3J8T45=QXzAmdqFFuNTA@mail.gmail.com>
-Message-ID: <CAPhsuW4FjWohGYzWGocF+zxMcLRk7N3J8T45=QXzAmdqFFuNTA@mail.gmail.com>
-Subject: Re: [PATCH] md: use interruptible apis in idle/frozen_sync_thread
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     Li Nan <linan122@huawei.com>, linux-raid@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        houtao1@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,76 +69,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 11:31=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
-rote:
->
-> =E5=9C=A8 2023/09/06 16:44, Li Nan =E5=86=99=E9=81=93:
-> > Before refactoring idle and frozen from action_store, interruptible api=
-s
-> > is used so that hungtask warning won't be triggered if it takes too lon=
-g
-> > to finish indle/frozen sync_thread. So change to use interruptible apis=
-.
-> >
-> LGTM
->
-> Reviewed-by: Yu Kuai <yukuai3@huawei.com>
->
-> > Signed-off-by: Li Nan <linan122@huawei.com>
+Michal Clapinski <mclapinski@google.com> writes:
 
-I think we will need a fix tag and send this via md-fixes branch (to 6.6)?
+> This change introduces a way to check if an fd points to a memfd's
+> original open fd (the one created by memfd_create).
+>
+> We encountered an issue with migrating memfds in CRIU (checkpoint
+> restore in userspace - it migrates running processes between
+> machines). Imagine a scenario:
+> 1. Create a memfd. By default it's open with O_RDWR and yet one can
+> exec() to it (unlike with regular files, where one would get ETXTBSY).
+> 2. Reopen that memfd with O_RDWR via /proc/self/fd/<fd>.
+>
+> Now those 2 fds are indistinguishable from userspace. You can't exec()
+> to either of them (since the reopen incremented inode->i_writecount)
+> and their /proc/self/fdinfo/ are exactly the same. Unfortunately they
+> are not the same. If you close the second one, the first one becomes
+> exec()able again. If you close the first one, the other doesn't become
+> exec()able. Therefore during migration it does matter which is recreated
+> first and which is reopened but there is no way for CRIU to tell which
+> was first.
+
+So please bear with me...I'll confess that I don't fully understand the
+situation here, so this is probably a dumb question.
+
+It seems like you are adding this "original open" test as a way of
+working around a quirk with the behavior of subsequent opens.  I don't
+*think* that this is part of the intended, documented behavior of
+memfds, it's just something that happens.  You're exposing an artifact
+of the current implementation.
+
+Given that the two file descriptors are otherwise indistinguishable,
+might a better fix be to make them indistinguishable in this regard as
+well?  Is there a good reason why the second fd doesn't become
+exec()able in this scenario and, if not, perhaps that behavior could be
+changed instead?
 
 Thanks,
-Song
 
-
-
-> > ---
-> >   drivers/md/md.c | 13 +++++++++----
-> >   1 file changed, 9 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/md/md.c b/drivers/md/md.c
-> > index 46badd13a687..52689adfa37f 100644
-> > --- a/drivers/md/md.c
-> > +++ b/drivers/md/md.c
-> > @@ -4834,11 +4834,14 @@ static void idle_sync_thread(struct mddev *mdde=
-v)
-> >   {
-> >       int sync_seq =3D atomic_read(&mddev->sync_seq);
-> >
-> > -     mutex_lock(&mddev->sync_mutex);
-> > +     if (mutex_lock_interruptible(&mddev->sync_mutex))
-> > +             return;
-> > +
-> >       clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-> >       stop_sync_thread(mddev);
-> >
-> > -     wait_event(resync_wait, sync_seq !=3D atomic_read(&mddev->sync_se=
-q) ||
-> > +     wait_event_interruptible(resync_wait,
-> > +                     sync_seq !=3D atomic_read(&mddev->sync_seq) ||
-> >                       !test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))=
-;
-> >
-> >       mutex_unlock(&mddev->sync_mutex);
-> > @@ -4846,11 +4849,13 @@ static void idle_sync_thread(struct mddev *mdde=
-v)
-> >
-> >   static void frozen_sync_thread(struct mddev *mddev)
-> >   {
-> > -     mutex_lock(&mddev->sync_mutex);
-> > +     if (mutex_lock_interruptible(&mddev->sync_mutex))
-> > +             return;
-> > +
-> >       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-> >       stop_sync_thread(mddev);
-> >
-> > -     wait_event(resync_wait, mddev->sync_thread =3D=3D NULL &&
-> > +     wait_event_interruptible(resync_wait, mddev->sync_thread =3D=3D N=
-ULL &&
-> >                       !test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))=
-;
-> >
-> >       mutex_unlock(&mddev->sync_mutex);
-> >
->
+jon
