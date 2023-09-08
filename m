@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2C77988B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFD17988BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243929AbjIHOaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55318 "EHLO
+        id S243986AbjIHOah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:30:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231899AbjIHOaP (ORCPT
+        with ESMTP id S243970AbjIHOab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:30:15 -0400
+        Fri, 8 Sep 2023 10:30:31 -0400
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECDE1BF5;
-        Fri,  8 Sep 2023 07:30:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFA51FE8;
+        Fri,  8 Sep 2023 07:30:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1694183410; x=1725719410;
+  t=1694183422; x=1725719422;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=kmUe7gf4S/VQfRUrjgXkd5uprc3VQ+NXaLDIYMzPFnA=;
-  b=xRKoQMy1CS0cGc1P+2pIuc+uTQAUI3J6SFH16wdwvSLjKHFA9+5JmUNV
-   Dd/AfvTD1sFtxANN9gwhGLp81aohmjtptiCBSv1EP9IQP3qqxIGXzF6bp
-   d7p7006kyGkCdIngVOC3qFp+rkEmKNA1juxX2zOanW4eSlpWGpZKVTejt
-   DYjKFgTtbKKX+AVLf6rNmisVHQMZkCyufnJLnWUX6KIKqkmgjk7psbdVk
-   9KwrGG04eA6oOX4dlKFj/YYPYCUIBdYq3mJ2UImXJ6N4gTLjptNPqf7lF
-   ZOhfQHX97kI3vq+iLOWM71GMP/8xh6fCs7ZRbZs9Urb0qwhslvs2pqs9H
-   w==;
-X-CSE-ConnectionGUID: Aywz+yjmSOCB/VIlcerAKg==
-X-CSE-MsgGUID: zQWazptsS8ukr9RtQEVIDQ==
+  bh=o/4kIOJ9QiV558+OQwsWtdlftTAaBUFLv7BslVDZoe4=;
+  b=cOvNhMNNqGnG95Cwno7D/374xXDT7shCCSWKWykYCsdzyvZ4PbPgcOSu
+   mbOQtp7jV8hRF9xRa1LB6scSdIhSAlnZ+ZNYN9dAXWTf//68zxocQAz66
+   ZsqjpO4YyQRdAlqsxc/O0BTB8Gnc8cjDX46ISRcNTfhqoPoGnguL71IzF
+   C3mHNNpRbTdHiZKH0cyAYV3WtLcNiVJnhlmz8pOw3QB+gVm6tWOB+1ytd
+   V9P/MYCW9EvycO725eLuT5wJ0406VyVINgQAN1t88Sw8RtzjCaUZs9Z55
+   6IgH0wWtsOCy/RbzPFWulqnCN8B+f8o5GqccoRpyDe6LRsstaWNNJHoDY
+   Q==;
+X-CSE-ConnectionGUID: 0oM0WiPjTKynEvbCqNPq+Q==
+X-CSE-MsgGUID: Vkq0kZYKRvy3VwWmZvV6yQ==
 X-ThreatScanner-Verdict: Negative
 X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
-   d="scan'208";a="3544696"
+   d="scan'208";a="170641771"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Sep 2023 07:30:09 -0700
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Sep 2023 07:30:20 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 8 Sep 2023 07:30:09 -0700
+ 15.1.2507.21; Fri, 8 Sep 2023 07:30:16 -0700
 Received: from CHE-LT-I17164LX.microchip.com (10.10.85.11) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 8 Sep 2023 07:30:01 -0700
+ 15.1.2507.21 via Frontend Transport; Fri, 8 Sep 2023 07:30:09 -0700
 From:   Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
 To:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
         <pabeni@redhat.com>, <robh+dt@kernel.org>,
@@ -56,9 +56,9 @@ CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <Nicolas.Ferre@microchip.com>, <UNGLinuxDriver@microchip.com>,
         <Thorsten.Kummermehr@microchip.com>,
         Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-Subject: [RFC PATCH net-next 2/6] net: ethernet: add mac-phy interrupt support with reset complete handling
-Date:   Fri, 8 Sep 2023 19:59:15 +0530
-Message-ID: <20230908142919.14849-3-Parthiban.Veerasooran@microchip.com>
+Subject: [RFC PATCH net-next 3/6] net: ethernet: implement OA TC6 configuration function
+Date:   Fri, 8 Sep 2023 19:59:16 +0530
+Message-ID: <20230908142919.14849-4-Parthiban.Veerasooran@microchip.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230908142919.14849-1-Parthiban.Veerasooran@microchip.com>
 References: <20230908142919.14849-1-Parthiban.Veerasooran@microchip.com>
@@ -75,238 +75,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register MAC-PHY interrupt and handle reset complete interrupt. Reset
-complete bit is set when the MAC-PHY reset complete and ready for
-configuration. When it is set, it will generate a non-maskable interrupt
-to alert the SPI host. Additionally reset complete bit in the STS0
-register has to be written by one upon reset complete to clear the
-interrupt.
+Read STDCAP register for the MAC-PHY capability and check against the
+configuration parameters such as chunk payload, tx cut through and rx cut
+through to configure the MAC-PHY. It also configures the control command
+protected/unprotected mode.
+
+In cut through mode configuration the MAC-PHY doesn't buffer the incoming
+data. In tx case, it passes the data to the network if the configured cps
+of data available. In rx case, it passes the data to the SPI host if the
+configured cps of data available from the network. Also disables all the
+errors mask in the IMASK0 register to check for the errors.
 
 Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
 ---
- drivers/net/ethernet/oa_tc6.c | 141 ++++++++++++++++++++++++++++++++--
- include/linux/oa_tc6.h        |  16 +++-
- 2 files changed, 150 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/oa_tc6.c | 39 +++++++++++++++++++++++++++++++++++
+ include/linux/oa_tc6.h        | 28 ++++++++++++++++++++++---
+ 2 files changed, 64 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/ethernet/oa_tc6.c b/drivers/net/ethernet/oa_tc6.c
-index 613cf034430a..0019f70345b6 100644
+index 0019f70345b6..65a7317f768d 100644
 --- a/drivers/net/ethernet/oa_tc6.c
 +++ b/drivers/net/ethernet/oa_tc6.c
-@@ -6,6 +6,7 @@
-  */
- 
- #include <linux/bitfield.h>
-+#include <linux/interrupt.h>
- #include <linux/oa_tc6.h>
- 
- static int oa_tc6_spi_transfer(struct spi_device *spi, u8 *ptx, u8 *prx,
-@@ -160,10 +161,16 @@ int oa_tc6_perform_ctrl(struct oa_tc6 *tc6, u32 addr, u32 val[], u8 len,
- 	if (ret)
- 		goto err_ctrl;
- 
--	/* Check echoed/received control reply */
--	ret = oa_tc6_check_control(tc6, tx_buf, rx_buf, len, wnr, ctrl_prot);
--	if (ret)
--		goto err_ctrl;
-+	/* In case of reset write, the echoed control command doesn't have any
-+	 * valid data. So no need to check for error.
-+	 */
-+	if (addr != OA_TC6_RESET) {
-+		/* Check echoed/received control reply */
-+		ret = oa_tc6_check_control(tc6, tx_buf, rx_buf, len, wnr,
-+					   ctrl_prot);
-+		if (ret)
-+			goto err_ctrl;
-+	}
- 
- 	if (!wnr) {
- 		/* Copy read data from the rx data in case of ctrl read */
-@@ -186,6 +193,88 @@ int oa_tc6_perform_ctrl(struct oa_tc6 *tc6, u32 addr, u32 val[], u8 len,
- 	return ret;
+@@ -287,6 +287,45 @@ int oa_tc6_read_register(struct oa_tc6 *tc6, u32 addr, u32 val[], u8 len)
  }
+ EXPORT_SYMBOL_GPL(oa_tc6_read_register);
  
-+static int oa_tc6_handler(void *data)
++int oa_tc6_configure(struct oa_tc6 *tc6, u8 cps, bool ctrl_prot, bool tx_cut_thr,
++		     bool rx_cut_thr)
 +{
-+	struct oa_tc6 *tc6 = data;
 +	u32 regval;
 +	int ret;
 +
-+	while (likely(!kthread_should_stop())) {
-+		wait_event_interruptible(tc6->tc6_wq, tc6->int_flag ||
-+					 kthread_should_stop());
-+		if (tc6->int_flag) {
-+			tc6->int_flag = false;
-+			ret = oa_tc6_perform_ctrl(tc6, OA_TC6_STS0, &regval, 1,
-+						  false, false);
-+			if (ret) {
-+				dev_err(&tc6->spi->dev, "Failed to read STS0\n");
-+				continue;
-+			}
-+			/* Check for reset complete interrupt status */
-+			if (regval & RESETC) {
-+				regval = RESETC;
-+				/* SPI host should write RESETC bit with one to
-+				 * clear the reset interrupt status.
-+				 */
-+				ret = oa_tc6_perform_ctrl(tc6, OA_TC6_STS0,
-+							  &regval, 1, true,
-+							  false);
-+				if (ret) {
-+					dev_err(&tc6->spi->dev,
-+						"Failed to write STS0\n");
-+					continue;
-+				}
-+				complete(&tc6->rst_complete);
-+			}
-+		}
-+	}
-+	return 0;
-+}
-+
-+static irqreturn_t macphy_irq(int irq, void *dev_id)
-+{
-+	struct oa_tc6 *tc6 = dev_id;
-+
-+	/* Wake tc6 task to perform interrupt action */
-+	tc6->int_flag = true;
-+	wake_up_interruptible(&tc6->tc6_wq);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int oa_tc6_sw_reset(struct oa_tc6 *tc6)
-+{
-+	long timeleft;
-+	u32 regval;
-+	int ret;
-+
-+	/* Perform software reset with both protected and unprotected control
-+	 * commands because the driver doesn't know the current status of the
-+	 * MAC-PHY.
-+	 */
-+	regval = SW_RESET;
-+	reinit_completion(&tc6->rst_complete);
-+	ret = oa_tc6_perform_ctrl(tc6, OA_TC6_RESET, &regval, 1, true, false);
-+	if (ret) {
-+		dev_err(&tc6->spi->dev, "RESET register write failed\n");
++	/* Read and configure the IMASK0 register for unmasking the interrupts */
++	ret = oa_tc6_read_register(tc6, OA_TC6_IMASK0, &regval, 1);
++	if (ret)
 +		return ret;
-+	}
 +
-+	ret = oa_tc6_perform_ctrl(tc6, OA_TC6_RESET, &regval, 1, true, true);
-+	if (ret) {
-+		dev_err(&tc6->spi->dev, "RESET register write failed\n");
++	regval &= TXPEM & TXBOEM & TXBUEM & RXBOEM & LOFEM & HDREM;
++	ret = oa_tc6_write_register(tc6, OA_TC6_IMASK0, &regval, 1);
++	if (ret)
 +		return ret;
-+	}
-+	timeleft = wait_for_completion_interruptible_timeout(&tc6->rst_complete,
-+							     msecs_to_jiffies(1));
-+	if (timeleft <= 0) {
-+		dev_err(&tc6->spi->dev, "MAC-PHY reset failed\n");
-+		return -ENODEV;
-+	}
++
++	/* Configure the CONFIG0 register with the required configurations */
++	regval = SYNC;
++	if (ctrl_prot)
++		regval |= PROTE;
++	if (tx_cut_thr)
++		regval |= TXCTE;
++	if (rx_cut_thr)
++		regval |= RXCTE;
++	regval |= FIELD_PREP(CPS, ilog2(cps) / ilog2(2));
++
++	ret = oa_tc6_write_register(tc6, OA_TC6_CONFIG0, &regval, 1);
++	if (ret)
++		return ret;
++
++	tc6->cps = cps;
++	tc6->ctrl_prot = ctrl_prot;
++	tc6->tx_cut_thr = tx_cut_thr;
++	tc6->rx_cut_thr = rx_cut_thr;
 +
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(oa_tc6_configure);
 +
- int oa_tc6_write_register(struct oa_tc6 *tc6, u32 addr, u32 val[], u8 len)
- {
- 	return oa_tc6_perform_ctrl(tc6, addr, val, len, true, tc6->ctrl_prot);
-@@ -201,6 +290,7 @@ EXPORT_SYMBOL_GPL(oa_tc6_read_register);
  struct oa_tc6 *oa_tc6_init(struct spi_device *spi)
  {
  	struct oa_tc6 *tc6;
-+	int ret;
- 
- 	if (!spi)
- 		return NULL;
-@@ -211,12 +301,51 @@ struct oa_tc6 *oa_tc6_init(struct spi_device *spi)
- 
- 	tc6->spi = spi;
- 
-+	/* Used for triggering the OA TC6 task */
-+	init_waitqueue_head(&tc6->tc6_wq);
-+
-+	init_completion(&tc6->rst_complete);
-+
-+	/* This task performs the SPI transfer */
-+	tc6->tc6_task = kthread_run(oa_tc6_handler, tc6, "OA TC6 Task");
-+	if (IS_ERR(tc6->tc6_task))
-+		goto err_tc6_task;
-+
-+	/* Set the highest priority to the tc6 task as it is time critical */
-+	sched_set_fifo(tc6->tc6_task);
-+
-+	/* Register MAC-PHY interrupt service routine */
-+	ret = devm_request_irq(&spi->dev, spi->irq, macphy_irq, 0, "macphy int",
-+			       tc6);
-+	if ((ret != -ENOTCONN) && ret < 0) {
-+		dev_err(&spi->dev, "Error attaching macphy irq %d\n", ret);
-+		goto err_macphy_irq;
-+	}
-+
-+	/* Perform MAC-PHY software reset */
-+	if (oa_tc6_sw_reset(tc6))
-+		goto err_macphy_reset;
-+
- 	return tc6;
-+
-+err_macphy_reset:
-+	devm_free_irq(&tc6->spi->dev, tc6->spi->irq, tc6);
-+err_macphy_irq:
-+	kthread_stop(tc6->tc6_task);
-+err_tc6_task:
-+	kfree(tc6);
-+	return NULL;
- }
- EXPORT_SYMBOL_GPL(oa_tc6_init);
- 
--void oa_tc6_deinit(struct oa_tc6 *tc6)
-+int oa_tc6_deinit(struct oa_tc6 *tc6)
- {
--	kfree(tc6);
-+	int ret;
-+
-+	devm_free_irq(&tc6->spi->dev, tc6->spi->irq, tc6);
-+	ret = kthread_stop(tc6->tc6_task);
-+	if (!ret)
-+		kfree(tc6);
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(oa_tc6_deinit);
 diff --git a/include/linux/oa_tc6.h b/include/linux/oa_tc6.h
-index 5e0a58ab1dcd..315f061c2dfe 100644
+index 315f061c2dfe..fa29c4e09720 100644
 --- a/include/linux/oa_tc6.h
 +++ b/include/linux/oa_tc6.h
-@@ -17,15 +17,29 @@
- #define CTRL_HDR_LEN	GENMASK(7, 1)	/* Length */
- #define CTRL_HDR_P	BIT(0)		/* Parity Bit */
+@@ -19,11 +19,28 @@
  
-+/* Open Alliance TC6 Standard Control and Status Registers */
-+#define OA_TC6_RESET	0x0003		/* Reset Control and Status Register */
-+#define OA_TC6_STS0	0x0008		/* Status Register #0 */
+ /* Open Alliance TC6 Standard Control and Status Registers */
+ #define OA_TC6_RESET	0x0003		/* Reset Control and Status Register */
++#define OA_TC6_CONFIG0	0x0004		/* Configuration Register #0 */
+ #define OA_TC6_STS0	0x0008		/* Status Register #0 */
++#define OA_TC6_IMASK0	0x000C		/* Interrupt Mask Register #0 */
+ 
+ /* RESET register field */
+ #define SW_RESET	BIT(0)		/* Software Reset */
+ 
++/* CONFIG0 register fields */
++#define SYNC		BIT(15)		/* Configuration Synchronization */
++#define TXCTE		BIT(9)		/* Tx cut-through enable */
++#define RXCTE		BIT(8)		/* Rx cut-through enable */
++#define PROTE		BIT(5)		/* Ctrl read/write Protection Enable */
++#define CPS		GENMASK(2, 0)	/* Chunk Payload Size */
 +
-+/* RESET register field */
-+#define SW_RESET	BIT(0)		/* Software Reset */
++/* Unmasking interrupt fields in IMASK0 */
++#define HDREM		~BIT(5)		/* Header Error Mask */
++#define LOFEM		~BIT(4)		/* Loss of Framing Error Mask */
++#define RXBOEM		~BIT(3)		/* Rx Buffer Overflow Error Mask */
++#define TXBUEM		~BIT(2)		/* Tx Buffer Underflow Error Mask */
++#define TXBOEM		~BIT(1)		/* Tx Buffer Overflow Error Mask */
++#define TXPEM		~BIT(0)		/* Tx Protocol Error Mask */
 +
-+/* STATUS0 register field */
-+#define RESETC		BIT(6)		/* Reset Complete */
-+
- #define TC6_HDR_SIZE	4		/* Ctrl command header size as per OA */
+ /* STATUS0 register field */
+ #define RESETC		BIT(6)		/* Reset Complete */
+ 
+@@ -31,15 +48,20 @@
  #define TC6_FTR_SIZE	4		/* Ctrl command footer size ss per OA */
  
  struct oa_tc6 {
- 	struct spi_device *spi;
- 	bool ctrl_prot;
-+	struct task_struct *tc6_task;
-+	wait_queue_head_t tc6_wq;
-+	bool int_flag;
+-	struct spi_device *spi;
+-	bool ctrl_prot;
 +	struct completion rst_complete;
+ 	struct task_struct *tc6_task;
+ 	wait_queue_head_t tc6_wq;
++	struct spi_device *spi;
++	bool tx_cut_thr;
++	bool rx_cut_thr;
++	bool ctrl_prot;
+ 	bool int_flag;
+-	struct completion rst_complete;
++	u8 cps;
  };
  
  struct oa_tc6 *oa_tc6_init(struct spi_device *spi);
--void oa_tc6_deinit(struct oa_tc6 *tc6);
-+int oa_tc6_deinit(struct oa_tc6 *tc6);
+ int oa_tc6_deinit(struct oa_tc6 *tc6);
  int oa_tc6_write_register(struct oa_tc6 *tc6, u32 addr, u32 value[], u8 len);
  int oa_tc6_read_register(struct oa_tc6 *tc6, u32 addr, u32 value[], u8 len);
++int oa_tc6_configure(struct oa_tc6 *tc6, u8 cps, bool ctrl_prot, bool tx_cut_thr,
++		     bool rx_cut_thr);
 -- 
 2.34.1
 
