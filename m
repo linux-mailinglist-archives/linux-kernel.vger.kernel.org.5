@@ -2,108 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFA2798032
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 03:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB20798039
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 03:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237287AbjIHBax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 21:30:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45028 "EHLO
+        id S236633AbjIHBfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 21:35:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbjIHBau (ORCPT
+        with ESMTP id S230521AbjIHBfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 21:30:50 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 214361BD2
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 18:30:46 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9a6190af24aso190330866b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 18:30:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694136644; x=1694741444; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+s6ddDNWj5Ed/aqdjx7Pfh0SYjgnxSyCgwh9TBhOQWw=;
-        b=CDgHwCEQ9xmWztLOsNwxJ58XlzSQTIUUU2Pxo5Vz2bjf/0nk8nvrWaYb2JTQ8Pqxcg
-         uq/FKnrYvSEhWKmwvhQqWYqUzaBrjdkof2GDniT3l46MuEOMDvNSWNYTVudM9ArGTB1b
-         UzNM5lWfy2NO6REnFWbKC+BY/djscLYVzNlgokjYPNwkpJT0WFZm04Y4lQatyVYxnHhi
-         360Jx8DJGQGWHhAesJCG3GFjWWCompxHb3aUW1dW9sM6oGlGtAOLj1caNSLlZ65sTw/b
-         Vy07qQbqe2Bma8BNfPFn+oSMBloLVMJRHMW2d5WN6AxrZOmnsWhEcnud1V59015ffl8t
-         VwtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694136644; x=1694741444;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+s6ddDNWj5Ed/aqdjx7Pfh0SYjgnxSyCgwh9TBhOQWw=;
-        b=UXoWb+joMToDsoK9yvuxsCkHr6JjZzHnKUCxy2HQhTXJQnQVEKU/OdO0v4uT8io1yW
-         lquDrxDabkxY+YnwVfR47gPdYxjYOU8jVzEiA2q9whGbAgc+deVed1AQFeOnywfxxbrJ
-         um2pYAjWqqXHXsuRR0jIKPlQIRyGegTg1XvnJqLEbQhKGbRhmTZFVNKC4X1mK55nrBH8
-         kNwP0wxjjOGiYq+YrrGvpkV10WCNGvuGEvLbFLhVy2he9Ujn/R5FA8msYzkzLzYpdSA2
-         Tsif6MGwdFG7308H+P2NYpEEkPk4bfFdZZd41E125owfllPD+HpoIvcG6U+wFTM3owMC
-         ppUw==
-X-Gm-Message-State: AOJu0YyyxXZLuVyRcGHI8fvzXAnW+e8j2rP2IBLPc0ogDtKw6gjoIEuq
-        exVlHHxp/xJJuu2w7y4vdkWhZt36GOrOZOXWXOQ=
-X-Google-Smtp-Source: AGHT+IGoHfi/f0ipDYYNQtYwElSZi0+PTS0KL74gN0o35Q3QTzuxbhrmUK7vaOEkHJM2Pm7wiL3FwQ==
-X-Received: by 2002:a17:906:76d8:b0:9a9:ee3e:e6b6 with SMTP id q24-20020a17090676d800b009a9ee3ee6b6mr608770ejn.3.1694136644631;
-        Thu, 07 Sep 2023 18:30:44 -0700 (PDT)
-Received: from [10.10.15.130] ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id d24-20020a17090648d800b00992e14af9c3sm325285ejt.143.2023.09.07.18.30.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 18:30:44 -0700 (PDT)
-Message-ID: <d5135c84-65d1-4e39-8c97-a7c6838a32a5@linaro.org>
-Date:   Fri, 8 Sep 2023 04:30:42 +0300
+        Thu, 7 Sep 2023 21:35:18 -0400
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D67519A7
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 18:35:15 -0700 (PDT)
+Date:   Fri, 08 Sep 2023 01:34:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail3; t=1694136913; x=1694396113;
+        bh=20d3p7nggaNeFs2QF0z5nZ1bLxBGS0c6JQr7quxo9mo=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=x3fe5Sy29HYNDlu5kpuXgzXhEzFi/hNI8bZ5Yfb+lyb6LqnorGXBbeASV+DSydnpa
+         SZcWFwwQQqAAcVhXpY8xvoXU8DG7jiZhWau0Bgx2fH+uMI8X+nlybZMKHIhXwT66mu
+         OEXcndVpYr+ptTKA0XgKz7YQoReUK8PUhg3beVfALzffKK2WPQ1YIimQ2aRp+fEpkT
+         E6LsV5HzFnQPi/I/1qN7DOaz/LaIk6YXP0pw6V+20zq00yjNVmenBOQFumSKcpKFM2
+         Oj/6XGKkwv2oZ+9a7hdMZTe2Eouc1P8211tGGyKYEZkGCeQauj8WSBqadWAr9K4kUZ
+         wB0tb2EP8ATew==
+To:     Johannes Roith <johannes@gnu-linux.rocks>
+From:   Rahul Rameshbabu <sergeantsagara@protonmail.com>
+Cc:     ak@it-klinger.de, andi.shyti@kernel.org,
+        benjamin.tissoires@redhat.com, christophe.jaillet@wanadoo.fr,
+        jikos@kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH v5] hid-mcp2200: added driver for GPIOs of MCP2200
+Message-ID: <87bkedv45j.fsf@protonmail.com>
+In-Reply-To: <20230907164121.21092-1-johannes@gnu-linux.rocks>
+References: <87ledpvhgm.fsf@protonmail.com> <20230907164121.21092-1-johannes@gnu-linux.rocks>
+Feedback-ID: 26003777:user:proton
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/msm/dpu: change _dpu_plane_calc_bw() to use u64 to
- avoid overflow
-Content-Language: en-GB
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kalyan Thota <quic_kalyant@quicinc.com>
-Cc:     dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com,
-        quic_parellan@quicinc.com, nespera@igalia.com,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230908012616.20654-1-quic_abhinavk@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20230908012616.20654-1-quic_abhinavk@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/09/2023 04:26, Abhinav Kumar wrote:
-> _dpu_plane_calc_bw() uses integer variables to calculate the bandwidth
-> used during plane bandwidth calculations. However for high resolution
-> displays this overflows easily and leads to below errors
-> 
-> [dpu error]crtc83 failed performance check -7
-> 
-> Promote the intermediate variables to u64 to avoid overflow.
-> 
-> changes in v2:
-> 	- change to u64 where actually needed in the math
-> 
-> Fixes: c33b7c0389e1 ("drm/msm/dpu: add support for clk and bw scaling for display")
-> Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/32
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c | 12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
+Hi Johannes,
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+On Thu, 07 Sep, 2023 18:41:21 +0200 "Johannes Roith" <johannes@gnu-linux.ro=
+cks> wrote:
+> Hi Rahul,
+>
+> thank you for the explanation, now I got it.
+>
+> I have added hid_hw_stop and hid_hw_close to my remove function and remov=
+ed the
+> devm_add_action_or_reset. The driver still worked well.
 
--- 
-With best wishes
-Dmitry
+Glad to hear this worked out. This discussion has motivated me to take a
+deeper look at hid_device_remove in the near future to see what can be
+done for devices that need to invoke hid_hw_open without needing to
+explicitly implement a remove callback.
+
+>
+> So, if it is okay for you, I would go this way and generate a new patch.
+
+This sounds great. Excited to see your patch on the mailing list.
+
+--
+Thanks,
+
+Rahul Rameshbabu
 
