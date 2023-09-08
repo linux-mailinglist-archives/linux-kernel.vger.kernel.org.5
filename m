@@ -2,150 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0598798292
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 08:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15207982AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 08:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242086AbjIHGpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 02:45:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54230 "EHLO
+        id S234107AbjIHGrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 02:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236742AbjIHGpn (ORCPT
+        with ESMTP id S232457AbjIHGrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 02:45:43 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A58A1BDD;
-        Thu,  7 Sep 2023 23:45:37 -0700 (PDT)
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by gandalf.ozlabs.org (Postfix) with ESMTP id 4Rhmnx5sZhz4xFD;
-        Fri,  8 Sep 2023 16:45:25 +1000 (AEST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rhmnx1wnCz4xF9;
-        Fri,  8 Sep 2023 16:45:25 +1000 (AEST)
-From:   Michael Ellerman <michaele@au1.ibm.com>
-To:     Sachin Sant <sachinp@linux.ibm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-mm@kvack.org,
-        liushixin2@huawei.com
-Cc:     open list <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org
-Subject: Re: Kernel crash during ltp(min_free_kbytes) test run
- (zone_reclaimable_pages)
-In-Reply-To: <F00144DE-2A3F-4463-8203-45E0D57E313E@linux.ibm.com>
-References: <F00144DE-2A3F-4463-8203-45E0D57E313E@linux.ibm.com>
-Date:   Fri, 08 Sep 2023 16:45:19 +1000
-Message-ID: <878r9hcge8.fsf@mail.lhotse>
+        Fri, 8 Sep 2023 02:47:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934A01BF0;
+        Thu,  7 Sep 2023 23:46:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB2B2C433C9;
+        Fri,  8 Sep 2023 06:46:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694155619;
+        bh=F/+3AoZMSA6jGzbZvILpyJhqzHBMsKrZoIHomJSa4HI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Digbn9unnTDdYbaZjXuF+eTk9YuXPNpX0HcgtWvI6qysLqfZfbHtE0AqQlEZozKf1
+         3DpBxe5JPnXQuE/su+szL/IPjrneBMc9YyAvAwtT/DnfBFs+QZef1Sadb8iX8GcCPA
+         V2bo2I0EOag6gTdMy2NQE3in9n9efkPUmMKk0kxA=
+Date:   Fri, 8 Sep 2023 07:46:56 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Stefan Lippers-Hollmann <s.l-h@gmx.de>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        Christoph Hellwig <hch@lst.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6.5 11/34] modules: only allow symbol_get of
+ EXPORT_SYMBOL_GPL modules
+Message-ID: <2023090848-chastise-paycheck-6d4d@gregkh>
+References: <20230904182948.594404081@linuxfoundation.org>
+ <20230904182949.104100132@linuxfoundation.org>
+ <20230907084135.02d97441@mir>
+ <2023090719-virtuous-snowflake-d015@gregkh>
+ <20230907221737.07f12f38@mir>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230907221737.07f12f38@mir>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sachin Sant <sachinp@linux.ibm.com> writes:
-> While running LTP tests (specifically min_free_kbytes) on a Power server
-> booted with 6.5.0-next-20230906 following crash was encountered.
->
-> [ 3952.404936] __vm_enough_memory: pid: 440285, comm: min_free_kbytes, not enough memory for the allocation
-> [ 3956.895519] __vm_enough_memory: pid: 440286, comm: min_free_kbytes, not enough memory for the allocation
-> [ 3961.296168] __vm_enough_memory: pid: 440287, comm: min_free_kbytes, not enough memory for the allocation
-> [ 3982.202651] Kernel attempted to read user page (28) - exploit attempt? (uid: 0)
-> [ 3982.202669] BUG: Kernel NULL pointer dereference on read at 0x00000028
-> [ 3982.202674] Faulting instruction address: 0xc000000000469660
-> [ 3982.202679] Oops: Kernel access of bad area, sig: 11 [#1]
-> [ 3982.202682] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=8192 NUMA pSeries
-> [ 3982.202688] Modules linked in: nfsv3 nfs_acl nfs lockd grace fscache netfs brd overlay exfat vfat fat btrfs blake2b_generic xor raid6_pq zstd_compress xfs loop sctp ip6_udp_tunnel udp_tunnel dm_mod nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 bonding rfkill tls ip_set nf_tables libcrc32c nfnetlink sunrpc pseries_rng vmx_crypto ext4 mbcache jbd2 sd_mod t10_pi crc64_rocksoft crc64 sg ibmvscsi ibmveth scsi_transport_srp fuse [last unloaded: init_module(O)]
-> [ 3982.202756] CPU: 18 PID: 440288 Comm: min_free_kbytes Tainted: G O 6.5.0-next-20230906 #1
-> [ 3982.202762] Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 0xf000006 of:IBM,FW1030.20 (NH1030_058) hv:phyp pSeries
-> [ 3982.202767] NIP: c000000000469660 LR: c0000000004694a8 CTR: 0000000000000000
-> [ 3982.202771] REGS: c00000001d6af410 TRAP: 0300 Tainted: G O (6.5.0-next-20230906)
-> [ 3982.202776] MSR: 8000000000009033 <SF,EE,ME,IR,DR,RI,LE> CR: 24402444 XER: 00000000
-> [ 3982.202787] CFAR: c0000000004694fc DAR: 0000000000000028 DSISR: 40000000 IRQMASK: 0 
-> [ 3982.202787] GPR00: c0000000004696b8 c00000001d6af6b0 c000000001451100 0000000000000080 
-> [ 3982.202787] GPR04: 0000000000000080 0000000000000081 0000000000000020 0000000000000000 
-> [ 3982.202787] GPR08: 0000000000000080 00000000000048d9 0000000000000000 00000000000014de 
-> [ 3982.202787] GPR12: 0000000000008000 c0000013ffab5300 c000000002f27238 c000000002c9d4d8 
-> [ 3982.202787] GPR16: 0000000000000000 0000000000000000 c000000006924d40 c000000002d174f8 
-> [ 3982.202787] GPR20: c000000002d17500 0000000000000002 60000000000000e0 00000000000008c0 
-> [ 3982.202787] GPR24: 0000000000000000 0000000000000000 0000000000000000 c000000002c9a7e8 
-> [ 3982.202787] GPR28: c000000002c9be10 c0000013ff1d1500 0000000000000488 0000000000000950 
-> [ 3982.202839] NIP [c000000000469660] zone_reclaimable_pages+0x2a0/0x2c0
-> [ 3982.202847] LR [c0000000004694a8] zone_reclaimable_pages+0xe8/0x2c0
-> [ 3982.202852] Call Trace:
-> [ 3982.202854] [c00000001d6af6b0] [5deadbeef0000122] 0x5deadbeef0000122 (unreliable)
-> [ 3982.202861] [c00000001d6af710] [c0000000004696b8] allow_direct_reclaim.part.72+0x38/0x190
-> [ 3982.202867] [c00000001d6af760] [c000000000469990] throttle_direct_reclaim+0x180/0x400
-> [ 3982.202873] [c00000001d6af7e0] [c00000000046de88] try_to_free_pages+0xd8/0x2a0
-> [ 3982.202879] [c00000001d6af8a0] [c0000000004e7370] __alloc_pages_slowpath.constprop.92+0x490/0x1000
-> [ 3982.202886] [c00000001d6afa50] [c0000000004e822c] __alloc_pages+0x34c/0x3d0
-> [ 3982.202893] [c00000001d6afad0] [c0000000004e8ce4] __folio_alloc+0x34/0x90
-> [ 3982.202898] [c00000001d6afb00] [c00000000051ba50] vma_alloc_folio+0xe0/0x460
-> [ 3982.202905] [c00000001d6afbc0] [c0000000004af108] do_pte_missing+0x2a8/0xca0
-> [ 3982.202912] [c00000001d6afc10] [c0000000004b3590] __handle_mm_fault+0x3f0/0x1060
-> [ 3982.202917] [c00000001d6afd20] [c0000000004b43c4] handle_mm_fault+0x1c4/0x330
-> [ 3982.202923] [c00000001d6afd70] [c000000000092a14] ___do_page_fault+0x2d4/0xaa0
-> [ 3982.202930] [c00000001d6afe20] [c0000000000934d0] do_page_fault+0xa0/0x2a0
-> [ 3982.202936] [c00000001d6afe50] [c000000000008be0] data_access_common_virt+0x210/0x220
-> [ 3982.202943] --- interrupt: 300 at 0x7fffb3cc6360
-> [ 3982.202946] NIP: 00007fffb3cc6360 LR: 0000000010005644 CTR: 0000000000001200
-> [ 3982.202950] REGS: c00000001d6afe80 TRAP: 0300 Tainted: G O (6.5.0-next-20230906)
-> [ 3982.202955] MSR: 800000000200d033 <SF,VEC,EE,PR,ME,IR,DR,RI,LE> CR: 44002444 XER: 00000000
-> [ 3982.202966] CFAR: 00007fffb3cc6384 DAR: 00007fea3bc70000 DSISR: 42000000 IRQMASK: 0 
-> [ 3982.202966] GPR00: 0000000000002000 00007fffd0497ae0 0000000010057f00 00007fea3bc00000 
-> [ 3982.202966] GPR04: 0000000000000001 0000000000100000 00007fea3bc70000 0000000000000000 
-> [ 3982.202966] GPR08: 1000000000000000 00007fea3bc00000 0000000000000000 0000000000000000 
-> [ 3982.202966] GPR12: 00007fffb3cc62a0 00007fffb410b080 0000000000000000 0000000000000000 
-> [ 3982.202966] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
-> [ 3982.202966] GPR20: 000000001002c260 000000001002c208 cccccccccccccccd a3d70a3d70a3d70b 
-> [ 3982.202966] GPR24: 000000001002c2d0 000000001002c238 00007fffb3e01888 000000001002c260 
-> [ 3982.202966] GPR28: 0000000000000000 000000001002c1f0 000000001002c218 0000000000000000 
-> [ 3982.203016] NIP [00007fffb3cc6360] 0x7fffb3cc6360
-> [ 3982.203020] LR [0000000010005644] 0x10005644
-> [ 3982.203023] --- interrupt: 300
-> [ 3982.203026] Code: eb21ffc8 eb81ffe0 eba1ffe8 ebc1fff0 7fffd214 eb41ffd0 7c0803a6 7fe3fb78 ebe1fff8 4e800020 60000000 60000000 <a12a0028> 3900ffff 7909782c b12a0028 
-> [ 3982.203044] ---[ end trace 0000000000000000 ]---
-> [ 3982.299095] pstore: backend (nvram) writing error (-1)
-> [ 3982.299105] 
-> [ 3983.299108] Kernel panic - not syncing: Fatal exception
-> [ 3983.564309] Rebooting in 10 seconds..
->
-> Git bisect point to the following patch
->
-> commit 92039ae85e8d018e82b9ba2597ca22e9851447fe
->     mm: vmscan: try to reclaim swapcache pages if no swap space
+On Thu, Sep 07, 2023 at 10:17:37PM +0200, Stefan Lippers-Hollmann wrote:
+> Hi
+> 
+> On 2023-09-07, Greg Kroah-Hartman wrote:
+> > On Thu, Sep 07, 2023 at 08:41:35AM +0200, Stefan Lippers-Hollmann wrote:
+> > > On 2023-09-04, Greg Kroah-Hartman wrote:
+> > > > 6.5-stable review patch.  If anyone has any objections, please let me know.
+> > > >
+> > > > ------------------
+> > > >
+> > > > From: Christoph Hellwig <hch@lst.de>
+> > > >
+> > > > commit 9011e49d54dcc7653ebb8a1e05b5badb5ecfa9f9 upstream.
+> > > >
+> > > > It has recently come to my attention that nvidia is circumventing the
+> > > > protection added in 262e6ae7081d ("modules: inherit
+> > > > TAINT_PROPRIETARY_MODULE") by importing exports from their proprietary
+> > > > modules into an allegedly GPL licensed module and then rexporting them.
+> > > >
+> > > > Given that symbol_get was only ever intended for tightly cooperating
+> > > > modules using very internal symbols it is logical to restrict it to
+> > > > being used on EXPORT_SYMBOL_GPL and prevent nvidia from costly DMCA
+> > > > Circumvention of Access Controls law suites.
+> > > >
+> > > > All symbols except for four used through symbol_get were already exported
+> > > > as EXPORT_SYMBOL_GPL, and the remaining four ones were switched over in
+> > > > the preparation patches.
+> > >
+> > > This patch, as part of v6.5.2, breaks the in-kernel ds3000 module
+> > > (for a TeVii s480 v2 DVB-S2 card, which is a PCIe card attaching two
+> > > onboard TeVii s660 cards via an onboard USB2 controller (MCS9990),
+> > > https://www.linuxtv.org/wiki/index.php/TeVii_S480) from loading.
+> >
+> > This is also broken in Linus's tree, right?
+> 
+> Yes, HEAD as of 6.5.0-12145-g4a0fc73da97e is affected just as well.
 
-Looks to be a direct NULL pointer deref, because
-can_reclaim_anon_pages() is passed sc = NULL:
+Ok, good, thanks for confirming.
 
+> > > [    2.896589] dvbdev: dvb_create_media_entity: media entity 'dvb-demux' registered.
+> > > [    2.901085] failing symbol_get of non-GPLONLY symbol ds3000_attach.
+> > > [    2.901089] DVB: Unable to find symbol ds3000_attach()
+> >
+> > This is odd, where is that call coming from?  I don't see any call to
+> > symbol_get in the dvb code, where is this happening?
+> >
+> > Anyway, does the patch below fix this?
+> 
+> That change alone only moves the issue down to ts2020_attach().
+> 
+> $ dmesg | grep -i -e dvb -e gpl -e symbol
+> [    1.464876] usb 3-1: Product: DVBS2BOX
+> [    1.482143] usb 5-1: Product: DVBS2BOX
+> [    3.692647] dvb-usb: found a 'TeVii S660 USB' in cold state, will try to load a firmware
+> [    3.692951] dvb-usb: downloading firmware from file 'dvb-usb-s660.fw'
+> [    3.860571] dvb-usb: found a 'TeVii S660 USB' in warm state.
+> [    3.860615] dvb-usb: will pass the complete MPEG2 transport stream to the software demuxer.
+> [    3.860944] dvbdev: DVB: registering new adapter (TeVii S660 USB)
+> [    4.097144] dvb-usb: MAC address: 00:18:XX:XX:XX:XX
+> [    4.097272] dvbdev: dvb_create_media_entity: media entity 'dvb-demux' registered.
+> [    4.111792] failing symbol_get of non-GPLONLY symbol ts2020_attach.
+> [    4.111795] DVB: Unable to find symbol ts2020_attach()
+> [    4.112759] usb 3-1: DVB: registering adapter 0 frontend 0 (Montage Technology DS3000)...
+> [    4.112764] dvbdev: dvb_create_media_entity: media entity 'Montage Technology DS3000' registered.
+> [    4.138938] dvb-usb: schedule remote query interval to 150 msecs.
+> [    4.138942] dvb-usb: TeVii S660 USB successfully initialized and connected.
+> [    4.138988] dvb-usb: found a 'TeVii S660 USB' in cold state, will try to load a firmware
+> [    4.139016] dvb-usb: downloading firmware from file 'dvb-usb-s660.fw'
+> [    4.292614] dvb-usb: found a 'TeVii S660 USB' in warm state.
+> [    4.292679] dvb-usb: will pass the complete MPEG2 transport stream to the software demuxer.
+> [    4.293075] dvbdev: DVB: registering new adapter (TeVii S660 USB)
+> [    4.538876] dvb-usb: MAC address: 00:18:XX:XX:XX:XX
+> [    4.539113] dvbdev: dvb_create_media_entity: media entity 'dvb-demux' registered.
+> [    4.543738] failing symbol_get of non-GPLONLY symbol ts2020_attach.
+> [    4.546349] failing symbol_get of non-GPLONLY symbol ts2020_attach.
+> [    4.546354] DVB: Unable to find symbol ts2020_attach()
+> [    4.548643] usb 5-1: DVB: registering adapter 1 frontend 0 (Montage Technology DS3000)...
+> [    4.548650] dvbdev: dvb_create_media_entity: media entity 'Montage Technology DS3000' registered.
+> [    4.549970] dvb-usb: schedule remote query interval to 150 msecs.
+> [    4.549973] dvb-usb: TeVii S660 USB successfully initialized and connected.
+> [    7.830408] ds3000_firmware_ondemand: Waiting for firmware upload (dvb-fe-ds3000.fw)...
+> [    8.367600] ds3000_firmware_ondemand: Waiting for firmware upload (dvb-fe-ds3000.fw)...
+> 
+> Extending this to approach to ts2020_attach() does fix the problem
+> for me. Searching the web for "failing symbol_get of non-GPLONLY
+> symbol" suggests that there might be further instances within the
+> DVB subsystem https://syzkaller.appspot.com/x/log.txt?x=11faa1eda80000
+> (this was merely gathered by a passive web search, I have no contact
+> to the poster or any further information about it).
 
-unsigned long zone_reclaimable_pages(struct zone *zone)
-{
-	unsigned long nr;
+Ugh, it looks like everyone that calls dvb_attach() is going to be
+affected.  I can make up a patch for this later today, unless Christoph
+beats me to it :)
 
-	nr = zone_page_state_snapshot(zone, NR_ZONE_INACTIVE_FILE) +
-		zone_page_state_snapshot(zone, NR_ZONE_ACTIVE_FILE);
-	if (can_reclaim_anon_pages(NULL, zone_to_nid(zone), NULL))
-                                                            ^^^^
+Also, in commit 8f569c0b4e6b ("media: dvb-core: add helper functions for
+I2C binding"), way back in 2018, it says no one should be using this
+function anymore, but given I see over 700 uses of it, that's obviously
+not changing any time soon :(
 
-static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
-					  int nid,
-					  struct scan_control *sc)
-{
-	if (memcg == NULL) {
-		/*
-		 * For non-memcg reclaim, is there
-		 * space in any swap device?
-		 */
-		if (get_nr_swap_pages() > 0)
-			return true;
-		/* Is there any swapcache pages to reclaim? */
-		if (total_swapcache_pages() > 0) {
-			sc->swapcache_only = 1;
+> [ now fully functional with EXPORT_SYMBOL_GPL(ds3000_attach) and
+>   EXPORT_SYMBOL_GPL(ts2020_attach) ]
 
-sc is NULL -> oops.
+Thanks for testing this.
 
-cheers
+greg k-h
