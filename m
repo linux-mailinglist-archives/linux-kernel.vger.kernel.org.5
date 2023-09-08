@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC54798CA7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8101798C88
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343842AbjIHSRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:17:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52224 "EHLO
+        id S1343670AbjIHSRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240532AbjIHSRa (ORCPT
+        with ESMTP id S240670AbjIHSRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:17:30 -0400
+        Fri, 8 Sep 2023 14:17:03 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0684268C;
-        Fri,  8 Sep 2023 11:17:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A74E8C116A1;
-        Fri,  8 Sep 2023 18:13:35 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0661E211B;
+        Fri,  8 Sep 2023 11:16:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A66AC43397;
+        Fri,  8 Sep 2023 18:13:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196816;
-        bh=Ue0UtTFOxrPpS1s/YE4TAEQffCDlXxbki3Zcb8O8C8k=;
+        s=k20201202; t=1694196820;
+        bh=7KmX9H4RHuoU2pigftNiT/P3ux4gsCEXaSwkazEQ/Ws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BRkyh/07nbNKb7P+SsDur4jeQtIR1N6P4T6V1AtSsuRlPDv6MS2yeQ5jbUIdNKnex
-         gjvWlOXiMqedp0fnpYMhIRfeIujhAnxw2Ujo4Xb6tKbxTrhLkoi2ttCddSjVtKuabK
-         21cttdLdUDzHtgaoyNpkQ5GM52MUiOx3v6+xAHNID89VH7+HLMZ8bd9DybptDF9OdS
-         dm3Z8dgDFfHdq+LBZ1VZVepiSZuKxtiJ47HFmJPCDdowHUs94fIkYyA4M28chJxISH
-         nC/Ig7eT9kCZN72/7QV2FVxRcLrHmQxVlyxGNosbytGoION/Ae2SF589vgAGSZvadB
-         fMQsRmfLaVECA==
+        b=Od9tmn6PU6KW8ZS1YBqvrf7Gn7Xc7ySe56jyKAtmw9N1F3LNFgJzu7F7BQ8KUfCJ+
+         rdWz4D8HaUYiDa1EAwRvbXkHWRRe872clEhG9RGafqbAbW2ZnYndtXTkLwM7DZiIAy
+         c0ZYAc2/pwH+/NaJ2Rd0FSxPMFe2J8g0xHAQPDWeAEkkNuvZSKlY/wNcH0YXnbCwL8
+         gZKY23IYVENevDONe3lvWe+QX0KNQMp6zVx9bQAjJ2da8iITTb4GQPTFY1E6dE7wbS
+         ytzl+Sg8TY/WUulO7PeIT+3Jc79S4f5LvYoFdvMai3ZNUu90dHSfzDr/zLCiEIBo2K
+         lS33Zgh0IM56w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Okan Sahin <okan.sahin@analog.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com
-Subject: [PATCH AUTOSEL 6.5 04/45] regulator: max77857: Add ADI MAX77857/59/MAX77831 Regulator Support
-Date:   Fri,  8 Sep 2023 14:12:45 -0400
-Message-Id: <20230908181327.3459042-4-sashal@kernel.org>
+Cc:     Jisheng Zhang <jszhang@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, davem@davemloft.net, edumazet@google.com,
+        pabeni@redhat.com, mcoquelin.stm32@gmail.com, wens@csie.org,
+        jernej.skrabec@gmail.com, samuel@sholland.org,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.5 05/45] net: stmmac: use per-queue 64 bit statistics where necessary
+Date:   Fri,  8 Sep 2023 14:12:46 -0400
+Message-Id: <20230908181327.3459042-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181327.3459042-1-sashal@kernel.org>
 References: <20230908181327.3459042-1-sashal@kernel.org>
@@ -52,532 +57,1331 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Okan Sahin <okan.sahin@analog.com>
+From: Jisheng Zhang <jszhang@kernel.org>
 
-[ Upstream commit af71cccadecedad3484c2208e2c4fc8eff927d4a ]
+[ Upstream commit 133466c3bbe171f826294161db203f7670bb30c8 ]
 
-Regulator driver for  MAX77857/59 and MAX77831.
-The MAX77857 is a high-efficiency, high-performance
-buck-boost converter targeted for systems requiring
-a wide input voltage range (2.5V to 16V).
+Currently, there are two major issues with stmmac driver statistics
+First of all, statistics in stmmac_extra_stats, stmmac_rxq_stats
+and stmmac_txq_stats are 32 bit variables on 32 bit platforms. This
+can cause some stats to overflow after several minutes of
+high traffic, for example rx_pkt_n, tx_pkt_n and so on.
 
-The MAX77859 is high-Efficiency Buck-Boost Converter
-for USB-PD/PPS Applications. It has wide input range
-(2.5V to 22V)
+Secondly, if HW supports multiqueues, there are frequent cacheline
+ping pongs on some driver statistic vars, for example, normal_irq_n,
+tx_pkt_n and so on. What's more, frequent cacheline ping pongs on
+normal_irq_n happens in ISR, this makes the situation worse.
 
-The MAX77831 is a high-efficiency, high-performance
-buck-boost converter targeted for systems requiring
-wide input voltage range (2.5V to 16V).
+To improve the driver, we convert those statistics to 64 bit, implement
+ndo_get_stats64 and update .get_ethtool_stats implementation
+accordingly. We also use per-queue statistics where necessary to remove
+the cacheline ping pongs as much as possible to make multiqueue
+operations faster. Those statistics which are not possible to overflow
+and not frequently updated are kept as is.
 
-Signed-off-by: Okan Sahin <okan.sahin@analog.com>
-Link: https://lore.kernel.org/r/20230717050736.10075-3-okan.sahin@analog.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+Link: https://lore.kernel.org/r/20230717160630.1892-3-jszhang@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/Kconfig              |  10 +
- drivers/regulator/Makefile             |   1 +
- drivers/regulator/max77857-regulator.c | 459 +++++++++++++++++++++++++
- 3 files changed, 470 insertions(+)
- create mode 100644 drivers/regulator/max77857-regulator.c
+ drivers/net/ethernet/stmicro/stmmac/common.h  |  39 ++--
+ .../net/ethernet/stmicro/stmmac/dwmac-sun8i.c |  12 +-
+ .../ethernet/stmicro/stmmac/dwmac100_dma.c    |   7 +-
+ .../ethernet/stmicro/stmmac/dwmac4_descs.c    |  16 +-
+ .../net/ethernet/stmicro/stmmac/dwmac4_lib.c  |  15 +-
+ .../net/ethernet/stmicro/stmmac/dwmac_lib.c   |  12 +-
+ .../ethernet/stmicro/stmmac/dwxgmac2_descs.c  |   6 +-
+ .../ethernet/stmicro/stmmac/dwxgmac2_dma.c    |  14 +-
+ .../net/ethernet/stmicro/stmmac/enh_desc.c    |  20 +-
+ drivers/net/ethernet/stmicro/stmmac/hwif.h    |  12 +-
+ .../net/ethernet/stmicro/stmmac/norm_desc.c   |  15 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |   2 +
+ .../ethernet/stmicro/stmmac/stmmac_ethtool.c  | 123 ++++++++---
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 200 ++++++++++++++----
+ 14 files changed, 335 insertions(+), 158 deletions(-)
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 823f8e6e48012..3cc92326fb2b4 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -584,6 +584,16 @@ config REGULATOR_MAX77650
- 	  Semiconductor. This device has a SIMO with three independent
- 	  power rails and an LDO.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
+index 16e67c18b6f71..57f2137bbe9d9 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/common.h
++++ b/drivers/net/ethernet/stmicro/stmmac/common.h
+@@ -59,13 +59,25 @@
+ /* #define FRAME_FILTER_DEBUG */
  
-+config REGULATOR_MAX77857
-+	tristate "ADI MAX77857/MAX77831 regulator support"
-+	depends on I2C
-+	select REGMAP_I2C
-+	help
-+	  This driver controls a ADI MAX77857 and MAX77831 regulators.
-+	  via I2C bus. MAX77857 and MAX77831 are high efficiency buck-boost
-+	  converters with input voltage range (2.5V to 16V). Say Y here to
-+	  enable the regulator driver
+ struct stmmac_txq_stats {
+-	unsigned long tx_pkt_n;
+-	unsigned long tx_normal_irq_n;
++	u64 tx_bytes;
++	u64 tx_packets;
++	u64 tx_pkt_n;
++	u64 tx_normal_irq_n;
++	u64 napi_poll;
++	u64 tx_clean;
++	u64 tx_set_ic_bit;
++	u64 tx_tso_frames;
++	u64 tx_tso_nfrags;
++	struct u64_stats_sync syncp;
+ };
+ 
+ struct stmmac_rxq_stats {
+-	unsigned long rx_pkt_n;
+-	unsigned long rx_normal_irq_n;
++	u64 rx_bytes;
++	u64 rx_packets;
++	u64 rx_pkt_n;
++	u64 rx_normal_irq_n;
++	u64 napi_poll;
++	struct u64_stats_sync syncp;
+ };
+ 
+ /* Extra statistic and debug information exposed by ethtool */
+@@ -81,6 +93,7 @@ struct stmmac_extra_stats {
+ 	unsigned long tx_frame_flushed;
+ 	unsigned long tx_payload_error;
+ 	unsigned long tx_ip_header_error;
++	unsigned long tx_collision;
+ 	/* Receive errors */
+ 	unsigned long rx_desc;
+ 	unsigned long sa_filter_fail;
+@@ -113,14 +126,6 @@ struct stmmac_extra_stats {
+ 	/* Tx/Rx IRQ Events */
+ 	unsigned long rx_early_irq;
+ 	unsigned long threshold;
+-	unsigned long tx_pkt_n;
+-	unsigned long rx_pkt_n;
+-	unsigned long normal_irq_n;
+-	unsigned long rx_normal_irq_n;
+-	unsigned long napi_poll;
+-	unsigned long tx_normal_irq_n;
+-	unsigned long tx_clean;
+-	unsigned long tx_set_ic_bit;
+ 	unsigned long irq_receive_pmt_irq_n;
+ 	/* MMC info */
+ 	unsigned long mmc_tx_irq_n;
+@@ -190,18 +195,16 @@ struct stmmac_extra_stats {
+ 	unsigned long mtl_rx_fifo_ctrl_active;
+ 	unsigned long mac_rx_frame_ctrl_fifo;
+ 	unsigned long mac_gmii_rx_proto_engine;
+-	/* TSO */
+-	unsigned long tx_tso_frames;
+-	unsigned long tx_tso_nfrags;
+ 	/* EST */
+ 	unsigned long mtl_est_cgce;
+ 	unsigned long mtl_est_hlbs;
+ 	unsigned long mtl_est_hlbf;
+ 	unsigned long mtl_est_btre;
+ 	unsigned long mtl_est_btrlm;
+-	/* per queue statistics */
+-	struct stmmac_txq_stats txq_stats[MTL_MAX_TX_QUEUES];
+-	struct stmmac_rxq_stats rxq_stats[MTL_MAX_RX_QUEUES];
++	unsigned long rx_dropped;
++	unsigned long rx_errors;
++	unsigned long tx_dropped;
++	unsigned long tx_errors;
+ };
+ 
+ /* Safety Feature statistics exposed by ethtool */
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+index 1e714380d1250..b20f8ba34efd9 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+@@ -440,8 +440,10 @@ static int sun8i_dwmac_dma_interrupt(struct stmmac_priv *priv,
+ 				     struct stmmac_extra_stats *x, u32 chan,
+ 				     u32 dir)
+ {
+-	u32 v;
++	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[chan];
++	struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[chan];
+ 	int ret = 0;
++	u32 v;
+ 
+ 	v = readl(ioaddr + EMAC_INT_STA);
+ 
+@@ -452,7 +454,9 @@ static int sun8i_dwmac_dma_interrupt(struct stmmac_priv *priv,
+ 
+ 	if (v & EMAC_TX_INT) {
+ 		ret |= handle_tx;
+-		x->tx_normal_irq_n++;
++		u64_stats_update_begin(&tx_q->txq_stats.syncp);
++		tx_q->txq_stats.tx_normal_irq_n++;
++		u64_stats_update_end(&tx_q->txq_stats.syncp);
+ 	}
+ 
+ 	if (v & EMAC_TX_DMA_STOP_INT)
+@@ -474,7 +478,9 @@ static int sun8i_dwmac_dma_interrupt(struct stmmac_priv *priv,
+ 
+ 	if (v & EMAC_RX_INT) {
+ 		ret |= handle_rx;
+-		x->rx_normal_irq_n++;
++		u64_stats_update_begin(&rx_q->rxq_stats.syncp);
++		rx_q->rxq_stats.rx_normal_irq_n++;
++		u64_stats_update_end(&rx_q->rxq_stats.syncp);
+ 	}
+ 
+ 	if (v & EMAC_RX_BUF_UA_INT)
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac100_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwmac100_dma.c
+index 1c32b1788f02e..dea270f60cc3e 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac100_dma.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac100_dma.c
+@@ -82,29 +82,24 @@ static void dwmac100_dump_dma_regs(struct stmmac_priv *priv,
+ }
+ 
+ /* DMA controller has two counters to track the number of the missed frames. */
+-static void dwmac100_dma_diagnostic_fr(struct net_device_stats *stats,
+-				       struct stmmac_extra_stats *x,
++static void dwmac100_dma_diagnostic_fr(struct stmmac_extra_stats *x,
+ 				       void __iomem *ioaddr)
+ {
+ 	u32 csr8 = readl(ioaddr + DMA_MISSED_FRAME_CTR);
+ 
+ 	if (unlikely(csr8)) {
+ 		if (csr8 & DMA_MISSED_FRAME_OVE) {
+-			stats->rx_over_errors += 0x800;
+ 			x->rx_overflow_cntr += 0x800;
+ 		} else {
+ 			unsigned int ove_cntr;
+ 			ove_cntr = ((csr8 & DMA_MISSED_FRAME_OVE_CNTR) >> 17);
+-			stats->rx_over_errors += ove_cntr;
+ 			x->rx_overflow_cntr += ove_cntr;
+ 		}
+ 
+ 		if (csr8 & DMA_MISSED_FRAME_OVE_M) {
+-			stats->rx_missed_errors += 0xffff;
+ 			x->rx_missed_cntr += 0xffff;
+ 		} else {
+ 			unsigned int miss_f = (csr8 & DMA_MISSED_FRAME_M_CNTR);
+-			stats->rx_missed_errors += miss_f;
+ 			x->rx_missed_cntr += miss_f;
+ 		}
+ 	}
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_descs.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_descs.c
+index 6a011d8633e8e..89a14084c6117 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_descs.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_descs.c
+@@ -13,8 +13,7 @@
+ #include "dwmac4.h"
+ #include "dwmac4_descs.h"
+ 
+-static int dwmac4_wrback_get_tx_status(struct net_device_stats *stats,
+-				       struct stmmac_extra_stats *x,
++static int dwmac4_wrback_get_tx_status(struct stmmac_extra_stats *x,
+ 				       struct dma_desc *p,
+ 				       void __iomem *ioaddr)
+ {
+@@ -40,15 +39,13 @@ static int dwmac4_wrback_get_tx_status(struct net_device_stats *stats,
+ 			x->tx_frame_flushed++;
+ 		if (unlikely(tdes3 & TDES3_LOSS_CARRIER)) {
+ 			x->tx_losscarrier++;
+-			stats->tx_carrier_errors++;
+ 		}
+ 		if (unlikely(tdes3 & TDES3_NO_CARRIER)) {
+ 			x->tx_carrier++;
+-			stats->tx_carrier_errors++;
+ 		}
+ 		if (unlikely((tdes3 & TDES3_LATE_COLLISION) ||
+ 			     (tdes3 & TDES3_EXCESSIVE_COLLISION)))
+-			stats->collisions +=
++			x->tx_collision +=
+ 			    (tdes3 & TDES3_COLLISION_COUNT_MASK)
+ 			    >> TDES3_COLLISION_COUNT_SHIFT;
+ 
+@@ -73,8 +70,7 @@ static int dwmac4_wrback_get_tx_status(struct net_device_stats *stats,
+ 	return ret;
+ }
+ 
+-static int dwmac4_wrback_get_rx_status(struct net_device_stats *stats,
+-				       struct stmmac_extra_stats *x,
++static int dwmac4_wrback_get_rx_status(struct stmmac_extra_stats *x,
+ 				       struct dma_desc *p)
+ {
+ 	unsigned int rdes1 = le32_to_cpu(p->des1);
+@@ -93,7 +89,7 @@ static int dwmac4_wrback_get_rx_status(struct net_device_stats *stats,
+ 
+ 	if (unlikely(rdes3 & RDES3_ERROR_SUMMARY)) {
+ 		if (unlikely(rdes3 & RDES3_GIANT_PACKET))
+-			stats->rx_length_errors++;
++			x->rx_length++;
+ 		if (unlikely(rdes3 & RDES3_OVERFLOW_ERROR))
+ 			x->rx_gmac_overflow++;
+ 
+@@ -103,10 +99,8 @@ static int dwmac4_wrback_get_rx_status(struct net_device_stats *stats,
+ 		if (unlikely(rdes3 & RDES3_RECEIVE_ERROR))
+ 			x->rx_mii++;
+ 
+-		if (unlikely(rdes3 & RDES3_CRC_ERROR)) {
++		if (unlikely(rdes3 & RDES3_CRC_ERROR))
+ 			x->rx_crc_errors++;
+-			stats->rx_crc_errors++;
+-		}
+ 
+ 		if (unlikely(rdes3 & RDES3_DRIBBLE_ERROR))
+ 			x->dribbling_bit++;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
+index 03ceb6a940732..980e5f8a37ec5 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
+@@ -171,6 +171,8 @@ int dwmac4_dma_interrupt(struct stmmac_priv *priv, void __iomem *ioaddr,
+ 	const struct dwmac4_addrs *dwmac4_addrs = priv->plat->dwmac4_addrs;
+ 	u32 intr_status = readl(ioaddr + DMA_CHAN_STATUS(dwmac4_addrs, chan));
+ 	u32 intr_en = readl(ioaddr + DMA_CHAN_INTR_ENA(dwmac4_addrs, chan));
++	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[chan];
++	struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[chan];
+ 	int ret = 0;
+ 
+ 	if (dir == DMA_DIR_RX)
+@@ -198,18 +200,19 @@ int dwmac4_dma_interrupt(struct stmmac_priv *priv, void __iomem *ioaddr,
+ 		}
+ 	}
+ 	/* TX/RX NORMAL interrupts */
+-	if (likely(intr_status & DMA_CHAN_STATUS_NIS))
+-		x->normal_irq_n++;
+ 	if (likely(intr_status & DMA_CHAN_STATUS_RI)) {
+-		x->rx_normal_irq_n++;
+-		x->rxq_stats[chan].rx_normal_irq_n++;
++		u64_stats_update_begin(&rx_q->rxq_stats.syncp);
++		rx_q->rxq_stats.rx_normal_irq_n++;
++		u64_stats_update_end(&rx_q->rxq_stats.syncp);
+ 		ret |= handle_rx;
+ 	}
+ 	if (likely(intr_status & DMA_CHAN_STATUS_TI)) {
+-		x->tx_normal_irq_n++;
+-		x->txq_stats[chan].tx_normal_irq_n++;
++		u64_stats_update_begin(&tx_q->txq_stats.syncp);
++		tx_q->txq_stats.tx_normal_irq_n++;
++		u64_stats_update_end(&tx_q->txq_stats.syncp);
+ 		ret |= handle_tx;
+ 	}
 +
- config REGULATOR_MAX8649
- 	tristate "Maxim 8649 voltage regulator"
- 	depends on I2C
-diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index 15e0d614ff666..c9347a5aa39a7 100644
---- a/drivers/regulator/Makefile
-+++ b/drivers/regulator/Makefile
-@@ -86,6 +86,7 @@ obj-$(CONFIG_REGULATOR_MAX77686) += max77686-regulator.o
- obj-$(CONFIG_REGULATOR_MAX77693) += max77693-regulator.o
- obj-$(CONFIG_REGULATOR_MAX77802) += max77802-regulator.o
- obj-$(CONFIG_REGULATOR_MAX77826) += max77826-regulator.o
-+obj-$(CONFIG_REGULATOR_MAX77857) += max77857-regulator.o
- obj-$(CONFIG_REGULATOR_MC13783) += mc13783-regulator.o
- obj-$(CONFIG_REGULATOR_MC13892) += mc13892-regulator.o
- obj-$(CONFIG_REGULATOR_MC13XXX_CORE) +=  mc13xxx-regulator-core.o
-diff --git a/drivers/regulator/max77857-regulator.c b/drivers/regulator/max77857-regulator.c
-new file mode 100644
-index 0000000000000..c5482ffd606ec
---- /dev/null
-+++ b/drivers/regulator/max77857-regulator.c
-@@ -0,0 +1,459 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2023 Analog Devices, Inc.
-+ * ADI Regulator driver for the MAX77857
-+ * MAX77859 and MAX77831.
+ 	if (unlikely(intr_status & DMA_CHAN_STATUS_TBU))
+ 		ret |= handle_tx;
+ 	if (unlikely(intr_status & DMA_CHAN_STATUS_ERI))
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c b/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c
+index 0b6f999a83052..aaa09b16b016f 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c
+@@ -10,6 +10,7 @@
+ #include <linux/iopoll.h>
+ #include "common.h"
+ #include "dwmac_dma.h"
++#include "stmmac.h"
+ 
+ #define GMAC_HI_REG_AE		0x80000000
+ 
+@@ -161,6 +162,8 @@ static void show_rx_process_state(unsigned int status)
+ int dwmac_dma_interrupt(struct stmmac_priv *priv, void __iomem *ioaddr,
+ 			struct stmmac_extra_stats *x, u32 chan, u32 dir)
+ {
++	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[chan];
++	struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[chan];
+ 	int ret = 0;
+ 	/* read the status register (CSR5) */
+ 	u32 intr_status = readl(ioaddr + DMA_STATUS);
+@@ -208,17 +211,20 @@ int dwmac_dma_interrupt(struct stmmac_priv *priv, void __iomem *ioaddr,
+ 	}
+ 	/* TX/RX NORMAL interrupts */
+ 	if (likely(intr_status & DMA_STATUS_NIS)) {
+-		x->normal_irq_n++;
+ 		if (likely(intr_status & DMA_STATUS_RI)) {
+ 			u32 value = readl(ioaddr + DMA_INTR_ENA);
+ 			/* to schedule NAPI on real RIE event. */
+ 			if (likely(value & DMA_INTR_ENA_RIE)) {
+-				x->rx_normal_irq_n++;
++				u64_stats_update_begin(&rx_q->rxq_stats.syncp);
++				rx_q->rxq_stats.rx_normal_irq_n++;
++				u64_stats_update_end(&rx_q->rxq_stats.syncp);
+ 				ret |= handle_rx;
+ 			}
+ 		}
+ 		if (likely(intr_status & DMA_STATUS_TI)) {
+-			x->tx_normal_irq_n++;
++			u64_stats_update_begin(&tx_q->txq_stats.syncp);
++			tx_q->txq_stats.tx_normal_irq_n++;
++			u64_stats_update_end(&tx_q->txq_stats.syncp);
+ 			ret |= handle_tx;
+ 		}
+ 		if (unlikely(intr_status & DMA_STATUS_ERI))
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_descs.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_descs.c
+index 13c347ee8be9c..fc82862a612c7 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_descs.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_descs.c
+@@ -8,8 +8,7 @@
+ #include "common.h"
+ #include "dwxgmac2.h"
+ 
+-static int dwxgmac2_get_tx_status(struct net_device_stats *stats,
+-				  struct stmmac_extra_stats *x,
++static int dwxgmac2_get_tx_status(struct stmmac_extra_stats *x,
+ 				  struct dma_desc *p, void __iomem *ioaddr)
+ {
+ 	unsigned int tdes3 = le32_to_cpu(p->des3);
+@@ -23,8 +22,7 @@ static int dwxgmac2_get_tx_status(struct net_device_stats *stats,
+ 	return ret;
+ }
+ 
+-static int dwxgmac2_get_rx_status(struct net_device_stats *stats,
+-				  struct stmmac_extra_stats *x,
++static int dwxgmac2_get_rx_status(struct stmmac_extra_stats *x,
+ 				  struct dma_desc *p)
+ {
+ 	unsigned int rdes3 = le32_to_cpu(p->des3);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
+index 070bd912580b7..3b5f8c595219b 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
+@@ -337,6 +337,8 @@ static int dwxgmac2_dma_interrupt(struct stmmac_priv *priv,
+ 				  struct stmmac_extra_stats *x, u32 chan,
+ 				  u32 dir)
+ {
++	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[chan];
++	struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[chan];
+ 	u32 intr_status = readl(ioaddr + XGMAC_DMA_CH_STATUS(chan));
+ 	u32 intr_en = readl(ioaddr + XGMAC_DMA_CH_INT_EN(chan));
+ 	int ret = 0;
+@@ -364,16 +366,16 @@ static int dwxgmac2_dma_interrupt(struct stmmac_priv *priv,
+ 
+ 	/* TX/RX NORMAL interrupts */
+ 	if (likely(intr_status & XGMAC_NIS)) {
+-		x->normal_irq_n++;
+-
+ 		if (likely(intr_status & XGMAC_RI)) {
+-			x->rx_normal_irq_n++;
+-			x->rxq_stats[chan].rx_normal_irq_n++;
++			u64_stats_update_begin(&rx_q->rxq_stats.syncp);
++			rx_q->rxq_stats.rx_normal_irq_n++;
++			u64_stats_update_end(&rx_q->rxq_stats.syncp);
+ 			ret |= handle_rx;
+ 		}
+ 		if (likely(intr_status & (XGMAC_TI | XGMAC_TBU))) {
+-			x->tx_normal_irq_n++;
+-			x->txq_stats[chan].tx_normal_irq_n++;
++			u64_stats_update_begin(&tx_q->txq_stats.syncp);
++			tx_q->txq_stats.tx_normal_irq_n++;
++			u64_stats_update_end(&tx_q->txq_stats.syncp);
+ 			ret |= handle_tx;
+ 		}
+ 	}
+diff --git a/drivers/net/ethernet/stmicro/stmmac/enh_desc.c b/drivers/net/ethernet/stmicro/stmmac/enh_desc.c
+index a91d8f13a931d..937b7a0466fca 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/enh_desc.c
++++ b/drivers/net/ethernet/stmicro/stmmac/enh_desc.c
+@@ -12,8 +12,7 @@
+ #include "common.h"
+ #include "descs_com.h"
+ 
+-static int enh_desc_get_tx_status(struct net_device_stats *stats,
+-				  struct stmmac_extra_stats *x,
++static int enh_desc_get_tx_status(struct stmmac_extra_stats *x,
+ 				  struct dma_desc *p, void __iomem *ioaddr)
+ {
+ 	unsigned int tdes0 = le32_to_cpu(p->des0);
+@@ -38,15 +37,13 @@ static int enh_desc_get_tx_status(struct net_device_stats *stats,
+ 
+ 		if (unlikely(tdes0 & ETDES0_LOSS_CARRIER)) {
+ 			x->tx_losscarrier++;
+-			stats->tx_carrier_errors++;
+ 		}
+ 		if (unlikely(tdes0 & ETDES0_NO_CARRIER)) {
+ 			x->tx_carrier++;
+-			stats->tx_carrier_errors++;
+ 		}
+ 		if (unlikely((tdes0 & ETDES0_LATE_COLLISION) ||
+ 			     (tdes0 & ETDES0_EXCESSIVE_COLLISIONS)))
+-			stats->collisions +=
++			x->tx_collision +=
+ 				(tdes0 & ETDES0_COLLISION_COUNT_MASK) >> 3;
+ 
+ 		if (unlikely(tdes0 & ETDES0_EXCESSIVE_DEFERRAL))
+@@ -117,8 +114,7 @@ static int enh_desc_coe_rdes0(int ipc_err, int type, int payload_err)
+ 	return ret;
+ }
+ 
+-static void enh_desc_get_ext_status(struct net_device_stats *stats,
+-				    struct stmmac_extra_stats *x,
++static void enh_desc_get_ext_status(struct stmmac_extra_stats *x,
+ 				    struct dma_extended_desc *p)
+ {
+ 	unsigned int rdes0 = le32_to_cpu(p->basic.des0);
+@@ -182,8 +178,7 @@ static void enh_desc_get_ext_status(struct net_device_stats *stats,
+ 	}
+ }
+ 
+-static int enh_desc_get_rx_status(struct net_device_stats *stats,
+-				  struct stmmac_extra_stats *x,
++static int enh_desc_get_rx_status(struct stmmac_extra_stats *x,
+ 				  struct dma_desc *p)
+ {
+ 	unsigned int rdes0 = le32_to_cpu(p->des0);
+@@ -193,14 +188,14 @@ static int enh_desc_get_rx_status(struct net_device_stats *stats,
+ 		return dma_own;
+ 
+ 	if (unlikely(!(rdes0 & RDES0_LAST_DESCRIPTOR))) {
+-		stats->rx_length_errors++;
++		x->rx_length++;
+ 		return discard_frame;
+ 	}
+ 
+ 	if (unlikely(rdes0 & RDES0_ERROR_SUMMARY)) {
+ 		if (unlikely(rdes0 & RDES0_DESCRIPTOR_ERROR)) {
+ 			x->rx_desc++;
+-			stats->rx_length_errors++;
++			x->rx_length++;
+ 		}
+ 		if (unlikely(rdes0 & RDES0_OVERFLOW_ERROR))
+ 			x->rx_gmac_overflow++;
+@@ -209,7 +204,7 @@ static int enh_desc_get_rx_status(struct net_device_stats *stats,
+ 			pr_err("\tIPC Csum Error/Giant frame\n");
+ 
+ 		if (unlikely(rdes0 & RDES0_COLLISION))
+-			stats->collisions++;
++			x->rx_collision++;
+ 		if (unlikely(rdes0 & RDES0_RECEIVE_WATCHDOG))
+ 			x->rx_watchdog++;
+ 
+@@ -218,7 +213,6 @@ static int enh_desc_get_rx_status(struct net_device_stats *stats,
+ 
+ 		if (unlikely(rdes0 & RDES0_CRC_ERROR)) {
+ 			x->rx_crc_errors++;
+-			stats->rx_crc_errors++;
+ 		}
+ 		ret = discard_frame;
+ 	}
+diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+index 6ee7cf07cfd76..652af8f6e75ff 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
++++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+@@ -57,8 +57,7 @@ struct stmmac_desc_ops {
+ 	/* Last tx segment reports the transmit status */
+ 	int (*get_tx_ls)(struct dma_desc *p);
+ 	/* Return the transmit status looking at the TDES1 */
+-	int (*tx_status)(struct net_device_stats *stats,
+-			 struct stmmac_extra_stats *x,
++	int (*tx_status)(struct stmmac_extra_stats *x,
+ 			 struct dma_desc *p, void __iomem *ioaddr);
+ 	/* Get the buffer size from the descriptor */
+ 	int (*get_tx_len)(struct dma_desc *p);
+@@ -67,11 +66,9 @@ struct stmmac_desc_ops {
+ 	/* Get the receive frame size */
+ 	int (*get_rx_frame_len)(struct dma_desc *p, int rx_coe_type);
+ 	/* Return the reception status looking at the RDES1 */
+-	int (*rx_status)(struct net_device_stats *stats,
+-			 struct stmmac_extra_stats *x,
++	int (*rx_status)(struct stmmac_extra_stats *x,
+ 			 struct dma_desc *p);
+-	void (*rx_extended_status)(struct net_device_stats *stats,
+-				   struct stmmac_extra_stats *x,
++	void (*rx_extended_status)(struct stmmac_extra_stats *x,
+ 				   struct dma_extended_desc *p);
+ 	/* Set tx timestamp enable bit */
+ 	void (*enable_tx_timestamp) (struct dma_desc *p);
+@@ -191,8 +188,7 @@ struct stmmac_dma_ops {
+ 	void (*dma_tx_mode)(struct stmmac_priv *priv, void __iomem *ioaddr,
+ 			    int mode, u32 channel, int fifosz, u8 qmode);
+ 	/* To track extra statistic (if supported) */
+-	void (*dma_diagnostic_fr)(struct net_device_stats *stats,
+-				  struct stmmac_extra_stats *x,
++	void (*dma_diagnostic_fr)(struct stmmac_extra_stats *x,
+ 				  void __iomem *ioaddr);
+ 	void (*enable_dma_transmission) (void __iomem *ioaddr);
+ 	void (*enable_dma_irq)(struct stmmac_priv *priv, void __iomem *ioaddr,
+diff --git a/drivers/net/ethernet/stmicro/stmmac/norm_desc.c b/drivers/net/ethernet/stmicro/stmmac/norm_desc.c
+index 350e6670a5766..68a7cfcb1d8f3 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/norm_desc.c
++++ b/drivers/net/ethernet/stmicro/stmmac/norm_desc.c
+@@ -12,8 +12,7 @@
+ #include "common.h"
+ #include "descs_com.h"
+ 
+-static int ndesc_get_tx_status(struct net_device_stats *stats,
+-			       struct stmmac_extra_stats *x,
++static int ndesc_get_tx_status(struct stmmac_extra_stats *x,
+ 			       struct dma_desc *p, void __iomem *ioaddr)
+ {
+ 	unsigned int tdes0 = le32_to_cpu(p->des0);
+@@ -31,15 +30,12 @@ static int ndesc_get_tx_status(struct net_device_stats *stats,
+ 	if (unlikely(tdes0 & TDES0_ERROR_SUMMARY)) {
+ 		if (unlikely(tdes0 & TDES0_UNDERFLOW_ERROR)) {
+ 			x->tx_underflow++;
+-			stats->tx_fifo_errors++;
+ 		}
+ 		if (unlikely(tdes0 & TDES0_NO_CARRIER)) {
+ 			x->tx_carrier++;
+-			stats->tx_carrier_errors++;
+ 		}
+ 		if (unlikely(tdes0 & TDES0_LOSS_CARRIER)) {
+ 			x->tx_losscarrier++;
+-			stats->tx_carrier_errors++;
+ 		}
+ 		if (unlikely((tdes0 & TDES0_EXCESSIVE_DEFERRAL) ||
+ 			     (tdes0 & TDES0_EXCESSIVE_COLLISIONS) ||
+@@ -47,7 +43,7 @@ static int ndesc_get_tx_status(struct net_device_stats *stats,
+ 			unsigned int collisions;
+ 
+ 			collisions = (tdes0 & TDES0_COLLISION_COUNT_MASK) >> 3;
+-			stats->collisions += collisions;
++			x->tx_collision += collisions;
+ 		}
+ 		ret = tx_err;
+ 	}
+@@ -70,8 +66,7 @@ static int ndesc_get_tx_len(struct dma_desc *p)
+  * and, if required, updates the multicast statistics.
+  * In case of success, it returns good_frame because the GMAC device
+  * is supposed to be able to compute the csum in HW. */
+-static int ndesc_get_rx_status(struct net_device_stats *stats,
+-			       struct stmmac_extra_stats *x,
++static int ndesc_get_rx_status(struct stmmac_extra_stats *x,
+ 			       struct dma_desc *p)
+ {
+ 	int ret = good_frame;
+@@ -81,7 +76,7 @@ static int ndesc_get_rx_status(struct net_device_stats *stats,
+ 		return dma_own;
+ 
+ 	if (unlikely(!(rdes0 & RDES0_LAST_DESCRIPTOR))) {
+-		stats->rx_length_errors++;
++		x->rx_length++;
+ 		return discard_frame;
+ 	}
+ 
+@@ -96,11 +91,9 @@ static int ndesc_get_rx_status(struct net_device_stats *stats,
+ 			x->ipc_csum_error++;
+ 		if (unlikely(rdes0 & RDES0_COLLISION)) {
+ 			x->rx_collision++;
+-			stats->collisions++;
+ 		}
+ 		if (unlikely(rdes0 & RDES0_CRC_ERROR)) {
+ 			x->rx_crc_errors++;
+-			stats->rx_crc_errors++;
+ 		}
+ 		ret = discard_frame;
+ 	}
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+index 07ea5ab0a60ba..4ce5eaaae5135 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+@@ -77,6 +77,7 @@ struct stmmac_tx_queue {
+ 	dma_addr_t dma_tx_phy;
+ 	dma_addr_t tx_tail_addr;
+ 	u32 mss;
++	struct stmmac_txq_stats txq_stats;
+ };
+ 
+ struct stmmac_rx_buffer {
+@@ -121,6 +122,7 @@ struct stmmac_rx_queue {
+ 		unsigned int len;
+ 		unsigned int error;
+ 	} state;
++	struct stmmac_rxq_stats rxq_stats;
+ };
+ 
+ struct stmmac_channel {
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+index 2ae73ab842d45..b7ac7abecdd35 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+@@ -89,14 +89,6 @@ static const struct stmmac_stats stmmac_gstrings_stats[] = {
+ 	/* Tx/Rx IRQ Events */
+ 	STMMAC_STAT(rx_early_irq),
+ 	STMMAC_STAT(threshold),
+-	STMMAC_STAT(tx_pkt_n),
+-	STMMAC_STAT(rx_pkt_n),
+-	STMMAC_STAT(normal_irq_n),
+-	STMMAC_STAT(rx_normal_irq_n),
+-	STMMAC_STAT(napi_poll),
+-	STMMAC_STAT(tx_normal_irq_n),
+-	STMMAC_STAT(tx_clean),
+-	STMMAC_STAT(tx_set_ic_bit),
+ 	STMMAC_STAT(irq_receive_pmt_irq_n),
+ 	/* MMC info */
+ 	STMMAC_STAT(mmc_tx_irq_n),
+@@ -163,9 +155,6 @@ static const struct stmmac_stats stmmac_gstrings_stats[] = {
+ 	STMMAC_STAT(mtl_rx_fifo_ctrl_active),
+ 	STMMAC_STAT(mac_rx_frame_ctrl_fifo),
+ 	STMMAC_STAT(mac_gmii_rx_proto_engine),
+-	/* TSO */
+-	STMMAC_STAT(tx_tso_frames),
+-	STMMAC_STAT(tx_tso_nfrags),
+ 	/* EST */
+ 	STMMAC_STAT(mtl_est_cgce),
+ 	STMMAC_STAT(mtl_est_hlbs),
+@@ -175,6 +164,23 @@ static const struct stmmac_stats stmmac_gstrings_stats[] = {
+ };
+ #define STMMAC_STATS_LEN ARRAY_SIZE(stmmac_gstrings_stats)
+ 
++/* statistics collected in queue which will be summed up for all TX or RX
++ * queues, or summed up for both TX and RX queues(napi_poll, normal_irq_n).
 + */
-+#include <linux/bitfield.h>
-+#include <linux/i2c.h>
-+#include <linux/interrupt.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/driver.h>
-+#include <linux/regulator/machine.h>
-+#include <linux/regulator/of_regulator.h>
-+#include <linux/util_macros.h>
-+
-+#define MAX77857_REG_INT_SRC		0x10
-+#define MAX77857_REG_INT_MASK		0x11
-+#define MAX77857_REG_CONT1		0x12
-+#define MAX77857_REG_CONT2		0x13
-+#define MAX77857_REG_CONT3		0x14
-+
-+#define MAX77857_INT_SRC_OCP		BIT(0)
-+#define MAX77857_INT_SRC_THS		BIT(1)
-+#define MAX77857_INT_SRC_HARDSHORT	BIT(2)
-+#define MAX77857_INT_SRC_OVP		BIT(3)
-+#define MAX77857_INT_SRC_POK		BIT(4)
-+
-+#define MAX77857_ILIM_MASK		GENMASK(2, 0)
-+#define MAX77857_CONT1_FREQ		GENMASK(4, 3)
-+#define MAX77857_CONT3_FPWM		BIT(5)
-+
-+#define MAX77859_REG_INT_SRC		0x11
-+#define MAX77859_REG_CONT1		0x13
-+#define MAX77859_REG_CONT2		0x14
-+#define MAX77859_REG_CONT3		0x15
-+#define MAX77859_REG_CONT5		0x17
-+#define MAX77859_CONT2_FPWM		BIT(2)
-+#define MAX77859_CONT2_INTB		BIT(3)
-+#define MAX77859_CONT3_DVS_START	BIT(2)
-+#define MAX77859_VOLTAGE_SEL_MASK	GENMASK(9, 0)
-+
-+#define MAX77859_CURRENT_MIN		1000000
-+#define MAX77859_CURRENT_MAX		5000000
-+#define MAX77859_CURRENT_STEP		50000
-+
-+enum max77857_id {
-+	ID_MAX77831 = 1,
-+	ID_MAX77857,
-+	ID_MAX77859,
-+	ID_MAX77859A,
++static const char stmmac_qstats_string[][ETH_GSTRING_LEN] = {
++	"rx_pkt_n",
++	"rx_normal_irq_n",
++	"tx_pkt_n",
++	"tx_normal_irq_n",
++	"tx_clean",
++	"tx_set_ic_bit",
++	"tx_tso_frames",
++	"tx_tso_nfrags",
++	"normal_irq_n",
++	"napi_poll",
 +};
++#define STMMAC_QSTATS ARRAY_SIZE(stmmac_qstats_string)
 +
-+static bool max77857_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	enum max77857_id id = (enum max77857_id)dev_get_drvdata(dev);
+ /* HW MAC Management counters (if supported) */
+ #define STMMAC_MMC_STAT(m)	\
+ 	{ #m, sizeof_field(struct stmmac_counters, m),	\
+@@ -535,23 +541,44 @@ static void stmmac_get_per_qstats(struct stmmac_priv *priv, u64 *data)
+ {
+ 	u32 tx_cnt = priv->plat->tx_queues_to_use;
+ 	u32 rx_cnt = priv->plat->rx_queues_to_use;
++	unsigned int start;
+ 	int q, stat;
++	u64 *pos;
+ 	char *p;
+ 
++	pos = data;
+ 	for (q = 0; q < tx_cnt; q++) {
+-		p = (char *)priv + offsetof(struct stmmac_priv,
+-					    xstats.txq_stats[q].tx_pkt_n);
++		struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[q];
++		struct stmmac_txq_stats snapshot;
 +
-+	switch (id) {
-+	case ID_MAX77831:
-+	case ID_MAX77857:
-+		return reg == MAX77857_REG_INT_SRC;
-+	case ID_MAX77859:
-+	case ID_MAX77859A:
-+		return reg == MAX77859_REG_INT_SRC;
-+	default:
-+		return true;
-+	}
-+}
++		data = pos;
++		do {
++			start = u64_stats_fetch_begin(&tx_q->txq_stats.syncp);
++			snapshot = tx_q->txq_stats;
++		} while (u64_stats_fetch_retry(&tx_q->txq_stats.syncp, start));
 +
-+struct regmap_config max77857_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.cache_type = REGCACHE_MAPLE,
-+	.volatile_reg = max77857_volatile_reg,
-+};
++		p = (char *)&snapshot + offsetof(struct stmmac_txq_stats, tx_pkt_n);
+ 		for (stat = 0; stat < STMMAC_TXQ_STATS; stat++) {
+-			*data++ = (*(unsigned long *)p);
+-			p += sizeof(unsigned long);
++			*data++ += (*(u64 *)p);
++			p += sizeof(u64);
+ 		}
+ 	}
 +
-+static int max77857_get_status(struct regulator_dev *rdev)
-+{
-+	unsigned int val;
-+	int ret;
++	pos = data;
+ 	for (q = 0; q < rx_cnt; q++) {
+-		p = (char *)priv + offsetof(struct stmmac_priv,
+-					    xstats.rxq_stats[q].rx_pkt_n);
++		struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[q];
++		struct stmmac_rxq_stats snapshot;
 +
-+	ret = regmap_read(rdev->regmap, MAX77857_REG_INT_SRC, &val);
-+	if (ret)
-+		return ret;
++		data = pos;
++		do {
++			start = u64_stats_fetch_begin(&rx_q->rxq_stats.syncp);
++			snapshot = rx_q->rxq_stats;
++		} while (u64_stats_fetch_retry(&rx_q->rxq_stats.syncp, start));
 +
-+	if (FIELD_GET(MAX77857_INT_SRC_POK, val))
-+		return REGULATOR_STATUS_ON;
++		p = (char *)&snapshot + offsetof(struct stmmac_rxq_stats, rx_pkt_n);
+ 		for (stat = 0; stat < STMMAC_RXQ_STATS; stat++) {
+-			*data++ = (*(unsigned long *)p);
+-			p += sizeof(unsigned long);
++			*data++ += (*(u64 *)p);
++			p += sizeof(u64);
+ 		}
+ 	}
+ }
+@@ -562,8 +589,10 @@ static void stmmac_get_ethtool_stats(struct net_device *dev,
+ 	struct stmmac_priv *priv = netdev_priv(dev);
+ 	u32 rx_queues_count = priv->plat->rx_queues_to_use;
+ 	u32 tx_queues_count = priv->plat->tx_queues_to_use;
++	u64 napi_poll = 0, normal_irq_n = 0;
++	int i, j = 0, pos, ret;
+ 	unsigned long count;
+-	int i, j = 0, ret;
++	unsigned int start;
+ 
+ 	if (priv->dma_cap.asp) {
+ 		for (i = 0; i < STMMAC_SAFETY_FEAT_SIZE; i++) {
+@@ -574,8 +603,7 @@ static void stmmac_get_ethtool_stats(struct net_device *dev,
+ 	}
+ 
+ 	/* Update the DMA HW counters for dwmac10/100 */
+-	ret = stmmac_dma_diagnostic_fr(priv, &dev->stats, (void *) &priv->xstats,
+-			priv->ioaddr);
++	ret = stmmac_dma_diagnostic_fr(priv, &priv->xstats, priv->ioaddr);
+ 	if (ret) {
+ 		/* If supported, for new GMAC chips expose the MMC counters */
+ 		if (priv->dma_cap.rmon) {
+@@ -606,6 +634,48 @@ static void stmmac_get_ethtool_stats(struct net_device *dev,
+ 		data[j++] = (stmmac_gstrings_stats[i].sizeof_stat ==
+ 			     sizeof(u64)) ? (*(u64 *)p) : (*(u32 *)p);
+ 	}
 +
-+	return REGULATOR_STATUS_ERROR;
-+}
++	pos = j;
++	for (i = 0; i < rx_queues_count; i++) {
++		struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[i];
++		struct stmmac_rxq_stats snapshot;
 +
-+static unsigned int max77857_get_mode(struct regulator_dev *rdev)
-+{
-+	enum max77857_id id = (enum max77857_id)rdev_get_drvdata(rdev);
-+	unsigned int regval;
-+	int ret;
++		j = pos;
++		do {
++			start = u64_stats_fetch_begin(&rx_q->rxq_stats.syncp);
++			snapshot = rx_q->rxq_stats;
++		} while (u64_stats_fetch_retry(&rx_q->rxq_stats.syncp, start));
 +
-+	switch (id) {
-+	case ID_MAX77831:
-+	case ID_MAX77857:
-+		ret = regmap_read(rdev->regmap, MAX77857_REG_CONT3, &regval);
-+		if (ret)
-+			return ret;
-+
-+		if (FIELD_GET(MAX77857_CONT3_FPWM, regval))
-+			return REGULATOR_MODE_FAST;
-+
-+		break;
-+	case ID_MAX77859:
-+	case ID_MAX77859A:
-+		ret = regmap_read(rdev->regmap, MAX77859_REG_CONT2, &regval);
-+		if (ret)
-+			return ret;
-+
-+		if (FIELD_GET(MAX77859_CONT2_FPWM, regval))
-+			return REGULATOR_MODE_FAST;
-+
-+		break;
-+	default:
-+		return -EINVAL;
++		data[j++] += snapshot.rx_pkt_n;
++		data[j++] += snapshot.rx_normal_irq_n;
++		normal_irq_n += snapshot.rx_normal_irq_n;
++		napi_poll += snapshot.napi_poll;
 +	}
 +
-+	return REGULATOR_MODE_NORMAL;
-+}
++	pos = j;
++	for (i = 0; i < tx_queues_count; i++) {
++		struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[i];
++		struct stmmac_txq_stats snapshot;
 +
-+static int max77857_set_mode(struct regulator_dev *rdev, unsigned int mode)
-+{
-+	enum max77857_id id = (enum max77857_id)rdev_get_drvdata(rdev);
-+	unsigned int reg, val;
++		j = pos;
++		do {
++			start = u64_stats_fetch_begin(&tx_q->txq_stats.syncp);
++			snapshot = tx_q->txq_stats;
++		} while (u64_stats_fetch_retry(&tx_q->txq_stats.syncp, start));
 +
-+	switch (id) {
-+	case ID_MAX77831:
-+	case ID_MAX77857:
-+		reg = MAX77857_REG_CONT3;
-+		val = MAX77857_CONT3_FPWM;
-+		break;
-+	case ID_MAX77859:
-+	case ID_MAX77859A:
-+		reg = MAX77859_REG_CONT2;
-+		val = MAX77859_CONT2_FPWM;
-+		break;
-+	default:
-+		return -EINVAL;
++		data[j++] += snapshot.tx_pkt_n;
++		data[j++] += snapshot.tx_normal_irq_n;
++		normal_irq_n += snapshot.tx_normal_irq_n;
++		data[j++] += snapshot.tx_clean;
++		data[j++] += snapshot.tx_set_ic_bit;
++		data[j++] += snapshot.tx_tso_frames;
++		data[j++] += snapshot.tx_tso_nfrags;
++		napi_poll += snapshot.napi_poll;
 +	}
++	normal_irq_n += priv->xstats.rx_early_irq;
++	data[j++] = normal_irq_n;
++	data[j++] = napi_poll;
 +
-+	switch (mode) {
-+	case REGULATOR_MODE_FAST:
-+		return regmap_set_bits(rdev->regmap, reg, val);
-+	case REGULATOR_MODE_NORMAL:
-+		return regmap_clear_bits(rdev->regmap, reg, val);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int max77857_get_error_flags(struct regulator_dev *rdev,
-+				    unsigned int *flags)
-+{
-+	unsigned int val;
-+	int ret;
-+
-+	ret = regmap_read(rdev->regmap, MAX77857_REG_INT_SRC, &val);
-+	if (ret)
-+		return ret;
-+
-+	*flags = 0;
-+
-+	if (FIELD_GET(MAX77857_INT_SRC_OVP, val))
-+		*flags |= REGULATOR_ERROR_OVER_VOLTAGE_WARN;
-+
-+	if (FIELD_GET(MAX77857_INT_SRC_OCP, val) ||
-+	    FIELD_GET(MAX77857_INT_SRC_HARDSHORT, val))
-+		*flags |= REGULATOR_ERROR_OVER_CURRENT;
-+
-+	if (FIELD_GET(MAX77857_INT_SRC_THS, val))
-+		*flags |= REGULATOR_ERROR_OVER_TEMP;
-+
-+	if (!FIELD_GET(MAX77857_INT_SRC_POK, val))
-+		*flags |= REGULATOR_ERROR_FAIL;
-+
-+	return 0;
-+}
-+
-+static struct linear_range max77859_lin_ranges[] = {
-+	REGULATOR_LINEAR_RANGE(3200000, 0x0A0, 0x320, 20000)
-+};
-+
-+static const unsigned int max77859_ramp_table[4] = {
-+	1000, 500, 250, 125
-+};
-+
-+static int max77859_set_voltage_sel(struct regulator_dev *rdev,
-+				    unsigned int sel)
-+{
-+	__be16 reg;
-+	int ret;
-+
-+	reg = cpu_to_be16(sel);
-+
-+	ret = regmap_bulk_write(rdev->regmap, MAX77859_REG_CONT3, &reg, 2);
-+	if (ret)
-+		return ret;
-+
-+	/* actually apply new voltage */
-+	return regmap_set_bits(rdev->regmap, MAX77859_REG_CONT3,
-+			       MAX77859_CONT3_DVS_START);
-+}
-+
-+int max77859_get_voltage_sel(struct regulator_dev *rdev)
-+{
-+	__be16 reg;
-+	int ret;
-+
-+	ret = regmap_bulk_read(rdev->regmap, MAX77859_REG_CONT3, &reg, 2);
-+	if (ret)
-+		return ret;
-+
-+	return FIELD_GET(MAX77859_VOLTAGE_SEL_MASK, __be16_to_cpu(reg));
-+}
-+
-+int max77859_set_current_limit(struct regulator_dev *rdev, int min_uA, int max_uA)
-+{
-+	u32 selector;
-+
-+	if (max_uA < MAX77859_CURRENT_MIN)
-+		return -EINVAL;
-+
-+	selector = 0x12 + (max_uA - MAX77859_CURRENT_MIN) / MAX77859_CURRENT_STEP;
-+
-+	selector = clamp_val(selector, 0x00, 0x7F);
-+
-+	return regmap_write(rdev->regmap, MAX77859_REG_CONT5, selector);
-+}
-+
-+int max77859_get_current_limit(struct regulator_dev *rdev)
-+{
-+	u32 selector;
-+	int ret;
-+
-+	ret = regmap_read(rdev->regmap, MAX77859_REG_CONT5, &selector);
-+	if (ret)
-+		return ret;
-+
-+	if (selector <= 0x12)
-+		return MAX77859_CURRENT_MIN;
-+
-+	if (selector >= 0x64)
-+		return MAX77859_CURRENT_MAX;
-+
-+	return MAX77859_CURRENT_MIN + (selector - 0x12) * MAX77859_CURRENT_STEP;
-+}
-+
-+static const struct regulator_ops max77859_regulator_ops = {
-+	.list_voltage = regulator_list_voltage_linear_range,
-+	.set_voltage_sel = max77859_set_voltage_sel,
-+	.get_voltage_sel = max77859_get_voltage_sel,
-+	.set_ramp_delay = regulator_set_ramp_delay_regmap,
-+	.get_status = max77857_get_status,
-+	.set_mode = max77857_set_mode,
-+	.get_mode = max77857_get_mode,
-+	.get_error_flags = max77857_get_error_flags,
-+};
-+
-+static const struct regulator_ops max77859a_regulator_ops = {
-+	.list_voltage = regulator_list_voltage_linear_range,
-+	.set_voltage_sel = max77859_set_voltage_sel,
-+	.get_voltage_sel = max77859_get_voltage_sel,
-+	.set_current_limit = max77859_set_current_limit,
-+	.get_current_limit = max77859_get_current_limit,
-+	.set_ramp_delay = regulator_set_ramp_delay_regmap,
-+	.get_status = max77857_get_status,
-+	.set_mode = max77857_set_mode,
-+	.get_mode = max77857_get_mode,
-+	.get_error_flags = max77857_get_error_flags,
-+};
-+
-+static const struct regulator_ops max77857_regulator_ops = {
-+	.list_voltage = regulator_list_voltage_linear_range,
-+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
-+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
-+	.set_ramp_delay = regulator_set_ramp_delay_regmap,
-+	.get_status = max77857_get_status,
-+	.set_mode = max77857_set_mode,
-+	.get_mode = max77857_get_mode,
-+	.get_error_flags = max77857_get_error_flags,
-+};
-+
-+static struct linear_range max77857_lin_ranges[] = {
-+	REGULATOR_LINEAR_RANGE(4485000, 0x3D, 0xCC, 73500)
-+};
-+
-+static const unsigned int max77857_switch_freq[] = {
-+	1200000, 1500000, 1800000, 2100000
-+};
-+
-+static const unsigned int max77857_ramp_table[2][4] = {
-+	{ 1333, 667, 333, 227 }, /* when switch freq is 1.8MHz or 2.1MHz */
-+	{ 1166, 667, 333, 167 }, /* when switch freq is 1.2MHz or 1.5MHz */
-+};
-+
-+static struct regulator_desc max77857_regulator_desc = {
-+	.ops = &max77857_regulator_ops,
-+	.name = "max77857",
-+	.linear_ranges = max77857_lin_ranges,
-+	.n_linear_ranges = ARRAY_SIZE(max77857_lin_ranges),
-+	.vsel_mask = 0xFF,
-+	.vsel_reg = MAX77857_REG_CONT2,
-+	.ramp_delay_table = max77857_ramp_table[0],
-+	.n_ramp_values = ARRAY_SIZE(max77857_ramp_table[0]),
-+	.ramp_reg = MAX77857_REG_CONT3,
-+	.ramp_mask = GENMASK(1, 0),
-+	.ramp_delay = max77857_ramp_table[0][0],
-+	.owner = THIS_MODULE,
-+};
-+
-+static void max77857_calc_range(struct device *dev, enum max77857_id id)
-+{
-+	struct linear_range *range;
-+	unsigned long vref_step;
-+	u32 rtop = 0;
-+	u32 rbot = 0;
-+
-+	device_property_read_u32(dev, "adi,rtop-ohms", &rtop);
-+	device_property_read_u32(dev, "adi,rbot-ohms", &rbot);
-+
-+	if (!rbot || !rtop)
-+		return;
-+
-+	switch (id) {
-+	case ID_MAX77831:
-+	case ID_MAX77857:
-+		range = max77857_lin_ranges;
-+		vref_step = 4900UL;
-+		break;
-+	case ID_MAX77859:
-+	case ID_MAX77859A:
-+		range = max77859_lin_ranges;
-+		vref_step = 1250UL;
-+		break;
-+	}
-+
-+	range->step = DIV_ROUND_CLOSEST(vref_step * (rbot + rtop), rbot);
-+	range->min = range->step * range->min_sel;
-+}
-+
-+static int max77857_probe(struct i2c_client *client)
-+{
-+	const struct i2c_device_id *i2c_id;
-+	struct device *dev = &client->dev;
-+	struct regulator_config cfg = { };
-+	struct regulator_dev *rdev;
-+	struct regmap *regmap;
-+	enum max77857_id id;
-+	u32 switch_freq = 0;
-+	int ret;
-+
-+	i2c_id = i2c_client_get_device_id(client);
-+	if (!i2c_id)
-+		return -EINVAL;
-+
-+	id = i2c_id->driver_data;
-+
-+	dev_set_drvdata(dev, (void *)id);
-+
-+	if (id == ID_MAX77859 || id == ID_MAX77859A) {
-+		max77857_regulator_desc.ops = &max77859_regulator_ops;
-+		max77857_regulator_desc.linear_ranges = max77859_lin_ranges;
-+		max77857_regulator_desc.ramp_delay_table = max77859_ramp_table;
-+		max77857_regulator_desc.ramp_delay = max77859_ramp_table[0];
-+	}
-+
-+	if (id == ID_MAX77859A)
-+		max77857_regulator_desc.ops = &max77859a_regulator_ops;
-+
-+	max77857_calc_range(dev, id);
-+
-+	regmap = devm_regmap_init_i2c(client, &max77857_regmap_config);
-+	if (IS_ERR(regmap))
-+		return dev_err_probe(dev, PTR_ERR(regmap),
-+				     "cannot initialize regmap\n");
-+
-+	device_property_read_u32(dev, "adi,switch-frequency-hz", &switch_freq);
-+	if (switch_freq) {
-+		switch_freq = find_closest(switch_freq, max77857_switch_freq,
-+					   ARRAY_SIZE(max77857_switch_freq));
-+
-+		if (id == ID_MAX77831 && switch_freq == 3)
-+			switch_freq = 2;
-+
-+		switch (id) {
-+		case ID_MAX77831:
-+		case ID_MAX77857:
-+			ret = regmap_update_bits(regmap, MAX77857_REG_CONT1,
-+						 MAX77857_CONT1_FREQ, switch_freq);
-+
-+			if (switch_freq >= 2)
-+				break;
-+
-+			max77857_regulator_desc.ramp_delay_table = max77857_ramp_table[1];
-+			max77857_regulator_desc.ramp_delay = max77857_ramp_table[1][0];
-+			break;
-+		case ID_MAX77859:
-+		case ID_MAX77859A:
-+			ret = regmap_update_bits(regmap, MAX77859_REG_CONT1,
-+						 MAX77857_CONT1_FREQ, switch_freq);
-+			break;
+ 	stmmac_get_per_qstats(priv, &data[j]);
+ }
+ 
+@@ -618,7 +688,7 @@ static int stmmac_get_sset_count(struct net_device *netdev, int sset)
+ 
+ 	switch (sset) {
+ 	case ETH_SS_STATS:
+-		len = STMMAC_STATS_LEN +
++		len = STMMAC_STATS_LEN + STMMAC_QSTATS +
+ 		      STMMAC_TXQ_STATS * tx_cnt +
+ 		      STMMAC_RXQ_STATS * rx_cnt;
+ 
+@@ -691,8 +761,11 @@ static void stmmac_get_strings(struct net_device *dev, u32 stringset, u8 *data)
+ 				p += ETH_GSTRING_LEN;
+ 			}
+ 		for (i = 0; i < STMMAC_STATS_LEN; i++) {
+-			memcpy(p, stmmac_gstrings_stats[i].stat_string,
+-				ETH_GSTRING_LEN);
++			memcpy(p, stmmac_gstrings_stats[i].stat_string, ETH_GSTRING_LEN);
++			p += ETH_GSTRING_LEN;
 +		}
-+		if (ret)
-+			return ret;
++		for (i = 0; i < STMMAC_QSTATS; i++) {
++			memcpy(p, stmmac_qstats_string[i], ETH_GSTRING_LEN);
+ 			p += ETH_GSTRING_LEN;
+ 		}
+ 		stmmac_get_qstats_string(priv, p);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 4727f7be4f86e..78d4143f5dea3 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -2432,6 +2432,8 @@ static bool stmmac_xdp_xmit_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
+ 	struct dma_desc *tx_desc = NULL;
+ 	struct xdp_desc xdp_desc;
+ 	bool work_done = true;
++	u32 tx_set_ic_bit = 0;
++	unsigned long flags;
+ 
+ 	/* Avoids TX time-out as we are sharing with slow path */
+ 	txq_trans_cond_update(nq);
+@@ -2492,7 +2494,7 @@ static bool stmmac_xdp_xmit_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
+ 		if (set_ic) {
+ 			tx_q->tx_count_frames = 0;
+ 			stmmac_set_tx_ic(priv, tx_desc);
+-			priv->xstats.tx_set_ic_bit++;
++			tx_set_ic_bit++;
+ 		}
+ 
+ 		stmmac_prepare_tx_desc(priv, tx_desc, 1, xdp_desc.len,
+@@ -2504,6 +2506,9 @@ static bool stmmac_xdp_xmit_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
+ 		tx_q->cur_tx = STMMAC_GET_ENTRY(tx_q->cur_tx, priv->dma_conf.dma_tx_size);
+ 		entry = tx_q->cur_tx;
+ 	}
++	flags = u64_stats_update_begin_irqsave(&tx_q->txq_stats.syncp);
++	tx_q->txq_stats.tx_set_ic_bit += tx_set_ic_bit;
++	u64_stats_update_end_irqrestore(&tx_q->txq_stats.syncp, flags);
+ 
+ 	if (tx_desc) {
+ 		stmmac_flush_tx_descriptors(priv, queue);
+@@ -2545,11 +2550,11 @@ static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue)
+ 	struct stmmac_tx_queue *tx_q = &priv->dma_conf.tx_queue[queue];
+ 	unsigned int bytes_compl = 0, pkts_compl = 0;
+ 	unsigned int entry, xmits = 0, count = 0;
++	u32 tx_packets = 0, tx_errors = 0;
++	unsigned long flags;
+ 
+ 	__netif_tx_lock_bh(netdev_get_tx_queue(priv->dev, queue));
+ 
+-	priv->xstats.tx_clean++;
+-
+ 	tx_q->xsk_frames_done = 0;
+ 
+ 	entry = tx_q->dirty_tx;
+@@ -2580,8 +2585,7 @@ static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue)
+ 		else
+ 			p = tx_q->dma_tx + entry;
+ 
+-		status = stmmac_tx_status(priv, &priv->dev->stats,
+-				&priv->xstats, p, priv->ioaddr);
++		status = stmmac_tx_status(priv,	&priv->xstats, p, priv->ioaddr);
+ 		/* Check if the descriptor is owned by the DMA */
+ 		if (unlikely(status & tx_dma_own))
+ 			break;
+@@ -2597,13 +2601,11 @@ static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue)
+ 		if (likely(!(status & tx_not_ls))) {
+ 			/* ... verify the status error condition */
+ 			if (unlikely(status & tx_err)) {
+-				priv->dev->stats.tx_errors++;
++				tx_errors++;
+ 				if (unlikely(status & tx_err_bump_tc))
+ 					stmmac_bump_dma_threshold(priv, queue);
+ 			} else {
+-				priv->dev->stats.tx_packets++;
+-				priv->xstats.tx_pkt_n++;
+-				priv->xstats.txq_stats[queue].tx_pkt_n++;
++				tx_packets++;
+ 			}
+ 			if (skb)
+ 				stmmac_get_tx_hwtstamp(priv, p, skb);
+@@ -2707,6 +2709,14 @@ static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue)
+ 			      STMMAC_COAL_TIMER(priv->tx_coal_timer[queue]),
+ 			      HRTIMER_MODE_REL);
+ 
++	flags = u64_stats_update_begin_irqsave(&tx_q->txq_stats.syncp);
++	tx_q->txq_stats.tx_packets += tx_packets;
++	tx_q->txq_stats.tx_pkt_n += tx_packets;
++	tx_q->txq_stats.tx_clean++;
++	u64_stats_update_end_irqrestore(&tx_q->txq_stats.syncp, flags);
++
++	priv->xstats.tx_errors += tx_errors;
++
+ 	__netif_tx_unlock_bh(netdev_get_tx_queue(priv->dev, queue));
+ 
+ 	/* Combine decisions from TX clean and XSK TX */
+@@ -2734,7 +2744,7 @@ static void stmmac_tx_err(struct stmmac_priv *priv, u32 chan)
+ 			    tx_q->dma_tx_phy, chan);
+ 	stmmac_start_tx_dma(priv, chan);
+ 
+-	priv->dev->stats.tx_errors++;
++	priv->xstats.tx_errors++;
+ 	netif_tx_wake_queue(netdev_get_tx_queue(priv->dev, chan));
+ }
+ 
+@@ -4110,6 +4120,7 @@ static netdev_tx_t stmmac_tso_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	struct stmmac_tx_queue *tx_q;
+ 	bool has_vlan, set_ic;
+ 	u8 proto_hdr_len, hdr;
++	unsigned long flags;
+ 	u32 pay_len, mss;
+ 	dma_addr_t des;
+ 	int i;
+@@ -4258,7 +4269,6 @@ static netdev_tx_t stmmac_tso_xmit(struct sk_buff *skb, struct net_device *dev)
+ 
+ 		tx_q->tx_count_frames = 0;
+ 		stmmac_set_tx_ic(priv, desc);
+-		priv->xstats.tx_set_ic_bit++;
+ 	}
+ 
+ 	/* We've used all descriptors we need for this skb, however,
+@@ -4274,9 +4284,13 @@ static netdev_tx_t stmmac_tso_xmit(struct sk_buff *skb, struct net_device *dev)
+ 		netif_tx_stop_queue(netdev_get_tx_queue(priv->dev, queue));
+ 	}
+ 
+-	dev->stats.tx_bytes += skb->len;
+-	priv->xstats.tx_tso_frames++;
+-	priv->xstats.tx_tso_nfrags += nfrags;
++	flags = u64_stats_update_begin_irqsave(&tx_q->txq_stats.syncp);
++	tx_q->txq_stats.tx_bytes += skb->len;
++	tx_q->txq_stats.tx_tso_frames++;
++	tx_q->txq_stats.tx_tso_nfrags += nfrags;
++	if (set_ic)
++		tx_q->txq_stats.tx_set_ic_bit++;
++	u64_stats_update_end_irqrestore(&tx_q->txq_stats.syncp, flags);
+ 
+ 	if (priv->sarc_type)
+ 		stmmac_set_desc_sarc(priv, first, priv->sarc_type);
+@@ -4326,7 +4340,7 @@ static netdev_tx_t stmmac_tso_xmit(struct sk_buff *skb, struct net_device *dev)
+ dma_map_err:
+ 	dev_err(priv->device, "Tx dma map failed\n");
+ 	dev_kfree_skb(skb);
+-	priv->dev->stats.tx_dropped++;
++	priv->xstats.tx_dropped++;
+ 	return NETDEV_TX_OK;
+ }
+ 
+@@ -4352,6 +4366,7 @@ static netdev_tx_t stmmac_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	struct stmmac_tx_queue *tx_q;
+ 	bool has_vlan, set_ic;
+ 	int entry, first_tx;
++	unsigned long flags;
+ 	dma_addr_t des;
+ 
+ 	tx_q = &priv->dma_conf.tx_queue[queue];
+@@ -4480,7 +4495,6 @@ static netdev_tx_t stmmac_xmit(struct sk_buff *skb, struct net_device *dev)
+ 
+ 		tx_q->tx_count_frames = 0;
+ 		stmmac_set_tx_ic(priv, desc);
+-		priv->xstats.tx_set_ic_bit++;
+ 	}
+ 
+ 	/* We've used all descriptors we need for this skb, however,
+@@ -4507,7 +4521,11 @@ static netdev_tx_t stmmac_xmit(struct sk_buff *skb, struct net_device *dev)
+ 		netif_tx_stop_queue(netdev_get_tx_queue(priv->dev, queue));
+ 	}
+ 
+-	dev->stats.tx_bytes += skb->len;
++	flags = u64_stats_update_begin_irqsave(&tx_q->txq_stats.syncp);
++	tx_q->txq_stats.tx_bytes += skb->len;
++	if (set_ic)
++		tx_q->txq_stats.tx_set_ic_bit++;
++	u64_stats_update_end_irqrestore(&tx_q->txq_stats.syncp, flags);
+ 
+ 	if (priv->sarc_type)
+ 		stmmac_set_desc_sarc(priv, first, priv->sarc_type);
+@@ -4569,7 +4587,7 @@ static netdev_tx_t stmmac_xmit(struct sk_buff *skb, struct net_device *dev)
+ dma_map_err:
+ 	netdev_err(priv->dev, "Tx DMA map failed\n");
+ 	dev_kfree_skb(skb);
+-	priv->dev->stats.tx_dropped++;
++	priv->xstats.tx_dropped++;
+ 	return NETDEV_TX_OK;
+ }
+ 
+@@ -4770,9 +4788,12 @@ static int stmmac_xdp_xmit_xdpf(struct stmmac_priv *priv, int queue,
+ 		set_ic = false;
+ 
+ 	if (set_ic) {
++		unsigned long flags;
+ 		tx_q->tx_count_frames = 0;
+ 		stmmac_set_tx_ic(priv, tx_desc);
+-		priv->xstats.tx_set_ic_bit++;
++		flags = u64_stats_update_begin_irqsave(&tx_q->txq_stats.syncp);
++		tx_q->txq_stats.tx_set_ic_bit++;
++		u64_stats_update_end_irqrestore(&tx_q->txq_stats.syncp, flags);
+ 	}
+ 
+ 	stmmac_enable_dma_transmission(priv, priv->ioaddr);
+@@ -4917,16 +4938,18 @@ static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
+ 				   struct dma_desc *p, struct dma_desc *np,
+ 				   struct xdp_buff *xdp)
+ {
++	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[queue];
+ 	struct stmmac_channel *ch = &priv->channel[queue];
+ 	unsigned int len = xdp->data_end - xdp->data;
+ 	enum pkt_hash_types hash_type;
+ 	int coe = priv->hw->rx_csum;
++	unsigned long flags;
+ 	struct sk_buff *skb;
+ 	u32 hash;
+ 
+ 	skb = stmmac_construct_skb_zc(ch, xdp);
+ 	if (!skb) {
+-		priv->dev->stats.rx_dropped++;
++		priv->xstats.rx_dropped++;
+ 		return;
+ 	}
+ 
+@@ -4945,8 +4968,10 @@ static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
+ 	skb_record_rx_queue(skb, queue);
+ 	napi_gro_receive(&ch->rxtx_napi, skb);
+ 
+-	priv->dev->stats.rx_packets++;
+-	priv->dev->stats.rx_bytes += len;
++	flags = u64_stats_update_begin_irqsave(&rx_q->rxq_stats.syncp);
++	rx_q->rxq_stats.rx_pkt_n++;
++	rx_q->rxq_stats.rx_bytes += len;
++	u64_stats_update_end_irqrestore(&rx_q->rxq_stats.syncp, flags);
+ }
+ 
+ static bool stmmac_rx_refill_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
+@@ -5023,9 +5048,11 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
+ 	unsigned int count = 0, error = 0, len = 0;
+ 	int dirty = stmmac_rx_dirty(priv, queue);
+ 	unsigned int next_entry = rx_q->cur_rx;
++	u32 rx_errors = 0, rx_dropped = 0;
+ 	unsigned int desc_size;
+ 	struct bpf_prog *prog;
+ 	bool failure = false;
++	unsigned long flags;
+ 	int xdp_status = 0;
+ 	int status = 0;
+ 
+@@ -5081,8 +5108,7 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
+ 			p = rx_q->dma_rx + entry;
+ 
+ 		/* read the status of the incoming frame */
+-		status = stmmac_rx_status(priv, &priv->dev->stats,
+-					  &priv->xstats, p);
++		status = stmmac_rx_status(priv, &priv->xstats, p);
+ 		/* check if managed by the DMA otherwise go ahead */
+ 		if (unlikely(status & dma_own))
+ 			break;
+@@ -5104,8 +5130,7 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
+ 			break;
+ 
+ 		if (priv->extend_desc)
+-			stmmac_rx_extended_status(priv, &priv->dev->stats,
+-						  &priv->xstats,
++			stmmac_rx_extended_status(priv, &priv->xstats,
+ 						  rx_q->dma_erx + entry);
+ 		if (unlikely(status == discard_frame)) {
+ 			xsk_buff_free(buf->xdp);
+@@ -5113,7 +5138,7 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
+ 			dirty++;
+ 			error = 1;
+ 			if (!priv->hwts_rx_en)
+-				priv->dev->stats.rx_errors++;
++				rx_errors++;
+ 		}
+ 
+ 		if (unlikely(error && (status & rx_not_ls)))
+@@ -5161,7 +5186,7 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
+ 			break;
+ 		case STMMAC_XDP_CONSUMED:
+ 			xsk_buff_free(buf->xdp);
+-			priv->dev->stats.rx_dropped++;
++			rx_dropped++;
+ 			break;
+ 		case STMMAC_XDP_TX:
+ 		case STMMAC_XDP_REDIRECT:
+@@ -5182,8 +5207,12 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
+ 
+ 	stmmac_finalize_xdp_rx(priv, xdp_status);
+ 
+-	priv->xstats.rx_pkt_n += count;
+-	priv->xstats.rxq_stats[queue].rx_pkt_n += count;
++	flags = u64_stats_update_begin_irqsave(&rx_q->rxq_stats.syncp);
++	rx_q->rxq_stats.rx_pkt_n += count;
++	u64_stats_update_end_irqrestore(&rx_q->rxq_stats.syncp, flags);
++
++	priv->xstats.rx_dropped += rx_dropped;
++	priv->xstats.rx_errors += rx_errors;
+ 
+ 	if (xsk_uses_need_wakeup(rx_q->xsk_pool)) {
+ 		if (failure || stmmac_rx_dirty(priv, queue) > 0)
+@@ -5207,6 +5236,7 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
+  */
+ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+ {
++	u32 rx_errors = 0, rx_dropped = 0, rx_bytes = 0, rx_packets = 0;
+ 	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[queue];
+ 	struct stmmac_channel *ch = &priv->channel[queue];
+ 	unsigned int count = 0, error = 0, len = 0;
+@@ -5216,6 +5246,7 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+ 	unsigned int desc_size;
+ 	struct sk_buff *skb = NULL;
+ 	struct stmmac_xdp_buff ctx;
++	unsigned long flags;
+ 	int xdp_status = 0;
+ 	int buf_sz;
+ 
+@@ -5271,8 +5302,7 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+ 			p = rx_q->dma_rx + entry;
+ 
+ 		/* read the status of the incoming frame */
+-		status = stmmac_rx_status(priv, &priv->dev->stats,
+-				&priv->xstats, p);
++		status = stmmac_rx_status(priv, &priv->xstats, p);
+ 		/* check if managed by the DMA otherwise go ahead */
+ 		if (unlikely(status & dma_own))
+ 			break;
+@@ -5289,14 +5319,13 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+ 		prefetch(np);
+ 
+ 		if (priv->extend_desc)
+-			stmmac_rx_extended_status(priv, &priv->dev->stats,
+-					&priv->xstats, rx_q->dma_erx + entry);
++			stmmac_rx_extended_status(priv, &priv->xstats, rx_q->dma_erx + entry);
+ 		if (unlikely(status == discard_frame)) {
+ 			page_pool_recycle_direct(rx_q->page_pool, buf->page);
+ 			buf->page = NULL;
+ 			error = 1;
+ 			if (!priv->hwts_rx_en)
+-				priv->dev->stats.rx_errors++;
++				rx_errors++;
+ 		}
+ 
+ 		if (unlikely(error && (status & rx_not_ls)))
+@@ -5364,7 +5393,7 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+ 							   virt_to_head_page(ctx.xdp.data),
+ 							   sync_len, true);
+ 					buf->page = NULL;
+-					priv->dev->stats.rx_dropped++;
++					rx_dropped++;
+ 
+ 					/* Clear skb as it was set as
+ 					 * status by XDP program.
+@@ -5393,7 +5422,7 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+ 
+ 			skb = napi_alloc_skb(&ch->rx_napi, buf1_len);
+ 			if (!skb) {
+-				priv->dev->stats.rx_dropped++;
++				rx_dropped++;
+ 				count++;
+ 				goto drain_data;
+ 			}
+@@ -5453,8 +5482,8 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+ 		napi_gro_receive(&ch->rx_napi, skb);
+ 		skb = NULL;
+ 
+-		priv->dev->stats.rx_packets++;
+-		priv->dev->stats.rx_bytes += len;
++		rx_packets++;
++		rx_bytes += len;
+ 		count++;
+ 	}
+ 
+@@ -5469,8 +5498,14 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+ 
+ 	stmmac_rx_refill(priv, queue);
+ 
+-	priv->xstats.rx_pkt_n += count;
+-	priv->xstats.rxq_stats[queue].rx_pkt_n += count;
++	flags = u64_stats_update_begin_irqsave(&rx_q->rxq_stats.syncp);
++	rx_q->rxq_stats.rx_packets += rx_packets;
++	rx_q->rxq_stats.rx_bytes += rx_bytes;
++	rx_q->rxq_stats.rx_pkt_n += count;
++	u64_stats_update_end_irqrestore(&rx_q->rxq_stats.syncp, flags);
++
++	priv->xstats.rx_dropped += rx_dropped;
++	priv->xstats.rx_errors += rx_errors;
+ 
+ 	return count;
+ }
+@@ -5480,10 +5515,15 @@ static int stmmac_napi_poll_rx(struct napi_struct *napi, int budget)
+ 	struct stmmac_channel *ch =
+ 		container_of(napi, struct stmmac_channel, rx_napi);
+ 	struct stmmac_priv *priv = ch->priv_data;
++	struct stmmac_rx_queue *rx_q;
+ 	u32 chan = ch->index;
++	unsigned long flags;
+ 	int work_done;
+ 
+-	priv->xstats.napi_poll++;
++	rx_q = &priv->dma_conf.rx_queue[chan];
++	flags = u64_stats_update_begin_irqsave(&rx_q->rxq_stats.syncp);
++	rx_q->rxq_stats.napi_poll++;
++	u64_stats_update_end_irqrestore(&rx_q->rxq_stats.syncp, flags);
+ 
+ 	work_done = stmmac_rx(priv, budget, chan);
+ 	if (work_done < budget && napi_complete_done(napi, work_done)) {
+@@ -5502,10 +5542,15 @@ static int stmmac_napi_poll_tx(struct napi_struct *napi, int budget)
+ 	struct stmmac_channel *ch =
+ 		container_of(napi, struct stmmac_channel, tx_napi);
+ 	struct stmmac_priv *priv = ch->priv_data;
++	struct stmmac_tx_queue *tx_q;
+ 	u32 chan = ch->index;
++	unsigned long flags;
+ 	int work_done;
+ 
+-	priv->xstats.napi_poll++;
++	tx_q = &priv->dma_conf.tx_queue[chan];
++	flags = u64_stats_update_begin_irqsave(&tx_q->txq_stats.syncp);
++	tx_q->txq_stats.napi_poll++;
++	u64_stats_update_end_irqrestore(&tx_q->txq_stats.syncp, flags);
+ 
+ 	work_done = stmmac_tx_clean(priv, budget, chan);
+ 	work_done = min(work_done, budget);
+@@ -5527,9 +5572,20 @@ static int stmmac_napi_poll_rxtx(struct napi_struct *napi, int budget)
+ 		container_of(napi, struct stmmac_channel, rxtx_napi);
+ 	struct stmmac_priv *priv = ch->priv_data;
+ 	int rx_done, tx_done, rxtx_done;
++	struct stmmac_rx_queue *rx_q;
++	struct stmmac_tx_queue *tx_q;
+ 	u32 chan = ch->index;
++	unsigned long flags;
++
++	rx_q = &priv->dma_conf.rx_queue[chan];
++	flags = u64_stats_update_begin_irqsave(&rx_q->rxq_stats.syncp);
++	rx_q->rxq_stats.napi_poll++;
++	u64_stats_update_end_irqrestore(&rx_q->rxq_stats.syncp, flags);
+ 
+-	priv->xstats.napi_poll++;
++	tx_q = &priv->dma_conf.tx_queue[chan];
++	flags = u64_stats_update_begin_irqsave(&tx_q->txq_stats.syncp);
++	tx_q->txq_stats.napi_poll++;
++	u64_stats_update_end_irqrestore(&tx_q->txq_stats.syncp, flags);
+ 
+ 	tx_done = stmmac_tx_clean(priv, budget, chan);
+ 	tx_done = min(tx_done, budget);
+@@ -6788,6 +6844,56 @@ int stmmac_xsk_wakeup(struct net_device *dev, u32 queue, u32 flags)
+ 	return 0;
+ }
+ 
++static void stmmac_get_stats64(struct net_device *dev, struct rtnl_link_stats64 *stats)
++{
++	struct stmmac_priv *priv = netdev_priv(dev);
++	u32 tx_cnt = priv->plat->tx_queues_to_use;
++	u32 rx_cnt = priv->plat->rx_queues_to_use;
++	unsigned int start;
++	int q;
++
++	for (q = 0; q < tx_cnt; q++) {
++		struct stmmac_txq_stats *txq_stats = &priv->dma_conf.tx_queue[q].txq_stats;
++		u64 tx_packets;
++		u64 tx_bytes;
++
++		do {
++			start = u64_stats_fetch_begin(&txq_stats->syncp);
++			tx_packets = txq_stats->tx_packets;
++			tx_bytes   = txq_stats->tx_bytes;
++		} while (u64_stats_fetch_retry(&txq_stats->syncp, start));
++
++		stats->tx_packets += tx_packets;
++		stats->tx_bytes += tx_bytes;
 +	}
 +
-+	cfg.dev = dev;
-+	cfg.driver_data = (void *)id;
-+	cfg.regmap = regmap;
-+	cfg.init_data = of_get_regulator_init_data(dev, dev->of_node,
-+						   &max77857_regulator_desc);
-+	if (!cfg.init_data)
-+		return -ENOMEM;
++	for (q = 0; q < rx_cnt; q++) {
++		struct stmmac_rxq_stats *rxq_stats = &priv->dma_conf.rx_queue[q].rxq_stats;
++		u64 rx_packets;
++		u64 rx_bytes;
 +
-+	rdev = devm_regulator_register(dev, &max77857_regulator_desc, &cfg);
-+	if (IS_ERR(rdev))
-+		return dev_err_probe(dev, PTR_ERR(rdev),
-+				     "cannot register regulator\n");
++		do {
++			start = u64_stats_fetch_begin(&rxq_stats->syncp);
++			rx_packets = rxq_stats->rx_packets;
++			rx_bytes   = rxq_stats->rx_bytes;
++		} while (u64_stats_fetch_retry(&rxq_stats->syncp, start));
 +
-+	return 0;
++		stats->rx_packets += rx_packets;
++		stats->rx_bytes += rx_bytes;
++	}
++
++	stats->rx_dropped = priv->xstats.rx_dropped;
++	stats->rx_errors = priv->xstats.rx_errors;
++	stats->tx_dropped = priv->xstats.tx_dropped;
++	stats->tx_errors = priv->xstats.tx_errors;
++	stats->tx_carrier_errors = priv->xstats.tx_losscarrier + priv->xstats.tx_carrier;
++	stats->collisions = priv->xstats.tx_collision + priv->xstats.rx_collision;
++	stats->rx_length_errors = priv->xstats.rx_length;
++	stats->rx_crc_errors = priv->xstats.rx_crc_errors;
++	stats->rx_over_errors = priv->xstats.rx_overflow_cntr;
++	stats->rx_missed_errors = priv->xstats.rx_missed_cntr;
 +}
 +
-+const struct i2c_device_id max77857_id[] = {
-+	{ "max77831", ID_MAX77831 },
-+	{ "max77857", ID_MAX77857 },
-+	{ "max77859", ID_MAX77859 },
-+	{ "max77859a", ID_MAX77859A },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, max77857_id);
+ static const struct net_device_ops stmmac_netdev_ops = {
+ 	.ndo_open = stmmac_open,
+ 	.ndo_start_xmit = stmmac_xmit,
+@@ -6798,6 +6904,7 @@ static const struct net_device_ops stmmac_netdev_ops = {
+ 	.ndo_set_rx_mode = stmmac_set_rx_mode,
+ 	.ndo_tx_timeout = stmmac_tx_timeout,
+ 	.ndo_eth_ioctl = stmmac_ioctl,
++	.ndo_get_stats64 = stmmac_get_stats64,
+ 	.ndo_setup_tc = stmmac_setup_tc,
+ 	.ndo_select_queue = stmmac_select_queue,
+ #ifdef CONFIG_NET_POLL_CONTROLLER
+@@ -7160,6 +7267,11 @@ int stmmac_dvr_probe(struct device *device,
+ 	priv->device = device;
+ 	priv->dev = ndev;
+ 
++	for (i = 0; i < MTL_MAX_RX_QUEUES; i++)
++		u64_stats_init(&priv->dma_conf.rx_queue[i].rxq_stats.syncp);
++	for (i = 0; i < MTL_MAX_TX_QUEUES; i++)
++		u64_stats_init(&priv->dma_conf.tx_queue[i].txq_stats.syncp);
 +
-+static const struct of_device_id max77857_of_id[] = {
-+	{ .compatible = "adi,max77831", .data = (void *)ID_MAX77831 },
-+	{ .compatible = "adi,max77857", .data = (void *)ID_MAX77857 },
-+	{ .compatible = "adi,max77859", .data = (void *)ID_MAX77859 },
-+	{ .compatible = "adi,max77859a", .data = (void *)ID_MAX77859A },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, max77857_of_id);
-+
-+struct i2c_driver max77857_driver = {
-+	.driver = {
-+		.name = "max77857",
-+		.of_match_table = max77857_of_id,
-+	},
-+	.id_table = max77857_id,
-+	.probe_new = max77857_probe,
-+};
-+module_i2c_driver(max77857_driver);
-+
-+MODULE_DESCRIPTION("Analog Devices MAX77857 Buck-Boost Converter Driver");
-+MODULE_AUTHOR("Ibrahim Tilki <Ibrahim.Tilki@analog.com>");
-+MODULE_AUTHOR("Okan Sahin <Okan.Sahin@analog.com>");
-+MODULE_LICENSE("GPL");
+ 	stmmac_set_ethtool_ops(ndev);
+ 	priv->pause = pause;
+ 	priv->plat = plat_dat;
 -- 
 2.40.1
 
