@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4140E7989AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 707077989AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244432AbjIHPOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 11:14:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
+        id S244424AbjIHPOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 11:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244412AbjIHPOs (ORCPT
+        with ESMTP id S244411AbjIHPOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Sep 2023 11:14:48 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2F41BFF;
-        Fri,  8 Sep 2023 08:14:42 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52a3ff5f0abso2956039a12.1;
-        Fri, 08 Sep 2023 08:14:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694186081; x=1694790881; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=atZ+M5AFC89fns5yYktOP5n7YffWb8eq/JNYGoPls6o=;
-        b=czggR3fKA1p2+uy0wuJXsWiZDazQKefsR+ONs8eB4zh/6IpEW+ExlqsviXsySv+8A7
-         xGmqzsSGqRfcY+SkF2d2nvVnBqmzvZE59H2oqwgz3nWbZiRIoh3pbqCpYx2d9b8ksSae
-         5NmJGPHr6AGAtV3sE9h6GRsxeKk/R87kMC9vmidxkumMvqpmdKGorHTxrO0PnYFzAXyp
-         N4c/gNPbWPVs9hqsB1GQ7zHxBR5Dl2/beRp1x04qLmheewaDdoCDBh7ZA+KCuYOJPW3G
-         Z8IHE9jTNMK1bVv/gNNNIAV2l/NMcWa9snhaKyaylJKSpvrDAsP4n6WKmgrB54YUZV1i
-         dbnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694186081; x=1694790881;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=atZ+M5AFC89fns5yYktOP5n7YffWb8eq/JNYGoPls6o=;
-        b=TgvZ2h11t9cGBEQmGYl/lyj6MAARa1BVecnewxkNYrQxcN0bcsYKULyxAD5fOT/3Zj
-         iDqjXyECs4POggERvYyH0/3o4UX3+7T+lyD+QAfs/EVs/vhsJiWJKZSDHcPlhyt5OcV8
-         GaiSC8SM/MAaPZc2M/QNyHTOnHz5OFoAdHdcpf3OmXQogEtTY1SPWvfneZCC7FRmfsFQ
-         76xIDXtCwt/O7QlkbuMpZZCkeh1RYIUfIwzlxFp4ZxGDWTDaIEKsyzSvYwNnqiznSKzL
-         92tCCtHyWLq78tvy+UfoHnANonP8I9aXnGi4n9V8clwOabfEGzoG5pMQRLntk8lQoq8z
-         aLjg==
-X-Gm-Message-State: AOJu0YznDNboZCrYSqVndv87Q8BI1I52G3KqjluKXqnEWjbSIahfvgH3
-        RuVt0iE0Mig4gA1cuhjI8YNCKpZRfQ==
-X-Google-Smtp-Source: AGHT+IFcJg5hcXsjXX0knl5z8cFkGsjaOKH0kKB8/DaoOrPf/A4VjnAQxhPGCOwVx1lN98OATVYLfw==
-X-Received: by 2002:a50:ed97:0:b0:523:387d:f5f1 with SMTP id h23-20020a50ed97000000b00523387df5f1mr2303303edr.24.1694186080517;
-        Fri, 08 Sep 2023 08:14:40 -0700 (PDT)
-Received: from p183 ([46.53.253.206])
-        by smtp.gmail.com with ESMTPSA id w15-20020a056402070f00b005288f0e547esm1150373edx.55.2023.09.08.08.14.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 08:14:40 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 18:14:38 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        keescook@chromium.org
-Subject: [PATCH v2] uapi: fix __DECLARE_FLEX_ARRAY for C++
-Message-ID: <a0c3a352-89c6-4764-b377-f55a68a1b2cb@p183>
-References: <930c3ee5-1282-40f4-93e0-8ff894aabf3a@p183>
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76871FC4
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 08:14:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694186082; x=1725722082;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=1DUKteFi87J/ZjtM43eEumr6T9NOL9on7XcA8r4tIK4=;
+  b=ccoQgAR8xUIk/xmBZmw4NUBtiELNJK1dnaXohkdnRdZeyMw4pVmLyc3X
+   K1ZCJjt74jInaJIcHrizoV/MFVveYxM5/gquBJCCKHgVzYndy7pg3kjeI
+   5oj0sfrhRS2QxBRKKyb31plfddQD3Gbdie7qxG0MEhV+SDfzWxvwhRMWM
+   GGz3F2XXHUgiJFbLiVbtA+nGpuKai/MBjd1nh9Yfjgrfjage/kz0m0hB3
+   /Zs6ZDocdrAaIGByV4ODvGr4NRfotCWCycV0/OW8eooRJfgs7GqIJu7Bl
+   0kVXNmCr1FwBjLL6u3Sntq+ylPM8WyZ0BMUv2mN4a2GpzAQ8FhPosgQH8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="377578743"
+X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
+   d="scan'208";a="377578743"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 08:14:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="832690991"
+X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
+   d="scan'208";a="832690991"
+Received: from fgilganx-mobl1.amr.corp.intel.com (HELO [10.209.17.195]) ([10.209.17.195])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 08:14:41 -0700
+Message-ID: <4c49c85a-2b2e-e408-534d-586f06a8e485@intel.com>
+Date:   Fri, 8 Sep 2023 08:14:41 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <930c3ee5-1282-40f4-93e0-8ff894aabf3a@p183>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: Memory protection keys: Signal handlers crash if pkey0 is
+ write-disabled
+Content-Language: en-US
+To:     Robert Kueffner <r.m.kueffner@gmail.com>
+Cc:     Kyle Huey <me@kylehuey.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <FF299375-B46F-46D0-90A9-333959FE9380@gmail.com>
+ <c0159d08-e69d-0329-5ca9-68fd26cab0c8@intel.com>
+ <E821837A-22AD-420C-A290-8511344E7EAF@gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <E821837A-22AD-420C-A290-8511344E7EAF@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,66 +70,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__DECLARE_FLEX_ARRAY(T, member) macro expands to
+On 9/7/23 16:07, Robert Kueffner wrote:
+>> I assume that *something* is trying to access pkey-0-protected
+>> memory. Any idea what that is?  Which entity is doing that access
+>> and what are they accessing?  The page fault tracepoints might come
+>> in handy.
+> If I understand correctly, the kernel (a) pushes the processor state
+> onto the stack and (b) resets PKRU=0x55555554 some time before
+> switching to the signal handler. And may try between (a) and (b) to
+> write pkey-0-protected memory.
+Well, the "pushes the processor state onto the stack" part is probably
+the problem.  That processor state _includes_ PKRU and it's also
+eventually the only place that processor state exists.
 
-	struct {
-		struct {} __empty_member;
-		T member[];
-	};
+That means that there's no simple solution.  You can't just move up
+where PKRU gets reset because that will blow away the PKRU that you need
+to save on the stack.
 
-which is subtly wrong in C++ because sizeof(struct{}) is 1 not 0,
-changing UAPI structures layouts.
-
-This can be fixed by expanding to
-
-	T member[];
-
-Now g++ doesn't like "T member[]" either throwing errors on code like
-this:
-
-	struct S {
-		union {
-			T1 member1[];
-			T2 member2[];
-		};
-	};
-
-or
-
-	struct S {
-		T member[];
-	};
-
-So use
-
-	T member[0];
-
-which seems to work and does the right thing wrt structure layout.
-
-Fix header guard while I'm at it.
-
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
-
- include/uapi/linux/stddef.h |    6 ++++++
- 1 file changed, 6 insertions(+)
-
---- a/include/uapi/linux/stddef.h
-+++ b/include/uapi/linux/stddef.h
-@@ -39,6 +39,10 @@
-  * struct, it needs to be wrapped in an anonymous struct with at least 1
-  * named member, but that member can be empty.
-  */
-+#ifdef __cplusplus
-+#define __DECLARE_FLEX_ARRAY(T, member)		\
-+	T member[0]
-+#else
- #define __DECLARE_FLEX_ARRAY(TYPE, NAME)	\
- 	struct { \
- 		struct { } __empty_ ## NAME; \
-@@ -49,3 +53,5 @@
- #ifndef __counted_by
- #define __counted_by(m)
- #endif
-+
-+#endif
+There are tons of complicated ways to fix this.  But the easiest way is
+just to say that you need to keep PKRU set so that the signal frame can
+be written at any time.
