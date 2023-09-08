@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB9479818D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 07:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE1479818F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 07:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236145AbjIHFbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 01:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33898 "EHLO
+        id S239292AbjIHFcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 01:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbjIHFbQ (ORCPT
+        with ESMTP id S230208AbjIHFb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 01:31:16 -0400
+        Fri, 8 Sep 2023 01:31:59 -0400
 Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA0319AB;
-        Thu,  7 Sep 2023 22:31:10 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3885UNTH127257;
-        Fri, 8 Sep 2023 00:30:23 -0500
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8446519AB;
+        Thu,  7 Sep 2023 22:31:55 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3885VI5u127503;
+        Fri, 8 Sep 2023 00:31:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694151023;
-        bh=qVrPkFrOEhubrmH8tnwCvoJfWFB5ux7tpR4S2nXEqEk=;
+        s=ti-com-17Q1; t=1694151078;
+        bh=ytb/oOdN4X4WPgolvKeWPvRV2KinLFocYZems56fZgc=;
         h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=O8qogjNI+5GeFrW0IqJq+yR0xXCGfHsZZZOyCMbxH67W8BDbvwwo/PsdKMuW6v+p/
-         +/iTfTruzUIRyHLUX7czCeUduyLg7gLhn3idNgfnmKdL5qZosT5iNF5076cx0aTeFQ
-         37yHsCZNT5Qja4ag+PYYfv7TuHmCNFeYCCjQJ82w=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3885UNtd011744
+        b=C8p5eyLrB0Nd7cK9rMXpAaWW1/8dXvx8JfAIBUGtZsWFH7IyTvSRBmojIQ6eZnBbU
+         fEvEolHyTLInnRM2y0601ysDq5Hv13zkRM/PZudrCek8Gvlw7gknyeLKYUq0ggSqT+
+         m8DLtj2V/ThLEckbtD032N7Ix/ZJ9xktWCiKgUnw=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3885VIcd029714
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 8 Sep 2023 00:30:23 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+        Fri, 8 Sep 2023 00:31:18 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 8
- Sep 2023 00:30:22 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2023 00:31:16 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 8 Sep 2023 00:30:22 -0500
+ Frontend Transport; Fri, 8 Sep 2023 00:31:16 -0500
 Received: from [10.24.69.199] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3885UGXw024265;
-        Fri, 8 Sep 2023 00:30:17 -0500
-Message-ID: <5600e087-0a87-faef-ba18-53c2f13655d8@ti.com>
-Date:   Fri, 8 Sep 2023 11:00:16 +0530
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3885VBqn127454;
+        Fri, 8 Sep 2023 00:31:12 -0500
+Message-ID: <87a80560-7813-e15e-46e5-03094e87a634@ti.com>
+Date:   Fri, 8 Sep 2023 11:01:10 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [EXTERNAL] Re: [RFC PATCH net-next 1/4] net: ti: icssg-prueth:
- Add helper functions to configure FDB
+Subject: Re: [EXTERNAL] Re: [RFC PATCH net-next 4/4] net: ti: icssg_prueth:
+ add TAPRIO offload support
 Content-Language: en-US
-To:     Roger Quadros <rogerq@kernel.org>, Andrew Lunn <andrew@lunn.ch>
-CC:     Simon Horman <horms@kernel.org>,
+To:     Roger Quadros <rogerq@kernel.org>, Simon Horman <horms@kernel.org>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         Jacob Keller <jacob.e.keller@intel.com>,
+        Andrew Lunn <andrew@lunn.ch>,
         Richard Cochran <richardcochran@gmail.com>,
         Paolo Abeni <pabeni@redhat.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
         <srk@ti.com>, <r-gunasekaran@ti.com>
 References: <20230830110847.1219515-1-danishanwar@ti.com>
- <20230830110847.1219515-2-danishanwar@ti.com>
- <edfbaf8e-16df-4a25-8647-79b8730dca08@lunn.ch>
- <0d71caf1-6fc2-9b77-1a72-54a354e89f03@ti.com>
- <07bda9b4-cd82-70b1-34af-7f4bb393e7c2@kernel.org>
+ <20230830110847.1219515-5-danishanwar@ti.com>
+ <d492bdeb-6bb6-4891-ba5e-7658a6e5e6ec@kernel.org>
 From:   MD Danish Anwar <danishanwar@ti.com>
-In-Reply-To: <07bda9b4-cd82-70b1-34af-7f4bb393e7c2@kernel.org>
+In-Reply-To: <d492bdeb-6bb6-4891-ba5e-7658a6e5e6ec@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
@@ -79,108 +77,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/09/23 17:27, Roger Quadros wrote:
+On 07/09/23 17:53, Roger Quadros wrote:
 > 
 > 
-> On 05/09/2023 11:36, MD Danish Anwar wrote:
->> Hi Andrew
+> On 30/08/2023 14:08, MD Danish Anwar wrote:
+>> From: Roger Quadros <rogerq@kernel.org>
 >>
->> On 04/09/23 19:32, Andrew Lunn wrote:
->>>> +int icssg_send_fdb_msg(struct prueth_emac *emac, struct mgmt_cmd *cmd,
->>>> +		       struct mgmt_cmd_rsp *rsp)
->>>> +{
->>>> +	struct prueth *prueth = emac->prueth;
->>>> +	int slice = prueth_emac_slice(emac);
->>>> +	int i = 10000;
->>>> +	int addr;
->>>> +
->>>> +	addr = icssg_queue_pop(prueth, slice == 0 ?
->>>> +			       ICSSG_CMD_POP_SLICE0 : ICSSG_CMD_POP_SLICE1);
->>>> +	if (addr < 0)
->>>> +		return addr;
->>>> +
->>>> +	/* First 4 bytes have FW owned buffer linking info which should
->>>> +	 * not be touched
->>>> +	 */
->>>> +	memcpy_toio(prueth->shram.va + addr + 4, cmd, sizeof(*cmd));
->>>> +	icssg_queue_push(prueth, slice == 0 ?
->>>> +			 ICSSG_CMD_PUSH_SLICE0 : ICSSG_CMD_PUSH_SLICE1, addr);
->>>> +	while (i--) {
->>>> +		addr = icssg_queue_pop(prueth, slice == 0 ?
->>>> +				       ICSSG_RSP_POP_SLICE0 : ICSSG_RSP_POP_SLICE1);
->>>> +		if (addr < 0) {
->>>> +			usleep_range(1000, 2000);
->>>> +			continue;
->>>> +		}
->>>
->>> Please try to make use of include/linux/iopoll.h.
->>>
+>> ICSSG dual-emac f/w supports Enhanced Scheduled Traffic (EST – defined
+>> in P802.1Qbv/D2.2 that later got included in IEEE 802.1Q-2018)
+>> configuration. EST allows express queue traffic to be scheduled
+>> (placed) on the wire at specific repeatable time intervals. In
+>> Linux kernel, EST configuration is done through tc command and
+>> the taprio scheduler in the net core implements a software only
+>> scheduler (SCH_TAPRIO). If the NIC is capable of EST configuration,
+>> user indicate "flag 2" in the command which is then parsed by
+>> taprio scheduler in net core and indicate that the command is to
+>> be offloaded to h/w. taprio then offloads the command to the
+>> driver by calling ndo_setup_tc() ndo ops. This patch implements
+>> ndo_setup_tc() to offload EST configuration to ICSSG.
 >>
->> I don't think APIs from iopoll.h will be useful here.
->> readl_poll_timeout() periodically polls an address until a condition is
->> met or a timeout occurs. It takes address, condition as argument and
->> store the value read from the address in val.
+>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+>> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+>> ---
+>>  drivers/net/ethernet/ti/Makefile             |   3 +-
+>>  drivers/net/ethernet/ti/icssg/icssg_prueth.c |   5 +-
+>>  drivers/net/ethernet/ti/icssg/icssg_prueth.h |   7 +
+>>  drivers/net/ethernet/ti/icssg/icssg_qos.c    | 294 +++++++++++++++++++
+>>  drivers/net/ethernet/ti/icssg/icssg_qos.h    | 119 ++++++++
+>>  5 files changed, 426 insertions(+), 2 deletions(-)
+>>  create mode 100644 drivers/net/ethernet/ti/icssg/icssg_qos.c
+>>  create mode 100644 drivers/net/ethernet/ti/icssg/icssg_qos.h
+>>
+>> diff --git a/drivers/net/ethernet/ti/Makefile b/drivers/net/ethernet/ti/Makefile
+>> index 3adceff760ce..de348c20eff9 100644
+>> --- a/drivers/net/ethernet/ti/Makefile
+>> +++ b/drivers/net/ethernet/ti/Makefile
+>> @@ -38,5 +38,6 @@ icssg-prueth-y := k3-cppi-desc-pool.o \
+>>  		  icssg/icssg_mii_cfg.o \
+>>  		  icssg/icssg_stats.o \
+>>  		  icssg/icssg_ethtool.o \
+>> -		  icssg/icssg_switchdev.o
+>> +		  icssg/icssg_switchdev.o \
+>> +		  icssg/icssg_qos.o
+>>  obj-$(CONFIG_TI_ICSS_IEP) += icssg/icss_iep.o
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+>> index 5b7e7297ce23..3236af45aa4e 100644
+>> --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+>> +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+>> @@ -1179,7 +1179,7 @@ static int emac_phy_connect(struct prueth_emac *emac)
+>>  	return 0;
+>>  }
+>>  
+>> -static u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts)
+>> +u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts)
+>>  {
+>>  	u32 hi_rollover_count, hi_rollover_count_r;
+>>  	struct prueth_emac *emac = clockops_data;
+>> @@ -1416,6 +1416,8 @@ static int emac_ndo_open(struct net_device *ndev)
+>>  		napi_enable(&emac->tx_chns[i].napi_tx);
+>>  	napi_enable(&emac->napi_rx);
+>>  
+>> +	icssg_qos_init(ndev);
+>> +
+>>  	/* start PHY */
+>>  	phy_start(ndev->phydev);
+>>  
+>> @@ -1695,6 +1697,7 @@ static const struct net_device_ops emac_netdev_ops = {
+>>  	.ndo_set_rx_mode = emac_ndo_set_rx_mode,
+>>  	.ndo_eth_ioctl = emac_ndo_ioctl,
+>>  	.ndo_get_stats64 = emac_ndo_get_stats64,
+>> +	.ndo_setup_tc = icssg_qos_ndo_setup_tc,
+>>  };
+>>  
+>>  /* get emac_port corresponding to eth_node name */
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+>> index 6e18da06c786..43b67213d8c7 100644
+>> --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+>> +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+>> @@ -37,6 +37,7 @@
+>>  #include "icssg_config.h"
+>>  #include "icss_iep.h"
+>>  #include "icssg_switch_map.h"
+>> +#include "icssg_qos.h"
+>>  
+>>  #define PRUETH_MAX_MTU          (2000 - ETH_HLEN - ETH_FCS_LEN)
+>>  #define PRUETH_MIN_PKT_SIZE     (VLAN_ETH_ZLEN)
+>> @@ -186,6 +187,9 @@ struct prueth_emac {
+>>  	struct devlink_port devlink_port;
+>>  	int port_vlan;
+>>  
+>> +	struct prueth_qos qos;
+>> +	struct work_struct ts_work;
+>> +
+>>  	struct delayed_work stats_work;
+>>  	u64 stats[ICSSG_NUM_STATS];
+>>  };
+>> @@ -331,4 +335,7 @@ void icssg_set_pvid(struct prueth *prueth, u8 vid, u8 port);
+>>  void emac_stats_work_handler(struct work_struct *work);
+>>  void emac_update_hardware_stats(struct prueth_emac *emac);
+>>  int emac_get_stat_by_name(struct prueth_emac *emac, char *stat_name);
+>> +
+>> +u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts);
+>> +
+>>  #endif /* __NET_TI_ICSSG_PRUETH_H */
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_qos.c b/drivers/net/ethernet/ti/icssg/icssg_qos.c
+>> new file mode 100644
+>> index 000000000000..e8102703e257
+>> --- /dev/null
+>> +++ b/drivers/net/ethernet/ti/icssg/icssg_qos.c
+>> @@ -0,0 +1,294 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Texas Instruments ICSSG PRUETH QoS submodule
+>> + * Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com/
 > 
-> You need to use read_poll_timeout() and provide the read function as
-> first argument 'op'. The arguments to the read function can be passed as is
-> at the end. Please read description of read_poll_timeout()
+> 2023 here and rest of series.
 > 
 
-I was only looking into real/b/w_poll_timeout() as it is mentioned in
-iopoll.h to not use read_poll_timeout() directly. Anyways, I will use
-read_poll_timeout() here with icssg_pop_queue() as a read API.
+Sure Roger.
 
->>
->> Here in our use case we need to continuously read the value returned
->> from icssg_queue_pop() and check if that is valid or not. If it's not
->> valid, we keep polling until timeout happens.
->>
->> icssg_queue_pop() does two read operations. It checks if the queue
->> number is valid or not. Then it reads the ICSSG_QUEUE_CNT_OFFSET for
->> that queue, if the value read is zero it returns inval. After that it
->> reads the value from ICSSG_QUEUE_OFFSET of that queue and store it in
->> 'val'. The returned value from icssg_queue_pop() is checked
->> continuously, if it's an error code, we keep polling. If it's a good
->> value then we call icssg_queue_push() with that value. As you can see
->> from the below definition of icssg_queue_pop() we are doing two reads
->> and two checks for error. I don't think this can be achieved by using
->> APIs in iopoll.h. readl_poll_timeout() reads from a single address
->> directly but we don't ave a single address that we can pass to
->> readl_poll_timeout() as an argument as we have to do two reads from two
->> different addresses during each poll.
->>
->> So I don't think we can use iopoll.h here. Please let me know if this
->> looks ok to you or if there is any other way we can use iopoll.h here
->>
->> int icssg_queue_pop(struct prueth *prueth, u8 queue)
->> {
->>     u32 val, cnt;
->>
->>     if (queue >= ICSSG_QUEUES_MAX)
->> 	return -EINVAL;
->>
->>     regmap_read(prueth->miig_rt, ICSSG_QUEUE_CNT_OFFSET + 4*queue,&cnt);
->>     if (!cnt)
->> 	return -EINVAL;
->>
->>     regmap_read(prueth->miig_rt, ICSSG_QUEUE_OFFSET + 4 * queue, &val);
->>
->>     return val;
->> }
->>
->>>> +	if (i <= 0) {
->>>> +		netdev_err(emac->ndev, "Timedout sending HWQ message\n");
->>>> +		return -EINVAL;
->>>
->>> Using iopoll.h will fix this, but -ETIMEDOUT, not -EINVAL.
->>>
->>
->> -ETIMEDOUT is actually a better suited error code here, I will change
->> -EINVAL to -ETIMEDOUT in this if check.
->>
->>>       Andrew
->>>
->>
+>> + */
+>> +
+>> +#include <linux/printk.h>
+>> +#include "icssg_prueth.h"
+>> +#include "icssg_switch_map.h"
+>> +
+>> +static void icssg_qos_tas_init(struct net_device *ndev);
+>> +
+>> +void icssg_qos_init(struct net_device *ndev)
+>> +{
+>> +	icssg_qos_tas_init(ndev);
+>> +
+>> +	/* IET init goes here */
+> 
+> Please drop this comment.
+> 
+
+Will drop this and post next revision.
+
+>> +}
+>> +
+> 
+> <snip>
 > 
 
 -- 
