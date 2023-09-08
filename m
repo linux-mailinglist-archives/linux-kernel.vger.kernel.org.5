@@ -2,190 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A257E7990A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970A7798FAF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245538AbjIHT5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55822 "EHLO
+        id S237186AbjIHTeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233110AbjIHT5T (ORCPT
+        with ESMTP id S243999AbjIHTds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:57:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97ECA3;
-        Fri,  8 Sep 2023 12:57:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FC3DC433BB;
-        Fri,  8 Sep 2023 19:34:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201641;
-        bh=OalSMVl3XxgEOsrbDSVUgswfFyTVgBefeOsrUsFx/t0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sfA3dD7JCHzaASKHHvd9HKvgZh/eGbVJcwUzLeOXRem3kMVQE+V+4V243Vs629Kg/
-         givMJPPCnJUCq+oLxpLOFgdQ4QoIc670ywmzliMpFBHC4PQwyASIFQl5kXzaD7Bxav
-         1jjar/7A0/ZKh5XBF40oY210iLk6rhB1fgjHDMlUpGGk4vtIo4wo+8e88OYNXtl63n
-         +txY5k3nbXr2apsVFph4HScjzeXlJteaubr0px3Wevar1IK6kx7pVoDrDjKR5Cw7wm
-         FEz3KIKnvEmttT0F+FGe9kng/5dZWAdL5lQgyoCLumjaSA2YLZenmL291VtrK9XMwg
-         OgEJ3Yk21PUnw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mateusz Guzik <mjguzik@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, ira.weiny@intel.com
-Subject: [PATCH AUTOSEL 6.4 31/31] x86: bring back rep movsq for user access on CPUs without ERMS
-Date:   Fri,  8 Sep 2023 15:32:00 -0400
-Message-Id: <20230908193201.3462957-31-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908193201.3462957-1-sashal@kernel.org>
-References: <20230908193201.3462957-1-sashal@kernel.org>
+        Fri, 8 Sep 2023 15:33:48 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354AA19A5
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 12:33:24 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-273b1ea30beso598212a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 12:33:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1694201565; x=1694806365; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=q77K6K9aetpUJ+m2swHb4WFutErkMKiXOvu8vLXzv6o=;
+        b=StaqAb895JvirYrM90QDqw3si2QNurWg9xqd3bKaTbAzN7xVFEafc8Jmtx+j252e4J
+         PhTV5qifegRuBcA97ZQv49pfRjdMBveQTNrD+bx2+ht+z6bitpIsdW+tJeh5SJg10+mZ
+         OSMSv4gQXVgunODUUCntC+mPvxH6usivIiSv6xaEzBHoo7KRgkQrJYE4MVXkwppJTgG9
+         jKx95J2fNhh0PsWbInAhfDal6KPd0eiCgLL09y3BtTzFaFheJmMZN885Spdk4TbGrgqa
+         awKrcAhzAqE3F+aTZEiZ9T3HpVi29zfnSU/G5rNJucsXrCiMQIC/0YiuffFzdgSpbPdx
+         fRvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694201565; x=1694806365;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=q77K6K9aetpUJ+m2swHb4WFutErkMKiXOvu8vLXzv6o=;
+        b=oXQA+thGPsZA+9rWP+FL7g8M+j0KGmwfGDqsmF8w9hLpo1mih1VKAnGgvOTJKcTAik
+         ku8Xdv0Eo9bMPGY5d7MpMZ4MjSua8M0KjQbmdmS5ybtwp78/23S8oU7RTHmuPAnHQMFl
+         23p7jhct86TfB0IoO87P6xx13p6ewQ7sszYsE6uCnfVhDK1y+l2bKen8MpkpwhmEBvpq
+         Yt3IzKqQI+pD5rZ2LcmH4Oy7yVWa3MiH1Iwzqq0xapfQh5A7/5xsEbc2l+k2LIVv5LI1
+         jRubdWDvZOQiQ9ytNU8TbyMgTzQp9ggc+aTaXXp0Jj5YY/VNI2YwwgcfQ+tyCvBN8BrL
+         fLIA==
+X-Gm-Message-State: AOJu0Yzhi4HauGaDns5Fiu9NyuZ8iTUafw4W1wYg1tVkHENsz9VRPaDK
+        z5R084Jx8hLFroKSIDB8TC3MfBP4jX/Xzc0Vw2Cs+A==
+X-Google-Smtp-Source: AGHT+IGHLvavStavXlYDVS2UvBAcUd/wa4WruHdVF/uXy7Bs2gkR5oWddVf4pPXi4u1EgSURMVojhg==
+X-Received: by 2002:a17:90a:7025:b0:263:730b:f568 with SMTP id f34-20020a17090a702500b00263730bf568mr3401958pjk.3.1694201565361;
+        Fri, 08 Sep 2023 12:32:45 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id 9-20020a17090a030900b002635db431a0sm1766410pje.45.2023.09.08.12.32.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Sep 2023 12:32:44 -0700 (PDT)
+Message-ID: <cd341326-cfaf-4796-8894-2241e7b630d9@kernel.dk>
+Date:   Fri, 8 Sep 2023 13:32:43 -0600
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.4.15
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH AUTOSEL 6.5 31/36] block: Allow bio_iov_iter_get_pages()
+ with bio->bi_bdev unset
+Content-Language: en-US
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-block@vger.kernel.org
+References: <20230908192848.3462476-1-sashal@kernel.org>
+ <20230908192848.3462476-31-sashal@kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230908192848.3462476-31-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Guzik <mjguzik@gmail.com>
+On 9/8/23 1:28 PM, Sasha Levin wrote:
+> From: Kent Overstreet <kent.overstreet@linux.dev>
+> 
+> [ Upstream commit 168145f617d57bf4e474901b7ffa869337a802e6 ]
+> 
+> bio_iov_iter_get_pages() trims the IO based on the block size of the
+> block device the IO will be issued to.
+> 
+> However, bcachefs is a multi device filesystem; when we're creating the
+> bio we don't yet know which block device the bio will be submitted to -
+> we have to handle the alignment checks elsewhere.
+> 
+> Thus this is needed to avoid a null ptr deref.
 
-[ Upstream commit ca96b162bfd21a5d55e3cd6099e4ee357a0eeb68 ]
+Please drop this one from -stable, there's no need.
 
-Intel CPUs ship with ERMS for over a decade, but this is not true for
-AMD.  In particular one reasonably recent uarch (EPYC 7R13) does not
-have it (or at least the bit is inactive when running on the Amazon EC2
-cloud -- I found rather conflicting information about AMD CPUs vs the
-extension).
-
-Hand-rolled mov loops executing in this case are quite pessimal compared
-to rep movsq for bigger sizes.  While the upper limit depends on uarch,
-everyone is well south of 1KB AFAICS and sizes bigger than that are
-common.
-
-While technically ancient CPUs may be suffering from rep usage, gcc has
-been emitting it for years all over kernel code, so I don't think this
-is a legitimate concern.
-
-Sample result from read1_processes from will-it-scale (4KB reads/s):
-
-  before:   1507021
-  after:    1721828 (+14%)
-
-Note that the cutoff point for rep usage is set to 64 bytes, which is
-way too conservative but I'm sticking to what was done in 47ee3f1dd93b
-("x86: re-introduce support for ERMS copies for user space accesses").
-That is to say *some* copies will now go slower, which is fixable but
-beyond the scope of this patch.
-
-Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/x86/include/asm/uaccess_64.h |  2 +-
- arch/x86/lib/copy_user_64.S       | 57 +++++++------------------------
- 2 files changed, 14 insertions(+), 45 deletions(-)
-
-diff --git a/arch/x86/include/asm/uaccess_64.h b/arch/x86/include/asm/uaccess_64.h
-index 81b826d3b7530..f2c02e4469ccc 100644
---- a/arch/x86/include/asm/uaccess_64.h
-+++ b/arch/x86/include/asm/uaccess_64.h
-@@ -116,7 +116,7 @@ copy_user_generic(void *to, const void *from, unsigned long len)
- 		"2:\n"
- 		_ASM_EXTABLE_UA(1b, 2b)
- 		:"+c" (len), "+D" (to), "+S" (from), ASM_CALL_CONSTRAINT
--		: : "memory", "rax", "r8", "r9", "r10", "r11");
-+		: : "memory", "rax");
- 	clac();
- 	return len;
- }
-diff --git a/arch/x86/lib/copy_user_64.S b/arch/x86/lib/copy_user_64.S
-index 01c5de4c279b8..0a81aafed7f88 100644
---- a/arch/x86/lib/copy_user_64.S
-+++ b/arch/x86/lib/copy_user_64.S
-@@ -27,7 +27,7 @@
-  * NOTE! The calling convention is very intentionally the same as
-  * for 'rep movs', so that we can rewrite the function call with
-  * just a plain 'rep movs' on machines that have FSRM.  But to make
-- * it simpler for us, we can clobber rsi/rdi and rax/r8-r11 freely.
-+ * it simpler for us, we can clobber rsi/rdi and rax freely.
-  */
- SYM_FUNC_START(rep_movs_alternative)
- 	cmpq $64,%rcx
-@@ -68,55 +68,24 @@ SYM_FUNC_START(rep_movs_alternative)
- 	_ASM_EXTABLE_UA( 3b, .Lcopy_user_tail)
- 
- .Llarge:
--0:	ALTERNATIVE "jmp .Lunrolled", "rep movsb", X86_FEATURE_ERMS
-+0:	ALTERNATIVE "jmp .Llarge_movsq", "rep movsb", X86_FEATURE_ERMS
- 1:	RET
- 
--        _ASM_EXTABLE_UA( 0b, 1b)
-+	_ASM_EXTABLE_UA( 0b, 1b)
- 
--	.p2align 4
--.Lunrolled:
--10:	movq (%rsi),%r8
--11:	movq 8(%rsi),%r9
--12:	movq 16(%rsi),%r10
--13:	movq 24(%rsi),%r11
--14:	movq %r8,(%rdi)
--15:	movq %r9,8(%rdi)
--16:	movq %r10,16(%rdi)
--17:	movq %r11,24(%rdi)
--20:	movq 32(%rsi),%r8
--21:	movq 40(%rsi),%r9
--22:	movq 48(%rsi),%r10
--23:	movq 56(%rsi),%r11
--24:	movq %r8,32(%rdi)
--25:	movq %r9,40(%rdi)
--26:	movq %r10,48(%rdi)
--27:	movq %r11,56(%rdi)
--	addq $64,%rsi
--	addq $64,%rdi
--	subq $64,%rcx
--	cmpq $64,%rcx
--	jae .Lunrolled
--	cmpl $8,%ecx
--	jae .Lword
-+.Llarge_movsq:
-+	movq %rcx,%rax
-+	shrq $3,%rcx
-+	andl $7,%eax
-+0:	rep movsq
-+	movl %eax,%ecx
- 	testl %ecx,%ecx
- 	jne .Lcopy_user_tail
- 	RET
- 
--	_ASM_EXTABLE_UA(10b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(11b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(12b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(13b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(14b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(15b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(16b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(17b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(20b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(21b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(22b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(23b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(24b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(25b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(26b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(27b, .Lcopy_user_tail)
-+1:	leaq (%rax,%rcx,8),%rcx
-+	jmp .Lcopy_user_tail
-+
-+	_ASM_EXTABLE_UA( 0b, 1b)
- SYM_FUNC_END(rep_movs_alternative)
- EXPORT_SYMBOL(rep_movs_alternative)
 -- 
-2.40.1
+Jens Axboe
 
