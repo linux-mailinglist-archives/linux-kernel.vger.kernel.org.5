@@ -2,48 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9543F798E97
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D32798C7F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238493AbjIHTCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49094 "EHLO
+        id S1343660AbjIHSQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbjIHTCa (ORCPT
+        with ESMTP id S1343590AbjIHSQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:02:30 -0400
+        Fri, 8 Sep 2023 14:16:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DDB3E46;
-        Fri,  8 Sep 2023 12:02:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA40DC433B9;
-        Fri,  8 Sep 2023 18:02:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90864212D;
+        Fri,  8 Sep 2023 11:16:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B101DC433C7;
+        Fri,  8 Sep 2023 18:02:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196158;
-        bh=FmxEL57wKOoZ8HJxy0Z4z4fZQdqvVjWyGKLslaCRunI=;
+        s=k20201202; t=1694196178;
+        bh=x3gniB19YhFkHNpuiOBnIlSK4dZqs3R/6VQq2mQpTpY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NCWx3QEeLhI15S/s7ziKkv2DjgUp5MHzPu8GlLgAcmJPSj0HqcKM/H8z4ixFbArGj
-         cI0Wt9/5SjELaBW6GF8SS+nUW64BirzFLwheDn/dmPYIyFApI4GSOgYsGOnJq5HVwT
-         xl1gd6/dNVyjtaze3JRIbqlhkwWgMovBVG1P3MnOIEFItPckO/WNVNm8qgE1PyaZ48
-         UaECkcBNMwcR6QVQMnt3CkrjRtqqm/8to+hCwJtczERZVj4rLxnWSYSxNXsqwXvSaO
-         bJtbdzA0ZraCGhpsMxpueQKohtTShtESJivc+zqFamg2YwPzqXItwgOxikoYQytbve
-         TTn6pk8mKroLA==
+        b=BnfPsBC8AElNcvCKEgFuo0RPqF813WpVjc8gzlNNCnYE952EOKc+wtvdj+VRIGDz4
+         C9nyzTyJxrNsh3BaAkKbQkYP7yVN9K4FUpiyLtwz9XbwN22DEwsYgbFG/GIs0Uatmf
+         ce62qXwBXOKpQKTpQicF/jYCJiQV1RluAx9WfL2kjFbjH5C7fVd25oFDHmdfoMqNAf
+         gb87N0ZiUBooWy23v1+OgGeuWNC0LTh2INJzFJg19Za0XrM9PprI4aRnez5B0v3fda
+         bPKpuNQW7Vpl9SGdImGu5xwQNIQscQ6vVrymcgIcimqIQYyzaBkpEhoI8VjiZF0e6i
+         GDELFxrsEOb0A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhangjin Wu <falcon@tinylab.org>,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Willy Tarreau <w@1wt.eu>, Sasha Levin <sashal@kernel.org>,
-        shuah@kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 10/10] selftests/nolibc: fix up kernel parameters support
-Date:   Fri,  8 Sep 2023 14:02:02 -0400
-Message-Id: <20230908180203.3458330-10-sashal@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 4/9] scftorture: Forgive memory-allocation failure if KASAN
+Date:   Fri,  8 Sep 2023 14:02:35 -0400
+Message-Id: <20230908180240.3458469-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908180203.3458330-1-sashal@kernel.org>
-References: <20230908180203.3458330-1-sashal@kernel.org>
+In-Reply-To: <20230908180240.3458469-1-sashal@kernel.org>
+References: <20230908180240.3458469-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.52
+X-stable-base: Linux 5.15.131
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -54,100 +51,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhangjin Wu <falcon@tinylab.org>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-[ Upstream commit c388c9920da2679f62bec48d00ca9e80e9d0a364 ]
+[ Upstream commit 013608cd0812bdb21fc26d39ed8fdd2fc76e8b9b ]
 
-kernel parameters allow pass two types of strings, one type is like
-'noapic', another type is like 'panic=5', the first type is passed as
-arguments of the init program, the second type is passed as environment
-variables of the init program.
+Kernels built with CONFIG_KASAN=y quarantine newly freed memory in order
+to better detect use-after-free errors.  However, this can exhaust memory
+more quickly in allocator-heavy tests, which can result in spurious
+scftorture failure.  This commit therefore forgives memory-allocation
+failure in kernels built with CONFIG_KASAN=y, but continues counting
+the errors for use in detailed test-result analyses.
 
-when users pass kernel parameters like this:
-
-    noapic NOLIBC_TEST=syscall
-
-our nolibc-test program will use the test setting from argv[1] and
-ignore the one from NOLIBC_TEST environment variable, and at last, it
-will print the following line and ignore the whole test setting.
-
-    Ignoring unknown test name 'noapic'
-
-reversing the parsing order does solve the above issue:
-
-    test = getenv("NOLIBC_TEST");
-    if (test)
-        test = argv[1];
-
-but it still doesn't work with such kernel parameters (without
-NOLIBC_TEST environment variable):
-
-    noapic FOO=bar
-
-To support all of the potential kernel parameters, let's verify the test
-setting from both of argv[1] and NOLIBC_TEST environment variable.
-
-Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
-Signed-off-by: Willy Tarreau <w@1wt.eu>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/nolibc/nolibc-test.c | 33 ++++++++++++++++++--
- 1 file changed, 31 insertions(+), 2 deletions(-)
+ kernel/scftorture.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-index 78bced95ac630..f8e8e8d2a5e18 100644
---- a/tools/testing/selftests/nolibc/nolibc-test.c
-+++ b/tools/testing/selftests/nolibc/nolibc-test.c
-@@ -630,6 +630,35 @@ static struct test test_names[] = {
- 	{ 0 }
- };
- 
-+int is_setting_valid(char *test)
-+{
-+	int idx, len, test_len, valid = 0;
-+	char delimiter;
-+
-+	if (!test)
-+		return valid;
-+
-+	test_len = strlen(test);
-+
-+	for (idx = 0; test_names[idx].name; idx++) {
-+		len = strlen(test_names[idx].name);
-+		if (test_len < len)
-+			continue;
-+
-+		if (strncmp(test, test_names[idx].name, len) != 0)
-+			continue;
-+
-+		delimiter = test[len];
-+		if (delimiter != ':' && delimiter != ',' && delimiter != '\0')
-+			continue;
-+
-+		valid = 1;
-+		break;
-+	}
-+
-+	return valid;
-+}
-+
- int main(int argc, char **argv, char **envp)
- {
- 	int min = 0;
-@@ -655,10 +684,10 @@ int main(int argc, char **argv, char **envp)
- 	 *    syscall:5-15[:.*],stdlib:8-10
- 	 */
- 	test = argv[1];
--	if (!test)
-+	if (!is_setting_valid(test))
- 		test = getenv("NOLIBC_TEST");
- 
--	if (test) {
-+	if (is_setting_valid(test)) {
- 		char *comma, *colon, *dash, *value;
- 
- 		do {
+diff --git a/kernel/scftorture.c b/kernel/scftorture.c
+index 27286d99e0c28..41006eef003f6 100644
+--- a/kernel/scftorture.c
++++ b/kernel/scftorture.c
+@@ -175,7 +175,8 @@ static void scf_torture_stats_print(void)
+ 		scfs.n_all_wait += scf_stats_p[i].n_all_wait;
+ 	}
+ 	if (atomic_read(&n_errs) || atomic_read(&n_mb_in_errs) ||
+-	    atomic_read(&n_mb_out_errs) || atomic_read(&n_alloc_errs))
++	    atomic_read(&n_mb_out_errs) ||
++	    (!IS_ENABLED(CONFIG_KASAN) && atomic_read(&n_alloc_errs)))
+ 		bangstr = "!!! ";
+ 	pr_alert("%s %sscf_invoked_count %s: %lld resched: %lld single: %lld/%lld single_ofl: %lld/%lld single_rpc: %lld single_rpc_ofl: %lld many: %lld/%lld all: %lld/%lld ",
+ 		 SCFTORT_FLAG, bangstr, isdone ? "VER" : "ver", invoked_count, scfs.n_resched,
+@@ -327,7 +328,8 @@ static void scftorture_invoke_one(struct scf_statistics *scfp, struct torture_ra
+ 		preempt_disable();
+ 	if (scfsp->scfs_prim == SCF_PRIM_SINGLE || scfsp->scfs_wait) {
+ 		scfcp = kmalloc(sizeof(*scfcp), GFP_ATOMIC);
+-		if (WARN_ON_ONCE(!scfcp)) {
++		if (!scfcp) {
++			WARN_ON_ONCE(!IS_ENABLED(CONFIG_KASAN));
+ 			atomic_inc(&n_alloc_errs);
+ 		} else {
+ 			scfcp->scfc_cpu = -1;
 -- 
 2.40.1
 
