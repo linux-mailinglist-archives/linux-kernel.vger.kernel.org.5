@@ -2,86 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED677983FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141427983FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240546AbjIHI0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 04:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57640 "EHLO
+        id S240778AbjIHI0w convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Sep 2023 04:26:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbjIHI0c (ORCPT
+        with ESMTP id S237159AbjIHI0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 04:26:32 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94B2173B;
-        Fri,  8 Sep 2023 01:26:27 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3888O0mI012802;
-        Fri, 8 Sep 2023 08:25:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Qvpv+YSxTwMVDczhu49b8KBaEyDvXaLOmT+Pd/+SCZ8=;
- b=kFW6om3Rmh0hHhsCCz5CSn9GTGGvkXxL+stI7OYGbcr/Sf6ZftamwRB0OeTKcjBC3Eba
- dTj389GnXdQwR09Ts3sDqBqBrE7pw5tEl+fJ5tmyBTXdwl/2g2+flyHXV2Mwu3HzTQHh
- k+SfIsFlAlCx3K67+a2s9cpa1QfrxDFQPgdYK3j1varu3g3wCjd9R9qs+OLf1PHHP1eE
- bRcLuP/lNKH5FxkjcH6jYuhzqwi1BF8JNgMuLZD1N1vYwDJ+VZTfAjgTFN6WCWc1V/8R
- EYkQ775u2aIMVLe3QtoN9E148ks5s2xAaer9/eUKksXuITU8s0SagulHGcQlLcZxniYl KA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3syfj2j40f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Sep 2023 08:25:57 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3888PuuP031839
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 8 Sep 2023 08:25:56 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 8 Sep
- 2023 01:25:48 -0700
-Message-ID: <375df554-e661-42ad-8a6f-f862aa05b654@quicinc.com>
-Date:   Fri, 8 Sep 2023 16:25:45 +0800
+        Fri, 8 Sep 2023 04:26:51 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC6D173B
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 01:26:46 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-162-3H32lV7WNIegh-Ql8HGViw-1; Fri, 08 Sep 2023 09:26:43 +0100
+X-MC-Unique: 3H32lV7WNIegh-Ql8HGViw-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 8 Sep
+ 2023 09:26:40 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 8 Sep 2023 09:26:40 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Kees Cook' <keescook@chromium.org>
+CC:     'Vlastimil Babka' <vbabka@suse.cz>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "'linux-mm@kvack.org'" <linux-mm@kvack.org>,
+        'Christoph Lameter' <cl@linux.com>,
+        'Pekka Enberg' <penberg@kernel.org>,
+        'David Rientjes' <rientjes@google.com>,
+        'Joonsoo Kim' <iamjoonsoo.kim@lge.com>,
+        'Andrew Morton' <akpm@linux-foundation.org>,
+        "'Eric Dumazet'" <edumazet@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        "Roman Gushchin" <roman.gushchin@linux.dev>
+Subject: RE: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return
+ 0 for non-zero size
+Thread-Topic: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return
+ 0 for non-zero size
+Thread-Index: Adnhh8rbtLpHk7QBQE+HpPR0NWDZ5gAMq8SAABymU5A=
+Date:   Fri, 8 Sep 2023 08:26:40 +0000
+Message-ID: <20ca0a567a874052a1161e9be0870463@AcuMS.aculab.com>
+References: <4d31a2bf7eb544749023cf491c0eccc8@AcuMS.aculab.com>
+ <202309071235.CB4F6B2@keescook>
+In-Reply-To: <202309071235.CB4F6B2@keescook>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: interconnect: Add Qualcomm SM4450
-To:     Rob Herring <robh@kernel.org>
-CC:     <will@kernel.org>, <arnd@arndb.de>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_kaushalk@quicinc.com>,
-        <peng.fan@nxp.com>, <kernel@quicinc.com>,
-        <catalin.marinas@arm.com>, <rafal@milecki.pl>,
-        <krzysztof.kozlowski+dt@linaro.org>, <nfraprado@collabora.com>,
-        <quic_shashim@quicinc.com>, <robh+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <quic_tingweiz@quicinc.com>,
-        <quic_aiquny@quicinc.com>, <linux-pm@vger.kernel.org>,
-        <quic_tsoni@quicinc.com>, <geert+renesas@glider.be>,
-        <andersson@kernel.org>, <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <agross@kernel.org>,
-        <quic_tdas@quicinc.com>, <djakov@kernel.org>,
-        <konrad.dybcio@linaro.org>
-References: <20230908064427.26999-1-quic_tengfan@quicinc.com>
- <20230908064427.26999-2-quic_tengfan@quicinc.com>
- <169415894359.3239551.14338430937225080028.robh@kernel.org>
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <169415894359.3239551.14338430937225080028.robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Uts8CPmZviThs9wdkuVaaJe0R2MEyUIO
-X-Proofpoint-GUID: Uts8CPmZviThs9wdkuVaaJe0R2MEyUIO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-08_05,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=882
- priorityscore=1501 clxscore=1015 impostorscore=0 spamscore=0 bulkscore=0
- malwarescore=0 lowpriorityscore=0 suspectscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309080077
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,57 +68,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Kees Cook
+> Sent: 07 September 2023 20:38
+> 
+> On Thu, Sep 07, 2023 at 12:42:20PM +0000, David Laight wrote:
+> > The typical use of kmalloc_size_roundup() is:
+> > 	ptr = kmalloc(sz = kmalloc_size_roundup(size), ...);
+> > 	if (!ptr) return -ENOMEM.
+> > This means it is vitally important that the returned value isn't
+> > less than the argument even if the argument is insane.
+> > In particular if kmalloc_slab() fails or the value is above
+> > (MAX_ULONG - PAGE_SIZE) zero is returned and kmalloc() will return
+> > it's single zero-length buffer.
+> >
+> > Fix by returning the input size on error or if the size exceeds
+> > a 'sanity' limit.
+> > kmalloc() will then return NULL is the size really is too big.
+> >
+> >
+> > Signed-off-by: David Laight <david.laight@aculab.com>
+> > Fixes: 05a940656e1eb ("slab: Introduce kmalloc_size_roundup()")
+> > ---
+> > v2:
+> >     - Use KMALLOC_MAX_SIZE for upper limit.
+> >       (KMALLOC_MAX_SIZE + 1 may give better code on some archs!)
+> >     - Invert test for overlarge for consistency.
+> >     - Put a likely() on result of kmalloc_slab().
+> >
+> >  mm/slab_common.c | 26 +++++++++++++-------------
+> >  1 file changed, 13 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/mm/slab_common.c b/mm/slab_common.c
+> > index cd71f9581e67..0fb7c7e19bad 100644
+> > --- a/mm/slab_common.c
+> > +++ b/mm/slab_common.c
+> > @@ -747,22 +747,22 @@ size_t kmalloc_size_roundup(size_t size)
+> >  {
+> >  	struct kmem_cache *c;
+> >
+> > -	/* Short-circuit the 0 size case. */
+> > -	if (unlikely(size == 0))
+> > -		return 0;
+> 
+> If we want to allow 0, let's just leave this case as-is: the compiler
+> will optimize it against the other tests.
 
+I doubt the compiler will optimise it away - especially with
+the unlikely().
 
-在 9/8/2023 3:42 PM, Rob Herring 写道:
-> 
-> On Fri, 08 Sep 2023 14:44:25 +0800, Tengfei Fan wrote:
->> The Qualcomm SM4450 SoC has several bus fabrics that could be controlled
->> and tuned dynamically according to the bandwidth demand.
->>
->> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->> ---
->>   .../interconnect/qcom,sm4450-rpmh.yaml        | 133 ++++++++++++++
->>   .../dt-bindings/interconnect/qcom,sm4450.h    | 163 ++++++++++++++++++
->>   2 files changed, 296 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sm4450-rpmh.yaml
->>   create mode 100644 include/dt-bindings/interconnect/qcom,sm4450.h
->>
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> Documentation/devicetree/bindings/interconnect/qcom,sm4450-rpmh.example.dts:18:18: fatal error: dt-bindings/clock/qcom,gcc-sm4450.h: No such file or directory
->     18 |         #include <dt-bindings/clock/qcom,gcc-sm4450.h>
->        |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> compilation terminated.
-> make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/interconnect/qcom,sm4450-rpmh.example.dtb] Error 1
-> make[2]: *** Waiting for unfinished jobs....
-> make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1500: dt_binding_check] Error 2
-> make: *** [Makefile:234: __sub-make] Error 2
-> 
-> doc reference errors (make refcheckdocs):
-> 
-> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230908064427.26999-2-quic_tengfan@quicinc.com
-> 
-> The base for the series is generally the latest rc1. A different dependency
-> should be noted in *this* patch.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit after running the above command yourself. Note
-> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-> your schema. However, it must be unset to test all examples with your schema.
-> 
-Thanks review this patch, will setup new env for verify again.
+OTOH the explicit checks for (size && size <= LIMIT) do
+get optimised to ((size - 1) <= LIMIT - 1) so become
+a single compare.
 
--- 
-Thx and BRs,
-Tengfei Fan
+Then returning 'size' at the bottom means that zero is returned
+in the arg is zero - which is fine.
+
+> 
+> > -	/* Short-circuit saturated "too-large" case. */
+> > -	if (unlikely(size == SIZE_MAX))
+> > -		return SIZE_MAX;
+> > +	if (size && size <= KMALLOC_MAX_CACHE_SIZE) {
+> > +		/*
+> > +		 * The flags don't matter since size_index is common to all.
+> > +		 * Neither does the caller for just getting ->object_size.
+> > +		 */
+> > +		c = kmalloc_slab(size, GFP_KERNEL, 0);
+> > +		return likely(c) ? c->object_size : size;
+> 
+> I would like to have this fail "safe". c should never be NULL here, so
+> let's return "KMALLOC_MAX_SIZE + 1" to force failures.
+
+Why even try to force failure here?
+The whole function is just an optimisation so that the caller
+can use the spare space.
+
+The only thing it mustn't do is return a smaller value.
+
+> 
+> > +	}
+> > +
+> >  	/* Above the smaller buckets, size is a multiple of page size. */
+> > -	if (size > KMALLOC_MAX_CACHE_SIZE)
+> > +	if (size && size <= KMALLOC_MAX_SIZE)
+> >  		return PAGE_SIZE << get_order(size);
+> >
+> > -	/*
+> > -	 * The flags don't matter since size_index is common to all.
+> > -	 * Neither does the caller for just getting ->object_size.
+> > -	 */
+> > -	c = kmalloc_slab(size, GFP_KERNEL, 0);
+> > -	return c ? c->object_size : 0;
+> > +	/* Return 'size' for 0 and very large - kmalloc() may fail. */
+> 
+> I want to _be certain_ failure happens. If we get here we need to return
+> "KMALLOC_MAX_SIZE + 1"
+
+Why care?
+
+	David
+
+> 
+> -Kees
+> 
+> > +	return size;
+> > +
+> >  }
+> >  EXPORT_SYMBOL(kmalloc_size_roundup);
+> >
+> > --
+> > 2.17.1
+> >
+> > -
+> > Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> > Registration No: 1397386 (Wales)
+> >
+> 
+> --
+> Kees Cook
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
