@@ -2,161 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 990927988CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 049427988BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244030AbjIHObq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:31:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36722 "EHLO
+        id S243918AbjIHOaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:30:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244031AbjIHObn (ORCPT
+        with ESMTP id S243964AbjIHOa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:31:43 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5AB211C;
-        Fri,  8 Sep 2023 07:31:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1694183459; x=1725719459;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TeHB0y9kfzmaAN0kkVn5rf9xamWzRSUzTry5VZYVrXg=;
-  b=yGkGgXfVJ85d/6qW39ne3e/tnsETkfd4NWedguo5PVSbFI5LYW1G793f
-   nBJOAGTu/mSliRhrSxVMjPgwczgqgfeTMvMB3KSV7nPVSlbJyeACzpTE2
-   b05fcYBsLZ5hVPjFBkt2B4DtDESTlj/SbJim/K5/kUUAP+YUQ0+lCsHCz
-   wuT519fd85JVMGnae5uFjEAka/WNQ3P/CQJeIJdPQZ7xDp1f2h485sr5y
-   BsxhgAZVXfO3tbWJSLk3PULin9j0CfXOkWvoYD87zfEIIcwDWlukVCPdz
-   4pjT3BXsjdGBGhPuVT6PL2Xap38zJwTaa2Czaa5a4zeTqTiEYPkMbkKRx
-   g==;
-X-CSE-ConnectionGUID: BfdJWj6dSkej858jQph4IQ==
-X-CSE-MsgGUID: urbI0jbkRtODixBn6MAIdw==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
-   d="scan'208";a="170641889"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Sep 2023 07:30:53 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 8 Sep 2023 07:30:39 -0700
-Received: from CHE-LT-I17164LX.microchip.com (10.10.85.11) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 8 Sep 2023 07:30:32 -0700
-From:   Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-To:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <corbet@lwn.net>, <steen.hegelund@microchip.com>,
-        <rdunlap@infradead.org>, <horms@kernel.org>,
-        <casper.casan@gmail.com>, <andrew@lunn.ch>
-CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <horatiu.vultur@microchip.com>, <Woojung.Huh@microchip.com>,
-        <Nicolas.Ferre@microchip.com>, <UNGLinuxDriver@microchip.com>,
-        <Thorsten.Kummermehr@microchip.com>,
-        Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-Subject: [RFC PATCH net-next 6/6] microchip: lan865x: add device-tree support for Microchip's LAN865X MACPHY
-Date:   Fri, 8 Sep 2023 19:59:19 +0530
-Message-ID: <20230908142919.14849-7-Parthiban.Veerasooran@microchip.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230908142919.14849-1-Parthiban.Veerasooran@microchip.com>
-References: <20230908142919.14849-1-Parthiban.Veerasooran@microchip.com>
+        Fri, 8 Sep 2023 10:30:26 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352C11FDC
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:30:19 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-414e78cdc11so15207321cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 07:30:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1694183418; x=1694788218; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xuLwfgsvmAUWs7vxqHGdnIpvRxY+S+flrjEPUNwXBKI=;
+        b=M4WarCHtCh+dV73cMhkCDNdExz0FQuZ5zqQiAClVRzG9FscGFh5VcQBlvTeaK1Qxbt
+         TjYokDGnuL1Oc3NBrwjSi/feR30+0YmthFWYwIFtkqYqH6Xx52uG1IJ+WcY+BqJZzlus
+         kDLGOOT/hBLAZvHhShoY7T2WEAxiYceKmlO+ZInOD7guzBjussyeaRtoyE/qWmUDkU6e
+         XINmNS/H61q+8aq3quZytrw5HeQeBjI2cWUV5AlebA+QyYOlXmB3fhrGbTulAuLYTtKn
+         B81b0k6Z8gOYM3RNv3O9fGHmB3YEH/fQUQs5B26AIInexjkYhc7ri07NqmkAuOJEvXTs
+         n+aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694183418; x=1694788218;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xuLwfgsvmAUWs7vxqHGdnIpvRxY+S+flrjEPUNwXBKI=;
+        b=RGjVooSvixy5BrhJmCnAYmnefjLrQWLQmnWTdbsItH06cm/MZt/BJJ60ISr4zc6ETi
+         X+j7vFbMGMc7eBW2jy7eqh6UuWdQ6C+7gGxbnuG/0HmugDj2t2j97xnEeByx1w4wZ85g
+         P4um68asmRAW716mW8mgeeFW6wtdBvSc19KG4Phj5nBoVLgPQJY9DwY8d/Y+7kEkfGMB
+         bVCxP1nxscj/NieU4YIYXm/0Stc0/UXmrMZrzBeywD2bmsu8Fo0CLeU4ja8Wsukyt7Oy
+         4KVgmZAx6e3lp8JCw4Bxt3ZixbZd6vhH7PTICwAWrukyDEb8zRQIG+W77uATfRb3koYK
+         XIPQ==
+X-Gm-Message-State: AOJu0YyPCgByRh2K1/v7OdR3ayizuBszrH5bo2+79/SjMXDcuGc31Yet
+        DIJMDC//k2R2rU9e6BPN3qoVlQ==
+X-Google-Smtp-Source: AGHT+IFn+3AwcxfCceLAeJPw+uVKytit2Yc1k7eETIMBnv1PTC1MyLerbBnm/iqfTL7DAhdHs0W3DA==
+X-Received: by 2002:ac8:5911:0:b0:412:2dd3:e0fb with SMTP id 17-20020ac85911000000b004122dd3e0fbmr3222450qty.5.1694183418289;
+        Fri, 08 Sep 2023 07:30:18 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-134-41-202-196.dhcp-dynamic.fibreop.ns.bellaliant.net. [134.41.202.196])
+        by smtp.gmail.com with ESMTPSA id x19-20020ac85393000000b0041511b21a7csm64615qtp.40.2023.09.08.07.30.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Sep 2023 07:30:16 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qecUx-001IWw-RI;
+        Fri, 08 Sep 2023 11:30:15 -0300
+Date:   Fri, 8 Sep 2023 11:30:15 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+Cc:     linux-rdma@vger.kernel.org, leon@kernel.org, zyjzyj2000@gmail.com,
+        linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
+        yangx.jy@fujitsu.com, lizhijian@fujitsu.com, y-goto@fujitsu.com
+Subject: Re: [PATCH for-next v6 6/7] RDMA/rxe: Add support for
+ Send/Recv/Write/Read with ODP
+Message-ID: <ZPsv98Mr6ogzchCL@ziepe.ca>
+References: <cover.1694153251.git.matsuda-daisuke@fujitsu.com>
+ <f15b06b934aa0ace8b28dc046022e5507458eb99.1694153251.git.matsuda-daisuke@fujitsu.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f15b06b934aa0ace8b28dc046022e5507458eb99.1694153251.git.matsuda-daisuke@fujitsu.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device-tree support for Microchip's LAN865X MACPHY for configuring
-the OPEN Alliance 10BASE-T1x MACPHY Serial Interface parameters.
+On Fri, Sep 08, 2023 at 03:26:47PM +0900, Daisuke Matsuda wrote:
+> +static inline bool rxe_odp_check_pages(struct rxe_mr *mr, u64 iova,
+> +				       int length, u32 flags)
+> +{
+> +	unsigned long lower, upper, idx;
+> +	unsigned long hmm_flags = HMM_PFN_VALID;
+> +	struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
+> +	struct page *page;
+> +	bool need_fault = false;
+> +
+> +	lower = rxe_mr_iova_to_index(mr, iova);
+> +	upper = rxe_mr_iova_to_index(mr, iova + length - 1);
+> +
+> +	if (!(flags & RXE_PAGEFAULT_RDONLY))
+> +		hmm_flags |= HMM_PFN_WRITE;
+> +
+> +	/* xarray is protected by umem_mutex */
+> +	for (idx = lower; idx <= upper; idx++) {
+> +		page = xa_load(&mr->page_list, idx);
+> +
+> +		if (!page || !(umem_odp->pfn_list[idx] & hmm_flags)) {
+> +			need_fault = true;
 
-Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
----
- .../bindings/net/microchip,lan865x.yaml       | 54 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 2 files changed, 55 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/microchip,lan865x.yaml
+Again you don't need the pfn_list and rxe should perhaps ideally find
+some way to disable it since we store struct pages in the xarray.
 
-diff --git a/Documentation/devicetree/bindings/net/microchip,lan865x.yaml b/Documentation/devicetree/bindings/net/microchip,lan865x.yaml
-new file mode 100644
-index 000000000000..3465b2c97690
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/microchip,lan865x.yaml
-@@ -0,0 +1,54 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/microchip,lan865x.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Microchip LAN8650/1 10BASE-T1S MACPHY Ethernet Controllers
-+
-+maintainers:
-+  - Parthiban Veerasooran <parthiban.veerasooran@microchip.com>
-+
-+description: |
-+  Device tree properties for LAN8650/1 10BASE-T1S MACPHY Ethernet
-+  controller.
-+
-+allOf:
-+  - $ref: ethernet-controller.yaml#
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - microchip,lan865x
-+  reg:
-+    maxItems: 1
-+
-+  local-mac-address: true
-+  oa-chunk-size: true
-+  oa-tx-cut-through: true
-+  oa-rx-cut-through: true
-+  oa-protected: true
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        ethernet@1{
-+            compatible = "microchip,lan865x";
-+            reg = <1>; /* CE0 */
-+            local-mac-address = [04 05 06 01 02 03];
-+            oa-chunk-size = <64>;
-+            oa-tx-cut-through;
-+            oa-rx-cut-through;
-+            oa-protected;
-+       };
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 666c042a15b2..2bbb7f17d74e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13883,6 +13883,7 @@ MICROCHIP LAN8650/1 10BASE-T1S MACPHY ETHERNET DRIVER
- M:	Parthiban Veerasooran <parthiban.veerasooran@microchip.com>
- L:	netdev@vger.kernel.org
- S:	Maintained
-+F:	Documentation/devicetree/bindings/net/microchip,lan865x.yaml
- F:	drivers/net/ethernet/microchip/lan865x.c
- 
- MICROCHIP LAN87xx/LAN937x T1 PHY DRIVER
--- 
-2.34.1
+This could also be a xas loop
 
+Jason
