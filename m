@@ -2,244 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 559AF7988AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E637D7988AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243860AbjIHO24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:28:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36086 "EHLO
+        id S243880AbjIHO3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:29:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbjIHO2y (ORCPT
+        with ESMTP id S232909AbjIHO3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:28:54 -0400
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B247D1BEE
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:28:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=oD02VyAokDurfrZFf/tfrEEr7ulUA834ZVCfV8mMe5I=; b=myhNSfvmLe3eW6kLQsPgJO3zgk
-        UC6FgbZ+PrzIkmepKvzH8ZVpIOmhdpX5QZ0ncjKS2EGkx1N+EqO8sgY0NEb7MfIRNhFHNYd0caHW8
-        zGTJl0md5+sa2LhF0HxEFXHf1DVCYDzu2XlpeEvk6n4mY0EKHTxt4qVSK28qyRpjAWks2I3ptVbWM
-        mnWCCt+8pL8YB2xtFsd5Asnjp2nJH4yS9utfW6Wqm+KUGgxXuSb3KozwXhXgHwyi4mu7zfpLMhiYm
-        NBIvwjws3papL6B9pwj6LQ0piMcObnqGYWB5jWYkV8eEh5Ods01PP2aVKaAkXUwi0P1aIkvgTaWMp
-        JY7VTyTQ==;
-Received: from [38.44.68.151] (helo=mail.igalia.com)
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-        id 1qecTO-001P8M-Dr; Fri, 08 Sep 2023 16:28:37 +0200
-Date:   Fri, 8 Sep 2023 13:28:22 -0100
-From:   Melissa Wen <mwen@igalia.com>
-To:     Harry Wentland <harry.wentland@amd.com>
-Cc:     amd-gfx@lists.freedesktop.org,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
-        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        Joshua Ashton <joshua@froggi.es>,
-        Sebastian Wick <sebastian.wick@redhat.com>,
-        Xaver Hugl <xaver.hugl@gmail.com>,
-        Shashank Sharma <Shashank.Sharma@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 29/34] drm/amd/display: allow newer DC hardware to use
- degamma ROM for PQ/HLG
-Message-ID: <20230908142822.ee27buxk4bg3u4vh@mail.igalia.com>
-References: <20230810160314.48225-1-mwen@igalia.com>
- <20230810160314.48225-30-mwen@igalia.com>
- <75118b7b-5753-41b0-a9f1-8047d79fa4ad@amd.com>
+        Fri, 8 Sep 2023 10:29:08 -0400
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571421BF5
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:29:04 -0700 (PDT)
+Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-7a5170c78e6so779877241.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 07:29:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1694183343; x=1694788143; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8aqh0zmf4yZbMkh2LM7vlZhrvNSdTYvOhnt75WUn3Y4=;
+        b=MKnWA5k33MpP5wbal+Z00tcw/ShWnqgxeMuLhEaus+1lPNAMpzd6cYE+Rx5a980lWd
+         XbcN39LDvRrYytk3aXpTv6DwRz4WkXjwCsQOSTPxSYaSOf32VtJjiQ2mxiWa6JuuzH5M
+         C+N1UvT04KZmW2rajGkGzeCfz3+IId6gDxiDTiSzyTyB8Uqbr+xRv5rYI6DovNNeFDkU
+         cskGPR6gGeBjB3xAXyZsDxxoJPj+y/nc8zRoR8YSbLkitLUKIImZFL/ppaXTKzFZC+fH
+         RPeWw+oaFwvsOh8TIfngWPE9lbMdfJUlr6u/WmcemTC48duXkht0QC6mtMqEGRLsEaVd
+         Jusw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694183343; x=1694788143;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8aqh0zmf4yZbMkh2LM7vlZhrvNSdTYvOhnt75WUn3Y4=;
+        b=ofzxKvHrZYiqA8cYNfnT88W7JYt0z9YH07DsouvToZEUZTbzmz/TW1AXtP/vxZJPFN
+         v6A2AtDwds8DUTYEFZDktiYMchOL2/OERk2aGR9aQG2dFIC6S8oHEwFs61cD11ke2P5k
+         qEF49RZrbyEwxXBcrS8TkC5KmF6rPhswYRio+6GtKShjh+F91noYKQaY5yRefNLSX0hB
+         TBdPbDcL9+y44EWhKOcRxBPWioosudNVvI1hiCuyyXm8cIlOkKqGHPDMXu2VW/EBV7QW
+         0OgF3+2R0a7d3lxxM37W3FIpmTMql/M3NmgVT21cOs/ZIdGHZBW0g8CoTKNmz8HQAVhg
+         CX8A==
+X-Gm-Message-State: AOJu0YxV9XRHPsL1s8sYZLkTq5UDoK6sP3Qco04SmwW2zVQM/D9zjI2z
+        9DJNJFvT+yq+LpIp3Zsd47b5DA==
+X-Google-Smtp-Source: AGHT+IHDsErZZ2cj+KD77fiOyqcvO+Iwf0pw8fDOjuWUBVlZwA9B6Ma2+vNWXjQWja50pqd7xFLkqQ==
+X-Received: by 2002:a05:6102:3541:b0:44e:b571:27af with SMTP id e1-20020a056102354100b0044eb57127afmr2853264vss.1.1694183343406;
+        Fri, 08 Sep 2023 07:29:03 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-134-41-202-196.dhcp-dynamic.fibreop.ns.bellaliant.net. [134.41.202.196])
+        by smtp.gmail.com with ESMTPSA id r19-20020a0ccc13000000b0064f523836fdsm735871qvk.123.2023.09.08.07.29.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Sep 2023 07:29:02 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qecTl-001IVr-SH;
+        Fri, 08 Sep 2023 11:29:01 -0300
+Date:   Fri, 8 Sep 2023 11:29:01 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+Cc:     linux-rdma@vger.kernel.org, leon@kernel.org, zyjzyj2000@gmail.com,
+        linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
+        yangx.jy@fujitsu.com, lizhijian@fujitsu.com, y-goto@fujitsu.com
+Subject: Re: [PATCH for-next v6 7/7] RDMA/rxe: Add support for the
+ traditional Atomic operations with ODP
+Message-ID: <ZPsvrTvT3CtsdWu5@ziepe.ca>
+References: <cover.1694153251.git.matsuda-daisuke@fujitsu.com>
+ <908514dfa6bbeae72d36481d893674b254ee416d.1694153251.git.matsuda-daisuke@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <75118b7b-5753-41b0-a9f1-8047d79fa4ad@amd.com>
+In-Reply-To: <908514dfa6bbeae72d36481d893674b254ee416d.1694153251.git.matsuda-daisuke@fujitsu.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/06, Harry Wentland wrote:
-> 
-> 
-> On 2023-08-10 12:03, Melissa Wen wrote:
-> > From: Joshua Ashton <joshua@froggi.es>
-> > 
-> > Need to funnel the color caps through to these functions so it can check
-> > that the hardware is capable.
-> > 
-> > v2:
-> > - remove redundant color caps assignment on plane degamma map (Harry)
-> > - pass color caps to degamma params
-> > 
-> > Signed-off-by: Joshua Ashton <joshua@froggi.es>
-> > Signed-off-by: Melissa Wen <mwen@igalia.com>
-> > ---
-> >  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 35 ++++++++++++-------
-> >  1 file changed, 22 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> > index f638e5b3a70b..4356846a2bce 100644
-> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> > @@ -538,6 +538,7 @@ static int amdgpu_dm_set_atomic_regamma(struct dc_stream_state *stream,
-> >  /**
-> >   * __set_input_tf - calculates the input transfer function based on expected
-> >   * input space.
-> > + * @caps: dc color capabilities
-> >   * @func: transfer function
-> >   * @lut: lookup table that defines the color space
-> >   * @lut_size: size of respective lut.
-> > @@ -545,7 +546,7 @@ static int amdgpu_dm_set_atomic_regamma(struct dc_stream_state *stream,
-> >   * Returns:
-> >   * 0 in case of success. -ENOMEM if fails.
-> >   */
-> > -static int __set_input_tf(struct dc_transfer_func *func,
-> > +static int __set_input_tf(struct dc_color_caps *caps, struct dc_transfer_func *func,
-> >  			  const struct drm_color_lut *lut, uint32_t lut_size)
-> >  {
-> >  	struct dc_gamma *gamma = NULL;
-> > @@ -562,7 +563,7 @@ static int __set_input_tf(struct dc_transfer_func *func,
-> >  		__drm_lut_to_dc_gamma(lut, gamma, false);
-> >  	}
-> >  
-> > -	res = mod_color_calculate_degamma_params(NULL, func, gamma, gamma != NULL);
-> > +	res = mod_color_calculate_degamma_params(caps, func, gamma, gamma != NULL);
-> >  
-> >  	if (gamma)
-> >  		dc_gamma_release(&gamma);
-> > @@ -725,7 +726,7 @@ static int amdgpu_dm_atomic_blend_lut(const struct drm_color_lut *blend_lut,
-> >  		func_blend->tf = tf;
-> >  		func_blend->sdr_ref_white_level = SDR_WHITE_LEVEL_INIT_VALUE;
-> >  
-> > -		ret = __set_input_tf(func_blend, blend_lut, blend_size);
-> > +		ret = __set_input_tf(NULL, func_blend, blend_lut, blend_size);
-> >  	} else {
-> >  		func_blend->type = TF_TYPE_BYPASS;
-> >  		func_blend->tf = TRANSFER_FUNCTION_LINEAR;
-> > @@ -950,7 +951,8 @@ int amdgpu_dm_update_crtc_color_mgmt(struct dm_crtc_state *crtc)
-> >  
-> >  static int
-> >  map_crtc_degamma_to_dc_plane(struct dm_crtc_state *crtc,
-> > -			     struct dc_plane_state *dc_plane_state)
-> > +			     struct dc_plane_state *dc_plane_state,
-> > +			     struct dc_color_caps *caps)
-> >  {
-> >  	const struct drm_color_lut *degamma_lut;
-> >  	enum dc_transfer_func_predefined tf = TRANSFER_FUNCTION_SRGB;
-> > @@ -1005,7 +1007,7 @@ map_crtc_degamma_to_dc_plane(struct dm_crtc_state *crtc,
-> >  			dc_plane_state->in_transfer_func->tf =
-> >  				TRANSFER_FUNCTION_LINEAR;
-> >  
-> > -		r = __set_input_tf(dc_plane_state->in_transfer_func,
-> > +		r = __set_input_tf(caps, dc_plane_state->in_transfer_func,
-> >  				   degamma_lut, degamma_size);
-> >  		if (r)
-> >  			return r;
-> > @@ -1018,7 +1020,7 @@ map_crtc_degamma_to_dc_plane(struct dm_crtc_state *crtc,
-> >  		dc_plane_state->in_transfer_func->tf = tf;
-> >  
-> >  		if (tf != TRANSFER_FUNCTION_SRGB &&
-> > -		    !mod_color_calculate_degamma_params(NULL,
-> > +		    !mod_color_calculate_degamma_params(caps,
-> >  							dc_plane_state->in_transfer_func,
-> >  							NULL, false))
-> >  			return -ENOMEM;
-> > @@ -1029,7 +1031,8 @@ map_crtc_degamma_to_dc_plane(struct dm_crtc_state *crtc,
-> >  
-> >  static int
-> >  __set_dm_plane_degamma(struct drm_plane_state *plane_state,
-> > -		       struct dc_plane_state *dc_plane_state)
-> > +		       struct dc_plane_state *dc_plane_state,
-> > +		       struct dc_color_caps *color_caps)
-> >  {
-> >  	struct dm_plane_state *dm_plane_state = to_dm_plane_state(plane_state);
-> >  	const struct drm_color_lut *degamma_lut;
-> > @@ -1060,7 +1063,7 @@ __set_dm_plane_degamma(struct drm_plane_state *plane_state,
-> >  		dc_plane_state->in_transfer_func->type =
-> >  			TF_TYPE_DISTRIBUTED_POINTS;
-> >  
-> > -		ret = __set_input_tf(dc_plane_state->in_transfer_func,
-> > +		ret = __set_input_tf(color_caps, dc_plane_state->in_transfer_func,
-> >  				     degamma_lut, degamma_size);
-> >  		if (ret)
-> >  			return ret;
-> > @@ -1068,7 +1071,7 @@ __set_dm_plane_degamma(struct drm_plane_state *plane_state,
-> >  		dc_plane_state->in_transfer_func->type =
-> >  			TF_TYPE_PREDEFINED;
-> >  
-> > -		if (!mod_color_calculate_degamma_params(NULL,
-> > +		if (!mod_color_calculate_degamma_params(color_caps,
-> >  		    dc_plane_state->in_transfer_func, NULL, false))
-> >  			return -ENOMEM;
-> >  	}
-> > @@ -1077,7 +1080,8 @@ __set_dm_plane_degamma(struct drm_plane_state *plane_state,
-> >  
-> >  static int
-> >  amdgpu_dm_plane_set_color_properties(struct drm_plane_state *plane_state,
-> > -				     struct dc_plane_state *dc_plane_state)
-> > +				     struct dc_plane_state *dc_plane_state,
-> > +				     struct dc_color_caps *color_caps)
-> 
-> This seems unused.
+On Fri, Sep 08, 2023 at 03:26:48PM +0900, Daisuke Matsuda wrote:
+> +int rxe_odp_mr_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
+> +			 u64 compare, u64 swap_add, u64 *orig_val)
+> +{
+> +	int err;
+> +	int retry = 0;
+> +	struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
+> +
+> +	mutex_lock(&umem_odp->umem_mutex);
+> +
+> +	/* Atomic operations manipulate a single char. */
+> +	if (rxe_odp_check_pages(mr, iova, sizeof(char), 0))
+> +		goto need_fault;
+> +
+> +	err = rxe_mr_do_atomic_op(mr, iova, opcode, compare,
+> +				  swap_add, orig_val);
+> +
+> +	mutex_unlock(&umem_odp->umem_mutex);
 
-Nice catch, it isn't. I'll remove in the next version.
+You should just use the xarray spinlock, the umem_mutex should only be
+held around the faulting flow
 
-Melissa
+> +
+> +	return err;
+> +
+> +need_fault:
+> +	/* allow max 3 tries for pagefault */
+> +	do {
 
-> 
-> Harry
-> 
-> >  {
-> >  	struct dm_plane_state *dm_plane_state = to_dm_plane_state(plane_state);
-> >  	enum amdgpu_transfer_function shaper_tf = AMDGPU_TRANSFER_FUNCTION_DEFAULT;
-> > @@ -1147,6 +1151,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
-> >  				      struct dc_plane_state *dc_plane_state)
-> >  {
-> >  	struct amdgpu_device *adev = drm_to_adev(crtc->base.state->dev);
-> > +	struct dc_color_caps *color_caps = NULL;
-> >  	bool has_crtc_cm_degamma;
-> >  	int ret;
-> >  
-> > @@ -1156,6 +1161,9 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
-> >  		return ret;
-> >  	}
-> >  
-> > +	if (dc_plane_state->ctx && dc_plane_state->ctx->dc)
-> > +		color_caps = &dc_plane_state->ctx->dc->caps.color;
-> > +
-> >  	/* Initially, we can just bypass the DGM block. */
-> >  	dc_plane_state->in_transfer_func->type = TF_TYPE_BYPASS;
-> >  	dc_plane_state->in_transfer_func->tf = TRANSFER_FUNCTION_LINEAR;
-> > @@ -1163,7 +1171,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
-> >  	/* After, we start to update values according to color props */
-> >  	has_crtc_cm_degamma = (crtc->cm_has_degamma || crtc->cm_is_degamma_srgb);
-> >  
-> > -	ret = __set_dm_plane_degamma(plane_state, dc_plane_state);
-> > +	ret = __set_dm_plane_degamma(plane_state, dc_plane_state, color_caps);
-> >  	if (ret == -ENOMEM)
-> >  		return ret;
-> >  
-> > @@ -1189,10 +1197,11 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
-> >  		 * linearize (implicit degamma) from sRGB/BT709 according to
-> >  		 * the input space.
-> >  		 */
-> > -		ret = map_crtc_degamma_to_dc_plane(crtc, dc_plane_state);
-> > +		ret = map_crtc_degamma_to_dc_plane(crtc, dc_plane_state, color_caps);
-> >  		if (ret)
-> >  			return ret;
-> >  	}
-> >  
-> > -	return amdgpu_dm_plane_set_color_properties(plane_state, dc_plane_state);
-> > +	return amdgpu_dm_plane_set_color_properties(plane_state,
-> > +						    dc_plane_state, color_caps);
-> >  }
-> 
+Why a retry loop? We already have a retry loop in
+ib_umem_odp_map_dma_and_lock,it doesn't need to be done externally. If
+you reach here with the lock held then progress should be guarenteed
+under the lock.
+
+Jason
