@@ -2,224 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B29FA79835D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 09:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2001798362
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 09:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240795AbjIHHml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 03:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43518 "EHLO
+        id S240499AbjIHHqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 03:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236549AbjIHHmh (ORCPT
+        with ESMTP id S230170AbjIHHqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 03:42:37 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB7D1BD2;
-        Fri,  8 Sep 2023 00:42:28 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Fri, 8 Sep 2023 03:46:06 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0851BD3
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 00:46:01 -0700 (PDT)
+Received: from eldfell (unknown [194.136.85.206])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2588421832;
-        Fri,  8 Sep 2023 07:42:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694158947; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=NHJKcpKlZ/+yii6ZB0cLfqW7JVxO+ELAe/deKUrmJ80=;
-        b=0Tr1RiLsGK9TKLdxwSc9RwxLIVKmEae8PGUWUTGhYIhqkvcnxmKXE3HYt5+5SqUjjUpxEZ
-        DCTZmPbwNt5ToqgWZJ00UT0I0Plhw1i14U2HJUY0Px379BJbaU56+RSKEu8z+V/xOMo2xd
-        woPLeoFeQ7kp5dfAXicDw3PDice1ftM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694158947;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=NHJKcpKlZ/+yii6ZB0cLfqW7JVxO+ELAe/deKUrmJ80=;
-        b=r9UDzDCi5/bP4K3dBarcJVpQtk/FZHh8rlyYCrXu3EqfT7loeAs6cgqxhTivXkBssY2kKX
-        lV8TgWuOzutVQyDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 96D2A132F2;
-        Fri,  8 Sep 2023 07:42:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WIYoJGLQ+mTfFQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 08 Sep 2023 07:42:26 +0000
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     seanjc@google.com
-Cc:     ackerleytng@google.com, akpm@linux-foundation.org,
-        anup@brainfault.org, aou@eecs.berkeley.edu,
-        chao.p.peng@linux.intel.com, chenhuacai@kernel.org,
-        david@redhat.com, isaku.yamahata@gmail.com, jarkko@kernel.org,
-        jmorris@namei.org, kirill.shutemov@linux.intel.com,
-        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        kvmarm@lists.linux.dev, liam.merwick@oracle.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-riscv@lists.infradead.org,
-        linux-security-module@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, mail@maciej.szmigiero.name,
-        maz@kernel.org, michael.roth@amd.com, mpe@ellerman.id.au,
-        oliver.upton@linux.dev, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, paul@paul-moore.com, pbonzini@redhat.com,
-        qperret@google.com, serge@hallyn.com, tabba@google.com,
-        vannapurve@google.com, vbabka@suse.cz, wei.w.wang@intel.com,
-        willy@infradead.org, yu.c.zhang@linux.intel.com
-Subject: [PATCH gmem FIXUP v2] mm, compaction: make testing mapping_unmovable() safe
-Date:   Fri,  8 Sep 2023 09:42:23 +0200
-Message-ID: <20230908074222.28723-2-vbabka@suse.cz>
-X-Mailer: git-send-email 2.42.0
+        (Authenticated sender: pq)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 86FB96607258;
+        Fri,  8 Sep 2023 08:45:58 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694159159;
+        bh=fV0DKh3z2jKCRSXyW1osjnn+ihoB68u2q3KPKI8SrUc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bdUwGdXaakgWqHAniM2vUuRRAc4Hc+P+kC8O4p8Oi9Ps/i0F5jIUU+uGM+r1oOo88
+         BWY9AejHc0v8EbvC01YG4zKz/iWv76DgCkUEbL96rmeBzIdQ//0Qd6w16GeJkQj/ew
+         XPL0l8/eFkGdv4OXqTR14O5hVHkDOwae5dZPG/4zxuxp1xT++Z8/UCS4xU9j17Qhb7
+         w98fCQcN439jD3639vMNka77gGthEeIp3Ioed/ronCuqf4UUPuIR/nBlnXpeE3Vavq
+         widYlkz/Uch7y7nA7LxOILiF3epaP0cvZp4WNrikaVf5yDlfNecpQFbymHk/ElGSUy
+         2eJA2UiP57Gng==
+Date:   Fri, 8 Sep 2023 10:45:42 +0300
+From:   Pekka Paalanen <pekka.paalanen@collabora.com>
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     Melissa Wen <mwen@igalia.com>, amd-gfx@lists.freedesktop.org,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
+        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        Joshua Ashton <joshua@froggi.es>,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        Xaver Hugl <xaver.hugl@gmail.com>,
+        Shashank Sharma <Shashank.Sharma@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
+        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 07/34] drm/amd/display: explicitly define EOTF and
+ inverse EOTF
+Message-ID: <20230908104542.2ffa4845.pekka.paalanen@collabora.com>
+In-Reply-To: <b8d1e0b8-61b5-4e6a-a95c-3095f97bb376@amd.com>
+References: <20230810160314.48225-1-mwen@igalia.com>
+        <20230810160314.48225-8-mwen@igalia.com>
+        <20230822140242.162a843a.pekka.paalanen@collabora.com>
+        <20230825141639.vurga52ysal37n2m@mail.igalia.com>
+        <40f1fabe-69ce-4b23-aed8-9f0837fe9988@amd.com>
+        <20230907104917.7cf8e22e.pekka.paalanen@collabora.com>
+        <b8d1e0b8-61b5-4e6a-a95c-3095f97bb376@amd.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/u/Qtp_/tODm0.9DUJUhgJOu";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As Kirill pointed out, mapping can be removed under us due to
-truncation. Test it under folio lock as already done for the async
-compaction / dirty folio case. To prevent locking every folio with
-mapping to do the test, do it only for unevictable folios, as we can
-expect the unmovable mapping folios are also unevictable. To enforce
-that expecation, make mapping_set_unmovable() also set AS_UNEVICTABLE.
+--Sig_/u/Qtp_/tODm0.9DUJUhgJOu
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Also incorporate comment update suggested by Matthew.
+On Thu, 7 Sep 2023 10:10:50 -0400
+Harry Wentland <harry.wentland@amd.com> wrote:
 
-Fixes: 3424873596ce ("mm: Add AS_UNMOVABLE to mark mapping as completely unmovable")
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
-v2: mapping_set_unmovable() sets also AS_UNEVICTABLE, as Sean suggested.
+> On 2023-09-07 03:49, Pekka Paalanen wrote:
+> > On Wed, 6 Sep 2023 16:15:10 -0400
+> > Harry Wentland <harry.wentland@amd.com> wrote:
+> >  =20
+> >> On 2023-08-25 10:18, Melissa Wen wrote: =20
+> >>> On 08/22, Pekka Paalanen wrote:   =20
+> >>>> On Thu, 10 Aug 2023 15:02:47 -0100
+> >>>> Melissa Wen <mwen@igalia.com> wrote:
+> >>>>   =20
+> >>>>> Instead of relying on color block names to get the transfer function
+> >>>>> intention regarding encoding pixel's luminance, define supported
+> >>>>> Electro-Optical Transfer Functions (EOTFs) and inverse EOTFs, that
+> >>>>> includes pure gamma or standardized transfer functions.
+> >>>>>
+> >>>>> Suggested-by: Harry Wentland <harry.wentland@amd.com>
+> >>>>> Signed-off-by: Melissa Wen <mwen@igalia.com>
+> >>>>> ---
+> >>>>>  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h | 19 +++--
+> >>>>>  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 69 +++++++++++++++=
+----
+> >>>>>  2 files changed, 67 insertions(+), 21 deletions(-)
 
- include/linux/pagemap.h |  6 +++++
- mm/compaction.c         | 49 +++++++++++++++++++++++++++--------------
- virt/kvm/guest_mem.c    |  2 +-
- 3 files changed, 39 insertions(+), 18 deletions(-)
+...
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 931d2f1da7d5..4070c59e6f25 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -276,6 +276,12 @@ static inline int mapping_use_writeback_tags(struct address_space *mapping)
- 
- static inline void mapping_set_unmovable(struct address_space *mapping)
- {
-+	/*
-+	 * It's expected unmovable mappings are also unevictable. Compaction
-+	 * migrate scanner (isolate_migratepages_block()) relies on this to
-+	 * reduce page locking.
-+	 */
-+	set_bit(AS_UNEVICTABLE, &mapping->flags);
- 	set_bit(AS_UNMOVABLE, &mapping->flags);
- }
- 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index a3d2b132df52..e0e439b105b5 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -862,6 +862,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 
- 	/* Time to isolate some pages for migration */
- 	for (; low_pfn < end_pfn; low_pfn++) {
-+		bool is_dirty, is_unevictable;
- 
- 		if (skip_on_failure && low_pfn >= next_skip_pfn) {
- 			/*
-@@ -1047,10 +1048,6 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 		if (!mapping && (folio_ref_count(folio) - 1) > folio_mapcount(folio))
- 			goto isolate_fail_put;
- 
--		/* The mapping truly isn't movable. */
--		if (mapping && mapping_unmovable(mapping))
--			goto isolate_fail_put;
--
- 		/*
- 		 * Only allow to migrate anonymous pages in GFP_NOFS context
- 		 * because those do not depend on fs locks.
-@@ -1062,8 +1059,10 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 		if (!folio_test_lru(folio))
- 			goto isolate_fail_put;
- 
-+		is_unevictable = folio_test_unevictable(folio);
-+
- 		/* Compaction might skip unevictable pages but CMA takes them */
--		if (!(mode & ISOLATE_UNEVICTABLE) && folio_test_unevictable(folio))
-+		if (!(mode & ISOLATE_UNEVICTABLE) && is_unevictable)
- 			goto isolate_fail_put;
- 
- 		/*
-@@ -1075,26 +1074,42 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 		if ((mode & ISOLATE_ASYNC_MIGRATE) && folio_test_writeback(folio))
- 			goto isolate_fail_put;
- 
--		if ((mode & ISOLATE_ASYNC_MIGRATE) && folio_test_dirty(folio)) {
--			bool migrate_dirty;
-+		is_dirty = folio_test_dirty(folio);
-+
-+		if (((mode & ISOLATE_ASYNC_MIGRATE) && is_dirty)
-+		    || (mapping && is_unevictable)) {
-+			bool migrate_dirty = true;
-+			bool is_unmovable;
- 
- 			/*
--			 * Only pages without mappings or that have a
--			 * ->migrate_folio callback are possible to migrate
--			 * without blocking. However, we can be racing with
--			 * truncation so it's necessary to lock the page
--			 * to stabilise the mapping as truncation holds
--			 * the page lock until after the page is removed
--			 * from the page cache.
-+			 * Only folios without mappings or that have
-+			 * a ->migrate_folio callback are possible to migrate
-+			 * without blocking.
-+			 *
-+			 * Folios from unmovable mappings are not migratable.
-+			 *
-+			 * However, we can be racing with truncation, which can
-+			 * free the mapping that we need to check. Truncation
-+			 * holds the folio lock until after the folio is removed
-+			 * from the page so holding it ourselves is sufficient.
-+			 *
-+			 * To avoid this folio locking to inspect every folio
-+			 * with mapping for being unmovable, we assume every
-+			 * such folio is also unevictable, which is a cheaper
-+			 * test. If our assumption goes wrong, it's not a bug,
-+			 * just potentially wasted cycles.
- 			 */
- 			if (!folio_trylock(folio))
- 				goto isolate_fail_put;
- 
- 			mapping = folio_mapping(folio);
--			migrate_dirty = !mapping ||
--					mapping->a_ops->migrate_folio;
-+			if ((mode & ISOLATE_ASYNC_MIGRATE) && is_dirty) {
-+				migrate_dirty = !mapping ||
-+						mapping->a_ops->migrate_folio;
-+			}
-+			is_unmovable = mapping && mapping_unmovable(mapping);
- 			folio_unlock(folio);
--			if (!migrate_dirty)
-+			if (!migrate_dirty || is_unmovable)
- 				goto isolate_fail_put;
- 		}
- 
-diff --git a/virt/kvm/guest_mem.c b/virt/kvm/guest_mem.c
-index c81d2bb9ae93..85903c32163f 100644
---- a/virt/kvm/guest_mem.c
-+++ b/virt/kvm/guest_mem.c
-@@ -390,7 +390,7 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags,
- 	inode->i_size = size;
- 	mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
- 	mapping_set_large_folios(inode->i_mapping);
--	mapping_set_unevictable(inode->i_mapping);
-+	/* this also sets the mapping as unevictable */
- 	mapping_set_unmovable(inode->i_mapping);
- 
- 	fd = get_unused_fd_flags(0);
--- 
-2.42.0
+> >> While I'm okay to move ahead with these AMD driver-specific properties
+> >> without IGT tests (since they're not enabled and not UABI) we really
+> >> need IGT tests once they become UABI with the Color Pipeline API. And =
+we
+> >> need more than just CRC testing. We'll need to do pixel-by-pixel compa=
+rison
+> >> so we can verify that the KMS driver behaves exactly how we expect for=
+ a
+> >> large range of values. =20
+> >=20
+> > Yes, please, very much, about the generic color UAPI.
+> >=20
+> > I believe IGT should contain the reference curve for all named fixed
+> > curves computed with standard libc math functions in double precision,
+> > and compute error statistics between that and hardware results.
+> > The actual test image would iterate through e.g. 1024 (all 10-bit
+> > values for integer format framebuffer) different values - 1024 is
+> > nothing as a number of pixels. Then we decide on acceptable error
+> > thresholds.
+> >  =20
+>=20
+> 1024 isn't a lot of values and fine if we test R, G, and B independently.
+> Unfortunately 1024^3 is about a billion pixels, so for testing 3DLUTs
+> (or other cases where we need to test the combination of RGB together)
+> we won't be able to cover all inputs with a single framebuffer.
 
+Of course, runtimes need to be practical. That idea was for 1D curves,
+and 3D mappings need a different distribution.
+
+> > It should also be tested with a floating-point framebuffer format, FP16
+> > or FP32, with a value distribution designed to be sensitive to typical
+> > numerical problems. For example, an inverse EOTF should be carefully
+> > tested with values near zero, since those are the most problematic and
+> > likely cause the most visible errors.
+> >=20
+> > Once all that is done, we can be very sure of what curve any hardware
+> > actually implements.
+> >=20
+> > I might even go far enough to suggest that any generic color UAPI with
+> > named fixed curves cannot land without such tests.
+> >  =20
+>=20
+> I tend to agree, though I think the same should on some level apply to
+> custom LUTs or other custom transforms.
+>=20
+> The IGT tests I'm writing will each have a "transform" function that does
+> the transform in CPU as reference.
+
+Sounds good!
+
+For testing optical-to-electrical kind of operations, one idea is to
+sample the electrical target space, and reverse the reference transform
+to come up with the test input values. That way one can test if the
+output space is sufficiently covered, and the rounding behavior as well.
+
+Electrical space usually tends to be integer encoded with not too many
+bits, making even exhaustive sampling feasible for 1D curves.
+
+
+Thanks,
+pq
+
+
+> >>> Then EOTF and inverse EOTF for PQ [2], and OETF and it seems an inver=
+se
+> >>> OETF but called EOTF for HLG[3]. But I'm an external dev, better if
+> >>> Harry can confirm.
+> >>>
+> >>> Thank you for pointing it out.
+> >>>
+> >>> [1] https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/am=
+d/display/modules/color/color_gamma.c#n55
+> >>> [2] https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/am=
+d/display/modules/color/color_gamma.c#n106
+> >>> [3] https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/am=
+d/display/modules/color/color_gamma.c#n174
+> >>>    =20
+> >>>>
+> >>>> The others seem fine to me.
+> >>>>
+> >>>>
+> >>>> Thanks,
+> >>>> pq =20
+>=20
+
+
+--Sig_/u/Qtp_/tODm0.9DUJUhgJOu
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmT60SYACgkQI1/ltBGq
+qqd5uA//Y8Zy2pkhccJtwjRXXVSVWJAlD8gvcTSXqqW7bStjM+3VN9Qy0IPv7tZP
+NEO5C0BoUASwjqHV7rVxvAipxtybv0+1jVs9TezhlQZWisx4prRYxJUt2r2Q63YT
++X8qqYGzsCRS/VoyWniVlY6WcvchF1NhMwba1d+m7Ck79QdhparU3qyJwQzAzuhW
+Imyy9SDhuK8aZjLmhcGNq6yhesm4uXMB9O2jvnXRaTliG7YaDZ2Tny14sN+CJl86
+1+dnnQwn/1yWxZMTbb1v0Ifsmln0cwViI6c7eHMYAc5D9u7bvrkl2HBzgYD+RbLJ
+VhwLSQBj7UGn735SQqwzZNX54RdvwpyHv9JUXCb6K0/zO0tP5NzTGQImabv1wyq0
+wTGz5EsADeX/7CmPwbioXW/1xAEfKHgCiNEaKjaASHuF3cFrdTETEwXB0XLaac0D
+4wB4wjjCEgNoQo6bp316YyZUTtaEljRBuTtunuCvlxfetNFasMhVuP3bScRH/2rd
+hzNics93aemZgs41id6l9XmezngiDJtMkCvpb9SuoGLvtZNH+mjkqZA3Y5id+8Rp
+Thmt5YpJDa2PaPgv9bn0GUmvkc7YaFcF/m8OMxA4uP94X3/t/NqLgHxHVkTX9nZP
+tYc08DsSdD9oxGFuzxtBnJ7L34byRrTxU828xsdob9TkZl6d+U8=
+=xZrO
+-----END PGP SIGNATURE-----
+
+--Sig_/u/Qtp_/tODm0.9DUJUhgJOu--
