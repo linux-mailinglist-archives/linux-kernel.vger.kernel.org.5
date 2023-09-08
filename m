@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3B77985AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3457985A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232107AbjIHKT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 06:19:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56758 "EHLO
+        id S242885AbjIHKSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 06:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235512AbjIHKT6 (ORCPT
+        with ESMTP id S235885AbjIHKSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 06:19:58 -0400
+        Fri, 8 Sep 2023 06:18:37 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6622122
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 03:19:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14FECC433C7;
-        Fri,  8 Sep 2023 10:17:30 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A258E2134
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 03:18:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35D0CC433BB;
+        Fri,  8 Sep 2023 10:17:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694168252;
-        bh=qrtlb3Inp+0PAFufVQ6/JFPnxSSyzXyjdaLgPSqbaiA=;
+        s=k20201202; t=1694168254;
+        bh=ynRD6EJmzx9ScX9FqHEAG3RGBNXu033RrZwYL9Faey8=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=DYxVNw2n5ACTgyEoxTzZ9Gf4qW625HO4uRskm+x+dDOZoyrZ8YbRg8Jg1Jsy/ApZH
-         n2L+hQ/EggbK1KymH5orwnBB8AKmOVdDcD6FcAEA4cBGZ5J0tyBqEc4or9YesO6x3V
-         tnULKFbsdrXg8mGEJKkC69OvNBAoyaSLQG/6bWr7hjS/xgIoARfM2e8f3JO+jUhr6J
-         HqCgjrPMkmd0Y+A6rkaQpnAGisZT2IsiV/6cH5iSKQny7bH70S6BzgX0wzAISW1hnX
-         BYfXdllxaWW/14bUNT7NDf2eNVi7n6Qi+8awYHxDh/EknL3qCHQRw+4h6+Vo/ZL+kT
-         z4qkyaTGzZysQ==
+        b=sBIySQNkGtQEVLyt+YcTgdwTBYTjpnjzqXiUUDvRJ/g60FnJt+0Yj98t5vHE1H6AE
+         4zwuPF7G2jyu0gXzwCqrLFNUNBfb648mmwWRjzWX1plzWYVj/ANMYBP4nYYxlTRppm
+         UdZJ3m8gXVbowf1Ukc2SKCvLL9++hKt///9/5siCpLP4oXgHfKkv1oUMmWQ9nu5LlO
+         wjgjrFlkjBzheP3g2vAfCMIV+Ivb7rpwAJqdL+rOLpF8tI/m/ObEm7sxDtMZRtEJXf
+         5bRR4bJ4zuw6CBHuoiJfFzQE9cxyLGt4CrAQJtcA5UAmhvtk4xUT0kBByl6tD/SdM9
+         ngsUEPVOoR0Ow==
 From:   Michael Walle <mwalle@kernel.org>
-Date:   Fri, 08 Sep 2023 12:16:48 +0200
-Subject: [PATCH v3 30/41] mtd: spi-nor: xmc: convert flash_info to new
- format
+Date:   Fri, 08 Sep 2023 12:16:49 +0200
+Subject: [PATCH v3 31/41] mtd: spi-nor: atmel: sort flash_info database
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230807-mtd-flash-info-db-rework-v3-30-e60548861b10@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v3-31-e60548861b10@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
@@ -54,42 +53,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The INFOx() macros are going away. Convert the flash_info database to
-the new format.
+The flash ID is the new primary key into our database. Sort the entry by
+it. Keep the most specific ones first, because there might be ID
+collisions between shorter and longer ones.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/mtd/spi-nor/xmc.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ drivers/mtd/spi-nor/atmel.c | 82 ++++++++++++++++++++++-----------------------
+ 1 file changed, 41 insertions(+), 41 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
-index 48062ccb22fa..d5a06054b0dd 100644
---- a/drivers/mtd/spi-nor/xmc.c
-+++ b/drivers/mtd/spi-nor/xmc.c
-@@ -9,12 +9,17 @@
- #include "core.h"
+diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
+index ccc985c48ae3..18e904962d0e 100644
+--- a/drivers/mtd/spi-nor/atmel.c
++++ b/drivers/mtd/spi-nor/atmel.c
+@@ -164,20 +164,20 @@ static const struct spi_nor_fixups atmel_nor_global_protection_fixups = {
  
- static const struct flash_info xmc_nor_parts[] = {
--	{ "XM25QH64A", INFO(0x207017, 0, 64 * 1024, 128)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
--	{ "XM25QH128A", INFO(0x207018, 0, 64 * 1024, 256)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
-+	{
-+		.id = SNOR_ID(0x20, 0x70, 0x17),
-+		.name = "XM25QH64A",
-+		.size = SZ_8M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+ static const struct flash_info atmel_nor_parts[] = {
+ 	{
+-		.id = SNOR_ID(0x1f, 0x66, 0x01),
+-		.name = "at25fs010",
+-		.sector_size = SZ_32K,
+-		.size = SZ_128K,
+-		.flags = SPI_NOR_HAS_LOCK,
++		.id = SNOR_ID(0x1f, 0x04, 0x00),
++		.name = "at26f004",
++		.size = SZ_512K,
+ 		.no_sfdp_flags = SECT_4K,
+-		.fixups = &at25fs_nor_fixups
+ 	}, {
+-		.id = SNOR_ID(0x1f, 0x66, 0x04),
+-		.name = "at25fs040",
+-		.size = SZ_512K,
+-		.flags = SPI_NOR_HAS_LOCK,
++		.id = SNOR_ID(0x1f, 0x25, 0x00),
++		.name = "at45db081d",
++		.size = SZ_1M,
+ 		.no_sfdp_flags = SECT_4K,
+-		.fixups = &at25fs_nor_fixups
 +	}, {
-+		.id = SNOR_ID(0x20, 0x70, 0x18),
-+		.name = "XM25QH128A",
-+		.size = SZ_16M,
++		.id = SNOR_ID(0x1f, 0x42, 0x16),
++		.name = "at25sl321",
++		.size = SZ_4M,
 +		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	},
+ 	}, {
+ 		.id = SNOR_ID(0x1f, 0x44, 0x01),
+ 		.name = "at25df041a",
+@@ -186,62 +186,62 @@ static const struct flash_info atmel_nor_parts[] = {
+ 		.no_sfdp_flags = SECT_4K,
+ 		.fixups = &atmel_nor_global_protection_fixups,
+ 	}, {
+-		.id = SNOR_ID(0x1f, 0x47, 0x00),
+-		.name = "at25df321",
+-		.size = SZ_4M,
++		.id = SNOR_ID(0x1f, 0x45, 0x01),
++		.name = "at26df081a",
++		.size = SZ_1M,
+ 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
+ 		.no_sfdp_flags = SECT_4K,
+ 		.fixups = &atmel_nor_global_protection_fixups
+ 	}, {
+-		.id = SNOR_ID(0x1f, 0x47, 0x01),
+-		.name = "at25df321a",
+-		.size = SZ_4M,
++		.id = SNOR_ID(0x1f, 0x46, 0x01),
++		.name = "at26df161a",
++		.size = SZ_2M,
+ 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
+ 		.no_sfdp_flags = SECT_4K,
+ 		.fixups = &atmel_nor_global_protection_fixups
+ 	}, {
+-		.id = SNOR_ID(0x1f, 0x48, 0x00),
+-		.name = "at25df641",
+-		.size = SZ_8M,
++		.id = SNOR_ID(0x1f, 0x47, 0x00),
++		.name = "at25df321",
++		.size = SZ_4M,
+ 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
+ 		.no_sfdp_flags = SECT_4K,
+ 		.fixups = &atmel_nor_global_protection_fixups
+ 	}, {
+-		.id = SNOR_ID(0x1f, 0x42, 0x16),
+-		.name = "at25sl321",
++		.id = SNOR_ID(0x1f, 0x47, 0x00),
++		.name = "at26df321",
+ 		.size = SZ_4M,
+-		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+-	}, {
+-		.id = SNOR_ID(0x1f, 0x04, 0x00),
+-		.name = "at26f004",
+-		.size = SZ_512K,
+-		.no_sfdp_flags = SECT_4K,
+-	}, {
+-		.id = SNOR_ID(0x1f, 0x45, 0x01),
+-		.name = "at26df081a",
+-		.size = SZ_1M,
+ 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
+ 		.no_sfdp_flags = SECT_4K,
+ 		.fixups = &atmel_nor_global_protection_fixups
+ 	}, {
+-		.id = SNOR_ID(0x1f, 0x46, 0x01),
+-		.name = "at26df161a",
+-		.size = SZ_2M,
++		.id = SNOR_ID(0x1f, 0x47, 0x01),
++		.name = "at25df321a",
++		.size = SZ_4M,
+ 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
+ 		.no_sfdp_flags = SECT_4K,
+ 		.fixups = &atmel_nor_global_protection_fixups
+ 	}, {
+-		.id = SNOR_ID(0x1f, 0x47, 0x00),
+-		.name = "at26df321",
+-		.size = SZ_4M,
++		.id = SNOR_ID(0x1f, 0x48, 0x00),
++		.name = "at25df641",
++		.size = SZ_8M,
+ 		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
+ 		.no_sfdp_flags = SECT_4K,
+ 		.fixups = &atmel_nor_global_protection_fixups
+ 	}, {
+-		.id = SNOR_ID(0x1f, 0x25, 0x00),
+-		.name = "at45db081d",
+-		.size = SZ_1M,
++		.id = SNOR_ID(0x1f, 0x66, 0x01),
++		.name = "at25fs010",
++		.sector_size = SZ_32K,
++		.size = SZ_128K,
++		.flags = SPI_NOR_HAS_LOCK,
++		.no_sfdp_flags = SECT_4K,
++		.fixups = &at25fs_nor_fixups
++	}, {
++		.id = SNOR_ID(0x1f, 0x66, 0x04),
++		.name = "at25fs040",
++		.size = SZ_512K,
++		.flags = SPI_NOR_HAS_LOCK,
+ 		.no_sfdp_flags = SECT_4K,
++		.fixups = &at25fs_nor_fixups
+ 	},
  };
  
- /* XMC (Wuhan Xinxin Semiconductor Manufacturing Corp.) */
 
 -- 
 2.39.2
