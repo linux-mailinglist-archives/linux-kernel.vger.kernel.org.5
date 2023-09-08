@@ -2,126 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C33897986F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 14:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6922B7986FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 14:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232080AbjIHMXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 08:23:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
+        id S235281AbjIHM1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 08:27:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbjIHMXw (ORCPT
+        with ESMTP id S232080AbjIHM1I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 08:23:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697291BEE
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 05:23:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694175781;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BhPlFmfDjkoScE/z9HkGq4pyZVDlNbtxuDngmMfLCU4=;
-        b=dMbCZGTWXIJ9tbmM/t7DuixG6vSPCAHLwxNkxzcm7jlEDSTid8X76o8z2PQnpHPostgCh+
-        fA6CHGzLzxrmlalahEMt87OuN4lFNUcTrsCVuoXoXf7lMmK+pvco3maYMfl9i7XU7JwoRz
-        zGLx4aSH5tG5XmIIeqSU5u2iZuydq9I=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-556-5HAR7KecNBahP_zJ9B0kSg-1; Fri, 08 Sep 2023 08:23:00 -0400
-X-MC-Unique: 5HAR7KecNBahP_zJ9B0kSg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9a9e12a3093so270938866b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 05:22:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694175779; x=1694780579;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BhPlFmfDjkoScE/z9HkGq4pyZVDlNbtxuDngmMfLCU4=;
-        b=PmatUIUavAu7AmYJbPOZ8AnNm2RFLtNcPdfp+p+pHgePqgJnEd02sdYDjqp6NdeJDn
-         yv2LcdL8XET/KCWrUbsSqlFHQxGuPDyLwlo8gW3xhxfUB4JYlcJIRSqO6ZJmhKrk3Zl5
-         RnPz2AJ8ynN0nz26oCQZPxNzFRNoDmsej0cBeLPzZ5pbgrrCAMmuyaEV8xDG5+mIQXuu
-         zYDnbgJ7KZQbqSQ7yy1gfykP/rzStRFKyuKJsYXHobXwYXgEOUgTKcgpglmZdZ70fOeL
-         5Of3PVTdCeEcKEAckHQnwYIIWTCDc7OJFg2GwNZc6ZWx/gRzFi/Ja1JBKxoosXdbwlVh
-         NpDQ==
-X-Gm-Message-State: AOJu0YymLJZel1qOLyvRoun2IrnPVeqVp+RB88AfS1WdJOFPXiGtzfTe
-        DUgmWLib6FBiQUV2iBbTjpmmsZJS2Av7oscE8q/PcNyhQo/mTRpqKh5rdxNJZBLI620sm9ACDqA
-        0at7KtFsUpbdBu0sPD89+vbop
-X-Received: by 2002:a17:906:9bdb:b0:9a9:f06d:9029 with SMTP id de27-20020a1709069bdb00b009a9f06d9029mr3022418ejc.32.1694175778867;
-        Fri, 08 Sep 2023 05:22:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHd/1NRhIs49SZXm3jKoUoVGtZpXWs07IbJqMUJVNj2/7BA/w2F4bIjrIpaXglqAXPkeeZHgA==
-X-Received: by 2002:a17:906:9bdb:b0:9a9:f06d:9029 with SMTP id de27-20020a1709069bdb00b009a9f06d9029mr3022393ejc.32.1694175778528;
-        Fri, 08 Sep 2023 05:22:58 -0700 (PDT)
-Received: from [192.168.0.224] (host-82-53-135-115.retail.telecomitalia.it. [82.53.135.115])
-        by smtp.gmail.com with ESMTPSA id lc18-20020a170906f91200b0099329b3ab67sm978419ejb.71.2023.09.08.05.22.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Sep 2023 05:22:57 -0700 (PDT)
-Message-ID: <6e095f34-d14a-d81b-5c23-9886b8c799cd@redhat.com>
-Date:   Fri, 8 Sep 2023 14:22:56 +0200
+        Fri, 8 Sep 2023 08:27:08 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16D41BEE;
+        Fri,  8 Sep 2023 05:27:03 -0700 (PDT)
+Received: from [172.22.36.47] (unknown [115.110.84.132])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: david.heidelberg)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3326E6607249;
+        Fri,  8 Sep 2023 13:26:56 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694176022;
+        bh=kxmYxmERfaHjIcR3GX44H1XW83N5R1EvDpk8rarq7DM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=RLbKzevVNzRpoYpSOUweFFqV1PRi95V1QP0aZkLHgy9FMlPUBdaTU1jiX2HrmCWKV
+         HIPqb9JG1zqG/qvy5nmv36psPYBdSJrfXMr869574pyE9z/e0vG5wo/dbANcMFNOaQ
+         h47VoJSADABNfqonov5ftn/5ZzHoyKsMnMsty/sSwZz5Rlfsv9y3+6MN5Dru9XtWzG
+         JiQUFm3HXBGAlpgYF5EIgH1ktK2F+/vc96f+OxXYEirTsKYMuVA75QJrhe93UGzDfh
+         ebjPpaCyo5tUE/0KcdRVpA5t0+fG0WvXj1p2ux3FHP5ZfjvGAMQ9B4VgFjs77B/EpE
+         12/KaIjUQUF+Q==
+Message-ID: <2dc6f9fa-06fb-44d8-97cb-6b5a983b7539@collabora.com>
+Date:   Fri, 8 Sep 2023 17:56:36 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: Prevent RT-throttling for idle-injection threads
-To:     Atul Kumar Pant <quic_atulpant@quicinc.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     rafael@kernel.org, daniel.lezcano@linaro.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_ashayj@quicinc.com, quic_rgottimu@quicinc.com,
-        quic_shashim@quicinc.com
-References: <20230808112523.2788452-1-quic_atulpant@quicinc.com>
- <20230811111719.17f9965a@gandalf.local.home>
- <20230908095527.GA2475625@hu-atulpant-hyd.qualcomm.com>
-Content-Language: en-US, pt-BR, it-IT
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-In-Reply-To: <20230908095527.GA2475625@hu-atulpant-hyd.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/6] drm: ci: Enable configs to fix mt8173 boot hang issue
+To:     Vignesh Raman <vignesh.raman@collabora.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        dri-devel@lists.freedesktop.org,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     helen.koike@collabora.com, guilherme.gallo@collabora.com,
+        sergi.blanch.torne@collabora.com, daniels@collabora.com,
+        emma@anholt.net, robclark@freedesktop.org,
+        gustavo.padovan@collabora.com, robdclark@google.com,
+        anholt@google.com, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
+        daniel@ffwll.ch, corbet@lwn.net, neil.armstrong@linaro.org,
+        khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, heiko@sntech.de,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+References: <20230825122435.316272-1-vignesh.raman@collabora.com>
+ <20230825122435.316272-5-vignesh.raman@collabora.com>
+ <6da8136b-be1f-6867-b2af-c636877ef189@collabora.com>
+ <ff99380a-cb0d-dc6c-0442-7aa60d14cec2@collabora.com>
+Content-Language: en-US
+From:   David Heidelberg <david.heidelberg@collabora.com>
+Autocrypt: addr=david.heidelberg@collabora.com; keydata=
+ xjMEYlvLOxYJKwYBBAHaRw8BAQdA5CoWEzz4igpwK4h6lK6ZformRk84+ymcfkGNPwqEeILN
+ MURhdmlkIEhlaWRlbGJlcmcgPGRhdmlkLmhlaWRlbGJlcmdAY29sbGFib3JhLmNvbT7ClgQT
+ FggAPhYhBEo7kSl22BK0F1Np/mn1Z4YcHsAUBQJiW8s7AhsDBQkFo5qABQsJCAcCBhUKCQgL
+ AgQWAgMBAh4BAheAAAoJEGn1Z4YcHsAU84kBAK5YqSWAOuIumAqgWvke6BEsaIGWGQzXSuKj
+ er/TXuFuAQCwc9ITSVXWWTSpdFt2+4z7Wch8tIGlbIFcS9dCFddwCc44BGJbyzsSCisGAQQB
+ l1UBBQEBB0AEk7jXEwDApGOwMH/X0UAPBH8Y3isjxhNMjpyRcnl2CwMBCAfCfgQYFggAJhYh
+ BEo7kSl22BK0F1Np/mn1Z4YcHsAUBQJiW8s7AhsMBQkFo5qAAAoJEGn1Z4YcHsAU0PEA/j0Y
+ uAOKJCnnwrkf3ozPP0sutA5bojoARwcIaZKO/zvIAP9PwTC9DGLg+8LJm7m2Lyf0LxLA8FXD
+ wueLHBdwHg6zAQ==
+In-Reply-To: <ff99380a-cb0d-dc6c-0442-7aa60d14cec2@collabora.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------QVbyyDjtHt2Y2bqlRUbNjGy2"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/23 11:55, Atul Kumar Pant wrote:
-> On Fri, Aug 11, 2023 at 11:17:19AM -0400, Steven Rostedt wrote:
->> On Tue,  8 Aug 2023 16:55:23 +0530
->> Atul Pant <quic_atulpant@quicinc.com> wrote:
->>
->>> Hi all,
->>> We are trying to implement a solution for thermal mitigation by using
->>> idle injection on CPUs. However we face some limitations with the current
->>> idle-inject framework. As per our need, we want to start injecting idle
->>> cycles on a CPU for indefinite time (until the temperature/power of the
->>> CPU falls below a threshold). This will help to keep the hot CPUs in the
->>> sleep state until we see improvement in temperature/power. If we set the
->>> idle duration to a large value or have an idle-injection ratio of 100%,
->>> then the idle-inject RT thread suffers from RT throttling. This results
->>> in the CPU exiting from the sleep state and consuming some power.
->>>
->>> The above situation can be avoided, if we can prevent RT throttling on
->>> the injected CPU. With the currently available sysctl parameters,
->>> sched_rt_runtime_us and sched_rt_period_us, we can prevent RT throttling
->>> by either setting sched_rt_runtime_us equal to sched_rt_period_us or,
->>> setting sched_rt_runtime_us to -1. Since these parameters are system
->>> wide, so it will affect the RT tasks on non idle-injected CPUs as well.
->>> To overcome this, will it be feasible to have these two parameters on a
->>> per CPU basis? This will allow to selectively disable RT throttling on
->>> idle-injected CPUs.
->> I wonder if the deadline scheduler that Daniel is working on would help in this case?
-> 		Are you referring to this thread regarding SCHED_DEADLINE server?
-> 		https://lore.kernel.org/all/cover.1686239016.git.bristot@kernel.org/T/#u
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------QVbyyDjtHt2Y2bqlRUbNjGy2
+Content-Type: multipart/mixed; boundary="------------0SjgPXBdE0pfxmCy61iR0gjG";
+ protected-headers="v1"
+From: David Heidelberg <david.heidelberg@collabora.com>
+To: Vignesh Raman <vignesh.raman@collabora.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ dri-devel@lists.freedesktop.org, Matthias Brugger <matthias.bgg@gmail.com>
+Cc: helen.koike@collabora.com, guilherme.gallo@collabora.com,
+ sergi.blanch.torne@collabora.com, daniels@collabora.com, emma@anholt.net,
+ robclark@freedesktop.org, gustavo.padovan@collabora.com,
+ robdclark@google.com, anholt@google.com, maarten.lankhorst@linux.intel.com,
+ mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+ corbet@lwn.net, neil.armstrong@linaro.org, khilman@baylibre.com,
+ jbrunet@baylibre.com, martin.blumenstingl@googlemail.com, heiko@sntech.de,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-amlogic@lists.infradead.org, linux-rockchip@lists.infradead.org
+Message-ID: <2dc6f9fa-06fb-44d8-97cb-6b5a983b7539@collabora.com>
+Subject: Re: [PATCH 4/6] drm: ci: Enable configs to fix mt8173 boot hang issue
+References: <20230825122435.316272-1-vignesh.raman@collabora.com>
+ <20230825122435.316272-5-vignesh.raman@collabora.com>
+ <6da8136b-be1f-6867-b2af-c636877ef189@collabora.com>
+ <ff99380a-cb0d-dc6c-0442-7aa60d14cec2@collabora.com>
+In-Reply-To: <ff99380a-cb0d-dc6c-0442-7aa60d14cec2@collabora.com>
 
-Yep, but the v4... this will replace rt throttling, and it already has per-cpu arguments.
+--------------0SjgPXBdE0pfxmCy61iR0gjG
+Content-Type: multipart/mixed; boundary="------------yPjLj8M50Ol2VqN53k1e0e4X"
 
-https://lore.kernel.org/lkml/20230906082952.GB38741@noisy.programming.kicks-ass.net/t/
+--------------yPjLj8M50Ol2VqN53k1e0e4X
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
--- Daniel
+T24gMDgvMDkvMjAyMyAxMzoyMywgVmlnbmVzaCBSYW1hbiB3cm90ZToNCg0KPiBIaSBBbmdl
+bG8sDQo+DQo+IE9uIDA3LzA5LzIzIDE2OjE2LCBBbmdlbG9HaW9hY2NoaW5vIERlbCBSZWdu
+byB3cm90ZToNCj4+IElsIDI1LzA4LzIzIDE0OjI0LCBWaWduZXNoIFJhbWFuIGhhIHNjcml0
+dG86DQo+Pj4gRW5hYmxlIHJlZ3VsYXRvcg0KPj4+IEVuYWJsZSBNVDYzOTcgUlRDIGRyaXZl
+cg0KPj4+DQo+Pj4gU2lnbmVkLW9mZi1ieTogVmlnbmVzaCBSYW1hbiA8dmlnbmVzaC5yYW1h
+bkBjb2xsYWJvcmEuY29tPg0KPj4+IC0tLQ0KPj4+IMKgIGRyaXZlcnMvZ3B1L2RybS9jaS9h
+cm02NC5jb25maWcgfCAyICsrDQo+Pj4gwqAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9u
+cygrKQ0KPj4+DQo+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9jaS9hcm02NC5j
+b25maWcgDQo+Pj4gYi9kcml2ZXJzL2dwdS9kcm0vY2kvYXJtNjQuY29uZmlnDQo+Pj4gaW5k
+ZXggODE3ZTE4ZGRmZDRmLi5lYTdhNmNjZWZmNDAgMTAwNjQ0DQo+Pj4gLS0tIGEvZHJpdmVy
+cy9ncHUvZHJtL2NpL2FybTY0LmNvbmZpZw0KPj4+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9j
+aS9hcm02NC5jb25maWcNCj4+PiBAQCAtMTg0LDYgKzE4NCw4IEBAIENPTkZJR19IV19SQU5E
+T01fTVRLPXkNCj4+PiDCoCBDT05GSUdfTVRLX0RFVkFQQz15DQo+Pj4gwqAgQ09ORklHX1BX
+TV9NVEtfRElTUD15DQo+Pj4gwqAgQ09ORklHX01US19DTURRPXkNCj4+PiArQ09ORklHX1JF
+R1VMQVRPUl9EQTkyMTE9eQ0KPj4+ICtDT05GSUdfUlRDX0RSVl9NVDYzOTc9eQ0KPj4NCj4+
+IEkgd29uZGVyIGlmIGl0J2QgYmUgYSBiZXR0ZXIgaWRlYSB0byBzaW1wbHkgYWRkIHRob3Nl
+IHRvIHRoZSANCj4+IGRlZmNvbmZpZyBpbnN0ZWFkIGFzDQo+Pg0KPj4gQ09ORklHX1JFR1VM
+QVRPUl9EQTkyMTE9bQ0KPj4gQ09ORklHX1JUQ19EUlZfTVQ2Mzk3PW0NCj4+DQo+PiBBbnkg
+b3BpbmlvbiBvbiB0aGlzPyBNYXR0aGlhcz8gQW55b25lIGVsc2U/DQo+DQo+IENPTkZJR19S
+VENfRFJWX01UNjM5Nz1tIGlzIGFscmVhZHkgcHJlc2VudCBpbiBkZWZjb25maWcuDQo+IFdl
+IGNhbiBhbHNvIGFkZCBDT05GSUdfUkVHVUxBVE9SX0RBOTIxMT1tIHRvIGRlZmNvbmZpZy4N
+Cg0KV2UgbmVlZCBhZGQgY29uZmlnIHNuaXBwZXQgb3ZlcnJpZGUgZm9yIENPTkZJR19SRUdV
+TEFUT1JfREE5MjExPXkgDQpiZWNhdXNlIG91ciBDSSBkb24ndCBoYXZlIGFueSBpbml0cmQg
+d2l0aCBtb2R1bGVzLCB3ZSBqdXN0IGltbWVkaWF0ZWx5IA0KY29udGludWUgYm9vdCBmcm9t
+IE5GUywgd2hlcmUgd2UgbG9hZCByZXN0IG9mIHRoZSBib290IG5vbi1lc3NlbnRpYWwgDQpt
+b2R1bGVzLg0KDQpGb3IgZ2VuZXJpYyBrZXJuZWwsIEkgYXNzdW1lIENPTkZJR19SRUdVTEFU
+T1JfREE5MjExPW0gc2hvdWxkIGJlIGFkZGVkLg0KDQpEYXZpZA0KDQo+DQo+IFJlZ2FyZHMs
+DQo+IFZpZ25lc2gNCg0KLS0gDQpEYXZpZCBIZWlkZWxiZXJnDQpDb25zdWx0YW50IFNvZnR3
+YXJlIEVuZ2luZWVyDQoNCkNvbGxhYm9yYSBMdGQuDQpQbGF0aW51bSBCdWlsZGluZywgU3Qg
+Sm9obidzIElubm92YXRpb24gUGFyaywgQ2FtYnJpZGdlIENCNCAwRFMsIFVLDQpSZWdpc3Rl
+cmVkIGluIEVuZ2xhbmQgJiBXYWxlcywgbm8uIDU1MTM3MTgNCg0K
+--------------yPjLj8M50Ol2VqN53k1e0e4X
+Content-Type: application/pgp-keys; name="OpenPGP_0x69F567861C1EC014.asc"
+Content-Disposition: attachment; filename="OpenPGP_0x69F567861C1EC014.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEYlvLOxYJKwYBBAHaRw8BAQdA5CoWEzz4igpwK4h6lK6ZformRk84+ymcfkGN
+PwqEeILNMURhdmlkIEhlaWRlbGJlcmcgPGRhdmlkLmhlaWRlbGJlcmdAY29sbGFi
+b3JhLmNvbT7ClgQTFggAPhYhBEo7kSl22BK0F1Np/mn1Z4YcHsAUBQJiW8s7AhsD
+BQkFo5qABQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEGn1Z4YcHsAU84kBAK5Y
+qSWAOuIumAqgWvke6BEsaIGWGQzXSuKjer/TXuFuAQCwc9ITSVXWWTSpdFt2+4z7
+Wch8tIGlbIFcS9dCFddwCc44BGJbyzsSCisGAQQBl1UBBQEBB0AEk7jXEwDApGOw
+MH/X0UAPBH8Y3isjxhNMjpyRcnl2CwMBCAfCfgQYFggAJhYhBEo7kSl22BK0F1Np
+/mn1Z4YcHsAUBQJiW8s7AhsMBQkFo5qAAAoJEGn1Z4YcHsAU0PEA/j0YuAOKJCnn
+wrkf3ozPP0sutA5bojoARwcIaZKO/zvIAP9PwTC9DGLg+8LJm7m2Lyf0LxLA8FXD
+wueLHBdwHg6zAQ=3D=3D
+=3DOQS+
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------yPjLj8M50Ol2VqN53k1e0e4X--
+
+--------------0SjgPXBdE0pfxmCy61iR0gjG--
+
+--------------QVbyyDjtHt2Y2bqlRUbNjGy2
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYIAB0WIQRKO5EpdtgStBdTaf5p9WeGHB7AFAUCZPsS/AAKCRBp9WeGHB7A
+FJMXAQDOC4fWl0gYmEvUPLQhSmJbWUme0uzP1yaP5MxtaDwvCwD7BgNQv9t8Yrp6
+kbFOXh1myrvVXSi5VYV9ry9kKAgaVQs=
+=LHU6
+-----END PGP SIGNATURE-----
+
+--------------QVbyyDjtHt2Y2bqlRUbNjGy2--
