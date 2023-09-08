@@ -2,281 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D34F179914B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 458A079914E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244692AbjIHUwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 16:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37148 "EHLO
+        id S245371AbjIHUwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 16:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233978AbjIHUwV (ORCPT
+        with ESMTP id S240081AbjIHUwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 16:52:21 -0400
-Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B761FE0
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 13:52:17 -0700 (PDT)
-Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mx0.riseup.net (Postfix) with ESMTPS id 4Rj7b5038bz9scb;
-        Fri,  8 Sep 2023 20:52:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1694206337; bh=2Y/kMyD/z9pXU7s6HkrEXYDIlqypOuBOVO8Uu8nZ41M=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=eer7x/sxK4RH7m/Z/iw5XLy02G3x35Uz3cXOkuegmj/juwx9w3Z3ObUH3vDzknBiM
-         V8K9hjYmygtPjP++3nDk0SQPhcsw63kPpvMiFdW/at1hyWTqtDdeqNsPERwGe++6Ip
-         EonXaVJnlsddfL3MZP7YKf0pcoxTjFinu/QuVVtE=
-X-Riseup-User-ID: 312483AA142EEE3508F02C1A56B8C2911D0784095B4F6D6D9164640054B6E0C4
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4Rj7Zp722dzJqBr;
-        Fri,  8 Sep 2023 20:52:02 +0000 (UTC)
-Message-ID: <4a1d5042-e698-6657-61a0-bb2f61468231@riseup.net>
-Date:   Fri, 8 Sep 2023 17:52:05 -0300
+        Fri, 8 Sep 2023 16:52:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E595C1FFD;
+        Fri,  8 Sep 2023 13:52:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87A55C43215;
+        Fri,  8 Sep 2023 20:52:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694206344;
+        bh=TcTQRLCCJ2nI5kBt3Ur/VJ/CjA9qDNAGUbTVoXZ0FFc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KKMs3kuE0jyLhFFImDSGLnNruBWTdUeyW76xuzGn69ruwfKYI6GKbJOaYXOQYZxy0
+         GBLo8zoKCuyc9etWI7P2hqXaoHe1OoTEI/nEhhLmdDq+x7kevRAmSflKjzGx6wKXVK
+         1vmR4jvvx8ZXhKhG4REISHbNAa47cFya9GHyN5fIQRoUJUcmU+7Jmzbx4jzEQhETje
+         tQStBQmAneqHovqRdKrc1FydK3HWBE2FJOZ4bLkJMBCt7W+ZWKEIOBuuAmrCH/FPYb
+         VtvltK95RppdKCbSzGcb7/WprEJRCyAptgDoUFBra9H9TTDJQuiRcYKZ9nAe2QY9Td
+         DUc2Fb76bENog==
+Received: (nullmailer pid 336501 invoked by uid 1000);
+        Fri, 08 Sep 2023 20:52:22 -0000
+Date:   Fri, 8 Sep 2023 15:52:22 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Paul Elder <paul.elder@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 3/3] arm64: dts: mediatek: mt8365-pumpkin: Add overlays
+ for thp7312 cameras
+Message-ID: <20230908205222.GA320762-robh@kernel.org>
+References: <20230905233118.183140-1-paul.elder@ideasonboard.com>
+ <20230905233118.183140-4-paul.elder@ideasonboard.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 2/2] drm/tests: Add new format conversion tests to
- better cover drm_fb_blit()
-Content-Language: en-US
-To:     Arthur Grillo <arthurgrillo@riseup.net>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     tales.aparecida@gmail.com, andrealmeid@riseup.net,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-References: <20230905-final-gsoc-v2-0-b52e8cb068ea@riseup.net>
- <20230905-final-gsoc-v2-2-b52e8cb068ea@riseup.net>
-From:   Maira Canal <mairacanal@riseup.net>
-In-Reply-To: <20230905-final-gsoc-v2-2-b52e8cb068ea@riseup.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230905233118.183140-4-paul.elder@ideasonboard.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arthur,
-
-On 9/5/23 18:27, Arthur Grillo wrote:
-> To fully cover drm_fb_blit(), add format conversion tests that are only
-> supported through drm_fb_blit().
+On Wed, Sep 06, 2023 at 08:31:18AM +0900, Paul Elder wrote:
+> Add overlays for the Pumpkin i350 to support THP7312 cameras.
 > 
-> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-
-Reviewed-by: Maíra Canal <mairacanal@riseup.net>
-
-Best Regards,
-- Maíra
-
+> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
 > ---
->   drivers/gpu/drm/tests/drm_format_helper_test.c | 142 +++++++++++++++++++++++++
->   1 file changed, 142 insertions(+)
+>  arch/arm64/boot/dts/mediatek/Makefile         |  4 +
+>  .../mt8365-pumpkin-common-thp7312.dtsi        | 23 ++++++
+>  .../mt8365-pumpkin-csi0-thp7312-imx258.dtso   | 73 +++++++++++++++++++
+>  .../mt8365-pumpkin-csi1-thp7312-imx258.dtso   | 73 +++++++++++++++++++
+>  4 files changed, 173 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-common-thp7312.dtsi
+>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi0-thp7312-imx258.dtso
+>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8365-pumpkin-csi1-thp7312-imx258.dtso
 > 
-> diff --git a/drivers/gpu/drm/tests/drm_format_helper_test.c b/drivers/gpu/drm/tests/drm_format_helper_test.c
-> index b888f7334510..889287245b1e 100644
-> --- a/drivers/gpu/drm/tests/drm_format_helper_test.c
-> +++ b/drivers/gpu/drm/tests/drm_format_helper_test.c
-> @@ -81,6 +81,16 @@ struct fb_swab_result {
->   	const u32 expected[TEST_BUF_SIZE];
->   };
->   
-> +struct convert_to_xbgr8888_result {
-> +	unsigned int dst_pitch;
-> +	const u32 expected[TEST_BUF_SIZE];
-> +};
+> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
+> index 20570bc40de8..ceaf24105001 100644
+> --- a/arch/arm64/boot/dts/mediatek/Makefile
+> +++ b/arch/arm64/boot/dts/mediatek/Makefile
+> @@ -56,4 +56,8 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-evk.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-pumpkin.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8516-pumpkin.dtb
+>  
+> +mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-csi0-thp7312-imx258.dtbo
+> +mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-csi1-thp7312-imx258.dtbo
+>  mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-ethernet-usb.dtbo
+
+This has no effect. You are assigning the same variable 3 times. It 
+needs to be every overlay applied to its base is a *-dtbs variable and 
+then those are all added to 'dtb-y'. IOW, we don't allow overlays which 
+can't be applied at build time.
+
+Assuming the overlays aren't mutually exclusive, you could do:
+
+mtk-mt8365-pumpkin-dtbs := mt8365-pumpkin.dtb mt8365-pumpkin-ethernet-usb.dtbo
+mtk-mt8365-pumpkin-dtbs += mt8365-pumpkin-csi0-thp7312-imx258.dtbo
+mtk-mt8365-pumpkin-dtbs += mt8365-pumpkin-csi1-thp7312-imx258.dtbo
+
+This works the same way as '-objs' variables to group .o files into a 
+module.
+
 > +
-> +struct convert_to_abgr8888_result {
-> +	unsigned int dst_pitch;
-> +	const u32 expected[TEST_BUF_SIZE];
-> +};
-> +
->   struct convert_xrgb8888_case {
->   	const char *name;
->   	unsigned int pitch;
-> @@ -98,6 +108,8 @@ struct convert_xrgb8888_case {
->   	struct convert_to_argb2101010_result argb2101010_result;
->   	struct convert_to_mono_result mono_result;
->   	struct fb_swab_result swab_result;
-> +	struct convert_to_xbgr8888_result xbgr8888_result;
-> +	struct convert_to_abgr8888_result abgr8888_result;
->   };
->   
->   static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
-> @@ -155,6 +167,14 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
->   			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
->   			.expected = { 0x0000FF01 },
->   		},
-> +		.xbgr8888_result = {
-> +			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-> +			.expected = { 0x010000FF },
-> +		},
-> +		.abgr8888_result = {
-> +			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-> +			.expected = { 0xFF0000FF },
-> +		},
->   	},
->   	{
->   		.name = "single_pixel_clip_rectangle",
-> @@ -213,6 +233,14 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
->   			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
->   			.expected = { 0x0000FF10 },
->   		},
-> +		.xbgr8888_result = {
-> +			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-> +			.expected = { 0x100000FF },
-> +		},
-> +		.abgr8888_result = {
-> +			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-> +			.expected = { 0xFF0000FF },
-> +		},
->   	},
->   	{
->   		/* Well known colors: White, black, red, green, blue, magenta,
-> @@ -343,6 +371,24 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
->   				0x00FFFF77, 0xFFFF0088,
->   			},
->   		},
-> +		.xbgr8888_result = {
-> +			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-> +			.expected = {
-> +				0x11FFFFFF, 0x22000000,
-> +				0x330000FF, 0x4400FF00,
-> +				0x55FF0000, 0x66FF00FF,
-> +				0x7700FFFF, 0x88FFFF00,
-> +			},
-> +		},
-> +		.abgr8888_result = {
-> +			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-> +			.expected = {
-> +				0xFFFFFFFF, 0xFF000000,
-> +				0xFF0000FF, 0xFF00FF00,
-> +				0xFFFF0000, 0xFFFF00FF,
-> +				0xFF00FFFF, 0xFFFFFF00,
-> +			},
-> +		},
->   	},
->   	{
->   		/* Randomly picked colors. Full buffer within the clip area. */
-> @@ -458,6 +504,22 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
->   				0x0303A8C2, 0x73F06CD2, 0x9C440EA3, 0x00000000, 0x00000000,
->   			},
->   		},
-> +		.xbgr8888_result = {
-> +			.dst_pitch =  20,
-> +			.expected = {
-> +				0xA19C440E, 0xB1054D11, 0xC103F3A8, 0x00000000, 0x00000000,
-> +				0xD173F06C, 0xA29C440E, 0xB2054D11, 0x00000000, 0x00000000,
-> +				0xC20303A8, 0xD273F06C, 0xA39C440E, 0x00000000, 0x00000000,
-> +			},
-> +		},
-> +		.abgr8888_result = {
-> +			.dst_pitch =  20,
-> +			.expected = {
-> +				0xFF9C440E, 0xFF054D11, 0xFF03F3A8, 0x00000000, 0x00000000,
-> +				0xFF73F06C, 0xFF9C440E, 0xFF054D11, 0x00000000, 0x00000000,
-> +				0xFF0303A8, 0xFF73F06C, 0xFF9C440E, 0x00000000, 0x00000000,
-> +			},
-> +		},
->   	},
->   };
->   
-> @@ -1082,6 +1144,84 @@ static void drm_test_fb_swab(struct kunit *test)
->   	KUNIT_EXPECT_MEMEQ(test, buf, result->expected, dst_size);
->   }
->   
-> +static void drm_test_fb_xrgb8888_to_abgr8888(struct kunit *test)
-> +{
-> +	const struct convert_xrgb8888_case *params = test->param_value;
-> +	const struct convert_to_abgr8888_result *result = &params->abgr8888_result;
-> +	size_t dst_size;
-> +	u32 *buf = NULL;
-> +	__le32 *xrgb8888 = NULL;
-> +	struct iosys_map dst, src;
-> +
-> +	struct drm_framebuffer fb = {
-> +		.format = drm_format_info(DRM_FORMAT_XRGB8888),
-> +		.pitches = { params->pitch, 0, 0 },
-> +	};
-> +
-> +	dst_size = conversion_buf_size(DRM_FORMAT_XBGR8888, result->dst_pitch, &params->clip, 0);
-> +
-> +	KUNIT_ASSERT_GT(test, dst_size, 0);
-> +
-> +	buf = kunit_kzalloc(test, dst_size, GFP_KERNEL);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf);
-> +	iosys_map_set_vaddr(&dst, buf);
-> +
-> +	xrgb8888 = cpubuf_to_le32(test, params->xrgb8888, TEST_BUF_SIZE);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, xrgb8888);
-> +	iosys_map_set_vaddr(&src, xrgb8888);
-> +
-> +	const unsigned int *dst_pitch = (result->dst_pitch == TEST_USE_DEFAULT_PITCH) ?
-> +		NULL : &result->dst_pitch;
-> +
-> +	int blit_result = 0;
-> +
-> +	blit_result = drm_fb_blit(&dst, dst_pitch, DRM_FORMAT_ABGR8888, &src, &fb, &params->clip);
-> +
-> +	buf = le32buf_to_cpu(test, (__force const __le32 *)buf, dst_size / sizeof(u32));
-> +
-> +	KUNIT_EXPECT_FALSE(test, blit_result);
-> +	KUNIT_EXPECT_MEMEQ(test, buf, result->expected, dst_size);
-> +}
-> +
-> +static void drm_test_fb_xrgb8888_to_xbgr8888(struct kunit *test)
-> +{
-> +	const struct convert_xrgb8888_case *params = test->param_value;
-> +	const struct convert_to_xbgr8888_result *result = &params->xbgr8888_result;
-> +	size_t dst_size;
-> +	u32 *buf = NULL;
-> +	__le32 *xrgb8888 = NULL;
-> +	struct iosys_map dst, src;
-> +
-> +	struct drm_framebuffer fb = {
-> +		.format = drm_format_info(DRM_FORMAT_XRGB8888),
-> +		.pitches = { params->pitch, 0, 0 },
-> +	};
-> +
-> +	dst_size = conversion_buf_size(DRM_FORMAT_XBGR8888, result->dst_pitch, &params->clip, 0);
-> +
-> +	KUNIT_ASSERT_GT(test, dst_size, 0);
-> +
-> +	buf = kunit_kzalloc(test, dst_size, GFP_KERNEL);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf);
-> +	iosys_map_set_vaddr(&dst, buf);
-> +
-> +	xrgb8888 = cpubuf_to_le32(test, params->xrgb8888, TEST_BUF_SIZE);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, xrgb8888);
-> +	iosys_map_set_vaddr(&src, xrgb8888);
-> +
-> +	const unsigned int *dst_pitch = (result->dst_pitch == TEST_USE_DEFAULT_PITCH) ?
-> +		NULL : &result->dst_pitch;
-> +
-> +	int blit_result = 0;
-> +
-> +	blit_result = drm_fb_blit(&dst, dst_pitch, DRM_FORMAT_XBGR8888, &src, &fb, &params->clip);
-> +
-> +	buf = le32buf_to_cpu(test, (__force const __le32 *)buf, dst_size / sizeof(u32));
-> +
-> +	KUNIT_EXPECT_FALSE(test, blit_result);
-> +	KUNIT_EXPECT_MEMEQ(test, buf, result->expected, dst_size);
-> +}
-> +
->   struct clip_offset_case {
->   	const char *name;
->   	unsigned int pitch;
-> @@ -1700,6 +1840,8 @@ static struct kunit_case drm_format_helper_test_cases[] = {
->   	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_argb2101010, convert_xrgb8888_gen_params),
->   	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_mono, convert_xrgb8888_gen_params),
->   	KUNIT_CASE_PARAM(drm_test_fb_swab, convert_xrgb8888_gen_params),
-> +	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_xbgr8888, convert_xrgb8888_gen_params),
-> +	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_abgr8888, convert_xrgb8888_gen_params),
->   	KUNIT_CASE_PARAM(drm_test_fb_clip_offset, clip_offset_gen_params),
->   	KUNIT_CASE_PARAM(drm_test_fb_build_fourcc_list, fb_build_fourcc_list_gen_params),
->   	KUNIT_CASE_PARAM(drm_test_fb_memcpy, fb_memcpy_gen_params),
-> 
+> +dtb-$(CONFIG_ARCH_MEDIATEK) += mtk-mt8365-pumpkin.dtb
+
+Looks like mtk-mt8365-pumpkin.dtb failed to get built before. In any 
+case, that's a terrible name. What's the difference between 
+mt8365-pumpkin.dtb and mtk-mt8365-pumpkin.dtb? There's no clue.
+
+Rob
