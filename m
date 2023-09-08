@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64E03798D56
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E803798D5A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236665AbjIHSVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43140 "EHLO
+        id S241175AbjIHSVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:21:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344088AbjIHST4 (ORCPT
+        with ESMTP id S1344095AbjIHST4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Sep 2023 14:19:56 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49E52D4F;
-        Fri,  8 Sep 2023 11:18:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16CFCC116A6;
-        Fri,  8 Sep 2023 18:17:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907CC2D51;
+        Fri,  8 Sep 2023 11:18:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 911E8C433C8;
+        Fri,  8 Sep 2023 18:17:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197047;
-        bh=kPzyhGpLgYOWktsL2OvjuWdZRDytUuhx+35KEFmIYus=;
+        s=k20201202; t=1694197048;
+        bh=iLWsyO/8yGOb4h4DP+3FeDaNhvKc+MvC5XCSCjcZYV4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q50RXMX/3CNt/mCrvswG/RKmtYFLhhrSOb163E7LjbGz02Eqj29u9fzoopT8UN63L
-         n5M7RnWBcnL53kD9BqS0tSd+83mCPuBIEPU5eEYDFcpo6Npd3wkVvoDxsxOUOb/h6y
-         S7UmBukIRNGWOSumcyI+5LrSI11LBZ4uLOADj7GQrMg2yoiPUo6vHDeIdVgRC5cKvZ
-         FtsAGKsUr4PtjreUa8A+H+BKPcFHzyrHwW89godobMvSDFVvY0kAggvfCspysxx8q/
-         NSB1X6n1oAlq8D6P+fAbhIQJ0DLGB4JwHlqcCIHEDQjLzuLEmVmS8Kw+KN0M6ViHkA
-         mgUb1UlumEoLQ==
+        b=W17b0nshNKDHGM+1H/4+4ujkFd31rPkRGJmt2qa8XTQi3G36DWzyoJcdLODHJWhdO
+         /mUCKV6+82jWST2U6pxHSnbtAjgOeD120yMAAoPcVLU0GthnYR0jWdRF6VtsbSnTzI
+         mQRVMRlN0wxELGE32GVRjt1A2dOXzUKJSALAnJmaqb+upF8qWokNH6tkX+pmHsPEzI
+         hbY41ANfQ5UNWQM+q5HFOkWrNMeHoBazt5jyoaRDptSO/Fty25x1TQK67UwQudOdXM
+         /wRRwwdmmIb8eI9/8bSoSfddwHr8Ro/69GhwU6cYSzuoknXSKtk9/zJXJ29kZtLiSM
+         qwylXXvpqv4Jw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Rajat Soni <quic_rajson@quicinc.com>,
-        Kalle Valo <quic_kvalo@quicinc.com>,
-        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
-        quic_jjohnson@quicinc.com, ath12k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 36/41] wifi: ath12k: Fix memory leak in rx_desc and tx_desc
-Date:   Fri,  8 Sep 2023 14:15:50 -0400
-Message-Id: <20230908181555.3459640-36-sashal@kernel.org>
+Cc:     Bastien Nocera <hadess@hadess.net>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Sasha Levin <sashal@kernel.org>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-bluetooth@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 37/41] Bluetooth: btusb: Fix quirks table naming
+Date:   Fri,  8 Sep 2023 14:15:51 -0400
+Message-Id: <20230908181555.3459640-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181555.3459640-1-sashal@kernel.org>
 References: <20230908181555.3459640-1-sashal@kernel.org>
@@ -54,115 +55,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajat Soni <quic_rajson@quicinc.com>
+From: Bastien Nocera <hadess@hadess.net>
 
-[ Upstream commit afb522b36e76acaa9f8fc06d0a9742d841c47c16 ]
+[ Upstream commit d831e3612111d385e8629104af5429808ef26e25 ]
 
-Currently when ath12k_dp_cc_desc_init() is called we allocate
-memory to rx_descs and tx_descs. In ath12k_dp_cc_cleanup(), during
-descriptor cleanup rx_descs and tx_descs memory is not freed.
+The quirks table was named "blacklist_table" which isn't a good
+description for that table as devices detected using it weren't ignored
+by the driver.
 
-This is cause of memory leak. These allocated memory should be
-freed in ath12k_dp_cc_cleanup.
+Rename the table to match what it actually does.
 
-In ath12k_dp_cc_desc_init(), we can save base address of rx_descs
-and tx_descs. In ath12k_dp_cc_cleanup(), we can free rx_descs and
-tx_descs memory using their base address.
-
-Tested-on: QCN9274 hw2.0 PCI WLAN.WBE.1.0.1-00029-QCAHKSWPL_SILICONZ-1
-
-Signed-off-by: Rajat Soni <quic_rajson@quicinc.com>
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://lore.kernel.org/r/20230718053510.30894-1-quic_rajson@quicinc.com
+Signed-off-by: Bastien Nocera <hadess@hadess.net>
+Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath12k/dp.c | 30 +++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath12k/dp.h |  2 ++
- 2 files changed, 31 insertions(+), 1 deletion(-)
+ drivers/bluetooth/btusb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath12k/dp.c b/drivers/net/wireless/ath/ath12k/dp.c
-index ae1645d0f42a2..f933896f2a68d 100644
---- a/drivers/net/wireless/ath/ath12k/dp.c
-+++ b/drivers/net/wireless/ath/ath12k/dp.c
-@@ -1129,6 +1129,7 @@ static void ath12k_dp_cc_cleanup(struct ath12k_base *ab)
- 	struct ath12k_dp *dp = &ab->dp;
- 	struct sk_buff *skb;
- 	int i;
-+	u32 pool_id, tx_spt_page;
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 18b7847aa417c..b312479ec404f 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -175,7 +175,7 @@ static const struct usb_device_id btusb_table[] = {
  
- 	if (!dp->spt_info)
- 		return;
-@@ -1148,6 +1149,14 @@ static void ath12k_dp_cc_cleanup(struct ath12k_base *ab)
- 		dev_kfree_skb_any(skb);
+ MODULE_DEVICE_TABLE(usb, btusb_table);
+ 
+-static const struct usb_device_id blacklist_table[] = {
++static const struct usb_device_id quirks_table[] = {
+ 	/* CSR BlueCore devices */
+ 	{ USB_DEVICE(0x0a12, 0x0001), .driver_info = BTUSB_CSR },
+ 
+@@ -4126,7 +4126,7 @@ static int btusb_probe(struct usb_interface *intf,
+ 	if (!id->driver_info) {
+ 		const struct usb_device_id *match;
+ 
+-		match = usb_match_id(intf, blacklist_table);
++		match = usb_match_id(intf, quirks_table);
+ 		if (match)
+ 			id = match;
  	}
- 
-+	for (i = 0; i < ATH12K_NUM_RX_SPT_PAGES; i++) {
-+		if (!dp->spt_info->rxbaddr[i])
-+			continue;
-+
-+		kfree(dp->spt_info->rxbaddr[i]);
-+		dp->spt_info->rxbaddr[i] = NULL;
-+	}
-+
- 	spin_unlock_bh(&dp->rx_desc_lock);
- 
- 	/* TX Descriptor cleanup */
-@@ -1170,6 +1179,21 @@ static void ath12k_dp_cc_cleanup(struct ath12k_base *ab)
- 		spin_unlock_bh(&dp->tx_desc_lock[i]);
- 	}
- 
-+	for (pool_id = 0; pool_id < ATH12K_HW_MAX_QUEUES; pool_id++) {
-+		spin_lock_bh(&dp->tx_desc_lock[pool_id]);
-+
-+		for (i = 0; i < ATH12K_TX_SPT_PAGES_PER_POOL; i++) {
-+			tx_spt_page = i + pool_id * ATH12K_TX_SPT_PAGES_PER_POOL;
-+			if (!dp->spt_info->txbaddr[tx_spt_page])
-+				continue;
-+
-+			kfree(dp->spt_info->txbaddr[tx_spt_page]);
-+			dp->spt_info->txbaddr[tx_spt_page] = NULL;
-+		}
-+
-+		spin_unlock_bh(&dp->tx_desc_lock[pool_id]);
-+	}
-+
- 	/* unmap SPT pages */
- 	for (i = 0; i < dp->num_spt_pages; i++) {
- 		if (!dp->spt_info[i].vaddr)
-@@ -1343,6 +1367,8 @@ static int ath12k_dp_cc_desc_init(struct ath12k_base *ab)
- 			return -ENOMEM;
- 		}
- 
-+		dp->spt_info->rxbaddr[i] = &rx_descs[0];
-+
- 		for (j = 0; j < ATH12K_MAX_SPT_ENTRIES; j++) {
- 			rx_descs[j].cookie = ath12k_dp_cc_cookie_gen(i, j);
- 			rx_descs[j].magic = ATH12K_DP_RX_DESC_MAGIC;
-@@ -1368,8 +1394,10 @@ static int ath12k_dp_cc_desc_init(struct ath12k_base *ab)
- 				return -ENOMEM;
- 			}
- 
-+			tx_spt_page = i + pool_id * ATH12K_TX_SPT_PAGES_PER_POOL;
-+			dp->spt_info->txbaddr[tx_spt_page] = &tx_descs[0];
-+
- 			for (j = 0; j < ATH12K_MAX_SPT_ENTRIES; j++) {
--				tx_spt_page = i + pool_id * ATH12K_TX_SPT_PAGES_PER_POOL;
- 				ppt_idx = ATH12K_NUM_RX_SPT_PAGES + tx_spt_page;
- 				tx_descs[j].desc_id = ath12k_dp_cc_cookie_gen(ppt_idx, j);
- 				tx_descs[j].pool_id = pool_id;
-diff --git a/drivers/net/wireless/ath/ath12k/dp.h b/drivers/net/wireless/ath/ath12k/dp.h
-index 7c5dafce5a68d..9aeda0321cd75 100644
---- a/drivers/net/wireless/ath/ath12k/dp.h
-+++ b/drivers/net/wireless/ath/ath12k/dp.h
-@@ -289,6 +289,8 @@ struct ath12k_tx_desc_info {
- struct ath12k_spt_info {
- 	dma_addr_t paddr;
- 	u64 *vaddr;
-+	struct ath12k_rx_desc_info *rxbaddr[ATH12K_NUM_RX_SPT_PAGES];
-+	struct ath12k_tx_desc_info *txbaddr[ATH12K_NUM_TX_SPT_PAGES];
- };
- 
- struct ath12k_reo_queue_ref {
 -- 
 2.40.1
 
