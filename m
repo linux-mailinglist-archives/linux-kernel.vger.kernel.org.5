@@ -2,154 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 499C97988EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39302798900
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244031AbjIHOgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49120 "EHLO
+        id S244055AbjIHOkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233199AbjIHOgU (ORCPT
+        with ESMTP id S230385AbjIHOkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:36:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB4113E;
-        Fri,  8 Sep 2023 07:36:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694183776; x=1725719776;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=EbdRNchmn/QzUbRwXGRJx8LBhK30qk1bPMTjrWD58pU=;
-  b=MTr5K/qPXuviTfXcTscyUCsmFNw+81wkDj5ZRBhiZHf0GzMdSujcPfO1
-   Rp+6SOdAer6yhLJH/P0kBxMGuyMZ73zQCKyK+HIxUpV8nksr5yUkZIa50
-   R55CkUV1bwFXq+Q63G0PB7m+1hsNNMRrERGDewE/FXd9hbx7MmHLhbi7r
-   fGpgMM4wWj3WHjBYNRrUok8yULa0yckmWiCgXdQV7v4sY3mb4bLZ929OT
-   JVB0NtOGdtnWeOqUnxqTuMGfVOmH5UHL5wWz5P1n4LACAlI2X6hN9D/mw
-   4FDFo3YifiT+pRqh1i1rMo95lct2iQcmkY2HzVano1qrZjCvahYpAUceo
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="408647320"
-X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
-   d="scan'208";a="408647320"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 07:35:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="735968915"
-X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
-   d="scan'208";a="735968915"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 08 Sep 2023 07:35:34 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 8 Sep 2023 07:35:34 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 8 Sep 2023 07:35:33 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Fri, 8 Sep 2023 07:35:33 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.177)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 8 Sep 2023 07:35:33 -0700
+        Fri, 8 Sep 2023 10:40:21 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2078.outbound.protection.outlook.com [40.107.223.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0249F19B5
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:40:16 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Dn9U+opvwIeOnMhsicUmLjghXvFKrIYSctAOlV0R5w6SUHlXioa6JUbcjNU+ZKjfw04el5PjhW7UKGugpjybkkHkp0vhsIdkK58f08SzTjly4fho1OuYe5gtbgRzNpMGbwTgZ9Gy1VtXWoR62hTH5MYfHmy0wFTOwWxCfn6oZCuHFKb+cTbMs3FPUd9biC5+TEKDdFEbDOby2rz4pnCaw924K7ZrWaseruNtqrmlAYXNBn7ADhmm0YhbACaclhlEe1iyyn858luWk8xo/Q0ILtI5TGaAZG6QKorqFwqrHm3yz3kk8aOjqQZ04oWLf9Dots7qgX+oXZUDwo6vZUnW4A==
+ b=QbTRoDFBKW5uTzyFfEU/TZ+0396FgLr0/+hJmdeH2aodbwSHZoBY6fPrmsPKQpMOO3+hilvIgir93rOgPVrsSRQMjp6HbjAT8IkodLuuLiZND/J+B+Rd4r8wVV/hshe32vIEuECTWPHZGv5EMeOZQc5ZxRzxagl5czPsGgWW8gwOikxC2f3rakQGtmKwlMAIB1425OVp/54Q1EDGPGOlba0Kjvq7MCJrRDPx68C8CCe9jwgnjiy9c/wr7izN6ym+nqu5rxhVzQSqLO/P+2xwQCqEhjGZvyNqjVWuGFbuShhR5VqvcyAfdDaF4yW5fDqjH68igaFg3z5noLXWrelSbw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qc9x2wgZsbpa8I5QpMf4E8QS3n5Sld/KU6VbO81YXx8=;
- b=bTP+RedIZGA4KGFWwWNE+jW1IAGkUDjeqUgBB1Ki0DFID2dcOBu6k4cYw7TWNawe4yGHEQkFs8twCZCMgFHyfZoF6HJCAa8pXhUvZDO8TevKgqZa0Jx/IHAikEkok7gsQjwAN0z/uaUKtaAa4qMj9SfIgWP731Mo1Uj9I31PQvwv7iSSkepd5o392RcDeItq2ExJl7LS0AxY83ocUM7ODbYiJ1q3m3T1Uxbd30QAdl+Ei2N35Bl05XK6sN5nI12falGZmygCIEe71+tN3JQU3Wp5OpIIvHOEtFYsbVEV3WpdilNLBg+/mxAQ4rvhLPh57QAFwv2Uu35BNDlwgsIldg==
+ bh=mQPQjE69gjtBYCngxAveT09oHtXWsrybf3lEKyIiDP8=;
+ b=a/vWYog6ONBk67QKs/GLC8uRmr0WHcjyLPYxSAnqVXY3Z3LexyYPUptKc71H7ZvdRDMQjSKR6BUJ5oBFEZH83XRBkS+hQsK3gJFmhqs5YE968NbL2PRvg8AbsZMSrziEWPuDDFOneU+g1B96SJV2S+H0QTnXPZQkmkmtkvxotququB53mQAYpS1kIth39hoRlqGmSBrONKBTjzNqrGCh91OPvK9WNPyXiuWen4jqmgJNqB0vxU04+Z+Wlm30Ku4VpQAzGI62ZVW9q/RFMtdLPHfO4qUjLCI1kI/l1EaTjVy5D63imRXbrXCIjUjlKvffR5fHFvlRrj5awU22wbXNng==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BY5PR11MB4306.namprd11.prod.outlook.com (2603:10b6:a03:1bb::17)
- by DM4PR11MB5424.namprd11.prod.outlook.com (2603:10b6:5:39c::8) with
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mQPQjE69gjtBYCngxAveT09oHtXWsrybf3lEKyIiDP8=;
+ b=VsTqM13AYeP72nlDZ84sche2tx7MPL+Nq1tU3zsnP8o01dtuW+sFl7oWJ+/HYCbatAOIiYaghwBPfncYp2ee8VKxS0QjFCXst2BCnStPvSbxzVx81H2nX9o0xleBsXJ9Em4e4YSUUYnWmH9W0WJIokKc4qy2HG871UysbVFgxoo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by SJ2PR12MB7824.namprd12.prod.outlook.com (2603:10b6:a03:4c4::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Fri, 8 Sep
- 2023 14:35:30 +0000
-Received: from BY5PR11MB4306.namprd11.prod.outlook.com
- ([fe80::e233:fa3b:bac7:9ce1]) by BY5PR11MB4306.namprd11.prod.outlook.com
- ([fe80::e233:fa3b:bac7:9ce1%6]) with mapi id 15.20.6768.029; Fri, 8 Sep 2023
- 14:35:29 +0000
-From:   "D M, Sharath Kumar" <sharath.kumar.d.m@intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
-        "kw@linux.com" <kw@linux.com>, "robh@kernel.org" <robh@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "dinguyen@kernel.org" <dinguyen@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 2/2] PCI: altera: add suport for Agilex Family FPGA
-Thread-Topic: [PATCH v2 2/2] PCI: altera: add suport for Agilex Family FPGA
-Thread-Index: AQHZ4LKiIDprQWqup0eKm2uSyqkaFrAOCSaAgAKepjCAADvsAIAAHRTg
-Date:   Fri, 8 Sep 2023 14:35:29 +0000
-Message-ID: <BY5PR11MB4306D2438CF3A387403CF9E0FDEDA@BY5PR11MB4306.namprd11.prod.outlook.com>
-References: <BY5PR11MB43060919B690263A0B1EA291FDEDA@BY5PR11MB4306.namprd11.prod.outlook.com>
- <20230908124700.GA292601@bhelgaas>
-In-Reply-To: <20230908124700.GA292601@bhelgaas>
-Accept-Language: en-US
+ 2023 14:40:13 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::121e:5e68:c78a:1f2f]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::121e:5e68:c78a:1f2f%3]) with mapi id 15.20.6768.029; Fri, 8 Sep 2023
+ 14:40:13 +0000
+Message-ID: <93a868ae-9734-478d-86b7-dd17cd67fecb@amd.com>
+Date:   Fri, 8 Sep 2023 10:40:07 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/34] drm/amd/display: fix segment distribution for
+ linear LUTs
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BY5PR11MB4306:EE_|DM4PR11MB5424:EE_
-x-ms-office365-filtering-correlation-id: 0818fe42-5cdf-41c3-f012-08dbb078d9c9
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6N4bDooEfsauqTvd7IPTkC6ZKRbSLBFxtNPN78NCBN7AdQzAdoA7UItdQlX00gxDXv1gORPGr0A5QmzEzhES3YyUzp0Zg1c5NYAwLo+7QI55tTVSdzPiR/8AIm2WQEU/5sW3uCvOnKOL/7Zju7lXteKrF4SJOpyKcgkGCGuJDeB+xoOz9LRJAUCSvnpOfJNrssJpjvUyATqT3oVYCg7WEgul8//GXcYurCO4ab7RhrjeY0/ZJwGg0VUIZ1v+GaOqvq2jTb8mtlmBr+MWUOMgzJjBiG4/EYMo4qMV2UWnm3PYTYxB7lusqXJzC4snAE0S46pLRMyQeNg1AKYx1JRUrrB/7T77JSfF6g7Rr6I0G7AA38+cM+b2ZGSGzlX7IJokXeU162zT9j+VsxkJIfjtofrvajYItQhgpJfIhIIIbA4/EV8bxfDOzAtZ3NT4Fe44qW8TrdnNfPuZebnhivoYox/U0PuaWkvdXS3Tkc8EqMuSaf8rF9QVFc/hvsFu0sqiesu21KBw3IxOFr1pBSY8lTN+a/aRJag9ckxa32b5qzIXA88aUf4cgg2w+czc7NF63c8X/tdem9dWNLIsxqS7DMI5EHBFbtv0eekA5wTvxrs=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4306.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(346002)(366004)(136003)(376002)(186009)(1800799009)(451199024)(53546011)(7696005)(6506007)(41300700001)(316002)(122000001)(2906002)(478600001)(33656002)(86362001)(64756008)(66446008)(66556008)(66476007)(38070700005)(76116006)(6916009)(54906003)(38100700002)(82960400001)(66946007)(71200400001)(55016003)(5660300002)(83380400001)(52536014)(8936002)(8676002)(4326008)(26005)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?OihK7Ml2vfn20wnzWQyHTCcKykaluulty7zvjMz/LqLPmCH3h3qV1098chgi?=
- =?us-ascii?Q?q7VuzTyf449sTxDd9JcyiXajfKjBZVx81t2dZAAe5XsRrXijJmyPiLs9M1GZ?=
- =?us-ascii?Q?8lvbN50lC4M/7Z8yZLflJt0UkYA1cHU43RKpR2NVoPbtsjUCyoUVEcIe1948?=
- =?us-ascii?Q?G1TUW56Wt5u0P52YD+mzfNRA2mHseBWR0xwRCnjUStQeOEqJYo7i1e/BDmSW?=
- =?us-ascii?Q?WY9cQ4UAganeV9xMuwoNB7AZkyko/AC4RzByK3B6r92+j5/rSVBR5K0nspvb?=
- =?us-ascii?Q?fOnggiSu2laAqpkV8+YwyxLHOlyifr8GG/gPFTcOH+j1foB9SNbrSXdoXRxl?=
- =?us-ascii?Q?3gGmWs3rkYXHVDsuhjPJtq5aTehtTyrDLanc1tvbBrV2BEfxgGeLkZRSjcFe?=
- =?us-ascii?Q?jS7Y2jDH4CDhxXIm188q0YC1YQPCmeLO306MHOAJbFF9yOx1yhSBVJ6dwsgl?=
- =?us-ascii?Q?fJo3kRhFsbw+20rOfbPz8Wqp4U4w0rdSXfYyiBPPCoVlzpLkvR15OE9f9z/e?=
- =?us-ascii?Q?DkdIw8cRi/SalKSrHnS8kE1AL0vvsccgA2TxgHwm0V3RnujsDozLJJA3uo5j?=
- =?us-ascii?Q?zJ6CGj0FYHW2Hd8ehhyf5vPt28wzq4a8mabJRK1pmv0iE0z+9kAZO8QqnzK8?=
- =?us-ascii?Q?Szm3CO0cUkSck31TuJDvSojl3TdSTYEIfBpzzqE6+L3pCvSOzg+YZYRBRnLc?=
- =?us-ascii?Q?xux2RdnRbaKSFz4xEEw78wZWZejOtRy0OD0uBgkNqIv7MgaP4xs77BNMSbng?=
- =?us-ascii?Q?oz7Xb9/r4FBmrtZcsbafna5Wvbf3sqzbmgYvpF27c7ydrXSHSe7NH0xOBAiV?=
- =?us-ascii?Q?tMmwPJQS15O+jyxPp/jemICOqbS59arphCs7gwNIMX87j2dy3WPOuVKZIn45?=
- =?us-ascii?Q?YZGozB/xwKlN0PuhwIsveX9lrI8el6CNgkbs4tO2VNGj2093Uo/CVSp/RlIh?=
- =?us-ascii?Q?2WrY+LAf7nShu2dzKhzOniPen+HlZUZ315ztzRCPg66cM5KDx43PyQivwaZi?=
- =?us-ascii?Q?tTbcoHwfuWUypBb8epsCvVppbAq9mbHWdsjpz8bw6ahlzqGI88UTzCyWLZwg?=
- =?us-ascii?Q?dVoDLca+lW/mURWbZCXqge9WGZIufXWGJbhGh3V/fK0oZcUswTThqrO6uLzR?=
- =?us-ascii?Q?BnhT7cmsphgflFJGmcA+5qZg9kLmm0//IdOFvzZeWONBxP85r07wMzR7Mkz6?=
- =?us-ascii?Q?4sJ3z+//E6DPzrgVJv5XSPD90sPgJj/On+Oi9yqtMCmCl2DG/oZyUK8NKg2C?=
- =?us-ascii?Q?OrrvQ8H/Bb8rPpJNEFxwnnahuPXrkXborCWIwa5lhB96jO/fTXpNpKREzQEq?=
- =?us-ascii?Q?ncUL7nbmcfnxZIyurQOA6ZYmDnlzbJidFoNunwztTskeGw9nOQtq/6bU2CfF?=
- =?us-ascii?Q?tcizsupniyNw9ofH79HoRDhdgFNljWxfWmZeo111c7MjlQxV2LvbOrhqETBO?=
- =?us-ascii?Q?R02AMZOM9cJ4b8SBI8Z7OMQPzMe8sYYQLHWdIMjGiR+7ycDUtdad+L2FqPcC?=
- =?us-ascii?Q?05lG1fq+wmJ7kS7WqRSso/9xoHHpy52KYBkKqddl45JF9VEvTpVdvY3X0SRR?=
- =?us-ascii?Q?a1YsPPyTHGloDnGDrIyBuWSPKmw8XzzWlmhBt1lG?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+To:     Melissa Wen <mwen@igalia.com>
+Cc:     amd-gfx@lists.freedesktop.org,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
+        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        Joshua Ashton <joshua@froggi.es>,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        Xaver Hugl <xaver.hugl@gmail.com>,
+        Shashank Sharma <Shashank.Sharma@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
+        linux-kernel@vger.kernel.org
+References: <20230810160314.48225-1-mwen@igalia.com>
+ <20230810160314.48225-2-mwen@igalia.com>
+ <7e11c23d-2824-4f32-b863-13cc631a6d40@amd.com>
+ <20230908141159.6hfne5r7hxi6bycs@mail.igalia.com>
+From:   Harry Wentland <harry.wentland@amd.com>
+In-Reply-To: <20230908141159.6hfne5r7hxi6bycs@mail.igalia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQBP288CA0021.CANP288.PROD.OUTLOOK.COM
+ (2603:10b6:c01:6a::8) To CO6PR12MB5427.namprd12.prod.outlook.com
+ (2603:10b6:5:358::13)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|SJ2PR12MB7824:EE_
+X-MS-Office365-Filtering-Correlation-Id: 957eed19-6759-457c-bc9c-08dbb0798272
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IhH2x2dELmCzG3BZzSHnBFg+uMlR96xvytxm94K6wAgK2FymVNzmxTNelSXzvnpc1x8rtz5eHP7DKK9MVsx2R/kzPag/wpBm+57pPBtBonjs4t5YpCtngpkfGm9Vj6K8iQMyVeqv0lT0bQz8Lqt0EDkFWxW+ZMWR3oefN7tqxFj0cL6XwE+ESz13JjRn7/TkUE/3KWlWhrdVCeits3QjXPXl6JCn32ynFH/AMSdYLvC1ijFGSV353VQEqmuUhqYhBnvFMkG7QfXh+KRzFb9ZdkDF2N3s5lmyi2q4+XfPtT6o5cPS5s+cbvDWIUK0jNvy9+biFA8a57PCsuAbVibDlTH9COtaNeGaacvy9YSsystn911UFRoGCUmnF94DJckp4J1p4w2qZvfnkQtUddh8K2+juIl5P0iRsO1Z8ty0NL5YUgsvD6aBCJ2jtPa+Csr4ZwnmjLXE9u8uac2peStR561ydqiF6aLnWCkBGgowL9/fI3zhsv5Jj7EIOqYo/bwGg6fl3j1YITlIz2tNbjjePsWIVj71YOZqeBXROc6i/wWLPbbGHMs1zLeHD/t9LzdvcbTFLJGkr7WzhWPXDWWQiOExYWDp606qEevpNtTmWrK4x6cTvoj7zYTWMM9Qzaa4/vnmHH/MuRU3CjF7ceQjDw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(376002)(39860400002)(396003)(451199024)(186009)(1800799009)(53546011)(6486002)(6506007)(6666004)(6512007)(83380400001)(478600001)(2616005)(26005)(6916009)(2906002)(7416002)(44832011)(66556008)(316002)(54906003)(66946007)(66476007)(41300700001)(5660300002)(8676002)(4326008)(8936002)(86362001)(36756003)(31696002)(38100700002)(31686004)(66899024)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?djB4NmZtcmFoNGZ5NWVxUFRrZG5iZkNtendabEdBV0Q4Vm8xcytPNU8yeWNy?=
+ =?utf-8?B?bUlVRE5CRE5nbCs2U3graElQcEl4Rkl3bS9hWUN3UmUvODhjS0RQenBPL1o0?=
+ =?utf-8?B?ZUcxU2FKNm5LOXAxTG0yNnNNbmtBL0FBWUZGWWVkSnVpNFE1dEx0QzI3UldN?=
+ =?utf-8?B?c2VSY3RyU3dySC8yTDBNZG5JRk5YZGVXN2Q5ZGljazMvNHplYXZ3QWtPajdy?=
+ =?utf-8?B?Nnk3VjRFZW1RaHE5SHJaYVYxMFBjbEp4ck5DbWZXSW1vZHNESTJJL2lZOG5M?=
+ =?utf-8?B?Z056WjA4SWR6R0MyZzhCTmdtNkR5b0Q1c2JpZGlpYzQrNHA4cFN5dHVhbTRN?=
+ =?utf-8?B?WkFXWWpJWEhaUnBmelFjdGplQzg2SnV5c3lyTVZEZFVmZDlKeHlnUHB0UDBw?=
+ =?utf-8?B?R3VmZ3YrZWVBVGhGSW9lN25Xa0g3NFRjd1gwcXJzNnQvU1llaXo0cUFYTmdv?=
+ =?utf-8?B?czcvaytaT2hPTFlEVUFsVDVqcUFiSGRCcmxtSWRTUmZybGp5TW9nRlozYmlT?=
+ =?utf-8?B?RkVPaVFEV0U3cXZDTEdZczduYzh6WWZHZmJhRzlkMkk0cXpHdEpHWHFwaGV6?=
+ =?utf-8?B?bkoyRkwzcHQ3dVNGSW8rLzZRSEVjQkViOXBQbmx6WWxMWFRFWlowZzN3Ujhs?=
+ =?utf-8?B?SmdTTTZRNy8wSTBmSGtQblhuenBoa0RGTThrbWNGeEt1Q2hod3R3WkxrMStN?=
+ =?utf-8?B?bXJRWTRldGZ0U1BBdTNvZUszZVFZaTAzSkhFOVl5dkhpTEVlTnltVUpQbkZi?=
+ =?utf-8?B?c2gwNUxxVG9XejBIUDNIZXFxTjZzVnBnYnd5RzVONm11YWtWMUFvOUFyWXlj?=
+ =?utf-8?B?K3ZySG03dHBXSFZLTHliWUFKS0RDSjVBZjdiUml6THBCRUI0TytPRXk2OHlU?=
+ =?utf-8?B?dXhaMU1SNlAwQ0pUNE5vbkRhNFJ3WVpSam5LSmJNaVA3Z0dhV3QwcHNjWmw2?=
+ =?utf-8?B?cXZGbkE5bE5WRTVlazlGY2pGVnA5RUlmTkNhZFBrdWVxaFJHTUR6MFR4T2la?=
+ =?utf-8?B?MGp4Vnk1TldqV2g3eW1lUlhLNWJvZ095aUcyenNvZWpucEpzcXpUaGJEU0F5?=
+ =?utf-8?B?enRGTW5JM1hNUGdOMjdlNkVtcVVBS1BSWWdWQklpYTJiZ29tbHE5MUpUY3k1?=
+ =?utf-8?B?ZjZsdk5BSWp4Ky9CU3NOcEdVMGtpSnFvakZiN0I1U01Hb3VYNjZuSGtibDcz?=
+ =?utf-8?B?OG9mV2RPMXRwQUxJcVc5RWdjOVBGUjdpd0RSQ0tjM2FWTUM4dDh4V1E1SEVt?=
+ =?utf-8?B?L2JVdnliVEQzWVl6M29YQUhCR0lLV3pGb1Erc3ZNK0pXZGpLTi9GZHBLeUFK?=
+ =?utf-8?B?eUFxMEY0dDk3U0tXZVRQL2ZPTmpsQ1RocFM5MkNUTTFLbnJmK0QzZ2FkZjB3?=
+ =?utf-8?B?UWdZdHIwUzAwbFo3U0RjU3BPYzdNR0c3Z3dFZDUwaEoyTWR3d3gwNWhjckJD?=
+ =?utf-8?B?S1VqMDlJZ0M5WEVwSWllRm1zWUVUSGhnU1dJOGhBS3dkUGRrVVRuNEVQTG5D?=
+ =?utf-8?B?VFVsQ1BsNjBPNXVGMGd6STF5ZjhpMFRYVmpvOW5yNmh3UUt6Mm93VVJNQ1Nh?=
+ =?utf-8?B?c3ViWTN4MmRXUUd2OGVlWXlEWmhPRXNjU2xXZHp6dnpHUWFoVUE1YUlIM3hy?=
+ =?utf-8?B?UEJwZDBIajRmUElLeXBUcUZGWWU2N3Frb3J2Z3pNamNhamNOa0hmY0w0RzRV?=
+ =?utf-8?B?OURHeG80ZGFGRXV3bmdwbUdlbUhSR0V4aDlxcjdLM290akVxZmh0cm1ZTFdI?=
+ =?utf-8?B?RzdINHNCOWswV0EwRUt2UkZweFlCTnl3UVFOeXZUNC9XQjljdEJOalF1UHp1?=
+ =?utf-8?B?SEJlaDdYRGtvSGJpbmpYeGpKQjlJOEp0YXViQVUxeDhyZWVEc0VsdkZXdG1y?=
+ =?utf-8?B?Ym5kYm5odlNpVmxnaHRaQVlmeWxSbGdzZEZUL1NHMXZIVHYxdlUzd2E5WmFL?=
+ =?utf-8?B?Z1hERVRJb3g3QkNjbFhFeTUrTkk0YTFFdWliek9nNmU1MDBnazRlRy9OT25H?=
+ =?utf-8?B?d1R6Y09rTXdqR1NGbndVTDBESjNQUXoxczN1L3YzWDY0ODlCc05yTXExNFRq?=
+ =?utf-8?B?R3dVdkt5aGxGZFBDUkdERTk1SzU4bEdiM1htM2ZpSHhFMjFuNlUrUlhlUnRO?=
+ =?utf-8?Q?jKgDa+0kZWFh1Nn2AQShY9WTU?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 957eed19-6759-457c-bc9c-08dbb0798272
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4306.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0818fe42-5cdf-41c3-f012-08dbb078d9c9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Sep 2023 14:35:29.9433
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2023 14:40:13.1243
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: m3mUo5tsivQkTkQEAoRMd6xJnklc4k929bAWX+VwW11axV2wXpcM2nkBmRFw4TOYsns88EOhg8d607xBFtLBpViyL+PxcQJjzCauwC3rpLE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5424
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mM5fNH89PRXUsPkdrw7SV3rdclBnzsgVI8nCaSCaX65TTbDH9QSwPeuDyZb4zi9ElHgq3pCjuvD54n7e/3g4Sg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7824
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -158,35 +141,174 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> -----Original Message-----
-> From: Bjorn Helgaas <helgaas@kernel.org>
-> Sent: Friday, September 8, 2023 6:17 PM
-> To: D M, Sharath Kumar <sharath.kumar.d.m@intel.com>
-> Cc: lpieralisi@kernel.org; kw@linux.com; robh@kernel.org;
-> bhelgaas@google.com; linux-pci@vger.kernel.org; dinguyen@kernel.org;
-> linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH v2 2/2] PCI: altera: add suport for Agilex Family FPG=
-A
->=20
-> On Fri, Sep 08, 2023 at 09:15:09AM +0000, D M, Sharath Kumar wrote:
-> > > -----Original Message-----
-> > > From: Bjorn Helgaas <helgaas@kernel.org>
->=20
-> > > > +static u32 port_conf_off;
-> > >
-> > > port_conf_off looks like something that should be per-controller.
-> > Specific to agilex, will rename to "aglx_port_conf_off"
->=20
-> This comment was not about the *name*, it was about the fact that it's a
-> single instance that applies to *all* controllers.  It might be the case =
-that
-> current hardware only supports a single controller, or that if you have
-> multiple controllers they all use the same port_conf_off value, but for
-> generality, values like this would normally be in the per-controller stru=
-cture.
->=20
-> Bjorn
-This driver supports 3 controllers/family ( arria, startix, agilex )
-This variable is only for agilex
-What is ur suggestion ?
-To add in controller data structure (struct altera_pcie_data) ?=20
+On 2023-09-08 10:11, Melissa Wen wrote:
+> On 09/06, Harry Wentland wrote:
+>> On 2023-08-10 12:02, Melissa Wen wrote:
+>>> From: Harry Wentland <harry.wentland@amd.com>
+>>>
+>>> The region and segment calculation was incapable of dealing
+>>> with regions of more than 16 segments. We first fix this.
+>>>
+>>> Now that we can support regions up to 256 elements we can
+>>> define a better segment distribution for near-linear LUTs
+>>> for our maximum of 256 HW-supported points.
+>>>
+>>> With these changes an "identity" LUT looks visually
+>>> indistinguishable from bypass and allows us to use
+>>> our 3DLUT.
+>>>
+>>
+>> Have you had a chance to test whether this patch makes a
+>> difference? I haven't had the time yet.
+> 
+> Last time I tested there was a banding issue on plane shaper LUT PQ ->
+> Display Native, but it seems I don't have this use case on tester
+> anymore, so I wasn't able to double-check if the issue persist. Maybe
+> Joshua can provide some inputs here.
+> 
+> Something I noticed is that shaper LUTs are the only 1D LUT on DCN30
+> pipeline that uses cm_helper_translate_curve_to_hw_format(), all others
+> (dpp-degamma/dpp-blend/mpc-regamma) call cm3_helper_translate_curve_*.
+> 
+
+Yeah, they use different codepaths, unfortunately. Might be nice if we
+could make them use the same.
+
+> We can drop it from this series until we get the steps to report the
+> issue properly.
+> 
+
+Thanks. If you have concrete steps that show the issue (or even better,
+an IGT test) I would be happy to include this.
+
+Harry
+
+> Melissa
+> 
+>>
+>> Harry
+>>
+>>> Signed-off-by: Harry Wentland <harry.wentland@amd.com>
+>>> Signed-off-by: Melissa Wen <mwen@igalia.com>
+>>> ---
+>>>   .../amd/display/dc/dcn10/dcn10_cm_common.c    | 93 +++++++++++++++----
+>>>   1 file changed, 75 insertions(+), 18 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_cm_common.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_cm_common.c
+>>> index 3538973bd0c6..04b2e04b68f3 100644
+>>> --- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_cm_common.c
+>>> +++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_cm_common.c
+>>> @@ -349,20 +349,37 @@ bool cm_helper_translate_curve_to_hw_format(struct dc_context *ctx,
+>>>   		 * segment is from 2^-10 to 2^1
+>>>   		 * There are less than 256 points, for optimization
+>>>   		 */
+>>> -		seg_distr[0] = 3;
+>>> -		seg_distr[1] = 4;
+>>> -		seg_distr[2] = 4;
+>>> -		seg_distr[3] = 4;
+>>> -		seg_distr[4] = 4;
+>>> -		seg_distr[5] = 4;
+>>> -		seg_distr[6] = 4;
+>>> -		seg_distr[7] = 4;
+>>> -		seg_distr[8] = 4;
+>>> -		seg_distr[9] = 4;
+>>> -		seg_distr[10] = 1;
+>>> +		if (output_tf->tf == TRANSFER_FUNCTION_LINEAR) {
+>>> +			seg_distr[0] = 0; /* 2 */
+>>> +			seg_distr[1] = 1; /* 4 */
+>>> +			seg_distr[2] = 2; /* 4 */
+>>> +			seg_distr[3] = 3; /* 8 */
+>>> +			seg_distr[4] = 4; /* 16 */
+>>> +			seg_distr[5] = 5; /* 32 */
+>>> +			seg_distr[6] = 6; /* 64 */
+>>> +			seg_distr[7] = 7; /* 128 */
+>>> +
+>>> +			region_start = -8;
+>>> +			region_end = 1;
+>>> +		} else {
+>>> +			seg_distr[0] = 3; /* 8 */
+>>> +			seg_distr[1] = 4; /* 16 */
+>>> +			seg_distr[2] = 4;
+>>> +			seg_distr[3] = 4;
+>>> +			seg_distr[4] = 4;
+>>> +			seg_distr[5] = 4;
+>>> +			seg_distr[6] = 4;
+>>> +			seg_distr[7] = 4;
+>>> +			seg_distr[8] = 4;
+>>> +			seg_distr[9] = 4;
+>>> +			seg_distr[10] = 1; /* 2 */
+>>> +			/* total = 8*16 + 8 + 64 + 2 = */
+>>> +
+>>> +			region_start = -10;
+>>> +			region_end = 1;
+>>> +		}
+>>> +
+>>>   
+>>> -		region_start = -10;
+>>> -		region_end = 1;
+>>>   	}
+>>>   
+>>>   	for (i = region_end - region_start; i < MAX_REGIONS_NUMBER ; i++)
+>>> @@ -375,16 +392,56 @@ bool cm_helper_translate_curve_to_hw_format(struct dc_context *ctx,
+>>>   
+>>>   	j = 0;
+>>>   	for (k = 0; k < (region_end - region_start); k++) {
+>>> -		increment = NUMBER_SW_SEGMENTS / (1 << seg_distr[k]);
+>>> +		/*
+>>> +		 * We're using an ugly-ish hack here. Our HW allows for
+>>> +		 * 256 segments per region but SW_SEGMENTS is 16.
+>>> +		 * SW_SEGMENTS has some undocumented relationship to
+>>> +		 * the number of points in the tf_pts struct, which
+>>> +		 * is 512, unlike what's suggested TRANSFER_FUNC_POINTS.
+>>> +		 *
+>>> +		 * In order to work past this dilemma we'll scale our
+>>> +		 * increment by (1 << 4) and then do the inverse (1 >> 4)
+>>> +		 * when accessing the elements in tf_pts.
+>>> +		 *
+>>> +		 * TODO: find a better way using SW_SEGMENTS and
+>>> +		 *       TRANSFER_FUNC_POINTS definitions
+>>> +		 */
+>>> +		increment = (NUMBER_SW_SEGMENTS << 4) / (1 << seg_distr[k]);
+>>>   		start_index = (region_start + k + MAX_LOW_POINT) *
+>>>   				NUMBER_SW_SEGMENTS;
+>>> -		for (i = start_index; i < start_index + NUMBER_SW_SEGMENTS;
+>>> +		for (i = (start_index << 4); i < (start_index << 4) + (NUMBER_SW_SEGMENTS << 4);
+>>>   				i += increment) {
+>>> +			struct fixed31_32 in_plus_one, in;
+>>> +			struct fixed31_32 value, red_value, green_value, blue_value;
+>>> +			uint32_t t = i & 0xf;
+>>> +
+>>>   			if (j == hw_points - 1)
+>>>   				break;
+>>> -			rgb_resulted[j].red = output_tf->tf_pts.red[i];
+>>> -			rgb_resulted[j].green = output_tf->tf_pts.green[i];
+>>> -			rgb_resulted[j].blue = output_tf->tf_pts.blue[i];
+>>> +
+>>> +			in_plus_one = output_tf->tf_pts.red[(i >> 4) + 1];
+>>> +			in = output_tf->tf_pts.red[i >> 4];
+>>> +			value = dc_fixpt_sub(in_plus_one, in);
+>>> +			value = dc_fixpt_shr(dc_fixpt_mul_int(value, t),  4);
+>>> +			value = dc_fixpt_add(in, value);
+>>> +			red_value = value;
+>>> +
+>>> +			in_plus_one = output_tf->tf_pts.green[(i >> 4) + 1];
+>>> +			in = output_tf->tf_pts.green[i >> 4];
+>>> +			value = dc_fixpt_sub(in_plus_one, in);
+>>> +			value = dc_fixpt_shr(dc_fixpt_mul_int(value, t),  4);
+>>> +			value = dc_fixpt_add(in, value);
+>>> +			green_value = value;
+>>> +
+>>> +			in_plus_one = output_tf->tf_pts.blue[(i >> 4) + 1];
+>>> +			in = output_tf->tf_pts.blue[i >> 4];
+>>> +			value = dc_fixpt_sub(in_plus_one, in);
+>>> +			value = dc_fixpt_shr(dc_fixpt_mul_int(value, t),  4);
+>>> +			value = dc_fixpt_add(in, value);
+>>> +			blue_value = value;
+>>> +
+>>> +			rgb_resulted[j].red = red_value;
+>>> +			rgb_resulted[j].green = green_value;
+>>> +			rgb_resulted[j].blue = blue_value;
+>>>   			j++;
+>>>   		}
+>>>   	}
+>>
