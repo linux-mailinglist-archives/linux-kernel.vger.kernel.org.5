@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC13C79858D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E698798590
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241812AbjIHKQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 06:16:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35094 "EHLO
+        id S242664AbjIHKRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 06:17:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242376AbjIHKQw (ORCPT
+        with ESMTP id S236362AbjIHKQ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 06:16:52 -0400
+        Fri, 8 Sep 2023 06:16:59 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14A01FFC
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 03:16:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB298C433C7;
-        Fri,  8 Sep 2023 10:16:39 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0383C2116
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 03:16:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAD80C433BF;
+        Fri,  8 Sep 2023 10:16:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694168201;
-        bh=LgVMUtw1CM1hDbEFLUFoQErg4cNgw+t9IA0MTKH/DNQ=;
+        s=k20201202; t=1694168203;
+        bh=T89/S72zev0zM3PT2bX1H7LCoqUelnfRBWMuWQbSpiM=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=PYCzJ9UBTRuQektnzaNNIGv8cya9PWZvapxMt4B9NJNRZn1kjAXFSa20wEINvgmaK
-         1n6e+IiAwBrpzl+WxJRwTmMzH9+cD+7ZzGC67luieXryCAArW2YC+LVsu0ZUoe5Enl
-         two1IFgfgPQ/14pd1sOw+Tj/sIiFslUm0YLTYd8Cw02jhdmBB4TzeaaiJOZu38MvUs
-         o5Rg98U9IdmwdrZqnggXp2U1MyEkY//ka9yiQK+INy6n8h1LfPoD0pbM0xZf3RSBqD
-         TTTxXMQfYhC7BRL5GOjbh3RAFb4YLMtOZvREUhuPlhgKKzn5XjTgkQWN2HydrFA5ua
-         KcBL6kJ0/QjYw==
+        b=YKajqh5qmxfm8nRsoN1FgIipGx2iCrFppuPf/DxZbAcBhVeGaRwjzX3AEBBYenNkK
+         aZDaYugUFP92MQHjOgRzov2uSRTEtW/pZwydnMsgLPXR199a5Yyq1p1+5PlAB8g73E
+         gcYvVwud1LI1T0ShgGsKVXFnsJBdO5Owzg36ThikTtsBY9zPsjeQ/qPLEPB2LA4kfa
+         5k0eJTORSdtQuKKj6wK9H4RIhp4N1fIqHlfbPnP4CPOYR/dLwH9DHwQSURQfM7ijrx
+         zPlpThaNzWV6JF2/gigpA/zvk3NaepHd63gDIW2aQwYmf9gCC8SevQSSuE1wAnYTtD
+         66COMI8oRimUg==
 From:   Michael Walle <mwalle@kernel.org>
-Date:   Fri, 08 Sep 2023 12:16:24 +0200
-Subject: [PATCH v3 06/41] mtd: spi-nor: default page_size to 256 bytes
+Date:   Fri, 08 Sep 2023 12:16:25 +0200
+Subject: [PATCH v3 07/41] mtd: spi-nor: store .n_banks in struct
+ spi_nor_flash_parameter
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230807-mtd-flash-info-db-rework-v3-6-e60548861b10@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v3-7-e60548861b10@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
@@ -53,75 +54,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The INFO() macro always set the page_size to 256 bytes. Make that an
-optional parameter. This default is a sane one for all older flashes,
-newer ones will set the page size by its SFDP tables anyway.
+First, fixups might want to replace the n_banks parameter, thus we need
+it in the (writable) parameter struct. Secondly, this way we can have a
+default in the core and just skip setting the n_banks in the flash_info
+database. Most of the flashes doesn't have more than one bank.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/mtd/spi-nor/core.c | 7 +------
- drivers/mtd/spi-nor/core.h | 8 ++++++--
- 2 files changed, 7 insertions(+), 8 deletions(-)
+ drivers/mtd/spi-nor/core.c | 7 ++++---
+ drivers/mtd/spi-nor/core.h | 2 ++
+ 2 files changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index f4cc2eafcc5e..d27ad1295ee0 100644
+index d27ad1295ee0..e27f1323fa0b 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2018,11 +2018,6 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
- static const struct flash_info spi_nor_generic_flash = {
- 	.name = "spi-nor-generic",
- 	.n_banks = 1,
--	/*
--	 * JESD216 rev A doesn't specify the page size, therefore we need a
--	 * sane default.
--	 */
--	.page_size = 256,
- 	.parse_sfdp = true,
- };
+@@ -2862,7 +2862,7 @@ static void spi_nor_init_flags(struct spi_nor *nor)
+ 	if (flags & NO_CHIP_ERASE)
+ 		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
  
-@@ -3001,7 +2996,7 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
- 	params->writesize = 1;
+-	if (flags & SPI_NOR_RWW && nor->info->n_banks > 1 &&
++	if (flags & SPI_NOR_RWW && nor->params->n_banks > 1 &&
+ 	    !nor->controller_ops)
+ 		nor->flags |= SNOR_F_RWW;
+ }
+@@ -2926,8 +2926,8 @@ static int spi_nor_late_init_params(struct spi_nor *nor)
+ 	if (nor->flags & SNOR_F_HAS_LOCK && !nor->params->locking_ops)
+ 		spi_nor_init_default_locking_ops(nor);
+ 
+-	if (nor->info->n_banks > 1)
+-		params->bank_size = div64_u64(params->size, nor->info->n_banks);
++	if (params->n_banks > 1)
++		params->bank_size = div64_u64(params->size, params->n_banks);
+ 
+ 	return 0;
+ }
+@@ -2997,6 +2997,7 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
  	params->size = info->size;
  	params->bank_size = params->size;
--	params->page_size = info->page_size;
-+	params->page_size = info->page_size ?: SPI_NOR_DEFAULT_PAGE_SIZE;
+ 	params->page_size = info->page_size ?: SPI_NOR_DEFAULT_PAGE_SIZE;
++	params->n_banks = info->n_banks;
  
  	if (!(info->flags & SPI_NOR_NO_FR)) {
  		/* Default to Fast Read for DT and non-DT platform devices. */
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 12c35409493b..25bc18197614 100644
+index 25bc18197614..2fc999f2787c 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -10,6 +10,11 @@
- #include "sfdp.h"
+@@ -358,6 +358,7 @@ struct spi_nor_otp {
+  *			in octal DTR mode.
+  * @rdsr_addr_nbytes:	dummy address bytes needed for Read Status Register
+  *			command in octal DTR mode.
++ * @n_banks:		number of banks.
+  * @n_dice:		number of dice in the flash memory.
+  * @vreg_offset:	volatile register offset for each die.
+  * @hwcaps:		describes the read and page program hardware
+@@ -394,6 +395,7 @@ struct spi_nor_flash_parameter {
+ 	u8				addr_mode_nbytes;
+ 	u8				rdsr_dummy;
+ 	u8				rdsr_addr_nbytes;
++	u8				n_banks;
+ 	u8				n_dice;
+ 	u32				*vreg_offset;
  
- #define SPI_NOR_MAX_ID_LEN	6
-+/*
-+ * 256 bytes is a sane default for most older flashes. Newer flashes will
-+ * have the page size defined within their SFDP tables.
-+ */
-+#define SPI_NOR_DEFAULT_PAGE_SIZE 256
- 
- /* Standard SPI NOR flash operations. */
- #define SPI_NOR_READID_OP(naddr, ndummy, buf, len)			\
-@@ -447,7 +452,7 @@ struct spi_nor_fixups {
-  * @sector_size:    the size listed here is what works with SPINOR_OP_SE, which
-  *                  isn't necessarily called a "sector" by the vendor.
-  * @n_banks:        the number of banks.
-- * @page_size:      the flash's page size.
-+ * @page_size:      (optional) the flash's page size. Defaults to 256.
-  * @addr_nbytes:    number of address bytes to send.
-  *
-  * @parse_sfdp:     true when flash supports SFDP tables. The false value has no
-@@ -558,7 +563,6 @@ struct flash_info {
- #define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
- 	.size = (_sector_size) * (_n_sectors),				\
- 	.sector_size = (_sector_size),					\
--	.page_size = 256,						\
- 	.n_banks = (_n_banks)
- 
- /* Used when the "_ext_id" is two bytes at most */
 
 -- 
 2.39.2
