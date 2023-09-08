@@ -2,47 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B104D798CD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2FD798CDD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343912AbjIHSSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
+        id S1343868AbjIHSSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343994AbjIHSST (ORCPT
+        with ESMTP id S1343995AbjIHSST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Sep 2023 14:18:19 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9BC2709;
-        Fri,  8 Sep 2023 11:17:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E382C116D3;
-        Fri,  8 Sep 2023 18:15:51 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56139270D;
+        Fri,  8 Sep 2023 11:17:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90414C433A9;
+        Fri,  8 Sep 2023 18:15:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196952;
-        bh=+7IsQtQ5i+ArhkWuyUtskzCuxw9rV5PTuFOTyEJEqGA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KUZ92OVeHqFjFkWDhuQKZedUWPtSIIOUo8fYpHOeuh9x5edHqaEVsKANMcNfbCGtN
-         fEJrXBR7aNro64S6feXez+bepOZ2tIZNqNYGsLYS6YRnYCYTeaUe6iNhDo1n0DZMVI
-         sV6/r7/+ekiXxbX6VtzFT3wwEfDdLhVdsfH48WHcEC4vmTpbULCkvbsO95hPr6d7sh
-         F7pNe4dkwhPTcXv+jZgqMLRRfZOxxdObYug57BtP3c07dmRxnfzz2xS204kg23cx/Q
-         KfIjZy9ahiEhEjceqk03boQ/7W/wYa9lRwpXQOyDkKsIBAuoYrS43C/oI1YXIODbRJ
-         IvKCR+zGhuKDQ==
+        s=k20201202; t=1694196958;
+        bh=e2bu/Du+oanq/xK4zd3zpYZOuxg9pZ9QbnGy6r14JvA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oDjYOYv9vgSOpIRjg8ZnrWN0CW58inucUg6gpBA3xcMVHA7pN4+s4/udw+gi84R4Z
+         qvga0Xb+hloCO2MCbUeBT7Qluv79ZxjtRz1xhRcaPaWAK7PRVHxjjGryp6D2FBjH3q
+         aiJWY3q93yKj2fRKZiFeKrTyxEkhgNY1dNMLs2a3A5suvXU0CQ49Fb+0JRMG8Ks5Vb
+         /HQU+7alEbWTn+9Jyy/iKJyKeo0hlyf9Lw2rZ5FcudjEc1Z3opjgkX413JQ/BhAIcy
+         IyMFCEADZ1w2racvrfFWmPnxjySLzH6OD26urxErvVpYseM1hmyM8mo9ZPozQfyHPJ
+         iQr2BM7py59LQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dave Marchevsky <davemarchevsky@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
-        andrii@kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 45/45] bpf: Consider non-owning refs to refcounted nodes RCU protected
-Date:   Fri,  8 Sep 2023 14:13:26 -0400
-Message-Id: <20230908181327.3459042-45-sashal@kernel.org>
+Cc:     Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, jiri@resnulli.us,
+        edumazet@google.com, pabeni@redhat.com, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 01/41] devlink: remove reload failed checks in params get/set callbacks
+Date:   Fri,  8 Sep 2023 14:15:15 -0400
+Message-Id: <20230908181555.3459640-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908181327.3459042-1-sashal@kernel.org>
-References: <20230908181327.3459042-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.2
+X-stable-base: Linux 6.4.15
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -53,98 +52,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Marchevsky <davemarchevsky@fb.com>
+From: Jiri Pirko <jiri@nvidia.com>
 
-[ Upstream commit 0816b8c6bf7fc87cec4273dc199e8f0764b9e7b1 ]
+[ Upstream commit 633d76ad01ad0321a1ace3e5cc4fed06753d7ac4 ]
 
-An earlier patch in the series ensures that the underlying memory of
-nodes with bpf_refcount - which can have multiple owners - is not reused
-until RCU grace period has elapsed. This prevents
-use-after-free with non-owning references that may point to
-recently-freed memory. While RCU read lock is held, it's safe to
-dereference such a non-owning ref, as by definition RCU GP couldn't have
-elapsed and therefore underlying memory couldn't have been reused.
+The checks in question were introduced by:
+commit 6b4db2e528f6 ("devlink: Fix use-after-free after a failed reload").
+That fixed an issue of reload with mlxsw driver.
 
-From the perspective of verifier "trustedness" non-owning refs to
-refcounted nodes are now trusted only in RCU CS and therefore should no
-longer pass is_trusted_reg, but rather is_rcu_reg. Let's mark them
-MEM_RCU in order to reflect this new state.
+Back then, that was a valid fix, because there was a limitation
+in place that prevented drivers from registering/unregistering params
+when devlink instance was registered.
 
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-Link: https://lore.kernel.org/r/20230821193311.3290257-6-davemarchevsky@fb.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+It was possible to do the fix differently by changing drivers to
+register/unregister params in appropriate places making sure the ops
+operate only on memory which is allocated and initialized. But that,
+as a dependency, would require to remove the limitation mentioned above.
+
+Eventually, this limitation was lifted by:
+commit 1d18bb1a4ddd ("devlink: allow registering parameters after the instance")
+
+Also, the alternative fix (which also fixed another issue) was done by:
+commit 74cbc3c03c82 ("mlxsw: spectrum_acl_tcam: Move devlink param to TCAM code").
+
+Therefore, the checks are no longer relevant. Each driver should make
+sure to have the params registered only when the memory the ops
+are working with is allocated and initialized.
+
+So remove the checks.
+
+Signed-off-by: Jiri Pirko <jiri@nvidia.com>
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/bpf.h   |  3 ++-
- kernel/bpf/verifier.c | 13 ++++++++++++-
- 2 files changed, 14 insertions(+), 2 deletions(-)
+ net/devlink/leftover.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f58895830adae..58e5fee4c03a4 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -640,7 +640,8 @@ enum bpf_type_flag {
- 	MEM_RCU			= BIT(13 + BPF_BASE_TYPE_BITS),
- 
- 	/* Used to tag PTR_TO_BTF_ID | MEM_ALLOC references which are non-owning.
--	 * Currently only valid for linked-list and rbtree nodes.
-+	 * Currently only valid for linked-list and rbtree nodes. If the nodes
-+	 * have a bpf_refcount_field, they must be tagged MEM_RCU as well.
- 	 */
- 	NON_OWN_REF		= BIT(14 + BPF_BASE_TYPE_BITS),
- 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 02a021c524ab8..c5fbdb977f011 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7842,6 +7842,7 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
- 	case PTR_TO_BTF_ID | PTR_TRUSTED:
- 	case PTR_TO_BTF_ID | MEM_RCU:
- 	case PTR_TO_BTF_ID | MEM_ALLOC | NON_OWN_REF:
-+	case PTR_TO_BTF_ID | MEM_ALLOC | NON_OWN_REF | MEM_RCU:
- 		/* When referenced PTR_TO_BTF_ID is passed to release function,
- 		 * its fixed offset must be 0. In the other cases, fixed offset
- 		 * can be non-zero. This was already checked above. So pass
-@@ -10303,6 +10304,7 @@ static int process_kf_arg_ptr_to_btf_id(struct bpf_verifier_env *env,
- static int ref_set_non_owning(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+diff --git a/net/devlink/leftover.c b/net/devlink/leftover.c
+index 790e61b2a9404..fa4705e509e3c 100644
+--- a/net/devlink/leftover.c
++++ b/net/devlink/leftover.c
+@@ -3982,7 +3982,7 @@ static int devlink_param_get(struct devlink *devlink,
+ 			     const struct devlink_param *param,
+ 			     struct devlink_param_gset_ctx *ctx)
  {
- 	struct bpf_verifier_state *state = env->cur_state;
-+	struct btf_record *rec = reg_btf_record(reg);
- 
- 	if (!state->active_lock.ptr) {
- 		verbose(env, "verifier internal error: ref_set_non_owning w/o active lock\n");
-@@ -10315,6 +10317,9 @@ static int ref_set_non_owning(struct bpf_verifier_env *env, struct bpf_reg_state
- 	}
- 
- 	reg->type |= NON_OWN_REF;
-+	if (rec->refcount_off >= 0)
-+		reg->type |= MEM_RCU;
-+
- 	return 0;
+-	if (!param->get || devlink->reload_failed)
++	if (!param->get)
+ 		return -EOPNOTSUPP;
+ 	return param->get(devlink, param->id, ctx);
  }
- 
-@@ -11155,6 +11160,11 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 		struct bpf_func_state *state;
- 		struct bpf_reg_state *reg;
- 
-+		if (in_rbtree_lock_required_cb(env) && (rcu_lock || rcu_unlock)) {
-+			verbose(env, "Calling bpf_rcu_read_{lock,unlock} in unnecessary rbtree callback\n");
-+			return -EACCES;
-+		}
-+
- 		if (rcu_lock) {
- 			verbose(env, "nested rcu read lock (kernel function %s)\n", func_name);
- 			return -EINVAL;
-@@ -16453,7 +16463,8 @@ static int do_check(struct bpf_verifier_env *env)
- 					return -EINVAL;
- 				}
- 
--				if (env->cur_state->active_rcu_lock) {
-+				if (env->cur_state->active_rcu_lock &&
-+				    !in_rbtree_lock_required_cb(env)) {
- 					verbose(env, "bpf_rcu_read_unlock is missing\n");
- 					return -EINVAL;
- 				}
+@@ -3991,7 +3991,7 @@ static int devlink_param_set(struct devlink *devlink,
+ 			     const struct devlink_param *param,
+ 			     struct devlink_param_gset_ctx *ctx)
+ {
+-	if (!param->set || devlink->reload_failed)
++	if (!param->set)
+ 		return -EOPNOTSUPP;
+ 	return param->set(devlink, param->id, ctx);
+ }
 -- 
 2.40.1
 
