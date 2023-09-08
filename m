@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2752A798E2A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16171798E07
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232798AbjIHSbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51668 "EHLO
+        id S1343625AbjIHS0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:26:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233933AbjIHSbG (ORCPT
+        with ESMTP id S1344433AbjIHS0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:31:06 -0400
+        Fri, 8 Sep 2023 14:26:11 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2A83C3D;
-        Fri,  8 Sep 2023 11:21:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11008C116A6;
-        Fri,  8 Sep 2023 18:21:04 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B88B5586;
+        Fri,  8 Sep 2023 11:22:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 606F7C116A5;
+        Fri,  8 Sep 2023 18:21:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197265;
-        bh=k3moEPGR0BOFaRMofyY+Z9IPG8m7Wu+N491Qu/QXPIA=;
+        s=k20201202; t=1694197267;
+        bh=tLxC2jLxw7ViCMJNwlmj0KNOB7TdgaNnRbv/DiajX+4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VkBV9jwVr6WuQVQdZXsKAXBs8xPaVcdwgsNVtzncZJ7vxvGPXKjwmlPgCSNWix2DU
-         wSqPMM9LhHTAdDofHxQWFzI3m0vcaj8OM8vxI+Aig7OeJD3Yz196Z4nelMwE88zd7T
-         XElxp6+wDjhd8AloiUT80ePKxZr9w8+nUWnsGd6AJDSwH6FhoV4qQn0zhgT/UCpapm
-         X9nrvwd1Nwz+nI3LBg4bBmg9XlpO5jfAjr+H3BhbmstsHx4oANbRIEVSCCfUxQU5+A
-         j8DQV5Li4SThPSFGmu2u6qp0f3v2HmyyYswMSbGMDgsGXurwO34Wtcn9nYSsf0203L
-         fONQ7Q3cr1paQ==
+        b=uIAnHuqRFJnzImTcn58V6eX77xf+wgzDaQ/NrWicxihOEtxrLyfQmFz6Fk/AjOn5i
+         hm8BDmSqjgpBfRCAaHmZoKu1p1SGWfPKJpOvOxh6ztyjwmdq9OIYP+YkzWPoG3ImKd
+         IrRAdqc76j7FQs2h8WXJpO3vYUDyZs+XJodLQg3cNkSqO6pC0bTICse6AobEVNBOmc
+         apmFLBr/bdWI7wG9RBWPlVlfUr5AfuwmJG3Cz1XsBMUZ/HwKFpYVvYUWcAfmjIz5uo
+         GlTGCTM/1B2Y98O0C8tkqVJfy5IOyOfetPcEj4SIoB+iSvPOW6owUdPXonoQpGCovu
+         wuQYIWmkTPmJw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Johannes Berg <johannes.berg@intel.com>,
-        syzbot+b2645b5bf1512b81fa22@syzkaller.appspotmail.com,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
-        linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 08/10] wifi: mac80211_hwsim: drop short frames
-Date:   Fri,  8 Sep 2023 14:20:42 -0400
-Message-Id: <20230908182046.3460968-8-sashal@kernel.org>
+Cc:     Hao Luo <haoluo@google.com>, Andrii Nakryiko <andrii@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
+        daniel@iogearbox.net, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 09/10] libbpf: Free btf_vmlinux when closing bpf_object
+Date:   Fri,  8 Sep 2023 14:20:43 -0400
+Message-Id: <20230908182046.3460968-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908182046.3460968-1-sashal@kernel.org>
 References: <20230908182046.3460968-1-sashal@kernel.org>
@@ -54,47 +52,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Hao Luo <haoluo@google.com>
 
-[ Upstream commit fba360a047d5eeeb9d4b7c3a9b1c8308980ce9a6 ]
+[ Upstream commit 29d67fdebc42af6466d1909c60fdd1ef4f3e5240 ]
 
-While technically some control frames like ACK are shorter and
-end after Address 1, such frames shouldn't be forwarded through
-wmediumd or similar userspace, so require the full 3-address
-header to avoid accessing invalid memory if shorter frames are
-passed in.
+I hit a memory leak when testing bpf_program__set_attach_target().
+Basically, set_attach_target() may allocate btf_vmlinux, for example,
+when setting attach target for bpf_iter programs. But btf_vmlinux
+is freed only in bpf_object_load(), which means if we only open
+bpf object but not load it, setting attach target may leak
+btf_vmlinux.
 
-Reported-by: syzbot+b2645b5bf1512b81fa22@syzkaller.appspotmail.com
-Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+So let's free btf_vmlinux in bpf_object__close() anyway.
+
+Signed-off-by: Hao Luo <haoluo@google.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20230822193840.1509809-1-haoluo@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mac80211_hwsim.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ tools/lib/bpf/libbpf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
-index f80b1d57d6c38..a21739b2f44e6 100644
---- a/drivers/net/wireless/mac80211_hwsim.c
-+++ b/drivers/net/wireless/mac80211_hwsim.c
-@@ -3367,14 +3367,15 @@ static int hwsim_cloned_frame_received_nl(struct sk_buff *skb_2,
- 	frame_data_len = nla_len(info->attrs[HWSIM_ATTR_FRAME]);
- 	frame_data = (void *)nla_data(info->attrs[HWSIM_ATTR_FRAME]);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index b8849812449c3..343018632d2d1 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4202,6 +4202,7 @@ void bpf_object__close(struct bpf_object *obj)
+ 	bpf_object__elf_finish(obj);
+ 	bpf_object__unload(obj);
+ 	btf__free(obj->btf);
++	btf__free(obj->btf_vmlinux);
+ 	btf_ext__free(obj->btf_ext);
  
-+	if (frame_data_len < sizeof(struct ieee80211_hdr_3addr) ||
-+	    frame_data_len > IEEE80211_MAX_DATA_LEN)
-+		goto err;
-+
- 	/* Allocate new skb here */
- 	skb = alloc_skb(frame_data_len, GFP_KERNEL);
- 	if (skb == NULL)
- 		goto err;
- 
--	if (frame_data_len > IEEE80211_MAX_DATA_LEN)
--		goto err;
--
- 	/* Copy the data */
- 	skb_put_data(skb, frame_data, frame_data_len);
- 
+ 	for (i = 0; i < obj->nr_maps; i++) {
 -- 
 2.40.1
 
