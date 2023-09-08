@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB78797F82
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 02:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235BF797F80
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 02:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237826AbjIHAFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 20:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51592 "EHLO
+        id S239220AbjIHAEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 20:04:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbjIHAFp (ORCPT
+        with ESMTP id S230137AbjIHAEf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 20:05:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C82F9D
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 17:05:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694131541; x=1725667541;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1NcPYdiM0hvvDlVn8clbFgQP3ij1ceNFZwkmKqROmuI=;
-  b=C36atgye6pxiTHoySb8mK72NqLqZKoJNVVLHrOzWwOa6ybV1uKuu2alG
-   YcxDblsIKyvIBwOgbBo8ZhHji1Vy3WSoz1ZQpFSD7iP6jV3Cp1h6rUmgI
-   7ciU88ofxts8EQYEibIGDmuAd8tZ7jRpMpN+xm/jwKcaykk+nTXfjbYAa
-   KTLhu8jX7rsbbKUdd90K2p8/7m5/ilKpqiphwnKT7IAMQdobm9XxjMZys
-   mQrt10mnhmqie6wfEErsFWoo75SM4i07VPa4aQRGY5pJHVBrTNPXiJ6Rw
-   Fq+Q8c5dMby2iJ6802QDXyn2YR5k9DM5MQD0EXZRbIn53uRHxMMbDen2Z
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="441533657"
-X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
-   d="scan'208";a="441533657"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 17:04:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="857090883"
-X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
-   d="scan'208";a="857090883"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 07 Sep 2023 17:04:40 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qeOzF-0001jT-2w;
-        Fri, 08 Sep 2023 00:04:37 +0000
-Date:   Fri, 8 Sep 2023 08:03:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Wander Lairson Costa <wander@redhat.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Dionna Amalie Glaze <dionnaglaze@google.com>,
-        Qinkun Bao <qinkun@apache.org>,
-        Guorui Yu <GuoRui.Yu@linux.alibaba.com>,
-        linux-coco@lists.linux.dev, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] virt: tdx-guest: Add Quote generation support using
- TSM_REPORTS
-Message-ID: <202309080741.ua24EU6S-lkp@intel.com>
-References: <20230907025405.2310931-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        Thu, 7 Sep 2023 20:04:35 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2B21BC8
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 17:04:30 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bb9a063f26so26615481fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 17:04:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1694131469; x=1694736269; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fiQCKbyXB8abg8qGcuuiBGfaep6ol1DgaRx2mq6P7fA=;
+        b=Yngk7s+RlfrEaTRKkZz29yVVqPnJqkMayx3YFBHQLzIeudgk9wTfGfUo6b9ptfhZax
+         AuYFR1UxCH1+RWCktvJaldUxK3h22sqSSCXp/sgkLa8v6qMedG2L3L/fC1/Hdd2NKHAC
+         ldCTaeK1+DwJXfvDryRKLyBTkefoHvR0cU7rCl+vFJ7pKcZ0VtOiz+n+t6dePV0GVINY
+         KRFZx32/O9LjEZI14mbYb1wlA7WlKiVA7YKb2E7UigM9qvw5MvmNmBe+ZpyyQAahzBHe
+         Wf6Eoh2nbhDXwjoflvSIk4PtTHafY70Yqdwxf9Q3mNpD5hxmlqGHA/55pqoAX0VaTtGF
+         uwSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694131469; x=1694736269;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fiQCKbyXB8abg8qGcuuiBGfaep6ol1DgaRx2mq6P7fA=;
+        b=BSl4k6hijUnTomdJJpgbPxq6IK1CXQFe/uCg0JENib+3ab6Dd86oMrW512686UWg2s
+         S+gXm1tJQ6U78HutBHrm78wC6sv91jX37Xf+9wD0eWaVGFEj86QngSxnziXDdTvB24/W
+         LRHUPnTIeVOAQhDGcVfl9vhCju2q6weFP2vrARt0jP9qyRGtEnXQjqPN5svVqQ4dBql9
+         D+aK2c27xp6SN1qg3rnkiiYr/GBFWFSfR//6y8OCUxdpJQAJjs951XtWK6s8ArHWNzSy
+         EQN+kA9jC/zYGmFzsmqKai3lo6IMiH755WUxkrSjvJkhCue9FK4NHd97MYCo/IO8623i
+         5PBw==
+X-Gm-Message-State: AOJu0YzfkJ85us8vWvUyXXYtNy4tWCjpSSjrhJfiz0mRCYK91Yv14Yzq
+        rESclGWKubXgAg6y2emyLbXIR06SeprT1jcRyF/R6Q==
+X-Google-Smtp-Source: AGHT+IHPF0FPZiC2uV97EcJOPkwMbXmVJ7HuCxJNzq4UIytQxII5P52NpTrwgUQRKfeNKpQClu024wWCpT6hJqBPooE=
+X-Received: by 2002:a2e:880d:0:b0:2bc:b821:84ad with SMTP id
+ x13-20020a2e880d000000b002bcb82184admr419405ljh.16.1694131469048; Thu, 07 Sep
+ 2023 17:04:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230907025405.2310931-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230811-strncpy-arch-arm64-v2-1-ba84eabffadb@google.com> <amh6pp2mkmn22jcvz5tva7c4aaqxaq7zaz6v5u6rb7emsqp6p2@nxd7ynj524sx>
+In-Reply-To: <amh6pp2mkmn22jcvz5tva7c4aaqxaq7zaz6v5u6rb7emsqp6p2@nxd7ynj524sx>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Thu, 7 Sep 2023 17:04:18 -0700
+Message-ID: <CAFhGd8qj+FOXjmBKUURR7fqwda-GVDUXtk8+xN65kYEoODP3VQ@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64/sysreg: refactor deprecated strncpy
+To:     Bjorn Andersson <andersson@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        Konrad Dybcio <konradybcio@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,42 +74,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kuppuswamy,
+On Thu, Sep 7, 2023 at 2:23=E2=80=AFPM Bjorn Andersson <andersson@kernel.or=
+g> wrote:
+>
+> On Fri, Aug 11, 2023 at 04:33:51PM +0000, Justin Stitt wrote:
+> > `strncpy` is deprecated for use on NUL-terminated destination strings
+> > [1]. Which seems to be the case here due to the forceful setting of `bu=
+f`'s
+> > tail to 0.
+> >
+> > A suitable replacement is `strscpy` [2] due to the fact that it
+> > guarantees NUL-termination on its destination buffer argument which is
+> > _not_ the case for `strncpy`!
+> >
+> > In this case, we can simplify the logic and also check for any silent
+> > truncation by using `strscpy`'s return value.
+> >
+> > This should have no functional change and yet uses a more robust and
+> > less ambiguous interface whilst reducing code complexity.
+> >
+>
+> I'm sorry, but this patch is wrong.
+>
+> __parse_cmdline() is supposed to match the command line against a set of
+> keywords, one word at a time. The new implementation ignores the
+> word-boundaries and matches the whole command line once and then breaks
+> the loop, typically without having found a match. (See below)
+>
+> Can we please have this patch dropped, Will?
+It has been, I believe. At any rate, a v4 is up [1] which prefers
+memcpy over strncpy.
 
-kernel test robot noticed the following build errors:
+>
+>
+>
+> Also, the commit message is a blanket statement about why strscpy is
+> better than stncpy, but I don't see how this is applicable to the code
+> it attempts to "fix". Afaict the code already handled these cases.
+>
+> > Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on=
+-nul-terminated-strings[1]
+> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en=
+.html [2]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Suggested-by: Kees Cook <keescook@chromium.org>
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > ---
+> > Changes in v2:
+> > - Utilize return value from strscpy and check for truncation (thanks Ke=
+es)
+> > - Link to v1: https://lore.kernel.org/r/20230810-strncpy-arch-arm64-v1-=
+1-f67f3685cd64@google.com
+> > ---
+> > For reference, see a part of `strscpy`'s implementation here:
+> >
+> > |     /* Hit buffer length without finding a NUL; force NUL-termination=
+. */
+> > |     if (res)
+> > |             dest[res-1] =3D '\0';
+> >
+> > Note: compile tested
+> > ---
+> >  arch/arm64/kernel/idreg-override.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idr=
+eg-override.c
+> > index 2fe2491b692c..aee12c75b738 100644
+> > --- a/arch/arm64/kernel/idreg-override.c
+> > +++ b/arch/arm64/kernel/idreg-override.c
+> > @@ -262,9 +262,9 @@ static __init void __parse_cmdline(const char *cmdl=
+ine, bool parse_aliases)
+> >               if (!len)
+> >                       return;
+> >
+> > -             len =3D min(len, ARRAY_SIZE(buf) - 1);
+>
+> Here "len" was either the number of bytes to the first space, the end of
+> the string, or the last byte in "buf".
+>
+> > -             strncpy(buf, cmdline, len);
+>
+> So this will copy one word, or the rest of the string.
+>
+> > -             buf[len] =3D 0;
+>
+> And it will NUL-terminate the word, which is then matched upon below.
+>
+> > +             len =3D strscpy(buf, cmdline, ARRAY_SIZE(buf));
+>
+> In this new implementation, the code copies the rest of the command line
+> to "buf", makes an attempt to match with with the keywords, and then
+> breaks the loop (as cmdline + len is the end of the string).
+>
+> Regards,
+> Bjorn
 
-[auto build test ERROR on tip/x86/core]
-[also build test ERROR on linus/master v6.5 next-20230907]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Kuppuswamy-Sathyanarayanan/virt-tdx-guest-Add-Quote-generation-support-using-TSM_REPORTS/20230907-105752
-base:   tip/x86/core
-patch link:    https://lore.kernel.org/r/20230907025405.2310931-1-sathyanarayanan.kuppuswamy%40linux.intel.com
-patch subject: [PATCH v1] virt: tdx-guest: Add Quote generation support using TSM_REPORTS
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20230908/202309080741.ua24EU6S-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230908/202309080741.ua24EU6S-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309080741.ua24EU6S-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/virt/coco/tdx-guest/tdx-guest.c:18:10: fatal error: linux/tsm.h: No such file or directory
-      18 | #include <linux/tsm.h>
-         |          ^~~~~~~~~~~~~
-   compilation terminated.
-
-
-vim +18 drivers/virt/coco/tdx-guest/tdx-guest.c
-
-  > 18	#include <linux/tsm.h>
-    19	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+[1]: https://lore.kernel.org/all/20230905-strncpy-arch-arm64-v4-1-bc4b14ddf=
+aef@google.com/
