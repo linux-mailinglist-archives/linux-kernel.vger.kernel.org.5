@@ -2,160 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 592F3798BA7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 19:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944E6798BAC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245470AbjIHR6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 13:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40870 "EHLO
+        id S245327AbjIHSAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245438AbjIHR6J (ORCPT
+        with ESMTP id S237940AbjIHSAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 13:58:09 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCAC61FD5
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 10:58:05 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d7ba833ef2aso2364737276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 10:58:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694195885; x=1694800685; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tNRAzZU/edQLTJw3qIY/o1dxHISQKnf/BXQhNzjVbbY=;
-        b=2qSjhcS0RK7HJABT1Le0Aj7tqR8nz/9wcSX3NJzL26yTMiYoFtqPnZ05T3ya+9GSMS
-         VDGhE8w6S6gPu6RB9e91do03PTw2mTij5Oh//DYubXC6S/w5HmMm3OqZM1WrDvS4dWXS
-         L6OGTauhNjnFJR7+2DarFhsrkRqMWimwuG1k6zkiLkgAzhMJR5JsE0MATkIPlY1qyDtw
-         Zpr2lQIdPEzcqGDYua+NI74QUjy16VLltzViM0AJhpxGnooaAitClfLc3hGq2ecZNrEd
-         YhcUzXf2bS1FdMugB3nc2y0+ocRn+NJ+SDMbnsHSnoyL7wyYSxA+CrsBpo+oC3QGHl2Y
-         +O5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694195885; x=1694800685;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tNRAzZU/edQLTJw3qIY/o1dxHISQKnf/BXQhNzjVbbY=;
-        b=WNn+UFi2jwNOJsGarIGsHYgsWeThINfwnuj8//wxvjmAuCJErUfqDHAOLlEMwp8BLg
-         +vr+6pNWaR6ZP795km6Crdw3zObbz0chthv2+yvSEAoi95YI0+kJsPscGAc+rlsksv/Y
-         eMGLJ7pyUoi37VKbFeDkU105PZHXvYCHovYIyhps2gA7YBcnX2JYSmjDjAYtHDdzVYwi
-         meJrw1YmVURGZHHtMB4nuAa741x/4Kh88KTly7OhA+13R6BEOj7ZWglE7k7DloRIAKrO
-         Sfh9aGIWoGOq0HOJDLiCNhyAVSVsPnS3ji30xnTfeGJyVA2byObjRvq7Lj2Jj99kmX2k
-         Ynww==
-X-Gm-Message-State: AOJu0Yx155qGOc5f4TSN5uqM5hKmyzL1ddmut1/GxAS5E3ridzdlSTiL
-        XMVqiajPUjapQwaCvGgca+lCGD1PrSimls+C
-X-Google-Smtp-Source: AGHT+IFoF1EiaUeA0+DU6tYzZsfsoi52XXqVRErttNtmBwyZirUf/VwWuA0433pCTHLt3+OeKv0sjSkOLMN7x+ON
-X-Received: from mclapinski.waw.corp.google.com ([2a00:79e0:9b:0:aa82:a90b:b76f:32b0])
- (user=mclapinski job=sendgmr) by 2002:a25:9208:0:b0:d7f:8774:dfd4 with SMTP
- id b8-20020a259208000000b00d7f8774dfd4mr62282ybo.12.1694195885073; Fri, 08
- Sep 2023 10:58:05 -0700 (PDT)
-Date:   Fri,  8 Sep 2023 19:57:38 +0200
-In-Reply-To: <20230908175738.41895-1-mclapinski@google.com>
-Mime-Version: 1.0
-References: <20230908175738.41895-1-mclapinski@google.com>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230908175738.41895-3-mclapinski@google.com>
-Subject: [PATCH v2 2/2] selftests: test ioctl(MEMFD_CHECK_IF_ORIGINAL)
-From:   Michal Clapinski <mclapinski@google.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, Shuah Khan <shuah@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Yi Liu <yi.l.liu@intel.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Steve French <stfrench@microsoft.com>,
-        Simon Ser <contact@emersion.fr>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Luca Vizzarro <Luca.Vizzarro@arm.com>,
-        Jeff Xu <jeffxu@google.com>, Aleksa Sarai <cyphar@cyphar.com>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Verkamp <dverkamp@chromium.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Cc:     Michal Clapinski <mclapinski@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Fri, 8 Sep 2023 14:00:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFE31FCA;
+        Fri,  8 Sep 2023 10:59:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA4D7C433C7;
+        Fri,  8 Sep 2023 17:59:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694195996;
+        bh=jAHtLt1B80Dvaw7l7CoJpQDseIGlrDLLCGLKy24S6gk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=e2iZVOsXTfU41zmvtBZQL0BNHCLpfuwg+btal883F4WN04mWw/BSyF3jYrhTnT8Sh
+         TNWBXAzZf0MhO7HHLOSM+VRjXSd+slrRRzMBcjordqDhpu/NXyEVcZ0Deq9H7Mr+ni
+         wUqhwKvhoTDrGxuLCqTumifOIJeWfJ9kPmWSt8jtCuTkjoWFig2dzgpmsgU3yHnTuo
+         0zg8chTISx51uCk6O3HTApslLJj0hy7fprm/4zF5xWNAgNaB3UUh0an7Ru7vMXcxn+
+         RWL/ZLi27pTw5kFDKTI3Wtqn+tX1D9FUrXVbhzZDV+mETA/jFZNHsRxbIwGpn5IBry
+         XMNmcg/zVLYdg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Abhishek Mainkar <abmainkar@nvidia.com>,
+        Bob Moore <robert.moore@intel.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>, linux-acpi@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org
+Subject: [PATCH AUTOSEL 6.5 01/16] ACPICA: Add AML_NO_OPERAND_RESOLVE flag to Timer
+Date:   Fri,  8 Sep 2023 13:59:38 -0400
+Message-Id: <20230908175953.3457942-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.5.2
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Michal Clapinski <mclapinski@google.com>
----
- tools/testing/selftests/memfd/memfd_test.c | 32 ++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+From: Abhishek Mainkar <abmainkar@nvidia.com>
 
-diff --git a/tools/testing/selftests/memfd/memfd_test.c b/tools/testing/selftests/memfd/memfd_test.c
-index 3df008677239..1a702af6e01a 100644
---- a/tools/testing/selftests/memfd/memfd_test.c
-+++ b/tools/testing/selftests/memfd/memfd_test.c
-@@ -13,6 +13,7 @@
- #include <stdlib.h>
- #include <signal.h>
- #include <string.h>
-+#include <sys/ioctl.h>
- #include <sys/mman.h>
- #include <sys/stat.h>
- #include <sys/syscall.h>
-@@ -39,6 +40,10 @@
+[ Upstream commit 3a21ffdbc825e0919db9da0e27ee5ff2cc8a863e ]
+
+ACPICA commit 90310989a0790032f5a0140741ff09b545af4bc5
+
+According to the ACPI specification 19.6.134, no argument is required to be passed for ASL Timer instruction. For taking care of no argument, AML_NO_OPERAND_RESOLVE flag is added to ASL Timer instruction opcode.
+
+When ASL timer instruction interpreted by ACPI interpreter, getting error. After adding AML_NO_OPERAND_RESOLVE flag to ASL Timer instruction opcode, issue is not observed.
+
+=============================================================
+UBSAN: array-index-out-of-bounds in acpica/dswexec.c:401:12 index -1 is out of range for type 'union acpi_operand_object *[9]'
+CPU: 37 PID: 1678 Comm: cat Not tainted
+6.0.0-dev-th500-6.0.y-1+bcf8c46459e407-generic-64k
+HW name: NVIDIA BIOS v1.1.1-d7acbfc-dirty 12/19/2022 Call trace:
+ dump_backtrace+0xe0/0x130
+ show_stack+0x20/0x60
+ dump_stack_lvl+0x68/0x84
+ dump_stack+0x18/0x34
+ ubsan_epilogue+0x10/0x50
+ __ubsan_handle_out_of_bounds+0x80/0x90
+ acpi_ds_exec_end_op+0x1bc/0x6d8
+ acpi_ps_parse_loop+0x57c/0x618
+ acpi_ps_parse_aml+0x1e0/0x4b4
+ acpi_ps_execute_method+0x24c/0x2b8
+ acpi_ns_evaluate+0x3a8/0x4bc
+ acpi_evaluate_object+0x15c/0x37c
+ acpi_evaluate_integer+0x54/0x15c
+ show_power+0x8c/0x12c [acpi_power_meter]
+
+Link: https://github.com/acpica/acpica/commit/90310989
+Signed-off-by: Abhishek Mainkar <abmainkar@nvidia.com>
+Signed-off-by: Bob Moore <robert.moore@intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/acpi/acpica/psopcode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/acpi/acpica/psopcode.c b/drivers/acpi/acpica/psopcode.c
+index 09029fe545f14..39e31030e5f49 100644
+--- a/drivers/acpi/acpica/psopcode.c
++++ b/drivers/acpi/acpica/psopcode.c
+@@ -603,7 +603,7 @@ const struct acpi_opcode_info acpi_gbl_aml_op_info[AML_NUM_OPCODES] = {
  
- #define MFD_NOEXEC_SEAL	0x0008U
+ /* 7E */ ACPI_OP("Timer", ARGP_TIMER_OP, ARGI_TIMER_OP, ACPI_TYPE_ANY,
+ 			 AML_CLASS_EXECUTE, AML_TYPE_EXEC_0A_0T_1R,
+-			 AML_FLAGS_EXEC_0A_0T_1R),
++			 AML_FLAGS_EXEC_0A_0T_1R | AML_NO_OPERAND_RESOLVE),
  
-+#ifndef MEMFD_CHECK_IF_ORIGINAL
-+#define MEMFD_CHECK_IF_ORIGINAL _IOR(0xB8, 0, int)
-+#endif
-+
- /*
-  * Default is not to test hugetlbfs
-  */
-@@ -1567,6 +1572,31 @@ static void test_share_fork(char *banner, char *b_suffix)
- 	close(fd);
- }
+ /* ACPI 5.0 opcodes */
  
-+static void test_ioctl_check_original(void)
-+{
-+	int fd, fd2;
-+
-+	printf("%s IOCTL-CHECK-ORIGINAL\n", memfd_str);
-+	fd = sys_memfd_create("kern_memfd_check_original", 0);
-+	if (fd < 0) {
-+		printf("memfd_create failed: %m\n");
-+		abort();
-+	}
-+	if (ioctl(fd, MEMFD_CHECK_IF_ORIGINAL) != 1) {
-+		printf("ioctl(MEMFD_CHECK_IF_ORIGINAL) failed\n");
-+		abort();
-+	}
-+
-+	fd2 = mfd_assert_reopen_fd(fd);
-+	if (ioctl(fd2, MEMFD_CHECK_IF_ORIGINAL) != 0) {
-+		printf("ioctl(MEMFD_CHECK_IF_ORIGINAL) failed\n");
-+		abort();
-+	}
-+
-+	close(fd);
-+	close(fd2);
-+}
-+
- int main(int argc, char **argv)
- {
- 	pid_t pid;
-@@ -1609,6 +1639,8 @@ int main(int argc, char **argv)
- 	test_share_open("SHARE-OPEN", "");
- 	test_share_fork("SHARE-FORK", "");
- 
-+	test_ioctl_check_original();
-+
- 	/* Run test-suite in a multi-threaded environment with a shared
- 	 * file-table. */
- 	pid = spawn_idle_thread(CLONE_FILES | CLONE_FS | CLONE_VM);
 -- 
-2.42.0.283.g2d96d420d3-goog
+2.40.1
 
