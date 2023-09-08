@@ -2,254 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 000887986C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 14:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE557986DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 14:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242602AbjIHMIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 08:08:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53528 "EHLO
+        id S237787AbjIHMKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 08:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231841AbjIHMIT (ORCPT
+        with ESMTP id S229713AbjIHMKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 08:08:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D9B1BE7;
-        Fri,  8 Sep 2023 05:08:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 305A8C433C8;
-        Fri,  8 Sep 2023 12:08:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694174895;
-        bh=kuk2AJFs2iERTGSGT8ELn/GGfY7dWDsEGrcndV0bjW8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=EZ/lufYlWutUJ639Mli6RcFwAQf83eeD7Ggoy6A/xWHFt4sPCUu/Ch//ZjfBZgCsF
-         QcHUWLS4y7jJ7aptoM7Jl8GNr6fCTM5bWIm+hyltlPr83TXrxteCGvdDV2yNOxRh0R
-         7E/RGfxXGSEXMq9xCSyvFevWY5rCg5UsiAI3vTxhG2QGwbUlz69Y6/Epn6DAsKIwok
-         Z7WBna1b10tTeKjHv/irVW3NY3WVsV0YvqDgLyNiOf6k8zUulUgbM541u3obK7M5Dc
-         GBwglrgLeGWowL1IjQH1GmeKpCiuHJGlAOpOVFfDpd9iF9SspTl5QwKRftoVTAk7nG
-         u8jWvcThdMqIA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AF506CE0FF4; Fri,  8 Sep 2023 05:08:14 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 05:08:14 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2] rcu/torture: Improve badness extraction from console
- logs
-Message-ID: <df66924b-d484-457f-8c79-21aadc4c13ec@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230908033047.2537010-1-joel@joelfernandes.org>
+        Fri, 8 Sep 2023 08:10:24 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E17D1BC5;
+        Fri,  8 Sep 2023 05:10:17 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2A5621FE19;
+        Fri,  8 Sep 2023 12:10:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694175016; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XyAJOe4IIc4u4PsIgJoECbVObRSruBJdgdnnkoMkWpc=;
+        b=ffcypC1C+MqUG8/Hn5L3CMDJzLEBNb9hCp2fG6HfXPJ4yJmXUmT08ZYq0yBtf+N43GV8ph
+        /c8aD84SlH7XveWi5DVNXy71HqnrBZThe+iunyHnwnNF+8rqPXSfrVu9ezRq5Y1SaLL8bK
+        0Kk44lT3LlCNk/ufrQip3EF2y4zXW+g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694175016;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XyAJOe4IIc4u4PsIgJoECbVObRSruBJdgdnnkoMkWpc=;
+        b=kBww0jG4zHOMXYIuFz6j4ucOkxulX/N1eGfJWY4Kij3JJQXPOKxOt1my+3UekQpk2gUmBF
+        sR1dRImfMA5TjSDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 18E65132F2;
+        Fri,  8 Sep 2023 12:10:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id H/MNBigP+2SDMAAAMHmgww
+        (envelope-from <jack@suse.cz>); Fri, 08 Sep 2023 12:10:16 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 806FBA0774; Fri,  8 Sep 2023 14:10:15 +0200 (CEST)
+Date:   Fri, 8 Sep 2023 14:10:15 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH 1/2] fs: initialize inode->__i_ctime to the epoch
+Message-ID: <20230908121015.k2xmkbiw7dljj24g@quack3>
+References: <20230907-ctime-fixes-v1-0-3b74c970d934@kernel.org>
+ <20230907-ctime-fixes-v1-1-3b74c970d934@kernel.org>
+ <20230908104229.5tsr2sn7oyfy53ih@quack3>
+ <0716e97eadc834ac4be97af5d6bbab82c5dc4ac9.camel@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230908033047.2537010-1-joel@joelfernandes.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <0716e97eadc834ac4be97af5d6bbab82c5dc4ac9.camel@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 03:30:46AM +0000, Joel Fernandes (Google) wrote:
-> Currently console.log.diags contains an output like follows:
-> [ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
-> [ 2457.542385] Call Trace:
+On Fri 08-09-23 07:41:45, Jeff Layton wrote:
+> On Fri, 2023-09-08 at 12:42 +0200, Jan Kara wrote:
+> > On Thu 07-09-23 12:33:47, Jeff Layton wrote:
+> > > With the advent of multigrain timestamps, we use inode_set_ctime_current
+> > > to set the ctime, which can skip updating if the existing ctime appears
+> > > to be in the future. Because we don't initialize this field at
+> > > allocation time, that could prevent the ctime from being initialized
+> > > properly when the inode is instantiated.
+> > > 
+> > > Always initialize the ctime field to the epoch so that the filesystem
+> > > can set the timestamps properly later.
+> > > 
+> > > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > Closes: https://lore.kernel.org/oe-lkp/202309071017.a64aca5e-oliver.sang@intel.com
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > 
+> > Looks good but don't you need the same treatment to atime after your patch
+> > 2/2?
+> > 
+> > 
 > 
-> This is not very useful and easier access to the call trace is desired.
-> Improve the script by extracting more lines after each grep match.
-> Provide a summary in the beginning like before, but also include details
-> below. Limit the total number of issues to a maximum of 10. And limit
-> the lines included after each issue to a maximum of 20.
-
-Much better!
-
-The above commit log would be better something as follows:
-
-------------------------------------------------------------------------
-
-Currently console.log.diags contains a line for each issue that was
-located in the console.log file, for example:
-
-[ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
-[ 2457.542385] Call Trace:
-
-Although this is quite helpful when viewed using the kvm-find-errors.sh
-script (in which case the console.log.diags file supplies the search
-strings to use on the full console.log file that immediately follows), the
-first splat often fully identifies the problem.  In such cases, it would
-be helpful for this splat to be contained within the console.log.diags
-file itself, without the need to refer to the full console.log file.
-
-This commit therefore limits the number of issues summarized to 10,
-and follows the summaries with up to 20 lines of the console.log file
-associated with each issue.
-
-------------------------------------------------------------------------
-
-Plus please see one simplification below.
-
-							Thanx, Paul
-
-> With these changes the output becomes:
+> I don't think so. Most filesystems are doing something along the lines
+> of this when allocating a new inode:
 > 
-> Issues found:
-> Line 6228: [ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
-> Line 6245: [ 2457.542385] Call Trace:
+>     inode->i_atime = inode->i_mtime = inode_set_ctime_current(inode);
 > 
-> Details of each issue:
-> Issue 1 (line 6228):
-> [ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
-> [ 2457.326661] Modules linked in:
-> [ 2457.334818] CPU: 2 PID: 13 Comm: rcu_tasks_trace Not tainted 5.15.128+ #381
-> [ 2457.349782] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [ 2457.373309] RIP: 0010:rcu_tasks_trace_pregp_step+0x4a/0x50
-> [...]
-> [ 2457.421803] RSP: 0018:ffffa80fc0073e40 EFLAGS: 00010202
-> [ 2457.431940] RAX: ffff8db91f580000 RBX: 000000000001b900 RCX: 0000000000000003
-> [ 2457.443206] RDX: 0000000000000008 RSI: ffffffffac6bebd8 RDI: 0000000000000003
-> [ 2457.454428] RBP: 0000000000000004 R08: 0000000000000001 R09: 0000000000000001
-> [ 2457.465668] R10: 0000000000000000 R11: 00000000ffffffff R12: ffff8db902d87f40
-> [ 2457.476971] R13: ffffffffac556620 R14: ffffffffac556630 R15: ffff8db9011a3200
-> [ 2457.488251] FS:  0000000000000000(0000) GS:ffff8db91f500000(0000) knlGS:0000000000000000
-> [ 2457.500834] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 2457.509602] CR2: 0000000000000000 CR3: 0000000002cbc000 CR4: 00000000000006e0
-> [ 2457.520378] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [ 2457.531440] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [ 2457.542385] Call Trace:
-> [ 2457.546756]  <TASK>
-> [ 2457.550349]  ? __warn+0x7b/0x100
-> [ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
-> -------------------------------------
-> Issue 2 (line 6245):
-> [ 2457.542385] Call Trace:
-> [ 2457.546756]  <TASK>
-> [ 2457.550349]  ? __warn+0x7b/0x100
-> [ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
-> [ 2457.574948]  ? report_bug+0x99/0xc0
-> [ 2457.593824]  ? handle_bug+0x3c/0x70
-> [ 2457.599534]  ? exc_invalid_op+0x13/0x60
-> [ 2457.625729]  ? asm_exc_invalid_op+0x16/0x20
-> [ 2457.632249]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
-> [ 2457.660010]  rcu_tasks_wait_gp+0x54/0x360
-> [ 2457.677761]  ? _raw_spin_unlock_irqrestore+0x2b/0x60
-> [ 2457.705658]  rcu_tasks_kthread+0x114/0x200
-> [ 2457.712450]  ? wait_woken+0x70/0x70
-> [ 2457.727283]  ? synchronize_rcu_tasks_rude+0x10/0x10
-> [ 2457.746221]  kthread+0x130/0x160
-> [ 2457.751487]  ? set_kthread_struct+0x40/0x40
-> [ 2457.758178]  ret_from_fork+0x22/0x30
-> [ 2457.763909]  </TASK>
-> [ 2457.767546] irq event stamp: 29544441
-> [ 2457.773344] hardirqs last  enabled at (29544451): [<ffffffffaace6cbd>] __up_console_sem+0x4d/0x60
-> [ 2457.786967] hardirqs last disabled at (29544460): [<ffffffffaace6ca2>] __up_console_sem+0x32/0x60
+> ...and I think they pretty much all have to initialize i_atime properly,
+> since someone could stat the inode before an atime update occurs.
+
+Ah, right. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> > > ---
+> > >  fs/inode.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/fs/inode.c b/fs/inode.c
+> > > index 35fd688168c5..54237f4242ff 100644
+> > > --- a/fs/inode.c
+> > > +++ b/fs/inode.c
+> > > @@ -168,6 +168,8 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
+> > >  	inode->i_fop = &no_open_fops;
+> > >  	inode->i_ino = 0;
+> > >  	inode->__i_nlink = 1;
+> > > +	inode->__i_ctime.tv_sec = 0;
+> > > +	inode->__i_ctime.tv_nsec = 0;
+> > >  	inode->i_opflags = 0;
+> > >  	if (sb->s_xattr)
+> > >  		inode->i_opflags |= IOP_XATTR;
+> > > 
+> > > -- 
+> > > 2.41.0
+> > > 
 > 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
-> v1->v2: Limit number of issues reported and include summary on the top.
-> 
->  .../rcutorture/bin/console-badness.sh         | 42 ++++++++++++++++++-
->  1 file changed, 41 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/rcutorture/bin/console-badness.sh b/tools/testing/selftests/rcutorture/bin/console-badness.sh
-> index aad51e7c0183..2612a4931723 100755
-> --- a/tools/testing/selftests/rcutorture/bin/console-badness.sh
-> +++ b/tools/testing/selftests/rcutorture/bin/console-badness.sh
-> @@ -9,10 +9,50 @@
->  # Copyright (C) 2020 Facebook, Inc.
->  #
->  # Authors: Paul E. McKenney <paulmck@kernel.org>
-> +INPUT_DATA=$(< /dev/stdin)
-
-Long runs can have extremely large console.log files, which might not
-play well with shell variables.  So this really needs to go into a file.
-An easy way to do that is like this:
-
-------------------------------------------------------------------------
-
-T="`mktemp -d ${TMPDIR-/tmp}/console-badness.sh.XXXXXX`"
-trap 'rm -rf $T' 0
-
-------------------------------------------------------------------------
-
-The "trap" statement auto-removes this temporary directory when the
-script exits.
-
-Then dump stdin to $T/console.  Or, better, change console-badness.sh to
-take the console file name as a parameter instead of taking its contents
-on stdin.  (It appears to be invoked from very few places.)
-
-> +MAX_NR_ISSUES=10
->  
-> -grep -E 'Badness|WARNING:|Warn|BUG|===========|BUG: KCSAN:|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
-> +# Get the line numbers for all the grep matches
-> +GREP_LINES="$(echo "$INPUT_DATA" |
-> +grep -n -E 'Badness|WARNING:|Warn|BUG|===========|BUG: KCSAN:|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
->  grep -v 'ODEBUG: ' |
->  grep -v 'This means that this is a DEBUG kernel and it is' |
->  grep -v 'Warning: unable to open an initial console' |
->  grep -v 'Warning: Failed to add ttynull console. No stdin, stdout, and stderr.*the init process!' |
->  grep -v 'NOHZ tick-stop error: Non-RCU local softirq work is pending, handler'
-> +)"
-
-Then redirect the above grep to "$T/badness-nbr" or some such.
-
-> +
-> +# Exit if no grep matches
-> +if [ ! -n "$GREP_LINES" ]; then exit 0; fi
-> +
-> +# Print first MAX_NR_ISSUES grepped lines
-> +echo "Issues found:"
-> +issue_num=1
-> +while IFS= read -r line; do
-> +    # Extract the line number from the line
-> +    num=$(echo "$line" | awk -F: '{print $1}')
-> +    # Extract the rest of the line
-> +    line_rest=$(echo "$line" | cut -d: -f2-)
-> +    echo "Line $num: $line_rest"
-> +    if [ "$issue_num" -eq "$MAX_NR_ISSUES" ]; then break; fi
-> +    issue_num="$(($issue_num + 1))"
-> +done <<< "$GREP_LINES"
-> +echo ""
-
-The above then collapses into something like this:
-
-sed < $T/badness-nbr -e 's/^[0-9]*:/Line & /' | head -"${MAX_NR_ISSUES}"
-
-> +
-> +# Print details of each issue
-> +#
-> +# Go through each line of GREP_LINES, extract the line number and then
-> +# print from that line and 20 lines after that line. Do that for each
-> +# grep match upto MAX_NR_ISSUES of them.
-> +echo "Details of each issue:"
-> +issue_num=1
-> +while IFS= read -r line; do
-> +    # Extract the line number from the line
-> +    num=$(echo "$line" | awk -F: '{print $1}')
-> +    # Print 20 lines after the matched line
-> +    echo "Issue $issue_num (line $num):"
-> +    echo "$INPUT_DATA" | sed -n "${num},$(($num + 20))p"
-> +    echo "-------------------------------------"
-> +    if [ "$issue_num" -eq "$MAX_NR_ISSUES" ]; then break; fi
-> +    issue_num="$(($issue_num + 1))"
-> +done <<< "$GREP_LINES"
-
-And the above also takes input from the file.
-
-One issue here is that if a number of badness strings occur in console.log
-in quick succession, there will be overlapping output, as in a given line
-from console.log might be printed many times.  For example, "WARNING"
-is often almost immediately followed by "Call Trace".
-
-In that case, is there a nice way to print the lines starting with the
-line containing "WARNING" though the 20 lines following "Call Trace"?
-
-							Thanx, Paul
+> -- 
+> Jeff Layton <jlayton@kernel.org>
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
