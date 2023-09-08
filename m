@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5B7798E3B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 271DC798DD9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242533AbjIHSbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
+        id S1343612AbjIHSZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344447AbjIHSbV (ORCPT
+        with ESMTP id S1343625AbjIHSXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:31:21 -0400
+        Fri, 8 Sep 2023 14:23:44 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955D82125;
-        Fri,  8 Sep 2023 11:22:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1288BC433BF;
-        Fri,  8 Sep 2023 18:20:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED992D7B;
+        Fri,  8 Sep 2023 11:21:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 301E8C116A2;
+        Fri,  8 Sep 2023 18:20:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197257;
-        bh=0+YyDjwx3h8JedkPqH2eJ8aZFt0cO7/GGWjCLDYPi8Q=;
+        s=k20201202; t=1694197258;
+        bh=P5hnyUObGqR96a01yY7SLm9LACRfzlpZt1T4nXOnP9c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c0m0CGZwYlBchrAUBxeNh60fw6f03iq+z/O+VtmRnsqDzdJYfNPir4vxpzV6802aG
-         0QC2r8tARvt90ZOvev0UurwvrGogsdxltkrJs9T6fW2rZhKlwcIZ+8WhK1I6wrmu5A
-         gjiCHK6cmVJ+1NQ4F7m7xilIznZuL1hBhM8Yn+b9uU3wStQGH3n/PfxvgvrpvLMiqX
-         +XOqaT5D7dkJY306lOYMePxX1Wc2MJWTHVnW9Np0GUrDwa2wDwhndx2hQJPKc0IYQY
-         rCmN7MEhejNT4q9sfFsma/ez4bytejHqS4uBb4aLSSNEMEI9OxWRWZ3iAHKA+6GCam
-         RUVrFeXAGGmRw==
+        b=Z4yav1TBdV6q2X+5GYaUiRo0GE8ga99PpDSirsdTAHEAR+m0Wd6z0Jr3fwoKiB7MH
+         ZHbC7/ZATDqcqoxXqPjogim2SLR3whfjByTtPYZIWvFsl1R3ed0rdUiohw4WnOVo9m
+         zIaDEKpzSwl1aB8jcQO6YEX79rqZ/1r70Ern2p2Qir6hek3759wceyPnO8X1WeUhnw
+         pVJa1XnoJSsoAFBGdV1tSxofZ9hbhlezBgIDYl6vO3Xq9nPWvtwxNtW2pqc7Dr+7n2
+         aSLe28QPrMl+hPDriU7kceVekl28GQ4D0/vgzG9jDaSskWCN9i1BmQ2mZdT9AjKEaB
+         IQK/hJttU1fZA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mark O'Donovan <shiftee@posteo.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, zohar@linux.ibm.com
-Subject: [PATCH AUTOSEL 5.4 04/10] crypto: lib/mpi - avoid null pointer deref in mpi_cmp_ui()
-Date:   Fri,  8 Sep 2023 14:20:38 -0400
-Message-Id: <20230908182046.3460968-4-sashal@kernel.org>
+Cc:     Alexander Steffen <Alexander.Steffen@infineon.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, peterhuewe@gmx.de,
+        linux-integrity@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 05/10] tpm_tis: Resend command to recover from data transfer errors
+Date:   Fri,  8 Sep 2023 14:20:39 -0400
+Message-Id: <20230908182046.3460968-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908182046.3460968-1-sashal@kernel.org>
 References: <20230908182046.3460968-1-sashal@kernel.org>
@@ -52,43 +53,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark O'Donovan <shiftee@posteo.net>
+From: Alexander Steffen <Alexander.Steffen@infineon.com>
 
-[ Upstream commit 9e47a758b70167c9301d2b44d2569f86c7796f2d ]
+[ Upstream commit 280db21e153d8810ce3b93640c63ae922bcb9e8e ]
 
-During NVMeTCP Authentication a controller can trigger a kernel
-oops by specifying the 8192 bit Diffie Hellman group and passing
-a correctly sized, but zeroed Diffie Hellamn value.
-mpi_cmp_ui() was detecting this if the second parameter was 0,
-but 1 is passed from dh_is_pubkey_valid(). This causes the null
-pointer u->d to be dereferenced towards the end of mpi_cmp_ui()
+Similar to the transmission of TPM responses, also the transmission of TPM
+commands may become corrupted. Instead of aborting when detecting such
+issues, try resending the command again.
 
-Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Alexander Steffen <Alexander.Steffen@infineon.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/mpi/mpi-cmp.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/char/tpm/tpm_tis_core.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/lib/mpi/mpi-cmp.c b/lib/mpi/mpi-cmp.c
-index d25e9e96c310f..ceaebe181cd70 100644
---- a/lib/mpi/mpi-cmp.c
-+++ b/lib/mpi/mpi-cmp.c
-@@ -25,8 +25,12 @@ int mpi_cmp_ui(MPI u, unsigned long v)
- 	mpi_limb_t limb = v;
- 
- 	mpi_normalize(u);
--	if (!u->nlimbs && !limb)
--		return 0;
-+	if (u->nlimbs == 0) {
-+		if (v == 0)
-+			return 0;
-+		else
-+			return -1;
+diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+index ef47d1d58ac3a..a084f732c1804 100644
+--- a/drivers/char/tpm/tpm_tis_core.c
++++ b/drivers/char/tpm/tpm_tis_core.c
+@@ -421,10 +421,17 @@ static int tpm_tis_send_main(struct tpm_chip *chip, const u8 *buf, size_t len)
+ 	int rc;
+ 	u32 ordinal;
+ 	unsigned long dur;
+-
+-	rc = tpm_tis_send_data(chip, buf, len);
+-	if (rc < 0)
+-		return rc;
++	unsigned int try;
++
++	for (try = 0; try < TPM_RETRY; try++) {
++		rc = tpm_tis_send_data(chip, buf, len);
++		if (rc >= 0)
++			/* Data transfer done successfully */
++			break;
++		else if (rc != -EIO)
++			/* Data transfer failed, not recoverable */
++			return rc;
 +	}
- 	if (u->sign)
- 		return -1;
- 	if (u->nlimbs > 1)
+ 
+ 	/* go and do it */
+ 	rc = tpm_tis_write8(priv, TPM_STS(priv->locality), TPM_STS_GO);
 -- 
 2.40.1
 
