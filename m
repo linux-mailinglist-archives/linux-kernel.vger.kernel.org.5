@@ -2,50 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC2979879F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 15:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 811CC7987A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 15:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243438AbjIHNMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 09:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35904 "EHLO
+        id S243450AbjIHNMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 09:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbjIHNMB (ORCPT
+        with ESMTP id S229699AbjIHNMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 09:12:01 -0400
+        Fri, 8 Sep 2023 09:12:43 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453B219B5
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 06:11:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F24A19B5;
+        Fri,  8 Sep 2023 06:12:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AdtzzDZ04a5DsK13L/ZQqO+LaO4hLz3EQLkHNNnVcSs=; b=bWWh8omZnBJEgS7l2UryxlPVc/
-        PzcfabZxfY8B3dPYA91U3+9tH6TKuDprk6TWRSUEum3rUlk6reMv7f04P0BK6goDxLVjVhkC4V9GC
-        z2MlKEi/agU4LKfQuNUwsZ2zMMVjgsy0KJdo8eSIsCMoKoHnF4ZnE2tvCkm7r44lkBvst0mTYq6w2
-        fTw9IbYlC2XeyPrsvdrm2qG3F2SEl1PJ1iuOXIBuCrg+X25+pKgnsDe2KEl00QnhbdL0aae0pk2TH
-        5Zat7FNO+5/Q6c67ptITlXz6F23sqMa4lIarZMKvdJYm7pwno85Hl9Z+5YbjL8zMG3R4bzxFov5E2
-        jMz80ACg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qebH7-000HKj-8u; Fri, 08 Sep 2023 13:11:53 +0000
-Date:   Fri, 8 Sep 2023 14:11:53 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
-        peterz@infradead.org, rostedt@goodmis.org, tglx@linutronix.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-Subject: Re: [PATCH v2 4/9] x86/clear_page: extend clear_page*() for
- multi-page clearing
-Message-ID: <ZPsdmYIIqxqpowv+@casper.infradead.org>
-References: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
- <20230830184958.2333078-5-ankur.a.arora@oracle.com>
+        bh=vvU+eKmWL+DR4xoUeZRyUmnpzpmdZUNS9K61jOHqF58=; b=izdwKbTSiZgV+FSXNWwinC9p9O
+        ixbmo7qk5yXS0bob/uCKur6XnmI/v5G1ZqZkJ2JVsmw5Svy6ghZLr+NcpeqbwbyLRlNuv7YIq8Ui4
+        gf+7nSp7OGjWxf1Yv2a9pJ4XqLQolsG68WR57W+3PJONw2iElz3Y2c/biPOeT/MdAWkJLr3lQw/6E
+        Qa9TeCKnnNA6ms4RvY5J0jQ2cBEs3vm5L+ILS6CzdzmjtM9YmEZw67lHNjke92MfHXyJx0G8ywxB/
+        U6Dx+ePBv5Rk4IO6fc/tD1mw77ZgCSGK6C5cEstTlb+Y5XUpSezLxZ39vD2S8Dn1uAoAmtEt3yIOF
+        VrLUoGTA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qebHd-000HM6-F0; Fri, 08 Sep 2023 13:12:25 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 22E02300472; Fri,  8 Sep 2023 15:12:25 +0200 (CEST)
+Date:   Fri, 8 Sep 2023 15:12:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Meng Li <li.meng@amd.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-acpi@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        Perry Yuan <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH V5 3/7] cpufreq: amd-pstate: Enable amd-pstate preferred
+ core supporting.
+Message-ID: <20230908131225.GE19320@noisy.programming.kicks-ass.net>
+References: <20230905015116.2268926-1-li.meng@amd.com>
+ <20230905015116.2268926-4-li.meng@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230830184958.2333078-5-ankur.a.arora@oracle.com>
+In-Reply-To: <20230905015116.2268926-4-li.meng@amd.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -55,14 +65,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 11:49:53AM -0700, Ankur Arora wrote:
-> -void clear_page_orig(void *page);
-> -void clear_page_rep(void *page);
-> -void clear_page_erms(void *page);
-> +void clear_pages_orig(void *page, unsigned int length);
-> +void clear_pages_rep(void *page, unsigned int length);
-> +void clear_pages_erms(void *page, unsigned int length);
+On Tue, Sep 05, 2023 at 09:51:12AM +0800, Meng Li wrote:
+> +	/*
+> +	 * This code can be run during CPU online under the
+> +	 * CPU hotplug locks, so sched_set_amd_prefcore_support()
 
-Maybe make this size_t so we know it's a byte count rather than being
-some other unit of length?
+There is no such function... ?
 
+> +	 * cannot be called from here.  Queue up a work item
+> +	 * to invoke it.
+> +	 */
+> +	schedule_work(&sched_prefcore_work);
