@@ -2,42 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 447A6799067
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F061799060
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234452AbjIHTp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44606 "EHLO
+        id S232665AbjIHToF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:44:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234397AbjIHTp6 (ORCPT
+        with ESMTP id S230022AbjIHToD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:45:58 -0400
+        Fri, 8 Sep 2023 15:44:03 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D0626B9;
-        Fri,  8 Sep 2023 12:45:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF425C433CD;
-        Fri,  8 Sep 2023 19:32:03 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08778269A;
+        Fri,  8 Sep 2023 12:43:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87F32C433AB;
+        Fri,  8 Sep 2023 19:32:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201526;
-        bh=BGVW/bVZ3R3G6HFyUlS67o1rwvFXphcCl2CYsx77NJI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uq3jU2UDw1BaK2IYSh6QsUdRUzt4wVPh2e9KKVwwy0LkYXgRDmYB/lZxtG49oI9q5
-         jv9ESu2x7T089uZ4F1/1LYmC1h4EHv0RUjcREWAn4s5n2xzU7ji5k9fGDEBYizxxWi
-         msUBxy5ei11Ae8mVT2r+KI+MdCNkje4NUrUjWK6yraettazknHBbO9sqMeLCq101yC
-         AWBh+NZ23WW6U3QZCY3ejGr/7+akuFKU/ChSed5Ojye3HbdmDtsdFa6er4cQGqD6lU
-         t5z//Pi6zw1B2yBWa7If+EPSA7/4ZR4Nhg2Vz9hyxEuIU61IsQNQSmNB7PyYJJJLh6
-         /E0mncwh496Gg==
+        s=k20201202; t=1694201527;
+        bh=kZ+TCZCEVPZJ3fQjxLRlsufPXX3kxYU9r0aaJQ+jHnk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Q7bn3mt0tVrbIyzXz3gTSBFlgLwZu50jmC8GhH7nCRhnPY0C+95qxHXpd0ZANkWBg
+         /qqlNuPDnKRWyeL3qBkk+V5YP5497+T9uKSTbNFdvN/EXs9JKbeDh8cYjEWdc7JNez
+         hLd2fvXo1CmZp6B6ZY4pP4RX2e7y/pJtS6CpELtPgSBqBxu/zkMK4WofJyklnHjekf
+         sgN5nup8i705KYRspkzZ9z2gLVy6ak6JSJvD9A8I613rp45o0AejFU1p6GnNz2dmeb
+         RXgw1uYecNaSLVdzHsmA17K6myA95VF9VlgdSZzwElfJ92rdKJ93krNkWd0OiGfNf+
+         3HsFKUNUJbfIg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Marek Vasut <marex@denx.de>, Sam Ravnborg <sam@ravnborg.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, andrzej.hajda@intel.com,
-        neil.armstrong@linaro.org, airlied@gmail.com, daniel@ffwll.ch,
+Cc:     Ralph Campbell <rcampbell@nvidia.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.4 01/31] drm/bridge: tc358762: Instruct DSI host to generate HSE packets
-Date:   Fri,  8 Sep 2023 15:31:30 -0400
-Message-Id: <20230908193201.3462957-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.4 02/31] drm/edid: Add quirk for OSVR HDK 2.0
+Date:   Fri,  8 Sep 2023 15:31:31 -0400
+Message-Id: <20230908193201.3462957-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230908193201.3462957-1-sashal@kernel.org>
+References: <20230908193201.3462957-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -52,36 +55,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Ralph Campbell <rcampbell@nvidia.com>
 
-[ Upstream commit 362fa8f6e6a05089872809f4465bab9d011d05b3 ]
+[ Upstream commit 98d4cb705bc00afd4a9a71cc1e84f7111682639a ]
 
-This bridge seems to need the HSE packet, otherwise the image is
-shifted up and corrupted at the bottom. This makes the bridge
-work with Samsung DSIM on i.MX8MM and i.MX8MP.
+The OSVR virtual reality headset HDK 2.0 uses a different EDID
+vendor and device identifier than the HDK 1.1 - 1.4 headsets.
+Add the HDK 2.0 vendor and device identifier to the quirks table so
+that window managers do not try to display the desktop screen on the
+headset display.
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-Signed-off-by: Robert Foss <rfoss@kernel.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20230615201902.566182-3-marex@denx.de
+Closes: https://gitlab.freedesktop.org/drm/misc/-/issues/30
+Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+Tested-by: Ralph Campbell <rcampbell@nvidia.com>
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20230621061903.3422648-1-rcampbell@nvidia.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/bridge/tc358762.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/drm_edid.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/bridge/tc358762.c b/drivers/gpu/drm/bridge/tc358762.c
-index 77f7f7f547570..5de3f5b8dd336 100644
---- a/drivers/gpu/drm/bridge/tc358762.c
-+++ b/drivers/gpu/drm/bridge/tc358762.c
-@@ -216,7 +216,7 @@ static int tc358762_probe(struct mipi_dsi_device *dsi)
- 	dsi->lanes = 1;
- 	dsi->format = MIPI_DSI_FMT_RGB888;
- 	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
--			  MIPI_DSI_MODE_LPM;
-+			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_VIDEO_HSE;
+diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+index e1a04461ba884..dd88c9c821ae8 100644
+--- a/drivers/gpu/drm/drm_edid.c
++++ b/drivers/gpu/drm/drm_edid.c
+@@ -230,6 +230,7 @@ static const struct edid_quirk {
  
- 	ret = tc358762_parse_dt(ctx);
- 	if (ret < 0)
+ 	/* OSVR HDK and HDK2 VR Headsets */
+ 	EDID_QUIRK('S', 'V', 'R', 0x1019, EDID_QUIRK_NON_DESKTOP),
++	EDID_QUIRK('A', 'U', 'O', 0x1111, EDID_QUIRK_NON_DESKTOP),
+ };
+ 
+ /*
 -- 
 2.40.1
 
