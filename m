@@ -2,87 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD017986BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 14:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 000887986C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 14:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241536AbjIHMHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 08:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33378 "EHLO
+        id S242602AbjIHMIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 08:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231841AbjIHMHr (ORCPT
+        with ESMTP id S231841AbjIHMIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 08:07:47 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23EF81BC5;
-        Fri,  8 Sep 2023 05:07:44 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-402c46c49f4so21012795e9.1;
-        Fri, 08 Sep 2023 05:07:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694174862; x=1694779662; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:newsgroups:cc:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=c0BAeFuaE3UP1EYT6gPTFY3nFreECTYzpkSaiTl/irI=;
-        b=XnobNMxrVO9ujWqKtkXCc8YJZd6M7hNAo4hwY00IOdA1HTH+Y1Lbx+4pYoKXbw8JHj
-         Ap9xd4EBzm++0oiRUH1giniwF/StgTPMszmuZJYJJCWLZFkQmhqYQ9qfgsZDWy5mQ0e7
-         7X0c5InEvoo2Itbzc9edSrmA2A+2b8bUUU1lqaHyCgMLoVd/h9qh4lycIr8MHqUrHxl6
-         V1yF5aB6+lvau6PMfMNuF96qQ/kdX2xkZPG/zbv6opPshzvInRE0OWA8btU85XWPJiTs
-         D4TPRn2u6wGgscIUnQ9cVo6WLhrlzFPJtTWaowZKK1X9ZvYV2oaPnY9jVFH0Zt84Q/z2
-         9kXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694174862; x=1694779662;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:newsgroups:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=c0BAeFuaE3UP1EYT6gPTFY3nFreECTYzpkSaiTl/irI=;
-        b=si7MsT8Nhm11p2n6UorRWhg6Q0DfO3sECRbcqQLVFsPKgEjUlu/TwJZ5I3du+kqhbc
-         m6ymkvglplSqbgzHHomnLVbY+cVIdzHhiiBBDF161n81DBaGfU/u3xa2vTB7zkF5CyIj
-         fnckPLQgVJZFCRJducGOvy7XRoplEbGf9nqscpxTAuQ0XKgbVPXGX5L5Dkx5WLGgJip2
-         szp4IE3uxf/usZhOlvVmuc9XwL1rSd6+OB36pgxxRd6pGLiDCrPdH4LHm3L8WSJSHtZp
-         s2mLlpzzqspHIzAXX4rbIAjFlNMfg85sCYkw39GXqN3+ZwfkEI/CrImglGhcEGxgeOJ2
-         yZuQ==
-X-Gm-Message-State: AOJu0Yzo/r86S+vSM7PR4MlBJMrPg70MQxzZpz3PBqXK33q7EguD8RFN
-        IamDOzkprssmglsQfRe9/m8=
-X-Google-Smtp-Source: AGHT+IGFPze7uqlGuOkxsqG+tOAOEeIw5h1YgkB0yA7TBv3BViY4t1LSgTZsQfXKgp2HC1PCvJ8dQg==
-X-Received: by 2002:a1c:7707:0:b0:401:5443:55a1 with SMTP id t7-20020a1c7707000000b00401544355a1mr1913379wmi.3.1694174862320;
-        Fri, 08 Sep 2023 05:07:42 -0700 (PDT)
-Received: from [10.43.17.103] (nat-pool-brq-t.redhat.com. [213.175.37.10])
-        by smtp.gmail.com with ESMTPSA id n8-20020a7bcbc8000000b003fe29f6b61bsm1816111wmi.46.2023.09.08.05.07.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Sep 2023 05:07:41 -0700 (PDT)
-Message-ID: <4a0952f8-32b1-46fc-a9f2-4be58ee41ace@gmail.com>
-Date:   Fri, 8 Sep 2023 14:07:40 +0200
+        Fri, 8 Sep 2023 08:08:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D9B1BE7;
+        Fri,  8 Sep 2023 05:08:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 305A8C433C8;
+        Fri,  8 Sep 2023 12:08:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694174895;
+        bh=kuk2AJFs2iERTGSGT8ELn/GGfY7dWDsEGrcndV0bjW8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=EZ/lufYlWutUJ639Mli6RcFwAQf83eeD7Ggoy6A/xWHFt4sPCUu/Ch//ZjfBZgCsF
+         QcHUWLS4y7jJ7aptoM7Jl8GNr6fCTM5bWIm+hyltlPr83TXrxteCGvdDV2yNOxRh0R
+         7E/RGfxXGSEXMq9xCSyvFevWY5rCg5UsiAI3vTxhG2QGwbUlz69Y6/Epn6DAsKIwok
+         Z7WBna1b10tTeKjHv/irVW3NY3WVsV0YvqDgLyNiOf6k8zUulUgbM541u3obK7M5Dc
+         GBwglrgLeGWowL1IjQH1GmeKpCiuHJGlAOpOVFfDpd9iF9SspTl5QwKRftoVTAk7nG
+         u8jWvcThdMqIA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id AF506CE0FF4; Fri,  8 Sep 2023 05:08:14 -0700 (PDT)
+Date:   Fri, 8 Sep 2023 05:08:14 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2] rcu/torture: Improve badness extraction from console
+ logs
+Message-ID: <df66924b-d484-457f-8c79-21aadc4c13ec@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230908033047.2537010-1-joel@joelfernandes.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fix writing to the filesystem after unmount
-To:     Christian Brauner <brauner@kernel.org>,
-        Zdenek Kabelac <zkabelac@redhat.com>
-Cc:     Jan Kara <jack@suse.cz>, Mikulas Patocka <mpatocka@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Christoph Hellwig <hch@lst.de>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Newsgroups: gmane.linux.file-systems,gmane.linux.kernel,gmane.linux.kernel.device-mapper.devel
-References: <60f244be-803b-fa70-665e-b5cba15212e@redhat.com>
- <20230906-aufkam-bareinlage-6e7d06d58e90@brauner>
- <818a3cc0-c17b-22c0-4413-252dfb579cca@redhat.com>
- <20230907094457.vcvmixi23dk3pzqe@quack3>
- <20230907-abgrenzen-achtung-b17e9a1ad136@brauner>
- <513f337e-d254-2454-6197-82df564ed5fc@redhat.com>
- <20230908073244.wyriwwxahd3im2rw@quack3>
- <86235d7a-a7ea-49da-968e-c5810cbf4a7b@redhat.com>
- <20230908102014.xgtcf5wth2l2cwup@quack3>
- <15c62097-d58f-4e66-bdf5-e0edb1306b2f@redhat.com>
- <20230908-bergwacht-bannen-1855c8afe518@brauner>
-Content-Language: en-US, cs
-From:   Zdenek Kabelac <zdenek.kabelac@gmail.com>
-In-Reply-To: <20230908-bergwacht-bannen-1855c8afe518@brauner>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908033047.2537010-1-joel@joelfernandes.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,23 +58,198 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 08. 09. 23 v 13:32 Christian Brauner napsal(a):
->> I'd say there are several options and we should aim towards the variant
->> which is most usable by normal users.
+On Fri, Sep 08, 2023 at 03:30:46AM +0000, Joel Fernandes (Google) wrote:
+> Currently console.log.diags contains an output like follows:
+> [ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
+> [ 2457.542385] Call Trace:
 > 
-> None of the options is sufficiently satisfying to risk intricate
-> behavioral changes with unknown consequences for existing workloads as
-> far as I'm concerned.
+> This is not very useful and easier access to the call trace is desired.
+> Improve the script by extracting more lines after each grep match.
+> Provide a summary in the beginning like before, but also include details
+> below. Limit the total number of issues to a maximum of 10. And limit
+> the lines included after each issue to a maximum of 20.
+
+Much better!
+
+The above commit log would be better something as follows:
+
+------------------------------------------------------------------------
+
+Currently console.log.diags contains a line for each issue that was
+located in the console.log file, for example:
+
+[ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
+[ 2457.542385] Call Trace:
+
+Although this is quite helpful when viewed using the kvm-find-errors.sh
+script (in which case the console.log.diags file supplies the search
+strings to use on the full console.log file that immediately follows), the
+first splat often fully identifies the problem.  In such cases, it would
+be helpful for this splat to be contained within the console.log.diags
+file itself, without the need to refer to the full console.log file.
+
+This commit therefore limits the number of issues summarized to 10,
+and follows the summaries with up to 20 lines of the console.log file
+associated with each issue.
+
+------------------------------------------------------------------------
+
+Plus please see one simplification below.
+
+							Thanx, Paul
+
+> With these changes the output becomes:
 > 
+> Issues found:
+> Line 6228: [ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
+> Line 6245: [ 2457.542385] Call Trace:
+> 
+> Details of each issue:
+> Issue 1 (line 6228):
+> [ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
+> [ 2457.326661] Modules linked in:
+> [ 2457.334818] CPU: 2 PID: 13 Comm: rcu_tasks_trace Not tainted 5.15.128+ #381
+> [ 2457.349782] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [ 2457.373309] RIP: 0010:rcu_tasks_trace_pregp_step+0x4a/0x50
+> [...]
+> [ 2457.421803] RSP: 0018:ffffa80fc0073e40 EFLAGS: 00010202
+> [ 2457.431940] RAX: ffff8db91f580000 RBX: 000000000001b900 RCX: 0000000000000003
+> [ 2457.443206] RDX: 0000000000000008 RSI: ffffffffac6bebd8 RDI: 0000000000000003
+> [ 2457.454428] RBP: 0000000000000004 R08: 0000000000000001 R09: 0000000000000001
+> [ 2457.465668] R10: 0000000000000000 R11: 00000000ffffffff R12: ffff8db902d87f40
+> [ 2457.476971] R13: ffffffffac556620 R14: ffffffffac556630 R15: ffff8db9011a3200
+> [ 2457.488251] FS:  0000000000000000(0000) GS:ffff8db91f500000(0000) knlGS:0000000000000000
+> [ 2457.500834] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 2457.509602] CR2: 0000000000000000 CR3: 0000000002cbc000 CR4: 00000000000006e0
+> [ 2457.520378] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [ 2457.531440] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [ 2457.542385] Call Trace:
+> [ 2457.546756]  <TASK>
+> [ 2457.550349]  ? __warn+0x7b/0x100
+> [ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+> -------------------------------------
+> Issue 2 (line 6245):
+> [ 2457.542385] Call Trace:
+> [ 2457.546756]  <TASK>
+> [ 2457.550349]  ? __warn+0x7b/0x100
+> [ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+> [ 2457.574948]  ? report_bug+0x99/0xc0
+> [ 2457.593824]  ? handle_bug+0x3c/0x70
+> [ 2457.599534]  ? exc_invalid_op+0x13/0x60
+> [ 2457.625729]  ? asm_exc_invalid_op+0x16/0x20
+> [ 2457.632249]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+> [ 2457.660010]  rcu_tasks_wait_gp+0x54/0x360
+> [ 2457.677761]  ? _raw_spin_unlock_irqrestore+0x2b/0x60
+> [ 2457.705658]  rcu_tasks_kthread+0x114/0x200
+> [ 2457.712450]  ? wait_woken+0x70/0x70
+> [ 2457.727283]  ? synchronize_rcu_tasks_rude+0x10/0x10
+> [ 2457.746221]  kthread+0x130/0x160
+> [ 2457.751487]  ? set_kthread_struct+0x40/0x40
+> [ 2457.758178]  ret_from_fork+0x22/0x30
+> [ 2457.763909]  </TASK>
+> [ 2457.767546] irq event stamp: 29544441
+> [ 2457.773344] hardirqs last  enabled at (29544451): [<ffffffffaace6cbd>] __up_console_sem+0x4d/0x60
+> [ 2457.786967] hardirqs last disabled at (29544460): [<ffffffffaace6ca2>] __up_console_sem+0x32/0x60
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+> v1->v2: Limit number of issues reported and include summary on the top.
+> 
+>  .../rcutorture/bin/console-badness.sh         | 42 ++++++++++++++++++-
+>  1 file changed, 41 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/rcutorture/bin/console-badness.sh b/tools/testing/selftests/rcutorture/bin/console-badness.sh
+> index aad51e7c0183..2612a4931723 100755
+> --- a/tools/testing/selftests/rcutorture/bin/console-badness.sh
+> +++ b/tools/testing/selftests/rcutorture/bin/console-badness.sh
+> @@ -9,10 +9,50 @@
+>  # Copyright (C) 2020 Facebook, Inc.
+>  #
+>  # Authors: Paul E. McKenney <paulmck@kernel.org>
+> +INPUT_DATA=$(< /dev/stdin)
 
-I'm not convinced anyone has the 'fsfreeze' + 'unmount' as a regular workload. 
-  Thus solving this unusual race case shouldn't be breaking anyones else 
-existing workload.
+Long runs can have extremely large console.log files, which might not
+play well with shell variables.  So this really needs to go into a file.
+An easy way to do that is like this:
 
-ATM there is no good solution for this particular case.
+------------------------------------------------------------------------
 
-So can you please elaborate which new risks are we going to introduce by 
-fixing this resource hole ?
+T="`mktemp -d ${TMPDIR-/tmp}/console-badness.sh.XXXXXX`"
+trap 'rm -rf $T' 0
 
+------------------------------------------------------------------------
 
-Zdenek
+The "trap" statement auto-removes this temporary directory when the
+script exits.
+
+Then dump stdin to $T/console.  Or, better, change console-badness.sh to
+take the console file name as a parameter instead of taking its contents
+on stdin.  (It appears to be invoked from very few places.)
+
+> +MAX_NR_ISSUES=10
+>  
+> -grep -E 'Badness|WARNING:|Warn|BUG|===========|BUG: KCSAN:|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
+> +# Get the line numbers for all the grep matches
+> +GREP_LINES="$(echo "$INPUT_DATA" |
+> +grep -n -E 'Badness|WARNING:|Warn|BUG|===========|BUG: KCSAN:|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
+>  grep -v 'ODEBUG: ' |
+>  grep -v 'This means that this is a DEBUG kernel and it is' |
+>  grep -v 'Warning: unable to open an initial console' |
+>  grep -v 'Warning: Failed to add ttynull console. No stdin, stdout, and stderr.*the init process!' |
+>  grep -v 'NOHZ tick-stop error: Non-RCU local softirq work is pending, handler'
+> +)"
+
+Then redirect the above grep to "$T/badness-nbr" or some such.
+
+> +
+> +# Exit if no grep matches
+> +if [ ! -n "$GREP_LINES" ]; then exit 0; fi
+> +
+> +# Print first MAX_NR_ISSUES grepped lines
+> +echo "Issues found:"
+> +issue_num=1
+> +while IFS= read -r line; do
+> +    # Extract the line number from the line
+> +    num=$(echo "$line" | awk -F: '{print $1}')
+> +    # Extract the rest of the line
+> +    line_rest=$(echo "$line" | cut -d: -f2-)
+> +    echo "Line $num: $line_rest"
+> +    if [ "$issue_num" -eq "$MAX_NR_ISSUES" ]; then break; fi
+> +    issue_num="$(($issue_num + 1))"
+> +done <<< "$GREP_LINES"
+> +echo ""
+
+The above then collapses into something like this:
+
+sed < $T/badness-nbr -e 's/^[0-9]*:/Line & /' | head -"${MAX_NR_ISSUES}"
+
+> +
+> +# Print details of each issue
+> +#
+> +# Go through each line of GREP_LINES, extract the line number and then
+> +# print from that line and 20 lines after that line. Do that for each
+> +# grep match upto MAX_NR_ISSUES of them.
+> +echo "Details of each issue:"
+> +issue_num=1
+> +while IFS= read -r line; do
+> +    # Extract the line number from the line
+> +    num=$(echo "$line" | awk -F: '{print $1}')
+> +    # Print 20 lines after the matched line
+> +    echo "Issue $issue_num (line $num):"
+> +    echo "$INPUT_DATA" | sed -n "${num},$(($num + 20))p"
+> +    echo "-------------------------------------"
+> +    if [ "$issue_num" -eq "$MAX_NR_ISSUES" ]; then break; fi
+> +    issue_num="$(($issue_num + 1))"
+> +done <<< "$GREP_LINES"
+
+And the above also takes input from the file.
+
+One issue here is that if a number of badness strings occur in console.log
+in quick succession, there will be overlapping output, as in a given line
+from console.log might be printed many times.  For example, "WARNING"
+is often almost immediately followed by "Call Trace".
+
+In that case, is there a nice way to print the lines starting with the
+line containing "WARNING" though the 20 lines following "Call Trace"?
+
+							Thanx, Paul
