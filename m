@@ -2,52 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE5C7985E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 125667985CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238610AbjIHKdO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Sep 2023 06:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
+        id S243045AbjIHKZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 06:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbjIHKdM (ORCPT
+        with ESMTP id S243118AbjIHKZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 06:33:12 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A618819A6;
-        Fri,  8 Sep 2023 03:33:08 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qeYe3-000myC-V2; Fri, 08 Sep 2023 12:23:23 +0200
-Received: from p5b13a40a.dip0.t-ipconnect.de ([91.19.164.10] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qeYe3-0026GM-Na; Fri, 08 Sep 2023 12:23:23 +0200
-Message-ID: <b07d08b4c120ffdbadba6fd341aca5c63ff3275e.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH 4/4] sh: machvec: remove custom ioport_{un,}map()
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-sh@vger.kernel.org, Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 08 Sep 2023 12:23:23 +0200
-In-Reply-To: <20230802184849.1019466-4-arnd@kernel.org>
-References: <20230802184849.1019466-1-arnd@kernel.org>
-         <20230802184849.1019466-4-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Fri, 8 Sep 2023 06:25:13 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8B21BFC
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 03:24:43 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-572a7141434so1037126eaf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 03:24:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694168629; x=1694773429; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DfAHPe/yZCXK6Ipx6KCp+2nRJ597fetZ8tOP8x/Y3eI=;
+        b=RW7hdYqGQpjDkk3wX60XLgI92w6fqhyAw1bNRxHxw5FyMsCk2J+lGsjonR12jhoSqf
+         RlAdCCf6zxYoWProgfHvAcYasA/IEV9FyY0vdYAUU/jaMfSYr5v11IDWf48fzZnze9ke
+         MnLeFiFdd+QXLRwYnRwVV72mJ46oSqUm0eaLg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694168629; x=1694773429;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DfAHPe/yZCXK6Ipx6KCp+2nRJ597fetZ8tOP8x/Y3eI=;
+        b=xJLlsjCV36Q9c+woNI1TrdAP/QFD1Ov8d+ztGC3sPBqGxavAnVjsYK7mjFxGzAfMzj
+         zBWuvZmBXzV0qoB4pUbHmE3MCivpGL+MZI7PT8Jrsi+oxEd+b57sHpjBaY8J26aK5sVY
+         KZoVvhi+1kKs6gTZF/lnbvNRuDsoSSF5Fs8rkW2AKhd4kUNymYGwCyKU5QqZzxXc7LZw
+         MNG2s/aPr+GaKlLrJCcsyuOn3XnGGsTnhfnjx4ulpP4F+vvQpI7TGEtOVnpEtCNWENrW
+         HQj1bJQBMd1QBkUcObAlyKo1hYBa1/7G6Ohs2424M10caypf76A1KwCNCAW+DCYt6Yr7
+         BVwA==
+X-Gm-Message-State: AOJu0YwACzBjWxmrdCF+3KUeiU5WKE0NDY5V+WNed+u0+aRT6PsU5AUr
+        D+xS6NLmwCTSe4v4X/8uggdezcSKB3Kp8H+pLcAW7HIQcft2y2Dz
+X-Google-Smtp-Source: AGHT+IEcsmWOaMN0sex/8VHBoGvhpIIwF11+aTivlfQzaWl3/Ih0CLNR8jF84J+DLODiKgcCnMCvalnsR/9BmpX0bTQ=
+X-Received: by 2002:a05:6820:2296:b0:56e:a1d3:747e with SMTP id
+ ck22-20020a056820229600b0056ea1d3747emr997434oob.6.1694168628939; Fri, 08 Sep
+ 2023 03:23:48 -0700 (PDT)
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.164.10
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+References: <20230907093927.400634-1-treapking@chromium.org>
+In-Reply-To: <20230907093927.400634-1-treapking@chromium.org>
+From:   Matthew Wang <matthewmwang@chromium.org>
+Date:   Fri, 8 Sep 2023 12:23:38 +0200
+Message-ID: <CABRiz0q9TjryfNs8m6czuExWRCpXiVYw0K7kW62r+jstBAm2Lw@mail.gmail.com>
+Subject: Re: [PATCH v2] wifi: mwifiex: Fix oob check condition in mwifiex_process_rx_packet
+To:     Pin-yen Lin <treapking@chromium.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kalle Valo <kvalo@kernel.org>,
+        Polaris Pi <pinkperfect2021@gmail.com>,
+        Brian Norris <briannorris@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,101 +65,6 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-08-02 at 20:48 +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> These functions were only used on the microdev
-> board that is now gone, so remove them to simplify
-> the ioport handling.
-> 
-> This could be further simplified to use the generic
-> I/O port accessors now.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/sh/include/asm/io.h      |  4 ++--
->  arch/sh/include/asm/machvec.h |  5 -----
->  arch/sh/kernel/ioport.c       | 13 +------------
->  3 files changed, 3 insertions(+), 19 deletions(-)
-> 
-> diff --git a/arch/sh/include/asm/io.h b/arch/sh/include/asm/io.h
-> index f2f38e9d489ac..ac521f287fa59 100644
-> --- a/arch/sh/include/asm/io.h
-> +++ b/arch/sh/include/asm/io.h
-> @@ -181,7 +181,7 @@ static inline void pfx##out##bwlq##p(type val, unsigned long port)	\
->  {									\
->  	volatile type *__addr;						\
->  									\
-> -	__addr = __ioport_map(port, sizeof(type));			\
-> +	__addr = (void __iomem *)sh_io_port_base + port;		\
->  	*__addr = val;							\
->  	slow;								\
->  }									\
-> @@ -191,7 +191,7 @@ static inline type pfx##in##bwlq##p(unsigned long port)			\
->  	volatile type *__addr;						\
->  	type __val;							\
->  									\
-> -	__addr = __ioport_map(port, sizeof(type));			\
-> +	__addr = (void __iomem *)sh_io_port_base + port;		\
->  	__val = *__addr;						\
->  	slow;								\
->  									\
-> diff --git a/arch/sh/include/asm/machvec.h b/arch/sh/include/asm/machvec.h
-> index 2b4b085e8f219..4e5314b921f19 100644
-> --- a/arch/sh/include/asm/machvec.h
-> +++ b/arch/sh/include/asm/machvec.h
-> @@ -19,11 +19,6 @@ struct sh_machine_vector {
->  	int (*mv_irq_demux)(int irq);
->  	void (*mv_init_irq)(void);
->  
-> -#ifdef CONFIG_HAS_IOPORT_MAP
-> -	void __iomem *(*mv_ioport_map)(unsigned long port, unsigned int size);
-> -	void (*mv_ioport_unmap)(void __iomem *);
-> -#endif
-> -
->  	int (*mv_clk_init)(void);
->  	int (*mv_mode_pins)(void);
->  
-> diff --git a/arch/sh/kernel/ioport.c b/arch/sh/kernel/ioport.c
-> index f39446a658bdb..c8aff8a20164d 100644
-> --- a/arch/sh/kernel/ioport.c
-> +++ b/arch/sh/kernel/ioport.c
-> @@ -12,15 +12,6 @@
->  unsigned long sh_io_port_base __read_mostly = -1;
->  EXPORT_SYMBOL(sh_io_port_base);
->  
-> -void __iomem *__ioport_map(unsigned long addr, unsigned int size)
-> -{
-> -	if (sh_mv.mv_ioport_map)
-> -		return sh_mv.mv_ioport_map(addr, size);
-> -
-> -	return (void __iomem *)(addr + sh_io_port_base);
-> -}
-> -EXPORT_SYMBOL(__ioport_map);
-> -
->  void __iomem *ioport_map(unsigned long port, unsigned int nr)
->  {
->  	void __iomem *ret;
-> @@ -29,13 +20,11 @@ void __iomem *ioport_map(unsigned long port, unsigned int nr)
->  	if (ret)
->  		return ret;
->  
-> -	return __ioport_map(port, nr);
-> +	return (void __iomem *)(port + sh_io_port_base);
->  }
->  EXPORT_SYMBOL(ioport_map);
->  
->  void ioport_unmap(void __iomem *addr)
->  {
-> -	if (sh_mv.mv_ioport_unmap)
-> -		sh_mv.mv_ioport_unmap(addr);
->  }
->  EXPORT_SYMBOL(ioport_unmap);
+> +       if (sizeof(rx_pkt_hdr) + rx_pkt_off <= skb->len &&
 
-Reviewed-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Not fixed. Did you accidentally resend the same patch?
