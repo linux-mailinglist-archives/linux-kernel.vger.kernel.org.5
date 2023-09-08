@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 619EF799062
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8EE798FA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234028AbjIHToI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
+        id S1345019AbjIHTdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:33:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbjIHToF (ORCPT
+        with ESMTP id S236800AbjIHTdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:44:05 -0400
+        Fri, 8 Sep 2023 15:33:35 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1DE26A5;
-        Fri,  8 Sep 2023 12:43:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E064C433C9;
-        Fri,  8 Sep 2023 19:33:02 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2401997;
+        Fri,  8 Sep 2023 12:33:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F9BDC433C8;
+        Fri,  8 Sep 2023 19:33:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201584;
-        bh=LtluMiPiAvNOgrlFsorMjnATBMItZh1rE0cJ9Uf6TLc=;
+        s=k20201202; t=1694201590;
+        bh=XIL/PjmmGSq1aPs5EM39cocbSJ+EaotijhxQRCOL5J4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z0/VDig3T+E8aCLIqotHkOVBb8PLc4ew1h4J6YtiTQS3o2rLJywhCDEdd3gMafa+e
-         fawsBhdv2gAm2JGlH9Dp/rmcO4M5i+rZp3z+muCOdDJJ2mpwkfy210tgPXW+zJv/IM
-         bfiM9byhXdb/nwZHI3Wr8VhhQJQM1dNMgty9rUYp/iDtvb8PEhXdaCedm4ajxzugoy
-         3wS7AMKMIieaQZdcqUhUqLe0QJ4p5ID8UJmutB44j/GeFKCJWojPGUoT6cnf0ElI1c
-         7qK0grvyZt6o+uTW+H/ZOGf3SQT3t5po3t3podiSoioO6NVOUMzoMkQuHUiJcyD/4o
-         34QKTWx03sqHQ==
+        b=LG0R9Zr3byEqE0nSz2LASdbQxtGa193l0jOZdDdjXReK00Yw9MbYmbL8Mw4qWhtsy
+         Nvy8cX8pe8Yu2O0Fpnbgtn2Ic9c+aZMhn9PgI4UFZax3iR0cjUyb1Ekax5XoNV2dnS
+         sXfZyH7TtupaApye7TL6B5gtJt/oZvK1NhRNUaFmuALLXIWcFjr2epyNCkechc4M3k
+         DsOPXZQMdLus5tyfIUtdq5JBZncimi8bLc8ETe+fJHz0bJcJoUfQM5nQNP945rtDQH
+         2qHDNtI4Zp59zBavqMeWsIl3hnAl+Usr349mSYCkJJtVGG4/n3997gh4dX43nugyaW
+         09UeOFrEz1m2A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Yaochun Hung <yc.hung@mediatek.com>,
+Cc:     Uday M Bhat <uday.m.bhat@intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Jairaj Arava <jairaj.arava@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
-        peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, perex@perex.cz, tiwai@suse.com,
-        matthias.bgg@gmail.com, sound-open-firmware@alsa-project.org,
-        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.4 15/31] ASoC: SOF: topology: simplify code to prevent static analysis warnings
-Date:   Fri,  8 Sep 2023 15:31:44 -0400
-Message-Id: <20230908193201.3462957-15-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, cezary.rojewski@intel.com,
+        liam.r.girdwood@linux.intel.com, peter.ujfalusi@linux.intel.com,
+        perex@perex.cz, tiwai@suse.com, ckeepax@opensource.cirrus.com,
+        gongjun.song@intel.com, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 6.4 16/31] ASoC: Intel: sof_sdw: Update BT offload config for soundwire config
+Date:   Fri,  8 Sep 2023 15:31:45 -0400
+Message-Id: <20230908193201.3462957-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908193201.3462957-1-sashal@kernel.org>
 References: <20230908193201.3462957-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.15
@@ -61,58 +60,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Uday M Bhat <uday.m.bhat@intel.com>
 
-[ Upstream commit 55cb3dc271d81f1982c949a2ac483a6daf613b92 ]
+[ Upstream commit a14aded9299187bb17ef90700eb2cf1120ef5885 ]
 
-make KCFLAGS='-fanalyzer' sound/soc/sof/intel/ reports a possible NULL
-pointer dereference.
+For soundwire config, SSP1 is used for BT offload. This is enabled
+in sof_sdw_quirk_table
 
-sound/soc/sof/topology.c:1136:21: error: dereference of NULL ‘w’
-[CWE-476] [-Werror=analyzer-null-dereference]
-
- 1136 |     strcmp(w->sname, rtd->dai_link->stream_name))
-
-The code is rather confusing and can be simplified to make static
-analysis happy. No functionality change.
-
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Uday M Bhat <uday.m.bhat@intel.com>
+Signed-off-by: Jairaj Arava <jairaj.arava@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Reviewed-by: Yaochun Hung <yc.hung@mediatek.com>
-Link: https://lore.kernel.org/r/20230731213748.440285-4-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20230731214257.444605-5-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/topology.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index f160dc454b448..8e6f6148f0a07 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -1117,10 +1117,11 @@ static void sof_disconnect_dai_widget(struct snd_soc_component *scomp,
- {
- 	struct snd_soc_card *card = scomp->card;
- 	struct snd_soc_pcm_runtime *rtd;
-+	const char *sname = w->sname;
- 	struct snd_soc_dai *cpu_dai;
- 	int i, stream;
- 
--	if (!w->sname)
-+	if (!sname)
- 		return;
- 
- 	if (w->id == snd_soc_dapm_dai_out)
-@@ -1133,7 +1134,7 @@ static void sof_disconnect_dai_widget(struct snd_soc_component *scomp,
- 	list_for_each_entry(rtd, &card->rtd_list, list) {
- 		/* does stream match DAI link ? */
- 		if (!rtd->dai_link->stream_name ||
--		    strcmp(w->sname, rtd->dai_link->stream_name))
-+		    strcmp(sname, rtd->dai_link->stream_name))
- 			continue;
- 
- 		for_each_rtd_cpu_dais(rtd, i, cpu_dai)
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index a6d13aae8f720..cc82cbcc1611a 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -439,7 +439,9 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Google"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Rex"),
+ 		},
+-		.driver_data = (void *)(SOF_SDW_PCH_DMIC),
++		.driver_data = (void *)(SOF_SDW_PCH_DMIC |
++					SOF_BT_OFFLOAD_SSP(1) |
++					SOF_SSP_BT_OFFLOAD_PRESENT),
+ 	},
+ 	/* LunarLake devices */
+ 	{
 -- 
 2.40.1
 
