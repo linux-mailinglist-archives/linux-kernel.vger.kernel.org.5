@@ -2,97 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 926F8799182
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 23:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30ABF799184
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 23:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245374AbjIHVaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 17:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52490 "EHLO
+        id S244870AbjIHVcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 17:32:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbjIHVaE (ORCPT
+        with ESMTP id S229891AbjIHVcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 17:30:04 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F962E46
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 14:30:00 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bd0bc8b429so43781961fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 14:30:00 -0700 (PDT)
+        Fri, 8 Sep 2023 17:32:02 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7722AE46
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 14:31:58 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d7b9eb73dcdso2276130276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 14:31:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694208598; x=1694813398; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2qDdudysz/QEH80r6EgYVihuuCpmrfhapLn+3lG+eMs=;
-        b=lk0M8VDSF4dVYW7KUFYFSZvb9khIM4fDolhIf3s+VJCbnJM+5WIgsBlIGxDiWWMjZr
-         8ZDu1/fA5C2eP02mlVAwDbqFqsdw4ZfwI38/hxYEhgZ2xHPM5RHvy7/pfNN3Gh3TApso
-         W4NwWY/C/2RlCkeIinLQMK2MhB6n2m5C50mr8=
+        d=google.com; s=20221208; t=1694208717; x=1694813517; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=R7b9OwuJv//o+ELCx6dXPif0Xt9fI41k+DjaD06EUhk=;
+        b=g7h0pQqLgkTyJOB05DFW8IDpmoUm2gdMjuWU7ITFm0Z0rkLJnr/7TyJx6BorHGOFqJ
+         +M7Dg2SLb0vbIyUCGoZ+JQbE52JJUufc9ZOfoaNf9d6uzEzBqEUq8xrICsCUWLsINtu+
+         /v7mEpVR/REz/q2W9+UuOfscHmMXgreT1eD8Ssq0lNk4KKyXN6AzOnb0LQBr9xRw7U3W
+         X6lpl2rpl9UtX807K8KGmvZIh1IzS7Ch18THaplOx2BBGQhMzJAaXqoI+LhLaph7WUuz
+         CgUvVTYh5TAFN4zmWQKIBMPu1G5jntSx1FNoL7BFRdWm3HvnizO+nvyGCPl4lVhel6Dw
+         6NwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694208598; x=1694813398;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2qDdudysz/QEH80r6EgYVihuuCpmrfhapLn+3lG+eMs=;
-        b=YZNH0QCdva8ksQSSVJfuu+UIknojiun4AJPX0mmw72KLH6+GZtxUHk4raRsNKn+v20
-         dK2kHzwwLwR3XGvHcxPC448UlFghsHUul741o31/Hs4hLtk3dZyU/L+b2UNWcr0K320P
-         NS/uG6sSW/t5Jtpb7jSfFC0u+7YOdEPmNIOv4/4J/5aneqCW6yuVMp8XgKi5QVCs8Oro
-         nTkee6NfN/eGjcSEwU1cEaWBHKhoFt52/Ep7zcIYuGXbwSsZiap9k3bY4hyaELPrNBHF
-         QGzvbmxhCTR2ecCwHbjx1tJgh4OpMMfxJiz3gfpLtXx1/rstFLanPD6MiIYr0J6nwG/H
-         mciQ==
-X-Gm-Message-State: AOJu0YzbUTA0cUT23Ogr59jUu1jvltDqzmA01L/Cpf5KnObMxve0iY3D
-        57Uc41gAihCzVpF/FMNKRcwGD1RWWG9v0aaB30FvzQ==
-X-Google-Smtp-Source: AGHT+IHLxc6Pt+LOz/vNpPU9ODhICc7VbTgK0zhU7UukD8vadAWyMGPJPmRY8v9AfR6NmoYisAx+6DTfyXICbK2T2eY=
-X-Received: by 2002:ac2:4839:0:b0:500:ac71:8464 with SMTP id
- 25-20020ac24839000000b00500ac718464mr2558487lft.66.1694208598596; Fri, 08 Sep
- 2023 14:29:58 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 8 Sep 2023 16:29:57 -0500
-MIME-Version: 1.0
-In-Reply-To: <20230908045946.GM1599918@black.fi.intel.com>
-References: <20230906180944.2197111-1-swboyd@chromium.org> <20230906180944.2197111-2-swboyd@chromium.org>
- <20230907053513.GH1599918@black.fi.intel.com> <CAE-0n51Ut296M2ZetuzXGpX32pS11bbWzfcbaFfqNxgSjzafJw@mail.gmail.com>
- <20230908045946.GM1599918@black.fi.intel.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date:   Fri, 8 Sep 2023 16:29:57 -0500
-Message-ID: <CAE-0n52VoAFopSgXiLMoSzBAdSLg4=x3i2R9Agjz5L7o8=1hew@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] platform/x86: intel_scu_ipc: Check status after
- timeout in busy_loop()
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        platform-driver-x86@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Prashant Malani <pmalani@chromium.org>
+        d=1e100.net; s=20230601; t=1694208717; x=1694813517;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R7b9OwuJv//o+ELCx6dXPif0Xt9fI41k+DjaD06EUhk=;
+        b=P/vgWjRLul/H5j2tmIL7YugwdKprBwG5OcekSe8wu7sbHHIVfjUlqUI2ggnRj5y4xv
+         UKp1h3ARkhj9cFbSpLVMa1zqZXznOZJiVKRmZZ7MDIVXuNMfSymgGjYCCot/zWbCjyoJ
+         ESAeVptuvqQgbmy8TqePdbTaMfkmICABm1wkwRmX5F+ASaV6tm9ks2tpydkNbHEynRX8
+         vSgHdFFdk+HmNmirNN+ujqsv+Y65WKgKSUkI3d+O3Nx/wbcaAFxmNnT1KmF5fa+bJzia
+         QdBHDeGrvpX9pjVXXysyv1MCatMfqPADEGbLREAUXzkgu7krbsldMJQpUu5nrcWDbtF8
+         4f9w==
+X-Gm-Message-State: AOJu0YxkjIkOR/Iu9sVFSUasPtk75nlPjoA1+YwOioZg6RPZzAQrlTPx
+        XVzmBAjfjRDWYxGUSNzQhvNO8DrDVw==
+X-Google-Smtp-Source: AGHT+IEw+uv+zm8RDEBGwRxkANylW/q4pnLNxvXTx2e/IAUJA2oImZKkJ8rFY6JBFveIzVpREN4PUp1ToA==
+X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
+ (user=rmoar job=sendgmr) by 2002:a25:8203:0:b0:d7e:b82a:ef68 with SMTP id
+ q3-20020a258203000000b00d7eb82aef68mr78275ybk.3.1694208717716; Fri, 08 Sep
+ 2023 14:31:57 -0700 (PDT)
+Date:   Fri,  8 Sep 2023 21:31:47 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
+Message-ID: <20230908213148.3610108-1-rmoar@google.com>
+Subject: [PATCH v2 1/2] kunit: add ability to run tests after boot using debugfs
+From:   Rae Moar <rmoar@google.com>
+To:     shuah@kernel.org, davidgow@google.com, dlatypov@google.com,
+        brendan.higgins@linux.dev, sadiyakazi@google.com
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Mika Westerberg (2023-09-07 21:59:46)
-> On Thu, Sep 07, 2023 at 01:11:17PM -0700, Stephen Boyd wrote:
-> >
-> > We can't use readl_busy_timeout() (you mean readl_poll_timeout() right?)
-> > because that implements the timeout with timekeeping and we don't know
-> > if this is called from suspend paths after timekeeping is suspended or
-> > from early boot paths where timekeeping isn't started.
->
-> Yes readl_poll_timeout(). :)
->
-> I don't think this code is used anymore outside of regular paths. It
-> used to be with the Moorestown/Medfield board support code but that's
-> gone already. Grepping for the users also don't reveal anything that
-> could be using it early at boot.
+Add functionality to run built-in tests after boot by writing to a
+debugfs file.
 
-Ok. Assuming this isn't used from paths during suspend/resume when
-timekeeping is suspended it look like readl_poll_timeout() is the
-shorter and simpler approach. So if that works for you I'll send another
-round with that and a fix for the ipcdev being overwritten.
+Add a new debugfs file labeled "run" for each test suite to use for
+this purpose.
+
+As an example, write to the file using the following:
+
+echo "any string" > /sys/kernel/debugfs/kunit/<testsuite>/run
+
+This will trigger the test suite to run and will print results to the
+kernel log.
+
+Note that what you "write" to the debugfs file will not be saved.
+
+To guard against running tests concurrently with this feature, add a
+mutex lock around running kunit. This supports the current practice of
+not allowing tests to be run concurrently on the same kernel.
+
+This functionality may not work for all tests.
+
+This new functionality could be used to design a parameter
+injection feature in the future.
+
+Signed-off-by: Rae Moar <rmoar@google.com>
+---
+
+Changes since v1:
+- Removed second patch as this problem has been fixed
+- Added Documentation patch
+- Made changes to work with new dynamically-extending log feature
+
+Note that these patches now rely on (and are rebased on) the patch series:
+https://lore.kernel.org/all/20230828104111.2394344-1-rf@opensource.cirrus.com/
+
+ lib/kunit/debugfs.c | 66 +++++++++++++++++++++++++++++++++++++++++++++
+ lib/kunit/test.c    | 13 +++++++++
+ 2 files changed, 79 insertions(+)
+
+diff --git a/lib/kunit/debugfs.c b/lib/kunit/debugfs.c
+index 270d185737e6..8c0a970321ce 100644
+--- a/lib/kunit/debugfs.c
++++ b/lib/kunit/debugfs.c
+@@ -8,12 +8,14 @@
+ #include <linux/module.h>
+ 
+ #include <kunit/test.h>
++#include <kunit/test-bug.h>
+ 
+ #include "string-stream.h"
+ #include "debugfs.h"
+ 
+ #define KUNIT_DEBUGFS_ROOT             "kunit"
+ #define KUNIT_DEBUGFS_RESULTS          "results"
++#define KUNIT_DEBUGFS_RUN              "run"
+ 
+ /*
+  * Create a debugfs representation of test suites:
+@@ -21,6 +23,8 @@
+  * Path						Semantics
+  * /sys/kernel/debug/kunit/<testsuite>/results	Show results of last run for
+  *						testsuite
++ * /sys/kernel/debug/kunit/<testsuite>/run	Write to this file to trigger
++ *						testsuite to run
+  *
+  */
+ 
+@@ -99,6 +103,51 @@ static int debugfs_results_open(struct inode *inode, struct file *file)
+ 	return single_open(file, debugfs_print_results, suite);
+ }
+ 
++/*
++ * Print a usage message to the debugfs "run" file
++ * (/sys/kernel/debug/kunit/<testsuite>/run) if opened.
++ */
++static int debugfs_print_run(struct seq_file *seq, void *v)
++{
++	struct kunit_suite *suite = (struct kunit_suite *)seq->private;
++
++	seq_puts(seq, "Write to this file to trigger the test suite to run.\n");
++	seq_printf(seq, "usage: echo \"any string\" > /sys/kernel/debugfs/kunit/%s/run\n",
++			suite->name);
++	return 0;
++}
++
++/*
++ * The debugfs "run" file (/sys/kernel/debug/kunit/<testsuite>/run)
++ * contains no information. Write to the file to trigger the test suite
++ * to run.
++ */
++static int debugfs_run_open(struct inode *inode, struct file *file)
++{
++	struct kunit_suite *suite;
++
++	suite = (struct kunit_suite *)inode->i_private;
++
++	return single_open(file, debugfs_print_run, suite);
++}
++
++/*
++ * Trigger a test suite to run by writing to the suite's "run" debugfs
++ * file found at: /sys/kernel/debug/kunit/<testsuite>/run
++ *
++ * Note: what is written to this file will not be saved.
++ */
++static ssize_t debugfs_run(struct file *file,
++		const char __user *buf, size_t count, loff_t *ppos)
++{
++	struct inode *f_inode = file->f_inode;
++	struct kunit_suite *suite = (struct kunit_suite *) f_inode->i_private;
++
++	__kunit_test_suites_init(&suite, 1);
++
++	return count;
++}
++
+ static const struct file_operations debugfs_results_fops = {
+ 	.open = debugfs_results_open,
+ 	.read = seq_read,
+@@ -106,10 +155,23 @@ static const struct file_operations debugfs_results_fops = {
+ 	.release = debugfs_release,
+ };
+ 
++static const struct file_operations debugfs_run_fops = {
++	.open = debugfs_run_open,
++	.read = seq_read,
++	.write = debugfs_run,
++	.llseek = seq_lseek,
++	.release = debugfs_release,
++};
++
+ void kunit_debugfs_create_suite(struct kunit_suite *suite)
+ {
+ 	struct kunit_case *test_case;
+ 
++	if (suite->log) {
++		/* Clear the suite log that's leftover from a previous run. */
++		string_stream_clear(suite->log);
++		return;
++	}
+ 	/* Allocate logs before creating debugfs representation. */
+ 	suite->log = alloc_string_stream(GFP_KERNEL);
+ 	string_stream_set_append_newlines(suite->log, true);
+@@ -124,6 +186,10 @@ void kunit_debugfs_create_suite(struct kunit_suite *suite)
+ 	debugfs_create_file(KUNIT_DEBUGFS_RESULTS, S_IFREG | 0444,
+ 			    suite->debugfs,
+ 			    suite, &debugfs_results_fops);
++
++	debugfs_create_file(KUNIT_DEBUGFS_RUN, S_IFREG | 0644,
++			    suite->debugfs,
++			    suite, &debugfs_run_fops);
+ }
+ 
+ void kunit_debugfs_destroy_suite(struct kunit_suite *suite)
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index 651cbda9f250..d376b886d72d 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -13,6 +13,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
++#include <linux/mutex.h>
+ #include <linux/panic.h>
+ #include <linux/sched/debug.h>
+ #include <linux/sched.h>
+@@ -22,6 +23,8 @@
+ #include "string-stream.h"
+ #include "try-catch-impl.h"
+ 
++static struct mutex kunit_run_lock;
++
+ /*
+  * Hook to fail the current test and print an error message to the log.
+  */
+@@ -668,6 +671,11 @@ int __kunit_test_suites_init(struct kunit_suite * const * const suites, int num_
+ 		return 0;
+ 	}
+ 
++	/* Use mutex lock to guard against running tests concurrently. */
++	if (mutex_lock_interruptible(&kunit_run_lock)) {
++		pr_err("kunit: test interrupted\n");
++		return -EINTR;
++	}
+ 	static_branch_inc(&kunit_running);
+ 
+ 	for (i = 0; i < num_suites; i++) {
+@@ -676,6 +684,7 @@ int __kunit_test_suites_init(struct kunit_suite * const * const suites, int num_
+ 	}
+ 
+ 	static_branch_dec(&kunit_running);
++	mutex_unlock(&kunit_run_lock);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(__kunit_test_suites_init);
+@@ -836,6 +845,10 @@ static int __init kunit_init(void)
+ 	kunit_install_hooks();
+ 
+ 	kunit_debugfs_init();
++
++	/* Initialize lock to guard against running tests concurrently. */
++	mutex_init(&kunit_run_lock);
++
+ #ifdef CONFIG_MODULES
+ 	return register_module_notifier(&kunit_mod_nb);
+ #else
+
+base-commit: b754593274e04fc840482a658b29791bc8f8b933
+-- 
+2.42.0.283.g2d96d420d3-goog
+
