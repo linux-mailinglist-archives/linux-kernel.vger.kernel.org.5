@@ -2,75 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41368798B4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 19:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93563798B53
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 19:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245393AbjIHRLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 13:11:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36086 "EHLO
+        id S244307AbjIHRPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 13:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233810AbjIHRLr (ORCPT
+        with ESMTP id S229492AbjIHRPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 13:11:47 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CB81FD5;
-        Fri,  8 Sep 2023 10:11:41 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-529fb2c6583so3037262a12.1;
-        Fri, 08 Sep 2023 10:11:41 -0700 (PDT)
+        Fri, 8 Sep 2023 13:15:32 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5B8CE6
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 10:15:28 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-500c37d479aso3645540e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 10:15:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694193099; x=1694797899; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZRZZtDSDbQ7ziD6U8enIVKCW6fBD3XLhOHURnTZwm+I=;
-        b=r27LHMXWq6JFzDriX8S3cF9X1svThjv4/reAkCS3DbEu72buDQ1aYGa1CvFoeZF5aj
-         e9yZ0pMOkcupdXxiv6022expw+GebuThz8p16RxTo7WORyDhnmxrUKP0H7+e0HkkQxKn
-         RHD8ezIKlE1jYuvHOwKKAUPGp4DYClq8hV+Qeg0vgYL71Wdd2OcKzCVMt7GKODJMhW2t
-         BaQyTZACPYm74HCilFHOSnlkAaXT/wZ5torJefR63qsR3Zy0JvV6VX1jGYgBXEwWNkfl
-         JWB5Rdnj+dGNmY4tj21esg3v1XdRsqIKCbrxjSC8NMoxYMxJWrpjM3tI0OtHj4CAKac6
-         CbxQ==
+        d=linux-foundation.org; s=google; t=1694193326; x=1694798126; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ftE86UDOiJ2OxuBofmHmxxisKgEH1PFcf8OJbUZ9prw=;
+        b=hKn+qYs/SFvQwH/NKkPyQIcvIHY/YFd34k2cUIBnLgga9M9cvq5wmTrNlBWmcNRg0e
+         aCWHTU6Fm1mZlAMkhxudp1ZPrhE4mrD/et7yqqcmwkCn9onK1g3P2wlwrHQH3AcLXCHM
+         oGTy8c3xJsG8OXEggrbOzk56nuHYpSu1UVFqA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694193099; x=1694797899;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZRZZtDSDbQ7ziD6U8enIVKCW6fBD3XLhOHURnTZwm+I=;
-        b=Qcxb9JWVnNmdVtposNsiw9UjB0fifaHYlKG4M2zWmaqumXJ1GVAcyNFckFi8y5KKSk
-         oKRc6ZN1H8l+Pz86awk7oOBqSA1lqcmTlOYfuACjuAau6C3BriT21JugO19Hm9pbAIXD
-         JSmRscEYsUuwC2WXL/Tf51beHJgu92p3Gh/lLOzB6nNO8svoCDfb/1NUFeLDvf4gNnwf
-         dWYqcHDMFvqK3jRv2cagb0RMA6hv1Wavg316gZMcq344xCvVKoOZGgvvvPggDJFkCia8
-         AICIHGfcoLfjC7IXOrWBQxJY5yczGLLnKLGVbCobx5FE0s+gEOBQJ0df3OLRjxCdun3J
-         38Gw==
-X-Gm-Message-State: AOJu0Yx2Q0EzD2RrZiTzKc9oL0daeTAGLJuRfvpQtpkfJbnLL3LsGXNX
-        mCKwdzEPOh/XUCr6hsdFVaHnmBeROP+4qduMBmg=
-X-Google-Smtp-Source: AGHT+IE81vOXgV+267Me6pgBsx7NyiALIoCgSFaF5/bhivgWOBvhVj01wJZJAyOS8B2FCfiqobx9r2YWGa9o39w+McA=
-X-Received: by 2002:a05:6402:1219:b0:523:102f:3ce1 with SMTP id
- c25-20020a056402121900b00523102f3ce1mr2572978edw.10.1694193099037; Fri, 08
- Sep 2023 10:11:39 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694193326; x=1694798126;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ftE86UDOiJ2OxuBofmHmxxisKgEH1PFcf8OJbUZ9prw=;
+        b=sqYoV23YhXrAPlNqtByX5lb6oFN1ZgJRsJ+k6V7Fwln3nr7VTU3YnjnNcJHkF9Py2Y
+         fI/qSIMx+hLS5LwmML9I9CaremA2aKDyNlNgGGJu7xAwv3qSXw+Z4hX2eFSmilaGgEUw
+         kXISX1/Se917gjbMO+0Guwz4MTdmtT3biVZXIkJ3Nn/qsYfFzpK6zRIGCURzRfq+q91N
+         4E5kB0HlGkNUh9m4lcm2jenzhBrk6FFkqnUmo9dONnEKnIBwFAxoR4QrwekmXgTcLFu+
+         Pp1m3XR6Y6iZfCc17irHwwiSI/kA9BudV3kEqDEUogYqN/eieu5/BTpwZ9RU5QzxhMWl
+         T0yg==
+X-Gm-Message-State: AOJu0YxUcUpPjkRyuOn29YLKi2P7XGZcbkofw4oDGGPbpbnlNvANPKoD
+        4CLTqJ7cZkXIcVMvttPjdng66cQpwjKxZUBK9MLbfG26
+X-Google-Smtp-Source: AGHT+IGNZ/ljVRqpDGIEjXFE2cCJ1AxuF6HpmgQTb8PcTEgILbjCtLRQafx99oV05eL0c9H5Dl9clQ==
+X-Received: by 2002:a05:6512:2346:b0:500:7dc0:b0b2 with SMTP id p6-20020a056512234600b005007dc0b0b2mr3156889lfu.28.1694193326344;
+        Fri, 08 Sep 2023 10:15:26 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id p14-20020ac246ce000000b004fa52552c7csm332991lfo.151.2023.09.08.10.15.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Sep 2023 10:15:25 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-500c37d479aso3645477e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 10:15:25 -0700 (PDT)
+X-Received: by 2002:a05:6512:e9a:b0:4fb:77d6:89c3 with SMTP id
+ bi26-20020a0565120e9a00b004fb77d689c3mr3236491lfb.12.1694193324794; Fri, 08
+ Sep 2023 10:15:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230906182125.48642-1-jandryuk@gmail.com> <24a741a4-b305-c817-e8c3-34b213ad0ee5@intel.com>
-In-Reply-To: <24a741a4-b305-c817-e8c3-34b213ad0ee5@intel.com>
-From:   Jason Andryuk <jandryuk@gmail.com>
-Date:   Fri, 8 Sep 2023 13:11:27 -0400
-Message-ID: <CAKf6xpvOG5kunrfQEoDBvrrY+UVUn3+9ovKmqXZo88nh05tt6Q@mail.gmail.com>
-Subject: Re: [PATCH v2] acpi/processor: sanitize _PDC buffer bits when running
- as Xen dom0
-To:     "Wilczynski, Michal" <michal.wilczynski@intel.com>
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Roger Pau Monne <roger.pau@citrix.com>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+References: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
+ <20230830184958.2333078-8-ankur.a.arora@oracle.com> <20230908070258.GA19320@noisy.programming.kicks-ass.net>
+In-Reply-To: <20230908070258.GA19320@noisy.programming.kicks-ass.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 8 Sep 2023 10:15:07 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wif4WMu-k9Pi9BoVRZwH6npjS6Km9DR9aROxANZzN2iRQ@mail.gmail.com>
+Message-ID: <CAHk-=wif4WMu-k9Pi9BoVRZwH6npjS6Km9DR9aROxANZzN2iRQ@mail.gmail.com>
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
+        tglx@linutronix.de, jon.grimm@amd.com, bharata@amd.com,
+        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
+        konrad.wilk@oracle.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,41 +82,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 7, 2023 at 9:20=E2=80=AFAM Wilczynski, Michal
-<michal.wilczynski@intel.com> wrote:
+On Fri, 8 Sept 2023 at 00:03, Peter Zijlstra <peterz@infradead.org> wrote:
 >
->
-> Hi,
->
-> On 9/6/2023 8:21 PM, Jason Andryuk wrote:
-> > From: Roger Pau Monne <roger.pau@citrix.com>
-> >
-> > The Processor _PDC buffer bits notify ACPI of the OS capabilities, and
-> > so ACPI can adjust the return of other Processor methods taking the OS
-> > capabilities into account.
->
-> _PDC method is deprecated for this purpose, since 2018, and is dropped fr=
-om
-> spec since 6.5
->
-> We made the switch in linux since 6.6:
-> 95272641338a ("ACPI: processor: Use _OSC to convey OSPM processor support=
- information")
+> Which on a PREEMPT_COUNT=n build will cause preemption while holding the
+> spinlock. I think something like the below will cause sufficient
+> warnings to avoid growing patterns like that.
 
-Thanks for the heads up, Michal.  The patch pre-dated 6.6 and I based
-this one off of 6.5.
+Hmm. I don't think that warning is valid.
 
-> >
-> > When Linux is running as a Xen dom0, it's the hypervisor the entity
-> > in charge of processor power management, and hence Xen needs to make
-> > sure the capabilities reported in the _PDC buffer match the
-> > capabilities of the driver in Xen.
->
-> So I guess you would need to sanitize buffer passed to _OSC method instea=
-d ?
+Disabling preemption is actually fine if it's done in an interrupt,
+iow if we have
 
-I think I'll modify the capabilities in arch_acpi_set_proc_cap_bits()
-and that will handle both _OSC and the _PDC fallback.
+        allow_resched();
+           -> irq happens
+                spin_lock();  // Ok and should *not* complain
+                ...
+                spin_unlock();
+            <- irq return (and preemption)
 
-Regards,
-Jason
+which actually makes me worry about the nested irq case, because this
+would *not* be ok:
+
+        allow_resched();
+           -> irq happens
+                -> *nested* irq happens
+                <- nested irq return (and preemption)
+
+ie the allow_resched() needs to still honor the irq count, and a
+nested irq return obviously must not cause any preemption.
+
+I've lost sight of the original patch series, and I assume / hope that
+the above isn't actually an issue, but exactly because I've lost sight
+of the original patches and only have this one in my mailbox I wanted
+to check.
+
+            Linus
