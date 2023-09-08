@@ -2,121 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CC5797F94
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 02:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D426797F96
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 02:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240801AbjIHASN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 20:18:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
+        id S240868AbjIHASa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 20:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238766AbjIHASM (ORCPT
+        with ESMTP id S230471AbjIHAS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 20:18:12 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06481BD3
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 17:18:07 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-794cd987ea6so58411739f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 17:18:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1694132287; x=1694737087; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kwqmgF23vQcnqhZph/r7b6EAuDvU+RRr94jnoyag2zI=;
-        b=k4ldOB/WV2Id/FMn4xqDqDA5iWuBuakDzCDiwsDF5nqDBOUAQ8uJZN8Tz1OBZJdl56
-         RdXUeyfXrQYpiHVVc2ljR0AhD/OuIu1IMeBMBu/4ftgQr9lYAduL2FlbvvZU5/ef4sTX
-         NXuZ6xkRrnHynR+vqFPgd/d0b3DLAxBoVsb1k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694132287; x=1694737087;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kwqmgF23vQcnqhZph/r7b6EAuDvU+RRr94jnoyag2zI=;
-        b=qJ4ToMQ6KdMuChkpS4JZLMqiyz7zLwqsDv73DyNSGlvQSgzrOPO/emE71hJ85/T1fG
-         r/Nx1LOmEqfL8Jntn+XX0ToviAhIObIMbyXfYfnyAqfgJOGqCXXlv18POZ7pkvDswtVT
-         6ZMh8LigOrrgShNLHHUyewjyFpTz1pOiSsa9HFNT/wrHhW7HOwJr9z4gNR9lqiPXtOUb
-         /CDEg/2a2+A1lHhMlNjZARTSyuvERlFuIMT8qbXiHRTWEbt7fyWrRMt15VrAhH8Ax49L
-         Gjx1WR3epB/ZalnChO1j7i3g1I4UCiTLfl+WC/PNRHEp6XCM0UJJkfJgHmrfa35xFNR7
-         UPpg==
-X-Gm-Message-State: AOJu0YzD9N+oXS2iO87yb6yB3APN9mvqokZgcENaEhhUWDkM14hPYm3+
-        ccojemzfjTEFdkJIGjqdyYW5sw==
-X-Google-Smtp-Source: AGHT+IH0N9Wu/V5lr5E20iI/yXizux3YQc4t0WJJ5poVDN3LCLNNDsPqZDNXh/R/umIjfpjCExXvYQ==
-X-Received: by 2002:a6b:610a:0:b0:786:25a3:ef30 with SMTP id v10-20020a6b610a000000b0078625a3ef30mr1337280iob.7.1694132287217;
-        Thu, 07 Sep 2023 17:18:07 -0700 (PDT)
-Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id u1-20020a02c041000000b0042b1061c6a8sm143948jam.84.2023.09.07.17.18.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 17:18:06 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 00:18:05 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Zhen Lei <thunder.leizhen@huaweicloud.com>,
-        rcu@vger.kernel.org, Zqiang <qiang.zhang1211@gmail.com>,
-        stable@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3 1/2] mm/vmalloc: Add a safer version of find_vm_area()
- for debug
-Message-ID: <20230908001805.GA4088026@google.com>
-References: <20230904180806.1002832-1-joel@joelfernandes.org>
- <571d4a4a-0674-4c84-b714-8e7582699e30@lucifer.local>
- <20230905114709.GA3881391@google.com>
- <CAA5enKbvrvTx=d6MgLZjupnsEuoCnRN8e9p+ffnJV1rJS+HkXA@mail.gmail.com>
- <20230906224608.GB1646335@google.com>
- <499537a7-3380-4355-ae34-df7f5c0f41bd@lucifer.local>
- <ZPmWnGG9b0JXsR54@pc636>
+        Thu, 7 Sep 2023 20:18:29 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE61419BD;
+        Thu,  7 Sep 2023 17:18:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1694132301;
+        bh=fpKdjFrfIKXIXJ9t1+BvKKKPcMvMMkRf2U7lxYASI5Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tOm/PaJJ2xxuCiCj7jqwsRrzejvpDnYqOXYohjy1fwPO4pbVHVvEaZYs+gofApOri
+         +wZAXhDwT2BjW/y/YX9jhqQcrJ6bnhYwZ+IrP+9Mk09NgQpVWfv7tuwI6TWULW/5N9
+         zjPZBSK50HYcoK+gd7UIcdLaj70vBjBr7cIivHUmq9hQJsVeMREsM2GOLeD75ZJAdV
+         eUttHAwKQXNpvbZoVj4rKDmLrCXZ6QFH76MFTgadwg3V4eO+EOOVjL0Pb8fgQLi1Fq
+         rfYzxYKG3DcAeJexdHFscLhJGv2AW3zGEs68YFg0J1iuWmSTNMnX7JWbJAOc/Cx3TN
+         lWZkt4S37TTWQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RhcCK04wdz4xFC;
+        Fri,  8 Sep 2023 10:18:20 +1000 (AEST)
+Date:   Fri, 8 Sep 2023 10:18:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the kvm-x86 tree
+Message-ID: <20230908101819.65e8994c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZPmWnGG9b0JXsR54@pc636>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/MlhS=k.9dxUGq+xnQ3sZrxE";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 11:23:40AM +0200, Uladzislau Rezki wrote:
-> On Thu, Sep 07, 2023 at 08:11:48AM +0100, Lorenzo Stoakes wrote:
-[..]
-> > Anyway, so TL;DR:-
-> > 
-> > 1. As we both agree, add a comment to explain why you need the spin trylock.
-> > (there are no further steps :P)
-> > 
-> > And I don't believe this actually needs any further changes after this
-> > discussion*, so if you fancy doing a follow up to that effect that will
-> > suffice for me thanks!
+--Sig_/MlhS=k.9dxUGq+xnQ3sZrxE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks.
+Hi all,
 
-> For PREEMPT_RT kernels we are not allowed to use "vmap parts" in non
-> slepable context, this is just reality, because we use a sleep type of
-> spinlock.
-> 
-> I am not sure how urgent we need this fix. But to me it looks like
-> debuging and corner case. Probably i am wrong and miss something.
-> But if it is correct, i would just bailout for RT kernel and rework
-> later in a more proper way. For example implement a safe way of RCU
-> scan but this is also another story.
+The following commits are also in Linus Torvalds' tree as different
+commits (but the same patches):
 
-Bailing out for RT kernel is insufficient, as we need the trylock() to avoid
-self-deadlock as well for !PREEMPT_RT. Plus IIRC in the past there was a
-opposition to special-casing PREEMPT_RT in code as well. Admittedly those
-PREEMPT_RT cases were related to detecting preempt-disabled than a lock-held
-section though.
+  004c297c327f ("KVM: x86/mmu: Harden TDP MMU iteration against root w/o sh=
+adow page")
+  064a5ab685bd ("KVM: x86/mmu: Cleanup sanity check of SPTEs at SP free")
+  1265fb534fa1 ("KVM: x86: Remove the unused page-track hook track_flush_sl=
+ot()")
+  21baf78ef845 ("KVM: x86/mmu: BUG() in rmap helpers iff CONFIG_BUG_ON_DATA=
+_CORRUPTION=3Dy")
+  21e0e1efd880 ("KVM: x86/mmu: Assert that correct locks are held for page =
+write-tracking")
+  2431c9ab231a ("KVM: x86/mmu: Drop infrastructure for multiple page-track =
+modes")
+  2d28b1230c1c ("drm/i915/gvt: Drop final dependencies on KVM internal deta=
+ils")
+  2f502998b046 ("KVM: x86/mmu: Move kvm_arch_flush_shadow_{all,memslot}() t=
+o mmu.c")
+  3e90c27b4209 ("KVM: x86/mmu: Guard against collision with KVM-defined PFE=
+RR_IMPLICIT_ACCESS")
+  3f8eb1d7d3ee ("KVM: drm/i915/gvt: Drop @vcpu from KVM's ->track_write() h=
+ook")
+  472ba3231883 ("KVM: x86/mmu: Plumb "struct kvm" all the way to pte_list_r=
+emove()")
+  4879a4370304 ("drm/i915/gvt: Use an "unsigned long" to iterate over memsl=
+ot gfns")
+  49a83e190b5b ("drm/i915/gvt: Protect gfn hash table with vgpu_lock")
+  4b42f39917c1 ("KVM: x86/mmu: Rename page-track APIs to reflect the new re=
+ality")
+  4f121b5d2228 ("KVM: x86/mmu: Bug the VM if a vCPU ends up in long mode wi=
+thout PAE enabled")
+  537eef32e720 ("drm/i915/gvt: Explicitly check that vGPU is attached befor=
+e shadowing")
+  5a9481e69942 ("KVM: x86/mmu: Delete pgprintk() and all its usage")
+  6a718c54c2ee ("drm/i915/gvt: Don't try to unpin an empty page range")
+  6d6ff9e6db15 ("KVM: x86/mmu: Bug the VM if write-tracking is used but not=
+ enabled")
+  732f57612d5c ("KVM: x86/mmu: Add helper to convert root hpa to shadow pag=
+e")
+  81d4621b7d9f ("KVM: x86/mmu: Disallow guest from using !visible slots for=
+ page tables")
+  823ab2ea8429 ("drm/i915/gvt: remove interface intel_gvt_is_valid_gfn")
+  865327865164 ("drm/i915/gvt: Verify pfn is "valid" before dereferencing "=
+struct page"")
+  982758f88bb9 ("KVM: x86/mmu: Replace MMU_DEBUG with proper KVM_PROVE_MMU =
+Kconfig")
+  9e3f832edfca ("KVM: x86/mmu: Harden new PGD against roots without shadow =
+pages")
+  a328a359d99b ("KVM: x86/mmu: Use dummy root, backed by zero page, for !vi=
+sible guest roots")
+  a41e34b05da7 ("drm/i915/gvt: Don't bother removing write-protection on to=
+-be-deleted slot")
+  ac5e77621712 ("drm/i915/gvt: Drop unused helper intel_vgpu_reset_gtt()")
+  b9ae8a09f357 ("drm/i915/gvt: switch from ->track_flush_slot() to ->track_=
+remove_region()")
+  bc90c971dcb7 ("KVM: x86/mmu: Use BUILD_BUG_ON_INVALID() for KVM_MMU_WARN_=
+ON() stub")
+  bfd926291c58 ("KVM: x86/mmu: Include mmu.h in spte.h")
+  c7784ee6cc06 ("KVM: x86/mmu: Avoid pointer arithmetic when iterating over=
+ SPTEs")
+  c94811471997 ("drm/i915/gvt: Error out on an attempt to shadowing an unkn=
+own GTT entry type")
+  ca181aa50724 ("KVM: x86/mmu: Drop @slot param from exported/external page=
+-track APIs")
+  e19314998321 ("KVM: x86/mmu: Move the lockdep_assert of mmu_lock to insid=
+e clear_dirty_pt_masked()")
+  e1cb291d66ac ("KVM: x86/mmu: Rename MMU_WARN_ON() to KVM_MMU_WARN_ON()")
+  e27395fb1b87 ("drm/i915/gvt: Verify hugepages are contiguous in physical =
+address space")
+  e2fe84fb5eae ("KVM: x86/mmu: Don't rely on page-track mechanism to flush =
+on memslot change")
+  eae2d71635a1 ("KVM: x86/mmu: Handle KVM bookkeeping in page-track APIs, n=
+ot callers")
+  ed501863ae54 ("KVM: x86/mmu: Delete rmap_printk() and all its usage")
+  f018c319cc2f ("drm/i915/gvt: Don't rely on KVM's gfn_to_pfn() to query po=
+ssible 2M GTT")
+  f01ebf874adb ("KVM: x86/mmu: Delete the "dbg" module param")
+  f1c58cdb8e04 ("KVM: x86/mmu: Don't bounce through page-track mechanism fo=
+r guest PTEs")
+  f969ecabe30b ("drm/i915/gvt: Put the page reference obtained by KVM's gfn=
+_to_pfn()")
 
-We could optionally do a trylock() loop + bail out after certain number of
-tries as well but that would compilicate the code a bit more and I am not
-sure if it is worth it. Still if you guys feel strongly about doing something
-like that, let me know and I can give it a try :).
+--=20
+Cheers,
+Stephen Rothwell
 
-thanks,
+--Sig_/MlhS=k.9dxUGq+xnQ3sZrxE
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
- - Joel
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmT6aEsACgkQAVBC80lX
+0Gwi+Af/aiEDXUxbKKPHHX5Yi9PyeaqrZPpJnq7/OWPinah0s8UwtkVNA2vOLiiS
+b3Xg5TraoGO+gU9PwudvRCwBrdLE2S5kLWofEluI47lKJzYAjZZN5AaI/6bKVHK5
+Jf6Izki9rVcSB7uv9nTxbBtyFoSdsR91osH2XXPEsDHhJjOerVs+yihk9Ylq+47C
+U0BqPJfpi25vLYJlS94/IR1Crr2ZXf8YMwgLGoezV5YBuwrgkxh9Mg/JWO713u0N
+1uzvc2s9rTOpUYsu+HucCfwT3VT2MqDJCnG1x6WQ1dEYaajbJ8lW4X2X1IU+eQeu
+0pP83EjsppoovGyuF1NGAE7nqbxI/A==
+=cARn
+-----END PGP SIGNATURE-----
+
+--Sig_/MlhS=k.9dxUGq+xnQ3sZrxE--
