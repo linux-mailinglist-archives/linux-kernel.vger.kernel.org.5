@@ -2,83 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 717707989C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057F47989C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244483AbjIHPUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 11:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34538 "EHLO
+        id S244435AbjIHPXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 11:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234324AbjIHPUB (ORCPT
+        with ESMTP id S243637AbjIHPXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 11:20:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4501BFF;
-        Fri,  8 Sep 2023 08:19:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694186398; x=1725722398;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Om6CjFzh5dLipu2fLEo63swa2QFjMY5gRRlLIokstrk=;
-  b=cMVNLhU5uvB7Wcv2BPC6rEWT5u2QaweWq/nfNchJyQ/fs3b1PiE5iuF1
-   wugjwVvR7gZdSuteoZNudkrn4SbcucBGXK4ewkViTyihZSPXIx163e5iL
-   i3PqO4d/LeiOp/wHwDREb/f16f4cRfn+XcmdJMi8edc6UMjQUxgSEFXtj
-   0SZmn+CCW4TTUFsyudTJyL4tmVub3YuBDuVdAfUphbnVmG4TCZfB53if9
-   9NaEDnlNu3OstUPqDPiVI2wc/DrIj+Waqw0u2A08NMI716w05e1Ib4WHP
-   6HTYdmkIpNTomBwAC2DWL8nX4RO6G2Azid4Xkc7gjoZgKrhkKAmuRE+ly
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="464043949"
-X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
-   d="scan'208";a="464043949"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 08:19:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="989293235"
-X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
-   d="scan'208";a="989293235"
-Received: from fgilganx-mobl1.amr.corp.intel.com (HELO [10.209.17.195]) ([10.209.17.195])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 08:19:56 -0700
-Message-ID: <95e9f2f8-d714-2f9e-6bbe-56c51b9125b6@intel.com>
-Date:   Fri, 8 Sep 2023 08:19:55 -0700
+        Fri, 8 Sep 2023 11:23:08 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A12B1FDC;
+        Fri,  8 Sep 2023 08:23:02 -0700 (PDT)
+Received: from localhost.localdomain (unknown [171.76.82.102])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: vignesh)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 908B16607286;
+        Fri,  8 Sep 2023 16:22:54 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694186580;
+        bh=UH7JSXB6n2DATdqfhUnkdU+dfoIlqt8kj0cMfuz0osk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=igyvzlqK5lTzT29SaRx5bCMKCwY4r6CFAJi1gYFmbWRaZUIY83Itg/T7tDjJxg+Wn
+         +gmlb2G86StkbllazVja93Mzjxf4XsTrgVn8I8N6hw/eDKq/Axc90ABzulch+e8RNS
+         qjMP2pa3vtcjcOeG1g7d7Bqxb+WRUsLG0HGWquZbuXJQBuo2boB/CVSqI6UH8VO/r1
+         idwEN7nFMIxoCttRbLW9Bp+kusAs5wG6Ei2IyR6/x6OZS/32GCIjgRFG119PmOZuFL
+         OB636AUb+930DyYaQwVKApws+/A14fHy4TZnPr2riikJjdg2wMAclhvSTLrEPQJqNr
+         r98mp3sOMYKSw==
+From:   Vignesh Raman <vignesh.raman@collabora.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     helen.koike@collabora.com, guilherme.gallo@collabora.com,
+        sergi.blanch.torne@collabora.com, david.heidelberg@collabora.com,
+        daniels@collabora.com, gustavo.padovan@collabora.com,
+        angelogioacchino.delregno@collabora.com, emma@anholt.net,
+        robclark@freedesktop.org, robdclark@google.com, anholt@google.com,
+        robdclark@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
+        jani.nikula@linux.intel.com, mripard@kernel.org,
+        dmitry.baryshkov@linaro.org, matthias.bgg@gmail.com,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH v3 0/9] drm: ci: fixes
+Date:   Fri,  8 Sep 2023 20:52:16 +0530
+Message-Id: <20230908152225.432139-1-vignesh.raman@collabora.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v13 01/22] x86/virt/tdx: Detect TDX during kernel boot
-Content-Language: en-US
-To:     Kai Huang <kai.huang@intel.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     x86@kernel.org, kirill.shutemov@linux.intel.com,
-        tony.luck@intel.com, peterz@infradead.org, tglx@linutronix.de,
-        bp@alien8.de, mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
-        pbonzini@redhat.com, david@redhat.com, dan.j.williams@intel.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        reinette.chatre@intel.com, len.brown@intel.com, ak@linux.intel.com,
-        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, nik.borisov@suse.com,
-        bagasdotme@gmail.com, sagis@google.com, imammedo@redhat.com
-References: <cover.1692962263.git.kai.huang@intel.com>
- <7329a23e94e10e222fce6ef4685c429b9377cad6.1692962263.git.kai.huang@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <7329a23e94e10e222fce6ef4685c429b9377cad6.1692962263.git.kai.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/23 05:14, Kai Huang wrote:
-> Intel Trust Domain Extensions (TDX) protects guest VMs from malicious
-> host and certain physical attacks.  A CPU-attested software module
-> called 'the TDX module' runs inside a new isolated memory range as a
-> trusted hypervisor to manage and run protected VMs.
-...
+The patch series contains improvements, enabling new ci jobs which
+enables testing for Mediatek MT8173, Qualcomm APQ 8016 and VirtIO GPU,
+fixing issues with the ci jobs and updating the expectation files.
+This series is intended for drm branch topic/drm-ci.
 
-Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
+v2:
+  - Use fdtoverlay command to merge overlay dtbo with the base dtb instead of modifying the kernel sources
+  - Reworded the commit message for enabling jobs
+  - Added a new patch in the series to use scripts/config to enable/disable configs
+
+v3:
+  - New patch in the series to add device tree overlay in arch/arm64/boot/dts/qcom
+  - drm-ci scripts to use device tree overlay from arch/arm64/boot/dts/qcom and compile base device tree with overlay support
+  - New patch in the series to enable CONFIG_REGULATOR_DA9211 in defconfig
+  - Remove CONFIG_RTC_DRV_MT6397=y as it is already enabled in defconfig
+
+Vignesh Raman (9):
+  drm: ci: igt_runner: Remove todo
+  arm64: dts: qcom: apq8016-sbc: Add overlay for usb host mode
+  drm: ci: Force db410c to host mode
+  drm: ci: virtio: Update ci variables
+  drm: ci: Enable regulator
+  arm64: defconfig: Enable DA9211 regulator
+  drm: ci: Update xfails
+  drm: ci: Enable new jobs
+  drm: ci: Use scripts/config to enable/disable configs
+
+ .../boot/dts/qcom/apq8016-sbc-usb-host.dtso   |  8 +++++++
+ arch/arm64/configs/defconfig                  |  1 +
+ drivers/gpu/drm/ci/arm64.config               |  1 +
+ drivers/gpu/drm/ci/build.sh                   | 21 ++++++++++++-------
+ drivers/gpu/drm/ci/igt_runner.sh              |  1 -
+ drivers/gpu/drm/ci/test.yml                   | 14 ++++---------
+ .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt |  1 -
+ drivers/gpu/drm/ci/xfails/i915-cml-fails.txt  |  1 -
+ drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt |  2 ++
+ drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt |  1 +
+ .../drm/ci/xfails/mediatek-mt8173-fails.txt   |  2 --
+ .../drm/ci/xfails/mediatek-mt8173-flakes.txt  | 16 ++++++++++++++
+ .../gpu/drm/ci/xfails/msm-apq8016-flakes.txt  |  2 ++
+ .../drm/ci/xfails/rockchip-rk3288-flakes.txt  |  1 +
+ .../drm/ci/xfails/rockchip-rk3399-fails.txt   |  4 ++--
+ .../drm/ci/xfails/rockchip-rk3399-flakes.txt  |  3 +++
+ 16 files changed, 54 insertions(+), 25 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtso
+
+-- 
+2.40.1
 
