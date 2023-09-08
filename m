@@ -2,122 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C945879843E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB021798444
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240750AbjIHIji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 04:39:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50264 "EHLO
+        id S239950AbjIHIkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 04:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjIHIjh (ORCPT
+        with ESMTP id S236018AbjIHIkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 04:39:37 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85761173B;
-        Fri,  8 Sep 2023 01:39:32 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 37501218E7;
-        Fri,  8 Sep 2023 08:39:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694162371; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fbx31EkjZzotYqty93GvSD1Lhn8zAYWbew9Y/e9+J/k=;
-        b=qdXyVB+GeZ7xjyEM+8B3z7v/B90Rjshipn9BTq6nq1UUwYXlLJmNGaDKURjIeKAoJLbN+i
-        VJVAvWSSWPb5TA4HaTgyixstotOJXmkf4J5/AWMxH+NXG/2NxPktfLxuP43j9/Jw6TZjHO
-        lt4IbeDeMkaGR3/b5PM+7anprx44UOc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694162371;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fbx31EkjZzotYqty93GvSD1Lhn8zAYWbew9Y/e9+J/k=;
-        b=OVZArmbicxnYm09FYLfar8yuMGQNs+4+hIn3vfD/D1mB51k1nQaJmp8gUFh7UvPM6qLg/Y
-        nw5MdFdYyVWNjMDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A850D131FD;
-        Fri,  8 Sep 2023 08:39:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Jy2wJcLd+mTgNwAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Fri, 08 Sep 2023 08:39:30 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id eba3de06;
-        Fri, 8 Sep 2023 08:39:29 +0000 (UTC)
-From:   =?utf-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
-To:     Xiubo Li <xiubli@redhat.com>
-Cc:     Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Milind Changire <mchangir@redhat.com>,
-        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [PATCH] ceph: remove unnecessary check for NULL in
- parse_longname()
-In-Reply-To: <3493bd1b-4982-e851-a2bc-c806889af01e@redhat.com> (Xiubo Li's
-        message of "Fri, 8 Sep 2023 08:14:19 +0800")
-References: <20230907133928.11126-1-lhenriques@suse.de>
-        <3493bd1b-4982-e851-a2bc-c806889af01e@redhat.com>
-Date:   Fri, 08 Sep 2023 09:39:29 +0100
-Message-ID: <877cp1m532.fsf@suse.de>
+        Fri, 8 Sep 2023 04:40:17 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16821BEA;
+        Fri,  8 Sep 2023 01:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=VXnhsorUHK5Bf5MDGsHtvKrSDEvw0CRZTu4ZdbI4RRA=; b=vfF7vs85iyrVRu/FjEGzcFMQ+w
+        yBlIpvaSAxF6F+FTBO02CmBnUp/KXRXkVTmz2xzwgwwB7UDdiB2Hxdy32TIarFJKuvzem3AeRbelM
+        LhiSNZXoNYfTWUnj+d8PCTkg7p8mzeaBM3LnCui838zR4QAc8PpeH6v1rDDWIbDBxtZrhQoCYYQZK
+        /HRgerpP8/fhPTQT6mX4akDaDnH/3HkZoITL2XCR1rDKIF1BKqbRi7SDALO8ycQ57VEO8GPaCa2I7
+        LbyySbBkGk6V+xlR2B69Tn8f2PxNoiUn7QZpmurkGSsLg/FwEcjWTAQWPtjXuZwIhWpHEF7epdFvt
+        ZmVQFTCA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35414)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qeX1r-0004kU-0Z;
+        Fri, 08 Sep 2023 09:39:51 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qeX1m-0006kZ-Tw; Fri, 08 Sep 2023 09:39:46 +0100
+Date:   Fri, 8 Sep 2023 09:39:46 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Hangyu Hua <hbh25y@gmail.com>
+Cc:     justin.chen@broadcom.com, florian.fainelli@broadcom.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, mw@semihalf.com, nbd@nbd.name, john@phrozen.org,
+        sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
+        lorenzo@kernel.org, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com,
+        maxime.chevallier@bootlin.com, nelson.chang@mediatek.com,
+        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2 2/3] net: ethernet: mvpp2_main: fix possible OOB write
+ in mvpp2_ethtool_get_rxnfc()
+Message-ID: <ZPrd0madH5Z+Ptve@shell.armlinux.org.uk>
+References: <20230908061950.20287-1-hbh25y@gmail.com>
+ <20230908061950.20287-3-hbh25y@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908061950.20287-3-hbh25y@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xiubo Li <xiubli@redhat.com> writes:
+On Fri, Sep 08, 2023 at 02:19:49PM +0800, Hangyu Hua wrote:
+> rules is allocated in ethtool_get_rxnfc and the size is determined by
+> rule_cnt from user space. So rule_cnt needs to be check before using
+> rules to avoid OOB writing or NULL pointer dereference.
+> 
+> Fixes: 90b509b39ac9 ("net: mvpp2: cls: Add Classification offload support")
+> Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
 
-> On 9/7/23 21:39, Lu=C3=ADs Henriques wrote:
->> Function ceph_get_inode() never returns NULL; instead it returns an
->> ERR_PTR() if something fails.  Thus, the check for NULL in
->> parse_longname() useless and can be dropped.
->>
->> Fixes: dd66df0053ef ("ceph: add support for encrypted snapshot names")
->> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
->> Signed-off-by: Lu=C3=ADs Henriques <lhenriques@suse.de>
->> ---
->>   fs/ceph/crypto.c | 2 --
->>   1 file changed, 2 deletions(-)
->>
->> diff --git a/fs/ceph/crypto.c b/fs/ceph/crypto.c
->> index e4d5cd56a80b..7d0b9b5ccfc6 100644
->> --- a/fs/ceph/crypto.c
->> +++ b/fs/ceph/crypto.c
->> @@ -249,8 +249,6 @@ static struct inode *parse_longname(const struct ino=
-de *parent,
->>   	if (!dir) {
->>   		/* This can happen if we're not mounting cephfs on the root */
->>   		dir =3D ceph_get_inode(parent->i_sb, vino, NULL);
->> -		if (!dir)
->> -			dir =3D ERR_PTR(-ENOENT);
->>   	}
->>   	if (IS_ERR(dir))
->>   		dout("Can't find inode %s (%s)\n", inode_number, name);
->>
-> Luis,
->
-> How about moving the error check into the=C2=A0 'if (!dir) {}' ? Because =
-from
-> 'ceph_find_inode()' the return value shouldn't be true here. This err che=
-ck
-> should for 'ceph_get_inode()' only.
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-Yeah, you're right.  Thanks, Xiubo.  I'll send out v2 shortly.
+Thanks!
 
-Cheers,
---=20
-Lu=C3=ADs
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
