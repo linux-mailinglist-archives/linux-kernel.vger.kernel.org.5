@@ -2,1560 +2,760 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB1C798503
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 11:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F27F079850A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 11:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239556AbjIHJtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 05:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53706 "EHLO
+        id S241204AbjIHJxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 05:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230475AbjIHJtS (ORCPT
+        with ESMTP id S232395AbjIHJxp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 05:49:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725B01BCD;
-        Fri,  8 Sep 2023 02:49:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B68ECC433C9;
-        Fri,  8 Sep 2023 09:49:07 +0000 (UTC)
-Message-ID: <960c0ab1-4346-4363-92b3-6b6d48d985bc@xs4all.nl>
-Date:   Fri, 8 Sep 2023 11:49:05 +0200
+        Fri, 8 Sep 2023 05:53:45 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88BD1BCD;
+        Fri,  8 Sep 2023 02:53:38 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bd9b4f8e0eso13916765ad.1;
+        Fri, 08 Sep 2023 02:53:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694166818; x=1694771618; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EpDk3IH1wg3WE5NyeAODGSQLwBSi4OlkvSxIUv3wpFM=;
+        b=ITUWjQJF8wkoSNglw5FnMXmEoiCPZFzonzmYQwa66xhl2IjsM9dpfvC7+Us19F/NwS
+         FQjhTNFZ3LvhzsRRVmltswgl5QNmSOpoCn6i3Tp0pEOIYjhqc2gJR3NEhxtrwgpHY4Kc
+         J6K3uH656Dlx076AtIJXzSoBbTxJJyPB6peK9MJIsr3jEoVvzm1lxw8eanSdG6qfFno+
+         neIrFc7Kv2+HF1w6DpHZSrEnUnW1cvXka1ERDJ7TDybvTRcyCWy7l4WfeMbKV14D1eIk
+         fZ8hdVEIS+hSIE75JEPzrzAE2zzE7Yw4ZaKJp94K6NuAB3PBfd/XobOYYSRHVxTMAU11
+         wezg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694166818; x=1694771618;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EpDk3IH1wg3WE5NyeAODGSQLwBSi4OlkvSxIUv3wpFM=;
+        b=L9RFQBj589TrtwDkhQbpDhkTHIT+Hv8ibZ3JQqfxktrX9poBpD6HsTJU3JbAHsqlsj
+         GRUUMZRpWKf75MD3mxFOdp5B8m2o3plYh6G0FWB9SiCuhTiVGbDCvZsHKBPUjeiPewEi
+         GXFpYbLFGNS7feCNjhish/EN/ZJrKxaYBoqxaAGJy4DMetJOcj6cZeclUFwMfa3db+9K
+         Azl9TEAKEeNWNTOdmtI2EvmjUeFgSJbvrrTPizBkQOifpoU3fLf6e4idSSNhbEXsP6aY
+         +d2s7edl4msuFVjtlS0WXTSnFN7ypcUGH+LaSkOMB2X3qA4e8+ZuKNtagay2mk4KJMAF
+         Mxjg==
+X-Gm-Message-State: AOJu0YyR/BE628F6O2JLFjaSh8JWJQ/IyLGlryQzx9xVF3rLZUHZB0TB
+        BWBnDwDvdbSoxiF42I6MuDw=
+X-Google-Smtp-Source: AGHT+IGvt+RAVsxwVh4O5TrxTvBCYRstmNv8vVlkAslLHhraQAFDTPHphh1G5gq3UQgi4Yf2+WoPMg==
+X-Received: by 2002:a17:903:22d0:b0:1bf:5cf7:41e2 with SMTP id y16-20020a17090322d000b001bf5cf741e2mr2449994plg.44.1694166817842;
+        Fri, 08 Sep 2023 02:53:37 -0700 (PDT)
+Received: from localhost.localdomain (2001-b400-e3a1-00a4-a20b-46bc-ccec-3e79.emome-ip6.hinet.net. [2001:b400:e3a1:a4:a20b:46bc:ccec:3e79])
+        by smtp.gmail.com with ESMTPSA id c9-20020a170902d48900b001b892aac5c9sm1172178plg.298.2023.09.08.02.53.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Sep 2023 02:53:37 -0700 (PDT)
+From:   Victor Shih <victorshihgli@gmail.com>
+To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        benchuanggli@gmail.com, HL.Liu@genesyslogic.com.tw,
+        Greg.tu@genesyslogic.com.tw, takahiro.akashi@linaro.org,
+        dlunev@chromium.org, Victor Shih <victor.shih@genesyslogic.com.tw>
+Subject: [PATCH V11 00/23] Add support UHS-II for GL9755
+Date:   Fri,  8 Sep 2023 17:53:07 +0800
+Message-Id: <20230908095330.12075-1-victorshihgli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] media: dvb: symbol fixup for dvb_attach()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     stable <stable@kernel.org>, Stefan Lippers-Hollmann <s.l-h@gmx.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, linux-media@vger.kernel.org,
-        linux-modules@vger.kernel.org
-References: <20230908092035.3815268-2-gregkh@linuxfoundation.org>
-Content-Language: en-US, nl
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230908092035.3815268-2-gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/09/2023 11:20, Greg Kroah-Hartman wrote:
-> In commit 9011e49d54dc ("modules: only allow symbol_get of
-> EXPORT_SYMBOL_GPL modules") the use of symbol_get is properly restricted
-> to GPL-only marked symbols.  This interacts oddly with the DVB logic
-> which only uses dvb_attach() to load the dvb driver which then uses
-> symbol_get().
-> 
-> Fix this up by properly marking all of the dvb_attach attach symbols as
-> EXPORT_SYMBOL_GPL().
-> 
-> Fixes: 9011e49d54dc ("modules: only allow symbol_get of EXPORT_SYMBOL_GPL modules")
-> Cc: stable <stable@kernel.org>
-> Reported-by: Stefan Lippers-Hollmann <s.l-h@gmx.de>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Luis Chamberlain <mcgrof@kernel.org>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: linux-media@vger.kernel.org
-> Cc: linux-modules@vger.kernel.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Victor Shih <victor.shih@genesyslogic.com.tw>
 
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Summary
+=======
+These patches[1] support UHS-II and fix GL9755 UHS-II compatibility.
 
-Regards,
+About UHS-II, roughly deal with the following three parts:
+1) A UHS-II detection and initialization:
+- Host setup to support UHS-II (Section 3.13.1 Host Controller Setup
+  Sequence[2]).
+- Detect a UHS-II I/F (Section 3.13.2 Card Interface Detection Sequence
+  [2]).
+- In step(9) of Section 3.13.2 in [2], UHS-II initialization is include
+  Section 3.13.3 UHS-II Card Initialization and Section 3.13.4 UHS-II
+  Setting Register Setup Sequence.
 
-	Hans
+2) Send Legacy SD command through SD-TRAN
+- Encapsulated SD packets are defined in SD-TRAN in order to ensure Legacy
+  SD compatibility and preserve Legacy SD infrastructures (Section 7.1.1
+  Packet Types and Format Overview[3]).
+- Host issue a UHS-II CCMD packet or a UHS-II DCMD (Section 3.13.5 UHS-II
+  CCMD Packet issuing and Section 3.13.6 UHS-II DCMD Packet issuing[2]).
 
-> ---
-> Luis, do you want to take this through your tree?  Or Mauro's?  Or I can
-> take it through mine, it should get to Linus soon as this is causing
-> regressions in his tree.
-> 
-> thanks,
-> 
-> greg k-h
-> 
->  drivers/media/dvb-frontends/ascot2e.c             | 2 +-
->  drivers/media/dvb-frontends/atbm8830.c            | 2 +-
->  drivers/media/dvb-frontends/au8522_dig.c          | 2 +-
->  drivers/media/dvb-frontends/bcm3510.c             | 2 +-
->  drivers/media/dvb-frontends/cx22700.c             | 2 +-
->  drivers/media/dvb-frontends/cx22702.c             | 2 +-
->  drivers/media/dvb-frontends/cx24110.c             | 2 +-
->  drivers/media/dvb-frontends/cx24113.c             | 2 +-
->  drivers/media/dvb-frontends/cx24116.c             | 2 +-
->  drivers/media/dvb-frontends/cx24120.c             | 2 +-
->  drivers/media/dvb-frontends/cx24123.c             | 2 +-
->  drivers/media/dvb-frontends/cxd2820r_core.c       | 2 +-
->  drivers/media/dvb-frontends/cxd2841er.c           | 4 ++--
->  drivers/media/dvb-frontends/cxd2880/cxd2880_top.c | 2 +-
->  drivers/media/dvb-frontends/dib0070.c             | 2 +-
->  drivers/media/dvb-frontends/dib0090.c             | 4 ++--
->  drivers/media/dvb-frontends/dib3000mb.c           | 2 +-
->  drivers/media/dvb-frontends/dib3000mc.c           | 2 +-
->  drivers/media/dvb-frontends/dib7000m.c            | 2 +-
->  drivers/media/dvb-frontends/dib7000p.c            | 2 +-
->  drivers/media/dvb-frontends/dib8000.c             | 2 +-
->  drivers/media/dvb-frontends/dib9000.c             | 2 +-
->  drivers/media/dvb-frontends/drx39xyj/drxj.c       | 2 +-
->  drivers/media/dvb-frontends/drxd_hard.c           | 2 +-
->  drivers/media/dvb-frontends/drxk_hard.c           | 2 +-
->  drivers/media/dvb-frontends/ds3000.c              | 2 +-
->  drivers/media/dvb-frontends/dvb-pll.c             | 2 +-
->  drivers/media/dvb-frontends/ec100.c               | 2 +-
->  drivers/media/dvb-frontends/helene.c              | 4 ++--
->  drivers/media/dvb-frontends/horus3a.c             | 2 +-
->  drivers/media/dvb-frontends/isl6405.c             | 2 +-
->  drivers/media/dvb-frontends/isl6421.c             | 2 +-
->  drivers/media/dvb-frontends/isl6423.c             | 2 +-
->  drivers/media/dvb-frontends/itd1000.c             | 2 +-
->  drivers/media/dvb-frontends/ix2505v.c             | 2 +-
->  drivers/media/dvb-frontends/l64781.c              | 2 +-
->  drivers/media/dvb-frontends/lg2160.c              | 2 +-
->  drivers/media/dvb-frontends/lgdt3305.c            | 2 +-
->  drivers/media/dvb-frontends/lgdt3306a.c           | 2 +-
->  drivers/media/dvb-frontends/lgdt330x.c            | 2 +-
->  drivers/media/dvb-frontends/lgs8gxx.c             | 2 +-
->  drivers/media/dvb-frontends/lnbh25.c              | 2 +-
->  drivers/media/dvb-frontends/lnbp21.c              | 4 ++--
->  drivers/media/dvb-frontends/lnbp22.c              | 2 +-
->  drivers/media/dvb-frontends/m88ds3103.c           | 2 +-
->  drivers/media/dvb-frontends/m88rs2000.c           | 2 +-
->  drivers/media/dvb-frontends/mb86a16.c             | 2 +-
->  drivers/media/dvb-frontends/mb86a20s.c            | 2 +-
->  drivers/media/dvb-frontends/mt312.c               | 2 +-
->  drivers/media/dvb-frontends/mt352.c               | 2 +-
->  drivers/media/dvb-frontends/nxt200x.c             | 2 +-
->  drivers/media/dvb-frontends/nxt6000.c             | 2 +-
->  drivers/media/dvb-frontends/or51132.c             | 2 +-
->  drivers/media/dvb-frontends/or51211.c             | 2 +-
->  drivers/media/dvb-frontends/s5h1409.c             | 2 +-
->  drivers/media/dvb-frontends/s5h1411.c             | 2 +-
->  drivers/media/dvb-frontends/s5h1420.c             | 2 +-
->  drivers/media/dvb-frontends/s5h1432.c             | 2 +-
->  drivers/media/dvb-frontends/s921.c                | 2 +-
->  drivers/media/dvb-frontends/si21xx.c              | 2 +-
->  drivers/media/dvb-frontends/sp887x.c              | 2 +-
->  drivers/media/dvb-frontends/stb0899_drv.c         | 2 +-
->  drivers/media/dvb-frontends/stb6000.c             | 2 +-
->  drivers/media/dvb-frontends/stb6100.c             | 2 +-
->  drivers/media/dvb-frontends/stv0288.c             | 2 +-
->  drivers/media/dvb-frontends/stv0297.c             | 2 +-
->  drivers/media/dvb-frontends/stv0299.c             | 2 +-
->  drivers/media/dvb-frontends/stv0367.c             | 6 +++---
->  drivers/media/dvb-frontends/stv0900_core.c        | 2 +-
->  drivers/media/dvb-frontends/stv090x.c             | 2 +-
->  drivers/media/dvb-frontends/stv6110.c             | 2 +-
->  drivers/media/dvb-frontends/stv6110x.c            | 2 +-
->  drivers/media/dvb-frontends/tda10021.c            | 2 +-
->  drivers/media/dvb-frontends/tda10023.c            | 2 +-
->  drivers/media/dvb-frontends/tda10048.c            | 2 +-
->  drivers/media/dvb-frontends/tda1004x.c            | 4 ++--
->  drivers/media/dvb-frontends/tda10086.c            | 2 +-
->  drivers/media/dvb-frontends/tda665x.c             | 2 +-
->  drivers/media/dvb-frontends/tda8083.c             | 2 +-
->  drivers/media/dvb-frontends/tda8261.c             | 2 +-
->  drivers/media/dvb-frontends/tda826x.c             | 2 +-
->  drivers/media/dvb-frontends/ts2020.c              | 2 +-
->  drivers/media/dvb-frontends/tua6100.c             | 2 +-
->  drivers/media/dvb-frontends/ves1820.c             | 2 +-
->  drivers/media/dvb-frontends/ves1x93.c             | 2 +-
->  drivers/media/dvb-frontends/zl10036.c             | 2 +-
->  drivers/media/dvb-frontends/zl10039.c             | 2 +-
->  drivers/media/dvb-frontends/zl10353.c             | 2 +-
->  drivers/media/pci/bt8xx/dst.c                     | 2 +-
->  drivers/media/pci/bt8xx/dst_ca.c                  | 2 +-
->  drivers/media/pci/ddbridge/ddbridge-dummy-fe.c    | 2 +-
->  drivers/media/tuners/fc0011.c                     | 2 +-
->  drivers/media/tuners/fc0012.c                     | 2 +-
->  drivers/media/tuners/fc0013.c                     | 2 +-
->  drivers/media/tuners/max2165.c                    | 2 +-
->  drivers/media/tuners/mc44s803.c                   | 2 +-
->  drivers/media/tuners/mt2060.c                     | 2 +-
->  drivers/media/tuners/mt2131.c                     | 2 +-
->  drivers/media/tuners/mt2266.c                     | 2 +-
->  drivers/media/tuners/mxl5005s.c                   | 2 +-
->  drivers/media/tuners/qt1010.c                     | 2 +-
->  drivers/media/tuners/tda18218.c                   | 2 +-
->  drivers/media/tuners/xc2028.c                     | 2 +-
->  drivers/media/tuners/xc4000.c                     | 2 +-
->  drivers/media/tuners/xc5000.c                     | 2 +-
->  drivers/staging/media/av7110/sp8870.c             | 2 +-
->  106 files changed, 113 insertions(+), 113 deletions(-)
-> 
-> diff --git a/drivers/media/dvb-frontends/ascot2e.c b/drivers/media/dvb-frontends/ascot2e.c
-> index 9b00b56230b6..cf8e5f1bd101 100644
-> --- a/drivers/media/dvb-frontends/ascot2e.c
-> +++ b/drivers/media/dvb-frontends/ascot2e.c
-> @@ -533,7 +533,7 @@ struct dvb_frontend *ascot2e_attach(struct dvb_frontend *fe,
->  		priv->i2c_address, priv->i2c);
->  	return fe;
->  }
-> -EXPORT_SYMBOL(ascot2e_attach);
-> +EXPORT_SYMBOL_GPL(ascot2e_attach);
->  
->  MODULE_DESCRIPTION("Sony ASCOT2E terr/cab tuner driver");
->  MODULE_AUTHOR("info@netup.ru");
-> diff --git a/drivers/media/dvb-frontends/atbm8830.c b/drivers/media/dvb-frontends/atbm8830.c
-> index bdd16b9c5824..778c865085bf 100644
-> --- a/drivers/media/dvb-frontends/atbm8830.c
-> +++ b/drivers/media/dvb-frontends/atbm8830.c
-> @@ -489,7 +489,7 @@ struct dvb_frontend *atbm8830_attach(const struct atbm8830_config *config,
->  	return NULL;
->  
->  }
-> -EXPORT_SYMBOL(atbm8830_attach);
-> +EXPORT_SYMBOL_GPL(atbm8830_attach);
->  
->  MODULE_DESCRIPTION("AltoBeam ATBM8830/8831 GB20600 demodulator driver");
->  MODULE_AUTHOR("David T. L. Wong <davidtlwong@gmail.com>");
-> diff --git a/drivers/media/dvb-frontends/au8522_dig.c b/drivers/media/dvb-frontends/au8522_dig.c
-> index 78cafdf27961..230436bf6cbd 100644
-> --- a/drivers/media/dvb-frontends/au8522_dig.c
-> +++ b/drivers/media/dvb-frontends/au8522_dig.c
-> @@ -879,7 +879,7 @@ struct dvb_frontend *au8522_attach(const struct au8522_config *config,
->  	au8522_release_state(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(au8522_attach);
-> +EXPORT_SYMBOL_GPL(au8522_attach);
->  
->  static const struct dvb_frontend_ops au8522_ops = {
->  	.delsys = { SYS_ATSC, SYS_DVBC_ANNEX_B },
-> diff --git a/drivers/media/dvb-frontends/bcm3510.c b/drivers/media/dvb-frontends/bcm3510.c
-> index 68b92b4419cf..b3f5c49accaf 100644
-> --- a/drivers/media/dvb-frontends/bcm3510.c
-> +++ b/drivers/media/dvb-frontends/bcm3510.c
-> @@ -835,7 +835,7 @@ struct dvb_frontend* bcm3510_attach(const struct bcm3510_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(bcm3510_attach);
-> +EXPORT_SYMBOL_GPL(bcm3510_attach);
->  
->  static const struct dvb_frontend_ops bcm3510_ops = {
->  	.delsys = { SYS_ATSC, SYS_DVBC_ANNEX_B },
-> diff --git a/drivers/media/dvb-frontends/cx22700.c b/drivers/media/dvb-frontends/cx22700.c
-> index b39ff516271b..1d04c0a652b2 100644
-> --- a/drivers/media/dvb-frontends/cx22700.c
-> +++ b/drivers/media/dvb-frontends/cx22700.c
-> @@ -432,4 +432,4 @@ MODULE_DESCRIPTION("Conexant CX22700 DVB-T Demodulator driver");
->  MODULE_AUTHOR("Holger Waechtler");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(cx22700_attach);
-> +EXPORT_SYMBOL_GPL(cx22700_attach);
-> diff --git a/drivers/media/dvb-frontends/cx22702.c b/drivers/media/dvb-frontends/cx22702.c
-> index cc6acbf6393d..61ad34b7004b 100644
-> --- a/drivers/media/dvb-frontends/cx22702.c
-> +++ b/drivers/media/dvb-frontends/cx22702.c
-> @@ -604,7 +604,7 @@ struct dvb_frontend *cx22702_attach(const struct cx22702_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(cx22702_attach);
-> +EXPORT_SYMBOL_GPL(cx22702_attach);
->  
->  static const struct dvb_frontend_ops cx22702_ops = {
->  	.delsys = { SYS_DVBT },
-> diff --git a/drivers/media/dvb-frontends/cx24110.c b/drivers/media/dvb-frontends/cx24110.c
-> index 6f99d6a27be2..9aeea089756f 100644
-> --- a/drivers/media/dvb-frontends/cx24110.c
-> +++ b/drivers/media/dvb-frontends/cx24110.c
-> @@ -653,4 +653,4 @@ MODULE_DESCRIPTION("Conexant CX24110 DVB-S Demodulator driver");
->  MODULE_AUTHOR("Peter Hettkamp");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(cx24110_attach);
-> +EXPORT_SYMBOL_GPL(cx24110_attach);
-> diff --git a/drivers/media/dvb-frontends/cx24113.c b/drivers/media/dvb-frontends/cx24113.c
-> index dd55d314bf9a..203cb6b3f941 100644
-> --- a/drivers/media/dvb-frontends/cx24113.c
-> +++ b/drivers/media/dvb-frontends/cx24113.c
-> @@ -590,7 +590,7 @@ struct dvb_frontend *cx24113_attach(struct dvb_frontend *fe,
->  
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(cx24113_attach);
-> +EXPORT_SYMBOL_GPL(cx24113_attach);
->  
->  module_param(debug, int, 0644);
->  MODULE_PARM_DESC(debug, "Activates frontend debugging (default:0)");
-> diff --git a/drivers/media/dvb-frontends/cx24116.c b/drivers/media/dvb-frontends/cx24116.c
-> index ea8264ccbb4e..8b978a9f74a4 100644
-> --- a/drivers/media/dvb-frontends/cx24116.c
-> +++ b/drivers/media/dvb-frontends/cx24116.c
-> @@ -1133,7 +1133,7 @@ struct dvb_frontend *cx24116_attach(const struct cx24116_config *config,
->  	state->frontend.demodulator_priv = state;
->  	return &state->frontend;
->  }
-> -EXPORT_SYMBOL(cx24116_attach);
-> +EXPORT_SYMBOL_GPL(cx24116_attach);
->  
->  /*
->   * Initialise or wake up device
-> diff --git a/drivers/media/dvb-frontends/cx24120.c b/drivers/media/dvb-frontends/cx24120.c
-> index 0f778660c72b..44515fdbe91d 100644
-> --- a/drivers/media/dvb-frontends/cx24120.c
-> +++ b/drivers/media/dvb-frontends/cx24120.c
-> @@ -305,7 +305,7 @@ struct dvb_frontend *cx24120_attach(const struct cx24120_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(cx24120_attach);
-> +EXPORT_SYMBOL_GPL(cx24120_attach);
->  
->  static int cx24120_test_rom(struct cx24120_state *state)
->  {
-> diff --git a/drivers/media/dvb-frontends/cx24123.c b/drivers/media/dvb-frontends/cx24123.c
-> index 3d84ee17e54c..539889e638cc 100644
-> --- a/drivers/media/dvb-frontends/cx24123.c
-> +++ b/drivers/media/dvb-frontends/cx24123.c
-> @@ -1096,7 +1096,7 @@ struct dvb_frontend *cx24123_attach(const struct cx24123_config *config,
->  
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(cx24123_attach);
-> +EXPORT_SYMBOL_GPL(cx24123_attach);
->  
->  static const struct dvb_frontend_ops cx24123_ops = {
->  	.delsys = { SYS_DVBS },
-> diff --git a/drivers/media/dvb-frontends/cxd2820r_core.c b/drivers/media/dvb-frontends/cxd2820r_core.c
-> index d7ee294c6833..7feb08dccfa1 100644
-> --- a/drivers/media/dvb-frontends/cxd2820r_core.c
-> +++ b/drivers/media/dvb-frontends/cxd2820r_core.c
-> @@ -536,7 +536,7 @@ struct dvb_frontend *cxd2820r_attach(const struct cxd2820r_config *config,
->  
->  	return pdata.get_dvb_frontend(client);
->  }
-> -EXPORT_SYMBOL(cxd2820r_attach);
-> +EXPORT_SYMBOL_GPL(cxd2820r_attach);
->  
->  static struct dvb_frontend *cxd2820r_get_dvb_frontend(struct i2c_client *client)
->  {
-> diff --git a/drivers/media/dvb-frontends/cxd2841er.c b/drivers/media/dvb-frontends/cxd2841er.c
-> index ef403a9fb753..d925ca24183b 100644
-> --- a/drivers/media/dvb-frontends/cxd2841er.c
-> +++ b/drivers/media/dvb-frontends/cxd2841er.c
-> @@ -3930,14 +3930,14 @@ struct dvb_frontend *cxd2841er_attach_s(struct cxd2841er_config *cfg,
->  {
->  	return cxd2841er_attach(cfg, i2c, SYS_DVBS);
->  }
-> -EXPORT_SYMBOL(cxd2841er_attach_s);
-> +EXPORT_SYMBOL_GPL(cxd2841er_attach_s);
->  
->  struct dvb_frontend *cxd2841er_attach_t_c(struct cxd2841er_config *cfg,
->  					struct i2c_adapter *i2c)
->  {
->  	return cxd2841er_attach(cfg, i2c, 0);
->  }
-> -EXPORT_SYMBOL(cxd2841er_attach_t_c);
-> +EXPORT_SYMBOL_GPL(cxd2841er_attach_t_c);
->  
->  static const struct dvb_frontend_ops cxd2841er_dvbs_s2_ops = {
->  	.delsys = { SYS_DVBS, SYS_DVBS2 },
-> diff --git a/drivers/media/dvb-frontends/cxd2880/cxd2880_top.c b/drivers/media/dvb-frontends/cxd2880/cxd2880_top.c
-> index f67b6d24b8d4..a06d8368ca79 100644
-> --- a/drivers/media/dvb-frontends/cxd2880/cxd2880_top.c
-> +++ b/drivers/media/dvb-frontends/cxd2880/cxd2880_top.c
-> @@ -1950,7 +1950,7 @@ struct dvb_frontend *cxd2880_attach(struct dvb_frontend *fe,
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(cxd2880_attach);
-> +EXPORT_SYMBOL_GPL(cxd2880_attach);
->  
->  MODULE_DESCRIPTION("Sony CXD2880 DVB-T2/T tuner + demod driver");
->  MODULE_AUTHOR("Sony Semiconductor Solutions Corporation");
-> diff --git a/drivers/media/dvb-frontends/dib0070.c b/drivers/media/dvb-frontends/dib0070.c
-> index cafb41dba861..9a8e7cdd2a24 100644
-> --- a/drivers/media/dvb-frontends/dib0070.c
-> +++ b/drivers/media/dvb-frontends/dib0070.c
-> @@ -762,7 +762,7 @@ struct dvb_frontend *dib0070_attach(struct dvb_frontend *fe, struct i2c_adapter
->  	fe->tuner_priv = NULL;
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(dib0070_attach);
-> +EXPORT_SYMBOL_GPL(dib0070_attach);
->  
->  MODULE_AUTHOR("Patrick Boettcher <patrick.boettcher@posteo.de>");
->  MODULE_DESCRIPTION("Driver for the DiBcom 0070 base-band RF Tuner");
-> diff --git a/drivers/media/dvb-frontends/dib0090.c b/drivers/media/dvb-frontends/dib0090.c
-> index 903da33642df..c958bcff026e 100644
-> --- a/drivers/media/dvb-frontends/dib0090.c
-> +++ b/drivers/media/dvb-frontends/dib0090.c
-> @@ -2634,7 +2634,7 @@ struct dvb_frontend *dib0090_register(struct dvb_frontend *fe, struct i2c_adapte
->  	return NULL;
->  }
->  
-> -EXPORT_SYMBOL(dib0090_register);
-> +EXPORT_SYMBOL_GPL(dib0090_register);
->  
->  struct dvb_frontend *dib0090_fw_register(struct dvb_frontend *fe, struct i2c_adapter *i2c, const struct dib0090_config *config)
->  {
-> @@ -2660,7 +2660,7 @@ struct dvb_frontend *dib0090_fw_register(struct dvb_frontend *fe, struct i2c_ada
->  	fe->tuner_priv = NULL;
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(dib0090_fw_register);
-> +EXPORT_SYMBOL_GPL(dib0090_fw_register);
->  
->  MODULE_AUTHOR("Patrick Boettcher <patrick.boettcher@posteo.de>");
->  MODULE_AUTHOR("Olivier Grenie <olivier.grenie@parrot.com>");
-> diff --git a/drivers/media/dvb-frontends/dib3000mb.c b/drivers/media/dvb-frontends/dib3000mb.c
-> index a6c2fc4586eb..c598b2a63325 100644
-> --- a/drivers/media/dvb-frontends/dib3000mb.c
-> +++ b/drivers/media/dvb-frontends/dib3000mb.c
-> @@ -815,4 +815,4 @@ MODULE_AUTHOR(DRIVER_AUTHOR);
->  MODULE_DESCRIPTION(DRIVER_DESC);
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(dib3000mb_attach);
-> +EXPORT_SYMBOL_GPL(dib3000mb_attach);
-> diff --git a/drivers/media/dvb-frontends/dib3000mc.c b/drivers/media/dvb-frontends/dib3000mc.c
-> index 2e11a246aae0..c2fca8289aba 100644
-> --- a/drivers/media/dvb-frontends/dib3000mc.c
-> +++ b/drivers/media/dvb-frontends/dib3000mc.c
-> @@ -935,7 +935,7 @@ struct dvb_frontend * dib3000mc_attach(struct i2c_adapter *i2c_adap, u8 i2c_addr
->  	kfree(st);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(dib3000mc_attach);
-> +EXPORT_SYMBOL_GPL(dib3000mc_attach);
->  
->  static const struct dvb_frontend_ops dib3000mc_ops = {
->  	.delsys = { SYS_DVBT },
-> diff --git a/drivers/media/dvb-frontends/dib7000m.c b/drivers/media/dvb-frontends/dib7000m.c
-> index 97ce97789c9e..fdb22f32e3a1 100644
-> --- a/drivers/media/dvb-frontends/dib7000m.c
-> +++ b/drivers/media/dvb-frontends/dib7000m.c
-> @@ -1434,7 +1434,7 @@ struct dvb_frontend * dib7000m_attach(struct i2c_adapter *i2c_adap, u8 i2c_addr,
->  	kfree(st);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(dib7000m_attach);
-> +EXPORT_SYMBOL_GPL(dib7000m_attach);
->  
->  static const struct dvb_frontend_ops dib7000m_ops = {
->  	.delsys = { SYS_DVBT },
-> diff --git a/drivers/media/dvb-frontends/dib7000p.c b/drivers/media/dvb-frontends/dib7000p.c
-> index 9273758bf140..444fe1c4bf2d 100644
-> --- a/drivers/media/dvb-frontends/dib7000p.c
-> +++ b/drivers/media/dvb-frontends/dib7000p.c
-> @@ -2822,7 +2822,7 @@ void *dib7000p_attach(struct dib7000p_ops *ops)
->  
->  	return ops;
->  }
-> -EXPORT_SYMBOL(dib7000p_attach);
-> +EXPORT_SYMBOL_GPL(dib7000p_attach);
->  
->  static const struct dvb_frontend_ops dib7000p_ops = {
->  	.delsys = { SYS_DVBT },
-> diff --git a/drivers/media/dvb-frontends/dib8000.c b/drivers/media/dvb-frontends/dib8000.c
-> index 2abda7d1cb6e..2f5165918163 100644
-> --- a/drivers/media/dvb-frontends/dib8000.c
-> +++ b/drivers/media/dvb-frontends/dib8000.c
-> @@ -4527,7 +4527,7 @@ void *dib8000_attach(struct dib8000_ops *ops)
->  
->  	return ops;
->  }
-> -EXPORT_SYMBOL(dib8000_attach);
-> +EXPORT_SYMBOL_GPL(dib8000_attach);
->  
->  MODULE_AUTHOR("Olivier Grenie <Olivier.Grenie@parrot.com, Patrick Boettcher <patrick.boettcher@posteo.de>");
->  MODULE_DESCRIPTION("Driver for the DiBcom 8000 ISDB-T demodulator");
-> diff --git a/drivers/media/dvb-frontends/dib9000.c b/drivers/media/dvb-frontends/dib9000.c
-> index 1c57587a917a..83cf6eadd49c 100644
-> --- a/drivers/media/dvb-frontends/dib9000.c
-> +++ b/drivers/media/dvb-frontends/dib9000.c
-> @@ -2546,7 +2546,7 @@ struct dvb_frontend *dib9000_attach(struct i2c_adapter *i2c_adap, u8 i2c_addr, c
->  	kfree(st);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(dib9000_attach);
-> +EXPORT_SYMBOL_GPL(dib9000_attach);
->  
->  static const struct dvb_frontend_ops dib9000_ops = {
->  	.delsys = { SYS_DVBT },
-> diff --git a/drivers/media/dvb-frontends/drx39xyj/drxj.c b/drivers/media/dvb-frontends/drx39xyj/drxj.c
-> index 68f4e8b5a0ab..a738573c8cd7 100644
-> --- a/drivers/media/dvb-frontends/drx39xyj/drxj.c
-> +++ b/drivers/media/dvb-frontends/drx39xyj/drxj.c
-> @@ -12372,7 +12372,7 @@ struct dvb_frontend *drx39xxj_attach(struct i2c_adapter *i2c)
->  
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(drx39xxj_attach);
-> +EXPORT_SYMBOL_GPL(drx39xxj_attach);
->  
->  static const struct dvb_frontend_ops drx39xxj_ops = {
->  	.delsys = { SYS_ATSC, SYS_DVBC_ANNEX_B },
-> diff --git a/drivers/media/dvb-frontends/drxd_hard.c b/drivers/media/dvb-frontends/drxd_hard.c
-> index 9860cae65f1c..6a531937f4bb 100644
-> --- a/drivers/media/dvb-frontends/drxd_hard.c
-> +++ b/drivers/media/dvb-frontends/drxd_hard.c
-> @@ -2939,7 +2939,7 @@ struct dvb_frontend *drxd_attach(const struct drxd_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(drxd_attach);
-> +EXPORT_SYMBOL_GPL(drxd_attach);
->  
->  MODULE_DESCRIPTION("DRXD driver");
->  MODULE_AUTHOR("Micronas");
-> diff --git a/drivers/media/dvb-frontends/drxk_hard.c b/drivers/media/dvb-frontends/drxk_hard.c
-> index 2770baebbbbc..87f3d4f0eb8c 100644
-> --- a/drivers/media/dvb-frontends/drxk_hard.c
-> +++ b/drivers/media/dvb-frontends/drxk_hard.c
-> @@ -6814,7 +6814,7 @@ struct dvb_frontend *drxk_attach(const struct drxk_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(drxk_attach);
-> +EXPORT_SYMBOL_GPL(drxk_attach);
->  
->  MODULE_DESCRIPTION("DRX-K driver");
->  MODULE_AUTHOR("Ralph Metzler");
-> diff --git a/drivers/media/dvb-frontends/ds3000.c b/drivers/media/dvb-frontends/ds3000.c
-> index 20fcf31af165..515aa7c7baf2 100644
-> --- a/drivers/media/dvb-frontends/ds3000.c
-> +++ b/drivers/media/dvb-frontends/ds3000.c
-> @@ -859,7 +859,7 @@ struct dvb_frontend *ds3000_attach(const struct ds3000_config *config,
->  	ds3000_set_voltage(&state->frontend, SEC_VOLTAGE_OFF);
->  	return &state->frontend;
->  }
-> -EXPORT_SYMBOL(ds3000_attach);
-> +EXPORT_SYMBOL_GPL(ds3000_attach);
->  
->  static int ds3000_set_carrier_offset(struct dvb_frontend *fe,
->  					s32 carrier_offset_khz)
-> diff --git a/drivers/media/dvb-frontends/dvb-pll.c b/drivers/media/dvb-frontends/dvb-pll.c
-> index 90cb41eacf98..ef697ab6bc2e 100644
-> --- a/drivers/media/dvb-frontends/dvb-pll.c
-> +++ b/drivers/media/dvb-frontends/dvb-pll.c
-> @@ -866,7 +866,7 @@ struct dvb_frontend *dvb_pll_attach(struct dvb_frontend *fe, int pll_addr,
->  
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(dvb_pll_attach);
-> +EXPORT_SYMBOL_GPL(dvb_pll_attach);
->  
->  
->  static int
-> diff --git a/drivers/media/dvb-frontends/ec100.c b/drivers/media/dvb-frontends/ec100.c
-> index 03bd80666cf8..2ad0a3c2f756 100644
-> --- a/drivers/media/dvb-frontends/ec100.c
-> +++ b/drivers/media/dvb-frontends/ec100.c
-> @@ -299,7 +299,7 @@ struct dvb_frontend *ec100_attach(const struct ec100_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(ec100_attach);
-> +EXPORT_SYMBOL_GPL(ec100_attach);
->  
->  static const struct dvb_frontend_ops ec100_ops = {
->  	.delsys = { SYS_DVBT },
-> diff --git a/drivers/media/dvb-frontends/helene.c b/drivers/media/dvb-frontends/helene.c
-> index 68c1a3e0e2ba..f127adee3ebb 100644
-> --- a/drivers/media/dvb-frontends/helene.c
-> +++ b/drivers/media/dvb-frontends/helene.c
-> @@ -1025,7 +1025,7 @@ struct dvb_frontend *helene_attach_s(struct dvb_frontend *fe,
->  			priv->i2c_address, priv->i2c);
->  	return fe;
->  }
-> -EXPORT_SYMBOL(helene_attach_s);
-> +EXPORT_SYMBOL_GPL(helene_attach_s);
->  
->  struct dvb_frontend *helene_attach(struct dvb_frontend *fe,
->  		const struct helene_config *config,
-> @@ -1061,7 +1061,7 @@ struct dvb_frontend *helene_attach(struct dvb_frontend *fe,
->  			priv->i2c_address, priv->i2c);
->  	return fe;
->  }
-> -EXPORT_SYMBOL(helene_attach);
-> +EXPORT_SYMBOL_GPL(helene_attach);
->  
->  static int helene_probe(struct i2c_client *client)
->  {
-> diff --git a/drivers/media/dvb-frontends/horus3a.c b/drivers/media/dvb-frontends/horus3a.c
-> index 24bf5cbcc184..0330b78a5b3f 100644
-> --- a/drivers/media/dvb-frontends/horus3a.c
-> +++ b/drivers/media/dvb-frontends/horus3a.c
-> @@ -395,7 +395,7 @@ struct dvb_frontend *horus3a_attach(struct dvb_frontend *fe,
->  		priv->i2c_address, priv->i2c);
->  	return fe;
->  }
-> -EXPORT_SYMBOL(horus3a_attach);
-> +EXPORT_SYMBOL_GPL(horus3a_attach);
->  
->  MODULE_DESCRIPTION("Sony HORUS3A satellite tuner driver");
->  MODULE_AUTHOR("Sergey Kozlov <serjk@netup.ru>");
-> diff --git a/drivers/media/dvb-frontends/isl6405.c b/drivers/media/dvb-frontends/isl6405.c
-> index 2cd69b4ff82c..7d28a743f97e 100644
-> --- a/drivers/media/dvb-frontends/isl6405.c
-> +++ b/drivers/media/dvb-frontends/isl6405.c
-> @@ -141,7 +141,7 @@ struct dvb_frontend *isl6405_attach(struct dvb_frontend *fe, struct i2c_adapter
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(isl6405_attach);
-> +EXPORT_SYMBOL_GPL(isl6405_attach);
->  
->  MODULE_DESCRIPTION("Driver for lnb supply and control ic isl6405");
->  MODULE_AUTHOR("Hartmut Hackmann & Oliver Endriss");
-> diff --git a/drivers/media/dvb-frontends/isl6421.c b/drivers/media/dvb-frontends/isl6421.c
-> index 43b0dfc6f453..2e9f6f12f849 100644
-> --- a/drivers/media/dvb-frontends/isl6421.c
-> +++ b/drivers/media/dvb-frontends/isl6421.c
-> @@ -213,7 +213,7 @@ struct dvb_frontend *isl6421_attach(struct dvb_frontend *fe, struct i2c_adapter
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(isl6421_attach);
-> +EXPORT_SYMBOL_GPL(isl6421_attach);
->  
->  MODULE_DESCRIPTION("Driver for lnb supply and control ic isl6421");
->  MODULE_AUTHOR("Andrew de Quincey & Oliver Endriss");
-> diff --git a/drivers/media/dvb-frontends/isl6423.c b/drivers/media/dvb-frontends/isl6423.c
-> index 8cd1bb88ce6e..a0d0a3834057 100644
-> --- a/drivers/media/dvb-frontends/isl6423.c
-> +++ b/drivers/media/dvb-frontends/isl6423.c
-> @@ -289,7 +289,7 @@ struct dvb_frontend *isl6423_attach(struct dvb_frontend *fe,
->  	fe->sec_priv = NULL;
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(isl6423_attach);
-> +EXPORT_SYMBOL_GPL(isl6423_attach);
->  
->  MODULE_DESCRIPTION("ISL6423 SEC");
->  MODULE_AUTHOR("Manu Abraham");
-> diff --git a/drivers/media/dvb-frontends/itd1000.c b/drivers/media/dvb-frontends/itd1000.c
-> index 1b33478653d1..f8f362f50e78 100644
-> --- a/drivers/media/dvb-frontends/itd1000.c
-> +++ b/drivers/media/dvb-frontends/itd1000.c
-> @@ -389,7 +389,7 @@ struct dvb_frontend *itd1000_attach(struct dvb_frontend *fe, struct i2c_adapter
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(itd1000_attach);
-> +EXPORT_SYMBOL_GPL(itd1000_attach);
->  
->  MODULE_AUTHOR("Patrick Boettcher <pb@linuxtv.org>");
->  MODULE_DESCRIPTION("Integrant ITD1000 driver");
-> diff --git a/drivers/media/dvb-frontends/ix2505v.c b/drivers/media/dvb-frontends/ix2505v.c
-> index 73f27105c139..3212e333d472 100644
-> --- a/drivers/media/dvb-frontends/ix2505v.c
-> +++ b/drivers/media/dvb-frontends/ix2505v.c
-> @@ -302,7 +302,7 @@ struct dvb_frontend *ix2505v_attach(struct dvb_frontend *fe,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(ix2505v_attach);
-> +EXPORT_SYMBOL_GPL(ix2505v_attach);
->  
->  module_param_named(debug, ix2505v_debug, int, 0644);
->  MODULE_PARM_DESC(debug, "Turn on/off frontend debugging (default:off).");
-> diff --git a/drivers/media/dvb-frontends/l64781.c b/drivers/media/dvb-frontends/l64781.c
-> index c5106a1ea1cd..fe5af2453d55 100644
-> --- a/drivers/media/dvb-frontends/l64781.c
-> +++ b/drivers/media/dvb-frontends/l64781.c
-> @@ -593,4 +593,4 @@ MODULE_DESCRIPTION("LSI L64781 DVB-T Demodulator driver");
->  MODULE_AUTHOR("Holger Waechtler, Marko Kohtala");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(l64781_attach);
-> +EXPORT_SYMBOL_GPL(l64781_attach);
-> diff --git a/drivers/media/dvb-frontends/lg2160.c b/drivers/media/dvb-frontends/lg2160.c
-> index f343066c297e..fe700aa56bff 100644
-> --- a/drivers/media/dvb-frontends/lg2160.c
-> +++ b/drivers/media/dvb-frontends/lg2160.c
-> @@ -1426,7 +1426,7 @@ struct dvb_frontend *lg2160_attach(const struct lg2160_config *config,
->  
->  	return &state->frontend;
->  }
-> -EXPORT_SYMBOL(lg2160_attach);
-> +EXPORT_SYMBOL_GPL(lg2160_attach);
->  
->  MODULE_DESCRIPTION("LG Electronics LG216x ATSC/MH Demodulator Driver");
->  MODULE_AUTHOR("Michael Krufky <mkrufky@linuxtv.org>");
-> diff --git a/drivers/media/dvb-frontends/lgdt3305.c b/drivers/media/dvb-frontends/lgdt3305.c
-> index c15d3735d34c..bdc8311e1c0b 100644
-> --- a/drivers/media/dvb-frontends/lgdt3305.c
-> +++ b/drivers/media/dvb-frontends/lgdt3305.c
-> @@ -1148,7 +1148,7 @@ struct dvb_frontend *lgdt3305_attach(const struct lgdt3305_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(lgdt3305_attach);
-> +EXPORT_SYMBOL_GPL(lgdt3305_attach);
->  
->  static const struct dvb_frontend_ops lgdt3304_ops = {
->  	.delsys = { SYS_ATSC, SYS_DVBC_ANNEX_B },
-> diff --git a/drivers/media/dvb-frontends/lgdt3306a.c b/drivers/media/dvb-frontends/lgdt3306a.c
-> index 3c6650f6e9a3..263887592415 100644
-> --- a/drivers/media/dvb-frontends/lgdt3306a.c
-> +++ b/drivers/media/dvb-frontends/lgdt3306a.c
-> @@ -1859,7 +1859,7 @@ struct dvb_frontend *lgdt3306a_attach(const struct lgdt3306a_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(lgdt3306a_attach);
-> +EXPORT_SYMBOL_GPL(lgdt3306a_attach);
->  
->  #ifdef DBG_DUMP
->  
-> diff --git a/drivers/media/dvb-frontends/lgdt330x.c b/drivers/media/dvb-frontends/lgdt330x.c
-> index 97a10996c7fa..081d6ad3ce72 100644
-> --- a/drivers/media/dvb-frontends/lgdt330x.c
-> +++ b/drivers/media/dvb-frontends/lgdt330x.c
-> @@ -927,7 +927,7 @@ struct dvb_frontend *lgdt330x_attach(const struct lgdt330x_config *_config,
->  
->  	return lgdt330x_get_dvb_frontend(client);
->  }
-> -EXPORT_SYMBOL(lgdt330x_attach);
-> +EXPORT_SYMBOL_GPL(lgdt330x_attach);
->  
->  static const struct dvb_frontend_ops lgdt3302_ops = {
->  	.delsys = { SYS_ATSC, SYS_DVBC_ANNEX_B },
-> diff --git a/drivers/media/dvb-frontends/lgs8gxx.c b/drivers/media/dvb-frontends/lgs8gxx.c
-> index 30014979b985..ffaf60e16ecd 100644
-> --- a/drivers/media/dvb-frontends/lgs8gxx.c
-> +++ b/drivers/media/dvb-frontends/lgs8gxx.c
-> @@ -1043,7 +1043,7 @@ struct dvb_frontend *lgs8gxx_attach(const struct lgs8gxx_config *config,
->  	return NULL;
->  
->  }
-> -EXPORT_SYMBOL(lgs8gxx_attach);
-> +EXPORT_SYMBOL_GPL(lgs8gxx_attach);
->  
->  MODULE_DESCRIPTION("Legend Silicon LGS8913/LGS8GXX DMB-TH demodulator driver");
->  MODULE_AUTHOR("David T. L. Wong <davidtlwong@gmail.com>");
-> diff --git a/drivers/media/dvb-frontends/lnbh25.c b/drivers/media/dvb-frontends/lnbh25.c
-> index 9ffe06cd787d..41bec050642b 100644
-> --- a/drivers/media/dvb-frontends/lnbh25.c
-> +++ b/drivers/media/dvb-frontends/lnbh25.c
-> @@ -173,7 +173,7 @@ struct dvb_frontend *lnbh25_attach(struct dvb_frontend *fe,
->  		__func__, priv->i2c_address);
->  	return fe;
->  }
-> -EXPORT_SYMBOL(lnbh25_attach);
-> +EXPORT_SYMBOL_GPL(lnbh25_attach);
->  
->  MODULE_DESCRIPTION("ST LNBH25 driver");
->  MODULE_AUTHOR("info@netup.ru");
-> diff --git a/drivers/media/dvb-frontends/lnbp21.c b/drivers/media/dvb-frontends/lnbp21.c
-> index e564974162d6..32593b1f75a3 100644
-> --- a/drivers/media/dvb-frontends/lnbp21.c
-> +++ b/drivers/media/dvb-frontends/lnbp21.c
-> @@ -155,7 +155,7 @@ struct dvb_frontend *lnbh24_attach(struct dvb_frontend *fe,
->  	return lnbx2x_attach(fe, i2c, override_set, override_clear,
->  							i2c_addr, LNBH24_TTX);
->  }
-> -EXPORT_SYMBOL(lnbh24_attach);
-> +EXPORT_SYMBOL_GPL(lnbh24_attach);
->  
->  struct dvb_frontend *lnbp21_attach(struct dvb_frontend *fe,
->  				struct i2c_adapter *i2c, u8 override_set,
-> @@ -164,7 +164,7 @@ struct dvb_frontend *lnbp21_attach(struct dvb_frontend *fe,
->  	return lnbx2x_attach(fe, i2c, override_set, override_clear,
->  							0x08, LNBP21_ISEL);
->  }
-> -EXPORT_SYMBOL(lnbp21_attach);
-> +EXPORT_SYMBOL_GPL(lnbp21_attach);
->  
->  MODULE_DESCRIPTION("Driver for lnb supply and control ic lnbp21, lnbh24");
->  MODULE_AUTHOR("Oliver Endriss, Igor M. Liplianin");
-> diff --git a/drivers/media/dvb-frontends/lnbp22.c b/drivers/media/dvb-frontends/lnbp22.c
-> index b8c7145d4cef..cb4ea5d3fad4 100644
-> --- a/drivers/media/dvb-frontends/lnbp22.c
-> +++ b/drivers/media/dvb-frontends/lnbp22.c
-> @@ -125,7 +125,7 @@ struct dvb_frontend *lnbp22_attach(struct dvb_frontend *fe,
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(lnbp22_attach);
-> +EXPORT_SYMBOL_GPL(lnbp22_attach);
->  
->  MODULE_DESCRIPTION("Driver for lnb supply and control ic lnbp22");
->  MODULE_AUTHOR("Dominik Kuhlen");
-> diff --git a/drivers/media/dvb-frontends/m88ds3103.c b/drivers/media/dvb-frontends/m88ds3103.c
-> index cf49ac56a37e..cf037b61b226 100644
-> --- a/drivers/media/dvb-frontends/m88ds3103.c
-> +++ b/drivers/media/dvb-frontends/m88ds3103.c
-> @@ -1695,7 +1695,7 @@ struct dvb_frontend *m88ds3103_attach(const struct m88ds3103_config *cfg,
->  	*tuner_i2c_adapter = pdata.get_i2c_adapter(client);
->  	return pdata.get_dvb_frontend(client);
->  }
-> -EXPORT_SYMBOL(m88ds3103_attach);
-> +EXPORT_SYMBOL_GPL(m88ds3103_attach);
->  
->  static const struct dvb_frontend_ops m88ds3103_ops = {
->  	.delsys = {SYS_DVBS, SYS_DVBS2},
-> diff --git a/drivers/media/dvb-frontends/m88rs2000.c b/drivers/media/dvb-frontends/m88rs2000.c
-> index b294ba87e934..2aa98203cd65 100644
-> --- a/drivers/media/dvb-frontends/m88rs2000.c
-> +++ b/drivers/media/dvb-frontends/m88rs2000.c
-> @@ -808,7 +808,7 @@ struct dvb_frontend *m88rs2000_attach(const struct m88rs2000_config *config,
->  
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(m88rs2000_attach);
-> +EXPORT_SYMBOL_GPL(m88rs2000_attach);
->  
->  MODULE_DESCRIPTION("M88RS2000 DVB-S Demodulator driver");
->  MODULE_AUTHOR("Malcolm Priestley tvboxspy@gmail.com");
-> diff --git a/drivers/media/dvb-frontends/mb86a16.c b/drivers/media/dvb-frontends/mb86a16.c
-> index 3ec2cb4fa504..0fc45896e7b8 100644
-> --- a/drivers/media/dvb-frontends/mb86a16.c
-> +++ b/drivers/media/dvb-frontends/mb86a16.c
-> @@ -1853,6 +1853,6 @@ struct dvb_frontend *mb86a16_attach(const struct mb86a16_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(mb86a16_attach);
-> +EXPORT_SYMBOL_GPL(mb86a16_attach);
->  MODULE_LICENSE("GPL");
->  MODULE_AUTHOR("Manu Abraham");
-> diff --git a/drivers/media/dvb-frontends/mb86a20s.c b/drivers/media/dvb-frontends/mb86a20s.c
-> index 125fed4891ba..f8e4bbee5bd5 100644
-> --- a/drivers/media/dvb-frontends/mb86a20s.c
-> +++ b/drivers/media/dvb-frontends/mb86a20s.c
-> @@ -2078,7 +2078,7 @@ struct dvb_frontend *mb86a20s_attach(const struct mb86a20s_config *config,
->  	dev_info(&i2c->dev, "Detected a Fujitsu mb86a20s frontend\n");
->  	return &state->frontend;
->  }
-> -EXPORT_SYMBOL(mb86a20s_attach);
-> +EXPORT_SYMBOL_GPL(mb86a20s_attach);
->  
->  static const struct dvb_frontend_ops mb86a20s_ops = {
->  	.delsys = { SYS_ISDBT },
-> diff --git a/drivers/media/dvb-frontends/mt312.c b/drivers/media/dvb-frontends/mt312.c
-> index d43a67045dbe..fb867dd8a26b 100644
-> --- a/drivers/media/dvb-frontends/mt312.c
-> +++ b/drivers/media/dvb-frontends/mt312.c
-> @@ -827,7 +827,7 @@ struct dvb_frontend *mt312_attach(const struct mt312_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(mt312_attach);
-> +EXPORT_SYMBOL_GPL(mt312_attach);
->  
->  module_param(debug, int, 0644);
->  MODULE_PARM_DESC(debug, "Turn on/off frontend debugging (default:off).");
-> diff --git a/drivers/media/dvb-frontends/mt352.c b/drivers/media/dvb-frontends/mt352.c
-> index 399d5c519027..1b2889f5cf67 100644
-> --- a/drivers/media/dvb-frontends/mt352.c
-> +++ b/drivers/media/dvb-frontends/mt352.c
-> @@ -593,4 +593,4 @@ MODULE_DESCRIPTION("Zarlink MT352 DVB-T Demodulator driver");
->  MODULE_AUTHOR("Holger Waechtler, Daniel Mack, Antonio Mancuso");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(mt352_attach);
-> +EXPORT_SYMBOL_GPL(mt352_attach);
-> diff --git a/drivers/media/dvb-frontends/nxt200x.c b/drivers/media/dvb-frontends/nxt200x.c
-> index 200b6dbc75f8..1c549ada6ebf 100644
-> --- a/drivers/media/dvb-frontends/nxt200x.c
-> +++ b/drivers/media/dvb-frontends/nxt200x.c
-> @@ -1216,5 +1216,5 @@ MODULE_DESCRIPTION("NXT200X (ATSC 8VSB & ITU-T J.83 AnnexB 64/256 QAM) Demodulat
->  MODULE_AUTHOR("Kirk Lapray, Michael Krufky, Jean-Francois Thibert, and Taylor Jacob");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(nxt200x_attach);
-> +EXPORT_SYMBOL_GPL(nxt200x_attach);
->  
-> diff --git a/drivers/media/dvb-frontends/nxt6000.c b/drivers/media/dvb-frontends/nxt6000.c
-> index 136918f82dda..e8d4940370dd 100644
-> --- a/drivers/media/dvb-frontends/nxt6000.c
-> +++ b/drivers/media/dvb-frontends/nxt6000.c
-> @@ -621,4 +621,4 @@ MODULE_DESCRIPTION("NxtWave NXT6000 DVB-T demodulator driver");
->  MODULE_AUTHOR("Florian Schirmer");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(nxt6000_attach);
-> +EXPORT_SYMBOL_GPL(nxt6000_attach);
-> diff --git a/drivers/media/dvb-frontends/or51132.c b/drivers/media/dvb-frontends/or51132.c
-> index 355f3598627b..74e04c7cca1e 100644
-> --- a/drivers/media/dvb-frontends/or51132.c
-> +++ b/drivers/media/dvb-frontends/or51132.c
-> @@ -605,4 +605,4 @@ MODULE_AUTHOR("Kirk Lapray");
->  MODULE_AUTHOR("Trent Piepho");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(or51132_attach);
-> +EXPORT_SYMBOL_GPL(or51132_attach);
-> diff --git a/drivers/media/dvb-frontends/or51211.c b/drivers/media/dvb-frontends/or51211.c
-> index ae732dc5116e..2e8e7071a67a 100644
-> --- a/drivers/media/dvb-frontends/or51211.c
-> +++ b/drivers/media/dvb-frontends/or51211.c
-> @@ -551,5 +551,5 @@ MODULE_DESCRIPTION("Oren OR51211 VSB [pcHDTV HD-2000] Demodulator Driver");
->  MODULE_AUTHOR("Kirk Lapray");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(or51211_attach);
-> +EXPORT_SYMBOL_GPL(or51211_attach);
->  
-> diff --git a/drivers/media/dvb-frontends/s5h1409.c b/drivers/media/dvb-frontends/s5h1409.c
-> index 3089cc174a6f..28b1dca077ea 100644
-> --- a/drivers/media/dvb-frontends/s5h1409.c
-> +++ b/drivers/media/dvb-frontends/s5h1409.c
-> @@ -981,7 +981,7 @@ struct dvb_frontend *s5h1409_attach(const struct s5h1409_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(s5h1409_attach);
-> +EXPORT_SYMBOL_GPL(s5h1409_attach);
->  
->  static const struct dvb_frontend_ops s5h1409_ops = {
->  	.delsys = { SYS_ATSC, SYS_DVBC_ANNEX_B },
-> diff --git a/drivers/media/dvb-frontends/s5h1411.c b/drivers/media/dvb-frontends/s5h1411.c
-> index 2563a72e98b7..fc48e659c2d8 100644
-> --- a/drivers/media/dvb-frontends/s5h1411.c
-> +++ b/drivers/media/dvb-frontends/s5h1411.c
-> @@ -900,7 +900,7 @@ struct dvb_frontend *s5h1411_attach(const struct s5h1411_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(s5h1411_attach);
-> +EXPORT_SYMBOL_GPL(s5h1411_attach);
->  
->  static const struct dvb_frontend_ops s5h1411_ops = {
->  	.delsys = { SYS_ATSC, SYS_DVBC_ANNEX_B },
-> diff --git a/drivers/media/dvb-frontends/s5h1420.c b/drivers/media/dvb-frontends/s5h1420.c
-> index 6bdec2898bc8..d700de1ea6c2 100644
-> --- a/drivers/media/dvb-frontends/s5h1420.c
-> +++ b/drivers/media/dvb-frontends/s5h1420.c
-> @@ -918,7 +918,7 @@ struct dvb_frontend *s5h1420_attach(const struct s5h1420_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(s5h1420_attach);
-> +EXPORT_SYMBOL_GPL(s5h1420_attach);
->  
->  static const struct dvb_frontend_ops s5h1420_ops = {
->  	.delsys = { SYS_DVBS },
-> diff --git a/drivers/media/dvb-frontends/s5h1432.c b/drivers/media/dvb-frontends/s5h1432.c
-> index 956e8ee4b388..ff5d3bdf3bc6 100644
-> --- a/drivers/media/dvb-frontends/s5h1432.c
-> +++ b/drivers/media/dvb-frontends/s5h1432.c
-> @@ -355,7 +355,7 @@ struct dvb_frontend *s5h1432_attach(const struct s5h1432_config *config,
->  
->  	return &state->frontend;
->  }
-> -EXPORT_SYMBOL(s5h1432_attach);
-> +EXPORT_SYMBOL_GPL(s5h1432_attach);
->  
->  static const struct dvb_frontend_ops s5h1432_ops = {
->  	.delsys = { SYS_DVBT },
-> diff --git a/drivers/media/dvb-frontends/s921.c b/drivers/media/dvb-frontends/s921.c
-> index f118d8e64103..7e461ac159fc 100644
-> --- a/drivers/media/dvb-frontends/s921.c
-> +++ b/drivers/media/dvb-frontends/s921.c
-> @@ -495,7 +495,7 @@ struct dvb_frontend *s921_attach(const struct s921_config *config,
->  
->  	return &state->frontend;
->  }
-> -EXPORT_SYMBOL(s921_attach);
-> +EXPORT_SYMBOL_GPL(s921_attach);
->  
->  static const struct dvb_frontend_ops s921_ops = {
->  	.delsys = { SYS_ISDBT },
-> diff --git a/drivers/media/dvb-frontends/si21xx.c b/drivers/media/dvb-frontends/si21xx.c
-> index 2d29d2c4d434..210ccd356e2b 100644
-> --- a/drivers/media/dvb-frontends/si21xx.c
-> +++ b/drivers/media/dvb-frontends/si21xx.c
-> @@ -937,7 +937,7 @@ struct dvb_frontend *si21xx_attach(const struct si21xx_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(si21xx_attach);
-> +EXPORT_SYMBOL_GPL(si21xx_attach);
->  
->  module_param(debug, int, 0644);
->  MODULE_PARM_DESC(debug, "Turn on/off frontend debugging (default:off).");
-> diff --git a/drivers/media/dvb-frontends/sp887x.c b/drivers/media/dvb-frontends/sp887x.c
-> index 146e7f2dd3c5..f59c0f96416b 100644
-> --- a/drivers/media/dvb-frontends/sp887x.c
-> +++ b/drivers/media/dvb-frontends/sp887x.c
-> @@ -624,4 +624,4 @@ MODULE_PARM_DESC(debug, "Turn on/off frontend debugging (default:off).");
->  MODULE_DESCRIPTION("Spase sp887x DVB-T demodulator driver");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(sp887x_attach);
-> +EXPORT_SYMBOL_GPL(sp887x_attach);
-> diff --git a/drivers/media/dvb-frontends/stb0899_drv.c b/drivers/media/dvb-frontends/stb0899_drv.c
-> index 4ee6c1e1e9f7..2f4d8fb400cd 100644
-> --- a/drivers/media/dvb-frontends/stb0899_drv.c
-> +++ b/drivers/media/dvb-frontends/stb0899_drv.c
-> @@ -1638,7 +1638,7 @@ struct dvb_frontend *stb0899_attach(struct stb0899_config *config, struct i2c_ad
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(stb0899_attach);
-> +EXPORT_SYMBOL_GPL(stb0899_attach);
->  MODULE_PARM_DESC(verbose, "Set Verbosity level");
->  MODULE_AUTHOR("Manu Abraham");
->  MODULE_DESCRIPTION("STB0899 Multi-Std frontend");
-> diff --git a/drivers/media/dvb-frontends/stb6000.c b/drivers/media/dvb-frontends/stb6000.c
-> index 8c9800d577e0..d74e34677b92 100644
-> --- a/drivers/media/dvb-frontends/stb6000.c
-> +++ b/drivers/media/dvb-frontends/stb6000.c
-> @@ -232,7 +232,7 @@ struct dvb_frontend *stb6000_attach(struct dvb_frontend *fe, int addr,
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(stb6000_attach);
-> +EXPORT_SYMBOL_GPL(stb6000_attach);
->  
->  module_param(debug, int, 0644);
->  MODULE_PARM_DESC(debug, "Turn on/off frontend debugging (default:off).");
-> diff --git a/drivers/media/dvb-frontends/stb6100.c b/drivers/media/dvb-frontends/stb6100.c
-> index 698866c4f15a..c5818a15a0d7 100644
-> --- a/drivers/media/dvb-frontends/stb6100.c
-> +++ b/drivers/media/dvb-frontends/stb6100.c
-> @@ -557,7 +557,7 @@ static void stb6100_release(struct dvb_frontend *fe)
->  	kfree(state);
->  }
->  
-> -EXPORT_SYMBOL(stb6100_attach);
-> +EXPORT_SYMBOL_GPL(stb6100_attach);
->  MODULE_PARM_DESC(verbose, "Set Verbosity level");
->  
->  MODULE_AUTHOR("Manu Abraham");
-> diff --git a/drivers/media/dvb-frontends/stv0288.c b/drivers/media/dvb-frontends/stv0288.c
-> index 3ae1f3a2f142..a5581bd60f9e 100644
-> --- a/drivers/media/dvb-frontends/stv0288.c
-> +++ b/drivers/media/dvb-frontends/stv0288.c
-> @@ -590,7 +590,7 @@ struct dvb_frontend *stv0288_attach(const struct stv0288_config *config,
->  
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(stv0288_attach);
-> +EXPORT_SYMBOL_GPL(stv0288_attach);
->  
->  module_param(debug_legacy_dish_switch, int, 0444);
->  MODULE_PARM_DESC(debug_legacy_dish_switch,
-> diff --git a/drivers/media/dvb-frontends/stv0297.c b/drivers/media/dvb-frontends/stv0297.c
-> index 6d5962d5697a..9d4dbd99a5a7 100644
-> --- a/drivers/media/dvb-frontends/stv0297.c
-> +++ b/drivers/media/dvb-frontends/stv0297.c
-> @@ -710,4 +710,4 @@ MODULE_DESCRIPTION("ST STV0297 DVB-C Demodulator driver");
->  MODULE_AUTHOR("Dennis Noermann and Andrew de Quincey");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(stv0297_attach);
-> +EXPORT_SYMBOL_GPL(stv0297_attach);
-> diff --git a/drivers/media/dvb-frontends/stv0299.c b/drivers/media/dvb-frontends/stv0299.c
-> index b5263a0ee5aa..da7ff2c2e8e5 100644
-> --- a/drivers/media/dvb-frontends/stv0299.c
-> +++ b/drivers/media/dvb-frontends/stv0299.c
-> @@ -752,4 +752,4 @@ MODULE_DESCRIPTION("ST STV0299 DVB Demodulator driver");
->  MODULE_AUTHOR("Ralph Metzler, Holger Waechtler, Peter Schildmann, Felix Domke, Andreas Oberritter, Andrew de Quincey, Kenneth Aafly");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(stv0299_attach);
-> +EXPORT_SYMBOL_GPL(stv0299_attach);
-> diff --git a/drivers/media/dvb-frontends/stv0367.c b/drivers/media/dvb-frontends/stv0367.c
-> index a93f40617469..48326434488c 100644
-> --- a/drivers/media/dvb-frontends/stv0367.c
-> +++ b/drivers/media/dvb-frontends/stv0367.c
-> @@ -1750,7 +1750,7 @@ struct dvb_frontend *stv0367ter_attach(const struct stv0367_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(stv0367ter_attach);
-> +EXPORT_SYMBOL_GPL(stv0367ter_attach);
->  
->  static int stv0367cab_gate_ctrl(struct dvb_frontend *fe, int enable)
->  {
-> @@ -2919,7 +2919,7 @@ struct dvb_frontend *stv0367cab_attach(const struct stv0367_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(stv0367cab_attach);
-> +EXPORT_SYMBOL_GPL(stv0367cab_attach);
->  
->  /*
->   * Functions for operation on Digital Devices hardware
-> @@ -3340,7 +3340,7 @@ struct dvb_frontend *stv0367ddb_attach(const struct stv0367_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(stv0367ddb_attach);
-> +EXPORT_SYMBOL_GPL(stv0367ddb_attach);
->  
->  MODULE_PARM_DESC(debug, "Set debug");
->  MODULE_PARM_DESC(i2c_debug, "Set i2c debug");
-> diff --git a/drivers/media/dvb-frontends/stv0900_core.c b/drivers/media/dvb-frontends/stv0900_core.c
-> index 212312d20ff6..e7b9b9b11d7d 100644
-> --- a/drivers/media/dvb-frontends/stv0900_core.c
-> +++ b/drivers/media/dvb-frontends/stv0900_core.c
-> @@ -1957,7 +1957,7 @@ struct dvb_frontend *stv0900_attach(const struct stv0900_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(stv0900_attach);
-> +EXPORT_SYMBOL_GPL(stv0900_attach);
->  
->  MODULE_PARM_DESC(debug, "Set debug");
->  
-> diff --git a/drivers/media/dvb-frontends/stv090x.c b/drivers/media/dvb-frontends/stv090x.c
-> index a07dc5fdeb3d..cc45139057ba 100644
-> --- a/drivers/media/dvb-frontends/stv090x.c
-> +++ b/drivers/media/dvb-frontends/stv090x.c
-> @@ -5071,7 +5071,7 @@ struct dvb_frontend *stv090x_attach(struct stv090x_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(stv090x_attach);
-> +EXPORT_SYMBOL_GPL(stv090x_attach);
->  
->  static const struct i2c_device_id stv090x_id_table[] = {
->  	{"stv090x", 0},
-> diff --git a/drivers/media/dvb-frontends/stv6110.c b/drivers/media/dvb-frontends/stv6110.c
-> index 963f6a896102..1cf9c095dbff 100644
-> --- a/drivers/media/dvb-frontends/stv6110.c
-> +++ b/drivers/media/dvb-frontends/stv6110.c
-> @@ -427,7 +427,7 @@ struct dvb_frontend *stv6110_attach(struct dvb_frontend *fe,
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(stv6110_attach);
-> +EXPORT_SYMBOL_GPL(stv6110_attach);
->  
->  module_param(debug, int, 0644);
->  MODULE_PARM_DESC(debug, "Turn on/off frontend debugging (default:off).");
-> diff --git a/drivers/media/dvb-frontends/stv6110x.c b/drivers/media/dvb-frontends/stv6110x.c
-> index 11653f846c12..c678f47d2449 100644
-> --- a/drivers/media/dvb-frontends/stv6110x.c
-> +++ b/drivers/media/dvb-frontends/stv6110x.c
-> @@ -467,7 +467,7 @@ const struct stv6110x_devctl *stv6110x_attach(struct dvb_frontend *fe,
->  	dev_info(&stv6110x->i2c->dev, "Attaching STV6110x\n");
->  	return stv6110x->devctl;
->  }
-> -EXPORT_SYMBOL(stv6110x_attach);
-> +EXPORT_SYMBOL_GPL(stv6110x_attach);
->  
->  static const struct i2c_device_id stv6110x_id_table[] = {
->  	{"stv6110x", 0},
-> diff --git a/drivers/media/dvb-frontends/tda10021.c b/drivers/media/dvb-frontends/tda10021.c
-> index faa6e54b3372..462e12ab6bd1 100644
-> --- a/drivers/media/dvb-frontends/tda10021.c
-> +++ b/drivers/media/dvb-frontends/tda10021.c
-> @@ -523,4 +523,4 @@ MODULE_DESCRIPTION("Philips TDA10021 DVB-C demodulator driver");
->  MODULE_AUTHOR("Ralph Metzler, Holger Waechtler, Markus Schulz");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(tda10021_attach);
-> +EXPORT_SYMBOL_GPL(tda10021_attach);
-> diff --git a/drivers/media/dvb-frontends/tda10023.c b/drivers/media/dvb-frontends/tda10023.c
-> index 8f32edf6b700..4c2541ecd743 100644
-> --- a/drivers/media/dvb-frontends/tda10023.c
-> +++ b/drivers/media/dvb-frontends/tda10023.c
-> @@ -594,4 +594,4 @@ MODULE_DESCRIPTION("Philips TDA10023 DVB-C demodulator driver");
->  MODULE_AUTHOR("Georg Acher, Hartmut Birr");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(tda10023_attach);
-> +EXPORT_SYMBOL_GPL(tda10023_attach);
-> diff --git a/drivers/media/dvb-frontends/tda10048.c b/drivers/media/dvb-frontends/tda10048.c
-> index 3cb4e5270e4f..5d5e4e9e4422 100644
-> --- a/drivers/media/dvb-frontends/tda10048.c
-> +++ b/drivers/media/dvb-frontends/tda10048.c
-> @@ -1138,7 +1138,7 @@ struct dvb_frontend *tda10048_attach(const struct tda10048_config *config,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(tda10048_attach);
-> +EXPORT_SYMBOL_GPL(tda10048_attach);
->  
->  static const struct dvb_frontend_ops tda10048_ops = {
->  	.delsys = { SYS_DVBT },
-> diff --git a/drivers/media/dvb-frontends/tda1004x.c b/drivers/media/dvb-frontends/tda1004x.c
-> index 83a798ca9b00..6f306db6c615 100644
-> --- a/drivers/media/dvb-frontends/tda1004x.c
-> +++ b/drivers/media/dvb-frontends/tda1004x.c
-> @@ -1378,5 +1378,5 @@ MODULE_DESCRIPTION("Philips TDA10045H & TDA10046H DVB-T Demodulator");
->  MODULE_AUTHOR("Andrew de Quincey & Robert Schlabbach");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(tda10045_attach);
-> -EXPORT_SYMBOL(tda10046_attach);
-> +EXPORT_SYMBOL_GPL(tda10045_attach);
-> +EXPORT_SYMBOL_GPL(tda10046_attach);
-> diff --git a/drivers/media/dvb-frontends/tda10086.c b/drivers/media/dvb-frontends/tda10086.c
-> index cdcf97664bba..b449514ae585 100644
-> --- a/drivers/media/dvb-frontends/tda10086.c
-> +++ b/drivers/media/dvb-frontends/tda10086.c
-> @@ -764,4 +764,4 @@ MODULE_DESCRIPTION("Philips TDA10086 DVB-S Demodulator");
->  MODULE_AUTHOR("Andrew de Quincey");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(tda10086_attach);
-> +EXPORT_SYMBOL_GPL(tda10086_attach);
-> diff --git a/drivers/media/dvb-frontends/tda665x.c b/drivers/media/dvb-frontends/tda665x.c
-> index 13e8969da7f8..346be5011fb7 100644
-> --- a/drivers/media/dvb-frontends/tda665x.c
-> +++ b/drivers/media/dvb-frontends/tda665x.c
-> @@ -227,7 +227,7 @@ struct dvb_frontend *tda665x_attach(struct dvb_frontend *fe,
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(tda665x_attach);
-> +EXPORT_SYMBOL_GPL(tda665x_attach);
->  
->  MODULE_DESCRIPTION("TDA665x driver");
->  MODULE_AUTHOR("Manu Abraham");
-> diff --git a/drivers/media/dvb-frontends/tda8083.c b/drivers/media/dvb-frontends/tda8083.c
-> index e3e1c3db2c85..44f53624557b 100644
-> --- a/drivers/media/dvb-frontends/tda8083.c
-> +++ b/drivers/media/dvb-frontends/tda8083.c
-> @@ -481,4 +481,4 @@ MODULE_DESCRIPTION("Philips TDA8083 DVB-S Demodulator");
->  MODULE_AUTHOR("Ralph Metzler, Holger Waechtler");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(tda8083_attach);
-> +EXPORT_SYMBOL_GPL(tda8083_attach);
-> diff --git a/drivers/media/dvb-frontends/tda8261.c b/drivers/media/dvb-frontends/tda8261.c
-> index 0d576d41c67d..8b06f92745dc 100644
-> --- a/drivers/media/dvb-frontends/tda8261.c
-> +++ b/drivers/media/dvb-frontends/tda8261.c
-> @@ -188,7 +188,7 @@ struct dvb_frontend *tda8261_attach(struct dvb_frontend *fe,
->  	return NULL;
->  }
->  
-> -EXPORT_SYMBOL(tda8261_attach);
-> +EXPORT_SYMBOL_GPL(tda8261_attach);
->  
->  MODULE_AUTHOR("Manu Abraham");
->  MODULE_DESCRIPTION("TDA8261 8PSK/QPSK Tuner");
-> diff --git a/drivers/media/dvb-frontends/tda826x.c b/drivers/media/dvb-frontends/tda826x.c
-> index f9703a1dd758..eafcf5f7da3d 100644
-> --- a/drivers/media/dvb-frontends/tda826x.c
-> +++ b/drivers/media/dvb-frontends/tda826x.c
-> @@ -164,7 +164,7 @@ struct dvb_frontend *tda826x_attach(struct dvb_frontend *fe, int addr, struct i2
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(tda826x_attach);
-> +EXPORT_SYMBOL_GPL(tda826x_attach);
->  
->  module_param(debug, int, 0644);
->  MODULE_PARM_DESC(debug, "Turn on/off frontend debugging (default:off).");
-> diff --git a/drivers/media/dvb-frontends/ts2020.c b/drivers/media/dvb-frontends/ts2020.c
-> index f5b60f827697..a5ebce57f35e 100644
-> --- a/drivers/media/dvb-frontends/ts2020.c
-> +++ b/drivers/media/dvb-frontends/ts2020.c
-> @@ -525,7 +525,7 @@ struct dvb_frontend *ts2020_attach(struct dvb_frontend *fe,
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(ts2020_attach);
-> +EXPORT_SYMBOL_GPL(ts2020_attach);
->  
->  /*
->   * We implement own regmap locking due to legacy DVB attach which uses frontend
-> diff --git a/drivers/media/dvb-frontends/tua6100.c b/drivers/media/dvb-frontends/tua6100.c
-> index 2483f614d0e7..41dd9b6d3190 100644
-> --- a/drivers/media/dvb-frontends/tua6100.c
-> +++ b/drivers/media/dvb-frontends/tua6100.c
-> @@ -186,7 +186,7 @@ struct dvb_frontend *tua6100_attach(struct dvb_frontend *fe, int addr, struct i2
->  	fe->tuner_priv = priv;
->  	return fe;
->  }
-> -EXPORT_SYMBOL(tua6100_attach);
-> +EXPORT_SYMBOL_GPL(tua6100_attach);
->  
->  MODULE_DESCRIPTION("DVB tua6100 driver");
->  MODULE_AUTHOR("Andrew de Quincey");
-> diff --git a/drivers/media/dvb-frontends/ves1820.c b/drivers/media/dvb-frontends/ves1820.c
-> index 9df14d0be1c1..ee5620e731e9 100644
-> --- a/drivers/media/dvb-frontends/ves1820.c
-> +++ b/drivers/media/dvb-frontends/ves1820.c
-> @@ -434,4 +434,4 @@ MODULE_DESCRIPTION("VLSI VES1820 DVB-C Demodulator driver");
->  MODULE_AUTHOR("Ralph Metzler, Holger Waechtler");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(ves1820_attach);
-> +EXPORT_SYMBOL_GPL(ves1820_attach);
-> diff --git a/drivers/media/dvb-frontends/ves1x93.c b/drivers/media/dvb-frontends/ves1x93.c
-> index b74727286302..c60e21d26b88 100644
-> --- a/drivers/media/dvb-frontends/ves1x93.c
-> +++ b/drivers/media/dvb-frontends/ves1x93.c
-> @@ -540,4 +540,4 @@ MODULE_DESCRIPTION("VLSI VES1x93 DVB-S Demodulator driver");
->  MODULE_AUTHOR("Ralph Metzler");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(ves1x93_attach);
-> +EXPORT_SYMBOL_GPL(ves1x93_attach);
-> diff --git a/drivers/media/dvb-frontends/zl10036.c b/drivers/media/dvb-frontends/zl10036.c
-> index d392c7cce2ce..7ba575e9c55f 100644
-> --- a/drivers/media/dvb-frontends/zl10036.c
-> +++ b/drivers/media/dvb-frontends/zl10036.c
-> @@ -496,7 +496,7 @@ struct dvb_frontend *zl10036_attach(struct dvb_frontend *fe,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(zl10036_attach);
-> +EXPORT_SYMBOL_GPL(zl10036_attach);
->  
->  module_param_named(debug, zl10036_debug, int, 0644);
->  MODULE_PARM_DESC(debug, "Turn on/off frontend debugging (default:off).");
-> diff --git a/drivers/media/dvb-frontends/zl10039.c b/drivers/media/dvb-frontends/zl10039.c
-> index 1335bf78d5b7..a3e4d219400c 100644
-> --- a/drivers/media/dvb-frontends/zl10039.c
-> +++ b/drivers/media/dvb-frontends/zl10039.c
-> @@ -295,7 +295,7 @@ struct dvb_frontend *zl10039_attach(struct dvb_frontend *fe,
->  	kfree(state);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(zl10039_attach);
-> +EXPORT_SYMBOL_GPL(zl10039_attach);
->  
->  module_param(debug, int, 0644);
->  MODULE_PARM_DESC(debug, "Turn on/off frontend debugging (default:off).");
-> diff --git a/drivers/media/dvb-frontends/zl10353.c b/drivers/media/dvb-frontends/zl10353.c
-> index 2a2cf20a73d6..8849d05475c2 100644
-> --- a/drivers/media/dvb-frontends/zl10353.c
-> +++ b/drivers/media/dvb-frontends/zl10353.c
-> @@ -665,4 +665,4 @@ MODULE_DESCRIPTION("Zarlink ZL10353 DVB-T demodulator driver");
->  MODULE_AUTHOR("Chris Pascoe");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(zl10353_attach);
-> +EXPORT_SYMBOL_GPL(zl10353_attach);
-> diff --git a/drivers/media/pci/bt8xx/dst.c b/drivers/media/pci/bt8xx/dst.c
-> index 3e52a51982d7..110651e47831 100644
-> --- a/drivers/media/pci/bt8xx/dst.c
-> +++ b/drivers/media/pci/bt8xx/dst.c
-> @@ -1722,7 +1722,7 @@ struct dst_state *dst_attach(struct dst_state *state, struct dvb_adapter *dvb_ad
->  	return state;				/*	Manu (DST is a card not a frontend)	*/
->  }
->  
-> -EXPORT_SYMBOL(dst_attach);
-> +EXPORT_SYMBOL_GPL(dst_attach);
->  
->  static const struct dvb_frontend_ops dst_dvbt_ops = {
->  	.delsys = { SYS_DVBT },
-> diff --git a/drivers/media/pci/bt8xx/dst_ca.c b/drivers/media/pci/bt8xx/dst_ca.c
-> index d234a0f404d6..a9cc6e7a57f9 100644
-> --- a/drivers/media/pci/bt8xx/dst_ca.c
-> +++ b/drivers/media/pci/bt8xx/dst_ca.c
-> @@ -668,7 +668,7 @@ struct dvb_device *dst_ca_attach(struct dst_state *dst, struct dvb_adapter *dvb_
->  	return NULL;
->  }
->  
-> -EXPORT_SYMBOL(dst_ca_attach);
-> +EXPORT_SYMBOL_GPL(dst_ca_attach);
->  
->  MODULE_DESCRIPTION("DST DVB-S/T/C Combo CA driver");
->  MODULE_AUTHOR("Manu Abraham");
-> diff --git a/drivers/media/pci/ddbridge/ddbridge-dummy-fe.c b/drivers/media/pci/ddbridge/ddbridge-dummy-fe.c
-> index 6868a0c4fc82..520ebd16b0c4 100644
-> --- a/drivers/media/pci/ddbridge/ddbridge-dummy-fe.c
-> +++ b/drivers/media/pci/ddbridge/ddbridge-dummy-fe.c
-> @@ -112,7 +112,7 @@ struct dvb_frontend *ddbridge_dummy_fe_qam_attach(void)
->  	state->frontend.demodulator_priv = state;
->  	return &state->frontend;
->  }
-> -EXPORT_SYMBOL(ddbridge_dummy_fe_qam_attach);
-> +EXPORT_SYMBOL_GPL(ddbridge_dummy_fe_qam_attach);
->  
->  static const struct dvb_frontend_ops ddbridge_dummy_fe_qam_ops = {
->  	.delsys = { SYS_DVBC_ANNEX_A },
-> diff --git a/drivers/media/tuners/fc0011.c b/drivers/media/tuners/fc0011.c
-> index eaa3bbc903d7..3d3b54be2955 100644
-> --- a/drivers/media/tuners/fc0011.c
-> +++ b/drivers/media/tuners/fc0011.c
-> @@ -499,7 +499,7 @@ struct dvb_frontend *fc0011_attach(struct dvb_frontend *fe,
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(fc0011_attach);
-> +EXPORT_SYMBOL_GPL(fc0011_attach);
->  
->  MODULE_DESCRIPTION("Fitipower FC0011 silicon tuner driver");
->  MODULE_AUTHOR("Michael Buesch <m@bues.ch>");
-> diff --git a/drivers/media/tuners/fc0012.c b/drivers/media/tuners/fc0012.c
-> index 4429d5e8c579..81e65acbdb17 100644
-> --- a/drivers/media/tuners/fc0012.c
-> +++ b/drivers/media/tuners/fc0012.c
-> @@ -495,7 +495,7 @@ struct dvb_frontend *fc0012_attach(struct dvb_frontend *fe,
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(fc0012_attach);
-> +EXPORT_SYMBOL_GPL(fc0012_attach);
->  
->  MODULE_DESCRIPTION("Fitipower FC0012 silicon tuner driver");
->  MODULE_AUTHOR("Hans-Frieder Vogt <hfvogt@gmx.net>");
-> diff --git a/drivers/media/tuners/fc0013.c b/drivers/media/tuners/fc0013.c
-> index 29dd9b55ff33..1006a2798eef 100644
-> --- a/drivers/media/tuners/fc0013.c
-> +++ b/drivers/media/tuners/fc0013.c
-> @@ -608,7 +608,7 @@ struct dvb_frontend *fc0013_attach(struct dvb_frontend *fe,
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(fc0013_attach);
-> +EXPORT_SYMBOL_GPL(fc0013_attach);
->  
->  MODULE_DESCRIPTION("Fitipower FC0013 silicon tuner driver");
->  MODULE_AUTHOR("Hans-Frieder Vogt <hfvogt@gmx.net>");
-> diff --git a/drivers/media/tuners/max2165.c b/drivers/media/tuners/max2165.c
-> index 1c746bed51fe..1575ab94e1c8 100644
-> --- a/drivers/media/tuners/max2165.c
-> +++ b/drivers/media/tuners/max2165.c
-> @@ -410,7 +410,7 @@ struct dvb_frontend *max2165_attach(struct dvb_frontend *fe,
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(max2165_attach);
-> +EXPORT_SYMBOL_GPL(max2165_attach);
->  
->  MODULE_AUTHOR("David T. L. Wong <davidtlwong@gmail.com>");
->  MODULE_DESCRIPTION("Maxim MAX2165 silicon tuner driver");
-> diff --git a/drivers/media/tuners/mc44s803.c b/drivers/media/tuners/mc44s803.c
-> index 0c9161516abd..ed8bdf7ebd99 100644
-> --- a/drivers/media/tuners/mc44s803.c
-> +++ b/drivers/media/tuners/mc44s803.c
-> @@ -356,7 +356,7 @@ struct dvb_frontend *mc44s803_attach(struct dvb_frontend *fe,
->  	kfree(priv);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(mc44s803_attach);
-> +EXPORT_SYMBOL_GPL(mc44s803_attach);
->  
->  MODULE_AUTHOR("Jochen Friedrich");
->  MODULE_DESCRIPTION("Freescale MC44S803 silicon tuner driver");
-> diff --git a/drivers/media/tuners/mt2060.c b/drivers/media/tuners/mt2060.c
-> index 0278a9f0aeef..4205ed4cf467 100644
-> --- a/drivers/media/tuners/mt2060.c
-> +++ b/drivers/media/tuners/mt2060.c
-> @@ -440,7 +440,7 @@ struct dvb_frontend * mt2060_attach(struct dvb_frontend *fe, struct i2c_adapter
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(mt2060_attach);
-> +EXPORT_SYMBOL_GPL(mt2060_attach);
->  
->  static int mt2060_probe(struct i2c_client *client)
->  {
-> diff --git a/drivers/media/tuners/mt2131.c b/drivers/media/tuners/mt2131.c
-> index 37f50ff6c0bd..eebc06088341 100644
-> --- a/drivers/media/tuners/mt2131.c
-> +++ b/drivers/media/tuners/mt2131.c
-> @@ -274,7 +274,7 @@ struct dvb_frontend * mt2131_attach(struct dvb_frontend *fe,
->  	fe->tuner_priv = priv;
->  	return fe;
->  }
-> -EXPORT_SYMBOL(mt2131_attach);
-> +EXPORT_SYMBOL_GPL(mt2131_attach);
->  
->  MODULE_AUTHOR("Steven Toth");
->  MODULE_DESCRIPTION("Microtune MT2131 silicon tuner driver");
-> diff --git a/drivers/media/tuners/mt2266.c b/drivers/media/tuners/mt2266.c
-> index 6136f20fa9b7..2e92885a6bcb 100644
-> --- a/drivers/media/tuners/mt2266.c
-> +++ b/drivers/media/tuners/mt2266.c
-> @@ -336,7 +336,7 @@ struct dvb_frontend * mt2266_attach(struct dvb_frontend *fe, struct i2c_adapter
->  	mt2266_calibrate(priv);
->  	return fe;
->  }
-> -EXPORT_SYMBOL(mt2266_attach);
-> +EXPORT_SYMBOL_GPL(mt2266_attach);
->  
->  MODULE_AUTHOR("Olivier DANET");
->  MODULE_DESCRIPTION("Microtune MT2266 silicon tuner driver");
-> diff --git a/drivers/media/tuners/mxl5005s.c b/drivers/media/tuners/mxl5005s.c
-> index 06dfab9fb8cb..d9bfa257a005 100644
-> --- a/drivers/media/tuners/mxl5005s.c
-> +++ b/drivers/media/tuners/mxl5005s.c
-> @@ -4120,7 +4120,7 @@ struct dvb_frontend *mxl5005s_attach(struct dvb_frontend *fe,
->  	fe->tuner_priv = state;
->  	return fe;
->  }
-> -EXPORT_SYMBOL(mxl5005s_attach);
-> +EXPORT_SYMBOL_GPL(mxl5005s_attach);
->  
->  MODULE_DESCRIPTION("MaxLinear MXL5005S silicon tuner driver");
->  MODULE_AUTHOR("Steven Toth");
-> diff --git a/drivers/media/tuners/qt1010.c b/drivers/media/tuners/qt1010.c
-> index a7b19863f489..48fc79cd4027 100644
-> --- a/drivers/media/tuners/qt1010.c
-> +++ b/drivers/media/tuners/qt1010.c
-> @@ -441,7 +441,7 @@ struct dvb_frontend * qt1010_attach(struct dvb_frontend *fe,
->  	fe->tuner_priv = priv;
->  	return fe;
->  }
-> -EXPORT_SYMBOL(qt1010_attach);
-> +EXPORT_SYMBOL_GPL(qt1010_attach);
->  
->  MODULE_DESCRIPTION("Quantek QT1010 silicon tuner driver");
->  MODULE_AUTHOR("Antti Palosaari <crope@iki.fi>");
-> diff --git a/drivers/media/tuners/tda18218.c b/drivers/media/tuners/tda18218.c
-> index 4ed94646116f..7d8d84dcb245 100644
-> --- a/drivers/media/tuners/tda18218.c
-> +++ b/drivers/media/tuners/tda18218.c
-> @@ -336,7 +336,7 @@ struct dvb_frontend *tda18218_attach(struct dvb_frontend *fe,
->  
->  	return fe;
->  }
-> -EXPORT_SYMBOL(tda18218_attach);
-> +EXPORT_SYMBOL_GPL(tda18218_attach);
->  
->  MODULE_DESCRIPTION("NXP TDA18218HN silicon tuner driver");
->  MODULE_AUTHOR("Antti Palosaari <crope@iki.fi>");
-> diff --git a/drivers/media/tuners/xc2028.c b/drivers/media/tuners/xc2028.c
-> index 69c2e1b99bf1..5a967edceca9 100644
-> --- a/drivers/media/tuners/xc2028.c
-> +++ b/drivers/media/tuners/xc2028.c
-> @@ -1512,7 +1512,7 @@ struct dvb_frontend *xc2028_attach(struct dvb_frontend *fe,
->  	return NULL;
->  }
->  
-> -EXPORT_SYMBOL(xc2028_attach);
-> +EXPORT_SYMBOL_GPL(xc2028_attach);
->  
->  MODULE_DESCRIPTION("Xceive xc2028/xc3028 tuner driver");
->  MODULE_AUTHOR("Michel Ludwig <michel.ludwig@gmail.com>");
-> diff --git a/drivers/media/tuners/xc4000.c b/drivers/media/tuners/xc4000.c
-> index d59b4ab77430..57ded9ff3f04 100644
-> --- a/drivers/media/tuners/xc4000.c
-> +++ b/drivers/media/tuners/xc4000.c
-> @@ -1742,7 +1742,7 @@ struct dvb_frontend *xc4000_attach(struct dvb_frontend *fe,
->  	xc4000_release(fe);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(xc4000_attach);
-> +EXPORT_SYMBOL_GPL(xc4000_attach);
->  
->  MODULE_AUTHOR("Steven Toth, Davide Ferri");
->  MODULE_DESCRIPTION("Xceive xc4000 silicon tuner driver");
-> diff --git a/drivers/media/tuners/xc5000.c b/drivers/media/tuners/xc5000.c
-> index 7b7d9fe4f945..2182e5b7b606 100644
-> --- a/drivers/media/tuners/xc5000.c
-> +++ b/drivers/media/tuners/xc5000.c
-> @@ -1460,7 +1460,7 @@ struct dvb_frontend *xc5000_attach(struct dvb_frontend *fe,
->  	xc5000_release(fe);
->  	return NULL;
->  }
-> -EXPORT_SYMBOL(xc5000_attach);
-> +EXPORT_SYMBOL_GPL(xc5000_attach);
->  
->  MODULE_AUTHOR("Steven Toth");
->  MODULE_DESCRIPTION("Xceive xc5000 silicon tuner driver");
-> diff --git a/drivers/staging/media/av7110/sp8870.c b/drivers/staging/media/av7110/sp8870.c
-> index 9767159aeb9b..abf5c72607b6 100644
-> --- a/drivers/staging/media/av7110/sp8870.c
-> +++ b/drivers/staging/media/av7110/sp8870.c
-> @@ -606,4 +606,4 @@ MODULE_DESCRIPTION("Spase SP8870 DVB-T Demodulator driver");
->  MODULE_AUTHOR("Juergen Peitz");
->  MODULE_LICENSE("GPL");
->  
-> -EXPORT_SYMBOL(sp8870_attach);
-> +EXPORT_SYMBOL_GPL(sp8870_attach);
+3) UHS-II Interrupt
+- Except for UHS-II error interrupts, most interrupts share the original
+  interrupt registers.
+
+Patch structure
+===============
+patch#1-#6:  for core
+patch#7-#22: for sdhci
+patch#23:    for GL9755
+
+Changes in v11 (September. 08, 2023)
+* rebased to the linux-kernel-v6.5.0-rc5 in Ulf Hansson next branch.
+* according to the comments provided by Adrian Hunter to modify the
+  patches base on the [V10 00/23] Add support UHS-II for GL9755.
+* Patch#18: Drop the check mmc_card_uhs2_hd_mode(host->mmc)
+            in sdhci_uhs2_set_transfer_mode().
+* Patch#20: Remove unused ocr_avail_uhs2.
+
+Reference
+=========
+[1] https://gitlab.com/VictorShih/linux-uhs2.git
+[2] SD Host Controller Simplified Specification 4.20
+[3] UHS-II Simplified Addendum 1.02
+[4] https://patchwork.kernel.org/project/linux-mmc/cover/20230818100217.12725-1-victorshihgli@gmail.com/
+
+----------------- original cover letter from v10 -----------------
+Summary
+=======
+These patches[1] support UHS-II and fix GL9755 UHS-II compatibility.
+
+About UHS-II, roughly deal with the following three parts:
+1) A UHS-II detection and initialization:
+- Host setup to support UHS-II (Section 3.13.1 Host Controller Setup
+  Sequence[2]).
+- Detect a UHS-II I/F (Section 3.13.2 Card Interface Detection Sequence
+  [2]).
+- In step(9) of Section 3.13.2 in [2], UHS-II initialization is include
+  Section 3.13.3 UHS-II Card Initialization and Section 3.13.4 UHS-II
+  Setting Register Setup Sequence.
+
+2) Send Legacy SD command through SD-TRAN
+- Encapsulated SD packets are defined in SD-TRAN in order to ensure Legacy
+  SD compatibility and preserve Legacy SD infrastructures (Section 7.1.1
+  Packet Types and Format Overview[3]).
+- Host issue a UHS-II CCMD packet or a UHS-II DCMD (Section 3.13.5 UHS-II
+  CCMD Packet issuing and Section 3.13.6 UHS-II DCMD Packet issuing[2]).
+
+3) UHS-II Interrupt
+- Except for UHS-II error interrupts, most interrupts share the original
+  interrupt registers.
+
+Patch structure
+===============
+patch#1-#6:  for core
+patch#7-#22: for sdhci
+patch#23:    for GL9755
+
+Changes in v10 (August. 18, 2023)
+* rebased to the linux-kernel-v6.5.0-rc5 in Ulf Hansson next branch.
+* according to the comments provided by Ulf Hansson to modify the
+  patches base on the [V9 00/23] Add support UHS-II for GL9755.
+* Patch#2: Drop unnecessary definitions and code.
+* Patch#3: Modify the commit message.
+* Patch#4: Modify the commit message.
+* Patch#5: Drop unnecessary definitions.
+* Patch#6: Move some definitions of PatchV9[02/23] to PatchV10[06/23].
+           Move some definitions of PatchV9[05/23] to PatchV10[06/23].
+           Drop do_multi in the mmc_blk_rw_rq_prep().
+           Use tmode_half_duplex to instead of uhs2_tmode0_flag.
+           Move entire control of the tmode into mmc_uhs2_prepare_cmd(). 
+* Patch#11: Move some definitions of PatchV9[05/23] to PatchV10[11/23].
+* Patch#18: Use tmode_half_duplex to instead of uhs2_tmode0_flag
+            in sdhci_uhs2_set_transfer_mode().
+* Patch#20: Move some definitions of PatchV9[05/23] to PatchV10[20/23].
+
+Reference
+=========
+[1] https://gitlab.com/VictorShih/linux-uhs2.git
+[2] SD Host Controller Simplified Specification 4.20
+[3] UHS-II Simplified Addendum 1.02
+[4] https://patchwork.kernel.org/project/linux-mmc/cover/20230721101349.12387-1-victorshihgli@gmail.com/
+
+----------------- original cover letter from v9 -----------------
+Summary
+=======
+These patches[1] support UHS-II and fix GL9755 UHS-II compatibility.
+
+About UHS-II, roughly deal with the following three parts:
+1) A UHS-II detection and initialization:
+- Host setup to support UHS-II (Section 3.13.1 Host Controller Setup
+  Sequence[2]).
+- Detect a UHS-II I/F (Section 3.13.2 Card Interface Detection Sequence
+  [2]).
+- In step(9) of Section 3.13.2 in [2], UHS-II initialization is include
+  Section 3.13.3 UHS-II Card Initialization and Section 3.13.4 UHS-II
+  Setting Register Setup Sequence.
+
+2) Send Legacy SD command through SD-TRAN
+- Encapsulated SD packets are defined in SD-TRAN in order to ensure Legacy
+  SD compatibility and preserve Legacy SD infrastructures (Section 7.1.1
+  Packet Types and Format Overview[3]).
+- Host issue a UHS-II CCMD packet or a UHS-II DCMD (Section 3.13.5 UHS-II
+  CCMD Packet issuing and Section 3.13.6 UHS-II DCMD Packet issuing[2]).
+
+3) UHS-II Interrupt
+- Except for UHS-II error interrupts, most interrupts share the original
+  interrupt registers.
+
+Patch structure
+===============
+patch#1-#6:  for core
+patch#7-#22: for sdhci
+patch#23:    for GL9755
+
+Changes in v9 (July. 21, 2023)
+* rebased to the linux-kernel-v6.5.0-rc1 in Ulf Hansson next branch.
+* according to the comments provided by Adrian Hunter to modify the
+  patches base on the [V8 00/23] Add support UHS-II for GL9755.
+* Patch#2: move sd_uhs2_operation definition of PatchV8[05/23]
+           to PatchV9[02/23] for avoid compilation errors.
+           move uhs2_control definition of PatchV8[05/23]
+           to PatchV9[02/23] for avoid compilation errors.
+           move mmc_host flags definition of PatchV8[05/23]
+           to PatchV9[02/23] for avoid compilation errors.
+           move mmc_host flags MMC_UHS2_SUPPORT definition of
+           PatchV8[05/23] to PatchV9[02/23] for avoid compilation errors.
+           move mmc_host flags MMC_UHS2_SD_TRAN definition of
+           PatchV8[05/23] to PatchV9[02/23] for avoid compilation errors.
+* Patch#7: Modify the commit message.
+* Patch#8: Modify the commit message.
+* Patch#11: Modify annotations in sdhci_get_vdd_value().
+* Patch#14: Simplity the turning_on_clk in sdhci_set_ios().
+* Patch#18: Modify the annotations in __sdhci_uhs2_send_command().
+* Patch#19: Cancel export state of sdhci_set_mrq_done() function.
+* Patch#23: Rename gl9755_pre_detect_init() to sdhci_gli_pre_detect_init().
+            Rename gl9755_uhs2_reset_sd_tran() to
+            sdhci_gli_uhs2_reset_sd_tran().
+
+Reference
+=========
+[1] https://gitlab.com/VictorShih/linux-uhs2.git
+[2] SD Host Controller Simplified Specification 4.20
+[3] UHS-II Simplified Addendum 1.02
+[4] https://patchwork.kernel.org/project/linux-mmc/cover/20230621100151.6329-1-victorshihgli@gmail.com/
+
+----------------- original cover letter from v8 -----------------
+Summary
+=======
+These patches[1] support UHS-II and fix GL9755 UHS-II compatibility.
+
+About UHS-II, roughly deal with the following three parts:
+1) A UHS-II detection and initialization:
+- Host setup to support UHS-II (Section 3.13.1 Host Controller Setup
+  Sequence[2]).
+- Detect a UHS-II I/F (Section 3.13.2 Card Interface Detection Sequence
+  [2]).
+- In step(9) of Section 3.13.2 in [2], UHS-II initialization is include
+  Section 3.13.3 UHS-II Card Initialization and Section 3.13.4 UHS-II
+  Setting Register Setup Sequence.
+
+2) Send Legacy SD command through SD-TRAN
+- Encapsulated SD packets are defined in SD-TRAN in order to ensure Legacy
+  SD compatibility and preserve Legacy SD infrastructures (Section 7.1.1
+  Packet Types and Format Overview[3]).
+- Host issue a UHS-II CCMD packet or a UHS-II DCMD (Section 3.13.5 UHS-II
+  CCMD Packet issuing and Section 3.13.6 UHS-II DCMD Packet issuing[2]).
+
+3) UHS-II Interrupt
+- Except for UHS-II error interrupts, most interrupts share the original
+  interrupt registers.
+
+Patch structure
+===============
+patch#1-#6:  for core
+patch#7-#22: for sdhci
+patch#23:    for GL9755
+
+Changes in v8 (June. 21, 2023)
+* rebased to the linux-kernel-v6.4.0-rc6 in Ulf Hansson next branch.
+* fix most of checkpatch warnings/errors.
+* according to the comments provided by Adrian Hunter to modify the
+  patches base on the [V7 00/23] Add support UHS-II for GL9755.
+* Patch#6: Add MMC_UHS2_SUPPORT to be cleared in sd_uhs2_detect().
+           Modify return value in sd_uhs2_attach().
+* Patch#7: Use tabs instead of spaces.
+* Patch#8: Modify MODULE_LICENSE from "GPL v2" to "GPL".
+* Patch#10: Adjust the position of matching brackets.
+* Patch#11: Adjust the position of matching brackets.
+            Add the initial value of the pwr in sdhci_uhs2_set_power().
+* Patch#13: Initialization be combined with declaration and realigned
+            in sdhci_calc_timeout_uhs2().
+            Forward declare struct mmc_command in sdhci_uhs2.h.
+* Patch#14: Add the judgment formula for MMC_TIMING_SPEED_A_HD,
+            MMC_TIMING_SPEED_B and MMC_TIMING_SPEED_B_HD in
+            __sdhci_uhs2_set_ios().
+            Add the switch case for MMC_TIMING_SPEED_A_HD,
+            MMC_TIMING_SPEED_B and MMC_TIMING_SPEED_B_HD in
+            sdhci_get_preset_value().
+            mmc_opt_regulator_set_ocr() to instead of
+            mmc_regulator_set_ocr() in sdhci_uhs2_set_ios().
+* Patch#15: usleep_range() to instead of udelay() in
+            sdhci_uhs2_interface_detect().
+            read_poll_timeout() to instead of read_poll_timeout_atomic()
+            in sdhci_uhs2_interface_detect().
+            Modify return value in sdhci_uhs2_do_detect_init().
+* Patch#16: Remove unnecessary include file.
+            read_poll_timeout() to instead of read_poll_timeout_atomic()
+            in sdhci_uhs2_enable_clk().
+            Put the comment on the end and put the lines in descending
+            line length in sdhci_uhs2_enable_clk().
+            Modify return value in sdhci_uhs2_enable_clk().
+* Patch#17: Reorder the definitions and lose the parentheses in
+            sdhci_uhs2_set_config().
+            read_poll_timeout() to instead of read_poll_timeout_atomic()
+            in sdhci_uhs2_check_dormant().
+* Patch#18: Adjust the position of matching brackets in
+            sdhci_uhs2_send_command_retry().
+            Modify CameCase definition in __sdhci_uhs2_finish_command().
+            Modify error message in __sdhci_uhs2_finish_command().
+            sdhci_uhs2_send_command_retry() to instead of
+            sdhci_uhs2_send_command() in sdhci_uhs2_request().
+            Use sdhci_uhs2_mode() to simplify code in
+            sdhci_uhs2_request_atomic().
+            Add forward declaration for sdhci_send_command().
+* Patch#19: Forward declare struct mmc_request in sdhci_uhs2.h.
+            Remove forward declaration of sdhci_send_command().
+            Use mmc_dev() to simplify code in sdhci_request_done_dma().
+* Patch#20: Change return type to void for __sdhci_uhs2_add_host_v4().
+            Remove unused variables in __sdhci_uhs2_add_host_v4().
+* Patch#22: Add config select MMC_SDHCI_UHS2 in Kconfig.
+* Patch#23: Use sdhci_get_vdd_value() to simplify code in 
+            gl9755_set_power().
+            Use read_poll_timeout_atomic() to simplify code in
+            sdhci_wait_clock_stable().
+            Use read_poll_timeout_atomic() to simplify code in
+            sdhci_gl9755_reset().
+
+Reference
+=========
+[1] https://gitlab.com/VictorShih/linux-uhs2.git
+[2] SD Host Controller Simplified Specification 4.20
+[3] UHS-II Simplified Addendum 1.02
+[4] https://patchwork.kernel.org/project/linux-mmc/cover/20230331105546.13607-1-victor.shih@genesyslogic.com.tw/
+
+----------------- original cover letter from v7 -----------------
+Summary
+=======
+These patches[1] support UHS-II and fix GL9755 UHS-II compatibility.
+
+About UHS-II, roughly deal with the following three parts:
+1) A UHS-II detection and initialization:
+- Host setup to support UHS-II (Section 3.13.1 Host Controller Setup Sequence
+  [2]).
+- Detect a UHS-II I/F (Section 3.13.2 Card Interface Detection Sequence[2]).
+- In step(9) of Section 3.13.2 in [2], UHS-II initialization is include Section
+  3.13.3 UHS-II Card Initialization and Section 3.13.4 UHS-II Setting Register
+  Setup Sequence.
+
+2) Send Legacy SD command through SD-TRAN
+- Encapsulated SD packets are defined in SD-TRAN in order to ensure Legacy SD
+  compatibility and preserve Legacy SD infrastructures (Section 7.1.1 Packet
+  Types and Format Overview[3]).
+- Host issue a UHS-II CCMD packet or a UHS-II DCMD (Section 3.13.5 UHS-II
+  CCMD Packet issuing and Section 3.13.6 UHS-II DCMD Packet issuing[2]).
+
+3) UHS-II Interrupt
+- Except for UHS-II error interrupts, most interrupts share the original
+  interrupt registers.
+
+Patch structure
+===============
+patch#1-#6:  for core
+patch#7-#22: for sdhci
+patch#23:    for GL9755
+
+Changes in v7 (Mar. 31, 2023)
+* rebased to the linux-kernel-v6.3.0-rc3 in Ulf Hansson next branch.
+* according to the guidance and overall architecture provided 
+  by Ulf Hansson, Ben Chuang and Jason Lai to implement the
+  UHS-2 Core function based on the patches of the [V4,0/6] 
+  Preparations to support SD UHS-II cards[5].
+* according to the guidance and comments provided by 
+  Adrian Hunter, Ben Chuang and AKASHI Takahiro to implement 
+  the UHS-2 Host function based on the patches of the 
+  [RFC,v3.1,00/27] Add support UHS-II for GL9755[4].
+* implement the necessary function to let the UHS-2 Core/Host
+  work properly.
+* fix most of checkpatch warnings/errors.
+* according to the guidance and comments provided by 
+  Adrian Hunter, Ben Chuang to implement the UHS-2 
+  Host function based on the patches of the 
+  [V5,00/26] Add support UHS-II for GL9755[6].
+* according to the guidance and comments provided by 
+  Ulf Hanssion, Adrian Hunter, Ben Chuang to implement the UHS-2 
+  Host function based on the patches of the 
+  [V6,00/24] Add support UHS-II for GL9755[7].
+* The uhs2_post_attach_sd() function is no longer needed so drop
+  the V6 version of the Patch#22.
+* Modifies the usage of the flags used by the sdhci host for
+  MMC_UHS2_INITIALIZED.
+* Patch#1: Drop unnecessary bracket.
+* Patch#2: Drop sd_uhs2_set_ios function.
+           Used ->uhs2_control() callback for uhs2_set_ios
+           in sd_uhs2_power_up().
+           Used ->uhs2_control() callback for uhs2_set_ios
+           in sd_uhs2_power_off().
+           Drop MMC_TIMING_SD_UHS2 in favor of MMC_TIMING_UHS2_SPEED_A.
+           Modify sd_uhs2_legacy_init to avoid the
+           sd_uhs2_reinit cycle issue.
+* Patch#5: Drop unnecessary definitions.
+* Patch#6: Drop unnecessary function.
+           Drop uhs2_state in favor of ios->timing.
+* Patch#7: Reorder values and positions of definitions.
+* Patch#9: Used sdhci_uhs2_mode function to simplify.
+* Patch#11: Drop pwr variable in sdhci_uhs2_set_power function.
+* Patch#14: Modify some descriptions.
+            Drop unnecessary function.
+* Patch#15: Drop using uhs2_reset ops and use sdhci_uhs2_reset function
+            in the sdhci_do_detect_init function.
+* Patch#17: Drop unnecessary function.
+* Patch#18: Drop unnecessary whitespace changes.
+            Cancel the export state of some functions.
+* Patch#19: Drop unnecessary function.
+            Used sdhci_uhs2_mode function to simplify.
+            Modify some descriptions.
+            Cancel the export state of some functions.
+* Patch#20: Drop using __sdhci_uhs2_host function and use
+            __sdhci_add_host function in sdhci_uhs2_add_host function.
+            Cancel the export state of some functions.
+* Patch#23: Drop using uhs2_post_attach_sd function.
+
+Reference
+=========
+[1] https://gitlab.com/ben.chuang/linux-uhs2-gl9755.git
+[2] SD Host Controller Simplified Specification 4.20
+[3] UHS-II Simplified Addendum 1.02
+[4] https://patchwork.kernel.org/project/linux-mmc/cover/20201106022726.19831-1-takahiro.akashi@linaro.org/
+[5] https://patchwork.kernel.org/project/linux-mmc/cover/20220418115833.10738-1-jasonlai.genesyslogic@gmail.com/
+[6] https://patchwork.kernel.org/project/linux-mmc/cover/20221019110647.11076-1-victor.shih@genesyslogic.com.tw/
+[7] https://patchwork.kernel.org/project/linux-mmc/cover/20221213090047.3805-1-victor.shih@genesyslogic.com.tw/
+
+----------------- original cover letter from v6 -----------------
+Summary
+=======
+These patches[1] support UHS-II and fix GL9755 UHS-II compatibility.
+
+About UHS-II, roughly deal with the following three parts:
+1) A UHS-II detection and initialization:
+- Host setup to support UHS-II (Section 3.13.1 Host Controller Setup Sequence
+  [2]).
+- Detect a UHS-II I/F (Section 3.13.2 Card Interface Detection Sequence[2]).
+- In step(9) of Section 3.13.2 in [2], UHS-II initialization is include Section
+  3.13.3 UHS-II Card Initialization and Section 3.13.4 UHS-II Setting Register
+  Setup Sequence.
+
+2) Send Legacy SD command through SD-TRAN
+- Encapsulated SD packets are defined in SD-TRAN in order to ensure Legacy SD
+  compatibility and preserve Legacy SD infrastructures (Section 7.1.1 Packet
+  Types and Format Overview[3]).
+- Host issue a UHS-II CCMD packet or a UHS-II DCMD (Section 3.13.5 UHS-II
+  CCMD Packet issuing and Section 3.13.6 UHS-II DCMD Packet issuing[2]).
+
+3) UHS-II Interrupt
+- Except for UHS-II error interrupts, most interrupts share the original
+  interrupt registers.
+
+Patch structure
+===============
+patch#1-#6:  for core
+patch#7-#23: for sdhci
+patch#24:    for GL9755
+
+Changes in v6 (Dec. 12, 2022)
+* rebased to the linux-kernel-v6.1.0-rc8 in Ulf Hansson next branch.
+* according to the guidance and overall architecture provided 
+  by Ulf Hansson, Ben Chuang and Jason Lai to implement the
+  UHS-2 Core function based on the patches of the [V4,0/6] 
+  Preparations to support SD UHS-II cards[5].
+* according to the guidance and comments provided by 
+  Adrian Hunter, Ben Chuang and AKASHI Takahiro to implement 
+  the UHS-2 Host function based on the patches of the 
+  [RFC,v3.1,00/27] Add support UHS-II for GL9755[4].
+* implement the necessary function to let the UHS-2 Core/Host
+  work properly.
+* fix most of checkpatch warnings/errors.
+* according to the guidance and comments provided by 
+  Adrian Hunter, Ben Chuang to implement the UHS-2 
+  Host function based on the patches of the 
+  [V5,00/26] Add support UHS-II for GL9755[6].
+* The uhs2_post_attach_sd() has implemented in Patch#6 and 
+  Patch#17 so drop the V5 version of the Patch#23.
+* Modifies the usage of the flags used by the sdhci host for
+  MMC_UHS2_INITIALIZED.
+* Patch#5: Drop unused definitions and functions.
+* Patch#7: Rename definitions.
+           Use BIT() GENMASK() in some cases.
+* Patch#8: Merge V5 version of Patch[7] and Patch[9] into 
+           V6 version of Patch[8].
+* Patch#9: Drop unnecessary function.
+           Rename used definitions.
+* Patch#10: Drop unnecessary function and simplify some code.
+* Patch#11: Drop unnecessary function.
+            Add new mmc_opt_regulator_set_ocr function.
+* Patch#13: Drop unnecessary function.
+            Use GENMASK() and FIELD_PREP() in some cases.
+* Patch#14: Drop unnecessary function.
+            Modify return value in some function.
+            Use GENMASK() and FIELD_PREP() in some cases.
+* Patch#15: Drop unnecessary function.
+            Rename used definitions.
+            Use GENMASK() and FIELD_GET() in some cases.
+            Wrap at 100 columns in some functions.
+* Patch#16: Drop unnecessary function.
+* Patch#17: Drop unnecessary function.
+            Drop the unnecessary parameter when call the DBG()
+            function.
+            Rename used definitions.
+            Cancel the export state of some functions.
+            Use GENMASK() and FIELD_PREP() in some cases.
+* Patch#18: Drop unnecessary function.
+            Add uhs2_dev_cmd function to simplify some functions.
+            Rename used definitions.
+            Cancel the export state of some functions.
+            Use GENMASK() and FIELD_PREP() in some cases.
+* Patch#19: Drop unnecessary function.
+            Add sdhci_uhs2_mode() in some functions.
+            Rename used definitions.
+            Cancel the export state of some functions.
+* Patch#20: Add new complete_work_fn/thread_irq_fn variables in
+            struct sdhci_host.
+            Use complete_work_fn/thread_irq_fn variables in 
+            sdhci_alloc_host()/sdhci_uhs2_add_host().
+            Rename used definitions.
+* Patch[24]: Rename used definitions.
+
+Reference
+=========
+[1] https://gitlab.com/ben.chuang/linux-uhs2-gl9755.git
+[2] SD Host Controller Simplified Specification 4.20
+[3] UHS-II Simplified Addendum 1.02
+[4] https://patchwork.kernel.org/project/linux-mmc/cover/20201106022726.19831-1-takahiro.akashi@linaro.org/
+[5] https://patchwork.kernel.org/project/linux-mmc/cover/20220418115833.10738-1-jasonlai.genesyslogic@gmail.com/
+[6] https://patchwork.kernel.org/project/linux-mmc/cover/20221019110647.11076-1-victor.shih@genesyslogic.com.tw/
+
+----------------- original cover letter from v5 -----------------
+Summary
+=======
+These patches[1] support UHS-II and fix GL9755 UHS-II compatibility.
+
+About UHS-II, roughly deal with the following three parts:
+1) A UHS-II detection and initialization:
+- Host setup to support UHS-II (Section 3.13.1 Host Controller Setup Sequence
+  [2]).
+- Detect a UHS-II I/F (Section 3.13.2 Card Interface Detection Sequence[2]).
+- In step(9) of Section 3.13.2 in [2], UHS-II initialization is include Section
+  3.13.3 UHS-II Card Initialization and Section 3.13.4 UHS-II Setting Register
+  Setup Sequence.
+
+2) Send Legacy SD command through SD-TRAN
+- Encapsulated SD packets are defined in SD-TRAN in order to ensure Legacy SD
+  compatibility and preserve Legacy SD infrastructures (Section 7.1.1 Packet
+  Types and Format Overview[3]).
+- Host issue a UHS-II CCMD packet or a UHS-II DCMD (Section 3.13.5 UHS-II
+  CCMD Packet issuing and Section 3.13.6 UHS-II DCMD Packet issuing[2]).
+
+3) UHS-II Interrupt
+- Except for UHS-II error interrupts, most interrupts share the original
+  interrupt registers.
+
+Patch structure
+===============
+patch#1-#6:  for core
+patch#7-#25: for sdhci
+patch#26:    for GL9755
+
+Changes in v5 (Oct. 19, 2022)
+* rebased to the linux-kernel-v6.1-rc1 in Ulf Hansson next branch.
+* according to the guidance and overall architecture provided 
+  by Ulf Hansson, Ben Chuang and Jason Lai to implement the
+  UHS-2 Core function based on the patches of the [V4,0/6] 
+  Preparations to support SD UHS-II cards[5].
+* according to the guidance and comments provided by 
+  Adrian Hunter, Ben Chuang and AKASHI Takahiro to implement 
+  the UHS-2 Host function based on the patches of the 
+  [RFC,v3.1,00/27] Add support UHS-II for GL9755[4].
+* implement the necessary function to let the UHS-2 Core/Host
+  work properly.
+* fix most of checkpatch warnings/errors
+
+Reference
+=========
+[1] https://gitlab.com/ben.chuang/linux-uhs2-gl9755.git
+[2] SD Host Controller Simplified Specification 4.20
+[3] UHS-II Simplified Addendum 1.02
+[4] https://patchwork.kernel.org/project/linux-mmc/cover/20201106022726.19831-1-takahiro.akashi@linaro.org/
+[5] https://patchwork.kernel.org/project/linux-mmc/cover/20220418115833.10738-1-jasonlai.genesyslogic@gmail.com/
+ 
+----------------- original cover letter from v3.1 -----------------
+This is an interim snapshot of our next version, v4, for enabling
+UHS-II on MMC/SD.
+
+It is focused on 'sdhci' side to address Adrian's comments regarding
+"modularising" sdhci-uhs2.c.
+The whole aim of this version is to get early feedback from Adrian (and
+others) on this issue. Without any consensus about the code structure,
+it would make little sense to go further ahead on sdhci side.
+(Actually, Adrian has made no comments other than "modularising" so far.)
+
+I heavily reworked/refactored sdhci-uhs2.c and re-organised the patch
+set to meet what I believe Adrian expects; no UHS-II related code in
+Legacy (UHS-I) code or sdhci.c.
+
+Nevertheless, almost of all changes I made are trivial and straightforward
+in this direction, and I believe that there is no logic changed since v3
+except sdhci_uhs2_irq(), as ops->irq hook, where we must deal with UHS-II
+command sequences in addition to UHS-II errors. So I added extra handlings.
+
+I admit that there is plenty of room for improvements (for example,
+handling host->flags), but again the focal point here is how sdhci-uhs2.c
+should be built as a module.
+
+Please review this series (particularly Patch#8-#26 and #27) from this
+viewpoint in the first place.
+(Ben is working on 'host' side but there is no change on 'host' side
+in this submission except a minor tweak.)
+
+Thanks,
+-Takahiro Akashi
+
+------ original cover letter from v3 ------
+Summary
+=======
+These patches[1] support UHS-II and fix GL9755 UHS-II compatibility.
+
+About UHS-II, roughly deal with the following three parts:
+1) A UHS-II detection and initialization:
+- Host setup to support UHS-II (Section 3.13.1 Host Controller Setup Sequence
+  [2]).
+- Detect a UHS-II I/F (Section 3.13.2 Card Interface Detection Sequence[2]).
+- In step(9) of Section 3.13.2 in [2], UHS-II initialization is include Section
+  3.13.3 UHS-II Card Initialization and Section 3.13.4 UHS-II Setting Register
+  Setup Sequence.
+
+2) Send Legacy SD command through SD-TRAN
+- Encapsulated SD packets are defined in SD-TRAN in order to ensure Legacy SD
+  compatibility and preserve Legacy SD infrastructures (Section 7.1.1 Packet
+  Types and Format Overview[3]).
+- Host issue a UHS-II CCMD packet or a UHS-II DCMD (Section 3.13.5 UHS-II
+  CCMD Packet issuing and Section 3.13.6 UHS-II DCMD Packet issuing[2]).
+
+3) UHS-II Interrupt
+- Except for UHS-II error interrupts, most interrupts share the original
+  interrupt registers.
+
+Patch structure
+===============
+patch#1-#7: for core
+patch#8-#17: for sdhci
+patch#18-#21: for GL9755
+
+Tests
+=====
+Ran 'dd' command to evaluate the performance:
+(SanDisk UHS-II card on GL9755 controller)
+                             Read    Write
+UHS-II disabled (UHS-I): 88.3MB/s 60.7MB/s
+UHS-II enabled         :  206MB/s   80MB/s
+
+TODO
+====
+- replace some define with BIT macro
+
+Reference
+=========
+[1] https://gitlab.com/ben.chuang/linux-uhs2-gl9755.git
+[2] SD Host Controller Simplified Specification 4.20
+[3] UHS-II Simplified Addendum 1.02
+
+Changes in v3 (Jul. 10, 2020)
+* rebased to v5.8-rc4
+* add copyright notice
+* reorganize the patch set and split some commits into smaller ones
+* separate uhs-2 headers from others
+* correct wrong spellings
+* fix most of checkpatch warnings/errors
+* remove all k[cz]alloc() from the code
+* guard sdhci-uhs2 specific code with
+      'if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2))'
+* make sdhci-uhs2.c as a module
+* trivial changes, including
+  - rename back sdhci-core.c to sdhci.c
+  - allow vendor code to disable uhs2 if v4_mode == 0
+      in __sdhci_add_host()
+  - merge uhs2_power_up() into mmc_power_up()
+  - remove flag_uhs2 from mmc_attach_sd()
+  - add function descriptions to EXPORT'ed functions
+  - other minor code optimization
+
+Changes in v2 (Jan. 9, 2020)
+* rebased to v5.5-rc5
+
+Ben Chuang (1):
+  mmc: sdhci-uhs2: add pre-detect_init hook
+
+Ulf Hansson (4):
+  mmc: core: Cleanup printing of speed mode at card insertion
+  mmc: core: Prepare to support SD UHS-II cards
+  mmc: core: Announce successful insertion of an SD UHS-II card
+  mmc: core: Extend support for mmc regulators with a vqmmc2
+
+Victor Shih (18):
+  mmc: core: Add definitions for SD UHS-II cards
+  mmc: core: Support UHS-II card control and access
+  mmc: sdhci: add UHS-II related definitions in headers
+  mmc: sdhci: add UHS-II module and add a kernel configuration
+  mmc: sdhci-uhs2: dump UHS-II registers
+  mmc: sdhci-uhs2: add reset function and uhs2_mode function
+  mmc: sdhci-uhs2: add set_power() to support vdd2
+  mmc: sdhci-uhs2: skip signal_voltage_switch()
+  mmc: sdhci-uhs2: add set_timeout()
+  mmc: sdhci-uhs2: add set_ios()
+  mmc: sdhci-uhs2: add detect_init() to detect the interface
+  mmc: sdhci-uhs2: add clock operations
+  mmc: sdhci-uhs2: add uhs2_control() to initialise the interface
+  mmc: sdhci-uhs2: add request() and others
+  mmc: sdhci-uhs2: add irq() and others
+  mmc: sdhci-uhs2: add add_host() and others to set up the driver
+  mmc: sdhci-pci: add UHS-II support framework
+  mmc: sdhci-pci-gli: enable UHS-II mode for GL9755
+
+ drivers/mmc/core/Makefile         |    2 +-
+ drivers/mmc/core/bus.c            |   38 +-
+ drivers/mmc/core/core.c           |   25 +-
+ drivers/mmc/core/core.h           |    1 +
+ drivers/mmc/core/host.h           |    7 +
+ drivers/mmc/core/mmc_ops.c        |   24 +-
+ drivers/mmc/core/mmc_ops.h        |    1 +
+ drivers/mmc/core/regulator.c      |   34 +
+ drivers/mmc/core/sd.c             |   13 +-
+ drivers/mmc/core/sd.h             |    4 +
+ drivers/mmc/core/sd_ops.c         |    9 +
+ drivers/mmc/core/sd_ops.h         |   18 +
+ drivers/mmc/core/sd_uhs2.c        | 1375 +++++++++++++++++++++++++++++
+ drivers/mmc/host/Kconfig          |   10 +
+ drivers/mmc/host/Makefile         |    1 +
+ drivers/mmc/host/sdhci-pci-core.c |   16 +-
+ drivers/mmc/host/sdhci-pci-gli.c  |  233 ++++-
+ drivers/mmc/host/sdhci-pci.h      |    3 +
+ drivers/mmc/host/sdhci-uhs2.c     | 1319 +++++++++++++++++++++++++++
+ drivers/mmc/host/sdhci-uhs2.h     |  192 ++++
+ drivers/mmc/host/sdhci.c          |  274 +++---
+ drivers/mmc/host/sdhci.h          |   74 +-
+ include/linux/mmc/card.h          |   36 +
+ include/linux/mmc/core.h          |   13 +
+ include/linux/mmc/host.h          |   77 ++
+ include/linux/mmc/sd_uhs2.h       |  240 +++++
+ 26 files changed, 3890 insertions(+), 149 deletions(-)
+ create mode 100644 drivers/mmc/core/sd_uhs2.c
+ create mode 100644 drivers/mmc/host/sdhci-uhs2.c
+ create mode 100644 drivers/mmc/host/sdhci-uhs2.h
+ create mode 100644 include/linux/mmc/sd_uhs2.h
+
+-- 
+2.25.1
 
