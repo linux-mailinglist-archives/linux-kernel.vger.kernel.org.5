@@ -2,108 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F326798572
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95AF079857C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231828AbjIHKGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 06:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
+        id S236689AbjIHKLB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Sep 2023 06:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233106AbjIHKGO (ORCPT
+        with ESMTP id S229790AbjIHKLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 06:06:14 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2499A2112;
-        Fri,  8 Sep 2023 03:05:35 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4F7D76607258;
-        Fri,  8 Sep 2023 11:04:31 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694167472;
-        bh=PMJKkkg9Mq7q/ZTFu38eyhxdwKmjapZyHJI+geNR8i8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=IUG/kfx8gip88bw4DdX3nLfzNBnv2xviKRyZDrn+w4vbBqIIUgyBT7mOX42pt1yL3
-         XWcCXO8BE5Fh7pukKJPESETYhGjpiGKgmXZUkDXyaoYTyTfJrruf80SSjaqk774DyC
-         fc5vtFp782MLHA9XNnUq7ebce7N3fHoEaBB7EKGsxgX04iW9jRuDLGJ/eFLrO1DryO
-         si3qe1M4FckQCQZp4tEB3d2H9EAkOzyu1EojSTrRu+LxF5qC80i6ltyXHmxQF6MKSJ
-         3N34Rii9imqymq0GXH5NEjR0vk7WCiTwQ2IYnDP/ryqVKW3oZE0q1nMN9c1hdykTqS
-         wTb2XAyFptyjA==
-Message-ID: <c46dc0ff-3713-917b-9640-27a4afdc0002@collabora.com>
-Date:   Fri, 8 Sep 2023 12:04:29 +0200
+        Fri, 8 Sep 2023 06:11:00 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBAA1BD3;
+        Fri,  8 Sep 2023 03:10:56 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qeYRy-000jn3-Ay; Fri, 08 Sep 2023 12:10:54 +0200
+Received: from p5b13a40a.dip0.t-ipconnect.de ([91.19.164.10] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qeYRy-001wF1-3O; Fri, 08 Sep 2023 12:10:54 +0200
+Message-ID: <d737e5a40f7e2009222d98de7696cc78740869e3.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH 4/4] sh: machvec: remove custom ioport_{un,}map()
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-sh@vger.kernel.org, Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 08 Sep 2023 12:10:53 +0200
+In-Reply-To: <20230802184849.1019466-4-arnd@kernel.org>
+References: <20230802184849.1019466-1-arnd@kernel.org>
+         <20230802184849.1019466-4-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v3] dt-bindings: phy: Add compatible for Mediatek MT8188
-Content-Language: en-US
-To:     Shuijing Li <shuijing.li@mediatek.com>, chunfeng.yun@mediatek.com,
-        vkoul@kernel.org, kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        matthias.bgg@gmail.com, chunkuang.hu@kernel.org,
-        p.zabel@pengutronix.de
-Cc:     linux-phy@lists.infradead.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        jitao.shi@mediatek.com
-References: <20230908075310.17825-1-shuijing.li@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230908075310.17825-1-shuijing.li@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.164.10
+X-ZEDAT-Hint: PO
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 08/09/23 09:53, Shuijing Li ha scritto:
-> Add dt-binding documentation of dsi-phy for MediaTek MT8188 SoC.
+Hi Arnd!
+
+On Wed, 2023-08-02 at 20:48 +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Signed-off-by: Shuijing Li <shuijing.li@mediatek.com>
-
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
-> ---
-> Changes in v3:
-> After upstreaming the basic version of mt8188.dtsi, we will add the
-> following mipi node in mt8188.dtsi:
-> mipi_tx_config0: mipi_dphy0@11c80000 {
-> 			compatible = "mediatek,mt8188-mipi-tx",
-> 				     "mediatek,mt8183-mipi-tx";
-> 			reg = <0 0x11c80000 0 0x1000>;
-> 			clocks = <&clk26m>;
-> 			#clock-cells = <0>;
-> 			#phy-cells = <0>;
-> 			clock-output-names = "mipi_tx0_pll";
-> 			status = "disabled";
-> 		};
-> per suggestion from the previous thread:
-> https://lore.kernel.org/all/0a6d3d14-33f0-92d2-b42f-e4d336c8cd91@linaro.org/
-> Changes in v2:
-> Adjust mt8188 position.
-> ---
->   Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml | 1 +
->   1 file changed, 1 insertion(+)
+> These functions were only used on the microdev
+> board that is now gone, so remove them to simplify
+> the ioport handling.
 > 
-> diff --git a/Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml b/Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml
-> index a63b20dfa4a5..6703689fcdbe 100644
-> --- a/Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml
-> +++ b/Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml
-> @@ -30,6 +30,7 @@ properties:
->             - const: mediatek,mt8173-mipi-tx
->         - items:
->             - enum:
-> +              - mediatek,mt8188-mipi-tx
->                 - mediatek,mt8365-mipi-tx
->             - const: mediatek,mt8183-mipi-tx
->         - const: mediatek,mt2701-mipi-tx
+> This could be further simplified to use the generic
+> I/O port accessors now.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/sh/include/asm/io.h      |  4 ++--
+>  arch/sh/include/asm/machvec.h |  5 -----
+>  arch/sh/kernel/ioport.c       | 13 +------------
+>  3 files changed, 3 insertions(+), 19 deletions(-)
+> 
+> diff --git a/arch/sh/include/asm/io.h b/arch/sh/include/asm/io.h
+> index f2f38e9d489ac..ac521f287fa59 100644
+> --- a/arch/sh/include/asm/io.h
+> +++ b/arch/sh/include/asm/io.h
+> @@ -181,7 +181,7 @@ static inline void pfx##out##bwlq##p(type val, unsigned long port)	\
+>  {									\
+>  	volatile type *__addr;						\
+>  									\
+> -	__addr = __ioport_map(port, sizeof(type));			\
+> +	__addr = (void __iomem *)sh_io_port_base + port;		\
+>  	*__addr = val;							\
+>  	slow;								\
+>  }									\
+> @@ -191,7 +191,7 @@ static inline type pfx##in##bwlq##p(unsigned long port)			\
+>  	volatile type *__addr;						\
+>  	type __val;							\
+>  									\
+> -	__addr = __ioport_map(port, sizeof(type));			\
+> +	__addr = (void __iomem *)sh_io_port_base + port;		\
+>  	__val = *__addr;						\
+>  	slow;								\
+>  									\
+> diff --git a/arch/sh/include/asm/machvec.h b/arch/sh/include/asm/machvec.h
+> index 2b4b085e8f219..4e5314b921f19 100644
+> --- a/arch/sh/include/asm/machvec.h
+> +++ b/arch/sh/include/asm/machvec.h
+> @@ -19,11 +19,6 @@ struct sh_machine_vector {
+>  	int (*mv_irq_demux)(int irq);
+>  	void (*mv_init_irq)(void);
+>  
+> -#ifdef CONFIG_HAS_IOPORT_MAP
+> -	void __iomem *(*mv_ioport_map)(unsigned long port, unsigned int size);
+> -	void (*mv_ioport_unmap)(void __iomem *);
+> -#endif
+> -
+>  	int (*mv_clk_init)(void);
+>  	int (*mv_mode_pins)(void);
+>  
+> diff --git a/arch/sh/kernel/ioport.c b/arch/sh/kernel/ioport.c
+> index f39446a658bdb..c8aff8a20164d 100644
+> --- a/arch/sh/kernel/ioport.c
+> +++ b/arch/sh/kernel/ioport.c
+> @@ -12,15 +12,6 @@
+>  unsigned long sh_io_port_base __read_mostly = -1;
+>  EXPORT_SYMBOL(sh_io_port_base);
+>  
+> -void __iomem *__ioport_map(unsigned long addr, unsigned int size)
+> -{
+> -	if (sh_mv.mv_ioport_map)
+> -		return sh_mv.mv_ioport_map(addr, size);
+> -
+> -	return (void __iomem *)(addr + sh_io_port_base);
+> -}
+> -EXPORT_SYMBOL(__ioport_map);
+> -
+>  void __iomem *ioport_map(unsigned long port, unsigned int nr)
+>  {
+>  	void __iomem *ret;
+> @@ -29,13 +20,11 @@ void __iomem *ioport_map(unsigned long port, unsigned int nr)
+>  	if (ret)
+>  		return ret;
+>  
+> -	return __ioport_map(port, nr);
+> +	return (void __iomem *)(port + sh_io_port_base);
+>  }
+>  EXPORT_SYMBOL(ioport_map);
+>  
+>  void ioport_unmap(void __iomem *addr)
+>  {
+> -	if (sh_mv.mv_ioport_unmap)
+> -		sh_mv.mv_ioport_unmap(addr);
+>  }
+>  EXPORT_SYMBOL(ioport_unmap);
 
+Why aren't you removing the function ioport_unmap(void __iomem *addr) completely
+and just turn it into stub? Is it still referenced somewhere?
 
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
