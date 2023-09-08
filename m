@@ -2,41 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66580798D03
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E68D798D08
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344010AbjIHSTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:19:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
+        id S230487AbjIHSTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343832AbjIHSSo (ORCPT
+        with ESMTP id S242230AbjIHSSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:18:44 -0400
+        Fri, 8 Sep 2023 14:18:52 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF4B271C;
-        Fri,  8 Sep 2023 11:18:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01635C32776;
-        Fri,  8 Sep 2023 18:16:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 351152727;
+        Fri,  8 Sep 2023 11:18:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F631C433B7;
+        Fri,  8 Sep 2023 18:16:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196998;
-        bh=jKnfc1dNRJYVBOS0uvQuHlKYFzmWbWa5/0ucEK8g9yc=;
+        s=k20201202; t=1694197000;
+        bh=rJ3CLk1EfOs0Q/7dcqphFNVGRn5lxVCtti48fYORXNo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jttF8i4zNZ0TwgFsuxmrsNFjnSpmKOnWwV7QM1qKzbgvsw5pkukMebRb/Pww2HNSg
-         DSO1BxkicfU9S///+St7w15tET3Z2OPfIuCyo787nkKo2ybqjPsMAcbZb3CWiLnQqE
-         zMUZxCy0njQlSIo42Ea9TcVq2GAgbV9lj5YZ6c/mBD8V5kbKYjlmonWirAAphWKsTV
-         0NZ1jK7obktH81Fjy3to9InfHaxIHFflWG1Ix5mdISWW+9iHBqpnr5OFa3N6vaJH0s
-         h7a63r4L0tycv7/pSgQJrfAo2kF1MftDGdAJBc1gymBxmiwR4qzV7uVmYQTvnf6y9H
-         mmyxWA+9OINIA==
+        b=L5ZTEWzmxZ29704FRuS6h3VnCdJQTFaxvkqjgZBKVHGXevTjMX7pA5AzebCBdfVrK
+         DeW+5bjABgJhqDOPu+aZqmj0O+zmx/wh17oIaFH8j+6aPhn7N1LdbGqV92d7FhSDHJ
+         yaDRcz7PTO5NpG36cBCmSql+TnP0+kj4+JTUGJzFW7g2IJHtIEImiVXMKqgfY/LEcP
+         MX42Lsun9XoSEoHxN+REx/OwV4XMkNVjGcQqy3QSekUD+ttvyOvy2ZdQ2ktLMn4qA7
+         KBgeiQyprIFdnazlWD9MgfBMyqpkpSgnwQA4lN4PEQxOqR65gjUaPwd9lMqDQjKWTf
+         pNrdhxYMy0jjQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wen Gong <quic_wgong@quicinc.com>,
-        Kalle Valo <quic_kvalo@quicinc.com>,
-        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
-        quic_jjohnson@quicinc.com, ath12k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 15/41] wifi: ath12k: avoid array overflow of hw mode for preferred_hw_mode
-Date:   Fri,  8 Sep 2023 14:15:29 -0400
-Message-Id: <20230908181555.3459640-15-sashal@kernel.org>
+Cc:     xu xin <xu.xin16@zte.com.cn>, Yang Yang <yang.yang29@zte.com.cn>,
+        Si Hao <si.hao@zte.com.cn>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com, pabeni@redhat.com,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 16/41] net/ipv4: return the real errno instead of -EINVAL
+Date:   Fri,  8 Sep 2023 14:15:30 -0400
+Message-Id: <20230908181555.3459640-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181555.3459640-1-sashal@kernel.org>
 References: <20230908181555.3459640-1-sashal@kernel.org>
@@ -54,59 +57,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wen Gong <quic_wgong@quicinc.com>
+From: xu xin <xu.xin16@zte.com.cn>
 
-[ Upstream commit 1e9b1363e2de1552ee4e3d74ac8bb43a194f1cb4 ]
+[ Upstream commit c67180efc507e04a87f22aa68bd7dd832db006b7 ]
 
-Currently ath12k define WMI_HOST_HW_MODE_DBS_OR_SBS=5 as max hw mode
-for enum wmi_host_hw_mode_config_type, it is also same for the array
-ath12k_hw_mode_pri_map.
+For now, No matter what error pointer ip_neigh_for_gw() returns,
+ip_finish_output2() always return -EINVAL, which may mislead the upper
+users.
 
-When tested with new version firmware/board data which support new
-hw mode eMLSR mode with hw mode value 8, it leads overflow usage for
-array ath12k_hw_mode_pri_map in function ath12k_wmi_hw_mode_caps(),
-and then lead preferred_hw_mode changed to 8, and finally function
-ath12k_pull_mac_phy_cap_svc_ready_ext() select the capability of hw
-mode 8, but the capability of eMLSR mode report from firmware does
-not support 2.4 GHz band for WCN7850, so finally 2.4 GHz band is
-disabled.
+For exemple, an application uses sendto to send an UDP packet, but when the
+neighbor table overflows, sendto() will get a value of -EINVAL, and it will
+cause users to waste a lot of time checking parameters for errors.
 
-Skip the hw mode which exceeds WMI_HOST_HW_MODE_MAX in function
-ath12k_wmi_hw_mode_caps() helps to avoid array overflow, then the 2.4
-GHz band will not be disabled.
+Return the real errno instead of -EINVAL.
 
-This is to keep compatibility with newer version firmware/board data
-files, this change is still needed after ath12k add eMLSR hw mode 8 in
-array ath12k_hw_mode_pri_map and enum wmi_host_hw_mode_config_type,
-because more hw mode maybe added in next firmware/board data version
-e.g hw mode 9, then it will also lead new array overflow without this
-change.
-
-Tested-on: WCN7850 hw2.0 PCI WLAN.HMT.1.0-03427-QCAHMTSWPL_V1.0_V2.0_SILICONZ-1.15378.4
-
-Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://lore.kernel.org/r/20230714072405.28705-1-quic_wgong@quicinc.com
+Signed-off-by: xu xin <xu.xin16@zte.com.cn>
+Reviewed-by: Yang Yang <yang.yang29@zte.com.cn>
+Cc: Si Hao <si.hao@zte.com.cn>
+Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+Reviewed-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Link: https://lore.kernel.org/r/20230807015408.248237-1-xu.xin16@zte.com.cn
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath12k/wmi.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/ipv4/ip_output.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath12k/wmi.c b/drivers/net/wireless/ath/ath12k/wmi.c
-index 7ae0bb78b2b53..cef01148fc163 100644
---- a/drivers/net/wireless/ath/ath12k/wmi.c
-+++ b/drivers/net/wireless/ath/ath12k/wmi.c
-@@ -3701,6 +3701,10 @@ static int ath12k_wmi_hw_mode_caps(struct ath12k_base *soc,
- 	for (i = 0 ; i < svc_rdy_ext->n_hw_mode_caps; i++) {
- 		hw_mode_caps = &svc_rdy_ext->hw_mode_caps[i];
- 		mode = le32_to_cpu(hw_mode_caps->hw_mode_id);
-+
-+		if (mode >= WMI_HOST_HW_MODE_MAX)
-+			continue;
-+
- 		pref = soc->wmi_ab.preferred_hw_mode;
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 6f6f63cf9224f..f649a65bfefa7 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -236,7 +236,7 @@ static int ip_finish_output2(struct net *net, struct sock *sk, struct sk_buff *s
+ 	net_dbg_ratelimited("%s: No header cache and no neighbour!\n",
+ 			    __func__);
+ 	kfree_skb_reason(skb, SKB_DROP_REASON_NEIGH_CREATEFAIL);
+-	return -EINVAL;
++	return PTR_ERR(neigh);
+ }
  
- 		if (ath12k_hw_mode_pri_map[mode] < ath12k_hw_mode_pri_map[pref]) {
+ static int ip_finish_output_gso(struct net *net, struct sock *sk,
 -- 
 2.40.1
 
