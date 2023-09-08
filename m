@@ -2,118 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93563798B53
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 19:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F77798B7B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 19:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244307AbjIHRPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 13:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
+        id S241068AbjIHR0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 13:26:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjIHRPc (ORCPT
+        with ESMTP id S233155AbjIHR0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 13:15:32 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5B8CE6
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 10:15:28 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-500c37d479aso3645540e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 10:15:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694193326; x=1694798126; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ftE86UDOiJ2OxuBofmHmxxisKgEH1PFcf8OJbUZ9prw=;
-        b=hKn+qYs/SFvQwH/NKkPyQIcvIHY/YFd34k2cUIBnLgga9M9cvq5wmTrNlBWmcNRg0e
-         aCWHTU6Fm1mZlAMkhxudp1ZPrhE4mrD/et7yqqcmwkCn9onK1g3P2wlwrHQH3AcLXCHM
-         oGTy8c3xJsG8OXEggrbOzk56nuHYpSu1UVFqA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694193326; x=1694798126;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ftE86UDOiJ2OxuBofmHmxxisKgEH1PFcf8OJbUZ9prw=;
-        b=sqYoV23YhXrAPlNqtByX5lb6oFN1ZgJRsJ+k6V7Fwln3nr7VTU3YnjnNcJHkF9Py2Y
-         fI/qSIMx+hLS5LwmML9I9CaremA2aKDyNlNgGGJu7xAwv3qSXw+Z4hX2eFSmilaGgEUw
-         kXISX1/Se917gjbMO+0Guwz4MTdmtT3biVZXIkJ3Nn/qsYfFzpK6zRIGCURzRfq+q91N
-         4E5kB0HlGkNUh9m4lcm2jenzhBrk6FFkqnUmo9dONnEKnIBwFAxoR4QrwekmXgTcLFu+
-         Pp1m3XR6Y6iZfCc17irHwwiSI/kA9BudV3kEqDEUogYqN/eieu5/BTpwZ9RU5QzxhMWl
-         T0yg==
-X-Gm-Message-State: AOJu0YxUcUpPjkRyuOn29YLKi2P7XGZcbkofw4oDGGPbpbnlNvANPKoD
-        4CLTqJ7cZkXIcVMvttPjdng66cQpwjKxZUBK9MLbfG26
-X-Google-Smtp-Source: AGHT+IGNZ/ljVRqpDGIEjXFE2cCJ1AxuF6HpmgQTb8PcTEgILbjCtLRQafx99oV05eL0c9H5Dl9clQ==
-X-Received: by 2002:a05:6512:2346:b0:500:7dc0:b0b2 with SMTP id p6-20020a056512234600b005007dc0b0b2mr3156889lfu.28.1694193326344;
-        Fri, 08 Sep 2023 10:15:26 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id p14-20020ac246ce000000b004fa52552c7csm332991lfo.151.2023.09.08.10.15.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Sep 2023 10:15:25 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-500c37d479aso3645477e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 10:15:25 -0700 (PDT)
-X-Received: by 2002:a05:6512:e9a:b0:4fb:77d6:89c3 with SMTP id
- bi26-20020a0565120e9a00b004fb77d689c3mr3236491lfb.12.1694193324794; Fri, 08
- Sep 2023 10:15:24 -0700 (PDT)
+        Fri, 8 Sep 2023 13:26:33 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98AF91FC7;
+        Fri,  8 Sep 2023 10:26:29 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (unknown [31.94.18.223])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CF8E310FE;
+        Fri,  8 Sep 2023 19:24:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1694193899;
+        bh=oWaVYJ84yTw1F3FOc83sGFaJxwx0456GDMdxWGrUfRI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fN3CZgDk/6BOrsjuDCPxlMB7Mww+IeF5LEWUm3jf3SUaWSkcGhmp0HWjfqkXp4Hks
+         1ZWp7AfG39C7bic6LRpn2wHmce4MlZlfDnpg2SFlRvGMN8xk1J7gk4wL8psrllJN2J
+         VTMYwuXqD5+LzpXxvD8dQpirPw+Ixwfbd80BuWTE=
+Date:   Fri, 8 Sep 2023 20:26:41 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Umang Jain <umang.jain@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Lee Jackson <lee.jackson@arducam.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Shawn Tu <shawnx.tu@intel.com>,
+        kieran.bingham@ideasonboard.com, jacopo.mondi@ideasonboard.com
+Subject: Re: [PATCH v6 2/2] media: i2c: Add driver for IMX519 sensor
+Message-ID: <20230908172641.GF17610@pendragon.ideasonboard.com>
+References: <20230908124344.171662-1-umang.jain@ideasonboard.com>
+ <20230908124344.171662-3-umang.jain@ideasonboard.com>
 MIME-Version: 1.0
-References: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
- <20230830184958.2333078-8-ankur.a.arora@oracle.com> <20230908070258.GA19320@noisy.programming.kicks-ass.net>
-In-Reply-To: <20230908070258.GA19320@noisy.programming.kicks-ass.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 8 Sep 2023 10:15:07 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wif4WMu-k9Pi9BoVRZwH6npjS6Km9DR9aROxANZzN2iRQ@mail.gmail.com>
-Message-ID: <CAHk-=wif4WMu-k9Pi9BoVRZwH6npjS6Km9DR9aROxANZzN2iRQ@mail.gmail.com>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
-        tglx@linutronix.de, jon.grimm@amd.com, bharata@amd.com,
-        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230908124344.171662-3-umang.jain@ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Sept 2023 at 00:03, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> Which on a PREEMPT_COUNT=n build will cause preemption while holding the
-> spinlock. I think something like the below will cause sufficient
-> warnings to avoid growing patterns like that.
+Hi Umang,
 
-Hmm. I don't think that warning is valid.
+Thank you for the patch.
 
-Disabling preemption is actually fine if it's done in an interrupt,
-iow if we have
+On Fri, Sep 08, 2023 at 08:43:44AM -0400, Umang Jain wrote:
+> From: Lee Jackson <lee.jackson@arducam.com>
+> 
+> Add a driver for the 16MPix IMX519 CSI2 sensor.
+> Whilst the sensor supports 2 or 4 CSI2 data lanes, this driver
+> currently only supports 2 lanes.
+> 
+> The following Bayer modes are currently available:
+> 
+> 4656x3496 10-bit @ 10fps
+> 3840x2160 10-bit (cropped) @ 21fps
+> 2328x1748 10-bit (binned) @ 30fps
+> 1920x1080 10-bit (cropped/binned) @ 60fps
+> 1280x720 10-bit (cropped/binned) @ 120fps
+> 
+> Signed-off-by: Lee Jackson <lee.jackson@arducam.com>
+> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+> ---
+>  MAINTAINERS                |    1 +
+>  drivers/media/i2c/Kconfig  |   14 +
+>  drivers/media/i2c/Makefile |    1 +
+>  drivers/media/i2c/imx519.c | 1842 ++++++++++++++++++++++++++++++++++++
+>  4 files changed, 1858 insertions(+)
+>  create mode 100644 drivers/media/i2c/imx519.c
 
-        allow_resched();
-           -> irq happens
-                spin_lock();  // Ok and should *not* complain
-                ...
-                spin_unlock();
-            <- irq return (and preemption)
+[snip]
 
-which actually makes me worry about the nested irq case, because this
-would *not* be ok:
+> diff --git a/drivers/media/i2c/imx519.c b/drivers/media/i2c/imx519.c
+> new file mode 100644
+> index 000000000000..f818a3d0bd25
+> --- /dev/null
+> +++ b/drivers/media/i2c/imx519.c
+> @@ -0,0 +1,1842 @@
 
-        allow_resched();
-           -> irq happens
-                -> *nested* irq happens
-                <- nested irq return (and preemption)
+[snip]
 
-ie the allow_resched() needs to still honor the irq count, and a
-nested irq return obviously must not cause any preemption.
+> +/* 16 mpix 10fps */
+> +static const struct cci_reg_sequence mode_4656x3496_regs[] = {
+> +	{ CCI_REG8(0x0111), 0x02 },
+> +	{ CCI_REG8(0x0112), 0x0a },
+> +	{ CCI_REG8(0x0113), 0x0a },
+> +	{ CCI_REG8(0x0114), 0x01 },
+> +	{ CCI_REG8(0x0342), 0x42 },
+> +	{ CCI_REG8(0x0343), 0x00 },
+> +	{ CCI_REG8(0x0340), 0x0d },
+> +	{ CCI_REG8(0x0341), 0xf4 },
+> +	{ CCI_REG8(0x0344), 0x00 },
+> +	{ CCI_REG8(0x0345), 0x00 },
+> +	{ CCI_REG8(0x0346), 0x00 },
+> +	{ CCI_REG8(0x0347), 0x00 },
+> +	{ CCI_REG8(0x0348), 0x12 },
+> +	{ CCI_REG8(0x0349), 0x2f },
+> +	{ CCI_REG8(0x034a), 0x0d },
+> +	{ CCI_REG8(0x034b), 0xa7 },
+> +	{ CCI_REG8(0x0220), 0x00 },
+> +	{ CCI_REG8(0x0221), 0x11 },
+> +	{ CCI_REG8(0x0222), 0x01 },
+> +	{ CCI_REG8(0x0900), 0x00 },
+> +	{ CCI_REG8(0x0901), 0x11 },
+> +	{ CCI_REG8(0x0902), 0x0a },
+> +	{ CCI_REG8(0x3f4c), 0x01 },
+> +	{ CCI_REG8(0x3f4d), 0x01 },
+> +	{ CCI_REG8(0x4254), 0x7f },
+> +	{ CCI_REG8(0x0401), 0x00 },
+> +	{ CCI_REG8(0x0404), 0x00 },
+> +	{ CCI_REG8(0x0405), 0x10 },
+> +	{ CCI_REG8(0x0408), 0x00 },
+> +	{ CCI_REG8(0x0409), 0x00 },
+> +	{ CCI_REG8(0x040a), 0x00 },
+> +	{ CCI_REG8(0x040b), 0x00 },
+> +	{ CCI_REG8(0x040c), 0x12 },
+> +	{ CCI_REG8(0x040d), 0x30 },
+> +	{ CCI_REG8(0x040e), 0x0d },
+> +	{ CCI_REG8(0x040f), 0xa8 },
+> +	{ CCI_REG8(0x034c), 0x12 },
+> +	{ CCI_REG8(0x034d), 0x30 },
+> +	{ CCI_REG8(0x034e), 0x0d },
+> +	{ CCI_REG8(0x034f), 0xa8 },
+> +	{ CCI_REG8(0x0301), 0x06 },
+> +	{ CCI_REG8(0x0303), 0x04 },
+> +	{ CCI_REG8(0x0305), 0x04 },
+> +	{ CCI_REG8(0x0306), 0x01 },
+> +	{ CCI_REG8(0x0307), 0x57 },
+> +	{ CCI_REG8(0x0309), 0x0a },
+> +	{ CCI_REG8(0x030b), 0x02 },
+> +	{ CCI_REG8(0x030d), 0x04 },
+> +	{ CCI_REG8(0x030e), 0x01 },
+> +	{ CCI_REG8(0x030f), 0x49 },
+> +	{ CCI_REG8(0x0310), 0x01 },
+> +	{ CCI_REG8(0x0820), 0x07 },
+> +	{ CCI_REG8(0x0821), 0xb6 },
+> +	{ CCI_REG8(0x0822), 0x00 },
+> +	{ CCI_REG8(0x0823), 0x00 },
+> +	{ CCI_REG8(0x3e20), 0x01 },
+> +	{ CCI_REG8(0x3e37), 0x00 },
+> +	{ CCI_REG8(0x3e3b), 0x00 },
+> +	{ CCI_REG8(0x0106), 0x00 },
+> +	{ CCI_REG8(0x0b00), 0x00 },
+> +	{ CCI_REG8(0x3230), 0x00 },
+> +	{ CCI_REG8(0x3f14), 0x01 },
+> +	{ CCI_REG8(0x3f3c), 0x01 },
+> +	{ CCI_REG8(0x3f0d), 0x0a },
+> +	{ CCI_REG8(0x3fbc), 0x00 },
+> +	{ CCI_REG8(0x3c06), 0x00 },
+> +	{ CCI_REG8(0x3c07), 0x48 },
+> +	{ CCI_REG8(0x3c0a), 0x00 },
+> +	{ CCI_REG8(0x3c0b), 0x00 },
+> +	{ CCI_REG8(0x3f78), 0x00 },
+> +	{ CCI_REG8(0x3f79), 0x40 },
+> +	{ CCI_REG8(0x3f7c), 0x00 },
+> +	{ CCI_REG8(0x3f7d), 0x00 },
+> +};
 
-I've lost sight of the original patch series, and I assume / hope that
-the above isn't actually an issue, but exactly because I've lost sight
-of the original patches and only have this one in my mailbox I wanted
-to check.
+Looking at the per-mode tables, it appears that all registers below
+0x3000 are CCS-compliant. Furthermore, all registers from 0x3000 above
+(defined in CCS as the manufacturer-specific register - or MSR - range)
+are identical for all modes. I can't tell if other modes could require
+different values for MSRs, so it's hard to assess real CCS compliance,
+but it looks like giving the CCS driver a try would be a good idea.
 
-            Linus
+I'm sure Sakari will be delighted :-)
+
+[snip]
+
+-- 
+Regards,
+
+Laurent Pinchart
