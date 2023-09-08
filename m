@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F0A798F19
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E07E798F1D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344523AbjIHT3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58716 "EHLO
+        id S1344555AbjIHT32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232686AbjIHT3T (ORCPT
+        with ESMTP id S1344565AbjIHT3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:29:19 -0400
+        Fri, 8 Sep 2023 15:29:25 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4DD10DF;
-        Fri,  8 Sep 2023 12:29:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5287CC433CC;
-        Fri,  8 Sep 2023 19:29:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D7E19C;
+        Fri,  8 Sep 2023 12:29:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46776C433C9;
+        Fri,  8 Sep 2023 19:29:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201346;
-        bh=BAFHb/C6okWRhyWm16JToaWpqvbrEGxonWbQx2rGVxE=;
+        s=k20201202; t=1694201348;
+        bh=PxuxuM9O9r9Vc+0Oc0Ad4R0NRIu2PQBHxmPa9Nyybjs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qJtZ/5bZQwdDaCsTGrH9Pni/bcPXkUNGwo2bURAyugN7KJe5GCP3V0SXkb+djDLpd
-         4zxvMOiijgLDk6E5M8BSCiLcl3KWXIyi42Q810GLpC7vmmXL+H0W/LPQl3ATob+P0+
-         NbbjgO9aqKdGtI3iNePqIwTJtdUJqOh9F+sxBbuMtxEibM5TwUvhzkDd4d6OlapjtA
-         5k412GKnc+VRoGQ5ExcLRir3LWipMALjIFcqIkFqp+AMrAD3oCmVwlPt/demoANgJY
-         y40Tnb+DuUzGN+L6qr+kWnZMHXtHcuic1D1pgI9avSGUVWE/oCsDjXVqw0xfbQF8O1
-         R8ubTu48DFUQA==
+        b=Q1WLNHzftNA/6xpG+x+hupR0zQeMAF4j5ImyFF1H5tI4Wwk9YnJgzv2WmeqT8/Amz
+         UqemBxJS1P0+SvENqnSV+AwWjROuZeeF2ZLVpDWIVqf/LpjNNAR7N6uJs2vjRxPrpG
+         ymUr2RstZluxxAXUalJ6n9QYwlTRL45wQeH21Iv5nUxXQB8Os/0EB91M8Fj26LvNeM
+         TZtuKT3rigPKpceJRPmyazdFg/G6M/O7f90FeQsVScZGNmQ/I37dVJ5xmk/RLBGwAk
+         ksuUa9f6dGjIvdQRX98Pl16cR9qHxgJUjC7jqFu9Akut2uneT0/t/P7kSyBZobrVuW
+         +SqqU38Ygb7GA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
@@ -37,9 +37,9 @@ Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         conor+dt@kernel.org, keescook@chromium.org,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-hardening@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 07/36] arm64: dts: qcom: sm6350: correct ramoops pmsg-size
-Date:   Fri,  8 Sep 2023 15:28:18 -0400
-Message-Id: <20230908192848.3462476-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 08/36] arm64: dts: qcom: sm8150-kumano: correct ramoops pmsg-size
+Date:   Fri,  8 Sep 2023 15:28:19 -0400
+Message-Id: <20230908192848.3462476-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908192848.3462476-1-sashal@kernel.org>
 References: <20230908192848.3462476-1-sashal@kernel.org>
@@ -59,28 +59,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-[ Upstream commit c86b97a72065e06eacb993dc71fa9febc93422af ]
+[ Upstream commit 4e6b942f092653ebcdbbc0819b2d1f08ab415bdc ]
 
 There is no 'msg-size' property in ramoops, so assume intention was for
 'pmsg-size':
 
-  sm6350-sony-xperia-lena-pdx213.dtb: ramoops@ffc00000: Unevaluated properties are not allowed ('msg-size' was unexpected)
+  sm8150-sony-xperia-kumano-griffin.dtb: ramoops@ffc00000: Unevaluated properties are not allowed ('msg-size' was unexpected)
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Link: https://lore.kernel.org/r/20230618114442.140185-5-krzysztof.kozlowski@linaro.org
+Link: https://lore.kernel.org/r/20230618114442.140185-6-krzysztof.kozlowski@linaro.org
 Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sm6350.dtsi | 2 +-
+ arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-index 30e77010aed57..698171bda9fa3 100644
---- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-@@ -673,7 +673,7 @@ ramoops: ramoops@ffc00000 {
- 			reg = <0 0xffc00000 0 0x100000>;
+diff --git a/arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano.dtsi b/arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano.dtsi
+index baafea53770bf..ae0ca48b89a59 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano.dtsi
+@@ -222,7 +222,7 @@ ramoops@ffc00000 {
+ 			reg = <0x0 0xffc00000 0x0 0x100000>;
  			record-size = <0x1000>;
  			console-size = <0x40000>;
 -			msg-size = <0x20000 0x20000>;
