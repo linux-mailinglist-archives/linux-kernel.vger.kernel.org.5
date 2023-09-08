@@ -2,125 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3185C7990F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E727990D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245583AbjIHUZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 16:25:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38186 "EHLO
+        id S238461AbjIHUHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 16:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239974AbjIHUZR (ORCPT
+        with ESMTP id S232528AbjIHUHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 16:25:17 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA949C;
-        Fri,  8 Sep 2023 13:25:13 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 388Cf1dQ026960;
-        Fri, 8 Sep 2023 18:54:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=VQa+l5fjSpshTSgHvyDB3UkN94/rJpy8jWTI3ZYkuBg=;
- b=OKRy8SdWNg78t4ZJiaWublCuoLyCFzPl+fyvXDVJ3VgD5EvzoNIFRMaz9QovhnnLQaw+
- TiXODJObVN1Oa/GphqJzAwckJGSVUMkdLRBe1mN0G7UIrBnGuq2DeAqYN7HUshaDdvVO
- 7yPSEWAW9vvsB/nu0R3TLmHTev45JiU4tpNvKIFOgANWPizFHvvBdHebX53vWW2kWMk8
- OunPHkS0GHVle5R3v9L9OHoyUpOoEfcOAt3SR0kNuYsQrus33icxtkU0zQrv1HiN5nlP
- D/TeP+SxXBlZCYp0FHmZpFx3bK7ML2h+KM0LOkwhM3zSOgmpFcwwQCy/91nL2P3mBr0W oQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3syu01229s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Sep 2023 18:54:58 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 388IsvTU012976
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 8 Sep 2023 18:54:57 GMT
-Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Fri, 8 Sep 2023 11:54:57 -0700
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-To:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
-        <quic_parellan@quicinc.com>, <nespera@igalia.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] drm/msm/dpu: try multirect based on mdp clock limits
-Date:   Fri, 8 Sep 2023 11:54:27 -0700
-Message-ID: <20230908185427.29026-2-quic_abhinavk@quicinc.com>
+        Fri, 8 Sep 2023 16:07:20 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B470F8E;
+        Fri,  8 Sep 2023 13:07:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 912AAC433BD;
+        Fri,  8 Sep 2023 19:33:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694201627;
+        bh=2ymu0h75QDYuoxIwmPdn9W2smvr5mgfdmUUoX3TZl0g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ouxdICFgxGxlGVx3bz/SVMBbfKWwqhcoWlIgZwelmwn+2HnJYHE59kAu5a/78Gk/y
+         i9ckIL1FwfxJKPc6j0u1muyIvEMLB9hgRTTDvKDH2FYzl60oLosuZ3+ps5zOxOJLc2
+         6Lt9m9ZPXsVGYgN6qoXTZGtJrCdg5r05G/Go4BpBrRCzuppUqVJXXOfeKl7b6YILB2
+         0xjOGUcpFiSKehaVRHGKd3D1qC77ejpA31v4J/IMUZLN0jci71nkGGwAEXdS2WeVql
+         dc3XuY/htPwMwQ76KTrhDxPxMYagzUbY9eJMzKJ3va/esZgsvTrzLXv2nH1uDtzeUE
+         oA5FPxmCj1q2w==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Georg Ottinger <g.ottinger@gmx.at>, Jan Kara <jack@suse.cz>,
+        Sasha Levin <sashal@kernel.org>, jack@suse.com,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 28/31] ext2: fix datatype of block number in ext2_xattr_set2()
+Date:   Fri,  8 Sep 2023 15:31:57 -0400
+Message-Id: <20230908193201.3462957-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908185427.29026-1-quic_abhinavk@quicinc.com>
-References: <20230908185427.29026-1-quic_abhinavk@quicinc.com>
+In-Reply-To: <20230908193201.3462957-1-sashal@kernel.org>
+References: <20230908193201.3462957-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.4.15
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 8WmarzNsTZcJqPehkHvTiXOyRIDRCLU0
-X-Proofpoint-GUID: 8WmarzNsTZcJqPehkHvTiXOyRIDRCLU0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-08_15,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 mlxscore=0 suspectscore=0 adultscore=0 bulkscore=0
- phishscore=0 impostorscore=0 clxscore=1015 spamscore=0 malwarescore=0
- mlxlogscore=718 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309080173
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's certainly possible that for large resolutions a single DPU SSPP
-cannot process the image without exceeding the MDP clock limits but
-it can still process it in multirect mode because the source rectangles
-will get divided and can fall within the MDP clock limits.
+From: Georg Ottinger <g.ottinger@gmx.at>
 
-If the SSPP cannot process the image even in multirect mode, then it
-will be rejected in dpu_plane_atomic_check_pipe().
+[ Upstream commit e88076348425b7d0491c8c98d8732a7df8de7aa3 ]
 
-Hence try using multirect for resolutions which cannot be processed
-by a single SSPP without exceeding the MDP clock limits.
+I run a small server that uses external hard drives for backups. The
+backup software I use uses ext2 filesystems with 4KiB block size and
+the server is running SELinux and therefore relies on xattr. I recently
+upgraded the hard drives from 4TB to 12TB models. I noticed that after
+transferring some TBs I got a filesystem error "Freeing blocks not in
+datazone - block = 18446744071529317386, count = 1" and the backup
+process stopped. Trying to fix the fs with e2fsck resulted in a
+completely corrupted fs. The error probably came from ext2_free_blocks(),
+and because of the large number 18e19 this problem immediately looked
+like some kind of integer overflow. Whereas the 4TB fs was about 1e9
+blocks, the new 12TB is about 3e9 blocks. So, searching the ext2 code,
+I came across the line in fs/ext2/xattr.c:745 where ext2_new_block()
+is called and the resulting block number is stored in the variable block
+as an int datatype. If a block with a block number greater than
+INT32_MAX is returned, this variable overflows and the call to
+sb_getblk() at line fs/ext2/xattr.c:750 fails, then the call to
+ext2_free_blocks() produces the error.
 
-Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Signed-off-by: Georg Ottinger <g.ottinger@gmx.at>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Message-Id: <20230815100340.22121-1-g.ottinger@gmx.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/ext2/xattr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-index 62dd9f9b4dce..85072328cd53 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-@@ -792,6 +792,7 @@ static int dpu_plane_atomic_check(struct drm_plane *plane,
- 										 plane);
- 	int ret = 0, min_scale;
- 	struct dpu_plane *pdpu = to_dpu_plane(plane);
-+	struct dpu_kms *kms = _dpu_plane_get_kms(&pdpu->base);
- 	struct dpu_plane_state *pstate = to_dpu_plane_state(new_plane_state);
- 	struct dpu_sw_pipe *pipe = &pstate->pipe;
- 	struct dpu_sw_pipe *r_pipe = &pstate->r_pipe;
-@@ -860,7 +861,8 @@ static int dpu_plane_atomic_check(struct drm_plane *plane,
+diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
+index 8906ba479aafb..89517937d36c4 100644
+--- a/fs/ext2/xattr.c
++++ b/fs/ext2/xattr.c
+@@ -742,10 +742,10 @@ ext2_xattr_set2(struct inode *inode, struct buffer_head *old_bh,
+ 			/* We need to allocate a new block */
+ 			ext2_fsblk_t goal = ext2_group_first_block_no(sb,
+ 						EXT2_I(inode)->i_block_group);
+-			int block = ext2_new_block(inode, goal, &error);
++			ext2_fsblk_t block = ext2_new_block(inode, goal, &error);
+ 			if (error)
+ 				goto cleanup;
+-			ea_idebug(inode, "creating block %d", block);
++			ea_idebug(inode, "creating block %lu", block);
  
- 	max_linewidth = pdpu->catalog->caps->max_linewidth;
- 
--	if (drm_rect_width(&pipe_cfg->src_rect) > max_linewidth) {
-+	if ((drm_rect_width(&pipe_cfg->src_rect) > max_linewidth) ||
-+	     _dpu_plane_calc_clk(&crtc_state->mode, pipe_cfg) > kms->perf.max_core_clk_rate) {
- 		/*
- 		 * In parallel multirect case only the half of the usual width
- 		 * is supported for tiled formats. If we are here, we know that
+ 			new_bh = sb_getblk(sb, block);
+ 			if (unlikely(!new_bh)) {
 -- 
 2.40.1
 
