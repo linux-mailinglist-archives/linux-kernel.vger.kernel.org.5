@@ -2,100 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B373798852
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F364C7988E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243718AbjIHOMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53346 "EHLO
+        id S239194AbjIHOft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232491AbjIHOMC (ORCPT
+        with ESMTP id S234972AbjIHOfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:12:02 -0400
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE3E1BF1
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:11:57 -0700 (PDT)
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-570096d89b1so2582373a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 07:11:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694182316; x=1694787116;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pnzCKZJczahJy+S/JArtFdOPkapnJg+gfjTcqGqp3sU=;
-        b=JxOS4sIrf7pIL+Ce0RDuSSXvXL9tWBlxRv0JzMj+p8xzDJuo+U9oLpHyNOz/88I0GP
-         SWEDghtBQPEpm7ZRcuAvyZYO2Rp1MLS3DMW9R9SkThBXoJcqrP9/saiwjRKfVMihQ/B6
-         MBoHyVX2O4tDnP7Ctkhr5wpFvagbVKRWsJ+t+vLcu7KEgiBamaDt7ZNKUO7asf3wzdEA
-         gLMlDEn8hetlZ+z/1UL5Uew0kA+hE4X/WfHZCPVI1d/rCZIAzsuqCpjYhIPo1xVtpCpW
-         2pALhDRCFCrKN9x6VPTao0VtpCu1GJU7rgGNd/TeqfEZ8XSNu3mcE4T6G8Yv9OkqPRQ0
-         3Pcw==
-X-Gm-Message-State: AOJu0YyjqY/KGehKXpfSLBSEcfdzx4dA+JFuQvFoCOdMe0RfY940M9pu
-        n5pJsJE+Jy1RAD0vTDj9XLdKIhAZL6m8UIYJQ0YkdI7M4C0Z
-X-Google-Smtp-Source: AGHT+IGSgdA4DWeLu66y6OI1b/B+AM6Taex0QSz7cVrPl8pF5e4doG9DA8+Y2RRxWeh7/Pp8DyNc+XgOQ6i0tm8gTJRNl6Jc8CfP
+        Fri, 8 Sep 2023 10:35:48 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB861BEE
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:35:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=KhangHqvifzsEmrU/jafDlCuZhalHpNTZ2BYg95hJmg=; b=ix0N7KiqUqtc7Vy3wXgBLQgdTe
+        UqQ+5O4MJGXwxfxWwg7t0y3BBZ3yQXdBoOArASHDG0Z1U35gY4q/JjjpdZaT3aSbjYNBLwG+hvq7u
+        +jq5bWLk1q86bGKvJPgWWlSrmC+hErrD/kvKZrilDMgWuYY0y6p4JDlurVzHi/GT+mFijHbnxWZSs
+        O4k9ateSk/Z0HEL2qxRep8+/5Kt1B+KUgkUFnxQJdSc0jeKZ669RxiafnR8MCFVTLGgDb9exjTGWi
+        6Rj4G0dOHuhW1ru/4E5ZiiOiYTppAGsb2cv2uXReFvt/5ROvZI5VHrpykuiG/ZD/jV/Uy40d38K9/
+        t1JQkkPA==;
+Received: from [38.44.68.151] (helo=mail.igalia.com)
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+        id 1qecDd-001Oqj-VU; Fri, 08 Sep 2023 16:12:21 +0200
+Date:   Fri, 8 Sep 2023 13:11:59 -0100
+From:   Melissa Wen <mwen@igalia.com>
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     amd-gfx@lists.freedesktop.org,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
+        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        Joshua Ashton <joshua@froggi.es>,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        Xaver Hugl <xaver.hugl@gmail.com>,
+        Shashank Sharma <Shashank.Sharma@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/34] drm/amd/display: fix segment distribution for
+ linear LUTs
+Message-ID: <20230908141159.6hfne5r7hxi6bycs@mail.igalia.com>
+References: <20230810160314.48225-1-mwen@igalia.com>
+ <20230810160314.48225-2-mwen@igalia.com>
+ <7e11c23d-2824-4f32-b863-13cc631a6d40@amd.com>
 MIME-Version: 1.0
-X-Received: by 2002:a65:6e03:0:b0:566:8b4:4f18 with SMTP id
- bd3-20020a656e03000000b0056608b44f18mr486498pgb.5.1694182316684; Fri, 08 Sep
- 2023 07:11:56 -0700 (PDT)
-Date:   Fri, 08 Sep 2023 07:11:56 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002bc0110604d98f19@google.com>
-Subject: [syzbot] Monthly udf report (Sep 2023)
-From:   syzbot <syzbot+listde33a415ffbafe5a4f45@syzkaller.appspotmail.com>
-To:     jack@suse.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7e11c23d-2824-4f32-b863-13cc631a6d40@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello udf maintainers/developers,
+On 09/06, Harry Wentland wrote:
+> On 2023-08-10 12:02, Melissa Wen wrote:
+> > From: Harry Wentland <harry.wentland@amd.com>
+> > 
+> > The region and segment calculation was incapable of dealing
+> > with regions of more than 16 segments. We first fix this.
+> > 
+> > Now that we can support regions up to 256 elements we can
+> > define a better segment distribution for near-linear LUTs
+> > for our maximum of 256 HW-supported points.
+> > 
+> > With these changes an "identity" LUT looks visually
+> > indistinguishable from bypass and allows us to use
+> > our 3DLUT.
+> > 
+> 
+> Have you had a chance to test whether this patch makes a
+> difference? I haven't had the time yet.
 
-This is a 31-day syzbot report for the udf subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/udf
+Last time I tested there was a banding issue on plane shaper LUT PQ ->
+Display Native, but it seems I don't have this use case on tester
+anymore, so I wasn't able to double-check if the issue persist. Maybe
+Joshua can provide some inputs here.
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 16 issues are still open and 18 have been fixed so far.
+Something I noticed is that shaper LUTs are the only 1D LUT on DCN30
+pipeline that uses cm_helper_translate_curve_to_hw_format(), all others
+(dpp-degamma/dpp-blend/mpc-regamma) call cm3_helper_translate_curve_*.
 
-Some of the still happening issues:
+We can drop it from this series until we get the steps to report the
+issue properly.
 
-Ref  Crashes Repro Title
-<1>  1372    Yes   WARNING in udf_truncate_extents
-                   https://syzkaller.appspot.com/bug?extid=43fc5ba6dcb33e3261ca
-<2>  82      Yes   KASAN: use-after-free Write in udf_close_lvid
-                   https://syzkaller.appspot.com/bug?extid=60864ed35b1073540d57
-<3>  22      No    WARNING in udf_new_block
-                   https://syzkaller.appspot.com/bug?extid=cc717c6c5fee9ed6e41d
-<4>  16      Yes   KASAN: use-after-free Read in udf_finalize_lvid
-                   https://syzkaller.appspot.com/bug?extid=46073c22edd7f242c028
-<5>  9       Yes   KASAN: use-after-free Read in udf_sync_fs
-                   https://syzkaller.appspot.com/bug?extid=82df44ede2faca24c729
-<6>  6       Yes   WARNING in udf_setsize (2)
-                   https://syzkaller.appspot.com/bug?extid=db6df8c0f578bc11e50e
-<7>  5       Yes   WARNING in __udf_add_aext (2)
-                   https://syzkaller.appspot.com/bug?extid=e381e4c52ca8a53c3af7
-<8>  4       Yes   KASAN: slab-out-of-bounds Write in udf_adinicb_writepage
-                   https://syzkaller.appspot.com/bug?extid=a3db10baf0c0ee459854
-<9>  3       Yes   UBSAN: array-index-out-of-bounds in udf_process_sequence
-                   https://syzkaller.appspot.com/bug?extid=abb7222a58e4ebc930ad
-<10> 2       Yes   KASAN: slab-use-after-free Read in udf_free_blocks
-                   https://syzkaller.appspot.com/bug?extid=0b7937459742a0a4cffd
+Melissa
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+> 
+> Harry
+> 
+> > Signed-off-by: Harry Wentland <harry.wentland@amd.com>
+> > Signed-off-by: Melissa Wen <mwen@igalia.com>
+> > ---
+> >  .../amd/display/dc/dcn10/dcn10_cm_common.c    | 93 +++++++++++++++----
+> >  1 file changed, 75 insertions(+), 18 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_cm_common.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_cm_common.c
+> > index 3538973bd0c6..04b2e04b68f3 100644
+> > --- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_cm_common.c
+> > +++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_cm_common.c
+> > @@ -349,20 +349,37 @@ bool cm_helper_translate_curve_to_hw_format(struct dc_context *ctx,
+> >  		 * segment is from 2^-10 to 2^1
+> >  		 * There are less than 256 points, for optimization
+> >  		 */
+> > -		seg_distr[0] = 3;
+> > -		seg_distr[1] = 4;
+> > -		seg_distr[2] = 4;
+> > -		seg_distr[3] = 4;
+> > -		seg_distr[4] = 4;
+> > -		seg_distr[5] = 4;
+> > -		seg_distr[6] = 4;
+> > -		seg_distr[7] = 4;
+> > -		seg_distr[8] = 4;
+> > -		seg_distr[9] = 4;
+> > -		seg_distr[10] = 1;
+> > +		if (output_tf->tf == TRANSFER_FUNCTION_LINEAR) {
+> > +			seg_distr[0] = 0; /* 2 */
+> > +			seg_distr[1] = 1; /* 4 */
+> > +			seg_distr[2] = 2; /* 4 */
+> > +			seg_distr[3] = 3; /* 8 */
+> > +			seg_distr[4] = 4; /* 16 */
+> > +			seg_distr[5] = 5; /* 32 */
+> > +			seg_distr[6] = 6; /* 64 */
+> > +			seg_distr[7] = 7; /* 128 */
+> > +
+> > +			region_start = -8;
+> > +			region_end = 1;
+> > +		} else {
+> > +			seg_distr[0] = 3; /* 8 */
+> > +			seg_distr[1] = 4; /* 16 */
+> > +			seg_distr[2] = 4;
+> > +			seg_distr[3] = 4;
+> > +			seg_distr[4] = 4;
+> > +			seg_distr[5] = 4;
+> > +			seg_distr[6] = 4;
+> > +			seg_distr[7] = 4;
+> > +			seg_distr[8] = 4;
+> > +			seg_distr[9] = 4;
+> > +			seg_distr[10] = 1; /* 2 */
+> > +			/* total = 8*16 + 8 + 64 + 2 = */
+> > +
+> > +			region_start = -10;
+> > +			region_end = 1;
+> > +		}
+> > +
+> >  
+> > -		region_start = -10;
+> > -		region_end = 1;
+> >  	}
+> >  
+> >  	for (i = region_end - region_start; i < MAX_REGIONS_NUMBER ; i++)
+> > @@ -375,16 +392,56 @@ bool cm_helper_translate_curve_to_hw_format(struct dc_context *ctx,
+> >  
+> >  	j = 0;
+> >  	for (k = 0; k < (region_end - region_start); k++) {
+> > -		increment = NUMBER_SW_SEGMENTS / (1 << seg_distr[k]);
+> > +		/*
+> > +		 * We're using an ugly-ish hack here. Our HW allows for
+> > +		 * 256 segments per region but SW_SEGMENTS is 16.
+> > +		 * SW_SEGMENTS has some undocumented relationship to
+> > +		 * the number of points in the tf_pts struct, which
+> > +		 * is 512, unlike what's suggested TRANSFER_FUNC_POINTS.
+> > +		 *
+> > +		 * In order to work past this dilemma we'll scale our
+> > +		 * increment by (1 << 4) and then do the inverse (1 >> 4)
+> > +		 * when accessing the elements in tf_pts.
+> > +		 *
+> > +		 * TODO: find a better way using SW_SEGMENTS and
+> > +		 *       TRANSFER_FUNC_POINTS definitions
+> > +		 */
+> > +		increment = (NUMBER_SW_SEGMENTS << 4) / (1 << seg_distr[k]);
+> >  		start_index = (region_start + k + MAX_LOW_POINT) *
+> >  				NUMBER_SW_SEGMENTS;
+> > -		for (i = start_index; i < start_index + NUMBER_SW_SEGMENTS;
+> > +		for (i = (start_index << 4); i < (start_index << 4) + (NUMBER_SW_SEGMENTS << 4);
+> >  				i += increment) {
+> > +			struct fixed31_32 in_plus_one, in;
+> > +			struct fixed31_32 value, red_value, green_value, blue_value;
+> > +			uint32_t t = i & 0xf;
+> > +
+> >  			if (j == hw_points - 1)
+> >  				break;
+> > -			rgb_resulted[j].red = output_tf->tf_pts.red[i];
+> > -			rgb_resulted[j].green = output_tf->tf_pts.green[i];
+> > -			rgb_resulted[j].blue = output_tf->tf_pts.blue[i];
+> > +
+> > +			in_plus_one = output_tf->tf_pts.red[(i >> 4) + 1];
+> > +			in = output_tf->tf_pts.red[i >> 4];
+> > +			value = dc_fixpt_sub(in_plus_one, in);
+> > +			value = dc_fixpt_shr(dc_fixpt_mul_int(value, t),  4);
+> > +			value = dc_fixpt_add(in, value);
+> > +			red_value = value;
+> > +
+> > +			in_plus_one = output_tf->tf_pts.green[(i >> 4) + 1];
+> > +			in = output_tf->tf_pts.green[i >> 4];
+> > +			value = dc_fixpt_sub(in_plus_one, in);
+> > +			value = dc_fixpt_shr(dc_fixpt_mul_int(value, t),  4);
+> > +			value = dc_fixpt_add(in, value);
+> > +			green_value = value;
+> > +
+> > +			in_plus_one = output_tf->tf_pts.blue[(i >> 4) + 1];
+> > +			in = output_tf->tf_pts.blue[i >> 4];
+> > +			value = dc_fixpt_sub(in_plus_one, in);
+> > +			value = dc_fixpt_shr(dc_fixpt_mul_int(value, t),  4);
+> > +			value = dc_fixpt_add(in, value);
+> > +			blue_value = value;
+> > +
+> > +			rgb_resulted[j].red = red_value;
+> > +			rgb_resulted[j].green = green_value;
+> > +			rgb_resulted[j].blue = blue_value;
+> >  			j++;
+> >  		}
+> >  	}
+> 
