@@ -2,74 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21FBE798464
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB506798465
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237916AbjIHIr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 04:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53810 "EHLO
+        id S238592AbjIHIsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 04:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbjIHIr6 (ORCPT
+        with ESMTP id S230413AbjIHIsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 04:47:58 -0400
+        Fri, 8 Sep 2023 04:48:24 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5911BF8;
-        Fri,  8 Sep 2023 01:47:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E46AC433C7;
-        Fri,  8 Sep 2023 08:47:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1694162869;
-        bh=RKazeNausWM6tPwdKCpl5s1mIWcdBnzHHJqJ5487TXQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z62vsB6g3tQAwXvNxqDvT2MSnN2e8BQFvu7VPHVtY3o9dCp3qiV9soyQc3VSY+o9i
-         e63/m30jM9eXsmvxaXQmPRGIZqibL7AGCgl+biR1wzg5HvSxwhG+GI36kYuAg+708p
-         3KDgE6ZAaA0P52ik7aylgzdQzrrwDjZyPyCZirDM=
-Date:   Fri, 8 Sep 2023 09:47:46 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Stefan Lippers-Hollmann <s.l-h@gmx.de>, stable@vger.kernel.org,
-        patches@lists.linux.dev, Luis Chamberlain <mcgrof@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6.5 11/34] modules: only allow symbol_get of
- EXPORT_SYMBOL_GPL modules
-Message-ID: <2023090813-plug-path-b06f@gregkh>
-References: <20230904182948.594404081@linuxfoundation.org>
- <20230904182949.104100132@linuxfoundation.org>
- <20230907084135.02d97441@mir>
- <2023090719-virtuous-snowflake-d015@gregkh>
- <20230907221737.07f12f38@mir>
- <2023090848-chastise-paycheck-6d4d@gregkh>
- <2023090841-antitrust-reword-d6bc@gregkh>
- <20230908083139.GA9985@lst.de>
- <20230908083538.GA10228@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230908083538.GA10228@lst.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0966A1BDA;
+        Fri,  8 Sep 2023 01:48:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 907CAC433C7;
+        Fri,  8 Sep 2023 08:48:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694162899;
+        bh=bJ7NhyJD9NHnfvbX3T+2HwcdtRMHnTXPcMy23isQEKs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bN+I+59/Sp8q4+wM/cbWgOQIf6I6bmKa4YUUBE3j8jip5uylr3YaGQ1YTGd25XFQ0
+         kYlcjIsFhgzpGTB6TDqGJpCocQXWYzWypwkyLiiS0TYpfkkCQWnJvVAxcEcDh0W58M
+         B612l/FV4ab4IJmRMSeS+9t5WB9WMPcGJHDUt/CwNcDdbbzui8PxyfBn39Ar69dzbk
+         l5f+PztbXfaFepj2nU0RnPRYOcTEGcW8OsLJC/idInpmOJEjOhP6k+iA266PIYRBDx
+         356qMvyVlyliW4MNaOB3hnRN6sZ/FK+jRhlmrykl3uKFyQa3NOTJ3c1Ckdoenvqf/Q
+         qMmAh5pJUszoQ==
+Date:   Fri, 8 Sep 2023 17:48:15 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ajay Kaher <akaher@vmware.com>,
+        Zheng Yejian <zhengyejian1@huawei.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: Re: [PATCH] tracefs/eventfs: Free top level files on removal
+Message-Id: <20230908174815.9700f5ad32821579d073c86c@kernel.org>
+In-Reply-To: <20230907175859.6fedbaa2@gandalf.local.home>
+References: <20230907175859.6fedbaa2@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 10:35:38AM +0200, Christoph Hellwig wrote:
-> On Fri, Sep 08, 2023 at 10:31:39AM +0200, Christoph Hellwig wrote:
-> > On Fri, Sep 08, 2023 at 08:07:08AM +0100, Greg Kroah-Hartman wrote:
-> > > And it's over 130 symbols, attached, I'll figure out a way to script
-> > > this...
-> > 
-> > Eww. Sorry for missing this, and I suspect it really should be
-> > entirely reworked in the future.  But for now the scripting sounds
-> > right.  Let me know if you'd done anything, otherwise I can look into
-> > it this afternoon Chilean time.
+On Thu, 7 Sep 2023 17:58:59 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> .. and it turns out dvb_attach has already been deprecated for 5 years
-> time, it's just that it still has all these users around.
+> When an instance is removed, the top level files of the eventfs directory
+> are not cleaned up. Call the eventfs_remove() on each of the entries to
+> free them.
+> 
+> This was found via kmemleak:
+> 
+> unreferenced object 0xffff8881047c1280 (size 96):
+>   comm "mkdir", pid 924, jiffies 4294906489 (age 2013.077s)
+>   hex dump (first 32 bytes):
+>     18 31 ed 03 81 88 ff ff 00 31 09 24 81 88 ff ff  .1.......1.$....
+>     00 00 00 00 00 00 00 00 98 19 7c 04 81 88 ff ff  ..........|.....
+>   backtrace:
+>     [<000000000fa46b4d>] kmalloc_trace+0x2a/0xa0
+>     [<00000000e729cd0c>] eventfs_prepare_ef.constprop.0+0x3a/0x160
+>     [<000000009032e6a8>] eventfs_add_events_file+0xa0/0x160
+>     [<00000000fe968442>] create_event_toplevel_files+0x6f/0x130
+>     [<00000000e364d173>] event_trace_add_tracer+0x14/0x140
+>     [<00000000411840fa>] trace_array_create_dir+0x52/0xf0
+>     [<00000000967804fa>] trace_array_create+0x208/0x370
+>     [<00000000da505565>] instance_mkdir+0x6b/0xb0
+>     [<00000000dc1215af>] tracefs_syscall_mkdir+0x5b/0x90
+>     [<00000000a8aca289>] vfs_mkdir+0x272/0x380
+>     [<000000007709b242>] do_mkdirat+0xfc/0x1d0
+>     [<00000000c0b6d219>] __x64_sys_mkdir+0x78/0xa0
+>     [<0000000097b5dd4b>] do_syscall_64+0x3f/0x90
+>     [<00000000a3f00cfa>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> unreferenced object 0xffff888103ed3118 (size 8):
+>   comm "mkdir", pid 924, jiffies 4294906489 (age 2013.077s)
+>   hex dump (first 8 bytes):
+>     65 6e 61 62 6c 65 00 00                          enable..
+>   backtrace:
+>     [<0000000010f75127>] __kmalloc_node_track_caller+0x51/0x160
+>     [<000000004b3eca91>] kstrdup+0x34/0x60
+>     [<0000000050074d7a>] eventfs_prepare_ef.constprop.0+0x53/0x160
+>     [<000000009032e6a8>] eventfs_add_events_file+0xa0/0x160
+>     [<00000000fe968442>] create_event_toplevel_files+0x6f/0x130
+>     [<00000000e364d173>] event_trace_add_tracer+0x14/0x140
+>     [<00000000411840fa>] trace_array_create_dir+0x52/0xf0
+>     [<00000000967804fa>] trace_array_create+0x208/0x370
+>     [<00000000da505565>] instance_mkdir+0x6b/0xb0
+>     [<00000000dc1215af>] tracefs_syscall_mkdir+0x5b/0x90
+>     [<00000000a8aca289>] vfs_mkdir+0x272/0x380
+>     [<000000007709b242>] do_mkdirat+0xfc/0x1d0
+>     [<00000000c0b6d219>] __x64_sys_mkdir+0x78/0xa0
+>     [<0000000097b5dd4b>] do_syscall_64+0x3f/0x90
+>     [<00000000a3f00cfa>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> 
+> Fixes: 5bdcd5f5331a2 eventfs: ("Implement removal of meta data from eventfs")
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-Yeah, apis never seem to go away.  I'm scripting it now, almost done...
+Looks good to me.
 
-greg k-h
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Thank you,
+> ---
+> 
+> This is on top of:
+> 
+>    https://lore.kernel.org/linux-trace-kernel/20230907024710.866917011@goodmis.org/
+> 
+>  fs/tracefs/event_inode.c | 30 ++++++++++++++++++++++++++----
+>  1 file changed, 26 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+> index 609ccb5b7cfc..f168aca45458 100644
+> --- a/fs/tracefs/event_inode.c
+> +++ b/fs/tracefs/event_inode.c
+> @@ -195,17 +195,39 @@ void eventfs_set_ef_status_free(struct tracefs_inode *ti, struct dentry *dentry)
+>  {
+>  	struct tracefs_inode *ti_parent;
+>  	struct eventfs_inode *ei;
+> -	struct eventfs_file *ef;
+> -
+> -	mutex_lock(&eventfs_mutex);
+> +	struct eventfs_file *ef, *tmp;
+>  
+>  	/* The top level events directory may be freed by this */
+>  	if (unlikely(ti->flags & TRACEFS_EVENT_TOP_INODE)) {
+> +		LIST_HEAD(ef_del_list);
+> +
+> +		mutex_lock(&eventfs_mutex);
+> +
+>  		ei = ti->private;
+> +
+> +		/* Record all the top level files */
+> +		list_for_each_entry_srcu(ef, &ei->e_top_files, list,
+> +					 lockdep_is_held(&eventfs_mutex)) {
+> +			list_add_tail(&ef->del_list, &ef_del_list);
+> +		}
+> +
+> +		/* Nothing should access this, but just in case! */
+> +		ti->private = NULL;
+> +
+> +		mutex_unlock(&eventfs_mutex);
+> +
+> +		/* Now safely free the top level files and their children */
+> +		list_for_each_entry_safe(ef, tmp, &ef_del_list, del_list) {
+> +			list_del(&ef->del_list);
+> +			eventfs_remove(ef);
+> +		}
+> +
+>  		kfree(ei);
+> -		goto out;
+> +		return;
+>  	}
+>  
+> +	mutex_lock(&eventfs_mutex);
+> +
+>  	ti_parent = get_tracefs(dentry->d_parent->d_inode);
+>  	if (!ti_parent || !(ti_parent->flags & TRACEFS_EVENT_INODE))
+>  		goto out;
+> -- 
+> 2.40.1
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
