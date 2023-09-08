@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5482B798CE6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BC8798CE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344099AbjIHSS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
+        id S1344096AbjIHSSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343806AbjIHSSM (ORCPT
+        with ESMTP id S229547AbjIHSSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Sep 2023 14:18:12 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D72A2135;
-        Fri,  8 Sep 2023 11:17:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21731C116D7;
-        Fri,  8 Sep 2023 18:15:17 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC91F2698;
+        Fri,  8 Sep 2023 11:17:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D9CFC4AF71;
+        Fri,  8 Sep 2023 18:15:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196918;
-        bh=mS2Y+2T2w7eJv6E5wy3SHuKWCL7kTFVfjOuvmi0a3uY=;
+        s=k20201202; t=1694196919;
+        bh=fgJvrhA5A3Tj86ogQKw8SdFO9Ll2VqiaH0pnRYkvACk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t18mCsNgxCWgwCmMR+jnpZfG2SMuoX0VSGWubK7ChFFQkGRhJfdi7q1OyHaPqqayr
-         eZYOkHFAJdB7+ADERgrvar2g5eJJXR+hzih0IV8EA3aeHm5HxakG0UiKn3fXGzJFWV
-         dG1r3OabteOvJWR5FKlxdLnpB0PHghOkw0Qimr1l3PsjFXFCbyH77G5ebicQWXNg0a
-         r4b27LLVD5nKJo52aWBO9hN2VDb9V1SBU9JZewHDNHpkGIONTb2RgxGkcSrqR+LSxS
-         Qgnl04JziP7Pl8pouCQaWFkmwZDSxewYddUZIn3vY4I6tMOVq/2JAA0dQQ6UBPrfzN
-         CV0+U0n2Z/1JA==
+        b=hmaiftdRNhqNRTu9hPfiF7rqrDXvjppq2pcHnytsSjHLbrf8kxekSzzzTn8mguzkx
+         g/aTgwXcRIMFDjX5eKEmZo02vl2abwAgEGM9E+F+U8+rvyyQv97LxKAVZI6h2KFWlO
+         8EVHJ8Mi0lcrvlql2bTF7Ft3M5ITk32Pw/20GyuLMtlteVTegi+jUGkABdtrEfmhnN
+         Ynb9hw6jyHOe4rmYm8+oCttqxAjVgfkAUnVihVWOlmt/hoC3U2bZclw71s9r0WuYcc
+         gaxZfPAIxD3GZElboBdMy9Slk7ps2S/vHFV8anVN0dMHA60ywK17N+aJoh43Fwhjek
+         tcrQ/MUk1KxTw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bastien Nocera <hadess@hadess.net>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Sasha Levin <sashal@kernel.org>, marcel@holtmann.org,
-        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-bluetooth@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 41/45] Bluetooth: btusb: Fix quirks table naming
-Date:   Fri,  8 Sep 2023 14:13:22 -0400
-Message-Id: <20230908181327.3459042-41-sashal@kernel.org>
+Cc:     Wen Gong <quic_wgong@quicinc.com>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Kalle Valo <quic_kvalo@quicinc.com>,
+        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
+        ath12k@lists.infradead.org, linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 42/45] wifi: ath12k: add check max message length while scanning with extraie
+Date:   Fri,  8 Sep 2023 14:13:23 -0400
+Message-Id: <20230908181327.3459042-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181327.3459042-1-sashal@kernel.org>
 References: <20230908181327.3459042-1-sashal@kernel.org>
@@ -55,46 +54,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bastien Nocera <hadess@hadess.net>
+From: Wen Gong <quic_wgong@quicinc.com>
 
-[ Upstream commit d831e3612111d385e8629104af5429808ef26e25 ]
+[ Upstream commit 2f5124e86ae74b7ba24c9ae2644107b750cbf38f ]
 
-The quirks table was named "blacklist_table" which isn't a good
-description for that table as devices detected using it weren't ignored
-by the driver.
+Currently the extraie length is directly used to allocate skb buffer. When
+the length of skb is greater than the max message length which firmware
+supports, error will happen in firmware side.
 
-Rename the table to match what it actually does.
+Hence add check for the skb length and drop extraie when overflow and
+print a message.
 
-Signed-off-by: Bastien Nocera <hadess@hadess.net>
-Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Tested-on: WCN7850 hw2.0 PCI WLAN.HMT.1.0-03427-QCAHMTSWPL_V1.0_V2.0_SILICONZ-1.15378.4
+
+Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
+Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Link: https://lore.kernel.org/r/20230809081657.13858-1-quic_wgong@quicinc.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/btusb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath12k/wmi.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index a38550df92b94..baf6762cf1f33 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -175,7 +175,7 @@ static const struct usb_device_id btusb_table[] = {
+diff --git a/drivers/net/wireless/ath/ath12k/wmi.c b/drivers/net/wireless/ath/ath12k/wmi.c
+index 4f378f06e946e..eebc5a65ce3b4 100644
+--- a/drivers/net/wireless/ath/ath12k/wmi.c
++++ b/drivers/net/wireless/ath/ath12k/wmi.c
+@@ -2162,12 +2162,6 @@ int ath12k_wmi_send_scan_start_cmd(struct ath12k *ar,
+ 	if (arg->num_bssid)
+ 		len += sizeof(*bssid) * arg->num_bssid;
  
- MODULE_DEVICE_TABLE(usb, btusb_table);
+-	len += TLV_HDR_SIZE;
+-	if (arg->extraie.len)
+-		extraie_len_with_pad =
+-			roundup(arg->extraie.len, sizeof(u32));
+-	len += extraie_len_with_pad;
+-
+ 	if (arg->num_hint_bssid)
+ 		len += TLV_HDR_SIZE +
+ 		       arg->num_hint_bssid * sizeof(*hint_bssid);
+@@ -2176,6 +2170,18 @@ int ath12k_wmi_send_scan_start_cmd(struct ath12k *ar,
+ 		len += TLV_HDR_SIZE +
+ 		       arg->num_hint_s_ssid * sizeof(*s_ssid);
  
--static const struct usb_device_id blacklist_table[] = {
-+static const struct usb_device_id quirks_table[] = {
- 	/* CSR BlueCore devices */
- 	{ USB_DEVICE(0x0a12, 0x0001), .driver_info = BTUSB_CSR },
++	len += TLV_HDR_SIZE;
++	if (arg->extraie.len)
++		extraie_len_with_pad =
++			roundup(arg->extraie.len, sizeof(u32));
++	if (extraie_len_with_pad <= (wmi->wmi_ab->max_msg_len[ar->pdev_idx] - len)) {
++		len += extraie_len_with_pad;
++	} else {
++		ath12k_warn(ar->ab, "discard large size %d bytes extraie for scan start\n",
++			    arg->extraie.len);
++		extraie_len_with_pad = 0;
++	}
++
+ 	skb = ath12k_wmi_alloc_skb(wmi->wmi_ab, len);
+ 	if (!skb)
+ 		return -ENOMEM;
+@@ -2265,7 +2271,7 @@ int ath12k_wmi_send_scan_start_cmd(struct ath12k *ar,
+ 	tlv->header = ath12k_wmi_tlv_hdr(WMI_TAG_ARRAY_BYTE, len);
+ 	ptr += TLV_HDR_SIZE;
  
-@@ -4128,7 +4128,7 @@ static int btusb_probe(struct usb_interface *intf,
- 	if (!id->driver_info) {
- 		const struct usb_device_id *match;
+-	if (arg->extraie.len)
++	if (extraie_len_with_pad)
+ 		memcpy(ptr, arg->extraie.ptr,
+ 		       arg->extraie.len);
  
--		match = usb_match_id(intf, blacklist_table);
-+		match = usb_match_id(intf, quirks_table);
- 		if (match)
- 			id = match;
- 	}
 -- 
 2.40.1
 
