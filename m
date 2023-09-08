@@ -2,159 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95AF079857C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06503798582
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236689AbjIHKLB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Sep 2023 06:11:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
+        id S237773AbjIHKMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 06:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjIHKLA (ORCPT
+        with ESMTP id S233322AbjIHKMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 06:11:00 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBAA1BD3;
-        Fri,  8 Sep 2023 03:10:56 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qeYRy-000jn3-Ay; Fri, 08 Sep 2023 12:10:54 +0200
-Received: from p5b13a40a.dip0.t-ipconnect.de ([91.19.164.10] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qeYRy-001wF1-3O; Fri, 08 Sep 2023 12:10:54 +0200
-Message-ID: <d737e5a40f7e2009222d98de7696cc78740869e3.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH 4/4] sh: machvec: remove custom ioport_{un,}map()
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-sh@vger.kernel.org, Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 08 Sep 2023 12:10:53 +0200
-In-Reply-To: <20230802184849.1019466-4-arnd@kernel.org>
-References: <20230802184849.1019466-1-arnd@kernel.org>
-         <20230802184849.1019466-4-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Fri, 8 Sep 2023 06:12:38 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E170A1BEE
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 03:12:33 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3885cugZ025352;
+        Fri, 8 Sep 2023 05:12:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=Z
+        JkzVi89kTdSUWvlVXK/bb8Ue3nL1QfrlwR8JcnKNZ8=; b=lFc2aiwvlS+FNBqAO
+        6II5AROoLG27GlC5y7UsrPGQdfzm+OdC7PLOrEegozNQK7QC5StoztWnNNUoNsSg
+        EVX3N6FfZj/EA1I+hrIsDO4guRsagb57E2dVclq3jPa8Ytk/vmM8D5kIxFnNW7JU
+        +r5Av7tq619wKyRnEnMnr0P2HHdUYAId3kkjFzm/S4EKLc3pcBUzeIPGHlcwSgIO
+        hvyGz6SsFKfYVQksgn5ivEjqTKQqLbD+UAMSgZmyJu798dPRuoffX4SR1HujnUtN
+        ZCnESVX1xtclD+O8DA+UUTjpHVaJD1bvgUIm55dCyZy/AEMo3sfhqcouj/j0rPXa
+        jbdwg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sv2ex7vq9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Sep 2023 05:12:25 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Fri, 8 Sep
+ 2023 11:12:23 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Fri, 8 Sep 2023 11:12:23 +0100
+Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.125])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A54B415B6;
+        Fri,  8 Sep 2023 10:12:23 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH] ALSA: hda: cs35l56: Call pm_runtime_dont_use_autosuspend()
+Date:   Fri, 8 Sep 2023 11:12:23 +0100
+Message-ID: <20230908101223.2656901-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.164.10
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: VwBTvCevhKQ7XB3gtlaJijQR5Pk2HvvR
+X-Proofpoint-GUID: VwBTvCevhKQ7XB3gtlaJijQR5Pk2HvvR
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd!
+Driver remove() must call pm_runtime_dont_use_autosuspend().
 
-On Wed, 2023-08-02 at 20:48 +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> These functions were only used on the microdev
-> board that is now gone, so remove them to simplify
-> the ioport handling.
-> 
-> This could be further simplified to use the generic
-> I/O port accessors now.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/sh/include/asm/io.h      |  4 ++--
->  arch/sh/include/asm/machvec.h |  5 -----
->  arch/sh/kernel/ioport.c       | 13 +------------
->  3 files changed, 3 insertions(+), 19 deletions(-)
-> 
-> diff --git a/arch/sh/include/asm/io.h b/arch/sh/include/asm/io.h
-> index f2f38e9d489ac..ac521f287fa59 100644
-> --- a/arch/sh/include/asm/io.h
-> +++ b/arch/sh/include/asm/io.h
-> @@ -181,7 +181,7 @@ static inline void pfx##out##bwlq##p(type val, unsigned long port)	\
->  {									\
->  	volatile type *__addr;						\
->  									\
-> -	__addr = __ioport_map(port, sizeof(type));			\
-> +	__addr = (void __iomem *)sh_io_port_base + port;		\
->  	*__addr = val;							\
->  	slow;								\
->  }									\
-> @@ -191,7 +191,7 @@ static inline type pfx##in##bwlq##p(unsigned long port)			\
->  	volatile type *__addr;						\
->  	type __val;							\
->  									\
-> -	__addr = __ioport_map(port, sizeof(type));			\
-> +	__addr = (void __iomem *)sh_io_port_base + port;		\
->  	__val = *__addr;						\
->  	slow;								\
->  									\
-> diff --git a/arch/sh/include/asm/machvec.h b/arch/sh/include/asm/machvec.h
-> index 2b4b085e8f219..4e5314b921f19 100644
-> --- a/arch/sh/include/asm/machvec.h
-> +++ b/arch/sh/include/asm/machvec.h
-> @@ -19,11 +19,6 @@ struct sh_machine_vector {
->  	int (*mv_irq_demux)(int irq);
->  	void (*mv_init_irq)(void);
->  
-> -#ifdef CONFIG_HAS_IOPORT_MAP
-> -	void __iomem *(*mv_ioport_map)(unsigned long port, unsigned int size);
-> -	void (*mv_ioport_unmap)(void __iomem *);
-> -#endif
-> -
->  	int (*mv_clk_init)(void);
->  	int (*mv_mode_pins)(void);
->  
-> diff --git a/arch/sh/kernel/ioport.c b/arch/sh/kernel/ioport.c
-> index f39446a658bdb..c8aff8a20164d 100644
-> --- a/arch/sh/kernel/ioport.c
-> +++ b/arch/sh/kernel/ioport.c
-> @@ -12,15 +12,6 @@
->  unsigned long sh_io_port_base __read_mostly = -1;
->  EXPORT_SYMBOL(sh_io_port_base);
->  
-> -void __iomem *__ioport_map(unsigned long addr, unsigned int size)
-> -{
-> -	if (sh_mv.mv_ioport_map)
-> -		return sh_mv.mv_ioport_map(addr, size);
-> -
-> -	return (void __iomem *)(addr + sh_io_port_base);
-> -}
-> -EXPORT_SYMBOL(__ioport_map);
-> -
->  void __iomem *ioport_map(unsigned long port, unsigned int nr)
->  {
->  	void __iomem *ret;
-> @@ -29,13 +20,11 @@ void __iomem *ioport_map(unsigned long port, unsigned int nr)
->  	if (ret)
->  		return ret;
->  
-> -	return __ioport_map(port, nr);
-> +	return (void __iomem *)(port + sh_io_port_base);
->  }
->  EXPORT_SYMBOL(ioport_map);
->  
->  void ioport_unmap(void __iomem *addr)
->  {
-> -	if (sh_mv.mv_ioport_unmap)
-> -		sh_mv.mv_ioport_unmap(addr);
->  }
->  EXPORT_SYMBOL(ioport_unmap);
+Drivers that call pm_runtime_use_autosuspend() must disable
+it in driver remove(). Unfortunately until recently this was
+only mentioned in 1 line in a 900+ line document so most
+people hadn't noticed this. It has only recently been added
+to the kerneldoc of pm_runtime_use_autosuspend().
 
-Why aren't you removing the function ioport_unmap(void __iomem *addr) completely
-and just turn it into stub? Is it still referenced somewhere?
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Fixes: 2a930a6da8ec ("ALSA: hda/cs35l56: Add driver for Cirrus Logic CS35L56 amplifier")
+---
+ sound/pci/hda/cs35l56_hda.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Adrian
-
+diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
+index 76b9c685560b..9e4976bdb5e0 100644
+--- a/sound/pci/hda/cs35l56_hda.c
++++ b/sound/pci/hda/cs35l56_hda.c
+@@ -1003,6 +1003,7 @@ void cs35l56_hda_remove(struct device *dev)
+ {
+ 	struct cs35l56_hda *cs35l56 = dev_get_drvdata(dev);
+ 
++	pm_runtime_dont_use_autosuspend(cs35l56->base.dev);
+ 	pm_runtime_get_sync(cs35l56->base.dev);
+ 	pm_runtime_disable(cs35l56->base.dev);
+ 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.30.2
+
