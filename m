@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D60798D69
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741F2798D68
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243942AbjIHSVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41800 "EHLO
+        id S233660AbjIHSVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:21:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344201AbjIHSUL (ORCPT
+        with ESMTP id S1343757AbjIHSUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Sep 2023 14:20:11 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79EB92D64;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00862D65;
         Fri,  8 Sep 2023 11:19:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2642DC433BA;
-        Fri,  8 Sep 2023 18:18:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FB2FC116AB;
+        Fri,  8 Sep 2023 18:18:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197089;
-        bh=oUXLTAR6wipgwTCMH3ruuFaVgj2xazre3nnKr6URNlA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bFl7rQaY4QDO7d0Vz4+296BqWsfUdbepB/SDw/1sZeWl0c9Y2ZRAAQWHTYF2EPffU
-         c2fRExO119ge5Fj0AEARmkF38M/v0cZXnLI6x62gx6SRGUiDoNMDAjRDjZq0Is4RIi
-         cUkfl/H9GVLwPYjsPV1BXEIAYoVGCERwQ5gb5fkcI7YUpbDOLFb9Px6v51Gbvocj7h
-         l4juZiiqNoOBSK3apCIGnYd0mS1/6nw2WUL2AT+jkcMABM1JH1LTKsscK/sbFf1niK
-         hMF0h/jspi9xUKwXc7EWMmlWY3v0Mcw9EY7yjS8p/zok9vSy+csXvGDF06fInxieuT
-         1KhT/7pqm5b2w==
+        s=k20201202; t=1694197091;
+        bh=G/fVZIoGPqBryia/5Jy1d179ebCj3eS3YcwTvDTKY5c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=QA4HzEIRcQO4VV0OObZRPk1xs5t1YCs2rttrkmPlUosWQKhvRY2BkwBAkPtB/mLFz
+         AaQxyd8j+WfkbVoFjGRYiWg9yjvE1srDLuthQ8+ZbsiIucQHxx6wFwufw0Mnb1yBzn
+         RY/RXqBP5nMrNsc+882kyBTn6MA3/Q1iQjsOHPEbMhI3p/06K+wiFZZ3AiD2HivwTJ
+         grB/H4dTpy+A4VYyMVenMKM9rJWazT60CcdiUPdHbQnEmGtJIDxabeFwbM6RwBPgXi
+         ESEv9FOrKBaImyb/iamwf9zVVIlITSHR2qb1i/Un/j3GwXltBKeCGPFZFWvea0Mh6x
+         1JvLGRgjdZt6g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, edumazet@google.com,
-        pabeni@redhat.com, jiri@resnulli.us, jacob.e.keller@intel.com,
-        michal.wilczynski@intel.com, shayd@nvidia.com,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 01/26] devlink: remove reload failed checks in params get/set callbacks
-Date:   Fri,  8 Sep 2023 14:17:39 -0400
-Message-Id: <20230908181806.3460164-1-sashal@kernel.org>
+Cc:     Azeem Shaikh <azeemshaikh38@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 02/26] crypto: lrw,xts - Replace strlcpy with strscpy
+Date:   Fri,  8 Sep 2023 14:17:40 -0400
+Message-Id: <20230908181806.3460164-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230908181806.3460164-1-sashal@kernel.org>
+References: <20230908181806.3460164-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -54,66 +54,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Pirko <jiri@nvidia.com>
+From: Azeem Shaikh <azeemshaikh38@gmail.com>
 
-[ Upstream commit 633d76ad01ad0321a1ace3e5cc4fed06753d7ac4 ]
+[ Upstream commit babb80b3ecc6f40c962e13c654ebcd27f25ee327 ]
 
-The checks in question were introduced by:
-commit 6b4db2e528f6 ("devlink: Fix use-after-free after a failed reload").
-That fixed an issue of reload with mlxsw driver.
+strlcpy() reads the entire source buffer first.
+This read may exceed the destination size limit.
+This is both inefficient and can lead to linear read
+overflows if a source string is not NUL-terminated [1].
+In an effort to remove strlcpy() completely [2], replace
+strlcpy() here with strscpy().
 
-Back then, that was a valid fix, because there was a limitation
-in place that prevented drivers from registering/unregistering params
-when devlink instance was registered.
+Direct replacement is safe here since return value of -errno
+is used to check for truncation instead of sizeof(dest).
 
-It was possible to do the fix differently by changing drivers to
-register/unregister params in appropriate places making sure the ops
-operate only on memory which is allocated and initialized. But that,
-as a dependency, would require to remove the limitation mentioned above.
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+[2] https://github.com/KSPP/linux/issues/89
 
-Eventually, this limitation was lifted by:
-commit 1d18bb1a4ddd ("devlink: allow registering parameters after the instance")
-
-Also, the alternative fix (which also fixed another issue) was done by:
-commit 74cbc3c03c82 ("mlxsw: spectrum_acl_tcam: Move devlink param to TCAM code").
-
-Therefore, the checks are no longer relevant. Each driver should make
-sure to have the params registered only when the memory the ops
-are working with is allocated and initialized.
-
-So remove the checks.
-
-Signed-off-by: Jiri Pirko <jiri@nvidia.com>
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/devlink.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ crypto/lrw.c | 6 +++---
+ crypto/xts.c | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/net/core/devlink.c b/net/core/devlink.c
-index 5a4a4b34ac15c..6ab335d2a0f56 100644
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -5218,7 +5218,7 @@ static int devlink_param_get(struct devlink *devlink,
- 			     const struct devlink_param *param,
- 			     struct devlink_param_gset_ctx *ctx)
- {
--	if (!param->get || devlink->reload_failed)
-+	if (!param->get)
- 		return -EOPNOTSUPP;
- 	return param->get(devlink, param->id, ctx);
- }
-@@ -5227,7 +5227,7 @@ static int devlink_param_set(struct devlink *devlink,
- 			     const struct devlink_param *param,
- 			     struct devlink_param_gset_ctx *ctx)
- {
--	if (!param->set || devlink->reload_failed)
-+	if (!param->set)
- 		return -EOPNOTSUPP;
- 	return param->set(devlink, param->id, ctx);
- }
+diff --git a/crypto/lrw.c b/crypto/lrw.c
+index 8d59a66b65255..fb8892ed179f5 100644
+--- a/crypto/lrw.c
++++ b/crypto/lrw.c
+@@ -357,10 +357,10 @@ static int lrw_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 	 * cipher name.
+ 	 */
+ 	if (!strncmp(cipher_name, "ecb(", 4)) {
+-		unsigned len;
++		int len;
+ 
+-		len = strlcpy(ecb_name, cipher_name + 4, sizeof(ecb_name));
+-		if (len < 2 || len >= sizeof(ecb_name))
++		len = strscpy(ecb_name, cipher_name + 4, sizeof(ecb_name));
++		if (len < 2)
+ 			goto err_free_inst;
+ 
+ 		if (ecb_name[len - 1] != ')')
+diff --git a/crypto/xts.c b/crypto/xts.c
+index de6cbcf69bbd6..b05020657cdc8 100644
+--- a/crypto/xts.c
++++ b/crypto/xts.c
+@@ -396,10 +396,10 @@ static int xts_create(struct crypto_template *tmpl, struct rtattr **tb)
+ 	 * cipher name.
+ 	 */
+ 	if (!strncmp(cipher_name, "ecb(", 4)) {
+-		unsigned len;
++		int len;
+ 
+-		len = strlcpy(ctx->name, cipher_name + 4, sizeof(ctx->name));
+-		if (len < 2 || len >= sizeof(ctx->name))
++		len = strscpy(ctx->name, cipher_name + 4, sizeof(ctx->name));
++		if (len < 2)
+ 			goto err_free_inst;
+ 
+ 		if (ctx->name[len - 1] != ')')
 -- 
 2.40.1
 
