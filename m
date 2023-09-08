@@ -2,153 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D20C798860
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F67879885F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243750AbjIHOPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
+        id S243734AbjIHOPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:15:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238387AbjIHOPO (ORCPT
+        with ESMTP id S238387AbjIHOPC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:15:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 429361BF5
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:14:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694182465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z+DYgz2fEBcb91Gsj/4qYbUxpyYa2G9Hg9hw8gwWLn4=;
-        b=Lv2+Hx4lsec2dtRFkTR+GouWAjTjGQBVW/NUWN4BQ4S5CEpQxtRIFyJIEGj0kbBJGTXC5K
-        8J15DEsfLubZj6t57y5apx59/i5Yl4oRapB7IzPsljPB3jP9gdVAhs0srtPo8/D75xpYNv
-        BBwn3MUiatgsrmC69xjSWZ9NQSgRWwg=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-351-bKG7W9IcN5OsSiWG_n-Qxg-1; Fri, 08 Sep 2023 10:14:23 -0400
-X-MC-Unique: bKG7W9IcN5OsSiWG_n-Qxg-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-502a52cae6bso184683e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 07:14:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694182462; x=1694787262;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z+DYgz2fEBcb91Gsj/4qYbUxpyYa2G9Hg9hw8gwWLn4=;
-        b=ViZA41ROJAitCGgu6A9StYeW3LO3LIx/9kJVU6AXHhFcLnAcbJbSfkUKZJ00Cdo1wE
-         VciVLcgbzXgiunJSmZ00d4yULGx8J/CPCCEVGqXTX8mHuAcujm56H1ArXyOA2GHFPq5d
-         YYX97dy8H2NWhJwCaFajL1/xUBQ08LtLZ7u9wg4eRDYw6fokpr5oMtrLOMIRGeglAFMU
-         catyJXMZkEHXXrWAirOBKNOC+ATk3RjluOFjVwUj3iN311c9OdsGnpdaQRFVHCgAZ8tF
-         L9HRduH/MmXxCwJTf7H6tmxTCkqLXFBExCp7F5HSYA9jFoMS3Yd2VjdA7sTs28tBbTID
-         Pk0Q==
-X-Gm-Message-State: AOJu0YwGo0vGXx6Wo6/7VETb9iMmS0jSdsIo3nrZyCZMsMpckhvXDmQd
-        eiERb5O2i7s1Q97bOwkzkxKpK5snhArRqFhD32zXKtQiqTJuMRx0IAPVxqfn93lkS/mG5iOtpxr
-        XSHbdRN19khNkLPVQ3PhJRYqk
-X-Received: by 2002:a19:3858:0:b0:500:9ee2:15f with SMTP id d24-20020a193858000000b005009ee2015fmr1738149lfj.46.1694182462576;
-        Fri, 08 Sep 2023 07:14:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEGaqckdgqkXxd5kLJGuKthu1vETthp1cKOh7mjzksIcU0n/q495aEBR6XYOkFNCrr0wGgHMA==
-X-Received: by 2002:a19:3858:0:b0:500:9ee2:15f with SMTP id d24-20020a193858000000b005009ee2015fmr1738130lfj.46.1694182462219;
-        Fri, 08 Sep 2023 07:14:22 -0700 (PDT)
-Received: from [192.168.0.224] (host-82-53-135-115.retail.telecomitalia.it. [82.53.135.115])
-        by smtp.gmail.com with ESMTPSA id rn5-20020a170906d92500b009a2235ed496sm1111489ejb.141.2023.09.08.07.14.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Sep 2023 07:14:21 -0700 (PDT)
-Message-ID: <4e85dee9-b078-dfb2-1d07-4ee57493d126@redhat.com>
-Date:   Fri, 8 Sep 2023 16:14:19 +0200
+        Fri, 8 Sep 2023 10:15:02 -0400
+X-Greylist: delayed 136 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 08 Sep 2023 07:14:53 PDT
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15BA1BF8
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:14:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=sm5cLPPVnG35jNFyBxl/t+oSTz+wIWhzfnyLq38aQvs=; b=Bnc9BuYin8EAbj4eKmI80pe/ao
+        /JISTSOQ8OQ9Y0hgfcI7dzk6ztA+3k6ffIewZXCOYCHW6+tyg09tVyGz5X+IOMJOUGJF8RGOveGEm
+        5FNp+KGqcmd1VR4q//XmQtVfh4dcSPBN+oMqpzid5HX6Vw4Pg7SDmGx81NUFHI8DB2bmK7TrtB8le
+        jSmtpHKGiJFAjQOeV7KhlJS75zgqN3D3NNK1938a7c7gT8OqJAZwLV2xFY+69ylrTGgJlostruEmW
+        v0xTBiCQXzd5sMYeuWp+MDBk6KYwG8wI59n0pKhUWgG8O8uyKWUHG9+jv9xNKpQr0XfPNfZ7WUJ1q
+        jym+Z0ZA==;
+Received: from [38.44.68.151] (helo=mail.igalia.com)
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+        id 1qecFw-001Ot2-7P; Fri, 08 Sep 2023 16:14:43 +0200
+Date:   Fri, 8 Sep 2023 13:14:38 -0100
+From:   Melissa Wen <mwen@igalia.com>
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     Pekka Paalanen <pekka.paalanen@collabora.com>,
+        amd-gfx@lists.freedesktop.org,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
+        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        Joshua Ashton <joshua@froggi.es>,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        Xaver Hugl <xaver.hugl@gmail.com>,
+        Shashank Sharma <Shashank.Sharma@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
+        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 07/34] drm/amd/display: explicitly define EOTF and
+ inverse EOTF
+Message-ID: <20230908141429.j5qaukyjo4n5na7d@mail.igalia.com>
+References: <20230810160314.48225-1-mwen@igalia.com>
+ <20230810160314.48225-8-mwen@igalia.com>
+ <20230822140242.162a843a.pekka.paalanen@collabora.com>
+ <20230825141639.vurga52ysal37n2m@mail.igalia.com>
+ <40f1fabe-69ce-4b23-aed8-9f0837fe9988@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v4 6/7] sched/deadline: Deferrable dl server
-Content-Language: en-US, pt-BR, it-IT
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
-References: <cover.1693510979.git.bristot@kernel.org>
- <754dab7f30695ca10a41613068bb63db3bfea003.1693510979.git.bristot@kernel.org>
- <20230905134203.GA20703@noisy.programming.kicks-ass.net>
- <b3b3a5c5-6688-966d-3d78-3e140730cb7b@redhat.com>
- <20230906082952.GB38741@noisy.programming.kicks-ass.net>
- <0ce80c5d-2433-13d5-33df-d110cf8faa9c@redhat.com>
- <20230906200406.GF28278@noisy.programming.kicks-ass.net>
- <20230906200848.GA35105@noisy.programming.kicks-ass.net>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-In-Reply-To: <20230906200848.GA35105@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <40f1fabe-69ce-4b23-aed8-9f0837fe9988@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/6/23 22:08, Peter Zijlstra wrote:
-> On Wed, Sep 06, 2023 at 10:04:06PM +0200, Peter Zijlstra wrote:
->> On Wed, Sep 06, 2023 at 04:58:11PM +0200, Daniel Bristot de Oliveira wrote:
->>
->>>> So one thing we could do is have update_curr_fair() decrement
->>>> fair_server's runtime and yield the period then it hits 0 (and capping
->>>> it at 0, not allowing it to go negative or so).
->>>>
->>>> That way you only force the situation when FAIR hasn't had it's allotted
->>>> time this perio, and only for as much as to make up for the time it
->>>> lacks.
->>>
->>> We can also decrease the runtime to a negative number while in
->>> defer/throttle state, and let the while in replenish_dl_entity() to
->>> replenish with the += runtime;
->>
->> Yes, but my point was that fair_server gives a lower bound of runtime
->> per period, more -- if available -- is fine.
->>
->> If we allow negative runtime, you'll affect future periods, and that is
->> not desired in this case.
->>
->> Or am I still confused?
+On 09/06, Harry Wentland wrote:
 > 
-> That is, let update_curr_fair() decrement fair_server runtime
-> *unconditionally* -- even if the task was not selected through the
-> server.
-
-Ah, I see! but then we would have to also consider the period, and control a
-period... without SCHED_DEADLINE watching us...
-
-I was considering only the "waiting for the 0-lag time to start running (after
-being armed)"
-
-If there is no need for the server to be armed... do nothing :-) If it is armed,
-reduce the amount of time the fair server could get.
-
-> Specifically, if the fair task is selected normally due to lack of
-> deadline tasks, that runtime *still* counts towards the fair-server and
-> have the server yield the period when zero.
 > 
-> This means that fair_server is only effective IFF 'normal' execution
-> doesn't match the fair_server.runtime execution.
+> On 2023-08-25 10:18, Melissa Wen wrote:
+> > On 08/22, Pekka Paalanen wrote:
+> >> On Thu, 10 Aug 2023 15:02:47 -0100
+> >> Melissa Wen <mwen@igalia.com> wrote:
+> >>
+> >>> Instead of relying on color block names to get the transfer function
+> >>> intention regarding encoding pixel's luminance, define supported
+> >>> Electro-Optical Transfer Functions (EOTFs) and inverse EOTFs, that
+> >>> includes pure gamma or standardized transfer functions.
+> >>>
+> >>> Suggested-by: Harry Wentland <harry.wentland@amd.com>
+> >>> Signed-off-by: Melissa Wen <mwen@igalia.com>
+> >>> ---
+> >>>  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h | 19 +++--
+> >>>  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 69 +++++++++++++++----
+> >>>  2 files changed, 67 insertions(+), 21 deletions(-)
+> >>>
+> >>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+> >>> index c749c9cb3d94..f6251ed89684 100644
+> >>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+> >>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+> >>> @@ -718,14 +718,21 @@ extern const struct amdgpu_ip_block_version dm_ip_block;
+> >>>  
+> >>>  enum amdgpu_transfer_function {
+> >>>  	AMDGPU_TRANSFER_FUNCTION_DEFAULT,
+> >>> -	AMDGPU_TRANSFER_FUNCTION_SRGB,
+> >>> -	AMDGPU_TRANSFER_FUNCTION_BT709,
+> >>> -	AMDGPU_TRANSFER_FUNCTION_PQ,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_SRGB_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_BT709_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_PQ_EOTF,
+> >>>  	AMDGPU_TRANSFER_FUNCTION_LINEAR,
+> >>>  	AMDGPU_TRANSFER_FUNCTION_UNITY,
+> >>> -	AMDGPU_TRANSFER_FUNCTION_GAMMA22,
+> >>> -	AMDGPU_TRANSFER_FUNCTION_GAMMA24,
+> >>> -	AMDGPU_TRANSFER_FUNCTION_GAMMA26,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_GAMMA22_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_GAMMA24_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_GAMMA26_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_SRGB_INV_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_BT709_INV_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_PQ_INV_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_GAMMA22_INV_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_GAMMA24_INV_EOTF,
+> >>> +	AMDGPU_TRANSFER_FUNCTION_GAMMA26_INV_EOTF,
+> >>> +        AMDGPU_TRANSFER_FUNCTION_COUNT
+> >>>  };
+> >>>  
+> >>>  struct dm_plane_state {
+> >>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> >>> index 56ce008b9095..cc2187c0879a 100644
+> >>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> >>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> >>> @@ -85,18 +85,59 @@ void amdgpu_dm_init_color_mod(void)
+> >>>  }
+> >>>  
+> >>>  #ifdef AMD_PRIVATE_COLOR
+> >>> -static const struct drm_prop_enum_list amdgpu_transfer_function_enum_list[] = {
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_DEFAULT, "Default" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_SRGB, "sRGB" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_BT709, "BT.709" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_PQ, "PQ (Perceptual Quantizer)" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_LINEAR, "Linear" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_UNITY, "Unity" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_GAMMA22, "Gamma 2.2" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_GAMMA24, "Gamma 2.4" },
+> >>> -	{ AMDGPU_TRANSFER_FUNCTION_GAMMA26, "Gamma 2.6" },
+> >>> +static const char * const
+> >>> +amdgpu_transfer_function_names[] = {
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_DEFAULT]		= "Default",
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_LINEAR]		= "Linear",
+> >>
+> >> Hi,
+> >>
+> >> if the below is identity, then what is linear? Is there a coefficient
+> >> (multiplier) somewhere? Offset?
+> >>
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_UNITY]		= "Unity",
+> >>
+> >> Should "Unity" be called "Identity"?
+> > 
+> > AFAIU, AMD treats Linear and Unity as the same: Identity. So, IIUC,
+> > indeed merging both as identity sounds the best approach.   
+> 
+> Agreed.
+> 
+> >>
+> >> Doesn't unity mean that the output is always 1.0 regardless of input?
+> >>
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_SRGB_EOTF]		= "sRGB EOTF",
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_BT709_EOTF]		= "BT.709 EOTF",
+> >>
+> >> BT.709 says about "Overall opto-electronic transfer characteristics at
+> >> source":
+> >>
+> >> 	In typical production practice the encoding function of image
+> >> 	sources is adjusted so that the final picture has the desired
+> >> 	look, as viewed on a reference monitor having the reference
+> >> 	decoding function of Recommendation ITU-R BT.1886, in the
+> >> 	reference viewing environment defined in Recommendation ITU-R
+> >> 	BT.2035.
+> >>
+> >> IOW, typically people tweak the encoding function instead of using
+> >> BT.709 OETF as is, which means that inverting the BT.709 OETF produces
+> >> something slightly unknown. The note about BT.1886 means that that
+> >> something is also not quite how it's supposed to be turned into light.
+> >>
+> >> Should this enum item be "BT.709 inverse OETF" and respectively below a
+> >> "BT.709 OETF"?
+> >>
+> >> What curve does the hardware actually implement?
+> > 
+> > Hmmmm.. I think I got confused in using OETF here since it's done within
+> > a camera. Looking at the coefficients used by AMD color module when not
+> > using ROM but build encoding and decoding curves[1] on pre-defined TF
+> > setup, I understand it's using OETF parameters for building both sRGB
+> > and BT 709:
+> > 
+> > ```
+> > /*sRGB     709     2.2 2.4 P3*/
+> > static const int32_t numerator01[] = { 31308,   180000, 0,  0,  0};
+> > static const int32_t numerator02[] = { 12920,   4500,   0,  0,  0};
+> > static const int32_t numerator03[] = { 55,      99,     0,  0,  0};
+> > static const int32_t numerator04[] = { 55,      99,     0,  0,  0};
+> > static const int32_t numerator05[] = { 2400,    2222,   2200, 2400, 2600};
+> > ```
+> > 
+> 
+> The first column here looks like the sRGB coefficients in Skia:
+> https://skia.googlesource.com/skia/+/19936eb1b23fef5187b07fb2e0e67dcf605c0672/include/core/SkColorSpace.h#46
+> 
+> The color module uses the same coefficients to calculate the transform
+> to linear space and from linear space. So it would support a TF and its
+> inverse.
+> 
+> From what I understand for sRGB and PQ its the EOTF and its inverse.
+> 
+> For BT.709 we should probably call it BT.709 inverse OETF (instead of
+> EOTF) and BT.709 OETF (instead of inverse EOTF).
 
-I see! I *think* it will cause more overhead than doing nothing unless there
-is something that can cause starvation. But I need to think more.
+I see. I'll update the transfer function list and docs accordingly.
 
--- Daniel
+Thanks
 
+Melissa
 
+> 
+> While I'm okay to move ahead with these AMD driver-specific properties
+> without IGT tests (since they're not enabled and not UABI) we really
+> need IGT tests once they become UABI with the Color Pipeline API. And we
+> need more than just CRC testing. We'll need to do pixel-by-pixel comparison
+> so we can verify that the KMS driver behaves exactly how we expect for a
+> large range of values.
+> 
+> Harry
+> 
+> > Then EOTF and inverse EOTF for PQ [2], and OETF and it seems an inverse
+> > OETF but called EOTF for HLG[3]. But I'm an external dev, better if
+> > Harry can confirm.
+> > 
+> > Thank you for pointing it out.
+> > 
+> > [1] https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/amd/display/modules/color/color_gamma.c#n55
+> > [2] https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/amd/display/modules/color/color_gamma.c#n106
+> > [3] https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/amd/display/modules/color/color_gamma.c#n174
+> > 
+> >>
+> >> The others seem fine to me.
+> >>
+> >>
+> >> Thanks,
+> >> pq
+> >>
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_PQ_EOTF]		= "PQ EOTF",
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_GAMMA22_EOTF]		= "Gamma 2.2 EOTF",
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_GAMMA24_EOTF]		= "Gamma 2.4 EOTF",
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_GAMMA26_EOTF]		= "Gamma 2.6 EOTF",
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_SRGB_INV_EOTF]	= "sRGB inv_EOTF",
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_BT709_INV_EOTF]	= "BT.709 inv_EOTF",
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_PQ_INV_EOTF]		= "PQ inv_EOTF",
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_GAMMA22_INV_EOTF]	= "Gamma 2.2 inv_EOTF",
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_GAMMA24_INV_EOTF]	= "Gamma 2.4 inv_EOTF",
+> >>> +	[AMDGPU_TRANSFER_FUNCTION_GAMMA26_INV_EOTF]	= "Gamma 2.6 inv_EOTF",
+> >>>  };
+> >>>  
+> >>> +static const u32 amdgpu_eotf =
+> >>> +	BIT(AMDGPU_TRANSFER_FUNCTION_SRGB_EOTF) |
+> >>> +	BIT(AMDGPU_TRANSFER_FUNCTION_BT709_EOTF) |
+> >>> +	BIT(AMDGPU_TRANSFER_FUNCTION_PQ_EOTF) |
+> >>> +	BIT(AMDGPU_TRANSFER_FUNCTION_GAMMA22_EOTF) |
+> >>> +	BIT(AMDGPU_TRANSFER_FUNCTION_GAMMA24_EOTF) |
+> >>> +	BIT(AMDGPU_TRANSFER_FUNCTION_GAMMA26_EOTF);
+> >>> +
+> >>> +static struct drm_property *
+> >>> +amdgpu_create_tf_property(struct drm_device *dev,
+> >>> +			  const char *name,
+> >>> +			  u32 supported_tf)
+> >>> +{
+> >>> +	u32 transfer_functions = supported_tf |
+> >>> +				 BIT(AMDGPU_TRANSFER_FUNCTION_DEFAULT) |
+> >>> +				 BIT(AMDGPU_TRANSFER_FUNCTION_LINEAR) |
+> >>> +				 BIT(AMDGPU_TRANSFER_FUNCTION_UNITY);
+> >>> +	struct drm_prop_enum_list enum_list[AMDGPU_TRANSFER_FUNCTION_COUNT];
+> >>> +	int i, len;
+> >>> +
+> >>> +	len = 0;
+> >>> +	for (i = 0; i < AMDGPU_TRANSFER_FUNCTION_COUNT; i++) {
+> >>> +		if ((transfer_functions & BIT(i)) == 0)
+> >>> +			continue;
+> >>> +
+> >>> +		enum_list[len].type = i;
+> >>> +		enum_list[len].name = amdgpu_transfer_function_names[i];
+> >>> +		len++;
+> >>> +	}
+> >>> +
+> >>> +	return drm_property_create_enum(dev, DRM_MODE_PROP_ENUM,
+> >>> +					name, enum_list, len);
+> >>> +}
+> >>> +
+> >>>  int
+> >>>  amdgpu_dm_create_color_properties(struct amdgpu_device *adev)
+> >>>  {
+> >>> @@ -116,11 +157,9 @@ amdgpu_dm_create_color_properties(struct amdgpu_device *adev)
+> >>>  		return -ENOMEM;
+> >>>  	adev->mode_info.plane_degamma_lut_size_property = prop;
+> >>>  
+> >>> -	prop = drm_property_create_enum(adev_to_drm(adev),
+> >>> -					DRM_MODE_PROP_ENUM,
+> >>> -					"AMD_PLANE_DEGAMMA_TF",
+> >>> -					amdgpu_transfer_function_enum_list,
+> >>> -					ARRAY_SIZE(amdgpu_transfer_function_enum_list));
+> >>> +	prop = amdgpu_create_tf_property(adev_to_drm(adev),
+> >>> +					 "AMD_PLANE_DEGAMMA_TF",
+> >>> +					 amdgpu_eotf);
+> >>>  	if (!prop)
+> >>>  		return -ENOMEM;
+> >>>  	adev->mode_info.plane_degamma_tf_property = prop;
+> >>
+> > 
+> > 
+> 
