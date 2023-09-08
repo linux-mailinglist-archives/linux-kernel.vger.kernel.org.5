@@ -2,134 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CBD3798332
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 09:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72352798335
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 09:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234275AbjIHHVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 03:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
+        id S239565AbjIHHWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 03:22:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbjIHHVK (ORCPT
+        with ESMTP id S239017AbjIHHWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 03:21:10 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A631BCD
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 00:21:02 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qeVnV-0007vb-OL; Fri, 08 Sep 2023 09:20:57 +0200
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qeVnU-004pP2-DM; Fri, 08 Sep 2023 09:20:56 +0200
-Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1qeVnT-003Drf-GB; Fri, 08 Sep 2023 09:20:55 +0200
-Date:   Fri, 8 Sep 2023 09:20:55 +0200
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     linux-rockchip@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        kernel@pengutronix.de,
-        Quentin Schulz <quentin.schulz@theobroma-systems.com>,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH 2/3] dt-bindings: pinctrl: rockchip: Add io domain
- properties
-Message-ID: <20230908072055.GE637806@pengutronix.de>
-References: <20230904115816.1237684-1-s.hauer@pengutronix.de>
- <20230904115816.1237684-3-s.hauer@pengutronix.de>
- <b4017947-9e16-7d97-a7b1-3e6964a1f7a9@arm.com>
- <20230906072121.GA492117@pengutronix.de>
- <5165d26f-d5fe-13e9-7940-b73e27b2bea7@arm.com>
+        Fri, 8 Sep 2023 03:22:11 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5D31BCB
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 00:22:06 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 39D711F461;
+        Fri,  8 Sep 2023 07:22:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1694157725; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yMgosH2V+Vld6J5jBXIJkB3KbdeHiICDvgis7QJxV0A=;
+        b=IfwXxUiGCHEs7s52yIjPuK33PsBsr2W6P5xxFnrDtsO0pgoz7DbPk5fUzTv/3Ku/o/piZA
+        qukMOP+J+UVZnnmmvXgbB8OXAPdcRRHFTmjWdpW40Q5Dnph2WNTb/1b0sT+4/J3lj61tgU
+        0f5ttoi2htW5vyKwtQV0zzIfMWmX/jY=
+Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id D3F1C2C142;
+        Fri,  8 Sep 2023 07:22:03 +0000 (UTC)
+Date:   Fri, 8 Sep 2023 09:22:03 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     rostedt@goodmis.org, john.ogness@linutronix.de,
+        senozhatsky@chromium.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Yunlong Xing <yunlong.xing@unisoc.com>, enlinmu@gmail.com,
+        yunlong.xing23@gmail.com
+Subject: Re: [PATCH] Revert "printk: export symbols for debug modules"
+Message-ID: <ZPrLm4fuSiv2-Rnm@alley>
+References: <20230905081902.321778-1-hch@lst.de>
+ <ZPb63crhycde0E0Q@alley>
+ <20230905132022.GA26718@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5165d26f-d5fe-13e9-7940-b73e27b2bea7@arm.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230905132022.GA26718@lst.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 05:35:26PM +0100, Robin Murphy wrote:
-> On 2023-09-06 08:21, Sascha Hauer wrote:
-> > On Tue, Sep 05, 2023 at 10:03:20AM +0100, Robin Murphy wrote:
-> > > On 2023-09-04 12:58, Sascha Hauer wrote:
-> > > > Add rockchip,io-domains property to the Rockchip pinctrl driver. This
-> > > > list of phandles points to the IO domain device(s) the pins of the
-> > > > pinctrl driver are supplied from.
-> > > > 
-> > > > Also a rockchip,io-domain-boot-on property is added to pin groups
-> > > > which can be used for pin groups which themselves are needed to access
-> > > > the regulators an IO domain is driven from.
-> > > > 
-> > > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > > > ---
-> > > >    .../bindings/pinctrl/rockchip,pinctrl.yaml          | 13 ++++++++++++-
-> > > >    1 file changed, 12 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml
-> > > > index 10c335efe619e..92075419d29cf 100644
-> > > > --- a/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml
-> > > > +++ b/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml
-> > > > @@ -62,6 +62,11 @@ properties:
-> > > >          Required for at least rk3188 and rk3288. On the rk3368 this should
-> > > >          point to the PMUGRF syscon.
-> > > > +  rockchip,io-domains:
-> > > > +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> > > > +    description:
-> > > > +      Phandles to io domains
-> > > > +
-> > > >      "#address-cells":
-> > > >        enum: [1, 2]
-> > > > @@ -137,7 +142,13 @@ additionalProperties:
-> > > >                - description:
-> > > >                    The phandle of a node contains the generic pinconfig options
-> > > >                    to use as described in pinctrl-bindings.txt.
-> > > > -
-> > > > +      rockchip,io-domain-boot-on:
-> > > 
-> > > I don't think "on" is a particularly descriptive or useful property name for
-> > > something that has no "off" state.
+On Tue 2023-09-05 15:20:22, Christoph Hellwig wrote:
+> On Tue, Sep 05, 2023 at 11:54:37AM +0200, Petr Mladek wrote:
+> > Yeah, I did not have a good feeling about this patch.
 > > 
-> > In fact it has an "off" state. A IO Domain can be disabled in the SoC
-> > registers
+> > I accepted it because there was an intention to upstream
+> > the module, see
+> > https://lore.kernel.org/all/CAAfh-jM0B2Cn579B0CkCrW44pJGGvjs112K+oMuViib+jDKafg@mail.gmail.com/
+> > 
+> > I think that it was bad decision. We should not export
+> > symbols when there is no in-tree user.
 > 
-> Oh, is that a thing on newer SoCs? At least in the RK3399 TRM the only
-> I/O-domain-related control I can find is the 1.8V/3.0V logic level threshold
-> in GRF_IO_VSEL (plus the one outlier in PMUGRF_SOC_CON0).
+> I think raw address to the printk buffer is a bad idea even for an
+> in-tree module.
 
-I didn't realize that it's new, the RK3568 is the first Rockchip SoC I
-work on, but yes, on RK3568 we have three bits per domain. One bit is to
-enable 1.8V, one to enable 2.5V and one for 3.3V. I would assume that
-clearing all bits means disable, and whatever strange things may happen
-when multiple bits are set...
+Yeah, I suggested to use the kmsg_dump() API in the original thread.
 
-Sascha
+Sigh, I made the bad decision in a hurry before vacation. I know
+that it is a bad excuse but... Thanks for catching it.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Best Regards,
+Petr
+
+PS: I have just sent a pull request with the revert.
