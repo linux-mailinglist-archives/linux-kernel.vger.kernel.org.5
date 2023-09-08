@@ -2,120 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9347D7985EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C608B7985F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242948AbjIHKed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 06:34:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53154 "EHLO
+        id S240763AbjIHKgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 06:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232099AbjIHKeb (ORCPT
+        with ESMTP id S231464AbjIHKgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 06:34:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09F11BF0;
-        Fri,  8 Sep 2023 03:34:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694169267; x=1725705267;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Lt9/l8LfGMpTc9AbtXr/yiF27RStf8Q1zDhFTijERZw=;
-  b=jk1dzNxgPdpF4/xZv/8kUokQZuPmVkJZe8bIOxoLfW7aXAaVz+1/NKQ0
-   MJPPFuUM0xo2i9O4WEQpq/GKJiks4ZGOcLhrRtxmIBxQ/JArkXQizwaf/
-   GpH5LRAXTDj99YiVZtqdalyg2Gk2gHwAwh/ntPrZQmtXdLZ91UO5ZoM54
-   ennr1DVzVg1osnlmz3/SAGMEdIVuf+EyTsDgF4vlfQUq1AAgDhbWbvHJy
-   Ekiod3PZMzHJJU4ftA5Bg8TomeuOWvIvxtmIs3/sqAgCUkP1qCdKivRh0
-   T0TZvAVsN0H4WI6LitKCivjUK3mBYdpKezFEwcBrVb4fvwYWqEa9+rbGD
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="381432178"
-X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
-   d="scan'208";a="381432178"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 03:34:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="745565658"
-X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
-   d="scan'208";a="745565658"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga007.fm.intel.com with SMTP; 08 Sep 2023 03:34:22 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 08 Sep 2023 13:34:21 +0300
-Date:   Fri, 8 Sep 2023 13:34:21 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.au@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v3 4/5] usb: typec: tcpci_rt1711h: Add
- enable_pd30_extended_message variable to struct rt1711h_chip_info
-Message-ID: <ZPr4rf2uMXd/CoG6@kuha.fi.intel.com>
-References: <20230906080619.36930-1-biju.das.jz@bp.renesas.com>
- <20230906080619.36930-5-biju.das.jz@bp.renesas.com>
+        Fri, 8 Sep 2023 06:36:37 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF67B199F
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 03:36:31 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-31c7912416bso1944696f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 03:36:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694169390; x=1694774190; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3365epFx7LcXGmfNolHsodlPpUOyKdHg5aTvRwZxU/8=;
+        b=RQPfZkLNNvPsLzPrIX8dolish6TnsCOKtbfpLNBW5cQ8gOO43842bJpNsn+tFRT706
+         UEOQqJ+9uY26rTCalcLjMHryqKAYViKY3FIjZFE7ZXUYeXf5wSp7i6e8cOToAPUO8+/T
+         wOzY7nLgAmT6AaMJIdu45OzUeiAvD5H9xpx1/g9orrUlGG/rpf3XhJ4VzVA9A58h9BWq
+         g2bFbD7XkdcroFQHLzO7xFOzSGJtSuEgh3DmlTHeyldUJqQFPK7CvWBdN3aqec6clD8+
+         pSSGRj1Jro6b+y2IM8hTLkDnKUrWcqxtxl8WMMvEbgJA0KVHxq5s+28qfs7tI9mCi037
+         X7Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694169390; x=1694774190;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3365epFx7LcXGmfNolHsodlPpUOyKdHg5aTvRwZxU/8=;
+        b=w0tpenRu/dvW3Q4oZmwRUjOIPjjQ0QQlsPqvzrQBmBBgIV0KQ+TeTcdCLGNTKL6IsT
+         JOoXxRWGgviwHvU5h2rwseCQPDpcmf9VPLpRDK60tfj7NUePGciwng4wBWS30v0L9V9J
+         YvOxVZFmzl+baZfEMh1zHn4llZkIhCnBqqOCwiYDxNPrnONoNr7kZOCwutlBvRj4mGtj
+         ak5P0CCgRvrfAn8JUI6C9YshFXm2cgtXNkpw7BoN6ieNUD+/wKbMHFy6H1BJLXj7isXG
+         re2CHtJhGIU6lKxLSKfGlQmqDER3W/r00AvrqJcMUFAWT6GNP+xRfh8X+OBypX3NnxjA
+         i4WQ==
+X-Gm-Message-State: AOJu0Yz7c4vBWLemiRa2I0c+J3wt/hgHr4riN6zaUcebe/XKeg5v+NH4
+        ZPPhwnNoFI1tU571B2csTzvmgA==
+X-Google-Smtp-Source: AGHT+IGr9AkyYDXkcu9tYUq68tDphkoTHwc/U6PrO7lcJlsZWWeAVyD6ErAsIS/p/pTBMmbdMeEncg==
+X-Received: by 2002:a05:6000:1250:b0:31d:74f8:fae with SMTP id j16-20020a056000125000b0031d74f80faemr1407561wrx.71.1694169390290;
+        Fri, 08 Sep 2023 03:36:30 -0700 (PDT)
+Received: from [192.168.0.163] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id o14-20020a5d58ce000000b0031433443265sm1746955wrf.53.2023.09.08.03.36.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Sep 2023 03:36:29 -0700 (PDT)
+Message-ID: <e1ab1df4-8431-483d-8f20-74de5349cfbc@linaro.org>
+Date:   Fri, 8 Sep 2023 11:36:28 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230906080619.36930-5-biju.das.jz@bp.renesas.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 15/17] media: qcom: camss: Move vfe_disable into a
+ common routine where applicable
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, rfoss@kernel.org,
+        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
+        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
+        andrey.konovalov@linaro.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230907164410.36651-1-bryan.odonoghue@linaro.org>
+ <20230907164410.36651-16-bryan.odonoghue@linaro.org>
+ <8b424303-09c9-4270-abfd-4f209f5c41e0@linaro.org>
+ <41d1e364-40a4-48b2-97ef-6c76d238002e@linaro.org>
+ <c9570c8e-c9a5-43f5-8b69-d5c38d214061@linaro.org>
+ <c5d64d12-668a-4d70-85ee-e4111d85a1be@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <c5d64d12-668a-4d70-85ee-e4111d85a1be@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 09:06:18AM +0100, Biju Das wrote:
-> The RT1715 has PD30 extended message compared to RT1711H. Add a variable
-> enable_pd30_extended_message to struct rt1711h_chip_info to enable this
-> feature for RT1715.
+On 08/09/2023 11:24, Konrad Dybcio wrote:
+> On 8.09.2023 12:21, Bryan O'Donoghue wrote:
+>> On 08/09/2023 11:04, Konrad Dybcio wrote:
+>>> On 8.09.2023 12:02, Konrad Dybcio wrote:
+>>>> On 7.09.2023 18:44, Bryan O'Donoghue wrote:
+>>>>> We can move vfe_disable() into a common routine in the core VFE file
+>>>>> provided we make wm_stop() a VFE specific callback.
+>>>>>
+>>>>> The callback is required to capture the case where VFE 17x currently isn't
+>>>>> VC enabled where as VFE 480 is.
+>>>>>
+>>>>> Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>>>>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>>>>> ---
+>>>> Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>>>>
+>>>> Konrad
+>>> Actually there's
+>>>
+>>> ret = vfe_reset(vfe);
+>>>
+>>> return ret;
+>>>
+>>>
+>>> which could just be
+>>>
+>>> return vfe_reset(vfe);
+>>>
+>>>
+>>> Konrad
+>>
+>> On purpose.
+>>
+>> I prefer the ret = ; return ret; pattern since it makes it easier / less work to
+>>
+>> ret = fn();
+>> if (ret)
+>>      goto error;
+>>
+>> error:
+>>      return ret;
+> There's no error label in vfe_disable_output
 > 
-> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Konrad
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+No there is not. Its a pattern I use to make adding jump labels easier 
+later on.
 
-> ---
-> v2->v3:
->  * Added Rb tag from Andy.
-> v1->v2:
->  * Changed enable_pd30_extended_message variable type to bool.
-> ---
->  drivers/usb/typec/tcpm/tcpci_rt1711h.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpci_rt1711h.c b/drivers/usb/typec/tcpm/tcpci_rt1711h.c
-> index 40822bae9ae8..5d2dc7ead9d0 100644
-> --- a/drivers/usb/typec/tcpm/tcpci_rt1711h.c
-> +++ b/drivers/usb/typec/tcpm/tcpci_rt1711h.c
-> @@ -54,6 +54,7 @@
->  struct rt1711h_chip_info {
->  	u32 rxdz_sel;
->  	u16 did;
-> +	bool enable_pd30_extended_message;
->  };
->  
->  struct rt1711h_chip {
-> @@ -110,7 +111,7 @@ static int rt1711h_init(struct tcpci *tcpci, struct tcpci_data *tdata)
->  		return ret;
->  
->  	/* Enable PD30 extended message for RT1715 */
-> -	if (chip->info->did == RT1715_DID) {
-> +	if (chip->info->enable_pd30_extended_message) {
->  		ret = regmap_update_bits(regmap, RT1711H_RTCTRL8,
->  					 RT1711H_ENEXTMSG, RT1711H_ENEXTMSG);
->  		if (ret < 0)
-> @@ -400,6 +401,7 @@ static const struct rt1711h_chip_info rt1711h = {
->  static const struct rt1711h_chip_info rt1715 = {
->  	.rxdz_sel = RT1711H_BMCIO_RXDZSEL,
->  	.did = RT1715_DID,
-> +	.enable_pd30_extended_message = true,
->  };
->  
->  static const struct i2c_device_id rt1711h_id[] = {
-> -- 
-> 2.25.1
+Just like you use the pattern of appending "," to aggregate initialisation.
 
--- 
-heikki
+---
+bod
