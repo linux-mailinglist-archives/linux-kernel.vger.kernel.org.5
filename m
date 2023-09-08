@@ -2,73 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A15799226
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 00:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C70799230
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 00:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245534AbjIHWWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 18:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59642 "EHLO
+        id S245143AbjIHWYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 18:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245716AbjIHWWu (ORCPT
+        with ESMTP id S242626AbjIHWYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 18:22:50 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D7D1FDA
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 15:22:45 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7ea08906b3so2641782276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 15:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694211765; x=1694816565; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=v5Cp90T0HlHlM0qC1hGQ5/U223gFFo3yll8YGs+M5Ps=;
-        b=wTH73xfC5sR0hHLUTvDc2/m2mxqoHxkQey+iy4hqKadwoQ8TxF+KO054e3OWfypwky
-         ruG2ueEh4Kg654e5MUSHGtaeaYZbKmW2rT20+yF8tUjSI+9zIZd9l7j7yIP47T9AlI/W
-         lCWikjAu1OI3jkedQTfyNrEvRXN+pvHxAg1JLPhswppt5maG8gOjDyo31Nh2RZ8u3KED
-         KpWtKXPcDuNBZAJVH5F9FTQo3KriqTwndFBHkOsAbxKjhX9yrvLCr7s37r7CYKPEL0Pz
-         mgEDxyeD9vdFltGdIUN5qwBy5WJmXmF05ya6K4Xtc0LUOIcPkBE7zRLKLolOyIPJSk0n
-         7Ixg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694211765; x=1694816565;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v5Cp90T0HlHlM0qC1hGQ5/U223gFFo3yll8YGs+M5Ps=;
-        b=JWgVdIhBuv0qJ2ei1UT/vjKO8ybIyPb+DIqQyjXQPLwT3aho6DJxpxpeY71LZikZ56
-         VAHxccXo7QkE0zoSobbB9M26RGe8faPYO8BNAFrw5ArQCQWWGoKcqR7HhQg0Fi1erZ4V
-         JXsq4Quy43eujjwRC+Z7ZGebZhRDSEBMXLceyLMBRj7EMG4XKguKHHOZOfyKYD16gE0G
-         IYS/wXhRfNgeUtDutQF5hekn/BCoVMHiwhtBH7ecmdEYd+kxxzAxWyg9ONc01YImoQFc
-         x0a4y+2JNI3GACWaN5dpXSaEqd3S2Rrrlmc8FnkvPwmnv24792OzxtyfirbSQEMwWgT/
-         wLtg==
-X-Gm-Message-State: AOJu0YymfZEqTzVp98ZM4dsjYsY6PYR8X1T1GL3wl11v10AhXzZJQY0r
-        TtZPTu6YUy4fjB4hxJlzdWpbDIvNJKrL1FESag==
-X-Google-Smtp-Source: AGHT+IFPFnTyGsFoc2ZSx47UoKkXlKTd1lUGjg7l0A9M/UItmxbV7iwmacXunuMpKmXV7s1YWdzHQiesT5QQCTmmtQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:b29a:0:b0:d7e:91ce:4619 with SMTP
- id k26-20020a25b29a000000b00d7e91ce4619mr72493ybj.2.1694211764994; Fri, 08
- Sep 2023 15:22:44 -0700 (PDT)
-Date:   Fri, 08 Sep 2023 22:22:40 +0000
-In-Reply-To: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
-Mime-Version: 1.0
-References: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694211760; l=819;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=Fpue+BQes/IsmvChTzta8giCoFG0nhFAwjMFha0XbBk=; b=FPcBxS7/Tinifrs92XiVf0HUjlKN++LkVXDHzYy0yvRwYAtxE2iVOoZp9QZgBtlGeGYK7eftL
- gV450GrArSzCjcFyglvip5hagZgozWtKZAOu4zZvAOoQH8odEMQi2tg
-X-Mailer: b4 0.12.3
-Message-ID: <20230908-kselftest-09-08-v2-3-0def978a4c1b@google.com>
-Subject: [PATCH v2 3/3] selftests/hid: force using our compiled libbpf headers
-From:   Justin Stitt <justinstitt@google.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Eduard Zingerman <eddyz87@gmail.com>, linux-input@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        Fri, 8 Sep 2023 18:24:32 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDE91FF5
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 15:24:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694211857; x=1725747857;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=sGZGv+RYcnXgcRLIJ8mG6Ha5l1cozDqIW/cWfDvFWPo=;
+  b=Q4WeDuNJcU/a5aC0qW43JxGmxfoEZSfQQC1LQiGAotbkRkhMgIzLUiSf
+   t7fY8Zc069wbnm03yOXTCF0DkVNOGtgTbDulqHf1IESMJWmu40kkt4JUh
+   /8aevCc1Nb0f3nrc6jgncOXAzYbxxfcymO9yQ1GRAOdMo6mAT8f5RX3Us
+   Pz0CX8r5YZErIzdGPY8+VUzKiLo+YEptS0wwsMEksdF/BKf5troJYq3Qz
+   oAhDwfjRo3v6Lb3sh44uagm3LYdyxhPPsmWa3MBulS+srOuokpSMANj42
+   Ur8GJw0dVRcbN3NUrV4/50gCUTreF6D3cSIFwdb6pgbK6kIgzL7AP17Fp
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="376669087"
+X-IronPort-AV: E=Sophos;i="6.02,238,1688454000"; 
+   d="scan'208";a="376669087"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 15:24:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="866262656"
+X-IronPort-AV: E=Sophos;i="6.02,238,1688454000"; 
+   d="scan'208";a="866262656"
+Received: from fgilganx-mobl1.amr.corp.intel.com (HELO [10.209.17.195]) ([10.209.17.195])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 15:24:15 -0700
+Message-ID: <fb81c0f4-5553-4c0d-89e3-3798405cdc7e@intel.com>
+Date:   Fri, 8 Sep 2023 15:24:15 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] x86/tdx: Allow extended topology CPUID leafs to be
+ emulated by hypercall
+Content-Language: en-US
+To:     Sagi Shahar <sagis@google.com>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230908175644.2478924-1-sagis@google.com>
+ <d08303a4-321b-419c-5b3b-11f05e4286ae@intel.com>
+ <CAAhR5DGUjeU=QoQdSXSLqaKiQ6U-Q8+sRQhnijHHtUtHfgh01Q@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <CAAhR5DGUjeU=QoQdSXSLqaKiQ6U-Q8+sRQhnijHHtUtHfgh01Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,31 +81,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Tissoires <bentiss@kernel.org>
+On 9/8/23 12:25, Sagi Shahar wrote:
+> On Fri, Sep 8, 2023 at 11:00 AM Dave Hansen <dave.hansen@intel.com> wrote:
+>>
+>> On 9/8/23 10:56, Sagi Shahar wrote:
+>>> The current TDX module does not handle extended topology leaves
+>>> explicitly and will generate a #VE but the current #VE handler
+>>> implementation blindly returns 0 for those CPUID leaves.
+>>>
+>>> This currently causes TDX guests to see 0 values when querying the numa
+>>> topology leading to incorrect numa configurations.
+>>>
+>>> This patch fixes this behavior by emulating the extended topology leaves
+>>> using the CPUID hypercall.
+>>
+>> ... and thus acquires the data from the untrusted VMM.  Right?
+>>
+>> What are the security implications of consuming this untrusted data?
+> 
+> The topology information is mostly used for performance optimizations
+> on the guest side. I don't see any security implications if VMM passes
+> incorrect values.
 
-Turns out that we were relying on the globally installed headers, not
-the ones we freshly compiled.
-Add a manual include in CFLAGS to sort this out.
+Oh, so I take it you did an audit and checked that no data structures
+are sized or accessed based on this information.
 
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
----
- tools/testing/selftests/hid/Makefile | 2 ++
- 1 file changed, 2 insertions(+)
+Could you share some of your analysis, please?  I'd love to see it in
+the changelog.
 
-diff --git a/tools/testing/selftests/hid/Makefile b/tools/testing/selftests/hid/Makefile
-index c5522088ece4..b01c14077c5d 100644
---- a/tools/testing/selftests/hid/Makefile
-+++ b/tools/testing/selftests/hid/Makefile
-@@ -22,6 +22,8 @@ CXX ?= $(CROSS_COMPILE)g++
- HOSTPKG_CONFIG := pkg-config
- 
- CFLAGS += -g -O0 -rdynamic -Wall -Werror -I$(OUTPUT)
-+CFLAGS += -I$(OUTPUT)/tools/include
-+
- LDLIBS += -lelf -lz -lrt -lpthread
- 
- # Silence some warnings when compiled with clang
+> Right now, the guest is already using the returned 0 values and gets
+> an incorrect numa topology leading to odd behavior in the guest. If we
+> allow guests to read these values from the untrusted VMM and VMM
+> spoofs the values, the worst that can happen is a different incorrect
+> numa topology instead of the incorrect one we already have today.
 
--- 
-2.42.0.283.g2d96d420d3-goog
+I'm going to have to disagree with this logic a wee bit.
 
+The 0's have *KNOWN*, *FIXED* behavior.  It may stink, but it's known
+and fixed and thoroughly unexploitable.  If it were somehow exploited,
+we would change it to another value that we control.
+
+The VMM values are fundamentally different.  They're dynamic and can be
+maliciously crafted.
+
+I'm actually not even sure how you're getting bad "NUMA" data out of
+these leaves.  The check_extended_topology_leaf() checks should fail
+because ecx will be all 0's and SMT_TYPE==1, so the (LEAFB_SUBTYPE(ecx)
+!=  SMT_TYPE) condition will always hit.
+
+I'm also not sure where the "numa topology" comment comes from.  There's
+a _lot_ of topology information in these leaves that's at a much finer
+granularity than NUMA nodes.  If you're getting errors on the console,
+it would be spectacular to share those.
+
+I have all kinds of guesses about what trouble this might be causing
+you, but I'm a bad guesser.
