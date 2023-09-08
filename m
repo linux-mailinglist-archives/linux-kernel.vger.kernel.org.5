@@ -2,106 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B872E7980FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 05:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F41EF798101
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 05:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239404AbjIHDcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 23:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55270 "EHLO
+        id S239940AbjIHDjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 23:39:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238739AbjIHDcG (ORCPT
+        with ESMTP id S233131AbjIHDjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 23:32:06 -0400
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692801BDB;
-        Thu,  7 Sep 2023 20:32:01 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=guangguan.wang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vrb2bZF_1694143917;
-Received: from localhost.localdomain(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0Vrb2bZF_1694143917)
+        Thu, 7 Sep 2023 23:39:24 -0400
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EE81BD5;
+        Thu,  7 Sep 2023 20:39:19 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R411e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0VraxvXs_1694144354;
+Received: from 30.221.149.157(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VraxvXs_1694144354)
           by smtp.aliyun-inc.com;
-          Fri, 08 Sep 2023 11:31:57 +0800
-From:   Guangguan Wang <guangguan.wang@linux.alibaba.com>
-To:     wenjia@linux.ibm.com, jaka@linux.ibm.com, kgraul@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     tonylu@linux.alibaba.com, alibuda@linux.alibaba.com,
-        guwen@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net 2/2] net/smc: use smc_lgr_list.lock to protect smc_lgr_list.list iterate in smcr_port_add
-Date:   Fri,  8 Sep 2023 11:31:43 +0800
-Message-Id: <20230908033143.89489-3-guangguan.wang@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20230908033143.89489-1-guangguan.wang@linux.alibaba.com>
-References: <20230908033143.89489-1-guangguan.wang@linux.alibaba.com>
+          Fri, 08 Sep 2023 11:39:15 +0800
+Message-ID: <3ab1f1d6-0aac-5a58-1bf9-74a62ec5901e@linux.alibaba.com>
+Date:   Fri, 8 Sep 2023 11:39:13 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v8 0/8] Add metrics for Arm CMN
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     John Garry <john.g.garry@oracle.com>,
+        Ian Rogers <irogers@google.com>, Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+References: <1694087913-46144-1-git-send-email-renyu.zj@linux.alibaba.com>
+ <ZPn1BEzAoQa/ogtL@kernel.org>
+From:   Jing Zhang <renyu.zj@linux.alibaba.com>
+In-Reply-To: <ZPn1BEzAoQa/ogtL@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While doing smcr_port_add, there maybe linkgroup add into or delete
-from smc_lgr_list.list at the same time, which may result kernel crash.
-So, use smc_lgr_list.lock to protect smc_lgr_list.list iterate in
-smcr_port_add.
 
-The crash calltrace show below:
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-PGD 0 P4D 0
-Oops: 0000 [#1] SMP NOPTI
-CPU: 0 PID: 559726 Comm: kworker/0:92 Kdump: loaded Tainted: G
-Hardware name: Alibaba Cloud Alibaba Cloud ECS, BIOS 449e491 04/01/2014
-Workqueue: events smc_ib_port_event_work [smc]
-RIP: 0010:smcr_port_add+0xa6/0xf0 [smc]
-RSP: 0000:ffffa5a2c8f67de0 EFLAGS: 00010297
-RAX: 0000000000000001 RBX: ffff9935e0650000 RCX: 0000000000000000
-RDX: 0000000000000010 RSI: ffff9935e0654290 RDI: ffff9935c8560000
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffff9934c0401918
-R10: 0000000000000000 R11: ffffffffb4a5c278 R12: ffff99364029aae4
-R13: ffff99364029aa00 R14: 00000000ffffffed R15: ffff99364029ab08
-FS:  0000000000000000(0000) GS:ffff994380600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 0000000f06a10003 CR4: 0000000002770ef0
-PKRU: 55555554
-Call Trace:
- smc_ib_port_event_work+0x18f/0x380 [smc]
- process_one_work+0x19b/0x340
- worker_thread+0x30/0x370
- ? process_one_work+0x340/0x340
- kthread+0x114/0x130
- ? __kthread_cancel_work+0x50/0x50
- ret_from_fork+0x1f/0x30
 
-Fixes: 1f90a05d9ff9 ("net/smc: add smcr_port_add() and smcr_link_up() processing")
-Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
----
- net/smc/smc_core.c | 2 ++
- 1 file changed, 2 insertions(+)
+在 2023/9/8 上午12:06, Arnaldo Carvalho de Melo 写道:
+> Em Thu, Sep 07, 2023 at 07:58:25PM +0800, Jing Zhang escreveu:
+>> Changes since v7:
+>> - Optimized pmu_uncore_identifier_match().
+>> - Added all missing "event=0" in JSON file.
+>> - Rebase this series onto the latest perf-tools-next.
+>> - Link: https://lore.kernel.org/all/1692606977-92009-1-git-send-email-renyu.zj@linux.alibaba.com/
+> 
+> Can you please refresh on top of what is in the tmp.perf-tools-next
+> branch at:
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git
+> 
 
-diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-index 3f465faf2b68..6aa3db47a956 100644
---- a/net/smc/smc_core.c
-+++ b/net/smc/smc_core.c
-@@ -1654,6 +1654,7 @@ void smcr_port_add(struct smc_ib_device *smcibdev, u8 ibport)
- {
- 	struct smc_link_group *lgr, *n;
- 
-+	spin_lock_bh(&smc_lgr_list.lock);
- 	list_for_each_entry_safe(lgr, n, &smc_lgr_list.list, list) {
- 		struct smc_link *link;
- 
-@@ -1669,6 +1670,7 @@ void smcr_port_add(struct smc_ib_device *smcibdev, u8 ibport)
- 		if (link)
- 			smc_llc_add_link_local(link);
- 	}
-+	spin_unlock_bh(&smc_lgr_list.lock);
- }
- 
- /* link is down - switch connections to alternate link,
--- 
-2.24.3 (Apple Git-128)
+Yes, this series is already based on the latest tmp.perf-tools-next.
 
+> patch 3/8 has some fuzz and b4 is not finding it in the mailing list,
+> probably the patch is too large? Do you have some git tree somewhere I
+> can use to pull from?
+> 
+
+Patch 3/8 is too large and it is being held until the list moderator can
+review it for approval.
+
+Perhaps you can pull it from my repository. Sorry for the inconvenience.
+https://github.com/ZhangJing-hub/linux/commit/c33234e62aa210cc7dea0be3c749af1a8737b88d
+
+Thanks,
+Jing
+
+> - Arnaldo
+>  
+>> Jing Zhang (8):
+>>   perf pmu: "Compat" supports matching multiple identifiers
+>>   perf metric: "Compat" supports matching multiple identifiers
+>>   perf vendor events: Supplement the omitted EventCode
+>>   perf jevents: Support more event fields
+>>   perf test: Make matching_pmu effective
+>>   perf test: Add pmu-event test for "Compat" and new event_field.
+>>   perf jevents: Add support for Arm CMN PMU aliasing
+>>   perf vendor events: Add JSON metrics for Arm CMN
+>>
+>>  .../pmu-events/arch/arm64/arm/cmn/sys/cmn.json     | 266 +++++++++++++++++++++
+>>  .../pmu-events/arch/arm64/arm/cmn/sys/metric.json  |  74 ++++++
+>>  .../pmu-events/arch/test/test_soc/sys/uncore.json  |   8 +
+>>  .../pmu-events/arch/x86/alderlake/pipeline.json    |   9 +
+>>  .../pmu-events/arch/x86/alderlaken/pipeline.json   |   3 +
+>>  .../pmu-events/arch/x86/broadwell/pipeline.json    |   4 +
+>>  .../pmu-events/arch/x86/broadwellde/pipeline.json  |   4 +
+>>  .../arch/x86/broadwellde/uncore-cache.json         |   2 +
+>>  .../arch/x86/broadwellde/uncore-interconnect.json  |   1 +
+>>  .../arch/x86/broadwellde/uncore-memory.json        |   1 +
+>>  .../arch/x86/broadwellde/uncore-power.json         |   1 +
+>>  .../pmu-events/arch/x86/broadwellx/pipeline.json   |   4 +
+>>  .../arch/x86/broadwellx/uncore-cache.json          |   2 +
+>>  .../arch/x86/broadwellx/uncore-interconnect.json   |  13 +
+>>  .../arch/x86/broadwellx/uncore-memory.json         |   2 +
+>>  .../arch/x86/broadwellx/uncore-power.json          |   1 +
+>>  .../pmu-events/arch/x86/cascadelakex/pipeline.json |   4 +
+>>  .../arch/x86/cascadelakex/uncore-cache.json        |   2 +
+>>  .../arch/x86/cascadelakex/uncore-interconnect.json |   1 +
+>>  .../arch/x86/cascadelakex/uncore-io.json           |   1 +
+>>  .../arch/x86/cascadelakex/uncore-memory.json       |   1 +
+>>  .../arch/x86/cascadelakex/uncore-power.json        |   1 +
+>>  .../pmu-events/arch/x86/elkhartlake/pipeline.json  |   2 +
+>>  .../pmu-events/arch/x86/goldmont/pipeline.json     |   3 +
+>>  .../pmu-events/arch/x86/goldmontplus/pipeline.json |   3 +
+>>  .../pmu-events/arch/x86/grandridge/pipeline.json   |   3 +
+>>  .../arch/x86/graniterapids/pipeline.json           |   4 +
+>>  .../perf/pmu-events/arch/x86/haswell/pipeline.json |   4 +
+>>  .../pmu-events/arch/x86/haswellx/pipeline.json     |   4 +
+>>  .../pmu-events/arch/x86/haswellx/uncore-cache.json |   2 +
+>>  .../arch/x86/haswellx/uncore-interconnect.json     |  14 ++
+>>  .../arch/x86/haswellx/uncore-memory.json           |   2 +
+>>  .../pmu-events/arch/x86/haswellx/uncore-power.json |   1 +
+>>  .../perf/pmu-events/arch/x86/icelake/pipeline.json |   5 +
+>>  .../pmu-events/arch/x86/icelakex/pipeline.json     |   5 +
+>>  .../pmu-events/arch/x86/icelakex/uncore-cache.json |   1 +
+>>  .../arch/x86/icelakex/uncore-interconnect.json     |   1 +
+>>  .../arch/x86/icelakex/uncore-memory.json           |   1 +
+>>  .../pmu-events/arch/x86/icelakex/uncore-power.json |   1 +
+>>  .../pmu-events/arch/x86/ivybridge/pipeline.json    |   3 +
+>>  .../perf/pmu-events/arch/x86/ivytown/pipeline.json |   4 +
+>>  .../pmu-events/arch/x86/ivytown/uncore-cache.json  |   2 +
+>>  .../arch/x86/ivytown/uncore-interconnect.json      |  11 +
+>>  .../pmu-events/arch/x86/ivytown/uncore-memory.json |   1 +
+>>  .../pmu-events/arch/x86/ivytown/uncore-power.json  |   1 +
+>>  .../pmu-events/arch/x86/jaketown/pipeline.json     |   4 +
+>>  .../pmu-events/arch/x86/jaketown/uncore-cache.json |   2 +
+>>  .../arch/x86/jaketown/uncore-interconnect.json     |  12 +
+>>  .../arch/x86/jaketown/uncore-memory.json           |   1 +
+>>  .../pmu-events/arch/x86/jaketown/uncore-power.json |   2 +
+>>  .../arch/x86/knightslanding/pipeline.json          |   3 +
+>>  .../arch/x86/knightslanding/uncore-cache.json      |   1 +
+>>  .../arch/x86/knightslanding/uncore-memory.json     |   4 +
+>>  .../pmu-events/arch/x86/meteorlake/pipeline.json   |   9 +
+>>  .../pmu-events/arch/x86/rocketlake/pipeline.json   |   3 +
+>>  .../pmu-events/arch/x86/sandybridge/pipeline.json  |   4 +
+>>  .../arch/x86/sapphirerapids/pipeline.json          |   5 +
+>>  .../pmu-events/arch/x86/sierraforest/pipeline.json |   4 +
+>>  .../pmu-events/arch/x86/silvermont/pipeline.json   |   3 +
+>>  .../perf/pmu-events/arch/x86/skylake/pipeline.json |   4 +
+>>  .../pmu-events/arch/x86/skylakex/pipeline.json     |   4 +
+>>  .../pmu-events/arch/x86/skylakex/uncore-cache.json |   2 +
+>>  .../arch/x86/skylakex/uncore-interconnect.json     |   1 +
+>>  .../pmu-events/arch/x86/skylakex/uncore-io.json    |   1 +
+>>  .../arch/x86/skylakex/uncore-memory.json           |   1 +
+>>  .../pmu-events/arch/x86/skylakex/uncore-power.json |   1 +
+>>  .../pmu-events/arch/x86/snowridgex/pipeline.json   |   2 +
+>>  .../arch/x86/snowridgex/uncore-cache.json          |   1 +
+>>  .../arch/x86/snowridgex/uncore-interconnect.json   |   1 +
+>>  .../arch/x86/snowridgex/uncore-memory.json         |   1 +
+>>  .../arch/x86/snowridgex/uncore-power.json          |   1 +
+>>  .../pmu-events/arch/x86/tigerlake/pipeline.json    |   5 +
+>>  tools/perf/pmu-events/empty-pmu-events.c           |   8 +
+>>  tools/perf/pmu-events/jevents.py                   |  21 +-
+>>  tools/perf/tests/pmu-events.c                      |  65 ++++-
+>>  tools/perf/util/metricgroup.c                      |   2 +-
+>>  tools/perf/util/pmu.c                              |  28 ++-
+>>  tools/perf/util/pmu.h                              |   1 +
+>>  78 files changed, 681 insertions(+), 9 deletions(-)
+>>  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json
+>>  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/cmn/sys/metric.json
+>>
+>> -- 
+>> 1.8.3.1
+>>
+> 
