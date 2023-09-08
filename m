@@ -2,126 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E70EE798B9B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 19:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F415798BA0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 19:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243750AbjIHR4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 13:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
+        id S245139AbjIHR6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 13:58:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235668AbjIHR4x (ORCPT
+        with ESMTP id S244978AbjIHR6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 13:56:53 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17B21FCA
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 10:56:49 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d780a0d3cefso2195323276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 10:56:49 -0700 (PDT)
+        Fri, 8 Sep 2023 13:58:05 -0400
+Received: from mail-lf1-x14a.google.com (mail-lf1-x14a.google.com [IPv6:2a00:1450:4864:20::14a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A381FCA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 10:58:01 -0700 (PDT)
+Received: by mail-lf1-x14a.google.com with SMTP id 2adb3069b0e04-501ce5902faso1710029e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 10:58:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694195809; x=1694800609; darn=vger.kernel.org;
+        d=google.com; s=20221208; t=1694195880; x=1694800680; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=sm/GVlmeHT2HjPSaV/RDHBoToFYHbp3bUGhZJgMdMmw=;
-        b=0jG0/2f0PfKOx0VDJQmWxIWGxQ/NZVhUQ1qFOl99Er3164aVoXG615Fser1XzIMg0U
-         D0Awptk4YCj5B38PV91xwF5SD96SOyW0f3e1Xe0ygzcnqa2YxvxoSvUWJWOQ6a6+cu0B
-         VSUbv+aWhzjCI5i8vTgWxkIQAVuC6J1gHmP4N/+XMrIkEJNJNSt73B3ZrZVwOTJuRFlj
-         kLdmJp7cadZAkRfY4/EmmlaCPOV2wtWnRCS2jKFaIQBYan5sjITQvM8MsauVJwu1pp0M
-         cqnOoibFUxaKcf/qb0vV4G1U/D23L5y9LW3KLxykcf1Tf6zf5i88SOg2h+mqASGsIuP5
-         RFbQ==
+        bh=ErZ/9dohV3kfQDHS+ABptN0u7+XrtGJQodsGEJaInJ0=;
+        b=5gZ88qh7pGh7FvvjtZCDaT3QTsWxCLzDQNH0/+RXjVR3V62Oo+ehy/A7wpU4yn+5V8
+         0i+sKK8/L2IuKdQ+I/7naxAnl254bE52eFeNfmc8svD9oZOgISzWnEsKtucn74laGS9P
+         +0DTI8/KOGNK+MF4BEXrfz1XCyfAwyLW1H9h0pJEjuifp3PWFx3qzZJVhAZTkil6+9dm
+         y/tSnbJyRpjSwJtDyIXNq4h/w8gfB3C3QiwTwQOwlyqLA7fPhBswTiGYdhi4qiBYDiku
+         MvSfZPNowb+oSDfRHJSHmfszaQCyl5hLpCKLVjszZ3B5YcmIOnmyVObgj7/NQnl5NA2t
+         JoBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694195809; x=1694800609;
+        d=1e100.net; s=20230601; t=1694195880; x=1694800680;
         h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=sm/GVlmeHT2HjPSaV/RDHBoToFYHbp3bUGhZJgMdMmw=;
-        b=Z+60qTCR6nXspY55hr/k82f/5IfPUrL+Pl4o77Bi14GU5U/iQ/xgDLxMFQ9GSSq47D
-         pNG1oXxZT2cgmc+J2+imUF1eWxuR3CEgJNTbA4ddr14Gsgjz0Fu8Vc437m4jj9JzxswK
-         qojJphPDGxRMty47F3FwqCX0c1nUxEMZTFzyPZ6VD4ou0Ps9gUB0XJEgC0t498C3slZ7
-         NvmY4GtjunnpRSL47Bo0zSJiV1Sr99TxVaYH4vJ4Gn6lKF/pgLYVsO5XkV78iRmp2Bb+
-         UFTcRp+rxbJP0Qo/7cME6RuAQySWVnYy6wI9fo5V1Dd6ohOA4apqRukhL5SVLtTA8pyc
-         RPxg==
-X-Gm-Message-State: AOJu0Yzb3ptPguFUgK3uU1qEZp13f3lEAbT/PGYRgVjYMoxpl6fAER8u
-        ZtnDzsGinMxzPHI0vZZuKSW5ghkabA==
-X-Google-Smtp-Source: AGHT+IGbH9h3+1Y2V0Rq0JiRLyDE+YvbbZH0ToxlJtk7Svq8q3keOY/ii6n+qTBrDMd2Bg6pEy4BFOzkxg==
-X-Received: from sagi.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:241b])
- (user=sagis job=sendgmr) by 2002:a25:d7d0:0:b0:d77:bcce:eb11 with SMTP id
- o199-20020a25d7d0000000b00d77bcceeb11mr65829ybg.10.1694195808968; Fri, 08 Sep
- 2023 10:56:48 -0700 (PDT)
-Date:   Fri,  8 Sep 2023 10:56:44 -0700
+        bh=ErZ/9dohV3kfQDHS+ABptN0u7+XrtGJQodsGEJaInJ0=;
+        b=Xsni1U/s6/75s8H8Itz/9uWenKxxOLXn4ncWia5y4EgLWlZYAWtd+suS9D3ZkUILHH
+         81zSAAZvN4HD1LsCYG+/dd278vpr7lCznE0WKMxGnOvxLx1/jLo5qReXgFHzjctO9F0t
+         xJMrfbICcMmgYtA4C3jJZoKeWxM1YN2abHedP+KYNmI1mBrE26oXZuLn5rHTmRk4LVHU
+         40tqslEos4XqNvtCad/Zp5mtmevArGvSj68Rh62wcQk+QeZresES4UmLFHEz4CqIBqiY
+         AtqL3qUHxl3NwkXLgVdg8/QSau0f6BiivY6jz0d8LUDefMs9lz6ooyVDRVpjFeB2no/6
+         Mm+g==
+X-Gm-Message-State: AOJu0YyN37he8fU/1A+UANPaKZtRQxZMYUF5/JX3XS35rfEL21qiEIp3
+        zc/4h2mjYdEeMjZJXx70Kx6Lx8ySXcnSQFnk
+X-Google-Smtp-Source: AGHT+IHIoFphFVujlKv0bW17vR3YnKxwcj2a41Lvx91RQMP11PbBJoLPxgodACZwwAjv+ntEO+ya/BHoHYpyXdwz
+X-Received: from mclapinski.waw.corp.google.com ([2a00:79e0:9b:0:aa82:a90b:b76f:32b0])
+ (user=mclapinski job=sendgmr) by 2002:ac2:5321:0:b0:502:9360:ca50 with SMTP
+ id f1-20020ac25321000000b005029360ca50mr51728lfh.1.1694195879603; Fri, 08 Sep
+ 2023 10:57:59 -0700 (PDT)
+Date:   Fri,  8 Sep 2023 19:57:36 +0200
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230908175644.2478924-1-sagis@google.com>
-Subject: [PATCH] x86/tdx: Allow extended topology CPUID leafs to be emulated
- by hypercall
-From:   Sagi Shahar <sagis@google.com>
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jun Nakajima <jun.nakajima@intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Vishal Annapurve <vannapurve@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Sagi Shahar <sagis@google.com>
+Message-ID: <20230908175738.41895-1-mclapinski@google.com>
+Subject: [PATCH v2 0/2] mm/memfd: add ioctl(MEMFD_CHECK_IF_ORIGINAL)
+From:   Michal Clapinski <mclapinski@google.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Yi Liu <yi.l.liu@intel.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Steve French <stfrench@microsoft.com>,
+        Simon Ser <contact@emersion.fr>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Luca Vizzarro <Luca.Vizzarro@arm.com>,
+        Jeff Xu <jeffxu@google.com>, Aleksa Sarai <cyphar@cyphar.com>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Verkamp <dverkamp@chromium.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Cc:     Michal Clapinski <mclapinski@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current TDX module does not handle extended topology leaves
-explicitly and will generate a #VE but the current #VE handler
-implementation blindly returns 0 for those CPUID leaves.
+This change introduces a way to check if an fd points to a memfd's
+original open fd (the one created by memfd_create).
 
-This currently causes TDX guests to see 0 values when querying the numa
-topology leading to incorrect numa configurations.
+We encountered an issue with migrating memfds in CRIU (checkpoint
+restore in userspace - it migrates running processes between
+machines). Imagine a scenario:
+1. Create a memfd. By default it's open with O_RDWR and yet one can
+exec() to it (unlike with regular files, where one would get ETXTBSY).
+2. Reopen that memfd with O_RDWR via /proc/self/fd/<fd>.
 
-This patch fixes this behavior by emulating the extended topology leaves
-using the CPUID hypercall.
+Now those 2 fds are indistinguishable from userspace. You can't exec()
+to either of them (since the reopen incremented inode->i_writecount)
+and their /proc/self/fdinfo/ are exactly the same. Unfortunately they
+are not the same. If you close the second one, the first one becomes
+exec()able again. If you close the first one, the other doesn't become
+exec()able. Therefore during migration it does matter which is recreated
+first and which is reopened but there is no way for CRIU to tell which
+was first.
 
-Change-Id: I427807e3ac8d9e3be50a6fac40ebd3f54b445b0c
-Signed-off-by: Sagi Shahar <sagis@google.com>
 ---
- arch/x86/coco/tdx/tdx.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+Changes since v1 at [1]:
+  - Rewrote it from fcntl to ioctl. This was requested by filesystems
+    maintainer.
 
-diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-index 1d6b863c42b0..db9a4673555a 100644
---- a/arch/x86/coco/tdx/tdx.c
-+++ b/arch/x86/coco/tdx/tdx.c
-@@ -321,13 +321,16 @@ static int handle_cpuid(struct pt_regs *regs, struct ve_info *ve)
- 	};
- 
- 	/*
--	 * Only allow VMM to control range reserved for hypervisor
--	 * communication.
-+	 * Only emulate CPUID in 2 cases:
-+	 * - CPUID is in the range reserved for hypervisor communication.
-+	 * - CPUID is an extended topology leaf which is not emulated natively
-+	 *   by the TDX module.
- 	 *
--	 * Return all-zeros for any CPUID outside the range. It matches CPU
--	 * behaviour for non-supported leaf.
-+	 * Return all-zeros for any other CPUID. It matches CPU behaviour for
-+	 * non-supported leaf.
- 	 */
--	if (regs->ax < 0x40000000 || regs->ax > 0x4FFFFFFF) {
-+	if ((regs->ax < 0x40000000 || regs->ax > 0x4FFFFFFF) &&
-+	    regs->ax != 0x0b && regs->ax != 0x1f) {
- 		regs->ax = regs->bx = regs->cx = regs->dx = 0;
- 		return ve_instr_len(ve);
- 	}
+Links:
+  [1] https://lore.kernel.org/all/20230831203647.558079-1-mclapinski@google.com/
+
+Michal Clapinski (2):
+  mm/memfd: add ioctl(MEMFD_CHECK_IF_ORIGINAL)
+  selftests: test ioctl(MEMFD_CHECK_IF_ORIGINAL)
+
+ .../userspace-api/ioctl/ioctl-number.rst      |  1 +
+ fs/hugetlbfs/inode.c                          |  9 ++++++
+ include/linux/memfd.h                         | 12 +++++++
+ mm/memfd.c                                    |  9 ++++++
+ mm/shmem.c                                    |  9 ++++++
+ tools/testing/selftests/memfd/memfd_test.c    | 32 +++++++++++++++++++
+ 6 files changed, 72 insertions(+)
+
 -- 
 2.42.0.283.g2d96d420d3-goog
 
