@@ -2,46 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF933798C15
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9543F798E97
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238067AbjIHSEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
+        id S238493AbjIHTCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:02:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343593AbjIHSEM (ORCPT
+        with ESMTP id S229957AbjIHTCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:04:12 -0400
+        Fri, 8 Sep 2023 15:02:30 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A539B1FF6;
-        Fri,  8 Sep 2023 11:03:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E076C43397;
-        Fri,  8 Sep 2023 18:02:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DDB3E46;
+        Fri,  8 Sep 2023 12:02:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA40DC433B9;
+        Fri,  8 Sep 2023 18:02:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196157;
-        bh=cWfzasjKc6OYRtp8td5HXClSIfRavFdl20grMYcqxao=;
+        s=k20201202; t=1694196158;
+        bh=FmxEL57wKOoZ8HJxy0Z4z4fZQdqvVjWyGKLslaCRunI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WBmTPYs0LxK/0Xv0RdPPXbzHEqNOyTOo7LQa1fVCRZ93ap32h5k/z15P9aErNBuwl
-         U2YGb+aW6wTK1hfUKjOnYfXNF0kqlHVhE7giMM5Yrg4LL9nimxdG6vQe3XmAggYXrn
-         al+jz/4XlYpc5yRMpCbp5e1LbHJ4TuEwgXuyEWNK+z49GM9aGn6RgnQ1R0X0z4eRjk
-         YS0rfkGov88Siuis5MbaNOPfBgZZfEBCFj+XGE5h607agxPrZrNwuuDCisBCTpVor9
-         CONxbb+pID8CHo1YnFy/nPQmp8MC+G+49x0AMEpx5aBMa10dhqZcfOpLyAnYsmKHL5
-         lZFoNHaG55hRg==
+        b=NCWx3QEeLhI15S/s7ziKkv2DjgUp5MHzPu8GlLgAcmJPSj0HqcKM/H8z4ixFbArGj
+         cI0Wt9/5SjELaBW6GF8SS+nUW64BirzFLwheDn/dmPYIyFApI4GSOgYsGOnJq5HVwT
+         xl1gd6/dNVyjtaze3JRIbqlhkwWgMovBVG1P3MnOIEFItPckO/WNVNm8qgE1PyaZ48
+         UaECkcBNMwcR6QVQMnt3CkrjRtqqm/8to+hCwJtczERZVj4rLxnWSYSxNXsqwXvSaO
+         bJtbdzA0ZraCGhpsMxpueQKohtTShtESJivc+zqFamg2YwPzqXItwgOxikoYQytbve
+         TTn6pk8mKroLA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mario Limonciello <mario.limonciello@amd.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>, rafael@kernel.org,
-        philipp.zabel@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux-acpi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 09/10] ACPI: x86: s2idle: Catch multiple ACPI_TYPE_PACKAGE objects
-Date:   Fri,  8 Sep 2023 14:02:01 -0400
-Message-Id: <20230908180203.3458330-9-sashal@kernel.org>
+Cc:     Zhangjin Wu <falcon@tinylab.org>,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Willy Tarreau <w@1wt.eu>, Sasha Levin <sashal@kernel.org>,
+        shuah@kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 10/10] selftests/nolibc: fix up kernel parameters support
+Date:   Fri,  8 Sep 2023 14:02:02 -0400
+Message-Id: <20230908180203.3458330-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908180203.3458330-1-sashal@kernel.org>
 References: <20230908180203.3458330-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.52
@@ -55,39 +54,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mario Limonciello <mario.limonciello@amd.com>
+From: Zhangjin Wu <falcon@tinylab.org>
 
-[ Upstream commit 883cf0d4cf288313b71146ddebdf5d647b76c78b ]
+[ Upstream commit c388c9920da2679f62bec48d00ca9e80e9d0a364 ]
 
-If a badly constructed firmware includes multiple `ACPI_TYPE_PACKAGE`
-objects while evaluating the AMD LPS0 _DSM, there will be a memory
-leak.  Explicitly guard against this.
+kernel parameters allow pass two types of strings, one type is like
+'noapic', another type is like 'panic=5', the first type is passed as
+arguments of the init program, the second type is passed as environment
+variables of the init program.
 
-Suggested-by: Bjorn Helgaas <helgaas@kernel.org>
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+when users pass kernel parameters like this:
+
+    noapic NOLIBC_TEST=syscall
+
+our nolibc-test program will use the test setting from argv[1] and
+ignore the one from NOLIBC_TEST environment variable, and at last, it
+will print the following line and ignore the whole test setting.
+
+    Ignoring unknown test name 'noapic'
+
+reversing the parsing order does solve the above issue:
+
+    test = getenv("NOLIBC_TEST");
+    if (test)
+        test = argv[1];
+
+but it still doesn't work with such kernel parameters (without
+NOLIBC_TEST environment variable):
+
+    noapic FOO=bar
+
+To support all of the potential kernel parameters, let's verify the test
+setting from both of argv[1] and NOLIBC_TEST environment variable.
+
+Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+Signed-off-by: Willy Tarreau <w@1wt.eu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/x86/s2idle.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ tools/testing/selftests/nolibc/nolibc-test.c | 33 ++++++++++++++++++--
+ 1 file changed, 31 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/x86/s2idle.c b/drivers/acpi/x86/s2idle.c
-index e499c60c45791..2e0778ddd0ad8 100644
---- a/drivers/acpi/x86/s2idle.c
-+++ b/drivers/acpi/x86/s2idle.c
-@@ -112,6 +112,12 @@ static void lpi_device_get_constraints_amd(void)
- 		union acpi_object *package = &out_obj->package.elements[i];
+diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+index 78bced95ac630..f8e8e8d2a5e18 100644
+--- a/tools/testing/selftests/nolibc/nolibc-test.c
++++ b/tools/testing/selftests/nolibc/nolibc-test.c
+@@ -630,6 +630,35 @@ static struct test test_names[] = {
+ 	{ 0 }
+ };
  
- 		if (package->type == ACPI_TYPE_PACKAGE) {
-+			if (lpi_constraints_table) {
-+				acpi_handle_err(lps0_device_handle,
-+						"Duplicate constraints list\n");
-+				goto free_acpi_buffer;
-+			}
++int is_setting_valid(char *test)
++{
++	int idx, len, test_len, valid = 0;
++	char delimiter;
 +
- 			lpi_constraints_table = kcalloc(package->package.count,
- 							sizeof(*lpi_constraints_table),
- 							GFP_KERNEL);
++	if (!test)
++		return valid;
++
++	test_len = strlen(test);
++
++	for (idx = 0; test_names[idx].name; idx++) {
++		len = strlen(test_names[idx].name);
++		if (test_len < len)
++			continue;
++
++		if (strncmp(test, test_names[idx].name, len) != 0)
++			continue;
++
++		delimiter = test[len];
++		if (delimiter != ':' && delimiter != ',' && delimiter != '\0')
++			continue;
++
++		valid = 1;
++		break;
++	}
++
++	return valid;
++}
++
+ int main(int argc, char **argv, char **envp)
+ {
+ 	int min = 0;
+@@ -655,10 +684,10 @@ int main(int argc, char **argv, char **envp)
+ 	 *    syscall:5-15[:.*],stdlib:8-10
+ 	 */
+ 	test = argv[1];
+-	if (!test)
++	if (!is_setting_valid(test))
+ 		test = getenv("NOLIBC_TEST");
+ 
+-	if (test) {
++	if (is_setting_valid(test)) {
+ 		char *comma, *colon, *dash, *value;
+ 
+ 		do {
 -- 
 2.40.1
 
