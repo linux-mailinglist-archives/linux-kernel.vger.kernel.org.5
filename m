@@ -2,114 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E637D7988AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5311F7988BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243880AbjIHO3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49366 "EHLO
+        id S243958AbjIHOab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbjIHO3I (ORCPT
+        with ESMTP id S243978AbjIHOa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:29:08 -0400
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571421BF5
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:29:04 -0700 (PDT)
-Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-7a5170c78e6so779877241.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 07:29:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1694183343; x=1694788143; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8aqh0zmf4yZbMkh2LM7vlZhrvNSdTYvOhnt75WUn3Y4=;
-        b=MKnWA5k33MpP5wbal+Z00tcw/ShWnqgxeMuLhEaus+1lPNAMpzd6cYE+Rx5a980lWd
-         XbcN39LDvRrYytk3aXpTv6DwRz4WkXjwCsQOSTPxSYaSOf32VtJjiQ2mxiWa6JuuzH5M
-         C+N1UvT04KZmW2rajGkGzeCfz3+IId6gDxiDTiSzyTyB8Uqbr+xRv5rYI6DovNNeFDkU
-         cskGPR6gGeBjB3xAXyZsDxxoJPj+y/nc8zRoR8YSbLkitLUKIImZFL/ppaXTKzFZC+fH
-         RPeWw+oaFwvsOh8TIfngWPE9lbMdfJUlr6u/WmcemTC48duXkht0QC6mtMqEGRLsEaVd
-         Jusw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694183343; x=1694788143;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8aqh0zmf4yZbMkh2LM7vlZhrvNSdTYvOhnt75WUn3Y4=;
-        b=ofzxKvHrZYiqA8cYNfnT88W7JYt0z9YH07DsouvToZEUZTbzmz/TW1AXtP/vxZJPFN
-         v6A2AtDwds8DUTYEFZDktiYMchOL2/OERk2aGR9aQG2dFIC6S8oHEwFs61cD11ke2P5k
-         qEF49RZrbyEwxXBcrS8TkC5KmF6rPhswYRio+6GtKShjh+F91noYKQaY5yRefNLSX0hB
-         TBdPbDcL9+y44EWhKOcRxBPWioosudNVvI1hiCuyyXm8cIlOkKqGHPDMXu2VW/EBV7QW
-         0OgF3+2R0a7d3lxxM37W3FIpmTMql/M3NmgVT21cOs/ZIdGHZBW0g8CoTKNmz8HQAVhg
-         CX8A==
-X-Gm-Message-State: AOJu0YxV9XRHPsL1s8sYZLkTq5UDoK6sP3Qco04SmwW2zVQM/D9zjI2z
-        9DJNJFvT+yq+LpIp3Zsd47b5DA==
-X-Google-Smtp-Source: AGHT+IHDsErZZ2cj+KD77fiOyqcvO+Iwf0pw8fDOjuWUBVlZwA9B6Ma2+vNWXjQWja50pqd7xFLkqQ==
-X-Received: by 2002:a05:6102:3541:b0:44e:b571:27af with SMTP id e1-20020a056102354100b0044eb57127afmr2853264vss.1.1694183343406;
-        Fri, 08 Sep 2023 07:29:03 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-134-41-202-196.dhcp-dynamic.fibreop.ns.bellaliant.net. [134.41.202.196])
-        by smtp.gmail.com with ESMTPSA id r19-20020a0ccc13000000b0064f523836fdsm735871qvk.123.2023.09.08.07.29.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 07:29:02 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qecTl-001IVr-SH;
-        Fri, 08 Sep 2023 11:29:01 -0300
-Date:   Fri, 8 Sep 2023 11:29:01 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Cc:     linux-rdma@vger.kernel.org, leon@kernel.org, zyjzyj2000@gmail.com,
-        linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
-        yangx.jy@fujitsu.com, lizhijian@fujitsu.com, y-goto@fujitsu.com
-Subject: Re: [PATCH for-next v6 7/7] RDMA/rxe: Add support for the
- traditional Atomic operations with ODP
-Message-ID: <ZPsvrTvT3CtsdWu5@ziepe.ca>
-References: <cover.1694153251.git.matsuda-daisuke@fujitsu.com>
- <908514dfa6bbeae72d36481d893674b254ee416d.1694153251.git.matsuda-daisuke@fujitsu.com>
+        Fri, 8 Sep 2023 10:30:26 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8C11FE1;
+        Fri,  8 Sep 2023 07:30:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1694183420; x=1725719420;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=KHR8Qc7/5doglix8W9O2Ns4ouxyrUJKNX4AIFv8kWLY=;
+  b=ab+4PIvAr91Hp4S8u4kH/m8e94fkIp/hSiD6ekfZKuvzHh8+tKfGpFDK
+   pwxtLAf5K7qjTacizyq5QPQ/nY0191oOdsi8NXU3yYcjdrHrOZmkn8dBo
+   PNwe2MkLK0E9Ydby21zsD/Ev92Fjlw5A5LpYtuOvKdpnqwbgzdrb+Lt4E
+   HEwdhgACfGVoWcDOH66LmSywXhykT0naKQaUoBi0Y+3G8aj+KFF+ik0Zu
+   4m2U9gmtx8+095+D+s7akMUGDGfgHD1dRTHejA8oD3O6hJF1z1pJUS0Pr
+   RAcAYTLcPW9nbO4/j+X7Wz+RnS80d20U/9w+YUv8kUKz/Qm7wja5B71uj
+   w==;
+X-CSE-ConnectionGUID: asNxVD5cQQC9XPoqMIkXxg==
+X-CSE-MsgGUID: j/lDpi6ASPmAIXsdJCS8dA==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
+   d="scan'208";a="3643518"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Sep 2023 07:30:19 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 8 Sep 2023 07:29:53 -0700
+Received: from CHE-LT-I17164LX.microchip.com (10.10.85.11) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Fri, 8 Sep 2023 07:29:45 -0700
+From:   Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+To:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <corbet@lwn.net>, <steen.hegelund@microchip.com>,
+        <rdunlap@infradead.org>, <horms@kernel.org>,
+        <casper.casan@gmail.com>, <andrew@lunn.ch>
+CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <horatiu.vultur@microchip.com>, <Woojung.Huh@microchip.com>,
+        <Nicolas.Ferre@microchip.com>, <UNGLinuxDriver@microchip.com>,
+        <Thorsten.Kummermehr@microchip.com>,
+        Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+Subject: [RFC PATCH net-next 0/6] Add support for OPEN Alliance 10BASE-T1x MACPHY Serial Interface
+Date:   Fri, 8 Sep 2023 19:59:13 +0530
+Message-ID: <20230908142919.14849-1-Parthiban.Veerasooran@microchip.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <908514dfa6bbeae72d36481d893674b254ee416d.1694153251.git.matsuda-daisuke@fujitsu.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 03:26:48PM +0900, Daisuke Matsuda wrote:
-> +int rxe_odp_mr_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
-> +			 u64 compare, u64 swap_add, u64 *orig_val)
-> +{
-> +	int err;
-> +	int retry = 0;
-> +	struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
-> +
-> +	mutex_lock(&umem_odp->umem_mutex);
-> +
-> +	/* Atomic operations manipulate a single char. */
-> +	if (rxe_odp_check_pages(mr, iova, sizeof(char), 0))
-> +		goto need_fault;
-> +
-> +	err = rxe_mr_do_atomic_op(mr, iova, opcode, compare,
-> +				  swap_add, orig_val);
-> +
-> +	mutex_unlock(&umem_odp->umem_mutex);
+This patch series contain the below updates,
+- Adds support for OPEN Alliance 10BASE-T1x MACPHY Serial Interface in the
+  net/ethernet/oa_tc6.c.
+- Adds driver support for Microchip LAN8650/1 Rev.B0 10BASE-T1S MACPHY
+  Ethernet driver in the net/ethernet/microchip/lan865x.c.
 
-You should just use the xarray spinlock, the umem_mutex should only be
-held around the faulting flow
+Parthiban Veerasooran (6):
+  net: ethernet: implement OPEN Alliance control transaction interface
+  net: ethernet: add mac-phy interrupt support with reset complete
+    handling
+  net: ethernet: implement OA TC6 configuration function
+  net: ethernet: implement data transaction interface
+  microchip: lan865x: add driver support for Microchip's LAN865X MACPHY
+  microchip: lan865x: add device-tree support for Microchip's LAN865X
+    MACPHY
 
-> +
-> +	return err;
-> +
-> +need_fault:
-> +	/* allow max 3 tries for pagefault */
-> +	do {
+ .../bindings/net/microchip,lan865x.yaml       |  54 ++
+ Documentation/networking/oa-tc6-framework.rst | 231 +++++
+ MAINTAINERS                                   |  15 +
+ drivers/net/ethernet/microchip/Kconfig        |  10 +
+ drivers/net/ethernet/microchip/Makefile       |   3 +
+ drivers/net/ethernet/microchip/lan865x.c      | 589 +++++++++++++
+ drivers/net/ethernet/oa_tc6.c                 | 807 ++++++++++++++++++
+ include/linux/oa_tc6.h                        | 130 +++
+ 8 files changed, 1839 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/microchip,lan865x.yaml
+ create mode 100644 Documentation/networking/oa-tc6-framework.rst
+ create mode 100644 drivers/net/ethernet/microchip/lan865x.c
+ create mode 100644 drivers/net/ethernet/oa_tc6.c
+ create mode 100644 include/linux/oa_tc6.h
 
-Why a retry loop? We already have a retry loop in
-ib_umem_odp_map_dma_and_lock,it doesn't need to be done externally. If
-you reach here with the lock held then progress should be guarenteed
-under the lock.
+-- 
+2.34.1
 
-Jason
