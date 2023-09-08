@@ -2,93 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A043C799157
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 23:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E28C979915D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 23:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237253AbjIHVAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 17:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
+        id S239972AbjIHVFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 17:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbjIHVAr (ORCPT
+        with ESMTP id S229959AbjIHVFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 17:00:47 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0706ADC
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 14:00:44 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d7e9d849bdfso2228693276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 14:00:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694206843; x=1694811643; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gh18cb+B4DQiVqR2FUjNTiQ8Lh4wfYdzCcaNqcauz90=;
-        b=CpNgAR1U5bRgvwfdGTgrAj4+GXpWl9u6z6aBoKW5bjG53DwciuPwMZ0+4KGNJm8jBS
-         GskrY5CT9NFVqYMbn6ApKqS5YF4TE+JEKV42vcnAi8Wdh1tdky9Q89W+D1Pg/yF2V5uB
-         XFHBBXCB8pdvTfZhaG9PAhLQAyQhfRT0asJCjLROQZSPSgjXYo627HgXc3CFDFEAxrWR
-         XeRN2v7p0jqd1S8/xsc3DgT5+IbNw3S5g+oUBtBomiA8ZrjIEAC0O6tRWij8fqPvy/+9
-         niXravnZCnVK5Tqxa8E6LyLOz5/Ba5AfDTfQtTJ/bhwfGdN4vun/HpoBMMAgNc3KfUb8
-         6Y4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694206843; x=1694811643;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gh18cb+B4DQiVqR2FUjNTiQ8Lh4wfYdzCcaNqcauz90=;
-        b=Stf4xu847RUorNmg5LZSu5UrMhooyFO7OxyWqLLstyBQox1XcXcpLhaQhQfNPcWeRe
-         leof8XIP1dY7HIciVkTzmb9nszg0NJiGzlpBSH99nCg4aa6IEBzh/9AsSQ4A8cMU1Iaz
-         6BYUXy+elvPrQYZPPz/kynnCEjrwTQTEBDK9vypKYS+89aHmEp7uv8w4qjzQd6UXWj3I
-         6Rj9qMRI4OJ8r+NyZl+bi/CtaP7oWE5Gudd3sXKrS81Bywbcx85/dOvaAsgMIPoBlCds
-         Iqc8+oKWPAydqktDI/tu5gWT+VNu88Fsd3IHx54dRz024K2prlAhoL0X4oFm86vX2GUY
-         oVaA==
-X-Gm-Message-State: AOJu0YzGoHrfIj8cep4GxYEPhPduBYb4v1dkp/P9lLzP2ikw8VfFXp16
-        UzRAQS7KOZAI34H7zFD5ALzi4MruI9GqFYZeIxY+SA==
-X-Google-Smtp-Source: AGHT+IHkEpImwbbsHeSlP6vaeEcHIvp1Q6piKEPtcNTxlSMYR8qKJjRwHSrRyCqbNK4QvGQ2NZIZknHe6PF50W7CxKk=
-X-Received: by 2002:a05:6902:704:b0:d12:77c7:b362 with SMTP id
- k4-20020a056902070400b00d1277c7b362mr4350629ybt.26.1694206843217; Fri, 08 Sep
- 2023 14:00:43 -0700 (PDT)
+        Fri, 8 Sep 2023 17:05:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9C7DC;
+        Fri,  8 Sep 2023 14:05:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D24F6C433C8;
+        Fri,  8 Sep 2023 21:05:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694207140;
+        bh=dxWq3a40k4nq/qHAcdtI8V30AcoMjsEC7R5DUmpbfdg=;
+        h=From:Date:Subject:To:Cc:From;
+        b=odd96rv24s+evSelU7hMhmYgDjmzjTmM8nYKIIHwlmhvivVRQ9KmHGmt1sj2UtCKg
+         Oj01mXLeg+9zD2VIe1S4SeJtxLNbliZeYbh5NY/TejcqmCl+PUGo+9tLoPYglXqrXH
+         Xc7Ep9DC2DipuLQ5/RxejOy1KIMH3f7wgjTEnSQRAOYaNz8X51DUQjalGRvAHm0aNB
+         uAht53f+BR3FWqbrS4Uf3TTEdPzR1ybemvOyBmpxq54QOTJ6W4Jhfib1HNl+lbtbVn
+         kVVj1rROe4kEueEVlOeeok/6MCi9KAa7DnxIbBMB6/QW3mUsgB/EVIiunW5efN/TYB
+         eI6omge8uTszA==
+From:   Jeff Layton <jlayton@kernel.org>
+Date:   Fri, 08 Sep 2023 17:05:27 -0400
+Subject: [PATCH] fs: fix regression querying for ACL on fs's that don't
+ support them
 MIME-Version: 1.0
-References: <20230907143302.4940-1-zhizhou.zh@gmail.com> <CACRpkdY=EYQfRrUaw5JL5e0x2p=KurYfwvfunJ+GF1PmupKNqg@mail.gmail.com>
- <ZPsmiV9I4qbqpAsO@shell.armlinux.org.uk>
-In-Reply-To: <ZPsmiV9I4qbqpAsO@shell.armlinux.org.uk>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 8 Sep 2023 23:00:31 +0200
-Message-ID: <CACRpkdYdf9H=LNRZMPurzTcA+bqoOHC1n-8TeCnVdz_iF7H+NA@mail.gmail.com>
-Subject: Re: [PATCH] ARM: mm: fix stack corruption when CONFIG_ARM_PV_FIXUP=y
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Andrew Davis <afd@ti.com>, Nishanth Menon <nm@ti.com>,
-        Zhizhou Zhang <zhizhou.zh@gmail.com>
-Cc:     rppt@kernel.org, akpm@linux-foundation.org, vishal.moola@gmail.com,
-        arnd@arndb.de, wangkefeng.wang@huawei.com, willy@infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Zhizhou Zhang <zhizhouzhang@asrmicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230908-acl-fix-v1-1-1e6b76c8dcc8@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAJaM+2QC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDSwML3cTkHN20zApdszSLNAszS2ODNGMjJaDqgqJUoDDYpOjY2loAFB6
+ 0GlkAAAA=
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Ondrej Valousek <ondrej.valousek.xm@renesas.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1691; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=dxWq3a40k4nq/qHAcdtI8V30AcoMjsEC7R5DUmpbfdg=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBk+4yevlsFLk7zQiTjnLAzT41hSIXwyqtHtuLCH
+ RFYntk2bTKJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZPuMngAKCRAADmhBGVaC
+ FWZwEACuuHr6UkgTusVlJX2MpCk/15F3oQnuqNe8rulZLY0t9TxM8lFPNain5C8DP46oHzHXp5g
+ u/FSgjtfZtPpxsOLAMqPVIPU2JLC3H9mYQBaS0vQVPN/z7xdpnJYES0T2yoitsgfwV0ejY/xfKa
+ T/qlYRqBf2EvcS1Wu/Qdm+K1xSkL+A3SQcV+ivJZwpGWmSMkFv6qETAfMx06SkOi/IPM7TmI9pb
+ boVfrUfkRi+QboDVYvdAgwNTObF5nhI2urJp8XiJHX4WonQFCNSahshEl4Q/nJzK/JH5WtcyGNZ
+ jD29Kw0PSdlb+ta4tGKisgqPKokZ8oqyFsuar2kEdYC7nB/lnye6HHd6p8CHFfFArq3ud9dfpBG
+ MynjtLmCpONQUoU6ZGSrNIrD0x7QdVRA3AJJ5juNHtPSHuYlTslnZXVmpFgh886TajYzWeATO7H
+ vrz8CvI0iFlHXuHkJEoEzZ/fZ/V5p7OadpZ9M0a0teSkL5F1eKqIBxC9gBB97uB0G657burAJXN
+ ATeaLm+d+SeHJFGlF7aVLbDfXVlUGBHdkBtmAiif62IO9+AjVRy2xIYa2a3JVg5k5RwI++7xRO0
+ dK6VkZThTTmnU32GDLUez0Pr4TmDWmpEtsRazKf+EAwcI1WJq6riB98XjTIJsVFeNnuBWAPaY8S
+ 3CEVNB4JhDhlWYw==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 8, 2023 at 3:50=E2=80=AFPM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
+In the not too distant past, the VFS ACL infrastructure would return
+-EOPNOTSUPP on filesystems (like NFS) that set SB_POSIXACL but that
+don't supply a get_acl or get_inode_acl method. On more recent kernels
+this returns -ENODATA, which breaks one method of detecting when ACLs
+are supported.
 
-> However, it makes a total nonsense of the comment, which explains
-> precisely why the flush_cache_all() is where it is. Moving it before
-> that comment means that the comment is now rediculous.
+Fix __get_acl to also check whether the inode has a "get_(inode_)?acl"
+method and to just return -EOPNOTSUPP if not.
 
-Zhizhou, can you look over the comment placement?
+Reported-by: Ondrej Valousek <ondrej.valousek.xm@renesas.com>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+This patch is another approach to fixing this issue. I don't care too
+much either way which approach we take, but this may fix the problem
+for other filesystems too. Should we take a belt and suspenders
+approach here and fix it in both places?
+---
+ fs/posix_acl.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-> So, please don't put it in the patch system.
->
-> The patch certainly needs to be tested on TI Keystone which is the
-> primary user of this code.
+diff --git a/fs/posix_acl.c b/fs/posix_acl.c
+index a05fe94970ce..4c7c62040c43 100644
+--- a/fs/posix_acl.c
++++ b/fs/posix_acl.c
+@@ -130,8 +130,12 @@ static struct posix_acl *__get_acl(struct mnt_idmap *idmap,
+ 	if (!is_uncached_acl(acl))
+ 		return acl;
+ 
+-	if (!IS_POSIXACL(inode))
+-		return NULL;
++	/*
++	 * NB: checking this after checking for a cached ACL allows tmpfs
++	 * (which doesn't specify a get_acl operation) to work properly.
++	 */
++	if (!IS_POSIXACL(inode) || (!inode->i_op->get_acl && !inode->i_op->get_inode_acl))
++		return ERR_PTR(-EOPNOTSUPP);
+ 
+ 	sentinel = uncached_acl_sentinel(current);
+ 	p = acl_by_type(inode, type);
 
-Added Andrew Davis and Nishanth Menon to the thread:
-can you folks review and test this for Keystone?
+---
+base-commit: a48fa7efaf1161c1c898931fe4c7f0070964233a
+change-id: 20230908-acl-fix-6f8f86930f32
 
-Yours,
-Linus Walleij
+Best regards,
+-- 
+Jeff Layton <jlayton@kernel.org>
+
