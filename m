@@ -2,284 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93EA8798B97
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 19:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E70EE798B9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 19:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244949AbjIHRuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 13:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37806 "EHLO
+        id S243750AbjIHR4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 13:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236775AbjIHRuE (ORCPT
+        with ESMTP id S235668AbjIHR4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 13:50:04 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009D81FC9
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 10:49:59 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-76d846a4b85so862275241.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 10:49:59 -0700 (PDT)
+        Fri, 8 Sep 2023 13:56:53 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17B21FCA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 10:56:49 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d780a0d3cefso2195323276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 10:56:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google; t=1694195399; x=1694800199; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qxkJiBKLveTjR/MyjvH4BgWR32mfxg/8UW+rZs4kCOM=;
-        b=T1NNv06h/qjDjtVBaLGVroaW7NGJTwQNHKLQDgzWig8fdIRKary97o9jEViPxV5gfP
-         sb/tiQKTiBeCy+Qf0ueQj16nIgdcIEKunVcQnh3IWBOVgT+iqgAXkaNXyKl9IrtHB8dU
-         C8e3+rHYR7s2RpXHE6SB5s05TbdjiwBf/vD9azzvshRATNdTpJJFZgBwNR7WYu+dQT6G
-         ntV1U93abCfHhZUHS5wfAtoKvKc3jGDRASiJ+ZDcf1sw4PvjB5zuptTHqj2GusV23FYP
-         wwD8oj5Qe4E9hkkzqxm+oKYrzh8K5KfCVFQUAfPgdu9ODl/V8Z0mgN9MeKDXxI4AZH+j
-         GiMQ==
+        d=google.com; s=20221208; t=1694195809; x=1694800609; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=sm/GVlmeHT2HjPSaV/RDHBoToFYHbp3bUGhZJgMdMmw=;
+        b=0jG0/2f0PfKOx0VDJQmWxIWGxQ/NZVhUQ1qFOl99Er3164aVoXG615Fser1XzIMg0U
+         D0Awptk4YCj5B38PV91xwF5SD96SOyW0f3e1Xe0ygzcnqa2YxvxoSvUWJWOQ6a6+cu0B
+         VSUbv+aWhzjCI5i8vTgWxkIQAVuC6J1gHmP4N/+XMrIkEJNJNSt73B3ZrZVwOTJuRFlj
+         kLdmJp7cadZAkRfY4/EmmlaCPOV2wtWnRCS2jKFaIQBYan5sjITQvM8MsauVJwu1pp0M
+         cqnOoibFUxaKcf/qb0vV4G1U/D23L5y9LW3KLxykcf1Tf6zf5i88SOg2h+mqASGsIuP5
+         RFbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694195399; x=1694800199;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qxkJiBKLveTjR/MyjvH4BgWR32mfxg/8UW+rZs4kCOM=;
-        b=Z35hrVAc5UH159ovlZvjzLaGDF6026dYY7Lnn0wSGwSeaHFEZLYwE0iqeTwFXZGYJV
-         BOAXk8DjCbN38f7AXaCasovmS2qtdCD1w4H+KtRi3/9kgvO+f8osU59gTLI8etEbAxHr
-         k+z7D+Pf6M0TUFBHTjyKYXpLIxqH8/KqV0ZI9VzAtguyuwijIJGBhqpCSerzt/93rj83
-         FqLOv2zpTaNNiLrOOp/yAFmY2J8s4Q+LRuiBZ0cx7D9bq61TXLERpHsRQq+KJdRVotbR
-         XN8ANUpGDAIFghv2wV0wX5GXj5LiLvoUbdc+e7kEPdyqw2iqg/mUOc3fmbNtFLLvxufW
-         eMug==
-X-Gm-Message-State: AOJu0Yxxx4B8nvDzkj1LtTpTz3/nRf/dxxdFzXN3aWI1c9tG/9kk9qoZ
-        Tle1nq7zLTtxRR4J8ukNJNHzT6jXKlctHXEW8Ln/Kg==
-X-Google-Smtp-Source: AGHT+IGawjhNhMCD6wKUit8+66aH+EtzGvqGSZLgsVqp8xopld5IS+giA+svIo6DY0gy8EZu4aziUKcvEm8x4vLF5dM=
-X-Received: by 2002:a67:fe92:0:b0:44d:482a:5444 with SMTP id
- b18-20020a67fe92000000b0044d482a5444mr3406902vsr.21.1694195399082; Fri, 08
- Sep 2023 10:49:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230908124344.171662-1-umang.jain@ideasonboard.com>
- <20230908124344.171662-3-umang.jain@ideasonboard.com> <vp3bbkaibfzdxzgv5xedpneqtyxqxlvioou5whb567s5txtgve@a4xr3wtmjqzu>
- <CAPY8ntCYz3D77R7G+JTKvOWW4uNTj-wKrsjJ7ASw_RoN4FU-ow@mail.gmail.com> <169419419630.3437168.7121485951334169757@ping.linuxembedded.co.uk>
-In-Reply-To: <169419419630.3437168.7121485951334169757@ping.linuxembedded.co.uk>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Fri, 8 Sep 2023 18:49:42 +0100
-Message-ID: <CAPY8ntAQvKhrFBP6b=RxOSc+siB+fwEep+83Y=gVcQeiLTUk3A@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] media: i2c: Add driver for IMX519 sensor
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
-        Umang Jain <umang.jain@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jackson <lee.jackson@arducam.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Shawn Tu <shawnx.tu@intel.com>
+        d=1e100.net; s=20230601; t=1694195809; x=1694800609;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sm/GVlmeHT2HjPSaV/RDHBoToFYHbp3bUGhZJgMdMmw=;
+        b=Z+60qTCR6nXspY55hr/k82f/5IfPUrL+Pl4o77Bi14GU5U/iQ/xgDLxMFQ9GSSq47D
+         pNG1oXxZT2cgmc+J2+imUF1eWxuR3CEgJNTbA4ddr14Gsgjz0Fu8Vc437m4jj9JzxswK
+         qojJphPDGxRMty47F3FwqCX0c1nUxEMZTFzyPZ6VD4ou0Ps9gUB0XJEgC0t498C3slZ7
+         NvmY4GtjunnpRSL47Bo0zSJiV1Sr99TxVaYH4vJ4Gn6lKF/pgLYVsO5XkV78iRmp2Bb+
+         UFTcRp+rxbJP0Qo/7cME6RuAQySWVnYy6wI9fo5V1Dd6ohOA4apqRukhL5SVLtTA8pyc
+         RPxg==
+X-Gm-Message-State: AOJu0Yzb3ptPguFUgK3uU1qEZp13f3lEAbT/PGYRgVjYMoxpl6fAER8u
+        ZtnDzsGinMxzPHI0vZZuKSW5ghkabA==
+X-Google-Smtp-Source: AGHT+IGbH9h3+1Y2V0Rq0JiRLyDE+YvbbZH0ToxlJtk7Svq8q3keOY/ii6n+qTBrDMd2Bg6pEy4BFOzkxg==
+X-Received: from sagi.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:241b])
+ (user=sagis job=sendgmr) by 2002:a25:d7d0:0:b0:d77:bcce:eb11 with SMTP id
+ o199-20020a25d7d0000000b00d77bcceeb11mr65829ybg.10.1694195808968; Fri, 08 Sep
+ 2023 10:56:48 -0700 (PDT)
+Date:   Fri,  8 Sep 2023 10:56:44 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
+Message-ID: <20230908175644.2478924-1-sagis@google.com>
+Subject: [PATCH] x86/tdx: Allow extended topology CPUID leafs to be emulated
+ by hypercall
+From:   Sagi Shahar <sagis@google.com>
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Vishal Annapurve <vannapurve@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Sagi Shahar <sagis@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran
+The current TDX module does not handle extended topology leaves
+explicitly and will generate a #VE but the current #VE handler
+implementation blindly returns 0 for those CPUID leaves.
 
-On Fri, 8 Sept 2023 at 18:30, Kieran Bingham
-<kieran.bingham@ideasonboard.com> wrote:
->
-> Hi Dave,
->
-> Quoting Dave Stevenson (2023-09-08 17:57:01)
-> > Hi Jacopo
-> >
-> > On Fri, 8 Sept 2023 at 17:24, Jacopo Mondi
-> > <jacopo.mondi@ideasonboard.com> wrote:
-> > >
-> > > Hi Umang
-> > >
-> > > On Fri, Sep 08, 2023 at 08:43:44AM -0400, Umang Jain wrote:
-> > > > From: Lee Jackson <lee.jackson@arducam.com>
-> > > >
->
-> ... <snip>
->
-> > > > +/* Power/clock management functions */
-> > > > +static int imx519_power_on(struct device *dev)
-> > > > +{
-> > > > +     struct i2c_client *client = to_i2c_client(dev);
-> > > > +     struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> > > > +     struct imx519 *imx519 = to_imx519(sd);
-> > > > +     int ret;
-> > > > +
-> > > > +     ret = regulator_bulk_enable(ARRAY_SIZE(imx519_supply_name),
-> > > > +                                 imx519->supplies);
-> > > > +     if (ret) {
-> > > > +             dev_err(&client->dev, "%s: failed to enable regulators\n",
-> > > > +                     __func__);
-> > > > +             return ret;
-> > > > +     }
-> > > > +
-> > > > +     ret = clk_prepare_enable(imx519->xclk);
-> > > > +     if (ret) {
-> > > > +             dev_err(&client->dev, "%s: failed to enable clock\n",
-> > > > +                     __func__);
-> > > > +             goto reg_off;
-> > > > +     }
-> > > > +
-> > > > +     gpiod_set_value_cansleep(imx519->reset_gpio, 1);
-> > >
-> > > Usually on power_on the reset/poweron gpios are set to logical 0.
-> > > If this works for you I think you need to invert the line polarity in
-> > > your .dts.
-> >
-> > XCLR needs to go high for IMX519 to power on.
-> > I think it possibly depends on what you've named it - reset vs power_on
-> >
-> > Quick sample (admittedly on 6.1 as that's what I happen to have):
-> > gpiod_set_value_cansleep(XXX_gpio, 1); in power_on.
-> > - imx219
-> > - imx214
-> > - imx274
-> > - imx334
-> > - imx335
-> > - ov7251
-> >
-> > gpiod_set_value_cansleep(XXX_gpio, 0) in power_on
-> > - imx290
-> > - imx296
-> > - imx412
->
-> As this is a camera connected using the Raspberry Pi connector - I have
-> been looking in this area too to add support for an IMX283.
->
-> It occured to me that the GPIO line on the RPi Camera Connector seems to
-> be named 'POWER_EN' ... and is usually responsible for enabling the
-> power to the regulators on the camera module...
->
-> It seems to me more 'clean/clear' to do something like the following:
->
->
-> / {
->         /* 12 MHz Crystal on the camera module */
->         imx283_inclk_0: imx283-inclk-12m {
->                 compatible = "fixed-clock";
->                 #clock-cells = <0>;
->                 status = "okay";
->                 clock-frequency = <12000000>;
->         };
->
->         reg_imx283_0_3v3: regulator-imx283-0-vdd3v3 {
->                 compatible = "regulator-fixed";
->                 pinctrl-names = "default";
->                 pinctrl-0 = <&pinctrl_csi0_pwdn>;
->                 regulator-min-microvolt = <3300000>;
->                 regulator-max-microvolt = <3300000>;
->                 regulator-name = "IMX283_0_POWER";
->                 gpio = <&gpio2 11 GPIO_ACTIVE_HIGH>;
->                 vin-supply = <&reg_csi1_3v3>;
->                 startup-delay-us = <300000>;
->                 enable-active-high;
->         };
-> };
->
->
-> &i2c2 {
->         sensor@1a {
->                 compatible = "sony,imx283";
->                 reg = <0x1a>;
->
->                 clocks = <&imx283_inclk_0>;
->                 clock-names = "xclk";
->
->                 rotation = <180>;
->                 orientation = <0>;
->
->                 status = "okay";
->
->                 VANA-supply = <&reg_imx283_0_3v3>; /* Analog 2.8v */
->                 VDIG-supply = <&reg_imx283_0_3v3>; /* Digital Core 1.05v */
->                 VDDL-supply = <&reg_imx283_0_3v3>; /* IF 1.8v */
->
->                 port {
->                         imx283_0_ep: endpoint {
->                                 remote-endpoint = <&mipi_csi_0_in>;
->                                 clock-lanes = <0>;
->                                 data-lanes = <1 2 3 4>;
->                         };
->                 };
->         };
-> };
->
->
-> I wondered if that's more clear than using a 'reset' line which isn't
-> actually what the schematics show.
+This currently causes TDX guests to see 0 values when querying the numa
+topology leading to incorrect numa configurations.
 
-That's almost exactly what Raspberry Pi do :-)
-About the only difference is that our overlays only assign one supply
-(generally vana) to the regulator that controls the GPIO, with the
-others attached to a dummy regulator.
+This patch fixes this behavior by emulating the extended topology leaves
+using the CPUID hypercall.
 
-It's a little spread between files, but combine:
-https://github.com/raspberrypi/linux/blob/rpi-6.1.y/arch/arm/boot/dts/overlays/imx219.dtsi
-https://github.com/raspberrypi/linux/blob/rpi-6.1.y/arch/arm/boot/dts/overlays/imx219-overlay.dts
-with cam1_reg definition in
-https://github.com/raspberrypi/linux/blob/rpi-6.1.y/arch/arm/boot/dts/bcm270x.dtsi#L178-L184
-and then the per board configuration of where the control GPIO is in
-https://github.com/raspberrypi/linux/blob/rpi-6.1.y/arch/arm/boot/dts/bcm2711-rpi-4-b.dts#L396-L398
+Change-Id: I427807e3ac8d9e3be50a6fac40ebd3f54b445b0c
+Signed-off-by: Sagi Shahar <sagis@google.com>
+---
+ arch/x86/coco/tdx/tdx.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-You'll find the same arrangement for the imx519 in imx519.dtsi and
-imx519-overlay.dts
+diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+index 1d6b863c42b0..db9a4673555a 100644
+--- a/arch/x86/coco/tdx/tdx.c
++++ b/arch/x86/coco/tdx/tdx.c
+@@ -321,13 +321,16 @@ static int handle_cpuid(struct pt_regs *regs, struct ve_info *ve)
+ 	};
+ 
+ 	/*
+-	 * Only allow VMM to control range reserved for hypervisor
+-	 * communication.
++	 * Only emulate CPUID in 2 cases:
++	 * - CPUID is in the range reserved for hypervisor communication.
++	 * - CPUID is an extended topology leaf which is not emulated natively
++	 *   by the TDX module.
+ 	 *
+-	 * Return all-zeros for any CPUID outside the range. It matches CPU
+-	 * behaviour for non-supported leaf.
++	 * Return all-zeros for any other CPUID. It matches CPU behaviour for
++	 * non-supported leaf.
+ 	 */
+-	if (regs->ax < 0x40000000 || regs->ax > 0x4FFFFFFF) {
++	if ((regs->ax < 0x40000000 || regs->ax > 0x4FFFFFFF) &&
++	    regs->ax != 0x0b && regs->ax != 0x1f) {
+ 		regs->ax = regs->bx = regs->cx = regs->dx = 0;
+ 		return ve_instr_len(ve);
+ 	}
+-- 
+2.42.0.283.g2d96d420d3-goog
 
-Exposing the (optional) reset GPIO is generally so that it is
-accurately describing the hardware, and there is the option for
-driving all regulators, clocks, and reset lines from the SoC.
-
-> > > > +     usleep_range(IMX519_XCLR_MIN_DELAY_US,
-> > > > +                  IMX519_XCLR_MIN_DELAY_US + IMX519_XCLR_DELAY_RANGE_US);
-> > >
-> > > fsleep() will do
-> > >
-> > > > +
-> > > > +     return 0;
-> > > > +
-> > > > +reg_off:
-> > > > +     regulator_bulk_disable(ARRAY_SIZE(imx519_supply_name), imx519->supplies);
-> > > > +
-> > > > +     return ret;
-> > > > +}
-> > > > +
-> > > > +static int imx519_power_off(struct device *dev)
-> > > > +{
-> > > > +     struct i2c_client *client = to_i2c_client(dev);
-> > > > +     struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> > > > +     struct imx519 *imx519 = to_imx519(sd);
-> > > > +
-> > > > +     gpiod_set_value_cansleep(imx519->reset_gpio, 0);
-> > > > +     regulator_bulk_disable(ARRAY_SIZE(imx519_supply_name), imx519->supplies);
-> > > > +     clk_disable_unprepare(imx519->xclk);
-> > >
-> > > Usually, the reverse power up sequence is used. It shouldn't make any
-> > > difference, unless the datasheet prescribes this sequence.
-> >
-> > I'd agree.
-> > T1 from XCLR falling to VANA/VDIG/VIF falling is 0us, so XCLR must go
-> > low first. VANA, VDIG, and VIF can then fall in any order.
-> >
-> > The diagram shows INCK stopping before XCLR is dropped.
-> > Driving a clock signal into powered down electronics is generally "a
-> > bad thing", so the clock should be stopped before the regulators are
-> > killed.
-> >
-> > Again this is copied from imx477. Our modules don't matter as all 3
-> > regulators, clock, and XCLR are sequenced off one GPIO.
->
-> Indeed, that's the part that makes me think modelling the regulator part
-> rather than a reset gpio could potentially make sense, but I'm sure this
-> is one of those scenarios that someone is about to shoot down my idea
-> ;-)
-
-Going back about 4 years I used to have the firmware patching the
-reset GPIO for the relevant sensor driver.
-
-That fell apart with the CM4 where there is one shutdown line fed to
-both camera ports - only one driver instance could claim the GPIO.
-Switching to regulators meant that the regulator framework did all the
-required refcounting for me, and life was happy again. It is also
-easier to define the relevant GPIO for the regulator at a platform
-level, rather than in the overlays, therefore the firmware didn't need
-to do any patching.
-
-  Dave
