@@ -2,148 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5BC79845D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FFBA798461
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbjIHIpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 04:45:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
+        id S237952AbjIHIrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 04:47:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbjIHIpY (ORCPT
+        with ESMTP id S230267AbjIHIrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 04:45:24 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 984851BE6
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 01:45:19 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5298e43bb67so3793716a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 01:45:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694162718; x=1694767518; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3WUNiLVD++qm82FWP5F8dE4ZgUSonnEZgMZ3dOtWEkk=;
-        b=htzIm4TaGFbU24/iWWKJfkDXL7eV22TNTKxOTHL4tLUMR8xQHIgH0sPvglPkgdTau4
-         uzAPHAf4H8MojN0lpPeO8C4X2ojmVewdVjDeLV5w9725IrKSRJ1hYkkusRNk62L/OLb8
-         TCP8373lg4FAuIEgj5OmQvQ3wo68Wd6Xn/MOJwh5wY7P2x+n1vcfD7ozIf/kyK4qI1eB
-         gaQIHHJ0AWsAawr1gwNRorMUvfQYg/fsQFFHJXCIpuXyG2oBMgwwmetI2EcbC/3liFbc
-         pTRyUQDk3JvG+hYiSyD3QfPC9Q91pDoB2luDHaSifJ6HNfosH8jRLhvRvJmyprGcdDFf
-         xpYg==
+        Fri, 8 Sep 2023 04:47:03 -0400
+Received: from mail-pg1-f208.google.com (mail-pg1-f208.google.com [209.85.215.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B291BE6
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 01:46:58 -0700 (PDT)
+Received: by mail-pg1-f208.google.com with SMTP id 41be03b00d2f7-573c84224easo2531011a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 01:46:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694162718; x=1694767518;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3WUNiLVD++qm82FWP5F8dE4ZgUSonnEZgMZ3dOtWEkk=;
-        b=YP6E6NvhYKlsZ73Fn8CUYH+5OgMTA8vZ1K+E+pg+pQ5mJUAsiBFbwujSxJXggvS6Vo
-         hNiWM2073q0Osg7LD86GyHdKwucvbSBay0JfcjAhxacuxPqK2w2d4vSMo7BStM0u5OlR
-         qjr5uomBWyTcjMkD5a5ZU0aR9hmrhfigMXmJJ4Dfz77fA+yV0icpg6a+To9NubfAIgSM
-         Oc8MmED4lJIh4pDdZ2CB4xcp10S94+ozUrJhkEO4n6dRP+5SnDR7hFr85P0uhc3LDFnq
-         XZM7E++rT/bWWfura74/bjuIz2oVkMLwjznrPippmF/ZhhjQ4rjztVaJsd7FcLDjbkvR
-         G5QA==
-X-Gm-Message-State: AOJu0Yx5oBlLJrtnGOZhz2yBXydJTvYyNulGxy7cm0XgDzN3kN4fAxSp
-        JHIHQEKJS5gAOjHu8ART/EgSRA==
-X-Google-Smtp-Source: AGHT+IHqZy4xk8TsnArgjHAFrCdwQ96Tz1rGFJJ7vCeFdpApJuwicPC1Cy+jgNAB+bFB6dWsisFXpQ==
-X-Received: by 2002:aa7:d7cd:0:b0:525:b29d:8dc8 with SMTP id e13-20020aa7d7cd000000b00525b29d8dc8mr2298677eds.5.1694162718077;
-        Fri, 08 Sep 2023 01:45:18 -0700 (PDT)
-Received: from [192.168.37.232] (178235177197.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.197])
-        by smtp.gmail.com with ESMTPSA id l9-20020aa7c309000000b0052a19a75372sm726329edq.90.2023.09.08.01.45.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Sep 2023 01:45:17 -0700 (PDT)
-Message-ID: <d0d6825a-97f7-405b-910e-772100c325a9@linaro.org>
-Date:   Fri, 8 Sep 2023 10:45:14 +0200
+        d=1e100.net; s=20230601; t=1694162817; x=1694767617;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FMXJpghyOhqovU2L13PsGuPmT91hB5S49awdBDMBk38=;
+        b=sreiPAQUE5JXg+zNqixTKugyv62crU2eFf0kYyGo2ChnNOiSyAR07JcKY3JpxgBWAF
+         iwH5ujXu7q5/rn6/hnVyKXai181q6Zxmyt573SBPz6nPMB2UyNDtgocueH3Di/TYFyg2
+         8EF8T2SWDeSnVS97inxbxv1sKF9zNu+LcLOS586kK0aQ6JibL6Z9RtrtKEMiFJ01wg6G
+         E0KQfQw0iBEwUE2luSwTKo3yYUiCTHZYPln3S/+IeyK1ce5fpm2KfrOZaRP8H1ZatWW3
+         59X2a6CZSYITWmu4x8SXcxuifgAyJqBl+isYZyXyM5piDf35Ckt23N5Ix5+7r21k9vmv
+         Ukww==
+X-Gm-Message-State: AOJu0YxtrSj78DRMdPqKH2iB2YRBfN5RBkY94jmOABDmliesUAwZnUrL
+        982q0Jpp9gf76ycK+qjGsJJn0OJx3ryjBXt6rON0WIXs0qbm
+X-Google-Smtp-Source: AGHT+IGmNiE55XOWrc5iYbCsONV42puRMimYScq1DXkM0RskLxZ7o5F95nllO9w9eczKDfcFdgy2Vian/kffCXWJRtx7EfAg1pCT
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] pinctrl: qcom: Add SM4450 pinctrl driver
-Content-Language: en-US
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, linus.walleij@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org
-Cc:     arnd@arndb.de, geert+renesas@glider.be, nfraprado@collabora.com,
-        rafal@milecki.pl, peng.fan@nxp.com, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
-        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
-        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
-        kernel@quicinc.com
-References: <20230908063843.26835-1-quic_tengfan@quicinc.com>
- <20230908063843.26835-3-quic_tengfan@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230908063843.26835-3-quic_tengfan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a63:9313:0:b0:569:450d:cf3d with SMTP id
+ b19-20020a639313000000b00569450dcf3dmr297800pge.6.1694162817649; Fri, 08 Sep
+ 2023 01:46:57 -0700 (PDT)
+Date:   Fri, 08 Sep 2023 01:46:57 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f014150604d5040a@google.com>
+Subject: [syzbot] [kernel?] general protection fault in serio_handle_event
+From:   syzbot <syzbot+bbc59256015533127d80@syzkaller.appspotmail.com>
+To:     andriy.shevchenko@linux.intel.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, rafael@kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
+        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8.09.2023 08:38, Tengfei Fan wrote:
-> Add pinctrl driver for TLMM block found in SM4450 SoC.
-> 
-> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> ---
-[...]
+Hello,
 
-> +/* Every pin is maintained as a single group, and missing or non-existing pin
-/*
- * Every pin
+syzbot found the following issue on:
 
-> + * would be maintained as dummy group to synchronize pin group index with
-> + * pin descriptor registered with pinctrl core.
-> + * Clients would not be able to request these dummy pin groups.
-> + */
-[...]
+HEAD commit:    db906f0ca6bb Merge tag 'phy-for-6.6' of git://git.kernel.o..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=11f66447a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3bd57a1ac08277b0
+dashboard link: https://syzkaller.appspot.com/bug?extid=bbc59256015533127d80
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=138b9848680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1537ea00680000
 
-> +static const int sm4450_acpi_reserved_gpios[] = {
-> +	0, 1, 2, 3, 136, -1
-> +};
-Are you ever going to boot with ACPI on this platform?
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3c57e6e58eb2/disk-db906f0c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f999d9f3cd94/vmlinux-db906f0c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/9d9c5e553ff2/bzImage-db906f0c.xz
 
-Why reserve UFS_RESET?
+The issue was bisected to:
 
-Why are 0-3 reserved? FP reader? Please leave a comment. Or
-delete this.
+commit d21fdd07cea418c0d98c8a15fc95b8b8970801e7
+Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date:   Thu Aug 17 09:12:21 2023 +0000
 
-Konrad
+    driver core: Return proper error code when dev_set_name() fails
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122032f0680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=112032f0680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=162032f0680000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bbc59256015533127d80@syzkaller.appspotmail.com
+Fixes: d21fdd07cea4 ("driver core: Return proper error code when dev_set_name() fails")
+
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 774 Comm: kworker/0:2 Not tainted 6.5.0-syzkaller-11275-gdb906f0ca6bb #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Workqueue: events_long serio_handle_event
+RIP: 0010:strchr+0x1b/0xb0 lib/string.c:329
+Code: 01 ae f7 48 8b 74 24 08 48 8b 14 24 eb 89 90 f3 0f 1e fa 48 b8 00 00 00 00 00 fc ff df 48 89 fa 55 48 c1 ea 03 53 48 83 ec 10 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 04 84 c0 75 51 0f b6 07 89
+RSP: 0018:ffffc90003ccfa58 EFLAGS: 00010282
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000025 RDI: 0000000000000000
+RBP: ffffc90003ccfae8 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: ffffc90003ccfae8
+R13: 0000000000000cc0 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7335610882 CR3: 000000006e989000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ kvasprintf_const+0x25/0x190 lib/kasprintf.c:45
+ kobject_set_name_vargs+0x5a/0x130 lib/kobject.c:272
+ kobject_add_varg lib/kobject.c:366 [inline]
+ kobject_add+0x12a/0x240 lib/kobject.c:424
+ device_add+0x290/0x1ac0 drivers/base/core.c:3560
+ serio_add_port drivers/input/serio/serio.c:539 [inline]
+ serio_handle_event+0x63b/0xa90 drivers/input/serio/serio.c:207
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:strchr+0x1b/0xb0 lib/string.c:329
+Code: 01 ae f7 48 8b 74 24 08 48 8b 14 24 eb 89 90 f3 0f 1e fa 48 b8 00 00 00 00 00 fc ff df 48 89 fa 55 48 c1 ea 03 53 48 83 ec 10 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 04 84 c0 75 51 0f b6 07 89
+RSP: 0018:ffffc90003ccfa58 EFLAGS: 00010282
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000025 RDI: 0000000000000000
+RBP: ffffc90003ccfae8 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: ffffc90003ccfae8
+R13: 0000000000000cc0 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f733558f000 CR3: 0000000078402000 CR4: 0000000000350ef0
+----------------
+Code disassembly (best guess):
+   0:	01 ae f7 48 8b 74    	add    %ebp,0x748b48f7(%rsi)
+   6:	24 08                	and    $0x8,%al
+   8:	48 8b 14 24          	mov    (%rsp),%rdx
+   c:	eb 89                	jmp    0xffffff97
+   e:	90                   	nop
+   f:	f3 0f 1e fa          	endbr64
+  13:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  1a:	fc ff df
+  1d:	48 89 fa             	mov    %rdi,%rdx
+  20:	55                   	push   %rbp
+  21:	48 c1 ea 03          	shr    $0x3,%rdx
+  25:	53                   	push   %rbx
+  26:	48 83 ec 10          	sub    $0x10,%rsp
+* 2a:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax <-- trapping instruction
+  2e:	48 89 fa             	mov    %rdi,%rdx
+  31:	83 e2 07             	and    $0x7,%edx
+  34:	38 d0                	cmp    %dl,%al
+  36:	7f 04                	jg     0x3c
+  38:	84 c0                	test   %al,%al
+  3a:	75 51                	jne    0x8d
+  3c:	0f b6 07             	movzbl (%rdi),%eax
+  3f:	89                   	.byte 0x89
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
