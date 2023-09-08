@@ -2,179 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 215867985B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7710D7985BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243009AbjIHKW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 06:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60574 "EHLO
+        id S237865AbjIHKXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 06:23:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241108AbjIHKWZ (ORCPT
+        with ESMTP id S237583AbjIHKXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 06:22:25 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32102114;
-        Fri,  8 Sep 2023 03:21:50 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 98E171FD74;
-        Fri,  8 Sep 2023 10:20:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694168414; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pHN3xfOjSN7msOotMbXVATC0m3J8u3hzQBfy6gdfcY0=;
-        b=eYVYa34tDLRQWRMo1PVRkzYwd36FhRujgnd3mnpE+yoctMC3WVnCvSUOtHZPGGVi4hL6dh
-        1NsgJ6pJ2XREplIdGSYbu/zmBuk6uH1BIBpPSw/N4TFm1Q/A6i77AnTWWrLPgRDp5xXVLd
-        g/+5X7NNLg5NFp6br0dxJy0h/xwji64=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694168414;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pHN3xfOjSN7msOotMbXVATC0m3J8u3hzQBfy6gdfcY0=;
-        b=aBd629a13wa8umr+2+r2I/XdiwZ4QEcoDHYx3h6VawMxeM0Q8HXfbCLWifSlNrPy8E+tH0
-        ZZmhoFyQBP7XjlAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 89FAD131FD;
-        Fri,  8 Sep 2023 10:20:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id jqaKIV71+mSgcQAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 08 Sep 2023 10:20:14 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 267B6A0774; Fri,  8 Sep 2023 12:20:14 +0200 (CEST)
-Date:   Fri, 8 Sep 2023 12:20:14 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Zdenek Kabelac <zkabelac@redhat.com>
-Cc:     Jan Kara <jack@suse.cz>, Mikulas Patocka <mpatocka@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Christoph Hellwig <hch@lst.de>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH] fix writing to the filesystem after unmount
-Message-ID: <20230908102014.xgtcf5wth2l2cwup@quack3>
-References: <f5d63867-5b3e-294b-d1f5-a128817cfc7@redhat.com>
- <20230906-aufheben-hagel-9925501b7822@brauner>
- <60f244be-803b-fa70-665e-b5cba15212e@redhat.com>
- <20230906-aufkam-bareinlage-6e7d06d58e90@brauner>
- <818a3cc0-c17b-22c0-4413-252dfb579cca@redhat.com>
- <20230907094457.vcvmixi23dk3pzqe@quack3>
- <20230907-abgrenzen-achtung-b17e9a1ad136@brauner>
- <513f337e-d254-2454-6197-82df564ed5fc@redhat.com>
- <20230908073244.wyriwwxahd3im2rw@quack3>
- <86235d7a-a7ea-49da-968e-c5810cbf4a7b@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+        Fri, 8 Sep 2023 06:23:31 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on20723.outbound.protection.outlook.com [IPv6:2a01:111:f400:feae::723])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592C81FFA;
+        Fri,  8 Sep 2023 03:22:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BH7CrOjQd19sK3DxGaPP+48EmYouRVXjWENf9X/+iS+8q+gH7ARk57DjZ60IjEkkok2uaTy5OlC1yQ4gyZmPZy+L7MRTkVTxTgHVAmlfVXHEp8KzKF+ixpK+SZ3TWSLC3W42k6JGeexl/QCISacqYY2NPOWGOsfb66E5TuwGuU1oAkAulBzqfVYFdj1jzYZqheUqpu/TEhnHnD8MsItn0ZdvarWZRBwhuMiCtnyz7r1Hb5meQY118HtjXlqIMx3SRtMjO20ATcSoElYvlDRdh/pQyL66OfTEVQHSvDfQGWZtjfZnwzogSrLAP/seErDSudIxabk6XoI6efrCccHGcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=J+wDdi8IhyMgPYrc9WFMlZ0yVIb40ZMZSmoDMvCDGog=;
+ b=E41nMWh+hsjVCsOBQ3mfJFYbv31CM1CapFgbnbzzNBFWJDrxwwhjTR/xQz3AwiwKxB88ePM72XYtrWy0W0yuypwL+ZEttlOyfdPor367WQnwVBwa8qjRqfd29J6OPeDobuwPZbvNPQpbzz/14+FGX/dqRWrYiEXdp7Dyzn4ypsoPqWkd/5Pzjwt8RUaGwpgE7LtSsA84EBrs7A0OehA+LdFAvJrDOHfWopZQIKMifHbhA+QL+bFXquc702g1IvQrFk9IcknY89/B6BMxHdAVI+lVwkhgT8VFiIX3g3eGixX8FVEZTkTROjET5cm/LTKyHoKX681+axOqck9P4+O/MQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J+wDdi8IhyMgPYrc9WFMlZ0yVIb40ZMZSmoDMvCDGog=;
+ b=Ikb0TX6Gp5/+YFD4LNFyA9d7+n+knYvWgOwkMA49ru0W87C+OEeA2DTHyKIrcv4al4hrCk6Epsc9qqqNzPpNKLN3uZqdF9NZrpcd8HNpHBhdShfpt/oSMAZ67pzDlnB+ENeEVzChdwdETFFEOaDYGYbpVbKxQ2AIOe5S51gYzV++Rn36GRdCv992WRPQ5ZqJw2oEI/Pkm/wteJqflzRThdDcY+Z+l8EL+GahOyfewuDwdf+2vPW24vPYYiyQUwjeV+XldoZobps94HNrktnnvFQ8r99aO7REesJ//zrVMEwZOAMQKik3heFxWqyH9LWkBa2dqBP+xoXuEIPGW+RBXQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from TYZPR06MB6697.apcprd06.prod.outlook.com (2603:1096:400:451::6)
+ by KL1PR0601MB4033.apcprd06.prod.outlook.com (2603:1096:820:24::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.38; Fri, 8 Sep
+ 2023 10:21:29 +0000
+Received: from TYZPR06MB6697.apcprd06.prod.outlook.com
+ ([fe80::5bef:53ac:2a7c:6f4e]) by TYZPR06MB6697.apcprd06.prod.outlook.com
+ ([fe80::5bef:53ac:2a7c:6f4e%3]) with mapi id 15.20.6745.034; Fri, 8 Sep 2023
+ 10:21:29 +0000
+From:   Lu Hongfei <luhongfei@vivo.com>
+To:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Lu Hongfei <luhongfei@vivo.com>,
+        Can Guo <quic_cang@quicinc.com>, Bean Huo <beanhuo@micron.com>,
+        Arthur Simchaev <arthur.simchaev@wdc.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Asutosh Das <quic_asutoshd@quicinc.com>,
+        "Bao D. Nguyen" <quic_nguyenb@quicinc.com>,
+        zhanghui <zhanghui31@xiaomi.com>,
+        Po-Wen Kao <powen.kao@mediatek.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+Subject: [PATCH v2 0/3] scsi: ufs: core: support WB buffer resize function
+Date:   Fri,  8 Sep 2023 18:20:15 +0800
+Message-Id: <20230908102113.547-1-luhongfei@vivo.com>
+X-Mailer: git-send-email 2.27.0.windows.1
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <86235d7a-a7ea-49da-968e-c5810cbf4a7b@redhat.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR01CA0196.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:189::23) To TYZPR06MB6697.apcprd06.prod.outlook.com
+ (2603:1096:400:451::6)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYZPR06MB6697:EE_|KL1PR0601MB4033:EE_
+X-MS-Office365-Filtering-Correlation-Id: a24253e9-3cea-4d42-a5f2-08dbb0555d8e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0ccAPHvq6jJujTlmUvvlc7YPIwLk7z0XE5h24m1ObsR+DKkAAxu0r+kFAFcfI6vvqTVwd6gvX+7cuv3RpHCkal13jXp69VISkclrQAxdGrMw3kupj5WTaX4n2r7O0vbH6WdqCi62snDF0WgWvJwNlyu8eo+mUaVeHca01XQj0jrVUGZOpcVb5aQeD8++gmfc3qLroZe0xBSgMLTiQj4DBPpwYUq7gP7qn85fZSaCrKhMt1UZsvkbqhk4h3dnS6tk2j/o61p1t9wmj6wycsLQpj9tANUGxaKjZB4/i/p8c7Hn4/iGmVomnx9MQewTADjGXf/bU83f8j1tIwNR699B8i9bd7KQeTTMf+aGMmBkAswGBk/fO2TysqVG7ahkPX4kd5NcXlfI2Ieih0P/WtkPPwtrEECc4dlmSwmW+Frv5VSMI17TQRD6BF1/NsRaKCxKaGivriaAUagMWo33R1bAeQNNvfFagsHPBjIkf0gJaHodtQQ/9xX/E7XfbKBQyMsD2FjJh21DZNAPEFx0M42xDf7czPlNb5iGppUU+FDxrWi5RoNOnZegcbMmK/9PPOa/ckL8dhg2i3hV2+va/mPL3Lbpv1tHXDvpHEM7/Vu+hb7tR3aL2DAhi2ZNWoOUbytx
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB6697.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(39860400002)(396003)(366004)(451199024)(186009)(1800799009)(5660300002)(4326008)(8936002)(6486002)(6506007)(8676002)(66476007)(316002)(66946007)(41300700001)(66556008)(2906002)(478600001)(52116002)(6666004)(110136005)(6512007)(26005)(1076003)(107886003)(2616005)(7416002)(83380400001)(921005)(38350700002)(38100700002)(86362001)(36756003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?P0XTe7DyBRDND3fw4K+XZA+ZWr6gKZyZNnJ4eLXQVaCFdfscYbyUFYplilQC?=
+ =?us-ascii?Q?3zvIl6MHurfDHpivLyPjiYnuebrB6T8AZtEGHuXqreDQxbVk6XSKLJBK2ADO?=
+ =?us-ascii?Q?wAL6H8l4xHHXBhe5mCU3HzXb0KmRAkKaHJwzQ3BIlU37ACI9tihV0fQOu1CJ?=
+ =?us-ascii?Q?96zZqRuyH1IA6iMtzxwIzS5D9ILsXq0nRtfGSthtI/5aTDvlo2iKLvT2PJZG?=
+ =?us-ascii?Q?QqSVGW4NcvT+xM2FqDVutCjfk5h0RfXcDbmk4EqTIeAoB3JAmbKG415bRu5F?=
+ =?us-ascii?Q?oGZPsRuAtH8TV2FH1otLZvMC1KUwHYeuut8QThYGM/GApwQVR4wuPEIduLjL?=
+ =?us-ascii?Q?rKbeV3bv2qKqLE03/7iaqKz1Y7Qv2SfKqGkX2Vp5rlvkiSAR+Qoa8xMsSCaD?=
+ =?us-ascii?Q?z5T8TxD2Fl/Q0qRvbbVl8OlMLvKMq1mqUswRWM1ghIijc8+CiVC81l9DIgGg?=
+ =?us-ascii?Q?vIjA3J6umWcEn1EUe0b5GNH4qRsML+y4OAkGRGzewxN2n3eBGpUt1gDOQP57?=
+ =?us-ascii?Q?/0NugLyiCbbh5Y/aXpap9kz60wvkERKABv+kKOxMjxbqXcAbAhc+LpDWrKzV?=
+ =?us-ascii?Q?2hc9Lm0uCrb5/1mHPWjxWR/3FcdMYqf6BSMtpheNDMpN5f0utjL13YdtbC/2?=
+ =?us-ascii?Q?UX208RNBcMtMWBbgAQ0jRw07kgulFfAFmSZCNCxFyohlI+09QF8Vx/K2X8al?=
+ =?us-ascii?Q?nk1JeJJaGn/NWnebI9Yp/BWBvWHNRcwFZELK/V+WYcpvIaG7SEO03f+PF4pl?=
+ =?us-ascii?Q?zN9Uc6bwttgDmTKAwEQ+uFjtWXaTjpyl3QvFja4wDSWVwFHwfFOh4rMBIWoh?=
+ =?us-ascii?Q?PLJetpDPRPxTJCC1s0CTi9ryh7UxmBVDwOwKIIsogTGU3M7VMjkjJXbYAvm0?=
+ =?us-ascii?Q?1iBWsdSOFVJz3NyxfnWPR/euwhRYEEfJCIRzltbxpOhfZLcsalxOn2DXFtgj?=
+ =?us-ascii?Q?4UmQw/cyRoboQtpA7MQXUNnubt0LBgzW70/bl7RmwP95OMiTwza53ibtKgz7?=
+ =?us-ascii?Q?wuQNdXNKNpKZLe5LLmLDoZ0JX9RauHrPNGzypViQProHF2Jq89gr8l/t9pC4?=
+ =?us-ascii?Q?e0KjvzcvMP6Ss5LvwcB4toFnIsP+8RDxElKIRhi7bm+RmW2bnXBW0ucsL0hw?=
+ =?us-ascii?Q?u4ZMJTNIs+bKs+qEOJ1GwYdZgFgrJ6DF/C4L60q06+M1S4Yee23YeQZPQRCp?=
+ =?us-ascii?Q?tUMllO4kGNY83PMOq8J8coSkPYmkTjT4mZP7WSL9vBwIIKoTXH7OWgNkRCGU?=
+ =?us-ascii?Q?1YqmYtzOPCpgGmCuQqE1OnseqPHWt8t0xBkh05znlzDLt/N/VsM4hsabILys?=
+ =?us-ascii?Q?E2TD4cZNLD5FOLv7KNGmmhAMa1ypzNSoAB7Gi4DGVRPjEyY1Z0nvvq6w2VCv?=
+ =?us-ascii?Q?v44C3nXQC+xtdXc5lgFNQqq0mJK1mbG6HPZSIhTLcKX8cvfLzDsooreqJHSK?=
+ =?us-ascii?Q?Q5AyEQGqHkVHKwyi3OdT8ITOcuIbGCxvubBeB3/YQYxD06Sktde3IZ0MIiB/?=
+ =?us-ascii?Q?ngc0tb0goFZRxqo6NDf24A+uVXMt0ZslUgBCyYx3ghN6fqXw0QRyAK011UtO?=
+ =?us-ascii?Q?4p41xYogPXwbpUQmxqz9sVYl4rVGvKMnNOs40uGy?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a24253e9-3cea-4d42-a5f2-08dbb0555d8e
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB6697.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2023 10:21:29.3135
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lMHVkn4H3n5COvDWyjxqrXYNZruWHOIhKL8zhkJ9NMTVN/Y1Eq2ftUJcjEFEWQCAAz6V5PPFpexYi3Yohx3JWA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB4033
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 08-09-23 11:29:40, Zdenek Kabelac wrote:
-> Dne 08. 09. 23 v 9:32 Jan Kara napsal(a):
-> > On Thu 07-09-23 14:04:51, Mikulas Patocka wrote:
-> > > 
-> > > On Thu, 7 Sep 2023, Christian Brauner wrote:
-> > > 
-> > > > > I think we've got too deep down into "how to fix things" but I'm not 100%
-> > > > We did.
-> > > > 
-> > > > > sure what the "bug" actually is. In the initial posting Mikulas writes "the
-> > > > > kernel writes to the filesystem after unmount successfully returned" - is
-> > > > > that really such a big issue?
-> > > I think it's an issue if the administrator writes a script that unmounts a
-> > > filesystem and then copies the underyling block device somewhere. Or a
-> > > script that unmounts a filesystem and runs fsck afterwards. Or a script
-> > > that unmounts a filesystem and runs mkfs on the same block device.
-> > Well, e.g. e2fsprogs use O_EXCL open so they will detect that the filesystem
-> > hasn't been unmounted properly and complain. Which is exactly what should
-> > IMHO happen.
-> > 
-> > > > > Anybody else can open the device and write to it as well. Or even
-> > > > > mount the device again. So userspace that relies on this is kind of
-> > > > > flaky anyway (and always has been).
-> > > It's admin's responsibility to make sure that the filesystem is not
-> > > mounted multiple times when he touches the underlying block device after
-> > > unmount.
-> > What I wanted to suggest is that we should provide means how to make sure
-> > block device is not being modified and educate admins and tool authors
-> > about them. Because just doing "umount /dev/sda1" and thinking this means
-> > that /dev/sda1 is unused now simply is not enough in today's world for
-> > multiple reasons and we cannot solve it just in the kernel.
-> > 
-> 
-> /me just wondering how do you then imagine i.e. safe removal of USB drive
-> when user shall not expect unmount really unmounts filesystem?
+Hello,
 
-Well, currently you click some "Eject / safely remove / whatever" button
-and then you get a "wait" dialog until everything is done after which
-you're told the stick is safe to remove. What I imagine is that the "wait"
-dialog needs to be there while there are any (or exclusive at minimum) openers
-of the device. Not until umount(2) syscall has returned. And yes, the
-kernel doesn't quite make that easy - the best you can currently probably
-do is to try opening the device with O_EXCL and if that fails, you know
-there's some other exclusive open.
+This v2 series implements the function of controlling the wb buffer resize
+via sysfs that will be supported in UFS4.1.
 
-> IMHO  - unmount should detect some very suspicious state of block device if
-> it cannot correctly proceed - i.e. reporting 'warning/error' on such
-> commands...
+The patch 1 add WB buffer resize related attr_idns.
+The patch 2 Add ufshcd_wb_buf_resize function to enable WB buffer resize.
+The patch 3 Add sysfs attributes to control WB buffer resize function.
 
-You seem to be concentrated too much on the simple case of a desktop with
-an USB stick you just copy data to & from. :) The trouble is, as Al wrote
-elsewhere in this thread that filesystem unmount can be for example a
-result of exit(2) or close(2) system call if you setup things in a nasty
-way. Do you want exit(2) to fail because the block device is frozen?
-Umount(2) has to work for all its users and changing the behavior has nasty
-corner-cases. So does the current behavior, I agree, but improving
-situation for one usecase while breaking another usecase isn't really a way
-forward...
+version 2 changes
+-Using sysfs to control WB buffer resize instead of exception event handler
+-Removed content related to exception event
+-Solved several issues that caused compilation errors
 
-> Main problem is - if the 'unmount' is successful in this case - the last
-> connection userspace had to this fileystem is lost - and user cannot get rid
-> of such filesystem anymore for a system.
+Of course, there may be better ways to implement this feature.
+If necessary, please point it out and I will optimize it as soon as
+possible.
 
-Well, the filesystem (struct superblock to be exact) is invisible in
-/proc/mounts (or whatever), that is true. But it is still very much
-associated with that block device and if you do 'mount <device>
-<mntpoint>', you'll get it back. But yes, the filesystem will not go away
-until all references to it are dropped and you cannot easily find who holds
-those references and how to get rid of them.
+As of now, there have been no UFS device releases that support this
+feature, so I have not tested the code on real hardware.
 
-> I'd likely propose in this particular state of unmounting of a frozen
-> filesystem to just proceed - and drop the frozen state together with release
-> filesystem and never issue any ioctl from such filelsystem to the device
-> below - so it would not be a 100% valid unmount - but since the freeze
-> should be nearly equivalent of having a proper 'unmount' being done -  it
-> shoudn't be causing any harm either - and  all resources associated could 
-> be 'released.  IMHO it's correct to 'drop' frozen state for filesystem
-> that is not going to exist anymore  (assuming it's the last  such user)
+------------------------------------------------------------------------
 
-This option was also discussed in the past and it has nasty consequences as
-well. Cleanly shutting down a filesystem usually needs to write to the
-underlying device so either you allow the filesystem to write to the device
-on umount breaking assumptions of the user who froze the fs or you'd have
-to implement a special handling for this case for every filesystem to avoid
-the writes (and put up with the fact that the filesystem will appear as
-uncleanly shutdown on the next mount). Not particularly nice either...
+Lu Hongfei (3):
+  scsi: ufs: core: add wb buffer resize related attr_idn
+  scsi: ufs: core: Add ufshcd_wb_buf_resize function to enable WB buffer
+    resize
+  scsi: ufs: core: Add sysfs attributes to control WB buffer resize
+    function
 
-								Honza
+ Documentation/ABI/testing/sysfs-driver-ufs | 52 ++++++++++++++++
+ drivers/ufs/core/ufs-sysfs.c               | 71 ++++++++++++++++++++++
+ drivers/ufs/core/ufshcd-priv.h             |  1 +
+ drivers/ufs/core/ufshcd.c                  | 21 +++++++
+ include/ufs/ufs.h                          |  5 +-
+ include/ufs/ufshcd.h                       |  1 +
+ 6 files changed, 150 insertions(+), 1 deletion(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.39.0
+
