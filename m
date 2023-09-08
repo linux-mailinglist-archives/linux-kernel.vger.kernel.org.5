@@ -2,236 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D111A798B81
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 19:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57DC798B86
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 19:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244497AbjIHRaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 13:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44272 "EHLO
+        id S244712AbjIHRgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 13:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233155AbjIHRaG (ORCPT
+        with ESMTP id S233155AbjIHRgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 13:30:06 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC5D1FC7;
-        Fri,  8 Sep 2023 10:30:01 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 39D4910FE;
-        Fri,  8 Sep 2023 19:28:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1694194111;
-        bh=tJBIxhbcn6XKva6LtHAB0MW4fczFZF1SSUAIJocFSGY=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=mduOhQvh1EqpIdh5dIYiv030fs5L6KtKqm6KnQ1j4tBciA9hC7eIXHNSvSPK0/G4U
-         ySYgviVWeRCE9btIANDYi7FkTs4yWZmmNMKAhdCxfgAMiBO9zcoxJf0AWdfQu3X94d
-         FqUfv8KI2iGd7/S7jO6B3ZmiyvsEvnFJrXmuGPLE=
-Content-Type: text/plain; charset="utf-8"
+        Fri, 8 Sep 2023 13:36:50 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B64E61FC7
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 10:36:45 -0700 (PDT)
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 388GFXvQ003153;
+        Fri, 8 Sep 2023 17:35:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2023-03-30;
+ bh=cykCh2nJtUncEWPDUHjA72bGPfdhWaIHDMBg+oQoI90=;
+ b=MHFZh7ZDMdfnDyBeKkexO66JP33rSt3Z9MJGK6vaBBCQgR6499g/1AXJMVhgeTQMPfOg
+ dzKpVOOZXZ+FMbhsUk3ugzcBHEU4aUN3+AQDc0tLkrSFGzMv8Yimej4IVAHGvWwzt8fh
+ Ir0o6Ey5g8TKoX8iWATuLYHEoZryg6t1emy5hf3sogwXltHWZTD2wTX9KbI+f2ltXfgA
+ /xbfKe6BtEiMa8/mgzBOjPO2oTz+t7S4pj74IALyryHmc+uIvi43g5qrTr4ppfocjmLa
+ cckzpiWx+wpK/saFuAMS/dZGieD7AXHCnPmemQC+sS2thrgyxVYC3oJua0WnfSQHCLPp 0A== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t06yh86yv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Sep 2023 17:35:57 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 388GSeOb025349;
+        Fri, 8 Sep 2023 17:35:56 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3suug9effp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Sep 2023 17:35:56 +0000
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 388HZtG4013827;
+        Fri, 8 Sep 2023 17:35:56 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3suug9efek-1;
+        Fri, 08 Sep 2023 17:35:55 +0000
+From:   Vijayendra Suman <vijayendra.suman@oracle.com>
+To:     avagin@google.com
+Cc:     avagin@gmail.com, brauner@kernel.org, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, keescook@chromium.org,
+        linux-kernel@vger.kernel.org, luto@amacapital.net,
+        mingo@redhat.com, peterz@infradead.org, posk@google.com,
+        tycho@tycho.pizza, vincent.guittot@linaro.org, wad@chromium.org,
+        yu.c.chen@intel.com, Vijayendra Suman <vijayendra.suman@oracle.com>
+Subject: [PATCH] perf/benchmark: Fix ifdef in header file uapi/asm/unistd_32.h
+Date:   Fri,  8 Sep 2023 10:35:32 -0700
+Message-ID: <20230908173532.1055882-1-vijayendra.suman@oracle.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230308073201.3102738-7-avagin@google.com>
+References: <20230308073201.3102738-7-avagin@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAPY8ntCYz3D77R7G+JTKvOWW4uNTj-wKrsjJ7ASw_RoN4FU-ow@mail.gmail.com>
-References: <20230908124344.171662-1-umang.jain@ideasonboard.com> <20230908124344.171662-3-umang.jain@ideasonboard.com> <vp3bbkaibfzdxzgv5xedpneqtyxqxlvioou5whb567s5txtgve@a4xr3wtmjqzu> <CAPY8ntCYz3D77R7G+JTKvOWW4uNTj-wKrsjJ7ASw_RoN4FU-ow@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] media: i2c: Add driver for IMX519 sensor
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Umang Jain <umang.jain@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jackson <lee.jackson@arducam.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Shawn Tu <shawnx.tu@intel.com>
-To:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Jacopo Mondi <jacopo.mondi@ideasonboard.com>
-Date:   Fri, 08 Sep 2023 18:29:56 +0100
-Message-ID: <169419419630.3437168.7121485951334169757@ping.linuxembedded.co.uk>
-User-Agent: alot/0.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-08_13,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ adultscore=0 phishscore=0 bulkscore=0 mlxscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309080161
+X-Proofpoint-GUID: A0Kq4ilS2KufzI-K6GNk_hw2Cd7l1Sf3
+X-Proofpoint-ORIG-GUID: A0Kq4ilS2KufzI-K6GNk_hw2Cd7l1Sf3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+Typo error for __NR_seccomp
 
-Quoting Dave Stevenson (2023-09-08 17:57:01)
-> Hi Jacopo
->=20
-> On Fri, 8 Sept 2023 at 17:24, Jacopo Mondi
-> <jacopo.mondi@ideasonboard.com> wrote:
-> >
-> > Hi Umang
-> >
-> > On Fri, Sep 08, 2023 at 08:43:44AM -0400, Umang Jain wrote:
-> > > From: Lee Jackson <lee.jackson@arducam.com>
-> > >
+ifdef -> ifndef
 
-... <snip>
+Signed-off-by: Vijayendra Suman <vijayendra.suman@oracle.com>
+---
+ tools/arch/x86/include/uapi/asm/unistd_32.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > > +/* Power/clock management functions */
-> > > +static int imx519_power_on(struct device *dev)
-> > > +{
-> > > +     struct i2c_client *client =3D to_i2c_client(dev);
-> > > +     struct v4l2_subdev *sd =3D i2c_get_clientdata(client);
-> > > +     struct imx519 *imx519 =3D to_imx519(sd);
-> > > +     int ret;
-> > > +
-> > > +     ret =3D regulator_bulk_enable(ARRAY_SIZE(imx519_supply_name),
-> > > +                                 imx519->supplies);
-> > > +     if (ret) {
-> > > +             dev_err(&client->dev, "%s: failed to enable regulators\=
-n",
-> > > +                     __func__);
-> > > +             return ret;
-> > > +     }
-> > > +
-> > > +     ret =3D clk_prepare_enable(imx519->xclk);
-> > > +     if (ret) {
-> > > +             dev_err(&client->dev, "%s: failed to enable clock\n",
-> > > +                     __func__);
-> > > +             goto reg_off;
-> > > +     }
-> > > +
-> > > +     gpiod_set_value_cansleep(imx519->reset_gpio, 1);
-> >
-> > Usually on power_on the reset/poweron gpios are set to logical 0.
-> > If this works for you I think you need to invert the line polarity in
-> > your .dts.
->=20
-> XCLR needs to go high for IMX519 to power on.
-> I think it possibly depends on what you've named it - reset vs power_on
->=20
-> Quick sample (admittedly on 6.1 as that's what I happen to have):
-> gpiod_set_value_cansleep(XXX_gpio, 1); in power_on.
-> - imx219
-> - imx214
-> - imx274
-> - imx334
-> - imx335
-> - ov7251
->=20
-> gpiod_set_value_cansleep(XXX_gpio, 0) in power_on
-> - imx290
-> - imx296
-> - imx412
+diff --git a/tools/arch/x86/include/uapi/asm/unistd_32.h b/tools/arch/x86/include/uapi/asm/unistd_32.h
+index 4798f9d18fe8..9de35df1afc3 100644
+--- a/tools/arch/x86/include/uapi/asm/unistd_32.h
++++ b/tools/arch/x86/include/uapi/asm/unistd_32.h
+@@ -26,6 +26,6 @@
+ #ifndef __NR_setns
+ #define __NR_setns 346
+ #endif
+-#ifdef __NR_seccomp
++#ifndef __NR_seccomp
+ #define __NR_seccomp 354
+ #endif
+-- 
+2.41.0
 
-As this is a camera connected using the Raspberry Pi connector - I have
-been looking in this area too to add support for an IMX283.
-
-It occured to me that the GPIO line on the RPi Camera Connector seems to
-be named 'POWER_EN' ... and is usually responsible for enabling the
-power to the regulators on the camera module...
-
-It seems to me more 'clean/clear' to do something like the following:
-
-
-/ {
-        /* 12 MHz Crystal on the camera module */
-        imx283_inclk_0: imx283-inclk-12m {
-                compatible =3D "fixed-clock";
-                #clock-cells =3D <0>;
-                status =3D "okay";
-                clock-frequency =3D <12000000>;
-        };
-
-        reg_imx283_0_3v3: regulator-imx283-0-vdd3v3 {
-                compatible =3D "regulator-fixed";
-                pinctrl-names =3D "default";
-                pinctrl-0 =3D <&pinctrl_csi0_pwdn>;
-                regulator-min-microvolt =3D <3300000>;
-                regulator-max-microvolt =3D <3300000>;
-                regulator-name =3D "IMX283_0_POWER";
-                gpio =3D <&gpio2 11 GPIO_ACTIVE_HIGH>;
-                vin-supply =3D <&reg_csi1_3v3>;
-                startup-delay-us =3D <300000>;
-                enable-active-high;
-        };
-};
-
-
-&i2c2 {
-        sensor@1a {
-                compatible =3D "sony,imx283";
-                reg =3D <0x1a>;
-
-                clocks =3D <&imx283_inclk_0>;
-                clock-names =3D "xclk";
-
-                rotation =3D <180>;
-                orientation =3D <0>;
-
-                status =3D "okay";
-
-                VANA-supply =3D <&reg_imx283_0_3v3>; /* Analog 2.8v */
-                VDIG-supply =3D <&reg_imx283_0_3v3>; /* Digital Core 1.05v =
-*/
-                VDDL-supply =3D <&reg_imx283_0_3v3>; /* IF 1.8v */
-
-                port {
-                        imx283_0_ep: endpoint {
-                                remote-endpoint =3D <&mipi_csi_0_in>;
-                                clock-lanes =3D <0>;
-                                data-lanes =3D <1 2 3 4>;
-                        };
-                };
-        };
-};
-
-
-I wondered if that's more clear than using a 'reset' line which isn't
-actually what the schematics show.
-
-
-
-
-> > > +     usleep_range(IMX519_XCLR_MIN_DELAY_US,
-> > > +                  IMX519_XCLR_MIN_DELAY_US + IMX519_XCLR_DELAY_RANGE=
-_US);
-> >
-> > fsleep() will do
-> >
-> > > +
-> > > +     return 0;
-> > > +
-> > > +reg_off:
-> > > +     regulator_bulk_disable(ARRAY_SIZE(imx519_supply_name), imx519->=
-supplies);
-> > > +
-> > > +     return ret;
-> > > +}
-> > > +
-> > > +static int imx519_power_off(struct device *dev)
-> > > +{
-> > > +     struct i2c_client *client =3D to_i2c_client(dev);
-> > > +     struct v4l2_subdev *sd =3D i2c_get_clientdata(client);
-> > > +     struct imx519 *imx519 =3D to_imx519(sd);
-> > > +
-> > > +     gpiod_set_value_cansleep(imx519->reset_gpio, 0);
-> > > +     regulator_bulk_disable(ARRAY_SIZE(imx519_supply_name), imx519->=
-supplies);
-> > > +     clk_disable_unprepare(imx519->xclk);
-> >
-> > Usually, the reverse power up sequence is used. It shouldn't make any
-> > difference, unless the datasheet prescribes this sequence.
->=20
-> I'd agree.
-> T1 from XCLR falling to VANA/VDIG/VIF falling is 0us, so XCLR must go
-> low first. VANA, VDIG, and VIF can then fall in any order.
->=20
-> The diagram shows INCK stopping before XCLR is dropped.
-> Driving a clock signal into powered down electronics is generally "a
-> bad thing", so the clock should be stopped before the regulators are
-> killed.
->=20
-> Again this is copied from imx477. Our modules don't matter as all 3
-> regulators, clock, and XCLR are sequenced off one GPIO.
-
-Indeed, that's the part that makes me think modelling the regulator part
-rather than a reset gpio could potentially make sense, but I'm sure this
-is one of those scenarios that someone is about to shoot down my idea
-;-)
-
---
-Kieran
