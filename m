@@ -2,121 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E28C979915D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 23:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DE579915E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 23:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239972AbjIHVFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 17:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
+        id S238711AbjIHVGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 17:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbjIHVFo (ORCPT
+        with ESMTP id S229959AbjIHVGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 17:05:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9C7DC;
-        Fri,  8 Sep 2023 14:05:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D24F6C433C8;
-        Fri,  8 Sep 2023 21:05:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694207140;
-        bh=dxWq3a40k4nq/qHAcdtI8V30AcoMjsEC7R5DUmpbfdg=;
-        h=From:Date:Subject:To:Cc:From;
-        b=odd96rv24s+evSelU7hMhmYgDjmzjTmM8nYKIIHwlmhvivVRQ9KmHGmt1sj2UtCKg
-         Oj01mXLeg+9zD2VIe1S4SeJtxLNbliZeYbh5NY/TejcqmCl+PUGo+9tLoPYglXqrXH
-         Xc7Ep9DC2DipuLQ5/RxejOy1KIMH3f7wgjTEnSQRAOYaNz8X51DUQjalGRvAHm0aNB
-         uAht53f+BR3FWqbrS4Uf3TTEdPzR1ybemvOyBmpxq54QOTJ6W4Jhfib1HNl+lbtbVn
-         kVVj1rROe4kEueEVlOeeok/6MCi9KAa7DnxIbBMB6/QW3mUsgB/EVIiunW5efN/TYB
-         eI6omge8uTszA==
-From:   Jeff Layton <jlayton@kernel.org>
-Date:   Fri, 08 Sep 2023 17:05:27 -0400
-Subject: [PATCH] fs: fix regression querying for ACL on fs's that don't
- support them
+        Fri, 8 Sep 2023 17:06:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28CDB4
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 14:06:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694207192; x=1725743192;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=B2ME6j4xqfoifP/DDypeWi4FcNKJSmVZsKFYGzHWRIA=;
+  b=FGGj8Wwsta+Gtn0Ob2nUoTnoYg+e8O6uqkjg6crj2hk605Wge8dkYVzA
+   U15eqhBED0cBTQyPeaPX6AmGBk9orzji1cyZKScsuVe0O7Ytvqs70HeGM
+   mMtMBcOuAzarhHBtKo8EJBjKvZOpySqS9OMPq8Zj7N8NXvQ2ggtYQJfoG
+   wrJ8WxIuBUGSEg86bPc1CHDj/m8nX+ulsSpwr8kNly6m0XfhPKfJX5WBb
+   VlMJNeQEFFkI9g1A45RkAAvO1F7QgcwKh73hjj42iEFQ4lD+js24A7b/t
+   nVb503PgY8T4e9SblJpi7eGqsC//9PFvlvL71BTFOCKIeRdVpo3Sg5mnJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="377656122"
+X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
+   d="scan'208";a="377656122"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 14:06:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="745738344"
+X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
+   d="scan'208";a="745738344"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 08 Sep 2023 14:06:30 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qeigO-0002cY-0d;
+        Fri, 08 Sep 2023 21:06:28 +0000
+Date:   Sat, 9 Sep 2023 05:06:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: net/core/filter.c:11662:17: error: no previous declaration for
+ 'bpf_dynptr_from_xdp'
+Message-ID: <202309090517.TVogaAQ3-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230908-acl-fix-v1-1-1e6b76c8dcc8@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAJaM+2QC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDSwML3cTkHN20zApdszSLNAszS2ODNGMjJaDqgqJUoDDYpOjY2loAFB6
- 0GlkAAAA=
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Ondrej Valousek <ondrej.valousek.xm@renesas.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1691; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=dxWq3a40k4nq/qHAcdtI8V30AcoMjsEC7R5DUmpbfdg=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBk+4yevlsFLk7zQiTjnLAzT41hSIXwyqtHtuLCH
- RFYntk2bTKJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZPuMngAKCRAADmhBGVaC
- FWZwEACuuHr6UkgTusVlJX2MpCk/15F3oQnuqNe8rulZLY0t9TxM8lFPNain5C8DP46oHzHXp5g
- u/FSgjtfZtPpxsOLAMqPVIPU2JLC3H9mYQBaS0vQVPN/z7xdpnJYES0T2yoitsgfwV0ejY/xfKa
- T/qlYRqBf2EvcS1Wu/Qdm+K1xSkL+A3SQcV+ivJZwpGWmSMkFv6qETAfMx06SkOi/IPM7TmI9pb
- boVfrUfkRi+QboDVYvdAgwNTObF5nhI2urJp8XiJHX4WonQFCNSahshEl4Q/nJzK/JH5WtcyGNZ
- jD29Kw0PSdlb+ta4tGKisgqPKokZ8oqyFsuar2kEdYC7nB/lnye6HHd6p8CHFfFArq3ud9dfpBG
- MynjtLmCpONQUoU6ZGSrNIrD0x7QdVRA3AJJ5juNHtPSHuYlTslnZXVmpFgh886TajYzWeATO7H
- vrz8CvI0iFlHXuHkJEoEzZ/fZ/V5p7OadpZ9M0a0teSkL5F1eKqIBxC9gBB97uB0G657burAJXN
- ATeaLm+d+SeHJFGlF7aVLbDfXVlUGBHdkBtmAiif62IO9+AjVRy2xIYa2a3JVg5k5RwI++7xRO0
- dK6VkZThTTmnU32GDLUez0Pr4TmDWmpEtsRazKf+EAwcI1WJq6riB98XjTIJsVFeNnuBWAPaY8S
- 3CEVNB4JhDhlWYw==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the not too distant past, the VFS ACL infrastructure would return
--EOPNOTSUPP on filesystems (like NFS) that set SB_POSIXACL but that
-don't supply a get_acl or get_inode_acl method. On more recent kernels
-this returns -ENODATA, which breaks one method of detecting when ACLs
-are supported.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   ca9c7abf9502e108fae0e34181e01b1a20bc439f
+commit: 05421aecd4ed65da0dc17b0c3c13779ef334e9e5 bpf: Add xdp dynptrs
+date:   6 months ago
+config: x86_64-sof-customedconfig-avs-defconfig (https://download.01.org/0day-ci/archive/20230909/202309090517.TVogaAQ3-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230909/202309090517.TVogaAQ3-lkp@intel.com/reproduce)
 
-Fix __get_acl to also check whether the inode has a "get_(inode_)?acl"
-method and to just return -EOPNOTSUPP if not.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309090517.TVogaAQ3-lkp@intel.com/
 
-Reported-by: Ondrej Valousek <ondrej.valousek.xm@renesas.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
-This patch is another approach to fixing this issue. I don't care too
-much either way which approach we take, but this may fix the problem
-for other filesystems too. Should we take a belt and suspenders
-approach here and fix it in both places?
----
- fs/posix_acl.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+All errors (new ones prefixed by >>):
 
-diff --git a/fs/posix_acl.c b/fs/posix_acl.c
-index a05fe94970ce..4c7c62040c43 100644
---- a/fs/posix_acl.c
-+++ b/fs/posix_acl.c
-@@ -130,8 +130,12 @@ static struct posix_acl *__get_acl(struct mnt_idmap *idmap,
- 	if (!is_uncached_acl(acl))
- 		return acl;
- 
--	if (!IS_POSIXACL(inode))
--		return NULL;
-+	/*
-+	 * NB: checking this after checking for a cached ACL allows tmpfs
-+	 * (which doesn't specify a get_acl operation) to work properly.
-+	 */
-+	if (!IS_POSIXACL(inode) || (!inode->i_op->get_acl && !inode->i_op->get_inode_acl))
-+		return ERR_PTR(-EOPNOTSUPP);
- 
- 	sentinel = uncached_acl_sentinel(current);
- 	p = acl_by_type(inode, type);
+   net/core/filter.c:11649:17: error: no previous declaration for 'bpf_dynptr_from_skb' [-Werror=missing-declarations]
+    __bpf_kfunc int bpf_dynptr_from_skb(struct sk_buff *skb, u64 flags,
+                    ^~~~~~~~~~~~~~~~~~~
+>> net/core/filter.c:11662:17: error: no previous declaration for 'bpf_dynptr_from_xdp' [-Werror=missing-declarations]
+    __bpf_kfunc int bpf_dynptr_from_xdp(struct xdp_buff *xdp, u64 flags,
+                    ^~~~~~~~~~~~~~~~~~~
+   cc1: all warnings being treated as errors
 
----
-base-commit: a48fa7efaf1161c1c898931fe4c7f0070964233a
-change-id: 20230908-acl-fix-6f8f86930f32
 
-Best regards,
+vim +/bpf_dynptr_from_xdp +11662 net/core/filter.c
+
+ 11645	
+ 11646	__diag_push();
+ 11647	__diag_ignore_all("-Wmissing-prototypes",
+ 11648			  "Global functions as their definitions will be in vmlinux BTF");
+ 11649	__bpf_kfunc int bpf_dynptr_from_skb(struct sk_buff *skb, u64 flags,
+ 11650					    struct bpf_dynptr_kern *ptr__uninit)
+ 11651	{
+ 11652		if (flags) {
+ 11653			bpf_dynptr_set_null(ptr__uninit);
+ 11654			return -EINVAL;
+ 11655		}
+ 11656	
+ 11657		bpf_dynptr_init(ptr__uninit, skb, BPF_DYNPTR_TYPE_SKB, 0, skb->len);
+ 11658	
+ 11659		return 0;
+ 11660	}
+ 11661	
+ 11662	__bpf_kfunc int bpf_dynptr_from_xdp(struct xdp_buff *xdp, u64 flags,
+ 11663					    struct bpf_dynptr_kern *ptr__uninit)
+ 11664	{
+ 11665		if (flags) {
+ 11666			bpf_dynptr_set_null(ptr__uninit);
+ 11667			return -EINVAL;
+ 11668		}
+ 11669	
+ 11670		bpf_dynptr_init(ptr__uninit, xdp, BPF_DYNPTR_TYPE_XDP, 0, xdp_get_buff_len(xdp));
+ 11671	
+ 11672		return 0;
+ 11673	}
+ 11674	__diag_pop();
+ 11675	
+
 -- 
-Jeff Layton <jlayton@kernel.org>
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
