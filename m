@@ -2,161 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FC1798401
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14204798408
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240755AbjIHI11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 04:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40496 "EHLO
+        id S234589AbjIHI1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 04:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234589AbjIHI10 (ORCPT
+        with ESMTP id S241913AbjIHI1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 04:27:26 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8460173B;
-        Fri,  8 Sep 2023 01:27:22 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38861vnW009023;
-        Fri, 8 Sep 2023 08:26:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=H3IHBoAbaYpHx/KPzKw5/tL5DYBjBx4c9td7Z4bv+Ys=;
- b=FaCUdqG7Xw0pk0/OWEgPcJ9DQHehtbOTTqpaEUdXIdC0/tTbSn3X9/eZjsckCawpM6Yz
- nTcn5CiO7a1kFm1avak9n/M2yNjDyauwIJq+13Yn1tGh4pCbnn3+cSqyB0argRACVAo+
- hMOtW7YBrwoCMSo03SJD/8hhbnnuse0wKb4VjEabVyD1KsQlo2CGyqCisakfLmgegPFV
- w6e9oC/KIthu49KJpW+96npw/av9i9VdBcBCwIqleY9xNPYfOc/9mIHdZy3TlQCIC05e
- bw+13FoqNW9Ee5bqUr9xxnZaYGrygEPyga3nq9Iqzpr47zylyAirG2JwvNaHcVa8Tmst Xg== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3syf5c25q2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Sep 2023 08:26:58 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3888QvwO029165
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 8 Sep 2023 08:26:57 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 8 Sep
- 2023 01:26:49 -0700
-Message-ID: <edc7df5b-0853-4bd9-aef8-6a37b2a5eb36@quicinc.com>
-Date:   Fri, 8 Sep 2023 16:26:49 +0800
+        Fri, 8 Sep 2023 04:27:45 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 90565173B;
+        Fri,  8 Sep 2023 01:27:38 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 15BE8C15;
+        Fri,  8 Sep 2023 01:28:16 -0700 (PDT)
+Received: from [10.57.93.91] (unknown [10.57.93.91])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB8F23F64C;
+        Fri,  8 Sep 2023 01:27:34 -0700 (PDT)
+Message-ID: <014daa8c-5dec-9502-885b-2200a8595f91@arm.com>
+Date:   Fri, 8 Sep 2023 09:27:33 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] interconnect: qcom: Add SM4450 interconnect provider
- driver
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <djakov@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>
-CC:     <arnd@arndb.de>, <geert+renesas@glider.be>,
-        <nfraprado@collabora.com>, <rafal@milecki.pl>, <peng.fan@nxp.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <quic_tsoni@quicinc.com>,
-        <quic_shashim@quicinc.com>, <quic_kaushalk@quicinc.com>,
-        <quic_tdas@quicinc.com>, <quic_tingweiz@quicinc.com>,
-        <quic_aiquny@quicinc.com>, <kernel@quicinc.com>
-References: <20230908064427.26999-1-quic_tengfan@quicinc.com>
- <20230908064427.26999-3-quic_tengfan@quicinc.com>
- <d78b19ef-0fb7-4fc3-bf01-58c10b4fd1cd@linaro.org>
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <d78b19ef-0fb7-4fc3-bf01-58c10b4fd1cd@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: [PATCH v8 07/13] coresight-tpdm: Add nodes to set trigger
+ timestamp and type
+To:     Tao Zhang <quic_taozha@quicinc.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Hao Zhang <quic_hazha@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, andersson@kernel.org
+References: <1692681973-20764-1-git-send-email-quic_taozha@quicinc.com>
+ <1692681973-20764-8-git-send-email-quic_taozha@quicinc.com>
+ <90beb51a-27fc-ef16-88cb-07a4b4ec06e4@arm.com>
+ <475d60a3-9b97-6a91-d638-09cf38d47eca@quicinc.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <475d60a3-9b97-6a91-d638-09cf38d47eca@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: DEdgzWvoRsg7TsOp2ChAHQHPlfEIKctS
-X-Proofpoint-ORIG-GUID: DEdgzWvoRsg7TsOp2ChAHQHPlfEIKctS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-08_05,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 spamscore=0 lowpriorityscore=0 phishscore=0
- malwarescore=0 suspectscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309080077
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 9/8/2023 4:16 PM, Konrad Dybcio 写道:
-> On 8.09.2023 08:44, Tengfei Fan wrote:
->> Add driver for the Qualcomm interconnect buses found in SM4450 based
->> platforms. The topology consists of several NoCs that are controlled
->> by a remote processor that collects the aggregated bandwidth for each
->> master-slave pairs.
+On 01/09/2023 15:41, Tao Zhang wrote:
+> 
+> On 9/1/2023 6:43 PM, Suzuki K Poulose wrote:
+>> On 22/08/2023 06:26, Tao Zhang wrote:
+>>> The nodes are needed to set or show the trigger timestamp and
+>>> trigger type. This change is to add these nodes to achieve these
+>>> function.
+>>>
+>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>>> ---
+>>>   .../ABI/testing/sysfs-bus-coresight-devices-tpdm   | 22 +++++
+>>>   drivers/hwtracing/coresight/coresight-tpdm.c       | 95 
+>>> ++++++++++++++++++++++
+>>>   2 files changed, 117 insertions(+)
+>>>
+>>> diff --git 
+>>> a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm 
+>>> b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>> index 2936226..9e26e30 100644
+>>> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>> @@ -21,3 +21,25 @@ Description:
+>>>             Accepts only one value -  1.
+>>>           1 : Reset the dataset of the tpdm
+>>> +
+>>> +What: /sys/bus/coresight/devices/<tpdm-name>/dsb_trig_type
+>>> +Date:        March 2023
+>>> +KernelVersion    6.5
 >>
->> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->> ---
-> [...]
+>> 6.7
+>>
+>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang 
+>>> (QUIC) <quic_taozha@quicinc.com>
+>>> +Description:
+>>> +        (RW) Set/Get the trigger type of the DSB for tpdm.
+>>> +
+>>> +        Accepts only one of the 2 values -  0 or 1.
+>>> +        0 : Set the DSB trigger type to false
+>>> +        1 : Set the DSB trigger type to true
+>>> +
+>>> +What: /sys/bus/coresight/devices/<tpdm-name>/dsb_trig_ts
+>>> +Date:        March 2023
+>>> +KernelVersion    6.5
+>>
+>> Same here
+>>
+>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang 
+>>> (QUIC) <quic_taozha@quicinc.com>
+>>> +Description:
+>>> +        (RW) Set/Get the trigger timestamp of the DSB for tpdm.
+>>> +
+>>> +        Accepts only one of the 2 values -  0 or 1.
+>>> +        0 : Set the DSB trigger type to false
+>>> +        1 : Set the DSB trigger type to true
+>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c 
+>>> b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>> index d6e7c8c..8e11c9b 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>> @@ -25,6 +25,18 @@ static bool tpdm_has_dsb_dataset(struct 
+>>> tpdm_drvdata *drvdata)
+>>>       return (drvdata->datasets & TPDM_PIDR0_DS_DSB);
+>>>   }
+>>>   +static umode_t tpdm_dsb_is_visible(struct kobject *kobj,
+>>> +                       struct attribute *attr, int n)
+>>
+>> minor nit: please align.
+>>
+>> static umode_t tpdm_dsb_is_visible(struct kobject *kobj,
+>>                    struct attribute *attr, int n)
+>>
+>> I don't know if you have a different setting for tabs in your editor.
+>> Please refer to the coding style document.
 > 
->> +++ b/drivers/interconnect/qcom/sm4450.c
->> @@ -0,0 +1,1848 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
->> + *
-> Stray blank line
->> + */
->> +
->> +#include <linux/device.h>
->> +#include <linux/interconnect.h>
->> +#include <linux/interconnect-provider.h>
->> +#include <linux/io.h>
-> Is this necessary?
-> 
->> +#include <linux/module.h>
->> +#include <linux/of_device.h>
->> +#include <linux/of_platform.h>
->> +#include <linux/platform_device.h>
->> +#include <dt-bindings/interconnect/qcom,sm4450.h>
->> +
-> [...]
-> 
->> +static struct qcom_icc_node * const mmss_noc_nodes[] = {
->> +	[MASTER_CAMNOC_HF] = &qnm_camnoc_hf,
->> +	[MASTER_CAMNOC_ICP] = &qnm_camnoc_icp,
->> +	[MASTER_CAMNOC_SF] = &qnm_camnoc_sf,
->> +	[MASTER_MDP] = &qnm_mdp,
->> +	[MASTER_CNOC_MNOC_CFG] = &qnm_mnoc_cfg,
->> +	[MASTER_VIDEO_P0_MMNOC] = &qnm_video0,
->> +	[MASTER_VIDEO_PROC_MMNOC] = &qnm_video_cpu,
->> +	[SLAVE_MNOC_HF_MEM_NOC] = &qns_mem_noc_hf,
->> +	[SLAVE_MNOC_SF_MEM_NOC] = &qns_mem_noc_sf,
->> +	[SLAVE_SERVICE_MNOC] = &srvc_mnoc,
->> +	[MASTER_MDP_DISP] = &qnm_mdp_disp,
->> +	[SLAVE_MNOC_HF_MEM_NOC_DISP] = &qns_mem_noc_hf_disp,
-> Please drop the _DISP paths, upstream will handle these with icc
-> tags.
-sure, will handle this.
-> 
-> [...]
-> 
->> +
->> +static const struct of_device_id qnoc_of_match[] = {
->> +	{ .compatible = "qcom,sm4450-aggre1-noc",
->> +	  .data = &sm4450_aggre1_noc},
-> Nit, but please:
-> 
-> - make these one line, like this:
-> { .compatible = "qcom,sm4450-aggre1-noc", .data = &sm4450_aggre1_noc },
-> 
-> - add the missing space before '}'
-sure, will handle this.
-> 
-> Konrad
+> Tab size is set to 4 in my editor.
 
--- 
-Thx and BRs,
-Tengfei Fan
+Please read :
+
+Documentation/process/coding-style.rst, section 1.
+
+Suzuki
+
+
+> 
+> There are 5 tabs and 3 spaces at the beginning of this line.
+> 
+> I don't know if this is the same as what you see in this patch.
+> 
+> I see from the editor that the code meets the requirements of the coding 
+> style document.
+> 
+> If the gap in alignment is not resolved, such alignment problems may 
+> still occur.
+> 
+> 
+> Best,
+> 
+> Tao
+> 
+>>
+>>> +{
+>>> +    struct device *dev = kobj_to_dev(kobj);
+>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>> +
+>>> +    if (drvdata && tpdm_has_dsb_dataset(drvdata))
+>>> +        return attr->mode;
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>>   static void tpdm_reset_datasets(struct tpdm_drvdata *drvdata)
+>>>   {
+>>>       if (tpdm_has_dsb_dataset(drvdata)) {
+>>> @@ -232,8 +244,91 @@ static struct attribute_group tpdm_attr_grp = {
+>>>       .attrs = tpdm_attrs,
+>>>   };
+>>>   +static ssize_t dsb_trig_type_show(struct device *dev,
+>>> +          struct device_attribute *attr, char *buf)
+>>
+>> same here.
+>>
+>>> +{
+>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>> +
+>>> +    return sysfs_emit(buf, "%u\n",
+>>> +             (unsigned int)drvdata->dsb->trig_type);
+>>> +}
+>>> +
+>>> +/*
+>>> + * Trigger type (boolean):
+>>> + * false - Disable trigger type.
+>>> + * true  - Enable trigger type.
+>>> + */
+>>> +static ssize_t dsb_trig_type_store(struct device *dev,
+>>> +                      struct device_attribute *attr,
+>>> +                      const char *buf,
+>>> +                      size_t size)
+>>> +{
+>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>> +    unsigned long val;
+>>> +
+>>> +    if ((kstrtoul(buf, 0, &val)) || (val & ~1UL))
+>>> +        return -EINVAL;
+>>> +
+>>> +    spin_lock(&drvdata->spinlock);
+>>> +    if (val)
+>>> +        drvdata->dsb->trig_type = true;
+>>> +    else
+>>> +        drvdata->dsb->trig_type = false;
+>>> +    spin_unlock(&drvdata->spinlock);
+>>> +    return size;
+>>> +}
+>>> +static DEVICE_ATTR_RW(dsb_trig_type);
+>>> +
+>>> +static ssize_t dsb_trig_ts_show(struct device *dev,
+>>> +                    struct device_attribute *attr,
+>>> +                    char *buf)
+>>> +{
+>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>> +
+>>> +    return sysfs_emit(buf, "%u\n",
+>>> +             (unsigned int)drvdata->dsb->trig_ts);
+>>> +}
+>>> +
+>>> +/*
+>>> + * Trigger timestamp (boolean):
+>>> + * false - Disable trigger timestamp.
+>>> + * true  - Enable trigger timestamp.
+>>> + */
+>>> +static ssize_t dsb_trig_ts_store(struct device *dev,
+>>> +                   struct device_attribute *attr,
+>>> +                   const char *buf,
+>>> +                   size_t size)
+>>> +{
+>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>> +    unsigned long val;
+>>> +
+>>> +    if ((kstrtoul(buf, 0, &val)) || (val & ~1UL))
+>>> +        return -EINVAL;
+>>> +
+>>> +    spin_lock(&drvdata->spinlock);
+>>> +    if (val)
+>>> +        drvdata->dsb->trig_ts = true;
+>>> +    else
+>>> +        drvdata->dsb->trig_ts = false;
+>>> +    spin_unlock(&drvdata->spinlock);
+>>> +    return size;
+>>> +}
+>>> +static DEVICE_ATTR_RW(dsb_trig_ts);
+>>> +
+>>> +static struct attribute *tpdm_dsb_attrs[] = {
+>>> +    &dev_attr_dsb_trig_ts.attr,
+>>> +    &dev_attr_dsb_trig_type.attr,
+>>> +    NULL,
+>>> +};
+>>> +
+>>> +static struct attribute_group tpdm_dsb_attr_grp = {
+>>> +    .attrs = tpdm_dsb_attrs,
+>>> +    .is_visible = tpdm_dsb_is_visible,
+>>> +};
+>>> +
+>>>   static const struct attribute_group *tpdm_attr_grps[] = {
+>>>       &tpdm_attr_grp,
+>>> +    &tpdm_dsb_attr_grp,
+>>>       NULL,
+>>>   };
+>>
+>> Rest looks fine to me
+>>
+>> Suzuki
+>>
+
