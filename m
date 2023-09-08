@@ -2,121 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC23797FCB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 02:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A36797FCC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 02:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241020AbjIHAfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 20:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43894 "EHLO
+        id S241091AbjIHAfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 20:35:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238727AbjIHAfa (ORCPT
+        with ESMTP id S232143AbjIHAfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 20:35:30 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F141BF0
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 17:35:17 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b974031aeaso27330501fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 17:35:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694133316; x=1694738116; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WufLjNztGlChBv98FBmKb2FlfCV1VsF4EoYLdsQzy3U=;
-        b=HsexrnJtMm0uyGQLlcnh9fAya4/GVLBzn8wA4h4p7WQnddZEQD3FNCmAxMHJEVK7wp
-         EQt7TgBLgspnessP8NNSMefqjtYJZ0vtseeIdQCWyDSJ0sExHceojaaBdQuIURJUzF01
-         HD1K3kImqwUoxr7niXDjpu+ge08TePiZM09UHh2U9Oqs2x7vllKttpEpnazcMNma7DvZ
-         z+N7PXHFTBYyjGfyPmRI9bbqUPyNdosRqCwsZdr2jXpxyJMJRf4Cmu3BD5Z8Hrl7dyzV
-         iZ1c1nYKWU7d2x+T0hVA702Wf6I/iCIExWqK0HbVMzx7UxDOcXCSX4QkDvV4Jn1Fskjy
-         U+Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694133316; x=1694738116;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WufLjNztGlChBv98FBmKb2FlfCV1VsF4EoYLdsQzy3U=;
-        b=ZK6gECRHHKGLU969pwJPHT60m3ASN8at+POpHXYd4XfgooDfmIQ63Uh1ofZOt+Tq3/
-         sDIVLtzuVSGvBhuyMB8ecjnPf4x0CRqPhOjdReVSKfpftX3nAEtDRgAhYcWJhjXMawgu
-         EBJ1HlSUwR3hMrLp7/QWJyesr2x+SDzQFyjLxKW7YKHU7ZgeZolVWqqC8ooLTKJZVSZ1
-         5hqaeQBrdN37HxJIEjDrmcUJY189N0sWvqZqEl6jYImMw//uwhbaZz5cG/UOMTrKHMgc
-         cMglaZKEa854/0zIdBqKUiEtIgLrLb27wDb5a5qfNDDk9K22t4FtqTqb4Ry6QRQIjk9J
-         Kgaw==
-X-Gm-Message-State: AOJu0YynwxMhBVlW/MLDYzTmuUGePO0i3GlUpZd8eeiv67CALIebvZx9
-        yF381RV5XNIBzhj4cInYYmjCkw==
-X-Google-Smtp-Source: AGHT+IEG4qe0Wnk8qI7Djt2pE2CXmT2pRRN8CzJa4p9Pz+uJgkGUR0afl2XPdHrEJ6PdPoYLGQg/YQ==
-X-Received: by 2002:a2e:9782:0:b0:2ba:6519:c50f with SMTP id y2-20020a2e9782000000b002ba6519c50fmr484086lji.52.1694133315738;
-        Thu, 07 Sep 2023 17:35:15 -0700 (PDT)
-Received: from [10.10.15.130] ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id i18-20020a17090671d200b0099cf840527csm280373ejk.153.2023.09.07.17.35.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 17:35:15 -0700 (PDT)
-Message-ID: <f110b0fa-f41f-47e8-a83b-30de2f2b128c@linaro.org>
-Date:   Fri, 8 Sep 2023 03:35:14 +0300
+        Thu, 7 Sep 2023 20:35:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5471D1BDB
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 17:35:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694133344; x=1725669344;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=9GjhWOhjH0wxGVPMcJD8CO+Jf39kpEAM+q0cTHyhmJo=;
+  b=igqUPRAkYghq9ICUUc2S4KPRiAaD/eEPa/5mSMOSmeG+31xt628lXD4H
+   6qDvIHUL3rX+KA9iOC1UsCo8VFq4p5X+AbCAymSL4oOPdpPb/SvXbz5ZL
+   npSyxY9tzhSS9B0yOrWSRDXco07X08f500GeSjyz7gMkmGz3NZGUCj/QD
+   M4jlOWLCLynPJC45Gta4f7Pxm4KdyKuoftm6PD3Cfa4XOyvNnjh6cB2S4
+   LvpsdL+mTKUTIzI7WFV3eA8gC/HzA2P1Y+UNyReRpN0mCf4Rejb4RQdAy
+   gwcc9yYUzRR1cNLSHoSwz1XbFTH+lWk8G+Fnz2o8ezitLKy1bUpM0EtCJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="377422440"
+X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
+   d="scan'208";a="377422440"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 17:35:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="865859423"
+X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
+   d="scan'208";a="865859423"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 07 Sep 2023 17:35:42 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qePTG-0001kl-3A;
+        Fri, 08 Sep 2023 00:35:38 +0000
+Date:   Fri, 8 Sep 2023 08:35:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: net/core/filter.c:11639:17: error: no previous declaration for
+ 'bpf_dynptr_from_skb'
+Message-ID: <202309080849.4yWoDkBk-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/msm/dpu: change _dpu_plane_calc_bw() to use u64 to
- avoid overflow
-Content-Language: en-GB
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kalyan Thota <quic_kalyant@quicinc.com>
-Cc:     dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com,
-        quic_parellan@quicinc.com, nespera@igalia.com,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230908003240.14104-1-quic_abhinavk@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20230908003240.14104-1-quic_abhinavk@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/09/2023 03:32, Abhinav Kumar wrote:
-> _dpu_plane_calc_bw() uses integer variables to calculate the bandwidth
-> used during plane bandwidth calculations. However for high resolution
-> displays this overflows easily and leads to below errors
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   ff6e6ded54725cd01623b9a1a86b74a523198733
+commit: b5964b968ac64c2ec2debee7518499113b27c34e bpf: Add skb dynptrs
+date:   6 months ago
+config: x86_64-sof-customedconfig-avs-defconfig (https://download.01.org/0day-ci/archive/20230908/202309080849.4yWoDkBk-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230908/202309080849.4yWoDkBk-lkp@intel.com/reproduce)
 
-Can we move the u64 conversion closer to the place where we actually 
-need it? Having u64 source width looks very strange.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309080849.4yWoDkBk-lkp@intel.com/
 
-> 
-> [dpu error]crtc83 failed performance check -7
-> 
-> Promote the intermediate variables to u64 to avoid overflow.
-> 
-> Fixes: c33b7c0389e1 ("drm/msm/dpu: add support for clk and bw scaling for display")
-> Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/32
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> index ae970af1154f..c6193131beec 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> @@ -118,7 +118,7 @@ static u64 _dpu_plane_calc_bw(const struct dpu_mdss_cfg *catalog,
->   	const struct drm_display_mode *mode,
->   	struct dpu_sw_pipe_cfg *pipe_cfg)
->   {
-> -	int src_width, src_height, dst_height, fps;
-> +	u64 src_width, src_height, dst_height, fps;
->   	u64 plane_prefill_bw;
->   	u64 plane_bw;
->   	u32 hw_latency_lines;
+All errors (new ones prefixed by >>):
+
+>> net/core/filter.c:11639:17: error: no previous declaration for 'bpf_dynptr_from_skb' [-Werror=missing-declarations]
+    __bpf_kfunc int bpf_dynptr_from_skb(struct sk_buff *skb, u64 flags,
+                    ^~~~~~~~~~~~~~~~~~~
+   cc1: all warnings being treated as errors
+
+
+vim +/bpf_dynptr_from_skb +11639 net/core/filter.c
+
+ 11635	
+ 11636	__diag_push();
+ 11637	__diag_ignore_all("-Wmissing-prototypes",
+ 11638			  "Global functions as their definitions will be in vmlinux BTF");
+ 11639	__bpf_kfunc int bpf_dynptr_from_skb(struct sk_buff *skb, u64 flags,
+ 11640					    struct bpf_dynptr_kern *ptr__uninit)
+ 11641	{
+ 11642		if (flags) {
+ 11643			bpf_dynptr_set_null(ptr__uninit);
+ 11644			return -EINVAL;
+ 11645		}
+ 11646	
+ 11647		bpf_dynptr_init(ptr__uninit, skb, BPF_DYNPTR_TYPE_SKB, 0, skb->len);
+ 11648	
+ 11649		return 0;
+ 11650	}
+ 11651	__diag_pop();
+ 11652	
 
 -- 
-With best wishes
-Dmitry
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
