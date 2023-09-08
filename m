@@ -2,83 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A4F798250
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 08:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F32F798256
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 08:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241604AbjIHGYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 02:24:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51874 "EHLO
+        id S238537AbjIHG1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 02:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238452AbjIHGYf (ORCPT
+        with ESMTP id S233317AbjIHG1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 02:24:35 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9804B19A6;
-        Thu,  7 Sep 2023 23:24:30 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bcc14ea414so28718221fa.0;
-        Thu, 07 Sep 2023 23:24:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694154269; x=1694759069; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=poqBFblIGkZYzM95ib/AwQKqF/vFUuMutfef2/uB2EU=;
-        b=N3tTQ7XF+FP3pj/k3T5B5AqO6VTOzi182r34DgWTm7EnMAr3af6g6NnG3hwmY3Ie6o
-         F7gRs5ftwYX9LjELY++gxpNUy7EM3fvmCLGmOxOgUelbR3nwIr1ewjhpzExCoAXIOUdI
-         CnbwesfLef3vBoeLtpbQGq5aFvC0AWH+sGXoCKeYibLHWo8O4YRO2heHCQEz2t0Nhk3h
-         BdlERc5rDZj2hUPtABBLEtlEhGHQw1TWjaiikR5G14xV4BM+8KoRkayFz3LUJhT/MfoQ
-         YMhe6Hn+bfWS/q6Wlz3pJ4MVz730E6iK4dd5GLgWskALmTtAS/zKCmbHLQBIG68BE7h/
-         cyGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694154269; x=1694759069;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=poqBFblIGkZYzM95ib/AwQKqF/vFUuMutfef2/uB2EU=;
-        b=HF8LSj0FZ4I0eNQ6dddD+bF30citapfK5fskbcwVx8/1kiY370Um6/vDQOG23Hg6kF
-         VbUhb30HnGGYnZdDt72ucACfLSpwpQPeWwIul3M8mgKEMvxrOGlSOtaes8xP5fyc5N0M
-         MhNqA8GZJWaS7PRav6wp6981p+I7x9hPKu8cRkDGzaC7PLFi50s0yDD8LVHqXYIm/4Dh
-         E4s8SPCgOBhLK0eJ6D2W6JNVgGNWgGQ03Wvl6Q185X4QDG45NOOKqTOcSnfviuphE3UL
-         jZLRiNSdD0IKfPDoqGse5tzld/+VJ6XRx800n5GuqM9rkdEAxPPfEM5G+TxZiZslqweP
-         0dNg==
-X-Gm-Message-State: AOJu0YwlGYQ7p911kH0qbG/e3w5qcZkMqvGR0HcfKeYvVMh3o1XN80Dd
-        zgwqRimnvCGDSydZaC9Yt7Q=
-X-Google-Smtp-Source: AGHT+IGATGlK1TdeR750Ftd5ipdwsL6GfW9TwVuipKbbBDeBAb+eAzwbBDPSTwo0Ffh29N67kaBcFA==
-X-Received: by 2002:a2e:b60a:0:b0:2b7:11f8:27d with SMTP id r10-20020a2eb60a000000b002b711f8027dmr1067893ljn.7.1694154268606;
-        Thu, 07 Sep 2023 23:24:28 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:16f8:1500::3? (dc78bmyyyyyyyyyyyyybt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::3])
-        by smtp.gmail.com with ESMTPSA id s10-20020a2e2c0a000000b002b836d8c839sm185078ljs.40.2023.09.07.23.24.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 23:24:27 -0700 (PDT)
-Message-ID: <e5cdcce2-98b6-ac4e-7e21-0bd73c7e9dfe@gmail.com>
-Date:   Fri, 8 Sep 2023 09:24:27 +0300
+        Fri, 8 Sep 2023 02:27:05 -0400
+Received: from esa7.hc1455-7.c3s2.iphmx.com (esa7.hc1455-7.c3s2.iphmx.com [139.138.61.252])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A50319A6;
+        Thu,  7 Sep 2023 23:27:01 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="110091201"
+X-IronPort-AV: E=Sophos;i="6.02,236,1688396400"; 
+   d="scan'208";a="110091201"
+Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
+  by esa7.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 15:26:57 +0900
+Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com [192.168.83.66])
+        by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id C68FDCF1CE;
+        Fri,  8 Sep 2023 15:26:54 +0900 (JST)
+Received: from m3002.s.css.fujitsu.com (msm3.b.css.fujitsu.com [10.128.233.104])
+        by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 1385DF9FE;
+        Fri,  8 Sep 2023 15:26:54 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.118.237.107])
+        by m3002.s.css.fujitsu.com (Postfix) with ESMTP id D476D200537C;
+        Fri,  8 Sep 2023 15:26:53 +0900 (JST)
+From:   Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+To:     linux-rdma@vger.kernel.org, leon@kernel.org, jgg@ziepe.ca,
+        zyjzyj2000@gmail.com
+Cc:     linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
+        yangx.jy@fujitsu.com, lizhijian@fujitsu.com, y-goto@fujitsu.com,
+        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+Subject: [PATCH for-next v6 0/7] On-Demand Paging on SoftRoCE
+Date:   Fri,  8 Sep 2023 15:26:41 +0900
+Message-Id: <cover.1694153251.git.matsuda-daisuke@fujitsu.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US, en-GB
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Andreas Klinger <ak@it-klinger.de>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1694001462.git.mazziesaccount@gmail.com>
- <08f7085ba1af2fae21c942f6c20a94c237df53ba.1694001462.git.mazziesaccount@gmail.com>
- <ZPifWlRvX5hLFPvG@smile.fi.intel.com>
- <4d8e2873-49bc-8314-ee16-dd327a92898d@gmail.com>
- <ZPnW38eO6by1NjIr@smile.fi.intel.com>
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-Subject: Re: [PATCH 2/3] iio: pressure: Support ROHM BU1390
-In-Reply-To: <ZPnW38eO6by1NjIr@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,294 +51,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/23 16:57, Andy Shevchenko wrote:
-> On Thu, Sep 07, 2023 at 08:57:17AM +0300, Matti Vaittinen wrote:
->> On 9/6/23 18:48, Andy Shevchenko wrote:
->>> On Wed, Sep 06, 2023 at 03:37:48PM +0300, Matti Vaittinen wrote:
-> 
-> ...
-> 
->>>> +struct bm1390_data {
->>>> +	int64_t timestamp, old_timestamp;
->>>
->>> Out of a sudden int64_t instead of u64?
->>
->> Judging the iio_push_to_buffers_with_timestamp() and iio_get_time_ns(), IIO
->> operates with signed timestamps. One being s64, the other int64_t.
->>
->>>> +	struct iio_trigger *trig;
->>>> +	struct regmap *regmap;
->>>> +	struct device *dev;
->>>> +	struct bm1390_data_buf buf;
->>>> +	int irq;
->>>> +	unsigned int state;
->>>> +	bool trigger_enabled;
->>>
->>>> +	u8 watermark;
->>>
->>> Or u8 instead of uint8_t?
->>
->> So, uint8_t is preferred? I don't really care all that much which of these
->> to use - which may even show up as a lack of consistency... I think I did
->> use uint8_t when I learned about it - but at some point someone somewhere
->> asked me to use u8 instead.. This somewhere might have been u-boot though...
->>
->> So, are you Suggesting I should replace u8 with uint8_t? Can do if it
->> matters.
-> 
-> Consistency matters, since I do not know the intention behind, I suggest use
-> either, but be consistent in the entire code. However, uXX are specific Linux
-> kernel internal types and some maintainers prefer them. Also you may grep for
-> the frequency of intXX_t vs. sXX or their unsigned counterparts.
-> 
->>>> +	/* Prevent accessing sensor during FIFO read sequence */
->>>> +	struct mutex mutex;
->>>> +};
-> 
-> ...
-> 
->>>> +static int bm1390_read_temp(struct bm1390_data *data, int *temp)
->>>> +{
->>>> +	u8 temp_reg[2] __aligned(2);
->>>
->>> Why?! Just use proper bitwise type.
->>
->> What is the proper bitwise type in this case?
->>
->> I'll explain my reasoning:
->> What we really have in hardware (BM1390) and read from it is 8bit registers.
->> This is u8 to me. And as we read two consecutive registers, we use u8
->> arr[2]. In my eyes it describes the data perfectly well, right?
-> 
-> Two different registers?! Why bulk is used in that case?
-> To me looks like you are reading 16-bit (or one that fits in 16-bit) register
-> in BE notation.
+This patch series implements the On-Demand Paging feature on SoftRoCE(rxe)
+driver, which has been available only in mlx5 driver[1] so far.
 
-As I wrote, it is two 8 bit registers at consecutive addresses. And this 
-is what u8 arr[2]; also says.
+There have been an obstacle to this series, but it has been finally solved.
+The commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe tasks")
+replaced the triple tasklets with a workqueue, and now it is ready to
+merge the ODP patches on top of it.
 
-Bulk read is mandatory as HW has a special feature of preventing the 
-update of these registers when a read is ongoing. If we do two reads we 
-risk of getting one of the registers updated between the accesses - 
-resulting incorrect value.
+I omitted some contents like the motive behind this series from the cover-
+letter. Please see the cover letter of v3 for more details[2].
 
-> 
->>>> +	__be16 *temp_raw;
->>>> +	int ret;
->>>> +	s16 val;
->>>> +	bool negative;
->>>> +
->>>> +	ret = regmap_bulk_read(data->regmap, BM1390_REG_TEMP_HI, &temp_reg,
->>>> +			       sizeof(temp_reg));
->>>> +	if (ret)
->>>> +		return ret;
->>>> +
->>>> +	if (temp_reg[0] & 0x80)
->>>> +		negative = true;
->>>> +	else
->>>> +		negative = false;
->>>
->>>> +	temp_raw = (__be16 *)&temp_reg[0];
->>>
->>> Heck no. Make temp_reg be properly typed.
->>
->> As I explained above, to me it seems ur arr[2} is _the_ proper type to
->> represent data we read from the device.
->>
->> What we need to do is to convert the 16bits of data to an integer we can
->> give to the rest of the system. And, we happen to know how to 'manipulate'
->> the data to get it in format of understandable integer. As we have these 16
->> bits in memory, aligned to 2 byte boundary - why shouldn't we just
->> 'manipulate' the data and say - here we have your integer, please be my
->> guest and use it?
-> 
-> Because it smell like a hack and is a hack here.
-> Either it's a single BE16 register, or it's two different registers that by
-> very unknown reason you are reading in a bulk.
+[Overview]
+When applications register a memory region(MR), RDMA drivers normally pin
+pages in the MR so that physical addresses are never changed during RDMA
+communication. This requires the MR to fit in physical memory and
+inevitably leads to memory pressure. On the other hand, On-Demand Paging
+(ODP) allows applications to register MRs without pinning pages. They are
+paged-in when the driver requires and paged-out when the OS reclaims. As a
+result, it is possible to register a large MR that does not fit in physical
+memory without taking up so much physical memory.
 
-It is two registers. The bulk read might warrant a comment - although I 
-believe this is nothing unusual. If it is a hack or not is an opinion. 
-To me it looks like a code that explicitly shows what data is and how it 
-is being handled. It does what it is supposed to do and shows it in all 
-dirty details.
+[How does ODP work?]
+"struct ib_umem_odp" is used to manage pages. It is created for each
+ODP-enabled MR on its registration. This struct holds a pair of arrays
+(dma_list/pfn_list) that serve as a driver page table. DMA addresses and
+PFNs are stored in the driver page table. They are updated on page-in and
+page-out, both of which use the common interfaces in the ib_uverbs layer.
 
-Still, I am open to suggestions but I'd prefer seeing a real improvement 
-instead of claiming that the hardware is something it is not (eg, having 
-16bit registers or should be read by individual accesses).
+Page-in can occur when requester, responder or completer access an MR in
+order to process RDMA operations. If they find that the pages being
+accessed are not present on physical memory or requisite permissions are
+not set on the pages, they provoke page fault to make the pages present
+with proper permissions and at the same time update the driver page table.
+After confirming the presence of the pages, they execute memory access such
+as read, write or atomic operations.
 
-The code in this form is no
-> go.
-> 
->> Well, I am keen to learn the 'correct bitwise type' you talk about - can you
->> please explain me what this correct type for two 8bit integers is? Maybe I
->> can improve.
-> 
-> If the registers are not of the same nature the bulk access is wrong.
-> Use one by one reads.
+Page-out is triggered by page reclaim or filesystem events (e.g. metadata
+update of a file that is being used as an MR). When creating an ODP-enabled
+MR, the driver registers an MMU notifier callback. When the kernel issues a
+page invalidation notification, the callback is provoked to unmap DMA
+addresses and update the driver page table. After that, the kernel releases
+the pages.
 
-Of same nature? As I said, there is 2 8bit registers at consecutive 
-addresses. They have no other 'nature' as far as I can tell.
+[Supported operations]
+All traditional operations are supported on RC connection. The new Atomic
+write[3] and RDMA Flush[4] operations are not included in this patchset. I
+will post them later after this patchset is merged. On UD connection, Send,
+Recv, and SRQ-Recv are supported.
 
-Data in these registers in not in standard format - it needs to be 
-manipulated to make it an ordinary integer. The code shows this very 
-clearly by not reading it in any standard integer.
+[How to test ODP?]
+There are only a few resources available for testing. pyverbs testcases in
+rdma-core and perftest[5] are recommendable ones. Other than them, the
+ibv_rc_pingpong command can also be used for testing. Note that you may
+have to build perftest from upstream because older versions do not handle
+ODP capabilities correctly.
 
-> ...
-> 
->>>> +static int bm1390_pressure_read(struct bm1390_data *data, u32 *pressure)
->>>> +{
->>>> +	int ret;
->>>> +	u8 raw[3];
->>>> +
->>>> +	ret = regmap_bulk_read(data->regmap, BM1390_REG_PRESSURE_BASE,
->>>> +			       &raw[0], sizeof(raw));
-> 
-> &raw[0] --> raw
-> 
->>>> +	if (ret < 0)
->>>> +		return ret;
->>>> +
->>>> +	*pressure = (u32)(raw[2] >> 2 | raw[1] << 6 | raw[0] << 14);
-> 
-> This, btw, looks like le24, but I'm puzzled with right shift.
-> I need to read datasheet carefully to understand this.
+The ODP tree is available from github:
+https://github.com/daimatsuda/linux/tree/odp_v6
 
-It's not just le24. We, again, have data placed in registers so that it 
-needs some suffling. The data-sheet does decent job explaining it 
-though. AFAIR, there was a 'gap' in bits so it needed some more suffling 
-to sift the bits so that they're consecutive. I think this indeed is 
-something that needs to be looked up from data-sheet to understand why 
-this play with bits is done.
+[Future work]
+My next work is to enable the new Atomic write[3] and RDMA Flush[4]
+operations with ODP. After that, I am going to implement the prefetch
+feature. It allows applications to trigger page fault using
+ibv_advise_mr(3) to optimize performance. Some existing software like
+librpma[6] use this feature. Additionally, I think we can also add the
+implicit ODP feature in the future.
 
-> ...
-> 
->>>> +	mutex_lock(&data->mutex);
->>>
->>> Wouldn't you like to start using cleanup.h?
->>
->> The new macro "thingee" for C++ destructor like constructs?
-> 
-> I was talking about these: guard() / scoped_guard().
+[1] [RFC 00/20] On demand paging
+https://www.spinics.net/lists/linux-rdma/msg18906.html
 
-Right, this was a bit more precise than "The new macro thingee", thanks 
-:) This, however is what I was referring to so what I wrote below still 
-applies :)
+[2] [PATCH for-next v3 0/7] On-Demand Paging on SoftRoCE
+https://lore.kernel.org/lkml/cover.1671772917.git.matsuda-daisuke@fujitsu.com/
 
-> 
->> TBH, I am not really in a rush with it for two reasons.
->> 1) The syntax looks very alien to me. I would like to get some time to get
->> used to it before voluntarily ending up maintaining a code using it. (I
->> don't like practicing things upstream as practicing tends to include making
->> more errors).
->>
->> 2. Related to 1). I am not (yet) convinced incorporating changes in stuff
->> using these cleanups is easy. I'm a bit reserved and would like to see how
->> things play out.
->>
->> 3. I expect I will get a few requests to backport the code to some older
->> kernels used by some big customers. (I've been doing plenty of extra work
->> when backporting my kernel improvements like regmap_irq stuff, linear
->> ranges, regulator pickable ranges, gts-helpers to customer kernels to get my
->> drivers working - or working around the lack of thiose features. I have been
->> willing to pay this prize to get those helpers upstream for everyone to use.
->> The cleanup.h however is there so it does not _need_ new users. I don't
->> think _all_ existing drivers will be converted to use it so one more should
->> probably not hurt. I think that in a year at least some customers will be
->> using kernel containing the cleanup.h - so by latest then it is time for me
->> to jump on that train. I hope I am used to reading those macros by then).
-> 
-> OK.
-> 
-> ...
-> 
->>>> +	case IIO_CHAN_INFO_SCALE:
->>>> +		if (chan->type == IIO_TEMP) {
->>>> +			*val = 31;
->>>> +			*val2 = 250000;
->>>> +
->>>> +			return IIO_VAL_INT_PLUS_MICRO;
->>>> +		} else if (chan->type == IIO_PRESSURE) {
->>>> +			*val = 0;
->>>> +			/*
->>>> +			 * pressure in hPa is register value divided by 2048.
->>>> +			 * This means kPa is 1/20480 times the register value,
->>>> +			 * which equals to 48828.125 * 10 ^ -9
->>>> +			 * This is 48828.125 nano kPa.
->>>> +			 *
->>>> +			 * When we scale this using IIO_VAL_INT_PLUS_NANO we
->>>> +			 * get 48828 - which means we lose some accuracy. Well,
->>>> +			 * let's try to live with that.
->>>> +			 */
->>>> +			*val2 = 48828;
->>>> +
->>>> +			return IIO_VAL_INT_PLUS_NANO;
->>>> +		}
->>>> +
->>>> +		return -EINVAL;
->>>
->>> Why not switch-case like other drivers do?
->>
->> In my eyes avoiding the very simple if - else if does not warrant nested
->> switches which look ugly to me.
-> 
-> Okay, yet another disagreement.
-> 
+[3] [PATCH v7 0/8] RDMA/rxe: Add atomic write operation
+https://lore.kernel.org/linux-rdma/1669905432-14-1-git-send-email-yangx.jy@fujitsu.com/
 
-Yes, we have a few :) Luckily most are more on a styling side of things. 
-I do still appreciate you reviewing the patches as I think I do agree 
-with most of your suggestions - and having an extra pair of eyes looking 
-at the code never hurts :)
+[4] [for-next PATCH 00/10] RDMA/rxe: Add RDMA FLUSH operation
+https://lore.kernel.org/lkml/20221206130201.30986-1-lizhijian@fujitsu.com/
 
-> ...
-> 
->>>> +	smp_lvl = FIELD_GET(BM1390_MASK_FIFO_LVL, smp_lvl);
->>>
->>>> +
->>>
->>> Unneeded blank line.
->>>
->>>> +	if (smp_lvl > 4) {
->>>> +		/*
->>>> +		 * Valid values should be 0, 1, 2, 3, 4 - rest are probably
->>>> +		 * bit errors in I2C line. Don't overflow if this happens.
->>>> +		 */
->>>> +		dev_err(data->dev, "bad FIFO level %d\n", smp_lvl);
->>>> +		smp_lvl = 4;
->>>> +	}
->>>
->>>> +	if (!smp_lvl)
->>>> +		return ret;
->>>
->>> This can be checked first as it's and error condition
->>
->> I wouldn't say it is an error condition.
-> 
-> Returning ret suggests otherwise.
+[5] linux-rdma/perftest: Infiniband Verbs Performance Tests
+https://github.com/linux-rdma/perftest
 
-Yes. I agree.
+[6] librpma: Remote Persistent Memory Access Library
+https://github.com/pmem/rpma
 
-> 
->> It just means there was no samples
->> collected in buffer.
-> 
-> But as you explained below, the code is actually 0 there.
-> In any case bailing out conditionals are better to be first.
+v5->v6:
+ Fixed the implementation according to Jason's suggestions
+   cf. https://lore.kernel.org/all/ZIdFXfDu4IMKE+BQ@nvidia.com/
+   cf. https://lore.kernel.org/all/ZIdGU709e1h5h4JJ@nvidia.com/
 
-Kind of agree. Or by very least it should be else if. But as you said, 
-early return is probably better here, thanks.
+v4->v5:
+ 1) Rebased to 6.4.0-rc2+
+ 2) Changed to schedule all works on responder and completer to workqueue
 
-> 
->>   and previous branch has
->>> no side effects on this. Also, wouldn't be better to use error code explicitly?
->>
->> Yes. For the clarity we definitely should explicitly do "return 0" here.
->> Thanks.
-> 
+v3->v4:
+ 1) Re-designed functions that access MRs to use the MR xarray.
+ 2) Rebased onto the latest jgg-for-next tree.
+
+v2->v3:
+ 1) Removed a patch that changes the common ib_uverbs layer.
+ 2) Re-implemented patches for conversion to workqueue.
+ 3) Fixed compile errors (happened when CONFIG_INFINIBAND_ON_DEMAND_PAGING=n).
+ 4) Fixed some functions that returned incorrect errors.
+ 5) Temporarily disabled ODP for RDMA Flush and Atomic Write.
+
+v1->v2:
+ 1) Fixed a crash issue reported by Haris Iqbal.
+ 2) Tried to make lock patters clearer as pointed out by Romanovsky.
+ 3) Minor clean ups and fixes.
+
+Daisuke Matsuda (7):
+  RDMA/rxe: Always defer tasks on responder and completer to workqueue
+  RDMA/rxe: Make MR functions accessible from other rxe source code
+  RDMA/rxe: Move resp_states definition to rxe_verbs.h
+  RDMA/rxe: Add page invalidation support
+  RDMA/rxe: Allow registering MRs for On-Demand Paging
+  RDMA/rxe: Add support for Send/Recv/Write/Read with ODP
+  RDMA/rxe: Add support for the traditional Atomic operations with ODP
+
+ drivers/infiniband/sw/rxe/Makefile          |   2 +
+ drivers/infiniband/sw/rxe/rxe.c             |  18 ++
+ drivers/infiniband/sw/rxe/rxe.h             |  37 ---
+ drivers/infiniband/sw/rxe/rxe_comp.c        |  12 +-
+ drivers/infiniband/sw/rxe/rxe_hw_counters.c |   1 -
+ drivers/infiniband/sw/rxe/rxe_hw_counters.h |   1 -
+ drivers/infiniband/sw/rxe/rxe_loc.h         |  39 +++
+ drivers/infiniband/sw/rxe/rxe_mr.c          |  20 +-
+ drivers/infiniband/sw/rxe/rxe_odp.c         | 313 ++++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_resp.c        |  31 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c       |   5 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.h       |  38 +++
+ 12 files changed, 441 insertions(+), 76 deletions(-)
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_odp.c
+
+base-commit: f5acc36b0714b7b8510a8b436087d33a65cb05f4
 
 -- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
+2.39.1
 
