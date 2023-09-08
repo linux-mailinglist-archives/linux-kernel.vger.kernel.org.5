@@ -2,163 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A44F579869D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 13:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBAF7986A7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 13:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242826AbjIHLzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 07:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44406 "EHLO
+        id S242989AbjIHL7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 07:59:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239226AbjIHLzH (ORCPT
+        with ESMTP id S238565AbjIHL7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 07:55:07 -0400
-Received: from mail-pf1-f205.google.com (mail-pf1-f205.google.com [209.85.210.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73E41BC1
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 04:55:03 -0700 (PDT)
-Received: by mail-pf1-f205.google.com with SMTP id d2e1a72fcca58-68ca6c214f9so2501967b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 04:55:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694174103; x=1694778903;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VpID/NCresXBqkoJiwT7k8kW4bhvmuOUSE5piT+zJ24=;
-        b=FAYRKKCFDk9jO4VckNTk82YD1zh2H9Oz59VnIXDqoXdEeoqkH/OsG6TsAOkT5X8pCb
-         T9xWxr/BjBThTzaTJXu0GpdTs9mZ24vbWE09hGLGidUIbcXXZQgweL47WDs4HLUSJGeA
-         nFgLemTE9eHEMLztDMWWza2P/AqbfJioSly0MUJfbiyvnuOrbQm8xIo7G0mTzgf4gKKA
-         WANgNTjEdBdKr7tmN06n83l2DoaWkPbrJIIVZ3pZDQPwm7XiwyWXuDG59jlzMWljHQma
-         EaohU7uEGd3Sq0qsJfBghVUuA1nh+cepaAn+i+QG01pN5gvF+SZIVoBLm3mM6AUmLDUU
-         3HKg==
-X-Gm-Message-State: AOJu0YwVO2t30I1rsJIYL8tesgJ66bDbEw4ncjsf4TTsoxMftma8roDd
-        N/tf7k5cm0HH0mFG8DjLStga7F7GuNVW5yRSUNMi3VbsI/tK
-X-Google-Smtp-Source: AGHT+IFrnJxo5hVxE67zNWYwuOgzQLvb2WzNk+jodw+i6pTBsZ1USWQiKcu762ADAAM8MoUkxi/830WHW4DJDzDD+1mCz4xsS/sf
+        Fri, 8 Sep 2023 07:59:30 -0400
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2A019BC;
+        Fri,  8 Sep 2023 04:59:25 -0700 (PDT)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id E07661C0019; Fri,  8 Sep 2023 13:59:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+        t=1694174362;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pgszQD84t0zWFYtdlm4co33mPCbsZOXmieVbxsc8Tu0=;
+        b=KQJ4R4+KQNuGIamlwHNZfjp2dSVDBl+R6ONq5VGA9+welTSi2VRQYjEDUl8tW1XFSrGwTy
+        c2Oh41Uvh6ViJZfc9q4RpM9Cj62ySxO78pNrhkQYp3/wUpIdBYEEzh+6x+UJ2FJfHBXwEq
+        GekWoxjSfU/nA2a3b19axQx2jFgDC+E=
+Date:   Fri, 8 Sep 2023 13:59:22 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Mikulas Patocka <mpatocka@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Zdenek Kabelac <zkabelac@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: [PATCH] fix writing to the filesystem after unmount
+Message-ID: <ZPsMmjFXGFmdRP+d@duo.ucw.cz>
+References: <59b54cc3-b98b-aff9-14fc-dc25c61111c6@redhat.com>
+ <20230906-launenhaft-kinder-118ea59706c8@brauner>
+ <f5d63867-5b3e-294b-d1f5-a128817cfc7@redhat.com>
+ <20230906-aufheben-hagel-9925501b7822@brauner>
+ <60f244be-803b-fa70-665e-b5cba15212e@redhat.com>
+ <20230906-aufkam-bareinlage-6e7d06d58e90@brauner>
+ <818a3cc0-c17b-22c0-4413-252dfb579cca@redhat.com>
+ <20230907094457.vcvmixi23dk3pzqe@quack3>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:150b:b0:68a:2c24:57ce with SMTP id
- q11-20020a056a00150b00b0068a2c2457cemr850686pfu.5.1694174103177; Fri, 08 Sep
- 2023 04:55:03 -0700 (PDT)
-Date:   Fri, 08 Sep 2023 04:55:03 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009b92c10604d7a5e9@google.com>
-Subject: [syzbot] [block?] WARNING in blk_rq_map_user_iov
-From:   syzbot <syzbot+a532b03fdfee2c137666@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, dan.j.williams@intel.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="VV/11Z1/4RYJMo7q"
+Content-Disposition: inline
+In-Reply-To: <20230907094457.vcvmixi23dk3pzqe@quack3>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--VV/11Z1/4RYJMo7q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    708283abf896 Merge tag 'dmaengine-6.6-rc1' of git://git.ke..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=14142f38680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1dc3cb855cd74c2
-dashboard link: https://syzkaller.appspot.com/bug?extid=a532b03fdfee2c137666
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=115bfbf4680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13896ed0680000
+On Thu 2023-09-07 11:44:57, Jan Kara wrote:
+> On Wed 06-09-23 18:52:39, Mikulas Patocka wrote:
+> > On Wed, 6 Sep 2023, Christian Brauner wrote:
+> > > On Wed, Sep 06, 2023 at 06:01:06PM +0200, Mikulas Patocka wrote:
+> > > > > > BTW. what do you think that unmount of a frozen filesystem shou=
+ld properly=20
+> > > > > > do? Fail with -EBUSY? Or, unfreeze the filesystem and unmount i=
+t? Or=20
+> > > > > > something else?
+> > > > >=20
+> > > > > In my opinion we should refuse to unmount frozen filesystems and =
+log an
+> > > > > error that the filesystem is frozen. Waiting forever isn't a good=
+ idea
+> > > > > in my opinion.
+> > > >=20
+> > > > But lvm may freeze filesystems anytime - so we'd get randomly retur=
+ned=20
+> > > > errors then.
+> > >=20
+> > > So? Or you might hang at anytime.
+> >=20
+> > lvm doesn't keep logical volumes suspended for a prolonged amount of ti=
+me.=20
+> > It will unfreeze them after it made updates to the dm table and to the=
+=20
+> > metadata. So, it won't hang forever.
+> >=20
+> > I think it's better to sleep for a short time in umount than to return =
+an=20
+> > error.
+>=20
+> I think we've got too deep down into "how to fix things" but I'm not 100%
+> sure what the "bug" actually is. In the initial posting Mikulas writes "t=
+he
+> kernel writes to the filesystem after unmount successfully returned" - is
+> that really such a big issue? Anybody else can open the device and write =
+to
+> it as well. Or even mount the device again. So userspace that relies on
+> this is kind of flaky anyway (and always has been).
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1bd71e72bfd8/disk-708283ab.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b1cd0be2dff5/vmlinux-708283ab.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ff76c3f9ca24/bzImage-708283ab.xz
+Umm. No? I admin my own systems; I'm responsible for my
+userspace. Maybe I'm in single user mode.
 
-The issue was bisected to:
+Noone writes to my block devices without my permissions.
 
-commit a41dad905e5a388f88435a517de102e9b2c8e43d
-Author: Al Viro <viro@zeniv.linux.org.uk>
-Date:   Fri Sep 16 00:11:15 2022 +0000
+By mount, I give such permission to the kernel. By umount, I take
+such permission away.
 
-    iov_iter: saner checks for attempt to copy to/from iterator
+There's nothing flaky about that. Kernel is simply buggy. Fix it.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=127483b8680000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=117483b8680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=167483b8680000
+[Remember that "you should umount before disconnecting USB devices to
+prevent data corruption"? How is that working with kernel writing to
+devices after umount?]
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a532b03fdfee2c137666@syzkaller.appspotmail.com
-Fixes: a41dad905e5a ("iov_iter: saner checks for attempt to copy to/from iterator")
+Best regards,
+									Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 5033 at lib/iov_iter.c:385 _copy_from_iter+0x2c2/0x1270 lib/iov_iter.c:385
-Modules linked in:
-CPU: 1 PID: 5033 Comm: syz-executor399 Not tainted 6.5.0-syzkaller-11329-g708283abf896 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:_copy_from_iter+0x2c2/0x1270 lib/iov_iter.c:385
-Code: 5d 41 5c 41 5d 41 5e 41 5f c3 e8 f9 8c 65 fd be 85 01 00 00 48 c7 c7 a0 94 e8 8a e8 d8 37 a5 fd e9 48 fe ff ff e8 de 8c 65 fd <0f> 0b 45 31 ff eb 88 e8 d2 8c 65 fd 31 ff 89 ee e8 f9 87 65 fd 40
-RSP: 0018:ffffc900043c7480 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff888014b03b80 RSI: ffffffff84220fb2 RDI: 0000000000000001
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: ffffffff8a60008b R12: 0000000000000001
-R13: ffffc900043c76c8 R14: 0000000000000001 R15: 0000160000000000
-FS:  0000555555a41380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200000c8 CR3: 000000007ebb3000 CR4: 0000000000350ee0
-Call Trace:
- <TASK>
- copy_page_from_iter lib/iov_iter.c:542 [inline]
- copy_page_from_iter+0xa5/0x120 lib/iov_iter.c:531
- bio_copy_from_iter block/blk-map.c:56 [inline]
- bio_copy_user_iov block/blk-map.c:211 [inline]
- blk_rq_map_user_iov+0x9d5/0x1860 block/blk-map.c:662
- blk_rq_map_user_io.part.0+0x276/0x2c0 block/blk-map.c:720
- blk_rq_map_user_io+0xe6/0x230 block/blk-map.c:701
- sg_start_req drivers/scsi/sg.c:1818 [inline]
- sg_common_write.constprop.0+0xd61/0x1c90 drivers/scsi/sg.c:803
- sg_new_write.isra.0+0x546/0xaa0 drivers/scsi/sg.c:770
- sg_ioctl_common drivers/scsi/sg.c:935 [inline]
- sg_ioctl+0x1814/0x2760 drivers/scsi/sg.c:1160
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f4cd02c0229
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff2da41248 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007fff2da41418 RCX: 00007f4cd02c0229
-RDX: 0000000020000300 RSI: 0000000000002285 RDI: 0000000000000003
-RBP: 00007f4cd0333610 R08: 00007fff2da41418 R09: 00007fff2da41418
-R10: 002367732f766564 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007fff2da41408 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
+--VV/11Z1/4RYJMo7q
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZPsMmgAKCRAw5/Bqldv6
+8jwpAKCloP9g2vbKKoXzhQ/ur0UU/OPQBQCfYxXaWEstMzVxbkv+WoWbEeYTPxE=
+=jKlj
+-----END PGP SIGNATURE-----
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--VV/11Z1/4RYJMo7q--
