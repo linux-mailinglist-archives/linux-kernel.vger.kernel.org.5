@@ -2,67 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A112E798001
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 03:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4997798004
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 03:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239353AbjIHBLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 21:11:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46716 "EHLO
+        id S239940AbjIHBMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 21:12:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjIHBLM (ORCPT
+        with ESMTP id S230113AbjIHBMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 21:11:12 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838CD1BCB;
-        Thu,  7 Sep 2023 18:11:08 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so25578721fa.3;
-        Thu, 07 Sep 2023 18:11:08 -0700 (PDT)
+        Thu, 7 Sep 2023 21:12:07 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5181BD3
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 18:12:03 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9a9d6b98845so438868666b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 18:12:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694135467; x=1694740267; darn=vger.kernel.org;
+        d=google.com; s=20221208; t=1694135521; x=1694740321; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bx8foFNhrfnEFqYrw1yPcsgvr+XmSSnNMk5PfQGbNnk=;
-        b=adbHhY+KegOybp7wX3TehTmh5Yk9G4AS/ShNvFIpWsJOi17bmLw5yp3b7oko9JXMEx
-         43EUYFeTcgFfbUXbe+hkLYUsC2+2M6KL+gf3YtLFmR5K52IusLhwMOLTgVl2Vpy9sqF9
-         vAOxWzsy6x/vSD+u3Xfn4CdepO5a4lmmM4cvoiHgB1uiul/Xj0Y/GEpzS2gjTyPKEsn0
-         xr5mIKWszI5bW5s9wiJcMq1o0Wf8YF3sbBnvEU+6KVEVqvMHw9hTidtpIgG5MUzMBq5+
-         BBynBNmDw2sFEnpUbhwmH1qzzP/ikAMlN7EvJvI1cXN2P2LRm2LaIaB/RDQKf9YS6Qxs
-         5rig==
+        bh=lwP1nywgzoBgchgsvrLcyHWBwwxyPh3r9Nw+HpT3wqM=;
+        b=EE5Dp9cXwobIzfTx6SUK8DmHqidYAPPgSQRFZoL/OdyAARG1eKxUk6v2YmWtjykYl2
+         /WislVDIVqR7tdqVAVxqRKxTijIHXPCdpv86CcDKB0zDM6LQCb8C+WkdLnJ3PwsxApUj
+         lrzv2MM89nGydKOVsdIWFgllr0ncS+IdLNM0K8hgjlL4Lw2jw9Nlm+JHJaR5NNohOJfF
+         xFbczENfYikFHH4rQCQqPyFEeWy2hgKiUTz1DVlgckEHlnDRRpSOpPm0XKuJDei1ocmM
+         YDCdBiipLBfVVj7rryvmmoyypx9m5YmWav8PNJ/iC9FKb/qNlnXYj26xCqYksO2ZT0qr
+         Jb7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694135467; x=1694740267;
+        d=1e100.net; s=20230601; t=1694135522; x=1694740322;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bx8foFNhrfnEFqYrw1yPcsgvr+XmSSnNMk5PfQGbNnk=;
-        b=Uh9/S4hFpe9nBKttaFhqDBnSgM87Jdoen7GK30bSMuwlyX260dTMVqHSY2SokPnulT
-         CDJOLou3FkKQtEoTbKMpshJKBsJehJkJnBRMDW+CGbOW5sJz1CL6fht0BV2G7qPNxA/H
-         w4KME7H+gmgtHcjwOfZpSqJ6y2wPtQYOHcm4ZgFZ2UHocaf4VQ2lQ0ue5sgvFYmbRypb
-         t/J7XkUTd0cJvG80kIaRBngnsLZqiC2bwhdscwY73PJWRU29IX+PeVpKINQdnVD6Ur/y
-         ZoYKcwBmGyA/X7iFVVq0FQn6Y48Sbugre7K89CnPRjiLm/Uax+GU+enimRx7TpTA29U1
-         PdOQ==
-X-Gm-Message-State: AOJu0YzVhxI3PGqSFsMCnMkyKgNxHeZR3ucPpU2cYgqAL1NEGqS/klP5
-        kd8qKRe78l8Q7glDkdPCqegYVvHH/zHIkPtdoPlRZFSa
-X-Google-Smtp-Source: AGHT+IGLkUNfUAVoPPl1Fw4C2EH7VcKQadbwCD1PYm5yL5A8RL4nKzxjF47HJgIEga7SpQX1409vG6/bnEsD6Xaq9HI=
-X-Received: by 2002:a2e:3517:0:b0:2b6:e2aa:8fbc with SMTP id
- z23-20020a2e3517000000b002b6e2aa8fbcmr562178ljz.8.1694135466348; Thu, 07 Sep
- 2023 18:11:06 -0700 (PDT)
+        bh=lwP1nywgzoBgchgsvrLcyHWBwwxyPh3r9Nw+HpT3wqM=;
+        b=l5IPu/WP2LZsduczyVyKUbLXmKAljXudwRIp4mYKgL7HX3kP0lYXME7vIJaq4T7jUk
+         ZTHgX8g30vTXvMH1oWIn24nY22ZfDcVrV7UvFes6EHR4lCn63K1Mpd7fCpXnLAY/D86b
+         pTe7tkLm2/mKh/AOeRuPEEicgp7hdeZcseBWITg5I90R7IqCZkGcea6f2pjAGhrl0jOe
+         nAIVAXdobmQdQNS7GoBvC0aLPScLaJ1mCdSguMOukkF/aIxfL9uxVdafRyZkqMwkF8GY
+         Ss4oZv9c7UoI29k8rKSuyESOpoXzJXMo6j0+Q7CfyNOlHNhrJOqLIvg7sB4/prPRnPC9
+         uETA==
+X-Gm-Message-State: AOJu0Yyss9cd/snxrZt6eUgELVZfnqwMZ9Ll9DDQtdg67OvRaC7HD39N
+        HroML0JXK4DfyVWQVPZEl9M61Y4uSLcUZvrZ22uBNw==
+X-Google-Smtp-Source: AGHT+IEo4HrtlJQLiB3a2CguUL41qVkvqToyGm9wIVJBUWGz9ZnQ1lO3IUapwZ91iqxoVX0OpJDvsX65JDjRAipLIvM=
+X-Received: by 2002:a17:907:e8e:b0:9a1:e5bf:c907 with SMTP id
+ ho14-20020a1709070e8e00b009a1e5bfc907mr5449125ejc.2.1694135521534; Thu, 07
+ Sep 2023 18:12:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230906102507.15504-2-tinozzo123@gmail.com>
-In-Reply-To: <20230906102507.15504-2-tinozzo123@gmail.com>
-From:   Daniel Ogorchock <djogorchock@gmail.com>
-Date:   Thu, 7 Sep 2023 21:10:55 -0400
-Message-ID: <CAEVj2tk3uUa625YVO+2Mv80FbNT6gE=16_GTxuLUB1ncT_jV2A@mail.gmail.com>
-Subject: Re: [PATCH v2 RESEND] HID: nintendo: reinitialize USB Pro Controller
- after resuming from suspend
-To:     Martino Fontana <tinozzo123@gmail.com>
-Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230831165611.2610118-1-yosryahmed@google.com>
+ <20230831165611.2610118-5-yosryahmed@google.com> <ZPX0kCKd4TaVLJY7@dhcp22.suse.cz>
+ <CAAPL-u9D2b=iF5Lf_cRnKxUfkiEe0AMDTu6yhrUAzX0b6a6rDg@mail.gmail.com> <CABWYdi1WNp9f20nRFEExn8QB1MwP7QXwvD6Q8xHHuTO2SUTLkA@mail.gmail.com>
+In-Reply-To: <CABWYdi1WNp9f20nRFEExn8QB1MwP7QXwvD6Q8xHHuTO2SUTLkA@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 7 Sep 2023 18:11:22 -0700
+Message-ID: <CAJD7tkasteOdJ_waQ0r9WqbiwRz3OCzmx35v7-XMNOLb2WRddQ@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] mm: memcg: use non-unified stats flushing for
+ userspace reads
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     Wei Xu <weixugc@google.com>, Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Thelen <gthelen@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,318 +81,193 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 6:25=E2=80=AFAM Martino Fontana <tinozzo123@gmail.co=
-m> wrote:
+On Thu, Sep 7, 2023 at 6:03=E2=80=AFPM Ivan Babrou <ivan@cloudflare.com> wr=
+ote:
 >
-> When suspending the computer, a Switch Pro Controller connected via USB w=
-ill
-> lose its internal status. However, because the USB connection was technic=
-ally
-> never lost, when resuming the computer, the driver will attempt to commun=
-icate
-> with the controller as if nothing happened (and fail).
-> Because of this, the user was forced to manually disconnect the controlle=
-r
-> (or to press the sync button on the controller to power it off), so that =
-it
-> can be re-initialized.
->
-> With this patch, the controller will be automatically re-initialized afte=
-r
-> resuming from suspend.
->
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D216233
->
-> Signed-off-by: Martino Fontana <tinozzo123@gmail.com>
+> On Thu, Sep 7, 2023 at 5:52=E2=80=AFPM Wei Xu <weixugc@google.com> wrote:
+> >
+> > On Mon, Sep 4, 2023 at 8:15=E2=80=AFAM Michal Hocko <mhocko@suse.com> w=
+rote:
+> > >
+> > > On Thu 31-08-23 16:56:11, Yosry Ahmed wrote:
+> > > > Unified flushing allows for great concurrency for paths that attemp=
+t to
+> > > > flush the stats, at the expense of potential staleness and a single
+> > > > flusher paying the extra cost of flushing the full tree.
+> > > >
+> > > > This tradeoff makes sense for in-kernel flushers that may observe h=
+igh
+> > > > concurrency (e.g. reclaim, refault). For userspace readers, stale s=
+tats
+> > > > may be unexpected and problematic, especially when such stats are u=
+sed
+> > > > for critical paths such as userspace OOM handling. Additionally, a
+> > > > userspace reader will occasionally pay the cost of flushing the ent=
+ire
+> > > > hierarchy, which also causes problems in some cases [1].
+> > > >
+> > > > Opt userspace reads out of unified flushing. This makes the cost of
+> > > > reading the stats more predictable (proportional to the size of the
+> > > > subtree), as well as the freshness of the stats. Userspace readers =
+are
+> > > > not expected to have similar concurrency to in-kernel flushers,
+> > > > serializing them among themselves and among in-kernel flushers shou=
+ld be
+> > > > okay. Nonetheless, for extra safety, introduce a mutex when flushin=
+g for
+> > > > userspace readers to make sure only a single userspace reader can c=
+ompete
+> > > > with in-kernel flushers at a time. This takes away userspace abilit=
+y to
+> > > > directly influence or hurt in-kernel lock contention.
+> > >
+> > > I think it would be helpful to note that the primary reason this is a
+> > > concern is that the spinlock is dropped during flushing under
+> > > contention.
+> > >
+> > > > An alternative is to remove flushing from the stats reading path
+> > > > completely, and rely on the periodic flusher. This should be accomp=
+anied
+> > > > by making the periodic flushing period tunable, and providing an
+> > > > interface for userspace to force a flush, following a similar model=
+ to
+> > > > /proc/vmstat. However, such a change will be hard to reverse if the
+> > > > implementation needs to be changed because:
+> > > > - The cost of reading stats will be very cheap and we won't be able=
+ to
+> > > >   take that back easily.
+> > > > - There are user-visible interfaces involved.
+> > > >
+> > > > Hence, let's go with the change that's most reversible first and re=
+visit
+> > > > as needed.
+> > > >
+> > > > This was tested on a machine with 256 cpus by running a synthetic t=
+est
+> > > > script [2] that creates 50 top-level cgroups, each with 5 children =
+(250
+> > > > leaf cgroups). Each leaf cgroup has 10 processes running that alloc=
+ate
+> > > > memory beyond the cgroup limit, invoking reclaim (which is an in-ke=
+rnel
+> > > > unified flusher). Concurrently, one thread is spawned per-cgroup to=
+ read
+> > > > the stats every second (including root, top-level, and leaf cgroups=
+ --
+> > > > so total 251 threads). No significant regressions were observed in =
+the
+> > > > total run time, which means that userspace readers are not signific=
+antly
+> > > > affecting in-kernel flushers:
+> > > >
+> > > > Base (mm-unstable):
+> > > >
+> > > > real  0m22.500s
+> > > > user  0m9.399s
+> > > > sys   73m41.381s
+> > > >
+> > > > real  0m22.749s
+> > > > user  0m15.648s
+> > > > sys   73m13.113s
+> > > >
+> > > > real  0m22.466s
+> > > > user  0m10.000s
+> > > > sys   73m11.933s
+> > > >
+> > > > With this patch:
+> > > >
+> > > > real  0m23.092s
+> > > > user  0m10.110s
+> > > > sys   75m42.774s
+> > > >
+> > > > real  0m22.277s
+> > > > user  0m10.443s
+> > > > sys   72m7.182s
+> > > >
+> > > > real  0m24.127s
+> > > > user  0m12.617s
+> > > > sys   78m52.765s
+> > > >
+> > > > [1]https://lore.kernel.org/lkml/CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08=
+M43KO9ME4-dsgfoQ@mail.gmail.com/
+> > > > [2]https://lore.kernel.org/lkml/CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbC=
+jcOBZcz6POYTV-4g@mail.gmail.com/
+> > > >
+> > > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > >
+> > > OK, I can live with that but I still believe that locking involved in
+> > > the user interface only begs for issues later on as there is no contr=
+ol
+> > > over that lock contention other than the number of processes involved=
+.
+> > > As it seems that we cannot make a consensus on this concern now and t=
+his
+> > > should be already helping existing workloads then let's just buy some
+> > > more time ;)
+> >
+> > Indeed, even though the new global mutex protects the kernel from the
+> > userspace contention on the rstats spinlock, its current
+> > implementation doesn't have any protection for the lock contention
+> > among the userspace threads and can cause significant delays to memcg
+> > stats reads.
+> >
+> > I tested this patch on a machine with 384 CPUs using a microbenchmark
+> > that spawns 10K threads, each reading its memory.stat every 100
+> > milliseconds.  Most of memory.stat reads take 5ms-10ms in kernel, with
+> > ~5% reads even exceeding 1 second. This is a significant regression.
+> > In comparison, without contention, each memory.stat read only takes
+> > 20us-50us in the kernel.  Almost all of the extra read time is spent
+> > on waiting for the new mutex. The time to flush rstats only accounts
+> > for 10us-50us (This test creates only 1K memory cgroups and doesn't
+> > generate any loads other than these stat reader threads).
+> >
+> >  Here are some ideas to control the lock contention on the mutex and
+> > reduce both the median and tail latencies of concurrent memcg stat
+> > reads:
 
-Hi Martino,
 
-Thanks for the patch. This has been on the backlog for a long time, so
-it's great to see that USB resume is handled now.
+Thanks for the analysis, Wei!
 
-Have you tested how this behaves for bluetooth controllers? Does the
-pm resume hook always result in error logs for bluetooth controllers,
-or has the kernel already removed the device before resume?
+I will update the patch series based on your ideas to limit the
+contention on the userspace read mutex.
 
-> ---
->  drivers/hid/hid-nintendo.c | 178 ++++++++++++++++++++++---------------
->  1 file changed, 106 insertions(+), 72 deletions(-)
 >
-> diff --git a/drivers/hid/hid-nintendo.c b/drivers/hid/hid-nintendo.c
-> index 250f5d2f8..a5ebe857a 100644
-> --- a/drivers/hid/hid-nintendo.c
-> +++ b/drivers/hid/hid-nintendo.c
-> @@ -2088,7 +2088,9 @@ static int joycon_read_info(struct joycon_ctlr *ctl=
-r)
->         struct joycon_input_report *report;
+> >
+> > - Bring back the stats_flush_threshold check in
+> > mem_cgroup_try_flush_stats() to mem_cgroup_user_flush_stats().  This
+> > check provides a reasonable bound on the stats staleness while being
+> > able to filter out a large number of rstats flush requests, which
+> > reduces the contention on the mutex.
+> >
+> > - When contended, upgrade the per-memcg rstats flush in
+> > mem_cgroup_user_flush_stats() to a root memcg flush and coalesce these
+> > contended flushes together.  We can wait for the ongoing flush to
+> > complete and eliminate repeated flush requests.
 >
->         req.subcmd_id =3D JC_SUBCMD_REQ_DEV_INFO;
-> +       mutex_lock(&ctlr->output_mutex);
->         ret =3D joycon_send_subcmd(ctlr, &req, 0, HZ);
-> +       mutex_unlock(&ctlr->output_mutex);
->         if (ret) {
->                 hid_err(ctlr->hdev, "Failed to get joycon info; ret=3D%d\=
-n", ret);
->                 return ret;
-> @@ -2117,6 +2119,88 @@ static int joycon_read_info(struct joycon_ctlr *ct=
-lr)
->         return 0;
->  }
+> Full root memcg flush being slow is one of the issues that prompted this =
+patch:
 >
-> +static int joycon_init(struct hid_device *hdev)
-> +{
-> +       struct joycon_ctlr *ctlr =3D hid_get_drvdata(hdev);
-> +       int ret =3D 0;
-> +
-> +       mutex_lock(&ctlr->output_mutex);
-> +       /* if handshake command fails, assume ble pro controller */
-> +       if ((jc_type_is_procon(ctlr) || jc_type_is_chrggrip(ctlr)) &&
-> +           !joycon_send_usb(ctlr, JC_USB_CMD_HANDSHAKE, HZ)) {
-> +               hid_dbg(hdev, "detected USB controller\n");
-> +               /* set baudrate for improved latency */
-> +               ret =3D joycon_send_usb(ctlr, JC_USB_CMD_BAUDRATE_3M, HZ)=
-;
-> +               if (ret) {
-> +                       hid_err(hdev, "Failed to set baudrate; ret=3D%d\n=
-", ret);
-> +                       goto err_mutex;
-> +               }
-> +               /* handshake */
-> +               ret =3D joycon_send_usb(ctlr, JC_USB_CMD_HANDSHAKE, HZ);
-> +               if (ret) {
-> +                       hid_err(hdev, "Failed handshake; ret=3D%d\n", ret=
-);
-> +                       goto err_mutex;
-> +               }
-> +               /*
-> +                * Set no timeout (to keep controller in USB mode).
-> +                * This doesn't send a response, so ignore the timeout.
-> +                */
-> +               joycon_send_usb(ctlr, JC_USB_CMD_NO_TIMEOUT, HZ/10);
-> +       } else if (jc_type_is_chrggrip(ctlr)) {
-> +               hid_err(hdev, "Failed charging grip handshake\n");
-> +               ret =3D -ETIMEDOUT;
-> +               goto err_mutex;
-> +       }
-> +
-> +       /* get controller calibration data, and parse it */
-> +       ret =3D joycon_request_calibration(ctlr);
-> +       if (ret) {
-> +               /*
-> +                * We can function with default calibration, but it may b=
-e
-> +                * inaccurate. Provide a warning, and continue on.
-> +                */
-> +               hid_warn(hdev, "Analog stick positions may be inaccurate\=
-n");
-> +       }
-> +
-> +       /* get IMU calibration data, and parse it */
-> +       ret =3D joycon_request_imu_calibration(ctlr);
-> +       if (ret) {
-> +               /*
-> +                * We can function with default calibration, but it may b=
-e
-> +                * inaccurate. Provide a warning, and continue on.
-> +                */
-> +               hid_warn(hdev, "Unable to read IMU calibration data\n");
-> +       }
-> +
-> +       /* Set the reporting mode to 0x30, which is the full report mode =
-*/
-> +       ret =3D joycon_set_report_mode(ctlr);
-> +       if (ret) {
-> +               hid_err(hdev, "Failed to set report mode; ret=3D%d\n", re=
-t);
-> +               goto err_mutex;
-> +       }
-> +
-> +       /* Enable rumble */
-> +       ret =3D joycon_enable_rumble(ctlr);
-> +       if (ret) {
-> +               hid_err(hdev, "Failed to enable rumble; ret=3D%d\n", ret)=
-;
-> +               goto err_mutex;
-> +       }
-> +
-> +       /* Enable the IMU */
-> +       ret =3D joycon_enable_imu(ctlr);
-> +       if (ret) {
-> +               hid_err(hdev, "Failed to enable the IMU; ret=3D%d\n", ret=
-);
-> +               goto err_mutex;
-> +       }
-> +
-> +       mutex_unlock(&ctlr->output_mutex);
-> +       return 0;
+> * https://lore.kernel.org/lkml/CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9M=
+E4-dsgfoQ@mail.gmail.com/
+>
+> I don't want us to regress in this regard.
 
-If desired, you could remove the above two lines and allow flow to
-continue through err_mutex even in the success case.
 
-> +
-> +err_mutex:
-> +       mutex_unlock(&ctlr->output_mutex);
-> +       return ret;
-> +}
-> +
->  /* Common handler for parsing inputs */
->  static int joycon_ctlr_read_handler(struct joycon_ctlr *ctlr, u8 *data,
->                                                               int size)
-> @@ -2248,85 +2332,19 @@ static int nintendo_hid_probe(struct hid_device *=
-hdev,
->
->         hid_device_io_start(hdev);
->
-> -       /* Initialize the controller */
-> -       mutex_lock(&ctlr->output_mutex);
-> -       /* if handshake command fails, assume ble pro controller */
-> -       if ((jc_type_is_procon(ctlr) || jc_type_is_chrggrip(ctlr)) &&
-> -           !joycon_send_usb(ctlr, JC_USB_CMD_HANDSHAKE, HZ)) {
-> -               hid_dbg(hdev, "detected USB controller\n");
-> -               /* set baudrate for improved latency */
-> -               ret =3D joycon_send_usb(ctlr, JC_USB_CMD_BAUDRATE_3M, HZ)=
-;
-> -               if (ret) {
-> -                       hid_err(hdev, "Failed to set baudrate; ret=3D%d\n=
-", ret);
-> -                       goto err_mutex;
-> -               }
-> -               /* handshake */
-> -               ret =3D joycon_send_usb(ctlr, JC_USB_CMD_HANDSHAKE, HZ);
-> -               if (ret) {
-> -                       hid_err(hdev, "Failed handshake; ret=3D%d\n", ret=
-);
-> -                       goto err_mutex;
-> -               }
-> -               /*
-> -                * Set no timeout (to keep controller in USB mode).
-> -                * This doesn't send a response, so ignore the timeout.
-> -                */
-> -               joycon_send_usb(ctlr, JC_USB_CMD_NO_TIMEOUT, HZ/10);
-> -       } else if (jc_type_is_chrggrip(ctlr)) {
-> -               hid_err(hdev, "Failed charging grip handshake\n");
-> -               ret =3D -ETIMEDOUT;
-> -               goto err_mutex;
-> -       }
-> -
-> -       /* get controller calibration data, and parse it */
-> -       ret =3D joycon_request_calibration(ctlr);
-> -       if (ret) {
-> -               /*
-> -                * We can function with default calibration, but it may b=
-e
-> -                * inaccurate. Provide a warning, and continue on.
-> -                */
-> -               hid_warn(hdev, "Analog stick positions may be inaccurate\=
-n");
-> -       }
-> -
-> -       /* get IMU calibration data, and parse it */
-> -       ret =3D joycon_request_imu_calibration(ctlr);
-> -       if (ret) {
-> -               /*
-> -                * We can function with default calibration, but it may b=
-e
-> -                * inaccurate. Provide a warning, and continue on.
-> -                */
-> -               hid_warn(hdev, "Unable to read IMU calibration data\n");
-> -       }
-> -
-> -       /* Set the reporting mode to 0x30, which is the full report mode =
-*/
-> -       ret =3D joycon_set_report_mode(ctlr);
-> -       if (ret) {
-> -               hid_err(hdev, "Failed to set report mode; ret=3D%d\n", re=
-t);
-> -               goto err_mutex;
-> -       }
-> -
-> -       /* Enable rumble */
-> -       ret =3D joycon_enable_rumble(ctlr);
-> -       if (ret) {
-> -               hid_err(hdev, "Failed to enable rumble; ret=3D%d\n", ret)=
-;
-> -               goto err_mutex;
-> -       }
-> -
-> -       /* Enable the IMU */
-> -       ret =3D joycon_enable_imu(ctlr);
-> +       ret =3D joycon_init(hdev);
->         if (ret) {
-> -               hid_err(hdev, "Failed to enable the IMU; ret=3D%d\n", ret=
-);
-> -               goto err_mutex;
-> +               hid_err(hdev, "Failed to initialize controller; ret=3D%d\=
-n", ret);
-> +               goto err_close;
->         }
->
->         ret =3D joycon_read_info(ctlr);
->         if (ret) {
->                 hid_err(hdev, "Failed to retrieve controller info; ret=3D=
-%d\n",
->                         ret);
-> -               goto err_mutex;
-> +               goto err_close;
->         }
->
-> -       mutex_unlock(&ctlr->output_mutex);
-> -
->         /* Initialize the leds */
->         ret =3D joycon_leds_create(ctlr);
->         if (ret) {
-> @@ -2352,8 +2370,6 @@ static int nintendo_hid_probe(struct hid_device *hd=
-ev,
->         hid_dbg(hdev, "probe - success\n");
->         return 0;
->
-> -err_mutex:
-> -       mutex_unlock(&ctlr->output_mutex);
->  err_close:
->         hid_hw_close(hdev);
->  err_stop:
-> @@ -2383,6 +2399,20 @@ static void nintendo_hid_remove(struct hid_device =
-*hdev)
->         hid_hw_stop(hdev);
->  }
->
-> +#ifdef CONFIG_PM
-> +
-> +static int nintendo_hid_resume(struct hid_device *hdev)
-> +{
-> +       int ret =3D joycon_init(hdev);
-> +
-> +       if (ret)
-> +               hid_err(hdev, "Failed to restore controller after resume"=
-);
-> +
-> +       return ret;
-> +}
-> +
-> +#endif
-> +
->  static const struct hid_device_id nintendo_hid_devices[] =3D {
->         { HID_USB_DEVICE(USB_VENDOR_ID_NINTENDO,
->                          USB_DEVICE_ID_NINTENDO_PROCON) },
-> @@ -2404,6 +2434,10 @@ static struct hid_driver nintendo_hid_driver =3D {
->         .probe          =3D nintendo_hid_probe,
->         .remove         =3D nintendo_hid_remove,
->         .raw_event      =3D nintendo_hid_event,
-> +
-> +#ifdef CONFIG_PM
-> +       .resume         =3D nintendo_hid_resume,
-> +#endif
+It will only be a fallback if there is high concurrency among
+userspace reads, which will cause high contention on the mutex. In
+that case, the userspace reads will be slowed down by contention,
+which can be even worse than flush slowness as it is theoretically
+unbounded.
 
-Something else we should do is add a suspend hook to power off the
-bluetooth-connected controllers. As of now, they remain powered on
-during suspend.
+I am working on a v5 now to incorporate Wei's suggestions. Would you
+be able to test that and verify that there are no regressions?
 
->  };
->  module_hid_driver(nintendo_hid_driver);
 >
-> --
-> 2.41.0
 >
-
-Thanks,
-Daniel
+> > - Wait for the mutex and the ongoing flush with a timeout.  We should
+> > not use busy-wait, though.  We can bail out to read the stats without
+> > a flush after enough wait.  A long-stalled system call is much worse
+> > than somewhat stale stats in the corner cases in my opinion.
+> >
+> > Wei Xu
+> >
