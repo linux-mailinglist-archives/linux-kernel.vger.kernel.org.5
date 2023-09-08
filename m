@@ -2,59 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B75C77992E7
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 01:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B147992EB
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 01:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345324AbjIHXpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 19:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48298 "EHLO
+        id S240555AbjIHXvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 19:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343694AbjIHXpj (ORCPT
+        with ESMTP id S232694AbjIHXvU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 19:45:39 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B26133;
-        Fri,  8 Sep 2023 16:45:35 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2be5e2a3c86so44046681fa.0;
-        Fri, 08 Sep 2023 16:45:35 -0700 (PDT)
+        Fri, 8 Sep 2023 19:51:20 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 923B718E
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 16:51:16 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bdbf10333bso21529915ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 16:51:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694216733; x=1694821533; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=obKL7O1pA1jFmqbJ3hxi0ggl2zJe+KnvydcEGbO7HUs=;
-        b=hs8o5+YE5GC+hG9jTPmYS8ghu6Z95MuvxabSD+B0vOG1fUbuwzuTeqj7FhydfJVDvh
-         uctKw2Tp2VnIvYNxHcQm+s5cQYkascK4HbjhStJ9HWDdTsjpEfRbaT1bAh57sgCWzWc7
-         ntQi/pYeZhndcXozAlqYd4KmnCQJtAt/rrRf6Z+of0SNTFwLTohNoMahwn50SyoKJLcq
-         9Ovry7XC2dwSnV68Y4u+71oeNtCirRCbEwNvZkPiU0L1g/9Af/MBea4YRqVcPz+DDWlt
-         KF+8YNmMS99QU5nuzToSrqJbwJtxCW+anM+hUlBaSTyxi/tMBlEiL3R5H7vITw5L7QiK
-         EyPg==
+        d=gmail.com; s=20221208; t=1694217076; x=1694821876; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aFPAFrw06YkFvcW1+oSEgoGL8va6uPxDJtsTprxSrLA=;
+        b=hKu8FzfM3G8rZTa3x9Ob4njMRor9LcALxzQVM+1CfVjIyxgN3SXNwfCSoeX308OQ3S
+         crSjjXXu+3cb232LSWNgZld+5pF1gRgwxBuDd5L6Al5IWFrWDWolC/7hlNwayJW9f9tX
+         yuQZ5yOWuf/0mp48AOq8drnMfuhTRhaDgxyow/5N7iULyXKWKPybZeoKgGlNDAfzKxKv
+         M1q7ay63DeYP9W1F4nTqdxmwvb1XtI9vA0fgLSP0472TPvZfP/OBaCFefRLMpyxB8KF3
+         vrgUv1hZ6AkeW50l9NAryodrY5kLRmRgRsW5GNv+CLzQjGQqRffDxhjrPiyQkQwgpY3s
+         ki7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694216733; x=1694821533;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=obKL7O1pA1jFmqbJ3hxi0ggl2zJe+KnvydcEGbO7HUs=;
-        b=E0+T0GTG+ExFIBzKg0nRPf534hJ/Yc8rcrwYgzx5tWq6llSTUoT1LBWiAzzUeAfa27
-         3r52VP4O0w54bQ5DYmOoybDWI1Wk19NZGBusvnXVBl7q6ST2KiaVNxuhbuPimrDm5DI5
-         0xPuMAiv5GjSIBtX2hWvUXe52qNybq1ShWx4NNJMHeABPhGrBk1jXqtm9QuUNppo1GvW
-         o0HNYVP+ws7rGyOFQQ8cvVKXe/pihw17TD6SyAAJ6bXSnuRZPvsvydeShzWW5tU4oSBy
-         Zi9SKf/EQsQ46AXibv0WSrb1tgYhve60XCsRk8QpjhXZoMFIKNQpOhAH/KeTT8Ecrpyu
-         wnlw==
-X-Gm-Message-State: AOJu0YwH2tpZBeChrxQBrcev8pe0wNl2I0p1z620Lu37GZAtGdzAiWDq
-        ofh552yDLVpmrhELvaWQU+GObzwCbv3S1juHnZHibDRn1lOFUA==
-X-Google-Smtp-Source: AGHT+IEdcNwbLflG8mxjbjBNoUztNekjx9hw37toXkvIoCsFDowgUd6vS6f0Qe0fZ1IjEL93wJtaW5CMcawknyzJmCI=
-X-Received: by 2002:a05:6512:128b:b0:500:b09f:eb3d with SMTP id
- u11-20020a056512128b00b00500b09feb3dmr2658440lfs.30.1694216732451; Fri, 08
- Sep 2023 16:45:32 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694217076; x=1694821876;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aFPAFrw06YkFvcW1+oSEgoGL8va6uPxDJtsTprxSrLA=;
+        b=A4LWemaP/+SZlSpnE+s+na/HKXiPpSlE22B6R0rUQZNtG9hFyWY+FkCJIqXgrMBaD4
+         i1aydljjCqBdBEja99/iCN/RqI4+msJWQ4XpKTCNpHYSoLyOflBaImlHvaeXEO+l0b4U
+         qdzUkoF0HV8tyRgiGF/j+pfb4w8s3KlD5vyGiAm84J8AqupvQuxFJUcpAutQTRDBOte6
+         zp/udwfLH5CQWnM6NPzKhLQb4AecPvBPPXCBPSYal2hnu3cYGTWdko3xwvyUWXLLCOfO
+         KnTao0xG1GzCK+iwVFDZkenjVClqcK39uDf2JcZ83y6GQkFjZnT6JHSP3dH6jc7XwUlw
+         uJIg==
+X-Gm-Message-State: AOJu0YyMP/89l6LZKN3wUQK+eir1shsqbrir3D6JlZFWzfXHYQn5AYVA
+        6N2kc3bXn4w64o97lfBiX38=
+X-Google-Smtp-Source: AGHT+IFRUIyM1m4pncJ0Nu19lRVBkqXyJ5X3NEe0F5euYr6EwYPMg5RyfxfpoUOAgB6jVFaykr/A1Q==
+X-Received: by 2002:a17:902:d505:b0:1bb:59da:77f8 with SMTP id b5-20020a170902d50500b001bb59da77f8mr4512905plg.48.1694217075894;
+        Fri, 08 Sep 2023 16:51:15 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-113.fbsv.net. [2a03:2880:ff:71::face:b00c])
+        by smtp.gmail.com with ESMTPSA id jf3-20020a170903268300b001bdc208ab82sm2117872plb.97.2023.09.08.16.51.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Sep 2023 16:51:15 -0700 (PDT)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] zswap: change zswap's default allocator to zsmalloc
+Date:   Fri,  8 Sep 2023 16:51:15 -0700
+Message-Id: <20230908235115.2943486-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 8 Sep 2023 18:45:21 -0500
-Message-ID: <CAH2r5mt0Wuett3pQhGmynJxSTN2FriXxXT3zU-Qi5sk1uZ+SQg@mail.gmail.com>
-Subject: [GIT PULL] ksmbd fix
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Namjae Jeon <linkinjeon@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -65,34 +71,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-8ae5d298ef2005da5454fc1680f983e85d3e1622:
+Out of zswap's 3 allocators, zsmalloc is the clear superior in terms of
+memory utilization, both in theory and as observed in practice, with its
+high storage density and low internal fragmentation. zsmalloc is also
+more actively developed and maintained, since it is the allocator of
+choice for zswap for many users, as well as the only allocator for zram.
 
-  Merge tag '6.6-rc-ksmbd-fixes-part1' of git://git.samba.org/ksmbd
-(2023-08-31 15:28:26 -0700)
+A historical objection to the selection of zsmalloc as the default
+allocator for zswap is its lack of writeback capability. However, this
+has changed, with the zsmalloc writeback patchset, and the subsequent
+zswap LRU refactor. With this, there is not a lot of good reasons to
+keep zbud, an otherwise inferior allocator, as the default instead of
+zswap.
 
-are available in the Git repository at:
+This patch changes the default allocator to zsmalloc. The only exception
+is on settings without MMU, in which case zbud will remain as the
+default.
 
-  git://git.samba.org/ksmbd.git tags/6.6-rc-ksmbd
+Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+---
+ mm/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-for you to fetch changes up to f5069159f32c8c943e047f22731317463c8e9b84:
-
-  ksmbd: remove experimental warning (2023-09-03 21:06:36 -0500)
-
-----------------------------------------------------------------
-one patch to remove unneeded warning
-  - after two years, many fixes and much testing, ksmbd is no longer
-    experimental
-
-----------------------------------------------------------------
-Steve French (1):
-      ksmbd: remove experimental warning
-
- fs/smb/server/Kconfig  | 2 +-
- fs/smb/server/server.c | 2 --
- 2 files changed, 1 insertion(+), 3 deletions(-)
-
+diff --git a/mm/Kconfig b/mm/Kconfig
+index 721dc88423c7..e0217deca084 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -130,6 +130,7 @@ config ZSWAP_COMPRESSOR_DEFAULT
+ choice
+ 	prompt "Default allocator"
+ 	depends on ZSWAP
++	default ZSWAP_ZPOOL_DEFAULT_ZSMALLOC if MMU
+ 	default ZSWAP_ZPOOL_DEFAULT_ZBUD
+ 	help
+ 	  Selects the default allocator for the compressed cache for
 -- 
-Thanks,
+2.34.1
 
-Steve
