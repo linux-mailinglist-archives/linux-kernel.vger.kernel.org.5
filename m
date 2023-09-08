@@ -2,213 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B68797FA4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 02:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7190F797FB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 02:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239680AbjIHA0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 20:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33858 "EHLO
+        id S240417AbjIHAac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 20:30:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238560AbjIHA0d (ORCPT
+        with ESMTP id S229890AbjIHAa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 20:26:33 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3531BD7
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 17:26:27 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-7926b7f8636so39497139f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 17:26:27 -0700 (PDT)
+        Thu, 7 Sep 2023 20:30:29 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E3B1BD8;
+        Thu,  7 Sep 2023 17:30:23 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so319222466b.0;
+        Thu, 07 Sep 2023 17:30:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1694132787; x=1694737587; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HVZN5vN8bRfWt9fXaRaMQ7INcbyUKWi7temjOgZW5Mk=;
-        b=YLWL35y1Yh5HcyyrloFoTSDk57dkqiXMEmYi+VQY7J+NUFwoj+P7N/yEmM7Avamvtq
-         O2ONTZjiTmLwiHbPPX2T0e3jU0D0Q2oluhHh8vW6Dtfb/MUxg2OVv7qiJS2JXLdGKJzu
-         9sIIul9sQthqwN5PXDVGLT/wazBQ+DqwbcEJs=
+        d=gmail.com; s=20221208; t=1694133021; x=1694737821; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rWH+VGW4ynUEnqVgfK8Uo5vbTneevGaezyT5mB/sqg4=;
+        b=OiY77u4+0lZZf05zyJjqtXsFEt53gnu17pzSAddazvgmxBSqq/iFfofB+q7WLCDEyU
+         m/fz+w2DjK7ajFwh6Wl5OMnpq2lSnZxhKNITuhb+ArT10qBLF/w3E6hUYLr2Ynr9Uy0L
+         sHeGcXkyahOnjrEnkCzBF3EwG9xF9KIv8UmufrGSjWBO9hDNyInV8+iHy5QYfk82jWye
+         xbFkA6w68il0m14wAmbY3aZ9vJvLyqfqhwJlL2IlVpJJ69odvj++3/+rNIuFZ3ktA/po
+         yf2n1Q3ML2zeCD2E+gfopvnQ7ym8KgJXlk0oJnacR9HwefsoXzYDvWgFTWYeFL/HpkjL
+         rvkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694132787; x=1694737587;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HVZN5vN8bRfWt9fXaRaMQ7INcbyUKWi7temjOgZW5Mk=;
-        b=w66LK+uKxzAR9H59FXgBD9sG++ejs0U6ep7iZVsH3IF+ByF3GB7OOFZkAXd02lX8I5
-         nyDKI9+IjX2Zei4qQm+Fr6dsmFfR1vRnkZWKV9TKna2F6rLEUb14LXqf9a3qcHLn0+mw
-         cTZpDorqcLhBdQ8aII2ZBY89p5NIOzSjsDKoQjRvkdlTZEnjiMgqYKpaIAC41DRXUQD0
-         NObYKIiq9VnMmFc7+0asYScMdYLfEwmNOcaDFH8dAMG2Somn25TMZylLWqL3roO2f4VJ
-         KWPguOsYXOS/XPZkYl8xTYzC1zAB9ahj3rVGx1mlI6zed8PiotQqPoat31ZjwJ+gkiIs
-         yYJg==
-X-Gm-Message-State: AOJu0YzBHI9oywAvGOKLDPTN0F8E4pPn+dnEEqg+Qn3Fszj1WZjeHjfn
-        yzDsDe5RcNPp+Pm+khK/I5nphQ==
-X-Google-Smtp-Source: AGHT+IFRVFtwWrfcVc0Z7SXHe2h5aZvauo+UgAqJm05OoRDsjuegTeHmvw/xRiZ8zZNk0DTKgvpQMw==
-X-Received: by 2002:a5d:8048:0:b0:783:498c:9cf0 with SMTP id b8-20020a5d8048000000b00783498c9cf0mr1256406ior.4.1694132787021;
-        Thu, 07 Sep 2023 17:26:27 -0700 (PDT)
-Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id x5-20020a6bda05000000b0076373f90e46sm168208iob.33.2023.09.07.17.26.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 17:26:26 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 00:26:26 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Zhen Lei <thunder.leizhen@huaweicloud.com>,
-        rcu@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        stable@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3 2/2] rcu: Dump vmalloc memory info safely
-Message-ID: <20230908002626.GB4088026@google.com>
-References: <20230904180806.1002832-1-joel@joelfernandes.org>
- <20230904180806.1002832-2-joel@joelfernandes.org>
- <9e329429-73a5-4926-af4f-edcf9e547101@lucifer.local>
- <20230905114841.GB3881391@google.com>
- <CAA5enKafgfqNE0DWg7tcd-iNGeE0Aud5VcmmWzdguK9Psq0uhQ@mail.gmail.com>
- <737d399d-c83a-3e66-ceb7-4ae7ba4acfb4@suse.cz>
+        d=1e100.net; s=20230601; t=1694133021; x=1694737821;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rWH+VGW4ynUEnqVgfK8Uo5vbTneevGaezyT5mB/sqg4=;
+        b=swAuNJCU2T/msM1CDytYscRXwuvHCPjssnrRg+Q6Gn7quYAY71uw8aCdr4KLss/JJi
+         G6KLB7yGgMtpzSEqasgGhnoK9InCJNEld8+zIiBIk6Ib73pTZPE7X04zo7zpkugFhJci
+         FB+wowcPCWOhpTjklmK7ntYr2LOzHNB4AGtrC9b25JIVYeLFsYHwRSAhkJs8WFQWvS4u
+         vQxfHEgY989eWvrIeqsl/qncCGZ2RDh8vKZ5Mk2v5JpUD/f4gpCSG4bq17oZDFtAC9Kv
+         wJHwZCnijNuEHfLVBXqC1a5ybSKNjL6PIh5HcP7KQEar+axr0nPLUVpqEUAJzfRRNzW3
+         rmNw==
+X-Gm-Message-State: AOJu0Ywbm+yLTgh3g27h3+DIFkr+l/LoZwnwZO1VTqKbEQRqI2iKTpej
+        ASdAUdrtewy2vCnIWaRCJoM=
+X-Google-Smtp-Source: AGHT+IHUmcSd3yGn0Yc+fxHKH36GJLlYUzap6qvtcfMqwZgOcAgDOYhbcm3dJF4+eYZ9U6PvPuYQ6g==
+X-Received: by 2002:a17:907:6e87:b0:9a1:c69c:9388 with SMTP id sh7-20020a1709076e8700b009a1c69c9388mr4152809ejc.37.1694133021412;
+        Thu, 07 Sep 2023 17:30:21 -0700 (PDT)
+Received: from [192.168.8.100] ([148.252.141.16])
+        by smtp.gmail.com with ESMTPSA id lz24-20020a170906fb1800b009932337747esm280974ejb.86.2023.09.07.17.30.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Sep 2023 17:30:21 -0700 (PDT)
+Message-ID: <6489b8cb-7d54-1e29-f192-a3449ed87fa1@gmail.com>
+Date:   Fri, 8 Sep 2023 01:29:55 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <737d399d-c83a-3e66-ceb7-4ae7ba4acfb4@suse.cz>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
+To:     Dave Chinner <david@fromorbit.com>, Hao Xu <hao.xu@linux.dev>
+Cc:     Matthew Wilcox <willy@infradead.org>, io-uring@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        Wanpeng Li <wanpengli@tencent.com>
+References: <20230827132835.1373581-1-hao.xu@linux.dev>
+ <20230827132835.1373581-8-hao.xu@linux.dev>
+ <ZOvA5DJDZN0FRymp@casper.infradead.org>
+ <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
+ <ZO3cI+DkotHQo3md@casper.infradead.org>
+ <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
+ <ZPUJHAKzxvXiEDYA@dread.disaster.area>
+Content-Language: en-US
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <ZPUJHAKzxvXiEDYA@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 09:10:38AM +0200, Vlastimil Babka wrote:
-> On 9/6/23 21:18, Lorenzo Stoakes wrote:
-> > On Tue, 5 Sept 2023 at 12:48, Joel Fernandes <joel@joelfernandes.org> wrote:
-> >>
-> >> On Tue, Sep 05, 2023 at 08:00:44AM +0100, Lorenzo Stoakes wrote:
-> >> > On Mon, Sep 04, 2023 at 06:08:05PM +0000, Joel Fernandes (Google) wrote:
-> >> > > From: Zqiang <qiang.zhang1211@gmail.com>
-> >> > >
-> >> > > Currently, for double invoke call_rcu(), will dump rcu_head objects
-> >> > > memory info, if the objects is not allocated from the slab allocator,
-> >> > > the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
-> >> > > need to be held, since the call_rcu() can be invoked in interrupt context,
-> >> > > therefore, there is a possibility of spinlock deadlock scenarios.
-> >> > >
-> >> > > And in Preempt-RT kernel, the rcutorture test also trigger the following
-> >> > > lockdep warning:
-> >> > >
-> >> > > BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
-> >> > > in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
-> >> > > preempt_count: 1, expected: 0
-> >> > > RCU nest depth: 1, expected: 1
-> >> > > 3 locks held by swapper/0/1:
-> >> > >  #0: ffffffffb534ee80 (fullstop_mutex){+.+.}-{4:4}, at: torture_init_begin+0x24/0xa0
-> >> > >  #1: ffffffffb5307940 (rcu_read_lock){....}-{1:3}, at: rcu_torture_init+0x1ec7/0x2370
-> >> > >  #2: ffffffffb536af40 (vmap_area_lock){+.+.}-{3:3}, at: find_vmap_area+0x1f/0x70
-> >> > > irq event stamp: 565512
-> >> > > hardirqs last  enabled at (565511): [<ffffffffb379b138>] __call_rcu_common+0x218/0x940
-> >> > > hardirqs last disabled at (565512): [<ffffffffb5804262>] rcu_torture_init+0x20b2/0x2370
-> >> > > softirqs last  enabled at (399112): [<ffffffffb36b2586>] __local_bh_enable_ip+0x126/0x170
-> >> > > softirqs last disabled at (399106): [<ffffffffb43fef59>] inet_register_protosw+0x9/0x1d0
-> >> > > Preemption disabled at:
-> >> > > [<ffffffffb58040c3>] rcu_torture_init+0x1f13/0x2370
-> >> > > CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-rc4-rt2-yocto-preempt-rt+ #15
-> >> > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
-> >> > > Call Trace:
-> >> > >  <TASK>
-> >> > >  dump_stack_lvl+0x68/0xb0
-> >> > >  dump_stack+0x14/0x20
-> >> > >  __might_resched+0x1aa/0x280
-> >> > >  ? __pfx_rcu_torture_err_cb+0x10/0x10
-> >> > >  rt_spin_lock+0x53/0x130
-> >> > >  ? find_vmap_area+0x1f/0x70
-> >> > >  find_vmap_area+0x1f/0x70
-> >> > >  vmalloc_dump_obj+0x20/0x60
-> >> > >  mem_dump_obj+0x22/0x90
-> >> > >  __call_rcu_common+0x5bf/0x940
-> >> > >  ? debug_smp_processor_id+0x1b/0x30
-> >> > >  call_rcu_hurry+0x14/0x20
-> >> > >  rcu_torture_init+0x1f82/0x2370
-> >> > >  ? __pfx_rcu_torture_leak_cb+0x10/0x10
-> >> > >  ? __pfx_rcu_torture_leak_cb+0x10/0x10
-> >> > >  ? __pfx_rcu_torture_init+0x10/0x10
-> >> > >  do_one_initcall+0x6c/0x300
-> >> > >  ? debug_smp_processor_id+0x1b/0x30
-> >> > >  kernel_init_freeable+0x2b9/0x540
-> >> > >  ? __pfx_kernel_init+0x10/0x10
-> >> > >  kernel_init+0x1f/0x150
-> >> > >  ret_from_fork+0x40/0x50
-> >> > >  ? __pfx_kernel_init+0x10/0x10
-> >> > >  ret_from_fork_asm+0x1b/0x30
-> >> > >  </TASK>
-> >> > >
-> >> > > The previous patch fixes this by using the deadlock-safe best-effort
-> >> > > version of find_vm_area. However, in case of failure print the fact that
-> >> > > the pointer was a vmalloc pointer so that we print at least something.
-> >> > >
-> >> > > Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
-> >> > > Cc: Paul E. McKenney <paulmck@kernel.org>
-> >> > > Cc: rcu@vger.kernel.org
-> >> > > Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> >> > > Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
-> >> > > Cc: stable@vger.kernel.org
-> >> > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> >> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >> > > ---
-> >> > >  mm/util.c | 4 +++-
-> >> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >> > >
-> >> > > diff --git a/mm/util.c b/mm/util.c
-> >> > > index dd12b9531ac4..406634f26918 100644
-> >> > > --- a/mm/util.c
-> >> > > +++ b/mm/util.c
-> >> > > @@ -1071,7 +1071,9 @@ void mem_dump_obj(void *object)
-> >> > >     if (vmalloc_dump_obj(object))
-> >> > >             return;
-> >> > >
-> >> > > -   if (virt_addr_valid(object))
-> >> > > +   if (is_vmalloc_addr(object))
-> >> > > +           type = "vmalloc memory";
-> >> > > +   else if (virt_addr_valid(object))
-> >> > >             type = "non-slab/vmalloc memory";
-> >> >
-> >> > I think you should update this to say non-slab/non-vmalloc memory (as much
-> >> > as that description sucks!) as this phrasing in the past meant to say
-> >> > 'non-slab or vmalloc memory' (already confusing phrasing) so better to be
-> >> > clear.
-> >>
-> >> True, though the issue you mentioned it is in existing code, a respin of this
-> >> patch could update it to say non-vmalloc. Good point, thanks for reviewing!
-> > 
-> > No it's not, you're changing the meaning, because you changed the code
-> > that determines the output...
+On 9/3/23 23:30, Dave Chinner wrote:
+> On Wed, Aug 30, 2023 at 02:11:31PM +0800, Hao Xu wrote:
+>> On 8/29/23 19:53, Matthew Wilcox wrote:
+>>> On Tue, Aug 29, 2023 at 03:46:13PM +0800, Hao Xu wrote:
+>>>> On 8/28/23 05:32, Matthew Wilcox wrote:
+>>>>> On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
+>>>>>> From: Hao Xu <howeyxu@tencent.com>
+>>>>>>
+>>>>>> Add a boolean parameter for file_accessed() to support nowait semantics.
+>>>>>> Currently it is true only with io_uring as its initial caller.
+>>>>>
+>>>>> So why do we need to do this as part of this series?  Apparently it
+>>>>> hasn't caused any problems for filemap_read().
+>>>>>
+>>>>
+>>>> We need this parameter to indicate if nowait semantics should be enforced in
+>>>> touch_atime(), There are locks and maybe IOs in it.
+>>>
+>>> That's not my point.  We currently call file_accessed() and
+>>> touch_atime() for nowait reads and nowait writes.  You haven't done
+>>> anything to fix those.
+>>>
+>>> I suspect you can trim this patchset down significantly by avoiding
+>>> fixing the file_accessed() problem.  And then come back with a later
+>>> patchset that fixes it for all nowait i/o.  Or do a separate prep series
+>>
+>> I'm ok to do that.
+>>
+>>> first that fixes it for the existing nowait users, and then a second
+>>> series to do all the directory stuff.
+>>>
+>>> I'd do the first thing.  Just ignore the problem.  Directory atime
+>>> updates cause I/O so rarely that you can afford to ignore it.  Almost
+>>> everyone uses relatime or nodiratime.
+>>
+>> Hi Matthew,
+>> The previous discussion shows this does cause issues in real
+>> producations: https://lore.kernel.org/io-uring/2785f009-2ebb-028d-8250-d5f3a30510f0@gmail.com/#:~:text=fwiw%2C%20we%27ve%20just%20recently%20had%20similar%20problems%20with%20io_uring%20read/write
+>>
 > 
-> I think it has always meant (but clearly it's not unambiguously worded) "not
-> slab && not vmalloc", that is before and after this patch. Only in case
-> patch 1 is applied and patch 2 not, can the output be wrong in that a
-> vmalloc pointer will (in case of trylock fail) be classified as "not slab &&
-> not vmalloc", but seems fine to me after patch 2.
-> 
-> I guess if we wanted, we could also rewrite it to be more like the kmem
-> check in the beginning of mem_dump_obj(), so there would be:
-> 
-> if (is_vmalloc_addr(...)) {
->     vmalloc_dump_obj(...);
->     return;
-> }
-> 
-> where vmalloc_dump_obj() itself would print at least "vmalloc memory" with
-> no further details in case of trylock failure.
-> 
-> that assumes is_vmalloc_addr() is guaranteed to be true for all addresses
-> that __find_vmap_area resolves, otherwise it could miss something compared
-> to current code. Is it guaranteed?
+> Then separate it out into it's own patch set so we can have a
+> discussion on the merits of requiring using noatime, relatime or
+> lazytime for really latency sensitive IO applications. Changing code
+> is not always the right solution...
 
-It is guaranteed based on my reading of the code. But maybe it may aid
-additional vmalloc-internals debugging if for some reason the address of the
-object stored in the vmalloc data structures is out of bound for some reason
-and the lookup actually succeded. That's just a hypothetical situation though
-and I don't think that that can actually happen.
+Separation sounds reasonable, but it can hardly be said that only
+latency sensitive apps would care about >1s nowait/async submission
+delays. Presumably, btrfs can improve on that, but it still looks
+like it's perfectly legit for filesystems do heavy stuff in
+timestamping like waiting for IO. Right?
 
-thanks,
-
- - Joel
-
+-- 
+Pavel Begunkov
