@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E301D798BC7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AE8798BC9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236236AbjIHSBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43286 "EHLO
+        id S245539AbjIHSBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245550AbjIHSBa (ORCPT
+        with ESMTP id S245550AbjIHSBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:01:30 -0400
+        Fri, 8 Sep 2023 14:01:35 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738122133;
-        Fri,  8 Sep 2023 11:01:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1939C433C9;
-        Fri,  8 Sep 2023 18:00:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D391FDB;
+        Fri,  8 Sep 2023 11:01:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F82BC43395;
+        Fri,  8 Sep 2023 18:00:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196045;
-        bh=HA0290nYjJTra1Fa8i+NOPy4ak9llenwVNo887t/S40=;
+        s=k20201202; t=1694196046;
+        bh=NTv4RKZSQUPe218AVkpSbtNHtt36fHaKpCy6GzbJ+5I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=siKVS1zCYUaqWiFNOPWljF7J1BEXRd6RU2WpjwgJ/9rZGnNgyv9OIYLUzgaIxwFon
-         4fkHmcCUtoZfHGn4fEVUaRQKxC097T8b57PkpBhZD/p7Hij5G7C8TRZM2Hizof6WAw
-         UrsaXNm1n4L7JBtzL0J8OeHpnWehTvRbMibhnM63a/cq6OfQ+vXlRbJWpvOVfH4f6A
-         vd/8AGH4J3+FI/DkQSwM56smhR70qVb7QegxXrYrYW1xKTv3aB2sX5n+uEauf5fzkT
-         PRKgFNzuIzTkseKVj/Uzq2/EOyNyB2rjtqHc1v8qKhohlj+R7lKVJsF4gey0S2zFtJ
-         2j0+4adHmS5yg==
+        b=HyfFqlkY7QnxW5auszQhY7OHpf07AZ4iX4MtIpjQOGpE5CYsrTKw37/ZAZEd43r6J
+         JBeo56LjXLFhRchcfH1u6XDjHrYwpnu/P73P96iLmkx+oIGF75y8XlY8dqmpDZZRbO
+         LfBKNKen1Y6675HO3Ro75ibTr6/EZ49+xRSzyJcZFILIAS4EG2cNpoYZ/ZnZxhS5Ij
+         JajmcHlbUX7cMW9c9zFLHWGjfK6dJEqYbYV5kFLV2z1iGjVBB3+XgrkdhGIvg1dj1j
+         KBhJcNL2qLz0gcyb4xKjEImQxxACnwk94c+SGgD9PHoBAWpXuo2Ngq2WK9aCX7YdAw
+         iUdGXhS8NoPJg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ding Xiang <dingxiang@cmss.chinamobile.com>,
+Cc:     Xu Yang <xu.yang_2@nxp.com>, Frank Li <Frank.Li@nxp.com>,
         Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        catalin.marinas@arm.com, shuah@kernel.org, broonie@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 10/16] kselftest/arm64: fix a memleak in zt_regs_run()
-Date:   Fri,  8 Sep 2023 13:59:47 -0400
-Message-Id: <20230908175953.3457942-10-sashal@kernel.org>
+        Frank.li@nxp.com, mark.rutland@arm.com, shawnguo@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.5 11/16] perf/imx_ddr: speed up overflow frequency of cycle
+Date:   Fri,  8 Sep 2023 13:59:48 -0400
+Message-Id: <20230908175953.3457942-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908175953.3457942-1-sashal@kernel.org>
 References: <20230908175953.3457942-1-sashal@kernel.org>
@@ -54,32 +53,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ding Xiang <dingxiang@cmss.chinamobile.com>
+From: Xu Yang <xu.yang_2@nxp.com>
 
-[ Upstream commit 46862da15e37efedb7d2d21e167f506c0b533772 ]
+[ Upstream commit e89ecd8368860bf05437eabd07d292c316221cfc ]
 
-If memcmp() does not return 0, "zeros" need to be freed to prevent memleak
+For i.MX8MP, we cannot ensure that cycle counter overflow occurs at least
+4 times as often as other events. Due to byte counters will count for any
+event configured, it will overflow more often. And if byte counters
+overflow that related counters would stop since they share the
+COUNTER_CNTL. We can speed up cycle counter overflow frequency by setting
+counter parameter (CP) field of cycle counter. In this way, we can avoid
+stop counting byte counters when interrupt didn't come and the byte
+counters can be fetched or updated from each cycle counter overflow
+interrupt.
 
-Signed-off-by: Ding Xiang <dingxiang@cmss.chinamobile.com>
-Link: https://lore.kernel.org/r/20230815074915.245528-1-dingxiang@cmss.chinamobile.com
+Because we initialize CP filed to shorten counter0 overflow time, the cycle
+counter will start couting from a fixed/base value each time. We need to
+remove the base from the result too. Therefore, we could get precise result
+from cycle counter.
+
+Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
+Reviewed-by: Frank Li <Frank.Li@nxp.com>
+Link: https://lore.kernel.org/r/20230811015438.1999307-1-xu.yang_2@nxp.com
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/arm64/signal/testcases/zt_regs.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/perf/fsl_imx8_ddr_perf.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/tools/testing/selftests/arm64/signal/testcases/zt_regs.c b/tools/testing/selftests/arm64/signal/testcases/zt_regs.c
-index e1eb4d5c027ab..2e384d731618b 100644
---- a/tools/testing/selftests/arm64/signal/testcases/zt_regs.c
-+++ b/tools/testing/selftests/arm64/signal/testcases/zt_regs.c
-@@ -65,6 +65,7 @@ int zt_regs_run(struct tdescr *td, siginfo_t *si, ucontext_t *uc)
- 	if (memcmp(zeros, (char *)zt + ZT_SIG_REGS_OFFSET,
- 		   ZT_SIG_REGS_SIZE(zt->nregs)) != 0) {
- 		fprintf(stderr, "ZT data invalid\n");
-+		free(zeros);
- 		return 1;
- 	}
+diff --git a/drivers/perf/fsl_imx8_ddr_perf.c b/drivers/perf/fsl_imx8_ddr_perf.c
+index 5222ba1e79d0e..b022755e6ab91 100644
+--- a/drivers/perf/fsl_imx8_ddr_perf.c
++++ b/drivers/perf/fsl_imx8_ddr_perf.c
+@@ -28,6 +28,8 @@
+ #define CNTL_CLEAR_MASK		0xFFFFFFFD
+ #define CNTL_OVER_MASK		0xFFFFFFFE
  
++#define CNTL_CP_SHIFT		16
++#define CNTL_CP_MASK		(0xFF << CNTL_CP_SHIFT)
+ #define CNTL_CSV_SHIFT		24
+ #define CNTL_CSV_MASK		(0xFFU << CNTL_CSV_SHIFT)
+ 
+@@ -35,6 +37,8 @@
+ #define EVENT_CYCLES_COUNTER	0
+ #define NUM_COUNTERS		4
+ 
++/* For removing bias if cycle counter CNTL.CP is set to 0xf0 */
++#define CYCLES_COUNTER_MASK	0x0FFFFFFF
+ #define AXI_MASKING_REVERT	0xffff0000	/* AXI_MASKING(MSB 16bits) + AXI_ID(LSB 16bits) */
+ 
+ #define to_ddr_pmu(p)		container_of(p, struct ddr_pmu, pmu)
+@@ -427,6 +431,17 @@ static void ddr_perf_counter_enable(struct ddr_pmu *pmu, int config,
+ 		writel(0, pmu->base + reg);
+ 		val = CNTL_EN | CNTL_CLEAR;
+ 		val |= FIELD_PREP(CNTL_CSV_MASK, config);
++
++		/*
++		 * On i.MX8MP we need to bias the cycle counter to overflow more often.
++		 * We do this by initializing bits [23:16] of the counter value via the
++		 * COUNTER_CTRL Counter Parameter (CP) field.
++		 */
++		if (pmu->devtype_data->quirks & DDR_CAP_AXI_ID_FILTER_ENHANCED) {
++			if (counter == EVENT_CYCLES_COUNTER)
++				val |= FIELD_PREP(CNTL_CP_MASK, 0xf0);
++		}
++
+ 		writel(val, pmu->base + reg);
+ 	} else {
+ 		/* Disable counter */
+@@ -466,6 +481,12 @@ static void ddr_perf_event_update(struct perf_event *event)
+ 	int ret;
+ 
+ 	new_raw_count = ddr_perf_read_counter(pmu, counter);
++	/* Remove the bias applied in ddr_perf_counter_enable(). */
++	if (pmu->devtype_data->quirks & DDR_CAP_AXI_ID_FILTER_ENHANCED) {
++		if (counter == EVENT_CYCLES_COUNTER)
++			new_raw_count &= CYCLES_COUNTER_MASK;
++	}
++
+ 	local64_add(new_raw_count, &event->count);
+ 
+ 	/*
 -- 
 2.40.1
 
