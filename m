@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E813B798943
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1A1798942
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244175AbjIHOxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
+        id S244168AbjIHOxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244135AbjIHOxZ (ORCPT
+        with ESMTP id S244103AbjIHOxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Sep 2023 10:53:25 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C96011FC0
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA35F1FC1
         for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:53:20 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 57A6A21D26;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 825EA1FEFF;
         Fri,  8 Sep 2023 14:53:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1694184799; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yGsbXXqcf4ORLaF4fFwqqZYAQFs76ztvW90bKyvUaBg=;
-        b=yaoSVUcftdz9Z0pvCocl71s6a42GoguCtjRHXa0NVRtJyYOG6A+9KfluK9Nx3m9FsnxsoH
-        nQhFs/wVHJNXuBKUYjlgy0YSvjKAfZz5BhBOE/d/6MtSEdQP0EBpF8i9JPxbt4GAX6uJVi
-        y0ZD68CA0KFlChqiBb0LB0e5BbPQwtk=
+        bh=TBS/rfQAa9CuGAOXLs/AG66+kZ+35/pxxXJ2H3zd1io=;
+        b=AErap95nCfprazdQmp9OXffnXycQVwIbGZpHDVA0rP1sASRm6I/cAKuQEAWyQwn3yPrIhj
+        n2us9Yv71zG8n60xarSDoURo97o0UJr6tPpUw1eQl5dNdrsDvGofv7aMgtveGRu7mN2InU
+        ErsEOQVo1bhO94LeTmRRs1dVrdIzL/Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1694184799;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yGsbXXqcf4ORLaF4fFwqqZYAQFs76ztvW90bKyvUaBg=;
-        b=1F8uln1OGPghmt/eKsFza2ILUJbA9ByJ69bS4pA/H55d4XBFwWCspcGJ6dS96kWwjv3Hpo
-        6+lv3dA372hQ5VCA==
+        bh=TBS/rfQAa9CuGAOXLs/AG66+kZ+35/pxxXJ2H3zd1io=;
+        b=PBQchTCPYcBZU1rMZMkGvd3jPhMJtIy0CS2wp+p1ullQX6NqzbDhx7UDZYJDCdQdtJKh3v
+        ubVT/MasEOcFelDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3169A13357;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 59E68131FD;
         Fri,  8 Sep 2023 14:53:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id wGFkC181+2QaBQAAMHmgww
+        id iIFAFV81+2QaBQAAMHmgww
         (envelope-from <vbabka@suse.cz>); Fri, 08 Sep 2023 14:53:19 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     David Rientjes <rientjes@google.com>,
@@ -59,9 +59,9 @@ Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
         patches@lists.linux.dev, linux-kernel@vger.kernel.org,
         Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH 3/4] mm/slub: attempt to find layouts up to 1/2 waste in calculate_order()
-Date:   Fri,  8 Sep 2023 16:53:06 +0200
-Message-ID: <20230908145302.30320-9-vbabka@suse.cz>
+Subject: [PATCH 4/4] mm/slub: refactor calculate_order() and calc_slab_order()
+Date:   Fri,  8 Sep 2023 16:53:07 +0200
+Message-ID: <20230908145302.30320-10-vbabka@suse.cz>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230908145302.30320-6-vbabka@suse.cz>
 References: <20230908145302.30320-6-vbabka@suse.cz>
@@ -76,74 +76,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The main loop in calculate_order() currently tries to find an order with
-at most 1/4 waste. If that's impossible (for particular large object
-sizes), there's a fallback that will try to place one object within
-slab_max_order.
+After the previous cleanups, we can now move some code from
+calc_slab_order() to calculate_order() so it's executed just once, and
+do some more cleanups.
 
-If we expand the loop boundary to also allow up to 1/2 waste as the last
-resort, we can remove the fallback and simplify the code, as the loop
-will find an order for such sizes as well. Note we don't need to allow
-more than 1/2 waste as that will never happen - calc_slab_order() would
-calculate more objects to fit, reducing waste below 1/2.
+- move the min_order and MAX_OBJS_PER_PAGE evaluation to
+  calc_slab_order().
 
-Sucessfully finding an order in the loop (compared to the fallback) will
-also have the benefit in trying to satisfy min_objects, because the
-fallback was passing 1. Thus the resulting slab orders might be larger
-(not because it would improve waste, but to reduce pressure on shared
-locks), which is one of the goals of calculate_order().
+- change calc_slab_order() parameter min_objects to min_order
 
-For example, with nr_cpus=1 and 4kB PAGE_SIZE, slub_max_order=3, before
-the patch we would get the following orders for these object sizes:
-
- 2056 to 10920 - order-3 as selected by the loop
-10928 to 12280 - order-2 due to fallback, as <1/4 waste is not possible
-12288 to 32768 - order-3 as <1/4 waste is again possible
-
-After the patch:
-
-2056 to 32768 - order-3, because even in the range of 10928 to 12280 we
-                try to satisfy the calculated min_objects.
-
-As a result the code is simpler and gives more consistent results.
+Also make MAX_OBJS_PER_PAGE check more robust by considering also
+min_objects in addition to slub_min_order. Otherwise this is not a
+functional change.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ mm/slub.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 5c287d96b212..f04eb029d85a 100644
+index f04eb029d85a..1c91f72c7239 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -4171,23 +4171,17 @@ static inline int calculate_order(unsigned int size)
- 	 * the order can only result in same or less fractional waste, not more.
- 	 *
- 	 * If that fails, we increase the acceptable fraction of waste and try
--	 * again.
-+	 * again. The last iteration with fraction of 1/2 would effectively
-+	 * accept any waste and give us the order determined by min_objects, as
-+	 * long as at least single object fits within slub_max_order.
+@@ -4110,17 +4110,12 @@ static unsigned int slub_min_objects;
+  * the smallest order which will fit the object.
+  */
+ static inline unsigned int calc_slab_order(unsigned int size,
+-		unsigned int min_objects, unsigned int max_order,
++		unsigned int min_order, unsigned int max_order,
+ 		unsigned int fract_leftover)
+ {
+-	unsigned int min_order = slub_min_order;
+ 	unsigned int order;
+ 
+-	if (order_objects(min_order, size) > MAX_OBJS_PER_PAGE)
+-		return get_order(size * MAX_OBJS_PER_PAGE) - 1;
+-
+-	for (order = max(min_order, (unsigned int)get_order(min_objects * size));
+-			order <= max_order; order++) {
++	for (order = min_order; order <= max_order; order++) {
+ 
+ 		unsigned int slab_size = (unsigned int)PAGE_SIZE << order;
+ 		unsigned int rem;
+@@ -4139,7 +4134,7 @@ static inline int calculate_order(unsigned int size)
+ 	unsigned int order;
+ 	unsigned int min_objects;
+ 	unsigned int max_objects;
+-	unsigned int nr_cpus;
++	unsigned int min_order;
+ 
+ 	min_objects = slub_min_objects;
+ 	if (!min_objects) {
+@@ -4152,7 +4147,7 @@ static inline int calculate_order(unsigned int size)
+ 		 * order on systems that appear larger than they are, and too
+ 		 * low order on systems that appear smaller than they are.
+ 		 */
+-		nr_cpus = num_present_cpus();
++		unsigned int nr_cpus = num_present_cpus();
+ 		if (nr_cpus <= 1)
+ 			nr_cpus = nr_cpu_ids;
+ 		min_objects = 4 * (fls(nr_cpus) + 1);
+@@ -4160,6 +4155,10 @@ static inline int calculate_order(unsigned int size)
+ 	max_objects = order_objects(slub_max_order, size);
+ 	min_objects = min(min_objects, max_objects);
+ 
++	min_order = max(slub_min_order, (unsigned int)get_order(min_objects * size));
++	if (order_objects(min_order, size) > MAX_OBJS_PER_PAGE)
++		return get_order(size * MAX_OBJS_PER_PAGE) - 1;
++
+ 	/*
+ 	 * Attempt to find best configuration for a slab. This works by first
+ 	 * attempting to generate a layout with the best possible configuration and
+@@ -4176,7 +4175,7 @@ static inline int calculate_order(unsigned int size)
+ 	 * long as at least single object fits within slub_max_order.
  	 */
--	for (unsigned int fraction = 16; fraction >= 4; fraction /= 2) {
-+	for (unsigned int fraction = 16; fraction > 1; fraction /= 2) {
- 		order = calc_slab_order(size, min_objects, slub_max_order,
+ 	for (unsigned int fraction = 16; fraction > 1; fraction /= 2) {
+-		order = calc_slab_order(size, min_objects, slub_max_order,
++		order = calc_slab_order(size, min_order, slub_max_order,
  					fraction);
  		if (order <= slub_max_order)
  			return order;
- 	}
- 
--	/*
--	 * We were unable to place multiple objects in a slab. Now
--	 * lets see if we can place a single object there.
--	 */
--	order = calc_slab_order(size, 1, slub_max_order, 1);
--	if (order <= slub_max_order)
--		return order;
--
- 	/*
- 	 * Doh this slab cannot be placed using slub_max_order.
- 	 */
 -- 
 2.42.0
 
