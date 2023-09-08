@@ -2,111 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE09798354
+	by mail.lfdr.de (Postfix) with ESMTP id 65879798353
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 09:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239486AbjIHHle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 03:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39508 "EHLO
+        id S235961AbjIHHlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 03:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237344AbjIHHl3 (ORCPT
+        with ESMTP id S237344AbjIHHlg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 03:41:29 -0400
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748A01990
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 00:41:24 -0700 (PDT)
+        Fri, 8 Sep 2023 03:41:36 -0400
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC55F1BD3
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 00:41:28 -0700 (PDT)
 Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20230908074122epoutp024490f2ba44eb562dca623988b6a7c5f8~C3IcJZlwz1142311423epoutp02o
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:41:22 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20230908074122epoutp024490f2ba44eb562dca623988b6a7c5f8~C3IcJZlwz1142311423epoutp02o
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230908074127epoutp03ec4e0b5ce9ee045474f1428404cd6d79~C3Igpdnna2171021710epoutp03j
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:41:27 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230908074127epoutp03ec4e0b5ce9ee045474f1428404cd6d79~C3Igpdnna2171021710epoutp03j
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1694158882;
-        bh=5nnYH4bzmD+WGjO/Clg8fuD1bDH4eamc7G31VCFfHEk=;
+        s=mail20170921; t=1694158887;
+        bh=IZ9jCFqwFNiYYg2ZEJwOHCgy8Fz2FKuFY/N9dF4FW9Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WObHQC+/A0adM4XXj6sLP7yIWYdE51gPMbqG7WP+YTmJNwf4yCmPakRDCTXVYkXUo
-         5xY8dsP1UOIZ0IOYkfdh/Dp6PbaDc5l7mKh5xVe9fSpCstbLMM/gsJ5/L2e7EsvU4G
-         j16vidHeJvmVv4skm4LPQ3gz2pVozS34wkf8E+Mo=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20230908074122epcas5p1a485c69ad14ec0e66649dfeb9963cbe1~C3Ib3KuY10093400934epcas5p1d;
-        Fri,  8 Sep 2023 07:41:22 +0000 (GMT)
-Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.180]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4Rhp2S3MqVz4x9Pp; Fri,  8 Sep
-        2023 07:41:20 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        1D.FB.19094.020DAF46; Fri,  8 Sep 2023 16:41:20 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        b=tFXJvuiIhLy/yiI9haGJ5tszzO2RECvvEx8HZhxHWFY3qmFb2rex0FKpkxCbOnIJi
+         0fru/6OB9698psf/uHMsiDiY+Yh52sAR7ok5fhyBYodxmip8PJsn3sOANJjJoWyBJU
+         7Q5DpkszbgOLlFpRxghjP9Vb6/v+xkQlP6KXUAT4=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20230908074126epcas5p3bb2add950c0441b38e343aea29436955~C3IgbGJJu2319023190epcas5p3i;
+        Fri,  8 Sep 2023 07:41:26 +0000 (GMT)
+Received: from epsmgec5p1new.samsung.com (unknown [182.195.38.177]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4Rhp2X4P8Cz4x9Q9; Fri,  8 Sep
+        2023 07:41:24 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7E.CC.09023.320DAF46; Fri,  8 Sep 2023 16:41:23 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
         epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20230908063510epcas5p46aa338154cc48041c5d28dbead88c97c~C2OpCj5ll2066220662epcas5p4U;
-        Fri,  8 Sep 2023 06:35:10 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230908063510epsmtrp1ad977c9cbfd52b5399318c4f1c2d2f85~C2OpB2Ft12348123481epsmtrp1C;
-        Fri,  8 Sep 2023 06:35:10 +0000 (GMT)
-X-AuditID: b6c32a50-39fff70000004a96-4b-64fad0200151
+        20230908063512epcas5p42b8a72d4001d041ed15ee559ee61f4c8~C2Oqlnxa-2265422654epcas5p4F;
+        Fri,  8 Sep 2023 06:35:12 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230908063512epsmtrp2e0bdb05b5181d7b786961be972e8ed84~C2Oqk_ZPz0270802708epsmtrp2b;
+        Fri,  8 Sep 2023 06:35:12 +0000 (GMT)
+X-AuditID: b6c32a44-c7ffa7000000233f-1a-64fad0236f63
 Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        78.1E.08788.E90CAF46; Fri,  8 Sep 2023 15:35:10 +0900 (KST)
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C8.6E.18916.F90CAF46; Fri,  8 Sep 2023 15:35:11 +0900 (KST)
 Received: from unvme-desktop.sa.corp.samsungelectronics.net (unknown
         [107.99.41.39]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20230908063509epsmtip1a0e61af5359bf1954bcbbacb17be6c72~C2On9_ip63145631456epsmtip1U;
-        Fri,  8 Sep 2023 06:35:09 +0000 (GMT)
+        20230908063510epsmtip17a6a54675047af2fb769127beb435249~C2Opcd3DV2661226612epsmtip1Q;
+        Fri,  8 Sep 2023 06:35:10 +0000 (GMT)
 From:   Ankit Kumar <ankit.kumar@samsung.com>
 To:     Jens Axboe <axboe@kernel.dk>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Keith Busch <kbusch@kernel.org>
 Cc:     gost.dev@samsung.com, Ankit Kumar <ankit.kumar@samsung.com>,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] block:t10-pi: remove redundant Type2 check during
- t10 PI verify
-Date:   Fri,  8 Sep 2023 17:22:30 +0530
-Message-Id: <20230908115233.261195-2-ankit.kumar@samsung.com>
+Subject: [PATCH v2 2/2] block:t10-pi: remove duplicate module license
+Date:   Fri,  8 Sep 2023 17:22:31 +0530
+Message-Id: <20230908115233.261195-3-ankit.kumar@samsung.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230908115233.261195-1-ankit.kumar@samsung.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAJsWRmVeSWpSXmKPExsWy7bCmlq7ChV8pBm/+S1qsufKb3WL13X42
-        i5sHdjJZTDp0jdFi7y1ti8u75rBZLD/+j8mB3ePy2VKPTas62Tw+Pr3F4tG3ZRWjx+dNcgGs
-        Udk2GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUBHKCmU
-        JeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVILUnIKTAr0ihNzi0vz0vXyUkusDA0MjEyBChOy
-        M042nmYs2MpW8bLpJ3MD4xzWLkZODgkBE4nDHZ+Yuhi5OIQE9jBKTN22gBXC+cQo8fz+RmYI
-        5xujxO3Hv5lhWg7uamaESOxllGib0soG4XQySSyY950JpIpNQFvi1dsbYB0iAmUSbx7uBLOZ
-        BWokOu/NAqsRFoiU2Nf5GcxmEVCVWLJxDQuIzStgK9Ez+yQ7xDZ5iZmXvoPZnAJ2Eg8XHWCD
-        qBGUODnzCQvETHmJ5q2zwU6VEHjELtF8bhobRLOLRPe7G0wQtrDEq+NboIZKSbzsb4OysyU2
-        PfwJVVMgceRFL9Sb9hKtp/qBbA6gBZoS63fpQ4RlJaaeWscEsZdPovf3E6hWXokd82BsVYm/
-        926zQNjSEjffXYWyPSSeNC9mgQTWREaJ3+cmsUxgVJiF5J9ZSP6ZhbB6ASPzKkap1ILi3PTU
-        ZNMCQ9281HJ4PCfn525iBCdNrYAdjKs3/NU7xMjEwXiIUYKDWUmEd7XIrxQh3pTEyqrUovz4
-        otKc1OJDjKbAEJ/ILCWanA9M23kl8YYmlgYmZmZmJpbGZoZK4ryvW+emCAmkJ5akZqemFqQW
-        wfQxcXBKNTAJRCi8X3gwM/yZvsJRi+7V3G45jXumiMyS4Xyi2n9qxY3LChIPrrL9yGP+Ftk9
-        OZf7yOMHaf/Wh56ZNPOj24yd9f82/IzcEPF1212vv16Z/ZJia3YUaMbWTz1v90Hz6Nr3u8+8
-        XiSnppilX7Qz8n7r8zLX1BeMGxveBW1QWpLKujxr7nk+AamcLEnlwztK3pzm3bxx5f7+386y
-        U5WfXmQ1TKhevc1UuGnu9H0FB3covFH5sc0zpPRmEKvD1QvO05KVLE/Lyt7/xcllJGthu2+N
-        Tgx3DaOa7ufXF5T3PXMNOZ4163zCD0HdWV0mu17anY45djm140Et22TbhOpwZ/bvBVEc7+Ja
-        v152Yo4T/hGtxFKckWioxVxUnAgAVC2jbSMEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKLMWRmVeSWpSXmKPExsWy7bCSnO68A79SDM4ukbBYc+U3u8Xqu/1s
-        FjcP7GSymHToGqPF3lvaFpd3zWGzWH78H5MDu8fls6Uem1Z1snl8fHqLxaNvyypGj8+b5AJY
-        o7hsUlJzMstSi/TtErgyTjaeZizYylbxsukncwPjHNYuRk4OCQETiYO7mhm7GLk4hAR2M0r8
-        2fIeKMEBlJCWWLg+EaJGWGLlv+fsEDXtTBI/NyxjBkmwCWhLvHp7A8wWEaiQmPNpKStIEbNA
-        A6PElM99YAlhgXCJDwevsYHYLAKqEks2rmEBsXkFbCV6Zp9kh9ggLzHz0ncwm1PATuLhogNg
-        9UJANe8vf2CEqBeUODnzCVgvM1B989bZzBMYBWYhSc1CklrAyLSKUTK1oDg3PbfYsMAoL7Vc
-        rzgxt7g0L10vOT93EyM4pLW0djDuWfVB7xAjEwfjIUYJDmYlEd7VIr9ShHhTEiurUovy44tK
-        c1KLDzFKc7AoifN+e92bIiSQnliSmp2aWpBaBJNl4uCUamDKUhRjW8HiHy87hSFjvt+0yQ/v
-        dpn/Otm89M98tnU/GQuuv9/95eL6U/957dwOZtRte8T5im29ov1fvd2eD96wn9hsbmgU5sPm
-        5LNlratoKrtbf7Pzmx67UheTh4FKhm3bN2k1aJ6WmHLeIDBy/QYJzdptLIvuTa4vFfYQkdtR
-        tMRFJWyXyGKpn2uTZXaJtzeEbc/OfFsRcf5lhPX/Gd7sZw6Zzr3VvHnVfn3HCk6DgODPVfkH
-        r2iLqTOE6B/92vu1X+vi860G0bbcqh+KdscuyP50cv03626/Vx9/x6yNVhFttTK/1ce26EhA
-        a3GY+lyfi4pz3VakeHB0dXza1V3imCQSZnpagSfMyXOhvBJLcUaioRZzUXEiADhUEwjYAgAA
-X-CMS-MailID: 20230908063510epcas5p46aa338154cc48041c5d28dbead88c97c
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnk+LIzCtJLcpLzFFi42LZdlhTXVf5wq8Ug4m3tSzWXPnNbrH6bj+b
+        xc0DO5ksJh26xmix95a2xeVdc9gslh//x+TA7nH5bKnHplWdbB4fn95i8ejbsorR4/MmuQDW
+        qGybjNTElNQihdS85PyUzLx0WyXv4HjneFMzA0NdQ0sLcyWFvMTcVFslF58AXbfMHKAjlBTK
+        EnNKgUIBicXFSvp2NkX5pSWpChn5xSW2SqkFKTkFJgV6xYm5xaV56Xp5qSVWhgYGRqZAhQnZ
+        GV93T2UpeM5S0XBuL2sDYx9LFyMnh4SAicSmzYuAbC4OIYHdjBI3vsxghnA+MUr8/zoVwWn9
+        MAeu5d7LFiaIxE5GiVOtZ6GcTiaJywsfsoFUsQloS7x6e4MZxBYRKJN483AnmM0sUCPReW8W
+        E4gtLOAq0bX7PzuIzSKgKnFo5wtWEJtXwFZizYM3zBDb5CVmXvoOVsMpYCfxcNEBNogaQYmT
+        M5+wQMyUl2jeOhvsVAmBe+wS237sYIJodpG4928f1NnCEq+Ob2GHsKUkPr/bywZhZ0tsevgT
+        qr5A4siLXqjF9hKtp/qBbA6gBZoS63fpQ4RlJaaeWscEsZdPovf3E6hWXokd82BsVYm/925D
+        rZWWuPnuKpTtIfGo9SQ0SCcySnz7+pd9AqPCLCT/zELyzyyE1QsYmVcxSqYWFOempyabFhjm
+        pZbDozk5P3cTIzhlarnsYLwx/5/eIUYmDsZDjBIczEoivKtFfqUI8aYkVlalFuXHF5XmpBYf
+        YjQFBvhEZinR5Hxg0s4riTc0sTQwMTMzM7E0NjNUEud93To3RUggPbEkNTs1tSC1CKaPiYNT
+        qoFpo1nwyZ+Jizk9pk/XeLgko+jHgtc1Lx43+rzd8dzkGK8Yr9rhJTEFW9LZnz7r/7vib5+2
+        Id9Rp+c2NR/Cw+xes35/F2Mea3h7Z9UC038fV/Qn+b/liV5gxmZ7yMA9848ik9HmMGXhJRtX
+        rjetPcsZcWbV8aIz1u7GN7iNJBR6XXP4Kv8ucjmzSjHujWR5+j8Zr58mGSta5FzLJFbl2ibv
+        vlp4/pjg7kcsGUIdAZyauXcq9T69eNT7TqanOuLqU/GVeQ/llpmvV34x+7JZWZWrnlrFjqaQ
+        5Ll3Vr03jYljl5mveeCT64PbzE7nPrhrNuftXjlR3FW0+NfCeuYbW+QEv1QJPn62uHb9EnF1
+        5xYlluKMREMt5qLiRAAuoisPIgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPLMWRmVeSWpSXmKPExsWy7bCSnO6CA79SDL7aWqy58pvdYvXdfjaL
+        mwd2MllMOnSN0WLvLW2Ly7vmsFksP/6PyYHd4/LZUo9NqzrZPD4+vcXi0bdlFaPH501yAaxR
+        XDYpqTmZZalF+nYJXBlfd09lKXjOUtFwbi9rA2MfSxcjJ4eEgInEvZctTCC2kMB2Ron1SxK6
+        GDmA4tISC9cnQpQIS6z895y9i5ELqKSdSeLKhvuMIAk2AW2JV29vMIPYIgIVEnM+LWUFKWIW
+        aGCUmPK5DywhLOAq0bX7PzuIzSKgKnFo5wtWEJtXwFZizYM3zBAb5CVmXvoOVsMpYCfxcNEB
+        NoiDbCXeX/7ACFEvKHFy5hOwo5mB6pu3zmaewCgwC0lqFpLUAkamVYyiqQXFuem5yQWGesWJ
+        ucWleel6yfm5mxjBYawVtINx2fq/eocYmTgYDzFKcDArifCuFvmVIsSbklhZlVqUH19UmpNa
+        fIhRmoNFSZxXOaczRUggPbEkNTs1tSC1CCbLxMEp1cDkxevKlZ4o0dId8ij89yHp4EReq0q5
+        tlSfb4mC/f1iNwoui/oEHtDMt5TYHR1Z9rlvU/P94sfXDtVG7XCcbfDLj6NIdHrxFZnlUsq7
+        22MkJ3Tfv3YpvshkRf2r1Ibw8xzX7ylvEn8ZV8HwVDX5I3d2iXbASQcX/Zi8BoeMUxxqegG/
+        GFf83brL4DiHQ9HXWKbJzSz7eNl+l97sPfjKJ34l6yqHCJX4NV2xnlXbG/vNL2SK7TjzPNVp
+        +mauCwIJ+xwM1Xece+ztWNpco7WxTc1J3tKuf6LT+W/XNt4R4JGzuGW2b9nZSrkp7gwxnyYa
+        tgnvTtuus43Z2/3XM574pZ+O8eUXarPP7Nx4IslDiaU4I9FQi7moOBEAhT75U9ICAAA=
+X-CMS-MailID: 20230908063512epcas5p42b8a72d4001d041ed15ee559ee61f4c8
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: REQ_APPROVE
 CMS-TYPE: 105P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230908063510epcas5p46aa338154cc48041c5d28dbead88c97c
+X-CMS-RootMailID: 20230908063512epcas5p42b8a72d4001d041ed15ee559ee61f4c8
 References: <20230908115233.261195-1-ankit.kumar@samsung.com>
-        <CGME20230908063510epcas5p46aa338154cc48041c5d28dbead88c97c@epcas5p4.samsung.com>
+        <CGME20230908063512epcas5p42b8a72d4001d041ed15ee559ee61f4c8@epcas5p4.samsung.com>
 X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_03_06,
         DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
@@ -117,29 +116,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T10_PI_TYPE2_PROTECTION is neither used to generate nor verify
-crc and ip. This remained since T10 PI code was moved out of SCSI.
+Remove duplicate MODULE_LICENSE("GPL") from t10-pi.c
+Fixes: a7d4383f17e1 ("block: add pi for extended integrity")
 
 Signed-off-by: Ankit Kumar <ankit.kumar@samsung.com>
 Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
 ---
- block/t10-pi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ block/t10-pi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/block/t10-pi.c b/block/t10-pi.c
-index 914d8cddd43a..bf0bba01417f 100644
+index bf0bba01417f..042f21b0e2e5 100644
 --- a/block/t10-pi.c
 +++ b/block/t10-pi.c
-@@ -64,8 +64,7 @@ static blk_status_t t10_pi_verify(struct blk_integrity_iter *iter,
- 		struct t10_pi_tuple *pi = iter->prot_buf;
- 		__be16 csum;
+@@ -471,4 +471,3 @@ const struct blk_integrity_profile ext_pi_type3_crc64 = {
+ EXPORT_SYMBOL_GPL(ext_pi_type3_crc64);
  
--		if (type == T10_PI_TYPE1_PROTECTION ||
--		    type == T10_PI_TYPE2_PROTECTION) {
-+		if (type == T10_PI_TYPE1_PROTECTION) {
- 			if (pi->app_tag == T10_PI_APP_ESCAPE)
- 				goto next;
- 
+ MODULE_LICENSE("GPL");
+-MODULE_LICENSE("GPL");
 -- 
 2.25.1
 
