@@ -2,118 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4552E798605
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24BC79860A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242532AbjIHKmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 06:42:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
+        id S242820AbjIHKo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 06:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234527AbjIHKme (ORCPT
+        with ESMTP id S229604AbjIHKox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 06:42:34 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE10B1BC6;
-        Fri,  8 Sep 2023 03:42:30 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9BB111FD95;
-        Fri,  8 Sep 2023 10:42:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694169749; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aUQKt/H3ZP7ajcYBxY10gBBVeTKZFcXnIqtiBFBJ8L8=;
-        b=E2XPOzAd2/wOYuRyPXwWksDqPCtj539n3ttrPi6iyeICdPf1vGuUZa3luzUOgR62kdbBK2
-        J2nmjukT1qV5D3EOXuWHPAKsdLSC1ru7cth8m1aftFMSPuP1VsIFv82yhBLmkb7tj+2yDI
-        1YRhhA7ydKp3HRVGefMJfVuTvJJ4vn8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694169749;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aUQKt/H3ZP7ajcYBxY10gBBVeTKZFcXnIqtiBFBJ8L8=;
-        b=FoUYrRLeeDvFNKS70jwXnA7nGxBlsrV/U1fU8qL75SGW2EKBe2eDarsVDOftbChvHSR5X1
-        USiYjLuV5gPwZBDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8D768131FD;
-        Fri,  8 Sep 2023 10:42:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 3Q6CIpX6+mSafQAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 08 Sep 2023 10:42:29 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 31D20A0774; Fri,  8 Sep 2023 12:42:29 +0200 (CEST)
-Date:   Fri, 8 Sep 2023 12:42:29 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH 1/2] fs: initialize inode->__i_ctime to the epoch
-Message-ID: <20230908104229.5tsr2sn7oyfy53ih@quack3>
-References: <20230907-ctime-fixes-v1-0-3b74c970d934@kernel.org>
- <20230907-ctime-fixes-v1-1-3b74c970d934@kernel.org>
+        Fri, 8 Sep 2023 06:44:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4195D1BC6;
+        Fri,  8 Sep 2023 03:44:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CxXN7IaoL8RwVwQiUmo1siGJgoNZz5WFIpz2pAVAxuc=; b=KIE8pBuT0ZFIv86asxj0niU4H1
+        3jPwIv8vg1avtC+nyDT0NIvw8I9ObyOPdsxNRjZ3vNAjDkNEptCLTUFypEo3+AFUy2bsdS0sUk0LI
+        DrO4Icf0473OfWRp4uwkoWbT6Q9rbPJH8575k+dYGHfzAnkw1b6Li9kErMrBQBDyFs7PdHkxGxF+e
+        cFawBf2j5TUjya/Y7hKCJKy77g/dikCTKSAgOlGqKH4hl1MSNVx/CEu/U/msdJNFtN9xpst2dlYwh
+        FfqrbA3Z+sSVUsxSvR1rdDQtUYnjEgVtGl+qMoQ1re7dd6f4kOoypfVs15+QCyEYTUyDKEO0Gg4Sr
+        4Y0QLQwQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qeYyZ-00HGsO-1U; Fri, 08 Sep 2023 10:44:35 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9763C300472; Fri,  8 Sep 2023 12:44:34 +0200 (CEST)
+Date:   Fri, 8 Sep 2023 12:44:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 1/5] locking: Add rwsem_is_write_locked()
+Message-ID: <20230908104434.GB24372@noisy.programming.kicks-ass.net>
+References: <20230907174705.2976191-1-willy@infradead.org>
+ <20230907174705.2976191-2-willy@infradead.org>
+ <20230907190810.GA14243@noisy.programming.kicks-ass.net>
+ <ZPoift7B3UDQgmWB@casper.infradead.org>
+ <20230907193838.GB14243@noisy.programming.kicks-ass.net>
+ <ZPpV+MeFqX6RHIYw@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230907-ctime-fixes-v1-1-3b74c970d934@kernel.org>
+In-Reply-To: <ZPpV+MeFqX6RHIYw@dread.disaster.area>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 07-09-23 12:33:47, Jeff Layton wrote:
-> With the advent of multigrain timestamps, we use inode_set_ctime_current
-> to set the ctime, which can skip updating if the existing ctime appears
-> to be in the future. Because we don't initialize this field at
-> allocation time, that could prevent the ctime from being initialized
-> properly when the inode is instantiated.
-> 
-> Always initialize the ctime field to the epoch so that the filesystem
-> can set the timestamps properly later.
-> 
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202309071017.a64aca5e-oliver.sang@intel.com
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+On Fri, Sep 08, 2023 at 09:00:08AM +1000, Dave Chinner wrote:
 
-Looks good but don't you need the same treatment to atime after your patch
-2/2?
+> > Right, but if you're not the lock owner, your answer to the question is
+> > a dice-roll, it might be locked, it might not be.
+> 
+> Except that the person writing the code knows the call chain that
+> leads up to that code, and so they have a pretty good idea whether
+> the object should be locked or not. If we are running that code, and
+> the object is locked, then it's pretty much guaranteed that the
+> owner of the lock is code that executed the check, because otherwise
+> we have a *major lock implementation bug*.
 
-								Honza
+Agreed, and this is fine. However there's been some very creative
+'use' of the _is_locked() class of functions in the past that did not
+follow 'common' sense.
 
-> ---
->  fs/inode.c | 2 ++
->  1 file changed, 2 insertions(+)
+If all usage was: I should be holding this, lets check. I probably
+wouldn't have this bad feeling about things.
+
+> > Most devs should run with lockdep on when writing new code, and I know
+> > the sanitizer robots run with lockdep on.
+> > 
+> > In general there seems to be a ton of lockdep on coverage.
 > 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 35fd688168c5..54237f4242ff 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -168,6 +168,8 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
->  	inode->i_fop = &no_open_fops;
->  	inode->i_ino = 0;
->  	inode->__i_nlink = 1;
-> +	inode->__i_ctime.tv_sec = 0;
-> +	inode->__i_ctime.tv_nsec = 0;
->  	inode->i_opflags = 0;
->  	if (sb->s_xattr)
->  		inode->i_opflags |= IOP_XATTR;
+> *cough*
 > 
-> -- 
-> 2.41.0
+> Bit locks, semaphores, and all sorts of other constructs for IO
+> serialisation (like inode_dio_wait()) have no lockdep coverage at
+> all. IOWs, large chunks of many filesystems, the VFS and the VM have
+> little to no lockdep coverage at all.
+
+True, however I was commenting on the assertion that vm code has
+duplicate asserts with the implication that was because not a lot of
+people run with lockdep on.
+
+> > > we also have VM_BUG_ON_MM(!rwsem_is_write_locked(&mm->mmap_lock), mm)
+> > > to give us a good assertion when lockdep is disabled.
+> > 
+> > Is that really worth it still? I mean, much of these assertions pre-date
+> > lockdep.
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> And we're trying to propagate them because lockdep isn't a viable
+> option for day to day testing of filesystems because of it's
+> overhead vs how infrequently it finds new problems.
+
+... in XFS. Lockdep avoids a giant pile of broken from entering the
+kernel and the robots still report plenty.
+
+> > > XFS has a problem with using lockdep in general, which is that a worker
+> > > thread can be spawned and use the fact that the spawner is holding the
+> > > lock.  There's no mechanism for the worker thread to ask "Does struct
+> > > task_struct *p hold the lock?".
+> > 
+> > Will be somewhat tricky to make happen -- but might be doable. It is
+> > however an interface that is *very* hard to use correctly. Basically I
+> > think you want to also assert that your target task 'p' is blocked,
+> > right?
+> > 
+> > That is: assert @p is blocked and holds @lock.
+> 
+> That addresses the immediate symptom; it doesn't address the large
+> problem with lockdep and needing non-owner rwsem semantics.
+> 
+> i.e. synchronous task based locking models don't work for
+> asynchronous multi-stage pipeline processing engines like XFS. The
+> lock protects the data object and follows the data object through
+> the processing pipeline, whilst the original submitter moves on to
+> the next operation to processes without blocking.
+> 
+> This is the non-blocking, async processing model that io_uring
+> development is pushing filesystems towards, so assuming that we only
+> hand a lock to a single worker task and then wait for it complete
+> (i.e. synchronous operation) flies in the face of current
+> development directions...
+
+I was looking at things from an interface abuse perspective. How easy is
+it to do the wrong thing. As said, we've had a bunch of really dodgy
+code with the _is_locked class of functions, hence my desire to find
+something else.
+
+As to the whole non-owner locking, yes, that's problematic. I'm not
+convinced async operations require non-owner locking, at the same time I
+do see that IO completions pose a challence.
+
+Coming from the schedulability and real-time corner, non-owner locks are
+a nightmare because of the inversions. So yeah, fun to be had I'm sure.
