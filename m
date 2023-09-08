@@ -2,74 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0707989F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A107989FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241052AbjIHP2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 11:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36610 "EHLO
+        id S244435AbjIHP26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 11:28:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjIHP2F (ORCPT
+        with ESMTP id S229530AbjIHP25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 11:28:05 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EFB1BEA
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 08:28:00 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bc0d39b52cso17512315ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 08:28:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694186880; x=1694791680; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language:subject
-         :references:cc:to:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ISx/id5dNxIJh+29FXmKcEhK6YchpdLSErhaK4D3qNY=;
-        b=puUQeUsE9KvLZInkH4RSJ15VKZOf+Oq222katUPXfmbQT/5fSACGTAS5RnZPEXTLkx
-         vZAeivmeCMFfvd/E3Q4QW90ePXBpKap/6BTrCqnR3gBGnYMniC9OQCXF9QlVOFL2KqQl
-         svq4t7jSxQQVsZMiNsHkNh4cdCQxEG7T/VDFMRhj2Lj+p5C6N6zdQ5gfT6tlAUEXkjlm
-         31zokZUsNs3VQF4YIgmZOYdHwG7VrHzSsL3kkgvUOEvvVLthBlvEC9bJLukbLl33IUno
-         IHzWG+S9/fGTJFHZAL94ys9wPmscfgzpXOsDQxBjp3l9PXHSGsRjoAe9Q4cceDyNcHWr
-         i4LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694186880; x=1694791680;
-        h=content-transfer-encoding:in-reply-to:from:content-language:subject
-         :references:cc:to:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ISx/id5dNxIJh+29FXmKcEhK6YchpdLSErhaK4D3qNY=;
-        b=qzaOAA79t0vxxYoeMEjnpZ7tjS0rcEZQC6qM+i9Xc1PXpNmlcx6QP8hvqo2IcCrAqf
-         J46MUPqQNgyCL7NtF1rGFcGZ2GaETGHHAyYVu6qatMotkTDa8et68Dwx6mijxX6mCQ7q
-         JVkR0UQ/wcE2mVe0nAI+Cc8B5LaVqtSNQ0tL29uY7NNDBaAdVx0YJz2xeQ8cTZN3s3Q4
-         elslGFt/30tEHD1S9pZvi0HHK2t8xOft0cZ4cdNqtXjQQlDQJGH2lknrYQo/MWSML/dy
-         BCxu6ThSPLvL2tmz8AgfN3pqMfulv+lRmlQ7ctsJgzBWONXuG4eKZTxrsOnX51tXu4jr
-         ksWQ==
-X-Gm-Message-State: AOJu0YyW2k5qgog74mZjfbe1tWYsddCB0nAyrCKg1APC7pvlf3vh4sfC
-        lFE+rjW/eLM3PNW6SrnZRBk=
-X-Google-Smtp-Source: AGHT+IF9MIfnm3S/SpaSMf0cVr1lXP/iCqKNvT3gWWfIFlFwPRdCTkW7qTgIYcvFtTQTVhn6+m7UGg==
-X-Received: by 2002:a17:902:6906:b0:1c0:aca0:8c2d with SMTP id j6-20020a170902690600b001c0aca08c2dmr2600278plk.67.1694186880104;
-        Fri, 08 Sep 2023 08:28:00 -0700 (PDT)
-Received: from [192.168.11.9] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id iw21-20020a170903045500b001b39ffff838sm1737554plb.25.2023.09.08.08.27.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Sep 2023 08:27:59 -0700 (PDT)
-Message-ID: <a21c80c1-533c-5167-8b0b-a6bc4953eec8@gmail.com>
-Date:   Sat, 9 Sep 2023 00:27:56 +0900
+        Fri, 8 Sep 2023 11:28:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E9D1FC4
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 08:28:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9BE2C433C9;
+        Fri,  8 Sep 2023 15:28:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694186933;
+        bh=vRlB/5Xg5ni0NcsQvZ9t0ajGq3sYV4nl6LLKbzOc54Y=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=lGNFkraB9RbVvVxdY6qPwqMNdBun0W5IbI/PG4d/mZlcEQ7B0lN/d9HTtJJ6nt4Xg
+         mmyqfQwYJexFEEjwyBS2GnsDC/a10zbgSEbsOpZqyJCDr7tczfMJloD7593hwi7ydu
+         lhWnjoH4tSo3XIpWqqEjGz6Rn+bQpINvv66XsUDbw/IllI8aLjRYx0r4/mMW8JI2NF
+         k5V6+szHOoMZHTQA7G/YmyjjT96Ow2SHKPzvPcGv8Kq5VpCd9x42/1g6+XNBGiVRzk
+         TGs+wv7ZuZdKnkgtslHZh3KCDilFXE+pfPmHldwy1O8+7lQh9v9X9TLu1zfaMGmRfE
+         jvuLSlqPidypA==
+Message-ID: <658f807e-7f7a-e6d2-25e7-00eb2187af2a@kernel.org>
+Date:   Fri, 8 Sep 2023 17:28:46 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-To:     palmer@rivosinc.com
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        torvalds@linux-foundation.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Akira Yokosawa <akiyks@gmail.com>
-References: <mhng-f4556557-af4d-4b6a-aa89-de77f7dacf2b@palmer-ri-x1c9>
-Subject: Re: [GIT PULL] RISC-V Patches for the 6.6 Merge Window, Part 2
-Content-Language: en-US
-From:   Akira Yokosawa <akiyks@gmail.com>
-In-Reply-To: <mhng-f4556557-af4d-4b6a-aa89-de77f7dacf2b@palmer-ri-x1c9>
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v4 6/7] sched/deadline: Deferrable dl server
+Content-Language: en-US, pt-BR, it-IT
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Phil Auld <pauld@redhat.com>
+References: <cover.1693510979.git.bristot@kernel.org>
+ <754dab7f30695ca10a41613068bb63db3bfea003.1693510979.git.bristot@kernel.org>
+ <20230905134203.GA20703@noisy.programming.kicks-ass.net>
+ <b3b3a5c5-6688-966d-3d78-3e140730cb7b@redhat.com>
+ <20230906082952.GB38741@noisy.programming.kicks-ass.net>
+ <0ce80c5d-2433-13d5-33df-d110cf8faa9c@redhat.com>
+ <20230907080729.GA16872@noisy.programming.kicks-ass.net>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20230907080729.GA16872@noisy.programming.kicks-ass.net>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,75 +71,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 08 Sep 2023 07:55:57 -0700 (PDT), Palmer Dabbelt wrote:
-> merged tag 'riscv-for-linus-6.6-mw1'
-> The following changes since commit e0152e7481c6c63764d6ea8ee41af5cf9dfac5e9:
+On 9/7/23 10:07, Peter Zijlstra wrote:
+> On Wed, Sep 06, 2023 at 04:58:11PM +0200, Daniel Bristot de Oliveira wrote:
 > 
->   Merge tag 'riscv-for-linus-6.6-mw1' of git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux (2023-09-01 08:09:48 -0700)
+>>> Yeah, it's a wee hack to move it to the zero-laxity point. I was
+>>> considering if it makes sense to push that down and make it available
+>>> for all DL tasks, but I'm not sure..
+>>
+>> It might be useful in the future, like when DL dominates all other schedulers, so
+>> we can have a way to schedule a deferred work, like kworkers... :-) But it might be
+>> too early for that..
 > 
-> are available in the Git repository at:
+> So... that scheme I was pushing where we unconditionally decrement
+> fair_server.dl_runtime from update_curr_fair(), that relies on it being
+> a proper zero-laxity scheduler, and doesn't work with the proposed defer
+> hack.
 > 
->   git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.6-mw2
+> That is, it relies on dl_runtime > 0 during throttle, and you explicitly
+> set it 0.
 > 
-> for you to fetch changes up to accb14aa1e699d11b8172283e8cb82a695b96c85:
+> Now, I've not looked at all this code in detail in a minute, but would
+> not something like the below work?
 > 
->   soc: renesas: Kconfig: For ARCH_R9A07G043 select the required configs if dependencies are met (2023-09-06 07:20:13 -0700)
+> AFAICT the regular dl_task_timer() callback works to make it go, because
+> replenish will see positive runtime (or not, when already consumed) and
+> DTRT.
 > 
-> ----------------------------------------------------------------
-> RISC-V Patches for the 6.6 Merge Window, Part 2
 > 
-> * The kernel now dynamically probes for misaligned access speed, as
->   opposed to relying on a table of known implementations.
-> * Support for non-coherent devices on systems using the Andes AX45MP
->   core, including the RZ/Five SoCs.
-> * Support for the V extension in ptrace(), again.
-> * Support for KASLR.
-> * Support for the BPF prog pack allocator in RISC-V.
-> * A handful of bug fixes and cleanups.
-> 
-> ----------------------------------------------------------------
-> The shortlog looks correct here, but the diffstat includes all sorts of files I
-> wasn't expecting.  I'm not entirely sure what's going on here, but I have a
-> little bit of a complex set of base branches here as the BPF changes have a
-> dependency on some arm64 BPF work and IIRC that sort of thing sometimes makes
-> diffstat go off the rails.  So hopefully that's just it.
+> Index: linux-2.6/include/linux/sched.h
+> ===================================================================
+> --- linux-2.6.orig/include/linux/sched.h
+> +++ linux-2.6/include/linux/sched.h
+> @@ -657,6 +657,7 @@ struct sched_dl_entity {
+>  	unsigned int			dl_non_contending : 1;
+>  	unsigned int			dl_overrun	  : 1;
+>  	unsigned int			dl_server         : 1;
+> +	unsigned int			dl_zerolax        : 1;
+>  
+>  	/*
+>  	 * Bandwidth enforcement timer. Each -deadline task has its
+> Index: linux-2.6/kernel/sched/deadline.c
+> ===================================================================
+> --- linux-2.6.orig/kernel/sched/deadline.c
+> +++ linux-2.6/kernel/sched/deadline.c
+> @@ -895,6 +895,16 @@ static void replenish_dl_entity(struct s
+>  		dl_se->dl_yielded = 0;
+>  	if (dl_se->dl_throttled)
+>  		dl_se->dl_throttled = 0;
+> +
+> +	/*
+> +	 * If this is a zero-laxity task, and we're before the zero-laxity
+> +	 * point, throttle it.
+> +	 */
+> +	if (dl_se->dl_zerolax &&
+> +	    dl_time_before(dl_se->deadline - dl_se->runtime, rq_clock(rq))) {
+> +		if (!is_dl_boosted(dl_se) && start_dl_timer(dl_se))
+> +			dl_se->dl_throttled = 1;
+> +	}
+>  }
+>  
+>  /*
+> @@ -1078,7 +1088,12 @@ static int start_dl_timer(struct sched_d
+>  	 * that it is actually coming from rq->clock and not from
+>  	 * hrtimer's time base reading.
+>  	 */
+> -	act = ns_to_ktime(dl_next_period(dl_se));
+> +	if (dl_se->dl_zerolax && !dl_se->dl_throttled) {
+> +		act = ns_to_ktime(dl_se->deadline - dl_se->runtime);
+> +	} else {
+> +		act = ns_to_ktime(dl_next_period(dl_se));
+> +	}
+> +
+>  	now = hrtimer_cb_get_time(timer);
+>  	delta = ktime_to_ns(now) - rq_clock(rq);
+>  	act = ktime_add_ns(act, delta);
+> @@ -1794,6 +1809,13 @@ enqueue_dl_entity(struct sched_dl_entity
+>  		setup_new_dl_entity(dl_se);
+>  	}
+>  
+> +	/*
+> +	 * If we are still throttled, eg. we got replenished but are a
+> +	 * zero-laxity task and still got to wait, don't enqueue.
+> +	 */
+> +	if (dl_se->dl_throttled)
+> +		return;
+> +
+>  	__enqueue_dl_entity(dl_se);
+>  }
 
-Hi Palmer,
-It looks like you have ignored Stephen Rothwell's kind investigation at
-https://lore.kernel.org/linux-next/20230908082625.487d39c4@canb.auug.org.au/.
+Let me see if I got it:
 
-Excerpt of Stephen's analysis:
+	- Always start the server, but throttled with full runtime...
+	- Unconditionally decrement fair_server.dl_runtime from update_curr_fair()
+		(check if it is not decremented twice as it runs)
+	- When the dl timer fire, replenish or throttle for the next period?
 
-> Actually, it looks like the merge
-> 
->   2bf3c0292f35 ("Merge patch series "RISC-V: Probe for misaligned access speed"")
-> 
-> in the risc-v tree was resolved very badly and dragged a lot of stuff
-> back in.
+is that the base for it?
 
-[...]
-
-> When I redid that merge:
-> 
-> $ git diff HEAD^..HEAD
->  Documentation/riscv/hwprobe.rst      |  11 ++--
->  arch/riscv/errata/thead/errata.c     |   8 ---
->  arch/riscv/include/asm/alternative.h |   5 --
->  arch/riscv/include/asm/cpufeature.h  |   2 +
->  arch/riscv/kernel/Makefile           |   1 +
->  arch/riscv/kernel/alternative.c      |  19 -------
->  arch/riscv/kernel/copy-unaligned.S   |  71 ++++++++++++++++++++++++
->  arch/riscv/kernel/copy-unaligned.h   |  13 +++++
->  arch/riscv/kernel/cpufeature.c       | 104 +++++++++++++++++++++++++++++++++++
->  arch/riscv/kernel/smpboot.c          |   3 +-
->  10 files changed, 198 insertions(+), 39 deletions(-)
-> 
-> So, the risc-v tree needs to be cleaned up.
-
-Palmer, you are requesting pull without the suggested cleanup.
-
-I'd really like this to be cleanly sorted out.
-
-Of course, it's up to Linus whether or not to pull as it is...
-
-        Thanks, Akira
+-- Daniel
