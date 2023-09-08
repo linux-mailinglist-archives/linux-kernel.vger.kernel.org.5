@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27DC1798EF4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDBE798E28
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242634AbjIHTR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42576 "EHLO
+        id S245699AbjIHSbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:31:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234865AbjIHTRU (ORCPT
+        with ESMTP id S235098AbjIHSbG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:17:20 -0400
+        Fri, 8 Sep 2023 14:31:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A1C12C;
-        Fri,  8 Sep 2023 12:17:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25A99C116AD;
-        Fri,  8 Sep 2023 18:21:24 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8BC4220;
+        Fri,  8 Sep 2023 11:21:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5B12C116AF;
+        Fri,  8 Sep 2023 18:21:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197285;
-        bh=M1SEUboSPYiiB6UY60gtnV2aLHbrgmGINt3ZwQqz7ZQ=;
+        s=k20201202; t=1694197286;
+        bh=8kTuVDxOZmLaAN+HeGoklCk+D2Ju5AiwppzdU0fPebE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O+0dNQv/KBPtflM6lIAt/P+CypY82xMjk4i3106L6VyB1iW9p5PEG7/myHLxjTU8w
-         sT3GwP2sCy9CWrUSIgm5/U5KDtE9j6iODH0Ksl0yTKuqnQDdNIf7PQpMCO1X7TNNg4
-         HQw0/3G5wOE5qoJuvVXjhNdHcu+qiCCvxPMpkg57tshu9tkjuybgw5H/jBAJWn2RMk
-         HpDWFElmltNyVbljVNXNDc1n5lcO/dmr9hEaSyBmNfDApvRN2aGzptemNnsJZRi2IF
-         GrmHzjLQFOy3qiiJKQIYKE+50JZlUdJ7O41T5IMgU8+PJIQ4qJEUT95pj762l59IAY
-         lYfQA26g2G62w==
+        b=UXMvduBjvD+lWx8nE4yhVCyyK8OnhnyzeRArqaSDDeH7U2XymN3E9Q3nuVgT7rM6R
+         09uOUBQ/cSf/PE4T0YRKkDSe03NMlOiwoyfCardqJpCVvUfT93BuWFtteG6JBUeipJ
+         QHZ5moEQs/weSwTP4Nl39oVQcsqYbAOsD75J87a/fx8q3MwuIL8K32r0Xtn0h4U9RD
+         fHv/bTG+jfKLGG0Sisv3Ay9FK6xtE0mGS1VNyrfO9+1qf8aFGH7E0ope5M36JM3Vh1
+         g4KT3PPtkRB28Y6YglXtwGs55Jxs0C7fE1Yi1ZqhgWWWBYIhAO3RIH+nkLtYPGikid
+         XOlVnY/gTii7Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Johannes Berg <johannes.berg@intel.com>,
-        syzbot+09d1cd2f71e6dd3bfd2c@syzkaller.appspotmail.com,
-        Sasha Levin <sashal@kernel.org>, johannes@sipsolutions.net,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 6/7] wifi: cfg80211: ocb: don't leave if not joined
-Date:   Fri,  8 Sep 2023 14:21:08 -0400
-Message-Id: <20230908182109.3461101-6-sashal@kernel.org>
+Cc:     Bastien Nocera <hadess@hadess.net>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Sasha Levin <sashal@kernel.org>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-bluetooth@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 7/7] Bluetooth: btusb: Fix quirks table naming
+Date:   Fri,  8 Sep 2023 14:21:09 -0400
+Message-Id: <20230908182109.3461101-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908182109.3461101-1-sashal@kernel.org>
 References: <20230908182109.3461101-1-sashal@kernel.org>
@@ -55,35 +55,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Bastien Nocera <hadess@hadess.net>
 
-[ Upstream commit abc76cf552e13cfa88a204b362a86b0e08e95228 ]
+[ Upstream commit d831e3612111d385e8629104af5429808ef26e25 ]
 
-If there's no OCB state, don't ask the driver/mac80211 to
-leave, since that's just confusing. Since set/clear the
-chandef state, that's a simple check.
+The quirks table was named "blacklist_table" which isn't a good
+description for that table as devices detected using it weren't ignored
+by the driver.
 
-Reported-by: syzbot+09d1cd2f71e6dd3bfd2c@syzkaller.appspotmail.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Rename the table to match what it actually does.
+
+Signed-off-by: Bastien Nocera <hadess@hadess.net>
+Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/ocb.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/bluetooth/btusb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/wireless/ocb.c b/net/wireless/ocb.c
-index e64dbf16330c4..73dd44e77a1a3 100644
---- a/net/wireless/ocb.c
-+++ b/net/wireless/ocb.c
-@@ -70,6 +70,9 @@ int __cfg80211_leave_ocb(struct cfg80211_registered_device *rdev,
- 	if (!rdev->ops->leave_ocb)
- 		return -EOPNOTSUPP;
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index b6eb48e44e6b1..77bd3e3b8b23c 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -182,7 +182,7 @@ static const struct usb_device_id btusb_table[] = {
  
-+	if (!wdev->u.ocb.chandef.chan)
-+		return -ENOTCONN;
-+
- 	err = rdev_leave_ocb(rdev, dev);
- 	if (!err)
- 		memset(&wdev->chandef, 0, sizeof(wdev->chandef));
+ MODULE_DEVICE_TABLE(usb, btusb_table);
+ 
+-static const struct usb_device_id blacklist_table[] = {
++static const struct usb_device_id quirks_table[] = {
+ 	/* CSR BlueCore devices */
+ 	{ USB_DEVICE(0x0a12, 0x0001), .driver_info = BTUSB_CSR },
+ 
+@@ -2944,7 +2944,7 @@ static int btusb_probe(struct usb_interface *intf,
+ 	if (!id->driver_info) {
+ 		const struct usb_device_id *match;
+ 
+-		match = usb_match_id(intf, blacklist_table);
++		match = usb_match_id(intf, quirks_table);
+ 		if (match)
+ 			id = match;
+ 	}
 -- 
 2.40.1
 
