@@ -2,106 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6F67992ED
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 01:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B40C7992EF
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 01:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245699AbjIHX4V convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Sep 2023 19:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54624 "EHLO
+        id S1344792AbjIHX5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 19:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232694AbjIHX4U (ORCPT
+        with ESMTP id S232694AbjIHX5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 19:56:20 -0400
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91102133;
-        Fri,  8 Sep 2023 16:56:16 -0700 (PDT)
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-d7f0a60a159so2283369276.0;
-        Fri, 08 Sep 2023 16:56:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694217376; x=1694822176;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3fduUCFN1Wge3LY7Pmf8tbiG6qwcGsnDEnR60i43Dug=;
-        b=uH11FijiQ1Cp33fWFePd7hgSZQUlzYJTIf+bXK8CISCER2enTpP4hdykyB2cIadaZJ
-         V6q1vQlqt5cC15D/qnkscOm6bWdzrri47sFEdCBbLLhD692LS0MimBsFSQnFaMF/6t0I
-         ENmI5YAI55/P+r0uOlYxJX/5c1x/jekyKWYkwEuysiO63OQoHDUD8j16NEhL1/uM0VNS
-         FW9W0C+8MrmXvVGvS/Y0YBlyb97eJdiaQPDLzRDOFvarsmxPj6X3WE0abBu8VxsSKbgA
-         nZmXnX1KA1Sqn0hDjOl24Ibf8JOs+iI/2vLn7xka5sNPlfPHwuMr74QFUsUCpfxwTm9+
-         xBpw==
-X-Gm-Message-State: AOJu0Yw1f6yYFJcB/jlVl29b2rdTA29ZsNJzZ7ZadybBaRGQ3UGLhkWz
-        8lrYHqxRoKL1VosWDyXFdCcQ81EkEQborCWjXMY=
-X-Google-Smtp-Source: AGHT+IFpPpodW4aTMB2R61kpjLaDyqIbx6kCtrohLpibG63gjKxeOMguL8CNXvS7QlLEljxFwDZi+X53sPI3clZKjkM=
-X-Received: by 2002:a25:9208:0:b0:d44:19e9:4c6d with SMTP id
- b8-20020a259208000000b00d4419e94c6dmr3611037ybo.65.1694217375658; Fri, 08 Sep
- 2023 16:56:15 -0700 (PDT)
+        Fri, 8 Sep 2023 19:57:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4BB133;
+        Fri,  8 Sep 2023 16:57:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B072FC433C7;
+        Fri,  8 Sep 2023 23:57:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694217433;
+        bh=6lBmqZwY26Xt/+O04ezUlGJ2Cb+N+JDZhJqABHZhfVc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CpVDQiMPRbcujh8GgkYcsvP6L0FAi7z+U+uKsteB79xgyiyHvGArD1YkA7CEy5tnu
+         hGVS/1jRaQn1dkiM5xhPMi0gOcVDaKsfBzyBQHxj6zJoOspXL5EvnN2W7tJ32k5T0B
+         XqIOJWGQg6c2IMuxgJ/KXJhJ03d91QYBcUF41jojbJKcRAiu0Vybp9dYvF+c/pmwQs
+         0BS51x38CUMrzuE53SRY8p1WV2o1pRWoIB4LCEVPrew1XFu1Hs/E84RuTbucglunjh
+         Y4Oe5ZVJx191J8BECnlBU24fiXYBCwD6gmnNcZdBVVU/ITZdhG6d2990yCSax/OPAO
+         fLwwfHfH9g0ng==
+Date:   Fri, 8 Sep 2023 16:57:13 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     alexjlzheng@gmail.com
+Cc:     chandan.babu@oracle.com, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jinliang Zheng <alexjlzheng@tencent.com>
+Subject: Re: [PATCH] xfs: remove redundant batch variables for serialization
+Message-ID: <20230908235713.GP28202@frogsfrogsfrogs>
+References: <20230907123017.1049345-1-alexjlzheng@tencent.com>
 MIME-Version: 1.0
-References: <20230908052216.566148-1-namhyung@kernel.org> <CAP-5=fUtEvW9h7N=w3vvYBB3vytnTXJsXrHDD6zLA2DzYFOBHQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fUtEvW9h7N=w3vvYBB3vytnTXJsXrHDD6zLA2DzYFOBHQ@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 8 Sep 2023 16:56:04 -0700
-Message-ID: <CAM9d7cj1rEjGy0QM2tkJhBn=hac-9Jya+ZJ4SNhBmB29u5KVMg@mail.gmail.com>
-Subject: Re: [PATCH] perf annotate: Add more x86 mov instruction cases
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230907123017.1049345-1-alexjlzheng@tencent.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
+On Thu, Sep 07, 2023 at 08:30:18PM +0800, alexjlzheng@gmail.com wrote:
+> From: Jinliang Zheng <alexjlzheng@tencent.com>
+> 
+> Historically, when generic percpu counters were introduced in xfs for
+> free block counters by commit 0d485ada404b ("xfs: use generic percpu
+> counters for free block counter"), the counters use a custom batch size.
+> In xfs_mod_freecounter(), originally named xfs_mod_fdblocks(), this
+> patch attempts to serialize the program using a smaller batch size as a
+> parameter to the addition function as the counter approaches 0.
+> 
+> Commit 8c1903d3081a ("xfs: inode and free block counters need to use
+> __percpu_counter_compare") pointed out the error in commit 0d485ada404b
+> ("xfs: use generic percpu counters for free block counter") mentioned
+> above and said that "Because the counters use a custom batch size, the
+> comparison functions need to be aware of that batch size otherwise the
+> comparison does not work correctly".
+> 
+> After commit 8c1903d3081a ("xfs: inode and free block counters need to
+> use __percpu_counter_compare"), the existence of the batch variable is
+> no longer necessary, so it was removed to simplify the code.
 
-On Thu, Sep 7, 2023 at 11:24 PM Ian Rogers <irogers@google.com> wrote:
->
-> On Thu, Sep 7, 2023 at 10:22 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > Instructions with sign- and zero- extention like movsbl and movzwq were
-> > not handled properly.  As it can check different size suffix (-b, -w, -l
-> > or -q) we can omit that and add the common parts even though some
-> > combinations are not possible.
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/arch/x86/annotate/instructions.c | 9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/perf/arch/x86/annotate/instructions.c b/tools/perf/arch/x86/annotate/instructions.c
-> > index 5f4ac4fc7fcf..5cdf457f5cbe 100644
-> > --- a/tools/perf/arch/x86/annotate/instructions.c
-> > +++ b/tools/perf/arch/x86/annotate/instructions.c
-> > @@ -74,12 +74,15 @@ static struct ins x86__instructions[] = {
-> >         { .name = "movdqa",     .ops = &mov_ops,  },
-> >         { .name = "movdqu",     .ops = &mov_ops,  },
-> >         { .name = "movsd",      .ops = &mov_ops,  },
-> > -       { .name = "movslq",     .ops = &mov_ops,  },
-> >         { .name = "movss",      .ops = &mov_ops,  },
-> > +       { .name = "movsb",      .ops = &mov_ops,  },
-> > +       { .name = "movsw",      .ops = &mov_ops,  },
-> > +       { .name = "movsl",      .ops = &mov_ops,  },
->
-> In Intel's manual some of these names are "Move Data From String to
-> String" operations, movsb and movsw in particular. These instructions
-> can be used to make simple memcpy loops. Could it be the past omission
-> was deliberate due to the different way the addressing works in the
-> instructions?
+It *was removed*?  It looks like this patch is _doing_ the removing.
 
-I don't know but in terms of instruction parsing, they are the same
-"MOVE" with two operands.  I'm not aware of anything in perf with
-the operands of these instructions.  So I guess it'd be fine to add
-these instructions even if they have different underlying behaviors.
+I don't get it, what problem are you having?
 
-Thanks,
-Namhyung
+--D
+
+> Signed-off-by: Jinliang Zheng <alexjlzheng@tencent.com>
+> ---
+>  fs/xfs/xfs_mount.c | 17 +----------------
+>  1 file changed, 1 insertion(+), 16 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
+> index 0a0fd19573d8..72dab39376b7 100644
+> --- a/fs/xfs/xfs_mount.c
+> +++ b/fs/xfs/xfs_mount.c
+> @@ -1144,7 +1144,6 @@ xfs_mod_freecounter(
+>  	int64_t			lcounter;
+>  	long long		res_used;
+>  	uint64_t		set_aside = 0;
+> -	s32			batch;
+>  	bool			has_resv_pool;
+>  
+>  	ASSERT(counter == &mp->m_fdblocks || counter == &mp->m_frextents);
+> @@ -1177,20 +1176,6 @@ xfs_mod_freecounter(
+>  		return 0;
+>  	}
+>  
+> -	/*
+> -	 * Taking blocks away, need to be more accurate the closer we
+> -	 * are to zero.
+> -	 *
+> -	 * If the counter has a value of less than 2 * max batch size,
+> -	 * then make everything serialise as we are real close to
+> -	 * ENOSPC.
+> -	 */
+> -	if (__percpu_counter_compare(counter, 2 * XFS_FDBLOCKS_BATCH,
+> -				     XFS_FDBLOCKS_BATCH) < 0)
+> -		batch = 1;
+> -	else
+> -		batch = XFS_FDBLOCKS_BATCH;
+> -
+>  	/*
+>  	 * Set aside allocbt blocks because these blocks are tracked as free
+>  	 * space but not available for allocation. Technically this means that a
+> @@ -1204,7 +1189,7 @@ xfs_mod_freecounter(
+>  	 */
+>  	if (has_resv_pool)
+>  		set_aside = xfs_fdblocks_unavailable(mp);
+> -	percpu_counter_add_batch(counter, delta, batch);
+> +	percpu_counter_add_batch(counter, delta, XFS_FDBLOCKS_BATCH);
+>  	if (__percpu_counter_compare(counter, set_aside,
+>  				     XFS_FDBLOCKS_BATCH) >= 0) {
+>  		/* we had space! */
+> -- 
+> 2.31.1
+> 
