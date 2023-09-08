@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D04798F8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBEF79904B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344877AbjIHTdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:33:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48566 "EHLO
+        id S1345175AbjIHTiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:38:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbjIHTcy (ORCPT
+        with ESMTP id S243379AbjIHThf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:32:54 -0400
+        Fri, 8 Sep 2023 15:37:35 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2A0CCA;
-        Fri,  8 Sep 2023 12:32:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E8F6C433C9;
-        Fri,  8 Sep 2023 19:31:39 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D32419E;
+        Fri,  8 Sep 2023 12:37:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88A66C43391;
+        Fri,  8 Sep 2023 19:31:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201500;
-        bh=2ymu0h75QDYuoxIwmPdn9W2smvr5mgfdmUUoX3TZl0g=;
+        s=k20201202; t=1694201501;
+        bh=b9nWo1DBJMfmUN0WRxx5L0ZK61Qp3jBoMn7uXGftn4U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gmwhtZFHFLvW6PBelhEO7sO7l2MoQrJM9xvJRf+/2rSFRNNW+1xKPLhANM06CYXS9
-         r4al7jfeZTXYiJnhCusZ8gVgjlINJ5kuUfS5MDJv6N/vcDSBLb9nIFrlVLxVliVuFY
-         WmP5c+wJgETnP1DIjLSfYHfbbEcqVeNrSOe7EYEuO7lBVqeI6qK/NpPg4IJEp4alT2
-         vYIWtcrCuEk6+pkLuPW4bCx2Hm/l9NvYSkMVDoc7zqV7QKw/N9m/8viShLQcsxdNnv
-         YDzGnfwxOeaJdcsWMdjAazO2kVecOKmaGtqqiCye/VwYZzzo3jDilvPHp+Jsi9esXD
-         rPETNXo7+FmUw==
+        b=G09hlp2t7AI1sSs2sy1U2Zvyq5YbDOAMgyYVvrPP+NJfSXNK3l7++qGiK7h3ldJVO
+         M+Fft7pi5WlmdSbuTfg00YNPCmsN07bAx27k3x1M69AKNir0+mJSqk0bqPM9ZoQAtO
+         EcBJYdYMUklcqVM40M61zsIT7gIq7ANlAG2tDxkJekOKEGstVjj+IpR/1LkBZ2wpsS
+         6DpKGwzxjl+cINBo7+k1fY9DmRuyuHSm9bocpztraLd1xNGmKPyL6kUUy0cyjOZVIu
+         uRdQK6G+g2CoC47Y9A7wfwXMIL035VtAg/rGrsT5d9a5SXM+ioglUesqdpQ7rohZDs
+         hEkStghqaqFvg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Georg Ottinger <g.ottinger@gmx.at>, Jan Kara <jack@suse.cz>,
-        Sasha Levin <sashal@kernel.org>, jack@suse.com,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 33/36] ext2: fix datatype of block number in ext2_xattr_set2()
-Date:   Fri,  8 Sep 2023 15:28:44 -0400
-Message-Id: <20230908192848.3462476-33-sashal@kernel.org>
+Cc:     Chengming Zhou <zhouchengming@bytedance.com>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Sasha Levin <sashal@kernel.org>, linux-block@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 34/36] blk-mq: fix tags leak when shrink nr_hw_queues
+Date:   Fri,  8 Sep 2023 15:28:45 -0400
+Message-Id: <20230908192848.3462476-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908192848.3462476-1-sashal@kernel.org>
 References: <20230908192848.3462476-1-sashal@kernel.org>
@@ -52,53 +52,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Georg Ottinger <g.ottinger@gmx.at>
+From: Chengming Zhou <zhouchengming@bytedance.com>
 
-[ Upstream commit e88076348425b7d0491c8c98d8732a7df8de7aa3 ]
+[ Upstream commit e1dd7bc93029024af5688253b0c05181d6e01f8e ]
 
-I run a small server that uses external hard drives for backups. The
-backup software I use uses ext2 filesystems with 4KiB block size and
-the server is running SELinux and therefore relies on xattr. I recently
-upgraded the hard drives from 4TB to 12TB models. I noticed that after
-transferring some TBs I got a filesystem error "Freeing blocks not in
-datazone - block = 18446744071529317386, count = 1" and the backup
-process stopped. Trying to fix the fs with e2fsck resulted in a
-completely corrupted fs. The error probably came from ext2_free_blocks(),
-and because of the large number 18e19 this problem immediately looked
-like some kind of integer overflow. Whereas the 4TB fs was about 1e9
-blocks, the new 12TB is about 3e9 blocks. So, searching the ext2 code,
-I came across the line in fs/ext2/xattr.c:745 where ext2_new_block()
-is called and the resulting block number is stored in the variable block
-as an int datatype. If a block with a block number greater than
-INT32_MAX is returned, this variable overflows and the call to
-sb_getblk() at line fs/ext2/xattr.c:750 fails, then the call to
-ext2_free_blocks() produces the error.
+Although we don't need to realloc set->tags[] when shrink nr_hw_queues,
+we need to free them. Or these tags will be leaked.
 
-Signed-off-by: Georg Ottinger <g.ottinger@gmx.at>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Message-Id: <20230815100340.22121-1-g.ottinger@gmx.at>
+How to reproduce:
+1. mount -t configfs configfs /mnt
+2. modprobe null_blk nr_devices=0 submit_queues=8
+3. mkdir /mnt/nullb/nullb0
+4. echo 1 > /mnt/nullb/nullb0/power
+5. echo 4 > /mnt/nullb/nullb0/submit_queues
+6. rmdir /mnt/nullb/nullb0
+
+In step 4, will alloc 9 tags (8 submit queues and 1 poll queue), then
+in step 5, new_nr_hw_queues = 5 (4 submit queues and 1 poll queue).
+At last in step 6, only these 5 tags are freed, the other 4 tags leaked.
+
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20230821095602.70742-1-chengming.zhou@linux.dev
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext2/xattr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ block/blk-mq.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index 8906ba479aafb..89517937d36c4 100644
---- a/fs/ext2/xattr.c
-+++ b/fs/ext2/xattr.c
-@@ -742,10 +742,10 @@ ext2_xattr_set2(struct inode *inode, struct buffer_head *old_bh,
- 			/* We need to allocate a new block */
- 			ext2_fsblk_t goal = ext2_group_first_block_no(sb,
- 						EXT2_I(inode)->i_block_group);
--			int block = ext2_new_block(inode, goal, &error);
-+			ext2_fsblk_t block = ext2_new_block(inode, goal, &error);
- 			if (error)
- 				goto cleanup;
--			ea_idebug(inode, "creating block %d", block);
-+			ea_idebug(inode, "creating block %lu", block);
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 953f08354c8c3..d9b365c2eaa0d 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -4402,9 +4402,13 @@ static int blk_mq_realloc_tag_set_tags(struct blk_mq_tag_set *set,
+ 				       int new_nr_hw_queues)
+ {
+ 	struct blk_mq_tags **new_tags;
++	int i;
  
- 			new_bh = sb_getblk(sb, block);
- 			if (unlikely(!new_bh)) {
+-	if (set->nr_hw_queues >= new_nr_hw_queues)
++	if (set->nr_hw_queues >= new_nr_hw_queues) {
++		for (i = new_nr_hw_queues; i < set->nr_hw_queues; i++)
++			__blk_mq_free_map_and_rqs(set, i);
+ 		goto done;
++	}
+ 
+ 	new_tags = kcalloc_node(new_nr_hw_queues, sizeof(struct blk_mq_tags *),
+ 				GFP_KERNEL, set->numa_node);
 -- 
 2.40.1
 
