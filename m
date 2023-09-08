@@ -2,82 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4B4798172
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 07:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4F7798176
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 07:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239005AbjIHFLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 01:11:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45348 "EHLO
+        id S240130AbjIHFOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 01:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230452AbjIHFK7 (ORCPT
+        with ESMTP id S230452AbjIHFOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 01:10:59 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183AD1997;
-        Thu,  7 Sep 2023 22:10:55 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bcfdadd149so29925071fa.0;
-        Thu, 07 Sep 2023 22:10:55 -0700 (PDT)
+        Fri, 8 Sep 2023 01:14:19 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F161997
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 22:14:14 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bf5c314a57so13416325ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 22:14:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694149853; x=1694754653; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UFHIUWHnNmQApPV1/bfs0UvEu6K4rETbQH94CLPjy5c=;
-        b=gU3UFauFYxA/UNNBQERw6lLlxVkI0wWg17LCUBk4zRQE5I4N/vCdNV86fWvfVZ6QW5
-         KXYa3xNIUTMkTtz7rz81iB7rmwhGqrGOFZ1U4V8HoZGJIqWFD6a43eQcG6U2rZ7c28wv
-         NbOCp/Dx7dnDN6Xlx2mj5ooJmFHrpsfoqsjvkMynswE2IHLf//g4zbBEdfUl76Li43KX
-         MduII7CRzgwSaRNv10Z96+n0++RET2VmtbTsV2YkS16j+7Dyasws5hZT4hR8KYH1IZEt
-         rSVW85QpK4OFU9Of65KX7jHX5cK3dUhXKHlwISum/Je4m4HC7WOKD0zI3JIfmNb+xpYa
-         fqiA==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694150054; x=1694754854; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/a46APqCOn2UBYLl+3vM5GiJlv00SujJdiThpnMY9u8=;
+        b=m+fLG4PcKUoyo1T8Yvjsi1DNr7+W/+AVqMZJp2Ofki/pKFcHrZIielhTGyAYMuRlX2
+         SGkUC4a0mucctXVC2wLaOafDfD7pfq0ZkH1KcvQEwMSlVvDHiXX0UiPp1J90qm9vyh9v
+         IxULy7PKyP+MmTdXQshwzfwqoCjMSYa0lHAL+6gufJDa7DrTq0jrNEC/V+H12GIx7jgZ
+         iBCqeRd1gQaCSqD7mjFqxlJYa8pq6ZHjh1SZ+8piv5Jh48tTbAA3YoAPIa4JSS+GvC8t
+         nV1KBW/wm1k8r4t8juHxVjPMDf8M3oaO9phIMV6l86sEzHIqtkp0Fm0BYTGl3Mb7vmp5
+         lORw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694149853; x=1694754653;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UFHIUWHnNmQApPV1/bfs0UvEu6K4rETbQH94CLPjy5c=;
-        b=deu/YwOg6zn3lb8VqYL+REoAE1zwud0pyA8TkGi+QwmoityPzGtzZ1/LV1wpME1bTY
-         h/4jKlG5VGjd2P1wQ3q65SP2G7DIlYX2DzQRunOR+htAKZKhNh+6X37tlMZ89NnLRPDv
-         Epbl/rt1o6uPbAR2AgH6CBthrJGqQBSc34LYUVdlzh966MzKvF/gbWqUgjXYg5fgVMKT
-         8jwUfh8W99Kq1xB6lXrSUGkMJBAxgpVupZTia+vYKP/8Z9zjzlzLhn5W/KWUeQ0bg0y7
-         CCj7XcAzW2OGbEPpFsuh8BpFasJBcoF58NvfWOA82tmqsE8JWC6ta6hS4OBg/pgDxdjn
-         uHBg==
-X-Gm-Message-State: AOJu0Yw/g7l+2ifNWuR253AdGxhit6kFTLBx/70N0Tw0l2PNZlrW8lQ0
-        mChRN0Dt4z3uFPrBFptb3bU=
-X-Google-Smtp-Source: AGHT+IHkmwL6J0JEYxPcyvxzepIZkzQPEW1RAz1nnotQMfzOKs9sBDFOzF2NCkc3prdt5tH+8Pu3Kg==
-X-Received: by 2002:a2e:900f:0:b0:2bc:dfab:5dc8 with SMTP id h15-20020a2e900f000000b002bcdfab5dc8mr843564ljg.37.1694149853049;
-        Thu, 07 Sep 2023 22:10:53 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:16f8:1500::3? (dc78bmyyyyyyyyyyyyybt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::3])
-        by smtp.gmail.com with ESMTPSA id m14-20020a2e910e000000b002ba161bdc9asm161751ljg.79.2023.09.07.22.10.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 22:10:52 -0700 (PDT)
-Message-ID: <e02bcbc0-ff86-e330-ab85-1a6e202063a6@gmail.com>
-Date:   Fri, 8 Sep 2023 08:10:51 +0300
+        d=1e100.net; s=20230601; t=1694150054; x=1694754854;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/a46APqCOn2UBYLl+3vM5GiJlv00SujJdiThpnMY9u8=;
+        b=OxaAEx8QX2bp+2ZKsBgF6vm5DB/Wc040U7knS3OI1YwoekQWTfvA4iJwfl5s9jzWEj
+         kZs8/b7e9BoG0wOmtCMpUUibSdMGv0hKUQf0X0Skk1Oawc+xbJzGZV5ZQqitQlJ+d4Hj
+         FY1rmpmeavVCrAcId7rY7ei2X59ENIpQN44LztmrZl1FVy6bmcDuc+s73mGWc8e8H3+a
+         CchYtTWzcknzTs635fdgcRQCWwlPi9AqwOLwIKiUuqRXeVMNR/h1vzPl7tOYMjPMXhyd
+         r8n12VeUgjZs+sqBEMT1NZTB9EtJDrhqTjd9GP6jYG6HufN3yQinkQfpPPRHda7c7iYQ
+         2YBw==
+X-Gm-Message-State: AOJu0YzvQTpe8Q3uIGwF2mrXCLXT5AfQcWdlvMoOEeC9s1Q1BA/p1R8q
+        xO9YusUrVfqJrT0M297ZHydzcw==
+X-Google-Smtp-Source: AGHT+IHujgbMM9DgjN+STeVv4CWjHBT7RgXxHsWcHil+Pw1TmXDbknKLDXT2gfzOP8AzMjzeKIVzjA==
+X-Received: by 2002:a17:902:b18c:b0:1b2:1b22:196 with SMTP id s12-20020a170902b18c00b001b21b220196mr1621335plr.48.1694150054292;
+        Thu, 07 Sep 2023 22:14:14 -0700 (PDT)
+Received: from charlie.ba.rivosinc.com ([66.220.2.162])
+        by smtp.gmail.com with ESMTPSA id f5-20020a17090274c500b001a5fccab02dsm616482plt.177.2023.09.07.22.14.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 22:14:13 -0700 (PDT)
+From:   Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH v3 0/5] riscv: Add fine-tuned checksum functions
+Date:   Thu, 07 Sep 2023 22:14:03 -0700
+Message-Id: <20230907-optimize_checksum-v3-0-c502d34d9d73@rivosinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] dt-bindings: Add ROHM BM1390 pressure sensor
-Content-Language: en-US, en-GB
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andreas Klinger <ak@it-klinger.de>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1694001462.git.mazziesaccount@gmail.com>
- <55e59e66824f75ce8ffe58d3463a9cbca56e25ac.1694001462.git.mazziesaccount@gmail.com>
- <20230907-e9e5cdcef1e6c88c1f6afbdd@fedora>
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <20230907-e9e5cdcef1e6c88c1f6afbdd@fedora>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-B4-Tracking: v=1; b=H4sIAJut+mQC/23N3wqCMBTH8VeRXbfYH6ezq94jItxx5SF0stmox
+ HdvShCEl98fnM+ZSLAebSCHbCLeRgzo+hRylxFo6/5mKTapiWBCMs1y6oYRO3zbC7QW7uHR0cb
+ wXAmtaxCcpLvB2ys+V/N0Tt1iGJ1/rS8iX9avJooNLXLKaCVLxbhJrKiPHqML2MMeXEcWMIofU
+ jG1hYiEADSF0o0pc2n+kHmeP9/95E76AAAA
+To:     Charlie Jenkins <charlie@rivosinc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <conor@kernel.org>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,61 +77,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/23 13:08, Conor Dooley wrote:
-> On Wed, Sep 06, 2023 at 03:37:19PM +0300, Matti Vaittinen wrote:
->> BM1390GLV-Z is a pressure sensor which performs internal temperature
->> compensation for the MEMS. Pressure range is from 300 hPa to 1300 hPa
->> and sample averaging and IIR filtering is built in sensor. Temperature
->> measurement is also supported.
->>
->> Add dt-bindings for the sensor.
->>
->> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
->> ---
->>   .../bindings/iio/pressure/rohm,bm1390.yaml    | 52 +++++++++++++++++++
->>   1 file changed, 52 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/iio/pressure/rohm,bm1390.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/iio/pressure/rohm,bm1390.yaml b/Documentation/devicetree/bindings/iio/pressure/rohm,bm1390.yaml
->> new file mode 100644
->> index 000000000000..d681fdd0f5ea
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/iio/pressure/rohm,bm1390.yaml
->> @@ -0,0 +1,52 @@
->> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/iio/pressure/rohm,bm1390.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: ROHM BM1390 pressure sensor
->> +
->> +maintainers:
->> +  - Matti Vaittinen <mazziesaccount@gmail.com>
->> +
->> +description: |
-> 
-> You've got no formatting to preserve the | is not needed.
-> 
->> +  BM1390GLV-Z is a pressure sensor which performs internal temperature
->> +  compensation for the MEMS. Pressure range is from 300 hPa to 1300 hPa
->> +  and sample averaging and IIR filtering is built in sensor.
-> 
-> nit: "built in to the sensor." or just "built-in."
-> 
-> Otherwise this seems alright to me,
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Each architecture generally implements fine-tuned checksum functions to
+leverage the instruction set. This patch adds the main checksum
+functions that are used in networking.
 
+Vector support is included in this patch to start a discussion on that,
+it can probably be optimized more. The vector patches still need some
+work as they rely on GCC vector intrinsics types which cannot work in
+the kernel since it requires C vector support rather than just assembler
+support. I have tested the vector patches as standalone algorithms in QEMU.
 
-Thanks Conor! I'll fix them for v2 :)
+This patch takes heavy use of the Zbb extension using alternatives
+patching.
 
-Yours,
-	-- Matti
+To test this patch, enable the configs for KUNIT, then CHECKSUM_KUNIT
+and RISCV_CHECKSUM_KUNIT.
 
+I have attempted to make these functions as optimal as possible, but I
+have not ran anything on actual riscv hardware. My performance testing
+has been limited to inspecting the assembly, running the algorithms on
+x86 hardware, and running in QEMU.
+
+ip_fast_csum is a relatively small function so even though it is
+possible to read 64 bits at a time on compatible hardware, the
+bottleneck becomes the clean up and setup code so loading 32 bits at a
+time is actually faster.
+
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+---
+Changes in v3:
+- Use riscv_has_extension_likely and has_vector where possible (Conor)
+- Reduce ifdefs by using IS_ENABLED where possible (Conor)
+- Use kernel_vector_begin in the vector code (Samuel)
+- Link to v2: https://lore.kernel.org/r/20230905-optimize_checksum-v2-0-ccd658db743b@rivosinc.com
+
+Changes in v2:
+- After more benchmarking, rework functions to improve performance.
+- Remove tests that overlapped with the already existing checksum
+  tests and make tests more extensive.
+- Use alternatives to activate code with Zbb and vector extensions
+- Link to v1: https://lore.kernel.org/r/20230826-optimize_checksum-v1-0-937501b4522a@rivosinc.com
+
+---
+Charlie Jenkins (5):
+      riscv: Checksum header
+      riscv: Add checksum library
+      riscv: Vector checksum header
+      riscv: Vector checksum library
+      riscv: Test checksum functions
+
+ arch/riscv/Kconfig.debug              |   1 +
+ arch/riscv/include/asm/checksum.h     | 180 +++++++++++++++++++
+ arch/riscv/lib/Kconfig.debug          |  31 ++++
+ arch/riscv/lib/Makefile               |   3 +
+ arch/riscv/lib/csum.c                 | 301 +++++++++++++++++++++++++++++++
+ arch/riscv/lib/riscv_checksum_kunit.c | 330 ++++++++++++++++++++++++++++++++++
+ 6 files changed, 846 insertions(+)
+---
+base-commit: af3c30d33476bc2694b0d699173544b07f7ae7de
+change-id: 20230804-optimize_checksum-db145288ac21
 -- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
+- Charlie
 
