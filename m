@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDC0798D8B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CAB3798D88
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344403AbjIHSWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
+        id S1344388AbjIHSWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245225AbjIHSVD (ORCPT
+        with ESMTP id S1343902AbjIHSVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Sep 2023 14:21:03 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECF22717;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9F12718;
         Fri,  8 Sep 2023 11:19:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2322C433CB;
-        Fri,  8 Sep 2023 18:18:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5AA8C433D9;
+        Fri,  8 Sep 2023 18:18:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197126;
-        bh=YvR4knq0LQJhkdyDueZsyjbvvnvnk0YhCZr0x5mFc5U=;
+        s=k20201202; t=1694197127;
+        bh=IdQA7SAebVFhVC8OCYuj+C4VeCRGZDopFCvDA7B6W74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qa43kIakLZb4xCvsd/a+3fE74B20iSQ7D6zep1ONC5TwqIyQP56KIYXEpMIEWRS17
-         1tPxuQCfUeg/8o4fIgQyxVV7XWR9L1F+IFLU1xhRZ2+4ISCItwQBB9q1Kt1wIk9UeM
-         MT88l8zOVk/oM8ZEHm120VMZ1a20PnoOtU0iMBlWO0rf9nloY+SH7GSooWvWhGpfQv
-         mK2nDsMwqJMcCLK/wvk4VAnIUHr93HzBIjbAPLATMJLlxbPFCvJ/gn0IoNj+dZhBz3
-         txRqO1CW6HT4NR2Aj7/lYEGSuTS9T+e6fJ8KpjaR/i6AwN3fioNCWLL9E74Wnx4FYR
-         xWLQgIncjXlJw==
+        b=V17oBKklP1uzKHYxopOq322kSYjfXJNVpcEEwnf9mqlFxelL2h/myAkIoXoCO1+J7
+         yHtUjOHuKRba95DE8xq9uiSNqxF8nLPtyC6ZtFCon7WlOI5khE9sQ8QenSZJASunjl
+         rJx4gGJAJedu/BR1p/k5uhVH2yWReyHm1ZuX6rMTfvzb0txJwsJQBiMncr7L9k6fwR
+         ZExLi7M1Ca6eeTU8hlKz5vrMjrw5xUmQxOdvbQRmGz6h0WwVd7xrOiT4gx3aL5Y8FY
+         fEO1vSaPa6xIe7XJzc0GTKOBfdaTZ4LFndCk/Qm4u+tU3oUxrNipb/b/R10o5LIgPD
+         BuiLnt8cOFtNg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mark O'Donovan <shiftee@posteo.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, zohar@linux.ibm.com
-Subject: [PATCH AUTOSEL 6.1 13/26] crypto: lib/mpi - avoid null pointer deref in mpi_cmp_ui()
-Date:   Fri,  8 Sep 2023 14:17:51 -0400
-Message-Id: <20230908181806.3460164-13-sashal@kernel.org>
+Cc:     Ying Hsu <yinghsu@chromium.org>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Sasha Levin <sashal@kernel.org>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-bluetooth@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 14/26] Bluetooth: Fix hci_suspend_sync crash
+Date:   Fri,  8 Sep 2023 14:17:52 -0400
+Message-Id: <20230908181806.3460164-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181806.3460164-1-sashal@kernel.org>
 References: <20230908181806.3460164-1-sashal@kernel.org>
@@ -52,43 +54,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark O'Donovan <shiftee@posteo.net>
+From: Ying Hsu <yinghsu@chromium.org>
 
-[ Upstream commit 9e47a758b70167c9301d2b44d2569f86c7796f2d ]
+[ Upstream commit 573ebae162111063eedc6c838a659ba628f66a0f ]
 
-During NVMeTCP Authentication a controller can trigger a kernel
-oops by specifying the 8192 bit Diffie Hellman group and passing
-a correctly sized, but zeroed Diffie Hellamn value.
-mpi_cmp_ui() was detecting this if the second parameter was 0,
-but 1 is passed from dh_is_pubkey_valid(). This causes the null
-pointer u->d to be dereferenced towards the end of mpi_cmp_ui()
+If hci_unregister_dev() frees the hci_dev object but hci_suspend_notifier
+may still be accessing it, it can cause the program to crash.
+Here's the call trace:
+  <4>[102152.653246] Call Trace:
+  <4>[102152.653254]  hci_suspend_sync+0x109/0x301 [bluetooth]
+  <4>[102152.653259]  hci_suspend_dev+0x78/0xcd [bluetooth]
+  <4>[102152.653263]  hci_suspend_notifier+0x42/0x7a [bluetooth]
+  <4>[102152.653268]  notifier_call_chain+0x43/0x6b
+  <4>[102152.653271]  __blocking_notifier_call_chain+0x48/0x69
+  <4>[102152.653273]  __pm_notifier_call_chain+0x22/0x39
+  <4>[102152.653276]  pm_suspend+0x287/0x57c
+  <4>[102152.653278]  state_store+0xae/0xe5
+  <4>[102152.653281]  kernfs_fop_write+0x109/0x173
+  <4>[102152.653284]  __vfs_write+0x16f/0x1a2
+  <4>[102152.653287]  ? selinux_file_permission+0xca/0x16f
+  <4>[102152.653289]  ? security_file_permission+0x36/0x109
+  <4>[102152.653291]  vfs_write+0x114/0x21d
+  <4>[102152.653293]  __x64_sys_write+0x7b/0xdb
+  <4>[102152.653296]  do_syscall_64+0x59/0x194
+  <4>[102152.653299]  entry_SYSCALL_64_after_hwframe+0x5c/0xc1
 
-Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+This patch holds the reference count of the hci_dev object while
+processing it in hci_suspend_notifier to avoid potential crash
+caused by the race condition.
+
+Signed-off-by: Ying Hsu <yinghsu@chromium.org>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/mpi/mpi-cmp.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ net/bluetooth/hci_core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/lib/mpi/mpi-cmp.c b/lib/mpi/mpi-cmp.c
-index c4cfa3ff05818..0835b6213235e 100644
---- a/lib/mpi/mpi-cmp.c
-+++ b/lib/mpi/mpi-cmp.c
-@@ -25,8 +25,12 @@ int mpi_cmp_ui(MPI u, unsigned long v)
- 	mpi_limb_t limb = v;
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index d034bf2a999e1..146ad00ad1b9c 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -2436,6 +2436,9 @@ static int hci_suspend_notifier(struct notifier_block *nb, unsigned long action,
+ 	if (hci_dev_test_flag(hdev, HCI_USER_CHANNEL))
+ 		return NOTIFY_DONE;
  
- 	mpi_normalize(u);
--	if (!u->nlimbs && !limb)
--		return 0;
-+	if (u->nlimbs == 0) {
-+		if (v == 0)
-+			return 0;
-+		else
-+			return -1;
-+	}
- 	if (u->sign)
- 		return -1;
- 	if (u->nlimbs > 1)
++	/* To avoid a potential race with hci_unregister_dev. */
++	hci_dev_hold(hdev);
++
+ 	if (action == PM_SUSPEND_PREPARE)
+ 		ret = hci_suspend_dev(hdev);
+ 	else if (action == PM_POST_SUSPEND)
+@@ -2445,6 +2448,7 @@ static int hci_suspend_notifier(struct notifier_block *nb, unsigned long action,
+ 		bt_dev_err(hdev, "Suspend notifier action (%lu) failed: %d",
+ 			   action, ret);
+ 
++	hci_dev_put(hdev);
+ 	return NOTIFY_DONE;
+ }
+ 
 -- 
 2.40.1
 
