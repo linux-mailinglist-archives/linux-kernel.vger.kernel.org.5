@@ -2,103 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D79799053
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4DD2799084
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243037AbjIHTjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42226 "EHLO
+        id S242468AbjIHTsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:48:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237553AbjIHTiw (ORCPT
+        with ESMTP id S242860AbjIHTsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:38:52 -0400
+        Fri, 8 Sep 2023 15:48:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10AE61FFF;
-        Fri,  8 Sep 2023 12:38:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62765C116AA;
-        Fri,  8 Sep 2023 19:37:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201822;
-        bh=YYapb1OHBBNErDKXvjx0ajU9+gbVJbCE6tiNSdzw2uU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mehsvgOTc2y9ntTFrmT1Rfm+H8U6A706a8vJ+xPY/nMjq1ZL0HQoLOoulfbeVGS1t
-         3T5Q2GCwDpDSMDpHPrHldMbd2OjCx9d6MxSeP+Ede5KQXyCpJDdswAWhM2IpzMPUjs
-         zSGTGf1NhEscuQ8zj63lTn953rKXxquKCqK8dns2PBer9x0TeZcQebyhB+xgcf37DW
-         RmE7Pd5ayaZCWXbiUKn0fvnR8T3awCsWY1jOEHZCb0dtnRbmzX7DM16cJ27WdDoUkd
-         dB023SRiYpCAANPqtrpIYLTQHnNepbl9l5Q2bCaEQ0goQQ0ivb8YKsPlKZb70+jfJA
-         7uhBmtD4n+waw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Georg Ottinger <g.ottinger@gmx.at>, Jan Kara <jack@suse.cz>,
-        Sasha Levin <sashal@kernel.org>, jack@suse.com,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 3/3] ext2: fix datatype of block number in ext2_xattr_set2()
-Date:   Fri,  8 Sep 2023 15:36:55 -0400
-Message-Id: <20230908193656.3464052-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908193656.3464052-1-sashal@kernel.org>
-References: <20230908193656.3464052-1-sashal@kernel.org>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7421219BA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 12:48:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EF89C433C9;
+        Fri,  8 Sep 2023 19:44:15 +0000 (UTC)
+Date:   Fri, 8 Sep 2023 15:44:17 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] tracing/synthetic: use union instead of casts
+Message-ID: <20230908154417.5172e343@gandalf.local.home>
+In-Reply-To: <20230810060538.1350348-2-svens@linux.ibm.com>
+References: <20230810060538.1350348-1-svens@linux.ibm.com>
+        <20230810060538.1350348-2-svens@linux.ibm.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.325
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Georg Ottinger <g.ottinger@gmx.at>
+On Thu, 10 Aug 2023 08:05:36 +0200
+Sven Schnelle <svens@linux.ibm.com> wrote:
 
-[ Upstream commit e88076348425b7d0491c8c98d8732a7df8de7aa3 ]
+> --- a/include/linux/trace_events.h
+> +++ b/include/linux/trace_events.h
+> @@ -59,6 +59,17 @@ int trace_raw_output_prep(struct trace_iterator *iter,
+>  extern __printf(2, 3)
+>  void trace_event_printf(struct trace_iterator *iter, const char *fmt, ...);
+>  
+> +/* Used to find the offset and length of dynamic fields in trace events */
+> +struct trace_dynamic_info {
+> +#ifdef CONFIG_CPU_BIG_ENDIAN
+> +	u16	offset;
+> +	u16	len;
+> +#else
+> +	u16	len;
+> +	u16	offset;
+> +#endif
+> +};
+> +
 
-I run a small server that uses external hard drives for backups. The
-backup software I use uses ext2 filesystems with 4KiB block size and
-the server is running SELinux and therefore relies on xattr. I recently
-upgraded the hard drives from 4TB to 12TB models. I noticed that after
-transferring some TBs I got a filesystem error "Freeing blocks not in
-datazone - block = 18446744071529317386, count = 1" and the backup
-process stopped. Trying to fix the fs with e2fsck resulted in a
-completely corrupted fs. The error probably came from ext2_free_blocks(),
-and because of the large number 18e19 this problem immediately looked
-like some kind of integer overflow. Whereas the 4TB fs was about 1e9
-blocks, the new 12TB is about 3e9 blocks. So, searching the ext2 code,
-I came across the line in fs/ext2/xattr.c:745 where ext2_new_block()
-is called and the resulting block number is stored in the variable block
-as an int datatype. If a block with a block number greater than
-INT32_MAX is returned, this variable overflows and the call to
-sb_getblk() at line fs/ext2/xattr.c:750 fails, then the call to
-ext2_free_blocks() produces the error.
+So this patch broke synthetic events. I found that it works with:
 
-Signed-off-by: Georg Ottinger <g.ottinger@gmx.at>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Message-Id: <20230815100340.22121-1-g.ottinger@gmx.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext2/xattr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index bd1d68ff3a9f8..437175bce22e8 100644
---- a/fs/ext2/xattr.c
-+++ b/fs/ext2/xattr.c
-@@ -664,10 +664,10 @@ ext2_xattr_set2(struct inode *inode, struct buffer_head *old_bh,
- 			/* We need to allocate a new block */
- 			ext2_fsblk_t goal = ext2_group_first_block_no(sb,
- 						EXT2_I(inode)->i_block_group);
--			int block = ext2_new_block(inode, goal, &error);
-+			ext2_fsblk_t block = ext2_new_block(inode, goal, &error);
- 			if (error)
- 				goto cleanup;
--			ea_idebug(inode, "creating block %d", block);
-+			ea_idebug(inode, "creating block %lu", block);
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 12f875e9e69a..4a98e23b0e77 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -65,10 +65,10 @@ struct trace_dynamic_info {
+ 	u16	offset;
+ 	u16	len;
+ #else
+-	u16	len;
+ 	u16	offset;
++	u16	len;
+ #endif
+-};
++} __packed;
  
- 			new_bh = sb_getblk(sb, block);
- 			if (unlikely(!new_bh)) {
--- 
-2.40.1
+ /*
+  * The trace entry - the most basic unit of tracing. This is what
 
+That is, I had to swap the order of len vs offset, and to also be safe, I
+added "__packed".
+
+I'm guessing that the BIG ENDIAN is broken too? So I'm going to swap that
+as well.
+
+It causes the following test to fail:
+
+ ./ftracetest test.d/trigger/inter-event/trigger-synthetic-event-dynstring.tc
+
+Which I didn't notice because I found that test to be broken, and needs this patch:
+
+diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-dynstring.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-dynstring.tc
+index 213d890ed188..174376ddbc6c 100644
+--- a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-dynstring.tc
++++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-dynstring.tc
+@@ -1,7 +1,7 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0
+ # description: event trigger - test inter-event histogram trigger trace action with dynamic string param
+-# requires: set_event synthetic_events events/sched/sched_process_exec/hist "char name[]' >> synthetic_events":README ping:program
++# requires: set_event synthetic_events events/sched/sched_process_exec/hist "' >> synthetic_events":README ping:program
+ 
+ fail() { #msg
+     echo $1
+
+-- Steve
