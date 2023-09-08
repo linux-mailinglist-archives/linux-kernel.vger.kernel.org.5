@@ -2,203 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F4179809F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 04:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E687980A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 04:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241604AbjIHCg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 22:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35726 "EHLO
+        id S241615AbjIHCko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 22:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231597AbjIHCg0 (ORCPT
+        with ESMTP id S231417AbjIHCkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 22:36:26 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9232F19A6;
-        Thu,  7 Sep 2023 19:36:22 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bcda0aaf47so32875601fa.1;
-        Thu, 07 Sep 2023 19:36:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694140581; x=1694745381; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3SloDScCMx4oSLnsTG5Eji59Tx/5anpswbLezsyOC20=;
-        b=IW+D63zaZFzzl8kf+IK0KaHGSv9Nh1OHROaW2n9tGQl+7YI5OYJ99dQwL0zEmM0D5n
-         gLyZOc1zzg0OBb/qQssmahuEVB7D4a9ffccrGWBTkiml4v70keClCOPuuw1JKOXSJHvQ
-         84qJZgDJINlxtsiMMqUSWyTAVhIWjE7mj+6RLvJE2Q3OLUOBdgJi+6CcwfbUg8vvrPpt
-         4ORVno6UM6v05/TgA5tNoKgjI+sC+vY5BK7u7q99/BVhz5VgRNgURFIjs5xVDgeuCTyf
-         Co6EX69PqpdzXnwdO2Nl9FaPxyAFA8EhCUmYyVRR39xa6YOzS2hmFS7hoioy6ujHlqir
-         Iu/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694140581; x=1694745381;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3SloDScCMx4oSLnsTG5Eji59Tx/5anpswbLezsyOC20=;
-        b=R2fL09PdhXVsqzWBdeK/EjofBjIc/ein0vClAygfa3vGERy8kv/0uHjtIpyKF79mQe
-         XmtNCGfO7bg7StftT3ZX1nzpDjTWpTmG53ja6WusIwEnD60SKh6Efuyb3QwqbqGYuNlL
-         7CTxDEl5eNcpt5NFrqkuEGBGtQhpKdOmFP5FRhw9q9gWCKDSLcNJGmR0W1lEbWntI5fH
-         lmn5BcW5cf0voilRF3+i7/8DGaJ4bexJvR8IGbCwVXGzvtVEKacDkZq2EdaBncE4+/am
-         vd3ezOTaXTREznsmEBGdcnlQbZReQGkMfIAI4vrMF64lcEKky80ISy6Ou6MNONk7aggC
-         Ejew==
-X-Gm-Message-State: AOJu0YxrS9d/TV4Ab2/VNr5Bx72nglgl9/rrWrsPel5VfdfqJQQ/Nlyn
-        Nk2OGPUyRJJpe246R917Yr7y1jCTOT4KvY6imJ4=
-X-Google-Smtp-Source: AGHT+IGPnaH1hB1XaAWpoSpVu9fE6H6lAvlQx/cBu/gZNMgWAzXLEKoti/amvId+mp2eIUJ6sUeQ6zygE6V1VF/TXK8=
-X-Received: by 2002:a2e:800f:0:b0:2b9:601d:2c0 with SMTP id
- j15-20020a2e800f000000b002b9601d02c0mr285241ljg.25.1694140580444; Thu, 07 Sep
- 2023 19:36:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1693659382.git.haibo1.xu@intel.com> <d2b3c53537fef3f0a2d27d8be663a64123d4bc3c.1693659382.git.haibo1.xu@intel.com>
- <20230904-a69c6a228bf4553cc58bca17@orel> <CAJve8ok03P-t7pTA9mH=5vvkUy4NtxHac_Z_NM88cs55YQZATg@mail.gmail.com>
- <20230907-5d3da2b6dca23bedb31b33a0@orel> <CAJve8om1VibbkHBuG4B+KbKY2eug42wGk9wiYtCYeF-WDY8EgQ@mail.gmail.com>
-In-Reply-To: <CAJve8om1VibbkHBuG4B+KbKY2eug42wGk9wiYtCYeF-WDY8EgQ@mail.gmail.com>
-From:   Haibo Xu <xiaobo55x@gmail.com>
-Date:   Fri, 8 Sep 2023 10:36:09 +0800
-Message-ID: <CAJve8o=_09khYSEapJfb2xiqzCLdM6FbR=Q9gAawZ6nhHDUZCQ@mail.gmail.com>
-Subject: Re: [PATCH v2 8/8] KVM: riscv: selftests: Add sstc timer test
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Guo Ren <guoren@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        wchen <waylingii@gmail.com>,
-        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Peter Gonda <pgonda@google.com>,
-        =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>,
-        Thomas Huth <thuth@redhat.com>, Like Xu <likexu@tencent.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Michal Luczaj <mhal@rbox.co>,
-        zhang songyi <zhang.songyi@zte.com.cn>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 7 Sep 2023 22:40:42 -0400
+Received: from out-222.mta0.migadu.com (out-222.mta0.migadu.com [91.218.175.222])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0C71BDB
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 19:40:38 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1694140836;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rs5bwBL78/PRiAuJDQ+7XQFfD46cSe+ZZZ20CkSpt74=;
+        b=ttEyOjViY13b8UUNKz7qX9yHrQRVA4N5KGdUQzGnIr6APiy3VyOh6Gloc/t4WK4SvBAxM0
+        UYMeFI/3xIaVCVSMoE18MfFogT7v3qyEWeKBGgOQ56sTmS2gb60vkR4wHh36mJGw/aERRE
+        bjTfbWN96NLaW9zlnHWNeVxTLn5MX20=
+Mime-Version: 1.0
+Subject: Re: [v4 4/4] mm: hugetlb: Skip initialization of gigantic tail struct
+ pages if freed by HVO
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230907183712.GB3640@monkey>
+Date:   Fri, 8 Sep 2023 10:39:56 +0800
+Cc:     Usama Arif <usama.arif@bytedance.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        fam.zheng@bytedance.com, liangma@liangbit.com,
+        punit.agrawal@bytedance.com
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <C51EF081-ABC9-4770-B329-2CAC2CE979FA@linux.dev>
+References: <20230906112605.2286994-1-usama.arif@bytedance.com>
+ <20230906112605.2286994-5-usama.arif@bytedance.com>
+ <20230907183712.GB3640@monkey>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 8, 2023 at 9:19=E2=80=AFAM Haibo Xu <xiaobo55x@gmail.com> wrote=
-:
->
-> On Fri, Sep 8, 2023 at 3:01=E2=80=AFAM Andrew Jones <ajones@ventanamicro.=
-com> wrote:
-> >
-> > On Thu, Sep 07, 2023 at 12:20:29PM +0800, Haibo Xu wrote:
-> > > On Mon, Sep 4, 2023 at 10:58=E2=80=AFPM Andrew Jones <ajones@ventanam=
-icro.com> wrote:
-> > > >
-> > > > On Sat, Sep 02, 2023 at 08:59:30PM +0800, Haibo Xu wrote:
-> > > > > Add a KVM selftest to validate the Sstc timer functionality.
-> > > > > The test was ported from arm64 arch timer test.
-> > > > >
-> > > > > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> > > > > ---
-> > >
-> > > > > diff --git a/tools/testing/selftests/kvm/riscv/arch_timer.c b/too=
-ls/testing/selftests/kvm/riscv/arch_timer.c
-> > > > > new file mode 100644
-> > > > > index 000000000000..c50a33c1e4f9
-> > > > > --- /dev/null
-> > > > > +++ b/tools/testing/selftests/kvm/riscv/arch_timer.c
-> > > > > @@ -0,0 +1,130 @@
-> > > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > > +/*
-> > > > > + * arch_timer.c - Tests the riscv64 sstc timer IRQ functionality
-> > > > > + *
-> > > > > + * The test validates the sstc timer IRQs using vstimecmp regist=
-ers.
-> > > > > + * It's ported from the aarch64 arch_timer test.
 
-> > >
-> > > > > +
-> > > > > +static void guest_code(void)
-> > > > > +{
-> > > > > +     uint32_t cpu =3D guest_get_vcpuid();
-> > > > > +     struct test_vcpu_shared_data *shared_data =3D &vcpu_shared_=
-data[cpu];
-> > > > > +
-> > > > > +     local_irq_disable();
-> > > > > +     timer_irq_disable();
-> > > > > +     local_irq_enable();
-> > > >
-> > > > I don't think we need to disable all interrupts when disabling the =
-timer
-> > > > interrupt.
-> > > >
-> > >
-> > > There is no local_irq_disable() protection during the initial debug
-> > > phase, but the test always
-> > > fail with below error messages:
-> > >
-> > > Guest assert failed,  vcpu 0; stage; 0; iter: 0
-> > > =3D=3D=3D=3D Test Assertion Failure =3D=3D=3D=3D
-> > >   riscv/arch_timer.c:78: config_iter + 1 =3D=3D irq_iter
-> > >   pid=3D585 tid=3D586 errno=3D4 - Interrupted system call
-> > >   (stack trace empty)
-> > >   0x1 !=3D 0x0 (config_iter + 1 !=3D irq_iter)
-> > >
-> > > To be frank, I am not quite sure why the local_irq_disable/enable() m=
-atters.
-> > > One possible reason may be some timer irq was triggered before we set=
- up the
-> > > timecmp register.
-> >
-> > We should ensure we know the exact, expected state of the vcpu before,
-> > during, and after the test. If a state doesn't match expectations,
-> > then the test should assert and we should go investigate the test code
-> > to see if setup/checking is correct. If it is, then we've found a bug
-> > in KVM that we need to go investigate.
-> >
-> > For Sstc, a pending timer interrupt completely depends on stimecmp, so
-> > we need to watch that closely. Take a look at the attached simple timer
-> > test I pulled together to illustrate how stimecmp, timer interrupt enab=
-le,
-> > and all interrupt enable interact. You may want to use it to help port
-> > the arch_timer.
-> >
->
-> Thanks for sharing the test codes. Will have an investigation on it.
->
 
-Hi Andrew,
+> On Sep 8, 2023, at 02:37, Mike Kravetz <mike.kravetz@oracle.com> =
+wrote:
+>=20
+> On 09/06/23 12:26, Usama Arif wrote:
+>> The new boot flow when it comes to initialization of gigantic pages
+>> is as follows:
+>> - At boot time, for a gigantic page during __alloc_bootmem_hugepage,
+>> the region after the first struct page is marked as noinit.
+>> - This results in only the first struct page to be
+>> initialized in reserve_bootmem_region. As the tail struct pages are
+>> not initialized at this point, there can be a significant saving
+>> in boot time if HVO succeeds later on.
+>> - Later on in the boot, the head page is prepped and the first
+>> HUGETLB_VMEMMAP_RESERVE_SIZE / sizeof(struct page) - 1 tail struct =
+pages
+>> are initialized.
+>> - HVO is attempted. If it is not successful, then the rest of the
+>> tail struct pages are initialized. If it is successful, no more
+>> tail struct pages need to be initialized saving significant boot =
+time.
+>>=20
+>> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+>> ---
+>> mm/hugetlb.c         | 61 =
++++++++++++++++++++++++++++++++++++++-------
+>> mm/hugetlb_vmemmap.c |  2 +-
+>> mm/hugetlb_vmemmap.h |  9 ++++---
+>> mm/internal.h        |  3 +++
+>> mm/mm_init.c         |  2 +-
+>> 5 files changed, 62 insertions(+), 15 deletions(-)
+>=20
+> As mentioned, in general this looks good.  One small point below.
+>=20
+>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>> index c32ca241df4b..540e0386514e 100644
+>> --- a/mm/hugetlb.c
+>> +++ b/mm/hugetlb.c
+>> @@ -3169,6 +3169,15 @@ int __alloc_bootmem_huge_page(struct hstate =
+*h, int nid)
+>> }
+>>=20
+>> found:
+>> +
+>> + 	/*
+>> + 	 * Only initialize the head struct page in =
+memmap_init_reserved_pages,
+>> + 	 * rest of the struct pages will be initialized by the HugeTLB =
+subsystem itself.
+>> + 	 * The head struct page is used to get folio information by the =
+HugeTLB
+>> + 	 * subsystem like zone id and node id.
+>> + 	 */
+>> + 	memblock_reserved_mark_noinit(virt_to_phys((void *)m + =
+PAGE_SIZE),
+>> + 	huge_page_size(h) - PAGE_SIZE);
+>> 	/* Put them into a private list first because mem_map is not up =
+yet */
+>> 	INIT_LIST_HEAD(&m->list);
+>> 	list_add(&m->list, &huge_boot_pages);
+>> @@ -3176,6 +3185,40 @@ int __alloc_bootmem_huge_page(struct hstate =
+*h, int nid)
+>> 	return 1;
+>> }
+>>=20
+>> +/* Initialize [start_page:end_page_number] tail struct pages of a =
+hugepage */
+>> +static void __init hugetlb_folio_init_tail_vmemmap(struct folio =
+*folio,
+>> +     		unsigned long start_page_number,
+>> +     		unsigned long end_page_number)
+>> +{
+>> + 	enum zone_type zone =3D zone_idx(folio_zone(folio));
+>> + 	int nid =3D folio_nid(folio);
+>> + 	unsigned long head_pfn =3D folio_pfn(folio);
+>> + 	unsigned long pfn, end_pfn =3D head_pfn + end_page_number;
+>> +
+>> + 	for (pfn =3D head_pfn + start_page_number; pfn < end_pfn; pfn++) =
+{
+>> + 	struct page *page =3D pfn_to_page(pfn);
+>> +
+>> + 		__init_single_page(page, pfn, zone, nid);
+>> + 		prep_compound_tail((struct page *)folio, pfn - =
+head_pfn);
+>> + 		set_page_count(page, 0);
+>> + 	}
+>> +}
+>> +
+>> +static void __init hugetlb_folio_init_vmemmap(struct folio *folio, =
+struct hstate *h,
+>> +        unsigned long nr_pages)
+>> +{
+>> + 	int ret;
+>> +
+>> + 	/* Prepare folio head */
+>> +	 __folio_clear_reserved(folio);
+>> + 	__folio_set_head(folio);
+>> + 	ret =3D page_ref_freeze(&folio->page, 1);
+>> + 	VM_BUG_ON(!ret);
+>=20
+> In the current code, we print a warning and free the associated pages =
+to
+> buddy if we ever experience an increased ref count.  The routine
+> hugetlb_folio_init_tail_vmemmap does not check for this.
+>=20
+> I do not believe speculative/temporary ref counts this early in the =
+boot
+> process are possible.  It would be great to get input from someone =
+else.
 
-You are right. The local_irq_disable() was not needed here.
-It's my fault that I also removed the local_irq_enable() when trying
-your suggestion.
+Yes, it is a very early stage and other tail struct pages haven't been
+initialized yet, anyone should not reference them. It it the same case
+as CONFIG_DEFERRED_STRUCT_PAGE_INIT enabled.
 
-Thanks for your review and help on this patch set!
+>=20
+> When I wrote the existing code, it was fairly easy to WARN and =
+continue
+> if we encountered an increased ref count.  Things would be bit more
 
-Regards,
-Haibo
+In your case, I think it is not in the boot process, right?
 
-> > Thanks,
-> > drew
+> complicated here.  So, it may not be worth the effort.
+
+Agree. Note that tail struct pages are not initialized here, if we want =
+to
+handle head page, how to handle tail pages? It really cannot resolved.
+We should make the same assumption as CONFIG_DEFERRED_STRUCT_PAGE_INIT
+that anyone should not reference those pages.
+
+Thanks.
+
