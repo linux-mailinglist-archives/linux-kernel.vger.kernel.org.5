@@ -2,160 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E92799200
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 00:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6172F799208
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 00:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240712AbjIHWCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 18:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54054 "EHLO
+        id S239929AbjIHWHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 18:07:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243126AbjIHWCn (ORCPT
+        with ESMTP id S234277AbjIHWHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 18:02:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E235819B4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 15:01:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694210511;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c/Mdr+GzW+sAH8pnXlRdcxL3Lco75+PnNmrEF8RR5jk=;
-        b=Uof0oJEqWt2er8EfHUGYqP2gN/brdaUL2+dM82kBRVt3k6zRyMnbww2b37lokiSamrKi58
-        dpCn9PId8vXiyiW1I3+v3moEK+S85HGALCJIH+vqAbDIt201LrZwvPQH9KKVfG+sPPBpiR
-        3nt7ledm4BI6oRoW2X+FeE8kYeTPVFA=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-588-1UZSawt_Ph2y7twuOPKy9g-1; Fri, 08 Sep 2023 18:01:50 -0400
-X-MC-Unique: 1UZSawt_Ph2y7twuOPKy9g-1
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-770544d0501so53229185a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 15:01:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694210510; x=1694815310;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c/Mdr+GzW+sAH8pnXlRdcxL3Lco75+PnNmrEF8RR5jk=;
-        b=LK0z8zKuGl2tL82srwzvdJyydY24aLO10ss1zA+otGzob/DK3SVzvxc14n2KNwEMd3
-         WsL82ufy7mH18Pc1Dryt0m/u76i8KBynkclIQdeOmZrR96/3oy3Axsup7OQWk+WYUlFF
-         Zvx7SuHN/yPzqqD4sDcACmOnsChJASbL7poOceL4q7Ab43BIo00jrmBkSDz5nHr/Bjkh
-         H2sLfx7exQmyAOqOaBATHBYb1iD2+DXx/T/goX5on6kQTRf4SiGGKtMlhhoSKg63/K2F
-         w5UYd8eLFjHUDBCWPi9bcNxjB4G/OVJVaFDddcOaTksDzhojnL91VqnWPQ8KLMO4appd
-         k41A==
-X-Gm-Message-State: AOJu0YyyWhu61p+HbMIXcxpU5x6WWCTleTbIb/oqOqoVscfKQ5+t+k4h
-        CGHEugNBxGg+N33SzMR39qsvXQ4PhrhWwabwII4OskW42MpBfvSUL37UXdQE4N1tLaAylfEQMM6
-        KJ6wN5An1GbilrAsMqhDhOhwi
-X-Received: by 2002:a05:620a:1a20:b0:76d:9234:1db4 with SMTP id bk32-20020a05620a1a2000b0076d92341db4mr3888989qkb.7.1694210510049;
-        Fri, 08 Sep 2023 15:01:50 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGYXsZIB5Fi5tMCsJrBEtgGgvTsQegolX3ll0BuwfoWJhX6998+NmmxiHzd2BWsKmfRMjarkA==
-X-Received: by 2002:a05:620a:1a20:b0:76d:9234:1db4 with SMTP id bk32-20020a05620a1a2000b0076d92341db4mr3888960qkb.7.1694210509711;
-        Fri, 08 Sep 2023 15:01:49 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id du32-20020a05620a47e000b0076cc4610d0asm884723qkb.85.2023.09.08.15.01.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 15:01:49 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 18:01:26 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Anish Moorthy <amoorthy@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Fri, 8 Sep 2023 18:07:06 -0400
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C7019B4;
+        Fri,  8 Sep 2023 15:07:01 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::646])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 1F552732;
+        Fri,  8 Sep 2023 22:07:01 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 1F552732
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1694210821; bh=TzgHmaKz25GaV9E+TB8GN+i6D/XaAru3PQjEw55fRDw=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=jbfKXfK0mE9O3f5dMY3E4dVKm5jEKviPm3oJiS/gqHdTHREyIh+YUPuPXL72lLNqS
+         qv6lR4nMb2tNem1jeiCHP60PTjurfc4Kkb4ybGEFDOcJybT0jNRotx+KtIURUK7hMx
+         e8pKFsN3Ml2gc0P8UrrNG/Ff3N4kmnDWrqXWZirAEUeRCLoXqB2nE6nz/flhtm5ytw
+         +kABmsUcQJNp+z7TePeUJI3hEVstmyGsVafoOoKy0j/uN2KcxJZRwvdtpIor09m53o
+         dC1ddPZ03jJ7lhKjadb0ByajF8+STLOQc6rac31L3IPJyObUjVTVYsvpwaji5ZuV0n
+         hbPucduHDXx9w==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     =?utf-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Houghton <jthoughton@google.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-Subject: Re: [PATCH 0/7] mm/userfaultfd/poll: Scale userfaultfd wakeups
-Message-ID: <ZPuZtm244zhMteqc@x1n>
-References: <20230905214235.320571-1-peterx@redhat.com>
- <CAJHvVcjQR95KVfu2qv3hepkLWkH5J8qRG_BazHKSXoGoGnUATg@mail.gmail.com>
+        Hugh Dickins <hughd@google.com>, Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Yi Liu <yi.l.liu@intel.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Steve French <stfrench@microsoft.com>,
+        Simon Ser <contact@emersion.fr>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Luca Vizzarro <Luca.Vizzarro@arm.com>,
+        Jeff Xu <jeffxu@google.com>, Aleksa Sarai <cyphar@cyphar.com>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Verkamp <dverkamp@chromium.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] mm/memfd: add ioctl(MEMFD_CHECK_IF_ORIGINAL)
+In-Reply-To: <CAAi7L5f1f3gHGr_8cCv2jW2Q5pjL9bpDD_4zrpXjXkoRmu95fg@mail.gmail.com>
+References: <20230908175738.41895-1-mclapinski@google.com>
+ <87tts4z9nu.fsf@meer.lwn.net>
+ <CAAi7L5f1f3gHGr_8cCv2jW2Q5pjL9bpDD_4zrpXjXkoRmu95fg@mail.gmail.com>
+Date:   Fri, 08 Sep 2023 16:07:00 -0600
+Message-ID: <87h6o4z5dn.fsf@meer.lwn.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJHvVcjQR95KVfu2qv3hepkLWkH5J8qRG_BazHKSXoGoGnUATg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 12:18:29PM -0700, Axel Rasmussen wrote:
-> On Tue, Sep 5, 2023 at 2:42 PM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > Userfaultfd is the type of file that doesn't need wake-all semantics: if
-> > there is a message enqueued (for either a fault address, or an event), we
-> > only need to wake up one service thread to handle it.  Waking up more
-> > normally means a waste of cpu cycles.  Besides that, and more importantly,
-> > that just doesn't scale.
-> 
-> Hi Peter,
+Micha=C5=82 C=C5=82api=C5=84ski <mclapinski@google.com> writes:
 
-Hi, Axel,
+> On Fri, Sep 8, 2023 at 10:34=E2=80=AFPM Jonathan Corbet <corbet@lwn.net> =
+wrote:
+>> Given that the two file descriptors are otherwise indistinguishable,
+>> might a better fix be to make them indistinguishable in this regard as
+>> well?  Is there a good reason why the second fd doesn't become
+>> exec()able in this scenario and, if not, perhaps that behavior could be
+>> changed instead?
+>
+> It probably could be changed, yes. But I'm worried that would be
+> broadening the bug that is the exec()ability of memfds. AFAIK no other
+> fd that is opened as writable can be exec()ed. If maintainers would
+> prefer this, I could do this.
 
-Sorry to respond late.
-
-> 
-> I took a quick look over the series and didn't see anything
-> objectionable. I was planning to actually test the series out and then
-> send out R-b's, but it will take some additional time (next week).
-
-Thanks.  The 2nd patch definitely needs some fixup on some functions
-(either I overlooked without enough CONFIG_* chosen; I am surprised I have
-vhost even compiled out when testing..), hope that won't bring you too much
-trouble.  I'll send a fixup soon on top of patch 2.
-
-> 
-> In the meantime, I was curious about the use case. A design I've seen
-> for VM live migration is to have 1 thread reading events off the uffd,
-> and then have many threads actually resolving the fault events that
-> come in (e.g. fetching pages over the network, issuing UFFDIO_COPY or
-> UFFDIO_CONTINUE, or whatever). In that design, since we only have a
-> single reader anyway, I think this series doesn't help.
-
-Yes.  If the test to carry out only uses 1 thread, it shouldn't bring much
-difference.
-
-> 
-> But, I'm curious if you have data indicating that > 1 reader is more
-> performant overall? I suspect it might be the case that, with "enough"
-> vCPUs, it makes sense to do so, but I don't have benchmark data to
-> tell me what that tipping point is yet.
-> 
-> OTOH, if one reader is plenty in ~all cases, optimizing this path is
-> less important.
-
-For myself I don't yet have an application that can leverage this much
-indeed, because QEMU so far only uses 1 reader thread.
-
-IIRC Anish was exactly proposing some kvm specific solutions to make single
-uffd scale, and this might be suitable for any use case like that where we
-may want to use single uffd and try to make it scale with threads.  Using 1
-reader + N worker is also a solution, but when using N readers (which also
-do the work) the app will hit this problem.
-
-I am also aware that some apps use more than 1 reader threads (umap), but I
-don't really know more than that.
-
-The problem is I think we shouldn't have that overhead easily just because
-an app invokes >1 readers, meanwhile it also doesn't make much sense to
-wake up all readers for a single event for userfaults.  So it should always
-be something good to have.
+I'm not convinced that perpetuating the behavior and adding an ioctl()
+workaround would be better than that; it seems to me that consistency
+would be better.  But I don't have any real say in that matter, of
+course; I'm curious what others think.
 
 Thanks,
 
--- 
-Peter Xu
-
+jon
