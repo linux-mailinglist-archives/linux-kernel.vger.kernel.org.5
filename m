@@ -2,114 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A8D798318
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 09:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D56A79831A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 09:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237982AbjIHHLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 03:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55744 "EHLO
+        id S241156AbjIHHNh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Sep 2023 03:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbjIHHLh (ORCPT
+        with ESMTP id S230233AbjIHHNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 03:11:37 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6E719A8
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 00:11:32 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-57325fcd970so1073074eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 00:11:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1694157092; x=1694761892; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=72dFAJSGUagOoS+KoRkKv9gdaS3fHJdzDdjwkMM9wZc=;
-        b=t0ZAn1qeMFUNAuAheEHg8mfSXbiXo9T0AzovkZGPedynp+Tx8qH7Hfa4V3TR6rqCBL
-         zE/Dyw5A4e+uB5DvggznqRZrv6Ocg22eGRzhgOALuYOCgwk7ik1SzM6zku/H/CmObFWI
-         J6r5Zd1Csqt+UJwKEEsLWxpr96HZAFejf5JR3hOiz2LlZJez44haXQRCxqyfG8+2+KZH
-         /k8LTOO3imNYVID0hxN8aSM6b7R1OEa7Q8eQ48M20LwJVdjFbJ2RNRFHToxCWct4a04L
-         sDNVF2HmFNnC9he/5om6WqBqAzgTLS360oeqM+yM65wmF+uY6Cn/4OlKzLvz3fCNtdEy
-         brbA==
+        Fri, 8 Sep 2023 03:13:33 -0400
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA54419A8
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 00:13:27 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-4ff09632194so2939880e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 00:13:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694157092; x=1694761892;
+        d=1e100.net; s=20230601; t=1694157204; x=1694762004;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=72dFAJSGUagOoS+KoRkKv9gdaS3fHJdzDdjwkMM9wZc=;
-        b=p1PRnIjm37oFEqa9Rvspm/qUmHlG174YA3GhMW+nnYvfCvacVpjfypqB8LE7H8Qxg4
-         33njcS7gvetT1q7fKUGyBzRjIg9KpJCB3u//FDfqBpFUP4H2BEfHz+xVItqlMRpp7ScJ
-         btPqr/T+GpQL+S9Yt6xZI4WniTPOFAkZjnxd7boi0pQpiZGPz8QN91nW3aKX8LCK5CuR
-         exmgC1La04JPHmJAf++kR9ZUm+1Phj/sSxOcxVcEuaYQK833JWmkk+ZwScD2SvcC7H0U
-         ssn5mZKGfZybIsCo3DFu7znmLGl9hXrWIg54hcgyPueAAEdIiL+mzjOCPFEFv2kPpUH6
-         WAPA==
-X-Gm-Message-State: AOJu0YwC3JCd+0m8nDoAmZLaUBrMBvcS9HX0wIORhtCBWI0FN5KSX2Bv
-        g/UKXZFVzw2MI5nVYhd3N7N0JzxJXUIK/hqp5Kkjbg==
-X-Google-Smtp-Source: AGHT+IHh32vWOCqQk/yQ9vH2Sb0yomFK9N4t9UhZFg7t2QpHtDnkNUivzN5mBR/6w4hKnCmTQPTcpXSzn8v85vYLPUk=
-X-Received: by 2002:a4a:6251:0:b0:570:c0c3:8319 with SMTP id
- y17-20020a4a6251000000b00570c0c38319mr1805993oog.3.1694157092101; Fri, 08 Sep
- 2023 00:11:32 -0700 (PDT)
+        bh=0v9HZl10d+1aEuTYsn3si5rKiEVCmNu7rrWd/6QlBLo=;
+        b=hXKtP43t23pq6PAaDWBwrIoGVOfxRKAdn7ET6UWJ9XTfIL/u1xWgjlItANrYbWyDSn
+         hMspT2AO4T45ZxMr1iZBjaW8wmTKxlNo/X4TJiajmT2GD5elBHMjahG0uF8rNSkkZcYY
+         1cWCAeGafOkmu4G6b2CP9mnwEiJMCFNlCDXVWoljHlr9INxnWjMPVbde3iRsgOvf+1cg
+         +MXRDcX9uCp02q1crynHU7/q0+LwKmUqsMZ+MytxDtCE2ur5hSj1ipclwz/kU0Cb8XxF
+         +daclUbUrRDXV+XK3lShppPpe/E9ZQGWvgXtgAFGAJvUPyGE8JyW14LDiZfqJh4zDqeG
+         1hWg==
+X-Gm-Message-State: AOJu0YyqTNWoaPVr1RaTDDcDum5qXj+w2Rf3XyUZglkZ37h3CPPDo3Wg
+        yA2BY/8E1019Mb/6+lZEd6AA2suN81+kuzyx
+X-Google-Smtp-Source: AGHT+IHzxR79IpVmsCeb26PbBXYTH6gAxwr2Z0SJ4nhW+B2rLrlu92oMV0c7KeM9OjD9IysxGLcp3g==
+X-Received: by 2002:a19:435d:0:b0:500:cb2b:8678 with SMTP id m29-20020a19435d000000b00500cb2b8678mr1085535lfj.40.1694157204049;
+        Fri, 08 Sep 2023 00:13:24 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id b6-20020ac247e6000000b0050294074233sm189460lfp.225.2023.09.08.00.13.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Sep 2023 00:13:23 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2bcb89b476bso29408981fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 00:13:23 -0700 (PDT)
+X-Received: by 2002:a05:651c:1029:b0:2bc:b45e:bb3f with SMTP id
+ w9-20020a05651c102900b002bcb45ebb3fmr1188477ljm.13.1694157203559; Fri, 08 Sep
+ 2023 00:13:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230908061950.20287-1-hbh25y@gmail.com> <20230908061950.20287-3-hbh25y@gmail.com>
-In-Reply-To: <20230908061950.20287-3-hbh25y@gmail.com>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Fri, 8 Sep 2023 09:11:20 +0200
-Message-ID: <CAPv3WKe3=RDzcp60KdX8Ew8DF=E1Uqgjr1LWQXsgiOdNuDTxSg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] net: ethernet: mvpp2_main: fix possible OOB write
- in mvpp2_ethtool_get_rxnfc()
-To:     Hangyu Hua <hbh25y@gmail.com>
-Cc:     justin.chen@broadcom.com, florian.fainelli@broadcom.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, linux@armlinux.org.uk, nbd@nbd.name,
-        john@phrozen.org, sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
-        lorenzo@kernel.org, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com,
-        maxime.chevallier@bootlin.com, nelson.chang@mediatek.com,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
+References: <cover.1694093327.git.geert@linux-m68k.org> <0778d9dd186928666d760d5523c7d2311f781621.1694093327.git.geert@linux-m68k.org>
+ <142e4eb5-b47e-e27c-1be3-bc6c5df889c0@linux-m68k.org> <6ff868a4-d433-6e92-8bf2-573fee19ce2c@gmail.com>
+ <291d4cb0-e3b8-1e7d-8b34-79aee23865fa@linux-m68k.org>
+In-Reply-To: <291d4cb0-e3b8-1e7d-8b34-79aee23865fa@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 8 Sep 2023 09:13:09 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXAEWUvfO8-ASrb=PJwftYEu+BXLzY7kf+aJGY4DuUTbA@mail.gmail.com>
+Message-ID: <CAMuHMdXAEWUvfO8-ASrb=PJwftYEu+BXLzY7kf+aJGY4DuUTbA@mail.gmail.com>
+Subject: Re: [PATCH 22/52] m68k: atari: Add and use "atari.h"
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
+        Philip Blundell <philb@gnu.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        Laurent Vivier <laurent@vivier.eu>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pt., 8 wrz 2023 o 08:21 Hangyu Hua <hbh25y@gmail.com> napisa=C5=82(a):
->
-> rules is allocated in ethtool_get_rxnfc and the size is determined by
-> rule_cnt from user space. So rule_cnt needs to be check before using
-> rules to avoid OOB writing or NULL pointer dereference.
->
-> Fixes: 90b509b39ac9 ("net: mvpp2: cls: Add Classification offload support=
-")
-> Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
-> ---
->  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/ne=
-t/ethernet/marvell/mvpp2/mvpp2_main.c
-> index eb74ccddb440..21c3f9b015c8 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> @@ -5586,6 +5586,11 @@ static int mvpp2_ethtool_get_rxnfc(struct net_devi=
-ce *dev,
->                 break;
->         case ETHTOOL_GRXCLSRLALL:
->                 for (i =3D 0; i < MVPP2_N_RFS_ENTRIES_PER_FLOW; i++) {
-> +                       if (loc =3D=3D info->rule_cnt) {
-> +                               ret =3D -EMSGSIZE;
-> +                               break;
-> +                       }
-> +
->                         if (port->rfs_rules[i])
->                                 rules[loc++] =3D i;
->                 }
+Hi Finn,
 
-Reviewed-by: Marcin Wojtas <mw@semihalf.com>
+On Fri, Sep 8, 2023 at 3:05 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> On Fri, 8 Sep 2023, Michael Schmitz wrote:
+> > atariints.h already has some prototypes, so yes on that account.
+> >
+> > atarihw.h only has inlines, but sound and time related prototypes could
+> > be added there, too.
+> >
+> > Geert's intentions might have been avoiding inclusion of all the
+> > hardware specific data in those two files, but the only source file to
+> > benefit from this is config.c (the other three already include
+> > atariints.h and atarihw.h).
+> >
+> > OTOH, considering this patch series adds a lot of other headers that
+> > only contain prototypes, it might be better to keep to that pattern
+> > everywhere.
+>
+> I think Geert's intention may have been to avoid adding definitions to the
+> asm/foo.h headers shipped with "make headers_install". If that's the
+> intention, there would seem to be a mess to be cleaned up, for which I'm
+> partly to blame...
 
-Thanks,
-Marcin
+arch/m68k/include/asm/ is not shipped, (arch/m68k/include/uapi/asm/ is).
+However, arch/m68k/include/asm/ is shared with the whole tree, while
+only the core code under arch/m68k/ needs these definitions.
+
+There is (are) definitely (an) opportunit{y,ies} for moving more stuff
+around (from <asm/...> to "...", more extern declarations in C files, ...).
+Not to mention the more substantial rework...
+But Linux/m68k^WRome wasn't built in a decade neither... ;-)
+
+And TBH, I also went for the "minimum amount of work" ;-)
+(which didn't work out that well, yet another rabbit hole, as usual...).
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
