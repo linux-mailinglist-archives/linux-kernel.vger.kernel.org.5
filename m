@@ -2,48 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E93798F8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83476798FB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232455AbjIHTdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33920 "EHLO
+        id S237779AbjIHTeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344958AbjIHTdH (ORCPT
+        with ESMTP id S232161AbjIHTeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:33:07 -0400
+        Fri, 8 Sep 2023 15:34:00 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D5731B1;
-        Fri,  8 Sep 2023 12:32:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50D25C433C7;
-        Fri,  8 Sep 2023 19:32:34 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE41219B5;
+        Fri,  8 Sep 2023 12:33:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BC79C433BB;
+        Fri,  8 Sep 2023 19:32:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201556;
-        bh=4uP1niyAXOLk6XmcLQBeaiuj8tMsLnjP2insbuuF6TQ=;
+        s=k20201202; t=1694201561;
+        bh=Y6f1pYXMyI4EGb7QXDxBGnbubvL70Gvt/tQOkkkpQaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SUkflhW5oPcDwdJA0uS98n0bd5Svi2Ps00XynXHHrkiKkUvtsC3qf4h8STb/LSJzJ
-         EZGZdHOSk5NHT8EQyotRkGlS1s1UqWKXPGKpH0Fnu4PU6hsn/M1oLfp5STMf0ofA1N
-         y2CFcoXR3t23VPH2qxmaDzm3TBZuLvGGSzqne8q+rQVipIuwu+Y6HA3g/S74dB/XAD
-         +fLaVEenjt4azRIaU8mp3/wYMHkYaBfKEwDK/Gqrgkv0PPF7VquABnHuY3QqnxbjPL
-         GI+4EP2TPqS0eDxHpFMyMDSEr6Svh9nDXhYP8PMeGlP+HpTQOdS+a2+TRFtWOpD0sI
-         e05161DDRM85A==
+        b=cw092zAoZzo8TdbHbJzjoTbBo0DUs2IfEUQkHAPYy5KLC7lDP2Ks0bqe+jMaSUeXl
+         FBcG3o9IV1KOx8xuqvUaTCrICE4qcDgqaH71eFTVQEJC8mtma1LXMR5+F04VjpNhRH
+         v6ZXYluzSN5aArcMEQb+jKaHhzwWvW54nMpt6MUADkLAcKIz15KxDa0skinm24zsxp
+         uEeaopsrzYU5ak33c7w1oKBBgrDW1KjtYoDhjJJPaV8189CB3ilW60MVbPLjwCJzga
+         hZAeH63OrCRwLWatfkoxIZhBJlIGRO1+rNkTb+Vg3ROoJg1DEEsNhu+ikhJMXfafeY
+         tAGNbUCQbNp+g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     George Shen <george.shen@amd.com>,
-        Wenjing Liu <wenjing.liu@amd.com>,
-        Alan Liu <haoping.liu@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, harry.wentland@amd.com,
-        sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, aric.cyr@amd.com, qingqing.zhuo@amd.com,
-        jun.lei@amd.com, alvin.lee2@amd.com, Mike.Hsieh@amd.com,
-        nasir.osman@amd.com, hamza.mahfooz@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.4 10/31] drm/amd/display: Add stream overhead in BW calculations for 128b/132b
-Date:   Fri,  8 Sep 2023 15:31:39 -0400
-Message-Id: <20230908193201.3462957-10-sashal@kernel.org>
+Cc:     Rong Tao <rongtao@cestc.cn>, Petr Mladek <pmladek@suse.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, chenjiahao16@huawei.com,
+        arnd@arndb.de
+Subject: [PATCH AUTOSEL 6.4 11/31] samples/hw_breakpoint: Fix kernel BUG 'invalid opcode: 0000'
+Date:   Fri,  8 Sep 2023 15:31:40 -0400
+Message-Id: <20230908193201.3462957-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908193201.3462957-1-sashal@kernel.org>
 References: <20230908193201.3462957-1-sashal@kernel.org>
@@ -61,112 +53,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: George Shen <george.shen@amd.com>
+From: Rong Tao <rongtao@cestc.cn>
 
-[ Upstream commit 974764180838516f80a13257da67a1ec6afb87d4 ]
+[ Upstream commit 910e230d5f1bb72c54532e94fbb1705095c7bab6 ]
 
-[Why]
-Current BW calculations do not account for the additional padding added
-for uncompressed pixel-to-symbol packing.
+Macro symbol_put() is defined as __symbol_put(__stringify(x))
 
-This results in X.Y being too low for 128b/132b SST streams in certain
-scenarios. If X.Y is too low, end user can observe image corruption.
+    ksym_name = "jiffies"
+    symbol_put(ksym_name)
 
-[How]
-Add function to calculate stream overhead to timing BW calculation for
-128b/132b SST cases.
+will be resolved as
 
-Reviewed-by: Wenjing Liu <wenjing.liu@amd.com>
-Acked-by: Alan Liu <haoping.liu@amd.com>
-Signed-off-by: George Shen <george.shen@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+    __symbol_put("ksym_name")
+
+which is clearly wrong. So symbol_put must be replaced with __symbol_put.
+
+When we uninstall hw_breakpoint.ko (rmmod), a kernel bug occurs with the
+following error:
+
+[11381.854152] kernel BUG at kernel/module/main.c:779!
+[11381.854159] invalid opcode: 0000 [#2] PREEMPT SMP PTI
+[11381.854163] CPU: 8 PID: 59623 Comm: rmmod Tainted: G      D    OE      6.2.9-200.fc37.x86_64 #1
+[11381.854167] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./B360M-HDV, BIOS P3.20 10/23/2018
+[11381.854169] RIP: 0010:__symbol_put+0xa2/0xb0
+[11381.854175] Code: 00 e8 92 d2 f7 ff 65 8b 05 c3 2f e6 78 85 c0 74 1b 48 8b 44 24 30 65 48 2b 04 25 28 00 00 00 75 12 48 83 c4 38 c3 cc cc cc cc <0f> 0b 0f 1f 44 00 00 eb de e8 c0 df d8 00 90 90 90 90 90 90 90 90
+[11381.854178] RSP: 0018:ffffad8ec6ae7dd0 EFLAGS: 00010246
+[11381.854181] RAX: 0000000000000000 RBX: ffffffffc1fd1240 RCX: 000000000000000c
+[11381.854184] RDX: 000000000000006b RSI: ffffffffc02bf7c7 RDI: ffffffffc1fd001c
+[11381.854186] RBP: 000055a38b76e7c8 R08: ffffffff871ccfe0 R09: 0000000000000000
+[11381.854188] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+[11381.854190] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+[11381.854192] FS:  00007fbf7c62c740(0000) GS:ffff8c5badc00000(0000) knlGS:0000000000000000
+[11381.854195] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[11381.854197] CR2: 000055a38b7793f8 CR3: 0000000363e1e001 CR4: 00000000003726e0
+[11381.854200] DR0: ffffffffb3407980 DR1: 0000000000000000 DR2: 0000000000000000
+[11381.854202] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+[11381.854204] Call Trace:
+[11381.854207]  <TASK>
+[11381.854212]  s_module_exit+0xc/0xff0 [symbol_getput]
+[11381.854219]  __do_sys_delete_module.constprop.0+0x198/0x2f0
+[11381.854225]  do_syscall_64+0x58/0x80
+[11381.854231]  ? exit_to_user_mode_prepare+0x180/0x1f0
+[11381.854237]  ? syscall_exit_to_user_mode+0x17/0x40
+[11381.854241]  ? do_syscall_64+0x67/0x80
+[11381.854245]  ? syscall_exit_to_user_mode+0x17/0x40
+[11381.854248]  ? do_syscall_64+0x67/0x80
+[11381.854252]  ? exc_page_fault+0x70/0x170
+[11381.854256]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dc.h         |  2 +
- drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c | 42 +++++++++++++++++++++
- 2 files changed, 44 insertions(+)
+ samples/hw_breakpoint/data_breakpoint.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dc.h b/drivers/gpu/drm/amd/display/dc/dc.h
-index 9279990e43694..508fd6ab58e80 100644
---- a/drivers/gpu/drm/amd/display/dc/dc.h
-+++ b/drivers/gpu/drm/amd/display/dc/dc.h
-@@ -1375,6 +1375,8 @@ struct dc_plane_state *dc_get_surface_for_mpcc(struct dc *dc,
- 
- uint32_t dc_get_opp_for_plane(struct dc *dc, struct dc_plane_state *plane);
- 
-+void dc_set_disable_128b_132b_stream_overhead(bool disable);
-+
- /* The function returns minimum bandwidth required to drive a given timing
-  * return - minimum required timing bandwidth in kbps.
-  */
-diff --git a/drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c b/drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c
-index 2bdc47615543c..9a0c9f9353b41 100644
---- a/drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c
-+++ b/drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c
-@@ -40,6 +40,8 @@ static bool dsc_policy_enable_dsc_when_not_needed;
- 
- static bool dsc_policy_disable_dsc_stream_overhead;
- 
-+static bool disable_128b_132b_stream_overhead;
-+
- #ifndef MAX
- #define MAX(X, Y) ((X) > (Y) ? (X) : (Y))
- #endif
-@@ -47,6 +49,41 @@ static bool dsc_policy_disable_dsc_stream_overhead;
- #define MIN(X, Y) ((X) < (Y) ? (X) : (Y))
- #endif
- 
-+/* Need to account for padding due to pixel-to-symbol packing
-+ * for uncompressed 128b/132b streams.
-+ */
-+static uint32_t apply_128b_132b_stream_overhead(
-+	const struct dc_crtc_timing *timing, const uint32_t kbps)
-+{
-+	uint32_t total_kbps = kbps;
-+
-+	if (disable_128b_132b_stream_overhead)
-+		return kbps;
-+
-+	if (!timing->flags.DSC) {
-+		struct fixed31_32 bpp;
-+		struct fixed31_32 overhead_factor;
-+
-+		bpp = dc_fixpt_from_int(kbps);
-+		bpp = dc_fixpt_div_int(bpp, timing->pix_clk_100hz / 10);
-+
-+		/* Symbols_per_HActive = HActive * bpp / (4 lanes * 32-bit symbol size)
-+		 * Overhead_factor = ceil(Symbols_per_HActive) / Symbols_per_HActive
-+		 */
-+		overhead_factor = dc_fixpt_from_int(timing->h_addressable);
-+		overhead_factor = dc_fixpt_mul(overhead_factor, bpp);
-+		overhead_factor = dc_fixpt_div_int(overhead_factor, 128);
-+		overhead_factor = dc_fixpt_div(
-+			dc_fixpt_from_int(dc_fixpt_ceil(overhead_factor)),
-+			overhead_factor);
-+
-+		total_kbps = dc_fixpt_ceil(
-+			dc_fixpt_mul_int(overhead_factor, total_kbps));
-+	}
-+
-+	return total_kbps;
-+}
-+
- uint32_t dc_bandwidth_in_kbps_from_timing(
- 	const struct dc_crtc_timing *timing)
+diff --git a/samples/hw_breakpoint/data_breakpoint.c b/samples/hw_breakpoint/data_breakpoint.c
+index 418c46fe5ffc3..9debd128b2ab8 100644
+--- a/samples/hw_breakpoint/data_breakpoint.c
++++ b/samples/hw_breakpoint/data_breakpoint.c
+@@ -70,7 +70,7 @@ static int __init hw_break_module_init(void)
+ static void __exit hw_break_module_exit(void)
  {
-@@ -1160,6 +1197,11 @@ void dc_dsc_policy_set_disable_dsc_stream_overhead(bool disable)
- 	dsc_policy_disable_dsc_stream_overhead = disable;
+ 	unregister_wide_hw_breakpoint(sample_hbp);
+-	symbol_put(ksym_name);
++	__symbol_put(ksym_name);
+ 	printk(KERN_INFO "HW Breakpoint for %s write uninstalled\n", ksym_name);
  }
  
-+void dc_set_disable_128b_132b_stream_overhead(bool disable)
-+{
-+	disable_128b_132b_stream_overhead = disable;
-+}
-+
- void dc_dsc_get_default_config_option(const struct dc *dc, struct dc_dsc_config_options *options)
- {
- 	options->dsc_min_slice_height_override = dc->debug.dsc_min_slice_height_override;
 -- 
 2.40.1
 
