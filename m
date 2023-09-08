@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CAB798816
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 15:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AABB798818
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 15:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243466AbjIHNsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 09:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
+        id S243487AbjIHNt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 09:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236401AbjIHNsA (ORCPT
+        with ESMTP id S233325AbjIHNt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 09:48:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF06E1BC6;
-        Fri,  8 Sep 2023 06:47:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97FD7C433C9;
-        Fri,  8 Sep 2023 13:47:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694180876;
-        bh=vo3LdEaDlbbC59r7f6ZMikgza/y5WzO7sH0rYXOKHuU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=u8/EDwyPv/C4WgLGqU9E737Ip8RQJvkW0oiuvWQ0koQUjCfTgn/9npdJ6HlepcJBy
-         0GZMUp+mms2rGrJjzOIrBQAQATXh8lpq9968CyKjIz6/O+BOo2IyZBa/5i1iwLLAw/
-         G9teVOyxvcym4e+8Je0rx0Fj3kMz5eZpqwEgrRw5gzc4QDBdt603/Ql68fVoErDXfO
-         m/XeF9QB12AI1vMTYECNLGTMQ/n1fYxqqlSZPjtAQvrvqvH4jmAol0FuXVaW9NKwYp
-         dwC7xN2jd41OD4WJEYJ6kRiVTVCKkCK3U/eG3iSotjpeCf/KegrB8Huc3TtOMquNRH
-         OjAvwSm/qJOVA==
-Message-ID: <34f72d799493c03cf77b32c1761ab6cf5d368f53.camel@kernel.org>
-Subject: Re: [PATCH RFC] nfs4: add a get_acl stub handler
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ondrej Valousek <ondrej.valousek.xm@renesas.com>
-Date:   Fri, 08 Sep 2023 09:47:54 -0400
-In-Reply-To: <20230908-bandbreite-orgel-065607d1b281@brauner>
-References: <20230907-kdevops-v1-1-c2015c29d634@kernel.org>
-         <20230908-bandbreite-orgel-065607d1b281@brauner>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Fri, 8 Sep 2023 09:49:26 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A471BF6;
+        Fri,  8 Sep 2023 06:49:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=uqY6Z5h6ZluAE9vpCfYrBwCL495VscqDRqy2N8Ea9Gw=; b=jGqURuwfyBPWOeEwk8Azmv3R7a
+        b5SMleDF3N5YuFPK0TzWTXLmhKnZ/nUJG58G2AbPMPCQiccSKMkPZnVleKN7qZXHODP8TAy/opAUM
+        WNY5XTVD0w/7qjUskXl/Rt11Dd3v9eReTnLM0aGEnf6K48x5bZwerxatXdgg5gyGUox8l6h6wlBO8
+        BG0tOp550Lx28Bh4L0ACP9yfLyE540Du/RTiXfgtO8cvG52Vh37qYSIH8EsIvbhIhhyExE9jG3o1F
+        11QYhBeCTaifFQcAGPqfWfNoGci9P4SO9L0gggMdcqLakNsH2lm96yamsmmk7UMWdD7aecVUyuqnE
+        DAS8RzVA==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qebr9-000BEW-5V; Fri, 08 Sep 2023 15:49:07 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qebr8-000DG6-Fl; Fri, 08 Sep 2023 15:49:06 +0200
+Subject: Re: [PATCH bpf-next v3 9/9] MAINTAINERS: Add myself for ARM32 BPF JIT
+ maintainer.
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Puranjay Mohan <puranjay12@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230907230550.1417590-1-puranjay12@gmail.com>
+ <20230907230550.1417590-10-puranjay12@gmail.com>
+ <ZPrdQEhw4f+TK8TB@shell.armlinux.org.uk>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1a4bc20a-b7ff-3697-5859-a2bb868c575f@iogearbox.net>
+Date:   Fri, 8 Sep 2023 15:49:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZPrdQEhw4f+TK8TB@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27025/Fri Sep  8 09:37:45 2023)
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-09-08 at 14:55 +0200, Christian Brauner wrote:
-> On Thu, Sep 07, 2023 at 01:32:36PM -0400, Jeff Layton wrote:
-> > In older kernels, attempting to fetch that system.posix_acl_access on
-> > NFSv4 would return -EOPNOTSUPP, but in more recent kernels that returns
-> > -ENODATA.
-> >=20
-> > Most filesystems that don't support POSIX ACLs leave the SB_POSIXACL
-> > flag clear, which cues the VFS to return -EOPNOTSUPP in this situation.
-> > We can't do that with NFSv4 since that flag also cues the VFS to avoid
-> > applying the umask early.
-> >=20
-> > Fix this by adding a stub get_acl handler for NFSv4 that always returns
-> > -EOPNOTSUPP.
-> >=20
-> > Reported-by: Ondrej Valousek <ondrej.valousek.xm@renesas.com>
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> > I suspect that this problem popped in due to some VFS layer changes. I
-> > haven't identified the patch that broke it, but I think this is probabl=
-y
-> > the least invasive way to fix it.
-> >=20
-> > Another alternative would be to return -EOPNOTSUPP on filesystems that
-> > set SB_POSIXACL but that don't set get_acl or get_inode_acl.
-> >=20
-> > Thoughts?
->=20
-> Yes: I hate POSIX ACLs. ;)
+On 9/8/23 10:37 AM, Russell King (Oracle) wrote:
+> On Thu, Sep 07, 2023 at 11:05:50PM +0000, Puranjay Mohan wrote:
+>> As Shubham has been inactive since 2017, Add myself for ARM32 BPF JIT.
+>>
+>> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+>> ---
+>>   MAINTAINERS | 5 +++--
+>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 612d6d1dbf36..c241856819bd 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -3602,9 +3602,10 @@ F:	Documentation/devicetree/bindings/iio/accel/bosch,bma400.yaml
+>>   F:	drivers/iio/accel/bma400*
+>>   
+>>   BPF JIT for ARM
+>> -M:	Shubham Bansal <illusionist.neo@gmail.com>
+>> +M:	Puranjay Mohan <puranjay12@gmail.com>
+>> +R:	Shubham Bansal <illusionist.neo@gmail.com>
+> 
+> Don't forget that I also want to review the changes, but I guess my
+> arch/arm entry will cover this too.
 
-The API is quite weird, yes.
+If there are no objections from all parties, it would be nice/better if both of
+you (Puranjay & Russell) could be explicitly added here as maintainers.
 
-> Before the VFS rework to only rely on i_op->*acl* methods POSIX ACLs
-> were set using sb->s_xattr handlers. So when a filesystem raised
-> SB_POSIXACL but didn't set sb->s_xattr handlers for POSIX ACLs we would:
->=20
-> __vfs_getxattr()
-> -> xattr_resolve_name()
->   // no match so return EOPNOTSUPP
->=20
-> No we have
->=20
-> vfs_get_acl()
-> -> __get_acl()
->    -> i_op->get_acl
->    // no get_acl inode method return ENODATA
->=20
-> So as a bugfix to backport I think you should do exactly what you do
-> here because I'm not sure if some fs relies on ENODATA to be returned if
-> no get_acl inode method is set. There's a lot of quirkiness everywhere.
-> But we should look through all callers and if nothing relies on EINVAL
-> just start returning EOPNOTSUPP if no get_acl i_op is set.
->=20
-> Looks good to me,
-> Acked-by: Christian Brauner <brauner@kernel.org>
-
-Thanks. I did some rudimentary git grepping, and I don't see any that
-set SB_POSIXACL but don't set either get_acl or get_inode_acl. I'll spin
-up a patch and we can get it into -next for a while and see if anything
-shakes out.
---=20
-Jeff Layton <jlayton@kernel.org>
+Thanks,
+Daniel
