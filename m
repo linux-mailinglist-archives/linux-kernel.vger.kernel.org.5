@@ -2,118 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 503457989EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC307989C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242221AbjIHPYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 11:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40922 "EHLO
+        id S244455AbjIHPWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 11:22:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244614AbjIHPYa (ORCPT
+        with ESMTP id S233329AbjIHPWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 11:24:30 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADBB9212D;
-        Fri,  8 Sep 2023 08:23:58 -0700 (PDT)
-Received: from localhost.localdomain (unknown [171.76.82.102])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: vignesh)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B15E666072AC;
-        Fri,  8 Sep 2023 16:23:51 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694186637;
-        bh=5EL9eVG51FsQl3AUWqIFCSbQ/zvgCyfjZgP+m+A22ZE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QOBXsLznaxQVmUs/xs/cLj/OKsA8O9X3FCFqolqoPKMoKNn05MfErt3NG9MFj60VA
-         HW32LskUPFhwmEvWQQCiw2VrCaW2zoCN+o62NO8pIJ7YlZ0iny+kDP2pc6+QtRyBE+
-         bafb6cLs1viGLSnW5jwpHS3H2yzl9JW9PcY++Yi7C6R7E0MSBZsboUjz/ZLbl7/Ve9
-         LbbsN7m7IOMFd46fFKgOAUjRn0x9Zg8QWMKas08G7OrjGCrAu6TIM0CsX+Wk0XHejb
-         BW4xRUQJXvz921dt/+jcI9YYcIZ5qp431ANmpEuRD1lEgpif92WUN9V1cRsKcWvxAB
-         BGzh3vwSim6VQ==
-From:   Vignesh Raman <vignesh.raman@collabora.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     helen.koike@collabora.com, guilherme.gallo@collabora.com,
-        sergi.blanch.torne@collabora.com, david.heidelberg@collabora.com,
-        daniels@collabora.com, gustavo.padovan@collabora.com,
-        angelogioacchino.delregno@collabora.com, emma@anholt.net,
-        robclark@freedesktop.org, robdclark@google.com, anholt@google.com,
-        robdclark@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
-        jani.nikula@linux.intel.com, mripard@kernel.org,
-        dmitry.baryshkov@linaro.org, matthias.bgg@gmail.com,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH v3 9/9] drm: ci: Use scripts/config to enable/disable configs
-Date:   Fri,  8 Sep 2023 20:52:25 +0530
-Message-Id: <20230908152225.432139-10-vignesh.raman@collabora.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908152225.432139-1-vignesh.raman@collabora.com>
-References: <20230908152225.432139-1-vignesh.raman@collabora.com>
+        Fri, 8 Sep 2023 11:22:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6430C1BFA;
+        Fri,  8 Sep 2023 08:22:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694186556; x=1725722556;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=2pJ1Njghwnio74sizFtHiEiT47JWSloBF6ZeODCQUuk=;
+  b=I62EFaqQu7H/M/Oi29LP/SSkK3ZKnTP4Nhcwx8mNH3BFoF4auStjT+Dh
+   AkgzEL2qq/T3g/KEQPWAtB/wL0o0uW7qS6J8BX7dar3zTzKtulWrfMteK
+   iKhhsvPoal4E8oMC2IhEd23uV0b7O6AzjlQLR10VpLjzR/nFDSL7lbWPO
+   PLMSrH9fuFHS+17T3lO+MymoGR94gTtcnBj0kuX9PNCnec47Al5ZcuVev
+   X/kS2hLQLMZGbiPfk74xpsHZtTHu0gJJrcZ/KPfong/x4Sn88nZydUjhl
+   UpsTPKtJqnwWy6/UxK9qG8eJU9AVrILcQnXKvi4+GEQOugR++P7GOKiug
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="380406584"
+X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
+   d="scan'208";a="380406584"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 08:22:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="719185891"
+X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
+   d="scan'208";a="719185891"
+Received: from fgilganx-mobl1.amr.corp.intel.com (HELO [10.209.17.195]) ([10.209.17.195])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 08:22:34 -0700
+Message-ID: <cbc3aabb-6a38-37f0-81aa-1cbfba445d95@intel.com>
+Date:   Fri, 8 Sep 2023 08:22:34 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v13 04/22] x86/cpu: Detect TDX partial write machine check
+ erratum
+Content-Language: en-US
+To:     Kai Huang <kai.huang@intel.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     x86@kernel.org, kirill.shutemov@linux.intel.com,
+        tony.luck@intel.com, peterz@infradead.org, tglx@linutronix.de,
+        bp@alien8.de, mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
+        pbonzini@redhat.com, david@redhat.com, dan.j.williams@intel.com,
+        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
+        reinette.chatre@intel.com, len.brown@intel.com, ak@linux.intel.com,
+        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, nik.borisov@suse.com,
+        bagasdotme@gmail.com, sagis@google.com, imammedo@redhat.com
+References: <cover.1692962263.git.kai.huang@intel.com>
+ <b089f93223958c168b5abd8eef0f810d616adb99.1692962263.git.kai.huang@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <b089f93223958c168b5abd8eef0f810d616adb99.1692962263.git.kai.huang@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of modifying files in git to enable/disable
-configs, use scripts/config on the .config file which
-will be used for building the kernel.
+On 8/25/23 05:14, Kai Huang wrote:
+> TDX memory has integrity and confidentiality protections.  Violations of
+> this integrity protection are supposed to only affect TDX operations and
+> are never supposed to affect the host kernel itself.  In other words,
+> the host kernel should never, itself, see machine checks induced by the
+> TDX integrity hardware.
 
-Suggested-by: Jani Nikula <jani.nikula@intel.com>
-Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
----
+This is missing one thing: alluding to how this will be used.  We might
+do that by saying: "To prepare for _____, add ______."
 
-v2:
-  - Added a new patch in the series to use scripts/config to enable/disable configs
+But that's a minor nit.
 
-v3:
-  - No changes
+...
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
+> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 
----
- drivers/gpu/drm/ci/build.sh | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
-index 092c195af242..093929a115de 100644
---- a/drivers/gpu/drm/ci/build.sh
-+++ b/drivers/gpu/drm/ci/build.sh
-@@ -70,19 +70,19 @@ if [ -z "$CI_MERGE_REQUEST_PROJECT_PATH" ]; then
-     fi
- fi
- 
--for opt in $ENABLE_KCONFIGS; do
--  echo CONFIG_$opt=y >> drivers/gpu/drm/ci/${KERNEL_ARCH}.config
--done
--for opt in $DISABLE_KCONFIGS; do
--  echo CONFIG_$opt=n >> drivers/gpu/drm/ci/${KERNEL_ARCH}.config
--done
--
- if [[ -n "${MERGE_FRAGMENT}" ]]; then
-     ./scripts/kconfig/merge_config.sh ${DEFCONFIG} drivers/gpu/drm/ci/${MERGE_FRAGMENT}
- else
-     make `basename ${DEFCONFIG}`
- fi
- 
-+for opt in $ENABLE_KCONFIGS; do
-+    ./scripts/config --enable CONFIG_$opt
-+done
-+for opt in $DISABLE_KCONFIGS; do
-+    ./scripts/config --disable CONFIG_$opt
-+done
-+
- make ${KERNEL_IMAGE_NAME}
- 
- mkdir -p /lava-files/
--- 
-2.40.1
-
+Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
