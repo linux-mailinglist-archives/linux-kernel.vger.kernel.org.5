@@ -2,113 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC96798231
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 08:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC5579823D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 08:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240485AbjIHGO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 02:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42754 "EHLO
+        id S241031AbjIHGR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 02:17:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbjIHGOy (ORCPT
+        with ESMTP id S232913AbjIHGRW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 02:14:54 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A186C1990;
-        Thu,  7 Sep 2023 23:14:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5D27B1F45A;
-        Fri,  8 Sep 2023 06:14:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694153688; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uO334wLPNGZ0g1WNh7fmBTcS2K14Hk+oRRgDz6PlSsU=;
-        b=1B0lyFDnUSw5BFUJy9Y68/rp3TjBP8BSHQo/CqfMXOTQ1RshG7QunosG14CnBc0X12xxEl
-        b/9gKN9nLYFdHUSEYIXGZOpge81Fv5Ii1zSQzF9TUIqdgUy3CAeVEcq4LtxqOpSDn96zxI
-        2x5YgAKz4u1SF7cNjbziqvUL5wDZl4I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694153688;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uO334wLPNGZ0g1WNh7fmBTcS2K14Hk+oRRgDz6PlSsU=;
-        b=+X3bQmJ9VSbDChz5GQktO+Uq3w9FEi3xugmkHcZiJMitTcR0G4x42b1MzIUbdzxt69hM7d
-        DOcnzTACDY8H/WBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E3D10131FD;
-        Fri,  8 Sep 2023 06:14:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WLKONNe7+mSabAAAMHmgww
-        (envelope-from <hare@suse.de>); Fri, 08 Sep 2023 06:14:47 +0000
-Message-ID: <bf2e8a17-fd95-4e48-92cd-382f7c8ee944@suse.de>
-Date:   Fri, 8 Sep 2023 08:14:47 +0200
+        Fri, 8 Sep 2023 02:17:22 -0400
+X-Greylist: delayed 64 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Sep 2023 23:17:15 PDT
+Received: from ssh247.corpemail.net (ssh247.corpemail.net [210.51.61.247])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D77919A6
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 23:17:15 -0700 (PDT)
+Received: from ssh247.corpemail.net
+        by ssh247.corpemail.net ((D)) with ASMTP (SSL) id DFY00105;
+        Fri, 08 Sep 2023 14:16:05 +0800
+Received: from localhost.localdomain (10.94.3.99) by
+ jtjnmail201621.home.langchao.com (10.100.2.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 8 Sep 2023 14:16:04 +0800
+From:   Bo Liu <liubo03@inspur.com>
+To:     <bskeggs@redhat.com>, <kherbst@redhat.com>, <lyude@redhat.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>, Bo Liu <liubo03@inspur.com>
+Subject: [PATCH] drm/nouveau/acr/ga102: remove set but unused variable
+Date:   Fri, 8 Sep 2023 02:16:01 -0400
+Message-ID: <20230908061601.2510-1-liubo03@inspur.com>
+X-Mailer: git-send-email 2.18.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 11/12] null: Enable trace capability for null block
-Content-Language: en-US
-To:     Nitesh Shetty <nj.shetty@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     martin.petersen@oracle.com, mcgrof@kernel.org,
-        gost.dev@samsung.com, Anuj Gupta <anuj20.g@samsung.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org
-References: <20230906163844.18754-1-nj.shetty@samsung.com>
- <CGME20230906164425epcas5p4275f672db2cfe129f666d8c929cbd095@epcas5p4.samsung.com>
- <20230906163844.18754-12-nj.shetty@samsung.com>
-From:   Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20230906163844.18754-12-nj.shetty@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.94.3.99]
+X-ClientProxiedBy: Jtjnmail201614.home.langchao.com (10.100.2.14) To
+ jtjnmail201621.home.langchao.com (10.100.2.21)
+tUid:   202390814160506aa29a415d9216ccfcf156a4c58824f
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/6/23 18:38, Nitesh Shetty wrote:
-> This is a prep patch to enable copy trace capability.
-> At present only zoned null_block is using trace, so we decoupled trace
-> and zoned dependency to make it usable in null_blk driver also.
-> 
-> Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
-> Signed-off-by: Anuj Gupta <anuj20.g@samsung.com>
-> ---
->   drivers/block/null_blk/Makefile | 2 --
->   drivers/block/null_blk/main.c   | 3 +++
->   drivers/block/null_blk/trace.h  | 2 ++
->   drivers/block/null_blk/zoned.c  | 1 -
->   4 files changed, 5 insertions(+), 3 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+The local variable loc in nvkm_acr_lsfw_load_sig_image_desc_v2()
+is set but not used. Remove the variable and related code.
 
-Cheers,
+Signed-off-by: Bo Liu <liubo03@inspur.com>
+---
+ drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Hannes
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c b/drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c
+index f36a359d4531..bd104a030243 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c
+@@ -218,7 +218,7 @@ nvkm_acr_lsfw_load_sig_image_desc_v2(struct nvkm_subdev *subdev,
+ 		const struct firmware *hsbl;
+ 		const struct nvfw_ls_hsbl_bin_hdr *hdr;
+ 		const struct nvfw_ls_hsbl_hdr *hshdr;
+-		u32 loc, sig, cnt, *meta;
++		u32 sig, cnt, *meta;
+ 
+ 		ret = nvkm_firmware_load_name(subdev, path, "hs_bl_sig", ver, &hsbl);
+ 		if (ret)
+@@ -227,7 +227,6 @@ nvkm_acr_lsfw_load_sig_image_desc_v2(struct nvkm_subdev *subdev,
+ 		hdr = nvfw_ls_hsbl_bin_hdr(subdev, hsbl->data);
+ 		hshdr = nvfw_ls_hsbl_hdr(subdev, hsbl->data + hdr->header_offset);
+ 		meta = (u32 *)(hsbl->data + hshdr->meta_data_offset);
+-		loc = *(u32 *)(hsbl->data + hshdr->patch_loc);
+ 		sig = *(u32 *)(hsbl->data + hshdr->patch_sig);
+ 		cnt = *(u32 *)(hsbl->data + hshdr->num_sig);
+ 
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
-Myers, Andrew McDonald, Martje Boudien Moerman
+2.27.0
 
