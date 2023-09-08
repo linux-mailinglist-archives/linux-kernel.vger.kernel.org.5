@@ -2,45 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FD1798DAD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ADAD798DC7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245209AbjIHSXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45496 "EHLO
+        id S1344153AbjIHSYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:24:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344255AbjIHSWB (ORCPT
+        with ESMTP id S1344351AbjIHSWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:22:01 -0400
+        Fri, 8 Sep 2023 14:22:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C65E3582;
-        Fri,  8 Sep 2023 11:19:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11AE7C433C9;
-        Fri,  8 Sep 2023 18:19:23 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733A4358A;
+        Fri,  8 Sep 2023 11:19:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81BE9C43142;
+        Fri,  8 Sep 2023 18:19:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197165;
-        bh=wajsEOxuawa+AsqLDijcCqAVwGQYvEMCh6/toU71h0A=;
+        s=k20201202; t=1694197166;
+        bh=Q+IjZG0Tp79KNBmY2MwgESORfBuGdtAgKIZeNd4EABE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DlKKZAsEj+EMIJrwRQzACOfRQ3cadtCMLnZGAnXPhpovHuhkAmurqOB/DNOpOwyu/
-         YavhHGfzsEtBWa9b8Njx3AYkF1Blbydy/gs1Kcy9BFZuJj8nd3k3ZMjULWkgAB0niO
-         ZCPpCm1Jmj1gSR+8mTUZdFN56IMYtjLVuadMRF8ZkKnkDU7ADVg8b1Qtn4Ae1X/oh9
-         6eOkab3qMsC7ZgSm/mGgTfGzxTSP/cCPPkzhoUuwohc3FBppc2n0toNAz9aULwXrdo
-         RvKph4ftwfgbTkJ/KMQ/2aDiFe9PyEm4Mo5w9yIwZmdOverw906fvxuaTeTSn8D6FF
-         ywMiXBpeZWDkA==
+        b=deaLQm1B/3zlhlAqHSjxPL7zRC/5c0HxRXcgvuo/OyBi0vWhWPY8gQO5k+cd585q1
+         cI/Fxmj47bGPSUACAPrFMH72QKz30ewOTVhiuMgE9dkzTKxRSQU2N6qKqFTEbCtqDs
+         3e3EohVxIijmQCRmDKQBeMLpU++lQx7t5EJr1ygUsaRpQtvOGg0CHA+JvUr+Yow5v9
+         1hIOSaERgYwqwvNA9MJvuv7h/ON77dsNgnjpDHTfAzYWWxATdmGGaOxArjcJnQFiQa
+         YEgiiP3hkCEGMM54GmK0JanwqSFP9u3+6L/jj0DT57viGND9+QcY5U3VZtzfp7N1Np
+         iGECS9/k/nIcg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Azeem Shaikh <azeemshaikh38@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 02/15] crypto: lrw,xts - Replace strlcpy with strscpy
-Date:   Fri,  8 Sep 2023 14:19:05 -0400
-Message-Id: <20230908181920.3460520-2-sashal@kernel.org>
+Cc:     Dmitry Antipov <dmantipov@yandex.ru>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+        Kalle Valo <quic_kvalo@quicinc.com>,
+        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
+        linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 03/15] wifi: ath9k: fix fortify warnings
+Date:   Fri,  8 Sep 2023 14:19:06 -0400
+Message-Id: <20230908181920.3460520-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181920.3460520-1-sashal@kernel.org>
 References: <20230908181920.3460520-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.131
@@ -54,68 +56,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Azeem Shaikh <azeemshaikh38@gmail.com>
+From: Dmitry Antipov <dmantipov@yandex.ru>
 
-[ Upstream commit babb80b3ecc6f40c962e13c654ebcd27f25ee327 ]
+[ Upstream commit 810e41cebb6c6e394f2068f839e1a3fc745a5dcc ]
 
-strlcpy() reads the entire source buffer first.
-This read may exceed the destination size limit.
-This is both inefficient and can lead to linear read
-overflows if a source string is not NUL-terminated [1].
-In an effort to remove strlcpy() completely [2], replace
-strlcpy() here with strscpy().
+When compiling with gcc 13.1 and CONFIG_FORTIFY_SOURCE=y,
+I've noticed the following:
 
-Direct replacement is safe here since return value of -errno
-is used to check for truncation instead of sizeof(dest).
+In function ‘fortify_memcpy_chk’,
+    inlined from ‘ath_tx_complete_aggr’ at drivers/net/wireless/ath/ath9k/xmit.c:556:4,
+    inlined from ‘ath_tx_process_buffer’ at drivers/net/wireless/ath/ath9k/xmit.c:773:3:
+./include/linux/fortify-string.h:529:25: warning: call to ‘__read_overflow2_field’
+declared with attribute warning: detected read beyond size of field (2nd parameter);
+maybe use struct_group()? [-Wattribute-warning]
+  529 |                         __read_overflow2_field(q_size_field, size);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-[2] https://github.com/KSPP/linux/issues/89
+In function ‘fortify_memcpy_chk’,
+    inlined from ‘ath_tx_count_frames’ at drivers/net/wireless/ath/ath9k/xmit.c:473:3,
+    inlined from ‘ath_tx_complete_aggr’ at drivers/net/wireless/ath/ath9k/xmit.c:572:2,
+    inlined from ‘ath_tx_process_buffer’ at drivers/net/wireless/ath/ath9k/xmit.c:773:3:
+./include/linux/fortify-string.h:529:25: warning: call to ‘__read_overflow2_field’
+declared with attribute warning: detected read beyond size of field (2nd parameter);
+maybe use struct_group()? [-Wattribute-warning]
+  529 |                         __read_overflow2_field(q_size_field, size);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+In both cases, the compiler complains on:
+
+memcpy(ba, &ts->ba_low, WME_BA_BMP_SIZE >> 3);
+
+which is the legal way to copy both 'ba_low' and following 'ba_high'
+members of 'struct ath_tx_status' at once (that is, issue one 8-byte
+'memcpy()' for two 4-byte fields). Since the fortification logic seems
+interprets this trick as an attempt to overread 4-byte 'ba_low', silence
+relevant warnings by using the convenient 'struct_group()' quirk.
+
+Suggested-by: Johannes Berg <johannes@sipsolutions.net>
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+Acked-by: Toke Høiland-Jørgensen <toke@toke.dk>
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Link: https://lore.kernel.org/r/20230620080855.396851-2-dmantipov@yandex.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/lrw.c | 6 +++---
- crypto/xts.c | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath9k/mac.h  | 6 ++++--
+ drivers/net/wireless/ath/ath9k/xmit.c | 4 ++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/crypto/lrw.c b/crypto/lrw.c
-index bcf09fbc750af..80d9076e42e0b 100644
---- a/crypto/lrw.c
-+++ b/crypto/lrw.c
-@@ -357,10 +357,10 @@ static int lrw_create(struct crypto_template *tmpl, struct rtattr **tb)
- 	 * cipher name.
- 	 */
- 	if (!strncmp(cipher_name, "ecb(", 4)) {
--		unsigned len;
-+		int len;
+diff --git a/drivers/net/wireless/ath/ath9k/mac.h b/drivers/net/wireless/ath/ath9k/mac.h
+index fd6aa49adadfe..9b00e77a6fc3c 100644
+--- a/drivers/net/wireless/ath/ath9k/mac.h
++++ b/drivers/net/wireless/ath/ath9k/mac.h
+@@ -113,8 +113,10 @@ struct ath_tx_status {
+ 	u8 qid;
+ 	u16 desc_id;
+ 	u8 tid;
+-	u32 ba_low;
+-	u32 ba_high;
++	struct_group(ba,
++		u32 ba_low;
++		u32 ba_high;
++	);
+ 	u32 evm0;
+ 	u32 evm1;
+ 	u32 evm2;
+diff --git a/drivers/net/wireless/ath/ath9k/xmit.c b/drivers/net/wireless/ath/ath9k/xmit.c
+index 6555abf02f18b..84c68aefc171a 100644
+--- a/drivers/net/wireless/ath/ath9k/xmit.c
++++ b/drivers/net/wireless/ath/ath9k/xmit.c
+@@ -421,7 +421,7 @@ static void ath_tx_count_frames(struct ath_softc *sc, struct ath_buf *bf,
+ 	isaggr = bf_isaggr(bf);
+ 	if (isaggr) {
+ 		seq_st = ts->ts_seqnum;
+-		memcpy(ba, &ts->ba_low, WME_BA_BMP_SIZE >> 3);
++		memcpy(ba, &ts->ba, WME_BA_BMP_SIZE >> 3);
+ 	}
  
--		len = strlcpy(ecb_name, cipher_name + 4, sizeof(ecb_name));
--		if (len < 2 || len >= sizeof(ecb_name))
-+		len = strscpy(ecb_name, cipher_name + 4, sizeof(ecb_name));
-+		if (len < 2)
- 			goto err_free_inst;
- 
- 		if (ecb_name[len - 1] != ')')
-diff --git a/crypto/xts.c b/crypto/xts.c
-index de6cbcf69bbd6..b05020657cdc8 100644
---- a/crypto/xts.c
-+++ b/crypto/xts.c
-@@ -396,10 +396,10 @@ static int xts_create(struct crypto_template *tmpl, struct rtattr **tb)
- 	 * cipher name.
- 	 */
- 	if (!strncmp(cipher_name, "ecb(", 4)) {
--		unsigned len;
-+		int len;
- 
--		len = strlcpy(ctx->name, cipher_name + 4, sizeof(ctx->name));
--		if (len < 2 || len >= sizeof(ctx->name))
-+		len = strscpy(ctx->name, cipher_name + 4, sizeof(ctx->name));
-+		if (len < 2)
- 			goto err_free_inst;
- 
- 		if (ctx->name[len - 1] != ')')
+ 	while (bf) {
+@@ -504,7 +504,7 @@ static void ath_tx_complete_aggr(struct ath_softc *sc, struct ath_txq *txq,
+ 	if (isaggr && txok) {
+ 		if (ts->ts_flags & ATH9K_TX_BA) {
+ 			seq_st = ts->ts_seqnum;
+-			memcpy(ba, &ts->ba_low, WME_BA_BMP_SIZE >> 3);
++			memcpy(ba, &ts->ba, WME_BA_BMP_SIZE >> 3);
+ 		} else {
+ 			/*
+ 			 * AR5416 can become deaf/mute when BA
 -- 
 2.40.1
 
