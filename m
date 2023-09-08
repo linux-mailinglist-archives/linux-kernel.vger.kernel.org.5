@@ -2,75 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D86707987B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 15:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063607987B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 15:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243489AbjIHNTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 09:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36992 "EHLO
+        id S243495AbjIHNUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 09:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231295AbjIHNTn (ORCPT
+        with ESMTP id S231295AbjIHNUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 09:19:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D421D19B5;
-        Fri,  8 Sep 2023 06:19:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=byTGpZunXOY72bf+Yy8GIShaEnFa/OpSgKmuUVjqnmY=; b=AQvtYt+4V1wAPVojSoKVC8VN+y
-        36uhQcVVz5smyjYMiZ5NigdM/nkLwL6Wl0kEizgybkW2MrZLsQlJvoHn5zH5S72pwKgAc97OmXrUC
-        tMVnaHZ86dnAJ00YxIEwBMpBZ0KVSaE+3Ryv2DoNB/9Pb29it7NN5JoIsWjlPQVPetmRm5F583tZU
-        CP/6IXuKdu+4QKxfdxAJTkWVTTj2WkD6rfpiIN6XejGoGjcuVe32uepWTpg717Vpl0VoZxkVx5ebs
-        iXtpRuEh568t3mQZI4rWPGSxxQL1/qeg/o2iQF5H2phK/Iis3RvdUl+WU27FUEAqhIgcMAY1aDVMG
-        MynsH61g==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qebOK-000JqN-A1; Fri, 08 Sep 2023 13:19:20 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EFF70300472; Fri,  8 Sep 2023 15:19:19 +0200 (CEST)
-Date:   Fri, 8 Sep 2023 15:19:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Meng Li <li.meng@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Huang Rui <ray.huang@amd.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-acpi@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Shimmer Huang <shimmer.huang@amd.com>,
-        Perry Yuan <Perry.Yuan@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH V5 4/7] cpufreq: Add a notification message that the
- highest perf has changed
-Message-ID: <20230908131919.GG19320@noisy.programming.kicks-ass.net>
-References: <20230905015116.2268926-1-li.meng@amd.com>
- <20230905015116.2268926-5-li.meng@amd.com>
+        Fri, 8 Sep 2023 09:20:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3A419B5
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 06:20:36 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694179234;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oO1gFl3OKa4t8K8AP1W/DdE2zLBmEcRzdjv56gJls20=;
+        b=urc0KUmqr+YNlIw1FuklEojRP4zqNCUjDR8EO298olL+nLaqYmQKhybEsB10sVLzZiFbwz
+        2nkJNbsvxop6+DJtxz6Y1QJRiey0vkn2pwVYpMcG4OVeKBf46ZfuCNB/PrXLUE4lXa33rK
+        6CifuxUFZYLjBzjRKheTi+r06WKxAwPJT+zuVMRioA2AEsi/UBYkW4nRrsiW/NOGavatKf
+        9OfHGyfDYITI223YrtTTpPxtqR8rkDMncMA6i37TGulk6TC36v03EFobMGu6tXfrqshD+R
+        siIE/zCPq8+p5FLvWnj8sy1vxbQb+uk0i0BpEVhTd7zbTjimvrr5yhKAEhLlzw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694179234;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oO1gFl3OKa4t8K8AP1W/DdE2zLBmEcRzdjv56gJls20=;
+        b=eDnjoENdMjxyHVKFBK2bz7wwSWKGdwBP56Z4ay7Wqv+JZJ9RI6Zm/gOb/4wSg3g1r/SCzt
+        FaNxCbRVUcfV9LDQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v3 4/7] printk: nbcon: Add ownership state functions
+In-Reply-To: <ZPiFW6H-umxxB4CE@alley>
+References: <20230903150539.245076-1-john.ogness@linutronix.de>
+ <20230903150539.245076-5-john.ogness@linutronix.de>
+ <ZPiFW6H-umxxB4CE@alley>
+Date:   Fri, 08 Sep 2023 15:26:32 +0206
+Message-ID: <8734zox0m7.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905015116.2268926-5-li.meng@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 09:51:13AM +0800, Meng Li wrote:
-> ACPI 6.5 section 8.4.6.1.1.1 specifies that Notify event 0x85 can be
-> emmitted to cause the the OSPM to re-evaluate the highest performance
-> register. Add support for this event.
-> 
-> Signed-off-by: Meng Li <li.meng@amd.com>
-> Link: https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html?highlight=cppc#cpc-continuous-performance-control
+On 2023-09-06, Petr Mladek <pmladek@suse.com> wrote:
+>> +static bool nbcon_context_can_proceed(struct nbcon_context *ctxt, struct nbcon_state *cur)
+>> +{
 
-Does uefi.org guarantee this is a stable link?
+[...]
+
+>> +	/*
+>> +	 * It is not known whether the handover succeeded. The outermost
+>
+> It was not immediately clear to me what exactly "handover succeeded" did mean.
+> I would write:
+>
+> 	* It is not clear whether the waiter really took the lock
+> 	* and re-printed the record. The outermost calsite...
+
+It is not just about printing. A console is locked by drivers for other
+purposes as well. And that is the situation that this comment is mostly
+targetting. For v4 I change it to:
+
+        /*
+         * It is not clear whether the waiter really took over ownership. The
+         * outermost callsite must make the final decision whether console
+         * ownership is needed for it to proceed. If yes, it must reacquire
+         * ownership (possibly hostile) before carefully proceeding.
+         *
+         * The calling context no longer owns the console so go back all the
+         * way instead of trying to implement reacquire heuristics in tons of
+         * places.
+         */
+
+John Ogness
