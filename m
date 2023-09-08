@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06AE8798BC9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC92798BD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245539AbjIHSBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:01:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43322 "EHLO
+        id S245602AbjIHSCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245550AbjIHSBf (ORCPT
+        with ESMTP id S245559AbjIHSCC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:01:35 -0400
+        Fri, 8 Sep 2023 14:02:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D391FDB;
-        Fri,  8 Sep 2023 11:01:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F82BC43395;
-        Fri,  8 Sep 2023 18:00:45 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 300F3212D;
+        Fri,  8 Sep 2023 11:01:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CEE6C116A3;
+        Fri,  8 Sep 2023 18:00:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196046;
-        bh=NTv4RKZSQUPe218AVkpSbtNHtt36fHaKpCy6GzbJ+5I=;
+        s=k20201202; t=1694196047;
+        bh=9fUtrjmWnvsh/0rq1FHs4iNmtWITarenxaafsF7vdcY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HyfFqlkY7QnxW5auszQhY7OHpf07AZ4iX4MtIpjQOGpE5CYsrTKw37/ZAZEd43r6J
-         JBeo56LjXLFhRchcfH1u6XDjHrYwpnu/P73P96iLmkx+oIGF75y8XlY8dqmpDZZRbO
-         LfBKNKen1Y6675HO3Ro75ibTr6/EZ49+xRSzyJcZFILIAS4EG2cNpoYZ/ZnZxhS5Ij
-         JajmcHlbUX7cMW9c9zFLHWGjfK6dJEqYbYV5kFLV2z1iGjVBB3+XgrkdhGIvg1dj1j
-         KBhJcNL2qLz0gcyb4xKjEImQxxACnwk94c+SGgD9PHoBAWpXuo2Ngq2WK9aCX7YdAw
-         iUdGXhS8NoPJg==
+        b=XFoKZbw4wpSD1fy1sOvQOmWkUvPno9cLo+z7ivJuoLImhXv8XJSHq0P5npTe9ldIi
+         v+9M9IA6hvYqccvUhuahD9kCCkqIMMAwFMkoyaj4KYr4L0oeZC8YzoZRAYGiiroxW7
+         IE9lJdaHfz9xhWRdIvjWfwj1/IUC1us38DT3aLvv23AXnVPEyXu5VJFbPB3CjC9Dnd
+         N1XDS+5ynCQv8PCsA+ly2rBbNJmKFYI06hRyL22ckSr9slTvR2j8CLmKjkDeemeMGJ
+         fTzIj06Yq+ZaFpoxXNvo5FDmi12YTwf4IXUXAssOPqS9LMJoOSXA2PwUxSr2889Ti0
+         0rjiq5PUb6KEA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xu Yang <xu.yang_2@nxp.com>, Frank Li <Frank.Li@nxp.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        Frank.li@nxp.com, mark.rutland@arm.com, shawnguo@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.5 11/16] perf/imx_ddr: speed up overflow frequency of cycle
-Date:   Fri,  8 Sep 2023 13:59:48 -0400
-Message-Id: <20230908175953.3457942-11-sashal@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>, rafael@kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 12/16] ACPI: video: Add backlight=native DMI quirk for Apple iMac12,1 and iMac12,2
+Date:   Fri,  8 Sep 2023 13:59:49 -0400
+Message-Id: <20230908175953.3457942-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908175953.3457942-1-sashal@kernel.org>
 References: <20230908175953.3457942-1-sashal@kernel.org>
@@ -53,87 +53,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xu Yang <xu.yang_2@nxp.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit e89ecd8368860bf05437eabd07d292c316221cfc ]
+[ Upstream commit 8cf04bb321f036dd2e523e993897e0789bd5265c ]
 
-For i.MX8MP, we cannot ensure that cycle counter overflow occurs at least
-4 times as often as other events. Due to byte counters will count for any
-event configured, it will overflow more often. And if byte counters
-overflow that related counters would stop since they share the
-COUNTER_CNTL. We can speed up cycle counter overflow frequency by setting
-counter parameter (CP) field of cycle counter. In this way, we can avoid
-stop counting byte counters when interrupt didn't come and the byte
-counters can be fetched or updated from each cycle counter overflow
-interrupt.
+Linux defaults to picking the non-working ACPI video backlight interface
+on the Apple iMac12,1 and iMac12,2.
 
-Because we initialize CP filed to shorten counter0 overflow time, the cycle
-counter will start couting from a fixed/base value each time. We need to
-remove the base from the result too. Therefore, we could get precise result
-from cycle counter.
+Add a DMI quirk to pick the working native radeon_bl0 interface instead.
 
-Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
-Reviewed-by: Frank Li <Frank.Li@nxp.com>
-Link: https://lore.kernel.org/r/20230811015438.1999307-1-xu.yang_2@nxp.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Link: https://gitlab.freedesktop.org/drm/amd/-/issues/1838
+Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2753
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/perf/fsl_imx8_ddr_perf.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ drivers/acpi/video_detect.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/perf/fsl_imx8_ddr_perf.c b/drivers/perf/fsl_imx8_ddr_perf.c
-index 5222ba1e79d0e..b022755e6ab91 100644
---- a/drivers/perf/fsl_imx8_ddr_perf.c
-+++ b/drivers/perf/fsl_imx8_ddr_perf.c
-@@ -28,6 +28,8 @@
- #define CNTL_CLEAR_MASK		0xFFFFFFFD
- #define CNTL_OVER_MASK		0xFFFFFFFE
- 
-+#define CNTL_CP_SHIFT		16
-+#define CNTL_CP_MASK		(0xFF << CNTL_CP_SHIFT)
- #define CNTL_CSV_SHIFT		24
- #define CNTL_CSV_MASK		(0xFFU << CNTL_CSV_SHIFT)
- 
-@@ -35,6 +37,8 @@
- #define EVENT_CYCLES_COUNTER	0
- #define NUM_COUNTERS		4
- 
-+/* For removing bias if cycle counter CNTL.CP is set to 0xf0 */
-+#define CYCLES_COUNTER_MASK	0x0FFFFFFF
- #define AXI_MASKING_REVERT	0xffff0000	/* AXI_MASKING(MSB 16bits) + AXI_ID(LSB 16bits) */
- 
- #define to_ddr_pmu(p)		container_of(p, struct ddr_pmu, pmu)
-@@ -427,6 +431,17 @@ static void ddr_perf_counter_enable(struct ddr_pmu *pmu, int config,
- 		writel(0, pmu->base + reg);
- 		val = CNTL_EN | CNTL_CLEAR;
- 		val |= FIELD_PREP(CNTL_CSV_MASK, config);
-+
-+		/*
-+		 * On i.MX8MP we need to bias the cycle counter to overflow more often.
-+		 * We do this by initializing bits [23:16] of the counter value via the
-+		 * COUNTER_CTRL Counter Parameter (CP) field.
-+		 */
-+		if (pmu->devtype_data->quirks & DDR_CAP_AXI_ID_FILTER_ENHANCED) {
-+			if (counter == EVENT_CYCLES_COUNTER)
-+				val |= FIELD_PREP(CNTL_CP_MASK, 0xf0);
-+		}
-+
- 		writel(val, pmu->base + reg);
- 	} else {
- 		/* Disable counter */
-@@ -466,6 +481,12 @@ static void ddr_perf_event_update(struct perf_event *event)
- 	int ret;
- 
- 	new_raw_count = ddr_perf_read_counter(pmu, counter);
-+	/* Remove the bias applied in ddr_perf_counter_enable(). */
-+	if (pmu->devtype_data->quirks & DDR_CAP_AXI_ID_FILTER_ENHANCED) {
-+		if (counter == EVENT_CYCLES_COUNTER)
-+			new_raw_count &= CYCLES_COUNTER_MASK;
-+	}
-+
- 	local64_add(new_raw_count, &event->count);
- 
- 	/*
+diff --git a/drivers/acpi/video_detect.c b/drivers/acpi/video_detect.c
+index 0c376edd64fe1..442396f6ed1f9 100644
+--- a/drivers/acpi/video_detect.c
++++ b/drivers/acpi/video_detect.c
+@@ -495,6 +495,24 @@ static const struct dmi_system_id video_detect_dmi_table[] = {
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "iMac11,3"),
+ 		},
+ 	},
++	{
++	 /* https://gitlab.freedesktop.org/drm/amd/-/issues/1838 */
++	 .callback = video_detect_force_native,
++	 /* Apple iMac12,1 */
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "Apple Inc."),
++		DMI_MATCH(DMI_PRODUCT_NAME, "iMac12,1"),
++		},
++	},
++	{
++	 /* https://gitlab.freedesktop.org/drm/amd/-/issues/2753 */
++	 .callback = video_detect_force_native,
++	 /* Apple iMac12,2 */
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "Apple Inc."),
++		DMI_MATCH(DMI_PRODUCT_NAME, "iMac12,2"),
++		},
++	},
+ 	{
+ 	 /* https://bugzilla.redhat.com/show_bug.cgi?id=1217249 */
+ 	 .callback = video_detect_force_native,
 -- 
 2.40.1
 
