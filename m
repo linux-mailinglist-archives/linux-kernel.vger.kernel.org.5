@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A764D798C80
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC54798CA7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343650AbjIHSQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:16:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60330 "EHLO
+        id S1343842AbjIHSRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:17:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343647AbjIHSQi (ORCPT
+        with ESMTP id S240532AbjIHSRa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:16:38 -0400
+        Fri, 8 Sep 2023 14:17:30 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1DC2135;
-        Fri,  8 Sep 2023 11:16:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 788BBC43142;
-        Fri,  8 Sep 2023 18:13:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0684268C;
+        Fri,  8 Sep 2023 11:17:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A74E8C116A1;
+        Fri,  8 Sep 2023 18:13:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196813;
-        bh=Px6YTqWVrT9O5rjNMNUtYYowvE2PAQ3QfWU57k78G78=;
+        s=k20201202; t=1694196816;
+        bh=Ue0UtTFOxrPpS1s/YE4TAEQffCDlXxbki3Zcb8O8C8k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rekgnD//HcoaI0TbEx1k3x0E1FB/lf/IqScKIqxdBrR0+dVbgVRjUYTsX3PfIqy7W
-         +tYxbn6J8jnr7tCBRnv4BWk00pF8prllWcmcnAzH47OkKO1UTdSo5nlsbuL1WR7dOc
-         1lTjHDBJvxcUJ4nCQHvJY0ygpt/hTi32v1t8YNtoEZE4lyweVS7P79VLdU7Y4t8xtB
-         gvWxpMG4Zta+7cEsMj26FvYFE2xsmpzwVAYNnHmU28xOL7odtzcIKucp9w4/elzcru
-         Zz72G9j4maLE09utuSfib0G+7MiGhYyi1knjiojbqUspa5dwWvbLsyzFtYf5PLZM4I
-         joOdMwpjTus5A==
+        b=BRkyh/07nbNKb7P+SsDur4jeQtIR1N6P4T6V1AtSsuRlPDv6MS2yeQ5jbUIdNKnex
+         gjvWlOXiMqedp0fnpYMhIRfeIujhAnxw2Ujo4Xb6tKbxTrhLkoi2ttCddSjVtKuabK
+         21cttdLdUDzHtgaoyNpkQ5GM52MUiOx3v6+xAHNID89VH7+HLMZ8bd9DybptDF9OdS
+         dm3Z8dgDFfHdq+LBZ1VZVepiSZuKxtiJ47HFmJPCDdowHUs94fIkYyA4M28chJxISH
+         nC/Ig7eT9kCZN72/7QV2FVxRcLrHmQxVlyxGNosbytGoION/Ae2SF589vgAGSZvadB
+         fMQsRmfLaVECA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Azeem Shaikh <azeemshaikh38@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 03/45] crypto: lrw,xts - Replace strlcpy with strscpy
-Date:   Fri,  8 Sep 2023 14:12:44 -0400
-Message-Id: <20230908181327.3459042-3-sashal@kernel.org>
+Cc:     Okan Sahin <okan.sahin@analog.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com
+Subject: [PATCH AUTOSEL 6.5 04/45] regulator: max77857: Add ADI MAX77857/59/MAX77831 Regulator Support
+Date:   Fri,  8 Sep 2023 14:12:45 -0400
+Message-Id: <20230908181327.3459042-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181327.3459042-1-sashal@kernel.org>
 References: <20230908181327.3459042-1-sashal@kernel.org>
@@ -54,68 +52,532 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Azeem Shaikh <azeemshaikh38@gmail.com>
+From: Okan Sahin <okan.sahin@analog.com>
 
-[ Upstream commit babb80b3ecc6f40c962e13c654ebcd27f25ee327 ]
+[ Upstream commit af71cccadecedad3484c2208e2c4fc8eff927d4a ]
 
-strlcpy() reads the entire source buffer first.
-This read may exceed the destination size limit.
-This is both inefficient and can lead to linear read
-overflows if a source string is not NUL-terminated [1].
-In an effort to remove strlcpy() completely [2], replace
-strlcpy() here with strscpy().
+Regulator driver for  MAX77857/59 and MAX77831.
+The MAX77857 is a high-efficiency, high-performance
+buck-boost converter targeted for systems requiring
+a wide input voltage range (2.5V to 16V).
 
-Direct replacement is safe here since return value of -errno
-is used to check for truncation instead of sizeof(dest).
+The MAX77859 is high-Efficiency Buck-Boost Converter
+for USB-PD/PPS Applications. It has wide input range
+(2.5V to 22V)
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-[2] https://github.com/KSPP/linux/issues/89
+The MAX77831 is a high-efficiency, high-performance
+buck-boost converter targeted for systems requiring
+wide input voltage range (2.5V to 16V).
 
-Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Okan Sahin <okan.sahin@analog.com>
+Link: https://lore.kernel.org/r/20230717050736.10075-3-okan.sahin@analog.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/lrw.c | 6 +++---
- crypto/xts.c | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/regulator/Kconfig              |  10 +
+ drivers/regulator/Makefile             |   1 +
+ drivers/regulator/max77857-regulator.c | 459 +++++++++++++++++++++++++
+ 3 files changed, 470 insertions(+)
+ create mode 100644 drivers/regulator/max77857-regulator.c
 
-diff --git a/crypto/lrw.c b/crypto/lrw.c
-index 1b0f76ba3eb5e..59260aefed280 100644
---- a/crypto/lrw.c
-+++ b/crypto/lrw.c
-@@ -357,10 +357,10 @@ static int lrw_create(struct crypto_template *tmpl, struct rtattr **tb)
- 	 * cipher name.
- 	 */
- 	if (!strncmp(cipher_name, "ecb(", 4)) {
--		unsigned len;
-+		int len;
+diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+index 823f8e6e48012..3cc92326fb2b4 100644
+--- a/drivers/regulator/Kconfig
++++ b/drivers/regulator/Kconfig
+@@ -584,6 +584,16 @@ config REGULATOR_MAX77650
+ 	  Semiconductor. This device has a SIMO with three independent
+ 	  power rails and an LDO.
  
--		len = strlcpy(ecb_name, cipher_name + 4, sizeof(ecb_name));
--		if (len < 2 || len >= sizeof(ecb_name))
-+		len = strscpy(ecb_name, cipher_name + 4, sizeof(ecb_name));
-+		if (len < 2)
- 			goto err_free_inst;
- 
- 		if (ecb_name[len - 1] != ')')
-diff --git a/crypto/xts.c b/crypto/xts.c
-index 09be909a6a1aa..548b302c6c6a0 100644
---- a/crypto/xts.c
-+++ b/crypto/xts.c
-@@ -396,10 +396,10 @@ static int xts_create(struct crypto_template *tmpl, struct rtattr **tb)
- 	 * cipher name.
- 	 */
- 	if (!strncmp(cipher_name, "ecb(", 4)) {
--		unsigned len;
-+		int len;
- 
--		len = strlcpy(ctx->name, cipher_name + 4, sizeof(ctx->name));
--		if (len < 2 || len >= sizeof(ctx->name))
-+		len = strscpy(ctx->name, cipher_name + 4, sizeof(ctx->name));
-+		if (len < 2)
- 			goto err_free_inst;
- 
- 		if (ctx->name[len - 1] != ')')
++config REGULATOR_MAX77857
++	tristate "ADI MAX77857/MAX77831 regulator support"
++	depends on I2C
++	select REGMAP_I2C
++	help
++	  This driver controls a ADI MAX77857 and MAX77831 regulators.
++	  via I2C bus. MAX77857 and MAX77831 are high efficiency buck-boost
++	  converters with input voltage range (2.5V to 16V). Say Y here to
++	  enable the regulator driver
++
+ config REGULATOR_MAX8649
+ 	tristate "Maxim 8649 voltage regulator"
+ 	depends on I2C
+diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
+index 15e0d614ff666..c9347a5aa39a7 100644
+--- a/drivers/regulator/Makefile
++++ b/drivers/regulator/Makefile
+@@ -86,6 +86,7 @@ obj-$(CONFIG_REGULATOR_MAX77686) += max77686-regulator.o
+ obj-$(CONFIG_REGULATOR_MAX77693) += max77693-regulator.o
+ obj-$(CONFIG_REGULATOR_MAX77802) += max77802-regulator.o
+ obj-$(CONFIG_REGULATOR_MAX77826) += max77826-regulator.o
++obj-$(CONFIG_REGULATOR_MAX77857) += max77857-regulator.o
+ obj-$(CONFIG_REGULATOR_MC13783) += mc13783-regulator.o
+ obj-$(CONFIG_REGULATOR_MC13892) += mc13892-regulator.o
+ obj-$(CONFIG_REGULATOR_MC13XXX_CORE) +=  mc13xxx-regulator-core.o
+diff --git a/drivers/regulator/max77857-regulator.c b/drivers/regulator/max77857-regulator.c
+new file mode 100644
+index 0000000000000..c5482ffd606ec
+--- /dev/null
++++ b/drivers/regulator/max77857-regulator.c
+@@ -0,0 +1,459 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2023 Analog Devices, Inc.
++ * ADI Regulator driver for the MAX77857
++ * MAX77859 and MAX77831.
++ */
++#include <linux/bitfield.h>
++#include <linux/i2c.h>
++#include <linux/interrupt.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <linux/regulator/driver.h>
++#include <linux/regulator/machine.h>
++#include <linux/regulator/of_regulator.h>
++#include <linux/util_macros.h>
++
++#define MAX77857_REG_INT_SRC		0x10
++#define MAX77857_REG_INT_MASK		0x11
++#define MAX77857_REG_CONT1		0x12
++#define MAX77857_REG_CONT2		0x13
++#define MAX77857_REG_CONT3		0x14
++
++#define MAX77857_INT_SRC_OCP		BIT(0)
++#define MAX77857_INT_SRC_THS		BIT(1)
++#define MAX77857_INT_SRC_HARDSHORT	BIT(2)
++#define MAX77857_INT_SRC_OVP		BIT(3)
++#define MAX77857_INT_SRC_POK		BIT(4)
++
++#define MAX77857_ILIM_MASK		GENMASK(2, 0)
++#define MAX77857_CONT1_FREQ		GENMASK(4, 3)
++#define MAX77857_CONT3_FPWM		BIT(5)
++
++#define MAX77859_REG_INT_SRC		0x11
++#define MAX77859_REG_CONT1		0x13
++#define MAX77859_REG_CONT2		0x14
++#define MAX77859_REG_CONT3		0x15
++#define MAX77859_REG_CONT5		0x17
++#define MAX77859_CONT2_FPWM		BIT(2)
++#define MAX77859_CONT2_INTB		BIT(3)
++#define MAX77859_CONT3_DVS_START	BIT(2)
++#define MAX77859_VOLTAGE_SEL_MASK	GENMASK(9, 0)
++
++#define MAX77859_CURRENT_MIN		1000000
++#define MAX77859_CURRENT_MAX		5000000
++#define MAX77859_CURRENT_STEP		50000
++
++enum max77857_id {
++	ID_MAX77831 = 1,
++	ID_MAX77857,
++	ID_MAX77859,
++	ID_MAX77859A,
++};
++
++static bool max77857_volatile_reg(struct device *dev, unsigned int reg)
++{
++	enum max77857_id id = (enum max77857_id)dev_get_drvdata(dev);
++
++	switch (id) {
++	case ID_MAX77831:
++	case ID_MAX77857:
++		return reg == MAX77857_REG_INT_SRC;
++	case ID_MAX77859:
++	case ID_MAX77859A:
++		return reg == MAX77859_REG_INT_SRC;
++	default:
++		return true;
++	}
++}
++
++struct regmap_config max77857_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.cache_type = REGCACHE_MAPLE,
++	.volatile_reg = max77857_volatile_reg,
++};
++
++static int max77857_get_status(struct regulator_dev *rdev)
++{
++	unsigned int val;
++	int ret;
++
++	ret = regmap_read(rdev->regmap, MAX77857_REG_INT_SRC, &val);
++	if (ret)
++		return ret;
++
++	if (FIELD_GET(MAX77857_INT_SRC_POK, val))
++		return REGULATOR_STATUS_ON;
++
++	return REGULATOR_STATUS_ERROR;
++}
++
++static unsigned int max77857_get_mode(struct regulator_dev *rdev)
++{
++	enum max77857_id id = (enum max77857_id)rdev_get_drvdata(rdev);
++	unsigned int regval;
++	int ret;
++
++	switch (id) {
++	case ID_MAX77831:
++	case ID_MAX77857:
++		ret = regmap_read(rdev->regmap, MAX77857_REG_CONT3, &regval);
++		if (ret)
++			return ret;
++
++		if (FIELD_GET(MAX77857_CONT3_FPWM, regval))
++			return REGULATOR_MODE_FAST;
++
++		break;
++	case ID_MAX77859:
++	case ID_MAX77859A:
++		ret = regmap_read(rdev->regmap, MAX77859_REG_CONT2, &regval);
++		if (ret)
++			return ret;
++
++		if (FIELD_GET(MAX77859_CONT2_FPWM, regval))
++			return REGULATOR_MODE_FAST;
++
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return REGULATOR_MODE_NORMAL;
++}
++
++static int max77857_set_mode(struct regulator_dev *rdev, unsigned int mode)
++{
++	enum max77857_id id = (enum max77857_id)rdev_get_drvdata(rdev);
++	unsigned int reg, val;
++
++	switch (id) {
++	case ID_MAX77831:
++	case ID_MAX77857:
++		reg = MAX77857_REG_CONT3;
++		val = MAX77857_CONT3_FPWM;
++		break;
++	case ID_MAX77859:
++	case ID_MAX77859A:
++		reg = MAX77859_REG_CONT2;
++		val = MAX77859_CONT2_FPWM;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (mode) {
++	case REGULATOR_MODE_FAST:
++		return regmap_set_bits(rdev->regmap, reg, val);
++	case REGULATOR_MODE_NORMAL:
++		return regmap_clear_bits(rdev->regmap, reg, val);
++	default:
++		return -EINVAL;
++	}
++}
++
++static int max77857_get_error_flags(struct regulator_dev *rdev,
++				    unsigned int *flags)
++{
++	unsigned int val;
++	int ret;
++
++	ret = regmap_read(rdev->regmap, MAX77857_REG_INT_SRC, &val);
++	if (ret)
++		return ret;
++
++	*flags = 0;
++
++	if (FIELD_GET(MAX77857_INT_SRC_OVP, val))
++		*flags |= REGULATOR_ERROR_OVER_VOLTAGE_WARN;
++
++	if (FIELD_GET(MAX77857_INT_SRC_OCP, val) ||
++	    FIELD_GET(MAX77857_INT_SRC_HARDSHORT, val))
++		*flags |= REGULATOR_ERROR_OVER_CURRENT;
++
++	if (FIELD_GET(MAX77857_INT_SRC_THS, val))
++		*flags |= REGULATOR_ERROR_OVER_TEMP;
++
++	if (!FIELD_GET(MAX77857_INT_SRC_POK, val))
++		*flags |= REGULATOR_ERROR_FAIL;
++
++	return 0;
++}
++
++static struct linear_range max77859_lin_ranges[] = {
++	REGULATOR_LINEAR_RANGE(3200000, 0x0A0, 0x320, 20000)
++};
++
++static const unsigned int max77859_ramp_table[4] = {
++	1000, 500, 250, 125
++};
++
++static int max77859_set_voltage_sel(struct regulator_dev *rdev,
++				    unsigned int sel)
++{
++	__be16 reg;
++	int ret;
++
++	reg = cpu_to_be16(sel);
++
++	ret = regmap_bulk_write(rdev->regmap, MAX77859_REG_CONT3, &reg, 2);
++	if (ret)
++		return ret;
++
++	/* actually apply new voltage */
++	return regmap_set_bits(rdev->regmap, MAX77859_REG_CONT3,
++			       MAX77859_CONT3_DVS_START);
++}
++
++int max77859_get_voltage_sel(struct regulator_dev *rdev)
++{
++	__be16 reg;
++	int ret;
++
++	ret = regmap_bulk_read(rdev->regmap, MAX77859_REG_CONT3, &reg, 2);
++	if (ret)
++		return ret;
++
++	return FIELD_GET(MAX77859_VOLTAGE_SEL_MASK, __be16_to_cpu(reg));
++}
++
++int max77859_set_current_limit(struct regulator_dev *rdev, int min_uA, int max_uA)
++{
++	u32 selector;
++
++	if (max_uA < MAX77859_CURRENT_MIN)
++		return -EINVAL;
++
++	selector = 0x12 + (max_uA - MAX77859_CURRENT_MIN) / MAX77859_CURRENT_STEP;
++
++	selector = clamp_val(selector, 0x00, 0x7F);
++
++	return regmap_write(rdev->regmap, MAX77859_REG_CONT5, selector);
++}
++
++int max77859_get_current_limit(struct regulator_dev *rdev)
++{
++	u32 selector;
++	int ret;
++
++	ret = regmap_read(rdev->regmap, MAX77859_REG_CONT5, &selector);
++	if (ret)
++		return ret;
++
++	if (selector <= 0x12)
++		return MAX77859_CURRENT_MIN;
++
++	if (selector >= 0x64)
++		return MAX77859_CURRENT_MAX;
++
++	return MAX77859_CURRENT_MIN + (selector - 0x12) * MAX77859_CURRENT_STEP;
++}
++
++static const struct regulator_ops max77859_regulator_ops = {
++	.list_voltage = regulator_list_voltage_linear_range,
++	.set_voltage_sel = max77859_set_voltage_sel,
++	.get_voltage_sel = max77859_get_voltage_sel,
++	.set_ramp_delay = regulator_set_ramp_delay_regmap,
++	.get_status = max77857_get_status,
++	.set_mode = max77857_set_mode,
++	.get_mode = max77857_get_mode,
++	.get_error_flags = max77857_get_error_flags,
++};
++
++static const struct regulator_ops max77859a_regulator_ops = {
++	.list_voltage = regulator_list_voltage_linear_range,
++	.set_voltage_sel = max77859_set_voltage_sel,
++	.get_voltage_sel = max77859_get_voltage_sel,
++	.set_current_limit = max77859_set_current_limit,
++	.get_current_limit = max77859_get_current_limit,
++	.set_ramp_delay = regulator_set_ramp_delay_regmap,
++	.get_status = max77857_get_status,
++	.set_mode = max77857_set_mode,
++	.get_mode = max77857_get_mode,
++	.get_error_flags = max77857_get_error_flags,
++};
++
++static const struct regulator_ops max77857_regulator_ops = {
++	.list_voltage = regulator_list_voltage_linear_range,
++	.set_voltage_sel = regulator_set_voltage_sel_regmap,
++	.get_voltage_sel = regulator_get_voltage_sel_regmap,
++	.set_ramp_delay = regulator_set_ramp_delay_regmap,
++	.get_status = max77857_get_status,
++	.set_mode = max77857_set_mode,
++	.get_mode = max77857_get_mode,
++	.get_error_flags = max77857_get_error_flags,
++};
++
++static struct linear_range max77857_lin_ranges[] = {
++	REGULATOR_LINEAR_RANGE(4485000, 0x3D, 0xCC, 73500)
++};
++
++static const unsigned int max77857_switch_freq[] = {
++	1200000, 1500000, 1800000, 2100000
++};
++
++static const unsigned int max77857_ramp_table[2][4] = {
++	{ 1333, 667, 333, 227 }, /* when switch freq is 1.8MHz or 2.1MHz */
++	{ 1166, 667, 333, 167 }, /* when switch freq is 1.2MHz or 1.5MHz */
++};
++
++static struct regulator_desc max77857_regulator_desc = {
++	.ops = &max77857_regulator_ops,
++	.name = "max77857",
++	.linear_ranges = max77857_lin_ranges,
++	.n_linear_ranges = ARRAY_SIZE(max77857_lin_ranges),
++	.vsel_mask = 0xFF,
++	.vsel_reg = MAX77857_REG_CONT2,
++	.ramp_delay_table = max77857_ramp_table[0],
++	.n_ramp_values = ARRAY_SIZE(max77857_ramp_table[0]),
++	.ramp_reg = MAX77857_REG_CONT3,
++	.ramp_mask = GENMASK(1, 0),
++	.ramp_delay = max77857_ramp_table[0][0],
++	.owner = THIS_MODULE,
++};
++
++static void max77857_calc_range(struct device *dev, enum max77857_id id)
++{
++	struct linear_range *range;
++	unsigned long vref_step;
++	u32 rtop = 0;
++	u32 rbot = 0;
++
++	device_property_read_u32(dev, "adi,rtop-ohms", &rtop);
++	device_property_read_u32(dev, "adi,rbot-ohms", &rbot);
++
++	if (!rbot || !rtop)
++		return;
++
++	switch (id) {
++	case ID_MAX77831:
++	case ID_MAX77857:
++		range = max77857_lin_ranges;
++		vref_step = 4900UL;
++		break;
++	case ID_MAX77859:
++	case ID_MAX77859A:
++		range = max77859_lin_ranges;
++		vref_step = 1250UL;
++		break;
++	}
++
++	range->step = DIV_ROUND_CLOSEST(vref_step * (rbot + rtop), rbot);
++	range->min = range->step * range->min_sel;
++}
++
++static int max77857_probe(struct i2c_client *client)
++{
++	const struct i2c_device_id *i2c_id;
++	struct device *dev = &client->dev;
++	struct regulator_config cfg = { };
++	struct regulator_dev *rdev;
++	struct regmap *regmap;
++	enum max77857_id id;
++	u32 switch_freq = 0;
++	int ret;
++
++	i2c_id = i2c_client_get_device_id(client);
++	if (!i2c_id)
++		return -EINVAL;
++
++	id = i2c_id->driver_data;
++
++	dev_set_drvdata(dev, (void *)id);
++
++	if (id == ID_MAX77859 || id == ID_MAX77859A) {
++		max77857_regulator_desc.ops = &max77859_regulator_ops;
++		max77857_regulator_desc.linear_ranges = max77859_lin_ranges;
++		max77857_regulator_desc.ramp_delay_table = max77859_ramp_table;
++		max77857_regulator_desc.ramp_delay = max77859_ramp_table[0];
++	}
++
++	if (id == ID_MAX77859A)
++		max77857_regulator_desc.ops = &max77859a_regulator_ops;
++
++	max77857_calc_range(dev, id);
++
++	regmap = devm_regmap_init_i2c(client, &max77857_regmap_config);
++	if (IS_ERR(regmap))
++		return dev_err_probe(dev, PTR_ERR(regmap),
++				     "cannot initialize regmap\n");
++
++	device_property_read_u32(dev, "adi,switch-frequency-hz", &switch_freq);
++	if (switch_freq) {
++		switch_freq = find_closest(switch_freq, max77857_switch_freq,
++					   ARRAY_SIZE(max77857_switch_freq));
++
++		if (id == ID_MAX77831 && switch_freq == 3)
++			switch_freq = 2;
++
++		switch (id) {
++		case ID_MAX77831:
++		case ID_MAX77857:
++			ret = regmap_update_bits(regmap, MAX77857_REG_CONT1,
++						 MAX77857_CONT1_FREQ, switch_freq);
++
++			if (switch_freq >= 2)
++				break;
++
++			max77857_regulator_desc.ramp_delay_table = max77857_ramp_table[1];
++			max77857_regulator_desc.ramp_delay = max77857_ramp_table[1][0];
++			break;
++		case ID_MAX77859:
++		case ID_MAX77859A:
++			ret = regmap_update_bits(regmap, MAX77859_REG_CONT1,
++						 MAX77857_CONT1_FREQ, switch_freq);
++			break;
++		}
++		if (ret)
++			return ret;
++	}
++
++	cfg.dev = dev;
++	cfg.driver_data = (void *)id;
++	cfg.regmap = regmap;
++	cfg.init_data = of_get_regulator_init_data(dev, dev->of_node,
++						   &max77857_regulator_desc);
++	if (!cfg.init_data)
++		return -ENOMEM;
++
++	rdev = devm_regulator_register(dev, &max77857_regulator_desc, &cfg);
++	if (IS_ERR(rdev))
++		return dev_err_probe(dev, PTR_ERR(rdev),
++				     "cannot register regulator\n");
++
++	return 0;
++}
++
++const struct i2c_device_id max77857_id[] = {
++	{ "max77831", ID_MAX77831 },
++	{ "max77857", ID_MAX77857 },
++	{ "max77859", ID_MAX77859 },
++	{ "max77859a", ID_MAX77859A },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, max77857_id);
++
++static const struct of_device_id max77857_of_id[] = {
++	{ .compatible = "adi,max77831", .data = (void *)ID_MAX77831 },
++	{ .compatible = "adi,max77857", .data = (void *)ID_MAX77857 },
++	{ .compatible = "adi,max77859", .data = (void *)ID_MAX77859 },
++	{ .compatible = "adi,max77859a", .data = (void *)ID_MAX77859A },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, max77857_of_id);
++
++struct i2c_driver max77857_driver = {
++	.driver = {
++		.name = "max77857",
++		.of_match_table = max77857_of_id,
++	},
++	.id_table = max77857_id,
++	.probe_new = max77857_probe,
++};
++module_i2c_driver(max77857_driver);
++
++MODULE_DESCRIPTION("Analog Devices MAX77857 Buck-Boost Converter Driver");
++MODULE_AUTHOR("Ibrahim Tilki <Ibrahim.Tilki@analog.com>");
++MODULE_AUTHOR("Okan Sahin <Okan.Sahin@analog.com>");
++MODULE_LICENSE("GPL");
 -- 
 2.40.1
 
