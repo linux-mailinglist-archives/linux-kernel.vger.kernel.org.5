@@ -2,44 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72882799098
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9DE799019
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237587AbjIHTwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
+        id S233705AbjIHThA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234682AbjIHTwy (ORCPT
+        with ESMTP id S239521AbjIHTgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:52:54 -0400
+        Fri, 8 Sep 2023 15:36:47 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722AE1B1;
-        Fri,  8 Sep 2023 12:52:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBDD0C116A8;
-        Fri,  8 Sep 2023 19:35:42 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31ED910FB;
+        Fri,  8 Sep 2023 12:36:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 786C8C116A9;
+        Fri,  8 Sep 2023 19:35:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201743;
-        bh=Y6f1pYXMyI4EGb7QXDxBGnbubvL70Gvt/tQOkkkpQaY=;
+        s=k20201202; t=1694201745;
+        bh=ptCKRph/jB0kxWZ/wtjN+cTTFnPUCSPwJwcJsE2x88c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KnSxxWi3DFaDcCj68ogkFlYmT5g0aQ8LwKm5rg3u63rKgQfhXNHecTGALFiMWi0Hn
-         KjgsGVvlO/z3aMhNUGvRO1ydn9SBdsECxrmJn08I+oIUlUXkx6heLiwRkjVeEoiUH8
-         oZoejS1iXnFCNLludOmo/YE8QVqjgam4fGYOxOdWxwmTVte0cvC9N0/yPM5fagKV2j
-         vC9+he6YNqJ2IuCw+vyr0apJIMPQ8Xlu6V+R3M8W/iKeQW8C7m8BAzyEowDqFYLFvR
-         9rQs+LLpj4kTSTlDxnMk3JhdRPxN3FLjUDLtkWAxt+JeX3MWbTSzAcy2vdMbBbNeCq
-         d2VTVCdAZBzuQ==
+        b=tpf265/oyNFs/elogNeggvy91rHe0KRiUBBNSEper+4Yed42Iw5TIfqEVpY1ZRzHA
+         5htP+HY84T5dRsQTmN1G7jKJqCxu5iKAVSYaprK+gIFFJ7sCSn3qABr2Fb4s5Zp2aY
+         h0zbCl+KPCupbn99nAZBszyn7BjvR2ZaSafoGNgL/dOoybghx+d+cNwY5VfdtKjZgQ
+         c+W318tl9x791Ga7t5NE8+0fL8vIeamT/wsEe5Atqy0milLnKmApjr3ItaCMZTT/GH
+         E8eArd9IL27uDQKgSlSEjBStmKua/DmtRn8zyWIaXti4KUm2s6qpKaSCPV1q/hYBwf
+         XzMS+rlvocqkQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Rong Tao <rongtao@cestc.cn>, Petr Mladek <pmladek@suse.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, chenjiahao16@huawei.com,
-        arnd@arndb.de
-Subject: [PATCH AUTOSEL 5.15 05/13] samples/hw_breakpoint: Fix kernel BUG 'invalid opcode: 0000'
-Date:   Fri,  8 Sep 2023 15:35:21 -0400
-Message-Id: <20230908193530.3463647-5-sashal@kernel.org>
+Cc:     =?UTF-8?q?Ma=C3=ADra=20Canal?= <mcanal@igalia.com>,
+        Arthur Grillo <arthurgrillo@riseup.net>,
+        =?UTF-8?q?Ma=C3=ADra=20Canal?= <mairacanal@riseup.net>,
+        Sasha Levin <sashal@kernel.org>, rodrigosiqueiramelo@gmail.com,
+        melissa.srw@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.15 06/13] drm/vkms: Fix race-condition between the hrtimer and the atomic commit
+Date:   Fri,  8 Sep 2023 15:35:22 -0400
+Message-Id: <20230908193530.3463647-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908193530.3463647-1-sashal@kernel.org>
 References: <20230908193530.3463647-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.131
@@ -53,74 +56,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
+From: Maíra Canal <mcanal@igalia.com>
 
-[ Upstream commit 910e230d5f1bb72c54532e94fbb1705095c7bab6 ]
+[ Upstream commit a0e6a017ab56936c0405fe914a793b241ed25ee0 ]
 
-Macro symbol_put() is defined as __symbol_put(__stringify(x))
+Currently, it is possible for the composer to be set as enabled and then
+as disabled without a proper call for the vkms_vblank_simulate(). This
+is problematic, because the driver would skip one CRC output, causing CRC
+tests to fail. Therefore, we need to make sure that, for each time the
+composer is set as enabled, a composer job is added to the queue.
 
-    ksym_name = "jiffies"
-    symbol_put(ksym_name)
+In order to provide this guarantee, add a mutex that will lock before
+the composer is set as enabled and will unlock only after the composer
+job is added to the queue. This way, we can have a guarantee that the
+driver won't skip a CRC entry.
 
-will be resolved as
+This race-condition is affecting the IGT test "writeback-check-output",
+making the test fail and also, leaking writeback framebuffers, as the
+writeback job is queued, but it is not signaled. This patch avoids both
+problems.
 
-    __symbol_put("ksym_name")
+[v2]:
+    * Create a new mutex and keep the spinlock across the atomic commit in
+      order to avoid interrupts that could result in deadlocks.
 
-which is clearly wrong. So symbol_put must be replaced with __symbol_put.
-
-When we uninstall hw_breakpoint.ko (rmmod), a kernel bug occurs with the
-following error:
-
-[11381.854152] kernel BUG at kernel/module/main.c:779!
-[11381.854159] invalid opcode: 0000 [#2] PREEMPT SMP PTI
-[11381.854163] CPU: 8 PID: 59623 Comm: rmmod Tainted: G      D    OE      6.2.9-200.fc37.x86_64 #1
-[11381.854167] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./B360M-HDV, BIOS P3.20 10/23/2018
-[11381.854169] RIP: 0010:__symbol_put+0xa2/0xb0
-[11381.854175] Code: 00 e8 92 d2 f7 ff 65 8b 05 c3 2f e6 78 85 c0 74 1b 48 8b 44 24 30 65 48 2b 04 25 28 00 00 00 75 12 48 83 c4 38 c3 cc cc cc cc <0f> 0b 0f 1f 44 00 00 eb de e8 c0 df d8 00 90 90 90 90 90 90 90 90
-[11381.854178] RSP: 0018:ffffad8ec6ae7dd0 EFLAGS: 00010246
-[11381.854181] RAX: 0000000000000000 RBX: ffffffffc1fd1240 RCX: 000000000000000c
-[11381.854184] RDX: 000000000000006b RSI: ffffffffc02bf7c7 RDI: ffffffffc1fd001c
-[11381.854186] RBP: 000055a38b76e7c8 R08: ffffffff871ccfe0 R09: 0000000000000000
-[11381.854188] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-[11381.854190] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[11381.854192] FS:  00007fbf7c62c740(0000) GS:ffff8c5badc00000(0000) knlGS:0000000000000000
-[11381.854195] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[11381.854197] CR2: 000055a38b7793f8 CR3: 0000000363e1e001 CR4: 00000000003726e0
-[11381.854200] DR0: ffffffffb3407980 DR1: 0000000000000000 DR2: 0000000000000000
-[11381.854202] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-[11381.854204] Call Trace:
-[11381.854207]  <TASK>
-[11381.854212]  s_module_exit+0xc/0xff0 [symbol_getput]
-[11381.854219]  __do_sys_delete_module.constprop.0+0x198/0x2f0
-[11381.854225]  do_syscall_64+0x58/0x80
-[11381.854231]  ? exit_to_user_mode_prepare+0x180/0x1f0
-[11381.854237]  ? syscall_exit_to_user_mode+0x17/0x40
-[11381.854241]  ? do_syscall_64+0x67/0x80
-[11381.854245]  ? syscall_exit_to_user_mode+0x17/0x40
-[11381.854248]  ? do_syscall_64+0x67/0x80
-[11381.854252]  ? exc_page_fault+0x70/0x170
-[11381.854256]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Signed-off-by: Maíra Canal <mcanal@igalia.com>
+Reviewed-by: Arthur Grillo <arthurgrillo@riseup.net>
+Signed-off-by: Maíra Canal <mairacanal@riseup.net>
+Link: https://patchwork.freedesktop.org/patch/msgid/20230523123207.173976-1-mcanal@igalia.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/hw_breakpoint/data_breakpoint.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/vkms/vkms_composer.c | 9 +++++++--
+ drivers/gpu/drm/vkms/vkms_crtc.c     | 9 +++++----
+ drivers/gpu/drm/vkms/vkms_drv.h      | 4 +++-
+ 3 files changed, 15 insertions(+), 7 deletions(-)
 
-diff --git a/samples/hw_breakpoint/data_breakpoint.c b/samples/hw_breakpoint/data_breakpoint.c
-index 418c46fe5ffc3..9debd128b2ab8 100644
---- a/samples/hw_breakpoint/data_breakpoint.c
-+++ b/samples/hw_breakpoint/data_breakpoint.c
-@@ -70,7 +70,7 @@ static int __init hw_break_module_init(void)
- static void __exit hw_break_module_exit(void)
- {
- 	unregister_wide_hw_breakpoint(sample_hbp);
--	symbol_put(ksym_name);
-+	__symbol_put(ksym_name);
- 	printk(KERN_INFO "HW Breakpoint for %s write uninstalled\n", ksym_name);
- }
+diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
+index 9e8204be9a146..77fced36af55e 100644
+--- a/drivers/gpu/drm/vkms/vkms_composer.c
++++ b/drivers/gpu/drm/vkms/vkms_composer.c
+@@ -332,10 +332,15 @@ void vkms_set_composer(struct vkms_output *out, bool enabled)
+ 	if (enabled)
+ 		drm_crtc_vblank_get(&out->crtc);
+ 
+-	spin_lock_irq(&out->lock);
++	mutex_lock(&out->enabled_lock);
+ 	old_enabled = out->composer_enabled;
+ 	out->composer_enabled = enabled;
+-	spin_unlock_irq(&out->lock);
++
++	/* the composition wasn't enabled, so unlock the lock to make sure the lock
++	 * will be balanced even if we have a failed commit
++	 */
++	if (!out->composer_enabled)
++		mutex_unlock(&out->enabled_lock);
+ 
+ 	if (old_enabled)
+ 		drm_crtc_vblank_put(&out->crtc);
+diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
+index 57bbd32e9bebb..1b02dee8587ac 100644
+--- a/drivers/gpu/drm/vkms/vkms_crtc.c
++++ b/drivers/gpu/drm/vkms/vkms_crtc.c
+@@ -16,7 +16,7 @@ static enum hrtimer_restart vkms_vblank_simulate(struct hrtimer *timer)
+ 	struct drm_crtc *crtc = &output->crtc;
+ 	struct vkms_crtc_state *state;
+ 	u64 ret_overrun;
+-	bool ret, fence_cookie;
++	bool ret, fence_cookie, composer_enabled;
+ 
+ 	fence_cookie = dma_fence_begin_signalling();
+ 
+@@ -25,15 +25,15 @@ static enum hrtimer_restart vkms_vblank_simulate(struct hrtimer *timer)
+ 	if (ret_overrun != 1)
+ 		pr_warn("%s: vblank timer overrun\n", __func__);
+ 
+-	spin_lock(&output->lock);
+ 	ret = drm_crtc_handle_vblank(crtc);
+ 	if (!ret)
+ 		DRM_ERROR("vkms failure on handling vblank");
+ 
+ 	state = output->composer_state;
+-	spin_unlock(&output->lock);
++	composer_enabled = output->composer_enabled;
++	mutex_unlock(&output->enabled_lock);
+ 
+-	if (state && output->composer_enabled) {
++	if (state && composer_enabled) {
+ 		u64 frame = drm_crtc_accurate_vblank_count(crtc);
+ 
+ 		/* update frame_start only if a queued vkms_composer_worker()
+@@ -293,6 +293,7 @@ int vkms_crtc_init(struct drm_device *dev, struct drm_crtc *crtc,
+ 
+ 	spin_lock_init(&vkms_out->lock);
+ 	spin_lock_init(&vkms_out->composer_lock);
++	mutex_init(&vkms_out->enabled_lock);
+ 
+ 	vkms_out->composer_workq = alloc_ordered_workqueue("vkms_composer", 0);
+ 	if (!vkms_out->composer_workq)
+diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+index d48c23d40ce5f..666997e2bcab8 100644
+--- a/drivers/gpu/drm/vkms/vkms_drv.h
++++ b/drivers/gpu/drm/vkms/vkms_drv.h
+@@ -83,8 +83,10 @@ struct vkms_output {
+ 	struct workqueue_struct *composer_workq;
+ 	/* protects concurrent access to composer */
+ 	spinlock_t lock;
++	/* guarantees that if the composer is enabled, a job will be queued */
++	struct mutex enabled_lock;
+ 
+-	/* protected by @lock */
++	/* protected by @enabled_lock */
+ 	bool composer_enabled;
+ 	struct vkms_crtc_state *composer_state;
  
 -- 
 2.40.1
