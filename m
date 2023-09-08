@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E092798780
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 14:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3536279877E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 14:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243421AbjIHM7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 08:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
+        id S243398AbjIHM7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 08:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243410AbjIHM7d (ORCPT
+        with ESMTP id S229830AbjIHM7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 08:59:33 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73B71FD8;
-        Fri,  8 Sep 2023 05:59:25 -0700 (PDT)
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 388AY4Ew022890;
-        Fri, 8 Sep 2023 08:58:56 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3sycfuqtjc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Sep 2023 08:58:56 -0400 (EDT)
-Received: from m0167088.ppops.net (m0167088.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.22/8.17.1.22) with ESMTP id 388CsWYv028495;
-        Fri, 8 Sep 2023 08:58:55 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3sycfuqtj8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Sep 2023 08:58:55 -0400 (EDT)
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 388CwsHl034591
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 8 Sep 2023 08:58:54 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Fri, 8 Sep 2023
- 08:58:53 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Fri, 8 Sep 2023 08:58:53 -0400
-Received: from debian.ad.analog.com ([10.48.65.137])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 388CwW6g008873;
-        Fri, 8 Sep 2023 08:58:35 -0400
-From:   Ciprian Regus <ciprian.regus@analog.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Ciprian Regus <ciprian.regus@analog.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexandru Tachici <alexandru.tachici@analog.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Lennart Franzen <lennart@lfdomain.com>,
-        <netdev@vger.kernel.org>
-Subject: [net] net:ethernet:adi:adin1110: Fix forwarding offload
-Date:   Fri, 8 Sep 2023 15:58:08 +0300
-Message-ID: <20230908125813.1715706-1-ciprian.regus@analog.com>
-X-Mailer: git-send-email 2.39.2
+        Fri, 8 Sep 2023 08:59:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8D91BFF;
+        Fri,  8 Sep 2023 05:59:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694177953; x=1725713953;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=VrPMYgQ16pTtZlBVSNm737aoWB5stO3oQMVdp8PvDig=;
+  b=OBwppJDQkoU/VA5cpiprCP6KfbYOBQBycXn4Dc5kSrT+GDIWDYLyYCDW
+   Ah8CVFr8n+e69lyURwi6KKOiQMsO6Ido9sKeLJM2pio09M7jdjmLmW5nF
+   ymzB2GftZz3wZr4wNDIki8gvxetD3Gsw5+nPxKVI+CK1NQVYsilYl79Jf
+   Vz1tm8xnLCmgBWhTh9vZGFBkRiGpQ4Iu7phhGW0njzqtG5U2+csuxeNt3
+   rweH8naoUGmoitesxyQXIK9kEpdLZipe4T7c69zmjDwpXvx4qyGL+Ktn1
+   IlYgNNeFNOz5OLOO3jXx3utxK/6XzR+uf4yF50GFXQwaDjVO5Hj8TFJZA
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="357943100"
+X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
+   d="scan'208";a="357943100"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 05:59:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="916165808"
+X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
+   d="scan'208";a="916165808"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 08 Sep 2023 05:59:07 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qeb4j-0002Gx-02;
+        Fri, 08 Sep 2023 12:59:05 +0000
+Date:   Fri, 8 Sep 2023 20:58:49 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        tglx@linutronix.de, maz@kernel.org, lee@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, robimarko@gmail.com,
+        quic_gurus@quicinc.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
+        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
+        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
+        kernel@quicinc.com, quic_bjorande@quicinc.com,
+        Ajit Pandey <quic_ajipan@quicinc.com>,
+        Tengfei Fan <quic_tengfan@quicinc.com>
+Subject: Re: [PATCH 5/6] arm64: dts: qcom: sm4450: Add RPMH and Global clock
+ controller
+Message-ID: <202309082044.62LHUCGY-lkp@intel.com>
+References: <20230908065847.28382-6-quic_tengfan@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: _HiZIgaNSr2uD9kivUrSlWd7IYvjb2ZL
-X-Proofpoint-GUID: wcHIv9gNUWl0snVUWcd2QKSMn_wz7r-v
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-08_09,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- mlxscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0 spamscore=0
- adultscore=0 phishscore=0 impostorscore=0 priorityscore=1501
- mlxlogscore=965 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2309080120
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908065847.28382-6-quic_tengfan@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -83,33 +76,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, when a new fdb entry is added (with both ports of the
-ADIN2111 bridged), the driver configures the MAC filters for the wrong
-port, which results in the forwarding being done by the host, and not
-actually hardware offloaded.
+Hi Tengfei,
 
-The ADIN2111 offloads the forwarding by setting filters on the
-destination MAC address of incoming frames. Based on these, they may be
-routed to the other port. Thus, if a frame has to be forwarded from port
-1 to port 2, the required configuration for the ADDR_FILT_UPRn register
-should set the APPLY2PORT1 bit (instead of APPLY2PORT2, as it's
-currently the case).
+kernel test robot noticed the following build errors:
 
-Fixes: bc93e19d088b ("net: ethernet: adi: Add ADIN1110 support")
-Signed-off-by: Ciprian Regus <ciprian.regus@analog.com>
----
- drivers/net/ethernet/adi/adin1110.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[auto build test ERROR on a47fc304d2b678db1a5d760a7d644dac9b067752]
 
-diff --git a/drivers/net/ethernet/adi/adin1110.c b/drivers/net/ethernet/adi/adin1110.c
-index 1c009b485188..ca66b747b7c5 100644
---- a/drivers/net/ethernet/adi/adin1110.c
-+++ b/drivers/net/ethernet/adi/adin1110.c
-@@ -1387,3 +1387,3 @@ static int adin1110_fdb_add(struct adin1110_port_priv *port_priv,
- 	other_port = priv->ports[!port_priv->nr];
--	port_rules = adin1110_port_rules(port_priv, false, true);
-+	port_rules = adin1110_port_rules(other_port, false, true);
- 	eth_broadcast_addr(mask);
+url:    https://github.com/intel-lab-lkp/linux/commits/Tengfei-Fan/dt-bindings-firmware-document-Qualcomm-SM4450-SCM/20230908-150308
+base:   a47fc304d2b678db1a5d760a7d644dac9b067752
+patch link:    https://lore.kernel.org/r/20230908065847.28382-6-quic_tengfan%40quicinc.com
+patch subject: [PATCH 5/6] arm64: dts: qcom: sm4450: Add RPMH and Global clock controller
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20230908/202309082044.62LHUCGY-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230908/202309082044.62LHUCGY-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309082044.62LHUCGY-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from arch/arm64/boot/dts/qcom/sm4450-qrd.dts:8:
+>> arch/arm64/boot/dts/qcom/sm4450.dtsi:7:10: fatal error: dt-bindings/clock/qcom,sm4450-gcc.h: No such file or directory
+       7 | #include <dt-bindings/clock/qcom,sm4450-gcc.h>
+         |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   compilation terminated.
+
+
+vim +7 arch/arm64/boot/dts/qcom/sm4450.dtsi
+
+   > 7	#include <dt-bindings/clock/qcom,sm4450-gcc.h>
+     8	#include <dt-bindings/gpio/gpio.h>
+     9	#include <dt-bindings/interrupt-controller/arm-gic.h>
+    10	#include <dt-bindings/soc/qcom,rpmh-rsc.h>
+    11	
+
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
