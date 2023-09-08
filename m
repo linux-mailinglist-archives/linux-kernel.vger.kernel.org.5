@@ -2,51 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0CA798EF6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F399B798DFB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344354AbjIHTRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
+        id S230494AbjIHSZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbjIHTRU (ORCPT
+        with ESMTP id S234559AbjIHSY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:17:20 -0400
+        Fri, 8 Sep 2023 14:24:57 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C5CA9;
-        Fri,  8 Sep 2023 12:17:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C257EC43142;
-        Fri,  8 Sep 2023 18:20:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A359269E;
+        Fri,  8 Sep 2023 11:21:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E713C116B8;
+        Fri,  8 Sep 2023 18:20:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197240;
-        bh=/H9l6lorHQfgkgSlQnFmbCyvnxmwEZQEYDSD2f3FJkw=;
+        s=k20201202; t=1694197241;
+        bh=ZB1dMqYt7rB/jUqIlA85VIIJd6Me2gmY3dwVUZeJdiE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=okrbgLvpCTlKGACMYUj2Hap7uBniVM2drANkWTp7LIYTjldJ7SK64x6u1Yhl8DAAt
-         yWrlw4Ddi9fCy/VzC87l3e6ewsOD7LFxC0arD7JnIXdNKWIAWnIBH63cQDTzqNFXLF
-         mM7s5ys0A8rpWSShwaKBMApfaH9q9utcUlTEUx4XrHCm6cT2KUmPGHGh6gH3aXqYso
-         Rg5WCOnj7Osop40lOBeUHlwzZUTwRRsGwSIqNjU5DgAZuVcu/rgpiuSJwZKSuSkBzd
-         Qe6YVdN4piErgxLblFozc0KwsV8R57UfG4wXwuAlhaaZXn58olWxfNpT/0I4314NWl
-         bOuJo8EnA37Bg==
+        b=KJUXt4RKUmm0B5OpFjezqK7TlvUCxCDv2KPhMxfYoCeHrkjlfWfwa0eL1ITjEbVmw
+         M2BJuKio454AxIrJ+6Z2ZxAnwrHj4K0BIT5z4BEUy8YYQu5S/KVRPpTSKXljLxPQPI
+         FF47ig5F5thaZk9wcXc55pwmWfucXY5eW45fsfT44mBL8/FYPI6Z5MIeqFjrtwEYpc
+         QhETQE4DEtlrsF7KvDyM9A34sIOdBMswiZGYNxYim+ahPU3OGfq9YBpGpNYDQ34v73
+         DE4tIe12FlS8CH99kMxQhGmxE5OS51N+gaRqqV4+9qWXCWynytTurgLsEgVEQZile9
+         Fv41KIo9glJeA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "GONG, Ruiqi" <gongruiqi1@huawei.com>, GONG@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Florian Westphal <fw@strlen.de>,
-        Sasha Levin <sashal@kernel.org>, pablo@netfilter.org,
-        kadlec@netfilter.org, roopa@nvidia.com, razor@blackwall.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, bridge@lists.linux-foundation.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 11/14] netfilter: ebtables: fix fortify warnings in size_entry_mwt()
-Date:   Fri,  8 Sep 2023 14:19:58 -0400
-Message-Id: <20230908182003.3460721-11-sashal@kernel.org>
+Cc:     Johannes Berg <johannes.berg@intel.com>,
+        syzbot+b2645b5bf1512b81fa22@syzkaller.appspotmail.com,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
+        linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 12/14] wifi: mac80211_hwsim: drop short frames
+Date:   Fri,  8 Sep 2023 14:19:59 -0400
+Message-Id: <20230908182003.3460721-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908182003.3460721-1-sashal@kernel.org>
 References: <20230908182003.3460721-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.194
@@ -60,79 +54,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit a7ed3465daa240bdf01a5420f64336fee879c09d ]
+[ Upstream commit fba360a047d5eeeb9d4b7c3a9b1c8308980ce9a6 ]
 
-When compiling with gcc 13 and CONFIG_FORTIFY_SOURCE=y, the following
-warning appears:
+While technically some control frames like ACK are shorter and
+end after Address 1, such frames shouldn't be forwarded through
+wmediumd or similar userspace, so require the full 3-address
+header to avoid accessing invalid memory if shorter frames are
+passed in.
 
-In function ‘fortify_memcpy_chk’,
-    inlined from ‘size_entry_mwt’ at net/bridge/netfilter/ebtables.c:2118:2:
-./include/linux/fortify-string.h:592:25: error: call to ‘__read_overflow2_field’
-declared with attribute warning: detected read beyond size of field (2nd parameter);
-maybe use struct_group()? [-Werror=attribute-warning]
-  592 |                         __read_overflow2_field(q_size_field, size);
-      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The compiler is complaining:
-
-memcpy(&offsets[1], &entry->watchers_offset,
-                       sizeof(offsets) - sizeof(offsets[0]));
-
-where memcpy reads beyong &entry->watchers_offset to copy
-{watchers,target,next}_offset altogether into offsets[]. Silence the
-warning by wrapping these three up via struct_group().
-
-Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Reported-by: syzbot+b2645b5bf1512b81fa22@syzkaller.appspotmail.com
+Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/uapi/linux/netfilter_bridge/ebtables.h | 14 ++++++++------
- net/bridge/netfilter/ebtables.c                |  3 +--
- 2 files changed, 9 insertions(+), 8 deletions(-)
+ drivers/net/wireless/mac80211_hwsim.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/include/uapi/linux/netfilter_bridge/ebtables.h b/include/uapi/linux/netfilter_bridge/ebtables.h
-index a494cf43a7552..b0caad82b6937 100644
---- a/include/uapi/linux/netfilter_bridge/ebtables.h
-+++ b/include/uapi/linux/netfilter_bridge/ebtables.h
-@@ -182,12 +182,14 @@ struct ebt_entry {
- 	unsigned char sourcemsk[ETH_ALEN];
- 	unsigned char destmac[ETH_ALEN];
- 	unsigned char destmsk[ETH_ALEN];
--	/* sizeof ebt_entry + matches */
--	unsigned int watchers_offset;
--	/* sizeof ebt_entry + matches + watchers */
--	unsigned int target_offset;
--	/* sizeof ebt_entry + matches + watchers + target */
--	unsigned int next_offset;
-+	__struct_group(/* no tag */, offsets, /* no attrs */,
-+		/* sizeof ebt_entry + matches */
-+		unsigned int watchers_offset;
-+		/* sizeof ebt_entry + matches + watchers */
-+		unsigned int target_offset;
-+		/* sizeof ebt_entry + matches + watchers + target */
-+		unsigned int next_offset;
-+	);
- 	unsigned char elems[0] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
- };
+diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
+index 255286b2324e2..0d41f172a1dc2 100644
+--- a/drivers/net/wireless/mac80211_hwsim.c
++++ b/drivers/net/wireless/mac80211_hwsim.c
+@@ -3619,14 +3619,15 @@ static int hwsim_cloned_frame_received_nl(struct sk_buff *skb_2,
+ 	frame_data_len = nla_len(info->attrs[HWSIM_ATTR_FRAME]);
+ 	frame_data = (void *)nla_data(info->attrs[HWSIM_ATTR_FRAME]);
  
-diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
-index 8335b7e4bcf6f..bab14186f9ad5 100644
---- a/net/bridge/netfilter/ebtables.c
-+++ b/net/bridge/netfilter/ebtables.c
-@@ -2001,8 +2001,7 @@ static int size_entry_mwt(const struct ebt_entry *entry, const unsigned char *ba
- 		return ret;
++	if (frame_data_len < sizeof(struct ieee80211_hdr_3addr) ||
++	    frame_data_len > IEEE80211_MAX_DATA_LEN)
++		goto err;
++
+ 	/* Allocate new skb here */
+ 	skb = alloc_skb(frame_data_len, GFP_KERNEL);
+ 	if (skb == NULL)
+ 		goto err;
  
- 	offsets[0] = sizeof(struct ebt_entry); /* matches come first */
--	memcpy(&offsets[1], &entry->watchers_offset,
--			sizeof(offsets) - sizeof(offsets[0]));
-+	memcpy(&offsets[1], &entry->offsets, sizeof(entry->offsets));
+-	if (frame_data_len > IEEE80211_MAX_DATA_LEN)
+-		goto err;
+-
+ 	/* Copy the data */
+ 	skb_put_data(skb, frame_data, frame_data_len);
  
- 	if (state->buf_kern_start) {
- 		buf_start = state->buf_kern_start + state->buf_kern_offset;
 -- 
 2.40.1
 
