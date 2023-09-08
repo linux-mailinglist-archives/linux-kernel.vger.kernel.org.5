@@ -2,168 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B4379883C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A681E79883F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243524AbjIHOAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
+        id S243524AbjIHOEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232157AbjIHOAe (ORCPT
+        with ESMTP id S233484AbjIHOEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:00:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE81B1BF5
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 06:59:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694181584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MemuIqeZQqqKC1XNtSvvn0B7xWADTH4/rC2lAmzD2Ks=;
-        b=GGYqkUJiA1Bc/c5YHYiQMVV9YjQuT1fjxdptke35tSrn8Ka4rgO4oPzjpwiM2hcV3ynaUt
-        JDfL8kNCMO5nBWIXL0bFe4xX79erP2GSk83uBn2bPTk+FBQfuXjZMm49GfxYoKU+DnQCZ2
-        Q1e4/8Fk6U9ccfaewE+dujZ9gH2ranU=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-664-S_7z9SJCOOiBwndqJFVB8A-1; Fri, 08 Sep 2023 09:59:43 -0400
-X-MC-Unique: S_7z9SJCOOiBwndqJFVB8A-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-52c6f3886e3so1533304a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 06:59:43 -0700 (PDT)
+        Fri, 8 Sep 2023 10:04:02 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530781BF1
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:03:58 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-573f8afe1d9so1577803a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 07:03:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bisdn-de.20230601.gappssmtp.com; s=20230601; t=1694181838; x=1694786638; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U2jvztty3xt2xqRdD6cfGGolwNPuHAE+YuTfrjsOWm8=;
+        b=k/ayXSOt+KDeq9unA2uzfzRbj+UTbtlf25/kwk3ZiLn6+pcjRVzkw0twErt2bwE2QL
+         vwZCFnKGNKwdcUu37O3sa8VNo1IC99N8CZqH+PX9C9n10EoEYxCJkCVIYcKNeY+1Yetn
+         ia3hZSSwvG7kaLCkyD2q0jvsMVaDeBOuCiZiDiwSLx/kLDtddgfboXO9L61T4C22/6Xd
+         F/Fw5vHAGQ2GXtF9UbmG/DMF/IYv0sAHYefL+GhHeDWLKlaF6lQ8cuYYSZ11BPTQnRCv
+         1tj0MptX869YToix7JiUXO5wfRYg6g0QBi15OrAw+YzwiqWU6SqKLoRPmu1APxq73mwM
+         vJBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694181582; x=1694786382;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MemuIqeZQqqKC1XNtSvvn0B7xWADTH4/rC2lAmzD2Ks=;
-        b=Zv0y6/haxL4njvuUiLFYS+KL831+gVhpVw3aCPTuQfOuC1mqgi5gkE6QC3jA9Ii1/Y
-         plazVjPF6Rt+foTTPhbhmL+TsNmDJnKbZ+o+B4BjC8ERqU1Yfx9n0VS0oGu7RB9gUQct
-         ArqJ/dFyWHfsFYn6rnAdPCrMMrd8p5pZGvTO9RlIu7so3hY/PE+qPNIghaLMv4B0fAu6
-         nrJy7O885qd8qXjqqwdt4U9Fd4XUap1T/5PdKDvmQ+g1g/CiFEdRCMdVNvIPd+t37VKg
-         E1xxKXsdXOML398mlUP7m+qplTDXx0ft+JSFdnyGVAT9LOoLULiUvD3XGezTqM+cqHIN
-         EUWA==
-X-Gm-Message-State: AOJu0YwtKlicpHtjSuyFOttExdcjd1gMJb4Qs094ImiSwfDkdQ8LqmjV
-        sHhbEk8uZV61B178W0eunwtFTH273mqr6mHZntaZUN73Q7NI4XcNEaQNN8O9Bwy/OQQu5ZJlGrN
-        7IKmRBFbuS9RSrJ/TJS3axQqj
-X-Received: by 2002:a17:906:8251:b0:9a5:eedb:ee2e with SMTP id f17-20020a170906825100b009a5eedbee2emr1928870ejx.19.1694181582471;
-        Fri, 08 Sep 2023 06:59:42 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH6BZQFdwaJzDd65kf+GYtqsaIHDCuVXAZznAx+FIKm0HIAG/w9QWEePYX1sQqYAB0dkJmKyw==
-X-Received: by 2002:a17:906:8251:b0:9a5:eedb:ee2e with SMTP id f17-20020a170906825100b009a5eedbee2emr1928860ejx.19.1694181582170;
-        Fri, 08 Sep 2023 06:59:42 -0700 (PDT)
-Received: from [192.168.0.224] (host-82-53-135-115.retail.telecomitalia.it. [82.53.135.115])
-        by smtp.gmail.com with ESMTPSA id s2-20020a170906354200b0097404f4a124sm1083637eja.2.2023.09.08.06.59.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Sep 2023 06:59:41 -0700 (PDT)
-Message-ID: <0255f3a0-d7fc-16d1-4664-05cb93ba1934@redhat.com>
-Date:   Fri, 8 Sep 2023 15:59:40 +0200
+        d=1e100.net; s=20230601; t=1694181838; x=1694786638;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U2jvztty3xt2xqRdD6cfGGolwNPuHAE+YuTfrjsOWm8=;
+        b=RX5t8H0VOFLD9vGB3YwBMWaAlfqnFwVrXjYicxKVE76VRZznGhnQqpp4mEk8uWKp3X
+         6cdFcvABcaO4Kav1oAKPYmrqGRiSly+myv2IzO6d5U800XYINgLIdsHZX821LjPvJssO
+         wwR15hejJoV5RD6iHOQYShyLMu8LUhuuqJRk6zEZYpmF5yo+/uqQkm0o7ZbCPeHckol1
+         14rxzmBbYSyYFpCnUJAfw0CwOUxOdWmBsvd05feX1wPter2M58rM7eNJwU9RtLY+mPj7
+         UAM2ybrL6axBYqZ0bjgKKbNcSVESHTB/CN6yI37silNrysu4KvAxAYLBxeSgGG76V/pd
+         0MTg==
+X-Gm-Message-State: AOJu0YwvMHLcI36kRX8xORE9AAXCVIuBG+tcpWvuUKSHwK1oHaGFQ1tB
+        TsbNMc2X11p/0pMksHIqCentlMCf2/arelwwG14FVSsVdfxOzcmrU0VIiB1771ZUMLONtt8G0I0
+        nlbbRk2FYYlXsTNFJ1vTS1V4YqON+vryygg==
+X-Google-Smtp-Source: AGHT+IFubqKICpsm4d0x1yCcLZWU0qkze1b5oT/J2zmu/5mc/iRlrnTk0M1kh+WZEoNCX34AwFqGsl3UdlU+a9TtVQA=
+X-Received: by 2002:a17:90b:4a10:b0:26d:1a46:1646 with SMTP id
+ kk16-20020a17090b4a1000b0026d1a461646mr2389383pjb.48.1694181837747; Fri, 08
+ Sep 2023 07:03:57 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v4 6/7] sched/deadline: Deferrable dl server
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
-References: <cover.1693510979.git.bristot@kernel.org>
- <754dab7f30695ca10a41613068bb63db3bfea003.1693510979.git.bristot@kernel.org>
- <20230905134203.GA20703@noisy.programming.kicks-ass.net>
- <b3b3a5c5-6688-966d-3d78-3e140730cb7b@redhat.com>
- <20230906082952.GB38741@noisy.programming.kicks-ass.net>
- <0ce80c5d-2433-13d5-33df-d110cf8faa9c@redhat.com>
- <20230906200406.GF28278@noisy.programming.kicks-ass.net>
-Content-Language: en-US
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-In-Reply-To: <20230906200406.GF28278@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230904090005.52622-1-jonas.gorski@bisdn.de> <20230905225338.g76dqf3a26dnnzxx@zenone.zhora.eu>
+In-Reply-To: <20230905225338.g76dqf3a26dnnzxx@zenone.zhora.eu>
+From:   Jonas Gorski <jonas.gorski@bisdn.de>
+Date:   Fri, 8 Sep 2023 16:03:46 +0200
+Message-ID: <CAJpXRYR+yUe4jGgNMOjbK3YALwkJp8vr9=1hH04FHWW-TcRGtA@mail.gmail.com>
+Subject: Re: [PATCH] i2c: iproc: reset bus after timeout if START_BUSY is stuck
+To:     Andi Shyti <andi.shyti@kernel.org>
+Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Kevin Cernekee <cernekee@chromium.org>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/6/23 22:04, Peter Zijlstra wrote:
-> On Wed, Sep 06, 2023 at 04:58:11PM +0200, Daniel Bristot de Oliveira wrote:
-> 
->>> So one thing we could do is have update_curr_fair() decrement
->>> fair_server's runtime and yield the period then it hits 0 (and capping
->>> it at 0, not allowing it to go negative or so).
->>>
->>> That way you only force the situation when FAIR hasn't had it's allotted
->>> time this perio, and only for as much as to make up for the time it
->>> lacks.
->>
->> We can also decrease the runtime to a negative number while in
->> defer/throttle state, and let the while in replenish_dl_entity() to
->> replenish with the += runtime;
+Hi,
 
-Repying in the sequence...but mostly to try to understand/explain my point (we might even
-be in agreement, but touching different parts of the code).
+Am Mi., 6. Sept. 2023 um 00:53 Uhr schrieb Andi Shyti <andi.shyti@kernel.or=
+g>:
+>
+> Hi Jonas,
+>
+> On Mon, Sep 04, 2023 at 11:00:04AM +0200, Jonas Gorski wrote:
+> > If a transaction times out, the START_BUSY signal may have gotten stuck=
+,
+> > and subsequent transactaction attempts will fail as the bus is still
+> > considered busy.
+> >
+> > To work around this, check if the START_BUSY bit is still asserted, and
+> > reset the controller in case it is.
+> >
+> > This is also done by the alternative, non-upstream iproc-smbus driver
+> > implementation [1].
+> >
+> > Works around situations like:
+> >
+> >     bcm-iproc-2c 1803b000.i2c: transaction timed out
+> >     bcm-iproc-2c 1803b000.i2c: bus is busy
+> >     bcm-iproc-2c 1803b000.i2c: bus is busy
+> >     bcm-iproc-2c 1803b000.i2c: bus is busy
+> >     bcm-iproc-2c 1803b000.i2c: bus is busy
+> >     bcm-iproc-2c 1803b000.i2c: bus is busy
+> >     ...
+> >
+> > where the bus never recovers after a timeout.
+> >
+> > [1] https://github.com/opencomputeproject/onie/blob/master/patches/kern=
+el/3.2.69/driver-iproc-smbus.patch
+> >
+> > Fixes: e6e5dd3566e0 ("i2c: iproc: Add Broadcom iProc I2C Driver")
+> > Signed-off-by: Jonas Gorski <jonas.gorski@bisdn.de>
+>
+> I think the right Fixes tag should be:
+>
+> Fixes: 3f98ad45e585 ("i2c: iproc: add polling support")
 
-> Yes, but my point was that fair_server gives a lower bound of runtime
-> per period, more -- if available -- is fine.
+That was the last change that part of the code, but the "issue" was
+not introduced there. The code before that already did a timeout check
+and flush in that case, without the reset.
 
-I am targeting that as well, and it works for the case in which we have only RT
-tasks causing starvation.
+Obviously the fix wouldn't apply without changes to a version without
+that commit, but the version would be nevertheless affected by the
+issue. That's why I chose the commit introducing the timeout handling.
 
-If we have other DL tasks, we cannot force the fair server to run till
-completion because it would add a U=1 to the system. Like, if we have a
-50ms server runtime... BOOM, we will miss lots of regular DL tasks deadline with
-1 ms period. I do not think it is worth to break deadline to give fair server
-time immediately. So, the fair server is scheduled as a periodic DL task.
+> Cc: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+> Cc: <stable@vger.kernel.org> # v5.2+
+>
+> > ---
+> > The iproc-smbus driver does some additional checks/mitigations, but
+> > since my I2C understanding is only very rudimentary, I didn't add them,
+> > also the reset was enough to fix the issue I was seeing.
+> >
+> > I was a bit conflicted about the Fixes tag, but since it fixes/work
+> > around misbehaviour seen I decided to add one.
+> >
+> > The issue was happening only in production, and only once per boot (so
+> > far), but with 100% probability within a few hours.
+> >
+> >  drivers/i2c/busses/i2c-bcm-iproc.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/drivers/i2c/busses/i2c-bcm-iproc.c b/drivers/i2c/busses/i2=
+c-bcm-iproc.c
+> > index 05c80680dff4..69f9c199fa3b 100644
+> > --- a/drivers/i2c/busses/i2c-bcm-iproc.c
+> > +++ b/drivers/i2c/busses/i2c-bcm-iproc.c
+> > @@ -796,6 +796,15 @@ static int bcm_iproc_i2c_xfer_wait(struct bcm_ipro=
+c_i2c_dev *iproc_i2c,
+> >       if (!time_left && !iproc_i2c->xfer_is_done) {
+> >               dev_err(iproc_i2c->device, "transaction timed out\n");
+> >
+> > +             /* check if START_BUSY did not clear */
+>
+> as Ray asked, can you please expand this comment?
 
-After the initial defer state, the DL server will get the runtime/period
-even with the CPU load of DL tasks. But:
+Will do, thanks for the reviews!
 
-	- We do not have such high load of DL tasks as well
-	- If one cares about it more, they can reduce the runtime/period
-	  granularity to mitigate the defer time
-	- If one do not care about RT tasks, just disable the defer mechanism
+Best Regards,
+Jonas
 
-So I think we are well covered, without having to break the basis of CBS+EDF assumptions
-(like that task will not add a higher load than U).
+--=20
+BISDN GmbH
+K=C3=B6rnerstra=C3=9Fe 7-10
+10785 Berlin
+Germany
 
 
-> If we allow negative runtime, you'll affect future periods, and that is
-> not desired in this case.
+Phone:=20
++49-30-6108-1-6100
 
-I think that I need to clarify this. I was thinking on this case:
 
-	- Fair server deffered
-	- If the server gets some time to run while waiting for the 0-lax
-	  we decrease the runtime...
-	- When the defer starts, the replenish will happen, and will +=
-	  runtime, giving it the correct proportional time left for the
-	  period the timer was armed. So it is not the next period, it is
-	  the delayed period.
+Managing Directors:=C2=A0
+Dr.-Ing. Hagen Woesner, Andreas=20
+K=C3=B6psel
 
-So I think we are thinking the same thing... just with a shift.
 
-> 
-> Or am I still confused?
-> 
-
-You are not alone... there are many states and I fear that I might be focusing
-on a different state.
-
--- Daniel
+Commercial register:=C2=A0
+Amtsgericht Berlin-Charlottenburg HRB 141569=20
+B
+VAT ID No:=C2=A0DE283257294
 
