@@ -2,59 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B198B79892C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD8E79892E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243328AbjIHOss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34520 "EHLO
+        id S244051AbjIHOtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:49:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231670AbjIHOss (ORCPT
+        with ESMTP id S243595AbjIHOtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:48:48 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2351FC6
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:48:43 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694184521;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RTrdSFyCoWh4NW0uf+rzUmbGZVj8FqZUC79wfn613SY=;
-        b=lOICJJe76KAIpSKUNukZCjJy/jh7gg4TnEYiTrty24yQlv1ohz+9f/i0zjgXSEQEkaX/Gs
-        e4Ro1Pjb6Mj5aWcigj0p/l0ebDBoYFZrwRSiA4V7Cy/0zcKh6yhX73y8Kvm6SxfpnunSF1
-        7GAOeUfvaElsLF/RAYTWfdNW69PAqIPlYPk3IbLQWduNwl/OvZFBRkApvj709Sd35wEETk
-        RqXPGG/D2UaGpchULlznOy2DHi75VcjmGJtg7Vu8Z07PVSTsV8MrK6QEGzy2WDNyWbioFU
-        nyPGovNYlgekCYpNe6/0PtS9Zpav/Z0wM5ZVqlEHHD8EpCuf7qOwbhaPrH3wFg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694184521;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RTrdSFyCoWh4NW0uf+rzUmbGZVj8FqZUC79wfn613SY=;
-        b=tz72ZTxHa5ijMeaBxi8gs5kaFGTWWQBB6fVASBT4cPWCl43M1rir8GiQsttFQfePW6H7sj
-        mYEmqVFwOmxzcDCw==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: hostile takeover: Re: [PATCH printk v2 3/8] printk: nbcon: Add
- acquire/release logic
-In-Reply-To: <ZPnu5P3b74K1mYTu@alley>
-References: <20230728000233.50887-1-john.ogness@linutronix.de>
- <20230728000233.50887-4-john.ogness@linutronix.de>
- <ZNOKSFAGPxYFeeJT@alley> <87o7iqrvvx.fsf@jogness.linutronix.de>
- <ZPnu5P3b74K1mYTu@alley>
-Date:   Fri, 08 Sep 2023 16:54:39 +0206
-Message-ID: <87a5twhgag.fsf@jogness.linutronix.de>
+        Fri, 8 Sep 2023 10:49:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 830131FC6
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:49:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694184540; x=1725720540;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=nWRmSNDBjYyGY2acXj+a55U9CI5D/oKEELeMyinmZXc=;
+  b=L0+WW0WF+Y+mjueKaRORBwlJQdcpjghH7EdyABfv3taY6qHu7ebC/FxP
+   wquSV/ToShY6EDYxXLnUGthUPTn8OL0YtsBevc4P/DR1+4r/rf51HImJZ
+   Q/Y2vG4hD4Hr/8mExUxbLN/ojfhGt5YHFEovE/m+RtLW2DM9xylgEoE8b
+   +YYljqwt7+Yiy7FZ4l3BGrQjdRtpFRHwV2lmuO24ffkZo0EDGHhtD7kS9
+   yM2Rl5uhD0REysWuTVa47GizPqHSeyc+655tQnnLe+m79NcsIX7qKm09H
+   reFIWim3TyyoE4nsZFV0HF1RvH5+bzOOn0YBdYPGLZ9yT7AR0j6cyD9OZ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="441675275"
+X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
+   d="scan'208";a="441675275"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 07:48:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="742530846"
+X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
+   d="scan'208";a="742530846"
+Received: from fgilganx-mobl1.amr.corp.intel.com (HELO [10.209.17.195]) ([10.209.17.195])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 07:48:59 -0700
+Message-ID: <cc90c896-7581-62b5-4836-971e9ca8fac0@intel.com>
+Date:   Fri, 8 Sep 2023 07:48:58 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] x86/sev-es: Do not use copy_from_kernel_nofault in early
+ #VC handler
+Content-Language: en-US
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Adam Dunlap <acdunlap@google.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nikunj A Dadhania <nikunj@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>, Jacob Xu <jacobhxu@google.com>
+References: <20230906224541.2778523-1-acdunlap@google.com>
+ <e037f1c0-aaf6-7951-04ea-6d27e557b61b@intel.com>
+ <CAMBK9=b9V6WxYZNrVPNV5vzBZ-mT_noBAxod=ijqrV3bUXAUyA@mail.gmail.com>
+ <cb958f57-6a3a-d626-da51-53ad0e61870c@intel.com>
+ <CAMBK9=bk715TjXhzwss+wFqpafKganGhZ=WKWPvEuJyM5M2MCQ@mail.gmail.com>
+ <ac2f3bfc-9177-abc9-d4d7-69b1fba943a6@intel.com>
+ <0d8a35c9-82ca-188a-529d-65fd01c40149@amd.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <0d8a35c9-82ca-188a-529d-65fd01c40149@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,52 +82,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-07, Petr Mladek <pmladek@suse.com> wrote:
-> Hmm, I am actually not sure if nbcon_emit_next_record()
-> calls printk_get_next_message() and con->write_atomic(con, wctxt)
-> in "safe" or "unsafe" context.
+On 9/8/23 06:13, Tom Lendacky wrote:
+> On 9/7/23 14:12, Dave Hansen wrote:
+>> But seriously, is it even *possible* to spin up a SEV-SNP VM what
+>> doesn't have NX?
+> 
+> It is a common path, so while an SEV guest would have NX support, you
+> would first have to determine that it is an SEV guest. That would take
+> issuing a CPUID instruction in order to determine if a particular MSR
+> can be read...
 
-It does not! In the early versions of this code it was not a problem
-because we had a per-priority buffer for each console. But now we only
-have one buffer that is shared by the NORMAL and EMERGENCY priorities
-per console. For v4 I am creating a safe region around
-printk_get_next_message() and console_prepend_dropped(). That will fix
-the issue. Nice catch!
+I was thinking more along the lines of telling folks that if they want
+to turn SEV-SNP support on, they also have to give up on running on a
+!NX system.  That would be a _bit_ nicer than just refusing to boot on
+all !NX systems.
 
-For the callbacks write_atomic() (and later, write_thread()) it should
-not be called in unsafe. It is up to the drivers to decide what is safe
-and unsafe.
+> Ultimately, we could probably pass the encryption mask from the
+> decompressor to the kernel and avoid some of the checks during early
+> boot of the kernel proper. Is it possible to boot an x86 kernel without
+> going through the decompressor?
 
->> 1. try direct
->> 2. try safe takeover
->> 3. try handover
->> 4. try hostile takeover
->
-> I rather meant:
->
->   1. try direct
->   2. try handover +
->      try safe takeover in every waiting cycle
->   3. try hostile takeover
->
-> But then it won't be a handover anymore.
->
-> Anyway, I would keep it as is for now. As mentioned above,
-> the current handover is more conservative approach because
-> the lock is passed on well defined locations.
-
-For v3 I made the change as I suggested above. So it will perform a
-direct takeover if the priority is higher and it is safe. Yes, waiting
-first might seem more polite and conservative. But if the driver is in a
-safe state, I see no reason to make a higher priority context wait. If
-it would be a problem for the first context to suddenly lose ownership,
-then it should be marking it an unsafe region.
-
-For fun I implemented it such that it only directly takes over an owner
-after having waited. But it adds quite a bit of ugliness to the routine
-and I don't think it is worth it.
-
-For v4 I will keep it the same as v3: a direct takeover of an existing
-owner when safe before trying the handover.
-
-John Ogness
+I think it's possible, but it's very unusual.
