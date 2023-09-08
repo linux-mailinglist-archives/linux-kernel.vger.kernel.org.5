@@ -2,83 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9587984FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 11:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289FC7984FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 11:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237359AbjIHJrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 05:47:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36002 "EHLO
+        id S241993AbjIHJsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 05:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230475AbjIHJrl (ORCPT
+        with ESMTP id S230475AbjIHJsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 05:47:41 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A241BDD
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 02:47:15 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-564af0ac494so1465913a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 02:47:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694166435; x=1694771235; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZOFDh/D3nnnbGTYfl9jTSGlOLCGKw3LCJaJiKQKzt8k=;
-        b=dPheguVJYjnsPoinyllXvG/HS/mjZ3x3CWYR9tfJAaosai5ovyV0E0Y/xiOhwPofCo
-         +DBFhqDlVq8KA62edHd7j6QPRqBO01ZSoWRhQFdrDzLfBmIeX4hj+AZdz4m2xDYcq7aj
-         CbLXRCZlSxLgVh6HEEnx7cu8VHuJhOcMlaHCTpoOX6rzu49GaDmGV17lVEgY7veNJ1Tk
-         bWDeaZJw6RwEr2LYS1AoYnzifFpnx8zRadnE7pC2+T3Mtgk6yWNUPOIvrjnemCIoV+Qq
-         P9y/WQ61dcK2iWhOd5Y6Hs1XLwy0orn35/ZQ12ius1OwEghPQGhdAuF05Xqm+0D3Zz0X
-         jqwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694166435; x=1694771235;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ZOFDh/D3nnnbGTYfl9jTSGlOLCGKw3LCJaJiKQKzt8k=;
-        b=NgVyv0fKw9p/PceANZak3YYL3D3LI3i/m9nZpg/0TfYKCfKx+c91h5OQLRpf7BTfJO
-         ZIZQJmEiaVOrlWzLqa04kif8Df9QGfcEinG7UhKMDy4P9gWb5K2VpM65DM25t2Abehao
-         cIW7UQrOw/6y6h02lFN479KRtqQeVk+ZyCmxKaYQm06Sk2WJhho8eRRWpZXce6bgMQk9
-         omO7E+Zl1QJ3cn3kvMoKwrPZR9YgO1p7C4URqLZfnp7nD1bUKQO1CjC/zceGxHPb1B4e
-         bu4aolB7ejBq0qBIAa1ffqOr7MYjJZGwtZNrFxzfSW8taQH4GKRMemtD61nQ6/ZgT80R
-         494A==
-X-Gm-Message-State: AOJu0Yyg0SPLHaYsbUy+yy/AH+ee+24mMUEu0BrG1QG0n+zPTu1BV4tF
-        9k9PZEN6dfFE5uFwfy1aowEuhQ==
-X-Google-Smtp-Source: AGHT+IGToacl2IfMv5vF0nuGEuNbbaTH2uXstB2lcyAVK5QoZX/d+uZ0rVygQlbRD+yxYwSf4/OO+w==
-X-Received: by 2002:a05:6a20:1441:b0:153:588c:f197 with SMTP id a1-20020a056a20144100b00153588cf197mr2569108pzi.35.1694166435181;
-        Fri, 08 Sep 2023 02:47:15 -0700 (PDT)
-Received: from [10.254.232.87] ([139.177.225.246])
-        by smtp.gmail.com with ESMTPSA id p5-20020a170902bd0500b001bba7aab822sm439696pls.5.2023.09.08.02.47.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Sep 2023 02:47:14 -0700 (PDT)
-Message-ID: <bbb0959d-5ad1-846b-b896-eb4c5dd900bf@bytedance.com>
-Date:   Fri, 8 Sep 2023 17:47:03 +0800
+        Fri, 8 Sep 2023 05:48:14 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBCE1BCD
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 02:48:09 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1qeY5q-0006z5-7k; Fri, 08 Sep 2023 11:48:02 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1qeY5m-004qk7-Ut; Fri, 08 Sep 2023 11:47:58 +0200
+Received: from mtr by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1qeY5m-003H19-Ih; Fri, 08 Sep 2023 11:47:58 +0200
+Date:   Fri, 8 Sep 2023 11:47:58 +0200
+From:   Michael Tretter <m.tretter@pengutronix.de>
+To:     =?utf-8?B?64yA7J246riwL1RpemVuIFBsYXRmb3JtIExhYihTUikv7IK87ISx7KCE7J6Q?= 
+        <inki.dae@samsung.com>
+Cc:     'Inki Dae' <daeinki@gmail.com>,
+        'Neil Armstrong' <neil.armstrong@linaro.org>,
+        'Robert Foss' <rfoss@kernel.org>,
+        'Jonas Karlman' <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        'Jernej Skrabec' <jernej.skrabec@gmail.com>,
+        'Laurent Pinchart' <Laurent.pinchart@ideasonboard.com>,
+        'Andrzej Hajda' <andrzej.hajda@intel.com>,
+        'Marek Szyprowski' <m.szyprowski@samsung.com>,
+        kernel@pengutronix.de, 'Jagan Teki' <jagan@amarulasolutions.com>
+Subject: Re: [PATCH 3/5] drm/bridge: samsung-dsim: update PLL reference clock
+Message-ID: <20230908094758.GB767994@pengutronix.de>
+References: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de>
+ <20230818-samsung-dsim-v1-3-b39716db6b7a@pengutronix.de>
+ <CAAQKjZODcKE_O-Nb_qym0BqAZymUu9j24d+8-UXFsFQekJ=unw@mail.gmail.com>
+ <CGME20230904111544epcas1p13a72637ff0351af5760ad958e5d11de9@epcas1p1.samsung.com>
+ <20230904111520.GC224131@pengutronix.de>
+ <001001d9dfd8$3444bbb0$9cce3310$@samsung.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH v2 5/6] maple_tree: Update check_forking() and
- bench_forking()
-To:     Matthew Wilcox <willy@infradead.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Peng Zhang <zhangpeng.00@bytedance.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        oe-lkp@lists.linux.dev, lkp@intel.com,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org, corbet@lwn.net,
-        akpm@linux-foundation.org, brauner@kernel.org, surenb@google.com,
-        michael.christie@oracle.com, peterz@infradead.org,
-        mathieu.desnoyers@efficios.com, npiggin@gmail.com,
-        avagin@gmail.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <202308312115.cad34fed-oliver.sang@intel.com>
- <0e9a87d9-410f-a906-e95c-976a141f24f0@bytedance.com>
- <20230907180301.lms4ihtwfuwj7bkb@revolver>
- <ZPoThAU9zoW2q/YR@casper.infradead.org>
-From:   Peng Zhang <zhangpeng.00@bytedance.com>
-In-Reply-To: <ZPoThAU9zoW2q/YR@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+In-Reply-To: <001001d9dfd8$3444bbb0$9cce3310$@samsung.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mtr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,38 +73,199 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2023/9/8 02:16, Matthew Wilcox 写道:
-> On Thu, Sep 07, 2023 at 02:03:01PM -0400, Liam R. Howlett wrote:
->>>>   WARNING: possible recursive locking detected
->>>>   6.5.0-rc4-00632-g2730245bd6b1 #1 Tainted: G                TN
->>>>   --------------------------------------------
->>>>   swapper/1 is trying to acquire lock:
->>>> ffffffff86485058 (&mt->ma_lock){+.+.}-{2:2}, at: check_forking (include/linux/spinlock.h:? lib/test_maple_tree.c:1854)
->>>>
->>>>   but task is already holding lock:
->>>>   ffff888110847a30 (&mt->ma_lock){+.+.}-{2:2}, at: check_forking (include/linux/spinlock.h:351 lib/test_maple_tree.c:1854)
->>> Thanks for the test. I checked that these are two different locks, why
->>> is this warning reported? Did I miss something?
->>
->> I don't think you can nest spinlocks like this.  In my previous test I
->> avoided nesting, but in your case we cannot avoid having both locks at
->> the same time.
->>
->> You can get around this by using an rwsemaphore, set the two trees as
->> external and use down_write_nested(&lock2, SINGLE_DEPTH_NESTING) like
->> the real fork.  Basically, switch the locking to exactly what fork does.
-Here I can use rwsemaphore to avoid the warning. But what about in
-mtree_dup()? mtree_dup() handles locks internally.
-
-Maybe spin_lock_nested() mentioned by Matthew can be used in
-mtree_dup().
+On Tue, 05 Sep 2023 18:06:06 +0900, 대인기/Tizen Platform Lab(SR)/삼성전자 wrote:
 > 
-> spin_lock_nested() exists.
-Thanks for mentioning this, I'll have a look.
 > 
-> You should probably both read through
-> Documentation/locking/lockdep-design.rst It's not the best user
-> documentation in the world, but it's what we have.
+> > -----Original Message-----
+> > From: dri-devel <dri-devel-bounces@lists.freedesktop.org> On Behalf Of
+> > Michael Tretter
+> > Sent: Monday, September 4, 2023 8:15 PM
+> > To: Inki Dae <daeinki@gmail.com>
+> > Cc: Neil Armstrong <neil.armstrong@linaro.org>; Robert Foss
+> > <rfoss@kernel.org>; Jonas Karlman <jonas@kwiboo.se>; dri-
+> > devel@lists.freedesktop.org; linux-kernel@vger.kernel.org; Jernej Skrabec
+> > <jernej.skrabec@gmail.com>; Laurent Pinchart
+> > <Laurent.pinchart@ideasonboard.com>; Andrzej Hajda
+> > <andrzej.hajda@intel.com>; Marek Szyprowski <m.szyprowski@samsung.com>;
+> > kernel@pengutronix.de; Jagan Teki <jagan@amarulasolutions.com>
+> > Subject: Re: [PATCH 3/5] drm/bridge: samsung-dsim: update PLL reference
+> > clock
+> > 
+> > On Mon, 04 Sep 2023 14:44:41 +0900, Inki Dae wrote:
+> > > 2023년 8월 29일 (화) 오전 12:59, Michael Tretter <m.tretter@pengutronix.de>
+> > 님이 작성:
+> > > >
+> > > > The PLL requires a clock between 2 MHz and 30 MHz after the pre-
+> > divider.
+> > > > The reference clock for the PLL may change due to changes to it's
+> > parent
+> > > > clock. Thus, the frequency may be out of range or unsuited for
+> > > > generating the high speed clock for MIPI DSI.
+> > > >
+> > > > Try to keep the pre-devider small, and set the reference clock close
+> > to
+> > > > 30 MHz before recalculating the PLL configuration. Use a divider with
+> > a
+> > > > power of two for the reference clock as this seems to work best in
+> > > > my tests.
+> > >
+> > > Clock frequency is specific to SoC architecture so we have to handle
+> > > it carefully because samsung-dsim.c is a common module for I.MX and
+> > > Exynos series.
+> > > You mentioned "The PLL requires a clock between 2 MHz and 3MHz after
+> > > pre-divider", and the clock means that fin_pll - PFD input frequency -
+> > > which can be calculated with oscillator clock frequency / P value?
+> > > According to Exynos datasheet, the fin_pll should be 6 ~ 12Mhz.
+> > >
+> > > For example,
+> > > In case of Exyhos, we use 24MHz as oscillator clock frequency, so
+> > > fin_pll frequency, 8MHz = 24MHz / P(3).
+> > >
+> > > Can you tell me the source of the constraint that clocks must be
+> > > between 2MHz and 30MHz?
+> > 
+> > The source is the i.MX8M Nano reference manual, Table 13-40. DPHY PLL
+> > Parameters. It documents that the P divider frequency (fin_pll) has a
+> > frequency range of 2 MHz to 30 MHz. According to the same table, the input
+
+Small clarification: These are the corrected limits of TRM rev. 1. In TRM rev.
+0 the limits are incorrectly specified as 6 MHz to 12 MHz.
+
+> 
+> In case of Exynos, the range is from 6MHz to 12MHz according to Exynos4212 reference manual, Table 1-5.
+> 
+> > frequency (fin) has a range of 6 MHz to 300 MHz.
+> 
+> In case of Exynos, the range is from 6MHz to 200MHz.
+> 
+> > 
+> > Is the table incorrect?
+> 
+
+> It's correct for I.MX but incorrect for Exynos. I think it would mean that
+> the valid range depends on SoC architecture. So I'd say that this patch is
+> specific to I.MX.
+
+I understand.
+
+> This was one of what I concerted about when trying to move
+> samsung-dsim.c module to bridge directory for common use between I.MX and
+> Exynos Platforms, and this will be what we have to solve together - I.MX and
+> Exynos engineers. How about using platform specific data -
+> samsung_dsim_driver_data structure?
+> 
+> I.e,
+> 
+> static const struct samsung_dsim_driver_data imx8mm_dsi_driver_data = {
+>     ...
+>     .min_fin_pll = 2,
+>     .max_fin_pll = 30,
+>     ...
+> };
+> 
+> static const struct samsung_dsim_driver_data exynosxxxx_dsi_driver_data = {
+>     ...
+>     .min_fin_pll = 6,
+>     .max_fin_pll = 12,
+>     ...
+> };
+
+Extending the samsung_dsim_driver_data sounds reasonable. There are already
+other frequency limits specified. I will implement this in v2.
+
+> 
+> And then,
+> 
+> while (fin > driver_data->max_fin_pll * MHZ)
+>     fin = fin / 2;
+> 
+> > 
+> > I also tried to always set the reference clock to 24 MHz, but depending on
+> > the
+> > display clock this isn't always possible.
+> 
+
+> According to dt binding, if samsung,pll-clock-frequency exists then we have
+> to use it first. I'm not sure but could we check if the pll_clk_rate is
+> valid or not depending on the given display clock in advance? If so then
+> maybe we could update the pll_clk_rate correctly by reading the pll_clk
+> frequency again.
+
+If samsung,pll-clock-frequency is set, the driver will neither check nor
+update the pll_clk, but assume that the clocks are configured correctly. Thus,
+the author of the device tree is responsible for selecting and configuring
+valid clocks.
+
+I observed that if I set pll_clk to any fixed value for different modes, the
+clock framework may use a different clock rate depending on what is possible.
+This may result in a reference clock that uses a fractional divider to get the
+pll_clk_rate or cannot exactly produce the hs_clock. These situations cause
+sync issues on the display.
+
+Checking, if the current pll_clk_rate would involve the pix_clk, the hs_clock,
+and the parent of the pll_clk. It may be possible, but I don't see a problem
+with calculating a suitable pll_clk_rate, updating the pll_clk, and then
+configuring the PLL to generate the hs_clock.
+
+Michael
+
+> 
+> Thanks,
+> Inki Dae
+> 
+> > 
+> > Michael
+> > 
+> > >
+> > > To other I.MX and Exynos engineers, please do not merge this patch
+> > > until two SoC platforms are tested correctly.
+> > >
+> > > Thanks,
+> > > Inki Dae
+> > >
+> > > >
+> > > > Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
+> > > > ---
+> > > >  drivers/gpu/drm/bridge/samsung-dsim.c | 15 +++++++++++++--
+> > > >  1 file changed, 13 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c
+> > b/drivers/gpu/drm/bridge/samsung-dsim.c
+> > > > index da90c2038042..4de6e4f116db 100644
+> > > > --- a/drivers/gpu/drm/bridge/samsung-dsim.c
+> > > > +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+> > > > @@ -611,10 +611,21 @@ static unsigned long samsung_dsim_set_pll(struct
+> > samsung_dsim *dsi,
+> > > >         u16 m;
+> > > >         u32 reg;
+> > > >
+> > > > -       if (dsi->pll_clk)
+> > > > +       if (dsi->pll_clk) {
+> > > > +               /*
+> > > > +                * Ensure that the reference clock is generated with a
+> > power of
+> > > > +                * two divider from its parent, but close to the PLLs
+> > upper
+> > > > +                * limit of the valid range of 2 MHz to 30 MHz.
+> > > > +                */
+> > > > +               fin = clk_get_rate(clk_get_parent(dsi->pll_clk));
+> > > > +               while (fin > 30 * MHZ)
+> > > > +                       fin = fin / 2;
+> > > > +               clk_set_rate(dsi->pll_clk, fin);
+> > > > +
+> > > >                 fin = clk_get_rate(dsi->pll_clk);
+> > > > -       else
+> > > > +       } else {
+> > > >                 fin = dsi->pll_clk_rate;
+> > > > +       }
+> > > >         dev_dbg(dsi->dev, "PLL ref clock freq %lu\n", fin);
+> > > >
+> > > >         fout = samsung_dsim_pll_find_pms(dsi, fin, freq, &p, &m, &s);
+> > > >
+> > > > --
+> > > > 2.39.2
+> > > >
+> > >
+> 
+> 
 > 
