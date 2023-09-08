@@ -2,126 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D03798AFA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 18:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4252A798B15
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 18:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245241AbjIHQx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 12:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50136 "EHLO
+        id S245364AbjIHQz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 12:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242077AbjIHQxZ (ORCPT
+        with ESMTP id S229713AbjIHQz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 12:53:25 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED562105
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 09:52:54 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-6493389c56fso12576376d6.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 09:52:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694191974; x=1694796774; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sFgFFCKLJ5w4KEXVj4sLDW2zQKRl1fCp5caELQugN10=;
-        b=Umx9ZAOQYrQjY6VaphdIL5/UmiDyvQfSGa860US8sCqIALK8uHrOJNckzZjaiq4wcR
-         M5id9cHBVpSD0ziUMk2QwqCFm8GfNhf7LWQW1nAZuOrUPU6GOqOfxRcL2ePY5rvItTdl
-         eFjVbuusU1mQmEWAy7Qx/ASPxWAGGMh+/nH53KW2i28lCdULSj7XtpwquZlMX8WGnbYj
-         Mh/R/jDmA7SL+PdZLTwHLvo/4ojh6rWUVcJCjM/9KzTUeHB9ype3GrSwnmYDjiMipS9o
-         Yuzn8BM2wWTtbdHgQ7LjFuvnSW3IUZnOHWbKR81O4c+a+vRRn3dZ/cQPTga/n3XzkQ+W
-         FPJQ==
+        Fri, 8 Sep 2023 12:55:58 -0400
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6514D2680;
+        Fri,  8 Sep 2023 09:55:22 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-501bd6f7d11so3717994e87.1;
+        Fri, 08 Sep 2023 09:55:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694191974; x=1694796774;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sFgFFCKLJ5w4KEXVj4sLDW2zQKRl1fCp5caELQugN10=;
-        b=bOka3/u/y+Y/qWiIrKoOhGzSL/pR5ebFJ7hbP7a3K2IhVW+iOMrAxPREFL7AsFLZmu
-         Ub1xjWijEmB75NF15j1V330W3L20wZRCXo+nIVDQyg+y1byPNBbCmrWnjwTdS6QQnzi9
-         Txw0vBi+ckrMbty42BzQm9FBqWUS7qD/Jnh/I1R6MFf8nBqOZgLNGMVDyxsiMf0D2BrZ
-         7qAc1NUJX41lxB0Q24BxLpLdU3MHux03QYcKbgMaBiyyz16/XR9lIKfgLOxGZpWMA3h0
-         w1UfQty51gLuMhiaFDcFDvXYmerbMgCwxnulx/IVyWuMoEkihOktnwOEeR7X1oXaC9oF
-         dJPA==
-X-Gm-Message-State: AOJu0Yw6uhjfLSFRf4leXu0kqAVx4j5mA4+86+D/lXEojXQfmizgS/So
-        Vk7mT4et/bIvgorcH0CJZ4jiHhqHtMO4COnTRq/bdw==
-X-Google-Smtp-Source: AGHT+IFXSQuRL19IVQpjI0ydTiACWCGqqd0y6PANxeLBcmXvUcpWOa8JEabxZHoydCi24eoU5hNMT11dg17tr5jT2uA=
-X-Received: by 2002:a0c:9a09:0:b0:64f:3c68:98ea with SMTP id
- p9-20020a0c9a09000000b0064f3c6898eamr3178455qvd.2.1694191973767; Fri, 08 Sep
- 2023 09:52:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694192117; x=1694796917;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S7URpEOHyiyMnwkk7ulREI14OY8DCzbtRusyfBiWSJI=;
+        b=JX9O/7ttTg/xcwDACP4i8TiPwkW72lCHbJBUpidhcG3J0uhcHeQ3YXmfHKiF27E+6D
+         VgqenuePm878MxAAlnZOlzt7k1suf9K20AFk3mN9bpves/xorl7yCyMXUBmiWb8R28JW
+         AkGd9A2cXnPoGrFHoYL5EM4H+x3XfHjEjozu1su5C2+5/69os4mV0HSdA+2wcfLqp+7H
+         Su3aFYh0tAQ2h2cekOQRT/+MtDiVH8PQR4zKJodDq4xkkq9s4RQx+7mPOSChJOwc6Mhp
+         SlC+FDuCi0wpEY+pxCK7BbGfYHPKKd+Ys63nfCOvc/eBSu34vh24ErcY6DE3TnIUclNo
+         /hDg==
+X-Gm-Message-State: AOJu0YxxLaZk5f/7H/iYU2WgVWgBscNQZA8QUZuYAKn8qfFqb1Wu6aR/
+        S3VANbOEuIOcQSN7Dyw35QM=
+X-Google-Smtp-Source: AGHT+IGHljrhvnrA7HLF8GAewGPNt9+isjVnu7yHq1p/pbkFl2qUisWBb7baIwcEX4XP0OE7pSgnyA==
+X-Received: by 2002:a05:6512:3f15:b0:500:aa41:9d67 with SMTP id y21-20020a0565123f1500b00500aa419d67mr3016978lfa.8.1694192116925;
+        Fri, 08 Sep 2023 09:55:16 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-118.fbsv.net. [2a03:2880:31ff:76::face:b00c])
+        by smtp.gmail.com with ESMTPSA id z7-20020a1709060ac700b0099bc08862b6sm1276320ejf.171.2023.09.08.09.55.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Sep 2023 09:55:16 -0700 (PDT)
+Date:   Fri, 8 Sep 2023 09:55:11 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
+        willemdebruijn.kernel@gmail.com, martin.lau@linux.dev,
+        krisman@suse.de, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, io-uring@vger.kernel.org, pabeni@redhat.com
+Subject: Re: [PATCH v4 00/10] io_uring: Initial support for {s,g}etsockopt
+ commands
+Message-ID: <ZPtR7+8YOWmtZHuD@gmail.com>
+References: <20230904162504.1356068-1-leitao@debian.org>
+ <20230905154951.0d0d3962@kernel.org>
 MIME-Version: 1.0
-References: <20230908093103.2620512-1-liushixin2@huawei.com>
-In-Reply-To: <20230908093103.2620512-1-liushixin2@huawei.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 8 Sep 2023 09:52:14 -0700
-Message-ID: <CAJD7tkafz_2XAuqE8tGLPEcpLngewhUo=5US14PAtSM9tLBUQg@mail.gmail.com>
-Subject: Re: [PATCH] mm: vmscan: fix NULL pointer dereference in can_reclaim_anon_pages
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Sachin Sant <sachinp@linux.ibm.com>,
-        Michael Ellerman <michaele@au1.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230905154951.0d0d3962@kernel.org>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 8, 2023 at 1:37=E2=80=AFAM Liu Shixin <liushixin2@huawei.com> w=
-rote:
->
-> The variable sc is NULL pointer in can_reclaim_anon_pages() when called
-> from zone_reclaimable_pages(). Check it before setting swapcache_only.
->
-> Reported-by: Sachin Sant <sachinp@linux.ibm.com>
-> Link: https://lore.kernel.org/linux-mm/F00144DE-2A3F-4463-8203-45E0D57E31=
-3E@linux.ibm.com/T/
-> Fixes: 92039ae85e8d("mm: vmscan: try to reclaim swapcache pages if no swa=
-p space")
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
->  mm/vmscan.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index f1dc0dbf1cdb..5eb85ddf403f 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -617,7 +617,7 @@ static inline bool can_reclaim_anon_pages(struct mem_=
-cgroup *memcg,
->                 if (get_nr_swap_pages() > 0)
->                         return true;
->                 /* Is there any swapcache pages to reclaim? */
-> -               if (total_swapcache_pages() > 0) {
-> +               if (sc && total_swapcache_pages() > 0) {
+On Tue, Sep 05, 2023 at 03:49:51PM -0700, Jakub Kicinski wrote:
+> On Mon,  4 Sep 2023 09:24:53 -0700 Breno Leitao wrote:
+> > Patches 1-2: Modify the BPF hooks to support sockptr_t, so, these functions
+> > become flexible enough to accept user or kernel pointers for optval/optlen.
+> 
+> Have you seen:
+> 
+> https://lore.kernel.org/all/CAHk-=wgGV61xrG=gO0=dXH64o2TDWWrXn1mx-CX885JZ7h84Og@mail.gmail.com/
 
-If sc is NULL, we will not return true even if we have pages in the
-swapcache. This will make can_reclaim_anon_pages() return differently
-based on whether sc is passed in. Is this the needed behavior?
+I haven't but I think it will not affect *much* this patchset.
 
-I thought the sc NULL check should be used only to guard the setting
-of sc->swapcache_only, not the return value as well?
+> ? I wasn't aware that Linus felt this way, now I wonder if having
+> sockptr_t spread will raise any red flags as this code flows back
+> to him.
 
->                         sc->swapcache_only =3D 1;
->                         return true;
->                 }
-> @@ -626,7 +626,7 @@ static inline bool can_reclaim_anon_pages(struct mem_=
-cgroup *memcg,
->                 if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
->                         return true;
->                 /* Is there any swapcache pages in memcg to reclaim? */
-> -               if (mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
-> +               if (sc && mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
->                         sc->swapcache_only =3D 1;
->                         return true;
->                 }
-> --
-> 2.25.1
->
+I can change the io_uring API in a way that we can avoid these
+sockptr_t changes completely.
+
+My plan is to mimic what getsockopt(2) is doing in io_uring cmd path, in
+regard to optlen being an userpointer, instead of a value - which is
+then translated to a KERNEL_SOCKPTR.
+
+In this way, this change don't need to touch any sockptr field.
+
+Thanks for the heads-up
