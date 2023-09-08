@@ -2,46 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BEC9798F7D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3CF798F63
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344893AbjIHTcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54028 "EHLO
+        id S1344856AbjIHTcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344862AbjIHTcu (ORCPT
+        with ESMTP id S1344833AbjIHTcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:32:50 -0400
+        Fri, 8 Sep 2023 15:32:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618771FE3;
-        Fri,  8 Sep 2023 12:32:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9451C433C8;
-        Fri,  8 Sep 2023 19:31:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B298410CA;
+        Fri,  8 Sep 2023 12:31:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7C44C433AD;
+        Fri,  8 Sep 2023 19:31:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201493;
-        bh=o9T6Uw/qtR+3CImr3chrMXNSOkwq+cSMpKWANrsOAJ4=;
+        s=k20201202; t=1694201494;
+        bh=xoOLMqcuyPH4UTuc0ZznVTA/lU5nY+YsFXGNg86K7n4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P/SwJ3iuSDcisoEy3c2JWLGwDghPaYaJrLcuc//bEHrOvO8bS+dhly4bsLgTCcBdJ
-         Zhqbvpc+SS6Qqk9I9PoIFxeZ3B5E7Z2kv9liMOwOW2Da/FxLWmq9WSyCg2tMQlNXDi
-         99sWiBB7YP30ykrqZZ5Vwk8TE5PbsOzoEd54UAlkRj7hfb1Ftamb9zeT9ofJjaNMcv
-         fxtjB9Kt5BPjZ5LvsbOzUL6VmARzoTK8dJbFzj5RqYev12yJpbIjprZNa5nmLu2k5T
-         rb7yIjoPT1MbYMhjmWH92n7+hXiCbOooS+QToZ5/kSszUhzStcJ0Ex1xCWNnN1tfBH
-         t8CNfZvmJHTSQ==
+        b=fmWPjGf+rSvhki8tWvB92Q4kT7ZsLCok/96m49lFmdAQsk1WiFjfMVGG59V7vKt9r
+         SX59qBT/4w21Af+uCkl5LehOaIF4kDJ3ZBRZpruFIMZmc1MhwSyKw0AIpdK+VVRycT
+         PlVtuSMgy2LnegdyNehFIN3OLfHBvtd+Rdgfl1Bbq383MkgZjM5Ky5BeFD47myPVNl
+         r5sIqY8yirIPnwurn/cvQjSL7FJEZlkwRUTo9OjQ/fucACy50XKWu8T3hgYd/jNo2K
+         pUbN/e3GqSQo0g5fAvjZLgpNelBawr4BNdYvoUAHcCqam+y/grUXMwFtdh6OGio7Dx
+         sf/RDlGy6G+5A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Chen-Yu Tsai <wenst@chromium.org>, CK Hu <ck.hu@mediatek.com>,
-        Alexandre Mergnat <amergnat@baylibre.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, p.zabel@pengutronix.de,
-        airlied@gmail.com, daniel@ffwll.ch, matthias.bgg@gmail.com,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.5 28/36] drm/mediatek: dp: Change logging to dev for mtk_dp_aux_transfer()
-Date:   Fri,  8 Sep 2023 15:28:39 -0400
-Message-Id: <20230908192848.3462476-28-sashal@kernel.org>
+Cc:     Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>,
+        Sasha Levin <sashal@kernel.org>, linux-omap@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 29/36] bus: ti-sysc: Configure uart quirks for k3 SoC
+Date:   Fri,  8 Sep 2023 15:28:40 -0400
+Message-Id: <20230908192848.3462476-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908192848.3462476-1-sashal@kernel.org>
 References: <20230908192848.3462476-1-sashal@kernel.org>
@@ -59,63 +51,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit fd70e2019bfbcb0ed90c5e23839bf510ce6acf8f ]
+[ Upstream commit 03a711d3cb83692733f865312f49e665c49de6de ]
 
-Change logging from drm_{err,info}() to dev_{err,info}() in functions
-mtk_dp_aux_transfer() and mtk_dp_aux_do_transfer(): this will be
-essential to avoid getting NULL pointer kernel panics if any kind
-of error happens during AUX transfers happening before the bridge
-is attached.
+Enable the uart quirks similar to the earlier SoCs. Let's assume we are
+likely going to need a k3 specific quirk mask separate from the earlier
+SoCs, so let's not start changing the revision register mask at this point.
 
-This may potentially start happening in a later commit implementing
-aux-bus support, as AUX transfers will be triggered from the panel
-driver (for EDID) before the mtk-dp bridge gets attached, and it's
-done in preparation for the same.
+Note that SYSC_QUIRK_LEGACY_IDLE will be needed until we can remove the
+need for pm_runtime_irq_safe() from 8250_omap driver.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Tested-by: Chen-Yu Tsai <wenst@chromium.org>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
-Link: https://patchwork.kernel.org/project/dri-devel/patch/20230725073234.55892-4-angelogioacchino.delregno@collabora.com/
-Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Reviewed-by: Nishanth Menon <nm@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/mediatek/mtk_dp.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/bus/ti-sysc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dp.c b/drivers/gpu/drm/mediatek/mtk_dp.c
-index 64eee77452c04..83de1338c4d5d 100644
---- a/drivers/gpu/drm/mediatek/mtk_dp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dp.c
-@@ -847,7 +847,7 @@ static int mtk_dp_aux_do_transfer(struct mtk_dp *mtk_dp, bool is_read, u8 cmd,
- 		u32 phy_status = mtk_dp_read(mtk_dp, MTK_DP_AUX_P0_3628) &
- 				 AUX_RX_PHY_STATE_AUX_TX_P0_MASK;
- 		if (phy_status != AUX_RX_PHY_STATE_AUX_TX_P0_RX_IDLE) {
--			drm_err(mtk_dp->drm_dev,
-+			dev_err(mtk_dp->dev,
- 				"AUX Rx Aux hang, need SW reset\n");
- 			return -EIO;
- 		}
-@@ -2057,7 +2057,7 @@ static ssize_t mtk_dp_aux_transfer(struct drm_dp_aux *mtk_aux,
- 		is_read = true;
- 		break;
- 	default:
--		drm_err(mtk_aux->drm_dev, "invalid aux cmd = %d\n",
-+		dev_err(mtk_dp->dev, "invalid aux cmd = %d\n",
- 			msg->request);
- 		ret = -EINVAL;
- 		goto err;
-@@ -2073,7 +2073,7 @@ static ssize_t mtk_dp_aux_transfer(struct drm_dp_aux *mtk_aux,
- 					     to_access, &msg->reply);
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+index 4cb23b9e06ea4..08a20672915c3 100644
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -1525,6 +1525,8 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
+ 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
+ 	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x47422e03, 0xffffffff,
+ 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
++	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x47424e03, 0xffffffff,
++		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
  
- 		if (ret) {
--			drm_info(mtk_dp->drm_dev,
-+			dev_info(mtk_dp->dev,
- 				 "Failed to do AUX transfer: %d\n", ret);
- 			goto err;
- 		}
+ 	/* Quirks that need to be set based on the module address */
+ 	SYSC_QUIRK("mcpdm", 0x40132000, 0, 0x10, -ENODEV, 0x50000800, 0xffffffff,
 -- 
 2.40.1
 
