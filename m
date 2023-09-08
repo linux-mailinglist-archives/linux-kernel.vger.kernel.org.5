@@ -2,83 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC5579823D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 08:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89CA3798239
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 08:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241031AbjIHGR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 02:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44186 "EHLO
+        id S236179AbjIHGQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 02:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232913AbjIHGRW (ORCPT
+        with ESMTP id S230228AbjIHGQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 02:17:22 -0400
-X-Greylist: delayed 64 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Sep 2023 23:17:15 PDT
-Received: from ssh247.corpemail.net (ssh247.corpemail.net [210.51.61.247])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D77919A6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 23:17:15 -0700 (PDT)
-Received: from ssh247.corpemail.net
-        by ssh247.corpemail.net ((D)) with ASMTP (SSL) id DFY00105;
-        Fri, 08 Sep 2023 14:16:05 +0800
-Received: from localhost.localdomain (10.94.3.99) by
- jtjnmail201621.home.langchao.com (10.100.2.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 8 Sep 2023 14:16:04 +0800
-From:   Bo Liu <liubo03@inspur.com>
-To:     <bskeggs@redhat.com>, <kherbst@redhat.com>, <lyude@redhat.com>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, Bo Liu <liubo03@inspur.com>
-Subject: [PATCH] drm/nouveau/acr/ga102: remove set but unused variable
-Date:   Fri, 8 Sep 2023 02:16:01 -0400
-Message-ID: <20230908061601.2510-1-liubo03@inspur.com>
-X-Mailer: git-send-email 2.18.2
+        Fri, 8 Sep 2023 02:16:46 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4171B1BD9;
+        Thu,  7 Sep 2023 23:16:42 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E7AD4218E7;
+        Fri,  8 Sep 2023 06:16:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694153800; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cfiRMiLiljQPPOhhpNNBkApUXT20U3F3E5R68i/OMvk=;
+        b=kRet6pO+tsSrG82Rwvv1LyygTDeAuDqcQvVQHNuT+wHctPZU1qp1ipdxRGQNUTuuY1iqEJ
+        25dcUERNuPvHqVGHDx0iGpZhZSguIeMPo8QeBUR3zRtYG6W3uNSzvp0d0AyXg2NbSjBdNO
+        vRWDoikWhtc4OLXe1vKoakW8hOAqxUM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694153800;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cfiRMiLiljQPPOhhpNNBkApUXT20U3F3E5R68i/OMvk=;
+        b=m+QzdY88ivA30UWFiCkWR71EfkwDvFkXyiaqpuqwEUnvy5x1HQwHdfItrKeBiB/MbEWhxw
+        FhqKG5e9iwUHiNCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 616D0131FD;
+        Fri,  8 Sep 2023 06:16:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id baswFki8+mQibgAAMHmgww
+        (envelope-from <hare@suse.de>); Fri, 08 Sep 2023 06:16:40 +0000
+Message-ID: <7bdf32f4-6fac-4ed4-a11f-b6dfe1c45177@suse.de>
+Date:   Fri, 8 Sep 2023 08:16:39 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.94.3.99]
-X-ClientProxiedBy: Jtjnmail201614.home.langchao.com (10.100.2.14) To
- jtjnmail201621.home.langchao.com (10.100.2.21)
-tUid:   202390814160506aa29a415d9216ccfcf156a4c58824f
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v15 12/12] null_blk: add support for copy offload
+Content-Language: en-US
+To:     Nitesh Shetty <nj.shetty@samsung.com>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     martin.petersen@oracle.com, mcgrof@kernel.org,
+        gost.dev@samsung.com,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Anuj Gupta <anuj20.g@samsung.com>,
+        Vincent Fu <vincent.fu@samsung.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org
+References: <20230906163844.18754-1-nj.shetty@samsung.com>
+ <CGME20230906164434epcas5p16135fb4935a62519360ede42e137bbbb@epcas5p1.samsung.com>
+ <20230906163844.18754-13-nj.shetty@samsung.com>
+From:   Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20230906163844.18754-13-nj.shetty@samsung.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The local variable loc in nvkm_acr_lsfw_load_sig_image_desc_v2()
-is set but not used. Remove the variable and related code.
+On 9/6/23 18:38, Nitesh Shetty wrote:
+> Implementation is based on existing read and write infrastructure.
+> copy_max_bytes: A new configfs and module parameter is introduced, which
+> can be used to set hardware/driver supported maximum copy limit.
+> Only request based queue mode will support for copy offload.
+> Added tracefs support to copy IO tracing.
+> 
+> Suggested-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
+> Signed-off-by: Anuj Gupta <anuj20.g@samsung.com>
+> Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
+> Signed-off-by: Vincent Fu <vincent.fu@samsung.com>
+> ---
+>   Documentation/block/null_blk.rst  |  5 ++
+>   drivers/block/null_blk/main.c     | 97 ++++++++++++++++++++++++++++++-
+>   drivers/block/null_blk/null_blk.h |  1 +
+>   drivers/block/null_blk/trace.h    | 23 ++++++++
+>   4 files changed, 123 insertions(+), 3 deletions(-)
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-Signed-off-by: Bo Liu <liubo03@inspur.com>
----
- drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Cheers,
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c b/drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c
-index f36a359d4531..bd104a030243 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c
-@@ -218,7 +218,7 @@ nvkm_acr_lsfw_load_sig_image_desc_v2(struct nvkm_subdev *subdev,
- 		const struct firmware *hsbl;
- 		const struct nvfw_ls_hsbl_bin_hdr *hdr;
- 		const struct nvfw_ls_hsbl_hdr *hshdr;
--		u32 loc, sig, cnt, *meta;
-+		u32 sig, cnt, *meta;
- 
- 		ret = nvkm_firmware_load_name(subdev, path, "hs_bl_sig", ver, &hsbl);
- 		if (ret)
-@@ -227,7 +227,6 @@ nvkm_acr_lsfw_load_sig_image_desc_v2(struct nvkm_subdev *subdev,
- 		hdr = nvfw_ls_hsbl_bin_hdr(subdev, hsbl->data);
- 		hshdr = nvfw_ls_hsbl_hdr(subdev, hsbl->data + hdr->header_offset);
- 		meta = (u32 *)(hsbl->data + hshdr->meta_data_offset);
--		loc = *(u32 *)(hsbl->data + hshdr->patch_loc);
- 		sig = *(u32 *)(hsbl->data + hshdr->patch_sig);
- 		cnt = *(u32 *)(hsbl->data + hshdr->num_sig);
- 
+Hannes
 -- 
-2.27.0
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
+Myers, Andrew McDonald, Martje Boudien Moerman
 
