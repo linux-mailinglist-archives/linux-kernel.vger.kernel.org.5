@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 365E9798C39
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C002D798C30
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237308AbjIHSGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34778 "EHLO
+        id S229959AbjIHSFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234826AbjIHSGB (ORCPT
+        with ESMTP id S244181AbjIHSFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:06:01 -0400
+        Fri, 8 Sep 2023 14:05:07 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B2F1FE2;
-        Fri,  8 Sep 2023 11:05:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5520BC43397;
-        Fri,  8 Sep 2023 18:04:23 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6182269A;
+        Fri,  8 Sep 2023 11:04:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0625FC4166B;
+        Fri,  8 Sep 2023 18:04:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196264;
-        bh=lPZzbqdipeOQnA8se+cbLxe11ndVPLVanezzJSDWuYU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Vj8SkSO3WqbAzVhi7zeiClPI6OD69goh44kapZzmdWNMc5uu/3UW9DKIfU3kOYuRg
-         HlvUu8wYJCh9B9HNaZl/qex0bxJf6VAcJFv6dITNG89J43PELeV8iUx9eYIXJpQuHI
-         QdUv7IbENkG+TcvG4fuEaP+qBY8l4gPlCV5H4II1zAsIA7lVT4lVoS0Kdbz6mF7Lnv
-         kTeSbKIcVShC7y8c/a5EgF7KAITMDvhmoYWYGDhSG23LzxRCmHvAhzPf+KEG9DxD5F
-         fQ6kqxOqVMbDtFF/cOnbt2Nz3hkh3hP+y7hKKZAgd0DfOxp8EDQhYp2D8tkXlbobsl
-         jPC254ekuZb/Q==
+        s=k20201202; t=1694196266;
+        bh=L0zSuJOhdB2hQ7Bko3h9ZixT0pDP7Rg3T3Sw4Zlh9oE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=knO0gHS3GSsgVwC7396ovywKH1TKwz2dazKqn4dRmSpVu3vub7n9nD1VulmqDvYDe
+         ALVDk26cxrWBQ+l98Wl7S1Pz12Eexl0nuUDKqXLcg5/WqxduVfHhOf0Qfiw+FnjpRt
+         jJxoq02hxc3tdxlieD/xRoA7X22kM2pUrV6AlxROwQ1FA2gt2LiVQMLZiILP7kzDFf
+         Iv58wWozqeW2/VUD/pqm6PgU82C/rfeYP/ZEVhgKPYx8BGnUm27PSJMV7GsbBiESmT
+         lrwmZY6Mv+nGaPem5NzvTcgbX+FuI/EFZDx/aa5S2QogWCA07DYnrrsFrulBDB1NAo
+         4mfb8ghGblmtw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Abhishek Mainkar <abmainkar@nvidia.com>,
-        Bob Moore <robert.moore@intel.com>,
+Cc:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
         "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>, linux-acpi@vger.kernel.org,
-        acpica-devel@lists.linuxfoundation.org
-Subject: [PATCH AUTOSEL 4.14 1/3] ACPICA: Add AML_NO_OPERAND_RESOLVE flag to Timer
-Date:   Fri,  8 Sep 2023 14:04:18 -0400
-Message-Id: <20230908180421.3458860-1-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, rafael@kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 2/3] ACPI: video: Add backlight=native DMI quirk for Lenovo Ideapad Z470
+Date:   Fri,  8 Sep 2023 14:04:19 -0400
+Message-Id: <20230908180421.3458860-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230908180421.3458860-1-sashal@kernel.org>
+References: <20230908180421.3458860-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -52,58 +54,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Abhishek Mainkar <abmainkar@nvidia.com>
+From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 
-[ Upstream commit 3a21ffdbc825e0919db9da0e27ee5ff2cc8a863e ]
+[ Upstream commit 96b709be183c56293933ef45b8b75f8af268c6de ]
 
-ACPICA commit 90310989a0790032f5a0140741ff09b545af4bc5
+The Lenovo Ideapad Z470 predates Windows 8, so it defaults to using
+acpi_video for backlight control. But this is not functional on this
+model.
 
-According to the ACPI specification 19.6.134, no argument is required to be passed for ASL Timer instruction. For taking care of no argument, AML_NO_OPERAND_RESOLVE flag is added to ASL Timer instruction opcode.
+Add a DMI quirk to use the native backlight interface which works.
 
-When ASL timer instruction interpreted by ACPI interpreter, getting error. After adding AML_NO_OPERAND_RESOLVE flag to ASL Timer instruction opcode, issue is not observed.
-
-=============================================================
-UBSAN: array-index-out-of-bounds in acpica/dswexec.c:401:12 index -1 is out of range for type 'union acpi_operand_object *[9]'
-CPU: 37 PID: 1678 Comm: cat Not tainted
-6.0.0-dev-th500-6.0.y-1+bcf8c46459e407-generic-64k
-HW name: NVIDIA BIOS v1.1.1-d7acbfc-dirty 12/19/2022 Call trace:
- dump_backtrace+0xe0/0x130
- show_stack+0x20/0x60
- dump_stack_lvl+0x68/0x84
- dump_stack+0x18/0x34
- ubsan_epilogue+0x10/0x50
- __ubsan_handle_out_of_bounds+0x80/0x90
- acpi_ds_exec_end_op+0x1bc/0x6d8
- acpi_ps_parse_loop+0x57c/0x618
- acpi_ps_parse_aml+0x1e0/0x4b4
- acpi_ps_execute_method+0x24c/0x2b8
- acpi_ns_evaluate+0x3a8/0x4bc
- acpi_evaluate_object+0x15c/0x37c
- acpi_evaluate_integer+0x54/0x15c
- show_power+0x8c/0x12c [acpi_power_meter]
-
-Link: https://github.com/acpica/acpica/commit/90310989
-Signed-off-by: Abhishek Mainkar <abmainkar@nvidia.com>
-Signed-off-by: Bob Moore <robert.moore@intel.com>
+Link: https://bugzilla.suse.com/show_bug.cgi?id=1208724
+Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpica/psopcode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/video_detect.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/acpi/acpica/psopcode.c b/drivers/acpi/acpica/psopcode.c
-index a402ad772a1e5..c561d35d441bb 100644
---- a/drivers/acpi/acpica/psopcode.c
-+++ b/drivers/acpi/acpica/psopcode.c
-@@ -637,7 +637,7 @@ const struct acpi_opcode_info acpi_gbl_aml_op_info[AML_NUM_OPCODES] = {
- 
- /* 7E */ ACPI_OP("Timer", ARGP_TIMER_OP, ARGI_TIMER_OP, ACPI_TYPE_ANY,
- 			 AML_CLASS_EXECUTE, AML_TYPE_EXEC_0A_0T_1R,
--			 AML_FLAGS_EXEC_0A_0T_1R),
-+			 AML_FLAGS_EXEC_0A_0T_1R | AML_NO_OPERAND_RESOLVE),
- 
- /* ACPI 5.0 opcodes */
- 
+diff --git a/drivers/acpi/video_detect.c b/drivers/acpi/video_detect.c
+index b4f16073ef432..866bc20c82397 100644
+--- a/drivers/acpi/video_detect.c
++++ b/drivers/acpi/video_detect.c
+@@ -294,6 +294,15 @@ static const struct dmi_system_id video_detect_dmi_table[] = {
+ 		DMI_MATCH(DMI_BOARD_NAME, "Lenovo IdeaPad S405"),
+ 		},
+ 	},
++	{
++	 /* https://bugzilla.suse.com/show_bug.cgi?id=1208724 */
++	 .callback = video_detect_force_native,
++	 /* Lenovo Ideapad Z470 */
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++		DMI_MATCH(DMI_PRODUCT_VERSION, "IdeaPad Z470"),
++		},
++	},
+ 	{
+ 	 /* https://bugzilla.redhat.com/show_bug.cgi?id=1187004 */
+ 	 .callback = video_detect_force_native,
 -- 
 2.40.1
 
