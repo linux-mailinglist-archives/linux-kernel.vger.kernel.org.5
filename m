@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01815799046
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF447990B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237227AbjIHTiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:38:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
+        id S1344400AbjIHUCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 16:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345057AbjIHThZ (ORCPT
+        with ESMTP id S235181AbjIHUCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:37:25 -0400
+        Fri, 8 Sep 2023 16:02:19 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34B42137;
-        Fri,  8 Sep 2023 12:37:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C68FC116A6;
-        Fri,  8 Sep 2023 19:36:53 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D92B4;
+        Fri,  8 Sep 2023 13:02:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C427C433CA;
+        Fri,  8 Sep 2023 19:36:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201814;
-        bh=MG2FAmFfsR5PijkiwiGPWs+ET7pbM8EZX0Ikj1H2/BY=;
+        s=k20201202; t=1694201815;
+        bh=YYapb1OHBBNErDKXvjx0ajU9+gbVJbCE6tiNSdzw2uU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dU+dta6dNVYrViS8Njgs5+F80HnJtihRMQ1N0JGuycG/PLi1Cf8h5vYIE8TWTqCnP
-         NL7tQhcp08sqLrzoWFZcdrXFy3XLp4PE0jaINegwJ9CL1UFTZxAIinFw2ie19lkAlD
-         zftOzgmiSm38bwXelkjTSuphzbH4jA+uAQ+bkc0oiS9iXtReoA9GXtI/gwXhhwN7tL
-         mi1w2+yCq5x6y+MQPhyyJ6VT3mwYcUb6SjOXPxEcS9TAp3BTPyDttdH0GALgxyIRSE
-         DXTXlqVj19NtqEg+LoKSdVaSJWw1liFHNrHi2p8/qK5bewO4LOTPSlmjG5korewCBi
-         oOsuteWBj9S+g==
+        b=fhNu9hPpQGXOjuOvYqsN2HPgmeoT8oFYAN8kJ3Eft9g+hPYQA+V6MsJtPmFQJ5dgN
+         CzbYHOa0Dcq/m1PmZxsHkCZKhv77gxiSyTyONWP8PYrY55RHQPoFyMHxWyG8CzLak/
+         +fhWJkMsjsjIbYQLg1X3Wh/PuojgHyqq1Oir9hhRx65vieIiG38J1xZLJjUXwkydBt
+         eRhNWl+/SBdkHvLjEM13iJn3EdfBSJ49Xa7M856VmZLmcO+oMxURbyTNA3jFs7bNr5
+         x6n0naQ7zWwt18YcjtQaHqo2yE0KRRfrFSJeQGJQPTbHQa18VJ5XMQn7xeF87ssyZM
+         eMjvFDJbVXXpg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhang Shurong <zhang_shurong@foxmail.com>,
-        Yu Kuai <yukuai3@huawei.com>, Song Liu <song@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-raid@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 2/3] md: raid1: fix potential OOB in raid1_remove_disk()
-Date:   Fri,  8 Sep 2023 15:36:47 -0400
-Message-Id: <20230908193648.3464004-2-sashal@kernel.org>
+Cc:     Georg Ottinger <g.ottinger@gmx.at>, Jan Kara <jack@suse.cz>,
+        Sasha Levin <sashal@kernel.org>, jack@suse.com,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 3/3] ext2: fix datatype of block number in ext2_xattr_set2()
+Date:   Fri,  8 Sep 2023 15:36:48 -0400
+Message-Id: <20230908193648.3464004-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908193648.3464004-1-sashal@kernel.org>
 References: <20230908193648.3464004-1-sashal@kernel.org>
@@ -52,44 +52,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Shurong <zhang_shurong@foxmail.com>
+From: Georg Ottinger <g.ottinger@gmx.at>
 
-[ Upstream commit 8b0472b50bcf0f19a5119b00a53b63579c8e1e4d ]
+[ Upstream commit e88076348425b7d0491c8c98d8732a7df8de7aa3 ]
 
-If rddev->raid_disk is greater than mddev->raid_disks, there will be
-an out-of-bounds in raid1_remove_disk(). We have already found
-similar reports as follows:
+I run a small server that uses external hard drives for backups. The
+backup software I use uses ext2 filesystems with 4KiB block size and
+the server is running SELinux and therefore relies on xattr. I recently
+upgraded the hard drives from 4TB to 12TB models. I noticed that after
+transferring some TBs I got a filesystem error "Freeing blocks not in
+datazone - block = 18446744071529317386, count = 1" and the backup
+process stopped. Trying to fix the fs with e2fsck resulted in a
+completely corrupted fs. The error probably came from ext2_free_blocks(),
+and because of the large number 18e19 this problem immediately looked
+like some kind of integer overflow. Whereas the 4TB fs was about 1e9
+blocks, the new 12TB is about 3e9 blocks. So, searching the ext2 code,
+I came across the line in fs/ext2/xattr.c:745 where ext2_new_block()
+is called and the resulting block number is stored in the variable block
+as an int datatype. If a block with a block number greater than
+INT32_MAX is returned, this variable overflows and the call to
+sb_getblk() at line fs/ext2/xattr.c:750 fails, then the call to
+ext2_free_blocks() produces the error.
 
-1) commit d17f744e883b ("md-raid10: fix KASAN warning")
-2) commit 1ebc2cec0b7d ("dm raid: fix KASAN warning in raid5_remove_disk")
-
-Fix this bug by checking whether the "number" variable is
-valid.
-
-Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
-Reviewed-by: Yu Kuai <yukuai3@huawei.com>
-Link: https://lore.kernel.org/r/tencent_0D24426FAC6A21B69AC0C03CE4143A508F09@qq.com
-Signed-off-by: Song Liu <song@kernel.org>
+Signed-off-by: Georg Ottinger <g.ottinger@gmx.at>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Message-Id: <20230815100340.22121-1-g.ottinger@gmx.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/raid1.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/ext2/xattr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index 0f8b1fb3d0517..b459a3af94224 100644
---- a/drivers/md/raid1.c
-+++ b/drivers/md/raid1.c
-@@ -1783,6 +1783,10 @@ static int raid1_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
- 	struct r1conf *conf = mddev->private;
- 	int err = 0;
- 	int number = rdev->raid_disk;
-+
-+	if (unlikely(number >= conf->raid_disks))
-+		goto abort;
-+
- 	struct raid1_info *p = conf->mirrors + number;
+diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
+index bd1d68ff3a9f8..437175bce22e8 100644
+--- a/fs/ext2/xattr.c
++++ b/fs/ext2/xattr.c
+@@ -664,10 +664,10 @@ ext2_xattr_set2(struct inode *inode, struct buffer_head *old_bh,
+ 			/* We need to allocate a new block */
+ 			ext2_fsblk_t goal = ext2_group_first_block_no(sb,
+ 						EXT2_I(inode)->i_block_group);
+-			int block = ext2_new_block(inode, goal, &error);
++			ext2_fsblk_t block = ext2_new_block(inode, goal, &error);
+ 			if (error)
+ 				goto cleanup;
+-			ea_idebug(inode, "creating block %d", block);
++			ea_idebug(inode, "creating block %lu", block);
  
- 	if (rdev != p->rdev)
+ 			new_bh = sb_getblk(sb, block);
+ 			if (unlikely(!new_bh)) {
 -- 
 2.40.1
 
