@@ -2,45 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0F7798D71
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37A1798D82
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242262AbjIHSV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
+        id S1344298AbjIHSWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239744AbjIHSUm (ORCPT
+        with ESMTP id S1344271AbjIHSU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:20:42 -0400
+        Fri, 8 Sep 2023 14:20:57 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 268D52110;
-        Fri,  8 Sep 2023 11:19:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C508CC116A1;
-        Fri,  8 Sep 2023 18:18:18 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844592120;
+        Fri,  8 Sep 2023 11:19:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A1E5C116A2;
+        Fri,  8 Sep 2023 18:18:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197099;
-        bh=xIYj9x7VhSQtAwPzUkxA3IumAGJ7hoT0f59ISFAR3/U=;
+        s=k20201202; t=1694197103;
+        bh=D7Hhn7eX7ypSQhNUqsnuhXgXBdBd0/PnJ6FI6P7C9VQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YBtUD9Ib3x3fKyoMBAZsKz94cT0tk4UkOMw5lqRsXfwf5zlZZKHT0cHeZdVEwi1wd
-         CmoDhsxBJMoEnnbmLoy7IF8Q8PK9sUbLdnIs6915WZEQzFxlBnRpkM6rWaxn7vWcRj
-         JGl5tW8cros/5LpBjYyhFNM+ZaT09kl3E+8o9qx88sPNoy2HXeQbR5AeZMHh0utUen
-         f/DnNOw/MFnAf7yXLq0BYIb9cyZPuWjv9zYv4g9g41anAiCOdVPID7nfKcphLo6DU+
-         A0wKLOD4S7YDlqkqyknHYh2PpPdnNAdefmjevmUe8zYY30glDjwPKa8PMq4r5f/PKm
-         KM2KTYuqfc4BA==
+        b=N39dU3jensqMgTLP6UjMcXIGkFviwwjjO5Q6p6wEvPoM4uvsnoOlx2EVnhdYHf6yi
+         hsDy2n36MW7iAoDw1s994WW10AVIhX0vNpvIbsgsNMN0EdVKs7xX+y0Wo1SCZywl9k
+         O1jSAGfCHwGy7IYgeQoTfzY+z2w15IhZ/S3SCJvgPM/2qgOhofWwVbjfx/TI7BbjOB
+         3SrJw2wRlN0SagoqmP4n6Kx6njLtIz8lFOer7qoj/rjiT/kfN/IQys3UAD14A7uCmD
+         ZRAVhOc0IgfLe8f6FiPIKCZi/tYGKmRgbxnAukzMP8BbWQ8HPOgjZ7RUApftPnCDSc
+         SmgbfcI/WV9/Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dmitry Antipov <dmantipov@yandex.ru>,
-        Brian Norris <briannorris@chromium.org>,
-        Kalle Valo <kvalo@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 06/26] wifi: mwifiex: fix fortify warning
-Date:   Fri,  8 Sep 2023 14:17:44 -0400
-Message-Id: <20230908181806.3460164-6-sashal@kernel.org>
+Cc:     Matt Whitlock <kernel@mattwhitlock.name>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>,
+        lorenzo@kernel.org, ryder.lee@mediatek.com, kvalo@kernel.org,
+        matthias.bgg@gmail.com, deren.wu@mediatek.com,
+        sean.wang@mediatek.com, horms@kernel.org,
+        linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.1 07/26] mt76: mt7921: don't assume adequate headroom for SDIO headers
+Date:   Fri,  8 Sep 2023 14:17:45 -0400
+Message-Id: <20230908181806.3460164-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181806.3460164-1-sashal@kernel.org>
 References: <20230908181806.3460164-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.52
@@ -54,81 +57,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Antipov <dmantipov@yandex.ru>
+From: Matt Whitlock <kernel@mattwhitlock.name>
 
-[ Upstream commit dcce94b80a954a8968ff29fafcfb066d6197fa9a ]
+[ Upstream commit 98c4d0abf5c478db1ad126ff0c187dbb84c0803c ]
 
-When compiling with gcc 13.1 and CONFIG_FORTIFY_SOURCE=y,
-I've noticed the following:
+mt7921_usb_sdio_tx_prepare_skb() calls mt7921_usb_sdio_write_txwi() and
+mt7921_skb_add_usb_sdio_hdr(), both of which blindly assume that
+adequate headroom will be available in the passed skb. This assumption
+typically is satisfied when the skb was allocated in the net core for
+transmission via the mt7921 netdev (although even that is only an
+optimization and is not strictly guaranteed), but the assumption is
+sometimes not satisfied when the skb originated in the receive path of
+another netdev and was passed through to the mt7921, such as by the
+bridge layer. Blindly prepending bytes to an skb is always wrong.
 
-In function ‘fortify_memcpy_chk’,
-    inlined from ‘mwifiex_construct_tdls_action_frame’ at drivers/net/wireless/marvell/mwifiex/tdls.c:765:3,
-    inlined from ‘mwifiex_send_tdls_action_frame’ at drivers/net/wireless/marvell/mwifiex/tdls.c:856:6:
-./include/linux/fortify-string.h:529:25: warning: call to ‘__read_overflow2_field’
-declared with attribute warning: detected read beyond size of field (2nd parameter);
-maybe use struct_group()? [-Wattribute-warning]
-  529 |                         __read_overflow2_field(q_size_field, size);
-      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This commit introduces a call to skb_cow_head() before the call to
+mt7921_usb_sdio_write_txwi() in mt7921_usb_sdio_tx_prepare_skb() to
+ensure that at least MT_SDIO_TXD_SIZE + MT_SDIO_HDR_SIZE bytes can be
+pushed onto the skb.
 
-The compiler actually complains on:
+Without this fix, I can trivially cause kernel panics by bridging an
+MT7921AU-based USB 802.11ax interface with an Ethernet interface on an
+Intel Atom-based x86 system using its onboard RTL8169 PCI Ethernet
+adapter and also on an ARM-based Raspberry Pi 1 using its onboard
+SMSC9512 USB Ethernet adapter. Note that the panics do not occur in
+every system configuration, as they occur only if the receiving netdev
+leaves less headroom in its received skbs than the mt7921 needs for its
+SDIO headers.
 
-memmove(pos + ETH_ALEN, &mgmt->u.action.category,
-	sizeof(mgmt->u.action.u.tdls_discover_resp));
+Here is an example stack trace of this panic on Raspberry Pi OS Lite
+2023-02-21 running kernel 6.1.24+ [1]:
 
-and it happens because the fortification logic interprets this
-as an attempt to overread 1-byte 'u.action.category' member of
-'struct ieee80211_mgmt'. To silence this warning, it's enough
-to pass an address of 'u.action' itself instead of an address
-of its first member.
+ skb_panic from skb_push+0x44/0x48
+ skb_push from mt7921_usb_sdio_tx_prepare_skb+0xd4/0x190 [mt7921_common]
+ mt7921_usb_sdio_tx_prepare_skb [mt7921_common] from mt76u_tx_queue_skb+0x94/0x1d0 [mt76_usb]
+ mt76u_tx_queue_skb [mt76_usb] from __mt76_tx_queue_skb+0x4c/0xc8 [mt76]
+ __mt76_tx_queue_skb [mt76] from mt76_txq_schedule.part.0+0x13c/0x398 [mt76]
+ mt76_txq_schedule.part.0 [mt76] from mt76_txq_schedule_all+0x24/0x30 [mt76]
+ mt76_txq_schedule_all [mt76] from mt7921_tx_worker+0x58/0xf4 [mt7921_common]
+ mt7921_tx_worker [mt7921_common] from __mt76_worker_fn+0x9c/0xec [mt76]
+ __mt76_worker_fn [mt76] from kthread+0xbc/0xe0
+ kthread from ret_from_fork+0x14/0x34
 
-This also fixes an improper usage of 'sizeof()'. Since 'skb' is
-extended with 'sizeof(mgmt->u.action.u.tdls_discover_resp) + 1'
-bytes (where 1 is actually 'sizeof(mgmt->u.action.category)'),
-I assume that the same number of bytes should be copied.
+After this fix, bridging the mt7921 interface works fine on both of my
+previously problematic systems.
 
-Suggested-by: Brian Norris <briannorris@chromium.org>
-Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
-Reviewed-by: Brian Norris <briannorris@chromium.org>
-Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://lore.kernel.org/r/20230629085115.180499-2-dmantipov@yandex.ru
+[1] https://github.com/raspberrypi/firmware/tree/5c276f55a4b21345cd4d6200a504ee991851ff7a
+
+Link: https://github.com/openwrt/openwrt/issues/11796
+Signed-off-by: Matt Whitlock <kernel@mattwhitlock.name>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/marvell/mwifiex/tdls.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7921/mac.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/tdls.c b/drivers/net/wireless/marvell/mwifiex/tdls.c
-index 97bb87c3676bb..6c60621b6cccb 100644
---- a/drivers/net/wireless/marvell/mwifiex/tdls.c
-+++ b/drivers/net/wireless/marvell/mwifiex/tdls.c
-@@ -735,6 +735,7 @@ mwifiex_construct_tdls_action_frame(struct mwifiex_private *priv,
- 	int ret;
- 	u16 capab;
- 	struct ieee80211_ht_cap *ht_cap;
-+	unsigned int extra;
- 	u8 radio, *pos;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
+index 1c0d8cf19b8eb..49ddca84f7862 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
+@@ -1167,6 +1167,10 @@ int mt7921_usb_sdio_tx_prepare_skb(struct mt76_dev *mdev, void *txwi_ptr,
+ 	if (unlikely(tx_info->skb->len <= ETH_HLEN))
+ 		return -EINVAL;
  
- 	capab = priv->curr_bss_params.bss_descriptor.cap_info_bitmap;
-@@ -753,7 +754,10 @@ mwifiex_construct_tdls_action_frame(struct mwifiex_private *priv,
- 
- 	switch (action_code) {
- 	case WLAN_PUB_ACTION_TDLS_DISCOVER_RES:
--		skb_put(skb, sizeof(mgmt->u.action.u.tdls_discover_resp) + 1);
-+		/* See the layout of 'struct ieee80211_mgmt'. */
-+		extra = sizeof(mgmt->u.action.u.tdls_discover_resp) +
-+			sizeof(mgmt->u.action.category);
-+		skb_put(skb, extra);
- 		mgmt->u.action.category = WLAN_CATEGORY_PUBLIC;
- 		mgmt->u.action.u.tdls_discover_resp.action_code =
- 					      WLAN_PUB_ACTION_TDLS_DISCOVER_RES;
-@@ -762,8 +766,7 @@ mwifiex_construct_tdls_action_frame(struct mwifiex_private *priv,
- 		mgmt->u.action.u.tdls_discover_resp.capability =
- 							     cpu_to_le16(capab);
- 		/* move back for addr4 */
--		memmove(pos + ETH_ALEN, &mgmt->u.action.category,
--			sizeof(mgmt->u.action.u.tdls_discover_resp));
-+		memmove(pos + ETH_ALEN, &mgmt->u.action, extra);
- 		/* init address 4 */
- 		eth_broadcast_addr(pos);
++	err = skb_cow_head(skb, MT_SDIO_TXD_SIZE + MT_SDIO_HDR_SIZE);
++	if (err)
++		return err;
++
+ 	if (!wcid)
+ 		wcid = &dev->mt76.global_wcid;
  
 -- 
 2.40.1
