@@ -2,50 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D838798688
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 13:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147D379869A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 13:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242765AbjIHLlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 07:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
+        id S242123AbjIHLvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 07:51:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236522AbjIHLlw (ORCPT
+        with ESMTP id S239226AbjIHLvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 07:41:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376D11BE7;
-        Fri,  8 Sep 2023 04:41:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DACDC433C8;
-        Fri,  8 Sep 2023 11:41:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694173307;
-        bh=Th07n2ZiEJs6k4933TKSCYY2PxyWJc5qY0ucWzXC3Gk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=hvYP+e5t0mw5oeIG5WhIGoBSXGvgHI8rCzYUQYWMpxFm+41b19/o7DzyDXW/K25Am
-         f1+gdRDRAZ2Uho2ktUBsnfI5poscWnV1DHgf9JDR0UBbeyGwtK9Qe77djKydKqK7iG
-         WxVVsicdJpV3XN9+2Zo+4r9KRKOQlstOgjRzHATa9nEvz3fNtblmYjfAHhUs1s5bdI
-         a3svBjEf1oE0NWdEgcAWa/0sr4gFcoS8K5btnIk0RqowjjuT2S/UbvbUZM7p9bork/
-         gPxC3M4/xnLuwmGdgzEyEb65ghFAYdd2q3t7HHy9QW6yySFsxQ5L447IMU8fiT8qj7
-         5lMhpC9/FfF8A==
-Message-ID: <0716e97eadc834ac4be97af5d6bbab82c5dc4ac9.camel@kernel.org>
-Subject: Re: [PATCH 1/2] fs: initialize inode->__i_ctime to the epoch
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <oliver.sang@intel.com>
-Date:   Fri, 08 Sep 2023 07:41:45 -0400
-In-Reply-To: <20230908104229.5tsr2sn7oyfy53ih@quack3>
-References: <20230907-ctime-fixes-v1-0-3b74c970d934@kernel.org>
-         <20230907-ctime-fixes-v1-1-3b74c970d934@kernel.org>
-         <20230908104229.5tsr2sn7oyfy53ih@quack3>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Fri, 8 Sep 2023 07:51:46 -0400
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F7B1BC1
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 04:51:40 -0700 (PDT)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1cc61f514baso1343399fac.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 04:51:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694173899; x=1694778699; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=etW99NG5BvyY4SuRfU5lZu1cQhINWbdTi13Yac2QPgE=;
+        b=mFnVzlLhJ8gyQ3l9N2K1VE15XQWy1n59TvrwSfrbBAPSK4y7er+IACwkPEse2gWeD5
+         cdvw+oCghBPNsLRw/PYNy8SFsTCUnZPwMuM4dyr3SMW4DVArnNBKiwc9EQzkILwKyjSW
+         XeSRpBGmuJZdJT5XfRSNezEfrgH6Tcx0Tg9rQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694173899; x=1694778699;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=etW99NG5BvyY4SuRfU5lZu1cQhINWbdTi13Yac2QPgE=;
+        b=DCiVBymj/CYXDqRkHBe02jBQ7WLsqRLdvQ21SZNjkMZfVjh9kKvY3bWUvZNwO3U4JY
+         AkeJpqlqXdDlGVTMQC0N8wr2jGVu9MSzZkwBi6HS7eg32sUN3PXjpdCn44B8xAnqq+JY
+         9L94rH8GvgbL+5el+ONFNnHMYyFXF/Y73VoWfb4r7T3C4sqkjC35CDU/E3t8nlyiSTZD
+         HfOzvHoRTeZFQzRVw4PCmb7hVXjuSHCB8vhcCHsUwHTrohHz5BflZ6E/65zqRqSXfjOX
+         fbw/3s6QVsyorFgtIFAxLoAiIuxD/ZQuSoAj0evvI+Nh0ADcR4Bk4Y1sau2algLStzjI
+         qD4g==
+X-Gm-Message-State: AOJu0YzuxjAFpZpVhRw7SttcTDZWe1hBoeEe3C1HCluVtDDZsvjllfXt
+        kYqeOdZXZFT01uoz+HBeAP4cmHEmbWsli7bifxc=
+X-Google-Smtp-Source: AGHT+IG5ICz9joPNyU8eCxmKKANfdXZk0AHXdPio6vB9t2aB2i1gyBe2msgrfOxtNmmt4X3CmyjT4Q==
+X-Received: by 2002:a05:6870:1710:b0:1be:f721:db04 with SMTP id h16-20020a056870171000b001bef721db04mr2607372oae.4.1694173899285;
+        Fri, 08 Sep 2023 04:51:39 -0700 (PDT)
+Received: from mail-io1-f43.google.com (mail-io1-f43.google.com. [209.85.166.43])
+        by smtp.gmail.com with ESMTPSA id f26-20020a02a81a000000b0042b70c5d242sm411294jaj.116.2023.09.08.04.51.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Sep 2023 04:51:38 -0700 (PDT)
+Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-77ac14ff51bso72949839f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 04:51:38 -0700 (PDT)
+X-Received: by 2002:a6b:e60b:0:b0:791:280:839e with SMTP id
+ g11-20020a6be60b000000b007910280839emr2660662ioh.16.1694173898001; Fri, 08
+ Sep 2023 04:51:38 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+References: <20230901234202.566951-1-dianders@chromium.org> <20230901164111.RFT.5.I2b014f90afc4729b6ecc7b5ddd1f6dedcea4625b@changeid>
+In-Reply-To: <20230901164111.RFT.5.I2b014f90afc4729b6ecc7b5ddd1f6dedcea4625b@changeid>
+From:   Fei Shao <fshao@chromium.org>
+Date:   Fri, 8 Sep 2023 19:51:00 +0800
+X-Gmail-Original-Message-ID: <CAC=S1niYAC3PFQoAmwVc=1FcK29uu5sC9c1pGo-mku__y7eHcA@mail.gmail.com>
+Message-ID: <CAC=S1niYAC3PFQoAmwVc=1FcK29uu5sC9c1pGo-mku__y7eHcA@mail.gmail.com>
+Subject: Re: [RFT PATCH 05/15] drm/mediatek: Call drm_atomic_helper_shutdown()
+ at shutdown time
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        Maxime Ripard <mripard@kernel.org>, airlied@gmail.com,
+        angelogioacchino.delregno@collabora.com, chunkuang.hu@kernel.org,
+        daniel@ffwll.ch, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        matthias.bgg@gmail.com, p.zabel@pengutronix.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,59 +80,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-09-08 at 12:42 +0200, Jan Kara wrote:
-> On Thu 07-09-23 12:33:47, Jeff Layton wrote:
-> > With the advent of multigrain timestamps, we use inode_set_ctime_curren=
-t
-> > to set the ctime, which can skip updating if the existing ctime appears
-> > to be in the future. Because we don't initialize this field at
-> > allocation time, that could prevent the ctime from being initialized
-> > properly when the inode is instantiated.
-> >=20
-> > Always initialize the ctime field to the epoch so that the filesystem
-> > can set the timestamps properly later.
-> >=20
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > Closes: https://lore.kernel.org/oe-lkp/202309071017.a64aca5e-oliver.san=
-g@intel.com
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
->=20
-> Looks good but don't you need the same treatment to atime after your patc=
-h
-> 2/2?
->=20
->=20
+Hi,
 
-I don't think so. Most filesystems are doing something along the lines
-of this when allocating a new inode:
+On Sat, Sep 2, 2023 at 7:42=E2=80=AFAM Douglas Anderson <dianders@chromium.=
+org> wrote:
+...<snip>
+> @@ -952,6 +960,7 @@ static const struct dev_pm_ops mtk_drm_pm_ops =3D {
+>  static struct platform_driver mtk_drm_platform_driver =3D {
+>         .probe  =3D mtk_drm_probe,
+>         .remove =3D mtk_drm_remove,
 
-    inode->i_atime =3D inode->i_mtime =3D inode_set_ctime_current(inode);
+I think this patch, and perhaps some others in this series, will have
+a trivial conflict to Uwe's work about the remove callback conversion
+e.g. [1], so you might want to rebase the series onto the latest
+linux-next.
 
-...and I think they pretty much all have to initialize i_atime properly,
-since someone could stat the inode before an atime update occurs.
+On the other hand, I tested this patch on MT8195 and MT8188
+Chromebooks and I don't see issues during boot / reboot, so
 
-> > ---
-> >  fs/inode.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >=20
-> > diff --git a/fs/inode.c b/fs/inode.c
-> > index 35fd688168c5..54237f4242ff 100644
-> > --- a/fs/inode.c
-> > +++ b/fs/inode.c
-> > @@ -168,6 +168,8 @@ int inode_init_always(struct super_block *sb, struc=
-t inode *inode)
-> >  	inode->i_fop =3D &no_open_fops;
-> >  	inode->i_ino =3D 0;
-> >  	inode->__i_nlink =3D 1;
-> > +	inode->__i_ctime.tv_sec =3D 0;
-> > +	inode->__i_ctime.tv_nsec =3D 0;
-> >  	inode->i_opflags =3D 0;
-> >  	if (sb->s_xattr)
-> >  		inode->i_opflags |=3D IOP_XATTR;
-> >=20
-> > --=20
-> > 2.41.0
-> >=20
+Reviewed-by: Fei Shao <fshao@chromium.org>
+Tested-by: Fei Shao <fshao@chromium.org>
 
---=20
-Jeff Layton <jlayton@kernel.org>
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git=
+/commit/?h=3Dmediatek-drm-next&id=3Db3af12a0b46888340e024ba8b231605bcf2d0ab=
+3
+
+
+
+> +       .shutdown =3D mtk_drm_shutdown,
+>         .driver =3D {
+>                 .name   =3D "mediatek-drm",
+>                 .pm     =3D &mtk_drm_pm_ops,
+> --
+> 2.42.0.283.g2d96d420d3-goog
+>
+>
