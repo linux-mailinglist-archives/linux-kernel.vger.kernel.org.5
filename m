@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCF4798F02
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E68798F04
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238771AbjIHT0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
+        id S238353AbjIHT25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjIHT0O (ORCPT
+        with ESMTP id S229455AbjIHT24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:26:14 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE2E8E
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 12:26:10 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2bcde83ce9fso41074851fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 12:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694201168; x=1694805968; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PGY9pRP4zXPESEDG1xIzcqkXDG7GbyjbuJ87NJ2oFmw=;
-        b=uXB5rtCUOfQnPrwQeKEIseMRdmTmhmEuVl1Uo+iHrPrlkUMC902J0CfSLbWEQgtMAo
-         W6Qa1whRZKVDC4EFqq5uBwqXKWsuciuPXEGHUeRB8RKqKtPU4bCnYvEMh9rWSacmlCld
-         sOf3MFbQpbsZREDYCwn1pgsDXRG6c3dlj/3NPjet2osETW8FiC0MYRiYyem8NQNap55u
-         WYU1dr/Ijn3k+jKB5uTwhAsQ+0yfcHAQRigN+v6A/y4N3ltx52gaqr3+wNS0TF9rxovn
-         CPCRZ7fctQlKluXpR5x4tpUgHS2Il8pPSTNd0svf6DMtGeIizafd8tRpn2P+jzfxtKPv
-         dXBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694201168; x=1694805968;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PGY9pRP4zXPESEDG1xIzcqkXDG7GbyjbuJ87NJ2oFmw=;
-        b=pyXJItxXQ9Or7Ds21X/WqtAPPtJyqMggXWR8aKwCPeCbsuvkGXyXNnyYWKT7sg019A
-         8fZQTLzNGIaWgy1/35BQizNj1N0UPgcqBMnxBj32xqLGWLfrb3ry1a5I6SgXskDwVJTm
-         JAqD9JsFLfJlDAyJuSPHyR5JHkc6dEQEl1fV7Ih/3BYql3Y+X3dM0B1qCa4rs0ckh54w
-         PJURCaWaKIXY/tVWJ6cseE9kCBUSyRscVA/KeuwSj3utQN+ZVVOjnisiEJ76113eua3s
-         ROL4eoTLXBaJLLP8DTV4gXrF91DOCpPn7ex4nFgj6CKtddnqX6XToBQi14Zk/lpHi6Ri
-         CQTw==
-X-Gm-Message-State: AOJu0YxpJwp73CHGVjljSprIp8gQbIMd/EBTcXO7zDpLWtznd6kAlSJg
-        noHWl3zSuYbqAI5HOI7gbnnek2SHLnINm/g6eqmFSg==
-X-Google-Smtp-Source: AGHT+IFymtFXtkG1oXRqy8G1UOHD/VxY7NihXOxf+AMoAFN0WAqlAJd1oLbMHB3fGZlLEJNmh4r4OPrtdjGrC7owa9s=
-X-Received: by 2002:a05:651c:1027:b0:2b9:ba02:436c with SMTP id
- w7-20020a05651c102700b002b9ba02436cmr2418559ljm.28.1694201168446; Fri, 08 Sep
- 2023 12:26:08 -0700 (PDT)
+        Fri, 8 Sep 2023 15:28:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D9D8E;
+        Fri,  8 Sep 2023 12:28:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D444EC433C9;
+        Fri,  8 Sep 2023 19:28:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694201332;
+        bh=+uyi4zQldHiJmZfU700jHvrjz7N0mC1oRwEtc6spOWs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JLxzjcdXqsbpngFDcYN6Xas757YLPsumBMLTFAXQc6aX7tWPRtMlN/fwnctCVBz34
+         mGYLfuJZLO8tCyn+McR1rTkm1xbKf9KFKrfrRa0SSkFx6sJ1WlzOrliCaLhDkUT5QN
+         KhdGg+E5Pgj0b4id5WyJyYRuBMTmUToRtwkO+5sGBM2tE0j7+dJV1OCYiRtUW9s6GA
+         njbJGxRIJzRioJYtWSibj4Ag4EW0a91Ro9ynH8Slssl40aDjg0XVaLtmn9KYPbVcLS
+         8RB3nXkVfiZcyWLuQarHTbl3XIq6gCI9wXWCj1alhNFoqf8Bzf4fQJiHhAKacsLxnf
+         0SNW9K8s5jHrQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Marek Vasut <marex@denx.de>, Sam Ravnborg <sam@ravnborg.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, andrzej.hajda@intel.com,
+        neil.armstrong@linaro.org, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.5 01/36] drm/bridge: tc358762: Instruct DSI host to generate HSE packets
+Date:   Fri,  8 Sep 2023 15:28:12 -0400
+Message-Id: <20230908192848.3462476-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-References: <20230908175644.2478924-1-sagis@google.com> <d08303a4-321b-419c-5b3b-11f05e4286ae@intel.com>
-In-Reply-To: <d08303a4-321b-419c-5b3b-11f05e4286ae@intel.com>
-From:   Sagi Shahar <sagis@google.com>
-Date:   Fri, 8 Sep 2023 12:25:57 -0700
-Message-ID: <CAAhR5DGUjeU=QoQdSXSLqaKiQ6U-Q8+sRQhnijHHtUtHfgh01Q@mail.gmail.com>
-Subject: Re: [PATCH] x86/tdx: Allow extended topology CPUID leafs to be
- emulated by hypercall
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jun Nakajima <jun.nakajima@intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.5.2
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 8, 2023 at 11:00=E2=80=AFAM Dave Hansen <dave.hansen@intel.com>=
- wrote:
->
-> On 9/8/23 10:56, Sagi Shahar wrote:
-> > The current TDX module does not handle extended topology leaves
-> > explicitly and will generate a #VE but the current #VE handler
-> > implementation blindly returns 0 for those CPUID leaves.
-> >
-> > This currently causes TDX guests to see 0 values when querying the numa
-> > topology leading to incorrect numa configurations.
-> >
-> > This patch fixes this behavior by emulating the extended topology leave=
-s
-> > using the CPUID hypercall.
->
-> ... and thus acquires the data from the untrusted VMM.  Right?
->
-> What are the security implications of consuming this untrusted data?
+From: Marek Vasut <marex@denx.de>
 
-The topology information is mostly used for performance optimizations
-on the guest side. I don't see any security implications if VMM passes
-incorrect values.
-Right now, the guest is already using the returned 0 values and gets
-an incorrect numa topology leading to odd behavior in the guest. If we
-allow guests to read these values from the untrusted VMM and VMM
-spoofs the values, the worst that can happen is a different incorrect
-numa topology instead of the incorrect one we already have today.
+[ Upstream commit 362fa8f6e6a05089872809f4465bab9d011d05b3 ]
+
+This bridge seems to need the HSE packet, otherwise the image is
+shifted up and corrupted at the bottom. This makes the bridge
+work with Samsung DSIM on i.MX8MM and i.MX8MP.
+
+Signed-off-by: Marek Vasut <marex@denx.de>
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+Signed-off-by: Robert Foss <rfoss@kernel.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20230615201902.566182-3-marex@denx.de
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/gpu/drm/bridge/tc358762.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/bridge/tc358762.c b/drivers/gpu/drm/bridge/tc358762.c
+index 5641395fd310e..11445c50956e1 100644
+--- a/drivers/gpu/drm/bridge/tc358762.c
++++ b/drivers/gpu/drm/bridge/tc358762.c
+@@ -231,7 +231,7 @@ static int tc358762_probe(struct mipi_dsi_device *dsi)
+ 	dsi->lanes = 1;
+ 	dsi->format = MIPI_DSI_FMT_RGB888;
+ 	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
+-			  MIPI_DSI_MODE_LPM;
++			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_VIDEO_HSE;
+ 
+ 	ret = tc358762_parse_dt(ctx);
+ 	if (ret < 0)
+-- 
+2.40.1
+
