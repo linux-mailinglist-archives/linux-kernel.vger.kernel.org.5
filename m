@@ -2,114 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A451E7992B5
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 01:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482727992B6
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 01:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344809AbjIHXNL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Sep 2023 19:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
+        id S1344861AbjIHXOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 19:14:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344784AbjIHXNJ (ORCPT
+        with ESMTP id S1344840AbjIHXOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 19:13:09 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC0118E
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 16:13:05 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 388HqD5G030687
-        for <linux-kernel@vger.kernel.org>; Fri, 8 Sep 2023 16:13:05 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3t06jvvkdt-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 16:13:04 -0700
-Received: from twshared52565.14.frc2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Fri, 8 Sep 2023 16:13:01 -0700
-Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
-        id 01CBF24087ED5; Fri,  8 Sep 2023 16:12:48 -0700 (PDT)
-From:   Song Liu <song@kernel.org>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <ndesaulniers@google.com>, Song Liu <song@kernel.org>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        <kexec@lists.infradead.org>, <x86@kernel.org>,
-        <llvm@lists.linux.dev>
-Subject: [PATCH v2] x86/purgatory: Remove LTO flags
-Date:   Fri, 8 Sep 2023 16:12:44 -0700
-Message-ID: <20230908231244.1092614-1-song@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        Fri, 8 Sep 2023 19:14:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 040B4133
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 16:13:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694214836; x=1725750836;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=qACPg/gBC5tWXRt7hebAA94mDZgXxR4pGdqk736pGqo=;
+  b=ad3tXKyB6ARzyAn61kWh7tWImGwFchvdVBursl5u601fJfiVqhYn7hKI
+   MBfUllVYMeYYTdPQK8CH2Sy0OX9EJyVy7uCBYw0u57fPdZQW65FmOEAN0
+   MLfhhRoPyuzBV8uqZCcXFVTvdzwSmI3j9iLwhowU5ih5nOrKDGLOU3jlH
+   A1o8YfLLRUv5Pzn+xS64Tj3gqBg3jByI4osA84R/AT5HTV/HuVjbxK3tw
+   WcuXSVBGhPKl4QAqmA+eIJrURHXC/R66HiDbyn4LgHV9phQIgEwmp5JgS
+   DaqGybRQWbj2gzRzdMCYWOV7N7YvQoPN8UMf5sBDPmVobhDhnQ3Flwlkb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="358070206"
+X-IronPort-AV: E=Sophos;i="6.02,238,1688454000"; 
+   d="scan'208";a="358070206"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 16:13:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="742672382"
+X-IronPort-AV: E=Sophos;i="6.02,238,1688454000"; 
+   d="scan'208";a="742672382"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 16:13:55 -0700
+Date:   Fri, 8 Sep 2023 16:13:54 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     babu.moger@amd.com
+Cc:     "Chatre, Reinette" <reinette.chatre@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        Amit Singh Tomar <amitsinght@marvell.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        George Cherian <gcherian@marvell.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "peternewman@google.com" <peternewman@google.com>,
+        Drew Fustini <dfustini@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: resctrl2 - status
+Message-ID: <ZPuqsupe+BevodqO@agluck-desk3>
+References: <SJ1PR11MB6083C0ED50E9B644F4AF8E4BFCE3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <fb9499b9-c445-01e8-8427-6b05256abdb5@intel.com>
+ <ZOkU+d4AsLGSAG+y@agluck-desk3>
+ <b48fe955-c1b4-4aeb-1ab0-bf26e56e1f0e@intel.com>
+ <ZOlRNTq3lE7VNHjU@agluck-desk3>
+ <9742f177-a0ce-c5d3-5d92-90dda32f5d07@intel.com>
+ <ZPjDHN0nvHz9kWFn@agluck-desk3>
+ <18f3a209-8dbf-4837-6bcb-a71a1ee1abb3@amd.com>
+ <SJ1PR11MB6083849D1AEF44806C4D669AFCEDA@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <09e2894e-eb2b-12a0-c4a2-5000b27bbded@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: jg41T-4l24zQ1yAN3q4KewC_oaCjHY6p
-X-Proofpoint-ORIG-GUID: jg41T-4l24zQ1yAN3q4KewC_oaCjHY6p
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-08_18,2023-09-05_01,2023-05-22_02
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <09e2894e-eb2b-12a0-c4a2-5000b27bbded@amd.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With LTO enabled, ld.lld generates multiple .text sections for
-purgatory.ro:
+On Fri, Sep 08, 2023 at 04:35:05PM -0500, Moger, Babu wrote:
+> Hi Tony,
+> 
+> 
+> On 9/8/2023 1:51 PM, Luck, Tony wrote:
+> > > > Can you try this out on an AMD system. I think I covered most of the
+> > > > existing AMD resctrl features, but I have no machine to test the code
+> > > > on, so very likely there are bugs in these code paths.
+> > > > 
+> > > > I'd like to make any needed changes now, before I start breaking this
+> > > > into reviewable bite-sized patches to avoid too much churn.
+> > > I tried your latest code briefly on my system.  Unfortunately, I could
+> > > not get it to work on my AMD system.
+> > > 
+> > > # git branch -a
+> > >     next
+> > > * resctrl2_v65
+> > > # ]# uname -r
+> > > 6.5.0+
+> > > #lsmod |grep rdt
+> > > rdt_show_ids           12288  0
+> > > rdt_mbm_local_bytes    12288  0
+> > > rdt_mbm_total_bytes    12288  0
+> > > rdt_llc_occupancy      12288  0
+> > > rdt_l3_cat             16384  0
+> > > 
+> > > # lsmod |grep mbe
+> > > amd_mbec               16384  0
+> > > 
+> > > I could not get  rdt_l3_mba
+> > > 
+> > > # modprobe rdt_l3_mba
+> > > modprobe: ERROR: could not insert 'rdt_l3_mba': No such device
+> > > 
+> > > I don't see any data for the default group either.
+> > > 
+> > > mount  -t resctrl resctrl /sys/fs/resctrl/
+> > > 
+> > > cd /sys/fs/resctrl/mon_data/mon_L3_00
+> > > 
+> > > cat mbm_summary
+> > >        n/a      n/a /
+> > Babu,
+> > 
+> > Thank a bunch for taking this for a quick spin. There's several bits of
+> > good news there. Several modules automatically loaded as expected.
+> > Nothing went "OOPS" and crashed the system.
+> > 
+> > Here’s the code that the rdt_l3_mba module runs that can cause failure
+> > to load with "No such device"
+> > 
+> >          if (!boot_cpu_has(X86_FEATURE_RDT_A)) {
+> >                  pr_debug("No RDT allocation support\n");
+> >                  return -ENODEV;
+> >          }
+> 
+> Shouldn't this be ?(or similar)
+> 
+> if (!rdt_cpu_has(X86_FEATURE_MBA))
+>                 return false;
 
-$ readelf -S purgatory.ro  | grep " .text"
-  [ 1] .text             PROGBITS         0000000000000000  00000040
-  [ 7] .text.purgatory   PROGBITS         0000000000000000  000020e0
-  [ 9] .text.warn        PROGBITS         0000000000000000  000021c0
-  [13] .text.sha256_upda PROGBITS         0000000000000000  000022f0
-  [15] .text.sha224_upda PROGBITS         0000000000000000  00002be0
-  [17] .text.sha256_fina PROGBITS         0000000000000000  00002bf0
-  [19] .text.sha224_fina PROGBITS         0000000000000000  00002cc0
+Yes. I should be using X86_FEATURE bits where they are available
+rather than peeking directly at CPUID register bits.
 
-This cause WARNING from kexec_purgatory_setup_sechdrs():
+> 
+> >          mba_features = cpuid_ebx(0x10);
+> > 
+> >          if (!(mba_features & BIT(3))) {
+> >                  pr_debug("No RDT MBA allocation\n");
+> >                  return -ENODEV;
+> >          }
+> > 
+> > I assume the first test must have succeeded (same code in rdt_l3_cat, and
+> > that loaded OK). So must be the second. How does AMD enumerate MBA
+> > support?
+> > 
+> > Less obvious what is the root cause of the mbm_summary file to fail to
+> > show any data. rdt_mbm_local_bytes  and rdt_mbm_total_bytes  modules
+> > loaded OK. So I'm looking for the right CPUID bits to detect memory bandwidth
+> > monitoring.
+> 
+> I am still not sure if resctrl2 will address all the current gaps in
+> resctrl1. We should probably list all issues on the table before we go that
+> route.
 
-WARNING: CPU: 26 PID: 110894 at kernel/kexec_file.c:919
-kexec_load_purgatory+0x37f/0x390
+Indeed yes! I don't want to have to do resctrl3 in a few years to
+cover gaps that could have been addressed in resctrl2.
 
-Fix this by disabling LTO for purgatory.
+However, fixing resctrl gaps is only one of the motivations for
+the rewrite. The bigger one is making life easier for all the
+architectures sharing the common code to do what they need to
+for their own quirks & differences without cluttering the
+common code base, or worrying "did my change just break something
+for another CPU architecture".
 
-Fixes: 8652d44f466a ("kexec: support purgatories with .text.hot sections")
-Cc: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Sami Tolvanen <samitolvanen@google.com>
-Cc: kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: x86@kernel.org
-Cc: llvm@lists.linux.dev
-Signed-off-by: Song Liu <song@kernel.org>
+> One of the main issue for AMD is coupling of LLC domains.
+> 
+> For example, AMD hardware supports 16 CLOSids per LLC domain. But Linux
+> design assumes that there are globally 16 total CLOSIDs for the whole
+> systems. We can only create 16 CLOSID now irrespective of how many domains
+> are there.
+> 
+> In reality, we should be able to create "16 x number of LLC domains" CLOSIDS
+> in the systems.  This is more evident in AMD. But, same problem applies to
+> Intel with multiple sockets.
 
----
-AFAICT, x86 is the only arch that supports LTO and purgatory.
+I think this can be somewhat achieved already with a combination of
+resctrl and cpusets (or some other way to set CPU affinity for tasks
+to only run on CPUs within a specific domain (or set of domains).
+That's why the schemata file allows setting different CBM masks
+per domain.
 
-Changes in v2:
-1. Use CC_FLAGS_LTO instead of hardcode -flto. (Nick Desaulniers)
----
- arch/x86/purgatory/Makefile | 4 ++++
- 1 file changed, 4 insertions(+)
+Can you explain how you would use 64 domains on a system with 4 domains
+and 16 CLOSID per domain?
 
-diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
-index c2a29be35c01..08aa0f25f12a 100644
---- a/arch/x86/purgatory/Makefile
-+++ b/arch/x86/purgatory/Makefile
-@@ -19,6 +19,10 @@ CFLAGS_sha256.o := -D__DISABLE_EXPORTS -D__NO_FORTIFY
- # optimization flags.
- KBUILD_CFLAGS := $(filter-out -fprofile-sample-use=% -fprofile-use=%,$(KBUILD_CFLAGS))
- 
-+# When LTO is enabled, llvm emits many text sections, which is not supported
-+# by kexec. Remove -flto=* flags.
-+KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_LTO),$(KBUILD_CFLAGS))
-+
- # When linking purgatory.ro with -r unresolved symbols are not checked,
- # also link a purgatory.chk binary without -r to check for unresolved symbols.
- PURGATORY_LDFLAGS := -e purgatory_start -z nodefaultlib
--- 
-2.34.1
+> My 02 cents. Hope to discuss more in our upcoming meeting.
+Agreed. This will be faster when we can talk instead of type :-)
 
+-Tony
