@@ -2,157 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B2379874C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 14:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 909A6798748
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 14:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243367AbjIHMqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 08:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
+        id S243312AbjIHMqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 08:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243317AbjIHMqo (ORCPT
+        with ESMTP id S229693AbjIHMqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 08:46:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFA41FE2
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 05:45:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694177108;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1Y+Afm1AbyOOay2suIW9GuS3A+26h6E5SR8gkW6kff4=;
-        b=M7ZJt3iUveBJp9DC3YFinhLNehpTt4gruByPlaqqiIgw63aWEburSKJTsJaejXu95Z0tor
-        Ro2zDo6v2MBWV9WesoYcimNnOcJq8umRmR+bnbJP0VU8743ppFwmC8j8F+sTUCB/KnKn6w
-        c2XpW7TGKIoJGgCzHlGG27k0Eo32rwo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-659-XJL12QFxN5WlgOC_lK5NiQ-1; Fri, 08 Sep 2023 08:45:05 -0400
-X-MC-Unique: XJL12QFxN5WlgOC_lK5NiQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6A9BA1C09CF4;
-        Fri,  8 Sep 2023 12:45:04 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.22.16.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9F57CC03295;
-        Fri,  8 Sep 2023 12:45:03 +0000 (UTC)
-Date:   Fri, 8 Sep 2023 08:45:01 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Hao Jia <jiahao.os@bytedance.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, mingo@kernel.org,
+        Fri, 8 Sep 2023 08:46:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2721BFF
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 05:45:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9DL4ykTlB0hN/m8lcjJGvh6M22oyKpixM02sGXThIxc=; b=dLE7TnnvY1s9Kzt65DMmvYZTY3
+        Pwk7pVfLqwtax+rzDGODWZ1Pa9zXJuP4nFXqhRXJrjzIMpYixzxAXi9VAfQypEWZmZsw/w8AYoQag
+        ansOhHCRRIVSX5a1soQIgrnL6poWRLmVqCVdSo40M0uP6HXYKC/kIKy/oJuBtxAYUeJ5vKtOj+ald
+        UT2Al3fSDPBTWtCW6nHWDcyYKYgBff0SHjbMDQEGnQvCQ1qFjT7eylEkh5BR/oXUenYANPT3QN4c+
+        LJ7BX3RF6dSO3zRBluLHAe7BKD+yMbHqXhsg3lAgUlbEpX24sagrooLHDq5Yq3KXcFNtXc5An3N0A
+        0HMCKFGw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qearR-000Bj5-PA; Fri, 08 Sep 2023 12:45:21 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6D984300472; Fri,  8 Sep 2023 14:45:21 +0200 (CEST)
+Date:   Fri, 8 Sep 2023 14:45:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
         juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [External] Re: [PATCH 0/2] Fix nohz_full vs rt bandwidth
-Message-ID: <20230908124501.GA471894@lorien.usersys.redhat.com>
-References: <20230821094927.51079-1-jiahao.os@bytedance.com>
- <1823b6fd-037f-38dc-2d33-0879d77768c3@bytedance.com>
- <20230907141703.GA441901@lorien.usersys.redhat.com>
- <bd786914-4718-7a35-fcc1-9cdee58d2f06@bytedance.com>
+        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
+        tglx@linutronix.de, jon.grimm@amd.com, bharata@amd.com,
+        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
+        konrad.wilk@oracle.com
+Subject: Re: [PATCH v2 9/9] x86/clear_huge_page: make clear_contig_region()
+ preemptible
+Message-ID: <20230908124521.GD19320@noisy.programming.kicks-ass.net>
+References: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
+ <20230830184958.2333078-10-ankur.a.arora@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bd786914-4718-7a35-fcc1-9cdee58d2f06@bytedance.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URI_HEX autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230830184958.2333078-10-ankur.a.arora@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 10:57:26AM +0800 Hao Jia wrote:
+On Wed, Aug 30, 2023 at 11:49:58AM -0700, Ankur Arora wrote:
+> clear_contig_region() can be used for clearing  regions as large as a
+> gigantic page. Allow preemption in irqentry_exit to make sure we don't
+> hold on to the CPU for an arbitrarily long period.
+
+It would be very nice to quantify the latency improvement here. At the
+very least perhaps mention how long a 2M or 1G clear takes (on you
+favourite machine) to illustrate why this is needed.
+
+> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+> ---
+>  arch/x86/mm/hugetlbpage.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> 
-> On 2023/9/7 Phil Auld wrote:
-> > Hi Hao,
-> > 
-> > On Wed, Sep 06, 2023 at 02:45:39PM +0800 Hao Jia wrote:
-> > > 
-> > > Friendly ping...
-> > > 
-> > > On 2023/8/21 Hao Jia wrote:
-> > > > Since the commit 88c56cfeaec4 ("sched/fair: Block nohz tick_stop
-> > > > when cfs bandwidth in use") was merged, it handles conflicts between
-> > > > NOHZ full and cfs_bandwidth well, and the scheduler feature HZ_BW
-> > > > allows us to choose which one to prefer.
-> > > > 
-> > > > This conflict also exists between NOHZ full and rt_bandwidth,
-> > > > these two patches try to handle it in a similar way.
-> > > > 
-> > 
-> > Are you actually hitting this in the real world?
-> > 
-> > We, for example, no longer enable RT_GROUP_SCHED so this is a non-issue
-> > for our use cases.  I'd recommend considering that. (Does it even
-> > work with cgroup2?)
-> > 
-> 
-> Yes, it has always been there. Regardless of whether RT_GROUP_SCHED is
-> enabled or not, rt bandwidth is always enabled. If RT_GROUP_SCHED is not
-> enabled, all rt tasks in the system are a group, and rt_runtime is 950000,
-> and rt_period is 1000000.So rt bandwidth is always enabled by default.
+> diff --git a/arch/x86/mm/hugetlbpage.c b/arch/x86/mm/hugetlbpage.c
+> index 0b9f7a6dad93..55d1d15ea618 100644
+> --- a/arch/x86/mm/hugetlbpage.c
+> +++ b/arch/x86/mm/hugetlbpage.c
+> @@ -152,7 +152,12 @@ hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
+>  #ifndef CONFIG_HIGHMEM
+>  static void clear_contig_region(struct page *page, unsigned int npages)
+>  {
+> +	/*
+> +	 * We might be clearing a large region. Allow rescheduling.
+> +	 */
+> +	allow_resched();
+>  	clear_pages(page_address(page), npages);
+> +	disallow_resched();
+>  }
 
-Sure, there is that. But I think Daniel is actively trying to remove it.
-
-Also I'm not sure you answered my question. Are you actually hitting this
-in the real world?  I'd be tempted to think this is a mis-configuration or
-mis-use of RT.  Plus you can disable that throttling and use stalld to catch
-cases where the rt task goes out of control.
-
-I'm not totally against doing this (for what my vote counts...), I just
-wonder if it's really needed. It seem it may be over-engineering something
-that is soon to be a non-problem. 
-
-
-Cheers,
-Phil
-
-> 
-> 
-> Thanks,
-> Hao
-> 
-> > In some ways what you have is a simplification of code, but it also
-> > obfuscates the stop_tick conditions by hiding them all in the class
-> > specific functions.  It was easier to see why the tick didn't stop
-> > looking at the original code.
-> > 
-> > It would be better to do this only if it is really needed, in my opinion.
-> > 
-> > 
-> > Cheers,
-> > Phil
-> > 
-> > > > patch1: Extracts a can_stop_tick() callback function for each
-> > > > sched_class from sched_can_stop_tick(), it will make things clearer
-> > > > and also convenient to handle the conflict between NOHZ full
-> > > > and rt_bandwidth.
-> > > > 
-> > > > patch2: If the HZ_BW scheduler feature is enabled, and the RT task
-> > > > to be run is constrained by rt_bandwidth runtime. Then it will
-> > > > prevent NO_HZ full from stopping tick.
-> > > > 
-> > > > Hao Jia (2):
-> > > >     sched/core: Introduce sched_class::can_stop_tick()
-> > > >     sched/rt: Block nohz tick_stop when rt bandwidth in use
-> > > > 
-> > > >    kernel/sched/core.c     | 67 +++++--------------------------
-> > > >    kernel/sched/deadline.c | 16 ++++++++
-> > > >    kernel/sched/fair.c     | 56 +++++++++++++++++++++++---
-> > > >    kernel/sched/rt.c       | 89 ++++++++++++++++++++++++++++++++++++++++-
-> > > >    kernel/sched/sched.h    |  5 ++-
-> > > >    5 files changed, 168 insertions(+), 65 deletions(-)
-> > > > 
-> > > 
-> > 
-> 
-
--- 
-
+Why is this in clear_contig_region() and not clear_pages() ? Any other
+clear_pages() user will have the same problems no?
