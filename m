@@ -2,54 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79187798C58
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B86798C7D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237029AbjIHSOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:14:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
+        id S1343642AbjIHSQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238675AbjIHSOd (ORCPT
+        with ESMTP id S1343608AbjIHSQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:14:33 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136FC1FEA;
-        Fri,  8 Sep 2023 11:13:56 -0700 (PDT)
-Received: from notapiano.myfiosgateway.com (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C384F66072B9;
-        Fri,  8 Sep 2023 19:12:46 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694196768;
-        bh=58aqhulC4fc6Pn7pCzoNspVmthf7zQNQ+CuztnXMM9k=;
+        Fri, 8 Sep 2023 14:16:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2594F212F;
+        Fri,  8 Sep 2023 11:16:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CC81C4339A;
+        Fri,  8 Sep 2023 18:13:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694196810;
+        bh=ppRWJhM2IQNdnlit5qe6toabd0+zlRqLBqSc22ui1MM=;
         h=From:To:Cc:Subject:Date:From;
-        b=D3/TDBhLtJg+v4QCDK7vby4V4RgDhW59/2BiowmTy3GpcnlDjbyicbjTnYuXicxEw
-         Y3HdFg7/iU+AW7hn6vfue4HXulIbjdLeNSOvrlJjMtWG2orbl9SS4g253yI2zewFsR
-         4ubUq5xRQzqU7rhz0+C+JAL7/52MaDdE27nJX/TdCHVWKJaIdUJ+1Xus1l4mnpsuNI
-         jSy5GprjgCaIWa7MIelrOWKCZobhBdVer6TQNpO42wuXZYvK/epcHg139TYdHhkZrN
-         rJCbVR3nLXC6KLoJ3RDlACvxkdLGlEcwKm8HPQKTW5Muz4OMnEVcnDX/VO4qw5gxTB
-         F/A9njH6ylDcw==
-From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>
-To:     Takashi Iwai <tiwai@suse.com>
-Cc:     kernel@collabora.com,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>, Jaroslav Kysela <perex@perex.cz>,
-        Mark Brown <broonie@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH] kselftest/alsa: Mark test plan as skipped when no cards are available
-Date:   Fri,  8 Sep 2023 14:12:40 -0400
-Message-ID: <20230908181242.95714-1-nfraprado@collabora.com>
-X-Mailer: git-send-email 2.42.0
+        b=puEqh/YnAVlyl3rU3XPqALVlNl1jE1e5o4A54SjrzcJja0u1Ikuof7RxvebnlhNox
+         Ekk8IyliGe4R8UNZOgUNnxmm1bLfzYgMQoojMgRCCDhrMJAZFSTcFdjCyDM8yTLn98
+         dTVHk/DgAyxol7aKDFe5334EAFlMRgq/LhoDI45UI67oGs4rfiFBDLGfGB7oz0bcsL
+         ypfk6KgDqHDpdtFXhw+3qjw0V/unYu1gyNXz0iKQT5LiQOifcj21HPxPrsR9Xog+AG
+         MfEWdh++Yzt6BmK49jyZDpQNhXiIAqqGjeyOa0U1M6xdbU431O3WMADk887a2LWB+z
+         hVBUzj+U2RFxQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Maksim Kiselev <bigunclemax@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, wens@csie.org,
+        jernej.skrabec@gmail.com, samuel@sholland.org,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.5 01/45] spi: sun6i: add quirk for dual and quad SPI modes support
+Date:   Fri,  8 Sep 2023 14:12:42 -0400
+Message-Id: <20230908181327.3459042-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.5.2
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,56 +53,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When no soundcards are available, it won't be possible to run any tests.
-Currently, when this happens, in both pcm-test and mixer-test, 0
-tests are reported, and the pass exit code is returned. Instead, call
-ksft_exit_skip() so that the whole test plan is marked as skipped in the
-KTAP output and it exits with the skip exit code.
+From: Maksim Kiselev <bigunclemax@gmail.com>
 
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+[ Upstream commit 0605d9fb411f3337482976842a3901d6c125d298 ]
 
+New Allwinner's SPI controllers can support dual and quad SPI modes.
+To enable one of these modes, we should set the corresponding bit in
+the SUN6I_BURST_CTL_CNT_REG register. DRM (28 bits) for dual mode and
+Quad_EN (29 bits) for quad transmission.
+
+Signed-off-by: Maksim Kiselev <bigunclemax@gmail.com>
+Link: https://lore.kernel.org/r/20230624131632.2972546-2-bigunclemax@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
+ drivers/spi/spi-sun6i.c | 29 +++++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
 
- tools/testing/selftests/alsa/mixer-test.c | 7 +++++--
- tools/testing/selftests/alsa/pcm-test.c   | 7 +++++--
- 2 files changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/alsa/mixer-test.c b/tools/testing/selftests/alsa/mixer-test.c
-index c95d63e553f4..8f45c15a5667 100644
---- a/tools/testing/selftests/alsa/mixer-test.c
-+++ b/tools/testing/selftests/alsa/mixer-test.c
-@@ -66,8 +66,11 @@ static void find_controls(void)
- 	char *card_name, *card_longname;
+diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
+index 30d541612253e..cec2747235abf 100644
+--- a/drivers/spi/spi-sun6i.c
++++ b/drivers/spi/spi-sun6i.c
+@@ -83,6 +83,9 @@
+ #define SUN6I_XMIT_CNT_REG		0x34
  
- 	card = -1;
--	if (snd_card_next(&card) < 0 || card < 0)
--		return;
-+	err = snd_card_next(&card);
-+	if (err < 0)
-+		ksft_exit_skip("Couldn't open first soundcard. rc=%d\n", err);
-+	if (card < 0)
-+		ksft_exit_skip("No soundcard available\n");
+ #define SUN6I_BURST_CTL_CNT_REG		0x38
++#define SUN6I_BURST_CTL_CNT_STC_MASK		GENMASK(23, 0)
++#define SUN6I_BURST_CTL_CNT_DRM			BIT(28)
++#define SUN6I_BURST_CTL_CNT_QUAD_EN		BIT(29)
  
- 	config = get_alsalib_config();
+ #define SUN6I_TXDATA_REG		0x200
+ #define SUN6I_RXDATA_REG		0x300
+@@ -90,6 +93,7 @@
+ struct sun6i_spi_cfg {
+ 	unsigned long		fifo_depth;
+ 	bool			has_clk_ctl;
++	u32			mode_bits;
+ };
  
-diff --git a/tools/testing/selftests/alsa/pcm-test.c b/tools/testing/selftests/alsa/pcm-test.c
-index 2f5e3c462194..74d9cf8b5a69 100644
---- a/tools/testing/selftests/alsa/pcm-test.c
-+++ b/tools/testing/selftests/alsa/pcm-test.c
-@@ -161,8 +161,11 @@ static void find_pcms(void)
- 	snd_pcm_info_alloca(&pcm_info);
+ struct sun6i_spi {
+@@ -266,7 +270,7 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
+ 	unsigned int div, div_cdr1, div_cdr2, timeout;
+ 	unsigned int start, end, tx_time;
+ 	unsigned int trig_level;
+-	unsigned int tx_len = 0, rx_len = 0;
++	unsigned int tx_len = 0, rx_len = 0, nbits = 0;
+ 	bool use_dma;
+ 	int ret = 0;
+ 	u32 reg;
+@@ -418,13 +422,29 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
+ 	sun6i_spi_write(sspi, SUN6I_GBL_CTL_REG, reg);
  
- 	card = -1;
--	if (snd_card_next(&card) < 0 || card < 0)
--		return;
-+	err = snd_card_next(&card);
-+	if (err < 0)
-+		ksft_exit_skip("Couldn't open first soundcard. rc=%d\n", err);
-+	if (card < 0)
-+		ksft_exit_skip("No soundcard available\n");
+ 	/* Setup the transfer now... */
+-	if (sspi->tx_buf)
++	if (sspi->tx_buf) {
+ 		tx_len = tfr->len;
++		nbits = tfr->tx_nbits;
++	} else if (tfr->rx_buf) {
++		nbits = tfr->rx_nbits;
++	}
++
++	switch (nbits) {
++	case SPI_NBITS_DUAL:
++		reg = SUN6I_BURST_CTL_CNT_DRM;
++		break;
++	case SPI_NBITS_QUAD:
++		reg = SUN6I_BURST_CTL_CNT_QUAD_EN;
++		break;
++	case SPI_NBITS_SINGLE:
++	default:
++		reg = FIELD_PREP(SUN6I_BURST_CTL_CNT_STC_MASK, tx_len);
++	}
  
- 	config = get_alsalib_config();
+ 	/* Setup the counters */
++	sun6i_spi_write(sspi, SUN6I_BURST_CTL_CNT_REG, reg);
+ 	sun6i_spi_write(sspi, SUN6I_BURST_CNT_REG, tfr->len);
+ 	sun6i_spi_write(sspi, SUN6I_XMIT_CNT_REG, tx_len);
+-	sun6i_spi_write(sspi, SUN6I_BURST_CTL_CNT_REG, tx_len);
  
+ 	if (!use_dma) {
+ 		/* Fill the TX FIFO */
+@@ -623,7 +643,8 @@ static int sun6i_spi_probe(struct platform_device *pdev)
+ 	master->set_cs = sun6i_spi_set_cs;
+ 	master->transfer_one = sun6i_spi_transfer_one;
+ 	master->num_chipselect = 4;
+-	master->mode_bits = SPI_CPOL | SPI_CPHA | SPI_CS_HIGH | SPI_LSB_FIRST;
++	master->mode_bits = SPI_CPOL | SPI_CPHA | SPI_CS_HIGH | SPI_LSB_FIRST |
++			    sspi->cfg->mode_bits;
+ 	master->bits_per_word_mask = SPI_BPW_MASK(8);
+ 	master->dev.of_node = pdev->dev.of_node;
+ 	master->auto_runtime_pm = true;
 -- 
-2.42.0
+2.40.1
 
