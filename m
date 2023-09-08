@@ -2,72 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BF97987C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 15:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9707987C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 15:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243541AbjIHN02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 09:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
+        id S243511AbjIHNZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 09:25:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237098AbjIHN01 (ORCPT
+        with ESMTP id S243544AbjIHNZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 09:26:27 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BCC1BC1
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 06:26:23 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bcda0aaf47so38389251fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 06:26:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1694179582; x=1694784382; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JtvG7vCoPjzvZ6xl4mQwiW30hYHrBTBAj9DoApT1P2w=;
-        b=BYn73QHDStv9k1exZIKuf3DqEmF6+ZmY8FPKu5IEONwpwm9I6zJtaQdfu+5sMAMYC/
-         aXmvh+o0Mq3ozChUsun7fffo7jT+zOl5hFiKfcz4SARdxjPA4f9BsKdYBLFz0wlwNI4K
-         Bqq5wb5A7V3ASoiwJ3IPNVtG69/6JS+5RwDgU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694179582; x=1694784382;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JtvG7vCoPjzvZ6xl4mQwiW30hYHrBTBAj9DoApT1P2w=;
-        b=C+YW4K0SMl/MPjU4qgrnrJ8kk0hcyjdWPVFtMTxr6a18lCff+WGeQA2MShOHpru/68
-         uk4qLzvcPrBsvL7dYGhrc7CB7fMuxTdIR16l5hdx8r1158D2fnmvaxPOQ5ye8L/T63J2
-         RNO/RFYqtfqgjzqc7XpNmdJEm5fsbwkn289Ek6CaPR7J5Di7pCs0MrlOCQqOXt7s4YHS
-         iec0ZEedKHXG323z7o2zyBzGOtt+1L4bcSwwHVNcizLbpxzJBnUw54OeUauZYIE46LiH
-         C7d37Zm+lBGFId65pz5+D+Qa8/gay1B4LvBIfiaihefO9oyelKPpV35PaJHzes47chyd
-         7ztQ==
-X-Gm-Message-State: AOJu0YxVrQSc+mj11S8H/W772Ln6Yapk43zh2KIJPtDmU6dxOxF9+gJG
-        3kC9aESIFBohivXtignlvyVwjFtzdl37oInMg4qcZA==
-X-Google-Smtp-Source: AGHT+IHXE6NA7384Ovya/IgVK7bR8Nri7iznp2hNET+Y6LuS6TLo2xz8tphlwO1rMJaX6yLUnlk6HxEqoKFut1VYR20=
-X-Received: by 2002:a2e:844e:0:b0:2bc:d507:6ee with SMTP id
- u14-20020a2e844e000000b002bcd50706eemr912865ljh.7.1694179581822; Fri, 08 Sep
- 2023 06:26:21 -0700 (PDT)
+        Fri, 8 Sep 2023 09:25:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24ECB1BF0;
+        Fri,  8 Sep 2023 06:25:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92464C433C7;
+        Fri,  8 Sep 2023 13:25:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694179510;
+        bh=9ndHr7tfUjp4mVv9z+x8c5QATDVhJpJXez+DnQJHD4Y=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=LSuiyWgqfqI/+cwgkgQLy7meh9HOXIGWKWHt9NZ32wVrLp9fCDtsfb574ghdFXdPu
+         Zw3gg+1SHOnmVrOUARCkrAZvHvncOQITDoTnrF65nNkg9B/jhCuP1UHmNJo4VgFTjI
+         C1MVc+RLSKoQ1vDHhEOXxpDVM0hCfhnqBVP9gd4jjo9c/ZLuAy//gpVcq2Ftn6hmj1
+         VZt3bAC5XcUEll4IxmWx4XLS85aQgUegnmRRVuY9kHelRE9DoE53bGEWAbkXca19U3
+         /EibWgc1NagVVJTX7q4jD+Ji6br27ko5GSH/dpAJTlV6hNms0Ieyq5X32szxSDXvUU
+         p4KzYY7Ve+pzA==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Ping-Ke Shih <pkshih@realtek.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Yanik Fuchs <Yanik.fuchs@mbv.ch>
+Subject: Re: [PATCH] wifi: rtw88: rtw8723d: Fix MAC address offset in EEPROM
+References: <20230907071614.2032404-1-s.hauer@pengutronix.de>
+        <bed0e0cacc44476582fc58180d77519c@realtek.com>
+        <20230908113655.GF637806@pengutronix.de>
+Date:   Fri, 08 Sep 2023 16:26:38 +0300
+In-Reply-To: <20230908113655.GF637806@pengutronix.de> (Sascha Hauer's message
+        of "Fri, 8 Sep 2023 13:36:55 +0200")
+Message-ID: <878r9gn6cx.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-References: <20230903151328.2981432-1-joel@joelfernandes.org>
- <20230903151328.2981432-2-joel@joelfernandes.org> <ZPscoU1l4HzP15sz@dhcp22.suse.cz>
-In-Reply-To: <ZPscoU1l4HzP15sz@dhcp22.suse.cz>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 8 Sep 2023 09:26:10 -0400
-Message-ID: <CAEXW_YQ1d2QK_dav59qVtj7zNrPLL+5zC8wGxAu7ZXC2Oou=6Q@mail.gmail.com>
-Subject: Re: [PATCH v6 1/7] mm/mremap: Optimize the start addresses in move_page_tables()
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, Lorenzo Stoakes <lstoakes@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Kirill A Shutemov <kirill@shutemov.name>,
-        "Liam R. Howlett" <liam.howlett@oracle.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,17 +53,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 8, 2023 at 9:07=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
-:
->
-> Sorry for being silent most of the time in this patch series and thanks
-> for pushing it forward.
->
-[...]
->
-> The patch looks good to me.
-> Acked-by: Michal Hocko <mhocko@suse.com>
+Sascha Hauer <s.hauer@pengutronix.de> writes:
 
-Thank you very much!!
+>> Should it add a Fixes tag? 
+>> Fixes: 87caeef032fc ("wifi: rtw88: Add rtw8723du chipset support")
+>
+> Yes, I forgot this. Kalle, can you add it once again while applying?
 
- - Joel
+Yes, I'll add it. I guess it would be good to apply this to wireless
+tree?
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
