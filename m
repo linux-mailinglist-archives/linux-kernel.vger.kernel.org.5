@@ -2,108 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC25799116
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D199799119
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343791AbjIHUi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 16:38:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47934 "EHLO
+        id S245641AbjIHUjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 16:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243773AbjIHUiz (ORCPT
+        with ESMTP id S242000AbjIHUjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 16:38:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCAB6C4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 13:38:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694205521; x=1725741521;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=qRz3N4dt9aOEvJciUns9J86RjO6vBdJBsn0ap5aaM8I=;
-  b=duYONdGu2C79nFQSjrpaLiEdvDAH+dRdlcOk6Z6+YpTY0gFZdY1MDeVc
-   ZAnDL91dw2PS5o2yNpDAN3C++4abzl8TG1rOoTlV+9WySqr3yJ3Pnldsy
-   zWLOI3t4aXBCaw+lLL7k3KDV8WFY+scFMcx57sVLI2DcSMLs8FzGys3lG
-   s86qOQ2xLbxdwZfbjHxXVxupy/+HP0PVOf0XBX3O4Xs3+Cpu6wrjuDAD1
-   pNGg65LXZHNhGx05XeUdQJq5arKGhaQ6QHl3DuXBZD0uJc4sjw9p8wLqK
-   wA8JSvGqQKLhs49Nf9K2gDRuwVGTR8Ntc3JDZfIVJVw5OObKe6p6ejCMj
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="376650601"
-X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
-   d="scan'208";a="376650601"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 13:37:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="832781676"
-X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
-   d="scan'208";a="832781676"
-Received: from imilose-mobl.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.209.14.33])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 13:37:20 -0700
-From:   Rick Edgecombe <rick.p.edgecombe@intel.com>
-To:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>, hjl.tools@gmail.com,
-        linux-kernel@vger.kernel.org
-Cc:     rick.p.edgecombe@intel.com
-Subject: [PATCH 3/3] x86/shstk: Add warning for shadow stack double unmap
-Date:   Fri,  8 Sep 2023 13:36:55 -0700
-Message-Id: <20230908203655.543765-4-rick.p.edgecombe@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230908203655.543765-1-rick.p.edgecombe@intel.com>
-References: <20230908203655.543765-1-rick.p.edgecombe@intel.com>
+        Fri, 8 Sep 2023 16:39:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF894B2;
+        Fri,  8 Sep 2023 13:39:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE3C4C433C8;
+        Fri,  8 Sep 2023 20:39:14 +0000 (UTC)
+Date:   Fri, 8 Sep 2023 16:39:29 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sven Schnelle <svens@linux.ibm.com>
+Subject: [RESEND][PATCH] tracing/synthetic: Fix order of struct
+ trace_dynamic_info
+Message-ID: <20230908163929.2c25f3dc@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are several ways a thread's shadow stacks can get unmapped. This
-can happen on exit or exec, as well as error handling in exec or clone.
-The task struct already keeps track of the thread's shadow stack. Use the
-size variable to keep track of if the shadow stack has already been freed.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-When an attempt to double unmap the thread shadow stack is caught, warn
-about it and abort the operation.
+To make handling BIG and LITTLE endian better the offset/len of dynamic
+fields of the synthetic events was changed into a structure of:
 
-Tested-by: H.J. Lu <hjl.tools@gmail.com>
-Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+ struct trace_dynamic_info {
+ #ifdef CONFIG_CPU_BIG_ENDIAN
+	u16	offset;
+	u16	len;
+ #else
+	u16	len;
+	u16	offset;
+ #endif
+ };
+
+to replace the manual changes of:
+
+ data_offset = offset & 0xffff;
+ data_offest = len << 16;
+
+But if you look closely, the above is:
+
+  <len> << 16 | offset
+
+Which in little endian would be in memory:
+
+ offset_lo offset_hi len_lo len_hi
+
+and in big endian:
+
+ len_hi len_lo offset_hi offset_lo
+
+Which if broken into a structure would be:
+
+ struct trace_dynamic_info {
+ #ifdef CONFIG_CPU_BIG_ENDIAN
+	u16	len;
+	u16	offset;
+ #else
+	u16	offset;
+	u16	len;
+ #endif
+ };
+
+Which is the opposite of what was defined.
+
+Fix this and just to be safe also add "__packed".
+
+Link: https://lore.kernel.org/all/20230908154417.5172e343@gandalf.local.home/
+
+Cc: stable@vger.kernel.org
+Fixes: ddeea494a16f3 ("tracing/synthetic: Use union instead of casts")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- arch/x86/kernel/shstk.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
 
-diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
-index ad63252ebebc..59e15dd8d0f8 100644
---- a/arch/x86/kernel/shstk.c
-+++ b/arch/x86/kernel/shstk.c
-@@ -426,7 +426,18 @@ void shstk_free(struct task_struct *tsk)
- 	if (!shstk->base)
- 		return;
+ [ Resending to the correct mailing list this time :-p ]
+
+ include/linux/trace_events.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 12f875e9e69a..21ae37e49319 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -62,13 +62,13 @@ void trace_event_printf(struct trace_iterator *iter, const char *fmt, ...);
+ /* Used to find the offset and length of dynamic fields in trace events */
+ struct trace_dynamic_info {
+ #ifdef CONFIG_CPU_BIG_ENDIAN
+-	u16	offset;
+ 	u16	len;
++	u16	offset;
+ #else
+-	u16	len;
+ 	u16	offset;
++	u16	len;
+ #endif
+-};
++} __packed;
  
-+	/*
-+	 * shstk->base is NULL for CLONE_VFORK child tasks, and so is
-+	 * normal. But size = 0 on a shstk->base is not normal and
-+	 * indicated an attempt to free the thread shadow stack twice.
-+	 * Warn about it.
-+	 */
-+	if (WARN_ON(!shstk->size))
-+		return;
-+
- 	unmap_shadow_stack(shstk->base, shstk->size);
-+
-+	shstk->size = 0;
- }
- 
- static int wrss_control(bool enable)
+ /*
+  * The trace entry - the most basic unit of tracing. This is what
 -- 
-2.34.1
+2.40.1
 
