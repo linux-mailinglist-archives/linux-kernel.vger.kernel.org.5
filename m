@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E99798DC9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D030798EB0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244725AbjIHSYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41264 "EHLO
+        id S245513AbjIHTHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344727AbjIHSXS (ORCPT
+        with ESMTP id S234485AbjIHTHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:23:18 -0400
+        Fri, 8 Sep 2023 15:07:20 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E27044682;
-        Fri,  8 Sep 2023 11:20:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC9A5C433CB;
-        Fri,  8 Sep 2023 18:20:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7794BE0;
+        Fri,  8 Sep 2023 12:07:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35B36C433D9;
+        Fri,  8 Sep 2023 18:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197242;
-        bh=5gYfhHtbATN1eBZVLKgHgCJ6/y3b9OYHJfOcIM3jMVo=;
+        s=k20201202; t=1694197244;
+        bh=1hdWCck4jn+KH3RcIdyPXBIfUoTUb1kDuxDPsoliRXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ohSUDPXS5dIWfC5d5DxljfFeXqa1OsFfDszXY6fZQYHJ9iy9cQy4xrofha5IOw9TV
-         QdLcIkeF28rvG2TToqudpMZvXw93KjkMcOCqSc6VReywk13z1HhCQY7x3HewwhL3sv
-         VNc2PMBgLFCJD8VkvFd5DmDcNMcsPRt9Er1a7tIAd/2sTvwCbac4asAFlJxKcgaDq+
-         Hkg97hgOiOeN0KJMwP6On1PGcbPz8aHpFtIqXlzxMqFKSN5y/uWZ0IpYt/Ylb+ekS3
-         OSsOlaP4Y2kw0WLydQhS1QGZ0QvYnz4YoBFD1tahofu8AkTp8rzHJ17Qv2qjkYYAKT
-         rlQs+yUIsbRCA==
+        b=KP/curU+IK56O4u0Hcz/K96Dvvyb+aGYFqjBMHWUz0QJVSJYgKYXi+1vgUPnrpuJj
+         NxuZtkwoSJCJKsT3XwIIOf1asqYs7A4F4Mbc11ilV07ZB09JiM3VmNIfW8QAv5r0Yo
+         QgiGtGtmEP0Yu3Id3crab795UAg0e+XBPikEn4NgYqzUnspUiJk7ie8n0L7mKgODFq
+         L1Kf/hIicgWjNSy0ZHVATHHM7CW/JT84LI8qvVq1r9cQzmn2W6emPWR5XyiX1eTRYn
+         EHpJSK+CttlVmGrwvM1mhXnTpS9u+/W4kZYAEliI48vbVtYxTEDNWy5rHoldsDrB/a
+         p8quNiHkS6+uQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hao Luo <haoluo@google.com>, Andrii Nakryiko <andrii@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
-        daniel@iogearbox.net, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 13/14] libbpf: Free btf_vmlinux when closing bpf_object
-Date:   Fri,  8 Sep 2023 14:20:00 -0400
-Message-Id: <20230908182003.3460721-13-sashal@kernel.org>
+Cc:     Bastien Nocera <hadess@hadess.net>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Sasha Levin <sashal@kernel.org>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-bluetooth@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 14/14] Bluetooth: btusb: Fix quirks table naming
+Date:   Fri,  8 Sep 2023 14:20:01 -0400
+Message-Id: <20230908182003.3460721-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908182003.3460721-1-sashal@kernel.org>
 References: <20230908182003.3460721-1-sashal@kernel.org>
@@ -52,39 +55,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hao Luo <haoluo@google.com>
+From: Bastien Nocera <hadess@hadess.net>
 
-[ Upstream commit 29d67fdebc42af6466d1909c60fdd1ef4f3e5240 ]
+[ Upstream commit d831e3612111d385e8629104af5429808ef26e25 ]
 
-I hit a memory leak when testing bpf_program__set_attach_target().
-Basically, set_attach_target() may allocate btf_vmlinux, for example,
-when setting attach target for bpf_iter programs. But btf_vmlinux
-is freed only in bpf_object_load(), which means if we only open
-bpf object but not load it, setting attach target may leak
-btf_vmlinux.
+The quirks table was named "blacklist_table" which isn't a good
+description for that table as devices detected using it weren't ignored
+by the driver.
 
-So let's free btf_vmlinux in bpf_object__close() anyway.
+Rename the table to match what it actually does.
 
-Signed-off-by: Hao Luo <haoluo@google.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20230822193840.1509809-1-haoluo@google.com
+Signed-off-by: Bastien Nocera <hadess@hadess.net>
+Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/bluetooth/btusb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 015ed8253f739..44646c5286fbe 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -7962,6 +7962,7 @@ void bpf_object__close(struct bpf_object *obj)
- 	bpf_object__elf_finish(obj);
- 	bpf_object__unload(obj);
- 	btf__free(obj->btf);
-+	btf__free(obj->btf_vmlinux);
- 	btf_ext__free(obj->btf_ext);
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 49d5375b04f40..139824637298a 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -173,7 +173,7 @@ static const struct usb_device_id btusb_table[] = {
  
- 	for (i = 0; i < obj->nr_maps; i++)
+ MODULE_DEVICE_TABLE(usb, btusb_table);
+ 
+-static const struct usb_device_id blacklist_table[] = {
++static const struct usb_device_id quirks_table[] = {
+ 	/* CSR BlueCore devices */
+ 	{ USB_DEVICE(0x0a12, 0x0001), .driver_info = BTUSB_CSR },
+ 
+@@ -4004,7 +4004,7 @@ static int btusb_probe(struct usb_interface *intf,
+ 	if (!id->driver_info) {
+ 		const struct usb_device_id *match;
+ 
+-		match = usb_match_id(intf, blacklist_table);
++		match = usb_match_id(intf, quirks_table);
+ 		if (match)
+ 			id = match;
+ 	}
 -- 
 2.40.1
 
