@@ -2,285 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0534799148
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D34F179914B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242173AbjIHUwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 16:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36958 "EHLO
+        id S244692AbjIHUwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 16:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233978AbjIHUwM (ORCPT
+        with ESMTP id S233978AbjIHUwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 16:52:12 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A0B1FE0
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 13:52:08 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-68c0d4cc3a4so2201514b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 13:52:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694206327; x=1694811127; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=VDbHt9ZjxbWg0OnwI6q2vK5uaDqhBGdPDoTGYH2kvhs=;
-        b=iPGzDLQb4z8fmv6qaVAu9JkFZv6kgtWc6fgkOyQA3hiaUWuG8tADPGWTlVU+qJvJwA
-         A+iOuhGH2A3ZKoOaqHqceF1fwUwnumlH66pnQVQXmZ21a4w0chAuY2SM9vjJ+Qol4J5F
-         BqZepDzHnqtZ2zW8Qdfa7QdJ3Eh+buiGfK6D0bCJUUnugkOkzl1Fk/e1WU1RofwdV/Bb
-         P4dx6XrePBv/zuGT7oeFlkZouVB36jDGws4kML/RcKnlkgWkZMksIiW+f/8HP/CdNkkB
-         5PIxzfi58h674DIXjsfEgP6J6H5DKkZi/bzKmJhrqirIAUhlEgMr4fiByFigFQZlBAtu
-         w7ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694206327; x=1694811127;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VDbHt9ZjxbWg0OnwI6q2vK5uaDqhBGdPDoTGYH2kvhs=;
-        b=bu1ECf3CnbN9YGxkKC9oInBkV4HTpQ+cyw1Q8t//fagSfqgBMGCij19mDZxtGsn8hQ
-         3+trWXMREPntr7p8TCKwpfQeVr0AH1QGJuwzNzzU6t6H5P/qtN4zjCsrlCYa7hLf5sLO
-         2Xb36O4oNrbjdukpih8j5rgR1KoUt0S0IcrjBH/SMFzlMHIGhBeiN1G1zZe+iBAILfvo
-         vl1T7MFZ1K48nx2ItLigZdB3MjfNy0tQZ5RHmH9IkYqyGjxRE53NECdGUIFFfH8GP/mi
-         RqGdOAf2q4LDgA72Oo1bMamhkJX8PwsTm4Z67gc2REFkte85GI74b5RQO8s7G7u7rcRm
-         v34g==
-X-Gm-Message-State: AOJu0YyT+KkRvADySSEKYE8mklWZSzel661xthqVyOW83l7UZH3ceMOZ
-        7aToC1/VY9JmoGNCoLk5WC4=
-X-Google-Smtp-Source: AGHT+IE3hfS2KA7c98Htv9+NTlTCBJzkYRjkcPnycGW13NYWt9fF/InbMS0k6WcKTOaP72T/K0kq5w==
-X-Received: by 2002:a05:6a21:60f:b0:153:beda:863 with SMTP id ll15-20020a056a21060f00b00153beda0863mr3012237pzb.45.1694206327330;
-        Fri, 08 Sep 2023 13:52:07 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m11-20020aa78a0b000000b0068a53ac9d46sm1667577pfa.100.2023.09.08.13.52.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Sep 2023 13:52:06 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <e7965d97-48cd-b2ed-328f-c1947121c8e7@roeck-us.net>
-Date:   Fri, 8 Sep 2023 13:52:04 -0700
+        Fri, 8 Sep 2023 16:52:21 -0400
+Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B761FE0
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 13:52:17 -0700 (PDT)
+Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mx0.riseup.net (Postfix) with ESMTPS id 4Rj7b5038bz9scb;
+        Fri,  8 Sep 2023 20:52:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1694206337; bh=2Y/kMyD/z9pXU7s6HkrEXYDIlqypOuBOVO8Uu8nZ41M=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=eer7x/sxK4RH7m/Z/iw5XLy02G3x35Uz3cXOkuegmj/juwx9w3Z3ObUH3vDzknBiM
+         V8K9hjYmygtPjP++3nDk0SQPhcsw63kPpvMiFdW/at1hyWTqtDdeqNsPERwGe++6Ip
+         EonXaVJnlsddfL3MZP7YKf0pcoxTjFinu/QuVVtE=
+X-Riseup-User-ID: 312483AA142EEE3508F02C1A56B8C2911D0784095B4F6D6D9164640054B6E0C4
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4Rj7Zp722dzJqBr;
+        Fri,  8 Sep 2023 20:52:02 +0000 (UTC)
+Message-ID: <4a1d5042-e698-6657-61a0-bb2f61468231@riseup.net>
+Date:   Fri, 8 Sep 2023 17:52:05 -0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] lockdep: Fix static memory detection even more
+Subject: Re: [PATCH v2 2/2] drm/tests: Add new format conversion tests to
+ better cover drm_fb_blit()
 Content-Language: en-US
-To:     Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
-        loongarch@lists.linux.dev
-Cc:     linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <ZNep5EcYskP9HtGD@p100>
- <b7526bf6-886f-457a-beba-84ae9f75bc77@roeck-us.net> <ZPT2cINsHd+sWJQU@ls3530>
- <78473084-d4d5-685f-9778-4bbe8878a43e@roeck-us.net> <ZPgnslFTlwImJ+Aq@ls3530>
- <081537c0-0d74-0242-451a-e6bd6f71cdd9@roeck-us.net> <ZPl+Y2vRYUnWtTQc@ls3530>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <ZPl+Y2vRYUnWtTQc@ls3530>
+To:     Arthur Grillo <arthurgrillo@riseup.net>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     tales.aparecida@gmail.com, andrealmeid@riseup.net,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+References: <20230905-final-gsoc-v2-0-b52e8cb068ea@riseup.net>
+ <20230905-final-gsoc-v2-2-b52e8cb068ea@riseup.net>
+From:   Maira Canal <mairacanal@riseup.net>
+In-Reply-To: <20230905-final-gsoc-v2-2-b52e8cb068ea@riseup.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/23 00:40, Helge Deller wrote:
-> * Guenter Roeck <linux@roeck-us.net>:
->> On 9/6/23 00:18, Helge Deller wrote:
->>> * Guenter Roeck <linux@roeck-us.net>:
->>>> On 9/3/23 14:11, Helge Deller wrote:
->>>>> * Guenter Roeck <linux@roeck-us.net>:
->>>>>> Hi,
->>>>>>
->>>>>> On Sat, Aug 12, 2023 at 05:48:52PM +0200, Helge Deller wrote:
->>>>>>> On the parisc architecture, lockdep reports for all static objects which
->>>>>>> are in the __initdata section (e.g. "setup_done" in devtmpfs,
->>>>>>> "kthreadd_done" in init/main.c) this warning:
->>>>>>>
->>>>>>> 	INFO: trying to register non-static key.
->>>>>>>
->>>>>>> The warning itself is wrong, because those objects are in the __initdata
->>>>>>> section, but the section itself is on parisc outside of range from
->>>>>>> _stext to _end, which is why the static_obj() functions returns a wrong
->>>>>>> answer.
->>>>>>>
->>>>>>> While fixing this issue, I noticed that the whole existing check can
->>>>>>> be simplified a lot.
->>>>>>> Instead of checking against the _stext and _end symbols (which include
->>>>>>> code areas too) just check for the .data and .bss segments (since we check a
->>>>>>> data object). This can be done with the existing is_kernel_core_data()
->>>>>>> macro.
->>>>>>>
->>>>>>> In addition objects in the __initdata section can be checked with
->>>>>>> init_section_contains().
->>>>>>>
->>>>>>> This partly reverts and simplifies commit bac59d18c701 ("x86/setup: Fix static
->>>>>>> memory detection").
->>>>>>>
->>>>>>> Tested on x86-64 and parisc.
->>>>>>>
->>>>>>> Signed-off-by: Helge Deller <deller@gmx.de>
->>>>>>> Fixes: bac59d18c701 ("x86/setup: Fix static memory detection")
->>>>>>
->>>>>> On loongarch, this patch results in the following backtrace.
->>>>>>
->>>>>> EFI stub: Loaded initrd from LINUX_EFI_INITRD_MEDIA_GUID device path
->>>>>> EFI stub: Exiting boot services
->>>>>> [    0.000000] INFO: trying to register non-static key.
->>>>>> [    0.000000] The code is fine but needs lockdep annotation, or maybe
->>>>>> [    0.000000] you didn't initialize this object before use?
->>>>>> [    0.000000] turning off the locking correctness validator.
->>>>>> [    0.000000]         ...
->>>>>> [    0.000000] Call Trace:
->>>>>> [    0.000000] [<9000000000223d84>] show_stack+0x5c/0x180
->>>>>> [    0.000000] [<900000000153e0b4>] dump_stack_lvl+0x88/0xd0
->>>>>> [    0.000000] [<90000000002bc548>] register_lock_class+0x768/0x770
->>>>>> [    0.000000] [<90000000002bc710>] __lock_acquire+0xb0/0x2a18
->>>>>> [    0.000000] [<90000000002bba1c>] lock_acquire+0x11c/0x328
->>>>>> [    0.000000] [<9000000000b34a60>] __debug_object_init+0x60/0x244
->>>>>> [    0.000000] [<9000000000337f94>] init_cgroup_housekeeping+0xe8/0x144
->>>>>> [    0.000000] [<900000000033e364>] init_cgroup_root+0x38/0xa0
->>>>>> [    0.000000] [<90000000017801ac>] cgroup_init_early+0x44/0x16c
->>>>>> [    0.000000] [<9000000001770758>] start_kernel+0x50/0x624
->>>>>> [    0.000000] [<90000000015410b4>] kernel_entry+0xb4/0xc4
->>>>>>
->>>>>> Reverting it fixes the problem. Bisect log attached.
->>>>>>
->>>>>> This is also seen in v6.5.y and v6.4.y since the patch has been applied
->>>>>> to those branches.
->>>>>
->>>>> Does this happens with CONFIG_SMP=n ?
->>>>> If so, I think the untested patch below might fix the issue.
->>>>>
->>>>
->>>> No, this is loongarch:defconfig with various debug options enabled.
->>>> That has CONFIG_SMP=y.
->>>
->>> Could you apply below patch and verify with the contents of the
->>> System.map file where the lock is located ?
->>>
->>> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
->>> index e85b5ad3e206..db0a301f9740 100644
->>> --- a/kernel/locking/lockdep.c
->>> +++ b/kernel/locking/lockdep.c
->>> @@ -969,7 +969,7 @@ static bool assign_lock_key(struct lockdep_map *lock)
->>>    	else {
->>>    		/* Debug-check: all keys must be persistent! */
->>>    		debug_locks_off();
->>> -		pr_err("INFO: trying to register non-static key.\n");
->>> +		pr_err("INFO: trying to register non-static key at %08lx.\n", addr);
->>>    		pr_err("The code is fine but needs lockdep annotation, or maybe\n");
->>>    		pr_err("you didn't initialize this object before use?\n");
->>>    		pr_err("turning off the locking correctness validator.\n");
->>
->> 90000000015602d0 D __la_abs_end
->> ...
->> 90000000016815c0 d fill_pool_map.3  <--- lock pointer
->> ...
->> 9000000001770000 T __init_begin
-> 
-> The problem is, that loongarch's  vmlinux.lds.S file puts data into
-> areas which are not marked "data" or "code".
-> 
-> can you try below patch?
-> The relevant part is here the move of ".data.rel : { *(.data.rel*) }"
-> into the data section.
-> The other parts are suggestions.
-> 
+Hi Arthur,
 
-The patch below fixes the problem for me.
-
-Guenter
-
-> Helge
+On 9/5/23 18:27, Arthur Grillo wrote:
+> To fully cover drm_fb_blit(), add format conversion tests that are only
+> supported through drm_fb_blit().
 > 
-> 
-> diff --git a/arch/loongarch/kernel/vmlinux.lds.S b/arch/loongarch/kernel/vmlinux.lds.S
-> index b1686afcf876..bb2ec86f37a8 100644
-> --- a/arch/loongarch/kernel/vmlinux.lds.S
-> +++ b/arch/loongarch/kernel/vmlinux.lds.S
-> @@ -53,33 +53,6 @@ SECTIONS
->   	. = ALIGN(PECOFF_SEGMENT_ALIGN);
->   	_etext = .;
->   
-> -	/*
-> -	 * struct alt_inst entries. From the header (alternative.h):
-> -	 * "Alternative instructions for different CPU types or capabilities"
-> -	 * Think locking instructions on spinlocks.
-> -	 */
-> -	. = ALIGN(4);
-> -	.altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
-> -		__alt_instructions = .;
-> -		*(.altinstructions)
-> -		__alt_instructions_end = .;
-> -	}
-> -
-> -#ifdef CONFIG_RELOCATABLE
-> -	. = ALIGN(8);
-> -	.la_abs : AT(ADDR(.la_abs) - LOAD_OFFSET) {
-> -		__la_abs_begin = .;
-> -		*(.la_abs)
-> -		__la_abs_end = .;
-> -	}
-> -#endif
-> -
-> -	.got : ALIGN(16) { *(.got) }
-> -	.plt : ALIGN(16) { *(.plt) }
-> -	.got.plt : ALIGN(16) { *(.got.plt) }
-> -
-> -	.data.rel : { *(.data.rel*) }
-> -
->   	. = ALIGN(PECOFF_SEGMENT_ALIGN);
->   	__init_begin = .;
->   	__inittext_begin = .;
-> @@ -94,6 +67,18 @@ SECTIONS
->   
->   	__initdata_begin = .;
->   
-> +	/*
-> +	 * struct alt_inst entries. From the header (alternative.h):
-> +	 * "Alternative instructions for different CPU types or capabilities"
-> +	 * Think locking instructions on spinlocks.
-> +	 */
-> +	. = ALIGN(4);
-> +	.altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
-> +		__alt_instructions = .;
-> +		*(.altinstructions)
-> +		__alt_instructions_end = .;
-> +	}
-> +
->   	INIT_DATA_SECTION(16)
->   	.exit.data : {
->   		EXIT_DATA
-> @@ -113,6 +98,11 @@ SECTIONS
->   
->   	_sdata = .;
->   	RO_DATA(4096)
-> +
-> +	.got : ALIGN(16) { *(.got) }
-> +	.plt : ALIGN(16) { *(.plt) }
-> +	.got.plt : ALIGN(16) { *(.got.plt) }
-> +
->   	RW_DATA(1 << CONFIG_L1_CACHE_SHIFT, PAGE_SIZE, THREAD_SIZE)
->   
->   	.rela.dyn : ALIGN(8) {
-> @@ -121,6 +111,17 @@ SECTIONS
->   		__rela_dyn_end = .;
->   	}
->   
-> +	.data.rel : { *(.data.rel*) }
-> +
-> +#ifdef CONFIG_RELOCATABLE
-> +	. = ALIGN(8);
-> +	.la_abs : AT(ADDR(.la_abs) - LOAD_OFFSET) {
-> +		__la_abs_begin = .;
-> +		*(.la_abs)
-> +		__la_abs_end = .;
-> +	}
-> +#endif
-> +
->   	.sdata : {
->   		*(.sdata)
->   	}
-> 
+> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
 
+Reviewed-by: Maíra Canal <mairacanal@riseup.net>
+
+Best Regards,
+- Maíra
+
+> ---
+>   drivers/gpu/drm/tests/drm_format_helper_test.c | 142 +++++++++++++++++++++++++
+>   1 file changed, 142 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/tests/drm_format_helper_test.c b/drivers/gpu/drm/tests/drm_format_helper_test.c
+> index b888f7334510..889287245b1e 100644
+> --- a/drivers/gpu/drm/tests/drm_format_helper_test.c
+> +++ b/drivers/gpu/drm/tests/drm_format_helper_test.c
+> @@ -81,6 +81,16 @@ struct fb_swab_result {
+>   	const u32 expected[TEST_BUF_SIZE];
+>   };
+>   
+> +struct convert_to_xbgr8888_result {
+> +	unsigned int dst_pitch;
+> +	const u32 expected[TEST_BUF_SIZE];
+> +};
+> +
+> +struct convert_to_abgr8888_result {
+> +	unsigned int dst_pitch;
+> +	const u32 expected[TEST_BUF_SIZE];
+> +};
+> +
+>   struct convert_xrgb8888_case {
+>   	const char *name;
+>   	unsigned int pitch;
+> @@ -98,6 +108,8 @@ struct convert_xrgb8888_case {
+>   	struct convert_to_argb2101010_result argb2101010_result;
+>   	struct convert_to_mono_result mono_result;
+>   	struct fb_swab_result swab_result;
+> +	struct convert_to_xbgr8888_result xbgr8888_result;
+> +	struct convert_to_abgr8888_result abgr8888_result;
+>   };
+>   
+>   static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
+> @@ -155,6 +167,14 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
+>   			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
+>   			.expected = { 0x0000FF01 },
+>   		},
+> +		.xbgr8888_result = {
+> +			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
+> +			.expected = { 0x010000FF },
+> +		},
+> +		.abgr8888_result = {
+> +			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
+> +			.expected = { 0xFF0000FF },
+> +		},
+>   	},
+>   	{
+>   		.name = "single_pixel_clip_rectangle",
+> @@ -213,6 +233,14 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
+>   			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
+>   			.expected = { 0x0000FF10 },
+>   		},
+> +		.xbgr8888_result = {
+> +			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
+> +			.expected = { 0x100000FF },
+> +		},
+> +		.abgr8888_result = {
+> +			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
+> +			.expected = { 0xFF0000FF },
+> +		},
+>   	},
+>   	{
+>   		/* Well known colors: White, black, red, green, blue, magenta,
+> @@ -343,6 +371,24 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
+>   				0x00FFFF77, 0xFFFF0088,
+>   			},
+>   		},
+> +		.xbgr8888_result = {
+> +			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
+> +			.expected = {
+> +				0x11FFFFFF, 0x22000000,
+> +				0x330000FF, 0x4400FF00,
+> +				0x55FF0000, 0x66FF00FF,
+> +				0x7700FFFF, 0x88FFFF00,
+> +			},
+> +		},
+> +		.abgr8888_result = {
+> +			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
+> +			.expected = {
+> +				0xFFFFFFFF, 0xFF000000,
+> +				0xFF0000FF, 0xFF00FF00,
+> +				0xFFFF0000, 0xFFFF00FF,
+> +				0xFF00FFFF, 0xFFFFFF00,
+> +			},
+> +		},
+>   	},
+>   	{
+>   		/* Randomly picked colors. Full buffer within the clip area. */
+> @@ -458,6 +504,22 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
+>   				0x0303A8C2, 0x73F06CD2, 0x9C440EA3, 0x00000000, 0x00000000,
+>   			},
+>   		},
+> +		.xbgr8888_result = {
+> +			.dst_pitch =  20,
+> +			.expected = {
+> +				0xA19C440E, 0xB1054D11, 0xC103F3A8, 0x00000000, 0x00000000,
+> +				0xD173F06C, 0xA29C440E, 0xB2054D11, 0x00000000, 0x00000000,
+> +				0xC20303A8, 0xD273F06C, 0xA39C440E, 0x00000000, 0x00000000,
+> +			},
+> +		},
+> +		.abgr8888_result = {
+> +			.dst_pitch =  20,
+> +			.expected = {
+> +				0xFF9C440E, 0xFF054D11, 0xFF03F3A8, 0x00000000, 0x00000000,
+> +				0xFF73F06C, 0xFF9C440E, 0xFF054D11, 0x00000000, 0x00000000,
+> +				0xFF0303A8, 0xFF73F06C, 0xFF9C440E, 0x00000000, 0x00000000,
+> +			},
+> +		},
+>   	},
+>   };
+>   
+> @@ -1082,6 +1144,84 @@ static void drm_test_fb_swab(struct kunit *test)
+>   	KUNIT_EXPECT_MEMEQ(test, buf, result->expected, dst_size);
+>   }
+>   
+> +static void drm_test_fb_xrgb8888_to_abgr8888(struct kunit *test)
+> +{
+> +	const struct convert_xrgb8888_case *params = test->param_value;
+> +	const struct convert_to_abgr8888_result *result = &params->abgr8888_result;
+> +	size_t dst_size;
+> +	u32 *buf = NULL;
+> +	__le32 *xrgb8888 = NULL;
+> +	struct iosys_map dst, src;
+> +
+> +	struct drm_framebuffer fb = {
+> +		.format = drm_format_info(DRM_FORMAT_XRGB8888),
+> +		.pitches = { params->pitch, 0, 0 },
+> +	};
+> +
+> +	dst_size = conversion_buf_size(DRM_FORMAT_XBGR8888, result->dst_pitch, &params->clip, 0);
+> +
+> +	KUNIT_ASSERT_GT(test, dst_size, 0);
+> +
+> +	buf = kunit_kzalloc(test, dst_size, GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf);
+> +	iosys_map_set_vaddr(&dst, buf);
+> +
+> +	xrgb8888 = cpubuf_to_le32(test, params->xrgb8888, TEST_BUF_SIZE);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, xrgb8888);
+> +	iosys_map_set_vaddr(&src, xrgb8888);
+> +
+> +	const unsigned int *dst_pitch = (result->dst_pitch == TEST_USE_DEFAULT_PITCH) ?
+> +		NULL : &result->dst_pitch;
+> +
+> +	int blit_result = 0;
+> +
+> +	blit_result = drm_fb_blit(&dst, dst_pitch, DRM_FORMAT_ABGR8888, &src, &fb, &params->clip);
+> +
+> +	buf = le32buf_to_cpu(test, (__force const __le32 *)buf, dst_size / sizeof(u32));
+> +
+> +	KUNIT_EXPECT_FALSE(test, blit_result);
+> +	KUNIT_EXPECT_MEMEQ(test, buf, result->expected, dst_size);
+> +}
+> +
+> +static void drm_test_fb_xrgb8888_to_xbgr8888(struct kunit *test)
+> +{
+> +	const struct convert_xrgb8888_case *params = test->param_value;
+> +	const struct convert_to_xbgr8888_result *result = &params->xbgr8888_result;
+> +	size_t dst_size;
+> +	u32 *buf = NULL;
+> +	__le32 *xrgb8888 = NULL;
+> +	struct iosys_map dst, src;
+> +
+> +	struct drm_framebuffer fb = {
+> +		.format = drm_format_info(DRM_FORMAT_XRGB8888),
+> +		.pitches = { params->pitch, 0, 0 },
+> +	};
+> +
+> +	dst_size = conversion_buf_size(DRM_FORMAT_XBGR8888, result->dst_pitch, &params->clip, 0);
+> +
+> +	KUNIT_ASSERT_GT(test, dst_size, 0);
+> +
+> +	buf = kunit_kzalloc(test, dst_size, GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf);
+> +	iosys_map_set_vaddr(&dst, buf);
+> +
+> +	xrgb8888 = cpubuf_to_le32(test, params->xrgb8888, TEST_BUF_SIZE);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, xrgb8888);
+> +	iosys_map_set_vaddr(&src, xrgb8888);
+> +
+> +	const unsigned int *dst_pitch = (result->dst_pitch == TEST_USE_DEFAULT_PITCH) ?
+> +		NULL : &result->dst_pitch;
+> +
+> +	int blit_result = 0;
+> +
+> +	blit_result = drm_fb_blit(&dst, dst_pitch, DRM_FORMAT_XBGR8888, &src, &fb, &params->clip);
+> +
+> +	buf = le32buf_to_cpu(test, (__force const __le32 *)buf, dst_size / sizeof(u32));
+> +
+> +	KUNIT_EXPECT_FALSE(test, blit_result);
+> +	KUNIT_EXPECT_MEMEQ(test, buf, result->expected, dst_size);
+> +}
+> +
+>   struct clip_offset_case {
+>   	const char *name;
+>   	unsigned int pitch;
+> @@ -1700,6 +1840,8 @@ static struct kunit_case drm_format_helper_test_cases[] = {
+>   	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_argb2101010, convert_xrgb8888_gen_params),
+>   	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_mono, convert_xrgb8888_gen_params),
+>   	KUNIT_CASE_PARAM(drm_test_fb_swab, convert_xrgb8888_gen_params),
+> +	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_xbgr8888, convert_xrgb8888_gen_params),
+> +	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_abgr8888, convert_xrgb8888_gen_params),
+>   	KUNIT_CASE_PARAM(drm_test_fb_clip_offset, clip_offset_gen_params),
+>   	KUNIT_CASE_PARAM(drm_test_fb_build_fourcc_list, fb_build_fourcc_list_gen_params),
+>   	KUNIT_CASE_PARAM(drm_test_fb_memcpy, fb_memcpy_gen_params),
+> 
