@@ -2,138 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2097E7980F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 05:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C467980F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 05:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233205AbjIHD2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 23:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51906 "EHLO
+        id S236045AbjIHDbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 23:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbjIHD2p (ORCPT
+        with ESMTP id S234233AbjIHDa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 23:28:45 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABFB1BDA
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 20:28:41 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-68bed2c786eso1409957b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 20:28:41 -0700 (PDT)
+        Thu, 7 Sep 2023 23:30:59 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2F91BDB
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 20:30:54 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-34ca860051fso6335825ab.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 20:30:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694143721; x=1694748521; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xyga/bR7KnO0AZcMSgesUn85OC4rXik7va8Pa71Uoy8=;
-        b=RDb3prWCyEm3INnTubf050KKcChO0XR3oaywa1MTuAnZfLDqjz+CVHu72S+vX90mKt
-         E2roMImkAokGSAKnjx0oukaDpWGXk2keiYlIZOqM03W0Cb0EBUZ7p+Ru4ieWKDTxxMOJ
-         Q54oFWVTzEyFbr9z3yx6hgoGiyC4AMhqkNDmBIGtM89Y67StAfExDxwQcNQpIFqUqbD1
-         YwUQ6gLQdxsApGfF88FwFNR+twkRZ5necGLlBioWSWUUF6FQsWfDtA4OMeoZLoO6wBv4
-         z4wa9hFpNq+7Dflkp9elfUWKQwxTacx7eble03h9ezKtt2/F/noxkYDPx53I7GHRE1mk
-         ECtQ==
+        d=joelfernandes.org; s=google; t=1694143853; x=1694748653; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tj245XZ8CauE5qKj7xtiqPrqhkxTcUOOShvoy4GdJho=;
+        b=fODtyEfz7lZlEIcuz8mH0qhV4FtCav2zhKatfJXUrBPO9XSbQsAyz+VujMr3H5VIfs
+         eZgopgfqiBPgbY+mOD4MWUB6hkJ8qt60mzHdmnSkwJUyx035mIO3LZAFL0IBQT56/d3P
+         wI+9Wu1pQEoCNCFZOsAIcdYX3zncCI3Gwt8ds=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694143721; x=1694748521;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Xyga/bR7KnO0AZcMSgesUn85OC4rXik7va8Pa71Uoy8=;
-        b=wVG+2ADCA+bTuisiZiDIWXOB6qCpgqXgZqAKfmNAbNtg5RwB7tT3ugGuFbqXHmSzfF
-         OlFwxs81mJ5DT031yw4+Iv7oXCfhiOp0/W1sI1lG7iEbmknIv3djN7QELqi9NeGXbj+V
-         gWesyYh1HHPDXg4Nsu1HM0Vo97MS4AuMKbte4GX9eB87WiJsJfxhak0IYY3So04yCm2x
-         1p/xo9yZu51NQMCWJBdfqLumtCBNWmVYpqkQC/aIaz8zSzNEtR8gzY2DlECVNMzmM4kW
-         wcyB86BCwDg1Cn79BHqopPMTWx/ECwXlpNPrVdrKzYObgfNY66y2wOfL09zeOK3UVqta
-         UtWg==
-X-Gm-Message-State: AOJu0Yw/2NBMWONUutuGP7vWM711tJEG5N3dya/ZZ7E6Zle3YuOJFFqs
-        IA5rqI3c3SBsOQ20bhMe6yDThw==
-X-Google-Smtp-Source: AGHT+IG3Fnhkv/ckb8v3efpkXk9m5bSeAiGH/2YqrB6IQjg0wzVL6kqNDRi12CQ/J7lIdOJcXpjfyA==
-X-Received: by 2002:a05:6a20:158d:b0:14c:e8d4:fb3e with SMTP id h13-20020a056a20158d00b0014ce8d4fb3emr1828439pzj.43.1694143720902;
-        Thu, 07 Sep 2023 20:28:40 -0700 (PDT)
-Received: from [10.84.158.67] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id jf3-20020a170903268300b001bf095dfb79sm453948plb.235.2023.09.07.20.28.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 20:28:40 -0700 (PDT)
-Message-ID: <dd8e6bfb-9d84-6a5d-94cb-4833f5d1943b@bytedance.com>
-Date:   Fri, 8 Sep 2023 11:28:34 +0800
+        d=1e100.net; s=20230601; t=1694143853; x=1694748653;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tj245XZ8CauE5qKj7xtiqPrqhkxTcUOOShvoy4GdJho=;
+        b=salO/5oFU+K9nOBJmIahix+PhPL0vmVm/aR6FDfWrrP0Gc46E8OMRxvKw5Q9Yr8x60
+         gasATcVAKtzRXvSzjIGIieNJf+3tgZC0lylFLgM/KMhbEIaCOuSrQOrEL5nI0IzE9/EV
+         wy5/y7SW/3aTWpUqfQ2Q4pqRH9Sh8loou1qxZ+ubwLTDi7jeML6LaizyP8WDETZqtmCS
+         9TsyEOO7jx1it1hpVhN96rbIj7uopnq4GN1rqJC+PUirknBiP8yjsNWaAsVIOW/fnsnK
+         huJxLqpRtPxIfgNTCD1Lfs2QS7XB1LLIq0O20MQX6cYshxH9biaMA/oGSZveonVvFYac
+         bcuQ==
+X-Gm-Message-State: AOJu0YxSbkLZzTzfeGOLQ3+PDc3tbFoX8SiHY1V01puhUzQ/8JEPh84d
+        9wnmvjmPX0tnJdW8L2vaGADA4D7x2n11uVxIyq0=
+X-Google-Smtp-Source: AGHT+IEnXbYBOb+I0Vl6c/EfAQx4znTnnjDDlmOdDXJfKFbcxhloccAyLlXtSpuGSo/9mYLyRbzO+A==
+X-Received: by 2002:a6b:a0d:0:b0:792:9406:a453 with SMTP id z13-20020a6b0a0d000000b007929406a453mr1755264ioi.14.1694143853353;
+        Thu, 07 Sep 2023 20:30:53 -0700 (PDT)
+Received: from joelboxx5.corp.google.com (74.120.171.34.bc.googleusercontent.com. [34.171.120.74])
+        by smtp.gmail.com with ESMTPSA id m12-20020a6bf30c000000b0079263d9b6a8sm245028ioh.11.2023.09.07.20.30.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 20:30:52 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH v2] rcu/torture: Improve badness extraction from console logs
+Date:   Fri,  8 Sep 2023 03:30:46 +0000
+Message-ID: <20230908033047.2537010-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [External] Re: Fwd: WARNING: CPU: 13 PID: 3837105 at
- kernel/sched/sched.h:1561 __cfsb_csd_unthrottle+0x149/0x160
-To:     Tim Chen <tim.c.chen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Benjamin Segall <bsegall@google.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Igor Raits <igor.raits@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Stable <stable@vger.kernel.org>
-References: <a5dd536d-041a-2ce9-f4b7-64d8d85c86dc@gmail.com>
- <xm26cyz4ibnb.fsf@google.com>
- <55e2861e-9722-08f8-2c49-966035ff4218@bytedance.com>
- <20230904222351.GC2568@noisy.programming.kicks-ass.net>
- <3544d5e3-3070-9ddc-fa6c-a05ed35dfd14@bytedance.com>
- <171e6a9435a33885a73b48762f86954e447c26c2.camel@linux.intel.com>
-From:   Hao Jia <jiahao.os@bytedance.com>
-In-Reply-To: <171e6a9435a33885a73b48762f86954e447c26c2.camel@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently console.log.diags contains an output like follows:
+[ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
+[ 2457.542385] Call Trace:
 
+This is not very useful and easier access to the call trace is desired.
+Improve the script by extracting more lines after each grep match.
+Provide a summary in the beginning like before, but also include details
+below. Limit the total number of issues to a maximum of 10. And limit
+the lines included after each issue to a maximum of 20.
 
-On 2023/9/8 Tim Chen wrote:
-> On Thu, 2023-09-07 at 16:59 +0800, Hao Jia wrote:
->>
->> On 2023/9/5 Peter Zijlstra wrote:
->>> On Thu, Aug 31, 2023 at 04:48:29PM +0800, Hao Jia wrote:
->>>
->>>> If I understand correctly, rq->clock_update_flags may be set to
->>>> RQCF_ACT_SKIP after __schedule() holds the rq lock, and sometimes the rq
->>>> lock may be released briefly in __schedule(), such as newidle_balance(). At
->>>> this time Other CPUs hold this rq lock, and then calling
->>>> rq_clock_start_loop_update() may trigger this warning.
->>>>
->>>> This warning check might be wrong. We need to add assert_clock_updated() to
->>>> check that the rq clock has been updated before calling
->>>> rq_clock_start_loop_update().
->>>>
->>>> Maybe some things can be like this?
->>>
->>> Urgh, aside from it being white space mangled, I think this is entirely
->>> going in the wrong direction.
->>>
->>> Leaking ACT_SKIP is dodgy as heck.. it's entirely too late to think
->>> clearly though, I'll have to try again tomorrow.
-> 
-> I am trying to understand why this is an ACT_SKIP leak.
-> Before call to __cfsb_csd_unthrottle(), is it possible someone
-> else lock the runqueue, set ACT_SKIP and release rq_lock?
-> And then that someone never update the rq_clock?
-> 
+With these changes the output becomes:
 
-Yes, we want to set rq->clock_update_flags to RQCF_ACT_SKIP to avoid 
-updating the rq clock multiple times in __cfsb_csd_unthrottle().
+Issues found:
+Line 6228: [ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
+Line 6245: [ 2457.542385] Call Trace:
 
-But now we find ACT_SKIP leak, so we cannot unconditionally set 
-rq->clock_update_flags to RQCF_ACT_SKIP in rq_clock_start_loop_update().
+Details of each issue:
+Issue 1 (line 6228):
+[ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
+[ 2457.326661] Modules linked in:
+[ 2457.334818] CPU: 2 PID: 13 Comm: rcu_tasks_trace Not tainted 5.15.128+ #381
+[ 2457.349782] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[ 2457.373309] RIP: 0010:rcu_tasks_trace_pregp_step+0x4a/0x50
+[...]
+[ 2457.421803] RSP: 0018:ffffa80fc0073e40 EFLAGS: 00010202
+[ 2457.431940] RAX: ffff8db91f580000 RBX: 000000000001b900 RCX: 0000000000000003
+[ 2457.443206] RDX: 0000000000000008 RSI: ffffffffac6bebd8 RDI: 0000000000000003
+[ 2457.454428] RBP: 0000000000000004 R08: 0000000000000001 R09: 0000000000000001
+[ 2457.465668] R10: 0000000000000000 R11: 00000000ffffffff R12: ffff8db902d87f40
+[ 2457.476971] R13: ffffffffac556620 R14: ffffffffac556630 R15: ffff8db9011a3200
+[ 2457.488251] FS:  0000000000000000(0000) GS:ffff8db91f500000(0000) knlGS:0000000000000000
+[ 2457.500834] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2457.509602] CR2: 0000000000000000 CR3: 0000000002cbc000 CR4: 00000000000006e0
+[ 2457.520378] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 2457.531440] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[ 2457.542385] Call Trace:
+[ 2457.546756]  <TASK>
+[ 2457.550349]  ? __warn+0x7b/0x100
+[ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+-------------------------------------
+Issue 2 (line 6245):
+[ 2457.542385] Call Trace:
+[ 2457.546756]  <TASK>
+[ 2457.550349]  ? __warn+0x7b/0x100
+[ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+[ 2457.574948]  ? report_bug+0x99/0xc0
+[ 2457.593824]  ? handle_bug+0x3c/0x70
+[ 2457.599534]  ? exc_invalid_op+0x13/0x60
+[ 2457.625729]  ? asm_exc_invalid_op+0x16/0x20
+[ 2457.632249]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+[ 2457.660010]  rcu_tasks_wait_gp+0x54/0x360
+[ 2457.677761]  ? _raw_spin_unlock_irqrestore+0x2b/0x60
+[ 2457.705658]  rcu_tasks_kthread+0x114/0x200
+[ 2457.712450]  ? wait_woken+0x70/0x70
+[ 2457.727283]  ? synchronize_rcu_tasks_rude+0x10/0x10
+[ 2457.746221]  kthread+0x130/0x160
+[ 2457.751487]  ? set_kthread_struct+0x40/0x40
+[ 2457.758178]  ret_from_fork+0x22/0x30
+[ 2457.763909]  </TASK>
+[ 2457.767546] irq event stamp: 29544441
+[ 2457.773344] hardirqs last  enabled at (29544451): [<ffffffffaace6cbd>] __up_console_sem+0x4d/0x60
+[ 2457.786967] hardirqs last disabled at (29544460): [<ffffffffaace6ca2>] __up_console_sem+0x32/0x60
 
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+v1->v2: Limit number of issues reported and include summary on the top.
 
->>
->> Hi Peter,
->>
->> Do you think this fix method is correct? Or should we go back to the
->> beginning and move update_rq_clock() from unthrottle_cfs_rq()?
->>
-> If anyone who locked the runqueue set ACT_SKIP also will update rq_clock,
-> I think your change is okay.  Otherwise rq_clock could be missing update.
-> 
-> Thanks.
-> 
-> Tim
+ .../rcutorture/bin/console-badness.sh         | 42 ++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/rcutorture/bin/console-badness.sh b/tools/testing/selftests/rcutorture/bin/console-badness.sh
+index aad51e7c0183..2612a4931723 100755
+--- a/tools/testing/selftests/rcutorture/bin/console-badness.sh
++++ b/tools/testing/selftests/rcutorture/bin/console-badness.sh
+@@ -9,10 +9,50 @@
+ # Copyright (C) 2020 Facebook, Inc.
+ #
+ # Authors: Paul E. McKenney <paulmck@kernel.org>
++INPUT_DATA=$(< /dev/stdin)
++MAX_NR_ISSUES=10
+ 
+-grep -E 'Badness|WARNING:|Warn|BUG|===========|BUG: KCSAN:|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
++# Get the line numbers for all the grep matches
++GREP_LINES="$(echo "$INPUT_DATA" |
++grep -n -E 'Badness|WARNING:|Warn|BUG|===========|BUG: KCSAN:|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
+ grep -v 'ODEBUG: ' |
+ grep -v 'This means that this is a DEBUG kernel and it is' |
+ grep -v 'Warning: unable to open an initial console' |
+ grep -v 'Warning: Failed to add ttynull console. No stdin, stdout, and stderr.*the init process!' |
+ grep -v 'NOHZ tick-stop error: Non-RCU local softirq work is pending, handler'
++)"
++
++# Exit if no grep matches
++if [ ! -n "$GREP_LINES" ]; then exit 0; fi
++
++# Print first MAX_NR_ISSUES grepped lines
++echo "Issues found:"
++issue_num=1
++while IFS= read -r line; do
++    # Extract the line number from the line
++    num=$(echo "$line" | awk -F: '{print $1}')
++    # Extract the rest of the line
++    line_rest=$(echo "$line" | cut -d: -f2-)
++    echo "Line $num: $line_rest"
++    if [ "$issue_num" -eq "$MAX_NR_ISSUES" ]; then break; fi
++    issue_num="$(($issue_num + 1))"
++done <<< "$GREP_LINES"
++echo ""
++
++# Print details of each issue
++#
++# Go through each line of GREP_LINES, extract the line number and then
++# print from that line and 20 lines after that line. Do that for each
++# grep match upto MAX_NR_ISSUES of them.
++echo "Details of each issue:"
++issue_num=1
++while IFS= read -r line; do
++    # Extract the line number from the line
++    num=$(echo "$line" | awk -F: '{print $1}')
++    # Print 20 lines after the matched line
++    echo "Issue $issue_num (line $num):"
++    echo "$INPUT_DATA" | sed -n "${num},$(($num + 20))p"
++    echo "-------------------------------------"
++    if [ "$issue_num" -eq "$MAX_NR_ISSUES" ]; then break; fi
++    issue_num="$(($issue_num + 1))"
++done <<< "$GREP_LINES"
+-- 
+2.42.0.283.g2d96d420d3-goog
+
