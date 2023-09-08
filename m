@@ -2,301 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B564C798296
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 08:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0598798292
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 08:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242136AbjIHGqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 02:46:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58432 "EHLO
+        id S242086AbjIHGpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 02:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232139AbjIHGp7 (ORCPT
+        with ESMTP id S236742AbjIHGpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 02:45:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B4510CF
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 23:45:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694155507;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JBgRp/Pi+WyYWoZu0MQSGlmMdRjI33tn8r0HqLW3EpI=;
-        b=Tp4AdZClga455UQZXYJQ7YxnNJgRZnfdO73DVkaNCjxgO5WcpVg/3rwzQl1wDlOZdv6iyD
-        E/CB2OEkIYUoNgaJpbu+bgvDjjwb9lthsySB7qIW6xTx1de9oKbTp1fnueVAsduQOQw/C9
-        QlovM2NxPfiMICIBYwHQQf7A9mI6eJg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-412-2-3KRVAuPnmAQ5AM-hkugQ-1; Fri, 08 Sep 2023 02:45:01 -0400
-X-MC-Unique: 2-3KRVAuPnmAQ5AM-hkugQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 8 Sep 2023 02:45:43 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A58A1BDD;
+        Thu,  7 Sep 2023 23:45:37 -0700 (PDT)
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by gandalf.ozlabs.org (Postfix) with ESMTP id 4Rhmnx5sZhz4xFD;
+        Fri,  8 Sep 2023 16:45:25 +1000 (AEST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E60DD8007CE;
-        Fri,  8 Sep 2023 06:45:00 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B49EFD47819;
-        Fri,  8 Sep 2023 06:44:59 +0000 (UTC)
-Date:   Fri, 8 Sep 2023 14:44:56 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     HAGIO =?utf-8?B?S0FaVUhJVE8o6JCp5bC+44CA5LiA5LuBKQ==?= 
-        <k-hagio-ab@nec.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "lijiang@redhat.com" <lijiang@redhat.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>
-Subject: Re: [PATCH v2 4/9] mm: vmalloc: Remove global vmap_area_root rb-tree
-Message-ID: <ZPrC6F76sBLtDgjJ@MiWiFi-R3L-srv>
-References: <20230829081142.3619-1-urezki@gmail.com>
- <20230829081142.3619-5-urezki@gmail.com>
- <ZPkyw0nAQSQWj5H1@MiWiFi-R3L-srv>
- <ZPmaYgsT5EdLVUyO@pc636>
- <ZPmesS66PTl+1Mdz@MiWiFi-R3L-srv>
- <8939ea67-ca27-1aa5-dfff-37d78ad59bb8@nec.com>
- <ZPqmZq29U4hrJPaG@MiWiFi-R3L-srv>
- <1d613b25-58d8-375b-6ef4-b27bc9b735e3@nec.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rhmnx1wnCz4xF9;
+        Fri,  8 Sep 2023 16:45:25 +1000 (AEST)
+From:   Michael Ellerman <michaele@au1.ibm.com>
+To:     Sachin Sant <sachinp@linux.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-mm@kvack.org,
+        liushixin2@huawei.com
+Cc:     open list <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org
+Subject: Re: Kernel crash during ltp(min_free_kbytes) test run
+ (zone_reclaimable_pages)
+In-Reply-To: <F00144DE-2A3F-4463-8203-45E0D57E313E@linux.ibm.com>
+References: <F00144DE-2A3F-4463-8203-45E0D57E313E@linux.ibm.com>
+Date:   Fri, 08 Sep 2023 16:45:19 +1000
+Message-ID: <878r9hcge8.fsf@mail.lhotse>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1d613b25-58d8-375b-6ef4-b27bc9b735e3@nec.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/08/23 at 05:01am, HAGIO KAZUHITO(萩尾 一仁) wrote:
-> On 2023/09/08 13:43, Baoquan He wrote:
-> > On 09/08/23 at 01:51am, HAGIO KAZUHITO(萩尾 一仁) wrote:
-> >> On 2023/09/07 18:58, Baoquan He wrote:
-> >>> On 09/07/23 at 11:39am, Uladzislau Rezki wrote:
-> >>>> On Thu, Sep 07, 2023 at 10:17:39AM +0800, Baoquan He wrote:
-> >>>>> Add Kazu and Lianbo to CC, and kexec mailing list
-> >>>>>
-> >>>>> On 08/29/23 at 10:11am, Uladzislau Rezki (Sony) wrote:
-> >>>>>> Store allocated objects in a separate nodes. A va->va_start
-> >>>>>> address is converted into a correct node where it should
-> >>>>>> be placed and resided. An addr_to_node() function is used
-> >>>>>> to do a proper address conversion to determine a node that
-> >>>>>> contains a VA.
-> >>>>>>
-> >>>>>> Such approach balances VAs across nodes as a result an access
-> >>>>>> becomes scalable. Number of nodes in a system depends on number
-> >>>>>> of CPUs divided by two. The density factor in this case is 1/2.
-> >>>>>>
-> >>>>>> Please note:
-> >>>>>>
-> >>>>>> 1. As of now allocated VAs are bound to a node-0. It means the
-> >>>>>>      patch does not give any difference comparing with a current
-> >>>>>>      behavior;
-> >>>>>>
-> >>>>>> 2. The global vmap_area_lock, vmap_area_root are removed as there
-> >>>>>>      is no need in it anymore. The vmap_area_list is still kept and
-> >>>>>>      is _empty_. It is exported for a kexec only;
-> >>>>>
-> >>>>> I haven't taken a test, while accessing all nodes' busy tree to get
-> >>>>> va of the lowest address could severely impact kcore reading efficiency
-> >>>>> on system with many vmap nodes. People doing live debugging via
-> >>>>> /proc/kcore will get a little surprise.
-> >>>>>
-> >>>>>
-> >>>>> Empty vmap_area_list will break makedumpfile utility, Crash utility
-> >>>>> could be impactd too. I checked makedumpfile code, it relys on
-> >>>>> vmap_area_list to deduce the vmalloc_start value.
-> >>>>>
-> >>>> It is left part and i hope i fix it in v3. The problem here is
-> >>>> we can not give an opportunity to access to vmap internals from
-> >>>> outside. This is just not correct, i.e. you are not allowed to
-> >>>> access the list directly.
-> >>>
-> >>> Right. Thanks for the fix in v3, that is a relief of makedumpfile and
-> >>> crash.
-> >>>
-> >>> Hi Kazu,
-> >>>
-> >>> Meanwhile, I am thinking if we should evaluate the necessity of
-> >>> vmap_area_list in makedumpfile and Crash. In makedumpfile, we just use
-> >>> vmap_area_list to deduce VMALLOC_START. Wondering if we can export
-> >>> VMALLOC_START directly. Surely, the lowest va->va_start in vmap_area_list
-> >>> is a tighter low boundary of vmalloc area and can reduce unnecessary
-> >>> scanning below the lowest va. Not sure if this is the reason people
-> >>> decided to export vmap_area_list.
-> >>
-> >> The kernel commit acd99dbf5402 introduced the original vmlist entry to
-> >> vmcoreinfo, but there is no information about why it did not export
-> >> VMALLOC_START directly.
-> >>
-> >> If VMALLOC_START is exported directly to vmcoreinfo, I think it would be
-> >> enough for makedumpfile.
-> > 
-> > Thanks for confirmation, Kazu.
-> > 
-> > Then, below draft patch should be enough to export VMALLOC_START
-> > instead, and remove vmap_area_list. 
-> 
-> also the following entries can be removed.
-> 
->          VMCOREINFO_OFFSET(vmap_area, va_start);
->          VMCOREINFO_OFFSET(vmap_area, list);
+Sachin Sant <sachinp@linux.ibm.com> writes:
+> While running LTP tests (specifically min_free_kbytes) on a Power server
+> booted with 6.5.0-next-20230906 following crash was encountered.
+>
+> [ 3952.404936] __vm_enough_memory: pid: 440285, comm: min_free_kbytes, not enough memory for the allocation
+> [ 3956.895519] __vm_enough_memory: pid: 440286, comm: min_free_kbytes, not enough memory for the allocation
+> [ 3961.296168] __vm_enough_memory: pid: 440287, comm: min_free_kbytes, not enough memory for the allocation
+> [ 3982.202651] Kernel attempted to read user page (28) - exploit attempt? (uid: 0)
+> [ 3982.202669] BUG: Kernel NULL pointer dereference on read at 0x00000028
+> [ 3982.202674] Faulting instruction address: 0xc000000000469660
+> [ 3982.202679] Oops: Kernel access of bad area, sig: 11 [#1]
+> [ 3982.202682] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=8192 NUMA pSeries
+> [ 3982.202688] Modules linked in: nfsv3 nfs_acl nfs lockd grace fscache netfs brd overlay exfat vfat fat btrfs blake2b_generic xor raid6_pq zstd_compress xfs loop sctp ip6_udp_tunnel udp_tunnel dm_mod nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 bonding rfkill tls ip_set nf_tables libcrc32c nfnetlink sunrpc pseries_rng vmx_crypto ext4 mbcache jbd2 sd_mod t10_pi crc64_rocksoft crc64 sg ibmvscsi ibmveth scsi_transport_srp fuse [last unloaded: init_module(O)]
+> [ 3982.202756] CPU: 18 PID: 440288 Comm: min_free_kbytes Tainted: G O 6.5.0-next-20230906 #1
+> [ 3982.202762] Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 0xf000006 of:IBM,FW1030.20 (NH1030_058) hv:phyp pSeries
+> [ 3982.202767] NIP: c000000000469660 LR: c0000000004694a8 CTR: 0000000000000000
+> [ 3982.202771] REGS: c00000001d6af410 TRAP: 0300 Tainted: G O (6.5.0-next-20230906)
+> [ 3982.202776] MSR: 8000000000009033 <SF,EE,ME,IR,DR,RI,LE> CR: 24402444 XER: 00000000
+> [ 3982.202787] CFAR: c0000000004694fc DAR: 0000000000000028 DSISR: 40000000 IRQMASK: 0 
+> [ 3982.202787] GPR00: c0000000004696b8 c00000001d6af6b0 c000000001451100 0000000000000080 
+> [ 3982.202787] GPR04: 0000000000000080 0000000000000081 0000000000000020 0000000000000000 
+> [ 3982.202787] GPR08: 0000000000000080 00000000000048d9 0000000000000000 00000000000014de 
+> [ 3982.202787] GPR12: 0000000000008000 c0000013ffab5300 c000000002f27238 c000000002c9d4d8 
+> [ 3982.202787] GPR16: 0000000000000000 0000000000000000 c000000006924d40 c000000002d174f8 
+> [ 3982.202787] GPR20: c000000002d17500 0000000000000002 60000000000000e0 00000000000008c0 
+> [ 3982.202787] GPR24: 0000000000000000 0000000000000000 0000000000000000 c000000002c9a7e8 
+> [ 3982.202787] GPR28: c000000002c9be10 c0000013ff1d1500 0000000000000488 0000000000000950 
+> [ 3982.202839] NIP [c000000000469660] zone_reclaimable_pages+0x2a0/0x2c0
+> [ 3982.202847] LR [c0000000004694a8] zone_reclaimable_pages+0xe8/0x2c0
+> [ 3982.202852] Call Trace:
+> [ 3982.202854] [c00000001d6af6b0] [5deadbeef0000122] 0x5deadbeef0000122 (unreliable)
+> [ 3982.202861] [c00000001d6af710] [c0000000004696b8] allow_direct_reclaim.part.72+0x38/0x190
+> [ 3982.202867] [c00000001d6af760] [c000000000469990] throttle_direct_reclaim+0x180/0x400
+> [ 3982.202873] [c00000001d6af7e0] [c00000000046de88] try_to_free_pages+0xd8/0x2a0
+> [ 3982.202879] [c00000001d6af8a0] [c0000000004e7370] __alloc_pages_slowpath.constprop.92+0x490/0x1000
+> [ 3982.202886] [c00000001d6afa50] [c0000000004e822c] __alloc_pages+0x34c/0x3d0
+> [ 3982.202893] [c00000001d6afad0] [c0000000004e8ce4] __folio_alloc+0x34/0x90
+> [ 3982.202898] [c00000001d6afb00] [c00000000051ba50] vma_alloc_folio+0xe0/0x460
+> [ 3982.202905] [c00000001d6afbc0] [c0000000004af108] do_pte_missing+0x2a8/0xca0
+> [ 3982.202912] [c00000001d6afc10] [c0000000004b3590] __handle_mm_fault+0x3f0/0x1060
+> [ 3982.202917] [c00000001d6afd20] [c0000000004b43c4] handle_mm_fault+0x1c4/0x330
+> [ 3982.202923] [c00000001d6afd70] [c000000000092a14] ___do_page_fault+0x2d4/0xaa0
+> [ 3982.202930] [c00000001d6afe20] [c0000000000934d0] do_page_fault+0xa0/0x2a0
+> [ 3982.202936] [c00000001d6afe50] [c000000000008be0] data_access_common_virt+0x210/0x220
+> [ 3982.202943] --- interrupt: 300 at 0x7fffb3cc6360
+> [ 3982.202946] NIP: 00007fffb3cc6360 LR: 0000000010005644 CTR: 0000000000001200
+> [ 3982.202950] REGS: c00000001d6afe80 TRAP: 0300 Tainted: G O (6.5.0-next-20230906)
+> [ 3982.202955] MSR: 800000000200d033 <SF,VEC,EE,PR,ME,IR,DR,RI,LE> CR: 44002444 XER: 00000000
+> [ 3982.202966] CFAR: 00007fffb3cc6384 DAR: 00007fea3bc70000 DSISR: 42000000 IRQMASK: 0 
+> [ 3982.202966] GPR00: 0000000000002000 00007fffd0497ae0 0000000010057f00 00007fea3bc00000 
+> [ 3982.202966] GPR04: 0000000000000001 0000000000100000 00007fea3bc70000 0000000000000000 
+> [ 3982.202966] GPR08: 1000000000000000 00007fea3bc00000 0000000000000000 0000000000000000 
+> [ 3982.202966] GPR12: 00007fffb3cc62a0 00007fffb410b080 0000000000000000 0000000000000000 
+> [ 3982.202966] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
+> [ 3982.202966] GPR20: 000000001002c260 000000001002c208 cccccccccccccccd a3d70a3d70a3d70b 
+> [ 3982.202966] GPR24: 000000001002c2d0 000000001002c238 00007fffb3e01888 000000001002c260 
+> [ 3982.202966] GPR28: 0000000000000000 000000001002c1f0 000000001002c218 0000000000000000 
+> [ 3982.203016] NIP [00007fffb3cc6360] 0x7fffb3cc6360
+> [ 3982.203020] LR [0000000010005644] 0x10005644
+> [ 3982.203023] --- interrupt: 300
+> [ 3982.203026] Code: eb21ffc8 eb81ffe0 eba1ffe8 ebc1fff0 7fffd214 eb41ffd0 7c0803a6 7fe3fb78 ebe1fff8 4e800020 60000000 60000000 <a12a0028> 3900ffff 7909782c b12a0028 
+> [ 3982.203044] ---[ end trace 0000000000000000 ]---
+> [ 3982.299095] pstore: backend (nvram) writing error (-1)
+> [ 3982.299105] 
+> [ 3983.299108] Kernel panic - not syncing: Fatal exception
+> [ 3983.564309] Rebooting in 10 seconds..
+>
+> Git bisect point to the following patch
+>
+> commit 92039ae85e8d018e82b9ba2597ca22e9851447fe
+>     mm: vmscan: try to reclaim swapcache pages if no swap space
 
-Right, they are useless now. I updated to remove them in below patch.
+Looks to be a direct NULL pointer deref, because
+can_reclaim_anon_pages() is passed sc = NULL:
 
-From a867fada34fd9e96528fcc5e72ae50b3b5685015 Mon Sep 17 00:00:00 2001
-From: Baoquan He <bhe@redhat.com>
-Date: Fri, 8 Sep 2023 11:53:22 +0800
-Subject: [PATCH] mm/vmalloc: remove vmap_area_list
-Content-type: text/plain
 
-Earlier, vmap_area_list is exported to vmcoreinfo so that makedumpfile
-get the base address of vmalloc area. Now, vmap_area_list is empty, so
-export VMALLOC_START to vmcoreinfo instead, and remove vmap_area_list.
+unsigned long zone_reclaimable_pages(struct zone *zone)
+{
+	unsigned long nr;
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
----
- Documentation/admin-guide/kdump/vmcoreinfo.rst | 8 ++++----
- arch/arm64/kernel/crash_core.c                 | 1 -
- arch/riscv/kernel/crash_core.c                 | 1 -
- include/linux/vmalloc.h                        | 1 -
- kernel/crash_core.c                            | 4 +---
- kernel/kallsyms_selftest.c                     | 1 -
- mm/nommu.c                                     | 2 --
- mm/vmalloc.c                                   | 3 +--
- 8 files changed, 6 insertions(+), 15 deletions(-)
+	nr = zone_page_state_snapshot(zone, NR_ZONE_INACTIVE_FILE) +
+		zone_page_state_snapshot(zone, NR_ZONE_ACTIVE_FILE);
+	if (can_reclaim_anon_pages(NULL, zone_to_nid(zone), NULL))
+                                                            ^^^^
 
-diff --git a/Documentation/admin-guide/kdump/vmcoreinfo.rst b/Documentation/admin-guide/kdump/vmcoreinfo.rst
-index 599e8d3bcbc3..c11bd4b1ceb1 100644
---- a/Documentation/admin-guide/kdump/vmcoreinfo.rst
-+++ b/Documentation/admin-guide/kdump/vmcoreinfo.rst
-@@ -65,11 +65,11 @@ Defines the beginning of the text section. In general, _stext indicates
- the kernel start address. Used to convert a virtual address from the
- direct kernel map to a physical address.
- 
--vmap_area_list
----------------
-+VMALLOC_START
-+-------------
- 
--Stores the virtual area list. makedumpfile gets the vmalloc start value
--from this variable and its value is necessary for vmalloc translation.
-+Stores the base address of vmalloc area. makedumpfile gets this value
-+since is necessary for vmalloc translation.
- 
- mem_map
- -------
-diff --git a/arch/arm64/kernel/crash_core.c b/arch/arm64/kernel/crash_core.c
-index 66cde752cd74..2a24199a9b81 100644
---- a/arch/arm64/kernel/crash_core.c
-+++ b/arch/arm64/kernel/crash_core.c
-@@ -23,7 +23,6 @@ void arch_crash_save_vmcoreinfo(void)
- 	/* Please note VMCOREINFO_NUMBER() uses "%d", not "%x" */
- 	vmcoreinfo_append_str("NUMBER(MODULES_VADDR)=0x%lx\n", MODULES_VADDR);
- 	vmcoreinfo_append_str("NUMBER(MODULES_END)=0x%lx\n", MODULES_END);
--	vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", VMALLOC_START);
- 	vmcoreinfo_append_str("NUMBER(VMALLOC_END)=0x%lx\n", VMALLOC_END);
- 	vmcoreinfo_append_str("NUMBER(VMEMMAP_START)=0x%lx\n", VMEMMAP_START);
- 	vmcoreinfo_append_str("NUMBER(VMEMMAP_END)=0x%lx\n", VMEMMAP_END);
-diff --git a/arch/riscv/kernel/crash_core.c b/arch/riscv/kernel/crash_core.c
-index 55f1d7856b54..5c39cedd2c5c 100644
---- a/arch/riscv/kernel/crash_core.c
-+++ b/arch/riscv/kernel/crash_core.c
-@@ -9,7 +9,6 @@ void arch_crash_save_vmcoreinfo(void)
- 	VMCOREINFO_NUMBER(phys_ram_base);
- 
- 	vmcoreinfo_append_str("NUMBER(PAGE_OFFSET)=0x%lx\n", PAGE_OFFSET);
--	vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", VMALLOC_START);
- 	vmcoreinfo_append_str("NUMBER(VMALLOC_END)=0x%lx\n", VMALLOC_END);
- 	vmcoreinfo_append_str("NUMBER(VMEMMAP_START)=0x%lx\n", VMEMMAP_START);
- 	vmcoreinfo_append_str("NUMBER(VMEMMAP_END)=0x%lx\n", VMEMMAP_END);
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index c720be70c8dd..91810b4e9510 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -253,7 +253,6 @@ extern long vread_iter(struct iov_iter *iter, const char *addr, size_t count);
- /*
-  *	Internals.  Don't use..
-  */
--extern struct list_head vmap_area_list;
- extern __init void vm_area_add_early(struct vm_struct *vm);
- extern __init void vm_area_register_early(struct vm_struct *vm, size_t align);
- 
-diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-index 03a7932cde0a..a9faaf7e5f7d 100644
---- a/kernel/crash_core.c
-+++ b/kernel/crash_core.c
-@@ -617,7 +617,7 @@ static int __init crash_save_vmcoreinfo_init(void)
- 	VMCOREINFO_SYMBOL_ARRAY(swapper_pg_dir);
- #endif
- 	VMCOREINFO_SYMBOL(_stext);
--	VMCOREINFO_SYMBOL(vmap_area_list);
-+	vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", VMALLOC_START);
- 
- #ifndef CONFIG_NUMA
- 	VMCOREINFO_SYMBOL(mem_map);
-@@ -658,8 +658,6 @@ static int __init crash_save_vmcoreinfo_init(void)
- 	VMCOREINFO_OFFSET(free_area, free_list);
- 	VMCOREINFO_OFFSET(list_head, next);
- 	VMCOREINFO_OFFSET(list_head, prev);
--	VMCOREINFO_OFFSET(vmap_area, va_start);
--	VMCOREINFO_OFFSET(vmap_area, list);
- 	VMCOREINFO_LENGTH(zone.free_area, MAX_ORDER + 1);
- 	log_buf_vmcoreinfo_setup();
- 	VMCOREINFO_LENGTH(free_area.free_list, MIGRATE_TYPES);
-diff --git a/kernel/kallsyms_selftest.c b/kernel/kallsyms_selftest.c
-index b4cac76ea5e9..8a689b4ff4f9 100644
---- a/kernel/kallsyms_selftest.c
-+++ b/kernel/kallsyms_selftest.c
-@@ -89,7 +89,6 @@ static struct test_item test_items[] = {
- 	ITEM_DATA(kallsyms_test_var_data_static),
- 	ITEM_DATA(kallsyms_test_var_bss),
- 	ITEM_DATA(kallsyms_test_var_data),
--	ITEM_DATA(vmap_area_list),
- #endif
- };
- 
-diff --git a/mm/nommu.c b/mm/nommu.c
-index 7f9e9e5a0e12..8c6686176ebd 100644
---- a/mm/nommu.c
-+++ b/mm/nommu.c
-@@ -131,8 +131,6 @@ int follow_pfn(struct vm_area_struct *vma, unsigned long address,
- }
- EXPORT_SYMBOL(follow_pfn);
- 
--LIST_HEAD(vmap_area_list);
--
- void vfree(const void *addr)
- {
- 	kfree(addr);
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 50d8239b82df..0a02633a9566 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -729,8 +729,7 @@ EXPORT_SYMBOL(vmalloc_to_pfn);
- 
- 
- static DEFINE_SPINLOCK(free_vmap_area_lock);
--/* Export for kexec only */
--LIST_HEAD(vmap_area_list);
-+
- static bool vmap_initialized __read_mostly;
- 
- /*
--- 
-2.41.0
+static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+					  int nid,
+					  struct scan_control *sc)
+{
+	if (memcg == NULL) {
+		/*
+		 * For non-memcg reclaim, is there
+		 * space in any swap device?
+		 */
+		if (get_nr_swap_pages() > 0)
+			return true;
+		/* Is there any swapcache pages to reclaim? */
+		if (total_swapcache_pages() > 0) {
+			sc->swapcache_only = 1;
 
+sc is NULL -> oops.
+
+cheers
