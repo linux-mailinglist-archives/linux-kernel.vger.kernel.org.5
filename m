@@ -2,44 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C90EB798DFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCB5798EEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240476AbjIHSZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:25:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44782 "EHLO
+        id S240057AbjIHTRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:17:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344387AbjIHSY4 (ORCPT
+        with ESMTP id S229523AbjIHTRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:24:56 -0400
+        Fri, 8 Sep 2023 15:17:19 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492533C2D;
-        Fri,  8 Sep 2023 11:21:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E25FC116B1;
-        Fri,  8 Sep 2023 18:21:19 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A66E0;
+        Fri,  8 Sep 2023 12:17:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56704C433CB;
+        Fri,  8 Sep 2023 18:21:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197279;
-        bh=qoVCP7StK1OiObZ8IMPMEzN6MkWQ3MTWnZZL+Bmwcnc=;
+        s=k20201202; t=1694197283;
+        bh=hD5njIcyf2lCixVvKUZXY/u9nTKEI62ubS16D3oz5Vc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ReqQWd4UZMVEn/WDcMMzDaDldFwgawOhbmPt8zI0S6vO663zElLZyLJDfla2k3/aH
-         WXHd3DLROifQmAcW8yUsSb/uJ+L5W8J6nr/y9hBweFThk32yxU3xuPwawClm4zRmiw
-         COMKiCGRj2zioa6jewkuzpveDA5+cEDMLCviWDqo2dLdBxFvS4Bl0RrO9CNMnMs+ET
-         jyHfjkdhzMM1LbyWNKy1WhD7c0giDlHI5252i1/CzsAuOuPjUc81B1D4rmWzew10ma
-         AYT7/N8PqBUocutdNX9RE6AhuoM2q9Bata578MeCWl853anPqYr7cyVHaDK2eFxFsm
-         EFRWFtVuLorPg==
+        b=PPGoH5QMpw6r8CPh9ENhzvKpqmuhG/8W0pQpd+074btcSy3dYD+V1CrscSXEim009
+         zLCTA3t5+N4jz7fbWqhkVJH2oSjQAYrh3xcMt6g+RGDD+0HKwzdjVfqUOAym+eALEC
+         BRxFpdS+Nc4/ZWfa3ckEho4wxwiApf+0GzNhdVcP2nYXQpzNTAJrZcEAMPV/Hml8OG
+         z6aZeka7dHwSiz0pD8saZbbh0qhFoh/s9cmInJ798oVNzyPklZkPXgM8KUoSiNCyn9
+         DoSvQmRfFSGmhx9ots2epM0O2IbuaEVNWHi0puz2qvmNdYDhIqpuLnMpyiMkqzm75F
+         U6m1nbwxWq9Tg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alexander Steffen <Alexander.Steffen@infineon.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, peterhuewe@gmx.de,
-        linux-integrity@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 4/7] tpm_tis: Resend command to recover from data transfer errors
-Date:   Fri,  8 Sep 2023 14:21:06 -0400
-Message-Id: <20230908182109.3461101-4-sashal@kernel.org>
+Cc:     "GONG, Ruiqi" <gongruiqi1@huawei.com>, GONG@vger.kernel.org,
+        Simon Horman <horms@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, chris.snook@gmail.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 5/7] alx: fix OOB-read compiler warning
+Date:   Fri,  8 Sep 2023 14:21:07 -0400
+Message-Id: <20230908182109.3461101-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908182109.3461101-1-sashal@kernel.org>
 References: <20230908182109.3461101-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.294
@@ -53,48 +56,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Steffen <Alexander.Steffen@infineon.com>
+From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
 
-[ Upstream commit 280db21e153d8810ce3b93640c63ae922bcb9e8e ]
+[ Upstream commit 3a198c95c95da10ad844cbeade2fe40bdf14c411 ]
 
-Similar to the transmission of TPM responses, also the transmission of TPM
-commands may become corrupted. Instead of aborting when detecting such
-issues, try resending the command again.
+The following message shows up when compiling with W=1:
 
-Signed-off-by: Alexander Steffen <Alexander.Steffen@infineon.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+In function ‘fortify_memcpy_chk’,
+    inlined from ‘alx_get_ethtool_stats’ at drivers/net/ethernet/atheros/alx/ethtool.c:297:2:
+./include/linux/fortify-string.h:592:4: error: call to ‘__read_overflow2_field’
+declared with attribute warning: detected read beyond size of field (2nd parameter);
+maybe use struct_group()? [-Werror=attribute-warning]
+  592 |    __read_overflow2_field(q_size_field, size);
+      |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In order to get alx stats altogether, alx_get_ethtool_stats() reads
+beyond hw->stats.rx_ok. Fix this warning by directly copying hw->stats,
+and refactor the unnecessarily complicated BUILD_BUG_ON btw.
+
+Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Link: https://lore.kernel.org/r/20230821013218.1614265-1-gongruiqi@huaweicloud.com
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/tpm/tpm_tis_core.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/atheros/alx/ethtool.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
-index 430a9eac67e19..d1869b9a2ffd3 100644
---- a/drivers/char/tpm/tpm_tis_core.c
-+++ b/drivers/char/tpm/tpm_tis_core.c
-@@ -425,10 +425,17 @@ static int tpm_tis_send_main(struct tpm_chip *chip, const u8 *buf, size_t len)
- 	int rc;
- 	u32 ordinal;
- 	unsigned long dur;
--
--	rc = tpm_tis_send_data(chip, buf, len);
--	if (rc < 0)
--		return rc;
-+	unsigned int try;
-+
-+	for (try = 0; try < TPM_RETRY; try++) {
-+		rc = tpm_tis_send_data(chip, buf, len);
-+		if (rc >= 0)
-+			/* Data transfer done successfully */
-+			break;
-+		else if (rc != -EIO)
-+			/* Data transfer failed, not recoverable */
-+			return rc;
-+	}
+diff --git a/drivers/net/ethernet/atheros/alx/ethtool.c b/drivers/net/ethernet/atheros/alx/ethtool.c
+index 2f4eabf652e80..51e5aa2c74b34 100644
+--- a/drivers/net/ethernet/atheros/alx/ethtool.c
++++ b/drivers/net/ethernet/atheros/alx/ethtool.c
+@@ -281,9 +281,8 @@ static void alx_get_ethtool_stats(struct net_device *netdev,
+ 	spin_lock(&alx->stats_lock);
  
- 	/* go and do it */
- 	rc = tpm_tis_write8(priv, TPM_STS(priv->locality), TPM_STS_GO);
+ 	alx_update_hw_stats(hw);
+-	BUILD_BUG_ON(sizeof(hw->stats) - offsetof(struct alx_hw_stats, rx_ok) <
+-		     ALX_NUM_STATS * sizeof(u64));
+-	memcpy(data, &hw->stats.rx_ok, ALX_NUM_STATS * sizeof(u64));
++	BUILD_BUG_ON(sizeof(hw->stats) != ALX_NUM_STATS * sizeof(u64));
++	memcpy(data, &hw->stats, sizeof(hw->stats));
+ 
+ 	spin_unlock(&alx->stats_lock);
+ }
 -- 
 2.40.1
 
