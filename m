@@ -2,288 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77910798876
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24ACA798883
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243750AbjIHOVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35566 "EHLO
+        id S243765AbjIHOWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232935AbjIHOVf (ORCPT
+        with ESMTP id S243774AbjIHOWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:21:35 -0400
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145CB1BEE
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:21:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=MF2zceLuFhGGeLdiSJkuoIjBOsmAXygPHChJYW8TspY=; b=KWgLE6ehESwJAH9XveQ8pSjWx3
-        yrXw9pphvt9wCY3U8vOyZRuTqf6NeAItMradqzkIYdFWaF1N0FGxZMqP41ZnjbpBkGcXQ8bL+sNrP
-        ayKH/oGXnKOiFJHgludyxTL0BlBNhedsClrpyOlejN6qTcjRLRVcpZMRoB/QOrn6zxpCIjp6lURUS
-        Go4tceDrXTAjEVIWjmgHmstftZxdOup9El2LuqVVWgpGf3BSP4+AhM+WRmFHIg2OU7TfkB7MIrKBk
-        3NDDLExrCVqeAG2gMjLR94gHjEO7hkZGbG863HkhBW0WpTr7Dsr2vwpnYt5rtir0evirRbSthIHqj
-        Ae7f13Pg==;
-Received: from [38.44.68.151] (helo=mail.igalia.com)
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-        id 1qecME-001P1W-Ak; Fri, 08 Sep 2023 16:21:13 +0200
-Date:   Fri, 8 Sep 2023 13:21:07 -0100
-From:   Melissa Wen <mwen@igalia.com>
-To:     Harry Wentland <harry.wentland@amd.com>
-Cc:     amd-gfx@lists.freedesktop.org,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
-        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        Joshua Ashton <joshua@froggi.es>,
-        Sebastian Wick <sebastian.wick@redhat.com>,
-        Xaver Hugl <xaver.hugl@gmail.com>,
-        Shashank Sharma <Shashank.Sharma@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 11/34] drm/amd/display: add plane shaper LUT and TF
- driver-specific properties
-Message-ID: <20230908142107.ihlfqp7kybbjddiq@mail.igalia.com>
-References: <20230810160314.48225-1-mwen@igalia.com>
- <20230810160314.48225-12-mwen@igalia.com>
- <26a6d3ed-472a-4c70-a6ce-29f3ea7c81f5@amd.com>
+        Fri, 8 Sep 2023 10:22:44 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B85B1FCD
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:22:40 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-64a5f9a165eso12367486d6.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 07:22:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1694182959; x=1694787759; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8DGIn2TrzhN1/7P30IYwkdw76l9rjdwVa0UFxDxOrEc=;
+        b=nMWf7dmS/hlq2sJfJQrkTSMoLw8C1muBUeCw8oMZJ/el5Av6a0c9xZJPv8YP4jicZ7
+         9QtXWxoC3h10nBW/q3pxPYv4jtzV11SPlJH8HuBE+lQ2Q0e5G5zA1aWB9uHSardh77/m
+         kph6wVdm7A/x7DuSPDASUsqBkP+/YopForbFZZHQjMrx64N4ajjnVMN00Br44YtoxlPn
+         ZsWJK7AM+TG9z0dBUJ5an8WU4LkgLKlyRFbmkKwp8rEDxy03hcWNyxVzy1T0CAOBPBmB
+         KvJ3TSukNBW68f4uenspmVvqSKSXknm/uF0dOdbaqBkAu6aE2D/ftDi18op5v57spS0i
+         H6bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694182959; x=1694787759;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8DGIn2TrzhN1/7P30IYwkdw76l9rjdwVa0UFxDxOrEc=;
+        b=VaWaKHEpe++qpwmumrlfJKd0WafSb0OmlgN7aollbixNLLXu2nqwUaO1ffrvt2jAi0
+         JffqWkK/TyjrHaFD6T31nIM25Yic5CYzgITxNvXKIDL69rGyAvC99Lx3ZmUDN0YAVUuy
+         XXArlLSaWn4vC8p7Z+pAyN9fpjQ1Sx4u9A5ky3AlvvJOe1C2DKrjmI9EewyGrX+FpvBn
+         jrh/VElW1k97Y7f+l7nkSCbH2URyl2ZKB9lgNhwrXr7q5qNr9MFaDLWNtDd6JM1TfECh
+         JSO2F6jOP4qhOTjFbyA58h+XsN2b+B4Tk7STll99HC9UpduuOHgigkSoTPgaqmpVb7wA
+         ijbQ==
+X-Gm-Message-State: AOJu0Yys0XftX4VP/ITmRXlNpfV1SIV9PCbiLpGGxLO83DmbpVCAxj1H
+        lyrqE5IOEZ8421yt9ccPkdcpFg==
+X-Google-Smtp-Source: AGHT+IF85r1wVh7xGySwFbtuZtJ4lf2+XyPaF89ogW0tYLg1HmLTHhPBPzOfd0FHJWABpcAO9mGqMA==
+X-Received: by 2002:a0c:cd11:0:b0:64f:72cc:4bca with SMTP id b17-20020a0ccd11000000b0064f72cc4bcamr2586320qvm.47.1694182959492;
+        Fri, 08 Sep 2023 07:22:39 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-134-41-202-196.dhcp-dynamic.fibreop.ns.bellaliant.net. [134.41.202.196])
+        by smtp.gmail.com with ESMTPSA id o3-20020a0ce403000000b00653589babfcsm731433qvl.132.2023.09.08.07.22.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Sep 2023 07:22:38 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qecNZ-001ISz-Lq;
+        Fri, 08 Sep 2023 11:22:37 -0300
+Date:   Fri, 8 Sep 2023 11:22:37 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+Cc:     linux-rdma@vger.kernel.org, leon@kernel.org, zyjzyj2000@gmail.com,
+        linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
+        yangx.jy@fujitsu.com, lizhijian@fujitsu.com, y-goto@fujitsu.com
+Subject: Re: [PATCH for-next v6 4/7] RDMA/rxe: Add page invalidation support
+Message-ID: <ZPsuLeuGAgpBoTjU@ziepe.ca>
+References: <cover.1694153251.git.matsuda-daisuke@fujitsu.com>
+ <1566fd3c63e4dac66717731e2c7a80039244e3af.1694153251.git.matsuda-daisuke@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <26a6d3ed-472a-4c70-a6ce-29f3ea7c81f5@amd.com>
+In-Reply-To: <1566fd3c63e4dac66717731e2c7a80039244e3af.1694153251.git.matsuda-daisuke@fujitsu.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/06, Harry Wentland wrote:
-> On 2023-08-10 12:02, Melissa Wen wrote:
-> > On AMD HW, 3D LUT always assumes a preceding shaper 1D LUT used for
-> > delinearizing and/or normalizing the color space before applying a 3D
-> > LUT. Add pre-defined transfer function to enable delinearizing content
-> > with or without shaper LUT, where AMD color module calculates the
-> > resulted shaper curve. We apply an inverse EOTF to go from linear values
-> > to encoded values. If we are already in a non-linear space and/or don't
-> > need to normalize values, we can bypass shaper LUT with a linear
-> > transfer function that is also the default TF value.
-> > 
+On Fri, Sep 08, 2023 at 03:26:45PM +0900, Daisuke Matsuda wrote:
+> On page invalidation, an MMU notifier callback is invoked to unmap DMA
+> addresses and update the driver page table(umem_odp->dma_list). It also
+> sets the corresponding entries in MR xarray to NULL to prevent any access.
+> The callback is registered when an ODP-enabled MR is created.
 > 
-> I think the color module will combine the TF and the custom 1D LUT
-> into the LUT that's actually programmed. We should spell out this
-> behavior in the comments below and in the patch description as it's
-> important for a userspace application to know.
+> Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+> ---
+>  drivers/infiniband/sw/rxe/Makefile  |  2 +
+>  drivers/infiniband/sw/rxe/rxe_odp.c | 64 +++++++++++++++++++++++++++++
+>  2 files changed, 66 insertions(+)
+>  create mode 100644 drivers/infiniband/sw/rxe/rxe_odp.c
 > 
-> The same applies to all other TF+LUT blocks.
+> diff --git a/drivers/infiniband/sw/rxe/Makefile b/drivers/infiniband/sw/rxe/Makefile
+> index 5395a581f4bb..93134f1d1d0c 100644
+> --- a/drivers/infiniband/sw/rxe/Makefile
+> +++ b/drivers/infiniband/sw/rxe/Makefile
+> @@ -23,3 +23,5 @@ rdma_rxe-y := \
+>  	rxe_task.o \
+>  	rxe_net.o \
+>  	rxe_hw_counters.o
+> +
+> +rdma_rxe-$(CONFIG_INFINIBAND_ON_DEMAND_PAGING) += rxe_odp.o
+> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
+> new file mode 100644
+> index 000000000000..834fb1a84800
+> --- /dev/null
+> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+> @@ -0,0 +1,64 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+> +/*
+> + * Copyright (c) 2022-2023 Fujitsu Ltd. All rights reserved.
+> + */
+> +
+> +#include <linux/hmm.h>
+> +
+> +#include <rdma/ib_umem_odp.h>
+> +
+> +#include "rxe.h"
+> +
+> +static void rxe_mr_unset_xarray(struct rxe_mr *mr, unsigned long start,
+> +				unsigned long end)
+> +{
+> +	unsigned long lower = rxe_mr_iova_to_index(mr, start);
+> +	unsigned long upper = rxe_mr_iova_to_index(mr, end - 1);
+> +	void *entry;
+> +
+> +	XA_STATE(xas, &mr->page_list, lower);
+> +
+> +	/* make elements in xarray NULL */
+> +	xas_lock(&xas);
+> +	while (true) {
+> +		xas_store(&xas, NULL);
+> +
+> +		entry = xas_next(&xas);
 
-yeah, you're right, I'll describe it better.
+I think this should just be
 
-Thanks,
+   xas_for_each(xas, entry, upper)
+         xas_store(&xas, NULL)
 
-Melissa
+> +		if (xas_retry(&xas, entry) || (xas.xa_index <= upper))
+> +			continue;
 
-> 
-> Harry
-> 
-> > v2:
-> > - squash commits for shaper LUT and shaper TF
-> > - define inverse EOTF as supported shaper TFs
-> > 
-> > Signed-off-by: Melissa Wen <mwen@igalia.com>
-> > ---
-> >  drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h      | 16 ++++++++++
-> >  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h | 11 +++++++
-> >  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 29 +++++++++++++++++
-> >  .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   | 32 +++++++++++++++++++
-> >  4 files changed, 88 insertions(+)
-> > 
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
-> > index 730a88236501..4fb164204ee6 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
-> > @@ -363,6 +363,22 @@ struct amdgpu_mode_info {
-> >  	 * @plane_hdr_mult_property:
-> >  	 */
-> >  	struct drm_property *plane_hdr_mult_property;
-> > +	/**
-> > +	 * @shaper_lut_property: Plane property to set pre-blending shaper LUT
-> > +	 * that converts color content before 3D LUT.
-> > +	 */
-> > +	struct drm_property *plane_shaper_lut_property;
-> > +	/**
-> > +	 * @shaper_lut_size_property: Plane property for the size of
-> > +	 * pre-blending shaper LUT as supported by the driver (read-only).
-> > +	 */
-> > +	struct drm_property *plane_shaper_lut_size_property;
-> > +	/**
-> > +	 * @plane_shaper_tf_property: Plane property to set a predefined
-> > +	 * transfer function for pre-blending shaper (before applying 3D LUT)
-> > +	 * with or without LUT.
-> > +	 */
-> > +	struct drm_property *plane_shaper_tf_property;
-> >  	/**
-> >  	 * @plane_lut3d_property: Plane property for gamma correction using a
-> >  	 * 3D LUT (pre-blending).
-> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-> > index deea90212e31..6b6c2980f0af 100644
-> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-> > @@ -769,6 +769,17 @@ struct dm_plane_state {
-> >  	 * S31.32 sign-magnitude.
-> >  	 */
-> >  	__u64 hdr_mult;
-> > +	/**
-> > +	 * @shaper_lut: shaper lookup table blob. The blob (if not NULL) is an
-> > +	 * array of &struct drm_color_lut.
-> > +	 */
-> > +	struct drm_property_blob *shaper_lut;
-> > +	/**
-> > +	 * @shaper_tf:
-> > +	 *
-> > +	 * Predefined transfer function to delinearize color space.
-> > +	 */
-> > +	enum amdgpu_transfer_function shaper_tf;
-> >  	/**
-> >  	 * @lut3d: 3D lookup table blob. The blob (if not NULL) is an array of
-> >  	 * &struct drm_color_lut.
-> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> > index 7e6d4df99a0c..fbcee717bf0a 100644
-> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> > @@ -151,6 +151,14 @@ static const u32 amdgpu_eotf =
-> >  	BIT(AMDGPU_TRANSFER_FUNCTION_GAMMA24_EOTF) |
-> >  	BIT(AMDGPU_TRANSFER_FUNCTION_GAMMA26_EOTF);
-> >  
-> > +static const u32 amdgpu_inv_eotf =
-> > +	BIT(AMDGPU_TRANSFER_FUNCTION_SRGB_INV_EOTF) |
-> > +	BIT(AMDGPU_TRANSFER_FUNCTION_BT709_INV_EOTF) |
-> > +	BIT(AMDGPU_TRANSFER_FUNCTION_PQ_INV_EOTF) |
-> > +	BIT(AMDGPU_TRANSFER_FUNCTION_GAMMA22_INV_EOTF) |
-> > +	BIT(AMDGPU_TRANSFER_FUNCTION_GAMMA24_INV_EOTF) |
-> > +	BIT(AMDGPU_TRANSFER_FUNCTION_GAMMA26_INV_EOTF);
-> > +
-> >  static struct drm_property *
-> >  amdgpu_create_tf_property(struct drm_device *dev,
-> >  			  const char *name,
-> > @@ -209,6 +217,27 @@ amdgpu_dm_create_color_properties(struct amdgpu_device *adev)
-> >  		return -ENOMEM;
-> >  	adev->mode_info.plane_hdr_mult_property = prop;
-> >  
-> > +	prop = drm_property_create(adev_to_drm(adev),
-> > +				   DRM_MODE_PROP_BLOB,
-> > +				   "AMD_PLANE_SHAPER_LUT", 0);
-> > +	if (!prop)
-> > +		return -ENOMEM;
-> > +	adev->mode_info.plane_shaper_lut_property = prop;
-> > +
-> > +	prop = drm_property_create_range(adev_to_drm(adev),
-> > +					 DRM_MODE_PROP_IMMUTABLE,
-> > +					 "AMD_PLANE_SHAPER_LUT_SIZE", 0, UINT_MAX);
-> > +	if (!prop)
-> > +		return -ENOMEM;
-> > +	adev->mode_info.plane_shaper_lut_size_property = prop;
-> > +
-> > +	prop = amdgpu_create_tf_property(adev_to_drm(adev),
-> > +					 "AMD_PLANE_SHAPER_TF",
-> > +					 amdgpu_inv_eotf);
-> > +	if (!prop)
-> > +		return -ENOMEM;
-> > +	adev->mode_info.plane_shaper_tf_property = prop;
-> > +
-> >  	prop = drm_property_create(adev_to_drm(adev),
-> >  				   DRM_MODE_PROP_BLOB,
-> >  				   "AMD_PLANE_LUT3D", 0);
-> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-> > index 882391f7add6..8d6ddf19bb87 100644
-> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-> > @@ -1332,6 +1332,7 @@ static void dm_drm_plane_reset(struct drm_plane *plane)
-> >  	__drm_atomic_helper_plane_reset(plane, &amdgpu_state->base);
-> >  	amdgpu_state->degamma_tf = AMDGPU_TRANSFER_FUNCTION_DEFAULT;
-> >  	amdgpu_state->hdr_mult = AMDGPU_HDR_MULT_DEFAULT;
-> > +	amdgpu_state->shaper_tf = AMDGPU_TRANSFER_FUNCTION_DEFAULT;
-> >  }
-> >  
-> >  static struct drm_plane_state *
-> > @@ -1353,11 +1354,14 @@ dm_drm_plane_duplicate_state(struct drm_plane *plane)
-> >  
-> >  	if (dm_plane_state->degamma_lut)
-> >  		drm_property_blob_get(dm_plane_state->degamma_lut);
-> > +	if (dm_plane_state->shaper_lut)
-> > +		drm_property_blob_get(dm_plane_state->shaper_lut);
-> >  	if (dm_plane_state->lut3d)
-> >  		drm_property_blob_get(dm_plane_state->lut3d);
-> >  
-> >  	dm_plane_state->degamma_tf = old_dm_plane_state->degamma_tf;
-> >  	dm_plane_state->hdr_mult = old_dm_plane_state->hdr_mult;
-> > +	dm_plane_state->shaper_tf = old_dm_plane_state->shaper_tf;
-> >  
-> >  	return &dm_plane_state->base;
-> >  }
-> > @@ -1430,6 +1434,8 @@ static void dm_drm_plane_destroy_state(struct drm_plane *plane,
-> >  		drm_property_blob_put(dm_plane_state->degamma_lut);
-> >  	if (dm_plane_state->lut3d)
-> >  		drm_property_blob_put(dm_plane_state->lut3d);
-> > +	if (dm_plane_state->shaper_lut)
-> > +		drm_property_blob_put(dm_plane_state->shaper_lut);
-> >  
-> >  	if (dm_plane_state->dc_state)
-> >  		dc_plane_state_release(dm_plane_state->dc_state);
-> > @@ -1462,6 +1468,14 @@ dm_atomic_plane_attach_color_mgmt_properties(struct amdgpu_display_manager *dm,
-> >  				   AMDGPU_HDR_MULT_DEFAULT);
-> >  
-> >  	if (dpp_color_caps.hw_3d_lut) {
-> > +		drm_object_attach_property(&plane->base,
-> > +					   mode_info.plane_shaper_lut_property, 0);
-> > +		drm_object_attach_property(&plane->base,
-> > +					   mode_info.plane_shaper_lut_size_property,
-> > +					   MAX_COLOR_LUT_ENTRIES);
-> > +		drm_object_attach_property(&plane->base,
-> > +					   mode_info.plane_shaper_tf_property,
-> > +					   AMDGPU_TRANSFER_FUNCTION_DEFAULT);
-> >  		drm_object_attach_property(&plane->base,
-> >  					   mode_info.plane_lut3d_property, 0);
-> >  		drm_object_attach_property(&plane->base,
-> > @@ -1499,6 +1513,19 @@ dm_atomic_plane_set_property(struct drm_plane *plane,
-> >  			dm_plane_state->hdr_mult = val;
-> >  			dm_plane_state->base.color_mgmt_changed = 1;
-> >  		}
-> > +	} else if (property == adev->mode_info.plane_shaper_lut_property) {
-> > +		ret = drm_property_replace_blob_from_id(plane->dev,
-> > +							&dm_plane_state->shaper_lut,
-> > +							val, -1,
-> > +							sizeof(struct drm_color_lut),
-> > +							&replaced);
-> > +		dm_plane_state->base.color_mgmt_changed |= replaced;
-> > +		return ret;
-> > +	} else if (property == adev->mode_info.plane_shaper_tf_property) {
-> > +		if (dm_plane_state->shaper_tf != val) {
-> > +			dm_plane_state->shaper_tf = val;
-> > +			dm_plane_state->base.color_mgmt_changed = 1;
-> > +		}
-> >  	} else if (property == adev->mode_info.plane_lut3d_property) {
-> >  		ret = drm_property_replace_blob_from_id(plane->dev,
-> >  							&dm_plane_state->lut3d,
-> > @@ -1534,6 +1561,11 @@ dm_atomic_plane_get_property(struct drm_plane *plane,
-> >  		*val = dm_plane_state->degamma_tf;
-> >  	} else if (property == adev->mode_info.plane_hdr_mult_property) {
-> >  		*val = dm_plane_state->hdr_mult;
-> > +	} else 	if (property == adev->mode_info.plane_shaper_lut_property) {
-> > +		*val = (dm_plane_state->shaper_lut) ?
-> > +			dm_plane_state->shaper_lut->base.id : 0;
-> > +	} else if (property == adev->mode_info.plane_shaper_tf_property) {
-> > +		*val = dm_plane_state->shaper_tf;
-> >  	} else 	if (property == adev->mode_info.plane_lut3d_property) {
-> >  		*val = (dm_plane_state->lut3d) ?
-> >  			dm_plane_state->lut3d->base.id : 0;
-> 
+xa_erase doesn't deal with retry entries, why do you think this does?
+
+IIRC retry entries cannot be seen under the spinlock
+
+Jason
