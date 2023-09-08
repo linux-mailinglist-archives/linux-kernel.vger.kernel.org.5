@@ -2,143 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 724F4798A28
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88F7798A2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244774AbjIHPn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 11:43:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
+        id S244761AbjIHPoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 11:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237259AbjIHPny (ORCPT
+        with ESMTP id S237259AbjIHPoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 11:43:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA01813E;
-        Fri,  8 Sep 2023 08:43:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87F46C433C9;
-        Fri,  8 Sep 2023 15:43:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694187830;
-        bh=nvtvLaa0FoHyowq+s+FNMuvJVWJKzmwnQCxC99FMXow=;
-        h=From:To:Cc:Subject:Date:From;
-        b=taR3O9MNcKUhRi9Ue07COaSLrdRP7Bwc2UjsV2YdJabPs79M5xh0VL8nlBps3QU+g
-         byQzj9RXhIGd7LS4AF0A8W7mTY6sMDL8YCg1wLN9MYueIVFiAwbI77YWVX1ZpEJDYP
-         r/wC3TZyyer76nRla5GLZxG7KQLbvZVwkkr/bPsx7oUlldrV5JXeqsS46WIuzCtFsE
-         csbmxrSLSWULw2SJcgPdfU035pVRDa9g1vx2DTpGh6eHn80DXo+0xm7+mMFEde8+Fv
-         icCwd8P9HyqCBKQhEUme310+4zqQ+PMeyyhfIUb79PkpGCV1e5ppOBvtqPoizZUIz5
-         4JyW3XdFN4Ivg==
-From:   guoren@kernel.org
-To:     guoren@kernel.org, David.Laight@ACULAB.COM, will@kernel.org,
-        peterz@infradead.org, mingo@redhat.com, longman@redhat.com,
-        maobibo@loongson.cn, mjguzik@gmail.com
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH V3] asm-generic: ticket-lock: Optimize arch_spin_value_unlocked
-Date:   Fri,  8 Sep 2023 11:43:39 -0400
-Message-Id: <20230908154339.3250567-1-guoren@kernel.org>
-X-Mailer: git-send-email 2.36.1
+        Fri, 8 Sep 2023 11:44:11 -0400
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F501FF2;
+        Fri,  8 Sep 2023 08:44:02 -0700 (PDT)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-26d50a832a9so1738565a91.3;
+        Fri, 08 Sep 2023 08:44:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694187842; x=1694792642;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bsFpBp1iOychJuJJ7GPCZs+E2CRFMb0GWiZRHuwanc8=;
+        b=WQrN5K/S+nX4oP8pVsELxkveEcfeULMakgP7PHeZ/z61SAcSk1oM8n8V1NE0SasyIx
+         v6iKCvDg4+nZ/4M1Uc38z8mguUE/KVmYZRLNUc0rOzWPRZEEkWwr1C+/+Y6XvNc2/U+/
+         WFFetM3vUf8mFxbG/uS1X4Wb8/UtqYgwm6nn0S0L58y8ptmMvtTLoiig4M+sm7oUDR3O
+         5gaFtYNGniy7kgA4GtzSkaoiWed9h2FrDr20hePIvmR5k15SsZlGz8E1OxJJQKCGoDvb
+         aJLpvORrSv3Wypex1wuyPVFv5QATbt32dRaDJt80FSBASJiJmUdXyzzeYcis3ds88Zpx
+         wtTw==
+X-Gm-Message-State: AOJu0YxXlZC3AHV3sU470jHeLS//HeH8Zh5Nw5aEEjpuaVkhm92mXGkr
+        lInYvO9uWr0APzznpv04Y/w=
+X-Google-Smtp-Source: AGHT+IGJUusUCZ4506LsQdCeW3WgQORt7eGXWD0XUYtBExhbIigtYdVwyzpdUEYQzFA/2jrp9VH8kA==
+X-Received: by 2002:a17:90a:c88:b0:268:29a3:bd05 with SMTP id v8-20020a17090a0c8800b0026829a3bd05mr2573201pja.48.1694187841658;
+        Fri, 08 Sep 2023 08:44:01 -0700 (PDT)
+Received: from [192.168.51.14] ([98.51.102.78])
+        by smtp.gmail.com with ESMTPSA id j2-20020a17090a840200b00260a5ecd273sm1464513pjn.1.2023.09.08.08.43.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Sep 2023 08:44:00 -0700 (PDT)
+Message-ID: <d5e3a6e6-882d-4f75-8eef-5f3e1058f921@acm.org>
+Date:   Fri, 8 Sep 2023 08:43:58 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] scsi: ufs: core: Add sysfs attributes to control
+ WB buffer resize function
+Content-Language: en-US
+To:     Lu Hongfei <luhongfei@vivo.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Can Guo <quic_cang@quicinc.com>, Bean Huo <beanhuo@micron.com>,
+        Arthur Simchaev <arthur.simchaev@wdc.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Asutosh Das <quic_asutoshd@quicinc.com>,
+        "Bao D. Nguyen" <quic_nguyenb@quicinc.com>,
+        zhanghui <zhanghui31@xiaomi.com>,
+        Po-Wen Kao <powen.kao@mediatek.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+References: <20230908102113.547-1-luhongfei@vivo.com>
+ <20230908102113.547-4-luhongfei@vivo.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20230908102113.547-4-luhongfei@vivo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+> +What:		/sys/bus/platform/drivers/ufshcd/*/enable_wb_buf_resize
+> +What:		/sys/bus/platform/devices/*.ufs/enable_wb_buf_resize
+> +Date:		Sept 2023
+> +Contact:	Lu Hongfei <luhongfei@vivo.com>
+> +Description:
+> +		The host can decrease or increase the WriteBooster Buffer size by setting
+> +		this file.
+> +
+> +		======  ======================================
+> +		   00h  Idle (There is no resize operation)
+> +		   01h  Decrease WriteBooster Buffer Size
+> +		   02h  Increase WriteBooster Buffer Size
+> +		Others  Reserved
+> +		======  ======================================
+> +
+> +		The file is write only.
 
-The arch_spin_value_unlocked of ticket-lock would cause the compiler to
-generate inefficient asm code in riscv architecture because of
-unnecessary memory access to the contended value.
+The name "enable_wb_buf_resize" seems misleading to me. 
+"wb_buf_resize_control" is probably a better name for this attribute 
+since this attribute can be used to increase and decrease the WB buffer 
+size.
 
-Before the patch:
-------
-void lockref_get(struct lockref *lockref)
-{
-  78:   fd010113                add     sp,sp,-48
-  7c:   02813023                sd      s0,32(sp)
-  80:   02113423                sd      ra,40(sp)
-  84:   03010413                add     s0,sp,48
+> +	if (hba->dev_info.wspecversion < 0x410 ||
+> +	    !hba->dev_info.b_presrv_uspc_en) {
+> +		dev_err(dev, "The WB buf resize is not allowed!\n");
+> +		return -EINVAL;
+> +	}
 
-0000000000000088 <.LBB296>:
-        CMPXCHG_LOOP(
-  88:   00053783                ld      a5,0(a0)
-------
+Please leave out the version number check. There probably will be UFS 
+4.0 devices that will implement this feature.
 
-After the patch:
-------
-void lockref_get(struct lockref *lockref)
-{
-        CMPXCHG_LOOP(
-  78:   00053783                ld      a5,0(a0)
-------
+Thanks,
 
-After the patch, the lockref_get could get in a fast path instead of the
-function's prologue. This is because ticket lock complex logic would
-limit compiler optimization for the spinlock fast path, and qspinlock
-won't.
-
-The caller of arch_spin_value_unlocked() could benefit from this
-change. Currently, the only caller is lockref.
-
-Acked-by: Waiman Long <longman@redhat.com>
-Acked-by: Will Deacon <will@kernel.org>
-Signed-off-by: Guo Ren <guoren@kernel.org>
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
----
-Changelog
-V3:
- - Add Acked-by tags
- - Optimize commit log
-
-V2:
- - Fixup commit log with Waiman advice.
- - Add Waiman comment in the commit msg.
----
- include/asm-generic/spinlock.h | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
-
-diff --git a/include/asm-generic/spinlock.h b/include/asm-generic/spinlock.h
-index fdfebcb050f4..90803a826ba0 100644
---- a/include/asm-generic/spinlock.h
-+++ b/include/asm-generic/spinlock.h
-@@ -68,11 +68,18 @@ static __always_inline void arch_spin_unlock(arch_spinlock_t *lock)
- 	smp_store_release(ptr, (u16)val + 1);
- }
- 
-+static __always_inline int arch_spin_value_unlocked(arch_spinlock_t lock)
-+{
-+	u32 val = lock.counter;
-+
-+	return ((val >> 16) == (val & 0xffff));
-+}
-+
- static __always_inline int arch_spin_is_locked(arch_spinlock_t *lock)
- {
--	u32 val = atomic_read(lock);
-+	arch_spinlock_t val = READ_ONCE(*lock);
- 
--	return ((val >> 16) != (val & 0xffff));
-+	return !arch_spin_value_unlocked(val);
- }
- 
- static __always_inline int arch_spin_is_contended(arch_spinlock_t *lock)
-@@ -82,11 +89,6 @@ static __always_inline int arch_spin_is_contended(arch_spinlock_t *lock)
- 	return (s16)((val >> 16) - (val & 0xffff)) > 1;
- }
- 
--static __always_inline int arch_spin_value_unlocked(arch_spinlock_t lock)
--{
--	return !arch_spin_is_locked(&lock);
--}
--
- #include <asm/qrwlock.h>
- 
- #endif /* __ASM_GENERIC_SPINLOCK_H */
--- 
-2.36.1
-
+Bart.
