@@ -2,86 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F53579833F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 09:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3C0798344
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 09:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239556AbjIHHaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 03:30:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42760 "EHLO
+        id S240896AbjIHHcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 03:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232310AbjIHHaE (ORCPT
+        with ESMTP id S230300AbjIHHcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 03:30:04 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8119E1BC8;
-        Fri,  8 Sep 2023 00:30:00 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3887BkCg002871;
-        Fri, 8 Sep 2023 07:29:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=tjETNQR7Qbjn8moY75mNH7bm6GbWzUOROl2QSxDzkM8=;
- b=FlXK3zMAFWE3UBbqZG2G/8XA1MqkVsBl/i+kUsQtrFpx1R1r53PahOUtq9jMa/MhHWeP
- 4OAzQyWk57JptAkAKJ7FbP4HjoqKu9VHztmOZmZv1dtCoAb81Xil21yyAajsBLROr631
- DV02gJiztYRuESmW64UoxrsK0MRhxDdk0YTR+iii2oFZNwcZD/60AWxnrz84cJBwtx2q
- B+PoA6Uc23ZtmOqpBRiSpQ+aW+iPozTk15kRf1ZvpZno5TYyk8ZDU5sJqNnAkz6/NHpV
- OYa+B8blXkGojQoXN53l1WOGvlJPyVinx+Po0zrjqslAuOJXlI/sFaIfZj1B0LkGnnCM 3Q== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sy7m0k20s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Sep 2023 07:29:26 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3887T7tt006191
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 8 Sep 2023 07:29:07 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 8 Sep
- 2023 00:28:58 -0700
-Message-ID: <1407c2f0-3abf-4cb0-93c0-e19f821ff2fb@quicinc.com>
-Date:   Fri, 8 Sep 2023 15:28:55 +0800
+        Fri, 8 Sep 2023 03:32:50 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0CDB1990;
+        Fri,  8 Sep 2023 00:32:46 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8339E1F45A;
+        Fri,  8 Sep 2023 07:32:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694158365; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=euHz7ZVLAcuf6vq3WgxuP8PbER62bbJ+haG60jiVoXQ=;
+        b=rY1GyH5M0uyeFrpo4O4jbubAo105Y0uosB8VbpEh6rrWxNTEhozMrRD5iIA986KleUsV1i
+        DjNdPiGY76ykBsylWHqWynnBhIEoZvwo8Dww+BO5TUGVhgoiBixN/ifEf+OHPoBclt/mr9
+        6n8WgsSU7c5qVbcdVRnldA8kxZlQ+Ck=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694158365;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=euHz7ZVLAcuf6vq3WgxuP8PbER62bbJ+haG60jiVoXQ=;
+        b=0gxAGbRhTSg8Dz/aDc3wLYdXL6zeCjHgT8wkalayH/X6gdRHrohmdscBS1AKmsaTVDDqJM
+        bcO8V+U15rjUJjCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 66765132F2;
+        Fri,  8 Sep 2023 07:32:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id n5D2GB3O+mRBEQAAMHmgww
+        (envelope-from <jack@suse.cz>); Fri, 08 Sep 2023 07:32:45 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id DBF11A0774; Fri,  8 Sep 2023 09:32:44 +0200 (CEST)
+Date:   Fri, 8 Sep 2023 09:32:44 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Zdenek Kabelac <zkabelac@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: [PATCH] fix writing to the filesystem after unmount
+Message-ID: <20230908073244.wyriwwxahd3im2rw@quack3>
+References: <59b54cc3-b98b-aff9-14fc-dc25c61111c6@redhat.com>
+ <20230906-launenhaft-kinder-118ea59706c8@brauner>
+ <f5d63867-5b3e-294b-d1f5-a128817cfc7@redhat.com>
+ <20230906-aufheben-hagel-9925501b7822@brauner>
+ <60f244be-803b-fa70-665e-b5cba15212e@redhat.com>
+ <20230906-aufkam-bareinlage-6e7d06d58e90@brauner>
+ <818a3cc0-c17b-22c0-4413-252dfb579cca@redhat.com>
+ <20230907094457.vcvmixi23dk3pzqe@quack3>
+ <20230907-abgrenzen-achtung-b17e9a1ad136@brauner>
+ <513f337e-d254-2454-6197-82df564ed5fc@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: pinctrl: qcom: Add SM4450 pinctrl
-To:     Rob Herring <robh@kernel.org>
-CC:     <quic_tingweiz@quicinc.com>,
-        <linux-arm-kernel@lists.infradead.org>, <rafal@milecki.pl>,
-        <conor+dt@kernel.org>, <nfraprado@collabora.com>,
-        <devicetree@vger.kernel.org>, <catalin.marinas@arm.com>,
-        <quic_kaushalk@quicinc.com>, <andersson@kernel.org>,
-        <quic_shashim@quicinc.com>, <linus.walleij@linaro.org>,
-        <quic_tsoni@quicinc.com>, <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <geert+renesas@glider.be>,
-        <peng.fan@nxp.com>, <quic_tdas@quicinc.com>,
-        <konrad.dybcio@linaro.org>, <arnd@arndb.de>, <will@kernel.org>,
-        <robh+dt@kernel.org>, <agross@kernel.org>,
-        <quic_aiquny@quicinc.com>, <kernel@quicinc.com>
-References: <20230908063843.26835-1-quic_tengfan@quicinc.com>
- <20230908063843.26835-2-quic_tengfan@quicinc.com>
- <169415774033.3172287.2910545525997528344.robh@kernel.org>
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <169415774033.3172287.2910545525997528344.robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: G0yg3CgXkxq4nOWlY_DqugIkk635XNFq
-X-Proofpoint-ORIG-GUID: G0yg3CgXkxq4nOWlY_DqugIkk635XNFq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-08_03,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- lowpriorityscore=0 adultscore=0 mlxlogscore=875 spamscore=0 malwarescore=0
- suspectscore=0 mlxscore=0 bulkscore=0 priorityscore=1501 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309080068
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <513f337e-d254-2454-6197-82df564ed5fc@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,49 +83,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu 07-09-23 14:04:51, Mikulas Patocka wrote:
+> 
+> 
+> On Thu, 7 Sep 2023, Christian Brauner wrote:
+> 
+> > > I think we've got too deep down into "how to fix things" but I'm not 100%
+> > 
+> > We did.
+> > 
+> > > sure what the "bug" actually is. In the initial posting Mikulas writes "the
+> > > kernel writes to the filesystem after unmount successfully returned" - is
+> > > that really such a big issue?
+> 
+> I think it's an issue if the administrator writes a script that unmounts a 
+> filesystem and then copies the underyling block device somewhere. Or a 
+> script that unmounts a filesystem and runs fsck afterwards. Or a script 
+> that unmounts a filesystem and runs mkfs on the same block device.
 
+Well, e.g. e2fsprogs use O_EXCL open so they will detect that the filesystem
+hasn't been unmounted properly and complain. Which is exactly what should
+IMHO happen.
 
-在 9/8/2023 3:22 PM, Rob Herring 写道:
+> > > Anybody else can open the device and write to it as well. Or even 
+> > > mount the device again. So userspace that relies on this is kind of 
+> > > flaky anyway (and always has been).
 > 
-> On Fri, 08 Sep 2023 14:38:41 +0800, Tengfei Fan wrote:
->> Add device tree binding Documentation details for Qualcomm SM4450
->> TLMM device.
->>
->> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->> ---
->>   .../bindings/pinctrl/qcom,sm4450-tlmm.yaml    | 129 ++++++++++++++++++
->>   1 file changed, 129 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
->>
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml:
-> Error in referenced schema matching $id: http://devicetree.org/schemas/pinctrl/qcom,tlmm-common.yaml
-> 
-> doc reference errors (make refcheckdocs):
-> 
-> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230908063843.26835-2-quic_tengfan@quicinc.com
-> 
-> The base for the series is generally the latest rc1. A different dependency
-> should be noted in *this* patch.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit after running the above command yourself. Note
-> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-> your schema. However, it must be unset to test all examples with your schema
-> 
-Thanks review this change detailly, do update env and do verify again.
+> It's admin's responsibility to make sure that the filesystem is not 
+> mounted multiple times when he touches the underlying block device after 
+> unmount.
 
+What I wanted to suggest is that we should provide means how to make sure
+block device is not being modified and educate admins and tool authors
+about them. Because just doing "umount /dev/sda1" and thinking this means
+that /dev/sda1 is unused now simply is not enough in today's world for
+multiple reasons and we cannot solve it just in the kernel.
+
+								Honza
 -- 
-Thx and BRs,
-Tengfei Fan
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
