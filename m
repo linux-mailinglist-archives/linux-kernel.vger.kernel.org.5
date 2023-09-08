@@ -2,148 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49027798E5B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CF2798ED2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238160AbjIHSmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:42:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
+        id S1344139AbjIHTMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:12:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237749AbjIHSmA (ORCPT
+        with ESMTP id S236695AbjIHTMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:42:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDEF81BF4;
-        Fri,  8 Sep 2023 11:41:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694198480; x=1725734480;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QPLINnlBu9wjGkIIvfYqrRJ4j0WIW2UBVJYhir95sJ8=;
-  b=KeV+TH4WbTYOpQbOe3yH2PlGo+Eue+zDZWf/KK46Lx6uG0IB482l2Brv
-   ykrBri2Ard5zsaF3G+1yVgU/uN8BrZEQx1ZzZgX6b+A7d1v0lhrzNGWZl
-   5KFyTthCXu5b6LVyVG66OxQuR/IOV78Wdeht7m4x6TFyBwcu/d2NDFBCA
-   BvNpLoISxoS87l00mGluhQLRbZ0bDwhqMAOU/H74Qv4Yh2cLwHQjUXw8o
-   PHS/7bWw0nEXts7kypgiFJlyt5MALkTFRcdkfQNIG9azhea3e4SpHRCvM
-   7Yv74BtT/NkbmRz7ukGQ2kT6A18fdjQ4k9Q+LJB1gUSIlg0e3jrqcsg+1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="444151350"
-X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
-   d="scan'208";a="444151350"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 11:39:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="832746957"
-X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
-   d="scan'208";a="832746957"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 08 Sep 2023 11:39:18 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qegNv-0002WK-2g;
-        Fri, 08 Sep 2023 18:39:15 +0000
-Date:   Sat, 9 Sep 2023 02:38:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: max31790: support to config PWM as TACH
-Message-ID: <202309090228.2bSFmAO8-lkp@intel.com>
-References: <20230906084837.3043030-3-Delphine_CC_Chiu@wiwynn.com>
+        Fri, 8 Sep 2023 15:12:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE94F19C;
+        Fri,  8 Sep 2023 12:12:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A503C433AB;
+        Fri,  8 Sep 2023 18:43:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694198641;
+        bh=hTakPB9y2sP+KFVIRgK+FzqnkIyWJ1W8m+mc/mWg3pM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mA2DCny7oDWvISNAOQ2sKcgoSL/JNlwal1YaYzyH6M0RauIWK8F/iissT4T4yZiaY
+         ZSJvtecmlUChP7HAhom1yNsOYl40fJoIqDG0WxK7MUTbGE7DPFhTVvrWTaF6DmggcH
+         /Sy19E3Q6kggvQ5B7qiJPnxbBNr63JkyPDqQRJ3CAG12sXiefngO49EV7qDbu4sdNq
+         vHJbUdVf2fu4ftjFH60MEWy9CcPsQdB02BSMU6JbwgzwMx0Lx8KDCh7SLRLcF/HqzS
+         TXt7mvWbGT4w/shmHN/ZnklbU/T7zoYPoycKmFnUfGRarC6pwQ0ZulxMEGBLACvGpR
+         Y1cBIGYBi8tYg==
+Date:   Fri, 8 Sep 2023 19:44:25 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Andreas Klinger <ak@it-klinger.de>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] iio: pressure: Support ROHM BU1390
+Message-ID: <20230908194425.24f1554e@jic23-huawei>
+In-Reply-To: <eba53e24-ea01-6c38-27ee-27c3d10aa73f@gmail.com>
+References: <cover.1694001462.git.mazziesaccount@gmail.com>
+        <08f7085ba1af2fae21c942f6c20a94c237df53ba.1694001462.git.mazziesaccount@gmail.com>
+        <ZPifWlRvX5hLFPvG@smile.fi.intel.com>
+        <4d8e2873-49bc-8314-ee16-dd327a92898d@gmail.com>
+        <ZPnW38eO6by1NjIr@smile.fi.intel.com>
+        <eba53e24-ea01-6c38-27ee-27c3d10aa73f@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230906084837.3043030-3-Delphine_CC_Chiu@wiwynn.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Delphine,
+On Fri, 8 Sep 2023 09:12:51 +0300
+Matti Vaittinen <mazziesaccount@gmail.com> wrote:
 
-kernel test robot noticed the following build warnings:
+> On 9/7/23 16:57, Andy Shevchenko wrote:
+> > On Thu, Sep 07, 2023 at 08:57:17AM +0300, Matti Vaittinen wrote:  
+> >> On 9/6/23 18:48, Andy Shevchenko wrote:  
+> >>> On Wed, Sep 06, 2023 at 03:37:48PM +0300, Matti Vaittinen wrote:  
+> > 
+> > ...
+> >   
+> >>>> +struct bm1390_data {
+> >>>> +	int64_t timestamp, old_timestamp;  
+> >>>
+> >>> Out of a sudden int64_t instead of u64?  
+> >>
+> >> Judging the iio_push_to_buffers_with_timestamp() and iio_get_time_ns(), IIO
+> >> operates with signed timestamps. One being s64, the other int64_t.
+> >>  
+> >>>> +	struct iio_trigger *trig;
+> >>>> +	struct regmap *regmap;
+> >>>> +	struct device *dev;
+> >>>> +	struct bm1390_data_buf buf;
+> >>>> +	int irq;
+> >>>> +	unsigned int state;
+> >>>> +	bool trigger_enabled;  
+> >>>  
+> >>>> +	u8 watermark;  
+> >>>
+> >>> Or u8 instead of uint8_t?  
+> >>
+> >> So, uint8_t is preferred? I don't really care all that much which of these
+> >> to use - which may even show up as a lack of consistency... I think I did
+> >> use uint8_t when I learned about it - but at some point someone somewhere
+> >> asked me to use u8 instead.. This somewhere might have been u-boot though...
+> >>
+> >> So, are you Suggesting I should replace u8 with uint8_t? Can do if it
+> >> matters.  
+> > 
+> > Consistency matters, since I do not know the intention behind, I suggest use
+> > either, but be consistent in the entire code. However, uXX are specific Linux
+> > kernel internal types and some maintainers prefer them. Also you may grep for
+> > the frequency of intXX_t vs. sXX or their unsigned counterparts.
+> >   
+> >>>> +	/* Prevent accessing sensor during FIFO read sequence */
+> >>>> +	struct mutex mutex;
+> >>>> +};  
+> > 
+> > ...
+> >   
+> >>>> +static int bm1390_read_temp(struct bm1390_data *data, int *temp)
+> >>>> +{
+> >>>> +	u8 temp_reg[2] __aligned(2);  
+> >>>
+> >>> Why?! Just use proper bitwise type.  
+> >>
+> >> What is the proper bitwise type in this case?
+> >>
+> >> I'll explain my reasoning:
+> >> What we really have in hardware (BM1390) and read from it is 8bit registers.
+> >> This is u8 to me. And as we read two consecutive registers, we use u8
+> >> arr[2]. In my eyes it describes the data perfectly well, right?  
+> > 
+> > Two different registers?! Why bulk is used in that case?
+> > To me looks like you are reading 16-bit (or one that fits in 16-bit) register
+> > in BE notation.  
+> 
+> As I wrote, it is two 8 bit registers at consecutive addresses. And this 
+> is what u8 arr[2]; also says.
+> 
+> Bulk read is mandatory as HW has a special feature of preventing the 
+> update of these registers when a read is ongoing. If we do two reads we 
+> risk of getting one of the registers updated between the accesses - 
+> resulting incorrect value.
 
-[auto build test WARNING on groeck-staging/hwmon-next]
-[also build test WARNING on linus/master v6.5 next-20230908]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Far as the kernel is concerned this is a __be16 and we use a bulk read to
+fill it from two registers.  If the use showed them having unrelated uses
+then it would be fair to handle it as an array of u8.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Delphine-CC-Chiu/hwmon-max31790-support-to-config-PWM-as-TACH/20230906-165344
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-next
-patch link:    https://lore.kernel.org/r/20230906084837.3043030-3-Delphine_CC_Chiu%40wiwynn.com
-patch subject: [PATCH] hwmon: max31790: support to config PWM as TACH
-config: x86_64-randconfig-161-20230907 (https://download.01.org/0day-ci/archive/20230909/202309090228.2bSFmAO8-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230909/202309090228.2bSFmAO8-lkp@intel.com/reproduce)
+> 
+> >   
+> >>>> +	__be16 *temp_raw;
+> >>>> +	int ret;
+> >>>> +	s16 val;
+> >>>> +	bool negative;
+> >>>> +
+> >>>> +	ret = regmap_bulk_read(data->regmap, BM1390_REG_TEMP_HI, &temp_reg,
+> >>>> +			       sizeof(temp_reg));
+> >>>> +	if (ret)
+> >>>> +		return ret;
+> >>>> +
+> >>>> +	if (temp_reg[0] & 0x80)
+> >>>> +		negative = true;
+> >>>> +	else
+> >>>> +		negative = false;  
+> >>>  
+> >>>> +	temp_raw = (__be16 *)&temp_reg[0];  
+> >>>
+> >>> Heck no. Make temp_reg be properly typed.  
+> >>
+> >> As I explained above, to me it seems ur arr[2} is _the_ proper type to
+> >> represent data we read from the device.
+> >>
+> >> What we need to do is to convert the 16bits of data to an integer we can
+> >> give to the rest of the system. And, we happen to know how to 'manipulate'
+> >> the data to get it in format of understandable integer. As we have these 16
+> >> bits in memory, aligned to 2 byte boundary - why shouldn't we just
+> >> 'manipulate' the data and say - here we have your integer, please be my
+> >> guest and use it?  
+> > 
+> > Because it smell like a hack and is a hack here.
+> > Either it's a single BE16 register, or it's two different registers that by
+> > very unknown reason you are reading in a bulk.  
+> 
+> It is two registers. The bulk read might warrant a comment - although I 
+> believe this is nothing unusual. If it is a hack or not is an opinion. 
+> To me it looks like a code that explicitly shows what data is and how it 
+> is being handled. It does what it is supposed to do and shows it in all 
+> dirty details.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309090228.2bSFmAO8-lkp@intel.com/
+Read it directly into a __be16
 
-smatch warnings:
-drivers/hwmon/max31790.c:511 max31790_config_pwm_as_tach() warn: unsigned 'fan_config' is never less than zero.
+> 
+> Still, I am open to suggestions but I'd prefer seeing a real improvement 
+> instead of claiming that the hardware is something it is not (eg, having 
+> 16bit registers or should be read by individual accesses).
+> 
+> The code in this form is no
+> > go.
+> >   
+> >> Well, I am keen to learn the 'correct bitwise type' you talk about - can you
+> >> please explain me what this correct type for two 8bit integers is? Maybe I
+> >> can improve.  
+> > 
+> > If the registers are not of the same nature the bulk access is wrong.
+> > Use one by one reads.  
+> 
+> Of same nature? As I said, there is 2 8bit registers at consecutive 
+> addresses. They have no other 'nature' as far as I can tell.
+> 
+> Data in these registers in not in standard format - it needs to be 
+> manipulated to make it an ordinary integer. The code shows this very 
+> clearly by not reading it in any standard integer.
 
-vim +/fan_config +511 drivers/hwmon/max31790.c
+I'm not convinced it does.  All support arch are 2s complement.
+be16_to_cpu() is fine for what you have unless I'm missing something.
+If it weren't we would have signed versions of those macros.
 
-   482	
-   483	static int max31790_config_pwm_as_tach(struct device *dev,
-   484					       struct i2c_client *client)
-   485	{
-   486		struct device_node *np = dev->of_node;
-   487		int i, ret = 0, size, channel;
-   488		u8 pwm_index[NR_CHANNEL] = { 0 };
-   489		u8 fan_config;
-   490	
-   491		size = of_property_count_u8_elems(np, "pwm-as-tach");
-   492	
-   493		if ((size > 0) && (size <= NR_CHANNEL)) {
-   494			ret = of_property_read_u8_array(np, "pwm-as-tach", pwm_index,
-   495							size);
-   496			if (ret) {
-   497				dev_err(dev,
-   498					"Property 'pwm-as-tach' cannot be read.\n");
-   499				return ret;
-   500			}
-   501	
-   502			for (i = 0; i < size; i++) {
-   503				if ((pwm_index[i] == 0) ||
-   504				    (pwm_index[i] > NR_CHANNEL)) {
-   505					continue;
-   506				}
-   507	
-   508				channel = pwm_index[i] - 1;
-   509				fan_config = i2c_smbus_read_byte_data(
-   510					client, MAX31790_REG_FAN_CONFIG(channel));
- > 511				if (fan_config < 0) {
-   512					dev_err(dev,
-   513						"Read fan config for channel %d failed.\n",
-   514						channel);
-   515					return fan_config;
-   516				}
-   517	
-   518				fan_config |= (MAX31790_FAN_CFG_CTRL_MON |
-   519					       MAX31790_FAN_CFG_TACH_INPUT);
-   520				i2c_smbus_write_byte_data(
-   521					client, MAX31790_REG_FAN_CONFIG(channel),
-   522					fan_config);
-   523			}
-   524		}
-   525	
-   526		return 0;
-   527	}
-   528	
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 
+> > ...
+> >   
+> >>>> +static int bm1390_pressure_read(struct bm1390_data *data, u32 *pressure)
+> >>>> +{
+> >>>> +	int ret;
+> >>>> +	u8 raw[3];
+> >>>> +
+> >>>> +	ret = regmap_bulk_read(data->regmap, BM1390_REG_PRESSURE_BASE,
+> >>>> +			       &raw[0], sizeof(raw));  
+> > 
+> > &raw[0] --> raw
+> >   
+> >>>> +	if (ret < 0)
+> >>>> +		return ret;
+> >>>> +
+> >>>> +	*pressure = (u32)(raw[2] >> 2 | raw[1] << 6 | raw[0] << 14);  
+> > 
+> > This, btw, looks like le24, but I'm puzzled with right shift.
+> > I need to read datasheet carefully to understand this.  
+> 
+> It's not just le24. We, again, have data placed in registers so that it 
+> needs some suffling. The data-sheet does decent job explaining it 
+> though. AFAIR, there was a 'gap' in bits so it needed some more suffling 
+> to sift the bits so that they're consecutive. I think this indeed is 
+> something that needs to be looked up from data-sheet to understand why 
+> this play with bits is done.
+
+
+These cases are harder to argue.  I'm fine with either approach for this one
+as a get_unaligned_le24() >> 2 would give same answer unless I'm also missing
+something but it isn't that obvious.
+
+Jonathan
