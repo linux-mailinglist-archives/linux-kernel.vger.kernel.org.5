@@ -2,173 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A1C798128
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 06:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D8D79812E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 06:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235113AbjIHEP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 00:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44592 "EHLO
+        id S236219AbjIHETQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 00:19:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjIHEP0 (ORCPT
+        with ESMTP id S229679AbjIHETP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 00:15:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D0A1BD5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 21:15:21 -0700 (PDT)
+        Fri, 8 Sep 2023 00:19:15 -0400
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Sep 2023 21:19:11 PDT
+Received: from alln-iport-4.cisco.com (alln-iport-4.cisco.com [173.37.142.91])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 192BE1BDD;
+        Thu,  7 Sep 2023 21:19:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694146521; x=1725682521;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=3+ryky8XXp9BdW0HqiBJHJH3sD7W4h1y5v1WLdCN140=;
-  b=XOwDHnHARIuRPyw3/+VZn9X3TYgumNLK1M1JXoqUNcNT+w8jcSfqjxtc
-   P6tynUoZW38Sfg8cIdKUr10zw8arSqqAmTKlfBxhYm9T5VKeveuAk4iFg
-   UZkWP9InSbk79RF8SW+/TcVOgPOcf9IJqJLf6+oJ6h6XGg5pt1oXn2/cT
-   E2JkKBtgAdiG7HTI2salB6uUMv+3fSHDFavW+XE0JSmpiwPrNOVnKhR2h
-   dAtuzgO7/1WC7v7mbYLcQec6LjDxppEzSQpVCLB1H1a8WpyrWCaitRomU
-   7u1i14iRsD5PEPvNwWJ6BFbPSj4nrkzP5V4AMXAqN3JttqDJ3EMUKdVxA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="381364869"
-X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
-   d="scan'208";a="381364869"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 21:10:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="865924979"
-X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
-   d="scan'208";a="865924979"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Sep 2023 21:10:11 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 7 Sep 2023 21:10:11 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 7 Sep 2023 21:10:10 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Thu, 7 Sep 2023 21:10:10 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.43) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 7 Sep 2023 21:10:10 -0700
+  d=cisco.com; i=@cisco.com; l=1327; q=dns/txt; s=iport;
+  t=1694146751; x=1695356351;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=ZL/w0ZvtsBW4aktza0zG8SBJhsEb4vxukVV7hDhj9Hw=;
+  b=KcmuwKB8a6oNjZ0e8axtOG9pHg4lTKQcpolarOe05iIiKcB0bhuGXNpi
+   DM8hGMfe53SBOem1916WUQSduYLmcOeHquw73TR4DgJtoLG/xEe8Z5p/a
+   UirwQWwKmEpUygfHJWt+VEI6aBsyR5DPkvbAPqx2tHtYcHximAygqyCPL
+   c=;
+X-CSE-ConnectionGUID: oOXD9SKyQAWf7I36bRyqrw==
+X-CSE-MsgGUID: pDD/ZNdbRhuCGIevMQouMw==
+X-IPAS-Result: =?us-ascii?q?A0DQAgDpnvpkmIoNJK1aHgEBCxIMQCWBHwuBZVJ1WyoSR?=
+ =?us-ascii?q?4gdA4UtiGQDnXuBJQNWDwEBAQ0BAUQEAQGFBgKGcQIlNAkOAQICAgEBAQEDA?=
+ =?us-ascii?q?gMBAQEBAQEBAgEBBQEBAQIBBwQUAQEBAQEBAQEeGQUOECeFaA2GBAEBAQEDE?=
+ =?us-ascii?q?hUTBgEBNwELBAIBCBEEAQEBHQEFCzIdCAIEDgUIGoJcgisDMQMBnSQBgUACi?=
+ =?us-ascii?q?ih4gQEzgQGCCQEBBgQFsBYEglIJgUeICAGFOIRNJxtAgU2BWIJoPoJiAoFih?=
+ =?us-ascii?q?BKCLolSgiuDFgcygimDNCqJOCqBCAhegWo9Ag1VCwtdgRWBKIEfAgIRORNHc?=
+ =?us-ascii?q?RsDBwOBAhArBwQvGwcGCRctJQZRBC0kCRMSPgSBaYFTCoEDPxEOEYJFIgIHN?=
+ =?us-ascii?q?jYZS4JjCRUMNU52ECsEFBiBFARqBRoVHjcREhkNAwh2HQIRIzwDBQMENgoVD?=
+ =?us-ascii?q?QshBRRDA0gGSwsDAhwFAwMEgTYFDx8CEBoGDi0DAxlFA0QdQAMLbT01FBsFB?=
+ =?us-ascii?q?GZZBaB+gkoOgSOBMIFfki2yCAong2ShOxepXy6XCHeoHAIEAgQFAg4BAQaBY?=
+ =?us-ascii?q?zqBW3AVgyJSGQ+OIBkfg0CPeXYCOQIHCwEBAwmIbgSCVgEB?=
+IronPort-PHdr: A9a23:jkQDBBTY3RrZUazzYczU7eqQKdpso3PLVj580XJvo7tKdqLm+IztI
+ wmCo/5sl1TOG47c7qEMh+nXtvX4UHcbqdaasX8EeYBRTRJNl8gMngIhDcLEQU32JfLndWo7S
+ exJVURu+DewNk0GUN3maQjqq2appSUXBg25MAN0IurvHYuHg8m6zemu+5r7aARTjz37arR3f
+ 126qAzLvZwOiJB5YuYpnwLUq2FBffhXw24gKVOIyhD74MrxtJI2+CVLsPVn/MlFOZg=
+IronPort-Data: A9a23:e4HWqqDEBAF6ihVW/+Xjw5YqxClBgxIJ4kV8jS/XYbTApDhz1GEHx
+ jAXCGGBO62CNzTze4twOo+28x4A7ZbTmoM1OVdlrnsFo1CmBibm6XV1Cm+qYkt+++WaFBoPA
+ /02M4SGdIZsCCaE+n9BC5C5xVFkz6aEW7HgP+DNPyF1VGdMRTwo4f5Zs7ZRbrVA357hWWthh
+ fuo+5eEYA79hGYvWo4pw/vrRC1H7ayaVAww5jTSVdgT1HfCmn8cCo4oJK3ZBxMUlaENQ4ZW7
+ 86apF2I1juxEyUFU7tJoZ6nGqE+eYM+CCDV4pZgtwdOtTAZzsA6+v5T2PPx8i67gR3R9zx64
+ I0lWZBd1W7FM4WU8NnxXSW0HAl5Gp1qqYTkMEGWjsLM7haYeUH92u9xWRRe0Y0woo6bAElH8
+ fgebTsKdB3G2qS9wamwTa9ngcFLwMvDZdxE/Co+i2iCS699EfgvQI2SjTNc9Ds9i9pHAfbZT
+ 8EYcjFoKh/HZnWjP39OVctvxbz41yiXnztwsH654pgR72LpzBFa/5ngLv/sfcGvWpAA9qqfj
+ juWozumav0AD/SbyDyY4jevi/XJkCfTRo0fDvu7++RsjVnVwXYcYDUNSVKxpfSRlEGzQZRcJ
+ lYS9y5oqrI9nHFHVfH0Wxm+5XWDpBNZBpxbEvYx70eGza+8Dxul6nYsSRlxRI0dl94PbAMki
+ X7SwdnTFCV1r+jAIZ6CzYu8oTS3MCkTCGYNYy4YUAcIi+UPRqlu0Xojqf4+TsaIYs3J9SLYm
+ GvS/XJu71kHpYtaifvnoAyvbyeE+8Chc+Ij2unAsotJBCtQYIqoYeREAnCEsK4Ydu51orR91
+ UXoduCX6OQISJqKjiHIHaMGHaqi4LCONzi0bb9T83sJqW7FF52LJN84DNRCyKFBbp1sldjBO
+ x67hO+pzMUPVEZGlIcuC25LN+wkzLL7CfPuXe3OY9xFb/BZLVHWoHg3PBLLjzy0yiDAdJ3T3
+ 7/FK65A6l5EUcxaIMaeG4/xLJdynHllnDOPLXwF5035ieT2iIGppUctaQvSMb9RAFKsqwTO+
+ NEXLNqR1xhaS4XDjtr/r+YuwaQxBSFjX/je8pUPHsbae1YOMD96UZf5n+h+E7GJaowIzI8kC
+ FnnBB8BoLc+7FWaQTi3hodLM+OxB8Yk9y1mYETB/z+AghAeXGpm149GH7Mfdrg8/+slxvlxJ
+ 8Tpse3ZahiTYlwrIwggUKQ=
+IronPort-HdrOrdr: A9a23:G37LRak/ND/68wRvPmLU17nJS6/pDfNpiWdD5ihNYBxZY6Wkfp
+ +V7ZcmPE7P6Ar5BktApTnZAtjwfZq9z/JICYl4B8baYOCUghrZEGgE1/qt/9SAIVywygc579
+ YDT0EQMqyMMbEXt7ec3OD8Kadf/DDlytHouQ699QYQcegCUcgJhGkJb3f+LqQ1fng4OXNTLu
+ vl2iMznUvbRZ1hVLXBOpBqZZmkm/T70LjdTVotARkh5AOSjTWuxoLbPnGjtCs2Yndk+5tn1X
+ LKvTDYy8yY3s1TzCWy60bjq7Bt3PfxwNpKA8KBzuIPLC/3twqubIN9H5WfoTEcuoiUmRUXue
+ iJhy1lE9V46nvXcG3wiwDqwRPc3DEn7GKn4UOEgEHkvdfySFsBeoh8bMNiA17kAngbzZZBOZ
+ FwriSkXl1sfEr9dRHGlpz1vtdR5xKJSDQZ4LUuZjdkIPgjgfdq3P4iFQVuYdc99OaQ0vF7LA
+ GoZ/usvsp+YBeUaWvUsXJox8HpVnMvHg2eSkxHocCN1SNK9UoJhXfw6fZv1kvozqhNAKVs9q
+ DBKOBlhbtORsgZYeZ0A/oAW9K+DijITQjXOGyfLFz7HOVfUki956Lf8fEw/qWnaZYIxJw9lN
+ DIV05Zr3c7fwbrBdeV1JNG/xjRSCG2XCjryMtZ+59l04eMCYbDIGmGUhQjgsGgq/IQDonSXO
+ uyIotfB7v5IW7nCe9yrkTDsllpWA8jueEuy6EGsgi107f2w6XRx5jmTMo=
+X-Talos-CUID: 9a23:hYKwvGG8DJumufBRqmJg0344S/sGY0T083mPAhTmA1x4UaeKHAo=
+X-Talos-MUID: 9a23:2L29pgse3SVK0Y7+rc2nnB1Oc/VO766UCF0mvrQLpey9MjFVJGLI
+X-IronPort-Anti-Spam-Filtered: true
+Received: from alln-core-5.cisco.com ([173.36.13.138])
+  by alln-iport-4.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 04:18:09 +0000
+Received: from alln-opgw-5.cisco.com (alln-opgw-5.cisco.com [173.37.147.253])
+        by alln-core-5.cisco.com (8.15.2/8.15.2) with ESMTPS id 3884I8Ue017675
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 8 Sep 2023 04:18:08 GMT
+X-CSE-ConnectionGUID: 6jGiuZU1QxalPlkEiX9uzA==
+X-CSE-MsgGUID: SCV6HzCMTS+r11jUJT7+DA==
+Authentication-Results: alln-opgw-5.cisco.com; dkim=pass (signature verified) header.i=@cisco.com; spf=Pass smtp.mailfrom=deeratho@cisco.com; dmarc=pass (p=quarantine dis=none) d=cisco.com
+X-IronPort-AV: E=Sophos;i="6.02,236,1688428800"; 
+   d="scan'208";a="633585"
+Received: from mail-dm3nam02lp2042.outbound.protection.outlook.com (HELO NAM02-DM3-obe.outbound.protection.outlook.com) ([104.47.56.42])
+  by alln-opgw-5.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 04:18:08 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gc13y9My8gpHy028BtXWidfipsVlkMHM2MhA0pMbvA+8U4PguoTnT+nDji6qTgh5CWZ0DBbZdxosueW3hp+BU00tm0ohnLWL/DjQ5n8U3MKgdZ46PuT2m3WLYR+AY+AbVdt/Ml3F7ubuXxBSs2ywxuQxgOxpbZAKZXKIB4uY1Jdscm5WpEDsqfjesly60J0yAzbgr++ymkbpWnxetnmVl7j5Sdj9+DAId/HeHJQ0P4+NxgAauqtInPGG/cWx4GO751/aA25cF2ztB7PsikVsIvYTVYFMwZQpq543CYDaHQ0F4NZDSzCaNJxy+3VTuD95zOPyqnvbsIRkCyUkL4Gacw==
+ b=KbrphReiTAgWQhHcSUtFYqjvghPZ6IZpn1QNUsZDF9Q/ff0WGCjB6mRGJ7SeUklTkOXNaWWI2vIm+9+rXdpeiOO7qQBEl9EsqbnqmU+GL4C8pkMFPZOJea0GhjpyIACfdGKeakMo4y6EZ8ihnMtthZqYuHs5y/HS1bQ6xeutnXtm+v5bTT4g7MKA8LgIYv8Ipgb/SuO8p4AK8hQA9je3KAh5QYyuqo/WgSAV4+tu0RGZeDBaoZki6RRghpF/IHJJew48Ty3d4G7u9igf3psWkL4I3PJh4M0iSDs6Im16WyWyt2dgv7MNDDc3Dcdfn+oqws5ylp5nu9hW40zbEi++vg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fOL3NHSgvBVhYVL72qwU95+1BfXXYVowytgONoSzgAw=;
- b=IgxGWCaYV0wUf3AJk+Yq46/bFR8HVW8kcpIJANTmi5ODlmAZySnbFbSG1uqpRBlNwHpN+Y1W237OXwFgIoKpoVFQ3CCLdSPfFYXuT2CFzI/u72hV9TZxgKtwf7kA4MjWVPSMW3cW8vI8tzNzd/YDkEyfBzDRyTHbepT5YU8MWXHM2pp0r85TKIYksgpaNm/nmHb7zgW8waE0jTgHItzxo4o0iNphJgECG55YWEdUKIcT56HqErq1arQ++L1siXaaxg2xqhsAKpy0tHVVT5QrhssLIXtgmGeLu2AMVjAYNzTmIsjNEqCzshuv2phv5V6ILDX2lIOkaO0c6ylFBVd8CA==
+ bh=ZL/w0ZvtsBW4aktza0zG8SBJhsEb4vxukVV7hDhj9Hw=;
+ b=Q5Bwms9maBcpfweGC+3iqi6HQXihvWpO4ybIRuWIrliUS7Oo6IAWbOLns5cBKZf1vDN77Aa+QI4COSap9KaM8QDD2EBoOq0ZJOo6hFQm1RfVEaqh9PLrYWKCNx0WgrmjKV1Q/qoYXUR9iHfWXywC2wQPBR9LRKgfq6CWLoUOax3xty7fJxvaetFexMYAA6TAObJfmC42k183lcCcWIbHzuNnPMmb6/CmBCBLgs9GUBwQyoFBjDjdQzeR12Mi/PB01yayuct9pqOOmyh2rmDbpI8ItoYkNq4Wrb2rb0yM2vUx2z9QOLx39PfFOVBuj1wk1+Noms3IS2/9VptktSQpHA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by BN0PR11MB5694.namprd11.prod.outlook.com (2603:10b6:408:167::10) with
+ smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
+ dkim=pass header.d=cisco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZL/w0ZvtsBW4aktza0zG8SBJhsEb4vxukVV7hDhj9Hw=;
+ b=O70dZBnTUmvGrLSXs8BFcD7hwOHVG8MhzvU/r+gdg3hcLVLySliCnlt0a1yaNXD/nocZLCKBa6w7ajDZV4WdmWGR/Gyyjs2yRCgn9yzIo6CV0q3oqOZtHnmXzLVgrHFniFsRIw4L0LHRQdXOgYDizb92IWpa5vbena5soEHIX/Y=
+Received: from DM4PR11MB6189.namprd11.prod.outlook.com (2603:10b6:8:ae::18) by
+ SN7PR11MB6800.namprd11.prod.outlook.com (2603:10b6:806:260::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.36; Fri, 8 Sep
- 2023 04:10:07 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::acb0:6bd3:58a:c992]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::acb0:6bd3:58a:c992%5]) with mapi id 15.20.6745.034; Fri, 8 Sep 2023
- 04:10:07 +0000
-Date:   Thu, 7 Sep 2023 21:10:03 -0700
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Erdem Aktas <erdemaktas@google.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Tony Luck" <tony.luck@intel.com>,
-        Wander Lairson Costa <wander@redhat.com>,
-        Dionna Amalie Glaze <dionnaglaze@google.com>,
-        Qinkun Bao <qinkun@apache.org>,
-        Guorui Yu <GuoRui.Yu@linux.alibaba.com>,
-        <linux-coco@lists.linux.dev>, <x86@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] virt: tdx-guest: Add Quote generation support using
- TSM_REPORTS
-Message-ID: <64fa9e9bcb164_68a129421@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <20230907025405.2310931-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAAYXXYzWMaruiTm84d=djM1Jekk-Ua9cEEZWWuZ-mh6knsCvTg@mail.gmail.com>
- <57469499-b150-4132-bd26-9a66991c9ce3@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <57469499-b150-4132-bd26-9a66991c9ce3@linux.intel.com>
-X-ClientProxiedBy: MW3PR05CA0006.namprd05.prod.outlook.com
- (2603:10b6:303:2b::11) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Fri, 8 Sep
+ 2023 04:18:07 +0000
+Received: from DM4PR11MB6189.namprd11.prod.outlook.com
+ ([fe80::9b29:81ff:3783:1740]) by DM4PR11MB6189.namprd11.prod.outlook.com
+ ([fe80::9b29:81ff:3783:1740%4]) with mapi id 15.20.6745.034; Fri, 8 Sep 2023
+ 04:18:07 +0000
+From:   "Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco)" 
+        <deeratho@cisco.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free bug in
+ btsdio_remove due to race condition
+Thread-Topic: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free bug in
+ btsdio_remove due to race condition
+Thread-Index: AQHZ4LvcJrVsnoRBq0W95V9qrz7orbAPJ16AgAEtl9A=
+Date:   Fri, 8 Sep 2023 04:18:07 +0000
+Message-ID: <DM4PR11MB6189DEDD52F3E17C8C4E3D1BC4EDA@DM4PR11MB6189.namprd11.prod.outlook.com>
+References: <20230906121525.3946250-1-deeratho@cisco.com>
+ <2023090738-passive-snowless-3b9d@gregkh>
+In-Reply-To: <2023090738-passive-snowless-3b9d@gregkh>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM4PR11MB6189:EE_|SN7PR11MB6800:EE_
+x-ms-office365-filtering-correlation-id: bb0d206a-2745-44a8-9fb2-08dbb0229a89
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 187xFZ9qkX8CyAEZJ38+m1XQwFRJS3L8/+ZH/VK5umgYCHEO5MPclBRqNqlU66X7CXETm0q8R1uN8zTkxq7qiKPoe5duRBAmsixyW7QLkrqIlmOzOqPciwqmgadKqqZGf3am7ZlLvbd6Mq+3coQ3hYwY9x68VTgUs7WE9Eh4l0Li+3MPKyMhxJVvGps7urQh73MAjQvsvJS/SBsTxo62LA6mnWwsoPhhy8Dr3+17LNu96bTWiNnIbGk6anmF+DhUMqvB/W9gCtyIGpIi721hpaDuoZdGcFXnOnFWrsf00wBfkWPvNmBpnDLVJKm1oqIEYKQ936aR7Fsm2daJLmDNAGadUEGHVYxJo1luJb0MNxNuI8OJlAoL5OT4k21ncBFiiY3GbsXDncD0GEHTn3tLlbNhiFhat9xvhF32pV51YJTQWOgCue8BwxN3WR+uHhvOfaQv97F15WIop4mh5+ZSuhFspAGLd/vwYduTfeYfelpz+m672vvhOdNUVx7LD/huB3jpeHzWNi4VRRFBP0/NXBY3+maqdB/YnY3FekOYjr+QfURIDzBjHfCvPV5c0Fb5SxvqXlAI7s8s09fT/Ak7pw/bVGFV8Vh3zFPa0ogSMQKn/uVYb83IoJhCM20CroNb
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6189.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(376002)(136003)(396003)(186009)(1800799009)(451199024)(52536014)(53546011)(7696005)(9686003)(6506007)(71200400001)(86362001)(4326008)(122000001)(55016003)(33656002)(38100700002)(38070700005)(2906002)(83380400001)(478600001)(66476007)(41300700001)(5660300002)(76116006)(8936002)(64756008)(8676002)(316002)(66446008)(6916009)(66556008)(66946007)(54906003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?SiP9sceT3334l7KjIqt4+YjeCypYpZEPa4oudQL5TwtKkACJeWotPJhSyDbs?=
+ =?us-ascii?Q?UQgExX7fxFVkcmHpOSRaok+YQ9zw+3bTBAOl3FiHEEIOl3fL7UbLlJX7uke5?=
+ =?us-ascii?Q?ywJTOcwZHiHUAeaDgLGdwCrKCEWH/URPgu/A3NDkvFUo+HY9XGQVmw8QPlvQ?=
+ =?us-ascii?Q?tHztwWEA8s/Pk8/UhSEFYEhumNYQLDPEcdkrtz9NvBw/f+YjzhvngTwMPj6i?=
+ =?us-ascii?Q?BrkU6BY7P+lgp/ngdJeX4WEwbIB4aYIumf6Wwn5/wBpG28GgTCi2+RDuiKKe?=
+ =?us-ascii?Q?NwS2jkopEFzxoej+y+sYzI/IGLYNnW7EPEjNjgdnQwwT2NBfNSOFNt/1hTH3?=
+ =?us-ascii?Q?+pkqLw6yhdByAxeIgo3YwvkKcESvV0sRiBglcquJ213g7G9OSnH9c8UFByzA?=
+ =?us-ascii?Q?v1a8VeGoFqT6ZtFmDvRId7pYV85UITQsjrgqYmvLbRqMvAZ7FRr+O5vxvbAs?=
+ =?us-ascii?Q?+rcP7wYRrq44v7HGIZqKuPf1BPFc1EVI6W64xm5H0qPDvImXIEoXq0fDvuJk?=
+ =?us-ascii?Q?gl1pO3F+XEA/fC/sAuFc5kdfL9MvIuUQrIldye9ekU5AohzZ1Pp5rGxzK5bg?=
+ =?us-ascii?Q?42gCwf1TbXElXS4vl097m8lDMn1I/QzGAlAS0x/ilMemRQJulXETBU9j2OJH?=
+ =?us-ascii?Q?Rw15V2J1zhL0+kzJCZs26Wds06XaCoyn8fLtm5lTqJ5iAvC03lrrqEi+mhQr?=
+ =?us-ascii?Q?/yc4hUj7BJQ33TmCmDAJ5oGpeA8z8BWoAjAerFshxvfFPwBrEq2j+5R3Pcyf?=
+ =?us-ascii?Q?PK4Xi1tl6lJGY19MrxZFY8cv7+gSXKE1gSEDAfollhlLsAWXkKuUw/QdoiDZ?=
+ =?us-ascii?Q?83nrALpFlEcJOel7hJUhAWd7q1sQhHZMwT00jp/AlXOiVon0ATnLXC6IO9yu?=
+ =?us-ascii?Q?UX4JaLtlFVgrhTkk6ZSyGGX0HqAdg9J/24QNJhi94R8LQNII01JA8/7F1GDM?=
+ =?us-ascii?Q?dMoF4/duLWib2e963gYk4qbQarzFluQQAVpLb7MN0eEA3ZpKMRCG4pl+JAXw?=
+ =?us-ascii?Q?Mo2gRSD1x1Sx37CPKe9qQiBuTYKwvn2Uxt5gqw9V3VjoY7z/zwCiX4GSRTP2?=
+ =?us-ascii?Q?/vVasp4aWiPZlLV/r+bGaA3FCVNvU2hC8gGLolLUOkPA16IDYa2ifp/dSuUa?=
+ =?us-ascii?Q?/B3m42wZujnYgknBjFiWoUv0WhyiQVY1/EE3QnNvTDePoqaZZrxR+g4ALtOy?=
+ =?us-ascii?Q?si4UErPUNprciHTHUJUKgvbejYWp9Xf7J1GUHrh3W6K3vzmym6zIbmNvW9ji?=
+ =?us-ascii?Q?gbteAkkjvZ6myhtHV7SEfUIAYMtE1qzR42CCVzfdoBO495b4Se14v+Y5Xve1?=
+ =?us-ascii?Q?/+YFpNVUy0S1bAPpkp3nn86Sic3ObmyLIKl6wjroukmd14LevqzdGz6KY2nz?=
+ =?us-ascii?Q?8nToNYbHElTo4IGXOKaHdWGShcF+QOflKXmY/yCpRyEWiFq4oNjtEF8q+wFO?=
+ =?us-ascii?Q?PqzT4y+qpwo8NnG94vlP5zZVz6Lbq5Dh1RusviYvYfPNGa4Km5AhKY0djeFv?=
+ =?us-ascii?Q?zgq//e9LlBQtoTmDwzBfo7+1fVK+PHElPaAI9Mfs3000m7b9PJtdZ2lRLC8u?=
+ =?us-ascii?Q?qFYCxmfuCclr2tVijLZXbAG1XJzv7HOA41VlvQlrCHZ6BMGIozaEjZaUBAGC?=
+ =?us-ascii?Q?TA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|BN0PR11MB5694:EE_
-X-MS-Office365-Filtering-Correlation-Id: 822bf6c6-4b76-41e0-0ac4-08dbb0217c53
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8Jnqckgp5K6Mlks+2Vd//yNCmYyNs0PMU7BL0H0WooJaTP8eJ0Zyn3ANkOR89+bnWQ1gwpQdNJcQxOztQyi6FNAEfDE618+F4uQIx+rM13McDmMJGHGJb2SsFBhsgUNEaaIGT0lcS1l+dhAOy38RR+LU09argidswHtErGlHAbsgUfVTP1+w5sbEud71klvyCa9wY247PAgm8uLfDzPAmmHkU8oYmXFF/Pm46ygrkIp0GilOFUEHBNdAIv1bt+pLEYpvpFoWl46bXeR9nXHcnODri+X6CocrNUvEWg0ZwX2vls0fu4nZNE7bAyvi75GTPnslIP3qjsaMfkNR5vSqvUGzzLpIQUK/GbwCJIvnODGVGe9L2AwXDFi2cf8DBla9bVnMsIC7DddNPfgRAV9H7qg8Nyu5Z0HLfdWUZhyC6uWRp/ZNPHA54kwvocuXpc/1M1lxvay/NX9Yk4mmq2R36enDwB1TofLpQgGEd15LDB0Or/eBUNuHXY5mYHOgNDUtmwRsCIq/blbnT/WwP9eIntw8oQBzmMpGWkuLQOAqJRbrYZ2K1L/B/eRUnjwCG3kpuhjWAMZkN7iwKJx1G8Z9LA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(366004)(376002)(136003)(396003)(451199024)(186009)(1800799009)(6512007)(53546011)(6666004)(6486002)(6506007)(9686003)(26005)(82960400001)(38100700002)(7416002)(4326008)(5660300002)(8676002)(8936002)(86362001)(2906002)(30864003)(41300700001)(316002)(54906003)(66476007)(66556008)(66946007)(110136005)(966005)(478600001)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QVgzanpmcTF2azNpREVaLzhaK3BRRUs4WDlDZkNPMmk0Zy9LdGZSMGt3ZnNL?=
- =?utf-8?B?ZnZLYk83UGRsTXlUUXVwUW5XQjU5QnpjNlVzR2ExZ3loZ1gvaG5jdGo5b3Qr?=
- =?utf-8?B?Z1ViOTdFRDZuTHVKLzNoMFBDVGVOaERsRnNhYWI4MkJEVU5VNmxibklqM1hL?=
- =?utf-8?B?bHdQM2ZCb2NjeFZwR0Jib0x3UGdWRmJwakNudGZiK3RzRUQ4TWMvWlBhaVhS?=
- =?utf-8?B?T1pyT3JyanRHRkp1Qk4vYmRDaVZoNVhkUVc2dlVrZ3FtNitscHJ5YlFQNUJJ?=
- =?utf-8?B?ak15aFlsL2N5d3hwZWU0NEJjMVhsWjBWMXJZbWxDNWtmSm5GQnpDenhnWmVV?=
- =?utf-8?B?QWRrbVN5QStGV0pPMWFhZ1ZqdDgwemgxa0k0U3RFSFhjNThqSXBtSGNUVkly?=
- =?utf-8?B?dm50ZXpMQ2JCZSt5aGZrOXlvZG1tR2diYlZDRzRXUWUzd1NJSklVQVJDOFVO?=
- =?utf-8?B?T3I2b2E4RC9NVGdvZSt5aG43dTVwTVlxWTU1N1lmL2hPS0ZGRG4vSVhKSUtL?=
- =?utf-8?B?UGRQdHFuN3BSNXNSYjJibmpjRzBUTHlnTFBHVUprUmpQNm5NeTB0Rzk4UUZL?=
- =?utf-8?B?VTZwTHB0WmNHWGdMT0U3ZWRUZDZsTWJFMG94STRHRUg2SjRTU1paWDRNMG9J?=
- =?utf-8?B?L2dxb1BjWWVqd0p0SEhkbEcrZjh2VVVMRzV5czd6REFnQmpMenhzUlVxTDZB?=
- =?utf-8?B?YVQ5N1JQZHR1cjZ0SEdxWVcrVU44aCsrTnNtbTBNSmVmazNsN214QU9heUE2?=
- =?utf-8?B?TXVuOXY5aEZvMXhJdEVsS3MwUll1MlNNMVpaNjMvdXY2T2NKcHN5Zkx2cnF6?=
- =?utf-8?B?SytLT2ZObmJZejlickNBUkdZSkdYKzVObTgzNm12RjBpN3oxZFhESWcxRHRU?=
- =?utf-8?B?ZDJiSlMrZ3VXZGlZZkJRbU5MVm5WSkR0SlA5ZmwxKzVqKzk0cFY3KzNCQWNt?=
- =?utf-8?B?L3BtOVl6OFBmbDMyaldPalVWUng4MHhuRVRCMVRoUStLTTUvdFBmVERqTmc4?=
- =?utf-8?B?OStaaDRrbjFJMzRsbVZScVBzZlMyU3NJODF5S1NWTStXVzUrMnlnelFRMEd6?=
- =?utf-8?B?VUsrOFI1a0xNVW1aZkpDNFJhQnNEZHM4R0RlRUVkOFQ3Nk5oeGJOTFc4U2Z3?=
- =?utf-8?B?MVdTWWd0ODNHSm5WTDJyZ3Exc2FSbTU5OHFEWFlQOEJrMWZ1TEZZUVNNSURr?=
- =?utf-8?B?QXpudGNERWdYS2g0QVFlR2VNMU9VNU5tQWhPaWdOTDlVWTR1MGIxOHNhcFZw?=
- =?utf-8?B?WHJUdGJlMFZoUjEyNnZENEFCcW0yV1NJa3k3NlZTZDNaWjhTcmpCckNhUldJ?=
- =?utf-8?B?VjNGVFhVVHdOK0pVMzRyQkJqWVBQdVlabXlMZ2t4YTRCWllydlV1L3V5SE14?=
- =?utf-8?B?bkp6eVdyMzBDY2NHQkR5T2pQdDdEM0NWQU15YXBPZFR2VEE3NkFBQVZEZWtv?=
- =?utf-8?B?M24rbCszS29NT3kyeFg5SnYvME1CRGJuMFFhODZwcWk2aDE2MVQ4ZXhaOUtm?=
- =?utf-8?B?N1A2Q0ZzWUIrSlVBaGVYMzR1dm1rTlNLTE1qR0NLUVowRlNZY0U2dEJlWkdI?=
- =?utf-8?B?S2k1S0R5UTJIODFyNlRIcHdDN0ZDNXlzckpvTFJTNk03SFVUSVNDRldqdkZM?=
- =?utf-8?B?SXJrb0RQNThNVDdUUWY0S0gwaGR6YjhXYTBGaDFyQ2UyS0diRHlManJIVHdT?=
- =?utf-8?B?cE5rcjQ1a1NmaWFkdGM5M2Q4UXJPTlErTTZycUFlSDVHaWlJUFU1RmdhZzI3?=
- =?utf-8?B?V0F3L0NLL05xeVBWcG5HMzFRdDhzUHdxYk9JWVB2R3ovOVlFN0c2Tk9jcGFJ?=
- =?utf-8?B?aEdCbDdOY1hXdFlyMkRUR2VycnZhZVZnZ3pzcklMcm1rMTB5aEIxbEFRSjRo?=
- =?utf-8?B?cWtSQ0Jlb3Vsdzk4SzNHWWxlMi9ZdFRUS3VZQ3hQcnR2c1N3cGRKaXFXNHVG?=
- =?utf-8?B?SjNsMzVjbGlLZ3lvQ0t6Mk5ITHVwRkdGSGxIK3JUUG5ZeS85UGpuN2ZDei9a?=
- =?utf-8?B?TW91c3NSUXdPUVFQQ1N3OFVTTnlPb0pYMlN1RSs2dC9xdzlvN1VNWW10dFo2?=
- =?utf-8?B?OHUxSzdnYm0relpzYjRvbU5ZL1VsbjhOQzVsOWIxblFIYVVBZjZwQ1F5M1lK?=
- =?utf-8?B?U0xJSzlzMzJqdm1GdzBtVytUR1gvdTE4ajVaQWVjckV1SzFhcGh5b1BBWXJQ?=
- =?utf-8?B?M0E9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 822bf6c6-4b76-41e0-0ac4-08dbb0217c53
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-OriginatorOrg: cisco.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2023 04:10:07.0843
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6189.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb0d206a-2745-44a8-9fb2-08dbb0229a89
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Sep 2023 04:18:07.0703
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hcdNKvzdhtkg93aT1IAoCfYhpPpuvfKlJIe9cwlvisXOm4SdSbp60jNbnGNJMUQz/C9hUt8ETFfAKeBwZZZaATB9ZsR6gGEBszkdhektzmk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR11MB5694
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: HP6f+P76N6cY+TT3FFzQdgDwFZrW764dgp/GSH1Om1LWZgZzTLgcrgEyajc4/z9M4tOxtehEY+ZuVtq7RRpCvQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6800
+X-Outbound-SMTP-Client: 173.37.147.253, alln-opgw-5.cisco.com
+X-Outbound-Node: alln-core-5.cisco.com
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -176,326 +195,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kuppuswamy Sathyanarayanan wrote:
-> Hi Erdem,
-> 
-> Thanks for the review.
-> 
-> On 9/7/2023 6:30 PM, Erdem Aktas wrote:
-> > On Wed, Sep 6, 2023 at 7:54 PM Kuppuswamy Sathyanarayanan
-> > <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
-> >>
-> >> In TDX guest, the attestation process is used to verify the TDX guest
-> >> trustworthiness to other entities before provisioning secrets to the
-> >> guest. The First step in the attestation process is TDREPORT
-> >> generation, which involves getting the guest measurement data in the
-> >> format of TDREPORT, which is further used to validate the authenticity
-> >> of the TDX guest. TDREPORT by design is integrity-protected and can
-> >> only be verified on the local machine.
-> >>
-> >> To support remote verification of the TDREPORT (in a SGX-based
-> >> attestation), the TDREPORT needs to be sent to the SGX Quoting Enclave
-> >> (QE) to convert it to a remote verifiable Quote. SGX QE by design can
-> > s/remote/remotely ?
-> >> only run outside of the TDX guest (i.e. in a host process or in a
-> >> normal VM) and guest can use communication channels like vsock or
-> >> TCP/IP to send the TDREPORT to the QE. But for security concerns, the
-> >> TDX guest may not support these communication channels. To handle such
-> >> cases, TDX defines a GetQuote hypercall which can be used by the guest
-> >> to request the host VMM to communicate with the SGX QE. More details
-> >> about GetQuote hypercall can be found in TDX Guest-Host Communication
-> >> Interface (GHCI) for Intel TDX 1.0, section titled
-> >> "TDG.VP.VMCALL<GetQuote>".
-> >>
-> >> Trusted Security Module (TSM) [1] exposes a common ABI for Confidential
-> >> Computing Guest platforms to get the measurement data via ConfigFS.
-> >> Extend the TSM framework and add support to allow an attestation agent
-> >> to get the TDX Quote data (included usage example below).
-> >>
-> >>   report=/sys/kernel/config/tsm/report/report0
-> >>   mkdir $report
-> >>   dd if=/dev/urandom bs=64 count=1 > $report/inblob
-> >>   hexdump -C $report/outblob
-> >>   rmdir $report
-> >>
-> >> GetQuote TDVMCALL requires TD guest pass a 4K aligned shared buffer
-> >> with TDREPORT data as input, which is further used by the VMM to copy
-> >> the TD Quote result after successful Quote generation. To create the
-> >> shared buffer, allocate a large enough memory and mark it shared using
-> >> set_memory_decrypted() in tdx_guest_init(). This buffer will be re-used
-> >> for GetQuote requests in the TDX TSM handler.
-> >>
-> >> Although this method reserves a fixed chunk of memory for GetQuote
-> >> requests, such one time allocation can help avoid memory fragmentation
-> >> related allocation failures later in the uptime of the guest.
-> >>
-> >> Since the Quote generation process is not time-critical or frequently
-> >> used, the current version uses a polling model for Quote requests and
-> >> it also does not support parallel GetQuote requests.
-> >>
-> >> Link: https://lore.kernel.org/lkml/169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com/ [1]
-> >> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> >> ---
-> >>
-> >> Hi All,
-> >>
-> >> The previous version of this patch series [1] added support for TDX
-> >> Guest Quote generation via an IOCTL interface. Since we have multiple
-> >> vendors implementing such interface, to avoid ABI proliferation, Dan
-> >> proposed using a common ABI for it and submitted the Trusted Secure
-> >> module (TSM) report ABI support [2]. This patchset extends the
-> >> TSM REPORTS to implement the TDX Quote generation support. Since there
-> >> is a change in interface type, I have dropped the previous Acks.
-> >>
-> >> [1] https://lore.kernel.org/lkml/3c57deb0-a311-2aad-c06b-4938e33491b5@linux.intel.com/
-> >> [2] https://lore.kernel.org/lkml/169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com/
-> >>
-> >> Changes since previous version:
-> >> * Used ConfigFS interface instead of IOCTL interface.
-> >> * Used polling model for Quote generation and dropped the event notification IRQ support.
-> >>
-> >>  arch/x86/coco/tdx/tdx.c                 |  21 +++
-> >>  arch/x86/include/asm/shared/tdx.h       |   1 +
-> >>  arch/x86/include/asm/tdx.h              |   2 +
-> >>  drivers/virt/coco/tdx-guest/Kconfig     |   1 +
-> >>  drivers/virt/coco/tdx-guest/tdx-guest.c | 205 +++++++++++++++++++++++-
-> >>  5 files changed, 229 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-> >> index 1d6b863c42b0..20414ed82fc5 100644
-> >> --- a/arch/x86/coco/tdx/tdx.c
-> >> +++ b/arch/x86/coco/tdx/tdx.c
-> >> @@ -104,6 +104,27 @@ int tdx_mcall_get_report0(u8 *reportdata, u8 *tdreport)
-> >>  }
-> >>  EXPORT_SYMBOL_GPL(tdx_mcall_get_report0);
-> >>
-> >> +/**
-> >> + * tdx_hcall_get_quote() - Wrapper to request TD Quote using GetQuote
-> >> + *                         hypercall.
-> >> + * @buf: Address of the directly mapped shared kernel buffer which
-> >> + *      contains TDREPORT data. The same buffer will be used by
-> >> + *      VMM to store the generated TD Quote output.
-> >> + * @size: size of the tdquote buffer (4KB-aligned).
-> >> + *
-> >> + * Refer to section titled "TDG.VP.VMCALL<GetQuote>" in the TDX GHCI
-> >> + * v1.0 specification for more information on GetQuote hypercall.
-> >> + * It is used in the TDX guest driver module to get the TD Quote.
-> >> + *
-> >> + * Return 0 on success or error code on failure.
-> >> + */
-> >> +u64 tdx_hcall_get_quote(u8 *buf, size_t size)
-> >> +{
-> >> +       /* Since buf is a shared memory, set the shared (decrypted) bits */
-> >> +       return _tdx_hypercall(TDVMCALL_GET_QUOTE, cc_mkdec(virt_to_phys(buf)), size, 0, 0);
-> >> +}
-> >> +EXPORT_SYMBOL_GPL(tdx_hcall_get_quote);
-> >> +
-> >>  static void __noreturn tdx_panic(const char *msg)
-> >>  {
-> >>         struct tdx_hypercall_args args = {
-> >> diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
-> >> index 7513b3bb69b7..9eab19950f39 100644
-> >> --- a/arch/x86/include/asm/shared/tdx.h
-> >> +++ b/arch/x86/include/asm/shared/tdx.h
-> >> @@ -22,6 +22,7 @@
-> >>
-> >>  /* TDX hypercall Leaf IDs */
-> >>  #define TDVMCALL_MAP_GPA               0x10001
-> >> +#define TDVMCALL_GET_QUOTE             0x10002
-> >>  #define TDVMCALL_REPORT_FATAL_ERROR    0x10003
-> >>
-> >>  #ifndef __ASSEMBLY__
-> >> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-> >> index 603e6d1e9d4a..ebd1cda4875f 100644
-> >> --- a/arch/x86/include/asm/tdx.h
-> >> +++ b/arch/x86/include/asm/tdx.h
-> >> @@ -52,6 +52,8 @@ bool tdx_early_handle_ve(struct pt_regs *regs);
-> >>
-> >>  int tdx_mcall_get_report0(u8 *reportdata, u8 *tdreport);
-> >>
-> >> +u64 tdx_hcall_get_quote(u8 *buf, size_t size);
-> >> +
-> >>  #else
-> >>
-> >>  static inline void tdx_early_init(void) { };
-> >> diff --git a/drivers/virt/coco/tdx-guest/Kconfig b/drivers/virt/coco/tdx-guest/Kconfig
-> >> index 14246fc2fb02..22dd59e19431 100644
-> >> --- a/drivers/virt/coco/tdx-guest/Kconfig
-> >> +++ b/drivers/virt/coco/tdx-guest/Kconfig
-> >> @@ -1,6 +1,7 @@
-> >>  config TDX_GUEST_DRIVER
-> >>         tristate "TDX Guest driver"
-> >>         depends on INTEL_TDX_GUEST
-> >> +       select TSM_REPORTS
-> >>         help
-> >>           The driver provides userspace interface to communicate with
-> >>           the TDX module to request the TDX guest details like attestation
-> >> diff --git a/drivers/virt/coco/tdx-guest/tdx-guest.c b/drivers/virt/coco/tdx-guest/tdx-guest.c
-> >> index 5e44a0fa69bd..135d89a7e418 100644
-> >> --- a/drivers/virt/coco/tdx-guest/tdx-guest.c
-> >> +++ b/drivers/virt/coco/tdx-guest/tdx-guest.c
-> >> @@ -12,12 +12,59 @@
-> >>  #include <linux/mod_devicetable.h>
-> >>  #include <linux/string.h>
-> >>  #include <linux/uaccess.h>
-> >> +#include <linux/set_memory.h>
-> >> +#include <linux/io.h>
-> >> +#include <linux/delay.h>
-> >> +#include <linux/tsm.h>
-> >>
-> >>  #include <uapi/linux/tdx-guest.h>
-> >>
-> >>  #include <asm/cpu_device_id.h>
-> >>  #include <asm/tdx.h>
-> >>
-> >> +/*
-> >> + * Intel's SGX QE implementation generally uses Quote size less
-> >> + * than 8K (2K Quote data + ~5K of ceritificate blob).
-> > s/ceritificate/certificate
-> >> + */
-> >> +#define GET_QUOTE_BUF_SIZE             SZ_8K
-> >> +
-> >> +#define GET_QUOTE_CMD_VER              1
-> >> +
-> >> +/* TDX GetQuote status codes */
-> >> +#define GET_QUOTE_SUCCESS              0
-> >> +#define GET_QUOTE_IN_FLIGHT            0xffffffffffffffff
-> >> +
-> >> +/* struct tdx_quote_buf: Format of Quote request buffer.
-> >> + * @version: Quote format version, filled by TD.
-> >> + * @status: Status code of Quote request, filled by VMM.
-> >> + * @in_len: Length of TDREPORT, filled by TD.
-> >> + * @out_len: Length of Quote data, filled by VMM.
-> >> + * @data: Quote data on output or TDREPORT on input.
-> >> + *
-> >> + * More details of Quote request buffer can be found in TDX
-> >> + * Guest-Host Communication Interface (GHCI) for Intel TDX 1.0,
-> >> + * section titled "TDG.VP.VMCALL<GetQuote>"
-> >> + */
-> >> +struct tdx_quote_buf {
-> >> +       u64 version;
-> >> +       u64 status;
-> >> +       u32 in_len;
-> >> +       u32 out_len;
-> >> +       u8 data[];
-> >> +};
-> >> +
-> >> +/* Quote data buffer */
-> >> +static void *quote_data;
-> >> +
-> >> +/* Lock to streamline quote requests */
-> >> +static DEFINE_MUTEX(quote_lock);
-> >> +
-> >> +/*
-> >> + * GetQuote request timeout in seconds. Expect that 30 seconds
-> >> + * is enough time for QE to respond to any Quote requests.
-> >> + */
-> >> +static u32 getquote_timeout = 30;
-> >> +
-> >>  static long tdx_get_report0(struct tdx_report_req __user *req)
-> >>  {
-> >>         u8 *reportdata, *tdreport;
-> >> @@ -53,6 +100,131 @@ static long tdx_get_report0(struct tdx_report_req __user *req)
-> >>         return ret;
-> >>  }
-> >>
-> >> +static void free_quote_buf(void *buf)
-> >> +{
-> >> +       size_t len = PAGE_ALIGN(GET_QUOTE_BUF_SIZE);
-> >> +       unsigned int count = len >> PAGE_SHIFT;
-> >> +
-> >> +       set_memory_encrypted((unsigned long)buf, count);
-> > Why not check the return error? if conversion fails (even though
-> > unlikely), we should at least print an error message.
-> 
-> Ok. Since it is unlikely to fail, we can use WARN_ON().
-> 
-> WARN_ON(set_memory_encrypted((unsigned long)buf, count))
+Hi Greg,
 
-No, panic_on_warn turns recoverable errors into fatal errors. Just
-pr_err(). I also assume you don't want memory that failed to be set back
-to encrypted into the free page pool, so it seems safer to leak the
-memory at this point.
+I want to merge this change into v6.1.52 stable kernel version.
 
-> 
-> >> +
-> >> +       free_pages_exact(buf, len);
-> >> +}
-> >> +
-> >> +static void *alloc_quote_buf(void)
-> >> +{
-> >> +       size_t len = PAGE_ALIGN(GET_QUOTE_BUF_SIZE);
-> >> +       unsigned int count = len >> PAGE_SHIFT;
-> >> +       void *addr;
-> >> +       int ret;
-> >> +
-> >> +       addr = alloc_pages_exact(len, GFP_KERNEL | __GFP_ZERO);
-> >> +       if (!addr)
-> >> +               return NULL;
-> >> +
-> >> +       ret = set_memory_decrypted((unsigned long)addr, count);
-> >> +       if (ret) {
-> >> +               free_pages_exact(addr, len);
-> >> +               return NULL;
-> >> +       }
-> >> +
-> >> +       return addr;
-> >> +}
-> >> +
-> >> +/*
-> >> + * wait_for_quote_completion() - Wait for Quote request completion
-> >> + * @quote_buf: Address of Quote buffer.
-> >> + * @timeout: Timeout in seconds to wait for the Quote generation.
-> >> + *
-> >> + * As per TDX GHCI v1.0 specification, sec titled "TDG.VP.VMCALL<GetQuote>",
-> >> + * the status field in the Quote buffer will be set to GET_QUOTE_IN_FLIGHT
-> >> + * while VMM processes the GetQuote request, and will change it to success
-> >> + * or error code after processing is complete. So wait till the status
-> >> + * changes from GET_QUOTE_IN_FLIGHT or the request timedout.
-> > s/timedout/being timed out?
-> >> + */
-> >> +static int wait_for_quote_completion(struct tdx_quote_buf *quote_buf, u32 timeout)
-> >> +{
-> >> +       int i = 0;
-> >> +
-> >> +       /*
-> >> +        * Quote requests usually take a few seconds to complete, so waking up
-> >> +        * once per second to recheck the status is fine for this use case.
-> >> +        */
-> >> +       while (quote_buf->status == GET_QUOTE_IN_FLIGHT && i++ < timeout)
-> >> +               ssleep(1);
-> > Would not this loop cause soft lock (or even panic) if getquote waits
-> > for 30s? Should we not yield?
-> 
-> Since we are sleeping for a second in each cycle (which will relinquish the CPU
-> to other threads), it should not create a soft lockup.
+I have added these details in my patch subject message. Sorry for inconveni=
+ence.
 
-No, this would need to release the lock while sleeping or otherwise make
-this interruptible to make that happen. In fact it should release the
-lock or use mutex_lock_interruptible() and configfs-tsm should switch to
-interruptible synchronization.
+Thanks & Regards,
+Deepak
+-----Original Message-----
+From: Greg KH <gregkh@linuxfoundation.org>=20
+Sent: Thursday, September 7, 2023 3:47 PM
+To: Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco) <deeratho@cisc=
+o.com>
+Cc: stable@vger.kernel.org; linux-kernel@vger.kernel.org
+Subject: Re: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free bug in =
+btsdio_remove due to race condition
 
-> 
-> >> +
-> >> +       return (i == timeout) ? -ETIMEDOUT : 0;
-> >> +}
-> >> +
-> >> +static u8 *tdx_report_new(const struct tsm_desc *desc, void *data, size_t *outblob_len)
-> >> +{
-> >> +       struct tdx_quote_buf *quote_buf = quote_data;
-> >> +       int ret;
-> >> +       u8 *buf;
-> >> +       u64 err;
-> >> +
-> >> +       guard(mutex)(&quote_lock);
-> > I understand that this does not support parallel getQuote requests but
-> > if the user space for some reason makes multiple requests, each
-> > request will finish until the previous ones are completed in kernel
-> 
-> Softlockup will only happen if a thread hogs the CPU for a long time without
-> relinquishing it. In our case, user processes waiting for the lock will be in
-> sleep state. So it should not create a lockup issue.
+On Wed, Sep 06, 2023 at 05:45:25PM +0530, Deepak Rathore wrote:
+> From: Zheng Wang <zyytlz.wz@163.com>
+>=20
+> [ Upstream commit 73f7b171b7c09139eb3c6a5677c200dc1be5f318 ]
+>=20
+> In btsdio_probe, the data->work is bound with btsdio_work. It will be=20
+> started in btsdio_send_frame.
+>=20
+> If the btsdio_remove runs with a unfinished work, there may be a race=20
+> condition that hdev is freed but used in btsdio_work. Fix it by=20
+> canceling the work before do cleanup in btsdio_remove.
+>=20
+> Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
+> Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+> Signed-off-by: Deepak Rathore <deeratho@cisco.com>
+>=20
 
-Stuck in uninterruptible sleep is another failure mode of the lockup
-detector. The other threads waiting to acquire the mutex will fire being
-stuck behind this thread.
+What tree(s) are you wanting this applied to?
+
+thanks,
+
+greg k-h
