@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E96798D9E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A20B798DA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344332AbjIHSWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57280 "EHLO
+        id S1344852AbjIHSX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:23:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242867AbjIHSVX (ORCPT
+        with ESMTP id S1344134AbjIHSV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:21:23 -0400
+        Fri, 8 Sep 2023 14:21:27 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E43C2116;
-        Fri,  8 Sep 2023 11:19:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF950C433CD;
-        Fri,  8 Sep 2023 18:19:09 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CB82D66;
+        Fri,  8 Sep 2023 11:19:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8E7AC116A7;
+        Fri,  8 Sep 2023 18:19:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197151;
-        bh=u9dEwrOvXbjzBfCMU9FaZiUDZQVrozxBy7cifxEB0KQ=;
+        s=k20201202; t=1694197153;
+        bh=0YXk5J/NyZx5HU6ntAlvQZ93TdO00vwCrjzDesKa/gM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YNtplmLSmAG0+H4Uob6/GTu/Snkde286SocE8gnVae02Kub1+jMTpOPbB0YkgExAt
-         ZA4+OAS8OWYJ7REUgNhUbIkwCjRirq1n2sSPmsCu4ngyLUVS1+JxCX5NA29DQ7IIaB
-         81QPTt/neGTgAPLGHONSguESqp0Z+Obs2MHgraBXxQCKMSdvU8ney/jLdfu8/h8SMz
-         cCiGpLtskkqNcTLmwC/EMjuKos91pgDHXwKqEvea0kcHc5aPWcDq6M1jTcTAQ31OUr
-         SFrV0n9IOq/UeMjBpjawJixS3RV+WPdT2om7OBoQ6EPcWtVAHetM17xkRhMbGabKtf
-         dFDeFvfd7I46A==
+        b=oV/uEfKo0e2e5wErv1J/aI7d05JK2AN6Iv/bXrTTBnIDebQqGrTMOQN6UJECvBLMO
+         sMS7RiepuTsRQNCy0yKYyUtabVB5eojvQ0gAP14d78FTj2gWRKtUaS+eWhgiaLFmcK
+         jKP+/zNqjc+WObFEo+Dof8be5rNReYMmrbnScepyTWRbr6ZnYb6SU3EUFjQzDk8cfP
+         KBaHna6L3l25i/suEFkjaE1HjmNpZu3ODD90vdQTt7bIVJ1BDywrundko4Y/7BOonb
+         10hFzCzg9ly4xsboW3mM5UgstHbTCADD6aapVZqgjQAGdia6vvS4VCojO38pLsfh6w
+         dhAaJyPsbAHjg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Johannes Berg <johannes.berg@intel.com>,
-        syzbot+09d1cd2f71e6dd3bfd2c@syzkaller.appspotmail.com,
+        syzbot+999fac712d84878a7379@syzkaller.appspotmail.com,
         Sasha Levin <sashal@kernel.org>, johannes@sipsolutions.net,
         davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
         pabeni@redhat.com, linux-wireless@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 22/26] wifi: cfg80211: ocb: don't leave if not joined
-Date:   Fri,  8 Sep 2023 14:18:00 -0400
-Message-Id: <20230908181806.3460164-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 23/26] wifi: mac80211: check for station first in client probe
+Date:   Fri,  8 Sep 2023 14:18:01 -0400
+Message-Id: <20230908181806.3460164-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181806.3460164-1-sashal@kernel.org>
 References: <20230908181806.3460164-1-sashal@kernel.org>
@@ -57,33 +57,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit abc76cf552e13cfa88a204b362a86b0e08e95228 ]
+[ Upstream commit 67dfa589aa8806c7959cbca2f4613b8d41c75a06 ]
 
-If there's no OCB state, don't ask the driver/mac80211 to
-leave, since that's just confusing. Since set/clear the
-chandef state, that's a simple check.
+When probing a client, first check if we have it, and then
+check for the channel context, otherwise you can trigger
+the warning there easily by probing when the AP isn't even
+started yet. Since a client existing means the AP is also
+operating, we can then keep the warning.
 
-Reported-by: syzbot+09d1cd2f71e6dd3bfd2c@syzkaller.appspotmail.com
+Also simplify the moved code a bit.
+
+Reported-by: syzbot+999fac712d84878a7379@syzkaller.appspotmail.com
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/ocb.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/mac80211/cfg.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/net/wireless/ocb.c b/net/wireless/ocb.c
-index 27a1732264f95..29afaf3da54f3 100644
---- a/net/wireless/ocb.c
-+++ b/net/wireless/ocb.c
-@@ -68,6 +68,9 @@ int __cfg80211_leave_ocb(struct cfg80211_registered_device *rdev,
- 	if (!rdev->ops->leave_ocb)
- 		return -EOPNOTSUPP;
+diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+index 23a44edcb11f7..cf3453b532d67 100644
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@ -3991,19 +3991,20 @@ static int ieee80211_probe_client(struct wiphy *wiphy, struct net_device *dev,
+ 	mutex_lock(&local->mtx);
  
-+	if (!wdev->u.ocb.chandef.chan)
-+		return -ENOTCONN;
+ 	rcu_read_lock();
++	sta = sta_info_get_bss(sdata, peer);
++	if (!sta) {
++		ret = -ENOLINK;
++		goto unlock;
++	}
 +
- 	err = rdev_leave_ocb(rdev, dev);
- 	if (!err)
- 		memset(&wdev->u.ocb.chandef, 0, sizeof(wdev->u.ocb.chandef));
++	qos = sta->sta.wme;
++
+ 	chanctx_conf = rcu_dereference(sdata->vif.bss_conf.chanctx_conf);
+ 	if (WARN_ON(!chanctx_conf)) {
+ 		ret = -EINVAL;
+ 		goto unlock;
+ 	}
+ 	band = chanctx_conf->def.chan->band;
+-	sta = sta_info_get_bss(sdata, peer);
+-	if (sta) {
+-		qos = sta->sta.wme;
+-	} else {
+-		ret = -ENOLINK;
+-		goto unlock;
+-	}
+ 
+ 	if (qos) {
+ 		fc = cpu_to_le16(IEEE80211_FTYPE_DATA |
 -- 
 2.40.1
 
