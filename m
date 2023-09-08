@@ -2,47 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D235D798F60
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D8A798F5A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344824AbjIHTb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38952 "EHLO
+        id S241688AbjIHTbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344842AbjIHTbx (ORCPT
+        with ESMTP id S1344847AbjIHTbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:31:53 -0400
+        Fri, 8 Sep 2023 15:31:36 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0BD211D;
-        Fri,  8 Sep 2023 12:31:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77506C4339A;
-        Fri,  8 Sep 2023 19:31:01 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7D21FC1;
+        Fri,  8 Sep 2023 12:31:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D1E3C433C7;
+        Fri,  8 Sep 2023 19:31:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201463;
-        bh=FNhRXj0vE4XTs9u78Jg7KGumTQtffqkpeiDGPEe1NNU=;
+        s=k20201202; t=1694201477;
+        bh=SfVdZao8/lvmacCnZXsfaOMnq2FGvbw1vbpw+ZorL4g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IEUXji/JAFMckijVjCfmxeZPzD7jsDvcDL4mnw5C/x+dR1cLe+7N7V0o+8ROjmuSB
-         eFRZrp839ipeD8rLh9kvMS6yh9UyVVgdMV7nMQybbFbKiI3jIZtkWo+dVDPb4W0G6Q
-         0WRAUNYmLbAWIQQFX/8t/T+wDKHZj+oJBm03lRRI3mX5+49nRCL8RIRPMoC8AIDnPD
-         mX8QcmCxNvkWvzZOpDtdzhZjb2Eg3Fn2zZpO5dGpQ6f9OyzJYc5cuP+BeyjCcTDeHx
-         Q6JYbQPAGFL0E5G9IxCe5Y4f0B3yVbF222QkhSMWrZPVyD1XOUcoX+NPYF5phZGCiQ
-         UAA50flPIy2oQ==
+        b=i546ArwW0barsCTpuWIdShFrJnGqFavnz1OpG370tdC/gLnwb6Vg2OzID4Wpt51JE
+         qkJLizdnjBnLBNM2PQeSEuBl+n3O4zCbHkwOMKoznhC93iL+r0gN2O0S6aKgXB0o+G
+         1eWCr3kQqFMPmHrT+EfOa1lkJBY3U2cM5e18m3H4jzocTD5xz1WN3fFQ9/AhbdqQUy
+         UBAVpPa/XKmmtL/ahyQxY3MtS0wsHP5BwOjyo0gMs2G2KyEN0q1Llk81yTAADna4DW
+         DRJvjOJf64Dm+PZYLlS0IJqFeUnG1e1lyZNySwivlxPvggfg29pRE4jpnAPmb3ff11
+         6QO5fmm5ldGJA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alvin Lee <alvin.lee2@amd.com>, Samson Tam <samson.tam@amd.com>,
-        Tom Chung <chiahsuan.chung@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, harry.wentland@amd.com,
-        sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, jun.lei@amd.com, qingqing.zhuo@amd.com,
-        Dillon.Varone@amd.com, aurabindo.pillai@amd.com,
-        wenjing.liu@amd.com, Chris.Park@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.5 23/36] drm/amd/display: Use max memclk variable when setting max memclk
-Date:   Fri,  8 Sep 2023 15:28:34 -0400
-Message-Id: <20230908192848.3462476-23-sashal@kernel.org>
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, robdclark@gmail.com,
+        quic_abhinavk@quicinc.com, airlied@gmail.com, daniel@ffwll.ch,
+        quic_akhilpo@quicinc.com, dianders@chromium.org,
+        andersson@kernel.org, johan+linaro@kernel.org,
+        joel@joelfernandes.org, swboyd@chromium.org,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.5 24/36] drm/msm/adreno: Use quirk identify hw_apriv
+Date:   Fri,  8 Sep 2023 15:28:35 -0400
+Message-Id: <20230908192848.3462476-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908192848.3462476-1-sashal@kernel.org>
 References: <20230908192848.3462476-1-sashal@kernel.org>
@@ -60,40 +59,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alvin Lee <alvin.lee2@amd.com>
+From: Rob Clark <robdclark@chromium.org>
 
-[ Upstream commit 2b1b838ea8e5437ef06a29818d16e9efdfaf0037 ]
+[ Upstream commit 459f9e26e7d49f80f587d7592ccb78e00ab458e4 ]
 
-[Description]
-In overclocking scenarios the max memclk could be higher
-than the DC mode limit. However, for configs that don't
-support MCLK switching we need to set the max memclk to
-the overclocked max instead of the DC mode max or we
-could result in underflow.
+Rather than just open coding a list of gpu-id matches.
 
-Reviewed-by: Samson Tam <samson.tam@amd.com>
-Acked-by: Tom Chung <chiahsuan.chung@amd.com>
-Signed-off-by: Alvin Lee <alvin.lee2@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Patchwork: https://patchwork.freedesktop.org/patch/549764/
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c      | 3 +--
+ drivers/gpu/drm/msm/adreno/adreno_device.c | 4 ++++
+ drivers/gpu/drm/msm/adreno/adreno_gpu.h    | 1 +
+ 3 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c
-index cb992aca760dc..5fc78bf927bbc 100644
---- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c
-+++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c
-@@ -802,7 +802,7 @@ static void dcn32_set_hard_min_memclk(struct clk_mgr *clk_mgr_base, bool current
- 					khz_to_mhz_ceil(clk_mgr_base->clks.dramclk_khz));
- 		else
- 			dcn32_smu_set_hard_min_by_freq(clk_mgr, PPCLK_UCLK,
--					clk_mgr_base->bw_params->clk_table.entries[clk_mgr_base->bw_params->clk_table.num_entries_per_clk.num_memclk_levels - 1].memclk_mhz);
-+					clk_mgr_base->bw_params->max_memclk_mhz);
- 	} else {
- 		dcn32_smu_set_hard_min_by_freq(clk_mgr, PPCLK_UCLK,
- 				clk_mgr_base->bw_params->clk_table.entries[0].memclk_mhz);
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index b3ada1e7b598b..77901af95b5a3 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -2491,8 +2491,7 @@ struct msm_gpu *a6xx_gpu_init(struct drm_device *dev)
+ 	/* Quirk data */
+ 	adreno_gpu->info = info;
+ 
+-	if (adreno_is_a650(adreno_gpu) || adreno_is_a660_family(adreno_gpu))
+-		adreno_gpu->base.hw_apriv = true;
++	adreno_gpu->base.hw_apriv = !!(info->quirks & ADRENO_QUIRK_HAS_HW_APRIV);
+ 
+ 	a6xx_llc_slices_init(pdev, a6xx_gpu);
+ 
+diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+index ce8d0b2475bf1..5751077c201eb 100644
+--- a/drivers/gpu/drm/msm/adreno/adreno_device.c
++++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+@@ -325,6 +325,7 @@ static const struct adreno_info gpulist[] = {
+ 		},
+ 		.gmem = SZ_1M + SZ_128K,
+ 		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
++		.quirks = ADRENO_QUIRK_HAS_HW_APRIV,
+ 		.init = a6xx_gpu_init,
+ 		.zapfw = "a650_zap.mdt",
+ 		.hwcg = a650_hwcg,
+@@ -339,6 +340,7 @@ static const struct adreno_info gpulist[] = {
+ 		},
+ 		.gmem = SZ_1M + SZ_512K,
+ 		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
++		.quirks = ADRENO_QUIRK_HAS_HW_APRIV,
+ 		.init = a6xx_gpu_init,
+ 		.zapfw = "a660_zap.mdt",
+ 		.hwcg = a660_hwcg,
+@@ -351,6 +353,7 @@ static const struct adreno_info gpulist[] = {
+ 		},
+ 		.gmem = SZ_512K,
+ 		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
++		.quirks = ADRENO_QUIRK_HAS_HW_APRIV,
+ 		.init = a6xx_gpu_init,
+ 		.hwcg = a660_hwcg,
+ 		.address_space_size = SZ_16G,
+@@ -375,6 +378,7 @@ static const struct adreno_info gpulist[] = {
+ 		},
+ 		.gmem = SZ_4M,
+ 		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
++		.quirks = ADRENO_QUIRK_HAS_HW_APRIV,
+ 		.init = a6xx_gpu_init,
+ 		.zapfw = "a690_zap.mdt",
+ 		.hwcg = a690_hwcg,
+diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+index 845019891ad19..a925e04a2283c 100644
+--- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
++++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+@@ -32,6 +32,7 @@ enum {
+ #define ADRENO_QUIRK_TWO_PASS_USE_WFI		BIT(0)
+ #define ADRENO_QUIRK_FAULT_DETECT_MASK		BIT(1)
+ #define ADRENO_QUIRK_LMLOADKILL_DISABLE		BIT(2)
++#define ADRENO_QUIRK_HAS_HW_APRIV		BIT(3)
+ 
+ struct adreno_rev {
+ 	uint8_t  core;
 -- 
 2.40.1
 
