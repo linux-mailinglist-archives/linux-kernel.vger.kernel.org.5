@@ -2,46 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34869798C86
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD87798E01
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343530AbjIHSRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38676 "EHLO
+        id S240258AbjIHSZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233921AbjIHSRC (ORCPT
+        with ESMTP id S235767AbjIHSZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:17:02 -0400
+        Fri, 8 Sep 2023 14:25:24 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FD22120;
-        Fri,  8 Sep 2023 11:16:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E520C433B6;
-        Fri,  8 Sep 2023 18:13:44 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85117271D;
+        Fri,  8 Sep 2023 11:22:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF7F8C116A4;
+        Fri,  8 Sep 2023 18:13:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196825;
-        bh=9/PnDo7PI+SMCeuDLvQ08bsQaRciDUxuttuBzW6Z/z8=;
+        s=k20201202; t=1694196826;
+        bh=4u4AnPxK5/18OB5xMRnWw/LHyv+kk9Aq56inmwsRCnE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mu5Rs6/hz/v+Rq14kzsHey+fRH5xPIi6xExIB4nbg0iyOm4pj4YDwJY2Xur4cJFqF
-         PukhIl0+L/Z25yzxehgv+OAIODS/lK4EuN7IDJZlR+MBotynUopO2bWmGpzb5dNS7n
-         sV8/RkDvLorCnMFfd6hRxohOf1j5gsLX4/qKQJn4bjci69qftUzctjFXV4+V5vAVhP
-         EH+FDPGta/QqfaR4DcexOIMMf6o5Kms2PDobnW9vWa+pRoTdFNcafjliD4my9LSs9P
-         Xoqj3K7cvnFGvgDCSueVwt9EzZDMaQzwReXRttDBSL5EOQeWVXJPMt0iBEvmUsC6cM
-         PnLiiloyozxhQ==
+        b=IrWUvyZsg/XAdJmsBI36uDdltdrdGHXv89Z/xBLtPJdZiku3Fla15oltD+aDbtxem
+         vGTrRJfJg82CuR5tJvXSuMum7pX4dKcUP2RC9su+Dy5eDmf1mZ6qPKORMdsrCQ+FcQ
+         M9NUUExAL/OiJU3an6XRPEheQ+Y/xpjTjJFJzImIzlj+adjCBWqVbC1m+dbd/W2u6S
+         0/Kcw2nkz4PCtoLaAUzAdmzk29u/wC2rcZdTABPvQGj0+fMWDu9n3V7trZAc3JeOm2
+         y6stCuAc8voSBAOcS1XgEnHLOU2Ao8nHGKtTTpJED2ECHZw9zsU/5SjSzkeAiioaYy
+         7/T6t1XihDKYQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dongliang Mu <dzm91@hust.edu.cn>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
-        Kalle Valo <quic_kvalo@quicinc.com>,
-        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
+Cc:     Dmitry Antipov <dmantipov@yandex.ru>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@kernel.org>, Sasha Levin <sashal@kernel.org>,
         linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 08/45] wifi: ath9k: fix printk specifier
-Date:   Fri,  8 Sep 2023 14:12:49 -0400
-Message-Id: <20230908181327.3459042-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 09/45] wifi: rtw88: delete timer and free skb queue when unloading
+Date:   Fri,  8 Sep 2023 14:12:50 -0400
+Message-Id: <20230908181327.3459042-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181327.3459042-1-sashal@kernel.org>
 References: <20230908181327.3459042-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.5.2
@@ -55,63 +53,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <dzm91@hust.edu.cn>
+From: Dmitry Antipov <dmantipov@yandex.ru>
 
-[ Upstream commit 061115fbfb2ce5870c9a004d68dc63138c07c782 ]
+[ Upstream commit 634fcbcaa4062db39aeb5ac6ed1bc1feb8dd5216 ]
 
-Smatch reports:
+Fix possible crash and memory leak on driver unload by deleting
+TX purge timer and freeing C2H queue in 'rtw_core_deinit()',
+shrink critical section in the latter by freeing COEX queue
+out of TX report lock scope.
 
-ath_pci_probe() warn: argument 4 to %lx specifier is cast from pointer
-ath_ahb_probe() warn: argument 4 to %lx specifier is cast from pointer
-
-Fix it by modifying %lx to %p in the printk format string.
-
-Note that with this change, the pointer address will be printed as a
-hashed value by default. This is appropriate because the kernel
-should not leak kernel pointers to user space in an informational
-message. If someone wants to see the real address for debugging
-purposes, this can be achieved with the no_hash_pointers kernel option.
-
-Signed-off-by: Dongliang Mu <dzm91@hust.edu.cn>
-Acked-by: Toke Høiland-Jørgensen <toke@toke.dk>
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://lore.kernel.org/r/20230723040403.296723-1-dzm91@hust.edu.cn
+Reviewed-by: Ping-Ke Shih <pkshih@realtek.com>
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+Signed-off-by: Kalle Valo <kvalo@kernel.org>
+Link: https://lore.kernel.org/r/20230628072327.167196-1-dmantipov@yandex.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath9k/ahb.c | 4 ++--
- drivers/net/wireless/ath/ath9k/pci.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/wireless/realtek/rtw88/main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/ahb.c b/drivers/net/wireless/ath/ath9k/ahb.c
-index 9cd12b20b18d8..9bfaadfa6c009 100644
---- a/drivers/net/wireless/ath/ath9k/ahb.c
-+++ b/drivers/net/wireless/ath/ath9k/ahb.c
-@@ -132,8 +132,8 @@ static int ath_ahb_probe(struct platform_device *pdev)
+diff --git a/drivers/net/wireless/realtek/rtw88/main.c b/drivers/net/wireless/realtek/rtw88/main.c
+index c853e2f2d448f..c2ddb4d382af5 100644
+--- a/drivers/net/wireless/realtek/rtw88/main.c
++++ b/drivers/net/wireless/realtek/rtw88/main.c
+@@ -2183,10 +2183,12 @@ void rtw_core_deinit(struct rtw_dev *rtwdev)
+ 		release_firmware(wow_fw->firmware);
  
- 	ah = sc->sc_ah;
- 	ath9k_hw_name(ah, hw_name, sizeof(hw_name));
--	wiphy_info(hw->wiphy, "%s mem=0x%lx, irq=%d\n",
--		   hw_name, (unsigned long)mem, irq);
-+	wiphy_info(hw->wiphy, "%s mem=0x%p, irq=%d\n",
-+		   hw_name, mem, irq);
+ 	destroy_workqueue(rtwdev->tx_wq);
++	timer_delete_sync(&rtwdev->tx_report.purge_timer);
+ 	spin_lock_irqsave(&rtwdev->tx_report.q_lock, flags);
+ 	skb_queue_purge(&rtwdev->tx_report.queue);
+-	skb_queue_purge(&rtwdev->coex.queue);
+ 	spin_unlock_irqrestore(&rtwdev->tx_report.q_lock, flags);
++	skb_queue_purge(&rtwdev->coex.queue);
++	skb_queue_purge(&rtwdev->c2h_queue);
  
- 	return 0;
- 
-diff --git a/drivers/net/wireless/ath/ath9k/pci.c b/drivers/net/wireless/ath/ath9k/pci.c
-index a09f9d223f3de..0633589b85c23 100644
---- a/drivers/net/wireless/ath/ath9k/pci.c
-+++ b/drivers/net/wireless/ath/ath9k/pci.c
-@@ -988,8 +988,8 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	sc->sc_ah->msi_reg = 0;
- 
- 	ath9k_hw_name(sc->sc_ah, hw_name, sizeof(hw_name));
--	wiphy_info(hw->wiphy, "%s mem=0x%lx, irq=%d\n",
--		   hw_name, (unsigned long)sc->mem, pdev->irq);
-+	wiphy_info(hw->wiphy, "%s mem=0x%p, irq=%d\n",
-+		   hw_name, sc->mem, pdev->irq);
- 
- 	return 0;
- 
+ 	list_for_each_entry_safe(rsvd_pkt, tmp, &rtwdev->rsvd_page_list,
+ 				 build_list) {
 -- 
 2.40.1
 
