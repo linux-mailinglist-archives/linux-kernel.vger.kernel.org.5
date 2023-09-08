@@ -2,462 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8404C798952
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E405679895D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243458AbjIHO4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:56:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50010 "EHLO
+        id S243328AbjIHO5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241895AbjIHO4K (ORCPT
+        with ESMTP id S232047AbjIHO5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:56:10 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC21B1FC4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:55:58 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-27373f0916dso1813023a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 07:55:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694184958; x=1694789758; darn=vger.kernel.org;
-        h=message-id:to:from:cc:subject:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SWvDwnthFmylIYNCBooVf93TbNy8B5Sk0upDAgXIZyU=;
-        b=iHYbchfRoqEHgjpBnPW6a0FCxIYMcNpxX8x1GV1edH02UCD+i2W6IeGAitJuL24nT7
-         gEBU1PKUBYeZnFIkf/65kC1g2MhRNd0gpvsWJ6laF8CJE60ePyRokPO9MIWE7duuZcjy
-         S6Vf5O3sJobLlHkmty9c8dbbnKLT4BEodlzalWHsqEyIPyFV+JR82I7yAfPaVd9mdfkT
-         RDAg8ma4ZAtQKkcz8ozkz7Ouc/RP+cef984H+r8sVYb0WJI2ErvMCKnS8vq5wVpyO11D
-         L9pOu+bQRFRBV+KAAyV1tDx+HzsbR6/BhxDGcv9srsYJLHYt9ZKn9o/OdgibpHRubIoh
-         YiTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694184958; x=1694789758;
-        h=message-id:to:from:cc:subject:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SWvDwnthFmylIYNCBooVf93TbNy8B5Sk0upDAgXIZyU=;
-        b=nUPsNpY1b/POHdOdh+tArnNQH2pWyGYhI5piAYRSPhP2LOvuhBWb0Ra2pdPluPeUco
-         hi+LA9MK3HLBOuoKwztaiLmEXEZYBij1oVO9YdB+aH+uG4c6slCyVQbx9Nk65mGAQaaH
-         KYekr3awKCT4TrDHuBviCJXFWGJ+bpRu5HBkXfSFqyObgqYANb8V6Z+WPd0xpdLRk7XI
-         l+z9vV+qPUs/LfB9JrMcJEZ/FBOJUHxqzyFgnb6CzNj7FiV+y8iZEqkjBjy4allaF1Tp
-         Xj4h5f1iV4WHnJ2ZOqeRtnbX0WXAeJOy02fIEIvOecmsnibnuhpprpcrtYRiA0P7ICJl
-         WKTw==
-X-Gm-Message-State: AOJu0YzImDznC15QCZswq7c2JF7Z+67WFVwvRKZzTRsVyRpIP1RuBFe+
-        IqlZNXrCRMxgzw1HSma6s7Z4t+APzB9ni3NTf+8=
-X-Google-Smtp-Source: AGHT+IH2JggA2YNrdpTxqEGSVskK0ubX2LA70P5P2DF3BlnUuNO7kvVShAow2701N14Pdeecr7sJ3g==
-X-Received: by 2002:a17:90a:72c4:b0:268:5c3b:6f28 with SMTP id l4-20020a17090a72c400b002685c3b6f28mr2898737pjk.19.1694184958238;
-        Fri, 08 Sep 2023 07:55:58 -0700 (PDT)
-Received: from localhost ([135.180.227.0])
-        by smtp.gmail.com with ESMTPSA id 12-20020a17090a194c00b0026f90d7947csm1525435pjh.34.2023.09.08.07.55.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 07:55:57 -0700 (PDT)
-Date:   Fri, 08 Sep 2023 07:55:57 -0700 (PDT)
-X-Google-Original-Date: Fri, 08 Sep 2023 07:53:21 PDT (-0700)
-Subject: [GIT PULL] RISC-V Patches for the 6.6 Merge Window, Part 2
-CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@rivosinc.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-f4556557-af4d-4b6a-aa89-de77f7dacf2b@palmer-ri-x1c9>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 8 Sep 2023 10:57:07 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2064.outbound.protection.outlook.com [40.107.92.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA47D1BFA;
+        Fri,  8 Sep 2023 07:56:53 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HZqDCFJprmbF+E2VTnaZT3ajaztv5F5BYHWjWHEzxR24CjTuz909L+Y9knpCJUefkWYKNLouY+X4bFSNOmFUVc9sY0u72C6Cj4MyNBJ9S1wVxj3fDb9kdjJQjsKE7naXgh0N7DTTtt9/nOaFujaWhoH9Qi0NZAyxqSDp7vM08DyvhqSQ+8P+XRJL5fcucHLN4JafWdZdRnMZkrXWQHqoQ9oni6HqH455Vv3CtVdvVobkQ6Iyz2zIbY4zEnd/+w2AdVS7morYO2VEWvEvXx3gQTdt7x9mwaF/WqxrTzW9Q3KSPhf7cZjnxBlSwctx0X72nLgQmyDs2GXGKnhlyUtc/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZqweeBZyqCwgVl/oWc939OaQsYq5TVbGNQEcFelS6cs=;
+ b=PkRCksouGP44r1EJMoSDq7gvxtVEYnyzMiXr34jEQl2jJcxQoos4D/N9mgBHF42ndAOqvLT/1XgktoenI9D/C0X9BRTqJssy3/Juxf0d+kI1ayLlcORQ4Z9YKmmNAnaaMcqmTVSzKHKmz6OsasrJI6BCxEh2Zhd34vbY6xDAU5j4gCbs6Cxgu9HXXTHgF83OkQQBTesqTOENHFheelQLP03u5/4GwLdO1EGugZqFeL61VLS6+27YtdJOpk1/SH/wi/QB7hWMMTEHsMDWL8nmGMHbB3tFVlfrZPUOffk7+FOnc8TGoPrHysV7C6/MrOt4c5wtSui4EXIAaUcrht4QzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZqweeBZyqCwgVl/oWc939OaQsYq5TVbGNQEcFelS6cs=;
+ b=mdWEFr90BUbv83hK+0S8QunhZGBqPd4c7z+raSUvCf8fINeaanzwSxJjD8/OCj8PvECx+tVB+2UjNycWChez3W2noqCFTXRzJuaEbaD9vpN5W5aD3fw+eMgbhl/rkX4lI5n0NhIscKSfZtG6JahbIDVR0ujGWN0fCvX+VjILxA5m8xfMdMbaZchufcnNLlG/2Swx3H9froPVcHONKLH9W/heSroT+RJ3vXSjpi7ts37EBOqSYKAxD973AYgxqwpRIKguBw59Uk/Q/6zlvp+P/9z1bgUV6DyiG0NIg8PeLnLva2d8T4Q9OhWN0DVH05Ck/46bxkw7Hn+cqLdDW8+2/w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
+ SJ2PR12MB7848.namprd12.prod.outlook.com (2603:10b6:a03:4ca::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.36; Fri, 8 Sep
+ 2023 14:56:49 +0000
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::4b09:197c:609a:1013]) by DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::4b09:197c:609a:1013%6]) with mapi id 15.20.6745.020; Fri, 8 Sep 2023
+ 14:56:49 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     =?utf-8?q?=22Philippe_Mathieu-Daud=C3=A9=22?= <philmd@linaro.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "\"Matthew Wilcox (Oracle)\"" <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "\"Mike Rapoport (IBM)\"" <rppt@kernel.org>
+Subject: Re: [PATCH v2 0/5] Use nth_page() in place of direct struct page
+ manipulation
+Date:   Fri, 08 Sep 2023 10:56:46 -0400
+X-Mailer: MailMate (1.14r5978)
+Message-ID: <7122A099-A01A-4B49-8391-E070E661E4B7@nvidia.com>
+In-Reply-To: <59cc930c-3efd-d31e-49c3-2778914ea9ae@linaro.org>
+References: <20230906150309.114360-1-zi.yan@sent.com>
+ <59cc930c-3efd-d31e-49c3-2778914ea9ae@linaro.org>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_AA0523F5-C1AD-42FD-B9CE-3340016FBD29_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: MN2PR04CA0011.namprd04.prod.outlook.com
+ (2603:10b6:208:d4::24) To DS7PR12MB5744.namprd12.prod.outlook.com
+ (2603:10b6:8:73::18)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|SJ2PR12MB7848:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3c22d56f-e591-482f-66e9-08dbb07bd460
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Hy+Q5sZ+6fwm/wCkGNpDdvW+5U4Cn7kLyXUymbsW9mZEoLr2r0TovgWevugeRHLJHb1QMWzAYArujgRLK9Czm355M5G/cTBmS3RTtk6ta6ZTCdWcOqPsN9bzc55xPRXfXcZJamQC/JX/st9TZQckHAc70bAqqi1AJwxVokA9a0EYOmd9nN6eatmrzVFMsNfu5kvIFP3FA3+f94ncsEKlgR5szdBEZUFSd5pkUyAO61HrlkmfTtFznSA+A3XZ75hCrJ7Je/h3EoSiE8i4DgQlNh7ztPn5JJcXdyFKWxo6P6/MwnlSPO+1o1dsyY9WwmHPogYDGzwtunfrfPhH1Pyk18/oC68b7Ams4CEhT/R1XI5Ve+yI+xprncMmbX+4six+eBs0f5aUPPDNKsdNx3WbMXZBpKlFDyxZ4chJSRDOtH3+8DfOo8H2O2hqCnGpmFH+wzf12rCNimDVlqZDNMz1uFjY+GUu2LAcYT7puukrdtgojCFDBLtI54LF+v2CwR4gN1hl4qT86IYzhv04KzudFOlhJ0umr/tQLuLmyghTMVeE6i/1FqcNIlZRgjlVMh/ndSAWCQgwhoy5PA4AMI1vt10SUPw3KlBE8WFCJAHlkJOseOovsARUTItxDjvnP0dn
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(136003)(39860400002)(346002)(451199024)(186009)(1800799009)(8936002)(4326008)(8676002)(478600001)(5660300002)(66476007)(66556008)(66946007)(83380400001)(7416002)(235185007)(2906002)(41300700001)(33656002)(54906003)(6916009)(316002)(86362001)(6666004)(6486002)(53546011)(33964004)(6506007)(6512007)(26005)(2616005)(38100700002)(36756003)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QXV1blhkWng3bkJUUndqZ2M2VnZ0cDYvTk5tL1hCTnoycm5USitxM0N1QkJi?=
+ =?utf-8?B?YjkrditDRzhCYUdUbUthdk05R3dzTFpLQXRtakQ2a01ja0dJZGhoU000cjYy?=
+ =?utf-8?B?K1hObFNFakhQL3EzSWpVbHNsWGhzbnJ2YVZaZDM0VjVqeHVFU29POVQ4M0sz?=
+ =?utf-8?B?bTA3QitYbTNsSVBpMHNXUTAvS3BTOEV1eFBFREF5VEVVbnMwdjdFK24wWEc2?=
+ =?utf-8?B?U2Y5TjFSRWFDV2xCVW5rb2JGSzBFbWNleDRXeUlxSmR2NE80S1dsZ0ZkdUJh?=
+ =?utf-8?B?eEcrK2lLbGpLeElsbHBoRjdkMkJiRkZsdFg2NnlqS1ZlQmxtUnpYOEQweWd3?=
+ =?utf-8?B?c3pMbWtaKytZZDI0TkdMVjZmRllLd05EK0N0WUhDam10YkZSL3IxckdyL1Rj?=
+ =?utf-8?B?YW1LbVBTVkZUUVdJeE1lZHpvNzBzeFNwc29Tb05CZWFlelc5alFiL1N3bW1O?=
+ =?utf-8?B?RVhGT1pUbm8xK25kVTRTd1Nhc1dRcFJudzhVR2VjVmZkbXBxNXdxcE9PaG5Q?=
+ =?utf-8?B?MDJRZXhIQ3R0ZnRNTndXczhQMjdWV1ZXR0toejdwZXVKajVDejRTbnpwbkZB?=
+ =?utf-8?B?Z1hramE1cDVhREZwSEZxdDRnZlVOUDdUK0VYNTNIZWxsVW56bGpXVXRpRmZ0?=
+ =?utf-8?B?cmRSL0JnQktDTkdPZ1lONGJRaGl0ckxWQ1BWQmU0VzVGSnk4dGNUazEwVU5m?=
+ =?utf-8?B?RjZMR1VNTTZFcDBEaWtKRDVJTWRENjZucVdmeTMvZ3FPQkRzblNxQ20zT1c3?=
+ =?utf-8?B?K0NybnZBRWlMWDhKbUVRTUVUbDAxRFhYOTAyemdScGFlb0JoajFvWjRScDB2?=
+ =?utf-8?B?UmM3NG1pSk5odUhaWDFqSmw1NmgvM2lyb3lhY1BLdkJpeHhwb2UzLzVUMlpV?=
+ =?utf-8?B?dkc4c2pISTZxcDJIRTFuMUozZFdHWkRTVWtWeVN2a0NnWE14eGk1NXZOVm1r?=
+ =?utf-8?B?aDlxRzBvZmNJS1htbmhTVEJ2aHR0Q2VNRHJQd0JJT3BMcDNsL3lQMkdZWVdF?=
+ =?utf-8?B?bUhWUHpPblZPeHNJT3RhNTliRjVLUEl6dWtLVEVUSm1tUjUzd0YrYm02VFNF?=
+ =?utf-8?B?cFFsT2NBZThtZlZoTmdpa1JZbFNNa3QwbzF1dndEdDF0cUtsaGVtMWd5bVFB?=
+ =?utf-8?B?QUhZNjU5YWxFWkt3WkI1Z2dHRjFRc3Rxc2kzNnJDaU05aGtTbm9lSlM0M0hU?=
+ =?utf-8?B?dTViSWJBUkdUUlozTGVNZXYvK0dKLzZuVzVyRVdLRjRqSlJTekozeGIwaTFP?=
+ =?utf-8?B?STBzZHZKYklBOW91T0t5dmZ2R2x0Qk5rOFZvdHZLY1p2WUU0L1NoVU9qTy9p?=
+ =?utf-8?B?TVJyK0l2ZHhWTmNGcG1aRGg1Nm5ZQlUvZXNCbWMydThRZkthUmoxdmdMZVVL?=
+ =?utf-8?B?enJJSDdHZXpOQkxnN2E1MWpWNTFaUXE2V0JKWU15YW8wYzMzZmR3WFp0U3Vl?=
+ =?utf-8?B?a3JzczRFNVZ0SWhVTHdxd1pleUxBcXhYbm16QjkxMDhaNk1qdmRmS1o3MUdP?=
+ =?utf-8?B?cHFZM2c1a0FZQUNBRFQ3eDdCU0MvcFZYUVJkaTlyUFQ5UE5NU29nbGwxeVBx?=
+ =?utf-8?B?bXBmQkZSdDZVUWVUNmRpS2lsei9QRWV5WGxEUXlBR2RiWXB2c2JwTElRYTJo?=
+ =?utf-8?B?cVdVWm5GUTJXNDZheHJPRE5JNGVsNlNrZktwaWFYUFRYbW9teDRxRERONmhy?=
+ =?utf-8?B?alBCcjdMMFNJL01FUmRYOE1PTzgyVzhONExicnNkUmFBSFdnUUlVdlhLNXZM?=
+ =?utf-8?B?VDh3SGttbFplUy80NFdYK0FUS09BMUVGM0NQQmhOSVJxV2UzVWl6Ny81blA0?=
+ =?utf-8?B?SWNTVnQ0Tk1OclhYbDVGOVd6aFpkajR0ZTI1dCsxaWRjRHNTQ214bjhuR2U5?=
+ =?utf-8?B?SDE4M2liNUd0SlZodGtlbFEyRjc3ZG41MUo2TzlxYUVpL2pDWjM4QU5SUnZi?=
+ =?utf-8?B?WWZUSnlKeTlOWnJkeVAvRFFWZHJlRVAvQ1ArY1kzRFJLSFcwcFhhSUhTbHBT?=
+ =?utf-8?B?bHRZaFUvYnZqeCtPcmtLYkxmbnBJeUk3YksvdjNBMElGUENJMjNSc2tuQncv?=
+ =?utf-8?B?c0MwRWNvMGd6TmhYMFlQSHYrL2oyb0VzWDh4UVpvUi9OdVBsa0IvZXkySGxo?=
+ =?utf-8?Q?7lfE=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c22d56f-e591-482f-66e9-08dbb07bd460
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2023 14:56:49.5856
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wHAOwEuoJ0UVmQfFH0r5mSLqzofIFRXe2nYeum/ZgbVIhxGAOVBkf65G7V9fDHgD
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7848
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-merged tag 'riscv-for-linus-6.6-mw1'
-The following changes since commit e0152e7481c6c63764d6ea8ee41af5cf9dfac5e9:
+--=_MailMate_AA0523F5-C1AD-42FD-B9CE-3340016FBD29_=
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-  Merge tag 'riscv-for-linus-6.6-mw1' of git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux (2023-09-01 08:09:48 -0700)
+On 8 Sep 2023, at 10:46, Philippe Mathieu-Daud=C3=A9 wrote:
 
-are available in the Git repository at:
+> Hi,
+>
+> On 6/9/23 17:03, Zi Yan wrote:
+>> From: Zi Yan <ziy@nvidia.com>
+>>
+>> On SPARSEMEM without VMEMMAP, struct page is not guaranteed to be
+>> contiguous, since each memory section's memmap might be allocated
+>> independently. hugetlb pages can go beyond a memory section size, thus=
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.6-mw2
+>> direct struct page manipulation on hugetlb pages/subpages might give
+>> wrong struct page. Kernel provides nth_page() to do the manipulation
+>> properly. Use that whenever code can see hugetlb pages.
+>
+> How can we notice "whenever code can see hugetlb pages"?
+> From your series it seems you did a manual code audit, is that correct?=
 
-for you to fetch changes up to accb14aa1e699d11b8172283e8cb82a695b96c85:
+> (I ask because I'm wondering about code scalability and catching other
+> cases).
 
-  soc: renesas: Kconfig: For ARCH_R9A07G043 select the required configs if dependencies are met (2023-09-06 07:20:13 -0700)
+Anything allocated from buddy allocator should be free of this problem,
+because MAX_ORDER is always smaller than a memory section size. This mean=
+s
+majority of kernel code should be fine. What is left is core mm code that=
 
-----------------------------------------------------------------
-RISC-V Patches for the 6.6 Merge Window, Part 2
+can have a chance to touch hugetlb, like migration, memory compaction,
+and of course hugetlb code. Yes, I did a manual code audit. And hopefully=
 
-* The kernel now dynamically probes for misaligned access speed, as
-  opposed to relying on a table of known implementations.
-* Support for non-coherent devices on systems using the Andes AX45MP
-  core, including the RZ/Five SoCs.
-* Support for the V extension in ptrace(), again.
-* Support for KASLR.
-* Support for the BPF prog pack allocator in RISC-V.
-* A handful of bug fixes and cleanups.
+I caught all cases.
 
-----------------------------------------------------------------
-The shortlog looks correct here, but the diffstat includes all sorts of files I
-wasn't expecting.  I'm not entirely sure what's going on here, but I have a
-little bit of a complex set of base branches here as the BPF changes have a
-dependency on some arm64 BPF work and IIRC that sort of thing sometimes makes
-diffstat go off the rails.  So hopefully that's just it.
+An alternative is to use nth_page() everywhere, but that is a very invasi=
+ve
+change for an uncommon config (SPARSEMEM + !VMEMMAP).
 
-I also have two merge conflicts: one in Documentation/bpf/instruction-set.rst
-and one in drivers/firmware/efi/libstub/.
 
-Resolving the BPF one seems pretty straight-forward, there was a line break
-introduced during the file moves in 4d496be9ca05 ("bpf,docs: Create new
-standardization subdirectory").  It's a bit worrying given the diffstat,
-though.
+--
+Best Regards,
+Yan, Zi
 
-I resolved the libstub conflict as part of mergeing in the patch set.  The
-actual conflict also looks pretty straight-forward: we refactored some KASLR
-handling out to shared code, but there was also a new argument added.  I
-resolved it when picking up the patch series, but after talking to some of the
-Arm folks I'm not quite sure that was the right way to go.  So it won't show up
-when actually merging, but figured I'd say something anyway as end up doing
-that sort of "fix a conflict when merging a patch set" from time to time.
+--=_MailMate_AA0523F5-C1AD-42FD-B9CE-3340016FBD29_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
 
-----------------------------------------------------------------
-Alexandre Ghiti (5):
-      riscv: Introduce virtual kernel mapping KASLR
-      riscv: Dump out kernel offset information on panic
-      arm64: libstub: Move KASLR handling functions to kaslr.c
-      libstub: Fix compilation warning for rv32
-      riscv: libstub: Implement KASLR by using generic functions
+-----BEGIN PGP SIGNATURE-----
 
-Andy Chiu (1):
-      RISC-V: Add ptrace support for vectors
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmT7Ni4PHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhUou8P/i/mkxAu1soujT0vCSSZldBRsf2ABgcE0USs
+QJWBxynHgvf2Pf49bvXJfC6DgFwNeM+iuOtQKzF2t9ayFya7rYzx24OmZyU7XIN6
+QlfmkJur71vSEp+5fu72Zg7qfWQnpKIgf0+4LxnBMzf7TkUtnuqlmMuEOdYA2tPX
+UyHblNFPt6WsyhwKnY4k6hZFDVNwWPm+DfZ0CHlYfPqTW3lLGgYPzPkMgtjIZ9k0
+fxSkcTbngd4hVuhKthLrOno0qsKMt0sRqRqFhTXL48r3S2gSQl6+Ao9TP1bjxTnY
+tUMsD+jojEszww1HfcVpZzZGZBbdE4hRMF4W7DVlxV+gXj9DlyzVL35NercZXaiG
+jZN6BfRwPaANiIhCXmtPCWnm0HWmI8Q/xexbINPnxja2neut8qj79eA11Plls2yy
+Xo4/Eh8SSBp3h9viLRXxcj/ROhfza7jB4rAt3OpudyEM4HLoqe4HdTsmaqPlquJ2
+R20zTslNoY98WAIoWd1wS5VrTfprIbmed8Pug93l98lsZnfVm625aAiliyhmSiuD
+M+uY9NInWVUQIwGKi6z3mNm1ei80dcOGKpVVRXd1XDJyKfqQYwJ48QkfpxRVJRcd
+x9vzrsJv6MoUDfej34VXhM9JcEoEjPcdSJD5igue2AtSrCUvMv/l6Zt5mzFDDfal
+ObQKhtkA
+=yPBh
+-----END PGP SIGNATURE-----
 
-Arnd Bergmann (2):
-      riscv: dma-mapping: only invalidate after DMA, not flush
-      riscv: dma-mapping: skip invalidation before bidirectional DMA
-
-Evan Green (2):
-      RISC-V: Probe for unaligned access speed
-      RISC-V: alternative: Remove feature_probe_func
-
-Lad Prabhakar (11):
-      riscv: dma-mapping: switch over to generic implementation
-      riscv: asm: vendorid_list: Add Andes Technology to the vendors list
-      riscv: errata: Add Andes alternative ports
-      riscv: mm: dma-noncoherent: nonstandard cache operations support
-      dt-bindings: cache: andestech,ax45mp-cache: Add DT binding documentation for L2 cache controller
-      cache: Add L2 cache management for Andes AX45MP RISC-V core
-      soc: renesas: Kconfig: Select the required configs for RZ/Five SoC
-      riscv: Kconfig: Select DMA_DIRECT_REMAP only if MMU is enabled
-      riscv: Kconfig.errata: Drop dependency for MMU in ERRATA_ANDES_CMO config
-      riscv: Kconfig.errata: Add dependency for RISCV_SBI in ERRATA_ANDES config
-      soc: renesas: Kconfig: For ARCH_R9A07G043 select the required configs if dependencies are met
-
-Palmer Dabbelt (6):
-      Merge patch series "RISC-V: Probe for misaligned access speed"
-      Merge patch series "riscv: dma-mapping: unify support for cache flushes"
-      Merge patch series "Add non-coherent DMA support for AX45MP"
-      Merge patch "RISC-V: Add ptrace support for vectors"
-      Merge patch series "riscv: Introduce KASLR"
-      Merge patch series "bpf, riscv: use BPF prog pack allocator in BPF JIT"
-
-Puranjay Mohan (4):
-      bpf: make bpf_prog_pack allocator portable
-      riscv: extend patch_text_nosync() for multiple pages
-      riscv: implement a memset like function for text
-      bpf, riscv: use prog pack allocator in the BPF JIT
-
- Documentation/bpf/instruction-set.rst              |  478 +++++++++
- Documentation/bpf/linux-notes.rst                  |   83 ++
- Documentation/devicetree/bindings/arm/msm/ssbi.txt |   18 +
- .../devicetree/bindings/arm/tegra/nvidia,nvec.txt  |   21 +
- .../bindings/arm/tegra/nvidia,tegra20-ahb.txt      |   17 +
- .../bindings/arm/tegra/nvidia,tegra20-flowctrl.txt |   18 +
- .../bindings/cache/andestech,ax45mp-cache.yaml     |   81 ++
- .../bindings/clock/amlogic,gxbb-aoclkc.txt         |   64 ++
- .../bindings/clock/amlogic,gxbb-clkc.txt           |   53 +
- .../devicetree/bindings/clock/hix5hd2-clock.txt    |   30 +
- .../devicetree/bindings/clock/oxnas,stdclk.txt     |   28 +
- .../devicetree/bindings/clock/xlnx,zynqmp-clk.txt  |   63 ++
- .../devicetree/bindings/cpufreq/ti-cpufreq.txt     |  132 +++
- .../devicetree/bindings/gpio/brcm,kona-gpio.txt    |   52 +
- .../devicetree/bindings/gpio/gpio_oxnas.txt        |   47 +
- .../bindings/input/rmi4/rmi_2d_sensor.txt          |   56 +
- .../devicetree/bindings/input/rmi4/rmi_f01.txt     |   39 +
- .../devicetree/bindings/input/rmi4/rmi_i2c.txt     |   61 ++
- .../devicetree/bindings/input/rmi4/rmi_spi.txt     |   56 +
- .../devicetree/bindings/net/davicom-dm9000.txt     |   27 +
- .../devicetree/bindings/net/ftgmac100.txt          |   67 ++
- .../devicetree/bindings/net/oxnas-dwmac.txt        |   41 +
- .../devicetree/bindings/net/xilinx_gmii2rgmii.txt  |   35 +
- .../bindings/opp/ti-omap5-opp-supply.txt           |   63 ++
- .../bindings/pinctrl/brcm,bcm11351-pinctrl.txt     |  461 +++++++++
- .../devicetree/bindings/pinctrl/oxnas,pinctrl.txt  |   56 +
- .../devicetree/bindings/pinctrl/pinctrl-single.txt |  262 +++++
- .../bindings/pinctrl/ti,omap-pinctrl.txt           |   13 +
- .../bindings/power/xlnx,zynqmp-genpd.txt           |   34 +
- Documentation/devicetree/bindings/pps/pps-gpio.txt |   30 +
- .../devicetree/bindings/regulator/slg51000.txt     |   88 ++
- .../devicetree/bindings/serial/cavium-uart.txt     |   19 +
- .../bindings/serial/nvidia,tegra20-hsuart.txt      |   73 ++
- .../bindings/serial/nxp,lpc1850-uart.txt           |   28 +
- Documentation/devicetree/bindings/sound/gtm601.txt |   19 +
- .../devicetree/bindings/sound/max9892x.txt         |   44 +
- .../devicetree/bindings/sound/nau8821.txt          |   55 +
- .../bindings/sound/qcom,msm8916-wcd-analog.txt     |  101 ++
- Documentation/devicetree/bindings/sound/wm8904.txt |   33 +
- .../bindings/spi/nvidia,tegra114-spi.txt           |   61 ++
- .../bindings/spi/nvidia,tegra20-sflash.txt         |   37 +
- .../bindings/spi/nvidia,tegra20-slink.txt          |   37 +
- .../devicetree/bindings/spi/spi-bcm63xx.txt        |   33 +
- .../bindings/thermal/nvidia,tegra124-soctherm.txt  |  238 +++++
- .../devicetree/bindings/usb/samsung-hsotg.txt      |   38 +
- Documentation/hwmon/smm665.rst                     |  187 ++++
- Documentation/loongarch/booting.rst                |   42 +
- Documentation/loongarch/features.rst               |    3 +
- Documentation/loongarch/index.rst                  |   22 +
- Documentation/loongarch/introduction.rst           |  390 +++++++
- Documentation/loongarch/irq-chip-model.rst         |  160 +++
- Documentation/mips/booting.rst                     |   28 +
- Documentation/mips/features.rst                    |    3 +
- Documentation/mips/index.rst                       |   21 +
- Documentation/mips/ingenic-tcu.rst                 |   71 ++
- Documentation/mm/frontswap.rst                     |  264 +++++
- .../ethernet/mellanox/mlx5/devlink.rst             |  313 ++++++
- Documentation/riscv/hwprobe.rst                    |   11 +-
- Documentation/s390/3270.ChangeLog                  |   44 +
- Documentation/s390/3270.rst                        |  298 ++++++
- Documentation/s390/cds.rst                         |  530 ++++++++++
- Documentation/s390/common_io.rst                   |  140 +++
- Documentation/s390/config3270.sh                   |   76 ++
- Documentation/s390/driver-model.rst                |  328 ++++++
- Documentation/s390/features.rst                    |    3 +
- Documentation/s390/index.rst                       |   30 +
- Documentation/s390/monreader.rst                   |  212 ++++
- Documentation/s390/pci.rst                         |  133 +++
- Documentation/s390/qeth.rst                        |   64 ++
- Documentation/s390/s390dbf.rst                     |  478 +++++++++
- Documentation/s390/text_files.rst                  |   11 +
- Documentation/s390/vfio-ap-locking.rst             |  115 +++
- Documentation/s390/vfio-ap.rst                     | 1069 ++++++++++++++++++++
- Documentation/s390/vfio-ccw.rst                    |  445 ++++++++
- Documentation/s390/zfcpdump.rst                    |   50 +
- .../translations/zh_CN/loongarch/booting.rst       |   48 +
- .../translations/zh_CN/loongarch/features.rst      |    8 +
- .../translations/zh_CN/loongarch/index.rst         |   27 +
- .../translations/zh_CN/loongarch/introduction.rst  |  353 +++++++
- .../zh_CN/loongarch/irq-chip-model.rst             |  157 +++
- Documentation/translations/zh_CN/mips/booting.rst  |   34 +
- Documentation/translations/zh_CN/mips/features.rst |   13 +
- Documentation/translations/zh_CN/mips/index.rst    |   29 +
- .../translations/zh_CN/mips/ingenic-tcu.rst        |   72 ++
- Documentation/translations/zh_CN/mm/frontswap.rst  |  196 ++++
- MAINTAINERS                                        |    7 +
- arch/arm/mach-keystone/keystone.h                  |   16 +
- arch/arm/mach-keystone/memory.h                    |   18 +
- arch/arm/mach-keystone/pm_domain.c                 |   50 +
- arch/arm/mach-nspire/mmio.h                        |   16 +
- arch/arm/mach-ux500/pm_domains.c                   |   79 ++
- arch/arm/mach-ux500/pm_domains.h                   |   17 +
- arch/arm/vfp/entry.S                               |   31 +
- arch/arm64/boot/dts/arm/vexpress-v2m-rs1.dtsi      |    1 +
- arch/arm64/include/asm/efi.h                       |    2 +
- arch/hexagon/mm/ioremap.c                          |   44 +
- arch/parisc/include/asm/machdep.h                  |   17 +
- arch/parisc/kernel/pa7300lc.c                      |   51 +
- arch/powerpc/include/asm/mpc8260.h                 |   22 +
- arch/powerpc/kernel/trace/ftrace_64_pg.S           |   67 ++
- arch/powerpc/kernel/trace/ftrace_low.S             |   78 ++
- arch/powerpc/kernel/trace/ftrace_mprofile.S        |  251 +++++
- arch/powerpc/lib/alloc.c                           |   23 +
- arch/powerpc/platforms/82xx/m82xx_pci.h            |   14 +
- arch/powerpc/platforms/83xx/usb.c                  |  251 +++++
- arch/riscv/Kconfig                                 |   28 +-
- arch/riscv/Kconfig.errata                          |   21 +
- arch/riscv/errata/Makefile                         |    1 +
- arch/riscv/errata/andes/Makefile                   |    1 +
- arch/riscv/errata/andes/errata.c                   |   66 ++
- arch/riscv/errata/thead/errata.c                   |    8 -
- arch/riscv/include/asm/alternative.h               |    8 +-
- arch/riscv/include/asm/cpufeature.h                |    2 +
- arch/riscv/include/asm/dma-noncoherent.h           |   28 +
- arch/riscv/include/asm/efi.h                       |    2 +
- arch/riscv/include/asm/errata_list.h               |    5 +
- arch/riscv/include/asm/page.h                      |    3 +
- arch/riscv/include/asm/patch.h                     |    1 +
- arch/riscv/include/asm/vendorid_list.h             |    1 +
- arch/riscv/include/uapi/asm/ptrace.h               |   13 +-
- arch/riscv/kernel/Makefile                         |    1 +
- arch/riscv/kernel/alternative.c                    |   24 +-
- arch/riscv/kernel/copy-unaligned.S                 |   71 ++
- arch/riscv/kernel/copy-unaligned.h                 |   13 +
- arch/riscv/kernel/cpufeature.c                     |  104 ++
- arch/riscv/kernel/image-vars.h                     |    1 +
- arch/riscv/kernel/patch.c                          |  114 ++-
- arch/riscv/kernel/pi/Makefile                      |    2 +-
- arch/riscv/kernel/pi/cmdline_early.c               |   13 +
- arch/riscv/kernel/pi/fdt_early.c                   |   30 +
- arch/riscv/kernel/ptrace.c                         |   79 ++
- arch/riscv/kernel/setup.c                          |   25 +
- arch/riscv/kernel/smpboot.c                        |    3 +-
- arch/riscv/mm/dma-noncoherent.c                    |  103 +-
- arch/riscv/mm/init.c                               |   36 +-
- arch/riscv/mm/pmem.c                               |   13 +
- arch/riscv/net/bpf_jit.h                           |    3 +
- arch/riscv/net/bpf_jit_comp64.c                    |   60 +-
- arch/riscv/net/bpf_jit_core.c                      |  106 +-
- arch/x86/include/asm/microcode_amd.h               |   58 ++
- arch/x86/include/asm/microcode_intel.h             |   88 ++
- drivers/Kconfig                                    |    2 +
- drivers/Makefile                                   |    1 +
- drivers/accel/ivpu/ivpu_hw_mtl.c                   | 1053 +++++++++++++++++++
- drivers/accel/ivpu/ivpu_hw_mtl_reg.h               |  281 +++++
- drivers/acpi/acpi_amba.c                           |  130 +++
- drivers/cache/Kconfig                              |   11 +
- drivers/cache/Makefile                             |    3 +
- drivers/cache/ax45mp_cache.c                       |  213 ++++
- drivers/clk/clk-oxnas.c                            |  251 +++++
- drivers/clk/meson/axg-aoclk.h                      |   18 +
- drivers/clk/meson/g12a-aoclk.h                     |   32 +
- drivers/clk/meson/gxbb-aoclk.h                     |   15 +
- drivers/clk/mmp/clk-mmp2.c                         |  454 +++++++++
- drivers/clk/mmp/clk-pxa168.c                       |  354 +++++++
- drivers/clk/mmp/clk-pxa910.c                       |  325 ++++++
- drivers/clk/qcom/lcc-mdm9615.c                     |  572 +++++++++++
- drivers/firmware/efi/libstub/Makefile              |    4 +-
- drivers/firmware/efi/libstub/arm64-stub.c          |  117 +--
- drivers/firmware/efi/libstub/efistub.h             |    8 +
- drivers/firmware/efi/libstub/kaslr.c               |  159 +++
- drivers/firmware/efi/libstub/riscv-stub.c          |   33 +-
- drivers/firmware/imx/scu-pd.c                      |  428 ++++++++
- .../gpu/drm/amd/amdgpu/aqua_vanjaram_reg_init.c    |  658 ++++++++++++
- drivers/gpu/drm/amd/amdkfd/kfd_iommu.c             |  356 +++++++
- drivers/gpu/drm/amd/amdkfd/kfd_iommu.h             |   84 ++
- .../drm/amd/display/dmub/inc/dmub_subvp_state.h    |  183 ++++
- drivers/gpu/drm/nouveau/nvkm/subdev/fb/ramga102.c  |   40 +
- drivers/soc/renesas/Kconfig                        |    5 +
- include/uapi/linux/elf.h                           |    2 +
- kernel/bpf/core.c                                  |    8 +-
- 171 files changed, 17642 insertions(+), 216 deletions(-)
- create mode 100644 Documentation/bpf/instruction-set.rst
- create mode 100644 Documentation/bpf/linux-notes.rst
- create mode 100644 Documentation/devicetree/bindings/arm/msm/ssbi.txt
- create mode 100644 Documentation/devicetree/bindings/arm/tegra/nvidia,nvec.txt
- create mode 100644 Documentation/devicetree/bindings/arm/tegra/nvidia,tegra20-ahb.txt
- create mode 100644 Documentation/devicetree/bindings/arm/tegra/nvidia,tegra20-flowctrl.txt
- create mode 100644 Documentation/devicetree/bindings/cache/andestech,ax45mp-cache.yaml
- create mode 100644 Documentation/devicetree/bindings/clock/amlogic,gxbb-aoclkc.txt
- create mode 100644 Documentation/devicetree/bindings/clock/amlogic,gxbb-clkc.txt
- create mode 100644 Documentation/devicetree/bindings/clock/hix5hd2-clock.txt
- create mode 100644 Documentation/devicetree/bindings/clock/oxnas,stdclk.txt
- create mode 100644 Documentation/devicetree/bindings/clock/xlnx,zynqmp-clk.txt
- create mode 100644 Documentation/devicetree/bindings/cpufreq/ti-cpufreq.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/brcm,kona-gpio.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/gpio_oxnas.txt
- create mode 100644 Documentation/devicetree/bindings/input/rmi4/rmi_2d_sensor.txt
- create mode 100644 Documentation/devicetree/bindings/input/rmi4/rmi_f01.txt
- create mode 100644 Documentation/devicetree/bindings/input/rmi4/rmi_i2c.txt
- create mode 100644 Documentation/devicetree/bindings/input/rmi4/rmi_spi.txt
- create mode 100644 Documentation/devicetree/bindings/net/davicom-dm9000.txt
- create mode 100644 Documentation/devicetree/bindings/net/ftgmac100.txt
- create mode 100644 Documentation/devicetree/bindings/net/oxnas-dwmac.txt
- create mode 100644 Documentation/devicetree/bindings/net/xilinx_gmii2rgmii.txt
- create mode 100644 Documentation/devicetree/bindings/opp/ti-omap5-opp-supply.txt
- create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm11351-pinctrl.txt
- create mode 100644 Documentation/devicetree/bindings/pinctrl/oxnas,pinctrl.txt
- create mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
- create mode 100644 Documentation/devicetree/bindings/pinctrl/ti,omap-pinctrl.txt
- create mode 100644 Documentation/devicetree/bindings/power/xlnx,zynqmp-genpd.txt
- create mode 100644 Documentation/devicetree/bindings/pps/pps-gpio.txt
- create mode 100644 Documentation/devicetree/bindings/regulator/slg51000.txt
- create mode 100644 Documentation/devicetree/bindings/serial/cavium-uart.txt
- create mode 100644 Documentation/devicetree/bindings/serial/nvidia,tegra20-hsuart.txt
- create mode 100644 Documentation/devicetree/bindings/serial/nxp,lpc1850-uart.txt
- create mode 100644 Documentation/devicetree/bindings/sound/gtm601.txt
- create mode 100644 Documentation/devicetree/bindings/sound/max9892x.txt
- create mode 100644 Documentation/devicetree/bindings/sound/nau8821.txt
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
- create mode 100644 Documentation/devicetree/bindings/sound/wm8904.txt
- create mode 100644 Documentation/devicetree/bindings/spi/nvidia,tegra114-spi.txt
- create mode 100644 Documentation/devicetree/bindings/spi/nvidia,tegra20-sflash.txt
- create mode 100644 Documentation/devicetree/bindings/spi/nvidia,tegra20-slink.txt
- create mode 100644 Documentation/devicetree/bindings/spi/spi-bcm63xx.txt
- create mode 100644 Documentation/devicetree/bindings/thermal/nvidia,tegra124-soctherm.txt
- create mode 100644 Documentation/devicetree/bindings/usb/samsung-hsotg.txt
- create mode 100644 Documentation/hwmon/smm665.rst
- create mode 100644 Documentation/loongarch/booting.rst
- create mode 100644 Documentation/loongarch/features.rst
- create mode 100644 Documentation/loongarch/index.rst
- create mode 100644 Documentation/loongarch/introduction.rst
- create mode 100644 Documentation/loongarch/irq-chip-model.rst
- create mode 100644 Documentation/mips/booting.rst
- create mode 100644 Documentation/mips/features.rst
- create mode 100644 Documentation/mips/index.rst
- create mode 100644 Documentation/mips/ingenic-tcu.rst
- create mode 100644 Documentation/mm/frontswap.rst
- create mode 100644 Documentation/networking/device_drivers/ethernet/mellanox/mlx5/devlink.rst
- create mode 100644 Documentation/s390/3270.ChangeLog
- create mode 100644 Documentation/s390/3270.rst
- create mode 100644 Documentation/s390/cds.rst
- create mode 100644 Documentation/s390/common_io.rst
- create mode 100644 Documentation/s390/config3270.sh
- create mode 100644 Documentation/s390/driver-model.rst
- create mode 100644 Documentation/s390/features.rst
- create mode 100644 Documentation/s390/index.rst
- create mode 100644 Documentation/s390/monreader.rst
- create mode 100644 Documentation/s390/pci.rst
- create mode 100644 Documentation/s390/qeth.rst
- create mode 100644 Documentation/s390/s390dbf.rst
- create mode 100644 Documentation/s390/text_files.rst
- create mode 100644 Documentation/s390/vfio-ap-locking.rst
- create mode 100644 Documentation/s390/vfio-ap.rst
- create mode 100644 Documentation/s390/vfio-ccw.rst
- create mode 100644 Documentation/s390/zfcpdump.rst
- create mode 100644 Documentation/translations/zh_CN/loongarch/booting.rst
- create mode 100644 Documentation/translations/zh_CN/loongarch/features.rst
- create mode 100644 Documentation/translations/zh_CN/loongarch/index.rst
- create mode 100644 Documentation/translations/zh_CN/loongarch/introduction.rst
- create mode 100644 Documentation/translations/zh_CN/loongarch/irq-chip-model.rst
- create mode 100644 Documentation/translations/zh_CN/mips/booting.rst
- create mode 100644 Documentation/translations/zh_CN/mips/features.rst
- create mode 100644 Documentation/translations/zh_CN/mips/index.rst
- create mode 100644 Documentation/translations/zh_CN/mips/ingenic-tcu.rst
- create mode 100644 Documentation/translations/zh_CN/mm/frontswap.rst
- create mode 100644 arch/arm/mach-keystone/keystone.h
- create mode 100644 arch/arm/mach-keystone/memory.h
- create mode 100644 arch/arm/mach-keystone/pm_domain.c
- create mode 100644 arch/arm/mach-nspire/mmio.h
- create mode 100644 arch/arm/mach-ux500/pm_domains.c
- create mode 100644 arch/arm/mach-ux500/pm_domains.h
- create mode 100644 arch/arm/vfp/entry.S
- create mode 120000 arch/arm64/boot/dts/arm/vexpress-v2m-rs1.dtsi
- create mode 100644 arch/hexagon/mm/ioremap.c
- create mode 100644 arch/parisc/include/asm/machdep.h
- create mode 100644 arch/parisc/kernel/pa7300lc.c
- create mode 100644 arch/powerpc/include/asm/mpc8260.h
- create mode 100644 arch/powerpc/kernel/trace/ftrace_64_pg.S
- create mode 100644 arch/powerpc/kernel/trace/ftrace_low.S
- create mode 100644 arch/powerpc/kernel/trace/ftrace_mprofile.S
- create mode 100644 arch/powerpc/lib/alloc.c
- create mode 100644 arch/powerpc/platforms/82xx/m82xx_pci.h
- create mode 100644 arch/powerpc/platforms/83xx/usb.c
- create mode 100644 arch/riscv/errata/andes/Makefile
- create mode 100644 arch/riscv/errata/andes/errata.c
- create mode 100644 arch/riscv/include/asm/dma-noncoherent.h
- create mode 100644 arch/riscv/kernel/copy-unaligned.S
- create mode 100644 arch/riscv/kernel/copy-unaligned.h
- create mode 100644 arch/riscv/kernel/pi/fdt_early.c
- create mode 100644 arch/x86/include/asm/microcode_amd.h
- create mode 100644 arch/x86/include/asm/microcode_intel.h
- create mode 100644 drivers/accel/ivpu/ivpu_hw_mtl.c
- create mode 100644 drivers/accel/ivpu/ivpu_hw_mtl_reg.h
- create mode 100644 drivers/acpi/acpi_amba.c
- create mode 100644 drivers/cache/Kconfig
- create mode 100644 drivers/cache/Makefile
- create mode 100644 drivers/cache/ax45mp_cache.c
- create mode 100644 drivers/clk/clk-oxnas.c
- create mode 100644 drivers/clk/meson/axg-aoclk.h
- create mode 100644 drivers/clk/meson/g12a-aoclk.h
- create mode 100644 drivers/clk/meson/gxbb-aoclk.h
- create mode 100644 drivers/clk/mmp/clk-mmp2.c
- create mode 100644 drivers/clk/mmp/clk-pxa168.c
- create mode 100644 drivers/clk/mmp/clk-pxa910.c
- create mode 100644 drivers/clk/qcom/lcc-mdm9615.c
- create mode 100644 drivers/firmware/efi/libstub/kaslr.c
- create mode 100644 drivers/firmware/imx/scu-pd.c
- create mode 100644 drivers/gpu/drm/amd/amdgpu/aqua_vanjaram_reg_init.c
- create mode 100644 drivers/gpu/drm/amd/amdkfd/kfd_iommu.c
- create mode 100644 drivers/gpu/drm/amd/amdkfd/kfd_iommu.h
- create mode 100644 drivers/gpu/drm/amd/display/dmub/inc/dmub_subvp_state.h
- create mode 100644 drivers/gpu/drm/nouveau/nvkm/subdev/fb/ramga102.c
+--=_MailMate_AA0523F5-C1AD-42FD-B9CE-3340016FBD29_=--
