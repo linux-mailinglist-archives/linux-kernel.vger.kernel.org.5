@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03670798BFA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC91A798BD4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245754AbjIHSDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:03:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53434 "EHLO
+        id S245630AbjIHSCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:02:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbjIHSDF (ORCPT
+        with ESMTP id S245604AbjIHSCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:03:05 -0400
+        Fri, 8 Sep 2023 14:02:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B0E2696;
-        Fri,  8 Sep 2023 11:02:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 411BDC433CB;
-        Fri,  8 Sep 2023 18:01:21 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8373A2136;
+        Fri,  8 Sep 2023 11:01:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34149C433B9;
+        Fri,  8 Sep 2023 18:01:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196081;
-        bh=oiCBIEZY60tSkOgWmSR8mY0q64KgwOAVwN8avxxJu5w=;
+        s=k20201202; t=1694196083;
+        bh=Qd+4UGrETBwe0du7Lj5TNxfVEz0Jc3rP+VVDyAEom0w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=orfMVTVnaVVrg7514F4pQtbCA6vtTMm/omSjTZ9Sgx9LpQh8IJYZs6fEECJz/Ec41
-         4Wk0zAnhKTXqMJSBDKNItrupIDv6VioLSiAV08NMYv8H5kBr3KKsZKK7zHjWaoWytW
-         AnWWAIv16Qvy+oabQIvBwirleGDUOehqBajS27kPVq08Nr4f/w2nBXqtYIWSQn7wEB
-         vB0YnrW2xhLBnaq7a6H3r7gHUEHqje9JPNAXFI8RZK0CO3VEZJppDx47roJbMSXLnD
-         /whWQcK9M6xrPD3lmSf28tBLVxA9olNvBRhMIe3BcorRqAOwQcZtI/wCTYpuyZ8Z4c
-         nPJj8MfKxXLpg==
+        b=HAB7hIAUCQsAs/VvBOUsYGBc9tVmNOIdsAKcaHgDktqk573VLJMJgx2QQSo1o/PKr
+         GsqWdGVaZwPzKZCk96WJOV/viLa7tp1jcwI/cCOR8gUrvzVOuH8kBOrWwsIX19zWMs
+         MaVE0QzYaiWZgujsbU8QTzDfJWY1ZSjpHHDw/G+r/1kEK5Epb2lTnwzppEIAIkIeXo
+         c//AkOT6YItqVP2QUoyJkGrXtFywt3aVwkBF37ozd3FiYnvam6bPVzHFh3dD0QgRvn
+         pHs0BUnZ9ucM8tGU0BeYfMm5mOYmGqq1FngLG3YM71NqL5vvEJpdtGHLv9UgBflrhq
+         0PIqHpG3X63Sg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.4 04/13] scftorture: Forgive memory-allocation failure if KASAN
-Date:   Fri,  8 Sep 2023 14:00:50 -0400
-Message-Id: <20230908180100.3458151-4-sashal@kernel.org>
+Cc:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>, rafael@kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 05/13] ACPI: video: Add backlight=native DMI quirk for Lenovo Ideapad Z470
+Date:   Fri,  8 Sep 2023 14:00:51 -0400
+Message-Id: <20230908180100.3458151-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908180100.3458151-1-sashal@kernel.org>
 References: <20230908180100.3458151-1-sashal@kernel.org>
@@ -51,47 +54,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 
-[ Upstream commit 013608cd0812bdb21fc26d39ed8fdd2fc76e8b9b ]
+[ Upstream commit 96b709be183c56293933ef45b8b75f8af268c6de ]
 
-Kernels built with CONFIG_KASAN=y quarantine newly freed memory in order
-to better detect use-after-free errors.  However, this can exhaust memory
-more quickly in allocator-heavy tests, which can result in spurious
-scftorture failure.  This commit therefore forgives memory-allocation
-failure in kernels built with CONFIG_KASAN=y, but continues counting
-the errors for use in detailed test-result analyses.
+The Lenovo Ideapad Z470 predates Windows 8, so it defaults to using
+acpi_video for backlight control. But this is not functional on this
+model.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Add a DMI quirk to use the native backlight interface which works.
+
+Link: https://bugzilla.suse.com/show_bug.cgi?id=1208724
+Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/scftorture.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/acpi/video_detect.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/kernel/scftorture.c b/kernel/scftorture.c
-index 5d113aa59e773..83c33ba0ca7e0 100644
---- a/kernel/scftorture.c
-+++ b/kernel/scftorture.c
-@@ -171,7 +171,8 @@ static void scf_torture_stats_print(void)
- 		scfs.n_all_wait += scf_stats_p[i].n_all_wait;
- 	}
- 	if (atomic_read(&n_errs) || atomic_read(&n_mb_in_errs) ||
--	    atomic_read(&n_mb_out_errs) || atomic_read(&n_alloc_errs))
-+	    atomic_read(&n_mb_out_errs) ||
-+	    (!IS_ENABLED(CONFIG_KASAN) && atomic_read(&n_alloc_errs)))
- 		bangstr = "!!! ";
- 	pr_alert("%s %sscf_invoked_count %s: %lld resched: %lld single: %lld/%lld single_ofl: %lld/%lld single_rpc: %lld single_rpc_ofl: %lld many: %lld/%lld all: %lld/%lld ",
- 		 SCFTORT_FLAG, bangstr, isdone ? "VER" : "ver", invoked_count, scfs.n_resched,
-@@ -323,7 +324,8 @@ static void scftorture_invoke_one(struct scf_statistics *scfp, struct torture_ra
- 		preempt_disable();
- 	if (scfsp->scfs_prim == SCF_PRIM_SINGLE || scfsp->scfs_wait) {
- 		scfcp = kmalloc(sizeof(*scfcp), GFP_ATOMIC);
--		if (WARN_ON_ONCE(!scfcp)) {
-+		if (!scfcp) {
-+			WARN_ON_ONCE(!IS_ENABLED(CONFIG_KASAN));
- 			atomic_inc(&n_alloc_errs);
- 		} else {
- 			scfcp->scfc_cpu = -1;
+diff --git a/drivers/acpi/video_detect.c b/drivers/acpi/video_detect.c
+index e7d04ab864a16..922a31857397c 100644
+--- a/drivers/acpi/video_detect.c
++++ b/drivers/acpi/video_detect.c
+@@ -445,6 +445,15 @@ static const struct dmi_system_id video_detect_dmi_table[] = {
+ 		DMI_MATCH(DMI_BOARD_NAME, "Lenovo IdeaPad S405"),
+ 		},
+ 	},
++	{
++	 /* https://bugzilla.suse.com/show_bug.cgi?id=1208724 */
++	 .callback = video_detect_force_native,
++	 /* Lenovo Ideapad Z470 */
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++		DMI_MATCH(DMI_PRODUCT_VERSION, "IdeaPad Z470"),
++		},
++	},
+ 	{
+ 	 /* https://bugzilla.redhat.com/show_bug.cgi?id=1187004 */
+ 	 .callback = video_detect_force_native,
 -- 
 2.40.1
 
