@@ -2,79 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D218798048
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 03:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8058A798050
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 03:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238093AbjIHBid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 21:38:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39176 "EHLO
+        id S239770AbjIHBkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 21:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235744AbjIHBib (ORCPT
+        with ESMTP id S231138AbjIHBkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 21:38:31 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E311C19A7;
-        Thu,  7 Sep 2023 18:38:27 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6bdcbde9676so1161930a34.3;
-        Thu, 07 Sep 2023 18:38:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694137107; x=1694741907; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GoqYLLTWFIzyoZFuY1x7lHwA6k4s+5qXgOEmq2+YoYU=;
-        b=EsBpaSe0lH006cNozgkyqkb/qVj35GpPvPD0+TihJj8AVV2NkjuS1uT2EdWrL1k8uc
-         FxAocCceBsKLZObsnDxzvGWhBbf5JCRVzOR6dlvll2DM9H5CByC7mENXBbvwAOt1nr3V
-         /vP14AYGSzMjYUQwVUrwyYscpC6H477gKaem3Fhk1SJM2HlwJ1m1Qh6vlPYdY7CdhqLr
-         ETOAHP6uasyBsAwABcmZLmA9Fd+BpcVnsGwetQCxDV7MxFQM4hjXyFszTEZq8lxsJ8Wr
-         iptYlDeXlnBoLHl9mdNfwpyBNtITx+4iJ7smHUS9ihsA2PpRbRzqfpv9V3T2M0mHzpOU
-         QM8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694137107; x=1694741907;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GoqYLLTWFIzyoZFuY1x7lHwA6k4s+5qXgOEmq2+YoYU=;
-        b=AGyFzUEo/CVNgjwO+Y4tTrban76h+SXhIB4ef4RCVFtF0Ux/n6XD5lIdZB7ra51UAR
-         OQQ2RhHwFpd+GLpD8XbktSX8mLGMvCRgL2yczDDn0lE5fU18/TCdKNp1kumKedI+hXTJ
-         GFUrqomhD7uGg2LVc+ZtXYTPqIrSDw/tM9MIV4R6PvJjLaQs4Yf1KrqT39A/5YG4ADLd
-         vcsCuyHXIIZxoTxSPnSmwYuH/WDi3/mYq6TiR7XMviXF1oD+/9OTSAqZuuwy8pwqQmEo
-         zBJegD27RjobCL06Uv2hfyBcL8C33/Qa26b06hCWLSzCCTWEy/ndNKhDGpAq3aTkQRcA
-         edKw==
-X-Gm-Message-State: AOJu0YwV+WdtmkuykXoWbH3ALbgGdiRl7Lvy1wEQ9MK0LVJyThM4YFW8
-        rTqX9R5Wb6chF0CImDWDeTY=
-X-Google-Smtp-Source: AGHT+IEX3ezoCJxl3ylzzZ+PxyXa4OnAcfwLdtTuYgj04ghqbAq39XjRtCcti+FtWFJm+Zk3a/JwUA==
-X-Received: by 2002:a9d:665a:0:b0:6bc:f20a:3b65 with SMTP id q26-20020a9d665a000000b006bcf20a3b65mr1067072otm.23.1694137107026;
-        Thu, 07 Sep 2023 18:38:27 -0700 (PDT)
-Received: from [192.168.0.106] ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id i3-20020a63b303000000b00570574feda0sm171870pgf.19.2023.09.07.18.38.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 18:38:26 -0700 (PDT)
-Message-ID: <470bd522-3e12-0e6c-de4e-2da8164d694b@gmail.com>
-Date:   Fri, 8 Sep 2023 08:38:22 +0700
+        Thu, 7 Sep 2023 21:40:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3CF1BD9;
+        Thu,  7 Sep 2023 18:40:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95A80C433C8;
+        Fri,  8 Sep 2023 01:40:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694137229;
+        bh=xxUJ4Zbe95SAzpB+WBTM98lJIPJcPTRSy6vNlAfrF3g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZJA+ENEOYiwenCrF8/5wdFQ2/maSyUWZxam3E0xSwi0MZWXQALrj0PKL9+/tJ+dm8
+         jlu3OWaOtU0ttfoTEYeR8kUpbV7LZQCafBE+grN1UovqChc4AY8trrc0qQ20ylAKM8
+         qDuj8o4V5EOiizMtg7uU05/hbdKSe099yT/pImdQL+BybGIFT9rL8mLMatBGkDu6YH
+         yMs0o+jTJLs4SOz4epUKvGOBAaTifLnSGcdZLkoUSwJ5pa0zl33s5S5NhjdtUV2Ifb
+         Y4cpPTFTonqSCfJlF/tM4Awjv9pRZ4yar+YYwvFXBX9GxnuubT885k4XioXqZ3WPda
+         NULivPNdERnVA==
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-501cef42bc9so2590852e87.0;
+        Thu, 07 Sep 2023 18:40:29 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzBp0s5WUhtvwFXsFFoajfY9MemnV4Eo3DG+b0sA/Qh8enBxcH5
+        1nV3jDjlE+36JggGf1OAlvMtIFU0fLCp+YF8dYo=
+X-Google-Smtp-Source: AGHT+IE0y1K+boYk2dLLdJ4ZbSDeD28Jji7PpL3yDaKlNddJw3VAlmFfQJnyncZGxyekqD3nfmhlar9p/B082vXV2ZE=
+X-Received: by 2002:a05:6512:3988:b0:500:8ecb:509 with SMTP id
+ j8-20020a056512398800b005008ecb0509mr954931lfu.15.1694137227691; Thu, 07 Sep
+ 2023 18:40:27 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: Slow boot and shutdown/reboot problems with 6.5.0+
-Content-Language: en-US
-To:     Marcus Seyfarth <m.seyfarth@gmail.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russell.h.weight@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Integrity <linux-integrity@vger.kernel.org>
-References: <5011708f-b0ae-2853-0f87-a3b59845a2cc@gmail.com>
- <CA+FbhJO8b5V_So2mMPu1ApKXTxk0ieWvNMa=HBTYTWDXLEA-ew@mail.gmail.com>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <CA+FbhJO8b5V_So2mMPu1ApKXTxk0ieWvNMa=HBTYTWDXLEA-ew@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230831083020.2187109-1-zhaotianrui@loongson.cn>
+ <20230831083020.2187109-29-zhaotianrui@loongson.cn> <925522e9-9be6-2545-4c4e-1608eaab523a@xen0n.name>
+In-Reply-To: <925522e9-9be6-2545-4c4e-1608eaab523a@xen0n.name>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Fri, 8 Sep 2023 09:40:16 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H5WHOysfEutSg1oopx5s8SDnYd8zn8C+TY6mqVbFr22sQ@mail.gmail.com>
+Message-ID: <CAAhV-H5WHOysfEutSg1oopx5s8SDnYd8zn8C+TY6mqVbFr22sQ@mail.gmail.com>
+Subject: Re: [PATCH v20 28/30] LoongArch: KVM: Enable kvm config and add the makefile
+To:     WANG Xuerui <kernel@xen0n.name>
+Cc:     Tianrui Zhao <zhaotianrui@loongson.cn>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
+        Mark Brown <broonie@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
+        Xi Ruoyao <xry111@xry111.site>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,22 +67,182 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/09/2023 20:56, Marcus Seyfarth wrote:
-> Thanks for picking this up! Just to keep track, you can remove my earlier report (https://bugzilla.kernel.org/show_bug.cgi?id=217864 <https://bugzilla.kernel.org/show_bug.cgi?id=217864>) from regzbot. I've split out the boot/shutdown/reboot part from there into this new one as that was still reproducible on default distro Kernels.
-> 
-> As to bisecting: Unfortunately I cannot afford the time right now to bisect this further as the system is used in production and already did invest a lot of time without success into it. Hopefully someone else can find the root cause of the problem. My systemd version is: 254.1, and I also use dbus 1.14.10 and dbus-broker 33.r35.g2220a84 which was configured with -D linux-4-17=true.
-> 
+On Fri, Sep 8, 2023 at 4:10=E2=80=AFAM WANG Xuerui <kernel@xen0n.name> wrot=
+e:
+>
+>
+> On 8/31/23 16:30, Tianrui Zhao wrote:
+> > Enable LoongArch kvm config and add the makefile to support build kvm
+> > module.
+> >
+> > Reviewed-by: Bibo Mao <maobibo@loongson.cn>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Link: https://lore.kernel.org/oe-kbuild-all/202304131526.iXfLaVZc-lkp@i=
+ntel.com/
+> > Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+> > ---
+> >   arch/loongarch/Kbuild                      |  1 +
+> >   arch/loongarch/Kconfig                     |  3 ++
+> >   arch/loongarch/configs/loongson3_defconfig |  2 +
+> >   arch/loongarch/kvm/Kconfig                 | 45 +++++++++++++++++++++=
++
+> >   arch/loongarch/kvm/Makefile                | 22 +++++++++++
+> >   5 files changed, 73 insertions(+)
+> >   create mode 100644 arch/loongarch/kvm/Kconfig
+> >   create mode 100644 arch/loongarch/kvm/Makefile
+> >
+> > diff --git a/arch/loongarch/Kbuild b/arch/loongarch/Kbuild
+> > index b01f5cdb27..40be8a1696 100644
+> > --- a/arch/loongarch/Kbuild
+> > +++ b/arch/loongarch/Kbuild
+> > @@ -2,6 +2,7 @@ obj-y +=3D kernel/
+> >   obj-y +=3D mm/
+> >   obj-y +=3D net/
+> >   obj-y +=3D vdso/
+> > +obj-y +=3D kvm/
+> Do we want to keep the list alphabetically sorted here?
+kvm directory can be at last, but I'm afraid that it should be
 
-Do you have test environment with similar configurations so that
-you can bisect there?
+ifdef CONFIG_KVM
+obj-y +=3D kvm/
+endif
 
-> Some other observations: It was very odd to notice that with 6.5.* local h264 video playback with mpv did not work any longer - mpv did not even open the files (it works fine with the older Kernel); the monitor refresh rate was set to 165 Hz (instead of the manually set 120 Hz) and opening of the task bar, Dolphin or attaching files to an E-mail took a lot longer to bring up the dialog than with the older Kernel. Hitting the power button still could successfully turn off the PC though, but clicking on the usual shutdown/reboot Plasma Desktop icons did not seem to work, at least not reliably in every case.
-> 
+If such a guard is unnecessary, then I agree to use alphabetical order.
 
-In that case, can you attach mpv output?
+Huacai
 
-Thanks.
-
--- 
-An old man doll... just what I always wanted! - Clara
-
+> >
+> >   # for cleaning
+> >   subdir- +=3D boot
+> > diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+> > index ecf282dee5..7f2f7ccc76 100644
+> > --- a/arch/loongarch/Kconfig
+> > +++ b/arch/loongarch/Kconfig
+> > @@ -123,6 +123,7 @@ config LOONGARCH
+> >       select HAVE_KPROBES
+> >       select HAVE_KPROBES_ON_FTRACE
+> >       select HAVE_KRETPROBES
+> > +     select HAVE_KVM
+> >       select HAVE_MOD_ARCH_SPECIFIC
+> >       select HAVE_NMI
+> >       select HAVE_PCI
+> > @@ -650,3 +651,5 @@ source "kernel/power/Kconfig"
+> >   source "drivers/acpi/Kconfig"
+> >
+> >   endmenu
+> > +
+> > +source "arch/loongarch/kvm/Kconfig"
+> > diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loongarc=
+h/configs/loongson3_defconfig
+> > index d64849b4cb..7acb4ae7af 100644
+> > --- a/arch/loongarch/configs/loongson3_defconfig
+> > +++ b/arch/loongarch/configs/loongson3_defconfig
+> > @@ -63,6 +63,8 @@ CONFIG_EFI_ZBOOT=3Dy
+> >   CONFIG_EFI_GENERIC_STUB_INITRD_CMDLINE_LOADER=3Dy
+> >   CONFIG_EFI_CAPSULE_LOADER=3Dm
+> >   CONFIG_EFI_TEST=3Dm
+> > +CONFIG_VIRTUALIZATION=3Dy
+> > +CONFIG_KVM=3Dm
+> >   CONFIG_MODULES=3Dy
+> >   CONFIG_MODULE_FORCE_LOAD=3Dy
+> >   CONFIG_MODULE_UNLOAD=3Dy
+> > diff --git a/arch/loongarch/kvm/Kconfig b/arch/loongarch/kvm/Kconfig
+> > new file mode 100644
+> > index 0000000000..bf7d6e7cde
+> > --- /dev/null
+> > +++ b/arch/loongarch/kvm/Kconfig
+> > @@ -0,0 +1,45 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +#
+> > +# KVM configuration
+> > +#
+> > +
+> > +source "virt/kvm/Kconfig"
+> > +
+> > +menuconfig VIRTUALIZATION
+> > +     bool "Virtualization"
+> > +     help
+> > +       Say Y here to get to see options for using your Linux host to r=
+un
+> > +       other operating systems inside virtual machines (guests).
+> > +       This option alone does not add any kernel code.
+> > +
+> > +       If you say N, all options in this submenu will be skipped and
+> > +       disabled.
+> > +
+> > +if VIRTUALIZATION
+> > +
+> > +config AS_HAS_LVZ_EXTENSION
+> > +     def_bool $(as-instr,hvcl 0)
+> > +
+> > +config KVM
+> > +     tristate "Kernel-based Virtual Machine (KVM) support"
+> > +     depends on HAVE_KVM
+> > +     depends on AS_HAS_LVZ_EXTENSION
+> > +     select MMU_NOTIFIER
+> > +     select ANON_INODES
+> > +     select PREEMPT_NOTIFIERS
+> > +     select KVM_MMIO
+> > +     select KVM_GENERIC_DIRTYLOG_READ_PROTECT
+> > +     select KVM_GENERIC_HARDWARE_ENABLING
+> > +     select KVM_XFER_TO_GUEST_WORK
+> > +     select HAVE_KVM_DIRTY_RING_ACQ_REL
+> > +     select HAVE_KVM_VCPU_ASYNC_IOCTL
+> > +     select HAVE_KVM_EVENTFD
+> > +     select SRCU
+> Make the list of selects also alphabetically sorted?
+> > +     help
+> > +       Support hosting virtualized guest machines using hardware
+> > +       virtualization extensions. You will need a fairly processor
+> > +       equipped with virtualization extensions.
+>
+> The word "fairly" seems extraneous here, and can be simply dropped.
+>
+> (I suppose you forgot to delete it after tweaking the original sentence,
+> that came from arch/x86/kvm: "You will need a fairly recent processor
+> ..." -- all LoongArch processors are recent!)
+>
+> > +
+> > +       If unsure, say N.
+> > +
+> > +endif # VIRTUALIZATION
+> > diff --git a/arch/loongarch/kvm/Makefile b/arch/loongarch/kvm/Makefile
+> > new file mode 100644
+> > index 0000000000..2335e873a6
+> > --- /dev/null
+> > +++ b/arch/loongarch/kvm/Makefile
+> > @@ -0,0 +1,22 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +#
+> > +# Makefile for LOONGARCH KVM support
+> "LoongArch" -- you may want to check the entire patch series for such
+> ALL-CAPS references to LoongArch in natural language paragraphs, they
+> all want to be spelled "LoongArch".
+> > +#
+> > +
+> > +ccflags-y +=3D -I $(srctree)/$(src)
+> > +
+> > +include $(srctree)/virt/kvm/Makefile.kvm
+> > +
+> > +obj-$(CONFIG_KVM) +=3D kvm.o
+> > +
+> > +kvm-y +=3D main.o
+> > +kvm-y +=3D vm.o
+> > +kvm-y +=3D vmid.o
+> > +kvm-y +=3D tlb.o
+> > +kvm-y +=3D mmu.o
+> > +kvm-y +=3D vcpu.o
+> > +kvm-y +=3D exit.o
+> > +kvm-y +=3D interrupt.o
+> > +kvm-y +=3D timer.o
+> > +kvm-y +=3D switch.o
+> > +kvm-y +=3D csr_ops.o
+> I'd suggest sorting this list too to better avoid editing conflicts in
+> the future.
+>
+> --
+> WANG "xen0n" Xuerui
+>
+> Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+>
+>
