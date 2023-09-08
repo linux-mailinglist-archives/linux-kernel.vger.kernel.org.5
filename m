@@ -2,127 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D26ED798A7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 18:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5372798A80
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 18:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232566AbjIHQLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 12:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36498 "EHLO
+        id S244949AbjIHQME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 12:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238765AbjIHQLa (ORCPT
+        with ESMTP id S238765AbjIHQMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 12:11:30 -0400
-Received: from smtp.smtpout.orange.fr (smtp-29.smtpout.orange.fr [80.12.242.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A431FDF
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 09:11:23 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id ee4jq6ujawJ7Jee4jqw3bA; Fri, 08 Sep 2023 18:11:21 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1694189481;
-        bh=+6AindnLA3kWmbjcoqncg4z08JP7Gi43jNm6msbfoQY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=tAot1hcjXjpXglcWx3paiok/8diihH91pXTsmoFf7sgUWJhzeZaC5APrenWuK2Mmg
-         yLu4aW8kA12gzpqQ4KpA0ELuzd7rHjPfkKkF2ZcHRDexhrXxgLkFu3s8mZgiY5lTcY
-         LExo1GnajVVNP+dpIXsMvksBogoGkiUx/76aaBfJzVAvzzHMwDGeXTBjEqRKtrbzNW
-         Eo7XwpL6m0agMxiMwATj277M/bMFKie+SyEsSVLVjjPBxJfBum99TdpJfdyF8blivf
-         YsJoOEFkb7EmRj9JoJI2YHZSRcUXYhcdgR6qmYYlGyBqUjyngk53p4cfY4qxpmzPuT
-         MlWyGnqPDD2WA==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 08 Sep 2023 18:11:21 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <492ae2a2-3364-f13c-4d93-0175221483a9@wanadoo.fr>
-Date:   Fri, 8 Sep 2023 18:11:17 +0200
+        Fri, 8 Sep 2023 12:12:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313CBB4
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 09:11:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7cV6rs7lHoym9wKU70XXMlIT0xCEu+NT4XjD1eOpxkE=; b=GxySJT4x09iGEvotlTKMCSioaA
+        E+kdzkusdHMTPQGJcUgoSUWwosJ0bw1QD5okJVh2JM95TndU3GKqspXj1ABI6sChYqZ7r1yu0UUWK
+        5sIse92nEs/yHOZmdP7qhlmI7vsJfqqNeBfPNwUdMYfOyw8JmjfLDXhaG8TuaYAWAL24BVGtweE+/
+        +ACCZb5dcr0sEnU5VU4NM36DgpAnENkya7Z4wS3bIk/OAzKi243trJ1ogV6rrT918IQ8Fx3UGtISF
+        k74ZUyavJCFyt2LXjcSD0Zmcn63084QiXKaVRDycg/BoEMlteiFgQXRLWnZfiprMAJ42qB4Prv07z
+        BfMTdtFQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qee56-0014Kr-Sv; Fri, 08 Sep 2023 16:11:41 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8BF6830057E; Fri,  8 Sep 2023 18:11:40 +0200 (CEST)
+Date:   Fri, 8 Sep 2023 18:11:40 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Phil Auld <pauld@redhat.com>
+Subject: Re: [PATCH v4 6/7] sched/deadline: Deferrable dl server
+Message-ID: <20230908161140.GM19320@noisy.programming.kicks-ass.net>
+References: <cover.1693510979.git.bristot@kernel.org>
+ <754dab7f30695ca10a41613068bb63db3bfea003.1693510979.git.bristot@kernel.org>
+ <20230905134203.GA20703@noisy.programming.kicks-ass.net>
+ <b3b3a5c5-6688-966d-3d78-3e140730cb7b@redhat.com>
+ <20230906082952.GB38741@noisy.programming.kicks-ass.net>
+ <0ce80c5d-2433-13d5-33df-d110cf8faa9c@redhat.com>
+ <20230907080729.GA16872@noisy.programming.kicks-ass.net>
+ <658f807e-7f7a-e6d2-25e7-00eb2187af2a@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] crypto: hisilicon/hpre - Fix a erroneous check after
- snprintf()
-Content-Language: fr, en-US
-To:     liulongfang <liulongfang@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Zaibo Xu <xuzaibo@huawei.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-crypto@vger.kernel.org
-References: <73534cb1713f58228d54ea53a8a137f4ef939bad.1693858632.git.christophe.jaillet@wanadoo.fr>
- <ZPaSCOX1F9b36rxV@gondor.apana.org.au>
- <00bdcfec-6cc1-e521-ceaa-d16d6341ca16@wanadoo.fr>
- <ZPbkJOPsx4as96D/@gondor.apana.org.au>
- <f4379fee-22c2-3b94-1725-70a317cc9baf@huawei.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <f4379fee-22c2-3b94-1725-70a317cc9baf@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <658f807e-7f7a-e6d2-25e7-00eb2187af2a@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 06/09/2023 à 04:04, liulongfang a écrit :
-> On 2023/9/5 16:17, Herbert Xu wrote:
->> On Tue, Sep 05, 2023 at 07:27:47AM +0200, Marion & Christophe JAILLET wrote:
->>>
->>> Some debugfs dir of file way be left around. Is it what your are talking
->>> about?
->>
->> Yes all allocated resources should be freed on the error path.
->>
->>>> The other snprintf in the same file also looks suspect.
->>>
->>> It looks correct to me.
->>>
->>> And HPRE_DBGFS_VAL_MAX_LEN being 20, it doesn't really matter. The string
->>> can't be truncated with just a "%u\n".
->>
->> Well if you're going to go with that line of reasoning then this
->> case ("cluster%d") can't overflow either, no?
->>
+On Fri, Sep 08, 2023 at 05:28:46PM +0200, Daniel Bristot de Oliveira wrote:
+
+> Let me see if I got it:
 > 
-> First, I checked the calling code of the snprintf function in all driver files in
-> the hisilicon directory. Only here is the processing of return value judgment.
-> This treatment is indeed problematic and needs to be modified.
+> 	- Always start the server, but throttled with full runtime...
+> 	- Unconditionally decrement fair_server.dl_runtime from update_curr_fair()
+> 		(check if it is not decremented twice as it runs)
+> 	- When the dl timer fire, replenish or throttle for the next period?
 > 
-> Then, I don't quite agree with your modification plan.
-> The modification of this solution is not complete.
-> As Herbert said, ("cluster%d") may still have overflow problems.
+> is that the base for it?
 
-Herbert said the contrary, and I agree with him.
-
-HPRE_DBGFS_VAL_MAX_LEN is 20.
-
-cluster%u will be at max:
-	strlen("cluster") + strlen("4294967295") + 1 = 17
-
-(unless some system have 64 bits int?)
-
-I do agree that it is safe to remove the test after snprintf(), but 
-there is no need from my POV to turn "i" into a u8.
-
-CJ
-
-> 
-> In the end, my proposed modification scheme is this:
-> ...
-> 	int ret;
-> 	u8 i;
-> 
-> 	for (i = 0; i < clusters_num; i++) {
-> 		snprintf(buf, HPRE_DBGFS_VAL_MAX_LEN, "cluster%u", i);
-> 		tmp_d = debugfs_create_dir(buf, qm->debug.debug_root);
-> 		...
-> 	}
-> ...
-> 
-> Thanks,
-> Longfang.
-> 
->> Cheers,
->>
-> 
-
+Yes. So if dl timer fires and it still has runtime replenish will not
+move the deadline and it will become eligible to run. If it has 0
+runtime, replenish does it's thing, ups runtime and moves the deadline
+forward and then the zero-laxity condition will re-throttle, goto 1
+etc..
