@@ -2,399 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E1C797D1F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 22:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0989D797B5F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Sep 2023 20:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237403AbjIGUEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 16:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58062 "EHLO
+        id S1343686AbjIGSPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 14:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbjIGUEl (ORCPT
+        with ESMTP id S1343678AbjIGSPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 16:04:41 -0400
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5235E47;
-        Thu,  7 Sep 2023 13:04:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-        t=1694117074; bh=ophhLi3i6X8///w4PUTl9tDrb+BFNE6yF2eTyBMHOlg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ec23C5GrJtQvtakIIKf4HvK0BORwM7KOhG99FZA3D3SdNAsFsv+6kmKvn3ebMS2dn
-         0g/4+7mwFWEBcIMmispFVtZTRIdkWK3mOHc0a2kahE59YJwNcpALEF07jZn6nOZ3CA
-         vfsEcPAXUyHBBGKdpBXsSRwenFHvj5fFVQKQ5JBg=
-Received: from [192.168.9.172] (unknown [101.88.25.36])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 0E3CD6011C;
-        Fri,  8 Sep 2023 04:04:34 +0800 (CST)
-Message-ID: <eff83dfe-5f89-6b46-2197-2873ede705bd@xen0n.name>
-Date:   Fri, 8 Sep 2023 04:04:33 +0800
+        Thu, 7 Sep 2023 14:15:09 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA011710;
+        Thu,  7 Sep 2023 11:14:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1694110495; x=1725646495;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0TnSY7Dj57kDvwS7MSema5/mPzlAoA5MTHNSNEab8U8=;
+  b=XPOdpMtBCI+ubajZ7i8BuwLCennOttM0P23YAC2PyoKYxpQOdvlMgHlk
+   gw7vb9XwTZ+6ISczpAeWM2blISohk3eJaVgeJ5WEF7MmaFFDG67iDEN1I
+   3aiRGrJN0oXDTG2MGeO0YNxQdBmwrcMDDeJj4hXFi3zvVXRsdX/1P6wlG
+   d0NrHetQqkCwHxO0cV7BkW9QmsT3zR9p8Rm5ieAibONw3C0LbpgP92bW4
+   4JKpRJvGYjWE/bQBymOoGMLCqLUd0BWMeD7MQnG/M7l4WFLcT2/ief7mY
+   cvo/o6adhCkmXUiUGgvp+tD30BWmKTHrc0aD+/D0Tmah6ujSKCjHneZBP
+   A==;
+X-CSE-ConnectionGUID: D0ayf4mnRCeKEpW5OwqQLA==
+X-CSE-MsgGUID: WcRlAeYdS+aCrUDu6oTEyQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.02,235,1688454000"; 
+   d="scan'208";a="3553050"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Sep 2023 07:04:08 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 7 Sep 2023 07:04:07 -0700
+Received: from CHE-LT-I17164LX.microchip.com (10.10.85.11) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Thu, 7 Sep 2023 07:04:03 -0700
+From:   Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+To:     <kuba@kernel.org>, <piergiorgio.beruto@gmail.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+        <andrew@lunn.ch>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <horatiu.vultur@microchip.com>, <Woojung.Huh@microchip.com>,
+        <Nicolas.Ferre@microchip.com>, <Thorsten.Kummermehr@microchip.com>,
+        <UNGLinuxDriver@microchip.com>,
+        Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+Subject: [PATCH net v2] ethtool: plca: fix plca enable data type while parsing the value
+Date:   Fri, 8 Sep 2023 19:33:46 +0530
+Message-ID: <20230908140346.40680-1-Parthiban.Veerasooran@microchip.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v20 27/30] LoongArch: KVM: Implement vcpu world switch
-Content-Language: en-US
-To:     Tianrui Zhao <zhaotianrui@loongson.cn>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
-        Mark Brown <broonie@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
-        Xi Ruoyao <xry111@xry111.site>
-References: <20230831083020.2187109-1-zhaotianrui@loongson.cn>
- <20230831083020.2187109-28-zhaotianrui@loongson.cn>
-From:   WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <20230831083020.2187109-28-zhaotianrui@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The ETHTOOL_A_PLCA_ENABLED data type is u8. But while parsing the
+value from the attribute, nla_get_u32() is used in the plca_update_sint()
+function instead of nla_get_u8(). So plca_cfg.enabled variable is updated
+with some garbage value instead of 0 or 1 and always enables plca even
+though plca is disabled through ethtool application. This bug has been
+fixed by parsing the values based on the attributes type in the policy.
 
-On 8/31/23 16:30, Tianrui Zhao wrote:
-> Implement LoongArch vcpu world switch, including vcpu enter guest and
-> vcpu exit from guest, both operations need to save or restore the host
-> and guest registers.
->
-> Reviewed-by: Bibo Mao <maobibo@loongson.cn>
-> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
-> ---
->   arch/loongarch/kernel/asm-offsets.c |  32 ++++
->   arch/loongarch/kvm/switch.S         | 255 ++++++++++++++++++++++++++++
->   2 files changed, 287 insertions(+)
->   create mode 100644 arch/loongarch/kvm/switch.S
->
-> diff --git a/arch/loongarch/kernel/asm-offsets.c b/arch/loongarch/kernel/asm-offsets.c
-> index 505e4bf596..d4bbaa74c1 100644
-> --- a/arch/loongarch/kernel/asm-offsets.c
-> +++ b/arch/loongarch/kernel/asm-offsets.c
-> @@ -9,6 +9,7 @@
->   #include <linux/mm.h>
->   #include <linux/kbuild.h>
->   #include <linux/suspend.h>
-> +#include <linux/kvm_host.h>
->   #include <asm/cpu-info.h>
->   #include <asm/ptrace.h>
->   #include <asm/processor.h>
-> @@ -285,3 +286,34 @@ void output_fgraph_ret_regs_defines(void)
->   	BLANK();
->   }
->   #endif
-> +
-> +static void __used output_kvm_defines(void)
-> +{
-> +	COMMENT(" KVM/LOONGARCH Specific offsets. ");
-"LoongArch"?
-> +
-> +	OFFSET(VCPU_FCSR0, kvm_vcpu_arch, fpu.fcsr);
-> +	OFFSET(VCPU_FCC, kvm_vcpu_arch, fpu.fcc);
-> +	BLANK();
-> +
-> +	OFFSET(KVM_VCPU_ARCH, kvm_vcpu, arch);
-> +	OFFSET(KVM_VCPU_KVM, kvm_vcpu, kvm);
-> +	OFFSET(KVM_VCPU_RUN, kvm_vcpu, run);
-> +	BLANK();
-> +
-> +	OFFSET(KVM_ARCH_HSP, kvm_vcpu_arch, host_sp);
-> +	OFFSET(KVM_ARCH_HTP, kvm_vcpu_arch, host_tp);
-> +	OFFSET(KVM_ARCH_HANDLE_EXIT, kvm_vcpu_arch, handle_exit);
-> +	OFFSET(KVM_ARCH_HPGD, kvm_vcpu_arch, host_pgd);
-> +	OFFSET(KVM_ARCH_GEENTRY, kvm_vcpu_arch, guest_eentry);
-> +	OFFSET(KVM_ARCH_GPC, kvm_vcpu_arch, pc);
-> +	OFFSET(KVM_ARCH_GGPR, kvm_vcpu_arch, gprs);
-> +	OFFSET(KVM_ARCH_HESTAT, kvm_vcpu_arch, host_estat);
-> +	OFFSET(KVM_ARCH_HBADV, kvm_vcpu_arch, badv);
-> +	OFFSET(KVM_ARCH_HBADI, kvm_vcpu_arch, badi);
-> +	OFFSET(KVM_ARCH_HECFG, kvm_vcpu_arch, host_ecfg);
-> +	OFFSET(KVM_ARCH_HEENTRY, kvm_vcpu_arch, host_eentry);
-> +	OFFSET(KVM_ARCH_HPERCPU, kvm_vcpu_arch, host_percpu);
-> +
-> +	OFFSET(KVM_GPGD, kvm, arch.pgd);
-> +	BLANK();
-> +}
-> diff --git a/arch/loongarch/kvm/switch.S b/arch/loongarch/kvm/switch.S
-> new file mode 100644
-> index 0000000000..f637fcd56c
-> --- /dev/null
-> +++ b/arch/loongarch/kvm/switch.S
-> @@ -0,0 +1,255 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2020-2023 Loongson Technology Corporation Limited
-> + */
-> +
-> +#include <linux/linkage.h>
-> +#include <asm/stackframe.h>
-> +#include <asm/asm.h>
-> +#include <asm/asmmacro.h>
-> +#include <asm/regdef.h>
-> +#include <asm/loongarch.h>
-> +
-> +#define PT_GPR_OFFSET(x)	(PT_R0 + 8*x)
-> +#define GGPR_OFFSET(x)		(KVM_ARCH_GGPR + 8*x)
-> +
-> +.macro kvm_save_host_gpr base
-> +	.irp n,1,2,3,22,23,24,25,26,27,28,29,30,31
-> +	st.d	$r\n, \base, PT_GPR_OFFSET(\n)
-> +	.endr
-> +.endm
-> +
-> +.macro kvm_restore_host_gpr base
-> +	.irp n,1,2,3,22,23,24,25,26,27,28,29,30,31
-> +	ld.d	$r\n, \base, PT_GPR_OFFSET(\n)
-> +	.endr
-> +.endm
-> +
-> +/*
-> + * save and restore all gprs except base register,
-> + * and default value of base register is a2.
-> + */
-> +.macro kvm_save_guest_gprs base
-> +	.irp n,1,2,3,4,5,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
-> +	st.d	$r\n, \base, GGPR_OFFSET(\n)
-> +	.endr
-> +.endm
-> +
-> +.macro kvm_restore_guest_gprs base
-> +	.irp n,1,2,3,4,5,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
-> +	ld.d	$r\n, \base, GGPR_OFFSET(\n)
-> +	.endr
-> +.endm
-> +
-> +/*
-> + * prepare switch to guest, save host reg and restore guest reg.
-> + * a2: kvm_vcpu_arch, don't touch it until 'ertn'
-> + * t0, t1: temp register
-> + */
-> +.macro kvm_switch_to_guest
-> +	/* set host excfg.VS=0, all exceptions share one exception entry */
-> +	csrrd		t0, LOONGARCH_CSR_ECFG
-> +	bstrins.w	t0, zero, CSR_ECFG_VS_SHIFT_END, CSR_ECFG_VS_SHIFT
-> +	csrwr		t0, LOONGARCH_CSR_ECFG
-> +
-> +	/* Load up the new EENTRY */
-> +	ld.d	t0, a2, KVM_ARCH_GEENTRY
-> +	csrwr	t0, LOONGARCH_CSR_EENTRY
-> +
-> +	/* Set Guest ERA */
-> +	ld.d	t0, a2, KVM_ARCH_GPC
-> +	csrwr	t0, LOONGARCH_CSR_ERA
-> +
-> +	/* Save host PGDL */
-> +	csrrd	t0, LOONGARCH_CSR_PGDL
-> +	st.d	t0, a2, KVM_ARCH_HPGD
-> +
-> +	/* Switch to kvm */
-> +	ld.d	t1, a2, KVM_VCPU_KVM - KVM_VCPU_ARCH
-> +
-> +	/* Load guest PGDL */
-> +	li.w    t0, KVM_GPGD
-> +	ldx.d   t0, t1, t0
-> +	csrwr	t0, LOONGARCH_CSR_PGDL
-> +
-> +	/* Mix GID and RID */
-> +	csrrd		t1, LOONGARCH_CSR_GSTAT
-> +	bstrpick.w	t1, t1, CSR_GSTAT_GID_SHIFT_END, CSR_GSTAT_GID_SHIFT
-> +	csrrd		t0, LOONGARCH_CSR_GTLBC
-> +	bstrins.w	t0, t1, CSR_GTLBC_TGID_SHIFT_END, CSR_GTLBC_TGID_SHIFT
-> +	csrwr		t0, LOONGARCH_CSR_GTLBC
-> +
-> +	/*
-> +	 * Switch to guest:
-> +	 *  GSTAT.PGM = 1, ERRCTL.ISERR = 0, TLBRPRMD.ISTLBR = 0
-> +	 *  ertn
-> +	 */
-> +
-> +	/*
-> +	 * Enable intr in root mode with future ertn so that host interrupt
-> +	 * can be responsed during VM runs
-> +	 * guest crmd comes from separate gcsr_CRMD register
-> +	 */
-> +	ori	t0, zero, CSR_PRMD_PIE
-Use "li.w" like the place several lines before?
-> +	csrxchg	t0, t0,   LOONGARCH_CSR_PRMD
-> +
-> +	/* Set PVM bit to setup ertn to guest context */
-> +	ori	t0, zero, CSR_GSTAT_PVM
-Similarly here...
-> +	csrxchg	t0, t0,   LOONGARCH_CSR_GSTAT
-> +
-> +	/* Load Guest gprs */
-> +	kvm_restore_guest_gprs a2
-> +	/* Load KVM_ARCH register */
-> +	ld.d	a2, a2,	(KVM_ARCH_GGPR + 8 * REG_A2)
-> +
-> +	ertn
-> +.endm
-> +
-> +	/*
-> +	 * exception entry for general exception from guest mode
-> +	 *  - IRQ is disabled
-> +	 *  - kernel privilege in root mode
-> +	 *  - page mode keep unchanged from previous prmd in root mode
-> +	 *  - Fixme: tlb exception cannot happen since registers relative with TLB
-> +	 *  -        is still in guest mode, such as pgd table/vmid registers etc,
-> +	 *  -        will fix with hw page walk enabled in future
-> +	 * load kvm_vcpu from reserved CSR KVM_VCPU_KS, and save a2 to KVM_TEMP_KS
-> +	 */
-> +	.text
-> +	.cfi_sections	.debug_frame
-> +SYM_CODE_START(kvm_vector_entry)
-> +	csrwr	a2,   KVM_TEMP_KS
-> +	csrrd	a2,   KVM_VCPU_KS
-> +	addi.d	a2,   a2, KVM_VCPU_ARCH
-> +
-> +	/* After save gprs, free to use any gpr */
-> +	kvm_save_guest_gprs a2
-> +	/* Save guest a2 */
-> +	csrrd	t0,	KVM_TEMP_KS
-> +	st.d	t0,	a2,	(KVM_ARCH_GGPR + 8 * REG_A2)
-> +
-> +	/* a2: kvm_vcpu_arch, a1 is free to use */
-> +	csrrd	s1,   KVM_VCPU_KS
-> +	ld.d	s0,   s1, KVM_VCPU_RUN
-> +
-> +	csrrd	t0,   LOONGARCH_CSR_ESTAT
-> +	st.d	t0,   a2, KVM_ARCH_HESTAT
-> +	csrrd	t0,   LOONGARCH_CSR_ERA
-> +	st.d	t0,   a2, KVM_ARCH_GPC
-> +	csrrd	t0,   LOONGARCH_CSR_BADV
-> +	st.d	t0,   a2, KVM_ARCH_HBADV
-> +	csrrd	t0,   LOONGARCH_CSR_BADI
-> +	st.d	t0,   a2, KVM_ARCH_HBADI
-> +
-> +	/* Restore host excfg.VS */
-> +	csrrd	t0, LOONGARCH_CSR_ECFG
-> +	ld.d	t1, a2, KVM_ARCH_HECFG
-> +	or	t0, t0, t1
-> +	csrwr	t0, LOONGARCH_CSR_ECFG
-> +
-> +	/* Restore host eentry */
-> +	ld.d	t0, a2, KVM_ARCH_HEENTRY
-> +	csrwr	t0, LOONGARCH_CSR_EENTRY
-> +
-> +	/* restore host pgd table */
-> +	ld.d    t0, a2, KVM_ARCH_HPGD
-> +	csrwr   t0, LOONGARCH_CSR_PGDL
-> +
-> +	/*
-> +	 * Disable PGM bit to enter root mode by default with next ertn
-> +	 */
-> +	ori	t0, zero, CSR_GSTAT_PVM
-And here.
-> +	csrxchg	zero, t0, LOONGARCH_CSR_GSTAT
-> +	/*
-> +	 * Clear GTLBC.TGID field
-> +	 *       0: for root  tlb update in future tlb instr
-> +	 *  others: for guest tlb update like gpa to hpa in future tlb instr
-> +	 */
-> +	csrrd	t0, LOONGARCH_CSR_GTLBC
-> +	bstrins.w	t0, zero, CSR_GTLBC_TGID_SHIFT_END, CSR_GTLBC_TGID_SHIFT
-> +	csrwr	t0, LOONGARCH_CSR_GTLBC
-> +	ld.d	tp, a2, KVM_ARCH_HTP
-> +	ld.d	sp, a2, KVM_ARCH_HSP
-> +	/* restore per cpu register */
-> +	ld.d	u0, a2, KVM_ARCH_HPERCPU
-> +	addi.d	sp, sp, -PT_SIZE
-> +
-> +	/* Prepare handle exception */
-> +	or	a0, s0, zero
-> +	or	a1, s1, zero
-Similarly "move X, Y" should be clearer here.
-> +	ld.d	t8, a2, KVM_ARCH_HANDLE_EXIT
-> +	jirl	ra, t8, 0
-> +
-> +	or	a2, s1, zero
-> +	addi.d	a2, a2, KVM_VCPU_ARCH
-> +
-> +	/* resume host when ret <= 0 */
-> +	bge	zero, a0, ret_to_host
-"blez a0, ret_to_host"
-> +
-> +	/*
-> +         * return to guest
-> +         * save per cpu register again, maybe switched to another cpu
-> +         */
-> +	st.d	u0, a2, KVM_ARCH_HPERCPU
-> +
-> +	/* Save kvm_vcpu to kscratch */
-> +	csrwr	s1, KVM_VCPU_KS
-> +	kvm_switch_to_guest
-> +
-> +ret_to_host:
-> +	ld.d    a2, a2, KVM_ARCH_HSP
-> +	addi.d  a2, a2, -PT_SIZE
-> +	kvm_restore_host_gpr    a2
-> +	jr      ra
-> +
-> +SYM_INNER_LABEL(kvm_vector_entry_end, SYM_L_LOCAL)
-> +SYM_CODE_END(kvm_vector_entry)
-> +
-> +/*
-> + * int kvm_enter_guest(struct kvm_run *run, struct kvm_vcpu *vcpu)
-> + *
-> + * @register_param:
-> + *  a0: kvm_run* run
-> + *  a1: kvm_vcpu* vcpu
-> + */
-> +SYM_FUNC_START(kvm_enter_guest)
-> +	/* allocate space in stack bottom */
-> +	addi.d	a2, sp, -PT_SIZE
-> +	/* save host gprs */
-> +	kvm_save_host_gpr a2
-> +
-> +	/* save host crmd,prmd csr to stack */
-> +	csrrd	a3, LOONGARCH_CSR_CRMD
-> +	st.d	a3, a2, PT_CRMD
-> +	csrrd	a3, LOONGARCH_CSR_PRMD
-> +	st.d	a3, a2, PT_PRMD
-> +
-> +	addi.d	a2, a1, KVM_VCPU_ARCH
-> +	st.d	sp, a2, KVM_ARCH_HSP
-> +	st.d	tp, a2, KVM_ARCH_HTP
-> +	/* Save per cpu register */
-> +	st.d	u0, a2, KVM_ARCH_HPERCPU
-> +
-> +	/* Save kvm_vcpu to kscratch */
-> +	csrwr	a1, KVM_VCPU_KS
-> +	kvm_switch_to_guest
-> +SYM_INNER_LABEL(kvm_enter_guest_end, SYM_L_LOCAL)
-> +SYM_FUNC_END(kvm_enter_guest)
-> +
-> +SYM_FUNC_START(kvm_save_fpu)
-> +	fpu_save_csr	a0 t1
-> +	fpu_save_double a0 t1
-> +	fpu_save_cc	a0 t1 t2
-> +	jr              ra
-> +SYM_FUNC_END(kvm_save_fpu)
-> +
-> +SYM_FUNC_START(kvm_restore_fpu)
-> +	fpu_restore_double a0 t1
-> +	fpu_restore_csr    a0 t1
-This needs to become "fpu_restore_csr a0 t1 t2" after commit 
-bd3c5798484a ("LoongArch: Add Loongson Binary Translation (LBT) 
-extension support") which is slated for Linux 6.6 and already inside 
-linux-next.
-> +	fpu_restore_cc	   a0 t1 t2
-> +	jr                 ra
-> +SYM_FUNC_END(kvm_restore_fpu)
-> +
-> +	.section ".rodata"
-> +SYM_DATA(kvm_vector_size, .quad kvm_vector_entry_end - kvm_vector_entry)
-> +SYM_DATA(kvm_enter_guest_size, .quad kvm_enter_guest_end - kvm_enter_guest)
+Fixes: 8580e16c28f3 ("net/ethtool: add netlink interface for the PLCA RS")
+Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+---
+ net/ethtool/plca.c | 45 +++++++++++++++++++++++++++++----------------
+ 1 file changed, 29 insertions(+), 16 deletions(-)
 
+diff --git a/net/ethtool/plca.c b/net/ethtool/plca.c
+index b238a1afe9ae..b1e2e3b5027f 100644
+--- a/net/ethtool/plca.c
++++ b/net/ethtool/plca.c
+@@ -21,16 +21,6 @@ struct plca_reply_data {
+ #define PLCA_REPDATA(__reply_base) \
+ 	container_of(__reply_base, struct plca_reply_data, base)
+ 
+-static void plca_update_sint(int *dst, const struct nlattr *attr,
+-			     bool *mod)
+-{
+-	if (!attr)
+-		return;
+-
+-	*dst = nla_get_u32(attr);
+-	*mod = true;
+-}
+-
+ // PLCA get configuration message ------------------------------------------- //
+ 
+ const struct nla_policy ethnl_plca_get_cfg_policy[] = {
+@@ -38,6 +28,29 @@ const struct nla_policy ethnl_plca_get_cfg_policy[] = {
+ 		NLA_POLICY_NESTED(ethnl_header_policy),
+ };
+ 
++static void plca_update_sint(int *dst, struct nlattr **tb, u32 attrid,
++			     bool *mod)
++{
++	const struct nlattr *attr = tb[attrid];
++
++	if (!attr ||
++	    WARN_ON_ONCE(attrid >= ARRAY_SIZE(ethnl_plca_set_cfg_policy)))
++		return;
++
++	switch (ethnl_plca_set_cfg_policy[attrid].type) {
++	case NLA_U8:
++		*dst = nla_get_u8(attr);
++		break;
++	case NLA_U32:
++		*dst = nla_get_u32(attr);
++		break;
++	default:
++		WARN_ON_ONCE(1);
++	}
++
++	*mod = true;
++}
++
+ static int plca_get_cfg_prepare_data(const struct ethnl_req_info *req_base,
+ 				     struct ethnl_reply_data *reply_base,
+ 				     const struct genl_info *info)
+@@ -144,13 +157,13 @@ ethnl_set_plca(struct ethnl_req_info *req_info, struct genl_info *info)
+ 		return -EOPNOTSUPP;
+ 
+ 	memset(&plca_cfg, 0xff, sizeof(plca_cfg));
+-	plca_update_sint(&plca_cfg.enabled, tb[ETHTOOL_A_PLCA_ENABLED], &mod);
+-	plca_update_sint(&plca_cfg.node_id, tb[ETHTOOL_A_PLCA_NODE_ID], &mod);
+-	plca_update_sint(&plca_cfg.node_cnt, tb[ETHTOOL_A_PLCA_NODE_CNT], &mod);
+-	plca_update_sint(&plca_cfg.to_tmr, tb[ETHTOOL_A_PLCA_TO_TMR], &mod);
+-	plca_update_sint(&plca_cfg.burst_cnt, tb[ETHTOOL_A_PLCA_BURST_CNT],
++	plca_update_sint(&plca_cfg.enabled, tb, ETHTOOL_A_PLCA_ENABLED, &mod);
++	plca_update_sint(&plca_cfg.node_id, tb, ETHTOOL_A_PLCA_NODE_ID, &mod);
++	plca_update_sint(&plca_cfg.node_cnt, tb, ETHTOOL_A_PLCA_NODE_CNT, &mod);
++	plca_update_sint(&plca_cfg.to_tmr, tb, ETHTOOL_A_PLCA_TO_TMR, &mod);
++	plca_update_sint(&plca_cfg.burst_cnt, tb, ETHTOOL_A_PLCA_BURST_CNT,
+ 			 &mod);
+-	plca_update_sint(&plca_cfg.burst_tmr, tb[ETHTOOL_A_PLCA_BURST_TMR],
++	plca_update_sint(&plca_cfg.burst_tmr, tb, ETHTOOL_A_PLCA_BURST_TMR,
+ 			 &mod);
+ 	if (!mod)
+ 		return 0;
 -- 
-WANG "xen0n" Xuerui
-
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+2.34.1
 
