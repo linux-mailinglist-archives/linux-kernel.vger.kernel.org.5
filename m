@@ -2,122 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 629FB798DCD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8BE798DC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344314AbjIHSYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
+        id S1343970AbjIHSYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:24:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344812AbjIHSXY (ORCPT
+        with ESMTP id S1344577AbjIHSXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:23:24 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D988F270E
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 11:20:54 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58c8cbf0a0dso63230127b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 11:20:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694197192; x=1694801992; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/97EpKERbgiYzE8cLBdT8sawBWM8E2NpBoGs1AmAU6M=;
-        b=qowPPs3w3UR/EL3t+fjKBk4WrnFkHDtPAWzaPKQ2zQNJt5RG4eA4SM40eRIY/sVoCg
-         cadTW5ksgZ19HLR3ps7zH9P6yYQSOXRJWSJlsyS+QB+J0ofGlx51IpeOBU/LPFsXF43l
-         xhrExaR5u2uPbeICbdOw4mhi4DFbPowcyTG39udJ5FQWFX7ZVduODjUOSncNmLUVJjC7
-         SPWXPGM42zCyqJUCXgcCG7XimugKqnc/Q3/oO4gSQbFvt1cvIADq6V90aG/FZ2hpwdGA
-         yc5nAfbkjU9WS2vYX8/orGPnO0rb5uILg7zDOqg0oGgtr6gSxqNTms0hqvn4bvoY4lIU
-         LjOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694197192; x=1694801992;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/97EpKERbgiYzE8cLBdT8sawBWM8E2NpBoGs1AmAU6M=;
-        b=S6bERESKhgkdH1f0vyWeTo6xlmd43AqkKiReFqNMGt+eVRBcN+GtgGt2JtqZBkNbVX
-         DL3GgqI9eZ+CdC/Cj1f2KL8djQ7Kotr+OKtzzyWWlO6q+F7aXgeDHFTaFnku3jOJX+5I
-         fBuydo7ksXeiq7RDM/IyFf1hzCUFlgJPzSZpeDMWk9rB7XTCLSdiYDZ8a4/mGbiF3sWG
-         zy70liVE7wyA55GjR2eHLfsJLYTD41TN/yqiK4q19Y2xCc2sriMrquXTvucUwEqeIHTQ
-         OeJGgXEAKKM7TV9QaorjbXjeGSXRSoWy0IDxp/b64UVNBKieTKfYzSi7X54v+DDany5+
-         xnrg==
-X-Gm-Message-State: AOJu0YyaswD5GLWVvQsMVNQHF1rhqBImPdES5Bl8IoDnTSMDOdFU80Nn
-        tItNdmBej709MEmHMe7JZBe5qSsuZ0k=
-X-Google-Smtp-Source: AGHT+IE64zl/Q7BHyFa2RZyEnCoDczJcAdOGZGRNn5/bEdQq1fPm6CCa5snaBq5FWmeyVh/22edqi1WcVOs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:7603:0:b0:d7e:78db:d264 with SMTP id
- r3-20020a257603000000b00d7e78dbd264mr188480ybc.5.1694197192401; Fri, 08 Sep
- 2023 11:19:52 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 11:19:50 -0700
-In-Reply-To: <20230804120536.2339722-1-linux@rasmusvillemoes.dk>
-Mime-Version: 1.0
-References: <20230804120536.2339722-1-linux@rasmusvillemoes.dk>
-Message-ID: <ZPtlxmdIJXOe0sEy@google.com>
-Subject: Re: [PATCH v2] scripts/setlocalversion: also consider annotated tags
- of the form vx.y.z-${file_localversion}
-From:   Sean Christopherson <seanjc@google.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 8 Sep 2023 14:23:03 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B97A1FE3;
+        Fri,  8 Sep 2023 11:20:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FAA1C433CB;
+        Fri,  8 Sep 2023 18:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694197210;
+        bh=Q+IjZG0Tp79KNBmY2MwgESORfBuGdtAgKIZeNd4EABE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HJ5iBklhm+XL+f5zzuZ2fZGNkgmryYUjmK2jnl0pFGu7D1Ne1dokJ6uPphuR2xusT
+         gji0HfNCJzIkz01IPZcZ7dh5S2Ye9tKG0gQISxZP+hcR4h2UmJyfx8RhHIZuBlA/qk
+         8LpxBXxRnI9mzhbVUWmD6bAk3+dtcqNpPnUtOnSP3DVQqGN3mGPou/IdECJF9Wt5/B
+         ws0LZ4wLjLlMdo5OKLyrfaLqAreiCTmKCr1D8p6+UAdOvrvn17CKAyWS8XModZa7LJ
+         5jMvz4S3lau2cNgS53Kftx186KTMA1Qpe8xeEyQvHzKCbnvnFQHvVJCLoSoRZTPK/Z
+         YQg3qgJG9L6Ug==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Dmitry Antipov <dmantipov@yandex.ru>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+        Kalle Valo <quic_kvalo@quicinc.com>,
+        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
+        linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 03/14] wifi: ath9k: fix fortify warnings
+Date:   Fri,  8 Sep 2023 14:19:50 -0400
+Message-Id: <20230908182003.3460721-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230908182003.3460721-1-sashal@kernel.org>
+References: <20230908182003.3460721-1-sashal@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.10.194
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023, Rasmus Villemoes wrote:
-> Commit 6ab7e1f95e96 ("setlocalversion: use only the correct release
-> tag for git-describe") was absolutely correct to limit which annotated
-> tags would be used to compute the -01234-gabcdef suffix. Otherwise, if
-> some random annotated tag exists closer to HEAD than the vX.Y.Z one,
-> the commit count would be too low.
-> 
-> However, since the version string always includes the
-> ${file_localversion} part, now the problem is that the count can be
-> too high. For example, building an 6.4.6-rt8 kernel with a few patches
-> on top, I currently get
-> 
-> $ make -s kernelrelease
-> 6.4.6-rt8-00128-gd78b7f406397
-> 
-> But those 128 commits include the 100 commits that are in
-> v6.4.6..v6.4.6-rt8, so this is somewhat misleading.
-> 
-> Amend the logic so that, in addition to the linux-next consideration,
-> the script also looks for a tag corresponding to the 6.4.6-rt8 part of
-> what will become the `uname -r` string. With this patch (so 29 patches
-> on top of v6.4.6-rt8), one instead gets
-> 
-> $ make -s kernelrelease
-> 6.4.6-rt8-00029-gd533209291a2
-> 
-> While there, note that the line
-> 
->   git describe --exact-match --match=$tag $tag 2>/dev/null
-> 
-> obviously asks if $tag is an annotated tag, but it does not actually
-> tell if the commit pointed to has any relation to HEAD. So remove both
-> uses of --exact-match, and instead just ask if the description
-> generated is identical to the tag we provided. Since we then already
-> have the result of
-> 
->   git describe --match=$tag
-> 
-> we also end up reducing the number of times we invoke "git describe".
+From: Dmitry Antipov <dmantipov@yandex.ru>
 
-Dropping "--exact-match" is resulting in unnacceptable latencies for me.  I don't
-understand what this is trying to do well enough to make a suggestion, but something
-has to change.
+[ Upstream commit 810e41cebb6c6e394f2068f839e1a3fc745a5dcc ]
 
-E.g. on my build box, a single `git describe --match=v6.5` takes ~8.5 seconds,
-whereas a complete from-scratch kernel build takes <30 seconds, and an incremental
-build takes <2 seconds.  When build testing to-be-applied changes, I compile each
-commit ~15 times (different x86 configs plus one for each other KVM architecture),
-which makes the ~8.5 second delay beyond painful.
+When compiling with gcc 13.1 and CONFIG_FORTIFY_SOURCE=y,
+I've noticed the following:
 
-And for actual testing, I can do an incremental build and boot into a VM in under
-20 seconds, a multi-second delay is extremely painful there as well.
+In function ‘fortify_memcpy_chk’,
+    inlined from ‘ath_tx_complete_aggr’ at drivers/net/wireless/ath/ath9k/xmit.c:556:4,
+    inlined from ‘ath_tx_process_buffer’ at drivers/net/wireless/ath/ath9k/xmit.c:773:3:
+./include/linux/fortify-string.h:529:25: warning: call to ‘__read_overflow2_field’
+declared with attribute warning: detected read beyond size of field (2nd parameter);
+maybe use struct_group()? [-Wattribute-warning]
+  529 |                         __read_overflow2_field(q_size_field, size);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In function ‘fortify_memcpy_chk’,
+    inlined from ‘ath_tx_count_frames’ at drivers/net/wireless/ath/ath9k/xmit.c:473:3,
+    inlined from ‘ath_tx_complete_aggr’ at drivers/net/wireless/ath/ath9k/xmit.c:572:2,
+    inlined from ‘ath_tx_process_buffer’ at drivers/net/wireless/ath/ath9k/xmit.c:773:3:
+./include/linux/fortify-string.h:529:25: warning: call to ‘__read_overflow2_field’
+declared with attribute warning: detected read beyond size of field (2nd parameter);
+maybe use struct_group()? [-Wattribute-warning]
+  529 |                         __read_overflow2_field(q_size_field, size);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In both cases, the compiler complains on:
+
+memcpy(ba, &ts->ba_low, WME_BA_BMP_SIZE >> 3);
+
+which is the legal way to copy both 'ba_low' and following 'ba_high'
+members of 'struct ath_tx_status' at once (that is, issue one 8-byte
+'memcpy()' for two 4-byte fields). Since the fortification logic seems
+interprets this trick as an attempt to overread 4-byte 'ba_low', silence
+relevant warnings by using the convenient 'struct_group()' quirk.
+
+Suggested-by: Johannes Berg <johannes@sipsolutions.net>
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+Acked-by: Toke Høiland-Jørgensen <toke@toke.dk>
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Link: https://lore.kernel.org/r/20230620080855.396851-2-dmantipov@yandex.ru
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/ath/ath9k/mac.h  | 6 ++++--
+ drivers/net/wireless/ath/ath9k/xmit.c | 4 ++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath9k/mac.h b/drivers/net/wireless/ath/ath9k/mac.h
+index fd6aa49adadfe..9b00e77a6fc3c 100644
+--- a/drivers/net/wireless/ath/ath9k/mac.h
++++ b/drivers/net/wireless/ath/ath9k/mac.h
+@@ -113,8 +113,10 @@ struct ath_tx_status {
+ 	u8 qid;
+ 	u16 desc_id;
+ 	u8 tid;
+-	u32 ba_low;
+-	u32 ba_high;
++	struct_group(ba,
++		u32 ba_low;
++		u32 ba_high;
++	);
+ 	u32 evm0;
+ 	u32 evm1;
+ 	u32 evm2;
+diff --git a/drivers/net/wireless/ath/ath9k/xmit.c b/drivers/net/wireless/ath/ath9k/xmit.c
+index 6555abf02f18b..84c68aefc171a 100644
+--- a/drivers/net/wireless/ath/ath9k/xmit.c
++++ b/drivers/net/wireless/ath/ath9k/xmit.c
+@@ -421,7 +421,7 @@ static void ath_tx_count_frames(struct ath_softc *sc, struct ath_buf *bf,
+ 	isaggr = bf_isaggr(bf);
+ 	if (isaggr) {
+ 		seq_st = ts->ts_seqnum;
+-		memcpy(ba, &ts->ba_low, WME_BA_BMP_SIZE >> 3);
++		memcpy(ba, &ts->ba, WME_BA_BMP_SIZE >> 3);
+ 	}
+ 
+ 	while (bf) {
+@@ -504,7 +504,7 @@ static void ath_tx_complete_aggr(struct ath_softc *sc, struct ath_txq *txq,
+ 	if (isaggr && txok) {
+ 		if (ts->ts_flags & ATH9K_TX_BA) {
+ 			seq_st = ts->ts_seqnum;
+-			memcpy(ba, &ts->ba_low, WME_BA_BMP_SIZE >> 3);
++			memcpy(ba, &ts->ba, WME_BA_BMP_SIZE >> 3);
+ 		} else {
+ 			/*
+ 			 * AR5416 can become deaf/mute when BA
+-- 
+2.40.1
+
