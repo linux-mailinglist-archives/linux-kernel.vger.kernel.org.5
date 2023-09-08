@@ -2,94 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE66579807A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 04:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 790A8798077
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 04:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241528AbjIHCTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 22:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58438 "EHLO
+        id S240160AbjIHCTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 22:19:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240555AbjIHCTt (ORCPT
+        with ESMTP id S230380AbjIHCTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 22:19:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A3B1BD9;
-        Thu,  7 Sep 2023 19:19:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87E1EC433CA;
-        Fri,  8 Sep 2023 02:19:45 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.96)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1qeR6H-000MZ2-2T;
-        Thu, 07 Sep 2023 22:20:01 -0400
-Message-ID: <20230908022001.580400115@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Thu, 07 Sep 2023 22:19:12 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ajay Kaher <akaher@vmware.com>
-Subject: [PATCH 2/2] tracing: Remove unused trace_event_file dir field
-References: <20230908021910.507739229@goodmis.org>
+        Thu, 7 Sep 2023 22:19:42 -0400
+Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 78EFD1BD5;
+        Thu,  7 Sep 2023 19:19:35 -0700 (PDT)
+X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
+Received: from 192.168.10.47
+        by mg.richtek.com with MailGates ESMTPS Server V6.0(696440:0:AUTH_RELAY)
+        (envelope-from <chiaen_wu@richtek.com>)
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256); Fri, 08 Sep 2023 10:19:13 +0800 (CST)
+Received: from ex4.rt.l (192.168.10.47) by ex4.rt.l (192.168.10.47) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.25; Fri, 8 Sep
+ 2023 10:19:13 +0800
+Received: from linuxcarl2.richtek.com (192.168.10.154) by ex4.rt.l
+ (192.168.10.45) with Microsoft SMTP Server id 15.2.1118.25 via Frontend
+ Transport; Fri, 8 Sep 2023 10:19:13 +0800
+Date:   Fri, 8 Sep 2023 10:19:13 +0800
+From:   ChiaEn Wu <chiaen_wu@richtek.com>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+CC:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <kernel-janitors@vger.kernel.org>, <error27@gmail.com>
+Subject: Re: [PATCH] power: supply: mt6370: Fix missing error code in
+ mt6370_chg_toggle_cfo()
+Message-ID: <20230908021913.GB3115@linuxcarl2.richtek.com>
+References: <20230906084815.2827930-1-harshit.m.mogalapalli@oracle.com>
+ <cd6eea67-df0f-08b1-61cd-57a3b4f9cf0d@collabora.com>
+ <1092ffb3-0238-4dc0-baf3-344a653fca3f@kadam.mountain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1092ffb3-0238-4dc0-baf3-344a653fca3f@kadam.mountain>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Thu, Sep 07, 2023 at 02:08:17PM +0300, Dan Carpenter wrote:
 
-Now that eventfs structure is used to create the events directory via the
-eventfs dynamically allocate code, the "dir" field of the trace_event_file
-structure is no longer used. Remove it.
+[...]
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/linux/trace_events.h |  1 -
- kernel/trace/trace_events.c  | 13 -------------
- 2 files changed, 14 deletions(-)
+> > > diff --git a/drivers/power/supply/mt6370-charger.c b/drivers/power/supply/mt6370-charger.c
+> > > index f27dae5043f5..a9641bd3d8cf 100644
+> > > --- a/drivers/power/supply/mt6370-charger.c
+> > > +++ b/drivers/power/supply/mt6370-charger.c
+> > > @@ -324,7 +324,7 @@ static int mt6370_chg_toggle_cfo(struct mt6370_priv *priv)
+> > >   	if (fl_strobe) {
+> > >   		dev_err(priv->dev, "Flash led is still in strobe mode\n");
+> > > -		return ret;
+> > > +		return -EINVAL;
+> > 
+> > I think that returning 0 here was intentional, but I agree on a return ret
+> > here being both confusing and wrong.
+> 
+> If it's a success path then probably we should remove the dev_err().
+> 
 
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index eb5c3add939b..12f875e9e69a 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -650,7 +650,6 @@ struct trace_event_file {
- 	struct trace_event_call		*event_call;
- 	struct event_filter __rcu	*filter;
- 	struct eventfs_file             *ef;
--	struct dentry			*dir;
- 	struct trace_array		*tr;
- 	struct trace_subsystem_dir	*system;
- 	struct list_head		triggers;
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 2af92177b765..065c63991858 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -992,19 +992,6 @@ static void remove_subsystem(struct trace_subsystem_dir *dir)
- 
- static void remove_event_file_dir(struct trace_event_file *file)
- {
--	struct dentry *dir = file->dir;
--	struct dentry *child;
--
--	if (dir) {
--		spin_lock(&dir->d_lock);	/* probably unneeded */
--		list_for_each_entry(child, &dir->d_subdirs, d_child) {
--			if (d_really_is_positive(child))	/* probably unneeded */
--				d_inode(child)->i_private = NULL;
--		}
--		spin_unlock(&dir->d_lock);
--
--		tracefs_remove(dir);
--	}
- 	eventfs_remove(file->ef);
- 	list_del(&file->list);
- 	remove_subsystem(file->system);
--- 
-2.40.1
+Hi all,
+Sorry for the late reply!
+
+I agree with the first half of Angelo's statement, I did make the
+mistake on this 'return ret'.
+What I was trying to say is that you should not to toggle cfo function
+when the FLED of MT6370 is still in "strobe mode".
+
+Therefore, I think the change of Harshit's patch is correct.
+It should be 'return -EINVAL' or 'return -EPERM' here.
+
+Thanks!
+
+
+Reviewed-by: ChiaEn Wu <chiaen_wu@richtek.com>
+
+
+Best regards,
+ChiaEn Wu
