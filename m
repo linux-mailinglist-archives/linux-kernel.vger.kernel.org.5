@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B34798FBD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D69AF798FC2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbjIHTeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55890 "EHLO
+        id S244997AbjIHTek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232003AbjIHTeU (ORCPT
+        with ESMTP id S236264AbjIHTe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:34:20 -0400
+        Fri, 8 Sep 2023 15:34:27 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF7C1BEA;
-        Fri,  8 Sep 2023 12:33:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53BAAC43395;
-        Fri,  8 Sep 2023 19:33:45 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DEF31FE8;
+        Fri,  8 Sep 2023 12:34:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D20A3C433B8;
+        Fri,  8 Sep 2023 19:33:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201626;
-        bh=sv26YkO+2CC8jbPrQi8prVP0gL6+twprUuqvin5F9mk=;
+        s=k20201202; t=1694201628;
+        bh=WnjuK4GWrv7imqTJ3JE3lg2r98F42KrLCH5nvnXBisA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JrRFNugdEoxFG+GaH+YBD1VxlsP8BH6Ie14g6kEJ+2wJhEQbg/oS3JnpjmOWpTgep
-         gYTVQATL5dPf0+BY0YG6e6RRg84uC7UjSojzB3RP+bAKSdCqrle8ePgvOcdaclFRYU
-         X+yeaPkUmxI2+oGK1dvqmW4fAPLkEnkY8vZJVXfWuQC5PsIey1/Xd4zqIxAyOhfNwg
-         fIOk02yziO3/k94NF40ms61z4GyckpExhco5ZpsTvMAsdrdt3gCQnlurWSCK4Pl5gx
-         IIEgytRG+fRK/vD5fzODRobGAMcz+1a2xtYKzYlG3XlCUlVKa5X5BfonrBre3z0veh
-         I/kJN5D35yUGQ==
+        b=Db5uCQpSobrf99xDiBCwUEuWmdIRC/WZbTpDv6lZUAH1bT+xrAO0tRPjMXLPg/m2L
+         83z+ryLxv0ANL0AEtUY6frHJA+LBx3J0YFq0M+l/Yq3J0EnU3TkRSoiiS/btaKA8mn
+         DfSdtUKqzWUgfvLPKxBAv64voC2dkuyprvrFbvbWJTYHUCsVX8yD0HeGyFYSq6y11+
+         v9J/ckuZ4JYbSD0rwJQWYwVTOcwPA3v7JfYXWN9koRw8uRcryPZ88HD6Uy2wUr34PQ
+         jnWAzByKQi0YnpZMc7lI6YAKJpXXyF26GXn8OnYVpGwAqXOD819ewdhmXGqa2n1Siq
+         i8vjoRxAloQAg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhang Shurong <zhang_shurong@foxmail.com>,
-        Yu Kuai <yukuai3@huawei.com>, Song Liu <song@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-raid@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 27/31] md: raid1: fix potential OOB in raid1_remove_disk()
-Date:   Fri,  8 Sep 2023 15:31:56 -0400
-Message-Id: <20230908193201.3462957-27-sashal@kernel.org>
+Cc:     Chengming Zhou <zhouchengming@bytedance.com>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Sasha Levin <sashal@kernel.org>, linux-block@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 29/31] blk-mq: fix tags leak when shrink nr_hw_queues
+Date:   Fri,  8 Sep 2023 15:31:58 -0400
+Message-Id: <20230908193201.3462957-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908193201.3462957-1-sashal@kernel.org>
 References: <20230908193201.3462957-1-sashal@kernel.org>
@@ -52,44 +52,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Shurong <zhang_shurong@foxmail.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
 
-[ Upstream commit 8b0472b50bcf0f19a5119b00a53b63579c8e1e4d ]
+[ Upstream commit e1dd7bc93029024af5688253b0c05181d6e01f8e ]
 
-If rddev->raid_disk is greater than mddev->raid_disks, there will be
-an out-of-bounds in raid1_remove_disk(). We have already found
-similar reports as follows:
+Although we don't need to realloc set->tags[] when shrink nr_hw_queues,
+we need to free them. Or these tags will be leaked.
 
-1) commit d17f744e883b ("md-raid10: fix KASAN warning")
-2) commit 1ebc2cec0b7d ("dm raid: fix KASAN warning in raid5_remove_disk")
+How to reproduce:
+1. mount -t configfs configfs /mnt
+2. modprobe null_blk nr_devices=0 submit_queues=8
+3. mkdir /mnt/nullb/nullb0
+4. echo 1 > /mnt/nullb/nullb0/power
+5. echo 4 > /mnt/nullb/nullb0/submit_queues
+6. rmdir /mnt/nullb/nullb0
 
-Fix this bug by checking whether the "number" variable is
-valid.
+In step 4, will alloc 9 tags (8 submit queues and 1 poll queue), then
+in step 5, new_nr_hw_queues = 5 (4 submit queues and 1 poll queue).
+At last in step 6, only these 5 tags are freed, the other 4 tags leaked.
 
-Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
-Reviewed-by: Yu Kuai <yukuai3@huawei.com>
-Link: https://lore.kernel.org/r/tencent_0D24426FAC6A21B69AC0C03CE4143A508F09@qq.com
-Signed-off-by: Song Liu <song@kernel.org>
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20230821095602.70742-1-chengming.zhou@linux.dev
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/raid1.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ block/blk-mq.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index e51b77a3a8397..d890e15230d21 100644
---- a/drivers/md/raid1.c
-+++ b/drivers/md/raid1.c
-@@ -1826,6 +1826,10 @@ static int raid1_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
- 	struct r1conf *conf = mddev->private;
- 	int err = 0;
- 	int number = rdev->raid_disk;
-+
-+	if (unlikely(number >= conf->raid_disks))
-+		goto abort;
-+
- 	struct raid1_info *p = conf->mirrors + number;
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 58bf41e8e66c7..d539b73a6be4a 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -4385,9 +4385,13 @@ static int blk_mq_realloc_tag_set_tags(struct blk_mq_tag_set *set,
+ 				       int new_nr_hw_queues)
+ {
+ 	struct blk_mq_tags **new_tags;
++	int i;
  
- 	if (rdev != p->rdev)
+-	if (set->nr_hw_queues >= new_nr_hw_queues)
++	if (set->nr_hw_queues >= new_nr_hw_queues) {
++		for (i = new_nr_hw_queues; i < set->nr_hw_queues; i++)
++			__blk_mq_free_map_and_rqs(set, i);
+ 		goto done;
++	}
+ 
+ 	new_tags = kcalloc_node(new_nr_hw_queues, sizeof(struct blk_mq_tags *),
+ 				GFP_KERNEL, set->numa_node);
 -- 
 2.40.1
 
