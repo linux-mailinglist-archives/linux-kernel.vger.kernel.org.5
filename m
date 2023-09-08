@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC59A798542
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 11:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F160E798557
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234176AbjIHJ57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 05:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53550 "EHLO
+        id S232713AbjIHKBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 06:01:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232284AbjIHJ56 (ORCPT
+        with ESMTP id S229542AbjIHKBI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 05:57:58 -0400
-Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6662F1FF2;
-        Fri,  8 Sep 2023 02:57:14 -0700 (PDT)
-Received: by mail-vk1-xa32.google.com with SMTP id 71dfb90a1353d-48d0dbf4ec5so654572e0c.2;
-        Fri, 08 Sep 2023 02:57:14 -0700 (PDT)
+        Fri, 8 Sep 2023 06:01:08 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9001FE9
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 03:00:24 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bf57366ccdso21417565ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 03:00:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694166980; x=1694771780; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1694167145; x=1694771945; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=J4NF0w3XAPrGaxJ5Sc/Fqz9qFVjNQRJyWxChIpfwlaU=;
-        b=ASPfybU935UHYWMWyp+C4rIayDrvGiBwEypd8yVgG9ZtyUnc6iofJuorGBEUauazyB
-         lgFe4hW7jBsZA5KlsJ9bHkWysHNPeAmPjx193/UY+CyLafCrkKYD0O8Vhj5E2ZiWNggq
-         4FSgY8I4DbKMpzN2XIAn0btnymfvoDVF9OV87oiWSPJ5u4Ic+vsWxIX+zGChiW457UKl
-         tFmvvNjVS362m49A7LdU9uZqDDx+TJgzmAC5netys4Ev0562trllIxd+QUfwnxHtm7wr
-         QyuVHPXT3n0ks193oTMJ4974Gakc1NMslcCR9mtRg1QclAYvw/Uxa03ehV5V0taJSthp
-         Nz4A==
+        bh=3bXTeQpdjQRua5NdbqlMCWj/ycDFicrMQeBdM0bMGMw=;
+        b=ZiFN1LLDL6sDVu4ON/wkI4bAEvJ2RNe5ShlKFp00uUyWiGgA+yu9ajYeZF5t2+K38G
+         DQEp0DNNu3/73r89a1SwU+rda0PnAHXnMW8IJ/8S4Bth5wwQieOra3OHsOqyV1ivvquw
+         G2jGHQLPbl6TaWRH+xJyxts5zLqAUiTSXS+SEVLZzphGRghgdViNZF/hFxKW+LlSX8u1
+         SoJ5uW8gvM/91C+Jl1iQPNdW4xhecY450a2TvjcyGzCRCo7yUflNNntDFlE3pq+slzD7
+         qVxNyHqB6b3sriliEeRE0F3ODcp/8WUmWi5x9SeFLkobcaZS6wvjoSiwYcUzi5gZ/LAs
+         Fung==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694166980; x=1694771780;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J4NF0w3XAPrGaxJ5Sc/Fqz9qFVjNQRJyWxChIpfwlaU=;
-        b=W+yfFCr6FFq/K/RTYEOsxKIpSTTF3Ap0O2XFv5kkZnh3a6rqeRFrZVcWi+DjSWBDO2
-         8+6T+HpGHY3KePof/flSfwGqWNeH+t9BHkYX0dJRB0D0c9Jd2RGwNHw4lpB0ttZgiWbm
-         AWX8l6FdYQNeZAyzGepazbgXYgMpIXqTSkqhuEb/N33MzetE4VWTW7m8GPdjascu/qDT
-         //ksKI0ugIJpaFidT81sWmIhG8lHjh9GfulNZXLORISlAh/micoeuePCgbWVm1KLgDEj
-         JPf+6QMBfn8L527FlnN0+D54POIPBWvdjB8r6QA71xBhF6/KJ5LwK2uFpjWK3quK1K5p
-         Kc0w==
-X-Gm-Message-State: AOJu0YxGzLhOt3gSL4QNj5qA0j6C2p3Gkic4wHrg8Re5C6p/Xrp2xatw
-        6FWyGc/GV/IEIVp71dkY9qA2LW7tw0tsIgqnpbs=
-X-Google-Smtp-Source: AGHT+IECe5sCdTamj/Jc8VZhQjUnqS0+/Ej8Wj6PwDHXtDwVWhYnMqTnPhujsbCs11TVyLKn5xUvzRZZOnXY7XVzLC8=
-X-Received: by 2002:a67:f9d9:0:b0:44d:4aa1:9d44 with SMTP id
- c25-20020a67f9d9000000b0044d4aa19d44mr1776201vsq.8.1694166980526; Fri, 08 Sep
- 2023 02:56:20 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694167145; x=1694771945;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3bXTeQpdjQRua5NdbqlMCWj/ycDFicrMQeBdM0bMGMw=;
+        b=JGibquIAR7XRj4zLF3DUczMwhJmSNdNyDmQQFrnyAY1ZI3/QnJuXiCfUOvvIbwmU7e
+         9gu0eJAJdMwyhu/NzzQShr21+VxVpBwleE4Ft90pyLU6Ei3SIou4DauSqsMl0fm2t9Dq
+         3ML260jVJq3Tb8SPlXJE3g16A+fJjv9iDD38DO735TxWYmJLugvakgI0C3Ik6fper/Mg
+         N7AsCRiFhewg8LAX6Im7toS87s7857FyDDKJTDBTzxrfqOw7DkxoXp4EgDVcIf9db922
+         WM2/jGnPluIq50M8hgNUifQhRhjyxx8tP+2rD3rU4tARsaY+T3qd4F0e24Uupd7dKk4o
+         2p3A==
+X-Gm-Message-State: AOJu0YxOQxMhqQuKnp8u6XFZMk78N6DWwJcvt6I8nNuWuZa1P8V29IGr
+        CucEPZNb0bQpad9d2/W1CMtYRQ==
+X-Google-Smtp-Source: AGHT+IGedR76hVXK1WBcaqFuQUXJzaKlwoEvzzggHuGYxkzUO76lUrRz9GzNXg+wcSGY1vog4i33bg==
+X-Received: by 2002:a17:902:e54e:b0:1c0:bcbc:d67 with SMTP id n14-20020a170902e54e00b001c0bcbc0d67mr6761333plf.22.1694167144904;
+        Fri, 08 Sep 2023 02:59:04 -0700 (PDT)
+Received: from [10.254.232.87] ([139.177.225.246])
+        by smtp.gmail.com with ESMTPSA id bi4-20020a170902bf0400b001bc45408d26sm1199081plb.36.2023.09.08.02.58.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Sep 2023 02:59:04 -0700 (PDT)
+Message-ID: <ab29ca4d-a7dc-9115-930d-86c6425e2b9c@bytedance.com>
+Date:   Fri, 8 Sep 2023 17:58:56 +0800
 MIME-Version: 1.0
-References: <20230818100217.12725-1-victorshihgli@gmail.com>
- <20230818100217.12725-21-victorshihgli@gmail.com> <e8ed5409-5a00-9478-5b91-85d54b7fb2bb@intel.com>
-In-Reply-To: <e8ed5409-5a00-9478-5b91-85d54b7fb2bb@intel.com>
-From:   Victor Shih <victorshihgli@gmail.com>
-Date:   Fri, 8 Sep 2023 17:56:08 +0800
-Message-ID: <CAK00qKAuPLL_8ja0u0OYhiXSjNW347Y1U_r0Ty9j4JdvqDqf4A@mail.gmail.com>
-Subject: Re: [PATCH V10 20/23] mmc: sdhci-uhs2: add add_host() and others to
- set up the driver
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, benchuanggli@gmail.com,
-        HL.Liu@genesyslogic.com.tw, Greg.tu@genesyslogic.com.tw,
-        takahiro.akashi@linaro.org, dlunev@chromium.org,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        Victor Shih <victor.shih@genesyslogic.com.tw>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: [PATCH v2 6/6] fork: Use __mt_dup() to duplicate maple tree in
+ dup_mmap()
+To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+        Peng Zhang <zhangpeng.00@bytedance.com>, corbet@lwn.net,
+        akpm@linux-foundation.org, willy@infradead.org, brauner@kernel.org,
+        surenb@google.com, michael.christie@oracle.com,
+        peterz@infradead.org, mathieu.desnoyers@efficios.com,
+        npiggin@gmail.com, avagin@gmail.com, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20230830125654.21257-1-zhangpeng.00@bytedance.com>
+ <20230830125654.21257-7-zhangpeng.00@bytedance.com>
+ <20230907201414.dagnqxfnu7f7qzxd@revolver>
+From:   Peng Zhang <zhangpeng.00@bytedance.com>
+In-Reply-To: <20230907201414.dagnqxfnu7f7qzxd@revolver>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,265 +82,219 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 4:35=E2=80=AFPM Adrian Hunter <adrian.hunter@intel.=
-com> wrote:
->
-> On 18/08/23 13:02, Victor Shih wrote:
-> > From: Victor Shih <victor.shih@genesyslogic.com.tw>
-> >
-> > This is a UHS-II version of sdhci's add_host/remove_host operation.
-> > Any sdhci drivers which are capable of handling UHS-II cards must
-> > call those functions instead of the corresponding sdhci's.
-> >
-> > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> > Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
-> > ---
-> >
-> > Updates in V10:
-> >  - Move some definitions of PatchV9[05/23] to PatchV10[20/23].
-> >
-> > Updates in V8:
-> >  - Change return type to void for __sdhci_uhs2_add_host_v4().
-> >  - Remove unused variables in __sdhci_uhs2_add_host_v4().
-> >
-> > Updates in V7:
-> >  - __sdhci_add_host() to instead of __sdhci_uhs2_add_host()
-> >    in sdhci_uhs2_add_host().
-> >  - Cancel export state of some functions.
-> >
-> > Updates in V6:
-> >  - Add complete_work_fn/thread_irq_fn variables in struct sdhci_host.
-> >  - Use complete_work_fn/thread_irq_fn variables in
-> >    sdhci_alloc_host() and sdhci_uhs2_add_host().
-> >  - Use sdhci_uhs2_mode() to simplify code in __sdhci_uhs2_remove_host()=
-.
-> >
-> > ---
-> >
-> >  drivers/mmc/host/sdhci-uhs2.c | 102 ++++++++++++++++++++++++++++++++++
-> >  drivers/mmc/host/sdhci-uhs2.h |   2 +
-> >  drivers/mmc/host/sdhci.c      |   7 ++-
-> >  drivers/mmc/host/sdhci.h      |   3 +
-> >  include/linux/mmc/host.h      |   1 +
-> >  5 files changed, 113 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs=
-2.c
-> > index 8d1be670af49..80eafacc8b9f 100644
-> > --- a/drivers/mmc/host/sdhci-uhs2.c
-> > +++ b/drivers/mmc/host/sdhci-uhs2.c
-> > @@ -16,6 +16,7 @@
-> >  #include <linux/bitfield.h>
-> >  #include <linux/mmc/mmc.h>
-> >  #include <linux/mmc/host.h>
-> > +#include <linux/regulator/consumer.h>
-> >
-> >  #include "sdhci.h"
-> >  #include "sdhci-uhs2.h"
-> > @@ -997,6 +998,107 @@ static irqreturn_t sdhci_uhs2_thread_irq(int irq,=
- void *dev_id)
-> >       return IRQ_HANDLED;
-> >  }
-> >
-> > +/*********************************************************************=
-********\
-> > + *
-> > + * Device allocation/registration                                     =
-       *
-> > + *                                                                    =
-       *
-> > +\*********************************************************************=
-********/
-> > +
-> > +static void __sdhci_uhs2_add_host_v4(struct sdhci_host *host, u32 caps=
-1)
-> > +{
-> > +     struct mmc_host *mmc;
-> > +     u32 max_current_caps2;
-> > +
-> > +     mmc =3D host->mmc;
-> > +
-> > +     /* Support UHS2 */
-> > +     if (caps1 & SDHCI_SUPPORT_UHS2)
-> > +             mmc->caps2 |=3D MMC_CAP2_SD_UHS2;
-> > +
-> > +     max_current_caps2 =3D sdhci_readl(host, SDHCI_MAX_CURRENT_1);
-> > +
-> > +     if ((caps1 & SDHCI_CAN_VDD2_180) &&
-> > +         !max_current_caps2 &&
-> > +         !IS_ERR(mmc->supply.vmmc2)) {
-> > +             /* UHS2 - VDD2 */
-> > +             int curr =3D regulator_get_current_limit(mmc->supply.vmmc=
-2);
-> > +
-> > +             if (curr > 0) {
-> > +                     /* convert to SDHCI_MAX_CURRENT format */
-> > +                     curr =3D curr / 1000;  /* convert to mA */
-> > +                     curr =3D curr / SDHCI_MAX_CURRENT_MULTIPLIER;
-> > +                     curr =3D min_t(u32, curr, SDHCI_MAX_CURRENT_LIMIT=
-);
-> > +                     max_current_caps2 =3D curr;
-> > +             }
-> > +     }
-> > +
-> > +     if (caps1 & SDHCI_CAN_VDD2_180)
-> > +             mmc->ocr_avail_uhs2 |=3D MMC_VDD_165_195;
-> > +     else
-> > +             mmc->caps2 &=3D ~MMC_CAP2_SD_UHS2;
-> > +}
-> > +
-> > +static int sdhci_uhs2_host_ops_init(struct sdhci_host *host);
-> > +
-> > +static void __sdhci_uhs2_remove_host(struct sdhci_host *host, int dead=
-)
-> > +{
-> > +     if (!sdhci_uhs2_mode(host))
-> > +             return;
-> > +
-> > +     if (!dead)
-> > +             sdhci_uhs2_reset(host, SDHCI_UHS2_SW_RESET_FULL);
-> > +}
-> > +
-> > +int sdhci_uhs2_add_host(struct sdhci_host *host)
-> > +{
-> > +     struct mmc_host *mmc =3D host->mmc;
-> > +     int ret;
-> > +
-> > +     ret =3D sdhci_setup_host(host);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     if (host->version >=3D SDHCI_SPEC_400)
-> > +             __sdhci_uhs2_add_host_v4(host, host->caps1);
-> > +
-> > +     if ((mmc->caps2 & MMC_CAP2_SD_UHS2) && !host->v4_mode)
-> > +             /* host doesn't want to enable UHS2 support */
-> > +             mmc->caps2 &=3D ~MMC_CAP2_SD_UHS2;
-> > +
-> > +     /* overwrite ops */
-> > +     if (mmc->caps2 & MMC_CAP2_SD_UHS2)
-> > +             sdhci_uhs2_host_ops_init(host);
-> > +
-> > +     host->complete_work_fn =3D sdhci_uhs2_complete_work;
-> > +     host->thread_irq_fn    =3D sdhci_uhs2_thread_irq;
-> > +
-> > +     /* LED support not implemented for UHS2 */
-> > +     host->quirks |=3D SDHCI_QUIRK_NO_LED;
-> > +
-> > +     ret =3D __sdhci_add_host(host);
-> > +     if (ret)
-> > +             goto cleanup;
-> > +
-> > +     return 0;
-> > +
-> > +cleanup:
-> > +     if (host->version >=3D SDHCI_SPEC_400)
-> > +             __sdhci_uhs2_remove_host(host, 0);
-> > +
-> > +     sdhci_cleanup_host(host);
-> > +
-> > +     return ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(sdhci_uhs2_add_host);
-> > +
-> > +void sdhci_uhs2_remove_host(struct sdhci_host *host, int dead)
-> > +{
-> > +     __sdhci_uhs2_remove_host(host, dead);
-> > +
-> > +     sdhci_remove_host(host, dead);
-> > +}
-> > +EXPORT_SYMBOL_GPL(sdhci_uhs2_remove_host);
-> > +
-> >  void sdhci_uhs2_request(struct mmc_host *mmc, struct mmc_request *mrq)
-> >  {
-> >       struct sdhci_host *host =3D mmc_priv(mmc);
-> > diff --git a/drivers/mmc/host/sdhci-uhs2.h b/drivers/mmc/host/sdhci-uhs=
-2.h
-> > index 3aa2cb4b39d6..bd5aae054c6f 100644
-> > --- a/drivers/mmc/host/sdhci-uhs2.h
-> > +++ b/drivers/mmc/host/sdhci-uhs2.h
-> > @@ -186,5 +186,7 @@ void sdhci_uhs2_clear_set_irqs(struct sdhci_host *h=
-ost, u32 clear, u32 set);
-> >  void sdhci_uhs2_request(struct mmc_host *mmc, struct mmc_request *mrq)=
-;
-> >  int sdhci_uhs2_request_atomic(struct mmc_host *mmc, struct mmc_request=
- *mrq);
-> >  u32 sdhci_uhs2_irq(struct sdhci_host *host, u32 intmask);
-> > +int sdhci_uhs2_add_host(struct sdhci_host *host);
-> > +void sdhci_uhs2_remove_host(struct sdhci_host *host, int dead);
-> >
-> >  #endif /* __SDHCI_UHS2_H */
-> > diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> > index 318d4830732f..b3de7e30ba54 100644
-> > --- a/drivers/mmc/host/sdhci.c
-> > +++ b/drivers/mmc/host/sdhci.c
-> > @@ -4104,6 +4104,9 @@ struct sdhci_host *sdhci_alloc_host(struct device=
- *dev,
-> >
-> >       host->max_timeout_count =3D 0xE;
-> >
-> > +     host->complete_work_fn =3D sdhci_complete_work;
-> > +     host->thread_irq_fn    =3D sdhci_thread_irq;
-> > +
-> >       return host;
-> >  }
-> >
-> > @@ -4853,7 +4856,7 @@ int __sdhci_add_host(struct sdhci_host *host)
-> >       if (!host->complete_wq)
-> >               return -ENOMEM;
-> >
-> > -     INIT_WORK(&host->complete_work, sdhci_complete_work);
-> > +     INIT_WORK(&host->complete_work, host->complete_work_fn);
-> >
-> >       timer_setup(&host->timer, sdhci_timeout_timer, 0);
-> >       timer_setup(&host->data_timer, sdhci_timeout_data_timer, 0);
-> > @@ -4862,7 +4865,7 @@ int __sdhci_add_host(struct sdhci_host *host)
-> >
-> >       sdhci_init(host, 0);
-> >
-> > -     ret =3D request_threaded_irq(host->irq, sdhci_irq, sdhci_thread_i=
-rq,
-> > +     ret =3D request_threaded_irq(host->irq, sdhci_irq, host->thread_i=
-rq_fn,
-> >                                  IRQF_SHARED, mmc_hostname(mmc), host);
-> >       if (ret) {
-> >               pr_err("%s: Failed to request IRQ %d: %d\n",
-> > diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-> > index 6bbb9f073f29..5235f2da6568 100644
-> > --- a/drivers/mmc/host/sdhci.h
-> > +++ b/drivers/mmc/host/sdhci.h
-> > @@ -626,6 +626,9 @@ struct sdhci_host {
-> >       struct timer_list timer;        /* Timer for timeouts */
-> >       struct timer_list data_timer;   /* Timer for data timeouts */
-> >
-> > +     void            (*complete_work_fn)(struct work_struct *work);
-> > +     irqreturn_t     (*thread_irq_fn)(int irq, void *dev_id);
-> > +
-> >  #if IS_ENABLED(CONFIG_MMC_SDHCI_EXTERNAL_DMA)
-> >       struct dma_chan *rx_chan;
-> >       struct dma_chan *tx_chan;
-> > diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
-> > index 1eba64228725..918d4998c1de 100644
-> > --- a/include/linux/mmc/host.h
-> > +++ b/include/linux/mmc/host.h
-> > @@ -379,6 +379,7 @@ struct mmc_host {
-> >       u32                     ocr_avail_sdio; /* SDIO-specific OCR */
-> >       u32                     ocr_avail_sd;   /* SD-specific OCR */
-> >       u32                     ocr_avail_mmc;  /* MMC-specific OCR */
-> > +     u32                     ocr_avail_uhs2; /* UHS2-specific OCR */
->
-> ocr_avail_uhs2 gets set but doesn't seem to be used
->
 
-Hi, Adrian
 
-I will drop the ocr_avail_uhs2 in the next version.
+在 2023/9/8 04:14, Liam R. Howlett 写道:
+> * Peng Zhang <zhangpeng.00@bytedance.com> [230830 08:58]:
+>> Use __mt_dup() to duplicate the old maple tree in dup_mmap(), and then
+>> directly modify the entries of VMAs in the new maple tree, which can
+>> get better performance. The optimization effect is proportional to the
+>> number of VMAs.
+>>
+>> There is a "spawn" in byte-unixbench[1], which can be used to test the
+>> performance of fork(). I modified it slightly to make it work with
+>> different number of VMAs.
+>>
+>> Below are the test numbers. There are 21 VMAs by default. The first row
+>> indicates the number of added VMAs. The following two lines are the
+>> number of fork() calls every 10 seconds. These numbers are different
+>> from the test results in v1 because this time the benchmark is bound to
+>> a CPU. This way the numbers are more stable.
+>>
+>>    Increment of VMAs: 0      100     200     400     800     1600    3200    6400
+>> 6.5.0-next-20230829: 111878 75531   53683   35282   20741   11317   6110    3158
+>> Apply this patchset: 114531 85420   64541   44592   28660   16371   9038    4831
+>>                       +2.37% +13.09% +20.23% +26.39% +38.18% +44.66% +47.92% +52.98%
+> 
+> Thanks!
+> 
+> Can you include 21 in this table since it's the default?
+Maybe I didn't express clearly, "Increment of VMAs" means the number of
+VMAs added on the basis of 21 VMAs.
+> 
+>>
+>> [1] https://github.com/kdlucas/byte-unixbench/tree/master
+>>
+>> Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
+>> ---
+>>   kernel/fork.c | 34 ++++++++++++++++++++++++++--------
+>>   mm/mmap.c     | 14 ++++++++++++--
+>>   2 files changed, 38 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/kernel/fork.c b/kernel/fork.c
+>> index 3b6d20dfb9a8..e6299adefbd8 100644
+>> --- a/kernel/fork.c
+>> +++ b/kernel/fork.c
+>> @@ -650,7 +650,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+>>   	int retval;
+>>   	unsigned long charge = 0;
+>>   	LIST_HEAD(uf);
+>> -	VMA_ITERATOR(old_vmi, oldmm, 0);
+>>   	VMA_ITERATOR(vmi, mm, 0);
+>>   
+>>   	uprobe_start_dup_mmap();
+>> @@ -678,17 +677,39 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+>>   		goto out;
+>>   	khugepaged_fork(mm, oldmm);
+>>   
+>> -	retval = vma_iter_bulk_alloc(&vmi, oldmm->map_count);
+>> -	if (retval)
+>> +	/* Use __mt_dup() to efficiently build an identical maple tree. */
+>> +	retval = __mt_dup(&oldmm->mm_mt, &mm->mm_mt, GFP_NOWAIT | __GFP_NOWARN);
+> 
+> Apparently the flags should be GFP_KERNEL here so that compaction can
+> run.
+OK, I'll change it to GFP_KERNEL.
+> 
+>> +	if (unlikely(retval))
+>>   		goto out;
+>>   
+>>   	mt_clear_in_rcu(vmi.mas.tree);
+>> -	for_each_vma(old_vmi, mpnt) {
+>> +	for_each_vma(vmi, mpnt) {
+>>   		struct file *file;
+>>   
+>>   		vma_start_write(mpnt);
+>>   		if (mpnt->vm_flags & VM_DONTCOPY) {
+>>   			vm_stat_account(mm, mpnt->vm_flags, -vma_pages(mpnt));
+>> +
+>> +			/*
+>> +			 * Since the new tree is exactly the same as the old one,
+>> +			 * we need to remove the unneeded VMAs.
+>> +			 */
+>> +			mas_store(&vmi.mas, NULL);
+>> +
+>> +			/*
+>> +			 * Even removing an entry may require memory allocation,
+>> +			 * and if removal fails, we use XA_ZERO_ENTRY to mark
+>> +			 * from which VMA it failed. The case of encountering
+>> +			 * XA_ZERO_ENTRY will be handled in exit_mmap().
+>> +			 */
+>> +			if (unlikely(mas_is_err(&vmi.mas))) {
+>> +				retval = xa_err(vmi.mas.node);
+>> +				mas_reset(&vmi.mas);
+>> +				if (mas_find(&vmi.mas, ULONG_MAX))
+>> +					mas_store(&vmi.mas, XA_ZERO_ENTRY);
+>> +				goto loop_out;
+>> +			}
+>> +
+> 
+> Storing NULL may need extra space as you noted, so we need to be careful
+> what happens if we don't have that space.  We should have a testcase to
+> test this scenario.
+> 
+> mas_store_gfp() should be used with GFP_KERNEL.  The VMAs use GFP_KERNEL
+> in this function, see vm_area_dup().
+> 
+> Don't use the exit_mmap() path to undo a failed fork.  You've added
+> checks and complications to the exit path for all tasks in the very
+> unlikely event that we run out of memory when we hit a very unlikely
+> VM_DONTCOPY flag.
+> 
+> I see the issue with having a portion of the tree with new VMAs that are
+> accounted and a portion of the tree that has old VMAs that should not be
+> looked at.  It was clever to use the XA_ZERO_ENTRY as a stop point, but
+> we cannot add that complication to the exit path and then there is the
+> OOM race to worry about (maybe, I am not sure since this MM isn't
+> active yet).
+> 
+> Using what is done in exit_mmap() and do_vmi_align_munmap() as a
+> prototype, we can do something like the *untested* code below:
+> 
+> if (unlikely(mas_is_err(&vmi.mas))) {
+> 	unsigned long max = vmi.index;
+> 
+> 	retval = xa_err(vmi.mas.node);
+> 	mas_set(&vmi.mas, 0);
+> 	tmp = mas_find(&vmi.mas, ULONG_MAX);
+> 	if (tmp) { /* Not the first VMA failed */
+> 		unsigned long nr_accounted = 0;
+> 
+> 		unmap_region(mm, &vmi.mas, vma, NULL, mpnt, 0, max, max,
+> 				true);
+> 		do {
+> 			if (vma->vm_flags & VM_ACCOUNT)
+> 				nr_accounted += vma_pages(vma);
+> 			remove_vma(vma, true);
+> 			cond_resched();
+> 			vma = mas_find(&vmi.mas, max - 1);
+> 		} while (vma != NULL);
+> 
+> 		vm_unacct_memory(nr_accounted);
+> 	}
+> 	__mt_destroy(&mm->mm_mt);
+> 	goto loop_out;
+> }
+> 
+> Once exit_mmap() is called, the check for OOM (no vma) will catch that
+> nothing is left to do.
+> 
+> It might be worth making an inline function to do this to keep the fork
+> code clean.  We should test this by detecting a specific task name and
+> returning a failure at a given interval:
+> 
+> if (!strcmp(current->comm, "fork_test") {
+> ...
+> }
 
-Thanks, Victor Shih
-
-> >       struct wakeup_source    *ws;            /* Enable consume of ueve=
-nts */
-> >       u32                     max_current_330;
-> >       u32                     max_current_300;
->
+Thank you for your suggestion, I will do this in the next version.
+> 
+> 
+>>   			continue;
+>>   		}
+>>   		charge = 0;
+>> @@ -750,8 +771,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+>>   			hugetlb_dup_vma_private(tmp);
+>>   
+>>   		/* Link the vma into the MT */
+>> -		if (vma_iter_bulk_store(&vmi, tmp))
+>> -			goto fail_nomem_vmi_store;
+>> +		mas_store(&vmi.mas, tmp);
+>>   
+>>   		mm->map_count++;
+>>   		if (!(tmp->vm_flags & VM_WIPEONFORK))
+>> @@ -778,8 +798,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+>>   	uprobe_end_dup_mmap();
+>>   	return retval;
+>>   
+>> -fail_nomem_vmi_store:
+>> -	unlink_anon_vmas(tmp);
+>>   fail_nomem_anon_vma_fork:
+>>   	mpol_put(vma_policy(tmp));
+>>   fail_nomem_policy:
+>> diff --git a/mm/mmap.c b/mm/mmap.c
+>> index b56a7f0c9f85..dfc6881be81c 100644
+>> --- a/mm/mmap.c
+>> +++ b/mm/mmap.c
+>> @@ -3196,7 +3196,11 @@ void exit_mmap(struct mm_struct *mm)
+>>   	arch_exit_mmap(mm);
+>>   
+>>   	vma = mas_find(&mas, ULONG_MAX);
+>> -	if (!vma) {
+>> +	/*
+>> +	 * If dup_mmap() fails to remove a VMA marked VM_DONTCOPY,
+>> +	 * xa_is_zero(vma) may be true.
+>> +	 */
+>> +	if (!vma || xa_is_zero(vma)) {
+>>   		/* Can happen if dup_mmap() received an OOM */
+>>   		mmap_read_unlock(mm);
+>>   		return;
+>> @@ -3234,7 +3238,13 @@ void exit_mmap(struct mm_struct *mm)
+>>   		remove_vma(vma, true);
+>>   		count++;
+>>   		cond_resched();
+>> -	} while ((vma = mas_find(&mas, ULONG_MAX)) != NULL);
+>> +		vma = mas_find(&mas, ULONG_MAX);
+>> +		/*
+>> +		 * If xa_is_zero(vma) is true, it means that subsequent VMAs
+>> +		 * donot need to be removed. Can happen if dup_mmap() fails to
+>> +		 * remove a VMA marked VM_DONTCOPY.
+>> +		 */
+>> +	} while (vma != NULL && !xa_is_zero(vma));
+>>   
+>>   	BUG_ON(count != mm->map_count);
+>>   
+>> -- 
+>> 2.20.1
+>>
+> 
