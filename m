@@ -2,133 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EE879925F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 00:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2E5799267
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 00:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344138AbjIHWom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 18:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44952 "EHLO
+        id S1344209AbjIHWst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 18:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245406AbjIHWok (ORCPT
+        with ESMTP id S245597AbjIHWsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 18:44:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52AEF1FE3
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 15:44:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694213076; x=1725749076;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ig9COPkSQI7Qa5GeNMp1dKZXcUs5jkyJAYheDDXz4oA=;
-  b=CPRcNqpUmecQs+rkKaTOxefIAIH/u0MuyXQ6T5phhNQukdGH5qSo4KDl
-   lJ8QrIRvF1JEfhi54FjOS6wHyPh96iJM7g+yZ9PvCB2Z1DAmpXKjGflEW
-   7tj7dAknog+t6V+SXhQLTiPLN7Vo27jbP3RBQbQlRyc69tX5lBEbCbAJo
-   sN2F1AQeiGDHm7yElcGuef2J5W2J7t+KFTON1R1OCBbaYyATiZfyyfsss
-   XyFmsBnGGhU4UlDENX4ewdpPy6X9u6oh6ghN8XmEJ6+LeWT8fqwZ7n6ld
-   /1utVToirJt9p4dq9BxGUlWM8vSA2ZjkzYoG7NUWpmk4NiGoKaT27zTN2
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="357228390"
-X-IronPort-AV: E=Sophos;i="6.02,238,1688454000"; 
-   d="scan'208";a="357228390"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 15:44:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="692417942"
-X-IronPort-AV: E=Sophos;i="6.02,238,1688454000"; 
-   d="scan'208";a="692417942"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 08 Sep 2023 15:44:34 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qekDH-0002gj-2H;
-        Fri, 08 Sep 2023 22:44:31 +0000
-Date:   Sat, 9 Sep 2023 06:43:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bibo Mao <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] LoongArch: Add tlb_flush_threshold for tlb flush range
-Message-ID: <202309090624.CrkoQ4fj-lkp@intel.com>
-References: <20230908012907.2994001-1-maobibo@loongson.cn>
+        Fri, 8 Sep 2023 18:48:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A0D61FEB;
+        Fri,  8 Sep 2023 15:48:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fRN1u2nqNkgfLlg5vCIRLVf7sVuYtWHo65n7KgqIXfY=; b=A7s/QcFH1OtqD4N1HXyJG63L4Q
+        j5WyQcSA3kobfAFfAp2qYxX843GAGbLGVXdQI0/1s7vM7uNyVikJu6xNS+5sK3hXXGsi3gfQ8hEIn
+        DV/ergTLfjJrGNYC0ah0hcQ+4GaeCgsJpEHiNILR0QQMQG5VZ2xDS/6HU90rXRSj3iqYcfKB8nJRA
+        82gWfonMICNdxXKgyA9ufisOnxkiCAedDGmcgizcyrbEoe7rnnN/reG+L7gnvcAnQgpLniv4260pY
+        zu2CRxZ7BcUQym6/C+2y1YHcN/Re8eMxC5BflhmYiIy1w+jWPjXiQd73Cehr2AgA4YVoev/LOPmSz
+        Fsb8dAdA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qekH7-002nP4-LY; Fri, 08 Sep 2023 22:48:30 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4F246300353; Sat,  9 Sep 2023 00:48:29 +0200 (CEST)
+Date:   Sat, 9 Sep 2023 00:48:29 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Elliot Berman <quic_eberman@quicinc.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>, kernel@quicinc.com,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Prakash Viswalingam <quic_prakashv@quicinc.com>
+Subject: Re: [PATCH v2] freezer,sched: Use saved_state to reduce some
+ spurious wakeups
+Message-ID: <20230908224829.GA32012@noisy.programming.kicks-ass.net>
+References: <20230830-avoid-spurious-freezer-wakeups-v2-1-8877245cdbdc@quicinc.com>
+ <20230904212324.GA2568@noisy.programming.kicks-ass.net>
+ <df61af06-a43e-05c5-66e8-5a68b08ff14b@quicinc.com>
+ <20230907094651.GB16872@noisy.programming.kicks-ass.net>
+ <4c5b5a0b-6d78-878e-7e66-e08e83e6e1c8@quicinc.com>
+ <20230908220804.GA29218@noisy.programming.kicks-ass.net>
+ <783c60ef-5341-7893-e9e8-2b1b249f89c9@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230908012907.2994001-1-maobibo@loongson.cn>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <783c60ef-5341-7893-e9e8-2b1b249f89c9@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bibo,
+On Fri, Sep 08, 2023 at 03:30:43PM -0700, Elliot Berman wrote:
+> 
+> 
+> On 9/8/2023 3:08 PM, Peter Zijlstra wrote:
+> > On Fri, Sep 08, 2023 at 01:08:07PM -0700, Elliot Berman wrote:
+> > 
+> >>> Perhaps we should start off by doing the below, instead of making it
+> >>> more complicated instead. I suppose you're right about the overhead, but
+> >>> run a hackbench just to make sure or something.
+> >>>
+> >>
+> >> I ran perf bench sched message -g 40 -l 40 with the v3 patch [1]. After 60
+> >> iterations each, I don't see a significant difference on my arm64 platform:
+> >> both samples ~normal and ~eq variance w/t-test p-value: 0.79.
+> >>
+> >> We also ran typical high level benchmarks for our SoCs (antutu,
+> >> geekbench, et. al) and didn't see any regressions there.
+> > 
+> > So if you would've made this 2 patches, the first removing the ifdef,
+> > then the changelog for that patch would be a good place to mention it
+> > doesn't measurably regress things.
+> 
+> No problem, easily done.
+> 
+> > As a bonus, it then makes your other changes smaller too ;-)
+> 
+> Did you mean that each commit is smaller but overall delta is the same
+> or something else? 
 
-kernel test robot noticed the following build errors:
+That.
 
-[auto build test ERROR on 744a759492b5c57ff24a6e8aabe47b17ad8ee964]
+> I still wanted to update comments on saved_state in
+> kernel/sched/core.c as it gives good explanation of what is going on. I
+> have split the commit but want to make sure I make the changes you were
+> thinking :-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Bibo-Mao/LoongArch-Add-tlb_flush_threshold-for-tlb-flush-range/20230908-093017
-base:   744a759492b5c57ff24a6e8aabe47b17ad8ee964
-patch link:    https://lore.kernel.org/r/20230908012907.2994001-1-maobibo%40loongson.cn
-patch subject: [PATCH] LoongArch: Add tlb_flush_threshold for tlb flush range
-config: loongarch-randconfig-r021-20230909 (https://download.01.org/0day-ci/archive/20230909/202309090624.CrkoQ4fj-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230909/202309090624.CrkoQ4fj-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309090624.CrkoQ4fj-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   arch/loongarch/mm/tlb.c: In function '__update_hugetlb':
->> arch/loongarch/mm/tlb.c:146:14: error: implicit declaration of function 'pmd_to_entrylo' [-Werror=implicit-function-declaration]
-     146 |         lo = pmd_to_entrylo(pte_val(*ptep));
-         |              ^~~~~~~~~~~~~~
-   arch/loongarch/mm/tlb.c: At top level:
-   arch/loongarch/mm/tlb.c:259:6: warning: no previous prototype for 'setup_tlb_handler' [-Wmissing-prototypes]
-     259 | void setup_tlb_handler(int cpu)
-         |      ^~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/pmd_to_entrylo +146 arch/loongarch/mm/tlb.c
-
-09cfefb7fa70c3 Huacai Chen 2022-05-31  131  
-09cfefb7fa70c3 Huacai Chen 2022-05-31  132  static void __update_hugetlb(struct vm_area_struct *vma, unsigned long address, pte_t *ptep)
-09cfefb7fa70c3 Huacai Chen 2022-05-31  133  {
-29d05a2438754e Bibo Mao    2023-09-08  134  #if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
-09cfefb7fa70c3 Huacai Chen 2022-05-31  135  	int idx;
-09cfefb7fa70c3 Huacai Chen 2022-05-31  136  	unsigned long lo;
-09cfefb7fa70c3 Huacai Chen 2022-05-31  137  	unsigned long flags;
-09cfefb7fa70c3 Huacai Chen 2022-05-31  138  
-09cfefb7fa70c3 Huacai Chen 2022-05-31  139  	local_irq_save(flags);
-09cfefb7fa70c3 Huacai Chen 2022-05-31  140  
-09cfefb7fa70c3 Huacai Chen 2022-05-31  141  	address &= (PAGE_MASK << 1);
-09cfefb7fa70c3 Huacai Chen 2022-05-31  142  	write_csr_entryhi(address);
-09cfefb7fa70c3 Huacai Chen 2022-05-31  143  	tlb_probe();
-09cfefb7fa70c3 Huacai Chen 2022-05-31  144  	idx = read_csr_tlbidx();
-09cfefb7fa70c3 Huacai Chen 2022-05-31  145  	write_csr_pagesize(PS_HUGE_SIZE);
-09cfefb7fa70c3 Huacai Chen 2022-05-31 @146  	lo = pmd_to_entrylo(pte_val(*ptep));
-09cfefb7fa70c3 Huacai Chen 2022-05-31  147  	write_csr_entrylo0(lo);
-09cfefb7fa70c3 Huacai Chen 2022-05-31  148  	write_csr_entrylo1(lo + (HPAGE_SIZE >> 1));
-09cfefb7fa70c3 Huacai Chen 2022-05-31  149  
-09cfefb7fa70c3 Huacai Chen 2022-05-31  150  	if (idx < 0)
-09cfefb7fa70c3 Huacai Chen 2022-05-31  151  		tlb_write_random();
-09cfefb7fa70c3 Huacai Chen 2022-05-31  152  	else
-09cfefb7fa70c3 Huacai Chen 2022-05-31  153  		tlb_write_indexed();
-09cfefb7fa70c3 Huacai Chen 2022-05-31  154  	write_csr_pagesize(PS_DEFAULT_SIZE);
-09cfefb7fa70c3 Huacai Chen 2022-05-31  155  
-09cfefb7fa70c3 Huacai Chen 2022-05-31  156  	local_irq_restore(flags);
-09cfefb7fa70c3 Huacai Chen 2022-05-31  157  #endif
-09cfefb7fa70c3 Huacai Chen 2022-05-31  158  }
-09cfefb7fa70c3 Huacai Chen 2022-05-31  159  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+well, it's nearly 1am, I'm not thinking very much :-) Changing those
+comments seems fine when you add the freezer thing.
