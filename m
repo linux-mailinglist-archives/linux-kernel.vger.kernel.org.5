@@ -2,73 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FACA7991A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 23:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC857991AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 23:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344635AbjIHVtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 17:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41058 "EHLO
+        id S1344043AbjIHVw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 17:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234884AbjIHVtj (ORCPT
+        with ESMTP id S231408AbjIHVw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 17:49:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7D419B6;
-        Fri,  8 Sep 2023 14:49:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694209775; x=1725745775;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=A3kcjKku3nLjouI93HaJUhtFFWzExoWvWEwvfEaE5Ns=;
-  b=b+3e8lKvCV3CnKkuXXVdV8t5GfBEkmBOHQXDzJyUoE2UUmX93ziNIbbR
-   4AdYDAKYn7nRrCkP6wKzvA+HcPwpDbeeKsIAImB4PQsZqqYujgh91qh+q
-   GqS7y0Amv49RV5lm8+B2SO/KuejsHHdKdJ0wLlv5sIHRvRXJNcxyXBZVt
-   Lt4FSWR901uqNjhZg/ixo+kgq3t4XlaB1S4WdVEk4d4/lQ+0/ZmOhSpEK
-   4dgQWId3586nMdclhy/6O9Vrcn28y85Pbm28V7Ax6sgyKPgAUt2OaXWiW
-   e1wz3iz0XKR7B72PXFOd/WkjALUFUI+620zCUvhu09i09iFqhblKW6WsQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="357219735"
-X-IronPort-AV: E=Sophos;i="6.02,238,1688454000"; 
-   d="scan'208";a="357219735"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 14:49:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="885811726"
-X-IronPort-AV: E=Sophos;i="6.02,238,1688454000"; 
-   d="scan'208";a="885811726"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Sep 2023 14:49:14 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qejM1-0002dk-1J;
-        Fri, 08 Sep 2023 21:49:29 +0000
-Date:   Sat, 9 Sep 2023 05:48:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Gatien Chevallier <gatien.chevallier@foss.st.com>,
-        Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Lionel Debieve <lionel.debieve@foss.st.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Gatien Chevallier <gatien.chevallier@foss.st.com>
-Subject: Re: [PATCH 05/10] hwrng: stm32 - rework error handling in
- stm32_rng_read()
-Message-ID: <202309090508.CyBIfKeu-lkp@intel.com>
-References: <20230908165120.730867-6-gatien.chevallier@foss.st.com>
+        Fri, 8 Sep 2023 17:52:28 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB4EE46
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 14:52:23 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7870821d9a1so1482205241.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 14:52:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694209942; x=1694814742; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m43PrEMsLZP2EQdS/bT6AbnWiwNqqhpPB/h3QciEWyw=;
+        b=VTrB+nZucJ1rcPIIFwERlGhyoTr0z8+6rAXXYiWoFUdiaSJFzqaYJp+n7EzxvIstEn
+         +3Vs2yAHse0jweIgHROApu7zkShjAHDNa3vDgveFEpMlL1INEsDlF+0yXYhV6SGeHZ9S
+         99sTPvFQRlswiD2Nt1aByFF75pa3o7k8TSRro=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694209942; x=1694814742;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m43PrEMsLZP2EQdS/bT6AbnWiwNqqhpPB/h3QciEWyw=;
+        b=BT7blanLnIQkUSZeCIeIKFI22frWTp9FbrSZjr8RNldzNaJV2puPLIu1w74Y8muejA
+         TSpeKnekUkYWnkB54FWtdGJ+YTyykhVhS980wqLwIrZskldzez7HZFe9I/gu0FaX3Nho
+         NxQWnyyP2wXTG1iizHqUZDL5Rt23QoLzZmGTTPrwzucV084/B4BmjBnqA15nDdlrUDao
+         JL7552m45BaQPenmzZWRMxNUZEIeLgf2/A3I87epNMy8yacEt9tqIwJXdjhfo4x3DvR1
+         8Nm6p+dpWOwFCJDlPFBqG32Lh40mEF7rAeZxGpAcPnURP+d1m02j0v0wHlGssIfYCdMB
+         6Jvw==
+X-Gm-Message-State: AOJu0YzmupNeOj7+SY+R8OrGaBljNRBcNGnet8ATLDW/8uNrVdyzBrSh
+        4pu/CyIDIL357mYA99SrMooxHLsfqkvKSe/RvLs=
+X-Google-Smtp-Source: AGHT+IGyoZwd8V33kv+eZWsKuai4IiCB9GkENwFb/sbZJyTInm+OWRYymctN6SvcrDsQURnCsifWwQ==
+X-Received: by 2002:a67:eccf:0:b0:44e:cab7:be2d with SMTP id i15-20020a67eccf000000b0044ecab7be2dmr1719012vsp.7.1694209942030;
+        Fri, 08 Sep 2023 14:52:22 -0700 (PDT)
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
+        by smtp.gmail.com with ESMTPSA id x22-20020a056102323600b004507f465cd8sm437970vsf.30.2023.09.08.14.52.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Sep 2023 14:52:21 -0700 (PDT)
+Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-44ee1123667so2204467137.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 14:52:21 -0700 (PDT)
+X-Received: by 2002:ad4:5f0d:0:b0:651:6604:bee6 with SMTP id
+ fo13-20020ad45f0d000000b006516604bee6mr9638376qvb.30.1694209920738; Fri, 08
+ Sep 2023 14:52:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230908165120.730867-6-gatien.chevallier@foss.st.com>
+References: <20230321-kexec_clang16-v7-0-b05c520b7296@chromium.org>
+ <CAPhsuW5_qAvV0N3o+hOiAnb1=buJ1pLzqYW9D+Bwft6hxJvAeQ@mail.gmail.com>
+ <CANiDSCu2YLaXv2DkfzN0GbTF1b79HnqPG=GWqodDr4X9krGjUA@mail.gmail.com> <CAPhsuW5JDPk7ZEthu7cowqp6emQOXsWgSvPM+kvnERPq4RR83w@mail.gmail.com>
+In-Reply-To: <CAPhsuW5JDPk7ZEthu7cowqp6emQOXsWgSvPM+kvnERPq4RR83w@mail.gmail.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Fri, 8 Sep 2023 23:51:47 +0200
+X-Gmail-Original-Message-ID: <CANiDSCtbo1ws7hTgeha8+V8g198GN1_NAdWV+9Hi5UZgk0cfUA@mail.gmail.com>
+Message-ID: <CANiDSCtbo1ws7hTgeha8+V8g198GN1_NAdWV+9Hi5UZgk0cfUA@mail.gmail.com>
+Subject: Re: [PATCH v7 0/4] kexec: Fix kexec_file_load for llvm16 with PGO
+To:     Song Liu <song@kernel.org>
+Cc:     Eric Biederman <ebiederm@xmission.com>,
+        Philipp Rudo <prudo@linux.vnet.ibm.com>,
+        Dave Young <dyoung@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Baoquan He <bhe@redhat.com>,
+        Philipp Rudo <prudo@redhat.com>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Ross Zwisler <zwisler@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Simon Horman <horms@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        llvm@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, stable@vger.kernel.org,
+        Palmer Dabbelt <palmer@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,169 +100,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gatien,
+Hi Song
 
-kernel test robot noticed the following build warnings:
+On Fri, 8 Sept 2023 at 23:48, Song Liu <song@kernel.org> wrote:
+>
+> Hi Ricardo,
+>
+> Thanks for your kind reply.
+>
+> On Fri, Sep 8, 2023 at 2:18=E2=80=AFPM Ricardo Ribalda <ribalda@chromium.=
+org> wrote:
+> >
+> > Hi Song
+> >
+> > On Fri, 8 Sept 2023 at 01:08, Song Liu <song@kernel.org> wrote:
+> > >
+> > > Hi Ricardo and folks,
+> > >
+> > > On Fri, May 19, 2023 at 7:48=E2=80=AFAM Ricardo Ribalda <ribalda@chro=
+mium.org> wrote:
+> > > >
+> > > > When upreving llvm I realised that kexec stopped working on my test
+> > > > platform.
+> > > >
+> > > > The reason seems to be that due to PGO there are multiple .text sec=
+tions
+> > > > on the purgatory, and kexec does not supports that.
+> > > >
+> > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > >
+> > > We are seeing WARNINGs like the following while kexec'ing a PGO and
+> > > LTO enabled kernel:
+> > >
+> > > WARNING: CPU: 26 PID: 110894 at kernel/kexec_file.c:919
+> > > kexec_load_purgatory+0x37f/0x390
+> > >
+> > > AFAICT, the warning was added by this set, and it was triggered when
+> > > we have many .text sections
+> > > in purgatory.ro. The kexec was actually successful. So I wonder
+> > > whether we really need the
+> > > WARNING here. If we disable LTO (PGO is still enabled), we don't see
+> > > the WARNING any more.
+> > >
+> > > I also tested an older kernel (5.19 based), where we also see many
+> > > .text sections with LTO. It
+> > > kexec()'ed fine. (It doesn't have the WARN_ON() in
+> > > kexec_purgatory_setup_sechdrs).
+> >
+> > You have been "lucky" that the code has chosen the correct start
+> > address, you need to modify the linker script of your kernel to
+> > disable PGO.
+> > You need to backport a patch like this:
+> > https://lore.kernel.org/lkml/CAPhsuW5_qAvV0N3o+hOiAnb1=3DbuJ1pLzqYW9D+B=
+wft6hxJvAeQ@mail.gmail.com/T/#md68b7f832216b0c56bbec0c9b07332e180b9ba2b
+>
+> We already have this commit in our branch. AFAICT, the issue was
+> triggered by LTO. So something like the following seems fixes it
+> (I haven't finished the end-to-end test yet). Does this change make
+> sense to you?
 
-[auto build test WARNING on atorgue-stm32/stm32-next]
-[also build test WARNING on robh/for-next herbert-crypto-2.6/master herbert-cryptodev-2.6/master linus/master v6.5 next-20230908]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+if the end-to-end works, please send it as a patch to the mailing list.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Gatien-Chevallier/dt-bindings-rng-introduce-new-compatible-for-STM32MP13x/20230909-005611
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/atorgue/stm32.git stm32-next
-patch link:    https://lore.kernel.org/r/20230908165120.730867-6-gatien.chevallier%40foss.st.com
-patch subject: [PATCH 05/10] hwrng: stm32 - rework error handling in stm32_rng_read()
-config: hexagon-randconfig-002-20230909 (https://download.01.org/0day-ci/archive/20230909/202309090508.CyBIfKeu-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230909/202309090508.CyBIfKeu-lkp@intel.com/reproduce)
+Thanks! :)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309090508.CyBIfKeu-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from drivers/char/hw_random/stm32-rng.c:9:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:334:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     547 |         val = __raw_readb(PCI_IOBASE + addr);
-         |                           ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-         |                                                   ^
-   In file included from drivers/char/hw_random/stm32-rng.c:9:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:334:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-         |                                                   ^
-   In file included from drivers/char/hw_random/stm32-rng.c:9:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:334:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     584 |         __raw_writeb(value, PCI_IOBASE + addr);
-         |                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
->> drivers/char/hw_random/stm32-rng.c:210:35: warning: left operand of comma operator has no effect [-Wunused-value]
-     210 |                         if (WARN_ON(sr & RNG_SR_CEIS), "RNG clock too slow - %x\n", sr)
-         |                                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:55:57: note: expanded from macro 'if'
-      55 | #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-         |                                                         ^~~~~~~~~~~
-   include/linux/compiler.h:57:52: note: expanded from macro '__trace_if_var'
-      57 | #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
-         |                                                    ^~~~
->> drivers/char/hw_random/stm32-rng.c:210:35: warning: left operand of comma operator has no effect [-Wunused-value]
-     210 |                         if (WARN_ON(sr & RNG_SR_CEIS), "RNG clock too slow - %x\n", sr)
-         |                                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:55:57: note: expanded from macro 'if'
-      55 | #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-         |                                                         ^~~~~~~~~~~
-   include/linux/compiler.h:57:86: note: expanded from macro '__trace_if_var'
-      57 | #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
-         |                                                                                      ^~~~
-   include/linux/compiler.h:68:3: note: expanded from macro '__trace_if_value'
-      68 |         (cond) ?                                        \
-         |          ^~~~
-   8 warnings generated.
+>
+> Thanks again,
+> Song
+>
+> diff --git i/arch/x86/purgatory/Makefile w/arch/x86/purgatory/Makefile
+> index 8f71aaa04cc2..dc306fa7197d 100644
+> --- i/arch/x86/purgatory/Makefile
+> +++ w/arch/x86/purgatory/Makefile
+> @@ -19,6 +19,10 @@ CFLAGS_sha256.o :=3D -D__DISABLE_EXPORTS
+>  # optimization flags.
+>  KBUILD_CFLAGS :=3D $(filter-out -fprofile-sample-use=3D%
+> -fprofile-use=3D%,$(KBUILD_CFLAGS))
+>
+> +# When LTO is enabled, llvm emits many text sections, which is not suppo=
+rted
+> +# by kexec. Remove -flto=3D* flags.
+> +KBUILD_CFLAGS :=3D $(filter-out -flto=3D%,$(KBUILD_CFLAGS))
+> +
+>  # When linking purgatory.ro with -r unresolved symbols are not checked,
+>  # also link a purgatory.chk binary without -r to check for unresolved sy=
+mbols.
+>  PURGATORY_LDFLAGS :=3D -e purgatory_start -z nodefaultlib
 
 
-vim +210 drivers/char/hw_random/stm32-rng.c
 
-   162	
-   163	
-   164	static int stm32_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
-   165	{
-   166		struct stm32_rng_private *priv = container_of(rng, struct stm32_rng_private, rng);
-   167		unsigned int i = 0;
-   168		int retval = 0, err = 0;
-   169		u32 sr;
-   170	
-   171		pm_runtime_get_sync((struct device *) priv->rng.priv);
-   172	
-   173		if (readl_relaxed(priv->base + RNG_SR) & RNG_SR_SEIS)
-   174			stm32_rng_conceal_seed_error(rng);
-   175	
-   176		while (max >= sizeof(u32)) {
-   177			sr = readl_relaxed(priv->base + RNG_SR);
-   178			/*
-   179			 * Manage timeout which is based on timer and take
-   180			 * care of initial delay time when enabling the RNG.
-   181			 */
-   182			if (!sr && wait) {
-   183				err = readl_relaxed_poll_timeout_atomic(priv->base
-   184									   + RNG_SR,
-   185									   sr, sr,
-   186									   10, 50000);
-   187				if (err) {
-   188					dev_err((struct device *)priv->rng.priv,
-   189						"%s: timeout %x!\n", __func__, sr);
-   190					break;
-   191				}
-   192			} else if (!sr) {
-   193				/* The FIFO is being filled up */
-   194				break;
-   195			}
-   196	
-   197			if (sr != RNG_SR_DRDY) {
-   198				if (sr & RNG_SR_SEIS) {
-   199					err = stm32_rng_conceal_seed_error(rng);
-   200					i++;
-   201					if (err && i > RNG_NB_RECOVER_TRIES) {
-   202						dev_err((struct device *)priv->rng.priv,
-   203							"Couldn't recover from seed error\n");
-   204						return -ENOTRECOVERABLE;
-   205					}
-   206	
-   207					continue;
-   208				}
-   209	
- > 210				if (WARN_ON(sr & RNG_SR_CEIS), "RNG clock too slow - %x\n", sr)
-   211					writel_relaxed(0, priv->base + RNG_SR);
-   212			}
-   213	
-   214			/* Late seed error case: DR being 0 is an error status */
-   215			*(u32 *)data = readl_relaxed(priv->base + RNG_DR);
-   216			if (!*(u32 *)data) {
-   217				err = stm32_rng_conceal_seed_error(rng);
-   218				i++;
-   219				if (err && i > RNG_NB_RECOVER_TRIES) {
-   220					dev_err((struct device *)priv->rng.priv,
-   221						"Couldn't recover from seed error");
-   222					return -ENOTRECOVERABLE;
-   223				}
-   224	
-   225				continue;
-   226			}
-   227	
-   228			i = 0;
-   229			retval += sizeof(u32);
-   230			data += sizeof(u32);
-   231			max -= sizeof(u32);
-   232		}
-   233	
-   234		pm_runtime_mark_last_busy((struct device *) priv->rng.priv);
-   235		pm_runtime_put_sync_autosuspend((struct device *) priv->rng.priv);
-   236	
-   237		return retval || !wait ? retval : -EIO;
-   238	}
-   239	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+Ricardo Ribalda
