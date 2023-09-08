@@ -2,170 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A107989FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB84C7989FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244435AbjIHP26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 11:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55926 "EHLO
+        id S244568AbjIHPaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 11:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjIHP25 (ORCPT
+        with ESMTP id S229530AbjIHPaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 11:28:57 -0400
+        Fri, 8 Sep 2023 11:30:17 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E9D1FC4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 08:28:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9BE2C433C9;
-        Fri,  8 Sep 2023 15:28:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670CB1FC1
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 08:30:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A424C433C8;
+        Fri,  8 Sep 2023 15:30:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694186933;
-        bh=vRlB/5Xg5ni0NcsQvZ9t0ajGq3sYV4nl6LLKbzOc54Y=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=lGNFkraB9RbVvVxdY6qPwqMNdBun0W5IbI/PG4d/mZlcEQ7B0lN/d9HTtJJ6nt4Xg
-         mmyqfQwYJexFEEjwyBS2GnsDC/a10zbgSEbsOpZqyJCDr7tczfMJloD7593hwi7ydu
-         lhWnjoH4tSo3XIpWqqEjGz6Rn+bQpINvv66XsUDbw/IllI8aLjRYx0r4/mMW8JI2NF
-         k5V6+szHOoMZHTQA7G/YmyjjT96Ow2SHKPzvPcGv8Kq5VpCd9x42/1g6+XNBGiVRzk
-         TGs+wv7ZuZdKnkgtslHZh3KCDilFXE+pfPmHldwy1O8+7lQh9v9X9TLu1zfaMGmRfE
-         jvuLSlqPidypA==
-Message-ID: <658f807e-7f7a-e6d2-25e7-00eb2187af2a@kernel.org>
-Date:   Fri, 8 Sep 2023 17:28:46 +0200
+        s=k20201202; t=1694187012;
+        bh=gp/Qd4M7tMQouaQ0tvh7NKp7hlaTwc/Xd1brfUHlaAE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tCZAPlWyttOhYM7uJVc1jDWcijQfGhGcqaZJ+7/+qe3b+ak0op4MRHUipB0If6J7k
+         xNzzcbum9vGNExXLk7xXnVhQLFGN+xbevulVbgSqeqImlccspjDfoI71dT3kTRTJBa
+         GhS9TURar48JUc/3R2inQw9OjyGqyi3QJEC9nY3/RxP6GOO03DByYxRzi3VK+6pN3y
+         wFIUWQrEsr8Uamzqd+QI5GKZHYjcezwHSF1yYlmbf1TZOavlxPXs2L6oq6BBJJJIzY
+         0RfkhzNx1r473iJmadEkNk/hZXB1ZJLRX1a2J7uceIPWCMNdiXFHIosEORu9yeeFX6
+         OdioJFW/1WY7Q==
+Date:   Fri, 8 Sep 2023 16:30:07 +0100
+From:   Will Deacon <will@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: [GIT PULL] arm64 fixes for -rc1
+Message-ID: <20230908153007.GA7281@willie-the-truck>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v4 6/7] sched/deadline: Deferrable dl server
-Content-Language: en-US, pt-BR, it-IT
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
-References: <cover.1693510979.git.bristot@kernel.org>
- <754dab7f30695ca10a41613068bb63db3bfea003.1693510979.git.bristot@kernel.org>
- <20230905134203.GA20703@noisy.programming.kicks-ass.net>
- <b3b3a5c5-6688-966d-3d78-3e140730cb7b@redhat.com>
- <20230906082952.GB38741@noisy.programming.kicks-ass.net>
- <0ce80c5d-2433-13d5-33df-d110cf8faa9c@redhat.com>
- <20230907080729.GA16872@noisy.programming.kicks-ass.net>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20230907080729.GA16872@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/23 10:07, Peter Zijlstra wrote:
-> On Wed, Sep 06, 2023 at 04:58:11PM +0200, Daniel Bristot de Oliveira wrote:
-> 
->>> Yeah, it's a wee hack to move it to the zero-laxity point. I was
->>> considering if it makes sense to push that down and make it available
->>> for all DL tasks, but I'm not sure..
->>
->> It might be useful in the future, like when DL dominates all other schedulers, so
->> we can have a way to schedule a deferred work, like kworkers... :-) But it might be
->> too early for that..
-> 
-> So... that scheme I was pushing where we unconditionally decrement
-> fair_server.dl_runtime from update_curr_fair(), that relies on it being
-> a proper zero-laxity scheduler, and doesn't work with the proposed defer
-> hack.
-> 
-> That is, it relies on dl_runtime > 0 during throttle, and you explicitly
-> set it 0.
-> 
-> Now, I've not looked at all this code in detail in a minute, but would
-> not something like the below work?
-> 
-> AFAICT the regular dl_task_timer() callback works to make it go, because
-> replenish will see positive runtime (or not, when already consumed) and
-> DTRT.
-> 
-> 
-> Index: linux-2.6/include/linux/sched.h
-> ===================================================================
-> --- linux-2.6.orig/include/linux/sched.h
-> +++ linux-2.6/include/linux/sched.h
-> @@ -657,6 +657,7 @@ struct sched_dl_entity {
->  	unsigned int			dl_non_contending : 1;
->  	unsigned int			dl_overrun	  : 1;
->  	unsigned int			dl_server         : 1;
-> +	unsigned int			dl_zerolax        : 1;
->  
->  	/*
->  	 * Bandwidth enforcement timer. Each -deadline task has its
-> Index: linux-2.6/kernel/sched/deadline.c
-> ===================================================================
-> --- linux-2.6.orig/kernel/sched/deadline.c
-> +++ linux-2.6/kernel/sched/deadline.c
-> @@ -895,6 +895,16 @@ static void replenish_dl_entity(struct s
->  		dl_se->dl_yielded = 0;
->  	if (dl_se->dl_throttled)
->  		dl_se->dl_throttled = 0;
-> +
-> +	/*
-> +	 * If this is a zero-laxity task, and we're before the zero-laxity
-> +	 * point, throttle it.
-> +	 */
-> +	if (dl_se->dl_zerolax &&
-> +	    dl_time_before(dl_se->deadline - dl_se->runtime, rq_clock(rq))) {
-> +		if (!is_dl_boosted(dl_se) && start_dl_timer(dl_se))
-> +			dl_se->dl_throttled = 1;
-> +	}
->  }
->  
->  /*
-> @@ -1078,7 +1088,12 @@ static int start_dl_timer(struct sched_d
->  	 * that it is actually coming from rq->clock and not from
->  	 * hrtimer's time base reading.
->  	 */
-> -	act = ns_to_ktime(dl_next_period(dl_se));
-> +	if (dl_se->dl_zerolax && !dl_se->dl_throttled) {
-> +		act = ns_to_ktime(dl_se->deadline - dl_se->runtime);
-> +	} else {
-> +		act = ns_to_ktime(dl_next_period(dl_se));
-> +	}
-> +
->  	now = hrtimer_cb_get_time(timer);
->  	delta = ktime_to_ns(now) - rq_clock(rq);
->  	act = ktime_add_ns(act, delta);
-> @@ -1794,6 +1809,13 @@ enqueue_dl_entity(struct sched_dl_entity
->  		setup_new_dl_entity(dl_se);
->  	}
->  
-> +	/*
-> +	 * If we are still throttled, eg. we got replenished but are a
-> +	 * zero-laxity task and still got to wait, don't enqueue.
-> +	 */
-> +	if (dl_se->dl_throttled)
-> +		return;
-> +
->  	__enqueue_dl_entity(dl_se);
->  }
+Hi Linus,
 
-Let me see if I got it:
+Please pull these three arm64 fixes for -rc1. The main one is a fix for
+a broken strscpy() conversion that landed in the merge window and broke
+early parsing of the kernel command line.
 
-	- Always start the server, but throttled with full runtime...
-	- Unconditionally decrement fair_server.dl_runtime from update_curr_fair()
-		(check if it is not decremented twice as it runs)
-	- When the dl timer fire, replenish or throttle for the next period?
+Cheers,
 
-is that the base for it?
+Will
 
--- Daniel
+--->8
+
+The following changes since commit e1df27213941725962f68c64349bbcc60ece0314:
+
+  Merge branch 'for-next/selftests' into for-next/core (2023-08-25 12:36:57 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
+
+for you to fetch changes up to 8bd795fedb8450ecbef18eeadbd23ed8fc7630f5:
+
+  arm64: csum: Fix OoB access in IP checksum code for negative lengths (2023-09-07 10:15:20 +0100)
+
+----------------------------------------------------------------
+arm64 fixes for -rc1
+
+- Fix an incorrect mask in the CXL PMU driver
+
+- Fix a regression in early parsing of the kernel command line
+
+- Fix an IP checksum OoB access reported by syzbot
+
+----------------------------------------------------------------
+Jeongtae Park (1):
+      perf: CXL: fix mismatched number of counters mask
+
+Will Deacon (2):
+      arm64/sysreg: Fix broken strncpy() -> strscpy() conversion
+      arm64: csum: Fix OoB access in IP checksum code for negative lengths
+
+ arch/arm64/kernel/idreg-override.c | 6 +++---
+ arch/arm64/lib/csum.c              | 2 +-
+ drivers/perf/cxl_pmu.c             | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
