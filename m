@@ -2,449 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB2A79855C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6C6798565
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238013AbjIHKCR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Sep 2023 06:02:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51224 "EHLO
+        id S240297AbjIHKDR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Sep 2023 06:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232354AbjIHKCP (ORCPT
+        with ESMTP id S233832AbjIHKDQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 06:02:15 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF261FE0;
-        Fri,  8 Sep 2023 03:01:50 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qeYHu-000Zq4-Ko; Fri, 08 Sep 2023 12:00:30 +0200
-Received: from p5b13a40a.dip0.t-ipconnect.de ([91.19.164.10] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qeYHu-001mq1-DG; Fri, 08 Sep 2023 12:00:30 +0200
-Message-ID: <7a55fbca0fea64c17547336fbfe9e5aa14ee1b4f.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH 2/4] sh: remove unused sh4-202 support
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-sh@vger.kernel.org, Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 08 Sep 2023 12:00:29 +0200
-In-Reply-To: <20230802184849.1019466-2-arnd@kernel.org>
-References: <20230802184849.1019466-1-arnd@kernel.org>
-         <20230802184849.1019466-2-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Fri, 8 Sep 2023 06:03:16 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA1E2110;
+        Fri,  8 Sep 2023 03:02:35 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id ABC8824E161;
+        Fri,  8 Sep 2023 18:01:22 +0800 (CST)
+Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 8 Sep
+ 2023 18:01:22 +0800
+Received: from [192.168.120.76] (171.223.208.138) by EXMBX168.cuchost.com
+ (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 8 Sep
+ 2023 18:01:21 +0800
+Message-ID: <dd63bb4f-a59b-0323-08fb-03f8cc048b6e@starfivetech.com>
+Date:   Fri, 8 Sep 2023 18:01:20 +0800
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.164.10
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v1 1/3] dt-bindings: mmc: Drop unused properties
+To:     Conor Dooley <conor@kernel.org>, Jessica Clarke <jrtc27@jrtc27.com>
+CC:     Conor Dooley <conor.dooley@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        <linux-mmc@vger.kernel.org>,
+        "Emil Renner Berthing" <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+References: <20230830031846.127957-1-william.qiu@starfivetech.com>
+ <20230830031846.127957-2-william.qiu@starfivetech.com>
+ <20230830-commence-trickery-40eaa193cb15@wendy>
+ <b375b88c-0d9c-30a9-21f6-283083cf3880@linaro.org>
+ <20230830-procedure-frostbite-56c751f7c276@wendy>
+ <efab6f52-4d7f-ea3c-0fc3-4e3ad03c14c7@starfivetech.com>
+ <20230901-remold-sublease-a1ddb1fc6348@spud>
+ <9EF26965-10E5-4BCA-AC5E-93C5AA55A0DF@jrtc27.com>
+ <20230901-affected-wanting-ab517791a870@spud>
+Content-Language: en-US
+From:   William Qiu <william.qiu@starfivetech.com>
+In-Reply-To: <20230901-affected-wanting-ab517791a870@spud>
+Content-Type: text/plain; charset="UTF-8"
+X-Originating-IP: [171.223.208.138]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX168.cuchost.com
+ (172.16.6.78)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-08-02 at 20:48 +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> This early prototype of the SH4 CPU was only used in
-> the "microdev" board that is now removed, so all of the
-> sh4-202 supoprt can also be removed.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/sh/Kconfig                        |   5 -
->  arch/sh/kernel/cpu/sh4/Makefile        |   4 -
->  arch/sh/kernel/cpu/sh4/clock-sh4-202.c | 174 -------------------------
->  arch/sh/kernel/cpu/sh4/setup-sh4-202.c | 139 --------------------
->  4 files changed, 322 deletions(-)
->  delete mode 100644 arch/sh/kernel/cpu/sh4/clock-sh4-202.c
->  delete mode 100644 arch/sh/kernel/cpu/sh4/setup-sh4-202.c
-> 
-> diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-> index d3df67f215ca5..d785329e57151 100644
-> --- a/arch/sh/Kconfig
-> +++ b/arch/sh/Kconfig
-> @@ -383,10 +383,6 @@ config CPU_SUBTYPE_SH7760
->  	bool "Support SH7760 processor"
->  	select CPU_SH4
->  
-> -config CPU_SUBTYPE_SH4_202
-> -	bool "Support SH4-202 processor"
-> -	select CPU_SH4
-> -
->  # SH-4A Processor Support
->  
->  config CPU_SUBTYPE_SH7723
-> @@ -517,7 +513,6 @@ config SH_PCLK_FREQ
->  			      CPU_SUBTYPE_SH7263 || \
->  			      CPU_SUBTYPE_MXG
->  	default "60000000" if CPU_SUBTYPE_SH7751 || CPU_SUBTYPE_SH7751R
-> -	default "66000000" if CPU_SUBTYPE_SH4_202
->  	default "50000000"
->  	help
->  	  This option is used to specify the peripheral clock frequency.
-> diff --git a/arch/sh/kernel/cpu/sh4/Makefile b/arch/sh/kernel/cpu/sh4/Makefile
-> index 00c16331e07e5..02e3ee16e15ce 100644
-> --- a/arch/sh/kernel/cpu/sh4/Makefile
-> +++ b/arch/sh/kernel/cpu/sh4/Makefile
-> @@ -23,15 +23,11 @@ obj-$(CONFIG_CPU_SUBTYPE_SH7091)	+= setup-sh7750.o
->  obj-$(CONFIG_CPU_SUBTYPE_SH7751)	+= setup-sh7750.o
->  obj-$(CONFIG_CPU_SUBTYPE_SH7751R)	+= setup-sh7750.o
->  obj-$(CONFIG_CPU_SUBTYPE_SH7760)	+= setup-sh7760.o
-> -obj-$(CONFIG_CPU_SUBTYPE_SH4_202)	+= setup-sh4-202.o
->  
->  # Primary on-chip clocks (common)
->  ifndef CONFIG_CPU_SH4A
->  clock-$(CONFIG_CPU_SH4)			:= clock-sh4.o
->  endif
->  
-> -# Additional clocks by subtype
-> -clock-$(CONFIG_CPU_SUBTYPE_SH4_202)	+= clock-sh4-202.o
-> -
->  obj-y					+= $(clock-y)
->  obj-$(CONFIG_PERF_EVENTS)		+= $(perf-y)
-> diff --git a/arch/sh/kernel/cpu/sh4/clock-sh4-202.c b/arch/sh/kernel/cpu/sh4/clock-sh4-202.c
-> deleted file mode 100644
-> index c1cdef763cb25..0000000000000
-> --- a/arch/sh/kernel/cpu/sh4/clock-sh4-202.c
-> +++ /dev/null
-> @@ -1,174 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -/*
-> - * arch/sh/kernel/cpu/sh4/clock-sh4-202.c
-> - *
-> - * Additional SH4-202 support for the clock framework
-> - *
-> - *  Copyright (C) 2005  Paul Mundt
-> - */
-> -#include <linux/init.h>
-> -#include <linux/kernel.h>
-> -#include <linux/err.h>
-> -#include <linux/io.h>
-> -#include <linux/clkdev.h>
-> -#include <asm/clock.h>
-> -#include <asm/freq.h>
-> -
-> -#define CPG2_FRQCR3	0xfe0a0018
-> -
-> -static int frqcr3_divisors[] = { 1, 2, 3, 4, 6, 8, 16 };
-> -static int frqcr3_values[]   = { 0, 1, 2, 3, 4, 5, 6  };
-> -
-> -static unsigned long emi_clk_recalc(struct clk *clk)
-> -{
-> -	int idx = __raw_readl(CPG2_FRQCR3) & 0x0007;
-> -	return clk->parent->rate / frqcr3_divisors[idx];
-> -}
-> -
-> -static inline int frqcr3_lookup(struct clk *clk, unsigned long rate)
-> -{
-> -	int divisor = clk->parent->rate / rate;
-> -	int i;
-> -
-> -	for (i = 0; i < ARRAY_SIZE(frqcr3_divisors); i++)
-> -		if (frqcr3_divisors[i] == divisor)
-> -			return frqcr3_values[i];
-> -
-> -	/* Safe fallback */
-> -	return 5;
-> -}
-> -
-> -static struct sh_clk_ops sh4202_emi_clk_ops = {
-> -	.recalc		= emi_clk_recalc,
-> -};
-> -
-> -static struct clk sh4202_emi_clk = {
-> -	.flags		= CLK_ENABLE_ON_INIT,
-> -	.ops		= &sh4202_emi_clk_ops,
-> -};
-> -
-> -static unsigned long femi_clk_recalc(struct clk *clk)
-> -{
-> -	int idx = (__raw_readl(CPG2_FRQCR3) >> 3) & 0x0007;
-> -	return clk->parent->rate / frqcr3_divisors[idx];
-> -}
-> -
-> -static struct sh_clk_ops sh4202_femi_clk_ops = {
-> -	.recalc		= femi_clk_recalc,
-> -};
-> -
-> -static struct clk sh4202_femi_clk = {
-> -	.flags		= CLK_ENABLE_ON_INIT,
-> -	.ops		= &sh4202_femi_clk_ops,
-> -};
-> -
-> -static void shoc_clk_init(struct clk *clk)
-> -{
-> -	int i;
-> -
-> -	/*
-> -	 * For some reason, the shoc_clk seems to be set to some really
-> -	 * insane value at boot (values outside of the allowable frequency
-> -	 * range for instance). We deal with this by scaling it back down
-> -	 * to something sensible just in case.
-> -	 *
-> -	 * Start scaling from the high end down until we find something
-> -	 * that passes rate verification..
-> -	 */
-> -	for (i = 0; i < ARRAY_SIZE(frqcr3_divisors); i++) {
-> -		int divisor = frqcr3_divisors[i];
-> -
-> -		if (clk->ops->set_rate(clk, clk->parent->rate / divisor) == 0)
-> -			break;
-> -	}
-> -
-> -	WARN_ON(i == ARRAY_SIZE(frqcr3_divisors));	/* Undefined clock */
-> -}
-> -
-> -static unsigned long shoc_clk_recalc(struct clk *clk)
-> -{
-> -	int idx = (__raw_readl(CPG2_FRQCR3) >> 6) & 0x0007;
-> -	return clk->parent->rate / frqcr3_divisors[idx];
-> -}
-> -
-> -static int shoc_clk_verify_rate(struct clk *clk, unsigned long rate)
-> -{
-> -	struct clk *bclk = clk_get(NULL, "bus_clk");
-> -	unsigned long bclk_rate = clk_get_rate(bclk);
-> -
-> -	clk_put(bclk);
-> -
-> -	if (rate > bclk_rate)
-> -		return 1;
-> -	if (rate > 66000000)
-> -		return 1;
-> -
-> -	return 0;
-> -}
-> -
-> -static int shoc_clk_set_rate(struct clk *clk, unsigned long rate)
-> -{
-> -	unsigned long frqcr3;
-> -	unsigned int tmp;
-> -
-> -	/* Make sure we have something sensible to switch to */
-> -	if (shoc_clk_verify_rate(clk, rate) != 0)
-> -		return -EINVAL;
-> -
-> -	tmp = frqcr3_lookup(clk, rate);
-> -
-> -	frqcr3 = __raw_readl(CPG2_FRQCR3);
-> -	frqcr3 &= ~(0x0007 << 6);
-> -	frqcr3 |= tmp << 6;
-> -	__raw_writel(frqcr3, CPG2_FRQCR3);
-> -
-> -	clk->rate = clk->parent->rate / frqcr3_divisors[tmp];
-> -
-> -	return 0;
-> -}
-> -
-> -static struct sh_clk_ops sh4202_shoc_clk_ops = {
-> -	.init		= shoc_clk_init,
-> -	.recalc		= shoc_clk_recalc,
-> -	.set_rate	= shoc_clk_set_rate,
-> -};
-> -
-> -static struct clk sh4202_shoc_clk = {
-> -	.flags		= CLK_ENABLE_ON_INIT,
-> -	.ops		= &sh4202_shoc_clk_ops,
-> -};
-> -
-> -static struct clk *sh4202_onchip_clocks[] = {
-> -	&sh4202_emi_clk,
-> -	&sh4202_femi_clk,
-> -	&sh4202_shoc_clk,
-> -};
-> -
-> -static struct clk_lookup lookups[] = {
-> -	/* main clocks */
-> -	CLKDEV_CON_ID("emi_clk", &sh4202_emi_clk),
-> -	CLKDEV_CON_ID("femi_clk", &sh4202_femi_clk),
-> -	CLKDEV_CON_ID("shoc_clk", &sh4202_shoc_clk),
-> -};
-> -
-> -int __init arch_clk_init(void)
-> -{
-> -	struct clk *clk;
-> -	int i, ret = 0;
-> -
-> -	cpg_clk_init();
-> -
-> -	clk = clk_get(NULL, "master_clk");
-> -	for (i = 0; i < ARRAY_SIZE(sh4202_onchip_clocks); i++) {
-> -		struct clk *clkp = sh4202_onchip_clocks[i];
-> -
-> -		clkp->parent = clk;
-> -		ret |= clk_register(clkp);
-> -	}
-> -
-> -	clk_put(clk);
-> -
-> -	clkdev_add_table(lookups, ARRAY_SIZE(lookups));
-> -
-> -	return ret;
-> -}
-> diff --git a/arch/sh/kernel/cpu/sh4/setup-sh4-202.c b/arch/sh/kernel/cpu/sh4/setup-sh4-202.c
-> deleted file mode 100644
-> index 363463e53d99c..0000000000000
-> --- a/arch/sh/kernel/cpu/sh4/setup-sh4-202.c
-> +++ /dev/null
-> @@ -1,139 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -/*
-> - * SH4-202 Setup
-> - *
-> - *  Copyright (C) 2006  Paul Mundt
-> - *  Copyright (C) 2009  Magnus Damm
-> - */
-> -#include <linux/platform_device.h>
-> -#include <linux/init.h>
-> -#include <linux/serial.h>
-> -#include <linux/serial_sci.h>
-> -#include <linux/sh_timer.h>
-> -#include <linux/sh_intc.h>
-> -#include <linux/io.h>
-> -#include <asm/platform_early.h>
-> -
-> -static struct scif_platform_data scif0_platform_data = {
-> -	.scscr		= SCSCR_REIE,
-> -	.type		= PORT_SCIF,
-> -};
-> -
-> -static struct resource scif0_resources[] = {
-> -	DEFINE_RES_MEM(0xffe80000, 0x100),
-> -	DEFINE_RES_IRQ(evt2irq(0x700)),
-> -	DEFINE_RES_IRQ(evt2irq(0x720)),
-> -	DEFINE_RES_IRQ(evt2irq(0x760)),
-> -	DEFINE_RES_IRQ(evt2irq(0x740)),
-> -};
-> -
-> -static struct platform_device scif0_device = {
-> -	.name		= "sh-sci",
-> -	.id		= 0,
-> -	.resource	= scif0_resources,
-> -	.num_resources	= ARRAY_SIZE(scif0_resources),
-> -	.dev		= {
-> -		.platform_data	= &scif0_platform_data,
-> -	},
-> -};
-> -
-> -static struct sh_timer_platform_data tmu0_platform_data = {
-> -	.channels_mask = 7,
-> -};
-> -
-> -static struct resource tmu0_resources[] = {
-> -	DEFINE_RES_MEM(0xffd80000, 0x30),
-> -	DEFINE_RES_IRQ(evt2irq(0x400)),
-> -	DEFINE_RES_IRQ(evt2irq(0x420)),
-> -	DEFINE_RES_IRQ(evt2irq(0x440)),
-> -};
-> -
-> -static struct platform_device tmu0_device = {
-> -	.name		= "sh-tmu",
-> -	.id		= 0,
-> -	.dev = {
-> -		.platform_data	= &tmu0_platform_data,
-> -	},
-> -	.resource	= tmu0_resources,
-> -	.num_resources	= ARRAY_SIZE(tmu0_resources),
-> -};
-> -
-> -static struct platform_device *sh4202_devices[] __initdata = {
-> -	&scif0_device,
-> -	&tmu0_device,
-> -};
-> -
-> -static int __init sh4202_devices_setup(void)
-> -{
-> -	return platform_add_devices(sh4202_devices,
-> -				    ARRAY_SIZE(sh4202_devices));
-> -}
-> -arch_initcall(sh4202_devices_setup);
-> -
-> -static struct platform_device *sh4202_early_devices[] __initdata = {
-> -	&scif0_device,
-> -	&tmu0_device,
-> -};
-> -
-> -void __init plat_early_device_setup(void)
-> -{
-> -	sh_early_platform_add_devices(sh4202_early_devices,
-> -				   ARRAY_SIZE(sh4202_early_devices));
-> -}
-> -
-> -enum {
-> -	UNUSED = 0,
-> -
-> -	/* interrupt sources */
-> -	IRL0, IRL1, IRL2, IRL3, /* only IRLM mode supported */
-> -	HUDI, TMU0, TMU1, TMU2, RTC, SCIF, WDT,
-> -};
-> -
-> -static struct intc_vect vectors[] __initdata = {
-> -	INTC_VECT(HUDI, 0x600),
-> -	INTC_VECT(TMU0, 0x400), INTC_VECT(TMU1, 0x420),
-> -	INTC_VECT(TMU2, 0x440), INTC_VECT(TMU2, 0x460),
-> -	INTC_VECT(RTC, 0x480), INTC_VECT(RTC, 0x4a0),
-> -	INTC_VECT(RTC, 0x4c0),
-> -	INTC_VECT(SCIF, 0x700), INTC_VECT(SCIF, 0x720),
-> -	INTC_VECT(SCIF, 0x740), INTC_VECT(SCIF, 0x760),
-> -	INTC_VECT(WDT, 0x560),
-> -};
-> -
-> -static struct intc_prio_reg prio_registers[] __initdata = {
-> -	{ 0xffd00004, 0, 16, 4, /* IPRA */ { TMU0, TMU1, TMU2, RTC } },
-> -	{ 0xffd00008, 0, 16, 4, /* IPRB */ { WDT, 0, 0, 0 } },
-> -	{ 0xffd0000c, 0, 16, 4, /* IPRC */ { 0, 0, SCIF, HUDI } },
-> -	{ 0xffd00010, 0, 16, 4, /* IPRD */ { IRL0, IRL1, IRL2, IRL3 } },
-> -};
-> -
-> -static DECLARE_INTC_DESC(intc_desc, "sh4-202", vectors, NULL,
-> -			 NULL, prio_registers, NULL);
-> -
-> -static struct intc_vect vectors_irlm[] __initdata = {
-> -	INTC_VECT(IRL0, 0x240), INTC_VECT(IRL1, 0x2a0),
-> -	INTC_VECT(IRL2, 0x300), INTC_VECT(IRL3, 0x360),
-> -};
-> -
-> -static DECLARE_INTC_DESC(intc_desc_irlm, "sh4-202_irlm", vectors_irlm, NULL,
-> -			 NULL, prio_registers, NULL);
-> -
-> -void __init plat_irq_setup(void)
-> -{
-> -	register_intc_controller(&intc_desc);
-> -}
-> -
-> -#define INTC_ICR	0xffd00000UL
-> -#define INTC_ICR_IRLM   (1<<7)
-> -
-> -void __init plat_irq_setup_pins(int mode)
-> -{
-> -	switch (mode) {
-> -	case IRQ_MODE_IRQ: /* individual interrupt mode for IRL3-0 */
-> -		__raw_writew(__raw_readw(INTC_ICR) | INTC_ICR_IRLM, INTC_ICR);
-> -		register_intc_controller(&intc_desc_irlm);
-> -		break;
-> -	default:
-> -		BUG();
-> -	}
-> -}
 
-Reviewed-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+On 2023/9/2 1:43, Conor Dooley wrote:
+> On Fri, Sep 01, 2023 at 06:20:38PM +0100, Jessica Clarke wrote:
+>> On 1 Sep 2023, at 16:42, Conor Dooley <conor@kernel.org> wrote:
+>> > 
+>> > On Fri, Sep 01, 2023 at 10:33:13AM +0800, William Qiu wrote:
+>> >> 
+>> >> 
+>> >> On 2023/8/30 16:34, Conor Dooley wrote:
+>> >>> On Wed, Aug 30, 2023 at 09:29:20AM +0200, Krzysztof Kozlowski wrote:
+>> >>>> On 30/08/2023 08:50, Conor Dooley wrote:
+>> >>>>> On Wed, Aug 30, 2023 at 11:18:44AM +0800, William Qiu wrote:
+>> >>>>>> Due to the change of tuning implementation, it's no longer necessary to
+>> >>>>>> use the "starfive,sysreg" property in dts, so drop the relevant
+>> >>>>>> description in dt-bindings here.
+>> >>>>> 
+>> >>>>> How does changing your software implantation invalidate a description of
+>> >>>>> the hardware?
+>> >>>>> 
+>> >>>> 
+>> >>>> Which is kind of proof that this syscon was just to substitute
+>> >>>> incomplete hardware description (e.g. missing clocks and phys). We
+>> >>>> should have rejected it. Just like we should reject them in the future.
+>> >>> 
+>> >>> :s I dunno what to do with this... I'm inclined to say not to remove it
+>> >>> from the binding or dts at all & only change the software.
+>> >>> 
+>> >>>> There are just few cases where syscon is reasonable. All others is just
+>> >>>> laziness. It's not only starfivetech, of course. Several other
+>> >>>> contributors do the same.
+>> >>> 
+>> >>> I'm not sure if laziness is fair, lack of understanding is usually more
+>> >>> likely.
+>> >> 
+>> >> For this, I tend to keep it in binding, but remove it from required. Because
+>> >> we only modify the tuning implementation, it doesn't mean that this property
+>> >> need to be removed, it's just no longer be the required one.
+>> > 
+>> > Please only remove it from required if the current driver doesn't break
+>> > if the regmap is removed.
+>> 
+>> Either way please make sure the documentation clearly states “never use
+>> this, if you’re using it you’re doing it wrong, this only exists
+>> because it was wrongly used in the past”. Otherwise people writing
+>> drivers for other OSes will probably use it too thinking they need to.
+> 
+> Maybe we should just delete it if the impact is going to be negligible,
+> sounds like you're not using it in FreeBSD, which was part of what I was
+> worried about. Guess it depends on what Emil & the distro heads think.
+Hi Conor,
+
+After discussing it with our colleagues, we decided that deleting it was the best
+course of action. Since there will no longer be a related implementation of
+"starfive,sysreg" in future drivers, even if the dt-binding is described, it will
+be "never use", so I think it should be deleted.
+
+What do you think?
+
+Best regards,
+William
