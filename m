@@ -2,52 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 860EB79847F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 11:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3AE798485
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 11:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238592AbjIHJBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 05:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
+        id S234708AbjIHJCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 05:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjIHJBd (ORCPT
+        with ESMTP id S229844AbjIHJCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 05:01:33 -0400
+        Fri, 8 Sep 2023 05:02:23 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C3E1BC8
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 02:01:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDF7EC433C9
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 09:01:29 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B341BC8;
+        Fri,  8 Sep 2023 02:02:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9FA3C433C9;
+        Fri,  8 Sep 2023 09:02:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694163689;
-        bh=rE5zH+On8EOe/kA8HLgVDoL97kxJNQGwOXrvmH08brw=;
+        s=k20201202; t=1694163739;
+        bh=rRKEvIB0lVb2uGUWPoA0+XeAQvNtg/fARJrpqhmZI3E=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pQxmZecx4EHJcQtFvleL5MDu6PXX2COHzS+Q8CYasrXQvV1fsF/yBa0djKu/I2+dG
-         rrgWBsobUv+JSLwNrWMbkLytpoK/N9NPaF7D9LOZm/UTdoJ44EdQwh24kaKZkURer3
-         vxt75QJUlwUvtZdbzJBv3t8FQiYlnzpRvbVKpqKR0Qw01HLcK1GO8R46HRj1vdvUYZ
-         R2kZ4i+drfp52pTPkhtNhMDQq7OhWTvyObO62CA6Rl7LsF+MX2di48w6QGytcH2O8D
-         oF/FmjyQmUi58zVGARoitippqRr21Upuy88BDHyGHDR1PR2QEYNgy4sK85hWSQY03B
-         bSeHoe8u+8kBg==
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-529fb04a234so2503483a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 02:01:29 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwWiLFHFIxr80UUGM9CTGk/309RTgjhTCFiclrhYo82U1E5cZKN
-        XllwyupzGzgtLLiZ0Tc5OP7VcqyvqcpIpmZhmwQ=
-X-Google-Smtp-Source: AGHT+IErbyVlIoQhbQ1VhQjIiVqC1OCG7Hd1zNV8Jx507J94fI35vzASUhnf3ixLKSDlNyb079zIDDuEOhnBDpeNt9E=
-X-Received: by 2002:a17:906:20dc:b0:9a9:e41f:d214 with SMTP id
- c28-20020a17090620dc00b009a9e41fd214mr1338393ejc.74.1694163688219; Fri, 08
- Sep 2023 02:01:28 -0700 (PDT)
+        b=bOXNj24SHdKL79z6qfM1jz0YMFFEnZqcAWfQGXW2LdIVaQDbeY0DQhD5/JprtiyDj
+         5D1k99+9Ug9dFN3lpUVgUMFb+noK4GaCPvJKFCJwg7T2e2+JUsNC8ryA59UAI/MjA+
+         nhZly7RSUCbgUDXu5rbOkRxYN7fIeaweU9f951Eubr4hYUupmCp3r0d0X0xr56GoG7
+         TSWC4FWPFYAvPS4fSD21+7m/TJTDKv1lgcMSbfjITw67g2TtEjYcmoKItUG7Y97Hw0
+         VZNeNKEm7ZluvzqobouSn1v3ioXDS3dPfdRUJCnjtDuu6e2FCsvfTpz6bPkSMQxquU
+         qkfRaTdEcE2/w==
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-99c4923195dso225185366b.2;
+        Fri, 08 Sep 2023 02:02:18 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzYmmn3N0eJ86RY5UVSHuEGe+d4IgMAB/ImN5j7vzi/Vz9f9yFn
+        iUsjCB6DYZbEYE+aeyfhtgSAlHG1MfyORDaVyE4=
+X-Google-Smtp-Source: AGHT+IHIxkho9CXfRVQdHREUP1Ny9xnSRZ4p9AxmPd+t8Z6hWpbhNEsJKkVWz7HAOHHA2nwechuLx9pmYabZgwNqZ0U=
+X-Received: by 2002:a17:906:18aa:b0:9a1:c42e:5e5e with SMTP id
+ c10-20020a17090618aa00b009a1c42e5e5emr1264248ejf.42.1694163717201; Fri, 08
+ Sep 2023 02:01:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230906123216.255932-1-wangjiexun@tinylab.org>
-In-Reply-To: <20230906123216.255932-1-wangjiexun@tinylab.org>
+References: <20230906-jag-sysctl_remove_empty_elem_arch-v1-0-3935d4854248@samsung.com>
+ <20230906-jag-sysctl_remove_empty_elem_arch-v1-8-3935d4854248@samsung.com>
+In-Reply-To: <20230906-jag-sysctl_remove_empty_elem_arch-v1-8-3935d4854248@samsung.com>
 From:   Guo Ren <guoren@kernel.org>
-Date:   Fri, 8 Sep 2023 17:01:14 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQUx35vOrG82WeS9pS8XRjVVLiLTMGt+TRmn2HsNahGXQ@mail.gmail.com>
-Message-ID: <CAJF2gTQUx35vOrG82WeS9pS8XRjVVLiLTMGt+TRmn2HsNahGXQ@mail.gmail.com>
-Subject: Re: [PATCH v2] RISC-V: Fix use of non existent CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK
-To:     Jiexun Wang <wangjiexun@tinylab.org>
-Cc:     conor@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, falcon@tinylab.org,
-        jszhang@kernel.org, tglx@linutronix.de
+Date:   Fri, 8 Sep 2023 17:01:44 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRFrd4zs_8vv5-n5p_+GYxnTJcRBtYDJaMZQQMOVKKOTw@mail.gmail.com>
+Message-ID: <CAJF2gTRFrd4zs_8vv5-n5p_+GYxnTJcRBtYDJaMZQQMOVKKOTw@mail.gmail.com>
+Subject: Re: [PATCH 8/8] c-sky: rm sentinel element from ctl_talbe array
+To:     j.granados@samsung.com
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
+        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-fsdevel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-csky@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -59,59 +84,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thx for fixup.
+Acked-by: Guo Ren <guoren@kernel.org>
 
-Reviewed-by: Guo Ren <guoren@kernel.org>
-
-On Wed, Sep 6, 2023 at 8:34=E2=80=AFPM Jiexun Wang <wangjiexun@tinylab.org>=
- wrote:
+On Wed, Sep 6, 2023 at 6:04=E2=80=AFPM Joel Granados via B4 Relay
+<devnull+j.granados.samsung.com@kernel.org> wrote:
 >
-> If configuration options SOFTIRQ_ON_OWN_STACK and PREEMPT_RT
-> are enabled simultaneously under RISC-V architecture,
-> it will result in a compilation failure:
+> From: Joel Granados <j.granados@samsung.com>
 >
-> arch/riscv/kernel/irq.c:64:6: error: redefinition of 'do_softirq_own_stac=
-k'
->    64 | void do_softirq_own_stack(void)
->       |      ^~~~~~~~~~~~~~~~~~~~
-> In file included from ./arch/riscv/include/generated/asm/softirq_stack.h:=
-1,
->                  from arch/riscv/kernel/irq.c:15:
-> ./include/asm-generic/softirq_stack.h:8:20: note: previous definition of =
-'do_softirq_own_stack' was here
->     8 | static inline void do_softirq_own_stack(void)
->       |                    ^~~~~~~~~~~~~~~~~~~~
+> This commit comes at the tail end of a greater effort to remove the
+> empty elements at the end of the ctl_table arrays (sentinels) which
+> will reduce the overall build time size of the kernel and run time
+> memory bloat by ~64 bytes per sentinel (further information Link :
+> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
 >
-> After changing CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK to CONFIG_SOFTIRQ_ON_OWN_=
-STACK,
-> compilation can be successful.
+> Remove sentinel from alignment_tbl ctl_table array.
 >
-> Fixes: dd69d07a5a6c ("riscv: stack: Support HAVE_SOFTIRQ_ON_OWN_STACK")
-> Signed-off-by: Jiexun Wang <wangjiexun@tinylab.org>
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
 > ---
-> Changes in v2:
-> - changed to a more suitable subject line
-> - add a Fixes tag
+>  arch/csky/abiv1/alignment.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
-> ---
->  arch/riscv/kernel/irq.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> diff --git a/arch/csky/abiv1/alignment.c b/arch/csky/abiv1/alignment.c
+> index b60259daed1b..0d75ce7b0328 100644
+> --- a/arch/csky/abiv1/alignment.c
+> +++ b/arch/csky/abiv1/alignment.c
+> @@ -328,8 +328,7 @@ static struct ctl_table alignment_tbl[5] =3D {
+>                 .maxlen =3D sizeof(align_usr_count),
+>                 .mode =3D 0666,
+>                 .proc_handler =3D &proc_dointvec
+> -       },
+> -       {}
+> +       }
+>  };
 >
-> diff --git a/arch/riscv/kernel/irq.c b/arch/riscv/kernel/irq.c
-> index a8efa053c4a5..a86f272ae2c3 100644
-> --- a/arch/riscv/kernel/irq.c
-> +++ b/arch/riscv/kernel/irq.c
-> @@ -60,7 +60,7 @@ static void init_irq_stacks(void)
->  }
->  #endif /* CONFIG_VMAP_STACK */
+>  static int __init csky_alignment_init(void)
 >
-> -#ifdef CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK
-> +#ifdef CONFIG_SOFTIRQ_ON_OWN_STACK
->  void do_softirq_own_stack(void)
->  {
->  #ifdef CONFIG_IRQ_STACKS
 > --
-> 2.34.1
+> 2.30.2
 >
 
 
