@@ -2,286 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB45179890D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F52179890F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244051AbjIHOnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
+        id S244076AbjIHOna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:43:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbjIHOnL (ORCPT
+        with ESMTP id S241362AbjIHOn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:43:11 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2046.outbound.protection.outlook.com [40.107.237.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B721BF1
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:43:07 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VcNXpyn8diHzAVC7B6XS4heNQWKnHGdVntgqs1Z2Z1CFR4Vur9dQQKHLGJbojhMviob0v6mY+EkweKaCRVhFps0mZ7ujRXQAcwyXtopUBwcJDrxjhWcxjMVjO6hpKfwwz6frW930b4QUpV08kTiYQsoAZbDQw+6cxdqd+AWo+hS/7P7WqswftuWoOUr3gQIruHwnDQ8ee8lUd+kO419HDgPRRaebFCmiXwjsEHj+xEqorY+d/6yPja0lp6nvuqfMn++oYe9fSUP3xyfhD2g0BIR0BDv6Z4U4vFTAsjUX+q2AEMIi6/GfKeKHJ5yUXGVU8AV45eTNN19ltwP6mW0ufg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FB14lOo5qxh/2YL7IHyvTQTRZHXOGUihv8E1pEK3VRA=;
- b=NioB+y+9GglEpDUZQYBGVP74xeTUxQrSAKiKiayaf7Y6uCklPkNBkUPmTxvpo5Kemmv8H6VyCX0EYmMR8B2hfvGjyNIB1QbqLmtsHdG68RagwrjKnznVAIuydw0OBDcw7P1FKFZB9baEP5+9BxX61y5xUYeQQKN5kcJkTFjddnMR27b7HqIUMeUdbUQRJ/kaj1GuxiPt4WIHLB7QVICJfR96jIcfx9KV0gDAm/ZNNvpB1ty7QsXs/uWBh7qw0Fkhy0Rxh9ZWkHnG5RCsgBN6VxjztWYshit/Xb3qHthFpFpWzdV/McPh/2mmuGFFwAD1MJjjMtrHOMu7kZszcoK8qA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FB14lOo5qxh/2YL7IHyvTQTRZHXOGUihv8E1pEK3VRA=;
- b=dUeKQqhIpM6psPOO6LlCzIaJz4PM6kt3SGWGGKmqD2sXy0ohke9w+guDbYwb8hahm2JksBB7UDlgDLDPOkqrnt2MPCxCmUwApemFZfEjQt/7mVSdX6TV6BLYw4Hyvg592h67eZsAuoNtsH3MQMyBw1pXZiOd+ZlDqAwnZiUo9bk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
- by DM4PR12MB5103.namprd12.prod.outlook.com (2603:10b6:5:392::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Fri, 8 Sep
- 2023 14:43:03 +0000
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::121e:5e68:c78a:1f2f]) by CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::121e:5e68:c78a:1f2f%3]) with mapi id 15.20.6768.029; Fri, 8 Sep 2023
- 14:43:03 +0000
-Message-ID: <1acac9eb-681b-4de1-bb22-a998bdfb95a2@amd.com>
-Date:   Fri, 8 Sep 2023 10:42:59 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 32/34] drm/amd/display: add plane CTM driver-specific
- property
-Content-Language: en-US
-To:     Melissa Wen <mwen@igalia.com>
-Cc:     amd-gfx@lists.freedesktop.org,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
-        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        Joshua Ashton <joshua@froggi.es>,
-        Sebastian Wick <sebastian.wick@redhat.com>,
-        Xaver Hugl <xaver.hugl@gmail.com>,
-        Shashank Sharma <Shashank.Sharma@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
-        linux-kernel@vger.kernel.org
-References: <20230810160314.48225-1-mwen@igalia.com>
- <20230810160314.48225-33-mwen@igalia.com>
- <d50e07fe-4e8e-4e18-ae75-ba351c3c95ad@amd.com>
- <20230908144129.o2rtvyydy5lhggre@mail.igalia.com>
-From:   Harry Wentland <harry.wentland@amd.com>
-In-Reply-To: <20230908144129.o2rtvyydy5lhggre@mail.igalia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YT1PR01CA0137.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2f::16) To CO6PR12MB5427.namprd12.prod.outlook.com
- (2603:10b6:5:358::13)
+        Fri, 8 Sep 2023 10:43:29 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7A61BFF;
+        Fri,  8 Sep 2023 07:43:23 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b962c226ceso36210671fa.3;
+        Fri, 08 Sep 2023 07:43:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694184202; x=1694789002; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=w8HwV+J/7uNnqFbijDhQaafWl9GR5aB5QOka+RcaLbE=;
+        b=ifxa3gaoc5LGoesPfBm8FnhW6pxYTrgTnveivx5F67e/UOenYvgdiWGkhEIVKWtRfk
+         Wu2hNZI8CHSWSf5JOIjgqo7ZRdrKWdc82UON3iqVNa4J2dxPms47k7WJCKj4zmgbHmld
+         6dWCyaoKYsYmr5sO/BLI5E6hVF8lQz6LKajL/+KuENgidNxdXIP8NwjoktezlG9+7Aik
+         JUgM3PajeUKFZVRwSJkhRvphyUQ+EismLzsl0itBucLTXcQRBwmAeOt+EvkAWM0MGbvG
+         x7dgSyKeRRg+Mj/QM59u8+jCSv72kg7gJpQ6sUXdIxZ9cG31XXAHQa+tHD5RW9tcOEs8
+         OUtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694184202; x=1694789002;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w8HwV+J/7uNnqFbijDhQaafWl9GR5aB5QOka+RcaLbE=;
+        b=oc0IRnKSK/uDMK7m5u5vGLNrXLQza/eep5G/3rJvolPU1nZlmdF8h++7/JRAopDZhm
+         GcfWZnv68NN9EVCS9oQBbzLCKbHkfowiE03+Nle6fSpbj5mkpf/7JqTzmRc82cUY0e8M
+         xJl7BxP9G9qNFTLpSnPvovFI6x2gK3Wid2u4Iy6Y8/CARyxy2x5VgN5wVyRm2cB6iY8m
+         H0ndBZKe6J6ubET8tNlyUjivkgCH9I5nWQS0macA/nAI+LB1yK+35QXmAYc+XldoZkSJ
+         p0hOxXGkU3qNLFdf3JoLKUQes0S8Z1sfKhjx6Kp4IsKraweAwJw1jHRifqjHdQSNY5YW
+         cDjw==
+X-Gm-Message-State: AOJu0YwHR3zT8pmtZu8/79y2bPOp0WB4/N2eq6QAKu0nBSitkIS2zAWP
+        ATA5YHow09WROyTbBN2b0ww=
+X-Google-Smtp-Source: AGHT+IFytL8L4GmYN1lwr1zUUD8lffspTsgM5GvKOTcdz6bFTFuST3e9LT9M6Av3AlU+swSps1K05g==
+X-Received: by 2002:a2e:3c18:0:b0:2bd:1615:f9f8 with SMTP id j24-20020a2e3c18000000b002bd1615f9f8mr2033400lja.45.1694184201563;
+        Fri, 08 Sep 2023 07:43:21 -0700 (PDT)
+Received: from ip-172-31-30-46.eu-west-1.compute.internal (ec2-54-217-129-48.eu-west-1.compute.amazonaws.com. [54.217.129.48])
+        by smtp.gmail.com with ESMTPSA id lz5-20020a170906fb0500b0098e78ff1a87sm1099436ejb.120.2023.09.08.07.43.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Sep 2023 07:43:21 -0700 (PDT)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, catalin.marinas@arm.com,
+        mark.rutland@arm.com, bpf@vger.kernel.org, kpsingh@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     puranjay12@gmail.com
+Subject: [PATCH bpf-next v5 0/3] bpf, arm64: use BPF prog pack allocator in BPF JIT
+Date:   Fri,  8 Sep 2023 14:43:17 +0000
+Message-Id: <20230908144320.2474-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|DM4PR12MB5103:EE_
-X-MS-Office365-Filtering-Correlation-Id: d4abc67c-f408-485c-10f8-08dbb079e802
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: emWmgoPC8UMbsoOYWmdJuxwI0L8vpW3R22NGk9w79Cdjup2auvauHKjBLbg4ChGM/HgNU9bHR8vGEpEXQPOo68Xck7rGlp8Nr1l+7LWGrEK3eMTBZ9AI3XNDX6bPcXZVtNNWgouH6WbkYuLwNpz2UjpSDw5WaHodPxZARYZ8CtkysOMDI2gprSQBX6bwq0R9neDsPymSCJUgDU2JpIRij90mccNVMwyfIRznxjkKKOeQ3Q7ADjNOpEPKQ0Sp4cs1zs5QnLoVTzOujNRZZ5bZt08TzQDJdsILia9PjAw30XPvIoRmlfe3yOMED0V9Il3cPXxXdiGocSgsrsBnQpkzOiT8faWS3+zihOSaft3XUcvNuSEXwfYP0iGXBr/g/R3CDncOm/wn9SdE88YwpjsFt9LzfJm5N2dN1bvnlyWh6EpiIlNh/sw4b0dFq1x71oPWmRSrqLuC5my/awleuSBD5Yoa6ZpRW2CJC5Ybkl7RWAwOciuivc/0Y17i28fekKqOaadhCkkLXSKDFQPszaYJdSzFRAdOA9yrEOuYvXR8+KBdgF4efhGmChM0vAD2u2sH+8b3UnTcUBY6rXS5i8WBfMRfyfGRshXaBoIlAb1AlhepRHYu55Q/UxQpBTofA4BRqZxb2Caa2Ws8PP+LoJfcRA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(346002)(136003)(39860400002)(1800799009)(451199024)(186009)(31686004)(6666004)(53546011)(6506007)(6486002)(36756003)(31696002)(86362001)(38100700002)(2616005)(26005)(478600001)(6512007)(2906002)(8936002)(8676002)(66476007)(41300700001)(4326008)(5660300002)(7416002)(54906003)(44832011)(316002)(66946007)(66556008)(6916009)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q29yRE84Qm9yVlR0cGtHQjh0d2FFd01CTk1lNHdwTlRNWFNkUXR0UTE3Z0g0?=
- =?utf-8?B?ck9iRlFaQzlxbmF6UW5yT2lPNThxdUZrWnVYZlFyOVB6cU9VaTRLYjA3SDZU?=
- =?utf-8?B?WHBENmRDMGtCYlNoek5NSWZXNzU3NGt3a3loeitIbWxqOG45VjgvSUZjR2Yv?=
- =?utf-8?B?OFJUVUF1ajdXUUZJQVFGb21xN0lvdTBUU0NtVEhiWUxiQmNnWDF6SWlYekxN?=
- =?utf-8?B?Z3cwZmxHNlhHZUJBWW1tOGkvcGRUdWljNWFSYW9uM255WjdNc0VqTWkvWWE4?=
- =?utf-8?B?UGdtZ2MzMGtpYXVJWDRiMWxOU1FUUmVHWURJMFBSQUhMenJjWmJIKzVUd00y?=
- =?utf-8?B?MGZNYmVCQnJ5SC9BMXV6ZWloYmtLYlV1SFdzUjlwWEtKZXNncmFGSWVkM0x2?=
- =?utf-8?B?SHJXam5aODlONElxZFBwenNhMnBRYy8rcU9LOHRqR25iTEVuVFlnemxCUEtC?=
- =?utf-8?B?L3dtWkdkaEZZWWJoeHI5a0kxOFNobWE2R0l2R2NOTmVPT3hmaFh6aTNuS1Jw?=
- =?utf-8?B?c2gvY1hQU3FoRzdja2dvUi92Wit2RnpiRjYwNDZnSHM1ZUdTMm5ZTlRkZVJX?=
- =?utf-8?B?cjRpeWNmY1JialZRa0Z1eTJGSDRNb2tkQzlONmg1K3pjOEEzOWN4eXFQM3Y1?=
- =?utf-8?B?ZDBJQ3RLODhwMGlJRlFXS01NQjBnVzBUUm9ZdlF4a1p1d25laUFzOUI3UGN5?=
- =?utf-8?B?eDZjNDl0QWlwU2JCTGdlei9ZYU5XQ2RQeUpTc1ZOQkJOSXJ3aE4zZnVUSXll?=
- =?utf-8?B?bXE0OWVXQmhjL01qdGV3UzF1YThHOU1Kc2NYTi9TTlFXKzRNWnBwcGo1Q3JF?=
- =?utf-8?B?aktuWVRtWFdmNTV1MU5sb0V1NEFNVm0rL0tXb1FIa2ZwMVR4a2lTYnJvck1R?=
- =?utf-8?B?ZE01emlhdmlqenhtR0FGTy9ZT3NHMjN2MkN3ak03MUwyc1hsY2FzRE5ISk5G?=
- =?utf-8?B?ZGJNR3hIWmlTejRieGxteVMvVUFkZjZFb0dybVZhQ296MGJUcHJiclM5Wjkx?=
- =?utf-8?B?VkhUNHIvWUEzV3BkOHJ2eFNqMm53WHZaYmwrVnYvbGpzKythVmRRUFVJZ0Ix?=
- =?utf-8?B?VGRjaGRCY2R4a1FhNHJUMGVhd2RCbWdtQjBQL0lpK2IvUW1hVDIxMU95eEti?=
- =?utf-8?B?c0d4MzdBSGYrZDYvbFFpdTdSdGlJOHg3cmRkRFdiY0tRSG90cytmRkowaTJw?=
- =?utf-8?B?d0VLRHhxdzB6NE1UTFFWVTk4ZW9sZFBKVmoxS1BkU1o0OC9PNjNia2prK0RP?=
- =?utf-8?B?bFVOQTVtYUYrMHlXdGd1cEdNZGNVQm14cnJsQ1BsMWRUL3dOZEhVOSt2TkZX?=
- =?utf-8?B?VHBUZWRYSFpxeEoxMU1EZnZRVm1GVlV1aHRaYVBzbHZVeWVVdEpsK29sVkYx?=
- =?utf-8?B?cklYMnFaZWJWM0VOcGtBTU54ZWtBdTBySWkzNXVkQVhWY0pYM014bUxSRzhZ?=
- =?utf-8?B?dEVNeW5ia29qc3VUNC9iYktmamJXRnltUEFudjFnM1Qyc2YrMnhTYi9UaHVk?=
- =?utf-8?B?MlVWMFRBdm92R2trT2VndU5qSW4vK3YxY09kNGNGaSs4TjlnWnhoTUlMU0Jn?=
- =?utf-8?B?SE8vWGYwTDI3bUZPNWpENVNPb3QxS3pVOUIxMTNtZUVJT2hRc0JhQWgyNW42?=
- =?utf-8?B?Z3MyNjlQeWZFZDZybG50TTVBWHFKeUVzZzNVcFJuYzEwTm9aKzhCNFduS1Vk?=
- =?utf-8?B?aEtnb1RncVphMlFVWGJyTGN5b2lXcWVoa3V1NUNpS2R5cUxXMHZUa2RSaWpY?=
- =?utf-8?B?QXNTY1FQQTQveGZBVjJhR3dvS1RPL2VFRldyYkhsOHRJZW94MkdCQ0hxMXp4?=
- =?utf-8?B?UERnZ0kxbTFQWG45L0tZbzlONFNRTHhyWFUvajBIUjBwRzBrb2VHUnFyRDh5?=
- =?utf-8?B?R1NwVDd3aUhLSFNBV3pQWGROZ1RRazNaMC8rL2t4YldWUDZaZEJoMXY4cFlj?=
- =?utf-8?B?NXFXNGY0TncwSks0Sm1DSGQvM0MzeEIxTW9jcUswbklXaHFNYS9EcUxDR0hh?=
- =?utf-8?B?QmY5OXc1WWUxTFNmdGdHQ3lEVngyM0FwWHZvWUtKRm0vcUFrMXJROUo2YzhT?=
- =?utf-8?B?Y3RRcFFWMVFnWkovZTMwMkJHRmtMbitDYlVlUWcxTkkwNFNUMlAvYmJSOEFv?=
- =?utf-8?Q?rQA0iC5aufdh/I1wM68yJNOQ7?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4abc67c-f408-485c-10f8-08dbb079e802
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2023 14:43:03.5300
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /9eSLXfSVhqMVrIeQQMQ5NtiSPQ8GAMAIsTaY1Xj/t8pt1mLHkqFUHrtPiebccV4FeFpdjw/h64sEVgtYzJKIQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5103
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changes in V4 => v5:
+1. Remove the patch for making prog pack allocator portable as it will come
+   through the RISCV tree[1].
 
+2. Add a new function aarch64_insn_set() to be used in
+   bpf_arch_text_invalidate() for putting illegal instructions after a
+   program is removed. The earlier implementation of bpf_arch_text_invalidate()
+   was calling aarch64_insn_patch_text_nosync() in a loop and making it slow
+   because each call invalidated the cache.
 
-On 2023-09-08 10:41, Melissa Wen wrote:
-> On 09/06, Harry Wentland wrote:
->>
->>
->> On 2023-08-10 12:03, Melissa Wen wrote:
->>> Plane CTM for pre-blending color space conversion. Only enable
->>> driver-specific plane CTM property on drivers that support both pre- and
->>> post-blending gamut remap matrix, i.e., DCN3+ family. Otherwise it
->>> conflits with DRM CRTC CTM property.
->>>
->>> Signed-off-by: Melissa Wen <mwen@igalia.com>
->>> ---
->>>   drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h      |  2 ++
->>>   .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h |  7 +++++++
->>>   .../amd/display/amdgpu_dm/amdgpu_dm_color.c   |  7 +++++++
->>>   .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   | 20 +++++++++++++++++++
->>>   4 files changed, 36 insertions(+)
->>>
->>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
->>> index abb871a912d7..84bf501b02f4 100644
->>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
->>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
->>> @@ -363,6 +363,8 @@ struct amdgpu_mode_info {
->>>   	 * @plane_hdr_mult_property:
->>>   	 */
->>>   	struct drm_property *plane_hdr_mult_property;
->>> +
->>> +	struct drm_property *plane_ctm_property;
->>>   	/**
->>>   	 * @shaper_lut_property: Plane property to set pre-blending shaper LUT
->>>   	 * that converts color content before 3D LUT.
->>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
->>> index 095f39f04210..6252ee912a63 100644
->>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
->>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
->>> @@ -769,6 +769,13 @@ struct dm_plane_state {
->>>   	 * S31.32 sign-magnitude.
->>>   	 */
->>>   	__u64 hdr_mult;
->>> +	/**
->>> +	 * @ctm:
->>> +	 *
->>> +	 * Color transformation matrix. See drm_crtc_enable_color_mgmt(). The
->>> +	 * blob (if not NULL) is a &struct drm_color_ctm.
->>> +	 */
->>> +	struct drm_property_blob *ctm;
->>>   	/**
->>>   	 * @shaper_lut: shaper lookup table blob. The blob (if not NULL) is an
->>>   	 * array of &struct drm_color_lut.
->>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
->>> index 4356846a2bce..86a918ab82be 100644
->>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
->>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
->>> @@ -218,6 +218,13 @@ amdgpu_dm_create_color_properties(struct amdgpu_device *adev)
->>>   		return -ENOMEM;
->>>   	adev->mode_info.plane_hdr_mult_property = prop;
->>>   
->>> +	prop = drm_property_create(adev_to_drm(adev),
->>> +				   DRM_MODE_PROP_BLOB,
->>> +				   "AMD_PLANE_CTM", 0);
->>
->> We'll want to wrap the property creation/attachment with
->> #ifdef AMD_PRIVATE_COLOR here as well.
-> 
-> yeah, it's already wrapped because it's created and attached together
-> with the other properties.
-> 
+   Here is test_tag now:
+   [root@ip-172-31-6-176 bpf]# time ./test_tag
+   test_tag: OK (40945 tests)
 
-Ah, I missed that. All good then.
+   real    0m19.695s
+   user    0m1.514s
+   sys     0m17.841s
 
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+   test_tag without these patches:
+   [root@ip-172-31-6-176 bpf]# time ./test_tag
+   test_tag: OK (40945 tests)
 
-Harry
+   real    0m21.487s
+   user    0m1.647s
+   sys     0m19.106s
 
->>
->> Harry
->>
->>> +	if (!prop)
->>> +		return -ENOMEM;
->>> +	adev->mode_info.plane_ctm_property = prop;
->>> +
->>>   	prop = drm_property_create(adev_to_drm(adev),
->>>   				   DRM_MODE_PROP_BLOB,
->>>   				   "AMD_PLANE_SHAPER_LUT", 0);
->>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
->>> index 3fd57de7c5be..0b1081c690cb 100644
->>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
->>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
->>> @@ -1355,6 +1355,8 @@ dm_drm_plane_duplicate_state(struct drm_plane *plane)
->>>   
->>>   	if (dm_plane_state->degamma_lut)
->>>   		drm_property_blob_get(dm_plane_state->degamma_lut);
->>> +	if (dm_plane_state->ctm)
->>> +		drm_property_blob_get(dm_plane_state->ctm);
->>>   	if (dm_plane_state->shaper_lut)
->>>   		drm_property_blob_get(dm_plane_state->shaper_lut);
->>>   	if (dm_plane_state->lut3d)
->>> @@ -1436,6 +1438,8 @@ static void dm_drm_plane_destroy_state(struct drm_plane *plane,
->>>   
->>>   	if (dm_plane_state->degamma_lut)
->>>   		drm_property_blob_put(dm_plane_state->degamma_lut);
->>> +	if (dm_plane_state->ctm)
->>> +		drm_property_blob_put(dm_plane_state->ctm);
->>>   	if (dm_plane_state->lut3d)
->>>   		drm_property_blob_put(dm_plane_state->lut3d);
->>>   	if (dm_plane_state->shaper_lut)
->>> @@ -1473,6 +1477,11 @@ dm_atomic_plane_attach_color_mgmt_properties(struct amdgpu_display_manager *dm,
->>>   				   dm->adev->mode_info.plane_hdr_mult_property,
->>>   				   AMDGPU_HDR_MULT_DEFAULT);
->>>   
->>> +	/* Only enable plane CTM if both DPP and MPC gamut remap is available. */
->>> +	if (dm->dc->caps.color.mpc.gamut_remap)
->>> +		drm_object_attach_property(&plane->base,
->>> +					   dm->adev->mode_info.plane_ctm_property, 0);
->>> +
->>>   	if (dpp_color_caps.hw_3d_lut) {
->>>   		drm_object_attach_property(&plane->base,
->>>   					   mode_info.plane_shaper_lut_property, 0);
->>> @@ -1530,6 +1539,14 @@ dm_atomic_plane_set_property(struct drm_plane *plane,
->>>   			dm_plane_state->hdr_mult = val;
->>>   			dm_plane_state->base.color_mgmt_changed = 1;
->>>   		}
->>> +	} else if (property == adev->mode_info.plane_ctm_property) {
->>> +		ret = drm_property_replace_blob_from_id(plane->dev,
->>> +							&dm_plane_state->ctm,
->>> +							val,
->>> +							sizeof(struct drm_color_ctm), -1,
->>> +							&replaced);
->>> +		dm_plane_state->base.color_mgmt_changed |= replaced;
->>> +		return ret;
->>>   	} else if (property == adev->mode_info.plane_shaper_lut_property) {
->>>   		ret = drm_property_replace_blob_from_id(plane->dev,
->>>   							&dm_plane_state->shaper_lut,
->>> @@ -1591,6 +1608,9 @@ dm_atomic_plane_get_property(struct drm_plane *plane,
->>>   		*val = dm_plane_state->degamma_tf;
->>>   	} else if (property == adev->mode_info.plane_hdr_mult_property) {
->>>   		*val = dm_plane_state->hdr_mult;
->>> +	} else if (property == adev->mode_info.plane_ctm_property) {
->>> +		*val = (dm_plane_state->ctm) ?
->>> +			dm_plane_state->ctm->base.id : 0;
->>>   	} else 	if (property == adev->mode_info.plane_shaper_lut_property) {
->>>   		*val = (dm_plane_state->shaper_lut) ?
->>>   			dm_plane_state->shaper_lut->base.id : 0;
->>
+   test_tag in the previous version was really slow > 2 minutes. see [2]
+
+3. Add cache invalidation in aarch64_insn_copy() so other users can call the
+   function without worrying about the cache. Currently only bpf_arch_text_copy()
+   is using it, but there might be more users in the future.
+
+Chanes in V3 => V4: Changes only in 3rd patch
+1. Fix the I-cache maintenance: Clean the data cache and invalidate the i-Cache
+   only *after* the instructions have been copied to the ROX region.
+
+Chanes in V2 => V3: Changes only in 3rd patch
+1. Set prog = orig_prog; in the failure path of bpf_jit_binary_pack_finalize()
+call.
+2. Add comments explaining the usage of the offsets in the exception table.
+
+Changes in v1 => v2:
+1. Make the naming consistent in the 3rd patch:
+   ro_image and image
+   ro_header and header
+   ro_image_ptr and image_ptr
+2. Use names dst/src in place of addr/opcode in second patch.
+3. Add Acked-by: Song Liu <song@kernel.org> in 1st and 2nd patch.
+
+BPF programs currently consume a page each on ARM64. For systems with many BPF
+programs, this adds significant pressure to instruction TLB. High iTLB pressure
+usually causes slow down for the whole system.
+
+Song Liu introduced the BPF prog pack allocator[3] to mitigate the above issue.
+It packs multiple BPF programs into a single huge page. It is currently only
+enabled for the x86_64 BPF JIT.
+
+This patch series enables the BPF prog pack allocator for the ARM64 BPF JIT.
+
+====================================================
+Performance Analysis of prog pack allocator on ARM64
+====================================================
+
+To test the performance of the BPF prog pack allocator on ARM64, a stresser
+tool[4] was built. This tool loads 8 BPF programs on the system and triggers
+5 of them in an infinite loop by doing system calls.
+
+The runner script starts 20 instances of the above which loads 8*20=160 BPF
+programs on the system, 5*20=100 of which are being constantly triggered.
+
+In the above environment we try to build Python-3.8.4 and try to find different
+iTLB metrics for the compilation done by gcc-12.2.0.
+
+The source code[5] is  configured with the following command:
+./configure --enable-optimizations --with-ensurepip=install
+
+Then the runner script is executed with the following command:
+./run.sh "perf stat -e ITLB_WALK,L1I_TLB,INST_RETIRED,iTLB-load-misses -a make -j32"
+
+This builds Python while 160 BPF programs are loaded and 100 are being constantly
+triggered and measures iTLB related metrics.
+
+The output of the above command is discussed below before and after enabling the
+BPF prog pack allocator.
+
+The tests were run on qemu-system-aarch64 with 32 cpus, 4G memory, -machine virt,
+-cpu host, and -enable-kvm.
+
+Results
+-------
+
+Before enabling prog pack allocator:
+------------------------------------
+
+Performance counter stats for 'system wide':
+
+         333278635      ITLB_WALK
+     6762692976558      L1I_TLB
+    25359571423901      INST_RETIRED
+       15824054789      iTLB-load-misses
+
+     189.029769053 seconds time elapsed
+
+After enabling prog pack allocator:
+-----------------------------------
+
+Performance counter stats for 'system wide':
+
+         190333544      ITLB_WALK
+     6712712386528      L1I_TLB
+    25278233304411      INST_RETIRED
+        5716757866      iTLB-load-misses
+
+     185.392650561 seconds time elapsed
+
+Improvements in metrics
+-----------------------
+
+Compilation time                             ---> 1.92% faster
+iTLB-load-misses/Sec (Less is better)        ---> 63.16% decrease
+ITLB_WALK/1000 INST_RETIRED (Less is better) ---> 42.71% decrease
+ITLB_Walk/L1I_TLB (Less is better)           ---> 42.47% decrease
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git/commit/?h=for-next&id=20e490adea279d49d57b800475938f5b67926d98
+[2] https://lore.kernel.org/all/CANk7y0gcP3dF2mESLp5JN1+9iDfgtiWRFGqLkCgZD6wby1kQOw@mail.gmail.com/
+[3] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
+[4] https://github.com/puranjaymohan/BPF-Allocator-Bench
+[5] https://www.python.org/ftp/python/3.8.4/Python-3.8.4.tgz
+
+Puranjay Mohan (3):
+  arm64: patching: Add aarch64_insn_copy()
+  arm64: patching: Add aarch64_insn_set()
+  bpf, arm64: use bpf_jit_binary_pack_alloc
+
+ arch/arm64/include/asm/patching.h |   2 +
+ arch/arm64/kernel/patching.c      |  81 ++++++++++++++++++
+ arch/arm64/net/bpf_jit_comp.c     | 136 ++++++++++++++++++++++++------
+ 3 files changed, 195 insertions(+), 24 deletions(-)
+
+-- 
+2.40.1
+
