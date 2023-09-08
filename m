@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC857991AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 23:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5C87991B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 23:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344043AbjIHVw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 17:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
+        id S1344083AbjIHV4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 17:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231408AbjIHVw2 (ORCPT
+        with ESMTP id S237687AbjIHV4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 17:52:28 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB4EE46
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 14:52:23 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7870821d9a1so1482205241.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 14:52:23 -0700 (PDT)
+        Fri, 8 Sep 2023 17:56:11 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6005CE45
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 14:56:05 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-44ea1f87427so1038741137.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 14:56:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694209942; x=1694814742; darn=vger.kernel.org;
+        d=google.com; s=20221208; t=1694210164; x=1694814964; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m43PrEMsLZP2EQdS/bT6AbnWiwNqqhpPB/h3QciEWyw=;
-        b=VTrB+nZucJ1rcPIIFwERlGhyoTr0z8+6rAXXYiWoFUdiaSJFzqaYJp+n7EzxvIstEn
-         +3Vs2yAHse0jweIgHROApu7zkShjAHDNa3vDgveFEpMlL1INEsDlF+0yXYhV6SGeHZ9S
-         99sTPvFQRlswiD2Nt1aByFF75pa3o7k8TSRro=
+        bh=+t21swsOyH2YblKosQFufOxa9wXHdCF/HAys5VxqFSU=;
+        b=dCZ/W/TVTMsK/8Zz4BBV2Nh0uoWC3befGRJ3/ukWJr8AMTDaUx7r8lrZ2/xQdW9aWS
+         kLXPlmpxmiJHKACm6fgoaUFk0O8zi/0HlEGKtMPe7FfbqiZg8LX8GpM5YkHrVrWlQMXK
+         b+0+sXBN4E9954qNlrwPCwX87UAnA9Ntf4LkJ72rl/04DJBsT/P9tZlhiDfChMvPjjex
+         3QFNjAkzi6qUWsat1b1hTjOY+IC/llo4s6RNeBDc6Rg6jcWcETb1i0w0h2JQVtv1lDtC
+         M2G5tN7gCWXO63X4AzvlB9CptvykFm+l+NkQVd14e8TwJKQOWlOQ02/HME/oaQO4YI6z
+         MSTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694209942; x=1694814742;
+        d=1e100.net; s=20230601; t=1694210164; x=1694814964;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=m43PrEMsLZP2EQdS/bT6AbnWiwNqqhpPB/h3QciEWyw=;
-        b=BT7blanLnIQkUSZeCIeIKFI22frWTp9FbrSZjr8RNldzNaJV2puPLIu1w74Y8muejA
-         TSpeKnekUkYWnkB54FWtdGJ+YTyykhVhS980wqLwIrZskldzez7HZFe9I/gu0FaX3Nho
-         NxQWnyyP2wXTG1iizHqUZDL5Rt23QoLzZmGTTPrwzucV084/B4BmjBnqA15nDdlrUDao
-         JL7552m45BaQPenmzZWRMxNUZEIeLgf2/A3I87epNMy8yacEt9tqIwJXdjhfo4x3DvR1
-         8Nm6p+dpWOwFCJDlPFBqG32Lh40mEF7rAeZxGpAcPnURP+d1m02j0v0wHlGssIfYCdMB
-         6Jvw==
-X-Gm-Message-State: AOJu0YzmupNeOj7+SY+R8OrGaBljNRBcNGnet8ATLDW/8uNrVdyzBrSh
-        4pu/CyIDIL357mYA99SrMooxHLsfqkvKSe/RvLs=
-X-Google-Smtp-Source: AGHT+IGyoZwd8V33kv+eZWsKuai4IiCB9GkENwFb/sbZJyTInm+OWRYymctN6SvcrDsQURnCsifWwQ==
-X-Received: by 2002:a67:eccf:0:b0:44e:cab7:be2d with SMTP id i15-20020a67eccf000000b0044ecab7be2dmr1719012vsp.7.1694209942030;
-        Fri, 08 Sep 2023 14:52:22 -0700 (PDT)
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
-        by smtp.gmail.com with ESMTPSA id x22-20020a056102323600b004507f465cd8sm437970vsf.30.2023.09.08.14.52.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Sep 2023 14:52:21 -0700 (PDT)
-Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-44ee1123667so2204467137.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 14:52:21 -0700 (PDT)
-X-Received: by 2002:ad4:5f0d:0:b0:651:6604:bee6 with SMTP id
- fo13-20020ad45f0d000000b006516604bee6mr9638376qvb.30.1694209920738; Fri, 08
- Sep 2023 14:52:00 -0700 (PDT)
+        bh=+t21swsOyH2YblKosQFufOxa9wXHdCF/HAys5VxqFSU=;
+        b=q4FoJDvQP6nYk3E2AUzzP4zxvcl9Qo90a975rYsP7CCXGV4wocavJlT9xnCvBYmIRI
+         USs8f/Ow2gmrGpSstMIDzbgjtyqnYaUjsUnVKQtFp+fIHq8Kag/B96H1SCLt7JRSythx
+         ayG1DEj7h2wp6dZuPMJz46+DPsUJoaO22eeRmvtuFv/DyBSRRQpEvYEjZ6BjkORtXHuS
+         IT3Py6mXrFmWev/ng+BQhmdZJiAafprXN2VfobUhtFdU3z7SHL6dXE9+4QbbXOLj+tyc
+         scr6uHWyeGWgolVXUeHI2t55Rda7SJf1cCywaifIQ6jPiP+HuHlRYsYaZdVd56BBpqB9
+         gE/g==
+X-Gm-Message-State: AOJu0YxVu0Ihtt/InEC3lMdhF23DDQSqEB5RkAXSFX2oMtlneXChC2cG
+        0ZSdjTiHKKyP0AooGJS37dwkcpK5+5aW1Xd05ItTmQ==
+X-Google-Smtp-Source: AGHT+IFkquQZzfJEqi3aegfL32v0MUP4COi0KsBHXJhNEJqPgvoL5VJcvuAC408MwYd6jYtnlMbhsJ/oBBfA1JrwqlA=
+X-Received: by 2002:a05:6102:3004:b0:44e:99a2:a51 with SMTP id
+ s4-20020a056102300400b0044e99a20a51mr3887876vsa.30.1694210164298; Fri, 08 Sep
+ 2023 14:56:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230321-kexec_clang16-v7-0-b05c520b7296@chromium.org>
- <CAPhsuW5_qAvV0N3o+hOiAnb1=buJ1pLzqYW9D+Bwft6hxJvAeQ@mail.gmail.com>
- <CANiDSCu2YLaXv2DkfzN0GbTF1b79HnqPG=GWqodDr4X9krGjUA@mail.gmail.com> <CAPhsuW5JDPk7ZEthu7cowqp6emQOXsWgSvPM+kvnERPq4RR83w@mail.gmail.com>
-In-Reply-To: <CAPhsuW5JDPk7ZEthu7cowqp6emQOXsWgSvPM+kvnERPq4RR83w@mail.gmail.com>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Fri, 8 Sep 2023 23:51:47 +0200
-X-Gmail-Original-Message-ID: <CANiDSCtbo1ws7hTgeha8+V8g198GN1_NAdWV+9Hi5UZgk0cfUA@mail.gmail.com>
-Message-ID: <CANiDSCtbo1ws7hTgeha8+V8g198GN1_NAdWV+9Hi5UZgk0cfUA@mail.gmail.com>
-Subject: Re: [PATCH v7 0/4] kexec: Fix kexec_file_load for llvm16 with PGO
-To:     Song Liu <song@kernel.org>
-Cc:     Eric Biederman <ebiederm@xmission.com>,
-        Philipp Rudo <prudo@linux.vnet.ibm.com>,
-        Dave Young <dyoung@redhat.com>,
+References: <20230908175738.41895-1-mclapinski@google.com> <87tts4z9nu.fsf@meer.lwn.net>
+In-Reply-To: <87tts4z9nu.fsf@meer.lwn.net>
+From:   =?UTF-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>
+Date:   Fri, 8 Sep 2023 23:55:52 +0200
+Message-ID: <CAAi7L5f1f3gHGr_8cCv2jW2Q5pjL9bpDD_4zrpXjXkoRmu95fg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] mm/memfd: add ioctl(MEMFD_CHECK_IF_ORIGINAL)
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Baoquan He <bhe@redhat.com>,
-        Philipp Rudo <prudo@redhat.com>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Ross Zwisler <zwisler@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Simon Horman <horms@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, stable@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>
+        Hugh Dickins <hughd@google.com>, Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Yi Liu <yi.l.liu@intel.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Steve French <stfrench@microsoft.com>,
+        Simon Ser <contact@emersion.fr>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Luca Vizzarro <Luca.Vizzarro@arm.com>,
+        Jeff Xu <jeffxu@google.com>, Aleksa Sarai <cyphar@cyphar.com>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Verkamp <dverkamp@chromium.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -100,93 +88,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Song
-
-On Fri, 8 Sept 2023 at 23:48, Song Liu <song@kernel.org> wrote:
+On Fri, Sep 8, 2023 at 10:34=E2=80=AFPM Jonathan Corbet <corbet@lwn.net> wr=
+ote:
 >
-> Hi Ricardo,
+> Michal Clapinski <mclapinski@google.com> writes:
 >
-> Thanks for your kind reply.
->
-> On Fri, Sep 8, 2023 at 2:18=E2=80=AFPM Ricardo Ribalda <ribalda@chromium.=
-org> wrote:
+> > This change introduces a way to check if an fd points to a memfd's
+> > original open fd (the one created by memfd_create).
 > >
-> > Hi Song
+> > We encountered an issue with migrating memfds in CRIU (checkpoint
+> > restore in userspace - it migrates running processes between
+> > machines). Imagine a scenario:
+> > 1. Create a memfd. By default it's open with O_RDWR and yet one can
+> > exec() to it (unlike with regular files, where one would get ETXTBSY).
+> > 2. Reopen that memfd with O_RDWR via /proc/self/fd/<fd>.
 > >
-> > On Fri, 8 Sept 2023 at 01:08, Song Liu <song@kernel.org> wrote:
-> > >
-> > > Hi Ricardo and folks,
-> > >
-> > > On Fri, May 19, 2023 at 7:48=E2=80=AFAM Ricardo Ribalda <ribalda@chro=
-mium.org> wrote:
-> > > >
-> > > > When upreving llvm I realised that kexec stopped working on my test
-> > > > platform.
-> > > >
-> > > > The reason seems to be that due to PGO there are multiple .text sec=
-tions
-> > > > on the purgatory, and kexec does not supports that.
-> > > >
-> > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > >
-> > > We are seeing WARNINGs like the following while kexec'ing a PGO and
-> > > LTO enabled kernel:
-> > >
-> > > WARNING: CPU: 26 PID: 110894 at kernel/kexec_file.c:919
-> > > kexec_load_purgatory+0x37f/0x390
-> > >
-> > > AFAICT, the warning was added by this set, and it was triggered when
-> > > we have many .text sections
-> > > in purgatory.ro. The kexec was actually successful. So I wonder
-> > > whether we really need the
-> > > WARNING here. If we disable LTO (PGO is still enabled), we don't see
-> > > the WARNING any more.
-> > >
-> > > I also tested an older kernel (5.19 based), where we also see many
-> > > .text sections with LTO. It
-> > > kexec()'ed fine. (It doesn't have the WARN_ON() in
-> > > kexec_purgatory_setup_sechdrs).
-> >
-> > You have been "lucky" that the code has chosen the correct start
-> > address, you need to modify the linker script of your kernel to
-> > disable PGO.
-> > You need to backport a patch like this:
-> > https://lore.kernel.org/lkml/CAPhsuW5_qAvV0N3o+hOiAnb1=3DbuJ1pLzqYW9D+B=
-wft6hxJvAeQ@mail.gmail.com/T/#md68b7f832216b0c56bbec0c9b07332e180b9ba2b
+> > Now those 2 fds are indistinguishable from userspace. You can't exec()
+> > to either of them (since the reopen incremented inode->i_writecount)
+> > and their /proc/self/fdinfo/ are exactly the same. Unfortunately they
+> > are not the same. If you close the second one, the first one becomes
+> > exec()able again. If you close the first one, the other doesn't become
+> > exec()able. Therefore during migration it does matter which is recreate=
+d
+> > first and which is reopened but there is no way for CRIU to tell which
+> > was first.
 >
-> We already have this commit in our branch. AFAICT, the issue was
-> triggered by LTO. So something like the following seems fixes it
-> (I haven't finished the end-to-end test yet). Does this change make
-> sense to you?
-
-if the end-to-end works, please send it as a patch to the mailing list.
-
-Thanks! :)
-
+> So please bear with me...I'll confess that I don't fully understand the
+> situation here, so this is probably a dumb question.
 >
-> Thanks again,
-> Song
->
-> diff --git i/arch/x86/purgatory/Makefile w/arch/x86/purgatory/Makefile
-> index 8f71aaa04cc2..dc306fa7197d 100644
-> --- i/arch/x86/purgatory/Makefile
-> +++ w/arch/x86/purgatory/Makefile
-> @@ -19,6 +19,10 @@ CFLAGS_sha256.o :=3D -D__DISABLE_EXPORTS
->  # optimization flags.
->  KBUILD_CFLAGS :=3D $(filter-out -fprofile-sample-use=3D%
-> -fprofile-use=3D%,$(KBUILD_CFLAGS))
->
-> +# When LTO is enabled, llvm emits many text sections, which is not suppo=
-rted
-> +# by kexec. Remove -flto=3D* flags.
-> +KBUILD_CFLAGS :=3D $(filter-out -flto=3D%,$(KBUILD_CFLAGS))
-> +
->  # When linking purgatory.ro with -r unresolved symbols are not checked,
->  # also link a purgatory.chk binary without -r to check for unresolved sy=
-mbols.
->  PURGATORY_LDFLAGS :=3D -e purgatory_start -z nodefaultlib
+> It seems like you are adding this "original open" test as a way of
+> working around a quirk with the behavior of subsequent opens.  I don't
+> *think* that this is part of the intended, documented behavior of
+> memfds, it's just something that happens.  You're exposing an artifact
+> of the current implementation.
 
+I don't know if the exec()ability of the original memfd was intended,
+let alone the non-exec()ability of subsequent opens. But otherwise
+yes.
 
+> Given that the two file descriptors are otherwise indistinguishable,
+> might a better fix be to make them indistinguishable in this regard as
+> well?  Is there a good reason why the second fd doesn't become
+> exec()able in this scenario and, if not, perhaps that behavior could be
+> changed instead?
 
---=20
-Ricardo Ribalda
+It probably could be changed, yes. But I'm worried that would be
+broadening the bug that is the exec()ability of memfds. AFAIK no other
+fd that is opened as writable can be exec()ed. If maintainers would
+prefer this, I could do this.
