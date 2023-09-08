@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1069798D4E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E03798D56
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344085AbjIHSVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
+        id S236665AbjIHSVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:21:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231776AbjIHSTw (ORCPT
+        with ESMTP id S1344088AbjIHST4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:19:52 -0400
+        Fri, 8 Sep 2023 14:19:56 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397FE2D4E;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49E52D4F;
         Fri,  8 Sep 2023 11:18:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9463CC4AF5D;
-        Fri,  8 Sep 2023 18:17:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16CFCC116A6;
+        Fri,  8 Sep 2023 18:17:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197045;
-        bh=jxtuWk36/Oy9U6E01iyi7IVtYw+wmTtUlDynGmcDPe4=;
+        s=k20201202; t=1694197047;
+        bh=kPzyhGpLgYOWktsL2OvjuWdZRDytUuhx+35KEFmIYus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ojz0sHD8pZBVQH89eIKc16TSJEQGRaJWqsmqQ6XTAXO+EwCIwnzdQ4g1to4qYQFw3
-         B+GHIuXmCENO08ZTodPvdFTyciKGMgC6ne0IXxKCVOD2fGU09cw5uuz7nFrlnGO+Yl
-         POaYgIzpzBdVOZUlIxB1Y714uui+wCqnfrPAqv1lTbE/omzpyisFOwbTqbVmue3Yf4
-         RqPceY8vUXmqo4CNFIMaaCmY3hH1qJKlymMWQllwiMa+7+JJfC6+9cFf0vwFiUXiBM
-         i5QPVGFI9IyiHbcmKz7dvDmY4O9GNibLHX9PrvNQDgUQJz+IQB18rD6xcbsLg9nhBm
-         1+GGtOMlH9Ytg==
+        b=q50RXMX/3CNt/mCrvswG/RKmtYFLhhrSOb163E7LjbGz02Eqj29u9fzoopT8UN63L
+         n5M7RnWBcnL53kD9BqS0tSd+83mCPuBIEPU5eEYDFcpo6Npd3wkVvoDxsxOUOb/h6y
+         S7UmBukIRNGWOSumcyI+5LrSI11LBZ4uLOADj7GQrMg2yoiPUo6vHDeIdVgRC5cKvZ
+         FtsAGKsUr4PtjreUa8A+H+BKPcFHzyrHwW89godobMvSDFVvY0kAggvfCspysxx8q/
+         NSB1X6n1oAlq8D6P+fAbhIQJ0DLGB4JwHlqcCIHEDQjLzuLEmVmS8Kw+KN0M6ViHkA
+         mgUb1UlumEoLQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hao Luo <haoluo@google.com>, Andrii Nakryiko <andrii@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
-        daniel@iogearbox.net, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 35/41] libbpf: Free btf_vmlinux when closing bpf_object
-Date:   Fri,  8 Sep 2023 14:15:49 -0400
-Message-Id: <20230908181555.3459640-35-sashal@kernel.org>
+Cc:     Rajat Soni <quic_rajson@quicinc.com>,
+        Kalle Valo <quic_kvalo@quicinc.com>,
+        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
+        quic_jjohnson@quicinc.com, ath12k@lists.infradead.org,
+        linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 36/41] wifi: ath12k: Fix memory leak in rx_desc and tx_desc
+Date:   Fri,  8 Sep 2023 14:15:50 -0400
+Message-Id: <20230908181555.3459640-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181555.3459640-1-sashal@kernel.org>
 References: <20230908181555.3459640-1-sashal@kernel.org>
@@ -52,39 +54,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hao Luo <haoluo@google.com>
+From: Rajat Soni <quic_rajson@quicinc.com>
 
-[ Upstream commit 29d67fdebc42af6466d1909c60fdd1ef4f3e5240 ]
+[ Upstream commit afb522b36e76acaa9f8fc06d0a9742d841c47c16 ]
 
-I hit a memory leak when testing bpf_program__set_attach_target().
-Basically, set_attach_target() may allocate btf_vmlinux, for example,
-when setting attach target for bpf_iter programs. But btf_vmlinux
-is freed only in bpf_object_load(), which means if we only open
-bpf object but not load it, setting attach target may leak
-btf_vmlinux.
+Currently when ath12k_dp_cc_desc_init() is called we allocate
+memory to rx_descs and tx_descs. In ath12k_dp_cc_cleanup(), during
+descriptor cleanup rx_descs and tx_descs memory is not freed.
 
-So let's free btf_vmlinux in bpf_object__close() anyway.
+This is cause of memory leak. These allocated memory should be
+freed in ath12k_dp_cc_cleanup.
 
-Signed-off-by: Hao Luo <haoluo@google.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20230822193840.1509809-1-haoluo@google.com
+In ath12k_dp_cc_desc_init(), we can save base address of rx_descs
+and tx_descs. In ath12k_dp_cc_cleanup(), we can free rx_descs and
+tx_descs memory using their base address.
+
+Tested-on: QCN9274 hw2.0 PCI WLAN.WBE.1.0.1-00029-QCAHKSWPL_SILICONZ-1
+
+Signed-off-by: Rajat Soni <quic_rajson@quicinc.com>
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Link: https://lore.kernel.org/r/20230718053510.30894-1-quic_rajson@quicinc.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/ath/ath12k/dp.c | 30 +++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath12k/dp.h |  2 ++
+ 2 files changed, 31 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index a27f6e9ccce75..29b9f223e0f93 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8328,6 +8328,7 @@ void bpf_object__close(struct bpf_object *obj)
- 	bpf_object__elf_finish(obj);
- 	bpf_object_unload(obj);
- 	btf__free(obj->btf);
-+	btf__free(obj->btf_vmlinux);
- 	btf_ext__free(obj->btf_ext);
+diff --git a/drivers/net/wireless/ath/ath12k/dp.c b/drivers/net/wireless/ath/ath12k/dp.c
+index ae1645d0f42a2..f933896f2a68d 100644
+--- a/drivers/net/wireless/ath/ath12k/dp.c
++++ b/drivers/net/wireless/ath/ath12k/dp.c
+@@ -1129,6 +1129,7 @@ static void ath12k_dp_cc_cleanup(struct ath12k_base *ab)
+ 	struct ath12k_dp *dp = &ab->dp;
+ 	struct sk_buff *skb;
+ 	int i;
++	u32 pool_id, tx_spt_page;
  
- 	for (i = 0; i < obj->nr_maps; i++)
+ 	if (!dp->spt_info)
+ 		return;
+@@ -1148,6 +1149,14 @@ static void ath12k_dp_cc_cleanup(struct ath12k_base *ab)
+ 		dev_kfree_skb_any(skb);
+ 	}
+ 
++	for (i = 0; i < ATH12K_NUM_RX_SPT_PAGES; i++) {
++		if (!dp->spt_info->rxbaddr[i])
++			continue;
++
++		kfree(dp->spt_info->rxbaddr[i]);
++		dp->spt_info->rxbaddr[i] = NULL;
++	}
++
+ 	spin_unlock_bh(&dp->rx_desc_lock);
+ 
+ 	/* TX Descriptor cleanup */
+@@ -1170,6 +1179,21 @@ static void ath12k_dp_cc_cleanup(struct ath12k_base *ab)
+ 		spin_unlock_bh(&dp->tx_desc_lock[i]);
+ 	}
+ 
++	for (pool_id = 0; pool_id < ATH12K_HW_MAX_QUEUES; pool_id++) {
++		spin_lock_bh(&dp->tx_desc_lock[pool_id]);
++
++		for (i = 0; i < ATH12K_TX_SPT_PAGES_PER_POOL; i++) {
++			tx_spt_page = i + pool_id * ATH12K_TX_SPT_PAGES_PER_POOL;
++			if (!dp->spt_info->txbaddr[tx_spt_page])
++				continue;
++
++			kfree(dp->spt_info->txbaddr[tx_spt_page]);
++			dp->spt_info->txbaddr[tx_spt_page] = NULL;
++		}
++
++		spin_unlock_bh(&dp->tx_desc_lock[pool_id]);
++	}
++
+ 	/* unmap SPT pages */
+ 	for (i = 0; i < dp->num_spt_pages; i++) {
+ 		if (!dp->spt_info[i].vaddr)
+@@ -1343,6 +1367,8 @@ static int ath12k_dp_cc_desc_init(struct ath12k_base *ab)
+ 			return -ENOMEM;
+ 		}
+ 
++		dp->spt_info->rxbaddr[i] = &rx_descs[0];
++
+ 		for (j = 0; j < ATH12K_MAX_SPT_ENTRIES; j++) {
+ 			rx_descs[j].cookie = ath12k_dp_cc_cookie_gen(i, j);
+ 			rx_descs[j].magic = ATH12K_DP_RX_DESC_MAGIC;
+@@ -1368,8 +1394,10 @@ static int ath12k_dp_cc_desc_init(struct ath12k_base *ab)
+ 				return -ENOMEM;
+ 			}
+ 
++			tx_spt_page = i + pool_id * ATH12K_TX_SPT_PAGES_PER_POOL;
++			dp->spt_info->txbaddr[tx_spt_page] = &tx_descs[0];
++
+ 			for (j = 0; j < ATH12K_MAX_SPT_ENTRIES; j++) {
+-				tx_spt_page = i + pool_id * ATH12K_TX_SPT_PAGES_PER_POOL;
+ 				ppt_idx = ATH12K_NUM_RX_SPT_PAGES + tx_spt_page;
+ 				tx_descs[j].desc_id = ath12k_dp_cc_cookie_gen(ppt_idx, j);
+ 				tx_descs[j].pool_id = pool_id;
+diff --git a/drivers/net/wireless/ath/ath12k/dp.h b/drivers/net/wireless/ath/ath12k/dp.h
+index 7c5dafce5a68d..9aeda0321cd75 100644
+--- a/drivers/net/wireless/ath/ath12k/dp.h
++++ b/drivers/net/wireless/ath/ath12k/dp.h
+@@ -289,6 +289,8 @@ struct ath12k_tx_desc_info {
+ struct ath12k_spt_info {
+ 	dma_addr_t paddr;
+ 	u64 *vaddr;
++	struct ath12k_rx_desc_info *rxbaddr[ATH12K_NUM_RX_SPT_PAGES];
++	struct ath12k_tx_desc_info *txbaddr[ATH12K_NUM_TX_SPT_PAGES];
+ };
+ 
+ struct ath12k_reo_queue_ref {
 -- 
 2.40.1
 
