@@ -2,40 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0433798C70
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B231C798C74
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343598AbjIHSQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
+        id S1343628AbjIHSQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239233AbjIHSQM (ORCPT
+        with ESMTP id S1343590AbjIHSQP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:16:12 -0400
+        Fri, 8 Sep 2023 14:16:15 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B900213C;
-        Fri,  8 Sep 2023 11:15:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9516C433CD;
-        Fri,  8 Sep 2023 18:02:29 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B3E2102;
+        Fri,  8 Sep 2023 11:15:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 955A2C433D9;
+        Fri,  8 Sep 2023 18:02:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196151;
-        bh=gQMKkAYYGNXHSznEzHSr3HQMUtBMAr8Z2rFt0CmMq1Y=;
+        s=k20201202; t=1694196153;
+        bh=+yIye7JzDwrKLqLolNpGU0vRcq5V9EywPX5jFKl87jE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KbDNvS+rTtBBs3PEA2z0KCoWw5WeVl10cdF6s7ou19z8I41JE3zECU7cCyTIgkN2F
-         qDJ+nNdNoGYJHquIgRWDLTC5N4rVvc3zPYrVeBcgGQh7im2hw1Q4gJlprQTl068GD5
-         eVweU4HsjEuWeu/cLyGvd6r403UCnwh7jhtvJL8vsvm4Ewq7SsxueMY2Zs+tpfFS9D
-         uHe6G78NQJ83o1beWKD2Q6IBMXj0kuAk0ue/iyJy6+dk1OV1outmcRbnbQUroSJ4V2
-         S9AQJOOq5eNgks/bvikVSS8tsK5WXn0EAPBK4xnejNAHepUW47XoxKDBNhLz2uaEhx
-         qot7PKrURQdHg==
+        b=PijsPi/c+Y8QaudVnr1IF8leB/bb73d0hZlHOXReokWHG4MjxfuinBQ7KGa61jyJx
+         2iveiJA4qnYqN1hfua0n8hfmX06Gq5P3uoJqEM8P3j6HA4HhY7RaunHEWBNYs8/fcM
+         WareVlHCpfY3rDuAxu4jP5gcBLTtWoPKnvu+iLM1HMtIkDmPU1UmvoXMj8jCl52brT
+         JyHFw+x9DaiGH+82BX1yjkC9DERq8y8U6eRbtkbs3FgKHEq1b0G4ySoCjbBXjl3P6F
+         Mpnpj0oLN9d5InH3Pw/6kigJ3SqHVSQqNu/s7CyFRkgLuF6AOELmlbapQF5D9zpCii
+         Pcvfhrpr12+/A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xu Yang <xu.yang_2@nxp.com>, Frank Li <Frank.Li@nxp.com>,
+Cc:     Tomislav Novak <tnovak@meta.com>,
+        Samuel Gosselin <sgosselin@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        Frank.li@nxp.com, mark.rutland@arm.com, shawnguo@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.1 07/10] perf/imx_ddr: speed up overflow frequency of cycle
-Date:   Fri,  8 Sep 2023 14:01:59 -0400
-Message-Id: <20230908180203.3458330-7-sashal@kernel.org>
+        mark.rutland@arm.com, linux@armlinux.org.uk, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 08/10] hw_breakpoint: fix single-stepping when using bpf_overflow_handler
+Date:   Fri,  8 Sep 2023 14:02:00 -0400
+Message-Id: <20230908180203.3458330-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908180203.3458330-1-sashal@kernel.org>
 References: <20230908180203.3458330-1-sashal@kernel.org>
@@ -53,87 +58,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xu Yang <xu.yang_2@nxp.com>
+From: Tomislav Novak <tnovak@meta.com>
 
-[ Upstream commit e89ecd8368860bf05437eabd07d292c316221cfc ]
+[ Upstream commit d11a69873d9a7435fe6a48531e165ab80a8b1221 ]
 
-For i.MX8MP, we cannot ensure that cycle counter overflow occurs at least
-4 times as often as other events. Due to byte counters will count for any
-event configured, it will overflow more often. And if byte counters
-overflow that related counters would stop since they share the
-COUNTER_CNTL. We can speed up cycle counter overflow frequency by setting
-counter parameter (CP) field of cycle counter. In this way, we can avoid
-stop counting byte counters when interrupt didn't come and the byte
-counters can be fetched or updated from each cycle counter overflow
-interrupt.
+Arm platforms use is_default_overflow_handler() to determine if the
+hw_breakpoint code should single-step over the breakpoint trigger or
+let the custom handler deal with it.
 
-Because we initialize CP filed to shorten counter0 overflow time, the cycle
-counter will start couting from a fixed/base value each time. We need to
-remove the base from the result too. Therefore, we could get precise result
-from cycle counter.
+Since bpf_overflow_handler() currently isn't recognized as a default
+handler, attaching a BPF program to a PERF_TYPE_BREAKPOINT event causes
+it to keep firing (the instruction triggering the data abort exception
+is never skipped). For example:
 
-Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
-Reviewed-by: Frank Li <Frank.Li@nxp.com>
-Link: https://lore.kernel.org/r/20230811015438.1999307-1-xu.yang_2@nxp.com
+  # bpftrace -e 'watchpoint:0x10000:4:w { print("hit") }' -c ./test
+  Attaching 1 probe...
+  hit
+  hit
+  [...]
+  ^C
+
+(./test performs a single 4-byte store to 0x10000)
+
+This patch replaces the check with uses_default_overflow_handler(),
+which accounts for the bpf_overflow_handler() case by also testing
+if one of the perf_event_output functions gets invoked indirectly,
+via orig_default_handler.
+
+Signed-off-by: Tomislav Novak <tnovak@meta.com>
+Tested-by: Samuel Gosselin <sgosselin@google.com> # arm64
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/linux-arm-kernel/20220923203644.2731604-1-tnovak@fb.com/
+Link: https://lore.kernel.org/r/20230605191923.1219974-1-tnovak@meta.com
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/perf/fsl_imx8_ddr_perf.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ arch/arm/kernel/hw_breakpoint.c   |  8 ++++----
+ arch/arm64/kernel/hw_breakpoint.c |  4 ++--
+ include/linux/perf_event.h        | 22 +++++++++++++++++++---
+ 3 files changed, 25 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/perf/fsl_imx8_ddr_perf.c b/drivers/perf/fsl_imx8_ddr_perf.c
-index 8e058e08fe810..6be97d0eebfa0 100644
---- a/drivers/perf/fsl_imx8_ddr_perf.c
-+++ b/drivers/perf/fsl_imx8_ddr_perf.c
-@@ -28,6 +28,8 @@
- #define CNTL_CLEAR_MASK		0xFFFFFFFD
- #define CNTL_OVER_MASK		0xFFFFFFFE
+diff --git a/arch/arm/kernel/hw_breakpoint.c b/arch/arm/kernel/hw_breakpoint.c
+index 054e9199f30db..dc0fb7a813715 100644
+--- a/arch/arm/kernel/hw_breakpoint.c
++++ b/arch/arm/kernel/hw_breakpoint.c
+@@ -626,7 +626,7 @@ int hw_breakpoint_arch_parse(struct perf_event *bp,
+ 	hw->address &= ~alignment_mask;
+ 	hw->ctrl.len <<= offset;
  
-+#define CNTL_CP_SHIFT		16
-+#define CNTL_CP_MASK		(0xFF << CNTL_CP_SHIFT)
- #define CNTL_CSV_SHIFT		24
- #define CNTL_CSV_MASK		(0xFFU << CNTL_CSV_SHIFT)
+-	if (is_default_overflow_handler(bp)) {
++	if (uses_default_overflow_handler(bp)) {
+ 		/*
+ 		 * Mismatch breakpoints are required for single-stepping
+ 		 * breakpoints.
+@@ -798,7 +798,7 @@ static void watchpoint_handler(unsigned long addr, unsigned int fsr,
+ 		 * Otherwise, insert a temporary mismatch breakpoint so that
+ 		 * we can single-step over the watchpoint trigger.
+ 		 */
+-		if (!is_default_overflow_handler(wp))
++		if (!uses_default_overflow_handler(wp))
+ 			continue;
+ step:
+ 		enable_single_step(wp, instruction_pointer(regs));
+@@ -811,7 +811,7 @@ static void watchpoint_handler(unsigned long addr, unsigned int fsr,
+ 		info->trigger = addr;
+ 		pr_debug("watchpoint fired: address = 0x%x\n", info->trigger);
+ 		perf_bp_event(wp, regs);
+-		if (is_default_overflow_handler(wp))
++		if (uses_default_overflow_handler(wp))
+ 			enable_single_step(wp, instruction_pointer(regs));
+ 	}
  
-@@ -35,6 +37,8 @@
- #define EVENT_CYCLES_COUNTER	0
- #define NUM_COUNTERS		4
+@@ -886,7 +886,7 @@ static void breakpoint_handler(unsigned long unknown, struct pt_regs *regs)
+ 			info->trigger = addr;
+ 			pr_debug("breakpoint fired: address = 0x%x\n", addr);
+ 			perf_bp_event(bp, regs);
+-			if (is_default_overflow_handler(bp))
++			if (uses_default_overflow_handler(bp))
+ 				enable_single_step(bp, addr);
+ 			goto unlock;
+ 		}
+diff --git a/arch/arm64/kernel/hw_breakpoint.c b/arch/arm64/kernel/hw_breakpoint.c
+index b29a311bb0552..9659a9555c63a 100644
+--- a/arch/arm64/kernel/hw_breakpoint.c
++++ b/arch/arm64/kernel/hw_breakpoint.c
+@@ -654,7 +654,7 @@ static int breakpoint_handler(unsigned long unused, unsigned long esr,
+ 		perf_bp_event(bp, regs);
  
-+/* For removing bias if cycle counter CNTL.CP is set to 0xf0 */
-+#define CYCLES_COUNTER_MASK	0x0FFFFFFF
- #define AXI_MASKING_REVERT	0xffff0000	/* AXI_MASKING(MSB 16bits) + AXI_ID(LSB 16bits) */
+ 		/* Do we need to handle the stepping? */
+-		if (is_default_overflow_handler(bp))
++		if (uses_default_overflow_handler(bp))
+ 			step = 1;
+ unlock:
+ 		rcu_read_unlock();
+@@ -733,7 +733,7 @@ static u64 get_distance_from_watchpoint(unsigned long addr, u64 val,
+ static int watchpoint_report(struct perf_event *wp, unsigned long addr,
+ 			     struct pt_regs *regs)
+ {
+-	int step = is_default_overflow_handler(wp);
++	int step = uses_default_overflow_handler(wp);
+ 	struct arch_hw_breakpoint *info = counter_arch_bp(wp);
  
- #define to_ddr_pmu(p)		container_of(p, struct ddr_pmu, pmu)
-@@ -428,6 +432,17 @@ static void ddr_perf_counter_enable(struct ddr_pmu *pmu, int config,
- 		writel(0, pmu->base + reg);
- 		val = CNTL_EN | CNTL_CLEAR;
- 		val |= FIELD_PREP(CNTL_CSV_MASK, config);
+ 	info->trigger = addr;
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 0031f7b4d9aba..63fae3c7ae430 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -1139,15 +1139,31 @@ extern int perf_event_output(struct perf_event *event,
+ 			     struct pt_regs *regs);
+ 
+ static inline bool
+-is_default_overflow_handler(struct perf_event *event)
++__is_default_overflow_handler(perf_overflow_handler_t overflow_handler)
+ {
+-	if (likely(event->overflow_handler == perf_event_output_forward))
++	if (likely(overflow_handler == perf_event_output_forward))
+ 		return true;
+-	if (unlikely(event->overflow_handler == perf_event_output_backward))
++	if (unlikely(overflow_handler == perf_event_output_backward))
+ 		return true;
+ 	return false;
+ }
+ 
++#define is_default_overflow_handler(event) \
++	__is_default_overflow_handler((event)->overflow_handler)
 +
-+		/*
-+		 * On i.MX8MP we need to bias the cycle counter to overflow more often.
-+		 * We do this by initializing bits [23:16] of the counter value via the
-+		 * COUNTER_CTRL Counter Parameter (CP) field.
-+		 */
-+		if (pmu->devtype_data->quirks & DDR_CAP_AXI_ID_FILTER_ENHANCED) {
-+			if (counter == EVENT_CYCLES_COUNTER)
-+				val |= FIELD_PREP(CNTL_CP_MASK, 0xf0);
-+		}
++#ifdef CONFIG_BPF_SYSCALL
++static inline bool uses_default_overflow_handler(struct perf_event *event)
++{
++	if (likely(is_default_overflow_handler(event)))
++		return true;
 +
- 		writel(val, pmu->base + reg);
- 	} else {
- 		/* Disable counter */
-@@ -467,6 +482,12 @@ static void ddr_perf_event_update(struct perf_event *event)
- 	int ret;
- 
- 	new_raw_count = ddr_perf_read_counter(pmu, counter);
-+	/* Remove the bias applied in ddr_perf_counter_enable(). */
-+	if (pmu->devtype_data->quirks & DDR_CAP_AXI_ID_FILTER_ENHANCED) {
-+		if (counter == EVENT_CYCLES_COUNTER)
-+			new_raw_count &= CYCLES_COUNTER_MASK;
-+	}
++	return __is_default_overflow_handler(event->orig_overflow_handler);
++}
++#else
++#define uses_default_overflow_handler(event) \
++	is_default_overflow_handler(event)
++#endif
 +
- 	local64_add(new_raw_count, &event->count);
- 
- 	/*
+ extern void
+ perf_event_header__init_id(struct perf_event_header *header,
+ 			   struct perf_sample_data *data,
 -- 
 2.40.1
 
