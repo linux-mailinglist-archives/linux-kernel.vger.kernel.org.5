@@ -2,59 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0CC798A45
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10A1798A46
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244134AbjIHP6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 11:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52176 "EHLO
+        id S244531AbjIHP6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 11:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244128AbjIHP6t (ORCPT
+        with ESMTP id S244205AbjIHP6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 11:58:49 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 299861BF5
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 08:58:42 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D145C150C;
-        Fri,  8 Sep 2023 08:59:19 -0700 (PDT)
-Received: from [10.57.5.217] (unknown [10.57.5.217])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C2363F67D;
-        Fri,  8 Sep 2023 08:58:38 -0700 (PDT)
-Message-ID: <ecc96b20-db88-5a96-d99b-98d6d20030cb@arm.com>
-Date:   Fri, 8 Sep 2023 16:58:31 +0100
+        Fri, 8 Sep 2023 11:58:52 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C261B1FCA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 08:58:44 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68e26165676so2413782b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 08:58:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694188724; x=1694793524; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sVWvu8RoKeTjqF5A2JKxf1ztiSq4CSZLNWsOZzIBv6o=;
+        b=TDv4to6h1T699DjBue9k4HdwzR3yAt8RujXK+bn+RxpmIMgipQMKtAFN9zSkb0yjoA
+         XP7Wrb2vt9qvLG5Pj4pJkfFEEFaeXfoXAFXhvcLE/J6tJoa19j0jDT+SsYSfhZ31zM0r
+         x/d/tdDs4jNaL1u26tdK0gfpYalMda9TEpYvo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694188724; x=1694793524;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sVWvu8RoKeTjqF5A2JKxf1ztiSq4CSZLNWsOZzIBv6o=;
+        b=tob9uYattmO5OqtaUsglcyRga1UEUYNHdCZDMxoCTSnme+AIQ7q29zjpfQoWDbmZKi
+         LjsAfdg6Au7JhW5dKYadT2UvR0W4kcRmM9AB3AFIILvNsxKfX64wuFun3IxPvaULsDZV
+         FLRm433QolBzAgkJBNlim5ovWuPOX3G3TgbWUX2+gFBz766Rw1CHmdVMss0Js+vEVHTO
+         42Qw1WBedNKd/ea69J8uOx8PFAIFAUQxKTf0qH+aszdLWxMZPswZ8gfSA4nC6dxXIvWF
+         zEsW5DguxIbiP6TY5BXlLpr4bJBrVLtNTzvaF6sLkpkSPlKFhQIvEVOsHqutKKOr8enM
+         98LQ==
+X-Gm-Message-State: AOJu0YwSGxT6y8z1vjnmh1oAb/tKcwjKZzqLbCMpGd9thugAhe3d94v/
+        gClu13Vcd9qRHb+7dZoa0h5JwQ==
+X-Google-Smtp-Source: AGHT+IEeBILJPe405y2GBTm/QUKPyzLs1vv58mCNYqEGLGb92qtZCnyLwgrOcMTUwsOfQMQAElfm4g==
+X-Received: by 2002:a05:6a20:e111:b0:149:602e:9239 with SMTP id kr17-20020a056a20e11100b00149602e9239mr4069491pzb.21.1694188724224;
+        Fri, 08 Sep 2023 08:58:44 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id h4-20020aa786c4000000b0068bbd43a6e2sm1542461pfo.10.2023.09.08.08.58.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Sep 2023 08:58:43 -0700 (PDT)
+Date:   Fri, 8 Sep 2023 08:58:42 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Aaron Lu <aaron.lu@intel.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        ardb@google.com
+Subject: Re: kexec reboot failed due to commit 75d090fd167ac
+Message-ID: <202309080856.F066F92C98@keescook>
+References: <20230829114816.GA508985@ziqianlu-dell>
+ <ZO3hQ0rbr8QuUjVI@debian.me>
+ <20230829125134.GA509331@ziqianlu-dell>
+ <20230829125939.bcg2r6hwqf45npko@box.shutemov.name>
+ <20230829140451.GA509854@ziqianlu-dell>
+ <20230907131409.masxz42ik6u456qp@box.shutemov.name>
+ <20230908060230.GA283801@ziqianlu-dell>
+ <20230908123233.dpbpohgrbyyxekzk@box.shutemov.name>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v5 10/24] tick/nohz: Move tick_nohz_full_mask declaration
- outside the #ifdef
-Content-Language: en-US
-To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        carl@os.amperecomputing.com, lcherian@marvell.com,
-        bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
-        xingxin.hx@openanolis.org, baolin.wang@linux.alibaba.com,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
-        dfustini@baylibre.com
-References: <20230728164254.27562-1-james.morse@arm.com>
- <20230728164254.27562-11-james.morse@arm.com>
- <989616c3-ea4c-1c9b-b857-6d8bcb4843bd@intel.com>
- <fb244874-da8f-ac6f-511f-92861a340abe@arm.com>
- <c9706a35-4a61-df51-2c70-d4bab62f9eab@intel.com>
-From:   James Morse <james.morse@arm.com>
-In-Reply-To: <c9706a35-4a61-df51-2c70-d4bab62f9eab@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908123233.dpbpohgrbyyxekzk@box.shutemov.name>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,50 +79,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette,
-
-On 8/25/23 01:43, Reinette Chatre wrote:
-> On 8/24/2023 9:55 AM, James Morse wrote:
->> On 09/08/2023 23:34, Reinette Chatre wrote:
->>> On 7/28/2023 9:42 AM, James Morse wrote:
->>>> tick_nohz_full_mask lists the CPUs that are nohz_full. This is only
->>>> needed when CONFIG_NO_HZ_FULL is defined. tick_nohz_full_cpu() allows
->>>> a specific CPU to be tested against the mask, and evaluates to false
->>>> when CONFIG_NO_HZ_FULL is not defined.
->>>>
->>>> The resctrl code needs to pick a CPU to run some work on, a new helper
->>>> prefers housekeeping CPUs by examining the tick_nohz_full_mask. Hiding
->>>> the declaration behind #ifdef CONFIG_NO_HZ_FULL forces all the users to
->>>> be behind an ifdef too.
->>>>
->>>> Move the tick_nohz_full_mask declaration, this lets callers drop the
->>>> ifdef, and guard access to tick_nohz_full_mask with IS_ENABLED() or
->>>> something like tick_nohz_full_cpu().
->>>>
->>>> The definition does not need to be moved as any callers should be
->>>> removed at compile time unless CONFIG_NO_HZ_FULL is defined.
-
->>> This is outside of the resctrl area. What is the upstreaming
->>> plan for this patch?
->>
->> Once you're happy with the rest of it - we can give the other folk on CC a poke.
->> I'd assume changes to this file also go via tip. It would just need an ack from the
->> relevant person.
+On Fri, Sep 08, 2023 at 03:32:33PM +0300, Kirill A. Shutemov wrote:
+> On Fri, Sep 08, 2023 at 02:02:30PM +0800, Aaron Lu wrote:
+> > On Thu, Sep 07, 2023 at 04:14:09PM +0300, Kirill A. Shutemov wrote:
+> > > On Tue, Aug 29, 2023 at 10:04:51PM +0800, Aaron Lu wrote:
+> > > > > Could you show dmesg of the first kernel before kexec?
+> > > > 
+> > > > Attached.
+> > > > 
+> > > > BTW, kexec is invoked like this:
+> > > > kver=6.4.0-rc5-00009-g75d090fd167a
+> > > > kdir=$HOME/kernels/$kver
+> > > > sudo kexec -l $kdir/vmlinuz-$kver --initrd=$kdir/initramfs-$kver.img --append="root=UUID=4381321e-e01e-455a-9d46-5e8c4c5b2d02 ro net.ifnames=0 acpi_rsdp=0x728e8014 no_hash_pointers sched_verbose selinux=0"
+> > > 
+> > > I don't understand why it happens.
+> > > 
+> > > Could you check if this patch changes anything:
+> > > 
+> > > diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/misc.c
+> > > index 94b7abcf624b..172c476ff6f3 100644
+> > > --- a/arch/x86/boot/compressed/misc.c
+> > > +++ b/arch/x86/boot/compressed/misc.c
+> > > @@ -456,10 +456,12 @@ asmlinkage __visible void *extract_kernel(void *rmode, memptr heap,
+> > >  
+> > >  	debug_putstr("\nDecompressing Linux... ");
+> > >  
+> > > +#if 0
+> > >  	if (init_unaccepted_memory()) {
+> > >  		debug_putstr("Accepting memory... ");
+> > >  		accept_memory(__pa(output), __pa(output) + needed_size);
+> > >  	}
+> > > +#endif
+> > >  
+> > >  	__decompress(input_data, input_len, NULL, NULL, output, output_len,
+> > >  			NULL, error);
+> > > -- 
+> > 
+> > It solved the problem.
 > 
-> At the moment this change is buried within a pile of resctrl
-> changes so we need to make sure that folks are not surprised by this
-> thinking we are trying to sneak it in. Please note that
-> CC is currently missing Frederic Weisbecker.
+> Looks like increasing BOOT_INIT_PGT_SIZE fixes the issue. I don't yet
+> understand why and how unaccepted memory is involved. I will look more
+> into it.
+> 
+> Enabling CONFIG_RANDOMIZE_BASE also makes the issue go away.
 
-Oops, fixed.
+Is this perhaps just luck? I.e. does is break ever on, say, 1000 boot
+attempts? (i.e. maybe some position is bad and KASLR happens to usually
+avoid it?)
 
+> Kees, maybe you have a clue?
 
-> I wonder if it may help to change cover letter to be something like
-> "x86/resctrl and tick/nohz: Monitor ..." Just an idea.
+The only thing I can think of is that something isn't being counted
+correctly due to the size of code, and it just happens that this commit
+makes the code large enough to exceed some set of mappings?
 
-I think that would be excessive - the subject of the patch already matches what is normal for that file. I'll move the patch to the top of the series as that makes it clearer that there is no dependency on the rest of the series.
+> 
+> diff --git a/arch/x86/include/asm/boot.h b/arch/x86/include/asm/boot.h
+> index 9191280d9ea3..26ccce41d781 100644
+> --- a/arch/x86/include/asm/boot.h
+> +++ b/arch/x86/include/asm/boot.h
+> @@ -40,7 +40,7 @@
+>  #ifdef CONFIG_X86_64
+>  # define BOOT_STACK_SIZE	0x4000
+>  
+> -# define BOOT_INIT_PGT_SIZE	(6*4096)
+> +# define BOOT_INIT_PGT_SIZE	(7*4096)
 
+That's why this might be working, for example? How large is the boot
+image before/after the commit, etc?
 
-Thanks,
+>  # ifdef CONFIG_RANDOMIZE_BASE
+>  /*
+>   * Assuming all cross the 512GB boundary:
+> -- 
+>   Kiryl Shutsemau / Kirill A. Shutemov
 
-James
+-Kees
+
+-- 
+Kees Cook
