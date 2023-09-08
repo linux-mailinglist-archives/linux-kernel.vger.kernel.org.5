@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 725BA7990A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C132799089
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243536AbjIHT5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
+        id S243198AbjIHTsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233042AbjIHT5T (ORCPT
+        with ESMTP id S241047AbjIHTss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:57:19 -0400
+        Fri, 8 Sep 2023 15:48:48 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B94099C;
-        Fri,  8 Sep 2023 12:57:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68450C433B6;
-        Fri,  8 Sep 2023 19:33:35 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95440CC;
+        Fri,  8 Sep 2023 12:48:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56ED2C43397;
+        Fri,  8 Sep 2023 19:33:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201616;
-        bh=QPi7U8LFYJTn90nKMCS6rP5mjt7sQN4sOXteL2xyPXs=;
+        s=k20201202; t=1694201618;
+        bh=F4faGuWQnASEi0inkuVom0wfJnle1bp2YiQ8dPBGAVQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jtXT+dGo+ut9kLhkUhMMvNABAfhhNCSUWFekLKe2c3Z7hRVSWhUVXC9nzG4W5MafZ
-         pTSxhmrdd39zHFHqkuDEwnyIX4/OK/M5HVQ79wP5Td5EE1SrITtGv+y9c0hOLFz6f5
-         CbvFaLm5aESnV+9ZwZSKiJmUF0z8LyP0iKoje6wTyHp+tyosQskPDD8VtnY1QOO76A
-         eBo8M2i9eW8gSE5bk2BiT8LRrcKQ04ezFZEgNAaKtY00nIugApRDeOhJbudoygCbGa
-         BUZxFhka9CpQ9ez2LlQSpMHKHDEq+1UAjntybtXBwd/agfrk1tP+LhNC/2C6Hto6gQ
-         vi/4FZq8c3NzQ==
+        b=gUbUiZfcaLmGGb/W9PRzNdeVrCHVo5aTYKqQWfc846Xo6mjkApb/zG/zzraKpiUBB
+         PMyR1h1X0Hgio8nDV5+y4+T7MInLPNNeeITRgewzPd0NkBepY9ZZr0YBGnbKmsQkdZ
+         w8BZL4inubxGtpfgcS6d9lJjbyZPngciO+FXbgORY5p42oQdG0MokWZ3vo5b9jjqmM
+         a0TP1gUxwqcEkkUsJPqbRJ6gvmbRNu7oHzAx0yc+PVBcnoKDOh+znQ4fhledv8C5kS
+         5LW8VAy2XiaJ3GO4mdsBE89e+ij0JhRh5WsnTHw2Za/c0O/mZ93KOCkCiV2R1T0MDD
+         o33Rr43EPSUFg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tuo Li <islituo@gmail.com>, BassCheck <bass@buaa.edu.cn>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Inki Dae <inki.dae@samsung.com>,
-        Sasha Levin <sashal@kernel.org>, sw0312.kim@samsung.com,
-        kyungmin.park@samsung.com, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 21/31] drm/exynos: fix a possible null-pointer dereference due to data race in exynos_drm_crtc_atomic_disable()
-Date:   Fri,  8 Sep 2023 15:31:50 -0400
-Message-Id: <20230908193201.3462957-21-sashal@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, Breno Leitao <leitao@debian.org>,
+        Sasha Levin <sashal@kernel.org>, keescook@chromium.org,
+        nathan@kernel.org, ndesaulniers@google.com,
+        io-uring@vger.kernel.org, linux-hardening@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.4 22/31] io_uring: annotate the struct io_kiocb slab for appropriate user copy
+Date:   Fri,  8 Sep 2023 15:31:51 -0400
+Message-Id: <20230908193201.3462957-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908193201.3462957-1-sashal@kernel.org>
 References: <20230908193201.3462957-1-sashal@kernel.org>
@@ -57,58 +54,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tuo Li <islituo@gmail.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 2e63972a2de14482d0eae1a03a73e379f1c3f44c ]
+[ Upstream commit b97f96e22f051d59d07a527dbd7d90408b661ca8 ]
 
-The variable crtc->state->event is often protected by the lock
-crtc->dev->event_lock when is accessed. However, it is accessed as a
-condition of an if statement in exynos_drm_crtc_atomic_disable() without
-holding the lock:
+When compiling the kernel with clang and having HARDENED_USERCOPY
+enabled, the liburing openat2.t test case fails during request setup:
 
-  if (crtc->state->event && !crtc->state->active)
+usercopy: Kernel memory overwrite attempt detected to SLUB object 'io_kiocb' (offset 24, size 24)!
+------------[ cut here ]------------
+kernel BUG at mm/usercopy.c:102!
+invalid opcode: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC
+CPU: 3 PID: 413 Comm: openat2.t Tainted: G                 N 6.4.3-g6995e2de6891-dirty #19
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.1-0-g3208b098f51a-prebuilt.qemu.org 04/01/2014
+RIP: 0010:usercopy_abort+0x84/0x90
+Code: ce 49 89 ce 48 c7 c3 68 48 98 82 48 0f 44 de 48 c7 c7 56 c6 94 82 4c 89 de 48 89 c1 41 52 41 56 53 e8 e0 51 c5 00 48 83 c4 18 <0f> 0b 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 55 41 57 41 56
+RSP: 0018:ffffc900016b3da0 EFLAGS: 00010296
+RAX: 0000000000000062 RBX: ffffffff82984868 RCX: 4e9b661ac6275b00
+RDX: ffff8881b90ec580 RSI: ffffffff82949a64 RDI: 00000000ffffffff
+RBP: 0000000000000018 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffc900016b3c88 R11: ffffc900016b3c30 R12: 00007ffe549659e0
+R13: ffff888119014000 R14: 0000000000000018 R15: 0000000000000018
+FS:  00007f862e3ca680(0000) GS:ffff8881b90c0000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005571483542a8 CR3: 0000000118c11000 CR4: 00000000003506e0
+Call Trace:
+ <TASK>
+ ? __die_body+0x63/0xb0
+ ? die+0x9d/0xc0
+ ? do_trap+0xa7/0x180
+ ? usercopy_abort+0x84/0x90
+ ? do_error_trap+0xc6/0x110
+ ? usercopy_abort+0x84/0x90
+ ? handle_invalid_op+0x2c/0x40
+ ? usercopy_abort+0x84/0x90
+ ? exc_invalid_op+0x2f/0x40
+ ? asm_exc_invalid_op+0x16/0x20
+ ? usercopy_abort+0x84/0x90
+ __check_heap_object+0xe2/0x110
+ __check_object_size+0x142/0x3d0
+ io_openat2_prep+0x68/0x140
+ io_submit_sqes+0x28a/0x680
+ __se_sys_io_uring_enter+0x120/0x580
+ do_syscall_64+0x3d/0x80
+ entry_SYSCALL_64_after_hwframe+0x46/0xb0
+RIP: 0033:0x55714834de26
+Code: ca 01 0f b6 82 d0 00 00 00 8b ba cc 00 00 00 45 31 c0 31 d2 41 b9 08 00 00 00 83 e0 01 c1 e0 04 41 09 c2 b8 aa 01 00 00 0f 05 <c3> 66 0f 1f 84 00 00 00 00 00 89 30 eb 89 0f 1f 40 00 8b 00 a8 06
+RSP: 002b:00007ffe549659c8 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
+RAX: ffffffffffffffda RBX: 00007ffe54965a50 RCX: 000055714834de26
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000008
+R10: 0000000000000000 R11: 0000000000000246 R12: 000055714834f057
+R13: 00007ffe54965a50 R14: 0000000000000001 R15: 0000557148351dd8
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
 
-However, if crtc->state->event is changed to NULL by another thread right
-after the conditions of the if statement is checked to be true, a
-null-pointer dereference can occur in drm_crtc_send_vblank_event():
+when it tries to copy struct open_how from userspace into the per-command
+space in the io_kiocb. There's nothing wrong with the copy, but we're
+missing the appropriate annotations for allowing user copies to/from the
+io_kiocb slab.
 
-  e->pipe = pipe;
+Allow copies in the per-command area, which is from the 'file' pointer to
+when 'opcode' starts. We do have existing user copies there, but they are
+not all annotated like the one that openat2_prep() uses,
+copy_struct_from_user(). But in practice opcodes should be allowed to
+copy data into their per-command area in the io_kiocb.
 
-To fix this possible null-pointer dereference caused by data race, the
-spin lock coverage is extended to protect the if statement as well as the
-function call to drm_crtc_send_vblank_event().
-
-Reported-by: BassCheck <bass@buaa.edu.cn>
-Link: https://sites.google.com/view/basscheck/home
-Signed-off-by: Tuo Li <islituo@gmail.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Added relevant link.
-Signed-off-by: Inki Dae <inki.dae@samsung.com>
+Reported-by: Breno Leitao <leitao@debian.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/exynos/exynos_drm_crtc.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ io_uring/io_uring.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_crtc.c b/drivers/gpu/drm/exynos/exynos_drm_crtc.c
-index 4153f302de7c4..d19e796c20613 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_crtc.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_crtc.c
-@@ -39,13 +39,12 @@ static void exynos_drm_crtc_atomic_disable(struct drm_crtc *crtc,
- 	if (exynos_crtc->ops->atomic_disable)
- 		exynos_crtc->ops->atomic_disable(exynos_crtc);
+diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
+index a57bdf336ca8a..f1bda21fe934a 100644
+--- a/io_uring/io_uring.c
++++ b/io_uring/io_uring.c
+@@ -4591,8 +4591,20 @@ static int __init io_uring_init(void)
  
-+	spin_lock_irq(&crtc->dev->event_lock);
- 	if (crtc->state->event && !crtc->state->active) {
--		spin_lock_irq(&crtc->dev->event_lock);
- 		drm_crtc_send_vblank_event(crtc, crtc->state->event);
--		spin_unlock_irq(&crtc->dev->event_lock);
--
- 		crtc->state->event = NULL;
- 	}
-+	spin_unlock_irq(&crtc->dev->event_lock);
- }
+ 	io_uring_optable_init();
  
- static int exynos_crtc_atomic_check(struct drm_crtc *crtc,
+-	req_cachep = KMEM_CACHE(io_kiocb, SLAB_HWCACHE_ALIGN | SLAB_PANIC |
+-				SLAB_ACCOUNT | SLAB_TYPESAFE_BY_RCU);
++	/*
++	 * Allow user copy in the per-command field, which starts after the
++	 * file in io_kiocb and until the opcode field. The openat2 handling
++	 * requires copying in user memory into the io_kiocb object in that
++	 * range, and HARDENED_USERCOPY will complain if we haven't
++	 * correctly annotated this range.
++	 */
++	req_cachep = kmem_cache_create_usercopy("io_kiocb",
++				sizeof(struct io_kiocb), 0,
++				SLAB_HWCACHE_ALIGN | SLAB_PANIC |
++				SLAB_ACCOUNT | SLAB_TYPESAFE_BY_RCU,
++				offsetof(struct io_kiocb, cmd.data),
++				sizeof_field(struct io_kiocb, cmd.data), NULL);
++
+ 	return 0;
+ };
+ __initcall(io_uring_init);
 -- 
 2.40.1
 
