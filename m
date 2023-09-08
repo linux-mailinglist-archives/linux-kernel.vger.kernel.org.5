@@ -2,177 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD6279926A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 00:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A431799275
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 00:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343817AbjIHWtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 18:49:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37474 "EHLO
+        id S235067AbjIHWvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 18:51:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344249AbjIHWtK (ORCPT
+        with ESMTP id S243165AbjIHWu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 18:49:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5091FFA;
-        Fri,  8 Sep 2023 15:49:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C72AC433C7;
-        Fri,  8 Sep 2023 22:49:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694213340;
-        bh=btnIsvilFbOoH30ASsTBGjOV/60yoK1+Mby6aAehNGY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=bbiA1FQluRk2v7MTczGdx3LpMVqsUilc6G/cEpDWaIRu0NQ4PUsOiqu3YFFc8jI9v
-         1R7mBWxaTKNEz3/Nt0YKb8vTbDJk4sC+kRhHX8LdOVrQKQeWRsB5ZxjqTepLpljZt6
-         lzfobxxdL0SN2KQS7ygY4tIRPjxXIhahZaY5COA/douDQoWN0KqbL9JxSqPo337jjr
-         pYbRnQeb/dYdzwmea8EpcgwXCuhfyRtBvf+xDJLu4qwditnI/AhXSqawr0Y6bOj4fU
-         QUKHVTOsO0N8obwByx3jvmOvQXO0cfy0p5AHOdewbpztHHAPf/pAChlOiBuptgtfAl
-         V2r6Fh/GXzcGw==
-Date:   Fri, 8 Sep 2023 17:48:58 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     bhelgaas@google.com, pali@kernel.org,
-        ilpo.jarvinen@linux.intel.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V2] pci: introduce static_nr to indicate domain_nr from
- which IDA
-Message-ID: <20230908224858.GA306960@bhelgaas>
+        Fri, 8 Sep 2023 18:50:58 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075C71FED;
+        Fri,  8 Sep 2023 15:50:55 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 388K0e4L016695;
+        Fri, 8 Sep 2023 22:50:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : subject :
+ date : message-id : mime-version : content-type :
+ content-transfer-encoding : to : cc; s=qcppdkim1;
+ bh=F3k7KeTvDFRHY2FyLaq52d7ups1kR425uouE6mppmeU=;
+ b=jjUfAeVkAtSZlNvvbQuGfrFOksmvF/p6eWwRdR1hh7bFoLMtbggRYSlU8ZrxeF6UoEdN
+ Iq7t4p+WZ7/VgMOXv5LUSvXwq2vbfbacPRvZuj6FzSqQ0ts/scaONQeCog1YTwzGtJJj
+ 0504JCrDSGclIuJaQdKAtWWLNGq9at972EFEYTpAoDhFWluy0Z+dY4yQZNhXDR4pQur0
+ yFQ7XzxkW9GGaxRK7LQY9s7xV11AMZOsRTf6QRCuihAJdjWVLHSHsXSEEcvfi+OI/2ho
+ 8bKqtUUfFMMsZCtp84GVIJmQ6xXAemvORCsAowIbjfB17G3DiwE/dtJ2jozStuHgUPuP 4Q== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3syu012ek5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Sep 2023 22:50:42 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 388MofIT010603
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 8 Sep 2023 22:50:42 GMT
+Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Fri, 8 Sep 2023 15:50:38 -0700
+From:   Elliot Berman <quic_eberman@quicinc.com>
+Subject: [PATCH v4 0/2] Avoid spurious freezer wakeups
+Date:   Fri, 8 Sep 2023 15:49:14 -0700
+Message-ID: <20230908-avoid-spurious-freezer-wakeups-v4-0-6155aa3dafae@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230815013744.45652-1-peng.fan@oss.nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOqk+2QC/4XOy07EIBgF4FeZsBbDpRbqyvcws+DyY/84QoUBL
+ 5O+u3RiosZFl+csvnMupEBGKOT+cCEZGhZMsYfh5kDcbOITUPQ9E8GEZJoralpCT8tSM6ZaaMg
+ An5Dpm3mGuhQ6BT3yadTMSkM6Yk0BarOJbu5MrKdTL5cMAd+vq4/Hnmcs55Q/rica39rvPaH39
+ hqnnGoL2gU18kGJh9eKDqO7demFbHgTv0DJdkGxgVopMdw5b737D8ofcGL7D2UH/TBpwYM3bPB
+ /wXVdvwDIFuUyhQEAAA==
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>
+CC:     Thomas Gleixner <tglx@linutronix.de>, <kernel@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        "Prakash Viswalingam" <quic_prakashv@quicinc.com>
+X-Mailer: b4 0.13-dev
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: kV7UEk9X3XJ8DieBq9vYArLkT9TCIxrM
+X-Proofpoint-GUID: kV7UEk9X3XJ8DieBq9vYArLkT9TCIxrM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-08_18,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=1 mlxscore=0 suspectscore=0 adultscore=0 bulkscore=1
+ phishscore=0 impostorscore=0 clxscore=1011 spamscore=0 malwarescore=0
+ mlxlogscore=912 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309080209
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In subject, run "git log --oneline drivers/pci/pci.c" and match the
-capitalization style.
+After commit f5d39b020809 ("freezer,sched: Rewrite core freezer logic"),
+tasks that transition directly from TASK_FREEZABLE to TASK_FROZEN  are
+always woken up on the thaw path. Prior to that commit, tasks could ask
+freezer to consider them "frozen enough" via freezer_do_not_count(). The
+commit replaced freezer_do_not_count() with a TASK_FREEZABLE state which
+allows freezer to immediately mark the task as TASK_FROZEN without
+waking up the task.  This is efficient for the suspend path, but on the
+thaw path, the task is always woken up even if the task didn't need to
+wake up and goes back to its TASK_(UN)INTERRUPTIBLE state. Although
+these tasks are capable of handling of the wakeup, we can observe a
+power/perf impact from the extra wakeup.
 
-On Tue, Aug 15, 2023 at 09:37:44AM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> When PCI node was created using an overlay and the overlay is
-> reverted/destroyed, the "linux,pci-domain" property no longer
-> exists, so of_get_pci_domain_nr will return failure. Then
-> of_pci_bus_release_domain_nr will actually use the dynamic IDA,
-> even if the IDA was allocated in static IDA.
+We observed on Android many tasks wait in the TASK_FREEZABLE state
+(particularly due to many of them being binder clients). We observed
+nearly 4x the number of tasks and a corresponding linear increase in
+latency and power consumption when thawing the system. The latency
+increased from ~15ms to ~50ms.
 
-Is there any user-visible effect of this issue?  For example, is there
-any hint in the dmesg log?  If so, we should include that hint here.
+Avoid the spurious wakeups by saving the state of TASK_FREEZABLE tasks.
+If the task was running before entering TASK_FROZEN state
+(__refrigerator()) or if the task received a wake up for the saved
+state, then the task is woken on thaw. saved_state from PREEMPT_RT locks
+can be re-used because freezer would not stomp on the rtlock wait flow:
+TASK_RTLOCK_WAIT isn't considered freezable.
 
-> Introduce a static_nr field in pci_bus to indicate whether the
-> IDA is a dynamic or static in order to free the correct one.
-> 
-> Fixes: c14f7ccc9f5d ("PCI: Assign PCI domain IDs by ida_alloc()")
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
-> 
-> V2:
->  Update commit message
->  Move static_nr:1 to stay besides others :1 fields.
-> 
->  drivers/pci/pci.c   | 22 ++++++++++++++--------
->  include/linux/pci.h |  1 +
->  2 files changed, 15 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 60230da957e0..5c98502bcda6 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -6881,10 +6881,10 @@ static void of_pci_reserve_static_domain_nr(void)
->  	}
->  }
->  
-> -static int of_pci_bus_find_domain_nr(struct device *parent)
-> +static int of_pci_bus_find_domain_nr(struct pci_bus *bus, struct device *parent)
->  {
->  	static bool static_domains_reserved = false;
-> -	int domain_nr;
-> +	int domain_nr, ret;
->  
->  	/* On the first call scan device tree for static allocations. */
->  	if (!static_domains_reserved) {
-> @@ -6892,6 +6892,8 @@ static int of_pci_bus_find_domain_nr(struct device *parent)
->  		static_domains_reserved = true;
->  	}
->  
-> +	bus->static_nr = 0;
-> +
->  	if (parent) {
->  		/*
->  		 * If domain is in DT, allocate it in static IDA.  This
-> @@ -6899,10 +6901,14 @@ static int of_pci_bus_find_domain_nr(struct device *parent)
->  		 * in DT.
->  		 */
->  		domain_nr = of_get_pci_domain_nr(parent->of_node);
-> -		if (domain_nr >= 0)
-> -			return ida_alloc_range(&pci_domain_nr_static_ida,
-> -					       domain_nr, domain_nr,
-> -					       GFP_KERNEL);
-> +		if (domain_nr >= 0) {
-> +			ret = ida_alloc_range(&pci_domain_nr_static_ida,
-> +					      domain_nr, domain_nr, GFP_KERNEL);
-> +			if (ret >= 0)
-> +				bus->static_nr = 1;
+For testing purposes, I use these commands can help see how many tasks were
+woken during thawing:
 
-There are a couple things that make this a little messy:
+1. Setup:
+   mkdir /sys/kernel/tracing/instances/freezer
+   cd /sys/kernel/tracing/instances/freezer 
+   echo 0 > tracing_on ; echo > trace
+   echo power:suspend_resume > set_event
+   echo 'enable_event:sched:sched_wakeup if action == "thaw_processes" && start == 1' > events/power/suspend_resume/trigger
+   echo 'traceoff if action == "thaw_processes" && start == 0' > events/power/suspend_resume/trigger
+   echo 1 > tracing_on
 
-  1) The "static_nr" name isn't great because the struct pci_bus
-  declaration doesn't have any clue about what it's for.  "nr" doesn't
-  suggest "PCI domain".
+2. Let kernel go to suspend
 
-  2) More importantly, the "static_nr = 1" assignment here doesn't fit
-  with the design where pci_bus_find_domain_nr() allocates the domain
-  number and pci_register_host_bridge() stores it in the struct
-  pci_bus.  The bus->domain_nr assignment and the bus->static_nr
-  assignment really should be in the same place.
+3. After kernel's back up:
+   cat /sys/kernel/tracing/instances/freezer/trace | grep sched_wakeup | grep -o "pid=[0-9]*" | sort -u | wc -l
 
-  I do see the problem that it's hard to return the "static alloc"
-  info back up the call chain to pci_register_host_bridge() where
-  bus->domain_nr is assigned, but setting bus->static_nr here in
-  of_pci_bus_find_domain_nr() seems a little kludgy.  I don't have any
-  good ideas yet, but I'll think about it.
+Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+---
+Changes in v4:
+- Split into 2 commits
+- Link to v3: https://lore.kernel.org/r/20230908-avoid-spurious-freezer-wakeups-v3-1-d49821fda04d@quicinc.com
 
-> +			return ret;
-> +		}
->  	}
->  
->  	/*
-> @@ -6920,7 +6926,7 @@ static void of_pci_bus_release_domain_nr(struct pci_bus *bus, struct device *par
->  		return;
->  
->  	/* Release domain from IDA where it was allocated. */
-> -	if (of_get_pci_domain_nr(parent->of_node) == bus->domain_nr)
-> +	if (bus->static_nr)
->  		ida_free(&pci_domain_nr_static_ida, bus->domain_nr);
->  	else
->  		ida_free(&pci_domain_nr_dynamic_ida, bus->domain_nr);
-> @@ -6928,7 +6934,7 @@ static void of_pci_bus_release_domain_nr(struct pci_bus *bus, struct device *par
->  
->  int pci_bus_find_domain_nr(struct pci_bus *bus, struct device *parent)
->  {
-> -	return acpi_disabled ? of_pci_bus_find_domain_nr(parent) :
-> +	return acpi_disabled ? of_pci_bus_find_domain_nr(bus, parent) :
->  			       acpi_pci_bus_find_domain_nr(bus);
->  }
->  
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index eeb2e6f6130f..222a1729ea7e 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -677,6 +677,7 @@ struct pci_bus {
->  	struct bin_attribute	*legacy_mem;	/* Legacy mem */
->  	unsigned int		is_added:1;
->  	unsigned int		unsafe_warn:1;	/* warned about RW1C config write */
-> +	unsigned int		static_nr:1;
->  };
->  
->  #define to_pci_bus(n)	container_of(n, struct pci_bus, dev)
-> -- 
-> 2.37.1
-> 
+Changes in v3:
+- Remove #ifdeferry for saved_state in kernel/sched/core.c
+- Link to v2: https://lore.kernel.org/r/20230830-avoid-spurious-freezer-wakeups-v2-1-8877245cdbdc@quicinc.com
+
+Changes in v2:
+- Rebase to v6.5 which includes commit 1c06918788e8 ("sched: Consider task_struct::saved_state in wait_task_inactive()")
+  This allows us to remove the special jobctl handling on thaw.
+- Link to v1: https://lore.kernel.org/r/20230828-avoid-spurious-freezer-wakeups-v1-1-8be8cf761472@quicinc.com
+
+---
+Elliot Berman (2):
+      sched/core: Remove ifdeffery for saved_state
+      freezer,sched: Use saved_state to reduce some spurious wakeups
+
+ include/linux/sched.h |  2 --
+ kernel/freezer.c      | 41 +++++++++++++++++++----------------------
+ kernel/sched/core.c   | 40 +++++++++++++++++-----------------------
+ 3 files changed, 36 insertions(+), 47 deletions(-)
+---
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+change-id: 20230817-avoid-spurious-freezer-wakeups-9f8619680b3a
+
+Best regards,
+-- 
+Elliot Berman <quic_eberman@quicinc.com>
+
