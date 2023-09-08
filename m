@@ -2,40 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD184798FDF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7594D799083
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345020AbjIHTfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49658 "EHLO
+        id S230051AbjIHTsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245509AbjIHTfG (ORCPT
+        with ESMTP id S242860AbjIHTs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:35:06 -0400
+        Fri, 8 Sep 2023 15:48:26 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A672116;
-        Fri,  8 Sep 2023 12:34:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43703C433CA;
-        Fri,  8 Sep 2023 19:34:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F07268C;
+        Fri,  8 Sep 2023 12:47:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DA42C43395;
+        Fri,  8 Sep 2023 19:34:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201666;
-        bh=Y6f1pYXMyI4EGb7QXDxBGnbubvL70Gvt/tQOkkkpQaY=;
+        s=k20201202; t=1694201677;
+        bh=oydeY7LMES6UGzJ49BFWh3Ok2ahwHYWzx3M2c5QljD0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NyrUfVrlaeIuWGqwz2ygfn0X03zKt4duLfLZXkLOedUQRJFofzq1eZ3LaCfVBJXOI
-         LJS5zj70ZRjNhVL39OENpWkQN2Qh8ek0UxQM/LYqjNLQk79l2lhQylOkVnExgz0cij
-         OpK0LLMOKPIg4+QXyUgAKGPYz3wmDiCaIMjRwysalCNhlhs78g2B0HP/NVX3NwGBXb
-         h9Tidnuj+C96dQdFfKwpgaifvdVB+geMwYvFOuccWI8vzMnzjuSSPK1TN6AV/Yq1nQ
-         INI7DzRzwcnClm3gauQ004hYmwltssmhrNMVnRaXC4mfo9fzTV6lD6dmr3YIiDodoh
-         F8AWn2o+NLnWQ==
+        b=pEnjrothwlkwp1dHOAzwEHuzQln1tG8XGUVqI3mleC0+oaaiGV951gb8o4GkwK/KH
+         zXYDf+J/9KIcHIQN33GmdcojT2Ky+22XvDBh/cAm+YDRRedJrVWYaGx8jgjYEAVfz5
+         yHiUAYYDWjhM9aADJhqeXh7u7RD6VuszsgxwE7zTba/yM2c/LVqkYt7xTmt4tR4T03
+         hW2DXW3iguXNZDJ3tVhAAVXj12IJFFWFQqWX1hPaqKtSqMlAZcB//AlG3HJEXc5MmM
+         4a3q6DA86UxGwAccbDP0c1CJmr3SCbKBqIGZbni9+MWLZ1eYeDDO19Br94CXi2AgDH
+         aZ0r3X1wEu8/A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Rong Tao <rongtao@cestc.cn>, Petr Mladek <pmladek@suse.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, arnd@arndb.de,
-        chenjiahao16@huawei.com
-Subject: [PATCH AUTOSEL 6.1 07/22] samples/hw_breakpoint: Fix kernel BUG 'invalid opcode: 0000'
-Date:   Fri,  8 Sep 2023 15:33:51 -0400
-Message-Id: <20230908193407.3463368-7-sashal@kernel.org>
+Cc:     Martin Tsai <martin.tsai@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Alex Hung <alex.hung@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, harry.wentland@amd.com,
+        sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, Jun.Lei@amd.com, wayne.lin@amd.com,
+        qingqing.zhuo@amd.com, Daniel.Miess@amd.com, duncan.ma@amd.com,
+        meenakshikumar.somasundaram@amd.com, sancchen@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.1 08/22] drm/amd/display: Read down-spread percentage from lut to adjust dprefclk.
+Date:   Fri,  8 Sep 2023 15:33:52 -0400
+Message-Id: <20230908193407.3463368-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908193407.3463368-1-sashal@kernel.org>
 References: <20230908193407.3463368-1-sashal@kernel.org>
@@ -53,74 +61,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
+From: Martin Tsai <martin.tsai@amd.com>
 
-[ Upstream commit 910e230d5f1bb72c54532e94fbb1705095c7bab6 ]
+[ Upstream commit 6917b0b711713b9d84d7e0844e9aa613997a51b2 ]
 
-Macro symbol_put() is defined as __symbol_put(__stringify(x))
+[Why]
+Panels show corruption with high refresh rate timings when
+ss is enabled.
 
-    ksym_name = "jiffies"
-    symbol_put(ksym_name)
+[How]
+Read down-spread percentage from lut to adjust dprefclk.
 
-will be resolved as
-
-    __symbol_put("ksym_name")
-
-which is clearly wrong. So symbol_put must be replaced with __symbol_put.
-
-When we uninstall hw_breakpoint.ko (rmmod), a kernel bug occurs with the
-following error:
-
-[11381.854152] kernel BUG at kernel/module/main.c:779!
-[11381.854159] invalid opcode: 0000 [#2] PREEMPT SMP PTI
-[11381.854163] CPU: 8 PID: 59623 Comm: rmmod Tainted: G      D    OE      6.2.9-200.fc37.x86_64 #1
-[11381.854167] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./B360M-HDV, BIOS P3.20 10/23/2018
-[11381.854169] RIP: 0010:__symbol_put+0xa2/0xb0
-[11381.854175] Code: 00 e8 92 d2 f7 ff 65 8b 05 c3 2f e6 78 85 c0 74 1b 48 8b 44 24 30 65 48 2b 04 25 28 00 00 00 75 12 48 83 c4 38 c3 cc cc cc cc <0f> 0b 0f 1f 44 00 00 eb de e8 c0 df d8 00 90 90 90 90 90 90 90 90
-[11381.854178] RSP: 0018:ffffad8ec6ae7dd0 EFLAGS: 00010246
-[11381.854181] RAX: 0000000000000000 RBX: ffffffffc1fd1240 RCX: 000000000000000c
-[11381.854184] RDX: 000000000000006b RSI: ffffffffc02bf7c7 RDI: ffffffffc1fd001c
-[11381.854186] RBP: 000055a38b76e7c8 R08: ffffffff871ccfe0 R09: 0000000000000000
-[11381.854188] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-[11381.854190] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[11381.854192] FS:  00007fbf7c62c740(0000) GS:ffff8c5badc00000(0000) knlGS:0000000000000000
-[11381.854195] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[11381.854197] CR2: 000055a38b7793f8 CR3: 0000000363e1e001 CR4: 00000000003726e0
-[11381.854200] DR0: ffffffffb3407980 DR1: 0000000000000000 DR2: 0000000000000000
-[11381.854202] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-[11381.854204] Call Trace:
-[11381.854207]  <TASK>
-[11381.854212]  s_module_exit+0xc/0xff0 [symbol_getput]
-[11381.854219]  __do_sys_delete_module.constprop.0+0x198/0x2f0
-[11381.854225]  do_syscall_64+0x58/0x80
-[11381.854231]  ? exit_to_user_mode_prepare+0x180/0x1f0
-[11381.854237]  ? syscall_exit_to_user_mode+0x17/0x40
-[11381.854241]  ? do_syscall_64+0x67/0x80
-[11381.854245]  ? syscall_exit_to_user_mode+0x17/0x40
-[11381.854248]  ? do_syscall_64+0x67/0x80
-[11381.854252]  ? exc_page_fault+0x70/0x170
-[11381.854256]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Martin Tsai <martin.tsai@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/hw_breakpoint/data_breakpoint.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../dc/clk_mgr/dcn314/dcn314_clk_mgr.c        | 33 +++++++++++++++++--
+ .../dc/clk_mgr/dcn314/dcn314_clk_mgr.h        |  7 ++++
+ 2 files changed, 38 insertions(+), 2 deletions(-)
 
-diff --git a/samples/hw_breakpoint/data_breakpoint.c b/samples/hw_breakpoint/data_breakpoint.c
-index 418c46fe5ffc3..9debd128b2ab8 100644
---- a/samples/hw_breakpoint/data_breakpoint.c
-+++ b/samples/hw_breakpoint/data_breakpoint.c
-@@ -70,7 +70,7 @@ static int __init hw_break_module_init(void)
- static void __exit hw_break_module_exit(void)
+diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn314/dcn314_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn314/dcn314_clk_mgr.c
+index e43b4d7dc60e2..0316fd8df3841 100644
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn314/dcn314_clk_mgr.c
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn314/dcn314_clk_mgr.c
+@@ -87,6 +87,14 @@ static const struct IP_BASE CLK_BASE = { { { { 0x00016C00, 0x02401800, 0, 0, 0,
+ #define CLK1_CLK_PLL_REQ__PllSpineDiv_MASK	0x0000F000L
+ #define CLK1_CLK_PLL_REQ__FbMult_frac_MASK	0xFFFF0000L
+ 
++#define regCLK1_CLK2_BYPASS_CNTL			0x029c
++#define regCLK1_CLK2_BYPASS_CNTL_BASE_IDX	0
++
++#define CLK1_CLK2_BYPASS_CNTL__CLK2_BYPASS_SEL__SHIFT	0x0
++#define CLK1_CLK2_BYPASS_CNTL__LK2_BYPASS_DIV__SHIFT	0x10
++#define CLK1_CLK2_BYPASS_CNTL__CLK2_BYPASS_SEL_MASK		0x00000007L
++#define CLK1_CLK2_BYPASS_CNTL__LK2_BYPASS_DIV_MASK		0x000F0000L
++
+ #define REG(reg_name) \
+ 	(CLK_BASE.instance[0].segment[reg ## reg_name ## _BASE_IDX] + reg ## reg_name)
+ 
+@@ -440,6 +448,11 @@ static DpmClocks314_t dummy_clocks;
+ 
+ static struct dcn314_watermarks dummy_wms = { 0 };
+ 
++static struct dcn314_ss_info_table ss_info_table = {
++	.ss_divider = 1000,
++	.ss_percentage = {0, 0, 375, 375, 375}
++};
++
+ static void dcn314_build_watermark_ranges(struct clk_bw_params *bw_params, struct dcn314_watermarks *table)
  {
- 	unregister_wide_hw_breakpoint(sample_hbp);
--	symbol_put(ksym_name);
-+	__symbol_put(ksym_name);
- 	printk(KERN_INFO "HW Breakpoint for %s write uninstalled\n", ksym_name);
- }
+ 	int i, num_valid_sets;
+@@ -719,6 +732,20 @@ static struct clk_mgr_funcs dcn314_funcs = {
+ };
+ extern struct clk_mgr_funcs dcn3_fpga_funcs;
+ 
++static void dcn314_read_ss_info_from_lut(struct clk_mgr_internal *clk_mgr)
++{
++	uint32_t clock_source;
++
++	REG_GET(CLK1_CLK2_BYPASS_CNTL, CLK2_BYPASS_SEL, &clock_source);
++
++	clk_mgr->dprefclk_ss_percentage = ss_info_table.ss_percentage[clock_source];
++
++	if (clk_mgr->dprefclk_ss_percentage != 0) {
++		clk_mgr->ss_on_dprefclk = true;
++		clk_mgr->dprefclk_ss_divider = ss_info_table.ss_divider;
++	}
++}
++
+ void dcn314_clk_mgr_construct(
+ 		struct dc_context *ctx,
+ 		struct clk_mgr_dcn314 *clk_mgr,
+@@ -791,9 +818,11 @@ void dcn314_clk_mgr_construct(
+ 
+ 	clk_mgr->base.base.dprefclk_khz = 600000;
+ 	clk_mgr->base.base.clks.ref_dtbclk_khz = 600000;
+-	dce_clock_read_ss_info(&clk_mgr->base);
++
++	dcn314_read_ss_info_from_lut(&clk_mgr->base);
+ 	/*if bios enabled SS, driver needs to adjust dtb clock, only enable with correct bios*/
+-	//clk_mgr->base.dccg->ref_dtbclk_khz = dce_adjust_dp_ref_freq_for_ss(clk_mgr_internal, clk_mgr->base.base.dprefclk_khz);
++	clk_mgr->base.base.dprefclk_khz =
++		dce_adjust_dp_ref_freq_for_ss(&clk_mgr->base, clk_mgr->base.base.dprefclk_khz);
+ 
+ 	clk_mgr->base.base.bw_params = &dcn314_bw_params;
+ 
+diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn314/dcn314_clk_mgr.h b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn314/dcn314_clk_mgr.h
+index 171f84340eb2f..e0670dafe2600 100644
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn314/dcn314_clk_mgr.h
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn314/dcn314_clk_mgr.h
+@@ -28,6 +28,8 @@
+ #define __DCN314_CLK_MGR_H__
+ #include "clk_mgr_internal.h"
+ 
++#define NUM_CLOCK_SOURCES   5
++
+ struct dcn314_watermarks;
+ 
+ struct dcn314_smu_watermark_set {
+@@ -40,6 +42,11 @@ struct clk_mgr_dcn314 {
+ 	struct dcn314_smu_watermark_set smu_wm_set;
+ };
+ 
++struct dcn314_ss_info_table {
++	uint32_t ss_divider;
++	uint32_t ss_percentage[NUM_CLOCK_SOURCES];
++};
++
+ bool dcn314_are_clock_states_equal(struct dc_clocks *a,
+ 		struct dc_clocks *b);
  
 -- 
 2.40.1
