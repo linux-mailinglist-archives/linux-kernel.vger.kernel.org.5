@@ -2,129 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B53798938
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE4D79893F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244132AbjIHOuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
+        id S241622AbjIHOxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244103AbjIHOuO (ORCPT
+        with ESMTP id S230102AbjIHOxU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:50:14 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B6B1BF9;
-        Fri,  8 Sep 2023 07:50:08 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-500c7796d8eso3615175e87.1;
-        Fri, 08 Sep 2023 07:50:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694184607; x=1694789407; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xkXpaqnjNB3MgoeN751DpK68gZT03o5yCj8DA/y5H7A=;
-        b=o6c0WpbVBnvM7aBUGrytTaB7PeBA7UAKRsLybXqcUodQ3k3FhLN4JVwKEsW9ACTJPF
-         WhlxYqlLKPPBpM0ZkqXNOyoLXQ/mrfa6rTQvVwifYt7Yqge8rQ1URCmYCgfE4SbaXLd6
-         cPEnjEr55q91d+eL3G6aTZX4k/+/VsZb8JkathBi5MrniHV6jmO3VLqSDXh9yRSSgtcJ
-         1t9OItP9A2bMNSDgp57/V1HGV7fiq4uQWNzLkmRdctl8EZi0NCWFph6+EmaI+BycCHAT
-         1K9aCHCV7RHUIu4ATgtlSlGTs7zUwGUZZ4BWISTta9YMHWeB/gCfvdWaj2ly0A4UILYV
-         BVzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694184607; x=1694789407;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xkXpaqnjNB3MgoeN751DpK68gZT03o5yCj8DA/y5H7A=;
-        b=LA+cTpIYWscDR9DwPFpD8nQAu9LghpXdkzU6Zf05pObSoCLFWyH/YufC1FbuYNDrFt
-         bdbNJU6gkvPb2f3cneLRNmLMSUHyCytL6n3r9/m6csdjwu0EkTqYeC9rjdr1Hi/4QWjc
-         xncivhLR2V1KBGlxC9iV3xM/GSsJAsuumE9zFgMToe6Bd+YpLReYp3tpguYdpyCyTuig
-         FkIN+OGV49QGbt+PLj0axjlsOLDT9wfx5tD0PeTIrU7iG2aDfmNUbdrW1R6nd3VHjEbr
-         /1CKvK9IbSvCWoA8vxh1d6T8bDgSd/wmCSHHic1+Vovlb8C/okKNN052zu/Z18dzFWKq
-         pAwg==
-X-Gm-Message-State: AOJu0YxRTHjOmMukB+hygPpW8cCC1Hh5SuU/qOaU0q7iP5mUPuleRuwi
-        ozqx/KEqWjSSvUTKuGF4VsBVK5xKpusp/y7RZHU=
-X-Google-Smtp-Source: AGHT+IGjut71Cuf1/3pmiqmLb02iNPUrU25uVCWP3M7RvsHnz8LT9ZQ55XWw9sho3xxF+7tpfhEqQEs2hgIUqnclj2A=
-X-Received: by 2002:a19:691c:0:b0:500:9f85:6e84 with SMTP id
- e28-20020a19691c000000b005009f856e84mr1757538lfc.3.1694184606718; Fri, 08 Sep
- 2023 07:50:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230907230550.1417590-1-puranjay12@gmail.com>
- <20230907230550.1417590-10-puranjay12@gmail.com> <ZPrdQEhw4f+TK8TB@shell.armlinux.org.uk>
- <1a4bc20a-b7ff-3697-5859-a2bb868c575f@iogearbox.net>
-In-Reply-To: <1a4bc20a-b7ff-3697-5859-a2bb868c575f@iogearbox.net>
-From:   Puranjay Mohan <puranjay12@gmail.com>
-Date:   Fri, 8 Sep 2023 16:49:55 +0200
-Message-ID: <CANk7y0izCD1Cwqpkf_i2Vi+QyS4ggdOEhJP0Uq_QWkLhp4zHwQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 9/9] MAINTAINERS: Add myself for ARM32 BPF JIT maintainer.
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Fri, 8 Sep 2023 10:53:20 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E064E1BF1
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:53:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=34xMklFC/rMdV9SMDcKUxNMXdG/pcAiyqnB1umRNMyM=; b=qlI+sbioGk33VzwUGPZLC9COEl
+        HEXFzD6IgN8b0nq+RGL7M//ld+WXG01/TiAfefOL8BfR3bimC83EacaEVyE1t5EkkcfP4Zak7PGV6
+        IykONlKKckdBlVJkSMr4mRdAmv0+I7qjLm4UqZ5N1BvHW+3cMq6hlhbbSekNxiMUosH79QtT4IpyM
+        Fk1+lHJGLv1i0NmDH3PT5DQ/ok7j+002MpRMme4TcCUqkK9pVGv1vsy4N/kwounaPfSmbgSs3S5aP
+        6mGS1d+XNkF7zbCAcCXsDTBqt+6/7Ye0RuNaGPauHTR4MlUER7YXWe7ml+ANs37JDu1T8edUcRXw1
+        HkpVcPOQ==;
+Received: from [38.44.68.151] (helo=mail.igalia.com)
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+        id 1qecqe-001Pc3-ON; Fri, 08 Sep 2023 16:52:40 +0200
+Date:   Fri, 8 Sep 2023 13:52:29 -0100
+From:   Melissa Wen <mwen@igalia.com>
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     amd-gfx@lists.freedesktop.org,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
+        dri-devel@lists.freedesktop.org, airlied@gmail.com,
+        brian.starkey@arm.com, christian.koenig@amd.com, daniel@ffwll.ch,
+        liviu.dudau@arm.com, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, Xinhui.Pan@amd.com,
+        Joshua Ashton <joshua@froggi.es>,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        Xaver Hugl <xaver.hugl@gmail.com>,
+        Shashank Sharma <Shashank.Sharma@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 00/34] drm/amd/display: add AMD driver-specific
+ properties for color mgmt
+Message-ID: <20230908145229.m7yxeu2ulxhy2skz@mail.igalia.com>
+References: <20230810160314.48225-1-mwen@igalia.com>
+ <b8b1dd2d-069d-4410-a3a1-d1cdb61fd4a8@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b8b1dd2d-069d-4410-a3a1-d1cdb61fd4a8@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 8, 2023 at 3:49=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.ne=
-t> wrote:
->
-> On 9/8/23 10:37 AM, Russell King (Oracle) wrote:
-> > On Thu, Sep 07, 2023 at 11:05:50PM +0000, Puranjay Mohan wrote:
-> >> As Shubham has been inactive since 2017, Add myself for ARM32 BPF JIT.
-> >>
-> >> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> >> ---
-> >>   MAINTAINERS | 5 +++--
-> >>   1 file changed, 3 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/MAINTAINERS b/MAINTAINERS
-> >> index 612d6d1dbf36..c241856819bd 100644
-> >> --- a/MAINTAINERS
-> >> +++ b/MAINTAINERS
-> >> @@ -3602,9 +3602,10 @@ F:    Documentation/devicetree/bindings/iio/acc=
-el/bosch,bma400.yaml
-> >>   F: drivers/iio/accel/bma400*
-> >>
-> >>   BPF JIT for ARM
-> >> -M:  Shubham Bansal <illusionist.neo@gmail.com>
-> >> +M:  Puranjay Mohan <puranjay12@gmail.com>
-> >> +R:  Shubham Bansal <illusionist.neo@gmail.com>
-> >
-> > Don't forget that I also want to review the changes, but I guess my
-> > arch/arm entry will cover this too.
->
-> If there are no objections from all parties, it would be nice/better if b=
-oth of
-> you (Puranjay & Russell) could be explicitly added here as maintainers.
+On 09/06, Harry Wentland wrote:
+> On 2023-08-10 12:02, Melissa Wen wrote:
+> > Hi all,
+> > 
+> > Here is the next version of our work to enable AMD driver-specific color
+> > management properties [1][2]. This series is a collection of
+> > contributions from Joshua, Harry, and me to enhance the AMD KMS color
+> > pipeline for Steam Deck/SteamOS by exposing additional pre-blending and
+> > post-blending color capabilities from those available in the current DRM
+> > KMS API[3].
+> > 
+> > The userspace case here is Gamescope which is the compositor for
+> > SteamOS. Gamescope is already using these features to implement its
+> > color management pipeline [4].
+> > 
+> > In this version, I try to address all concerns shared in the previous
+> > one, i.e.:
+> > - Replace DRM_ by AMDGPU_ prefix for transfer function enumeration; 
+> > - Explicitly define EOTFs and inverse EOTFs and set props accordingly;
+> > - Document pre-defined transfer functions;
+> > - Remove misleading comments;
+> > - Remove post-blending/MPC shaper and 3D LUT support;
+> > - Move driver-specific property operations from amdgpu_display.c to
+> >   amdgpu_dm_color.c;
+> > - Reset planes if any color props change;
+> > - Nits/small fixes;
+> > 
+> > Bearing in mind the complexity of color concepts, I believe there is a
+> > high chance of some misunderstanding from my side when defining EOTFs
+> > and documenting pre-defined TFs. So, reviews are very important and
+> > welcome (thanks in advance). FWIW, I added Harry as a co-developer of
+> > this TF documentation since I based on his description of EOTF/inv_EOTF
+> > and previous documentation work [5]. Let me know if there is a better
+> > way for credits.
+> > 
+> > Two DC patches were already applied and, therefore, removed from the
+> > series. I added r-b according to previous feedback. We also add plane
+> > CTM to driver-specific properties. As a result, this is the updated list
+> > of all driver-specific color properties exposed by this series:
+> > 
+> > - plane degamma LUT and pre-defined TF;
+> > - plane HDR multiplier;
+> > - plane CTM 3x4;
+> > - plane shaper LUT and pre-defined TF;
+> > - plane 3D LUT;
+> > - plane blend LUT and pre-defined TF;
+> > - CRTC gamma pre-defined TF;
+> > 
+> > Remember you can find the AMD HW color capabilities documented here:
+> > https://dri.freedesktop.org/docs/drm/gpu/amdgpu/display/display-manager.html#color-management-properties
+> > 
+> > Worth mentioning that the pre-blending degamma block can use ROM curves
+> > for some pre-defined TFs, but the other blocks use the AMD color module
+> > to calculate this curve considering pre-defined coefficients.
+> > 
+> > We need changes on DC gamut remap matrix to support the plane and CRTC
+> > CTM on drivers that support both. I've sent a previous patch to apply
+> > these changes to all DCN3+ families [6]. Here I use the same changes but
+> > limited to DCN301. Just let me know if you prefer the previous/expanded
+> > version.
+> > 
+> > Finally, this is the Linux/AMD color management API before and after
+> > blending with the driver-specific properties:
+> > 
+> > +----------------------+
+> > |   PLANE              |
+> > |                      |
+> > |  +----------------+  |
+> > |  | AMD Degamma    |  |
+> > |  |                |  |
+> > |  | EOTF | 1D LUT  |  |
+> > |  +--------+-------+  |
+> > |           |          |
+> > |  +--------v-------+  |
+> > |  |    AMD HDR     |  |
+> > |  |    Multiply    |  |
+> > |  +--------+-------+  |
+> > |           |          |
+> > |  +--------v-------+  |
+> > |  |  AMD CTM (3x4) |  |
+> > |  +--------+-------+  |
+> > |           |          |
+> > |  +--------v-------+  |
+> > |  | AMD Shaper     |  |
+> > |  |                |  |
+> > |  | inv_EOTF |     |  |
+> > |  | Custom 1D LUT  |  |
+> > |  +--------+-------+  |
+> > |           |          |
+> > |  +--------v-------+  |
+> > |  |   AMD 3D LUT   |  |
+> > |  |   17^3/12-bit  |  |
+> > |  +--------+-------+  |
+> > |           |          |
+> > |  +--------v-------+  |
+> > |  | AMD Blend      |  |
+> > |  |                |  |
+> > |  | EOTF | 1D LUT  |  |
+> > |  +--------+-------+  |
+> > |           |          |
+> > ++----------v---------++
+> > ||      Blending      ||
+> > ++----------+---------++
+> > |    CRTC   |          |
+> > |           |          |
+> > |   +-------v-------+  |
+> > |   | DRM Degamma   |  |
+> > |   |               |  |
+> > |   | Custom 1D LUT |  |
+> > |   +-------+-------+  |
+> > |           |          |
+> > |   +-------v-------+  |
+> > |   | DRM CTM (3x3) |  |
+> > |   +-------+-------+  |
+> > |           |          |
+> > |   +-------v-------+  |
+> > |   | DRM Gamma     |  |
+> > |   |               |  |
+> > |   | Custom 1D LUT |  |
+> > |   +---------------+  |
+> > |   | *AMD Gamma    |  |
+> > |   |   inv_EOTF    |  |
+> > |   +---------------+  |
+> > |                      |
+> > +----------------------+
+> > 
+> > Let me know your thoughts.
+> > 
+> 
+> Thanks again for your amazing work on this.
+> 
+> Patches 5, 6, 14, 16, and 24 are
+> Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+> 
+> I left comments on the remaining unreviewed patches.
 
-Yes, I agree with that. Russell knows more about ARM than anyone else!
+Thank you for the detailed review. I'll address your comments and also
+those from Pekka in the next version.
 
-If I send another version for any other comments I get, I will include
-this change.
-But if this version of the series is applied, can you make this change
-while applying the patch?
+Melissa
 
->
-> Thanks,
-> Daniel
-
-Thanks,
-Puranjay
+> 
+> Harry
+> 
+> > Best Regards,
+> > 
+> > Melissa Wen
+> > 
+> > [1] https://lore.kernel.org/dri-devel/20230423141051.702990-1-mwen@igalia.com
+> > [2] https://lore.kernel.org/dri-devel/20230523221520.3115570-1-mwen@igalia.com
+> > [3] https://github.com/ValveSoftware/gamescope/blob/master/src/docs/Steam%20Deck%20Display%20Pipeline.png
+> > [4] https://github.com/ValveSoftware/gamescope
+> > [5] https://lore.kernel.org/dri-devel/20210730204134.21769-1-harry.wentland@amd.com
+> > [6] https://lore.kernel.org/dri-devel/20230721132431.692158-1-mwen@igalia.com
+> > 
+> > 
+> > Harry Wentland (1):
+> >   drm/amd/display: fix segment distribution for linear LUTs
+> > 
+> > Joshua Ashton (14):
+> >   drm/amd/display: add plane degamma TF driver-specific property
+> >   drm/amd/display: add plane HDR multiplier driver-specific property
+> >   drm/amd/display: add plane blend LUT and TF driver-specific properties
+> >   drm/amd/display: add CRTC gamma TF support
+> >   drm/amd/display: set sdr_ref_white_level to 80 for out_transfer_func
+> >   drm/amd/display: mark plane as needing reset if color props change
+> >   drm/amd/display: add plane degamma TF and LUT support
+> >   drm/amd/display: add dc_fixpt_from_s3132 helper
+> >   drm/amd/display: add HDR multiplier support
+> >   drm/amd/display: handle empty LUTs in __set_input_tf
+> >   drm/amd/display: add plane blend LUT and TF support
+> >   drm/amd/display: allow newer DC hardware to use degamma ROM for PQ/HLG
+> >   drm/amd/display: copy 3D LUT settings from crtc state to stream_update
+> >   drm/amd/display: Use 3x4 CTM for plane CTM
+> > 
+> > Melissa Wen (19):
+> >   drm/drm_mode_object: increase max objects to accommodate new color
+> >     props
+> >   drm/drm_property: make replace_property_blob_from_id a DRM helper
+> >   drm/drm_plane: track color mgmt changes per plane
+> >   drm/amd/display: add driver-specific property for plane degamma LUT
+> >   drm/amd/display: explicitly define EOTF and inverse EOTF
+> >   drm/amd/display: document AMDGPU pre-defined transfer functions
+> >   drm/amd/display: add plane 3D LUT driver-specific properties
+> >   drm/amd/display: add plane shaper LUT and TF driver-specific
+> >     properties
+> >   drm/amd/display: add CRTC gamma TF driver-specific property
+> >   drm/amd/display: add comments to describe DM crtc color mgmt behavior
+> >   drm/amd/display: encapsulate atomic regamma operation
+> >   drm/amd/display: decouple steps for mapping CRTC degamma to DC plane
+> >   drm/amd/display: reject atomic commit if setting both plane and CRTC
+> >     degamma
+> >   drm/amd/display: add plane shaper LUT support
+> >   drm/amd/display: add plane shaper TF support
+> >   drm/amd/display: add plane 3D LUT support
+> >   drm/amd/display: set stream gamut remap matrix to MPC for DCN301
+> >   drm/amd/display: add plane CTM driver-specific property
+> >   drm/amd/display: add plane CTM support
+> > 
+> >  drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h      |  71 ++
+> >  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  34 +-
+> >  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h | 101 +++
+> >  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 805 ++++++++++++++++--
+> >  .../amd/display/amdgpu_dm/amdgpu_dm_crtc.c    |  72 ++
+> >  .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   | 224 ++++-
+> >  .../amd/display/dc/dcn10/dcn10_cm_common.c    |  93 +-
+> >  .../drm/amd/display/dc/dcn30/dcn30_hwseq.c    |  37 +
+> >  .../drm/amd/display/dc/dcn30/dcn30_hwseq.h    |   3 +
+> >  .../drm/amd/display/dc/dcn301/dcn301_init.c   |   2 +-
+> >  .../gpu/drm/amd/display/include/fixed31_32.h  |  12 +
+> >  drivers/gpu/drm/arm/malidp_crtc.c             |   2 +-
+> >  drivers/gpu/drm/drm_atomic.c                  |   1 +
+> >  drivers/gpu/drm/drm_atomic_state_helper.c     |   1 +
+> >  drivers/gpu/drm/drm_atomic_uapi.c             |  43 +-
+> >  drivers/gpu/drm/drm_property.c                |  49 ++
+> >  include/drm/drm_mode_object.h                 |   2 +-
+> >  include/drm/drm_plane.h                       |   7 +
+> >  include/drm/drm_property.h                    |   6 +
+> >  include/uapi/drm/drm_mode.h                   |   8 +
+> >  20 files changed, 1446 insertions(+), 127 deletions(-)
+> > 
+> 
