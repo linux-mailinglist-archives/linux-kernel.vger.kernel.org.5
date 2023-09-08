@@ -2,71 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F20AD798499
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 11:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C2579849B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 11:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241458AbjIHJLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 05:11:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
+        id S241129AbjIHJNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 05:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241404AbjIHJLQ (ORCPT
+        with ESMTP id S234663AbjIHJNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 05:11:16 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7911BF4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 02:11:09 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-402c46c49f4so19454915e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 02:11:09 -0700 (PDT)
+        Fri, 8 Sep 2023 05:13:21 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383A51BEA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 02:13:17 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-51a52a7d859so6350029a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 02:13:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=froggi.es; s=google; t=1694164268; x=1694769068; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1694164395; x=1694769195; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=uucPgAlGBQZ8LNzLV0XU3oBxm9XKuhvV3ldf5KCnJas=;
-        b=KFTrR103szWJEVVrwrOh3S5yIePmAzay2NB6PFt/uuy3m7O/JxRVNNdzZkzciTproH
-         3v8xwblhNzTDV1uo0m4/p5wR9GMFix1uGRNY0tjAI8FXgLRMX7FbeSJSwo5TdUwofpft
-         nvztFi9NemEqR16ZeE+wtHJdHE7ceZXDNxXcYtsL5OoFaddDJfbqBc0tSBCe9NW/71mY
-         nVd4VORQIrH72GdWhuu1G4EG11p34BgmGDav8jPY2m2NMFcUOwU3BR+H5bPJNSITQstl
-         j+b373W00j2OxP/ygsSj8XuTaes00BZsqS3aoyq9ZlZtVIdwpFqOAOkfv5rQqXwMo2DA
-         qbRg==
+        bh=IXVqW1Q51trZqJlGLGeYiuozAuhYVqk3/BmiXFCxCwI=;
+        b=hPumbPWURHUghKOWtRikMx17hfZBgx6UgenU/cm3achNBT517irsDx17ZcIkOyIw5W
+         8Vx0Q47FzmWkFKC0TB6Zpb8qN5BWcgmT1+Xdz8xRJ6zLzRJqmvNUCbmYuuZUPdAmE/rm
+         yhd4uRJUwRaVjkFQYlsOATZz2MWnos3uEMVZ9Q590xWzjvgPEm2078usOZ9SsAqElzdP
+         xs6BZTm+QFYpGjexQGBVCujfRHLDmILxN+8L2hTAJZ2gX/gZaBqxuRhMOABYsOZyFJRW
+         VJGLG8M3ttV7emp8/6oeDBJ9TKs4ULd6XhMV7b3FMKAZ7sbchF+qc1TRZzR1oQdrDa1T
+         nf/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694164268; x=1694769068;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1694164395; x=1694769195;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uucPgAlGBQZ8LNzLV0XU3oBxm9XKuhvV3ldf5KCnJas=;
-        b=STdrAmhH/mBPnyEBF20Vf/6+O8Dd2UMp6RxplGIO/jawGsxhzEF6MZ8DI4vjrV00by
-         yTS7JQsRTf/8u22nk40Qg2qs7CQ7VLGHZqZ/oxRNvy65pZXmC7/DW+YRLzLMT6ASpA3o
-         N5b9HBwkbH9gY83299jmfBT9l/yivEwlFXCCKSHSXFziBF7KUxOKlo3JmXnXymn8Sten
-         GZKSdpR+zgCe05ayKORWng2aSP2J3JBUsC/bjnc1c54p1dKaBlKf8xurW9975i1kNM8C
-         BDZiiWgU84n9jGO/2RDAk6yu/XWrtH0enAjGZjk0J6ysVO2OL/+GFQwiERLCon/fSYHI
-         kU9Q==
-X-Gm-Message-State: AOJu0YzQLkpdG03xz5+RMtwbRSjZylK6WA4lBxEZNndHUnZ1OFSkb3FT
-        SzD3ql9OIbEOwrIYTWYwekXttw==
-X-Google-Smtp-Source: AGHT+IHXFm0k3Ng9rEIihR13gx7EBn8TISG7UZBX/S9GUomLYkv0qz2Sp94jomnPytBSKb0AniVSKQ==
-X-Received: by 2002:a7b:c01a:0:b0:3fb:d1db:545b with SMTP id c26-20020a7bc01a000000b003fbd1db545bmr1557599wmb.20.1694164267671;
-        Fri, 08 Sep 2023 02:11:07 -0700 (PDT)
-Received: from [192.168.0.89] (darl-09-b2-v4wan-165404-cust288.vm5.cable.virginm.net. [86.17.61.33])
-        by smtp.gmail.com with ESMTPSA id v17-20020a5d6791000000b0031c5ce91ad6sm1535225wru.97.2023.09.08.02.11.06
+        bh=IXVqW1Q51trZqJlGLGeYiuozAuhYVqk3/BmiXFCxCwI=;
+        b=fnyV8hLVxNGvABQcdhOb33PzPeOsi/5Ah725Ups15p98Vn0etfOOSy9JJoNRcRDLpA
+         g2QVcIhG1iN8jZBy/exzKPRtMeVjGcXBdckVyLTQfj9s4Ae5gwUHESKgRIGZapQ9s5Ht
+         tnTrPvUXRN8ORzCLDDdX+EBuDGZXXG0yZ+I1C0imc3YENqVsZOvtHEaq8nkX0ZhWOo32
+         LNjAzTXI6imlUuxKMr6v4SBC6Da/QGKC8+DKnBYn/abnAf1Xah4RWgjbRLsDkU2wKL9/
+         87jJ4J0DsCOrt4/MfQcqoG1v7jHO7Ex8jMN9Iej1EwC9Zo1DG5UwptoqSRZtGYI+gyCo
+         fDfA==
+X-Gm-Message-State: AOJu0Yya2fauZQxnlfiomt8wLGKcEFOcJ247jhodjmKhs+3IARRAO+9j
+        3SSu5PyTPbyJUjpsnzJONJqERw==
+X-Google-Smtp-Source: AGHT+IE/Igq1U6CUrKvj4eZ+OTmvvdgj+7itzGSMXL2cZnfDaXeEkB4cgdUx9TJGFwFTU8J0tCu27Q==
+X-Received: by 2002:a17:907:7604:b0:9a5:bceb:1cf8 with SMTP id jx4-20020a170907760400b009a5bceb1cf8mr1999314ejc.3.1694164395635;
+        Fri, 08 Sep 2023 02:13:15 -0700 (PDT)
+Received: from [192.168.37.45] (178235177197.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.197])
+        by smtp.gmail.com with ESMTPSA id va17-20020a17090711d100b009929ab17be0sm751029ejb.162.2023.09.08.02.13.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Sep 2023 02:11:07 -0700 (PDT)
-Message-ID: <689a856d-4c4a-4d65-b4f2-a5b11e61d75b@froggi.es>
-Date:   Fri, 8 Sep 2023 10:11:06 +0100
+        Fri, 08 Sep 2023 02:13:15 -0700 (PDT)
+Message-ID: <f9cc0fd5-ebc7-4f8b-a595-e4741f77f870@linaro.org>
+Date:   Fri, 8 Sep 2023 11:13:13 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] bcachefs
-To:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org
-References: <20230903032555.np6lu5mouv5tw4ff@moria.home.lan>
- <CAHk-=wjUX287gJCKDXUY02Wpot1n0VkjQk-PmDOmrsrEfwPfPg@mail.gmail.com>
- <20230907234001.oe4uypp6anb5vqem@moria.home.lan>
+Subject: Re: [PATCH v4 02/17] media: qcom: camss: Rename camss struct
+ resources to camss_subdev_resources
 Content-Language: en-US
-From:   Joshua Ashton <joshua@froggi.es>
-In-Reply-To: <20230907234001.oe4uypp6anb5vqem@moria.home.lan>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, rfoss@kernel.org,
+        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
+        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
+        andrey.konovalov@linaro.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230907164410.36651-1-bryan.odonoghue@linaro.org>
+ <20230907164410.36651-3-bryan.odonoghue@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230907164410.36651-3-bryan.odonoghue@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -77,137 +115,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/8/23 00:40, Kent Overstreet wrote:
-> On Wed, Sep 06, 2023 at 12:36:18PM -0700, Linus Torvalds wrote:
->> So I'm starting to look at this because I have most other pull
->> requests done, and while I realize there's no universal support for it
->> I suspect any further changes are better done in-tree. The out-of-tree
->> thing has been done.
->>
->> However, while I'll continue to look at it in this form, I just
->> realized that it's completely unacceptable for one very obvious
->> reason:
->>
->> On Sat, 2 Sept 2023 at 20:26, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->>>
->>>    https://evilpiepirate.org/git/bcachefs.git bcachefs-for-upstream
->>
->> No way am I pulling that without a signed tag and a pgp key with a
->> chain of trust. You've been around for long enough that having such a
->> key shouldn't be a problem for you, so make it happen.
->>
->> There are a few other issues that I have with this, and Christoph did
->> mention a big one: it's not been in linux-next. I don't know why I
->> thought it had been, it's just such an obvious thing for any new "I
->> want this merged upstream" tree.
->>
->> So these kinds of "I'll just ignore _all_ basic rules" kinds of issues
->> do annoy me.
->>
->> I need to know that you understand that if you actually want this
->> upstream, you need to work with upstream.
->>
->> That very much means *NOT* continuing this "I'll just do it my way".
->> You need to show that you can work with others, that you can work
->> within the framework of upstream, and that not every single thread you
->> get into becomes an argument.
->>
->> This, btw, is not negotiable.  If you feel uncomfortable with that
->> basic notion, you had better just continue doing development outside
->> the main kernel tree for another decade.
->>
->> The fact that I only now notice that you never submitted this to
->> linux-next is obviously on me. My bad.
->>
->> But at the same time it worries me that it might be a sign of you just
->> thinking that your way is special.
->>
->>                  Linus
+On 7.09.2023 18:43, Bryan O'Donoghue wrote:
+> Rename non-specific struct resources {} to struct camss_subdev_resources {}
 > 
-> Honestly, though, this process is getting entirely kafkaesque.
+> Each logical block in CAMSS has a number of regulators, clocks and resets
+> associated with it. We represent these blocks as v4l subdevices.
 > 
-> I've been spending the past month or two working laying the groundwork
-> for putting together a team to work on this, because god knows we need
-> fresh blood in filesystem land - but that's on hold. Getting blindsided
-> by another three month delay hurts, but that's not even the main thing.
+> The name "struct camss_subdev_resources" is a more descriptive and accurate
+> name.
 > 
-> The biggest thing has just been the non stop hostility and accusations -
-> everything from "fracturing the community" too "ignoring all the rules"
-> and my favorite, "is this the hill Kent wants to die on?" - when I'm
-> just trying to get work done.
-> 
-> I don't generally think of myself as being particularly difficult to
-> work with, I get along fine with most of the filesystem developers I
-> interact with - regularly sharing ideas back and forth with the XFS
-> people - but these review discussions have been entirely dominated by
-> the most divisive people in our community, and I'm being told it's
-> entirely on me to work with the guy whos one constant in the past 15
-> years has been to try and block everything I submit?
-> 
-> I'm just trying to get work done here. I'm not trying to ignore the
-> rules. I'm trying to work with people who are willing to have reasonable
-> discussions.
-> 
-> -------------------
-> 
-> When I was a teenager, I wanted nothing more than to be a Linux kernel
-> programmer. I thought it utterly amazing that this huge group of people
-> from around the world were working together over the internet, and that
-> anyone could take part if they had the chops.
-> 
-> That was my escape from a shitty family situation and the assholes in my
-> life.
-> 
-> But my life is different now; I have new and better people in my life,
-> and I have to be thinking about them, and if merging bcachefs means I
-> have to spend a lot more time in interactions like this then it's going
-> to make me a shitty person to be around; and I don't want to do that to
-> myself and I definitely don't want to do that to the people I care
-> about.
-> 
-> I'm going to go offline for awhile and think about what I want to do
-> next.
+> Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-I've been holding off replying here for a while because I really hoped 
-that this situation would just work itself out. (I apologise for adding 
-more noise in advance)
-
-I agree that it really sucks that sometimes you don't get replies to 
-things sometimes or the review from the people you need it from all the 
-time, or didn't tell you something you needed to know.
-
-But, I think it's really important though to realize that you are 
-talking to other people on the ML and not review machines (unless that 
-person is Dave Airlie on Zink ;P) and very often, other work can come up 
-that would block them being able to spend time reviewing or guiding you 
-on this process.
-
-Everyone on here is another person who has their own huuuge slog of work 
-that is super important for security, stability, shipping a 
-product/feature, keeping their job, etc.
-
-Eg. I proposed several revisions on the casefolding support for 
-bcachefs, but right now I am busy doing some other AMDGPU and 
-Gamescope/Proton + color work so I haven't had a chance to follow up 
-more on that since the last discussion.
-
-You might think that because X takes a while to respond/review or a 
-didn't mention that you actually needed to do Y or missed your meeting; 
-it's because they don't care, but it's probably way more likely that 
-they are just busy and going through their own personal hell.
-
-One of the harsh things about open source is rationalizing that nobody 
-owes you a review or any of their time. If people are willing to review 
-your features and changes in any capacity, then they also have an 
-interest in your project.
-
-If you can understand that, then you are going to have a much better 
-time proposing things upstream.
-
-I also really want to see bcachefs in mainline, and I know you can do 
-it. :-)
-
-Cheers
-- Joshie 🐸✨
+Konrad
