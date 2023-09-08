@@ -2,46 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D4879908C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C773279903F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244408AbjIHTtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:49:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41820 "EHLO
+        id S245578AbjIHTiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243168AbjIHTtB (ORCPT
+        with ESMTP id S230384AbjIHThW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:49:01 -0400
+        Fri, 8 Sep 2023 15:37:22 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2604171F;
-        Fri,  8 Sep 2023 12:48:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E6CFC4163D;
-        Fri,  8 Sep 2023 19:36:47 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAC7212A;
+        Fri,  8 Sep 2023 12:36:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C7DDC4163C;
+        Fri,  8 Sep 2023 19:36:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201808;
-        bh=mUzN3FyyNu3FLKa9WhO4+TX4mzylTF0rizk8q87A1T8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KHOQb/NpqHuCSQDlJwmAShUkgB9EjEgTU6+UbxN6BQttcvU0P/um/2ddCIP3Sues9
-         PGGT9LD3Wn+/gUgWrp23gclwIxNBu/NgzRQYaiTFFeMpVKbBomO/blXXn69HkgGIea
-         z42I9ISiI5Aw+vjrdmdFHE4i2nLwrKdR0X1EX+8U08OBMXbe6nfKny48dkFjHYGUUT
-         lR03/PS6UxUMvSHpTiBjkw21p7CymCs/uoiEVisVp5ZDOBl+SIORjvsZyswcUyGIFT
-         DzmwkBX5rwMTZZzFOBUnRn2KrWIwurW/+EtC3xCX7GddwBnPVxMbYFp4lqI2c/Zh66
-         veY2QAQ1NlwQw==
+        s=k20201202; t=1694201812;
+        bh=SKtZBkIgwSXQzOLWVJokvcy5wPpU5mthvIS28XtE/xM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kIA9ZX0NCgdXM1uGRZE2RX9zlpVibn2dnVseF4IQ5qMqJrvs6TwqLJPcAXoSIK++V
+         cgRy5frNykdjhmMHa7WHiIvAx5S14jekUsxMwxVRAnqYhleqhAxXznX+Z/kPyEMuIV
+         Bjlfp55s7ZGi46B4QM2quETCC1izu2gW/hu4DgKGT9XFI+SIUKtipDFRhdUmiKdr2x
+         mKxGw3uxJuaahZrfEDauD36CEJxKX9B23kvH9OBXlmGnVfN2kZJ/1QeqQOgGdqBS+L
+         pnT1yTf0VDUjbulEQrWYzmuy3vNxdVkZcwGQ7pKGW6cQtqc/AiyKzBL5rf6v2khu9S
+         FBbbaRV92L4Ng==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Georg Ottinger <g.ottinger@gmx.at>, Jan Kara <jack@suse.cz>,
-        Sasha Levin <sashal@kernel.org>, jack@suse.com,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 4/4] ext2: fix datatype of block number in ext2_xattr_set2()
-Date:   Fri,  8 Sep 2023 15:36:40 -0400
-Message-Id: <20230908193641.3463943-4-sashal@kernel.org>
+Cc:     Tuo Li <islituo@gmail.com>, BassCheck <bass@buaa.edu.cn>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Inki Dae <inki.dae@samsung.com>,
+        Sasha Levin <sashal@kernel.org>, sw0312.kim@samsung.com,
+        kyungmin.park@samsung.com, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 1/3] drm/exynos: fix a possible null-pointer dereference due to data race in exynos_drm_crtc_atomic_disable()
+Date:   Fri,  8 Sep 2023 15:36:46 -0400
+Message-Id: <20230908193648.3464004-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908193641.3463943-1-sashal@kernel.org>
-References: <20230908193641.3463943-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.256
+X-stable-base: Linux 4.19.294
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -52,53 +55,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Georg Ottinger <g.ottinger@gmx.at>
+From: Tuo Li <islituo@gmail.com>
 
-[ Upstream commit e88076348425b7d0491c8c98d8732a7df8de7aa3 ]
+[ Upstream commit 2e63972a2de14482d0eae1a03a73e379f1c3f44c ]
 
-I run a small server that uses external hard drives for backups. The
-backup software I use uses ext2 filesystems with 4KiB block size and
-the server is running SELinux and therefore relies on xattr. I recently
-upgraded the hard drives from 4TB to 12TB models. I noticed that after
-transferring some TBs I got a filesystem error "Freeing blocks not in
-datazone - block = 18446744071529317386, count = 1" and the backup
-process stopped. Trying to fix the fs with e2fsck resulted in a
-completely corrupted fs. The error probably came from ext2_free_blocks(),
-and because of the large number 18e19 this problem immediately looked
-like some kind of integer overflow. Whereas the 4TB fs was about 1e9
-blocks, the new 12TB is about 3e9 blocks. So, searching the ext2 code,
-I came across the line in fs/ext2/xattr.c:745 where ext2_new_block()
-is called and the resulting block number is stored in the variable block
-as an int datatype. If a block with a block number greater than
-INT32_MAX is returned, this variable overflows and the call to
-sb_getblk() at line fs/ext2/xattr.c:750 fails, then the call to
-ext2_free_blocks() produces the error.
+The variable crtc->state->event is often protected by the lock
+crtc->dev->event_lock when is accessed. However, it is accessed as a
+condition of an if statement in exynos_drm_crtc_atomic_disable() without
+holding the lock:
 
-Signed-off-by: Georg Ottinger <g.ottinger@gmx.at>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Message-Id: <20230815100340.22121-1-g.ottinger@gmx.at>
+  if (crtc->state->event && !crtc->state->active)
+
+However, if crtc->state->event is changed to NULL by another thread right
+after the conditions of the if statement is checked to be true, a
+null-pointer dereference can occur in drm_crtc_send_vblank_event():
+
+  e->pipe = pipe;
+
+To fix this possible null-pointer dereference caused by data race, the
+spin lock coverage is extended to protect the if statement as well as the
+function call to drm_crtc_send_vblank_event().
+
+Reported-by: BassCheck <bass@buaa.edu.cn>
+Link: https://sites.google.com/view/basscheck/home
+Signed-off-by: Tuo Li <islituo@gmail.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Added relevant link.
+Signed-off-by: Inki Dae <inki.dae@samsung.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext2/xattr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/exynos/exynos_drm_crtc.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index 62acbe27d8bf4..ca7ff31a1f194 100644
---- a/fs/ext2/xattr.c
-+++ b/fs/ext2/xattr.c
-@@ -690,10 +690,10 @@ ext2_xattr_set2(struct inode *inode, struct buffer_head *old_bh,
- 			/* We need to allocate a new block */
- 			ext2_fsblk_t goal = ext2_group_first_block_no(sb,
- 						EXT2_I(inode)->i_block_group);
--			int block = ext2_new_block(inode, goal, &error);
-+			ext2_fsblk_t block = ext2_new_block(inode, goal, &error);
- 			if (error)
- 				goto cleanup;
--			ea_idebug(inode, "creating block %d", block);
-+			ea_idebug(inode, "creating block %lu", block);
+diff --git a/drivers/gpu/drm/exynos/exynos_drm_crtc.c b/drivers/gpu/drm/exynos/exynos_drm_crtc.c
+index 2696289ecc78f..b3e23ace5869c 100644
+--- a/drivers/gpu/drm/exynos/exynos_drm_crtc.c
++++ b/drivers/gpu/drm/exynos/exynos_drm_crtc.c
+@@ -43,13 +43,12 @@ static void exynos_drm_crtc_atomic_disable(struct drm_crtc *crtc,
+ 	if (exynos_crtc->ops->disable)
+ 		exynos_crtc->ops->disable(exynos_crtc);
  
- 			new_bh = sb_getblk(sb, block);
- 			if (unlikely(!new_bh)) {
++	spin_lock_irq(&crtc->dev->event_lock);
+ 	if (crtc->state->event && !crtc->state->active) {
+-		spin_lock_irq(&crtc->dev->event_lock);
+ 		drm_crtc_send_vblank_event(crtc, crtc->state->event);
+-		spin_unlock_irq(&crtc->dev->event_lock);
+-
+ 		crtc->state->event = NULL;
+ 	}
++	spin_unlock_irq(&crtc->dev->event_lock);
+ }
+ 
+ static int exynos_crtc_atomic_check(struct drm_crtc *crtc,
 -- 
 2.40.1
 
