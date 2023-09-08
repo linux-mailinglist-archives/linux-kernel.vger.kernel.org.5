@@ -2,100 +2,386 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8F3797FF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 03:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A112E798001
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 03:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238850AbjIHBFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 21:05:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
+        id S239353AbjIHBLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 21:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjIHBFy (ORCPT
+        with ESMTP id S230150AbjIHBLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 21:05:54 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9BC01BD3
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 18:05:50 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 40C4B5C01C9;
-        Thu,  7 Sep 2023 21:05:50 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 07 Sep 2023 21:05:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1694135150; x=1694221550; bh=WmqyT4IFLv9qj
-        H0y30QsEQmethRjFgEsjTygW1IyiXA=; b=DRjkjBnWsc49xHzSgjZXba3yl3ZMr
-        r471ebLtFRXd1N7ePXF61uuOV48ajy4sEVwConnQzv+ujXOikP0cijgJTI5T6XJU
-        eJk1FuIGK7DzaS+KHENdsDGY+bwJAU6zgitbqPMjJvYQ0Jfxgbb6Zy5Bnfyu205x
-        y72zYhq9cPQiEO+Lz8kHXHjE9RI494GB3njvsq3PrtBEuDRpj/5beiqlPqtxqiKL
-        ZAVde3y0G0uesbksFpYUIr9wdFw5caeEBUR5BBpR05OR2TGt1x2xyHv5E8gn6TsM
-        IdItFlw2ra/rCU0lgQFPHiuUIIfkqzoX9cNOyy6qVmS3Ns9zdyXdS1FEA==
-X-ME-Sender: <xms:bXP6ZGo17a6n6-hPbwa3kAekgU6Qw5Zyz5aBmKT9kRMSFY6EaR4Vwg>
-    <xme:bXP6ZEoWqwrjhIxqX8NAcrCkHMjRIBb2V3wiGC8vKZgnqzeMZGqQavts9LfblZ_lq
-    YI6ZLSHOe-cHprNvKM>
-X-ME-Received: <xmr:bXP6ZLNRd_Ctkcs2FPc6qYavojZC6TorceNe-LdqKCT6A3716qDM6WIGJbseeQeCJQ1gwc7xwm9Q_jOK9dOaLIyQUBA27Q2xJ6c>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehiedggeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:bnP6ZF4HHGZ9dLGvkeIUYJxOiP0pk82kcv5HxaSf5sOLbDVhj6GMHw>
-    <xmx:bnP6ZF5beTNRjvACs1BPZdeyFbV0hEF8945hbW2JvFgDsXJmZWwrqw>
-    <xmx:bnP6ZFj3UDKkNJsO1GWzl_KuvEGujSKV4AmiLG36Bm2H0lJchrNZwQ>
-    <xmx:bnP6ZAbHjtdQRFnkExEFB-YVvSRVlQ2SZOoHAbo0Iki_u-nGq1Bynw>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 7 Sep 2023 21:05:47 -0400 (EDT)
-Date:   Fri, 8 Sep 2023 11:05:59 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
-        Philip Blundell <philb@gnu.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        Laurent Vivier <laurent@vivier.eu>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 22/52] m68k: atari: Add and use "atari.h"
-In-Reply-To: <6ff868a4-d433-6e92-8bf2-573fee19ce2c@gmail.com>
-Message-ID: <291d4cb0-e3b8-1e7d-8b34-79aee23865fa@linux-m68k.org>
-References: <cover.1694093327.git.geert@linux-m68k.org> <0778d9dd186928666d760d5523c7d2311f781621.1694093327.git.geert@linux-m68k.org> <142e4eb5-b47e-e27c-1be3-bc6c5df889c0@linux-m68k.org> <6ff868a4-d433-6e92-8bf2-573fee19ce2c@gmail.com>
+        Thu, 7 Sep 2023 21:11:12 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838CD1BCB;
+        Thu,  7 Sep 2023 18:11:08 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so25578721fa.3;
+        Thu, 07 Sep 2023 18:11:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694135467; x=1694740267; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bx8foFNhrfnEFqYrw1yPcsgvr+XmSSnNMk5PfQGbNnk=;
+        b=adbHhY+KegOybp7wX3TehTmh5Yk9G4AS/ShNvFIpWsJOi17bmLw5yp3b7oko9JXMEx
+         43EUYFeTcgFfbUXbe+hkLYUsC2+2M6KL+gf3YtLFmR5K52IusLhwMOLTgVl2Vpy9sqF9
+         vAOxWzsy6x/vSD+u3Xfn4CdepO5a4lmmM4cvoiHgB1uiul/Xj0Y/GEpzS2gjTyPKEsn0
+         xr5mIKWszI5bW5s9wiJcMq1o0Wf8YF3sbBnvEU+6KVEVqvMHw9hTidtpIgG5MUzMBq5+
+         BBynBNmDw2sFEnpUbhwmH1qzzP/ikAMlN7EvJvI1cXN2P2LRm2LaIaB/RDQKf9YS6Qxs
+         5rig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694135467; x=1694740267;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bx8foFNhrfnEFqYrw1yPcsgvr+XmSSnNMk5PfQGbNnk=;
+        b=Uh9/S4hFpe9nBKttaFhqDBnSgM87Jdoen7GK30bSMuwlyX260dTMVqHSY2SokPnulT
+         CDJOLou3FkKQtEoTbKMpshJKBsJehJkJnBRMDW+CGbOW5sJz1CL6fht0BV2G7qPNxA/H
+         w4KME7H+gmgtHcjwOfZpSqJ6y2wPtQYOHcm4ZgFZ2UHocaf4VQ2lQ0ue5sgvFYmbRypb
+         t/J7XkUTd0cJvG80kIaRBngnsLZqiC2bwhdscwY73PJWRU29IX+PeVpKINQdnVD6Ur/y
+         ZoYKcwBmGyA/X7iFVVq0FQn6Y48Sbugre7K89CnPRjiLm/Uax+GU+enimRx7TpTA29U1
+         PdOQ==
+X-Gm-Message-State: AOJu0YzVhxI3PGqSFsMCnMkyKgNxHeZR3ucPpU2cYgqAL1NEGqS/klP5
+        kd8qKRe78l8Q7glDkdPCqegYVvHH/zHIkPtdoPlRZFSa
+X-Google-Smtp-Source: AGHT+IGLkUNfUAVoPPl1Fw4C2EH7VcKQadbwCD1PYm5yL5A8RL4nKzxjF47HJgIEga7SpQX1409vG6/bnEsD6Xaq9HI=
+X-Received: by 2002:a2e:3517:0:b0:2b6:e2aa:8fbc with SMTP id
+ z23-20020a2e3517000000b002b6e2aa8fbcmr562178ljz.8.1694135466348; Thu, 07 Sep
+ 2023 18:11:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230906102507.15504-2-tinozzo123@gmail.com>
+In-Reply-To: <20230906102507.15504-2-tinozzo123@gmail.com>
+From:   Daniel Ogorchock <djogorchock@gmail.com>
+Date:   Thu, 7 Sep 2023 21:10:55 -0400
+Message-ID: <CAEVj2tk3uUa625YVO+2Mv80FbNT6gE=16_GTxuLUB1ncT_jV2A@mail.gmail.com>
+Subject: Re: [PATCH v2 RESEND] HID: nintendo: reinitialize USB Pro Controller
+ after resuming from suspend
+To:     Martino Fontana <tinozzo123@gmail.com>
+Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Sep 2023, Michael Schmitz wrote:
+On Wed, Sep 6, 2023 at 6:25=E2=80=AFAM Martino Fontana <tinozzo123@gmail.co=
+m> wrote:
+>
+> When suspending the computer, a Switch Pro Controller connected via USB w=
+ill
+> lose its internal status. However, because the USB connection was technic=
+ally
+> never lost, when resuming the computer, the driver will attempt to commun=
+icate
+> with the controller as if nothing happened (and fail).
+> Because of this, the user was forced to manually disconnect the controlle=
+r
+> (or to press the sync button on the controller to power it off), so that =
+it
+> can be re-initialized.
+>
+> With this patch, the controller will be automatically re-initialized afte=
+r
+> resuming from suspend.
+>
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D216233
+>
+> Signed-off-by: Martino Fontana <tinozzo123@gmail.com>
 
-> 
-> atariints.h already has some prototypes, so yes on that account.
-> 
-> atarihw.h only has inlines, but sound and time related prototypes could 
-> be added there, too.
-> 
-> Geert's intentions might have been avoiding inclusion of all the 
-> hardware specific data in those two files, but the only source file to 
-> benefit from this is config.c (the other three already include 
-> atariints.h and atarihw.h).
-> 
-> OTOH, considering this patch series adds a lot of other headers that 
-> only contain prototypes, it might be better to keep to that pattern 
-> everywhere.
-> 
+Hi Martino,
 
-I think Geert's intention may have been to avoid adding definitions to the 
-asm/foo.h headers shipped with "make headers_install". If that's the 
-intention, there would seem to be a mess to be cleaned up, for which I'm 
-partly to blame...
+Thanks for the patch. This has been on the backlog for a long time, so
+it's great to see that USB resume is handled now.
+
+Have you tested how this behaves for bluetooth controllers? Does the
+pm resume hook always result in error logs for bluetooth controllers,
+or has the kernel already removed the device before resume?
+
+> ---
+>  drivers/hid/hid-nintendo.c | 178 ++++++++++++++++++++++---------------
+>  1 file changed, 106 insertions(+), 72 deletions(-)
+>
+> diff --git a/drivers/hid/hid-nintendo.c b/drivers/hid/hid-nintendo.c
+> index 250f5d2f8..a5ebe857a 100644
+> --- a/drivers/hid/hid-nintendo.c
+> +++ b/drivers/hid/hid-nintendo.c
+> @@ -2088,7 +2088,9 @@ static int joycon_read_info(struct joycon_ctlr *ctl=
+r)
+>         struct joycon_input_report *report;
+>
+>         req.subcmd_id =3D JC_SUBCMD_REQ_DEV_INFO;
+> +       mutex_lock(&ctlr->output_mutex);
+>         ret =3D joycon_send_subcmd(ctlr, &req, 0, HZ);
+> +       mutex_unlock(&ctlr->output_mutex);
+>         if (ret) {
+>                 hid_err(ctlr->hdev, "Failed to get joycon info; ret=3D%d\=
+n", ret);
+>                 return ret;
+> @@ -2117,6 +2119,88 @@ static int joycon_read_info(struct joycon_ctlr *ct=
+lr)
+>         return 0;
+>  }
+>
+> +static int joycon_init(struct hid_device *hdev)
+> +{
+> +       struct joycon_ctlr *ctlr =3D hid_get_drvdata(hdev);
+> +       int ret =3D 0;
+> +
+> +       mutex_lock(&ctlr->output_mutex);
+> +       /* if handshake command fails, assume ble pro controller */
+> +       if ((jc_type_is_procon(ctlr) || jc_type_is_chrggrip(ctlr)) &&
+> +           !joycon_send_usb(ctlr, JC_USB_CMD_HANDSHAKE, HZ)) {
+> +               hid_dbg(hdev, "detected USB controller\n");
+> +               /* set baudrate for improved latency */
+> +               ret =3D joycon_send_usb(ctlr, JC_USB_CMD_BAUDRATE_3M, HZ)=
+;
+> +               if (ret) {
+> +                       hid_err(hdev, "Failed to set baudrate; ret=3D%d\n=
+", ret);
+> +                       goto err_mutex;
+> +               }
+> +               /* handshake */
+> +               ret =3D joycon_send_usb(ctlr, JC_USB_CMD_HANDSHAKE, HZ);
+> +               if (ret) {
+> +                       hid_err(hdev, "Failed handshake; ret=3D%d\n", ret=
+);
+> +                       goto err_mutex;
+> +               }
+> +               /*
+> +                * Set no timeout (to keep controller in USB mode).
+> +                * This doesn't send a response, so ignore the timeout.
+> +                */
+> +               joycon_send_usb(ctlr, JC_USB_CMD_NO_TIMEOUT, HZ/10);
+> +       } else if (jc_type_is_chrggrip(ctlr)) {
+> +               hid_err(hdev, "Failed charging grip handshake\n");
+> +               ret =3D -ETIMEDOUT;
+> +               goto err_mutex;
+> +       }
+> +
+> +       /* get controller calibration data, and parse it */
+> +       ret =3D joycon_request_calibration(ctlr);
+> +       if (ret) {
+> +               /*
+> +                * We can function with default calibration, but it may b=
+e
+> +                * inaccurate. Provide a warning, and continue on.
+> +                */
+> +               hid_warn(hdev, "Analog stick positions may be inaccurate\=
+n");
+> +       }
+> +
+> +       /* get IMU calibration data, and parse it */
+> +       ret =3D joycon_request_imu_calibration(ctlr);
+> +       if (ret) {
+> +               /*
+> +                * We can function with default calibration, but it may b=
+e
+> +                * inaccurate. Provide a warning, and continue on.
+> +                */
+> +               hid_warn(hdev, "Unable to read IMU calibration data\n");
+> +       }
+> +
+> +       /* Set the reporting mode to 0x30, which is the full report mode =
+*/
+> +       ret =3D joycon_set_report_mode(ctlr);
+> +       if (ret) {
+> +               hid_err(hdev, "Failed to set report mode; ret=3D%d\n", re=
+t);
+> +               goto err_mutex;
+> +       }
+> +
+> +       /* Enable rumble */
+> +       ret =3D joycon_enable_rumble(ctlr);
+> +       if (ret) {
+> +               hid_err(hdev, "Failed to enable rumble; ret=3D%d\n", ret)=
+;
+> +               goto err_mutex;
+> +       }
+> +
+> +       /* Enable the IMU */
+> +       ret =3D joycon_enable_imu(ctlr);
+> +       if (ret) {
+> +               hid_err(hdev, "Failed to enable the IMU; ret=3D%d\n", ret=
+);
+> +               goto err_mutex;
+> +       }
+> +
+> +       mutex_unlock(&ctlr->output_mutex);
+> +       return 0;
+
+If desired, you could remove the above two lines and allow flow to
+continue through err_mutex even in the success case.
+
+> +
+> +err_mutex:
+> +       mutex_unlock(&ctlr->output_mutex);
+> +       return ret;
+> +}
+> +
+>  /* Common handler for parsing inputs */
+>  static int joycon_ctlr_read_handler(struct joycon_ctlr *ctlr, u8 *data,
+>                                                               int size)
+> @@ -2248,85 +2332,19 @@ static int nintendo_hid_probe(struct hid_device *=
+hdev,
+>
+>         hid_device_io_start(hdev);
+>
+> -       /* Initialize the controller */
+> -       mutex_lock(&ctlr->output_mutex);
+> -       /* if handshake command fails, assume ble pro controller */
+> -       if ((jc_type_is_procon(ctlr) || jc_type_is_chrggrip(ctlr)) &&
+> -           !joycon_send_usb(ctlr, JC_USB_CMD_HANDSHAKE, HZ)) {
+> -               hid_dbg(hdev, "detected USB controller\n");
+> -               /* set baudrate for improved latency */
+> -               ret =3D joycon_send_usb(ctlr, JC_USB_CMD_BAUDRATE_3M, HZ)=
+;
+> -               if (ret) {
+> -                       hid_err(hdev, "Failed to set baudrate; ret=3D%d\n=
+", ret);
+> -                       goto err_mutex;
+> -               }
+> -               /* handshake */
+> -               ret =3D joycon_send_usb(ctlr, JC_USB_CMD_HANDSHAKE, HZ);
+> -               if (ret) {
+> -                       hid_err(hdev, "Failed handshake; ret=3D%d\n", ret=
+);
+> -                       goto err_mutex;
+> -               }
+> -               /*
+> -                * Set no timeout (to keep controller in USB mode).
+> -                * This doesn't send a response, so ignore the timeout.
+> -                */
+> -               joycon_send_usb(ctlr, JC_USB_CMD_NO_TIMEOUT, HZ/10);
+> -       } else if (jc_type_is_chrggrip(ctlr)) {
+> -               hid_err(hdev, "Failed charging grip handshake\n");
+> -               ret =3D -ETIMEDOUT;
+> -               goto err_mutex;
+> -       }
+> -
+> -       /* get controller calibration data, and parse it */
+> -       ret =3D joycon_request_calibration(ctlr);
+> -       if (ret) {
+> -               /*
+> -                * We can function with default calibration, but it may b=
+e
+> -                * inaccurate. Provide a warning, and continue on.
+> -                */
+> -               hid_warn(hdev, "Analog stick positions may be inaccurate\=
+n");
+> -       }
+> -
+> -       /* get IMU calibration data, and parse it */
+> -       ret =3D joycon_request_imu_calibration(ctlr);
+> -       if (ret) {
+> -               /*
+> -                * We can function with default calibration, but it may b=
+e
+> -                * inaccurate. Provide a warning, and continue on.
+> -                */
+> -               hid_warn(hdev, "Unable to read IMU calibration data\n");
+> -       }
+> -
+> -       /* Set the reporting mode to 0x30, which is the full report mode =
+*/
+> -       ret =3D joycon_set_report_mode(ctlr);
+> -       if (ret) {
+> -               hid_err(hdev, "Failed to set report mode; ret=3D%d\n", re=
+t);
+> -               goto err_mutex;
+> -       }
+> -
+> -       /* Enable rumble */
+> -       ret =3D joycon_enable_rumble(ctlr);
+> -       if (ret) {
+> -               hid_err(hdev, "Failed to enable rumble; ret=3D%d\n", ret)=
+;
+> -               goto err_mutex;
+> -       }
+> -
+> -       /* Enable the IMU */
+> -       ret =3D joycon_enable_imu(ctlr);
+> +       ret =3D joycon_init(hdev);
+>         if (ret) {
+> -               hid_err(hdev, "Failed to enable the IMU; ret=3D%d\n", ret=
+);
+> -               goto err_mutex;
+> +               hid_err(hdev, "Failed to initialize controller; ret=3D%d\=
+n", ret);
+> +               goto err_close;
+>         }
+>
+>         ret =3D joycon_read_info(ctlr);
+>         if (ret) {
+>                 hid_err(hdev, "Failed to retrieve controller info; ret=3D=
+%d\n",
+>                         ret);
+> -               goto err_mutex;
+> +               goto err_close;
+>         }
+>
+> -       mutex_unlock(&ctlr->output_mutex);
+> -
+>         /* Initialize the leds */
+>         ret =3D joycon_leds_create(ctlr);
+>         if (ret) {
+> @@ -2352,8 +2370,6 @@ static int nintendo_hid_probe(struct hid_device *hd=
+ev,
+>         hid_dbg(hdev, "probe - success\n");
+>         return 0;
+>
+> -err_mutex:
+> -       mutex_unlock(&ctlr->output_mutex);
+>  err_close:
+>         hid_hw_close(hdev);
+>  err_stop:
+> @@ -2383,6 +2399,20 @@ static void nintendo_hid_remove(struct hid_device =
+*hdev)
+>         hid_hw_stop(hdev);
+>  }
+>
+> +#ifdef CONFIG_PM
+> +
+> +static int nintendo_hid_resume(struct hid_device *hdev)
+> +{
+> +       int ret =3D joycon_init(hdev);
+> +
+> +       if (ret)
+> +               hid_err(hdev, "Failed to restore controller after resume"=
+);
+> +
+> +       return ret;
+> +}
+> +
+> +#endif
+> +
+>  static const struct hid_device_id nintendo_hid_devices[] =3D {
+>         { HID_USB_DEVICE(USB_VENDOR_ID_NINTENDO,
+>                          USB_DEVICE_ID_NINTENDO_PROCON) },
+> @@ -2404,6 +2434,10 @@ static struct hid_driver nintendo_hid_driver =3D {
+>         .probe          =3D nintendo_hid_probe,
+>         .remove         =3D nintendo_hid_remove,
+>         .raw_event      =3D nintendo_hid_event,
+> +
+> +#ifdef CONFIG_PM
+> +       .resume         =3D nintendo_hid_resume,
+> +#endif
+
+Something else we should do is add a suspend hook to power off the
+bluetooth-connected controllers. As of now, they remain powered on
+during suspend.
+
+>  };
+>  module_hid_driver(nintendo_hid_driver);
+>
+> --
+> 2.41.0
+>
+
+Thanks,
+Daniel
