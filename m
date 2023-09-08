@@ -2,50 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26BEA798108
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 05:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9544D798118
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 06:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240214AbjIHDo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 23:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55078 "EHLO
+        id S232301AbjIHEBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 00:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230436AbjIHDoz (ORCPT
+        with ESMTP id S229679AbjIHEBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 23:44:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD7A1BD5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 20:44:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28373C433C8;
-        Fri,  8 Sep 2023 03:44:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694144691;
-        bh=NO6h5OcHwHsI0o1lcWAQvbgEh5BLlbaPObg41/h+1VE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ms53MSfrw40om2BbrDYkVeylRGWZ69/gSBVDp9HobzwJjjyMThAQs7FZCn07G5cwf
-         CWegrmdW/vdYNPcooCasjlFz0fxYKJNupgk9C7eleq9hsUaHMCaKoHwlhpQv0T8YUw
-         J8VUmRpyEClm7gIcX6CoJ4dSytflHEYoWUoLiqevMjxpc3MLCtkZaNqnAEzLE6psEB
-         bGTNCmW/bxL5AzHB9sBAAnd2/92+Ldh0xxk+64rGPMAz/1HMnn93KsQpyAP511lWhl
-         yE/dGaz0UhU7Y+uaFsmzIS1l1wwxuWzTkbOKRR0y6AuEh9n/tqj5IotZIHspDujHMq
-         c6ovhaxJEjmiw==
-Date:   Thu, 7 Sep 2023 20:44:50 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-Cc:     <piergiorgio.beruto@gmail.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <pabeni@redhat.com>, <andrew@lunn.ch>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <horatiu.vultur@microchip.com>, <Woojung.Huh@microchip.com>,
-        <Nicolas.Ferre@microchip.com>, <Thorsten.Kummermehr@microchip.com>,
-        <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH net v2] ethtool: plca: fix plca enable data type while
- parsing the value
-Message-ID: <20230907204450.6b9e63df@kernel.org>
-In-Reply-To: <20230908140346.40680-1-Parthiban.Veerasooran@microchip.com>
-References: <20230908140346.40680-1-Parthiban.Veerasooran@microchip.com>
+        Fri, 8 Sep 2023 00:01:46 -0400
+X-Greylist: delayed 398 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Sep 2023 21:01:38 PDT
+Received: from smtp1.hiworks.co.kr (smtp1.hiworks.co.kr [121.254.168.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3631BDD
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 21:01:37 -0700 (PDT)
+Received: (qmail 127826 invoked from network); 8 Sep 2023 12:54:54 +0900
+Received: from unknown (HELO hiworks.co.kr) (192.168.10.224)
+        by 0 (qmail 1.03 + ejcp v14) with SMTP;
+        8 Sep 2023 12:54:54 +0900
+Received: (qmail 154234 invoked from network); 8 Sep 2023 12:54:54 +0900
+Received: from unknown (HELO saram-MINIPC-PN53..) (mwkim@gaonchips.com@220.88.49.178)
+        by 0 (qmail 1.03 + ejcp v14) with SMTP;
+        8 Sep 2023 12:54:54 +0900
+X-Authinfo: HIWORKS SMTP authenticated <mwkim@gaonchips.com|220.88.49.178|mwkim@gaonchips.com|230908125454_7307154146>
+X-MailFrom-INFO: Info <country_code:KR|rbl_level:0>
+From:   Myunguk Kim <mwkim@gaonchips.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        =?UTF-8?q?Uw=20e=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Myunguk Kim <mwkim@gaonchips.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] ASoC: dwc: Add Single DMA mode support
+Date:   Fri,  8 Sep 2023 12:54:49 +0900
+Message-Id: <20230908035449.2211723-1-mwkim@gaonchips.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,17 +52,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Sep 2023 19:33:46 +0530 Parthiban Veerasooran wrote:
-> The ETHTOOL_A_PLCA_ENABLED data type is u8. But while parsing the
-> value from the attribute, nla_get_u32() is used in the plca_update_sint()
-> function instead of nla_get_u8(). So plca_cfg.enabled variable is updated
-> with some garbage value instead of 0 or 1 and always enables plca even
-> though plca is disabled through ethtool application. This bug has been
-> fixed by parsing the values based on the attributes type in the policy.
-> 
-> Fixes: 8580e16c28f3 ("net/ethtool: add netlink interface for the PLCA RS")
-> Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+There is a SoC between dwc and DMA block (ie. PL330)
+that does not have a burst signal and supports only single.
 
-One second look you need to fix the date on your system and resend.
-The patch came to us with a date 24h in the future it will confuse
-patchwork.
+So write not-support-burst property on dts, it support single DMA mode.
+
+Signed-off-by: Myunguk Kim <mwkim@gaonchips.com>
+---
+ include/sound/designware_i2s.h |  1 +
+ sound/soc/dwc/dwc-i2s.c        | 12 ++++++++++--
+ 2 files changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/include/sound/designware_i2s.h b/include/sound/designware_i2s.h
+index f6803205a9fb..060e0cbcd55c 100644
+--- a/include/sound/designware_i2s.h
++++ b/include/sound/designware_i2s.h
+@@ -36,6 +36,7 @@ struct i2s_platform_data 
+{ 	#define DW_I2S_QUIRK_COMP_REG_OFFSET	(1 << 0)
+ 	#define DW_I2S_QUIRK_COMP_PARAM1	(1 << 1)
+ 	#define DW_I2S_QUIRK_16BIT_IDX_OVERRIDE (1 << 2)
++	#define DW_I2S_QUIRK_NOT_SUPPORT_BURST	(1 << 3)
+ 	unsigned int quirks;
+ 	unsigned int i2s_reg_comp1;
+ 	unsigned int i2s_reg_comp2;
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index 5ab1b3eb2d28..c4dd8c18beba 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -713,7 +713,10 @@ static int dw_configure_dai_by_dt(struct dw_i2s_dev *dev,
+ 		dev->play_dma_data.dt.addr = res->start + I2S_TXDMA;
+ 		dev->play_dma_data.dt.fifo_size = fifo_depth *
+ 			(fifo_width[idx2]) >> 8;
+-		dev->play_dma_data.dt.maxburst = 16;
++		if (dev->quirks & DW_I2S_QUIRK_NOT_SUPPORT_BURST)
++			dev->play_dma_data.dt.maxburst = 1;
++		else
++			dev->play_dma_data.dt.maxburst = 16;
+ 	}
+ 	if (COMP1_RX_ENABLED(comp1)) 
+{ 		idx2 = COMP2_RX_WORDSIZE_0(comp2);
+@@ -722,7 +725,10 @@ static int dw_configure_dai_by_dt(struct dw_i2s_dev *dev,
+ 		dev->capture_dma_data.dt.addr = res->start + I2S_RXDMA;
+ 		dev->capture_dma_data.dt.fifo_size = fifo_depth *
+ 			(fifo_width[idx2] >> 8);
+-		dev->capture_dma_data.dt.maxburst = 16;
++		if (dev->quirks & DW_I2S_QUIRK_NOT_SUPPORT_BURST)
++			dev->capture_dma_data.dt.maxburst = 1;
++		else
++			dev->capture_dma_data.dt.maxburst = 16;
+ 	}
+ 
+ 	return 0;
+@@ -979,6 +985,8 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 		ret = dw_configure_dai_by_pd(dev, dw_i2s_dai, res, pdata);
+ 	} else 
+{ 		clk_id = "i2sclk";
++		if (of_get_property(pdev->dev.of_node, "not-support-burst", NULL))
++			dev->quirks |= DW_I2S_QUIRK_NOT_SUPPORT_BURST;
+ 		ret = dw_configure_dai_by_dt(dev, dw_i2s_dai, res);
+ 	}
+ 	if (ret < 0)
+-- 
+2.34.1
+
