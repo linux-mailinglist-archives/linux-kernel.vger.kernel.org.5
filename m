@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A93F3798CBF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09470798CD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242709AbjIHSSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:18:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43188 "EHLO
+        id S1343836AbjIHSSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343898AbjIHSR5 (ORCPT
+        with ESMTP id S1343939AbjIHSSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:17:57 -0400
+        Fri, 8 Sep 2023 14:18:07 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B941FC9;
-        Fri,  8 Sep 2023 11:17:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66B3EC116B7;
-        Fri,  8 Sep 2023 18:15:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C2B1FE1;
+        Fri,  8 Sep 2023 11:17:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD3A3C116B3;
+        Fri,  8 Sep 2023 18:15:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196912;
-        bh=W16OcVSKs5ccAz3e1l46OfV/3zF/e5jNDDgw0J5WPgM=;
+        s=k20201202; t=1694196913;
+        bh=v5r4k8U0DLGb0mXAvVkpUeh3vSlveuQG9MwHS2kHWDM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DS0/awohiZ/7rrGL1a3MuZC/LFneSMY0kHzbBZXbjTeTbnWAOsefi1ztWT1PjTyad
-         6svqhP+s0GSuTaUmlRs2V56hRtra+5Difvyz+LlmEbaosnTdoZ+H1RvZPN0giCeN32
-         7rOIhgMoELMIsCpBTVDM3qg05dqRM3HDkdGPxkbnSv+nQhsriTHArGod59mf1Ir0lO
-         mTWgk83pQDGvFk3Ua035iXBlo2yUpgXcCww1+geq4fA2uc5wHELfRs+2rSEJBlLtBk
-         X45+IKV9DXMqPU+Uos0GAX+1Ixn2oeL4bfHMeEava+0Brz4ILx9eKJmRL7GwBRL4/z
-         ZDj5Qbzo6MqOg==
+        b=VPkwgsi/qn1vNpXJcbP4xtFnNJcmO1A9m5XEFiSWoHT9UVfkfwx69KJ8z7sDTMlKZ
+         WHILo2BPJgzGW4wxdJ/cuKkIFC4cP0wyxK+ejneXQBO0Pmgtk8mAJNvwVZhxV+Eosd
+         WuZQBKEUbXa4iD+Vt/OTmUPPMPu/rlprrCLBEZ7aq4XC82N5LTm/9Uj3PR+dBLVrps
+         q8WzDWb5TtdWIdFYiGyFc7ar9TIh1jO+pA635kXPSL6qvHjQDG3kO3mSp5JTikyJTR
+         lUc2UDIMxHFXF4SL5cRtC6AjbzGMuW26Gux5JAretKe+WWN8aerqPB8sVLPp0dFuBu
+         yWrEWQ3zr13qQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Johannes Berg <johannes.berg@intel.com>,
-        syzbot+b2645b5bf1512b81fa22@syzkaller.appspotmail.com,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
         Sasha Levin <sashal@kernel.org>, johannes@sipsolutions.net,
         kvalo@kernel.org, linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 37/45] wifi: mac80211_hwsim: drop short frames
-Date:   Fri,  8 Sep 2023 14:13:18 -0400
-Message-Id: <20230908181327.3459042-37-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 38/45] Revert "wifi: mac80211_hwsim: check the return value of nla_put_u32"
+Date:   Fri,  8 Sep 2023 14:13:19 -0400
+Message-Id: <20230908181327.3459042-38-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181327.3459042-1-sashal@kernel.org>
 References: <20230908181327.3459042-1-sashal@kernel.org>
@@ -56,45 +54,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit fba360a047d5eeeb9d4b7c3a9b1c8308980ce9a6 ]
+[ Upstream commit 1b78dd34560e9962f8e917fe4adde6f2ab0eb89f ]
 
-While technically some control frames like ACK are shorter and
-end after Address 1, such frames shouldn't be forwarded through
-wmediumd or similar userspace, so require the full 3-address
-header to avoid accessing invalid memory if shorter frames are
-passed in.
+This reverts commit b970ac68e0c4 ("wifi: mac80211_hwsim: check the
+return value of nla_put_u32") since it introduced a memory leak in
+the error path, which seems worse than sending an incomplete skb,
+and the put can't fail anyway since the SKB was just allocated.
 
-Reported-by: syzbot+b2645b5bf1512b81fa22@syzkaller.appspotmail.com
-Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/virtual/mac80211_hwsim.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/wireless/virtual/mac80211_hwsim.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/wireless/virtual/mac80211_hwsim.c b/drivers/net/wireless/virtual/mac80211_hwsim.c
-index f446fd0e8cd0d..dd516cec41973 100644
+index dd516cec41973..23307c8baea21 100644
 --- a/drivers/net/wireless/virtual/mac80211_hwsim.c
 +++ b/drivers/net/wireless/virtual/mac80211_hwsim.c
-@@ -5626,14 +5626,15 @@ static int hwsim_cloned_frame_received_nl(struct sk_buff *skb_2,
- 	frame_data_len = nla_len(info->attrs[HWSIM_ATTR_FRAME]);
- 	frame_data = (void *)nla_data(info->attrs[HWSIM_ATTR_FRAME]);
+@@ -582,9 +582,8 @@ static int mac80211_hwsim_vendor_cmd_test(struct wiphy *wiphy,
+ 		 */
  
-+	if (frame_data_len < sizeof(struct ieee80211_hdr_3addr) ||
-+	    frame_data_len > IEEE80211_MAX_DATA_LEN)
-+		goto err;
+ 		/* Add vendor data */
+-		err = nla_put_u32(skb, QCA_WLAN_VENDOR_ATTR_TEST, val + 1);
+-		if (err)
+-			return err;
++		nla_put_u32(skb, QCA_WLAN_VENDOR_ATTR_TEST, val + 1);
 +
- 	/* Allocate new skb here */
- 	skb = alloc_skb(frame_data_len, GFP_KERNEL);
- 	if (skb == NULL)
- 		goto err;
- 
--	if (frame_data_len > IEEE80211_MAX_DATA_LEN)
--		goto err;
--
- 	/* Copy the data */
- 	skb_put_data(skb, frame_data, frame_data_len);
- 
+ 		/* Send the event - this will call nla_nest_end() */
+ 		cfg80211_vendor_event(skb, GFP_KERNEL);
+ 	}
 -- 
 2.40.1
 
