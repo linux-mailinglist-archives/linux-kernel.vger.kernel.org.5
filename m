@@ -2,42 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3FC799091
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619EF799062
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238547AbjIHTt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46340 "EHLO
+        id S234028AbjIHToI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:44:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234041AbjIHTt0 (ORCPT
+        with ESMTP id S230022AbjIHToF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:49:26 -0400
+        Fri, 8 Sep 2023 15:44:05 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0014B2696;
-        Fri,  8 Sep 2023 12:49:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF341C433C7;
-        Fri,  8 Sep 2023 19:33:00 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1DE26A5;
+        Fri,  8 Sep 2023 12:43:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E064C433C9;
+        Fri,  8 Sep 2023 19:33:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201582;
-        bh=/fl972o/lq1Tfwhci3r1oCRLmRL2sWl6fS4A2/i7fwY=;
+        s=k20201202; t=1694201584;
+        bh=LtluMiPiAvNOgrlFsorMjnATBMItZh1rE0cJ9Uf6TLc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SQpcxl8XoO+6ES68kI8jCpejayXeFddYehquMlDMQZfZpysXaGvUgcot0jcXqpj39
-         IJog18ueQ4e2hpsZBbyaEh1Vprn+nbDxGZ9e5yt8lKwk92Hrgst7yaacDIDvlMBydR
-         MCXfHi00W95cLZl4JruJFMl3lYUBTPd3LP884lGAtREOtBBNzqD3LgmrMCPE7ER6aR
-         robdkVAdwE4WDKezFY0x7zXSdxxx7kEKVRSWv4o+hUwQT3QZrvN0lTk9WA2plrwN9/
-         dDpAdgDej/UU+8JVcemC+RewVoadWaBZDLVbo8XNQymqdfHEPBucNeVRiwiLpuib+A
-         HHPEB7VD6n/QA==
+        b=Z0/VDig3T+E8aCLIqotHkOVBb8PLc4ew1h4J6YtiTQS3o2rLJywhCDEdd3gMafa+e
+         fawsBhdv2gAm2JGlH9Dp/rmcO4M5i+rZp3z+muCOdDJJ2mpwkfy210tgPXW+zJv/IM
+         bfiM9byhXdb/nwZHI3Wr8VhhQJQM1dNMgty9rUYp/iDtvb8PEhXdaCedm4ajxzugoy
+         3wS7AMKMIieaQZdcqUhUqLe0QJ4p5ID8UJmutB44j/GeFKCJWojPGUoT6cnf0ElI1c
+         7qK0grvyZt6o+uTW+H/ZOGf3SQT3t5po3t3podiSoioO6NVOUMzoMkQuHUiJcyD/4o
+         34QKTWx03sqHQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Ma=C3=ADra=20Canal?= <mcanal@igalia.com>,
-        Arthur Grillo <arthurgrillo@riseup.net>,
-        =?UTF-8?q?Ma=C3=ADra=20Canal?= <mairacanal@riseup.net>,
-        Sasha Levin <sashal@kernel.org>, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.4 14/31] drm/vkms: Fix race-condition between the hrtimer and the atomic commit
-Date:   Fri,  8 Sep 2023 15:31:43 -0400
-Message-Id: <20230908193201.3462957-14-sashal@kernel.org>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Rander Wang <rander.wang@intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Yaochun Hung <yc.hung@mediatek.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
+        peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, perex@perex.cz, tiwai@suse.com,
+        matthias.bgg@gmail.com, sound-open-firmware@alsa-project.org,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.4 15/31] ASoC: SOF: topology: simplify code to prevent static analysis warnings
+Date:   Fri,  8 Sep 2023 15:31:44 -0400
+Message-Id: <20230908193201.3462957-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908193201.3462957-1-sashal@kernel.org>
 References: <20230908193201.3462957-1-sashal@kernel.org>
@@ -56,119 +61,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maíra Canal <mcanal@igalia.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit a0e6a017ab56936c0405fe914a793b241ed25ee0 ]
+[ Upstream commit 55cb3dc271d81f1982c949a2ac483a6daf613b92 ]
 
-Currently, it is possible for the composer to be set as enabled and then
-as disabled without a proper call for the vkms_vblank_simulate(). This
-is problematic, because the driver would skip one CRC output, causing CRC
-tests to fail. Therefore, we need to make sure that, for each time the
-composer is set as enabled, a composer job is added to the queue.
+make KCFLAGS='-fanalyzer' sound/soc/sof/intel/ reports a possible NULL
+pointer dereference.
 
-In order to provide this guarantee, add a mutex that will lock before
-the composer is set as enabled and will unlock only after the composer
-job is added to the queue. This way, we can have a guarantee that the
-driver won't skip a CRC entry.
+sound/soc/sof/topology.c:1136:21: error: dereference of NULL ‘w’
+[CWE-476] [-Werror=analyzer-null-dereference]
 
-This race-condition is affecting the IGT test "writeback-check-output",
-making the test fail and also, leaking writeback framebuffers, as the
-writeback job is queued, but it is not signaled. This patch avoids both
-problems.
+ 1136 |     strcmp(w->sname, rtd->dai_link->stream_name))
 
-[v2]:
-    * Create a new mutex and keep the spinlock across the atomic commit in
-      order to avoid interrupts that could result in deadlocks.
+The code is rather confusing and can be simplified to make static
+analysis happy. No functionality change.
 
-Signed-off-by: Maíra Canal <mcanal@igalia.com>
-Reviewed-by: Arthur Grillo <arthurgrillo@riseup.net>
-Signed-off-by: Maíra Canal <mairacanal@riseup.net>
-Link: https://patchwork.freedesktop.org/patch/msgid/20230523123207.173976-1-mcanal@igalia.com
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+Reviewed-by: Yaochun Hung <yc.hung@mediatek.com>
+Link: https://lore.kernel.org/r/20230731213748.440285-4-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vkms/vkms_composer.c | 9 +++++++--
- drivers/gpu/drm/vkms/vkms_crtc.c     | 9 +++++----
- drivers/gpu/drm/vkms/vkms_drv.h      | 4 +++-
- 3 files changed, 15 insertions(+), 7 deletions(-)
+ sound/soc/sof/topology.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
-index 80164e79af006..7f56d1f7eda11 100644
---- a/drivers/gpu/drm/vkms/vkms_composer.c
-+++ b/drivers/gpu/drm/vkms/vkms_composer.c
-@@ -296,10 +296,15 @@ void vkms_set_composer(struct vkms_output *out, bool enabled)
- 	if (enabled)
- 		drm_crtc_vblank_get(&out->crtc);
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index f160dc454b448..8e6f6148f0a07 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -1117,10 +1117,11 @@ static void sof_disconnect_dai_widget(struct snd_soc_component *scomp,
+ {
+ 	struct snd_soc_card *card = scomp->card;
+ 	struct snd_soc_pcm_runtime *rtd;
++	const char *sname = w->sname;
+ 	struct snd_soc_dai *cpu_dai;
+ 	int i, stream;
  
--	spin_lock_irq(&out->lock);
-+	mutex_lock(&out->enabled_lock);
- 	old_enabled = out->composer_enabled;
- 	out->composer_enabled = enabled;
--	spin_unlock_irq(&out->lock);
-+
-+	/* the composition wasn't enabled, so unlock the lock to make sure the lock
-+	 * will be balanced even if we have a failed commit
-+	 */
-+	if (!out->composer_enabled)
-+		mutex_unlock(&out->enabled_lock);
+-	if (!w->sname)
++	if (!sname)
+ 		return;
  
- 	if (old_enabled)
- 		drm_crtc_vblank_put(&out->crtc);
-diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
-index 57bbd32e9bebb..1b02dee8587ac 100644
---- a/drivers/gpu/drm/vkms/vkms_crtc.c
-+++ b/drivers/gpu/drm/vkms/vkms_crtc.c
-@@ -16,7 +16,7 @@ static enum hrtimer_restart vkms_vblank_simulate(struct hrtimer *timer)
- 	struct drm_crtc *crtc = &output->crtc;
- 	struct vkms_crtc_state *state;
- 	u64 ret_overrun;
--	bool ret, fence_cookie;
-+	bool ret, fence_cookie, composer_enabled;
+ 	if (w->id == snd_soc_dapm_dai_out)
+@@ -1133,7 +1134,7 @@ static void sof_disconnect_dai_widget(struct snd_soc_component *scomp,
+ 	list_for_each_entry(rtd, &card->rtd_list, list) {
+ 		/* does stream match DAI link ? */
+ 		if (!rtd->dai_link->stream_name ||
+-		    strcmp(w->sname, rtd->dai_link->stream_name))
++		    strcmp(sname, rtd->dai_link->stream_name))
+ 			continue;
  
- 	fence_cookie = dma_fence_begin_signalling();
- 
-@@ -25,15 +25,15 @@ static enum hrtimer_restart vkms_vblank_simulate(struct hrtimer *timer)
- 	if (ret_overrun != 1)
- 		pr_warn("%s: vblank timer overrun\n", __func__);
- 
--	spin_lock(&output->lock);
- 	ret = drm_crtc_handle_vblank(crtc);
- 	if (!ret)
- 		DRM_ERROR("vkms failure on handling vblank");
- 
- 	state = output->composer_state;
--	spin_unlock(&output->lock);
-+	composer_enabled = output->composer_enabled;
-+	mutex_unlock(&output->enabled_lock);
- 
--	if (state && output->composer_enabled) {
-+	if (state && composer_enabled) {
- 		u64 frame = drm_crtc_accurate_vblank_count(crtc);
- 
- 		/* update frame_start only if a queued vkms_composer_worker()
-@@ -293,6 +293,7 @@ int vkms_crtc_init(struct drm_device *dev, struct drm_crtc *crtc,
- 
- 	spin_lock_init(&vkms_out->lock);
- 	spin_lock_init(&vkms_out->composer_lock);
-+	mutex_init(&vkms_out->enabled_lock);
- 
- 	vkms_out->composer_workq = alloc_ordered_workqueue("vkms_composer", 0);
- 	if (!vkms_out->composer_workq)
-diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-index f152d54baf769..b8948c8729ee4 100644
---- a/drivers/gpu/drm/vkms/vkms_drv.h
-+++ b/drivers/gpu/drm/vkms/vkms_drv.h
-@@ -98,8 +98,10 @@ struct vkms_output {
- 	struct workqueue_struct *composer_workq;
- 	/* protects concurrent access to composer */
- 	spinlock_t lock;
-+	/* guarantees that if the composer is enabled, a job will be queued */
-+	struct mutex enabled_lock;
- 
--	/* protected by @lock */
-+	/* protected by @enabled_lock */
- 	bool composer_enabled;
- 	struct vkms_crtc_state *composer_state;
- 
+ 		for_each_rtd_cpu_dais(rtd, i, cpu_dai)
 -- 
 2.40.1
 
