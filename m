@@ -2,96 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 297057989F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0707989F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240589AbjIHP0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 11:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34552 "EHLO
+        id S241052AbjIHP2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 11:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235484AbjIHP0V (ORCPT
+        with ESMTP id S229530AbjIHP2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 11:26:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15211FCF
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 08:25:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vsshDTPena8IquRzHvGJCywEGoxIJRLv8XBPS87Fxgg=; b=o4clfq8u+x8KH3RasytlmHBxBL
-        yy+me8gW8yWdI3v+RmSajIELXiBY2eOeO9k5jMU9RmS8kSVBYo8h70tRZ+A0KYeuiuXK59XFMC32t
-        FhYe7foIefdQ6ISlDVAN0ikAfyUNDB0o9EAH6rPg7+QvXvdeqFXYZMiU9A/fPNLQsAP1YDcGUgPY/
-        9QtQoUnspXRaVMcHtjjAeUIS1w5mJz4Dtd+o4yAf9+zFKpmJLU7IAiTJfOPhviTuvc/rosviipsd6
-        y8yo9nODaS+pZvW+TCK9NUC3kEJful+a/TS9i8ncepkbz3tDypzNSXV+sI9eA0IN+9Vu9JzG36jM3
-        s/omrudQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qedMg-000tXu-Nw; Fri, 08 Sep 2023 15:25:46 +0000
-Date:   Fri, 8 Sep 2023 16:25:46 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org
-Subject: Re: BUG: KCSAN: data-race in folio_batch_move_lru / mpage_read_end_io
-Message-ID: <ZPs8+sLv5oaubrKj@casper.infradead.org>
-References: <cbb9d596-43ac-bad4-b6f6-8c13f95d244e@alu.unizg.hr>
- <ZPCpQQVTtlB0FA5A@casper.infradead.org>
+        Fri, 8 Sep 2023 11:28:05 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EFB1BEA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 08:28:00 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bc0d39b52cso17512315ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 08:28:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694186880; x=1694791680; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language:subject
+         :references:cc:to:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ISx/id5dNxIJh+29FXmKcEhK6YchpdLSErhaK4D3qNY=;
+        b=puUQeUsE9KvLZInkH4RSJ15VKZOf+Oq222katUPXfmbQT/5fSACGTAS5RnZPEXTLkx
+         vZAeivmeCMFfvd/E3Q4QW90ePXBpKap/6BTrCqnR3gBGnYMniC9OQCXF9QlVOFL2KqQl
+         svq4t7jSxQQVsZMiNsHkNh4cdCQxEG7T/VDFMRhj2Lj+p5C6N6zdQ5gfT6tlAUEXkjlm
+         31zokZUsNs3VQF4YIgmZOYdHwG7VrHzSsL3kkgvUOEvvVLthBlvEC9bJLukbLl33IUno
+         IHzWG+S9/fGTJFHZAL94ys9wPmscfgzpXOsDQxBjp3l9PXHSGsRjoAe9Q4cceDyNcHWr
+         i4LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694186880; x=1694791680;
+        h=content-transfer-encoding:in-reply-to:from:content-language:subject
+         :references:cc:to:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ISx/id5dNxIJh+29FXmKcEhK6YchpdLSErhaK4D3qNY=;
+        b=qzaOAA79t0vxxYoeMEjnpZ7tjS0rcEZQC6qM+i9Xc1PXpNmlcx6QP8hvqo2IcCrAqf
+         J46MUPqQNgyCL7NtF1rGFcGZ2GaETGHHAyYVu6qatMotkTDa8et68Dwx6mijxX6mCQ7q
+         JVkR0UQ/wcE2mVe0nAI+Cc8B5LaVqtSNQ0tL29uY7NNDBaAdVx0YJz2xeQ8cTZN3s3Q4
+         elslGFt/30tEHD1S9pZvi0HHK2t8xOft0cZ4cdNqtXjQQlDQJGH2lknrYQo/MWSML/dy
+         BCxu6ThSPLvL2tmz8AgfN3pqMfulv+lRmlQ7ctsJgzBWONXuG4eKZTxrsOnX51tXu4jr
+         ksWQ==
+X-Gm-Message-State: AOJu0YyW2k5qgog74mZjfbe1tWYsddCB0nAyrCKg1APC7pvlf3vh4sfC
+        lFE+rjW/eLM3PNW6SrnZRBk=
+X-Google-Smtp-Source: AGHT+IF9MIfnm3S/SpaSMf0cVr1lXP/iCqKNvT3gWWfIFlFwPRdCTkW7qTgIYcvFtTQTVhn6+m7UGg==
+X-Received: by 2002:a17:902:6906:b0:1c0:aca0:8c2d with SMTP id j6-20020a170902690600b001c0aca08c2dmr2600278plk.67.1694186880104;
+        Fri, 08 Sep 2023 08:28:00 -0700 (PDT)
+Received: from [192.168.11.9] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id iw21-20020a170903045500b001b39ffff838sm1737554plb.25.2023.09.08.08.27.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Sep 2023 08:27:59 -0700 (PDT)
+Message-ID: <a21c80c1-533c-5167-8b0b-a6bc4953eec8@gmail.com>
+Date:   Sat, 9 Sep 2023 00:27:56 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZPCpQQVTtlB0FA5A@casper.infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+To:     palmer@rivosinc.com
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        torvalds@linux-foundation.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Akira Yokosawa <akiyks@gmail.com>
+References: <mhng-f4556557-af4d-4b6a-aa89-de77f7dacf2b@palmer-ri-x1c9>
+Subject: Re: [GIT PULL] RISC-V Patches for the 6.6 Merge Window, Part 2
+Content-Language: en-US
+From:   Akira Yokosawa <akiyks@gmail.com>
+In-Reply-To: <mhng-f4556557-af4d-4b6a-aa89-de77f7dacf2b@palmer-ri-x1c9>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 03:52:49PM +0100, Matthew Wilcox wrote:
-> >  read to 0xffffef9a44978bc0 of 8 bytes by task 348 on cpu 12:
-> >  folio_batch_move_lru (./include/linux/mm.h:1814 ./include/linux/mm.h:1824 ./include/linux/memcontrol.h:1636 ./include/linux/memcontrol.h:1659 mm/swap.c:216)
-> >  folio_batch_add_and_move (mm/swap.c:235)
-> >  folio_add_lru (./arch/x86/include/asm/preempt.h:95 mm/swap.c:518)
-> >  folio_add_lru_vma (mm/swap.c:538)
-> >  do_anonymous_page (mm/memory.c:4146)
+On Fri, 08 Sep 2023 07:55:57 -0700 (PDT), Palmer Dabbelt wrote:
+> merged tag 'riscv-for-linus-6.6-mw1'
+> The following changes since commit e0152e7481c6c63764d6ea8ee41af5cf9dfac5e9:
 > 
-> This is the part I don't understand.  The path to calling
-> folio_add_lru_vma() comes directly from vma_alloc_zeroed_movable_folio():
+>   Merge tag 'riscv-for-linus-6.6-mw1' of git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux (2023-09-01 08:09:48 -0700)
 > 
-[snip]
+> are available in the Git repository at:
 > 
-> (sorry that's a lot of lines).  But there's _nowhere_ there that sets
-> PG_locked.  It's a freshly allocated page; all page flags (that are
-> actually flags; ignore the stuff up at the top) should be clear.  We
-> even check that with PAGE_FLAGS_CHECK_AT_PREP.  Plus, it doesn't
-> make sense that we'd start I/O; the page is freshly allocated, full of
-> zeroes; there's no backing store to read the page from.
+>   git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.6-mw2
 > 
-> It really feels like this page was freed while it was still under I/O
-> and it's been reallocated to this victim process.
+> for you to fetch changes up to accb14aa1e699d11b8172283e8cb82a695b96c85:
 > 
-> I'm going to try a few things and see if I can figure this out.
+>   soc: renesas: Kconfig: For ARCH_R9A07G043 select the required configs if dependencies are met (2023-09-06 07:20:13 -0700)
+> 
+> ----------------------------------------------------------------
+> RISC-V Patches for the 6.6 Merge Window, Part 2
+> 
+> * The kernel now dynamically probes for misaligned access speed, as
+>   opposed to relying on a table of known implementations.
+> * Support for non-coherent devices on systems using the Andes AX45MP
+>   core, including the RZ/Five SoCs.
+> * Support for the V extension in ptrace(), again.
+> * Support for KASLR.
+> * Support for the BPF prog pack allocator in RISC-V.
+> * A handful of bug fixes and cleanups.
+> 
+> ----------------------------------------------------------------
+> The shortlog looks correct here, but the diffstat includes all sorts of files I
+> wasn't expecting.  I'm not entirely sure what's going on here, but I have a
+> little bit of a complex set of base branches here as the BPF changes have a
+> dependency on some arm64 BPF work and IIRC that sort of thing sometimes makes
+> diffstat go off the rails.  So hopefully that's just it.
 
-I'm having trouble reproducing this.  Can you get it to happen reliably?
+Hi Palmer,
+It looks like you have ignored Stephen Rothwell's kind investigation at
+https://lore.kernel.org/linux-next/20230908082625.487d39c4@canb.auug.org.au/.
 
-This is what I'm currently running with, and it doesn't trigger.
-I'd expect it to if we were going to hit the KCSAN bug.
+Excerpt of Stephen's analysis:
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 0c5be12f9336..d22e8798c326 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4439,6 +4439,7 @@ struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
- 	page = __alloc_pages_slowpath(alloc_gfp, order, &ac);
- 
- out:
-+	VM_BUG_ON_PAGE(page && (page->flags & (PAGE_FLAGS_CHECK_AT_PREP &~ (1 << PG_head))), page);
- 	if (memcg_kmem_online() && (gfp & __GFP_ACCOUNT) && page &&
- 	    unlikely(__memcg_kmem_charge_page(page, gfp, order) != 0)) {
- 		__free_pages(page, order);
+> Actually, it looks like the merge
+> 
+>   2bf3c0292f35 ("Merge patch series "RISC-V: Probe for misaligned access speed"")
+> 
+> in the risc-v tree was resolved very badly and dragged a lot of stuff
+> back in.
+
+[...]
+
+> When I redid that merge:
+> 
+> $ git diff HEAD^..HEAD
+>  Documentation/riscv/hwprobe.rst      |  11 ++--
+>  arch/riscv/errata/thead/errata.c     |   8 ---
+>  arch/riscv/include/asm/alternative.h |   5 --
+>  arch/riscv/include/asm/cpufeature.h  |   2 +
+>  arch/riscv/kernel/Makefile           |   1 +
+>  arch/riscv/kernel/alternative.c      |  19 -------
+>  arch/riscv/kernel/copy-unaligned.S   |  71 ++++++++++++++++++++++++
+>  arch/riscv/kernel/copy-unaligned.h   |  13 +++++
+>  arch/riscv/kernel/cpufeature.c       | 104 +++++++++++++++++++++++++++++++++++
+>  arch/riscv/kernel/smpboot.c          |   3 +-
+>  10 files changed, 198 insertions(+), 39 deletions(-)
+> 
+> So, the risc-v tree needs to be cleaned up.
+
+Palmer, you are requesting pull without the suggested cleanup.
+
+I'd really like this to be cleanly sorted out.
+
+Of course, it's up to Linus whether or not to pull as it is...
+
+        Thanks, Akira
