@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DD379906F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD184798FDF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238295AbjIHTqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36176 "EHLO
+        id S1345020AbjIHTfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236298AbjIHTqt (ORCPT
+        with ESMTP id S245509AbjIHTfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:46:49 -0400
+        Fri, 8 Sep 2023 15:35:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91523CEB;
-        Fri,  8 Sep 2023 12:46:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CCBDC116A1;
-        Fri,  8 Sep 2023 19:34:20 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A672116;
+        Fri,  8 Sep 2023 12:34:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43703C433CA;
+        Fri,  8 Sep 2023 19:34:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201662;
-        bh=YaAKr4UBjDAq2FtvudD8YuixDZ2Js/CAn6br2NTsQ+Y=;
+        s=k20201202; t=1694201666;
+        bh=Y6f1pYXMyI4EGb7QXDxBGnbubvL70Gvt/tQOkkkpQaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qt7FehAJ5FeaqTxC9QaFSwn+1RZ+hioeYplQUXvyYnT8rDypmg4EvuRvF3z9eFN8f
-         BMU9SPMKrUVnK6HcJKN5x0Spw6HiFpI3a/UKuCI4K4tuxLVSQYV8KepOjyOy4ywfiI
-         J5z/gWgrk/h5go7TYR5jR5R+Tx3G4NEYCz1P4FziXw6h9dGKk0KIxqUMTkW09UxnR2
-         iSpfGfQLKnvzbxje8MxPaE8tyvOjMc6X+nxfqO2TT2WD26P6ehdKT2e4ppDHhOedWw
-         UegNP1qGwxa3dhFaud40gVZXw7kKYc5nxYP8IAfRcYfoLOMDFr3xrCdWmjvngpM9PY
-         QsGoMMRtX5L8A==
+        b=NyrUfVrlaeIuWGqwz2ygfn0X03zKt4duLfLZXkLOedUQRJFofzq1eZ3LaCfVBJXOI
+         LJS5zj70ZRjNhVL39OENpWkQN2Qh8ek0UxQM/LYqjNLQk79l2lhQylOkVnExgz0cij
+         OpK0LLMOKPIg4+QXyUgAKGPYz3wmDiCaIMjRwysalCNhlhs78g2B0HP/NVX3NwGBXb
+         h9Tidnuj+C96dQdFfKwpgaifvdVB+geMwYvFOuccWI8vzMnzjuSSPK1TN6AV/Yq1nQ
+         INI7DzRzwcnClm3gauQ004hYmwltssmhrNMVnRaXC4mfo9fzTV6lD6dmr3YIiDodoh
+         F8AWn2o+NLnWQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, agross@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, keescook@chromium.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 06/22] arm64: dts: qcom: sm8250-edo: correct ramoops pmsg-size
-Date:   Fri,  8 Sep 2023 15:33:50 -0400
-Message-Id: <20230908193407.3463368-6-sashal@kernel.org>
+Cc:     Rong Tao <rongtao@cestc.cn>, Petr Mladek <pmladek@suse.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, arnd@arndb.de,
+        chenjiahao16@huawei.com
+Subject: [PATCH AUTOSEL 6.1 07/22] samples/hw_breakpoint: Fix kernel BUG 'invalid opcode: 0000'
+Date:   Fri,  8 Sep 2023 15:33:51 -0400
+Message-Id: <20230908193407.3463368-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908193407.3463368-1-sashal@kernel.org>
 References: <20230908193407.3463368-1-sashal@kernel.org>
@@ -57,37 +53,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+From: Rong Tao <rongtao@cestc.cn>
 
-[ Upstream commit 7dc3606f91427414d00a2fb09e6e0e32c14c2093 ]
+[ Upstream commit 910e230d5f1bb72c54532e94fbb1705095c7bab6 ]
 
-There is no 'msg-size' property in ramoops, so assume intention was for
-'pmsg-size':
+Macro symbol_put() is defined as __symbol_put(__stringify(x))
 
-  sm8250-sony-xperia-edo-pdx206.dtb: ramoops@ffc00000: Unevaluated properties are not allowed ('msg-size' was unexpected)
+    ksym_name = "jiffies"
+    symbol_put(ksym_name)
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Link: https://lore.kernel.org/r/20230618114442.140185-7-krzysztof.kozlowski@linaro.org
-Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+will be resolved as
+
+    __symbol_put("ksym_name")
+
+which is clearly wrong. So symbol_put must be replaced with __symbol_put.
+
+When we uninstall hw_breakpoint.ko (rmmod), a kernel bug occurs with the
+following error:
+
+[11381.854152] kernel BUG at kernel/module/main.c:779!
+[11381.854159] invalid opcode: 0000 [#2] PREEMPT SMP PTI
+[11381.854163] CPU: 8 PID: 59623 Comm: rmmod Tainted: G      D    OE      6.2.9-200.fc37.x86_64 #1
+[11381.854167] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./B360M-HDV, BIOS P3.20 10/23/2018
+[11381.854169] RIP: 0010:__symbol_put+0xa2/0xb0
+[11381.854175] Code: 00 e8 92 d2 f7 ff 65 8b 05 c3 2f e6 78 85 c0 74 1b 48 8b 44 24 30 65 48 2b 04 25 28 00 00 00 75 12 48 83 c4 38 c3 cc cc cc cc <0f> 0b 0f 1f 44 00 00 eb de e8 c0 df d8 00 90 90 90 90 90 90 90 90
+[11381.854178] RSP: 0018:ffffad8ec6ae7dd0 EFLAGS: 00010246
+[11381.854181] RAX: 0000000000000000 RBX: ffffffffc1fd1240 RCX: 000000000000000c
+[11381.854184] RDX: 000000000000006b RSI: ffffffffc02bf7c7 RDI: ffffffffc1fd001c
+[11381.854186] RBP: 000055a38b76e7c8 R08: ffffffff871ccfe0 R09: 0000000000000000
+[11381.854188] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+[11381.854190] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+[11381.854192] FS:  00007fbf7c62c740(0000) GS:ffff8c5badc00000(0000) knlGS:0000000000000000
+[11381.854195] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[11381.854197] CR2: 000055a38b7793f8 CR3: 0000000363e1e001 CR4: 00000000003726e0
+[11381.854200] DR0: ffffffffb3407980 DR1: 0000000000000000 DR2: 0000000000000000
+[11381.854202] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+[11381.854204] Call Trace:
+[11381.854207]  <TASK>
+[11381.854212]  s_module_exit+0xc/0xff0 [symbol_getput]
+[11381.854219]  __do_sys_delete_module.constprop.0+0x198/0x2f0
+[11381.854225]  do_syscall_64+0x58/0x80
+[11381.854231]  ? exit_to_user_mode_prepare+0x180/0x1f0
+[11381.854237]  ? syscall_exit_to_user_mode+0x17/0x40
+[11381.854241]  ? do_syscall_64+0x67/0x80
+[11381.854245]  ? syscall_exit_to_user_mode+0x17/0x40
+[11381.854248]  ? do_syscall_64+0x67/0x80
+[11381.854252]  ? exc_page_fault+0x70/0x170
+[11381.854256]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi | 2 +-
+ samples/hw_breakpoint/data_breakpoint.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi
-index 390b90a8ddf70..468724670a2a2 100644
---- a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo.dtsi
-@@ -112,7 +112,7 @@ ramoops@ffc00000 {
- 			reg = <0x0 0xffc00000 0x0 0x100000>;
- 			record-size = <0x1000>;
- 			console-size = <0x40000>;
--			msg-size = <0x20000 0x20000>;
-+			pmsg-size = <0x20000>;
- 			ecc-size = <16>;
- 			no-map;
- 		};
+diff --git a/samples/hw_breakpoint/data_breakpoint.c b/samples/hw_breakpoint/data_breakpoint.c
+index 418c46fe5ffc3..9debd128b2ab8 100644
+--- a/samples/hw_breakpoint/data_breakpoint.c
++++ b/samples/hw_breakpoint/data_breakpoint.c
+@@ -70,7 +70,7 @@ static int __init hw_break_module_init(void)
+ static void __exit hw_break_module_exit(void)
+ {
+ 	unregister_wide_hw_breakpoint(sample_hbp);
+-	symbol_put(ksym_name);
++	__symbol_put(ksym_name);
+ 	printk(KERN_INFO "HW Breakpoint for %s write uninstalled\n", ksym_name);
+ }
+ 
 -- 
 2.40.1
 
