@@ -2,114 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BA37987DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 15:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B85D47987DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 15:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243588AbjIHN3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 09:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39834 "EHLO
+        id S243579AbjIHN3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 09:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243560AbjIHN3M (ORCPT
+        with ESMTP id S243557AbjIHN3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Sep 2023 09:29:12 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE9E1BF6
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 06:29:08 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c1e780aa95so15381855ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 06:29:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694179748; x=1694784548; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8fTqSPosGVFRSuNbuDzcDh8MPrifrDs8eg/tRpTv6/E=;
-        b=S/6Ktyxahte69BF8wIV8rn2HryXahP7SvQqUxAWzqpxjbP8luJKRC2N5gycAQ8WNrO
-         V/ITDrX04wzc8uLXMC84jzhLs1X/aKjxD4hIfDaUqnnNhGT8+/zwOaIxJUQoXEfY0bFW
-         TXEbHnR5mJQBSnUYIAKQmyI2zEcNuXUTjQWkU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694179748; x=1694784548;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8fTqSPosGVFRSuNbuDzcDh8MPrifrDs8eg/tRpTv6/E=;
-        b=MjlOhTMsWggPAeleVJhoyqXYPgszg/p/KJfAMxx8fjNcihVjBu9UJ2JibMm3SOE1XV
-         vQvm083h92yM09VIiFdcW1mJ55E+z3/wVE2wtJCrnnQkQ6PwVYZlMNGm4NKGvJSUM9zo
-         Lfi9GhS5kgzU6ck5m9A1ULmHmwXEpm/DEVnPeOJNP/HriVFx2N6Cjd1btQex45etQiq6
-         QdEtdQPq+9J1/Q4vuezYJi9+9mTLFrJka4v+wcua1OqbnAASczYqxR59YSSIJKCqHrbs
-         lVTkRH4cuirQeKuPajl9kJaldaG7i9tOwwS7gYIYBdqc65tXTd1XX/jxz5G5MYisevRq
-         Pa+A==
-X-Gm-Message-State: AOJu0YzGUnoxsdKxVE6vGuQ/SEGA5AvYE7v/hJTsoCDRbQ1LVj6cua+O
-        UhKY2FffPfkMup53FSVdpjaKmQ==
-X-Google-Smtp-Source: AGHT+IHWCBplIrjcCzuUpgb9NC4rnhznC4Bx+ZzE6bt7VuZlgtVVJg0EhVEiMWW50/fNxqh+vxaWSQ==
-X-Received: by 2002:a17:902:ce82:b0:1bd:c7e2:462 with SMTP id f2-20020a170902ce8200b001bdc7e20462mr3029639plg.11.1694179747803;
-        Fri, 08 Sep 2023 06:29:07 -0700 (PDT)
-Received: from fshao-p620.tpe.corp.google.com ([2401:fa00:1:10:2f7e:9c4:ed14:b826])
-        by smtp.gmail.com with ESMTPSA id o12-20020a170902778c00b001bc6536051bsm1562560pll.184.2023.09.08.06.29.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 06:29:07 -0700 (PDT)
-From:   Fei Shao <fshao@chromium.org>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-mediatek@lists.infradead.org, Fei Shao <fshao@chromium.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Bin Liu <bin.liu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: [PATCH] media: mtk-jpegenc: Fix bug in JPEG encode quality selection
-Date:   Fri,  8 Sep 2023 21:28:04 +0800
-Message-ID: <20230908132839.2034566-1-fshao@chromium.org>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6C11BF4;
+        Fri,  8 Sep 2023 06:29:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/Su6vpBpZs72kzi34K7jBSnLd/tcZ/SFt4/dlVSkVFw=; b=K5PZdHmlnGTpKNg+y7jVbukJcH
+        uQO1OK0E8cQ5n+0RVG+hmRDy6fc355K2oLNozEhbRgWA5b2Lz5VQ6bdtAnhES9aw1wf7B/NOYX9Nb
+        vX97GLanY3hskCFL3Eb9/HmDMUR0QGecCYZ2OQUBIF7biwYG+0ZknHV8QMc+L48Pqp+xOY+yW3gJr
+        CGHU9EsUtXM2keujz1Nz68bt4zPlk8jcVxAt6dQpXo6tg5zk4uUQE8yKBZKrr//qKllX/ZmCWekTM
+        SAeHUhR+ZipNVRQJVq20HBSJdYqWwgIdU/zJ+tQ9JLNCdbvyngP/GKROCZ0PwPakE/ooBYN9Pj+kG
+        DNiBgmMw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qebXI-002Xef-2Z;
+        Fri, 08 Sep 2023 13:28:38 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BB248300472; Fri,  8 Sep 2023 15:28:37 +0200 (CEST)
+Date:   Fri, 8 Sep 2023 15:28:37 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Meng Li <li.meng@amd.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-acpi@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        Perry Yuan <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>, Wyes Karny <wyes.karny@amd.com>
+Subject: Re: [PATCH V5 5/7] cpufreq: amd-pstate: Update amd-pstate preferred
+ core ranking dynamically
+Message-ID: <20230908132837.GJ19320@noisy.programming.kicks-ass.net>
+References: <20230905015116.2268926-1-li.meng@amd.com>
+ <20230905015116.2268926-6-li.meng@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230905015116.2268926-6-li.meng@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver uses the upper-bound approach to decide the target JPEG
-encode quality, but there's a logic bug that if the desired quality is
-higher than what the driver can support, the driver falls back to using
-the worst quality.
+On Tue, Sep 05, 2023 at 09:51:14AM +0800, Meng Li wrote:
 
-Fix the bug by assuming using the best quality in the beginning, and
-with trivial refactor to avoid long lines.
+> diff --git a/include/linux/amd-pstate.h b/include/linux/amd-pstate.h
+> index 446394f84606..2159fd5693fe 100644
+> --- a/include/linux/amd-pstate.h
+> +++ b/include/linux/amd-pstate.h
+> @@ -31,6 +31,11 @@ struct amd_aperf_mperf {
+>  	u64 mperf;
+>  	u64 tsc;
+>  };
+> +	/* For platforms that do not support the preferred core feature, the
+> +	 * highest_pef may be configured with 166 or 255, to avoid max frequency
+> +	 * calculated wrongly. we take the AMD_CPPC_HIGHEST_PERF(cap1) value as
+> +	 * the default max perf.
+> +	 */
 
-Fixes: 45f13a57d813 ("media: platform: Add jpeg enc feature")
-Signed-off-by: Fei Shao <fshao@chromium.org>
----
-
- drivers/media/platform/mediatek/jpeg/mtk_jpeg_enc_hw.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/media/platform/mediatek/jpeg/mtk_jpeg_enc_hw.c b/drivers/media/platform/mediatek/jpeg/mtk_jpeg_enc_hw.c
-index 2bbc48c7402c..f8fa3b841ccf 100644
---- a/drivers/media/platform/mediatek/jpeg/mtk_jpeg_enc_hw.c
-+++ b/drivers/media/platform/mediatek/jpeg/mtk_jpeg_enc_hw.c
-@@ -127,6 +127,7 @@ void mtk_jpeg_set_enc_params(struct mtk_jpeg_ctx *ctx,  void __iomem *base)
- 	u32 img_stride;
- 	u32 mem_stride;
- 	u32 i, enc_quality;
-+	u32 nr_enc_quality = ARRAY_SIZE(mtk_jpeg_enc_quality);
- 
- 	value = width << 16 | height;
- 	writel(value, base + JPEG_ENC_IMG_SIZE);
-@@ -157,8 +158,8 @@ void mtk_jpeg_set_enc_params(struct mtk_jpeg_ctx *ctx,  void __iomem *base)
- 	writel(img_stride, base + JPEG_ENC_IMG_STRIDE);
- 	writel(mem_stride, base + JPEG_ENC_STRIDE);
- 
--	enc_quality = mtk_jpeg_enc_quality[0].hardware_value;
--	for (i = 0; i < ARRAY_SIZE(mtk_jpeg_enc_quality); i++) {
-+	enc_quality = mtk_jpeg_enc_quality[nr_enc_quality - 1].hardware_value;
-+	for (i = 0; i < nr_enc_quality; i++) {
- 		if (ctx->enc_quality <= mtk_jpeg_enc_quality[i].quality_param) {
- 			enc_quality = mtk_jpeg_enc_quality[i].hardware_value;
- 			break;
--- 
-2.42.0.283.g2d96d420d3-goog
-
+Invalid comment style, also seems randomly (mis)placed.
