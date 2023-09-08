@@ -2,121 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3AAB798A2C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941E4798A2D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244790AbjIHPqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 11:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54300 "EHLO
+        id S244531AbjIHPqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 11:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235890AbjIHPp7 (ORCPT
+        with ESMTP id S235890AbjIHPqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 11:45:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972E413E;
-        Fri,  8 Sep 2023 08:45:55 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 17:45:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694187953;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=XJnX1m9tikTjZGjqJrcNBhMRmibBo9sQ63QbjXvSeXw=;
-        b=OTJyDvj3jMKinyvJ3uHIIWnyLR6NotdnY0IP6y7CyGJnA5XtU0/ZeEttiaKedPNkLmna/C
-        DigaDQAHAxez+qHd/uSKRSVdTmebWswOBkpmTv6h+1Mxu5F5PWr5QZdnzRSlmzRaKZ4USj
-        oK3e1qtWTJI2XEu5Dqlu3x/IZgiqmOglvLHVan06ZDyGVCRrPpJMby3KfSolOWPKI8D9Tu
-        O4YMsjsgjLVZ43+TiCWlfQchvERDgzr05WaZ9UbUxsMQLxEG56cX1TJYpYob/fzTU8Khxc
-        NseAGSyhhckgMILHxRMwrA2Uk/VFj4tA90RKsOm35dV+C4TLPQ4pUz9hzH/bJw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694187953;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=XJnX1m9tikTjZGjqJrcNBhMRmibBo9sQ63QbjXvSeXw=;
-        b=0OKoHU3dqRxuVPC9vJ0dN9/BYM2+aWjdw5SfRGJA33eRi/J0DGjXRi9VHTbN90MkPJkTM+
-        SP2q53KYvdf5KoBQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v6.5.2-rt8
-Message-ID: <20230908154552.8TntDGz6@linutronix.de>
+        Fri, 8 Sep 2023 11:46:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346ED1FC4
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 08:46:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 085BBC433C9;
+        Fri,  8 Sep 2023 15:46:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694187972;
+        bh=VNbazyRE370gNZi/pHSUlpmXcMceT96Fm7hfdqN6qm0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=W+NDGlJV7b50NBiPVfSJUusyYpzLVAcE2elkubEwzBbLd6BTsm4n2noLzVcIJDinM
+         8N/F1KIUkj8eKSRy5mAXBRcBqE5Mrx1/IF65g+6x0vf8xUQI+VX2lSX1Syaiw0EKIE
+         Ca+fUBcUOFFlwmmMk1BUy7B/LghUxcD9rum750l3LwylSlqzQkQaPv+EncszfZxLo1
+         vfp12Bygewy/qQnhG8vMxwWEvRbmFoVvRpadgV9pu5RCl3yAFYuoMgNDbeSnziYQV2
+         4ZjTUgjo6Gih931sjhnKHwtsu8r/CyUwlAJi99zK5p5HgzB4IEibQWI5AyEFFR3eY5
+         CkfZjTt472MBg==
+Date:   Fri, 8 Sep 2023 08:46:06 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>,
+        thomas.petazzoni@bootlin.com,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [RFC PATCH net-next 6/7] net: ethtool: add a netlink command to
+ get PHY information
+Message-ID: <20230908084606.5707e1b1@kernel.org>
+In-Reply-To: <20230907092407.647139-7-maxime.chevallier@bootlin.com>
+References: <20230907092407.647139-1-maxime.chevallier@bootlin.com>
+        <20230907092407.647139-7-maxime.chevallier@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+On Thu,  7 Sep 2023 11:24:04 +0200 Maxime Chevallier wrote:
+>  	ETHTOOL_MSG_PHY_LIST_GET,
+> +	ETHTOOL_MSG_PHY_GET,
 
-I'm pleased to announce the v6.5.2-rt8 patch set. 
+The distinction between LIST_GET and GET is a bit odd for netlink.
+GET has a do and a dump. The dump is effectively LIST_GET.
 
-Changes since v6.5.2-rt7:
-
-  - The locking patches for flushed queued I/O had a possible dead lock
-    with write_lock(). Reported by Sultan Alsawaf.
-
-Known issues
-     None
-
-The delta patch against v6.5.2-rt7 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.5/incr/patch-6.5.2-rt7-rt8.patch.xz
-
-You can get this release via the git tree at:
-
-    https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v6.5.2-rt8
-
-The RT patch against v6.5.2 can be found here:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.5/older/patch-6.5.2-rt8.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.5/older/patches-6.5.2-rt8.tar.xz
-
-Sebastian
-
-diff --git a/kernel/locking/rwbase_rt.c b/kernel/locking/rwbase_rt.c
-index b5e881250fec5..34a59569db6be 100644
---- a/kernel/locking/rwbase_rt.c
-+++ b/kernel/locking/rwbase_rt.c
-@@ -241,7 +241,7 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
- 	/* Force readers into slow path */
- 	atomic_sub(READER_BIAS, &rwb->readers);
- 
--	rt_mutex_pre_schedule();
-+	rwbase_pre_schedule();
- 
- 	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
- 	if (__rwbase_write_trylock(rwb))
-@@ -254,7 +254,7 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
- 		if (rwbase_signal_pending_state(state, current)) {
- 			rwbase_restore_current_state();
- 			__rwbase_write_unlock(rwb, 0, flags);
--			rt_mutex_post_schedule();
-+			rwbase_post_schedule();
- 			trace_contention_end(rwb, -EINTR);
- 			return -EINTR;
- 		}
-@@ -273,7 +273,7 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
- 
- out_unlock:
- 	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
--	rt_mutex_post_schedule();
-+	rwbase_post_schedule();
- 	return 0;
- }
- 
-diff --git a/localversion-rt b/localversion-rt
-index 045478966e9f1..700c857efd9ba 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt7
-+-rt8
+The dump can accept filtering arguments, like ifindex, if you want 
+to narrow down the results, that's perfectly fine (you may need to
+give up some of the built-in ethtool scaffolding, but it shouldn't 
+be all that bad).
