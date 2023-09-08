@@ -2,53 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF8179911F
+	by mail.lfdr.de (Postfix) with ESMTP id 1E77E79911E
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344592AbjIHUkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 16:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35394 "EHLO
+        id S1343795AbjIHUku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 16:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241776AbjIHUkr (ORCPT
+        with ESMTP id S1344574AbjIHUks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 16:40:47 -0400
+        Fri, 8 Sep 2023 16:40:48 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB6AA3;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7948A7;
         Fri,  8 Sep 2023 13:40:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1E7B2C433C9;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 48B03C433CA;
         Fri,  8 Sep 2023 20:40:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1694205643;
-        bh=eToUIZTHu2FYs248Jnfi2mgVqBrYnyTvIrftHHxI7t4=;
+        bh=FMvZJR4KS5QRR4bwnzr3jgnn4rs19maSXvrZttLDA40=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=cnk8wZxrcznJsAfNu+bQ4R4e0pnlp5l+ijvv8xTWA0tbyWtgrs/MCViR6Z6XG7Fre
-         8crdCEus83DilRMvNYhCZnVvwwbFczeMktd59AQ5KPqlxkKX86qVlFrDt5cNwlelDz
-         RRya2nV4kK4crS6QZfCb7Djr3u+HJ6C6kBPoZpud8ow8lnnLnSmJr8nPOaYpb3m5eB
-         ZKHTjXhUtU3TXp4bon0O2VwckAKbRgRIQEzVPeh2DsAPsOCuxNZhyVXw9vk6grADDG
-         uxrFD0tk6bc9KxhF+MLuYubegIeTzH00QKMx3HotgyT/GExvWEEdOtxQlIiEEF5SJT
-         1Q0fuEvKBCQXg==
+        b=gt7QDTn84QDg6J5Feg7Ok4E2FSMwF7pcTF04FPtUyuKLVk2HGEfWWdfWcjjU79SP2
+         KjtEVxzNkk8txdvawp0hpyXzl623CTlljTY0knD6kPryoIQ1bDhNTfEUXYf68zmpdw
+         Wn3LJkPPMTvW3QW9Kmx+Q8aXqYh2zTGgCeGpTVPChpneULX/IZK9XAa5lxPAeuE7Nq
+         fkEQyCRCW5BYTMF1NWBtHFkIojhicyeeAcmj87x/bSUnwXQ7uHmRqBtoYeK9tHVUT8
+         uvesyq7oFpn3aLi9x92fA+NaWxX8C4GF34UuPLAN7PIOvwPiVnRnxa6U1wVZSR0PzI
+         /4sji4DCCNZQg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0787DE53805;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2EC57C04E27;
         Fri,  8 Sep 2023 20:40:43 +0000 (UTC)
-Subject: Re: [GIT PULL] gpio: fixes for v6.6-rc1
+Subject: Re: [GIT PULL] Power management fix for v6.6-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230908110622.9503-1-brgl@bgdev.pl>
-References: <20230908110622.9503-1-brgl@bgdev.pl>
+In-Reply-To: <CAJZ5v0gOBBqyhwbi+FyQDgdwW3_EbtA0DgJYsH9kNxNMR=LCbQ@mail.gmail.com>
+References: <CAJZ5v0gOBBqyhwbi+FyQDgdwW3_EbtA0DgJYsH9kNxNMR=LCbQ@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230908110622.9503-1-brgl@bgdev.pl>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v6.6-rc1
-X-PR-Tracked-Commit-Id: 180b10bd160b014448366e5bc86e0558f8acb74f
+X-PR-Tracked-Message-Id: <CAJZ5v0gOBBqyhwbi+FyQDgdwW3_EbtA0DgJYsH9kNxNMR=LCbQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-6.6-rc1-3
+X-PR-Tracked-Commit-Id: 081690e941188acfad41b8dbde2112029a2aa206
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d30c0d326b43614c4ca9d31b7e31e806160f1817
-Message-Id: <169420564302.32167.538681804103502843.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: fd88c59e7929ee1a155988e87df27686aa1de967
+Message-Id: <169420564318.32167.7295132677376765748.pr-tracker-bot@kernel.org>
 Date:   Fri, 08 Sep 2023 20:40:43 +0000
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -58,12 +56,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri,  8 Sep 2023 13:06:22 +0200:
+The pull request you sent on Fri, 8 Sep 2023 21:22:52 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v6.6-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-6.6-rc1-3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d30c0d326b43614c4ca9d31b7e31e806160f1817
+https://git.kernel.org/torvalds/c/fd88c59e7929ee1a155988e87df27686aa1de967
 
 Thank you!
 
