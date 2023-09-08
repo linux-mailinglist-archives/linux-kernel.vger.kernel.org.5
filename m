@@ -2,48 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE5D798F6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447A6799067
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236011AbjIHTc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:32:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
+        id S234452AbjIHTp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344854AbjIHTcS (ORCPT
+        with ESMTP id S234397AbjIHTp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:32:18 -0400
+        Fri, 8 Sep 2023 15:45:58 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13801FF3;
-        Fri,  8 Sep 2023 12:31:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DAAFC4339A;
-        Fri,  8 Sep 2023 19:31:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D0626B9;
+        Fri,  8 Sep 2023 12:45:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF425C433CD;
+        Fri,  8 Sep 2023 19:32:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201515;
-        bh=OalSMVl3XxgEOsrbDSVUgswfFyTVgBefeOsrUsFx/t0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lVZWC9CgT3dJPiOn+WglqNL//PfRAIJPnIif8ONVgCWKRkd141/ZVSsFY4/PMgWh0
-         Te4GfeLeIhiJi4kOCiwIiLN9BnEv8jMETnAy3rLDkASilmsTsRaL4/NDA72oesmLGR
-         872ZwjmXed3nrSr/cpfoKBqMhVUNcJ1s8D+WEeg2Nh2lpcAj+K3UMaAvEwB844BXJK
-         DjUR+/nxWEBJaW+KbRvuX1Ch0Z6t5UTb1/3a4KjE4pY4mYyIYcaMhdSwwytFKY71z6
-         t++7WFoRYSDRUcbLF9jCGdYFpq7qbb8YA5KVZjB043ih5c/0/XCNYq4bigm0dCRtB+
-         TclxYNs0103XA==
+        s=k20201202; t=1694201526;
+        bh=BGVW/bVZ3R3G6HFyUlS67o1rwvFXphcCl2CYsx77NJI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uq3jU2UDw1BaK2IYSh6QsUdRUzt4wVPh2e9KKVwwy0LkYXgRDmYB/lZxtG49oI9q5
+         jv9ESu2x7T089uZ4F1/1LYmC1h4EHv0RUjcREWAn4s5n2xzU7ji5k9fGDEBYizxxWi
+         msUBxy5ei11Ae8mVT2r+KI+MdCNkje4NUrUjWK6yraettazknHBbO9sqMeLCq101yC
+         AWBh+NZ23WW6U3QZCY3ejGr/7+akuFKU/ChSed5Ojye3HbdmDtsdFa6er4cQGqD6lU
+         t5z//Pi6zw1B2yBWa7If+EPSA7/4ZR4Nhg2Vz9hyxEuIU61IsQNQSmNB7PyYJJJLh6
+         /E0mncwh496Gg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mateusz Guzik <mjguzik@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, ira.weiny@intel.com
-Subject: [PATCH AUTOSEL 6.5 36/36] x86: bring back rep movsq for user access on CPUs without ERMS
-Date:   Fri,  8 Sep 2023 15:28:47 -0400
-Message-Id: <20230908192848.3462476-36-sashal@kernel.org>
+Cc:     Marek Vasut <marex@denx.de>, Sam Ravnborg <sam@ravnborg.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, andrzej.hajda@intel.com,
+        neil.armstrong@linaro.org, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.4 01/31] drm/bridge: tc358762: Instruct DSI host to generate HSE packets
+Date:   Fri,  8 Sep 2023 15:31:30 -0400
+Message-Id: <20230908193201.3462957-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908192848.3462476-1-sashal@kernel.org>
-References: <20230908192848.3462476-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.2
+X-stable-base: Linux 6.4.15
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -54,138 +52,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Guzik <mjguzik@gmail.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit ca96b162bfd21a5d55e3cd6099e4ee357a0eeb68 ]
+[ Upstream commit 362fa8f6e6a05089872809f4465bab9d011d05b3 ]
 
-Intel CPUs ship with ERMS for over a decade, but this is not true for
-AMD.  In particular one reasonably recent uarch (EPYC 7R13) does not
-have it (or at least the bit is inactive when running on the Amazon EC2
-cloud -- I found rather conflicting information about AMD CPUs vs the
-extension).
+This bridge seems to need the HSE packet, otherwise the image is
+shifted up and corrupted at the bottom. This makes the bridge
+work with Samsung DSIM on i.MX8MM and i.MX8MP.
 
-Hand-rolled mov loops executing in this case are quite pessimal compared
-to rep movsq for bigger sizes.  While the upper limit depends on uarch,
-everyone is well south of 1KB AFAICS and sizes bigger than that are
-common.
-
-While technically ancient CPUs may be suffering from rep usage, gcc has
-been emitting it for years all over kernel code, so I don't think this
-is a legitimate concern.
-
-Sample result from read1_processes from will-it-scale (4KB reads/s):
-
-  before:   1507021
-  after:    1721828 (+14%)
-
-Note that the cutoff point for rep usage is set to 64 bytes, which is
-way too conservative but I'm sticking to what was done in 47ee3f1dd93b
-("x86: re-introduce support for ERMS copies for user space accesses").
-That is to say *some* copies will now go slower, which is fixable but
-beyond the scope of this patch.
-
-Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+Signed-off-by: Robert Foss <rfoss@kernel.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20230615201902.566182-3-marex@denx.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/uaccess_64.h |  2 +-
- arch/x86/lib/copy_user_64.S       | 57 +++++++------------------------
- 2 files changed, 14 insertions(+), 45 deletions(-)
+ drivers/gpu/drm/bridge/tc358762.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/uaccess_64.h b/arch/x86/include/asm/uaccess_64.h
-index 81b826d3b7530..f2c02e4469ccc 100644
---- a/arch/x86/include/asm/uaccess_64.h
-+++ b/arch/x86/include/asm/uaccess_64.h
-@@ -116,7 +116,7 @@ copy_user_generic(void *to, const void *from, unsigned long len)
- 		"2:\n"
- 		_ASM_EXTABLE_UA(1b, 2b)
- 		:"+c" (len), "+D" (to), "+S" (from), ASM_CALL_CONSTRAINT
--		: : "memory", "rax", "r8", "r9", "r10", "r11");
-+		: : "memory", "rax");
- 	clac();
- 	return len;
- }
-diff --git a/arch/x86/lib/copy_user_64.S b/arch/x86/lib/copy_user_64.S
-index 01c5de4c279b8..0a81aafed7f88 100644
---- a/arch/x86/lib/copy_user_64.S
-+++ b/arch/x86/lib/copy_user_64.S
-@@ -27,7 +27,7 @@
-  * NOTE! The calling convention is very intentionally the same as
-  * for 'rep movs', so that we can rewrite the function call with
-  * just a plain 'rep movs' on machines that have FSRM.  But to make
-- * it simpler for us, we can clobber rsi/rdi and rax/r8-r11 freely.
-+ * it simpler for us, we can clobber rsi/rdi and rax freely.
-  */
- SYM_FUNC_START(rep_movs_alternative)
- 	cmpq $64,%rcx
-@@ -68,55 +68,24 @@ SYM_FUNC_START(rep_movs_alternative)
- 	_ASM_EXTABLE_UA( 3b, .Lcopy_user_tail)
+diff --git a/drivers/gpu/drm/bridge/tc358762.c b/drivers/gpu/drm/bridge/tc358762.c
+index 77f7f7f547570..5de3f5b8dd336 100644
+--- a/drivers/gpu/drm/bridge/tc358762.c
++++ b/drivers/gpu/drm/bridge/tc358762.c
+@@ -216,7 +216,7 @@ static int tc358762_probe(struct mipi_dsi_device *dsi)
+ 	dsi->lanes = 1;
+ 	dsi->format = MIPI_DSI_FMT_RGB888;
+ 	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
+-			  MIPI_DSI_MODE_LPM;
++			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_VIDEO_HSE;
  
- .Llarge:
--0:	ALTERNATIVE "jmp .Lunrolled", "rep movsb", X86_FEATURE_ERMS
-+0:	ALTERNATIVE "jmp .Llarge_movsq", "rep movsb", X86_FEATURE_ERMS
- 1:	RET
- 
--        _ASM_EXTABLE_UA( 0b, 1b)
-+	_ASM_EXTABLE_UA( 0b, 1b)
- 
--	.p2align 4
--.Lunrolled:
--10:	movq (%rsi),%r8
--11:	movq 8(%rsi),%r9
--12:	movq 16(%rsi),%r10
--13:	movq 24(%rsi),%r11
--14:	movq %r8,(%rdi)
--15:	movq %r9,8(%rdi)
--16:	movq %r10,16(%rdi)
--17:	movq %r11,24(%rdi)
--20:	movq 32(%rsi),%r8
--21:	movq 40(%rsi),%r9
--22:	movq 48(%rsi),%r10
--23:	movq 56(%rsi),%r11
--24:	movq %r8,32(%rdi)
--25:	movq %r9,40(%rdi)
--26:	movq %r10,48(%rdi)
--27:	movq %r11,56(%rdi)
--	addq $64,%rsi
--	addq $64,%rdi
--	subq $64,%rcx
--	cmpq $64,%rcx
--	jae .Lunrolled
--	cmpl $8,%ecx
--	jae .Lword
-+.Llarge_movsq:
-+	movq %rcx,%rax
-+	shrq $3,%rcx
-+	andl $7,%eax
-+0:	rep movsq
-+	movl %eax,%ecx
- 	testl %ecx,%ecx
- 	jne .Lcopy_user_tail
- 	RET
- 
--	_ASM_EXTABLE_UA(10b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(11b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(12b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(13b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(14b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(15b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(16b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(17b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(20b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(21b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(22b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(23b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(24b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(25b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(26b, .Lcopy_user_tail)
--	_ASM_EXTABLE_UA(27b, .Lcopy_user_tail)
-+1:	leaq (%rax,%rcx,8),%rcx
-+	jmp .Lcopy_user_tail
-+
-+	_ASM_EXTABLE_UA( 0b, 1b)
- SYM_FUNC_END(rep_movs_alternative)
- EXPORT_SYMBOL(rep_movs_alternative)
+ 	ret = tc358762_parse_dt(ctx);
+ 	if (ret < 0)
 -- 
 2.40.1
 
