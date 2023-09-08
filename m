@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 194227990CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1177990CB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344497AbjIHUEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 16:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49834 "EHLO
+        id S245730AbjIHUEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 16:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344480AbjIHUEG (ORCPT
+        with ESMTP id S1344482AbjIHUEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 16:04:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F150170F
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 13:03:06 -0700 (PDT)
+        Fri, 8 Sep 2023 16:04:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4844D10CF
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 13:03:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694203385;
+        s=mimecast20190719; t=1694203393;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qJlM81Ad0uqQunhdFKofh1JwhP2kaFm8hxSxz8OfTMk=;
-        b=ePZJUstpqLUGNvY10VuB9AYfCD4dvj3m10nybqw9kdfteIuEWQp7ZfSbtnImd5Q6jibuww
-        vwdegGnb5VzcUFbCV+UTQtJuVikxOvp+1P9Kxf6WcC2JmUIXQKGn3ZL/q3NrM3BcrRCibj
-        /LmX2ESKlCFyCQyMKuiwhK+tK16ZXnM=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=R2kuY7QrN77OjYcmiIgmsp8RgTy5tijHIGRui0VqTUY=;
+        b=FVtUIV6tsX+mNwu0dPRU6/krl9z5hF9660WzUhQAK5v5pfb1taPidTii67cjZRQlB36Opz
+        N+VKXKxTwg38ubSiFAI1yy6hyWdSyAD3Z7LrfcGoLSuQKA4NOSmveGTGWAGYLY8TfIMfNB
+        qIVcvn0Vo93t4/92WiM7XdHw3ws5SLQ=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-458-N7lXP_I2PAGVZeGgOExc8w-1; Fri, 08 Sep 2023 16:03:02 -0400
-X-MC-Unique: N7lXP_I2PAGVZeGgOExc8w-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-64a4269ca98so6043486d6.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 13:03:02 -0700 (PDT)
+ us-mta-235-5Ue3-Wm7Nv-F8iB9xFRzZQ-1; Fri, 08 Sep 2023 16:03:11 -0400
+X-MC-Unique: 5Ue3-Wm7Nv-F8iB9xFRzZQ-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-76f1cc68e65so58231985a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 13:03:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694203382; x=1694808182;
+        d=1e100.net; s=20230601; t=1694203391; x=1694808191;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qJlM81Ad0uqQunhdFKofh1JwhP2kaFm8hxSxz8OfTMk=;
-        b=MczSR9pi2q5pqIkuq/22nTF5u75JZfOjfAKHUhT+iMGZcAP1wCbHTkzvjiL/Y8wfkP
-         6/mjtZDtmgGKMlkO1yDY0dV1gJfNHzrCS2P6CrflqWizdOXzlHbJGr+yKVtiAc6+1Nkj
-         51dJY4Fw8ttvalsRWyhCDgUbXv4lujE+IGUrNizO6utqV9gqQTLVN6C7gY+J2qIBncp6
-         9dkyWA5us751gHkwl/f5NcyJZ0kPX0cLD9tlwimCBLBWchQqAyYUBNKnQmODxIBeOJfD
-         XpRS5aPE3JcGDQz8BSAy4Hau5ILpcqH2XvF7rIVk08aE/0SQP2OFn/eHI2leQvMdvDeN
-         pVRA==
-X-Gm-Message-State: AOJu0YxLggkJN1nwvGyu/Sfy1HnuRUXRr6FPZaIbo4tohgKEPHLixmi8
-        WRQwavCl7xxUEM6GD4kkt7YWDaLSzDLo4Tu4ioX5xmfvbAoc+tTMqmBdwXTz6uKc77vaCGXKkmG
-        cNG501NBxqii5AuHpHD8SSzWL
-X-Received: by 2002:a05:6214:234b:b0:649:5f43:245c with SMTP id hu11-20020a056214234b00b006495f43245cmr3403718qvb.4.1694203382304;
-        Fri, 08 Sep 2023 13:03:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGkpjEpC3M4jl16uIjnS3PMQJTudw+DmAKJXO1LGuAkwNI/2h/IQUepIX3UGSH4cUrAf1SALA==
-X-Received: by 2002:a05:6214:234b:b0:649:5f43:245c with SMTP id hu11-20020a056214234b00b006495f43245cmr3403702qvb.4.1694203382095;
-        Fri, 08 Sep 2023 13:03:02 -0700 (PDT)
+        bh=R2kuY7QrN77OjYcmiIgmsp8RgTy5tijHIGRui0VqTUY=;
+        b=xCB3WEIkUMV0O43N0o/F6lHYOcZDVxHt9vFNmc9RK62SMyd4OL4XJzg2/IBL7xJayq
+         ID0qgJQ5HJrRS4Rzl1S+quNQCXKi7b0cRmOk6n81fg/CfYYLeP/ktZQ+3qERJRu0tfKo
+         VXfuOc2Ysh6ngJmYsAWIG/D1XedwFc2P/D5114wv8GKK/e3fgMgxrXmzaiMNlnRu1/0+
+         r7zUrWlZ4TrPiqIMdh25axxNoFdRzvzVu7Qw99swcg5/dXh8SF2KwlgrTv8phtVTG/VI
+         4QM4A7Oo9U1EAXwsr2HWLk983vEOZK7rSyENVTHxwk7D22IBoA6jKr0+VSEZylPv7L7m
+         9S3Q==
+X-Gm-Message-State: AOJu0YxzojJqkikR9Kks/8+XJ/J8dHwJIghtGk1HLkduUk78/HIDLOK6
+        F+jbR6pYCDFBshfIhKdRVpnpAmKYHAm7eWwYSk1CzUELNvZSUbUhWZE/Ar1Z0LIh7qtKu0DV58x
+        Y22QgmjSjS7e8XXZcvOZwa7On
+X-Received: by 2002:a05:620a:46a6:b0:75b:23a1:69ee with SMTP id bq38-20020a05620a46a600b0075b23a169eemr3480476qkb.5.1694203391480;
+        Fri, 08 Sep 2023 13:03:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGuCpViWH7IrGzpUqlTBi1h+iY/5ABj5ubmz/i5MJtwSQDaqOps3aQUe1r5isWfpnPKjPasBg==
+X-Received: by 2002:a05:620a:46a6:b0:75b:23a1:69ee with SMTP id bq38-20020a05620a46a600b0075b23a169eemr3480460qkb.5.1694203391259;
+        Fri, 08 Sep 2023 13:03:11 -0700 (PDT)
 Received: from fedorinator.redhat.com ([2001:9e8:32da:e500:513e:fbe9:e455:ae67])
-        by smtp.gmail.com with ESMTPSA id r19-20020a0ccc13000000b0064f523836fdsm959242qvk.123.2023.09.08.13.02.59
+        by smtp.gmail.com with ESMTPSA id c17-20020ae9e211000000b0076f15f2918fsm825920qkc.63.2023.09.08.13.03.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 13:03:01 -0700 (PDT)
+        Fri, 08 Sep 2023 13:03:10 -0700 (PDT)
 From:   Philipp Stanner <pstanner@redhat.com>
 To:     Kees Cook <keescook@chromium.org>,
         Andy Shevchenko <andy@kernel.org>,
@@ -75,9 +75,9 @@ Cc:     VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>,
         kexec@lists.infradead.org, linux-hardening@vger.kernel.org,
         Philipp Stanner <pstanner@redhat.com>,
         David Airlie <airlied@redhat.com>
-Subject: [PATCH v2 2/5] kernel: kexec: copy user-array safely
-Date:   Fri,  8 Sep 2023 21:59:41 +0200
-Message-ID: <31313a8a1dd1baf9dd3c21fbe8dd46b9e111f20c.1694202430.git.pstanner@redhat.com>
+Subject: [PATCH v2 3/5] kernel: watch_queue: copy user-array safely
+Date:   Fri,  8 Sep 2023 21:59:42 +0200
+Message-ID: <b333514f0be426385b5215b47d24062b4f551584.1694202430.git.pstanner@redhat.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1694202430.git.pstanner@redhat.com>
 References: <cover.1694202430.git.pstanner@redhat.com>
@@ -85,9 +85,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -102,21 +101,21 @@ duplicating the user-space array safely.
 Suggested-by: David Airlie <airlied@redhat.com>
 Signed-off-by: Philipp Stanner <pstanner@redhat.com>
 ---
- kernel/kexec.c | 2 +-
+ kernel/watch_queue.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/kexec.c b/kernel/kexec.c
-index 107f355eac10..8f35a5a42af8 100644
---- a/kernel/kexec.c
-+++ b/kernel/kexec.c
-@@ -247,7 +247,7 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
- 		((flags & KEXEC_ARCH_MASK) != KEXEC_ARCH_DEFAULT))
+diff --git a/kernel/watch_queue.c b/kernel/watch_queue.c
+index d0b6b390ee42..778b4056700f 100644
+--- a/kernel/watch_queue.c
++++ b/kernel/watch_queue.c
+@@ -331,7 +331,7 @@ long watch_queue_set_filter(struct pipe_inode_info *pipe,
+ 	    filter.__reserved != 0)
  		return -EINVAL;
  
--	ksegments = memdup_user(segments, nr_segments * sizeof(ksegments[0]));
-+	ksegments = memdup_array_user(segments, nr_segments, sizeof(ksegments[0]));
- 	if (IS_ERR(ksegments))
- 		return PTR_ERR(ksegments);
+-	tf = memdup_user(_filter->filters, filter.nr_filters * sizeof(*tf));
++	tf = memdup_array_user(_filter->filters, filter.nr_filters, sizeof(*tf));
+ 	if (IS_ERR(tf))
+ 		return PTR_ERR(tf);
  
 -- 
 2.41.0
