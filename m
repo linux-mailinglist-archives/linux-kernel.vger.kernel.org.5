@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1177990CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 193B07990CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245730AbjIHUEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 16:04:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
+        id S1344484AbjIHUEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 16:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344482AbjIHUEN (ORCPT
+        with ESMTP id S1344522AbjIHUET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 16:04:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4844D10CF
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 13:03:14 -0700 (PDT)
+        Fri, 8 Sep 2023 16:04:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7971704
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 13:03:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694203393;
+        s=mimecast20190719; t=1694203402;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=R2kuY7QrN77OjYcmiIgmsp8RgTy5tijHIGRui0VqTUY=;
-        b=FVtUIV6tsX+mNwu0dPRU6/krl9z5hF9660WzUhQAK5v5pfb1taPidTii67cjZRQlB36Opz
-        N+VKXKxTwg38ubSiFAI1yy6hyWdSyAD3Z7LrfcGoLSuQKA4NOSmveGTGWAGYLY8TfIMfNB
-        qIVcvn0Vo93t4/92WiM7XdHw3ws5SLQ=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=UOJpuwbwTVfs+j95sEE93OpkqtbclA96WzipEC/nM14=;
+        b=B5Xj9Ttc+s+aZQxg2A3jQbfa8yOwnks3IUTh3RJHo7yUvJyDP16+zr0pbXdQJGzZ2QKyOM
+        /FMh94mhge3/pdvosTE+WUPmnH2gljxTFxIiU0hk8G/oBDLk4if3OGV5NxLQYXtMrY2H8m
+        Jvw4Lgy9Ll3TePAjZwnXltt+hPxTNdw=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-235-5Ue3-Wm7Nv-F8iB9xFRzZQ-1; Fri, 08 Sep 2023 16:03:11 -0400
-X-MC-Unique: 5Ue3-Wm7Nv-F8iB9xFRzZQ-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-76f1cc68e65so58231985a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 13:03:11 -0700 (PDT)
+ us-mta-584-FsduL-wZOmyv3k3rPoEeaw-1; Fri, 08 Sep 2023 16:03:20 -0400
+X-MC-Unique: FsduL-wZOmyv3k3rPoEeaw-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-4122119722eso4981691cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 13:03:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694203391; x=1694808191;
+        d=1e100.net; s=20230601; t=1694203399; x=1694808199;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=R2kuY7QrN77OjYcmiIgmsp8RgTy5tijHIGRui0VqTUY=;
-        b=xCB3WEIkUMV0O43N0o/F6lHYOcZDVxHt9vFNmc9RK62SMyd4OL4XJzg2/IBL7xJayq
-         ID0qgJQ5HJrRS4Rzl1S+quNQCXKi7b0cRmOk6n81fg/CfYYLeP/ktZQ+3qERJRu0tfKo
-         VXfuOc2Ysh6ngJmYsAWIG/D1XedwFc2P/D5114wv8GKK/e3fgMgxrXmzaiMNlnRu1/0+
-         r7zUrWlZ4TrPiqIMdh25axxNoFdRzvzVu7Qw99swcg5/dXh8SF2KwlgrTv8phtVTG/VI
-         4QM4A7Oo9U1EAXwsr2HWLk983vEOZK7rSyENVTHxwk7D22IBoA6jKr0+VSEZylPv7L7m
-         9S3Q==
-X-Gm-Message-State: AOJu0YxzojJqkikR9Kks/8+XJ/J8dHwJIghtGk1HLkduUk78/HIDLOK6
-        F+jbR6pYCDFBshfIhKdRVpnpAmKYHAm7eWwYSk1CzUELNvZSUbUhWZE/Ar1Z0LIh7qtKu0DV58x
-        Y22QgmjSjS7e8XXZcvOZwa7On
-X-Received: by 2002:a05:620a:46a6:b0:75b:23a1:69ee with SMTP id bq38-20020a05620a46a600b0075b23a169eemr3480476qkb.5.1694203391480;
-        Fri, 08 Sep 2023 13:03:11 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGuCpViWH7IrGzpUqlTBi1h+iY/5ABj5ubmz/i5MJtwSQDaqOps3aQUe1r5isWfpnPKjPasBg==
-X-Received: by 2002:a05:620a:46a6:b0:75b:23a1:69ee with SMTP id bq38-20020a05620a46a600b0075b23a169eemr3480460qkb.5.1694203391259;
-        Fri, 08 Sep 2023 13:03:11 -0700 (PDT)
+        bh=UOJpuwbwTVfs+j95sEE93OpkqtbclA96WzipEC/nM14=;
+        b=arOwL+XefdaFkxnwiHKBWtwmj8n6BBQtiz+CRawE1RMANw1cPEcqwUTziu2ezwmpcE
+         bpOIJHU4ppahw/mlHwVhoTBrUiDINnr/eKlbRdt3ZZKxncWBXvejYqaj4r9cXmKKB0Vc
+         hfDWvSbA+wKAxY8NGtrC04DHtmwO7NcBKsiwXOn6IphamA0Jfh4Zt6mQvH1XyJjxqGQn
+         DoGRgwNTlnMqvvoPt1SCJMVarSfv8w1aJXx4plIi1LcLD3+7FWgEp9+3HtFLOmxgT8gD
+         PMBYpThCId79fZBL4RbtTyKF2vqnbsuG/6+fcBtzSVytWtcIlFiK1GOzGofhPJW7z9X0
+         rlSg==
+X-Gm-Message-State: AOJu0YynWZXjRcK4ib8SzLvPlw/0or4uAzOzDQtLXx8AteLzk8KkGhCR
+        MjSu6ifj6leMY+FsplhYEQyHKYxzyl10+ugiejhkHju1+wBLkUZSPrn6UG5XMiiioiTVVyyOXtn
+        I08PLqXJw2zKN6Kshk5pp0LN8
+X-Received: by 2002:ac8:7e94:0:b0:412:12e8:8538 with SMTP id w20-20020ac87e94000000b0041212e88538mr3683927qtj.1.1694203399530;
+        Fri, 08 Sep 2023 13:03:19 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHAKN1YnAkZtTcGtA674mV4f8NT9irZONaAKXTHG61Fqfz6xPH+/e15CARdB3FRUjLa10PQWg==
+X-Received: by 2002:ac8:7e94:0:b0:412:12e8:8538 with SMTP id w20-20020ac87e94000000b0041212e88538mr3683913qtj.1.1694203399274;
+        Fri, 08 Sep 2023 13:03:19 -0700 (PDT)
 Received: from fedorinator.redhat.com ([2001:9e8:32da:e500:513e:fbe9:e455:ae67])
-        by smtp.gmail.com with ESMTPSA id c17-20020ae9e211000000b0076f15f2918fsm825920qkc.63.2023.09.08.13.03.07
+        by smtp.gmail.com with ESMTPSA id bb37-20020a05622a1b2500b004116b082feesm843284qtb.75.2023.09.08.13.03.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 13:03:10 -0700 (PDT)
+        Fri, 08 Sep 2023 13:03:19 -0700 (PDT)
 From:   Philipp Stanner <pstanner@redhat.com>
 To:     Kees Cook <keescook@chromium.org>,
         Andy Shevchenko <andy@kernel.org>,
@@ -75,9 +75,9 @@ Cc:     VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>,
         kexec@lists.infradead.org, linux-hardening@vger.kernel.org,
         Philipp Stanner <pstanner@redhat.com>,
         David Airlie <airlied@redhat.com>
-Subject: [PATCH v2 3/5] kernel: watch_queue: copy user-array safely
-Date:   Fri,  8 Sep 2023 21:59:42 +0200
-Message-ID: <b333514f0be426385b5215b47d24062b4f551584.1694202430.git.pstanner@redhat.com>
+Subject: [PATCH v2 4/5] drm_lease.c: copy user-array safely
+Date:   Fri,  8 Sep 2023 21:59:43 +0200
+Message-ID: <bca4966d616f417267ba02f66ff9891fceffd7f0.1694202430.git.pstanner@redhat.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1694202430.git.pstanner@redhat.com>
 References: <cover.1694202430.git.pstanner@redhat.com>
@@ -85,8 +85,9 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -101,22 +102,24 @@ duplicating the user-space array safely.
 Suggested-by: David Airlie <airlied@redhat.com>
 Signed-off-by: Philipp Stanner <pstanner@redhat.com>
 ---
- kernel/watch_queue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/drm_lease.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/watch_queue.c b/kernel/watch_queue.c
-index d0b6b390ee42..778b4056700f 100644
---- a/kernel/watch_queue.c
-+++ b/kernel/watch_queue.c
-@@ -331,7 +331,7 @@ long watch_queue_set_filter(struct pipe_inode_info *pipe,
- 	    filter.__reserved != 0)
- 		return -EINVAL;
- 
--	tf = memdup_user(_filter->filters, filter.nr_filters * sizeof(*tf));
-+	tf = memdup_array_user(_filter->filters, filter.nr_filters, sizeof(*tf));
- 	if (IS_ERR(tf))
- 		return PTR_ERR(tf);
- 
+diff --git a/drivers/gpu/drm/drm_lease.c b/drivers/gpu/drm/drm_lease.c
+index 150fe1555068..94375c6a5425 100644
+--- a/drivers/gpu/drm/drm_lease.c
++++ b/drivers/gpu/drm/drm_lease.c
+@@ -510,8 +510,8 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
+ 	/* Handle leased objects, if any */
+ 	idr_init(&leases);
+ 	if (object_count != 0) {
+-		object_ids = memdup_user(u64_to_user_ptr(cl->object_ids),
+-					 array_size(object_count, sizeof(__u32)));
++		object_ids = memdup_array_user(u64_to_user_ptr(cl->object_ids),
++					       object_count, sizeof(__u32));
+ 		if (IS_ERR(object_ids)) {
+ 			ret = PTR_ERR(object_ids);
+ 			idr_destroy(&leases);
 -- 
 2.41.0
 
