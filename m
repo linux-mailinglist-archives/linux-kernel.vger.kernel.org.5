@@ -2,131 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A99798B27
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 19:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41368798B4B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 19:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245390AbjIHREn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 13:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57074 "EHLO
+        id S245393AbjIHRLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 13:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244336AbjIHREm (ORCPT
+        with ESMTP id S233810AbjIHRLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 13:04:42 -0400
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F04F19B6;
-        Fri,  8 Sep 2023 10:04:38 -0700 (PDT)
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-99bf3f59905so280047266b.3;
-        Fri, 08 Sep 2023 10:04:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694192677; x=1694797477;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Fri, 8 Sep 2023 13:11:47 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CB81FD5;
+        Fri,  8 Sep 2023 10:11:41 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-529fb2c6583so3037262a12.1;
+        Fri, 08 Sep 2023 10:11:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694193099; x=1694797899; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=57ZvQzT8uSwMhJOxXEiVm+FHuG7dmlxUbz/rogmB6vU=;
-        b=EPMP/TFgPalYscCqdFqGTpYOe7NGdjaEwiQqkQpEwqHEEJTLoApoRlzP2rBPpsEE54
-         8KsYvllR7rLl6lh6ZhonZvJR1XrE9cuHWIx4PvrWf+ZyMwFBetAKWfY7QIm8uP2F7nWF
-         zSEpXY5ltSFNtbIdZvXcrgSSMCYNikhoAYEIdUeaeWADs5OnPAUtmF8/2fu4dp/ZpZ1n
-         EH+wO4/mBEJQG76WLfVonmsZtvH5+2TJ11tT82Kw2+TwbFE5IGjLo5KM8bgSpHZeuDHw
-         it8xDga3RtQh7Ukv1YgOJQLr51L/jfDFELcWIs9uHTcEjMN2ZlWeE5MZ/JnVz2qidYVm
-         ddVQ==
-X-Gm-Message-State: AOJu0YztReAQFOdqWQiE8Up9QvBj4/PNhSinqcYaeflvyZamz9Wh2MlU
-        OJZVtJnyqpUsKnBbAxvpeXE=
-X-Google-Smtp-Source: AGHT+IHYKj1fQnlinPGbS3+2SiXOR/ZeR+G9D4YK1oE2vNA54ciYrJ0PCXSUFDmbsdhLUlMLyOb0Eg==
-X-Received: by 2002:a17:906:292a:b0:99d:f6e9:1cf8 with SMTP id v10-20020a170906292a00b0099df6e91cf8mr2540705ejd.20.1694192676666;
-        Fri, 08 Sep 2023 10:04:36 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-022.fbsv.net. [2a03:2880:31ff:16::face:b00c])
-        by smtp.gmail.com with ESMTPSA id op5-20020a170906bce500b00992ea405a79sm1276001ejb.166.2023.09.08.10.04.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 10:04:36 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 10:04:34 -0700
-From:   Breno Leitao <leitao@debian.org>
-To:     Gabriel Krisman Bertazi <krisman@suse.de>
-Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-        willemdebruijn.kernel@gmail.com, martin.lau@linux.dev,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org, kuba@kernel.org,
-        pabeni@redhat.com
-Subject: Re: [PATCH v4 07/10] io_uring/cmd: return -EOPNOTSUPP if net is
- disabled
-Message-ID: <ZPtUIl93hBKKqhu6@gmail.com>
-References: <20230904162504.1356068-1-leitao@debian.org>
- <20230904162504.1356068-8-leitao@debian.org>
- <871qfcby28.fsf@suse.de>
+        bh=ZRZZtDSDbQ7ziD6U8enIVKCW6fBD3XLhOHURnTZwm+I=;
+        b=r27LHMXWq6JFzDriX8S3cF9X1svThjv4/reAkCS3DbEu72buDQ1aYGa1CvFoeZF5aj
+         e9yZ0pMOkcupdXxiv6022expw+GebuThz8p16RxTo7WORyDhnmxrUKP0H7+e0HkkQxKn
+         RHD8ezIKlE1jYuvHOwKKAUPGp4DYClq8hV+Qeg0vgYL71Wdd2OcKzCVMt7GKODJMhW2t
+         BaQyTZACPYm74HCilFHOSnlkAaXT/wZ5torJefR63qsR3Zy0JvV6VX1jGYgBXEwWNkfl
+         JWB5Rdnj+dGNmY4tj21esg3v1XdRsqIKCbrxjSC8NMoxYMxJWrpjM3tI0OtHj4CAKac6
+         CbxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694193099; x=1694797899;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZRZZtDSDbQ7ziD6U8enIVKCW6fBD3XLhOHURnTZwm+I=;
+        b=Qcxb9JWVnNmdVtposNsiw9UjB0fifaHYlKG4M2zWmaqumXJ1GVAcyNFckFi8y5KKSk
+         oKRc6ZN1H8l+Pz86awk7oOBqSA1lqcmTlOYfuACjuAau6C3BriT21JugO19Hm9pbAIXD
+         JSmRscEYsUuwC2WXL/Tf51beHJgu92p3Gh/lLOzB6nNO8svoCDfb/1NUFeLDvf4gNnwf
+         dWYqcHDMFvqK3jRv2cagb0RMA6hv1Wavg316gZMcq344xCvVKoOZGgvvvPggDJFkCia8
+         AICIHGfcoLfjC7IXOrWBQxJY5yczGLLnKLGVbCobx5FE0s+gEOBQJ0df3OLRjxCdun3J
+         38Gw==
+X-Gm-Message-State: AOJu0Yx2Q0EzD2RrZiTzKc9oL0daeTAGLJuRfvpQtpkfJbnLL3LsGXNX
+        mCKwdzEPOh/XUCr6hsdFVaHnmBeROP+4qduMBmg=
+X-Google-Smtp-Source: AGHT+IE81vOXgV+267Me6pgBsx7NyiALIoCgSFaF5/bhivgWOBvhVj01wJZJAyOS8B2FCfiqobx9r2YWGa9o39w+McA=
+X-Received: by 2002:a05:6402:1219:b0:523:102f:3ce1 with SMTP id
+ c25-20020a056402121900b00523102f3ce1mr2572978edw.10.1694193099037; Fri, 08
+ Sep 2023 10:11:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871qfcby28.fsf@suse.de>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230906182125.48642-1-jandryuk@gmail.com> <24a741a4-b305-c817-e8c3-34b213ad0ee5@intel.com>
+In-Reply-To: <24a741a4-b305-c817-e8c3-34b213ad0ee5@intel.com>
+From:   Jason Andryuk <jandryuk@gmail.com>
+Date:   Fri, 8 Sep 2023 13:11:27 -0400
+Message-ID: <CAKf6xpvOG5kunrfQEoDBvrrY+UVUn3+9ovKmqXZo88nh05tt6Q@mail.gmail.com>
+Subject: Re: [PATCH v2] acpi/processor: sanitize _PDC buffer bits when running
+ as Xen dom0
+To:     "Wilczynski, Michal" <michal.wilczynski@intel.com>
+Cc:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Roger Pau Monne <roger.pau@citrix.com>,
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 08:32:15AM -0400, Gabriel Krisman Bertazi wrote:
-> Breno Leitao <leitao@debian.org> writes:
-> 
-> > Protect io_uring_cmd_sock() to be called if CONFIG_NET is not set. If
-> > network is not enabled, but io_uring is, then we want to return
-> > -EOPNOTSUPP for any possible socket operation.
+On Thu, Sep 7, 2023 at 9:20=E2=80=AFAM Wilczynski, Michal
+<michal.wilczynski@intel.com> wrote:
+>
+>
+> Hi,
+>
+> On 9/6/2023 8:21 PM, Jason Andryuk wrote:
+> > From: Roger Pau Monne <roger.pau@citrix.com>
 > >
-> > This is helpful because io_uring_cmd_sock() can now call functions that
-> > only exits if CONFIG_NET is enabled without having #ifdef CONFIG_NET
-> > inside the function itself.
-> >
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
-> > ---
-> >  io_uring/uring_cmd.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
-> > index 60f843a357e0..6a91e1af7d05 100644
-> > --- a/io_uring/uring_cmd.c
-> > +++ b/io_uring/uring_cmd.c
-> > @@ -167,6 +167,7 @@ int io_uring_cmd_import_fixed(u64 ubuf, unsigned long len, int rw,
-> >  }
-> >  EXPORT_SYMBOL_GPL(io_uring_cmd_import_fixed);
-> >  
-> > +#if defined(CONFIG_NET)
-> >  int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
-> >  {
-> >  	struct socket *sock = cmd->file->private_data;
-> > @@ -192,4 +193,11 @@ int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
-> >  		return -EOPNOTSUPP;
-> >  	}
-> >  }
-> > +#else
-> > +int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
-> > +{
-> > +	return -EOPNOTSUPP;
-> > +}
-> > +#endif
-> > +
-> >  EXPORT_SYMBOL_GPL(io_uring_cmd_sock);
-> 
-> It doesn't make much sense to export the symbol on the !CONFIG_NET case.
-> Usually, you'd make it a 'static inline' in the header file (even though
-> it won't be ever inlined in this case):
-> 
-> in include/linux/io_uring.h:
-> 
-> #if defined(CONFIG_NET)
-> int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags);
-> #else
-> static inline int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
-> {
-> 	return -EOPNOTSUPP;
-> }
-> #endif
-> 
-> But this is a minor detail. I'd say to consider doing it if you end up doing
-> another spin of the patchset.  Other than that, looks good to me.
+> > The Processor _PDC buffer bits notify ACPI of the OS capabilities, and
+> > so ACPI can adjust the return of other Processor methods taking the OS
+> > capabilities into account.
+>
+> _PDC method is deprecated for this purpose, since 2018, and is dropped fr=
+om
+> spec since 6.5
+>
+> We made the switch in linux since 6.6:
+> 95272641338a ("ACPI: processor: Use _OSC to convey OSPM processor support=
+ information")
 
-This makes sense, and I will add the symbol export inside the
-"if defined(CONFIG_NET)" block, since I need to respin this patchset to
-address the sockptr_t concern.
+Thanks for the heads up, Michal.  The patch pre-dated 6.6 and I based
+this one off of 6.5.
 
-Thanks for the good reviews!
+> >
+> > When Linux is running as a Xen dom0, it's the hypervisor the entity
+> > in charge of processor power management, and hence Xen needs to make
+> > sure the capabilities reported in the _PDC buffer match the
+> > capabilities of the driver in Xen.
+>
+> So I guess you would need to sanitize buffer passed to _OSC method instea=
+d ?
+
+I think I'll modify the capabilities in arch_acpi_set_proc_cap_bits()
+and that will handle both _OSC and the _PDC fallback.
+
+Regards,
+Jason
