@@ -2,47 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2782B798CFA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0685F798CFE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344173AbjIHSTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41830 "EHLO
+        id S241837AbjIHST1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:19:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343869AbjIHSSl (ORCPT
+        with ESMTP id S1343984AbjIHSSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Sep 2023 14:18:41 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057DC2114;
-        Fri,  8 Sep 2023 11:18:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA928C43395;
-        Fri,  8 Sep 2023 18:16:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445212120;
+        Fri,  8 Sep 2023 11:18:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC6EEC433CD;
+        Fri,  8 Sep 2023 18:16:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196977;
-        bh=VDWwr2fmsHE/DSkU4U+g3Jy6guLZMB6mAI4l8yVfuUc=;
+        s=k20201202; t=1694196986;
+        bh=cgEaIzwHZTyAPMNCMxGDfmUJA2R5lfAjPk2R7thf1CQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gdVFKSIzK3WaGa6PXh37Z659rScD3nDwzNY9UvLG9BbsHH5Csx8gic8ck/GKIOBPH
-         bVDmHDLQM1HngzN+fNhMx3rwKkwvH+5Q0eGR18WAjVsnqS8gA/xDHgldymwUh+O4Fi
-         6+/ELUrK7Dj42HIy6+KOh0dy3FD+TIlfPJ0pB9xMFYITAO7V+Y5a0BQ6yCe57ycW2m
-         J4NawEu/sISvnrxpquPxPwNpTNPyAk5IBgtLurZwgAxF4Lp3yCsp/HCRiOJ8sWU/Of
-         VDlvRUqqxrl3+wvCVrcl3oPluIBt8RSF2CZXB0/AqSxdCdsWUt7CLMwESyQCKjcXJK
-         UaWyRdMZDcusA==
+        b=TlH2SNlY2RP61ud3AQHIvqYlH4pHIvHkHMy15Mj5qRAiNYOM7kxQmCEv1z3qoqy4h
+         6FY0vKrXso6pudpiKuY2Aov79MGX/n3KP+f9m6qnvLI8wIS33nHIRgsu7Ch1r0FzAv
+         qFlCb2whF5CfX34u/oFu4AmlZusYUtGDdaQgfRcSG34M/7CB4+UaZJNT/ITncKx32B
+         lUXvrnDfE36RXuWlD5X9VmxrJ2HwcIE+hTE2QmupBhahuItb/dboVxWP9qZ2raTe7a
+         nhgb6bgL6LSg2D5Bfv1GKrbBwC3QKKX1ZehxcpRSu5a4eSaA7/nBZCQXxSEQEb9SKX
+         rKnZbpUADQbYA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Matt Whitlock <kernel@mattwhitlock.name>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>,
-        lorenzo@kernel.org, ryder.lee@mediatek.com, kvalo@kernel.org,
-        matthias.bgg@gmail.com, deren.wu@mediatek.com,
-        sean.wang@mediatek.com, linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.4 09/41] mt76: mt7921: don't assume adequate headroom for SDIO headers
-Date:   Fri,  8 Sep 2023 14:15:23 -0400
-Message-Id: <20230908181555.3459640-9-sashal@kernel.org>
+Cc:     Dmitry Antipov <dmantipov@yandex.ru>,
+        Kalle Valo <quic_kvalo@quicinc.com>,
+        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
+        linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 10/41] wifi: wil6210: fix fortify warnings
+Date:   Fri,  8 Sep 2023 14:15:24 -0400
+Message-Id: <20230908181555.3459640-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181555.3459640-1-sashal@kernel.org>
 References: <20230908181555.3459640-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.15
@@ -56,76 +54,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matt Whitlock <kernel@mattwhitlock.name>
+From: Dmitry Antipov <dmantipov@yandex.ru>
 
-[ Upstream commit 98c4d0abf5c478db1ad126ff0c187dbb84c0803c ]
+[ Upstream commit 1ad8237e971630c66a1a6194491e0837b64d00e0 ]
 
-mt7921_usb_sdio_tx_prepare_skb() calls mt7921_usb_sdio_write_txwi() and
-mt7921_skb_add_usb_sdio_hdr(), both of which blindly assume that
-adequate headroom will be available in the passed skb. This assumption
-typically is satisfied when the skb was allocated in the net core for
-transmission via the mt7921 netdev (although even that is only an
-optimization and is not strictly guaranteed), but the assumption is
-sometimes not satisfied when the skb originated in the receive path of
-another netdev and was passed through to the mt7921, such as by the
-bridge layer. Blindly prepending bytes to an skb is always wrong.
+When compiling with gcc 13.1 and CONFIG_FORTIFY_SOURCE=y,
+I've noticed the following:
 
-This commit introduces a call to skb_cow_head() before the call to
-mt7921_usb_sdio_write_txwi() in mt7921_usb_sdio_tx_prepare_skb() to
-ensure that at least MT_SDIO_TXD_SIZE + MT_SDIO_HDR_SIZE bytes can be
-pushed onto the skb.
+In function ‘fortify_memcpy_chk’,
+    inlined from ‘wil_rx_crypto_check_edma’ at drivers/net/wireless/ath/wil6210/txrx_edma.c:566:2:
+./include/linux/fortify-string.h:529:25: warning: call to ‘__read_overflow2_field’
+declared with attribute warning: detected read beyond size of field (2nd parameter);
+maybe use struct_group()? [-Wattribute-warning]
+  529 |                         __read_overflow2_field(q_size_field, size);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Without this fix, I can trivially cause kernel panics by bridging an
-MT7921AU-based USB 802.11ax interface with an Ethernet interface on an
-Intel Atom-based x86 system using its onboard RTL8169 PCI Ethernet
-adapter and also on an ARM-based Raspberry Pi 1 using its onboard
-SMSC9512 USB Ethernet adapter. Note that the panics do not occur in
-every system configuration, as they occur only if the receiving netdev
-leaves less headroom in its received skbs than the mt7921 needs for its
-SDIO headers.
+where the compiler complains on:
 
-Here is an example stack trace of this panic on Raspberry Pi OS Lite
-2023-02-21 running kernel 6.1.24+ [1]:
+const u8 *pn;
+...
+pn = (u8 *)&st->ext.pn_15_0;
+...
+memcpy(cc->pn, pn, IEEE80211_GCMP_PN_LEN);
 
- skb_panic from skb_push+0x44/0x48
- skb_push from mt7921_usb_sdio_tx_prepare_skb+0xd4/0x190 [mt7921_common]
- mt7921_usb_sdio_tx_prepare_skb [mt7921_common] from mt76u_tx_queue_skb+0x94/0x1d0 [mt76_usb]
- mt76u_tx_queue_skb [mt76_usb] from __mt76_tx_queue_skb+0x4c/0xc8 [mt76]
- __mt76_tx_queue_skb [mt76] from mt76_txq_schedule.part.0+0x13c/0x398 [mt76]
- mt76_txq_schedule.part.0 [mt76] from mt76_txq_schedule_all+0x24/0x30 [mt76]
- mt76_txq_schedule_all [mt76] from mt7921_tx_worker+0x58/0xf4 [mt7921_common]
- mt7921_tx_worker [mt7921_common] from __mt76_worker_fn+0x9c/0xec [mt76]
- __mt76_worker_fn [mt76] from kthread+0xbc/0xe0
- kthread from ret_from_fork+0x14/0x34
+and:
 
-After this fix, bridging the mt7921 interface works fine on both of my
-previously problematic systems.
+In function ‘fortify_memcpy_chk’,
+    inlined from ‘wil_rx_crypto_check’ at drivers/net/wireless/ath/wil6210/txrx.c:684:2:
+./include/linux/fortify-string.h:529:25: warning: call to ‘__read_overflow2_field’
+declared with attribute warning: detected read beyond size of field (2nd parameter);
+maybe use struct_group()? [-Wattribute-warning]
+  529 |                         __read_overflow2_field(q_size_field, size);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-[1] https://github.com/raspberrypi/firmware/tree/5c276f55a4b21345cd4d6200a504ee991851ff7a
+where the compiler complains on:
 
-Link: https://github.com/openwrt/openwrt/issues/11796
-Signed-off-by: Matt Whitlock <kernel@mattwhitlock.name>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+const u8 *pn = (u8 *)&d->mac.pn_15_0;
+...
+memcpy(cc->pn, pn, IEEE80211_GCMP_PN_LEN);
+
+In both cases, the fortification logic interprets 'memcpy()' as 6-byte
+overread of 2-byte field 'pn_15_0' of 'struct wil_rx_status_extension'
+and 'pn_15_0' of 'struct vring_rx_mac', respectively. To silence
+these warnings, last two fields of the aforementioned structures
+are grouped using 'struct_group_attr(pn, __packed' quirk.
+
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Link: https://lore.kernel.org/r/20230621093711.80118-1-dmantipov@yandex.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7921/mac.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/wireless/ath/wil6210/txrx.c      | 2 +-
+ drivers/net/wireless/ath/wil6210/txrx.h      | 6 ++++--
+ drivers/net/wireless/ath/wil6210/txrx_edma.c | 2 +-
+ drivers/net/wireless/ath/wil6210/txrx_edma.h | 6 ++++--
+ 4 files changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
-index 1675bf5204812..a671c601c5836 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
-@@ -1180,6 +1180,10 @@ int mt7921_usb_sdio_tx_prepare_skb(struct mt76_dev *mdev, void *txwi_ptr,
- 	if (unlikely(tx_info->skb->len <= ETH_HLEN))
- 		return -EINVAL;
+diff --git a/drivers/net/wireless/ath/wil6210/txrx.c b/drivers/net/wireless/ath/wil6210/txrx.c
+index 237cbd5c5060b..f29ac6de71399 100644
+--- a/drivers/net/wireless/ath/wil6210/txrx.c
++++ b/drivers/net/wireless/ath/wil6210/txrx.c
+@@ -666,7 +666,7 @@ static int wil_rx_crypto_check(struct wil6210_priv *wil, struct sk_buff *skb)
+ 	struct wil_tid_crypto_rx *c = mc ? &s->group_crypto_rx :
+ 				      &s->tid_crypto_rx[tid];
+ 	struct wil_tid_crypto_rx_single *cc = &c->key_id[key_id];
+-	const u8 *pn = (u8 *)&d->mac.pn_15_0;
++	const u8 *pn = (u8 *)&d->mac.pn;
  
-+	err = skb_cow_head(skb, MT_SDIO_TXD_SIZE + MT_SDIO_HDR_SIZE);
-+	if (err)
-+		return err;
-+
- 	if (!wcid)
- 		wcid = &dev->mt76.global_wcid;
+ 	if (!cc->key_set) {
+ 		wil_err_ratelimited(wil,
+diff --git a/drivers/net/wireless/ath/wil6210/txrx.h b/drivers/net/wireless/ath/wil6210/txrx.h
+index 1ae1bec1b97f1..689f68d89a440 100644
+--- a/drivers/net/wireless/ath/wil6210/txrx.h
++++ b/drivers/net/wireless/ath/wil6210/txrx.h
+@@ -343,8 +343,10 @@ struct vring_rx_mac {
+ 	u32 d0;
+ 	u32 d1;
+ 	u16 w4;
+-	u16 pn_15_0;
+-	u32 pn_47_16;
++	struct_group_attr(pn, __packed,
++		u16 pn_15_0;
++		u32 pn_47_16;
++	);
+ } __packed;
  
+ /* Rx descriptor - DMA part
+diff --git a/drivers/net/wireless/ath/wil6210/txrx_edma.c b/drivers/net/wireless/ath/wil6210/txrx_edma.c
+index 201c8c35e0c9e..1ba1f21ebea26 100644
+--- a/drivers/net/wireless/ath/wil6210/txrx_edma.c
++++ b/drivers/net/wireless/ath/wil6210/txrx_edma.c
+@@ -548,7 +548,7 @@ static int wil_rx_crypto_check_edma(struct wil6210_priv *wil,
+ 	s = &wil->sta[cid];
+ 	c = mc ? &s->group_crypto_rx : &s->tid_crypto_rx[tid];
+ 	cc = &c->key_id[key_id];
+-	pn = (u8 *)&st->ext.pn_15_0;
++	pn = (u8 *)&st->ext.pn;
+ 
+ 	if (!cc->key_set) {
+ 		wil_err_ratelimited(wil,
+diff --git a/drivers/net/wireless/ath/wil6210/txrx_edma.h b/drivers/net/wireless/ath/wil6210/txrx_edma.h
+index c736f7413a35f..ee90e225bb050 100644
+--- a/drivers/net/wireless/ath/wil6210/txrx_edma.h
++++ b/drivers/net/wireless/ath/wil6210/txrx_edma.h
+@@ -330,8 +330,10 @@ struct wil_rx_status_extension {
+ 	u32 d0;
+ 	u32 d1;
+ 	__le16 seq_num; /* only lower 12 bits */
+-	u16 pn_15_0;
+-	u32 pn_47_16;
++	struct_group_attr(pn, __packed,
++		u16 pn_15_0;
++		u32 pn_47_16;
++	);
+ } __packed;
+ 
+ struct wil_rx_status_extended {
 -- 
 2.40.1
 
