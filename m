@@ -2,146 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0A07984A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 11:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E947984A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 11:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241416AbjIHJPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 05:15:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37174 "EHLO
+        id S241828AbjIHJPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 05:15:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237346AbjIHJO5 (ORCPT
+        with ESMTP id S236197AbjIHJPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 05:14:57 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0DF51BF3
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 02:14:52 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bcc0adab4so228735466b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 02:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694164491; x=1694769291; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=spMrl03aG3cwXrmMb8I0m+ExCCr+3EoDtWgExjSIlcY=;
-        b=AnHZEsPiuoOBbE8vqI3tMfqZV2mDQZFUYIwtFIVzDKdozDrI9Bfy7g4hgCtjSyOLDk
-         OiIITQtPK4/IPPgHN22TfqT4lvr8nQOPOEGOkmE4YQO53HajqaYbrHJOjhnXOQRdesrY
-         XEHZXGOtq2j5Krox+eTnJeIS/c9Qt0aztK6yUwnVvEgVmOJuDr8rxyjN1NBb/ZvLIe+J
-         qoUDCvUZ6KyVmvuNdDUj7jT1xXfFtp0HQX5/ZADxZfKcOwQ0KzztIObHPqs9E7EviZ49
-         PDRDyHmqWmanDxTVOpJ+UrfcMOUBTXpKso02A7wbXJXJO1P6HNEJO4jBhqLunFDZOsyK
-         pxfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694164491; x=1694769291;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=spMrl03aG3cwXrmMb8I0m+ExCCr+3EoDtWgExjSIlcY=;
-        b=RsK+pZAXde42fFnLSJsceamBZZiY5RetsEC8wMe0itwTjNzb6GQBL8+vR6sNaLi8Ng
-         eCxsJBq6cfIcZUMX3mTxoU9EXs8fSVdEFbroqyRX8Q30yEIPkEEkdpldJE7jvXy4syNT
-         r5N+z+4cZ0QYfNMieU32fwP86nw/IYlyUytZ7IrBtQ+pIliFHHTk86ypsEXNIznpnxQQ
-         Z1rTloR5tWSyN3FKdyMeA1cd56u4FRV6S/L2xrDt892Hjy3qWaGPURRLIVu/QTbMSAhn
-         X4ECbEGLKCTbQLcqemMlemwDNwWSRqT0cCwGalG/wQJBWbDd+UCVsHne2fn0XV03FGiG
-         6fUQ==
-X-Gm-Message-State: AOJu0YyD0NxstA71eI0Fu6T+JQjMSW9n5+LBgY8qoki+qIjnUHk7P4No
-        TPaJWUpXynkT+kpVr1b+MmLdxw==
-X-Google-Smtp-Source: AGHT+IG+6c5QmxwOy0MLsp6n7CnKVdQLF0rSSStjLcvA94R0Y2CCCMNn2HX344MniLasrTX+78Sd2g==
-X-Received: by 2002:a17:906:318d:b0:9a5:b630:a92a with SMTP id 13-20020a170906318d00b009a5b630a92amr1459179ejy.8.1694164491133;
-        Fri, 08 Sep 2023 02:14:51 -0700 (PDT)
-Received: from [192.168.37.45] (178235177197.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.197])
-        by smtp.gmail.com with ESMTPSA id va17-20020a17090711d100b009929ab17be0sm751029ejb.162.2023.09.08.02.14.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Sep 2023 02:14:50 -0700 (PDT)
-Message-ID: <1253a158-e867-4a9f-b846-d008e2756d74@linaro.org>
-Date:   Fri, 8 Sep 2023 11:14:49 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 07/17] media: qcom: camss: Pass CAMSS subdev callbacks
- via resource ops pointer
+        Fri, 8 Sep 2023 05:15:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3B71BFB;
+        Fri,  8 Sep 2023 02:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694164514; x=1725700514;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=TagmebyclPfIvAkBv92GeJ+Ep8J6Yqfd3QA9a7z/TLM=;
+  b=RHzWqZzHQbbVDPL1BpZewTL8eHYTbt4eNOawGx8D90kHv2QlThGA0dGw
+   26c1fUkH7qQX2fcXYgIe0BxGizQFPlAKU7pSjwyEyM4eLgUYuEmm+W8dv
+   I+QL4YE8xCqKhKwr1fcE4ayo+gxBHxaQSrrxqZLewshApS0qRPEgcsj9A
+   t278W/vk7zhF01oN8AT9LoIbzMWx0nr0OU5ggrA9WSldJm9lUfSWRdCd1
+   yHBTi94x4AC8HFfYEl0Z7HLFfj/zO5EnLLq0GG0mpy21dvPoLWexu3602
+   IQBsT0zhvjm+Ordr5hbEUrnae3AV0HO0WmAJEvAZcBK+Jr3GJZL+3gj/r
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="380344160"
+X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
+   d="scan'208";a="380344160"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 02:15:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="866045016"
+X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
+   d="scan'208";a="866045016"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 08 Sep 2023 02:15:13 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 8 Sep 2023 02:15:12 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 8 Sep 2023 02:15:12 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Fri, 8 Sep 2023 02:15:12 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Fri, 8 Sep 2023 02:15:11 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P1cvpViuAiqFQbtCd8G1GZndvAzej3KMcUliCkC6KGYsl6+4Dwm3q/VS3A+Hm1evNisKQdgvFsYzN703EnxYmpJQUnsaq/rYim2HpwaTtmh0NyxFuGOrfjXYp8hNjNnTkDhn8A6YWMbBR1Yyu3Kl4HyZMmab8HYrf9gBnumOdgoyHojFs3gfKZfD+sCjHSnCQP3tXipim3B6nFqKhgW7zEcrPJT4ZmWSmBOuy7j2XZ1eJ3TSbKUnb8eSLtMFATjrg7VKTpnPoNccvAWTG6WvnmSv1/04NiWJsZEBwROG+gL4xqFux4/dmKvq3Wey8licorhzJghO1TfSe4hh15NdeA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EeQ9Cqn/QggM9/FrwZykiQBntun57i2MpI6w/2l89Do=;
+ b=MSbHU0GWl71R/1EjBdQFF4CCistW3d1cxD6N6fCSAShzw/f6J2QHUxP58YdYahzEbPJROwYmz5vX7r321HD3mPX/W1BNOE/kD6YoDW5us1fRm3XLuQfWse0+QhM++mXjlYEXuHFwmSkVrP4oz5tWNMgof3nVO7eMx6JnYcHfadfiu8s6Czoyq7SnOVqs1Dn/6uJa+ADaSmNzBU3OoFa/X+NQ8Pt8X4XCdOK+JdmCCT0GAmZfH/Bk6Wc+Rkmk/m9p3guaGZVPdVsrnywfE1n6Byqm6wn2SP1Pq1o8kDppB4CeQMh6LwTaieeYGSfjMQv/mB2rVmmW7g+1zT0vrDz9Pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BY5PR11MB4306.namprd11.prod.outlook.com (2603:10b6:a03:1bb::17)
+ by MW4PR11MB5890.namprd11.prod.outlook.com (2603:10b6:303:188::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Fri, 8 Sep
+ 2023 09:15:09 +0000
+Received: from BY5PR11MB4306.namprd11.prod.outlook.com
+ ([fe80::e233:fa3b:bac7:9ce1]) by BY5PR11MB4306.namprd11.prod.outlook.com
+ ([fe80::e233:fa3b:bac7:9ce1%6]) with mapi id 15.20.6768.029; Fri, 8 Sep 2023
+ 09:15:09 +0000
+From:   "D M, Sharath Kumar" <sharath.kumar.d.m@intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
+        "kw@linux.com" <kw@linux.com>, "robh@kernel.org" <robh@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "dinguyen@kernel.org" <dinguyen@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 2/2] PCI: altera: add suport for Agilex Family FPGA
+Thread-Topic: [PATCH v2 2/2] PCI: altera: add suport for Agilex Family FPGA
+Thread-Index: AQHZ4LKiIDprQWqup0eKm2uSyqkaFrAOCSaAgAKepjA=
+Date:   Fri, 8 Sep 2023 09:15:09 +0000
+Message-ID: <BY5PR11MB43060919B690263A0B1EA291FDEDA@BY5PR11MB4306.namprd11.prod.outlook.com>
+References: <20230906110918.1501376-3-sharath.kumar.d.m@intel.com>
+ <20230906171211.GA230112@bhelgaas>
+In-Reply-To: <20230906171211.GA230112@bhelgaas>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, rfoss@kernel.org,
-        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230907164410.36651-1-bryan.odonoghue@linaro.org>
- <20230907164410.36651-8-bryan.odonoghue@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230907164410.36651-8-bryan.odonoghue@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY5PR11MB4306:EE_|MW4PR11MB5890:EE_
+x-ms-office365-filtering-correlation-id: 57777499-08f0-4660-0d04-08dbb04c199b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1O+78fTZnTXOZv2cpY6MYe8evjcLk2zjm9YlB37EAlwh/+FA6VQn2k+izr4nZOSo422CU2votvNJb6hSjXX9KtBlJvK9m3hmiZdmE1voKqtUhgt4UQpXn72N6342KQJmxIR1DO510Pvlct/QYBaIoQuAgmsf8pYo2sOPfbaGSD41iePOzDL0kQ8yFp0uwN9PHt4jkXU3n9z4ehx5IqEWSMurE813qOORLgCslcWCkNQwYA0Rn2unsz/J7iXM8Ob9ppc0y3z4tB/eHYe4d5nkLUAaJeHercwPgUmqM2p4I15NoSk7/mT80tWMfdARuzc/2nsX2pHo20tzOlf5rF7+mvN1paAL5crBC1LkGOaupYJb5SX8GnHAlbirFBHcyq1GIB2+5UcHPKUutvZnJKvI3a6TRr5LMPcTABt+LQ2avbJ5ZgIIrytKmLNkuCKn/7hDtOn0jWlrhdJS5u4nKxfv/ycq4qsgw2kkmxzLnOqwnE4BONXfbm4VlpqsxAYV9tat4gQAyVHDEdLE6x2dblXMVefDt2HD/NlF+eJLs1+oz+RCS0FKNnq9LvZIwp970ET9YQEAUyjaJFg3IoH0XUiUFYdyok+A850aN7fn1/oEG4ODAWlDgG691jal5vVb/SoP
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4306.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(136003)(376002)(366004)(1800799009)(451199024)(186009)(122000001)(71200400001)(53546011)(7696005)(6506007)(82960400001)(9686003)(86362001)(33656002)(55016003)(38100700002)(38070700005)(26005)(2906002)(83380400001)(52536014)(478600001)(41300700001)(4326008)(316002)(76116006)(8936002)(5660300002)(8676002)(66476007)(54906003)(6916009)(66556008)(66446008)(66946007)(64756008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?v2F6GdK4j7MZ2XgWDj8Sju+WGI3uQF1+SRutBU9sTqmqsGhBEZsxM2sTe81v?=
+ =?us-ascii?Q?8RGN6I+4NBafaDWkAZfoOiEEr19fm8jqPjrJ8E98EKHA2dPMNWDCA4cpHY4Y?=
+ =?us-ascii?Q?L7l/fNPf+A8kbORPfUCv9fkw4gFjvGBV4O9cT/wG3VJL2cRsUc2djq9UzVvI?=
+ =?us-ascii?Q?8bxVsCwehk/ZpMytimO/q3sT0nQ2APO2jHCx8Tlxaj27/L+ntEw2vuojyypS?=
+ =?us-ascii?Q?fW3hqJdvA7TO+M8DOoCwp5vfBBcISDSTZphThP0h/6cp5wLSSA8MVf6bioG1?=
+ =?us-ascii?Q?wv9VvqzlZkM+SvsIYKDlPAJ7YbdWM9qP5o+JumSpF4gohT19QhchPe6E8k0d?=
+ =?us-ascii?Q?7Hrks1pL3dkU7DC3ORz8OBHKHgIAonlvs1eMR3kwhaZtDDoNL0HKYF/Pk0LB?=
+ =?us-ascii?Q?jJcCY9TYb/xDLjc4jH/ST2uG+EnjOdCVdspfzTfBS8+zpEGrQrb3ncVA5r7b?=
+ =?us-ascii?Q?kA3tQtzXvneymYK//bibfPGTUCScUFQKnq2mGZQWfr824tvDYnXCivawOk5k?=
+ =?us-ascii?Q?5RG8js58G97EoxUltL1v4gG0yr8BPoZ1BV6RBw6uM0Ft2HXwcVNzeqjrSSCs?=
+ =?us-ascii?Q?Wj69cULgbiY4imZAM8mn3rsXBUQEFVXctHlgQrp4WdBHVfnya8WIgUiivA90?=
+ =?us-ascii?Q?nKbUetJi3n99Qy5rE1PhUvsBbVj0oFJT09mWX9h3/Ybt8P23I9OxqVycpb2h?=
+ =?us-ascii?Q?ZaiCOB5meOPb/Rk7r4rVz7YaalUyFwsoOOfk84/SaFn/VR7oB/cwurfLMhze?=
+ =?us-ascii?Q?vLEPA7zuc6RgLOF/BQs468Vl1RgR+C0W5stEgJ/9F2InO4IgyDun/3E0nOKk?=
+ =?us-ascii?Q?b3FDnXQUb+L/xwN0LsGL1IIuQWXin9na2Px4Dwj5JWusUb5+NT46xjHkv9eX?=
+ =?us-ascii?Q?Fj1wT8AAD7/KWbSBJnabjMHjNPavhxEYZJh0qnPh3UrkojOmwJU0ybf14H2L?=
+ =?us-ascii?Q?ByBNMrQNIiAqk9KfMhzGvq8z2idx18qX7s87U/Fr0yZs1t1g/AhE+Qr1TyBh?=
+ =?us-ascii?Q?xGAFUik4eLO2f4/wOSa/IwglfreW/Oy6YBdaG25zMzQC22QpiD7fhpxmWbhG?=
+ =?us-ascii?Q?PO/0UbAYQCotslKRub61l+G6JsQbDxWcqT9NbUsKsNnyeVbN4FyfezgphT0I?=
+ =?us-ascii?Q?DsO3QoFFsqD7JdFsvQlv8NyyQv5/6jkMKw3ahzUBwwLjx+J+oPiwmj5qTVzw?=
+ =?us-ascii?Q?MXG3EE2EVdDYJYau1HS8rmbgRn/olBdGzqq87nTOksnbFEolc0iGe2FhV22w?=
+ =?us-ascii?Q?m2PZuprVT5xGdr3FsxvCYcZGoGA8vkkStAVYdFeqhfPN8fpmBRQJ0ii4dSQi?=
+ =?us-ascii?Q?kmeW8gRlIQdF4dTdJ4LNcKGUCvHm3Kl+TjYkbakM0JQqym3v1RsoMm2ZPz05?=
+ =?us-ascii?Q?KbKjgMpQAh4EEAjPgI2x0RIqJZrpDhOjwE0MpVpctvJDSaWVvesJCSoDaHcS?=
+ =?us-ascii?Q?G/bDXbi+mIu8Q7unU0Pztdw7rvnT9CyEu1dv9B3y1PTnlE8zI0i9QY8pJ+wl?=
+ =?us-ascii?Q?45oEAwWwTHHPgeE/1F/eyo23a1A0LrQpjYKwxTYt5+8rOmkSeUmgfitCvy/i?=
+ =?us-ascii?Q?9qkZ5XOY+bxxBjwlEqfjpJFwWoDwVFL2veAZusXUgjwSGub0sgJi8+mCssKO?=
+ =?us-ascii?Q?2w=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4306.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57777499-08f0-4660-0d04-08dbb04c199b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Sep 2023 09:15:09.6574
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tUmsgO6Dd0rYFlGt9km6yD2CkYgjfyLvkY5wwj4IAgIDDz3Wg1DR4pFckolVr+kgaQKCuORPgK7zNWlvXO0cxhEjp4OBMURF8miWePjItrQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB5890
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7.09.2023 18:44, Bryan O'Donoghue wrote:
-> It is possible to pass all of the CAMSS subdevice internal operations
-> pointers from the controlling resources structure with an additional
-> pointer added to the resources structure.
-> 
-> This allows for the removal of most of the probe-time control structures.
-> 
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
-[...]
 
-> diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-> index 54886a2a449b0..12131d9ea7ca8 100644
-> --- a/drivers/media/platform/qcom/camss/camss.c
-> +++ b/drivers/media/platform/qcom/camss/camss.c
-> @@ -42,7 +42,8 @@ static const struct camss_subdev_resources csiphy_res_8x16[] = {
->  				{ 0 },
->  				{ 100000000, 200000000 } },
->  		.reg = { "csiphy0", "csiphy0_clk_mux" },
-> -		.interrupt = { "csiphy0" }
-> +		.interrupt = { "csiphy0" },
-> +		.ops = &csiphy_ops_2ph_1_0
-I'd really vouch for adding commas at the end, so that the
-next diffs will be smaller
 
-otherwise
-
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-Konrad
+> -----Original Message-----
+> From: Bjorn Helgaas <helgaas@kernel.org>
+> Sent: Wednesday, September 6, 2023 10:42 PM
+> To: D M, Sharath Kumar <sharath.kumar.d.m@intel.com>
+> Cc: lpieralisi@kernel.org; kw@linux.com; robh@kernel.org;
+> bhelgaas@google.com; linux-pci@vger.kernel.org; dinguyen@kernel.org;
+> linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH v2 2/2] PCI: altera: add suport for Agilex Family FPG=
+A
+>=20
+> Capitalize subject line similarly.
+ok
+>=20
+> s/suport/support/
+ok
+>=20
+> On Wed, Sep 06, 2023 at 04:39:18PM +0530, sharath.kumar.d.m@intel.com
+> wrote:
+> > From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+>=20
+> Needs a commit log.  It's ok to repeat the subject line.
+ok
+>=20
+> > +#define AGLX_BDF_REG 0x00002004
+> > +#define AGLX_ROOT_PORT_IRQ_STATUS 0x14c #define
+> > +AGLX_ROOT_PORT_IRQ_ENABLE 0x150
+> > +#define CFG_AER                   (1<<4)
+>=20
+> This seems to be AGLX-specific so maybe should have a prefix?
+Will change to AGLX_CFG_AER
+>=20
+> > +static u32 port_conf_off;
+>=20
+> port_conf_off looks like something that should be per-controller.
+Specific to agilex, will rename to "aglx_port_conf_off"
+>=20
+> > +static int aglx_rp_read_cfg(struct altera_pcie *pcie, u8 busno, u32 de=
+vfn,
+> > +			int where, int size, u32 *value)
+> > +{
+> > +	void __iomem *addr =3D AGLX_RP_CFG_ADDR(pcie, where);
+> > +
+> > +	switch (size) {
+> > +	case 1:
+> > +		*value =3D readb(addr);
+> > +		break;
+> > +	case 2:
+> > +		*value =3D readw(addr);
+> > +		break;
+> > +	default:
+> > +		*value =3D readl(addr);
+> > +		break;
+> > +	}
+> > +
+> > +	/* interrupt pin not programmed in hardware
+> > +	 */
+>=20
+> Use single-line comment style:
+ok
+>=20
+>   /* interrupt pin not programmed in hardware */
+>=20
+> > +	if (where =3D=3D 0x3d)
+> > +		*value =3D 0x01;
+> > +	if (where =3D=3D 0x3c)
+> > +		*value |=3D 0x0100;
+>=20
+> Use PCI_INTERRUPT_LINE and PCI_INTERRUPT_PIN.
+ok
+>=20
+> > +	return PCIBIOS_SUCCESSFUL;
+> > +}
+>=20
+> > +static void aglx_isr(struct irq_desc *desc) {
+> > +	struct irq_chip *chip =3D irq_desc_get_chip(desc);
+> > +	struct altera_pcie *pcie;
+> > +	struct device *dev;
+> > +	u32 status;
+> > +	int ret;
+> > +
+> > +	chained_irq_enter(chip, desc);
+> > +	pcie =3D irq_desc_get_handler_data(desc);
+> > +	dev =3D &pcie->pdev->dev;
+> > +
+> > +	status =3D readl((pcie->hip_base + port_conf_off
+> > +		+ AGLX_ROOT_PORT_IRQ_STATUS));
+> > +	if (status & CFG_AER) {
+> > +		ret =3D generic_handle_domain_irq(pcie->irq_domain, 0);
+> > +		if (ret)
+> > +			dev_err_ratelimited(dev, "unexpected IRQ,\n");
+>=20
+> Remove the comma at end (or maybe you meant to add something else?)
+> Looks like the place it was copied from had "unexpected IRQ, INT%d".
+ok
+>=20
+> > +	if (pcie->pcie_data->version =3D=3D ALTERA_PCIE_V3) {
+> > +		pcie->cs_base =3D
+> > +			devm_platform_ioremap_resource_byname(pdev,
+> "Cs");
+> > +		if (IS_ERR(pcie->cs_base))
+> > +			return PTR_ERR(pcie->cs_base);
+> > +		of_property_read_u32(pcie->pdev->dev.of_node,
+> "port_conf_stat",
+> > +			&port_conf_off);
+> > +		dev_info(&pcie->pdev->dev, "port_conf_stat_off =3D%x\n",
+> > +port_conf_off);
+>=20
+> Is this a debug message?  Doesn't look like something we need all the tim=
+e.  If
+> you want it all the time, use %#x so it's clear that it's hex.
+ok
+>=20
+> > +static const struct altera_pcie_data altera_pcie_3_0_data =3D {
+> > +	.ops =3D &altera_pcie_ops_3_0,
+> > +	.version =3D ALTERA_PCIE_V3,
+> > +	.cap_offset =3D 0x70,
+>=20
+> > +	.cfgrd0 =3D 0,
+> > +	.cfgrd1 =3D 0,
+> > +	.cfgwr0 =3D 0,
+> > +	.cfgwr1 =3D 0,
+>=20
+> cfgrd0, ..., cfgwr1 aren't used here, so no need to initialize them.
+ok
