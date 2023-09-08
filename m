@@ -2,182 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 489AE79830E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 09:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35835798311
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 09:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239486AbjIHHF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 03:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
+        id S237449AbjIHHHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 03:07:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232354AbjIHHFY (ORCPT
+        with ESMTP id S230425AbjIHHHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 03:05:24 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2908119AE;
-        Fri,  8 Sep 2023 00:05:20 -0700 (PDT)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3886idF2017720;
-        Fri, 8 Sep 2023 07:04:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=vzUArHqkJev+Nd04DgnrSxOKaShq00tG6YTO6CUmYZI=;
- b=MrBHdfUUKULiL9TktAwsQSaseY7A3izeQTTqKtCgU3rWsqUKeRLg30Pn/6TfMz0iMn0w
- 8GzwxVSSah4UrTipr3MEKF6vpcVmzL1dgVs8lVv5hClOEVFB2877sMwpGAbWy4TdWzz6
- aXqLckd6hFmw2VyAXgh08vY2aak21poSPOfV8HXduvs9gfUNP5COE7W4PuLK+UU2oEcS
- vWrFAOYcCBR+lHoaLMjo34MwjSmp62r07TJVnde/gx+vzscQsmbvEw8Oo1d9Qvqan9mz
- ch/hs7tQEj7LEHLHVioLI/75E3K9lk3I8xEKFgtfbgwO8oYaxKahKJBL2ejNLo0bnfXD sQ== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3syxkv00x7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 Sep 2023 07:04:52 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3886h5tR009437;
-        Fri, 8 Sep 2023 07:04:38 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3syfy111p0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 Sep 2023 07:04:38 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YEkZzxUETqJMLdWfUzWGV6pt39hWfm/NvqgzZvLiX0tQ+hRPVV5j7TnaGpX5NwIc9Rb9VT/zRctD2tkV6ThmxzTgMXc2HboqRzd1DxdFtmKGgiZ24LWWGwOE/poQ48pg2xq1ofNActiCkHfVfal7AU/oOjgo2Kipqq9uyY6MI1eLJmH8GDXXN/6HyHZEOy2PeEo0WAvgPa1x5FaVQ6rqzbOs2d7xESSBri4OtG5OCdj7VtyTJCQhBJpVoPXMkIj5k9h/0MemWh+3Dl6rwnWYXNXR1KsSnCgLLmYPP+DoXleV3AKkELuwL2o+Xs00/bp9g4pe4ft7uRRJao9dExGVnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vzUArHqkJev+Nd04DgnrSxOKaShq00tG6YTO6CUmYZI=;
- b=F6C5+ymJjIit4faM/QwXche9Atc/uw0A8hJoLUiUBeNQQdAD214T66N/V7A6j5iMyqzVLZm8HawtjnrAf96nAm5NvJYWMRVyTiSmXWe3LnQIdTLwnKqyU3eXLIfpFCz4XIgQtJq5Ed/PTI/1+TZxWoGHWP8H25Sv2YKwn9iDTztAw0ZrwO8ss3vET0iI931ry8AGHznyBj7YzdkKN2aYTSv2xTKvb+jDNgvIgFxiDNv4siSvkq0zUe81TTllqOJZvyWTW8Jr5y7o1lfLVcPvShUCupcj4IvrjMmrMtXU1MFb8aFsuDRinQvhBA1iamel28m14GbWmtKtYI2H0MnJqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vzUArHqkJev+Nd04DgnrSxOKaShq00tG6YTO6CUmYZI=;
- b=vKzuSh4vwJItvT54IsnUp40vZm7sQoMBMiE3Lzz8xZM1bx3hExXdijQBiIMUPCkiwDpPuIYCs70fxpseafdGylJU9nlvIW1gs6qqA6R5O2MRZ/yfSQbo7H94ysnXJH80+c4cVyS16op+fQ8rvuef9C3EZf/Zz5eA4XC3XYgUfeo=
-Received: from DM6PR10MB3001.namprd10.prod.outlook.com (2603:10b6:5:69::23) by
- DS0PR10MB7127.namprd10.prod.outlook.com (2603:10b6:8:df::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6768.30; Fri, 8 Sep 2023 07:04:37 +0000
-Received: from DM6PR10MB3001.namprd10.prod.outlook.com
- ([fe80::3c2a:5677:55fa:2d36]) by DM6PR10MB3001.namprd10.prod.outlook.com
- ([fe80::3c2a:5677:55fa:2d36%7]) with mapi id 15.20.6768.029; Fri, 8 Sep 2023
- 07:04:36 +0000
-Message-ID: <4f4404a3-0bc3-b75f-6ff6-1725fd252f87@oracle.com>
-Date:   Fri, 8 Sep 2023 12:34:27 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATH v2] cgroup: add cgroup_favordynmods= command-line option
-Content-Language: en-US
-To:     Luiz Capitulino <luizcap@amazon.com>,
-        Waiman Long <longman@redhat.com>, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lcapitulino@gmail.com
-References: <20230906005712.66461-1-luizcap@amazon.com>
- <5487ed0a-8483-0a92-c7c1-9ca3ed8e6162@oracle.com>
- <ac50c7a3-c2af-26c1-cdd3-0add6b299994@redhat.com>
- <a88173b8-0d87-37fe-3c4c-bd1d15d3f5bb@oracle.com>
- <e7675405-c910-340e-0679-0271dff76722@amazon.com>
-From:   Kamalesh Babulal <kamalesh.babulal@oracle.com>
-In-Reply-To: <e7675405-c910-340e-0679-0271dff76722@amazon.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MAXPR01CA0118.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:5d::36) To DM6PR10MB3001.namprd10.prod.outlook.com
- (2603:10b6:5:69::23)
+        Fri, 8 Sep 2023 03:07:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 790AD19A8;
+        Fri,  8 Sep 2023 00:07:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ECDCC433C8;
+        Fri,  8 Sep 2023 07:07:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694156831;
+        bh=Mvfg40PvNKlM7cqJHpippOSPHXHi3Vb5ApnlY5WBQQ0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ohsZscb/kc/cKPqnlhi2NGu8Lh/Rnv66j06ZXqF/7Im+tQNzzhRVnYmExDcGWsVX4
+         AcZjuFUqbKuTi6bkI3wo0uX4+fisE0JHnpRTLj6po15Z40zb3/OabIfEzpSVOoI5gU
+         LqLKMs7qzswNhzaT9LtD8hugtUTsO4bROL6s7yyA=
+Date:   Fri, 8 Sep 2023 08:07:08 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Stefan Lippers-Hollmann <s.l-h@gmx.de>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        Christoph Hellwig <hch@lst.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6.5 11/34] modules: only allow symbol_get of
+ EXPORT_SYMBOL_GPL modules
+Message-ID: <2023090841-antitrust-reword-d6bc@gregkh>
+References: <20230904182948.594404081@linuxfoundation.org>
+ <20230904182949.104100132@linuxfoundation.org>
+ <20230907084135.02d97441@mir>
+ <2023090719-virtuous-snowflake-d015@gregkh>
+ <20230907221737.07f12f38@mir>
+ <2023090848-chastise-paycheck-6d4d@gregkh>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB3001:EE_|DS0PR10MB7127:EE_
-X-MS-Office365-Filtering-Correlation-Id: f6e23042-a063-4966-78c1-08dbb039dcb6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LITMLQakZ5yaBIPOXeMdTvR/v8Ij5Bt4pOLtYJNZzfXRfp65WgS8ZGI9ieZTgfekrIyKHjNtgkWy/WkGEDkfQZr3PSJARNFnWWJGEcHVo5ogg8H1K+SpCLRG8pzryiCvYaz4NR958jG5Wmz53rNCFgyIWN9vblhUiF0MS4htYVfV56ciTVnSvYuk/HLZ7xdtnc5tJF/IAChOAMayz4787H4SnxwkcOcL4g6dh+moY3Zrp9SFAwdc1LNJd2ushPEkLes0U44afpXAZhcH1XL0VuM8l+ftSOcN4nW6WCTCKsn8M0nxTUp2ZFRSvY7Jn9TpWIWy86njWq94C2xKE9WKixkQ7IKcsET2k1L1x6soJ63A0m/lZzmzbElSOgmJh+EIA0Bn6AzP61vIgOosrqCSvG58zrAQiamHqQ6a76dfQaiakQzI6zj/2BOFGzuE9JzkWQows9xdbtUY3Gz4/Kxxqofxt8t6DQAvZ//b64sqc1uxCkjm7jE65HFFNmsbjt+Kl9najBkZYx9/gBkpJWD4L4dVfAFYZz3nq1wiDkibyvzuLE6/5/1/MITzvC2UaTYLIbIEPHfHMzH6RffXsZdR4vMLfTUrIokuOiXyPbC/okOXpBgnQIyq1vLzhz+7tT5GNSCEorFCNZwXbEm+luqA0w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3001.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(346002)(396003)(376002)(366004)(186009)(1800799009)(451199024)(2906002)(31696002)(86362001)(53546011)(2616005)(26005)(478600001)(36756003)(6506007)(6486002)(6666004)(6512007)(55236004)(38100700002)(83380400001)(41300700001)(31686004)(5660300002)(4326008)(8936002)(8676002)(316002)(44832011)(110136005)(66556008)(66476007)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bXdKVVlGbVcxa3ZUTjZpRHdXOFV4bkVmWUZRaWYybm5UUzJiN2V5ZGpMQzZr?=
- =?utf-8?B?MG9BVENjQkJwcnVkTEhveDFKRnNWVHpuNXh4SFdrQVVPT0QyYmRLdTI5UDFI?=
- =?utf-8?B?RGV1dXdidEV6czBwZFozMkdpd0FLWURnWC9TRnRnM2ljSTJqMXZJVmhzN3VG?=
- =?utf-8?B?TkUwYXNPSlNTQUlKWGVYc0VKdElrVHJDWjRUUjZJczZNTmVQbzZzOGV3NkxJ?=
- =?utf-8?B?RXFzaVdOWTliQ2tiSm41Qk1sOVg4Vjdtc1ZrM2VGR0xRRTlUSFNtbGoyNHJ2?=
- =?utf-8?B?M3pPM2xUdTJqZVh4RWZiMWc3dU1ldXRCMFdidk9ZZ0JnbHoyNEgxVFBPeWZp?=
- =?utf-8?B?QllORlpjWlJ2WGVUdDF4MjduNUk5NHJ3RGNMejRNeUtHMVZpUEt4OUVpcHF3?=
- =?utf-8?B?OEtJTnN3YmF4bjRLeDk0amlSbXFGRTBnT2hibGRkSU9pSndkZmw5bVpvS3ZZ?=
- =?utf-8?B?QnY5bERvelE2aTBkLy9qeFN1bUlWRE1OcDNEZmtnWGdNVE03NWdzMTRpMnlZ?=
- =?utf-8?B?YjJBZzRtRnFvTldJMDhLNW9qSUlGRWJpUDBrQ1hUZFhYTnNxU3QxaFlocDlu?=
- =?utf-8?B?bUFkbUU1UnFGWHFMUXh2YXY5MXdJRjJMTzFGeTRuK1Q5Ny81eVZ1amVhM0hy?=
- =?utf-8?B?d1c1WmsycGlGRjRsZFMyVVpqb21tL1orRjlOTTQ4OHhyclc3SVBOenpTMjFG?=
- =?utf-8?B?b2xCeGtOU1ZaR0J0UTRuUHFGRGROQ3hGdFRzVzh0UENUT1p3Ky9QTUdzdDZS?=
- =?utf-8?B?S3E3RnQrTHNnM3Y4L1BNTzJCd1B5bEtZWncwQkcySFVYeVBLUnhzOUNPOHEv?=
- =?utf-8?B?MzFSbzMwVWZ6NndXNjRha0NQU09RQWYrOWJ1VmNLK0Q3R29KTHIrdTgyU0Rm?=
- =?utf-8?B?cEh1ZXlnNHpxS0owU0ZsV1NscFdEVGtZTjh2b0VEM3ZlZnlSRmxJNXdKcUh4?=
- =?utf-8?B?M1M3RlFKbDJnN1NFUXJYRmZSQnBLdHNEek5hR09vYVRNb204bE9VaHd2RTFz?=
- =?utf-8?B?VG5iTTRLM0owd0dmSmFGbGM5Snd5QVpUVTVjMFlnTlBYeTBweTZ5TlNybG0v?=
- =?utf-8?B?cTI4Y3QyZElCcGFMeXVLWUdDWXVrajNOZWFtekd1YjE2eWJldjRDVURnejRD?=
- =?utf-8?B?a3BDSGRNME9xb0gyL0VYcGZKVUtUOE5GemladllTR2djZzJuamNpZEdiSFY5?=
- =?utf-8?B?ZFMvMHBRSDNjY1VDY0MrcjBOdExEejhQUUtaL1VJKzNvZGxWbHZmNkpseG44?=
- =?utf-8?B?TExVT1g4NkRkeVBFV3RRQ0trUW1MallTVjgxZnVwMThXTjkrZ2xEdDBMNDl4?=
- =?utf-8?B?VlZ0bmZCSzAySVdrc2tNeFFRSGI0Qm5iSWo0Y01SL01kc2c4cTdnOWdseFpX?=
- =?utf-8?B?ZC9wc2tvNzEyY1BRVVZBd3VvNHMyOGZMMHVJRkNsc3l4cVYvUjVaai90aGti?=
- =?utf-8?B?Kys3QkhuRFZyWFh3RDlFU1dEd0RJeUR1NEVOWC95QUxGOTVTVnpaMVpDU3Nm?=
- =?utf-8?B?NythNGIveEhzSDFJRldOSmVMb3ExbDY5RklESkMwdUQxNUNweHFxZ1lENXJ2?=
- =?utf-8?B?Q3Y1SGNBT1BJM2R0V01tRnpnYTFEbGFuZFNSSG9UeFlVaEQ0S3E4Y1l0RE5M?=
- =?utf-8?B?WDFtZUdCVUllb1NSejBkOG14WWtVY3ZXQTlFSXdiVzNsTWg4ZkJmNHc4SHJn?=
- =?utf-8?B?NUMzUXM2MzJDV1B4Z2EwZ0x2amxjVUtPY09VS1kyNVdzeDdFUWU0T0xsczJs?=
- =?utf-8?B?KytaTC9pdVphL09KaWpsdVNnRjBKdUFUcDZFZzljVXhsZW1pdTlUbkNieE90?=
- =?utf-8?B?RW9MbCtnNUhQamdkY3lUTmRBM09MalJEQWlwekRZaDdUVDB2K3RoMTNROG9G?=
- =?utf-8?B?Y2xvTElhcjVSejNOVlpCNkZPSTVRTjZ1MWhSb2JFaFRJTWkxbjQzQkxjQmZy?=
- =?utf-8?B?cUdCNUphZW9vMDdabGgxd0hzUHJqYUxFVFJrbDhTc3F2RmwzNE5qNEVDNDlI?=
- =?utf-8?B?TXR6cW5pV1lzZ0xjUnpxSGluT204azJyQk4zM3pxdXhkQzNURElnRWV0SVBZ?=
- =?utf-8?B?cUZIOGVOZkVQMHVwOFRISXJ1NWhLV0tEckJ3R0tybkVXZmhLRlRDTFhrWmov?=
- =?utf-8?B?ckVjQlFySDZJV0dHcHJBd3JocEJEdzkzTjZpTmFKdGlmVlhOdDVRMkZyWHdN?=
- =?utf-8?B?QWc9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?SnVSNXkwMWkxVDdIUyt3UkQ1SDZmZ2RpMXhCNmVQZlowUGZ5cUh2UXZxejht?=
- =?utf-8?B?WkVrSVZnUi9jMTJQVkQvVmkvVC9KYW52SERNenpnbDd0QUxUcUdldFF2RzZL?=
- =?utf-8?B?OVIrbzdqVnppa0xqazMxYlAvL2d4N25GdXg1V3J1TFd2c3ZxWFdEc0dEdURx?=
- =?utf-8?B?TS9TZ3lEK2QwaHlzYmtXZmdKQXNGbkRjWndpUU14RjRnSnJhYjlTVHM2NjVu?=
- =?utf-8?B?T1pXODNxMFdqOFpZVjhSTW5EQ3ZBWnZVYkdrWDFMVUdhZnBzOUhRZHpiQ0tv?=
- =?utf-8?B?OTZ3eDJRUGlsNXRJTEJRTVAwQ3V4dWszVk9sNWI2N1pRQ0NIckNnU0xaWTRL?=
- =?utf-8?B?Y29Cem9BbjNWQzBSOE5yZzdOYVpLQ3M3SVduNEw3SVRUQzN3V2pubGIweHp6?=
- =?utf-8?B?akJURFAvSFdJTnE1N25wOVNob2NsaWJmOUpIRkZyc3BYamlLK0szV3BXS1Y4?=
- =?utf-8?B?OWIvUlZ2RWRGYjR6SmtNVVJ5aVdCUmQ4UUlDZ1UvaTFXTExWaFNVNDRDNXo2?=
- =?utf-8?B?bnIwalBsWXE4djhaRGZXd01NQ2V2ZkhyZFdURXVuU2dnVlVwZTNHOEZRVlQ3?=
- =?utf-8?B?ZW9CR0I2N1BGMEJrenZHaXJTTXZIaU94dUVRWUQ3VmZUdlFSeGhObEhJNzJU?=
- =?utf-8?B?SGdNOTRtR2FPc3BJRmxNU1FDUXhMZm5VRUJNL0VscVI5Tk9mK3BxTlJ5dTJD?=
- =?utf-8?B?TEVuM3pHYzQ0RmJhSE80ejk3NENpTkxZUGpXVmg4blg2bGlVMzZ3TWQ2Slh3?=
- =?utf-8?B?NGVSL2swTGwzVFMwbjY0UWQrTzd2dER3MEd2M25NNHRSUU51WVEyb0tDWlNh?=
- =?utf-8?B?aTRzMWY2aThONzNQakRtTUdQbU94dEovUDVTQ1VYSU1UcFFzcThhc1orVXR0?=
- =?utf-8?B?TDRoUk95QlB2ZGhsUUtsRHhVcWRwRGZaeGxSdUpIcjRyTjUwV3FKbUZNcU1u?=
- =?utf-8?B?UTh6bGViWGlMeGUzUW1BY1NBbXFKUWNGUzJyai9TZGlzN05zSnZRWlZwajl3?=
- =?utf-8?B?QjJJbjhZdnc3TC9OTnBHMTZmQ2lhQTJ5M0pTcmdYTHJtdTczQ1U5SWxoK3dM?=
- =?utf-8?B?bzZWUmk4WTE3c0dPeHFCVVJBNWhCMlNZWGlqNk93aFRoUVJ4NU9pU3h6MVRp?=
- =?utf-8?B?SlpSaVhvbSthM0FXa0E1TzlCbnpEbW1WS3lGR1RZM05rZlptK043SWdSbzAy?=
- =?utf-8?B?dGRCSFBNWkZ6cGNSZ25JcmxxK0I4cEJjSEVDNTZmS2RGQ0ZXQWFEQzhqTURx?=
- =?utf-8?Q?ZDPDYUUwphB7u4t?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6e23042-a063-4966-78c1-08dbb039dcb6
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3001.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2023 07:04:36.9291
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GOPN/tiwjS+R2tFZElyCC8WlVjBKaLb7ESRcud0++8x4YJWo8w7SxGaLMV/y0+7Q5cZo0SjRA74T/E9+pLcpqOPIej+wKNfTP8UeF4J8nII=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB7127
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-08_03,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 mlxlogscore=921
- suspectscore=0 phishscore=0 spamscore=0 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309080064
-X-Proofpoint-GUID: EVcOhKNhsDpg2AxpAdS90fMKMwaC-Z3C
-X-Proofpoint-ORIG-GUID: EVcOhKNhsDpg2AxpAdS90fMKMwaC-Z3C
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="ei/y4dglsX7VnWMK"
+Content-Disposition: inline
+In-Reply-To: <2023090848-chastise-paycheck-6d4d@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -185,90 +56,250 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--ei/y4dglsX7VnWMK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 9/8/23 00:17, Luiz Capitulino wrote:
-
-[...]
-
->>>> Consider a case where the kernel is compiled with
->>>> CONFIG_CGROUP_FAVOR_DYNMODS=n and kernel command line is passed with
->>>> cgroup_favordynmods=true, this would set the have_favordynmods to true.
->>>> In cgroup_favordynmods_setup(), should it return 0 with a pr_warn(),
->>>> when CONFIG_CGROUP_FAVOR_DYNMODS=n in the above case, or is this
->>>> expected behavior?
->>>
->>> According to the documentation of __setup:
->>>
->>> /*
->>>   * NOTE: __setup functions return values:
->>>   * @fn returns 1 (or non-zero) if the option argument is "handled"
->>>   * and returns 0 if the option argument is "not handled".
->>>   */
->>>
->>> So the return value should tell whether the input parameter is a recognizable true or false value, not whether it is true or false. kstrtobool returns 0 if it is a recognizable T/F value or -EINVAL otherwise. So the check is correct. I did double check that before I ack'ed the patch.
->>>
->>
->> Apologies for not being clear in the previous email. It was in two parts,
->> where the first one was more of a question, where if a kernel is compiled
->> with CONFIG_CGROUP_FAVOR_DYNMODS config option disabled and the user
->> attempts to pass cgroup_favordynmods=true in the kernel command line.
->>
->> In this scenario, the have_favordynmods is set to true regardless of
->> the CONFIG_CGROUP_FAVOR_DYNMODS config option being enabled/disabled in
->> the kernel. This allows the user to set CGRP_ROOT_FAVOR_DYNMODS flag
->> without enabling the CONFIG_CGROUP_FAVOR_DYNMODS kernel config.
+On Fri, Sep 08, 2023 at 07:46:56AM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Sep 07, 2023 at 10:17:37PM +0200, Stefan Lippers-Hollmann wrote:
+> > Hi
+> > 
+> > On 2023-09-07, Greg Kroah-Hartman wrote:
+> > > On Thu, Sep 07, 2023 at 08:41:35AM +0200, Stefan Lippers-Hollmann wrote:
+> > > > On 2023-09-04, Greg Kroah-Hartman wrote:
+> > > > > 6.5-stable review patch.  If anyone has any objections, please let me know.
+> > > > >
+> > > > > ------------------
+> > > > >
+> > > > > From: Christoph Hellwig <hch@lst.de>
+> > > > >
+> > > > > commit 9011e49d54dcc7653ebb8a1e05b5badb5ecfa9f9 upstream.
+> > > > >
+> > > > > It has recently come to my attention that nvidia is circumventing the
+> > > > > protection added in 262e6ae7081d ("modules: inherit
+> > > > > TAINT_PROPRIETARY_MODULE") by importing exports from their proprietary
+> > > > > modules into an allegedly GPL licensed module and then rexporting them.
+> > > > >
+> > > > > Given that symbol_get was only ever intended for tightly cooperating
+> > > > > modules using very internal symbols it is logical to restrict it to
+> > > > > being used on EXPORT_SYMBOL_GPL and prevent nvidia from costly DMCA
+> > > > > Circumvention of Access Controls law suites.
+> > > > >
+> > > > > All symbols except for four used through symbol_get were already exported
+> > > > > as EXPORT_SYMBOL_GPL, and the remaining four ones were switched over in
+> > > > > the preparation patches.
+> > > >
+> > > > This patch, as part of v6.5.2, breaks the in-kernel ds3000 module
+> > > > (for a TeVii s480 v2 DVB-S2 card, which is a PCIe card attaching two
+> > > > onboard TeVii s660 cards via an onboard USB2 controller (MCS9990),
+> > > > https://www.linuxtv.org/wiki/index.php/TeVii_S480) from loading.
+> > >
+> > > This is also broken in Linus's tree, right?
+> > 
+> > Yes, HEAD as of 6.5.0-12145-g4a0fc73da97e is affected just as well.
 > 
-> Correct, that's exactly the goal of this patch: to give users the
-> option to enable/disable favordynmods at boot-time regardless of
-> CONFIG_FAVOR_DYNMODS.
+> Ok, good, thanks for confirming.
 > 
-> This is especially useful with cgroup v1 where remounting with
-> favordynmods is not supported.
-
-Thank you so much for explaining. I understand the idea of the
-patch better now.
-
->> Shouldn't the cgroup_favordynmods kernel parameter be valid only when
->> the kernel is compiled with CONFIG_CGROUP_FAVOR_DYNMODS=y and allows the
->> user to only disable it in the kernel command line instead of allowing
->> them to set/unset have_favordynmods when CONFIG_CGROUP_FAVOR_DYNMODS is
->> disabled.
+> > > > [    2.896589] dvbdev: dvb_create_media_entity: media entity 'dvb-demux' registered.
+> > > > [    2.901085] failing symbol_get of non-GPLONLY symbol ds3000_attach.
+> > > > [    2.901089] DVB: Unable to find symbol ds3000_attach()
+> > >
+> > > This is odd, where is that call coming from?  I don't see any call to
+> > > symbol_get in the dvb code, where is this happening?
+> > >
+> > > Anyway, does the patch below fix this?
+> > 
+> > That change alone only moves the issue down to ts2020_attach().
+> > 
+> > $ dmesg | grep -i -e dvb -e gpl -e symbol
+> > [    1.464876] usb 3-1: Product: DVBS2BOX
+> > [    1.482143] usb 5-1: Product: DVBS2BOX
+> > [    3.692647] dvb-usb: found a 'TeVii S660 USB' in cold state, will try to load a firmware
+> > [    3.692951] dvb-usb: downloading firmware from file 'dvb-usb-s660.fw'
+> > [    3.860571] dvb-usb: found a 'TeVii S660 USB' in warm state.
+> > [    3.860615] dvb-usb: will pass the complete MPEG2 transport stream to the software demuxer.
+> > [    3.860944] dvbdev: DVB: registering new adapter (TeVii S660 USB)
+> > [    4.097144] dvb-usb: MAC address: 00:18:XX:XX:XX:XX
+> > [    4.097272] dvbdev: dvb_create_media_entity: media entity 'dvb-demux' registered.
+> > [    4.111792] failing symbol_get of non-GPLONLY symbol ts2020_attach.
+> > [    4.111795] DVB: Unable to find symbol ts2020_attach()
+> > [    4.112759] usb 3-1: DVB: registering adapter 0 frontend 0 (Montage Technology DS3000)...
+> > [    4.112764] dvbdev: dvb_create_media_entity: media entity 'Montage Technology DS3000' registered.
+> > [    4.138938] dvb-usb: schedule remote query interval to 150 msecs.
+> > [    4.138942] dvb-usb: TeVii S660 USB successfully initialized and connected.
+> > [    4.138988] dvb-usb: found a 'TeVii S660 USB' in cold state, will try to load a firmware
+> > [    4.139016] dvb-usb: downloading firmware from file 'dvb-usb-s660.fw'
+> > [    4.292614] dvb-usb: found a 'TeVii S660 USB' in warm state.
+> > [    4.292679] dvb-usb: will pass the complete MPEG2 transport stream to the software demuxer.
+> > [    4.293075] dvbdev: DVB: registering new adapter (TeVii S660 USB)
+> > [    4.538876] dvb-usb: MAC address: 00:18:XX:XX:XX:XX
+> > [    4.539113] dvbdev: dvb_create_media_entity: media entity 'dvb-demux' registered.
+> > [    4.543738] failing symbol_get of non-GPLONLY symbol ts2020_attach.
+> > [    4.546349] failing symbol_get of non-GPLONLY symbol ts2020_attach.
+> > [    4.546354] DVB: Unable to find symbol ts2020_attach()
+> > [    4.548643] usb 5-1: DVB: registering adapter 1 frontend 0 (Montage Technology DS3000)...
+> > [    4.548650] dvbdev: dvb_create_media_entity: media entity 'Montage Technology DS3000' registered.
+> > [    4.549970] dvb-usb: schedule remote query interval to 150 msecs.
+> > [    4.549973] dvb-usb: TeVii S660 USB successfully initialized and connected.
+> > [    7.830408] ds3000_firmware_ondemand: Waiting for firmware upload (dvb-fe-ds3000.fw)...
+> > [    8.367600] ds3000_firmware_ondemand: Waiting for firmware upload (dvb-fe-ds3000.fw)...
+> > 
+> > Extending this to approach to ts2020_attach() does fix the problem
+> > for me. Searching the web for "failing symbol_get of non-GPLONLY
+> > symbol" suggests that there might be further instances within the
+> > DVB subsystem https://syzkaller.appspot.com/x/log.txt?x=11faa1eda80000
+> > (this was merely gathered by a passive web search, I have no contact
+> > to the poster or any further information about it).
 > 
-> This was my first idea as well, but since we'd allow for enabling why
-> not allow for disabling as well? Besides, the resulting code is
-> fairly simple.
-
-Agreed, If it's independent of CONFIG_CGROUP_FAVOR_DYNMODS config
-option, providing both enable and disable, is useful.
-
->> If the above assumption is right, that's where the second part was of
->> email, where I was suggesting the restriction by using ifdef guards in
->> cgroup_favordynmods_setup(), something like:
->>
->> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
->> index 2b7d74304606..5c7d1a0b1dbe 100644
->> --- a/kernel/cgroup/cgroup.c
->> +++ b/kernel/cgroup/cgroup.c
->> @@ -6768,7 +6768,11 @@ __setup("cgroup_debug", enable_cgroup_debug);
->>
->>   static int __init cgroup_favordynmods_setup(char *str)
->>   {
->> +#ifdef CGROUP_FAVOR_DYNMODS
->>          return (kstrtobool(str, &have_favordynmods) == 0);
->> +#endif
->> +       pr_warn("Favor Dynmods not supported\n");
->> +       return 0;
->>   }
+> Ugh, it looks like everyone that calls dvb_attach() is going to be
+> affected.  I can make up a patch for this later today, unless Christoph
+> beats me to it :)
 > 
-> Why should we do this? What's the benefit for the user?
+> Also, in commit 8f569c0b4e6b ("media: dvb-core: add helper functions for
+> I2C binding"), way back in 2018, it says no one should be using this
+> function anymore, but given I see over 700 uses of it, that's obviously
+> not changing any time soon :(
 
-This code was constructed on the idea of have_favordynmods, should
-be available only when the kernel is compiled with CONFIG_CGROUP_FAVOR_DYNMODS
-and it's of no benefit.
- 
->>   __setup("cgroup_favordynmods=", cgroup_favordynmods_setup);
->>
+And it's over 130 symbols, attached, I'll figure out a way to script
+this...
 
--- 
-Thanks,
-Kamalesh
+
+--ei/y4dglsX7VnWMK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=symbol_list
+
+as102_attach
+ascot2e_attach
+atbm8830_attach
+au8522_attach
+bcm3510_attach
+cx22700_attach
+cx22702_attach
+cx24110_attach
+cx24113_attach
+cx24116_attach
+cx24117_attach
+cx24120_attach
+cx24123_attach
+cxd2820r_attach
+cxd2841er_attach_s
+cxd2841er_attach_t_c
+cxd2880_attach
+ddbridge_dummy_fe_qam_attach
+dib0070_attach
+dib0090_fw_register
+dib0090_register
+dib3000mb_attach
+dib3000mc_attach
+dib7000m_attach
+dib7000p_attach
+dib8000_attach
+dib9000_attach
+drx39xxj_attach
+drxd_attach
+drxk_attach
+ds3000_attach
+dst_attach
+dst_ca_attach
+dvb_pll_attach
+ec100_attach
+fc0011_attach
+fc0012_attach
+fc0013_attach
+gp8psk_fe_attach
+helene_attach
+helene_attach_s
+horus3a_attach
+isl6405_attach
+isl6421_attach
+isl6423_attach
+itd1000_attach
+ix2505v_attach
+l64781_attach
+lg2160_attach
+lgdt3305_attach
+lgdt3306a_attach
+lgdt330x_attach
+lgs8gxx_attach
+lnbh24_attach
+lnbh25_attach
+lnbp21_attach
+lnbp22_attach
+m88ds3103_attach
+m88rs2000_attach
+max2165_attach
+mb86a16_attach
+mb86a20s_attach
+mc44s803_attach
+microtune_attach
+mt2060_attach
+mt2063_attach
+mt2131_attach
+mt2266_attach
+mt312_attach
+mt352_attach
+mxl111sf_demod_attach
+mxl111sf_tuner_attach
+mxl5005s_attach
+mxl5007t_attach
+mxl5xx_attach
+nxt200x_attach
+nxt6000_attach
+or51132_attach
+or51211_attach
+qt1010_attach
+r820t_attach
+s5h1409_attach
+s5h1411_attach
+s5h1420_attach
+s5h1432_attach
+s921_attach
+si21xx_attach
+simple_tuner_attach
+sp8870_attach
+sp887x_attach
+stb0899_attach
+stb6000_attach
+stb6100_attach
+stv0288_attach
+stv0297_attach
+stv0299_attach
+stv0367cab_attach
+stv0367ddb_attach
+stv0367ter_attach
+stv0900_attach
+stv090x_attach
+stv0910_attach
+stv6110_attach
+stv6110x_attach
+stv6111_attach
+tda10021_attach
+tda10023_attach
+tda10045_attach
+tda10046_attach
+tda10048_attach
+tda10086_attach
+tda18218_attach
+tda18271_attach
+tda18271c2dd_attach
+tda665x_attach
+tda8083_attach
+tda8261_attach
+tda826x_attach
+tda827x_attach
+tda829x_attach
+tda9887_attach
+tea5761_attach
+tea5767_attach
+ts2020_attach
+tua6100_attach
+ves1820_attach
+ves1x93_attach
+xc2028_attach
+xc4000_attach
+xc5000_attach
+zl10036_attach
+zl10039_attach
+zl10353_attach
+
+--ei/y4dglsX7VnWMK--
