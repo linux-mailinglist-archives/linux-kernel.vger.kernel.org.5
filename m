@@ -2,42 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 388BC7983BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 823EF7983C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbjIHIKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 04:10:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34006 "EHLO
+        id S241991AbjIHIMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 04:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234726AbjIHIKv (ORCPT
+        with ESMTP id S234422AbjIHIMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 04:10:51 -0400
-Received: from cmccmta3.chinamobile.com (cmccmta6.chinamobile.com [111.22.67.139])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 442C51BEA;
-        Fri,  8 Sep 2023 01:10:43 -0700 (PDT)
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from spf.mail.chinamobile.com (unknown[10.188.0.87])
-        by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee964fad700d7a-2e45b;
-        Fri, 08 Sep 2023 16:10:41 +0800 (CST)
-X-RM-TRANSID: 2ee964fad700d7a-2e45b
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain.localdomain (unknown[10.54.5.252])
-        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee364fad6ff8a4-128ab;
-        Fri, 08 Sep 2023 16:10:41 +0800 (CST)
-X-RM-TRANSID: 2ee364fad6ff8a4-128ab
-From:   Ding Xiang <dingxiang@cmss.chinamobile.com>
-To:     perex@perex.cz, tiwai@suse.com, broonie@kernel.org,
-        shuah@kernel.org
-Cc:     alsa-devel@alsa-project.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests: ALSA: remove unused variables
-Date:   Fri,  8 Sep 2023 16:10:40 +0800
-Message-Id: <20230908081040.197243-1-dingxiang@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.38.1
+        Fri, 8 Sep 2023 04:12:30 -0400
+Received: from mail03.siengine.com (mail03.siengine.com [43.240.192.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6877C1BD3
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 01:12:23 -0700 (PDT)
+Received: from dsgsiengine01 ([10.8.1.61])
+        by mail03.siengine.com with ESMTPS id 3888Bk7Y028237
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 8 Sep 2023 16:11:46 +0800 (+08)
+        (envelope-from lucas.liu@siengine.com)
+Received: from SEEXMB03-2019.siengine.com (SEEXMB03-2019.siengine.com [10.8.1.33])
+        by dsgsiengine01 (SkyGuard) with ESMTPS id 4RhpjX5WhVz7ZMlT;
+        Fri,  8 Sep 2023 16:11:44 +0800 (CST)
+Received: from SEEXMB04-2019.siengine.com (10.8.1.34) by
+ SEEXMB03-2019.siengine.com (10.8.1.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1258.25; Fri, 8 Sep 2023 16:11:44 +0800
+Received: from SEEXMB04-2019.siengine.com ([fe80::ebda:7f0d:8ee8:ab8f]) by
+ SEEXMB04-2019.siengine.com ([fe80::ebda:7f0d:8ee8:ab8f%14]) with mapi id
+ 15.02.1258.025; Fri, 8 Sep 2023 16:11:44 +0800
+From:   =?gb2312?B?TGl1IEx1Y2FzL8H1saPW+Q==?= <lucas.liu@siengine.com>
+To:     =?gb2312?B?TGl1IEx1Y2FzL8H1saPW+Q==?= <lucas.liu@siengine.com>,
+        "liviu.dudau@arm.com" <liviu.dudau@arm.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>
+CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?u9i4tDogW1BBVENIXSBkcm0va29tZWRhOiBhZGQgTlYxMiBmb3JtYXQgdG8g?=
+ =?gb2312?Q?support_writeback_layer_type?=
+Thread-Topic: [PATCH] drm/komeda: add NV12 format to support writeback layer
+ type
+Thread-Index: AQHZ2ltn9LP8IvenzkCX2e1v2bsk4rAQoe+A
+Date:   Fri, 8 Sep 2023 08:11:44 +0000
+Message-ID: <b393669c80274dfcbcf94c60fea8ae76@siengine.com>
+References: <20230829093004.22860-1-lucas.liu@siengine.com>
+In-Reply-To: <20230829093004.22860-1-lucas.liu@siengine.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.12.10.56]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-DKIM-Results: [10.8.1.61]; dkim=none;
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: mail03.siengine.com 3888Bk7Y028237
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -47,121 +67,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These variables are never referenced in the code, just remove them.
-
-Signed-off-by: Ding Xiang <dingxiang@cmss.chinamobile.com>
----
- tools/testing/selftests/alsa/conf.c                |  1 -
- tools/testing/selftests/alsa/mixer-test.c          | 11 +++--------
- tools/testing/selftests/alsa/pcm-test.c            |  4 ++--
- tools/testing/selftests/alsa/test-pcmtest-driver.c |  1 -
- 4 files changed, 5 insertions(+), 12 deletions(-)
-
-diff --git a/tools/testing/selftests/alsa/conf.c b/tools/testing/selftests/alsa/conf.c
-index d7aafe5a1993..2f1685a3eae1 100644
---- a/tools/testing/selftests/alsa/conf.c
-+++ b/tools/testing/selftests/alsa/conf.c
-@@ -431,7 +431,6 @@ long conf_get_long(snd_config_t *root, const char *key1, const char *key2, long
- int conf_get_bool(snd_config_t *root, const char *key1, const char *key2, int def)
- {
- 	snd_config_t *cfg;
--	long l;
- 	int ret;
- 
- 	if (!root)
-diff --git a/tools/testing/selftests/alsa/mixer-test.c b/tools/testing/selftests/alsa/mixer-test.c
-index c95d63e553f4..21e482b23f50 100644
---- a/tools/testing/selftests/alsa/mixer-test.c
-+++ b/tools/testing/selftests/alsa/mixer-test.c
-@@ -188,7 +188,7 @@ static int wait_for_event(struct ctl_data *ctl, int timeout)
- {
- 	unsigned short revents;
- 	snd_ctl_event_t *event;
--	int count, err;
-+	int err;
- 	unsigned int mask = 0;
- 	unsigned int ev_id;
- 
-@@ -430,7 +430,6 @@ static bool strend(const char *haystack, const char *needle)
- static void test_ctl_name(struct ctl_data *ctl)
- {
- 	bool name_ok = true;
--	bool check;
- 
- 	ksft_print_msg("%d.%d %s\n", ctl->card->card, ctl->elem,
- 		       ctl->name);
-@@ -863,7 +862,6 @@ static bool test_ctl_write_invalid_value(struct ctl_data *ctl,
- 					 snd_ctl_elem_value_t *val)
- {
- 	int err;
--	long val_read;
- 
- 	/* Ideally this will fail... */
- 	err = snd_ctl_elem_write(ctl->card->handle, val);
-@@ -883,8 +881,7 @@ static bool test_ctl_write_invalid_value(struct ctl_data *ctl,
- 
- static bool test_ctl_write_invalid_boolean(struct ctl_data *ctl)
- {
--	int err, i;
--	long val_read;
-+	int i;
- 	bool fail = false;
- 	snd_ctl_elem_value_t *val;
- 	snd_ctl_elem_value_alloca(&val);
-@@ -994,8 +991,7 @@ static bool test_ctl_write_invalid_integer64(struct ctl_data *ctl)
- 
- static bool test_ctl_write_invalid_enumerated(struct ctl_data *ctl)
- {
--	int err, i;
--	unsigned int val_read;
-+	int i;
- 	bool fail = false;
- 	snd_ctl_elem_value_t *val;
- 	snd_ctl_elem_value_alloca(&val);
-@@ -1027,7 +1023,6 @@ static bool test_ctl_write_invalid_enumerated(struct ctl_data *ctl)
- static void test_ctl_write_invalid(struct ctl_data *ctl)
- {
- 	bool pass;
--	int err;
- 
- 	/* If the control is turned off let's be polite */
- 	if (snd_ctl_elem_info_is_inactive(ctl->info)) {
-diff --git a/tools/testing/selftests/alsa/pcm-test.c b/tools/testing/selftests/alsa/pcm-test.c
-index 2f5e3c462194..c0a39818c5a4 100644
---- a/tools/testing/selftests/alsa/pcm-test.c
-+++ b/tools/testing/selftests/alsa/pcm-test.c
-@@ -257,7 +257,7 @@ static void find_pcms(void)
- static void test_pcm_time(struct pcm_data *data, enum test_class class,
- 			  const char *test_name, snd_config_t *pcm_cfg)
- {
--	char name[64], key[128], msg[256];
-+	char name[64], msg[256];
- 	const int duration_s = 2, margin_ms = 100;
- 	const int duration_ms = duration_s * 1000;
- 	const char *cs;
-@@ -567,7 +567,7 @@ int main(void)
- {
- 	struct card_data *card;
- 	struct pcm_data *pcm;
--	snd_config_t *global_config, *cfg, *pcm_cfg;
-+	snd_config_t *global_config, *cfg;
- 	int num_pcm_tests = 0, num_tests, num_std_pcm_tests;
- 	int ret;
- 	void *thread_ret;
-diff --git a/tools/testing/selftests/alsa/test-pcmtest-driver.c b/tools/testing/selftests/alsa/test-pcmtest-driver.c
-index 357adc722cba..a52ecd43dbe3 100644
---- a/tools/testing/selftests/alsa/test-pcmtest-driver.c
-+++ b/tools/testing/selftests/alsa/test-pcmtest-driver.c
-@@ -313,7 +313,6 @@ TEST_F(pcmtest, ni_playback) {
-  */
- TEST_F(pcmtest, reset_ioctl) {
- 	snd_pcm_t *handle;
--	unsigned char *it;
- 	int test_res;
- 	struct pcmtest_test_params *params = &self->params;
- 
--- 
-2.38.1
-
-
-
+SGkgIGFsbCwNCg0KCURvIHlvdSBoYXZlIGFueSBzdWdnZXN0aW9ucyBmb3IgdGhlIHBhdGNoIEkg
+c3VibWl0dGVkPyBQbGVhc2UgYWxzbyBsZXQgbWUga25vdywgdGhhbmsgeW91IQ0KDQpCZXN0IFJl
+Z2FyZHMsDQpiYW96aHUubGl1DQotLS0tLdPKvP7Urbz+LS0tLS0NCreivP7IyzogYmFvemh1Lmxp
+dSA8bHVjYXMubGl1QHNpZW5naW5lLmNvbT4gDQq3osvNyrG85DogMjAyM8TqONTCMjnI1SAxNzoz
+MA0KytW8/sjLOiBsaXZpdS5kdWRhdUBhcm0uY29tOyBhaXJsaWVkQGdtYWlsLmNvbTsgZGFuaWVs
+QGZmd2xsLmNoDQqzrcvNOiBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBsaW51eC1r
+ZXJuZWxAdmdlci5rZXJuZWwub3JnOyBMaXUgTHVjYXMvwfWxo9b5IDxsdWNhcy5saXVAc2llbmdp
+bmUuY29tPg0K1vfM4jogW1BBVENIXSBkcm0va29tZWRhOiBhZGQgTlYxMiBmb3JtYXQgdG8gc3Vw
+cG9ydCB3cml0ZWJhY2sgbGF5ZXIgdHlwZQ0KDQpXaGVuIHRlc3RpbmcgdGhlIGQ3MSB3cml0ZWJh
+Y2sgbGF5ZXIgZnVuY3Rpb24sIHRoZSBvdXRwdXQgZm9ybWF0IGlzIHNldCB0byBOVjEyLCBhbmQg
+dGhlIGZvbGxvd2luZyBlcnJvciBtZXNzYWdlIGlzIGRpc3BsYXllZDoNCg0KW2RybTprb21lZGFf
+ZmJfaXNfbGF5ZXJfc3VwcG9ydGVkXSBMYXllciBUWVBFOiA0IGRvZXNuJ3Qgc3VwcG9ydCBmYiBG
+TVQ6IE5WMTIgbGl0dGxlLWVuZGlhbiAoMHgzMjMxNTY0ZSkgd2l0aCBtb2RpZmllcjogMHgwLi4N
+Cg0KQ2hlY2sgdGhlIGQ3MSBkYXRhIG1hbnVhbCwgd3JpdGViYWNrIGxheWVyIG91dHB1dCBmb3Jt
+YXRzIGluY2x1ZGVzIE5WMTIgZm9ybWF0Lg0KDQpTaWduZWQtb2ZmLWJ5OiBiYW96aHUubGl1IDxs
+dWNhcy5saXVAc2llbmdpbmUuY29tPg0KLS0tDQogZHJpdmVycy9ncHUvZHJtL2FybS9kaXNwbGF5
+L2tvbWVkYS9kNzEvZDcxX2Rldi5jIHwgMiArLQ0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlv
+bigrKSwgMSBkZWxldGlvbigtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2FybS9k
+aXNwbGF5L2tvbWVkYS9kNzEvZDcxX2Rldi5jIGIvZHJpdmVycy9ncHUvZHJtL2FybS9kaXNwbGF5
+L2tvbWVkYS9kNzEvZDcxX2Rldi5jDQppbmRleCA2YzU2ZjU2NjJiYzcuLjgwOTczOTc1YmZkYiAx
+MDA2NDQNCi0tLSBhL2RyaXZlcnMvZ3B1L2RybS9hcm0vZGlzcGxheS9rb21lZGEvZDcxL2Q3MV9k
+ZXYuYw0KKysrIGIvZHJpdmVycy9ncHUvZHJtL2FybS9kaXNwbGF5L2tvbWVkYS9kNzEvZDcxX2Rl
+di5jDQpAQCAtNTIxLDcgKzUyMSw3IEBAIHN0YXRpYyBzdHJ1Y3Qga29tZWRhX2Zvcm1hdF9jYXBz
+IGQ3MV9mb3JtYXRfY2Fwc190YWJsZVtdID0gew0KIAl7X19IV19JRCg1LCAxKSwJRFJNX0ZPUk1B
+VF9ZVVlWLAlSSUNILAkJUm90X0FMTF9IX1YsCUxZVF9OTSwgQUZCX1RIfSwgLyogYWZiYyAqLw0K
+IAl7X19IV19JRCg1LCAyKSwJRFJNX0ZPUk1BVF9ZVVlWLAlSSUNILAkJRmxpcF9IX1YsCQkwLCAw
+fSwNCiAJe19fSFdfSUQoNSwgMyksCURSTV9GT1JNQVRfVVlWWSwJUklDSCwJCUZsaXBfSF9WLAkJ
+MCwgMH0sDQotCXtfX0hXX0lEKDUsIDYpLAlEUk1fRk9STUFUX05WMTIsCVJJQ0gsCQlGbGlwX0hf
+ViwJCTAsIDB9LA0KKwl7X19IV19JRCg1LCA2KSwJRFJNX0ZPUk1BVF9OVjEyLAlSSUNIX1dCLAlG
+bGlwX0hfViwJCTAsIDB9LA0KIAl7X19IV19JRCg1LCA2KSwJRFJNX0ZPUk1BVF9ZVVY0MjBfOEJJ
+VCwJUklDSCwJCVJvdF9BTExfSF9WLAlMWVRfTk0sIEFGQl9USH0sIC8qIGFmYmMgKi8NCiAJe19f
+SFdfSUQoNSwgNyksCURSTV9GT1JNQVRfWVVWNDIwLAlSSUNILAkJRmxpcF9IX1YsCQkwLCAwfSwN
+CiAJLyogWVVWIDEwYml0Ki8NCi0tDQoyLjE3LjENCg0K
