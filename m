@@ -2,93 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC307989C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847FE7989F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244455AbjIHPWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 11:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
+        id S244435AbjIHPZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 11:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233329AbjIHPWk (ORCPT
+        with ESMTP id S235484AbjIHPZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 11:22:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6430C1BFA;
-        Fri,  8 Sep 2023 08:22:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694186556; x=1725722556;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=2pJ1Njghwnio74sizFtHiEiT47JWSloBF6ZeODCQUuk=;
-  b=I62EFaqQu7H/M/Oi29LP/SSkK3ZKnTP4Nhcwx8mNH3BFoF4auStjT+Dh
-   AkgzEL2qq/T3g/KEQPWAtB/wL0o0uW7qS6J8BX7dar3zTzKtulWrfMteK
-   iKhhsvPoal4E8oMC2IhEd23uV0b7O6AzjlQLR10VpLjzR/nFDSL7lbWPO
-   PLMSrH9fuFHS+17T3lO+MymoGR94gTtcnBj0kuX9PNCnec47Al5ZcuVev
-   X/kS2hLQLMZGbiPfk74xpsHZtTHu0gJJrcZ/KPfong/x4Sn88nZydUjhl
-   UpsTPKtJqnwWy6/UxK9qG8eJU9AVrILcQnXKvi4+GEQOugR++P7GOKiug
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="380406584"
-X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
-   d="scan'208";a="380406584"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 08:22:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="719185891"
-X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
-   d="scan'208";a="719185891"
-Received: from fgilganx-mobl1.amr.corp.intel.com (HELO [10.209.17.195]) ([10.209.17.195])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 08:22:34 -0700
-Message-ID: <cbc3aabb-6a38-37f0-81aa-1cbfba445d95@intel.com>
-Date:   Fri, 8 Sep 2023 08:22:34 -0700
+        Fri, 8 Sep 2023 11:25:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4C42125;
+        Fri,  8 Sep 2023 08:24:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4C17C433CA;
+        Fri,  8 Sep 2023 15:24:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694186680;
+        bh=fXjtOigHLEJ1WJtElTztBusz+atOZCq2/IkS7MCl4mI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hQ8JnI1QGiaOPzyQCrUAKYcKFiIfMtN+Z8YcXcMAyXuIXtViVyNsJdlscKqw9pUsS
+         dVDADrj8VYVR3WNLRMd3q8liRxJvA2ocLp8kpZ/K55Y6wr6UnDmpEvStLhtrlPrmcN
+         H3y21oFY09jV2qmCTLm3LLSHGyh0H0GZqjbtm1vVk6EOrrX+EoWJ666WVTq3nnh90m
+         W3weEyPPg37eZuETSlOoZtu263MMF3eFfIH7ENpCH+My9xDSnz7cVJ2/Ne2nIBob8y
+         DMLBRYkHQY0c/BOazlKE/2C9o+EemoDt8pSx4CVmMG19CiEhIIwqqDskiPtmgLvCIF
+         /vfrerZDJqFKQ==
+Received: (nullmailer pid 3971375 invoked by uid 1000);
+        Fri, 08 Sep 2023 15:24:38 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linux-pm@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] cpufreq: pmac32: Use of_property_read_reg() to parse "reg"
+Date:   Fri,  8 Sep 2023 10:23:47 -0500
+Message-Id: <20230908152429.3970492-1-robh@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v13 04/22] x86/cpu: Detect TDX partial write machine check
- erratum
-Content-Language: en-US
-To:     Kai Huang <kai.huang@intel.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     x86@kernel.org, kirill.shutemov@linux.intel.com,
-        tony.luck@intel.com, peterz@infradead.org, tglx@linutronix.de,
-        bp@alien8.de, mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
-        pbonzini@redhat.com, david@redhat.com, dan.j.williams@intel.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        reinette.chatre@intel.com, len.brown@intel.com, ak@linux.intel.com,
-        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, nik.borisov@suse.com,
-        bagasdotme@gmail.com, sagis@google.com, imammedo@redhat.com
-References: <cover.1692962263.git.kai.huang@intel.com>
- <b089f93223958c168b5abd8eef0f810d616adb99.1692962263.git.kai.huang@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <b089f93223958c168b5abd8eef0f810d616adb99.1692962263.git.kai.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/23 05:14, Kai Huang wrote:
-> TDX memory has integrity and confidentiality protections.  Violations of
-> this integrity protection are supposed to only affect TDX operations and
-> are never supposed to affect the host kernel itself.  In other words,
-> the host kernel should never, itself, see machine checks induced by the
-> TDX integrity hardware.
+Use the recently added of_property_read_reg() helper to get the
+untranslated "reg" address value.
 
-This is missing one thing: alluding to how this will be used.  We might
-do that by saying: "To prepare for _____, add ______."
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+v2:
+ - Add missing include
+---
+ drivers/cpufreq/pmac32-cpufreq.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-But that's a minor nit.
+diff --git a/drivers/cpufreq/pmac32-cpufreq.c b/drivers/cpufreq/pmac32-cpufreq.c
+index ec75e79659ac..df3567c1e93b 100644
+--- a/drivers/cpufreq/pmac32-cpufreq.c
++++ b/drivers/cpufreq/pmac32-cpufreq.c
+@@ -24,6 +24,7 @@
+ #include <linux/device.h>
+ #include <linux/hardirq.h>
+ #include <linux/of.h>
++#include <linux/of_address.h>
+ 
+ #include <asm/machdep.h>
+ #include <asm/irq.h>
+@@ -378,10 +379,9 @@ static int pmac_cpufreq_cpu_init(struct cpufreq_policy *policy)
+ 
+ static u32 read_gpio(struct device_node *np)
+ {
+-	const u32 *reg = of_get_property(np, "reg", NULL);
+-	u32 offset;
++	u64 offset;
+ 
+-	if (reg == NULL)
++	if (of_property_read_reg(np, 0, &offset, NULL) < 0)
+ 		return 0;
+ 	/* That works for all keylargos but shall be fixed properly
+ 	 * some day... The problem is that it seems we can't rely
+@@ -389,7 +389,6 @@ static u32 read_gpio(struct device_node *np)
+ 	 * relative to the base of KeyLargo or to the base of the
+ 	 * GPIO space, and the device-tree doesn't help.
+ 	 */
+-	offset = *reg;
+ 	if (offset < KEYLARGO_GPIO_LEVELS0)
+ 		offset += KEYLARGO_GPIO_LEVELS0;
+ 	return offset;
+-- 
+2.40.1
 
-...
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
-> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-
-Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
