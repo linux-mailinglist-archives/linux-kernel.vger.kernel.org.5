@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBC8798597
+	by mail.lfdr.de (Postfix) with ESMTP id 091BA798596
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242744AbjIHKRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 06:17:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50600 "EHLO
+        id S242820AbjIHKRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 06:17:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240669AbjIHKRj (ORCPT
+        with ESMTP id S242806AbjIHKRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 06:17:39 -0400
+        Fri, 8 Sep 2023 06:17:49 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDAF62114
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 03:17:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AC6AC433B6;
-        Fri,  8 Sep 2023 10:17:03 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C021FE7
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 03:17:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AFA4C433D9;
+        Fri,  8 Sep 2023 10:17:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694168225;
-        bh=zgFFzyUZ+SJao/5qkE8JyiR+umnjcGflTNkQJIikt2Q=;
+        s=k20201202; t=1694168227;
+        bh=FMrL+V9+pSz441pre2fqIuiBhaXySkpsxmO1V8C9qk8=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=KF/qjqC77zFxURonv6rzEu1JbOvtLVObDrbsW/G4XoeBdhZHlcZnl9iDy1SYjEFKF
-         GNoaYyX2YVswrHAWZJqYFGukkfuOAi6wor607vqQqL+btTpxVN28k6bg4Rac80KhE0
-         x0ge/MeEMosxSq0SpgV4l6c4nqgrcgThxNR2MauwlWh907PcCZAohXZTX3fPLefazP
-         UdYVVb7yHklEb1f9JHeDJm69KDZYjqkX2KNYAzpJSdQb+vdlDnBul16Hg2fxovV+5E
-         OQHMsJhDXivj62IVG3OVHatFnwU1npkgdu1D5ZsuJxlkaLdHd6d3wpTMw/mkDv95hW
-         9nTnZ+3B4EQ6Q==
+        b=hzhQfV7Mto8sYitMxK094l8sU39m82qISWwicDglYHbllVMc9C/rv8gSJC5U4C/19
+         HljZW0ons3FYvgF+H3UaqCXV/o7XiwYyBeWcJbZ04LM1u72QA7+GBpmXX0Y/kkBS4f
+         Bq9BYlgTtR7Thfc640sSFY9DHcw91LkViTJrip/j3w3S3wRZF7qgzoZNJr3QfxwsFI
+         UB5oxnQiaVQ+DoN6VvUX7RAxv1oq3tBFKqsZoDrKCmHdmnH/IJnOXs5Yc/LFtH0ahJ
+         tevrUpqBemOU/geuJmAbaVhwNoXzyHLC3GI4cAiHsTraeADq6epAycoluVZxUvUbrr
+         MN/mKwfOdEHbg==
 From:   Michael Walle <mwalle@kernel.org>
-Date:   Fri, 08 Sep 2023 12:16:35 +0200
-Subject: [PATCH v3 17/41] mtd: spi-nor: atmel: convert flash_info to new
+Date:   Fri, 08 Sep 2023 12:16:36 +0200
+Subject: [PATCH v3 18/41] mtd: spi-nor: eon: convert flash_info to new
  format
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230807-mtd-flash-info-db-rework-v3-17-e60548861b10@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v3-18-e60548861b10@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
@@ -58,144 +58,93 @@ The INFOx() macros are going away. Convert the flash_info database to
 the new format.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/mtd/spi-nor/atmel.c | 122 +++++++++++++++++++++++++++++---------------
- 1 file changed, 80 insertions(+), 42 deletions(-)
+ drivers/mtd/spi-nor/eon.c | 72 +++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 54 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-index d2de2cb0c066..ccc985c48ae3 100644
---- a/drivers/mtd/spi-nor/atmel.c
-+++ b/drivers/mtd/spi-nor/atmel.c
-@@ -163,48 +163,86 @@ static const struct spi_nor_fixups atmel_nor_global_protection_fixups = {
- };
+diff --git a/drivers/mtd/spi-nor/eon.c b/drivers/mtd/spi-nor/eon.c
+index 4848ffe8b38f..ba09cb6c2abd 100644
+--- a/drivers/mtd/spi-nor/eon.c
++++ b/drivers/mtd/spi-nor/eon.c
+@@ -9,24 +9,60 @@
+ #include "core.h"
  
- static const struct flash_info atmel_nor_parts[] = {
--	{ "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4)
--		FLAGS(SPI_NOR_HAS_LOCK)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &at25fs_nor_fixups },
--	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8)
--		FLAGS(SPI_NOR_HAS_LOCK)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &at25fs_nor_fixups },
--	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &atmel_nor_global_protection_fixups },
--	{ "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &atmel_nor_global_protection_fixups },
--	{ "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &atmel_nor_global_protection_fixups },
--	{ "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &atmel_nor_global_protection_fixups },
--	{ "at25sl321",	INFO(0x1f4216, 0, 64 * 1024, 64)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--	{ "at26f004",   INFO(0x1f0400, 0, 64 * 1024,  8)
+ static const struct flash_info eon_nor_parts[] = {
+-	{ "en25f32",    INFO(0x1c3116, 0, 64 * 1024,   64)
 -		NO_SFDP_FLAGS(SECT_4K) },
--	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &atmel_nor_global_protection_fixups },
--	{ "at26df161a", INFO(0x1f4601, 0, 64 * 1024, 32)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &atmel_nor_global_protection_fixups },
--	{ "at26df321",  INFO(0x1f4700, 0, 64 * 1024, 64)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &atmel_nor_global_protection_fixups },
--	{ "at45db081d", INFO(0x1f2500, 0, 64 * 1024, 16)
+-	{ "en25p32",    INFO(0x1c2016, 0, 64 * 1024,   64) },
+-	{ "en25q32b",   INFO(0x1c3016, 0, 64 * 1024,   64) },
+-	{ "en25p64",    INFO(0x1c2017, 0, 64 * 1024,  128) },
+-	{ "en25q64",    INFO(0x1c3017, 0, 64 * 1024,  128)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "en25q80a",   INFO(0x1c3014, 0, 64 * 1024,   16)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+-	{ "en25qh16",   INFO(0x1c7015, 0, 64 * 1024,   32)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+-	{ "en25qh32",   INFO(0x1c7016, 0, 64 * 1024,   64) },
+-	{ "en25qh64",   INFO(0x1c7017, 0, 64 * 1024,  128)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+-	{ "en25qh128",  INFO(0x1c7018, 0, 64 * 1024,  256) },
+-	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  0) },
+-	{ "en25s64",	INFO(0x1c3817, 0, 64 * 1024,  128)
 -		NO_SFDP_FLAGS(SECT_4K) },
 +	{
-+		.id = SNOR_ID(0x1f, 0x66, 0x01),
-+		.name = "at25fs010",
-+		.sector_size = SZ_32K,
-+		.size = SZ_128K,
-+		.flags = SPI_NOR_HAS_LOCK,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &at25fs_nor_fixups
-+	}, {
-+		.id = SNOR_ID(0x1f, 0x66, 0x04),
-+		.name = "at25fs040",
-+		.size = SZ_512K,
-+		.flags = SPI_NOR_HAS_LOCK,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &at25fs_nor_fixups
-+	}, {
-+		.id = SNOR_ID(0x1f, 0x44, 0x01),
-+		.name = "at25df041a",
-+		.size = SZ_512K,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &atmel_nor_global_protection_fixups,
-+	}, {
-+		.id = SNOR_ID(0x1f, 0x47, 0x00),
-+		.name = "at25df321",
++		.id = SNOR_ID(0x1c, 0x31, 0x16),
++		.name = "en25f32",
 +		.size = SZ_4M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
 +		.no_sfdp_flags = SECT_4K,
-+		.fixups = &atmel_nor_global_protection_fixups
 +	}, {
-+		.id = SNOR_ID(0x1f, 0x47, 0x01),
-+		.name = "at25df321a",
++		.id = SNOR_ID(0x1c, 0x20, 0x16),
++		.name = "en25p32",
 +		.size = SZ_4M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &atmel_nor_global_protection_fixups
 +	}, {
-+		.id = SNOR_ID(0x1f, 0x48, 0x00),
-+		.name = "at25df641",
++		.id = SNOR_ID(0x1c, 0x30, 0x16),
++		.name = "en25q32b",
++		.size = SZ_4M,
++	}, {
++		.id = SNOR_ID(0x1c, 0x20, 0x17),
++		.name = "en25p64",
 +		.size = SZ_8M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &atmel_nor_global_protection_fixups
 +	}, {
-+		.id = SNOR_ID(0x1f, 0x42, 0x16),
-+		.name = "at25sl321",
-+		.size = SZ_4M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0x1f, 0x04, 0x00),
-+		.name = "at26f004",
-+		.size = SZ_512K,
++		.id = SNOR_ID(0x1c, 0x30, 0x17),
++		.name = "en25q64",
++		.size = SZ_8M,
 +		.no_sfdp_flags = SECT_4K,
 +	}, {
-+		.id = SNOR_ID(0x1f, 0x45, 0x01),
-+		.name = "at26df081a",
++		.id = SNOR_ID(0x1c, 0x30, 0x14),
++		.name = "en25q80a",
 +		.size = SZ_1M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &atmel_nor_global_protection_fixups
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
 +	}, {
-+		.id = SNOR_ID(0x1f, 0x46, 0x01),
-+		.name = "at26df161a",
++		.id = SNOR_ID(0x1c, 0x70, 0x15),
++		.name = "en25qh16",
 +		.size = SZ_2M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &atmel_nor_global_protection_fixups
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
 +	}, {
-+		.id = SNOR_ID(0x1f, 0x47, 0x00),
-+		.name = "at26df321",
++		.id = SNOR_ID(0x1c, 0x70, 0x16),
++		.name = "en25qh32",
 +		.size = SZ_4M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &atmel_nor_global_protection_fixups
 +	}, {
-+		.id = SNOR_ID(0x1f, 0x25, 0x00),
-+		.name = "at45db081d",
-+		.size = SZ_1M,
++		.id = SNOR_ID(0x1c, 0x70, 0x17),
++		.name = "en25qh64",
++		.size = SZ_8M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
++	}, {
++		.id = SNOR_ID(0x1c, 0x70, 0x18),
++		.name = "en25qh128",
++		.size = SZ_16M,
++	}, {
++		.id = SNOR_ID(0x1c, 0x70, 0x19),
++		.name = "en25qh256",
++	}, {
++		.name = "en25s64",
++		.id = SNOR_ID(0x1c, 0x38, 0x17),
++		.size = SZ_8M,
 +		.no_sfdp_flags = SECT_4K,
 +	},
  };
  
- const struct spi_nor_manufacturer spi_nor_atmel = {
+ const struct spi_nor_manufacturer spi_nor_eon = {
 
 -- 
 2.39.2
