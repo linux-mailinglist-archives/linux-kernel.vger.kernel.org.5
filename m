@@ -2,152 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87683798937
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B53798938
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244106AbjIHOuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:50:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60746 "EHLO
+        id S244132AbjIHOuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:50:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242959AbjIHOuN (ORCPT
+        with ESMTP id S244103AbjIHOuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:50:13 -0400
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E901FC0
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:50:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=7CsbEU9fx8LTBLkq6AyVZmjr235jVh/NHMPa791ymNE=; b=Ft/dtsQy4TfpdFd0Q7WiZLeqmj
-        JcbzzSReg13ya9ZpwtvZoVz/vgTZ0ZPUuDrBSE/JKW7jsbzvmqvQFgHyb0IjZz3HLVkSfev+cqKga
-        m1W+Z2vzSYISFojiFuj9Gg599Bdi9p5xQTUBkGBIZWzU2X6J24ZRk1sbkv2x7ac04HXZwimWviduo
-        A2RUf1nfV8FbiV/7k/5TfFyALkFxEtIdqlx9Of27zthuFuq54Je67BUwtR9wv7lbMhOfExcpAQ8GP
-        vNbn1aLnr8pIPcTX4XSCYvFLu7yfVdLxHcodNL1ED+AR98MqUIyu8C5a4hD34SiuK7C7S9jdGNzI7
-        0OL3UcjA==;
-Received: from [38.44.68.151] (helo=mail.igalia.com)
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-        id 1qeco0-001PYn-24; Fri, 08 Sep 2023 16:49:55 +0200
-Date:   Fri, 8 Sep 2023 13:49:47 -0100
-From:   Melissa Wen <mwen@igalia.com>
-To:     Harry Wentland <harry.wentland@amd.com>
-Cc:     amd-gfx@lists.freedesktop.org,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
-        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        Joshua Ashton <joshua@froggi.es>,
-        Sebastian Wick <sebastian.wick@redhat.com>,
-        Xaver Hugl <xaver.hugl@gmail.com>,
-        Shashank Sharma <Shashank.Sharma@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 33/34] drm/amd/display: add plane CTM support
-Message-ID: <20230908144947.ih5z4x6wol2mcrod@mail.igalia.com>
-References: <20230810160314.48225-1-mwen@igalia.com>
- <20230810160314.48225-34-mwen@igalia.com>
- <f6903055-5abc-4a1f-9a23-3f9bb9c31c4a@amd.com>
+        Fri, 8 Sep 2023 10:50:14 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B6B1BF9;
+        Fri,  8 Sep 2023 07:50:08 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-500c7796d8eso3615175e87.1;
+        Fri, 08 Sep 2023 07:50:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694184607; x=1694789407; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xkXpaqnjNB3MgoeN751DpK68gZT03o5yCj8DA/y5H7A=;
+        b=o6c0WpbVBnvM7aBUGrytTaB7PeBA7UAKRsLybXqcUodQ3k3FhLN4JVwKEsW9ACTJPF
+         WhlxYqlLKPPBpM0ZkqXNOyoLXQ/mrfa6rTQvVwifYt7Yqge8rQ1URCmYCgfE4SbaXLd6
+         cPEnjEr55q91d+eL3G6aTZX4k/+/VsZb8JkathBi5MrniHV6jmO3VLqSDXh9yRSSgtcJ
+         1t9OItP9A2bMNSDgp57/V1HGV7fiq4uQWNzLkmRdctl8EZi0NCWFph6+EmaI+BycCHAT
+         1K9aCHCV7RHUIu4ATgtlSlGTs7zUwGUZZ4BWISTta9YMHWeB/gCfvdWaj2ly0A4UILYV
+         BVzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694184607; x=1694789407;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xkXpaqnjNB3MgoeN751DpK68gZT03o5yCj8DA/y5H7A=;
+        b=LA+cTpIYWscDR9DwPFpD8nQAu9LghpXdkzU6Zf05pObSoCLFWyH/YufC1FbuYNDrFt
+         bdbNJU6gkvPb2f3cneLRNmLMSUHyCytL6n3r9/m6csdjwu0EkTqYeC9rjdr1Hi/4QWjc
+         xncivhLR2V1KBGlxC9iV3xM/GSsJAsuumE9zFgMToe6Bd+YpLReYp3tpguYdpyCyTuig
+         FkIN+OGV49QGbt+PLj0axjlsOLDT9wfx5tD0PeTIrU7iG2aDfmNUbdrW1R6nd3VHjEbr
+         /1CKvK9IbSvCWoA8vxh1d6T8bDgSd/wmCSHHic1+Vovlb8C/okKNN052zu/Z18dzFWKq
+         pAwg==
+X-Gm-Message-State: AOJu0YxRTHjOmMukB+hygPpW8cCC1Hh5SuU/qOaU0q7iP5mUPuleRuwi
+        ozqx/KEqWjSSvUTKuGF4VsBVK5xKpusp/y7RZHU=
+X-Google-Smtp-Source: AGHT+IGjut71Cuf1/3pmiqmLb02iNPUrU25uVCWP3M7RvsHnz8LT9ZQ55XWw9sho3xxF+7tpfhEqQEs2hgIUqnclj2A=
+X-Received: by 2002:a19:691c:0:b0:500:9f85:6e84 with SMTP id
+ e28-20020a19691c000000b005009f856e84mr1757538lfc.3.1694184606718; Fri, 08 Sep
+ 2023 07:50:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f6903055-5abc-4a1f-9a23-3f9bb9c31c4a@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230907230550.1417590-1-puranjay12@gmail.com>
+ <20230907230550.1417590-10-puranjay12@gmail.com> <ZPrdQEhw4f+TK8TB@shell.armlinux.org.uk>
+ <1a4bc20a-b7ff-3697-5859-a2bb868c575f@iogearbox.net>
+In-Reply-To: <1a4bc20a-b7ff-3697-5859-a2bb868c575f@iogearbox.net>
+From:   Puranjay Mohan <puranjay12@gmail.com>
+Date:   Fri, 8 Sep 2023 16:49:55 +0200
+Message-ID: <CANk7y0izCD1Cwqpkf_i2Vi+QyS4ggdOEhJP0Uq_QWkLhp4zHwQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 9/9] MAINTAINERS: Add myself for ARM32 BPF JIT maintainer.
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/06, Harry Wentland wrote:
-> 
-> 
-> On 2023-08-10 12:03, Melissa Wen wrote:
-> > Map the plane CTM driver-specific property to DC plane, instead of DC
-> > stream. The remaining steps to program DPP block are already implemented
-> > on DC shared-code.
-> > 
-> > Signed-off-by: Melissa Wen <mwen@igalia.com>
-> > ---
-> >  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  1 +
-> >  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 25 +++++++++++++++++++
-> >  2 files changed, 26 insertions(+)
-> > 
-> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > index dfe61c5ed49e..f239410234b3 100644
-> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > @@ -9578,6 +9578,7 @@ static bool should_reset_plane(struct drm_atomic_state *state,
-> >  		if (dm_old_other_state->degamma_tf != dm_new_other_state->degamma_tf ||
-> >  		    dm_old_other_state->degamma_lut != dm_new_other_state->degamma_lut ||
-> >  		    dm_old_other_state->hdr_mult != dm_new_other_state->hdr_mult ||
-> > +		    dm_old_other_state->ctm != dm_new_other_state->ctm ||
-> >  		    dm_old_other_state->shaper_lut != dm_new_other_state->shaper_lut ||
-> >  		    dm_old_other_state->shaper_tf != dm_new_other_state->shaper_tf ||
-> >  		    dm_old_other_state->lut3d != dm_new_other_state->lut3d ||
-> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> > index 86a918ab82be..7ff329101fd4 100644
-> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> > @@ -1158,6 +1158,8 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
-> >  				      struct dc_plane_state *dc_plane_state)
-> >  {
-> >  	struct amdgpu_device *adev = drm_to_adev(crtc->base.state->dev);
-> > +	struct dm_plane_state *dm_plane_state = to_dm_plane_state(plane_state);
-> > +	struct drm_color_ctm *ctm = NULL;
-> >  	struct dc_color_caps *color_caps = NULL;
-> >  	bool has_crtc_cm_degamma;
-> >  	int ret;
-> > @@ -1209,6 +1211,29 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
-> >  			return ret;
-> >  	}
-> >  
-> > +	/* Setup CRTC CTM. */
-> > +	if (dm_plane_state->ctm) {
-> > +		ctm = (struct drm_color_ctm *)dm_plane_state->ctm->data;
-> > +
-> > +		/*
-> > +		 * So far, if we have both plane and CRTC CTM, plane CTM takes
-> > +		 * the priority and we discard data for CRTC CTM, as
-> > +		 * implemented in dcn10_program_gamut_remap().  However, we
-> 
-> Isn't it the opposite? If stream (crtc) has a CTM we program that, only if
-> stream doesn't have a CTM we program the plane one?
+On Fri, Sep 8, 2023 at 3:49=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.ne=
+t> wrote:
+>
+> On 9/8/23 10:37 AM, Russell King (Oracle) wrote:
+> > On Thu, Sep 07, 2023 at 11:05:50PM +0000, Puranjay Mohan wrote:
+> >> As Shubham has been inactive since 2017, Add myself for ARM32 BPF JIT.
+> >>
+> >> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> >> ---
+> >>   MAINTAINERS | 5 +++--
+> >>   1 file changed, 3 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/MAINTAINERS b/MAINTAINERS
+> >> index 612d6d1dbf36..c241856819bd 100644
+> >> --- a/MAINTAINERS
+> >> +++ b/MAINTAINERS
+> >> @@ -3602,9 +3602,10 @@ F:    Documentation/devicetree/bindings/iio/acc=
+el/bosch,bma400.yaml
+> >>   F: drivers/iio/accel/bma400*
+> >>
+> >>   BPF JIT for ARM
+> >> -M:  Shubham Bansal <illusionist.neo@gmail.com>
+> >> +M:  Puranjay Mohan <puranjay12@gmail.com>
+> >> +R:  Shubham Bansal <illusionist.neo@gmail.com>
+> >
+> > Don't forget that I also want to review the changes, but I guess my
+> > arch/arm entry will cover this too.
+>
+> If there are no objections from all parties, it would be nice/better if b=
+oth of
+> you (Puranjay & Russell) could be explicitly added here as maintainers.
 
-yeah, you're right. It was an intermediate approach that was discarded.
-Indeed, I think I need to rewrite it to better describe that CRTC CTM
-priority regarding DPP gamut remap matrix.
+Yes, I agree with that. Russell knows more about ARM than anyone else!
 
-Thanks for pointing it out.
+If I send another version for any other comments I get, I will include
+this change.
+But if this version of the series is applied, can you make this change
+while applying the patch?
 
-Melissa
+>
+> Thanks,
+> Daniel
 
-> 
-> Harry
-> 
-> > +		 * have MPC gamut_remap_matrix from DCN3 family, therefore we
-> > +		 * can remap MPC programing of the matrix to MPC block and
-> > +		 * provide support for both DPP and MPC matrix at the same
-> > +		 * time.
-> > +		 */
-> > +		__drm_ctm_to_dc_matrix(ctm, dc_plane_state->gamut_remap_matrix.matrix);
-> > +
-> > +		dc_plane_state->gamut_remap_matrix.enable_remap = true;
-> > +		dc_plane_state->input_csc_color_matrix.enable_adjustment = false;
-> > +	} else {
-> > +		/* Bypass CTM. */
-> > +		dc_plane_state->gamut_remap_matrix.enable_remap = false;
-> > +		dc_plane_state->input_csc_color_matrix.enable_adjustment = false;
-> > +	}
-> > +
-> >  	return amdgpu_dm_plane_set_color_properties(plane_state,
-> >  						    dc_plane_state, color_caps);
-> >  }
-> 
+Thanks,
+Puranjay
