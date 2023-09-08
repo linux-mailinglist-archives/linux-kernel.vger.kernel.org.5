@@ -2,115 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D2C7984F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 11:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5A77984F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 11:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241810AbjIHJm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 05:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49172 "EHLO
+        id S241031AbjIHJo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 05:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbjIHJm5 (ORCPT
+        with ESMTP id S231779AbjIHJoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 05:42:57 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD2D1BF1;
-        Fri,  8 Sep 2023 02:42:54 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3889cZg2032229;
-        Fri, 8 Sep 2023 09:42:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ecYvUJkgEZY8thT/8b9+RPpjBcLl/sH8Z/aqr6ySu44=;
- b=Qrb6VZ4ROnKMumSIUtHDot4vITpzyrQROvOnTyKds/Ef8iw1+07tq3AuJ/2vz0l1RYYF
- zUrIgFgTiZ2JNr+WdHV3fMdlSm9hGTtSh47oWfQQeHJaMEqFtrz7gJfM90P8oc1H1dvH
- P1S0OWjjEsRKJADq+zPvA3aDKH7pGYkT9Y9brCSwe66YpMfnBrm9Vr2MTGpqAmSmJpiT
- fBMR89ZgFq8TfiFtqLnveVM2AHT6d/WRJNUTclaqao1uTKNmk3SEDv5REoiKo9UbE6vF
- XPP4iF1JbGrTfaCEZFiLkgSdhDe7PN//CgfaRoJqmAp4PjdgpHqgorBtYpG8w/xBkiBq 0Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t00xfgajg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Sep 2023 09:42:49 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3889cs8f002938;
-        Fri, 8 Sep 2023 09:42:49 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t00xfgaj1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Sep 2023 09:42:49 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3887mgcN026756;
-        Fri, 8 Sep 2023 09:42:48 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svgcp2qd1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Sep 2023 09:42:48 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-        by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3889glo022217130
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 Sep 2023 09:42:47 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 683295803F;
-        Fri,  8 Sep 2023 09:42:47 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0298558054;
-        Fri,  8 Sep 2023 09:42:45 +0000 (GMT)
-Received: from [9.179.12.78] (unknown [9.179.12.78])
-        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  8 Sep 2023 09:42:44 +0000 (GMT)
-Message-ID: <0f9aa662-f629-e7d9-1979-50493b9f52c0@linux.ibm.com>
-Date:   Fri, 8 Sep 2023 11:42:44 +0200
+        Fri, 8 Sep 2023 05:44:25 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0BA4019A8
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 02:44:21 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0507D75;
+        Fri,  8 Sep 2023 02:44:58 -0700 (PDT)
+Received: from [192.168.1.12] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8CEA3F64C;
+        Fri,  8 Sep 2023 02:44:18 -0700 (PDT)
+Message-ID: <b886a9af-6c90-c12a-f700-1a9141e25e7a@arm.com>
+Date:   Fri, 8 Sep 2023 11:43:50 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH net 0/2] Two fixes for SMC-R
-To:     Guangguan Wang <guangguan.wang@linux.alibaba.com>,
-        jaka@linux.ibm.com, kgraul@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     tonylu@linux.alibaba.com, alibuda@linux.alibaba.com,
-        guwen@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230908033143.89489-1-guangguan.wang@linux.alibaba.com>
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <20230908033143.89489-1-guangguan.wang@linux.alibaba.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+From:   Pierre Gondois <pierre.gondois@arm.com>
+Subject: Re: [PATCH] sched/fair: Skip cpus with no sched domain attached
+ during NOHZ idle balance
+To:     "Zhang, Rui" <rui.zhang@intel.com>,
+        "Lu, Aaron" <aaron.lu@intel.com>
+Cc:     "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
+        "tj@kernel.org" <tj@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+References: <20230804090858.7605-1-rui.zhang@intel.com>
+ <20230814031432.GA574314@ziqianlu-dell>
+ <cb305abedea24980c93ce2b436e64039d3796812.camel@intel.com>
+Content-Language: en-US
+In-Reply-To: <cb305abedea24980c93ce2b436e64039d3796812.camel@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 6lKdxtwvttwIN4H7jkOk17j7eFDVs27L
-X-Proofpoint-GUID: i0HU0V0It_HG_aqW8MMo25gZfHVs8t4b
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-08_06,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- priorityscore=1501 malwarescore=0 mlxlogscore=965 lowpriorityscore=0
- bulkscore=0 mlxscore=0 spamscore=0 suspectscore=0 clxscore=1015
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309080088
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Rui,
+
+On 8/14/23 10:30, Zhang, Rui wrote:
+> On Mon, 2023-08-14 at 11:14 +0800, Aaron Lu wrote:
+>> Hi Rui,
+>>
+>> On Fri, Aug 04, 2023 at 05:08:58PM +0800, Zhang Rui wrote:
+>>> Problem statement
+>>> -----------------
+>>> When using cgroup isolated partition to isolate cpus including
+>>> cpu0, it
+>>> is observed that cpu0 is woken up frequenctly but doing nothing.
+>>> This is
+>>> not good for power efficiency.
+>>>
+>>> <idle>-0     [000]   616.491602: hrtimer_cancel:
+>>> hrtimer=0xffff8e8fdf623c10
+>>> <idle>-0     [000]   616.491608: hrtimer_start:
+>>> hrtimer=0xffff8e8fdf623c10 function=tick_sched_timer/0x0
+>>> expires=615996000000 softexpires=615996000000
+>>> <idle>-0     [000]   616.491616: rcu_utilization:      Start
+>>> context switch
+>>> <idle>-0     [000]   616.491618: rcu_utilization:      End context
+>>> switch
+>>> <idle>-0     [000]   616.491637: tick_stop:            success=1
+>>> dependency=NONE
+>>> <idle>-0     [000]   616.491637: hrtimer_cancel:
+>>> hrtimer=0xffff8e8fdf623c10
+>>> <idle>-0     [000]   616.491638: hrtimer_start:
+>>> hrtimer=0xffff8e8fdf623c10 function=tick_sched_timer/0x0
+>>> expires=616420000000 softexpires=616420000000
+>>>
+>>> The above pattern repeats every one or multiple ticks, results in
+>>> total
+>>> 2000+ wakeups on cpu0 in 60 seconds, when running workload on the
+>>> cpus that are not in the isolated partition.
+>>>
+>>> Rootcause
+>>> ---------
+>>> In NOHZ mode, an active cpu either sends an IPI or touches the idle
+>>> cpu's polling flag to wake it up, so that the idle cpu can pull
+>>> tasks
+>>> from the busy cpu. The logic for selecting the target cpu is to use
+>>> the
+>>> first idle cpu that presents in both nohz.idle_cpus_mask and
+>>> housekeeping_cpumask.
+>>>
+>>> In the above scenario, when cpu0 is in the cgroup isolated
+>>> partition,
+>>> its sched domain is deteched, but it is still available in both of
+>>> the
+>>> above cpumasks. As a result, cpu0
+>>
+>> I saw in nohz_balance_enter_idle(), if a cpu is isolated, it will not
+>> set itself in nohz.idle_cpus_mask and thus should not be chosen as
+>> ilb_cpu. I wonder what's stopping this from working?
+> 
+> One thing I forgot to mention is that the problem is gone if we offline
+> and re-online those cpus. In that case, the isolated cpus are removed
+> from the nohz.idle_cpus_mask in sched_cpu_deactivate() and are never
+> added back.
+> 
+> At runtime, the cpus can be removed from the nohz.idle_cpus_mask in
+> below case only
+> 	trigger_load_balance()
+> 	        if (unlikely(on_null_domain(rq) || !cpu_active(cpu_of(rq))))
+> 	                return;
+> 	        nohz_balancer_kick(rq);
+> 			nohz_balance_exit_idle()
+> 
+> My understanding is that if a cpu is in nohz.idle_cpus_mask when it is
+> isolated, there is no chance to remove it from that mask later, so the
+> check in nohz_balance_enter_idle() does not help.
 
 
-On 08.09.23 05:31, Guangguan Wang wrote:
-> Two fixes for SMC-R.
-> 
-> Guangguan Wang (2):
->    net/smc: bugfix for smcr v2 server connect success statistic
->    net/smc: use smc_lgr_list.lock to protect smc_lgr_list.list iterate in
->      smcr_port_add
-> 
->   net/smc/smc_core.c  | 2 ++
->   net/smc/smc_stats.h | 3 ++-
->   2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-Thank you for fixing them!
+As you mentioned, once a CPU is isolated, its rq->nohz_tick_stopped is
+never updated. Instead of avoiding isolated CPUs at each find_new_ilb() call
+as this patch does, maybe it would be better to permanently remove these CPUs
+from nohz.idle_cpus_mask. This would lower the number of checks done.
+This could be done with something like:
+@@ -11576,6 +11586,20 @@ void nohz_balance_enter_idle(int cpu)
+           */
+          rq->has_blocked_load = 1;
+   
++       /* If we're a completely isolated CPU, we don't play: */
++       if (on_null_domain(rq)) {
++               if (cpumask_test_cpu(rq->cpu, nohz.idle_cpus_mask)) {
++                       cpumask_clear_cpu(rq->cpu, nohz.idle_cpus_mask);
++                       atomic_dec(&nohz.nr_cpus);
++               }
++
++               /*
++                * Set nohz_tick_stopped on isolated CPUs to avoid keeping the
++                * value that was stored when rebuild_sched_domains() was called.
++                */
++               rq->nohz_tick_stopped = 1;
++       }
++
+          /*
+           * The tick is still stopped but load could have been added in the
+           * meantime. We set the nohz.has_blocked flag to trig a check of the
+@@ -11585,10 +11609,6 @@ void nohz_balance_enter_idle(int cpu)
+          if (rq->nohz_tick_stopped)
+                  goto out;
+   
+-       /* If we're a completely isolated CPU, we don't play: */
+-       if (on_null_domain(rq))
+-               return;
+-
+          rq->nohz_tick_stopped = 1;
+   
+          cpumask_set_cpu(cpu, nohz.idle_cpus_mask);
 
-The sign is for the two patches:
-Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+Otherwise I could reproduce the issue and the patch was solving it, so:
+Tested-by: Pierre Gondois <pierre.gondois@arm.com>
+
+
+
+
+
+Also, your patch doesn't aim to solve that, but I think there is an issue
+when updating cpuset.cpus when an isolated partition was already created:
+
+// Create an isolated partition containing CPU0
+# mkdir cgroup
+# mount -t cgroup2 none cgroup/
+# mkdir cgroup/Testing
+# echo "+cpuset" > cgroup/cgroup.subtree_control
+# echo "+cpuset" > cgroup/Testing/cgroup.subtree_control
+# echo 0 > cgroup/Testing/cpuset.cpus
+# echo isolated > cgroup/Testing/cpuset.cpus.partition
+
+// CPU0's sched domain is detached:
+# ls /sys/kernel/debug/sched/domains/cpu0/
+# ls /sys/kernel/debug/sched/domains/cpu1/
+domain0  domain1
+
+// Change the isolated partition to be CPU1
+# echo 1 > cgroup/Testing/cpuset.cpus
+
+// CPU[0-1] sched domains are not updated:
+# ls /sys/kernel/debug/sched/domains/cpu0/
+# ls /sys/kernel/debug/sched/domains/cpu1/
+domain0  domain1
+
+Regards,
+Pierre
+
