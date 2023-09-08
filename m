@@ -2,87 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 121EB798A23
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23A4798A26
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235890AbjIHPnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 11:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35238 "EHLO
+        id S244733AbjIHPny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 11:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbjIHPnO (ORCPT
+        with ESMTP id S237259AbjIHPnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 11:43:14 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470841FC7
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 08:43:10 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c0e7e3d170so135845ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 08:43:10 -0700 (PDT)
+        Fri, 8 Sep 2023 11:43:51 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A013313E
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 08:43:47 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-770ef96aa01so6356785a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 08:43:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694187790; x=1694792590; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1694187826; x=1694792626; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ejXqpKu8kQzY2C9Hwied0dLrXN/PvCiO6ZeCOYXfoyo=;
-        b=eCEdDyXxGHpTTwIs90Wj/Fy/4ROMIrK23vc6InO3ftkAW/p80gkP+d9HnxawZnDpQE
-         D3HoP4mm+wrsQf5mzZ5h21jdlstAkJuEyPRU0LfeWEjzBURvdqTAli55+IAKQQYSnsAG
-         NB2F5WqAapAMsgooYBd3zRhPHBkVR4L2xOsNfHfgQmTqhvDPUy+/VYzgdZGaV1xyz44M
-         nF6D71OBsY4sbUpTYv5TsG0+2/zOLEWQlA430OKJOQdwkGg+cyAUKTBXAOx8gjUY80px
-         vCnXVPzIGyUMUlN3l7hObOhfrMxp7QESUuYuDGLIdOlbcUp0qISnIRSzO/SoGag2rji8
-         grFg==
+        bh=YAbqY1cEwNYR2Hdp5jO+8518fCgaxRWgrEKpGgN0FMc=;
+        b=WkXxmld+Jj1HdGWBoCBjscS4g6WPQ430hRCOll9QUMs86mJYYOvAZoCGASEHTF8gRM
+         JnIdrd44ZFr+CWP0h7JGnPDclor/dwNk1aS9YgIWH9ZkFJCC2RdG73WAVNx8dRXrMyiy
+         5KSON19HyncFIk+R+a6366hDoG8CyTWv/x2wnQwWfgbydIpDoXX31haZtNeQvk6rKcA6
+         s/roUGe+xAoADk2s0C37o9nIP9VkkPN36+lb5jpzB0+BurTuc4gBkNn1YbEDbMDxD3aa
+         ijXoKM+0b+4PagDs44hk6HIJpJoTFa2xYZKR8SV/wcbSnfAXm8i+Qx4BTL3BsA83XeR3
+         kuXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694187790; x=1694792590;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1694187826; x=1694792626;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ejXqpKu8kQzY2C9Hwied0dLrXN/PvCiO6ZeCOYXfoyo=;
-        b=wTDilfsx0SLF9cHz9ySxmo7Apy/dWzcfNj2xRTd2dNdR0UwsEvDn6ri2KaT1dyaunh
-         Si8gYv8AtGNWwnlHoRyuVQQRxjMimwKR00tKCollEgrHKqmMs/H73sZNYmp0Ct4opSh8
-         0bDaBeGq3PWMsU1GLteFURq6SUJzO1oGA4w9StzNAi+grS+CEdFA9AepFS481uMffXRa
-         GRFvDaFkHWIKb24FgFQQ3Tz/yKVeSgMO2eHu4JWyp3d3rzFPIw/6Zk3+w/SF8sL0y3/n
-         4bsTOqpNd+QkvrTpLLb6PRAdqceQzZc1DJe+m+ea1WU+XA1Z0NB7y6vdhuWgQRMlBOGs
-         n7Lg==
-X-Gm-Message-State: AOJu0Ywq3GjcfsEG2MLWCGooukmKY6pfYSd+LX/Sp+oMYZHU5P8qsCvs
-        miZ77j8zWCmMAK+wKKA9MO637RTRFiJLqBqHQjrkJQ==
-X-Google-Smtp-Source: AGHT+IGF4KgcARS3ELwU3djcOgRsJ8LUV9Z2iRMZaHkfbRj2AhZyzhZsFu8/E8c4GO03km/XfNifFFOFwPf3OCxHkGA=
-X-Received: by 2002:a17:902:d2d2:b0:1c3:39f8:3e72 with SMTP id
- n18-20020a170902d2d200b001c339f83e72mr272217plc.22.1694187789585; Fri, 08 Sep
- 2023 08:43:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230901062141.51972-1-wuyun.abel@bytedance.com> <1d935bfc-50b0-54f3-22f0-d360f8a7c1ac@bytedance.com>
-In-Reply-To: <1d935bfc-50b0-54f3-22f0-d360f8a7c1ac@bytedance.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 8 Sep 2023 08:42:58 -0700
-Message-ID: <CALvZod6zuPy5p6m5ins2+BQMwmEeAWiz+C5vtF7pVZdcmKNGcQ@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next 0/3] sock: Be aware of memcg pressure on alloc
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Breno Leitao <leitao@debian.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        bh=YAbqY1cEwNYR2Hdp5jO+8518fCgaxRWgrEKpGgN0FMc=;
+        b=UEl0olUa8IC6R4NSPgQVwN0f4UYjzx9877zKJEbox7hCkGSJtgB6LsPe0JZT4YGe/B
+         XZd35Q8xDMAM2j/bIyKhBm00lzAMu4FtpMSp14QE8fji4BF2VHLert20+ws+fFqRQURd
+         M4qOmrKMZ2tRJd6aM7gX0QUkPEHc9VMHtgP+Jp7TmT9Z2glz9jlT+HYRKSVpKf1HppEB
+         QY0nbsK2EXUfBKKoTHHZdYl9NKJko+SvZZxMe++7EGKmiDMJERN9ODfCfQkL5aWOJrmt
+         IlOOd3i47iBTo9ng6/yL/ia/Np1BfsJgem9vLz5nr3M8iDfr2gZUknaWaxihKltI2eG9
+         bovg==
+X-Gm-Message-State: AOJu0YyQ0k3TkAD7I7l9B4GNo7mcaHptVHHzA+IkQUOQvNz0cGSe+xoN
+        SYgH2eJQ46KI1XIWLuhMCAA=
+X-Google-Smtp-Source: AGHT+IFaLMV77/KVlfAvaPC+0ooDdOx76C1N+s2dvPgaXCOpZ/r1rLgjNg84TMxVgV/HNdoXI8VV2A==
+X-Received: by 2002:a05:620a:44c8:b0:76e:e9b4:ff44 with SMTP id y8-20020a05620a44c800b0076ee9b4ff44mr3207992qkp.67.1694187826385;
+        Fri, 08 Sep 2023 08:43:46 -0700 (PDT)
+Received: from smtpclient.apple ([2601:189:8480:9a90:2102:7c79:a2b0:6525])
+        by smtp.gmail.com with ESMTPSA id pj48-20020a05620a1db000b0076d9f2d4fabsm667235qkn.15.2023.09.08.08.43.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 08 Sep 2023 08:43:46 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
+Subject: Re: Memory protection keys: Signal handlers crash if pkey0 is
+ write-disabled
+From:   Robert Kueffner <r.m.kueffner@gmail.com>
+In-Reply-To: <4c49c85a-2b2e-e408-534d-586f06a8e485@intel.com>
+Date:   Fri, 8 Sep 2023 11:43:34 -0400
+Cc:     Kyle Huey <me@kylehuey.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Message-Id: <F12A9E98-41F5-4A81-8B04-C96B0CDEC406@gmail.com>
+References: <FF299375-B46F-46D0-90A9-333959FE9380@gmail.com>
+ <c0159d08-e69d-0329-5ca9-68fd26cab0c8@intel.com>
+ <E821837A-22AD-420C-A290-8511344E7EAF@gmail.com>
+ <4c49c85a-2b2e-e408-534d-586f06a8e485@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+X-Mailer: Apple Mail (2.3731.600.7)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,10 +81,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 8, 2023 at 12:55=E2=80=AFAM Abel Wu <wuyun.abel@bytedance.com> =
-wrote:
->
-> Friendly ping :)
->
+> There are tons of complicated ways to fix this.  But the easiest way =
+is
+> just to say that you need to keep PKRU set so that the signal frame =
+can
+> be written at any time.
 
-Sorry for the delay, I will get to this over this weekend.
+Just for completeness sake, the signal frame was actually written =
+successfully since I moved the stack pointer to pkey-1 associated memory =
+before any exceptions, details in unix.stackexchange I =
+<https://unix.stackexchange.com/questions/755160/memory-protection-keys-ex=
+ception-handler-crashes-if-pkey0-is-write-disabled> posted in the =
+beginning.
+And it=E2=80=99s probably that the kernel wants to write something else =
+into pkey-0 associated memory.=20
+
+I understand that there is no easy solution, so my idea of isolating a =
+user from corrupting pkey-0 memory is probably moot.
+
+Thanks Dave, that helped me a lot to understand the problem=
