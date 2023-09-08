@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B21A5798AB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 18:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD25798AB7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 18:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241666AbjIHQdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 12:33:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49106 "EHLO
+        id S243853AbjIHQfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 12:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240304AbjIHQdp (ORCPT
+        with ESMTP id S231775AbjIHQfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 12:33:45 -0400
-Received: from smtp.smtpout.orange.fr (smtp-29.smtpout.orange.fr [80.12.242.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED24319B6
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 09:33:41 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id eeQKqI5GZmTYjeeQKqPfiw; Fri, 08 Sep 2023 18:33:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1694190820;
-        bh=sdUE6TT14eCOvBoLJKIUC2N7D/QN1SaUjLEtihNQU5w=;
-        h=From:To:Cc:Subject:Date;
-        b=HGltK7lFNNSlaViWY5Tw+9MdSB0TIuI2S4w5MayZ5ex+ylWxQQqhQVVxZm5ugaxgy
-         pMfJ3CzQ6IgikgF75wQaqaTr5/maVjAVP+hh/QDI25vYO33kpOAw6DrH1Uj3uM7766
-         de+6KA1xEduuUmHwxLbB231sJJFBVXFgOSJXYW64mMpj623DgpsQGeRBVGa/ToWE4P
-         LctZ4qg0h5GAOZeCo0b30nemcfEZVN1axXIgE2uhGctFhbfttk4r5D2ka3L85a4YOr
-         DN4gsmr5tiiIkl1J2/s4U5GQTL0p90mM2PXzc+jmQlecxD/7iI1ZQZk8fgX9InOpX4
-         /NRBoMrt5AGug==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 08 Sep 2023 18:33:40 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        David Vernet <void@manifault.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        bpf@vger.kernel.org
-Subject: [PATCH] bpf: Fix a erroneous check after snprintf()
-Date:   Fri,  8 Sep 2023 18:33:35 +0200
-Message-Id: <393bdebc87b22563c08ace094defa7160eb7a6c0.1694190795.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Fri, 8 Sep 2023 12:35:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F8F199F;
+        Fri,  8 Sep 2023 09:35:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29E85C433C7;
+        Fri,  8 Sep 2023 16:35:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694190910;
+        bh=opvoYBGCH4dY7vMCWNy9kQQq8R5kic6SeZ7L6tqcHnk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fxBhmPd2ZSWlr0act9Ady9X7FRpPNRybLf1MPGEqt3gKZIST754/dqOVnHsImSbDP
+         qIp8PdxFM58KUkuY1/RZYt9jPqNqBnOoDAM4JUENrm4eJt3Dz+kXB0qqr7/3lFNqNr
+         F5+xDqzjYE8lyIJuGObee0/mHLCMHvnX8pMcKA4s=
+Date:   Fri, 8 Sep 2023 17:35:07 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable <stable@kernel.org>,
+        Stefan Lippers-Hollmann <s.l-h@gmx.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, linux-media@vger.kernel.org,
+        linux-modules@vger.kernel.org
+Subject: Re: [PATCH] media: dvb: symbol fixup for dvb_attach()
+Message-ID: <2023090852-stoppable-jackpot-549f@gregkh>
+References: <20230908092035.3815268-2-gregkh@linuxfoundation.org>
+ <ZPtKCc2PLi0wdR2+@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPtKCc2PLi0wdR2+@bombadil.infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-snprintf() does not return negative error code on error, it returns the
-number of characters which *would* be generated for the given input.
+On Fri, Sep 08, 2023 at 09:21:29AM -0700, Luis Chamberlain wrote:
+> On Fri, Sep 08, 2023 at 10:20:36AM +0100, Greg Kroah-Hartman wrote:
+> > In commit 9011e49d54dc ("modules: only allow symbol_get of
+> > EXPORT_SYMBOL_GPL modules") the use of symbol_get is properly restricted
+> > to GPL-only marked symbols.  This interacts oddly with the DVB logic
+> > which only uses dvb_attach() to load the dvb driver which then uses
+> > symbol_get().
+> > 
+> > Fix this up by properly marking all of the dvb_attach attach symbols as
+> > EXPORT_SYMBOL_GPL().
+> > 
+> > Fixes: 9011e49d54dc ("modules: only allow symbol_get of EXPORT_SYMBOL_GPL modules")
+> > Cc: stable <stable@kernel.org>
+> > Reported-by: Stefan Lippers-Hollmann <s.l-h@gmx.de>
+> > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > Cc: Luis Chamberlain <mcgrof@kernel.org>
+> > Cc: Christoph Hellwig <hch@lst.de>
+> > Cc: linux-media@vger.kernel.org
+> > Cc: linux-modules@vger.kernel.org
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> > Luis, do you want to take this through your tree?  Or Mauro's?  Or I can
+> > take it through mine, it should get to Linus soon as this is causing
+> > regressions in his tree.
+> 
+> You've done the work so it is up to you, whatever helps you expedite it
+> as it already hit stable. Feel free to take it through your tree.
 
-Fix the error handling check.
+If you ack it, I can take it now through my tree and send it to Linus
+tomorrow.
 
-Fixes: 57539b1c0ac2 ("bpf: Enable annotating trusted nested pointers")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- kernel/bpf/btf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+thanks,
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 1095bbe29859..8090d7fb11ef 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -8501,7 +8501,7 @@ bool btf_nested_type_is_trusted(struct bpf_verifier_log *log,
- 	tname = btf_name_by_offset(btf, walk_type->name_off);
- 
- 	ret = snprintf(safe_tname, sizeof(safe_tname), "%s%s", tname, suffix);
--	if (ret < 0)
-+	if (ret >= sizeof(safe_tname))
- 		return false;
- 
- 	safe_id = btf_find_by_name_kind(btf, safe_tname, BTF_INFO_KIND(walk_type->info));
--- 
-2.34.1
-
+greg k-h
