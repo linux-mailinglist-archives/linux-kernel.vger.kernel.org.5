@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7237990BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E3A798FB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344453AbjIHUC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 16:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56048 "EHLO
+        id S245378AbjIHTeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:34:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235196AbjIHUCT (ORCPT
+        with ESMTP id S1345004AbjIHTeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 16:02:19 -0400
+        Fri, 8 Sep 2023 15:34:07 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EA0A3;
-        Fri,  8 Sep 2023 13:02:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 304C6C433BA;
-        Fri,  8 Sep 2023 19:33:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E55269A;
+        Fri,  8 Sep 2023 12:33:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6641BC4163D;
+        Fri,  8 Sep 2023 19:33:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201621;
-        bh=xoOLMqcuyPH4UTuc0ZznVTA/lU5nY+YsFXGNg86K7n4=;
+        s=k20201202; t=1694201623;
+        bh=pCAWUMxAeQMhlxOAfYYGNQCU+BovgMqJp27SdzpfWZY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QzydwON1sFJRDV1/mAzEQDxa/ztYVu6K2O3EP0cdstBI2xSLl6zBJ8k9yIE0wHAQT
-         AWrw7cP54Z2FaiSRMHv+2Id3O/+cZdDvAlC4cYo/7N+xiKwS8waoE1Sf5frTnCUhpS
-         I3yrIVDbHG1XSv5MVcd8qiSAqryR0IpX2YfQGuQVpJlo10PSY5xTldGygqyjPt6qKo
-         KlGG9sQJ0h80Q452gd/OUiWp/EyBk7SqmX5FfWIIvwz+ILleQhG8XvnCEfjlhxqbV6
-         OhHBsEKHIl7IB+bylqZkA9GJmB0XsWKfmspDY/nqINoXOhgHLbDHifN2ei5RVaO/Wu
-         YzRRVbxYBQc7g==
+        b=DfTcoE7c8NqJk51Ri/hdVNN2e/2Ndk/pZGZdTy2m611Ufx9N/taSnPdl1GQXLj9sK
+         1wMfO51+0SaVRAdRymC4QXcWu4JPucgpH2bI/pqgbeSc7O2lwsnd/sujXSr2UvWwkR
+         pHQMhDU+YCFsNzakwinQPzKTCjHCoFqJdJk3AId99jM7ZRpNFEggGgNMMGMLS3KHH4
+         g1MbamsxVNLWzzvaGGZ61tB6dLZdJGG0H0PNCg/VZ+eN1gYX5ob+wMUALHlAbBvcl8
+         XDmWa+F53sBqMGf0KiSuiQuwE6jOhyHkDyT74ipJ+ZevBOH7m1NEglcZEZnlqYT+wa
+         YWy9D2ACHEoQA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>,
-        Sasha Levin <sashal@kernel.org>, linux-omap@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 24/31] bus: ti-sysc: Configure uart quirks for k3 SoC
-Date:   Fri,  8 Sep 2023 15:31:53 -0400
-Message-Id: <20230908193201.3462957-24-sashal@kernel.org>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, agross@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 25/31] arm64: dts: qcom: sc8280xp-x13s: Add camera activity LED
+Date:   Fri,  8 Sep 2023 15:31:54 -0400
+Message-Id: <20230908193201.3462957-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908193201.3462957-1-sashal@kernel.org>
 References: <20230908193201.3462957-1-sashal@kernel.org>
@@ -51,37 +55,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-[ Upstream commit 03a711d3cb83692733f865312f49e665c49de6de ]
+[ Upstream commit 1c63dd1c5fdafa8854526d7d60d2b741c813678d ]
 
-Enable the uart quirks similar to the earlier SoCs. Let's assume we are
-likely going to need a k3 specific quirk mask separate from the earlier
-SoCs, so let's not start changing the revision register mask at this point.
+Disappointigly, the camera activity LED is implemented in software.
+Hook it up as a gpio-led and (until we have camera *and* a "camera on"
+LED trigger) configure it as a panic indicator.
 
-Note that SYSC_QUIRK_LEGACY_IDLE will be needed until we can remove the
-need for pm_runtime_irq_safe() from 8250_omap driver.
-
-Reviewed-by: Nishanth Menon <nm@ti.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Link: https://lore.kernel.org/r/20230805-topic-x13s_cam_led-v1-1-443d752158c4@linaro.org
+Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/ti-sysc.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts   | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
-index 4cb23b9e06ea4..08a20672915c3 100644
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -1525,6 +1525,8 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
- 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
- 	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x47422e03, 0xffffffff,
- 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
-+	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x47424e03, 0xffffffff,
-+		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
+diff --git a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
+index bdcba719fc385..90a21ab5c54fc 100644
+--- a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
++++ b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
+@@ -12,6 +12,7 @@
+ #include <dt-bindings/iio/qcom,spmi-adc7-pmr735a.h>
+ #include <dt-bindings/input/gpio-keys.h>
+ #include <dt-bindings/input/input.h>
++#include <dt-bindings/leds/common.h>
+ #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
  
- 	/* Quirks that need to be set based on the module address */
- 	SYSC_QUIRK("mcpdm", 0x40132000, 0, 0x10, -ENODEV, 0x50000800, 0xffffffff,
+ #include "sc8280xp.dtsi"
+@@ -78,6 +79,21 @@ switch-lid {
+ 		};
+ 	};
+ 
++	leds {
++		compatible = "gpio-leds";
++
++		led-camera-indicator {
++			label = "white:camera-indicator";
++			function = LED_FUNCTION_INDICATOR;
++			color = <LED_COLOR_ID_WHITE>;
++			gpios = <&tlmm 28 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "none";
++			default-state = "off";
++			/* Reuse as a panic indicator until we get a "camera on" trigger */
++			panic-indicator;
++		};
++	};
++
+ 	pmic-glink {
+ 		compatible = "qcom,sc8280xp-pmic-glink", "qcom,pmic-glink";
+ 
 -- 
 2.40.1
 
