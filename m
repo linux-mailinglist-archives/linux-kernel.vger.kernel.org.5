@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09470798CD0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FEF798EDB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343836AbjIHSSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
+        id S1343772AbjIHTMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343939AbjIHSSH (ORCPT
+        with ESMTP id S234188AbjIHTMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:18:07 -0400
+        Fri, 8 Sep 2023 15:12:24 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C2B1FE1;
-        Fri,  8 Sep 2023 11:17:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD3A3C116B3;
-        Fri,  8 Sep 2023 18:15:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64EE0E6B;
+        Fri,  8 Sep 2023 12:12:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23264C116B4;
+        Fri,  8 Sep 2023 18:15:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196913;
-        bh=v5r4k8U0DLGb0mXAvVkpUeh3vSlveuQG9MwHS2kHWDM=;
+        s=k20201202; t=1694196915;
+        bh=r79lwaELI4Gs1WB8QGgVqDIUBX3aGVfUv/JCqb98c6I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VPkwgsi/qn1vNpXJcbP4xtFnNJcmO1A9m5XEFiSWoHT9UVfkfwx69KJ8z7sDTMlKZ
-         WHILo2BPJgzGW4wxdJ/cuKkIFC4cP0wyxK+ejneXQBO0Pmgtk8mAJNvwVZhxV+Eosd
-         WuZQBKEUbXa4iD+Vt/OTmUPPMPu/rlprrCLBEZ7aq4XC82N5LTm/9Uj3PR+dBLVrps
-         q8WzDWb5TtdWIdFYiGyFc7ar9TIh1jO+pA635kXPSL6qvHjQDG3kO3mSp5JTikyJTR
-         lUc2UDIMxHFXF4SL5cRtC6AjbzGMuW26Gux5JAretKe+WWN8aerqPB8sVLPp0dFuBu
-         yWrEWQ3zr13qQ==
+        b=Qs0hVxwxHPdXspX1Oy58C19h6t3F2bQp9VjahmbmLWdg5iJQIZ+USc855z9lRxls6
+         GLYWhStxwzDROELhCX/DKbWQuxztgDVQXZjOC0xcw6e99R1ToiVf/3hslNqo9lvLBO
+         8LVdOvbg9Pf7aXijJWUoy3g+4H/aJEvkHtVPX2HF3CEKgPvT07qoV5LKCjNJpqqFBn
+         ZRbz+z1N8K49YlTLarCnhzVyUaYoi/5zAh5up4Hlg/AYrXFVlkuk1bemsZjG/AB+6X
+         1qRCGkp2tEhi2Z2RrxOmw9OShLAweqFt7XazhtdFHbajv1qVszOWoOCC3xH+FyQGsW
+         +ZQp58IPKpeiw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>, johannes@sipsolutions.net,
-        kvalo@kernel.org, linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 38/45] Revert "wifi: mac80211_hwsim: check the return value of nla_put_u32"
-Date:   Fri,  8 Sep 2023 14:13:19 -0400
-Message-Id: <20230908181327.3459042-38-sashal@kernel.org>
+Cc:     Hao Luo <haoluo@google.com>, Andrii Nakryiko <andrii@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
+        daniel@iogearbox.net, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 39/45] libbpf: Free btf_vmlinux when closing bpf_object
+Date:   Fri,  8 Sep 2023 14:13:20 -0400
+Message-Id: <20230908181327.3459042-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181327.3459042-1-sashal@kernel.org>
 References: <20230908181327.3459042-1-sashal@kernel.org>
@@ -52,37 +52,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Hao Luo <haoluo@google.com>
 
-[ Upstream commit 1b78dd34560e9962f8e917fe4adde6f2ab0eb89f ]
+[ Upstream commit 29d67fdebc42af6466d1909c60fdd1ef4f3e5240 ]
 
-This reverts commit b970ac68e0c4 ("wifi: mac80211_hwsim: check the
-return value of nla_put_u32") since it introduced a memory leak in
-the error path, which seems worse than sending an incomplete skb,
-and the put can't fail anyway since the SKB was just allocated.
+I hit a memory leak when testing bpf_program__set_attach_target().
+Basically, set_attach_target() may allocate btf_vmlinux, for example,
+when setting attach target for bpf_iter programs. But btf_vmlinux
+is freed only in bpf_object_load(), which means if we only open
+bpf object but not load it, setting attach target may leak
+btf_vmlinux.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+So let's free btf_vmlinux in bpf_object__close() anyway.
+
+Signed-off-by: Hao Luo <haoluo@google.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20230822193840.1509809-1-haoluo@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/virtual/mac80211_hwsim.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ tools/lib/bpf/libbpf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/virtual/mac80211_hwsim.c b/drivers/net/wireless/virtual/mac80211_hwsim.c
-index dd516cec41973..23307c8baea21 100644
---- a/drivers/net/wireless/virtual/mac80211_hwsim.c
-+++ b/drivers/net/wireless/virtual/mac80211_hwsim.c
-@@ -582,9 +582,8 @@ static int mac80211_hwsim_vendor_cmd_test(struct wiphy *wiphy,
- 		 */
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 214f828ece6bf..83bb099d58253 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8352,6 +8352,7 @@ void bpf_object__close(struct bpf_object *obj)
+ 	bpf_object__elf_finish(obj);
+ 	bpf_object_unload(obj);
+ 	btf__free(obj->btf);
++	btf__free(obj->btf_vmlinux);
+ 	btf_ext__free(obj->btf_ext);
  
- 		/* Add vendor data */
--		err = nla_put_u32(skb, QCA_WLAN_VENDOR_ATTR_TEST, val + 1);
--		if (err)
--			return err;
-+		nla_put_u32(skb, QCA_WLAN_VENDOR_ATTR_TEST, val + 1);
-+
- 		/* Send the event - this will call nla_nest_end() */
- 		cfg80211_vendor_event(skb, GFP_KERNEL);
- 	}
+ 	for (i = 0; i < obj->nr_maps; i++)
 -- 
 2.40.1
 
