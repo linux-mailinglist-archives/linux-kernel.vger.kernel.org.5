@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 141427983FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94FC1798401
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240778AbjIHI0w convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Sep 2023 04:26:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
+        id S240755AbjIHI11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 04:27:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237159AbjIHI0v (ORCPT
+        with ESMTP id S234589AbjIHI10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 04:26:51 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC6D173B
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 01:26:46 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-162-3H32lV7WNIegh-Ql8HGViw-1; Fri, 08 Sep 2023 09:26:43 +0100
-X-MC-Unique: 3H32lV7WNIegh-Ql8HGViw-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 8 Sep
- 2023 09:26:40 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 8 Sep 2023 09:26:40 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Kees Cook' <keescook@chromium.org>
-CC:     'Vlastimil Babka' <vbabka@suse.cz>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "'linux-mm@kvack.org'" <linux-mm@kvack.org>,
-        'Christoph Lameter' <cl@linux.com>,
-        'Pekka Enberg' <penberg@kernel.org>,
-        'David Rientjes' <rientjes@google.com>,
-        'Joonsoo Kim' <iamjoonsoo.kim@lge.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        "'Eric Dumazet'" <edumazet@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        "Roman Gushchin" <roman.gushchin@linux.dev>
-Subject: RE: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return
- 0 for non-zero size
-Thread-Topic: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return
- 0 for non-zero size
-Thread-Index: Adnhh8rbtLpHk7QBQE+HpPR0NWDZ5gAMq8SAABymU5A=
-Date:   Fri, 8 Sep 2023 08:26:40 +0000
-Message-ID: <20ca0a567a874052a1161e9be0870463@AcuMS.aculab.com>
-References: <4d31a2bf7eb544749023cf491c0eccc8@AcuMS.aculab.com>
- <202309071235.CB4F6B2@keescook>
-In-Reply-To: <202309071235.CB4F6B2@keescook>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 8 Sep 2023 04:27:26 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8460173B;
+        Fri,  8 Sep 2023 01:27:22 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38861vnW009023;
+        Fri, 8 Sep 2023 08:26:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=H3IHBoAbaYpHx/KPzKw5/tL5DYBjBx4c9td7Z4bv+Ys=;
+ b=FaCUdqG7Xw0pk0/OWEgPcJ9DQHehtbOTTqpaEUdXIdC0/tTbSn3X9/eZjsckCawpM6Yz
+ nTcn5CiO7a1kFm1avak9n/M2yNjDyauwIJq+13Yn1tGh4pCbnn3+cSqyB0argRACVAo+
+ hMOtW7YBrwoCMSo03SJD/8hhbnnuse0wKb4VjEabVyD1KsQlo2CGyqCisakfLmgegPFV
+ w6e9oC/KIthu49KJpW+96npw/av9i9VdBcBCwIqleY9xNPYfOc/9mIHdZy3TlQCIC05e
+ bw+13FoqNW9Ee5bqUr9xxnZaYGrygEPyga3nq9Iqzpr47zylyAirG2JwvNaHcVa8Tmst Xg== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3syf5c25q2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Sep 2023 08:26:58 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3888QvwO029165
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 8 Sep 2023 08:26:57 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 8 Sep
+ 2023 01:26:49 -0700
+Message-ID: <edc7df5b-0853-4bd9-aef8-6a37b2a5eb36@quicinc.com>
+Date:   Fri, 8 Sep 2023 16:26:49 +0800
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] interconnect: qcom: Add SM4450 interconnect provider
+ driver
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <djakov@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>
+CC:     <arnd@arndb.de>, <geert+renesas@glider.be>,
+        <nfraprado@collabora.com>, <rafal@milecki.pl>, <peng.fan@nxp.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <quic_tsoni@quicinc.com>,
+        <quic_shashim@quicinc.com>, <quic_kaushalk@quicinc.com>,
+        <quic_tdas@quicinc.com>, <quic_tingweiz@quicinc.com>,
+        <quic_aiquny@quicinc.com>, <kernel@quicinc.com>
+References: <20230908064427.26999-1-quic_tengfan@quicinc.com>
+ <20230908064427.26999-3-quic_tengfan@quicinc.com>
+ <d78b19ef-0fb7-4fc3-bf01-58c10b4fd1cd@linaro.org>
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <d78b19ef-0fb7-4fc3-bf01-58c10b4fd1cd@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: DEdgzWvoRsg7TsOp2ChAHQHPlfEIKctS
+X-Proofpoint-ORIG-GUID: DEdgzWvoRsg7TsOp2ChAHQHPlfEIKctS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-08_05,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 phishscore=0
+ malwarescore=0 suspectscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999
+ mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309080077
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,125 +88,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook
-> Sent: 07 September 2023 20:38
+
+
+在 9/8/2023 4:16 PM, Konrad Dybcio 写道:
+> On 8.09.2023 08:44, Tengfei Fan wrote:
+>> Add driver for the Qualcomm interconnect buses found in SM4450 based
+>> platforms. The topology consists of several NoCs that are controlled
+>> by a remote processor that collects the aggregated bandwidth for each
+>> master-slave pairs.
+>>
+>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+>> ---
+> [...]
 > 
-> On Thu, Sep 07, 2023 at 12:42:20PM +0000, David Laight wrote:
-> > The typical use of kmalloc_size_roundup() is:
-> > 	ptr = kmalloc(sz = kmalloc_size_roundup(size), ...);
-> > 	if (!ptr) return -ENOMEM.
-> > This means it is vitally important that the returned value isn't
-> > less than the argument even if the argument is insane.
-> > In particular if kmalloc_slab() fails or the value is above
-> > (MAX_ULONG - PAGE_SIZE) zero is returned and kmalloc() will return
-> > it's single zero-length buffer.
-> >
-> > Fix by returning the input size on error or if the size exceeds
-> > a 'sanity' limit.
-> > kmalloc() will then return NULL is the size really is too big.
-> >
-> >
-> > Signed-off-by: David Laight <david.laight@aculab.com>
-> > Fixes: 05a940656e1eb ("slab: Introduce kmalloc_size_roundup()")
-> > ---
-> > v2:
-> >     - Use KMALLOC_MAX_SIZE for upper limit.
-> >       (KMALLOC_MAX_SIZE + 1 may give better code on some archs!)
-> >     - Invert test for overlarge for consistency.
-> >     - Put a likely() on result of kmalloc_slab().
-> >
-> >  mm/slab_common.c | 26 +++++++++++++-------------
-> >  1 file changed, 13 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/mm/slab_common.c b/mm/slab_common.c
-> > index cd71f9581e67..0fb7c7e19bad 100644
-> > --- a/mm/slab_common.c
-> > +++ b/mm/slab_common.c
-> > @@ -747,22 +747,22 @@ size_t kmalloc_size_roundup(size_t size)
-> >  {
-> >  	struct kmem_cache *c;
-> >
-> > -	/* Short-circuit the 0 size case. */
-> > -	if (unlikely(size == 0))
-> > -		return 0;
+>> +++ b/drivers/interconnect/qcom/sm4450.c
+>> @@ -0,0 +1,1848 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+>> + *
+> Stray blank line
+>> + */
+>> +
+>> +#include <linux/device.h>
+>> +#include <linux/interconnect.h>
+>> +#include <linux/interconnect-provider.h>
+>> +#include <linux/io.h>
+> Is this necessary?
 > 
-> If we want to allow 0, let's just leave this case as-is: the compiler
-> will optimize it against the other tests.
-
-I doubt the compiler will optimise it away - especially with
-the unlikely().
-
-OTOH the explicit checks for (size && size <= LIMIT) do
-get optimised to ((size - 1) <= LIMIT - 1) so become
-a single compare.
-
-Then returning 'size' at the bottom means that zero is returned
-in the arg is zero - which is fine.
-
+>> +#include <linux/module.h>
+>> +#include <linux/of_device.h>
+>> +#include <linux/of_platform.h>
+>> +#include <linux/platform_device.h>
+>> +#include <dt-bindings/interconnect/qcom,sm4450.h>
+>> +
+> [...]
 > 
-> > -	/* Short-circuit saturated "too-large" case. */
-> > -	if (unlikely(size == SIZE_MAX))
-> > -		return SIZE_MAX;
-> > +	if (size && size <= KMALLOC_MAX_CACHE_SIZE) {
-> > +		/*
-> > +		 * The flags don't matter since size_index is common to all.
-> > +		 * Neither does the caller for just getting ->object_size.
-> > +		 */
-> > +		c = kmalloc_slab(size, GFP_KERNEL, 0);
-> > +		return likely(c) ? c->object_size : size;
+>> +static struct qcom_icc_node * const mmss_noc_nodes[] = {
+>> +	[MASTER_CAMNOC_HF] = &qnm_camnoc_hf,
+>> +	[MASTER_CAMNOC_ICP] = &qnm_camnoc_icp,
+>> +	[MASTER_CAMNOC_SF] = &qnm_camnoc_sf,
+>> +	[MASTER_MDP] = &qnm_mdp,
+>> +	[MASTER_CNOC_MNOC_CFG] = &qnm_mnoc_cfg,
+>> +	[MASTER_VIDEO_P0_MMNOC] = &qnm_video0,
+>> +	[MASTER_VIDEO_PROC_MMNOC] = &qnm_video_cpu,
+>> +	[SLAVE_MNOC_HF_MEM_NOC] = &qns_mem_noc_hf,
+>> +	[SLAVE_MNOC_SF_MEM_NOC] = &qns_mem_noc_sf,
+>> +	[SLAVE_SERVICE_MNOC] = &srvc_mnoc,
+>> +	[MASTER_MDP_DISP] = &qnm_mdp_disp,
+>> +	[SLAVE_MNOC_HF_MEM_NOC_DISP] = &qns_mem_noc_hf_disp,
+> Please drop the _DISP paths, upstream will handle these with icc
+> tags.
+sure, will handle this.
 > 
-> I would like to have this fail "safe". c should never be NULL here, so
-> let's return "KMALLOC_MAX_SIZE + 1" to force failures.
-
-Why even try to force failure here?
-The whole function is just an optimisation so that the caller
-can use the spare space.
-
-The only thing it mustn't do is return a smaller value.
-
+> [...]
 > 
-> > +	}
-> > +
-> >  	/* Above the smaller buckets, size is a multiple of page size. */
-> > -	if (size > KMALLOC_MAX_CACHE_SIZE)
-> > +	if (size && size <= KMALLOC_MAX_SIZE)
-> >  		return PAGE_SIZE << get_order(size);
-> >
-> > -	/*
-> > -	 * The flags don't matter since size_index is common to all.
-> > -	 * Neither does the caller for just getting ->object_size.
-> > -	 */
-> > -	c = kmalloc_slab(size, GFP_KERNEL, 0);
-> > -	return c ? c->object_size : 0;
-> > +	/* Return 'size' for 0 and very large - kmalloc() may fail. */
+>> +
+>> +static const struct of_device_id qnoc_of_match[] = {
+>> +	{ .compatible = "qcom,sm4450-aggre1-noc",
+>> +	  .data = &sm4450_aggre1_noc},
+> Nit, but please:
 > 
-> I want to _be certain_ failure happens. If we get here we need to return
-> "KMALLOC_MAX_SIZE + 1"
-
-Why care?
-
-	David
-
+> - make these one line, like this:
+> { .compatible = "qcom,sm4450-aggre1-noc", .data = &sm4450_aggre1_noc },
 > 
-> -Kees
+> - add the missing space before '}'
+sure, will handle this.
 > 
-> > +	return size;
-> > +
-> >  }
-> >  EXPORT_SYMBOL(kmalloc_size_roundup);
-> >
-> > --
-> > 2.17.1
-> >
-> > -
-> > Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> > Registration No: 1397386 (Wales)
-> >
-> 
-> --
-> Kees Cook
+> Konrad
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+Thx and BRs,
+Tengfei Fan
