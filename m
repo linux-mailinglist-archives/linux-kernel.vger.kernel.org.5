@@ -2,92 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDF9798BE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1E3798BB1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245692AbjIHSCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48776 "EHLO
+        id S241380AbjIHSAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245679AbjIHSC1 (ORCPT
+        with ESMTP id S245484AbjIHSAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:02:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17361FDF;
-        Fri,  8 Sep 2023 11:01:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2F28C433CD;
-        Fri,  8 Sep 2023 18:00:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196057;
-        bh=hk9L2W57X5Tbgu0Jcm3U7It8/YndrZpaVGTFEGP4UbI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WQeQmi4SqVD0cJU3+LQkmOZSpnpKM78ociXZEw6LkWYUbYx8+3gNVoS5vBo848q9l
-         8OV7YG90DJuuvvnXm+Une9d+rF+t+hSxwM11uEFqj/zjXmK9D7/qNmGgGf2jyXzIu4
-         4ov9ZwbhkquOG5cP1zNPyN/Qu/1diFYQ6oDUmwuUC+wM6LocIb7zeSg+6ahgsnmgYP
-         7WBtZaBhRU9MvVD2jKw02if1NmneszBb8LSuuq0+7PmKyRpuCHiqoh9lbxEKhjCTVL
-         rLfDm7S+q7KnIpVzJUaLHiXbxUqEd14eUHZ4aSinrLeGoE1iCVYnefxiTQSetncO1P
-         5GGGFFG9fx62w==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Willy Tarreau <w@1wt.eu>, Sasha Levin <sashal@kernel.org>,
-        shuah@kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 16/16] selftests/nolibc: prevent out of bounds access in expect_vfprintf
-Date:   Fri,  8 Sep 2023 13:59:53 -0400
-Message-Id: <20230908175953.3457942-16-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908175953.3457942-1-sashal@kernel.org>
-References: <20230908175953.3457942-1-sashal@kernel.org>
+        Fri, 8 Sep 2023 14:00:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE00F1FCD
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 11:00:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694196011; x=1725732011;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=lJcDDd1iiAVsiZV2Yf1EraA6YBLwWFpJzpmN/FxXRqU=;
+  b=ZxnScoGiz8s/raedoaRDbkoZDPz+edlfX6vjhxpNNJoEPYrCOunWI8Xu
+   qIEXvLKMIbgI4IOmfJZxKl5nYwte2tb5BHSsiBXJo3t66QYOY1UebLFq3
+   ZcXZFlxzViY8jQA9+0FABcBE1woF7a6A9RetEpSCNA7tXPu/Va3zUoUob
+   pe98Mzy+TUd7u22EiAQpyNgtLwAmniTtQFJZeEwwnvBYDX2fu/wupDIlt
+   CISoScY1i6EcOR+CXFltDe91k1mb6dU8xOw+XtNoJQAxBbR6EL4w7lnf9
+   QW0zliotl9eDpQYNDddE3GRDmpiOviOY3ME+Ou72LTD8DNbErqyCQuMBs
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="381527330"
+X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
+   d="scan'208";a="381527330"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 11:00:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="832738267"
+X-IronPort-AV: E=Sophos;i="6.02,237,1688454000"; 
+   d="scan'208";a="832738267"
+Received: from fgilganx-mobl1.amr.corp.intel.com (HELO [10.209.17.195]) ([10.209.17.195])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 11:00:09 -0700
+Message-ID: <d08303a4-321b-419c-5b3b-11f05e4286ae@intel.com>
+Date:   Fri, 8 Sep 2023 11:00:08 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] x86/tdx: Allow extended topology CPUID leafs to be
+ emulated by hypercall
+Content-Language: en-US
+To:     Sagi Shahar <sagis@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Vishal Annapurve <vannapurve@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230908175644.2478924-1-sagis@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <20230908175644.2478924-1-sagis@google.com>
 Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.2
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Weißschuh <linux@weissschuh.net>
+On 9/8/23 10:56, Sagi Shahar wrote:
+> The current TDX module does not handle extended topology leaves
+> explicitly and will generate a #VE but the current #VE handler
+> implementation blindly returns 0 for those CPUID leaves.
+> 
+> This currently causes TDX guests to see 0 values when querying the numa
+> topology leading to incorrect numa configurations.
+> 
+> This patch fixes this behavior by emulating the extended topology leaves
+> using the CPUID hypercall.
 
-[ Upstream commit 9c5e490093e83e165022e0311bd7df5aa06cc860 ]
+... and thus acquires the data from the untrusted VMM.  Right?
 
-If read() fails and returns -1 (or returns garbage for some other
-reason) buf would be accessed out of bounds.
-Only use the return value of read() after it has been validated.
-
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-Signed-off-by: Willy Tarreau <w@1wt.eu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/testing/selftests/nolibc/nolibc-test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-index 55628a25df0a3..8e7750e2eb97c 100644
---- a/tools/testing/selftests/nolibc/nolibc-test.c
-+++ b/tools/testing/selftests/nolibc/nolibc-test.c
-@@ -769,7 +769,6 @@ static int expect_vfprintf(int llen, size_t c, const char *expected, const char
- 	lseek(fd, 0, SEEK_SET);
- 
- 	r = read(fd, buf, sizeof(buf) - 1);
--	buf[r] = '\0';
- 
- 	fclose(memfile);
- 
-@@ -779,6 +778,7 @@ static int expect_vfprintf(int llen, size_t c, const char *expected, const char
- 		return 1;
- 	}
- 
-+	buf[r] = '\0';
- 	llen += printf(" \"%s\" = \"%s\"", expected, buf);
- 	ret = strncmp(expected, buf, c);
- 
--- 
-2.40.1
-
+What are the security implications of consuming this untrusted data?
