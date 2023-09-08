@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5F3799038
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22266799021
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 21:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236068AbjIHTiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 15:38:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36686 "EHLO
+        id S241483AbjIHThS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 15:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345359AbjIHTiC (ORCPT
+        with ESMTP id S244138AbjIHThF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 15:38:02 -0400
+        Fri, 8 Sep 2023 15:37:05 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD272717;
-        Fri,  8 Sep 2023 12:37:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF3CEC116A7;
-        Fri,  8 Sep 2023 19:36:07 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA7619B4;
+        Fri,  8 Sep 2023 12:36:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45D52C433BC;
+        Fri,  8 Sep 2023 19:36:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694201768;
-        bh=BKko6t0Gp5lfbnkQjFzPwy/lDdNXxhszLpjXgkWVJPI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z6xTDolq9Qq8r2JBqsA3sPDr9FW+1yKtHdJB+0m+7MatBUBFoqtehBu9b97Wr20rt
-         VnsxWNNsTQlLM9Ga0Uhxlr2FWsrGUF8wo9GJI/nNg59/89jjqWtAVAybSPLnFRqE9F
-         cKTN+/nk4jnjLU1zQ7G5CgyZ9seJYmD1jKCFEfwaci0IctM/LfkTvHGOWTg96N2Cl9
-         eBS3+uUvjhOcAZW53m1XPQ5A3ks4V3xt/cr/dW6BSDmPlB5pBAUH4vSGcdH2OgRKlj
-         mf79Q43jw7D0znKdT/o/QAVNngf4hmz7RzNBDya/CvbsdYCWoe87ts94g+5Z7m36X+
-         WB5bly7Ohp6tg==
+        s=k20201202; t=1694201774;
+        bh=7DNKxML1OovOuL0wtQlSR0eXrNBQN/Adr0v9MwgCV4c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qew8TfU7iRlPkFp/2HB0EKQu831oV0dIqEIrg/cB0k9trnjOQleHSAwEEI6xghQTt
+         Oipy1WA9sB9x799D5XjBYQHYuxVJDeWfBoNnPJGw6b18xhfyIE0UvSf65zP2dFaaru
+         RIRc7K7/0qY8gRtaLYD8RGi4FzLRr7bSqvENaGi5kvPy2vxBflXSidNdGkMS9rE0eI
+         jcDSgLrIsRIWaxQ8V1HMU2WhODHPHfqF9FHSI/NEIQKrv8hJO005ipIMFXjiXsfKv9
+         nCcB4TboA+NLb3gckGiTAgXiomAWQsOvBsDdL6c4fcO+M+GaumFioYgHH+qo+iIt/p
+         KM3PWQ8OT4Vsg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Georg Ottinger <g.ottinger@gmx.at>, Jan Kara <jack@suse.cz>,
-        Sasha Levin <sashal@kernel.org>, jack@suse.com,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 13/13] ext2: fix datatype of block number in ext2_xattr_set2()
-Date:   Fri,  8 Sep 2023 15:35:29 -0400
-Message-Id: <20230908193530.3463647-13-sashal@kernel.org>
+Cc:     Marek Vasut <marex@denx.de>, Sam Ravnborg <sam@ravnborg.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, andrzej.hajda@intel.com,
+        neil.armstrong@linaro.org, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.10 1/9] drm/bridge: tc358762: Instruct DSI host to generate HSE packets
+Date:   Fri,  8 Sep 2023 15:36:02 -0400
+Message-Id: <20230908193611.3463821-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908193530.3463647-1-sashal@kernel.org>
-References: <20230908193530.3463647-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.131
+X-stable-base: Linux 5.10.194
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -52,53 +52,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Georg Ottinger <g.ottinger@gmx.at>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit e88076348425b7d0491c8c98d8732a7df8de7aa3 ]
+[ Upstream commit 362fa8f6e6a05089872809f4465bab9d011d05b3 ]
 
-I run a small server that uses external hard drives for backups. The
-backup software I use uses ext2 filesystems with 4KiB block size and
-the server is running SELinux and therefore relies on xattr. I recently
-upgraded the hard drives from 4TB to 12TB models. I noticed that after
-transferring some TBs I got a filesystem error "Freeing blocks not in
-datazone - block = 18446744071529317386, count = 1" and the backup
-process stopped. Trying to fix the fs with e2fsck resulted in a
-completely corrupted fs. The error probably came from ext2_free_blocks(),
-and because of the large number 18e19 this problem immediately looked
-like some kind of integer overflow. Whereas the 4TB fs was about 1e9
-blocks, the new 12TB is about 3e9 blocks. So, searching the ext2 code,
-I came across the line in fs/ext2/xattr.c:745 where ext2_new_block()
-is called and the resulting block number is stored in the variable block
-as an int datatype. If a block with a block number greater than
-INT32_MAX is returned, this variable overflows and the call to
-sb_getblk() at line fs/ext2/xattr.c:750 fails, then the call to
-ext2_free_blocks() produces the error.
+This bridge seems to need the HSE packet, otherwise the image is
+shifted up and corrupted at the bottom. This makes the bridge
+work with Samsung DSIM on i.MX8MM and i.MX8MP.
 
-Signed-off-by: Georg Ottinger <g.ottinger@gmx.at>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Message-Id: <20230815100340.22121-1-g.ottinger@gmx.at>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+Signed-off-by: Robert Foss <rfoss@kernel.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20230615201902.566182-3-marex@denx.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext2/xattr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/bridge/tc358762.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index 841fa6d9d744b..f1dc11dab0d88 100644
---- a/fs/ext2/xattr.c
-+++ b/fs/ext2/xattr.c
-@@ -694,10 +694,10 @@ ext2_xattr_set2(struct inode *inode, struct buffer_head *old_bh,
- 			/* We need to allocate a new block */
- 			ext2_fsblk_t goal = ext2_group_first_block_no(sb,
- 						EXT2_I(inode)->i_block_group);
--			int block = ext2_new_block(inode, goal, &error);
-+			ext2_fsblk_t block = ext2_new_block(inode, goal, &error);
- 			if (error)
- 				goto cleanup;
--			ea_idebug(inode, "creating block %d", block);
-+			ea_idebug(inode, "creating block %lu", block);
+diff --git a/drivers/gpu/drm/bridge/tc358762.c b/drivers/gpu/drm/bridge/tc358762.c
+index 1bfdfc6affafe..21c57d3435687 100644
+--- a/drivers/gpu/drm/bridge/tc358762.c
++++ b/drivers/gpu/drm/bridge/tc358762.c
+@@ -224,7 +224,7 @@ static int tc358762_probe(struct mipi_dsi_device *dsi)
+ 	dsi->lanes = 1;
+ 	dsi->format = MIPI_DSI_FMT_RGB888;
+ 	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
+-			  MIPI_DSI_MODE_LPM;
++			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_VIDEO_HSE;
  
- 			new_bh = sb_getblk(sb, block);
- 			if (unlikely(!new_bh)) {
+ 	ret = tc358762_parse_dt(ctx);
+ 	if (ret < 0)
 -- 
 2.40.1
 
