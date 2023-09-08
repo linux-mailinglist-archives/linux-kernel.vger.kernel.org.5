@@ -2,203 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FFB6798196
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 07:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C57798199
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 07:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238207AbjIHFtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 01:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35748 "EHLO
+        id S239793AbjIHFvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 01:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbjIHFtd (ORCPT
+        with ESMTP id S230208AbjIHFvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 01:49:33 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C75B19BA
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 22:49:27 -0700 (PDT)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3885ic1m019136;
-        Fri, 8 Sep 2023 05:49:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=/NVCbDXvMHcTSIZzv2xh7SpnbsqeoOC2Cf/Z+wr0Ins=;
- b=iOmRqZPamB/fIUeMs0ZmzmzFkMBoQuwvNwuKYMLur8heR12jrHvLltDXM6vUr3vcyXNg
- 0agqj5jY0Uz5t5eJolD4f0/9qJptOqZNPJ3I6dd3JHGrmlNkIIjfKxEyiVcucGrq9rcK
- 5rrDqDL4clzHGQlmmr3VS5ZUICTyNDR0x2YZlUL92Fv5uXLLISk0Pqux127v8WcYZiiQ
- 129lZ+347tY2DbkYQ4d10misVcbwejDFxbm5+XvycWCcOzhRCVXkrTApAyE/WKGAx9Cu
- rM3qtJ64KYeWzFqnh3kPH6rIC8UPCcyHXgkuXA63LlBvcqvCXnrCswB4hyuvmYpLyx2B zA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sywdh8fcs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Sep 2023 05:49:15 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3885jdU2023624;
-        Fri, 8 Sep 2023 05:49:15 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sywdh8fcj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Sep 2023 05:49:15 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38844ke1021478;
-        Fri, 8 Sep 2023 05:49:14 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svfs01p7r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Sep 2023 05:49:14 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3885nBPB8258228
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 Sep 2023 05:49:11 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8906520040;
-        Fri,  8 Sep 2023 05:49:11 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B3EFF20043;
-        Fri,  8 Sep 2023 05:49:09 +0000 (GMT)
-Received: from [9.43.5.59] (unknown [9.43.5.59])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  8 Sep 2023 05:49:09 +0000 (GMT)
-Message-ID: <d6efeaef-2226-5ade-11bc-20038457d2ab@linux.ibm.com>
-Date:   Fri, 8 Sep 2023 11:19:08 +0530
+        Fri, 8 Sep 2023 01:51:22 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D5C19BA;
+        Thu,  7 Sep 2023 22:51:19 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C371F218EA;
+        Fri,  8 Sep 2023 05:51:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694152276; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I1jlw6dXRzKXinGxUT2SY0IMhDQLif42Och5k8NNLJE=;
+        b=TXzTuy5WCuaYAiImqFlBiXBtuAbEKWlz5ZoimisX1yskMoAvGRqbnZnv5r2xSdTUO1wCT2
+        v1a9nvXIHgpP0bVZeR/klHO6eOuYgMuwAPcrg+RyWLjcqk4Pj52ltJSam6cDuv2Gy/rQ9m
+        9rlEXJJBR+MKJ+i7iEf/o1LBaLeiuUc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694152276;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I1jlw6dXRzKXinGxUT2SY0IMhDQLif42Och5k8NNLJE=;
+        b=9zF2l2QhmQhF3pFOWbf90bVcKsaxsmS9oxZ2Hl0NlNckhBRAi5tTNPdMt0UbHTPbFIGtiF
+        9U1zhzzZNfKmMCBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 97CA0132FA;
+        Fri,  8 Sep 2023 05:51:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id VntUI1S2+mTYYgAAMHmgww
+        (envelope-from <hare@suse.de>); Fri, 08 Sep 2023 05:51:16 +0000
+Message-ID: <98a47b9b-45ee-4166-aad7-6a2c05c201a0@suse.de>
+Date:   Fri, 8 Sep 2023 07:51:16 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/3] powerpc/fadump: make is_fadump_active() visible
- for exporting vmcore
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] blk-mq: fix tags UAF when shrink nr_hw_queues
+To:     chengming.zhou@linux.dev, axboe@kernel.dk, ming.lei@redhat.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        Yi Zhang <yi.zhang@redhat.com>
+References: <20230908005702.2183908-1-chengming.zhou@linux.dev>
 Content-Language: en-US
-To:     Baoquan He <bhe@redhat.com>, Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Kexec-ml <kexec@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Dave Young <dyoung@redhat.com>
-References: <20230905183604.568996-1-hbathini@linux.ibm.com>
- <ZPliwJ6b9oNDtAHC@MiWiFi-R3L-srv>
-From:   Hari Bathini <hbathini@linux.ibm.com>
-In-Reply-To: <ZPliwJ6b9oNDtAHC@MiWiFi-R3L-srv>
+From:   Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20230908005702.2183908-1-chengming.zhou@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: GjYGaxyP1NU0gkvaQmCYA0z4aXCm9sy-
-X-Proofpoint-ORIG-GUID: HywezhvQKwIbpsfIlmCSI0IALXLvJsdF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-08_03,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- phishscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
- clxscore=1015 impostorscore=0 spamscore=0 mlxlogscore=999 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309080049
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks, Baoquan.
-
-On 07/09/23 11:12 am, Baoquan He wrote:
-> On 09/06/23 at 12:06am, Hari Bathini wrote:
->> Include asm/fadump.h in asm/kexec.h to make it visible while exporting
->> vmcore. Also, update is_fadump_active() to return boolean instead of
->> integer for better readability. The change will be used in the next
->> patch to ensure vmcore is exported when fadump is active.
->>
->> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+On 9/8/23 02:57, chengming.zhou@linux.dev wrote:
+> From: Chengming Zhou <zhouchengming@bytedance.com>
 > 
-> Thanks, Hari. The whole series looks good to me.
+> When nr_hw_queues shrink, we free the excess tags before realloc
+> hw_ctxs for each queue, during that we may need to access those
+> tags, like blk_mq_tag_idle(hctx) will access queue shared tags.
 > 
-> Acked-by: Baoquan He <bhe@redhat.com>
+> So slab-use-after-free caused and reported by KASAN. Fix it by
+> moving the releasing of excess tags to the end.
 > 
-> Since it's a power specific change, should be picked into powerpc tree?
-
-Michael, would you mind taking the series via powerpc tree..
-
-Thanks
-Hari
-
->> ---
->>
->> Changes in v2:
->> * New patch based on Baoquan's suggestion to use is_fadump_active()
->>    instead of introducing new function is_crashdump_kernel().
->>
->>
->>   arch/powerpc/include/asm/fadump.h | 4 ++--
->>   arch/powerpc/include/asm/kexec.h  | 8 ++++++--
->>   arch/powerpc/kernel/fadump.c      | 4 ++--
->>   3 files changed, 10 insertions(+), 6 deletions(-)
->>
->> diff --git a/arch/powerpc/include/asm/fadump.h b/arch/powerpc/include/asm/fadump.h
->> index 526a6a647312..27b74a7e2162 100644
->> --- a/arch/powerpc/include/asm/fadump.h
->> +++ b/arch/powerpc/include/asm/fadump.h
->> @@ -15,13 +15,13 @@ extern int crashing_cpu;
->>   
->>   extern int is_fadump_memory_area(u64 addr, ulong size);
->>   extern int setup_fadump(void);
->> -extern int is_fadump_active(void);
->> +extern bool is_fadump_active(void);
->>   extern int should_fadump_crash(void);
->>   extern void crash_fadump(struct pt_regs *, const char *);
->>   extern void fadump_cleanup(void);
->>   
->>   #else	/* CONFIG_FA_DUMP */
->> -static inline int is_fadump_active(void) { return 0; }
->> +static inline bool is_fadump_active(void) { return false; }
->>   static inline int should_fadump_crash(void) { return 0; }
->>   static inline void crash_fadump(struct pt_regs *regs, const char *str) { }
->>   static inline void fadump_cleanup(void) { }
->> diff --git a/arch/powerpc/include/asm/kexec.h b/arch/powerpc/include/asm/kexec.h
->> index a1ddba01e7d1..b760ef459234 100644
->> --- a/arch/powerpc/include/asm/kexec.h
->> +++ b/arch/powerpc/include/asm/kexec.h
->> @@ -51,6 +51,7 @@
->>   
->>   #ifndef __ASSEMBLY__
->>   #include <asm/reg.h>
->> +#include <asm/fadump.h>
->>   
->>   typedef void (*crash_shutdown_t)(void);
->>   
->> @@ -99,10 +100,13 @@ void relocate_new_kernel(unsigned long indirection_page, unsigned long reboot_co
->>   
->>   void kexec_copy_flush(struct kimage *image);
->>   
->> -#if defined(CONFIG_CRASH_DUMP) && defined(CONFIG_PPC_RTAS)
->> +#if defined(CONFIG_CRASH_DUMP)
->> +#define is_fadump_active		is_fadump_active
->> +#if defined(CONFIG_PPC_RTAS)
->>   void crash_free_reserved_phys_range(unsigned long begin, unsigned long end);
->>   #define crash_free_reserved_phys_range crash_free_reserved_phys_range
->> -#endif
->> +#endif /* CONFIG_PPC_RTAS */
->> +#endif /* CONFIG_CRASH_DUMP */
->>   
->>   #ifdef CONFIG_KEXEC_FILE
->>   extern const struct kexec_file_ops kexec_elf64_ops;
->> diff --git a/arch/powerpc/kernel/fadump.c b/arch/powerpc/kernel/fadump.c
->> index 3ff2da7b120b..5682a65e8326 100644
->> --- a/arch/powerpc/kernel/fadump.c
->> +++ b/arch/powerpc/kernel/fadump.c
->> @@ -187,9 +187,9 @@ int should_fadump_crash(void)
->>   	return 1;
->>   }
->>   
->> -int is_fadump_active(void)
->> +bool is_fadump_active(void)
->>   {
->> -	return fw_dump.dump_active;
->> +	return !!fw_dump.dump_active;
->>   }
->>   
->>   /*
->> -- 
->> 2.41.0
->>
+> Fixes: e1dd7bc93029 ("blk-mq: fix tags leak when shrink nr_hw_queues")
+> Reported-by: Yi Zhang <yi.zhang@redhat.com>
+> Closes: https://lore.kernel.org/all/CAHj4cs_CK63uoDpGBGZ6DN4OCTpzkR3UaVgK=LX8Owr8ej2ieQ@mail.gmail.com/
+> Cc: Ming Lei <ming.lei@redhat.com>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> ---
+>   block/blk-mq.c | 13 +++++++------
+>   1 file changed, 7 insertions(+), 6 deletions(-)
 > 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+
+Cheers,
+
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
+Myers, Andrew McDonald, Martje Boudien Moerman
+
