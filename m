@@ -2,124 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3C0798344
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 09:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0276179834E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 09:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240896AbjIHHcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 03:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51006 "EHLO
+        id S234942AbjIHHlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 03:41:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbjIHHcu (ORCPT
+        with ESMTP id S230300AbjIHHlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 03:32:50 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0CDB1990;
-        Fri,  8 Sep 2023 00:32:46 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8339E1F45A;
-        Fri,  8 Sep 2023 07:32:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694158365; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=euHz7ZVLAcuf6vq3WgxuP8PbER62bbJ+haG60jiVoXQ=;
-        b=rY1GyH5M0uyeFrpo4O4jbubAo105Y0uosB8VbpEh6rrWxNTEhozMrRD5iIA986KleUsV1i
-        DjNdPiGY76ykBsylWHqWynnBhIEoZvwo8Dww+BO5TUGVhgoiBixN/ifEf+OHPoBclt/mr9
-        6n8WgsSU7c5qVbcdVRnldA8kxZlQ+Ck=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694158365;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=euHz7ZVLAcuf6vq3WgxuP8PbER62bbJ+haG60jiVoXQ=;
-        b=0gxAGbRhTSg8Dz/aDc3wLYdXL6zeCjHgT8wkalayH/X6gdRHrohmdscBS1AKmsaTVDDqJM
-        bcO8V+U15rjUJjCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 66765132F2;
-        Fri,  8 Sep 2023 07:32:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id n5D2GB3O+mRBEQAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 08 Sep 2023 07:32:45 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id DBF11A0774; Fri,  8 Sep 2023 09:32:44 +0200 (CEST)
-Date:   Fri, 8 Sep 2023 09:32:44 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Zdenek Kabelac <zkabelac@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Christoph Hellwig <hch@lst.de>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH] fix writing to the filesystem after unmount
-Message-ID: <20230908073244.wyriwwxahd3im2rw@quack3>
-References: <59b54cc3-b98b-aff9-14fc-dc25c61111c6@redhat.com>
- <20230906-launenhaft-kinder-118ea59706c8@brauner>
- <f5d63867-5b3e-294b-d1f5-a128817cfc7@redhat.com>
- <20230906-aufheben-hagel-9925501b7822@brauner>
- <60f244be-803b-fa70-665e-b5cba15212e@redhat.com>
- <20230906-aufkam-bareinlage-6e7d06d58e90@brauner>
- <818a3cc0-c17b-22c0-4413-252dfb579cca@redhat.com>
- <20230907094457.vcvmixi23dk3pzqe@quack3>
- <20230907-abgrenzen-achtung-b17e9a1ad136@brauner>
- <513f337e-d254-2454-6197-82df564ed5fc@redhat.com>
+        Fri, 8 Sep 2023 03:41:00 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 27A431990;
+        Fri,  8 Sep 2023 00:40:56 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 93B7BC15;
+        Fri,  8 Sep 2023 00:41:33 -0700 (PDT)
+Received: from [192.168.2.82] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EBAEC3F64C;
+        Fri,  8 Sep 2023 00:40:52 -0700 (PDT)
+Message-ID: <44fc6d03-c663-53de-e4f7-e56687c5718d@arm.com>
+Date:   Fri, 8 Sep 2023 09:40:35 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <513f337e-d254-2454-6197-82df564ed5fc@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH 0/7] sched: cpufreq: Remove magic margins
+Content-Language: en-US
+To:     Qais Yousef <qyousef@layalina.io>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Lukasz Luba <lukasz.luba@arm.com>
+References: <20230827233203.1315953-1-qyousef@layalina.io>
+ <20230907130805.GE10955@noisy.programming.kicks-ass.net>
+ <20230908001725.mtqbse3xwhzvo5qp@airbuntu>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20230908001725.mtqbse3xwhzvo5qp@airbuntu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 07-09-23 14:04:51, Mikulas Patocka wrote:
-> 
-> 
-> On Thu, 7 Sep 2023, Christian Brauner wrote:
-> 
-> > > I think we've got too deep down into "how to fix things" but I'm not 100%
-> > 
-> > We did.
-> > 
-> > > sure what the "bug" actually is. In the initial posting Mikulas writes "the
-> > > kernel writes to the filesystem after unmount successfully returned" - is
-> > > that really such a big issue?
-> 
-> I think it's an issue if the administrator writes a script that unmounts a 
-> filesystem and then copies the underyling block device somewhere. Or a 
-> script that unmounts a filesystem and runs fsck afterwards. Or a script 
-> that unmounts a filesystem and runs mkfs on the same block device.
+On 08/09/2023 02:17, Qais Yousef wrote:
+> On 09/07/23 15:08, Peter Zijlstra wrote:
+>> On Mon, Aug 28, 2023 at 12:31:56AM +0100, Qais Yousef wrote:
 
-Well, e.g. e2fsprogs use O_EXCL open so they will detect that the filesystem
-hasn't been unmounted properly and complain. Which is exactly what should
-IMHO happen.
+[...]
 
-> > > Anybody else can open the device and write to it as well. Or even 
-> > > mount the device again. So userspace that relies on this is kind of 
-> > > flaky anyway (and always has been).
+> But for the 0.8 and 1.25 margin problems, actually the problem is that 25% is
+> too aggressive/fast and wastes power. I'm actually slowing things down as
+> a result of this series. And I'm expecting some not to be happy about it on
+> their systems. The response_time_ms was my way to give back control. I didn't
+> see how I can make things faster and slower at the same time without making
+> decisions on behalf of the user/sysadmin.
 > 
-> It's admin's responsibility to make sure that the filesystem is not 
-> mounted multiple times when he touches the underlying block device after 
-> unmount.
+> So the connection I see between PELT and the margins or headrooms in
+> fits_capacity() and map_util_perf()/dvfs_headroom is that they expose the need
+> to manage the perf/power trade-off of the system.
+> 
+> Particularly the default is not good for the modern systems, Cortex-X is too
+> powerful but we still operate within the same power and thermal budgets.
+> 
+> And what was a high end A78 is a mid core today. So if you look at today's
+> mobile world topology we really have a tiy+big+huge combination of cores. The
+> bigs are called mids, but they're very capable. Fits capacity forces migration
+> to the 'huge' cores too soon with that 80% margin. While the 80% might be too
+> small for the tiny ones as some workloads really struggle there if they hang on
+> for too long. It doesn't help that these systems ship with 4ms tick. Something
+> more to consider changing I guess.
 
-What I wanted to suggest is that we should provide means how to make sure
-block device is not being modified and educate admins and tool authors
-about them. Because just doing "umount /dev/sda1" and thinking this means
-that /dev/sda1 is unused now simply is not enough in today's world for
-multiple reasons and we cannot solve it just in the kernel.
+If this is the problem then you could simply make the margin (headroom)
+a function of cpu_capacity_orig?
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+[...]
+
+> There's a question that I'm struggling with if I may ask. Why is it perceived
+> our constant response time (practically ~200ms to go from 0 to max) as a good
+> fit for all use cases? Capability of systems differs widely in terms of what
+> performance you get at say a util of 512. Or in other words how much work is
+> done in a unit of time differs between system, but we still represent that work
+> in a constant way. A task ran for 10ms on powerful System A would have done
+
+PELT (util_avg) is uarch & frequency invariant.
+
+So e.g. a task with util_avg = 256 could have a runtime/period
+
+on big CPU (capacity = 1024) of 4ms/16ms
+
+on little CPU (capacity = 512) of 8ms/16ms
+
+The amount of work in invariant (so we can compare between asymmetric
+capacity CPUs) but the runtime obviously differs according to the capacity.
+
+[...]
