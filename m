@@ -2,125 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D199799119
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136F979911C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245641AbjIHUjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 16:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
+        id S1344575AbjIHUks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 16:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242000AbjIHUjk (ORCPT
+        with ESMTP id S236809AbjIHUkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 16:39:40 -0400
+        Fri, 8 Sep 2023 16:40:47 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF894B2;
-        Fri,  8 Sep 2023 13:39:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE3C4C433C8;
-        Fri,  8 Sep 2023 20:39:14 +0000 (UTC)
-Date:   Fri, 8 Sep 2023 16:39:29 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: [RESEND][PATCH] tracing/synthetic: Fix order of struct
- trace_dynamic_info
-Message-ID: <20230908163929.2c25f3dc@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6616C9C
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 13:40:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id F00A4C433C8;
+        Fri,  8 Sep 2023 20:40:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694205643;
+        bh=/XOpT10/LX/g4/2GJtyB/zzVlk6oSdoKQo6DyWnDg4s=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=LhEHRTDF0xWtrLrNIluMxydo7OSHabE2dLa9rzTRD14xRK5k2mYREgGXunu3/+aq9
+         yWDOyCWIiERRdfUtmQrsEE6cGKtWJ+W7zdeop2YE3mqQda7ECFA4L2z0w7mgSYGKvI
+         Bmfw7l9lxr2Ud5i5fS0MMPZRhRFwa+yuzahlhwJAqszKionadRM5ynWJpE4icqHvq9
+         gZMPUtbhRkMtrAEwFr4bo3ROK/oiGyDbr4oHX9ZmU1cnArrEwC4IoGp4tTTCctrnKG
+         8Qab7UoHP4Szq9uwu0OfLY/iK86W7rTHm0cCimU7f0Xp4YE3fmsryLBQw0rMP1AJBh
+         0h3Gdjs8B02Ig==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DB0ECE5250B;
+        Fri,  8 Sep 2023 20:40:42 +0000 (UTC)
+Subject: Re: [GIT PULL] sound fixes for 6.6-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <87o7id9jzs.wl-tiwai@suse.de>
+References: <87o7id9jzs.wl-tiwai@suse.de>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <87o7id9jzs.wl-tiwai@suse.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-fix-6.6-rc1
+X-PR-Tracked-Commit-Id: ecc8b4d0b6e19031733f28537971f8c5088dada2
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: a3d231e44ab827345d24973a621e9364949423a4
+Message-Id: <169420564288.32167.5423104882043035033.pr-tracker-bot@kernel.org>
+Date:   Fri, 08 Sep 2023 20:40:42 +0000
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+The pull request you sent on Fri, 08 Sep 2023 09:55:51 +0200:
 
-To make handling BIG and LITTLE endian better the offset/len of dynamic
-fields of the synthetic events was changed into a structure of:
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-fix-6.6-rc1
 
- struct trace_dynamic_info {
- #ifdef CONFIG_CPU_BIG_ENDIAN
-	u16	offset;
-	u16	len;
- #else
-	u16	len;
-	u16	offset;
- #endif
- };
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/a3d231e44ab827345d24973a621e9364949423a4
 
-to replace the manual changes of:
+Thank you!
 
- data_offset = offset & 0xffff;
- data_offest = len << 16;
-
-But if you look closely, the above is:
-
-  <len> << 16 | offset
-
-Which in little endian would be in memory:
-
- offset_lo offset_hi len_lo len_hi
-
-and in big endian:
-
- len_hi len_lo offset_hi offset_lo
-
-Which if broken into a structure would be:
-
- struct trace_dynamic_info {
- #ifdef CONFIG_CPU_BIG_ENDIAN
-	u16	len;
-	u16	offset;
- #else
-	u16	offset;
-	u16	len;
- #endif
- };
-
-Which is the opposite of what was defined.
-
-Fix this and just to be safe also add "__packed".
-
-Link: https://lore.kernel.org/all/20230908154417.5172e343@gandalf.local.home/
-
-Cc: stable@vger.kernel.org
-Fixes: ddeea494a16f3 ("tracing/synthetic: Use union instead of casts")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-
- [ Resending to the correct mailing list this time :-p ]
-
- include/linux/trace_events.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index 12f875e9e69a..21ae37e49319 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -62,13 +62,13 @@ void trace_event_printf(struct trace_iterator *iter, const char *fmt, ...);
- /* Used to find the offset and length of dynamic fields in trace events */
- struct trace_dynamic_info {
- #ifdef CONFIG_CPU_BIG_ENDIAN
--	u16	offset;
- 	u16	len;
-+	u16	offset;
- #else
--	u16	len;
- 	u16	offset;
-+	u16	len;
- #endif
--};
-+} __packed;
- 
- /*
-  * The trace entry - the most basic unit of tracing. This is what
 -- 
-2.40.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
