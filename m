@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BC6798D8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBDC0798D8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236726AbjIHSWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41712 "EHLO
+        id S1344403AbjIHSWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbjIHSU6 (ORCPT
+        with ESMTP id S245225AbjIHSVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:20:58 -0400
+        Fri, 8 Sep 2023 14:21:03 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B532826BD;
-        Fri,  8 Sep 2023 11:19:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A01FC43140;
-        Fri,  8 Sep 2023 18:18:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECF22717;
+        Fri,  8 Sep 2023 11:19:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2322C433CB;
+        Fri,  8 Sep 2023 18:18:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197123;
-        bh=5IUt5jOw0j/GAMErOaqocmM4IXD72TvXgoHe9eInHFk=;
+        s=k20201202; t=1694197126;
+        bh=YvR4knq0LQJhkdyDueZsyjbvvnvnk0YhCZr0x5mFc5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J7R5Ump92ahHhk8v4HdJdTKKiI7WijaU2+P+K9LY65V+3Hlluk4xD6qha4KYFB2WS
-         pOwxmeGYstHV4F3Gm5cWF5qbZmEvmzfGiT71lozBozZtzbBFe4Vm1WeXT/dHfE4kYx
-         t6BhMKv6E2zgD68yv32LcJL9mfT1h765xdVZVIgZRSt+Rj1v1XdoMvfBgOhmvDXGi3
-         5MnXd8dCw9/lyLRmrsNMwXRwtqN4dxQkK7Vholfvj91GKcr4miPOfP2i+H72IsPbz7
-         wBYWVTpvk02k5Q4uLHO0f+DWae4oVFUAqLYd2Iu97IBodarZQoHHPfLn/tM3CeNPEX
-         UwwRaS6Jqdjeg==
+        b=Qa43kIakLZb4xCvsd/a+3fE74B20iSQ7D6zep1ONC5TwqIyQP56KIYXEpMIEWRS17
+         1tPxuQCfUeg/8o4fIgQyxVV7XWR9L1F+IFLU1xhRZ2+4ISCItwQBB9q1Kt1wIk9UeM
+         MT88l8zOVk/oM8ZEHm120VMZ1a20PnoOtU0iMBlWO0rf9nloY+SH7GSooWvWhGpfQv
+         mK2nDsMwqJMcCLK/wvk4VAnIUHr93HzBIjbAPLATMJLlxbPFCvJ/gn0IoNj+dZhBz3
+         txRqO1CW6HT4NR2Aj7/lYEGSuTS9T+e6fJ8KpjaR/i6AwN3fioNCWLL9E74Wnx4FYR
+         xWLQgIncjXlJw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     xu xin <xu.xin16@zte.com.cn>, Yang Yang <yang.yang29@zte.com.cn>,
-        Si Hao <si.hao@zte.com.cn>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com, pabeni@redhat.com,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 12/26] net/ipv4: return the real errno instead of -EINVAL
-Date:   Fri,  8 Sep 2023 14:17:50 -0400
-Message-Id: <20230908181806.3460164-12-sashal@kernel.org>
+Cc:     Mark O'Donovan <shiftee@posteo.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>, zohar@linux.ibm.com
+Subject: [PATCH AUTOSEL 6.1 13/26] crypto: lib/mpi - avoid null pointer deref in mpi_cmp_ui()
+Date:   Fri,  8 Sep 2023 14:17:51 -0400
+Message-Id: <20230908181806.3460164-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181806.3460164-1-sashal@kernel.org>
 References: <20230908181806.3460164-1-sashal@kernel.org>
@@ -57,45 +52,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: xu xin <xu.xin16@zte.com.cn>
+From: Mark O'Donovan <shiftee@posteo.net>
 
-[ Upstream commit c67180efc507e04a87f22aa68bd7dd832db006b7 ]
+[ Upstream commit 9e47a758b70167c9301d2b44d2569f86c7796f2d ]
 
-For now, No matter what error pointer ip_neigh_for_gw() returns,
-ip_finish_output2() always return -EINVAL, which may mislead the upper
-users.
+During NVMeTCP Authentication a controller can trigger a kernel
+oops by specifying the 8192 bit Diffie Hellman group and passing
+a correctly sized, but zeroed Diffie Hellamn value.
+mpi_cmp_ui() was detecting this if the second parameter was 0,
+but 1 is passed from dh_is_pubkey_valid(). This causes the null
+pointer u->d to be dereferenced towards the end of mpi_cmp_ui()
 
-For exemple, an application uses sendto to send an UDP packet, but when the
-neighbor table overflows, sendto() will get a value of -EINVAL, and it will
-cause users to waste a lot of time checking parameters for errors.
-
-Return the real errno instead of -EINVAL.
-
-Signed-off-by: xu xin <xu.xin16@zte.com.cn>
-Reviewed-by: Yang Yang <yang.yang29@zte.com.cn>
-Cc: Si Hao <si.hao@zte.com.cn>
-Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
-Reviewed-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Link: https://lore.kernel.org/r/20230807015408.248237-1-xu.xin16@zte.com.cn
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/ip_output.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/mpi/mpi-cmp.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index acfe58d2f1dd7..831c627e03ff8 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -234,7 +234,7 @@ static int ip_finish_output2(struct net *net, struct sock *sk, struct sk_buff *s
- 	net_dbg_ratelimited("%s: No header cache and no neighbour!\n",
- 			    __func__);
- 	kfree_skb_reason(skb, SKB_DROP_REASON_NEIGH_CREATEFAIL);
--	return -EINVAL;
-+	return PTR_ERR(neigh);
- }
+diff --git a/lib/mpi/mpi-cmp.c b/lib/mpi/mpi-cmp.c
+index c4cfa3ff05818..0835b6213235e 100644
+--- a/lib/mpi/mpi-cmp.c
++++ b/lib/mpi/mpi-cmp.c
+@@ -25,8 +25,12 @@ int mpi_cmp_ui(MPI u, unsigned long v)
+ 	mpi_limb_t limb = v;
  
- static int ip_finish_output_gso(struct net *net, struct sock *sk,
+ 	mpi_normalize(u);
+-	if (!u->nlimbs && !limb)
+-		return 0;
++	if (u->nlimbs == 0) {
++		if (v == 0)
++			return 0;
++		else
++			return -1;
++	}
+ 	if (u->sign)
+ 		return -1;
+ 	if (u->nlimbs > 1)
 -- 
 2.40.1
 
