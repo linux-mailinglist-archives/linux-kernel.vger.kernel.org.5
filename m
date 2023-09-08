@@ -2,73 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 653FA7992B3
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 01:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A451E7992B5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 01:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235392AbjIHXLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 19:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
+        id S1344809AbjIHXNL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Sep 2023 19:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238763AbjIHXL2 (ORCPT
+        with ESMTP id S1344784AbjIHXNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 19:11:28 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029FB12C
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 16:11:16 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-64cca551ae2so15320616d6.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 16:11:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694214675; x=1694819475; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FDTUvYeB5jGMTHRnOd/srtZWnDGxuAwnUbNTB651Vz8=;
-        b=VuT8cUIZoiukMbR9ATNwC+mpiH1IRqp3uEVWDIvMtzxmqP06xfHvemPr8G2sFAr01C
-         AwD428SZUW0/J2lhjMeUd+QFDA7pLKuf89nWGVNYsGOmTfKRJolaEfOfjoFO7X6rv8yl
-         TVVjPICWnoNp+WFMD7mjjZI7fwi5oHzTJvIT7c2OjLjhdKNHqnccCkRtj3J4Lrf06z2S
-         NmouBJ9Txino6aw3or+UaJGVTOQKhjLndLD90g3veQ59k+o/zpsvbkcuU/fMkE6CaK/B
-         7CViV8Msv7n6KDOOoLchra6LTvTkiocWfrTE3EILhfzF/lYGndV2SLtk3GEKQQk93TNo
-         I/ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694214675; x=1694819475;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FDTUvYeB5jGMTHRnOd/srtZWnDGxuAwnUbNTB651Vz8=;
-        b=h0s0++PCt4oVgp9tB4hyOYLBYqdETeBBNd4z5Akn1rXIHyQB3Uo/idKjJOZI5Zl7KT
-         mRUNWo1eKgUwaFqwdfNVQIOkAc0xGJPP8MCQJLZJZfGBdnrRzDU/6mKESdSpcDAUhn05
-         GpwYgX1BDAoBOc1qlbYp3FS1k/C9j+IJQrEzL6ruIuW6l+7UsEHIfrHZc7pLG0gU1Dfz
-         yLMYmLfouBO7w/s1+zmsDw6OdEbBoSFF7lrhEwEvtdGURFRowQlwlIINs+PSMmdUJDfE
-         Cx+jX3nuOG7PIhH54qsMEKWTfzPhxHp3KcheTQPp0VggwIav4eSLmh2E/SLOLYgJwnhe
-         KYNg==
-X-Gm-Message-State: AOJu0Yzww01P1bGs+yhs9AJ0H7qKR2hgIcgjieYlzDWJ1AER35b9l9+E
-        uezTIyvWws4NyAhjbaYCeeRCVoS/s2t1mGTXsQB+3A==
-X-Google-Smtp-Source: AGHT+IHBm938huR6rL9KgVhsO0HpRvBrmHcYgSI4aFO+O8kfuGNJWnGlfU8LhNRHyvY74s1J9yVY5FoczX/mhto/ZtI=
-X-Received: by 2002:a0c:b2ce:0:b0:647:42dc:78c2 with SMTP id
- d14-20020a0cb2ce000000b0064742dc78c2mr3682354qvf.7.1694214674934; Fri, 08 Sep
- 2023 16:11:14 -0700 (PDT)
+        Fri, 8 Sep 2023 19:13:09 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC0118E
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 16:13:05 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 388HqD5G030687
+        for <linux-kernel@vger.kernel.org>; Fri, 8 Sep 2023 16:13:05 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3t06jvvkdt-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 16:13:04 -0700
+Received: from twshared52565.14.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Fri, 8 Sep 2023 16:13:01 -0700
+Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
+        id 01CBF24087ED5; Fri,  8 Sep 2023 16:12:48 -0700 (PDT)
+From:   Song Liu <song@kernel.org>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <ndesaulniers@google.com>, Song Liu <song@kernel.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        <kexec@lists.infradead.org>, <x86@kernel.org>,
+        <llvm@lists.linux.dev>
+Subject: [PATCH v2] x86/purgatory: Remove LTO flags
+Date:   Fri, 8 Sep 2023 16:12:44 -0700
+Message-ID: <20230908231244.1092614-1-song@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230908-kselftest-param_test-c-v1-1-e35bd9052d61@google.com>
-In-Reply-To: <20230908-kselftest-param_test-c-v1-1-e35bd9052d61@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 8 Sep 2023 16:11:03 -0700
-Message-ID: <CAKwvOdmgh0XJi_at98KNwfPS4=Hq0+vkjT3SzTARZtEMyOx04w@mail.gmail.com>
-Subject: Re: [PATCH RFC] selftests/rseq: fix kselftest Clang build warnings
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: jg41T-4l24zQ1yAN3q4KewC_oaCjHY6p
+X-Proofpoint-ORIG-GUID: jg41T-4l24zQ1yAN3q4KewC_oaCjHY6p
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-08_18,2023-09-05_01,2023-05-22_02
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,105 +58,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 8, 2023 at 4:03=E2=80=AFPM Justin Stitt <justinstitt@google.com=
-> wrote:
->
-> Hi,
->
-> I am experiencing many warnings when trying to build tools/testing/selfte=
-sts.
->
-> Here's one such example from rseq tree:
-> |  param_test.c:1234:10: error: address argument to atomic operation must=
- be a pointer to _Atomic type ('intptr_t *' (aka 'long *') invalid)
-> |   1234 |         while (!atomic_load(&args->percpu_list_ptr)) {}
-> |        |                 ^           ~~~~~~~~~~~~~~~~~~~~~~
-> |  /usr/local/google/home/justinstitt/repos/tc-build/build/llvm/final/lib=
-/clang/18/include/stdatomic.h:140:29: note: expanded from macro 'atomic_loa=
-d'
-> |    140 | #define atomic_load(object) __c11_atomic_load(object, __ATOMIC=
-_SEQ_CST)
-> |        |                             ^                 ~~~~~~
+With LTO enabled, ld.lld generates multiple .text sections for
+purgatory.ro:
 
-ah, so __c11_atomic_load is a compiler built in (similar to cstdint.h)
-(see the path of the note diagnostic).
+$ readelf -S purgatory.ro  | grep " .text"
+  [ 1] .text             PROGBITS         0000000000000000  00000040
+  [ 7] .text.purgatory   PROGBITS         0000000000000000  000020e0
+  [ 9] .text.warn        PROGBITS         0000000000000000  000021c0
+  [13] .text.sha256_upda PROGBITS         0000000000000000  000022f0
+  [15] .text.sha224_upda PROGBITS         0000000000000000  00002be0
+  [17] .text.sha256_fina PROGBITS         0000000000000000  00002bf0
+  [19] .text.sha224_fina PROGBITS         0000000000000000  00002cc0
 
-Your changes below look correct to me (except for the last hunk.
-percpu_list_ptr is already an intptr_t, the cast seems redundant);
-does GCC error with your below changes?
+This cause WARNING from kexec_purgatory_setup_sechdrs():
 
->
-> I added the _Atomic type in various locations to silence _all_ (10) of th=
-ese
-> warnings. I'm wondering, though, perhaps the absence of these _Atomic
-> types in the first place is on purpose? Am I on the right track to fix
-> these warnings without damaging the legitimacy of the tests at hand?
->
-> I'd like some feedback about where to go from here and if others are
-> experiencing the same issues. Thanks!
->
-> FWIW here's my specific build incantation on Clang-18 (49d41de57896e935cd=
-5726719c5208bce22694ae):
-> $ make LLVM=3D1 -j128 ARCH=3Dx86_64 mrproper headers defconfig kselftest-=
-merge
-> $ make LLVM=3D1 ARCH=3Dx86_64 -C tools/testing/selftests
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1698
-> Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/6=
-1
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
->  tools/testing/selftests/rseq/param_test.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/testing/selftests/rseq/param_test.c b/tools/testing/se=
-lftests/rseq/param_test.c
-> index bf951a490bb4..94802aeed2c6 100644
-> --- a/tools/testing/selftests/rseq/param_test.c
-> +++ b/tools/testing/selftests/rseq/param_test.c
-> @@ -356,7 +356,7 @@ struct inc_thread_test_data {
->  };
->
->  struct percpu_list_node {
-> -       intptr_t data;
-> +       _Atomic intptr_t data;
->         struct percpu_list_node *next;
->  };
->
-> @@ -1212,8 +1212,8 @@ static int set_signal_handler(void)
->  /* Test MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU membarrier command. *=
-/
->  #ifdef TEST_MEMBARRIER
->  struct test_membarrier_thread_args {
-> -       int stop;
-> -       intptr_t percpu_list_ptr;
-> +       _Atomic int stop;
-> +       _Atomic intptr_t percpu_list_ptr;
->  };
->
->  /* Worker threads modify data in their "active" percpu lists. */
-> @@ -1240,7 +1240,7 @@ void *test_membarrier_worker_thread(void *arg)
->                         int cpu =3D get_current_cpu_id();
->
->                         ret =3D rseq_offset_deref_addv(RSEQ_MO_RELAXED, R=
-SEQ_PERCPU,
-> -                               &args->percpu_list_ptr,
-> +                               (intptr_t*)&args->percpu_list_ptr,
->                                 sizeof(struct percpu_list_entry) * cpu, 1=
-, cpu);
->                 } while (rseq_unlikely(ret));
->         }
->
-> ---
-> base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-> change-id: 20230908-kselftest-param_test-c-1763b62e762f
->
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
->
+WARNING: CPU: 26 PID: 110894 at kernel/kexec_file.c:919
+kexec_load_purgatory+0x37f/0x390
 
+Fix this by disabling LTO for purgatory.
 
---=20
-Thanks,
-~Nick Desaulniers
+Fixes: 8652d44f466a ("kexec: support purgatories with .text.hot sections")
+Cc: Ricardo Ribalda <ribalda@chromium.org>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: kexec@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: x86@kernel.org
+Cc: llvm@lists.linux.dev
+Signed-off-by: Song Liu <song@kernel.org>
+
+---
+AFAICT, x86 is the only arch that supports LTO and purgatory.
+
+Changes in v2:
+1. Use CC_FLAGS_LTO instead of hardcode -flto. (Nick Desaulniers)
+---
+ arch/x86/purgatory/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
+index c2a29be35c01..08aa0f25f12a 100644
+--- a/arch/x86/purgatory/Makefile
++++ b/arch/x86/purgatory/Makefile
+@@ -19,6 +19,10 @@ CFLAGS_sha256.o := -D__DISABLE_EXPORTS -D__NO_FORTIFY
+ # optimization flags.
+ KBUILD_CFLAGS := $(filter-out -fprofile-sample-use=% -fprofile-use=%,$(KBUILD_CFLAGS))
+ 
++# When LTO is enabled, llvm emits many text sections, which is not supported
++# by kexec. Remove -flto=* flags.
++KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_LTO),$(KBUILD_CFLAGS))
++
+ # When linking purgatory.ro with -r unresolved symbols are not checked,
+ # also link a purgatory.chk binary without -r to check for unresolved symbols.
+ PURGATORY_LDFLAGS := -e purgatory_start -z nodefaultlib
+-- 
+2.34.1
+
