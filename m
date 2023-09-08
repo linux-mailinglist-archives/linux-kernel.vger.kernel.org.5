@@ -2,47 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24456798DBE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB2F798DC2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232471AbjIHSXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
+        id S237606AbjIHSX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344425AbjIHSWp (ORCPT
+        with ESMTP id S1344435AbjIHSWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Sep 2023 14:22:45 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD3F35B7;
-        Fri,  8 Sep 2023 11:19:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46D61C433CD;
-        Fri,  8 Sep 2023 18:19:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 825103A82;
+        Fri,  8 Sep 2023 11:19:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15BC6C433B6;
+        Fri,  8 Sep 2023 18:19:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197190;
-        bh=XODDTN7vRoEHOpmYQf6ue9p4+3JcrLCDM534vfS8aVc=;
+        s=k20201202; t=1694197192;
+        bh=rZDQaoKKGAWzJqqNus001fL+/T4YtsVs/3RksbmNEuY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s/DISq5898OHgZZB2IFh1iTzEpWNE02+LyvFAFbdSKdhJaFoIbDAxdV4C3vxhZEGi
-         s7HlvjEVHs950bpHSTNhxWciZEyecdn6KBsxrnwGwB9rUsO/+o5bJpRcHzYeIjBMVd
-         sXyPCf0p8NwbTT0Nojd46CRc+Bn1EoPXgq5KHbE7Fs4R6kZS6J/jY8GNI2PteI6dwQ
-         zNEyvrIR4fwNSb+oZEYSgnDoZljAxhMI9/XU9fgp2ODU0sH7CZ8VUT8xba42mrAMc6
-         +tWY1myZG+dFJO++npJC7HQcAzH+GE3jxdJoErGLk0xf98ioUqvbZ4nw3rgVkNUkp3
-         3YLGQQ+rx1GCA==
+        b=h8Am2oDp0M/TTejAuiTTJIgIdhJhxCgg3qMkcmoUb2yFMuGb9Uxfa3xgjOwog7SWL
+         1Y5PdDAsYH2OmFwddDEEYTU1tyfhpUAK2TJ6QkC7CNoTLxGq7/1B76ymVVqlpkGYVD
+         dd6Z5+xPUTjP0+ep8XP3gsglFpv1sjymuSr0YmGK3a2dk9m7jpzOo5VErmdJNSUimQ
+         4C+1ItZhufj0pxV1J/RRzWJ3PeqVtthHCepw7aDmaGUJbyon1ezfRp7cA32obqvDvp
+         /og31WVko+ASjC55WUSdZ53HuouJTGs039NW/Ys21ZTV4ts822gSkGk7JETGrtzUfx
+         Uz3cnmKCRaetQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "GONG, Ruiqi" <gongruiqi1@huawei.com>, GONG@vger.kernel.org,
-        Simon Horman <horms@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, chris.snook@gmail.com,
+Cc:     Johannes Berg <johannes.berg@intel.com>,
+        syzbot+be9c824e6f269d608288@syzkaller.appspotmail.com,
+        Sasha Levin <sashal@kernel.org>, johannes@sipsolutions.net,
         davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, linux-wireless@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 10/15] alx: fix OOB-read compiler warning
-Date:   Fri,  8 Sep 2023 14:19:13 -0400
-Message-Id: <20230908181920.3460520-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 11/15] wifi: mac80211: check S1G action frame size
+Date:   Fri,  8 Sep 2023 14:19:14 -0400
+Message-Id: <20230908181920.3460520-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181920.3460520-1-sashal@kernel.org>
 References: <20230908181920.3460520-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.131
@@ -56,49 +55,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 3a198c95c95da10ad844cbeade2fe40bdf14c411 ]
+[ Upstream commit 19e4a47ee74718a22e963e8a647c8c3bfe8bb05c ]
 
-The following message shows up when compiling with W=1:
+Before checking the action code, check that it even
+exists in the frame.
 
-In function ‘fortify_memcpy_chk’,
-    inlined from ‘alx_get_ethtool_stats’ at drivers/net/ethernet/atheros/alx/ethtool.c:297:2:
-./include/linux/fortify-string.h:592:4: error: call to ‘__read_overflow2_field’
-declared with attribute warning: detected read beyond size of field (2nd parameter);
-maybe use struct_group()? [-Werror=attribute-warning]
-  592 |    __read_overflow2_field(q_size_field, size);
-      |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-In order to get alx stats altogether, alx_get_ethtool_stats() reads
-beyond hw->stats.rx_ok. Fix this warning by directly copying hw->stats,
-and refactor the unnecessarily complicated BUILD_BUG_ON btw.
-
-Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Link: https://lore.kernel.org/r/20230821013218.1614265-1-gongruiqi@huaweicloud.com
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Reported-by: syzbot+be9c824e6f269d608288@syzkaller.appspotmail.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/atheros/alx/ethtool.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ net/mac80211/rx.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/ethernet/atheros/alx/ethtool.c b/drivers/net/ethernet/atheros/alx/ethtool.c
-index b716adacd8159..7f6b69a523676 100644
---- a/drivers/net/ethernet/atheros/alx/ethtool.c
-+++ b/drivers/net/ethernet/atheros/alx/ethtool.c
-@@ -292,9 +292,8 @@ static void alx_get_ethtool_stats(struct net_device *netdev,
- 	spin_lock(&alx->stats_lock);
- 
- 	alx_update_hw_stats(hw);
--	BUILD_BUG_ON(sizeof(hw->stats) - offsetof(struct alx_hw_stats, rx_ok) <
--		     ALX_NUM_STATS * sizeof(u64));
--	memcpy(data, &hw->stats.rx_ok, ALX_NUM_STATS * sizeof(u64));
-+	BUILD_BUG_ON(sizeof(hw->stats) != ALX_NUM_STATS * sizeof(u64));
-+	memcpy(data, &hw->stats, sizeof(hw->stats));
- 
- 	spin_unlock(&alx->stats_lock);
- }
+diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
+index 175ead6b19cb4..26943c93f14c4 100644
+--- a/net/mac80211/rx.c
++++ b/net/mac80211/rx.c
+@@ -3557,6 +3557,10 @@ ieee80211_rx_h_action(struct ieee80211_rx_data *rx)
+ 			break;
+ 		goto queue;
+ 	case WLAN_CATEGORY_S1G:
++		if (len < offsetofend(typeof(*mgmt),
++				      u.action.u.s1g.action_code))
++			break;
++
+ 		switch (mgmt->u.action.u.s1g.action_code) {
+ 		case WLAN_S1G_TWT_SETUP:
+ 		case WLAN_S1G_TWT_TEARDOWN:
 -- 
 2.40.1
 
