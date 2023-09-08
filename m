@@ -2,268 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B737990ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C07A7990F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 22:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241067AbjIHUT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 16:19:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40276 "EHLO
+        id S242392AbjIHUWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 16:22:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232896AbjIHUT2 (ORCPT
+        with ESMTP id S232427AbjIHUWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 16:19:28 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BDC958E;
-        Fri,  8 Sep 2023 13:19:23 -0700 (PDT)
-Received: from localhost.localdomain (unknown [4.155.48.120])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 1368C212B5C9;
-        Fri,  8 Sep 2023 13:19:22 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1368C212B5C9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1694204362;
-        bh=dquOv3dRAsWU7zZ/8ALd/SttxVRTrgGAgsVuK3vyB2U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=nv0PCRTKs3ZvQgZlzeccLicvgGiDRpBH/9uJr8v3taiJCSrEJJIpPdErqduiM+dtR
-         8g/bu3A0H0RPrQrCTLsDGm6Jc4JIbFnmWnJ0vdj6LUouvtboJWDoaxOK+AhgsJzI4h
-         VJnO9oGwsnw4ee0mXzUiKj+XtgVCK/ewqjj1BDxs=
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     rostedt@goodmis.org, shuah@kernel.org, mhiramat@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        broonie@kernel.org, naresh.kamboju@linaro.org,
-        anders.roxell@linaro.org, arnd@arndb.de
-Subject: [PATCH v2] selftests/user_events: Fix failures when user_events is not installed
-Date:   Fri,  8 Sep 2023 20:19:16 +0000
-Message-Id: <20230908201916.562-1-beaub@linux.microsoft.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 8 Sep 2023 16:22:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671C98E;
+        Fri,  8 Sep 2023 13:22:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5E88C433C7;
+        Fri,  8 Sep 2023 20:22:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694204553;
+        bh=e16P9xW9C+d4tSLnP+okZqHGPvQNrZo/ehkhKcvH+1Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=k+d8zrVmlgo5BbTvTUjz9ywe8/kX7mPycN4GcRjnwV3INi3SlFARanzsrBobH49zq
+         wfHa+jF6/wSOwiMBi8B1eXTBhsfEzFlXrjX2c0Hvt22LF3sBGIh+H/cHwyFItCj3Dj
+         YC/KPBUoe32fxkizDfL6TOjfhYimARZG/Uj1mXZKici1ATEuJKIWacX/wd8L7GdA6E
+         mx3vOtZvm2l5jhvw5cpRv/f7OI2cKouP+WI7z9qFoi6Vp25/dLKq970n6JdjdMmrWK
+         ZBBtRYZbI3m7nxcfyIfa+QqYpyHz+vqProWJlD2kSAq+K1rJ+bmqPRXyxgnRx61jrT
+         rAnQlE5bkEx7g==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-502a7e1bdc7so263531e87.0;
+        Fri, 08 Sep 2023 13:22:33 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyBSwgKroRWAVW3Uo3OgrEP44Tq6ts/7boAXFl2B5aomduHvK1q
+        0L1F7CdxEBZ+92RVi9CGEwRo+YMpts6fwYmTtro=
+X-Google-Smtp-Source: AGHT+IGSdkZj1l/XvKWToISgZ9w4muU6hYTmhbPfDa3yJQt+XxcvxldKyDqHZy3mN+070us8dp/tNoKXhAZ9WfPxBpY=
+X-Received: by 2002:a05:6512:788:b0:4fb:9e1a:e592 with SMTP id
+ x8-20020a056512078800b004fb9e1ae592mr2478517lfr.4.1694204552130; Fri, 08 Sep
+ 2023 13:22:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <tencent_0D24426FAC6A21B69AC0C03CE4143A508F09@qq.com> <bd46efce-07ee-4cb3-a5d0-f133a1e79fd9@redhat.com>
+In-Reply-To: <bd46efce-07ee-4cb3-a5d0-f133a1e79fd9@redhat.com>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 8 Sep 2023 13:22:19 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7FOt7FJ_01i5NgaEoNRG7URAcNdAb=sKVxiMpdK_QfsQ@mail.gmail.com>
+Message-ID: <CAPhsuW7FOt7FJ_01i5NgaEoNRG7URAcNdAb=sKVxiMpdK_QfsQ@mail.gmail.com>
+Subject: Re: [PATCH v2] md: raid1: fix potential OOB in raid1_remove_disk()
+To:     Nigel Croxon <ncroxon@redhat.com>
+Cc:     Zhang Shurong <zhang_shurong@foxmail.com>, yukuai1@huaweicloud.com,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When user_events is not installed the self tests currently fail. Now
-that these self tests run by default we need to ensure they don't fail
-when user_events was not enabled for the kernel being tested.
+On Fri, Sep 8, 2023 at 6:48=E2=80=AFAM Nigel Croxon <ncroxon@redhat.com> wr=
+ote:
+>
+>
+> On 7/22/23 3:53 AM, Zhang Shurong wrote:
+>
+> If rddev->raid_disk is greater than mddev->raid_disks, there will be
+> an out-of-bounds in raid1_remove_disk(). We have already found
+> similar reports as follows:
+>
+> 1) commit d17f744e883b ("md-raid10: fix KASAN warning")
+> 2) commit 1ebc2cec0b7d ("dm raid: fix KASAN warning in raid5_remove_disk"=
+)
+>
+> Fix this bug by checking whether the "number" variable is
+> valid.
+>
+> Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+> ---
+> Changes in v2:
+>  - Using conf->raid_disks instead of mddev->raid_disks.
+>
+>  drivers/md/raid1.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> index dd25832eb045..80aeee63dfb7 100644
+> --- a/drivers/md/raid1.c
+> +++ b/drivers/md/raid1.c
+> @@ -1829,6 +1829,10 @@ static int raid1_remove_disk(struct mddev *mddev, =
+struct md_rdev *rdev)
+>   struct r1conf *conf =3D mddev->private;
+>   int err =3D 0;
+>   int number =3D rdev->raid_disk;
+> +
+> + if (unlikely(number >=3D conf->raid_disks))
+> + goto abort;
+> +
+>   struct raid1_info *p =3D conf->mirrors + number;
+>
+>   if (rdev !=3D p->rdev)
+>
+> When compiling this patch.. I get the following error
+>
+> drivers/md/raid1.c: In function 'raid1_remove_disk':
+> drivers/md/raid1.c:1844:9: error: ISO C90 forbids mixed declarations and =
+code [-Werror=3Ddeclaration-after-statement]
+>  1844 |         struct raid1_info *p =3D conf->mirrors + number;
+>       |         ^~~~~~
+>
+> And that's because the new code was inserted before the struct.
+> Here is a fix:
+>
+>     raid1: fix error: ISO C90 forbids mixed declarations
+>
+>     There is a compile error when commit is added:
+>     md: raid1: fix potential OOB in raid1_remove_disk()
+>
+>     drivers/md/raid1.c: In function 'raid1_remove_disk':
+>     drivers/md/raid1.c:1844:9: error: ISO C90 forbids mixed declarations
+>     and code [-Werror=3Ddeclaration-after-statement]
+>      1844 |         struct raid1_info *p =3D conf->mirrors + number;
+>           |         ^~~~~~
+>
+>     And that's because the new code was inserted before the struct.
+>     The change is move the struct command above the new commit.
+>
+>     Fixes: md: raid1: fix potential OOB in raid1_remove_disk()
+>     commit 8b0472b50bcf
+>
+>     Signed-off-by: Nigel Croxon <ncroxon@redhat.com>
 
-Add common methods to detect if tracefs and user_events is enabled. If
-either is not enabled skip the test. If tracefs is enabled, but is not
-mounted, mount tracefs and fail if there were any errors. Fail if not
-run as root.
+Thanks for catching this! Would you mind sending an official patch for it?
 
-Fixes: 68b4d2d58389 ("selftests/user_events: Reenable build")
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Link: https://lore.kernel.org/all/CA+G9fYuugZ0OMeS6HvpSS4nuf_A3s455ecipGBvER0LJHojKZg@mail.gmail.com/
+Song
 
-Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
----
-V2 Changes:
-  Moved to stat() for existence checks vs open()/close().
-
- .../testing/selftests/user_events/abi_test.c  |   3 +
- .../testing/selftests/user_events/dyn_test.c  |   2 +
- .../selftests/user_events/ftrace_test.c       |   3 +
- .../testing/selftests/user_events/perf_test.c |   3 +
- .../user_events/user_events_selftests.h       | 100 ++++++++++++++++++
- 5 files changed, 111 insertions(+)
- create mode 100644 tools/testing/selftests/user_events/user_events_selftests.h
-
-diff --git a/tools/testing/selftests/user_events/abi_test.c b/tools/testing/selftests/user_events/abi_test.c
-index 5125c42efe65..22374d29ffdd 100644
---- a/tools/testing/selftests/user_events/abi_test.c
-+++ b/tools/testing/selftests/user_events/abi_test.c
-@@ -19,6 +19,7 @@
- #include <asm/unistd.h>
- 
- #include "../kselftest_harness.h"
-+#include "user_events_selftests.h"
- 
- const char *data_file = "/sys/kernel/tracing/user_events_data";
- const char *enable_file = "/sys/kernel/tracing/events/user_events/__abi_event/enable";
-@@ -93,6 +94,8 @@ FIXTURE(user) {
- };
- 
- FIXTURE_SETUP(user) {
-+	USER_EVENT_FIXTURE_SETUP(return);
-+
- 	change_event(false);
- 	self->check = 0;
- }
-diff --git a/tools/testing/selftests/user_events/dyn_test.c b/tools/testing/selftests/user_events/dyn_test.c
-index 91a4444ad42b..32c827a52d7d 100644
---- a/tools/testing/selftests/user_events/dyn_test.c
-+++ b/tools/testing/selftests/user_events/dyn_test.c
-@@ -15,6 +15,7 @@
- #include <unistd.h>
- 
- #include "../kselftest_harness.h"
-+#include "user_events_selftests.h"
- 
- const char *abi_file = "/sys/kernel/tracing/user_events_data";
- const char *enable_file = "/sys/kernel/tracing/events/user_events/__test_event/enable";
-@@ -146,6 +147,7 @@ FIXTURE(user) {
- };
- 
- FIXTURE_SETUP(user) {
-+	USER_EVENT_FIXTURE_SETUP(return);
- }
- 
- FIXTURE_TEARDOWN(user) {
-diff --git a/tools/testing/selftests/user_events/ftrace_test.c b/tools/testing/selftests/user_events/ftrace_test.c
-index 5beb0aef1d81..6a260caeeddc 100644
---- a/tools/testing/selftests/user_events/ftrace_test.c
-+++ b/tools/testing/selftests/user_events/ftrace_test.c
-@@ -16,6 +16,7 @@
- #include <unistd.h>
- 
- #include "../kselftest_harness.h"
-+#include "user_events_selftests.h"
- 
- const char *data_file = "/sys/kernel/tracing/user_events_data";
- const char *status_file = "/sys/kernel/tracing/user_events_status";
-@@ -206,6 +207,8 @@ FIXTURE(user) {
- };
- 
- FIXTURE_SETUP(user) {
-+	USER_EVENT_FIXTURE_SETUP(return);
-+
- 	self->status_fd = open(status_file, O_RDONLY);
- 	ASSERT_NE(-1, self->status_fd);
- 
-diff --git a/tools/testing/selftests/user_events/perf_test.c b/tools/testing/selftests/user_events/perf_test.c
-index 8b09be566fa2..f893398cda05 100644
---- a/tools/testing/selftests/user_events/perf_test.c
-+++ b/tools/testing/selftests/user_events/perf_test.c
-@@ -17,6 +17,7 @@
- #include <asm/unistd.h>
- 
- #include "../kselftest_harness.h"
-+#include "user_events_selftests.h"
- 
- const char *data_file = "/sys/kernel/tracing/user_events_data";
- const char *id_file = "/sys/kernel/tracing/events/user_events/__test_event/id";
-@@ -113,6 +114,8 @@ FIXTURE(user) {
- };
- 
- FIXTURE_SETUP(user) {
-+	USER_EVENT_FIXTURE_SETUP(return);
-+
- 	self->data_fd = open(data_file, O_RDWR);
- 	ASSERT_NE(-1, self->data_fd);
- }
-diff --git a/tools/testing/selftests/user_events/user_events_selftests.h b/tools/testing/selftests/user_events/user_events_selftests.h
-new file mode 100644
-index 000000000000..690378942f82
---- /dev/null
-+++ b/tools/testing/selftests/user_events/user_events_selftests.h
-@@ -0,0 +1,100 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef _USER_EVENTS_SELFTESTS_H
-+#define _USER_EVENTS_SELFTESTS_H
-+
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <sys/mount.h>
-+#include <unistd.h>
-+#include <errno.h>
-+
-+#include "../kselftest.h"
-+
-+static inline bool tracefs_enabled(char **message, bool *fail)
-+{
-+	struct stat buf;
-+	int ret;
-+
-+	*message = "";
-+	*fail = false;
-+
-+	/* Ensure tracefs is installed */
-+	ret = stat("/sys/kernel/tracing", &buf);
-+
-+	if (ret == -1) {
-+		*message = "Tracefs is not installed";
-+		return false;
-+	}
-+
-+	/* Ensure mounted tracefs */
-+	ret = stat("/sys/kernel/tracing/README", &buf);
-+
-+	if (ret == -1 && errno == ENOENT) {
-+		if (mount(NULL, "/sys/kernel/tracing", "tracefs", 0, NULL) != 0) {
-+			*message = "Cannot mount tracefs";
-+			*fail = true;
-+			return false;
-+		}
-+
-+		ret = stat("/sys/kernel/tracing/README", &buf);
-+	}
-+
-+	if (ret == -1) {
-+		*message = "Cannot access tracefs";
-+		*fail = true;
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
-+static inline bool user_events_enabled(char **message, bool *fail)
-+{
-+	struct stat buf;
-+	int ret;
-+
-+	*message = "";
-+	*fail = false;
-+
-+	if (getuid() != 0) {
-+		*message = "Must be run as root";
-+		*fail = true;
-+		return false;
-+	}
-+
-+	if (!tracefs_enabled(message, fail))
-+		return false;
-+
-+	/* Ensure user_events is installed */
-+	ret = stat("/sys/kernel/tracing/user_events_data", &buf);
-+
-+	if (ret == -1) {
-+		switch (errno) {
-+		case ENOENT:
-+			*message = "user_events is not installed";
-+			return false;
-+
-+		default:
-+			*message = "Cannot access user_events_data";
-+			*fail = true;
-+			return false;
-+		}
-+	}
-+
-+	return true;
-+}
-+
-+#define USER_EVENT_FIXTURE_SETUP(statement) do { \
-+	char *message; \
-+	bool fail; \
-+	if (!user_events_enabled(&message, &fail)) { \
-+		if (fail) { \
-+			TH_LOG("Setup failed due to: %s", message); \
-+			ASSERT_FALSE(fail); \
-+		} \
-+		SKIP(statement, "Skipping due to: %s", message); \
-+	} \
-+} while (0)
-+
-+#endif /* _USER_EVENTS_SELFTESTS_H */
-
-base-commit: 9b1db732866bee060b9bca9493e5ebf5e8874c48
--- 
-2.34.1
-
+>
+> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> index a5453b126aab..4f1483bb708b 100644
+> --- a/drivers/md/raid1.c
+> +++ b/drivers/md/raid1.c
+> @@ -1846,11 +1846,11 @@ static int raid1_remove_disk(struct mddev *mddev,=
+ struct md_rdev *rdev)
+>         int err =3D 0;
+>         int number =3D rdev->raid_disk;
+>
+> +       struct raid1_info *p =3D conf->mirrors + number;
+> +
+>         if (unlikely(number >=3D conf->raid_disks))
+>                 goto abort;
+>
+> -       struct raid1_info *p =3D conf->mirrors + number;
+> -
+>         if (rdev !=3D p->rdev)
+>                 p =3D conf->mirrors + conf->raid_disks + number;
+>
+>
