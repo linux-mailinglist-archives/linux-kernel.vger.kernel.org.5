@@ -2,75 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D10A1798A46
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 17:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C72798A50
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 18:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244531AbjIHP6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 11:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
+        id S244205AbjIHQDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 12:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244205AbjIHP6w (ORCPT
+        with ESMTP id S240812AbjIHQDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 11:58:52 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C261B1FCA
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 08:58:44 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68e26165676so2413782b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 08:58:44 -0700 (PDT)
+        Fri, 8 Sep 2023 12:03:32 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9EE81FD9;
+        Fri,  8 Sep 2023 09:03:21 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bcc0adab4so277114766b.2;
+        Fri, 08 Sep 2023 09:03:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694188724; x=1694793524; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694189000; x=1694793800; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sVWvu8RoKeTjqF5A2JKxf1ztiSq4CSZLNWsOZzIBv6o=;
-        b=TDv4to6h1T699DjBue9k4HdwzR3yAt8RujXK+bn+RxpmIMgipQMKtAFN9zSkb0yjoA
-         XP7Wrb2vt9qvLG5Pj4pJkfFEEFaeXfoXAFXhvcLE/J6tJoa19j0jDT+SsYSfhZ31zM0r
-         x/d/tdDs4jNaL1u26tdK0gfpYalMda9TEpYvo=
+        bh=H1Yz6OhmoK/aAZh58Ge5vVqf6WDrZqCawVIXLfTFMWk=;
+        b=iwbdx6fFolnuAFLq6yxNkhHseYkhh2LodMFZRU8cSCad3VORZ45VLNvljTQlA36aUi
+         GE10BIrXCKFPOTGbvRKknNk3iUR5MsC+3eaIWkpPa9AGK135Dqo07WiYz4hEmbJn8Dif
+         aM8Mbhp4FNXTAVr1n1B7Fs8Bm95/Vw+YnjY8tZi7IkadYCk28+DgLBuBkfcIHLPqN2Mh
+         fd1cg9xyxFY05mHBgNJAMm7tAbaENZpRBdx1jR5RD6OnVukNMTV/HfcbsI9p3FpdDYV6
+         6GL3XDXHzfqC9nmCQ255qgTba8pY2G4HVrXdgmyLKADOd3Jb91cLvjGjm13QcQKXKP8O
+         5DrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694188724; x=1694793524;
+        d=1e100.net; s=20230601; t=1694189000; x=1694793800;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sVWvu8RoKeTjqF5A2JKxf1ztiSq4CSZLNWsOZzIBv6o=;
-        b=tob9uYattmO5OqtaUsglcyRga1UEUYNHdCZDMxoCTSnme+AIQ7q29zjpfQoWDbmZKi
-         LjsAfdg6Au7JhW5dKYadT2UvR0W4kcRmM9AB3AFIILvNsxKfX64wuFun3IxPvaULsDZV
-         FLRm433QolBzAgkJBNlim5ovWuPOX3G3TgbWUX2+gFBz766Rw1CHmdVMss0Js+vEVHTO
-         42Qw1WBedNKd/ea69J8uOx8PFAIFAUQxKTf0qH+aszdLWxMZPswZ8gfSA4nC6dxXIvWF
-         zEsW5DguxIbiP6TY5BXlLpr4bJBrVLtNTzvaF6sLkpkSPlKFhQIvEVOsHqutKKOr8enM
-         98LQ==
-X-Gm-Message-State: AOJu0YwSGxT6y8z1vjnmh1oAb/tKcwjKZzqLbCMpGd9thugAhe3d94v/
-        gClu13Vcd9qRHb+7dZoa0h5JwQ==
-X-Google-Smtp-Source: AGHT+IEeBILJPe405y2GBTm/QUKPyzLs1vv58mCNYqEGLGb92qtZCnyLwgrOcMTUwsOfQMQAElfm4g==
-X-Received: by 2002:a05:6a20:e111:b0:149:602e:9239 with SMTP id kr17-20020a056a20e11100b00149602e9239mr4069491pzb.21.1694188724224;
-        Fri, 08 Sep 2023 08:58:44 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h4-20020aa786c4000000b0068bbd43a6e2sm1542461pfo.10.2023.09.08.08.58.43
+        bh=H1Yz6OhmoK/aAZh58Ge5vVqf6WDrZqCawVIXLfTFMWk=;
+        b=gIGDoMYYQ9fQ5UTiFxom36Yo6f/nKxUz2LC0RLrSdFgBU6mq+CB9IVMrsx6BXBEjHv
+         Fvho0Mv7PcowBXoVQJko/id5lFHp4t40RkcSyu3J6pJWCb7eThr9+kp8yXrrEOluWuMa
+         iCWy3jaCO6uzz/z0xzs0pkeKj9TYL5lH4JbFSHJ0Z4bPUpyzxSh+Gy7jCJujyfqiKMjN
+         RSj4J6q3g45g4HjquE9glmkKkcabkIN+QmR85duvbauEqKIK6dbi6Y4YgXIrI7u1A0Cn
+         MsSl3MUPEN+AKAq6xoWvOYb/tBOW4nYCDzoRpzKukpIVy+Gq3C77f+8ojZ+sYRSZCZ6J
+         lDKw==
+X-Gm-Message-State: AOJu0Yw9kVmyLjp2gnAZt++lTqmg/wBCAtekh4ACDZbgqqct2F/aIPdc
+        +9TpymqvKrnENdFsYhmHA1HPx1z8GQ==
+X-Google-Smtp-Source: AGHT+IEaavioBPf3vAKJBA/Kb7ey2P+c0wZOcJ4GBcIWt1+U+8L3WCmHSq64cyihbUNlugu3bQXiSw==
+X-Received: by 2002:a17:906:5a5a:b0:9a5:c9a4:ba13 with SMTP id my26-20020a1709065a5a00b009a5c9a4ba13mr2129987ejc.37.1694189000044;
+        Fri, 08 Sep 2023 09:03:20 -0700 (PDT)
+Received: from p183 ([46.53.253.206])
+        by smtp.gmail.com with ESMTPSA id lz24-20020a170906fb1800b009932337747esm1204115ejb.86.2023.09.08.09.03.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 08:58:43 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 08:58:42 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Aaron Lu <aaron.lu@intel.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        ardb@google.com
-Subject: Re: kexec reboot failed due to commit 75d090fd167ac
-Message-ID: <202309080856.F066F92C98@keescook>
-References: <20230829114816.GA508985@ziqianlu-dell>
- <ZO3hQ0rbr8QuUjVI@debian.me>
- <20230829125134.GA509331@ziqianlu-dell>
- <20230829125939.bcg2r6hwqf45npko@box.shutemov.name>
- <20230829140451.GA509854@ziqianlu-dell>
- <20230907131409.masxz42ik6u456qp@box.shutemov.name>
- <20230908060230.GA283801@ziqianlu-dell>
- <20230908123233.dpbpohgrbyyxekzk@box.shutemov.name>
+        Fri, 08 Sep 2023 09:03:19 -0700 (PDT)
+Date:   Fri, 8 Sep 2023 19:03:17 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] uapi: fix __DECLARE_FLEX_ARRAY for C++
+Message-ID: <f1819874-2b91-4983-9ebe-6cd83d5d3bc3@p183>
+References: <930c3ee5-1282-40f4-93e0-8ff894aabf3a@p183>
+ <a0c3a352-89c6-4764-b377-f55a68a1b2cb@p183>
+ <202309080848.60319AF@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230908123233.dpbpohgrbyyxekzk@box.shutemov.name>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+In-Reply-To: <202309080848.60319AF@keescook>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,82 +73,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 03:32:33PM +0300, Kirill A. Shutemov wrote:
-> On Fri, Sep 08, 2023 at 02:02:30PM +0800, Aaron Lu wrote:
-> > On Thu, Sep 07, 2023 at 04:14:09PM +0300, Kirill A. Shutemov wrote:
-> > > On Tue, Aug 29, 2023 at 10:04:51PM +0800, Aaron Lu wrote:
-> > > > > Could you show dmesg of the first kernel before kexec?
-> > > > 
-> > > > Attached.
-> > > > 
-> > > > BTW, kexec is invoked like this:
-> > > > kver=6.4.0-rc5-00009-g75d090fd167a
-> > > > kdir=$HOME/kernels/$kver
-> > > > sudo kexec -l $kdir/vmlinuz-$kver --initrd=$kdir/initramfs-$kver.img --append="root=UUID=4381321e-e01e-455a-9d46-5e8c4c5b2d02 ro net.ifnames=0 acpi_rsdp=0x728e8014 no_hash_pointers sched_verbose selinux=0"
-> > > 
-> > > I don't understand why it happens.
-> > > 
-> > > Could you check if this patch changes anything:
-> > > 
-> > > diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/misc.c
-> > > index 94b7abcf624b..172c476ff6f3 100644
-> > > --- a/arch/x86/boot/compressed/misc.c
-> > > +++ b/arch/x86/boot/compressed/misc.c
-> > > @@ -456,10 +456,12 @@ asmlinkage __visible void *extract_kernel(void *rmode, memptr heap,
-> > >  
-> > >  	debug_putstr("\nDecompressing Linux... ");
-> > >  
-> > > +#if 0
-> > >  	if (init_unaccepted_memory()) {
-> > >  		debug_putstr("Accepting memory... ");
-> > >  		accept_memory(__pa(output), __pa(output) + needed_size);
-> > >  	}
-> > > +#endif
-> > >  
-> > >  	__decompress(input_data, input_len, NULL, NULL, output, output_len,
-> > >  			NULL, error);
-> > > -- 
+On Fri, Sep 08, 2023 at 08:53:12AM -0700, Kees Cook wrote:
+> On Fri, Sep 08, 2023 at 06:14:38PM +0300, Alexey Dobriyan wrote:
+> > __DECLARE_FLEX_ARRAY(T, member) macro expands to
 > > 
-> > It solved the problem.
+> > 	struct {
+> > 		struct {} __empty_member;
+> > 		T member[];
+> > 	};
+> > 
+> > which is subtly wrong in C++ because sizeof(struct{}) is 1 not 0,
 > 
-> Looks like increasing BOOT_INIT_PGT_SIZE fixes the issue. I don't yet
-> understand why and how unaccepted memory is involved. I will look more
-> into it.
+> Ewwww. Isn't this a bug in C++?
+
+Sort of, but it can't be fixed.
+
+> > changing UAPI structures layouts.
+> > 
+> > This can be fixed by expanding to
+> > 
+> > 	T member[];
+> > 
+> > Now g++ doesn't like "T member[]" either throwing errors on code like
+> > this:
+> > 
+> > 	struct S {
+> > 		union {
+> > 			T1 member1[];
+> > 			T2 member2[];
+> > 		};
+> > 	};
+> > 
+> > or
+> > 
+> > 	struct S {
+> > 		T member[];
+> > 	};
+> > So use
+> > 
+> > 	T member[0];
+> > 
+> > which seems to work and does the right thing wrt structure layout.
 > 
-> Enabling CONFIG_RANDOMIZE_BASE also makes the issue go away.
-
-Is this perhaps just luck? I.e. does is break ever on, say, 1000 boot
-attempts? (i.e. maybe some position is bad and KASLR happens to usually
-avoid it?)
-
-> Kees, maybe you have a clue?
-
-The only thing I can think of is that something isn't being counted
-correctly due to the size of code, and it just happens that this commit
-makes the code large enough to exceed some set of mappings?
-
+> It seems sad to leave C++ broken, but I guess we have to do this.
 > 
-> diff --git a/arch/x86/include/asm/boot.h b/arch/x86/include/asm/boot.h
-> index 9191280d9ea3..26ccce41d781 100644
-> --- a/arch/x86/include/asm/boot.h
-> +++ b/arch/x86/include/asm/boot.h
-> @@ -40,7 +40,7 @@
->  #ifdef CONFIG_X86_64
->  # define BOOT_STACK_SIZE	0x4000
->  
-> -# define BOOT_INIT_PGT_SIZE	(6*4096)
-> +# define BOOT_INIT_PGT_SIZE	(7*4096)
+> Acked-by: Kees Cook <keescook@chromium.org>
+> 
+> > Fix header guard while I'm at it.
+> 
+> Hm, when did that get broken? Maybe that should be fixed separately?
 
-That's why this might be working, for example? How large is the boot
-image before/after the commit, etc?
+By your last commit?
 
->  # ifdef CONFIG_RANDOMIZE_BASE
->  /*
->   * Assuming all cross the 512GB boundary:
+> > Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> 
+> Probably a Fixes: tag would be nice too.
+
+OK
+
+Fixes: c8248faf3ca2 ("Compiler Attributes: counted_by: Adjust name and identifier expansion")
+Fixes: 3080ea5553cc ("stddef: Introduce DECLARE_FLEX_ARRAY() helper")
+
+> >  include/uapi/linux/stddef.h |    6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > --- a/include/uapi/linux/stddef.h
+> > +++ b/include/uapi/linux/stddef.h
+> > @@ -39,6 +39,10 @@
+> >   * struct, it needs to be wrapped in an anonymous struct with at least 1
+> >   * named member, but that member can be empty.
+> >   */
+> > +#ifdef __cplusplus
+> > +#define __DECLARE_FLEX_ARRAY(T, member)		\
+> > +	T member[0]
+> > +#else
+> >  #define __DECLARE_FLEX_ARRAY(TYPE, NAME)	\
+> >  	struct { \
+> >  		struct { } __empty_ ## NAME; \
+> > @@ -49,3 +53,5 @@
+> >  #ifndef __counted_by
+> >  #define __counted_by(m)
+> >  #endif
+> > +
+> > +#endif
+> 
 > -- 
->   Kiryl Shutsemau / Kirill A. Shutemov
-
--Kees
-
--- 
-Kees Cook
+> Kees Cook
