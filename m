@@ -2,65 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 692AB79867B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 13:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DCCF798681
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 13:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242807AbjIHLcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 07:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
+        id S242263AbjIHLhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 07:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231164AbjIHLcl (ORCPT
+        with ESMTP id S229453AbjIHLhH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 07:32:41 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAA61FC4;
-        Fri,  8 Sep 2023 04:32:28 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-50091b91a83so3186488e87.3;
-        Fri, 08 Sep 2023 04:32:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694172746; x=1694777546; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6PPorl9wVbuo1uuAa9GCQe4GH/N/mOgDSgRVOXiC4Xs=;
-        b=A7smgSqU4Vd386QnVTV4gVRiZrPnAOGPJOm/ioCkIRKcBoHfXLLows9ESUDmFm0cwA
-         sqoNr1lrNek4DCTW3aGQiX4VtyVsgmWzeC7y+KzCnsU4jrsESy0A3N8i94OjZ+sVLkNf
-         dwF5PUc1lLmnhaBv1TpSpLdPT083sb4iQbF/gx8IHxY1N5WhLNl52dEB6+L/nC9G//rA
-         tSdJX3uapc1NfzVk41g8ERcFUJnKSclL60F4N6bwy0JMGGSVmGxOymEzB/UKSIZBlNaH
-         bIZoBk6xHTH/pn+5NB9Y4KdG46K7uC28vR0kY/NlmAXcaRuwpJedFm3xcirQJ0ayphxt
-         hL7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694172746; x=1694777546;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6PPorl9wVbuo1uuAa9GCQe4GH/N/mOgDSgRVOXiC4Xs=;
-        b=Z0zM3U46h8Crk5kBhEGD+qOxJGHQMlcDq1H3VztuicERALwYxLlihUuR/t3UWWD6ND
-         HlW0dlGLOg9I8baGU0WxtG4Kyej00gwssxvgKE+oPBfsc2znqA1ErxPC0P4pex1A6O01
-         i1H9Wi70iekKgIUyGf2WT1CHeolCPYo+EuOM45rtWqS8EkJ0NYgVPdTVJLDl8VT3UheL
-         EUGqxqZN/6JUkEV/Ju8upj5laBxN0dqqIAPAuU0TTny2ro7UR5vwFWjASki+8uVw5+IM
-         QT8j/5HPxu6b+Qpe0EcT/fO47233TQdsz0P61ieI05MjwSfeJvtmhQ7SoSiLbM4lM2Dt
-         zYiA==
-X-Gm-Message-State: AOJu0Yz58OOEIiNkKCO8g54dkfiJ0z2kzHY7IO2N6OMkosZrG9zqJGfZ
-        VPlLinoQM3h2yNMUbig4uQ==
-X-Google-Smtp-Source: AGHT+IGrGaZ8RhXzHMLdtMpLJ3Qoxz38b3IriqqoFf+vup6bKImDxsxT8iGV8piZim5JOxtSjE73KQ==
-X-Received: by 2002:a19:6503:0:b0:500:8f65:c624 with SMTP id z3-20020a196503000000b005008f65c624mr1351524lfb.53.1694172746216;
-        Fri, 08 Sep 2023 04:32:26 -0700 (PDT)
-Received: from p183 ([46.53.253.206])
-        by smtp.gmail.com with ESMTPSA id s6-20020aa7c546000000b00521953ce6e0sm906185edr.93.2023.09.08.04.32.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 04:32:25 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 14:32:24 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        keescook@chromium.org
-Subject: [PATCH] uapi: partially fix __DECLARE_FLEX_ARRAY for C++
-Message-ID: <930c3ee5-1282-40f4-93e0-8ff894aabf3a@p183>
+        Fri, 8 Sep 2023 07:37:07 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547F01BE7
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 04:37:03 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qeZnF-0007tr-F7; Fri, 08 Sep 2023 13:36:57 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qeZnE-004rrl-2v; Fri, 08 Sep 2023 13:36:56 +0200
+Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qeZnD-003K9l-Gt; Fri, 08 Sep 2023 13:36:55 +0200
+Date:   Fri, 8 Sep 2023 13:36:55 +0200
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Ping-Ke Shih <pkshih@realtek.com>
+Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kalle Valo <kvalo@kernel.org>, Yanik Fuchs <Yanik.fuchs@mbv.ch>
+Subject: Re: [PATCH] wifi: rtw88: rtw8723d: Fix MAC address offset in EEPROM
+Message-ID: <20230908113655.GF637806@pengutronix.de>
+References: <20230907071614.2032404-1-s.hauer@pengutronix.de>
+ <bed0e0cacc44476582fc58180d77519c@realtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <bed0e0cacc44476582fc58180d77519c@realtek.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,47 +60,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__DECLARE_FLEX_ARRAY(T, member) macro expands to
+On Fri, Sep 08, 2023 at 12:23:13AM +0000, Ping-Ke Shih wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Sascha Hauer <s.hauer@pengutronix.de>
+> > Sent: Thursday, September 7, 2023 3:16 PM
+> > To: linux-wireless@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org; Kalle Valo <kvalo@kernel.org>; Ping-Ke Shih <pkshih@realtek.com>; Yanik
+> > Fuchs <Yanik.fuchs@mbv.ch>
+> > Subject: [PATCH] wifi: rtw88: rtw8723d: Fix MAC address offset in EEPROM
+> > 
+> > The MAC address is stored at offset 0x107 in the EEPROM, like correctly
+> > stated in the comment. Add a two bytes reserved field right before the
+> > MAC address to shift it from offset 0x105 to 0x107.
+> > 
+> > With this the MAC address returned from my RTL8723du wifi stick can be
+> > correctly decoded as "Shenzhen Four Seas Global Link Network Technology
+> > Co., Ltd."
+> 
+> With this correctness, my stick can be recognized as: 
+> " Bus 003 Device 010: ID 0bda:d723 Realtek Semiconductor Corp. 802.11n WLAN Adapter"
 
-	struct {
-		struct {} __empty_member;
-		T member[];
-	};
+It should be recognized like this also without this patch, but with this
+patch the MAC address should be read correctly.
 
-which is subtly wrong in C++ because sizeof(struct{}) is 1 not 0,
-changing UAPI structures layouts.
+> 
+> Should it add a Fixes tag? 
+> Fixes: 87caeef032fc ("wifi: rtw88: Add rtw8723du chipset support")
 
-This can be fixed by expanding simply to
+Yes, I forgot this. Kalle, can you add it once again while applying?
 
-	T member[];
+Sascha
 
-Most of the usages still be broken because of other C++ shenanigans
-but this fixes simplest usage: 1 flexible member at the end.
-
-Fix header guard while I'm at it.
-
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
-
- include/uapi/linux/stddef.h |    6 ++++++
- 1 file changed, 6 insertions(+)
-
---- a/include/uapi/linux/stddef.h
-+++ b/include/uapi/linux/stddef.h
-@@ -39,6 +39,10 @@
-  * struct, it needs to be wrapped in an anonymous struct with at least 1
-  * named member, but that member can be empty.
-  */
-+#ifdef __cplusplus
-+#define __DECLARE_FLEX_ARRAY(T, member)		\
-+	T member[]
-+#else
- #define __DECLARE_FLEX_ARRAY(TYPE, NAME)	\
- 	struct { \
- 		struct { } __empty_ ## NAME; \
-@@ -49,3 +53,5 @@
- #ifndef __counted_by
- #define __counted_by(m)
- #endif
-+
-+#endif
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
