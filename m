@@ -2,116 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D747983E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F7D7983E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 10:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237562AbjIHIUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 04:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
+        id S238779AbjIHIU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 04:20:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233092AbjIHIUj (ORCPT
+        with ESMTP id S237979AbjIHIU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 04:20:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49B7173B;
-        Fri,  8 Sep 2023 01:20:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694161235; x=1725697235;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mvNQ9uU/kK3N8/bDrmxpdKy+upygvoAdffwYay19gfA=;
-  b=ieK3cCp8BReMV6svQsVjbE8GOv3lkZPmwbs9CaZ+XQX0xMgFABiqAw7v
-   tzN62+L2rQTNivgjXovbQoQQ+l3BaQZrnIe0W+2CppnDhZB5nMScfFqbE
-   Ozqtdurbag5bHSxka+tHjK42Hh4Gi+NZOLFDYA/HJX7M3ALcFfhKuyXT6
-   M3TLGKg0ZN2Tzg4wKb31dq649Ys0yGasGVnfQ+VTrFyu82FO2FfohWcC9
-   A/u4C2HI/3ztll6fExAimEYcWZtnzsZOHLe9oYtiBeustAJClVVpfWurY
-   ZOx+Z35A/Ihx8iwfKLegd4NqcG16QjMSYKd22lBNQ4QiyxB+ihUuaL7M7
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="444027467"
-X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
-   d="scan'208";a="444027467"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 01:20:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10826"; a="742428329"
-X-IronPort-AV: E=Sophos;i="6.02,236,1688454000"; 
-   d="scan'208";a="742428329"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orsmga002.jf.intel.com with SMTP; 08 Sep 2023 01:20:32 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 08 Sep 2023 11:20:31 +0300
-Date:   Fri, 8 Sep 2023 11:20:30 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.au@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v3 1/5] usb: typec: tcpci_rt1711h: Remove trailing comma
- in the terminator entry for OF table
-Message-ID: <ZPrZTgx7nVxhHean@kuha.fi.intel.com>
-References: <20230906080619.36930-1-biju.das.jz@bp.renesas.com>
- <20230906080619.36930-2-biju.das.jz@bp.renesas.com>
+        Fri, 8 Sep 2023 04:20:56 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E844B1BDA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 01:20:50 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1qeWjR-00053g-8L; Fri, 08 Sep 2023 10:20:49 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1qeWjN-004q5L-09; Fri, 08 Sep 2023 10:20:45 +0200
+Received: from mtr by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1qeWjM-003FNe-MO; Fri, 08 Sep 2023 10:20:44 +0200
+Date:   Fri, 8 Sep 2023 10:20:44 +0200
+From:   Michael Tretter <m.tretter@pengutronix.de>
+To:     Maxim Schwalm <maxim.schwalm@gmail.com>
+Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH 5/5] drm/bridge: samsung-dsim: calculate porches in Hz
+Message-ID: <20230908082044.GA767994@pengutronix.de>
+References: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de>
+ <20230818-samsung-dsim-v1-5-b39716db6b7a@pengutronix.de>
+ <53ee3d14-05f4-981f-26d2-ef9ef6b3a61b@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230906080619.36930-2-biju.das.jz@bp.renesas.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <53ee3d14-05f4-981f-26d2-ef9ef6b3a61b@gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mtr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 09:06:15AM +0100, Biju Das wrote:
-> Remove trailing comma in the terminator entry for OF table.
-> While at it, drop a space in the terminator for ID table.
+On Mon, 04 Sep 2023 16:28:37 +0200, Maxim Schwalm wrote:
+> On 28.08.23 17:59, Michael Tretter wrote:
+> > Calculating the byte_clk in kHz is imprecise for a hs_clock of 55687500
+> > Hz, which may be used with a pixel clock of 74.25 MHz with mode
+> > 1920x1080-30.
+> > 
+> > Fix the calculation by using HZ instead of kHZ.
+> > 
+> > This requires to change the type to u64 to prevent overflows of the
+> > integer type.
+> > 
+> > Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
+> > ---
+> >  drivers/gpu/drm/bridge/samsung-dsim.c | 10 ++++++----
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
+> > index 459be953be55..eb7aca2b9ab7 100644
+> > --- a/drivers/gpu/drm/bridge/samsung-dsim.c
+> > +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+> > @@ -973,10 +973,12 @@ static void samsung_dsim_set_display_mode(struct samsung_dsim *dsi)
+> >  	u32 reg;
+> >  
+> >  	if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO) {
+> > -		int byte_clk_khz = dsi->hs_clock / 1000 / 8;
+> > -		int hfp = DIV_ROUND_UP((m->hsync_start - m->hdisplay) * byte_clk_khz, m->clock);
+> > -		int hbp = DIV_ROUND_UP((m->htotal - m->hsync_end) * byte_clk_khz, m->clock);
+> > -		int hsa = DIV_ROUND_UP((m->hsync_end - m->hsync_start) * byte_clk_khz, m->clock);
+> > +		u64 byte_clk = dsi->hs_clock / 8;
+> > +		u64 pix_clk = m->clock * 1000;
+> > +
+> > +		int hfp = DIV64_U64_ROUND_UP((m->hsync_start - m->hdisplay) * byte_clk, pix_clk);
+> > +		int hbp = DIV64_U64_ROUND_UP((m->htotal - m->hsync_end) * byte_clk, pix_clk);
+> > +		int hsa = DIV64_U64_ROUND_UP((m->hsync_end - m->hsync_start) * byte_clk, pix_clk);
 > 
-> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Wouldn't it make sense to use the videomode structure here?
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+That would introduce a dependency on VIDEOMODE_HELPERS to avoid four explicit
+calculations of the pixel clock in Hz and the porches in pixels. I don't think
+that's really worth it.
 
-> ---
-> v2->v3:
->  * Dropped updating I2C driver data in ID table as there is no user yet.
->  * Updated commit header and description.
->  * Added Rb tag from Andy.
->  * Retained the Rb tag as it is trivial change.
-> v1->v2:
->  * Drop space from ID table
->  * Remove trailing comma in the terminator entry for OF table.
-> ---
->  drivers/usb/typec/tcpm/tcpci_rt1711h.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+Michael
+
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpci_rt1711h.c b/drivers/usb/typec/tcpm/tcpci_rt1711h.c
-> index 17ebc5fb684f..6146bca8e55f 100644
-> --- a/drivers/usb/typec/tcpm/tcpci_rt1711h.c
-> +++ b/drivers/usb/typec/tcpm/tcpci_rt1711h.c
-> @@ -394,7 +394,7 @@ static void rt1711h_remove(struct i2c_client *client)
->  static const struct i2c_device_id rt1711h_id[] = {
->  	{ "rt1711h", 0 },
->  	{ "rt1715", 0 },
-> -	{ }
-> +	{}
->  };
->  MODULE_DEVICE_TABLE(i2c, rt1711h_id);
->  
-> @@ -402,7 +402,7 @@ MODULE_DEVICE_TABLE(i2c, rt1711h_id);
->  static const struct of_device_id rt1711h_of_match[] = {
->  	{ .compatible = "richtek,rt1711h", .data = (void *)RT1711H_DID },
->  	{ .compatible = "richtek,rt1715", .data = (void *)RT1715_DID },
-> -	{},
-> +	{}
->  };
->  MODULE_DEVICE_TABLE(of, rt1711h_of_match);
->  #endif
-> -- 
-> 2.25.1
-
--- 
-heikki
+> >  
+> >  		/* remove packet overhead when possible */
+> >  		hfp = max(hfp - 6, 0);
+> > 
+> 
+> Best regards,
+> Maxim
+> 
