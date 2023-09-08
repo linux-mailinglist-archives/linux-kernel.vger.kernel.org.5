@@ -2,107 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AABB798818
+	by mail.lfdr.de (Postfix) with ESMTP id DE1C8798819
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 15:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243487AbjIHNt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 09:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58458 "EHLO
+        id S243663AbjIHNta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 09:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233325AbjIHNt0 (ORCPT
+        with ESMTP id S243541AbjIHNt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 09:49:26 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A471BF6;
-        Fri,  8 Sep 2023 06:49:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=uqY6Z5h6ZluAE9vpCfYrBwCL495VscqDRqy2N8Ea9Gw=; b=jGqURuwfyBPWOeEwk8Azmv3R7a
-        b5SMleDF3N5YuFPK0TzWTXLmhKnZ/nUJG58G2AbPMPCQiccSKMkPZnVleKN7qZXHODP8TAy/opAUM
-        WNY5XTVD0w/7qjUskXl/Rt11Dd3v9eReTnLM0aGEnf6K48x5bZwerxatXdgg5gyGUox8l6h6wlBO8
-        BG0tOp550Lx28Bh4L0ACP9yfLyE540Du/RTiXfgtO8cvG52Vh37qYSIH8EsIvbhIhhyExE9jG3o1F
-        11QYhBeCTaifFQcAGPqfWfNoGci9P4SO9L0gggMdcqLakNsH2lm96yamsmmk7UMWdD7aecVUyuqnE
-        DAS8RzVA==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qebr9-000BEW-5V; Fri, 08 Sep 2023 15:49:07 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qebr8-000DG6-Fl; Fri, 08 Sep 2023 15:49:06 +0200
-Subject: Re: [PATCH bpf-next v3 9/9] MAINTAINERS: Add myself for ARM32 BPF JIT
- maintainer.
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Puranjay Mohan <puranjay12@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Fri, 8 Sep 2023 09:49:28 -0400
+Received: from forwardcorp1b.mail.yandex.net (forwardcorp1b.mail.yandex.net [178.154.239.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFA11BF4
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 06:49:19 -0700 (PDT)
+Received: from mail-nwsmtp-smtp-corp-canary-81.sas.yp-c.yandex.net (mail-nwsmtp-smtp-corp-canary-81.sas.yp-c.yandex.net [IPv6:2a02:6b8:c08:ac00:0:640:e1b9:0])
+        by forwardcorp1b.mail.yandex.net (Yandex) with ESMTP id 6795C60025;
+        Fri,  8 Sep 2023 16:49:17 +0300 (MSK)
+Received: from valesini-ubuntu.yandex-team.ru (unknown [2a02:6b8:b081:b69c::1:20])
+        by mail-nwsmtp-smtp-corp-canary-81.sas.yp-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id 7na2h21OeKo0-T2qBrQie;
+        Fri, 08 Sep 2023 16:49:16 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru;
+        s=default; t=1694180956;
+        bh=H0w/h30ida2PMg+LOls8odAvZahwrQ5WOiuuSuvbg3Q=;
+        h=Message-Id:Date:In-Reply-To:Cc:Subject:References:To:From;
+        b=fqdbDnhDjql0LgkHOi9BR3RjuTm9VcZHxOcMDEgCc4pp8X0DomP7p/LL0urXZfmrd
+         DggHMd54lfvv4ghJwbaaYDN9ynm2w9srBgvvqBkMCyXqp2sP1qI6DOUIBZOZROhC2h
+         npahztAfUQBWi9UblS0DGIJhtXDoPPcJAbHoCozo=
+Authentication-Results: mail-nwsmtp-smtp-corp-canary-81.sas.yp-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+From:   Valentine Sinitsyn <valesini@yandex-team.ru>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
         linux-kernel@vger.kernel.org
-References: <20230907230550.1417590-1-puranjay12@gmail.com>
- <20230907230550.1417590-10-puranjay12@gmail.com>
- <ZPrdQEhw4f+TK8TB@shell.armlinux.org.uk>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <1a4bc20a-b7ff-3697-5859-a2bb868c575f@iogearbox.net>
-Date:   Fri, 8 Sep 2023 15:49:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+Subject: [PATCH v7 1/2] kernfs: sysfs: support custom llseek method for sysfs entries
+Date:   Fri,  8 Sep 2023 18:49:06 +0500
+Message-Id: <20230908134907.121407-1-valesini@yandex-team.ru>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <202309051442.bd6f9879-oliver.sang@intel.com>
+References: <202309051442.bd6f9879-oliver.sang@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <ZPrdQEhw4f+TK8TB@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27025/Fri Sep  8 09:37:45 2023)
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/23 10:37 AM, Russell King (Oracle) wrote:
-> On Thu, Sep 07, 2023 at 11:05:50PM +0000, Puranjay Mohan wrote:
->> As Shubham has been inactive since 2017, Add myself for ARM32 BPF JIT.
->>
->> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
->> ---
->>   MAINTAINERS | 5 +++--
->>   1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 612d6d1dbf36..c241856819bd 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -3602,9 +3602,10 @@ F:	Documentation/devicetree/bindings/iio/accel/bosch,bma400.yaml
->>   F:	drivers/iio/accel/bma400*
->>   
->>   BPF JIT for ARM
->> -M:	Shubham Bansal <illusionist.neo@gmail.com>
->> +M:	Puranjay Mohan <puranjay12@gmail.com>
->> +R:	Shubham Bansal <illusionist.neo@gmail.com>
-> 
-> Don't forget that I also want to review the changes, but I guess my
-> arch/arm entry will cover this too.
+As of now, seeking in sysfs files is handled by generic_file_llseek().
+There are situations where one may want to customize seeking logic:
 
-If there are no objections from all parties, it would be nice/better if both of
-you (Puranjay & Russell) could be explicitly added here as maintainers.
+- Many sysfs entries are fixed files while generic_file_llseek() accepts
+  past-the-end positions. Not only being useless by itself, this
+  also means a bug in userspace code will trigger not at lseek(), but at
+  some later point making debugging harder.
+- generic_file_llseek() relies on f_mapping->host to get the file size
+  which might not be correct for all sysfs entries.
+  See commit 636b21b50152 ("PCI: Revoke mappings like devmem") as an example.
 
-Thanks,
-Daniel
+Implement llseek method to override this behavior at sysfs attribute
+level. The method is optional, and if it is absent,
+generic_file_llseek() is called to preserve backwards compatibility.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Valentine Sinitsyn <valesini@yandex-team.ru>
+---
+v7:
+        - Use proper locking in kernfs_fop_llseek()
+v6:
+        - Mark pci_llseek_resource() as __maybe_unused
+        - Fix a typo in pci_create_legacy_files()
+v5:
+        - Fix builds without PCI mmap support (e.g. Alpha)
+v4:
+        - Fix builds which #define HAVE_PCI_LEGACY (e.g. PowerPC)
+v3:
+        - Grammar fixes
+        - Add base-patch: and prerequisite-patch-id: to make kernel test
+          robot happy
+v2:
+        - Add infrastructure to customize llseek per sysfs entry type
+        - Override llseek for PCI sysfs entries with fixed_file_llseek()
+
+ fs/kernfs/file.c       | 29 ++++++++++++++++++++++++++++-
+ fs/sysfs/file.c        | 13 +++++++++++++
+ include/linux/kernfs.h |  1 +
+ include/linux/sysfs.h  |  2 ++
+ 4 files changed, 44 insertions(+), 1 deletion(-)
+
+diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+index 180906c36f51..1a76fb8128ce 100644
+--- a/fs/kernfs/file.c
++++ b/fs/kernfs/file.c
+@@ -903,6 +903,33 @@ static __poll_t kernfs_fop_poll(struct file *filp, poll_table *wait)
+ 	return ret;
+ }
+ 
++static loff_t kernfs_fop_llseek(struct file *file, loff_t offset, int whence)
++{
++	struct kernfs_open_file *of = kernfs_of(file);
++	const struct kernfs_ops *ops;
++	loff_t ret;
++
++	/*
++	 * @of->mutex nests outside active ref and is primarily to ensure that
++	 * the ops aren't called concurrently for the same open file.
++	 */
++	mutex_lock(&of->mutex);
++	if (!kernfs_get_active(of->kn)) {
++		mutex_unlock(&of->mutex);
++		return -ENODEV;
++	}
++
++	ops = kernfs_ops(of->kn);
++	if (ops->llseek)
++		ret = ops->llseek(of, offset, whence);
++	else
++		ret = generic_file_llseek(file, offset, whence);
++
++	mutex_unlock(&of->mutex);
++	kernfs_put_active(of->kn);
++	return ret;
++}
++
+ static void kernfs_notify_workfn(struct work_struct *work)
+ {
+ 	struct kernfs_node *kn;
+@@ -1005,7 +1032,7 @@ EXPORT_SYMBOL_GPL(kernfs_notify);
+ const struct file_operations kernfs_file_fops = {
+ 	.read_iter	= kernfs_fop_read_iter,
+ 	.write_iter	= kernfs_fop_write_iter,
+-	.llseek		= generic_file_llseek,
++	.llseek		= kernfs_fop_llseek,
+ 	.mmap		= kernfs_fop_mmap,
+ 	.open		= kernfs_fop_open,
+ 	.release	= kernfs_fop_release,
+diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
+index a12ac0356c69..6b7652fb8050 100644
+--- a/fs/sysfs/file.c
++++ b/fs/sysfs/file.c
+@@ -167,6 +167,18 @@ static int sysfs_kf_bin_mmap(struct kernfs_open_file *of,
+ 	return battr->mmap(of->file, kobj, battr, vma);
+ }
+ 
++static loff_t sysfs_kf_bin_llseek(struct kernfs_open_file *of, loff_t offset,
++				  int whence)
++{
++	struct bin_attribute *battr = of->kn->priv;
++	struct kobject *kobj = of->kn->parent->priv;
++
++	if (battr->llseek)
++		return battr->llseek(of->file, kobj, battr, offset, whence);
++	else
++		return generic_file_llseek(of->file, offset, whence);
++}
++
+ static int sysfs_kf_bin_open(struct kernfs_open_file *of)
+ {
+ 	struct bin_attribute *battr = of->kn->priv;
+@@ -249,6 +261,7 @@ static const struct kernfs_ops sysfs_bin_kfops_mmap = {
+ 	.write		= sysfs_kf_bin_write,
+ 	.mmap		= sysfs_kf_bin_mmap,
+ 	.open		= sysfs_kf_bin_open,
++	.llseek		= sysfs_kf_bin_llseek,
+ };
+ 
+ int sysfs_add_file_mode_ns(struct kernfs_node *parent,
+diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
+index 2a36f3218b51..99aaa050ccb7 100644
+--- a/include/linux/kernfs.h
++++ b/include/linux/kernfs.h
+@@ -316,6 +316,7 @@ struct kernfs_ops {
+ 			 struct poll_table_struct *pt);
+ 
+ 	int (*mmap)(struct kernfs_open_file *of, struct vm_area_struct *vma);
++	loff_t (*llseek)(struct kernfs_open_file *of, loff_t offset, int whence);
+ };
+ 
+ /*
+diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
+index fd3fe5c8c17f..b717a70219f6 100644
+--- a/include/linux/sysfs.h
++++ b/include/linux/sysfs.h
+@@ -181,6 +181,8 @@ struct bin_attribute {
+ 			char *, loff_t, size_t);
+ 	ssize_t (*write)(struct file *, struct kobject *, struct bin_attribute *,
+ 			 char *, loff_t, size_t);
++	loff_t (*llseek)(struct file *, struct kobject *, struct bin_attribute *,
++			 loff_t, int);
+ 	int (*mmap)(struct file *, struct kobject *, struct bin_attribute *attr,
+ 		    struct vm_area_struct *vma);
+ };
+
+base-commit: a48fa7efaf1161c1c898931fe4c7f0070964233a
+-- 
+2.34.1
+
