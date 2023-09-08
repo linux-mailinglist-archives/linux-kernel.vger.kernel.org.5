@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 469C7798D48
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73681798D4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241754AbjIHSVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45478 "EHLO
+        id S1344290AbjIHSVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240504AbjIHSTv (ORCPT
+        with ESMTP id S230449AbjIHSTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:19:51 -0400
+        Fri, 8 Sep 2023 14:19:52 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CCB2D41;
-        Fri,  8 Sep 2023 11:18:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A223C4AF5E;
-        Fri,  8 Sep 2023 18:17:21 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82F02D4A;
+        Fri,  8 Sep 2023 11:18:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F6CBC433B6;
+        Fri,  8 Sep 2023 18:17:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694197042;
-        bh=pnplm/+s8y0FwPjjHZzVh9XvGP9O9nXGhoDsgPwUWmI=;
+        s=k20201202; t=1694197044;
+        bh=E+pPLeDr5mS2hebiJNZayqDM920k5RvPk27o+zwDu+Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qZ1HqgOXgb6RRmBT1ruhQfLYGUO8c8tbAvF3co3Sj8KqC4MK+8YM7XiBBV+qiwHzB
-         kgt8qLM5Y/dWNSjU8SagEwl0odaByxLFkKTT5ToBaSehNhVsl5Xku6f3va4ezNvPw1
-         ghZmZ0ml6KkLscVdDf4+aVpKKdeNp/XKL/4TnwgyrYuc3UUDFAkkwp9LfnbYyz53Do
-         c85cgyTncedfiEphQwUeuP0fK5Nuh/GD8Kxn8pRxx4I8YRB4AoHiR5wV7lRjsJhMLh
-         wr+dfsbW2O6b9ArsaVV+KugaS4Gkw4uYbs63WFQoBxfae/CzuBDKVZQ8KjiOrb++GW
-         K9KKoADarI+cw==
+        b=mfhTZ+aAtTe/8zTDsxkWVRhJWwBJSVoRv6wj39NdtWl0meWV1SV5jyI2KgP3ulB+1
+         qqhuB9OExTPuh7dFd+7dcbT+RZb5HpvrmmqWeA9ph61lhrI0FYiFTJiqvIqAvIsJob
+         gHN4tMJJp0Vv8BElZVdQPE0StSmQw0UpdacwvwllEKNerU28EeuWMcNJpF0KO4gJ7W
+         4ZEcr8Km2YB9gEuc7crW4AwG3eUrLpwSMmYlh1sdlDQU7AWbAooxpTcabTkpqR4yPb
+         TQl6TemFY1E6/LetjQvQaqd20x+QkjOwWB93pqcKKuEazt3dS9kpUkzlZPxU8vjjds
+         L3pZq822sFs3g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Johannes Berg <johannes.berg@intel.com>,
-        syzbot+999fac712d84878a7379@syzkaller.appspotmail.com,
+        syzbot+b2645b5bf1512b81fa22@syzkaller.appspotmail.com,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
         Sasha Levin <sashal@kernel.org>, johannes@sipsolutions.net,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 33/41] wifi: mac80211: check for station first in client probe
-Date:   Fri,  8 Sep 2023 14:15:47 -0400
-Message-Id: <20230908181555.3459640-33-sashal@kernel.org>
+        kvalo@kernel.org, linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 34/41] wifi: mac80211_hwsim: drop short frames
+Date:   Fri,  8 Sep 2023 14:15:48 -0400
+Message-Id: <20230908181555.3459640-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908181555.3459640-1-sashal@kernel.org>
 References: <20230908181555.3459640-1-sashal@kernel.org>
@@ -57,55 +56,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 67dfa589aa8806c7959cbca2f4613b8d41c75a06 ]
+[ Upstream commit fba360a047d5eeeb9d4b7c3a9b1c8308980ce9a6 ]
 
-When probing a client, first check if we have it, and then
-check for the channel context, otherwise you can trigger
-the warning there easily by probing when the AP isn't even
-started yet. Since a client existing means the AP is also
-operating, we can then keep the warning.
+While technically some control frames like ACK are shorter and
+end after Address 1, such frames shouldn't be forwarded through
+wmediumd or similar userspace, so require the full 3-address
+header to avoid accessing invalid memory if shorter frames are
+passed in.
 
-Also simplify the moved code a bit.
-
-Reported-by: syzbot+999fac712d84878a7379@syzkaller.appspotmail.com
+Reported-by: syzbot+b2645b5bf1512b81fa22@syzkaller.appspotmail.com
+Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/cfg.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/net/wireless/virtual/mac80211_hwsim.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index f2d08dbccfb7d..5360876e6541a 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -4128,19 +4128,20 @@ static int ieee80211_probe_client(struct wiphy *wiphy, struct net_device *dev,
- 	mutex_lock(&local->mtx);
+diff --git a/drivers/net/wireless/virtual/mac80211_hwsim.c b/drivers/net/wireless/virtual/mac80211_hwsim.c
+index ed5af63025979..6be374f4c9349 100644
+--- a/drivers/net/wireless/virtual/mac80211_hwsim.c
++++ b/drivers/net/wireless/virtual/mac80211_hwsim.c
+@@ -5617,14 +5617,15 @@ static int hwsim_cloned_frame_received_nl(struct sk_buff *skb_2,
+ 	frame_data_len = nla_len(info->attrs[HWSIM_ATTR_FRAME]);
+ 	frame_data = (void *)nla_data(info->attrs[HWSIM_ATTR_FRAME]);
  
- 	rcu_read_lock();
-+	sta = sta_info_get_bss(sdata, peer);
-+	if (!sta) {
-+		ret = -ENOLINK;
-+		goto unlock;
-+	}
++	if (frame_data_len < sizeof(struct ieee80211_hdr_3addr) ||
++	    frame_data_len > IEEE80211_MAX_DATA_LEN)
++		goto err;
 +
-+	qos = sta->sta.wme;
-+
- 	chanctx_conf = rcu_dereference(sdata->vif.bss_conf.chanctx_conf);
- 	if (WARN_ON(!chanctx_conf)) {
- 		ret = -EINVAL;
- 		goto unlock;
- 	}
- 	band = chanctx_conf->def.chan->band;
--	sta = sta_info_get_bss(sdata, peer);
--	if (sta) {
--		qos = sta->sta.wme;
--	} else {
--		ret = -ENOLINK;
--		goto unlock;
--	}
+ 	/* Allocate new skb here */
+ 	skb = alloc_skb(frame_data_len, GFP_KERNEL);
+ 	if (skb == NULL)
+ 		goto err;
  
- 	if (qos) {
- 		fc = cpu_to_le16(IEEE80211_FTYPE_DATA |
+-	if (frame_data_len > IEEE80211_MAX_DATA_LEN)
+-		goto err;
+-
+ 	/* Copy the data */
+ 	skb_put_data(skb, frame_data, frame_data_len);
+ 
 -- 
 2.40.1
 
