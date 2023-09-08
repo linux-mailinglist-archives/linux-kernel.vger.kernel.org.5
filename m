@@ -2,423 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CD07982FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 09:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB06E7982F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 08:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238856AbjIHHAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 03:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
+        id S242459AbjIHG7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 02:59:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234868AbjIHHAe (ORCPT
+        with ESMTP id S242386AbjIHG7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 03:00:34 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095D22117;
-        Thu,  7 Sep 2023 23:59:59 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38868URL020932;
-        Fri, 8 Sep 2023 06:59:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=slmJWCHXHROR/0qAT+qcBTllFiI5gDv5bKspclueavM=;
- b=bKl8CVEOffoajtpi2EEmcWdrs4/eHziFWQ5CDM7y+gI2TGtlFvCL8MaDygWhjz8NBxUY
- dL584hqAio7Aig1rbBXqH14ISvxTqDPIc7ekKYg8O84L7e0vXKfSP0LqztMiGZpxAugV
- hp0pLURwQO73STmmQTXujG+j7FfZITHPSuKqafdpo9bNZBttvfAZmJQitgqvcWLVAqWK
- ciqCDZ4yK3jK/6DE0Mi3Cqe0V9TcwuCjEnpY887i9LUfPNhvh2GIFIn5tec7GrhWDUEt
- nVUOjjdPG0ixr0fDstO9YHmyTza8keFCZW0+FFjPkBcNGlvcnqo3KXLFLGzhOvX3xXct GA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3syf5c1ytr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Sep 2023 06:59:54 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3886xrCE029812
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 8 Sep 2023 06:59:53 GMT
-Received: from tengfan2-gv.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Thu, 7 Sep 2023 23:59:44 -0700
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <tglx@linutronix.de>, <maz@kernel.org>, <lee@kernel.org>
-CC:     <robimarko@gmail.com>, <quic_gurus@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_tsoni@quicinc.com>,
-        <quic_shashim@quicinc.com>, <quic_kaushalk@quicinc.com>,
-        <quic_tdas@quicinc.com>, <quic_tingweiz@quicinc.com>,
-        <quic_aiquny@quicinc.com>, <kernel@quicinc.com>,
-        <quic_bjorande@quicinc.com>, Tengfei Fan <quic_tengfan@quicinc.com>
-Subject: [PATCH 6/6] arm64: dts: qcom: add uart console support for SM4450
-Date:   Fri, 8 Sep 2023 14:58:47 +0800
-Message-ID: <20230908065847.28382-7-quic_tengfan@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230908065847.28382-1-quic_tengfan@quicinc.com>
-References: <20230908065847.28382-1-quic_tengfan@quicinc.com>
+        Fri, 8 Sep 2023 02:59:44 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA7281BD8;
+        Thu,  7 Sep 2023 23:59:39 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-401d10e3e54so18413385e9.2;
+        Thu, 07 Sep 2023 23:59:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694156378; x=1694761178; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mjDLcllXuQB9fMiD1YO8Am5UOuvL3MHNOtNmYPG4ZJ8=;
+        b=p2FZWxbONSl1R86+/40cckBkJO9iPjm+zl9cZI6ppn9bNxotbGgUwVxz3Wx+RoMTDv
+         VIPI17r6bVHr/8F/1QP2J8Ss9zrjc2N3/5crv4EtTfrIGqBuQvNaWF1AyATuYUAvZp30
+         9MpM0tsRoLvmjaC2wchD3H/fBiCqRDADFcm4i05mcQvILYxefa3FtnjPb59RMQ2MC5Ke
+         kbwimWjiMNfpGOnTJdoHkIKYA+37umP3Wy6fPQZjbwhpFrF1gAVleGV35wUPhIHoqFvC
+         nFg/CiFRYS6mpFsieemt1yQCr81x1+Yhl0w6CeVw0mP7odplMXHSjwHCWJc0iu+4FPrh
+         4RZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694156378; x=1694761178;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mjDLcllXuQB9fMiD1YO8Am5UOuvL3MHNOtNmYPG4ZJ8=;
+        b=hayPoPrxhpX3cKxCxgi7YWwpdUYJ99FsJMAhneC8mvKhK9KjMx/QwnsLL1bJWvpSO3
+         So0k/3ZUO7ImcQ9Ktd3MVrgZ8FM+dX337omZq9x6lOeSxY60ZuvKLUgmuGlEL1mZjXJe
+         X8s3eX2hMtpdKmeCy9Bo7Log43R0EV+lKo1HpbqWZ9HfTZFRC+UK5WivXlozscz0xPsJ
+         dN+GkmNi3UX5kM+uzqccKD3KdRVH1w6KDmBFb4rUJ3pPLartsAMDwzgNkGiP0jigvUeC
+         8nU9TVoAiaOtuEv87bbiXUZ7JBBUqn/Yw1dcRFKCX/cVVwXemhA9MeKn0hka/WHr26JF
+         7aNg==
+X-Gm-Message-State: AOJu0YyuyXl4ytw0O7vQ4F7Ia7wb4VMY649Tphf0lvOBR+aQEq3Kyqsd
+        RSEO489n34fhQvWe48ondYs=
+X-Google-Smtp-Source: AGHT+IGM1JfDgyy/2dl6TEtwz/XvcIH37J3N2Fej+DS87LarA2/uYFOpOKc2ATIxC/1AxjCVyF/5iw==
+X-Received: by 2002:a05:6000:1081:b0:30e:3caa:971b with SMTP id y1-20020a056000108100b0030e3caa971bmr1187063wrw.51.1694156378079;
+        Thu, 07 Sep 2023 23:59:38 -0700 (PDT)
+Received: from [10.254.108.106] (munvpn.amd.com. [165.204.72.6])
+        by smtp.gmail.com with ESMTPSA id c16-20020a5d4150000000b00317a29af4b2sm1250339wrq.68.2023.09.07.23.59.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Sep 2023 23:59:37 -0700 (PDT)
+Message-ID: <c9f33bc8-85be-5234-5bc8-7f50abc2dadd@gmail.com>
+Date:   Fri, 8 Sep 2023 08:59:35 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: bxWEdiHoWVB2-E609tP_G10jbjHCHEAp
-X-Proofpoint-ORIG-GUID: bxWEdiHoWVB2-E609tP_G10jbjHCHEAp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-08_03,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 spamscore=0 lowpriorityscore=0 phishscore=0
- malwarescore=0 suspectscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309080062
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
+ to select the primary video adapter at boot time
+Content-Language: en-US
+To:     suijingfeng <suijingfeng@loongson.cn>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc:     nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org
+References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
+ <44ec8549-dc36-287e-4359-abd3ec8d22d6@suse.de>
+ <5afd2efb-f838-f9b7-02a9-2cf4d4fd2382@loongson.cn>
+ <2adfa653-ac35-d560-be52-c92848a1eef5@gmail.com>
+ <b51d49f3-e3de-6b8d-9cb4-df5c03f3cdc0@loongson.cn>
+ <10509692-ce04-e225-5a27-abc955554bdc@gmail.com>
+ <a9af88c5-4509-96ff-a7fd-a0f72d2f1e6a@linux.dev>
+ <127fab21-bc5c-f782-e42b-1092fbb8df34@amd.com>
+ <39736dad-41e3-8b24-ccef-ac3425a6c9f4@loongson.cn>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+In-Reply-To: <39736dad-41e3-8b24-ccef-ac3425a6c9f4@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add base description of UART, TLMM, interconnect, TCSRCC and SMMU nodes
-which helps SM4450 boot to shell with console on boards with this SoC.
+Am 07.09.23 um 18:33 schrieb suijingfeng:
+> Hi,
+>
+>
+> On 2023/9/7 17:08, Christian König wrote:
+>
+>
+>> I strongly suggest that you just completely drop this here 
+>
+>
+> Drop this is OK, no problem. Then I will go to develop something else.
+> This version is not intended to merge originally, as it's a RFC.
+> Also, the core mechanism already finished, it is the first patch in 
+> this series.
+> Things left are just policy (how to specify one and parse the kernel 
+> CMD line) and nothing interesting left.
+> It is actually to fulfill my promise at V3 which is to give some 
+> examples as usage cases.
+>
+>
+>> and go into the AST driver and try to fix it. 
+>
+> Well, someone tell me that this is well defined behavior yesterday,
+> which imply that it is not a bug. I'm not going to fix a non-bug.
 
-Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sm4450-qrd.dts |  14 +-
- arch/arm64/boot/dts/qcom/sm4450.dtsi    | 258 ++++++++++++++++++++++++
- 2 files changed, 270 insertions(+), 2 deletions(-)
+Sorry for that, I wasn't realizing what you are actually trying to do.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm4450-qrd.dts b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
-index 00a1c81ca397..bb8c58fb4267 100644
---- a/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
-+++ b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
-@@ -10,9 +10,19 @@
- 	model = "Qualcomm Technologies, Inc. SM4450 QRD";
- 	compatible = "qcom,sm4450-qrd", "qcom,sm4450";
- 
--	aliases { };
-+	aliases {
-+		serial0 = &uart7;
-+	};
- 
- 	chosen {
--		bootargs = "console=hvc0";
-+		stdout-path = "serial0:115200n8";
- 	};
- };
-+
-+&qupv3_id_0 {
-+	status = "okay";
-+};
-+
-+&uart7 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sm4450.dtsi b/arch/arm64/boot/dts/qcom/sm4450.dtsi
-index 2395b1d655a2..3af7255fca35 100644
---- a/arch/arm64/boot/dts/qcom/sm4450.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm4450.dtsi
-@@ -7,6 +7,8 @@
- #include <dt-bindings/clock/qcom,sm4450-gcc.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/interconnect/qcom,icc.h>
-+#include <dt-bindings/interconnect/qcom,sm4450.h>
- #include <dt-bindings/soc/qcom,rpmh-rsc.h>
- 
- / {
-@@ -262,6 +264,26 @@
- 		};
- 	};
- 
-+	firmware {
-+		scm: scm {
-+			compatible = "qcom,scm-sm4450", "qcom,scm";
-+			interconnects = <&aggre2_noc MASTER_CRYPTO 0 &mc_virt SLAVE_EBI1 0>;
-+			#reset-cells = <1>;
-+		};
-+	};
-+
-+	clk_virt: interconnect-0 {
-+		compatible = "qcom,sm4450-clk-virt";
-+		#interconnect-cells = <2>;
-+		qcom,bcm-voters = <&apps_bcm_voter>;
-+	};
-+
-+	mc_virt: interconnect-1 {
-+		compatible = "qcom,sm4450-mc-virt";
-+		#interconnect-cells = <2>;
-+		qcom,bcm-voters = <&apps_bcm_voter>;
-+	};
-+
- 	memory@a0000000 {
- 		device_type = "memory";
- 		/* We expect the bootloader to fill in the size */
-@@ -387,12 +409,118 @@
- 			clocks = <&rpmhcc RPMH_CXO_CLK>, <&sleep_clk>;
- 		};
- 
-+		qupv3_id_0: geniqup@ac0000 {
-+			compatible = "qcom,geni-se-qup";
-+			reg = <0x0 0x00ac0000 0x0 0x2000>;
-+			ranges;
-+			clock-names = "m-ahb", "s-ahb";
-+			clocks = <&gcc GCC_QUPV3_WRAP_0_M_AHB_CLK>,
-+				 <&gcc GCC_QUPV3_WRAP_0_S_AHB_CLK>;
-+			iommus = <&apps_smmu 0x163 0x0>;
-+			interconnects = <&clk_virt MASTER_QUP_CORE_0 0 &clk_virt SLAVE_QUP_CORE_0 0>;
-+			interconnect-names = "qup-core";
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			status = "disabled";
-+
-+			uart7: serial@a88000 {
-+				compatible = "qcom,geni-debug-uart";
-+				reg = <0 0x00a88000 0 0x4000>;
-+				clock-names = "se";
-+				clocks = <&gcc GCC_QUPV3_WRAP1_S2_CLK>;
-+				interrupts = <GIC_SPI 355 IRQ_TYPE_LEVEL_HIGH>;
-+				pinctrl-names = "default";
-+				pinctrl-0 = <&qup_uart7_tx>, <&qup_uart7_rx>;
-+				status = "disabled";
-+			};
-+		};
-+
-+		aggre1_noc: interconnect@16e0000 {
-+			tible = "qcom,sm4450-aggre1-noc";
-+			reg = <0 0x016e0000 0 0x1c080>;
-+			#interconnect-cells = <2>;
-+			clocks = <&gcc GCC_SDCC2_AHB_CLK>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		aggre2_noc: interconnect@1700000 {
-+			compatible = "qcom,sm4450-aggre2-noc";
-+			reg = <0 0x01700000 0 0x31080>;
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+			clocks = <&rpmhcc RPMH_IPA_CLK>,
-+				 <&gcc GCC_AGGRE_USB3_PRIM_AXI_CLK>;
-+		};
-+
-+		cnoc2: interconnect@1500000 {
-+			compatible = "qcom,sm4450-cnoc2";
-+			reg = <0 0x1500000 0 0x6200>;
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		cnoc3: interconnect@1510000 {
-+			compatible = "qcom,sm4450-cnoc3";
-+			reg = <0 0x01510000 0 0xF200>;
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		gem_noc: interconnect@19100000 {
-+			compatible = "qcom,sm4450-gem-noc";
-+			reg = <0 0x19100000 0 0xBC080>;
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		lpass_ag_noc: interconnect@3c40000 {
-+			compatible = "qcom,sm4450-lpass-ag-noc";
-+			reg = <0 0x3C40000 0 0x17200>;
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		mmss_noc: interconnect@1740000 {
-+			compatible = "qcom,sm4450-mmss-noc";
-+			reg = <0 0x1740000 0 0x19080>;
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		pcie_anoc: interconnect@16c0000 {
-+			compatible = "qcom,sm4450-pcie-anoc";
-+			reg = <0 0x16C0000 0 0x7080>;
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+			clocks = <&gcc GCC_AGGRE_NOC_PCIE_0_AXI_CLK>,
-+				 <&gcc GCC_CFG_NOC_PCIE_ANOC_AHB_CLK>;
-+		};
-+
-+		system_noc: interconnect@1680000 {
-+			compatible = "qcom,sm4450-system-noc";
-+			reg = <0 0x1680000 0 0x19080>;
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		video_aggre_noc: interconnect@1760000 {
-+			compatible = "qcom,sm4450-video-aggre-noc";
-+			reg = <0 0x1760000 0 0x1100>;
-+			#interconnect-cells = <2>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
- 		tcsr_mutex: hwlock@1f40000 {
- 			compatible = "qcom,tcsr-mutex";
- 			reg = <0x0 0x01f40000 0x0 0x40000>;
- 			#hwlock-cells = <1>;
- 		};
- 
-+		tcsr: syscon@1fc0000 {
-+			compatible = "qcom,sm4450-tcsr", "syscon";
-+			reg = <0x0 0x1fc0000 0x0 0x30000>;
-+		};
-+
- 		pdc: interrupt-controller@b220000 {
- 			compatible = "qcom,sm4450-pdc", "qcom,pdc";
- 			reg = <0 0x0b220000 0 0x30000>, <0 0x174000f0 0 0x64>;
-@@ -403,6 +531,109 @@
- 			interrupt-controller;
- 		};
- 
-+		apps_smmu: iommu@15000000 {
-+			compatible = "qcom,sm4450-smmu-500", "qcom,smmu-500", "arm,mmu-500";
-+			reg = <0 0x15000000 0 0x100000>;
-+			#iommu-cells = <2>;
-+			#global-interrupts = <1>;
-+			interrupts = <GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 104 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 181 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 182 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 185 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 186 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 189 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 190 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 191 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 192 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 315 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 316 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 317 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 318 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 319 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 320 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 321 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 322 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 323 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 324 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 325 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 326 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 327 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 328 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 329 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 330 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 331 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 332 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 333 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 334 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 335 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 336 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 337 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 338 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 339 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 340 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 341 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 342 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 343 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 344 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 395 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 396 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 397 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 398 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 399 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 400 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 401 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 402 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 403 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 404 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 405 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 406 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 407 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 408 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 409 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 412 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 418 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 419 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 421 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 423 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 424 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 670 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 690 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 691 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 692 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 707 IRQ_TYPE_LEVEL_HIGH>;
-+		};
-+
- 		intc: interrupt-controller@17200000 {
- 			compatible = "arm,gic-v3";
- 			reg = <0x0 0x17200000 0x0 0x10000>,     /* GICD */
-@@ -480,4 +711,31 @@
- 			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
- 			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>;
- 	};
-+
-+	tlmm: pinctrl@f100000 {
-+		compatible = "qcom,sm4450-tlmm";
-+		reg = <0 0x0f100000 0 0x300000>;
-+		interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
-+		gpio-ranges = <&tlmm 0 0 137>;
-+		wakeup-parent = <&pdc>;
-+
-+		qup_uart7_rx: qup-uart7-rx-state {
-+			pins = "gpio22";
-+			function = "qup1_se2_l2";
-+			drive-strength = <2>;
-+			bias-disable;
-+		};
-+
-+		qup_uart7_tx: qup-uart7-tx-state {
-+			pins = "gpio22";
-+			function = "qup1_se2_l2";
-+			drive-strength = <2>;
-+			bias-disable;
-+		};
-+	};
-+
- };
--- 
-2.17.1
+> But if thomas ask me to fix it, then I probably have to try to fix.
+> But I suggest if things not broken, don't fix it. Otherwise this may
+> incur more big trouble. For server's single display use case, it is
+> good enough.
+
+Yeah, exactly that's the reason why you shouldn't mess with this.
+
+In theory you could try to re-program the necessary north bridge blocks 
+to make integrated graphics work even if you installed a dedicated VGA 
+adapter, but you will most likely be missing something.
+
+The only real fix is to tell the BIOS that you want to use the 
+integrated VGA device even if a dedicated one is detected.
+
+If you want to learn more about the background AMD has a bunch of 
+documentation around this on their website: 
+https://www.amd.com/en/search/documentation/hub.html
+
+The most interesting document for you is probably the BIOS programming 
+manual, but don't ask me what exactly the title of that one. @Alex do 
+you remember what that was called?
+
+IIRC Intel had similar documentations public, but I don't know where to 
+find those of hand.
+
+Regards,
+Christian.
+
+>
+>
+> Thanks.
+>
 
