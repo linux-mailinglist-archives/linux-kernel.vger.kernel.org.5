@@ -2,97 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F397982E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 08:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD25D7982E5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 08:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237788AbjIHG63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 02:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43848 "EHLO
+        id S240054AbjIHG7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 02:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjIHG61 (ORCPT
+        with ESMTP id S229789AbjIHG7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 02:58:27 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E0519AE
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 23:58:24 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3ff7d73a6feso17887275e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 23:58:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694156302; x=1694761102; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IS7APAXWLyRKAmVXEey0BMtRb06oUTAybc0N4RvhQnc=;
-        b=KFK8tlXXPvW8nsUu32Blic3UJ+2pt2UH5jVJfkBU88QDxKP2v5v86dgzKUXXWHzdow
-         q7qk6eJ2ibm3nKUcFdsTCrFMTxsqyWl+5oBqlmug9uL19xxbwOo1fSdYFUYkin+okocp
-         4Y3kH2s5KQOgPcGvxVE+VtRUKY/i1HKYfwsPIXvdNOrFzoGtxh7xuF30OZ1qzRjSvtRO
-         Q+Sl47pnla576a9pWNmAvGTniOwcUM6ggaKx62+1V6FXXAVHmR1aCw4pVWLqlyEpbKxz
-         2/CmS1x9xWmTZdi8GjM6OtQzBXtb8ml4aAqJGVraEy18wDUaqszEPZ15vpNYpXw4vm1p
-         +yzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694156302; x=1694761102;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IS7APAXWLyRKAmVXEey0BMtRb06oUTAybc0N4RvhQnc=;
-        b=AHvzG/iMp8Wl1kCPS/xDDWsYjlNZtIQF2ywIHzlRCFwo3jaXZIPxgBj3jbvvYl7xTM
-         r9FIbQCpVLRGdy59EgBJfh4fXxLgfzxaKHEy2BQZ0gmjgKHSubXPJ1UDDBsrUIE54FDf
-         28DHvdFACuAZZ6rITch0orirHGD7QEpF93DSlKrwLTph2d0X579izftIjJsJFVZWF6YG
-         4yCFl9BkAcPlEsK+2a+qXtni92aNAqEjHyn43Kn52jz6kfgleN82x6ZtsHCe0xSU/NMD
-         FSqUTVOivVzJdrTuztFfbSxUP7giwae2TrLr8J1nuQ+qI1eiWUEFgFxARIfRorOz13bL
-         CygA==
-X-Gm-Message-State: AOJu0Yzxl/UThGJBPsrlV1Eg4yA4xZdMvnO5MKSSiid4Rg65s1N0CZnC
-        2mWFr+Zp+NFjdWjKE1VW5IQYOw==
-X-Google-Smtp-Source: AGHT+IEZV1Q27i9G8hEK5mZxwqpxrF/pwUjpH/zY9fyCoVx23TMN0b8UA/eU3imtpk7CgnINvQq+qw==
-X-Received: by 2002:a05:600c:2483:b0:401:d2cb:e6f3 with SMTP id 3-20020a05600c248300b00401d2cbe6f3mr1573418wms.1.1694156302156;
-        Thu, 07 Sep 2023 23:58:22 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id l23-20020a1c7917000000b003fe17901fcdsm4361670wme.32.2023.09.07.23.58.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 23:58:21 -0700 (PDT)
-Date:   Fri, 8 Sep 2023 09:58:18 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net] net: ethernet: mtk_eth_soc: fix uninitialized
- variable
-Message-ID: <8a7f79be-e775-48ce-9eff-afa399e560d7@kadam.mountain>
-References: <9918f1ae-5604-4bdc-a654-e0566ca77ad6@moroto.mountain>
- <51d1ae238aecde07b2b4fe02cdab0dc87287cd96.1694099183.git.daniel@makrotopia.org>
+        Fri, 8 Sep 2023 02:59:38 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F96510CF;
+        Thu,  7 Sep 2023 23:59:34 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3886Hcks005785;
+        Fri, 8 Sep 2023 06:59:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=0dh/W+s/vNwtSwiNENXAoa02cSlrDOw2zJYmcRo7rkE=;
+ b=RoqacNWPpZs8v7Ohd/mOSh32Izx+mkMj7KIW2lDZ+2fY636rgJTvDYuwL9mtnj5ndceS
+ rdqvr0/549o8ncnW2dHG1yFyvgYYT29agR1QZ0UF++ZYZpBZqDaXgrADM6IOnA/VAPgJ
+ w1GxDIpzleof8LlV1ivhpiDbblFl9V7qarCGG3DeIbRd191kgKZP/uU5P1GJjaw5CVHI
+ kOiLTFa8/w/RzZhOgSHxONTSanR+sW2Ede4bz8gyZOMArUjSFZ2CifCH4qrzCBMP4eWh
+ T+sH01DbKwigEDLisaVSafL0dE+cguASS4qo8IGwdw6Bq8VK3R1Y4J8jpp7kflpXFt3m mA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3synyq8xbb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Sep 2023 06:59:19 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3886xI6h013472
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 8 Sep 2023 06:59:18 GMT
+Received: from tengfan2-gv.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Thu, 7 Sep 2023 23:59:10 -0700
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <tglx@linutronix.de>, <maz@kernel.org>, <lee@kernel.org>
+CC:     <robimarko@gmail.com>, <quic_gurus@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_tsoni@quicinc.com>,
+        <quic_shashim@quicinc.com>, <quic_kaushalk@quicinc.com>,
+        <quic_tdas@quicinc.com>, <quic_tingweiz@quicinc.com>,
+        <quic_aiquny@quicinc.com>, <kernel@quicinc.com>,
+        <quic_bjorande@quicinc.com>, Tengfei Fan <quic_tengfan@quicinc.com>
+Subject: [PATCH 0/6] soc: qcom: Add uart console support for SM4450
+Date:   Fri, 8 Sep 2023 14:58:41 +0800
+Message-ID: <20230908065847.28382-1-quic_tengfan@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51d1ae238aecde07b2b4fe02cdab0dc87287cd96.1694099183.git.daniel@makrotopia.org>
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: riN0Ch_Ab_oeiIIUoPg5R6Yg9suvTYNF
+X-Proofpoint-GUID: riN0Ch_Ab_oeiIIUoPg5R6Yg9suvTYNF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-08_03,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ spamscore=0 clxscore=1011 malwarescore=0 priorityscore=1501 suspectscore=0
+ mlxlogscore=649 impostorscore=0 phishscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309080062
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 07, 2023 at 04:14:20PM +0100, Daniel Golle wrote:
-> Variable dma_addr in function mtk_poll_rx can be uninitialized on
-> some of the error paths. In practise this doesn't matter, even random
-> data present in uninitialized stack memory can safely be used in the
-> way it happens in the error path.
+This series add base description of UART, TLMM, interconnect, TCSRCC
+RPMHCC, GCC, RPMh PD and SMMU nodes which helps SM4450 boot to shell
+with console on boards with this SoC.
 
-KMemsan can detect unintialized memory at runtime as well.  But
-presumably no one runs that on production systems.
+This patch series depends on below patch series:
+"[PATCH 0/4] clk: qcom: Add support for GCC and RPMHCC on SM4450"
+https://lore.kernel.org/linux-arm-msm/20230824173410.550126-1-quic_ajipan@quicinc.com/
+"[PATCH 0/3] pinctl: qcom: Add SM4450 pinctrl driver"
+https://lore.kernel.org/linux-arm-msm/20230908063843.26835-1-quic_tengfan@quicinc.com/
+"[PATCH 0/3] interconnect: qcom: Add SM4450 interconnect driver"
+https://lore.kernel.org/linux-arm-msm/20230908064427.26999-1-quic_tengfan@quicinc.com/
 
-regards,
-dan carpenter
+Ajit Pandey (2):
+  arm64: dts: qcom: sm4450: Add apps_rsc and cmd_db node
+  arm64: dts: qcom: sm4450: Add RPMH and Global clock controller
+
+Tengfei Fan (4):
+  dt-bindings: firmware: document Qualcomm SM4450 SCM
+  dt-bindings: mfd: qcom,tcsr: Add compatible for sm4450
+  dt-bindings: interrupt-controller: qcom,pdc: document qcom,sm4450-pdc
+  arm64: dts: qcom: add uart console support for SM4450
+
+ .../bindings/firmware/qcom,scm.yaml           |   3 +
+ .../interrupt-controller/qcom,pdc.yaml        |   1 +
+ .../devicetree/bindings/mfd/qcom,tcsr.yaml    |   1 +
+ arch/arm64/boot/dts/qcom/sm4450-qrd.dts       |  14 +-
+ arch/arm64/boot/dts/qcom/sm4450.dtsi          | 310 ++++++++++++++++++
+ 5 files changed, 327 insertions(+), 2 deletions(-)
+
+
+base-commit: a47fc304d2b678db1a5d760a7d644dac9b067752
+-- 
+2.17.1
 
