@@ -2,46 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1ED798C91
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81475798C6F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 20:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245570AbjIHSRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 14:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52106 "EHLO
+        id S245583AbjIHSQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 14:16:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343734AbjIHSRM (ORCPT
+        with ESMTP id S239618AbjIHSQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:17:12 -0400
+        Fri, 8 Sep 2023 14:16:11 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD8B2135;
-        Fri,  8 Sep 2023 11:16:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18260C433C8;
-        Fri,  8 Sep 2023 18:03:29 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD8B1FF9;
+        Fri,  8 Sep 2023 11:15:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2CF6C433BF;
+        Fri,  8 Sep 2023 18:03:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196211;
-        bh=11OU4XNU4n5z9KKkA2xS9EE12kjOD0DfMQHKXNk2Nr0=;
+        s=k20201202; t=1694196212;
+        bh=HhWUwEdsg2b6uJbdXtwyVBiqwyeaWbTJV1DNjSY1nFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=clsSwTI/FfYJng+5pjXiRZEAyQBgPA9x0iLnTsyTvnLEeaIvXXqsnnkaQi70liyp8
-         baPn5POv2eR93fvJZpkcMPby1PrmKMCy2KiXBSaAWj4kAyqANCqpd10eT1sMVOij0P
-         RKnFMmtVldsf2L0paUM7zh6GKM2bQRi2LFa5ZekyvpbWDjHnRTEYQfkUNspKlBEnf1
-         sVW6jhKtTe6+n0tj+z1kXnPP9GnSokl4zaCMrzRd84g0Vry7LMOa8ouiQkeslddBp8
-         lUo89jDrLFDALEkjY0HTuBy/FrG1+eIp8kQ0QEkOYHpLL3bpUWqJ+V+m9YlT7ThkZp
-         XofDPl95ZKrIA==
+        b=SigM5evV6tlpEql6eFyx7ti02kTFemvBK+DZJ1i253XDBRtdISp8BCPRxJ3U6hC51
+         PpSx9UpfKVrKDnIrAeStPF0ZSlNXZTBREFeCWKYnctnq9QwGubD5/Um46BdGQREbHe
+         Cl3OZBnsBtPoPBETCzk7CM/l3RIWZL/Ok5qZmA8ZKQ1lIO9GU8obsHGIiUrRXBpy4W
+         raKPZ5PpLRFW7jiCLeQ3IknAG8i8WJCUdQkEU+tJ4iPNCTc2q4YgN29zP6myhc0Mk+
+         9204uLtTtLfME4bEyhC383PM1tVZQoMK6y7ivj+geGuC/i7Hfa7FXlbZWmu08GWIDo
+         lhzccD75pFwvQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wander Lairson Costa <wander@redhat.com>,
-        Hu Chunyu <chuhu@redhat.com>, Oleg Nesterov <oleg@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>, brauner@kernel.org,
-        mst@redhat.com, michael.christie@oracle.com,
-        wangkefeng.wang@huawei.com, akpm@linux-foundation.org,
-        surenb@google.com, Liam.Howlett@oracle.com,
-        mathieu.desnoyers@efficios.com, npiggin@gmail.com,
-        mjguzik@gmail.com, avagin@gmail.com
-Subject: [PATCH AUTOSEL 5.10 2/8] kernel/fork: beware of __put_task_struct() calling context
-Date:   Fri,  8 Sep 2023 14:03:13 -0400
-Message-Id: <20230908180320.3458596-2-sashal@kernel.org>
+Cc:     Zqiang <qiang.zhang1211@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, dave@stgolabs.net,
+        josh@joshtriplett.org, frederic@kernel.org,
+        quic_neeraju@quicinc.com, joel@joelfernandes.org,
+        boqun.feng@gmail.com, rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 3/8] rcuscale: Move rcu_scale_writer() schedule_timeout_uninterruptible() to _idle()
+Date:   Fri,  8 Sep 2023 14:03:14 -0400
+Message-Id: <20230908180320.3458596-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230908180320.3458596-1-sashal@kernel.org>
 References: <20230908180320.3458596-1-sashal@kernel.org>
@@ -59,126 +55,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wander Lairson Costa <wander@redhat.com>
+From: Zqiang <qiang.zhang1211@gmail.com>
 
-[ Upstream commit d243b34459cea30cfe5f3a9b2feb44e7daff9938 ]
+[ Upstream commit e60c122a1614b4f65b29a7bef9d83b9fd30e937a ]
 
-Under PREEMPT_RT, __put_task_struct() indirectly acquires sleeping
-locks. Therefore, it can't be called from an non-preemptible context.
+The rcuscale.holdoff module parameter can be used to delay the start
+of rcu_scale_writer() kthread.  However, the hung-task timeout will
+trigger when the timeout specified by rcuscale.holdoff is greater than
+hung_task_timeout_secs:
 
-One practical example is splat inside inactive_task_timer(), which is
-called in a interrupt context:
+runqemu kvm nographic slirp qemuparams="-smp 4 -m 2048M"
+bootparams="rcuscale.shutdown=0 rcuscale.holdoff=300"
 
-  CPU: 1 PID: 2848 Comm: life Kdump: loaded Tainted: G W ---------
-   Hardware name: HP ProLiant DL388p Gen8, BIOS P70 07/15/2012
-   Call Trace:
-   dump_stack_lvl+0x57/0x7d
-   mark_lock_irq.cold+0x33/0xba
-   mark_lock+0x1e7/0x400
-   mark_usage+0x11d/0x140
-   __lock_acquire+0x30d/0x930
-   lock_acquire.part.0+0x9c/0x210
-   rt_spin_lock+0x27/0xe0
-   refill_obj_stock+0x3d/0x3a0
-   kmem_cache_free+0x357/0x560
-   inactive_task_timer+0x1ad/0x340
-   __run_hrtimer+0x8a/0x1a0
-   __hrtimer_run_queues+0x91/0x130
-   hrtimer_interrupt+0x10f/0x220
-   __sysvec_apic_timer_interrupt+0x7b/0xd0
-   sysvec_apic_timer_interrupt+0x4f/0xd0
-   asm_sysvec_apic_timer_interrupt+0x12/0x20
-   RIP: 0033:0x7fff196bf6f5
+[  247.071753] INFO: task rcu_scale_write:59 blocked for more than 122 seconds.
+[  247.072529]       Not tainted 6.4.0-rc1-00134-gb9ed6de8d4ff #7
+[  247.073400] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  247.074331] task:rcu_scale_write state:D stack:30144 pid:59    ppid:2      flags:0x00004000
+[  247.075346] Call Trace:
+[  247.075660]  <TASK>
+[  247.075965]  __schedule+0x635/0x1280
+[  247.076448]  ? __pfx___schedule+0x10/0x10
+[  247.076967]  ? schedule_timeout+0x2dc/0x4d0
+[  247.077471]  ? __pfx_lock_release+0x10/0x10
+[  247.078018]  ? enqueue_timer+0xe2/0x220
+[  247.078522]  schedule+0x84/0x120
+[  247.078957]  schedule_timeout+0x2e1/0x4d0
+[  247.079447]  ? __pfx_schedule_timeout+0x10/0x10
+[  247.080032]  ? __pfx_rcu_scale_writer+0x10/0x10
+[  247.080591]  ? __pfx_process_timeout+0x10/0x10
+[  247.081163]  ? __pfx_sched_set_fifo_low+0x10/0x10
+[  247.081760]  ? __pfx_rcu_scale_writer+0x10/0x10
+[  247.082287]  rcu_scale_writer+0x6b1/0x7f0
+[  247.082773]  ? mark_held_locks+0x29/0xa0
+[  247.083252]  ? __pfx_rcu_scale_writer+0x10/0x10
+[  247.083865]  ? __pfx_rcu_scale_writer+0x10/0x10
+[  247.084412]  kthread+0x179/0x1c0
+[  247.084759]  ? __pfx_kthread+0x10/0x10
+[  247.085098]  ret_from_fork+0x2c/0x50
+[  247.085433]  </TASK>
 
-Instead of calling __put_task_struct() directly, we defer it using
-call_rcu(). A more natural approach would use a workqueue, but since
-in PREEMPT_RT, we can't allocate dynamic memory from atomic context,
-the code would become more complex because we would need to put the
-work_struct instance in the task_struct and initialize it when we
-allocate a new task_struct.
+This commit therefore replaces schedule_timeout_uninterruptible() with
+schedule_timeout_idle().
 
-The issue is reproducible with stress-ng:
-
-  while true; do
-      stress-ng --sched deadline --sched-period 1000000000 \
-	      --sched-runtime 800000000 --sched-deadline \
-	      1000000000 --mmapfork 23 -t 20
-  done
-
-Reported-by: Hu Chunyu <chuhu@redhat.com>
-Suggested-by: Oleg Nesterov <oleg@redhat.com>
-Suggested-by: Valentin Schneider <vschneid@redhat.com>
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Wander Lairson Costa <wander@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20230614122323.37957-2-wander@redhat.com
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/sched/task.h | 28 +++++++++++++++++++++++++++-
- kernel/fork.c              |  8 ++++++++
- 2 files changed, 35 insertions(+), 1 deletion(-)
+ kernel/rcu/rcuscale.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-index e8304e929e283..de21a45a4ee7d 100644
---- a/include/linux/sched/task.h
-+++ b/include/linux/sched/task.h
-@@ -110,10 +110,36 @@ static inline struct task_struct *get_task_struct(struct task_struct *t)
- }
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index 6c05365ed80fc..3b9783eda6796 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -372,7 +372,7 @@ rcu_scale_writer(void *arg)
+ 	sched_set_fifo_low(current);
  
- extern void __put_task_struct(struct task_struct *t);
-+extern void __put_task_struct_rcu_cb(struct rcu_head *rhp);
+ 	if (holdoff)
+-		schedule_timeout_uninterruptible(holdoff * HZ);
++		schedule_timeout_idle(holdoff * HZ);
  
- static inline void put_task_struct(struct task_struct *t)
- {
--	if (refcount_dec_and_test(&t->usage))
-+	if (!refcount_dec_and_test(&t->usage))
-+		return;
-+
-+	/*
-+	 * under PREEMPT_RT, we can't call put_task_struct
-+	 * in atomic context because it will indirectly
-+	 * acquire sleeping locks.
-+	 *
-+	 * call_rcu() will schedule delayed_put_task_struct_rcu()
-+	 * to be called in process context.
-+	 *
-+	 * __put_task_struct() is called when
-+	 * refcount_dec_and_test(&t->usage) succeeds.
-+	 *
-+	 * This means that it can't "conflict" with
-+	 * put_task_struct_rcu_user() which abuses ->rcu the same
-+	 * way; rcu_users has a reference so task->usage can't be
-+	 * zero after rcu_users 1 -> 0 transition.
-+	 *
-+	 * delayed_free_task() also uses ->rcu, but it is only called
-+	 * when it fails to fork a process. Therefore, there is no
-+	 * way it can conflict with put_task_struct().
-+	 */
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT) && !preemptible())
-+		call_rcu(&t->rcu, __put_task_struct_rcu_cb);
-+	else
- 		__put_task_struct(t);
- }
- 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 31455f5ab015a..633b0af1d1a73 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -745,6 +745,14 @@ void __put_task_struct(struct task_struct *tsk)
- }
- EXPORT_SYMBOL_GPL(__put_task_struct);
- 
-+void __put_task_struct_rcu_cb(struct rcu_head *rhp)
-+{
-+	struct task_struct *task = container_of(rhp, struct task_struct, rcu);
-+
-+	__put_task_struct(task);
-+}
-+EXPORT_SYMBOL_GPL(__put_task_struct_rcu_cb);
-+
- void __init __weak arch_task_cache_init(void) { }
- 
- /*
+ 	/*
+ 	 * Wait until rcu_end_inkernel_boot() is called for normal GP tests
 -- 
 2.40.1
 
