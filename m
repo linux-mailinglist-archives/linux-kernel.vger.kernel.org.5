@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B48657992AB
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 01:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF527992AF
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 01:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbjIHXIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 19:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
+        id S244137AbjIHXJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 19:09:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235142AbjIHXIb (ORCPT
+        with ESMTP id S231314AbjIHXJv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 19:08:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F791FE5;
-        Fri,  8 Sep 2023 16:08:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32BB2C433C9;
-        Fri,  8 Sep 2023 23:08:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694214507;
-        bh=salNxs9lLXGL2pFylW72b0vqlDDT0L/9nFvYDSD1rbU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S8RRs1uHRBIPCSTgHYjQtew/XHYwhLMbUDo9UgQCZZo4Iv+G749bzuWbRhOSCfZWs
-         vTgCcTxEILQTlnhn+v/7D+m+21hTND3K4hCQEIis9xxqUs+/+TSLtfdcyrAMQR8QvC
-         p4MOqgPKvYAZxSbAPBvnfveCl2jjCsYfjaLPHBACeKVN7oBdkG2btDt1gTC/W9Pcsc
-         jLEhhB2k6Q2dwNSjWgwOClW10q80c+PFz68ZqpNrbWi+1CH+Dm0+zNzp6pBrsEz4p8
-         kLX9ttCPsV9qZReNG+0ipRr4Lh75Jqjzh6/0iZkSWksXQFLSUYiguoO/OkL9OvhC77
-         +kkmLFojF97ag==
-Date:   Sat, 9 Sep 2023 00:08:22 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
-        <nfraprado@collabora.com>
-Cc:     Takashi Iwai <tiwai@suse.com>, kernel@collabora.com,
-        Jaroslav Kysela <perex@perex.cz>,
-        Shuah Khan <shuah@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] kselftest/alsa: Mark test plan as skipped when no cards
- are available
-Message-ID: <0fa0901e-d271-438d-bc2b-11399ad3b07c@sirena.org.uk>
-References: <20230908181242.95714-1-nfraprado@collabora.com>
+        Fri, 8 Sep 2023 19:09:51 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA5B1FE5;
+        Fri,  8 Sep 2023 16:09:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=r7DXMMG8lphyN1UYT/bdqivjwbJYfjhTJFNgrVjQWJQ=; b=MIVUvcTZhlZQmiAIATHfNHIKVO
+        CJhnk788m6vic6dye+YMPr2UEzzGxKosZEX2+BqKuM1BdlPQHPzRQGrzmxqKTMBxHDr+ZJXS97qeQ
+        xHOnlbO/94akhRCatQ2Zc4pKvw0UH3SbzYruUX/iHZ7JvTS3CIk6ibVxkAuEIAR6rNwgGBBkFnaTp
+        l0l/Zx28gD/dgjZ3owAYXUGk99MlNFCC8/XAV4IhQ1vo9bIAiyU33YEAtMy+Y/zEMzzRoqQa5SRuW
+        zI5XMt1bdzbGutzevigArC3YwxvoAtfLqduxeK7zoWa7mx/vtfv4+scIKgHUDxSEcpP8ujhTnAV+K
+        IMz7pbQw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qekbf-00Efj4-2D;
+        Fri, 08 Sep 2023 23:09:43 +0000
+Date:   Fri, 8 Sep 2023 16:09:43 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable <stable@kernel.org>,
+        Stefan Lippers-Hollmann <s.l-h@gmx.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, linux-media@vger.kernel.org,
+        linux-modules@vger.kernel.org
+Subject: Re: [PATCH] media: dvb: symbol fixup for dvb_attach()
+Message-ID: <ZPupt66Ue9PutjTK@bombadil.infradead.org>
+References: <20230908092035.3815268-2-gregkh@linuxfoundation.org>
+ <ZPtKCc2PLi0wdR2+@bombadil.infradead.org>
+ <2023090852-stoppable-jackpot-549f@gregkh>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gtB/MfxvGH0d09GU"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230908181242.95714-1-nfraprado@collabora.com>
-X-Cookie: My EARS are GONE!!
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <2023090852-stoppable-jackpot-549f@gregkh>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,34 +56,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 08, 2023 at 05:35:07PM +0100, Greg Kroah-Hartman wrote:
+> On Fri, Sep 08, 2023 at 09:21:29AM -0700, Luis Chamberlain wrote:
+> > On Fri, Sep 08, 2023 at 10:20:36AM +0100, Greg Kroah-Hartman wrote:
+> > > In commit 9011e49d54dc ("modules: only allow symbol_get of
+> > > EXPORT_SYMBOL_GPL modules") the use of symbol_get is properly restricted
+> > > to GPL-only marked symbols.  This interacts oddly with the DVB logic
+> > > which only uses dvb_attach() to load the dvb driver which then uses
+> > > symbol_get().
+> > > 
+> > > Fix this up by properly marking all of the dvb_attach attach symbols as
+> > > EXPORT_SYMBOL_GPL().
+> > > 
+> > > Fixes: 9011e49d54dc ("modules: only allow symbol_get of EXPORT_SYMBOL_GPL modules")
+> > > Cc: stable <stable@kernel.org>
+> > > Reported-by: Stefan Lippers-Hollmann <s.l-h@gmx.de>
+> > > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > > Cc: Luis Chamberlain <mcgrof@kernel.org>
+> > > Cc: Christoph Hellwig <hch@lst.de>
+> > > Cc: linux-media@vger.kernel.org
+> > > Cc: linux-modules@vger.kernel.org
+> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > ---
+> > > Luis, do you want to take this through your tree?  Or Mauro's?  Or I can
+> > > take it through mine, it should get to Linus soon as this is causing
+> > > regressions in his tree.
+> > 
+> > You've done the work so it is up to you, whatever helps you expedite it
+> > as it already hit stable. Feel free to take it through your tree.
+> 
+> If you ack it, I can take it now through my tree and send it to Linus
+> tomorrow.
 
---gtB/MfxvGH0d09GU
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sorry for the delay:
 
-On Fri, Sep 08, 2023 at 02:12:40PM -0400, N=EDcolas F. R. A. Prado wrote:
-> When no soundcards are available, it won't be possible to run any tests.
-> Currently, when this happens, in both pcm-test and mixer-test, 0
-> tests are reported, and the pass exit code is returned. Instead, call
-> ksft_exit_skip() so that the whole test plan is marked as skipped in the
-> KTAP output and it exits with the skip exit code.
+Acked-by Luis Chamberlain <mcgrof@kernel.org>
 
-Why?
-
---gtB/MfxvGH0d09GU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmT7qWUACgkQJNaLcl1U
-h9CVNgf/bknC546PS9Qi9kytQmrmnRIck4p3/Yv2zeKVVypqZ+T9VGGd45Z5yOtF
-lRcilGo976cR1/xT4LFNuDyrUIM9d3fqf5HSQ0RT5UlYnJ1YExjD5DZvdZsqRr9C
-79g6q2UjiLMqarkMkiML1b3+w5pgJqPp5gpHtMuFl/aTWO1js0SXiJYEvnm7g8p1
-gjApPBitF8CVuS9XzqR0caAPUBkJSfRqWfVJYNQXnuF9+/bzZa+qChKjOxZ7GMY1
-328IIC47xB/5Yu8N672MYqwmtN4PF0lxXGH8l0/5SC4NHAs36XK+Kdwr5hE5nzwo
-q4w0VkZAwxSF3wCCH1LNKkGnVDmXeQ==
-=Shz6
------END PGP SIGNATURE-----
-
---gtB/MfxvGH0d09GU--
+  Luis
