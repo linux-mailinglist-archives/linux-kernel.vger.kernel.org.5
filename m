@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A681E79883F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC91798843
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 16:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243524AbjIHOEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 10:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
+        id S243692AbjIHOG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 10:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233484AbjIHOEC (ORCPT
+        with ESMTP id S233484AbjIHOG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 10:04:02 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530781BF1
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:03:58 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-573f8afe1d9so1577803a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 07:03:58 -0700 (PDT)
+        Fri, 8 Sep 2023 10:06:57 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA15113E
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 07:06:52 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6bf2427b947so1473618a34.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 07:06:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bisdn-de.20230601.gappssmtp.com; s=20230601; t=1694181838; x=1694786638; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U2jvztty3xt2xqRdD6cfGGolwNPuHAE+YuTfrjsOWm8=;
-        b=k/ayXSOt+KDeq9unA2uzfzRbj+UTbtlf25/kwk3ZiLn6+pcjRVzkw0twErt2bwE2QL
-         vwZCFnKGNKwdcUu37O3sa8VNo1IC99N8CZqH+PX9C9n10EoEYxCJkCVIYcKNeY+1Yetn
-         ia3hZSSwvG7kaLCkyD2q0jvsMVaDeBOuCiZiDiwSLx/kLDtddgfboXO9L61T4C22/6Xd
-         F/Fw5vHAGQ2GXtF9UbmG/DMF/IYv0sAHYefL+GhHeDWLKlaF6lQ8cuYYSZ11BPTQnRCv
-         1tj0MptX869YToix7JiUXO5wfRYg6g0QBi15OrAw+YzwiqWU6SqKLoRPmu1APxq73mwM
-         vJBg==
+        d=linuxtx.org; s=google; t=1694182012; x=1694786812; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=vyG3UChShGVJO9DWooQ063oFbpwzovAkingO0YTtxfI=;
+        b=UPquD9Mpugp7mq/Z/taIlRo25AzGdeGL1C7LJlmygu4HPzinhfv/27mgKD9yvrIaJd
+         pFR5QiEHtcDkY4M1is5oWDjErIhrJhgg2+qt7FMsOYGBcEBaEoKLNfHNWpTEuNZRXoxp
+         JilXAz/SonvpnaqR+nxiPKi6I9SM1GRACnxkg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694181838; x=1694786638;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U2jvztty3xt2xqRdD6cfGGolwNPuHAE+YuTfrjsOWm8=;
-        b=RX5t8H0VOFLD9vGB3YwBMWaAlfqnFwVrXjYicxKVE76VRZznGhnQqpp4mEk8uWKp3X
-         6cdFcvABcaO4Kav1oAKPYmrqGRiSly+myv2IzO6d5U800XYINgLIdsHZX821LjPvJssO
-         wwR15hejJoV5RD6iHOQYShyLMu8LUhuuqJRk6zEZYpmF5yo+/uqQkm0o7ZbCPeHckol1
-         14rxzmBbYSyYFpCnUJAfw0CwOUxOdWmBsvd05feX1wPter2M58rM7eNJwU9RtLY+mPj7
-         UAM2ybrL6axBYqZ0bjgKKbNcSVESHTB/CN6yI37silNrysu4KvAxAYLBxeSgGG76V/pd
-         0MTg==
-X-Gm-Message-State: AOJu0YwvMHLcI36kRX8xORE9AAXCVIuBG+tcpWvuUKSHwK1oHaGFQ1tB
-        TsbNMc2X11p/0pMksHIqCentlMCf2/arelwwG14FVSsVdfxOzcmrU0VIiB1771ZUMLONtt8G0I0
-        nlbbRk2FYYlXsTNFJ1vTS1V4YqON+vryygg==
-X-Google-Smtp-Source: AGHT+IFubqKICpsm4d0x1yCcLZWU0qkze1b5oT/J2zmu/5mc/iRlrnTk0M1kh+WZEoNCX34AwFqGsl3UdlU+a9TtVQA=
-X-Received: by 2002:a17:90b:4a10:b0:26d:1a46:1646 with SMTP id
- kk16-20020a17090b4a1000b0026d1a461646mr2389383pjb.48.1694181837747; Fri, 08
- Sep 2023 07:03:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694182012; x=1694786812;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vyG3UChShGVJO9DWooQ063oFbpwzovAkingO0YTtxfI=;
+        b=PYhnp7EG+OOuFNU5Gpl5p9ZbgYu2+BQk17tiNnMfo0w27glxw/AVVcLMVUFDhUxpZA
+         YZGfw1RapgN12ijQQlwJ2jtOXzVQubVMkP//Vs+BMW4FTSfcmhXu3D60tgGSJXPqHk6a
+         GEcQJIKhtAGZYIoZd6q9XUKDC+w9FNG1zdTKBFEZPw0hX54kc0vmxU11qQdNZfczMfm/
+         2ScJKWdiDz76CiEw8Vn198CLSW4YAx+lYtx76GwZfIiqtLVeC2tc6Ji38y39xcSnSgrz
+         a2eAVR38wNky/Ea25JIk6E6hiOEYw9TVvXj8Sm+7TopzLpB9in6sbiPOg33wDfemQOmQ
+         xe5Q==
+X-Gm-Message-State: AOJu0YxPymGyPh7733+55acN48Z1av+8+kzZZf4fUXR/Z6MHQynhVDu7
+        eMSPAPTMUcAOwJ6okCRe2muFmCTcXqROin3ukmnVYJn6
+X-Google-Smtp-Source: AGHT+IGlGpMT8eP8hzLgjD/uwE/TSjN7En/WrHjfpuEMHJFNGdbQGIXNb7JhD/YORyT0OudSoOQaQg==
+X-Received: by 2002:a05:6830:20ce:b0:6be:e447:dbd with SMTP id z14-20020a05683020ce00b006bee4470dbdmr2639358otq.22.1694182012202;
+        Fri, 08 Sep 2023 07:06:52 -0700 (PDT)
+Received: from fedora64.linuxtx.org ([99.47.93.78])
+        by smtp.gmail.com with ESMTPSA id s23-20020a0568301e1700b006b8c6eb962esm705759otr.52.2023.09.08.07.06.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Sep 2023 07:06:51 -0700 (PDT)
+Sender: Justin Forbes <jmforbes@linuxtx.org>
+From:   "Justin M. Forbes" <jforbes@fedoraproject.org>
+To:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Ivan Orlov <ivan.orlov0322@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jmforbes@linuxtx.org,
+        "Justin M. Forbes" <jforbes@fedoraproject.org>
+Subject: [PATCH] Fix typo in tpmrm class definition
+Date:   Fri,  8 Sep 2023 09:06:29 -0500
+Message-ID: <20230908140629.2930150-1-jforbes@fedoraproject.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230904090005.52622-1-jonas.gorski@bisdn.de> <20230905225338.g76dqf3a26dnnzxx@zenone.zhora.eu>
-In-Reply-To: <20230905225338.g76dqf3a26dnnzxx@zenone.zhora.eu>
-From:   Jonas Gorski <jonas.gorski@bisdn.de>
-Date:   Fri, 8 Sep 2023 16:03:46 +0200
-Message-ID: <CAJpXRYR+yUe4jGgNMOjbK3YALwkJp8vr9=1hH04FHWW-TcRGtA@mail.gmail.com>
-Subject: Re: [PATCH] i2c: iproc: reset bus after timeout if START_BUSY is stuck
-To:     Andi Shyti <andi.shyti@kernel.org>
-Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Kevin Cernekee <cernekee@chromium.org>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,109 +72,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Commit d2e8071bed0be ("tpm: make all 'class' structures const")
+unfortunately had a typo for the name on tpmrm.
 
-Am Mi., 6. Sept. 2023 um 00:53 Uhr schrieb Andi Shyti <andi.shyti@kernel.or=
-g>:
->
-> Hi Jonas,
->
-> On Mon, Sep 04, 2023 at 11:00:04AM +0200, Jonas Gorski wrote:
-> > If a transaction times out, the START_BUSY signal may have gotten stuck=
-,
-> > and subsequent transactaction attempts will fail as the bus is still
-> > considered busy.
-> >
-> > To work around this, check if the START_BUSY bit is still asserted, and
-> > reset the controller in case it is.
-> >
-> > This is also done by the alternative, non-upstream iproc-smbus driver
-> > implementation [1].
-> >
-> > Works around situations like:
-> >
-> >     bcm-iproc-2c 1803b000.i2c: transaction timed out
-> >     bcm-iproc-2c 1803b000.i2c: bus is busy
-> >     bcm-iproc-2c 1803b000.i2c: bus is busy
-> >     bcm-iproc-2c 1803b000.i2c: bus is busy
-> >     bcm-iproc-2c 1803b000.i2c: bus is busy
-> >     bcm-iproc-2c 1803b000.i2c: bus is busy
-> >     ...
-> >
-> > where the bus never recovers after a timeout.
-> >
-> > [1] https://github.com/opencomputeproject/onie/blob/master/patches/kern=
-el/3.2.69/driver-iproc-smbus.patch
-> >
-> > Fixes: e6e5dd3566e0 ("i2c: iproc: Add Broadcom iProc I2C Driver")
-> > Signed-off-by: Jonas Gorski <jonas.gorski@bisdn.de>
->
-> I think the right Fixes tag should be:
->
-> Fixes: 3f98ad45e585 ("i2c: iproc: add polling support")
+Fixes: d2e8071bed0b ("tpm: make all 'class' structures const")
+Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
+---
+ drivers/char/tpm/tpm-chip.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-That was the last change that part of the code, but the "issue" was
-not introduced there. The code before that already did a timeout check
-and flush in that case, without the reset.
+diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+index 23f6f2eda84c..42b1062e33cd 100644
+--- a/drivers/char/tpm/tpm-chip.c
++++ b/drivers/char/tpm/tpm-chip.c
+@@ -33,7 +33,7 @@ const struct class tpm_class = {
+ 	.shutdown_pre = tpm_class_shutdown,
+ };
+ const struct class tpmrm_class = {
+-	.name = "tmprm",
++	.name = "tpmrm",
+ };
+ dev_t tpm_devt;
 
-Obviously the fix wouldn't apply without changes to a version without
-that commit, but the version would be nevertheless affected by the
-issue. That's why I chose the commit introducing the timeout handling.
-
-> Cc: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-> Cc: <stable@vger.kernel.org> # v5.2+
->
-> > ---
-> > The iproc-smbus driver does some additional checks/mitigations, but
-> > since my I2C understanding is only very rudimentary, I didn't add them,
-> > also the reset was enough to fix the issue I was seeing.
-> >
-> > I was a bit conflicted about the Fixes tag, but since it fixes/work
-> > around misbehaviour seen I decided to add one.
-> >
-> > The issue was happening only in production, and only once per boot (so
-> > far), but with 100% probability within a few hours.
-> >
-> >  drivers/i2c/busses/i2c-bcm-iproc.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> >
-> > diff --git a/drivers/i2c/busses/i2c-bcm-iproc.c b/drivers/i2c/busses/i2=
-c-bcm-iproc.c
-> > index 05c80680dff4..69f9c199fa3b 100644
-> > --- a/drivers/i2c/busses/i2c-bcm-iproc.c
-> > +++ b/drivers/i2c/busses/i2c-bcm-iproc.c
-> > @@ -796,6 +796,15 @@ static int bcm_iproc_i2c_xfer_wait(struct bcm_ipro=
-c_i2c_dev *iproc_i2c,
-> >       if (!time_left && !iproc_i2c->xfer_is_done) {
-> >               dev_err(iproc_i2c->device, "transaction timed out\n");
-> >
-> > +             /* check if START_BUSY did not clear */
->
-> as Ray asked, can you please expand this comment?
-
-Will do, thanks for the reviews!
-
-Best Regards,
-Jonas
-
---=20
-BISDN GmbH
-K=C3=B6rnerstra=C3=9Fe 7-10
-10785 Berlin
-Germany
-
-
-Phone:=20
-+49-30-6108-1-6100
-
-
-Managing Directors:=C2=A0
-Dr.-Ing. Hagen Woesner, Andreas=20
-K=C3=B6psel
-
-
-Commercial register:=C2=A0
-Amtsgericht Berlin-Charlottenburg HRB 141569=20
-B
-VAT ID No:=C2=A0DE283257294
+-- 
+2.41.0
 
