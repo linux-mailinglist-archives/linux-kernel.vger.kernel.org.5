@@ -2,299 +2,449 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F160E798557
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB2A79855C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 12:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232713AbjIHKBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 06:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36986 "EHLO
+        id S238013AbjIHKCR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Sep 2023 06:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjIHKBI (ORCPT
+        with ESMTP id S232354AbjIHKCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 06:01:08 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9001FE9
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 03:00:24 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bf57366ccdso21417565ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 03:00:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694167145; x=1694771945; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3bXTeQpdjQRua5NdbqlMCWj/ycDFicrMQeBdM0bMGMw=;
-        b=ZiFN1LLDL6sDVu4ON/wkI4bAEvJ2RNe5ShlKFp00uUyWiGgA+yu9ajYeZF5t2+K38G
-         DQEp0DNNu3/73r89a1SwU+rda0PnAHXnMW8IJ/8S4Bth5wwQieOra3OHsOqyV1ivvquw
-         G2jGHQLPbl6TaWRH+xJyxts5zLqAUiTSXS+SEVLZzphGRghgdViNZF/hFxKW+LlSX8u1
-         SoJ5uW8gvM/91C+Jl1iQPNdW4xhecY450a2TvjcyGzCRCo7yUflNNntDFlE3pq+slzD7
-         qVxNyHqB6b3sriliEeRE0F3ODcp/8WUmWi5x9SeFLkobcaZS6wvjoSiwYcUzi5gZ/LAs
-         Fung==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694167145; x=1694771945;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3bXTeQpdjQRua5NdbqlMCWj/ycDFicrMQeBdM0bMGMw=;
-        b=JGibquIAR7XRj4zLF3DUczMwhJmSNdNyDmQQFrnyAY1ZI3/QnJuXiCfUOvvIbwmU7e
-         9gu0eJAJdMwyhu/NzzQShr21+VxVpBwleE4Ft90pyLU6Ei3SIou4DauSqsMl0fm2t9Dq
-         3ML260jVJq3Tb8SPlXJE3g16A+fJjv9iDD38DO735TxWYmJLugvakgI0C3Ik6fper/Mg
-         N7AsCRiFhewg8LAX6Im7toS87s7857FyDDKJTDBTzxrfqOw7DkxoXp4EgDVcIf9db922
-         WM2/jGnPluIq50M8hgNUifQhRhjyxx8tP+2rD3rU4tARsaY+T3qd4F0e24Uupd7dKk4o
-         2p3A==
-X-Gm-Message-State: AOJu0YxOQxMhqQuKnp8u6XFZMk78N6DWwJcvt6I8nNuWuZa1P8V29IGr
-        CucEPZNb0bQpad9d2/W1CMtYRQ==
-X-Google-Smtp-Source: AGHT+IGedR76hVXK1WBcaqFuQUXJzaKlwoEvzzggHuGYxkzUO76lUrRz9GzNXg+wcSGY1vog4i33bg==
-X-Received: by 2002:a17:902:e54e:b0:1c0:bcbc:d67 with SMTP id n14-20020a170902e54e00b001c0bcbc0d67mr6761333plf.22.1694167144904;
-        Fri, 08 Sep 2023 02:59:04 -0700 (PDT)
-Received: from [10.254.232.87] ([139.177.225.246])
-        by smtp.gmail.com with ESMTPSA id bi4-20020a170902bf0400b001bc45408d26sm1199081plb.36.2023.09.08.02.58.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Sep 2023 02:59:04 -0700 (PDT)
-Message-ID: <ab29ca4d-a7dc-9115-930d-86c6425e2b9c@bytedance.com>
-Date:   Fri, 8 Sep 2023 17:58:56 +0800
+        Fri, 8 Sep 2023 06:02:15 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF261FE0;
+        Fri,  8 Sep 2023 03:01:50 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qeYHu-000Zq4-Ko; Fri, 08 Sep 2023 12:00:30 +0200
+Received: from p5b13a40a.dip0.t-ipconnect.de ([91.19.164.10] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qeYHu-001mq1-DG; Fri, 08 Sep 2023 12:00:30 +0200
+Message-ID: <7a55fbca0fea64c17547336fbfe9e5aa14ee1b4f.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH 2/4] sh: remove unused sh4-202 support
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-sh@vger.kernel.org, Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 08 Sep 2023 12:00:29 +0200
+In-Reply-To: <20230802184849.1019466-2-arnd@kernel.org>
+References: <20230802184849.1019466-1-arnd@kernel.org>
+         <20230802184849.1019466-2-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH v2 6/6] fork: Use __mt_dup() to duplicate maple tree in
- dup_mmap()
-To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-        Peng Zhang <zhangpeng.00@bytedance.com>, corbet@lwn.net,
-        akpm@linux-foundation.org, willy@infradead.org, brauner@kernel.org,
-        surenb@google.com, michael.christie@oracle.com,
-        peterz@infradead.org, mathieu.desnoyers@efficios.com,
-        npiggin@gmail.com, avagin@gmail.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20230830125654.21257-1-zhangpeng.00@bytedance.com>
- <20230830125654.21257-7-zhangpeng.00@bytedance.com>
- <20230907201414.dagnqxfnu7f7qzxd@revolver>
-From:   Peng Zhang <zhangpeng.00@bytedance.com>
-In-Reply-To: <20230907201414.dagnqxfnu7f7qzxd@revolver>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.164.10
+X-ZEDAT-Hint: PO
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2023-08-02 at 20:48 +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> This early prototype of the SH4 CPU was only used in
+> the "microdev" board that is now removed, so all of the
+> sh4-202 supoprt can also be removed.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/sh/Kconfig                        |   5 -
+>  arch/sh/kernel/cpu/sh4/Makefile        |   4 -
+>  arch/sh/kernel/cpu/sh4/clock-sh4-202.c | 174 -------------------------
+>  arch/sh/kernel/cpu/sh4/setup-sh4-202.c | 139 --------------------
+>  4 files changed, 322 deletions(-)
+>  delete mode 100644 arch/sh/kernel/cpu/sh4/clock-sh4-202.c
+>  delete mode 100644 arch/sh/kernel/cpu/sh4/setup-sh4-202.c
+> 
+> diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+> index d3df67f215ca5..d785329e57151 100644
+> --- a/arch/sh/Kconfig
+> +++ b/arch/sh/Kconfig
+> @@ -383,10 +383,6 @@ config CPU_SUBTYPE_SH7760
+>  	bool "Support SH7760 processor"
+>  	select CPU_SH4
+>  
+> -config CPU_SUBTYPE_SH4_202
+> -	bool "Support SH4-202 processor"
+> -	select CPU_SH4
+> -
+>  # SH-4A Processor Support
+>  
+>  config CPU_SUBTYPE_SH7723
+> @@ -517,7 +513,6 @@ config SH_PCLK_FREQ
+>  			      CPU_SUBTYPE_SH7263 || \
+>  			      CPU_SUBTYPE_MXG
+>  	default "60000000" if CPU_SUBTYPE_SH7751 || CPU_SUBTYPE_SH7751R
+> -	default "66000000" if CPU_SUBTYPE_SH4_202
+>  	default "50000000"
+>  	help
+>  	  This option is used to specify the peripheral clock frequency.
+> diff --git a/arch/sh/kernel/cpu/sh4/Makefile b/arch/sh/kernel/cpu/sh4/Makefile
+> index 00c16331e07e5..02e3ee16e15ce 100644
+> --- a/arch/sh/kernel/cpu/sh4/Makefile
+> +++ b/arch/sh/kernel/cpu/sh4/Makefile
+> @@ -23,15 +23,11 @@ obj-$(CONFIG_CPU_SUBTYPE_SH7091)	+= setup-sh7750.o
+>  obj-$(CONFIG_CPU_SUBTYPE_SH7751)	+= setup-sh7750.o
+>  obj-$(CONFIG_CPU_SUBTYPE_SH7751R)	+= setup-sh7750.o
+>  obj-$(CONFIG_CPU_SUBTYPE_SH7760)	+= setup-sh7760.o
+> -obj-$(CONFIG_CPU_SUBTYPE_SH4_202)	+= setup-sh4-202.o
+>  
+>  # Primary on-chip clocks (common)
+>  ifndef CONFIG_CPU_SH4A
+>  clock-$(CONFIG_CPU_SH4)			:= clock-sh4.o
+>  endif
+>  
+> -# Additional clocks by subtype
+> -clock-$(CONFIG_CPU_SUBTYPE_SH4_202)	+= clock-sh4-202.o
+> -
+>  obj-y					+= $(clock-y)
+>  obj-$(CONFIG_PERF_EVENTS)		+= $(perf-y)
+> diff --git a/arch/sh/kernel/cpu/sh4/clock-sh4-202.c b/arch/sh/kernel/cpu/sh4/clock-sh4-202.c
+> deleted file mode 100644
+> index c1cdef763cb25..0000000000000
+> --- a/arch/sh/kernel/cpu/sh4/clock-sh4-202.c
+> +++ /dev/null
+> @@ -1,174 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -/*
+> - * arch/sh/kernel/cpu/sh4/clock-sh4-202.c
+> - *
+> - * Additional SH4-202 support for the clock framework
+> - *
+> - *  Copyright (C) 2005  Paul Mundt
+> - */
+> -#include <linux/init.h>
+> -#include <linux/kernel.h>
+> -#include <linux/err.h>
+> -#include <linux/io.h>
+> -#include <linux/clkdev.h>
+> -#include <asm/clock.h>
+> -#include <asm/freq.h>
+> -
+> -#define CPG2_FRQCR3	0xfe0a0018
+> -
+> -static int frqcr3_divisors[] = { 1, 2, 3, 4, 6, 8, 16 };
+> -static int frqcr3_values[]   = { 0, 1, 2, 3, 4, 5, 6  };
+> -
+> -static unsigned long emi_clk_recalc(struct clk *clk)
+> -{
+> -	int idx = __raw_readl(CPG2_FRQCR3) & 0x0007;
+> -	return clk->parent->rate / frqcr3_divisors[idx];
+> -}
+> -
+> -static inline int frqcr3_lookup(struct clk *clk, unsigned long rate)
+> -{
+> -	int divisor = clk->parent->rate / rate;
+> -	int i;
+> -
+> -	for (i = 0; i < ARRAY_SIZE(frqcr3_divisors); i++)
+> -		if (frqcr3_divisors[i] == divisor)
+> -			return frqcr3_values[i];
+> -
+> -	/* Safe fallback */
+> -	return 5;
+> -}
+> -
+> -static struct sh_clk_ops sh4202_emi_clk_ops = {
+> -	.recalc		= emi_clk_recalc,
+> -};
+> -
+> -static struct clk sh4202_emi_clk = {
+> -	.flags		= CLK_ENABLE_ON_INIT,
+> -	.ops		= &sh4202_emi_clk_ops,
+> -};
+> -
+> -static unsigned long femi_clk_recalc(struct clk *clk)
+> -{
+> -	int idx = (__raw_readl(CPG2_FRQCR3) >> 3) & 0x0007;
+> -	return clk->parent->rate / frqcr3_divisors[idx];
+> -}
+> -
+> -static struct sh_clk_ops sh4202_femi_clk_ops = {
+> -	.recalc		= femi_clk_recalc,
+> -};
+> -
+> -static struct clk sh4202_femi_clk = {
+> -	.flags		= CLK_ENABLE_ON_INIT,
+> -	.ops		= &sh4202_femi_clk_ops,
+> -};
+> -
+> -static void shoc_clk_init(struct clk *clk)
+> -{
+> -	int i;
+> -
+> -	/*
+> -	 * For some reason, the shoc_clk seems to be set to some really
+> -	 * insane value at boot (values outside of the allowable frequency
+> -	 * range for instance). We deal with this by scaling it back down
+> -	 * to something sensible just in case.
+> -	 *
+> -	 * Start scaling from the high end down until we find something
+> -	 * that passes rate verification..
+> -	 */
+> -	for (i = 0; i < ARRAY_SIZE(frqcr3_divisors); i++) {
+> -		int divisor = frqcr3_divisors[i];
+> -
+> -		if (clk->ops->set_rate(clk, clk->parent->rate / divisor) == 0)
+> -			break;
+> -	}
+> -
+> -	WARN_ON(i == ARRAY_SIZE(frqcr3_divisors));	/* Undefined clock */
+> -}
+> -
+> -static unsigned long shoc_clk_recalc(struct clk *clk)
+> -{
+> -	int idx = (__raw_readl(CPG2_FRQCR3) >> 6) & 0x0007;
+> -	return clk->parent->rate / frqcr3_divisors[idx];
+> -}
+> -
+> -static int shoc_clk_verify_rate(struct clk *clk, unsigned long rate)
+> -{
+> -	struct clk *bclk = clk_get(NULL, "bus_clk");
+> -	unsigned long bclk_rate = clk_get_rate(bclk);
+> -
+> -	clk_put(bclk);
+> -
+> -	if (rate > bclk_rate)
+> -		return 1;
+> -	if (rate > 66000000)
+> -		return 1;
+> -
+> -	return 0;
+> -}
+> -
+> -static int shoc_clk_set_rate(struct clk *clk, unsigned long rate)
+> -{
+> -	unsigned long frqcr3;
+> -	unsigned int tmp;
+> -
+> -	/* Make sure we have something sensible to switch to */
+> -	if (shoc_clk_verify_rate(clk, rate) != 0)
+> -		return -EINVAL;
+> -
+> -	tmp = frqcr3_lookup(clk, rate);
+> -
+> -	frqcr3 = __raw_readl(CPG2_FRQCR3);
+> -	frqcr3 &= ~(0x0007 << 6);
+> -	frqcr3 |= tmp << 6;
+> -	__raw_writel(frqcr3, CPG2_FRQCR3);
+> -
+> -	clk->rate = clk->parent->rate / frqcr3_divisors[tmp];
+> -
+> -	return 0;
+> -}
+> -
+> -static struct sh_clk_ops sh4202_shoc_clk_ops = {
+> -	.init		= shoc_clk_init,
+> -	.recalc		= shoc_clk_recalc,
+> -	.set_rate	= shoc_clk_set_rate,
+> -};
+> -
+> -static struct clk sh4202_shoc_clk = {
+> -	.flags		= CLK_ENABLE_ON_INIT,
+> -	.ops		= &sh4202_shoc_clk_ops,
+> -};
+> -
+> -static struct clk *sh4202_onchip_clocks[] = {
+> -	&sh4202_emi_clk,
+> -	&sh4202_femi_clk,
+> -	&sh4202_shoc_clk,
+> -};
+> -
+> -static struct clk_lookup lookups[] = {
+> -	/* main clocks */
+> -	CLKDEV_CON_ID("emi_clk", &sh4202_emi_clk),
+> -	CLKDEV_CON_ID("femi_clk", &sh4202_femi_clk),
+> -	CLKDEV_CON_ID("shoc_clk", &sh4202_shoc_clk),
+> -};
+> -
+> -int __init arch_clk_init(void)
+> -{
+> -	struct clk *clk;
+> -	int i, ret = 0;
+> -
+> -	cpg_clk_init();
+> -
+> -	clk = clk_get(NULL, "master_clk");
+> -	for (i = 0; i < ARRAY_SIZE(sh4202_onchip_clocks); i++) {
+> -		struct clk *clkp = sh4202_onchip_clocks[i];
+> -
+> -		clkp->parent = clk;
+> -		ret |= clk_register(clkp);
+> -	}
+> -
+> -	clk_put(clk);
+> -
+> -	clkdev_add_table(lookups, ARRAY_SIZE(lookups));
+> -
+> -	return ret;
+> -}
+> diff --git a/arch/sh/kernel/cpu/sh4/setup-sh4-202.c b/arch/sh/kernel/cpu/sh4/setup-sh4-202.c
+> deleted file mode 100644
+> index 363463e53d99c..0000000000000
+> --- a/arch/sh/kernel/cpu/sh4/setup-sh4-202.c
+> +++ /dev/null
+> @@ -1,139 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -/*
+> - * SH4-202 Setup
+> - *
+> - *  Copyright (C) 2006  Paul Mundt
+> - *  Copyright (C) 2009  Magnus Damm
+> - */
+> -#include <linux/platform_device.h>
+> -#include <linux/init.h>
+> -#include <linux/serial.h>
+> -#include <linux/serial_sci.h>
+> -#include <linux/sh_timer.h>
+> -#include <linux/sh_intc.h>
+> -#include <linux/io.h>
+> -#include <asm/platform_early.h>
+> -
+> -static struct scif_platform_data scif0_platform_data = {
+> -	.scscr		= SCSCR_REIE,
+> -	.type		= PORT_SCIF,
+> -};
+> -
+> -static struct resource scif0_resources[] = {
+> -	DEFINE_RES_MEM(0xffe80000, 0x100),
+> -	DEFINE_RES_IRQ(evt2irq(0x700)),
+> -	DEFINE_RES_IRQ(evt2irq(0x720)),
+> -	DEFINE_RES_IRQ(evt2irq(0x760)),
+> -	DEFINE_RES_IRQ(evt2irq(0x740)),
+> -};
+> -
+> -static struct platform_device scif0_device = {
+> -	.name		= "sh-sci",
+> -	.id		= 0,
+> -	.resource	= scif0_resources,
+> -	.num_resources	= ARRAY_SIZE(scif0_resources),
+> -	.dev		= {
+> -		.platform_data	= &scif0_platform_data,
+> -	},
+> -};
+> -
+> -static struct sh_timer_platform_data tmu0_platform_data = {
+> -	.channels_mask = 7,
+> -};
+> -
+> -static struct resource tmu0_resources[] = {
+> -	DEFINE_RES_MEM(0xffd80000, 0x30),
+> -	DEFINE_RES_IRQ(evt2irq(0x400)),
+> -	DEFINE_RES_IRQ(evt2irq(0x420)),
+> -	DEFINE_RES_IRQ(evt2irq(0x440)),
+> -};
+> -
+> -static struct platform_device tmu0_device = {
+> -	.name		= "sh-tmu",
+> -	.id		= 0,
+> -	.dev = {
+> -		.platform_data	= &tmu0_platform_data,
+> -	},
+> -	.resource	= tmu0_resources,
+> -	.num_resources	= ARRAY_SIZE(tmu0_resources),
+> -};
+> -
+> -static struct platform_device *sh4202_devices[] __initdata = {
+> -	&scif0_device,
+> -	&tmu0_device,
+> -};
+> -
+> -static int __init sh4202_devices_setup(void)
+> -{
+> -	return platform_add_devices(sh4202_devices,
+> -				    ARRAY_SIZE(sh4202_devices));
+> -}
+> -arch_initcall(sh4202_devices_setup);
+> -
+> -static struct platform_device *sh4202_early_devices[] __initdata = {
+> -	&scif0_device,
+> -	&tmu0_device,
+> -};
+> -
+> -void __init plat_early_device_setup(void)
+> -{
+> -	sh_early_platform_add_devices(sh4202_early_devices,
+> -				   ARRAY_SIZE(sh4202_early_devices));
+> -}
+> -
+> -enum {
+> -	UNUSED = 0,
+> -
+> -	/* interrupt sources */
+> -	IRL0, IRL1, IRL2, IRL3, /* only IRLM mode supported */
+> -	HUDI, TMU0, TMU1, TMU2, RTC, SCIF, WDT,
+> -};
+> -
+> -static struct intc_vect vectors[] __initdata = {
+> -	INTC_VECT(HUDI, 0x600),
+> -	INTC_VECT(TMU0, 0x400), INTC_VECT(TMU1, 0x420),
+> -	INTC_VECT(TMU2, 0x440), INTC_VECT(TMU2, 0x460),
+> -	INTC_VECT(RTC, 0x480), INTC_VECT(RTC, 0x4a0),
+> -	INTC_VECT(RTC, 0x4c0),
+> -	INTC_VECT(SCIF, 0x700), INTC_VECT(SCIF, 0x720),
+> -	INTC_VECT(SCIF, 0x740), INTC_VECT(SCIF, 0x760),
+> -	INTC_VECT(WDT, 0x560),
+> -};
+> -
+> -static struct intc_prio_reg prio_registers[] __initdata = {
+> -	{ 0xffd00004, 0, 16, 4, /* IPRA */ { TMU0, TMU1, TMU2, RTC } },
+> -	{ 0xffd00008, 0, 16, 4, /* IPRB */ { WDT, 0, 0, 0 } },
+> -	{ 0xffd0000c, 0, 16, 4, /* IPRC */ { 0, 0, SCIF, HUDI } },
+> -	{ 0xffd00010, 0, 16, 4, /* IPRD */ { IRL0, IRL1, IRL2, IRL3 } },
+> -};
+> -
+> -static DECLARE_INTC_DESC(intc_desc, "sh4-202", vectors, NULL,
+> -			 NULL, prio_registers, NULL);
+> -
+> -static struct intc_vect vectors_irlm[] __initdata = {
+> -	INTC_VECT(IRL0, 0x240), INTC_VECT(IRL1, 0x2a0),
+> -	INTC_VECT(IRL2, 0x300), INTC_VECT(IRL3, 0x360),
+> -};
+> -
+> -static DECLARE_INTC_DESC(intc_desc_irlm, "sh4-202_irlm", vectors_irlm, NULL,
+> -			 NULL, prio_registers, NULL);
+> -
+> -void __init plat_irq_setup(void)
+> -{
+> -	register_intc_controller(&intc_desc);
+> -}
+> -
+> -#define INTC_ICR	0xffd00000UL
+> -#define INTC_ICR_IRLM   (1<<7)
+> -
+> -void __init plat_irq_setup_pins(int mode)
+> -{
+> -	switch (mode) {
+> -	case IRQ_MODE_IRQ: /* individual interrupt mode for IRL3-0 */
+> -		__raw_writew(__raw_readw(INTC_ICR) | INTC_ICR_IRLM, INTC_ICR);
+> -		register_intc_controller(&intc_desc_irlm);
+> -		break;
+> -	default:
+> -		BUG();
+> -	}
+> -}
 
+Reviewed-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 
-在 2023/9/8 04:14, Liam R. Howlett 写道:
-> * Peng Zhang <zhangpeng.00@bytedance.com> [230830 08:58]:
->> Use __mt_dup() to duplicate the old maple tree in dup_mmap(), and then
->> directly modify the entries of VMAs in the new maple tree, which can
->> get better performance. The optimization effect is proportional to the
->> number of VMAs.
->>
->> There is a "spawn" in byte-unixbench[1], which can be used to test the
->> performance of fork(). I modified it slightly to make it work with
->> different number of VMAs.
->>
->> Below are the test numbers. There are 21 VMAs by default. The first row
->> indicates the number of added VMAs. The following two lines are the
->> number of fork() calls every 10 seconds. These numbers are different
->> from the test results in v1 because this time the benchmark is bound to
->> a CPU. This way the numbers are more stable.
->>
->>    Increment of VMAs: 0      100     200     400     800     1600    3200    6400
->> 6.5.0-next-20230829: 111878 75531   53683   35282   20741   11317   6110    3158
->> Apply this patchset: 114531 85420   64541   44592   28660   16371   9038    4831
->>                       +2.37% +13.09% +20.23% +26.39% +38.18% +44.66% +47.92% +52.98%
-> 
-> Thanks!
-> 
-> Can you include 21 in this table since it's the default?
-Maybe I didn't express clearly, "Increment of VMAs" means the number of
-VMAs added on the basis of 21 VMAs.
-> 
->>
->> [1] https://github.com/kdlucas/byte-unixbench/tree/master
->>
->> Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
->> ---
->>   kernel/fork.c | 34 ++++++++++++++++++++++++++--------
->>   mm/mmap.c     | 14 ++++++++++++--
->>   2 files changed, 38 insertions(+), 10 deletions(-)
->>
->> diff --git a/kernel/fork.c b/kernel/fork.c
->> index 3b6d20dfb9a8..e6299adefbd8 100644
->> --- a/kernel/fork.c
->> +++ b/kernel/fork.c
->> @@ -650,7 +650,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>   	int retval;
->>   	unsigned long charge = 0;
->>   	LIST_HEAD(uf);
->> -	VMA_ITERATOR(old_vmi, oldmm, 0);
->>   	VMA_ITERATOR(vmi, mm, 0);
->>   
->>   	uprobe_start_dup_mmap();
->> @@ -678,17 +677,39 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>   		goto out;
->>   	khugepaged_fork(mm, oldmm);
->>   
->> -	retval = vma_iter_bulk_alloc(&vmi, oldmm->map_count);
->> -	if (retval)
->> +	/* Use __mt_dup() to efficiently build an identical maple tree. */
->> +	retval = __mt_dup(&oldmm->mm_mt, &mm->mm_mt, GFP_NOWAIT | __GFP_NOWARN);
-> 
-> Apparently the flags should be GFP_KERNEL here so that compaction can
-> run.
-OK, I'll change it to GFP_KERNEL.
-> 
->> +	if (unlikely(retval))
->>   		goto out;
->>   
->>   	mt_clear_in_rcu(vmi.mas.tree);
->> -	for_each_vma(old_vmi, mpnt) {
->> +	for_each_vma(vmi, mpnt) {
->>   		struct file *file;
->>   
->>   		vma_start_write(mpnt);
->>   		if (mpnt->vm_flags & VM_DONTCOPY) {
->>   			vm_stat_account(mm, mpnt->vm_flags, -vma_pages(mpnt));
->> +
->> +			/*
->> +			 * Since the new tree is exactly the same as the old one,
->> +			 * we need to remove the unneeded VMAs.
->> +			 */
->> +			mas_store(&vmi.mas, NULL);
->> +
->> +			/*
->> +			 * Even removing an entry may require memory allocation,
->> +			 * and if removal fails, we use XA_ZERO_ENTRY to mark
->> +			 * from which VMA it failed. The case of encountering
->> +			 * XA_ZERO_ENTRY will be handled in exit_mmap().
->> +			 */
->> +			if (unlikely(mas_is_err(&vmi.mas))) {
->> +				retval = xa_err(vmi.mas.node);
->> +				mas_reset(&vmi.mas);
->> +				if (mas_find(&vmi.mas, ULONG_MAX))
->> +					mas_store(&vmi.mas, XA_ZERO_ENTRY);
->> +				goto loop_out;
->> +			}
->> +
-> 
-> Storing NULL may need extra space as you noted, so we need to be careful
-> what happens if we don't have that space.  We should have a testcase to
-> test this scenario.
-> 
-> mas_store_gfp() should be used with GFP_KERNEL.  The VMAs use GFP_KERNEL
-> in this function, see vm_area_dup().
-> 
-> Don't use the exit_mmap() path to undo a failed fork.  You've added
-> checks and complications to the exit path for all tasks in the very
-> unlikely event that we run out of memory when we hit a very unlikely
-> VM_DONTCOPY flag.
-> 
-> I see the issue with having a portion of the tree with new VMAs that are
-> accounted and a portion of the tree that has old VMAs that should not be
-> looked at.  It was clever to use the XA_ZERO_ENTRY as a stop point, but
-> we cannot add that complication to the exit path and then there is the
-> OOM race to worry about (maybe, I am not sure since this MM isn't
-> active yet).
-> 
-> Using what is done in exit_mmap() and do_vmi_align_munmap() as a
-> prototype, we can do something like the *untested* code below:
-> 
-> if (unlikely(mas_is_err(&vmi.mas))) {
-> 	unsigned long max = vmi.index;
-> 
-> 	retval = xa_err(vmi.mas.node);
-> 	mas_set(&vmi.mas, 0);
-> 	tmp = mas_find(&vmi.mas, ULONG_MAX);
-> 	if (tmp) { /* Not the first VMA failed */
-> 		unsigned long nr_accounted = 0;
-> 
-> 		unmap_region(mm, &vmi.mas, vma, NULL, mpnt, 0, max, max,
-> 				true);
-> 		do {
-> 			if (vma->vm_flags & VM_ACCOUNT)
-> 				nr_accounted += vma_pages(vma);
-> 			remove_vma(vma, true);
-> 			cond_resched();
-> 			vma = mas_find(&vmi.mas, max - 1);
-> 		} while (vma != NULL);
-> 
-> 		vm_unacct_memory(nr_accounted);
-> 	}
-> 	__mt_destroy(&mm->mm_mt);
-> 	goto loop_out;
-> }
-> 
-> Once exit_mmap() is called, the check for OOM (no vma) will catch that
-> nothing is left to do.
-> 
-> It might be worth making an inline function to do this to keep the fork
-> code clean.  We should test this by detecting a specific task name and
-> returning a failure at a given interval:
-> 
-> if (!strcmp(current->comm, "fork_test") {
-> ...
-> }
-
-Thank you for your suggestion, I will do this in the next version.
-> 
-> 
->>   			continue;
->>   		}
->>   		charge = 0;
->> @@ -750,8 +771,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>   			hugetlb_dup_vma_private(tmp);
->>   
->>   		/* Link the vma into the MT */
->> -		if (vma_iter_bulk_store(&vmi, tmp))
->> -			goto fail_nomem_vmi_store;
->> +		mas_store(&vmi.mas, tmp);
->>   
->>   		mm->map_count++;
->>   		if (!(tmp->vm_flags & VM_WIPEONFORK))
->> @@ -778,8 +798,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>   	uprobe_end_dup_mmap();
->>   	return retval;
->>   
->> -fail_nomem_vmi_store:
->> -	unlink_anon_vmas(tmp);
->>   fail_nomem_anon_vma_fork:
->>   	mpol_put(vma_policy(tmp));
->>   fail_nomem_policy:
->> diff --git a/mm/mmap.c b/mm/mmap.c
->> index b56a7f0c9f85..dfc6881be81c 100644
->> --- a/mm/mmap.c
->> +++ b/mm/mmap.c
->> @@ -3196,7 +3196,11 @@ void exit_mmap(struct mm_struct *mm)
->>   	arch_exit_mmap(mm);
->>   
->>   	vma = mas_find(&mas, ULONG_MAX);
->> -	if (!vma) {
->> +	/*
->> +	 * If dup_mmap() fails to remove a VMA marked VM_DONTCOPY,
->> +	 * xa_is_zero(vma) may be true.
->> +	 */
->> +	if (!vma || xa_is_zero(vma)) {
->>   		/* Can happen if dup_mmap() received an OOM */
->>   		mmap_read_unlock(mm);
->>   		return;
->> @@ -3234,7 +3238,13 @@ void exit_mmap(struct mm_struct *mm)
->>   		remove_vma(vma, true);
->>   		count++;
->>   		cond_resched();
->> -	} while ((vma = mas_find(&mas, ULONG_MAX)) != NULL);
->> +		vma = mas_find(&mas, ULONG_MAX);
->> +		/*
->> +		 * If xa_is_zero(vma) is true, it means that subsequent VMAs
->> +		 * donot need to be removed. Can happen if dup_mmap() fails to
->> +		 * remove a VMA marked VM_DONTCOPY.
->> +		 */
->> +	} while (vma != NULL && !xa_is_zero(vma));
->>   
->>   	BUG_ON(count != mm->map_count);
->>   
->> -- 
->> 2.20.1
->>
-> 
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
