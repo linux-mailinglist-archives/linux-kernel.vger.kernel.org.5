@@ -2,78 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 151477980A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 04:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5DE37980AC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Sep 2023 04:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238093AbjIHCqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Sep 2023 22:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57816 "EHLO
+        id S241936AbjIHCsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Sep 2023 22:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236351AbjIHCqW (ORCPT
+        with ESMTP id S239353AbjIHCr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Sep 2023 22:46:22 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F3A11BDB
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 19:45:57 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68c0d886ea0so1410924b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Sep 2023 19:45:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694141156; x=1694745956; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9h7VfuU4Oy/BBgAD3W63aRNBjYZvFElCK9G+YIFUMro=;
-        b=DlEwLOspdKXitmVgPP5k0/K4ooJ3MyQHIs7lhOhjcTE+E42DkhFzKmvNxk0Gu5N01O
-         r421176bwKsCgtKGE945YI2yBzo8UbI05piy5UdjwFZ6YyWf2gBrzh09H1gGWdXD0lIj
-         CSU/h2voAqbUzT1BPeMkWqr1QP/mvAII3wJ3sz3FQQrFA90uJbVcNlfyNTFiAePZqvkD
-         LClU3+jFDoWcxxRzpAzjfJ5iKXSqd9VLpHlfyWkzeCaDJQPqOIHHYIN9nRNqqpTmXOh/
-         ZLlpA9y9wgbV+HnMF05/aWnljsNlncJ/S9mgUHWJbr9A/6mI2tSCKjAzFicFy7PR4zZd
-         wnIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694141156; x=1694745956;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9h7VfuU4Oy/BBgAD3W63aRNBjYZvFElCK9G+YIFUMro=;
-        b=MyWe12naA2H1LEobKN9zw1fAyh7Iivnpza3rhne6WuQUFbAmLXo5FKgnQIqGrGt+Wv
-         VR/EWZK+nkT2BwEx8CQ9FRGa4MWuWrE2aliWWEuezQRo4v7CF9Nbc0S+D+ioVcm4Xq19
-         ChZxTxCsl470jeFr4l33t2DUzWfUS0hhV5cQcHh4tfHnYWUBf4rX8LG8a6Ft+ySTDsDc
-         HqKwXJgjiZQQqYfAjoRDorWRMx0gbYNih9L64B1jTDUSnr7G03SUQsJ4YZLkTsykN4gr
-         H4HMh6ihIrLPYxy2NY4QKYgrswBBeGWWyRmabEjvCtvEuMrcwjaCTrTWmcnSXwrUw8x/
-         45uw==
-X-Gm-Message-State: AOJu0YwZJdhvPo3dBXNpXfnUVyVHsC2bGbqiuv7ZJ020al/pJsyON+NL
-        FXXFI9xc2LG46IqdrUHJ8A+d7Q==
-X-Google-Smtp-Source: AGHT+IFQnqvdNGpryMKcZ/mzsBNIkInaLkAduE8sTSSLhlfJiuy33tUzTGUUvwepdzpMVoAqKZwRRA==
-X-Received: by 2002:a05:6a00:248d:b0:68e:290b:bb57 with SMTP id c13-20020a056a00248d00b0068e290bbb57mr1309970pfv.18.1694141156556;
-        Thu, 07 Sep 2023 19:45:56 -0700 (PDT)
-Received: from [10.254.232.87] ([139.177.225.246])
-        by smtp.gmail.com with ESMTPSA id p15-20020aa7860f000000b00666e649ca46sm357491pfn.101.2023.09.07.19.45.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 19:45:56 -0700 (PDT)
-Message-ID: <3ebd7fab-ba27-9abd-b06f-b16fa567ebbc@bytedance.com>
-Date:   Fri, 8 Sep 2023 10:45:47 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH v2 1/6] maple_tree: Add two helpers
-To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-        Peng Zhang <zhangpeng.00@bytedance.com>, corbet@lwn.net,
-        akpm@linux-foundation.org, willy@infradead.org, brauner@kernel.org,
-        surenb@google.com, michael.christie@oracle.com,
-        peterz@infradead.org, mathieu.desnoyers@efficios.com,
-        npiggin@gmail.com, avagin@gmail.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20230830125654.21257-1-zhangpeng.00@bytedance.com>
- <20230830125654.21257-2-zhangpeng.00@bytedance.com>
- <20230907201314.g4scadi3tk5ctrd2@revolver>
-From:   Peng Zhang <zhangpeng.00@bytedance.com>
-In-Reply-To: <20230907201314.g4scadi3tk5ctrd2@revolver>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Thu, 7 Sep 2023 22:47:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0861BE2
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Sep 2023 19:47:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7BCD8C433C7;
+        Fri,  8 Sep 2023 02:47:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694141275;
+        bh=dUuDOZoI7m1VHLYkauov4MfNyEtITYJV+zU6Q6hXNAo=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=d3vq+tt911em7TIEDNY8WG54S/fkws4yY36B0WqKTlLYvn4cEyz7dRvKnkgOVvsWc
+         XLt52A8XI5dQWoBpGryb7ADeg/lkpbKoCA3nEWSRAx2OkI/AWSl1j3VkDlGJXlwszV
+         8yjZoKoFYIoEkaaT/1J772aRWE0VMOfcB2uiAZvf9pHe9EGT0mgWb5ITU1WqtvNAyk
+         1kyCMBikVM7/2D6gisH9lYthwxRWMQBWWeJp0JqnBkUUDalieGsdbO8GS3vsIq56ry
+         swDEcTKTUfbiWFYkGz+DcY27flPKNXtFhE4V03DZTYsvHWbjPPFaSMuFhpJOxzoibz
+         KK40goPMTspxA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 68A79E22AFB;
+        Fri,  8 Sep 2023 02:47:55 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for v6.6-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20230907220103.3900219-1-kuba@kernel.org>
+References: <20230907220103.3900219-1-kuba@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230907220103.3900219-1-kuba@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.6-rc1
+X-PR-Tracked-Commit-Id: 1b36955cc048c8ff6ba448dbf4be0e52f59f2963
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 73be7fb14e83d24383f840a22f24d3ed222ca319
+Message-Id: <169414127542.11889.2442967335814102525.pr-tracker-bot@kernel.org>
+Date:   Fri, 08 Sep 2023 02:47:55 +0000
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pabeni@redhat.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,61 +57,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Thu,  7 Sep 2023 15:01:03 -0700:
 
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.6-rc1
 
-在 2023/9/8 04:13, Liam R. Howlett 写道:
-> * Peng Zhang <zhangpeng.00@bytedance.com> [230830 08:57]:
->> Add two helpers, which will be used later.
-> 
-> Can you please change the subject to something like:
-> Add mt_free_one() and mt_attr() helpers
-> 
-> for easier git log readability?
-OK, I'll do that.
-> 
->>
->> Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
->> ---
->>   lib/maple_tree.c | 12 +++++++++++-
->>   1 file changed, 11 insertions(+), 1 deletion(-)
->>
->> diff --git a/lib/maple_tree.c b/lib/maple_tree.c
->> index ee1ff0c59fd7..ef234cf02e3e 100644
->> --- a/lib/maple_tree.c
->> +++ b/lib/maple_tree.c
->> @@ -165,6 +165,11 @@ static inline int mt_alloc_bulk(gfp_t gfp, size_t size, void **nodes)
->>   	return kmem_cache_alloc_bulk(maple_node_cache, gfp, size, nodes);
->>   }
->>   
->> +static inline void mt_free_one(struct maple_node *node)
->> +{
->> +	kmem_cache_free(maple_node_cache, node);
->> +}
->> +
->>   static inline void mt_free_bulk(size_t size, void __rcu **nodes)
->>   {
->>   	kmem_cache_free_bulk(maple_node_cache, size, (void **)nodes);
->> @@ -205,6 +210,11 @@ static unsigned int mas_mt_height(struct ma_state *mas)
->>   	return mt_height(mas->tree);
->>   }
->>   
->> +static inline unsigned int mt_attr(struct maple_tree *mt)
->> +{
->> +	return mt->ma_flags & ~MT_FLAGS_HEIGHT_MASK;
->> +}
->> +
->>   static inline enum maple_type mte_node_type(const struct maple_enode *entry)
->>   {
->>   	return ((unsigned long)entry >> MAPLE_NODE_TYPE_SHIFT) &
->> @@ -5520,7 +5530,7 @@ void mas_destroy(struct ma_state *mas)
->>   			mt_free_bulk(count, (void __rcu **)&node->slot[1]);
->>   			total -= count;
->>   		}
->> -		kmem_cache_free(maple_node_cache, node);
->> +		mt_free_one(ma_mnode_ptr(node));
->>   		total--;
->>   	}
->>   
->> -- 
->> 2.20.1
->>
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/73be7fb14e83d24383f840a22f24d3ed222ca319
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
