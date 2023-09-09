@@ -2,187 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22719799545
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E3F79954A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236430AbjIIAyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:54:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40728 "EHLO
+        id S1344981AbjIIBJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 21:09:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236186AbjIIAyX (ORCPT
+        with ESMTP id S236339AbjIIBJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 20:54:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DFF12685
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 17:53:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694220832; x=1725756832;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=SgLx2PeCWloRvN+iXOhfgsEnSo7etUw2fSbm0rpTy6M=;
-  b=Kb+KttPnbu+bI8cl6IE4L7/ksUjVnVUHwiTXfu3N5UXnR1VN3a9XSrPg
-   Kl6d5ZIavTcF1rCXzvzCQPXFipA+PeUrjHfP8++mTuOGYhKdTmFe3qqt7
-   DFTi7n3RSKpD0cVuYIincU0SWZKQjEyN1Bpn7x2aXGrODKQhBUWlWyxvB
-   9UuSfTVXtK/bvtIgmkGSJiizPC8FCa2wd3EH7wBsDxyfN/0BlOb+dsCvN
-   uyc4KQsZc8ZwrEsU7uRJTUNM9F7IFyQYlRuYFd1ZuOHE3p44xuypJLpe7
-   rTBQ9PLLXoxIWKI8A7o0sllntz2VJtsM4A4aayy+8LGsmskgDDpI59dAd
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="357242064"
-X-IronPort-AV: E=Sophos;i="6.02,238,1688454000"; 
-   d="scan'208";a="357242064"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2023 17:52:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="745788836"
-X-IronPort-AV: E=Sophos;i="6.02,238,1688454000"; 
-   d="scan'208";a="745788836"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 08 Sep 2023 17:52:37 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qemDD-0002mV-2T;
-        Sat, 09 Sep 2023 00:52:35 +0000
-Date:   Sat, 9 Sep 2023 08:52:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Vineet Gupta <vgupta@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org
-Subject: ERROR: modpost: "__ld_r13_to_r25_ret" [lib/zstd/zstd_decompress.ko]
- undefined!
-Message-ID: <202309090835.rHqW4kav-lkp@intel.com>
+        Fri, 8 Sep 2023 21:09:46 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9E8268F
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 18:09:07 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so43097751fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 18:09:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1694221674; x=1694826474; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V3GCqPLGYjnqG/vcrz5uchTokgn3URl87uJVzY9m8YM=;
+        b=LRydJC8Z9mwfkWwruWkvHOcy6e7UkrN0VUY9d1KVP9LJh8TNWeGkTmD1qwO56XkRtf
+         6odfxO/UC7iHOkYgRlPW5iBa3MIkp2RUm4TGh32olgMFDYEj50k6xgJDyjVjAIezL6rp
+         3wcyhv0yfopHtF+p44f+JffaFseF/LXApsucc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694221674; x=1694826474;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V3GCqPLGYjnqG/vcrz5uchTokgn3URl87uJVzY9m8YM=;
+        b=lPT5fircjRt4ojoegJCqQp9y5PS8K7hfDS2RyxIRAuoPz7XmlqTvN4t3rJ2ZPHfdhu
+         8X4vcx1O4RJy0PVbfpRz9GM0VfpIoaPm+m1VT1UMz6bibyaNetZfgIwb1uyUZWPkdZW9
+         bEZKb5CrcOKAPgbt5Ga/beWJdqmFGzonFHI1ne9rba13uqgYYyP+nasf32OS//aJnAc5
+         7LIq1632LKqXphpQ6zDtTVZziYNimMuETDgKSI98gHPgOeOYVQRbK33wi8a3Moyv5RYK
+         U6G5nqA2hYtzNdTerOQHDOGUxMMFMuvrtTa0fsFy+VN5ULvX6rYcI5Y07Mda1Lu2/iU+
+         fgCQ==
+X-Gm-Message-State: AOJu0YxxkAv8PA/3Z1QmvIXMDPWvyJFDt5qrh2xvhtJj/PqqfMisoI9l
+        RHBOi8Z6lNc6ZU+ANCo+SlXzPupXGJRCTQm4pwUYcA==
+X-Google-Smtp-Source: AGHT+IGRH+GyQD+1mO99RA490b0zFxrdbv0FSWc8VeRQRvJvuuzaigDTzHy7juJlnz54WCTCOQlcyxl0Piel2MXru5w=
+X-Received: by 2002:a2e:9655:0:b0:2b6:de52:357 with SMTP id
+ z21-20020a2e9655000000b002b6de520357mr2840888ljh.40.1694221673459; Fri, 08
+ Sep 2023 18:07:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230908203603.5865-1-frederic@kernel.org> <20230908203603.5865-3-frederic@kernel.org>
+In-Reply-To: <20230908203603.5865-3-frederic@kernel.org>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 8 Sep 2023 21:07:42 -0400
+Message-ID: <CAEXW_YQ1tz4G3EwPZBx=ADVzjDiQCVPA-4GtqMpFxfRsx3oc9A@mail.gmail.com>
+Subject: Re: [PATCH 02/10] rcu: Rename jiffies_till_flush to jiffies_lazy_flush
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vineet,
+On Fri, Sep 8, 2023 at 4:36=E2=80=AFPM Frederic Weisbecker <frederic@kernel=
+.org> wrote:
+>
+> The variable name jiffies_till_flush is too generic and therefore:
+>
+> * It may shadow a global variable
+> * It doesn't tell on what it operates
+>
+> Make the name more precise, along with the related APIs.
+>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  kernel/rcu/rcu.h       |  8 ++++----
+>  kernel/rcu/rcuscale.c  |  6 +++---
+>  kernel/rcu/tree_nocb.h | 20 ++++++++++----------
+>  3 files changed, 17 insertions(+), 17 deletions(-)
+>
+> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> index 56a8466a11a2..4ac4daae9917 100644
+> --- a/kernel/rcu/rcu.h
+> +++ b/kernel/rcu/rcu.h
+> @@ -541,11 +541,11 @@ enum rcutorture_type {
+>  };
+>
+>  #if defined(CONFIG_RCU_LAZY)
+> -unsigned long rcu_lazy_get_jiffies_till_flush(void);
+> -void rcu_lazy_set_jiffies_till_flush(unsigned long j);
+> +unsigned long rcu_get_jiffies_lazy_flush(void);
+> +void rcu_set_jiffies_lazy_flush(unsigned long j);
+>  #else
+> -static inline unsigned long rcu_lazy_get_jiffies_till_flush(void) { retu=
+rn 0; }
+> -static inline void rcu_lazy_set_jiffies_till_flush(unsigned long j) { }
+> +static inline unsigned long rcu_get_jiffies_lazy_flush(void) { return 0;=
+ }
+> +static inline void rcu_set_jiffies_lazy_flush(unsigned long j) { }
+>  #endif
+>
+>  #if defined(CONFIG_TREE_RCU)
+> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> index ffdb30495e3c..8db4fedaaa1e 100644
+> --- a/kernel/rcu/rcuscale.c
+> +++ b/kernel/rcu/rcuscale.c
+> @@ -764,9 +764,9 @@ kfree_scale_init(void)
+>
+>         if (kfree_by_call_rcu) {
+>                 /* do a test to check the timeout. */
+> -               orig_jif =3D rcu_lazy_get_jiffies_till_flush();
+> +               orig_jif =3D rcu_get_jiffies_lazy_flush();
+>
+> -               rcu_lazy_set_jiffies_till_flush(2 * HZ);
+> +               rcu_set_jiffies_lazy_flush(2 * HZ);
+>                 rcu_barrier();
+>
+>                 jif_start =3D jiffies;
+> @@ -775,7 +775,7 @@ kfree_scale_init(void)
+>
+>                 smp_cond_load_relaxed(&rcu_lazy_test1_cb_called, VAL =3D=
+=3D 1);
+>
+> -               rcu_lazy_set_jiffies_till_flush(orig_jif);
+> +               rcu_set_jiffies_lazy_flush(orig_jif);
+>
+>                 if (WARN_ON_ONCE(jiffies_at_lazy_cb - jif_start < 2 * HZ)=
+) {
+>                         pr_alert("ERROR: call_rcu() CBs are not being laz=
+y as expected!\n");
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 5598212d1f27..b9eab359c597 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -264,21 +264,21 @@ static bool wake_nocb_gp(struct rcu_data *rdp, bool=
+ force)
+>   * left unsubmitted to RCU after those many jiffies.
+>   */
+>  #define LAZY_FLUSH_JIFFIES (10 * HZ)
+> -static unsigned long jiffies_till_flush =3D LAZY_FLUSH_JIFFIES;
+> +static unsigned long jiffies_lazy_flush =3D LAZY_FLUSH_JIFFIES;
+>
+>  #ifdef CONFIG_RCU_LAZY
+>  // To be called only from test code.
+> -void rcu_lazy_set_jiffies_till_flush(unsigned long jif)
+> +void rcu_set_jiffies_lazy_flush(unsigned long jif)
+>  {
+> -       jiffies_till_flush =3D jif;
+> +       jiffies_lazy_flush =3D jif;
+>  }
+> -EXPORT_SYMBOL(rcu_lazy_set_jiffies_till_flush);
+> +EXPORT_SYMBOL(rcu_set_jiffies_lazy_flush);
+>
+> -unsigned long rcu_lazy_get_jiffies_till_flush(void)
+> +unsigned long rcu_get_jiffies_lazy_flush(void)
+>  {
+> -       return jiffies_till_flush;
+> +       return jiffies_lazy_flush;
+>  }
+> -EXPORT_SYMBOL(rcu_lazy_get_jiffies_till_flush);
+> +EXPORT_SYMBOL(rcu_get_jiffies_lazy_flush);
+>  #endif
+>
+>  /*
 
-First bad commit (maybe != root cause):
+While at it, could we replace jiffies_lazy_flush with
+rcu_get_jiffies_lazy_flush() in the below? That way all users are
+going through the API.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   32bf43e4efdb87e0f7e90ba3883e07b8522322ad
-commit: cfca4b5abe0cc13f9d9f45f760efd8260e31200f ARC: entry: use gp to cache task pointer (vs. r25)
-date:   3 weeks ago
-config: arc-randconfig-r001-20210930 (https://download.01.org/0day-ci/archive/20230909/202309090835.rHqW4kav-lkp@intel.com/config)
-compiler: arc-elf-gcc (GCC) 12.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230909/202309090835.rHqW4kav-lkp@intel.com/reproduce)
+With that,
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309090835.rHqW4kav-lkp@intel.com/
+thanks,
 
-All errors (new ones prefixed by >>, old ones prefixed by <<):
+ - Joel
 
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/cdrom/cdrom.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/common/usb-otg-fsm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/phy/phy-am335x-control.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/phy/phy-am335x.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/host/ohci-exynos.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/misc/isight_firmware.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/class/usbtmc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/serial/usb_debug.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/serial/mxuport.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/serial/navman.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/serial/qcaux.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/chipidea/ci_hdrc_msm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/libcomposite.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_acm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/u_serial.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_serial.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_obex.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/u_ether.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_ecm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_ecm_subset.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_rndis.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_mass_storage.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_fs.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_hid.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_tcm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/input/tests/input_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/rtc/lib_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/rtc/rtc-omap.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/dvb-frontends/mb86a16.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/watchdog/omap_wdt.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-apple.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-aureal.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-betopff.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-bigbenff.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-cherry.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-chicony.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-cypress.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-dr.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-emsff.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-elecom.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-elo.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-ezkey.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-gyration.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-holtek-kbd.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-holtek-mouse.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-ite.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-kensington.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-kye.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-lcpower.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-lenovo.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-logitech.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-lg-g15.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-magicmouse.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-ntrig.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-petalynx.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-redragon.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-retrode.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-samsung.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-semitek.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-speedlink.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-steam.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-steelseries.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-sunplus.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-gaff.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-tmff.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-tivo.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-topseed.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-twinhan.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-uclogic.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-xinmo.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-zpff.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-waltop.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/platform/goldfish/goldfish_pipe.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mailbox/mtk-cmdq-mailbox.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/rpmsg/rpmsg_char.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_simpleondemand.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwtracing/intel_th/intel_th_msu_sink.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/interconnect/imx/imx8mn-interconnect.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/vdpa/vdpa.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/ata/sata_gemini.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_util.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_cmdset_0020.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/maps/map_funcs.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/spmi/hisi-spmi-controller.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/spmi/spmi-pmic-arb.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio_cif.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio_aec.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio_netx.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio_mf624.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwmon/corsair-cpro.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwmon/mr75203.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/vhost/vringh.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/siox/siox-bus-gpio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/core/dev_addr_lists_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/packet/af_packet_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/atm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/lec.o
-ERROR: modpost: "__st_r13_to_r25" [lib/zstd/zstd_decompress.ko] undefined!
->> ERROR: modpost: "__ld_r13_to_r25_ret" [lib/zstd/zstd_decompress.ko] undefined!
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> @@ -299,7 +299,7 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, =
+int waketype,
+>          */
+>         if (waketype =3D=3D RCU_NOCB_WAKE_LAZY &&
+>             rdp->nocb_defer_wakeup =3D=3D RCU_NOCB_WAKE_NOT) {
+> -               mod_timer(&rdp_gp->nocb_timer, jiffies + jiffies_till_flu=
+sh);
+> +               mod_timer(&rdp_gp->nocb_timer, jiffies + jiffies_lazy_flu=
+sh);
+>                 WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
+>         } else if (waketype =3D=3D RCU_NOCB_WAKE_BYPASS) {
+>                 mod_timer(&rdp_gp->nocb_timer, jiffies + 2);
+> @@ -482,7 +482,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp,=
+ struct rcu_head *rhp,
+>         // flush ->nocb_bypass to ->cblist.
+>         if ((ncbs && !bypass_is_lazy && j !=3D READ_ONCE(rdp->nocb_bypass=
+_first)) ||
+>             (ncbs &&  bypass_is_lazy &&
+> -            (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_t=
+ill_flush))) ||
+> +            (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_l=
+azy_flush))) ||
+>             ncbs >=3D qhimark) {
+>                 rcu_nocb_lock(rdp);
+>                 *was_alldone =3D !rcu_segcblist_pend_cbs(&rdp->cblist);
+> @@ -723,7 +723,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+>                 lazy_ncbs =3D READ_ONCE(rdp->lazy_len);
+>
+>                 if (bypass_ncbs && (lazy_ncbs =3D=3D bypass_ncbs) &&
+> -                   (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + ji=
+ffies_till_flush) ||
+> +                   (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + ji=
+ffies_lazy_flush) ||
+>                      bypass_ncbs > 2 * qhimark)) {
+>                         flush_bypass =3D true;
+>                 } else if (bypass_ncbs && (lazy_ncbs !=3D bypass_ncbs) &&
+> --
+> 2.41.0
+>
