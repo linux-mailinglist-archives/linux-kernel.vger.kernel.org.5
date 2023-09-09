@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B297995E0
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26567995F1
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 04:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343613AbjIIB5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 21:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42772 "EHLO
+        id S236096AbjIICV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 22:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234966AbjIIB5s (ORCPT
+        with ESMTP id S229448AbjIICV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 21:57:48 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BFA5186;
-        Fri,  8 Sep 2023 18:57:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93929C433C7;
-        Sat,  9 Sep 2023 01:57:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694224664;
-        bh=hPlhWYXoxMB13Bs2dThgtL6xFZJ2Lc+eLHYA4wq5rEA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SdysHumw8t+oNc3pE1kBFKyhZcAMpGGHy/USUajloff6fqBVuvTCr77rDUGEYhcZC
-         kMrrlvaE61WbJRWJwf98PBuyTO9w9K+/+N66B4Qze2DfYNLK99EFI0a5Kb93tnX4bN
-         ezEEdcW7Ulzmt7epZ3aWEVyiT4QY0qepi0IP3dVSRPkaW3V8/DRWwhOnEXJp2rgOcq
-         vAvQrIZypdRLPJL7VZuCJQqVcZ+TYnkT8YL0zqTzLA3OdOL8nj24WcpZHgb8OL9B6M
-         bL+CNUVQNj5gdtwcLBwef8S5FjH5auOkvSoylw4/r4OPkkypbSo7MFFnyu4t/KulVN
-         sMXiFZqwKzbDA==
-Date:   Sat, 9 Sep 2023 10:57:38 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Beau Belgrave <beaub@linux.microsoft.com>, rostedt@goodmis.org,
-        shuah@kernel.org, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        naresh.kamboju@linaro.org, anders.roxell@linaro.org, arnd@arndb.de
-Subject: Re: [PATCH v2] selftests/user_events: Fix failures when user_events
- is not installed
-Message-Id: <20230909105738.edd1c794dc861b60ed010668@kernel.org>
-In-Reply-To: <29fce076-746c-4650-8358-b4e0fa215cf7@sirena.org.uk>
-References: <20230908201916.562-1-beaub@linux.microsoft.com>
-        <29fce076-746c-4650-8358-b4e0fa215cf7@sirena.org.uk>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Fri, 8 Sep 2023 22:21:57 -0400
+Received: from mail-pl1-f208.google.com (mail-pl1-f208.google.com [209.85.214.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E231FEA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 19:21:52 -0700 (PDT)
+Received: by mail-pl1-f208.google.com with SMTP id d9443c01a7336-1c093862623so38091495ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 19:21:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694226112; x=1694830912;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Qahrvgod/2lO4fQ5eX628+D1T3pLU9aFiqfl13DMEn4=;
+        b=DMplBCdmBs8eHJjftuwnb03qT+nuIk0MazHuRg1Kssn3BdQ0MuYGR11eWlnpG0oeI3
+         ihqcUVlCowk/11a1xKkoWtGcrTBCcb8icHqQCesZaMbjX3znTxv/fmip4fnXvjlEMZAD
+         PnsxzPnFt6f2rjR87W5iYnOE+egBjWUNytiKVueFYlY5IoMfZD2MU5r1BD1z2Cf/u+Iv
+         G/V/2rlekQ7amGoYpjzx/8mHKib7k9pPWEKiY5INE6JAGUF1QSa3JTClzO2s3BptESiC
+         qdEKzmMIHgJbajoGD7Z4JF9e/YH7vQ4bKoQnCp1UJ05DHQGn/JBdKm8t4MzKcSWmlrTT
+         pnuQ==
+X-Gm-Message-State: AOJu0YwQPpjS0gUvDdnRPc2IaydfcvGCE9sGr7Oc84aS93nbQjeQrcvV
+        KkU/Tb0I73GAIbaDjDHgatVDwtL4+X2KX2ZbLKgGNs58WeD3zLKP7Q==
+X-Google-Smtp-Source: AGHT+IEowzSWSQqo5NJXGdPFhixbLPvs89EyTB5Xro3Sk0j+XIXMBhl/FM788Dut082nTn8vIP4Lo20x5BpaOWyqkVgZVaRSbp1B
+MIME-Version: 1.0
+X-Received: by 2002:a17:902:d512:b0:1c3:29c4:c4e8 with SMTP id
+ b18-20020a170902d51200b001c329c4c4e8mr1537941plg.4.1694226112209; Fri, 08 Sep
+ 2023 19:21:52 -0700 (PDT)
+Date:   Fri, 08 Sep 2023 19:21:52 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009667590604e3c1eb@google.com>
+Subject: [syzbot] upstream test error: BUG: mismatching fuzzer/executor git
+ revisions: ADDR vs ADDR
+From:   syzbot <syzbot+277810e6a9df498beef2@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,26 +54,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 Sep 2023 00:33:05 +0100
-Mark Brown <broonie@kernel.org> wrote:
+Hello,
 
-> On Fri, Sep 08, 2023 at 08:19:16PM +0000, Beau Belgrave wrote:
-> 
-> > Add common methods to detect if tracefs and user_events is enabled. If
-> > either is not enabled skip the test. If tracefs is enabled, but is not
-> > mounted, mount tracefs and fail if there were any errors. Fail if not
-> > run as root.
-> 
-> This will leave tracefs mounted if it was not already mounted which is a
-> change to the system configuration.  While that may happen if things go
-> wrong during a test we should probably avoid actively doing this and
-> either only skip or try to umount at the end of the test if we mounted
-> ourselves.
+syzbot found the following issue on:
 
-Oh, I didn't know that. I need to update ftracetest to unmount tracefs if
-it is not mounted.
+HEAD commit:    3f86ed6ec0b3 Merge tag 'arc-6.6-rc1' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=145485a8680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b273cdfbc13e9a4b
+dashboard link: https://syzkaller.appspot.com/bug?extid=277810e6a9df498beef2
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-Thanks!
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/d9f6ad973552/disk-3f86ed6e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7eb37bce3c21/vmlinux-3f86ed6e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b19d1fc0d83e/bzImage-3f86ed6e.xz
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+277810e6a9df498beef2@syzkaller.appspotmail.com
+
+Warning: Permanently added '10.128.0.111' (ED25519) to the list of known hosts.
+2023/09/05 01:57:15 fuzzer started
+2023/09/05 01:57:15 connecting to host at 10.128.0.169:37705
+2023/09/05 01:57:15 checking machine...
+2023/09/05 01:57:15 checking revisions...
+2023/09/05 01:57:15 SYZFATAL: BUG: mismatching fuzzer/executor git revisions: 8bc9053e88dacf57f5ce550da040d31895eb9626 vs 0b6286dc40e114a33a60c7fbbddbe7fcffc1bb4c
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
