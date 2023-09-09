@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6412C7993D2
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4631799483
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345047AbjIIAiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:38:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47272 "EHLO
+        id S1345865AbjIIAjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244971AbjIIAiH (ORCPT
+        with ESMTP id S1345861AbjIIAjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 20:38:07 -0400
+        Fri, 8 Sep 2023 20:39:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F4C826A3;
-        Fri,  8 Sep 2023 17:37:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FC80C43215;
-        Sat,  9 Sep 2023 00:36:40 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB5C212E;
+        Fri,  8 Sep 2023 17:38:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87376C113C9;
+        Sat,  9 Sep 2023 00:36:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694219801;
-        bh=N1pcWlOYqiveziN0IOp5nLZqzPGbOe9ls13Mam/I8lc=;
+        s=k20201202; t=1694219802;
+        bh=I2HbKzYQplI9PMuTEcdT8wtZsx8daJXkYIiO0l3x6K0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vIispxQCHkYFFGAYMpOFxAHFdvglID+XlaZJIIG3RomGB4GLZGcuk1y1XnItDUDJM
-         XXCUXEOJBctR4lB44ppsGWi/OBQ0+fKW0phTlnse8QCwBe8bgZ3QELflAcrX2Kooyp
-         nmbBW8iP89u8LcV82Cp8k6LK78QJ0zcpWVtW1fsrwIxLFXKAkrDdWwqmAVkM4Fuwf8
-         oKNHFfjDtFrZxzQtTWsHsh00ZQUIqlB4aeeoGTPJXxCLhi+6MKXoKk9DDQfxt2FauG
-         /CY1iWuf/jMJc0wiJdw0DvULPvpxrkkDnEtvgkIGOLKYeU8/4H6WWo8tehWnXCD5qh
-         6k3BI5rjS6+cQ==
+        b=NUr5trdeKR/IYGnxN1RmsDv4qJBwtF5t/qZVbygFoFeWXtjQrbGER0OihYxiF9A0O
+         U92yGWqC0KejHvtMpPf3fNadKmvrIUFJqmfz7XHX9Ux7xn4EAvVbpYYzUhFnxsv8d7
+         VNo7H26mGMjuvo3khLYZeHq9j5QypBSRtanDRBQ+fZm+yMu4AhTYJ251wI2j4h99a3
+         i7B+P6GUVACDD/p9DYywEO4yNEHRXPLRydJSri8anQz78zoN1vs/S/5TxOYfD+WfcI
+         pbZ/6sYSFIcu8Dv31oTQJGG5h+jrwyKKNVcO30HI++Kk4GW/ex4UU4Gtn7uesPAqy1
+         UkMfbhEuMSQfw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Baoquan He <bhe@redhat.com>, kernel test robot <lkp@intel.com>,
-        Derek Kiernan <derek.kiernan@amd.com>,
-        Dragan Cvetic <dragan.cvetic@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.5 18/28] misc: open-dice: make OPEN_DICE depend on HAS_IOMEM
-Date:   Fri,  8 Sep 2023 20:35:52 -0400
-Message-Id: <20230909003604.3579407-18-sashal@kernel.org>
+Cc:     Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 19/28] workqueue: Call wq_update_unbound_numa() on all CPUs in NUMA node on CPU hotplug
+Date:   Fri,  8 Sep 2023 20:35:53 -0400
+Message-Id: <20230909003604.3579407-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909003604.3579407-1-sashal@kernel.org>
 References: <20230909003604.3579407-1-sashal@kernel.org>
@@ -56,50 +51,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Baoquan He <bhe@redhat.com>
+From: Tejun Heo <tj@kernel.org>
 
-[ Upstream commit aefc8b57af7787c80686e49a5841e9289cb11f53 ]
+[ Upstream commit 4cbfd3de737b9d00544ff0f673cb75fc37bffb6a ]
 
-On s390 systems (aka mainframes), it has classic channel devices for
-networking and permanent storage that are currently even more common
-than PCI devices. Hence it could have a fully functional s390 kernel
-with CONFIG_PCI=n, then the relevant iomem mapping functions
-[including ioremap(), devm_ioremap(), etc.] are not available.
+When a CPU went online or offline, wq_update_unbound_numa() was called only
+on the CPU which was going up or down. This works fine because all CPUs on
+the same NUMA node share the same pool_workqueue slot - one CPU updating it
+updates it for everyone in the node.
 
-Here let OPEN_DICE depend on HAS_IOMEM so that it won't be built
-to cause below compiling error if PCI is unset:
+However, future changes will make each CPU use a separate pool_workqueue
+even when they're sharing the same worker_pool, which requires updating
+pool_workqueue's for all CPUs which may be sharing the same pool_workqueue
+on hotplug.
 
-------
-ERROR: modpost: "devm_memremap" [drivers/misc/open-dice.ko] undefined!
-ERROR: modpost: "devm_memunmap" [drivers/misc/open-dice.ko] undefined!
-------
+To accommodate the planned changes, this patch updates
+workqueue_on/offline_cpu() so that they call wq_update_unbound_numa() for
+all CPUs sharing the same NUMA node as the CPU going up or down. In the
+current code, the second+ calls would be noops and there shouldn't be any
+behavior changes.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202306211329.ticOJCSv-lkp@intel.com/
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Cc: Derek Kiernan <derek.kiernan@amd.com>
-Cc: Dragan Cvetic <dragan.cvetic@amd.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Link: https://lore.kernel.org/r/20230707135852.24292-4-bhe@redhat.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+* As wq_update_unbound_numa() is now called on multiple CPUs per each
+  hotplug event, @cpu is renamed to @hotplug_cpu and another @cpu argument
+  is added. The former indicates the CPU being hot[un]plugged and the latter
+  the CPU whose pool_workqueue is being updated.
+
+* In wq_update_unbound_numa(), cpu_off is renamed to off_cpu for consistency
+  with the new @hotplug_cpu.
+
+Signed-off-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/workqueue.c | 34 +++++++++++++++++++++++++---------
+ 1 file changed, 25 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index 75e427f124b28..cadd4a820c033 100644
---- a/drivers/misc/Kconfig
-+++ b/drivers/misc/Kconfig
-@@ -496,6 +496,7 @@ config HISI_HIKEY_USB
- config OPEN_DICE
- 	tristate "Open Profile for DICE driver"
- 	depends on OF_RESERVED_MEM
-+	depends on HAS_IOMEM
- 	help
- 	  This driver exposes a DICE reserved memory region to userspace via
- 	  a character device. The memory region contains Compound Device
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 800b4208dba9a..88ee01d50572f 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -4448,7 +4448,8 @@ int apply_workqueue_attrs(struct workqueue_struct *wq,
+ /**
+  * wq_update_unbound_numa - update NUMA affinity of a wq for CPU hot[un]plug
+  * @wq: the target workqueue
+- * @cpu: the CPU coming up or going down
++ * @cpu: the CPU to update pool association for
++ * @hotplug_cpu: the CPU coming up or going down
+  * @online: whether @cpu is coming up or going down
+  *
+  * This function is to be called from %CPU_DOWN_PREPARE, %CPU_ONLINE and
+@@ -4468,10 +4469,10 @@ int apply_workqueue_attrs(struct workqueue_struct *wq,
+  * CPU_DOWN_PREPARE.
+  */
+ static void wq_update_unbound_numa(struct workqueue_struct *wq, int cpu,
+-				   bool online)
++				   int hotplug_cpu, bool online)
+ {
+ 	int node = cpu_to_node(cpu);
+-	int cpu_off = online ? -1 : cpu;
++	int off_cpu = online ? -1 : hotplug_cpu;
+ 	struct pool_workqueue *old_pwq = NULL, *pwq;
+ 	struct workqueue_attrs *target_attrs;
+ 	cpumask_t *cpumask;
+@@ -4499,7 +4500,7 @@ static void wq_update_unbound_numa(struct workqueue_struct *wq, int cpu,
+ 	 * and create a new one if they don't match.  If the target cpumask
+ 	 * equals the default pwq's, the default pwq should be used.
+ 	 */
+-	if (wq_calc_node_cpumask(wq->dfl_pwq->pool->attrs, node, cpu_off, cpumask)) {
++	if (wq_calc_node_cpumask(wq->dfl_pwq->pool->attrs, node, off_cpu, cpumask)) {
+ 		if (cpumask_equal(cpumask, pwq->pool->attrs->cpumask))
+ 			return;
+ 	} else {
+@@ -5530,8 +5531,15 @@ int workqueue_online_cpu(unsigned int cpu)
+ 	}
+ 
+ 	/* update NUMA affinity of unbound workqueues */
+-	list_for_each_entry(wq, &workqueues, list)
+-		wq_update_unbound_numa(wq, cpu, true);
++	list_for_each_entry(wq, &workqueues, list) {
++		int tcpu;
++
++		for_each_possible_cpu(tcpu) {
++			if (cpu_to_node(tcpu) == cpu_to_node(cpu)) {
++				wq_update_unbound_numa(wq, tcpu, cpu, true);
++			}
++		}
++	}
+ 
+ 	mutex_unlock(&wq_pool_mutex);
+ 	return 0;
+@@ -5549,8 +5557,15 @@ int workqueue_offline_cpu(unsigned int cpu)
+ 
+ 	/* update NUMA affinity of unbound workqueues */
+ 	mutex_lock(&wq_pool_mutex);
+-	list_for_each_entry(wq, &workqueues, list)
+-		wq_update_unbound_numa(wq, cpu, false);
++	list_for_each_entry(wq, &workqueues, list) {
++		int tcpu;
++
++		for_each_possible_cpu(tcpu) {
++			if (cpu_to_node(tcpu) == cpu_to_node(cpu)) {
++				wq_update_unbound_numa(wq, tcpu, cpu, false);
++			}
++		}
++	}
+ 	mutex_unlock(&wq_pool_mutex);
+ 
+ 	return 0;
+@@ -6589,7 +6604,8 @@ void __init workqueue_init(void)
+ 	}
+ 
+ 	list_for_each_entry(wq, &workqueues, list) {
+-		wq_update_unbound_numa(wq, smp_processor_id(), true);
++		wq_update_unbound_numa(wq, smp_processor_id(), smp_processor_id(),
++				       true);
+ 		WARN(init_rescuer(wq),
+ 		     "workqueue: failed to create early rescuer for %s",
+ 		     wq->name);
 -- 
 2.40.1
 
