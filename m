@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F26799335
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6749C79933B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345439AbjIIAWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:22:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
+        id S242554AbjIIAXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:23:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345491AbjIIAWu (ORCPT
+        with ESMTP id S239696AbjIIAXU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 20:22:50 -0400
+        Fri, 8 Sep 2023 20:23:20 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E3526BF;
-        Fri,  8 Sep 2023 17:22:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 984E4C433CC;
-        Sat,  9 Sep 2023 00:22:29 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A1F26A9;
+        Fri,  8 Sep 2023 17:22:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F6D9C433C7;
+        Sat,  9 Sep 2023 00:22:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694218950;
-        bh=2s3vHOMcNdcrZU+wGpSckbUw5LTnWIjmBpY4tiNXT3Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h1jK6Px8UVMlZIyTRqfF3Ol2MbaiWqIUw+lFYEUnmxCEVXlIRjUnpZ6VG4vflzmOO
-         NDlkNfxXV1v5sT+gImxLpyc3GYj8ah/8gm5+ztxr8L3YSXUNykBMPK4WlNNUF56p6C
-         xYz4lq2wIrwr14mCziSOPg3LW5pTZroF+wvuyJy8mzokiSvLVVHe1pkekPAvKHt6F1
-         9BnmPRXn8e/lLchQi6bjNiU+C2NOXGjA++2wQwBUMnJiCy4LgEHYnUVhvTasG/aVJJ
-         QgVTCS2ocz6KoZIefQ7z+X+hRTkQU7/MxWCFgGQ726HsFn2497e0Z253a+/AXFxOF6
-         rnSqj9VNgYPnw==
+        s=k20201202; t=1694218958;
+        bh=o8hO5XQkI1EYEIpQom16vP7HFoLPCqItj2HyhpJBHp0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cmcV8rndNOl+I0t4CoTs9xF0Z6m+Y/2G2DxMEbk0yq4FGodV3hyeInm1B9hIeLFDx
+         oGV2yNDzwFtvzIjdT3RqlHJ0Ykizi0C59qpBepJMBwnWClV8jSZ4M8Zkw5ewT7v8iX
+         lxrSFboiXDjKfVEVxdyYmRoSdwe7Xhiw7kVJfTuZyHNi6AnfbOzayjxRYeqAug1iWN
+         iBQT5OBk/UUR9Ul9XP+A+OU6uJouteHq2RRDBfvyNelLet+eIKFudSzQqrLx4ltYON
+         MD/CHT+YxzGgNihRBbTnlAp4f4uBY0OE47RpMmQcV3U0d/AtyUIjugJum4///NApA6
+         /RLTTNeh/HhJA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yong-Xuan Wang <yongxuan.wang@sifive.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, paul.walmsley@sifive.com,
-        greentime.hu@sifive.com, kw@linux.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 11/11] PCI: fu740: Set the number of MSI vectors
-Date:   Fri,  8 Sep 2023 20:22:04 -0400
-Message-Id: <20230909002205.3578068-11-sashal@kernel.org>
+Cc:     Andrew Kanner <andrew.kanner@gmail.com>,
+        syzbot+6a93efb725385bc4b2e9@syzkaller.appspotmail.com,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, shaggy@kernel.org,
+        wuhoipok@gmail.com, code@siddh.me, yogi.kernel@gmail.com,
+        jfs-discussion@lists.sourceforge.net, mudongliangabcd@gmail.com,
+        wonguk.lee1023@gmail.com
+Subject: [PATCH AUTOSEL 6.4 01/11] fs/jfs: prevent double-free in dbUnmount() after failed jfs_remount()
+Date:   Fri,  8 Sep 2023 20:22:21 -0400
+Message-Id: <20230909002233.3578213-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230909002205.3578068-1-sashal@kernel.org>
-References: <20230909002205.3578068-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.2
+X-stable-base: Linux 6.4.15
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -56,41 +55,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yong-Xuan Wang <yongxuan.wang@sifive.com>
+From: Andrew Kanner <andrew.kanner@gmail.com>
 
-[ Upstream commit 551a60e1225e71fff8efd9390204c505b0870e0f ]
+[ Upstream commit cade5397e5461295f3cb87880534b6a07cafa427 ]
 
-The iMSI-RX module of the DW PCIe controller provides multiple sets of
-MSI_CTRL_INT_i_* registers, and each set is capable of handling 32 MSI
-interrupts. However, the fu740 PCIe controller driver only enabled one set
-of MSI_CTRL_INT_i_* registers, as the total number of supported interrupts
-was not specified.
+Syzkaller reported the following issue:
+==================================================================
+BUG: KASAN: double-free in slab_free mm/slub.c:3787 [inline]
+BUG: KASAN: double-free in __kmem_cache_free+0x71/0x110 mm/slub.c:3800
+Free of addr ffff888086408000 by task syz-executor.4/12750
+[...]
+Call Trace:
+ <TASK>
+[...]
+ kasan_report_invalid_free+0xac/0xd0 mm/kasan/report.c:482
+ ____kasan_slab_free+0xfb/0x120
+ kasan_slab_free include/linux/kasan.h:177 [inline]
+ slab_free_hook mm/slub.c:1781 [inline]
+ slab_free_freelist_hook+0x12e/0x1a0 mm/slub.c:1807
+ slab_free mm/slub.c:3787 [inline]
+ __kmem_cache_free+0x71/0x110 mm/slub.c:3800
+ dbUnmount+0xf4/0x110 fs/jfs/jfs_dmap.c:264
+ jfs_umount+0x248/0x3b0 fs/jfs/jfs_umount.c:87
+ jfs_put_super+0x86/0x190 fs/jfs/super.c:194
+ generic_shutdown_super+0x130/0x310 fs/super.c:492
+ kill_block_super+0x79/0xd0 fs/super.c:1386
+ deactivate_locked_super+0xa7/0xf0 fs/super.c:332
+ cleanup_mnt+0x494/0x520 fs/namespace.c:1291
+ task_work_run+0x243/0x300 kernel/task_work.c:179
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ exit_to_user_mode_loop+0x124/0x150 kernel/entry/common.c:171
+ exit_to_user_mode_prepare+0xb2/0x140 kernel/entry/common.c:203
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x26/0x60 kernel/entry/common.c:296
+ do_syscall_64+0x49/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+[...]
+ </TASK>
 
-Set the supported number of MSI vectors to enable all the MSI_CTRL_INT_i_*
-registers on the fu740 PCIe core, allowing the system to fully utilize the
-available MSI interrupts.
+Allocated by task 13352:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x3d/0x60 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:371 [inline]
+ __kasan_kmalloc+0x97/0xb0 mm/kasan/common.c:380
+ kmalloc include/linux/slab.h:580 [inline]
+ dbMount+0x54/0x980 fs/jfs/jfs_dmap.c:164
+ jfs_mount+0x1dd/0x830 fs/jfs/jfs_mount.c:121
+ jfs_fill_super+0x590/0xc50 fs/jfs/super.c:556
+ mount_bdev+0x26c/0x3a0 fs/super.c:1359
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:610
+ vfs_get_tree+0x88/0x270 fs/super.c:1489
+ do_new_mount+0x289/0xad0 fs/namespace.c:3145
+ do_mount fs/namespace.c:3488 [inline]
+ __do_sys_mount fs/namespace.c:3697 [inline]
+ __se_sys_mount+0x2d3/0x3c0 fs/namespace.c:3674
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Link: https://lore.kernel.org/r/20230807055621.2431-1-yongxuan.wang@sifive.com
-Signed-off-by: Yong-Xuan Wang <yongxuan.wang@sifive.com>
-Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+Freed by task 13352:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x3d/0x60 mm/kasan/common.c:52
+ kasan_save_free_info+0x27/0x40 mm/kasan/generic.c:518
+ ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
+ kasan_slab_free include/linux/kasan.h:177 [inline]
+ slab_free_hook mm/slub.c:1781 [inline]
+ slab_free_freelist_hook+0x12e/0x1a0 mm/slub.c:1807
+ slab_free mm/slub.c:3787 [inline]
+ __kmem_cache_free+0x71/0x110 mm/slub.c:3800
+ dbUnmount+0xf4/0x110 fs/jfs/jfs_dmap.c:264
+ jfs_mount_rw+0x545/0x740 fs/jfs/jfs_mount.c:247
+ jfs_remount+0x3db/0x710 fs/jfs/super.c:454
+ reconfigure_super+0x3bc/0x7b0 fs/super.c:935
+ vfs_fsconfig_locked fs/fsopen.c:254 [inline]
+ __do_sys_fsconfig fs/fsopen.c:439 [inline]
+ __se_sys_fsconfig+0xad5/0x1060 fs/fsopen.c:314
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+[...]
+
+JFS_SBI(ipbmap->i_sb)->bmap wasn't set to NULL after kfree() in
+dbUnmount().
+
+Syzkaller uses faultinject to reproduce this KASAN double-free
+warning. The issue is triggered if either diMount() or dbMount() fail
+in jfs_remount(), since diUnmount() or dbUnmount() already happened in
+such a case - they will do double-free on next execution: jfs_umount
+or jfs_remount.
+
+Tested on both upstream and jfs-next by syzkaller.
+
+Reported-and-tested-by: syzbot+6a93efb725385bc4b2e9@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/000000000000471f2d05f1ce8bad@google.com/T/
+Link: https://syzkaller.appspot.com/bug?extid=6a93efb725385bc4b2e9
+Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/dwc/pcie-fu740.c | 1 +
+ fs/jfs/jfs_dmap.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/controller/dwc/pcie-fu740.c b/drivers/pci/controller/dwc/pcie-fu740.c
-index 0c90583c078bf..1e9b44b8bba48 100644
---- a/drivers/pci/controller/dwc/pcie-fu740.c
-+++ b/drivers/pci/controller/dwc/pcie-fu740.c
-@@ -299,6 +299,7 @@ static int fu740_pcie_probe(struct platform_device *pdev)
- 	pci->dev = dev;
- 	pci->ops = &dw_pcie_ops;
- 	pci->pp.ops = &fu740_pcie_host_ops;
-+	pci->pp.num_vectors = MAX_MSI_IRQS;
+diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+index bd4ef43b02033..e9d075cbd71ad 100644
+--- a/fs/jfs/jfs_dmap.c
++++ b/fs/jfs/jfs_dmap.c
+@@ -269,6 +269,7 @@ int dbUnmount(struct inode *ipbmap, int mounterror)
  
- 	/* SiFive specific region: mgmt */
- 	afp->mgmt_base = devm_platform_ioremap_resource_byname(pdev, "mgmt");
+ 	/* free the memory for the in-memory bmap. */
+ 	kfree(bmp);
++	JFS_SBI(ipbmap->i_sb)->bmap = NULL;
+ 
+ 	return (0);
+ }
 -- 
 2.40.1
 
