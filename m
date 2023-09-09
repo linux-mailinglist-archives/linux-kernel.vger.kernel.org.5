@@ -2,113 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3257995D7
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF047995D9
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237238AbjIIBqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 21:46:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
+        id S238950AbjIIBtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 21:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232161AbjIIBqw (ORCPT
+        with ESMTP id S229717AbjIIBtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 21:46:52 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7481716
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 18:46:48 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-6490c2c4702so14688076d6.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 18:46:48 -0700 (PDT)
+        Fri, 8 Sep 2023 21:49:02 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A01F1FE0
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 18:48:57 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bd3f629c76so44626371fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 18:48:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kudzu-us.20230601.gappssmtp.com; s=20230601; t=1694224007; x=1694828807; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=26BI+0n04B5aNtj8zPuXi+pIvROzpuhpiJ4Kp/E4q6A=;
-        b=LDk4LP5y1DeSPInwO3PLA6rvqFGTLYL0ZuMjgKIKNjthwkwoaHuZKooh29G/3tnttO
-         uh50YhTNuLaFqYggoOW/BFkLGHzAZizz39sL4ibvEHHxznwhrzv8F1n9CUFhudm5L4Le
-         /CfryZuanEDXKErYlJe0+UUl5EBGJiLSXCzr1+H4EmmMomFTslG8BIo/ZLBa+MsxbVgx
-         4k6oPM+VH2vZ5QUxYuRiCu2cv5X9X6EHw3wpEl0DpTYAcLEA7XLBKRpRhJizt0D8IFTW
-         G1jqBJtmvrUE+egrEVeEMtxLpjjfHsvTtWjwCGDddcPfOXc8DFmIvH5weZEwclcm5jt4
-         DGnw==
+        d=joelfernandes.org; s=google; t=1694224135; x=1694828935; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kFC4wiL127MJ3x2dOUtgK+qn8vixUyxFWgVnpUusG5A=;
+        b=x/eM8QKPOFxbTG1/15Pj8aFGlJLZjvu/BddiQntuqCf76EG/k1eHrTmkmTGMkj9A6G
+         hqD6btICMb4WuMV8E/FAHR9Jl4NbaSli4HU06QlR8xU3kBl6D95a3YQapH16wfsocJ9t
+         uiiBPniolNwauEFkan9/aS2nSYaknHA1jD7gg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694224007; x=1694828807;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=26BI+0n04B5aNtj8zPuXi+pIvROzpuhpiJ4Kp/E4q6A=;
-        b=WUT99qc3+PJ5cBGlXJTDGJO4CW212ZvvigucznGZlhIzlhmdGhwDMt0YOi1F12uKW4
-         Ne4rySv3DGbUrRFPhFMhOLG00VD33rTWH5UMjzu/nAJyR9z7BneXH6k5u/4psk2hpACs
-         NCHoFsDPpcs+VrVm5fFDQP45Y6Y942GVkawgvw22FOx6oPrZZ66u3sTpZcX2kC0NcFaB
-         LcmJGFLKXtJpkj/XkChHB7UeoMBSwSEyn1bb5xGUddHOEzw6Bv7xy1bdRj5X+OM1Z2hX
-         269jc69UggtDvk0PhVmDkHWurkh/4oy6blO+k6qT37TZ4fvtQEDjGFhHuOMUc+N0kaTO
-         HjKA==
-X-Gm-Message-State: AOJu0YwzIQt7srsxq13DBc5zwUb0nm92TZax78rmfB1F59f09RP5JDdc
-        sDx2cpFT2ICB6ZVdamAA7YU+iXTw79hPsSFDFQg=
-X-Google-Smtp-Source: AGHT+IH8jIhg4dy1rQ87RnbLG0KNPA2cA2o7nnNQ3ZjQ/vgD5iXTEY3mC7rWrjAqPU/q1vJGn+Mwow==
-X-Received: by 2002:a0c:a892:0:b0:64f:3bee:93a6 with SMTP id x18-20020a0ca892000000b0064f3bee93a6mr3424599qva.42.1694224007216;
-        Fri, 08 Sep 2023 18:46:47 -0700 (PDT)
-Received: from localhost ([2605:a601:a697:5800:8ac9:b3ff:febf:a2f8])
-        by smtp.gmail.com with ESMTPSA id v4-20020a0ce1c4000000b0064dd4b5fdb4sm1176989qvl.6.2023.09.08.18.46.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 18:46:46 -0700 (PDT)
-From:   Jon Mason <jdmason@kudzu.us>
-X-Google-Original-From: Jon Mason <jdm@athena.kudzu.us>
-Date:   Fri, 8 Sep 2023 21:46:40 -0400
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, ntb@lists.linux.dev
-Subject: [GIT PULL] NTB bug fixes for 6.6
-Message-ID: <ZPvOgFe6+hUx9SUC@athena.kudzu.us>
+        d=1e100.net; s=20230601; t=1694224135; x=1694828935;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kFC4wiL127MJ3x2dOUtgK+qn8vixUyxFWgVnpUusG5A=;
+        b=Lw5FfLaQ1hHT4FTRmbsm49io+CAj8MUJsKhPF12MOaMhIsSoNMXBbWpk2P8nyfSOZb
+         zujqP4JpgEeNWUyNc2CImiavsRu8sYKtVm4s/QkCttOM6cGfSL5iNTWnkJCWfJKP3rw9
+         WIWSNF/DMSAbOEnwuFfnvKGtZEhY38B8MB4zjuEQvpAZe/52Dot/5Kv/4+y28sLoFvl/
+         JyNP7NUEdXRVfsHVG0CmDdEwA2pF4oGhQL8N5At/xX3+TIuFb3W6WuaQN81XNepMz4I2
+         XQ13hAmGaQPpkmuvMqfrppfSOZ7l7qU0CX1201Y2GMdW9zfm0PHO1AbLDNkmoHL77Ihx
+         rjdw==
+X-Gm-Message-State: AOJu0YxzZGVk0LuZtb2sSfXxMQG8NCQ0V843+JNkE/EYFf042Bq94PtA
+        7F0whwRJZlDoogSbAyJjAseA/4vvHSvRUVHWwY1hlg==
+X-Google-Smtp-Source: AGHT+IEWaX1AGQYRyc6iCeThFz95+Si6y29Mcx8P3Ihl44LSN7k4AzUdmCdODRMHOLt4ERMhpTTEVuidKfCEVc3Q+LE=
+X-Received: by 2002:a2e:330f:0:b0:2bd:2056:ceed with SMTP id
+ d15-20020a2e330f000000b002bd2056ceedmr2791592ljc.25.1694224135577; Fri, 08
+ Sep 2023 18:48:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230908203603.5865-1-frederic@kernel.org> <20230908203603.5865-4-frederic@kernel.org>
+In-Reply-To: <20230908203603.5865-4-frederic@kernel.org>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 8 Sep 2023 21:48:44 -0400
+Message-ID: <CAEXW_YTxSft0cZkq6UOsdkDxLCjMZfqqK3fBVz6He0UebCqS+g@mail.gmail.com>
+Subject: Re: [PATCH 03/10] rcu/nocb: Remove needless LOAD-ACQUIRE
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
-Here are a few NTB bug fixes for 6.6.  Please consider pulling them.
+On Fri, Sep 8, 2023 at 4:36=E2=80=AFPM Frederic Weisbecker <frederic@kernel=
+.org> wrote:
+>
+> The LOAD-ACQUIRE access performed on rdp->nocb_cb_sleep advertizes
+> ordering callback execution against grace period completion. However
+> this is contradicted by the following:
+>
+> * This LOAD-ACQUIRE doesn't pair with anything. The only counterpart
+>   barrier that can be found is the smp_mb() placed after callbacks
+>   advancing in nocb_gp_wait(). However the barrier is placed _after_
+>   ->nocb_cb_sleep write.
 
-Thanks,
-Jon
+Hmm, on one side you have:
+
+WRITE_ONCE(rdp->nocb_cb_sleep, false);
+smp_mb();
+swake_up_one(&rdp->nocb_cb_wq);   /* wakeup -- consider this to be a STORE =
+*/
+
+And on another side you have:
+swait_event_interruptible_exclusive(rdp->nocb_cb_wq, ..cond..) /*
+consider this to be a LOAD */
+smp_load_acquire(&rdp->nocb_cb_sleep)
+/* exec CBs (LOAD operations) */
+
+So there seems to be pairing AFAICS.
+
+But maybe you are referring to pairing between advancing the callbacks
+and storing to nocb_cb_sleep. In this case, the RELEASE of the nocb
+unlock operation just after advancing should be providing the
+ordering, but we still need the acquire this patch deletes.
+
+> * Callbacks can be concurrently advanced between the LOAD-ACQUIRE on
+>   ->nocb_cb_sleep and the call to rcu_segcblist_extract_done_cbs() in
+>   rcu_do_batch(), making any ordering based on ->nocb_cb_sleep broken.
+
+If you don't mind, could you elaborate more?
+
+> * Both rcu_segcblist_extract_done_cbs() and rcu_advance_cbs() are called
+>   under the nocb_lock, the latter hereby providing already the desired
+>   ACQUIRE semantics.
+
+The acquire orders loads to nocb_cb_sleep with all later loads/stores.
+I am not sure how nocb_lock gives that same behavior since that's
+doing ACQUIRE on the lock access itself and not on nocb_cb_sleep
+access, I'd appreciate it if we can debate this out.
+
+Every few months I need a memory-ordering workout so this can be that.
+;-) You could be onto something.
+
+thanks,
+
+ - Joel
 
 
 
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
-
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
-
-are available in the Git repository at:
-
-  https://github.com/jonmason/ntb tags/ntb-6.6
-
-for you to fetch changes up to 643982232860887fed493144957ea5794b6557d1:
-
-  ntb: Check tx descriptors outstanding instead of head/tail for tx queue (2023-08-22 12:38:19 -0400)
-
-----------------------------------------------------------------
-Link toggling fixes and debugfs error path fixes
-
-----------------------------------------------------------------
-Dave Jiang (4):
-      ntb: Clean up tx tail index on link down
-      ntb: Drop packets when qp link is down
-      ntb: Fix calculation ntb_transport_tx_free_entry()
-      ntb: Check tx descriptors outstanding instead of head/tail for tx queue
-
-Minjie Du (1):
-      dtivers: ntb: fix parameter check in perf_setup_dbgfs()
-
-Ruan Jinjie (2):
-      NTB: ntb_tool: Switch to memdup_user_nul() helper
-      ntb: amd: Drop unnecessary error check for debugfs_create_dir
-
-Wang Ming (1):
-      ntb: Remove error checking for debugfs_create_dir()
-
- drivers/ntb/hw/amd/ntb_hw_amd.c | 11 ++++-------
- drivers/ntb/ntb_transport.c     | 21 ++++++++++++++++-----
- drivers/ntb/test/ntb_perf.c     |  2 +-
- drivers/ntb/test/ntb_tool.c     | 15 +++------------
- 4 files changed, 24 insertions(+), 25 deletions(-)
+>
+> Therefore it is safe to access ->nocb_cb_sleep with a simple compiler
+> barrier.
+>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  kernel/rcu/tree_nocb.h | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index b9eab359c597..6e63ba4788e1 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -933,8 +933,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
+>                 swait_event_interruptible_exclusive(rdp->nocb_cb_wq,
+>                                                     nocb_cb_wait_cond(rdp=
+));
+>
+> -               // VVV Ensure CB invocation follows _sleep test.
+> -               if (smp_load_acquire(&rdp->nocb_cb_sleep)) { // ^^^
+> +               if (READ_ONCE(rdp->nocb_cb_sleep)) {
+>                         WARN_ON(signal_pending(current));
+>                         trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS=
+("WokeEmpty"));
+>                 }
+> --
+> 2.41.0
+>
