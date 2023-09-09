@@ -2,80 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC173799B53
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 23:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2999799B59
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 23:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241571AbjIIVRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 17:17:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36134 "EHLO
+        id S242150AbjIIVUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 17:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230470AbjIIVRY (ORCPT
+        with ESMTP id S230470AbjIIVUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 17:17:24 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F11131
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 14:17:16 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-5009d4a4897so5391726e87.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 14:17:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694294234; x=1694899034; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FUTX2wZtyaGuqkUm3+lfhlNbLIAZVk0Z/0uyTAczRl0=;
-        b=f8hDBLdyJraoy40fvC3U8LtSSwt0CBXTH+nV3mWGfMMOeb1r1UoAjycircBv7yrz2z
-         xAXWDGzoXWq1EOjo3q+VhG+SZA4aQT+A2aDqctIEBSrt85lYMBUXb5FKjGzYWy+y3vW2
-         G2Q4u7y096tN9a0zBXpOXNkp5b2cNrbEqUX+A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694294234; x=1694899034;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FUTX2wZtyaGuqkUm3+lfhlNbLIAZVk0Z/0uyTAczRl0=;
-        b=gD+lbvo6fKKwEfPvENZkOudp9bBhRhjMraHO41iBUrIHvZVTOKO6M/vHoPk33bThLg
-         TxkHVhPpT/RAhyy5v3UggYMt4kSUz89uBmgf+9ixFiun7LyaUPd05UOHAZpXQ6ROWBvO
-         58yCQNxx8KWamWiweNUP6HvsTYhKhbWlGyEjiipdYj/oYg9GnSXDV8GNkwUlNVX9Es/M
-         jrrnvH7/E1hfmeNa2RXaeV/ulYQsafhEs+7ZrBrAVBjTSf7LWll3fvR0kTNRQIKlfYLb
-         0WHdEiKKhHp7no0N63Ri1WkYv2iUDSu/Ue9Wf8j4c0iYzDA5qCKhRwRvANevFrrDBnO+
-         oRPw==
-X-Gm-Message-State: AOJu0YyMy4KOh5gk1uVubjdBiyfzYTQZk/BkLVbiTqVkuNWhi+4NXm9z
-        EQdHAwwcfqp09MzPbdTm17AQO+K1MQVlBBKCUnN/BZd6
-X-Google-Smtp-Source: AGHT+IGfOtckppz2NzZdJFb7Y3s9+wEHVPvawfdAmeILC/9b3t1m8S5NLfJsemMZXnw+63XesCLy8Q==
-X-Received: by 2002:ac2:58e7:0:b0:4fb:90c6:c31a with SMTP id v7-20020ac258e7000000b004fb90c6c31amr4214159lfo.14.1694294233996;
-        Sat, 09 Sep 2023 14:17:13 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id w6-20020ac254a6000000b004fb64600e5dsm731024lfk.219.2023.09.09.14.17.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Sep 2023 14:17:12 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-502934c88b7so4894729e87.2
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 14:17:11 -0700 (PDT)
-X-Received: by 2002:ac2:597b:0:b0:500:a092:d085 with SMTP id
- h27-20020ac2597b000000b00500a092d085mr4467355lfp.68.1694294231470; Sat, 09
- Sep 2023 14:17:11 -0700 (PDT)
+        Sat, 9 Sep 2023 17:20:53 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F171131
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 14:20:49 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id F3E5D3200805;
+        Sat,  9 Sep 2023 17:20:44 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Sat, 09 Sep 2023 17:20:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1694294444; x=1694380844; bh=Sn2F/0ubDOgcdhrssDrqzyRGCBkHH7oBOQI
+        2a3Dinvw=; b=GwMSj3GmmUGZUz+TzefxuyYs4BxeAeaAzAg9uFmhn+iuiHAcSS0
+        UCrIWMAq+eEhHxUOScsfTTCr+XCYuk61sWRBnWlP8byarAIQiuS05kS2uV7d/PO/
+        42LKGoTORm/viV/UehjHdWUmrJ68gBAdUbUzMSHTGSVVZKdj0NSHlw5a6g1Byax1
+        MKGw2IcAdCl789VxnsQeCAuDkRn+PiOki44TQvWQJKQlrh09KZ4Na9TPXxlvOizw
+        SXz7Ufzm0MNh7oi45zHJOXto8bXnuU9CudcCDRLSqtRqa7IJgU2CF594BnRhu6XT
+        HtyQ02B5tQQ7KIDGidfmFzHtMiAgzQZhSYQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1694294444; x=1694380844; bh=Sn2F/0ubDOgcdhrssDrqzyRGCBkHH7oBOQI
+        2a3Dinvw=; b=JXBPmsC1WwVG1Wi+i14PgkFlxICfX0K39Y0SIGAsyVutUYfpmoM
+        cbHhKaoaSqemWeyc0xBOOeK3Tceh8FpQJkhiFJYMl4xglCFqy3D0j0Wrc7hjgr6z
+        yChJgeyYjK3YajwhZM3AOcNnjZbfRXNYrYKLqfJz5Tr8ZAC+17VEAEX5j0JSF4oV
+        oNZtf2A8iquLvyd6W5V0ndEd/DO6KpISEf7uD4wci8agPvsbtBOM4fn9CuH7yNzb
+        03uYTZ8og4EsY/ST8/bcmJ+ywpwfyHDH6oeZePz8iOxD+A9NEAWNR+ijgNLzyujJ
+        C4dHWJkawuGx3OWcsdmrb7bFkSvW42Mc7Yg==
+X-ME-Sender: <xms:q-H8ZPgbPY-tZDHvFsPcSW49oPbyPvlJCr04wYBTLWbaSv0IPkEPAg>
+    <xme:q-H8ZMDUuwQUw-TBkbry3YApEn7IPWzGZL5_Yj9BETCm8liLsUzDxcyJXzckcp69Q
+    Z9bAnZEStQdIiCx0Q>
+X-ME-Received: <xmr:q-H8ZPFtfl2lcnF1mQFNxCxpAlI9sWLZ9OgYZQux4MGKilueQTRF1IrAioHmCUWzMYKYgXA6dtEMBtAVA9NGhmtTQBL4cV2oray7v4NxnpeaPemZ3hedkoZu3A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehledgudehlecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttdefjeenucfhrhhomhepufgr
+    mhhuvghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqne
+    cuggftrfgrthhtvghrnhepkeejleelfeeitdfhtdfgkeeghedufeduueegffdvhfdukeel
+    leeftdetjeehuddtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:q-H8ZMTBqgLvdEJiU3F2cVwLmo6piZogtcSt106rPxcBSUoFEP-tMg>
+    <xmx:q-H8ZMxcvmFo-citqyBq2p4cKY6o--hIXpR_DweRNSv4E3D_6qoK9Q>
+    <xmx:q-H8ZC5nY5rEfTHrgzJsnaucjNyrPZGF7BcgNiMJ4OuDiVGEIzYTKw>
+    <xmx:rOH8ZIfbw2x-39473PQatEKS5LHn-7UshH0Ml9ilRqtCVpwKrOF-9A>
+Feedback-ID: i0ad843c9:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 9 Sep 2023 17:20:42 -0400 (EDT)
+Message-ID: <0e270067-cd2d-ecd0-512b-5dce4865fa4c@sholland.org>
+Date:   Sat, 9 Sep 2023 16:20:41 -0500
 MIME-Version: 1.0
-References: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
- <20230830184958.2333078-8-ankur.a.arora@oracle.com> <20230908070258.GA19320@noisy.programming.kicks-ass.net>
- <87zg1v3xxh.fsf@oracle.com>
-In-Reply-To: <87zg1v3xxh.fsf@oracle.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 9 Sep 2023 14:16:54 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
-Message-ID: <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
-        tglx@linutronix.de, jon.grimm@amd.com, bharata@amd.com,
-        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux ppc64le; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2] RISC-V: Fix use of non existent
+ CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK
+Content-Language: en-US
+To:     Jiexun Wang <wangjiexun@tinylab.org>
+Cc:     guoren@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, falcon@tinylab.org,
+        jszhang@kernel.org, tglx@linutronix.de, conor@kernel.org
+References: <20230906123216.255932-1-wangjiexun@tinylab.org>
+From:   Samuel Holland <samuel@sholland.org>
+In-Reply-To: <20230906123216.255932-1-wangjiexun@tinylab.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,33 +91,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 Sept 2023 at 13:16, Ankur Arora <ankur.a.arora@oracle.com> wrote:
->
-> > +     if (WARN_ON(resched_allowed()))
-> > +             return;
->
-> And, maybe something like this to guard against __this_cpu_read()
-> etc:
->
-> +++ b/lib/smp_processor_id.c
-> @@ -13,6 +13,9 @@ unsigned int check_preemption_disabled(const char *what1, const char *what2)
+Hi,
+
+The patch is correct, though the subject isn't quite accurate.
+CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK exists; it is defined in arch/Kconfig.
+It's just the wrong option to use to guard the function definition.
+
+On 9/6/23 07:32, Jiexun Wang wrote:
+> If configuration options SOFTIRQ_ON_OWN_STACK and PREEMPT_RT 
+> are enabled simultaneously under RISC-V architecture,
+> it will result in a compilation failure:
+> 
+> arch/riscv/kernel/irq.c:64:6: error: redefinition of 'do_softirq_own_stack'
+>    64 | void do_softirq_own_stack(void)
+>       |      ^~~~~~~~~~~~~~~~~~~~
+> In file included from ./arch/riscv/include/generated/asm/softirq_stack.h:1,
+>                  from arch/riscv/kernel/irq.c:15:
+> ./include/asm-generic/softirq_stack.h:8:20: note: previous definition of 'do_softirq_own_stack' was here
+>     8 | static inline void do_softirq_own_stack(void)
+>       |                    ^~~~~~~~~~~~~~~~~~~~
+>       
+> After changing CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK to CONFIG_SOFTIRQ_ON_OWN_STACK,
+> compilation can be successful.
+> 
+> Fixes: dd69d07a5a6c ("riscv: stack: Support HAVE_SOFTIRQ_ON_OWN_STACK")
+> Signed-off-by: Jiexun Wang <wangjiexun@tinylab.org>
+> ---
+> Changes in v2:
+> - changed to a more suitable subject line
+> - add a Fixes tag
+> 
+> ---
+>  arch/riscv/kernel/irq.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/kernel/irq.c b/arch/riscv/kernel/irq.c
+> index a8efa053c4a5..a86f272ae2c3 100644
+> --- a/arch/riscv/kernel/irq.c
+> +++ b/arch/riscv/kernel/irq.c
+> @@ -60,7 +60,7 @@ static void init_irq_stacks(void)
+>  }
+>  #endif /* CONFIG_VMAP_STACK */
+>  
+> -#ifdef CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK
+> +#ifdef CONFIG_SOFTIRQ_ON_OWN_STACK
+
+It would be good to fix the #endif comment at the bottom of the function
+as well.
+
+Regards,
+Samuel
+
+>  void do_softirq_own_stack(void)
 >  {
->         int this_cpu = raw_smp_processor_id();
->
-> +       if (unlikely(resched_allowed()))
-> +               goto out_error;
+>  #ifdef CONFIG_IRQ_STACKS
 
-Again, both of those checks are WRONG.
-
-They'll error out even in exceptions / interrupts, when we have a
-preempt count already from the exception itself.
-
-So testing "resched_allowed()" that only tests the TIF_RESCHED_ALLOW
-bit is wrong, wrong, wrong.
-
-These situations aren't errors if we already had a preemption count
-for other reasons. Only trying to disable preemption when in process
-context (while TIF_RESCHED_ALLOW) is a problem. Your patch is missing
-the check for "are we in a process context" part.
-
-                Linus
