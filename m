@@ -2,202 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D70F17997AF
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 13:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4237997B0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 13:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345061AbjIILcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 07:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
+        id S1343758AbjIILfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 07:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233881AbjIILcT (ORCPT
+        with ESMTP id S231388AbjIILfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 07:32:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADD4E46
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 04:32:15 -0700 (PDT)
+        Sat, 9 Sep 2023 07:35:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53801E47
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 04:35:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694259135; x=1725795135;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=nUYLq5T9/GHcLWl6uTwmBe2oMwAzdBhwkG/9NeVxpJk=;
-  b=kJTZcKmdzDqiq+VnZZBvN+zKu51AH0HJFPtV9qf7XMie9hgc/eKdjyAf
-   If3KJeEjNrVzn4QqcRazj6z03t0Ul8XvEeyPADSTO6foftFWbql55Gn7n
-   b6qotkPIBT8ACQdPkNA88c5IUkxXAqdSPcDW06gwMa4oCrtBYRZ5wrb9g
-   wqmj6AuO+Jp0fPFckrpYKfyfWNKLJbc9Txc8JRZvDFgbMd2SaYQQyXKAP
-   H2va3Ihwur1m7TVWM30ayk7MjQe3DYy4uWCiMUTgiint434knMRzjdP3F
-   0rJRa6V7AClCs/w1Z/PBBYkUB1hmV79lUEuAFnZ2bsIb7WgicNw+7kpI4
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="376722593"
+  t=1694259317; x=1725795317;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=eiDPrhsnjiLb8i3ucQdhTgfXOBsU5q73ADKmIah/TwE=;
+  b=XL9RbzmwtLPaNq24DlI6s84dC+UiJWVMK0YQDF2d7j9DCohz1uvTi4X0
+   FRdfYv2gsEKRa28lyJL6yfP/UMbwmDTYORmM6S1wHWpBcLk99zYWTzmOp
+   iIDEUJTlCJnFdRqcBPj3lrTonZzjao/YFHIsdHXIzf9EgKcfFdfLBftth
+   aK/d1/aTxn4o+YNLJsAb4PbLVyPgGDJ1u1lHa0+ZBVdHZkI/UD23+GWzY
+   cnsZzFRspDOX0kHmvt1zxxnX+FmSt3s/A0epXm1j57P0vxWdMlNX8r7zm
+   R77fKrAccxCk+mKBulPp5QVcyLaVVlD0jYZvAM48hZUo/U8YV3w4enB+Y
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="381634502"
 X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
-   d="scan'208";a="376722593"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 04:32:15 -0700
+   d="scan'208";a="381634502"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 04:35:16 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="745879626"
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="772030664"
 X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
-   d="scan'208";a="745879626"
-Received: from rdota-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.216.166])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 04:32:13 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id A293C104CCE; Sat,  9 Sep 2023 14:32:09 +0300 (+03)
-Date:   Sat, 9 Sep 2023 14:32:09 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Ard Biesheuvel <ardb@google.com>
-Cc:     Kees Cook <keescook@chromium.org>, Aaron Lu <aaron.lu@intel.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-Subject: Re: kexec reboot failed due to commit 75d090fd167ac
-Message-ID: <20230909113209.actnan6hczrclz2d@box.shutemov.name>
-References: <20230829114816.GA508985@ziqianlu-dell>
- <ZO3hQ0rbr8QuUjVI@debian.me>
- <20230829125134.GA509331@ziqianlu-dell>
- <20230829125939.bcg2r6hwqf45npko@box.shutemov.name>
- <20230829140451.GA509854@ziqianlu-dell>
- <20230907131409.masxz42ik6u456qp@box.shutemov.name>
- <20230908060230.GA283801@ziqianlu-dell>
- <20230908123233.dpbpohgrbyyxekzk@box.shutemov.name>
- <202309080856.F066F92C98@keescook>
- <CAGnOC3aG9BuoVEGs4LQhhczdhAF0gFBmXR7GXKAf4Z8FPTb1PQ@mail.gmail.com>
+   d="scan'208";a="772030664"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 09 Sep 2023 04:35:15 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qewF7-0003QC-14;
+        Sat, 09 Sep 2023 11:35:13 +0000
+Date:   Sat, 9 Sep 2023 19:34:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: lib/maple_tree.c:4327:20: warning: stack frame size (1112) exceeds
+ limit (1024) in 'mas_wr_modify'
+Message-ID: <202309091955.zGrdk70J-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGnOC3aG9BuoVEGs4LQhhczdhAF0gFBmXR7GXKAf4Z8FPTb1PQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 06:17:53PM +0200, Ard Biesheuvel wrote:
-> On Fri, Sep 8, 2023 at 5:58 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Fri, Sep 08, 2023 at 03:32:33PM +0300, Kirill A. Shutemov wrote:
-> > > On Fri, Sep 08, 2023 at 02:02:30PM +0800, Aaron Lu wrote:
-> > > > On Thu, Sep 07, 2023 at 04:14:09PM +0300, Kirill A. Shutemov wrote:
-> > > > > On Tue, Aug 29, 2023 at 10:04:51PM +0800, Aaron Lu wrote:
-> > > > > > > Could you show dmesg of the first kernel before kexec?
-> > > > > >
-> > > > > > Attached.
-> > > > > >
-> > > > > > BTW, kexec is invoked like this:
-> > > > > > kver=6.4.0-rc5-00009-g75d090fd167a
-> > > > > > kdir=$HOME/kernels/$kver
-> > > > > > sudo kexec -l $kdir/vmlinuz-$kver --initrd=$kdir/initramfs-$kver.img --append="root=UUID=4381321e-e01e-455a-9d46-5e8c4c5b2d02 ro net.ifnames=0 acpi_rsdp=0x728e8014 no_hash_pointers sched_verbose selinux=0"
-> > > > >
-> > > > > I don't understand why it happens.
-> > > > >
-> > > > > Could you check if this patch changes anything:
-> > > > >
-> > > > > diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/misc.c
-> > > > > index 94b7abcf624b..172c476ff6f3 100644
-> > > > > --- a/arch/x86/boot/compressed/misc.c
-> > > > > +++ b/arch/x86/boot/compressed/misc.c
-> > > > > @@ -456,10 +456,12 @@ asmlinkage __visible void *extract_kernel(void *rmode, memptr heap,
-> > > > >
-> > > > >   debug_putstr("\nDecompressing Linux... ");
-> > > > >
-> > > > > +#if 0
-> > > > >   if (init_unaccepted_memory()) {
-> > > > >           debug_putstr("Accepting memory... ");
-> > > > >           accept_memory(__pa(output), __pa(output) + needed_size);
-> > > > >   }
-> > > > > +#endif
-> > > > >
-> > > > >   __decompress(input_data, input_len, NULL, NULL, output, output_len,
-> > > > >                   NULL, error);
-> > > > > --
-> > > >
-> > > > It solved the problem.
-> > >
-> > > Looks like increasing BOOT_INIT_PGT_SIZE fixes the issue. I don't yet
-> > > understand why and how unaccepted memory is involved. I will look more
-> > > into it.
-> > >
-> > > Enabling CONFIG_RANDOMIZE_BASE also makes the issue go away.
-> >
-> > Is this perhaps just luck? I.e. does is break ever on, say, 1000 boot
-> > attempts? (i.e. maybe some position is bad and KASLR happens to usually
-> > avoid it?)
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6099776f9f268e61fe5ecd721f994a8cfce5306f
+commit: 54a611b605901c7d5d05b6b8f5d04a6ceb0962aa Maple Tree: add new data structure
+date:   12 months ago
+config: um-allnoconfig (https://download.01.org/0day-ci/archive/20230909/202309091955.zGrdk70J-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230909/202309091955.zGrdk70J-lkp@intel.com/reproduce)
 
-Yes, it can be luck.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309091955.zGrdk70J-lkp@intel.com/
 
-> > > Kees, maybe you have a clue?
-> >
-> > The only thing I can think of is that something isn't being counted
-> > correctly due to the size of code, and it just happens that this commit
-> > makes the code large enough to exceed some set of mappings?
-> >
-> > >
-> > > diff --git a/arch/x86/include/asm/boot.h b/arch/x86/include/asm/boot.h
-> > > index 9191280d9ea3..26ccce41d781 100644
-> > > --- a/arch/x86/include/asm/boot.h
-> > > +++ b/arch/x86/include/asm/boot.h
-> > > @@ -40,7 +40,7 @@
-> > >  #ifdef CONFIG_X86_64
-> > >  # define BOOT_STACK_SIZE     0x4000
-> > >
-> > > -# define BOOT_INIT_PGT_SIZE  (6*4096)
-> > > +# define BOOT_INIT_PGT_SIZE  (7*4096)
-> >
-> > That's why this might be working, for example? How large is the boot
-> > image before/after the commit, etc?
-> >
-> 
-> Not sure why these changes would make a difference here, but choking
-> on accept_memory() on a non-TDX suggests that init_unaccepted_memory()
-> is poking into unmapped memory before it even decides that the
-> unaccepted memory does not exist.
-> 
-> init_unaccepted_memory() has
-> 
->         ret = efi_get_conf_table(boot_params, &cfg_table_pa, &cfg_table_len);
->         if (ret) {
->                 warn("EFI config table not found.");
->                 return false;
->         }
-> 
-> which looks for <guid, phys_addr> tuples in an array pointed to by the
-> EFI system table, and if either of those is not mapped, things can be
-> expected to explode.
-> 
-> The only odd thing there is that this code is invoked after setting up
-> the 'demand paging' logic in the decompressor.
-> 
-> If you haven't yet, could you please retry the kexec boot with
-> earlyprintk=tty<insert your UART params here>?
+All warnings (new ones prefixed by >>):
 
-early console in extract_kernel
-input_data: 0x000000807eb433a8
-input_len: 0x0000000000d26271
-output: 0x000000807b000000
-output_len: 0x0000000004800c10
-kernel_total_size: 0x0000000003e28000
-needed_size: 0x0000000004a00000
-trampoline_32bit: 0x000000000009d000
-
-Decompressing Linux... out of pgt_buf in arch/x86/boot/compressed/ident_map_64.c!?
-pages->pgt_buf_offset: 0x0000000000006000
-pages->pgt_buf_size: 0x0000000000006000
+   lib/maple_tree.c:330:20: warning: unused function 'mte_set_full' [-Wunused-function]
+     330 | static inline void mte_set_full(const struct maple_enode *node)
+         |                    ^
+   lib/maple_tree.c:335:20: warning: unused function 'mte_clear_full' [-Wunused-function]
+     335 | static inline void mte_clear_full(const struct maple_enode *node)
+         |                    ^
+   lib/maple_tree.c:3958:19: warning: stack frame size (1032) exceeds limit (1024) in 'mas_wr_spanning_store' [-Wframe-larger-than]
+    3958 | static inline int mas_wr_spanning_store(struct ma_wr_state *wr_mas)
+         |                   ^
+>> lib/maple_tree.c:4327:20: warning: stack frame size (1112) exceeds limit (1024) in 'mas_wr_modify' [-Wframe-larger-than]
+    4327 | static inline void mas_wr_modify(struct ma_wr_state *wr_mas)
+         |                    ^
+   4 warnings generated.
 
 
-Error: kernel_ident_mapping_init() failed
+vim +/mas_wr_modify +4327 lib/maple_tree.c
 
-It crashes on #PF due to stbl->nr_tables dereference in
-efi_get_conf_table() called from init_unaccepted_memory().
-
-I don't see anything special about stbl location: 0x775d6018.
-
-One other bit of information: disabling 5-level paging also helps the
-issue.
-
-I will debug further.
+  4326	
+> 4327	static inline void mas_wr_modify(struct ma_wr_state *wr_mas)
+  4328	{
+  4329		unsigned char node_slots;
+  4330		unsigned char node_size;
+  4331		struct ma_state *mas = wr_mas->mas;
+  4332	
+  4333		/* Direct replacement */
+  4334		if (wr_mas->r_min == mas->index && wr_mas->r_max == mas->last) {
+  4335			rcu_assign_pointer(wr_mas->slots[mas->offset], wr_mas->entry);
+  4336			if (!!wr_mas->entry ^ !!wr_mas->content)
+  4337				mas_update_gap(mas);
+  4338			return;
+  4339		}
+  4340	
+  4341		/* Attempt to append */
+  4342		node_slots = mt_slots[wr_mas->type];
+  4343		node_size = wr_mas->node_end - wr_mas->offset_end + mas->offset + 2;
+  4344		if (mas->max == ULONG_MAX)
+  4345			node_size++;
+  4346	
+  4347		/* slot and node store will not fit, go to the slow path */
+  4348		if (unlikely(node_size >= node_slots))
+  4349			goto slow_path;
+  4350	
+  4351		if (wr_mas->entry && (wr_mas->node_end < node_slots - 1) &&
+  4352		    (mas->offset == wr_mas->node_end) && mas_wr_append(wr_mas)) {
+  4353			if (!wr_mas->content || !wr_mas->entry)
+  4354				mas_update_gap(mas);
+  4355			return;
+  4356		}
+  4357	
+  4358		if ((wr_mas->offset_end - mas->offset <= 1) && mas_wr_slot_store(wr_mas))
+  4359			return;
+  4360		else if (mas_wr_node_store(wr_mas))
+  4361			return;
+  4362	
+  4363		if (mas_is_err(mas))
+  4364			return;
+  4365	
+  4366	slow_path:
+  4367		mas_wr_bnode(wr_mas);
+  4368	}
+  4369	
 
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
