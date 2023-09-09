@@ -2,167 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFEC79963B
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 06:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CCD799659
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 06:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236981AbjIIEbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 00:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45190 "EHLO
+        id S237779AbjIIEni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 00:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234907AbjIIEbb (ORCPT
+        with ESMTP id S233015AbjIIEnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 00:31:31 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5E11FC4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 21:31:26 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-34e25ad38cbso9572655ab.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 21:31:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1694233886; x=1694838686; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jq94CIuMJv6Et1Il9g8VDV8VFH4r8Hlwhfq/jJyTJ34=;
-        b=osaSxQoaew6rFtBNvW1hEveP866DayosSnPh71qkCcpYPYba1xjDvTZ+HEYT6I4A9Z
-         +Z+2tWocXo+ypZ83QiHKREWMfWtTgyPEUmi3ZEjYfq81NXOJq6XaSJ67JpMbJ8okZSyJ
-         fDIZeqpUYpagnZGWQ7fwC0+WSBpYKkFRPW2dA=
+        Sat, 9 Sep 2023 00:43:37 -0400
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF561BFF
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 21:43:33 -0700 (PDT)
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-26ecc4795a4so3627635a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 21:43:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694233886; x=1694838686;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jq94CIuMJv6Et1Il9g8VDV8VFH4r8Hlwhfq/jJyTJ34=;
-        b=pkRovWEqEZXITnNCTzCPZaU/L/IeHfrAkNoRoC/fJTwocNhcXiAp0H9pXbAFwMd0Oh
-         SeH6YeXZRVkA/CcFLmRsV2BzFzs/8KrkXfR88cE+OuSW8QFq9Y1IFLO7NmNSAmivvc6z
-         ef4BZSbx7HQ5iejuzPiKsvXxiT2wRO9E75X+76ls3Xo5rVy1WQV7ddnNfqXc2ia6RASG
-         FPv0z0/di1oxpWQCOGvYNwyVxlXTK63j0cHNIdg0JdKyeuoH+j2vyXrGis8C0askGtM0
-         RphzJhUhbVg2Boo+mn3L4CjJuWVyn0G3W+iyPMxAEQ6ij0K+7LR6t+//zjdD71cIJgXk
-         cjpA==
-X-Gm-Message-State: AOJu0Yy0K3S+bkrUyIp2p6Li8HkTEv+t5lovsS0zErSsNOwCNXHF1Zov
-        fi18p7QILgp4R0pjk5QTAUfI0A==
-X-Google-Smtp-Source: AGHT+IHBEThR5AoYD2dYCcq0kdnKKq3t3O8tICSv2OoKS2ptkz/FAP9j3nQ+I5R798vdDgKk4cUj2w==
-X-Received: by 2002:a05:6e02:1d1e:b0:349:927a:5d85 with SMTP id i30-20020a056e021d1e00b00349927a5d85mr5818792ila.22.1694233886254;
-        Fri, 08 Sep 2023 21:31:26 -0700 (PDT)
-Received: from localhost (74.120.171.34.bc.googleusercontent.com. [34.171.120.74])
-        by smtp.gmail.com with ESMTPSA id fn2-20020a056638640200b0042aec33bc26sm880864jab.18.2023.09.08.21.31.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Sep 2023 21:31:25 -0700 (PDT)
-Date:   Sat, 9 Sep 2023 04:31:25 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH 04/10] rcu/nocb: Remove needless full barrier after
- callback advancing
-Message-ID: <20230909043125.GA3920383@google.com>
-References: <20230908203603.5865-1-frederic@kernel.org>
- <20230908203603.5865-5-frederic@kernel.org>
+        d=1e100.net; s=20230601; t=1694234613; x=1694839413;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=J9VOH8rEmp3GKpBTMA8aMapsiHuFFJuPNIe8SZwLu2Y=;
+        b=wR+rJ/Z5N4MoXKfhkvojDFuQjAsgfAy1sNYHVDY3UiC5tLqdZuptqyNLL3zo8Zv6E4
+         4dFU1xbbbXaSUEvJpvbqjZJ4d11hlXKFcnLpg/LieaYiJ3wW4AP1O/Dk6LGRyL0K9RVO
+         SfkjRJHoQxakzE4ANWNlsAol+XzNsXn5P2OzMFICovoj0wvDgyGA4g3fkEtacLc+mj8t
+         pv77kBGG0NpF/yzoYvuiY3Doo7GFJ/oFq3Eqn3rWgvmbu1wtV1quWFrntCnsm0zXkmDe
+         4A7V8gPVZ4mx3Cix4m9xym+udGmyb7tcDmii0CHrbEGN2AoBXbZ0FHS5Rh8ruf1bZsBR
+         zGKg==
+X-Gm-Message-State: AOJu0YzJSmsC/K86jwROkq/bYOndK4NlNlSDs2fVInVfL5wi1e8PFvXp
+        LJvqjqRH5G9eBLpM7CocqHlJi1C18YZPw+Qt0K90jQ7QMlsn
+X-Google-Smtp-Source: AGHT+IGMhh/j459Gzt/rEiiX1DNfKO4klsksx1Q7EqO75mEvJDscH3PEPRqqESz+KAP2R6r38tp5WZWFAHOZRTk6eRefYk49KXYm
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230908203603.5865-5-frederic@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a17:90a:aa81:b0:262:ef07:f30a with SMTP id
+ l1-20020a17090aaa8100b00262ef07f30amr1097707pjq.7.1694234612944; Fri, 08 Sep
+ 2023 21:43:32 -0700 (PDT)
+Date:   Fri, 08 Sep 2023 21:43:32 -0700
+In-Reply-To: <20230909034207.5816-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004554cd0604e5bcc5@google.com>
+Subject: Re: [syzbot] [mm?] kernel BUG in vma_replace_policy
+From:   syzbot <syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 10:35:57PM +0200, Frederic Weisbecker wrote:
-> A full barrier is issued from nocb_gp_wait() upon callbacks advancing
-> to order grace period completion with callbacks execution.
-> 
-> However these two events are already ordered by the
-> smp_mb__after_unlock_lock() barrier within the call to
-> raw_spin_lock_rcu_node() that is necessary for callbacks advancing to
-> happen.
-> 
-> The following litmus test shows the kind of guarantee that this barrier
-> provides:
-> 
-> 	C smp_mb__after_unlock_lock
-> 
-> 	{}
-> 
-> 	// rcu_gp_cleanup()
-> 	P0(spinlock_t *rnp_lock, int *gpnum)
-> 	{
-> 		// Grace period cleanup increase gp sequence number
-> 		spin_lock(rnp_lock);
-> 		WRITE_ONCE(*gpnum, 1);
-> 		spin_unlock(rnp_lock);
-> 	}
-> 
-> 	// nocb_gp_wait()
-> 	P1(spinlock_t *rnp_lock, spinlock_t *nocb_lock, int *gpnum, int *cb_ready)
-> 	{
-> 		int r1;
-> 
-> 		// Call rcu_advance_cbs() from nocb_gp_wait()
-> 		spin_lock(nocb_lock);
-> 		spin_lock(rnp_lock);
-> 		smp_mb__after_unlock_lock();
-> 		r1 = READ_ONCE(*gpnum);
-> 		WRITE_ONCE(*cb_ready, 1);
-> 		spin_unlock(rnp_lock);
-> 		spin_unlock(nocb_lock);
-> 	}
-> 
-> 	// nocb_cb_wait()
-> 	P2(spinlock_t *nocb_lock, int *cb_ready, int *cb_executed)
-> 	{
-> 		int r2;
-> 
-> 		// rcu_do_batch() -> rcu_segcblist_extract_done_cbs()
-> 		spin_lock(nocb_lock);
-> 		r2 = READ_ONCE(*cb_ready);
-> 		spin_unlock(nocb_lock);
-> 
-> 		// Actual callback execution
-> 		WRITE_ONCE(*cb_executed, 1);
+Hello,
 
-So related to this something in the docs caught my attention under "Callback
-Invocation" [1]
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-<quote>
-However, if the callback function communicates to other CPUs, for example,
-doing a wakeup, then it is that function's responsibility to maintain
-ordering. For example, if the callback function wakes up a task that runs on
-some other CPU, proper ordering must in place in both the callback function
-and the task being awakened. To see why this is important, consider the top
-half of the grace-period cleanup diagram. The callback might be running on a
-CPU corresponding to the leftmost leaf rcu_node structure, and awaken a task
-that is to run on a CPU corresponding to the rightmost leaf rcu_node
-structure, and the grace-period kernel thread might not yet have reached the
-rightmost leaf. In this case, the grace period's memory ordering might not
-yet have reached that CPU, so again the callback function and the awakened
-task must supply proper ordering.
-</quote>
+Reported-and-tested-by: syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com
 
-I believe this text is for non-nocb but if we apply that to the nocb case,
-lets see what happens.
+Tested on:
 
-In the litmus, he rcu_advance_cbs() happened on P1, however the callback is
-executing on P2. That sounds very similar to the non-nocb world described in
-the text where a callback tries to wake something up on a different CPU and
-needs to take care of all the ordering.
+commit:         32bf43e4 Merge tag 'thermal-6.6-rc1-3' of git://git.ke..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=15137480680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e82a7781f9208c0d
+dashboard link: https://syzkaller.appspot.com/bug?extid=b591856e0f0139f83023
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=12eaf0e8680000
 
-So unless I'm missing something (quite possible), P2 must see the update to
-gpnum as well. However, per your limus test, the only thing P2  does is
-acquire the nocb_lock. I don't see how it is guaranteed to see gpnum == 1.
-I am curious what happens in your litmus if you read gpnum in a register and
-checked for it.
-
-So maybe the memory barriers you are deleting need to be kept in place? Idk.
-
-thanks,
-
- - Joel
-
-[1] https://docs.kernel.org/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.html#callback-invocation
-
+Note: testing is done by a robot and is best-effort only.
