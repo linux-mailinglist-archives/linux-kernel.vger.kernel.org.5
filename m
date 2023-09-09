@@ -2,121 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E3A7997BD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 13:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324687997BE
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 13:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345347AbjIILyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 07:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42422 "EHLO
+        id S1345417AbjIILzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 07:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231737AbjIILyD (ORCPT
+        with ESMTP id S231737AbjIILzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 07:54:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 969A5E46
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 04:53:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694260394;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2Brd09ChjlGcm33tn5aaPV7Dgfxku3U91yIO+34U0Xs=;
-        b=F4aktB2XjRu8T2agOXqDQvaLtlnvOiG83qQSHV+YpSZ5ytT3RVeUW0TxVLR8d3tlBDHvpJ
-        AVrEgblxS6qeQlTO8MNbNfSxIz23PfylZJhWwf5ybWkt4+Zrensqhx6s5LW0n0UgfCLsD9
-        xw9Ta804pjJDajrCJFiyfeTz4312GjI=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-90-pYKiScUIOYCYB6weopR4kw-1; Sat, 09 Sep 2023 07:53:13 -0400
-X-MC-Unique: pYKiScUIOYCYB6weopR4kw-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-76f29f14e0aso297503685a.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 04:53:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694260392; x=1694865192;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=2Brd09ChjlGcm33tn5aaPV7Dgfxku3U91yIO+34U0Xs=;
-        b=wg0GyPuG5GvcZaeDDTHdYmqEsNpvWlMnzeZcbSsVlFdMiND1oqQkqv5YWMMqPF7Abz
-         RCdMtG7fD2uxXHiF1Y+AYM0jv6mPV+9PAXIQutGBhyiMIob5unh0xjJ4Be+BbZHdyjVI
-         VcpXKY9MNG9/QtiZhmMqg+7OOrTA5I8QLnUGmZ0aiCBEolW3nsA0HbFQwt6CgVLwa5st
-         UvEy6eRliRi1udoXSMWfGhKoRC5imED1Fr8nUsDzocN0Eig54zwGhKfSc5RQFnx4ehDw
-         bVe7tRul86KoSRum57ucXRTr9wC4zqImJUDbA5KCV85fqOpmTUYadi49lB07aOV9FrL3
-         YCOA==
-X-Gm-Message-State: AOJu0YxSSbpmbuPLsRr0SKgOzLTlLKAogSa5vwv3mt5q4B3w2q49GPQs
-        KxoFfUDc+aOyVa8h3dIPKDDI/hBbgHOsnCTZVklkxk27fX+WuVkTctSnoo8dnueO3n8ctfJ+uG1
-        J7DlWpNGLYNyDWPE2sbuc6YTH
-X-Received: by 2002:a05:620a:3d1:b0:767:96e2:a9cb with SMTP id r17-20020a05620a03d100b0076796e2a9cbmr4880708qkm.38.1694260392553;
-        Sat, 09 Sep 2023 04:53:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFzaPjdqQmtJK0AQn4B8TqeeRtKxwtYxBagaljOo1lDC4D12dp4dP61e64rcoFNOk8YVLcX7g==
-X-Received: by 2002:a05:620a:3d1:b0:767:96e2:a9cb with SMTP id r17-20020a05620a03d100b0076796e2a9cbmr4880699qkm.38.1694260392288;
-        Sat, 09 Sep 2023 04:53:12 -0700 (PDT)
-Received: from [192.168.50.193] ([134.195.185.129])
-        by smtp.gmail.com with ESMTPSA id d5-20020a05620a136500b0076f206cf16fsm1250131qkl.89.2023.09.09.04.53.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Sep 2023 04:53:11 -0700 (PDT)
-Message-ID: <46d929d0-2aab-4cf2-b2bf-338963e8ba5a@redhat.com>
-Date:   Sat, 9 Sep 2023 07:53:10 -0400
+        Sat, 9 Sep 2023 07:55:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B3BE46
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 04:55:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C83BFC433C8;
+        Sat,  9 Sep 2023 11:54:59 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Alexander Potapenko <glider@google.com>
+Cc:     loongarch@lists.linux.dev, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 1/2] kasan: Cleanup the __HAVE_ARCH_SHADOW_MAP usage
+Date:   Sat,  9 Sep 2023 19:54:48 +0800
+Message-Id: <20230909115450.1903218-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     song@kernel.org, yukuai1@huaweicloud.com,
-        Zhang Shurong <zhang_shurong@foxmail.com>
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com
-From:   Nigel Croxon <ncroxon@redhat.com>
-Subject: [PATCH] raid1: fix error: ISO C90 forbids mixed declarations
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a compile error when this commit is added:
-md: raid1: fix potential OOB in raid1_remove_disk()
+As Linus suggested, __HAVE_ARCH_XYZ is stupid and only for historical
+uses. So cleanup the __HAVE_ARCH_SHADOW_MAP usage and use self-defined
+macros instead.
 
-drivers/md/raid1.c: In function 'raid1_remove_disk':
-drivers/md/raid1.c:1844:9: error: ISO C90 forbids mixed declarations
-and code [-Werror=declaration-after-statement]
-1844 |         struct raid1_info *p = conf->mirrors + number;
-      |         ^~~~~~
-
-That's because the new code was inserted before the struct.
-The change is move the struct command above this commit.
-
-Fixes: md: raid1: fix potential OOB in raid1_remove_disk()
-commit 8b0472b50bcf
-
-Signed-off-by: Nigel Croxon <ncroxon@redhat.com>
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
-  drivers/md/raid1.c | 4 ++--
-  1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/loongarch/include/asm/kasan.h | 10 ++++++++--
+ include/linux/kasan.h              |  2 +-
+ mm/kasan/kasan.h                   |  8 +++-----
+ 3 files changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index a5453b126aab..4f1483bb708b 100644
---- a/drivers/md/raid1.c
-+++ b/drivers/md/raid1.c
-@@ -1846,11 +1846,11 @@ static int raid1_remove_disk(struct mddev 
-*mddev, struct md_rdev *rdev)
-      int err = 0;
-      int number = rdev->raid_disk;
-
-+    struct raid1_info *p = conf->mirrors + number;
-+
-      if (unlikely(number >= conf->raid_disks))
-          goto abort;
-
--    struct raid1_info *p = conf->mirrors + number;
+diff --git a/arch/loongarch/include/asm/kasan.h b/arch/loongarch/include/asm/kasan.h
+index deeff8158f45..a12ecab37da7 100644
+--- a/arch/loongarch/include/asm/kasan.h
++++ b/arch/loongarch/include/asm/kasan.h
+@@ -10,8 +10,6 @@
+ #include <asm/io.h>
+ #include <asm/pgtable.h>
+ 
+-#define __HAVE_ARCH_SHADOW_MAP
 -
-      if (rdev != p->rdev)
-          p = conf->mirrors + conf->raid_disks + number;
-
+ #define KASAN_SHADOW_SCALE_SHIFT 3
+ #define KASAN_SHADOW_OFFSET	_AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
+ 
+@@ -68,6 +66,7 @@ static __always_inline bool kasan_arch_is_ready(void)
+ 	return !kasan_early_stage;
+ }
+ 
++#define kasan_mem_to_shadow kasan_mem_to_shadow
+ static inline void *kasan_mem_to_shadow(const void *addr)
+ {
+ 	if (!kasan_arch_is_ready()) {
+@@ -97,6 +96,7 @@ static inline void *kasan_mem_to_shadow(const void *addr)
+ 	}
+ }
+ 
++#define kasan_shadow_to_mem kasan_shadow_to_mem
+ static inline const void *kasan_shadow_to_mem(const void *shadow_addr)
+ {
+ 	unsigned long addr = (unsigned long)shadow_addr;
+@@ -119,6 +119,12 @@ static inline const void *kasan_shadow_to_mem(const void *shadow_addr)
+ 	}
+ }
+ 
++#define addr_has_metadata addr_has_metadata
++static __always_inline bool addr_has_metadata(const void *addr)
++{
++	return (kasan_mem_to_shadow((void *)addr) != NULL);
++}
++
+ void kasan_init(void);
+ asmlinkage void kasan_early_init(void);
+ 
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 3df5499f7936..842623d708c2 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -54,7 +54,7 @@ extern p4d_t kasan_early_shadow_p4d[MAX_PTRS_PER_P4D];
+ int kasan_populate_early_shadow(const void *shadow_start,
+ 				const void *shadow_end);
+ 
+-#ifndef __HAVE_ARCH_SHADOW_MAP
++#ifndef kasan_mem_to_shadow
+ static inline void *kasan_mem_to_shadow(const void *addr)
+ {
+ 	return (void *)((unsigned long)addr >> KASAN_SHADOW_SCALE_SHIFT)
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index f70e3d7a602e..d37831b8511c 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -291,7 +291,7 @@ struct kasan_stack_ring {
+ 
+ #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ 
+-#ifndef __HAVE_ARCH_SHADOW_MAP
++#ifndef kasan_shadow_to_mem
+ static inline const void *kasan_shadow_to_mem(const void *shadow_addr)
+ {
+ 	return (void *)(((unsigned long)shadow_addr - KASAN_SHADOW_OFFSET)
+@@ -299,15 +299,13 @@ static inline const void *kasan_shadow_to_mem(const void *shadow_addr)
+ }
+ #endif
+ 
++#ifndef addr_has_metadata
+ static __always_inline bool addr_has_metadata(const void *addr)
+ {
+-#ifdef __HAVE_ARCH_SHADOW_MAP
+-	return (kasan_mem_to_shadow((void *)addr) != NULL);
+-#else
+ 	return (kasan_reset_tag(addr) >=
+ 		kasan_shadow_to_mem((void *)KASAN_SHADOW_START));
+-#endif
+ }
++#endif
+ 
+ /**
+  * kasan_check_range - Check memory region, and report if invalid access.
 -- 
-2.31.1
+2.39.3
 
