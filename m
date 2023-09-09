@@ -2,359 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB8D7997AD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 13:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70F17997AF
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 13:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345055AbjIILaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 07:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45746 "EHLO
+        id S1345061AbjIILcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 07:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233881AbjIILaM (ORCPT
+        with ESMTP id S233881AbjIILcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 07:30:12 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BD1E46;
-        Sat,  9 Sep 2023 04:30:07 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 054DC68B05; Sat,  9 Sep 2023 13:30:01 +0200 (CEST)
-Date:   Sat, 9 Sep 2023 13:30:00 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christian Brauner <brauner@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] iov_iter: Kunit tests for copying to/from an
- iterator
-Message-ID: <20230909113000.GB12045@lst.de>
-References: <20230908160322.1714302-1-dhowells@redhat.com> <20230908160322.1714302-3-dhowells@redhat.com>
+        Sat, 9 Sep 2023 07:32:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADD4E46
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 04:32:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694259135; x=1725795135;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=nUYLq5T9/GHcLWl6uTwmBe2oMwAzdBhwkG/9NeVxpJk=;
+  b=kJTZcKmdzDqiq+VnZZBvN+zKu51AH0HJFPtV9qf7XMie9hgc/eKdjyAf
+   If3KJeEjNrVzn4QqcRazj6z03t0Ul8XvEeyPADSTO6foftFWbql55Gn7n
+   b6qotkPIBT8ACQdPkNA88c5IUkxXAqdSPcDW06gwMa4oCrtBYRZ5wrb9g
+   wqmj6AuO+Jp0fPFckrpYKfyfWNKLJbc9Txc8JRZvDFgbMd2SaYQQyXKAP
+   H2va3Ihwur1m7TVWM30ayk7MjQe3DYy4uWCiMUTgiint434knMRzjdP3F
+   0rJRa6V7AClCs/w1Z/PBBYkUB1hmV79lUEuAFnZ2bsIb7WgicNw+7kpI4
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="376722593"
+X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
+   d="scan'208";a="376722593"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 04:32:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="745879626"
+X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
+   d="scan'208";a="745879626"
+Received: from rdota-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.216.166])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 04:32:13 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id A293C104CCE; Sat,  9 Sep 2023 14:32:09 +0300 (+03)
+Date:   Sat, 9 Sep 2023 14:32:09 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Ard Biesheuvel <ardb@google.com>
+Cc:     Kees Cook <keescook@chromium.org>, Aaron Lu <aaron.lu@intel.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+Subject: Re: kexec reboot failed due to commit 75d090fd167ac
+Message-ID: <20230909113209.actnan6hczrclz2d@box.shutemov.name>
+References: <20230829114816.GA508985@ziqianlu-dell>
+ <ZO3hQ0rbr8QuUjVI@debian.me>
+ <20230829125134.GA509331@ziqianlu-dell>
+ <20230829125939.bcg2r6hwqf45npko@box.shutemov.name>
+ <20230829140451.GA509854@ziqianlu-dell>
+ <20230907131409.masxz42ik6u456qp@box.shutemov.name>
+ <20230908060230.GA283801@ziqianlu-dell>
+ <20230908123233.dpbpohgrbyyxekzk@box.shutemov.name>
+ <202309080856.F066F92C98@keescook>
+ <CAGnOC3aG9BuoVEGs4LQhhczdhAF0gFBmXR7GXKAf4Z8FPTb1PQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230908160322.1714302-3-dhowells@redhat.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGnOC3aG9BuoVEGs4LQhhczdhAF0gFBmXR7GXKAf4Z8FPTb1PQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +/* I/O iterator tests.  This can only test kernel-backed iterator types.
+On Fri, Sep 08, 2023 at 06:17:53PM +0200, Ard Biesheuvel wrote:
+> On Fri, Sep 8, 2023 at 5:58 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Fri, Sep 08, 2023 at 03:32:33PM +0300, Kirill A. Shutemov wrote:
+> > > On Fri, Sep 08, 2023 at 02:02:30PM +0800, Aaron Lu wrote:
+> > > > On Thu, Sep 07, 2023 at 04:14:09PM +0300, Kirill A. Shutemov wrote:
+> > > > > On Tue, Aug 29, 2023 at 10:04:51PM +0800, Aaron Lu wrote:
+> > > > > > > Could you show dmesg of the first kernel before kexec?
+> > > > > >
+> > > > > > Attached.
+> > > > > >
+> > > > > > BTW, kexec is invoked like this:
+> > > > > > kver=6.4.0-rc5-00009-g75d090fd167a
+> > > > > > kdir=$HOME/kernels/$kver
+> > > > > > sudo kexec -l $kdir/vmlinuz-$kver --initrd=$kdir/initramfs-$kver.img --append="root=UUID=4381321e-e01e-455a-9d46-5e8c4c5b2d02 ro net.ifnames=0 acpi_rsdp=0x728e8014 no_hash_pointers sched_verbose selinux=0"
+> > > > >
+> > > > > I don't understand why it happens.
+> > > > >
+> > > > > Could you check if this patch changes anything:
+> > > > >
+> > > > > diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/misc.c
+> > > > > index 94b7abcf624b..172c476ff6f3 100644
+> > > > > --- a/arch/x86/boot/compressed/misc.c
+> > > > > +++ b/arch/x86/boot/compressed/misc.c
+> > > > > @@ -456,10 +456,12 @@ asmlinkage __visible void *extract_kernel(void *rmode, memptr heap,
+> > > > >
+> > > > >   debug_putstr("\nDecompressing Linux... ");
+> > > > >
+> > > > > +#if 0
+> > > > >   if (init_unaccepted_memory()) {
+> > > > >           debug_putstr("Accepting memory... ");
+> > > > >           accept_memory(__pa(output), __pa(output) + needed_size);
+> > > > >   }
+> > > > > +#endif
+> > > > >
+> > > > >   __decompress(input_data, input_len, NULL, NULL, output, output_len,
+> > > > >                   NULL, error);
+> > > > > --
+> > > >
+> > > > It solved the problem.
+> > >
+> > > Looks like increasing BOOT_INIT_PGT_SIZE fixes the issue. I don't yet
+> > > understand why and how unaccepted memory is involved. I will look more
+> > > into it.
+> > >
+> > > Enabling CONFIG_RANDOMIZE_BASE also makes the issue go away.
+> >
+> > Is this perhaps just luck? I.e. does is break ever on, say, 1000 boot
+> > attempts? (i.e. maybe some position is bad and KASLR happens to usually
+> > avoid it?)
 
-kernel comments start with a:
+Yes, it can be luck.
 
-/*
+> > > Kees, maybe you have a clue?
+> >
+> > The only thing I can think of is that something isn't being counted
+> > correctly due to the size of code, and it just happens that this commit
+> > makes the code large enough to exceed some set of mappings?
+> >
+> > >
+> > > diff --git a/arch/x86/include/asm/boot.h b/arch/x86/include/asm/boot.h
+> > > index 9191280d9ea3..26ccce41d781 100644
+> > > --- a/arch/x86/include/asm/boot.h
+> > > +++ b/arch/x86/include/asm/boot.h
+> > > @@ -40,7 +40,7 @@
+> > >  #ifdef CONFIG_X86_64
+> > >  # define BOOT_STACK_SIZE     0x4000
+> > >
+> > > -# define BOOT_INIT_PGT_SIZE  (6*4096)
+> > > +# define BOOT_INIT_PGT_SIZE  (7*4096)
+> >
+> > That's why this might be working, for example? How large is the boot
+> > image before/after the commit, etc?
+> >
+> 
+> Not sure why these changes would make a difference here, but choking
+> on accept_memory() on a non-TDX suggests that init_unaccepted_memory()
+> is poking into unmapped memory before it even decides that the
+> unaccepted memory does not exist.
+> 
+> init_unaccepted_memory() has
+> 
+>         ret = efi_get_conf_table(boot_params, &cfg_table_pa, &cfg_table_len);
+>         if (ret) {
+>                 warn("EFI config table not found.");
+>                 return false;
+>         }
+> 
+> which looks for <guid, phys_addr> tuples in an array pointed to by the
+> EFI system table, and if either of those is not mapped, things can be
+> expected to explode.
+> 
+> The only odd thing there is that this code is invoked after setting up
+> the 'demand paging' logic in the decompressor.
+> 
+> If you haven't yet, could you please retry the kexec boot with
+> earlyprintk=tty<insert your UART params here>?
 
-and nothing else on the line.  (for brevity I'm not going to repeat
-the comment for the rest of this series)
+early console in extract_kernel
+input_data: 0x000000807eb433a8
+input_len: 0x0000000000d26271
+output: 0x000000807b000000
+output_len: 0x0000000004800c10
+kernel_total_size: 0x0000000003e28000
+needed_size: 0x0000000004a00000
+trampoline_32bit: 0x000000000009d000
 
-> +static const struct kvec_test_range kvec_test_ranges[] = {
-> +	{ 0x00002, 0x00002 },
-> +	{ 0x00027, 0x03000 },
-> +	{ 0x05193, 0x18794 },
-> +	{ 0x20000, 0x20000 },
-> +	{ 0x20000, 0x24000 },
-> +	{ 0x24000, 0x27001 },
-> +	{ 0x29000, 0xffffb },
-> +	{ 0xffffd, 0xffffe },
+Decompressing Linux... out of pgt_buf in arch/x86/boot/compressed/ident_map_64.c!?
+pages->pgt_buf_offset: 0x0000000000006000
+pages->pgt_buf_size: 0x0000000000006000
 
-How were these values picked?  Should there be a comment explaining them?
 
-> +	buffer = vmap(pages, npages, VM_MAP | VM_MAP_PUT_PAGES, PAGE_KERNEL);
-> +        KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buffer);
+Error: kernel_ident_mapping_init() failed
 
-The KUNIT_ASSERT_NOT_ERR_OR_NULL seems misindented.
+It crashes on #PF due to stbl->nr_tables dereference in
+efi_get_conf_table() called from init_unaccepted_memory().
 
-> + */
-> +static void __init iov_kunit_copy_to_bvec(struct kunit *test)
-> +{
-> +	const struct bvec_test_range *pr;
-> +	struct iov_iter iter;
-> +	struct bio_vec bvec[8];
-> +	struct page **spages, **bpages;
-> +	u8 *scratch, *buffer;
-> +	size_t bufsize, npages, size, copied;
-> +	int i, b, patt;
-> +
-> +	bufsize = 0x100000;
-> +	npages = bufsize / PAGE_SIZE;
-> +
-> +	scratch = iov_kunit_create_buffer(test, &spages, npages);
-> +	for (i = 0; i < bufsize; i++)
-> +		scratch[i] = pattern(i);
-> +
-> +	buffer = iov_kunit_create_buffer(test, &bpages, npages);
-> +	memset(buffer, 0, bufsize);
-> +
-> +	iov_kunit_load_bvec(test, &iter, READ, bvec, ARRAY_SIZE(bvec),
-> +			    bpages, npages, bufsize, bvec_test_ranges);
-> +	size = iter.count;
-> +
-> +	copied = copy_to_iter(scratch, size, &iter);
-> +
-> +	KUNIT_EXPECT_EQ(test, copied, size);
-> +	KUNIT_EXPECT_EQ(test, iter.count, 0);
-> +	KUNIT_EXPECT_EQ(test, iter.nr_segs, 0);
-> +
-> +	/* Build the expected image in the scratch buffer. */
-> +	b = 0;
-> +	patt = 0;
-> +	memset(scratch, 0, bufsize);
-> +	for (pr = bvec_test_ranges; pr->from >= 0; pr++, b++) {
-> +		u8 *p = scratch + pr->page * PAGE_SIZE;
-> +
-> +		for (i = pr->from; i < pr->to; i++)
-> +			p[i] = pattern(patt++);
-> +	}
-> +
-> +	/* Compare the images */
-> +	for (i = 0; i < bufsize; i++) {
-> +		KUNIT_EXPECT_EQ_MSG(test, buffer[i], scratch[i], "at i=%x", i);
-> +		if (buffer[i] != scratch[i])
-> +			return;
-> +	}
-> +
-> +	KUNIT_SUCCEED();
-> +}
-> +
-> +/*
-> + * Test copying from a ITER_BVEC-type iterator.
-> + */
-> +static void __init iov_kunit_copy_from_bvec(struct kunit *test)
-> +{
-> +	const struct bvec_test_range *pr;
-> +	struct iov_iter iter;
-> +	struct bio_vec bvec[8];
-> +	struct page **spages, **bpages;
-> +	u8 *scratch, *buffer;
-> +	size_t bufsize, npages, size, copied;
-> +	int i, j;
-> +
-> +	bufsize = 0x100000;
-> +	npages = bufsize / PAGE_SIZE;
-> +
-> +	buffer = iov_kunit_create_buffer(test, &bpages, npages);
-> +	for (i = 0; i < bufsize; i++)
-> +		buffer[i] = pattern(i);
-> +
-> +	scratch = iov_kunit_create_buffer(test, &spages, npages);
-> +	memset(scratch, 0, bufsize);
-> +
-> +	iov_kunit_load_bvec(test, &iter, WRITE, bvec, ARRAY_SIZE(bvec),
-> +			    bpages, npages, bufsize, bvec_test_ranges);
-> +	size = iter.count;
-> +
-> +	copied = copy_from_iter(scratch, size, &iter);
-> +
-> +	KUNIT_EXPECT_EQ(test, copied, size);
-> +	KUNIT_EXPECT_EQ(test, iter.count, 0);
-> +	KUNIT_EXPECT_EQ(test, iter.nr_segs, 0);
-> +
-> +	/* Build the expected image in the main buffer. */
-> +	i = 0;
-> +	memset(buffer, 0, bufsize);
-> +	for (pr = bvec_test_ranges; pr->from >= 0; pr++) {
-> +		size_t patt = pr->page * PAGE_SIZE;
-> +
-> +		for (j = pr->from; j < pr->to; j++) {
-> +			buffer[i++] = pattern(patt + j);
-> +			if (i >= bufsize)
-> +				goto stop;
-> +		}
-> +	}
-> +stop:
-> +
-> +	/* Compare the images */
-> +	for (i = 0; i < bufsize; i++) {
-> +		KUNIT_EXPECT_EQ_MSG(test, scratch[i], buffer[i], "at i=%x", i);
-> +		if (scratch[i] != buffer[i])
-> +			return;
-> +	}
-> +
-> +	KUNIT_SUCCEED();
-> +}
-> +
-> +static void iov_kunit_destroy_xarray(void *data)
-> +{
-> +	struct xarray *xarray = data;
-> +
-> +	xa_destroy(xarray);
-> +	kfree(xarray);
-> +}
-> +
-> +static void __init iov_kunit_load_xarray(struct kunit *test,
-> +					 struct iov_iter *iter, int dir,
-> +					 struct xarray *xarray,
-> +					 struct page **pages, size_t npages)
-> +{
-> +	size_t size = 0;
-> +	int i;
-> +
-> +	for (i = 0; i < npages; i++) {
-> +		void *x = xa_store(xarray, i, pages[i], GFP_KERNEL);
-> +
-> +		KUNIT_ASSERT_FALSE(test, xa_is_err(x));
-> +		size += PAGE_SIZE;
-> +	}
-> +	iov_iter_xarray(iter, dir, xarray, 0, size);
-> +}
-> +
-> +static struct xarray *iov_kunit_create_xarray(struct kunit *test)
-> +{
-> +	struct xarray *xarray;
-> +
-> +	xarray = kzalloc(sizeof(struct xarray), GFP_KERNEL);
-> +	xa_init(xarray);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, xarray);
-> +	kunit_add_action_or_reset(test, iov_kunit_destroy_xarray, xarray);
-> +	return xarray;
-> +}
-> +
-> +/*
-> + * Test copying to a ITER_XARRAY-type iterator.
-> + */
-> +static void __init iov_kunit_copy_to_xarray(struct kunit *test)
-> +{
-> +	const struct kvec_test_range *pr;
-> +	struct iov_iter iter;
-> +	struct xarray *xarray;
-> +	struct page **spages, **bpages;
-> +	u8 *scratch, *buffer;
-> +	size_t bufsize, npages, size, copied;
-> +	int i, patt;
-> +
-> +	bufsize = 0x100000;
-> +	npages = bufsize / PAGE_SIZE;
-> +
-> +	xarray = iov_kunit_create_xarray(test);
-> +
-> +	scratch = iov_kunit_create_buffer(test, &spages, npages);
-> +	for (i = 0; i < bufsize; i++)
-> +		scratch[i] = pattern(i);
-> +
-> +	buffer = iov_kunit_create_buffer(test, &bpages, npages);
-> +	memset(buffer, 0, bufsize);
-> +
-> +	iov_kunit_load_xarray(test, &iter, READ, xarray, bpages, npages);
-> +
-> +	i = 0;
-> +	for (pr = kvec_test_ranges; pr->from >= 0; pr++) {
-> +		size = pr->to - pr->from;
-> +		KUNIT_ASSERT_LE(test, pr->to, bufsize);
-> +
-> +		iov_iter_xarray(&iter, READ, xarray, pr->from, size);
-> +		copied = copy_to_iter(scratch + i, size, &iter);
-> +
-> +		KUNIT_EXPECT_EQ(test, copied, size);
-> +		KUNIT_EXPECT_EQ(test, iter.count, 0);
-> +		KUNIT_EXPECT_EQ(test, iter.iov_offset, size);
-> +		i += size;
-> +	}
-> +
-> +	/* Build the expected image in the scratch buffer. */
-> +	patt = 0;
-> +	memset(scratch, 0, bufsize);
-> +	for (pr = kvec_test_ranges; pr->from >= 0; pr++)
-> +		for (i = pr->from; i < pr->to; i++)
-> +			scratch[i] = pattern(patt++);
-> +
-> +	/* Compare the images */
-> +	for (i = 0; i < bufsize; i++) {
-> +		KUNIT_EXPECT_EQ_MSG(test, buffer[i], scratch[i], "at i=%x", i);
-> +		if (buffer[i] != scratch[i])
-> +			return;
-> +	}
-> +
-> +	KUNIT_SUCCEED();
-> +}
-> +
-> +/*
-> + * Test copying from a ITER_XARRAY-type iterator.
-> + */
-> +static void __init iov_kunit_copy_from_xarray(struct kunit *test)
-> +{
-> +	const struct kvec_test_range *pr;
-> +	struct iov_iter iter;
-> +	struct xarray *xarray;
-> +	struct page **spages, **bpages;
-> +	u8 *scratch, *buffer;
-> +	size_t bufsize, npages, size, copied;
-> +	int i, j;
-> +
-> +	bufsize = 0x100000;
-> +	npages = bufsize / PAGE_SIZE;
-> +
-> +	xarray = iov_kunit_create_xarray(test);
-> +
-> +	buffer = iov_kunit_create_buffer(test, &bpages, npages);
-> +	for (i = 0; i < bufsize; i++)
-> +		buffer[i] = pattern(i);
-> +
-> +	scratch = iov_kunit_create_buffer(test, &spages, npages);
-> +	memset(scratch, 0, bufsize);
-> +
-> +	iov_kunit_load_xarray(test, &iter, READ, xarray, bpages, npages);
-> +
-> +	i = 0;
-> +	for (pr = kvec_test_ranges; pr->from >= 0; pr++) {
-> +		size = pr->to - pr->from;
-> +		KUNIT_ASSERT_LE(test, pr->to, bufsize);
-> +
-> +		iov_iter_xarray(&iter, WRITE, xarray, pr->from, size);
-> +		copied = copy_from_iter(scratch + i, size, &iter);
-> +
-> +		KUNIT_EXPECT_EQ(test, copied, size);
-> +		KUNIT_EXPECT_EQ(test, iter.count, 0);
-> +		KUNIT_EXPECT_EQ(test, iter.iov_offset, size);
-> +		i += size;
-> +	}
-> +
-> +	/* Build the expected image in the main buffer. */
-> +	i = 0;
-> +	memset(buffer, 0, bufsize);
-> +	for (pr = kvec_test_ranges; pr->from >= 0; pr++) {
-> +		for (j = pr->from; j < pr->to; j++) {
-> +			buffer[i++] = pattern(j);
-> +			if (i >= bufsize)
-> +				goto stop;
-> +		}
-> +	}
-> +stop:
-> +
-> +	/* Compare the images */
-> +	for (i = 0; i < bufsize; i++) {
-> +		KUNIT_EXPECT_EQ_MSG(test, scratch[i], buffer[i], "at i=%x", i);
-> +		if (scratch[i] != buffer[i])
-> +			return;
-> +	}
-> +
-> +	KUNIT_SUCCEED();
-> +}
-> +
-> +static struct kunit_case __refdata iov_kunit_cases[] = {
-> +	KUNIT_CASE(iov_kunit_copy_to_kvec),
-> +	KUNIT_CASE(iov_kunit_copy_from_kvec),
-> +	KUNIT_CASE(iov_kunit_copy_to_bvec),
-> +	KUNIT_CASE(iov_kunit_copy_from_bvec),
-> +	KUNIT_CASE(iov_kunit_copy_to_xarray),
-> +	KUNIT_CASE(iov_kunit_copy_from_xarray),
-> +	{}
-> +};
-> +
-> +static struct kunit_suite iov_kunit_suite = {
-> +	.name = "iov_iter",
-> +	.test_cases = iov_kunit_cases,
-> +};
-> +
-> +kunit_test_suites(&iov_kunit_suite);
----end quoted text---
+I don't see anything special about stbl location: 0x775d6018.
+
+One other bit of information: disabling 5-level paging also helps the
+issue.
+
+I will debug further.
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
