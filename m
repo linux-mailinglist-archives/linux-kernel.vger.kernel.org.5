@@ -2,221 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B337799A26
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96ED8799A2F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 19:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235548AbjIIQ5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 12:57:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
+        id S235650AbjIIREJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 13:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235016AbjIIQ5x (ORCPT
+        with ESMTP id S235016AbjIIREI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 12:57:53 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B359BB;
-        Sat,  9 Sep 2023 09:57:49 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99cce6f7de2so377484966b.3;
-        Sat, 09 Sep 2023 09:57:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694278667; x=1694883467; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cpwp0v6JdlChbRTatKGsDL07X7Hnk5vl+8d9N6DJD6U=;
-        b=bxK4CxtlLjYIAnWEcGtk4v37AQsGg+8LoaqvzGEw2h7a2zaqsG5XImlrjKZMFJe+BC
-         6XFDwdiq4auiqpWdBQssp0pFZ/FxoVsrN9qksts/oyQLaSJZL81L30ToGTWR1S7vFZ7J
-         9attfr4sywdTC66Yn0kJq9idLokMJVHoWt9Eo6fqB1f4g334NV8mYQpZA2Ny8JR/b/lJ
-         D1SY9oVz/e6h4Q8/rKJUmwQjv8jxag6kQSwzpH4fPBmarn22YC9IvUjA6r3qq+ZKxm2E
-         mz2Av5Q1vLjSmCr04TJlIKVNB4OMBMqA6eaYDUq6sRsna45NjNVK1c2RYTmq6G2bJUVd
-         HXJQ==
+        Sat, 9 Sep 2023 13:04:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB233C7
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 10:03:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694278997;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=KRsfGWDiakSCdlAdAROSL7HgPfkAmtDGqTNLHJo4TzA=;
+        b=DcId9aIRVf/MQAELfI19OLywG+9oz1x7SX03+mLZe60VdcEuiii+57JfEXH0HZM9H3xU+q
+        VUam+zlPnR6Th1+QLa8gnmvNulWS6AyszcwsfhatcmFJgiNXjz/2BPLBz1vQyITL4nCW4D
+        nNWsz8tt/JBsUpEL3i/n1I6Rw9kgT1w=
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com
+ [209.85.160.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-654-a7nLLLhEOyuYqmJa4kEVAA-1; Sat, 09 Sep 2023 13:03:16 -0400
+X-MC-Unique: a7nLLLhEOyuYqmJa4kEVAA-1
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1cc4d62dd0cso3690365fac.3
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 10:03:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694278667; x=1694883467;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Cpwp0v6JdlChbRTatKGsDL07X7Hnk5vl+8d9N6DJD6U=;
-        b=fjWeiMgpXHBoibPHSvbFtJqK3XaOyxhYEgQ/7fWBI0pLjmFR6PmuMU5ZsN6v+z7C4c
-         Hby7HSqnJ1fBOCGgQ94/LvK6RWrLBtGJHnzVFnSx6NBdmZcTeDhSXtr2tF1eZz8sVO/R
-         jSIAXV+oirJEiaSM6aEsylIAAWLTX8kgJG7h2vuErA3QnAHxoL+DwluNaUbtu0fWiaqr
-         BZGrsHQ6fES8Y0nFg86JdcV/MaZlerFZmsbX1RNP7OGK4lRl1qZXSASf/kgjdvYYAYxQ
-         BrFBC6L1NrilRXJjXWulcR8sgTdiPhoyXN/mwWJiAwbyaXEXp/6Y/7lIa3QpqXbVeeCB
-         QaRg==
-X-Gm-Message-State: AOJu0YyWRehNAKDbd5BOvX8UdmWPR48X+A5ZPv/BUaM9zMD3pqYa8tbM
-        G1PfSP5r9OE4Z3iN9fxw2L0=
-X-Google-Smtp-Source: AGHT+IGuRXyCWJ1MlQxpgqs7XCKnF0y57cMGCFu7NuWh5PDtcqllmEoRHwLQxkXjD3WlFypUGFqOLg==
-X-Received: by 2002:a17:906:2202:b0:9a1:b7ec:c8bd with SMTP id s2-20020a170906220200b009a1b7ecc8bdmr4482352ejs.42.1694278667442;
-        Sat, 09 Sep 2023 09:57:47 -0700 (PDT)
-Received: from fedora.. (dh207-96-186.xnet.hr. [88.207.96.186])
-        by smtp.googlemail.com with ESMTPSA id si16-20020a170906ced000b00993470682e5sm2569357ejb.32.2023.09.09.09.57.46
+        d=1e100.net; s=20230601; t=1694278995; x=1694883795;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KRsfGWDiakSCdlAdAROSL7HgPfkAmtDGqTNLHJo4TzA=;
+        b=mTmHDxjcYMkCSXZoa9lPESs1O3zSUV53KSdUbeyf0079DduZltXkPL8IUMKf8fqDlL
+         otCl75QNr/PL0ap2vF7GSlo/dLa3C5EUq5ZIULZnNP/Mg2jiU7C7J9rJ3naSFp28gqRI
+         AiROIw0Rr1Ct/icYAplNHkaWXUsBStOP7eI73JckzA8ME0SYV1UPRcOT/cOT+zMd5mAa
+         loU/n+r657PrjQZFKu3Wd1KfKfrm71rlr3VnNZcX7pooKmSc23e1CftgW3fe1FQOAakm
+         I++BdADoXdoIY9ou1zNxDpzLrzOJTS/3+VxjOPEZL3LVia/zYF/VaVuR3whwojgExXmQ
+         X0fQ==
+X-Gm-Message-State: AOJu0YxB/sD6r7djxtoRM+Fm7BqyJNyx461++NYfgX8IYvY6+Xd6XmTH
+        1xigBwwPnNCUx9LArxyNRn0MQeTn3+jJhUFkGQJaTHZ6mfKBAB/wW/quwMkfFhE/WkToCSOwKm3
+        9fc8hqKqPe9E/Vc6chMxt51gD
+X-Received: by 2002:a05:6870:b50d:b0:1b7:3432:9ec4 with SMTP id v13-20020a056870b50d00b001b734329ec4mr7421917oap.10.1694278995766;
+        Sat, 09 Sep 2023 10:03:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHewocO8VMFHcxmM6tjTB6hUq/W2PQDcgGcMorZTDjzD+HilF0jRgw7t5/4Xv8olN1HKNaLfg==
+X-Received: by 2002:a05:6870:b50d:b0:1b7:3432:9ec4 with SMTP id v13-20020a056870b50d00b001b734329ec4mr7421891oap.10.1694278995479;
+        Sat, 09 Sep 2023 10:03:15 -0700 (PDT)
+Received: from kernel-devel.local ([240d:1a:c0d:9f00:245e:16ff:fe87:c960])
+        by smtp.gmail.com with ESMTPSA id c2-20020a633502000000b0057405fc20c3sm2935490pga.72.2023.09.09.10.03.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Sep 2023 09:57:46 -0700 (PDT)
-From:   Robert Marko <robimarko@gmail.com>
-To:     ilia.lin@kernel.org, vireshk@kernel.org, nm@ti.com,
-        sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        rafael@kernel.org, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, dmitry.baryshkov@linaro.org
-Cc:     Christian Marangi <ansuelsmth@gmail.com>,
-        Robert Marko <robimarko@gmail.com>
-Subject: [PATCH v3 3/3] cpufreq: qcom-nvmem: add support for IPQ8064
-Date:   Sat,  9 Sep 2023 18:56:02 +0200
-Message-ID: <20230909165739.1036263-3-robimarko@gmail.com>
+        Sat, 09 Sep 2023 10:03:15 -0700 (PDT)
+From:   Shigeru Yoshida <syoshida@redhat.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shigeru Yoshida <syoshida@redhat.com>,
+        syzbot+6f98de741f7dbbfc4ccb@syzkaller.appspotmail.com
+Subject: [PATCH net v2] kcm: Fix memory leak in error path of kcm_sendmsg()
+Date:   Sun, 10 Sep 2023 02:03:10 +0900
+Message-ID: <20230909170310.1978851-1-syoshida@redhat.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230909165739.1036263-1-robimarko@gmail.com>
-References: <20230909165739.1036263-1-robimarko@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Marangi <ansuelsmth@gmail.com>
+syzbot reported a memory leak like below:
 
-IPQ8064 comes in 3 families:
-* IPQ8062 up to 1.0GHz
-* IPQ8064/IPQ8066/IPQ8068 up to 1.4GHz
-* IPQ8065/IPQ8069 up to 1.7Ghz
+BUG: memory leak
+unreferenced object 0xffff88810b088c00 (size 240):
+  comm "syz-executor186", pid 5012, jiffies 4294943306 (age 13.680s)
+  hex dump (first 32 bytes):
+    00 89 08 0b 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff83e5d5ff>] __alloc_skb+0x1ef/0x230 net/core/skbuff.c:634
+    [<ffffffff84606e59>] alloc_skb include/linux/skbuff.h:1289 [inline]
+    [<ffffffff84606e59>] kcm_sendmsg+0x269/0x1050 net/kcm/kcmsock.c:815
+    [<ffffffff83e479c6>] sock_sendmsg_nosec net/socket.c:725 [inline]
+    [<ffffffff83e479c6>] sock_sendmsg+0x56/0xb0 net/socket.c:748
+    [<ffffffff83e47f55>] ____sys_sendmsg+0x365/0x470 net/socket.c:2494
+    [<ffffffff83e4c389>] ___sys_sendmsg+0xc9/0x130 net/socket.c:2548
+    [<ffffffff83e4c536>] __sys_sendmsg+0xa6/0x120 net/socket.c:2577
+    [<ffffffff84ad7bb8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff84ad7bb8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-So, in order to be able to support one OPP table, add support for
-IPQ8064 family based of SMEM SoC ID-s and correctly set the version so
-opp-supported-hw can be correctly used.
+In kcm_sendmsg(), kcm_tx_msg(head)->last_skb is used as a cursor to append
+newly allocated skbs to 'head'. If some bytes are copied, an error occurred,
+and jumped to out_error label, 'last_skb' is left unmodified. A later
+kcm_sendmsg() will use an obsoleted 'last_skb' reference, corrupting the
+'head' frag_list and causing the leak.
 
-Bit are set with the following logic:
-* IPQ8062 BIT 0
-* IPQ8064/IPQ8066/IPQ8068 BIT 1
-* IPQ8065/IPQ8069 BIT 2
+This patch fixes this issue by properly updating the last allocated skb in
+'last_skb'.
 
-speed is never fused, only pvs values are fused.
-
-IPQ806x SoC doesn't have pvs_version so we drop and we use the new
-pattern:
-opp-microvolt-speed0-pvs<PSV_VALUE>
-
-Example:
-- for ipq8062 psv2
-  opp-microvolt-speed0-pvs2 = < 925000 878750 971250>
-
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-Signed-off-by: Robert Marko <robimarko@gmail.com>
+Fixes: ab7ac4eb9832 ("kcm: Kernel Connection Multiplexor module")
+Reported-and-tested-by: syzbot+6f98de741f7dbbfc4ccb@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=6f98de741f7dbbfc4ccb
+Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
 ---
-Changes in v3:
-* Use enum for SoC version
-* Dont evaluate speed as its not fused, only pvs
-
-Changes in v2:
-* Include IPQ8064 support
+v1->v2:
+- Update the commit message to include more detailed root cause. 
 ---
- drivers/cpufreq/qcom-cpufreq-nvmem.c | 68 +++++++++++++++++++++++++++-
- 1 file changed, 67 insertions(+), 1 deletion(-)
+ net/kcm/kcmsock.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-index ba9e1d60e5b5..3d93b511db86 100644
---- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
-+++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-@@ -35,6 +35,12 @@ enum ipq8074_versions {
- 	IPQ8074_ACORN_VERSION,
- };
+diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
+index 393f01b2a7e6..34d4062f639a 100644
+--- a/net/kcm/kcmsock.c
++++ b/net/kcm/kcmsock.c
+@@ -939,6 +939,8 @@ static int kcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
  
-+enum ipq806x_versions {
-+	IPQ8062_VERSION = 0,
-+	IPQ8064_VERSION,
-+	IPQ8065_VERSION,
-+};
-+
- struct qcom_cpufreq_drv;
+ 	if (head != kcm->seq_skb)
+ 		kfree_skb(head);
++	else if (copied)
++		kcm_tx_msg(head)->last_skb = skb;
  
- struct qcom_cpufreq_match_data {
-@@ -208,6 +214,62 @@ static int qcom_cpufreq_krait_name_version(struct device *cpu_dev,
- 	return ret;
- }
+ 	err = sk_stream_error(sk, msg->msg_flags, err);
  
-+static int qcom_cpufreq_ipq8064_name_version(struct device *cpu_dev,
-+					     struct nvmem_cell *speedbin_nvmem,
-+					     char **pvs_name,
-+					     struct qcom_cpufreq_drv *drv)
-+{
-+	int speed = 0, pvs = 0, pvs_ver = 0;
-+	int msm_id, ret = 0;
-+	u8 *speedbin;
-+	size_t len;
-+
-+	speedbin = nvmem_cell_read(speedbin_nvmem, &len);
-+
-+	if (IS_ERR(speedbin))
-+		return PTR_ERR(speedbin);
-+
-+	if (len != 4) {
-+		dev_err(cpu_dev, "Unable to read nvmem data. Defaulting to 0!\n");
-+		kfree(speedbin);
-+		return -ENODEV;
-+	}
-+
-+	get_krait_bin_format_a(cpu_dev, &speed, &pvs, &pvs_ver, speedbin);
-+
-+	ret = qcom_smem_get_soc_id(&msm_id);
-+	if (ret)
-+		return ret;
-+
-+	switch (msm_id) {
-+	case QCOM_ID_IPQ8062:
-+		drv->versions = BIT(IPQ8062_VERSION);
-+		break;
-+	case QCOM_ID_IPQ8064:
-+	case QCOM_ID_IPQ8066:
-+	case QCOM_ID_IPQ8068:
-+		drv->versions = BIT(IPQ8064_VERSION);
-+		break;
-+	case QCOM_ID_IPQ8065:
-+	case QCOM_ID_IPQ8069:
-+		drv->versions = BIT(IPQ8065_VERSION);
-+		break;
-+	default:
-+		dev_err(cpu_dev,
-+			"SoC ID %u is not part of IPQ8064 family, limiting to 1.0GHz!\n",
-+			msm_id);
-+		drv->versions = BIT(IPQ8062_VERSION);
-+		break;
-+	}
-+
-+	/* IPQ8064 speed is never fused. Only pvs values are fused. */
-+	snprintf(*pvs_name, sizeof("speedXX-pvsXX"), "speed%d-pvs%d",
-+		 speed, pvs);
-+
-+	kfree(speedbin);
-+	return ret;
-+}
-+
- static int qcom_cpufreq_ipq8074_name_version(struct device *cpu_dev,
- 					     struct nvmem_cell *speedbin_nvmem,
- 					     char **pvs_name,
-@@ -257,6 +319,10 @@ static const struct qcom_cpufreq_match_data match_data_qcs404 = {
- 	.genpd_names = qcs404_genpd_names,
- };
- 
-+static const struct qcom_cpufreq_match_data match_data_ipq8064 = {
-+	.get_version = qcom_cpufreq_ipq8064_name_version,
-+};
-+
- static const struct qcom_cpufreq_match_data match_data_ipq8074 = {
- 	.get_version = qcom_cpufreq_ipq8074_name_version,
- };
-@@ -403,7 +469,7 @@ static const struct of_device_id qcom_cpufreq_match_list[] __initconst = {
- 	{ .compatible = "qcom,apq8096", .data = &match_data_kryo },
- 	{ .compatible = "qcom,msm8996", .data = &match_data_kryo },
- 	{ .compatible = "qcom,qcs404", .data = &match_data_qcs404 },
--	{ .compatible = "qcom,ipq8064", .data = &match_data_krait },
-+	{ .compatible = "qcom,ipq8064", .data = &match_data_ipq8064 },
- 	{ .compatible = "qcom,ipq8074", .data = &match_data_ipq8074 },
- 	{ .compatible = "qcom,apq8064", .data = &match_data_krait },
- 	{ .compatible = "qcom,msm8974", .data = &match_data_krait },
 -- 
 2.41.0
 
