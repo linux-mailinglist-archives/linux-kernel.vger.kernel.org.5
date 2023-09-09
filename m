@@ -2,59 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E347997F0
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 14:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67DD77997F5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 14:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243294AbjIIMd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 08:33:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51088 "EHLO
+        id S1343758AbjIIMfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 08:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbjIIMd1 (ORCPT
+        with ESMTP id S229804AbjIIMfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 08:33:27 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEBECD6
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 05:33:23 -0700 (PDT)
-Received: from mail.denx.de (unknown [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: festevam@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 2128586433;
-        Sat,  9 Sep 2023 14:33:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1694262801;
-        bh=FGJ+3GoBJjrtTqJFHFJ12q0FRofA5cXQDyydOvBNyO4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MDTcfkRObBGeXLdQGT1lvvL5V366HVLH1RPZevF89/SRhxGDqQrLQ6qVzl1aSyJqs
-         VSqTXfskgZhUgqlTZyngyHNv55pDAXByBfDp5jKoA47270k4WJFQHAB7tgqXFPoKE6
-         9TtBNa75Xi9v/nR7KlW+pfEmp4dJag4B5NA4Raf/hiH+9EoixyzL4C04YUe5HeYM/m
-         0OuBAABdgkEV9FlTCdDAdJyITbRc4JvDF0vE6VQdMdRDohzMotJgsC2zIHqqHqvPb1
-         RS3KckYNdSU7GqLVMf8720TRs5Zn1sLdrvIiNbSFhI9eVOcvLmE5DRiIoUvKRn6eqx
-         aKk3UA+Nj1BmQ==
+        Sat, 9 Sep 2023 08:35:51 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBCCCD6;
+        Sat,  9 Sep 2023 05:35:47 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 389CTH8w029162;
+        Sat, 9 Sep 2023 12:35:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=FA0lskpsv9OKLCFBfBqkli5ASIBjL2TDMaHQYS69HaU=;
+ b=pEjaRdloWEO9chHf7k23Y9tVROANCGUI5EE+kmc2KWWSJcZnwkbSSbulyGE3WJPjUUzM
+ 2kCHMP/ElQ7j/9NzWk4Eo/NX4bWWV3+RtPCjpcFyDV7Teutmtqm80Qe2zaVh4e0lgBND
+ gNM9b8M1c/Jcao8WveyqvpFAzOWK1q8xqblV76BTlMOYOuSpeHMtlEY/zFX23jHPETqC
+ YGQNUvoTaeD73qVBbUHjfemLPmNa39xaRhLtKoPa+gNRfqy1XeYwJGe000PpoApttDcK
+ eH7gT4z24pESDHI/J0253CqiZiaVdl7F+bNFkychQsCstloNMDNhhHq1QnIQkDIkoJ3S +w== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0edmgrtm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 09 Sep 2023 12:35:34 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 389CZXnX008159
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 9 Sep 2023 12:35:33 GMT
+Received: from hu-ajipan-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Sat, 9 Sep 2023 05:35:28 -0700
+From:   Ajit Pandey <quic_ajipan@quicinc.com>
+To:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Imran Shaik <quic_imrashai@quicinc.com>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>
+CC:     Ajit Pandey <quic_ajipan@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/4] clk: qcom: Add support for GCC and RPMHCC on SM4450
+Date:   Sat, 9 Sep 2023 18:04:27 +0530
+Message-ID: <20230909123431.1725728-1-quic_ajipan@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 09 Sep 2023 09:33:21 -0300
-From:   Fabio Estevam <festevam@denx.de>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, patches@opensource.cirrus.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] ASoC: wm8960: Fix error handling in probe
-In-Reply-To: <20230909120237.2646275-1-linux@roeck-us.net>
-References: <20230909120237.2646275-1-linux@roeck-us.net>
-Message-ID: <f25a7897ba298a2e0187df91d121ab28@denx.de>
-X-Sender: festevam@denx.de
-User-Agent: Roundcube Webmail/1.3.6
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: GtDPVssh3DJu8bMng3kjrEbULh7qxRtC
+X-Proofpoint-GUID: GtDPVssh3DJu8bMng3kjrEbULh7qxRtC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-09_10,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ priorityscore=1501 mlxlogscore=839 malwarescore=0 spamscore=0
+ impostorscore=0 lowpriorityscore=0 clxscore=1015 phishscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309090114
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,50 +85,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/09/2023 09:02, Guenter Roeck wrote:
-> Commit 422f10adc3eb ("ASoC: wm8960: Add support for the power 
-> supplies")
-> added regulator support to the wm8960 driver, but neglected to update
-> error handling in the probe function. This results in warning 
-> backtraces
-> if the probe function fails.
-> 
-> WARNING: CPU: 0 PID: 1 at drivers/regulator/core.c:2396
-> _regulator_put.part.0+0x1b4/0x1d8
-> Modules linked in:
-> CPU: 0 PID: 1 Comm: swapper/0 Tainted: G                 N
-> 6.5.0-11075-g92901222f83d #1
-> Hardware name: Freescale i.MX6 Ultralite (Device Tree)
->  unwind_backtrace from show_stack+0x10/0x14
->  show_stack from dump_stack_lvl+0x68/0x90
->  dump_stack_lvl from __warn+0x70/0x1a4
->  __warn from warn_slowpath_fmt+0xac/0x220
->  warn_slowpath_fmt from _regulator_put.part.0+0x1b4/0x1d8
->  _regulator_put.part.0 from regulator_bulk_free+0x44/0x64
->  regulator_bulk_free from release_nodes+0x50/0x7c
->  release_nodes from devres_release_group+0xbc/0x138
->  devres_release_group from i2c_device_probe+0x180/0x268
->  i2c_device_probe from really_probe+0xc4/0x2e0
->  really_probe from __driver_probe_device+0x84/0x1a0
->  __driver_probe_device from driver_probe_device+0x2c/0xc4
->  driver_probe_device from __driver_attach+0x94/0x144
->  __driver_attach from bus_for_each_dev+0x70/0xc4
->  bus_for_each_dev from bus_add_driver+0xc4/0x1cc
->  bus_add_driver from driver_register+0x7c/0x114
->  driver_register from i2c_register_driver+0x3c/0xac
->  i2c_register_driver from do_one_initcall+0x68/0x3b0
->  do_one_initcall from kernel_init_freeable+0x18c/0x240
->  kernel_init_freeable from kernel_init+0x14/0x144
->  kernel_init from ret_from_fork+0x14/0x24
-> 
-> Add the missing calls to regulator_bulk_disable().
-> 
-> Cc: Fabio Estevam <festevam@denx.de>
-> Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
-> Fixes: 422f10adc3eb ("ASoC: wm8960: Add support for the power 
-> supplies")
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+This series add dt-bindings and driver support for GCC and RPMHCC on
+SM4450 platform.
 
-Thanks for the fix:
+Changes in v2:
+ - Remove min-items and optional tag from bindings documentation.
+ - Use qcom_branch_set_force_mem_core() wrapper API to update bits.
+ - Link to v1: https://patchwork.kernel.org/project/linux-clk/list/?series=779098
 
-Reviewed-by: Fabio Estevam <festevam@denx.de>
+Ajit Pandey (4):
+  dt-bindings: clock: qcom: Add RPMHCC for SM4450
+  clk: qcom: rpmh: Add RPMH clocks support for SM4450
+  dt-bindings: clock: qcom: Add GCC clocks for SM4450
+  clk: qcom: Add GCC driver support for SM4450
+
+ .../bindings/clock/qcom,rpmhcc.yaml           |    1 +
+ .../bindings/clock/qcom,sm4450-gcc.yaml       |   55 +
+ drivers/clk/qcom/Kconfig                      |    9 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/clk-rpmh.c                   |   21 +
+ drivers/clk/qcom/gcc-sm4450.c                 | 2897 +++++++++++++++++
+ include/dt-bindings/clock/qcom,sm4450-gcc.h   |  197 ++
+ 7 files changed, 3181 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,sm4450-gcc.yaml
+ create mode 100644 drivers/clk/qcom/gcc-sm4450.c
+ create mode 100644 include/dt-bindings/clock/qcom,sm4450-gcc.h
+
+-- 
+2.25.1
+
