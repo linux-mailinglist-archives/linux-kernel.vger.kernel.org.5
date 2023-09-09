@@ -2,44 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2857993B0
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C37799390
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234652AbjIIAeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37440 "EHLO
+        id S1345546AbjIIAZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232141AbjIIAeU (ORCPT
+        with ESMTP id S1344840AbjIIAZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 20:34:20 -0400
+        Fri, 8 Sep 2023 20:25:41 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA34E213E;
-        Fri,  8 Sep 2023 17:33:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8387FC116A7;
-        Sat,  9 Sep 2023 00:24:26 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 436D92691;
+        Fri,  8 Sep 2023 17:25:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E4A8C433CD;
+        Sat,  9 Sep 2023 00:24:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694219068;
-        bh=M15GPJc/483qJVqC1x6GaWPRwH7qRowHLJ77hqP4wmQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aR9di1xLTznEDqN/8/Lj8nDgcuRMa15CQNYvdF7y38nfwAv/RB+ZHcmul8atrDAio
-         i8JmUA7mO9ST979/XlCvEWTs8zgjJnem28vye7w00abidN+eqDX41AKRjCclw80GgS
-         nFUdPYTH2gk+9tSvPDwmAqDVWVU4r//wm3iA8KdRV3NUzyP5N5483bI5VJpAUYU2xZ
-         kfwO+1JlzlNinuT4GABEuaY0Zwl8wZ4NchqfAgQexJ6iKjmpkOsqIMp/htNzoMmY4Q
-         xeNQ4zWFDE4GLOJUt2ZvVuzSMdhooLItjEACj5igCWJWZRmGCci/9B0QQWQ7T91MY7
-         iLYnt6UA6D3iw==
+        s=k20201202; t=1694219071;
+        bh=hG4ddWXsPHjO6HOI0xSWPEHtDitPItHZTkJ0ZCW19pU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JCC9HDkuETgLXs3qEDfoA83LtkFbMJ7+l+aB4sL8mr7bgiNFTa+vheB/cYBs8IN5x
+         xFEFcVrQb62gMcHfTCiXn8J7N1LmUF/9bRexbNMjzBQUGsX25Te/1sNVBMBXwbwW39
+         Issp8MQE/jV5I+TJSM/ZDTdOubhBsQQBCjVgpM7heBsAtwOVFf+Sut0a/NxisyCT1M
+         g23SghFKh/N5ptW0c1DrJJzG6WMltin1miBiz4FR32180MuUx4VDE+EeemIcLuuCQ4
+         /6HK96zBhUk2ZtsRqgbffTqOAA4Ye/l/+bfN3+trLeLhsXxOM9CZ/9EiLtC8Yd7Hhi
+         pxsfo685L2eEQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andrew Kanner <andrew.kanner@gmail.com>,
-        syzbot+6a93efb725385bc4b2e9@syzkaller.appspotmail.com,
+Cc:     Liu Shixin via Jfs-discussion 
+        <jfs-discussion@lists.sourceforge.net>,
+        syzbot+90a11e6b1e810785c6ff@syzkaller.appspotmail.com,
+        Liu Shixin <liushixin2@huawei.com>,
         Dave Kleikamp <dave.kleikamp@oracle.com>,
         Sasha Levin <sashal@kernel.org>, shaggy@kernel.org,
-        code@siddh.me, yogi.kernel@gmail.com, liushixin2@huawei.com,
-        wonguk.lee1023@gmail.com, wuhoipok@gmail.com,
-        mudongliangabcd@gmail.com, jfs-discussion@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 4.19 1/6] fs/jfs: prevent double-free in dbUnmount() after failed jfs_remount()
-Date:   Fri,  8 Sep 2023 20:24:17 -0400
-Message-Id: <20230909002424.3578867-1-sashal@kernel.org>
+        jlayton@kernel.org, jack@suse.cz, okanatov@gmail.com
+Subject: [PATCH AUTOSEL 4.19 2/6] jfs: fix invalid free of JFS_IP(ipimap)->i_imap in diUnmount
+Date:   Fri,  8 Sep 2023 20:24:18 -0400
+Message-Id: <20230909002424.3578867-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230909002424.3578867-1-sashal@kernel.org>
+References: <20230909002424.3578867-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -55,116 +57,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Kanner <andrew.kanner@gmail.com>
+From: Liu Shixin via Jfs-discussion <jfs-discussion@lists.sourceforge.net>
 
-[ Upstream commit cade5397e5461295f3cb87880534b6a07cafa427 ]
+[ Upstream commit 6e2bda2c192d0244b5a78b787ef20aa10cb319b7 ]
 
-Syzkaller reported the following issue:
-==================================================================
-BUG: KASAN: double-free in slab_free mm/slub.c:3787 [inline]
-BUG: KASAN: double-free in __kmem_cache_free+0x71/0x110 mm/slub.c:3800
-Free of addr ffff888086408000 by task syz-executor.4/12750
-[...]
-Call Trace:
- <TASK>
-[...]
- kasan_report_invalid_free+0xac/0xd0 mm/kasan/report.c:482
- ____kasan_slab_free+0xfb/0x120
- kasan_slab_free include/linux/kasan.h:177 [inline]
- slab_free_hook mm/slub.c:1781 [inline]
- slab_free_freelist_hook+0x12e/0x1a0 mm/slub.c:1807
- slab_free mm/slub.c:3787 [inline]
- __kmem_cache_free+0x71/0x110 mm/slub.c:3800
- dbUnmount+0xf4/0x110 fs/jfs/jfs_dmap.c:264
- jfs_umount+0x248/0x3b0 fs/jfs/jfs_umount.c:87
- jfs_put_super+0x86/0x190 fs/jfs/super.c:194
- generic_shutdown_super+0x130/0x310 fs/super.c:492
- kill_block_super+0x79/0xd0 fs/super.c:1386
- deactivate_locked_super+0xa7/0xf0 fs/super.c:332
- cleanup_mnt+0x494/0x520 fs/namespace.c:1291
- task_work_run+0x243/0x300 kernel/task_work.c:179
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
- exit_to_user_mode_loop+0x124/0x150 kernel/entry/common.c:171
- exit_to_user_mode_prepare+0xb2/0x140 kernel/entry/common.c:203
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x26/0x60 kernel/entry/common.c:296
- do_syscall_64+0x49/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[...]
- </TASK>
+syzbot found an invalid-free in diUnmount:
 
-Allocated by task 13352:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x3d/0x60 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:371 [inline]
- __kasan_kmalloc+0x97/0xb0 mm/kasan/common.c:380
- kmalloc include/linux/slab.h:580 [inline]
- dbMount+0x54/0x980 fs/jfs/jfs_dmap.c:164
- jfs_mount+0x1dd/0x830 fs/jfs/jfs_mount.c:121
- jfs_fill_super+0x590/0xc50 fs/jfs/super.c:556
- mount_bdev+0x26c/0x3a0 fs/super.c:1359
- legacy_get_tree+0xea/0x180 fs/fs_context.c:610
- vfs_get_tree+0x88/0x270 fs/super.c:1489
- do_new_mount+0x289/0xad0 fs/namespace.c:3145
- do_mount fs/namespace.c:3488 [inline]
- __do_sys_mount fs/namespace.c:3697 [inline]
- __se_sys_mount+0x2d3/0x3c0 fs/namespace.c:3674
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+BUG: KASAN: double-free in slab_free mm/slub.c:3661 [inline]
+BUG: KASAN: double-free in __kmem_cache_free+0x71/0x110 mm/slub.c:3674
+Free of addr ffff88806f410000 by task syz-executor131/3632
 
-Freed by task 13352:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x3d/0x60 mm/kasan/common.c:52
- kasan_save_free_info+0x27/0x40 mm/kasan/generic.c:518
- ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
- kasan_slab_free include/linux/kasan.h:177 [inline]
- slab_free_hook mm/slub.c:1781 [inline]
- slab_free_freelist_hook+0x12e/0x1a0 mm/slub.c:1807
- slab_free mm/slub.c:3787 [inline]
- __kmem_cache_free+0x71/0x110 mm/slub.c:3800
- dbUnmount+0xf4/0x110 fs/jfs/jfs_dmap.c:264
- jfs_mount_rw+0x545/0x740 fs/jfs/jfs_mount.c:247
- jfs_remount+0x3db/0x710 fs/jfs/super.c:454
- reconfigure_super+0x3bc/0x7b0 fs/super.c:935
- vfs_fsconfig_locked fs/fsopen.c:254 [inline]
- __do_sys_fsconfig fs/fsopen.c:439 [inline]
- __se_sys_fsconfig+0xad5/0x1060 fs/fsopen.c:314
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+ CPU: 0 PID: 3632 Comm: syz-executor131 Not tainted 6.1.0-rc7-syzkaller-00012-gca57f02295f1 #0
+ Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+ Call Trace:
+  <TASK>
+  __dump_stack lib/dump_stack.c:88 [inline]
+  dump_stack_lvl+0x1b1/0x28e lib/dump_stack.c:106
+  print_address_description+0x74/0x340 mm/kasan/report.c:284
+  print_report+0x107/0x1f0 mm/kasan/report.c:395
+  kasan_report_invalid_free+0xac/0xd0 mm/kasan/report.c:460
+  ____kasan_slab_free+0xfb/0x120
+  kasan_slab_free include/linux/kasan.h:177 [inline]
+  slab_free_hook mm/slub.c:1724 [inline]
+  slab_free_freelist_hook+0x12e/0x1a0 mm/slub.c:1750
+  slab_free mm/slub.c:3661 [inline]
+  __kmem_cache_free+0x71/0x110 mm/slub.c:3674
+  diUnmount+0xef/0x100 fs/jfs/jfs_imap.c:195
+  jfs_umount+0x108/0x370 fs/jfs/jfs_umount.c:63
+  jfs_put_super+0x86/0x190 fs/jfs/super.c:194
+  generic_shutdown_super+0x130/0x310 fs/super.c:492
+  kill_block_super+0x79/0xd0 fs/super.c:1428
+  deactivate_locked_super+0xa7/0xf0 fs/super.c:332
+  cleanup_mnt+0x494/0x520 fs/namespace.c:1186
+  task_work_run+0x243/0x300 kernel/task_work.c:179
+  exit_task_work include/linux/task_work.h:38 [inline]
+  do_exit+0x664/0x2070 kernel/exit.c:820
+  do_group_exit+0x1fd/0x2b0 kernel/exit.c:950
+  __do_sys_exit_group kernel/exit.c:961 [inline]
+  __se_sys_exit_group kernel/exit.c:959 [inline]
+  __x64_sys_exit_group+0x3b/0x40 kernel/exit.c:959
+  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+  entry_SYSCALL_64_after_hwframe+0x63/0xcd
 [...]
 
-JFS_SBI(ipbmap->i_sb)->bmap wasn't set to NULL after kfree() in
-dbUnmount().
+JFS_IP(ipimap)->i_imap is not setting to NULL after free in diUnmount.
+If jfs_remount() free JFS_IP(ipimap)->i_imap but then failed at diMount().
+JFS_IP(ipimap)->i_imap will be freed once again.
+Fix this problem by setting JFS_IP(ipimap)->i_imap to NULL after free.
 
-Syzkaller uses faultinject to reproduce this KASAN double-free
-warning. The issue is triggered if either diMount() or dbMount() fail
-in jfs_remount(), since diUnmount() or dbUnmount() already happened in
-such a case - they will do double-free on next execution: jfs_umount
-or jfs_remount.
-
-Tested on both upstream and jfs-next by syzkaller.
-
-Reported-and-tested-by: syzbot+6a93efb725385bc4b2e9@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/000000000000471f2d05f1ce8bad@google.com/T/
-Link: https://syzkaller.appspot.com/bug?extid=6a93efb725385bc4b2e9
-Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
+Reported-by: syzbot+90a11e6b1e810785c6ff@syzkaller.appspotmail.com
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_dmap.c | 1 +
+ fs/jfs/jfs_imap.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-index 63ad6b1d575a5..b20fffc8b4c13 100644
---- a/fs/jfs/jfs_dmap.c
-+++ b/fs/jfs/jfs_dmap.c
-@@ -282,6 +282,7 @@ int dbUnmount(struct inode *ipbmap, int mounterror)
- 
- 	/* free the memory for the in-memory bmap. */
- 	kfree(bmp);
-+	JFS_SBI(ipbmap->i_sb)->bmap = NULL;
+diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
+index 93e8c590ff5c0..7565e00e88182 100644
+--- a/fs/jfs/jfs_imap.c
++++ b/fs/jfs/jfs_imap.c
+@@ -208,6 +208,7 @@ int diUnmount(struct inode *ipimap, int mounterror)
+ 	 * free in-memory control structure
+ 	 */
+ 	kfree(imap);
++	JFS_IP(ipimap)->i_imap = NULL;
  
  	return (0);
  }
