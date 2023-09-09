@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EB5799550
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6412C7993D2
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344551AbjIIBN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 21:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48416 "EHLO
+        id S1345047AbjIIAiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:38:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231671AbjIIBN0 (ORCPT
+        with ESMTP id S244971AbjIIAiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 21:13:26 -0400
+        Fri, 8 Sep 2023 20:38:07 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1501FFF;
-        Fri,  8 Sep 2023 18:12:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78BE1C433B8;
-        Sat,  9 Sep 2023 00:36:38 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F4C826A3;
+        Fri,  8 Sep 2023 17:37:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FC80C43215;
+        Sat,  9 Sep 2023 00:36:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694219799;
-        bh=Yb+5dw/jF096YB80Cp2SCxuJIGHUmlwXM+6g4tqnnCE=;
+        s=k20201202; t=1694219801;
+        bh=N1pcWlOYqiveziN0IOp5nLZqzPGbOe9ls13Mam/I8lc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XQC7IOrpRR0XV5XFrYR1ais15jntcg4WVYcrfiBtqfyFP/HepWpP1mZhTbzj3ywRL
-         DbcBciramN/+gkEJLmrAUbuJXS5uDkMOnS5O7Q7wgNUFu9Z6xtNGV9Kx8u1/ZLDnsz
-         BLJlm+Edr04DdyGztMamoyymIGi7fQCBTcltU0g1M9IidRrMDJejWYW31l76eeMaP3
-         3RdotsoSw8hwJZ5SPpAk4AXutB10uhKg8qhwpCNlX8+x7gkBEil61gsAMWoGtqtkOU
-         K4IcZ5pXZHSrpwkgF0A+x9ty6Daa5fEsLsZvOMIoKfpXF7bNkBCfrS08N2lBl535+X
-         Klpyul9p1gdPA==
+        b=vIispxQCHkYFFGAYMpOFxAHFdvglID+XlaZJIIG3RomGB4GLZGcuk1y1XnItDUDJM
+         XXCUXEOJBctR4lB44ppsGWi/OBQ0+fKW0phTlnse8QCwBe8bgZ3QELflAcrX2Kooyp
+         nmbBW8iP89u8LcV82Cp8k6LK78QJ0zcpWVtW1fsrwIxLFXKAkrDdWwqmAVkM4Fuwf8
+         oKNHFfjDtFrZxzQtTWsHsh00ZQUIqlB4aeeoGTPJXxCLhi+6MKXoKk9DDQfxt2FauG
+         /CY1iWuf/jMJc0wiJdw0DvULPvpxrkkDnEtvgkIGOLKYeU8/4H6WWo8tehWnXCD5qh
+         6k3BI5rjS6+cQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+Cc:     Baoquan He <bhe@redhat.com>, kernel test robot <lkp@intel.com>,
+        Derek Kiernan <derek.kiernan@amd.com>,
+        Dragan Cvetic <dragan.cvetic@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, jirislaby@kernel.org,
-        ilpo.jarvinen@linux.intel.com, u.kleine-koenig@pengutronix.de,
-        linux-serial@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 17/28] serial: cpm_uart: Avoid suspicious locking
-Date:   Fri,  8 Sep 2023 20:35:51 -0400
-Message-Id: <20230909003604.3579407-17-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 18/28] misc: open-dice: make OPEN_DICE depend on HAS_IOMEM
+Date:   Fri,  8 Sep 2023 20:35:52 -0400
+Message-Id: <20230909003604.3579407-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909003604.3579407-1-sashal@kernel.org>
 References: <20230909003604.3579407-1-sashal@kernel.org>
@@ -55,78 +56,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Baoquan He <bhe@redhat.com>
 
-[ Upstream commit 36ef11d311f405e55ad8e848c19b212ff71ef536 ]
+[ Upstream commit aefc8b57af7787c80686e49a5841e9289cb11f53 ]
 
-  CHECK   drivers/tty/serial/cpm_uart/cpm_uart_core.c
-drivers/tty/serial/cpm_uart/cpm_uart_core.c:1271:39: warning: context imbalance in 'cpm_uart_console_write' - unexpected unlock
+On s390 systems (aka mainframes), it has classic channel devices for
+networking and permanent storage that are currently even more common
+than PCI devices. Hence it could have a fully functional s390 kernel
+with CONFIG_PCI=n, then the relevant iomem mapping functions
+[including ioremap(), devm_ioremap(), etc.] are not available.
 
-Allthough 'nolock' is not expected to change, sparse find the following
-form suspicious:
+Here let OPEN_DICE depend on HAS_IOMEM so that it won't be built
+to cause below compiling error if PCI is unset:
 
-	if (unlikely(nolock)) {
-		local_irq_save(flags);
-	} else {
-		spin_lock_irqsave(&pinfo->port.lock, flags);
-	}
+------
+ERROR: modpost: "devm_memremap" [drivers/misc/open-dice.ko] undefined!
+ERROR: modpost: "devm_memunmap" [drivers/misc/open-dice.ko] undefined!
+------
 
-	cpm_uart_early_write(pinfo, s, count, true);
-
-	if (unlikely(nolock)) {
-		local_irq_restore(flags);
-	} else {
-		spin_unlock_irqrestore(&pinfo->port.lock, flags);
-	}
-
-Rewrite it a more obvious form:
-
-	if (unlikely(oops_in_progress)) {
-		local_irq_save(flags);
-		cpm_uart_early_write(pinfo, s, count, true);
-		local_irq_restore(flags);
-	} else {
-		spin_lock_irqsave(&pinfo->port.lock, flags);
-		cpm_uart_early_write(pinfo, s, count, true);
-		spin_unlock_irqrestore(&pinfo->port.lock, flags);
-	}
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Link: https://lore.kernel.org/r/f7da5cdc9287960185829cfef681a7d8614efa1f.1691068700.git.christophe.leroy@csgroup.eu
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202306211329.ticOJCSv-lkp@intel.com/
+Signed-off-by: Baoquan He <bhe@redhat.com>
+Cc: Derek Kiernan <derek.kiernan@amd.com>
+Cc: Dragan Cvetic <dragan.cvetic@amd.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20230707135852.24292-4-bhe@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/cpm_uart/cpm_uart_core.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ drivers/misc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/tty/serial/cpm_uart/cpm_uart_core.c b/drivers/tty/serial/cpm_uart/cpm_uart_core.c
-index 66afa9bea6bfe..71366a4cea22c 100644
---- a/drivers/tty/serial/cpm_uart/cpm_uart_core.c
-+++ b/drivers/tty/serial/cpm_uart/cpm_uart_core.c
-@@ -1255,19 +1255,14 @@ static void cpm_uart_console_write(struct console *co, const char *s,
- {
- 	struct uart_cpm_port *pinfo = &cpm_uart_ports[co->index];
- 	unsigned long flags;
--	int nolock = oops_in_progress;
- 
--	if (unlikely(nolock)) {
-+	if (unlikely(oops_in_progress)) {
- 		local_irq_save(flags);
--	} else {
--		spin_lock_irqsave(&pinfo->port.lock, flags);
--	}
--
--	cpm_uart_early_write(pinfo, s, count, true);
--
--	if (unlikely(nolock)) {
-+		cpm_uart_early_write(pinfo, s, count, true);
- 		local_irq_restore(flags);
- 	} else {
-+		spin_lock_irqsave(&pinfo->port.lock, flags);
-+		cpm_uart_early_write(pinfo, s, count, true);
- 		spin_unlock_irqrestore(&pinfo->port.lock, flags);
- 	}
- }
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index 75e427f124b28..cadd4a820c033 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -496,6 +496,7 @@ config HISI_HIKEY_USB
+ config OPEN_DICE
+ 	tristate "Open Profile for DICE driver"
+ 	depends on OF_RESERVED_MEM
++	depends on HAS_IOMEM
+ 	help
+ 	  This driver exposes a DICE reserved memory region to userspace via
+ 	  a character device. The memory region contains Compound Device
 -- 
 2.40.1
 
