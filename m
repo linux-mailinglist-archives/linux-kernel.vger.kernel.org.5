@@ -2,50 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E556F799356
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF0179935E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345086AbjIIAYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49488 "EHLO
+        id S1344616AbjIIAYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233300AbjIIAYb (ORCPT
+        with ESMTP id S1343854AbjIIAYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 20:24:31 -0400
+        Fri, 8 Sep 2023 20:24:37 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725BB2698;
-        Fri,  8 Sep 2023 17:23:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AFA1C433CB;
-        Sat,  9 Sep 2023 00:22:48 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FCC26B0;
+        Fri,  8 Sep 2023 17:24:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ADC0C433CA;
+        Sat,  9 Sep 2023 00:22:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694218970;
-        bh=Yf752qBKvCQy9EjHEhZa+d50RLLxrQNydUzESvDvMVs=;
+        s=k20201202; t=1694218973;
+        bh=fdHvbgwWgP/EMGj/RzIWLuGXd8eizNOtytTbA7I4uT0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ir7MgrPFNi8Do0SV8kjkrwd++TkXsvxZYfQWv79ROSxgdOMKRIVD5MihbbkXBh2Rq
-         WK/21sDb1QWcbRtZru7dS7EzxzmVPIhcrh+pTlLJVp4GVZ4OI3ozJMvu8xhVqee8SG
-         u6Zx2tYnGHCnHR8naJRLlJv0vRo8RAEk7LVBXSF3F7VPDVzVGiLQU9/mGf2C06AePC
-         zXcQszv2t5xLIwKREpFUWCQZLxQqCw0jp3hq2btNmAgZrDHOyJRCkJ1iZ4nmFwBYbG
-         W3IEW3YeDJsGDLMy8dnUoQMABjPX0V76SYS8u8T9QQlqqrIsPa5fCWeXmxP+K8saoo
-         f8woYSm/Yeu+Q==
+        b=M5EsHUb9GTtranFlWFnWBcVNoWqh35qKwTh2vWFquGFh3Nxwefhz8QzZCqUhzSxI7
+         EqCvSvupAQNXnyLvVW1nDglrlQSKcI+1Dr+8oCr0I0pnjZQgvwncMJu7rfuPVPhL7R
+         NvDrmkPLBZ580hdbyRNZcfYZj27NaewDVHDcLM8TfFdjaJZw4HH4MrxSLSOcQW8hN2
+         aZVZSjzjP8f5ODp4khyUrmcM1AgAwrnf/c9WfpCKU5thnkA8Hj/Gpl7PY69MWc6wIl
+         n6vs9wVz1AUrHdUz44S5CFQQAoBoLHh8wRSL8F/TkcaE2xgGNqXQlt4/CmXxib9tRX
+         v4Y6CP77C84kw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tomislav Novak <tnovak@fb.com>,
-        Samuel Gosselin <sgosselin@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     =?UTF-8?q?M=C3=A5rten=20Lindahl?= <marten.lindahl@axis.com>,
         Russell King <rmk+kernel@armlinux.org.uk>,
-        Sasha Levin <sashal@kernel.org>, will@kernel.org,
-        mark.rutland@arm.com, linux@armlinux.org.uk, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 07/11] ARM: 9316/1: hw_breakpoint: fix single-stepping when using bpf_overflow_handler
-Date:   Fri,  8 Sep 2023 20:22:27 -0400
-Message-Id: <20230909002233.3578213-7-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux@armlinux.org.uk,
+        bhe@redhat.com, gpiccoli@igalia.com, akpm@linux-foundation.org,
+        chenlifu@huawei.com, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.4 08/11] ARM: 9317/1: kexec: Make smp stop calls asynchronous
+Date:   Fri,  8 Sep 2023 20:22:28 -0400
+Message-Id: <20230909002233.3578213-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909002233.3578213-1-sashal@kernel.org>
 References: <20230909002233.3578213-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.15
@@ -60,148 +56,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomislav Novak <tnovak@fb.com>
+From: Mårten Lindahl <marten.lindahl@axis.com>
 
-[ Upstream commit e6b51532d5273eeefba84106daea3d392c602837 ]
+[ Upstream commit 8922ba71c969d2a0c01a94372a71477d879470de ]
 
-Arm platforms use is_default_overflow_handler() to determine if the
-hw_breakpoint code should single-step over the breakpoint trigger or
-let the custom handler deal with it.
+If a panic is triggered by a hrtimer interrupt all online cpus will be
+notified and set offline. But as highlighted by commit 19dbdcb8039c
+("smp: Warn on function calls from softirq context") this call should
+not be made synchronous with disabled interrupts:
 
-Since bpf_overflow_handler() currently isn't recognized as a default
-handler, attaching a BPF program to a PERF_TYPE_BREAKPOINT event causes
-it to keep firing (the instruction triggering the data abort exception
-is never skipped). For example:
+ softdog: Initiating panic
+ Kernel panic - not syncing: Software Watchdog Timer expired
+ WARNING: CPU: 1 PID: 0 at kernel/smp.c:753 smp_call_function_many_cond
+   unwind_backtrace:
+     show_stack
+     dump_stack_lvl
+     __warn
+     warn_slowpath_fmt
+     smp_call_function_many_cond
+     smp_call_function
+     crash_smp_send_stop.part.0
+     machine_crash_shutdown
+     __crash_kexec
+     panic
+     softdog_fire
+     __hrtimer_run_queues
+     hrtimer_interrupt
 
-  # bpftrace -e 'watchpoint:0x10000:4:w { print("hit") }' -c ./test
-  Attaching 1 probe...
-  hit
-  hit
-  [...]
-  ^C
+Make the smp call for machine_crash_nonpanic_core() asynchronous.
 
-(./test performs a single 4-byte store to 0x10000)
-
-This patch replaces the check with uses_default_overflow_handler(),
-which accounts for the bpf_overflow_handler() case by also testing
-if one of the perf_event_output functions gets invoked indirectly,
-via orig_default_handler.
-
-Link: https://lore.kernel.org/linux-arm-kernel/20220923203644.2731604-1-tnovak@fb.com/
-
-Signed-off-by: Tomislav Novak <tnovak@fb.com>
-Tested-by: Samuel Gosselin <sgosselin@google.com> # arm64
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Mårten Lindahl <marten.lindahl@axis.com>
 Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kernel/hw_breakpoint.c   |  8 ++++----
- arch/arm64/kernel/hw_breakpoint.c |  4 ++--
- include/linux/perf_event.h        | 22 +++++++++++++++++++---
- 3 files changed, 25 insertions(+), 9 deletions(-)
+ arch/arm/kernel/machine_kexec.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/kernel/hw_breakpoint.c b/arch/arm/kernel/hw_breakpoint.c
-index 054e9199f30db..dc0fb7a813715 100644
---- a/arch/arm/kernel/hw_breakpoint.c
-+++ b/arch/arm/kernel/hw_breakpoint.c
-@@ -626,7 +626,7 @@ int hw_breakpoint_arch_parse(struct perf_event *bp,
- 	hw->address &= ~alignment_mask;
- 	hw->ctrl.len <<= offset;
- 
--	if (is_default_overflow_handler(bp)) {
-+	if (uses_default_overflow_handler(bp)) {
- 		/*
- 		 * Mismatch breakpoints are required for single-stepping
- 		 * breakpoints.
-@@ -798,7 +798,7 @@ static void watchpoint_handler(unsigned long addr, unsigned int fsr,
- 		 * Otherwise, insert a temporary mismatch breakpoint so that
- 		 * we can single-step over the watchpoint trigger.
- 		 */
--		if (!is_default_overflow_handler(wp))
-+		if (!uses_default_overflow_handler(wp))
- 			continue;
- step:
- 		enable_single_step(wp, instruction_pointer(regs));
-@@ -811,7 +811,7 @@ static void watchpoint_handler(unsigned long addr, unsigned int fsr,
- 		info->trigger = addr;
- 		pr_debug("watchpoint fired: address = 0x%x\n", info->trigger);
- 		perf_bp_event(wp, regs);
--		if (is_default_overflow_handler(wp))
-+		if (uses_default_overflow_handler(wp))
- 			enable_single_step(wp, instruction_pointer(regs));
+diff --git a/arch/arm/kernel/machine_kexec.c b/arch/arm/kernel/machine_kexec.c
+index 46364b699cc30..5d07cf9e0044d 100644
+--- a/arch/arm/kernel/machine_kexec.c
++++ b/arch/arm/kernel/machine_kexec.c
+@@ -94,16 +94,28 @@ static void machine_crash_nonpanic_core(void *unused)
  	}
- 
-@@ -886,7 +886,7 @@ static void breakpoint_handler(unsigned long unknown, struct pt_regs *regs)
- 			info->trigger = addr;
- 			pr_debug("breakpoint fired: address = 0x%x\n", addr);
- 			perf_bp_event(bp, regs);
--			if (is_default_overflow_handler(bp))
-+			if (uses_default_overflow_handler(bp))
- 				enable_single_step(bp, addr);
- 			goto unlock;
- 		}
-diff --git a/arch/arm64/kernel/hw_breakpoint.c b/arch/arm64/kernel/hw_breakpoint.c
-index b29a311bb0552..9659a9555c63a 100644
---- a/arch/arm64/kernel/hw_breakpoint.c
-+++ b/arch/arm64/kernel/hw_breakpoint.c
-@@ -654,7 +654,7 @@ static int breakpoint_handler(unsigned long unused, unsigned long esr,
- 		perf_bp_event(bp, regs);
- 
- 		/* Do we need to handle the stepping? */
--		if (is_default_overflow_handler(bp))
-+		if (uses_default_overflow_handler(bp))
- 			step = 1;
- unlock:
- 		rcu_read_unlock();
-@@ -733,7 +733,7 @@ static u64 get_distance_from_watchpoint(unsigned long addr, u64 val,
- static int watchpoint_report(struct perf_event *wp, unsigned long addr,
- 			     struct pt_regs *regs)
- {
--	int step = is_default_overflow_handler(wp);
-+	int step = uses_default_overflow_handler(wp);
- 	struct arch_hw_breakpoint *info = counter_arch_bp(wp);
- 
- 	info->trigger = addr;
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index c8dcfdbda1f40..5783fd921cc45 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -1305,15 +1305,31 @@ extern int perf_event_output(struct perf_event *event,
- 			     struct pt_regs *regs);
- 
- static inline bool
--is_default_overflow_handler(struct perf_event *event)
-+__is_default_overflow_handler(perf_overflow_handler_t overflow_handler)
- {
--	if (likely(event->overflow_handler == perf_event_output_forward))
-+	if (likely(overflow_handler == perf_event_output_forward))
- 		return true;
--	if (unlikely(event->overflow_handler == perf_event_output_backward))
-+	if (unlikely(overflow_handler == perf_event_output_backward))
- 		return true;
- 	return false;
  }
  
-+#define is_default_overflow_handler(event) \
-+	__is_default_overflow_handler((event)->overflow_handler)
++static DEFINE_PER_CPU(call_single_data_t, cpu_stop_csd) =
++	CSD_INIT(machine_crash_nonpanic_core, NULL);
 +
-+#ifdef CONFIG_BPF_SYSCALL
-+static inline bool uses_default_overflow_handler(struct perf_event *event)
-+{
-+	if (likely(is_default_overflow_handler(event)))
-+		return true;
+ void crash_smp_send_stop(void)
+ {
+ 	static int cpus_stopped;
+ 	unsigned long msecs;
++	call_single_data_t *csd;
++	int cpu, this_cpu = raw_smp_processor_id();
+ 
+ 	if (cpus_stopped)
+ 		return;
+ 
+ 	atomic_set(&waiting_for_crash_ipi, num_online_cpus() - 1);
+-	smp_call_function(machine_crash_nonpanic_core, NULL, false);
++	for_each_online_cpu(cpu) {
++		if (cpu == this_cpu)
++			continue;
 +
-+	return __is_default_overflow_handler(event->orig_overflow_handler);
-+}
-+#else
-+#define uses_default_overflow_handler(event) \
-+	is_default_overflow_handler(event)
-+#endif
++		csd = &per_cpu(cpu_stop_csd, cpu);
++		smp_call_function_single_async(cpu, csd);
++	}
 +
- extern void
- perf_event_header__init_id(struct perf_event_header *header,
- 			   struct perf_sample_data *data,
+ 	msecs = 1000; /* Wait at most a second for the other cpus to stop */
+ 	while ((atomic_read(&waiting_for_crash_ipi) > 0) && msecs) {
+ 		mdelay(1);
 -- 
 2.40.1
 
