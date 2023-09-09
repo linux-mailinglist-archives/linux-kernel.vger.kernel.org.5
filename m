@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D516799380
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F24799384
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345514AbjIIAZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:25:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
+        id S244064AbjIIAZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:25:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236745AbjIIAZ0 (ORCPT
+        with ESMTP id S245473AbjIIAZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Sep 2023 20:25:26 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B9F211E;
-        Fri,  8 Sep 2023 17:24:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71F46C433C9;
-        Sat,  9 Sep 2023 00:24:03 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE3D2121;
+        Fri,  8 Sep 2023 17:24:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5551C07616;
+        Sat,  9 Sep 2023 00:24:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694219044;
-        bh=m/rJyG9sVeBbPS6dltLZuN7zvAOPCkzF8q1O+pn1mu4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cZyuqW7nnFQ/faBvwh25HG/1NlE8AU4qoa0zxr1jv7cWqMzorIpw79wR+UjfOD0mm
-         7Wohr6z4sCPT/EOVqjAfHsGPxLXfJ9aEDGORWC5HfSdphIec8uKDtzSYExu7Kg4bEo
-         DOPJvLGwstiqV+yz3W1ubR6Rv2yFZD4oXPrdO+Hd8t3hpvpsGesBTU4jkjdsTxl3Hv
-         nC5n/UGkRrP70s/EVjqJ5HMy8cqk8elRdO+FOGQ6M+SMwY+L/IHzgs5HTYlExen+XQ
-         YYXQvIC11Zlho6ox0QG40rnWcpEOgraJkDrX+5f68vS+HUbtp+1s93ndqa5JdjqxT7
-         oOdotE66XYmEA==
+        s=k20201202; t=1694219050;
+        bh=aKHy1O5nQNPjEJyoEe8pe4pT8Zy42T3IK9p0ehYl+S4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZdJHCPkikLEEArVrfrB2MVK0CS5Ncz7Asjo3CQ8E6md28H5u1PJSwIWU0iXW1fRr4
+         UyVKrk5s5GTtGg7cnfstFMF+s41oMexuQiLlTG9vkl7013BuMWd4PeXPE0IqviT2Xo
+         lWefH2IWciBEJCLDIBaKEnQOOZMPLU2Dtj46GiJBjCaA9Fvvj3MK54/6Sl8FyX1pQ2
+         I6+nS/KTpidF1dJjkjRgAZg9rShmeN9NCT0qq58uBZ66Riosslv2sJa0DFDvBkPQ4w
+         UiD8g9VPM/K+4HMx0TYn+EmaaXHtjJWmD9seEMzLJTAbCgA2GSX9eQ6FVXaGodV3tD
+         GRkiF/J10AiHQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     ruanjinjie <ruanjinjie@huawei.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>, gregkh@linuxfoundation.org,
-        wei.liu@kernel.org, idryomov@gmail.com, sfr@canb.auug.org.au,
-        robh@kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 5.10 5/5] powerpc/pseries: fix possible memory leak in ibmebus_bus_init()
-Date:   Fri,  8 Sep 2023 20:23:49 -0400
-Message-Id: <20230909002351.3578696-5-sashal@kernel.org>
+Cc:     Andrew Kanner <andrew.kanner@gmail.com>,
+        syzbot+6a93efb725385bc4b2e9@syzkaller.appspotmail.com,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, shaggy@kernel.org,
+        code@siddh.me, liushixin2@huawei.com, mudongliangabcd@gmail.com,
+        wuhoipok@gmail.com, wonguk.lee1023@gmail.com,
+        yogi.kernel@gmail.com, jfs-discussion@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 5.4 1/6] fs/jfs: prevent double-free in dbUnmount() after failed jfs_remount()
+Date:   Fri,  8 Sep 2023 20:24:00 -0400
+Message-Id: <20230909002406.3578776-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230909002351.3578696-1-sashal@kernel.org>
-References: <20230909002351.3578696-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.194
+X-stable-base: Linux 5.4.256
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -55,37 +55,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ruanjinjie <ruanjinjie@huawei.com>
+From: Andrew Kanner <andrew.kanner@gmail.com>
 
-[ Upstream commit afda85b963c12947e298ad85d757e333aa40fd74 ]
+[ Upstream commit cade5397e5461295f3cb87880534b6a07cafa427 ]
 
-If device_register() returns error in ibmebus_bus_init(), name of kobject
-which is allocated in dev_set_name() called in device_add() is leaked.
+Syzkaller reported the following issue:
+==================================================================
+BUG: KASAN: double-free in slab_free mm/slub.c:3787 [inline]
+BUG: KASAN: double-free in __kmem_cache_free+0x71/0x110 mm/slub.c:3800
+Free of addr ffff888086408000 by task syz-executor.4/12750
+[...]
+Call Trace:
+ <TASK>
+[...]
+ kasan_report_invalid_free+0xac/0xd0 mm/kasan/report.c:482
+ ____kasan_slab_free+0xfb/0x120
+ kasan_slab_free include/linux/kasan.h:177 [inline]
+ slab_free_hook mm/slub.c:1781 [inline]
+ slab_free_freelist_hook+0x12e/0x1a0 mm/slub.c:1807
+ slab_free mm/slub.c:3787 [inline]
+ __kmem_cache_free+0x71/0x110 mm/slub.c:3800
+ dbUnmount+0xf4/0x110 fs/jfs/jfs_dmap.c:264
+ jfs_umount+0x248/0x3b0 fs/jfs/jfs_umount.c:87
+ jfs_put_super+0x86/0x190 fs/jfs/super.c:194
+ generic_shutdown_super+0x130/0x310 fs/super.c:492
+ kill_block_super+0x79/0xd0 fs/super.c:1386
+ deactivate_locked_super+0xa7/0xf0 fs/super.c:332
+ cleanup_mnt+0x494/0x520 fs/namespace.c:1291
+ task_work_run+0x243/0x300 kernel/task_work.c:179
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ exit_to_user_mode_loop+0x124/0x150 kernel/entry/common.c:171
+ exit_to_user_mode_prepare+0xb2/0x140 kernel/entry/common.c:203
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x26/0x60 kernel/entry/common.c:296
+ do_syscall_64+0x49/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+[...]
+ </TASK>
 
-As comment of device_add() says, it should call put_device() to drop
-the reference count that was set in device_initialize() when it fails,
-so the name can be freed in kobject_cleanup().
+Allocated by task 13352:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x3d/0x60 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:371 [inline]
+ __kasan_kmalloc+0x97/0xb0 mm/kasan/common.c:380
+ kmalloc include/linux/slab.h:580 [inline]
+ dbMount+0x54/0x980 fs/jfs/jfs_dmap.c:164
+ jfs_mount+0x1dd/0x830 fs/jfs/jfs_mount.c:121
+ jfs_fill_super+0x590/0xc50 fs/jfs/super.c:556
+ mount_bdev+0x26c/0x3a0 fs/super.c:1359
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:610
+ vfs_get_tree+0x88/0x270 fs/super.c:1489
+ do_new_mount+0x289/0xad0 fs/namespace.c:3145
+ do_mount fs/namespace.c:3488 [inline]
+ __do_sys_mount fs/namespace.c:3697 [inline]
+ __se_sys_mount+0x2d3/0x3c0 fs/namespace.c:3674
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Signed-off-by: ruanjinjie <ruanjinjie@huawei.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://msgid.link/20221110011929.3709774-1-ruanjinjie@huawei.com
+Freed by task 13352:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x3d/0x60 mm/kasan/common.c:52
+ kasan_save_free_info+0x27/0x40 mm/kasan/generic.c:518
+ ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
+ kasan_slab_free include/linux/kasan.h:177 [inline]
+ slab_free_hook mm/slub.c:1781 [inline]
+ slab_free_freelist_hook+0x12e/0x1a0 mm/slub.c:1807
+ slab_free mm/slub.c:3787 [inline]
+ __kmem_cache_free+0x71/0x110 mm/slub.c:3800
+ dbUnmount+0xf4/0x110 fs/jfs/jfs_dmap.c:264
+ jfs_mount_rw+0x545/0x740 fs/jfs/jfs_mount.c:247
+ jfs_remount+0x3db/0x710 fs/jfs/super.c:454
+ reconfigure_super+0x3bc/0x7b0 fs/super.c:935
+ vfs_fsconfig_locked fs/fsopen.c:254 [inline]
+ __do_sys_fsconfig fs/fsopen.c:439 [inline]
+ __se_sys_fsconfig+0xad5/0x1060 fs/fsopen.c:314
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+[...]
+
+JFS_SBI(ipbmap->i_sb)->bmap wasn't set to NULL after kfree() in
+dbUnmount().
+
+Syzkaller uses faultinject to reproduce this KASAN double-free
+warning. The issue is triggered if either diMount() or dbMount() fail
+in jfs_remount(), since diUnmount() or dbUnmount() already happened in
+such a case - they will do double-free on next execution: jfs_umount
+or jfs_remount.
+
+Tested on both upstream and jfs-next by syzkaller.
+
+Reported-and-tested-by: syzbot+6a93efb725385bc4b2e9@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/000000000000471f2d05f1ce8bad@google.com/T/
+Link: https://syzkaller.appspot.com/bug?extid=6a93efb725385bc4b2e9
+Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/ibmebus.c | 1 +
+ fs/jfs/jfs_dmap.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/platforms/pseries/ibmebus.c b/arch/powerpc/platforms/pseries/ibmebus.c
-index 8c6e509f69675..c3cc010e9cc45 100644
---- a/arch/powerpc/platforms/pseries/ibmebus.c
-+++ b/arch/powerpc/platforms/pseries/ibmebus.c
-@@ -451,6 +451,7 @@ static int __init ibmebus_bus_init(void)
- 	if (err) {
- 		printk(KERN_WARNING "%s: device_register returned %i\n",
- 		       __func__, err);
-+		put_device(&ibmebus_bus_device);
- 		bus_unregister(&ibmebus_bus_type);
+diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+index 8e8d53241386f..a785c747a8cbb 100644
+--- a/fs/jfs/jfs_dmap.c
++++ b/fs/jfs/jfs_dmap.c
+@@ -269,6 +269,7 @@ int dbUnmount(struct inode *ipbmap, int mounterror)
  
- 		return err;
+ 	/* free the memory for the in-memory bmap. */
+ 	kfree(bmp);
++	JFS_SBI(ipbmap->i_sb)->bmap = NULL;
+ 
+ 	return (0);
+ }
 -- 
 2.40.1
 
