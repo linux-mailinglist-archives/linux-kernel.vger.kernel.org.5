@@ -2,39 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A5779945C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F0479942F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbjIIAjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51884 "EHLO
+        id S1345584AbjIIAjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:39:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345763AbjIIAjE (ORCPT
+        with ESMTP id S1345792AbjIIAjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 20:39:04 -0400
+        Fri, 8 Sep 2023 20:39:05 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B895826B9;
-        Fri,  8 Sep 2023 17:38:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE88AC4AF76;
-        Sat,  9 Sep 2023 00:37:58 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9822A26BA;
+        Fri,  8 Sep 2023 17:38:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ACACC433CB;
+        Sat,  9 Sep 2023 00:38:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694219879;
-        bh=c+F/Dz8vvbceFZKEWNuOjAZJHyzYGdIT1rS7HFXFq9g=;
+        s=k20201202; t=1694219895;
+        bh=c7A2T2kDMKnljYsyhWTIiqMgRghvPMAiuvkhE7iublY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AdKb+SoSoYMmuJuiMpuFD66mi12B+Z/FgWFTg6j2pVy+ifENbkoyFLhaLvZS4OXJL
-         AxxV/QmcPBTvNJVmzjoH67Q5uQTsZXLd9mlqJcBBrRjwJjzs9l/n2KGbJd67wCXzUy
-         jnGLdv9YeAuVSJymuNlbnT1SwRcXAbSUH6vhwIHa+Qto4/5cUTYTHkNFQKYQb2/m1L
-         qbewEHJjeaHIfXjMsdc8NPIzLffUy/dHq4OM1nTuJdSpSmqznjxvAbcqcAxSd8TVQQ
-         j8twLnoIrJCE2ho8L0tkrKIxaIiHNEV0yttSDF4z77qu01ak5+QjL9o9N1UUXrQlD2
-         Hfacn74N42K+Q==
+        b=Rb9mC/2+CsKfkIAzADNB1R4kkTNwDxmKWzqS29+2qRxKEARPWcAUzTsnWvAkhHZCP
+         x3BZn0NJGr0Ice9uUDSdrgP4dYCfh49LmWdqiU3RibccrCuGqGttPJAoU4Xaue0mN+
+         JRftnN2wZrZeozNf5A9AoQJIXHZJ8TywxGTcb0OCeMcqA7Xjs7UUPJDOVr7guJKUKd
+         /cCiDy81+CGCPHO2NICaasGhkoDwcxpRr0V+wkLYnK8swOnl+CHcPJwOVANsCGvd+T
+         YtkzAIsTAFjDKEYgMzEY/mpsXwNyGtLuPKTQBGTFRSo4fsrwbxcCrbbLS1uxSgBJpB
+         BWGkxzp97dORQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dan Drown <dan-netdev@drown.org>, Oliver Neukum <oneukum@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 24/25] usb: cdc-acm: move ldisc dcd notification outside of acm's read lock
-Date:   Fri,  8 Sep 2023 20:37:12 -0400
-Message-Id: <20230909003715.3579761-24-sashal@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Sasha Levin <sashal@kernel.org>, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, ndesaulniers@google.com,
+        peterz@infradead.org, ajones@ventanamicro.com, heiko@sntech.de,
+        prabhakar.mahadev-lad.rj@bp.renesas.com, liaochang1@huawei.com,
+        namcaov@gmail.com, andy.chiu@sifive.com, guoren@kernel.org,
+        alexghiti@rivosinc.com, bjorn@rivosinc.com,
+        jeeheng.sia@starfivetech.com, jszhang@kernel.org,
+        greentime.hu@sifive.com, masahiroy@kernel.org,
+        apatel@ventanamicro.com, mnissler@rivosinc.com,
+        coelacanthushex@gmail.com, linux-riscv@lists.infradead.org,
+        llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.4 25/25] riscv: Add CFI error handling
+Date:   Fri,  8 Sep 2023 20:37:13 -0400
+Message-Id: <20230909003715.3579761-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909003715.3579761-1-sashal@kernel.org>
 References: <20230909003715.3579761-1-sashal@kernel.org>
@@ -42,6 +55,7 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.15
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -53,43 +67,284 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Drown <dan-netdev@drown.org>
+From: Sami Tolvanen <samitolvanen@google.com>
 
-[ Upstream commit f72ae60881ff685004d7de7152517607fcd9968f ]
+[ Upstream commit af0ead42f69389cd4ed68e1a4c6cde45c0adb35c ]
 
-dcd_change notification call moved outside of the acm->read_lock
-to protect any future tty ldisc that calls wait_serial_change()
+With CONFIG_CFI_CLANG, the compiler injects a type preamble immediately
+before each function and a check to validate the target function type
+before indirect calls:
 
-Signed-off-by: Dan Drown <dan-netdev@drown.org>
-Acked-by: Oliver Neukum <oneukum@suse.com>
-Link: https://lore.kernel.org/r/ZN1zV/zjPgpGlHXo@vps3.drown.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  ; type preamble
+    .word <id>
+  function:
+    ...
+  ; indirect call check
+    lw      t1, -4(a0)
+    lui     t2, <hi20>
+    addiw   t2, t2, <lo12>
+    beq     t1, t2, .Ltmp0
+    ebreak
+  .Ltmp0:
+    jarl    a0
+
+Implement error handling code for the ebreak traps emitted for the
+checks. This produces the following oops on a CFI failure (generated
+using lkdtm):
+
+[   21.177245] CFI failure at lkdtm_indirect_call+0x22/0x32 [lkdtm]
+(target: lkdtm_increment_int+0x0/0x18 [lkdtm]; expected type: 0x3ad55aca)
+[   21.178483] Kernel BUG [#1]
+[   21.178671] Modules linked in: lkdtm
+[   21.179037] CPU: 1 PID: 104 Comm: sh Not tainted
+6.3.0-rc6-00037-g37d5ec6297ab #1
+[   21.179511] Hardware name: riscv-virtio,qemu (DT)
+[   21.179818] epc : lkdtm_indirect_call+0x22/0x32 [lkdtm]
+[   21.180106]  ra : lkdtm_CFI_FORWARD_PROTO+0x48/0x7c [lkdtm]
+[   21.180426] epc : ffffffff01387092 ra : ffffffff01386f14 sp : ff20000000453cf0
+[   21.180792]  gp : ffffffff81308c38 tp : ff6000000243f080 t0 : ff20000000453b78
+[   21.181157]  t1 : 000000003ad55aca t2 : 000000007e0c52a5 s0 : ff20000000453d00
+[   21.181506]  s1 : 0000000000000001 a0 : ffffffff0138d170 a1 : ffffffff013870bc
+[   21.181819]  a2 : b5fea48dd89aa700 a3 : 0000000000000001 a4 : 0000000000000fff
+[   21.182169]  a5 : 0000000000000004 a6 : 00000000000000b7 a7 : 0000000000000000
+[   21.182591]  s2 : ff20000000453e78 s3 : ffffffffffffffea s4 : 0000000000000012
+[   21.183001]  s5 : ff600000023c7000 s6 : 0000000000000006 s7 : ffffffff013882a0
+[   21.183653]  s8 : 0000000000000008 s9 : 0000000000000002 s10: ffffffff0138d878
+[   21.184245]  s11: ffffffff0138d878 t3 : 0000000000000003 t4 : 0000000000000000
+[   21.184591]  t5 : ffffffff8133df08 t6 : ffffffff8133df07
+[   21.184858] status: 0000000000000120 badaddr: 0000000000000000
+cause: 0000000000000003
+[   21.185415] [<ffffffff01387092>] lkdtm_indirect_call+0x22/0x32 [lkdtm]
+[   21.185772] [<ffffffff01386f14>] lkdtm_CFI_FORWARD_PROTO+0x48/0x7c [lkdtm]
+[   21.186093] [<ffffffff01383552>] lkdtm_do_action+0x22/0x34 [lkdtm]
+[   21.186445] [<ffffffff0138350c>] direct_entry+0x128/0x13a [lkdtm]
+[   21.186817] [<ffffffff8033ed8c>] full_proxy_write+0x58/0xb2
+[   21.187352] [<ffffffff801d4fe8>] vfs_write+0x14c/0x33a
+[   21.187644] [<ffffffff801d5328>] ksys_write+0x64/0xd4
+[   21.187832] [<ffffffff801d53a6>] sys_write+0xe/0x1a
+[   21.188171] [<ffffffff80003996>] ret_from_syscall+0x0/0x2
+[   21.188595] Code: 0513 0f65 a303 ffc5 53b7 7e0c 839b 2a53 0363 0073 (9002) 9582
+[   21.189178] ---[ end trace 0000000000000000 ]---
+[   21.189590] Kernel panic - not syncing: Fatal exception
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com> # ISA bits
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Link: https://lore.kernel.org/r/20230710183544.999540-12-samitolvanen@google.com
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/class/cdc-acm.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/riscv/Kconfig            |  1 +
+ arch/riscv/include/asm/cfi.h  | 22 ++++++++++
+ arch/riscv/include/asm/insn.h | 10 +++++
+ arch/riscv/kernel/Makefile    |  2 +
+ arch/riscv/kernel/cfi.c       | 77 +++++++++++++++++++++++++++++++++++
+ arch/riscv/kernel/traps.c     |  4 +-
+ 6 files changed, 115 insertions(+), 1 deletion(-)
+ create mode 100644 arch/riscv/include/asm/cfi.h
+ create mode 100644 arch/riscv/kernel/cfi.c
 
-diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
-index 11da5fb284d0a..ca51230f44409 100644
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -318,6 +318,16 @@ static void acm_process_notification(struct acm *acm, unsigned char *buf)
- 		}
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 052845384ed38..36dd0390b8257 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -45,6 +45,7 @@ config RISCV
+ 	select ARCH_SUPPORTS_PAGE_TABLE_CHECK if MMU
+ 	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS
++	select ARCH_USES_CFI_TRAPS if CFI_CLANG
+ 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
+ 	select ARCH_WANT_FRAME_POINTERS
+ 	select ARCH_WANT_GENERAL_HUGETLB if !RISCV_ISA_SVNAPOT
+diff --git a/arch/riscv/include/asm/cfi.h b/arch/riscv/include/asm/cfi.h
+new file mode 100644
+index 0000000000000..56bf9d69d5e38
+--- /dev/null
++++ b/arch/riscv/include/asm/cfi.h
+@@ -0,0 +1,22 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_RISCV_CFI_H
++#define _ASM_RISCV_CFI_H
++
++/*
++ * Clang Control Flow Integrity (CFI) support.
++ *
++ * Copyright (C) 2023 Google LLC
++ */
++
++#include <linux/cfi.h>
++
++#ifdef CONFIG_CFI_CLANG
++enum bug_trap_type handle_cfi_failure(struct pt_regs *regs);
++#else
++static inline enum bug_trap_type handle_cfi_failure(struct pt_regs *regs)
++{
++	return BUG_TRAP_TYPE_NONE;
++}
++#endif /* CONFIG_CFI_CLANG */
++
++#endif /* _ASM_RISCV_CFI_H */
+diff --git a/arch/riscv/include/asm/insn.h b/arch/riscv/include/asm/insn.h
+index 603095c913e37..bbd878d4815ce 100644
+--- a/arch/riscv/include/asm/insn.h
++++ b/arch/riscv/include/asm/insn.h
+@@ -63,6 +63,7 @@
+ #define RVG_RS1_OPOFF		15
+ #define RVG_RS2_OPOFF		20
+ #define RVG_RD_OPOFF		7
++#define RVG_RS1_MASK		GENMASK(4, 0)
+ #define RVG_RD_MASK		GENMASK(4, 0)
  
- 		difference = acm->ctrlin ^ newctrl;
+ /* The bit field of immediate value in RVC J instruction */
+@@ -130,6 +131,7 @@
+ #define RVC_C2_RS1_OPOFF	7
+ #define RVC_C2_RS2_OPOFF	2
+ #define RVC_C2_RD_OPOFF		7
++#define RVC_C2_RS1_MASK		GENMASK(4, 0)
+ 
+ /* parts of opcode for RVG*/
+ #define RVG_OPCODE_FENCE	0x0f
+@@ -269,6 +271,10 @@ static __always_inline bool riscv_insn_is_c_jalr(u32 code)
+ #define RV_X(X, s, mask)  (((X) >> (s)) & (mask))
+ #define RVC_X(X, s, mask) RV_X(X, s, mask)
+ 
++#define RV_EXTRACT_RS1_REG(x) \
++	({typeof(x) x_ = (x); \
++	(RV_X(x_, RVG_RS1_OPOFF, RVG_RS1_MASK)); })
 +
-+		if ((difference & USB_CDC_SERIAL_STATE_DCD) && acm->port.tty) {
-+			struct tty_ldisc *ld = tty_ldisc_ref(acm->port.tty);
-+			if (ld) {
-+				if (ld->ops->dcd_change)
-+					ld->ops->dcd_change(acm->port.tty, newctrl & USB_CDC_SERIAL_STATE_DCD);
-+				tty_ldisc_deref(ld);
-+			}
-+		}
+ #define RV_EXTRACT_RD_REG(x) \
+ 	({typeof(x) x_ = (x); \
+ 	(RV_X(x_, RVG_RD_OPOFF, RVG_RD_MASK)); })
+@@ -296,6 +302,10 @@ static __always_inline bool riscv_insn_is_c_jalr(u32 code)
+ 	(RV_X(x_, RV_B_IMM_11_OPOFF, RV_B_IMM_11_MASK) << RV_B_IMM_11_OFF) | \
+ 	(RV_IMM_SIGN(x_) << RV_B_IMM_SIGN_OFF); })
+ 
++#define RVC_EXTRACT_C2_RS1_REG(x) \
++	({typeof(x) x_ = (x); \
++	(RV_X(x_, RVC_C2_RS1_OPOFF, RVC_C2_RS1_MASK)); })
 +
- 		spin_lock_irqsave(&acm->read_lock, flags);
- 		acm->ctrlin = newctrl;
- 		acm->oldcount = acm->iocount;
+ #define RVC_EXTRACT_JTYPE_IMM(x) \
+ 	({typeof(x) x_ = (x); \
+ 	(RVC_X(x_, RVC_J_IMM_3_1_OPOFF, RVC_J_IMM_3_1_MASK) << RVC_J_IMM_3_1_OFF) | \
+diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+index 153864e4f3996..c173a7cbf4e11 100644
+--- a/arch/riscv/kernel/Makefile
++++ b/arch/riscv/kernel/Makefile
+@@ -90,6 +90,8 @@ obj-$(CONFIG_CRASH_CORE)	+= crash_core.o
+ 
+ obj-$(CONFIG_JUMP_LABEL)	+= jump_label.o
+ 
++obj-$(CONFIG_CFI_CLANG)		+= cfi.o
++
+ obj-$(CONFIG_EFI)		+= efi.o
+ obj-$(CONFIG_COMPAT)		+= compat_syscall_table.o
+ obj-$(CONFIG_COMPAT)		+= compat_signal.o
+diff --git a/arch/riscv/kernel/cfi.c b/arch/riscv/kernel/cfi.c
+new file mode 100644
+index 0000000000000..820158d7a2913
+--- /dev/null
++++ b/arch/riscv/kernel/cfi.c
+@@ -0,0 +1,77 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Clang Control Flow Integrity (CFI) support.
++ *
++ * Copyright (C) 2023 Google LLC
++ */
++#include <asm/cfi.h>
++#include <asm/insn.h>
++
++/*
++ * Returns the target address and the expected type when regs->epc points
++ * to a compiler-generated CFI trap.
++ */
++static bool decode_cfi_insn(struct pt_regs *regs, unsigned long *target,
++			    u32 *type)
++{
++	unsigned long *regs_ptr = (unsigned long *)regs;
++	int rs1_num;
++	u32 insn;
++
++	*target = *type = 0;
++
++	/*
++	 * The compiler generates the following instruction sequence
++	 * for indirect call checks:
++	 *
++	 *   lw      t1, -4(<reg>)
++	 *   lui     t2, <hi20>
++	 *   addiw   t2, t2, <lo12>
++	 *   beq     t1, t2, .Ltmp1
++	 *   ebreak  ; <- regs->epc
++	 *   .Ltmp1:
++	 *   jalr    <reg>
++	 *
++	 * We can read the expected type and the target address from the
++	 * registers passed to the beq/jalr instructions.
++	 */
++	if (get_kernel_nofault(insn, (void *)regs->epc - 4))
++		return false;
++	if (!riscv_insn_is_beq(insn))
++		return false;
++
++	*type = (u32)regs_ptr[RV_EXTRACT_RS1_REG(insn)];
++
++	if (get_kernel_nofault(insn, (void *)regs->epc) ||
++	    get_kernel_nofault(insn, (void *)regs->epc + GET_INSN_LENGTH(insn)))
++		return false;
++
++	if (riscv_insn_is_jalr(insn))
++		rs1_num = RV_EXTRACT_RS1_REG(insn);
++	else if (riscv_insn_is_c_jalr(insn))
++		rs1_num = RVC_EXTRACT_C2_RS1_REG(insn);
++	else
++		return false;
++
++	*target = regs_ptr[rs1_num];
++
++	return true;
++}
++
++/*
++ * Checks if the ebreak trap is because of a CFI failure, and handles the trap
++ * if needed. Returns a bug_trap_type value similarly to report_bug.
++ */
++enum bug_trap_type handle_cfi_failure(struct pt_regs *regs)
++{
++	unsigned long target;
++	u32 type;
++
++	if (!is_cfi_trap(regs->epc))
++		return BUG_TRAP_TYPE_NONE;
++
++	if (!decode_cfi_insn(regs, &target, &type))
++		return report_cfi_failure_noaddr(regs, regs->epc);
++
++	return report_cfi_failure(regs, regs->epc, &target, type);
++}
+diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+index bd19e885dcec1..8db848e2c244c 100644
+--- a/arch/riscv/kernel/traps.c
++++ b/arch/riscv/kernel/traps.c
+@@ -21,6 +21,7 @@
+ 
+ #include <asm/asm-prototypes.h>
+ #include <asm/bug.h>
++#include <asm/cfi.h>
+ #include <asm/csr.h>
+ #include <asm/processor.h>
+ #include <asm/ptrace.h>
+@@ -242,7 +243,8 @@ void handle_break(struct pt_regs *regs)
+ 								== NOTIFY_STOP)
+ 		return;
+ #endif
+-	else if (report_bug(regs->epc, regs) == BUG_TRAP_TYPE_WARN)
++	else if (report_bug(regs->epc, regs) == BUG_TRAP_TYPE_WARN ||
++		 handle_cfi_failure(regs) == BUG_TRAP_TYPE_WARN)
+ 		regs->epc += get_break_insn_length(regs->epc);
+ 	else
+ 		die(regs, "Kernel BUG");
 -- 
 2.40.1
 
