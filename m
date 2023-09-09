@@ -2,74 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04354799BE9
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 00:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB27D799BFE
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 01:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345106AbjIIWbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 18:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
+        id S241066AbjIIXDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 19:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345068AbjIIWa7 (ORCPT
+        with ESMTP id S233588AbjIIXDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 18:30:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D3B19E;
-        Sat,  9 Sep 2023 15:30:55 -0700 (PDT)
+        Sat, 9 Sep 2023 19:03:02 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B2419F
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 16:02:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694298655; x=1725834655;
+  t=1694300577; x=1725836577;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=nPh5kN86S2eqPb19pMUhL45pIE4wp86MSMDjsHHLLU8=;
-  b=P1EQPUPGJu9pjOC/ccQXfy8VGnzkP84SpIURaM8EDx0bXYZy4nHiLKz9
-   SbmQbrS0eA7FnMz0tFzwe8cVLYaFXhBCNbTSSE27TYOY2jf4M3gD0rcvo
-   fFG8mktiMYFqgFNlVUMxg3Lc0wMoKsmy0p6vNYodpvAgLwR0kMh7HmTLA
-   4w5Afb4cyKCQOvhlMD7xb9Zi8aae9IN0hHRel8ye/oMYEU2J0U1trFv8a
-   BGgB358ZXzdNRGHV9NbJawoo/Dya+sWk1jOwBE8feKnVFosqmwAKemYTX
-   vyNKi5oyNRu1qkx60qNxA4zzA6BuSOz18lFM/6RNiMNn4+H62BK0RBI/H
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="381671702"
+  bh=kdYI3gLn+OXw5eJXQsX/kgg4km5uXqWEXPrQgDX6NVs=;
+  b=UoJ6JfLFI7vE/O3dMJU8QiC4mOYEYNLbWXM435nuF72p31nKG7+DjogA
+   SH1hQT4UMedI+zpN3a0hdJgV1DZehgdVCubX5rGERN+xoHMRs7tSeeqSq
+   5kROXANOLvicEoJfRMjHFmo2OXKb9s9dYo+kY2xAiWmrS/kZV4BUQMJ6w
+   HIoUtw3wyTWnUjfYbTPeq+T8AGk0qlMzxcW5aHlqkoRI8y6uaJVuWiL8Q
+   xq/0m7Rfr/fzp50PyIXYAmsbXo5Zh1+fCLilIocd8HhAqrsBu+DchYXgI
+   tf1Q5u/ouUFXBHlRghjzqk9Q4PrBrtpQLGpwf1V/OKa3rnwhN18U1wGTD
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="362897871"
 X-IronPort-AV: E=Sophos;i="6.02,240,1688454000"; 
-   d="scan'208";a="381671702"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 15:30:54 -0700
+   d="scan'208";a="362897871"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 16:02:57 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="772123760"
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="736336319"
 X-IronPort-AV: E=Sophos;i="6.02,240,1688454000"; 
-   d="scan'208";a="772123760"
+   d="scan'208";a="736336319"
 Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 09 Sep 2023 15:30:52 -0700
+  by orsmga007.jf.intel.com with ESMTP; 09 Sep 2023 16:02:55 -0700
 Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qf6TZ-00040M-2w;
-        Sat, 09 Sep 2023 22:30:49 +0000
-Date:   Sun, 10 Sep 2023 06:30:12 +0800
+        id 1qf6yb-000424-0Z;
+        Sat, 09 Sep 2023 23:02:53 +0000
+Date:   Sun, 10 Sep 2023 07:02:45 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Matthew Garrett <matthew.garrett@nebula.com>,
-        Jeremy Kerr <jk@ozlabs.org>, Ard Biesheuvel <ardb@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Anisse Astier <an.astier@criteo.com>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-Subject: Re: [PATCH 1/1] efivarfs: fix statfs() on efivarfs
-Message-ID: <202309100610.zLYrHmqr-lkp@intel.com>
-References: <20230909180812.10904-1-heinrich.schuchardt@canonical.com>
+To:     Samuel Holland <samuel@sholland.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        linux-riscv@lists.infradead.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
+Subject: Re: [PATCH 7/7] riscv: mm: Combine the SMP and non-SMP TLB flushing
+ code
+Message-ID: <202309100639.tTr4BtGk-lkp@intel.com>
+References: <20230909201727.10909-8-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230909180812.10904-1-heinrich.schuchardt@canonical.com>
+In-Reply-To: <20230909201727.10909-8-samuel@sholland.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heinrich,
+Hi Samuel,
 
 kernel test robot noticed the following build warnings:
 
@@ -79,86 +78,63 @@ kernel test robot noticed the following build warnings:
 And when submitting patch, we suggest to use '--base' as documented in
 https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Heinrich-Schuchardt/efivarfs-fix-statfs-on-efivarfs/20230910-020949
+url:    https://github.com/intel-lab-lkp/linux/commits/Samuel-Holland/riscv-Apply-SiFive-CIP-1200-workaround-to-single-ASID-sfence-vma/20230910-042028
 base:   linus/master
-patch link:    https://lore.kernel.org/r/20230909180812.10904-1-heinrich.schuchardt%40canonical.com
-patch subject: [PATCH 1/1] efivarfs: fix statfs() on efivarfs
-config: riscv-randconfig-r003-20230910 (https://download.01.org/0day-ci/archive/20230910/202309100610.zLYrHmqr-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230910/202309100610.zLYrHmqr-lkp@intel.com/reproduce)
+patch link:    https://lore.kernel.org/r/20230909201727.10909-8-samuel%40sholland.org
+patch subject: [PATCH 7/7] riscv: mm: Combine the SMP and non-SMP TLB flushing code
+config: riscv-allnoconfig (https://download.01.org/0day-ci/archive/20230910/202309100639.tTr4BtGk-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230910/202309100639.tTr4BtGk-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309100610.zLYrHmqr-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309100639.tTr4BtGk-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
->> fs/efivarfs/super.c:45:6: warning: variable 'remaining_space' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-           if (efi_rt_services_supported(EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)) {
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   fs/efivarfs/super.c:60:6: note: uninitialized use occurs here
-           if (remaining_space > efivar_reserved_space())
-               ^~~~~~~~~~~~~~~
-   fs/efivarfs/super.c:45:2: note: remove the 'if' if its condition is always true
-           if (efi_rt_services_supported(EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)) {
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   fs/efivarfs/super.c:32:36: note: initialize the variable 'remaining_space' to silence this warning
-           u64 storage_space, remaining_space, max_variable_size;
-                                             ^
-                                              = 0
-   1 warning generated.
+   arch/riscv/mm/tlbflush.c: In function '__flush_tlb_range':
+>> arch/riscv/mm/tlbflush.c:52:22: warning: variable 'cpuid' set but not used [-Wunused-but-set-variable]
+      52 |         unsigned int cpuid;
+         |                      ^~~~~
 
 
-vim +45 fs/efivarfs/super.c
+vim +/cpuid +52 arch/riscv/mm/tlbflush.c
 
-    26	
-    27	static int efivarfs_statfs(struct dentry *dentry, struct kstatfs *buf)
-    28	{
-    29		const u32 attr = EFI_VARIABLE_NON_VOLATILE |
-    30				 EFI_VARIABLE_BOOTSERVICE_ACCESS |
-    31				 EFI_VARIABLE_RUNTIME_ACCESS;
-    32		u64 storage_space, remaining_space, max_variable_size;
-    33		efi_status_t status;
-    34	
-    35		/*
-    36		 * This is not a normal filesystem, so no point in pretending it has a block
-    37		 * size; we declare f_bsize to 1, so that we can then report the exact value
-    38		 * sent by EFI QueryVariableInfo in f_blocks and f_bfree
-    39		 */
-    40		buf->f_bsize	= 1;
-    41		buf->f_namelen	= NAME_MAX;
-    42		buf->f_type	= dentry->d_sb->s_magic;
-    43	
-    44		/* Some UEFI firmware does not implement QueryVariable() */
-  > 45		if (efi_rt_services_supported(EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)) {
-    46			status = efivar_query_variable_info(attr, &storage_space,
-    47							    &remaining_space,
-    48							    &max_variable_size);
-    49			if (status == EFI_SUCCESS) {
-    50				buf->f_blocks	= storage_space;
-    51				buf->f_bfree	= remaining_space;
-    52			}
-    53		}
-    54	
-    55		/*
-    56		 * In f_bavail we declare the free space that the kernel will allow writing
-    57		 * when the storage_paranoia x86 quirk is active. To use more, users
-    58		 * should boot the kernel with efi_no_storage_paranoia.
-    59		 */
-    60		if (remaining_space > efivar_reserved_space())
-    61			buf->f_bavail = remaining_space - efivar_reserved_space();
-    62		else
-    63			buf->f_bavail = 0;
-    64	
-    65		return 0;
-    66	}
-    67	static const struct super_operations efivarfs_ops = {
-    68		.statfs = efivarfs_statfs,
-    69		.drop_inode = generic_delete_inode,
-    70		.evict_inode = efivarfs_evict_inode,
-    71	};
-    72	
+18d2199d81054f Anup Patel        2023-03-28  46  
+18d2199d81054f Anup Patel        2023-03-28  47  static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
+c3b2d67046d236 Nanyong Sun       2021-04-30  48  			      unsigned long size, unsigned long stride)
+95594cb40c6e01 Christoph Hellwig 2019-08-21  49  {
+ff15058bb4eb32 Samuel Holland    2023-09-09  50  	unsigned long asid = cntx2asid(atomic_long_read(&mm->context.id));
+70c7605c08c597 Christoph Hellwig 2021-06-06  51  	struct cpumask *cmask = mm_cpumask(mm);
+31738ede9b339c Atish Patra       2019-08-22 @52  	unsigned int cpuid;
+95594cb40c6e01 Christoph Hellwig 2019-08-21  53  
+6384423f49c804 Atish Patra       2019-08-22  54  	if (cpumask_empty(cmask))
+6384423f49c804 Atish Patra       2019-08-22  55  		return;
+6384423f49c804 Atish Patra       2019-08-22  56  
+31738ede9b339c Atish Patra       2019-08-22  57  	cpuid = get_cpu();
+047bf3010ac2de Samuel Holland    2023-09-09  58  #ifdef CONFIG_SMP
+3f1e782998cdf6 Guo Ren           2021-06-06  59  	/* check if the tlbflush needs to be sent to other CPUs */
+ff15058bb4eb32 Samuel Holland    2023-09-09  60  	if (cpumask_any_but(cmask, cpuid) < nr_cpu_ids) {
+18d2199d81054f Anup Patel        2023-03-28  61  		if (riscv_use_ipi_for_rfence()) {
+047bf3010ac2de Samuel Holland    2023-09-09  62  			struct flush_tlb_range_data ftd;
+047bf3010ac2de Samuel Holland    2023-09-09  63  
+18d2199d81054f Anup Patel        2023-03-28  64  			ftd.asid = asid;
+18d2199d81054f Anup Patel        2023-03-28  65  			ftd.start = start;
+18d2199d81054f Anup Patel        2023-03-28  66  			ftd.size = size;
+18d2199d81054f Anup Patel        2023-03-28  67  			ftd.stride = stride;
+18d2199d81054f Anup Patel        2023-03-28  68  			on_each_cpu_mask(cmask,
+18d2199d81054f Anup Patel        2023-03-28  69  					 __ipi_flush_tlb_range_asid,
+18d2199d81054f Anup Patel        2023-03-28  70  					 &ftd, 1);
+18d2199d81054f Anup Patel        2023-03-28  71  		} else
+18d2199d81054f Anup Patel        2023-03-28  72  			sbi_remote_sfence_vma_asid(cmask,
+18d2199d81054f Anup Patel        2023-03-28  73  						   start, size, asid);
+18d2199d81054f Anup Patel        2023-03-28  74  	} else
+047bf3010ac2de Samuel Holland    2023-09-09  75  #endif
+ff15058bb4eb32 Samuel Holland    2023-09-09  76  		local_flush_tlb_range_asid(start, size, stride, asid);
+31738ede9b339c Atish Patra       2019-08-22  77  	put_cpu();
+95594cb40c6e01 Christoph Hellwig 2019-08-21  78  }
+95594cb40c6e01 Christoph Hellwig 2019-08-21  79  
 
 -- 
 0-DAY CI Kernel Test Service
