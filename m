@@ -2,46 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B977995D2
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D516799380
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345227AbjIIBm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 21:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39622 "EHLO
+        id S1345514AbjIIAZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234529AbjIIBmU (ORCPT
+        with ESMTP id S236745AbjIIAZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 21:42:20 -0400
+        Fri, 8 Sep 2023 20:25:26 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7441FE7;
-        Fri,  8 Sep 2023 18:42:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 967A2C4167D;
-        Sat,  9 Sep 2023 00:23:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B9F211E;
+        Fri,  8 Sep 2023 17:24:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71F46C433C9;
+        Sat,  9 Sep 2023 00:24:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694219041;
-        bh=kA478PEecCt3vyxSqYOoFJ19TD2X6Ic5k0Wpr/WWTSc=;
+        s=k20201202; t=1694219044;
+        bh=m/rJyG9sVeBbPS6dltLZuN7zvAOPCkzF8q1O+pn1mu4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=juwrDmDyAJzl+NZ+gbEpWy8ZVdH3j8ppa8OWykr3shbfoFAj2Jg4Wn/S/QaF5twK+
-         9EFfgl2DxEagS5RKnJKAfjxa9oSu9t3WRjfGJO19CIsEJlf/4rqlJCE5zq5whnfslc
-         N2iT/2QVH/EFAVX7H4y1Hh8sOzcaFcmtvLqqEar9mF0t903/eRmmp9WAVHz2xm8CZc
-         p/TuldHNO/Qdl6IL8UUnLobp3x+SE01IFsdbwVx666QTEE0mOElXTgXBnAchN/0jAp
-         RoFsmH1KrkioW+jHwx/Cao3MtjmphsxtJ41o85JMpsGaDyeRvja+7X2DTxVnYWuQcL
-         Vdn9465Rmpdpw==
+        b=cZyuqW7nnFQ/faBvwh25HG/1NlE8AU4qoa0zxr1jv7cWqMzorIpw79wR+UjfOD0mm
+         7Wohr6z4sCPT/EOVqjAfHsGPxLXfJ9aEDGORWC5HfSdphIec8uKDtzSYExu7Kg4bEo
+         DOPJvLGwstiqV+yz3W1ubR6Rv2yFZD4oXPrdO+Hd8t3hpvpsGesBTU4jkjdsTxl3Hv
+         nC5n/UGkRrP70s/EVjqJ5HMy8cqk8elRdO+FOGQ6M+SMwY+L/IHzgs5HTYlExen+XQ
+         YYXQvIC11Zlho6ox0QG40rnWcpEOgraJkDrX+5f68vS+HUbtp+1s93ndqa5JdjqxT7
+         oOdotE66XYmEA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tomislav Novak <tnovak@fb.com>,
-        Samuel Gosselin <sgosselin@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Sasha Levin <sashal@kernel.org>, will@kernel.org,
-        mark.rutland@arm.com, linux@armlinux.org.uk, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 4/5] ARM: 9316/1: hw_breakpoint: fix single-stepping when using bpf_overflow_handler
-Date:   Fri,  8 Sep 2023 20:23:48 -0400
-Message-Id: <20230909002351.3578696-4-sashal@kernel.org>
+Cc:     ruanjinjie <ruanjinjie@huawei.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>, gregkh@linuxfoundation.org,
+        wei.liu@kernel.org, idryomov@gmail.com, sfr@canb.auug.org.au,
+        robh@kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.10 5/5] powerpc/pseries: fix possible memory leak in ibmebus_bus_init()
+Date:   Fri,  8 Sep 2023 20:23:49 -0400
+Message-Id: <20230909002351.3578696-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909002351.3578696-1-sashal@kernel.org>
 References: <20230909002351.3578696-1-sashal@kernel.org>
@@ -50,157 +45,47 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.194
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomislav Novak <tnovak@fb.com>
+From: ruanjinjie <ruanjinjie@huawei.com>
 
-[ Upstream commit e6b51532d5273eeefba84106daea3d392c602837 ]
+[ Upstream commit afda85b963c12947e298ad85d757e333aa40fd74 ]
 
-Arm platforms use is_default_overflow_handler() to determine if the
-hw_breakpoint code should single-step over the breakpoint trigger or
-let the custom handler deal with it.
+If device_register() returns error in ibmebus_bus_init(), name of kobject
+which is allocated in dev_set_name() called in device_add() is leaked.
 
-Since bpf_overflow_handler() currently isn't recognized as a default
-handler, attaching a BPF program to a PERF_TYPE_BREAKPOINT event causes
-it to keep firing (the instruction triggering the data abort exception
-is never skipped). For example:
+As comment of device_add() says, it should call put_device() to drop
+the reference count that was set in device_initialize() when it fails,
+so the name can be freed in kobject_cleanup().
 
-  # bpftrace -e 'watchpoint:0x10000:4:w { print("hit") }' -c ./test
-  Attaching 1 probe...
-  hit
-  hit
-  [...]
-  ^C
-
-(./test performs a single 4-byte store to 0x10000)
-
-This patch replaces the check with uses_default_overflow_handler(),
-which accounts for the bpf_overflow_handler() case by also testing
-if one of the perf_event_output functions gets invoked indirectly,
-via orig_default_handler.
-
-Link: https://lore.kernel.org/linux-arm-kernel/20220923203644.2731604-1-tnovak@fb.com/
-
-Signed-off-by: Tomislav Novak <tnovak@fb.com>
-Tested-by: Samuel Gosselin <sgosselin@google.com> # arm64
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Signed-off-by: ruanjinjie <ruanjinjie@huawei.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://msgid.link/20221110011929.3709774-1-ruanjinjie@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kernel/hw_breakpoint.c   |  8 ++++----
- arch/arm64/kernel/hw_breakpoint.c |  4 ++--
- include/linux/perf_event.h        | 22 +++++++++++++++++++---
- 3 files changed, 25 insertions(+), 9 deletions(-)
+ arch/powerpc/platforms/pseries/ibmebus.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/kernel/hw_breakpoint.c b/arch/arm/kernel/hw_breakpoint.c
-index b1423fb130ea4..8f1fa7aac31fb 100644
---- a/arch/arm/kernel/hw_breakpoint.c
-+++ b/arch/arm/kernel/hw_breakpoint.c
-@@ -626,7 +626,7 @@ int hw_breakpoint_arch_parse(struct perf_event *bp,
- 	hw->address &= ~alignment_mask;
- 	hw->ctrl.len <<= offset;
+diff --git a/arch/powerpc/platforms/pseries/ibmebus.c b/arch/powerpc/platforms/pseries/ibmebus.c
+index 8c6e509f69675..c3cc010e9cc45 100644
+--- a/arch/powerpc/platforms/pseries/ibmebus.c
++++ b/arch/powerpc/platforms/pseries/ibmebus.c
+@@ -451,6 +451,7 @@ static int __init ibmebus_bus_init(void)
+ 	if (err) {
+ 		printk(KERN_WARNING "%s: device_register returned %i\n",
+ 		       __func__, err);
++		put_device(&ibmebus_bus_device);
+ 		bus_unregister(&ibmebus_bus_type);
  
--	if (is_default_overflow_handler(bp)) {
-+	if (uses_default_overflow_handler(bp)) {
- 		/*
- 		 * Mismatch breakpoints are required for single-stepping
- 		 * breakpoints.
-@@ -798,7 +798,7 @@ static void watchpoint_handler(unsigned long addr, unsigned int fsr,
- 		 * Otherwise, insert a temporary mismatch breakpoint so that
- 		 * we can single-step over the watchpoint trigger.
- 		 */
--		if (!is_default_overflow_handler(wp))
-+		if (!uses_default_overflow_handler(wp))
- 			continue;
- step:
- 		enable_single_step(wp, instruction_pointer(regs));
-@@ -811,7 +811,7 @@ static void watchpoint_handler(unsigned long addr, unsigned int fsr,
- 		info->trigger = addr;
- 		pr_debug("watchpoint fired: address = 0x%x\n", info->trigger);
- 		perf_bp_event(wp, regs);
--		if (is_default_overflow_handler(wp))
-+		if (uses_default_overflow_handler(wp))
- 			enable_single_step(wp, instruction_pointer(regs));
- 	}
- 
-@@ -886,7 +886,7 @@ static void breakpoint_handler(unsigned long unknown, struct pt_regs *regs)
- 			info->trigger = addr;
- 			pr_debug("breakpoint fired: address = 0x%x\n", addr);
- 			perf_bp_event(bp, regs);
--			if (is_default_overflow_handler(bp))
-+			if (uses_default_overflow_handler(bp))
- 				enable_single_step(bp, addr);
- 			goto unlock;
- 		}
-diff --git a/arch/arm64/kernel/hw_breakpoint.c b/arch/arm64/kernel/hw_breakpoint.c
-index 712e97c03e54c..e5a0c38f1b5ee 100644
---- a/arch/arm64/kernel/hw_breakpoint.c
-+++ b/arch/arm64/kernel/hw_breakpoint.c
-@@ -654,7 +654,7 @@ static int breakpoint_handler(unsigned long unused, unsigned int esr,
- 		perf_bp_event(bp, regs);
- 
- 		/* Do we need to handle the stepping? */
--		if (is_default_overflow_handler(bp))
-+		if (uses_default_overflow_handler(bp))
- 			step = 1;
- unlock:
- 		rcu_read_unlock();
-@@ -733,7 +733,7 @@ static u64 get_distance_from_watchpoint(unsigned long addr, u64 val,
- static int watchpoint_report(struct perf_event *wp, unsigned long addr,
- 			     struct pt_regs *regs)
- {
--	int step = is_default_overflow_handler(wp);
-+	int step = uses_default_overflow_handler(wp);
- 	struct arch_hw_breakpoint *info = counter_arch_bp(wp);
- 
- 	info->trigger = addr;
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 67a50c78232fe..93dffe2f3fff2 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -1069,15 +1069,31 @@ extern int perf_event_output(struct perf_event *event,
- 			     struct pt_regs *regs);
- 
- static inline bool
--is_default_overflow_handler(struct perf_event *event)
-+__is_default_overflow_handler(perf_overflow_handler_t overflow_handler)
- {
--	if (likely(event->overflow_handler == perf_event_output_forward))
-+	if (likely(overflow_handler == perf_event_output_forward))
- 		return true;
--	if (unlikely(event->overflow_handler == perf_event_output_backward))
-+	if (unlikely(overflow_handler == perf_event_output_backward))
- 		return true;
- 	return false;
- }
- 
-+#define is_default_overflow_handler(event) \
-+	__is_default_overflow_handler((event)->overflow_handler)
-+
-+#ifdef CONFIG_BPF_SYSCALL
-+static inline bool uses_default_overflow_handler(struct perf_event *event)
-+{
-+	if (likely(is_default_overflow_handler(event)))
-+		return true;
-+
-+	return __is_default_overflow_handler(event->orig_overflow_handler);
-+}
-+#else
-+#define uses_default_overflow_handler(event) \
-+	is_default_overflow_handler(event)
-+#endif
-+
- extern void
- perf_event_header__init_id(struct perf_event_header *header,
- 			   struct perf_sample_data *data,
+ 		return err;
 -- 
 2.40.1
 
