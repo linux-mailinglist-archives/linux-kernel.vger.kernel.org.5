@@ -2,172 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFC7799981
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02DC7999F4
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbjIIQZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 12:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56308 "EHLO
+        id S236784AbjIIQ1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 12:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346709AbjIIPy3 (ORCPT
+        with ESMTP id S240705AbjIIPzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 11:54:29 -0400
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 11C0913E;
-        Sat,  9 Sep 2023 08:54:23 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.02,239,1688396400"; 
-   d="scan'208";a="175533633"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 10 Sep 2023 00:54:23 +0900
-Received: from localhost.localdomain (unknown [10.226.92.15])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id EFB0640118FA;
-        Sun, 10 Sep 2023 00:54:20 +0900 (JST)
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Biju Das <biju.das.au@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH] clk: clk-si544: Simplify probe() and is_valid_frequency()
-Date:   Sat,  9 Sep 2023 16:54:18 +0100
-Message-Id: <20230909155418.24426-1-biju.das.jz@bp.renesas.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 9 Sep 2023 11:55:14 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FD413E;
+        Sat,  9 Sep 2023 08:55:08 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a02:8010:65b5:0:1ac0:4dff:feee:236a])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: alarumbe)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 50B6F6607285;
+        Sat,  9 Sep 2023 16:55:07 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694274907;
+        bh=/VE6MYnZDRY2VilA8U4RrFDUgId9z3RuvBUTwX9xUnU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fmIOdwm1d8Z2rRv7T5UTzHkIJ9GlZlZ2olQk58Xw8hBMHS4o9kCvG/acDtPJHBEdD
+         HU5HF4Inu/N3SmEV8ljfEDjt4kQnFwKccki17M6vguGgK22PRbyCBP+iG+SpyicmYj
+         trrbwIFXZ9kovG4UsUf2qUkR5cu2g0EGH/4aanfVIfxal4mZXDSLQuutrgO7IUbr59
+         Gl9Dt0RaDsTCcifHAWmP8gCA8z1G3gR2d71T/f9QlGmHVUU22XjeS+67ZqGJPebSjd
+         CGfBRYAyQxtqnuP04838ylt8zy21y0uu4vKajbS8u6J2WzAQsn6l+3mLocgIz9/bpD
+         0P9rqS5Ka13xg==
+Date:   Sat, 9 Sep 2023 16:55:04 +0100
+From:   =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        robdclark@gmail.com, quic_abhinavk@quicinc.com,
+        dmitry.baryshkov@linaro.org, sean@poorly.run,
+        marijn.suijten@somainline.org, robh@kernel.org,
+        steven.price@arm.com, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        healych@amazon.com, kernel@collabora.com,
+        freedreno@lists.freedesktop.org
+Subject: Re: [PATCH v3 2/8] drm/panfrost: Enable cycle counter register upon
+ job submission
+Message-ID: <il5vlcbe5ddvxb7xiwyfcbojrabkvrw6ffrjbswgubruht6vkw@ksl33b2pgage>
+References: <20230905184533.959171-1-adrian.larumbe@collabora.com>
+ <20230905184533.959171-3-adrian.larumbe@collabora.com>
+ <20230906092140.3993d40a@collabora.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230906092140.3993d40a@collabora.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver has an OF match table, still, it uses an ID lookup table for
-retrieving match data. Currently, the driver is working on the
-assumption that an I2C device registered via OF will always match a
-legacy I2C device ID. The correct approach is to have an OF device ID
-table using i2c_get_match_data() if the devices are registered via OF/ID.
+On 06.09.2023 09:21, Boris Brezillon wrote:
+>On Tue,  5 Sep 2023 19:45:18 +0100
+>Adrián Larumbe <adrian.larumbe@collabora.com> wrote:
+>
+>> In a future development, we will want to keep track of the number of GPU
+>> cycles spent on a given job. That means we should enable it only when the
+>> GPU has work to do, and switch it off whenever it is idle to avoid power
+>> waste.
+>> 
+>> To avoid race conditions during enablement/disabling, a reference counting
+>> mechanism was introduced, and a job flag that tells us whether a given job
+>> increased the refcount. This is necessary, because a future development
+>> will let user space toggle cycle counting through a debugfs file, and a
+>> given job might have been in flight by the time cycle counting was
+>> disabled.
+>> 
+>> Toggling of GPU cycle counting has to be done through a module parameter.
+>> 
+>> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+>> ---
+>>  drivers/gpu/drm/panfrost/panfrost_device.c |  5 +++
+>>  drivers/gpu/drm/panfrost/panfrost_device.h |  6 +++
+>>  drivers/gpu/drm/panfrost/panfrost_gpu.c    | 43 ++++++++++++++++++++++
+>>  drivers/gpu/drm/panfrost/panfrost_gpu.h    |  6 +++
+>>  drivers/gpu/drm/panfrost/panfrost_job.c    | 10 +++++
+>>  drivers/gpu/drm/panfrost/panfrost_job.h    |  1 +
+>>  6 files changed, 71 insertions(+)
+>> 
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+>> index fa1a086a862b..1ea2ac3804f0 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+>> @@ -18,6 +18,9 @@
+>>  #include "panfrost_mmu.h"
+>>  #include "panfrost_perfcnt.h"
+>>  
+>> +static bool profile;
+>> +module_param(profile, bool, 0600);
+>
+>Not sure if we should make that a module parameter. Might be better
+>exposed as a debugfs knob attached to the device (even if having
+>multiple Mali devices is rather unlikely, I think I'd prefer to make
+>this toggle per-device).
+>
+>> +
+>>  static int panfrost_reset_init(struct panfrost_device *pfdev)
+>>  {
+>>  	pfdev->rstc = devm_reset_control_array_get_optional_exclusive(pfdev->dev);
+>> @@ -207,6 +210,8 @@ int panfrost_device_init(struct panfrost_device *pfdev)
+>>  
+>>  	spin_lock_init(&pfdev->as_lock);
+>>  
+>> +	atomic_set(&pfdev->profile_mode, profile);
+>
+>So, profile_mode can only be set at probe time, meaning any changes to
+>the profile module param is not taken into account after that point.
 
-Unify the OF/ID table by using max_freq as match data instead of
-enum si544_speed_grade and replace the ID lookup table for
-the match data by i2c_get_match_data(). This allows to simplify both
-probe() and is_valid_frequency().
+Not in this patch in the series, that's why I thought of enabling debugfs
+toggling in a later patch.  But I suppose it's best to coalesce them into a
+single one and do away with the module param altogether.
 
-Drop enum si544_speed_grade as there is no user.
+>> +
+>>  	err = panfrost_clk_init(pfdev);
+>>  	if (err) {
+>>  		dev_err(pfdev->dev, "clk init failed %d\n", err);
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> index b0126b9fbadc..5c09c9f3ae08 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> @@ -107,6 +107,7 @@ struct panfrost_device {
+>>  	struct list_head scheduled_jobs;
+>>  
+>>  	struct panfrost_perfcnt *perfcnt;
+>> +	atomic_t profile_mode;
+>>  
+>>  	struct mutex sched_lock;
+>>  
+>> @@ -121,6 +122,11 @@ struct panfrost_device {
+>>  	struct shrinker shrinker;
+>>  
+>>  	struct panfrost_devfreq pfdevfreq;
+>> +
+>> +	struct {
+>> +		atomic_t use_count;
+>> +		spinlock_t lock;
+>> +	} cycle_counter;
+>>  };
+>>  
+>>  struct panfrost_mmu {
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>> index 2faa344d89ee..fddbc72bf093 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>> @@ -73,6 +73,8 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
+>>  	gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
+>>  	gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL);
+>>  
+>> +	atomic_set(&pfdev->cycle_counter.use_count, 0);
+>
+>I think I'd prefer if the jobs that were in-flight at the time a GPU
+>hang occurred explicitly release their reference on use_count. So maybe
+>something like
+>
+>	/* When we reset the GPU we should have no cycle-counter users
+>	 * left.
+>	 */
+>	if (drm_WARN_ON(cycle_counter.use_count != 0))
+>		atomic_set(&pfdev->cycle_counter.use_count, 0);
+>
+>to catch unbalanced get/put situations.
+>
+>> +
+>>  	return 0;
+>>  }
+>>  
+>> @@ -321,6 +323,46 @@ static void panfrost_gpu_init_features(struct panfrost_device *pfdev)
+>>  		 pfdev->features.shader_present, pfdev->features.l2_present);
+>>  }
+>>  
+>> +void panfrost_cycle_counter_get(struct panfrost_device *pfdev)
+>> +{
+>> +	if (atomic_inc_not_zero(&pfdev->cycle_counter.use_count))
+>> +		return;
+>> +
+>> +	spin_lock(&pfdev->cycle_counter.lock);
+>> +	if (atomic_inc_return(&pfdev->cycle_counter.use_count) == 1)
+>> +		gpu_write(pfdev, GPU_CMD, GPU_CMD_CYCLE_COUNT_START);
+>> +	spin_unlock(&pfdev->cycle_counter.lock);
+>> +}
+>> +
+>> +void panfrost_cycle_counter_put(struct panfrost_device *pfdev)
+>> +{
+>> +	if (atomic_add_unless(&pfdev->cycle_counter.use_count, -1, 1))
+>> +		return;
+>> +
+>> +	spin_lock(&pfdev->cycle_counter.lock);
+>> +	if (atomic_dec_return(&pfdev->cycle_counter.use_count) == 0)
+>> +		gpu_write(pfdev, GPU_CMD, GPU_CMD_CYCLE_COUNT_STOP);
+>> +	spin_unlock(&pfdev->cycle_counter.lock);
+>> +}
+>> +
+>> +void panfrost_cycle_counter_stop(struct panfrost_device *pfdev)
+>> +{
+>> +	atomic_set(&pfdev->profile_mode, 0);
+>> +	gpu_write(pfdev, GPU_CMD, GPU_CMD_CYCLE_COUNT_STOP);
+>
+>Why do we need to issue a STOP here. Setting profile_mode to false
+>should be enough to prevent future jobs from enabling the
+>cycle-counter, and the counter will be naturally disabled when all
+>in-flight jobs that had profiling enabled are done.
+>
+>Actually I'm not even sure I understand why this function exists.
 
-While at it, remove the trailing comma in the terminator entry for the OF
-table making code robust against (theoretical) misrebases or other similar
-things where the new entry goes _after_ the termination without the
-compiler noticing.
+I thought it might be good to stop the cycle counter at once even if there
+were still in-flight jobs, but now that you mention this perhaps it would
+run the risk of disabling it even in the case of a broken refcount.
 
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- drivers/clk/clk-si544.c | 51 ++++++++++++-----------------------------
- 1 file changed, 15 insertions(+), 36 deletions(-)
+>> +}
+>> +
+>> +unsigned long long panfrost_cycle_counter_read(struct panfrost_device *pfdev)
+>> +{
+>> +	U32 hi, lo;
+>> +
+>> +	do {
+>> +		hi = gpu_read(pfdev, GPU_CYCLE_COUNT_HI);
+>> +		lo = gpu_read(pfdev, GPU_CYCLE_COUNT_LO);
+>> +	} while (hi != gpu_read(pfdev, GPU_CYCLE_COUNT_HI));
+>> +
+>> +	return ((u64)hi << 32) | lo;
+>> +}
+>> +
+>>  void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+>>  {
+>>  	int ret;
+>> @@ -367,6 +409,7 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+>>  
+>>  void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+>>  {
+>> +	panfrost_cycle_counter_stop(pfdev);
+>
+>So, you're setting profile_mode = 0 in the suspend path, but AFAICT,
+>it's not set back to the module param profile value on resume, which
+>means it's disabled on suspend and never re-enabled after that.
 
-diff --git a/drivers/clk/clk-si544.c b/drivers/clk/clk-si544.c
-index 22925968aa35..4132db706144 100644
---- a/drivers/clk/clk-si544.c
-+++ b/drivers/clk/clk-si544.c
-@@ -56,17 +56,11 @@
- #define DELTA_M_FRAC_NUM	19
- #define DELTA_M_FRAC_DEN	20000
- 
--enum si544_speed_grade {
--	si544a,
--	si544b,
--	si544c,
--};
--
- struct clk_si544 {
- 	struct clk_hw hw;
- 	struct regmap *regmap;
- 	struct i2c_client *i2c_client;
--	enum si544_speed_grade speed_grade;
-+	unsigned long  max_freq;
- };
- #define to_clk_si544(_hw)	container_of(_hw, struct clk_si544, hw)
- 
-@@ -196,24 +190,10 @@ static int si544_set_muldiv(struct clk_si544 *data,
- static bool is_valid_frequency(const struct clk_si544 *data,
- 	unsigned long frequency)
- {
--	unsigned long max_freq = 0;
--
- 	if (frequency < SI544_MIN_FREQ)
- 		return false;
- 
--	switch (data->speed_grade) {
--	case si544a:
--		max_freq = 1500000000;
--		break;
--	case si544b:
--		max_freq = 800000000;
--		break;
--	case si544c:
--		max_freq = 350000000;
--		break;
--	}
--
--	return frequency <= max_freq;
-+	return frequency <= data->max_freq;
- }
- 
- /* Calculate divider settings for a given frequency */
-@@ -451,19 +431,10 @@ static const struct regmap_config si544_regmap_config = {
- 	.volatile_reg = si544_regmap_is_volatile,
- };
- 
--static const struct i2c_device_id si544_id[] = {
--	{ "si544a", si544a },
--	{ "si544b", si544b },
--	{ "si544c", si544c },
--	{ }
--};
--MODULE_DEVICE_TABLE(i2c, si544_id);
--
- static int si544_probe(struct i2c_client *client)
- {
- 	struct clk_si544 *data;
- 	struct clk_init_data init;
--	const struct i2c_device_id *id = i2c_match_id(si544_id, client);
- 	int err;
- 
- 	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
-@@ -475,7 +446,7 @@ static int si544_probe(struct i2c_client *client)
- 	init.num_parents = 0;
- 	data->hw.init = &init;
- 	data->i2c_client = client;
--	data->speed_grade = id->driver_data;
-+	data->max_freq = (uintptr_t)i2c_get_match_data(client);
- 
- 	if (of_property_read_string(client->dev.of_node, "clock-output-names",
- 			&init.name))
-@@ -507,11 +478,19 @@ static int si544_probe(struct i2c_client *client)
- 	return 0;
- }
- 
-+static const struct i2c_device_id si544_id[] = {
-+	{ "si544a", 1500000000 },
-+	{ "si544b", 800000000 },
-+	{ "si544c", 350000000 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, si544_id);
-+
- static const struct of_device_id clk_si544_of_match[] = {
--	{ .compatible = "silabs,si544a" },
--	{ .compatible = "silabs,si544b" },
--	{ .compatible = "silabs,si544c" },
--	{ },
-+	{ .compatible = "silabs,si544a", .data = (void *)1500000000 },
-+	{ .compatible = "silabs,si544b", .data = (void *)800000000 },
-+	{ .compatible = "silabs,si544c", .data = (void *)350000000 },
-+	{ }
- };
- MODULE_DEVICE_TABLE(of, clk_si544_of_match);
- 
--- 
-2.25.1
+Yep, this is wrong, I missed this path altogether.
+
+>Besides, I don't really see a reason to change the pfdev->profile_mode
+>value in this path. If we suspend the device, that means we have no
+>jobs running, and the use_count refcount should have dropped to zero,
+>thus disabling cycle counting.
+>
+>>  	gpu_write(pfdev, TILER_PWROFF_LO, 0);
+>>  	gpu_write(pfdev, SHADER_PWROFF_LO, 0);
+>>  	gpu_write(pfdev, L2_PWROFF_LO, 0);
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.h b/drivers/gpu/drm/panfrost/panfrost_gpu.h
+>> index 468c51e7e46d..4d62e8901c79 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.h
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.h
+>> @@ -16,6 +16,12 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev);
+>>  void panfrost_gpu_power_on(struct panfrost_device *pfdev);
+>>  void panfrost_gpu_power_off(struct panfrost_device *pfdev);
+>>  
+>> +void panfrost_stop_cycle_counter(struct panfrost_device *pfdev);
+>> +void panfrost_cycle_counter_get(struct panfrost_device *pfdev);
+>> +void panfrost_cycle_counter_stop(struct panfrost_device *pfdev);
+>> +void panfrost_cycle_counter_put(struct panfrost_device *pfdev);
+>> +unsigned long long panfrost_cycle_counter_read(struct panfrost_device *pfdev);
+>> +
+>>  void panfrost_gpu_amlogic_quirk(struct panfrost_device *pfdev);
+>>  
+>>  #endif
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+>> index 033f5e684707..8b1bf6ac48f8 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+>> @@ -297,6 +297,11 @@ int panfrost_job_push(struct panfrost_job *job)
+>>  
+>>  	kref_get(&job->refcount); /* put by scheduler job completion */
+>>  
+>> +	if (atomic_read(&pfdev->profile_mode)) {
+>> +		panfrost_cycle_counter_get(pfdev);
+>> +		job->is_profiled = true;
+>> +	}
+>> +
+>>  	drm_sched_entity_push_job(&job->base);
+>>  
+>>  	mutex_unlock(&pfdev->sched_lock);
+>> @@ -351,6 +356,9 @@ static void panfrost_job_free(struct drm_sched_job *sched_job)
+>>  
+>>  	drm_sched_job_cleanup(sched_job);
+>>  
+>> +	if (job->is_profiled)
+>> +		panfrost_cycle_counter_put(job->pfdev);
+>> +
+>>  	panfrost_job_put(job);
+>>  }
+>>  
+>> @@ -842,6 +850,8 @@ int panfrost_job_init(struct panfrost_device *pfdev)
+>>  		}
+>>  	}
+>>  
+>> +	spin_lock_init(&pfdev->cycle_counter.lock);
+>> +
+>>  	panfrost_job_enable_interrupts(pfdev);
+>>  
+>>  	return 0;
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.h b/drivers/gpu/drm/panfrost/panfrost_job.h
+>> index 8becc1ba0eb9..2aa0add35459 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_job.h
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_job.h
+>> @@ -32,6 +32,7 @@ struct panfrost_job {
+>>  
+>>  	/* Fence to be signaled by drm-sched once its done with the job */
+>>  	struct dma_fence *render_done_fence;
+>> +	bool is_profiled;
+>>  };
+>>  
+>>  int panfrost_job_init(struct panfrost_device *pfdev);
 
