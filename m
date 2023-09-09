@@ -2,98 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CDA799B50
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 23:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC173799B53
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 23:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241271AbjIIVQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 17:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33898 "EHLO
+        id S241571AbjIIVRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 17:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239398AbjIIVQl (ORCPT
+        with ESMTP id S230470AbjIIVRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 17:16:41 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52666131;
-        Sat,  9 Sep 2023 14:16:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=Zt6OrCismPf+aycVIJ+FicoSu1Q1+BGOLqCiYwahFl8=; b=coKzf3opw1nK9pbEe4bFgAR6Lf
-        AcLRY6jlcfWy5v+CNsR7DaCMqlDaCfDALWhQILBbx+sTVkzO8DrN6F4y4s/e3UATN38JM+WMaPvk0
-        jJ2VbbEMEKKJ+JqHChsqm6lVfDp5TFl2FP1C9sGXT9bHln5wHM45FameMSFKrepR/nW8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qf5JF-0064b4-2c; Sat, 09 Sep 2023 23:16:05 +0200
-Date:   Sat, 9 Sep 2023 23:16:05 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
-        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
-Message-ID: <71f7c475-e111-4e4b-9e8f-4c8a6bf6bc34@lunn.ch>
-References: <47b61929-5c2d-4906-b153-2046a94858c8@arinc9.com>
- <20230813112026.ohsx6srbt2staxma@skbuf>
- <8a8e14f1-0493-4298-a2cc-6e7ae7929334@arinc9.com>
- <20230813190157.4y3zoro53qsz43pe@skbuf>
- <f5f468c1-b5a2-4336-b1d9-fd82da95b21d@arinc9.com>
- <20230814143601.mnpxtcm2zybnbvoh@skbuf>
- <0cee0928-74c9-4048-8cd8-70bfbfafd9b2@arinc9.com>
- <20230827121235.zog4c3ehu2cyd3jy@skbuf>
- <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
- <87325ce9-595a-4dda-a6a1-b5927d25719b@arinc9.com>
+        Sat, 9 Sep 2023 17:17:24 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F11131
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 14:17:16 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-5009d4a4897so5391726e87.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 14:17:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1694294234; x=1694899034; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FUTX2wZtyaGuqkUm3+lfhlNbLIAZVk0Z/0uyTAczRl0=;
+        b=f8hDBLdyJraoy40fvC3U8LtSSwt0CBXTH+nV3mWGfMMOeb1r1UoAjycircBv7yrz2z
+         xAXWDGzoXWq1EOjo3q+VhG+SZA4aQT+A2aDqctIEBSrt85lYMBUXb5FKjGzYWy+y3vW2
+         G2Q4u7y096tN9a0zBXpOXNkp5b2cNrbEqUX+A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694294234; x=1694899034;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FUTX2wZtyaGuqkUm3+lfhlNbLIAZVk0Z/0uyTAczRl0=;
+        b=gD+lbvo6fKKwEfPvENZkOudp9bBhRhjMraHO41iBUrIHvZVTOKO6M/vHoPk33bThLg
+         TxkHVhPpT/RAhyy5v3UggYMt4kSUz89uBmgf+9ixFiun7LyaUPd05UOHAZpXQ6ROWBvO
+         58yCQNxx8KWamWiweNUP6HvsTYhKhbWlGyEjiipdYj/oYg9GnSXDV8GNkwUlNVX9Es/M
+         jrrnvH7/E1hfmeNa2RXaeV/ulYQsafhEs+7ZrBrAVBjTSf7LWll3fvR0kTNRQIKlfYLb
+         0WHdEiKKhHp7no0N63Ri1WkYv2iUDSu/Ue9Wf8j4c0iYzDA5qCKhRwRvANevFrrDBnO+
+         oRPw==
+X-Gm-Message-State: AOJu0YyMy4KOh5gk1uVubjdBiyfzYTQZk/BkLVbiTqVkuNWhi+4NXm9z
+        EQdHAwwcfqp09MzPbdTm17AQO+K1MQVlBBKCUnN/BZd6
+X-Google-Smtp-Source: AGHT+IGfOtckppz2NzZdJFb7Y3s9+wEHVPvawfdAmeILC/9b3t1m8S5NLfJsemMZXnw+63XesCLy8Q==
+X-Received: by 2002:ac2:58e7:0:b0:4fb:90c6:c31a with SMTP id v7-20020ac258e7000000b004fb90c6c31amr4214159lfo.14.1694294233996;
+        Sat, 09 Sep 2023 14:17:13 -0700 (PDT)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id w6-20020ac254a6000000b004fb64600e5dsm731024lfk.219.2023.09.09.14.17.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Sep 2023 14:17:12 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-502934c88b7so4894729e87.2
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 14:17:11 -0700 (PDT)
+X-Received: by 2002:ac2:597b:0:b0:500:a092:d085 with SMTP id
+ h27-20020ac2597b000000b00500a092d085mr4467355lfp.68.1694294231470; Sat, 09
+ Sep 2023 14:17:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87325ce9-595a-4dda-a6a1-b5927d25719b@arinc9.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
+ <20230830184958.2333078-8-ankur.a.arora@oracle.com> <20230908070258.GA19320@noisy.programming.kicks-ass.net>
+ <87zg1v3xxh.fsf@oracle.com>
+In-Reply-To: <87zg1v3xxh.fsf@oracle.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 9 Sep 2023 14:16:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
+Message-ID: <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
+        tglx@linutronix.de, jon.grimm@amd.com, bharata@amd.com,
+        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
+        konrad.wilk@oracle.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please trim the text when replying.
+On Sat, 9 Sept 2023 at 13:16, Ankur Arora <ankur.a.arora@oracle.com> wrote:
+>
+> > +     if (WARN_ON(resched_allowed()))
+> > +             return;
+>
+> And, maybe something like this to guard against __this_cpu_read()
+> etc:
+>
+> +++ b/lib/smp_processor_id.c
+> @@ -13,6 +13,9 @@ unsigned int check_preemption_disabled(const char *what1, const char *what2)
+>  {
+>         int this_cpu = raw_smp_processor_id();
+>
+> +       if (unlikely(resched_allowed()))
+> +               goto out_error;
 
+Again, both of those checks are WRONG.
 
-> I'm writing below as a mix of patch log and discussion.
-> 
-> Phylink bindings are required for ports that are controlled by OF-based
-> buses. DSA, like any other driver utilising the Linux MDIO infrastructure,
-> can register a bus. If I understand correctly, non-OF-based registration of
-> OpenFirmware MDIO buses is a feature specific to DSA which certain DSA
-> subdrivers make use of.
+They'll error out even in exceptions / interrupts, when we have a
+preempt count already from the exception itself.
 
-This is not really DSA specific. Any MAC driver, or MDIO driver, can
-call mdiobus_regsiter(), or of_mdiobus_register() and pass a NULL
-pointer if there is no OF node available. It then requires that the
-MAC driver uses an function like phy_find_first(), or knows via other
-means what address the PHY uses on the bus. For DSA, that other means
-is assuming a 1:1 mapping between port number and bus address.
+So testing "resched_allowed()" that only tests the TIF_RESCHED_ALLOW
+bit is wrong, wrong, wrong.
 
-   Andrew
+These situations aren't errors if we already had a preemption count
+for other reasons. Only trying to disable preemption when in process
+context (while TIF_RESCHED_ALLOW) is a problem. Your patch is missing
+the check for "are we in a process context" part.
+
+                Linus
