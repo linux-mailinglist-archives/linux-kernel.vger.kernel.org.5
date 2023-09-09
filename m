@@ -2,614 +2,698 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA977999E8
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F5B7999D8
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236151AbjIIQ0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 12:26:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35326 "EHLO
+        id S237791AbjIIQ12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 12:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233239AbjIIQTd (ORCPT
+        with ESMTP id S229511AbjIIQUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 12:19:33 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCB7197;
-        Sat,  9 Sep 2023 09:19:28 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 6A01C320091F;
-        Sat,  9 Sep 2023 12:19:26 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Sat, 09 Sep 2023 12:19:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1694276365; x=
-        1694362765; bh=uSTKvre5OkFD26Z/CNG6inepkxbO+yEbrMMhcke7UwM=; b=g
-        pGG/MkX3PpVofz1FQ6lN1LB9wayD9XxcJsemnEm+HdmjoQJbDDYBLfHyUQAu/2Mk
-        VAiBAB3YL5ON29AJsYxHINtwyuPzwZc8DHw28vWtOV80GCx+fK8GGBBEu5bHeSLo
-        rfA8Xq2bGkhuVnyXipSivfAvZHXSpqUChGm6lQBWeI7OVrnRm7f/k5bSo17ZvSbY
-        mzherSIM9xYPp71fe6cCHDREjslVKJqd9toC4fg8PxDB7XSXLNYDdLXGB7xoRZGx
-        J7zpqHpMDAmCB4PVL/wzvhxiuvbAjEL8JTLmlv0NoC8Xw8TU1lYqFkV1xWicXZK9
-        ljiQeItAgZTjTCmKarc0g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1694276365; x=
-        1694362765; bh=uSTKvre5OkFD26Z/CNG6inepkxbO+yEbrMMhcke7UwM=; b=H
-        vM2YxFihsRQKfJs8a0dZ2xVUqpTy0BxwM4TUQWxP9TmxNwWVny/PpvKnOBOPoNbZ
-        jf9E77V5bgUJkNvxHq88WTU9rHeNzlJ2D9FD7GySVR+xVyeTLeKdj7vb7d4JVIh8
-        RXv9h+ARJfy8/fMfrlZJb5T7aSr87uTW52YXM+4T+J8PoF8zWlWnLkr6LUGGcL6R
-        GV0LMHiQee/zbpWPayvdL7QLJae8ZKcw7al/VkToeECO0ZEca7wdX29uJ0kvv1vJ
-        9vD7YwxqhuJIKd4HvN68HZD/TxC1srGLKoYl6zNuulQZPM4PVnmBevqnAeyECrOy
-        Yv6+RElxH8+pU/6clLm4Q==
-X-ME-Sender: <xms:DZv8ZLa7v6hR5OQbZo0_1Gko7TBYdro1Titj08Rmrwj6ZGls8Qq3Ew>
-    <xme:DZv8ZKaMBkTYcehvoeFGwEaecMGOABcwE18fnaRVUvjnzLEvRO1hpSENDxE0CuFRA
-    4VD6WSPj6_QKum2hAM>
-X-ME-Received: <xmr:DZv8ZN9ej21jNHV8bZPZEy3H3dy6WcCIQ3R5NfJirvIU1iZAhqL-eux3Yc1yWfY1P_sGIePWwLJRhyo8FOlPGtFQaOHe>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehledgleekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdludehmdenucfjughrpefhvf
-    evufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeflrghnucfjvghnughrihhk
-    ucfhrghrrhcuoehkvghrnhgvlhesjhhfrghrrhdrtggtqeenucggtffrrghtthgvrhhnpe
-    egfeeliefggeeiiedtudevveevvddvvefguddtvdeitdejleejuefgueelieehteenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkvghrnhgvlh
-    esjhhfrghrrhdrtggt
-X-ME-Proxy: <xmx:DZv8ZBorv5Gu5RogBbPx5o2zHuLW-Q6978R5g28-FMO8BQyYnxit-w>
-    <xmx:DZv8ZGp6WlMMVEdLGrPsjgLQZKFvDHm60ZPJIeNRXNoqHbRNbnrXmQ>
-    <xmx:DZv8ZHT3Hw6mzMqzvqjt1sobjUNlkkT_c6d72ZDv8AMxnbu7Jb9Fkg>
-    <xmx:DZv8ZMh0hdH0swdb-tDUj2vAJk2R2WdFwGzMxlNrAuq-jLNv70PaXw>
-Feedback-ID: i0fc947c4:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 9 Sep 2023 12:19:23 -0400 (EDT)
-From:   Jan Hendrik Farr <kernel@jfarr.cc>
-To:     linux-kernel@vger.kernel.org
-Cc:     kexec@lists.infradead.org, x86@kernel.org, tglx@linutronix.de,
-        dhowells@redhat.com, vgoyal@redhat.com, keyrings@vger.kernel.org,
-        akpm@linux-foundation.org, bhe@redhat.com, bhelgaas@google.com,
-        lennart@poettering.net, bluca@debian.org,
-        systemd-devel@lists.freedesktop.org, kernel@jfarr.cc
-Subject: [PATCH 1/1] x86/kexec: UKI support
-Date:   Sat,  9 Sep 2023 18:18:51 +0200
-Message-Id: <20230909161851.223627-2-kernel@jfarr.cc>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230909161851.223627-1-kernel@jfarr.cc>
-References: <20230909161851.223627-1-kernel@jfarr.cc>
+        Sat, 9 Sep 2023 12:20:31 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1333C197
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 09:20:26 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-402cc6b8bedso34739595e9.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 09:20:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1694276424; x=1694881224; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cdQuoMAafRRIHxJpr4yAXlcE/RBqOa0LnAWsnsQ3Kqg=;
+        b=FBmPtJBPI6t7EeOfdfg4Bj77iH60JeZx/C6qNjRghqC9aPSOS87/ccSXtRVenMFJbs
+         jd41uRJ/7ecDfViTThLNH/rkauPZESM2sD+hp1r6Q+GopZhPsITa+bA8JcLqrlSbWn6O
+         jQ+OKiWFsYdZyL2Bb0LRoHmtq5BX66S2ZVu0WT+co2d1S0ph3PsAO78md/b3B6tHv6iW
+         IpZwLqN/JN+HWQY2krFObM6pVUUIYz84YSrfgeHkH7MU1d4XZHQztJoHDDtZOcTTR+lE
+         NjqBNUNkTbp4S2veQqYZ1pbZ9cpjXhI5yhYO9ONalakxUn1I1LOU1o+PDKxeOly2Q6Kt
+         jdVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694276424; x=1694881224;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cdQuoMAafRRIHxJpr4yAXlcE/RBqOa0LnAWsnsQ3Kqg=;
+        b=KCvGAPYQdjgkodfgikLmhlqwABgIUPzOqc7Flvi7j2Oh7Q/c75DZwJNEpmhkJT3Low
+         Zh0A85wFjNE9HGqWPwp0aCV8VMwMQJasycoL+Q4dan/HBRM/DCwjdN0hsL7gRWPZtnZb
+         2lzNiss50bd7NHLFYCftlZgJgszbc8LV13pb5/e5nksllXyHBzItSlByJIZatik16p/6
+         5XI2oL/CbEH42bCQXM5rE4h0ynJ81TxJN9tSKSmo0ZtK+2+C65pdJP9lZV3wHzBEvfrC
+         bOXrugjEVVYPTKKjEpJ3ld65b0g6E1j5M6zP6C+2eG88GreGshFbQ6wmxvpOBcrWnBgM
+         ZwoQ==
+X-Gm-Message-State: AOJu0Yx+4onStyZnoWjdxEtHxebDqV6gROZHGTpPfy4w9rqbTEzglwP3
+        ZE5dTC7TZdvjHYH4y2pI/TQ5kw==
+X-Google-Smtp-Source: AGHT+IGICLy5UIr7Wg/yv94/5wmf14uTPbQuVzAyNy8kzoFQl6+dyLpAYOK7JovsX/dConAijjzMow==
+X-Received: by 2002:a7b:ce06:0:b0:3fc:114:c015 with SMTP id m6-20020a7bce06000000b003fc0114c015mr4540533wmc.39.1694276424197;
+        Sat, 09 Sep 2023 09:20:24 -0700 (PDT)
+Received: from [192.168.32.2] ([82.78.167.145])
+        by smtp.gmail.com with ESMTPSA id z20-20020a1c4c14000000b00402e942561fsm8200092wmf.38.2023.09.09.09.20.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Sep 2023 09:20:23 -0700 (PDT)
+Message-ID: <1a3154b5-e849-dc60-8434-892b38cec87e@tuxon.dev>
+Date:   Sat, 9 Sep 2023 19:20:22 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+Subject: Re: [PATCH v4 5/8] drm: atmel_hlcdc: Add support for XLCDC in atmel
+ LCD driver
+To:     Manikandan Muralidharan <manikandan.m@microchip.com>,
+        sam@ravnborg.org, bbrezillon@kernel.org, airlied@gmail.com,
+        daniel@ffwll.ch, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, lee@kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Hari.PrasathGE@microchip.com,
+        Balamanikandan.Gunasundar@microchip.com,
+        Durai.ManickamKR@microchip.com, Nayabbasha.Sayed@microchip.com,
+        Dharma.B@microchip.com, Varshini.Rajendran@microchip.com,
+        Balakrishnan.S@microchip.com
+References: <20230825125444.93222-1-manikandan.m@microchip.com>
+ <20230825125444.93222-6-manikandan.m@microchip.com>
+Content-Language: en-US
+In-Reply-To: <20230825125444.93222-6-manikandan.m@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-make the kernel accept UKIs (Unified Kernel Images) for kexec_file_load.
+Hi, Manikandan,
 
-UKIs contain the kernel bzImage, initrd, and cmdline all packaged up as
-one EFI application. The main advantage of this is that the whole
-combination is signed together as a package for secure boot.
+On 8/25/23 15:54, Manikandan Muralidharan wrote:
+> - XLCDC in SAM9X7 has different sets of registers and additional
+> configuration bits when compared to previous HLCDC IP. Read/write
+> operation on the controller registers is now separated using the
+> XLCDC status flag.
+> 	- HEO scaling, window resampling, Alpha blending, YUV-to-RGB
+> conversion in XLCDC is derived and handled using additional
+> configuration bits and registers.
+> 	- Writing one to the Enable fields of each layer in LCD_ATTRE
+> is required to reflect the values set in Configuration, FBA, Enable
+> registers of each layer
+> 
+> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
+> Co-developed-by: Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
+> Signed-off-by: Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
+> Co-developed-by: Durai Manickam KR <durai.manickamkr@microchip.com>
+> Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
+> ---
+>  .../gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c    |  25 +-
+>  .../gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c   | 333 +++++++++++++++---
+>  2 files changed, 299 insertions(+), 59 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
+> index cc5cf4c2faf7..4b11a1de8af4 100644
+> --- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
+> +++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
+> @@ -79,6 +79,7 @@ static void atmel_hlcdc_crtc_mode_set_nofb(struct drm_crtc *c)
+>  	unsigned int mask = ATMEL_HLCDC_CLKDIV_MASK | ATMEL_HLCDC_CLKPOL;
+>  	unsigned int cfg = 0;
+>  	int div, ret;
+> +	bool is_xlcdc = crtc->dc->desc->is_xlcdc;
+>  
+>  	/* get encoder from crtc */
+>  	drm_for_each_encoder(en_iter, ddev) {
+> @@ -164,10 +165,10 @@ static void atmel_hlcdc_crtc_mode_set_nofb(struct drm_crtc *c)
+>  	state = drm_crtc_state_to_atmel_hlcdc_crtc_state(c->state);
+>  	cfg = state->output_mode << 8;
+>  
+> -	if (adj->flags & DRM_MODE_FLAG_NVSYNC)
+> +	if (!is_xlcdc && (adj->flags & DRM_MODE_FLAG_NVSYNC))
+>  		cfg |= ATMEL_HLCDC_VSPOL;
+>  
+> -	if (adj->flags & DRM_MODE_FLAG_NHSYNC)
+> +	if (!is_xlcdc && (adj->flags & DRM_MODE_FLAG_NHSYNC))
+>  		cfg |= ATMEL_HLCDC_HSPOL;
+>  
+>  	regmap_update_bits(regmap, ATMEL_HLCDC_CFG(5),
+> @@ -202,6 +203,16 @@ static void atmel_hlcdc_crtc_atomic_disable(struct drm_crtc *c,
+>  
+>  	pm_runtime_get_sync(dev->dev);
+>  
+> +	if (crtc->dc->desc->is_xlcdc) {
+> +		regmap_write(regmap, ATMEL_HLCDC_DIS, ATMEL_XLCDC_CM);
+> +		regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
+> +					 !(status & ATMEL_XLCDC_CM), 10, 0);
 
-This implementation parses the UKI and passes the bzImage, initrd, and
-cmdline to the normal bzImage loader.
+You may want to check the return value of regmap_read_poll_timeout().
+Otherwise your setup may fail.
 
-Signed-off-by: Jan Hendrik Farr <kernel@jfarr.cc>
----
- arch/x86/include/asm/kexec-uki.h       |   7 ++
- arch/x86/include/asm/parse_pefile.h    |  32 +++++++
- arch/x86/kernel/Makefile               |   2 +
- arch/x86/kernel/kexec-uki.c            | 113 +++++++++++++++++++++++++
- arch/x86/kernel/machine_kexec_64.c     |   2 +
- arch/x86/kernel/parse_pefile.c         | 110 ++++++++++++++++++++++++
- crypto/asymmetric_keys/mscode_parser.c |   2 +-
- crypto/asymmetric_keys/verify_pefile.c | 110 +++---------------------
- crypto/asymmetric_keys/verify_pefile.h |  16 ----
- 9 files changed, 278 insertions(+), 116 deletions(-)
- create mode 100644 arch/x86/include/asm/kexec-uki.h
- create mode 100644 arch/x86/include/asm/parse_pefile.h
- create mode 100644 arch/x86/kernel/kexec-uki.c
- create mode 100644 arch/x86/kernel/parse_pefile.c
+Also, regmap_read_poll_timeout() may sleep, the other settings in this
+functions are done with bussy looping, is there a reason for that?
 
-diff --git a/arch/x86/include/asm/kexec-uki.h b/arch/x86/include/asm/kexec-uki.h
-new file mode 100644
-index 000000000000..87fd2c6fb091
---- /dev/null
-+++ b/arch/x86/include/asm/kexec-uki.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef _ASM_KEXEC_UKI_H
-+#define _ASM_KEXEC_UKI_H
-+
-+extern const struct kexec_file_ops kexec_uki_ops;
-+
-+#endif  /* _ASM_KEXEC_UKI_H */
-diff --git a/arch/x86/include/asm/parse_pefile.h b/arch/x86/include/asm/parse_pefile.h
-new file mode 100644
-index 000000000000..c29f8c98ee66
---- /dev/null
-+++ b/arch/x86/include/asm/parse_pefile.h
-@@ -0,0 +1,32 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (C) 2014 Red Hat, Inc. All Rights Reserved.
-+ *
-+ * Written by David Howells (dhowells@redhat.com)
-+ */
-+
-+#ifndef _ASM_PARSE_PEFILE_H
-+#define _ASM_PARSE_PEFILE_H
-+
-+#include <linux/pe.h>
-+
-+struct pefile_context {
-+	unsigned	header_size;
-+	unsigned	image_checksum_offset;
-+	unsigned	cert_dirent_offset;
-+	unsigned	n_data_dirents;
-+	unsigned	n_sections;
-+	unsigned	certs_size;
-+	unsigned	sig_offset;
-+	unsigned	sig_len;
-+	const struct section_header *secs;
-+
-+	/* PKCS#7 MS Individual Code Signing content */
-+	const void	*digest;		/* Digest */
-+	unsigned	digest_len;		/* Digest length */
-+	const char	*digest_algo;		/* Digest algorithm */
-+};
-+int pefile_parse_binary(const void *pebuf, unsigned int pelen,
-+			       struct pefile_context *ctx);
-+
-+#endif // _ASM_PARSE_PEFILE_H
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 3269a0e23d3a..8a37a977bf72 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -101,6 +101,8 @@ obj-$(CONFIG_CRASH_CORE)	+= crash_core_$(BITS).o
- obj-$(CONFIG_KEXEC_CORE)	+= machine_kexec_$(BITS).o
- obj-$(CONFIG_KEXEC_CORE)	+= relocate_kernel_$(BITS).o crash.o
- obj-$(CONFIG_KEXEC_FILE)	+= kexec-bzimage64.o
-+obj-$(CONFIG_KEXEC_FILE)	+= kexec-uki.o
-+obj-$(CONFIG_KEXEC_FILE)	+= parse_pefile.o
- obj-$(CONFIG_CRASH_DUMP)	+= crash_dump_$(BITS).o
- obj-y				+= kprobes/
- obj-$(CONFIG_MODULES)		+= module.o
-diff --git a/arch/x86/kernel/kexec-uki.c b/arch/x86/kernel/kexec-uki.c
-new file mode 100644
-index 000000000000..9275196a6b71
---- /dev/null
-+++ b/arch/x86/kernel/kexec-uki.c
-@@ -0,0 +1,113 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Kexec UKI loader
-+ *
-+ * Copyright (C) 2023 Jan Hendrik Farr
-+ *
-+ * Authors:
-+ *      Jan Hendrik Farr <kernel@jfarr.cc>
-+ */
-+
-+#define pr_fmt(fmt)	"kexec-uki: " fmt
-+
-+#include <linux/kernel.h>
-+#include "linux/pe.h"
-+#include <linux/kexec.h>
-+#include <linux/err.h>
-+
-+#include <asm/kexec-uki.h>
-+#include <asm/kexec-bzimage64.h>
-+#include <asm/parse_pefile.h>
-+
-+static int find_section(struct pefile_context *ctx, const char *name,
-+			const struct section_header **sec)
-+{
-+	for (int i = 0; i < ctx->n_sections; i++) {
-+		const struct section_header *cur_sec = &ctx->secs[i];
-+
-+		if (!strncmp(cur_sec->name, name, ARRAY_SIZE(cur_sec->name))) {
-+			*sec = cur_sec;
-+			return 0;
-+		}
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int uki_probe(const char *buf, unsigned long len)
-+{
-+	int ret = -ENOEXEC;
-+	struct pefile_context pe_ctx;
-+
-+	int r = pefile_parse_binary(buf, len, &pe_ctx);
-+
-+	if (r) {
-+		pr_info("Not a UKI. Not a valid PE file\n");
-+		return ret;
-+	}
-+
-+	const struct section_header *_;
-+
-+	if (find_section(&pe_ctx, ".linux", &_) ||
-+	    find_section(&pe_ctx, ".initrd", &_) ||
-+	    find_section(&pe_ctx, ".cmdline", &_)) {
-+		pr_info("Not a UKI. Missing .linux, .initrd, or .cmdline\n");
-+		return ret;
-+	}
-+
-+
-+	pr_info("It's a UKI\n");
-+	return 0;
-+}
-+
-+static void *uki_load(struct kimage *image, char *kernel,
-+		      unsigned long kernel_len, char *initrd,
-+		      unsigned long initrd_len, char *cmdline,
-+		      unsigned long cmdline_len)
-+{
-+	struct pefile_context pe_ctx;
-+	int r = pefile_parse_binary(kernel, kernel_len, &pe_ctx);
-+
-+	if (r)
-+		return ERR_PTR(r);
-+
-+	pr_debug("pefile_parse_binary return %d, number of sections: %d\n",
-+		 r, pe_ctx.n_sections);
-+
-+	const struct section_header *sec_linux, *sec_initrd, *sec_cmdline;
-+	int r_linux = find_section(&pe_ctx, ".linux", &sec_linux);
-+	int r_initrd = find_section(&pe_ctx, ".initrd", &sec_initrd);
-+	int r_cmdline = find_section(&pe_ctx, ".cmdline", &sec_cmdline);
-+
-+	if (r_linux || r_initrd || r_cmdline)
-+		return ERR_PTR(-EINVAL);
-+
-+	void *ret = kexec_bzImage64_ops.load(
-+		image,
-+		kernel + sec_linux->data_addr,
-+		sec_linux->raw_data_size,
-+		kernel + sec_initrd->data_addr,
-+		sec_initrd->raw_data_size,
-+		kernel + sec_cmdline->data_addr,
-+		sec_cmdline->raw_data_size
-+	);
-+
-+	if (IS_ERR(ret))
-+		pr_warn("bzImage64_load error\n");
-+
-+	return ret;
-+}
-+
-+static int uki_cleanup(void *loader_data)
-+{
-+	return kexec_bzImage64_ops.cleanup(loader_data);
-+}
-+
-+const struct kexec_file_ops kexec_uki_ops = {
-+	.probe = uki_probe,
-+	.load = uki_load,
-+	.cleanup = uki_cleanup,
-+#ifdef CONFIG_KEXEC_BZIMAGE_VERIFY_SIG
-+	.verify_sig = kexec_kernel_verify_pe_sig,
-+#endif
-+};
-diff --git a/arch/x86/kernel/machine_kexec_64.c b/arch/x86/kernel/machine_kexec_64.c
-index 1a3e2c05a8a5..072f5aac52b9 100644
---- a/arch/x86/kernel/machine_kexec_64.c
-+++ b/arch/x86/kernel/machine_kexec_64.c
-@@ -25,6 +25,7 @@
- #include <asm/io_apic.h>
- #include <asm/debugreg.h>
- #include <asm/kexec-bzimage64.h>
-+#include <asm/kexec-uki.h>
- #include <asm/setup.h>
- #include <asm/set_memory.h>
- #include <asm/cpu.h>
-@@ -81,6 +82,7 @@ static int map_acpi_tables(struct x86_mapping_info *info, pgd_t *level4p) { retu
- #ifdef CONFIG_KEXEC_FILE
- const struct kexec_file_ops * const kexec_file_loaders[] = {
- 		&kexec_bzImage64_ops,
-+		&kexec_uki_ops,
- 		NULL
- };
- #endif
-diff --git a/arch/x86/kernel/parse_pefile.c b/arch/x86/kernel/parse_pefile.c
-new file mode 100644
-index 000000000000..7737c94a1848
---- /dev/null
-+++ b/arch/x86/kernel/parse_pefile.c
-@@ -0,0 +1,110 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Parse a PE binary
-+ *
-+ * Copyright (C) 2014 Red Hat, Inc. All Rights Reserved.
-+ * Copyright (C) 2023 Jan Hendrik Farr
-+ *
-+ * Written by David Howells (dhowells@redhat.com)
-+ */
-+
-+#include <asm/parse_pefile.h>
-+#include <linux/err.h>
-+
-+#define pr_fmt(fmt)	"parse_pefile: " fmt
-+#include <linux/module.h>
-+/*
-+ * Parse a PE binary.
-+ */
-+int pefile_parse_binary(const void *pebuf, unsigned int pelen,
-+			       struct pefile_context *ctx)
-+{
-+	const struct mz_hdr *mz = pebuf;
-+	const struct pe_hdr *pe;
-+	const struct pe32_opt_hdr *pe32;
-+	const struct pe32plus_opt_hdr *pe64;
-+	const struct data_directory *ddir;
-+	const struct data_dirent *dde;
-+	const struct section_header *secs, *sec;
-+	size_t cursor, datalen = pelen;
-+
-+
-+#define chkaddr(base, x, s)						\
-+	do {								\
-+		if ((x) < base || (s) >= datalen || (x) > datalen - (s)) \
-+			return -ELIBBAD;				\
-+	} while (0)
-+
-+	chkaddr(0, 0, sizeof(*mz));
-+	if (mz->magic != MZ_MAGIC)
-+		return -ELIBBAD;
-+	cursor = sizeof(*mz);
-+
-+	chkaddr(cursor, mz->peaddr, sizeof(*pe));
-+	pe = pebuf + mz->peaddr;
-+	if (pe->magic != PE_MAGIC)
-+		return -ELIBBAD;
-+	cursor = mz->peaddr + sizeof(*pe);
-+
-+	chkaddr(0, cursor, sizeof(pe32->magic));
-+	pe32 = pebuf + cursor;
-+	pe64 = pebuf + cursor;
-+
-+	switch (pe32->magic) {
-+	case PE_OPT_MAGIC_PE32:
-+		chkaddr(0, cursor, sizeof(*pe32));
-+		ctx->image_checksum_offset =
-+			(unsigned long)&pe32->csum - (unsigned long)pebuf;
-+		ctx->header_size = pe32->header_size;
-+		cursor += sizeof(*pe32);
-+		ctx->n_data_dirents = pe32->data_dirs;
-+		break;
-+
-+	case PE_OPT_MAGIC_PE32PLUS:
-+		chkaddr(0, cursor, sizeof(*pe64));
-+		ctx->image_checksum_offset =
-+			(unsigned long)&pe64->csum - (unsigned long)pebuf;
-+		ctx->header_size = pe64->header_size;
-+		cursor += sizeof(*pe64);
-+		ctx->n_data_dirents = pe64->data_dirs;
-+		break;
-+
-+	default:
-+		pr_warn("Unknown PEOPT magic = %04hx\n", pe32->magic);
-+		return -ELIBBAD;
-+	}
-+
-+	pr_debug("checksum @ %x\n", ctx->image_checksum_offset);
-+	pr_debug("header size = %x\n", ctx->header_size);
-+
-+	if (cursor >= ctx->header_size || ctx->header_size >= datalen)
-+		return -ELIBBAD;
-+
-+	if (ctx->n_data_dirents > (ctx->header_size - cursor) / sizeof(*dde))
-+		return -ELIBBAD;
-+
-+	ddir = pebuf + cursor;
-+	cursor += sizeof(*dde) * ctx->n_data_dirents;
-+
-+	ctx->cert_dirent_offset =
-+		(unsigned long)&ddir->certs - (unsigned long)pebuf;
-+	ctx->certs_size = ddir->certs.size;
-+
-+	if (ddir->certs.virtual_address && ddir->certs.size) {
-+
-+		chkaddr(ctx->header_size, ddir->certs.virtual_address,
-+			ddir->certs.size);
-+		ctx->sig_offset = ddir->certs.virtual_address;
-+		ctx->sig_len = ddir->certs.size;
-+		pr_debug("cert = %x @%x [%*ph]\n",
-+			 ctx->sig_len, ctx->sig_offset,
-+			 ctx->sig_len, pebuf + ctx->sig_offset);
-+
-+	}
-+
-+	ctx->n_sections = pe->sections;
-+	if (ctx->n_sections > (ctx->header_size - cursor) / sizeof(*sec))
-+		return -ELIBBAD;
-+	ctx->secs = secs = pebuf + cursor;
-+
-+	return 0;
-+}
-diff --git a/crypto/asymmetric_keys/mscode_parser.c b/crypto/asymmetric_keys/mscode_parser.c
-index 839591ad21ac..063b348bb4c3 100644
---- a/crypto/asymmetric_keys/mscode_parser.c
-+++ b/crypto/asymmetric_keys/mscode_parser.c
-@@ -11,7 +11,7 @@
- #include <linux/err.h>
- #include <linux/oid_registry.h>
- #include <crypto/pkcs7.h>
--#include "verify_pefile.h"
-+#include <asm/parse_pefile.h>
- #include "mscode.asn1.h"
- 
- /*
-diff --git a/crypto/asymmetric_keys/verify_pefile.c b/crypto/asymmetric_keys/verify_pefile.c
-index f440767bd727..fbb319094c0a 100644
---- a/crypto/asymmetric_keys/verify_pefile.c
-+++ b/crypto/asymmetric_keys/verify_pefile.c
-@@ -14,106 +14,9 @@
- #include <linux/asn1.h>
- #include <linux/verification.h>
- #include <crypto/hash.h>
-+#include <asm/parse_pefile.h>
- #include "verify_pefile.h"
- 
--/*
-- * Parse a PE binary.
-- */
--static int pefile_parse_binary(const void *pebuf, unsigned int pelen,
--			       struct pefile_context *ctx)
--{
--	const struct mz_hdr *mz = pebuf;
--	const struct pe_hdr *pe;
--	const struct pe32_opt_hdr *pe32;
--	const struct pe32plus_opt_hdr *pe64;
--	const struct data_directory *ddir;
--	const struct data_dirent *dde;
--	const struct section_header *secs, *sec;
--	size_t cursor, datalen = pelen;
--
--	kenter("");
--
--#define chkaddr(base, x, s)						\
--	do {								\
--		if ((x) < base || (s) >= datalen || (x) > datalen - (s)) \
--			return -ELIBBAD;				\
--	} while (0)
--
--	chkaddr(0, 0, sizeof(*mz));
--	if (mz->magic != MZ_MAGIC)
--		return -ELIBBAD;
--	cursor = sizeof(*mz);
--
--	chkaddr(cursor, mz->peaddr, sizeof(*pe));
--	pe = pebuf + mz->peaddr;
--	if (pe->magic != PE_MAGIC)
--		return -ELIBBAD;
--	cursor = mz->peaddr + sizeof(*pe);
--
--	chkaddr(0, cursor, sizeof(pe32->magic));
--	pe32 = pebuf + cursor;
--	pe64 = pebuf + cursor;
--
--	switch (pe32->magic) {
--	case PE_OPT_MAGIC_PE32:
--		chkaddr(0, cursor, sizeof(*pe32));
--		ctx->image_checksum_offset =
--			(unsigned long)&pe32->csum - (unsigned long)pebuf;
--		ctx->header_size = pe32->header_size;
--		cursor += sizeof(*pe32);
--		ctx->n_data_dirents = pe32->data_dirs;
--		break;
--
--	case PE_OPT_MAGIC_PE32PLUS:
--		chkaddr(0, cursor, sizeof(*pe64));
--		ctx->image_checksum_offset =
--			(unsigned long)&pe64->csum - (unsigned long)pebuf;
--		ctx->header_size = pe64->header_size;
--		cursor += sizeof(*pe64);
--		ctx->n_data_dirents = pe64->data_dirs;
--		break;
--
--	default:
--		pr_warn("Unknown PEOPT magic = %04hx\n", pe32->magic);
--		return -ELIBBAD;
--	}
--
--	pr_debug("checksum @ %x\n", ctx->image_checksum_offset);
--	pr_debug("header size = %x\n", ctx->header_size);
--
--	if (cursor >= ctx->header_size || ctx->header_size >= datalen)
--		return -ELIBBAD;
--
--	if (ctx->n_data_dirents > (ctx->header_size - cursor) / sizeof(*dde))
--		return -ELIBBAD;
--
--	ddir = pebuf + cursor;
--	cursor += sizeof(*dde) * ctx->n_data_dirents;
--
--	ctx->cert_dirent_offset =
--		(unsigned long)&ddir->certs - (unsigned long)pebuf;
--	ctx->certs_size = ddir->certs.size;
--
--	if (!ddir->certs.virtual_address || !ddir->certs.size) {
--		pr_warn("Unsigned PE binary\n");
--		return -ENODATA;
--	}
--
--	chkaddr(ctx->header_size, ddir->certs.virtual_address,
--		ddir->certs.size);
--	ctx->sig_offset = ddir->certs.virtual_address;
--	ctx->sig_len = ddir->certs.size;
--	pr_debug("cert = %x @%x [%*ph]\n",
--		 ctx->sig_len, ctx->sig_offset,
--		 ctx->sig_len, pebuf + ctx->sig_offset);
--
--	ctx->n_sections = pe->sections;
--	if (ctx->n_sections > (ctx->header_size - cursor) / sizeof(*sec))
--		return -ELIBBAD;
--	ctx->secs = secs = pebuf + cursor;
--
--	return 0;
--}
- 
- /*
-  * Check and strip the PE wrapper from around the signature and check that the
-@@ -431,6 +334,13 @@ int verify_pefile_signature(const void *pebuf, unsigned pelen,
- 	if (ret < 0)
- 		return ret;
- 
-+	const struct data_dirent *certs = pebuf + ctx.cert_dirent_offset;
-+
-+	if (!certs->virtual_address || !certs->size) {
-+		pr_warn("Unsigned PE binary\n");
-+		return -ENODATA;
-+	}
-+
- 	ret = pefile_strip_sig_wrapper(pebuf, &ctx);
- 	if (ret < 0)
- 		return ret;
-@@ -439,8 +349,10 @@ int verify_pefile_signature(const void *pebuf, unsigned pelen,
- 				     pebuf + ctx.sig_offset, ctx.sig_len,
- 				     trusted_keys, usage,
- 				     mscode_parse, &ctx);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pr_warn("invalid PE file signature\n");
- 		goto error;
-+	}
- 
- 	pr_debug("Digest: %u [%*ph]\n",
- 		 ctx.digest_len, ctx.digest_len, ctx.digest);
-diff --git a/crypto/asymmetric_keys/verify_pefile.h b/crypto/asymmetric_keys/verify_pefile.h
-index e1628e100cde..5ab2f9a5b2ef 100644
---- a/crypto/asymmetric_keys/verify_pefile.h
-+++ b/crypto/asymmetric_keys/verify_pefile.h
-@@ -8,22 +8,6 @@
- #include <crypto/pkcs7.h>
- #include <crypto/hash_info.h>
- 
--struct pefile_context {
--	unsigned	header_size;
--	unsigned	image_checksum_offset;
--	unsigned	cert_dirent_offset;
--	unsigned	n_data_dirents;
--	unsigned	n_sections;
--	unsigned	certs_size;
--	unsigned	sig_offset;
--	unsigned	sig_len;
--	const struct section_header *secs;
--
--	/* PKCS#7 MS Individual Code Signing content */
--	const void	*digest;		/* Digest */
--	unsigned	digest_len;		/* Digest length */
--	const char	*digest_algo;		/* Digest algorithm */
--};
- 
- #define kenter(FMT, ...)					\
- 	pr_devel("==> %s("FMT")\n", __func__, ##__VA_ARGS__)
--- 
-2.40.1
+> +
+> +		regmap_write(regmap, ATMEL_HLCDC_DIS, ATMEL_XLCDC_SD);
+> +		regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
+> +					 status & ATMEL_XLCDC_SD, 10, 0);
 
+Same here.
+
+> +	}
+> +
+>  	regmap_write(regmap, ATMEL_HLCDC_DIS, ATMEL_HLCDC_DISP);
+>  	while (!regmap_read(regmap, ATMEL_HLCDC_SR, &status) &&
+>  	       (status & ATMEL_HLCDC_DISP))
+> @@ -256,6 +267,16 @@ static void atmel_hlcdc_crtc_atomic_enable(struct drm_crtc *c,
+>  	       !(status & ATMEL_HLCDC_DISP))
+>  		cpu_relax();
+>  
+> +	if (crtc->dc->desc->is_xlcdc) {
+> +		regmap_write(regmap, ATMEL_HLCDC_EN, ATMEL_XLCDC_CM);
+> +		regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
+> +					 status & ATMEL_XLCDC_CM, 10, 0);
+> +
+> +		regmap_write(regmap, ATMEL_HLCDC_EN, ATMEL_XLCDC_SD);
+> +		regmap_read_poll_timeout(regmap, ATMEL_HLCDC_SR, status,
+> +					 !(status & ATMEL_XLCDC_SD), 10, 0);
+> +	}
+> +
+>  	pm_runtime_put_sync(dev->dev);
+>  
+>  }
+> diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
+> index daa508504f47..26caf4cddfa4 100644
+> --- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
+> +++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
+> @@ -330,11 +330,59 @@ static void atmel_hlcdc_plane_setup_scaler(struct atmel_hlcdc_plane *plane,
+>  								     yfactor));
+>  }
+>  
+> +static void atmel_xlcdc_plane_setup_scaler(struct atmel_hlcdc_plane *plane,
+> +					   struct atmel_hlcdc_plane_state *state)
+> +{
+> +	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
+> +	u32 xfactor, yfactor;
+> +
+> +	if (!desc->layout.scaler_config)
+> +		return;
+> +
+> +	if (state->crtc_w == state->src_w && state->crtc_h == state->src_h) {
+> +		atmel_hlcdc_layer_write_cfg(&plane->layer,
+> +					    desc->layout.scaler_config, 0);
+> +		return;
+> +	}
+> +
+> +	/* xfactor = round[(2^20 * XMEMSIZE)/XSIZE)] */
+> +	xfactor = (u32)(((1 << 20) * state->src_w) / state->crtc_w);
+
+Could ((1 << 20) * state->src_w) overflow?
+
+> +
+> +	/* yfactor = round[(2^20 * YMEMSIZE)/YSIZE)] */
+> +	yfactor = (u32)(((1 << 20) * state->src_h) / state->crtc_h);
+
+Same here.
+
+> +
+> +	atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config,
+> +				    ATMEL_XLCDC_LAYER_VSCALER_LUMA_ENABLE |
+> +				    ATMEL_XLCDC_LAYER_VSCALER_CHROMA_ENABLE |
+> +				    ATMEL_XLCDC_LAYER_HSCALER_LUMA_ENABLE |
+> +				    ATMEL_XLCDC_LAYER_HSCALER_CHROMA_ENABLE);
+> +
+> +	atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 1,
+> +				    yfactor);
+> +	atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 3,
+> +				    xfactor);
+> +
+> +	/* As per YCbCr window resampling configuration */
+> +	if (state->base.fb->format->format == DRM_FORMAT_YUV420) {
+> +		atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 2,
+> +					    yfactor / 2);
+> +		atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 4,
+> +					    xfactor / 2);
+> +	} else {
+> +		/* As per ARGB window resampling configuration */
+> +		atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 2,
+> +					    yfactor);
+> +		atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 4,
+> +					    xfactor);
+> +	}
+
+This can be written as follows:
+if (state->base.fb->format->format == DRM_FORMAT_YUV420) {
+	yfactor /= 2);
+	xfactor /= 2);
+}
+atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 2,
+			    yfactor);
+atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.scaler_config + 4,
+			    xfactor);
+
+
+
+> +}
+> +
+>  static void
+>  atmel_hlcdc_plane_update_pos_and_size(struct atmel_hlcdc_plane *plane,
+>  				      struct atmel_hlcdc_plane_state *state)
+>  {
+>  	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
+> +	struct atmel_hlcdc_dc *dc = plane->base.dev->dev_private;
+>  
+>  	if (desc->layout.size)
+>  		atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.size,
+> @@ -352,7 +400,10 @@ atmel_hlcdc_plane_update_pos_and_size(struct atmel_hlcdc_plane *plane,
+>  					ATMEL_HLCDC_LAYER_POS(state->crtc_x,
+>  							      state->crtc_y));
+>  
+> -	atmel_hlcdc_plane_setup_scaler(plane, state);
+> +	if (dc->desc->is_xlcdc)
+> +		atmel_xlcdc_plane_setup_scaler(plane, state);
+> +	else
+> +		atmel_hlcdc_plane_setup_scaler(plane, state);
+
+What if you embedd the plane_setup_scaller function in struct
+atmel_hlcdc_dc_desc and define per lcdc variant the proper function you can
+have here something like:
+	dc->desc->plane_setup_scaler();
+
+This is valid for other places in this patch (see below).
+
+>  }
+>  
+>  static void
+> @@ -393,6 +444,40 @@ atmel_hlcdc_plane_update_general_settings(struct atmel_hlcdc_plane *plane,
+>  				    cfg);
+>  }
+>  
+> +static void
+> +atmel_xlcdc_plane_update_general_settings(struct atmel_hlcdc_plane *plane,
+> +					  struct atmel_hlcdc_plane_state *state)
+> +{
+> +	unsigned int cfg;
+> +	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
+> +	const struct drm_format_info *format = state->base.fb->format;
+> +
+> +	atmel_hlcdc_layer_write_cfg(&plane->layer, ATMEL_XLCDC_LAYER_DMA_CFG,
+> +				    ATMEL_HLCDC_LAYER_DMA_BLEN_INCR16 | state->ahb_id);
+> +
+> +	cfg = ATMEL_XLCDC_LAYER_DMA | ATMEL_XLCDC_LAYER_REP;
+> +
+> +	if (plane->base.type != DRM_PLANE_TYPE_PRIMARY) {
+> +		/*
+> +		 * Alpha Blending bits specific to SAM9X7 SoC
+> +		 */
+> +		cfg |= ATMEL_XLCDC_LAYER_SFACTC_A0_MULT_AS |
+> +		       ATMEL_XLCDC_LAYER_SFACTA_ONE |
+> +		       ATMEL_XLCDC_LAYER_DFACTC_M_A0_MULT_AS |
+> +		       ATMEL_XLCDC_LAYER_DFACTA_ONE;
+> +		if (format->has_alpha)
+> +			cfg |= ATMEL_XLCDC_LAYER_A0(0xff);
+> +		else
+> +			cfg |= ATMEL_XLCDC_LAYER_A0(state->base.alpha);
+> +	}
+> +
+> +	if (state->disc_h && state->disc_w)
+> +		cfg |= ATMEL_XLCDC_LAYER_DISCEN;
+> +
+> +	atmel_hlcdc_layer_write_cfg(&plane->layer, desc->layout.general_config,
+> +				    cfg);
+> +}
+> +
+>  static void atmel_hlcdc_plane_update_format(struct atmel_hlcdc_plane *plane,
+>  					struct atmel_hlcdc_plane_state *state)
+>  {
+> @@ -437,36 +522,55 @@ static void atmel_hlcdc_plane_update_clut(struct atmel_hlcdc_plane *plane,
+>  	}
+>  }
+>  
+> +static void update_hlcdc_buffers(struct atmel_hlcdc_plane *plane,
+> +				 struct atmel_hlcdc_plane_state *state, u32 sr, int i)
+> +{
+> +	atmel_hlcdc_layer_write_reg(&plane->layer,
+> +				    ATMEL_HLCDC_LAYER_PLANE_HEAD(i),
+> +				    state->dscrs[i]->self);
+> +
+> +	if (!(sr & ATMEL_HLCDC_LAYER_EN)) {
+
+To avoid extra indenting:
+	if (sr & ATMEL_HLCDC_LAYER_EN)
+		return;
+
+> +		atmel_hlcdc_layer_write_reg(&plane->layer,
+> +					    ATMEL_HLCDC_LAYER_PLANE_ADDR(i),
+> +					    state->dscrs[i]->addr);
+> +		atmel_hlcdc_layer_write_reg(&plane->layer,
+> +					    ATMEL_HLCDC_LAYER_PLANE_CTRL(i),
+> +					    state->dscrs[i]->ctrl);
+> +		atmel_hlcdc_layer_write_reg(&plane->layer,
+> +					    ATMEL_HLCDC_LAYER_PLANE_NEXT(i),
+> +					    state->dscrs[i]->self);
+> +	}
+> +}
+> +
+> +static void update_xlcdc_buffers(struct atmel_hlcdc_plane *plane,
+> +				 struct atmel_hlcdc_plane_state *state, int i)
+> +{
+> +	atmel_hlcdc_layer_write_reg(&plane->layer,
+> +				    ATMEL_XLCDC_LAYER_PLANE_ADDR(i),
+> +				    state->dscrs[i]->addr);
+> +}
+> +
+>  static void atmel_hlcdc_plane_update_buffers(struct atmel_hlcdc_plane *plane,
+> -					struct atmel_hlcdc_plane_state *state)
+> +					     struct atmel_hlcdc_plane_state *state)
+
+update_hlcdc_buffers() and update_xlcdc_buffers() could also be members in
+the struct atmel_hlcdc_dc_desc and called accordingly where needed w/o
+checking is_xlcdc.
+
+>  {
+>  	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
+> +	struct atmel_hlcdc_dc *dc = plane->base.dev->dev_private;
+>  	struct drm_framebuffer *fb = state->base.fb;
+>  	u32 sr;
+>  	int i;
+>  
+> -	sr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHSR);
+> +	if (!dc->desc->is_xlcdc)
+> +		sr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHSR);
+>  
+>  	for (i = 0; i < state->nplanes; i++) {
+>  		struct drm_gem_dma_object *gem = drm_fb_dma_get_gem_obj(fb, i);
+>  
+>  		state->dscrs[i]->addr = gem->dma_addr + state->offsets[i];
+>  
+> -		atmel_hlcdc_layer_write_reg(&plane->layer,
+> -					    ATMEL_HLCDC_LAYER_PLANE_HEAD(i),
+> -					    state->dscrs[i]->self);
+> -
+> -		if (!(sr & ATMEL_HLCDC_LAYER_EN)) {
+> -			atmel_hlcdc_layer_write_reg(&plane->layer,
+> -					ATMEL_HLCDC_LAYER_PLANE_ADDR(i),
+> -					state->dscrs[i]->addr);
+> -			atmel_hlcdc_layer_write_reg(&plane->layer,
+> -					ATMEL_HLCDC_LAYER_PLANE_CTRL(i),
+> -					state->dscrs[i]->ctrl);
+> -			atmel_hlcdc_layer_write_reg(&plane->layer,
+> -					ATMEL_HLCDC_LAYER_PLANE_NEXT(i),
+> -					state->dscrs[i]->self);
+> -		}
+> +		if (dc->desc->is_xlcdc)
+> +			update_xlcdc_buffers(plane, state, i);
+> +		else
+> +			update_hlcdc_buffers(plane, state, sr, i);
+
+And here you can have something like:
+		dc->desc->update_lcdc_buffers();
+>  
+>  		if (desc->layout.xstride[i])
+>  			atmel_hlcdc_layer_write_cfg(&plane->layer,
+> @@ -712,11 +816,8 @@ static int atmel_hlcdc_plane_atomic_check(struct drm_plane *p,
+>  	return 0;
+>  }
+>  
+> -static void atmel_hlcdc_plane_atomic_disable(struct drm_plane *p,
+> -					     struct drm_atomic_state *state)
+> +static void hlcdc_atomic_disable(struct atmel_hlcdc_plane *plane)
+>  {
+> -	struct atmel_hlcdc_plane *plane = drm_plane_to_atmel_hlcdc_plane(p);
+> -
+>  	/* Disable interrupts */
+>  	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_HLCDC_LAYER_IDR,
+>  				    0xffffffff);
+> @@ -731,6 +832,72 @@ static void atmel_hlcdc_plane_atomic_disable(struct drm_plane *p,
+>  	atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_ISR);
+>  }
+>  
+> +static void xlcdc_atomic_disable(struct atmel_hlcdc_plane *plane)
+> +{
+> +	/* Disable interrupts */
+> +	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_XLCDC_LAYER_IDR,
+> +				    0xffffffff);
+> +
+> +	/* Disable the layer */
+> +	atmel_hlcdc_layer_write_reg(&plane->layer,
+> +				    ATMEL_XLCDC_LAYER_ENR, 0);
+> +
+> +	/* Clear all pending interrupts */
+> +	atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_XLCDC_LAYER_ISR);
+> +}
+> +
+> +static void atmel_hlcdc_plane_atomic_disable(struct drm_plane *p,
+> +					     struct drm_atomic_state *state)
+> +{
+> +	struct atmel_hlcdc_plane *plane = drm_plane_to_atmel_hlcdc_plane(p);
+> +	struct atmel_hlcdc_dc *dc = plane->base.dev->dev_private;
+> +
+> +	if (dc->desc->is_xlcdc)
+> +		xlcdc_atomic_disable(plane);
+> +	else
+> +		hlcdc_atomic_disable(plane);
+
+	dc->desc->lcdc_atomic_disable();
+
+> +}
+> +
+> +static void hlcdc_atomic_update(struct atmel_hlcdc_plane *plane)
+> +{
+> +	u32 sr;
+> +
+> +	/* Enable the overrun interrupts. */
+> +	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_HLCDC_LAYER_IER,
+> +				    ATMEL_HLCDC_LAYER_OVR_IRQ(0) |
+> +				    ATMEL_HLCDC_LAYER_OVR_IRQ(1) |
+> +				    ATMEL_HLCDC_LAYER_OVR_IRQ(2));
+> +
+> +	/* Apply the new config at the next SOF event. */
+> +	sr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHSR);
+> +	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHER,
+> +				    ATMEL_HLCDC_LAYER_UPDATE |
+> +				    (sr & ATMEL_HLCDC_LAYER_EN ?
+> +				    ATMEL_HLCDC_LAYER_A2Q : ATMEL_HLCDC_LAYER_EN));
+> +}
+> +
+> +static void xlcdc_atomic_update(struct atmel_hlcdc_plane *plane,
+> +				struct atmel_hlcdc_dc *dc)
+> +{
+> +	/* Enable the overrun interrupts. */
+> +	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_XLCDC_LAYER_IER,
+> +				    ATMEL_XLCDC_LAYER_OVR_IRQ(0) |
+> +				    ATMEL_XLCDC_LAYER_OVR_IRQ(1) |
+> +				    ATMEL_XLCDC_LAYER_OVR_IRQ(2));
+> +
+> +	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_XLCDC_LAYER_ENR,
+> +				    ATMEL_XLCDC_LAYER_EN);
+> +
+> +	/*
+> +	 * Updating XLCDC_xxxCFGx, XLCDC_xxxFBA and XLCDC_xxxEN,
+> +	 * (where xxx indicates each layer) requires writing one to the
+> +	 * Update Attribute field for each layer in LCDC_ATTRE register for SAM9X7.
+> +	 */
+> +	regmap_write(dc->hlcdc->regmap, ATMEL_XLCDC_ATTRE, ATMEL_XLCDC_BASE_UPDATE |
+> +		     ATMEL_XLCDC_OVR1_UPDATE | ATMEL_XLCDC_OVR3_UPDATE |
+> +		     ATMEL_XLCDC_HEO_UPDATE);
+> +}
+> +
+>  static void atmel_hlcdc_plane_atomic_update(struct drm_plane *p,
+>  					    struct drm_atomic_state *state)
+>  {
+> @@ -739,7 +906,7 @@ static void atmel_hlcdc_plane_atomic_update(struct drm_plane *p,
+>  	struct atmel_hlcdc_plane *plane = drm_plane_to_atmel_hlcdc_plane(p);
+>  	struct atmel_hlcdc_plane_state *hstate =
+>  			drm_plane_state_to_atmel_hlcdc_plane_state(new_s);
+> -	u32 sr;
+> +	struct atmel_hlcdc_dc *dc = p->dev->dev_private;
+>  
+>  	if (!new_s->crtc || !new_s->fb)
+>  		return;
+> @@ -750,29 +917,67 @@ static void atmel_hlcdc_plane_atomic_update(struct drm_plane *p,
+>  	}
+>  
+>  	atmel_hlcdc_plane_update_pos_and_size(plane, hstate);
+> -	atmel_hlcdc_plane_update_general_settings(plane, hstate);
+> +	if (dc->desc->is_xlcdc)
+> +		atmel_xlcdc_plane_update_general_settings(plane, hstate);
+> +	else
+> +		atmel_hlcdc_plane_update_general_settings(plane, hstate);
+
+	dc->desc->lcdc_plane_update_general_settigns();
+
+>  	atmel_hlcdc_plane_update_format(plane, hstate);
+>  	atmel_hlcdc_plane_update_clut(plane, hstate);
+>  	atmel_hlcdc_plane_update_buffers(plane, hstate);
+>  	atmel_hlcdc_plane_update_disc_area(plane, hstate);
+>  
+> -	/* Enable the overrun interrupts. */
+> -	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_HLCDC_LAYER_IER,
+> -				    ATMEL_HLCDC_LAYER_OVR_IRQ(0) |
+> -				    ATMEL_HLCDC_LAYER_OVR_IRQ(1) |
+> -				    ATMEL_HLCDC_LAYER_OVR_IRQ(2));
+> +	if (dc->desc->is_xlcdc)
+> +		xlcdc_atomic_update(plane, dc);
+> +	else
+> +		hlcdc_atomic_update(plane);
+
+	dc->desc->lcdc_atomic_update();
+
+> +}
+>  
+> -	/* Apply the new config at the next SOF event. */
+> -	sr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHSR);
+> -	atmel_hlcdc_layer_write_reg(&plane->layer, ATMEL_HLCDC_LAYER_CHER,
+> -			ATMEL_HLCDC_LAYER_UPDATE |
+> -			(sr & ATMEL_HLCDC_LAYER_EN ?
+> -			 ATMEL_HLCDC_LAYER_A2Q : ATMEL_HLCDC_LAYER_EN));
+> +u32 hlcdc_csc_coeffs[] = {
+> +	0x4c900091,
+> +	0x7a5f5090,
+> +	0x40040890
+> +};
+
+You can move this in function where it is used and declare it static.
+
+> +
+> +u32 xlcdc_csc_coeffs[] = {
+> +	0x00000488,
+> +	0x00000648,
+> +	0x1EA00480,
+> +	0x00001D28,
+> +	0x08100480,
+> +	0x00000000,
+> +	0x00000007
+> +};
+
+Same here.
+
+> +
+> +static void hlcdc_csc_init(struct atmel_hlcdc_plane *plane,
+> +			   const struct atmel_hlcdc_layer_desc *desc)
+> +{
+> +	/*
+> +	 * TODO: declare a "yuv-to-rgb-conv-factors" property to let
+> +	 * userspace modify these factors (using a BLOB property ?).
+> +	 */
+> +	for (int i = 0; i < ARRAY_SIZE(hlcdc_csc_coeffs); i++)
+
+{ at the end of for statement.
+
+> +		atmel_hlcdc_layer_write_cfg(&plane->layer,
+> +					    desc->layout.csc + i,
+> +					    hlcdc_csc_coeffs[i]);
+
+} here
+
+> +}
+> +
+> +static void xlcdc_csc_init(struct atmel_hlcdc_plane *plane,
+> +			   const struct atmel_hlcdc_layer_desc *desc)
+> +{
+> +	/*
+> +	 * yuv-to-rgb-conv-factors are now defined from LCDC_HEOCFG16 to
+> +	 * LCDC_HEOCFG21 registers in SAM9X7.
+> +	 */
+> +	for (int i = 0; i < ARRAY_SIZE(xlcdc_csc_coeffs); i++)
+> +		atmel_hlcdc_layer_write_cfg(&plane->layer,
+> +					    desc->layout.csc + i,
+> +					    xlcdc_csc_coeffs[i]);
+
+Ditto
+
+>  }
+>  
+>  static int atmel_hlcdc_plane_init_properties(struct atmel_hlcdc_plane *plane)
+>  {
+>  	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
+> +	struct atmel_hlcdc_dc *dc = plane->base.dev->dev_private;
+>  
+>  	if (desc->type == ATMEL_HLCDC_OVERLAY_LAYER ||
+>  	    desc->type == ATMEL_HLCDC_CURSOR_LAYER) {
+> @@ -796,31 +1001,19 @@ static int atmel_hlcdc_plane_init_properties(struct atmel_hlcdc_plane *plane)
+>  			return ret;
+>  	}
+>  
+> -	if (desc->layout.csc) {
+> -		/*
+> -		 * TODO: decare a "yuv-to-rgb-conv-factors" property to let
+> -		 * userspace modify these factors (using a BLOB property ?).
+> -		 */
+> -		atmel_hlcdc_layer_write_cfg(&plane->layer,
+> -					    desc->layout.csc,
+> -					    0x4c900091);
+> -		atmel_hlcdc_layer_write_cfg(&plane->layer,
+> -					    desc->layout.csc + 1,
+> -					    0x7a5f5090);
+> -		atmel_hlcdc_layer_write_cfg(&plane->layer,
+> -					    desc->layout.csc + 2,
+> -					    0x40040890);
+> -	}
+> +	if (dc->desc->is_xlcdc && desc->layout.csc)
+> +		xlcdc_csc_init(plane, desc);
+> +	else
+> +		if (desc->layout.csc)
+> +			hlcdc_csc_init(plane, desc);
+
+	if (desc->layout.csc)
+		dc->desc->lcdc_csc_init();
+
+>  
+>  	return 0;
+>  }
+>  
+> -void atmel_hlcdc_plane_irq(struct atmel_hlcdc_plane *plane)
+> +static void hlcdc_irq_dbg(struct atmel_hlcdc_plane *plane,
+> +			  const struct atmel_hlcdc_layer_desc *desc)
+>  {
+> -	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
+> -	u32 isr;
+> -
+> -	isr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_ISR);
+> +	u32 isr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_HLCDC_LAYER_ISR);
+>  
+>  	/*
+>  	 * There's not much we can do in case of overrun except informing
+> @@ -830,8 +1023,34 @@ void atmel_hlcdc_plane_irq(struct atmel_hlcdc_plane *plane)
+>  	if (isr &
+>  	    (ATMEL_HLCDC_LAYER_OVR_IRQ(0) | ATMEL_HLCDC_LAYER_OVR_IRQ(1) |
+>  	     ATMEL_HLCDC_LAYER_OVR_IRQ(2)))
+> -		dev_dbg(plane->base.dev->dev, "overrun on plane %s\n",
+> -			desc->name);
+> +		pr_warn("%s: overrun on plane %s\n", __func__, desc->name);
+
+Why changing to pr_warn? why not dev_warn, if any?
+
+> +}
+> +
+> +static void xlcdc_irq_dbg(struct atmel_hlcdc_plane *plane,
+> +			  const struct atmel_hlcdc_layer_desc *desc)
+> +{
+> +	u32 isr = atmel_hlcdc_layer_read_reg(&plane->layer, ATMEL_XLCDC_LAYER_ISR);
+> +
+> +	/*
+> +	 * There's not much we can do in case of overrun except informing
+> +	 * the user. However, we are in interrupt context here, hence the
+> +	 * use of dev_dbg().
+> +	 */
+> +	if (isr &
+> +	    (ATMEL_XLCDC_LAYER_OVR_IRQ(0) | ATMEL_XLCDC_LAYER_OVR_IRQ(1) |
+> +	     ATMEL_XLCDC_LAYER_OVR_IRQ(2)))
+> +		pr_warn("%s: overrun on plane %s\n", __func__, desc->name);
+
+dev_warn() ?
+
+> +}
+> +
+> +void atmel_hlcdc_plane_irq(struct atmel_hlcdc_plane *plane)
+> +{
+> +	const struct atmel_hlcdc_layer_desc *desc = plane->layer.desc;
+> +	struct atmel_hlcdc_dc *dc = plane->base.dev->dev_private;
+> +
+> +	if (dc->desc->is_xlcdc)
+> +		xlcdc_irq_dbg(plane, desc);
+> +	else
+> +		hlcdc_irq_dbg(plane, desc);
+
+	dc->desc->lcdc_irq_dbg() ?
+
+>  }
+>  
+>  static const struct drm_plane_helper_funcs atmel_hlcdc_layer_plane_helper_funcs = {
