@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B04799ABF
+	by mail.lfdr.de (Postfix) with ESMTP id 83295799ABE
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 22:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245013AbjIIURr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 16:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55534 "EHLO
+        id S244941AbjIIURu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 16:17:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245132AbjIIURp (ORCPT
+        with ESMTP id S244826AbjIIURr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 16:17:45 -0400
+        Sat, 9 Sep 2023 16:17:47 -0400
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A94CED
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 13:17:39 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 2D9BD3200805;
-        Sat,  9 Sep 2023 16:17:38 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FA51BC
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 13:17:41 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 68E34320090E;
+        Sat,  9 Sep 2023 16:17:40 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sat, 09 Sep 2023 16:17:38 -0400
+  by compute1.internal (MEProxy); Sat, 09 Sep 2023 16:17:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1694290657; x=
-        1694377057; bh=rUsqFVJjBVyLyCtvleKeuxMZhdTqpYL3EtsdFwHrfmk=; b=E
-        N8Sx3QN/zwyT1uB2+ogFARNEBx5avj520tUSxakXtHkIRaKHXquCPWKjhWIzDZgG
-        srtx3VyL9+CDt3cqFSDUG6MQF2i/sOudw4fvnTOxSxeyya6GP/oPZW2IYxCwRut2
-        40mmFiiqU6NNduAoRnoXLlYRKOSSRHcwtZ6GXPO3ZkS6e9fZ27yZrvOyB0euLz9y
-        kj88QUz7fOXwIZUbxic69m6Kh2dLZ/WpeigR/X4t3feBkqX7h24Rk/4bXQEfm40M
-        fQdX4a9Nz3LeVejqFaHuJXTUPRCg2thjwWhWK1mK2V6IgHXJdCUprlREPHV1mf+b
-        tDiB8MPwA70ma9zm4JwUQ==
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1694290659; x=
+        1694377059; bh=HyKF8F/MhKP+/+HfUHmiXOs6fZCNU+XAaKpYQdP8b5o=; b=J
+        kDfNIKb5OoXzQdKkTgNCXeFNXCpiqW915uClF5iObI79vo7f9KW1Oh4HGJX2fdDc
+        FPCHVatGnaFaAlAgyLyGtZzbsLIaQWHH7iPoANcK791yNmKKu5RVi6V/QynxemzS
+        9monY3DvscjJUv3HIne/CVYPeBIsoH6jlmGSlsqD26JgXo+SAFgzQmy36f3E2OU2
+        LQ9cK5jE9nFkIoViqQQHHBUq4luDwnBWdHCU9UzEAdtgKI1W82x3CkbZo1jLqHIY
+        PKbuXclW1at0SLW9cBQEpGMPFwBs7o1D0p7KCJ5P8elIVm3US6fNhwdD3dssW/7e
+        LqEL3+hsdeSyUd3ulfZKQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1694290657; x=
-        1694377057; bh=rUsqFVJjBVyLyCtvleKeuxMZhdTqpYL3EtsdFwHrfmk=; b=l
-        R+Q/fYfNiHJVIzgyH8iPibJTTy6BLgjJwAJX9wbPM0FZjI/tTm4mQMH5s2MYqzG7
-        CoypenZlZDIJwwfOBTr01Buows1SWTkPrwjGvr26szHSjHxGbO+6QUhMwxCDrjqy
-        X013ycgQWlbyxULqmNrU3Xfy+mJZL3U876cdL6urH/vRtDyoMEk99b46BbaZTwPE
-        FPfJ+CPX3k0+3F9zmkQop8AxbAbmC2TrHdCRcFf3vELyKw6fJ4BqmE60GJNZdLXQ
-        slewUndvm4x5TzH5Y1HEHVR6aif3RLAIEw78+QsrAXYpDFfgIf7KUkBJT8Srh0vt
-        LdKCPxnON/hgTnyTp6hFQ==
-X-ME-Sender: <xms:4dL8ZP9-5oTidZloLy-nR4A4FbUUVGt-C7Bk6E37WxyKXgTk2PJW-g>
-    <xme:4dL8ZLtIRylnb_DLOCyHGJRtEVI_MwLggr1EH8q_NWYe7mgHOn_NNCTPiwgZR46nf
-    I4oD6zJTmMiIbRTog>
-X-ME-Received: <xmr:4dL8ZNBRdsxg3h_Z2SdA8FnR7qYUb0DtLHc-6Uo2qgP792mDniMJ9-aMgr5_b_o2xaS1Okk7eqLaBwHkqmV18wwEYkZXxlBr7oU1BozGtUF4cebUMD0iKGnavlKwwDLOtcgwVA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehledgudeghecutefuodetggdotefrod
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1694290659; x=
+        1694377059; bh=HyKF8F/MhKP+/+HfUHmiXOs6fZCNU+XAaKpYQdP8b5o=; b=N
+        GLiUn6J/oadG0HJX2fg9RyrdTv40GynBxcSwJzMBTpgX9CssXqBIHR3YkQQTcvPM
+        f/zVsR8nU1eDqhte1SDK47QoMsAmiFKU3cbnTCOxlMf85tywSHvFcicsnb90A/lX
+        AmMRLVKdOTJy2Q1bbjaDYxbrZs+RWZVuhripR6HiIDThEFArWjRWs49+0fMS+/5J
+        BIBL1TxmT25fKm4qStV573bJdKmt3adGucn1QNZm2giqSiQ/m58+wtk5AdPw4x+H
+        B8ky8qdfvjGGulnOCMfE6kJLFdsjLxoBSd77bsbHctJlyNembZZg+ep7W6Kf2lpj
+        X93SgqnkADSG/m/0yvoHQ==
+X-ME-Sender: <xms:49L8ZCzVQL84ALiuQEP0Ead93a8Krd2Nc6JQ8M2XfEv9etvh1_UQMw>
+    <xme:49L8ZORnpqKsLuHFUA-lAmo1uKCOcqjSzssS-7wHgDLnIFKXvjpIUxMcCq_qVwido
+    sUD6FKvwI1FiIvo9A>
+X-ME-Received: <xmr:49L8ZEVswTfojHHcMN97n83bqnPjpxpbU_nGHfkL9xthl67SCy9lEs377Fl2CyBTp2bZzT9pIEOXJ83bPTqlR4jb0Asky6pvYaaAa2mgamF4kjseO7Q0U0Ep3DW9Fl6ei9ozdg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehledgudegiecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
     enucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghm
@@ -56,22 +56,22 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehledgudeghecutefuodetgg
     ggtffrrghtthgvrhhnpedukeetueduhedtleetvefguddvvdejhfefudelgfduveeggeeh
     gfdufeeitdevteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
     hrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:4dL8ZLchhWySKUuDasjyZRBwirkTM0Hv-5KK324bJPnioTfpilz32A>
-    <xmx:4dL8ZEOJ8dOb5MX812UdY66grGmMnTiq_0FdOjruBInopqeysKKZQQ>
-    <xmx:4dL8ZNk_1GNUP3mm6M8l-i85_rfeI8IhxNymwDZf0md-BVV5Yd1Ktw>
-    <xmx:4dL8ZBoYoYJ7FQKWFAUwYWhZX7FXYpsZwK4IwxxST5Z9rMObLBc-Fw>
+X-ME-Proxy: <xmx:49L8ZIiDIG98txURAyYMLGs9QZIb2FEeIZlasS9UfIucV--eczHMPQ>
+    <xmx:49L8ZED1p_QLgaFCY3d3W5ywNFfq5zhk4YBkOZ4KRHjKfRvcvLBqpA>
+    <xmx:49L8ZJKIwSmEZj9d-xz-QWPwVITZI7SwOxt_VikvCdgyFwWoPu8z_w>
+    <xmx:49L8ZH84GHPzaKdux-COeCYp2MU-glpjJ-N-1szOATamQ-bhFIduiw>
 Feedback-ID: i0ad843c9:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 9 Sep 2023 16:17:37 -0400 (EDT)
+ 9 Sep 2023 16:17:39 -0400 (EDT)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Palmer Dabbelt <palmer@dabbelt.com>,
         Alexandre Ghiti <alexghiti@rivosinc.com>,
         linux-riscv@lists.infradead.org
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Samuel Holland <samuel@sholland.org>
-Subject: [PATCH 4/7] riscv: mm: Make asid_bits a local variable
-Date:   Sat,  9 Sep 2023 15:16:32 -0500
-Message-ID: <20230909201727.10909-5-samuel@sholland.org>
+Subject: [PATCH 5/7] riscv: mm: Preserve global TLB entries when switching contexts
+Date:   Sat,  9 Sep 2023 15:16:33 -0500
+Message-ID: <20230909201727.10909-6-samuel@sholland.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230909201727.10909-1-samuel@sholland.org>
 References: <20230909201727.10909-1-samuel@sholland.org>
@@ -86,35 +86,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This variable is only used inside asids_init().
+If the CPU does not support multiple ASIDs, all MM contexts use ASID 0.
+In this case, it is still beneficial to flush the TLB by ASID, as the
+single-ASID variant of the sfence.vma instruction preserves TLB entries
+for global (kernel) pages.
+
+This optimization is recommended by the RISC-V privileged specification:
+
+  If the implementation does not provide ASIDs, or software chooses
+  to always use ASID 0, then after every satp write, software should
+  execute SFENCE.VMA with rs1=x0. In the common case that no global
+  translations have been modified, rs2 should be set to a register
+  other than x0 but which contains the value zero, so that global
+  translations are not flushed.
+
+It is not possible to apply this optimization when using the ASID
+allocator, because that code must flush the TLB for all ASIDs at once
+when incrementing the version number.
 
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
 
- arch/riscv/mm/context.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/riscv/mm/context.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-index b5170ac1b742..43a8bc2d5af4 100644
+index 43a8bc2d5af4..3ca9b653df7d 100644
 --- a/arch/riscv/mm/context.c
 +++ b/arch/riscv/mm/context.c
-@@ -20,7 +20,6 @@
- 
- DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
- 
--static unsigned long asid_bits;
- static unsigned long num_asids;
- 
- static atomic_long_t current_version;
-@@ -226,7 +225,7 @@ static inline void set_mm(struct mm_struct *prev,
- 
- static int __init asids_init(void)
+@@ -200,7 +200,7 @@ static void set_mm_noasid(struct mm_struct *mm)
  {
--	unsigned long old;
-+	unsigned long asid_bits, old;
+ 	/* Switch the page table and blindly nuke entire local TLB */
+ 	csr_write(CSR_SATP, virt_to_pfn(mm->pgd) | satp_mode);
+-	local_flush_tlb_all();
++	local_flush_tlb_all_asid(0);
+ }
  
- 	/* Figure-out number of ASID bits in HW */
- 	old = csr_read(CSR_SATP);
+ static inline void set_mm(struct mm_struct *prev,
 -- 
 2.41.0
 
