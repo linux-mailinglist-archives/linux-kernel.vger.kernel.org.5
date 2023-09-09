@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFA3799327
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347F4799328
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234907AbjIIAW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:22:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57202 "EHLO
+        id S236496AbjIIAW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236083AbjIIAWV (ORCPT
+        with ESMTP id S1345380AbjIIAWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 20:22:21 -0400
+        Fri, 8 Sep 2023 20:22:23 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F6F1FF0;
-        Fri,  8 Sep 2023 17:22:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23A1CC433C9;
-        Sat,  9 Sep 2023 00:22:16 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5041FF2;
+        Fri,  8 Sep 2023 17:22:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 680C7C433BB;
+        Sat,  9 Sep 2023 00:22:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694218937;
-        bh=6zZhYpEfqiSb8CkV4zQWOjcp2N+k6I++dN/RT6H5mwY=;
+        s=k20201202; t=1694218938;
+        bh=d/pO5CryywYvb1JjGDX8L3PtPe7/JEc6xSMfBRKns0E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z8vYkMmPdgPy0wbFU+Pzmg5oanYx9RxcTmmCEwrVy0+WJziYOHnstHGNP7/TzJkoM
-         SV8wYTatg03V9BQTQBVOxYmHwsuw8pp8/aNvnBt9EzuFOox/0SSomF6r4/qeIwrmuQ
-         I2xB/Z39+gwMm3hAmvi5WVOv5swWDXP5Ikom8ZdlimP3CovaCSGfm1oNr5CKf9pUB1
-         r23sGT5shGCUD0WRkC/rotCqNFDQ/bO8FI26leWkqxBxuEsyZ4JenPzfzyhcvs5uKx
-         ZqWFbvSzjXiOU+adxPXK5uWb/+Rhgu+ZMecJM4oqjwQ0jhttBGwEioQG7q4+2pdrSF
-         KgaFzejrq7OuA==
+        b=tWoYjyAb7+mXqlPcMPRf0Xytsa43WPq5iF8pgmgY7nVe2A6BvUU7w55uBnJL1xrOR
+         ejZUcIW1APm0MxmEVlvS3+9RrkR38PUeIhn/bgCr0J02hXchLqgrnUXV7DGl7MREQS
+         zTqPpPJtmVmtpw+iQae50Ho0r0ghuwD2Q2Hf+A8i/4b8O76VIfKkf4+8eOeHVLjIaP
+         6p2pHFzJuIlmWgTH74WkPAXBSlXSnPtRDbKTDVFuY76YdSsnDFjCH7hgLQqUwcm+VP
+         Zt88ax4ND8ZQR6Iv8RV+xPOaLmFF1sZ63Q8qjNO9dAS9U01rtAkLTsQVo1A0OLRlpI
+         fyjkd2udwoCVQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Baokun Li <libaokun1@huawei.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 05/11] ext4: avoid overlapping preallocations due to overflow
-Date:   Fri,  8 Sep 2023 20:21:58 -0400
-Message-Id: <20230909002205.3578068-5-sashal@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, l.stach@pengutronix.de,
+        kw@linux.com, bhelgaas@google.com, shawnguo@kernel.org,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.5 06/11] PCI: dwc: Provide deinit callback for i.MX
+Date:   Fri,  8 Sep 2023 20:21:59 -0400
+Message-Id: <20230909002205.3578068-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909002205.3578068-1-sashal@kernel.org>
 References: <20230909002205.3578068-1-sashal@kernel.org>
@@ -54,105 +58,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Baokun Li <libaokun1@huawei.com>
+From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit bedc5d34632c21b5adb8ca7143d4c1f794507e4c ]
+[ Upstream commit fc8b24c28bec19fc0621d108b9ee81ddfdedb25a ]
 
-Let's say we want to allocate 2 blocks starting from 4294966386, after
-predicting the file size, start is aligned to 4294965248, len is changed
-to 2048, then end = start + size = 0x100000000. Since end is of
-type ext4_lblk_t, i.e. uint, end is truncated to 0.
+The i.MX integration for the DesignWare PCI controller has a _host_exit()
+operation which undoes everything that the _host_init() operation does but
+does not wire this up as the host_deinit callback for the core, or call it
+in any path other than suspend. This means that if we ever unwind the
+initial probe of the device, for example because it fails, the regulator
+core complains that the regulators for the device were left enabled:
 
-This causes (pa->pa_lstart >= end) to always hold when checking if the
-current extent to be allocated crosses already preallocated blocks, so the
-resulting ac_g_ex may cross already preallocated blocks. Hence we convert
-the end type to loff_t and use pa_logical_end() to avoid overflow.
+imx6q-pcie 33800000.pcie: iATU: unroll T, 4 ob, 4 ib, align 64K, limit 16G
+imx6q-pcie 33800000.pcie: Phy link never came up
+imx6q-pcie 33800000.pcie: Phy link never came up
+imx6q-pcie: probe of 33800000.pcie failed with error -110
+------------[ cut here ]------------
+WARNING: CPU: 2 PID: 46 at drivers/regulator/core.c:2396 _regulator_put+0x110/0x128
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-Link: https://lore.kernel.org/r/20230724121059.11834-4-libaokun1@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Wire up the callback so that the core can clean up after itself.
+
+Link: https://lore.kernel.org/r/20230731-pci-imx-regulator-cleanup-v2-1-fc8fa5c9893d@kernel.org
+Tested-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Reviewed-by: Richard Zhu <hongxing.zhu@nxp.com>
+Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/mballoc.c | 21 ++++++++++-----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
+ drivers/pci/controller/dwc/pci-imx6.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 4cb13b3e41b3f..2fdcd37b7c54f 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -4222,12 +4222,13 @@ ext4_mb_pa_rb_next_iter(ext4_lblk_t new_start, ext4_lblk_t cur_start, struct rb_
+diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+index 27aaa2a6bf391..a18c20085e940 100644
+--- a/drivers/pci/controller/dwc/pci-imx6.c
++++ b/drivers/pci/controller/dwc/pci-imx6.c
+@@ -1040,6 +1040,7 @@ static void imx6_pcie_host_exit(struct dw_pcie_rp *pp)
  
- static inline void
- ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
--			  ext4_lblk_t start, ext4_lblk_t end)
-+			  ext4_lblk_t start, loff_t end)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
- 	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
- 	struct ext4_prealloc_space *tmp_pa;
--	ext4_lblk_t tmp_pa_start, tmp_pa_end;
-+	ext4_lblk_t tmp_pa_start;
-+	loff_t tmp_pa_end;
- 	struct rb_node *iter;
+ static const struct dw_pcie_host_ops imx6_pcie_host_ops = {
+ 	.host_init = imx6_pcie_host_init,
++	.host_deinit = imx6_pcie_host_exit,
+ };
  
- 	read_lock(&ei->i_prealloc_lock);
-@@ -4236,7 +4237,7 @@ ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
- 		tmp_pa = rb_entry(iter, struct ext4_prealloc_space,
- 				  pa_node.inode_node);
- 		tmp_pa_start = tmp_pa->pa_lstart;
--		tmp_pa_end = tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
-+		tmp_pa_end = pa_logical_end(sbi, tmp_pa);
- 
- 		spin_lock(&tmp_pa->pa_lock);
- 		if (tmp_pa->pa_deleted == 0)
-@@ -4258,14 +4259,14 @@ ext4_mb_pa_assert_overlap(struct ext4_allocation_context *ac,
-  */
- static inline void
- ext4_mb_pa_adjust_overlap(struct ext4_allocation_context *ac,
--			  ext4_lblk_t *start, ext4_lblk_t *end)
-+			  ext4_lblk_t *start, loff_t *end)
- {
- 	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
- 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
- 	struct ext4_prealloc_space *tmp_pa = NULL, *left_pa = NULL, *right_pa = NULL;
- 	struct rb_node *iter;
--	ext4_lblk_t new_start, new_end;
--	ext4_lblk_t tmp_pa_start, tmp_pa_end, left_pa_end = -1, right_pa_start = -1;
-+	ext4_lblk_t new_start, tmp_pa_start, right_pa_start = -1;
-+	loff_t new_end, tmp_pa_end, left_pa_end = -1;
- 
- 	new_start = *start;
- 	new_end = *end;
-@@ -4284,7 +4285,7 @@ ext4_mb_pa_adjust_overlap(struct ext4_allocation_context *ac,
- 		tmp_pa = rb_entry(iter, struct ext4_prealloc_space,
- 				  pa_node.inode_node);
- 		tmp_pa_start = tmp_pa->pa_lstart;
--		tmp_pa_end = tmp_pa->pa_lstart + EXT4_C2B(sbi, tmp_pa->pa_len);
-+		tmp_pa_end = pa_logical_end(sbi, tmp_pa);
- 
- 		/* PA must not overlap original request */
- 		spin_lock(&tmp_pa->pa_lock);
-@@ -4364,8 +4365,7 @@ ext4_mb_pa_adjust_overlap(struct ext4_allocation_context *ac,
- 	}
- 
- 	if (left_pa) {
--		left_pa_end =
--			left_pa->pa_lstart + EXT4_C2B(sbi, left_pa->pa_len);
-+		left_pa_end = pa_logical_end(sbi, left_pa);
- 		BUG_ON(left_pa_end > ac->ac_o_ex.fe_logical);
- 	}
- 
-@@ -4404,8 +4404,7 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
- 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
- 	struct ext4_super_block *es = sbi->s_es;
- 	int bsbits, max;
--	ext4_lblk_t end;
--	loff_t size, start_off;
-+	loff_t size, start_off, end;
- 	loff_t orig_size __maybe_unused;
- 	ext4_lblk_t start;
- 
+ static const struct dw_pcie_ops dw_pcie_ops = {
 -- 
 2.40.1
 
