@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95CCC79952A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 425B87994F0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236743AbjIIAvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36892 "EHLO
+        id S1346169AbjIIAoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjIIAvD (ORCPT
+        with ESMTP id S1346199AbjIIAni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 20:51:03 -0400
+        Fri, 8 Sep 2023 20:43:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71F15270C;
-        Fri,  8 Sep 2023 17:50:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A19A5C433D9;
-        Sat,  9 Sep 2023 00:40:50 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76ABEE45;
+        Fri,  8 Sep 2023 17:41:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8666C116A5;
+        Sat,  9 Sep 2023 00:40:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694220051;
-        bh=1xK2q2NfCdz6+gYsXTF+bzt9IQT/cQZPBZ6xqsrpdXc=;
+        s=k20201202; t=1694220054;
+        bh=zYyaHrFEtEHKe5etRnxtlFJFqe1gKZN9do1KTfD6Etg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UTbkiuaXSAlL9lRxOAeybynZ4BEyAa9KM2raMxBl6zDmV79ipN9Bm75DuaOASX8a2
-         KsTsPgyo6fL88j4tLNb7l2FLZAt/3J6yvBrt/CSVko0nz0PpkrMoeyNXcvFqCNpHbD
-         OJam2mcTMk1XFlHP6++VoLJ/GDvUunbWg3On35m/7rcB1beA/l2as8tjSBjBPvkAi2
-         zPZeHIFSSmdLseMTLX/Mlte4+Ko0kGZmakUx4IU4LBTlZzIlwFau+YVpapA/32EMZZ
-         /pp66fMhV3McC6d/GsJUJGIkrgyD9Gas4YT4Kg7oP2ZI8OhxDy9s0PAdsd44n6lgyN
-         WQYPyomfbXeTQ==
+        b=qmG2BH8HRa62R0IW4fPSzHBEyiw2eVW4ymFYtwUw6AlAyBkl5OI9zYaKz+TAcwCvK
+         76d6Cc9LXiH0xeFMnHsXRRri12Zc4Dv1U5bUO3A7W+KXBCCSs8fWL3u/yJ4fRlfWUz
+         6XY/riWV93A3oE65dGGZrsXNAsbwG7gDQHNXu6wQZiU7XoJ4l4hvxnm8c/Izs4GZTr
+         bjjRc7e3zwUvktA0Udx/72wnB/qEB2oeOiTCK/HNEvpi1E9Bmb8IBwbkPV6J/6WdOJ
+         xnj542I6e83Mai2hm+HPMGm/GuieQOBPElzgBp5TTU8vtQeO6XDJcGri2gkg5YVX6F
+         fb58B/abk5+CQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Zhang Shurong <zhang_shurong@foxmail.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Sasha Levin <sashal@kernel.org>, mchehab@kernel.org,
-        yuzhe@nfschina.com, harperchen1110@gmail.com,
         linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 02/14] media: dw2102: Fix null-ptr-deref in dw2102_i2c_transfer()
-Date:   Fri,  8 Sep 2023 20:40:33 -0400
-Message-Id: <20230909004045.3581014-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 03/14] media: af9005: Fix null-ptr-deref in af9005_i2c_xfer
+Date:   Fri,  8 Sep 2023 20:40:34 -0400
+Message-Id: <20230909004045.3581014-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909004045.3581014-1-sashal@kernel.org>
 References: <20230909004045.3581014-1-sashal@kernel.org>
@@ -57,94 +56,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhang Shurong <zhang_shurong@foxmail.com>
 
-[ Upstream commit 5ae544d94abc8ff77b1b9bf8774def3fa5689b5b ]
+[ Upstream commit f4ee84f27625ce1fdf41e8483fa0561a1b837d10 ]
 
-In dw2102_i2c_transfer, msg is controlled by user. When msg[i].buf
+In af9005_i2c_xfer, msg is controlled by user. When msg[i].buf
 is null and msg[i].len is zero, former checks on msg[i].buf would be
-passed. Malicious data finally reach dw2102_i2c_transfer. If accessing
+passed. Malicious data finally reach af9005_i2c_xfer. If accessing
 msg[i].buf[0] without sanity check, null ptr deref would happen.
 We add check on msg[i].len to prevent crash.
 
 Similar commit:
-commit 950e252cb469
-("[media] dw2102: limit messages to buffer size")
+commit 0ed554fd769a
+("media: dvb-usb: az6027: fix null-ptr-deref in az6027_i2c_xfer()")
 
 Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb/dw2102.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ drivers/media/usb/dvb-usb/af9005.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/media/usb/dvb-usb/dw2102.c b/drivers/media/usb/dvb-usb/dw2102.c
-index cd0566c0b3de7..a3c5261f9aa41 100644
---- a/drivers/media/usb/dvb-usb/dw2102.c
-+++ b/drivers/media/usb/dvb-usb/dw2102.c
-@@ -131,6 +131,10 @@ static int dw2102_i2c_transfer(struct i2c_adapter *adap, struct i2c_msg msg[],
- 
- 	switch (num) {
- 	case 2:
-+		if (msg[0].len < 1) {
-+			num = -EOPNOTSUPP;
-+			break;
+diff --git a/drivers/media/usb/dvb-usb/af9005.c b/drivers/media/usb/dvb-usb/af9005.c
+index d2737460c9d3b..60acaaf8b892f 100644
+--- a/drivers/media/usb/dvb-usb/af9005.c
++++ b/drivers/media/usb/dvb-usb/af9005.c
+@@ -431,6 +431,10 @@ static int af9005_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg msg[],
+ 		if (ret == 0)
+ 			ret = 2;
+ 	} else {
++		if (msg[0].len < 2) {
++			ret = -EOPNOTSUPP;
++			goto unlock;
 +		}
- 		/* read stv0299 register */
- 		value = msg[0].buf[0];/* register */
- 		for (i = 0; i < msg[1].len; i++) {
-@@ -142,6 +146,10 @@ static int dw2102_i2c_transfer(struct i2c_adapter *adap, struct i2c_msg msg[],
- 	case 1:
- 		switch (msg[0].addr) {
- 		case 0x68:
-+			if (msg[0].len < 2) {
-+				num = -EOPNOTSUPP;
-+				break;
-+			}
- 			/* write to stv0299 register */
- 			buf6[0] = 0x2a;
- 			buf6[1] = msg[0].buf[0];
-@@ -151,6 +159,10 @@ static int dw2102_i2c_transfer(struct i2c_adapter *adap, struct i2c_msg msg[],
- 			break;
- 		case 0x60:
- 			if (msg[0].flags == 0) {
-+				if (msg[0].len < 4) {
-+					num = -EOPNOTSUPP;
-+					break;
-+				}
- 			/* write to tuner pll */
- 				buf6[0] = 0x2c;
- 				buf6[1] = 5;
-@@ -162,6 +174,10 @@ static int dw2102_i2c_transfer(struct i2c_adapter *adap, struct i2c_msg msg[],
- 				dw210x_op_rw(d->udev, 0xb2, 0, 0,
- 						buf6, 7, DW210X_WRITE_MSG);
- 			} else {
-+				if (msg[0].len < 1) {
-+					num = -EOPNOTSUPP;
-+					break;
-+				}
- 			/* read from tuner */
- 				dw210x_op_rw(d->udev, 0xb5, 0, 0,
- 						buf6, 1, DW210X_READ_MSG);
-@@ -169,12 +185,20 @@ static int dw2102_i2c_transfer(struct i2c_adapter *adap, struct i2c_msg msg[],
- 			}
- 			break;
- 		case (DW2102_RC_QUERY):
-+			if (msg[0].len < 2) {
-+				num = -EOPNOTSUPP;
-+				break;
-+			}
- 			dw210x_op_rw(d->udev, 0xb8, 0, 0,
- 					buf6, 2, DW210X_READ_MSG);
- 			msg[0].buf[0] = buf6[0];
- 			msg[0].buf[1] = buf6[1];
- 			break;
- 		case (DW2102_VOLTAGE_CTRL):
-+			if (msg[0].len < 1) {
-+				num = -EOPNOTSUPP;
-+				break;
-+			}
- 			buf6[0] = 0x30;
- 			buf6[1] = msg[0].buf[0];
- 			dw210x_op_rw(d->udev, 0xb2, 0, 0,
+ 		/* write one or more registers */
+ 		reg = msg[0].buf[0];
+ 		addr = msg[0].addr;
+@@ -440,6 +444,7 @@ static int af9005_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg msg[],
+ 			ret = 1;
+ 	}
+ 
++unlock:
+ 	mutex_unlock(&d->i2c_mutex);
+ 	return ret;
+ }
 -- 
 2.40.1
 
