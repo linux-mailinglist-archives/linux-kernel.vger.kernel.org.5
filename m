@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DCB799C24
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 01:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85BF3799C28
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 02:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240827AbjIIX6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 19:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37412 "EHLO
+        id S1343837AbjIJAAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 20:00:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231758AbjIIX6E (ORCPT
+        with ESMTP id S242067AbjIJAAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 19:58:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B83771BD
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 16:57:59 -0700 (PDT)
+        Sat, 9 Sep 2023 20:00:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4CD1BF
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 16:59:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694303879; x=1725839879;
+  t=1694303999; x=1725839999;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=C5T9p5h5t1QUPVT65JINBV51aMrrj56FEgVzTjGh9/E=;
-  b=ANhbb97f1z5O9kbJgi4KqVA12DbkPd2JpC9iIHdtKxL3olVU2/lpdB52
-   jEHogNk2IUpOdOVnm1wqCiQNN12dlRKvndFqU0BfzOfreCqtlh1avcw4w
-   I/j/Cg6Q0e39C1pWo3du68Wo2ZAi9ZqxqLg90Hj6fcTtTST8sW2MH7Mdb
-   BZvvYoVdMOXjpcf2F10OXM2DXGN56hkCP1dnYh2soVb43gcdNyjMK9w3y
-   XmAZ+SjOgyq0xEgFRTvD9NMxwbMUhAyJ38uR8lag6JiAjOXvv7FzVEsfS
-   zkEn5gXHDAwptGZoBnQCGv3sb9WpZsmR/oItoVancPf0j/Ic0MASZHk5l
+  bh=fHTdagqL+LfhPiJe2cHZhqxZp7r3SU4TYF9oqz40oN8=;
+  b=JwPcZV/QgD03YbUcifl5iAVN+ILK/cZ+yxQSkbnfP8txp3Z+5ifYXriQ
+   fQj0J2T6mNEhUnjHAM9yAi6/HzfvOE9t3kna2kQBVvXDZDgUOS40q6VwM
+   s+Hc48sU53kQiAM7NHiPi7Ffxrubq6JdfPJkJ0YtD8xTJb1Ewusm2LJxf
+   crw1Aj/7Tyvh1JR3zO33I+eR8TWPjKNM8NnRoawWo72GPwr62mAYXuvxC
+   fYYmJWnoE23UGHnaAPBRQLf9zm5zC0HnW+VaxivMQyB+CwqBiwpGB5PuJ
+   tS8xoM1qlVi/rSlKim4HJhu2IdPnIvFEfMAqkNeGiAPPryNgTuciTQmhj
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="376763213"
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="358158849"
 X-IronPort-AV: E=Sophos;i="6.02,240,1688454000"; 
-   d="scan'208";a="376763213"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 16:57:59 -0700
+   d="scan'208";a="358158849"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 16:59:58 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="772133677"
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="857833729"
 X-IronPort-AV: E=Sophos;i="6.02,240,1688454000"; 
-   d="scan'208";a="772133677"
+   d="scan'208";a="857833729"
 Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 09 Sep 2023 16:57:57 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 09 Sep 2023 16:59:57 -0700
 Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qf7pr-00044B-14;
-        Sat, 09 Sep 2023 23:57:55 +0000
-Date:   Sun, 10 Sep 2023 07:57:42 +0800
+        id 1qf7rn-00044K-1Y;
+        Sat, 09 Sep 2023 23:59:55 +0000
+Date:   Sun, 10 Sep 2023 07:59:49 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Igor Torrente <igormtorrente@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Melissa Wen <melissa.srw@gmail.com>
-Subject: drivers/gpu/drm/vkms/vkms_formats.c:91:35: sparse: sparse: cast to
- restricted __le16
-Message-ID: <202309100731.aKzChvXw-lkp@intel.com>
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: kernel/bpf/memalloc.c:139:48: sparse: sparse: incorrect type in
+ initializer (different address spaces)
+Message-ID: <202309100756.kJWzQTtH-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -63,154 +63,126 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   a3c57ab79a06e333a869ae340420cb3c6f5921d3
-commit: 3675d8a1726337bd1e839a185e0a7ce0bc459b6b drm: vkms: Adds XRGB_16161616 and ARGB_1616161616 formats
+head:   6b8bb5b8d9b35fb43f0dbf9fd91b7d35e6232e08
+commit: 4ab67149f3c6e97c5c506a726f0ebdec38241679 bpf: Add percpu allocation support to bpf_mem_alloc.
 date:   1 year ago
-config: i386-randconfig-061-20230909 (https://download.01.org/0day-ci/archive/20230910/202309100731.aKzChvXw-lkp@intel.com/config)
+config: i386-randconfig-063-20230910 (https://download.01.org/0day-ci/archive/20230910/202309100756.kJWzQTtH-lkp@intel.com/config)
 compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230910/202309100731.aKzChvXw-lkp@intel.com/reproduce)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230910/202309100756.kJWzQTtH-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309100731.aKzChvXw-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309100756.kJWzQTtH-lkp@intel.com/
 
 sparse warnings: (new ones prefixed by >>)
->> drivers/gpu/drm/vkms/vkms_formats.c:91:35: sparse: sparse: cast to restricted __le16
-   drivers/gpu/drm/vkms/vkms_formats.c:92:35: sparse: sparse: cast to restricted __le16
-   drivers/gpu/drm/vkms/vkms_formats.c:93:35: sparse: sparse: cast to restricted __le16
-   drivers/gpu/drm/vkms/vkms_formats.c:94:35: sparse: sparse: cast to restricted __le16
-   drivers/gpu/drm/vkms/vkms_formats.c:109:35: sparse: sparse: cast to restricted __le16
-   drivers/gpu/drm/vkms/vkms_formats.c:110:35: sparse: sparse: cast to restricted __le16
-   drivers/gpu/drm/vkms/vkms_formats.c:111:35: sparse: sparse: cast to restricted __le16
->> drivers/gpu/drm/vkms/vkms_formats.c:177:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   drivers/gpu/drm/vkms/vkms_formats.c:177:31: sparse:     expected unsigned short [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:177:31: sparse:     got restricted __le16 [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:178:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   drivers/gpu/drm/vkms/vkms_formats.c:178:31: sparse:     expected unsigned short [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:178:31: sparse:     got restricted __le16 [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:179:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   drivers/gpu/drm/vkms/vkms_formats.c:179:31: sparse:     expected unsigned short [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:179:31: sparse:     got restricted __le16 [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:180:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   drivers/gpu/drm/vkms/vkms_formats.c:180:31: sparse:     expected unsigned short [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:180:31: sparse:     got restricted __le16 [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:195:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   drivers/gpu/drm/vkms/vkms_formats.c:195:31: sparse:     expected unsigned short [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:195:31: sparse:     got restricted __le16 [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:196:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   drivers/gpu/drm/vkms/vkms_formats.c:196:31: sparse:     expected unsigned short [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:196:31: sparse:     got restricted __le16 [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:197:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   drivers/gpu/drm/vkms/vkms_formats.c:197:31: sparse:     expected unsigned short [usertype]
-   drivers/gpu/drm/vkms/vkms_formats.c:197:31: sparse:     got restricted __le16 [usertype]
+>> kernel/bpf/memalloc.c:139:48: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void *pptr @@     got void [noderef] __percpu * @@
+   kernel/bpf/memalloc.c:139:48: sparse:     expected void *pptr
+   kernel/bpf/memalloc.c:139:48: sparse:     got void [noderef] __percpu *
+>> kernel/bpf/memalloc.c:142:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __percpu *__pdata @@     got void *pptr @@
+   kernel/bpf/memalloc.c:142:37: sparse:     expected void [noderef] __percpu *__pdata
+   kernel/bpf/memalloc.c:142:37: sparse:     got void *pptr
+>> kernel/bpf/memalloc.c:211:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __percpu *__pdata @@     got void * @@
+   kernel/bpf/memalloc.c:211:43: sparse:     expected void [noderef] __percpu *__pdata
+   kernel/bpf/memalloc.c:211:43: sparse:     got void *
 
-vim +91 drivers/gpu/drm/vkms/vkms_formats.c
+vim +139 kernel/bpf/memalloc.c
 
-    80	
-    81	static void ARGB16161616_to_argb_u16(struct line_buffer *stage_buffer,
-    82					     const struct vkms_frame_info *frame_info,
-    83					     int y)
-    84	{
-    85		struct pixel_argb_u16 *out_pixels = stage_buffer->pixels;
-    86		u16 *src_pixels = get_packed_src_addr(frame_info, y);
-    87		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
-    88				    stage_buffer->n_pixels);
-    89	
-    90		for (size_t x = 0; x < x_limit; x++, src_pixels += 4) {
-  > 91			out_pixels[x].a = le16_to_cpu(src_pixels[3]);
-    92			out_pixels[x].r = le16_to_cpu(src_pixels[2]);
-    93			out_pixels[x].g = le16_to_cpu(src_pixels[1]);
-    94			out_pixels[x].b = le16_to_cpu(src_pixels[0]);
-    95		}
-    96	}
-    97	
-    98	static void XRGB16161616_to_argb_u16(struct line_buffer *stage_buffer,
-    99					     const struct vkms_frame_info *frame_info,
-   100					     int y)
-   101	{
-   102		struct pixel_argb_u16 *out_pixels = stage_buffer->pixels;
-   103		u16 *src_pixels = get_packed_src_addr(frame_info, y);
-   104		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
-   105				    stage_buffer->n_pixels);
-   106	
-   107		for (size_t x = 0; x < x_limit; x++, src_pixels += 4) {
-   108			out_pixels[x].a = (u16)0xffff;
-   109			out_pixels[x].r = le16_to_cpu(src_pixels[2]);
-   110			out_pixels[x].g = le16_to_cpu(src_pixels[1]);
-   111			out_pixels[x].b = le16_to_cpu(src_pixels[0]);
-   112		}
-   113	}
-   114	
-   115	/*
-   116	 * The following  functions take an line of argb_u16 pixels from the
-   117	 * src_buffer, convert them to a specific format, and store them in the
-   118	 * destination.
-   119	 *
-   120	 * They are used in the `compose_active_planes` to convert and store a line
-   121	 * from the src_buffer to the writeback buffer.
-   122	 */
-   123	static void argb_u16_to_ARGB8888(struct vkms_frame_info *frame_info,
-   124					 const struct line_buffer *src_buffer, int y)
-   125	{
-   126		int x_dst = frame_info->dst.x1;
-   127		u8 *dst_pixels = packed_pixels_addr(frame_info, x_dst, y);
-   128		struct pixel_argb_u16 *in_pixels = src_buffer->pixels;
-   129		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
-   130				    src_buffer->n_pixels);
-   131	
-   132		for (size_t x = 0; x < x_limit; x++, dst_pixels += 4) {
-   133			/*
-   134			 * This sequence below is important because the format's byte order is
-   135			 * in little-endian. In the case of the ARGB8888 the memory is
-   136			 * organized this way:
-   137			 *
-   138			 * | Addr     | = blue channel
-   139			 * | Addr + 1 | = green channel
-   140			 * | Addr + 2 | = Red channel
-   141			 * | Addr + 3 | = Alpha channel
-   142			 */
-   143			dst_pixels[3] = DIV_ROUND_CLOSEST(in_pixels[x].a, 257);
-   144			dst_pixels[2] = DIV_ROUND_CLOSEST(in_pixels[x].r, 257);
-   145			dst_pixels[1] = DIV_ROUND_CLOSEST(in_pixels[x].g, 257);
-   146			dst_pixels[0] = DIV_ROUND_CLOSEST(in_pixels[x].b, 257);
-   147		}
-   148	}
+   127	
+   128	static void *__alloc(struct bpf_mem_cache *c, int node)
+   129	{
+   130		/* Allocate, but don't deplete atomic reserves that typical
+   131		 * GFP_ATOMIC would do. irq_work runs on this cpu and kmalloc
+   132		 * will allocate from the current numa node which is what we
+   133		 * want here.
+   134		 */
+   135		gfp_t flags = GFP_NOWAIT | __GFP_NOWARN | __GFP_ACCOUNT;
+   136	
+   137		if (c->percpu) {
+   138			void **obj = kmem_cache_alloc_node(c->kmem_cache, flags, node);
+ > 139			void *pptr = __alloc_percpu_gfp(c->unit_size, 8, flags);
+   140	
+   141			if (!obj || !pptr) {
+ > 142				free_percpu(pptr);
+   143				kfree(obj);
+   144				return NULL;
+   145			}
+   146			obj[1] = pptr;
+   147			return obj;
+   148		}
    149	
-   150	static void argb_u16_to_XRGB8888(struct vkms_frame_info *frame_info,
-   151					 const struct line_buffer *src_buffer, int y)
-   152	{
-   153		int x_dst = frame_info->dst.x1;
-   154		u8 *dst_pixels = packed_pixels_addr(frame_info, x_dst, y);
-   155		struct pixel_argb_u16 *in_pixels = src_buffer->pixels;
-   156		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
-   157				    src_buffer->n_pixels);
-   158	
-   159		for (size_t x = 0; x < x_limit; x++, dst_pixels += 4) {
-   160			dst_pixels[3] = 0xff;
-   161			dst_pixels[2] = DIV_ROUND_CLOSEST(in_pixels[x].r, 257);
-   162			dst_pixels[1] = DIV_ROUND_CLOSEST(in_pixels[x].g, 257);
-   163			dst_pixels[0] = DIV_ROUND_CLOSEST(in_pixels[x].b, 257);
-   164		}
-   165	}
-   166	
-   167	static void argb_u16_to_ARGB16161616(struct vkms_frame_info *frame_info,
-   168					     const struct line_buffer *src_buffer, int y)
-   169	{
-   170		int x_dst = frame_info->dst.x1;
-   171		u16 *dst_pixels = packed_pixels_addr(frame_info, x_dst, y);
-   172		struct pixel_argb_u16 *in_pixels = src_buffer->pixels;
-   173		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
-   174				    src_buffer->n_pixels);
-   175	
-   176		for (size_t x = 0; x < x_limit; x++, dst_pixels += 4) {
- > 177			dst_pixels[3] = cpu_to_le16(in_pixels[x].a);
-   178			dst_pixels[2] = cpu_to_le16(in_pixels[x].r);
-   179			dst_pixels[1] = cpu_to_le16(in_pixels[x].g);
-   180			dst_pixels[0] = cpu_to_le16(in_pixels[x].b);
-   181		}
-   182	}
-   183	
+   150		if (c->kmem_cache)
+   151			return kmem_cache_alloc_node(c->kmem_cache, flags, node);
+   152	
+   153		return kmalloc_node(c->unit_size, flags, node);
+   154	}
+   155	
+   156	static struct mem_cgroup *get_memcg(const struct bpf_mem_cache *c)
+   157	{
+   158	#ifdef CONFIG_MEMCG_KMEM
+   159		if (c->objcg)
+   160			return get_mem_cgroup_from_objcg(c->objcg);
+   161	#endif
+   162	
+   163	#ifdef CONFIG_MEMCG
+   164		return root_mem_cgroup;
+   165	#else
+   166		return NULL;
+   167	#endif
+   168	}
+   169	
+   170	/* Mostly runs from irq_work except __init phase. */
+   171	static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
+   172	{
+   173		struct mem_cgroup *memcg = NULL, *old_memcg;
+   174		unsigned long flags;
+   175		void *obj;
+   176		int i;
+   177	
+   178		memcg = get_memcg(c);
+   179		old_memcg = set_active_memcg(memcg);
+   180		for (i = 0; i < cnt; i++) {
+   181			obj = __alloc(c, node);
+   182			if (!obj)
+   183				break;
+   184			if (IS_ENABLED(CONFIG_PREEMPT_RT))
+   185				/* In RT irq_work runs in per-cpu kthread, so disable
+   186				 * interrupts to avoid preemption and interrupts and
+   187				 * reduce the chance of bpf prog executing on this cpu
+   188				 * when active counter is busy.
+   189				 */
+   190				local_irq_save(flags);
+   191			/* alloc_bulk runs from irq_work which will not preempt a bpf
+   192			 * program that does unit_alloc/unit_free since IRQs are
+   193			 * disabled there. There is no race to increment 'active'
+   194			 * counter. It protects free_llist from corruption in case NMI
+   195			 * bpf prog preempted this loop.
+   196			 */
+   197			WARN_ON_ONCE(local_inc_return(&c->active) != 1);
+   198			__llist_add(obj, &c->free_llist);
+   199			c->free_cnt++;
+   200			local_dec(&c->active);
+   201			if (IS_ENABLED(CONFIG_PREEMPT_RT))
+   202				local_irq_restore(flags);
+   203		}
+   204		set_active_memcg(old_memcg);
+   205		mem_cgroup_put(memcg);
+   206	}
+   207	
+   208	static void free_one(struct bpf_mem_cache *c, void *obj)
+   209	{
+   210		if (c->percpu) {
+ > 211			free_percpu(((void **)obj)[1]);
+   212			kmem_cache_free(c->kmem_cache, obj);
+   213			return;
+   214		}
+   215	
+   216		if (c->kmem_cache)
+   217			kmem_cache_free(c->kmem_cache, obj);
+   218		else
+   219			kfree(obj);
+   220	}
+   221	
 
 -- 
 0-DAY CI Kernel Test Service
