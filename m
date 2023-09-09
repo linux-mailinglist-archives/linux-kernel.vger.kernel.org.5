@@ -2,102 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E26567995F1
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 04:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3AD7995F5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 04:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236096AbjIICV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 22:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39456 "EHLO
+        id S239238AbjIIC1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 22:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjIICV5 (ORCPT
+        with ESMTP id S229448AbjIIC1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 22:21:57 -0400
-Received: from mail-pl1-f208.google.com (mail-pl1-f208.google.com [209.85.214.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E231FEA
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 19:21:52 -0700 (PDT)
-Received: by mail-pl1-f208.google.com with SMTP id d9443c01a7336-1c093862623so38091495ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 19:21:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694226112; x=1694830912;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Qahrvgod/2lO4fQ5eX628+D1T3pLU9aFiqfl13DMEn4=;
-        b=DMplBCdmBs8eHJjftuwnb03qT+nuIk0MazHuRg1Kssn3BdQ0MuYGR11eWlnpG0oeI3
-         ihqcUVlCowk/11a1xKkoWtGcrTBCcb8icHqQCesZaMbjX3znTxv/fmip4fnXvjlEMZAD
-         PnsxzPnFt6f2rjR87W5iYnOE+egBjWUNytiKVueFYlY5IoMfZD2MU5r1BD1z2Cf/u+Iv
-         G/V/2rlekQ7amGoYpjzx/8mHKib7k9pPWEKiY5INE6JAGUF1QSa3JTClzO2s3BptESiC
-         qdEKzmMIHgJbajoGD7Z4JF9e/YH7vQ4bKoQnCp1UJ05DHQGn/JBdKm8t4MzKcSWmlrTT
-         pnuQ==
-X-Gm-Message-State: AOJu0YwQPpjS0gUvDdnRPc2IaydfcvGCE9sGr7Oc84aS93nbQjeQrcvV
-        KkU/Tb0I73GAIbaDjDHgatVDwtL4+X2KX2ZbLKgGNs58WeD3zLKP7Q==
-X-Google-Smtp-Source: AGHT+IEowzSWSQqo5NJXGdPFhixbLPvs89EyTB5Xro3Sk0j+XIXMBhl/FM788Dut082nTn8vIP4Lo20x5BpaOWyqkVgZVaRSbp1B
+        Fri, 8 Sep 2023 22:27:44 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534451FEF;
+        Fri,  8 Sep 2023 19:27:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=OE+AIxlFdRyZcA4Gag1i4gJe884pcRWVjakLn4CplzA=; b=30rG5BMChfpid4nfM6SSkqxXpT
+        y5HHdpI0Wt3J6p7gbZ0V8RZfdC8/HYmsehA1xtW1ZO0PFPQUUnQer13DL7VhZXkItWMWDciP+svtf
+        pVuMuCZhIpxTxxuHNINTHGw71C5igSptNHdmRLCifjKf8XCr8zhViUMRMrOrJ90xjP6c=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qenh5-00636R-Gx; Sat, 09 Sep 2023 04:27:31 +0200
+Date:   Sat, 9 Sep 2023 04:27:31 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc:     netdev@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        Michael Riesch <michael.riesch@wolfvision.net>
+Subject: Re: [PATCH] net: phy: dp83867: Add support for hardware blinking LEDs
+Message-ID: <6c8f5cc5-0b8b-42e0-ac86-91ddcb35389f@lunn.ch>
+References: <20230907084731.2181381-1-s.hauer@pengutronix.de>
+ <2239338.iZASKD2KPV@steina-w>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:d512:b0:1c3:29c4:c4e8 with SMTP id
- b18-20020a170902d51200b001c329c4c4e8mr1537941plg.4.1694226112209; Fri, 08 Sep
- 2023 19:21:52 -0700 (PDT)
-Date:   Fri, 08 Sep 2023 19:21:52 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009667590604e3c1eb@google.com>
-Subject: [syzbot] upstream test error: BUG: mismatching fuzzer/executor git
- revisions: ADDR vs ADDR
-From:   syzbot <syzbot+277810e6a9df498beef2@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2239338.iZASKD2KPV@steina-w>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+> This works as intended so far. Unfortunately this driver and the PHY LED 
+> framework do not support active-low LEDs (yet).
 
-syzbot found the following issue on:
+Polarity is something which i've seen a few PHY devices have. It also
+seems like a core LED concept, not something specific to PHY LEDs. So
+i think this needs to be partially addressed in the LED core.
 
-HEAD commit:    3f86ed6ec0b3 Merge tag 'arc-6.6-rc1' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=145485a8680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b273cdfbc13e9a4b
-dashboard link: https://syzkaller.appspot.com/bug?extid=277810e6a9df498beef2
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d9f6ad973552/disk-3f86ed6e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7eb37bce3c21/vmlinux-3f86ed6e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b19d1fc0d83e/bzImage-3f86ed6e.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+277810e6a9df498beef2@syzkaller.appspotmail.com
-
-Warning: Permanently added '10.128.0.111' (ED25519) to the list of known hosts.
-2023/09/05 01:57:15 fuzzer started
-2023/09/05 01:57:15 connecting to host at 10.128.0.169:37705
-2023/09/05 01:57:15 checking machine...
-2023/09/05 01:57:15 checking revisions...
-2023/09/05 01:57:15 SYZFATAL: BUG: mismatching fuzzer/executor git revisions: 8bc9053e88dacf57f5ce550da040d31895eb9626 vs 0b6286dc40e114a33a60c7fbbddbe7fcffc1bb4c
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+  Andrew
