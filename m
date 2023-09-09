@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F457993D9
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31223799553
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345716AbjIIAia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37666 "EHLO
+        id S1344754AbjIIBNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 21:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345707AbjIIAiH (ORCPT
+        with ESMTP id S1343716AbjIIBN1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 20:38:07 -0400
+        Fri, 8 Sep 2023 21:13:27 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8645C26AB;
-        Fri,  8 Sep 2023 17:37:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1CDBC433CD;
-        Sat,  9 Sep 2023 00:37:26 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8462F2121;
+        Fri,  8 Sep 2023 18:13:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A205C116A9;
+        Sat,  9 Sep 2023 00:37:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694219847;
-        bh=PoqB7G9Vfikam0GR9KERBfdi5X+OnD1jcrHBQlZ5In4=;
+        s=k20201202; t=1694219849;
+        bh=ErhirofyQSlMNxPBuSUuI8Egcmidvj8SE7c7pI5yQFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ovNhHL15b2nxjtlsBg03QOBYIdbSj1c9uhcrO9m18xEo492SaTXV5qPdFSTXBj5IB
-         R/APYCfGUjrnFnTdV8v2RXuN7VNINQNuQmh0NsatWesLiu3QOr9ylbPyvwn03TgfZg
-         O/DzPtSldDMgFZ/RtVyAB98yzIcqVcKCpxViohWRLv89E1N4b8RoJpRAo/RWJ+qPr6
-         meAoJlJgfWO8JTDnYfebmJkinMRaLVdIBtjKv2rGQ/wheIjauWQkymt0/ZlS/IEixw
-         3s/YCTOQZSdq1E9QZK1xyIAwSQX5M5+fXnxHaawuSmNk3jDFKj5R0UjdpkqPVqE8Ua
-         syLZLUTIqhqcQ==
+        b=c0Uv0oxmMxJyQCmogCy8HYEhShe/kPd9yHJBttnWE7bXjEDekzqLxdJdLU4Wkos7+
+         khBilfogXC9v9Jtya5O9po8QcUJ6NLBtYPNk4VA5iK5FijLJHYs0ep41Ii4+CuzA7F
+         4X5k1ZWe0+hZLCAw8a5HvecfOaqo+m+heMcwhp0OJgXp2qpk1kM0+lKykA/dpoGcsT
+         mMbGVhhayLXhpgu5g44TmvYsymSDwWLI3bZzP2rtrpoHlXHKKUdXYp2WtHpbl1VvUx
+         D8aM8NSID9dLNI/1Svg9ZC3LmbemwA6QkhzgFaYq5abvYVrAYPQHQpeUtYdrZXAPIp
+         vX1jECY2/F5Sg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Zhang Shurong <zhang_shurong@foxmail.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sasha Levin <sashal@kernel.org>, crope@iki.fi,
-        mchehab@kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 05/25] media: anysee: fix null-ptr-deref in anysee_master_xfer
-Date:   Fri,  8 Sep 2023 20:36:53 -0400
-Message-Id: <20230909003715.3579761-5-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, mchehab@kernel.org,
+        linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 06/25] media: az6007: Fix null-ptr-deref in az6007_i2c_xfer()
+Date:   Fri,  8 Sep 2023 20:36:54 -0400
+Message-Id: <20230909003715.3579761-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909003715.3579761-1-sashal@kernel.org>
 References: <20230909003715.3579761-1-sashal@kernel.org>
@@ -56,11 +56,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhang Shurong <zhang_shurong@foxmail.com>
 
-[ Upstream commit c30411266fd67ea3c02a05c157231654d5a3bdc9 ]
+[ Upstream commit 1047f9343011f2cedc73c64829686206a7e9fc3f ]
 
-In anysee_master_xfer, msg is controlled by user. When msg[i].buf
+In az6007_i2c_xfer, msg is controlled by user. When msg[i].buf
 is null and msg[i].len is zero, former checks on msg[i].buf would be
-passed. Malicious data finally reach anysee_master_xfer. If accessing
+passed. Malicious data finally reach az6007_i2c_xfer. If accessing
 msg[i].buf[0] without sanity check, null ptr deref would happen.
 We add check on msg[i].len to prevent crash.
 
@@ -70,25 +70,37 @@ commit 0ed554fd769a
 
 Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-[hverkuil: add spaces around +]
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb-v2/anysee.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/usb/dvb-usb-v2/az6007.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/media/usb/dvb-usb-v2/anysee.c b/drivers/media/usb/dvb-usb-v2/anysee.c
-index aa45b5d263f6b..a1235d0cce92f 100644
---- a/drivers/media/usb/dvb-usb-v2/anysee.c
-+++ b/drivers/media/usb/dvb-usb-v2/anysee.c
-@@ -202,7 +202,7 @@ static int anysee_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msg,
- 
- 	while (i < num) {
- 		if (num > i + 1 && (msg[i+1].flags & I2C_M_RD)) {
--			if (msg[i].len > 2 || msg[i+1].len > 60) {
-+			if (msg[i].len != 2 || msg[i + 1].len > 60) {
- 				ret = -EOPNOTSUPP;
- 				break;
- 			}
+diff --git a/drivers/media/usb/dvb-usb-v2/az6007.c b/drivers/media/usb/dvb-usb-v2/az6007.c
+index 7524c90f5da61..6cbfe75791c21 100644
+--- a/drivers/media/usb/dvb-usb-v2/az6007.c
++++ b/drivers/media/usb/dvb-usb-v2/az6007.c
+@@ -788,6 +788,10 @@ static int az6007_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[],
+ 			if (az6007_xfer_debug)
+ 				printk(KERN_DEBUG "az6007: I2C W addr=0x%x len=%d\n",
+ 				       addr, msgs[i].len);
++			if (msgs[i].len < 1) {
++				ret = -EIO;
++				goto err;
++			}
+ 			req = AZ6007_I2C_WR;
+ 			index = msgs[i].buf[0];
+ 			value = addr | (1 << 8);
+@@ -802,6 +806,10 @@ static int az6007_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[],
+ 			if (az6007_xfer_debug)
+ 				printk(KERN_DEBUG "az6007: I2C R addr=0x%x len=%d\n",
+ 				       addr, msgs[i].len);
++			if (msgs[i].len < 1) {
++				ret = -EIO;
++				goto err;
++			}
+ 			req = AZ6007_I2C_RD;
+ 			index = msgs[i].buf[0];
+ 			value = addr;
 -- 
 2.40.1
 
