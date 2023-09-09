@@ -2,72 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9F77997D2
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 14:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D987997D7
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 14:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244104AbjIIMCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 08:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46238 "EHLO
+        id S1344947AbjIIMI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 08:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231783AbjIIMCs (ORCPT
+        with ESMTP id S231783AbjIIMIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 08:02:48 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1518DCCA
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 05:02:42 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68fb46f38f9so8697b3a.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 05:02:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694260961; x=1694865761; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=NNvJwlKaaEpene3hYwihaclJlQcxiYMKhd0xVHXQVBw=;
-        b=UpDMsSrvC/Z7+8pZJydvT+MTrWl5kAdDW3+irkItuLJ769Z9LzTzVKWRprqiW/rOA0
-         LhyKzCyyIiKv6EnHG7iiS2vtpP3kSMpDFWstDfvvOA4yX9c2IjOkhjHk1YDefReuUCqe
-         H4lUg2Yy6wKcSYMLXP8m4TGEfZ4p9FshAXI8RxuzuVCqfd6n2yg/MOxq37Fab3ssDDRl
-         towicCKgiUD2RSmB2qzgXLIEgJy+VOGR4MA5k6uzwX1mPwwWHDUi2khAYF993OXyIeGm
-         4j88DpDWu0XrRfqrVFaThUgPUhkcMnnHgdV0xr9hfcoU5cI90bKKPm55ehnFAo+ekvP0
-         DC8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694260961; x=1694865761;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NNvJwlKaaEpene3hYwihaclJlQcxiYMKhd0xVHXQVBw=;
-        b=hGw6BxJ7h6H7xchFgQb5LJocdW3DzkAvMiqPiu0R2wE4aJs3b9j9SAj9ZRxO3mWPRf
-         H/zqkT3I2owiLG6Qb82wy+U4NcMvGkn1SsWKiBy4naNn0aKX6qjahrth5YnyCmx+nEfr
-         XJ9frqtoi944/gaUkvtIGUeIDYgNW9+TtukheyyocbH/i1YgFdvg1mBjxQmCeWmqLYxz
-         CAinttKuABP1HmZaomAxtzaZ13huSDBxCA3rc0PH4zZKUrHBgYG6EUN5HdvDiUWHe12p
-         38iFV1OP+o4LYaX00U0ASHtkQhKilPhO7svFxcsjbwEvHBw2lX/3z71yrWM4BRClzZDi
-         YVxA==
-X-Gm-Message-State: AOJu0Yw/z2gcfXH+/l5ZghrJfRyFqfXh5aQ1NtdkD2uVVZl9YbQQ5T3C
-        oFdThGlKaL8fVz8P93ulXvM=
-X-Google-Smtp-Source: AGHT+IGV7wsSQZ8gM7uM2NiGxc6j/PbI14YYzMboVpAXGs4115SPsQ1Lllx9LIRYLsg46MDkbWVtnA==
-X-Received: by 2002:a05:6a00:851:b0:68e:2da7:6b0d with SMTP id q17-20020a056a00085100b0068e2da76b0dmr4870688pfk.1.1694260961156;
-        Sat, 09 Sep 2023 05:02:41 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p1-20020a63b801000000b0056368adf5e2sm2576176pge.87.2023.09.09.05.02.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Sep 2023 05:02:40 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, patches@opensource.cirrus.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Fabio Estevam <festevam@denx.de>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH] ASoC: wm8960: Fix error handling in probe
-Date:   Sat,  9 Sep 2023 05:02:37 -0700
-Message-Id: <20230909120237.2646275-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
+        Sat, 9 Sep 2023 08:08:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937CECC1
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 05:08:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694261300; x=1725797300;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=4I3lBU2DMVueFg6TaIyefQ5zLIqyw+5/iO6Pt81J8Mk=;
+  b=G22ietgyDQXj479JrUOMwmNhLe6+uNbQuWCo924kTt4PPhoi0R2iXfTS
+   CYXbSnwPzaSqY0QlTAZPpyYHB6lnPxJXOD1ppbou0qFE85lq3rsu8wOaF
+   2B9x/J4nfk5hBJriGvvdNV21vE7Cs/j543sFoi4I2tw+WMfouUw7yxJ1B
+   v7UjujX/ay1xOcOMyU0EpLGAVbZ9vk5Znm9ANPLMUsaQVDcFrmvk+79x3
+   uQvY9C/qmlwtiLyARohdLy4clCG6Ag6yhuO+uVJNa7KMk4/gTNQb3N+lC
+   c8y+ZAqDfcrC/cgH2umC+Eubzp321dQ3ZxYQB1f9njWUXrlZKm5Wk0GLv
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="358120958"
+X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
+   d="scan'208";a="358120958"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 05:08:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="885952515"
+X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
+   d="scan'208";a="885952515"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 09 Sep 2023 05:08:00 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qewl6-0003Te-2U;
+        Sat, 09 Sep 2023 12:08:16 +0000
+Date:   Sat, 9 Sep 2023 20:07:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/opp/core.c:2181: warning: Function parameter or member
+ 'opp_table' not described in '_opp_set_clknames'
+Message-ID: <202309092008.fU1U8cHe-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,104 +62,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 422f10adc3eb ("ASoC: wm8960: Add support for the power supplies")
-added regulator support to the wm8960 driver, but neglected to update
-error handling in the probe function. This results in warning backtraces
-if the probe function fails.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6099776f9f268e61fe5ecd721f994a8cfce5306f
+commit: 2368f57685768f9f9cd666eaa4194a359d89afb8 OPP: Migrate set-clk-name API to use set-config helpers
+date:   1 year, 2 months ago
+config: csky-defconfig (https://download.01.org/0day-ci/archive/20230909/202309092008.fU1U8cHe-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230909/202309092008.fU1U8cHe-lkp@intel.com/reproduce)
 
-WARNING: CPU: 0 PID: 1 at drivers/regulator/core.c:2396 _regulator_put.part.0+0x1b4/0x1d8
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper/0 Tainted: G                 N 6.5.0-11075-g92901222f83d #1
-Hardware name: Freescale i.MX6 Ultralite (Device Tree)
- unwind_backtrace from show_stack+0x10/0x14
- show_stack from dump_stack_lvl+0x68/0x90
- dump_stack_lvl from __warn+0x70/0x1a4
- __warn from warn_slowpath_fmt+0xac/0x220
- warn_slowpath_fmt from _regulator_put.part.0+0x1b4/0x1d8
- _regulator_put.part.0 from regulator_bulk_free+0x44/0x64
- regulator_bulk_free from release_nodes+0x50/0x7c
- release_nodes from devres_release_group+0xbc/0x138
- devres_release_group from i2c_device_probe+0x180/0x268
- i2c_device_probe from really_probe+0xc4/0x2e0
- really_probe from __driver_probe_device+0x84/0x1a0
- __driver_probe_device from driver_probe_device+0x2c/0xc4
- driver_probe_device from __driver_attach+0x94/0x144
- __driver_attach from bus_for_each_dev+0x70/0xc4
- bus_for_each_dev from bus_add_driver+0xc4/0x1cc
- bus_add_driver from driver_register+0x7c/0x114
- driver_register from i2c_register_driver+0x3c/0xac
- i2c_register_driver from do_one_initcall+0x68/0x3b0
- do_one_initcall from kernel_init_freeable+0x18c/0x240
- kernel_init_freeable from kernel_init+0x14/0x144
- kernel_init from ret_from_fork+0x14/0x24
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309092008.fU1U8cHe-lkp@intel.com/
 
-Add the missing calls to regulator_bulk_disable().
+All warnings (new ones prefixed by >>):
 
-Cc: Fabio Estevam <festevam@denx.de>
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
-Fixes: 422f10adc3eb ("ASoC: wm8960: Add support for the power supplies")
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- sound/soc/codecs/wm8960.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+   drivers/opp/core.c:1967: warning: Function parameter or member 'opp_table' not described in '_opp_set_supported_hw'
+   drivers/opp/core.c:1967: warning: Excess function parameter 'dev' description in '_opp_set_supported_hw'
+   drivers/opp/core.c:2068: warning: Function parameter or member 'opp_table' not described in '_opp_set_regulators'
+   drivers/opp/core.c:2068: warning: Excess function parameter 'count' description in '_opp_set_regulators'
+>> drivers/opp/core.c:2181: warning: Function parameter or member 'opp_table' not described in '_opp_set_clknames'
+   drivers/opp/core.c:2653: warning: Function parameter or member 'token' not described in 'dev_pm_opp_clear_config'
+   drivers/opp/core.c:2653: warning: Excess function parameter 'opp_table' description in 'dev_pm_opp_clear_config'
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 0a50180750e8..7689fe3cc86d 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -1468,8 +1468,10 @@ static int wm8960_i2c_probe(struct i2c_client *i2c)
- 	}
- 
- 	wm8960->regmap = devm_regmap_init_i2c(i2c, &wm8960_regmap);
--	if (IS_ERR(wm8960->regmap))
--		return PTR_ERR(wm8960->regmap);
-+	if (IS_ERR(wm8960->regmap)) {
-+		ret = PTR_ERR(wm8960->regmap);
-+		goto bulk_disable;
-+	}
- 
- 	if (pdata)
- 		memcpy(&wm8960->pdata, pdata, sizeof(struct wm8960_data));
-@@ -1479,13 +1481,14 @@ static int wm8960_i2c_probe(struct i2c_client *i2c)
- 	ret = i2c_master_recv(i2c, &val, sizeof(val));
- 	if (ret >= 0) {
- 		dev_err(&i2c->dev, "Not wm8960, wm8960 reg can not read by i2c\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto bulk_disable;
- 	}
- 
- 	ret = wm8960_reset(wm8960->regmap);
- 	if (ret != 0) {
- 		dev_err(&i2c->dev, "Failed to issue reset\n");
--		return ret;
-+		goto bulk_disable;
- 	}
- 
- 	if (wm8960->pdata.shared_lrclk) {
-@@ -1494,7 +1497,7 @@ static int wm8960_i2c_probe(struct i2c_client *i2c)
- 		if (ret != 0) {
- 			dev_err(&i2c->dev, "Failed to enable LRCM: %d\n",
- 				ret);
--			return ret;
-+			goto bulk_disable;
- 		}
- 	}
- 
-@@ -1528,7 +1531,13 @@ static int wm8960_i2c_probe(struct i2c_client *i2c)
- 
- 	ret = devm_snd_soc_register_component(&i2c->dev,
- 			&soc_component_dev_wm8960, &wm8960_dai, 1);
-+	if (ret)
-+		goto bulk_disable;
- 
-+	return 0;
-+
-+bulk_disable:
-+	regulator_bulk_disable(ARRAY_SIZE(wm8960->supplies), wm8960->supplies);
- 	return ret;
- }
- 
+
+vim +2181 drivers/opp/core.c
+
+32aee78bc5184c drivers/opp/core.c            Yangtao Li          2021-03-14  2165  
+829a4e8c0e9aab drivers/base/power/opp/core.c Viresh Kumar        2017-06-21  2166  /**
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2167   * _opp_set_clknames() - Set clk names for the device
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2168   * @dev: Device for which clk names is being set.
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2169   * @names: Clk names.
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2170   *
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2171   * In order to support OPP switching, OPP layer needs to get pointers to the
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2172   * clocks for the device. Simple cases work fine without using this routine
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2173   * (i.e. by passing connection-id as NULL), but for a device with multiple
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2174   * clocks available, the OPP core needs to know the exact names of the clks to
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2175   * use.
+829a4e8c0e9aab drivers/base/power/opp/core.c Viresh Kumar        2017-06-21  2176   *
+829a4e8c0e9aab drivers/base/power/opp/core.c Viresh Kumar        2017-06-21  2177   * This must be called before any OPPs are initialized for the device.
+829a4e8c0e9aab drivers/base/power/opp/core.c Viresh Kumar        2017-06-21  2178   */
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2179  static int _opp_set_clknames(struct opp_table *opp_table, struct device *dev,
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2180  			     const char * const names[])
+829a4e8c0e9aab drivers/base/power/opp/core.c Viresh Kumar        2017-06-21 @2181  {
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2182  	const char * const *temp = names;
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2183  	int count = 0;
+829a4e8c0e9aab drivers/base/power/opp/core.c Viresh Kumar        2017-06-21  2184  
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2185  	/* Count number of clks */
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2186  	while (*temp++)
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2187  		count++;
+829a4e8c0e9aab drivers/base/power/opp/core.c Viresh Kumar        2017-06-21  2188  
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2189  	/*
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2190  	 * This is a special case where we have a single clock, whose connection
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2191  	 * id name is NULL, i.e. first two entries are NULL in the array.
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2192  	 */
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2193  	if (!count && !names[1])
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2194  		count = 1;
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2195  
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2196  	/* We support only one clock name for now */
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2197  	if (count != 1)
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2198  		return -EINVAL;
+829a4e8c0e9aab drivers/base/power/opp/core.c Viresh Kumar        2017-06-21  2199  
+0a43452bb6b1f4 drivers/opp/core.c            Viresh Kumar        2022-05-25  2200  	/* Another CPU that shares the OPP table has set the clkname ? */
+0a43452bb6b1f4 drivers/opp/core.c            Viresh Kumar        2022-05-25  2201  	if (opp_table->clk_configured)
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2202  		return 0;
+0a43452bb6b1f4 drivers/opp/core.c            Viresh Kumar        2022-05-25  2203  
+32439ac7535a8e drivers/opp/core.c            Viresh Kumar        2021-01-28  2204  	/* clk shouldn't be initialized at this point */
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2205  	if (WARN_ON(opp_table->clk))
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2206  		return -EBUSY;
+829a4e8c0e9aab drivers/base/power/opp/core.c Viresh Kumar        2017-06-21  2207  
+829a4e8c0e9aab drivers/base/power/opp/core.c Viresh Kumar        2017-06-21  2208  	/* Find clk for the device */
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2209  	opp_table->clk = clk_get(dev, names[0]);
+829a4e8c0e9aab drivers/base/power/opp/core.c Viresh Kumar        2017-06-21  2210  	if (IS_ERR(opp_table->clk)) {
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2211  		return dev_err_probe(dev, PTR_ERR(opp_table->clk),
+543256d239b415 drivers/opp/core.c            Krzysztof Kozlowski 2022-04-08  2212  				    "%s: Couldn't find clock\n", __func__);
+829a4e8c0e9aab drivers/base/power/opp/core.c Viresh Kumar        2017-06-21  2213  	}
+829a4e8c0e9aab drivers/base/power/opp/core.c Viresh Kumar        2017-06-21  2214  
+0a43452bb6b1f4 drivers/opp/core.c            Viresh Kumar        2022-05-25  2215  	opp_table->clk_configured = true;
+0a43452bb6b1f4 drivers/opp/core.c            Viresh Kumar        2022-05-25  2216  
+2368f57685768f drivers/opp/core.c            Viresh Kumar        2022-05-26  2217  	return 0;
+829a4e8c0e9aab drivers/base/power/opp/core.c Viresh Kumar        2017-06-21  2218  }
+829a4e8c0e9aab drivers/base/power/opp/core.c Viresh Kumar        2017-06-21  2219  
+
+:::::: The code at line 2181 was first introduced by commit
+:::::: 829a4e8c0e9aab17bcfe2ddb070388b8ada26292 PM / OPP: Add dev_pm_opp_{set|put}_clkname()
+
+:::::: TO: Viresh Kumar <viresh.kumar@linaro.org>
+:::::: CC: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
