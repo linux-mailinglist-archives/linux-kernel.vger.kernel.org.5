@@ -2,137 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0470E7997B5
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 13:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B597997B6
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 13:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345127AbjIILn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 07:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41116 "EHLO
+        id S1345307AbjIILqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 07:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345085AbjIILn1 (ORCPT
+        with ESMTP id S1345210AbjIILqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 07:43:27 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 054E7E4B
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 04:43:21 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-501be2d45e0so4865781e87.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 04:43:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694259800; x=1694864600; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xCpAdva5TEWf3neJC0oPUjxFzfbbailcikmIjix3yK4=;
-        b=pPubzIAQpvNmY0h3HkCpmWd07Jro7Opo7bJPB8pVL7yP38XaNXhhHrRtZDXs6owkEt
-         FR9VEi7e/hC6sowy2SJwjUAoRwkPaqpmorjqpFI3W9KkdKL3mFScDYeeGqOkLkFHH1/U
-         UJ+QN4ifEUieNftd+PJKQFC8sWQOmlXmMH9VR9KjHu9jf2h6oOcqTBujfp/Ycu4Ra3Fd
-         652np1ks8FhGkKup+rTpBhth8njz/+jvCQQUuZTPXlu4ZcqCoyCX+suPpcra4IRh5mj9
-         7nlgw+wAFeTqHZODKDD0oRrV3zZRycr6W4hPc5WJaZVcs9HKfa5T6UWPomjr4SRslDqB
-         BpwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694259800; x=1694864600;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xCpAdva5TEWf3neJC0oPUjxFzfbbailcikmIjix3yK4=;
-        b=FjxN+kD23rHMg07LxwJSb6JZ+cKAuxOe8hFJIidjmC7+P6ZjLD2d4r146btavCNnU9
-         IECVdhCn7H+6GYl/LgdB8VqGhF59XVq5Dv7CyYFwBojByWedif2YqpWStdGfBu/jrRFK
-         LQ1MISqlNfAcCDhF6Y8taXUP7w6baKmMI6ro4XgXi+TCTE9GW73tmKEO+eTZIqbO9T/U
-         ttU5jBcZc1dpXj9p5IO576MLJ9eyS9an0cm++iOUO4Q2wgG2HEKoj1IzPUDYNZ7iSKZK
-         tylmlhcw1qt7PWurd7iU5yihmfTNLuZRUY5x1dlxOCTGQ13eOFwak1tV4Q0729oqZc5L
-         +Ndw==
-X-Gm-Message-State: AOJu0YwcXtlWs+P8ye06i+WYbZ3TAsOGSm+cJFwTk+QspN0nSy3iC1U/
-        BPrLStrwuMXV3Uc928Op0IBOTA==
-X-Google-Smtp-Source: AGHT+IHzXeq/4pfSd79mUwWr4jocUgQYAQikmhOdQoqYRM74yDWPGgjY5Lift+Zl3SfQa1a/MDdp9Q==
-X-Received: by 2002:a05:6512:2511:b0:4f8:586a:8af6 with SMTP id be17-20020a056512251100b004f8586a8af6mr3861270lfb.4.1694259800157;
-        Sat, 09 Sep 2023 04:43:20 -0700 (PDT)
-Received: from [192.168.37.232] (178235177205.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.205])
-        by smtp.gmail.com with ESMTPSA id xo23-20020a170907bb9700b009a219ecbaf1sm2245134ejc.85.2023.09.09.04.43.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Sep 2023 04:43:19 -0700 (PDT)
-Message-ID: <1585395a-bef7-4782-a564-cf8a19bada21@linaro.org>
-Date:   Sat, 9 Sep 2023 13:43:17 +0200
+        Sat, 9 Sep 2023 07:46:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912BE186
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 04:46:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694259979; x=1725795979;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=UI7IR0Ft3ndhwmZaJP7vXpuiljdP0FhgaQdrnHO04f4=;
+  b=hm51trmaC0raMnqXY4LSBYv0M4h0FQezCE3LnBYKJHiLIEAFSTXkB8oV
+   5fHHKv7k4VDLqmaJQ7nWkNXhyJZghP3/TE3Kf3e0j1NCm8yR0L/VhpmVF
+   TszbgnXcVupgMbLKcUgvZO9ch+ereWoKckTGA8HXa6ASK0hQ7WHP/ZCcQ
+   sDCEzRvYvmwbWqCueA2iZab87PbiJNUwWj7wM4/hpvzbxCpmbBZMW/c6t
+   fA0Jh07dfxOqY8v0r9WXWwHKBeFsIvjDvqVTINT2e5ucjHGPY5oGKt1Eu
+   /XMj0HdUigC2z+hY7n10Yj6dDPUJgbwzadRIKmrlvPIGY+Fbr7qdU92+W
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="376724423"
+X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
+   d="scan'208";a="376724423"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 04:46:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="866392453"
+X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
+   d="scan'208";a="866392453"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 09 Sep 2023 04:46:16 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qewPm-0003RK-09;
+        Sat, 09 Sep 2023 11:46:14 +0000
+Date:   Sat, 9 Sep 2023 19:45:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Donglin Peng <pengdonglin@sangfor.com.cn>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        Huacai Chen <chenhuacai@loongson.cn>
+Subject: arch/loongarch/kernel/asm-offsets.c:278:6: warning: no previous
+ prototype for 'output_fgraph_ret_regs_defines'
+Message-ID: <202309091907.j6NUC3Nc-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: msm8916-samsung-j5-common: Add
- accelerometer
-Content-Language: en-US
-To:     "Lin, Meng-Bo" <linmengbo0689@protonmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Markuss Broks <markuss.broks@gmail.com>
-References: <20230904123123.2593-1-linmengbo0689@protonmail.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230904123123.2593-1-linmengbo0689@protonmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4.09.2023 14:35, Lin, Meng-Bo wrote:
-> From: Markuss Broks <markuss.broks@gmail.com>
-> 
-> J5 and J5X have ST LIS2HH12 accelerometer.
-> Add support for it.
-> 
-> Signed-off-by: Markuss Broks <markuss.broks@gmail.com>
-> Co-developed-by: Stephan Gerhold <stephan@gerhold.net>
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> Co-developed-by: Lin, Meng-Bo <linmengbo0689@protonmail.com>
-> Signed-off-by: Lin, Meng-Bo <linmengbo0689@protonmail.com>
-> ---
-We've concluded off-list that i2c-gpio is used because Samsung
-routed the sensor to pins which are not associated with QUPs.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6099776f9f268e61fe5ecd721f994a8cfce5306f
+commit: 5779e3c0f5aed8a3239839ad55ad017e1278ecd7 LoongArch: ftrace: Enable HAVE_FUNCTION_GRAPH_RETVAL
+date:   3 months ago
+config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230909/202309091907.j6NUC3Nc-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230909/202309091907.j6NUC3Nc-lkp@intel.com/reproduce)
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309091907.j6NUC3Nc-lkp@intel.com/
 
-Konrad
+All warnings (new ones prefixed by >>):
+
+   arch/loongarch/kernel/asm-offsets.c:17:6: warning: no previous prototype for 'output_ptreg_defines' [-Wmissing-prototypes]
+      17 | void output_ptreg_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:64:6: warning: no previous prototype for 'output_task_defines' [-Wmissing-prototypes]
+      64 | void output_task_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:79:6: warning: no previous prototype for 'output_thread_info_defines' [-Wmissing-prototypes]
+      79 | void output_thread_info_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:95:6: warning: no previous prototype for 'output_thread_defines' [-Wmissing-prototypes]
+      95 | void output_thread_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:138:6: warning: no previous prototype for 'output_thread_fpu_defines' [-Wmissing-prototypes]
+     138 | void output_thread_fpu_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:178:6: warning: no previous prototype for 'output_mm_defines' [-Wmissing-prototypes]
+     178 | void output_mm_defines(void)
+         |      ^~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:210:6: warning: no previous prototype for 'output_sc_defines' [-Wmissing-prototypes]
+     210 | void output_sc_defines(void)
+         |      ^~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:218:6: warning: no previous prototype for 'output_signal_defines' [-Wmissing-prototypes]
+     218 | void output_signal_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:256:6: warning: no previous prototype for 'output_smpboot_defines' [-Wmissing-prototypes]
+     256 | void output_smpboot_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:266:6: warning: no previous prototype for 'output_pbe_defines' [-Wmissing-prototypes]
+     266 | void output_pbe_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~
+>> arch/loongarch/kernel/asm-offsets.c:278:6: warning: no previous prototype for 'output_fgraph_ret_regs_defines' [-Wmissing-prototypes]
+     278 | void output_fgraph_ret_regs_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+   arch/loongarch/kernel/asm-offsets.c:17:6: warning: no previous prototype for 'output_ptreg_defines' [-Wmissing-prototypes]
+      17 | void output_ptreg_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:64:6: warning: no previous prototype for 'output_task_defines' [-Wmissing-prototypes]
+      64 | void output_task_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:79:6: warning: no previous prototype for 'output_thread_info_defines' [-Wmissing-prototypes]
+      79 | void output_thread_info_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:95:6: warning: no previous prototype for 'output_thread_defines' [-Wmissing-prototypes]
+      95 | void output_thread_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:138:6: warning: no previous prototype for 'output_thread_fpu_defines' [-Wmissing-prototypes]
+     138 | void output_thread_fpu_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:178:6: warning: no previous prototype for 'output_mm_defines' [-Wmissing-prototypes]
+     178 | void output_mm_defines(void)
+         |      ^~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:210:6: warning: no previous prototype for 'output_sc_defines' [-Wmissing-prototypes]
+     210 | void output_sc_defines(void)
+         |      ^~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:218:6: warning: no previous prototype for 'output_signal_defines' [-Wmissing-prototypes]
+     218 | void output_signal_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:256:6: warning: no previous prototype for 'output_smpboot_defines' [-Wmissing-prototypes]
+     256 | void output_smpboot_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~~~~
+   arch/loongarch/kernel/asm-offsets.c:266:6: warning: no previous prototype for 'output_pbe_defines' [-Wmissing-prototypes]
+     266 | void output_pbe_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~
+>> arch/loongarch/kernel/asm-offsets.c:278:6: warning: no previous prototype for 'output_fgraph_ret_regs_defines' [-Wmissing-prototypes]
+     278 | void output_fgraph_ret_regs_defines(void)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/output_fgraph_ret_regs_defines +278 arch/loongarch/kernel/asm-offsets.c
+
+   276	
+   277	#ifdef CONFIG_FUNCTION_GRAPH_TRACER
+ > 278	void output_fgraph_ret_regs_defines(void)
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
