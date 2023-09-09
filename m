@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8027993B6
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423FB7993BA
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244716AbjIIAhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60286 "EHLO
+        id S1344389AbjIIAhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232141AbjIIAhO (ORCPT
+        with ESMTP id S237169AbjIIAhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 20:37:14 -0400
+        Fri, 8 Sep 2023 20:37:15 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E542698;
-        Fri,  8 Sep 2023 17:36:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53DD3C433C7;
-        Sat,  9 Sep 2023 00:36:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F90212D;
+        Fri,  8 Sep 2023 17:36:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61C6EC433CB;
+        Sat,  9 Sep 2023 00:36:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694219767;
-        bh=guUZwgwpptycEhh1UBHNkj0x7bnqCz7pkwBOOnAQXcs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=lps+1660wPoW5Noj5R6wns2MCbjAaVEQoUfyntA4jxAzVf02vUE13GvUoyv0rdttc
-         pOm2xZuQMW0gSn9W9xS9beH+kf71qusDQ4FQoCo1e++o8VYi904R77APd5sfCrsBWT
-         p/LfOIDEydOMa6Hv2o+4sXaz4pbyrH9/sc6murhs3W1gMEoOR4VMjepXAYwM0aXFbM
-         +uGYOv01zalup7fgJZoC+VIvzt0rv5ECH3h1MayzP+SGx1uk4EN7jb/HeicK3uuYTD
-         YZ19se4gzV9PkL+2wowpL1/QIGLoxxhitvcx7WFfWRgFNsC8C7v0GhA+hqWfaPMK2v
-         Zs4h/CVS3xG1g==
+        s=k20201202; t=1694219769;
+        bh=jQRjJqCxiS2xgnYhcH7Xbo+FN0aoh/RMEQ2iSadk/4c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BT4cGv9DZmyQXrMY+jh/1bdHSzXl3CzOSwC9+C+2tzj80jUFIipNwl7VWhbqvmhX8
+         tZccAgPA/Kz4JLKkAlHT1V/fo4sV70WmgbVtFuxi/ogJ9qWLTfYcrcqcMDhdW3x81D
+         00kIJBKc3N4wAVncCfEbNcyyVVwDh/wqH41d1gqMEKWANtCZoyTKd04RPukF325nPN
+         KnIBSuSsFM5i5nrSxW/xc00DUru4L58eoehIPLrTHGvt4Reu3o2PqQxqt98HCUHGtF
+         hgqtcx41SJJ7IXEv12bvbEJdj/CU+mX0YUMottiNKwfgpY9IOyu2lH/1ylg6JrRpBt
+         QXuU2btVLFsfA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lu Hongfei <luhongfei@vivo.com>,
+Cc:     Zhang Shurong <zhang_shurong@foxmail.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sasha Levin <sashal@kernel.org>, mchehab@kernel.org,
-        matthias.bgg@gmail.com, moudy.ho@mediatek.com,
-        sakari.ailus@linux.intel.com, sunke32@huawei.com, arnd@arndb.de,
-        drv@mailo.com, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.5 01/28] media: mdp3: Fix resource leaks in of_find_device_by_node
-Date:   Fri,  8 Sep 2023 20:35:35 -0400
-Message-Id: <20230909003604.3579407-1-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, crope@iki.fi,
+        mchehab@kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 02/28] media: dvb-usb-v2: af9035: Fix null-ptr-deref in af9035_i2c_master_xfer
+Date:   Fri,  8 Sep 2023 20:35:36 -0400
+Message-Id: <20230909003604.3579407-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230909003604.3579407-1-sashal@kernel.org>
+References: <20230909003604.3579407-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -56,38 +54,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Hongfei <luhongfei@vivo.com>
+From: Zhang Shurong <zhang_shurong@foxmail.com>
 
-[ Upstream commit 35ca8ce495366909b4c2e701d1356570dd40c4e2 ]
+[ Upstream commit 7bf744f2de0a848fb1d717f5831b03db96feae89 ]
 
-Use put_device to release the object get through of_find_device_by_node,
-avoiding resource leaks.
+In af9035_i2c_master_xfer, msg is controlled by user. When msg[i].buf
+is null and msg[i].len is zero, former checks on msg[i].buf would be
+passed. Malicious data finally reach af9035_i2c_master_xfer. If accessing
+msg[i].buf[0] without sanity check, null ptr deref would happen.
+We add check on msg[i].len to prevent crash.
 
-Signed-off-by: Lu Hongfei <luhongfei@vivo.com>
+Similar commit:
+commit 0ed554fd769a
+("media: dvb-usb: az6027: fix null-ptr-deref in az6027_i2c_xfer()")
+
+Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/media/usb/dvb-usb-v2/af9035.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
-index a605e80c7dc36..b0ca2b3a8a739 100644
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
-@@ -892,11 +892,13 @@ static int mdp_get_subsys_id(struct mdp_dev *mdp, struct device *dev,
- 	ret = cmdq_dev_get_client_reg(&comp_pdev->dev, &cmdq_reg, index);
- 	if (ret != 0) {
- 		dev_err(&comp_pdev->dev, "cmdq_dev_get_subsys fail!\n");
-+		put_device(&comp_pdev->dev);
- 		return -EINVAL;
- 	}
+diff --git a/drivers/media/usb/dvb-usb-v2/af9035.c b/drivers/media/usb/dvb-usb-v2/af9035.c
+index 1e9c8d01523be..33a2aa8907e65 100644
+--- a/drivers/media/usb/dvb-usb-v2/af9035.c
++++ b/drivers/media/usb/dvb-usb-v2/af9035.c
+@@ -322,6 +322,8 @@ static int af9035_i2c_master_xfer(struct i2c_adapter *adap,
+ 			ret = -EOPNOTSUPP;
+ 		} else if ((msg[0].addr == state->af9033_i2c_addr[0]) ||
+ 			   (msg[0].addr == state->af9033_i2c_addr[1])) {
++			if (msg[0].len < 3 || msg[1].len < 1)
++				return -EOPNOTSUPP;
+ 			/* demod access via firmware interface */
+ 			u32 reg = msg[0].buf[0] << 16 | msg[0].buf[1] << 8 |
+ 					msg[0].buf[2];
+@@ -381,6 +383,8 @@ static int af9035_i2c_master_xfer(struct i2c_adapter *adap,
+ 			ret = -EOPNOTSUPP;
+ 		} else if ((msg[0].addr == state->af9033_i2c_addr[0]) ||
+ 			   (msg[0].addr == state->af9033_i2c_addr[1])) {
++			if (msg[0].len < 3)
++				return -EOPNOTSUPP;
+ 			/* demod access via firmware interface */
+ 			u32 reg = msg[0].buf[0] << 16 | msg[0].buf[1] << 8 |
+ 					msg[0].buf[2];
+@@ -388,10 +392,7 @@ static int af9035_i2c_master_xfer(struct i2c_adapter *adap,
+ 			if (msg[0].addr == state->af9033_i2c_addr[1])
+ 				reg |= 0x100000;
  
- 	comp->subsys_id = cmdq_reg.subsys;
- 	dev_dbg(&comp_pdev->dev, "subsys id=%d\n", cmdq_reg.subsys);
-+	put_device(&comp_pdev->dev);
- 
- 	return 0;
- }
+-			ret = (msg[0].len >= 3) ? af9035_wr_regs(d, reg,
+-							         &msg[0].buf[3],
+-							         msg[0].len - 3)
+-					        : -EOPNOTSUPP;
++			ret = af9035_wr_regs(d, reg, &msg[0].buf[3], msg[0].len - 3);
+ 		} else {
+ 			/* I2C write */
+ 			u8 buf[MAX_XFER_SIZE];
 -- 
 2.40.1
 
