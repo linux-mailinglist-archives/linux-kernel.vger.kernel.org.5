@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 889077996AB
+	by mail.lfdr.de (Postfix) with ESMTP id D6DA07996AC
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 09:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238656AbjIIHH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 03:07:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59250 "EHLO
+        id S244944AbjIIHI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 03:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbjIIHHz (ORCPT
+        with ESMTP id S229597AbjIIHIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 03:07:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CADB41BFF
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 00:07:50 -0700 (PDT)
+        Sat, 9 Sep 2023 03:08:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD111BF9
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 00:08:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694243270; x=1725779270;
+  t=1694243330; x=1725779330;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=foRAnYeNbtyWXLOG68TP07h5ZP4CZXQJD1hz1aym0qo=;
-  b=CAAKCI+2lEvGO1mZF7RxW+zzK0rt0Rz55F4wIGJzIP4I7zmhk8N82HKK
-   s5VAsXXT8lV0to1sjw5OOBhrsReJmVhuSg17jLdObJ9nqnNGXa/93thJS
-   TQv2ovdz97gJa7M4mU5Mt7S9beS5zampGhI3C+BV0dff65Y9Lz3uS9d5I
-   e3LEAn9UgsSZHzdOOTqMvB76BZe1siwAPHC1ly02v2gszJzjzg7fIayE5
-   qNl/2OoZjVSiqWIq5WPXjkaqEEs+1ye9WSU5ElJ0nd2gTFo1VlaaNDJDj
-   43dw0WhE2tuR6KhNb8Xn2cDdX/F+WjVRm3WVM8xIIcWOeCTvw9Q4DCPtT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="380526680"
+  bh=Xv5T9WSZWFjttBhAsH3tfPxJ2gOPx23bW1Cl+jZpRX0=;
+  b=DJ29IaFVHETidL+epREMvo8W4D/qYH5jG167LyClYNnJf5temHkqKz1x
+   ddDk957Dm9DRE/XmNOkwRkUM/9whhC23769GdGrleMewJ5QRPkmTGfCsr
+   +CbP30hZeGQSBGshQQic5lBVVJ/H0ELSX6ZsC3OBS5JZfvTVE6lKEJrtR
+   raB4YYrTwaePMgw9QZsJhSoLhgyauirT67s2d/1jI2X25uatxBJeKMGx1
+   FzRv0Jdh1KEdEu2wb3VcoUK4OoNDqf+2dSNx2R+Y/gGJ7k+qJzYMYsfUT
+   WHI8WGQZ5tGfW5t0mHb0hKl4GxVAlsltu5sYnTincsa3Q3Jv5LNBlYEL+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="375173697"
 X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
-   d="scan'208";a="380526680"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 00:07:50 -0700
+   d="scan'208";a="375173697"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 00:08:49 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="692500239"
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="1073563936"
 X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
-   d="scan'208";a="692500239"
+   d="scan'208";a="1073563936"
 Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 09 Sep 2023 00:07:48 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 09 Sep 2023 00:08:48 -0700
 Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qes4I-00032S-0W;
-        Sat, 09 Sep 2023 07:07:46 +0000
-Date:   Sat, 9 Sep 2023 15:07:43 +0800
+        id 1qes5G-00032j-10;
+        Sat, 09 Sep 2023 07:08:46 +0000
+Date:   Sat, 9 Sep 2023 15:07:47 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Aditi Ghag <aditi.ghag@isovalent.com>
+To:     Petlozu Pravareshwar <petlozup@nvidia.com>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: net/core/filter.c:11748:17: error: no previous declaration for
- 'bpf_sock_destroy'
-Message-ID: <202309091542.bIKqs1sH-lkp@intel.com>
+        Thierry Reding <treding@nvidia.com>,
+        Stefan Kristiansson <stefank@nvidia.com>
+Subject: drivers/soc/tegra/pmc.c:467: warning: Function parameter or member
+ 'syscore' not described in 'tegra_pmc'
+Message-ID: <202309091552.Brm1Esmk-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,153 +63,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Petlozu,
+
+FYI, the error/warning still remains.
+
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   6099776f9f268e61fe5ecd721f994a8cfce5306f
-commit: 4ddbcb886268af8d12a23e6640b39d1d9c652b1b bpf: Add bpf_sock_destroy kfunc
-date:   4 months ago
-config: x86_64-sof-customedconfig-avs-defconfig (https://download.01.org/0day-ci/archive/20230909/202309091542.bIKqs1sH-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230909/202309091542.bIKqs1sH-lkp@intel.com/reproduce)
+commit: 1ddb8f6d44ff482c9953a06f800453bc372cfead soc/tegra: pmc: Fix dual edge triggered wakes
+date:   10 months ago
+config: arm-defconfig (https://download.01.org/0day-ci/archive/20230909/202309091552.Brm1Esmk-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230909/202309091552.Brm1Esmk-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309091542.bIKqs1sH-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309091552.Brm1Esmk-lkp@intel.com/
 
-All errors (new ones prefixed by >>):
+All warnings (new ones prefixed by >>):
 
-   net/core/filter.c:11650:17: error: no previous declaration for 'bpf_dynptr_from_skb' [-Werror=missing-declarations]
-    __bpf_kfunc int bpf_dynptr_from_skb(struct sk_buff *skb, u64 flags,
-                    ^~~~~~~~~~~~~~~~~~~
-   net/core/filter.c:11663:17: error: no previous declaration for 'bpf_dynptr_from_xdp' [-Werror=missing-declarations]
-    __bpf_kfunc int bpf_dynptr_from_xdp(struct xdp_buff *xdp, u64 flags,
-                    ^~~~~~~~~~~~~~~~~~~
->> net/core/filter.c:11748:17: error: no previous declaration for 'bpf_sock_destroy' [-Werror=missing-declarations]
-    __bpf_kfunc int bpf_sock_destroy(struct sock_common *sock)
-                    ^~~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
+>> drivers/soc/tegra/pmc.c:467: warning: Function parameter or member 'syscore' not described in 'tegra_pmc'
 
 
-vim +/bpf_sock_destroy +11748 net/core/filter.c
+vim +467 drivers/soc/tegra/pmc.c
 
- 11646	
- 11647	__diag_push();
- 11648	__diag_ignore_all("-Wmissing-prototypes",
- 11649			  "Global functions as their definitions will be in vmlinux BTF");
- 11650	__bpf_kfunc int bpf_dynptr_from_skb(struct sk_buff *skb, u64 flags,
- 11651					    struct bpf_dynptr_kern *ptr__uninit)
- 11652	{
- 11653		if (flags) {
- 11654			bpf_dynptr_set_null(ptr__uninit);
- 11655			return -EINVAL;
- 11656		}
- 11657	
- 11658		bpf_dynptr_init(ptr__uninit, skb, BPF_DYNPTR_TYPE_SKB, 0, skb->len);
- 11659	
- 11660		return 0;
- 11661	}
- 11662	
- 11663	__bpf_kfunc int bpf_dynptr_from_xdp(struct xdp_buff *xdp, u64 flags,
- 11664					    struct bpf_dynptr_kern *ptr__uninit)
- 11665	{
- 11666		if (flags) {
- 11667			bpf_dynptr_set_null(ptr__uninit);
- 11668			return -EINVAL;
- 11669		}
- 11670	
- 11671		bpf_dynptr_init(ptr__uninit, xdp, BPF_DYNPTR_TYPE_XDP, 0, xdp_get_buff_len(xdp));
- 11672	
- 11673		return 0;
- 11674	}
- 11675	__diag_pop();
- 11676	
- 11677	int bpf_dynptr_from_skb_rdonly(struct sk_buff *skb, u64 flags,
- 11678				       struct bpf_dynptr_kern *ptr__uninit)
- 11679	{
- 11680		int err;
- 11681	
- 11682		err = bpf_dynptr_from_skb(skb, flags, ptr__uninit);
- 11683		if (err)
- 11684			return err;
- 11685	
- 11686		bpf_dynptr_set_rdonly(ptr__uninit);
- 11687	
- 11688		return 0;
- 11689	}
- 11690	
- 11691	BTF_SET8_START(bpf_kfunc_check_set_skb)
- 11692	BTF_ID_FLAGS(func, bpf_dynptr_from_skb)
- 11693	BTF_SET8_END(bpf_kfunc_check_set_skb)
- 11694	
- 11695	BTF_SET8_START(bpf_kfunc_check_set_xdp)
- 11696	BTF_ID_FLAGS(func, bpf_dynptr_from_xdp)
- 11697	BTF_SET8_END(bpf_kfunc_check_set_xdp)
- 11698	
- 11699	static const struct btf_kfunc_id_set bpf_kfunc_set_skb = {
- 11700		.owner = THIS_MODULE,
- 11701		.set = &bpf_kfunc_check_set_skb,
- 11702	};
- 11703	
- 11704	static const struct btf_kfunc_id_set bpf_kfunc_set_xdp = {
- 11705		.owner = THIS_MODULE,
- 11706		.set = &bpf_kfunc_check_set_xdp,
- 11707	};
- 11708	
- 11709	static int __init bpf_kfunc_init(void)
- 11710	{
- 11711		int ret;
- 11712	
- 11713		ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &bpf_kfunc_set_skb);
- 11714		ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_ACT, &bpf_kfunc_set_skb);
- 11715		ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SK_SKB, &bpf_kfunc_set_skb);
- 11716		ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SOCKET_FILTER, &bpf_kfunc_set_skb);
- 11717		ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SKB, &bpf_kfunc_set_skb);
- 11718		ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_OUT, &bpf_kfunc_set_skb);
- 11719		ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_IN, &bpf_kfunc_set_skb);
- 11720		ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_XMIT, &bpf_kfunc_set_skb);
- 11721		ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_SEG6LOCAL, &bpf_kfunc_set_skb);
- 11722		ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_NETFILTER, &bpf_kfunc_set_skb);
- 11723		return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &bpf_kfunc_set_xdp);
- 11724	}
- 11725	late_initcall(bpf_kfunc_init);
- 11726	
- 11727	/* Disables missing prototype warnings */
- 11728	__diag_push();
- 11729	__diag_ignore_all("-Wmissing-prototypes",
- 11730			  "Global functions as their definitions will be in vmlinux BTF");
- 11731	
- 11732	/* bpf_sock_destroy: Destroy the given socket with ECONNABORTED error code.
- 11733	 *
- 11734	 * The function expects a non-NULL pointer to a socket, and invokes the
- 11735	 * protocol specific socket destroy handlers.
- 11736	 *
- 11737	 * The helper can only be called from BPF contexts that have acquired the socket
- 11738	 * locks.
- 11739	 *
- 11740	 * Parameters:
- 11741	 * @sock: Pointer to socket to be destroyed
- 11742	 *
- 11743	 * Return:
- 11744	 * On error, may return EPROTONOSUPPORT, EINVAL.
- 11745	 * EPROTONOSUPPORT if protocol specific destroy handler is not supported.
- 11746	 * 0 otherwise
- 11747	 */
- 11748	__bpf_kfunc int bpf_sock_destroy(struct sock_common *sock)
- 11749	{
- 11750		struct sock *sk = (struct sock *)sock;
- 11751	
- 11752		/* The locking semantics that allow for synchronous execution of the
- 11753		 * destroy handlers are only supported for TCP and UDP.
- 11754		 * Supporting protocols will need to acquire sock lock in the BPF context
- 11755		 * prior to invoking this kfunc.
- 11756		 */
- 11757		if (!sk->sk_prot->diag_destroy || (sk->sk_protocol != IPPROTO_TCP &&
- 11758						   sk->sk_protocol != IPPROTO_UDP))
- 11759			return -EOPNOTSUPP;
- 11760	
- 11761		return sk->sk_prot->diag_destroy(sk, ECONNABORTED);
- 11762	}
- 11763	
+5f84bb1a4099e26 Sandipan Patra       2018-10-24  383  
+7232398abc6a718 Thierry Reding       2014-07-11  384  /**
+7232398abc6a718 Thierry Reding       2014-07-11  385   * struct tegra_pmc - NVIDIA Tegra PMC
+35b67291b4a85d3 Jon Hunter           2015-12-04  386   * @dev: pointer to PMC device structure
+7232398abc6a718 Thierry Reding       2014-07-11  387   * @base: pointer to I/O remapped register region
+bbe5af60041cae1 Thierry Reding       2019-01-25  388   * @wake: pointer to I/O remapped region for WAKE registers
+bbe5af60041cae1 Thierry Reding       2019-01-25  389   * @aotag: pointer to I/O remapped region for AOTAG registers
+bbe5af60041cae1 Thierry Reding       2019-01-25  390   * @scratch: pointer to I/O remapped region for scratch registers
+7232398abc6a718 Thierry Reding       2014-07-11  391   * @clk: pointer to pclk clock
+35b67291b4a85d3 Jon Hunter           2015-12-04  392   * @soc: pointer to SoC data structure
+e247deae1a55089 Mikko Perttunen      2019-01-25  393   * @tz_only: flag specifying if the PMC can only be accessed via TrustZone
+3195ac6d9cbeef2 Jon Hunter           2015-12-04  394   * @debugfs: pointer to debugfs entry
+7232398abc6a718 Thierry Reding       2014-07-11  395   * @rate: currently configured rate of pclk
+7232398abc6a718 Thierry Reding       2014-07-11  396   * @suspend_mode: lowest suspend mode available
+7232398abc6a718 Thierry Reding       2014-07-11  397   * @cpu_good_time: CPU power good time (in microseconds)
+7232398abc6a718 Thierry Reding       2014-07-11  398   * @cpu_off_time: CPU power off time (in microsecends)
+7232398abc6a718 Thierry Reding       2014-07-11  399   * @core_osc_time: core power good OSC time (in microseconds)
+7232398abc6a718 Thierry Reding       2014-07-11  400   * @core_pmu_time: core power good PMU time (in microseconds)
+7232398abc6a718 Thierry Reding       2014-07-11  401   * @core_off_time: core power off time (in microseconds)
+7232398abc6a718 Thierry Reding       2014-07-11  402   * @corereq_high: core power request is active-high
+7232398abc6a718 Thierry Reding       2014-07-11  403   * @sysclkreq_high: system clock request is active-high
+7232398abc6a718 Thierry Reding       2014-07-11  404   * @combined_req: combined power request for CPU & core
+7232398abc6a718 Thierry Reding       2014-07-11  405   * @cpu_pwr_good_en: CPU power good signal is enabled
+7232398abc6a718 Thierry Reding       2014-07-11  406   * @lp0_vec_phys: physical base address of the LP0 warm boot code
+7232398abc6a718 Thierry Reding       2014-07-11  407   * @lp0_vec_size: size of the LP0 warm boot code
+a38045121bf4211 Jon Hunter           2016-03-30  408   * @powergates_available: Bitmap of available power gates
+7232398abc6a718 Thierry Reding       2014-07-11  409   * @powergates_lock: mutex for power gate register access
+bbe5af60041cae1 Thierry Reding       2019-01-25  410   * @pctl_dev: pin controller exposed by the PMC
+bbe5af60041cae1 Thierry Reding       2019-01-25  411   * @domain: IRQ domain provided by the PMC
+bbe5af60041cae1 Thierry Reding       2019-01-25  412   * @irq: chip implementation for the IRQ domain
+e57a243f5d896f0 Dmitry Osipenko      2019-09-26  413   * @clk_nb: pclk clock changes handler
+d3a20dcbca4880a Thierry Reding       2022-05-06  414   * @core_domain_state_synced: flag marking the core domain's state as synced
+d3a20dcbca4880a Thierry Reding       2022-05-06  415   * @core_domain_registered: flag marking the core domain as registered
+1ddb8f6d44ff482 Petlozu Pravareshwar 2022-09-30  416   * @wake_type_level_map: Bitmap indicating level type for non-dual edge wakes
+1ddb8f6d44ff482 Petlozu Pravareshwar 2022-09-30  417   * @wake_type_dual_edge_map: Bitmap indicating if a wake is dual-edge or not
+1ddb8f6d44ff482 Petlozu Pravareshwar 2022-09-30  418   * @wake_sw_status_map: Bitmap to hold raw status of wakes without mask
+1ddb8f6d44ff482 Petlozu Pravareshwar 2022-09-30  419   * @wake_cntrl_level_map: Bitmap to hold wake levels to be programmed in
+1ddb8f6d44ff482 Petlozu Pravareshwar 2022-09-30  420   *     cntrl register associated with each wake during system suspend.
+7232398abc6a718 Thierry Reding       2014-07-11  421   */
+7232398abc6a718 Thierry Reding       2014-07-11  422  struct tegra_pmc {
+3568df3d31d62b4 Mikko Perttunen      2015-01-06  423  	struct device *dev;
+7232398abc6a718 Thierry Reding       2014-07-11  424  	void __iomem *base;
+c641ec6eab8587a Thierry Reding       2017-08-30  425  	void __iomem *wake;
+c641ec6eab8587a Thierry Reding       2017-08-30  426  	void __iomem *aotag;
+5be2255676bf2bc Thierry Reding       2017-08-30  427  	void __iomem *scratch;
+7232398abc6a718 Thierry Reding       2014-07-11  428  	struct clk *clk;
+3195ac6d9cbeef2 Jon Hunter           2015-12-04  429  	struct dentry *debugfs;
+7232398abc6a718 Thierry Reding       2014-07-11  430  
+7232398abc6a718 Thierry Reding       2014-07-11  431  	const struct tegra_pmc_soc *soc;
+e247deae1a55089 Mikko Perttunen      2019-01-25  432  	bool tz_only;
+7232398abc6a718 Thierry Reding       2014-07-11  433  
+7232398abc6a718 Thierry Reding       2014-07-11  434  	unsigned long rate;
+7232398abc6a718 Thierry Reding       2014-07-11  435  
+7232398abc6a718 Thierry Reding       2014-07-11  436  	enum tegra_suspend_mode suspend_mode;
+7232398abc6a718 Thierry Reding       2014-07-11  437  	u32 cpu_good_time;
+7232398abc6a718 Thierry Reding       2014-07-11  438  	u32 cpu_off_time;
+7232398abc6a718 Thierry Reding       2014-07-11  439  	u32 core_osc_time;
+7232398abc6a718 Thierry Reding       2014-07-11  440  	u32 core_pmu_time;
+7232398abc6a718 Thierry Reding       2014-07-11  441  	u32 core_off_time;
+7232398abc6a718 Thierry Reding       2014-07-11  442  	bool corereq_high;
+7232398abc6a718 Thierry Reding       2014-07-11  443  	bool sysclkreq_high;
+7232398abc6a718 Thierry Reding       2014-07-11  444  	bool combined_req;
+7232398abc6a718 Thierry Reding       2014-07-11  445  	bool cpu_pwr_good_en;
+7232398abc6a718 Thierry Reding       2014-07-11  446  	u32 lp0_vec_phys;
+7232398abc6a718 Thierry Reding       2014-07-11  447  	u32 lp0_vec_size;
+a38045121bf4211 Jon Hunter           2016-03-30  448  	DECLARE_BITMAP(powergates_available, TEGRA_POWERGATE_MAX);
+7232398abc6a718 Thierry Reding       2014-07-11  449  
+7232398abc6a718 Thierry Reding       2014-07-11  450  	struct mutex powergates_lock;
+4a37f11c8f57ffd Aapo Vienamo         2018-08-10  451  
+4a37f11c8f57ffd Aapo Vienamo         2018-08-10  452  	struct pinctrl_dev *pctl_dev;
+19906e6b1667217 Thierry Reding       2018-09-17  453  
+19906e6b1667217 Thierry Reding       2018-09-17  454  	struct irq_domain *domain;
+19906e6b1667217 Thierry Reding       2018-09-17  455  	struct irq_chip irq;
+e57a243f5d896f0 Dmitry Osipenko      2019-09-26  456  
+e57a243f5d896f0 Dmitry Osipenko      2019-09-26  457  	struct notifier_block clk_nb;
+41bafa698ddd075 Dmitry Osipenko      2021-06-01  458  
+41bafa698ddd075 Dmitry Osipenko      2021-06-01  459  	bool core_domain_state_synced;
+41bafa698ddd075 Dmitry Osipenko      2021-06-01  460  	bool core_domain_registered;
+1ddb8f6d44ff482 Petlozu Pravareshwar 2022-09-30  461  
+1ddb8f6d44ff482 Petlozu Pravareshwar 2022-09-30  462  	unsigned long *wake_type_level_map;
+1ddb8f6d44ff482 Petlozu Pravareshwar 2022-09-30  463  	unsigned long *wake_type_dual_edge_map;
+1ddb8f6d44ff482 Petlozu Pravareshwar 2022-09-30  464  	unsigned long *wake_sw_status_map;
+1ddb8f6d44ff482 Petlozu Pravareshwar 2022-09-30  465  	unsigned long *wake_cntrl_level_map;
+1ddb8f6d44ff482 Petlozu Pravareshwar 2022-09-30  466  	struct syscore_ops syscore;
+7232398abc6a718 Thierry Reding       2014-07-11 @467  };
+7232398abc6a718 Thierry Reding       2014-07-11  468  
+
+:::::: The code at line 467 was first introduced by commit
+:::::: 7232398abc6a7186e315425638c367d50c674718 ARM: tegra: Convert PMC to a driver
+
+:::::: TO: Thierry Reding <treding@nvidia.com>
+:::::: CC: Thierry Reding <treding@nvidia.com>
 
 -- 
 0-DAY CI Kernel Test Service
