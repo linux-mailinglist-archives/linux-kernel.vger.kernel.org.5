@@ -2,89 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 327AE799626
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 05:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B93F799639
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 06:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244716AbjIIDhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 23:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40366 "EHLO
+        id S236356AbjIIEbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 00:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240919AbjIIDhd (ORCPT
+        with ESMTP id S233627AbjIIEbb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 23:37:33 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314591FEA
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 20:37:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A803BC433CD;
-        Sat,  9 Sep 2023 03:37:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694230649;
-        bh=u4g+CGjCZbG2QHJKasID6b5E2s2G6qeOdsap6ruSGmY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Izsy8M9gmHRZoYcw3BIdjHqk4Bh4D39q8DOc/nlB1dcLYYvpMQGZxHev79ESz2uns
-         WEu/9IXL70k9mccElhHgYBm8RqMZJk6rScKpW7vnlzL/IY3fsrVG5lAuul/mz7MdGn
-         UJrGFRmo4XD9g1Q33/kCg0C+GCVOWZwGsjdlE5Q+MBBRu8xG/fnutSXgquG1SjGdnp
-         b+iZW54q/5eZ9jpWecrLxzyz4UXNo3+AXEljpMjsI66zhNXb+aGUk22Q2BQx6qJJ/3
-         jT/ulxnTRocN/Vg5EAkvTeirS7OtTYYuLlQwTDc/RZrHcbr/aRpVaxBD2hrKfcwSJu
-         Fp0dVQBatu+iw==
-From:   SeongJae Park <sj@kernel.org>
-Cc:     SeongJae Park <sj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        damon@lists.linux.dev, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC 8/8] mm/damon/core: mark damon_moving_sum() as a static function
-Date:   Sat,  9 Sep 2023 03:37:11 +0000
-Message-Id: <20230909033711.55794-9-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230909033711.55794-1-sj@kernel.org>
-References: <20230909033711.55794-1-sj@kernel.org>
+        Sat, 9 Sep 2023 00:31:31 -0400
+X-Greylist: delayed 898 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 08 Sep 2023 21:31:26 PDT
+Received: from mail-m25497.xmail.ntesmail.com (mail-m25497.xmail.ntesmail.com [103.129.254.97])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3551BFF
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 21:31:26 -0700 (PDT)
+DKIM-Signature: a=rsa-sha256;
+        b=Y9T09Ba3aDJmf/t9nRe28WFU3HTYA0M4yUY0ZPSc1KaH9+fCUt0R1GLPvr5Od612vVEMwJoj1t7livYkSUeVy9jDLQ4BD/A5L+fxW0kB3Z1ChJrMyRWDMpsniFxBcob7XvURgwbLQ05EUTrVtEttfWA/5hX5zoDnFKhorp2UPYY=;
+        c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
+        bh=WuNKHkVsHNP86Di5GRNLcvWVzu0r7U61O+1vXD2vASo=;
+        h=date:mime-version:subject:message-id:from;
+Received: from [192.168.60.65] (unknown [103.29.142.67])
+        by mail-m127102.qiye.163.com (Hmail) with ESMTPA id 5E4B06C01C6;
+        Sat,  9 Sep 2023 12:06:19 +0800 (CST)
+Message-ID: <468e55f2-f3d7-1340-dac9-1d6763d996cb@rock-chips.com>
+Date:   Sat, 9 Sep 2023 12:06:13 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RESEND PATCH v1] clk: clk-fractional-divider: Export
+ clk_fractional_divider_general_approximation API
+Content-Language: en-US
+To:     Elaine Zhang <zhangqing@rock-chips.com>, mturquette@baylibre.com,
+        sboyd@kernel.org, heiko@sntech.de
+Cc:     linux-clk@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org, huangtao@rock-chips.com
+References: <20230801081456.2551-1-zhangqing@rock-chips.com>
+From:   Kever Yang <kever.yang@rock-chips.com>
+In-Reply-To: <20230801081456.2551-1-zhangqing@rock-chips.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkaH0NMVhlLSh9NQhhOHUgeSVUTARMWGhIXJBQOD1
+        lXWRgSC1lBWUpLSFVJQlVKT0lVTUxZV1kWGg8SFR0UWUFZT0tIVUpNT0hNTFVKS0tVSkJLS1kG
+X-HM-Tid: 0a8a781e81efb280kuuu5e4b06c01c6
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pi46Tjo4HD1RARAhPjw3M0sK
+        GDYwCzpVSlVKTUJPSUhJSENLT0tLVTMWGhIXVRAeDR4JVQIaFRw7CRQYEFYYExILCFUYFBZFWVdZ
+        EgtZQVlKS0hVSUJVSk9JVU1MWVdZCAFZQUlOQk83Bg++
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function is used by only mm/damon/core.c.  Mark it as a static
-function.
+Hi Michael and Stephen,
 
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- include/linux/damon.h | 2 --
- mm/damon/core.c       | 2 +-
- 2 files changed, 1 insertion(+), 3 deletions(-)
+     Could this patch be land to common clock?
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 0fe13482df63..491fdd3e4c76 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -632,8 +632,6 @@ void damon_add_region(struct damon_region *r, struct damon_target *t);
- void damon_destroy_region(struct damon_region *r, struct damon_target *t);
- int damon_set_regions(struct damon_target *t, struct damon_addr_range *ranges,
- 		unsigned int nr_ranges);
--unsigned int damon_moving_sum(unsigned int mvsum, unsigned int nomvsum,
--		unsigned int len_window, unsigned int new_value);
- void damon_update_region_access_rate(struct damon_region *r, bool accessed,
- 		struct damon_attrs *attrs);
- 
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index 1ba7c4669263..83b0cd329e84 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -1627,7 +1627,7 @@ int damon_set_region_biggest_system_ram_default(struct damon_target *t,
-  *
-  * Return: Pseudo-moving average after getting the @new_value.
-  */
--unsigned int damon_moving_sum(unsigned int mvsum, unsigned int nomvsum,
-+static unsigned int damon_moving_sum(unsigned int mvsum, unsigned int nomvsum,
- 		unsigned int len_window, unsigned int new_value)
- {
- 	return mvsum - nomvsum / len_window + new_value;
--- 
-2.25.1
+On 2023/8/1 16:14, Elaine Zhang wrote:
+> This is used by the Rockchip clk driver, export it to allow that
+> driver to be compiled as a module.
+>
+> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
 
+Looks OK to me,
+
+Reviewed-by: Kever Yang <kever.yang@rock-chips.com>
+
+Thanks,
+- Kever
+
+> ---
+>   drivers/clk/clk-fractional-divider.c | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/clk/clk-fractional-divider.c b/drivers/clk/clk-fractional-divider.c
+> index 479297763e70..44bf21c97034 100644
+> --- a/drivers/clk/clk-fractional-divider.c
+> +++ b/drivers/clk/clk-fractional-divider.c
+> @@ -142,6 +142,7 @@ void clk_fractional_divider_general_approximation(struct clk_hw *hw,
+>   			GENMASK(fd->mwidth - 1, 0), GENMASK(fd->nwidth - 1, 0),
+>   			m, n);
+>   }
+> +EXPORT_SYMBOL_GPL(clk_fractional_divider_general_approximation);
+>   
+>   static long clk_fd_round_rate(struct clk_hw *hw, unsigned long rate,
+>   			      unsigned long *parent_rate)
