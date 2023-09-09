@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91160799615
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 05:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8F2799616
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 05:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239515AbjIIDYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 23:24:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59168 "EHLO
+        id S243733AbjIIDY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 23:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234556AbjIIDXh (ORCPT
+        with ESMTP id S234638AbjIIDXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Sep 2023 23:23:37 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9ED51FF5;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE621FF6;
         Fri,  8 Sep 2023 20:23:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ABC5C433CD;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97E63C433CA;
         Sat,  9 Sep 2023 03:23:32 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
         (envelope-from <rostedt@goodmis.org>)
-        id 1qeoZb-000YkY-0G;
+        id 1qeoZb-000Yl7-0v;
         Fri, 08 Sep 2023 23:23:51 -0400
-Message-ID: <20230909032350.900547495@goodmis.org>
+Message-ID: <20230909032351.104588615@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 08 Sep 2023 23:16:29 -0400
+Date:   Fri, 08 Sep 2023 23:16:30 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Naveen N Rao <naveen@kernel.org>
-Subject: [for-linus][PATCH 14/15] selftests/ftrace: Fix dependencies for some of the synthetic event
- tests
+        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
+Subject: [for-linus][PATCH 15/15] tracing/synthetic: Fix order of struct trace_dynamic_info
 References: <20230909031615.047488015@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,55 +43,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naveen N Rao <naveen@kernel.org>
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Commit b81a3a100cca1b ("tracing/histogram: Add simple tests for
-stacktrace usage of synthetic events") changed the output text in
-tracefs README, but missed updating some of the dependencies specified
-in selftests. This causes some of the tests to exit as unsupported.
+To make handling BIG and LITTLE endian better the offset/len of dynamic
+fields of the synthetic events was changed into a structure of:
 
-Fix this by changing the grep pattern. Since we want these tests to work
-on older kernels, match only against the common last part of the
-pattern.
+ struct trace_dynamic_info {
+ #ifdef CONFIG_CPU_BIG_ENDIAN
+	u16	offset;
+	u16	len;
+ #else
+	u16	len;
+	u16	offset;
+ #endif
+ };
 
-Link: https://lore.kernel.org/linux-trace-kernel/20230614091046.2178539-1-naveen@kernel.org
+to replace the manual changes of:
 
-Cc: <linux-kselftest@vger.kernel.org>
+ data_offset = offset & 0xffff;
+ data_offest = len << 16;
+
+But if you look closely, the above is:
+
+  <len> << 16 | offset
+
+Which in little endian would be in memory:
+
+ offset_lo offset_hi len_lo len_hi
+
+and in big endian:
+
+ len_hi len_lo offset_hi offset_lo
+
+Which if broken into a structure would be:
+
+ struct trace_dynamic_info {
+ #ifdef CONFIG_CPU_BIG_ENDIAN
+	u16	len;
+	u16	offset;
+ #else
+	u16	offset;
+	u16	len;
+ #endif
+ };
+
+Which is the opposite of what was defined.
+
+Fix this and just to be safe also add "__packed".
+
+Link: https://lore.kernel.org/all/20230908154417.5172e343@gandalf.local.home/
+Link: https://lore.kernel.org/linux-trace-kernel/20230908163929.2c25f3dc@gandalf.local.home
+
+Cc: stable@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Shuah Khan <shuah@kernel.org>
-Fixes: b81a3a100cca ("tracing/histogram: Add simple tests for stacktrace usage of synthetic events")
-Signed-off-by: Naveen N Rao <naveen@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>
+Fixes: ddeea494a16f3 ("tracing/synthetic: Use union instead of casts")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- .../trigger/inter-event/trigger-synthetic-event-dynstring.tc    | 2 +-
- .../inter-event/trigger-synthetic_event_syntax_errors.tc        | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ include/linux/trace_events.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-dynstring.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-dynstring.tc
-index 213d890ed188..174376ddbc6c 100644
---- a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-dynstring.tc
-+++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-dynstring.tc
-@@ -1,7 +1,7 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
- # description: event trigger - test inter-event histogram trigger trace action with dynamic string param
--# requires: set_event synthetic_events events/sched/sched_process_exec/hist "char name[]' >> synthetic_events":README ping:program
-+# requires: set_event synthetic_events events/sched/sched_process_exec/hist "' >> synthetic_events":README ping:program
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 12f875e9e69a..21ae37e49319 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -62,13 +62,13 @@ void trace_event_printf(struct trace_iterator *iter, const char *fmt, ...);
+ /* Used to find the offset and length of dynamic fields in trace events */
+ struct trace_dynamic_info {
+ #ifdef CONFIG_CPU_BIG_ENDIAN
+-	u16	offset;
+ 	u16	len;
++	u16	offset;
+ #else
+-	u16	len;
+ 	u16	offset;
++	u16	len;
+ #endif
+-};
++} __packed;
  
- fail() { #msg
-     echo $1
-diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
-index 955e3ceea44b..b927ee54c02d 100644
---- a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
-+++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
-@@ -1,7 +1,7 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
- # description: event trigger - test synthetic_events syntax parser errors
--# requires: synthetic_events error_log "char name[]' >> synthetic_events":README
-+# requires: synthetic_events error_log "' >> synthetic_events":README
- 
- check_error() { # command-with-error-pos-by-^
-     ftrace_errlog_check 'synthetic_events' "$1" 'synthetic_events'
+ /*
+  * The trace entry - the most basic unit of tracing. This is what
 -- 
 2.40.1
