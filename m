@@ -2,135 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96ED8799A2F
+	by mail.lfdr.de (Postfix) with ESMTP id 4BAD3799A2E
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 19:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235650AbjIIREJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 13:04:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55968 "EHLO
+        id S235875AbjIIRFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 13:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235016AbjIIREI (ORCPT
+        with ESMTP id S231539AbjIIRFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 13:04:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB233C7
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 10:03:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694278997;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=KRsfGWDiakSCdlAdAROSL7HgPfkAmtDGqTNLHJo4TzA=;
-        b=DcId9aIRVf/MQAELfI19OLywG+9oz1x7SX03+mLZe60VdcEuiii+57JfEXH0HZM9H3xU+q
-        VUam+zlPnR6Th1+QLa8gnmvNulWS6AyszcwsfhatcmFJgiNXjz/2BPLBz1vQyITL4nCW4D
-        nNWsz8tt/JBsUpEL3i/n1I6Rw9kgT1w=
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com
- [209.85.160.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-654-a7nLLLhEOyuYqmJa4kEVAA-1; Sat, 09 Sep 2023 13:03:16 -0400
-X-MC-Unique: a7nLLLhEOyuYqmJa4kEVAA-1
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1cc4d62dd0cso3690365fac.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 10:03:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694278995; x=1694883795;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KRsfGWDiakSCdlAdAROSL7HgPfkAmtDGqTNLHJo4TzA=;
-        b=mTmHDxjcYMkCSXZoa9lPESs1O3zSUV53KSdUbeyf0079DduZltXkPL8IUMKf8fqDlL
-         otCl75QNr/PL0ap2vF7GSlo/dLa3C5EUq5ZIULZnNP/Mg2jiU7C7J9rJ3naSFp28gqRI
-         AiROIw0Rr1Ct/icYAplNHkaWXUsBStOP7eI73JckzA8ME0SYV1UPRcOT/cOT+zMd5mAa
-         loU/n+r657PrjQZFKu3Wd1KfKfrm71rlr3VnNZcX7pooKmSc23e1CftgW3fe1FQOAakm
-         I++BdADoXdoIY9ou1zNxDpzLrzOJTS/3+VxjOPEZL3LVia/zYF/VaVuR3whwojgExXmQ
-         X0fQ==
-X-Gm-Message-State: AOJu0YxB/sD6r7djxtoRM+Fm7BqyJNyx461++NYfgX8IYvY6+Xd6XmTH
-        1xigBwwPnNCUx9LArxyNRn0MQeTn3+jJhUFkGQJaTHZ6mfKBAB/wW/quwMkfFhE/WkToCSOwKm3
-        9fc8hqKqPe9E/Vc6chMxt51gD
-X-Received: by 2002:a05:6870:b50d:b0:1b7:3432:9ec4 with SMTP id v13-20020a056870b50d00b001b734329ec4mr7421917oap.10.1694278995766;
-        Sat, 09 Sep 2023 10:03:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHewocO8VMFHcxmM6tjTB6hUq/W2PQDcgGcMorZTDjzD+HilF0jRgw7t5/4Xv8olN1HKNaLfg==
-X-Received: by 2002:a05:6870:b50d:b0:1b7:3432:9ec4 with SMTP id v13-20020a056870b50d00b001b734329ec4mr7421891oap.10.1694278995479;
-        Sat, 09 Sep 2023 10:03:15 -0700 (PDT)
-Received: from kernel-devel.local ([240d:1a:c0d:9f00:245e:16ff:fe87:c960])
-        by smtp.gmail.com with ESMTPSA id c2-20020a633502000000b0057405fc20c3sm2935490pga.72.2023.09.09.10.03.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Sep 2023 10:03:15 -0700 (PDT)
-From:   Shigeru Yoshida <syoshida@redhat.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shigeru Yoshida <syoshida@redhat.com>,
-        syzbot+6f98de741f7dbbfc4ccb@syzkaller.appspotmail.com
-Subject: [PATCH net v2] kcm: Fix memory leak in error path of kcm_sendmsg()
-Date:   Sun, 10 Sep 2023 02:03:10 +0900
-Message-ID: <20230909170310.1978851-1-syoshida@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Sat, 9 Sep 2023 13:05:33 -0400
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498A89C
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 10:05:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+        t=1694279124; bh=n6XYvU0I6OlN6ZT+DVICFQ8YyaakTDFD13vykeRCZwQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ku0aRmJtm1PhKG+qBpkqcNXBUZtH9b6n/P95iS8G9gVzWBeegPildMRKwsigJtA0L
+         iFSxJUUSvham7+EKS9diq+EMEaWDx9DpaJbjvRK40bclmsaEeDpEldllER0VF6RBDi
+         RIeG7EtLkROU2KYkvFAc5ue/iTrG+IQcNuzrC/MY=
+Received: from [192.168.9.172] (unknown [101.88.25.36])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id E2B8560117;
+        Sun, 10 Sep 2023 01:05:23 +0800 (CST)
+Message-ID: <fc0f52e0-99a7-bde7-6674-9c1c579c6bc7@xen0n.name>
+Date:   Sun, 10 Sep 2023 01:05:21 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 1/2] kasan: Cleanup the __HAVE_ARCH_SHADOW_MAP usage
+To:     Huacai Chen <chenhuacai@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Alexander Potapenko <glider@google.com>
+Cc:     loongarch@lists.linux.dev, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20230909115450.1903218-1-chenhuacai@loongson.cn>
+Content-Language: en-US
+From:   WANG Xuerui <kernel@xen0n.name>
+In-Reply-To: <20230909115450.1903218-1-chenhuacai@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot reported a memory leak like below:
+Hi,
 
-BUG: memory leak
-unreferenced object 0xffff88810b088c00 (size 240):
-  comm "syz-executor186", pid 5012, jiffies 4294943306 (age 13.680s)
-  hex dump (first 32 bytes):
-    00 89 08 0b 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff83e5d5ff>] __alloc_skb+0x1ef/0x230 net/core/skbuff.c:634
-    [<ffffffff84606e59>] alloc_skb include/linux/skbuff.h:1289 [inline]
-    [<ffffffff84606e59>] kcm_sendmsg+0x269/0x1050 net/kcm/kcmsock.c:815
-    [<ffffffff83e479c6>] sock_sendmsg_nosec net/socket.c:725 [inline]
-    [<ffffffff83e479c6>] sock_sendmsg+0x56/0xb0 net/socket.c:748
-    [<ffffffff83e47f55>] ____sys_sendmsg+0x365/0x470 net/socket.c:2494
-    [<ffffffff83e4c389>] ___sys_sendmsg+0xc9/0x130 net/socket.c:2548
-    [<ffffffff83e4c536>] __sys_sendmsg+0xa6/0x120 net/socket.c:2577
-    [<ffffffff84ad7bb8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84ad7bb8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+On 9/9/23 19:54, Huacai Chen wrote:
+> As Linus suggested, __HAVE_ARCH_XYZ is stupid and only for historical
+> uses. So cleanup the __HAVE_ARCH_SHADOW_MAP usage and use self-defined
 
-In kcm_sendmsg(), kcm_tx_msg(head)->last_skb is used as a cursor to append
-newly allocated skbs to 'head'. If some bytes are copied, an error occurred,
-and jumped to out_error label, 'last_skb' is left unmodified. A later
-kcm_sendmsg() will use an obsoleted 'last_skb' reference, corrupting the
-'head' frag_list and causing the leak.
+For the first sentence, I suggest adding quotation marks to make the 
+opinion expression clearer. And paraphrasing a bit:
 
-This patch fixes this issue by properly updating the last allocated skb in
-'last_skb'.
+ > As Linus suggested, __HAVE_ARCH_XYZ is "stupid" and "having 
+historical uses of it doesn't make it good".
 
-Fixes: ab7ac4eb9832 ("kcm: Kernel Connection Multiplexor module")
-Reported-and-tested-by: syzbot+6f98de741f7dbbfc4ccb@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=6f98de741f7dbbfc4ccb
-Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
----
-v1->v2:
-- Update the commit message to include more detailed root cause. 
----
- net/kcm/kcmsock.c | 2 ++
- 1 file changed, 2 insertions(+)
+What do you think?
 
-diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
-index 393f01b2a7e6..34d4062f639a 100644
---- a/net/kcm/kcmsock.c
-+++ b/net/kcm/kcmsock.c
-@@ -939,6 +939,8 @@ static int kcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- 
- 	if (head != kcm->seq_skb)
- 		kfree_skb(head);
-+	else if (copied)
-+		kcm_tx_msg(head)->last_skb = skb;
- 
- 	err = sk_stream_error(sk, msg->msg_flags, err);
- 
+> macros instead.
+"self-defined macro" doesn't really make sense, at least to me. I'd 
+suggest something like "migrate __HAVE_ARCH_SHADOW_MAP to separate 
+macros named after the respective functions", what about this one?
+>
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> ---
+>   arch/loongarch/include/asm/kasan.h | 10 ++++++++--
+>   include/linux/kasan.h              |  2 +-
+>   mm/kasan/kasan.h                   |  8 +++-----
+>   3 files changed, 12 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/loongarch/include/asm/kasan.h b/arch/loongarch/include/asm/kasan.h
+> index deeff8158f45..a12ecab37da7 100644
+> --- a/arch/loongarch/include/asm/kasan.h
+> +++ b/arch/loongarch/include/asm/kasan.h
+> @@ -10,8 +10,6 @@
+>   #include <asm/io.h>
+>   #include <asm/pgtable.h>
+>   
+> -#define __HAVE_ARCH_SHADOW_MAP
+> -
+>   #define KASAN_SHADOW_SCALE_SHIFT 3
+>   #define KASAN_SHADOW_OFFSET	_AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
+>   
+> @@ -68,6 +66,7 @@ static __always_inline bool kasan_arch_is_ready(void)
+>   	return !kasan_early_stage;
+>   }
+>   
+> +#define kasan_mem_to_shadow kasan_mem_to_shadow
+>   static inline void *kasan_mem_to_shadow(const void *addr)
+>   {
+>   	if (!kasan_arch_is_ready()) {
+> @@ -97,6 +96,7 @@ static inline void *kasan_mem_to_shadow(const void *addr)
+>   	}
+>   }
+>   
+> +#define kasan_shadow_to_mem kasan_shadow_to_mem
+>   static inline const void *kasan_shadow_to_mem(const void *shadow_addr)
+>   {
+>   	unsigned long addr = (unsigned long)shadow_addr;
+> @@ -119,6 +119,12 @@ static inline const void *kasan_shadow_to_mem(const void *shadow_addr)
+>   	}
+>   }
+>   
+> +#define addr_has_metadata addr_has_metadata
+> +static __always_inline bool addr_has_metadata(const void *addr)
+> +{
+> +	return (kasan_mem_to_shadow((void *)addr) != NULL);
+Drop the outermost pair of parens that's not necessary? It's only a 
+simple comparison after all (although the left hand side is a bit "heavy").
+> +}
+> +
+>   void kasan_init(void);
+>   asmlinkage void kasan_early_init(void);
+>   
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index 3df5499f7936..842623d708c2 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -54,7 +54,7 @@ extern p4d_t kasan_early_shadow_p4d[MAX_PTRS_PER_P4D];
+>   int kasan_populate_early_shadow(const void *shadow_start,
+>   				const void *shadow_end);
+>   
+> -#ifndef __HAVE_ARCH_SHADOW_MAP
+> +#ifndef kasan_mem_to_shadow
+>   static inline void *kasan_mem_to_shadow(const void *addr)
+>   {
+>   	return (void *)((unsigned long)addr >> KASAN_SHADOW_SCALE_SHIFT)
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index f70e3d7a602e..d37831b8511c 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -291,7 +291,7 @@ struct kasan_stack_ring {
+>   
+>   #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+>   
+> -#ifndef __HAVE_ARCH_SHADOW_MAP
+> +#ifndef kasan_shadow_to_mem
+>   static inline const void *kasan_shadow_to_mem(const void *shadow_addr)
+>   {
+>   	return (void *)(((unsigned long)shadow_addr - KASAN_SHADOW_OFFSET)
+> @@ -299,15 +299,13 @@ static inline const void *kasan_shadow_to_mem(const void *shadow_addr)
+>   }
+>   #endif
+>   
+> +#ifndef addr_has_metadata
+>   static __always_inline bool addr_has_metadata(const void *addr)
+>   {
+> -#ifdef __HAVE_ARCH_SHADOW_MAP
+> -	return (kasan_mem_to_shadow((void *)addr) != NULL);
+> -#else
+>   	return (kasan_reset_tag(addr) >=
+>   		kasan_shadow_to_mem((void *)KASAN_SHADOW_START));
+> -#endif
+>   }
+> +#endif
+>   
+>   /**
+>    * kasan_check_range - Check memory region, and report if invalid access.
+
+The other parts look mechanical and okay to me. With the minor nits 
+addressed (or justified):
+
+Reviewed-by: WANG Xuerui <git@xen0n.name>
+
 -- 
-2.41.0
+WANG "xen0n" Xuerui
+
+Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
 
