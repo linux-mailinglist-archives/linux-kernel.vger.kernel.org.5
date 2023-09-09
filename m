@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9AF37993FB
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E927993D5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238486AbjIIAiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38936 "EHLO
+        id S1345712AbjIIAiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345637AbjIIAhr (ORCPT
+        with ESMTP id S241829AbjIIAhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Sep 2023 20:37:47 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE142113;
-        Fri,  8 Sep 2023 17:37:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52EB0C433BA;
-        Sat,  9 Sep 2023 00:36:27 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3AA2109;
+        Fri,  8 Sep 2023 17:37:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4755C433BD;
+        Sat,  9 Sep 2023 00:36:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694219788;
-        bh=OnI8TW+z1Rk6cUZg2rW3CeYNlL0cZjubF6KRUIos7jY=;
+        s=k20201202; t=1694219789;
+        bh=cB0itskmytt+dGfeUP5WecthNkn3rtVLvAwzO09arYY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H7OV5n78V5DHZ3wea7PbP9Xi3T/ryXrrCG45xtVXb20Vf5d9fMV29y5VJ1BDZq5gA
-         R20XTxsyrTiE+04SnBvV7SADgGWMeDkEF1UpZtkx+mNCQaM98W/GjD25KHsSOzN5k9
-         MnpXib7ye5cd1HL26YDNG/jIOYWC1ojH3lqBAKIVAo9ROFqwGaNoDovvhYpYPJ4Mq3
-         K0Og+pTGwMc9Dp6pNo+MZ6eCvGqrb089AdAFMX7PbG3x1t+ESDH+GGnTyhHtszLcud
-         R16qTeI3B+R/KQFnHrWUY4RYjGwpwQfmotSpWoq88qUJ8rBum2wNFRqcVNC+17AnU/
-         DRfhyhzoGqyvg==
+        b=YyjhJIcFVtuHX6EUhA4O3sVLNirTJnz1zUl3pMsWZ6XmObDP6tqLCVS0YCBJF2Dx2
+         0hpqfwgss7oTp/IBzWxN1N2q8vbrZ/YTMM/KLp7lgMG7D8vnnhr9UFuo1S1/Yef+8E
+         I1bHJdDHiGbiBylmzjJGBEeql2AoWwuPbGoa1BZDJhwLaUouJlpzIjfoq2Zuyw2too
+         yhoqFwFtYwQCTuTMfc9Y+22UCDwTyQlZJucCuMBbDvbkef+nO3PbuaUc+RWgGFg+tf
+         h1X2ObOnydJvaXqemWOLBY1IzXRHcwykkQDoYghOMFI2qK9A91MToJkK+G9A/vGE+X
+         3BQK26oUrmFiw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xiaolei Wang <xiaolei.wang@windriver.com>,
-        Peter Chen <peter.chen@kernel.org>,
+Cc:     Madhu M <madhu.m@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, pawell@cadence.com,
-        linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 12/28] usb: cdns3: Put the cdns set active part outside the spin lock
-Date:   Fri,  8 Sep 2023 20:35:46 -0400
-Message-Id: <20230909003604.3579407-12-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 13/28] usb: typec: intel_pmc_mux: Add new ACPI ID for Lunar Lake IOM device
+Date:   Fri,  8 Sep 2023 20:35:47 -0400
+Message-Id: <20230909003604.3579407-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909003604.3579407-1-sashal@kernel.org>
 References: <20230909003604.3579407-1-sashal@kernel.org>
@@ -55,141 +55,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaolei Wang <xiaolei.wang@windriver.com>
+From: Madhu M <madhu.m@intel.com>
 
-[ Upstream commit 2319b9c87fe243327285f2fefd7374ffd75a65fc ]
+[ Upstream commit e032368e8cb15ab1f11b92f078caa9bae995b8fe ]
 
-The device may be scheduled during the resume process,
-so this cannot appear in atomic operations. Since
-pm_runtime_set_active will resume suppliers, put set
-active outside the spin lock, which is only used to
-protect the struct cdns data structure, otherwise the
-kernel will report the following warning:
+Intel Lunar Lake IOM has a different IOM port status offset and size
+than Intel MTL.
 
-  BUG: sleeping function called from invalid context at drivers/base/power/runtime.c:1163
-  in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 651, name: sh
-  preempt_count: 1, expected: 0
-  RCU nest depth: 0, expected: 0
-  CPU: 0 PID: 651 Comm: sh Tainted: G        WC         6.1.20 #1
-  Hardware name: Freescale i.MX8QM MEK (DT)
-  Call trace:
-    dump_backtrace.part.0+0xe0/0xf0
-    show_stack+0x18/0x30
-    dump_stack_lvl+0x64/0x80
-    dump_stack+0x1c/0x38
-    __might_resched+0x1fc/0x240
-    __might_sleep+0x68/0xc0
-    __pm_runtime_resume+0x9c/0xe0
-    rpm_get_suppliers+0x68/0x1b0
-    __pm_runtime_set_status+0x298/0x560
-    cdns_resume+0xb0/0x1c0
-    cdns3_controller_resume.isra.0+0x1e0/0x250
-    cdns3_plat_resume+0x28/0x40
+Intel Lunar Lake is the first platform to extend IOM port status
+from 32bit to 64bit by adding DDI port number into IOM port status.
 
-Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
-Acked-by: Peter Chen <peter.chen@kernel.org>
-Link: https://lore.kernel.org/r/20230616021952.1025854-1-xiaolei.wang@windriver.com
+Added IOM_PORT_STATUS_REGS macro for using platform specific IOM port
+status offset and size.
+
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Madhu M <madhu.m@intel.com>
+Link: https://lore.kernel.org/r/20230704080509.14251-1-madhu.m@intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/cdns3/cdns3-plat.c |  3 ++-
- drivers/usb/cdns3/cdnsp-pci.c  |  3 ++-
- drivers/usb/cdns3/core.c       | 15 +++++++++++----
- drivers/usb/cdns3/core.h       |  7 +++++--
- 4 files changed, 20 insertions(+), 8 deletions(-)
+ drivers/usb/typec/mux/intel_pmc_mux.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/usb/cdns3/cdns3-plat.c b/drivers/usb/cdns3/cdns3-plat.c
-index 884e2301237f4..1168dbeed2ce0 100644
---- a/drivers/usb/cdns3/cdns3-plat.c
-+++ b/drivers/usb/cdns3/cdns3-plat.c
-@@ -255,9 +255,10 @@ static int cdns3_controller_resume(struct device *dev, pm_message_t msg)
- 	cdns3_set_platform_suspend(cdns->dev, false, false);
+diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
+index 5e8edf3881c0d..61a88f68b458c 100644
+--- a/drivers/usb/typec/mux/intel_pmc_mux.c
++++ b/drivers/usb/typec/mux/intel_pmc_mux.c
+@@ -117,6 +117,16 @@ enum {
+ 	  IOM_PORT_STATUS_DHPD_HPD_STATUS_SHIFT) &			\
+ 	 IOM_PORT_STATUS_DHPD_HPD_STATUS_ASSERT)
  
- 	spin_lock_irqsave(&cdns->lock, flags);
--	cdns_resume(cdns, !PMSG_IS_AUTO(msg));
-+	cdns_resume(cdns);
- 	cdns->in_lpm = false;
- 	spin_unlock_irqrestore(&cdns->lock, flags);
-+	cdns_set_active(cdns, !PMSG_IS_AUTO(msg));
- 	if (cdns->wakeup_pending) {
- 		cdns->wakeup_pending = false;
- 		enable_irq(cdns->wakeup_irq);
-diff --git a/drivers/usb/cdns3/cdnsp-pci.c b/drivers/usb/cdns3/cdnsp-pci.c
-index 7b151f5af3ccb..0725668ffea4c 100644
---- a/drivers/usb/cdns3/cdnsp-pci.c
-+++ b/drivers/usb/cdns3/cdnsp-pci.c
-@@ -208,8 +208,9 @@ static int __maybe_unused cdnsp_pci_resume(struct device *dev)
- 	int ret;
- 
- 	spin_lock_irqsave(&cdns->lock, flags);
--	ret = cdns_resume(cdns, 1);
-+	ret = cdns_resume(cdns);
- 	spin_unlock_irqrestore(&cdns->lock, flags);
-+	cdns_set_active(cdns, 1);
- 
- 	return ret;
- }
-diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
-index dbcdf3b24b477..7b20d2d5c262e 100644
---- a/drivers/usb/cdns3/core.c
-+++ b/drivers/usb/cdns3/core.c
-@@ -522,9 +522,8 @@ int cdns_suspend(struct cdns *cdns)
- }
- EXPORT_SYMBOL_GPL(cdns_suspend);
- 
--int cdns_resume(struct cdns *cdns, u8 set_active)
-+int cdns_resume(struct cdns *cdns)
- {
--	struct device *dev = cdns->dev;
- 	enum usb_role real_role;
- 	bool role_changed = false;
- 	int ret = 0;
-@@ -556,15 +555,23 @@ int cdns_resume(struct cdns *cdns, u8 set_active)
- 	if (cdns->roles[cdns->role]->resume)
- 		cdns->roles[cdns->role]->resume(cdns, cdns_power_is_lost(cdns));
- 
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(cdns_resume);
++/* IOM port status register */
++#define IOM_PORT_STATUS_REGS(_offset_, _size_)	((_offset_) | (_size_))
++#define IOM_PORT_STATUS_REGS_SZ_MASK		BIT(0)
++#define IOM_PORT_STATUS_REGS_SZ_4		0
++#define IOM_PORT_STATUS_REGS_SZ_8		1
++#define IOM_PORT_STATUS_REGS_OFFSET(_d_)				\
++	((_d_) & ~IOM_PORT_STATUS_REGS_SZ_MASK)
++#define IOM_PORT_STATUS_REGS_SIZE(_d_)					\
++	(4 << ((_d_) & IOM_PORT_STATUS_REGS_SZ_MASK))
 +
-+void cdns_set_active(struct cdns *cdns, u8 set_active)
-+{
-+	struct device *dev = cdns->dev;
-+
- 	if (set_active) {
- 		pm_runtime_disable(dev);
- 		pm_runtime_set_active(dev);
- 		pm_runtime_enable(dev);
- 	}
+ struct pmc_usb;
  
--	return 0;
-+	return;
+ struct pmc_usb_port {
+@@ -145,6 +155,7 @@ struct pmc_usb {
+ 	struct acpi_device *iom_adev;
+ 	void __iomem *iom_base;
+ 	u32 iom_port_status_offset;
++	u8 iom_port_status_size;
+ 
+ 	struct dentry *dentry;
+ };
+@@ -160,7 +171,7 @@ static void update_port_status(struct pmc_usb_port *port)
+ 
+ 	port->iom_status = readl(port->pmc->iom_base +
+ 				 port->pmc->iom_port_status_offset +
+-				 port_num * sizeof(u32));
++				 port_num * port->pmc->iom_port_status_size);
  }
--EXPORT_SYMBOL_GPL(cdns_resume);
-+EXPORT_SYMBOL_GPL(cdns_set_active);
- #endif /* CONFIG_PM_SLEEP */
  
- MODULE_AUTHOR("Peter Chen <peter.chen@nxp.com>");
-diff --git a/drivers/usb/cdns3/core.h b/drivers/usb/cdns3/core.h
-index 2d332a788871e..4a4dbc2c15615 100644
---- a/drivers/usb/cdns3/core.h
-+++ b/drivers/usb/cdns3/core.h
-@@ -125,10 +125,13 @@ int cdns_init(struct cdns *cdns);
- int cdns_remove(struct cdns *cdns);
+ static int sbu_orientation(struct pmc_usb_port *port)
+@@ -589,13 +600,16 @@ static int pmc_usb_register_port(struct pmc_usb *pmc, int index,
+ /* IOM ACPI IDs and IOM_PORT_STATUS_OFFSET */
+ static const struct acpi_device_id iom_acpi_ids[] = {
+ 	/* TigerLake */
+-	{ "INTC1072", 0x560, },
++	{ "INTC1072", IOM_PORT_STATUS_REGS(0x560, IOM_PORT_STATUS_REGS_SZ_4) },
  
- #ifdef CONFIG_PM_SLEEP
--int cdns_resume(struct cdns *cdns, u8 set_active);
-+int cdns_resume(struct cdns *cdns);
- int cdns_suspend(struct cdns *cdns);
-+void cdns_set_active(struct cdns *cdns, u8 set_active);
- #else /* CONFIG_PM_SLEEP */
--static inline int cdns_resume(struct cdns *cdns, u8 set_active)
-+static inline int cdns_resume(struct cdns *cdns)
-+{ return 0; }
-+static inline int cdns_set_active(struct cdns *cdns, u8 set_active)
- { return 0; }
- static inline int cdns_suspend(struct cdns *cdns)
- { return 0; }
+ 	/* AlderLake */
+-	{ "INTC1079", 0x160, },
++	{ "INTC1079", IOM_PORT_STATUS_REGS(0x160, IOM_PORT_STATUS_REGS_SZ_4) },
+ 
+ 	/* Meteor Lake */
+-	{ "INTC107A", 0x160, },
++	{ "INTC107A", IOM_PORT_STATUS_REGS(0x160, IOM_PORT_STATUS_REGS_SZ_4) },
++
++	/* Lunar Lake */
++	{ "INTC10EA", IOM_PORT_STATUS_REGS(0x150, IOM_PORT_STATUS_REGS_SZ_8) },
+ 	{}
+ };
+ 
+@@ -615,7 +629,8 @@ static int pmc_usb_probe_iom(struct pmc_usb *pmc)
+ 	if (!adev)
+ 		return -ENODEV;
+ 
+-	pmc->iom_port_status_offset = (u32)dev_id->driver_data;
++	pmc->iom_port_status_offset = IOM_PORT_STATUS_REGS_OFFSET(dev_id->driver_data);
++	pmc->iom_port_status_size = IOM_PORT_STATUS_REGS_SIZE(dev_id->driver_data);
+ 
+ 	INIT_LIST_HEAD(&resource_list);
+ 	ret = acpi_dev_get_memory_resources(adev, &resource_list);
 -- 
 2.40.1
 
