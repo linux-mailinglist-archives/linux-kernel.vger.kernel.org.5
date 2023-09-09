@@ -2,129 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B25C799A39
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 19:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE4D799A36
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 19:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236383AbjIIRQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 13:16:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
+        id S236076AbjIIRP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 13:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbjIIRP7 (ORCPT
+        with ESMTP id S230504AbjIIRPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 13:15:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA7EDC7;
-        Sat,  9 Sep 2023 10:15:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67B15C433C9;
-        Sat,  9 Sep 2023 17:15:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694279755;
-        bh=KhtWGf2zPoyiuxjJnXbblI6vUKh1wZS3V87vTaTu1Ak=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=orQqJHz5NHPU9U9e8TwVINUBcesVcDAxcGwZJFOGPzVl/1QfguH4sjWojoPNDENhn
-         DN9JYIKOzELAOjDg2ULxs17pWQceUPZom7GFWsnzwT3Zs3ptPQpFzlLU9i5lA4GAlk
-         wsmLUPJkUsvTlleAwfHbOgfD2RDCAhR+0SC7lj8mfXwETlfcX19Xk+9pSkuPwhEzH7
-         5KuiXaKwaZT82PEgw8F6/uDg8D/QxeULK5DLxhZ4LOD3Ce6D8LaVRMIikTw+s3h0CY
-         CiPBrDBhCz7uBMIQ5FTJvPIYDlQIa+8d2n9oJcUD0eYniyKfmlI0vexUL0FJr3ss/E
-         8hfdVRhwCupAQ==
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1c504386370so2149444fac.1;
-        Sat, 09 Sep 2023 10:15:55 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yx78ceyapgzytwt9pj+vRHGTMEvtpISlAPfdoUK6H1Qz4dshvh+
-        3rzlQOZRzBGpye0McjSagebml+fUS9Pnfrr2kko=
-X-Google-Smtp-Source: AGHT+IFB4QMpozMyQcYYqjROcK1d0b9AZciucdiHOYXeCZaSUKBl9wA+yiE9RsjNLUevb72OKpxlQpU6vZOn2MWqVuI=
-X-Received: by 2002:a05:6870:41cf:b0:1b7:27cf:9709 with SMTP id
- z15-20020a05687041cf00b001b727cf9709mr7079226oac.43.1694279754787; Sat, 09
- Sep 2023 10:15:54 -0700 (PDT)
+        Sat, 9 Sep 2023 13:15:55 -0400
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63F49C;
+        Sat,  9 Sep 2023 10:15:50 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-d7eed15ad69so2913959276.1;
+        Sat, 09 Sep 2023 10:15:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694279750; x=1694884550;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XUYhXiAroV4hg8ozsfWDxDiqQmJJcr1xhZd/suVLTSc=;
+        b=bZLcy4FhVSyZxkeY3Jv9oCxuwJFcp3zTJf8EYW5iwBQ8nq95FhhaKTIma3WUntlLDM
+         2/OhCrOpZO2MHJY7/oxYiDeKGlBx69zhz78Qm+oeVdsK7HM3gYhuWFJRY3VJepeRSZu8
+         s/augKAE6+J6QLILkSfGHTpE1433DMBmBUriQH23tDsX4HQPneGfXS8UzPJ2zqNMFN2L
+         7p+cLAz6fz0NKkdQ/1k7RJIeRjxt40kNXWgOtJJ1I19G9CfrFHR8P65vFl0Jzp06Oedz
+         NMKZzM2E7B0CHSvG/oBjPKi/42+RiY8o8bywPB2KXnm6+HSqZLwDfb0AqN81VFiAgi1O
+         tJMA==
+X-Gm-Message-State: AOJu0Yw/I3min1SfaYviIq+zr078oPepPvSons79giOEiu2q4spSYoQa
+        NpmMdrPyGBwq9PU205mYfnebeMkg5bNlgg==
+X-Google-Smtp-Source: AGHT+IGHnOYFmpPB1GY+y3R3jPVjrcxXv0ELMunv7ZefBzCz3E3uQgJKgXqVZgzzA1G3H3PRDVK9jQ==
+X-Received: by 2002:a05:6902:704:b0:d7e:7916:b41d with SMTP id k4-20020a056902070400b00d7e7916b41dmr7157976ybt.13.1694279749974;
+        Sat, 09 Sep 2023 10:15:49 -0700 (PDT)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
+        by smtp.gmail.com with ESMTPSA id s104-20020a25aa71000000b00d7fcdc8e17dsm887072ybi.37.2023.09.09.10.15.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Sep 2023 10:15:49 -0700 (PDT)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-59b50b4556eso20444477b3.1;
+        Sat, 09 Sep 2023 10:15:49 -0700 (PDT)
+X-Received: by 2002:a0d:ebc4:0:b0:589:fbfe:fff1 with SMTP id
+ u187-20020a0debc4000000b00589fbfefff1mr5703734ywe.10.1694279748861; Sat, 09
+ Sep 2023 10:15:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230905190828.790400-1-masahiroy@kernel.org> <1MbRk3-1q6Cp42Bcv-00bwDk@mail.gmx.net>
-In-Reply-To: <1MbRk3-1q6Cp42Bcv-00bwDk@mail.gmx.net>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 10 Sep 2023 02:15:18 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASqCukUFNjT5NOfc7eT6isvh6K70DpMmCu3YkukbA9Tmw@mail.gmail.com>
-Message-ID: <CAK7LNASqCukUFNjT5NOfc7eT6isvh6K70DpMmCu3YkukbA9Tmw@mail.gmail.com>
-Subject: Re: [PATCH] linux/export: fix reference to exported functions for parisc64
-To:     Helge Deller <deller@gmx.de>
-Cc:     linux-parisc@vger.kernel.org,
-        John David Anglin <dave.anglin@bell.net>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
+References: <20230909161851.223627-1-kernel@jfarr.cc>
+In-Reply-To: <20230909161851.223627-1-kernel@jfarr.cc>
+From:   Luca Boccassi <bluca@debian.org>
+Date:   Sat, 9 Sep 2023 18:15:37 +0100
+X-Gmail-Original-Message-ID: <CAMw=ZnT-Ck-Y4i-MZAf99U5nzgDaj-q8UPRH_c00JgGMtUy_QA@mail.gmail.com>
+Message-ID: <CAMw=ZnT-Ck-Y4i-MZAf99U5nzgDaj-q8UPRH_c00JgGMtUy_QA@mail.gmail.com>
+Subject: Re: [PATCH 0/1] x86/kexec: UKI support
+To:     Jan Hendrik Farr <kernel@jfarr.cc>
+Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        x86@kernel.org, tglx@linutronix.de, dhowells@redhat.com,
+        vgoyal@redhat.com, keyrings@vger.kernel.org,
+        akpm@linux-foundation.org, bhe@redhat.com, bhelgaas@google.com,
+        lennart@poettering.net, systemd-devel@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 4:26=E2=80=AFAM Helge Deller <deller@gmx.de> wrote:
+On Sat, 9 Sept 2023 at 17:19, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
 >
-> I think ppc64 is affected too.
+> Hello,
+>
+> this patch implements UKI support for kexec_file_load. It will require support
+> in the kexec-tools userspace utility. For testing purposes the following can be used:
+> https://github.com/Cydox/kexec-test/
+>
+> There has been discussion on this topic in an issue on GitHub that is linked below
+> for reference.
+>
+>
+> Some links:
+> - Related discussion: https://github.com/systemd/systemd/issues/28538
+> - Documentation of UKIs: https://uapi-group.org/specifications/specs/unified_kernel_image/
+>
+> Jan Hendrik Farr (1):
+>   x86/kexec: UKI support
 
+Hi,
 
-I tested ppc64 ABI v1, but did not see a breakage.
+Thanks for working on this, it looks super useful and at Microsoft we
+are definitely interested in it, as we rely heavily on kexec and we
+are looking to switch to UKIs.
 
+I had a quick look, two comments:
 
-
-
-
-> Search for dereference_function_descriptor() in kernel sources, e.g.
-> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1494564.html
-> Helge
->
-> -------- Urspr=C3=BCngliche Nachricht --------
-> Von: Masahiro Yamada <masahiroy@kernel.org>
-> Datum: 05.09.23 21:08 (GMT+01:00)
-> An: linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>, John Davi=
-d Anglin <dave.anglin@bell.net>
-> Cc: linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, Masahiro =
-Yamada <masahiroy@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>
-> Betreff: [PATCH] linux/export: fix reference to exported functions for pa=
-risc64
->
-> John David Anglin reported parisc has been broken since commit
-> ddb5cdbafaaa ("kbuild: generate KSYMTAB entries by modpost").
->
-> I checked the assembler output, and noticed function references are
-> prefixed with P%, so the situation in parisc64 is similar to ia64.
->
-> Fixes: ddb5cdbafaaa ("kbuild: generate KSYMTAB entries by modpost")
-> Reported-by: John David Anglin <dave.anglin@bell.net>
-> Closes: https://lore.kernel.org/linux-parisc/1901598a-e11d-f7dd-a5d9-9a69=
-d06e6b6e@bell.net/T/#u
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
-> I just checked the assembler output, and I created this patch
-> based on my best guess. Only compile-tested.
-> I hope somebody will run-test this patch.
->
->
-> include/linux/export-internal.h | 2 ++
-> 1 file changed, 2 insertions(+)
->
-> diff --git a/include/linux/export-internal.h b/include/linux/export-inter=
-nal.h
-> index 1c849db953a5..45fca09b2319 100644
-> --- a/include/linux/export-internal.h
-> +++ b/include/linux/export-internal.h
-> @@ -52,6 +52,8 @@
->
-> #ifdef CONFIG_IA64
-> #define KSYM_FUNC(name) @fptr(name)
-> +#elif defined(CONFIG_PARISC) && defined(CONFIG_64BIT)
-> +#define KSYM_FUNC(name) P%name
-> #else
-> #define KSYM_FUNC(name) name
-> #endif
-> --
-> 2.39.2
->
-
-
---=20
-Best Regards
-Masahiro Yamada
+- the cmdline section is actually optional, just like it's optional to
+pass it on a traditional kexec load, so it should be used if present,
+but skipped if not
+- the dtb section also is optional but supported, and given kexec
+supports loading a new dtb I think this change should support it too
+immediately. Moreover, we are adding support for multiple DTBs in a
+single UKI (by simply having multiple .dtb sections, and picking the
+one that matches the firmware), as a stretch goal would be nice to
+support that too, but it can also come later
+- also what would it take to support arm64, which is the other major UEFI arch?
