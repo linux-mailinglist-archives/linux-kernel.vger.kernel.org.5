@@ -2,291 +2,777 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB2B7996F4
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 10:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E657996F7
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 10:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344247AbjIIIuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 04:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40950 "EHLO
+        id S1344374AbjIIIyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 04:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbjIIIt7 (ORCPT
+        with ESMTP id S229957AbjIIIyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 04:49:59 -0400
-Received: from alln-iport-2.cisco.com (alln-iport-2.cisco.com [173.37.142.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480BA10F6;
-        Sat,  9 Sep 2023 01:49:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=2993; q=dns/txt; s=iport;
-  t=1694249395; x=1695458995;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=gZWAns42T3cQ+GTQCauC61QSiJa9p2oLmxJfaoJolL4=;
-  b=mwzRehVAqJtRskfjgzP3DQLvSm9gRqhwWFz0UAkhDhe9QpRBbE1gR8LN
-   lQ5Ca011OWTPohWYsxid/IT5HyKnZkH6W7c/VEyHOTYxlugoqOLXRTA30
-   mYHfa5f6yJBsR0mVD+9SlvjCq+dQ4CExuHRDb5CI+Ljl0/AxxJPh64edS
-   0=;
-X-CSE-ConnectionGUID: VT0FzjqoRWKxZOC+X5bioA==
-X-CSE-MsgGUID: k94k+P3NQ0e1k7MN3kFySw==
-X-IPAS-Result: =?us-ascii?q?A0B1AgCpMPxkmIYNJK1aHgEBCxIMQCWBHwuBZVJ2AlkqE?=
- =?us-ascii?q?keIHQOFLYhkA517gSUDVg8BAQENAQE7CQQBAYUGAoZxAiU0CQ4BAgICAQEBA?=
- =?us-ascii?q?QMCAwEBAQEBAQECAQEFAQEBAgEHBBQBAQEBAQEBAR4ZBRAOJ4VoDYYEAQEBA?=
- =?us-ascii?q?QIBEhUTBgEBNwEEBwQCAQgRBAEBAR4FCzIdCAIEDgUIGoJcAYIqAw4jAwEQn?=
- =?us-ascii?q?F4BgUACiih4gQEzgQGCCQEBBgQFsBYEglIJgUiICQGIIYFlJxtAgU0SgQNDg?=
- =?us-ascii?q?mg+glcLAgOBX0uDR4IuiU2CK4JXPwUCMoIpgn80KoEYiC8qgQgIXoFqPQINV?=
- =?us-ascii?q?QsLXYEUgSiBHgICETkTR3EbAwcDgQIQKwcELxsHBgkWLSUGUQQtJAkTEj4Eg?=
- =?us-ascii?q?WeBUQqBBj8RDhGCRSICBzY2GUuCYwkVDDVOdhArBBQYgRQEagUaFR43ERIZD?=
- =?us-ascii?q?QMIdh0CMjwDBQMENgoVDQshBRRDA0gGSwsDAhwFAwMEgTYFDx8CEBoGDi0DA?=
- =?us-ascii?q?xlXA0QdQAMLbT01FBsFBGZZBaAWb4JKDoEjFwFYQEIoAg9kki2vUII4CieDZ?=
- =?us-ascii?q?IwAlTsXhAGBVpIFkgMulwh3jWGIb5FMAgQCBAUCDgEBBoFjOoFGDgdwFYMiC?=
- =?us-ascii?q?UkZD41FWwwNCRaDQIRZO4pldgIJMAIHCwEBAwmIbgSCVgEB?=
-IronPort-PHdr: A9a23:uDCrlh3GucK/epPusmDPZ1BlVkEcU/3cJAUZ7N8gk71RN/7l9JX5N
- 0uZ7vJo3xfFXoTevupNkPGe87vhVmoJ/YubvTgcfYZNWR4IhYRenwEpDMOfT0yuBPXrdCc9W
- s9FUQwt5Gm1ZHBcA922fFjOuju35D8WFA/4MF95K+nvE5LSiOy81vu5/NvYZAAbzDa4aKl5e
- Q2/th6Z9tFDmJZrMK831hrPrzNEev8Dw2RuKBPbk0P359y7+9ho9CE4hg==
-IronPort-Data: A9a23:swsTwKmxr5lNmITGWnI/SODo5gxPJkRdPkR7XQ2eYbSJt1+Wr1Gzt
- xJOXWGCPKqOamXyf9x1OonjpEMHscXdn9EwHAppqyBhE1tH+JHPbTi7wugcHM8zwunrFh8PA
- xA2M4GYRCwMZiaB4E/rav649SUUOZigHtLUEPTDNj16WThqQSIgjQMLs+Mii+aEu/Dha++2k
- Y20+5e31GONgWYuaTpFs/Pb8XuDgdyr0N8mlg1mDRx0lAe2e0k9VPo3Oay3Jn3kdYhYdsbSq
- zHrlezREsvxpn/BO/v9+lrJWhRiro36YWBivkFrt52K2XCukMCdPpETb5LwYW8P49mAcksYJ
- N9l7fRcQi9xVkHAdXh0vxRwS0lD0aN6FLDvH0Tnn96R1kr8TFj88dJFT3FrN4wf07MiaY1O3
- aRwxDElZxSHgae9x6i2D7A2wM8iN8LseogYvxmMzxmAUq1gGs6FGv6MvIQEtNszrpgm8fL2a
- 8cUczNzbBPoaBxUMVBRA5U79AutriCiK2EA8gPM9MLb5UDQnVByk4C2FuONd4WJGuBzxUW2t
- 1nZqjGR7hYybYzDlmXtHmiXruvOmz7rHYEfDru18tZ0j1CJgG8eEhsbUR28u/bRolWiUthbJ
- mQK9Sc066s/7kqmSp/6RRLQnZKflhcYX9wVGOog5UTUkOzf4h2SAS4PSTsphMEaWNEeewBy+
- E2LhtTTOh9/gpq+CkLA/LaThGbnUcQKFlMqaSgBRAoDxtDspoAvkx7CJuqP9obo0LUZ/hmtn
- Vi3QDgCa6Y71pVThv/rlbzTq3f9+MaVE1JdChD/AzrN0+9vWGKyi2VEA3Dy6fJNKu51pXHe4
- SBcwaByAA3yZKxheQSEROELWbqu/fvAaWeail90FJ5n/DOok5JCQWyyyG8jTKuKGp9bEdMMX
- KM1kVgBjHO0FCD6BZKbm6rrV6wXIVHITLwJrMz8YNtUeYRWfwSa5ixobkP49zmzwRR1wP5vY
- sjKKZjE4ZMm5UJPkmPeqwA1j+dD+8zC7T+7qW3Tlk7+iuPOOBZ5t59cbgLRBgzG0E90iFyFr
- 4kAXyd74x5eS+b5KjLG6pIeKEtiEJTILc6eliCjTcbaelAOMDh4U5f5mOpxE6Q7xP49vrmTo
- RmAtrpwlQCXaYvvc1vaMxiOqdrHAP5CkJ7MFXxwZAb2hCZ9MO5CLs43LvMKQFXuz8Q6pdZcR
- PgecMLGCfNKIgkrMRxHBXUhhOSOrCiWuD8=
-IronPort-HdrOrdr: A9a23:YueOeK5KuLZjeS/DuAPXwY2CI+orL9Y04lQ7vn2ZFiYlEfBwxv
- rPoB1E737JYW4qKQAdcLC7VJVpQRvnhOdICPoqTMeftW7dySWVxeBZnMTfKljbak/DH4FmpN
- pdmsRFebrN5B1B/LjHCWqDYpcdKbu8gdyVbI7lph8HI3AOGsVdBkVCe3mm+yZNNXF77O8CZe
- ChD7181kGdkBosH6KGL0hAddLu4/fMk5XrawMHARkI1Cmi5AnD1JfKVzKj8lM7ST1g/ZcOmF
- Kpr+X+3MqemsD+7iWZ+37Y7pxQltek4MBEHtawhs8cLSipohq0Zax6Mofy/wwdkaWK0hIHgd
- PMqxAvM4BY8HXKZFy4phPrxk3JzCsu0Xn/0lWV6EGT4/ARBQhKTvapt7gpNScx2HBQ+u2UF5
- g7hl5xgqAnSS8oWh6Nv+QgGSsazXZc6kBS4tL7x0YvI7f2LoUh7bD2OChuYco99OWQ0vF8LM
- B+SM7b//pYalWccjTQuXRu2sWlWjApEg6BWVVqgL3e79F6pgEw86Ij/r1Vol4QsJYmD5VU7e
- XNNapl0LlIU88NdKp4QOMMW9G+BGDBSQ/FdDv6GyWqKIgXf3bW75Ln6rQ84++nPJQO0ZspgZ
- zEFFdVr3Q7dU7iAdCHmJdL7hfOSmOgWimF8LAS27Fp/rnnALb7OyyKT14j18OmvvUEG8XeH+
- 2+PZpHasWTZFcG2bw5qTEWd6MiXkX2Cvdlz+rTc2j+1v72Fg==
-X-Talos-CUID: =?us-ascii?q?9a23=3AJR6RpmiaIq6cOu5ynSEjr1kJSzJuTEGF4mXSOki?=
- =?us-ascii?q?CNkV5epq+Cm/N8qJjup87?=
-X-Talos-MUID: =?us-ascii?q?9a23=3Aimtb8Q7jXrDu8U9Pc64khfkTxoxrsvitS3hWt6x?=
- =?us-ascii?q?etpCHaglWYDSznQ+oF9o=3D?=
-X-IronPort-Anti-Spam-Filtered: true
-Received: from alln-core-12.cisco.com ([173.36.13.134])
-  by alln-iport-2.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 08:49:54 +0000
-Received: from rcdn-opgw-2.cisco.com (rcdn-opgw-2.cisco.com [72.163.7.163])
-        by alln-core-12.cisco.com (8.15.2/8.15.2) with ESMTPS id 3898nsHK022837
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 9 Sep 2023 08:49:54 GMT
-X-CSE-ConnectionGUID: n6zw4rdeQ660Tm4O3lfs7A==
-X-CSE-MsgGUID: NDwm4EQ4QTmeo+o7T35Vsg==
-Authentication-Results: rcdn-opgw-2.cisco.com; dkim=pass (signature verified) header.i=@cisco.com; spf=Pass smtp.mailfrom=deeratho@cisco.com; dmarc=pass (p=quarantine dis=none) d=cisco.com
-X-IronPort-AV: E=Sophos;i="6.02,239,1688428800"; 
-   d="scan'208";a="1576395"
-Received: from mail-dm6nam10lp2103.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.103])
-  by rcdn-opgw-2.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 08:49:53 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U5wR+AMsRO3UJWcJC6G8fsnvzwBO07YGcUdc5QvRithNGUoCZGYi59ZVRCe8Gq8OprDGgoiIJpJtXB9UiLnYZEbYLshkGCbe1J8GMaAMOOi0buuggTwyYLHSkfo/ENADi0TNpTokNY97+fkTAQoZawkQsXSfZek9522Qr3+kPs39Gh5qhNb7Vjr3HXo5eEKXGkmaQpj4m4qi7h0Np66E1dger+ZqyPDRmIT38a+SrB+T6Q8m8Cw5QgwvRu8OFMMK9R+ofkunwr3ljsvk7SzI7dBiqw5qlLnzLQ7XFxS8IB+EaY2kXthDvh1UIibtO/hfeQvY4adtg8LW0iVOrRfqSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C0sFI09pNuMtjgzcMsSkQy6Spq6KBsfK12/2Kpl8+NM=;
- b=kU6TbG84bWV1P7PHSehQ8/PPJo25/EjJiBBiVach04eii+ZZ06C1Pi2FeYIOcQwfYJ0Jc3pIvbrT8IgElKPrntwkSxV9bnpjoOXhMuG86s1ImB/KzXNZ08BD0kT0teXQ9PbfH0oTD2DAuERYe4sXCzVVuSus5OxpJXHygLe785JITBBMl9KAV/AuUKCz1z55AN3KWvGY+Tbrz0dflJf/OYKWdwjni24wkJEv2cG29sLD2iVCDpuYjDJy+ZIini7g+qis3FCTWcglZuWIrkUNd9kvG+qAEcHPpd05R0p/Bz8vlza6znKCIIgi3GzwfzcJ3vxwuA1C8BYYxbpy5gAChA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
- dkim=pass header.d=cisco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C0sFI09pNuMtjgzcMsSkQy6Spq6KBsfK12/2Kpl8+NM=;
- b=UC+BJcgaq+nDtT4ZL+ADN6+/Pe0F0nFxiaiwG2TzjMSKHAVrUHCQUg+7Vrb5esWmfvfdVGc7dpwOkZ/NE4ie4XDpjKhiYtX9evtLIDd5taeVdmeNSFNf11OQzb0fRnofpFRWKTOpbjN1QstLD2GC2ehSZ/BsiGVqYw7co95Qk/Y=
-Received: from DM4PR11MB6189.namprd11.prod.outlook.com (2603:10b6:8:ae::18) by
- SJ0PR11MB7701.namprd11.prod.outlook.com (2603:10b6:a03:4e4::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6768.31; Sat, 9 Sep 2023 08:49:52 +0000
-Received: from DM4PR11MB6189.namprd11.prod.outlook.com
- ([fe80::9b29:81ff:3783:1740]) by DM4PR11MB6189.namprd11.prod.outlook.com
- ([fe80::9b29:81ff:3783:1740%4]) with mapi id 15.20.6768.029; Sat, 9 Sep 2023
- 08:49:52 +0000
-From:   "Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco)" 
-        <deeratho@cisco.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco)" 
-        <deeratho@cisco.com>
-Subject: RE: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free bug in
- btsdio_remove due to race condition
-Thread-Topic: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free bug in
- btsdio_remove due to race condition
-Thread-Index: AQHZ4LvcJrVsnoRBq0W95V9qrz7orbAPJ16AgAEtl9CAAB50cIAADDAAgAAAvOCAAATUgIABq+ow
-Date:   Sat, 9 Sep 2023 08:49:52 +0000
-Message-ID: <DM4PR11MB61897793502F49240BCA903CC4ECA@DM4PR11MB6189.namprd11.prod.outlook.com>
-References: <20230906121525.3946250-1-deeratho@cisco.com>
- <2023090738-passive-snowless-3b9d@gregkh>
- <DM4PR11MB6189DEDD52F3E17C8C4E3D1BC4EDA@DM4PR11MB6189.namprd11.prod.outlook.com>
- <DM4PR11MB61890EE125816A786D153C22C4EDA@DM4PR11MB6189.namprd11.prod.outlook.com>
- <2023090820-wielder-angled-3def@gregkh>
- <DM4PR11MB618943BFA18521150923326BC4EDA@DM4PR11MB6189.namprd11.prod.outlook.com>
- <2023090826-fabulous-genetics-e912@gregkh>
-In-Reply-To: <2023090826-fabulous-genetics-e912@gregkh>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM4PR11MB6189:EE_|SJ0PR11MB7701:EE_
-x-ms-office365-filtering-correlation-id: 1ddf400b-f6f9-4bca-e7c7-08dbb111bb7f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: VYY8VfDvysc9ixl3+bLhbRRL5tFQG+AzTfM8K0PJrbw/Qpnzi0womaqPsguG+gIuXxNkM2Ci2cfqTAuLuAo5lp7OQNHZidAKJhnJo82S1TKLDcPri7A5bWB4SDJmj4sT/cuWdoz0gFbC3ytAmo73WlZL/TZf5rCI96qnMHD2F9jCIDVlqu6VJhUU+N6O4wFCQZ4EN7yphpXXQcAWxuXrRQROQfqrbjLCCzesO1TmXgK06iPQmH5PZkBu44Pao2p1ggqK8n/F4gWJgXT91WwS8di3JcJQv943kj+cQuRwTR+Nt9FMMe8VEf4bsXL5z8Jd9Sb9JleJzFXXSqCZOZckbOZcn+trh7F2msvIDbJtEBpfUVCA4epWIRofYXskjXUZdaAc3nYYsV2PfqSqcp2YisGmort7nA4ybpYtDRs/+C81Sju8SIyNKiuVGg1ItIv0CaWG4EeZuP+CgUIzfQBX3Nz1F4sFAs6ueJ8WvP5/82rBVq9trQlg+Dch2PZEX91LRL6VT3OPiRTTYwo6oZBZVKW6DvFsgTOzqplc7tEoNGNVoIVSJYgsu2TfpzVwsQWqwC6bSEl71jojBdouy5YAbkj3lQFV9x4D+ZyFHq6JaGI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6189.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(136003)(376002)(366004)(39860400002)(186009)(451199024)(1800799009)(83380400001)(966005)(19625735003)(478600001)(122000001)(107886003)(9686003)(55016003)(53546011)(71200400001)(6506007)(7696005)(86362001)(2906002)(52536014)(8676002)(4326008)(5660300002)(8936002)(33656002)(6916009)(54906003)(66556008)(66476007)(64756008)(66946007)(316002)(41300700001)(76116006)(66446008)(26005)(38100700002)(38070700005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?OtOvLMWfQYNPMeaTmG2Ny9KTXS2jlJ3HjvnS3tzhAP+sQpXQ83ZIcMc9fm8E?=
- =?us-ascii?Q?nnls/EsQjoSWXGA6P2MoVX2Ob6gDrRMm9IKQwtL9pmwL57la4oZ8C2oK89Va?=
- =?us-ascii?Q?3bmGaVUyg9dF7r+EGgN2Tk7Vvwgl/AcS6Mxd8iR1xQAbme4W5Fcm15cblVhF?=
- =?us-ascii?Q?oYRmzN7FwIm/01DYnesrnF6T6OS56xbB7TTvsO1HwJWdSk2isknccLnfFGhn?=
- =?us-ascii?Q?wFBWwxKSMY6eZBT8u+EtAbfzXyk6er8UFCT2zbkq5OJ3jzvzq6pE1qz95eLs?=
- =?us-ascii?Q?j0qxw6udBbFNVczWb7Hu2OFVQUoElhZMhzVoEPlsdGn9K6ImdU8ZAkQc34Yb?=
- =?us-ascii?Q?kOxhhvsEx5vlZi97p5/vznVYSdtCClQcw/DWFl+qvArceQCSW+A364TMJfWB?=
- =?us-ascii?Q?RyowwcmmNpPr10sidwyzkUbqejqY25oddKujptEtQW8ip8WZ8gXM0MrcRXTk?=
- =?us-ascii?Q?vVzgHzxqfBrPAw+G2aAejvVJUTb+MF+OOKs999o6rtixhtVO/UH+2X8QWU3p?=
- =?us-ascii?Q?witlIoANohI5WwGH8iHF4zz4GlFx3s6ePg90xYYPG+POTS7Hn02qUzy6Gjql?=
- =?us-ascii?Q?srLBwpwjhb3r/oRex02ivZdeKEh8T3uru6hGPl79UMOPGwaCBJX6cil5eKhq?=
- =?us-ascii?Q?3BI1U7KGqdAqpSACYklHh9jLlVby1QuXEs+Hw261x6KPSvB6/S62VmlUavET?=
- =?us-ascii?Q?mCUpGHZlRQVE8cDgkaYZxd0Ccum95Z+U4zE7wZjCoKSOM/mImQgIfNAIxd1l?=
- =?us-ascii?Q?dhGSAuxb4kiYqqO3Q1sT0DKpKCHByvJ+yTl645IN9Flg94B+7cmBQi5QOdCm?=
- =?us-ascii?Q?F4GQCGrT4qlhuMTRSWbtqh781evNmXVOn4bateTMHgn1ifuaH2LpAKscqCzU?=
- =?us-ascii?Q?QcBxjumYsK3gH4K92Epm1QpEmrXi2Qju2/ftZOtj/l5lolecu0hReMYx4c0+?=
- =?us-ascii?Q?KV6jink92tKlL8PxwHEATwJ0YVMUaZDbqGxFpp3QyvQYtET41c2qeP5C+ArO?=
- =?us-ascii?Q?RhIMlkh7J5AB1LUJDiD6P8CK3OrFWfGDKI9raP5HBkmJ0yzQvVfKauQkbmLx?=
- =?us-ascii?Q?EHf4GkYnkaWDtrj82Rl8TP7aqZzgExB2HCYCaOUcFUsBibOxz/+99TQ5LdzT?=
- =?us-ascii?Q?DmXufTmJf6X+mN+Q1LXwYQBBwXwEl4uzApxntX0Xa96hMJsmzru23eRl9cNF?=
- =?us-ascii?Q?mLosyPATTyTBEmMa3BFnWZZloeYOpfWrRHMC/RJrtT6dG7qr6pS7lK4K0IZM?=
- =?us-ascii?Q?s39YzHDzfsJ9vsqWOMsDCz6EJQwfmyCdLgB6x/DII1b0JcQ2hfUA3kLbyY/r?=
- =?us-ascii?Q?4swkCBWkrneMXYSH2zhjDjFvmgYaQrf5wxidbQp3rv3hxjwv/k5OBkp+p82d?=
- =?us-ascii?Q?11kMQERyGuC1CbEbkilQ5AUF3Bkzgcl9F8h2uIJNwSxU5doR9v/Re04h6wQB?=
- =?us-ascii?Q?MBw3S73OtMEbLtVf43qTMtZ7z1/c9uP/ccLQkdMp3wqajidwXFKoscdHqRF6?=
- =?us-ascii?Q?wRMTmdZg2/RM7E+LmP2M7zLj8Z0BrXew7fHNi59rveAZwObiF1Sp5FrbwuaA?=
- =?us-ascii?Q?ZDIZAR1R7cDcduJ3NldZOaUh5l9OFGOqlqww+yRT?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Sat, 9 Sep 2023 04:54:13 -0400
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F6510F6;
+        Sat,  9 Sep 2023 01:54:04 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B0410FF807;
+        Sat,  9 Sep 2023 08:53:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+        t=1694249642;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fPyUYQLyx47PeNlqKxT+aTtsZJ3iYspjlYlykygyiuc=;
+        b=UQfz2ahW9ABaRafSgjFTQI5Zlk0Z/seB/LuZdIQ0ulfjMzR2l7vbbcP6CgW/T6vYMJ+jWs
+        mWVlMkW/SHw+10Hepe2cHMko76AAq2HF9qUGyn32ctuG4cr6XXXvqhDFRWGEIXA2B1436g
+        DRqgzi3Ymk9wnsTUH8gwNvYw27Y4Xv8JnOc44nrjDDQaYgKuxM2N7RbnvQdTw+mgRtXpon
+        cXWPfzS9U11E9MOHRlgyGFUFtwWlo5t1HaMySrr5ip6feXYsrMY+wM+eFL52Ki36NqC55z
+        n+3zcOcPQtPcvvYu5eaE918MLnvC6KaGC4np/lkeaC7SQb5dYyZ4oaTiiw6mXA==
+Message-ID: <87325ce9-595a-4dda-a6a1-b5927d25719b@arinc9.com>
+Date:   Sat, 9 Sep 2023 11:53:50 +0300
 MIME-Version: 1.0
-X-OriginatorOrg: cisco.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6189.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ddf400b-f6f9-4bca-e7c7-08dbb111bb7f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2023 08:49:52.1275
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OeGdNuR6kIvnFPppPLWqZ6NqXTByea3Lq+U80nuExo3LKVOWJHPCaxBK35uXJZW3/dLrLllyUt9ueRMT3QHq5A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB7701
-X-Outbound-SMTP-Client: 72.163.7.163, rcdn-opgw-2.cisco.com
-X-Outbound-Node: alln-core-12.cisco.com
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
+Content-Language: en-US
+From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
+        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20230812091708.34665-3-arinc.unal@arinc9.com>
+ <abc44324-454c-4524-b05e-fe989755ea47@arinc9.com>
+ <47b61929-5c2d-4906-b153-2046a94858c8@arinc9.com>
+ <47b61929-5c2d-4906-b153-2046a94858c8@arinc9.com>
+ <20230813112026.ohsx6srbt2staxma@skbuf>
+ <8a8e14f1-0493-4298-a2cc-6e7ae7929334@arinc9.com>
+ <20230813190157.4y3zoro53qsz43pe@skbuf>
+ <f5f468c1-b5a2-4336-b1d9-fd82da95b21d@arinc9.com>
+ <20230814143601.mnpxtcm2zybnbvoh@skbuf>
+ <0cee0928-74c9-4048-8cd8-70bfbfafd9b2@arinc9.com>
+ <20230827121235.zog4c3ehu2cyd3jy@skbuf>
+ <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
+In-Reply-To: <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------Original Message-----
-From: Greg KH <gregkh@linuxfoundation.org>=20
-Sent: Friday, September 8, 2023 12:39 PM
-To: Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco) <deeratho@cisc=
-o.com>
-Cc: stable@vger.kernel.org; linux-kernel@vger.kernel.org
-Subject: Re: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free bug in =
-btsdio_remove due to race condition
+On 4.09.2023 14:33, Arınç ÜNAL wrote:
+> Hey Vladimir,
+> 
+> On 27.08.2023 15:12, Vladimir Oltean wrote:
+>> Hi Arınç,
+>>
+>> I am on vacation and I will just reply with some clarification aspects,
+>> without having done any further research on the topic since my last reply.
+>>
+>> On Sun, Aug 27, 2023 at 11:33:16AM +0300, Arınç ÜNAL wrote:
+>>> Before I continue commenting, I'd like to state my understanding so we can
+>>> make sure we're on the same page. If a driver doesn't use
+>>> ds->slave_mii_bus, the switch it controls must not have any internal MDIO
+>>> buses. Otherwise the PHYs on these buses couldn't function, and an improper
+>>> driver like this would not be on the official Linux source code.
+>>
+>> A DSA switch port, like any OF-based ethernet-controller which uses
+>> phylink, will use one of the phy-handle, fixed-link or managed properties
+>> to describe the interface connecting the MAC/MAC-side PCS to the PHY.
+>>
+>> At its core, ds->slave_mii_bus is nothing more than a mechanism to make
+>> sense of device trees where the above 3 phylink properties are not present.
+>>
+>> It is completely false to say that if a driver doesn't have ds->slave_mii_bus,
+>> it must not have an internal MDIO bus. Because you could still describe
+>> that internal MDIO bus like below, without making any use of the sole property
+>> that makes ds->slave_mii_bus useful from a dt-bindings perspective.
+>>
+>> ethernet-switch {
+>>     ethernet-ports {
+>>         port@0 {
+>>             reg = <0>;
+>>             phy-handle = <&port0_phy>;
+>>             phy-mode = "internal";
+>>         };
+>>     };
+>>
+>>     mdio {
+>>         port0_phy: ethernet-phy@0 {
+>>             reg = <0>;
+>>         };
+>>     };
+>> };
+>>
+>> This is the more universal way of describing the port setup in an
+>> OF-based way. There is also the DSA-specific (and old-style, before phylink)
+>> way of describing the same thing, which relies on the non-OF-based
+>> ds->slave_mii_bus, with bindings that look like this:
+>>
+>> ethernet-switch {
+>>     ethernet-ports {
+>>         port@0 {
+>>             reg = <0>;
+>>         };
+>>     };
+>> };
+>>
+>> But, I would say that the first variant of the binding is preferable,
+>> since it is more universal.
+>>
+>> Not all switches that have an internal MDIO bus support the second
+>> variant of the dt-binding (the ones that don't have ds->slave_mii_bus don't).
+>> But, they support the same configuration through the first form.
+> 
+> Understood.
+> 
+>>
+>> Furthermore, on the U-Boot mailing lists, I have been suggesting that
+>> the DM_DSA driver for mv88e6xxx should not bother to support the second
+>> version of the binding, since it is just more code to be added to handle
+>> a case which can already be described with the more universal first binding.
+> 
+> That makes sense.
+> 
+>>
+>>> I've checked mscc,vsc7514-switch. What I see is, the architecture is an SoC
+>>> with a switch component. Since the switch component is not designed to be a
+>>> standalone IC, the MDIO bus of the SoC could just as well be used without
+>>> the need to design an MDIO controller specific to the switch component, to
+>>> manage the PHYs. So I see this switch as just another case of a switch
+>>> without an internal MDIO bus.
+>>
+>> Well, we need to clarify the semantics of an "internal" MDIO bus.
+>>
+>> I would say most discrete chips with DSA switches have this SoC-style
+>> architecture, with separate address spaces for the switching IP, MDIO
+>> bus, GPIO controller, IRQ controllers, temperature sensors etc (see
+>> "mscc,vsc7512-switch" which is like "mscc,vsc7514-switch", but it is
+>> controlled over SPIO instead of MMIO). The dt-bindings of most DSA
+>> switches may or may not reflect that discrete chip organization. Those
+>> drivers and dt-bindings could be reimagined so that DSA is not the
+>> top-level driver.
+>>
+>> Yet, I would argue that it's wrong to say that because it isn't an OF
+>> child of the switch, the MDIO bus of the VSC7514 is not internal in the
+>> same way that the Realtek MDIO bus is internal. The switch ports are
+>> connected to internal PHYs on this MDIO bus, and there aren't PHYs on
+>> this MDIO bus that go to other MACs than the switch ports. So, the
+>> VSC7514 MDIO bus could legally be called the internal MDIO bus of the
+>> switch, even if there isn't a parent/child relationship between them.
+> 
+> Good point, I had believed that the management interface of all of the PHYs
+> being connected to the MDIO bus - which is not part of the switching IP
+> address space - would be enough to classify the MDIO bus as non-internal.
+> 
+> However, the architecture of separate address spaces for the switching IP
+> and MDIO bus is used on any type of IC with the switching feature.
+> Therefore, this characteristic cannot be used to distinguish whether an
+> MDIO bus is of a switch.
+> 
+> What we can refer to to classify an internal MDIO bus is by confirming the
+> data interface of all PHYs on the MDIO bus is connected to the switch port
+> MACs, as you have pointed out here.
+> 
+> Because the architecture of separate address spaces for the switching IP
+> and MDIO bus is used on any type of IC with the switching feature, it can
+> differ by driver how the MDIO bus is defined on the dt-bindings. So we
+> can't make universal bindings of an internal MDIO bus of a switch that
+> apply to every switch.
+> 
+> So, the correct approach is to define things under the switch-specific
+> schema which is affine to the driver, as you have already pointed out.
+> Which schemas to define what will of course differ.
+> 
+>>
+>> So, what I'm disagreeing with is your insistence to correlate your
+>> problem with internal MDIO buses. The way in which the problem is
+>> formulated dictates what problem gets solved, and the problem is not
+>> correctly formulated here. It is purely about ds->slave_mii_bus and its
+>> driver-defined OF presence/absence. It is a DSA-specific binding aspect
+>> which not even all DSA switches inherit, let alone bindings outside DSA.
+> 
+> Got it.
+> 
+>>
+>>>> For switches in the second category, it all depends on the way in which
+>>>> the driver finds the node for of_mdiobus_register().
+>>>
+>>> Ok, so some drivers require the mdio child node. Some require it and the
+>>> compatible property with a certain string.
+>>>
+>>> MDIO controlled Realtek switches do not need the compatible property under
+>>> the mdio child node. There're no compatible strings to make a distinction
+>>> between the SMI and MDIO controlled switches so the best we can do is keep
+>>> it the way it currently is. Define realtek,smi-mdio as a compatible string
+>>> but keep the compatible property optional. I did state this on my reply to
+>>> patch 3 but still received reviewed-bys regardless.
+>>
+>> Yes, because.... [1]
+>>
+>>>> Having identified all switches which make some sort of use of
+>>>> ds->slave_mii_bus, the rule would sound like this:
+>>>>
+>>>> 1. If the schema is that of (need to replace this with compatible
+>>>>      strings, I'm too lazy for that):
+>>>>
+>>>>      - ksz_switch_ops
+>>>>      - mv88e6060_switch_ops
+>>>>      - lan9303_switch_ops
+>>>>      - rtl8365mb_switch_ops_mdio
+>>>>      - b53_switch_ops
+>>>>      - vsc73xx_ds_ops
+>>>>      - mv88e6xxx
+>>>>      - qca8k
+>>>>
+>>>>      and we have an "mdio" child, then phylink bindings are mandatory on user ports.
+>>>>
+>>>> 2. If the schema is that of gswip_mdio and we have a child node of "lantiq,xrx200-mdio",
+>>>>      then phylink bindings are mandatory on user ports (I haven't checked,
+>>>>      but it might be that the "lantiq,xrx200-mdio" child is mandatory, and
+>>>>      in that case, this goes to category 4 below).
+>>>>
+>>>> 3. If the schema is that of realtek_smi_setup_mdio and we have a child node of
+>>>>      "realtek,smi-mdio", then phylink bindings are mandatory on user ports
+>>>>      (same comment about the child MDIO note maybe being mandatory).
+>>>>
+>>>> 4. If the switch didn't appear in the above set of rules, then phylink
+>>>>      bindings are unconditionally mandatory on user ports.
+>>>>
+>>>> We don't care at all what the drivers that don't use ds->slave_mii_bus
+>>>> do with the "mdio" child node. It doesn't change the fact that their
+>>>> user ports can't have missing phylink bindings.
+>>>
+>>> I partially agree. I say, for the switches without an internal MDIO bus,
+>>> invalidate the mdio child node, and enforce the phylink bindings on the
+>>> user ports. Such as mscc,vsc7514-switch and nxp,sja1105x. For nxp,sja1110x,
+>>> invalidate the mdio child node, and enforce the phylink bindings on the
+>>> user ports if the mdios property is used.
+>>
+>> Why "if the mdios property is used" and not "always"? :-/
+>>
+>> To say it again: because the sja1105 driver does not use ds->slave_mii_bus,
+>> it can make no sense of dt-bindings on user ports which lack phylink properties.
+>> So they are *always* needed. The "mdios" property changes nothing in that regard.
+> 
+> Got it.
+> 
+>>
+>>>
+>>> I'd like to add this before I conclude. The way I understand dt-bindings is
+>>> that a binding does not have to translate to an action on the driver.
+>>> Documenting bindings for the sole purpose of describing hardware is a valid
+>>> case.
+>>
+>> [1] ...this. The SMI-controlled and MDIO-controlled Realtek switches are
+>> otherwise the same, right? So why would they have different dt-bindings?
+> 
+> Honestly, I'm wondering the answer to this as well. For some reason, when
+> probing the SMI controlled Realtek switches, instead of just letting
+> dsa_switch_setup() populate ds->slave_mii_bus, on realtek_smi_setup_mdio()
+> on realtek-smi.c:
+> 
+> - priv->slave_mii_bus is allocated.
+> - mdio_np = of_get_compatible_child(priv->dev->of_node, "realtek,smi-mdio");
+> - priv->slave_mii_bus->dev.of_node = mdio_np;
+> - ds->slave_mii_bus = priv->slave_mii_bus;
+> 
+>>
+>>> For example, currently, the MT753X DSA subdriver won't, in any way,
+>>> register the bus OF-based. Still, the mdio property for the switches which
+>>> this driver controls can be documented because the internal mdio bus does
+>>> exist on the hardware.
+>>
+>> It can, but the whole point is: if ds->slave_mii_bus gains an OF presence,
+>> then it loses its core functionality (that user ports can lack phylink
+>> bindings). This is the entire essence of what this discussion should capture.
+> 
+> Understood.
+> 
+>>
+>>>
+>>> So I'd like to keep the mdio property valid for the switches which their
+>>> drivers can only register non-OF-based ds->slave_mii_bus.
+>>>
+>>> In conclusion, what to do:
+>>>
+>>> - Define "the mdio property" and "the enforcement of phylink bindings for
+>>>    user ports if mdio property is used" on ethernet-switch.yaml.
+>>>      - Invalidate the mdio property on the switches without an internal MDIO
+>>>        bus.
+>>> - Define "the enforcement of phylink bindings for user ports" on the
+>>>    switches without an internal MDIO bus.
+>>> - Require "the mdio property" for the switches which their driver requires
+>>>    it to function.
+>>> - Require "the mdio property" and "the compatible string of the mdio
+>>>    property" for the switches which their driver requires them to function.
+>>>
+>>> There's no 1:1 switch to switch compatible string relation, as seen on
+>>> Realtek switches so I'll have to figure that out as I go.
+>>>
+>>> I'm open to your comments to this mail but the gap between discussion and
+>>> end result has widened a lot on this patch series so I'd like to first
+>>> offload this conversation by preparing v2 with what I said here and discuss
+>>> further there.
+>>
+>> Honestly, from my side, a verbal comment in the dt-bindings document
+>> would have been just fine, as long as it is truthful to the reality it
+>> describes.
+>>
+>> You wanted to over-complicate things with an actual schema validation,
+>> and then hooking onto things that are unrelated with the phenomenon that
+>> needs to be captured (like the "mdio" child node, without explicit
+>> regard to whether it is the ds->slave_mii_bus or not).
+>>
+>> It's not about internal MDIO buses in general, it's about whether those
+>> internal MDIO buses are used in ds->slave_mii_bus, and their OF
+>> presence/absence! That is absolutely driver-specific and I would only
+>> expect a driver-specific way of enforcing it. I didn't say it's not
+>> hard, and I didn't ask to enforce it, either.
+> 
+> OK, I believe we're on the same page now, I will start working on properly
+> enforcing this.
 
-> A: http://en.wikipedia.org/wiki/Top_post
-> Q: Were do I find info about this thing called top-posting?
-> A: Because it messes up the order in which people normally read text.
-> Q: Why is top-posting such a bad thing?
-> A: Top-posting.
-> Q: What is the most annoying thing in e-mail?
+I'm writing below as a mix of patch log and discussion.
 
-> A: No.
-> Q: Should I include quotations after my reply?
+Phylink bindings are required for ports that are controlled by OF-based
+buses. DSA, like any other driver utilising the Linux MDIO infrastructure,
+can register a bus. If I understand correctly, non-OF-based registration of
+OpenFirmware MDIO buses is a feature specific to DSA which certain DSA
+subdrivers make use of.
 
+There's no way to distinguish which port is controlled by which driver's
+MDIO bus on the bindings so we can't enforce phylink bindings for all user
+ports as this would also enforce phylink bindings on user ports controlled
+by a non-OF-based bus.
 
-> http://daringfireball.net/2007/07/on_top
+But we can know when DSA won't create a non-OF-based bus. That leaves us
+with only OF-based buses in which case we can enforce phylink bindings for
+all user ports. So we need to check each DSA subdriver to see when all
+buses will be OF-based.
 
-On Fri, Sep 08, 2023 at 06:54:06AM +0000, Deepak Rathore -X (deeratho - E-I=
-NFO CHIPS INC at Cisco) wrote:
-> Hi Greg,
->=20
-> This change is required to fix kernel CVE: CVE-2023-1989 which is=20
-> reported in v6.1 kernel version.
+A DSA subdriver can either let the main DSA driver register the bus or it
+can register a bus or buses itself.
 
-> Which change?
+The attributes of a DSA subdriver that lets the DSA driver register the
+bus:
+- ds->ops->phy_read() and ds->ops->phy_write() are present.
+- ds->slave_mii_bus is not populated by the DSA subdriver.
+- The bus is registered non-OF-based or OF-based. Registered OF-based if
+   "mdio" child node is defined.
 
-[Deepak]: I am referring below change. This below change is required to fix=
- kernel CVE: CVE-2023-1989 which is reported in v6.1 kernel.
+How each DSA subdriver behaves is documented below.
 
-Subject: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free bug in btsd=
-io_remove due to race condition
+---
 
-From: Zheng Wang <zyytlz.wz@163.com>
+- mscc,vsc7514-switch.yaml
+   - mscc,vsc7514-switch
+   - mscc,vsc7512-switch
 
-[ Upstream commit 73f7b171b7c09139eb3c6a5677c200dc1be5f318 ]
+drivers/net/ethernet/mscc/ocelot_vsc7514.c:
+- Not a DSA subdriver.
+- MDIO_MSCC_MIIM, a driver utilising the Linux MDIO infrastructure is used
+   to register a bus.
 
-In btsdio_probe, the data->work is bound with btsdio_work. It will be start=
-ed in btsdio_send_frame.
+drivers/net/dsa/ocelot/ocelot_ext.c:
+- The DSA subdriver won't let the DSA driver register the bus.
+   - No ds->ops->phy_read() or ds->ops->phy_write().
+- MDIO_MSCC_MIIM, a driver utilising the Linux MDIO infrastructure is used
+   to register a bus.
 
-If the btsdio_remove runs with a unfinished work, there may be a race condi=
-tion that hdev is freed but used in btsdio_work. Fix it by canceling the wo=
-rk before do cleanup in btsdio_remove.
+What to do:
+- For mscc,vsc7514-switch, enforce phylink bindings for ports.
+- For mscc,vsc7512-switch, enforce phylink bindings for user ports.
 
-Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Deepak Rathore <deeratho@cisco.com>
+---
 
-diff --git a/drivers/bluetooth/btsdio.c b/drivers/bluetooth/btsdio.c index =
-795be33f2892..f19d31ee37ea 100644
---- a/drivers/bluetooth/btsdio.c
-+++ b/drivers/bluetooth/btsdio.c
-@@ -357,6 +357,7 @@ static void btsdio_remove(struct sdio_func *func)
- 	if (!data)
- 		return;
-=20
-+	cancel_work_sync(&data->work);
- 	hdev =3D data->hdev;
-=20
- 	sdio_set_drvdata(func, NULL);
---
-2.35.6
+- renesas,rzn1-a5psw.yaml
+   - renesas,r9a06g032-a5psw, renesas,rzn1-a5psw
 
+drivers/net/dsa/rzn1_a5psw.c:
+- The DSA subdriver won't let the DSA driver register the bus.
+   - No ds->ops->phy_read() or ds->ops->phy_write().
+- Registers the bus OF-based only. Registers the bus when "mdio" child node
+   is defined.
+   -	mdio = of_get_child_by_name(dev->of_node, "mdio");
+     if (of_device_is_available(mdio))
+       ret = a5psw_probe_mdio(a5psw, mdio);
 
-> It is fixed in upstream starting from v6.3 kernel version and required=20
-> to fix in 6.1 kernel version as well so we have backported this from
-> v6.3 kernel version to v6.1 and I have sent this patch for review and=20
-> merging.
+What to do:
+- Document "mdio".
+- Enforce phylink bindings for user ports.
 
-> Again, what commit are you referring to here.
+---
 
-> confused,
+- realtek.yaml
+   - realtek,rtl8365mb
+   - realtek,rtl8366rb
 
-> greg k-h
+drivers/net/dsa/realtek/realtek-smi.c:
+- The DSA subdriver won't let the DSA driver register the bus. Registers
+   the bus OF-based only. Registering the bus is mandatory. Registers the
+   bus when compatible string "realtek,smi-mdio" on a child node is defined.
+   - mdio_np = of_get_compatible_child(priv->dev->of_node, "realtek,smi-mdio");
+     if (!mdio_np)
+       return -ENODEV;
+     ds->slave_mii_bus = priv->slave_mii_bus;
 
-[Deepak]: Sorry for the inconvenience that my message did not provide all t=
-he details.
-The kernel CVE: CVE-2023-1989 is fixed in upstream with this commit: https:=
-//github.com/torvalds/linux/commit/73f7b171b7c09139eb3c6a5677c200dc1be5f318
-Starting from v6.3 kernel and we have to fix this in 6.1 kernel as well, so=
- we have backported this from v6.3 kernel version to v6.1 kernel.
+drivers/net/dsa/realtek/realtek-mdio.c:
+- The DSA subdriver lets the DSA driver register the bus.
 
-Regards,
-Deepak
+What to do:
+- Document "mdio".
+   - Require "mdio". (Can't do because it's not required for MDIO controlled
+     switches that share the compatible string with SMI controlled switches.
+     This is why I would like Luiz to unify the bus registeration process.)
+- Document compatible string "realtek,smi-mdio" on "mdio" child node.
+   - Require compatible. (Can't do because the same as above.)
+- Enforce phylink bindings for user ports. (Can't do because the same as
+   above.)
+   - Enforce phylink bindings for user ports if "mdio" is defined.
+
+---
+
+- qca8k.yaml
+   - qca,qca8327
+   - qca,qca8328
+   - qca,qca8334
+   - qca,qca8337
+
+drivers/net/dsa/qca/qca8k-8xxx.c:
+- The DSA subdriver won't let the DSA driver register the bus.
+   - No ds->ops->phy_read() or ds->ops->phy_write().
+- Registers the bus non-OF-based or OF-based. Registers OF-based if "mdio"
+   child node is defined.
+   - mdio = of_get_child_by_name(priv->dev->of_node, "mdio");
+
+What to do:
+- Document "mdio".
+- Enforce phylink bindings for user ports if "mdio" is defined.
+
+---
+
+- nxp,sja1105.yaml
+   - nxp,sja1105e
+   - nxp,sja1105t
+   - nxp,sja1105p
+   - nxp,sja1105q
+   - nxp,sja1105r
+   - nxp,sja1105s
+   - nxp,sja1110a
+   - nxp,sja1110b
+   - nxp,sja1110c
+   - nxp,sja1110d
+
+drivers/net/dsa/sja1105/sja1105_mdio.c:
+- The DSA subdriver won't let the DSA driver register the bus.
+   - No ds->ops->phy_read() or ds->ops->phy_write().
+- Registers multiple buses OF-based only. Registers the buses when "mdios"
+   child node and "nxp,sja1110-base-tx-mdio" and "nxp,sja1110-base-t1-mdio"
+   compatible strings per child node under "mdios" is defined.
+   - mdio_node = of_get_child_by_name(switch_node, "mdios");
+     if (!mdio_node)
+       return 0;
+   - np = of_get_compatible_child(mdio_node, "nxp,sja1110-base-tx-mdio");
+     if (!np)
+       return 0;
+   - np = of_get_compatible_child(mdio_node, "nxp,sja1110-base-t1-mdio");
+     if (!np)
+       return 0;
+
+What to do:
+- Document "mdios".
+   - Document child node pattern property under "mdios".
+     - Document "nxp,sja1110-base-tx-mdio" and "nxp,sja1110-base-t1-mdio"
+       compatible strings.
+- Enforce phylink bindings for user ports.
+
+---
+
+- mscc,ocelot.yaml
+   - mscc,vsc9953-switch
+   - pci1957,eef0
+
+drivers/net/dsa/ocelot/seville_vsc9953.c:
+- The DSA subdriver won't let the DSA driver register the bus.
+   - No ds->ops->phy_read() or ds->ops->phy_write().
+- MDIO_MSCC_MIIM, a driver utilising the Linux MDIO infrastructure is used
+   to register a bus.
+
+drivers/net/dsa/ocelot/felix_vsc9959.c:
+- The DSA subdriver won't let the DSA driver register the bus.
+   - No ds->ops->phy_read() or ds->ops->phy_write().
+- FSL_ENETC_MDIO, a driver utilising the Linux MDIO infrastructure is used
+   to register a bus.
+
+What to do:
+- Enforce phylink bindings for user ports.
+
+---
+
+- microchip,lan937x.yaml
+   - microchip,lan9370
+   - microchip,lan9371
+   - microchip,lan9372
+   - microchip,lan9373
+   - microchip,lan9374
+- microchip,ksz.yaml
+   - microchip,ksz8765
+   - microchip,ksz8794
+   - microchip,ksz8795
+   - microchip,ksz8863
+   - microchip,ksz8873
+   - microchip,ksz9477
+   - microchip,ksz9897
+   - microchip,ksz9896
+   - microchip,ksz9567
+   - microchip,ksz8565
+   - microchip,ksz9893
+   - microchip,ksz9563
+   - microchip,ksz8563
+
+drivers/net/dsa/microchip/ksz_common.c:
+- The DSA subdriver won't let the DSA driver register the bus when "mdio"
+   child node is defined. Registers the bus OF-based only. Registers the bus
+   when "mdio" child node is defined.
+   - mdio_np = of_get_child_by_name(dev->dev->of_node, "mdio");
+     if (!mdio_np)
+       return 0;
+     ds->slave_mii_bus = bus;
+
+What to do:
+- Document "mdio".
+- Enforce phylink bindings for user ports if "mdio" is defined.
+
+---
+
+- hirschmann,hellcreek.yaml
+   - hirschmann,hellcreek-de1soc-r1
+
+drivers/net/dsa/hirschmann/hellcreek.c:
+- The DSA subdriver won't let the DSA driver register the bus.
+   - No ds->ops->phy_read() or ds->ops->phy_write().
+
+What to do:
+- Enforce phylink bindings for user ports.
+
+---
+
+- mediatek,mt7530.yaml
+   - mediatek,mt7530
+   - mediatek,mt7531
+   - mediatek,mt7621
+   - mediatek,mt7988-switch
+
+drivers/net/dsa/mt7530.c:
+- The DSA subdriver won't let the DSA driver register the bus.
+   - No ds->ops->phy_read() or ds->ops->phy_write().
+- Registers the bus non-OF-based or OF-based. Registers OF-based if "mdio"
+   child node is defined. (This is after the patch for the MT7530 DSA
+   subdriver is applied.)
+
+What to do:
+- Document "mdio".
+- Enforce phylink bindings for user ports if "mdio" is defined.
+
+---
+
+- brcm,sf2.yaml
+   - brcm,bcm4908-switch
+   - brcm,bcm7278-switch-v4.0
+   - brcm,bcm7278-switch-v4.8
+   - brcm,bcm7445-switch-v4.0
+
+drivers/net/dsa/bcm_sf2.c:
+- The DSA subdriver won't let the DSA driver register the bus.
+   - No ds->ops->phy_read() or ds->ops->phy_write().
+- Requires MDIO_BCM_UNIMAC, a driver utilising the Linux MDIO
+   infrastructure to register a bus.
+   - dn = of_find_compatible_node(NULL, NULL, "brcm,unimac-mdio");
+     priv->master_mii_bus = of_mdio_find_bus(dn);
+     if (!priv->master_mii_bus) {
+       of_node_put(dn);
+       return -EPROBE_DEFER;
+     }
+
+What to do:
+- Enforce phylink bindings for user ports.
+
+---
+
+- brcm,b53.yaml
+   - brcm,bcm5325
+   - brcm,bcm53115
+   - brcm,bcm53125
+   - brcm,bcm53128
+   - brcm,bcm53134
+   - brcm,bcm5365
+   - brcm,bcm5395
+   - brcm,bcm5389
+   - brcm,bcm5397
+   - brcm,bcm5398
+   - brcm,bcm11360-srab, brcm,cygnus-srab
+   - brcm,bcm53010-srab, brcm,bcm5301x-srab
+   - brcm,bcm53011-srab, brcm,bcm5301x-srab
+   - brcm,bcm53012-srab, brcm,bcm5301x-srab
+   - brcm,bcm53018-srab, brcm,bcm5301x-srab
+   - brcm,bcm53019-srab, brcm,bcm5301x-srab
+   - brcm,bcm11404-srab, brcm,omega-srab
+   - brcm,bcm11407-srab, brcm,omega-srab
+   - brcm,bcm11409-srab, brcm,omega-srab
+   - brcm,bcm58310-srab, brcm,omega-srab
+   - brcm,bcm58311-srab, brcm,omega-srab
+   - brcm,bcm58313-srab, brcm,omega-srab
+   - brcm,bcm58522-srab, brcm,nsp-srab
+   - brcm,bcm58523-srab, brcm,nsp-srab
+   - brcm,bcm58525-srab, brcm,nsp-srab
+   - brcm,bcm58622-srab, brcm,nsp-srab
+   - brcm,bcm58623-srab, brcm,nsp-srab
+   - brcm,bcm58625-srab, brcm,nsp-srab
+   - brcm,bcm88312-srab, brcm,nsp-srab
+   - brcm,bcm3384-switch, brcm,bcm63xx-switch
+   - brcm,bcm6318-switch, brcm,bcm63xx-switch
+   - brcm,bcm6328-switch, brcm,bcm63xx-switch
+   - brcm,bcm6362-switch, brcm,bcm63xx-switch
+   - brcm,bcm6368-switch, brcm,bcm63xx-switch
+   - brcm,bcm63268-switch, brcm,bcm63xx-switch
+
+drivers/net/dsa/b53/b53_common.c:
+- The DSA subdriver lets the DSA driver register the bus.
+
+What to do:
+- Document "mdio".
+- Enforce phylink bindings for user ports if "mdio" is defined.
+
+---
+
+- arrow,xrs700x.yaml
+   - arrow,xrs7003e
+   - arrow,xrs7003f
+   - arrow,xrs7004e
+   - arrow,xrs7004f
+
+drivers/net/dsa/xrs700x/xrs700x.c:
+- The DSA subdriver won't let the DSA driver register the bus.
+   - No ds->ops->phy_read() or ds->ops->phy_write().
+
+What to do:
+- Enforce phylink bindings for user ports.
+
+---
+
+Text documents. I will handle these when I replace them with json-schema
+documents.
+
+- ar9331.txt
+   - qca,ar9331-switch
+
+drivers/net/dsa/qca/ar9331.c:
+- The DSA subdriver won't let the DSA driver register the bus.
+   - No ds->ops->phy_read() or ds->ops->phy_write().
+- Registers the bus OF-based only. Registering the bus is mandatory.
+   Registers the bus when "mdio" child node is defined.
+   - mnp = of_get_child_by_name(np, "mdio");
+     if (!mnp)
+       return -ENODEV;
+
+What to do:
+- Document "mdio".
+   - Require "mdio".
+- Enforce phylink bindings for user ports.
+
+---
+
+- lan9303.txt
+   - smsc,lan9303-i2c
+   - smsc,lan9303-mdio
+
+drivers/net/dsa/lan9303-core.c:
+- The DSA subdriver lets the DSA driver register the bus.
+
+What to do:
+- Document "mdio".
+- Enforce phylink bindings for user ports if "mdio" is defined.
+
+---
+
+- lantiq-gswip.txt
+   - lantiq,xrx200-gswip
+   - lantiq,xrx300-gswip
+   - lantiq,xrx330-gswip
+
+drivers/net/dsa/lantiq_gswip.c:
+- The DSA subdriver won't let the DSA driver register the bus.
+   - No ds->ops->phy_read() or ds->ops->phy_write().
+- Registers the bus OF-based only. Registers the bus when compatible string
+   "lantiq,xrx200-mdio" on a child node is defined.
+   - mdio_np = of_get_compatible_child(dev->of_node, "lantiq,xrx200-mdio");
+     if (mdio_np)
+       err = gswip_mdio(priv, mdio_np);
+
+What to do:
+- Document "mdio".
+- Document compatible string "realtek,smi-mdio" on "mdio" child node.
+   - Require compatible.
+- Enforce phylink bindings for user ports.
+
+---
+
+- marvell.txt
+   - marvell,mv88e6085
+   - marvell,mv88e6190
+   - marvell,mv88e6250
+
+drivers/net/dsa/mv88e6xxx/chip.c:
+- The DSA subdriver won't let the DSA driver register the bus.
+   - ds->slave_mii_bus = mv88e6xxx_default_mdio_bus(chip);
+- Registers the bus non-OF-based or OF-based. Registers OF-based if "mdio"
+   child node is defined.
+
+What to do:
+- Document "mdio".
+- Enforce phylink bindings for user ports if "mdio" is defined.
+
+---
+
+- vitesse,vsc73xx.txt
+   - vitesse,vsc7385
+   - vitesse,vsc7388
+   - vitesse,vsc7395
+   - vitesse,vsc7398
+
+drivers/net/dsa/vitesse-vsc73xx-core.c:
+- The DSA subdriver lets the DSA driver register the bus.
+
+What to do:
+- Document "mdio".
+- Enforce phylink bindings for user ports if "mdio" is defined.
+
+Arınç
