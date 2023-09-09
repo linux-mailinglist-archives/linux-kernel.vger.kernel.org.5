@@ -2,128 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8F2799616
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 05:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C0D799618
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 05:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243733AbjIIDY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 23:24:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
+        id S233627AbjIIDcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 23:32:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234638AbjIIDXh (ORCPT
+        with ESMTP id S229453AbjIIDcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 23:23:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE621FF6;
-        Fri,  8 Sep 2023 20:23:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97E63C433CA;
-        Sat,  9 Sep 2023 03:23:32 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.96)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1qeoZb-000Yl7-0v;
-        Fri, 08 Sep 2023 23:23:51 -0400
-Message-ID: <20230909032351.104588615@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Fri, 08 Sep 2023 23:16:30 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
+        Fri, 8 Sep 2023 23:32:14 -0400
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E04A1FDB
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 20:32:07 -0700 (PDT)
+Received: from [2601:18c:9101:a8b6:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1qeoh1-0003P4-2B;
+        Fri, 08 Sep 2023 23:31:31 -0400
+Date:   Fri, 8 Sep 2023 23:31:27 -0400
+From:   Rik van Riel <riel@surriel.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
-Subject: [for-linus][PATCH 15/15] tracing/synthetic: Fix order of struct trace_dynamic_info
-References: <20230909031615.047488015@goodmis.org>
+Cc:     kernel-team@meta.com, Mike Rappoport <rppt@kernel.org>,
+        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: [PATCH]  x86,kexec,ima: use memblock_free_late from
+ ima_free_kexec_buffer
+Message-ID: <20230908233127.0af375d1@imladris.surriel.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Sender: riel@surriel.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+The code calling ima_free_kexec_buffer runs long after the memblock
+allocator has already been torn down, potentially resulting in a use
+after free in memblock_isolate_range.
 
-To make handling BIG and LITTLE endian better the offset/len of dynamic
-fields of the synthetic events was changed into a structure of:
+With KASAN or KFENCE, this use after free will result in a BUG
+from the idle task, and a subsequent kernel panic.
 
- struct trace_dynamic_info {
- #ifdef CONFIG_CPU_BIG_ENDIAN
-	u16	offset;
-	u16	len;
- #else
-	u16	len;
-	u16	offset;
- #endif
- };
+Switch ima_free_kexec_buffer over to memblock_free_late to avoid
+that issue.
 
-to replace the manual changes of:
-
- data_offset = offset & 0xffff;
- data_offest = len << 16;
-
-But if you look closely, the above is:
-
-  <len> << 16 | offset
-
-Which in little endian would be in memory:
-
- offset_lo offset_hi len_lo len_hi
-
-and in big endian:
-
- len_hi len_lo offset_hi offset_lo
-
-Which if broken into a structure would be:
-
- struct trace_dynamic_info {
- #ifdef CONFIG_CPU_BIG_ENDIAN
-	u16	len;
-	u16	offset;
- #else
-	u16	offset;
-	u16	len;
- #endif
- };
-
-Which is the opposite of what was defined.
-
-Fix this and just to be safe also add "__packed".
-
-Link: https://lore.kernel.org/all/20230908154417.5172e343@gandalf.local.home/
-Link: https://lore.kernel.org/linux-trace-kernel/20230908163929.2c25f3dc@gandalf.local.home
-
-Cc: stable@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Sven Schnelle <svens@linux.ibm.com>
-Fixes: ddeea494a16f3 ("tracing/synthetic: Use union instead of casts")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Fixes: fee3ff99bc67 ("powerpc: Move arch independent ima kexec functions to drivers/of/kexec.c")
+Cc: stable@kernel.org
+Signed-off-by: Rik van Riel <riel@surriel.com>
+Suggested-by: Mike Rappoport <rppt@kernel.org>
 ---
- include/linux/trace_events.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/kernel/setup.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index 12f875e9e69a..21ae37e49319 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -62,13 +62,13 @@ void trace_event_printf(struct trace_iterator *iter, const char *fmt, ...);
- /* Used to find the offset and length of dynamic fields in trace events */
- struct trace_dynamic_info {
- #ifdef CONFIG_CPU_BIG_ENDIAN
--	u16	offset;
- 	u16	len;
-+	u16	offset;
- #else
--	u16	len;
- 	u16	offset;
-+	u16	len;
- #endif
--};
-+} __packed;
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index b9145a63da77..b098b1fa2470 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -358,15 +358,11 @@ static void __init add_early_ima_buffer(u64 phys_addr)
+ #if defined(CONFIG_HAVE_IMA_KEXEC) && !defined(CONFIG_OF_FLATTREE)
+ int __init ima_free_kexec_buffer(void)
+ {
+-	int rc;
+-
+ 	if (!ima_kexec_buffer_size)
+ 		return -ENOENT;
  
- /*
-  * The trace entry - the most basic unit of tracing. This is what
+-	rc = memblock_phys_free(ima_kexec_buffer_phys,
+-				ima_kexec_buffer_size);
+-	if (rc)
+-		return rc;
++	memblock_free_late(ima_kexec_buffer_phys,
++			   ima_kexec_buffer_size);
+ 
+ 	ima_kexec_buffer_phys = 0;
+ 	ima_kexec_buffer_size = 0;
 -- 
-2.40.1
+2.41.0
+
+
