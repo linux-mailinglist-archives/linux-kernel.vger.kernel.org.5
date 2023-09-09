@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A004B799333
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C947079958B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345417AbjIIAWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:22:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
+        id S239970AbjIIBXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 21:23:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345446AbjIIAWf (ORCPT
+        with ESMTP id S235149AbjIIAWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 20:22:35 -0400
+        Fri, 8 Sep 2023 20:22:42 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE869213B;
-        Fri,  8 Sep 2023 17:22:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DEB4C4AF72;
-        Sat,  9 Sep 2023 00:22:23 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B64126A1;
+        Fri,  8 Sep 2023 17:22:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79C75C433C9;
+        Sat,  9 Sep 2023 00:22:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694218944;
-        bh=fdHvbgwWgP/EMGj/RzIWLuGXd8eizNOtytTbA7I4uT0=;
+        s=k20201202; t=1694218947;
+        bh=U8SVG3ed5aOkz47y6WQTq3badBZrFa7OwxFB5JFpvMk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aT1EiWwFY6YtPAI4xPh1FuRdUHZdT41YzRf3co5KwexEI+OYl9Vp9Nec7IKueyI1u
-         El9gCceTT1GZS7IvLqv6ewafw/5L3SaiKzL29yIS2vQn6Q/eMpxOf21ogVeu4DGFGN
-         gsM3spYIA2gXcavBMah5Gbvou5KFwcDMiN45hDhvov+nHop1Hn66NXQgpsYIxdzmJD
-         +KnPK016IKjteSfocM1MRa7BFGuVVQymVjQ2n0D/crnb3LZGOk/kOwNb3JYBHRQXnu
-         U9ZP9Z3pFlIfqvd6KITHT+3i/lUsDbKIunXGzTbaWz/uTmM6xH2cHFTpn/2I0W+gF3
-         OuZsQrlaBOUDg==
+        b=XftZY7DahGqPp69CPh1VCmv6qMMcXnDLDnbDc2AFRXg/oqAmIJUnphSAdfgKwHm9u
+         6H3qLF/lacGWPI6HQlGLA7PKAne2dg3fY//B05gux0lx7R2Wy4vXPEINPZC9XWDR6N
+         dR5JKtTUYxElXeb6EbOfaIb4IwsmKggQY4sD6tf7rN44DaVl9iiP6jM5zyqij6TQUg
+         e+xVGQ/t5vjQwDvDpEhZ3EQzSeDWYy1bl3wMB5z/5eTB5MrFd6JmvkwF7JBlLRJrUC
+         JSn12KqkMxtzcG7xXvHWYgubdYRz4rydE6bKwU0N2tkb8cRNX9rqzDVDr2y14mTdV6
+         Rd608WmeAWx8Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?M=C3=A5rten=20Lindahl?= <marten.lindahl@axis.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Sasha Levin <sashal@kernel.org>, linux@armlinux.org.uk,
-        bhe@redhat.com, gpiccoli@igalia.com, chenlifu@huawei.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.5 08/11] ARM: 9317/1: kexec: Make smp stop calls asynchronous
-Date:   Fri,  8 Sep 2023 20:22:01 -0400
-Message-Id: <20230909002205.3578068-8-sashal@kernel.org>
+Cc:     ruanjinjie <ruanjinjie@huawei.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>, gregkh@linuxfoundation.org,
+        idryomov@gmail.com, wei.liu@kernel.org, ira.weiny@intel.com,
+        sfr@canb.auug.org.au, robh@kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 6.5 09/11] powerpc/pseries: fix possible memory leak in ibmebus_bus_init()
+Date:   Fri,  8 Sep 2023 20:22:02 -0400
+Message-Id: <20230909002205.3578068-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909002205.3578068-1-sashal@kernel.org>
 References: <20230909002205.3578068-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.5.2
@@ -56,76 +56,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mårten Lindahl <marten.lindahl@axis.com>
+From: ruanjinjie <ruanjinjie@huawei.com>
 
-[ Upstream commit 8922ba71c969d2a0c01a94372a71477d879470de ]
+[ Upstream commit afda85b963c12947e298ad85d757e333aa40fd74 ]
 
-If a panic is triggered by a hrtimer interrupt all online cpus will be
-notified and set offline. But as highlighted by commit 19dbdcb8039c
-("smp: Warn on function calls from softirq context") this call should
-not be made synchronous with disabled interrupts:
+If device_register() returns error in ibmebus_bus_init(), name of kobject
+which is allocated in dev_set_name() called in device_add() is leaked.
 
- softdog: Initiating panic
- Kernel panic - not syncing: Software Watchdog Timer expired
- WARNING: CPU: 1 PID: 0 at kernel/smp.c:753 smp_call_function_many_cond
-   unwind_backtrace:
-     show_stack
-     dump_stack_lvl
-     __warn
-     warn_slowpath_fmt
-     smp_call_function_many_cond
-     smp_call_function
-     crash_smp_send_stop.part.0
-     machine_crash_shutdown
-     __crash_kexec
-     panic
-     softdog_fire
-     __hrtimer_run_queues
-     hrtimer_interrupt
+As comment of device_add() says, it should call put_device() to drop
+the reference count that was set in device_initialize() when it fails,
+so the name can be freed in kobject_cleanup().
 
-Make the smp call for machine_crash_nonpanic_core() asynchronous.
-
-Signed-off-by: Mårten Lindahl <marten.lindahl@axis.com>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Signed-off-by: ruanjinjie <ruanjinjie@huawei.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://msgid.link/20221110011929.3709774-1-ruanjinjie@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kernel/machine_kexec.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ arch/powerpc/platforms/pseries/ibmebus.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/kernel/machine_kexec.c b/arch/arm/kernel/machine_kexec.c
-index 46364b699cc30..5d07cf9e0044d 100644
---- a/arch/arm/kernel/machine_kexec.c
-+++ b/arch/arm/kernel/machine_kexec.c
-@@ -94,16 +94,28 @@ static void machine_crash_nonpanic_core(void *unused)
- 	}
- }
+diff --git a/arch/powerpc/platforms/pseries/ibmebus.c b/arch/powerpc/platforms/pseries/ibmebus.c
+index 44703f13985bf..969cb9fc960f8 100644
+--- a/arch/powerpc/platforms/pseries/ibmebus.c
++++ b/arch/powerpc/platforms/pseries/ibmebus.c
+@@ -460,6 +460,7 @@ static int __init ibmebus_bus_init(void)
+ 	if (err) {
+ 		printk(KERN_WARNING "%s: device_register returned %i\n",
+ 		       __func__, err);
++		put_device(&ibmebus_bus_device);
+ 		bus_unregister(&ibmebus_bus_type);
  
-+static DEFINE_PER_CPU(call_single_data_t, cpu_stop_csd) =
-+	CSD_INIT(machine_crash_nonpanic_core, NULL);
-+
- void crash_smp_send_stop(void)
- {
- 	static int cpus_stopped;
- 	unsigned long msecs;
-+	call_single_data_t *csd;
-+	int cpu, this_cpu = raw_smp_processor_id();
- 
- 	if (cpus_stopped)
- 		return;
- 
- 	atomic_set(&waiting_for_crash_ipi, num_online_cpus() - 1);
--	smp_call_function(machine_crash_nonpanic_core, NULL, false);
-+	for_each_online_cpu(cpu) {
-+		if (cpu == this_cpu)
-+			continue;
-+
-+		csd = &per_cpu(cpu_stop_csd, cpu);
-+		smp_call_function_single_async(cpu, csd);
-+	}
-+
- 	msecs = 1000; /* Wait at most a second for the other cpus to stop */
- 	while ((atomic_read(&waiting_for_crash_ipi) > 0) && msecs) {
- 		mdelay(1);
+ 		return err;
 -- 
 2.40.1
 
