@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3117994DF
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9B77994E8
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234604AbjIIAno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33170 "EHLO
+        id S1345982AbjIIAn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:43:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346078AbjIIAnW (ORCPT
+        with ESMTP id S1346170AbjIIAn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 20:43:22 -0400
+        Fri, 8 Sep 2023 20:43:28 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4718D273D;
-        Fri,  8 Sep 2023 17:40:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E761DC113C9;
-        Sat,  9 Sep 2023 00:40:39 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F95E2D60;
+        Fri,  8 Sep 2023 17:40:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 565F0C116AA;
+        Sat,  9 Sep 2023 00:40:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694220040;
-        bh=0sOm6lIP2wXjVkePKRYIhBw8lIidJxM8I2I6MMcG9lE=;
+        s=k20201202; t=1694220041;
+        bh=mzsZ7F4Exv+U0aV32a4s72ENTwSqVKjcrFpdDhJBXls=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rCoQEyQ/s/WUdUk4wyxVmVr4B17sPp/xCokDFywfaqyt53wkU1DsVp6srQk0mOSk6
-         yJPvFia/eKaKO5F2MBvsI+wIRv2CUn01AXU2Jqwxe0sIpW/VedPOOrE1Uv6RZAeD+/
-         mSSfXpVuzxTZ7Z31J4ywTS5Pb+nEdvnp3M9+V9pYDQq3zm1n59imreUnegEVwIYEiS
-         IaFAm9jZ76JDKTXJf2F2HREbuWGizDMvfqmu+a+y2oN8KQd3GyoB2jSh2XniV+GWbz
-         3KJwOa6wQU8B1XegK1zEpfIAmRzp6JZnkxLQCnb5yeODevRzIDJgg/ie4rugMqqaEK
-         KtRsf659rHI3Q==
+        b=jbFKcr1SE3Jw0K+MmeBaGmUX5BCLm18dOPl+4MoUfl2BDcHAB+stjiO1thUQiPKas
+         O4BjI7P2P5GvW9UhxCRbLdJ4OeKCjZeq6aeiZ44o6gPuWSIyUZCQX4p8XkAepCc+AB
+         J94yvAzdfwBtWmQVZadGq2ah2v8VjA6DgbT6+xa34u4FWVVP1fA47IqBz3ulTyhAaB
+         aVfwJtsMO7jEZVN6uUdJf4M03q1+OqcnFE5BQIoRVvW/bWqm5NgvGHDKeJ2kGevTbI
+         /j84AIRt3NsmAFmF5g6CQz/ErFyfJ0+6KK2Eu4zVKQOr8PIQ42DmKZl54ZlaR1o2wF
+         a73kAsGI91vgw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, jirislaby@kernel.org,
-        ilpo.jarvinen@linux.intel.com, u.kleine-koenig@pengutronix.de,
-        linux-serial@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 11/14] serial: cpm_uart: Avoid suspicious locking
-Date:   Fri,  8 Sep 2023 20:40:11 -0400
-Message-Id: <20230909004015.3580832-11-sashal@kernel.org>
+Cc:     Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 12/14] workqueue: Call wq_update_unbound_numa() on all CPUs in NUMA node on CPU hotplug
+Date:   Fri,  8 Sep 2023 20:40:12 -0400
+Message-Id: <20230909004015.3580832-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909004015.3580832-1-sashal@kernel.org>
 References: <20230909004015.3580832-1-sashal@kernel.org>
@@ -55,78 +51,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Tejun Heo <tj@kernel.org>
 
-[ Upstream commit 36ef11d311f405e55ad8e848c19b212ff71ef536 ]
+[ Upstream commit 4cbfd3de737b9d00544ff0f673cb75fc37bffb6a ]
 
-  CHECK   drivers/tty/serial/cpm_uart/cpm_uart_core.c
-drivers/tty/serial/cpm_uart/cpm_uart_core.c:1271:39: warning: context imbalance in 'cpm_uart_console_write' - unexpected unlock
+When a CPU went online or offline, wq_update_unbound_numa() was called only
+on the CPU which was going up or down. This works fine because all CPUs on
+the same NUMA node share the same pool_workqueue slot - one CPU updating it
+updates it for everyone in the node.
 
-Allthough 'nolock' is not expected to change, sparse find the following
-form suspicious:
+However, future changes will make each CPU use a separate pool_workqueue
+even when they're sharing the same worker_pool, which requires updating
+pool_workqueue's for all CPUs which may be sharing the same pool_workqueue
+on hotplug.
 
-	if (unlikely(nolock)) {
-		local_irq_save(flags);
-	} else {
-		spin_lock_irqsave(&pinfo->port.lock, flags);
-	}
+To accommodate the planned changes, this patch updates
+workqueue_on/offline_cpu() so that they call wq_update_unbound_numa() for
+all CPUs sharing the same NUMA node as the CPU going up or down. In the
+current code, the second+ calls would be noops and there shouldn't be any
+behavior changes.
 
-	cpm_uart_early_write(pinfo, s, count, true);
+* As wq_update_unbound_numa() is now called on multiple CPUs per each
+  hotplug event, @cpu is renamed to @hotplug_cpu and another @cpu argument
+  is added. The former indicates the CPU being hot[un]plugged and the latter
+  the CPU whose pool_workqueue is being updated.
 
-	if (unlikely(nolock)) {
-		local_irq_restore(flags);
-	} else {
-		spin_unlock_irqrestore(&pinfo->port.lock, flags);
-	}
+* In wq_update_unbound_numa(), cpu_off is renamed to off_cpu for consistency
+  with the new @hotplug_cpu.
 
-Rewrite it a more obvious form:
-
-	if (unlikely(oops_in_progress)) {
-		local_irq_save(flags);
-		cpm_uart_early_write(pinfo, s, count, true);
-		local_irq_restore(flags);
-	} else {
-		spin_lock_irqsave(&pinfo->port.lock, flags);
-		cpm_uart_early_write(pinfo, s, count, true);
-		spin_unlock_irqrestore(&pinfo->port.lock, flags);
-	}
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Link: https://lore.kernel.org/r/f7da5cdc9287960185829cfef681a7d8614efa1f.1691068700.git.christophe.leroy@csgroup.eu
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/cpm_uart/cpm_uart_core.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ kernel/workqueue.c | 34 +++++++++++++++++++++++++---------
+ 1 file changed, 25 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/tty/serial/cpm_uart/cpm_uart_core.c b/drivers/tty/serial/cpm_uart/cpm_uart_core.c
-index de6d02f7abe2b..c37036fee231d 100644
---- a/drivers/tty/serial/cpm_uart/cpm_uart_core.c
-+++ b/drivers/tty/serial/cpm_uart/cpm_uart_core.c
-@@ -1267,19 +1267,14 @@ static void cpm_uart_console_write(struct console *co, const char *s,
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 856188b0681af..c7f9b3efcac96 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -4083,7 +4083,8 @@ int apply_workqueue_attrs(struct workqueue_struct *wq,
+ /**
+  * wq_update_unbound_numa - update NUMA affinity of a wq for CPU hot[un]plug
+  * @wq: the target workqueue
+- * @cpu: the CPU coming up or going down
++ * @cpu: the CPU to update pool association for
++ * @hotplug_cpu: the CPU coming up or going down
+  * @online: whether @cpu is coming up or going down
+  *
+  * This function is to be called from %CPU_DOWN_PREPARE, %CPU_ONLINE and
+@@ -4103,10 +4104,10 @@ int apply_workqueue_attrs(struct workqueue_struct *wq,
+  * CPU_DOWN_PREPARE.
+  */
+ static void wq_update_unbound_numa(struct workqueue_struct *wq, int cpu,
+-				   bool online)
++				   int hotplug_cpu, bool online)
  {
- 	struct uart_cpm_port *pinfo = &cpm_uart_ports[co->index];
- 	unsigned long flags;
--	int nolock = oops_in_progress;
- 
--	if (unlikely(nolock)) {
-+	if (unlikely(oops_in_progress)) {
- 		local_irq_save(flags);
--	} else {
--		spin_lock_irqsave(&pinfo->port.lock, flags);
--	}
--
--	cpm_uart_early_write(pinfo, s, count, true);
--
--	if (unlikely(nolock)) {
-+		cpm_uart_early_write(pinfo, s, count, true);
- 		local_irq_restore(flags);
+ 	int node = cpu_to_node(cpu);
+-	int cpu_off = online ? -1 : cpu;
++	int off_cpu = online ? -1 : hotplug_cpu;
+ 	struct pool_workqueue *old_pwq = NULL, *pwq;
+ 	struct workqueue_attrs *target_attrs;
+ 	cpumask_t *cpumask;
+@@ -4134,7 +4135,7 @@ static void wq_update_unbound_numa(struct workqueue_struct *wq, int cpu,
+ 	 * and create a new one if they don't match.  If the target cpumask
+ 	 * equals the default pwq's, the default pwq should be used.
+ 	 */
+-	if (wq_calc_node_cpumask(wq->dfl_pwq->pool->attrs, node, cpu_off, cpumask)) {
++	if (wq_calc_node_cpumask(wq->dfl_pwq->pool->attrs, node, off_cpu, cpumask)) {
+ 		if (cpumask_equal(cpumask, pwq->pool->attrs->cpumask))
+ 			return;
  	} else {
-+		spin_lock_irqsave(&pinfo->port.lock, flags);
-+		cpm_uart_early_write(pinfo, s, count, true);
- 		spin_unlock_irqrestore(&pinfo->port.lock, flags);
+@@ -5062,8 +5063,15 @@ int workqueue_online_cpu(unsigned int cpu)
  	}
- }
+ 
+ 	/* update NUMA affinity of unbound workqueues */
+-	list_for_each_entry(wq, &workqueues, list)
+-		wq_update_unbound_numa(wq, cpu, true);
++	list_for_each_entry(wq, &workqueues, list) {
++		int tcpu;
++
++		for_each_possible_cpu(tcpu) {
++			if (cpu_to_node(tcpu) == cpu_to_node(cpu)) {
++				wq_update_unbound_numa(wq, tcpu, cpu, true);
++			}
++		}
++	}
+ 
+ 	mutex_unlock(&wq_pool_mutex);
+ 	return 0;
+@@ -5081,8 +5089,15 @@ int workqueue_offline_cpu(unsigned int cpu)
+ 
+ 	/* update NUMA affinity of unbound workqueues */
+ 	mutex_lock(&wq_pool_mutex);
+-	list_for_each_entry(wq, &workqueues, list)
+-		wq_update_unbound_numa(wq, cpu, false);
++	list_for_each_entry(wq, &workqueues, list) {
++		int tcpu;
++
++		for_each_possible_cpu(tcpu) {
++			if (cpu_to_node(tcpu) == cpu_to_node(cpu)) {
++				wq_update_unbound_numa(wq, tcpu, cpu, false);
++			}
++		}
++	}
+ 	mutex_unlock(&wq_pool_mutex);
+ 
+ 	return 0;
+@@ -6033,7 +6048,8 @@ int __init workqueue_init(void)
+ 	}
+ 
+ 	list_for_each_entry(wq, &workqueues, list) {
+-		wq_update_unbound_numa(wq, smp_processor_id(), true);
++		wq_update_unbound_numa(wq, smp_processor_id(), smp_processor_id(),
++				       true);
+ 		WARN(init_rescuer(wq),
+ 		     "workqueue: failed to create early rescuer for %s",
+ 		     wq->name);
 -- 
 2.40.1
 
