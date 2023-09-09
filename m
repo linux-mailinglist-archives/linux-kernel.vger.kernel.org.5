@@ -2,146 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEEA27999F6
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFFC7799981
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239130AbjIIQ1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 12:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36942 "EHLO
+        id S230263AbjIIQZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 12:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346701AbjIIPw4 (ORCPT
+        with ESMTP id S1346709AbjIIPy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 11:52:56 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337BF180;
-        Sat,  9 Sep 2023 08:52:52 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c1e780aa95so21566655ad.3;
-        Sat, 09 Sep 2023 08:52:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694274771; x=1694879571; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fgpa7ePPXDf81q5q2R0+qC0wZ59LoDUqcXyRaIm3KfE=;
-        b=a2EtqDj0feMdhivyTEMi3UkoWCVwvdJux7/mjhCaknL0lZvZUR7SgSxz9VQMadR7AV
-         dyzGa/PKGhPfrRGv0KhDFnEemyolJt0d7j7yJh4RYxz4QB0Yf2Mb8RTdcFHBBJs0JS/I
-         jLR8ACm69RNRxSitOos/81qsDSFGe6Rljlc1LPgBllBB+UoEyTmbQcsuAo5LiRszVJNG
-         0lVrxfMzVcdRRKgiQ66SusiMAm19GDVkBFbGKOw83zd9uZiqNeV5AXo3wjfGqR8kySFq
-         /p7Ij9uKdrjq6JrRakUSg51dC17hSq/fNDjMdyeCYDzlM73tPiS55+u/eHWivdVKSwYV
-         6NAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694274771; x=1694879571;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fgpa7ePPXDf81q5q2R0+qC0wZ59LoDUqcXyRaIm3KfE=;
-        b=Z3JBVMxMfaLLWjqL0MysnioCOe9gql6xk5o2slv0nQw6JaclQHTZcB6ykDgrT800iE
-         U1et8KnEjXzuuaQJzGDfsPI4wUP29lauAc0KIXmbkVg4wAf2BmDifHTjGrCL6b0c+XAe
-         HEA4pt6PcGzlf1LBMfTi0meTcIEaLkG2DsHDc/6y01jY2zjo4xa2Le8s8f8vvGUXiqPR
-         CHs2CLxVlLjUKnGIUqirhJ5bhNk9QLMLhR2nP2amX2zxepp7AXZIKXQavj9boxR1sM6q
-         oIsZ6MUJXevHYPpeO26tqxH6RkSqXLHebxWvYKxWgXy/+F3/S4KTrVlJAfj8xaZcjVPM
-         t3RA==
-X-Gm-Message-State: AOJu0Yx0FjUsdc8sqlhbnntJBM5yQn3l2+Yo8su4FGKfhWmFZjXGlx1p
-        8FKp/26nnpWzbjOPC7NpoqZunds7bPrlCQ==
-X-Google-Smtp-Source: AGHT+IHjDCzUL7bJiz6mFbSIE+EIH00p+G4f05fHtvMlNGOTIzh0y+NyM9MBHYLBf8fAqRHqNqAwIQ==
-X-Received: by 2002:a17:90a:4e47:b0:26b:2f9:a898 with SMTP id t7-20020a17090a4e4700b0026b02f9a898mr4980514pjl.47.1694274771484;
-        Sat, 09 Sep 2023 08:52:51 -0700 (PDT)
-Received: from VERNHAO-MC1.tencent.com ([111.197.253.118])
-        by smtp.gmail.com with ESMTPSA id l2-20020a17090a72c200b0025bd4db25f0sm2894612pjk.53.2023.09.09.08.52.47
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 09 Sep 2023 08:52:51 -0700 (PDT)
-From:   Xin Hao <haoxing990@gmail.com>
-X-Google-Original-From: Xin Hao <vernhao@tencent.com>
-To:     hannes@cmpxchg.org
-Cc:     mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        haoxing990@gmail.com
-Subject: [PATCH] mm: memcg: add THP swap out info for anonymous reclaim
-Date:   Sat,  9 Sep 2023 23:52:41 +0800
-Message-ID: <20230909155242.22767-1-vernhao@tencent.com>
-X-Mailer: git-send-email 2.42.0
+        Sat, 9 Sep 2023 11:54:29 -0400
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 11C0913E;
+        Sat,  9 Sep 2023 08:54:23 -0700 (PDT)
+X-IronPort-AV: E=Sophos;i="6.02,239,1688396400"; 
+   d="scan'208";a="175533633"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie5.idc.renesas.com with ESMTP; 10 Sep 2023 00:54:23 +0900
+Received: from localhost.localdomain (unknown [10.226.92.15])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id EFB0640118FA;
+        Sun, 10 Sep 2023 00:54:20 +0900 (JST)
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Biju Das <biju.das.jz@bp.renesas.com>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Biju Das <biju.das.au@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH] clk: clk-si544: Simplify probe() and is_valid_frequency()
+Date:   Sat,  9 Sep 2023 16:54:18 +0100
+Message-Id: <20230909155418.24426-1-biju.das.jz@bp.renesas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At present, we support per-memcg reclaim strategy, however we do not
-know the number of transparent huge pages being reclaimed, as we know
-the transparent huge pages need to be splited before reclaim them, and
-they will bring some performance bottleneck effect. for example, when
-two memcg (A & B) are doing reclaim for anonymous pages at same time,
-and 'A' memcg is reclaiming a large number of transparent huge pages, we
-can better analyze that the performance bottleneck will be caused by 'A'
-memcg.  therefore, in order to better analyze such problems, there add
-THP swap out info for per-memcg.
+The driver has an OF match table, still, it uses an ID lookup table for
+retrieving match data. Currently, the driver is working on the
+assumption that an I2C device registered via OF will always match a
+legacy I2C device ID. The correct approach is to have an OF device ID
+table using i2c_get_match_data() if the devices are registered via OF/ID.
 
-Signed-off-by: Xin Hao <vernhao@tencent.com>
+Unify the OF/ID table by using max_freq as match data instead of
+enum si544_speed_grade and replace the ID lookup table for
+the match data by i2c_get_match_data(). This allows to simplify both
+probe() and is_valid_frequency().
+
+Drop enum si544_speed_grade as there is no user.
+
+While at it, remove the trailing comma in the terminator entry for the OF
+table making code robust against (theoretical) misrebases or other similar
+things where the new entry goes _after_ the termination without the
+compiler noticing.
+
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 ---
- mm/memcontrol.c | 6 ++++++
- mm/page_io.c    | 4 +++-
- mm/vmscan.c     | 2 ++
- 3 files changed, 11 insertions(+), 1 deletion(-)
+ drivers/clk/clk-si544.c | 51 ++++++++++++-----------------------------
+ 1 file changed, 15 insertions(+), 36 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index ecc07b47e813..a644f601e2ca 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -752,6 +752,8 @@ static const unsigned int memcg_vm_event_stat[] = {
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- 	THP_FAULT_ALLOC,
- 	THP_COLLAPSE_ALLOC,
-+	THP_SWPOUT,
-+	THP_SWPOUT_FALLBACK,
- #endif
- };
+diff --git a/drivers/clk/clk-si544.c b/drivers/clk/clk-si544.c
+index 22925968aa35..4132db706144 100644
+--- a/drivers/clk/clk-si544.c
++++ b/drivers/clk/clk-si544.c
+@@ -56,17 +56,11 @@
+ #define DELTA_M_FRAC_NUM	19
+ #define DELTA_M_FRAC_DEN	20000
  
-@@ -4131,6 +4133,10 @@ static const unsigned int memcg1_events[] = {
- 	PGPGOUT,
- 	PGFAULT,
- 	PGMAJFAULT,
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	THP_SWPOUT,
-+	THP_SWPOUT_FALLBACK,
-+#endif
+-enum si544_speed_grade {
+-	si544a,
+-	si544b,
+-	si544c,
+-};
+-
+ struct clk_si544 {
+ 	struct clk_hw hw;
+ 	struct regmap *regmap;
+ 	struct i2c_client *i2c_client;
+-	enum si544_speed_grade speed_grade;
++	unsigned long  max_freq;
  };
+ #define to_clk_si544(_hw)	container_of(_hw, struct clk_si544, hw)
  
- static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
-diff --git a/mm/page_io.c b/mm/page_io.c
-index fe4c21af23f2..008ada2e024a 100644
---- a/mm/page_io.c
-+++ b/mm/page_io.c
-@@ -208,8 +208,10 @@ int swap_writepage(struct page *page, struct writeback_control *wbc)
- static inline void count_swpout_vm_event(struct folio *folio)
+@@ -196,24 +190,10 @@ static int si544_set_muldiv(struct clk_si544 *data,
+ static bool is_valid_frequency(const struct clk_si544 *data,
+ 	unsigned long frequency)
  {
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
--	if (unlikely(folio_test_pmd_mappable(folio)))
-+	if (unlikely(folio_test_pmd_mappable(folio))) {
-+		count_memcg_events(folio_memcg(folio), THP_SWPOUT, 1);
- 		count_vm_event(THP_SWPOUT);
-+	}
- #endif
- 	count_vm_events(PSWPOUT, folio_nr_pages(folio));
+-	unsigned long max_freq = 0;
+-
+ 	if (frequency < SI544_MIN_FREQ)
+ 		return false;
+ 
+-	switch (data->speed_grade) {
+-	case si544a:
+-		max_freq = 1500000000;
+-		break;
+-	case si544b:
+-		max_freq = 800000000;
+-		break;
+-	case si544c:
+-		max_freq = 350000000;
+-		break;
+-	}
+-
+-	return frequency <= max_freq;
++	return frequency <= data->max_freq;
  }
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index ea57a43ebd6b..29a82b72345a 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1928,6 +1928,8 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
- 								folio_list))
- 						goto activate_locked;
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+					count_memcg_events(folio_memcg(folio),
-+							   THP_SWPOUT_FALLBACK, 1);
- 					count_vm_event(THP_SWPOUT_FALLBACK);
- #endif
- 					if (!add_to_swap(folio))
+ 
+ /* Calculate divider settings for a given frequency */
+@@ -451,19 +431,10 @@ static const struct regmap_config si544_regmap_config = {
+ 	.volatile_reg = si544_regmap_is_volatile,
+ };
+ 
+-static const struct i2c_device_id si544_id[] = {
+-	{ "si544a", si544a },
+-	{ "si544b", si544b },
+-	{ "si544c", si544c },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(i2c, si544_id);
+-
+ static int si544_probe(struct i2c_client *client)
+ {
+ 	struct clk_si544 *data;
+ 	struct clk_init_data init;
+-	const struct i2c_device_id *id = i2c_match_id(si544_id, client);
+ 	int err;
+ 
+ 	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+@@ -475,7 +446,7 @@ static int si544_probe(struct i2c_client *client)
+ 	init.num_parents = 0;
+ 	data->hw.init = &init;
+ 	data->i2c_client = client;
+-	data->speed_grade = id->driver_data;
++	data->max_freq = (uintptr_t)i2c_get_match_data(client);
+ 
+ 	if (of_property_read_string(client->dev.of_node, "clock-output-names",
+ 			&init.name))
+@@ -507,11 +478,19 @@ static int si544_probe(struct i2c_client *client)
+ 	return 0;
+ }
+ 
++static const struct i2c_device_id si544_id[] = {
++	{ "si544a", 1500000000 },
++	{ "si544b", 800000000 },
++	{ "si544c", 350000000 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, si544_id);
++
+ static const struct of_device_id clk_si544_of_match[] = {
+-	{ .compatible = "silabs,si544a" },
+-	{ .compatible = "silabs,si544b" },
+-	{ .compatible = "silabs,si544c" },
+-	{ },
++	{ .compatible = "silabs,si544a", .data = (void *)1500000000 },
++	{ .compatible = "silabs,si544b", .data = (void *)800000000 },
++	{ .compatible = "silabs,si544c", .data = (void *)350000000 },
++	{ }
+ };
+ MODULE_DEVICE_TABLE(of, clk_si544_of_match);
+ 
 -- 
-2.42.0
+2.25.1
 
