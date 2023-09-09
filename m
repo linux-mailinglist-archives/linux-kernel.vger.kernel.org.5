@@ -2,232 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5849A7999F5
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBFF7999CE
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235360AbjIIQ1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 12:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
+        id S231992AbjIIQZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 12:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346334AbjIIOSm (ORCPT
+        with ESMTP id S231194AbjIIOYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 10:18:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC9BCD8
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 07:17:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694269078;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gxpqjGlWGczKrjdD/KSIdC9Ij7lXDy76wdf60gzXu/U=;
-        b=XNXZuYRVYjPtFPJ2jJryhmGrEtOYyAWzYXGgBsSSp+lGgW6wgnHQ1kLdEw5mASge/prg+y
-        yVFIqWnfWOdLCAUL18Ihk8/uljEucZ8mLFsqDD/tNKVHeXH+7pxmSbLJqVOs+MmAzFtAF2
-        I1Pf8YQdnNNSKYPdb15DoEhlaX+rjbQ=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-121-jZZPfnEHMoiBTklalfgj_w-1; Sat, 09 Sep 2023 10:17:56 -0400
-X-MC-Unique: jZZPfnEHMoiBTklalfgj_w-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9a5cd04315aso203473366b.2
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 07:17:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694269075; x=1694873875;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gxpqjGlWGczKrjdD/KSIdC9Ij7lXDy76wdf60gzXu/U=;
-        b=UE/ZHSMsHVWmIMsmhKHZ0ypln71/IDnvmA40QpJ92Mx5+9XygnDy2z4aYjj6ECUED3
-         qn6JB7oReX/2ibaNdsbJp8+ihER4OkdVam5Eh4PkUvUB+KWvUP3JF/r5/+juUKxnO7sG
-         N3OdxzvWdJu0XaNtCCQCF6uWqCjk81ViLeThiumZk00ohMU30l52zGbzt7Y74lT22+dK
-         dn82qEXlL8UAfubuxPJBgOtO/BZvOM+3G0IrCxiL1ki3Ckfew6VmmjeJ7ZgwAQzfc6SU
-         PfDtgUkWV3rtYNKOKIiPX7eG54Z8e5z12GYFPnty35xoyirLVQYT1/lcuZHn5TDNd9ro
-         S5IQ==
-X-Gm-Message-State: AOJu0YxNBdBUiDWoqJkII5PDUlofFsyodONrpBbh6bfOAnBqGI3rBVIB
-        tR1vM0+YNiqwRj77Vxf42RU4JfQAkhE9dG6/OTxKFRf9cOAfTlujyMLt05oDkh94cG1dOTZDNuA
-        ryZo33bwcZflEhD5qkqxfd/rx
-X-Received: by 2002:a17:906:1099:b0:9a1:bb8f:17d0 with SMTP id u25-20020a170906109900b009a1bb8f17d0mr4501448eju.30.1694269075507;
-        Sat, 09 Sep 2023 07:17:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFMudyVp+zx8RzmnPFLHESTvoKIZa2tIOu9EV9hDpsbWpIlbA1KAhUYJhR+ZESN38YSVQ+qMw==
-X-Received: by 2002:a17:906:1099:b0:9a1:bb8f:17d0 with SMTP id u25-20020a170906109900b009a1bb8f17d0mr4501420eju.30.1694269075146;
-        Sat, 09 Sep 2023 07:17:55 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id i10-20020a170906114a00b00992076f4a01sm2396508eja.190.2023.09.09.07.17.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Sep 2023 07:17:54 -0700 (PDT)
-Message-ID: <173bdafa-08da-7473-6711-61131986eb3c@redhat.com>
-Date:   Sat, 9 Sep 2023 16:17:53 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFT PATCH 11/21] platform: x86: android-tablets: don't access
- GPIOLIB private members
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Dipen Patel <dipenp@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Gross <markgross@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
-        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20230905185309.131295-1-brgl@bgdev.pl>
- <20230905185309.131295-12-brgl@bgdev.pl>
- <8f51b4a8-bb9c-4918-61a8-4ab402da1ed0@redhat.com>
- <CAMRc=Mfmp3Nd5jwNWr=kc8RFO-arFDwEvLxj5Qu9_1OOXR2gHQ@mail.gmail.com>
-Content-Language: en-US, nl
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAMRc=Mfmp3Nd5jwNWr=kc8RFO-arFDwEvLxj5Qu9_1OOXR2gHQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Sat, 9 Sep 2023 10:24:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100FA180;
+        Sat,  9 Sep 2023 07:24:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EEF5C433C8;
+        Sat,  9 Sep 2023 14:24:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694269481;
+        bh=zVn2Zw7WnqviXrl0PFThoMfvMcVrD4b3OlWOf1nMLeQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VLsaU8JnoEKd5Nr/fIz+WM6zKsNNKK8bTE+O8loGiVXjA7B6F/CS4cbQpXA78ykuo
+         srX9/kAWw7+qjk9UZZwXIthm/FVner+NBL+GM6vgJB6xMCjIrZkyQupiCD8ed+PKSc
+         7+Eu+TyUhBmkRRWOASNOJ/oHADM9JQhEeP5xMzYs0FwE3IEnyU0s2i1KC541JVwtMi
+         CSAU0+kV6pc5BBcOiN7GTwTo/mchs14GVnJiIWx7gdvrDlQM3xavfBOZ9RAzXtuKn1
+         JAVuYA10plL7MK4H05N/XYSmwG2I+ro0nzwCDyyMHzcphSrcTJx2iymowRN29qUyDh
+         oIfDyiMG+D3+g==
+Date:   Sat, 9 Sep 2023 23:24:35 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v4 4/9] fprobe: rethook: Use ftrace_regs in fprobe exit
+ handler and rethook
+Message-Id: <20230909232435.dfa15f93f1c5eef5b229a7d2@kernel.org>
+In-Reply-To: <yt9dzg1zokyg.fsf@linux.ibm.com>
+References: <169280372795.282662.9784422934484459769.stgit@devnote2>
+        <169280377434.282662.7610009313268953247.stgit@devnote2>
+        <20230904224038.4420a76ea15931aa40179697@kernel.org>
+        <yt9d5y4pozrl.fsf@linux.ibm.com>
+        <20230905223633.23cd4e6e8407c45b934be477@kernel.org>
+        <yt9dzg1zokyg.fsf@linux.ibm.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
+Hi Sven,
 
-On 9/6/23 16:27, Bartosz Golaszewski wrote:
-> On Wed, Sep 6, 2023 at 3:01 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> Hi Bartosz,
->>
->> On 9/5/23 20:52, Bartosz Golaszewski wrote:
->>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>>
->>> We're slowly removing cases of abuse of the GPIOLIB public API. One of
->>> the biggest issues is looking up and accessing struct gpio_chip whose
->>> life-time is tied to the provider and which can disappear from under any
->>> user at any given moment. We have provided new interfaces that use the
->>> opaque struct gpio_device which is reference counted and will soon be
->>> thorougly protected with appropriate locking.
->>>
->>> Stop using old interfaces in this driver and switch to safer
->>> alternatives.
->>>
->>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>
->> First of all sorry for the issues this hack-ish kernel module
->> is causing for cleaning up gpiolib APIs.
->>
->> I don't know how close a look you took at the code, so first of
->> all let me try to briefly explain what this hackish kernel module
->> is for:
->>
->> There are some x86_64/ACPI tablets which shipped with Android as
->> factory OS. On these tablets the device-specific (BSP style)
->> kernel has things like the touchscreen driver simply having
->> a hardcoded I2C bus-number + I2C client address. Combined
->> with also hardcoded GPIO numbers (using the old number base APIs)
->> for any GPIOs it needs.
->>
->> So the original Android kernels do not need the devices
->> to be properly described in ACPI and the ACPI tables are
->> just one big copy and paste job from some BSP which do
->> not accurately describe the hardware at all.
->>
->> x86-android-tablets.ko identifies affected models by their
->> DMI strings and then manually instantiates things like
->> i2c-clients for the touchscreen, accelerometer and also
->> other stuff. Yes this is ugly but it allows mainline kernels
->> to run pretty well on these devices since other then
->> the messed up ACPI tables these are pretty standard x86/ACPI
->> tablets.
->>
->> I hope this explains the hacks, now on to the problems
->> these are causing:
+On Wed, 06 Sep 2023 08:49:11 +0200
+Sven Schnelle <svens@linux.ibm.com> wrote:
+
+> Hi Masami,
 > 
-> This makes sense! Maybe we'd need a good-old board file setting up all
-> non-described devices using the driver model?
-
-Right, this is pretty much exactly what the x86-android-tablets
-code does. Except that it does it for a bunch of boards in a single
-.ko / driver. There is a lot of commonality between these boards,
-so this allows sharing most of the code.
-
-The driver uses DMI matching, with the match's driver_data pointing
-to a description of which devices to instantiate and then the shared
-code takes care of instantiating those.
-
-About 90% of the data / code is __init or __initdata so both
-the code to instantiate the devices as well as the per board
-data is free-ed after module_init() has run.
-
-<snip>
-
->> So rather then the above I think what needs to happen here
->> (and I can hopefully make some time for that this weekend) is:
->>
->> 1. Have the x86-android-tablets code instantiate a
->>    "x86-android-tablets" platform-dev
->> 2. Have the code generate a gpiod_lookup_table for all GPIOs
->>    for which it currently uses x86_android_tablet_get_gpiod()
->>    with the .dev_id set to "x86-android-tablets"
->> 3. Use regular gpiod_get() on the "x86-android-tablets" pdev
->>    to get the desc.
->>
->> I think this should solve all the issues with
->> x86_android_tablet_get_gpiod() poking inside
->> gpiolib external since now it is only using
->> public gpiolib APIs, right ?
->>
->> One question about 2. there are 2 ways to do this:
->>
->> i. Have the module_init() function loop over all
->> x86_dev_info members which will result in calling
->> x86_android_tablet_get_gpiod() and have it generate
->> one big gpiod_lookup_table for all GPIOs needed
->> in one go. At which point x86_android_tablet_get_gpiod()
->> goes away and can be directly replaced with gpiod_get()
->> calls on the pdev.
->>
->> ii. Keep x86_android_tablet_get_gpiod() and have it
->> generate a gpiod_lookup_table with just 1 entry for
->> the GPIO which its caller wants. Register the lookup
->> table, do the gpiod_get() and then immediately
->> unregister the lookup table again.
->>
->> ii. Would be easier for me to implement, especially
->> since there is also some custom (board specific)
->> init code calling x86_android_tablet_get_gpiod()
->> which would require some special handling for i.
->>
->> OTOH I guess some people will consider ii. somewhat
->> ugly, although AFAICT it is perfectly ok to use
->> the gpiolib lookup APIs this way.
->>
->> Can you please let me known if you are ok with ii,
->> or if you would prefer me going with solution i. ?
->>
+> Masami Hiramatsu (Google) <mhiramat@kernel.org> writes:
 > 
-> I am fine with ii. I have recently sent a patch that does exactly that
-> in one of the SPI drivers. It's ugly but it's better than what we have
-> now.
+> > Thus, we need to ensure that the ftrace_regs which is saved in the ftrace
+> > *without* FTRACE_WITH_REGS flags, can be used for hooking the function
+> > return. I saw;
+> >
+> > void arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mcount)
+> > {
+> >         rh->ret_addr = regs->gprs[14];
+> >         rh->frame = regs->gprs[15];
+> >
+> >         /* Replace the return addr with trampoline addr */
+> >         regs->gprs[14] = (unsigned long)&arch_rethook_trampoline;
+> > }
+> >
+> > gprs[15] is a stack pointer, so it is saved in ftrace_regs too, but what about
+> > gprs[14]? (I guess it is a link register)
+> > We need to read the gprs[14] and ensure that is restored to gpr14 when the
+> > ftrace is exit even without FTRACE_WITH_REGS flag.
+> >
+> > IOW, it is ftrace save regs/restore regs code issue. I need to check how the
+> > function_graph implements it.
+> 
+> gpr2-gpr14 are always saved in ftrace_caller/ftrace_regs_caller(),
+> regardless of the FTRACE_WITH_REGS flags. The only difference is that
+> without the FTRACE_WITH_REGS flag the program status word (psw) is not
+> saved because collecting that is a rather expensive operation.
 
-Ok, I have just finished implementing this using the ii. method.
+Thanks for checking that! So s390 will recover those saved registers
+even if FTRACE_WITH_REGS flag is not set? (I wonder what is the requirement
+of the ftrace_regs when returning from ftrace_call() without
+FTRACE_WITH_REGS?)
 
-I'll post a patch-series for this for review right after this email.
+> 
+> I used the following commands to test rethook (is that the correct
+> testcase?)
+> 
+> #!/bin/bash
+> cd /sys/kernel/tracing
+> 
+> echo 'r:icmp_rcv icmp_rcv' >kprobe_events
+> echo 1 >events/kprobes/icmp_rcv/enable
+> ping -c 1 127.0.0.1
+> cat trace
 
-After that series x86-android-tablets should no longer be a problem
-wrt using any private gpiolib APIs.
+No, the kprobe will path pt_regs to rethook.
+Cna you run
 
-Regards,
+echo "f:icmp_rcv%return icmp_rcv" >> dynamic_events
 
-Hans
+instead of kprobe_events?
+
+Thank you,
+
+> 
+> which gave me:
+> 
+> ping-686     [001] ..s1.    96.890817: icmp_rcv: (ip_protocol_deliver_rcu+0x42/0x218 <- icmp_rcv)
+> 
+> I applied the following patch on top of your patches to make it compile,
+> and rethook still seems to work:
+> 
+> commit dab51b0a5b885660630433ac89f8e64a2de0eb86
+> Author: Sven Schnelle <svens@linux.ibm.com>
+> Date:   Wed Sep 6 08:06:23 2023 +0200
+> 
+>     rethook wip
+>     
+>     Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+> 
+> diff --git a/arch/s390/kernel/rethook.c b/arch/s390/kernel/rethook.c
+> index af10e6bdd34e..4e86c0a1a064 100644
+> --- a/arch/s390/kernel/rethook.c
+> +++ b/arch/s390/kernel/rethook.c
+> @@ -3,8 +3,9 @@
+>  #include <linux/kprobes.h>
+>  #include "rethook.h"
+>  
+> -void arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mcount)
+> +void arch_rethook_prepare(struct rethook_node *rh, struct ftrace_regs *fregs, bool mcount)
+>  {
+> +	struct pt_regs *regs = (struct pt_regs *)fregs;
+>  	rh->ret_addr = regs->gprs[14];
+>  	rh->frame = regs->gprs[15];
+>  
+> @@ -13,10 +14,11 @@ void arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mc
+>  }
+>  NOKPROBE_SYMBOL(arch_rethook_prepare);
+>  
+> -void arch_rethook_fixup_return(struct pt_regs *regs,
+> +void arch_rethook_fixup_return(struct ftrace_regs *fregs,
+>  			       unsigned long correct_ret_addr)
+>  {
+>  	/* Replace fake return address with real one. */
+> +	struct pt_regs *regs = (struct pt_regs *)fregs;
+>  	regs->gprs[14] = correct_ret_addr;
+>  }
+>  NOKPROBE_SYMBOL(arch_rethook_fixup_return);
+> @@ -24,9 +26,9 @@ NOKPROBE_SYMBOL(arch_rethook_fixup_return);
+>  /*
+>   * Called from arch_rethook_trampoline
+>   */
+> -unsigned long arch_rethook_trampoline_callback(struct pt_regs *regs)
+> +unsigned long arch_rethook_trampoline_callback(struct ftrace_regs *fregs)
+>  {
+> -	return rethook_trampoline_handler(regs, regs->gprs[15]);
+> +	return rethook_trampoline_handler(fregs, fregs->regs.gprs[15]);
+>  }
+>  NOKPROBE_SYMBOL(arch_rethook_trampoline_callback);
+>  
+> diff --git a/arch/s390/kernel/rethook.h b/arch/s390/kernel/rethook.h
+> index 32f069eed3f3..0fe62424fc78 100644
+> --- a/arch/s390/kernel/rethook.h
+> +++ b/arch/s390/kernel/rethook.h
+> @@ -2,6 +2,6 @@
+>  #ifndef __S390_RETHOOK_H
+>  #define __S390_RETHOOK_H
+>  
+> -unsigned long arch_rethook_trampoline_callback(struct pt_regs *regs);
+> +unsigned long arch_rethook_trampoline_callback(struct ftrace_regs *fregs);
+>  
+>  #endif
+> 
 
 
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
