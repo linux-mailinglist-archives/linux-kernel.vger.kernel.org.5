@@ -2,112 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2446799B23
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 22:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59CDA799B50
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 23:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236862AbjIIU3q convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 9 Sep 2023 16:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48854 "EHLO
+        id S241271AbjIIVQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 17:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbjIIU3n (ORCPT
+        with ESMTP id S239398AbjIIVQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 16:29:43 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AA519E;
-        Sat,  9 Sep 2023 13:29:38 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qf4a0-003NNt-FK; Sat, 09 Sep 2023 22:29:20 +0200
-Received: from dynamic-089-014-158-203.89.14.pool.telefonica.de ([89.14.158.203] helo=[192.168.1.11])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qf4a0-0025rN-5I; Sat, 09 Sep 2023 22:29:20 +0200
-Message-ID: <86e6baa7dc92b42440c1e07332c876530306eaa3.camel@physik.fu-berlin.de>
-Subject: [GIT PULL] sh updates for v6.6
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Duoming Zhou <duoming@zju.edu.cn>,
-        Petr Tesarik <petr.tesarik.ext@huawei.com>,
-        Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-sh@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Sat, 09 Sep 2023 22:29:11 +0200
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Sat, 9 Sep 2023 17:16:41 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52666131;
+        Sat,  9 Sep 2023 14:16:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Zt6OrCismPf+aycVIJ+FicoSu1Q1+BGOLqCiYwahFl8=; b=coKzf3opw1nK9pbEe4bFgAR6Lf
+        AcLRY6jlcfWy5v+CNsR7DaCMqlDaCfDALWhQILBbx+sTVkzO8DrN6F4y4s/e3UATN38JM+WMaPvk0
+        jJ2VbbEMEKKJ+JqHChsqm6lVfDp5TFl2FP1C9sGXT9bHln5wHM45FameMSFKrepR/nW8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qf5JF-0064b4-2c; Sat, 09 Sep 2023 23:16:05 +0200
+Date:   Sat, 9 Sep 2023 23:16:05 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
+        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
+Message-ID: <71f7c475-e111-4e4b-9e8f-4c8a6bf6bc34@lunn.ch>
+References: <47b61929-5c2d-4906-b153-2046a94858c8@arinc9.com>
+ <20230813112026.ohsx6srbt2staxma@skbuf>
+ <8a8e14f1-0493-4298-a2cc-6e7ae7929334@arinc9.com>
+ <20230813190157.4y3zoro53qsz43pe@skbuf>
+ <f5f468c1-b5a2-4336-b1d9-fd82da95b21d@arinc9.com>
+ <20230814143601.mnpxtcm2zybnbvoh@skbuf>
+ <0cee0928-74c9-4048-8cd8-70bfbfafd9b2@arinc9.com>
+ <20230827121235.zog4c3ehu2cyd3jy@skbuf>
+ <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
+ <87325ce9-595a-4dda-a6a1-b5927d25719b@arinc9.com>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 89.14.158.203
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87325ce9-595a-4dda-a6a1-b5927d25719b@arinc9.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus!
+Please trim the text when replying.
 
-I am very late this merge window since I was rather busy the past month but
-as there are only two small fixes in this pull request, I hope you are still
-willing to pull the sh changes for v6.6.
 
-The first patch by Duoming Zhou fixes a use-after-free bug in the push-switch
-driver while the second one by Petr Tesarik addresses an issue where the call
-to dma_declare_coherent_memory() incorrectly passes the buffer end address
-instead of the buffer size as the size parameter.
+> I'm writing below as a mix of patch log and discussion.
+> 
+> Phylink bindings are required for ports that are controlled by OF-based
+> buses. DSA, like any other driver utilising the Linux MDIO infrastructure,
+> can register a bus. If I understand correctly, non-OF-based registration of
+> OpenFirmware MDIO buses is a feature specific to DSA which certain DSA
+> subdrivers make use of.
 
-I expect the pull request for v6.7 much larger since we're currently working
-on converting arch/sh to using device trees for which the patches have now
-been posted on the linux-sh mailing list.
- 
-The following changes since commit fdf0eaf11452d72945af31804e2a1048ee1b574c:
+This is not really DSA specific. Any MAC driver, or MDIO driver, can
+call mdiobus_regsiter(), or of_mdiobus_register() and pass a NULL
+pointer if there is no OF node available. It then requires that the
+MAC driver uses an function like phy_find_first(), or knows via other
+means what address the PHY uses on the bus. For DSA, that other means
+is assuming a 1:1 mapping between port number and bus address.
 
-  Linux 6.5-rc2 (2023-07-16 15:10:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/glaubitz/sh-linux.git tags/sh-for-v6.6-tag1
-
-for you to fetch changes up to 246f80a0b17f8f582b2c0996db02998239057c65:
-
-  sh: push-switch: Reorder cleanup operations to avoid use-after-free bug (2023-09-09 21:54:20 +0200)
-
-Thanks for pulling!
-
-Adrian
-
-----------------------------------------------------------------
-sh updates for v6.6
-
-- sh: push-switch: Reorder cleanup operations to avoid use-after-free bug
-- sh: boards: Fix CEU buffer size passed to dma_declare_coherent_memory()
-
-----------------------------------------------------------------
-Duoming Zhou (1):
-      sh: push-switch: Reorder cleanup operations to avoid use-after-free bug
-
-Petr Tesarik (1):
-      sh: boards: Fix CEU buffer size passed to dma_declare_coherent_memory()
-
- arch/sh/boards/mach-ap325rxa/setup.c | 2 +-
- arch/sh/boards/mach-ecovec24/setup.c | 6 ++----
- arch/sh/boards/mach-kfr2r09/setup.c  | 2 +-
- arch/sh/boards/mach-migor/setup.c    | 2 +-
- arch/sh/boards/mach-se/7724/setup.c  | 6 ++----
- arch/sh/drivers/push-switch.c        | 2 +-
- 6 files changed, 8 insertions(+), 12 deletions(-)
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+   Andrew
