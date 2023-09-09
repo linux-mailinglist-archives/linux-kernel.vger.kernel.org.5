@@ -2,86 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E376799BE0
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 00:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E76799BE1
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 00:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238254AbjIIWHH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 9 Sep 2023 18:07:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37372 "EHLO
+        id S1343986AbjIIWM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 18:12:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232487AbjIIWHF (ORCPT
+        with ESMTP id S232487AbjIIWM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 18:07:05 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E987D9;
-        Sat,  9 Sep 2023 15:07:00 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qf66U-003ZTJ-9l; Sun, 10 Sep 2023 00:06:58 +0200
-Received: from dynamic-089-014-158-203.89.14.pool.telefonica.de ([89.14.158.203] helo=[192.168.1.11])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qf66U-002Ij2-2q; Sun, 10 Sep 2023 00:06:58 +0200
-Message-ID: <06b34c01b1781ae76df1f037bcde261f9bdc162e.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH 1/4] sh: remove stale microdev board
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-sh@vger.kernel.org, Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Date:   Sun, 10 Sep 2023 00:06:49 +0200
-In-Reply-To: <20230802184849.1019466-1-arnd@kernel.org>
-References: <20230802184849.1019466-1-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
-MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 89.14.158.203
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 9 Sep 2023 18:12:58 -0400
+Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919C7D9
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 15:12:53 -0700 (PDT)
+Received: by a3.inai.de (Postfix, from userid 65534)
+        id 385995873035B; Sun, 10 Sep 2023 00:12:49 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
+Received: from a4.inai.de (a4.inai.de [IPv6:2a01:4f8:10b:45d8::f8])
+        by a3.inai.de (Postfix) with ESMTP id C940F5872FF4F;
+        Sun, 10 Sep 2023 00:12:48 +0200 (CEST)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     o-takashi@sakamocchi.jp
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] firewire: dissolve one menu indirection
+Date:   Sun, 10 Sep 2023 00:11:35 +0200
+Message-ID: <20230909221248.2598-1-jengelh@inai.de>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230909033457.GA59845@workstation.local>
+References: <20230909033457.GA59845@workstation.local>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd!
+Assume you are in the "Device Drivers" menu in menuconfig, and the
+cursor is on "IEEE 1394 (FireWire) support". To deactivate everything
+FireWire-related, the following keystrokes are needed:
 
-On Wed, 2023-08-02 at 20:48 +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> This board was an early prototype platform for early SH4 CPUs and related
-> to the already removed SH5 cayman platform.
-> 
-> The microdev board itself has been kept in the tree for this long despite
-> being in a bad shape even 20 years ago when it got merged, with no working
-> PCI support and ugly workarounds for its I/O port implementation that
-> try to emulate PC style peripheral access despite being quite different
-> in reality.
-> 
-> As far as I can tell, the ethernet, display, USB and PCI devices on it
-> already broke at some point (afbb9d8d5266b, 46bc85872040a), so I
-> think we can just remove it entirely.
+ENTER N DOWN N RIGHT ENTER
 
-The series didn't apply cleanly against v6.5-rc1.
+The plan of v6.5-1-gfd416616d099 was to reduce this to just
 
-Could you rebase against v6.6-rc1 once it's out so I can pick up this
-series for v6.7?
+N
 
-Thanks,
-Adrian
+by making "IEEE 1394" a menuconfig item. That did not resonate, so
+try a middle way which reduces it to
 
+N DOWN N
+
+without introducing a new config option, by dissolving one level of
+menus.
+
+Signed-off-by: Jan Engelhardt <jengelh@inai.de>
+---
+This patch applies on top of fd416616d0995f4947dd0a7a8c2ac4d9f916a9d0.
+
+ drivers/firewire/Kconfig | 32 +++++++++++---------------------
+ 1 file changed, 11 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/firewire/Kconfig b/drivers/firewire/Kconfig
+index be1a9e685782..6b27944059bc 100644
+--- a/drivers/firewire/Kconfig
++++ b/drivers/firewire/Kconfig
+@@ -1,22 +1,10 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-menuconfig FIREWIRE_SUPPORT
+-	bool "IEEE 1394 (FireWire) support"
+-	default y
++menuconfig FIREWIRE
++	tristate "FireWire driver stack"
++	select CRC_ITU_T
+ 	depends on PCI || COMPILE_TEST
+ 	# firewire-core does not depend on PCI but is
+ 	# not useful without PCI controller driver
+-	help
+-	  Support for FireWire.
+-
+-	  The answer to this question will not directly affect the
+-	  kernel: saying N will just cause the configurator to skip all
+-	  the questions about FireWire.
+-
+-if FIREWIRE_SUPPORT
+-
+-config FIREWIRE
+-	tristate "FireWire driver stack"
+-	select CRC_ITU_T
+ 	help
+ 	  This is the new-generation IEEE 1394 (FireWire) driver stack
+ 	  a.k.a. Juju, a new implementation designed for robustness and
+@@ -28,9 +16,11 @@ config FIREWIRE
+ 	  To compile this driver as a module, say M here: the module will be
+ 	  called firewire-core.
+ 
++if FIREWIRE
++
+ config FIREWIRE_KUNIT_UAPI_TEST
+ 	tristate "KUnit tests for layout of structure in UAPI" if !KUNIT_ALL_TESTS
+-	depends on FIREWIRE && KUNIT
++	depends on KUNIT
+ 	default KUNIT_ALL_TESTS
+ 	help
+ 	  This builds the KUnit tests whether structures exposed to user
+@@ -46,7 +36,7 @@ config FIREWIRE_KUNIT_UAPI_TEST
+ 
+ config FIREWIRE_OHCI
+ 	tristate "OHCI-1394 controllers"
+-	depends on PCI && FIREWIRE && MMU
++	depends on PCI && MMU
+ 	help
+ 	  Enable this driver if you have a FireWire controller based
+ 	  on the OHCI specification.  For all practical purposes, this
+@@ -57,7 +47,7 @@ config FIREWIRE_OHCI
+ 
+ config FIREWIRE_SBP2
+ 	tristate "Storage devices (SBP-2 protocol)"
+-	depends on FIREWIRE && SCSI
++	depends on SCSI
+ 	help
+ 	  This option enables you to use SBP-2 devices connected to a
+ 	  FireWire bus.  SBP-2 devices include storage devices like
+@@ -72,7 +62,7 @@ config FIREWIRE_SBP2
+ 
+ config FIREWIRE_NET
+ 	tristate "IP networking over 1394"
+-	depends on FIREWIRE && INET
++	depends on INET
+ 	help
+ 	  This enables IPv4/IPv6 over IEEE 1394, providing IP connectivity
+ 	  with other implementations of RFC 2734/3146 as found on several
+@@ -81,6 +71,8 @@ config FIREWIRE_NET
+ 	  To compile this driver as a module, say M here:  The module will be
+ 	  called firewire-net.
+ 
++endif # FIREWIRE
++
+ config FIREWIRE_NOSY
+ 	tristate "Nosy - a FireWire traffic sniffer for PCILynx cards"
+ 	depends on PCI
+@@ -105,5 +97,3 @@ config FIREWIRE_NOSY
+ 	  nosy-dump, can be found in tools/firewire/ of the kernel sources.
+ 
+ 	  If unsure, say N.
+-
+-endif # FIREWIRE_SUPPORT
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.42.0
+
