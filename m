@@ -2,136 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6627999DC
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0AA7999EB
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235906AbjIIQ1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 12:27:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60712 "EHLO
+        id S234151AbjIIQ0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 12:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240627AbjIIOHm (ORCPT
+        with ESMTP id S241655AbjIIOJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 10:07:42 -0400
-Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0243FCC1
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 07:07:37 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailnew.west.internal (Postfix) with ESMTP id B28DA2B000C2;
-        Sat,  9 Sep 2023 10:07:34 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Sat, 09 Sep 2023 10:07:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1694268454; x=1694275654; bh=AltuPP/LqeE6uAGSGb8FseNo9A60IhA1lu+
-        5xb2VAGk=; b=SRu7W0JjHy+7J3xJg2yylV229CcXGC7Q/Bu4wJue4kpMxLRjuiv
-        /rm1kimQQrokMtdw5dgKtV03MOINzLOzdhYM65eqc7PfbGeanAuZOweu521VuNRs
-        5y3wqWg4FU2M4ihkriVavUZG5xIl78x66XgSIukGrkX+NmLVVvj1NPKrC/BYIYd+
-        YyJE/jnx8l2l2jdv7lfh8VevJpk9lW9YsXJW8HCnalJQAK5AgMY9j1SR3PnUtH+E
-        o6PFJ3kkc6aQwKCQvkUJhEwH7nqpopW7QxA9uxKV3ZEp0VidPqRnWe0INKRckD3l
-        NuRkJP1s2iUHAsozJWqoe8oRfw45bDV09vA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1694268454; x=1694275654; bh=AltuPP/LqeE6uAGSGb8FseNo9A60IhA1lu+
-        5xb2VAGk=; b=r5XrJ3oAFxBgLmziT3FzAZd3H9GdEbpzF7Y0ZtIU7KYycyFhTO2
-        jVT7DB3yH0vvg7NLQSXRo3kWh7vY1dDWq82QS4+uRyaAMugHOcov1Ibba1/0D9yo
-        7WdblTVlu2/4kopg+Uo267t/Po0WZQs7ywVyiv2yG3UlKe/GnLClWv9dVeYg3wVI
-        uc0xXIjGiooEIB0k+KOdh8TijccKU3aEYeGxehiRxzeR9Qkir43CsDeydgerkCis
-        Erk0x8gm/wruGajNXy831rQLBHAc/pvcSYEsyxoifw9tL1YaBvs8DJ6dgqPvLlTV
-        dVgCA8+ihM/UGFTUOXUaNdybJKW0QBoVZKA==
-X-ME-Sender: <xms:JXz8ZCl2rnah069ySds2jAb9v_x_dEZabHp4pX80D5AUeaZE0TZlyw>
-    <xme:JXz8ZJ1BMwoeAY2o-maKy1lT-AMR52vPR8C8vCEn-pibE-rm60RKxvuU3nX4GZNnx
-    tia74_Eqx1mjXjN6IQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehledgjedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeelfefgueeviefgudduueefueffkeelleeijeelkefgudfgueelledtuddu
-    ieegvdenucffohhmrghinhepghhouggsohhlthdrohhrghenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:JXz8ZApW4v7BgzReF-anvTJLf0emao3RaWXzDrywo8UIRFKJm9d40g>
-    <xmx:JXz8ZGkKxyHwBzln8_bHyERy_Yihk92t-qHvQCzyS9Se0bIUZtbztA>
-    <xmx:JXz8ZA2JKRhSHUzEfjEL4b-EMyI0D_PedhmfRNWNcxjaxE2Adi7uGg>
-    <xmx:Jnz8ZBltFIuxlG-Do68QNuFy22OdtF-z8F8wfmM1PvL86HYMkMULu_tsWO8>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 5D0E3B60089; Sat,  9 Sep 2023 10:07:33 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-711-g440737448e-fm-20230828.001-g44073744
-Mime-Version: 1.0
-Message-Id: <76998b95-827a-4e71-8782-0990b204fcfa@app.fastmail.com>
-In-Reply-To: <CAMuHMdWs0QbRQZCXZ2Gycqb7jjsjUZMp7_h2mVWxR1zrjCL1Og@mail.gmail.com>
-References: <cover.1694093327.git.geert@linux-m68k.org>
- <64ea8cf65a4318fbf8c91cb3062d90a2555007c4.1694093327.git.geert@linux-m68k.org>
- <2545f40a-0c59-491d-895f-4a7975faaedc@app.fastmail.com>
- <CAMuHMdWs0QbRQZCXZ2Gycqb7jjsjUZMp7_h2mVWxR1zrjCL1Og@mail.gmail.com>
-Date:   Sat, 09 Sep 2023 16:07:13 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Geert Uytterhoeven" <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org,
-        "Finn Thain" <fthain@linux-m68k.org>,
-        "Michael Schmitz" <schmitzmic@gmail.com>,
-        "Philip Blundell" <philb@gnu.org>,
-        "Greg Ungerer" <gerg@linux-m68k.org>,
-        "Joshua Thompson" <funaho@jurai.org>,
-        "Sam Creasey" <sammy@sammy.net>,
-        "Laurent Vivier" <laurent@vivier.eu>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 15/52] m68k: emu: Mark version[] __maybe_unused
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 9 Sep 2023 10:09:32 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E2CCC1
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 07:09:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694268567; x=1725804567;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Czqq/j81Dtm6nwP2yz4qKe8IqZZ5MMkNOTJX5VOKxD0=;
+  b=DEX8uo9D24NW4gbjYurktfmOzQencI/m0b+izhCMVcOGKng3u4nWTJ+z
+   Ck150bcmNvCE99orRIixFACbm/WQ8K8F1jHQLLkGEYmsjdp/4WqdsJ2IJ
+   GbDgRvTHGidOPGSVRRV67aS/M+ce6Q4HH1YOUx/JY+Uks7BSUB1MA3Gi1
+   NWrUYLYkS0qkmprsVDX+iFp3W4j0AqJYDYdcfMoFsr5mRb90S/lnZf2QK
+   kd+g5j5iawRsPjylcNrvwrOvqdfcEAlCUaHAC7w8rPGqKPsFi3tC9SZHq
+   mRBS1zBAsKQD4KJQa5NmGirr9gx/TdfCvfhtSBtw41dz6w/PcUPqFnXB1
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="357290064"
+X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
+   d="scan'208";a="357290064"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 07:09:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="745903290"
+X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
+   d="scan'208";a="745903290"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 09 Sep 2023 07:09:25 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qeyeI-0003aY-1X;
+        Sat, 09 Sep 2023 14:09:22 +0000
+Date:   Sat, 9 Sep 2023 22:08:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     David Thompson <davthompson@nvidia.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        Shravan Kumar Ramani <shravankr@nvidia.com>
+Subject: mlxbf-bootctl.c:undefined reference to `sysfs_format_mac'
+Message-ID: <202309092107.yUYdtSR9-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 9, 2023, at 14:12, Geert Uytterhoeven wrote:
-> Hi Arnd,
->
-> On Sat, Sep 9, 2023 at 10:28=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> =
-wrote:
->> On Thu, Sep 7, 2023, at 15:41, Geert Uytterhoeven wrote:
->> > When building with W=3D1:
->> >
->> >     m68k/arch/m68k/emu/nfeth.c:42:19: warning: =E2=80=98version=E2=80=
-=99 defined but
->> > not used [-Wunused-const-variable=3D]
->> >        42 | static const char version[] =3D
->> >         |                   ^~~~~~~
->> >
->> > Fix this while obeying the wishes of the original copyright holders=
- by
->> > marking version[] with __maybe_unused.
->> >
->> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>
->> That will just drop it from the object file, maybe it should
->> instead be marked "__used" ?
->
-> Given it's been like this since the beginning, I guess it never showed
-> up in the object file anyway...
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6099776f9f268e61fe5ecd721f994a8cfce5306f
+commit: 7e38a7422f128e7d7ba24b444e957d585dbb272f mlxbf-bootctl: Support sysfs entries for MFG fields
+date:   2 weeks ago
+config: arm64-randconfig-r032-20210928 (https://download.01.org/0day-ci/archive/20230909/202309092107.yUYdtSR9-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 12.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230909/202309092107.yUYdtSR9-lkp@intel.com/reproduce)
 
-Older compilers used to keep unused variables, and all versions
-still do when building with -O0 instead of the usual -O2.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309092107.yUYdtSR9-lkp@intel.com/
 
-I can see on godbolt.org that gcc-1.27 did not have that optimization
-yet, while gcc-4.1 had it, but I haven't found any versions between
-those. I vaguely remember us throwing out the version strings from
-most kernel files a long time ago, possibly that was triggered by
-gcc no longer putting them into the object any more, but I can't
-find a reference for that.
+All errors (new ones prefixed by >>):
 
-What I can see is that a lot of old network drivers have version
-strings like this one, but they are actually printed from the
-probe function, and lost their __devinitdata annotation in the past.
+   aarch64-linux-ld: drivers/platform/mellanox/mlxbf-bootctl.o: in function `oob_mac_show':
+>> mlxbf-bootctl.c:(.text+0x12c8): undefined reference to `sysfs_format_mac'
+   mlxbf-bootctl.c:(.text+0x12c8): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `sysfs_format_mac'
 
-      Arnd
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
