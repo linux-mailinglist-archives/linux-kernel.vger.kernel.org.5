@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4DE0799562
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B48799571
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346275AbjIIBOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 21:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40948 "EHLO
+        id S1346332AbjIIBOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 21:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346203AbjIIBOG (ORCPT
+        with ESMTP id S1346344AbjIIBOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 21:14:06 -0400
+        Fri, 8 Sep 2023 21:14:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E36A268D;
-        Fri,  8 Sep 2023 18:13:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B929DC433BF;
-        Sat,  9 Sep 2023 01:13:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F7219B4;
+        Fri,  8 Sep 2023 18:14:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19D72C4166B;
+        Sat,  9 Sep 2023 01:13:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694221987;
-        bh=cuyekVbAgASysnQCjog5upEd50V6X6VBAg0FWT8PaEg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KkNr9HJw7pcR6jeDG83sWt1Xv/o8LMASdC39g0U3oMzrGXmVk4bRRV2DwLlOT/D6w
-         FTNfw47MTqkORHL6fNjnMNIxR5butWlhe0a0BLdc9TVN1Unx/JNbeCr7GK5wZ5vQ4a
-         l/4UJyWlghjCYO5HqX6imgKqGGjw+AqIPhFQC0kkNH7yEa9OQz4wQEQTkcDpwkOM7A
-         EEJICkEpoTv6XMposksTpgCSIKG0fbzeWDIiFpD93BtCl9k6P/hQeeJSuIR/vUn/bO
-         0w2GxL2bCYujBMwLp0rFcHEU+enm3QuY6fMf8JIXEt2ldpJm9dHNXabL3GL/VVu+/c
-         y77HxP4O8YTiw==
+        s=k20201202; t=1694221988;
+        bh=Jp4wFcUQHBU/UbQWDXQJVSnskEARGJqXEmym+qZK+xA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hyf6K5rkD0ycclRzgRNG6MNxPUpSzaOYTVWisaHkqHjs2isunQn1PCokkTEpYYcA2
+         Zg4mf+JQpM4eMtuvRgZZPZ5Q7CHD2YDHPNBCAaWy86q77p4Bgpb0FizlWCRuTZTEfx
+         0bh9+uRsiiAjMgTqqOx8ossCj89OsqakxfZd534pLinRfu9WgP7t0tyaEkVYei7w+M
+         Lzmuuo/AUsuHvlKAH452veLKuCiaFVg2savLwzbFE2fPgFtwl00L/EjTsJO0QhfIO0
+         9oTfy8kezRX9iZ6lk4UVtt2HlJ4pETfeC0VrCRkPor20smY1KKFICPY9AaTBVvQLq3
+         TBUg1kXx2HuJA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     John Ogness <john.ogness@linutronix.de>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
         Petr Mladek <pmladek@suse.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.4 1/6] printk: Reduce console_unblank() usage in unsafe scenarios
-Date:   Fri,  8 Sep 2023 21:12:59 -0400
-Message-Id: <20230909011304.3581870-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.4 2/6] printk: Keep non-panic-CPUs out of console lock
+Date:   Fri,  8 Sep 2023 21:13:00 -0400
+Message-Id: <20230909011304.3581870-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230909011304.3581870-1-sashal@kernel.org>
+References: <20230909011304.3581870-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -53,98 +55,104 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: John Ogness <john.ogness@linutronix.de>
 
-[ Upstream commit 7b23a66db55ed0a55b020e913f0d6f6d52a1ad2c ]
+[ Upstream commit 51a1d258e50e03a0216bf42b6af9ff34ec402ac1 ]
 
-A semaphore is not NMI-safe, even when using down_trylock(). Both
-down_trylock() and up() are using internal spinlocks and up()
-might even call wake_up_process().
+When in a panic situation, non-panic CPUs should avoid holding the
+console lock so as not to contend with the panic CPU. This is already
+implemented with abandon_console_lock_in_panic(), which is checked
+after each printed line. However, non-panic CPUs should also avoid
+trying to acquire the console lock during a panic.
 
-In the panic() code path it gets even worse because the internal
-spinlocks of the semaphore may have been taken by a CPU that has
-been stopped.
-
-To reduce the risk of deadlocks caused by the console semaphore in
-the panic path, make the following changes:
-
-- First check if any consoles have implemented the unblank()
-  callback. If not, then there is no reason to take the console
-  semaphore anyway. (This check is also useful for the non-panic
-  path since the locking/unlocking of the console lock can be
-  quite expensive due to console printing.)
-
-- If the panic path is in NMI context, bail out without attempting
-  to take the console semaphore or calling any unblank() callbacks.
-  Bailing out is acceptable because console_unblank() would already
-  bail out if the console semaphore is contended. The alternative of
-  ignoring the console semaphore and calling the unblank() callbacks
-  anyway is a bad idea because these callbacks are also not NMI-safe.
-
-If consoles with unblank() callbacks exist and console_unblank() is
-called from a non-NMI panic context, it will still attempt a
-down_trylock(). This could still result in a deadlock if one of the
-stopped CPUs is holding the semaphore internal spinlock. But this
-is a risk that the kernel has been (and continues to be) willing
-to take.
+Modify console_trylock() to fail and console_lock() to block() when
+called from a non-panic CPU during a panic.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 Reviewed-by: Petr Mladek <pmladek@suse.com>
 Signed-off-by: Petr Mladek <pmladek@suse.com>
-Link: https://lore.kernel.org/r/20230717194607.145135-3-john.ogness@linutronix.de
+Link: https://lore.kernel.org/r/20230717194607.145135-4-john.ogness@linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/printk/printk.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ kernel/printk/printk.c | 45 ++++++++++++++++++++++++------------------
+ 1 file changed, 26 insertions(+), 19 deletions(-)
 
 diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 6a333adce3b33..653ad62ded417 100644
+index 653ad62ded417..d4df72efe91b5 100644
 --- a/kernel/printk/printk.c
 +++ b/kernel/printk/printk.c
-@@ -3045,9 +3045,27 @@ EXPORT_SYMBOL(console_conditional_schedule);
+@@ -2585,6 +2585,25 @@ static int console_cpu_notify(unsigned int cpu)
+ 	return 0;
+ }
  
- void console_unblank(void)
- {
-+	bool found_unblank = false;
- 	struct console *c;
- 	int cookie;
- 
++/*
++ * Return true when this CPU should unlock console_sem without pushing all
++ * messages to the console. This reduces the chance that the console is
++ * locked when the panic CPU tries to use it.
++ */
++static bool abandon_console_lock_in_panic(void)
++{
++	if (!panic_in_progress())
++		return false;
++
 +	/*
-+	 * First check if there are any consoles implementing the unblank()
-+	 * callback. If not, there is no reason to continue and take the
-+	 * console lock, which in particular can be dangerous if
-+	 * @oops_in_progress is set.
++	 * We can use raw_smp_processor_id() here because it is impossible for
++	 * the task to be migrated to the panic_cpu, or away from it. If
++	 * panic_cpu has already been set, and we're not currently executing on
++	 * that CPU, then we never will be.
 +	 */
-+	cookie = console_srcu_read_lock();
-+	for_each_console_srcu(c) {
-+		if ((console_srcu_read_flags(c) & CON_ENABLED) && c->unblank) {
-+			found_unblank = true;
-+			break;
-+		}
-+	}
-+	console_srcu_read_unlock(cookie);
-+	if (!found_unblank)
-+		return;
++	return atomic_read(&panic_cpu) != raw_smp_processor_id();
++}
 +
- 	/*
- 	 * Stop console printing because the unblank() callback may
- 	 * assume the console is not within its write() callback.
-@@ -3056,6 +3074,16 @@ void console_unblank(void)
- 	 * In that case, attempt a trylock as best-effort.
- 	 */
- 	if (oops_in_progress) {
-+		/* Semaphores are not NMI-safe. */
-+		if (in_nmi())
-+			return;
+ /**
+  * console_lock - block the console subsystem from printing
+  *
+@@ -2597,6 +2616,10 @@ void console_lock(void)
+ {
+ 	might_sleep();
+ 
++	/* On panic, the console_lock must be left to the panic cpu. */
++	while (abandon_console_lock_in_panic())
++		msleep(1000);
 +
-+		/*
-+		 * Attempting to trylock the console lock can deadlock
-+		 * if another CPU was stopped while modifying the
-+		 * semaphore. "Hope and pray" that this is not the
-+		 * current situation.
-+		 */
- 		if (down_trylock_console_sem() != 0)
- 			return;
- 	} else
+ 	down_console_sem();
+ 	if (console_suspended)
+ 		return;
+@@ -2615,6 +2638,9 @@ EXPORT_SYMBOL(console_lock);
+  */
+ int console_trylock(void)
+ {
++	/* On panic, the console_lock must be left to the panic cpu. */
++	if (abandon_console_lock_in_panic())
++		return 0;
+ 	if (down_trylock_console_sem())
+ 		return 0;
+ 	if (console_suspended) {
+@@ -2633,25 +2659,6 @@ int is_console_locked(void)
+ }
+ EXPORT_SYMBOL(is_console_locked);
+ 
+-/*
+- * Return true when this CPU should unlock console_sem without pushing all
+- * messages to the console. This reduces the chance that the console is
+- * locked when the panic CPU tries to use it.
+- */
+-static bool abandon_console_lock_in_panic(void)
+-{
+-	if (!panic_in_progress())
+-		return false;
+-
+-	/*
+-	 * We can use raw_smp_processor_id() here because it is impossible for
+-	 * the task to be migrated to the panic_cpu, or away from it. If
+-	 * panic_cpu has already been set, and we're not currently executing on
+-	 * that CPU, then we never will be.
+-	 */
+-	return atomic_read(&panic_cpu) != raw_smp_processor_id();
+-}
+-
+ /*
+  * Check if the given console is currently capable and allowed to print
+  * records.
 -- 
 2.40.1
 
