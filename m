@@ -2,85 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C22567999DB
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2677999CD
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236567AbjIIQ07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 12:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37022 "EHLO
+        id S231624AbjIIQZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 12:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346728AbjIIQHR (ORCPT
+        with ESMTP id S233553AbjIIQMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 12:07:17 -0400
-Received: from smtp.smtpout.orange.fr (smtp-28.smtpout.orange.fr [80.12.242.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9371519C
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 09:07:12 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id f0UBqPpdGlD5tf0UCqzuca; Sat, 09 Sep 2023 18:07:10 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1694275630;
-        bh=M9hyEFFDEMxxrx1+9It4RWlADeh61fRaXNc2/8F9oGU=;
-        h=From:To:Cc:Subject:Date;
-        b=H1kBQ1HrwcdInkRmHnzdOZ75JPnmDdIoR7TL3xoOw3MpJBojN563dgCQGXEeU8LBY
-         wms5cu3/os9G/8qftVre1W4aabxP2zWDYSzIPaB/tdpdXsqjCiIwrQrmjcC7inQJvM
-         lY6eRlkox4L0W16sBPGaEU1MIIQCcc9yWdKaWE2eX2Ya6jruwFMRra3bY086U9aUbj
-         9+uy1KkwwsN9FuOqUZnVKZpW7ANPEF2PghMKlep6KCoyaY7DZs6NFA2ncmZSCfqQxK
-         M77Me8ky4BIEH7LprZRLZe355DeE1xZewEOpnL/keOpXXwlOLGu/86uJrOVBJHYJKd
-         39Yz0EaiaRTQw==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 09 Sep 2023 18:07:10 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Dave Kleikamp <shaggy@austin.ibm.com>,
-        Andrew Morton <akpm@osdl.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH] ext4: Fix a test in ext4_decode_error()
-Date:   Sat,  9 Sep 2023 18:07:02 +0200
-Message-Id: <2c0edffd8557807c6cd6d55111482c5cad7c8f2f.1694275603.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sat, 9 Sep 2023 12:12:41 -0400
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A6719E
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 09:12:37 -0700 (PDT)
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5704126625aso3555022a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 09:12:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694275957; x=1694880757;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v7nzmSUstAY9iXOgzx0SrvI4KAmIBqP4eruzpfGoWhE=;
+        b=mgWofsz0BcUbNtCKH4WMbX2S8rXj/kLZkoODuVrTvoZy9zd7LJcInmXWotXpf2z59p
+         EXxUZadyLML5jvBTO59TXPBUc71OFJnpoFLOHtrT64musmazXl+Fyg8GJu3KspS3BNvF
+         dwSIv1xdIeGPkxWfVwMs1A/i8dHjv5DDYElIJDFrZTjJMfXIj9hKChIycIBsG2XHip6V
+         2n8xdg5tnvCQ/tuMzQWabOMHgwWVOC7viLgpq9lxX1VTpRTvDopKrakO2hqOLe5/1zx0
+         jD+Wly29feMpbmsTfHzDz0G8od9w0bJkRKDPzAWUO64IHSDwfKvxl381nfxKoTLGSH9f
+         fm2g==
+X-Gm-Message-State: AOJu0Yx1T3N7apwoqHwmwiirm6guMnjbtzyiWrY2v4IRxUNMkdrg+0Ai
+        7y4p4TiXShWl2dHTvt3l/BhUHK8IlV+vMtQtuwQ3yxkOEmgp
+X-Google-Smtp-Source: AGHT+IHB8tpqCVGsHysIYhKGMTC17bOoeqx6WIvtbuoYab8f/mFbkUgNQ45UMC/BR6WY4zyp3FT6rrxnhxirCoPnI1MWOUk84NMq
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:2742:0:b0:577:460c:1d1f with SMTP id
+ n63-20020a632742000000b00577460c1d1fmr392879pgn.7.1694275957183; Sat, 09 Sep
+ 2023 09:12:37 -0700 (PDT)
+Date:   Sat, 09 Sep 2023 09:12:37 -0700
+In-Reply-To: <000000000000d97f3c060479c4f8@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000945b5b0604ef5cb6@google.com>
+Subject: Re: [syzbot] [bpf?] general protection fault in bpf_prog_offload_verifier_prep
+From:   syzbot <syzbot+291100dcb32190ec02a8@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com,
+        haoluo@google.com, hawk@kernel.org, horms@kernel.org,
+        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, lmb@isovalent.com,
+        martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
+        song@kernel.org, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The doc of snprintf() states that "If the return is greater than or equal
-to @size, the resulting string is truncated".
+syzbot has bisected this issue to:
 
-So in order to "Check for truncated error codes...", we must check that the
-returned value is < 16.
+commit 47a71c1f9af0a334c9dfa97633c41de4feda4287
+Author: Andrii Nakryiko <andrii@kernel.org>
+Date:   Thu Apr 6 23:41:58 2023 +0000
 
-Fixes: ac27a0ec112a ("[PATCH] ext4: initial copy of files from ext3")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- fs/ext4/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+    bpf: Add log_true_size output field to return necessary log buffer size
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 38217422f938..f58fc7cc6f81 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -941,7 +941,7 @@ const char *ext4_decode_error(struct super_block *sb, int errno,
- 		 * NULL. */
- 		if (nbuf) {
- 			/* Check for truncated error codes... */
--			if (snprintf(nbuf, 16, "error %d", -errno) >= 0)
-+			if (snprintf(nbuf, 16, "error %d", -errno) < 16)
- 				errstr = nbuf;
- 		}
- 		break;
--- 
-2.34.1
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=132a4268680000
+start commit:   fa09bc40b21a igb: disable virtualization features on 82580
+git tree:       net
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10aa4268680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=172a4268680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=634e05b4025da9da
+dashboard link: https://syzkaller.appspot.com/bug?extid=291100dcb32190ec02a8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1529c448680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15db0248680000
 
+Reported-by: syzbot+291100dcb32190ec02a8@syzkaller.appspotmail.com
+Fixes: 47a71c1f9af0 ("bpf: Add log_true_size output field to return necessary log buffer size")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
