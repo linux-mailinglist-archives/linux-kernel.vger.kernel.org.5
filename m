@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D33799667
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 07:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A14799664
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 07:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242812AbjIIFFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 01:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33714 "EHLO
+        id S241667AbjIIFFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 01:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241261AbjIIFFv (ORCPT
+        with ESMTP id S241261AbjIIFFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 01:05:51 -0400
+        Sat, 9 Sep 2023 01:05:48 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17971BC1;
-        Fri,  8 Sep 2023 22:05:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6805FC433C8;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4AE1BD3;
+        Fri,  8 Sep 2023 22:05:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 989FEC433C7;
         Sat,  9 Sep 2023 05:05:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1694235944;
-        bh=SdIEpcqAEofTvunL+Q/268WFo7lxaf5CapcX0yqZgd4=;
+        bh=GeCssub23t9bTXJ3thnoW4wDLpZD/1qQaVz4EHrdQhA=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=G90J1twi0u0k5J77Xvwm6QM5u3+G4hL3zN9f817gYJgUAZf5kznlNLiinXDcpg8PR
-         xWBAVgIx5WiuGtlOiPzrUoWNJcDGI3odJLFiwX7DyWpOG1sVL3x25QuWlwO0krXor5
-         zmG4KoM6S24zrbrO7+2ELQvM7bJtf/X6uFYsg1GB82FYUk9LOMvIqhS8va7m2XfMX1
-         NhdTMRDzbEeYzVxa0cpXWFpZLeqrg/Y0c86YDqQHYZjKXeI1Z1t5vkI1Obo3hEVLvl
-         OvMxxZCEcxFJqBPfd2QUEuH51Brvh/QMObclgAc3NGw0Wwru4ZEkfAGUc5Q4qv0bJv
-         84bSvXrozLjEQ==
+        b=TbwKIwYbQ/xteIOJ+frKomjMNKV/mzzE2ctvW9n/TbQsL0HPmCjoyq+CiKYKw1A2A
+         yhrlvL2Xg1Pthlbec3P1jTmhFVoBCUcfNm18Vc5qwQMSbKwq8ltljhlFJsDWI5Xv7Q
+         50nLjh5jBtzU4f45eK1yWbibeCzuUy/3TAoJqRGNn/EohHKREPnHkiN3BUlTIfOXlB
+         oIDX0psrSQo1G+dt4fIvYAmFrwr/v5n31/zCJ69x35ZRSlhlR4pnslBtB6lRybKV+J
+         vqNmSuveHcfJzAPoDIs6Qf9iPQQePtfm2bVSVRZouW9ebS75DSoFd63u0tJrPX2+1s
+         ZPvKf/TDNaQ2A==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 554B6E505B7;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 861FFE22AFC;
         Sat,  9 Sep 2023 05:05:44 +0000 (UTC)
-Subject: Re: [GIT PULL] XArray for 6.6
+Subject: Re: [GIT PULL] ksmbd fix
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZPtdbS6FTadc3LVA@casper.infradead.org>
-References: <ZPtdbS6FTadc3LVA@casper.infradead.org>
+In-Reply-To: <CAH2r5mt0Wuett3pQhGmynJxSTN2FriXxXT3zU-Qi5sk1uZ+SQg@mail.gmail.com>
+References: <CAH2r5mt0Wuett3pQhGmynJxSTN2FriXxXT3zU-Qi5sk1uZ+SQg@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZPtdbS6FTadc3LVA@casper.infradead.org>
-X-PR-Tracked-Remote: git://git.infradead.org/users/willy/xarray.git tags/xarray-6.6
-X-PR-Tracked-Commit-Id: 2a15de80dd0f7e04a823291aa9eb49c5294f56af
+X-PR-Tracked-Message-Id: <CAH2r5mt0Wuett3pQhGmynJxSTN2FriXxXT3zU-Qi5sk1uZ+SQg@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.samba.org/ksmbd.git tags/6.6-rc-ksmbd
+X-PR-Tracked-Commit-Id: f5069159f32c8c943e047f22731317463c8e9b84
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3095dd99dd759a5cab8bb81674bc133b1365fb6b
-Message-Id: <169423594434.31372.11897994774461493926.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 6099776f9f268e61fe5ecd721f994a8cfce5306f
+Message-Id: <169423594454.31372.12322551557869380696.pr-tracker-bot@kernel.org>
 Date:   Sat, 09 Sep 2023 05:05:44 +0000
-To:     Matthew Wilcox <willy@infradead.org>
+To:     Steve French <smfrench@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
+        Namjae Jeon <linkinjeon@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -57,12 +58,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 8 Sep 2023 18:44:13 +0100:
+The pull request you sent on Fri, 8 Sep 2023 18:45:21 -0500:
 
-> git://git.infradead.org/users/willy/xarray.git tags/xarray-6.6
+> git://git.samba.org/ksmbd.git tags/6.6-rc-ksmbd
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3095dd99dd759a5cab8bb81674bc133b1365fb6b
+https://git.kernel.org/torvalds/c/6099776f9f268e61fe5ecd721f994a8cfce5306f
 
 Thank you!
 
