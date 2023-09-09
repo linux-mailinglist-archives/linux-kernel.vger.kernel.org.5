@@ -2,86 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9686E7999EC
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0AE7999E4
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235765AbjIIQ0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 12:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56254 "EHLO
+        id S239009AbjIIQ1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 12:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346206AbjIIPll (ORCPT
+        with ESMTP id S1346683AbjIIPpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 11:41:41 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C2913D;
-        Sat,  9 Sep 2023 08:41:37 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2bcfdadd149so53001881fa.0;
-        Sat, 09 Sep 2023 08:41:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694274095; x=1694878895; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=bazo2KU1dPKrrOcg/X9lZoXi1aVqyf7ItDAKxGtR4wM=;
-        b=HlPHzxd92YLz+PCc/LaQAcFg4i1FiTVHMy0egNOCQusSH7eU6ATzQg5HpAUnKHwGJP
-         xK1vHkIsdFjpk6ajWnCRTrgPVL9oOailuzXH6cSsT4HR2p8b876kCWW1tNhMMyYWhEh/
-         OupRQtGZyvjWPFZY139xKg3DzL1m6gazFkHDnslm52XD3+uopwNK9eJhKaUvLSD95UCT
-         A9D2lzpuG8VD3NhrMPWwPnd1Je8dEQw8VU4RGWecuX/M6HzeNyPeoFO3UxOutZYJP15b
-         b1e3agLhNlGiJqhH7kHJMB17QTjUFmNRYPG1uNtcYqz+H4CJ0pW8UK/HBm8/ZfNIOOZe
-         MIfg==
+        Sat, 9 Sep 2023 11:45:16 -0400
+Received: from mail-pf1-f206.google.com (mail-pf1-f206.google.com [209.85.210.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC8513E
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 08:45:11 -0700 (PDT)
+Received: by mail-pf1-f206.google.com with SMTP id d2e1a72fcca58-68fb5cea0a9so116990b3a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 08:45:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694274095; x=1694878895;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bazo2KU1dPKrrOcg/X9lZoXi1aVqyf7ItDAKxGtR4wM=;
-        b=vJLxQgcIw1yiyJYAPAEWGLVkhBAm8O6Qr6gSSJCtlqpZSi/u1QQAYksnKvaB2ULlAL
-         DEvSv3pdVb4rY+GJHh87n1sCa/rOEwtmhs6xYc/jOC85de6t67B3mjKiUEuraC2yXyCD
-         5Yz/mI8MmXQKcYq8lvATXTDCQ80YmoaZbTxuxSVp3xMGFQDtrANIEdjOKGbxp/Gjw+BA
-         g9YwOQOFpYmTX+0zTGWLm1siPqKo0Q+O8f3i8S9wZO9lu6MAV+RCFIurbUHJqMXdElZQ
-         zYi9gBjVY20LiWbDSlIg941egB1UL7KF65N2Hw1LIWULus2mi88SpqYyQPUFbVL5YLMI
-         Nr7g==
-X-Gm-Message-State: AOJu0Yx89CYdcQkpGeoN6QQF1qTED5fK4ulef7N66u63wFvZpaMLCpEO
-        BMxLhm8RRQBr2Ivq87BKdk0+FCFC74HCNg==
-X-Google-Smtp-Source: AGHT+IGVv1rEkOaRPl81NAP8E7KdVqexzwcVszloDudt1EKXtf6mubD5YowJLVrJt9bDAx/S6HMqqQ==
-X-Received: by 2002:a2e:9297:0:b0:2ba:18e5:1064 with SMTP id d23-20020a2e9297000000b002ba18e51064mr3970152ljh.14.1694274094785;
-        Sat, 09 Sep 2023 08:41:34 -0700 (PDT)
-Received: from [192.168.3.32] (dh207-96-186.xnet.hr. [88.207.96.186])
-        by smtp.gmail.com with ESMTPSA id kj13-20020a170907764d00b009a1b857e3a5sm2482685ejc.54.2023.09.09.08.41.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Sep 2023 08:41:33 -0700 (PDT)
-Message-ID: <eaabca40-446d-effd-5d5f-f3e2618ff616@gmail.com>
-Date:   Sat, 9 Sep 2023 17:41:32 +0200
+        d=1e100.net; s=20230601; t=1694274311; x=1694879111;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LbWmtI2saoAhWc9NAmAAALAja+o02+Kc4sbFNaTcIA0=;
+        b=ge++iILQlAel8/Qq0N8Wy68vpBgGICKvPXwKgolmRUz4Mgr2v3S9Jfx9x/uJn0Oh8C
+         Y8qph0Z2F22+lWDupdzqg2orDcyjnAyeQHnILP9IsZb6X5K2kIt3hHmpe/KTid5Hhiql
+         qJfYxbFkbSGCoqVSfeP/7lw9JF5mVjATl9wdlKhnn7nNlE5Pza4tfAGcl/bGql/yIrIv
+         b096ByoBRHvUmH36YcagyJKeKoxV9F58/DMdnPz7M4Qldhn2DPggXNUCbcuJpJ+XrW8N
+         YvTV8XF7VgvFT5fPlp9NeQzLLebfTQB9+Xwgw/v5lqUB9SNFWS75dUjWz5SOFhiXPNpH
+         7wOA==
+X-Gm-Message-State: AOJu0YyCSdILJOxNwrd7+wSKRUSXhUiZV0FFNIozg293ivR/65iZhsK7
+        ST9Urn/BGcQxO77JOiKRg+4VVZIq/W70Ud3OLmG1khVZu3ZP
+X-Google-Smtp-Source: AGHT+IGpSGhA2lWuHBjuYLtK/TINlTvWuKPB1acF3vooBe2XeFUBkESDPDNertjqPsTH1HTVryn1Kp9E7e0SNEkbOZV0Trncmeem
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH RESEND 6/7] clk: qcom: apss-ipq6018: add the GPLL0 clock
- also as clock provider
-To:     Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-        Anusha Rao <quic_anusha@quicinc.com>,
-        Devi Priya <quic_devipriy@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org
-References: <20230904-gpll_cleanup-v1-0-de2c448f1188@quicinc.com>
- <20230904-gpll_cleanup-v1-6-de2c448f1188@quicinc.com>
-Content-Language: en-US
-From:   Robert Marko <robimarko@gmail.com>
-In-Reply-To: <20230904-gpll_cleanup-v1-6-de2c448f1188@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a05:6a00:1989:b0:68e:47fd:4ee9 with SMTP id
+ d9-20020a056a00198900b0068e47fd4ee9mr2087283pfl.6.1694274311273; Sat, 09 Sep
+ 2023 08:45:11 -0700 (PDT)
+Date:   Sat, 09 Sep 2023 08:45:11 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000079c7640604eefa47@google.com>
+Subject: [syzbot] [jfs?] kernel BUG in txLock
+From:   syzbot <syzbot+451384fb192454e258de@syzkaller.appspotmail.com>
+To:     jfs-discussion@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shaggy@kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,47 +55,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-On 06. 09. 2023. 06:56, Kathiravan Thirumoorthy wrote:
-> While the kernel is booting up, APSS PLL will be running at 800MHz with
-> GPLL0 as source. Once the cpufreq driver is available, APSS PLL will be
-> configured and select the rate based on the opp table and the source will
-> be changed to APSS_PLL_EARLY.
->
-> Without this patch, CPU Freq driver reports that CPU is running at 24MHz
-> instead of the 800MHz.
->
-> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-I can confirm that this works on IPQ8074 as well, it now properly sees the
-default CPU clock of 800MHz instead of XO rate.
+syzbot found the following issue on:
 
-Tested-by: Robert Marko <robimarko@gmail.com>
-> ---
->   drivers/clk/qcom/apss-ipq6018.c | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/clk/qcom/apss-ipq6018.c b/drivers/clk/qcom/apss-ipq6018.c
-> index f2f502e2d5a4..4e13a085a857 100644
-> --- a/drivers/clk/qcom/apss-ipq6018.c
-> +++ b/drivers/clk/qcom/apss-ipq6018.c
-> @@ -20,16 +20,19 @@
->   
->   enum {
->   	P_XO,
-> +	P_GPLL0,
->   	P_APSS_PLL_EARLY,
->   };
->   
->   static const struct clk_parent_data parents_apcs_alias0_clk_src[] = {
->   	{ .fw_name = "xo" },
-> +	{ .fw_name = "gpll0" },
->   	{ .fw_name = "pll" },
->   };
->   
->   static const struct parent_map parents_apcs_alias0_clk_src_map[] = {
->   	{ P_XO, 0 },
-> +	{ P_GPLL0, 4 },
->   	{ P_APSS_PLL_EARLY, 5 },
->   };
->   
->
+HEAD commit:    65d6e954e378 Merge tag 'gfs2-v6.5-rc5-fixes' of git://git...
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=15853c0c680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ff0db7a15ba54ead
+dashboard link: https://syzkaller.appspot.com/bug?extid=451384fb192454e258de
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=140b48c8680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15276fb8680000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/d2f8f959540a/disk-65d6e954.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/6f0285edec65/vmlinux-65d6e954.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/61d3ef608e62/bzImage-65d6e954.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/4db3738411e6/mount_0.gz
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1355caa4680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10d5caa4680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1755caa4680000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+451384fb192454e258de@syzkaller.appspotmail.com
+
+Locker's tblock: ffffc900025f1300: 8b424900 ffffffff 00000200 00000000
+Locker's tblock: ffffc900025f1310: 025f1310 ffffc900 025f1310 ffffc900
+Locker's tblock: ffffc900025f1320: 00000004 0000001c 00000007 00000000
+Tlock: ffffc900028120d8: 00010004 20208040 1cf49d90 ffff8880
+Tlock: ffffc900028120e8: 76f2a930 ffff8880 03140000 05002000
+Tlock: ffffc900028120f8: 06030a00 0000020d 00000000 00000000
+Tlock: ffffc90002812108: 00000000 00000000 00000000 00000000
+Tlock: ffffc90002812118: 00000000 00000000
+------------[ cut here ]------------
+kernel BUG at fs/jfs/jfs_txnmgr.c:834!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 5053 Comm: syz-executor131 Not tainted 6.5.0-syzkaller-11938-g65d6e954e378 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:txLock+0x1cd4/0x1fa0 fs/jfs/jfs_txnmgr.c:834
+Code: 8b 48 c7 c6 40 4f 42 8b ba 01 00 00 00 b9 10 00 00 00 41 b8 04 00 00 00 4c 8b 4c 24 20 6a 00 6a 48 e8 a0 2f 2a 01 48 83 c4 10 <0f> 0b e8 55 21 7c fe 4c 89 e7 48 c7 c6 40 57 42 8b e8 36 9f bd fe
+RSP: 0018:ffffc90003a5ef98 EFLAGS: 00010282
+RAX: 8c29e29eae6e2500 RBX: 1ffff9200050241b RCX: ffff88807d4ed940
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: 0000000000000010 R08: ffffffff8170afec R09: 1ffff9200074bd28
+R10: dffffc0000000000 R11: fffff5200074bd29 R12: ffffc900028120da
+R13: 0000000000000002 R14: 000000000000001b R15: 0000000000002020
+FS:  00007f0a9153a6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0a8a119000 CR3: 00000000271f3000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ dtSplitRoot+0x430/0x1920 fs/jfs/jfs_dtree.c:1919
+ dtSplitUp fs/jfs/jfs_dtree.c:985 [inline]
+ dtInsert+0x12fa/0x6b00 fs/jfs/jfs_dtree.c:863
+ jfs_create+0x7b6/0xb90 fs/jfs/namei.c:137
+ lookup_open fs/namei.c:3495 [inline]
+ open_last_lookups fs/namei.c:3563 [inline]
+ path_openat+0x13e7/0x3180 fs/namei.c:3793
+ do_filp_open+0x234/0x490 fs/namei.c:3823
+ do_sys_openat2+0x13e/0x1d0 fs/open.c:1422
+ do_sys_open fs/open.c:1437 [inline]
+ __do_sys_open fs/open.c:1445 [inline]
+ __se_sys_open fs/open.c:1441 [inline]
+ __x64_sys_open+0x225/0x270 fs/open.c:1441
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0a91585949
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 91 1b 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0a9153a218 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 00007f0a9160b6c8 RCX: 00007f0a91585949
+RDX: 0000000000000000 RSI: 0000000000000040 RDI: 0000000020000400
+RBP: 00007f0a9160b6c0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f0a915d8210
+R13: 00007f0a915d204d R14: 0030656c69662f2e R15: 6573726168636f69
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:txLock+0x1cd4/0x1fa0 fs/jfs/jfs_txnmgr.c:834
+Code: 8b 48 c7 c6 40 4f 42 8b ba 01 00 00 00 b9 10 00 00 00 41 b8 04 00 00 00 4c 8b 4c 24 20 6a 00 6a 48 e8 a0 2f 2a 01 48 83 c4 10 <0f> 0b e8 55 21 7c fe 4c 89 e7 48 c7 c6 40 57 42 8b e8 36 9f bd fe
+RSP: 0018:ffffc90003a5ef98 EFLAGS: 00010282
+RAX: 8c29e29eae6e2500 RBX: 1ffff9200050241b RCX: ffff88807d4ed940
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: 0000000000000010 R08: ffffffff8170afec R09: 1ffff9200074bd28
+R10: dffffc0000000000 R11: fffff5200074bd29 R12: ffffc900028120da
+R13: 0000000000000002 R14: 000000000000001b R15: 0000000000002020
+FS:  00007f0a9153a6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0a8a119000 CR3: 00000000271f3000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
