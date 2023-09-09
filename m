@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8670F799576
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84AE799569
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238886AbjIIBPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 21:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
+        id S242772AbjIIBOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 21:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238048AbjIIBPF (ORCPT
+        with ESMTP id S1346308AbjIIBO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 21:15:05 -0400
+        Fri, 8 Sep 2023 21:14:26 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99B11FDB;
-        Fri,  8 Sep 2023 18:14:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2E02C116A9;
-        Sat,  9 Sep 2023 01:13:26 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CECE26A9;
+        Fri,  8 Sep 2023 18:14:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B340FC116A8;
+        Sat,  9 Sep 2023 01:13:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694222008;
-        bh=fqhdzrto9/FhQBa1hvJ7yJQ8qfxkPxO6H3qH5NP3oi4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=feYv12X35bcsAxexSLjCLnX3ZeYd6/OquioW7nUzq5T7/K/fATNsPLCg9IRU52LjI
-         NM0ogL4cA4Wf+6xBxsjmvyvB4+x1H63S1biOS8BCCf4epFxIpAIMXLZ7vtPH1VVwrV
-         wc8vN8YvAcDp5wS4fI2tcHzN1ok3HbciXfKEmuv45eaMs8DRUeVDacnXYA8LL4ZTsT
-         PFzGEi0NPOkIfQEM8VOJye0uY8xwEHqAyzbY9SpxQ3aEVfeAGgh1xB6B4go4o1YHqI
-         BLmc4S+UNwP5h/Pf8E6VzH39C+L0LByQQVRRfAbc2FlmfpZUAn1wgm84GKiduXEUC1
-         opmZBbOdv0PZg==
+        s=k20201202; t=1694222012;
+        bh=iTTYjwjlxm5QPY3nAKGxvPdYt+hzxdFG1uHTgR7R2Cc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FqRIOydqO0xIOKGJ3dzDXGwROSYGM9FP1btTHNncZ+v4brqt8TC+zTZUvQnUZoniC
+         gtolQMUu7GWvS0/xXM73RekxNGaRj+3jntRlbHpjBkvrKc1GwepvnkB51eFGZ29KDJ
+         vX1roIZYuYaCCOTzzp/J7eIKEuaFPsf/Ijo03quxBKCdVi+bWfydQ7DyoSOjkitRP/
+         cYSUmgLM3SscLKfRz9VjQ7YmX3L0D5IqanNky9JBMxUUKafB5mu+ohOlQ2YlfNMFUr
+         n7p6Vl033AIQOd75er3doUK+DBIcwnpJinjE7VdMwdBsF7nBl2RsLB62UozwkBgqtL
+         fCsvcz9gK8o4A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Mark Brown <broonie@kernel.org>,
@@ -36,16 +36,14 @@ Cc:     Mark Brown <broonie@kernel.org>,
         tiny.windzz@gmail.com, rafael@kernel.org, wens@csie.org,
         samuel@sholland.org, linux-pm@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.15 2/2] thermal/drivers/sun8i: Free calibration nvmem after reading it
-Date:   Fri,  8 Sep 2023 21:13:22 -0400
-Message-Id: <20230909011322.3582088-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10] thermal/drivers/sun8i: Free calibration nvmem after reading it
+Date:   Fri,  8 Sep 2023 21:13:28 -0400
+Message-Id: <20230909011328.3582165-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230909011322.3582088-1-sashal@kernel.org>
-References: <20230909011322.3582088-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.131
+X-stable-base: Linux 5.10.194
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -79,10 +77,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/thermal/sun8i_thermal.c b/drivers/thermal/sun8i_thermal.c
-index cd464db064142..c1650b20e4975 100644
+index e053b06280172..6a0e809174731 100644
 --- a/drivers/thermal/sun8i_thermal.c
 +++ b/drivers/thermal/sun8i_thermal.c
-@@ -286,7 +286,7 @@ static int sun8i_ths_calibrate(struct ths_device *tmdev)
+@@ -285,7 +285,7 @@ static int sun8i_ths_calibrate(struct ths_device *tmdev)
  	size_t callen;
  	int ret = 0;
  
@@ -91,7 +89,7 @@ index cd464db064142..c1650b20e4975 100644
  	if (IS_ERR(calcell)) {
  		if (PTR_ERR(calcell) == -EPROBE_DEFER)
  			return -EPROBE_DEFER;
-@@ -316,6 +316,8 @@ static int sun8i_ths_calibrate(struct ths_device *tmdev)
+@@ -315,6 +315,8 @@ static int sun8i_ths_calibrate(struct ths_device *tmdev)
  
  	kfree(caldata);
  out:
