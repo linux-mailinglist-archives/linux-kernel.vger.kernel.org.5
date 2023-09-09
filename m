@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 399A7799611
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 05:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8A4799614
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 05:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233202AbjIIDYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 23:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
+        id S244137AbjIIDYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 23:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233986AbjIIDXh (ORCPT
+        with ESMTP id S233956AbjIIDXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Sep 2023 23:23:37 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466251FE0
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1CF1FE7
         for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 20:23:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 808A7C433B8;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83D37C433CB;
         Sat,  9 Sep 2023 03:23:31 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
         (envelope-from <rostedt@goodmis.org>)
-        id 1qeoZa-000Yhj-08;
+        id 1qeoZa-000YiI-0m;
         Fri, 08 Sep 2023 23:23:50 -0400
-Message-ID: <20230909032349.854283780@goodmis.org>
+Message-ID: <20230909032350.061257707@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 08 Sep 2023 23:16:24 -0400
+Date:   Fri, 08 Sep 2023 23:16:25 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Zheng Yejian <zhengyejian1@huawei.com>
-Subject: [for-linus][PATCH 09/15] ring-buffer: Avoid softlockup in ring_buffer_resize()
+        Ajay Kaher <akaher@vmware.com>,
+        Zheng Yejian <zhengyejian1@huawei.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: [for-linus][PATCH 10/15] tracefs/eventfs: Free top level files on removal
 References: <20230909031615.047488015@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +45,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheng Yejian <zhengyejian1@huawei.com>
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-When user resize all trace ring buffer through file 'buffer_size_kb',
-then in ring_buffer_resize(), kernel allocates buffer pages for each
-cpu in a loop.
+When an instance is removed, the top level files of the eventfs directory
+are not cleaned up. Call the eventfs_remove() on each of the entries to
+free them.
 
-If the kernel preemption model is PREEMPT_NONE and there are many cpus
-and there are many buffer pages to be allocated, it may not give up cpu
-for a long time and finally cause a softlockup.
+This was found via kmemleak:
 
-To avoid it, call cond_resched() after each cpu buffer allocation.
+unreferenced object 0xffff8881047c1280 (size 96):
+  comm "mkdir", pid 924, jiffies 4294906489 (age 2013.077s)
+  hex dump (first 32 bytes):
+    18 31 ed 03 81 88 ff ff 00 31 09 24 81 88 ff ff  .1.......1.$....
+    00 00 00 00 00 00 00 00 98 19 7c 04 81 88 ff ff  ..........|.....
+  backtrace:
+    [<000000000fa46b4d>] kmalloc_trace+0x2a/0xa0
+    [<00000000e729cd0c>] eventfs_prepare_ef.constprop.0+0x3a/0x160
+    [<000000009032e6a8>] eventfs_add_events_file+0xa0/0x160
+    [<00000000fe968442>] create_event_toplevel_files+0x6f/0x130
+    [<00000000e364d173>] event_trace_add_tracer+0x14/0x140
+    [<00000000411840fa>] trace_array_create_dir+0x52/0xf0
+    [<00000000967804fa>] trace_array_create+0x208/0x370
+    [<00000000da505565>] instance_mkdir+0x6b/0xb0
+    [<00000000dc1215af>] tracefs_syscall_mkdir+0x5b/0x90
+    [<00000000a8aca289>] vfs_mkdir+0x272/0x380
+    [<000000007709b242>] do_mkdirat+0xfc/0x1d0
+    [<00000000c0b6d219>] __x64_sys_mkdir+0x78/0xa0
+    [<0000000097b5dd4b>] do_syscall_64+0x3f/0x90
+    [<00000000a3f00cfa>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+unreferenced object 0xffff888103ed3118 (size 8):
+  comm "mkdir", pid 924, jiffies 4294906489 (age 2013.077s)
+  hex dump (first 8 bytes):
+    65 6e 61 62 6c 65 00 00                          enable..
+  backtrace:
+    [<0000000010f75127>] __kmalloc_node_track_caller+0x51/0x160
+    [<000000004b3eca91>] kstrdup+0x34/0x60
+    [<0000000050074d7a>] eventfs_prepare_ef.constprop.0+0x53/0x160
+    [<000000009032e6a8>] eventfs_add_events_file+0xa0/0x160
+    [<00000000fe968442>] create_event_toplevel_files+0x6f/0x130
+    [<00000000e364d173>] event_trace_add_tracer+0x14/0x140
+    [<00000000411840fa>] trace_array_create_dir+0x52/0xf0
+    [<00000000967804fa>] trace_array_create+0x208/0x370
+    [<00000000da505565>] instance_mkdir+0x6b/0xb0
+    [<00000000dc1215af>] tracefs_syscall_mkdir+0x5b/0x90
+    [<00000000a8aca289>] vfs_mkdir+0x272/0x380
+    [<000000007709b242>] do_mkdirat+0xfc/0x1d0
+    [<00000000c0b6d219>] __x64_sys_mkdir+0x78/0xa0
+    [<0000000097b5dd4b>] do_syscall_64+0x3f/0x90
+    [<00000000a3f00cfa>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
 
-Link: https://lore.kernel.org/linux-trace-kernel/20230906081930.3939106-1-zhengyejian1@huawei.com
+Link: https://lore.kernel.org/linux-trace-kernel/20230907175859.6fedbaa2@gandalf.local.home
 
-Cc: <mhiramat@kernel.org>
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Ajay Kaher <akaher@vmware.com>
+Cc: Zheng Yejian <zhengyejian1@huawei.com>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Fixes: 5bdcd5f5331a2 eventfs: ("Implement removal of meta data from eventfs")
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/ring_buffer.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/tracefs/event_inode.c | 30 ++++++++++++++++++++++++++----
+ 1 file changed, 26 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 78502d4c7214..72ccf75defd0 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -2198,6 +2198,8 @@ int ring_buffer_resize(struct trace_buffer *buffer, unsigned long size,
- 				err = -ENOMEM;
- 				goto out_err;
- 			}
-+
-+			cond_resched();
- 		}
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 609ccb5b7cfc..f168aca45458 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -195,17 +195,39 @@ void eventfs_set_ef_status_free(struct tracefs_inode *ti, struct dentry *dentry)
+ {
+ 	struct tracefs_inode *ti_parent;
+ 	struct eventfs_inode *ei;
+-	struct eventfs_file *ef;
+-
+-	mutex_lock(&eventfs_mutex);
++	struct eventfs_file *ef, *tmp;
  
- 		cpus_read_lock();
+ 	/* The top level events directory may be freed by this */
+ 	if (unlikely(ti->flags & TRACEFS_EVENT_TOP_INODE)) {
++		LIST_HEAD(ef_del_list);
++
++		mutex_lock(&eventfs_mutex);
++
+ 		ei = ti->private;
++
++		/* Record all the top level files */
++		list_for_each_entry_srcu(ef, &ei->e_top_files, list,
++					 lockdep_is_held(&eventfs_mutex)) {
++			list_add_tail(&ef->del_list, &ef_del_list);
++		}
++
++		/* Nothing should access this, but just in case! */
++		ti->private = NULL;
++
++		mutex_unlock(&eventfs_mutex);
++
++		/* Now safely free the top level files and their children */
++		list_for_each_entry_safe(ef, tmp, &ef_del_list, del_list) {
++			list_del(&ef->del_list);
++			eventfs_remove(ef);
++		}
++
+ 		kfree(ei);
+-		goto out;
++		return;
+ 	}
+ 
++	mutex_lock(&eventfs_mutex);
++
+ 	ti_parent = get_tracefs(dentry->d_parent->d_inode);
+ 	if (!ti_parent || !(ti_parent->flags & TRACEFS_EVENT_INODE))
+ 		goto out;
 -- 
 2.40.1
