@@ -2,221 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F65799AC3
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 22:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C398799AD0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 22:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245227AbjIIUSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 16:18:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56234 "EHLO
+        id S245420AbjIIUSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 16:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239931AbjIIUSE (ORCPT
+        with ESMTP id S245346AbjIIUSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 16:18:04 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9ACBE73
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 13:17:45 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id DF3C4320090E;
-        Sat,  9 Sep 2023 16:17:44 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Sat, 09 Sep 2023 16:17:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1694290664; x=
-        1694377064; bh=a7RQskjaETnUB7Hp/T92jpvvET5ms5jF4Eb+hZaDEyI=; b=J
-        8U6+zD6CiKtlWqKDAskkYFhuDtgIckiPB/7lksw946WKmDxpWUgYdbbEDm0RclGl
-        vDY74H5Yr4DdxccX57XaVRToiLWYDmlTbO0luKq3/cIrsBDx9pxmD+O04EwVAJXy
-        Z21t93Ly8W6i0Ahhc5B5/eFQ7QBQT3UpVbqQK0MNoer5pr3h4xjtVgL60X6P4i1H
-        ivUx277V8FX//1JY4wlhJ2ZwxJLn1p4QtQQP8W7r9gDllhtb0BH9vrjQ8IHf9k7B
-        RZYPilLZGpkEPRe42T2nppigHi+ANLbEsRK64ycR8vSZGjBdFJ9mIfhFOWLTATBk
-        aUBt2R3LPMlA1XLxVcrZQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1694290664; x=
-        1694377064; bh=a7RQskjaETnUB7Hp/T92jpvvET5ms5jF4Eb+hZaDEyI=; b=b
-        M27lb4EWA9BmB3m23H9K7njzrwz1bmIeiC5n4OWhUv2bwrE3fqlPBd/kAKAq3I9T
-        e5xwcraAUx0Gc+NwOYzt8ojKyH3/XxxiNv1oVipM8loatwq/R2656NXKOYmYKmNi
-        O21F3BqBHB2BTq1h+mMfnaq1iypcjKCMUukjOpNMPVr32ts1eBC4LMBohZWu+Oj7
-        XIThvzOMEr/coKW8CccbNQsAKKcGQYFdbNpx0mDpETtmLShxDxs8IRZt1mJDC6tC
-        FWSYgAAhfceLtWGniOn7cqvbhIGsHYCwX7xj3I/kK4U/xdM8i/oeAhkk4N5YvzQH
-        ckFKYFs9xZRm+KPQViSKw==
-X-ME-Sender: <xms:6NL8ZAP-jn16aiPBShXHouXc0o5eLOeBQpe7up0vPIPUt19c1_3_Cg>
-    <xme:6NL8ZG_10vruJCmqg4pXKL97lJdyKGTi3ur04iDSCjy5bJ1CFUt3DDcO-ajZoraFj
-    l76N9lSInB_gTFw_Q>
-X-ME-Received: <xmr:6NL8ZHSSCNCNDI19FcSWtyFkuX6aqs1cIGcCGhusFWb3K6He9BKXRWXtR6cfjJ8LcvoF0Lg74YrliipKlmIsbMotzFY55iBr7MdK3YVSWGtCYcl-of_84-j2cJ2RphzQmDtagQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehledgudegiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghm
-    uhgvlhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpedukeetueduhedtleetvefguddvvdejhfefudelgfduveeggeeh
-    gfdufeeitdevteenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:6NL8ZIv_DSdrPavGVuaB-fhnhim8VgJmDXaKwpvURvQ1ZUJ3aibLLQ>
-    <xmx:6NL8ZId09I71zAQ0gDnEg_lCCQPoa6KPGuQXbwhX5__P0ZD7RqYjqg>
-    <xmx:6NL8ZM2DIX5_1ekz2WkxlTCOmIpkHmMjRutizgag7fRiuJ7xZ5bqtQ>
-    <xmx:6NL8ZH63BAoctxgNuQkkhWo7ZpT2xDyPwbLM9bYgm4m3ScvQi2551A>
-Feedback-ID: i0ad843c9:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 9 Sep 2023 16:17:43 -0400 (EDT)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        linux-riscv@lists.infradead.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Samuel Holland <samuel@sholland.org>
-Subject: [PATCH 7/7] riscv: mm: Combine the SMP and non-SMP TLB flushing code
-Date:   Sat,  9 Sep 2023 15:16:35 -0500
-Message-ID: <20230909201727.10909-8-samuel@sholland.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230909201727.10909-1-samuel@sholland.org>
-References: <20230909201727.10909-1-samuel@sholland.org>
+        Sat, 9 Sep 2023 16:18:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC2E1725
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 13:17:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694290669; x=1725826669;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=McbniZy+9jhoTTvcKnvSc4orX1A7o30dvUCmobJNkvI=;
+  b=mqk9AgJM0B90qkXf0vMKnlnyR0Utb0CxvTz/0Vu8lasjXehm6aXJ8oRl
+   8agPJGRWNNHZpJNYbAn+W5T+FKUDHPn70mh06Ga5l4jiiWXYaa7qoxRHY
+   wtEDyRAqb3ddBkjIABQ71D8tdEBKQxA6/+gt+WeGe9C4WTSBuP8S/07cH
+   ru+RBravV6dfABYB7dh3aMIgpvmJ/A8/hhAf4KD9pCYFcRpqR+2VlrzwU
+   OnHE1pw6L2FKOwHcCurg83Y0eoOiUnLWNv69bXlaCckC8qu6VZd9/P5UO
+   bMsUWJEgIPgOfFIrfgBfuu9W4P8kLwXbnnSp8Wd/0V/RWMgP0DbuxDZM0
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="368108510"
+X-IronPort-AV: E=Sophos;i="6.02,240,1688454000"; 
+   d="scan'208";a="368108510"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 13:17:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="833026074"
+X-IronPort-AV: E=Sophos;i="6.02,240,1688454000"; 
+   d="scan'208";a="833026074"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 09 Sep 2023 13:17:46 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qf4Om-0003sd-22;
+        Sat, 09 Sep 2023 20:17:44 +0000
+Date:   Sun, 10 Sep 2023 04:16:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>
+Subject: arch/x86/events/intel/pt.c:674: warning: Function parameter or
+ member 'cpu' not described in 'topa_insert_pages'
+Message-ID: <202309100419.uLqvM7jh-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows non-SMP configurations to take advantage of improvements
-to the code in tlbflush.c, such as support for huge pages and flushing
-multiple-page ranges.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   2a5a4326e58339a26cd1510259e7310b8c0980ff
+commit: 90583af61d0c0d2826f42a297a03645b35c49085 perf/x86/intel/pt: Clean up ToPA allocation path
+date:   4 years ago
+config: i386-allnoconfig (https://download.01.org/0day-ci/archive/20230910/202309100419.uLqvM7jh-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230910/202309100419.uLqvM7jh-lkp@intel.com/reproduce)
 
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309100419.uLqvM7jh-lkp@intel.com/
 
- arch/riscv/include/asm/tlbflush.h | 31 ++++++++-----------------------
- arch/riscv/mm/Makefile            |  5 +----
- arch/riscv/mm/tlbflush.c          |  7 ++++++-
- 3 files changed, 15 insertions(+), 28 deletions(-)
+All warnings (new ones prefixed by >>):
 
-diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-index ba27cf68b170..a947ae3afd28 100644
---- a/arch/riscv/include/asm/tlbflush.h
-+++ b/arch/riscv/include/asm/tlbflush.h
-@@ -33,13 +33,12 @@ static inline void local_flush_tlb_page_asid(unsigned long addr,
- {
- 	ALT_SFENCE_VMA_ADDR_ASID(addr, asid);
- }
--#else /* CONFIG_MMU */
--#define local_flush_tlb_all()			do { } while (0)
--#define local_flush_tlb_page(addr)		do { } while (0)
--#endif /* CONFIG_MMU */
- 
--#if defined(CONFIG_SMP) && defined(CONFIG_MMU)
-+#ifdef CONFIG_SMP
- void flush_tlb_all(void);
-+#else
-+#define flush_tlb_all() local_flush_tlb_all()
-+#endif
- void flush_tlb_mm(struct mm_struct *mm);
- void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
- void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
-@@ -49,24 +48,10 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
- void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
- 			unsigned long end);
- #endif
--#else /* CONFIG_SMP && CONFIG_MMU */
--
--#define flush_tlb_all() local_flush_tlb_all()
--#define flush_tlb_page(vma, addr) local_flush_tlb_page(addr)
--
--static inline void flush_tlb_mm(struct mm_struct *mm)
--{
--	unsigned long asid = cntx2asid(atomic_long_read(&mm->context.id));
--
--	local_flush_tlb_all_asid(asid);
--}
--
--static inline void flush_tlb_range(struct vm_area_struct *vma,
--		unsigned long start, unsigned long end)
--{
--	flush_tlb_mm(vma->vm_mm);
--}
--#endif /* !CONFIG_SMP || !CONFIG_MMU */
-+#else /* CONFIG_MMU */
-+#define local_flush_tlb_all()			do { } while (0)
-+#define local_flush_tlb_page(addr)		do { } while (0)
-+#endif /* CONFIG_MMU */
- 
- /* Flush a range of kernel pages */
- static inline void flush_tlb_kernel_range(unsigned long start,
-diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
-index 9c454f90fd3d..64f901674e35 100644
---- a/arch/riscv/mm/Makefile
-+++ b/arch/riscv/mm/Makefile
-@@ -13,15 +13,12 @@ endif
- KCOV_INSTRUMENT_init.o := n
- 
- obj-y += init.o
--obj-$(CONFIG_MMU) += extable.o fault.o pageattr.o
-+obj-$(CONFIG_MMU) += extable.o fault.o pageattr.o tlbflush.o
- obj-y += cacheflush.o
- obj-y += context.o
- obj-y += pgtable.o
- obj-y += pmem.o
- 
--ifeq ($(CONFIG_MMU),y)
--obj-$(CONFIG_SMP) += tlbflush.o
--endif
- obj-$(CONFIG_HUGETLB_PAGE) += hugetlbpage.o
- obj-$(CONFIG_PTDUMP_CORE) += ptdump.o
- obj-$(CONFIG_KASAN)   += kasan_init.o
-diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-index 56c2d40681a2..587b3bb084b2 100644
---- a/arch/riscv/mm/tlbflush.c
-+++ b/arch/riscv/mm/tlbflush.c
-@@ -15,6 +15,7 @@ static inline void local_flush_tlb_range_asid(unsigned long start,
- 		local_flush_tlb_all_asid(asid);
- }
- 
-+#ifdef CONFIG_SMP
- static void __ipi_flush_tlb_all(void *info)
- {
- 	local_flush_tlb_all();
-@@ -41,12 +42,12 @@ static void __ipi_flush_tlb_range_asid(void *info)
- 
- 	local_flush_tlb_range_asid(d->start, d->size, d->stride, d->asid);
- }
-+#endif
- 
- static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
- 			      unsigned long size, unsigned long stride)
- {
- 	unsigned long asid = cntx2asid(atomic_long_read(&mm->context.id));
--	struct flush_tlb_range_data ftd;
- 	struct cpumask *cmask = mm_cpumask(mm);
- 	unsigned int cpuid;
- 
-@@ -54,9 +55,12 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
- 		return;
- 
- 	cpuid = get_cpu();
-+#ifdef CONFIG_SMP
- 	/* check if the tlbflush needs to be sent to other CPUs */
- 	if (cpumask_any_but(cmask, cpuid) < nr_cpu_ids) {
- 		if (riscv_use_ipi_for_rfence()) {
-+			struct flush_tlb_range_data ftd;
-+
- 			ftd.asid = asid;
- 			ftd.start = start;
- 			ftd.size = size;
-@@ -68,6 +72,7 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
- 			sbi_remote_sfence_vma_asid(cmask,
- 						   start, size, asid);
- 	} else
-+#endif
- 		local_flush_tlb_range_asid(start, size, stride, asid);
- 	put_cpu();
- }
+>> arch/x86/events/intel/pt.c:674: warning: Function parameter or member 'cpu' not described in 'topa_insert_pages'
+>> arch/x86/events/intel/pt.c:1066: warning: Function parameter or member 'cpu' not described in 'pt_buffer_init_topa'
+   arch/x86/events/intel/pt.c:1066: warning: Function parameter or member 'nr_pages' not described in 'pt_buffer_init_topa'
+   arch/x86/events/intel/pt.c:1066: warning: Excess function parameter 'size' description in 'pt_buffer_init_topa'
+   arch/x86/events/intel/pt.c:1111: warning: Function parameter or member 'event' not described in 'pt_buffer_setup_aux'
+   arch/x86/events/intel/pt.c:1111: warning: Excess function parameter 'cpu' description in 'pt_buffer_setup_aux'
+
+
+vim +674 arch/x86/events/intel/pt.c
+
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  662  
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  663  /**
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  664   * topa_insert_pages() - create a list of ToPA tables
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  665   * @buf:	PT buffer being initialized.
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  666   * @gfp:	Allocation flags.
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  667   *
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  668   * This initializes a list of ToPA tables with entries from
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  669   * the data_pages provided by rb_alloc_aux().
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  670   *
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  671   * Return:	0 on success or error code.
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  672   */
+90583af61d0c0d arch/x86/events/intel/pt.c                Alexander Shishkin 2019-08-21  673  static int topa_insert_pages(struct pt_buffer *buf, int cpu, gfp_t gfp)
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30 @674  {
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  675  	struct topa *topa = buf->last;
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  676  	int order = 0;
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  677  	struct page *p;
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  678  
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  679  	p = virt_to_page(buf->data_pages[buf->nr_pages]);
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  680  	if (PagePrivate(p))
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  681  		order = page_private(p);
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  682  
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  683  	if (topa_table_full(topa)) {
+90583af61d0c0d arch/x86/events/intel/pt.c                Alexander Shishkin 2019-08-21  684  		topa = topa_alloc(cpu, gfp);
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  685  		if (!topa)
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  686  			return -ENOMEM;
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  687  
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  688  		topa_insert_table(buf, topa);
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  689  	}
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  690  
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  691  	TOPA_ENTRY(topa, -1)->base = page_to_phys(p) >> TOPA_SHIFT;
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  692  	TOPA_ENTRY(topa, -1)->size = order;
+f6d079ce867d67 arch/x86/events/intel/pt.c                Chao Peng          2018-10-24  693  	if (!buf->snapshot &&
+f6d079ce867d67 arch/x86/events/intel/pt.c                Chao Peng          2018-10-24  694  	    !intel_pt_validate_hw_cap(PT_CAP_topa_multiple_entries)) {
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  695  		TOPA_ENTRY(topa, -1)->intr = 1;
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  696  		TOPA_ENTRY(topa, -1)->stop = 1;
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  697  	}
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  698  
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  699  	topa->last++;
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  700  	topa->size += sizes(order);
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  701  
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  702  	buf->nr_pages += 1ul << order;
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  703  
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  704  	return 0;
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  705  }
+52ca9ced3f7077 arch/x86/kernel/cpu/perf_event_intel_pt.c Alexander Shishkin 2015-01-30  706  
+
+:::::: The code at line 674 was first introduced by commit
+:::::: 52ca9ced3f70779589e6ecc329baffe69d8f5f7a perf/x86/intel/pt: Add Intel PT PMU driver
+
+:::::: TO: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+:::::: CC: Ingo Molnar <mingo@kernel.org>
+
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
