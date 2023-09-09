@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 202417994AC
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F1C7994D4
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346030AbjIIAlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32926 "EHLO
+        id S240271AbjIIAly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346011AbjIIAkJ (ORCPT
+        with ESMTP id S1346029AbjIIAk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 20:40:09 -0400
+        Fri, 8 Sep 2023 20:40:28 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620F32D5A;
-        Fri,  8 Sep 2023 17:39:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07F8AC433C9;
-        Sat,  9 Sep 2023 00:39:18 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E3E2D74;
+        Fri,  8 Sep 2023 17:39:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24E59C433D9;
+        Sat,  9 Sep 2023 00:39:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694219959;
-        bh=AkuarkZMuJJZPf+ahKIOj9/X2xOBJEBgJWmh7M136CE=;
+        s=k20201202; t=1694219962;
+        bh=Q23QxNAooLET6K9c29PEVHuY9Qk2bDvBOaqkXQ5fJv0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zdkdyw2+cp09QE/8QL7XPBVtkSBrHGt6DHWmS15Ub8KufsRR7dFFl6Y8UfmnIwx/V
-         PrlcHweM7XZtRYxre6JaseGyIYkWl3wEOSCHZC63NYkv90gIDpfdVm5fRsLwXwlW9P
-         dVoNZCgj2me+QkkZqZ26Fx1Kx7zGA3Zy3+tfo1JUGaiEULJRCK97k/NalmoOSErAMb
-         uFEVabCE/hCmqev7SaNJZNZufqyuKiCHNMJ4jy9aLT795p+0huu2suhcqmAekKZwcq
-         0IYVOVFr2rigDWu+gMFNQzeSuiBo+YR4jqVTId/JkUcAa3omfDCeVQkKeYajG7btQu
-         xkh65oNbtmTCg==
+        b=uX2SxvYxbs+ehqwrhrZXO1CkFscovj8w6hvVtxN5M5DTyLrP6n8411Owy9STJNLy3
+         bBIV482n1rQK8cM37mKFVrKtNrr/owwedfU4Be6Et13jKmcLRf6bofpaNYzVH+vft0
+         nc946LlsENku4EKzZ5gHGXHYS0jxDhRM7Q6Xxyw7GWNfo2NCPTVmD294clJlXiGTVO
+         WFq8YLwdjvBGQagJOCHY0Y05yaRbzOFxPO0Jv6bdOuGA1ZToYoZYR4MPPVOLZ/BnOJ
+         YcsnxE45Dl+BUCVTR+XV5ZbS0YNbGyLNvqn4syqS81UBK7vqIcB+zmRlPE9v1utfRA
+         lAB4DtVlDOoFA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sasha Levin <sashal@kernel.org>, crope@iki.fi,
-        mchehab@kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 08/19] media: tuners: qt1010: replace BUG_ON with a regular error
-Date:   Fri,  8 Sep 2023 20:38:52 -0400
-Message-Id: <20230909003903.3580394-8-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, mchehab@kernel.org,
+        harperchen1110@gmail.com, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 09/19] media: pci: cx23885: replace BUG with error return
+Date:   Fri,  8 Sep 2023 20:38:53 -0400
+Message-Id: <20230909003903.3580394-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909003903.3580394-1-sashal@kernel.org>
 References: <20230909003903.3580394-1-sashal@kernel.org>
@@ -55,42 +55,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit ee630b29ea44d1851bb6c903f400956604834463 ]
+[ Upstream commit 2e1796fd4904fdd6062a8e4589778ea899ea0c8d ]
 
-BUG_ON is unnecessary here, and in addition it confuses smatch.
-Replacing this with an error return help resolve this smatch
-warning:
+It was completely unnecessary to use BUG in buffer_prepare().
+Just replace it with an error return. This also fixes a smatch warning:
 
-drivers/media/tuners/qt1010.c:350 qt1010_init() error: buffer overflow 'i2c_data' 34 <= 34
+drivers/media/pci/cx23885/cx23885-video.c:422 buffer_prepare() error: uninitialized symbol 'ret'.
 
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/tuners/qt1010.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/media/pci/cx23885/cx23885-video.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/tuners/qt1010.c b/drivers/media/tuners/qt1010.c
-index 3853a3d43d4f2..a7b19863f489e 100644
---- a/drivers/media/tuners/qt1010.c
-+++ b/drivers/media/tuners/qt1010.c
-@@ -345,11 +345,12 @@ static int qt1010_init(struct dvb_frontend *fe)
- 			else
- 				valptr = &tmpval;
- 
--			BUG_ON(i >= ARRAY_SIZE(i2c_data) - 1);
--
--			err = qt1010_init_meas1(priv, i2c_data[i+1].reg,
--						i2c_data[i].reg,
--						i2c_data[i].val, valptr);
-+			if (i >= ARRAY_SIZE(i2c_data) - 1)
-+				err = -EIO;
-+			else
-+				err = qt1010_init_meas1(priv, i2c_data[i + 1].reg,
-+							i2c_data[i].reg,
-+							i2c_data[i].val, valptr);
- 			i++;
- 			break;
- 		}
+diff --git a/drivers/media/pci/cx23885/cx23885-video.c b/drivers/media/pci/cx23885/cx23885-video.c
+index b01499f810697..6851e01da1c5b 100644
+--- a/drivers/media/pci/cx23885/cx23885-video.c
++++ b/drivers/media/pci/cx23885/cx23885-video.c
+@@ -413,7 +413,7 @@ static int buffer_prepare(struct vb2_buffer *vb)
+ 				dev->height >> 1);
+ 		break;
+ 	default:
+-		BUG();
++		return -EINVAL; /* should not happen */
+ 	}
+ 	dprintk(2, "[%p/%d] buffer_init - %dx%d %dbpp 0x%08x - dma=0x%08lx\n",
+ 		buf, buf->vb.vb2_buf.index,
 -- 
 2.40.1
 
