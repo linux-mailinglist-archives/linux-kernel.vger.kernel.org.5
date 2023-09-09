@@ -2,41 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FF07995FB
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 05:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02CA799609
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 05:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbjIIDJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 23:09:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
+        id S236802AbjIIDXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 23:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjIIDJg (ORCPT
+        with ESMTP id S232068AbjIIDXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 23:09:36 -0400
+        Fri, 8 Sep 2023 23:23:35 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B0E1FC0;
-        Fri,  8 Sep 2023 20:09:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D875CC433C8;
-        Sat,  9 Sep 2023 03:09:29 +0000 (UTC)
-Date:   Fri, 8 Sep 2023 23:09:47 -0400
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4859D1FE3
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 20:23:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAF37C433C8;
+        Sat,  9 Sep 2023 03:23:29 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.96)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1qeoZY-000YcL-0U;
+        Fri, 08 Sep 2023 23:23:48 -0400
+Message-ID: <20230909031615.047488015@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Fri, 08 Sep 2023 23:16:15 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+To:     linux-kernel@vger.kernel.org
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zheng Yejian <zhengyejian1@huawei.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Ajay Kaher <akaher@vmware.com>
-Subject: Re: [PATCH 1/6] tracefs/eventfs: Use dput to free the toplevel
- events directory
-Message-ID: <20230908230947.09e1565f@gandalf.local.home>
-In-Reply-To: <20230908164553.aff280695dd77b2b9cab35b8@kernel.org>
-References: <20230907024710.866917011@goodmis.org>
-        <20230907024803.250873643@goodmis.org>
-        <20230908164553.aff280695dd77b2b9cab35b8@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-linus][PATCH 00/15] tracing: Fixes for 6.6
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
@@ -46,94 +39,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Sep 2023 16:45:53 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+Tracing fixes for 6.6:
 
-> Hi, 
-> 
-> On Wed, 06 Sep 2023 22:47:11 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> > 
-> > Currently when rmdir on an instance is done, eventfs_remove_events_dir()
-> > is called and it does a dput on the dentry and then frees the
-> > eventfs_inode that represents the events directory.
-> > 
-> > But there's no protection against a reader reading the top level events
-> > directory at the same time and we can get a use after free error. Instead,
-> > use the dput() associated to the dentry to also free the eventfs_inode
-> > associated to the events directory, as that will get called when the last
-> > reference to the directory is released.
-> > 
-> > Link: https://lore.kernel.org/all/1cb3aee2-19af-c472-e265-05176fe9bd84@huawei.com/
-> > 
-> > Cc: Ajay Kaher <akaher@vmware.com>
-> > Fixes: 5bdcd5f5331a2 eventfs: ("Implement removal of meta data from eventfs")
-> > Reported-by: Zheng Yejian <zhengyejian1@huawei.com>
-> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > ---
-> > Changes since v1: https://lore.kernel.org/linux-trace-kernel/20230905183332.628d7cc0@gandalf.local.home
-> >  - Removed left over "ei" variable (kernel test robot)
-> > 
-> >  fs/tracefs/event_inode.c | 17 ++++++++++++-----
-> >  fs/tracefs/inode.c       |  2 +-
-> >  fs/tracefs/internal.h    |  5 +++--
-> >  3 files changed, 16 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-> > index fa1a1679a886..609ccb5b7cfc 100644
-> > --- a/fs/tracefs/event_inode.c
-> > +++ b/fs/tracefs/event_inode.c
-> > @@ -185,17 +185,27 @@ static struct dentry *create_dir(const char *name, struct dentry *parent, void *
-> >  
-> >  /**
-> >   * eventfs_set_ef_status_free - set the ef->status to free
-> > + * @ti: the tracefs_inode of the dentry
-> >   * @dentry: dentry who's status to be freed
-> >   *
-> >   * eventfs_set_ef_status_free will be called if no more
-> >   * references remain
-> >   */
-> > -void eventfs_set_ef_status_free(struct dentry *dentry)
-> > +void eventfs_set_ef_status_free(struct tracefs_inode *ti, struct dentry *dentry)
-> >  {
-> >  	struct tracefs_inode *ti_parent;
-> > +	struct eventfs_inode *ei;
-> >  	struct eventfs_file *ef;
-> >  
-> >  	mutex_lock(&eventfs_mutex);
-> > +
-> > +	/* The top level events directory may be freed by this */
-> > +	if (unlikely(ti->flags & TRACEFS_EVENT_TOP_INODE)) {
-> > +		ei = ti->private;
-> > +		kfree(ei);  
-> 
-> Don't we need to clear 'ti->private' here to avoid accessing
-> (or double free) ti->private somewhare?
+- Add missing LOCKDOWN checks for eventfs callers
+  When LOCKDOWN is active for tracing, it causes inconsistent state
+  when some functions succeed and others fail. 
 
-I don't think it's needed but I did add it to
+- Use dput() to free the top level eventfs descriptor
+  There was a race between accesses and freeing it.
 
-  https://lore.kernel.org/linux-trace-kernel/20230907175859.6fedbaa2@gandalf.local.home/
+- Fix a long standing bug that eventfs exposed due to changing timings
+  by dynamically creating files. That is, If a event file is opened
+  for an instance, there's nothing preventing the instance from being
+  removed which will make accessing the files cause use-after-free bugs.
 
-Which you reviewed.
+- Fix a ring buffer race that happens when iterating over the ring
+  buffer while writers are active. Check to make sure not to read
+  the event meta data if it's beyond the end of the ring buffer sub buffer.
 
-> 
-> > +		goto out;
-> > +	}
-> > +
-> >  	ti_parent = get_tracefs(dentry->d_parent->d_inode);
-> >  	if (!ti_parent || !(ti_parent->flags & TRACEFS_EVENT_INODE))
-> >  		goto out;  
-> 
-> Here, I guess this "!(ti_parent->flags & TRACEFS_EVENT_INODE)" means this
-> inode is TRACEFS_EVENT_TOP_INODE, so this check may not be needed,
-> is this correct?
+- Fix the print trigger that disappeared because the test to create it
+  was looking for the event dir field being filled, but now it has the
+  "ef" field filled for the eventfs structure.
 
-The check isn't needed but I like to keep it because it will break things
-badly if it is every called on something that is not an EVENT_INODE.
+- Remove the unused "dir" field from the event structure.
 
-We could add a WARN() here if not, but this code is not critical if it is
-called without it set.
+- Fix the order of the trace_dynamic_info as it had it backwards for the
+  offset and len fields for which one was for which endianess.
 
--- Steve
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+trace/urgent
+
+Head SHA1: 595efe1079cd38a5b7d2762bf6d3bd94105bae0f
+
+
+Naveen N Rao (1):
+      selftests/ftrace: Fix dependencies for some of the synthetic event tests
+
+Steven Rostedt (Google) (13):
+      tracefs: Add missing lockdown check to tracefs_create_dir()
+      tracefs/eventfs: Add missing lockdown checks
+      tracefs/eventfs: Use dput to free the toplevel events directory
+      tracing: Increase trace array ref count on enable and filter files
+      tracing: Have tracing_max_latency inc the trace array ref count
+      tracing: Have current_trace inc the trace array ref count
+      tracing: Have option files inc the trace array ref count
+      tracing: Have event inject files inc the trace array ref count
+      tracefs/eventfs: Free top level files on removal
+      ring-buffer: Do not attempt to read past "commit"
+      tracing: Use the new eventfs descriptor for print trigger
+      tracing: Remove unused trace_event_file dir field
+      tracing/synthetic: Fix order of struct trace_dynamic_info
+
+Zheng Yejian (1):
+      ring-buffer: Avoid softlockup in ring_buffer_resize()
+
+----
+ fs/tracefs/event_inode.c                           | 56 +++++++++++++++--
+ fs/tracefs/inode.c                                 |  5 +-
+ fs/tracefs/internal.h                              |  5 +-
+ include/linux/trace_events.h                       |  7 +--
+ kernel/trace/ring_buffer.c                         |  7 +++
+ kernel/trace/trace.c                               | 72 +++++++++++++++++++---
+ kernel/trace/trace.h                               |  2 +
+ kernel/trace/trace_events.c                        | 19 ++----
+ kernel/trace/trace_events_inject.c                 |  3 +-
+ .../trigger-synthetic-event-dynstring.tc           |  2 +-
+ .../trigger-synthetic_event_syntax_errors.tc       |  2 +-
+ 11 files changed, 140 insertions(+), 40 deletions(-)
