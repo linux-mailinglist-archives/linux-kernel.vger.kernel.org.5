@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F567994C4
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD127994CA
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241966AbjIIAkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33046 "EHLO
+        id S1345942AbjIIAk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345929AbjIIAjk (ORCPT
+        with ESMTP id S1345934AbjIIAjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Sep 2023 20:39:40 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372772695;
-        Fri,  8 Sep 2023 17:38:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AB20C433BD;
-        Sat,  9 Sep 2023 00:38:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2484E2712;
+        Fri,  8 Sep 2023 17:38:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7E3BC43140;
+        Sat,  9 Sep 2023 00:38:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694219913;
-        bh=lD0W62Gb89XMInZipeZtZ+rDmFvBX28Qm4aq9zgBHK8=;
+        s=k20201202; t=1694219914;
+        bh=k0w5Ey5Ue52pB+mKY7nXANMkK2lIfk94w3cPbdapbvc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PonutIKsoxExGLrgg+zq12iHhXUlEv4bwGq4xK+ZCeQl1R6Y6lhM2KzKRsAncXBvc
-         WXExFhYhDMIOYMC7gkQ/AU2GNTziLnLTuOn6mUwWelYGQIPy+FAZKi0qcqc1LdsxX4
-         1jQHo+NPf6gAihSjoM+FwHoU2GMC7E401RAchYSyLdgwTNmI6MOFRkV7Qmi+X2fxe0
-         aFxM2krhVSbs5eI1CLmTJF+DtcNv57o+r4Ljq/IsA7r9i5FYo4pUdgwCfBBhlpcWjl
-         LdGQ+4mK7OAkV+4kNGffpNSbh5MCUK+d14TBOoGrKzx/iffj6G3c007oTdA7Q3TNHK
-         ZQ4aszRGDo93A==
+        b=MXqI8w6vzd+MBK+xeqXyaB+92vnxiP/lTq7itwGTnQvfLnPPumkD/Jp61Yo6I90Ul
+         O8yK8iL/zd3Uyhgz9NywsoKVDI89fNN9J+mmNC1usj/fYaO8Jb0jICyVJekdk1qQFF
+         oQIlJWFnrFsgZiRoz+7K5Tpo87eX8FsDylbXkccmfq2HkonAWAgKrsQjoWKYbiVZg2
+         tQ6s+VNewG7w9aauQURpwUik2QiiK04gM0xaWbWCkEjS8Qo4r50QfZkD20czf6IzRl
+         r6Rqe6+ekr7mfz81TBHW80+cUhhgQvVusazL3sxcTVfPwLn43FgvYz5EXXler/H60q
+         kP3EClB9/yQIA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhang Shurong <zhang_shurong@foxmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sasha Levin <sashal@kernel.org>, crope@iki.fi,
-        mchehab@kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 07/24] media: dvb-usb-v2: gl861: Fix null-ptr-deref in gl861_i2c_master_xfer
-Date:   Fri,  8 Sep 2023 20:37:59 -0400
-Message-Id: <20230909003818.3580081-7-sashal@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Nuno Sa <nuno.sa@analog.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>, jic23@kernel.org,
+        linux-iio@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 08/24] iio: core: Use min() instead of min_t() to make code more robust
+Date:   Fri,  8 Sep 2023 20:38:00 -0400
+Message-Id: <20230909003818.3580081-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909003818.3580081-1-sashal@kernel.org>
 References: <20230909003818.3580081-1-sashal@kernel.org>
@@ -54,40 +55,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Shurong <zhang_shurong@foxmail.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit b97719a66970601cd3151a3e2020f4454a1c4ff6 ]
+[ Upstream commit cb1d17535061ca295903f97f5cb0af9db719c02c ]
 
-In gl861_i2c_master_xfer, msg is controlled by user. When msg[i].buf
-is null and msg[i].len is zero, former checks on msg[i].buf would be
-passed. Malicious data finally reach gl861_i2c_master_xfer. If accessing
-msg[i].buf[0] without sanity check, null ptr deref would happen.
-We add check on msg[i].len to prevent crash.
+min() has strict type checking and preferred over min_t() for
+unsigned types to avoid overflow. Here it's unclear why min_t()
+was chosen since both variables are of the same type. In any
+case update to use min().
 
-Similar commit:
-commit 0ed554fd769a
-("media: dvb-usb: az6027: fix null-ptr-deref in az6027_i2c_xfer()")
-
-Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+Link: https://lore.kernel.org/r/20230721170022.3461-5-andriy.shevchenko@linux.intel.com
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb-v2/gl861.c | 2 +-
+ drivers/iio/industrialio-core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/dvb-usb-v2/gl861.c b/drivers/media/usb/dvb-usb-v2/gl861.c
-index 0c434259c36f1..c71e7b93476de 100644
---- a/drivers/media/usb/dvb-usb-v2/gl861.c
-+++ b/drivers/media/usb/dvb-usb-v2/gl861.c
-@@ -120,7 +120,7 @@ static int gl861_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg msg[],
- 	} else if (num == 2 && !(msg[0].flags & I2C_M_RD) &&
- 		   (msg[1].flags & I2C_M_RD)) {
- 		/* I2C write + read */
--		if (msg[0].len > 1 || msg[1].len > sizeof(ctx->buf)) {
-+		if (msg[0].len != 1 || msg[1].len > sizeof(ctx->buf)) {
- 			ret = -EOPNOTSUPP;
- 			goto err;
- 		}
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index f3f8392623a46..354e7ee0c51c3 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -417,7 +417,7 @@ static ssize_t iio_debugfs_write_reg(struct file *file,
+ 	char buf[80];
+ 	int ret;
+ 
+-	count = min_t(size_t, count, (sizeof(buf)-1));
++	count = min(count, sizeof(buf) - 1);
+ 	if (copy_from_user(buf, userbuf, count))
+ 		return -EFAULT;
+ 
 -- 
 2.40.1
 
