@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF20799385
+	by mail.lfdr.de (Postfix) with ESMTP id EFE85799386
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239205AbjIIAZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45376 "EHLO
+        id S1345539AbjIIAZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239543AbjIIAZ0 (ORCPT
+        with ESMTP id S242630AbjIIAZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 20:25:26 -0400
+        Fri, 8 Sep 2023 20:25:27 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E52212E;
-        Fri,  8 Sep 2023 17:24:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 718BAC116A1;
-        Sat,  9 Sep 2023 00:24:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C38212F;
+        Fri,  8 Sep 2023 17:24:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 191A9C116A3;
+        Sat,  9 Sep 2023 00:24:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694219053;
-        bh=qQf82i+sjGwg3S88YL2uucbm2M8hqjg1N1kJx0kMwIg=;
+        s=k20201202; t=1694219055;
+        bh=w80pTsFQ1MwY45OPec2VNM3BQefFcCJwfE6EAZmEflY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=POlYKVqrAtfRrYcfx9qWEgwBuU62JTOwZ02uOH8zeTnMUW/CULbY8SdO6aPAdLYiB
-         uJSOISN94fB+CcG/mZKqQ/UNOk177MjoGOvsA5+WnrM6lG27+ek3kvZ3nnnm+o6Z+9
-         vYf8hsw0Mc1On/d88Nue8tEjQvcmw4Vx/MzB4AtqeBIHm+/KFsZjmHeZ+D9o5NNgnz
-         eW9s8fQCTtNlHnsCe6749f0KAGK6oED0U4/yPAf8tyDzYa4ebJDrKL/NlgqnDuVIHT
-         Pa9d24oFYci6/7NicmHKOgLwJJBI4cAz/RT4joBTBg3V/1Eifo0ARHm+UhJQSP1txq
-         1XZ1oY9qAJMog==
+        b=guq8rFrkgQhsmOieCUutRBhlLeS5yRrCgKR8b+9o3gCTFM00hZNY1NRy8ZtUK3Odi
+         gIrKnYY/p8h7aONBhhRSebR9WS9W9EvciQQWF7syhJ90OXH87IpKi7+pwrq24IZKyW
+         EFW7sRBMtAExemlWDNy4rc2n9/Mldwfg3u7eCaOUVnPoI6Cn1zlrON5z7IGU741LiI
+         0bDTrQ7tDmdr3MnnjublmZII+yr4ipzpsry6dCO2Or9YUBJ/ebXq0Zk5NgO21HR4+i
+         mAUTYBLZbAn0dGKO9yxFdJJDJ7luOgPEFTns+MRuAS1Z4rV1TH0ay68vDzTUjuH8M8
+         WySjhd80gP9Zw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Liu Shixin via Jfs-discussion 
-        <jfs-discussion@lists.sourceforge.net>,
-        syzbot+90a11e6b1e810785c6ff@syzkaller.appspotmail.com,
-        Liu Shixin <liushixin2@huawei.com>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, shaggy@kernel.org,
-        jlayton@kernel.org, okanatov@gmail.com, jack@suse.cz
-Subject: [PATCH AUTOSEL 5.4 2/6] jfs: fix invalid free of JFS_IP(ipimap)->i_imap in diUnmount
-Date:   Fri,  8 Sep 2023 20:24:01 -0400
-Message-Id: <20230909002406.3578776-2-sashal@kernel.org>
+Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 3/6] PCI: Make quirk using inw() depend on HAS_IOPORT
+Date:   Fri,  8 Sep 2023 20:24:02 -0400
+Message-Id: <20230909002406.3578776-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909002406.3578776-1-sashal@kernel.org>
 References: <20230909002406.3578776-1-sashal@kernel.org>
@@ -57,75 +54,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Shixin via Jfs-discussion <jfs-discussion@lists.sourceforge.net>
+From: Niklas Schnelle <schnelle@linux.ibm.com>
 
-[ Upstream commit 6e2bda2c192d0244b5a78b787ef20aa10cb319b7 ]
+[ Upstream commit f768c75d61582b011962f9dcb9ff8eafb8da0383 ]
 
-syzbot found an invalid-free in diUnmount:
+In the future inw() and friends will not be compiled on architectures
+without I/O port support.
 
-BUG: KASAN: double-free in slab_free mm/slub.c:3661 [inline]
-BUG: KASAN: double-free in __kmem_cache_free+0x71/0x110 mm/slub.c:3674
-Free of addr ffff88806f410000 by task syz-executor131/3632
-
- CPU: 0 PID: 3632 Comm: syz-executor131 Not tainted 6.1.0-rc7-syzkaller-00012-gca57f02295f1 #0
- Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
- Call Trace:
-  <TASK>
-  __dump_stack lib/dump_stack.c:88 [inline]
-  dump_stack_lvl+0x1b1/0x28e lib/dump_stack.c:106
-  print_address_description+0x74/0x340 mm/kasan/report.c:284
-  print_report+0x107/0x1f0 mm/kasan/report.c:395
-  kasan_report_invalid_free+0xac/0xd0 mm/kasan/report.c:460
-  ____kasan_slab_free+0xfb/0x120
-  kasan_slab_free include/linux/kasan.h:177 [inline]
-  slab_free_hook mm/slub.c:1724 [inline]
-  slab_free_freelist_hook+0x12e/0x1a0 mm/slub.c:1750
-  slab_free mm/slub.c:3661 [inline]
-  __kmem_cache_free+0x71/0x110 mm/slub.c:3674
-  diUnmount+0xef/0x100 fs/jfs/jfs_imap.c:195
-  jfs_umount+0x108/0x370 fs/jfs/jfs_umount.c:63
-  jfs_put_super+0x86/0x190 fs/jfs/super.c:194
-  generic_shutdown_super+0x130/0x310 fs/super.c:492
-  kill_block_super+0x79/0xd0 fs/super.c:1428
-  deactivate_locked_super+0xa7/0xf0 fs/super.c:332
-  cleanup_mnt+0x494/0x520 fs/namespace.c:1186
-  task_work_run+0x243/0x300 kernel/task_work.c:179
-  exit_task_work include/linux/task_work.h:38 [inline]
-  do_exit+0x664/0x2070 kernel/exit.c:820
-  do_group_exit+0x1fd/0x2b0 kernel/exit.c:950
-  __do_sys_exit_group kernel/exit.c:961 [inline]
-  __se_sys_exit_group kernel/exit.c:959 [inline]
-  __x64_sys_exit_group+0x3b/0x40 kernel/exit.c:959
-  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[...]
-
-JFS_IP(ipimap)->i_imap is not setting to NULL after free in diUnmount.
-If jfs_remount() free JFS_IP(ipimap)->i_imap but then failed at diMount().
-JFS_IP(ipimap)->i_imap will be freed once again.
-Fix this problem by setting JFS_IP(ipimap)->i_imap to NULL after free.
-
-Reported-by: syzbot+90a11e6b1e810785c6ff@syzkaller.appspotmail.com
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Co-developed-by: Arnd Bergmann <arnd@kernel.org>
+Link: https://lore.kernel.org/r/20230703135255.2202721-2-schnelle@linux.ibm.com
+Signed-off-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_imap.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/pci/quirks.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
-index 937ca07b58b1d..67c67604b8c85 100644
---- a/fs/jfs/jfs_imap.c
-+++ b/fs/jfs/jfs_imap.c
-@@ -195,6 +195,7 @@ int diUnmount(struct inode *ipimap, int mounterror)
- 	 * free in-memory control structure
- 	 */
- 	kfree(imap);
-+	JFS_IP(ipimap)->i_imap = NULL;
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 73260bd217278..947c2c2d8c8c5 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -270,6 +270,7 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_NEC,	PCI_DEVICE_ID_NEC_CBUS_1,	quirk_isa_d
+ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_NEC,	PCI_DEVICE_ID_NEC_CBUS_2,	quirk_isa_dma_hangs);
+ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_NEC,	PCI_DEVICE_ID_NEC_CBUS_3,	quirk_isa_dma_hangs);
  
- 	return (0);
++#ifdef CONFIG_HAS_IOPORT
+ /*
+  * Intel NM10 "TigerPoint" LPC PM1a_STS.BM_STS must be clear
+  * for some HT machines to use C4 w/o hanging.
+@@ -289,6 +290,7 @@ static void quirk_tigerpoint_bm_sts(struct pci_dev *dev)
+ 	}
  }
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_TGP_LPC, quirk_tigerpoint_bm_sts);
++#endif
+ 
+ /* Chipsets where PCI->PCI transfers vanish or hang */
+ static void quirk_nopcipci(struct pci_dev *dev)
 -- 
 2.40.1
 
