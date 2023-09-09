@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32219799AEF
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 22:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E5A799B74
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 23:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233485AbjIIUUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 16:20:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46602 "EHLO
+        id S1344478AbjIIVgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 17:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241756AbjIIUUE (ORCPT
+        with ESMTP id S229550AbjIIVgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 16:20:04 -0400
+        Sat, 9 Sep 2023 17:36:24 -0400
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8395710FA;
-        Sat,  9 Sep 2023 13:19:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9DA197;
+        Sat,  9 Sep 2023 14:36:19 -0700 (PDT)
 Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 389KHmVi027220;
-        Sat, 9 Sep 2023 20:17:48 GMT
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 389KFTOb024634;
+        Sat, 9 Sep 2023 20:17:57 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=tz8rKdVo2TshdvaxQGBb5GEOXGLShJh7mmZE7uPCmnA=;
- b=mxq+eoUWuaQXcBsTguvLL6z8lTwUYy1VXhhXiNeoOet6HlxEsYiQaCndZ2pbhmnSzVTg
- Bveaf2gnj+zEOe6PiKaFgYM8aWGgDzYI2eFyyM3rkUBxvdYEBv9YqlN54ebCoLs8kj61
- gEk3CKt04nnLpMjxaOgIAcdNJVa4bwssU+wLf1GStllLZYii5QiMw2d+ekdMH4r0ws7A
- +M5MJ06/9Y9eyY3yPnbAIxjP76OqDLMoWzFNPyam6vWufkdR00mHOAdLJ7d0OaOo3jYE
- quN/blYJPMn4RCFxRayhx3Kxe3hCwuN8C0JT+6bO8ZcSN4kXlDbS1VXwRMBUhLF8rGbC 8g== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0edmh6rg-1
+ bh=Iq68V/32EqzeNlShcHrSyIUHTWoc0og9RggN9uOODMY=;
+ b=hNtCTUQiIIQ7Izwlj8HsPFSakhwKdENyFea9VUIqpOIdMyW6XQv0ZRP7LwxFQKh43bbQ
+ e2nqx8cZOEYzGBODObbCz9m/LSywJpKBkcjkIwSxhPpfVfzYkMeAG409G5v7VEhn1Ch0
+ ACt6IbNRXBkPfiYF5/NSeHYychgOHGqlGKqzPq6N4uShrolUJO2bmCrwEcT2V7pJjekh
+ MQtB2QCu4TWim+30aptkav5AiCHINyU7qkQJvaD0G/NhgRVZgYEVVFznxph3WWjwgHAR
+ rOVm7dyxeNkelUFNMDcnmYaedhrAn7iTZhsrI9dJ27u7MAlWsZK1x1CUoO5sT82XZf1n yw== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0edmh6rk-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 09 Sep 2023 20:17:48 +0000
+        Sat, 09 Sep 2023 20:17:57 +0000
 Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 389KHl6U019361
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 389KHuYb023125
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 9 Sep 2023 20:17:47 GMT
+        Sat, 9 Sep 2023 20:17:56 GMT
 Received: from hu-mojha-hyd.qualcomm.com (10.80.80.8) by
  nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Sat, 9 Sep 2023 13:17:37 -0700
+ 15.2.1118.36; Sat, 9 Sep 2023 13:17:45 -0700
 From:   Mukesh Ojha <quic_mojha@quicinc.com>
 To:     <corbet@lwn.net>, <agross@kernel.org>, <andersson@kernel.org>,
         <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
@@ -57,9 +57,9 @@ CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
         <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>,
         <quic_mojha@quicinc.com>
-Subject: [PATCH v5 07/17] soc: qcom: minidump: Add pending region registration
-Date:   Sun, 10 Sep 2023 01:46:08 +0530
-Message-ID: <1694290578-17733-8-git-send-email-quic_mojha@quicinc.com>
+Subject: [PATCH v5 08/17] arm64: mm: Add dynamic ramoops region support through command line
+Date:   Sun, 10 Sep 2023 01:46:09 +0530
+Message-ID: <1694290578-17733-9-git-send-email-quic_mojha@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
 References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
@@ -70,8 +70,8 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nasanex01c.na.qualcomm.com (10.45.79.139)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: l56D68ugrVebVB5QF2tdyoNpM9sVsFuj
-X-Proofpoint-GUID: l56D68ugrVebVB5QF2tdyoNpM9sVsFuj
+X-Proofpoint-ORIG-GUID: u0-g2siph-gd2nvBJdgadHnj3L6QHlQ8
+X-Proofpoint-GUID: u0-g2siph-gd2nvBJdgadHnj3L6QHlQ8
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-09_19,2023-09-05_01,2023-05-22_02
@@ -89,236 +89,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pending regions are those apss minidump regions which came for
-registration before minidump was initialized or ready to do
-register the region.
+The reserved memory region for ramoops is assumed to be at a fixed
+and known location when read from the devicetree. This may not be
+required for something like Qualcomm's minidump which is interested
+in knowing addresses of ramoops region but it does not put hard
+requirement of address being fixed as most of it's SoC does not
+support warm reset and does not use pstorefs at all instead it has
+firmware way of collecting ramoops region if it gets to know the
+address and register it with apss minidump table which is sitting
+in shared memory region in DDR and firmware will have access to
+these table during reset and collects it on crash of SoC.
 
-We can add regions to pending region list and register all of
-them from apss minidump driver probe in one go.
+So, add the support of reserving ramoops region to be dynamically
+allocated early during boot if it is request through command line
+via 'dyn_ramoops_size=' and fill up reserved resource structure and
+export the structure, so that it can be read by ramoops driver.
 
 Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
 ---
- drivers/soc/qcom/qcom_minidump.c | 140 ++++++++++++++++++++++++++++++++++++---
- 1 file changed, 130 insertions(+), 10 deletions(-)
+ arch/arm64/mm/init.c       | 94 ++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/pstore_ram.h |  2 +
+ 2 files changed, 96 insertions(+)
 
-diff --git a/drivers/soc/qcom/qcom_minidump.c b/drivers/soc/qcom/qcom_minidump.c
-index 86f4d09a7b4e..4ce36f154e89 100644
---- a/drivers/soc/qcom/qcom_minidump.c
-+++ b/drivers/soc/qcom/qcom_minidump.c
-@@ -13,6 +13,7 @@
- #include <linux/init.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
-+#include <linux/list.h>
- #include <linux/mutex.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-@@ -63,6 +64,33 @@ struct minidump {
- 	struct mutex			md_lock;
- };
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index d31c3a9290c5..14d7086758bf 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -31,6 +31,7 @@
+ #include <linux/hugetlb.h>
+ #include <linux/acpi_iort.h>
+ #include <linux/kmemleak.h>
++#include <linux/pstore_ram.h>
  
-+/**
-+ * struct minidump_pregion - Minidump pending region
-+ * @list       : Pending region list pointer
-+ * @region     : APSS minidump client region
-+ */
-+struct minidump_pregion {
-+	struct list_head	     list;
-+	struct qcom_minidump_region  region;
-+};
-+
-+/**
-+ * struct minidump_plist - Minidump pending region list
-+ * @plist	: List of pending region to be registered
-+ * @pregion_cnt	: Count of the pending region to be registered
-+ */
-+struct minidump_plist {
-+	struct list_head  plist;
-+	int 		  pregion_cnt;
-+	struct mutex	  plock;
-+};
-+
-+static struct minidump_plist md_plist = {
-+	.plist = LIST_HEAD_INIT(md_plist.plist),
-+	.pregion_cnt = 0,
-+	.plock = __MUTEX_INITIALIZER(md_plist.plock),
-+};
-+
- /*
-  * In some of the Old Qualcomm devices, boot firmware statically allocates 300
-  * as total number of supported region (including all co-processors) in
-@@ -336,6 +364,26 @@ static bool qcom_minidump_valid_region(const struct qcom_minidump_region *region
- 		IS_ALIGNED(region->size, 4);
- }
+ #include <asm/boot.h>
+ #include <asm/fixmap.h>
+@@ -73,6 +74,93 @@ phys_addr_t __ro_after_init arm64_dma_phys_limit;
  
-+static struct minidump_pregion *
-+check_region_in_plist(const struct qcom_minidump_region *region)
+ #define DEFAULT_CRASH_KERNEL_LOW_SIZE	(128UL << 20)
+ 
++#define RAMOOPS_ADDR_HIGH_MAX		(PHYS_MASK + 1)
++
++/* Location of the reserved area for the dynamic ramoops */
++struct resource dyn_ramoops_res = {
++	.name  = "ramoops",
++	.start = 0,
++	.end   = 0,
++	.flags = IORESOURCE_BUSY | IORESOURCE_SYSTEM_RAM,
++	.desc  = IORES_DESC_NONE,
++};
++EXPORT_SYMBOL(dyn_ramoops_res);
++
++static int __init parse_dynamic_ramoops(char *cmdline, unsigned long long *size)
 +{
-+	struct minidump_pregion *md_pregion;
-+	struct minidump_pregion *tmp;
-+	bool found = false;
++	const char *name = "dyn_ramoops_size=";
++	char *p = NULL;
++	char *q = NULL;
++	char *tmp;
 +
-+	list_for_each_entry_safe(md_pregion, tmp, &md_plist.plist, list) {
-+		struct qcom_minidump_region *md_region;
++	if (!cmdline)
++		return -ENOENT;
 +
-+		md_region = &md_pregion->region;
-+		if (!strcmp(md_region->name, region->name)) {
-+			found = true;
++	/* Check for "dyn_ramoops_size" and use the later if there are more */
++	p = strstr(cmdline, name);
++	while (p) {
++		q = p;
++		p = strchr(p, ' ');
++		if (!p)
 +			break;
-+		}
++
++		p = strstr(p + 1, name);
 +	}
 +
-+	return found ? md_pregion : NULL;
-+}
-+
- /**
-  * qcom_minidump_region_register() - Register region in APSS Minidump table.
-  * @region: minidump region.
-@@ -344,16 +392,44 @@ static bool qcom_minidump_valid_region(const struct qcom_minidump_region *region
-  */
- int qcom_minidump_region_register(const struct qcom_minidump_region *region)
- {
-+	struct minidump_pregion *md_pregion;
- 	struct minidump *md;
--	int ret;
--
--	md = qcom_smem_minidump_ready();
--	if (!md)
--		return -EPROBE_DEFER;
-+	int ret = 0;
- 
- 	if (!qcom_minidump_valid_region(region))
- 		return -EINVAL;
- 
-+	mutex_lock(&md_plist.plock);
-+	md = qcom_smem_minidump_ready();
-+	if (!md) {
-+		if (md_plist.pregion_cnt >= MAX_NUM_ENTRIES - 1) {
-+			pr_err("maximum region limit %u reached\n", md_plist.pregion_cnt);
-+			ret = -ENOSPC;
-+			goto unlock_plock;
-+		}
-+
-+		md_pregion = check_region_in_plist(region);
-+		if (md_pregion) {
-+			pr_info("%s region is already exist\n", region->name);
-+			ret = -EEXIST;
-+			goto unlock_plock;
-+		}
-+		/*
-+		 * Maintain a list of client regions which came before
-+		 * minidump driver was ready and once it is ready,
-+		 * register them in one go from minidump probe function.
-+		 */
-+		md_pregion = kzalloc(sizeof(*md_pregion), GFP_KERNEL);
-+		if (!md_pregion) {
-+			ret = -ENOMEM;
-+			goto unlock_plock;
-+		}
-+		md_pregion->region = *region;
-+		list_add_tail(&md_pregion->list, &md_plist.plist);
-+		md_plist.pregion_cnt++;
-+		goto unlock_plock;
++	if (!q) {
++		pr_err("ramoops: No entry found for %s\n", name);
++		return -ENOENT;
 +	}
 +
- 	mutex_lock(&md->md_lock);
- 	ret = qcom_md_region_register(md, region);
- 	if (ret)
-@@ -362,6 +438,10 @@ int qcom_minidump_region_register(const struct qcom_minidump_region *region)
- 	qcom_md_update_elfheader(md, region);
- unlock:
- 	mutex_unlock(&md->md_lock);
++	p = q + strlen(name);
++	*size = memparse(p, &tmp);
++	if (p == tmp) {
++		pr_err("ramoops: memory value expected\n");
++		return -EINVAL;
++	}
++
 +	return 0;
-+
-+unlock_plock:
-+	mutex_unlock(&md_plist.plock);
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(qcom_minidump_region_register);
-@@ -374,16 +454,28 @@ EXPORT_SYMBOL_GPL(qcom_minidump_region_register);
-  */
- int qcom_minidump_region_unregister(const struct qcom_minidump_region *region)
- {
-+	struct minidump_pregion *md_pregion;
- 	struct minidump *md;
--	int ret;
--
--	md = qcom_smem_minidump_ready();
--	if (!md)
--		return -EPROBE_DEFER;
-+	int ret = 0;
- 
- 	if (!qcom_minidump_valid_region(region))
- 		return -EINVAL;
- 
-+	mutex_lock(&md_plist.plock);
-+	md = qcom_smem_minidump_ready();
-+	if (!md) {
-+		md_pregion = check_region_in_plist(region);
-+		if (!md_pregion) {
-+			ret = -ENOENT;
-+			goto unlock_plock;
-+		}
-+
-+		list_del(&md_pregion->list);
-+		kfree(md_pregion);
-+		md_plist.pregion_cnt--;
-+		goto unlock_plock;
-+	}
-+
- 	mutex_lock(&md->md_lock);
- 	ret = qcom_md_region_unregister(md, region);
- 	if (ret)
-@@ -393,6 +485,10 @@ int qcom_minidump_region_unregister(const struct qcom_minidump_region *region)
- unlock:
- 	mutex_unlock(&md->md_lock);
- 	return ret;
-+
-+unlock_plock:
-+	mutex_unlock(&md_plist.plock);
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(qcom_minidump_region_unregister);
- 
-@@ -532,6 +628,27 @@ static int qcom_apss_md_table_init(struct minidump *md,
- 	return 0;
- }
- 
-+void qcom_apss_register_pending_regions(struct minidump *md)
-+{
-+	struct minidump_ss_data *mdss_data = md->apss_data;
-+	struct minidump_pregion *md_pregion;
-+	struct minidump_pregion *tmp;
-+
-+	list_for_each_entry_safe(md_pregion, tmp, &md_plist.plist, list) {
-+		struct qcom_minidump_region *region;
-+
-+		region = &md_pregion->region;
-+		mutex_lock(&md->md_lock);
-+		qcom_md_add_region(mdss_data, region);
-+		qcom_md_update_elfheader(md, region);
-+		mutex_unlock(&md->md_lock);
-+
-+		list_del(&md_pregion->list);
-+		kfree(md_pregion);
-+		md_plist.pregion_cnt--;
-+	}
 +}
 +
- static int qcom_apss_minidump_probe(struct platform_device *pdev)
++static int __init parse_dyn_ramoops_size_dummy(char *arg)
++{
++	return 0;
++}
++early_param("dyn_ramoops_size", parse_dyn_ramoops_size_dummy);
++
++/*
++ * reserve_dynamic_ramoops() - reserves memory for dynamic ramoops
++ *
++ * This enable dynamic reserve memory support for ramoops through
++ * command line.
++ */
++static void __init reserve_dynamic_ramoops(void)
++{
++	char *cmdline = boot_command_line;
++	unsigned long long ramoops_base;
++	unsigned long long ramoops_size;
++
++	if (!IS_ENABLED(CONFIG_PSTORE_RAM))
++		return;
++
++	if (parse_dynamic_ramoops(cmdline, &ramoops_size))
++		return;
++
++	ramoops_base = memblock_phys_alloc_range(ramoops_size, SMP_CACHE_BYTES,
++						 0, RAMOOPS_ADDR_HIGH_MAX);
++	if (!ramoops_base) {
++		pr_err("cannot allocate ramoops dynamic memory (size:0x%llx).\n",
++			ramoops_size);
++		return;
++	}
++
++	kmemleak_ignore_phys(ramoops_base);
++
++	dyn_ramoops_res.start = ramoops_base;
++	dyn_ramoops_res.end = ramoops_base + ramoops_size - 1;
++	insert_resource(&iomem_resource, &dyn_ramoops_res);
++}
++
+ static int __init reserve_crashkernel_low(unsigned long long low_size)
  {
- 	struct minidump_global_toc *mdgtoc;
-@@ -571,7 +688,10 @@ static int qcom_apss_minidump_probe(struct platform_device *pdev)
- 		return ret;
- 	}
+ 	unsigned long long low_base;
+@@ -456,6 +544,12 @@ void __init bootmem_init(void)
+ 	 */
+ 	reserve_crashkernel();
  
-+	mutex_lock(&md_plist.plock);
- 	platform_set_drvdata(pdev, md);
-+	qcom_apss_register_pending_regions(md);
-+	mutex_unlock(&md_plist.plock);
- 
- 	return ret;
++	/*
++	 * Reserving ramoops region resource dynamically in case it is
++	 * requested from command line.
++	 */
++	reserve_dynamic_ramoops();
++
+ 	memblock_dump_all();
  }
+ 
+diff --git a/include/linux/pstore_ram.h b/include/linux/pstore_ram.h
+index 9d65ff94e216..07d700b7649d 100644
+--- a/include/linux/pstore_ram.h
++++ b/include/linux/pstore_ram.h
+@@ -10,6 +10,8 @@
+ 
+ #include <linux/pstore.h>
+ 
++extern struct resource dyn_ramoops_res;
++
+ struct persistent_ram_ecc_info {
+ 	int block_size;
+ 	int ecc_size;
 -- 
 2.7.4
 
