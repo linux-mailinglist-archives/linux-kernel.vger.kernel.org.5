@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E3F799559
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C8E79955F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346115AbjIIBOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 21:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46032 "EHLO
+        id S1346263AbjIIBOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 21:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345799AbjIIBNr (ORCPT
+        with ESMTP id S1346177AbjIIBOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 21:13:47 -0400
+        Fri, 8 Sep 2023 21:14:05 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997ED1FCA;
-        Fri,  8 Sep 2023 18:13:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 112FAC433C9;
-        Sat,  9 Sep 2023 01:12:58 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907BC268A;
+        Fri,  8 Sep 2023 18:13:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36C8FC433B9;
+        Sat,  9 Sep 2023 01:13:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694221979;
-        bh=Q6Z2h2hDzqcaMZc4vdr3L7hQEpWvL+5HeThDqxIVaLs=;
+        s=k20201202; t=1694221981;
+        bh=so/jiUm0IFNWiswFiYsvovecnodfe5LB4OYacBJJQ5c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IsHTuyczXhWs4NRMF0ECHWjV2hOBTzWJ24qyQuXXnQI+ID/Qzs1/zaCg0mTmHUliz
-         hXyJmQxRuGgbHAgxqRFNSZYlAbE7XaQXzamR6NK3guXIJ2IUC7KPf1d8V3LJORFQMd
-         Pc77rGV1DmTHvgRPwegLnZpRa0halxh+luVpal2zjle/KjdVfMCosGFJxWH2xDnJoV
-         jNHiBQHPsB4GZzO7qbJOtoIvs5gwZ/SGEEIFSBv2GGVXl4IdP/13gwRgtXUNLVWl7A
-         IDwPO1oYEh7aoUKZotFSrQpuOOxOYgLKwj0ZghO0pJJkxsmHpVIxTkkX76rySJKzJ3
-         xTQPBFZPQbH9A==
+        b=thnjd22qui7o8iTewiagJaUKGNIvYG3DkSuZm4uqwWSukwhQkxKN85KloY8qA9Lnm
+         uoNHkYNL6jGPlwlk2fgt1Rv9WK6EN09bkUWWQ7HqcYcxeUhELM1UBtse2Dqag3FmPk
+         2MRLYgeTMGTmnkU9Os3dtpMCL2IDLcUfNXhBNg0VLG0w2sA29l4Yejdfj3UxE3CTEh
+         iroRcJi//0SPyA3VFR5EbfRSt9jOS8eprTCJK1omFE5VEwbvWMWKSVCntcoTU8Q8Tw
+         YwCtYtdFTEnhfmi/CLm+Fvi7F0dbR+w6GvX3aBvYZhzEfWEOd6VMG5k57Hdtb3Wurp
+         dYs+DMAK9QaoQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     John Ogness <john.ogness@linutronix.de>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
         Petr Mladek <pmladek@suse.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.5 3/6] printk: Do not take console lock for console_flush_on_panic()
-Date:   Fri,  8 Sep 2023 21:12:51 -0400
-Message-Id: <20230909011254.3581788-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 4/6] printk: Consolidate console deferred printing
+Date:   Fri,  8 Sep 2023 21:12:52 -0400
+Message-Id: <20230909011254.3581788-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909011254.3581788-1-sashal@kernel.org>
 References: <20230909011254.3581788-1-sashal@kernel.org>
@@ -55,92 +55,122 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: John Ogness <john.ogness@linutronix.de>
 
-[ Upstream commit eacb04ff3c5b8662a65f380ae450250698448cff ]
+[ Upstream commit 696ffaf50e1f8dbc66223ff614473f945f5fb8d8 ]
 
-Currently console_flush_on_panic() will attempt to acquire the
-console lock when flushing the buffer on panic. If it fails to
-acquire the lock, it continues anyway because this is the last
-chance to get any pending records printed.
+Printing to consoles can be deferred for several reasons:
 
-The reason why the console lock was attempted at all was to
-prevent any other CPUs from acquiring the console lock for
-printing while the panic CPU was printing. But as of the
-previous commit, non-panic CPUs will no longer attempt to
-acquire the console lock in a panic situation. Therefore it is
-no longer strictly necessary for a panic CPU to acquire the
-console lock.
+- explicitly with printk_deferred()
+- printk() in NMI context
+- recursive printk() calls
 
-Avoiding taking the console lock when flushing in panic has
-the additional benefit of avoiding possible deadlocks due to
-semaphore usage in NMI context (semaphores are not NMI-safe)
-and avoiding possible deadlocks if another CPU accesses the
-semaphore and is stopped while holding one of the semaphore's
-internal spinlocks.
+The current implementation is not consistent. For printk_deferred(),
+irq work is scheduled twice. For NMI und recursive, panic CPU
+suppression and caller delays are not properly enforced.
+
+Correct these inconsistencies by consolidating the deferred printing
+code so that vprintk_deferred() is the top-level function for
+deferred printing and vprintk_emit() will perform whichever irq_work
+queueing is appropriate.
+
+Also add kerneldoc for wake_up_klogd() and defer_console_output() to
+clarify their differences and appropriate usage.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 Reviewed-by: Petr Mladek <pmladek@suse.com>
 Signed-off-by: Petr Mladek <pmladek@suse.com>
-Link: https://lore.kernel.org/r/20230717194607.145135-5-john.ogness@linutronix.de
+Link: https://lore.kernel.org/r/20230717194607.145135-6-john.ogness@linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/printk/printk.c | 28 +++++++++++++++++++---------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+ kernel/printk/printk.c      | 35 ++++++++++++++++++++++++++++-------
+ kernel/printk/printk_safe.c |  9 ++-------
+ 2 files changed, 30 insertions(+), 14 deletions(-)
 
 diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 591c11888200d..88770561c4350 100644
+index 88770561c4350..d5e29fad84234 100644
 --- a/kernel/printk/printk.c
 +++ b/kernel/printk/printk.c
-@@ -3120,14 +3120,24 @@ void console_unblank(void)
-  */
- void console_flush_on_panic(enum con_flush_mode mode)
- {
-+	bool handover;
-+	u64 next_seq;
-+
- 	/*
--	 * If someone else is holding the console lock, trylock will fail
--	 * and may_schedule may be set.  Ignore and proceed to unlock so
--	 * that messages are flushed out.  As this can be called from any
--	 * context and we don't want to get preempted while flushing,
--	 * ensure may_schedule is cleared.
-+	 * Ignore the console lock and flush out the messages. Attempting a
-+	 * trylock would not be useful because:
-+	 *
-+	 *   - if it is contended, it must be ignored anyway
-+	 *   - console_lock() and console_trylock() block and fail
-+	 *     respectively in panic for non-panic CPUs
-+	 *   - semaphores are not NMI-safe
-+	 */
-+
-+	/*
-+	 * If another context is holding the console lock,
-+	 * @console_may_schedule might be set. Clear it so that
-+	 * this context does not call cond_resched() while flushing.
- 	 */
--	console_trylock();
- 	console_may_schedule = 0;
- 
- 	if (mode == CONSOLE_REPLAY_ALL) {
-@@ -3140,15 +3150,15 @@ void console_flush_on_panic(enum con_flush_mode mode)
- 		cookie = console_srcu_read_lock();
- 		for_each_console_srcu(c) {
- 			/*
--			 * If the above console_trylock() failed, this is an
--			 * unsynchronized assignment. But in that case, the
-+			 * This is an unsynchronized assignment, but the
- 			 * kernel is in "hope and pray" mode anyway.
- 			 */
- 			c->seq = seq;
- 		}
- 		console_srcu_read_unlock(cookie);
+@@ -2308,7 +2308,11 @@ asmlinkage int vprintk_emit(int facility, int level,
+ 		preempt_enable();
  	}
--	console_unlock();
+ 
+-	wake_up_klogd();
++	if (in_sched)
++		defer_console_output();
++	else
++		wake_up_klogd();
 +
-+	console_flush_all(false, &next_seq, &handover);
+ 	return printed_len;
+ }
+ EXPORT_SYMBOL(vprintk_emit);
+@@ -3843,11 +3847,33 @@ static void __wake_up_klogd(int val)
+ 	preempt_enable();
  }
  
- /*
++/**
++ * wake_up_klogd - Wake kernel logging daemon
++ *
++ * Use this function when new records have been added to the ringbuffer
++ * and the console printing of those records has already occurred or is
++ * known to be handled by some other context. This function will only
++ * wake the logging daemon.
++ *
++ * Context: Any context.
++ */
+ void wake_up_klogd(void)
+ {
+ 	__wake_up_klogd(PRINTK_PENDING_WAKEUP);
+ }
+ 
++/**
++ * defer_console_output - Wake kernel logging daemon and trigger
++ *	console printing in a deferred context
++ *
++ * Use this function when new records have been added to the ringbuffer,
++ * this context is responsible for console printing those records, but
++ * the current context is not allowed to perform the console printing.
++ * Trigger an irq_work context to perform the console printing. This
++ * function also wakes the logging daemon.
++ *
++ * Context: Any context.
++ */
+ void defer_console_output(void)
+ {
+ 	/*
+@@ -3864,12 +3890,7 @@ void printk_trigger_flush(void)
+ 
+ int vprintk_deferred(const char *fmt, va_list args)
+ {
+-	int r;
+-
+-	r = vprintk_emit(0, LOGLEVEL_SCHED, NULL, fmt, args);
+-	defer_console_output();
+-
+-	return r;
++	return vprintk_emit(0, LOGLEVEL_SCHED, NULL, fmt, args);
+ }
+ 
+ int _printk_deferred(const char *fmt, ...)
+diff --git a/kernel/printk/printk_safe.c b/kernel/printk/printk_safe.c
+index ef0f9a2044da1..6d10927a07d83 100644
+--- a/kernel/printk/printk_safe.c
++++ b/kernel/printk/printk_safe.c
+@@ -38,13 +38,8 @@ asmlinkage int vprintk(const char *fmt, va_list args)
+ 	 * Use the main logbuf even in NMI. But avoid calling console
+ 	 * drivers that might have their own locks.
+ 	 */
+-	if (this_cpu_read(printk_context) || in_nmi()) {
+-		int len;
+-
+-		len = vprintk_store(0, LOGLEVEL_DEFAULT, NULL, fmt, args);
+-		defer_console_output();
+-		return len;
+-	}
++	if (this_cpu_read(printk_context) || in_nmi())
++		return vprintk_deferred(fmt, args);
+ 
+ 	/* No obstacles. */
+ 	return vprintk_default(fmt, args);
 -- 
 2.40.1
 
