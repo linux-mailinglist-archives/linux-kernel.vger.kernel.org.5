@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE44799A42
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 19:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86BAE799A48
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 19:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237293AbjIIR2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 13:28:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
+        id S237354AbjIIRkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 13:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235271AbjIIR2O (ORCPT
+        with ESMTP id S232657AbjIIRkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 13:28:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4C9132
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 10:27:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694280445;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u03sgd3fgOsRd0JFDZyPxvLZYkelxDPmhK1T2JbjEHY=;
-        b=WDVYQTyeUnhdtPV+cHgCk9UKxK2jkMipZur3vooDcDE2m0tBKuVtMsYRRpnCvTPkwq3NzG
-        Ld32fzOGzrvNeQSJM5G4unl4E0zxbGkVTJn8T9RYCDRHrOprPeBPYKnKWwK3vh9WSOGD4U
-        M6zCDBtdKFk1pp5HYNELgJDbVm4N/co=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-590-WaTb0Ba5OHaX7dEJLZ-q2w-1; Sat, 09 Sep 2023 13:27:22 -0400
-X-MC-Unique: WaTb0Ba5OHaX7dEJLZ-q2w-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 828798030A9;
-        Sat,  9 Sep 2023 17:27:22 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.36])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 76BB440F063;
-        Sat,  9 Sep 2023 17:27:21 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Sat,  9 Sep 2023 19:26:30 +0200 (CEST)
-Date:   Sat, 9 Sep 2023 19:26:29 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] getrusage: use __for_each_thread()
-Message-ID: <20230909172629.GA20454@redhat.com>
-References: <20230909172554.GA20441@redhat.com>
+        Sat, 9 Sep 2023 13:40:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F18D135;
+        Sat,  9 Sep 2023 10:40:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1IJhOTrmx3z5yA8bOgTa5/cW12NcN6iy4SPd+R4a+r4=; b=vURBibPB3+O7RzHSUyFGqZUPld
+        kQ11c4WSHJ6Nk3CVm1eeocSCChWN1AD+XnkVPzTbvuPkwpLCLGzugd1KgLUtRPpfBu1kwJf24MNnj
+        oD9g7STSMPP1PMo9kcSX6igrw+kTPtKYOgivZNvP00GDj67a65m3eQjRfVIdpkwmeTizt3SjT/ilv
+        bCVEKKf82uYpCPkx6PUA/l1IkI15FD1XGolFqU0uSJCdpp1HlELb+KkyhkciU7RpmfsE2AGfxnaoo
+        nR41yblNuNvEbdbwG9Q+CpPJ3JC9hRAL8SVjZi2HHNqBs6bytOG/xI9qpgdyCnvXjcXQcZ0Tm5sKl
+        E+/p6c/Q==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qf1vy-007ROQ-QX; Sat, 09 Sep 2023 17:39:50 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5FADF300348; Sat,  9 Sep 2023 19:39:50 +0200 (CEST)
+Date:   Sat, 9 Sep 2023 19:39:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Meng Li <li.meng@amd.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-acpi@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        Perry Yuan <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH V6 3/7] cpufreq: amd-pstate: Enable amd-pstate preferred
+ core supporting.
+Message-ID: <20230909173950.GA33532@noisy.programming.kicks-ass.net>
+References: <20230908074653.2799055-1-li.meng@amd.com>
+ <20230908074653.2799055-4-li.meng@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230909172554.GA20441@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230908074653.2799055-4-li.meng@amd.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do/while_each_thread should be avoided when possible.
+On Fri, Sep 08, 2023 at 03:46:49PM +0800, Meng Li wrote:
+> +static void amd_pstate_init_prefcore(void)
+> +{
+> +	int cpu, ret;
+> +	u64 highest_perf;
+> +
+> +	if (!prefcore)
+> +		return;
+> +
+> +	for_each_online_cpu(cpu) {
+> +		ret = amd_pstate_get_highest_perf(cpu, &highest_perf);
+> +		if (ret)
+> +			break;
+> +
+> +		sched_set_itmt_core_prio(highest_perf, cpu);
+> +
+> +		/* check if CPPC preferred core feature is enabled*/
+> +		if (highest_perf == AMD_PSTATE_MAX_CPPC_PERF) {
+> +			pr_debug("AMD CPPC preferred core is unsupported!\n");
+> +			hw_prefcore = false;
+> +			prefcore = false;
+> +			return;
+> +		}
+> +	}
+> +
+> +	/*
+> +	 * This code can be run during CPU online under the
+> +	 * CPU hotplug locks, so sched_set_amd_prefcore_support()
+> +	 * cannot be called from here.  Queue up a work item
+> +	 * to invoke it.
+> +	 */
+> +	schedule_work(&sched_prefcore_work);
+> +}
 
-Plus this change allows to avoid lock_task_sighand(), we can use rcu
-and/or sig->stats_lock instead.
-
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- kernel/sys.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/kernel/sys.c b/kernel/sys.c
-index 097cbea62a72..67436d465be4 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -1830,10 +1830,8 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
- 		r->ru_oublock += sig->oublock;
- 		if (maxrss < sig->maxrss)
- 			maxrss = sig->maxrss;
--		t = p;
--		do {
-+		__for_each_thread(sig, t)
- 			accumulate_thread_rusage(t, r);
--		} while_each_thread(p, t);
- 		break;
- 
- 	default:
--- 
-2.25.1.362.g51ebf55
-
-
+Brilliant, repost without addressing prior feedback..  :-(
