@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B597997B6
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 13:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737DE7997B7
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 13:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345307AbjIILqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 07:46:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345210AbjIILqX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345263AbjIILqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 9 Sep 2023 07:46:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbjIILqW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Sep 2023 07:46:22 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912BE186
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 04:46:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318A7E47
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 04:46:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694259979; x=1725795979;
+  t=1694259978; x=1725795978;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=UI7IR0Ft3ndhwmZaJP7vXpuiljdP0FhgaQdrnHO04f4=;
-  b=hm51trmaC0raMnqXY4LSBYv0M4h0FQezCE3LnBYKJHiLIEAFSTXkB8oV
-   5fHHKv7k4VDLqmaJQ7nWkNXhyJZghP3/TE3Kf3e0j1NCm8yR0L/VhpmVF
-   TszbgnXcVupgMbLKcUgvZO9ch+ereWoKckTGA8HXa6ASK0hQ7WHP/ZCcQ
-   sDCEzRvYvmwbWqCueA2iZab87PbiJNUwWj7wM4/hpvzbxCpmbBZMW/c6t
-   fA0Jh07dfxOqY8v0r9WXWwHKBeFsIvjDvqVTINT2e5ucjHGPY5oGKt1Eu
-   /XMj0HdUigC2z+hY7n10Yj6dDPUJgbwzadRIKmrlvPIGY+Fbr7qdU92+W
+  bh=MU/u0cbk8JEvOoYAvlZCJUBtZBZw4qz8RcPo2RbLobQ=;
+  b=k5upBA4B+sY7ZLSFIp7mlowMrOQNAW23bhG652t+J/HC14Vu//GAQgOA
+   fJFgLLsVDlfGwyb0NZSStxTAP1YrPBvEZVToBS9irLybEwt/T6kd2PNhZ
+   wmeXUXAsR0/jEEBmMN6bWFVOJ9fl5fY51dugU8JnxDrofz82rfgqclV8l
+   juAIan81xfBpNOVT1JprreKiLvYC3rZ1rP6kQGisROf7ExlaMn5u11wFh
+   q4RwP0WhGdd6sOr6iMmCK1TCjXUXS4FBe+GeOSqiALCIyQ0oOFAXRrFeZ
+   66BdVoNj7F8GoJ+FrtTZfNKBKfO7cg8ihm8UffB86SyWMR0EyqqSt2zUv
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="376724423"
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="376724418"
 X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
-   d="scan'208";a="376724423"
+   d="scan'208";a="376724418"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 04:46:17 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="866392453"
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="866392452"
 X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
-   d="scan'208";a="866392453"
+   d="scan'208";a="866392452"
 Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
   by orsmga004.jf.intel.com with ESMTP; 09 Sep 2023 04:46:16 -0700
 Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qewPm-0003RK-09;
+        id 1qewPm-0003RM-0D;
         Sat, 09 Sep 2023 11:46:14 +0000
-Date:   Sat, 9 Sep 2023 19:45:27 +0800
+Date:   Sat, 9 Sep 2023 19:45:28 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Donglin Peng <pengdonglin@sangfor.com.cn>
+To:     Igor Torrente <igormtorrente@gmail.com>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Huacai Chen <chenhuacai@loongson.cn>
-Subject: arch/loongarch/kernel/asm-offsets.c:278:6: warning: no previous
- prototype for 'output_fgraph_ret_regs_defines'
-Message-ID: <202309091907.j6NUC3Nc-lkp@intel.com>
+        Melissa Wen <melissa.srw@gmail.com>
+Subject: drivers/gpu/drm/vkms/vkms_formats.c:91:35: sparse: sparse: cast to
+ restricted __le16
+Message-ID: <202309091931.cdPrChkB-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -66,93 +65,153 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   6099776f9f268e61fe5ecd721f994a8cfce5306f
-commit: 5779e3c0f5aed8a3239839ad55ad017e1278ecd7 LoongArch: ftrace: Enable HAVE_FUNCTION_GRAPH_RETVAL
-date:   3 months ago
-config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230909/202309091907.j6NUC3Nc-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230909/202309091907.j6NUC3Nc-lkp@intel.com/reproduce)
+commit: 3675d8a1726337bd1e839a185e0a7ce0bc459b6b drm: vkms: Adds XRGB_16161616 and ARGB_1616161616 formats
+date:   1 year ago
+config: i386-randconfig-061-20230909 (https://download.01.org/0day-ci/archive/20230909/202309091931.cdPrChkB-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230909/202309091931.cdPrChkB-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309091907.j6NUC3Nc-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309091931.cdPrChkB-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+sparse warnings: (new ones prefixed by >>)
+>> drivers/gpu/drm/vkms/vkms_formats.c:91:35: sparse: sparse: cast to restricted __le16
+   drivers/gpu/drm/vkms/vkms_formats.c:92:35: sparse: sparse: cast to restricted __le16
+   drivers/gpu/drm/vkms/vkms_formats.c:93:35: sparse: sparse: cast to restricted __le16
+   drivers/gpu/drm/vkms/vkms_formats.c:94:35: sparse: sparse: cast to restricted __le16
+   drivers/gpu/drm/vkms/vkms_formats.c:109:35: sparse: sparse: cast to restricted __le16
+   drivers/gpu/drm/vkms/vkms_formats.c:110:35: sparse: sparse: cast to restricted __le16
+   drivers/gpu/drm/vkms/vkms_formats.c:111:35: sparse: sparse: cast to restricted __le16
+>> drivers/gpu/drm/vkms/vkms_formats.c:177:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
+   drivers/gpu/drm/vkms/vkms_formats.c:177:31: sparse:     expected unsigned short [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:177:31: sparse:     got restricted __le16 [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:178:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
+   drivers/gpu/drm/vkms/vkms_formats.c:178:31: sparse:     expected unsigned short [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:178:31: sparse:     got restricted __le16 [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:179:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
+   drivers/gpu/drm/vkms/vkms_formats.c:179:31: sparse:     expected unsigned short [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:179:31: sparse:     got restricted __le16 [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:180:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
+   drivers/gpu/drm/vkms/vkms_formats.c:180:31: sparse:     expected unsigned short [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:180:31: sparse:     got restricted __le16 [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:195:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
+   drivers/gpu/drm/vkms/vkms_formats.c:195:31: sparse:     expected unsigned short [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:195:31: sparse:     got restricted __le16 [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:196:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
+   drivers/gpu/drm/vkms/vkms_formats.c:196:31: sparse:     expected unsigned short [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:196:31: sparse:     got restricted __le16 [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:197:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
+   drivers/gpu/drm/vkms/vkms_formats.c:197:31: sparse:     expected unsigned short [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:197:31: sparse:     got restricted __le16 [usertype]
 
-   arch/loongarch/kernel/asm-offsets.c:17:6: warning: no previous prototype for 'output_ptreg_defines' [-Wmissing-prototypes]
-      17 | void output_ptreg_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:64:6: warning: no previous prototype for 'output_task_defines' [-Wmissing-prototypes]
-      64 | void output_task_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:79:6: warning: no previous prototype for 'output_thread_info_defines' [-Wmissing-prototypes]
-      79 | void output_thread_info_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:95:6: warning: no previous prototype for 'output_thread_defines' [-Wmissing-prototypes]
-      95 | void output_thread_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:138:6: warning: no previous prototype for 'output_thread_fpu_defines' [-Wmissing-prototypes]
-     138 | void output_thread_fpu_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:178:6: warning: no previous prototype for 'output_mm_defines' [-Wmissing-prototypes]
-     178 | void output_mm_defines(void)
-         |      ^~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:210:6: warning: no previous prototype for 'output_sc_defines' [-Wmissing-prototypes]
-     210 | void output_sc_defines(void)
-         |      ^~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:218:6: warning: no previous prototype for 'output_signal_defines' [-Wmissing-prototypes]
-     218 | void output_signal_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:256:6: warning: no previous prototype for 'output_smpboot_defines' [-Wmissing-prototypes]
-     256 | void output_smpboot_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:266:6: warning: no previous prototype for 'output_pbe_defines' [-Wmissing-prototypes]
-     266 | void output_pbe_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~
->> arch/loongarch/kernel/asm-offsets.c:278:6: warning: no previous prototype for 'output_fgraph_ret_regs_defines' [-Wmissing-prototypes]
-     278 | void output_fgraph_ret_regs_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---
-   arch/loongarch/kernel/asm-offsets.c:17:6: warning: no previous prototype for 'output_ptreg_defines' [-Wmissing-prototypes]
-      17 | void output_ptreg_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:64:6: warning: no previous prototype for 'output_task_defines' [-Wmissing-prototypes]
-      64 | void output_task_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:79:6: warning: no previous prototype for 'output_thread_info_defines' [-Wmissing-prototypes]
-      79 | void output_thread_info_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:95:6: warning: no previous prototype for 'output_thread_defines' [-Wmissing-prototypes]
-      95 | void output_thread_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:138:6: warning: no previous prototype for 'output_thread_fpu_defines' [-Wmissing-prototypes]
-     138 | void output_thread_fpu_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:178:6: warning: no previous prototype for 'output_mm_defines' [-Wmissing-prototypes]
-     178 | void output_mm_defines(void)
-         |      ^~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:210:6: warning: no previous prototype for 'output_sc_defines' [-Wmissing-prototypes]
-     210 | void output_sc_defines(void)
-         |      ^~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:218:6: warning: no previous prototype for 'output_signal_defines' [-Wmissing-prototypes]
-     218 | void output_signal_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:256:6: warning: no previous prototype for 'output_smpboot_defines' [-Wmissing-prototypes]
-     256 | void output_smpboot_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~~~~
-   arch/loongarch/kernel/asm-offsets.c:266:6: warning: no previous prototype for 'output_pbe_defines' [-Wmissing-prototypes]
-     266 | void output_pbe_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~
->> arch/loongarch/kernel/asm-offsets.c:278:6: warning: no previous prototype for 'output_fgraph_ret_regs_defines' [-Wmissing-prototypes]
-     278 | void output_fgraph_ret_regs_defines(void)
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+vim +91 drivers/gpu/drm/vkms/vkms_formats.c
 
-
-vim +/output_fgraph_ret_regs_defines +278 arch/loongarch/kernel/asm-offsets.c
-
-   276	
-   277	#ifdef CONFIG_FUNCTION_GRAPH_TRACER
- > 278	void output_fgraph_ret_regs_defines(void)
+    80	
+    81	static void ARGB16161616_to_argb_u16(struct line_buffer *stage_buffer,
+    82					     const struct vkms_frame_info *frame_info,
+    83					     int y)
+    84	{
+    85		struct pixel_argb_u16 *out_pixels = stage_buffer->pixels;
+    86		u16 *src_pixels = get_packed_src_addr(frame_info, y);
+    87		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
+    88				    stage_buffer->n_pixels);
+    89	
+    90		for (size_t x = 0; x < x_limit; x++, src_pixels += 4) {
+  > 91			out_pixels[x].a = le16_to_cpu(src_pixels[3]);
+    92			out_pixels[x].r = le16_to_cpu(src_pixels[2]);
+    93			out_pixels[x].g = le16_to_cpu(src_pixels[1]);
+    94			out_pixels[x].b = le16_to_cpu(src_pixels[0]);
+    95		}
+    96	}
+    97	
+    98	static void XRGB16161616_to_argb_u16(struct line_buffer *stage_buffer,
+    99					     const struct vkms_frame_info *frame_info,
+   100					     int y)
+   101	{
+   102		struct pixel_argb_u16 *out_pixels = stage_buffer->pixels;
+   103		u16 *src_pixels = get_packed_src_addr(frame_info, y);
+   104		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
+   105				    stage_buffer->n_pixels);
+   106	
+   107		for (size_t x = 0; x < x_limit; x++, src_pixels += 4) {
+   108			out_pixels[x].a = (u16)0xffff;
+   109			out_pixels[x].r = le16_to_cpu(src_pixels[2]);
+   110			out_pixels[x].g = le16_to_cpu(src_pixels[1]);
+   111			out_pixels[x].b = le16_to_cpu(src_pixels[0]);
+   112		}
+   113	}
+   114	
+   115	/*
+   116	 * The following  functions take an line of argb_u16 pixels from the
+   117	 * src_buffer, convert them to a specific format, and store them in the
+   118	 * destination.
+   119	 *
+   120	 * They are used in the `compose_active_planes` to convert and store a line
+   121	 * from the src_buffer to the writeback buffer.
+   122	 */
+   123	static void argb_u16_to_ARGB8888(struct vkms_frame_info *frame_info,
+   124					 const struct line_buffer *src_buffer, int y)
+   125	{
+   126		int x_dst = frame_info->dst.x1;
+   127		u8 *dst_pixels = packed_pixels_addr(frame_info, x_dst, y);
+   128		struct pixel_argb_u16 *in_pixels = src_buffer->pixels;
+   129		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
+   130				    src_buffer->n_pixels);
+   131	
+   132		for (size_t x = 0; x < x_limit; x++, dst_pixels += 4) {
+   133			/*
+   134			 * This sequence below is important because the format's byte order is
+   135			 * in little-endian. In the case of the ARGB8888 the memory is
+   136			 * organized this way:
+   137			 *
+   138			 * | Addr     | = blue channel
+   139			 * | Addr + 1 | = green channel
+   140			 * | Addr + 2 | = Red channel
+   141			 * | Addr + 3 | = Alpha channel
+   142			 */
+   143			dst_pixels[3] = DIV_ROUND_CLOSEST(in_pixels[x].a, 257);
+   144			dst_pixels[2] = DIV_ROUND_CLOSEST(in_pixels[x].r, 257);
+   145			dst_pixels[1] = DIV_ROUND_CLOSEST(in_pixels[x].g, 257);
+   146			dst_pixels[0] = DIV_ROUND_CLOSEST(in_pixels[x].b, 257);
+   147		}
+   148	}
+   149	
+   150	static void argb_u16_to_XRGB8888(struct vkms_frame_info *frame_info,
+   151					 const struct line_buffer *src_buffer, int y)
+   152	{
+   153		int x_dst = frame_info->dst.x1;
+   154		u8 *dst_pixels = packed_pixels_addr(frame_info, x_dst, y);
+   155		struct pixel_argb_u16 *in_pixels = src_buffer->pixels;
+   156		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
+   157				    src_buffer->n_pixels);
+   158	
+   159		for (size_t x = 0; x < x_limit; x++, dst_pixels += 4) {
+   160			dst_pixels[3] = 0xff;
+   161			dst_pixels[2] = DIV_ROUND_CLOSEST(in_pixels[x].r, 257);
+   162			dst_pixels[1] = DIV_ROUND_CLOSEST(in_pixels[x].g, 257);
+   163			dst_pixels[0] = DIV_ROUND_CLOSEST(in_pixels[x].b, 257);
+   164		}
+   165	}
+   166	
+   167	static void argb_u16_to_ARGB16161616(struct vkms_frame_info *frame_info,
+   168					     const struct line_buffer *src_buffer, int y)
+   169	{
+   170		int x_dst = frame_info->dst.x1;
+   171		u16 *dst_pixels = packed_pixels_addr(frame_info, x_dst, y);
+   172		struct pixel_argb_u16 *in_pixels = src_buffer->pixels;
+   173		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
+   174				    src_buffer->n_pixels);
+   175	
+   176		for (size_t x = 0; x < x_limit; x++, dst_pixels += 4) {
+ > 177			dst_pixels[3] = cpu_to_le16(in_pixels[x].a);
+   178			dst_pixels[2] = cpu_to_le16(in_pixels[x].r);
+   179			dst_pixels[1] = cpu_to_le16(in_pixels[x].g);
+   180			dst_pixels[0] = cpu_to_le16(in_pixels[x].b);
+   181		}
+   182	}
+   183	
 
 -- 
 0-DAY CI Kernel Test Service
