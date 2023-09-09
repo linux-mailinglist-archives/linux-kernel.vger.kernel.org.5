@@ -2,126 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CE74799AFC
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 22:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2446799B23
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 22:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239447AbjIIUUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 16:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40780 "EHLO
+        id S236862AbjIIU3q convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 9 Sep 2023 16:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234993AbjIIUUs (ORCPT
+        with ESMTP id S229645AbjIIU3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 16:20:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C43E54
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 13:19:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694290798; x=1725826798;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=9rqO5sSSk7RV2kaKfdGcvUUUALXgTgvAyfV4CzoH/hI=;
-  b=hVScht5eZ4QtCAsvQH0T5SUQOneIdKzmRF5tBGUiRGX6N35HsOXmgY5m
-   hbVO3odqJX3x5FzfQgTSpBDuOQKQcL72x7UcTfxgcC+WuJV2ExXi1Jhha
-   A4sVZ4BOGwNTZrBLo1mjaAnY4m8QI1jS/7Y8SOZtK/4CUmLmi13BQ+X+Y
-   dJjWgQMyc2pz34zcSkUES6LmS+OHdAyC7ALBO6sbGiEV3Xlo4feO7kj1s
-   5VNo/0p9RD54RSGcs+EdlzbaAdKrVehsw4CviDTgoS2OfUaLpGtcByybp
-   boJfIj4MQYtOrmw4hK5b75CPwG39e4gjjL2olOnPIquG41uydYOXl7wUL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="376752791"
-X-IronPort-AV: E=Sophos;i="6.02,240,1688454000"; 
-   d="scan'208";a="376752791"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 13:18:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="916550726"
-X-IronPort-AV: E=Sophos;i="6.02,240,1688454000"; 
-   d="scan'208";a="916550726"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 09 Sep 2023 13:18:46 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qf4Pk-0003sk-28;
-        Sat, 09 Sep 2023 20:18:44 +0000
-Date:   Sun, 10 Sep 2023 04:17:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sui Jingfeng <suijingfeng@loongson.cn>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse: sparse:
- incorrect type in argument 1 (different address spaces)
-Message-ID: <202309100448.LTa4vVqD-lkp@intel.com>
+        Sat, 9 Sep 2023 16:29:43 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AA519E;
+        Sat,  9 Sep 2023 13:29:38 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qf4a0-003NNt-FK; Sat, 09 Sep 2023 22:29:20 +0200
+Received: from dynamic-089-014-158-203.89.14.pool.telefonica.de ([89.14.158.203] helo=[192.168.1.11])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qf4a0-0025rN-5I; Sat, 09 Sep 2023 22:29:20 +0200
+Message-ID: <86e6baa7dc92b42440c1e07332c876530306eaa3.camel@physik.fu-berlin.de>
+Subject: [GIT PULL] sh updates for v6.6
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Duoming Zhou <duoming@zju.edu.cn>,
+        Petr Tesarik <petr.tesarik.ext@huawei.com>,
+        Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-sh@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Sat, 09 Sep 2023 22:29:11 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 89.14.158.203
+X-ZEDAT-Hint: PO
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6099776f9f268e61fe5ecd721f994a8cfce5306f
-commit: f39db26c54281da6a785259498ca74b5e470476f drm: Add kms driver for loongson display controller
-date:   10 weeks ago
-config: i386-randconfig-061-20230909 (https://download.01.org/0day-ci/archive/20230910/202309100448.LTa4vVqD-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230910/202309100448.LTa4vVqD-lkp@intel.com/reproduce)
+Hi Linus!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309100448.LTa4vVqD-lkp@intel.com/
+I am very late this merge window since I was rather busy the past month but
+as there are only two small fixes in this pull request, I hope you are still
+willing to pull the sh changes for v6.6.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem * @@     got void *kptr @@
-   drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse:     expected void volatile [noderef] __iomem *
-   drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse:     got void *kptr
->> drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const volatile [noderef] __iomem * @@     got void *kptr @@
-   drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse:     expected void const volatile [noderef] __iomem *
-   drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse:     got void *kptr
+The first patch by Duoming Zhou fixes a use-after-free bug in the push-switch
+driver while the second one by Petr Tesarik addresses an issue where the call
+to dma_declare_coherent_memory() incorrectly passes the buffer end address
+instead of the buffer size as the size parameter.
 
-vim +27 drivers/gpu/drm/loongson/lsdc_benchmark.c
+I expect the pull request for v6.7 much larger since we're currently working
+on converting arch/sh to using device trees for which the patches have now
+been posted on the linux-sh mailing list.
+ 
+The following changes since commit fdf0eaf11452d72945af31804e2a1048ee1b574c:
 
-    12	
-    13	typedef void (*lsdc_copy_proc_t)(struct lsdc_bo *src_bo,
-    14					 struct lsdc_bo *dst_bo,
-    15					 unsigned int size,
-    16					 int n);
-    17	
-    18	static void lsdc_copy_gtt_to_vram_cpu(struct lsdc_bo *src_bo,
-    19					      struct lsdc_bo *dst_bo,
-    20					      unsigned int size,
-    21					      int n)
-    22	{
-    23		lsdc_bo_kmap(src_bo);
-    24		lsdc_bo_kmap(dst_bo);
-    25	
-    26		while (n--)
-  > 27			memcpy_toio(dst_bo->kptr, src_bo->kptr, size);
-    28	
-    29		lsdc_bo_kunmap(src_bo);
-    30		lsdc_bo_kunmap(dst_bo);
-    31	}
-    32	
-    33	static void lsdc_copy_vram_to_gtt_cpu(struct lsdc_bo *src_bo,
-    34					      struct lsdc_bo *dst_bo,
-    35					      unsigned int size,
-    36					      int n)
-    37	{
-    38		lsdc_bo_kmap(src_bo);
-    39		lsdc_bo_kmap(dst_bo);
-    40	
-    41		while (n--)
-  > 42			memcpy_fromio(dst_bo->kptr, src_bo->kptr, size);
-    43	
-    44		lsdc_bo_kunmap(src_bo);
-    45		lsdc_bo_kunmap(dst_bo);
-    46	}
-    47	
+  Linux 6.5-rc2 (2023-07-16 15:10:37 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/glaubitz/sh-linux.git tags/sh-for-v6.6-tag1
+
+for you to fetch changes up to 246f80a0b17f8f582b2c0996db02998239057c65:
+
+  sh: push-switch: Reorder cleanup operations to avoid use-after-free bug (2023-09-09 21:54:20 +0200)
+
+Thanks for pulling!
+
+Adrian
+
+----------------------------------------------------------------
+sh updates for v6.6
+
+- sh: push-switch: Reorder cleanup operations to avoid use-after-free bug
+- sh: boards: Fix CEU buffer size passed to dma_declare_coherent_memory()
+
+----------------------------------------------------------------
+Duoming Zhou (1):
+      sh: push-switch: Reorder cleanup operations to avoid use-after-free bug
+
+Petr Tesarik (1):
+      sh: boards: Fix CEU buffer size passed to dma_declare_coherent_memory()
+
+ arch/sh/boards/mach-ap325rxa/setup.c | 2 +-
+ arch/sh/boards/mach-ecovec24/setup.c | 6 ++----
+ arch/sh/boards/mach-kfr2r09/setup.c  | 2 +-
+ arch/sh/boards/mach-migor/setup.c    | 2 +-
+ arch/sh/boards/mach-se/7724/setup.c  | 6 ++----
+ arch/sh/drivers/push-switch.c        | 2 +-
+ 6 files changed, 8 insertions(+), 12 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
