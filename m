@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F40799AC0
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 22:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F65799AC3
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 22:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245171AbjIIUR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 16:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43006 "EHLO
+        id S245227AbjIIUSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 16:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237086AbjIIURz (ORCPT
+        with ESMTP id S239931AbjIIUSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 16:17:55 -0400
+        Sat, 9 Sep 2023 16:18:04 -0400
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F00CE7
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 13:17:43 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id A23CD3200805;
-        Sat,  9 Sep 2023 16:17:42 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9ACBE73
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 13:17:45 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id DF3C4320090E;
+        Sat,  9 Sep 2023 16:17:44 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Sat, 09 Sep 2023 16:17:43 -0400
+  by compute3.internal (MEProxy); Sat, 09 Sep 2023 16:17:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1694290662; x=
-        1694377062; bh=vYgeei/BDcJ6bUB2DAGppW0ND32ofla8o2DCj1NxYPE=; b=K
-        u0dd0RZHMaDqMns7iRitHO88BySItmXc1V/+Vb/OkmR3KGcO1DvaRAtq3OLHETze
-        naLsbxraep105inN1mW8i3aVWoN2CHwYKGEBnzeDVwtB/CY825a4Z6xplHeKufSB
-        j5nFyWllPSvSBWdcnnya2PQa8PQnYYZV8XJ5rJi+x/EQ026aTvbwXVV8VdsVpeGh
-        K6pNLRO3moFbl1eU9gKfEAOCfyD/8MKFiMMKp6OiMj6Z78ZchXerkP5VT2pQbY1v
-        Kah1XXspL8hkSGENcggXYwqoYZTnzsPBZM5B7wK0UGfXDstVHgvLEPFUuxcvWJ4X
-        I7OZP8RqM2VGeFapjE9CA==
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1694290664; x=
+        1694377064; bh=a7RQskjaETnUB7Hp/T92jpvvET5ms5jF4Eb+hZaDEyI=; b=J
+        8U6+zD6CiKtlWqKDAskkYFhuDtgIckiPB/7lksw946WKmDxpWUgYdbbEDm0RclGl
+        vDY74H5Yr4DdxccX57XaVRToiLWYDmlTbO0luKq3/cIrsBDx9pxmD+O04EwVAJXy
+        Z21t93Ly8W6i0Ahhc5B5/eFQ7QBQT3UpVbqQK0MNoer5pr3h4xjtVgL60X6P4i1H
+        ivUx277V8FX//1JY4wlhJ2ZwxJLn1p4QtQQP8W7r9gDllhtb0BH9vrjQ8IHf9k7B
+        RZYPilLZGpkEPRe42T2nppigHi+ANLbEsRK64ycR8vSZGjBdFJ9mIfhFOWLTATBk
+        aUBt2R3LPMlA1XLxVcrZQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1694290662; x=
-        1694377062; bh=vYgeei/BDcJ6bUB2DAGppW0ND32ofla8o2DCj1NxYPE=; b=J
-        6plQnuSCnXtX5IBcgF5KYZGLQQG5MhLcW0wynftAZ0np5C/3SOw1d4GtGQhHZoeA
-        RUCoGTMdxPBabmUAs8z9fzJypFl0W39j4LSRzE/kj+YtSJ+y2/NJxCWOMlC+OiBh
-        E06QkMy8GJfKVsumpoaI812sFBrDYMDbN7JgsvEuVRLEJ8/imdo2h3gHSfEr1mtS
-        U5OdXOVeblb2nv0zlpwDBRQC818RhI7+SAipU2efh9earF6Cmks7jZbChNmnwBYD
-        Vd/3hzPGOd+tI1EvQdpIoT/1VmuvUeJxT7/xF3v23ep25CoStRL7VhCvoOIJo699
-        CEAt1LarUDmRPpTBESL8w==
-X-ME-Sender: <xms:5tL8ZCxRHNq-vzK9N_uG8qqhbp1rBBZJvMQ9p4a7aAHLq3NtnewxUg>
-    <xme:5tL8ZOQzgpOWVkKdWgPPv6_cgUihWvwV0e4kJV3IgmdiyW0KJM_agwaPSvToF64mD
-    BKKgu6Gzmjz4Bhqnw>
-X-ME-Received: <xmr:5tL8ZEVIn04lOL8iEg7t_6-Bpd7rcM1EVp87tIIXdWdNEfB7mEw9ZCI9xIQrxqsnwjd_Vb-hOeWYdBkUxugRx_7CmdETWSKc1f38xGy0tjLYkUNXxf_DsCaJFXJl1xiuAhsZFg>
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1694290664; x=
+        1694377064; bh=a7RQskjaETnUB7Hp/T92jpvvET5ms5jF4Eb+hZaDEyI=; b=b
+        M27lb4EWA9BmB3m23H9K7njzrwz1bmIeiC5n4OWhUv2bwrE3fqlPBd/kAKAq3I9T
+        e5xwcraAUx0Gc+NwOYzt8ojKyH3/XxxiNv1oVipM8loatwq/R2656NXKOYmYKmNi
+        O21F3BqBHB2BTq1h+mMfnaq1iypcjKCMUukjOpNMPVr32ts1eBC4LMBohZWu+Oj7
+        XIThvzOMEr/coKW8CccbNQsAKKcGQYFdbNpx0mDpETtmLShxDxs8IRZt1mJDC6tC
+        FWSYgAAhfceLtWGniOn7cqvbhIGsHYCwX7xj3I/kK4U/xdM8i/oeAhkk4N5YvzQH
+        ckFKYFs9xZRm+KPQViSKw==
+X-ME-Sender: <xms:6NL8ZAP-jn16aiPBShXHouXc0o5eLOeBQpe7up0vPIPUt19c1_3_Cg>
+    <xme:6NL8ZG_10vruJCmqg4pXKL97lJdyKGTi3ur04iDSCjy5bJ1CFUt3DDcO-ajZoraFj
+    l76N9lSInB_gTFw_Q>
+X-ME-Received: <xmr:6NL8ZHSSCNCNDI19FcSWtyFkuX6aqs1cIGcCGhusFWb3K6He9BKXRWXtR6cfjJ8LcvoF0Lg74YrliipKlmIsbMotzFY55iBr7MdK3YVSWGtCYcl-of_84-j2cJ2RphzQmDtagQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehledgudegiecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
@@ -56,22 +56,22 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehledgudegiecutefuodetgg
     ggtffrrghtthgvrhhnpedukeetueduhedtleetvefguddvvdejhfefudelgfduveeggeeh
     gfdufeeitdevteenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfh
     hrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:5tL8ZIgvP082q9SgyvhZDbZ69buLo0piSwbSNT3_7U8OsZV6xK8lvg>
-    <xmx:5tL8ZEAxP4Bj3bU5vGdQ1eX2D8JNvBrwsjCMkx_b0-N6o3oStnzTuA>
-    <xmx:5tL8ZJIUDslnDG-sxfX_w_w2fCw2f6hdrGqre1Oxj6FtmZCr892DhQ>
-    <xmx:5tL8ZH9UTzbv1bS2mhrE2nMYvChZb-rj8vYZoG893ysjlGWDVmt9Dw>
+X-ME-Proxy: <xmx:6NL8ZIv_DSdrPavGVuaB-fhnhim8VgJmDXaKwpvURvQ1ZUJ3aibLLQ>
+    <xmx:6NL8ZId09I71zAQ0gDnEg_lCCQPoa6KPGuQXbwhX5__P0ZD7RqYjqg>
+    <xmx:6NL8ZM2DIX5_1ekz2WkxlTCOmIpkHmMjRutizgag7fRiuJ7xZ5bqtQ>
+    <xmx:6NL8ZH63BAoctxgNuQkkhWo7ZpT2xDyPwbLM9bYgm4m3ScvQi2551A>
 Feedback-ID: i0ad843c9:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 9 Sep 2023 16:17:41 -0400 (EDT)
+ 9 Sep 2023 16:17:43 -0400 (EDT)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Palmer Dabbelt <palmer@dabbelt.com>,
         Alexandre Ghiti <alexghiti@rivosinc.com>,
         linux-riscv@lists.infradead.org
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Samuel Holland <samuel@sholland.org>
-Subject: [PATCH 6/7] riscv: mm: Always flush a single MM context by ASID
-Date:   Sat,  9 Sep 2023 15:16:34 -0500
-Message-ID: <20230909201727.10909-7-samuel@sholland.org>
+Subject: [PATCH 7/7] riscv: mm: Combine the SMP and non-SMP TLB flushing code
+Date:   Sat,  9 Sep 2023 15:16:35 -0500
+Message-ID: <20230909201727.10909-8-samuel@sholland.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230909201727.10909-1-samuel@sholland.org>
 References: <20230909201727.10909-1-samuel@sholland.org>
@@ -86,170 +86,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even if ASIDs are not supported, using the single-ASID variant of the
-sfence.vma instruction preserves TLB entries for global (kernel) pages.
-So it is always most efficient to use the single-ASID code path.
+This allows non-SMP configurations to take advantage of improvements
+to the code in tlbflush.c, such as support for huge pages and flushing
+multiple-page ranges.
 
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
 
- arch/riscv/include/asm/mmu_context.h |  2 -
- arch/riscv/include/asm/tlbflush.h    | 11 +++--
- arch/riscv/mm/context.c              |  3 +-
- arch/riscv/mm/tlbflush.c             | 68 ++++++----------------------
- 4 files changed, 24 insertions(+), 60 deletions(-)
+ arch/riscv/include/asm/tlbflush.h | 31 ++++++++-----------------------
+ arch/riscv/mm/Makefile            |  5 +----
+ arch/riscv/mm/tlbflush.c          |  7 ++++++-
+ 3 files changed, 15 insertions(+), 28 deletions(-)
 
-diff --git a/arch/riscv/include/asm/mmu_context.h b/arch/riscv/include/asm/mmu_context.h
-index 7030837adc1a..b0659413a080 100644
---- a/arch/riscv/include/asm/mmu_context.h
-+++ b/arch/riscv/include/asm/mmu_context.h
-@@ -33,8 +33,6 @@ static inline int init_new_context(struct task_struct *tsk,
- 	return 0;
- }
- 
--DECLARE_STATIC_KEY_FALSE(use_asid_allocator);
--
- #include <asm-generic/mmu_context.h>
- 
- #endif /* _ASM_RISCV_MMU_CONTEXT_H */
 diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-index e55831edfc19..ba27cf68b170 100644
+index ba27cf68b170..a947ae3afd28 100644
 --- a/arch/riscv/include/asm/tlbflush.h
 +++ b/arch/riscv/include/asm/tlbflush.h
-@@ -54,13 +54,18 @@ void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
- #define flush_tlb_all() local_flush_tlb_all()
- #define flush_tlb_page(vma, addr) local_flush_tlb_page(addr)
- 
-+static inline void flush_tlb_mm(struct mm_struct *mm)
-+{
-+	unsigned long asid = cntx2asid(atomic_long_read(&mm->context.id));
-+
-+	local_flush_tlb_all_asid(asid);
-+}
-+
- static inline void flush_tlb_range(struct vm_area_struct *vma,
- 		unsigned long start, unsigned long end)
+@@ -33,13 +33,12 @@ static inline void local_flush_tlb_page_asid(unsigned long addr,
  {
--	local_flush_tlb_all();
-+	flush_tlb_mm(vma->vm_mm);
+ 	ALT_SFENCE_VMA_ADDR_ASID(addr, asid);
  }
+-#else /* CONFIG_MMU */
+-#define local_flush_tlb_all()			do { } while (0)
+-#define local_flush_tlb_page(addr)		do { } while (0)
+-#endif /* CONFIG_MMU */
+ 
+-#if defined(CONFIG_SMP) && defined(CONFIG_MMU)
++#ifdef CONFIG_SMP
+ void flush_tlb_all(void);
++#else
++#define flush_tlb_all() local_flush_tlb_all()
++#endif
+ void flush_tlb_mm(struct mm_struct *mm);
+ void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
+ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+@@ -49,24 +48,10 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ 			unsigned long end);
+ #endif
+-#else /* CONFIG_SMP && CONFIG_MMU */
 -
--#define flush_tlb_mm(mm) flush_tlb_all()
- #endif /* !CONFIG_SMP || !CONFIG_MMU */
+-#define flush_tlb_all() local_flush_tlb_all()
+-#define flush_tlb_page(vma, addr) local_flush_tlb_page(addr)
+-
+-static inline void flush_tlb_mm(struct mm_struct *mm)
+-{
+-	unsigned long asid = cntx2asid(atomic_long_read(&mm->context.id));
+-
+-	local_flush_tlb_all_asid(asid);
+-}
+-
+-static inline void flush_tlb_range(struct vm_area_struct *vma,
+-		unsigned long start, unsigned long end)
+-{
+-	flush_tlb_mm(vma->vm_mm);
+-}
+-#endif /* !CONFIG_SMP || !CONFIG_MMU */
++#else /* CONFIG_MMU */
++#define local_flush_tlb_all()			do { } while (0)
++#define local_flush_tlb_page(addr)		do { } while (0)
++#endif /* CONFIG_MMU */
  
  /* Flush a range of kernel pages */
-diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-index 3ca9b653df7d..20057085ab8a 100644
---- a/arch/riscv/mm/context.c
-+++ b/arch/riscv/mm/context.c
-@@ -18,8 +18,7 @@
+ static inline void flush_tlb_kernel_range(unsigned long start,
+diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
+index 9c454f90fd3d..64f901674e35 100644
+--- a/arch/riscv/mm/Makefile
++++ b/arch/riscv/mm/Makefile
+@@ -13,15 +13,12 @@ endif
+ KCOV_INSTRUMENT_init.o := n
  
- #ifdef CONFIG_MMU
+ obj-y += init.o
+-obj-$(CONFIG_MMU) += extable.o fault.o pageattr.o
++obj-$(CONFIG_MMU) += extable.o fault.o pageattr.o tlbflush.o
+ obj-y += cacheflush.o
+ obj-y += context.o
+ obj-y += pgtable.o
+ obj-y += pmem.o
  
--DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
--
-+static DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
- static unsigned long num_asids;
- 
- static atomic_long_t current_version;
+-ifeq ($(CONFIG_MMU),y)
+-obj-$(CONFIG_SMP) += tlbflush.o
+-endif
+ obj-$(CONFIG_HUGETLB_PAGE) += hugetlbpage.o
+ obj-$(CONFIG_PTDUMP_CORE) += ptdump.o
+ obj-$(CONFIG_KASAN)   += kasan_init.o
 diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-index 54c3e70ccd81..56c2d40681a2 100644
+index 56c2d40681a2..587b3bb084b2 100644
 --- a/arch/riscv/mm/tlbflush.c
 +++ b/arch/riscv/mm/tlbflush.c
-@@ -6,15 +6,6 @@
- #include <asm/sbi.h>
- #include <asm/mmu_context.h>
- 
--static inline void local_flush_tlb_range(unsigned long start,
--		unsigned long size, unsigned long stride)
--{
--	if (size <= stride)
--		local_flush_tlb_page(start);
--	else
--		local_flush_tlb_all();
--}
--
- static inline void local_flush_tlb_range_asid(unsigned long start,
- 		unsigned long size, unsigned long stride, unsigned long asid)
- {
-@@ -51,62 +42,33 @@ static void __ipi_flush_tlb_range_asid(void *info)
- 	local_flush_tlb_range_asid(d->start, d->size, d->stride, d->asid);
+@@ -15,6 +15,7 @@ static inline void local_flush_tlb_range_asid(unsigned long start,
+ 		local_flush_tlb_all_asid(asid);
  }
  
--static void __ipi_flush_tlb_range(void *info)
--{
--	struct flush_tlb_range_data *d = info;
--
--	local_flush_tlb_range(d->start, d->size, d->stride);
--}
--
++#ifdef CONFIG_SMP
+ static void __ipi_flush_tlb_all(void *info)
+ {
+ 	local_flush_tlb_all();
+@@ -41,12 +42,12 @@ static void __ipi_flush_tlb_range_asid(void *info)
+ 
+ 	local_flush_tlb_range_asid(d->start, d->size, d->stride, d->asid);
+ }
++#endif
+ 
  static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
  			      unsigned long size, unsigned long stride)
  {
-+	unsigned long asid = cntx2asid(atomic_long_read(&mm->context.id));
- 	struct flush_tlb_range_data ftd;
+ 	unsigned long asid = cntx2asid(atomic_long_read(&mm->context.id));
+-	struct flush_tlb_range_data ftd;
  	struct cpumask *cmask = mm_cpumask(mm);
  	unsigned int cpuid;
--	bool broadcast;
  
- 	if (cpumask_empty(cmask))
+@@ -54,9 +55,12 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
  		return;
  
  	cpuid = get_cpu();
++#ifdef CONFIG_SMP
  	/* check if the tlbflush needs to be sent to other CPUs */
--	broadcast = cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
--	if (static_branch_unlikely(&use_asid_allocator)) {
--		unsigned long asid = cntx2asid(atomic_long_read(&mm->context.id));
--
--		if (broadcast) {
--			if (riscv_use_ipi_for_rfence()) {
--				ftd.asid = asid;
--				ftd.start = start;
--				ftd.size = size;
--				ftd.stride = stride;
--				on_each_cpu_mask(cmask,
--						 __ipi_flush_tlb_range_asid,
--						 &ftd, 1);
--			} else
--				sbi_remote_sfence_vma_asid(cmask,
--							   start, size, asid);
--		} else {
--			local_flush_tlb_range_asid(start, size, stride, asid);
--		}
--	} else {
--		if (broadcast) {
--			if (riscv_use_ipi_for_rfence()) {
--				ftd.asid = 0;
--				ftd.start = start;
--				ftd.size = size;
--				ftd.stride = stride;
--				on_each_cpu_mask(cmask,
--						 __ipi_flush_tlb_range,
--						 &ftd, 1);
--			} else
--				sbi_remote_sfence_vma(cmask, start, size);
--		} else {
--			local_flush_tlb_range(start, size, stride);
--		}
--	}
--
-+	if (cpumask_any_but(cmask, cpuid) < nr_cpu_ids) {
-+		if (riscv_use_ipi_for_rfence()) {
-+			ftd.asid = asid;
-+			ftd.start = start;
-+			ftd.size = size;
-+			ftd.stride = stride;
-+			on_each_cpu_mask(cmask,
-+					 __ipi_flush_tlb_range_asid,
-+					 &ftd, 1);
-+		} else
-+			sbi_remote_sfence_vma_asid(cmask,
-+						   start, size, asid);
-+	} else
-+		local_flush_tlb_range_asid(start, size, stride, asid);
+ 	if (cpumask_any_but(cmask, cpuid) < nr_cpu_ids) {
+ 		if (riscv_use_ipi_for_rfence()) {
++			struct flush_tlb_range_data ftd;
++
+ 			ftd.asid = asid;
+ 			ftd.start = start;
+ 			ftd.size = size;
+@@ -68,6 +72,7 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
+ 			sbi_remote_sfence_vma_asid(cmask,
+ 						   start, size, asid);
+ 	} else
++#endif
+ 		local_flush_tlb_range_asid(start, size, stride, asid);
  	put_cpu();
  }
- 
 -- 
 2.41.0
 
