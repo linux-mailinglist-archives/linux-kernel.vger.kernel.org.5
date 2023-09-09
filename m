@@ -2,80 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5717995DA
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878DD7995DC
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 03:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240925AbjIIBvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 21:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
+        id S232915AbjIIBwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 21:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbjIIBvQ (ORCPT
+        with ESMTP id S234966AbjIIBwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 21:51:16 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D07186
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 18:51:12 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so43330641fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 18:51:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1694224270; x=1694829070; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PrToj7FeDRLWjKBQmt7EM4KaQEIvjVbVJx9Xts6lKOU=;
-        b=FU/jo9CmBRp87h5YF6u89FZLl2nXROKCYBvuMKyMAErvenw/EmaHq2zB+mVe/jwnRD
-         8ZQKCwQdtQLlSxbor6OVKMAbpJ/YQMqGQK/CEpJOy2nWZhNCLpH+LPALfrEbd3W32at2
-         Dr/5/RieJNlZLmjOKE+ji3rdDPyO5d/PWa1OQ=
+        Fri, 8 Sep 2023 21:52:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F7B1FE0
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Sep 2023 18:51:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694224288;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SanvGomkSje1s3xXLYmIy8A6OYMvM6JQdu3zGT78Ysw=;
+        b=TNXr6cexwb9mJ/lUTcmng/4bjdzxSyHO53qjKCD/N+Ka/a38ZF0Mt9E7h4nFuLwqr3WrV7
+        cjmvAoFrX5XTDl2+cgV4Pg5O5ubBOBwMDxx7BAzEuaAmGALbi8O7s6xQeTn82GNWTo0Ee6
+        Ny7K156LrT/oiOcw7nvwXVGgQOpz0W8=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-628-OpuSLNPgMUm2XfNJNU4yxw-1; Fri, 08 Sep 2023 21:51:26 -0400
+X-MC-Unique: OpuSLNPgMUm2XfNJNU4yxw-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-655d3c7e27bso5261216d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Sep 2023 18:51:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694224270; x=1694829070;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PrToj7FeDRLWjKBQmt7EM4KaQEIvjVbVJx9Xts6lKOU=;
-        b=D0METd2PWjMhbB/Aat4DThOSRZirvXqG1mJ10XCpb4SoPopFdZevhyND3Btvds0WNX
-         pkK6YtxADO8WMPP0lBecXB5T9Q+IoeB6kMIio50stB/j9ZM4K9SZg9klBz6ZU/doFsHY
-         P47ZZi/oBv4ZFnHWx3SmJwH9JwxsXgOfzDV8vGgSTf8C9hnxuLjM83O6gSArw/RavBGY
-         vHQ8TlxRCb6bYDx+rVYIKHsRxWcQqV/gJhFTHzCgriXwiEkG4DFuRG/l0IhEI+gcpQqh
-         1rN5Lpik7/w8Wu5gwips6mx4UgQuUynmSVHjF4R9pA9Zlsx3cm7knBqkVBKROqeS8vya
-         2JTg==
-X-Gm-Message-State: AOJu0YxlALeYVLWeFUBcok11Ep8f2jBv9t9G+ludEgcHUaaF78dv49nA
-        maqnm40AKTArr9cv/Deo8i07NVe83El0ONmUAq52OA==
-X-Google-Smtp-Source: AGHT+IHOIuHOCzsUY5H2PPqv3Yp9QbQ2cgHuTrW+0DRaNEAH0oKwk+XmuIxDsdNpVRHw7osDHATTPHsIdwdlvW4jllM=
-X-Received: by 2002:a2e:9b5a:0:b0:2bc:c51d:da9e with SMTP id
- o26-20020a2e9b5a000000b002bcc51dda9emr3351866ljj.21.1694224270514; Fri, 08
- Sep 2023 18:51:10 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694224286; x=1694829086;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SanvGomkSje1s3xXLYmIy8A6OYMvM6JQdu3zGT78Ysw=;
+        b=nlHO09LLIzCGMEE8BMmcFBOzEUmUS7T3eXZPkDJ26/m8kcpXNKGkvuP0LLLX+6klUs
+         fo1F2y+DgdZy1DSFCX9ZKCu9j6nEL42RmnJk4NhpPrmyIIFaq/UwJCPyKdPkH11ipMqs
+         UbF/bRv8zTtG3rvJVcvxm5G+PAUZvmlMfkZXR7y9helMoeiAvINnm5qTUSrPWiwgGNLZ
+         zbe3BClPwjwczVd0okaoXEnYPjRtSCtyXqWgU52RebeLoa/MRjMqUsceu03C95TMTlJb
+         Pq/br3fEhivELdG5dii2PcjTlPBn0LMwlG28mF95+kI0p+kdhZvRFNE0wtbY1A3/WWZO
+         Misg==
+X-Gm-Message-State: AOJu0YyiTwBWaa2hT8z5TGyB7ZtmiupkAPpCIv4OaoOHZVhUjCOcggR5
+        IIbiEiGY3ZG5AGtt5N1oKFpOm3qTuNqPIHnSJ+jzMrMRUsgrvqP+tCK8urCKuk8wINk/uLi+uzi
+        jtyLmP4WN0nP06/S6++dtgW/0
+X-Received: by 2002:a0c:f189:0:b0:64f:4ba6:3b2d with SMTP id m9-20020a0cf189000000b0064f4ba63b2dmr3995138qvl.44.1694224286024;
+        Fri, 08 Sep 2023 18:51:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEVh4ux+7IqqyRIt488t13shoGm2kJKCOWhsRwEuleU7OnKpj/Zy1OLf+heVW5s49yNQ892NA==
+X-Received: by 2002:a0c:f189:0:b0:64f:4ba6:3b2d with SMTP id m9-20020a0cf189000000b0064f4ba63b2dmr3995122qvl.44.1694224285794;
+        Fri, 08 Sep 2023 18:51:25 -0700 (PDT)
+Received: from x1-fbsd.aquini.net (c-73-249-122-233.hsd1.nh.comcast.net. [73.249.122.233])
+        by smtp.gmail.com with ESMTPSA id x13-20020a0ce24d000000b0064c1b27bf2dsm1145804qvl.140.2023.09.08.18.51.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Sep 2023 18:51:25 -0700 (PDT)
+Date:   Fri, 8 Sep 2023 21:51:21 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Waiman Long <longman@redhat.com>,
+        Rafael Aquini <raquini@redhat.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] mm/slab_common: fix slab_caches list corruption after
+ kmem_cache_destroy()
+Message-ID: <ZPvPmU9vBXQoFBm4@x1-fbsd.aquini.net>
+References: <20230908230649.802560-1-aquini@redhat.com>
+ <ZPvHUK95S6Dgl86v@casper.infradead.org>
 MIME-Version: 1.0
-References: <20230908203603.5865-1-frederic@kernel.org> <20230908203603.5865-4-frederic@kernel.org>
- <CAEXW_YTxSft0cZkq6UOsdkDxLCjMZfqqK3fBVz6He0UebCqS+g@mail.gmail.com>
-In-Reply-To: <CAEXW_YTxSft0cZkq6UOsdkDxLCjMZfqqK3fBVz6He0UebCqS+g@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 8 Sep 2023 21:50:59 -0400
-Message-ID: <CAEXW_YQec-aUxMQ_tGx9N6_pF=K9vhWZEPT6JGKcemcBXOM+7g@mail.gmail.com>
-Subject: Re: [PATCH 03/10] rcu/nocb: Remove needless LOAD-ACQUIRE
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPvHUK95S6Dgl86v@casper.infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > * Callbacks can be concurrently advanced between the LOAD-ACQUIRE on
-> >   ->nocb_cb_sleep and the call to rcu_segcblist_extract_done_cbs() in
-> >   rcu_do_batch(), making any ordering based on ->nocb_cb_sleep broken.
+On Sat, Sep 09, 2023 at 02:16:00AM +0100, Matthew Wilcox wrote:
+> On Fri, Sep 08, 2023 at 07:06:49PM -0400, Rafael Aquini wrote:
+> > This patch fixes this issue by properly checking shutdown_cache()'s
+> > return value before taking the kmem_cache_release() branch.
+> 
+> Is this the right way to fix this problem?  If the module destroys the
+> slab cache, it's not going to be possible to free any of the objects
+> still allocated from the cache.  I feel that we should treat this as
+> implicitly freeing all the objects that were allocated from the cache
+> rather than saying the cache is still busy.
 >
-> If you don't mind, could you elaborate more?
 
-Ah, I see you deleted the counterpart memory barrier in the next
-patch. I was reading the patches in order, so I did not notice. I'll
-go read that as well. It might make sense to combine this and the next
-patch, not sure.
+Leaving the cache with the unfreeable slabs "alone" is how it was historically 
+done, and we have to fix this corner case opened by 0495e337b703 this way to 
+address the corruption on stable releases without changing their established 
+and expected behavior.
 
- - Joel
+I think your proposal for a different behavior upon cache destruction is
+something we should discuss for future releases, but it is orthogonal to
+this required follow-up fix.
+
+
