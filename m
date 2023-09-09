@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 676257994EF
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F222D7994F3
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241972AbjIIAoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 20:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55836 "EHLO
+        id S1346192AbjIIAoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:44:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346186AbjIIAng (ORCPT
+        with ESMTP id S1346200AbjIIAni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 20:43:36 -0400
+        Fri, 8 Sep 2023 20:43:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261D2421C;
-        Fri,  8 Sep 2023 17:40:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C7D1C116A7;
-        Sat,  9 Sep 2023 00:40:42 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29704226;
+        Fri,  8 Sep 2023 17:41:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7CEBC116AB;
+        Sat,  9 Sep 2023 00:40:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694220043;
-        bh=+ShVL8UuEqIwo9ArqQITPyPurkHIjkiBHqh8aihiJg4=;
+        s=k20201202; t=1694220044;
+        bh=kOtzIdYvM65eOSCLmigwS5A6OwdOKeLzb2TKCJOMY8I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uB1KmqOoC0SRdIOExVS0xFfy3Cq9tnAaCmxzMUzaYqZ4ZS+MQZUgRbeKUk8qbWPGJ
-         Zdvlt1rz3GejqJ98jM6i6SAx1Db55lnucOFmuxNeIhVIJjjlnCv2dR0Lga5Gb3sAsO
-         WsJd4/NfZvhMlpBLII59yGVUXkikSRrcJR7hlTLJHIVOziu8geC15lni2Qhm+oWHco
-         mvwSqCXoOoas41bKELpk3s3XWxOa+9RojusbqoUlwRZ5yf2NUsVJXs0yZx722qGOwy
-         uEstCTiMb775emVfOQ4dXyEmMCzw5FHCv/pZg0C4IOOLndCNEUXeHlzohv8mbA7HEe
-         ugphcXHoJqiBA==
+        b=m2kOOVNsTAu95GQXG7NqdBGF5E9p1P3pDBClN93RkYlxOVB9iFBrKzUuR24TD9NNl
+         hy+tKHf5+1TpMyjToOvL8bTN5eFx1IORw4o7wEjyMbL7JzyMheXaQoRURCjDKYK8eb
+         dSUucrQIXak4sBuIhLqBxX9NVeMVvxDpKQMm05Nyh2sHuYr9jQ/6xnbum/tViWaq1+
+         B+HDX19BhqSUtl0NOHEVIJ70JD9ZExuM+YIA4cBp6U8hunZ3o1ow0AkzfY8t4/6lom
+         9NZnCNR/N+ST79Z3S2jjYwi7CtWGQizttSe9FJ+2G082aYmLmwFeddqR7cIJ8BVsUk
+         /x8Hax+C4lG6A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sasha Levin <sashal@kernel.org>, yong.zhi@intel.com,
-        bingbu.cao@intel.com, djrscally@gmail.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 13/14] media: pci: ipu3-cio2: Initialise timing struct to avoid a compiler warning
-Date:   Fri,  8 Sep 2023 20:40:13 -0400
-Message-Id: <20230909004015.3580832-13-sashal@kernel.org>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 14/14] kobject: Add sanity check for kset->kobj.ktype in kset_register()
+Date:   Fri,  8 Sep 2023 20:40:14 -0400
+Message-Id: <20230909004015.3580832-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230909004015.3580832-1-sashal@kernel.org>
 References: <20230909004015.3580832-1-sashal@kernel.org>
@@ -55,34 +53,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 9d7531be3085a8f013cf173ccc4e72e3cf493538 ]
+[ Upstream commit 4d0fe8c52bb3029d83e323c961221156ab98680b ]
 
-Initialise timing struct in cio2_hw_init() to zero in order to avoid a
-compiler warning. The warning was a false positive.
+When I register a kset in the following way:
+	static struct kset my_kset;
+	kobject_set_name(&my_kset.kobj, "my_kset");
+        ret = kset_register(&my_kset);
 
-Reported-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+A null pointer dereference exception is occurred:
+[ 4453.568337] Unable to handle kernel NULL pointer dereference at \
+virtual address 0000000000000028
+... ...
+[ 4453.810361] Call trace:
+[ 4453.813062]  kobject_get_ownership+0xc/0x34
+[ 4453.817493]  kobject_add_internal+0x98/0x274
+[ 4453.822005]  kset_register+0x5c/0xb4
+[ 4453.825820]  my_kobj_init+0x44/0x1000 [my_kset]
+... ...
+
+Because I didn't initialize my_kset.kobj.ktype.
+
+According to the description in Documentation/core-api/kobject.rst:
+ - A ktype is the type of object that embeds a kobject.  Every structure
+   that embeds a kobject needs a corresponding ktype.
+
+So add sanity check to make sure kset->kobj.ktype is not NULL.
+
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20230805084114.1298-2-thunder.leizhen@huaweicloud.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/intel/ipu3/ipu3-cio2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/kobject.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/media/pci/intel/ipu3/ipu3-cio2.c b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-index 3457f0f545c48..9c0d117e093b1 100644
---- a/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-+++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-@@ -359,7 +359,7 @@ static int cio2_hw_init(struct cio2_device *cio2, struct cio2_queue *q)
- 	void __iomem *const base = cio2->base;
- 	u8 lanes, csi2bus = q->csi2.port;
- 	u8 sensor_vc = SENSOR_VIR_CH_DFLT;
--	struct cio2_csi2_timing timing;
-+	struct cio2_csi2_timing timing = { 0 };
- 	int i, r;
+diff --git a/lib/kobject.c b/lib/kobject.c
+index 0c6d17503a113..c4025a880d753 100644
+--- a/lib/kobject.c
++++ b/lib/kobject.c
+@@ -877,6 +877,11 @@ int kset_register(struct kset *k)
+ 	if (!k)
+ 		return -EINVAL;
  
- 	fmt = cio2_find_format(NULL, &q->subdev_fmt.code);
++	if (!k->kobj.ktype) {
++		pr_err("must have a ktype to be initialized properly!\n");
++		return -EINVAL;
++	}
++
+ 	kset_init(k);
+ 	err = kobject_add_internal(&k->kobj);
+ 	if (err)
 -- 
 2.40.1
 
