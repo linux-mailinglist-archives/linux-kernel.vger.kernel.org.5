@@ -2,126 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C63F5799783
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 13:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42B779978B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 13:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344718AbjIILBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 07:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
+        id S1344809AbjIILE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 07:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344674AbjIILBW (ORCPT
+        with ESMTP id S237575AbjIILEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 07:01:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF49CCFD
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 04:01:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694257274; x=1725793274;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=bWYFh3R0xNe5KLzrae2y3MAyY4PaR0XHBbdayXWcTJQ=;
-  b=DfGd2eugDfkH936kj5kqC5EkQMLOQhThmR8VXdDkflt8GO7vI9YzGUeg
-   sF/P6kNEU1MYWdDPBctmLuuCBG5hg3NKM8f4VzAKF5bfZrz0zQPnnZnVB
-   Quto7UVEshPT49o0+OeifSYSjz+PM7zgbud/277zwo2+o/WtttfdvNHYu
-   0kEK9SQQ7oMR+OX/hok/Gj+nifxURhfjVvWY1RgpG7tx//0I79ML+5gbv
-   +1EGYcxoAnpFeEhwnT9PbFJ2g81vMIXTRriMdmW1eGZJTenY8/5dFJsjH
-   O4K8oNaAAbS/3sKV3YYc7Tw6M8/9z96g+LmHGsby6xH9Z2UxD1kl2qGgm
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="368073146"
-X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
-   d="scan'208";a="368073146"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 04:01:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="916464745"
-X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
-   d="scan'208";a="916464745"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 09 Sep 2023 04:01:12 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qeviA-0003Ly-1o;
-        Sat, 09 Sep 2023 11:01:10 +0000
-Date:   Sat, 9 Sep 2023 19:01:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-Subject: drivers/iommu/io-pgtable-dart.c:157:25: warning: variable 'new' set
- but not used
-Message-ID: <202309091804.8DRVOiw1-lkp@intel.com>
+        Sat, 9 Sep 2023 07:04:54 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B5F1CED
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 04:04:50 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c0ecb9a075so21878515ad.2
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 04:04:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694257490; x=1694862290; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hhJX5VWHXXtciuS9BkKk5zfmvkcSaBWZ/aSQRFscuJA=;
+        b=s11GDNinn8phXfcPhsh/p6j0iF7jan8biJtSs07PbHWtz6qZvNw+bjDAVsthGGedAC
+         yiVm+9KyxTHwWbYFgGfGJzVX0GPMOALOeaFEFeKZ4O14viP7PmbsS1HzHBY+3kRC9SHp
+         YV0gWFkHveVDmEnb+48nPL8VZDbujEXMI63Dthy2eWFL38uVwbCqWrFSVjP23kGCz9j3
+         rx+rbtKn/gbxPG4DXnZJIKejr3B7+J5+3pDvExRm8fI4pQQCepmnk/xhxnetFydMwFvW
+         jWhxpKLspMXiCi7uMqHQbNivOHX3pQfxzg5D09nx8u/V9ErktAlhQ0rJFsSxe4DDjuOb
+         8Tcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694257490; x=1694862290;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hhJX5VWHXXtciuS9BkKk5zfmvkcSaBWZ/aSQRFscuJA=;
+        b=p4ZS+9ixKdLs2Xdi5S/y+9vG+tYENrlmmq6ZFjRKZOsnSkEcKl8U3uGmhhdtQOplNI
+         vKWNc97/QPXbY/3e2PRinGD4vYsm+pj9UVtNX4pq14GU+qwJGpQBKC7VlU1mlravOrwn
+         RazL4rAUMlm8zOA5IKsyELkbJH1MmNxdmHWDIpDM8Yb7gERrCJ6Ct+94sFagHwEWZsha
+         NJqL5kkBHN6toPx7JMsbTrIFLOOy3bfT059woQvfWmWAEfEb3GlCzYplSV6F5E1cJ0Nu
+         RqjwRnxasLFFOn7XL36aRFkTi2YZ2+0LIN38NCaV9It/gkrXjlLokG+G3Sv+kCvqXKeF
+         RG9w==
+X-Gm-Message-State: AOJu0YziKabWa8W1bN2DOnCZ/Cq3BOTtVAUsI/0XkVUdfDCUneqOvkEY
+        3MTnsHZi0Gj+CUAJh5Rk1CA=
+X-Google-Smtp-Source: AGHT+IGMiGpjKR5+4BJIqy4f/HlylX0MSMIi2+xFdaiFsk2sdaUrzTeLkVocsGY1gIjqCETBTBv8TQ==
+X-Received: by 2002:a17:902:7489:b0:1bb:25bd:d09c with SMTP id h9-20020a170902748900b001bb25bdd09cmr4498991pll.1.1694257489858;
+        Sat, 09 Sep 2023 04:04:49 -0700 (PDT)
+Received: from brag-vm.localdomain ([27.4.106.123])
+        by smtp.gmail.com with ESMTPSA id j9-20020a170902da8900b001bbbbda70ccsm3017206plx.158.2023.09.09.04.04.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Sep 2023 04:04:49 -0700 (PDT)
+From:   Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch
+Cc:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm: fix doc warnings related to drm connector
+Date:   Sat,  9 Sep 2023 16:33:43 +0530
+Message-Id: <20230909110343.8103-1-bragathemanick0908@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+Addressing drm dp/hdmi connector related kernel documentation
+warning and add more information about these values.
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+---
+ drivers/gpu/drm/drm_connector.c | 2 ++
+ include/drm/drm_connector.h     | 2 ++
+ 2 files changed, 4 insertions(+)
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6099776f9f268e61fe5ecd721f994a8cfce5306f
-commit: 9257959a6e5b4fca6fc8e985790bff62c2046f20 locking/atomic: scripts: restructure fallback ifdeffery
-date:   3 months ago
-config: arc-allmodconfig (https://download.01.org/0day-ci/archive/20230909/202309091804.8DRVOiw1-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230909/202309091804.8DRVOiw1-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309091804.8DRVOiw1-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/iommu/io-pgtable-dart.c: In function 'dart_install_table':
-   drivers/iommu/io-pgtable-dart.c:168:13: error: void value not ignored as it ought to be
-     168 |         old = cmpxchg64_relaxed(ptep, curr, new);
-         |             ^
->> drivers/iommu/io-pgtable-dart.c:157:25: warning: variable 'new' set but not used [-Wunused-but-set-variable]
-     157 |         dart_iopte old, new;
-         |                         ^~~
-
-
-vim +/new +157 drivers/iommu/io-pgtable-dart.c
-
-745ef1092bcfcf Janne Grunau 2022-09-16  151  
-745ef1092bcfcf Janne Grunau 2022-09-16  152  static dart_iopte dart_install_table(dart_iopte *table,
-745ef1092bcfcf Janne Grunau 2022-09-16  153  					     dart_iopte *ptep,
-745ef1092bcfcf Janne Grunau 2022-09-16  154  					     dart_iopte curr,
-745ef1092bcfcf Janne Grunau 2022-09-16  155  					     struct dart_io_pgtable *data)
-745ef1092bcfcf Janne Grunau 2022-09-16  156  {
-745ef1092bcfcf Janne Grunau 2022-09-16 @157  	dart_iopte old, new;
-745ef1092bcfcf Janne Grunau 2022-09-16  158  
-745ef1092bcfcf Janne Grunau 2022-09-16  159  	new = paddr_to_iopte(__pa(table), data) | APPLE_DART_PTE_VALID;
-745ef1092bcfcf Janne Grunau 2022-09-16  160  
-745ef1092bcfcf Janne Grunau 2022-09-16  161  	/*
-745ef1092bcfcf Janne Grunau 2022-09-16  162  	 * Ensure the table itself is visible before its PTE can be.
-745ef1092bcfcf Janne Grunau 2022-09-16  163  	 * Whilst we could get away with cmpxchg64_release below, this
-745ef1092bcfcf Janne Grunau 2022-09-16  164  	 * doesn't have any ordering semantics when !CONFIG_SMP.
-745ef1092bcfcf Janne Grunau 2022-09-16  165  	 */
-745ef1092bcfcf Janne Grunau 2022-09-16  166  	dma_wmb();
-745ef1092bcfcf Janne Grunau 2022-09-16  167  
-745ef1092bcfcf Janne Grunau 2022-09-16  168  	old = cmpxchg64_relaxed(ptep, curr, new);
-745ef1092bcfcf Janne Grunau 2022-09-16  169  
-745ef1092bcfcf Janne Grunau 2022-09-16  170  	return old;
-745ef1092bcfcf Janne Grunau 2022-09-16  171  }
-745ef1092bcfcf Janne Grunau 2022-09-16  172  
-
-:::::: The code at line 157 was first introduced by commit
-:::::: 745ef1092bcfcf3bca8d82c260947ca498022dde iommu/io-pgtable: Move Apple DART support to its own file
-
-:::::: TO: Janne Grunau <j@jannau.net>
-:::::: CC: Joerg Roedel <jroedel@suse.de>
-
+diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+index bf8371dc2a61..084c95785dda 100644
+--- a/drivers/gpu/drm/drm_connector.c
++++ b/drivers/gpu/drm/drm_connector.c
+@@ -2203,6 +2203,7 @@ static int drm_mode_create_colorspace_property(struct drm_connector *connector,
+ /**
+  * drm_mode_create_hdmi_colorspace_property - create hdmi colorspace property
+  * @connector: connector to create the Colorspace property on.
++ * @supported_colorspaces: to get hdmi supported colorspaces.
+  *
+  * Called by a driver the first time it's needed, must be attached to desired
+  * HDMI connectors.
+@@ -2227,6 +2228,7 @@ EXPORT_SYMBOL(drm_mode_create_hdmi_colorspace_property);
+ /**
+  * drm_mode_create_dp_colorspace_property - create dp colorspace property
+  * @connector: connector to create the Colorspace property on.
++ * @supported_colorspaces: to get dp supported colorspaces.
+  *
+  * Called by a driver the first time it's needed, must be attached to desired
+  * DP connectors.
+diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+index d300fde6c1a4..556d66dd122c 100644
+--- a/include/drm/drm_connector.h
++++ b/include/drm/drm_connector.h
+@@ -498,6 +498,8 @@ enum drm_privacy_screen_status {
+  *   ITU-R BT.601 colorimetry format
+  *   The DP spec does not say whether this is the 525 or the 625
+  *   line version.
++ * @DRM_MODE_COLORIMETRY_COUNT:
++ *   Represents the count of colorspaces.
+  */
+ enum drm_colorspace {
+ 	/* For Default case, driver will set the colorspace */
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
