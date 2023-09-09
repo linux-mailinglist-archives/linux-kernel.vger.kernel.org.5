@@ -2,179 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E717999EA
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C8A7999E6
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 18:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233586AbjIIQ1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 12:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51810 "EHLO
+        id S238312AbjIIQ1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 12:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243392AbjIIPFa (ORCPT
+        with ESMTP id S1346563AbjIIPLj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 11:05:30 -0400
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BDF831A8;
-        Sat,  9 Sep 2023 08:05:24 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.02,239,1688396400"; 
-   d="scan'208";a="179253444"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 10 Sep 2023 00:05:23 +0900
-Received: from localhost.localdomain (unknown [10.226.92.15])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 48FBD40062A3;
-        Sun, 10 Sep 2023 00:05:21 +0900 (JST)
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Biju Das <biju.das.au@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH] clk: cdce925: Extend match support for OF tables
-Date:   Sat,  9 Sep 2023 16:05:16 +0100
-Message-Id: <20230909150516.10353-1-biju.das.jz@bp.renesas.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 9 Sep 2023 11:11:39 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DBE1A8
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 08:11:34 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-27197b0b733so601255a91.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 08:11:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1694272294; x=1694877094; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FR4mT7BpnQdHvbo4nJB7tN7p8TAHwH3cLmazs6aPmRY=;
+        b=K8y37S5UWFsHK/IJcGT6538xALY5nUM5uRehhpr8XIYGvW1Ln9MjWk6SEeJ8acB1J9
+         iYDL8bMgGvCnOkZzlRF+5D5VOmNzfG/bdvrt5jjnJMPOYH4oNAa98xN+RFDDnGiOaEUl
+         G9oZ0+Ru3u0QZTIAc1HpUK9tX45fh8KY0FgouSDGK0GM3r7N1SEAMfLeCdMvK8FttwsI
+         oZdpy0txlqgtExzh1t4RG2cQB4dFGn5JJC3fEYgYDrxoP0+i4Qssgad0t7c9OJtpehu+
+         S2V/LtgXV3NjbQ5MZ4e6p9/vIKB7i+Zl+bEaMuKWc+bU6aCUxSDuhza5DaMcVNeowj2w
+         RdMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694272294; x=1694877094;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FR4mT7BpnQdHvbo4nJB7tN7p8TAHwH3cLmazs6aPmRY=;
+        b=Mk7GEDvWEhCjYl0Cj8p5527+fGpTyHRVIWHUc/1JKCgz8407sxB9Xtdavw1zMRfawe
+         LlrOd8fgnENhFxVf2urfiR8UO9qMBJtn2kiF2g4Al1lZy6DiClhVqwYxshNAlfXCPPzv
+         iAybF0uboVvCQGlMNne/Isu1kltNmTiVS2qItLjm34Xpp11BLLmhR0aR0yPAndBfVHOo
+         sXXJFit4b3BX44qONSzfPnL9HRMoyxEGsuOGX9+QhJ1qoLfgR1ndyCwOWDQNpyxhlwMw
+         4uBhUT2NQ3VEPEZpix2BU+rBTpY6dAGoQi2Vg/1QKpjnJzDllHcbLJhElaFSbqVyDTkP
+         TASg==
+X-Gm-Message-State: AOJu0YyBELssi7W0LHgSZN15sbJvQxIZUEzcopFN0XrooCk4vq8yKAf9
+        bD/6wGqJ0SC9wJIUejSEwY+33Q==
+X-Google-Smtp-Source: AGHT+IEetE5imo0CtKdmhK3iz+SEcOuUNbyEMBqZEcAJidGPHnc1cKIxlJx+AQXl4xfSoakrkGKoYg==
+X-Received: by 2002:a17:90a:3ec4:b0:26d:414d:a98a with SMTP id k62-20020a17090a3ec400b0026d414da98amr5254874pjc.1.1694272294081;
+        Sat, 09 Sep 2023 08:11:34 -0700 (PDT)
+Received: from localhost.localdomain ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id f15-20020a170902ff0f00b001bdb0483e65sm3371450plj.265.2023.09.09.08.11.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Sep 2023 08:11:32 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     brauner@kernel.org, arnd@arndb.de, asml.silence@gmail.com
+Subject: [PATCHSET v4 0/5] Add io_uring support for waitid
+Date:   Sat,  9 Sep 2023 09:11:19 -0600
+Message-Id: <20230909151124.1229695-1-axboe@kernel.dk>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver has an OF match table, still, it uses an ID lookup table for
-retrieving match data. Currently, the driver is working on the
-assumption that an I2C device registered via OF will always match a
-legacy I2C device ID. The correct approach is to have an OF device ID
-table using i2c_get_match_data() if the devices are registered via OF/ID.
+Hi,
 
-Unify the OF/ID table by using struct clk_cdce925_chip_info
-as match data for both these tables and replace the ID lookup table for
-the match data by i2c_get_match_data().
+This adds support for IORING_OP_WAITID, which is an async variant of
+the waitid(2) syscall. Rather than have a parent need to block waiting
+on a child task state change, it can now simply get an async notication
+when the requested state change has occured.
 
-Split the array clk_cdce925_chip_info_tbl[] as individual variables, and
-make lines shorter by referring to e.g. &clk_cdce913_info instead of
-&clk_cdce925_chip_info_tbl[CDCE913].
+Patches 1..4 are purely prep patches, and should not have functional
+changes. They split out parts of do_wait() into __do_wait(), so that
+the prepare-to-wait and sleep parts are contained within do_wait().
 
-Drop enum related to chip type as there is no user.
+Patch 5 adds io_uring support.
 
-While at it, remove the trailing comma in the terminator entry for the OF
-table making code robust against (theoretical) misrebases or other similar
-things where the new entry goes _after_ the termination without the
-compiler noticing.
+I wrote a few basic tests for this, which can be found in the
+'waitid' branch of liburing:
 
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- drivers/clk/clk-cdce925.c | 65 +++++++++++++++++++++------------------
- 1 file changed, 35 insertions(+), 30 deletions(-)
+https://git.kernel.dk/cgit/liburing/log/?h=waitid
 
-diff --git a/drivers/clk/clk-cdce925.c b/drivers/clk/clk-cdce925.c
-index cdee4958f26d..584c103394bb 100644
---- a/drivers/clk/clk-cdce925.c
-+++ b/drivers/clk/clk-cdce925.c
-@@ -25,25 +25,11 @@
-  * Model this as 2 PLL clocks which are parents to the outputs.
-  */
- 
--enum {
--	CDCE913,
--	CDCE925,
--	CDCE937,
--	CDCE949,
--};
--
- struct clk_cdce925_chip_info {
- 	int num_plls;
- 	int num_outputs;
- };
- 
--static const struct clk_cdce925_chip_info clk_cdce925_chip_info_tbl[] = {
--	[CDCE913] = { .num_plls = 1, .num_outputs = 3 },
--	[CDCE925] = { .num_plls = 2, .num_outputs = 5 },
--	[CDCE937] = { .num_plls = 3, .num_outputs = 7 },
--	[CDCE949] = { .num_plls = 4, .num_outputs = 9 },
--};
--
- #define MAX_NUMBER_OF_PLLS	4
- #define MAX_NUMBER_OF_OUTPUTS	9
- 
-@@ -621,20 +607,10 @@ static struct regmap_bus regmap_cdce925_bus = {
- 	.read = cdce925_regmap_i2c_read,
- };
- 
--static const struct i2c_device_id cdce925_id[] = {
--	{ "cdce913", CDCE913 },
--	{ "cdce925", CDCE925 },
--	{ "cdce937", CDCE937 },
--	{ "cdce949", CDCE949 },
--	{ }
--};
--MODULE_DEVICE_TABLE(i2c, cdce925_id);
--
- static int cdce925_probe(struct i2c_client *client)
- {
- 	struct clk_cdce925_chip *data;
- 	struct device_node *node = client->dev.of_node;
--	const struct i2c_device_id *id = i2c_match_id(cdce925_id, client);
- 	const char *parent_name;
- 	const char *pll_clk_name[MAX_NUMBER_OF_PLLS] = {NULL,};
- 	struct clk_init_data init;
-@@ -665,7 +641,7 @@ static int cdce925_probe(struct i2c_client *client)
- 		return -ENOMEM;
- 
- 	data->i2c_client = client;
--	data->chip_info = &clk_cdce925_chip_info_tbl[id->driver_data];
-+	data->chip_info = i2c_get_match_data(client);
- 	config.max_register = CDCE925_OFFSET_PLL +
- 		data->chip_info->num_plls * 0x10 - 1;
- 	data->regmap = devm_regmap_init(&client->dev, &regmap_cdce925_bus,
-@@ -822,12 +798,41 @@ static int cdce925_probe(struct i2c_client *client)
- 	return err;
- }
- 
-+static const struct clk_cdce925_chip_info clk_cdce913_info = {
-+	.num_plls = 1,
-+	.num_outputs = 3,
-+};
-+
-+static const struct clk_cdce925_chip_info clk_cdce925_info = {
-+	.num_plls = 2,
-+	.num_outputs = 5,
-+};
-+
-+static const struct clk_cdce925_chip_info clk_cdce937_info = {
-+	.num_plls = 3,
-+	.num_outputs = 7,
-+};
-+
-+static const struct clk_cdce925_chip_info clk_cdce949_info = {
-+	.num_plls = 4,
-+	.num_outputs = 9,
-+};
-+
-+static const struct i2c_device_id cdce925_id[] = {
-+	{ "cdce913", (kernel_ulong_t)&clk_cdce913_info },
-+	{ "cdce925", (kernel_ulong_t)&clk_cdce925_info },
-+	{ "cdce937", (kernel_ulong_t)&clk_cdce937_info },
-+	{ "cdce949", (kernel_ulong_t)&clk_cdce949_info },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, cdce925_id);
-+
- static const struct of_device_id clk_cdce925_of_match[] = {
--	{ .compatible = "ti,cdce913" },
--	{ .compatible = "ti,cdce925" },
--	{ .compatible = "ti,cdce937" },
--	{ .compatible = "ti,cdce949" },
--	{ },
-+	{ .compatible = "ti,cdce913", .data = &clk_cdce913_info },
-+	{ .compatible = "ti,cdce925", .data = &clk_cdce925_info },
-+	{ .compatible = "ti,cdce937", .data = &clk_cdce937_info },
-+	{ .compatible = "ti,cdce949", .data = &clk_cdce949_info },
-+	{ }
- };
- MODULE_DEVICE_TABLE(of, clk_cdce925_of_match);
- 
+Also spun a custom kernel for someone to test it, and no issues reported
+so far.
+
+The code can also be found here:
+
+https://git.kernel.dk/cgit/linux/log/?h=io_uring-waitid
+
+ include/linux/io_uring_types.h |   2 +
+ include/uapi/linux/io_uring.h  |   2 +
+ io_uring/Makefile              |   3 +-
+ io_uring/cancel.c              |   5 +
+ io_uring/io_uring.c            |   3 +
+ io_uring/opdef.c               |  10 +-
+ io_uring/waitid.c              | 372 +++++++++++++++++++++++++++++++++
+ io_uring/waitid.h              |  15 ++
+ kernel/exit.c                  | 131 ++++++------
+ kernel/exit.h                  |  30 +++
+ 10 files changed, 512 insertions(+), 61 deletions(-)
+
+Changes since v3:
+- Rebase on current tree
+- Move it before the futex changes. Note that if you're testing this,
+  this means that the opcode values have changed. The liburing repo
+  has been rebased as a result as well, you'll want to update that too.
+  liburing also has update test cases.
+- Fix races between cancelation and wakeup trigger. This follows a
+  scheme similar to the internal poll io_uring handling
+
 -- 
-2.25.1
+Jens Axboe
+
 
