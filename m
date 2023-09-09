@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15591799A60
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 20:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5298C799A63
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 20:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238752AbjIISTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 14:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
+        id S238797AbjIISUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 14:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238467AbjIISTy (ORCPT
+        with ESMTP id S239009AbjIISUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 14:19:54 -0400
+        Sat, 9 Sep 2023 14:20:20 -0400
 Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 703D9CED
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 11:19:44 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-401ef656465so9072965e9.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 11:19:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6F210F3
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 11:19:51 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fe4f3b5f25so8896865e9.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 11:19:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694283583; x=1694888383; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694283590; x=1694888390; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IOE6XlBntSncTLlCWMl5brTZ/7LxZLVyWM/OgQDv3Gg=;
-        b=eLU2HNIvA9JAyRBFDgbP4kb12qOJF6dg+Qh9sCnqUNDa86uxpnap+khL8CkePAvAJA
-         FZj7n92v0Q98NVCT92h3eQTP+Oy5YUIELZLRes/Bkvh09Htc5NSLhA4IE2Mn501bYWMh
-         4xn9Q28FZwz+PKTWs+kpMZ0nS5/mpnqAqn/fuaa+Ajo1PpG5ucMPI0ayJ7hQgzqHWp1s
-         kTxD0LWiAuPxJ2vJVWqkDwcmc2MyOwXAVP+ZOVSY/S7Jt2HtJwISEf9cp9e2/MGiyAl1
-         n3AJBhkuOQiP8Y+15SXLhXba9hvIr/DqN0S/tKiUp92fE/g2gc0pxFM4Z8yt1uWd+aC2
-         LniA==
+        bh=GpwmshN/SnkxoMv0hgadPL0UXh7rR+Fy3DtPmnciQb0=;
+        b=VPa5MSphjh++SdAtit7iu3Awzeqd/iCCJHCeF0aanPN2vJJ571CXfF2YjBgKtJrZIj
+         uvMaZwguc5dE3WO6hptDKJOo/rpXsrmNFRUbkTSgdwQnEmYLYb+VssNumtfOIdGUFSTN
+         gpqjDAkVZ+V7YzdZFp6z54zya8cYM5vm3C+8GNzdLVLXOoVH9nDhiH3GvSxZ62fJRufs
+         rYK7GQJWZ/5Bq0PPCLBlUlmJuctEPMbnHyuMrKNjAYfhmNaTn96CBzPko5ylbmYtsLNa
+         lBUBTtHMWzA1VjftzDpjHA2fA8KQmgi+x13nOaVa2uQP968cn2t+1AVKvhXmQI2oSwlW
+         WF0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694283583; x=1694888383;
+        d=1e100.net; s=20230601; t=1694283590; x=1694888390;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IOE6XlBntSncTLlCWMl5brTZ/7LxZLVyWM/OgQDv3Gg=;
-        b=Z/uljwDEIKqQhIXmIH6S6nn3+9c2fdQJU/kV21PZkeIKMdElQcn2EwuElfDV9JwfTt
-         vjqXGJ79RatU+QUVJu98IXoUbGMjbbtuEogbCRNzSn4bmxnx1j+L9iDco1srAWgi7RKO
-         iPNYoO28+b9zurxEmP1KMG+CnhsrhyKKzhd12PmykqGESLh1aVmTMqOaDc7YwrBo0emj
-         HmMUnLUGJCArRe3MHRCkgzKYsw+9L8TUfFa8jZdm+oCAjPrk0ysk85vDvBTO07aFZi7O
-         XaZPPmDqm4a83DFcs/eo5aeIUBYHHDOhgRFnS1Rz/6ZwzCv1EXolRw35mz0gHF7janVF
-         fVSA==
-X-Gm-Message-State: AOJu0YxPTnXoXXs4A7suMVHpIJiMI25wbQINtkutwZVNgxvz87bp9xmT
-        +dyq2gVu9Yx8qkl4nPOVGZ8=
-X-Google-Smtp-Source: AGHT+IFTaKn85G8pHUiSw+ZLVsc2X6tVt+VxCw1j0vbNFp+QI4MF4bXya63MafT83wdsJ3tc09V5yQ==
-X-Received: by 2002:a05:600c:3b03:b0:401:7d3b:cc84 with SMTP id m3-20020a05600c3b0300b004017d3bcc84mr5186831wms.0.1694283582616;
-        Sat, 09 Sep 2023 11:19:42 -0700 (PDT)
+        bh=GpwmshN/SnkxoMv0hgadPL0UXh7rR+Fy3DtPmnciQb0=;
+        b=YDSw6kIcEWHMd7HPVmH+dprPxRXrTNFKeRxaQ8nxA38UF3nSpZ/7Nu5eoxaVdUU9Ye
+         B2qk35+OimQfncBBMPq99wzND2gC12WlDGNo1hQNCw0ZCfq0uUQ1Z6RucmssgEP+k6Er
+         4AHUPB6NgvsnDLcTitP12b7EhlVabr2IvslwIG+vDWquqdtMPJ5jp2rjfrt4OuAjq6bt
+         Qngo7VFr9Z0zE/fcRnvXdRlO2N3JFcU/g5xo5GaRWlIfMvMX8mf7zt1WpQBypCG9w/bN
+         BJiVIMqSd2CctnPJ+O/ORx6qFFphfr4x6lDXZmE8KagaN/UK/RVao6fYOktagE3CPLsO
+         U9ug==
+X-Gm-Message-State: AOJu0YzJvCivLSZ8jGns5B4jsFJ8OI8kyYE85rDj6WoDuJFhu7jZCHty
+        LdYMtgWhXMlN2BKXKTjZ2Fk=
+X-Google-Smtp-Source: AGHT+IHLt3smwCNceCgJThJzA35FlMq7WPqfvXc8OO+RfHKvxUVXmcgCPYlMvVJBJCWColdkWAkbzQ==
+X-Received: by 2002:a05:600c:1d0a:b0:401:c6a2:3cd5 with SMTP id l10-20020a05600c1d0a00b00401c6a23cd5mr4916064wms.2.1694283589687;
+        Sat, 09 Sep 2023 11:19:49 -0700 (PDT)
 Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id n13-20020a5d484d000000b0031f3b04e7cdsm5372378wrs.109.2023.09.09.11.19.42
+        by smtp.gmail.com with ESMTPSA id l10-20020a1c790a000000b003fed70fb09dsm5232607wme.26.2023.09.09.11.19.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Sep 2023 11:19:42 -0700 (PDT)
-Date:   Sat, 9 Sep 2023 20:19:40 +0200
+        Sat, 09 Sep 2023 11:19:49 -0700 (PDT)
+Date:   Sat, 9 Sep 2023 20:19:47 +0200
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/8] staging: rtl8192e: Use standard function in
- rtllib_process_probe_response()
-Message-ID: <f06e976555d2f045effabb3ccfea1a2cf133088d.1694282907.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 4/8] staging: rtl8192e: Use standard function in
+ rtllib_rx_check_duplicate()
+Message-ID: <c636aadd4cf4898c57c348a1d789790c5a459749.1694282907.git.philipp.g.hortmann@gmail.com>
 References: <cover.1694282907.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,93 +71,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace proprietary is_beacon() with ieee80211_is_beacon() and
-proprietary "WLAN_FC_GET_STYPE(frame_ctl) == RTLLIB_STYPE_PROBE_RESP"
-with standard function to increase readability.
+Use standard function ieee80211_is_beacon() to avoid proprietary code and
+to increase readability.
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/rtllib_rx.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+ drivers/staging/rtl8192e/rtllib_rx.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtllib_rx.c b/drivers/staging/rtl8192e/rtllib_rx.c
-index 108238aa61d9..89c8d66765fe 100644
+index 89c8d66765fe..80eee43ee444 100644
 --- a/drivers/staging/rtl8192e/rtllib_rx.c
 +++ b/drivers/staging/rtl8192e/rtllib_rx.c
-@@ -2448,11 +2448,6 @@ static inline void update_network(struct rtllib_device *ieee,
- 	dst->BssCcxVerNumber = src->BssCcxVerNumber;
- }
- 
--static inline int is_beacon(u16 fc)
--{
--	return (WLAN_FC_GET_STYPE(fc) == RTLLIB_STYPE_BEACON);
--}
--
- static int IsPassiveChannel(struct rtllib_device *rtllib, u8 channel)
+@@ -904,11 +904,8 @@ static int rtllib_rx_check_duplicate(struct rtllib_device *ieee,
  {
- 	if (channel > MAX_CHANNEL_NUMBER) {
-@@ -2491,7 +2486,7 @@ static inline void rtllib_process_probe_response(
- 	short renew;
- 	struct rtllib_network *network = kzalloc(sizeof(struct rtllib_network),
- 						 GFP_ATOMIC);
--	u16 frame_ctl = le16_to_cpu(beacon->header.frame_ctl);
-+	__le16 frame_ctl = beacon->header.frame_ctl;
+ 	struct rtllib_hdr_4addr *hdr = (struct rtllib_hdr_4addr *)skb->data;
+ 	u16 fc, sc;
+-	u8 frag, type, stype;
++	u8 frag;
  
- 	if (!network)
- 		return;
-@@ -2521,14 +2516,14 @@ static inline void rtllib_process_probe_response(
- 		netdev_dbg(ieee->dev, "Dropped '%s' ( %pM) via %s.\n",
- 			   escape_essid(info_element->data, info_element->len),
- 			   beacon->header.addr3,
--			   is_beacon(frame_ctl) ? "BEACON" : "PROBE RESPONSE");
-+			   ieee80211_is_beacon(frame_ctl) ? "BEACON" : "PROBE RESPONSE");
- 		goto free_network;
- 	}
+-	fc = le16_to_cpu(hdr->frame_ctl);
+-	type = WLAN_FC_GET_TYPE(fc);
+-	stype = WLAN_FC_GET_STYPE(fc);
+ 	sc = le16_to_cpu(hdr->seq_ctl);
+ 	frag = WLAN_GET_SEQ_FRAG(sc);
  
- 	if (!rtllib_legal_channel(ieee, network->channel))
- 		goto free_network;
- 
--	if (WLAN_FC_GET_STYPE(frame_ctl) == RTLLIB_STYPE_PROBE_RESP) {
-+	if (ieee80211_is_probe_resp(frame_ctl)) {
- 		if (IsPassiveChannel(ieee, network->channel)) {
- 			netdev_info(ieee->dev,
- 				    "GetScanInfo(): For Global Domain, filter probe response at channel(%d).\n",
-@@ -2561,7 +2556,7 @@ static inline void rtllib_process_probe_response(
- 			else
- 				ieee->current_network.buseprotection = false;
+@@ -916,8 +913,7 @@ static int rtllib_rx_check_duplicate(struct rtllib_device *ieee,
+ 		!ieee->current_network.qos_data.active ||
+ 		!IsDataFrame(skb->data) ||
+ 		IsLegacyDataFrame(skb->data)) {
+-		if (!((type == RTLLIB_FTYPE_MGMT) &&
+-		      (stype == RTLLIB_STYPE_BEACON))) {
++		if (!ieee80211_is_beacon(hdr->frame_ctl)) {
+ 			if (is_duplicate_packet(ieee, hdr))
+ 				return -1;
  		}
--		if (is_beacon(frame_ctl)) {
-+		if (ieee80211_is_beacon(frame_ctl)) {
- 			if (ieee->link_state >= MAC80211_LINKED)
- 				ieee->link_detect_info.NumRecvBcnInPeriod++;
- 		}
-@@ -2597,7 +2592,7 @@ static inline void rtllib_process_probe_response(
- 		netdev_dbg(ieee->dev, "Adding '%s' ( %pM) via %s.\n",
- 			   escape_essid(network->ssid, network->ssid_len),
- 			   network->bssid,
--			   is_beacon(frame_ctl) ? "BEACON" : "PROBE RESPONSE");
-+			   ieee80211_is_beacon(frame_ctl) ? "BEACON" : "PROBE RESPONSE");
- 
- 		memcpy(target, network, sizeof(*target));
- 		list_add_tail(&target->list, &ieee->network_list);
-@@ -2607,7 +2602,7 @@ static inline void rtllib_process_probe_response(
- 		netdev_dbg(ieee->dev, "Updating '%s' ( %pM) via %s.\n",
- 			   escape_essid(target->ssid, target->ssid_len),
- 			   target->bssid,
--			   is_beacon(frame_ctl) ? "BEACON" : "PROBE RESPONSE");
-+			   ieee80211_is_beacon(frame_ctl) ? "BEACON" : "PROBE RESPONSE");
- 
- 		/* we have an entry and we are going to update it. But this
- 		 *  entry may be already expired. In this case we do the same
-@@ -2628,7 +2623,7 @@ static inline void rtllib_process_probe_response(
- 	}
- 
- 	spin_unlock_irqrestore(&ieee->lock, flags);
--	if (is_beacon(frame_ctl) &&
-+	if (ieee80211_is_beacon(frame_ctl) &&
- 	    is_same_network(&ieee->current_network, network,
- 	    (network->ssid_len ? 1 : 0)) &&
- 	    (ieee->link_state == MAC80211_LINKED)) {
 -- 
 2.41.0
 
