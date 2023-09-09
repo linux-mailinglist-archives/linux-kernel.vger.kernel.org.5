@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DA47992F6
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 01:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 413367992FF
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 02:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345347AbjIHX7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Sep 2023 19:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32814 "EHLO
+        id S241496AbjIIAG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Sep 2023 20:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233629AbjIHX7H (ORCPT
+        with ESMTP id S231316AbjIIAG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Sep 2023 19:59:07 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8614C18E;
-        Fri,  8 Sep 2023 16:59:02 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2D8F15C01D4;
-        Fri,  8 Sep 2023 19:59:00 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 08 Sep 2023 19:59:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jcline.org; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1694217540; x=1694303940; bh=5hPh3+A1H4
-        jBnyK3iCCM3bu6cw6mebsPN+ivH9DugBY=; b=a+a5xsQd2PAdpoDepP++GoZdkb
-        RKTMbSDjw2ShX0Bt+cIK85NR6rD5RbqOQ/9y4iVnM1uVbVLnvuLt3Gm2vsLK5hON
-        fWG7WOLd0m9qp1Hsodl/c+V07OHZdC0WPIhG9qqD+7Jm0hbQbVgDBSz5sLpfpicP
-        w7SlUvaMilNVwKhmXVGyZHiZ8yNud2o7JYYpYm7NYRlDOC78vs+5Ff5/FSIeO1CZ
-        wXTVM1gX+gq6boljjXo6Z//Y8gpRjJtUbjGR/YHU39F9K3765JNnnxtc204aU5qG
-        AiGON/ZztWNywezQqr8cXkRyePv0W82BdSvDaWEd/A1roPxzyUGB/efAMNQg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1694217540; x=1694303940; bh=5hPh3+A1H4jBn
-        yK3iCCM3bu6cw6mebsPN+ivH9DugBY=; b=2PBqp+Nl7uaqC2epPYIfFSFMrqSWd
-        To5kX28VbPIvStwzKoJ/lBx1lGz+49twRUu9EzuVKCdrIz/WokyNSLGEK9c+XnK4
-        VRSS1iaK0E2vBd/0zqliAyYkLXt4q/LB1jo+4c54G0C/vgB2y3QrxP4YKzMqETTm
-        kv3NfsQwO/9JIpr82Lmr/iaU7XbXtbfY0kGUTL90cnZOXNcs8aXl26eLB22S23kk
-        6QZjUL8+EfTBIaEFVEmO1XHS2cVRzN3Yaa9sGVZW6WM4WyRSZLvOqRxpEzztF2Fm
-        Q23VpAs3aPuy/1XTaag3vu6nu6ckyFfG5QIdCkH5o7RBofBqIxnzO5b9g==
-X-ME-Sender: <xms:Q7X7ZOMx_M8nQX_LtjMIWdv7AM-8qlnIGg43l0u9BqkSLxwQzvw88w>
-    <xme:Q7X7ZM9LbUJ9xcoM6Ly5rJ-aZB2nU1UuXI7J8sK1nDDx3m25U3dHrICFe8_bD2ROZ
-    Qg_CeWat6kv4o8vFJg>
-X-ME-Received: <xmr:Q7X7ZFSZ2dYI7PEFOAhXnDGZIxfqZkkGZiW0v0Emt9nz9RtTZsXjqSIkZJHQsQjlA4_MReS3wneLSH54v_6fgw6DS5mn2tFOTL8S>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehkedgvdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomheplfgvrhgvmhih
-    ucevlhhinhgvuceojhgvrhgvmhihsehjtghlihhnvgdrohhrgheqnecuggftrfgrthhtvg
-    hrnhepveelveefheeuhffhieduvefgudefiedvfeduteejlefflefggfekvdeuhffgteev
-    necuffhomhgrihhnpehshiiikhgrlhhlvghrrdgrphhpshhpohhtrdgtohhmnecuvehluh
-    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhgvrhgvmhihsehj
-    tghlihhnvgdrohhrgh
-X-ME-Proxy: <xmx:Q7X7ZOssu3Bbsp9MozxgLgYrEHn7goHQsBojjOMrc1EOsqZHBeWhgw>
-    <xmx:Q7X7ZGcG9ZiDV2gc3EUDsplpyuptptk-3CxJc2WV9cAwrmLrI-Wqlw>
-    <xmx:Q7X7ZC3g7v1crpVah3HDzlGoEb8H4-gM3_poFb6wJAA0xbpJ_x57QQ>
-    <xmx:RLX7ZMtnjaQOFTXdNkRcCeYrU2FIlPHT1dilIXyKUQUT5CQ17aXgWw>
-Feedback-ID: i7a7146c5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 8 Sep 2023 19:58:59 -0400 (EDT)
-From:   Jeremy Cline <jeremy@jcline.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeremy Cline <jeremy@jcline.org>,
-        syzbot+c1d0a03d305972dbbe14@syzkaller.appspotmail.com
-Subject: [PATCH net] net: nfc: llcp: Add lock when modifying device list
-Date:   Fri,  8 Sep 2023 19:58:53 -0400
-Message-ID: <20230908235853.1319596-1-jeremy@jcline.org>
-X-Mailer: git-send-email 2.41.0
+        Fri, 8 Sep 2023 20:06:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D1B133;
+        Fri,  8 Sep 2023 17:06:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C883C433C7;
+        Sat,  9 Sep 2023 00:06:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694217982;
+        bh=poS1zC35Ou/Eox389O+3kfe0qq35tr84EXWEkWfw4t8=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=H7TpepoHQXgtTAWLHdiOh2jg9Ru/6aWmR3xB0V/FEtXn+7gm7h6+vUeVmgspIZl8V
+         be3+XTBaOO1LzjsJHRPHrffUsJDL0n08V1eggRLhl83qLfQfGxx+AmLsA2q+aXpSKX
+         G25FJgRwy5tPNJTjhBSUmJhRA1HD/PjyQxYwW9Ns1Hp5XYbETB4b5iJdR4OPU4tJph
+         QsXB3LyWPSmcERUnpLFezFlaCaE5t0xFMrXlgL7hrGR8BmSXwTJfoNE/zJVzBsDJ16
+         LnLT0ti4uah/6RLQ8fMR6Td9iBZFK4dIlSkORNwP5+/LV0WRXmhieRRv/feZCwF9km
+         /ctQR3brRbT6A==
+Message-ID: <de9c4d5ea85da5614563bee7d3368459.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <79a79ec5-3691-43d2-ca3e-478a94f85e2d@tuxon.dev>
+References: <20230727053156.13587-1-claudiu.beznea@tuxon.dev> <20230727053156.13587-4-claudiu.beznea@tuxon.dev> <412f9209637e6eb861cd07e1d6dbc346.sboyd@kernel.org> <79a79ec5-3691-43d2-ca3e-478a94f85e2d@tuxon.dev>
+Subject: Re: [PATCH 03/42] clk: at91: sam9x60: switch to parent_hw and parent_data
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, varshini.rajendran@microchip.com
+To:     alexandre.belloni@bootlin.com,
+        claudiu beznea <claudiu.beznea@tuxon.dev>, mripard@kernel.org,
+        mturquette@baylibre.com, nicolas.ferre@microchip.com
+Date:   Fri, 08 Sep 2023 17:06:18 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device list needs its associated lock held when modifying it, or the
-list could become corrupted, as syzbot discovered.
+Sorry, I missed this series in my review queue.
 
-Reported-and-tested-by: syzbot+c1d0a03d305972dbbe14@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=c1d0a03d305972dbbe14
-Signed-off-by: Jeremy Cline <jeremy@jcline.org>
----
- net/nfc/llcp_core.c | 2 ++
- 1 file changed, 2 insertions(+)
+Quoting claudiu beznea (2023-08-01 21:24:54)
+> On 29.07.2023 06:28, Stephen Boyd wrote:
+> > Quoting Claudiu Beznea (2023-07-26 22:31:17)
+> >> @@ -177,31 +178,34 @@ static const struct {
+> >> -       td_slck_name =3D of_clk_get_parent_name(np, i);
+> >> -
+> >> -       i =3D of_property_match_string(np, "clock-names", "md_slck");
+> >> -       if (i < 0)
+> >> +       td_slck_hw =3D __clk_get_hw(clk);
+> >=20
+> > Don't introduce more usage of __clk_get_hw(). The index for "td_slck"
+> > should be known, and it can be used as the index member in struct
+> > clk_parent_data.  This allows the clk framework to lazily find the
+> > parent, instead of requiring the parent to be registered before this
+> > code runs. It also reduces the usage of __clk_get_hw().
+>=20
+> If I'll do this I will have to also change the approach that has been done
+> for SAMA7G5 (already integrated in v6.5-rc1, maybe I had to let it more on
+> the mailing list before taking into the tree) for all the clock drivers
+> (basically instead of parent_hws I will have to provide parent_data to AT=
+91
+> clock registration APIs AFAICT). No issue with that... just telling...
 
-diff --git a/net/nfc/llcp_core.c b/net/nfc/llcp_core.c
-index f60e424e0607..6705bb895e23 100644
---- a/net/nfc/llcp_core.c
-+++ b/net/nfc/llcp_core.c
-@@ -1636,7 +1636,9 @@ int nfc_llcp_register_device(struct nfc_dev *ndev)
- 	timer_setup(&local->sdreq_timer, nfc_llcp_sdreq_timer, 0);
- 	INIT_WORK(&local->sdreq_timeout_work, nfc_llcp_sdreq_timeout_work);
- 
-+	spin_lock(&llcp_devices_lock);
- 	list_add(&local->list, &llcp_devices);
-+	spin_unlock(&llcp_devices_lock);
- 
- 	return 0;
- }
--- 
-2.41.0
+Ok. Please do that.
 
+>=20
+> The reason I did it with parent_hws + __clk_get_hw() on PMC parents in
+> SAMA7G5 is that SAMA7G5 PLL parent rate need to be known from the
+> registration to setup properly the PLL. Otherwise PLL will not lock if not
+> properly setup. For this I got the parent_hw for PLL parent to retrieve i=
+ts
+> rate and thus I chose at that time to also get the clk_hw for the other
+> parents of PMC just to have the same approach on all parents (and it look=
+ed
+> to me that code will be simpler).
+
+You can use the regular clk_get() APIs for that if you're trying to
+enforce a "this clk must be registered first" sort of thing. If the
+clk_get() call fails, then the driver can probe defer, etc. But don't
+turn around and take that clk and call __clk_get_hw() on it to express
+the parent relationship. Instead, let the parent matching take place
+through the normal means. The goal is to get rid of __clk_get_hw() at
+some point.
