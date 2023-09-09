@@ -2,99 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 070F87997B9
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 13:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E3A7997BD
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 13:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345210AbjIILrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 07:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
+        id S1345347AbjIILyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 07:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231737AbjIILrT (ORCPT
+        with ESMTP id S231737AbjIILyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 07:47:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DC5186;
-        Sat,  9 Sep 2023 04:47:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55F03C433C8;
-        Sat,  9 Sep 2023 11:47:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1694260034;
-        bh=KMWBsdp8nGAV3aRsdcvJzjfRJ3yWDJoFWmXVM+GYvHQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZSNoAPOjuLmayLiYyEGQIg3zAh8C0IwIA0x8gZvRUmUYhaK5vrCsPXS4GJjFLWnL3
-         DlfGQ83t3IfEJ2370DOacV5C2q4djUG+iZz6j5tUsEyGCh4tE370mXJN/9dSE5jxJl
-         9Jgez7MQpYbqiYCWae7KzGfNdJfhIG6gJITyTdqg=
-Date:   Sat, 9 Sep 2023 12:47:11 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco)" 
-        <deeratho@cisco.com>
-Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free bug in
- btsdio_remove due to race condition
-Message-ID: <2023090925-eloquence-derail-1e2b@gregkh>
-References: <20230906121525.3946250-1-deeratho@cisco.com>
- <2023090738-passive-snowless-3b9d@gregkh>
- <DM4PR11MB6189DEDD52F3E17C8C4E3D1BC4EDA@DM4PR11MB6189.namprd11.prod.outlook.com>
- <DM4PR11MB61890EE125816A786D153C22C4EDA@DM4PR11MB6189.namprd11.prod.outlook.com>
- <2023090820-wielder-angled-3def@gregkh>
- <DM4PR11MB618943BFA18521150923326BC4EDA@DM4PR11MB6189.namprd11.prod.outlook.com>
- <2023090826-fabulous-genetics-e912@gregkh>
- <DM4PR11MB61897793502F49240BCA903CC4ECA@DM4PR11MB6189.namprd11.prod.outlook.com>
+        Sat, 9 Sep 2023 07:54:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 969A5E46
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 04:53:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694260394;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2Brd09ChjlGcm33tn5aaPV7Dgfxku3U91yIO+34U0Xs=;
+        b=F4aktB2XjRu8T2agOXqDQvaLtlnvOiG83qQSHV+YpSZ5ytT3RVeUW0TxVLR8d3tlBDHvpJ
+        AVrEgblxS6qeQlTO8MNbNfSxIz23PfylZJhWwf5ybWkt4+Zrensqhx6s5LW0n0UgfCLsD9
+        xw9Ta804pjJDajrCJFiyfeTz4312GjI=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-90-pYKiScUIOYCYB6weopR4kw-1; Sat, 09 Sep 2023 07:53:13 -0400
+X-MC-Unique: pYKiScUIOYCYB6weopR4kw-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-76f29f14e0aso297503685a.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 04:53:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694260392; x=1694865192;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=2Brd09ChjlGcm33tn5aaPV7Dgfxku3U91yIO+34U0Xs=;
+        b=wg0GyPuG5GvcZaeDDTHdYmqEsNpvWlMnzeZcbSsVlFdMiND1oqQkqv5YWMMqPF7Abz
+         RCdMtG7fD2uxXHiF1Y+AYM0jv6mPV+9PAXIQutGBhyiMIob5unh0xjJ4Be+BbZHdyjVI
+         VcpXKY9MNG9/QtiZhmMqg+7OOrTA5I8QLnUGmZ0aiCBEolW3nsA0HbFQwt6CgVLwa5st
+         UvEy6eRliRi1udoXSMWfGhKoRC5imED1Fr8nUsDzocN0Eig54zwGhKfSc5RQFnx4ehDw
+         bVe7tRul86KoSRum57ucXRTr9wC4zqImJUDbA5KCV85fqOpmTUYadi49lB07aOV9FrL3
+         YCOA==
+X-Gm-Message-State: AOJu0YxSSbpmbuPLsRr0SKgOzLTlLKAogSa5vwv3mt5q4B3w2q49GPQs
+        KxoFfUDc+aOyVa8h3dIPKDDI/hBbgHOsnCTZVklkxk27fX+WuVkTctSnoo8dnueO3n8ctfJ+uG1
+        J7DlWpNGLYNyDWPE2sbuc6YTH
+X-Received: by 2002:a05:620a:3d1:b0:767:96e2:a9cb with SMTP id r17-20020a05620a03d100b0076796e2a9cbmr4880708qkm.38.1694260392553;
+        Sat, 09 Sep 2023 04:53:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFzaPjdqQmtJK0AQn4B8TqeeRtKxwtYxBagaljOo1lDC4D12dp4dP61e64rcoFNOk8YVLcX7g==
+X-Received: by 2002:a05:620a:3d1:b0:767:96e2:a9cb with SMTP id r17-20020a05620a03d100b0076796e2a9cbmr4880699qkm.38.1694260392288;
+        Sat, 09 Sep 2023 04:53:12 -0700 (PDT)
+Received: from [192.168.50.193] ([134.195.185.129])
+        by smtp.gmail.com with ESMTPSA id d5-20020a05620a136500b0076f206cf16fsm1250131qkl.89.2023.09.09.04.53.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Sep 2023 04:53:11 -0700 (PDT)
+Message-ID: <46d929d0-2aab-4cf2-b2bf-338963e8ba5a@redhat.com>
+Date:   Sat, 9 Sep 2023 07:53:10 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM4PR11MB61897793502F49240BCA903CC4ECA@DM4PR11MB6189.namprd11.prod.outlook.com>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     song@kernel.org, yukuai1@huaweicloud.com,
+        Zhang Shurong <zhang_shurong@foxmail.com>
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com
+From:   Nigel Croxon <ncroxon@redhat.com>
+Subject: [PATCH] raid1: fix error: ISO C90 forbids mixed declarations
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 09, 2023 at 08:49:52AM +0000, Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco) wrote:
-> -----Original Message-----
-> From: Greg KH <gregkh@linuxfoundation.org> 
-> Sent: Friday, September 8, 2023 12:39 PM
-> To: Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco) <deeratho@cisco.com>
-> Cc: stable@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free bug in btsdio_remove due to race condition
-> 
-> > A: http://en.wikipedia.org/wiki/Top_post
-> > Q: Were do I find info about this thing called top-posting?
-> > A: Because it messes up the order in which people normally read text.
-> > Q: Why is top-posting such a bad thing?
-> > A: Top-posting.
-> > Q: What is the most annoying thing in e-mail?
-> 
-> > A: No.
-> > Q: Should I include quotations after my reply?
-> 
-> 
-> > http://daringfireball.net/2007/07/on_top
-> 
-> On Fri, Sep 08, 2023 at 06:54:06AM +0000, Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco) wrote:
-> > Hi Greg,
-> > 
-> > This change is required to fix kernel CVE: CVE-2023-1989 which is 
-> > reported in v6.1 kernel version.
-> 
-> > Which change?
-> 
-> [Deepak]: I am referring below change. This below change is required to fix kernel CVE: CVE-2023-1989 which is reported in v6.1 kernel.
-> 
-> Subject: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free bug in btsdio_remove due to race condition
-> 
-> From: Zheng Wang <zyytlz.wz@163.com>
-> 
-> [ Upstream commit 73f7b171b7c09139eb3c6a5677c200dc1be5f318 ]
+There is a compile error when this commit is added:
+md: raid1: fix potential OOB in raid1_remove_disk()
 
-This commit is already in the 6.1.52 kernel release, why do you want it
-included again?
+drivers/md/raid1.c: In function 'raid1_remove_disk':
+drivers/md/raid1.c:1844:9: error: ISO C90 forbids mixed declarations
+and code [-Werror=declaration-after-statement]
+1844 |         struct raid1_info *p = conf->mirrors + number;
+      |         ^~~~~~
 
-confused,
+That's because the new code was inserted before the struct.
+The change is move the struct command above this commit.
 
-greg k-h
+Fixes: md: raid1: fix potential OOB in raid1_remove_disk()
+commit 8b0472b50bcf
+
+Signed-off-by: Nigel Croxon <ncroxon@redhat.com>
+---
+  drivers/md/raid1.c | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+index a5453b126aab..4f1483bb708b 100644
+--- a/drivers/md/raid1.c
++++ b/drivers/md/raid1.c
+@@ -1846,11 +1846,11 @@ static int raid1_remove_disk(struct mddev 
+*mddev, struct md_rdev *rdev)
+      int err = 0;
+      int number = rdev->raid_disk;
+
++    struct raid1_info *p = conf->mirrors + number;
++
+      if (unlikely(number >= conf->raid_disks))
+          goto abort;
+
+-    struct raid1_info *p = conf->mirrors + number;
+-
+      if (rdev != p->rdev)
+          p = conf->mirrors + conf->raid_disks + number;
+
+-- 
+2.31.1
+
