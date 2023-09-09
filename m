@@ -2,101 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D4A799A6C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 20:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F658799A6B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Sep 2023 20:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239921AbjIISYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 14:24:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
+        id S239681AbjIISYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 14:24:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232500AbjIISYV (ORCPT
+        with ESMTP id S232500AbjIISXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 14:24:21 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25B41B1;
-        Sat,  9 Sep 2023 11:24:16 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99357737980so376571666b.2;
-        Sat, 09 Sep 2023 11:24:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694283855; x=1694888655; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4jYkVVzxchQ/jvYzUJH0KXfajovzBr8JajkB6P5mHS8=;
-        b=UXespIooOrtN4iEPxbs6t8dByE41nn14FfX116EONWPRtKUe+jn+SXa7taUJZDQZFI
-         lOa0ov45AjUJC4MBSB4OgZT8VIDCROfEiqpKv0BQHXAokZLP/tE/HYYvsh6GnkFBhdrp
-         Rdg42hTIUJWVWGNcDxvojkykjNdNmkSVznMxdr2VfqFP/TTRwcYt/7ee4SIHevc+FQ4g
-         mzKqNLqGbSmkhWAIQ7MqrDz/NG7iyyCn+POBz7n1A1wXkFmvW3dr5sDX9JtOj8LgW6W0
-         sbuqHlwqNLaNjmlHPGi5mJm0ToQE1tQZHUWtnPQSpdsuQCN/fx/Yz1aA+440O3EDZk1j
-         /VwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694283855; x=1694888655;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4jYkVVzxchQ/jvYzUJH0KXfajovzBr8JajkB6P5mHS8=;
-        b=KQdTIh3FyVBa9T606BOREtNzNcayIH+bDcqyJQH95THf7tFKgCcsIsfePkglsldVmu
-         RBc6c+L7BzIAKpgoccqQ1ghfHpwvM6Jah1KXn1gS61lFQkFrq5ZGSBEptPw0Zsj/xWR9
-         xOAYLSOaB8pBNOH/iaJNi3SjuCt05hkp+EBGLjYolE5TGHEQ6s4Uhp2Hj5kDpAma85iV
-         pmX8k1ViQ55wvTZFv9EarHCZyLPe1GZZpmPlud0x0uoOpA+tewfKqa2agb2f0IbekuYh
-         vctz09qscHFYwj3bVOgKcvu1noIzw64L0DaWuaE5BTwqo7DgTWbNRDdKGtnOalNyALWM
-         tyBQ==
-X-Gm-Message-State: AOJu0YzotTEk84aUByOGZ2qX5HFP2ed+1AXhR0EuEH6ThJDpThZfs6Rd
-        X81Z5+t/fIZCt2bOqbGW0Uk=
-X-Google-Smtp-Source: AGHT+IEpNUcH3+mmN1ltcg3wFOHvJNTJFOq3QX7cp8abBc/6YEvWbaTa+08LJ4bI1TPCZAaaFIkYjw==
-X-Received: by 2002:a17:906:1011:b0:9a2:2635:daa8 with SMTP id 17-20020a170906101100b009a22635daa8mr4536000ejm.56.1694283854840;
-        Sat, 09 Sep 2023 11:24:14 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id o21-20020a1709062e9500b0099ddc81903asm2645374eji.221.2023.09.09.11.24.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Sep 2023 11:24:14 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 614BF27C0054;
-        Sat,  9 Sep 2023 14:24:12 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sat, 09 Sep 2023 14:24:12 -0400
-X-ME-Sender: <xms:TLj8ZIuB3K6hJoRprOH4j08nQ8s2zh9MthksoiQEv0ytOj0-ex2mlA>
-    <xme:TLj8ZFcmYM6X6PtZVcVXapp6icKyUFoC9XQUb0W_IAMlSsBqNLqsa9pgVxnkR4Nxe
-    6tMXRdmP-KvaPv9-Q>
-X-ME-Received: <xmr:TLj8ZDzV9gIl64i8iDq1bnNcFq6yx_nWDnfJjyV9y42yyalZSI10JZ2jllKZmw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehledguddvgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhephfetvdfgtdeukedvkeeiteeiteejieehvdetheduudejvdektdekfeeg
-    vddvhedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhht
-    hhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquh
-    hnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:TLj8ZLMe4ObNP3lU5YUwE9q14QwbD6GW4DaBNqlIrhouBVuRITWp6Q>
-    <xmx:TLj8ZI-oSWwLGFFPNrhuGOlnlvgCihTa7yrldPFpWBj_FIEaMqXpSQ>
-    <xmx:TLj8ZDXbhy8f7HvKb73YMi7O3_leXH2JFR5XsGaiVL4aWmPx9soDTA>
-    <xmx:TLj8ZIxfaZ1BzWr0Qo2Mja1Y-1r8RWpRADlcrtgaDiOUOhpoVsrUtQ>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 9 Sep 2023 14:24:11 -0400 (EDT)
-Date:   Sat, 9 Sep 2023 11:22:48 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Subject: Re: [PATCH 04/10] rcu/nocb: Remove needless full barrier after
- callback advancing
-Message-ID: <ZPy3-MS7uOJfmJhs@boqun-archlinux>
-References: <20230908203603.5865-1-frederic@kernel.org>
- <20230908203603.5865-5-frederic@kernel.org>
- <20230909043125.GA3920383@google.com>
+        Sat, 9 Sep 2023 14:23:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32891B0
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 11:23:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694283824; x=1725819824;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jsdzmHq8rbuRqWGuSSL9/Aqq4HRROVcGsibEZJxL074=;
+  b=Lb7mXwqDQmt0itUZ+VP2rnMXOoomOpE73wHB20IsCopODV3dY57B7l5B
+   yFBPVcvVSJFe/b4aEFiPabdlzBrRhpicys/J8DIKX05uNYSFPSLGLBvEn
+   8JO24nRO0sh5zt7XNKjMXd1/mWwc2QZ/lmYDbqBdNk/JcyE+Ogf5eiWuU
+   sph2HG827E7NykObxKAhFq7ruuEQAjWjSY8QZbWTQfdh8gJvsZLO2IX+w
+   XSq/zEinntZV+qusF8NyceMbJEGqdkGrvq3y0uKB6/svTrs6AnzDakVtA
+   Sd417EkRjvSvVDt8snJDjyu0cYLvhXioFhulPJyz7kz9AC/rrYxlswhA4
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="362887562"
+X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
+   d="scan'208";a="362887562"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 11:23:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="719498893"
+X-IronPort-AV: E=Sophos;i="6.02,239,1688454000"; 
+   d="scan'208";a="719498893"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 09 Sep 2023 11:23:40 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qf2cM-0003mX-0q;
+        Sat, 09 Sep 2023 18:23:38 +0000
+Date:   Sun, 10 Sep 2023 02:23:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, faith.ekstrand@collabora.com
+Cc:     oe-kbuild-all@lists.linux.dev, nouveau@lists.freedesktop.org,
+        Danilo Krummrich <dakr@redhat.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH drm-misc-next v3 1/7] drm/gpuvm: rename struct
+ drm_gpuva_manager to struct drm_gpuvm
+Message-ID: <202309100242.Xp5Sk9EY-lkp@intel.com>
+References: <20230909153125.30032-2-dakr@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230909043125.GA3920383@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20230909153125.30032-2-dakr@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -104,151 +71,181 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 09, 2023 at 04:31:25AM +0000, Joel Fernandes wrote:
-> On Fri, Sep 08, 2023 at 10:35:57PM +0200, Frederic Weisbecker wrote:
-> > A full barrier is issued from nocb_gp_wait() upon callbacks advancing
-> > to order grace period completion with callbacks execution.
-> > 
-> > However these two events are already ordered by the
-> > smp_mb__after_unlock_lock() barrier within the call to
-> > raw_spin_lock_rcu_node() that is necessary for callbacks advancing to
-> > happen.
-> > 
-> > The following litmus test shows the kind of guarantee that this barrier
-> > provides:
-> > 
-> > 	C smp_mb__after_unlock_lock
-> > 
-> > 	{}
-> > 
-> > 	// rcu_gp_cleanup()
-> > 	P0(spinlock_t *rnp_lock, int *gpnum)
-> > 	{
-> > 		// Grace period cleanup increase gp sequence number
-> > 		spin_lock(rnp_lock);
-> > 		WRITE_ONCE(*gpnum, 1);
-> > 		spin_unlock(rnp_lock);
-> > 	}
-> > 
-> > 	// nocb_gp_wait()
-> > 	P1(spinlock_t *rnp_lock, spinlock_t *nocb_lock, int *gpnum, int *cb_ready)
-> > 	{
-> > 		int r1;
-> > 
-> > 		// Call rcu_advance_cbs() from nocb_gp_wait()
-> > 		spin_lock(nocb_lock);
-> > 		spin_lock(rnp_lock);
-> > 		smp_mb__after_unlock_lock();
-> > 		r1 = READ_ONCE(*gpnum);
-> > 		WRITE_ONCE(*cb_ready, 1);
-> > 		spin_unlock(rnp_lock);
-> > 		spin_unlock(nocb_lock);
-> > 	}
-> > 
-> > 	// nocb_cb_wait()
-> > 	P2(spinlock_t *nocb_lock, int *cb_ready, int *cb_executed)
-> > 	{
-> > 		int r2;
-> > 
-> > 		// rcu_do_batch() -> rcu_segcblist_extract_done_cbs()
-> > 		spin_lock(nocb_lock);
-> > 		r2 = READ_ONCE(*cb_ready);
-> > 		spin_unlock(nocb_lock);
-> > 
-> > 		// Actual callback execution
-> > 		WRITE_ONCE(*cb_executed, 1);
-> 
-> So related to this something in the docs caught my attention under "Callback
-> Invocation" [1]
-> 
-> <quote>
-> However, if the callback function communicates to other CPUs, for example,
-> doing a wakeup, then it is that function's responsibility to maintain
-> ordering. For example, if the callback function wakes up a task that runs on
-> some other CPU, proper ordering must in place in both the callback function
-> and the task being awakened. To see why this is important, consider the top
-> half of the grace-period cleanup diagram. The callback might be running on a
-> CPU corresponding to the leftmost leaf rcu_node structure, and awaken a task
-> that is to run on a CPU corresponding to the rightmost leaf rcu_node
-> structure, and the grace-period kernel thread might not yet have reached the
-> rightmost leaf. In this case, the grace period's memory ordering might not
-> yet have reached that CPU, so again the callback function and the awakened
-> task must supply proper ordering.
-> </quote>
-> 
-> I believe this text is for non-nocb but if we apply that to the nocb case,
-> lets see what happens.
-> 
-> In the litmus, he rcu_advance_cbs() happened on P1, however the callback is
-> executing on P2. That sounds very similar to the non-nocb world described in
-> the text where a callback tries to wake something up on a different CPU and
-> needs to take care of all the ordering.
-> 
-> So unless I'm missing something (quite possible), P2 must see the update to
-> gpnum as well. However, per your limus test, the only thing P2  does is
-> acquire the nocb_lock. I don't see how it is guaranteed to see gpnum == 1.
+Hi Danilo,
 
-Because P1 writes cb_ready under nocb_lock, and P2 reads cb_ready under
-nocb_lock as well and if P2 read P1's write, then we know the serialized
-order of locking is P1 first (i.e. the spin_lock(nocb_lock) on P2 reads
-from the spin_unlock(nocb_lock) on P1), in other words:
+kernel test robot noticed the following build warnings:
 
-(fact #1)
+[auto build test WARNING on 6bd3d8da51ca1ec97c724016466606aec7739b9f]
 
-	unlock(nocb_lock) // on P1
-	->rfe
-	lock(nocb_lock) // on P2
+url:    https://github.com/intel-lab-lkp/linux/commits/Danilo-Krummrich/drm-gpuvm-rename-struct-drm_gpuva_manager-to-struct-drm_gpuvm/20230909-233346
+base:   6bd3d8da51ca1ec97c724016466606aec7739b9f
+patch link:    https://lore.kernel.org/r/20230909153125.30032-2-dakr%40redhat.com
+patch subject: [PATCH drm-misc-next v3 1/7] drm/gpuvm: rename struct drm_gpuva_manager to struct drm_gpuvm
+config: riscv-defconfig (https://download.01.org/0day-ci/archive/20230910/202309100242.Xp5Sk9EY-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230910/202309100242.Xp5Sk9EY-lkp@intel.com/reproduce)
 
-so if P1 reads P0's write on gpnum
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309100242.Xp5Sk9EY-lkp@intel.com/
 
-(assumption #1)
+All warnings (new ones prefixed by >>):
 
-	W(gpnum)=1 // on P0
-	->rfe
-	R(gpnum)=1 // on P1
+   drivers/gpu/drm/drm_gpuvm.c: In function '__drm_gpuvm_sm_map':
+>> drivers/gpu/drm/drm_gpuvm.c:1079:39: warning: variable 'prev' set but not used [-Wunused-but-set-variable]
+    1079 |         struct drm_gpuva *va, *next, *prev = NULL;
+         |                                       ^~~~
 
-and we have
 
-(fact #2)
+vim +/prev +1079 drivers/gpu/drm/drm_gpuvm.c
 
-	R(gpnum)=1 // on P1
-	->(po; [UL])
-	unlock(nocb_lock) // on P1
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1072  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1073  static int
+5d2000a9816e19 drivers/gpu/drm/drm_gpuvm.c     Danilo Krummrich 2023-09-09  1074  __drm_gpuvm_sm_map(struct drm_gpuvm *gpuvm,
+5d2000a9816e19 drivers/gpu/drm/drm_gpuvm.c     Danilo Krummrich 2023-09-09  1075  		   const struct drm_gpuvm_ops *ops, void *priv,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1076  		   u64 req_addr, u64 req_range,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1077  		   struct drm_gem_object *req_obj, u64 req_offset)
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1078  {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20 @1079  	struct drm_gpuva *va, *next, *prev = NULL;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1080  	u64 req_end = req_addr + req_range;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1081  	int ret;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1082  
+5d2000a9816e19 drivers/gpu/drm/drm_gpuvm.c     Danilo Krummrich 2023-09-09  1083  	if (unlikely(!drm_gpuva_range_valid(gpuvm, req_addr, req_range)))
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1084  		return -EINVAL;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1085  
+5d2000a9816e19 drivers/gpu/drm/drm_gpuvm.c     Danilo Krummrich 2023-09-09  1086  	drm_gpuvm_for_each_va_range_safe(va, next, gpuvm, req_addr, req_end) {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1087  		struct drm_gem_object *obj = va->gem.obj;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1088  		u64 offset = va->gem.offset;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1089  		u64 addr = va->va.addr;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1090  		u64 range = va->va.range;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1091  		u64 end = addr + range;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1092  		bool merge = !!va->gem.obj;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1093  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1094  		if (addr == req_addr) {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1095  			merge &= obj == req_obj &&
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1096  				 offset == req_offset;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1097  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1098  			if (end == req_end) {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1099  				ret = op_unmap_cb(ops, priv, va, merge);
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1100  				if (ret)
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1101  					return ret;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1102  				break;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1103  			}
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1104  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1105  			if (end < req_end) {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1106  				ret = op_unmap_cb(ops, priv, va, merge);
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1107  				if (ret)
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1108  					return ret;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1109  				goto next;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1110  			}
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1111  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1112  			if (end > req_end) {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1113  				struct drm_gpuva_op_map n = {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1114  					.va.addr = req_end,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1115  					.va.range = range - req_range,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1116  					.gem.obj = obj,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1117  					.gem.offset = offset + req_range,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1118  				};
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1119  				struct drm_gpuva_op_unmap u = {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1120  					.va = va,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1121  					.keep = merge,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1122  				};
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1123  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1124  				ret = op_remap_cb(ops, priv, NULL, &n, &u);
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1125  				if (ret)
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1126  					return ret;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1127  				break;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1128  			}
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1129  		} else if (addr < req_addr) {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1130  			u64 ls_range = req_addr - addr;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1131  			struct drm_gpuva_op_map p = {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1132  				.va.addr = addr,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1133  				.va.range = ls_range,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1134  				.gem.obj = obj,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1135  				.gem.offset = offset,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1136  			};
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1137  			struct drm_gpuva_op_unmap u = { .va = va };
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1138  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1139  			merge &= obj == req_obj &&
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1140  				 offset + ls_range == req_offset;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1141  			u.keep = merge;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1142  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1143  			if (end == req_end) {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1144  				ret = op_remap_cb(ops, priv, &p, NULL, &u);
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1145  				if (ret)
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1146  					return ret;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1147  				break;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1148  			}
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1149  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1150  			if (end < req_end) {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1151  				ret = op_remap_cb(ops, priv, &p, NULL, &u);
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1152  				if (ret)
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1153  					return ret;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1154  				goto next;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1155  			}
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1156  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1157  			if (end > req_end) {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1158  				struct drm_gpuva_op_map n = {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1159  					.va.addr = req_end,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1160  					.va.range = end - req_end,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1161  					.gem.obj = obj,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1162  					.gem.offset = offset + ls_range +
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1163  						      req_range,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1164  				};
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1165  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1166  				ret = op_remap_cb(ops, priv, &p, &n, &u);
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1167  				if (ret)
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1168  					return ret;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1169  				break;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1170  			}
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1171  		} else if (addr > req_addr) {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1172  			merge &= obj == req_obj &&
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1173  				 offset == req_offset +
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1174  					   (addr - req_addr);
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1175  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1176  			if (end == req_end) {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1177  				ret = op_unmap_cb(ops, priv, va, merge);
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1178  				if (ret)
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1179  					return ret;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1180  				break;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1181  			}
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1182  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1183  			if (end < req_end) {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1184  				ret = op_unmap_cb(ops, priv, va, merge);
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1185  				if (ret)
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1186  					return ret;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1187  				goto next;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1188  			}
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1189  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1190  			if (end > req_end) {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1191  				struct drm_gpuva_op_map n = {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1192  					.va.addr = req_end,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1193  					.va.range = end - req_end,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1194  					.gem.obj = obj,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1195  					.gem.offset = offset + req_end - addr,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1196  				};
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1197  				struct drm_gpuva_op_unmap u = {
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1198  					.va = va,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1199  					.keep = merge,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1200  				};
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1201  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1202  				ret = op_remap_cb(ops, priv, NULL, &n, &u);
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1203  				if (ret)
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1204  					return ret;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1205  				break;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1206  			}
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1207  		}
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1208  next:
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1209  		prev = va;
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1210  	}
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1211  
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1212  	return op_map_cb(ops, priv,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1213  			 req_addr, req_range,
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1214  			 req_obj, req_offset);
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1215  }
+e6303f323b1ad9 drivers/gpu/drm/drm_gpuva_mgr.c Danilo Krummrich 2023-07-20  1216  
 
-combine them you get
-
-	W(gpnum)=1 // on P0
-	->rfe           // fact #1
-	->(po; [UL])    // fact #2
-	->rfe           // assumption #1
-	lock(nocb_lock) // on P2
-	->([LKR]; po)
-	M // any access on P2 after spin_lock(nocb_lock);
-
-so
-	W(gpnum)=1 // on P0
-	->rfe ->po-unlock-lock-po
-	M // on P2
-
-and po-unlock-lock-po is A-culum, hence "->rfe ->po-unlock-lock-po" or
-"rfe; po-unlock-lock-po" is culum-fence, hence it's a ->prop, which
-means the write of gpnum on P0 propagates to P2 before any memory
-accesses after spin_lock(nocb_lock)?
-
-Of course, I haven't looked into the bigger picture here (whether the
-barrier is for something else, etc.) ;-)
-
-Regards,
-Boqun
-
-> I am curious what happens in your litmus if you read gpnum in a register and
-> checked for it.
-> 
-> So maybe the memory barriers you are deleting need to be kept in place? Idk.
-> 
-> thanks,
-> 
->  - Joel
-> 
-> [1] https://docs.kernel.org/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.html#callback-invocation
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
