@@ -2,56 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7E5799EB5
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 16:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA88799EB8
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 16:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346698AbjIJOrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 10:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50386 "EHLO
+        id S1346701AbjIJOwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 10:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232850AbjIJOrj (ORCPT
+        with ESMTP id S234190AbjIJOwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 10:47:39 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322631A5
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 07:47:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDCBAC433C7;
-        Sun, 10 Sep 2023 14:47:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694357254;
-        bh=NErVm+qMXZ/pqK2rnbYhPDdyFVVpqvEVZyCXf/EFVGY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ubxVCTCKav+V51WDKuTtO0EDuxSfsqy9sKFT5Af++H1Fh3Z9uIHtsZLcAFgogb2DW
-         kLN62joKoSscCalyAHAP1XhN7GoOyat3h480sycZQEab/1X+UtB3OMRPlouXDt99ZN
-         7MYBaeQpinURBCB7NUKIK7Wb3DjSxBSK+Sl0SxDkZUQeRxSJV3X9b17qZkqFP+xdn4
-         0KQrhvL8fzq6mcEPAGZCkT+dwy+F/FxAA2a3/FqpTQ1SU0P0JGO8gB7iXPKcJS0L6b
-         GYiMhnyyct6+GQ+oHPRMrxdM6YZ2kNDAtY4w6cPoFKpA2voqNJP7VcCSiBe8+Q0ISf
-         Fy3sv/BaB1Bug==
-Date:   Sun, 10 Sep 2023 16:47:28 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Hangyu Hua <hbh25y@gmail.com>
-Cc:     justin.chen@broadcom.com, florian.fainelli@broadcom.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, mw@semihalf.com, linux@armlinux.org.uk,
-        nbd@nbd.name, john@phrozen.org, sean.wang@mediatek.com,
-        Mark-MC.Lee@mediatek.com, lorenzo@kernel.org,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        maxime.chevallier@bootlin.com, nelson.chang@mediatek.com,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v2 3/3] net: ethernet: mtk_eth_soc: fix possible NULL
- pointer dereference in mtk_hwlro_get_fdir_all()
-Message-ID: <20230910144728.GF775887@kernel.org>
-References: <20230908061950.20287-1-hbh25y@gmail.com>
- <20230908061950.20287-4-hbh25y@gmail.com>
+        Sun, 10 Sep 2023 10:52:02 -0400
+Received: from mail-pl1-f205.google.com (mail-pl1-f205.google.com [209.85.214.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA7B913D
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 07:51:57 -0700 (PDT)
+Received: by mail-pl1-f205.google.com with SMTP id d9443c01a7336-1c09d82dfc7so44386695ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 07:51:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694357517; x=1694962317;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E0Ojb7OTdTxEQDiHU7hYHayp+pPl3jVJoq88mfYTEN8=;
+        b=kZl9EXjrqlZlL9W5yF5z6eORHO3sDmpY1ENbQyId+qSlbyjNM4Fx1GRukvEatXeP28
+         nCw1TfO3N/zaq9PprMG1xzzlgpNPA7NRY67MXO7Zly/0VyhqYyxsav7ZQHrQMKCgC2DF
+         7KDOlWi762seXZyjA9EDYpTf1w0M+McagfmlRcxyBxENNokeyrolw5PZMLUUWyEXHI98
+         VHKJiX1gCqr0N6LeZV/mjcu+2SWj090TXM9E7ycQMBWI1hQkasZC50mhFD1VL+nXT8Bs
+         YZRMrvN/jN67bAjQEXXEwXLQhXCFqHUR2SqXsUyPpC+VFi42iWjtN7RtnhxoAm5419dq
+         jrzg==
+X-Gm-Message-State: AOJu0YyQSOj9KwfSclGiNL5LSrOAickyoo6zZh47NqgBGmLxoDM9hacN
+        XDrwE06m9u740gL6KlSskW8/5LMgQKc55NtQte+QyNl7EQQG
+X-Google-Smtp-Source: AGHT+IFh6a/vcy8cJxeKhskfFjYE4tPogtEHr8dc2FhFADHhUxC3+m2MDBYvv0OTG7lT4yeqaauzsu/kZMjiQFLLL2BJjscY8lSt
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230908061950.20287-4-hbh25y@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a17:903:18e:b0:1c3:8976:e816 with SMTP id
+ z14-20020a170903018e00b001c38976e816mr2601941plg.2.1694357517285; Sun, 10 Sep
+ 2023 07:51:57 -0700 (PDT)
+Date:   Sun, 10 Sep 2023 07:51:57 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f0bfe70605025941@google.com>
+Subject: [syzbot] [gfs2?] kernel BUG in gfs2_quota_cleanup
+From:   syzbot <syzbot+3b6e67ac2b646da57862@syzkaller.appspotmail.com>
+To:     agruenba@redhat.com, gfs2@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rpeterso@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,13 +55,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 02:19:50PM +0800, Hangyu Hua wrote:
-> rule_locs is allocated in ethtool_get_rxnfc and the size is determined by
-> rule_cnt from user space. So rule_cnt needs to be check before using
-> rule_locs to avoid NULL pointer dereference.
-> 
-> Fixes: 7aab747e5563 ("net: ethernet: mediatek: add ethtool functions to configure RX flows of HW LRO")
-> Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
+Hello,
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+syzbot found the following issue on:
 
+HEAD commit:    65d6e954e378 Merge tag 'gfs2-v6.5-rc5-fixes' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=150b1d58680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cbf8b29a87b8a830
+dashboard link: https://syzkaller.appspot.com/bug?extid=3b6e67ac2b646da57862
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/a239a86394dd/disk-65d6e954.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/1d7af042d4c5/vmlinux-65d6e954.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/cdb5df52c1e3/bzImage-65d6e954.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3b6e67ac2b646da57862@syzkaller.appspotmail.com
+
+RBP: 00007ffd0d57a210 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffd0d57b2d0
+R13: 00007fbf640c73b9 R14: 00000000002ca96c R15: 0000000000000003
+ </TASK>
+------------[ cut here ]------------
+kernel BUG at fs/gfs2/quota.c:1485!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 5074 Comm: syz-executor.4 Not tainted 6.5.0-syzkaller-11938-g65d6e954e378 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:gfs2_quota_cleanup+0x5cc/0x6e0 fs/gfs2/quota.c:1485
+Code: ff e8 e8 3b e1 fd e8 73 40 e1 fd 49 8d b7 70 12 00 00 89 ea 48 c7 c7 a0 16 da 8a e8 be 5b c4 fd e9 1b fe ff ff e8 54 40 e1 fd <0f> 0b 4c 89 e7 e8 2a 3d 36 fe e9 ef fd ff ff e8 40 3d 36 fe e9 14
+RSP: 0018:ffffc900038bfaf0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff888076948200 RSI: ffffffff83a5622c RDI: 0000000000000007
+RBP: dffffc0000000000 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000001 R11: 000000000008c8e8 R12: 0000000000000000
+R13: 0000000000000000 R14: ffffc900038bfb40 R15: ffff888036950000
+FS:  0000555556145480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f68df122866 CR3: 000000003214a000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ gfs2_make_fs_ro+0x11e/0x350 fs/gfs2/super.c:574
+ gfs2_put_super+0x66a/0x760 fs/gfs2/super.c:606
+ generic_shutdown_super+0x161/0x3c0 fs/super.c:693
+ kill_block_super+0x3b/0x70 fs/super.c:1646
+ gfs2_kill_sb+0x361/0x410 fs/gfs2/ops_fstype.c:1811
+ deactivate_locked_super+0x9a/0x170 fs/super.c:481
+ deactivate_super+0xde/0x100 fs/super.c:514
+ cleanup_mnt+0x222/0x3d0 fs/namespace.c:1254
+ task_work_run+0x14d/0x240 kernel/task_work.c:179
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x210/0x240 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
+ do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fbf6407de17
+Code: b0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffd0d57a158 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fbf6407de17
+RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007ffd0d57a210
+RBP: 00007ffd0d57a210 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffd0d57b2d0
+R13: 00007fbf640c73b9 R14: 00000000002ca96c R15: 0000000000000003
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:gfs2_quota_cleanup+0x5cc/0x6e0 fs/gfs2/quota.c:1485
+Code: ff e8 e8 3b e1 fd e8 73 40 e1 fd 49 8d b7 70 12 00 00 89 ea 48 c7 c7 a0 16 da 8a e8 be 5b c4 fd e9 1b fe ff ff e8 54 40 e1 fd <0f> 0b 4c 89 e7 e8 2a 3d 36 fe e9 ef fd ff ff e8 40 3d 36 fe e9 14
+RSP: 0018:ffffc900038bfaf0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff888076948200 RSI: ffffffff83a5622c RDI: 0000000000000007
+RBP: dffffc0000000000 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000001 R11: 000000000008c8e8 R12: 0000000000000000
+R13: 0000000000000000 R14: ffffc900038bfb40 R15: ffff888036950000
+FS:  0000555556145480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f68df122866 CR3: 000000003214a000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
