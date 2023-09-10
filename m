@@ -2,75 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA718799F50
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 20:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8BA799F54
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 20:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236100AbjIJSUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 14:20:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46732 "EHLO
+        id S236898AbjIJS3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 14:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbjIJSUb (ORCPT
+        with ESMTP id S234005AbjIJS3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 14:20:31 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C159818F
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 11:20:26 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31768ce2e81so3705400f8f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 11:20:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1694370025; x=1694974825; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MvwmuK6zDdHxLtx5clgb/iLgnTsb5Ioo/98jIe0vnGA=;
-        b=KGHWr6rbu+ye0YoE2kwzD1VRRkkWEcdzuDoMqaOx6R0jjBVYo++MFSLi12QwUjkNJQ
-         1yPKQoLm14x8C3SyO4rtKdJVBS7XosiGM0Ope2Z0/ivbNZRS5X1tm+BQTvN9bkWoYtU5
-         +Urryfl4v08n1cxQua3UqKJu0iIWMCI47vMY+ZqX1zGxHlQK7kQjpMWGwFVDmRqfpGoX
-         mIeUWU9UO6sbQoQ5By+31nlAc/Y8IR+OFENuNthoiZvcUswB1+NuKinsi4HC0O18nCgp
-         /Yb8hzRSBglzLJk9Dt8uJsBJqywzlX4XZwsnw08pXhH32iudblp2aRrzW3iDz0xOFbzQ
-         NV+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694370025; x=1694974825;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MvwmuK6zDdHxLtx5clgb/iLgnTsb5Ioo/98jIe0vnGA=;
-        b=J0r7DI0h4UBEDuqM2yR0hmEDMBDtTzG7bRlq93aqv6RXMwa9MlszGt1r+sU3FPwGeX
-         gbU8FzzDSuVcD0fLEr9PkWV25jJQ33naCcKuhFpABMdSuz+OVaCBMg6UU7LGjrvItLOm
-         /Knro4KZVL5wuCT3Pi2gJg8iencLf5em6yTZMjAzBbo7zSxCYjb9oVhJ5lq+eeCDF9iN
-         WCrd6IxivEf3gzutaryTgcqEMNC10fZSbXzu4jIqCOurufy+mLwCXKwrOhx9syUTuerK
-         q5q6VvGuS/ZnsgFI0doBePWnCqPRZPKCmSKo2yPqd5Qg/Cp16viRfmMPumNXObgOw+Vc
-         35Gg==
-X-Gm-Message-State: AOJu0YzgPJ566k5Nh7MRbIB3pqOoO94tqtcwBqAL2nz78k0ltgWUg+xW
-        IIN2hFQw+bkUF2FFed/DEvHwXw==
-X-Google-Smtp-Source: AGHT+IGzeTX7urFedcuJSmfm2ibmKjyj75DLKVYU44V+a+Vsk9c+iC0EcICiPNkTDKEWD/xg83btSA==
-X-Received: by 2002:a5d:4b83:0:b0:313:dee2:e052 with SMTP id b3-20020a5d4b83000000b00313dee2e052mr6387818wrt.26.1694370025136;
-        Sun, 10 Sep 2023 11:20:25 -0700 (PDT)
-Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id x14-20020adff0ce000000b00319779ee691sm7767632wro.28.2023.09.10.11.20.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Sep 2023 11:20:24 -0700 (PDT)
-Date:   Sun, 10 Sep 2023 19:20:23 +0100
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [RFC PATCH 0/7] sched: cpufreq: Remove magic margins
-Message-ID: <20230910182023.hdrhx6b5bq5r4vfo@airbuntu>
-References: <20230827233203.1315953-1-qyousef@layalina.io>
- <a6365f63-4669-15e5-b843-f4bfb1bd5e68@arm.com>
- <20230906211850.zyvk6qtt6fvpxaf3@airbuntu>
- <6011d8bb-9a3b-1435-30b0-d75b39bf5efa@arm.com>
- <20230907115307.GD10955@noisy.programming.kicks-ass.net>
+        Sun, 10 Sep 2023 14:29:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689C119C
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 11:29:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694370558; x=1725906558;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=PzGu76tMua3HCUi2AOOfNljJel3wCG4fnugGy7jKLbs=;
+  b=UM8iFGyWGr005nydNRwi6CNWc9YEbOGGmgpEU7ca1hTIbWlH4D5Yc/xS
+   bNvGnK/T2dyOmwsvjyjIcw5q+0WSU6G8I0+cBgGk3saw43yVGIoxEcjK/
+   kKAxG7JMcNWYJI0IHYDNbIpGDZ8QGR9u4VsKIw1KdHsR1+6//pqUVDrR9
+   4YoceOW4cIt6iTpq0JoTHM8aoybsfiGgskCOGutXOgfdoRt6OFBWFievN
+   5bZU+eRfnaVx3XX67gkmh8BqvzQRgxQq2nG3BuYTa9k/SdGRC+PddoOWZ
+   RQlXUtOOXWFVkBcDiT9eGvLWbWgM6OxIdUSiAIEPmUDQoSWxLo8ZmegQR
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="441932687"
+X-IronPort-AV: E=Sophos;i="6.02,242,1688454000"; 
+   d="scan'208";a="441932687"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 11:29:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="743080658"
+X-IronPort-AV: E=Sophos;i="6.02,242,1688454000"; 
+   d="scan'208";a="743080658"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 10 Sep 2023 11:29:15 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qfPBJ-0005GC-0d;
+        Sun, 10 Sep 2023 18:29:13 +0000
+Date:   Mon, 11 Sep 2023 02:28:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Janne Grunau via B4 Relay <devnull+j.jannau.net@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     oe-kbuild-all@lists.linux.dev, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, asahi@lists.linux.dev
+Subject: Re: [PATCH] drm/simpledrm: Add support for multiple "power-domains"
+Message-ID: <202309110206.wDXP9YXl-lkp@intel.com>
+References: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230907115307.GD10955@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,41 +69,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/07/23 13:53, Peter Zijlstra wrote:
-> On Thu, Sep 07, 2023 at 08:48:08AM +0100, Lukasz Luba wrote:
-> 
-> > > Hehe. That's because they're not really periodic ;-)
-> > 
-> > They are periodic in a sense, they wake up every 16ms, but sometimes
-> > they have more work. It depends what is currently going in the game
-> > and/or sometimes the data locality (might not be in cache).
-> > 
-> > Although, that's for games, other workloads like youtube play or this
-> > one 'Yahoo browser' (from your example) are more 'predictable' (after
-> > the start up period). And I really like the potential energy saving
-> > there :)
-> 
-> So everything media is fundamentally periodic, you're hard tied to the
-> framerate / audio-buffer size etc..
-> 
-> Also note that the traditional periodic task model from the real-time
-> community has the notion of WCET, which completely covers this
-> fluctuation in frame-to-frame work, it only considers the absolute worst
-> case.
-> 
-> Now, practically, that stinks, esp. when you care about batteries, but
-> it does not mean these tasks are not periodic.
+Hi Janne,
 
-piecewise periodic?
+kernel test robot noticed the following build warnings:
 
-> Many extentions to the periodic task model are possible, including
-> things like average runtime with bursts etc.. all have their trade-offs.
+[auto build test WARNING on 15d30b46573d75f5cb58cfacded8ebab9c76a2b0]
 
-The challenge we have is the endless number of workloads we need to cater for..
-Or you think one of these models can actually scale to that?
+url:    https://github.com/intel-lab-lkp/linux/commits/Janne-Grunau-via-B4-Relay/drm-simpledrm-Add-support-for-multiple-power-domains/20230911-004026
+base:   15d30b46573d75f5cb58cfacded8ebab9c76a2b0
+patch link:    https://lore.kernel.org/r/20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685%40jannau.net
+patch subject: [PATCH] drm/simpledrm: Add support for multiple "power-domains"
+config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230911/202309110206.wDXP9YXl-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230911/202309110206.wDXP9YXl-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309110206.wDXP9YXl-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from include/linux/device.h:15,
+                    from include/linux/acpi.h:14,
+                    from include/linux/i2c.h:13,
+                    from include/uapi/linux/fb.h:6,
+                    from include/linux/fb.h:7,
+                    from include/linux/platform_data/simplefb.h:12,
+                    from drivers/gpu/drm/tiny/simpledrm.c:7:
+   drivers/gpu/drm/tiny/simpledrm.c: In function 'simpledrm_device_detach_genpd':
+>> include/drm/drm_print.h:456:39: warning: ' ' flag used with '%p' gnu_printf format [-Wformat=]
+     456 |         dev_##level##type((drm)->dev, "[drm] " fmt, ##__VA_ARGS__)
+         |                                       ^~~~~~~~
+   include/linux/dev_printk.h:110:30: note: in definition of macro 'dev_printk_index_wrap'
+     110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+         |                              ^~~
+   include/linux/dev_printk.h:144:56: note: in expansion of macro 'dev_fmt'
+     144 |         dev_printk_index_wrap(_dev_err, KERN_ERR, dev, dev_fmt(fmt), ##__VA_ARGS__)
+         |                                                        ^~~~~~~
+   include/drm/drm_print.h:456:9: note: in expansion of macro 'dev_err'
+     456 |         dev_##level##type((drm)->dev, "[drm] " fmt, ##__VA_ARGS__)
+         |         ^~~~
+   include/drm/drm_print.h:469:9: note: in expansion of macro '__drm_printk'
+     469 |         __drm_printk((drm), err,, "*ERROR* " fmt, ##__VA_ARGS__)
+         |         ^~~~~~~~~~~~
+   drivers/gpu/drm/tiny/simpledrm.c:506:9: note: in expansion of macro 'drm_err'
+     506 |         drm_err(&sdev->dev, "% power-domains count:%d\n", __func__, sdev->pwr_dom_count);
+         |         ^~~~~~~
 
 
-Thanks!
+vim +456 include/drm/drm_print.h
 
---
-Qais Yousef
+e820f52577b14c6 Jim Cromie            2022-09-11  416  
+02c9656b2f0d699 Haneen Mohammed       2017-10-17  417  /**
+b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  418   * DRM_DEV_DEBUG() - Debug output for generic drm code
+02c9656b2f0d699 Haneen Mohammed       2017-10-17  419   *
+306589856399e18 Douglas Anderson      2021-09-21  420   * NOTE: this is deprecated in favor of drm_dbg_core().
+306589856399e18 Douglas Anderson      2021-09-21  421   *
+091756bbb1a9613 Haneen Mohammed       2017-10-17  422   * @dev: device pointer
+091756bbb1a9613 Haneen Mohammed       2017-10-17  423   * @fmt: printf() like format string.
+02c9656b2f0d699 Haneen Mohammed       2017-10-17  424   */
+db87086492581c8 Joe Perches           2018-03-16  425  #define DRM_DEV_DEBUG(dev, fmt, ...)					\
+db87086492581c8 Joe Perches           2018-03-16  426  	drm_dev_dbg(dev, DRM_UT_CORE, fmt, ##__VA_ARGS__)
+b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  427  /**
+b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  428   * DRM_DEV_DEBUG_DRIVER() - Debug output for vendor specific part of the driver
+b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  429   *
+306589856399e18 Douglas Anderson      2021-09-21  430   * NOTE: this is deprecated in favor of drm_dbg() or dev_dbg().
+306589856399e18 Douglas Anderson      2021-09-21  431   *
+b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  432   * @dev: device pointer
+b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  433   * @fmt: printf() like format string.
+b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  434   */
+db87086492581c8 Joe Perches           2018-03-16  435  #define DRM_DEV_DEBUG_DRIVER(dev, fmt, ...)				\
+db87086492581c8 Joe Perches           2018-03-16  436  	drm_dev_dbg(dev, DRM_UT_DRIVER,	fmt, ##__VA_ARGS__)
+b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  437  /**
+b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  438   * DRM_DEV_DEBUG_KMS() - Debug output for modesetting code
+b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  439   *
+306589856399e18 Douglas Anderson      2021-09-21  440   * NOTE: this is deprecated in favor of drm_dbg_kms().
+306589856399e18 Douglas Anderson      2021-09-21  441   *
+b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  442   * @dev: device pointer
+b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  443   * @fmt: printf() like format string.
+b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  444   */
+db87086492581c8 Joe Perches           2018-03-16  445  #define DRM_DEV_DEBUG_KMS(dev, fmt, ...)				\
+db87086492581c8 Joe Perches           2018-03-16  446  	drm_dev_dbg(dev, DRM_UT_KMS, fmt, ##__VA_ARGS__)
+a18b21929453af7 Lyude Paul            2018-07-16  447  
+fb6c7ab8718eb25 Jani Nikula           2019-12-10  448  /*
+fb6c7ab8718eb25 Jani Nikula           2019-12-10  449   * struct drm_device based logging
+fb6c7ab8718eb25 Jani Nikula           2019-12-10  450   *
+fb6c7ab8718eb25 Jani Nikula           2019-12-10  451   * Prefer drm_device based logging over device or prink based logging.
+fb6c7ab8718eb25 Jani Nikula           2019-12-10  452   */
+fb6c7ab8718eb25 Jani Nikula           2019-12-10  453  
+fb6c7ab8718eb25 Jani Nikula           2019-12-10  454  /* Helper for struct drm_device based logging. */
+fb6c7ab8718eb25 Jani Nikula           2019-12-10  455  #define __drm_printk(drm, level, type, fmt, ...)			\
+fb6c7ab8718eb25 Jani Nikula           2019-12-10 @456  	dev_##level##type((drm)->dev, "[drm] " fmt, ##__VA_ARGS__)
+fb6c7ab8718eb25 Jani Nikula           2019-12-10  457  
+fb6c7ab8718eb25 Jani Nikula           2019-12-10  458  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
