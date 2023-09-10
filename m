@@ -2,138 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 832D1799CA7
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 06:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB2F799CA9
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 06:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346052AbjIJEgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 00:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49818 "EHLO
+        id S1346187AbjIJEhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 00:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238403AbjIJEgT (ORCPT
+        with ESMTP id S1346161AbjIJEho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 00:36:19 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C747195
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 21:36:14 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99c93638322so709490066b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 21:36:14 -0700 (PDT)
+        Sun, 10 Sep 2023 00:37:44 -0400
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC47195;
+        Sat,  9 Sep 2023 21:37:38 -0700 (PDT)
+Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1d4e0c2901bso2392179fac.0;
+        Sat, 09 Sep 2023 21:37:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694320572; x=1694925372; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=L8HEy6S0LdmzzzNFz4rEsIqVyXRa/Zk4t2KCxzu/Vho=;
-        b=G5Msj5VS7aeKvqeDymn+sMEDhxQ/NDbYkfEgHsxqvim9khyHgehkxhkTDcMD/FzVaN
-         IaEYHE6iXlsbiIybfD+/TvjDu2CDrNpX6tQrVXScYg8bmiDX/TRq7TIoffGE2PPEsTzp
-         wfnr84+QCpfhP4NqH2uXU+tS0HaBJZ4sgWscw=
+        d=gmail.com; s=20221208; t=1694320658; x=1694925458; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=28TDwagANbm8HIbTFyx3CBMn7Zz+dpCIZxzUcErrG5s=;
+        b=m1WpsjztrNH8peo0rxuhh9CYykqUTvvKq+PZnE5LAhSm2Q39l/5m2RX2QDFdBuV4IZ
+         xyl/eSAFZQCbNslK9r0yfC1HkbBn55TzAmmQhItWr8E8+bujrwBrevQZrYXe9VeeyFOQ
+         54cFhNR805zTVFusk30MLKZ/4+nSfby8hBJizBL4MhA+IZGAbl8nXjMZNltTtL26RdR9
+         H4KhCDuUDVvRlGIpK+uOaBCPwnx400CKFul76WnLPhEVpZQfcUk8yAFpfoBIJWsSE3B7
+         qfFQjNZ5BjNLW5wZn+LFrx2icxpEqM+iH4h05wJlPy1ucvYj2Fp0OpJfNGVXTY87djTH
+         9+6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694320572; x=1694925372;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=L8HEy6S0LdmzzzNFz4rEsIqVyXRa/Zk4t2KCxzu/Vho=;
-        b=DJ7J/KYYs/N+xBSyodiNhgS0bzc9EcuMjORrS6WytdeJe4FT6ZjFxujuxDv9OUiFAt
-         2l+Ce1jE+mRvNaYcQaiiVQlSMysK68p7bOu3m2qcFKr7u9c6VZ4l2zVnIrRQZ7uW2Vx1
-         ud5YvknNMXkk9phk6JzA7QUzIz02oODyJqaeW4mPzmkGFYpT8KceJPo2o5YSo/VP3fno
-         07y5/85Bqq8JzYnnsqju+qsQfmayf1PDRy6IyW158Lil72Hc8KHoZBMnkIx1y7t9XPNM
-         McKpO0EUuuDPeh9YxAf+2323UIzqDVJC8hdyWy+MDtxz978DMc/QRfN8MvJYS6RbK9hL
-         DYNQ==
-X-Gm-Message-State: AOJu0YwIIV4R3vYiHbVz0Aq6uuEEztkNi3I1lIiK8MkBYleCF2kiFvvu
-        2/d472BMhosR5egxhezjMPR3zwf8B8UlGRusH0Qmac6X
-X-Google-Smtp-Source: AGHT+IHQA5fdce8LMLNh5BafBbAlnDVW8aDFUGuU2cuxrrcqBEoNwXFJsRBn+dba6kWhV7wjFg9pZw==
-X-Received: by 2002:a17:906:c113:b0:9a9:9d19:b250 with SMTP id do19-20020a170906c11300b009a99d19b250mr13085752ejc.17.1694320572646;
-        Sat, 09 Sep 2023 21:36:12 -0700 (PDT)
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
-        by smtp.gmail.com with ESMTPSA id g18-20020a170906595200b009931a3adf64sm3293126ejr.17.2023.09.09.21.36.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Sep 2023 21:36:12 -0700 (PDT)
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-9aa0495f9cfso326827066b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 21:36:12 -0700 (PDT)
-X-Received: by 2002:a17:907:2713:b0:9a5:cc2b:50e5 with SMTP id
- w19-20020a170907271300b009a5cc2b50e5mr8297488ejk.32.1694320572001; Sat, 09
- Sep 2023 21:36:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694320658; x=1694925458;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=28TDwagANbm8HIbTFyx3CBMn7Zz+dpCIZxzUcErrG5s=;
+        b=hDf1lr3P2DlG7ZlbCKi3A47pyma3wCR1X7ytlOBOXZK3u/krvnVtISWVhC8hZ6N25Q
+         vrsJeznbluCYjHCCqCiKI3uoljOXjbf6Nunfb1znor0o+THFyN6taV1elxxEHvWbAxqC
+         s0jm3UPkmVEDOc+iiI7dzDSAT1/24VY1vNG3+RxEYQs/9V6xik+awPK/hmKY2kTbCzmM
+         HutyfxwfgxbVXjIfn1eYQU4C+fQcY+dv9ReDDREIH0DJg1YyjIAKTJSFkosqBwI2/p0k
+         VrOL1Z66BiXPhbjfgCiN/SERbM1Wet9Ocy7xPw7y8r+VdrcZxSYU/EunJyrJds9nguVW
+         srxA==
+X-Gm-Message-State: AOJu0Yy0uvfQF7/jQpFS8HWvdfL9+ALUyHbbfNgSIR6GTMqhNAh5+Hgt
+        UAhtHN45uHGBAa3Sh25Agh57dMfl9njL+z951GooCSVWzcY=
+X-Google-Smtp-Source: AGHT+IFp5zFknvSKDmGFWesaph1tNcTKmNY5gmPbhFPx4wUKtcAyiXJnWBq1XpvXecYQlxYJj3e2qPsd6JZB0TUcnY0=
+X-Received: by 2002:a05:6870:51c7:b0:1be:f8d9:7bdd with SMTP id
+ b7-20020a05687051c700b001bef8d97bddmr8159153oaj.6.1694320658018; Sat, 09 Sep
+ 2023 21:37:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
- <20230830184958.2333078-8-ankur.a.arora@oracle.com> <20230908070258.GA19320@noisy.programming.kicks-ass.net>
- <87zg1v3xxh.fsf@oracle.com> <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
- <87edj64rj1.fsf@oracle.com>
-In-Reply-To: <87edj64rj1.fsf@oracle.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 9 Sep 2023 21:35:54 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
-Message-ID: <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
-        tglx@linutronix.de, jon.grimm@amd.com, bharata@amd.com,
-        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com
+References: <20230910040811.53046-1-erer1243@gmail.com> <ZP1DsYlG+R/Y9fjr@casper.infradead.org>
+In-Reply-To: <ZP1DsYlG+R/Y9fjr@casper.infradead.org>
+From:   Oliver F <erer1243@gmail.com>
+Date:   Sun, 10 Sep 2023 00:37:27 -0400
+Message-ID: <CAHhkmma2uKdnDCCidRVd0pF-xJRPDL_f5qfYos5vpcUE6cXdJA@mail.gmail.com>
+Subject: Re: [PATCH] docs/sphinx: Explicitly convert Sphinx paths to str
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 Sept 2023 at 20:49, Ankur Arora <ankur.a.arora@oracle.com> wrote:
+On Sun, Sep 10, 2023 at 12:19=E2=80=AFAM Matthew Wilcox <willy@infradead.or=
+g> wrote:
 >
-> I think we can keep these checks, but with this fixed definition of
-> resched_allowed(). This might be better:
+> On Sun, Sep 10, 2023 at 12:08:06AM -0400, Oliver Faso wrote:
+> >                  else:
+> > -                    doc =3D env.srcdir + "/" + env.docname + ":" + str=
+(self.lineno)
+> > +                    doc =3D str(env.srcdir) + "/" + env.docname + ":" =
++ str(self.lineno)
 >
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -2260,7 +2260,8 @@ static inline void disallow_resched(void)
+> Would we be better off doing the path manipulation in Path, then converti=
+ng
+> to string?  ie:
 >
->  static __always_inline bool resched_allowed(void)
->  {
-> -       return unlikely(test_tsk_thread_flag(current, TIF_RESCHED_ALLOW));
-> +       return unlikely(!preempt_count() &&
-> +                        test_tsk_thread_flag(current, TIF_RESCHED_ALLOW));
->  }
+>                         doc =3D str(env.srcdir / env.docname) + ":" + str=
+(self.lineno)
+>
 
-I'm not convinced (at all) that the preempt count is the right thing.
+That would be incompatible with earlier Sphinx versions, which most
+people are probably using.
+The benefits would be supporting non-'/' separators, and invalid uft8 in pa=
+ths.
+But, I think those things don't matter here.
 
-It works for interrupts, yes, because interrupts will increment the
-preempt count even on non-preempt kernels (since the preempt count is
-also the interrupt context level).
-
-But what about any synchronous trap handling?
-
-In other words, just something like a page fault? A page fault doesn't
-increment the preemption count (and in fact many page faults _will_
-obviously re-schedule as part of waiting for IO).
-
-A page fault can *itself* say "feel free to preempt me", and that's one thing.
-
-But a page fault can also *interupt* something that said "feel free to
-preempt me", and that's a completely *different* thing.
-
-So I feel like the "tsk_thread_flag" was sadly completely the wrong
-place to add this bit to, and the wrong place to test it in. What we
-really want is "current kernel entry context".
-
-So the right thing to do would basically be to put it in the stack
-frame at kernel entry - whether that kernel entry was a system call
-(which is doing some big copy that should be preemptible without us
-having to add "cond_resched()" in places), or is a page fault (which
-will also do things like big page clearings for hugepages)
-
-And we don't have that, do we?
-
-We have "on_thread_stack()", which checks for "are we on the system
-call stack". But that doesn't work for page faults.
-
-PeterZ - I feel like I might be either very confused, or missing
-something You probably go "Duh, Linus, you're off on one of your crazy
-tangents, and none of this is relevant because..."
-
-                 Linus
+(sorry Matthew for double mail, I hit the wrong reply button)
