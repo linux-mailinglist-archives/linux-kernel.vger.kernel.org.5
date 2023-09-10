@@ -2,346 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21319799CF6
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 09:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52924799CF9
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 09:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346422AbjIJHvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 03:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33828 "EHLO
+        id S1346427AbjIJHwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 03:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjIJHvj (ORCPT
+        with ESMTP id S229650AbjIJHwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 03:51:39 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BBE119
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 00:51:33 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38A7oldh013675;
-        Sun, 10 Sep 2023 07:51:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=9txS/sar90T7+xOaEjMOJg+AvUaToWHqDas010cXiyo=;
- b=WZb6BkwMHcQ6RsPAaLQh7SFMnISjgplV6aYWhZmEPBR3LH0gXWu+qZe6qToo/9/1oyBZ
- oIJYlw5kkTof9SecXwnrVjiUWXkIKL659709Xt6oDzqtfiBBMHkOYMdckypU8SQTnH9r
- XIreRo97KLqkX2mbmpG5gLBILKH1+bB91xBwVeNK1yA9eX+Bass03UVZVkQeYFngEr6D
- gE+4yp6CgCziZws+V6XjFjXmVOdhnPEVsidQlu6PnnmFNhWi5R0vtpgjQZEJI9RKmrQ6
- jCmGiqZfpajbpqJqfCgxUwKNqUmUgbJN3FxMR6tusme0500CuDWtK6nUxQVgfMZ0xrWw 4w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t19s3805u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 10 Sep 2023 07:51:15 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38A7pESQ014252;
-        Sun, 10 Sep 2023 07:51:14 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t19s3805h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 10 Sep 2023 07:51:14 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38A728PR012037;
-        Sun, 10 Sep 2023 07:51:13 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t13dy2348-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 10 Sep 2023 07:51:13 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38A7pClb6554262
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 10 Sep 2023 07:51:12 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4D4D55804E;
-        Sun, 10 Sep 2023 07:51:12 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 00A9558054;
-        Sun, 10 Sep 2023 07:51:07 +0000 (GMT)
-Received: from [9.171.45.185] (unknown [9.171.45.185])
-        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Sun, 10 Sep 2023 07:51:06 +0000 (GMT)
-Message-ID: <b9397226-c9e4-346b-9f2a-91c21633f4ce@linux.vnet.ibm.com>
-Date:   Sun, 10 Sep 2023 13:21:04 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [RFC PATCH 0/7] Optimization to reduce the cost of newidle
- balance
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Chen Yu <yu.chen.surf@gmail.com>,
-        Aaron Lu <aaron.lu@intel.com>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <cover.1690273854.git.yu.c.chen@intel.com>
- <8561f192-ccd0-c2e3-3115-8cf09a7d3e55@linux.vnet.ibm.com>
- <ZO9fvgovn/MtLVzZ@chenyu5-mobl2>
+        Sun, 10 Sep 2023 03:52:40 -0400
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2139.outbound.protection.outlook.com [40.107.114.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D3A119
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 00:52:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kG3VBGVVOV5sQIyyR18quMgjXqtIyYH78wOex8ZC3pxize2JzQ6Y7Mbp1r8LDtWjiESJQsW35c2BbbcUUh5CXsMBspNbh0W90Ij3UxSvpm+8YkqcL4Me2O6vZsWs/ywlYNsWbUzl7Q7FKWTO/XW1wIejLarfDx3W8IkEi9uEdr/zLw1fkH8YY7g7dm/jLKDS7djczuQz+I+5kbkJ+QlCP7tHqSi+j+kAq7XDlKReWbEHh2xDkIyCe+bTr5aAkDSkXZitpcVW+lRWmNPWAajBuJnD14R34uYPsnaL/+vjplHGxpCCigs3fkASI7257o35EM/qgg51avE8U1uNVB+ysg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HUW3jzPqs2ZJOI6vd6dLqwelHVIk5gbyBwSKHe4kr4E=;
+ b=Nusl9bWZUDxoJ7YmPxsY+rr23LFtCS4hDy4ySr7ycj7E3ZYgXy+8xIO2+QqiwlBH02DP5EeW6ZHW8F3FfTh79/AfLkrWfC9Hz9IC2RmGw7Ltw8J11wIhZi8S5dGEmLpYAttO4xFVDbUmfhl42jjr//TTCTZ3YY4zmXl/35hdfEsfV+dNNxNBajSpn+VHy/RqRI7V5e0RGbspuC2jJK7JwgA0tsjRSL9P8wtiCPEuHx8MdzTLRVDvYvxg0UhDc7p9187Rvn3HJTg2KDS0rtPDgkn7BfPki51rr198uNSchtGrzrd+znShHvsWM16p5iJwGuHp7zvp9Oq6D3pEvCwtyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HUW3jzPqs2ZJOI6vd6dLqwelHVIk5gbyBwSKHe4kr4E=;
+ b=A9dEDuCEv+5RL1WMLBvrqdhb4xNYMWYBiLESmI1taT1nOWNAZEX+uEjKIxA471C2qAq5kMOkSAu81ClnfPrummWE3K7gMpug4+fFxDHfgkhig1mxHrIE5+6NpaCA6raolxw4/wjt7vXYBedkyke+pTULmXi1PIyJelOlliAsHk0=
+Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
+ by TY3PR01MB11594.jpnprd01.prod.outlook.com (2603:1096:400:374::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.34; Sun, 10 Sep
+ 2023 07:52:29 +0000
+Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
+ ([fe80::9d23:32f5:9325:3706]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
+ ([fe80::9d23:32f5:9325:3706%5]) with mapi id 15.20.6768.029; Sun, 10 Sep 2023
+ 07:52:29 +0000
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     Shenghao Ding <shenghao-ding@ti.com>,
+        "tiwai@suse.de" <tiwai@suse.de>
+CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "kevin-lu@ti.com" <kevin-lu@ti.com>,
+        "13916275206@139.com" <13916275206@139.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
+        "mengdong.lin@intel.com" <mengdong.lin@intel.com>,
+        "baojun.xu@ti.com" <baojun.xu@ti.com>,
+        "thomas.gfeller@q-drop.com" <thomas.gfeller@q-drop.com>,
+        "peeyush@ti.com" <peeyush@ti.com>, "navada@ti.com" <navada@ti.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "gentuser@gmail.com" <gentuser@gmail.com>
+Subject: RE: [PATCH v1] ALSA: hda/tas2781: Support ACPI_ID both TXNW2781 and
+ TIAS2781
+Thread-Topic: [PATCH v1] ALSA: hda/tas2781: Support ACPI_ID both TXNW2781 and
+ TIAS2781
+Thread-Index: AQHZ47iZwJO7TO/5+kSTHw1BiSGD2LATqquQ
+Date:   Sun, 10 Sep 2023 07:52:29 +0000
+Message-ID: <OS0PR01MB59222A9E3B642799B308379586F3A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+References: <20230910072704.1359-1-shenghao-ding@ti.com>
+In-Reply-To: <20230910072704.1359-1-shenghao-ding@ti.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-In-Reply-To: <ZO9fvgovn/MtLVzZ@chenyu5-mobl2>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: vtFA0vW_kRW3FPctsU03kohpCnL3YN9Q
-X-Proofpoint-ORIG-GUID: rV50byoYEtJAMbl_CYI3zgQ2w6sRsNDs
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bp.renesas.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TY3PR01MB11594:EE_
+x-ms-office365-filtering-correlation-id: 45f082e0-f86f-4b41-daeb-08dbb1d2e1b7
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Q3jkFaAb5pfSTWZTC4Zs2Zp0fMvjGmasIoaBrzwTHu3D5gQsthXA8QnYSxaM7hoSH8AN/KOrLdVT6QOVuRBCeDrdDAdc2xvSsAR+0cfbdPR1VPM+A5F0gmYc+0J7hNohWyHb9zNihsIIKtObaQuyE1tvy2GJ/p7HwZyJHzPfl7GeH00u5KnMrkTHvw874IhwsgV2ZceNZN5YLXU3EmDDOQvmcCmrtb5QbydjkiMtWbJxCzPOgE9S+hFXh1VAG/3PQxDfdBLAhanDzgN2tpPkxHD5vGQiWC5VoVnXVI04Tdt8ePOAEn4ay+owQG1P1udkZO1L7dmYUgBENDVMS2M/rCugUuqJhVyWXnNNQu6oUFcSRrtCuoPGNIjs3edF/boMhCjubV12HixVSMG/OVKjkMBWuONtlGeMZwuimA2NTcPOznRQFIF4NP/7TKj79yNi90ZXc5XXIP06Dr/f0ghMFq5HyiZ7DWCcl/vRjJ2HEYzIdfrno9CsPpbwg/GF++hrZu7ibhTiJTLUoNQVId0F86USD87/Z7B2jsdzPqX0javoVR87kGJvL4e+Te6u0WtQvy4+emAN3kj9ehGP1AirBa38tgpGe8A81XP3R7gKoiTzZoDlNH0VRkvh1NtY27er
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(396003)(376002)(346002)(39860400002)(186009)(1800799009)(451199024)(6506007)(7696005)(9686003)(71200400001)(83380400001)(122000001)(86362001)(38100700002)(33656002)(38070700005)(55016003)(26005)(76116006)(66946007)(66446008)(66556008)(66476007)(64756008)(54906003)(110136005)(7416002)(316002)(41300700001)(2906002)(52536014)(5660300002)(8936002)(8676002)(4326008)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?a9+SPRBvMD3CYswwF76jK4daUEOyJzuNYZMCtVV8ok/DwAhMV3bHEiHKqc26?=
+ =?us-ascii?Q?T98GhURB5Avj5M2qSOLDuRIVaS4iHgoEAjrdKdGR04JG/X/1D+CMDqZUKren?=
+ =?us-ascii?Q?8l7oriY7V/E01a9pFTsi5mk71Liz1QE/GxMv9kAOxEiYVxtJVQJP3NDP3/Xj?=
+ =?us-ascii?Q?MSokth9wa53cwE3bTrDrAe9vkLRCnG9/U5FMA5wI5PjSFMVqC6gFoCvB+cKq?=
+ =?us-ascii?Q?MAZ+tV75HHHGh04AZOA1MKqh1lIYVxMKowkddek2JutW8GwYRkJ68ZWcC0QH?=
+ =?us-ascii?Q?N2V1KQTqH5c7clDD1HDWoAGD0ist45H2FU3tRwUf8LVMAjq/nblQJEhaWtee?=
+ =?us-ascii?Q?EWrzT1XheytGelMQXYstL702l2HYS4GgHHHb61EsadtlGH2qqDFvrij+G5jF?=
+ =?us-ascii?Q?4gP6gVwp8rWqIkUFwZts80prcGxxhcc0OsCZJhpVY014FHhZ869D8jpNYC61?=
+ =?us-ascii?Q?oRksAObZ3a5ldoDuD2Eu6y41GIUVgHPbG0KwfgWd2wWyV5/ksotHN5gBaOQy?=
+ =?us-ascii?Q?A4zlsjF/0mjMGmfmC8la8l86k6UCuppVLR95fVrXVFwQZsKWOe4PkcZcH8JI?=
+ =?us-ascii?Q?Pj+JHdoJiCF0HhYGH8P6mWI0Ra1mGNLVQlOMkQBQwRWHhQgvGopNitmL58IW?=
+ =?us-ascii?Q?9FxqZuohX0s/PBu5xhK+xhhBhU+qEqRHX+7VTL7M689da7tq/RL4tvU82Jrs?=
+ =?us-ascii?Q?srqmsxiU31bKNz9VsYoi1RxW67cmNIstTmXgntj6wH3qopmk6H/ufItfvauR?=
+ =?us-ascii?Q?vqJj+q+/QgaY6PZ2hUT2/yE30tNyOc12Y/sQJRRrO/AMp93USLIwUIZNaRJO?=
+ =?us-ascii?Q?Egl6+OoDhEDHrRSVywFna8fA1G4/Vyth+Y2Phx8YG9uyy5PiFe7333GodrBD?=
+ =?us-ascii?Q?LWX2uinqJrREzbem4hsvtpP3uQrHdTvwoEmCCl3i554EK0P4qniKVVtcnCEz?=
+ =?us-ascii?Q?YV58wX9WkxHDV7woJnMzcbCKkhaHV0C+kipe4cv3hHWYcrrBmxVTRLD13eY3?=
+ =?us-ascii?Q?Hs513NsWEV9xpmoJWtjj8OfIEYHZRM8Xm9Ro9RucNCcMJ2zbPow0LIWMiDD0?=
+ =?us-ascii?Q?FCSzjpxAQ6Y4baU+k0iznlfDo1qz7ZjQp+pkMIij27ljNBIBRzCUck0MgqK4?=
+ =?us-ascii?Q?PQ5deIkN9irCqVhh7ZjOKJj5ix60j1PUIznsuraHU4bjax4wzS2jjaySKVYN?=
+ =?us-ascii?Q?Nkk3mfrZMpqxxhp78wJGtjytpdTgIwpOUxRM+b+rQ6VOwevi4AWZAXtS0x1A?=
+ =?us-ascii?Q?VeTN1aZ0bExsMn3xD/3MtddZ7/ojeqfrhJBQVOuesh3tOKpTObT0wGwbvSBc?=
+ =?us-ascii?Q?VhM8ojbroCxSG8yWfTs9lPoRTOrusaCoihtHOLdu5EBRWVDgRtCn1pn3pPSc?=
+ =?us-ascii?Q?7pDJNHE/2yJrkVZQUB7GA4nXZMDapcQogCjZ4BrCURm/IUXRFy1gaoCvKm9u?=
+ =?us-ascii?Q?2XyOuObpFJDY+sWvx11iHrdVgsfAZ5m++lj+w4cegVnvPC156hMSxPtGIHar?=
+ =?us-ascii?Q?VPs058YQND9vG52hhnH/YR+Al1TDfkQCeJxVwBzMXycB025u+uJdki1GZtvA?=
+ =?us-ascii?Q?UyZRet+ZTfPEkAD6mfQ9vXGDFYWWbV6FPlezDdpNCKEUoneXISDRPC0fMK9j?=
+ =?us-ascii?Q?0Q=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-10_01,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- suspectscore=0 priorityscore=1501 malwarescore=0 adultscore=0 bulkscore=0
- lowpriorityscore=0 impostorscore=0 phishscore=0 mlxscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309100064
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45f082e0-f86f-4b41-daeb-08dbb1d2e1b7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Sep 2023 07:52:29.1181
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2P7EOWbT6yZa8xv+3cBMI2QH4QmZtGwvavCSglTQDAx92M/SebIF8NcLwtmmCqaY1FBA+aln2nrftPqLgaYdlRcYb1d13kpI9dWU+/8Pv0w=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB11594
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Shenghao Ding,
+
+Thanks for the patch.
+
+> Subject: [PATCH v1] ALSA: hda/tas2781: Support ACPI_ID both TXNW2781 and
+> TIAS2781
+>=20
+> Support ACPI_ID both TXNW2781 and TIAS2781, TXNW2781 is the only one lega=
+l
+> ACPI ID, TIAS2781 is the widely-used ACPI ID named by our customers, so f=
+ar
+> it is not registered. We have discussed this with them, they requested
+> TIAS2781 must be supported for the laptops already released to market,
+> their new laptops will switch to TXNW2781.
+>=20
+> Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+>=20
+> ---
+> Changes in v1:
+>  - Add TXNW2781 into tas2781_acpi_hda_match and move it to the top
+>  - Redefine tas2781_generic_fixup, remove hid param
+>  - TIAS2781 has been used by our customers, see following dstd.dsl. We
+>     have discussed this with them, they requested TIAS2781 must be
+>     supported for the laptops already released to market, their new
+>     laptops will switch to TXNW2781
+>    Name (_HID, "TIAS2781")  // _HID: Hardware ID
+>    Name (_UID, Zero)  // _UID: Unique ID
+>    Method (_SUB, 0, NotSerialized)  // _SUB: Subsystem ID
+>    {
+>        If ((SPID =3D=3D Zero))
+>        {
+>           Return ("17AA3886")
+>        }
+>=20
+>        If ((SPID =3D=3D One))
+>        {
+>            Return ("17AA3884")
+>        }
+>    }
+>  - Add TXNW2781 support in comp_match_tas2781_dev_name
+> ---
+>  sound/pci/hda/patch_realtek.c   | 36 ++++++++++++++++++---------------
+>  sound/pci/hda/tas2781_hda_i2c.c | 33 ++++++++++++++++++------------
+>  2 files changed, 40 insertions(+), 29 deletions(-)
+>=20
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.=
+c
+> index b7e78bfcff..6dae58a8ef 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -6770,24 +6770,35 @@ static int comp_match_cs35l41_dev_name(struct
+> device *dev, void *data)
+>  	return !strcmp(d + n, tmp);
+>  }
+>=20
+> +/* TIAS2781 is the unofficial ACPI id, but widely used in current device=
+s.
+> + * TXNW2781 is the official ACPI id, and will be used in the new devices=
+.
+> + * Check TIAS2781 or TXNW2781
+> + */
+>  static int comp_match_tas2781_dev_name(struct device *dev,
+>  	void *data)
+>  {
+> -	struct scodec_dev_name *p =3D data;
+> +	const char c[][10] =3D { "TXNW2781", "TIAS2781" };
+
+This you should get from match_data().
+See below.
+
+>  	const char *d =3D dev_name(dev);
+> -	int n =3D strlen(p->bus);
+> +	const char *bus =3D data;
+> +	int n =3D strlen(bus), i;
+>  	char tmp[32];
+>=20
+>  	/* check the bus name */
+> -	if (strncmp(d, p->bus, n))
+> +	if (strncmp(d, bus, n))
+>  		return 0;
+>  	/* skip the bus number */
+>  	if (isdigit(d[n]))
+>  		n++;
+> -	/* the rest must be exact matching */
+> -	snprintf(tmp, sizeof(tmp), "-%s:00", p->hid);
+>=20
+> -	return !strcmp(d + n, tmp);
+> +	for (i =3D 0; i < ARRAY_SIZE(c); i++) {
+> +		/* the rest must be exact matching */
+> +		snprintf(tmp, sizeof(tmp), "-%s:00", c[i]);
+> +
+> +		if (!strcmp(d + n, tmp))
+> +			return 1;
+> +	}
+> +
+> +	return 0;
+>  }
+>=20
+>  static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, con=
+st
+> char *bus, @@ -6824,24 +6835,17 @@ static void cs35l41_generic_fixup(stru=
+ct
+> hda_codec *cdc, int action, const char  }
+>=20
+>  static void tas2781_generic_fixup(struct hda_codec *cdc, int action,
+> -	const char *bus, const char *hid)
+> +	const char *bus)
+>  {
+>  	struct device *dev =3D hda_codec_dev(cdc);
+>  	struct alc_spec *spec =3D cdc->spec;
+> -	struct scodec_dev_name *rec;
+>  	int ret;
+>=20
+>  	switch (action) {
+>  	case HDA_FIXUP_ACT_PRE_PROBE:
+> -		rec =3D devm_kmalloc(dev, sizeof(*rec), GFP_KERNEL);
+> -		if (!rec)
+> -			return;
+> -		rec->bus =3D bus;
+> -		rec->hid =3D hid;
+> -		rec->index =3D 0;
+>  		spec->comps[0].codec =3D cdc;
+>  		component_match_add(dev, &spec->match,
+> -			comp_match_tas2781_dev_name, rec);
+> +			comp_match_tas2781_dev_name, (void *)bus);
+>  		ret =3D component_master_add_with_match(dev, &comp_master_ops,
+>  			spec->match);
+>  		if (ret)
+> @@ -6888,7 +6892,7 @@ static void
+> alc287_fixup_legion_16ithg6_speakers(struct hda_codec *cdc, const st
+> static void tas2781_fixup_i2c(struct hda_codec *cdc,
+>  	const struct hda_fixup *fix, int action)  {
+> -	 tas2781_generic_fixup(cdc, action, "i2c", "TIAS2781");
+> +	 tas2781_generic_fixup(cdc, action, "i2c");
+>  }
+>=20
+>  /* for alc295_fixup_hp_top_speakers */
+> diff --git a/sound/pci/hda/tas2781_hda_i2c.c
+> b/sound/pci/hda/tas2781_hda_i2c.c index fb80280293..8493952305 100644
+> --- a/sound/pci/hda/tas2781_hda_i2c.c
+> +++ b/sound/pci/hda/tas2781_hda_i2c.c
+> @@ -65,6 +65,16 @@ enum calib_data {
+>  	CALIB_MAX
+>  };
+>=20
+> +/* TIAS2781 is the unofficial ACPI id, but widely used in current device=
+s.
+> + * TXNW2781 is the official ACPI id, and will be used in the new devices=
+.
+> + */
+> +static const struct acpi_device_id tas2781_acpi_hda_match[] =3D {
+> +	{"TIAS2781", 0 },
+> +	{"TXNW2781", 1 },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(acpi, tas2781_acpi_hda_match);
+> +
+>  static int tas2781_get_i2c_res(struct acpi_resource *ares, void *data)  =
+{
+>  	struct tasdevice_priv *tas_priv =3D data; @@ -644,20 +654,23 @@ static
+> void tas2781_hda_remove(struct device *dev)  static int
+> tas2781_hda_i2c_probe(struct i2c_client *clt)  {
+>  	struct tasdevice_priv *tas_priv;
+> -	const char *device_name;
+> -	int ret;
+> +	int ret, i;
+>=20
+> -	if (strstr(dev_name(&clt->dev), "TIAS2781"))
+> -		device_name =3D "TIAS2781";
+> -	else
+> -		return -ENODEV;
+> +	/* Check TIAS2781 or TXNW2781 */
+> +	for (i =3D 0; i < ARRAY_SIZE(tas2781_acpi_hda_match); i++)
+
+Why not aviding for loop as it can be retrieved directly
+using i2c_get_match_data()?
+
+Update the ACPI/ID table to use pointer to the device_name
+as data in the table.
+
+Then,
+
+device_name =3D i2c_get_match_data(client);
+if (!device_name && strstr(dev_name(&clt->dev), device_name)))
+	return dev_err_probe(tas_priv->dev, -ENODEV,
+	"Device not available\n");
+
+Cheers,
+Biju
+
+> +static const struct acpi_device_id tas2781_acpi_hda_match[] =3D {
+> +	{"TIAS2781", 0 },
+> +	{"TXNW2781", 1 },
+> +	{}
+> +};
 
 
-On 8/30/23 8:56 PM, Chen Yu wrote:
-> Hi Shrikanth,
-
-Hi Chen, sorry for the slightly delayed response.
-
-note: patch as is, fails to apply cleanly as BASE_SLICE is not a
-feature in the latest tip/sched/core. 
-
-> 
-> On 2023-08-25 at 13:18:56 +0530, Shrikanth Hegde wrote:
->>
->> On 7/27/23 8:03 PM, Chen Yu wrote:
->>
->> Hi Chen. It is a nice patch series in effort to reduce the newidle cost. 
->> This gives the idea of making use of calculations done in load_balance to used 
->> among different idle types. 
->>
-> 
-> Thanks for taking a look at this patch set.
-> 
->> It was interesting to see how this would work on Power Systems. The reason being we have 
->> large core count and LLC size is small. i.e at small core level (llc_weight=4). This would
->> mean quite frequest access sd_share at different level which would reside on the first_cpu of 
->> the sched domain, which might result in more cache-misses. But perf stats didnt show the same.
->>
-> 
-> Do you mean 1 large domain(Die domain?) has many LLC sched domains as its children,
-> and accessing the large domain's sd_share field would cross different LLCs and the
-> latency is high? Yes, this could be a problem and it depends on the hardware that how
-> fast differet LLCs snoop the data with each other.
-
-Yes
-
-> On the other hand, the periodic load balance is the writer of sd_share, and the
-> interval is based on the cpu_weight of that domain. So the write might be less frequent
-> on large domains, and most access to sd_share would be the read issued by newidle balance,
-> which is less costly.
-> 
->> Another concern on more number of sched  groups at DIE level, which might take a hit if 
->> the balancing takes longer for the system to stabilize. 
-> 
-> Do you mean, if newidle balance does not pull tasks hard enough, the imbalance between groups
-> would last longer? Yes, Prateek has mentioned this point, the ILB_UTIL has this problem, I'll
-> think more about it. We want to find a way in newidle balance to do less scan, but still pulls
-> tasks as hard as before.
-> 
->>
->> tl;dr
->>
->> Tested with micro-benchmarks on system with 96 Cores with SMT=8. Total of 768 CPU's. There is some amount 
-> 
-> May I know the sched domain hierarchy of this platform?
-> grep . /sys/kernel/debug/sched/domains/cpu0/domain*/*
-> cat /proc/schedstat  | grep cpu0 -A 4  (4 domains?)
-
-/sys/kernel/debug/sched/domains/cpu0/domain0/name:SMT
-/sys/kernel/debug/sched/domains/cpu0/domain1/name:MC
-/sys/kernel/debug/sched/domains/cpu0/domain2/name:DIE
-/sys/kernel/debug/sched/domains/cpu0/domain3/name:NUMA
-/sys/kernel/debug/sched/domains/cpu0/domain4/name:NUMA
+> +		if (strstr(dev_name(&clt->dev), tas2781_acpi_hda_match[i].id))
+> +			break;
 
 
-domain-0: span=0,2,4,6 level=SMT
-   groups: 0:{ span=0 }, 2:{ span=2 }, 4:{ span=4 }, 6:{ span=6 }
-   domain-1: span=0-7,24-39,48-55,72-87 level=MC
-    groups: 0:{ span=0,2,4,6 cap=4096 }, 1:{ span=1,3,5,7 cap=4096 }, 24:{ span=24,26,28,30 cap=4096 }, 25:{ span=25,27,29,31 cap=4096 }, 32:{ span=32,34,36,38 cap=4096 }, 33:{ span=33,35,37,39 cap=4096 }, 48:{ span=48,50,52,54 cap=4096 }, 49:{ span=49,51,53,55 cap=4096 }, 72:{ span=72,74,76,78 cap=4096 }, 73:{ span=73,75,77,79 cap=4096 }, 80:{ span=80,82,84,86 cap=4096 }, 81:{ span=81,83,85,87 cap=4096 }
-    domain-2: span=0-95 level=DIE
-     groups: 0:{ span=0-7,24-39,48-55,72-87 cap=49152 }, 8:{ span=8-23,40-47,56-71,88-95 cap=49152 }
-    domain-3: span=0-191 level=NUMA
-     groups: 0:{ span=0-95 cap=98304 }, 96:{ span=96-191 cap=98304 }
-    domain-4: span=0-767 level=NUMA
-     groups: 0:{ span=0-191 cap=196608 }, 192:{ span=192-383 cap=196608 }, 384:{ span=384-575 cap=196608 }, 576:{ span=576-767 cap=196608 }
+> +
+> +	if (i =3D=3D ARRAY_SIZE(tas2781_acpi_hda_match))
+> +		return dev_err_probe(tas_priv->dev, -ENODEV,
+> +			"Device not available\n");
+>=20
+>  	tas_priv =3D tasdevice_kzalloc(clt);
+>  	if (!tas_priv)
+>  		return -ENOMEM;
+>=20
+>  	tas_priv->irq_info.irq =3D clt->irq;
+> -	ret =3D tas2781_read_acpi(tas_priv, device_name);
+> +	ret =3D tas2781_read_acpi(tas_priv, tas2781_acpi_hda_match[i].id);
+>  	if (ret)
+>  		return dev_err_probe(tas_priv->dev, ret,
+>  			"Platform not supported\n");
+> @@ -822,12 +835,6 @@ static const struct i2c_device_id tas2781_hda_i2c_id=
+[]
+> =3D {
+>  	{}
+>  };
+>=20
+> -static const struct acpi_device_id tas2781_acpi_hda_match[] =3D {
+> -	{"TIAS2781", 0 },
+> -	{}
+> -};
+> -MODULE_DEVICE_TABLE(acpi, tas2781_acpi_hda_match);
+> -
+>  static struct i2c_driver tas2781_hda_i2c_driver =3D {
+>  	.driver =3D {
+>  		.name		=3D "tas2781-hda",
+> --
+> 2.34.1
 
-
-our LLC is at SMT domain. in an MC domain there could be max upto 16 such LLC. 
-That is for Dedicated Logical Partitions(LPAR).
-on Shared Processor Logical Partitions(SPLPAR),  it is observed that MC domain 
-doesnt make sense. After below proposed change, DIE domain would have SMT as groups. 
-After that there this max number of LLC in a DIE can go upto 30. 
-https://lore.kernel.org/lkml/20230830105244.62477-5-srikar@linux.vnet.ibm.com/#r
-
-> 
->> of regression with hackbench and schbench. haven't looked into why. Any pointers to check would be helpful.
-> 
-> May I know what is the command to run hackbench and schbench below? For example
-> the fd number, package size and the loop number of hackbench, and
-> number of message thread and worker thread of schbench, etc. I assume
-> you are using the old schbench? As the latest schbench would track other metrics
-> besides tail latency.
-> 
-> 
-
-Yes. Old schbench.  and Hackbench is from ltp. 
-I can try to test the next version. 
-
->> Did a test with more real case workload that we have called daytrader. Its is DB workload which gives total
->> transcations done per second. That doesn't show any regression.
->>
->> Its true that all benchmarks will not be happy.
->> Maybe in below cases, newidle may not be that costly. Do you have any specific benchmark to be tried? 
->>
-> 
-> Previously I tested schbench/hackbench/netperf/tbench/sqlite, and also I'm planning
-> to try an OLTP.
-> 
->> -----------------------------------------------------------------------------------------------------
->> 					6.5.rc4			6.5.rc4 + PATCH_V2 		gain					
->> Daytrader:				55049				55378			0.59%
->>
->> -----------------------------------------------------------------------------------------------------
->> hackbench(50 iterations):			   6.5.rc4	6.5.rc4 + PATCH_V2(gain%)
->>
->>
->> Process 10 groups                    :       0.19,       0.19(0.00)             
->> Process 20 groups                    :       0.23,       0.24(-4.35)            
->> Process 30 groups                    :       0.28,       0.30(-7.14)            
->> Process 40 groups                    :       0.38,       0.40(-5.26)            
->> Process 50 groups                    :       0.43,       0.45(-4.65)            
->> Process 60 groups                    :       0.51,       0.51(0.00)             
->> thread 10 Time                       :       0.21,       0.22(-4.76)            
->> thread 20 Time                       :       0.27,       0.32(-18.52)           
->> Process(Pipe) 10 Time                :       0.17,       0.17(0.00)             
->> Process(Pipe) 20 Time                :       0.23,       0.23(0.00)             
->> Process(Pipe) 30 Time                :       0.28,       0.28(0.00)             
->> Process(Pipe) 40 Time                :       0.33,       0.32(3.03)             
->> Process(Pipe) 50 Time                :       0.38,       0.36(5.26)             
->> Process(Pipe) 60 Time                :       0.40,       0.39(2.50)             
->> thread(Pipe) 10 Time                 :       0.14,       0.14(0.00)             
->> thread(Pipe) 20 Time                 :       0.20,       0.19(5.00) 
->>
->> Observation: lower is better. socket based runs show regression quite a bit, 
->> pipe shows slight improvement. 
->>
->>
->> -----------------------------------------------------------------------------------------------------
->> Unixbench(10 iterations):			   6.5.rc4	6.5.rc4 + PATCH_V2(gain%)
->>
->> 1 X Execl Throughput                  :    4280.15,    4398.30(2.76)           
->> 4 X Execl Throughput                  :    8171.60,    8061.60(-1.35)            
->> 1 X Pipe-based Context Switching      :  172455.50,  174586.60(1.24)           
->> 4 X Pipe-based Context Switching      :  633708.35,  664659.85(4.88)           
->> 1 X Process Creation                  :    6891.20,    7056.85(2.40)           
->> 4 X Process Creation                  :    8826.20,    8996.25(1.93)           
->> 1 X Shell Scripts (1 concurrent)      :    9272.05,    9456.10(1.98)           
->> 4 X Shell Scripts (1 concurrent)      :   27919.60,   25319.75(-9.31)            
->> 1 X Shell Scripts (8 concurrent)      :    4462.70,    4392.75(-1.57)            
->> 4 X Shell Scripts (8 concurrent)      :   11852.30,   10820.70(-8.70) 
->>
->> Observation: higher is better. Results are somewhat mixed.  
->>
->>
->> -----------------------------------------------------------------------------------------------------
->> schbench(10 iterations)			 6.5.rc4	6.5.rc4 + PATCH_V2(gain%)
->>
->> 1 Threads                                                                       
->> 50.0th:                                   8.00,       7.00(12.50)               
->> 75.0th:                                   8.00,       7.60(5.00)                
->> 90.0th:                                   8.80,       8.00(9.09)                
->> 95.0th:                                  10.20,       8.20(19.61)               
->> 99.0th:                                  13.60,      11.00(19.12)               
->> 99.5th:                                  14.00,      12.80(8.57)                
->> 99.9th:                                  15.80,      35.00(-121.52)             
->> 2 Threads                                                                       
->> 50.0th:                                   8.40,       8.20(2.38)                
->> 75.0th:                                   9.00,       8.60(4.44)                
->> 90.0th:                                  10.20,       9.60(5.88)                
->> 95.0th:                                  11.20,      10.20(8.93)                
->> 99.0th:                                  14.40,      11.40(20.83)               
->> 99.5th:                                  14.80,      12.80(13.51)               
->> 99.9th:                                  17.60,      14.80(15.91)               
->> 4 Threads                                                                       
->> 50.0th:                                  10.60,      10.40(1.89)                
->> 75.0th:                                  12.20,      11.60(4.92)                
->> 90.0th:                                  13.60,      12.60(7.35)                
->> 95.0th:                                  14.40,      13.00(9.72)                
->> 99.0th:                                  16.40,      15.60(4.88)                
->> 99.5th:                                  16.80,      16.60(1.19)                
->> 99.9th:                                  22.00,      29.00(-31.82)              
->> 8 Threads                                                                       
->> 50.0th:                                  12.00,      11.80(1.67)                
->> 75.0th:                                  14.40,      14.40(0.00)                
->> 90.0th:                                  17.00,      18.00(-5.88)               
->> 95.0th:                                  19.20,      19.80(-3.13)               
->> 99.0th:                                  23.00,      24.20(-5.22)               
->> 99.5th:                                  26.80,      29.20(-8.96)               
->> 99.9th:                                  68.00,      97.20(-42.94)  
->> 16 Threads                                                                      
->> 50.0th:                                  18.00,      18.20(-1.11)               
->> 75.0th:                                  23.20,      23.60(-1.72)               
->> 90.0th:                                  28.00,      27.40(2.14)                
->> 95.0th:                                  31.20,      30.40(2.56)                
->> 99.0th:                                  38.60,      38.20(1.04)                
->> 99.5th:                                  50.60,      50.40(0.40)                
->> 99.9th:                                 122.80,     108.00(12.05)               
->> 32 Threads                                                                      
->> 50.0th:                                  30.00,      30.20(-0.67)               
->> 75.0th:                                  42.20,      42.60(-0.95)               
->> 90.0th:                                  52.60,      55.40(-5.32)               
->> 95.0th:                                  58.60,      63.00(-7.51)               
->> 99.0th:                                  69.60,      78.20(-12.36)              
->> 99.5th:                                  79.20,     103.80(-31.06)              
->> 99.9th:                                 171.80,     209.60(-22.00)
->>
->> Observation: lower is better. tail latencies seem to go up. schbench also has run to run variations.
->>
->> -----------------------------------------------------------------------------------------------------
->> stress-ng(20 iterations)	   6.5.rc4	6.5.rc4 + PATCH_V2(gain%)
->> 	 ( 100000 cpu-ops)
->>
->> --cpu=768 Time               :       1.58,       1.53(3.16)                     
->> --cpu=384 Time               :       1.66,       1.63(1.81)                     
->> --cpu=192 Time               :       2.67,       2.77(-3.75)                    
->> --cpu=96 Time                :       3.70,       3.69(0.27)                     
->> --cpu=48 Time                :       5.73,       5.69(0.70)                     
->> --cpu=24 Time                :       7.27,       7.26(0.14)                     
->> --cpu=12 Time                :      14.25,      14.24(0.07)                     
->> --cpu=6 Time                 :       28.42,      28.40(0.07)                    
->> --cpu=3 Time                 :      56.81,      56.68(0.23)                     
->> --cpu=768 -util=10 Time      :       3.69,       3.70(-0.27)                    
->> --cpu=768 -util=20 Time      :       5.67,       5.70(-0.53)                    
->> --cpu=768 -util=30 Time      :       7.08,       7.12(-0.56)                    
->> --cpu=768 -util=40 Time      :       8.23,       8.27(-0.49)                    
->> --cpu=768 -util=50 Time      :       9.22,       9.26(-0.43)                    
->> --cpu=768 -util=60 Time      :      10.09,      10.15(-0.59)                    
->> --cpu=768 -util=70 Time      :      10.93,      10.98(-0.46)                    
->> --cpu=768 -util=80 Time      :      11.79,      11.79(0.00)                     
->> --cpu=768 -util=90 Time      :      12.63,      12.60(0.24) 
->>
->>
->> Observation: lower is better. Almost no difference.
-> 
-> I'll try to run the same tests of hackbench/schbench on my machine, to
-> see if I could find any clue for the regression.
-> 
-> 
-> thanks,
-> Chenyu
