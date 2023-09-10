@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75632799C72
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 05:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAC9799C6E
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 05:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345844AbjIJDlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 23:41:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37366 "EHLO
+        id S241709AbjIJDl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 23:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343962AbjIJDk7 (ORCPT
+        with ESMTP id S1344260AbjIJDlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 23:40:59 -0400
+        Sat, 9 Sep 2023 23:41:00 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE4018F;
-        Sat,  9 Sep 2023 20:40:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BCC7C433CB;
-        Sun, 10 Sep 2023 03:40:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEAC119E
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 20:40:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FF92C43395;
+        Sun, 10 Sep 2023 03:40:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1694317256;
-        bh=mFM51HzoacyqEH6SUQlgy6Seux4I2scRhn39ZTi26N8=;
+        bh=eynGbeHbTWCoAAQx22o6QCyTrP+ceLiyJPZLaUvkSBw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ggjMC2rmC/l0w3mnxmHmvMLHBY+eoIkIhaqUHgcKJkeLp9KdJd9TOBud13T113lyx
-         bK+9WVt2wR8tYBlSMiwDTbbJWBtR8c2uKMve4DoO47Ocw9i1LprtBLoEe8R1sVkRu6
-         QaVmD7Domx1Dhzr1xW9KHlMlM8CpgIkYhycXUCR1+xnrQy7lcckR7acPYU9lpf9ZKi
-         139vmPrd7zxFCh1zlOZ/eQoDhJMv/Ybu9j8+QqTtqcG/fUvso0W2tLBty1MDSUlTwy
-         yyTYrg/FNIF/NEfT3QCrRkNG+qDMx2BtxTu2DvezLkq674bfGaS9kb86X/wN6Q68v5
-         MehGv6Co7gdAA==
+        b=S8Q9uAD8o9PcqFqVFXtN8GWHciJp1oKA9CHvzkSpgw2OPWsaRycMdldPI1RynQ5wX
+         n3N+eRILhlbnDGLvA8HdsQknJrO7Yo5eOR6l2ePhuVATnpcYyhgx59gEiewNFrOVaB
+         G7Xy+AuwGCx0+pXOdCLAuicPvGAqLNGAR1zzACOgQ+DBqMaRkLOWe+t7Xme9gU04WO
+         91IxlBNu0x8dHZrcbT6+TuwF2Jh7/H819njkFGH23Xml9mRdyUU0Wn7ffzt7rkujyp
+         omII1CcYj4RI/3WxnO4vlWDtMvA/Ub6lqgD1orJJPnkmG4/OlkdKgQmZPNzXEtI8zf
+         m+eV7d+nCJ4VQ==
 From:   SeongJae Park <sj@kernel.org>
 Cc:     SeongJae Park <sj@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, damon@lists.linux.dev,
-        linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        damon@lists.linux.dev, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC 7/8] Docs/admin-guide/mm/damon/usage: update for DAMOS apply intervals
-Date:   Sun, 10 Sep 2023 03:40:47 +0000
-Message-Id: <20230910034048.59191-8-sj@kernel.org>
+Subject: [RFC 8/8] Docs/ABI/damon: update for DAMOS apply intervals
+Date:   Sun, 10 Sep 2023 03:40:48 +0000
+Message-Id: <20230910034048.59191-9-sj@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230910034048.59191-1-sj@kernel.org>
 References: <20230910034048.59191-1-sj@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -52,48 +50,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update DAMON usage document's DAMON sysfs interface section for the
-newly added DAMOS apply intervals support (apply_interval_us file).
+Update DAMON ABI document for the newly added DAMON sysfs file for DAMOS
+apply intervals (apply_interval_us file).
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- Documentation/admin-guide/mm/damon/usage.rst | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ Documentation/ABI/testing/sysfs-kernel-mm-damon | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index 6272cd36590a..8507a6e45d86 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -76,7 +76,7 @@ comma (","). ::
-     │ │ │ │ │ │ │ │ ...
-     │ │ │ │ │ │ ...
-     │ │ │ │ │ schemes/nr_schemes
--    │ │ │ │ │ │ 0/action
-+    │ │ │ │ │ │ 0/action,apply_interval_us
-     │ │ │ │ │ │ │ access_pattern/
-     │ │ │ │ │ │ │ │ sz/min,max
-     │ │ │ │ │ │ │ │ nr_accesses/min,max
-@@ -269,8 +269,8 @@ schemes/<N>/
- ------------
+diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-damon b/Documentation/ABI/testing/sysfs-kernel-mm-damon
+index 420b30f09cf0..b35649a46a2f 100644
+--- a/Documentation/ABI/testing/sysfs-kernel-mm-damon
++++ b/Documentation/ABI/testing/sysfs-kernel-mm-damon
+@@ -151,6 +151,13 @@ Contact:	SeongJae Park <sj@kernel.org>
+ Description:	Writing to and reading from this file sets and gets the action
+ 		of the scheme.
  
- In each scheme directory, five directories (``access_pattern``, ``quotas``,
--``watermarks``, ``filters``, ``stats``, and ``tried_regions``) and one file
--(``action``) exist.
-+``watermarks``, ``filters``, ``stats``, and ``tried_regions``) and two files
-+(``action`` and ``apply_interval``) exist.
- 
- The ``action`` file is for setting and getting the scheme's :ref:`action
- <damon_design_damos_action>`.  The keywords that can be written to and read
-@@ -296,6 +296,9 @@ Note that support of each action depends on the running DAMON operations set
-  - ``stat``: Do nothing but count the statistics.
-    Supported by all operations sets.
- 
-+The ``apply_interval_us`` file is for setting and getting the scheme's
-+:ref:`apply_interval <damon_design_damos>` in microseconds.
++What:		/sys/kernel/mm/damon/admin/kdamonds/<K>/contexts/<C>/schemes/<S>/apply_interval_us
++Date:		Sep 2023
++Contact:	SeongJae Park <sj@kernel.org>
++Description:	Writing a value to this file sets the action apply interval of
++		the scheme in microseconds.  Reading this file returns the
++		value.
 +
- schemes/<N>/access_pattern/
- ---------------------------
- 
+ What:		/sys/kernel/mm/damon/admin/kdamonds/<K>/contexts/<C>/schemes/<S>/access_pattern/sz/min
+ Date:		Mar 2022
+ Contact:	SeongJae Park <sj@kernel.org>
 -- 
 2.25.1
 
