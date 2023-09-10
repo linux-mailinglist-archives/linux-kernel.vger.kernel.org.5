@@ -2,153 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A73799E6C
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 15:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25FBA799E74
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 15:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346673AbjIJNI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 09:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40428 "EHLO
+        id S1345310AbjIJNRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 09:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbjIJNIz (ORCPT
+        with ESMTP id S233773AbjIJNRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 09:08:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6414DCCD;
-        Sun, 10 Sep 2023 06:08:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4EA8C433CB;
-        Sun, 10 Sep 2023 13:08:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694351330;
-        bh=06TCWhhNaPcXhNliGYsP4LF/Cwg8cceqJIrPIcchQC0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nUhpT3ez+tRlG1qKGeKuY3N74tmjgygmH900zRvjZwa0kwhlQfD50HEhe2zSwH5bQ
-         vXblBq40V6OwLPAyZUHpnX/nD9bgU6wIWH1bHYzgh7Ah82cdPR4YRjyxmLndyqeg+M
-         SewkFy1TYvrmmdrN1ecFQJ7FNjiSQpU41SYYAroIvkClX95gWECtnmFzSbS1P5gfit
-         tMO7Cy5FdwU/+9Ob4xAV8W1tItRJbXF+0azUkEISRV01gQjg89N64ydwbZB9+a2V3I
-         aN2Gc/Hm8Jd32rZ/RboO7ctE9s5YuKkTDCrtojdvHKNtSA12iR02+csCCe6tpwWz1I
-         2IZ3076zqTz4A==
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2bcbfb3705dso57669761fa.1;
-        Sun, 10 Sep 2023 06:08:50 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxlED+rUsNnpNDsuHgeqQkXLjjd01Y+jQn/nUWqWn7zcnnUJA0R
-        +/PmYg9MaQJ3q8oiK4ESbIXyYJ4xWBPaDMKOa6k=
-X-Google-Smtp-Source: AGHT+IFIZnimPRaY6IPZz/3CkdKFl7CePRXC49Ub/MgsC8Wh4H7WKsZWw9ZKtn2hbE6ekgD2E9RKGbjhx1iYmClGwSg=
-X-Received: by 2002:a2e:9987:0:b0:2bb:c212:5589 with SMTP id
- w7-20020a2e9987000000b002bbc2125589mr5771501lji.17.1694351329054; Sun, 10 Sep
- 2023 06:08:49 -0700 (PDT)
+        Sun, 10 Sep 2023 09:17:02 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629EDCD9
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 06:16:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694351816; x=1725887816;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=hmrPvT6LCtTjXM1+zbXel3GOdGbwJ83CIIPNwHeCdFc=;
+  b=VIhnGTczQI1Yb2aEOALWwMHF83sdopRGOZLOdbUgut0IE0Q4SwgFq7b5
+   SohzpTRZ9w/z/y6oEEhOX4MRhdxhZFV9qU1Xb2XfIzwPkTiZpwinrLHla
+   qiM7Nw/KhStimtdjCEH4Clfk+dcTnwQPbIn9DsMiUpyHe9iNF7EW0k7+E
+   acxBg6JN2PUsLc6gBovVsBHF66k43feA7u0yn73HOumDKMiXWCqG2ti0w
+   lefjpJ3n13oInpQ2/SddvdfpPaXFaJkYl37YNQo3ouKbG8LhW7a+ero1Z
+   VFvB8w7W4IotcsoMVrl6wwQLIYJE75D+bRnai521fxDlb65b8wGLwm2Jk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="444324295"
+X-IronPort-AV: E=Sophos;i="6.02,241,1688454000"; 
+   d="scan'208";a="444324295"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 06:16:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="833177440"
+X-IronPort-AV: E=Sophos;i="6.02,241,1688454000"; 
+   d="scan'208";a="833177440"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 10 Sep 2023 06:16:53 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qfKJ1-0004y2-1s;
+        Sun, 10 Sep 2023 13:16:51 +0000
+Date:   Sun, 10 Sep 2023 21:16:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Igor Torrente <igormtorrente@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Melissa Wen <melissa.srw@gmail.com>
+Subject: drivers/gpu/drm/vkms/vkms_formats.c:91:35: sparse: sparse: cast to
+ restricted __le16
+Message-ID: <202309102114.LpssgIpN-lkp@intel.com>
 MIME-Version: 1.0
-References: <20230910045445.41632-1-heinrich.schuchardt@canonical.com>
-In-Reply-To: <20230910045445.41632-1-heinrich.schuchardt@canonical.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 10 Sep 2023 15:08:37 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEh3=vzJiCe1hy3r55akqSn0+t1AGZNEF8wqWCR3_rRcg@mail.gmail.com>
-Message-ID: <CAMj1kXEh3=vzJiCe1hy3r55akqSn0+t1AGZNEF8wqWCR3_rRcg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] efivarfs: fix statfs() on efivarfs
-To:     Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-Cc:     Jeremy Kerr <jk@ozlabs.org>, Anisse Astier <an.astier@criteo.com>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Sept 2023 at 06:53, Heinrich Schuchardt
-<heinrich.schuchardt@canonical.com> wrote:
->
-> Some firmware (notably U-Boot) provides GetVariable() and
-> GetNextVariableName() but not QueryVariableInfo().
->
-> With commit d86ff3333cb1 ("efivarfs: expose used and total size") the
-> statfs syscall was broken for such firmware.
->
-> If QueryVariableInfo() does not exist or returns an error, just report the
-> file-system size as 0 as statfs_simple() previously did.
->
-> Fixes: d86ff3333cb1 ("efivarfs: expose used and total size")
-> Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-> ---
-> v2:
->         initialize remaining_space to 0
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   535a265d7f0dd50d8c3a4f8b4f3a452d56bd160f
+commit: 3675d8a1726337bd1e839a185e0a7ce0bc459b6b drm: vkms: Adds XRGB_16161616 and ARGB_1616161616 formats
+date:   1 year ago
+config: i386-randconfig-061-20230909 (https://download.01.org/0day-ci/archive/20230910/202309102114.LpssgIpN-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230910/202309102114.LpssgIpN-lkp@intel.com/reproduce)
 
-Thanks for the patch, and apologies for the oversight.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309102114.LpssgIpN-lkp@intel.com/
 
-> ---
->  fs/efivarfs/super.c | 20 ++++++++++++--------
->  1 file changed, 12 insertions(+), 8 deletions(-)
->
-> diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
-> index e028fafa04f3..3893aae6a9be 100644
-> --- a/fs/efivarfs/super.c
-> +++ b/fs/efivarfs/super.c
-> @@ -29,14 +29,9 @@ static int efivarfs_statfs(struct dentry *dentry, struct kstatfs *buf)
->         const u32 attr = EFI_VARIABLE_NON_VOLATILE |
->                          EFI_VARIABLE_BOOTSERVICE_ACCESS |
->                          EFI_VARIABLE_RUNTIME_ACCESS;
-> -       u64 storage_space, remaining_space, max_variable_size;
-> +       u64 storage_space, remaining_space = 0, max_variable_size;
+sparse warnings: (new ones prefixed by >>)
+>> drivers/gpu/drm/vkms/vkms_formats.c:91:35: sparse: sparse: cast to restricted __le16
+   drivers/gpu/drm/vkms/vkms_formats.c:92:35: sparse: sparse: cast to restricted __le16
+   drivers/gpu/drm/vkms/vkms_formats.c:93:35: sparse: sparse: cast to restricted __le16
+   drivers/gpu/drm/vkms/vkms_formats.c:94:35: sparse: sparse: cast to restricted __le16
+   drivers/gpu/drm/vkms/vkms_formats.c:109:35: sparse: sparse: cast to restricted __le16
+   drivers/gpu/drm/vkms/vkms_formats.c:110:35: sparse: sparse: cast to restricted __le16
+   drivers/gpu/drm/vkms/vkms_formats.c:111:35: sparse: sparse: cast to restricted __le16
+>> drivers/gpu/drm/vkms/vkms_formats.c:177:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
+   drivers/gpu/drm/vkms/vkms_formats.c:177:31: sparse:     expected unsigned short [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:177:31: sparse:     got restricted __le16 [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:178:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
+   drivers/gpu/drm/vkms/vkms_formats.c:178:31: sparse:     expected unsigned short [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:178:31: sparse:     got restricted __le16 [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:179:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
+   drivers/gpu/drm/vkms/vkms_formats.c:179:31: sparse:     expected unsigned short [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:179:31: sparse:     got restricted __le16 [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:180:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
+   drivers/gpu/drm/vkms/vkms_formats.c:180:31: sparse:     expected unsigned short [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:180:31: sparse:     got restricted __le16 [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:195:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
+   drivers/gpu/drm/vkms/vkms_formats.c:195:31: sparse:     expected unsigned short [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:195:31: sparse:     got restricted __le16 [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:196:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
+   drivers/gpu/drm/vkms/vkms_formats.c:196:31: sparse:     expected unsigned short [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:196:31: sparse:     got restricted __le16 [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:197:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
+   drivers/gpu/drm/vkms/vkms_formats.c:197:31: sparse:     expected unsigned short [usertype]
+   drivers/gpu/drm/vkms/vkms_formats.c:197:31: sparse:     got restricted __le16 [usertype]
 
-Shouldn't storage_space be set to 0 too?
+vim +91 drivers/gpu/drm/vkms/vkms_formats.c
 
->         efi_status_t status;
->
-> -       status = efivar_query_variable_info(attr, &storage_space, &remaining_space,
-> -                                           &max_variable_size);
-> -       if (status != EFI_SUCCESS)
-> -               return efi_status_to_err(status);
-> -
->         /*
->          * This is not a normal filesystem, so no point in pretending it has a block
->          * size; we declare f_bsize to 1, so that we can then report the exact value
-> @@ -44,10 +39,19 @@ static int efivarfs_statfs(struct dentry *dentry, struct kstatfs *buf)
->          */
->         buf->f_bsize    = 1;
->         buf->f_namelen  = NAME_MAX;
-> -       buf->f_blocks   = storage_space;
-> -       buf->f_bfree    = remaining_space;
->         buf->f_type     = dentry->d_sb->s_magic;
->
-> +       /* Some UEFI firmware does not implement QueryVariable() */
-> +       if (efi_rt_services_supported(EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)) {
-> +               status = efivar_query_variable_info(attr, &storage_space,
-> +                                                   &remaining_space,
-> +                                                   &max_variable_size);
-> +               if (status == EFI_SUCCESS) {
-> +                       buf->f_blocks   = storage_space;
-> +                       buf->f_bfree    = remaining_space;
-> +               }
-> +       }
-> +
+    80	
+    81	static void ARGB16161616_to_argb_u16(struct line_buffer *stage_buffer,
+    82					     const struct vkms_frame_info *frame_info,
+    83					     int y)
+    84	{
+    85		struct pixel_argb_u16 *out_pixels = stage_buffer->pixels;
+    86		u16 *src_pixels = get_packed_src_addr(frame_info, y);
+    87		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
+    88				    stage_buffer->n_pixels);
+    89	
+    90		for (size_t x = 0; x < x_limit; x++, src_pixels += 4) {
+  > 91			out_pixels[x].a = le16_to_cpu(src_pixels[3]);
+    92			out_pixels[x].r = le16_to_cpu(src_pixels[2]);
+    93			out_pixels[x].g = le16_to_cpu(src_pixels[1]);
+    94			out_pixels[x].b = le16_to_cpu(src_pixels[0]);
+    95		}
+    96	}
+    97	
+    98	static void XRGB16161616_to_argb_u16(struct line_buffer *stage_buffer,
+    99					     const struct vkms_frame_info *frame_info,
+   100					     int y)
+   101	{
+   102		struct pixel_argb_u16 *out_pixels = stage_buffer->pixels;
+   103		u16 *src_pixels = get_packed_src_addr(frame_info, y);
+   104		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
+   105				    stage_buffer->n_pixels);
+   106	
+   107		for (size_t x = 0; x < x_limit; x++, src_pixels += 4) {
+   108			out_pixels[x].a = (u16)0xffff;
+   109			out_pixels[x].r = le16_to_cpu(src_pixels[2]);
+   110			out_pixels[x].g = le16_to_cpu(src_pixels[1]);
+   111			out_pixels[x].b = le16_to_cpu(src_pixels[0]);
+   112		}
+   113	}
+   114	
+   115	/*
+   116	 * The following  functions take an line of argb_u16 pixels from the
+   117	 * src_buffer, convert them to a specific format, and store them in the
+   118	 * destination.
+   119	 *
+   120	 * They are used in the `compose_active_planes` to convert and store a line
+   121	 * from the src_buffer to the writeback buffer.
+   122	 */
+   123	static void argb_u16_to_ARGB8888(struct vkms_frame_info *frame_info,
+   124					 const struct line_buffer *src_buffer, int y)
+   125	{
+   126		int x_dst = frame_info->dst.x1;
+   127		u8 *dst_pixels = packed_pixels_addr(frame_info, x_dst, y);
+   128		struct pixel_argb_u16 *in_pixels = src_buffer->pixels;
+   129		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
+   130				    src_buffer->n_pixels);
+   131	
+   132		for (size_t x = 0; x < x_limit; x++, dst_pixels += 4) {
+   133			/*
+   134			 * This sequence below is important because the format's byte order is
+   135			 * in little-endian. In the case of the ARGB8888 the memory is
+   136			 * organized this way:
+   137			 *
+   138			 * | Addr     | = blue channel
+   139			 * | Addr + 1 | = green channel
+   140			 * | Addr + 2 | = Red channel
+   141			 * | Addr + 3 | = Alpha channel
+   142			 */
+   143			dst_pixels[3] = DIV_ROUND_CLOSEST(in_pixels[x].a, 257);
+   144			dst_pixels[2] = DIV_ROUND_CLOSEST(in_pixels[x].r, 257);
+   145			dst_pixels[1] = DIV_ROUND_CLOSEST(in_pixels[x].g, 257);
+   146			dst_pixels[0] = DIV_ROUND_CLOSEST(in_pixels[x].b, 257);
+   147		}
+   148	}
+   149	
+   150	static void argb_u16_to_XRGB8888(struct vkms_frame_info *frame_info,
+   151					 const struct line_buffer *src_buffer, int y)
+   152	{
+   153		int x_dst = frame_info->dst.x1;
+   154		u8 *dst_pixels = packed_pixels_addr(frame_info, x_dst, y);
+   155		struct pixel_argb_u16 *in_pixels = src_buffer->pixels;
+   156		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
+   157				    src_buffer->n_pixels);
+   158	
+   159		for (size_t x = 0; x < x_limit; x++, dst_pixels += 4) {
+   160			dst_pixels[3] = 0xff;
+   161			dst_pixels[2] = DIV_ROUND_CLOSEST(in_pixels[x].r, 257);
+   162			dst_pixels[1] = DIV_ROUND_CLOSEST(in_pixels[x].g, 257);
+   163			dst_pixels[0] = DIV_ROUND_CLOSEST(in_pixels[x].b, 257);
+   164		}
+   165	}
+   166	
+   167	static void argb_u16_to_ARGB16161616(struct vkms_frame_info *frame_info,
+   168					     const struct line_buffer *src_buffer, int y)
+   169	{
+   170		int x_dst = frame_info->dst.x1;
+   171		u16 *dst_pixels = packed_pixels_addr(frame_info, x_dst, y);
+   172		struct pixel_argb_u16 *in_pixels = src_buffer->pixels;
+   173		int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
+   174				    src_buffer->n_pixels);
+   175	
+   176		for (size_t x = 0; x < x_limit; x++, dst_pixels += 4) {
+ > 177			dst_pixels[3] = cpu_to_le16(in_pixels[x].a);
+   178			dst_pixels[2] = cpu_to_le16(in_pixels[x].r);
+   179			dst_pixels[1] = cpu_to_le16(in_pixels[x].g);
+   180			dst_pixels[0] = cpu_to_le16(in_pixels[x].b);
+   181		}
+   182	}
+   183	
 
-I'd prefer not to ignore the error completely here. How about we do
-
---- a/fs/efivarfs/super.c
-+++ b/fs/efivarfs/super.c
-@@ -32,10 +32,15 @@ static int efivarfs_statfs(struct dentry *dentry,
-struct kstatfs *buf)
-        u64 storage_space, remaining_space, max_variable_size;
-        efi_status_t status;
-
--       status = efivar_query_variable_info(attr, &storage_space,
-&remaining_space,
--                                           &max_variable_size);
--       if (status != EFI_SUCCESS)
--               return efi_status_to_err(status);
-+       /* Some UEFI firmware does not implement QueryVariableInfo() */
-+       storage_space = remaining_space = 0;
-+       if (efi_rt_services_supported(EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)) {
-+               status = efivar_query_variable_info(attr, &storage_space,
-+                                                   &remaining_space,
-+                                                   &max_variable_size);
-+               if (status != EFI_SUCCESS && status != EFI_UNSUPPORTED)
-+                       return efi_status_to_err(status);
-+       }
-
-        /*
-         * This is not a normal filesystem, so no point in pretending
-it has a block
-
-(no need to resend if you agree)
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
