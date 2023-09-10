@@ -2,132 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C926A799DC7
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 12:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA53799DCB
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 13:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346632AbjIJK6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 06:58:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
+        id S1345174AbjIJLBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 07:01:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346627AbjIJK6g (ORCPT
+        with ESMTP id S232378AbjIJLBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 06:58:36 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC69CD3
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 03:58:31 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-401da71b85eso38337645e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 03:58:31 -0700 (PDT)
+        Sun, 10 Sep 2023 07:01:42 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA48CCC;
+        Sun, 10 Sep 2023 04:01:37 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso60635121fa.1;
+        Sun, 10 Sep 2023 04:01:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694343510; x=1694948310; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fNoc1LM/E6H5fy+Umw6YcgnujDKHeqmHqmoV1CSlmdM=;
-        b=SBECwzuKTKTWUWw08Jf+oBt/zXO0hj3iloUr9Yh0twueoAA8O1XQ7qZ7qehiYwDKzW
-         7/K6lHhZFZ3g0gtpWVZJLsSn2duFCtBI6KFwAtMtHAZOtINNTzVmSUooXILqGZueydaI
-         L4temgMGnjzzskxS1gmU8R+MThG7M4kTgZgVqQFixK2f1B5n9KplW7PMSZmDf4Kldt9Y
-         76Y5lWXWhCFMMtsf7yrdQftHWSr6ow41uKpCEsaNWJBEs4BfcLRJW5ZAklmomp5xZw8G
-         Jy+E+Tb/mOyOYOYCkb+itkCZJz3V+hXgQhh76W/0BIsGkGWNG4jzr67F/hoGe+XgytMf
-         Dj3Q==
+        d=gmail.com; s=20221208; t=1694343696; x=1694948496; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HBkpEqUb+78mNZeKD0UcDWXhyqQzEoqyYm5VM9b2Bq0=;
+        b=o7RhsfKknjbiAwXeeXgYbjCzcQVFtxerzPODUJvutlXTHU51ZA2P57fTGRrHqrrq42
+         fUb2JJCv9fnDxJyvhGV5dGVyYlZk2Ayvs6fugOWiyfAVhTVCh6SKYa/fBacdIGq+Ajfa
+         fn5ONSPXISe7rf7wUks1IjbPE7h3BMkbSpV1Jt4Lu4W+60xjSJluXGXtHEM1Zy3GBgLE
+         5iD71+D2R27riY44toRBs2i0aIQKjAtIw0qidW0tp9kfiLtCZdjfQU0s3cranG0uh8da
+         s/WCBzYO7TuJdBv4Deaqn5nUushmzKhcGW/JtwnbQpUngNP3DrOhzSNJ1j2QTbQYl5MU
+         /sOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694343510; x=1694948310;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fNoc1LM/E6H5fy+Umw6YcgnujDKHeqmHqmoV1CSlmdM=;
-        b=f69Ab+eeW7EWU/6jsXpj6btR9MOAPDyUynFxyPoogcjEJAuDhhUSjdXf63OCna8mK4
-         0BmnSS9h8SA1fc/b8Lpd3f9i6SGkop6W5IEOL397F6Hx+S9seW7VCnK0574BUQiAXHhH
-         IXEhlEDo83uHGtcHr5go7BFpC9I7dtYqPyTLcBy0kWSXhKGhrxdBB4YSHmq7CSAoOrjN
-         QwX/dlsrTuOiYi/Elgm2gnqLkdrM4i9PYB56llU4YR+4LkiTSW6kacyfKgKRaOcQIzyG
-         59l2JV8PJKqZtznLNdVZtKnqxZ4rmC4Wox7BBSqsKn+IDCkA0q3sCJsywvlkiPow9Tg5
-         iP9g==
-X-Gm-Message-State: AOJu0YxpeRB8MwjSZNsBiyTSu/YfyQj55z1sVzifIoubNmwpxZ/fZXf4
-        0O7FL+CdS9VKcaTpRT/GP1pBGgrqZd9+CYe+QmI=
-X-Google-Smtp-Source: AGHT+IFoqGAqbxgpxpbyQy19z4WlZQXKZGhevIC5ftZ45vMQgeEGXtXNV+pxmpD/KYkA3EFrJ4iasw==
-X-Received: by 2002:a05:600c:2249:b0:3fe:111a:d1d9 with SMTP id a9-20020a05600c224900b003fe111ad1d9mr6225338wmm.25.1694343509858;
-        Sun, 10 Sep 2023 03:58:29 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id u3-20020a05600c210300b003fe601a7d46sm10069910wml.45.2023.09.10.03.58.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Sep 2023 03:58:29 -0700 (PDT)
-Message-ID: <591b72ea-e89e-3944-5bd9-da967fe78e84@linaro.org>
-Date:   Sun, 10 Sep 2023 12:58:27 +0200
+        d=1e100.net; s=20230601; t=1694343696; x=1694948496;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HBkpEqUb+78mNZeKD0UcDWXhyqQzEoqyYm5VM9b2Bq0=;
+        b=Z/L96y23H+bYZaSdVF1wV306DmsDFI1CuVRd2u8KOAfgUiFjS0sVcIPV2zRHcIMN/2
+         IwXSxsfijjmKyG0iblqNB8LnsjYjnC5mg1tLLJAlZ3o/7Zi7Buj+p8LfQUFiX46KRaka
+         rNqp1lEYgR80+SL0mGB/2bjWxLg35j4xIyAN4w3w80gfVDyN22oJBpxJat3iVogmOoUP
+         HsGKgn1oXGpN8zBxwWmvlc/W0LACNP4lSfgPBhj26POP3nFTK+w/5tWzgxzTWlSWto/z
+         4cvsSrLRCmWgZoDcbvzSzniDQMB6Q1+zdvz0pS2jTKKh5I0IUqFd52QA6WlA9HY7dTZA
+         8jVQ==
+X-Gm-Message-State: AOJu0YwbBsPPbtVS8FprGMjqYr5UsduuPOdeDYKp2DMaqmvMNpYHWhYW
+        rWoyGR79JNxbTRtxnj2HFsc=
+X-Google-Smtp-Source: AGHT+IGOXs+af2H/WM6i72c3ovfgngRuyQhC73lGFtAS5Zrg3rPugKF1E13QWMEBTCRSMkndrQlO4g==
+X-Received: by 2002:a2e:b247:0:b0:2b9:c046:8617 with SMTP id n7-20020a2eb247000000b002b9c0468617mr4917864ljm.5.1694343695412;
+        Sun, 10 Sep 2023 04:01:35 -0700 (PDT)
+Received: from [127.0.1.1] (ip-185-104-138-31.ptr.icomera.net. [185.104.138.31])
+        by smtp.gmail.com with ESMTPSA id o6-20020a17090637c600b00991e2b5a27dsm3651710ejc.37.2023.09.10.04.00.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Sep 2023 04:01:34 -0700 (PDT)
+From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Date:   Sun, 10 Sep 2023 13:00:27 +0200
+Subject: [PATCH] dt-bindings: rtc: pcf2123: convert to YAML
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH V2 2/2] arm: dts: am3517-evm: Enable Ethernet PHY
- Interrupt
-Content-Language: en-US
-To:     Adam Ford <aford173@gmail.com>, linux-omap@vger.kernel.org
-Cc:     aford@beaconembedded.com,
-        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230907-topic-pcf2123_yaml-v1-1-40e82bed2066@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAMqh/WQC/x2N0QrCMAwAf2Xk2UDXKUF/RWR0WeoCrivNEGXs3
+ +18PI7jNjApKga3ZoMibzVdUoX21ABPIT0FdawM3vnOXR3humRlzBx967v+G+YXepYLxbMQjQQ
+ 1HIIJDiUkno50DrZKOUQuEvXzv90f+/4DSG6k3X0AAAA=
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        "Derald D. Woods" <woods.technical@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230908204828.5242-1-aford173@gmail.com>
- <20230908204828.5242-2-aford173@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230908204828.5242-2-aford173@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Chris Verges <chrisv@cyberswitching.com>
+Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694343655; l=2678;
+ i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
+ bh=tdwkiF5gV6ILncjzIuPpYriuqRSejpFZSQyqazCIw5s=;
+ b=VFJXtuw2LwhPo0MUvkIDPH2ip7Ft/WHz0YtAyksfg1RZpQ0/yVAt7I0HKpCLhlmVjyBuF0QNU
+ ezqow81GuXjCAZRFR+bMZxF8/w5dNd0dg8eVSAkc+GC+mzVYOC5oSvo
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/09/2023 22:48, Adam Ford wrote:
-> The Ethernet PHY interrupt pin is routed to GPIO_58.  Create a
-> PHY node to configure this GPIO for the interrupt to avoid polling.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> ---
-> V2:  Use current device tree naming convention for led-pins
-> 
-> diff --git a/arch/arm/boot/dts/ti/omap/am3517-evm.dts b/arch/arm/boot/dts/ti/omap/am3517-evm.dts
-> index 866f68c5b504..8a3d850a4f0d 100644
-> --- a/arch/arm/boot/dts/ti/omap/am3517-evm.dts
-> +++ b/arch/arm/boot/dts/ti/omap/am3517-evm.dts
-> @@ -172,11 +172,24 @@ hsusb1_phy: hsusb1_phy {
->  &davinci_emac {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&ethernet_pins>;
-> +	phy-mode = "rmii";
-> +	phy-handle = <&ethphy0>;
->  	status = "okay";
->  };
->  
->  &davinci_mdio {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
->  	status = "okay";
-> +
-> +	ethphy0: ethernet-phy@0 {
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&enet_phy_pins>;
-> +		compatible = "ethernet-phy-ieee802.3-c22";
-> +		reg = <0>;
-> +		interrupt-parent = <&gpio2>;
-> +		interrupts = <26 IRQ_TYPE_LEVEL_LOW>;	/* gpio_58 */
-> +	};
->  };
->  
->  &dss {
-> @@ -257,6 +270,12 @@ OMAP3_CORE1_IOPAD(0x2210, PIN_INPUT_PULLDOWN | MUX_MODE0) /* rmii_50mhz_clk */
->  		>;
->  	};
->  
-> +	enet_phy_pins: pinmux_ent_phy_pins {
+Convert the existing txt binding to the preferred YAML format.
 
-No improvements...
+The pcf2123 node may contain SPI settings such as spi-cs-high and
+spi-max-frequency, which keeps it from being added to the trivial-rtc
+binding with its current definition. Add a reference to
+spi-peripheral-props.yaml to account for that.
+
+The "interrupts" property was missing in the binding although it is
+already supported. Add the missing property in the new binding.
+
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+---
+ .../devicetree/bindings/rtc/nxp,pcf2123.yaml       | 45 ++++++++++++++++++++++
+ .../devicetree/bindings/rtc/nxp,rtc-2123.txt       | 17 --------
+ 2 files changed, 45 insertions(+), 17 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf2123.yaml b/Documentation/devicetree/bindings/rtc/nxp,pcf2123.yaml
+new file mode 100644
+index 000000000000..013e5e5dc0ae
+--- /dev/null
++++ b/Documentation/devicetree/bindings/rtc/nxp,pcf2123.yaml
+@@ -0,0 +1,45 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/rtc/nxp,pcf2123.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP PCF2123 SPI Real Time Clock
++
++maintainers:
++  - Chris Verges <chrisv@cyberswitching.com>
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++  - $ref: rtc.yaml#
++
++properties:
++  compatible:
++    enum:
++      - nxp,pcf2123
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        rtc@3 {
++            compatible = "nxp,pcf2123";
++            reg = <3>;
++            spi-cs-high;
++        };
++    };
++...
+diff --git a/Documentation/devicetree/bindings/rtc/nxp,rtc-2123.txt b/Documentation/devicetree/bindings/rtc/nxp,rtc-2123.txt
+deleted file mode 100644
+index 7371f525a687..000000000000
+--- a/Documentation/devicetree/bindings/rtc/nxp,rtc-2123.txt
++++ /dev/null
+@@ -1,17 +0,0 @@
+-NXP PCF2123 SPI Real Time Clock
+-
+-Required properties:
+-- compatible: should be: "nxp,pcf2123"
+-                      or "microcrystal,rv2123"
+-- reg: should be the SPI slave chipselect address
+-
+-Optional properties:
+-- spi-cs-high: PCF2123 needs chipselect high
+-
+-Example:
+-
+-pcf2123: rtc@3 {
+-	compatible = "nxp,pcf2123"
+-	reg = <3>
+-	spi-cs-high;
+-};
+
+---
+base-commit: 535a265d7f0dd50d8c3a4f8b4f3a452d56bd160f
+change-id: 20230907-topic-pcf2123_yaml-2ce57f4e77d7
 
 Best regards,
-Krzysztof
+-- 
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
