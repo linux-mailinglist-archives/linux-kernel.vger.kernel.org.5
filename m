@@ -2,168 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BD4799CAE
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 06:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F12799CB1
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 06:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346261AbjIJEqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 00:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
+        id S1346289AbjIJExz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 00:53:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236484AbjIJEqD (ORCPT
+        with ESMTP id S236484AbjIJExv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 00:46:03 -0400
-Received: from mail-pf1-f208.google.com (mail-pf1-f208.google.com [209.85.210.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6E61BF
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 21:45:59 -0700 (PDT)
-Received: by mail-pf1-f208.google.com with SMTP id d2e1a72fcca58-68fac73c54aso953264b3a.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 21:45:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694321158; x=1694925958;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5rI+wW1D3pEQy6NkxGD/WZQotkC8/aBPOgOXgQXzWXw=;
-        b=BnnxW98ViH1T8CzxFuxr6J9O2ZMr3ZqWvw//8LhIoAdgUiQZdjyBM8KCWIWZSDVv9I
-         EdXguXJi5C9BlHdgYOEMjMYMw7wZDM6J3xdj/AjaOnfThQ3dmEZY3aEugaKLaTXScrf+
-         aV2tPd+tq4d6zH9IW9pr/jtpw/mFqeqgUj6Z2VshUe9lTtOTQKaJVbTljQdnqO8fwR+P
-         rEwYxMF5V2504TSRuYcRWY7twftUL0lVhmn+AtdGwalBTE0IXGmN81KktyQbc+51yK9S
-         Hj4hFfrrOYykQZmggjkynS70ftq7O9Dsqp/lcy1mX3l3u/Nk14rRSiIxNTVx+x/hnoir
-         hm5A==
-X-Gm-Message-State: AOJu0YzQ4nHchH8U18EvkhZK38ZckxorWKR2Cqe86Cr5NAAd3ItoH0pE
-        OfgLmX4HLRBkyAhcUnCCZnIeADBeYYDv9SSxaWSRUfuUgnL3
-X-Google-Smtp-Source: AGHT+IFIGCO87tTTbKFAEIALMs+fleP1/EF6ONSFquTElCD4CFDiwQXu5MlmJh31nNspuerZpEVErDj8EUikbiWlfdwhz9/Plm0+
+        Sun, 10 Sep 2023 00:53:51 -0400
+Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37EFB1A5;
+        Sat,  9 Sep 2023 21:53:47 -0700 (PDT)
+Received: from LT2ubnt.fritz.box (ip-178-202-040-247.um47.pools.vodafone-ip.de [178.202.40.247])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 7CC073F6E8;
+        Sun, 10 Sep 2023 04:53:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1694321622;
+        bh=Tqi6lKwkCDtOSm6x+4nuXgIPF7Qwninbar0fNQ2vKfY=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=a8YlhTj501jI9/1y5oLbYftPKHmKLTYZPOjSomNRsG6piPM8ucYUR15tv6p/28yV4
+         0pg4pveFyFMliLWmKq9xocDFfHAU7ho6DEow0xZs7X1wObnvTkdpM1dsWkt8bmeKd6
+         1RSpCWVEj8A/yDVpsipr7/pLDNqfX83Dg8JeUnAkjPh2YmMnomh7yNKBFAovSw+k3H
+         /YnVmMThYRRP51apFHX8Ota3n/VwAwMNcl9OTRCvQvMjZZzaqhSEGuxwkIq/Uj7wiz
+         KPGDXh+VGuLlMz5z8Aao5XFgbjP11CjmulcHgENWkgzBdRYVxT/i7T1jkMsM5wctdk
+         A3IbPs6xKTRrg==
+From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+To:     Jeremy Kerr <jk@ozlabs.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Anisse Astier <an.astier@criteo.com>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Subject: [PATCH v2 1/1] efivarfs: fix statfs() on efivarfs
+Date:   Sun, 10 Sep 2023 06:54:45 +0200
+Message-Id: <20230910045445.41632-1-heinrich.schuchardt@canonical.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:b55:b0:68e:36bc:1925 with SMTP id
- p21-20020a056a000b5500b0068e36bc1925mr2639588pfo.1.1694321158463; Sat, 09 Sep
- 2023 21:45:58 -0700 (PDT)
-Date:   Sat, 09 Sep 2023 21:45:58 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c925dc0604f9e2ef@google.com>
-Subject: [syzbot] [gfs2?] BUG: sleeping function called from invalid context
- in gfs2_withdraw
-From:   syzbot <syzbot+577d06779fa95206ba66@syzkaller.appspotmail.com>
-To:     agruenba@redhat.com, gfs2@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rpeterso@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Some firmware (notably U-Boot) provides GetVariable() and
+GetNextVariableName() but not QueryVariableInfo().
 
-syzbot found the following issue on:
+With commit d86ff3333cb1 ("efivarfs: expose used and total size") the
+statfs syscall was broken for such firmware.
 
-HEAD commit:    65d6e954e378 Merge tag 'gfs2-v6.5-rc5-fixes' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10994bcc680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cbf8b29a87b8a830
-dashboard link: https://syzkaller.appspot.com/bug?extid=577d06779fa95206ba66
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10cd8e20680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=115ddba8680000
+If QueryVariableInfo() does not exist or returns an error, just report the
+file-system size as 0 as statfs_simple() previously did.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-65d6e954.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/040b1e85a692/vmlinux-65d6e954.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/984f55ac441b/bzImage-65d6e954.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/cd97a0244981/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+577d06779fa95206ba66@syzkaller.appspotmail.com
-
-loop0: rw=1, sector=3280942697285464, nr_sectors = 8 limit=32768
-gfs2: fsid=syz:syz.0: Error 10 writing to journal, jid=0
-gfs2: fsid=syz:syz.0: fatal: I/O error(s)
-gfs2: fsid=syz:syz.0: about to withdraw this file system
-BUG: sleeping function called from invalid context at fs/gfs2/util.c:157
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5141, name: syz-executor200
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-INFO: lockdep is turned off.
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 1 PID: 5141 Comm: syz-executor200 Not tainted 6.5.0-syzkaller-11938-g65d6e954e378 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10187
- signal_our_withdraw fs/gfs2/util.c:157 [inline]
- gfs2_withdraw+0xc7d/0x1280 fs/gfs2/util.c:342
- gfs2_ail1_empty+0x8cc/0xab0 fs/gfs2/log.c:377
- gfs2_flush_revokes+0x6b/0x90 fs/gfs2/log.c:815
- revoke_lo_before_commit+0x22/0x640 fs/gfs2/lops.c:867
- lops_before_commit fs/gfs2/lops.h:40 [inline]
- gfs2_log_flush+0x105e/0x27f0 fs/gfs2/log.c:1101
- gfs2_write_inode+0x24a/0x4b0 fs/gfs2/super.c:453
- write_inode fs/fs-writeback.c:1456 [inline]
- __writeback_single_inode+0xa81/0xe70 fs/fs-writeback.c:1668
- writeback_single_inode+0x2af/0x590 fs/fs-writeback.c:1724
- sync_inode_metadata+0xa5/0xe0 fs/fs-writeback.c:2786
- gfs2_fsync+0x218/0x380 fs/gfs2/file.c:761
- vfs_fsync_range+0x141/0x220 fs/sync.c:188
- generic_write_sync include/linux/fs.h:2625 [inline]
- gfs2_file_write_iter+0xd97/0x10c0 fs/gfs2/file.c:1150
- call_write_iter include/linux/fs.h:1985 [inline]
- do_iter_readv_writev+0x21e/0x3c0 fs/read_write.c:735
- do_iter_write+0x17f/0x830 fs/read_write.c:860
- vfs_iter_write+0x7a/0xb0 fs/read_write.c:901
- iter_file_splice_write+0x698/0xbf0 fs/splice.c:736
- do_splice_from fs/splice.c:933 [inline]
- direct_splice_actor+0x118/0x180 fs/splice.c:1142
- splice_direct_to_actor+0x347/0xa30 fs/splice.c:1088
- do_splice_direct+0x1af/0x280 fs/splice.c:1194
- do_sendfile+0xb88/0x1390 fs/read_write.c:1254
- __do_sys_sendfile64 fs/read_write.c:1322 [inline]
- __se_sys_sendfile64 fs/read_write.c:1308 [inline]
- __x64_sys_sendfile64+0x1d6/0x220 fs/read_write.c:1308
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f86c8957779
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffef8d7a208 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-RAX: ffffffffffffffda RBX: 00007ffef8d7a3d8 RCX: 00007f86c8957779
-RDX: 0000000000000000 RSI: 0000000000000007 RDI: 0000000000000006
-RBP: 00007f86c89dc610 R08: 00007ffef8d7a3d8 R09: 00007ffef8d7a3d8
-R10: 0001000000201004 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffef8d7a3c8 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-BUG: scheduling while atomic: syz-executor200/5141/0x00000002
-INFO: lockdep is turned off.
-Modules linked in:
-Preemption disabled at:
-[<0000000000000000>] 0x0
-
-
+Fixes: d86ff3333cb1 ("efivarfs: expose used and total size")
+Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+v2:
+	initialize remaining_space to 0
+---
+ fs/efivarfs/super.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
+index e028fafa04f3..3893aae6a9be 100644
+--- a/fs/efivarfs/super.c
++++ b/fs/efivarfs/super.c
+@@ -29,14 +29,9 @@ static int efivarfs_statfs(struct dentry *dentry, struct kstatfs *buf)
+ 	const u32 attr = EFI_VARIABLE_NON_VOLATILE |
+ 			 EFI_VARIABLE_BOOTSERVICE_ACCESS |
+ 			 EFI_VARIABLE_RUNTIME_ACCESS;
+-	u64 storage_space, remaining_space, max_variable_size;
++	u64 storage_space, remaining_space = 0, max_variable_size;
+ 	efi_status_t status;
+ 
+-	status = efivar_query_variable_info(attr, &storage_space, &remaining_space,
+-					    &max_variable_size);
+-	if (status != EFI_SUCCESS)
+-		return efi_status_to_err(status);
+-
+ 	/*
+ 	 * This is not a normal filesystem, so no point in pretending it has a block
+ 	 * size; we declare f_bsize to 1, so that we can then report the exact value
+@@ -44,10 +39,19 @@ static int efivarfs_statfs(struct dentry *dentry, struct kstatfs *buf)
+ 	 */
+ 	buf->f_bsize	= 1;
+ 	buf->f_namelen	= NAME_MAX;
+-	buf->f_blocks	= storage_space;
+-	buf->f_bfree	= remaining_space;
+ 	buf->f_type	= dentry->d_sb->s_magic;
+ 
++	/* Some UEFI firmware does not implement QueryVariable() */
++	if (efi_rt_services_supported(EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)) {
++		status = efivar_query_variable_info(attr, &storage_space,
++						    &remaining_space,
++						    &max_variable_size);
++		if (status == EFI_SUCCESS) {
++			buf->f_blocks	= storage_space;
++			buf->f_bfree	= remaining_space;
++		}
++	}
++
+ 	/*
+ 	 * In f_bavail we declare the free space that the kernel will allow writing
+ 	 * when the storage_paranoia x86 quirk is active. To use more, users
+-- 
+2.40.1
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
