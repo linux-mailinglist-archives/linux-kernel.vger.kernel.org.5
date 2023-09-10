@@ -2,84 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FD2799C5B
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 05:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2E9799C5E
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 05:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345532AbjIJDCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 23:02:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33918 "EHLO
+        id S1345617AbjIJDRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 23:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233350AbjIJDCm (ORCPT
+        with ESMTP id S1345971AbjIJDRb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 23:02:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B384FFE
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 20:02:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BDaxoltn3/UZiOrwW4Wv/EpuuPmh9gcWTTnPbzfAnLs=; b=hDFo2iqpTUgigrRKVdsPNJTzIG
-        2fQPelSUwOxxNzBfKNaOgBo89JptFra0YyvK91cc/0Ff2LGvtUMTl+MCPYLNZj1MS7uR6aMNcpkCe
-        1o1xwlpJv/vAnlBaexk0EOaIndxYXrDiRbmEaPnzGkGjWa1ToNPZTwE4wBXo/tAlg3dp6PwDZlI8f
-        KPYsk7C6KUnBqgMOYa0ttSGyWUmpfyzHbGB6+O4vOjD2VsDlYAXpoTL8C93E5dwZmFmGdZJW7WQNu
-        QN1D2xHDZKswW7TEnfysJY8BB9+49cCt7GL8GWEc+zYhHNVBmhvE6W0USvjmJxH71628iGilQMVAE
-        wIyOAgiQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qfAiW-009vBp-Js; Sun, 10 Sep 2023 03:02:32 +0000
-Date:   Sun, 10 Sep 2023 04:02:32 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     syzbot <syzbot+55cc72f8cc3a549119df@syzkaller.appspotmail.com>
-Cc:     akpm@linux-foundation.org, fengwei.yin@intel.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [mm?] BUG: Bad page map (7)
-Message-ID: <ZP0xyFnnghM42GcW@casper.infradead.org>
-References: <000000000000d099fa0604f03351@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000d099fa0604f03351@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 9 Sep 2023 23:17:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB1B18F;
+        Sat,  9 Sep 2023 20:17:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1B043C433C8;
+        Sun, 10 Sep 2023 03:17:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694315845;
+        bh=ouyStzZ3ETADqbo0bPWUlWLVuVUFgRfFzX299oq7b7s=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Z2Es5jUeXfsH8ZDBWiVAhIoilqpNr014R9j4Eyc5BRnIDxd5/h/FnT+LWYELY+W2U
+         aJkbM9ikAvk3K2e24b5/85Pc91rOlhMcRM8Icdcf9M0pUzB3t6imZrFiJkt5Z9gP44
+         XFeg9NraEpXP9DbAAFTyaKX0U9oINg79ywF1GW9bMz1yaPC9GR0KPpgQaeOf9mBijt
+         05VE5WlNhev/aFU2xkEk+WvGji9HGhWgUDetbmTRD+v+RGbzWPMkGTiENJ/GlLJwA9
+         q+j6+t8TmtkHEkNL7qjEzZQ6vzBwgf0rmcbpPJJFyVgljYn2h0MLjUcm3pQljoe6Jm
+         Xve3A44T9yKLA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0888BE22AFC;
+        Sun, 10 Sep 2023 03:17:25 +0000 (UTC)
+Subject: Re: [GIT PULL] perf tools changes for v6.6
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20230906005330.373916-1-acme@kernel.org>
+References: <20230906005330.373916-1-acme@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230906005330.373916-1-acme@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git tags/perf-tools-for-v6.6-1-2023-09-05
+X-PR-Tracked-Commit-Id: 45fc4628c15ab2cb7b2f53354b21db63f0a41f81
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 535a265d7f0dd50d8c3a4f8b4f3a452d56bd160f
+Message-Id: <169431584502.25659.1703863725780355599.pr-tracker-bot@kernel.org>
+Date:   Sun, 10 Sep 2023 03:17:25 +0000
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Aditya Gupta <adityag@linux.ibm.com>,
+        Akanksha J N <akanksha@linux.ibm.com>,
+        Anup Sharma <anupnewsmail@gmail.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        James Clark <james.clark@arm.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Lu Hongfei <luhongfei@vivo.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Xiu Jianfeng <xiujianfeng@huawei.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 09, 2023 at 10:12:48AM -0700, syzbot wrote:
-> commit 617c28ecab22d98a3809370eb6cb50fa24b7bfe1
-> Author: Yin Fengwei <fengwei.yin@intel.com>
-> Date:   Wed Aug 2 15:14:05 2023 +0000
-> 
->     filemap: batch PTE mappings
+The pull request you sent on Tue,  5 Sep 2023 21:53:30 -0300:
 
-Hmm ... I don't know if this is the bug, but ...
+> git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git tags/perf-tools-for-v6.6-1-2023-09-05
 
-#syz test
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/535a265d7f0dd50d8c3a4f8b4f3a452d56bd160f
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 582f5317ff71..580d0b2b1a7c 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -3506,7 +3506,7 @@ static vm_fault_t filemap_map_folio_range(struct vm_fault *vmf,
- 		if (count) {
- 			set_pte_range(vmf, folio, page, count, addr);
- 			folio_ref_add(folio, count);
--			if (in_range(vmf->address, addr, count))
-+			if (in_range(vmf->address, addr, count * PAGE_SIZE))
- 				ret = VM_FAULT_NOPAGE;
- 		}
- 
-@@ -3520,7 +3520,7 @@ static vm_fault_t filemap_map_folio_range(struct vm_fault *vmf,
- 	if (count) {
- 		set_pte_range(vmf, folio, page, count, addr);
- 		folio_ref_add(folio, count);
--		if (in_range(vmf->address, addr, count))
-+		if (in_range(vmf->address, addr, count * PAGE_SIZE))
- 			ret = VM_FAULT_NOPAGE;
- 	}
- 
+Thank you!
 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
