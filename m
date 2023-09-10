@@ -2,163 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF6A799F9F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 21:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E43A799FA5
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 22:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233314AbjIJT6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 15:58:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44996 "EHLO
+        id S231485AbjIJUQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 16:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231843AbjIJT6l (ORCPT
+        with ESMTP id S229688AbjIJUQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 15:58:41 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975C9132
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 12:58:36 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31dcf18f9e2so3757647f8f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 12:58:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1694375915; x=1694980715; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=U/mpJ4QxANMd1OUi0izes/wPE27BO8URpmrDEAd/e+A=;
-        b=Kjp1i//bLXWlW2wDeGwlX3Ybt46ejYSxUzDq7cLGvuOWev+4nHQytKW+rLCEUrG51t
-         XHwdOlc+5otnNX/6GyzgRSaoC+cb/ppPjxyIuEw8o1tcq7W/kRXdbahgeI+G364xj6uU
-         h2G/sDT8L7EKgzWUrSfh48AK+Ga2wHhlxlDgnmurmEulqbutH/aG0UPSymyVx2IVDYJZ
-         pAGsHh+9jAHraCZ8U5asjK7G+lgC5Aetl7nhIhParjz8qYSy3LO7pkaAduCJrfJfbYuJ
-         299JwZG35VZPfex7l1e8uyGcCliLeVMYSsbcfDbksivLlImEaXyes/XlMw+9QtcpBrP2
-         vuEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694375915; x=1694980715;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U/mpJ4QxANMd1OUi0izes/wPE27BO8URpmrDEAd/e+A=;
-        b=if7DmOVfDn7N9Q4kgTR7WVmr5A6L1QHcvy1oj72vz0DJa1DJ0AXJnCFU538ylcOtoT
-         h6LbDWjH2Ec1gwrQJQ+tijoDcKslWLp+5SRCJ4GoY6COmBe+E6ikk5PunfBGNLynC8fs
-         Vx2qd2uJ4i/S/Qiby8b6R+eIE9MEvx2h31HMPVNqGVGm5K0TeSl76/EF+1KkBDIpOdJz
-         kGiROSLgA/AXe7raWchR2Ijk6g49sLtlpQA7dtEvXdTz1p/Fe7LNKiFvqH/m671iID8U
-         HrQ+HQrfJKdmOIHCu/KfuZyzb5w2xrp+bYHiah0aVcMqYvN0zwBE/zTgio23B7rv0IqK
-         4JMw==
-X-Gm-Message-State: AOJu0YyO1qUzGDPLTRaW0oqBdksSZGO0RP9XyLPhLy9T++VO5lmj/KLS
-        lPj4x+LO1/poTGNu1QjNnRsYrQ==
-X-Google-Smtp-Source: AGHT+IEQDVbVhC1bXE9o/if6YM58KB28ZTDBO/FwCzX9X/u10FKNVul2ruxbQ3NG8SyOkN1iEvNlgA==
-X-Received: by 2002:a5d:5541:0:b0:317:6310:a616 with SMTP id g1-20020a5d5541000000b003176310a616mr6087460wrw.36.1694375914818;
-        Sun, 10 Sep 2023 12:58:34 -0700 (PDT)
-Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id a6-20020a5d5706000000b0031ad5a54bedsm8032679wrv.9.2023.09.10.12.58.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Sep 2023 12:58:34 -0700 (PDT)
-Date:   Sun, 10 Sep 2023 20:58:32 +0100
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Lukasz Luba <lukasz.luba@arm.com>
-Subject: Re: [RFC PATCH 1/7] sched/pelt: Add a new function to approximate
- the future util_avg value
-Message-ID: <20230910195832.pncjsqmkepichly6@airbuntu>
-References: <20230827233203.1315953-1-qyousef@layalina.io>
- <20230827233203.1315953-2-qyousef@layalina.io>
- <8f63efa6-f9d1-9b1c-7737-4094f6acfc62@arm.com>
- <20230906211936.yqejc25czc6tddm6@airbuntu>
- <47a11e4e-d349-7d98-7006-4bf08a53c0cf@arm.com>
+        Sun, 10 Sep 2023 16:16:24 -0400
+Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EAAC133
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 13:16:16 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id fQqjqzpvD0408fQqjqaHQK; Sun, 10 Sep 2023 22:16:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1694376968;
+        bh=RKE0XROMFTZ69Gm317IVP+Ru3SLHlplqDelJtYvM1po=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=BBC51B1Sbtz0f4sl/qpUwpRpyKq085Zkcx8+6V1LUaXSEcmUlw+wYNJPuKJNTbi6D
+         qn4jGCJu6FhX2ErsBZLPU+8zG+o5H0mokvHXpyn/TepkpFETWpx3xjuZ7mn3XCjkpZ
+         af0Z6OWnx9r7EhrKeTYCj2lzne0eeE7dTaTv+zFdCZmIa3XT52VWlGxqlxd9Q+B3xu
+         rZws69OYxsCYXU5NlX+tqMbPGGKmkcn0xR9MYWoP3taFsYiOaOP2s62HBkjPK4AeyN
+         jqoGdGOAlqmYMN7SQJ7gBScbw2RGz6UworUavwwr0nOQg3W+Yit5nsac/NKUsd/KKQ
+         dH/aPV3OPoWpA==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 10 Sep 2023 22:16:07 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <0b6ad379-049a-5152-12e5-77c62ffc4541@wanadoo.fr>
+Date:   Sun, 10 Sep 2023 22:16:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <47a11e4e-d349-7d98-7006-4bf08a53c0cf@arm.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] drm/simpledrm: Add support for multiple "power-domains"
+Content-Language: fr
+To:     j@jannau.net, Thomas Zimmermann <tzimmermann@suse.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        asahi@lists.linux.dev
+References: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/07/23 13:12, Dietmar Eggemann wrote:
-> On 06/09/2023 23:19, Qais Yousef wrote:
-> > On 09/06/23 14:56, Dietmar Eggemann wrote:
-> >> On 28/08/2023 01:31, Qais Yousef wrote:
+Le 10/09/2023 à 18:39, Janne Grunau via B4 Relay a écrit :
+> From: Janne Grunau <j@jannau.net>
 > 
-> [...]
+> Multiple power domains need to be handled explicitly in each driver. The
+> driver core can not handle it automatically since it is not aware of
+> power sequencing requirements the hardware might have. This is not a
+> problem for simpledrm since everything is expected to be powered on by
+> the bootloader. simpledrm has just ensure it remains powered on during
+> its lifetime.
+> This is required on Apple silicon M2 and M2 Pro/Max/Ultra desktop
+> systems. The HDMI output initialized by the bootloader requires keeping
+> the display controller and a DP phy power domain on.
 > 
-> >>> +/*
-> >>> + * Approximate the new util_avg value assuming an entity has continued to run
-> >>> + * for @delta us.
-> >>> + */
-> >>> +unsigned long approximate_util_avg(unsigned long util, u64 delta)
-> >>> +{
-> >>> +	struct sched_avg sa = {
-> >>> +		.util_sum = util * PELT_MIN_DIVIDER,
-> >>> +		.util_avg = util,
-> >>> +	};
-> >>> +
-> >>> +	if (unlikely(!delta))
-> >>> +		return util;
-> >>> +
-> >>> +	accumulate_sum(delta, &sa, 0, 0, 1);
-> >>
-> >> IMHO, you miss the handling of `periods != 0`. load = 0 eclipses this
-> >> code in accumulate_sum().
+> Signed-off-by: Janne Grunau <j@jannau.net>
+> ---
+>   drivers/gpu/drm/tiny/simpledrm.c | 106 +++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 106 insertions(+)
 > 
-> You could call accumulate_sum(delta, &sa, 1, 0, 1);
+> diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/simpledrm.c
+> index ff86ba1ae1b8..efedede57d42 100644
+> --- a/drivers/gpu/drm/tiny/simpledrm.c
+> +++ b/drivers/gpu/drm/tiny/simpledrm.c
+> @@ -6,6 +6,7 @@
+>   #include <linux/of_address.h>
+>   #include <linux/platform_data/simplefb.h>
+>   #include <linux/platform_device.h>
+> +#include <linux/pm_domain.h>
+>   #include <linux/regulator/consumer.h>
+>   
+>   #include <drm/drm_aperture.h>
+> @@ -227,6 +228,12 @@ struct simpledrm_device {
+>   	unsigned int regulator_count;
+>   	struct regulator **regulators;
+>   #endif
+> +	/* power-domains */
+> +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
+> +	int pwr_dom_count;
+> +	struct device **pwr_dom_devs;
+> +	struct device_link **pwr_dom_links;
+> +#endif
+>   
+>   	/* simplefb settings */
+>   	struct drm_display_mode mode;
+> @@ -468,6 +475,102 @@ static int simpledrm_device_init_regulators(struct simpledrm_device *sdev)
+>   }
+>   #endif
+>   
+> +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
+> +/*
+> + * Generic power domain handling code.
+> + *
+> + * Here we handle the power-domains properties of our "simple-framebuffer"
+> + * dt node. This is only necessary if there is more than one power-domain.
+> + * A single power-domains is handled automatically by the driver core. Multiple
+> + * power-domains have to be handled by drivers since the driver core can't know
+> + * the correct power sequencing. Power sequencing is not an issue for simpledrm
+> + * since the bootloader has put the power domains already in the correct state.
+> + * simpledrm has only to ensure they remain active for its lifetime.
+> + *
+> + * When the driver unloads, we detach from the power-domains.
+> + *
+> + * We only complain about errors here, no action is taken as the most likely
+> + * error can only happen due to a mismatch between the bootloader which set
+> + * up the "simple-framebuffer" dt node, and the PM domain providers in the
+> + * device tree. Chances are that there are no adverse effects, and if there are,
+> + * a clean teardown of the fb probe will not help us much either. So just
+> + * complain and carry on, and hope that the user actually gets a working fb at
+> + * the end of things.
+> + */
+> +static void simpledrm_device_detach_genpd(void *res)
+> +{
+> +	int i;
+> +	struct simpledrm_device *sdev = /*(struct simpledrm_device *)*/res;
+> +
+> +
+> +	drm_err(&sdev->dev, "% power-domains count:%d\n", __func__, sdev->pwr_dom_count);
+> +	if (sdev->pwr_dom_count <= 1)
+> +		return;
+> +
+> +	for (i = sdev->pwr_dom_count - 1; i >= 0; i--) {
+> +		if (!sdev->pwr_dom_links[i])
+> +			device_link_del(sdev->pwr_dom_links[i]);
+> +		if (!IS_ERR_OR_NULL(sdev->pwr_dom_devs[i]))
+> +			dev_pm_domain_detach(sdev->pwr_dom_devs[i], true);
+> +	}
+> +}
+> +
+> +static int simpledrm_device_attach_genpd(struct simpledrm_device *sdev)
+> +{
+> +	struct device *dev = sdev->dev.dev;
+> +	int i;
+> +
+> +	sdev->pwr_dom_count = of_count_phandle_with_args(dev->of_node, "power-domains",
+> +							 "#power-domain-cells");
+> +	/*
+> +	 * Single power-domain devices are handled by driver core nothing to do
+> +	 * here. The same for device nodes without "power-domains" property.
+> +	 */
+> +	if (sdev->pwr_dom_count <= 1)
+> +		return 0;
+> +
+> +	sdev->pwr_dom_devs = devm_kcalloc(dev, sdev->pwr_dom_count,
+> +					       sizeof(*sdev->pwr_dom_devs),
+> +					       GFP_KERNEL);
+> +	if (!sdev->pwr_dom_devs)
+> +		return -ENOMEM;
+> +
+> +	sdev->pwr_dom_links = devm_kcalloc(dev, sdev->pwr_dom_count,
+> +						sizeof(*sdev->pwr_dom_links),
+> +						GFP_KERNEL);
+> +	if (!sdev->pwr_dom_links)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < sdev->pwr_dom_count; i++) {
+> +		sdev->pwr_dom_devs[i] = dev_pm_domain_attach_by_id(dev, i);
+> +		if (IS_ERR(sdev->pwr_dom_devs[i])) {
+> +			int ret = PTR_ERR(sdev->pwr_dom_devs[i]);
+> +			if (ret == -EPROBE_DEFER) {
+> +				simpledrm_device_detach_genpd(sdev);
+> +				return PTR_ERR(sdev->pwr_dom_devs[i]);
+> +			}
+> +			drm_err(&sdev->dev,
+> +				"pm_domain_attach_by_id(%u) failed: %d\n", i, ret);
+> +		}
+> +
 
-Yes. I initially thought the load is not necessary, but good catch. I didn't
-get a chance to rerun to see the numbers, but hopefully this should fix the
-wrong numbers I was seeing. Thanks!
+sdev->pwr_dom_devs[i] can be an ERR_PTR here.
+Maybe a break or a continue missing after drm_err() above?
 
+CJ
+
+> +		sdev->pwr_dom_links[i] = device_link_add(dev,
+> +							 sdev->pwr_dom_devs[i],
+> +							 DL_FLAG_STATELESS |
+> +							 DL_FLAG_PM_RUNTIME |
+> +							 DL_FLAG_RPM_ACTIVE);
+> +		if (!sdev->pwr_dom_links[i])
+> +			drm_err(&sdev->dev, "failed to link power-domain %u\n", i);
+> +	}
+> +
+> +	return devm_add_action_or_reset(dev, simpledrm_device_detach_genpd, sdev);
+> +}
+> +#else
+> +static int simpledrm_device_attach_genpd(struct simpledrm_device *sdev)
+> +{
+> +	return 0;
+> +}
+> +#endif
+> +
+>   /*
+>    * Modesetting
+>    */
+> @@ -651,6 +754,9 @@ static struct simpledrm_device *simpledrm_device_create(struct drm_driver *drv,
+>   	if (ret)
+>   		return ERR_PTR(ret);
+>   	ret = simpledrm_device_init_regulators(sdev);
+> +	if (ret)
+> +		return ERR_PTR(ret);
+> +	ret = simpledrm_device_attach_genpd(sdev);
+>   	if (ret)
+>   		return ERR_PTR(ret);
+>   
 > 
-> > 
-> > Yes. For some reason I got blank registered when I saw if this codepath can
-> > impact util_avg..
+> ---
+> base-commit: 15d30b46573d75f5cb58cfacded8ebab9c76a2b0
+> change-id: 20230910-simpledrm-multiple-power-domains-f41efa6ad9bc
 > 
-> Another thing ... I guess if you call accumulate_sum with delta the PELT
-> machinery assumes `delta = now - sa->last_update_time` which means you
-> would have to use `clock_pelt + TICK_USEC` as delta.
+> Best regards,
 
-Right.
-
-The way I understood it is that at TICK we should do update_load_avg() which
-would call __update_load_sum() which uses
-
-	delta = now - sa->last_update_time
-
-which passes this delta to accumulate_sum()
-
-I can see we are not very accurate since there will be a small additional time
-besides TICK_USEC that we are not accounting for. But I can't see how this can
-cause a big error.
-
-	predicted (assumed) tick time/delta
-
-		sa->last_update_time = now
-		tick_time = TICK_USEC + now
-
-		delta = tick_time - sa->last_update_time
-		delta = TICK_USEC + now - now
-		delta = TICK_USEC
-
-	but actual tick time/delta
-
-		sa->last_update_time = now - x
-		tick_time = TICK_USEC + now
-
-		delta = tick_time - sa->last_update_time
-		delta = TICK_USEC + now - (now - x)
-		delta = TICK_USEC + x
-
-So the delta I am using might be slightly shorter than it should be.
-
-IIUC, what you're saying that the `x` in my equation above is clock_pelt,
-right?
-
-
-Thanks!
-
---
-Qais Yousef
