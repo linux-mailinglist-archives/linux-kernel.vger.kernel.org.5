@@ -2,187 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA53799DCB
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 13:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EBA799DDB
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 13:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345174AbjIJLBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 07:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49238 "EHLO
+        id S1346642AbjIJLUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 07:20:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232378AbjIJLBm (ORCPT
+        with ESMTP id S233692AbjIJLUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 07:01:42 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA48CCC;
-        Sun, 10 Sep 2023 04:01:37 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso60635121fa.1;
-        Sun, 10 Sep 2023 04:01:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694343696; x=1694948496; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HBkpEqUb+78mNZeKD0UcDWXhyqQzEoqyYm5VM9b2Bq0=;
-        b=o7RhsfKknjbiAwXeeXgYbjCzcQVFtxerzPODUJvutlXTHU51ZA2P57fTGRrHqrrq42
-         fUb2JJCv9fnDxJyvhGV5dGVyYlZk2Ayvs6fugOWiyfAVhTVCh6SKYa/fBacdIGq+Ajfa
-         fn5ONSPXISe7rf7wUks1IjbPE7h3BMkbSpV1Jt4Lu4W+60xjSJluXGXtHEM1Zy3GBgLE
-         5iD71+D2R27riY44toRBs2i0aIQKjAtIw0qidW0tp9kfiLtCZdjfQU0s3cranG0uh8da
-         s/WCBzYO7TuJdBv4Deaqn5nUushmzKhcGW/JtwnbQpUngNP3DrOhzSNJ1j2QTbQYl5MU
-         /sOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694343696; x=1694948496;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HBkpEqUb+78mNZeKD0UcDWXhyqQzEoqyYm5VM9b2Bq0=;
-        b=Z/L96y23H+bYZaSdVF1wV306DmsDFI1CuVRd2u8KOAfgUiFjS0sVcIPV2zRHcIMN/2
-         IwXSxsfijjmKyG0iblqNB8LnsjYjnC5mg1tLLJAlZ3o/7Zi7Buj+p8LfQUFiX46KRaka
-         rNqp1lEYgR80+SL0mGB/2bjWxLg35j4xIyAN4w3w80gfVDyN22oJBpxJat3iVogmOoUP
-         HsGKgn1oXGpN8zBxwWmvlc/W0LACNP4lSfgPBhj26POP3nFTK+w/5tWzgxzTWlSWto/z
-         4cvsSrLRCmWgZoDcbvzSzniDQMB6Q1+zdvz0pS2jTKKh5I0IUqFd52QA6WlA9HY7dTZA
-         8jVQ==
-X-Gm-Message-State: AOJu0YwbBsPPbtVS8FprGMjqYr5UsduuPOdeDYKp2DMaqmvMNpYHWhYW
-        rWoyGR79JNxbTRtxnj2HFsc=
-X-Google-Smtp-Source: AGHT+IGOXs+af2H/WM6i72c3ovfgngRuyQhC73lGFtAS5Zrg3rPugKF1E13QWMEBTCRSMkndrQlO4g==
-X-Received: by 2002:a2e:b247:0:b0:2b9:c046:8617 with SMTP id n7-20020a2eb247000000b002b9c0468617mr4917864ljm.5.1694343695412;
-        Sun, 10 Sep 2023 04:01:35 -0700 (PDT)
-Received: from [127.0.1.1] (ip-185-104-138-31.ptr.icomera.net. [185.104.138.31])
-        by smtp.gmail.com with ESMTPSA id o6-20020a17090637c600b00991e2b5a27dsm3651710ejc.37.2023.09.10.04.00.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Sep 2023 04:01:34 -0700 (PDT)
-From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date:   Sun, 10 Sep 2023 13:00:27 +0200
-Subject: [PATCH] dt-bindings: rtc: pcf2123: convert to YAML
+        Sun, 10 Sep 2023 07:20:24 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FCACD5;
+        Sun, 10 Sep 2023 04:20:19 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qfIUD-0005Bf-DQ; Sun, 10 Sep 2023 13:20:17 +0200
+Message-ID: <f8ca4666-1a64-49fe-afa7-47e72c82ef9e@leemhuis.info>
+Date:   Sun, 10 Sep 2023 13:20:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] lockdep: Fix static memory detection even more
+Content-Language: en-US, de-DE
+To:     Guenter Roeck <linux@roeck-us.net>, Helge Deller <deller@gmx.de>
+Cc:     linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <ZNep5EcYskP9HtGD@p100>
+ <b7526bf6-886f-457a-beba-84ae9f75bc77@roeck-us.net>
+From:   "Linux regression tracking #adding (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <b7526bf6-886f-457a-beba-84ae9f75bc77@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230907-topic-pcf2123_yaml-v1-1-40e82bed2066@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAMqh/WQC/x2N0QrCMAwAf2Xk2UDXKUF/RWR0WeoCrivNEGXs3
- +18PI7jNjApKga3ZoMibzVdUoX21ABPIT0FdawM3vnOXR3humRlzBx967v+G+YXepYLxbMQjQQ
- 1HIIJDiUkno50DrZKOUQuEvXzv90f+/4DSG6k3X0AAAA=
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chris Verges <chrisv@cyberswitching.com>
-Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694343655; l=2678;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=tdwkiF5gV6ILncjzIuPpYriuqRSejpFZSQyqazCIw5s=;
- b=VFJXtuw2LwhPo0MUvkIDPH2ip7Ft/WHz0YtAyksfg1RZpQ0/yVAt7I0HKpCLhlmVjyBuF0QNU
- ezqow81GuXjCAZRFR+bMZxF8/w5dNd0dg8eVSAkc+GC+mzVYOC5oSvo
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1694344819;376fddac;
+X-HE-SMSGID: 1qfIUD-0005Bf-DQ
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the existing txt binding to the preferred YAML format.
+[side notes:
+* mail has a reduced set of recipients
+* fix is in the works, but add it to the tracking, as rc1 is due
+* just in case it was missed: culprit made it to various stable series]
 
-The pcf2123 node may contain SPI settings such as spi-cs-high and
-spi-max-frequency, which keeps it from being added to the trivial-rtc
-binding with its current definition. Add a reference to
-spi-peripheral-props.yaml to account for that.
+[TLDR: I'm adding this report to the list of tracked Linux kernel
+regressions; the text you find below is based on a few templates
+paragraphs you might have encountered already in similar form.
+See link in footer if these mails annoy you.]
 
-The "interrupts" property was missing in the binding although it is
-already supported. Add the missing property in the new binding.
+On 03.09.23 21:36, Guenter Roeck wrote:
+> 
+> On Sat, Aug 12, 2023 at 05:48:52PM +0200, Helge Deller wrote:
+>> On the parisc architecture, lockdep reports for all static objects which
+>> are in the __initdata section (e.g. "setup_done" in devtmpfs,
+>> "kthreadd_done" in init/main.c) this warning:
+>>
+>> 	INFO: trying to register non-static key.
+>>
+> [...]
+>> Signed-off-by: Helge Deller <deller@gmx.de>
+>> Fixes: bac59d18c701 ("x86/setup: Fix static memory detection")
+> 
+> On loongarch, this patch results in the following backtrace.
+> [...]> # first bad commit: [0a6b58c5cd0dfd7961e725212f0fc8dfc5d96195]
+lockdep: fix static memory detection even more
 
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- .../devicetree/bindings/rtc/nxp,pcf2123.yaml       | 45 ++++++++++++++++++++++
- .../devicetree/bindings/rtc/nxp,rtc-2123.txt       | 17 --------
- 2 files changed, 45 insertions(+), 17 deletions(-)
+Thanks for the report. To be sure the issue doesn't fall through the
+cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
+tracking bot:
 
-diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf2123.yaml b/Documentation/devicetree/bindings/rtc/nxp,pcf2123.yaml
-new file mode 100644
-index 000000000000..013e5e5dc0ae
---- /dev/null
-+++ b/Documentation/devicetree/bindings/rtc/nxp,pcf2123.yaml
-@@ -0,0 +1,45 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/rtc/nxp,pcf2123.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP PCF2123 SPI Real Time Clock
-+
-+maintainers:
-+  - Chris Verges <chrisv@cyberswitching.com>
-+
-+allOf:
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-+  - $ref: rtc.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - nxp,pcf2123
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        rtc@3 {
-+            compatible = "nxp,pcf2123";
-+            reg = <3>;
-+            spi-cs-high;
-+        };
-+    };
-+...
-diff --git a/Documentation/devicetree/bindings/rtc/nxp,rtc-2123.txt b/Documentation/devicetree/bindings/rtc/nxp,rtc-2123.txt
-deleted file mode 100644
-index 7371f525a687..000000000000
---- a/Documentation/devicetree/bindings/rtc/nxp,rtc-2123.txt
-+++ /dev/null
-@@ -1,17 +0,0 @@
--NXP PCF2123 SPI Real Time Clock
--
--Required properties:
--- compatible: should be: "nxp,pcf2123"
--                      or "microcrystal,rv2123"
--- reg: should be the SPI slave chipselect address
--
--Optional properties:
--- spi-cs-high: PCF2123 needs chipselect high
--
--Example:
--
--pcf2123: rtc@3 {
--	compatible = "nxp,pcf2123"
--	reg = <3>
--	spi-cs-high;
--};
+#regzbot ^introduced 0a6b58c5cd0dfd7961e725212f0fc8dfc5d961
+#regzbot title lockdep: backtrace on loongarch
+#regzbot ignore-activity
 
----
-base-commit: 535a265d7f0dd50d8c3a4f8b4f3a452d56bd160f
-change-id: 20230907-topic-pcf2123_yaml-2ce57f4e77d7
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply and tell me -- ideally
+while also telling regzbot about it, as explained by the page listed in
+the footer of this mail.
 
-Best regards,
--- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Developers: When fixing the issue, remember to add 'Link:' tags pointing
+to the report (the parent of this mail). See page linked in footer for
+details.
 
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
