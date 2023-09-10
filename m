@@ -2,208 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8F0799FA6
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 22:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE8D799FAA
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 22:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232505AbjIJUR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 16:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53566 "EHLO
+        id S233024AbjIJUYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 16:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjIJURY (ORCPT
+        with ESMTP id S229688AbjIJUYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 16:17:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157F51B8;
-        Sun, 10 Sep 2023 13:17:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E22E0C433C8;
-        Sun, 10 Sep 2023 20:17:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694377038;
-        bh=TIqtZhamWQ42KqgYzx3QpXUddC012LJLUbdc3XYWkCI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UXwu3NvOMDHHZTWCOMJ/+YWWtB6hioyT9R1gYmh1MhZ5hF3wbM7r1a999gydS52mt
-         aao5hk/J5T5C4f7jphEZ+ansFmOupa1pWL5i2UHjLiAzKUG2qbNsW/Vqax75IEjq3j
-         znj2S9fLSRoxh/z34Y+MJbClfQRQ+nNqBFIspIP5WB3Mva5mdtqCCQFLXg5xhuYd4v
-         zSYci6IXfQnPLgTCVdEbjnl/65Zcu3J9Ky1cIHRi3gSfigC3r7RiJFQKhJOGq2W0KG
-         5VXTqoz5VAdhseurcqo9CjI5OfpJQxdp+Xise53SwfmmRnVEkjyl8qKtVBSjsEjRvX
-         kY6fpkTx/vDLw==
-Date:   Sun, 10 Sep 2023 22:17:15 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Subject: Re: [PATCH 04/10] rcu/nocb: Remove needless full barrier after
- callback advancing
-Message-ID: <ZP4kSwWkUdf-rfRW@localhost.localdomain>
-References: <20230908203603.5865-1-frederic@kernel.org>
- <20230908203603.5865-5-frederic@kernel.org>
- <20230909043125.GA3920383@google.com>
- <ZPy3-MS7uOJfmJhs@boqun-archlinux>
- <20230910040923.GA762577@google.com>
+        Sun, 10 Sep 2023 16:24:34 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF09135
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 13:24:30 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-58d40c2debeso38067857b3.2
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 13:24:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694377470; x=1694982270; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=jPK2akfGkxfliBdm1B1rykv3Q3W/tZl7VK0ifr4uOX0=;
+        b=UkaWWwyEKhw2lU/GkvhdnyMUh/A1yHm4+MP72I5ipIFuTt1KIPl1aIr+vU7w+LY6+W
+         crrDEXrdhGyVkT2HCQXJZuF+/btIgU/0wjf7lkrZ5kCbD3BJ+IcQzfSq3Ax8PFxToAA4
+         fm7rr/V7l1V/ZYUnDzbR/WtQ3b5g3PRU6wv2nZtmMcTtcIIbcyn63zqwfmcEIza22Zr/
+         sltlVK63Hz7uhr50Sx7VknnipOT2fuyj+utpt7Bk7ZG2iOo06aaBV065EeoXRmqzg6xQ
+         5d1St4KaLlUNd6LIP8BQAOCX4mgzyQppaGbebWg471Yh5MZ3fzbcZklinEruWY6HNR0x
+         KQaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694377470; x=1694982270;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jPK2akfGkxfliBdm1B1rykv3Q3W/tZl7VK0ifr4uOX0=;
+        b=uQ4zJYfe+xfruZh9tLsPsaXt2vd74+pqbdto1EYxmKGCuuVCJytbkR8+TrIc6Pul8l
+         I11WKuI2hvvBxlTo9gci/ul5/avLIRzIPyFmnhRDm01vVH9B/8xTTbC75P7GteSuwX9u
+         iTZVE0u7sVl1rIzlj/mTBWOfNfCI8cGc4MvVaUr9Bn+DV/X1JW5VFMs1vVk6tM3Tp+Kf
+         Gp9C2LgrBr5t/Y5oNMJqprLY41fOOgXrIPwXfqYNEzA4NEbZ/MMqLZD8M5veQRe6VhCZ
+         m0ldGjiQS/ctzLNsWJ+Cmu6HY990xc4mtYpHiX7wBaVZSGjuO5iNDyG1Y5B2P3OJsOer
+         8E5A==
+X-Gm-Message-State: AOJu0YzUp/QoQo3O7fkAIuufIHBE/MXjOQ85R68XVArdDGK6prdXEFi8
+        HoOuWIdYiStm8anIy3QAbwd5BiCByz2fAooCPmc=
+X-Google-Smtp-Source: AGHT+IE81gMO4gvRJN5KEXCY5/3nBLTG0HQMD0vzmkTfDDX9ibLT6M4XZ5vRJE38FN3eGPl1u+ye0gvYesRAwyZd6nQ=
+X-Received: by 2002:a0d:cbd7:0:b0:57a:50ba:b3a0 with SMTP id
+ n206-20020a0dcbd7000000b0057a50bab3a0mr8313601ywd.12.1694377469693; Sun, 10
+ Sep 2023 13:24:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230910040923.GA762577@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:7108:7654:b0:339:167d:ffbc with HTTP; Sun, 10 Sep 2023
+ 13:24:29 -0700 (PDT)
+From:   Ududonka Ahmed <ududonka.ahmed1@gmail.com>
+Date:   Sun, 10 Sep 2023 20:24:29 +0000
+Message-ID: <CABdpV841fgyGAFs-9LL0DMESJBsmO2JVVn_yvqO-O3U_uv1Gig@mail.gmail.com>
+Subject: Thanks you very much
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=7.4 required=5.0 tests=ADVANCE_FEE_2_NEW_MONEY,
+        BAYES_50,DEAR_NOBODY,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
+        DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLY,
+        HK_SCAM,LOTS_OF_MONEY,MONEY_ATM_CARD,MONEY_FRAUD_3,MONEY_NOHTML,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_MONEY autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:112b listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [ududonka.ahmed1[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [ududonka.ahmed1[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 DEAR_NOBODY RAW: Message contains Dear but with no name
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  0.7 HK_SCAM No description available.
+        *  0.0 MONEY_NOHTML Lots of money in plain text
+        *  0.0 MONEY_ATM_CARD Lots of money on an ATM card
+        *  1.0 FREEMAIL_REPLY From and body contain different freemails
+        *  2.8 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+        *  0.0 MONEY_FRAUD_3 Lots of money and several fraud phrases
+        *  2.0 ADVANCE_FEE_2_NEW_MONEY Advance Fee fraud and lots of money
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Sun, Sep 10, 2023 at 12:09:23AM -0400, Joel Fernandes a écrit :
-> On Sat, Sep 09, 2023 at 11:22:48AM -0700, Boqun Feng wrote:
-> > On Sat, Sep 09, 2023 at 04:31:25AM +0000, Joel Fernandes wrote:
-> > > On Fri, Sep 08, 2023 at 10:35:57PM +0200, Frederic Weisbecker wrote:
-> > > > A full barrier is issued from nocb_gp_wait() upon callbacks advancing
-> > > > to order grace period completion with callbacks execution.
-> > > > 
-> > > > However these two events are already ordered by the
-> > > > smp_mb__after_unlock_lock() barrier within the call to
-> > > > raw_spin_lock_rcu_node() that is necessary for callbacks advancing to
-> > > > happen.
-> > > > 
-> > > > The following litmus test shows the kind of guarantee that this barrier
-> > > > provides:
-> > > > 
-> > > > 	C smp_mb__after_unlock_lock
-> > > > 
-> > > > 	{}
-> > > > 
-> > > > 	// rcu_gp_cleanup()
-> > > > 	P0(spinlock_t *rnp_lock, int *gpnum)
-> > > > 	{
-> > > > 		// Grace period cleanup increase gp sequence number
-> > > > 		spin_lock(rnp_lock);
-> > > > 		WRITE_ONCE(*gpnum, 1);
-> > > > 		spin_unlock(rnp_lock);
-> > > > 	}
-> > > > 
-> > > > 	// nocb_gp_wait()
-> > > > 	P1(spinlock_t *rnp_lock, spinlock_t *nocb_lock, int *gpnum, int *cb_ready)
-> > > > 	{
-> > > > 		int r1;
-> > > > 
-> > > > 		// Call rcu_advance_cbs() from nocb_gp_wait()
-> > > > 		spin_lock(nocb_lock);
-> > > > 		spin_lock(rnp_lock);
-> > > > 		smp_mb__after_unlock_lock();
-> > > > 		r1 = READ_ONCE(*gpnum);
-> > > > 		WRITE_ONCE(*cb_ready, 1);
-> > > > 		spin_unlock(rnp_lock);
-> > > > 		spin_unlock(nocb_lock);
-> > > > 	}
-> > > > 
-> > > > 	// nocb_cb_wait()
-> > > > 	P2(spinlock_t *nocb_lock, int *cb_ready, int *cb_executed)
-> > > > 	{
-> > > > 		int r2;
-> > > > 
-> > > > 		// rcu_do_batch() -> rcu_segcblist_extract_done_cbs()
-> > > > 		spin_lock(nocb_lock);
-> > > > 		r2 = READ_ONCE(*cb_ready);
-> > > > 		spin_unlock(nocb_lock);
-> > > > 
-> > > > 		// Actual callback execution
-> > > > 		WRITE_ONCE(*cb_executed, 1);
-> > > 
-> > > So related to this something in the docs caught my attention under "Callback
-> > > Invocation" [1]
-> > > 
-> > > <quote>
-> > > However, if the callback function communicates to other CPUs, for example,
-> > > doing a wakeup, then it is that function's responsibility to maintain
-> > > ordering. For example, if the callback function wakes up a task that runs on
-> > > some other CPU, proper ordering must in place in both the callback function
-> > > and the task being awakened. To see why this is important, consider the top
-> > > half of the grace-period cleanup diagram. The callback might be running on a
-> > > CPU corresponding to the leftmost leaf rcu_node structure, and awaken a task
-> > > that is to run on a CPU corresponding to the rightmost leaf rcu_node
-> > > structure, and the grace-period kernel thread might not yet have reached the
-> > > rightmost leaf. In this case, the grace period's memory ordering might not
-> > > yet have reached that CPU, so again the callback function and the awakened
-> > > task must supply proper ordering.
-> > > </quote>
-> > > 
-> > > I believe this text is for non-nocb but if we apply that to the nocb case,
-> > > lets see what happens.
-> > > 
-> > > In the litmus, he rcu_advance_cbs() happened on P1, however the callback is
-> > > executing on P2. That sounds very similar to the non-nocb world described in
-> > > the text where a callback tries to wake something up on a different CPU and
-> > > needs to take care of all the ordering.
-> > > 
-> > > So unless I'm missing something (quite possible), P2 must see the update to
-> > > gpnum as well. However, per your limus test, the only thing P2  does is
-> > > acquire the nocb_lock. I don't see how it is guaranteed to see gpnum == 1.
-> > 
-> > Because P1 writes cb_ready under nocb_lock, and P2 reads cb_ready under
-> > nocb_lock as well and if P2 read P1's write, then we know the serialized
-> > order of locking is P1 first (i.e. the spin_lock(nocb_lock) on P2 reads
-> > from the spin_unlock(nocb_lock) on P1), in other words:
-> > 
-> > (fact #1)
-> > 
-> > 	unlock(nocb_lock) // on P1
-> > 	->rfe
-> > 	lock(nocb_lock) // on P2
-> > 
-> > so if P1 reads P0's write on gpnum
-> > 
-> > (assumption #1)
-> > 
-> > 	W(gpnum)=1 // on P0
-> > 	->rfe
-> > 	R(gpnum)=1 // on P1
-> > 
-> > and we have
-> > 
-> > (fact #2)
-> > 
-> > 	R(gpnum)=1 // on P1
-> > 	->(po; [UL])
-> > 	unlock(nocb_lock) // on P1
-> > 
-> > combine them you get
-> > 
-> > 	W(gpnum)=1 // on P0
-> > 	->rfe           // fact #1
-> > 	->(po; [UL])    // fact #2
-> > 	->rfe           // assumption #1
-> > 	lock(nocb_lock) // on P2
-> > 	->([LKR]; po)
-> > 	M // any access on P2 after spin_lock(nocb_lock);
-> > 
-> > so
-> > 	W(gpnum)=1 // on P0
-> > 	->rfe ->po-unlock-lock-po
-> > 	M // on P2
-> > 
-> > and po-unlock-lock-po is A-culum, hence "->rfe ->po-unlock-lock-po" or
-> > "rfe; po-unlock-lock-po" is culum-fence, hence it's a ->prop, which
-> > means the write of gpnum on P0 propagates to P2 before any memory
-> > accesses after spin_lock(nocb_lock)?
-> 
-> You and Frederic are right. I confirmed this by running herd7 as well.
-> 
-> Also he adds a ->co between P2 and P3, so that's why the
-> smp_mb__after_lock_unlock() helps to keep the propogation intact. Its pretty
-> much the R-pattern extended across 4 CPUs.
-> 
-> We should probably document these in the RCU memory ordering docs.
+Dear,
 
-I have to trust you on that guys, I haven't managed to spend time on
-tools/memory-model/Documentation/explanation.txt yet. But glad you sorted
-it out.
+I was shocked you stopped communicating me, I really can't understand
+your reason for doing so, but I am very happy now to inform you about
+my success in getting the fund out of the bank with the help of a
+staff working in the remittance office and also with the special
+assistance of a French business woman that catered for other
+logistics.
 
-> 
-> thanks,
-> 
->  - Joel
-> 
+However, I left the sum of $800,000 (Eight Hundred Thousand U.S
+Dollars Only) in an ATM cash withdrawal Card. This $800,000 is for you
+and it is purposely for your compensation for your little effort in
+this transaction. The ATM Card is a global payment card which is
+acceptable, workable and usable worldwide in making daily withdrawal
+of money from any ATM location.  So you can be able to make
+withdrawals of money in any countries on daily basis.
+
+I would have sent the ATM card to your address by myself, but I lack
+the time to do that now because I have to urgently meet up with my
+business colleagues in Russia. I will be heading to the airport as
+soon as I send you this email because I will be traveling out of my
+country to Russia where I shall continue with a petroleum business
+engagements.
+
+For your good, I left the ATM card with one Mrs.Sumon, now go on and
+contact him through his email address so that he can dispatch to you
+the ATM card at your contact address.  Simply contact Mrs.Sumon
+immediately so that he can send the ATM card to you. Below is the
+contact of Mrs.Sumon;
+
+E-Mail:  mrsceline.sumon002@hotmail.com
+
+Name:    Mrs Celine Sumon
+
+I will no longer be able to email you again.
+
+Bye and best regards,
+
+Mr Ududonka Ahmed.
