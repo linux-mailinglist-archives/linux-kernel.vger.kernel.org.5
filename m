@@ -2,70 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4BD799DB9
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 12:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB92799DBD
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 12:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346606AbjIJKxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 06:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
+        id S1346611AbjIJKzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 06:55:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345116AbjIJKxs (ORCPT
+        with ESMTP id S234093AbjIJKzX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 06:53:48 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA4BCCC;
-        Sun, 10 Sep 2023 03:53:44 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-573429f5874so2099354eaf.0;
-        Sun, 10 Sep 2023 03:53:44 -0700 (PDT)
+        Sun, 10 Sep 2023 06:55:23 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF880CD3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 03:55:18 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5280ef23593so4251688a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 03:55:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694343223; x=1694948023; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yO8wM+copFRJxZm/8kwNOn/72vUaPl/xBNJjFh2sxHE=;
-        b=kzjFoLiwk7CTzyzFzadNhv+N8C49p+AoipqVUZ6KlgWAgeHydKhs4rKVQTn3uOU9rN
-         enLgRGKO0Z9JNO+j8S0clFLVX411PgJ7dqPFVCZPoalV4oRDZhB9xvNpk/xE12Dy/mUR
-         CSgaqvsg9FF1d9B6th4Drzwoz0V5jisCZfSREvx6DpI1soE5oSaZC6/aNNcbutfYUMpH
-         l4iayx4hsKLvrL1Femu5EZ0pPJE5/dm3DJhdzSYTgy18dltFQiGOYUIWYuQQ/mxtJD3d
-         ONlfTv1jUG3mQnmPlIW7tXLZt/ghioY7i8gl9t6PfmLj2Tw+CmypGXvLJPAt979cfv2y
-         PXVQ==
+        d=linaro.org; s=google; t=1694343316; x=1694948116; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=puTyiF7lSO91f2hx49Y8uu9bTlDZQ2heMks8xKH0qYk=;
+        b=JlBgVMIode+Sh1KsqhI1qHSaK3enqKRveA//ohv30Q5fPEevcBCP6HXmIdTGiDFx1T
+         AXP/HUuUwhVIn2K2dXQ2EwYPju0/xf8FN2cPfrDvWJgXcQ67A5GTmR+cMkp4WXyrxhq+
+         kHhZCpDntsLPGSyJ4OiDo5wndeZ1nFFspLogSThe8tqW5nOR2mMBbNryADvZB3dm6aNq
+         tEnuEpiOnSftigX2THx6Plfs7P2+PDrR6rg116A4Dai76zXvRinoknzpL4Ed4geKUbL4
+         FTaTRK0A4rO8Bv2WNEazf7eLjFoHsoWoOXRfOjn0kT65zBIDkoIjThR54XGwFDm1h7NH
+         SdZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694343223; x=1694948023;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yO8wM+copFRJxZm/8kwNOn/72vUaPl/xBNJjFh2sxHE=;
-        b=MhHEz75Y9KBBbkMbBC1Es31eQKX79C0NjkQ3i5gISGv0Ue4Xud3evf3fvT6Zqu2UF8
-         FnOqgv69s+vgrHZ+zpyDyrHOzCL0iYidM/WNYP9ODnKbRrX0L23rtlAstIxCFCGWTVE1
-         Oy1dZtiXP2ZJhCClf223bQzJe+4li3mHOX8zBUBgdb9X/N/NMicBvJxmIpxZ5k04WZcl
-         ONSkOI2QFrLacjyyD+fQ2y8/bfCbEevgNY1Xea4YLbOmr9bYrFLDq2qH1WWRd4Ail6E7
-         sltu5K3PoYOOvIgNihFEooz/SG9D5JU1g8p0tKmHqnhtjFbp8l4BuEXmDh8jvYEeWNCh
-         Bdrw==
-X-Gm-Message-State: AOJu0YycFDYS295kQwOWVbFIv5EkW0UDHcUN4eQuir4VZCJsU4rwSpmY
-        GxIZe8mi/TOU757gohd3LYPAFrzgQxBsbieWWlbIMRNa
-X-Google-Smtp-Source: AGHT+IGPajXUmUDPLR8w4irxOkNT7upmeHZXoXKapDCb1gdDGStc/HY3Blw1Ed/Ygxr/uMDioTuMqd4TT9CA278JH0E=
-X-Received: by 2002:a4a:9111:0:b0:56c:820e:7f02 with SMTP id
- k17-20020a4a9111000000b0056c820e7f02mr5646231oog.0.1694343223503; Sun, 10 Sep
- 2023 03:53:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694343316; x=1694948116;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=puTyiF7lSO91f2hx49Y8uu9bTlDZQ2heMks8xKH0qYk=;
+        b=nVn85UCRqLFKU0mblpouBjC8dvS1fke8DYO1/+XyrYLknHocrZsJbmkPZMFpo5gf1y
+         GQSx3I/j7qRvLrY84BmzTkH0FhvFx0LLMtjVEvJ4Bt1jozW2t49qQIWjeWuxsTJz7dQ8
+         Sq6AhkFlJzUrXCeyrHKEykYiievHsg/56iTYriyp4qd9TkehSaHKurAGovsxogSxUJUM
+         JLw8quTYJBksyDTT/U1xGseURi1Qm/7T55Xo72jPyHMXBPkPwTaUgW+9nXFsNWTWmI1y
+         BT7saaGFEnWU6iIbTRH19nzKJ5xES3TO0gTxCOYiUZGST0+Qk3Gp/qMBjxofsWWGiu9C
+         krJQ==
+X-Gm-Message-State: AOJu0Yw3GKCduupScOBQABqYXUlB9zOOmokrbQcXmkhXNKEimv0TdCVW
+        tU/6r7Rgxm4NUY7W0FhDD2pFpQ==
+X-Google-Smtp-Source: AGHT+IHM0sRwrwHDiGd+MkKBFN1EjjQ3cC0NYWTn5BzqqBklD9R01Xykug8EJN7zERNVsImMivnFUQ==
+X-Received: by 2002:a50:ee89:0:b0:529:fa63:ef7d with SMTP id f9-20020a50ee89000000b00529fa63ef7dmr5063892edr.7.1694343315732;
+        Sun, 10 Sep 2023 03:55:15 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id j8-20020aa7c0c8000000b00525503fac84sm3240460edp.25.2023.09.10.03.55.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Sep 2023 03:55:15 -0700 (PDT)
+Message-ID: <feb8eaeb-954c-416d-6e30-acb4b92764e0@linaro.org>
+Date:   Sun, 10 Sep 2023 12:55:12 +0200
 MIME-Version: 1.0
-Received: by 2002:a8a:9d8:0:b0:4f0:1250:dd51 with HTTP; Sun, 10 Sep 2023
- 03:53:42 -0700 (PDT)
-In-Reply-To: <9a5dd401bf154a0aace0e5f781a3580c@AcuMS.aculab.com>
-References: <20230830140315.2666490-1-mjguzik@gmail.com> <27ba3536633c4e43b65f1dcd0a82c0de@AcuMS.aculab.com>
- <CAGudoHHUWZNz0OU5yCqOBkeifSYKhm4y6WO1x+q5pDPt1j3+GA@mail.gmail.com> <9a5dd401bf154a0aace0e5f781a3580c@AcuMS.aculab.com>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Sun, 10 Sep 2023 12:53:42 +0200
-Message-ID: <CAGudoHEuY1cMFStdRAjb8aWbHNqy8Pbeavk6tPB+u=rYzFDF+Q@mail.gmail.com>
-Subject: Re: [PATCH v2] x86: bring back rep movsq for user access on CPUs
- without ERMS
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [RFC PATCH net-next 6/6] microchip: lan865x: add device-tree
+ support for Microchip's LAN865X MACPHY
+Content-Language: en-US
+To:     Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        corbet@lwn.net, steen.hegelund@microchip.com,
+        rdunlap@infradead.org, horms@kernel.org, casper.casan@gmail.com,
+        andrew@lunn.ch
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        horatiu.vultur@microchip.com, Woojung.Huh@microchip.com,
+        Nicolas.Ferre@microchip.com, UNGLinuxDriver@microchip.com,
+        Thorsten.Kummermehr@microchip.com
+References: <20230908142919.14849-1-Parthiban.Veerasooran@microchip.com>
+ <20230908142919.14849-7-Parthiban.Veerasooran@microchip.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230908142919.14849-7-Parthiban.Veerasooran@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,43 +86,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/23, David Laight <David.Laight@aculab.com> wrote:
-> ...
->> When I was playing with this stuff about 5 years ago I found 32-byte
->> loops to be optimal for uarchs of the priod (Skylake, Broadwell,
->> Haswell and so on), but only up to a point where rep wins.
->
-> Does the 'rep movsq' ever actually win?
-> (Unless you find one of the EMRS (or similar) versions.)
-> IIRC it only ever does one iteration per clock - and you
-> should be able to match that with a carefully constructed loop.
->
+On 08/09/2023 16:29, Parthiban Veerasooran wrote:
+> Add device-tree support for Microchip's LAN865X MACPHY for configuring
+> the OPEN Alliance 10BASE-T1x MACPHY Serial Interface parameters.
 
-Sorry for late reply, I missed your e-mail due to all the unrelated
-traffic in the thread and using gmail client. ;)
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
 
-I am somewhat confused by the question though. In this very patch I'm
-showing numbers from an ERMS-less uarch getting a win from switching
-from hand-rolled mov loop to rep movsq, while doing 4KB copies.
+> 
+> Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+> ---
+>  .../bindings/net/microchip,lan865x.yaml       | 54 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 55 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/microchip,lan865x.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/microchip,lan865x.yaml b/Documentation/devicetree/bindings/net/microchip,lan865x.yaml
+> new file mode 100644
+> index 000000000000..3465b2c97690
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/microchip,lan865x.yaml
+> @@ -0,0 +1,54 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/microchip,lan865x.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip LAN8650/1 10BASE-T1S MACPHY Ethernet Controllers
+> +
+> +maintainers:
+> +  - Parthiban Veerasooran <parthiban.veerasooran@microchip.com>
+> +
+> +description: |
+> +  Device tree properties for LAN8650/1 10BASE-T1S MACPHY Ethernet
 
-Now, one can definitely try to make a case the loop is implemented in
-a suboptimal manner and a better one would outperform rep. I did note
-myself that such loops *do* beat rep up to a point, last I played with
-this it was south of 1KB. It may be higher than that today.
+Drop "Device tree properties for" and instead describe the hardware.
 
-Normally I don't have access to this particular hw, but I can get it again.
+> +  controller.
+> +
+> +allOf:
+> +  - $ref: ethernet-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    items:
 
-I can't stress again one *can* beat rep movsq as plopped in right
-here, but only up to a certain size.
+No need for items. Just enum.
 
-Since you are questioning whether movsq wins at /any/ size vs an
-optimal loop, I suggest you hack it up, show the win on 4KB on your
-uarch of choice and then I'll be happy to get access to the hw I
-tested my patch on to bench your variant.
 
-That said, as CPUs get better they execute this loops faster,
-interestingly rep is not improving at an equivalent rate which is
-rather funny. Even then, there is a limit past which rep wins AFAICS.
+> +      - enum:
+> +          - microchip,lan865x
 
--- 
-Mateusz Guzik <mjguzik gmail.com>
+No wildcards in compatibles.
+
+Missing blank line.
+
+
+
+> +  reg:
+> +    maxItems: 1
+> +
+> +  local-mac-address: true
+> +  oa-chunk-size: true
+> +  oa-tx-cut-through: true
+> +  oa-rx-cut-through: true
+> +  oa-protected: true
+
+What are all these? Where are they defined that you skip description,
+type and vendor prefix?
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    spi {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        ethernet@1{
+
+Missing space
+
+> +            compatible = "microchip,lan865x";
+> +            reg = <1>; /* CE0 */
+
+CE0? chip-select? What does this comment mean in this context?
+
+> +            local-mac-address = [04 05 06 01 02 03];
+> +            oa-chunk-size = <64>;
+> +            oa-tx-cut-through;
+> +            oa-rx-cut-through;
+> +            oa-protected;
+
+
+
+Best regards,
+Krzysztof
+
