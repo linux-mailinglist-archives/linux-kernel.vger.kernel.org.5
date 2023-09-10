@@ -2,230 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E43A799FA5
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8F0799FA6
 	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 22:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbjIJUQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 16:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49780 "EHLO
+        id S232505AbjIJUR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 16:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjIJUQY (ORCPT
+        with ESMTP id S229688AbjIJURY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 16:16:24 -0400
-Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EAAC133
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 13:16:16 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id fQqjqzpvD0408fQqjqaHQK; Sun, 10 Sep 2023 22:16:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1694376968;
-        bh=RKE0XROMFTZ69Gm317IVP+Ru3SLHlplqDelJtYvM1po=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=BBC51B1Sbtz0f4sl/qpUwpRpyKq085Zkcx8+6V1LUaXSEcmUlw+wYNJPuKJNTbi6D
-         qn4jGCJu6FhX2ErsBZLPU+8zG+o5H0mokvHXpyn/TepkpFETWpx3xjuZ7mn3XCjkpZ
-         af0Z6OWnx9r7EhrKeTYCj2lzne0eeE7dTaTv+zFdCZmIa3XT52VWlGxqlxd9Q+B3xu
-         rZws69OYxsCYXU5NlX+tqMbPGGKmkcn0xR9MYWoP3taFsYiOaOP2s62HBkjPK4AeyN
-         jqoGdGOAlqmYMN7SQJ7gBScbw2RGz6UworUavwwr0nOQg3W+Yit5nsac/NKUsd/KKQ
-         dH/aPV3OPoWpA==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 10 Sep 2023 22:16:07 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <0b6ad379-049a-5152-12e5-77c62ffc4541@wanadoo.fr>
-Date:   Sun, 10 Sep 2023 22:16:05 +0200
+        Sun, 10 Sep 2023 16:17:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157F51B8;
+        Sun, 10 Sep 2023 13:17:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E22E0C433C8;
+        Sun, 10 Sep 2023 20:17:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694377038;
+        bh=TIqtZhamWQ42KqgYzx3QpXUddC012LJLUbdc3XYWkCI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UXwu3NvOMDHHZTWCOMJ/+YWWtB6hioyT9R1gYmh1MhZ5hF3wbM7r1a999gydS52mt
+         aao5hk/J5T5C4f7jphEZ+ansFmOupa1pWL5i2UHjLiAzKUG2qbNsW/Vqax75IEjq3j
+         znj2S9fLSRoxh/z34Y+MJbClfQRQ+nNqBFIspIP5WB3Mva5mdtqCCQFLXg5xhuYd4v
+         zSYci6IXfQnPLgTCVdEbjnl/65Zcu3J9Ky1cIHRi3gSfigC3r7RiJFQKhJOGq2W0KG
+         5VXTqoz5VAdhseurcqo9CjI5OfpJQxdp+Xise53SwfmmRnVEkjyl8qKtVBSjsEjRvX
+         kY6fpkTx/vDLw==
+Date:   Sun, 10 Sep 2023 22:17:15 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Subject: Re: [PATCH 04/10] rcu/nocb: Remove needless full barrier after
+ callback advancing
+Message-ID: <ZP4kSwWkUdf-rfRW@localhost.localdomain>
+References: <20230908203603.5865-1-frederic@kernel.org>
+ <20230908203603.5865-5-frederic@kernel.org>
+ <20230909043125.GA3920383@google.com>
+ <ZPy3-MS7uOJfmJhs@boqun-archlinux>
+ <20230910040923.GA762577@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] drm/simpledrm: Add support for multiple "power-domains"
-Content-Language: fr
-To:     j@jannau.net, Thomas Zimmermann <tzimmermann@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        asahi@lists.linux.dev
-References: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230910040923.GA762577@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 10/09/2023 à 18:39, Janne Grunau via B4 Relay a écrit :
-> From: Janne Grunau <j@jannau.net>
+Le Sun, Sep 10, 2023 at 12:09:23AM -0400, Joel Fernandes a �crit :
+> On Sat, Sep 09, 2023 at 11:22:48AM -0700, Boqun Feng wrote:
+> > On Sat, Sep 09, 2023 at 04:31:25AM +0000, Joel Fernandes wrote:
+> > > On Fri, Sep 08, 2023 at 10:35:57PM +0200, Frederic Weisbecker wrote:
+> > > > A full barrier is issued from nocb_gp_wait() upon callbacks advancing
+> > > > to order grace period completion with callbacks execution.
+> > > > 
+> > > > However these two events are already ordered by the
+> > > > smp_mb__after_unlock_lock() barrier within the call to
+> > > > raw_spin_lock_rcu_node() that is necessary for callbacks advancing to
+> > > > happen.
+> > > > 
+> > > > The following litmus test shows the kind of guarantee that this barrier
+> > > > provides:
+> > > > 
+> > > > 	C smp_mb__after_unlock_lock
+> > > > 
+> > > > 	{}
+> > > > 
+> > > > 	// rcu_gp_cleanup()
+> > > > 	P0(spinlock_t *rnp_lock, int *gpnum)
+> > > > 	{
+> > > > 		// Grace period cleanup increase gp sequence number
+> > > > 		spin_lock(rnp_lock);
+> > > > 		WRITE_ONCE(*gpnum, 1);
+> > > > 		spin_unlock(rnp_lock);
+> > > > 	}
+> > > > 
+> > > > 	// nocb_gp_wait()
+> > > > 	P1(spinlock_t *rnp_lock, spinlock_t *nocb_lock, int *gpnum, int *cb_ready)
+> > > > 	{
+> > > > 		int r1;
+> > > > 
+> > > > 		// Call rcu_advance_cbs() from nocb_gp_wait()
+> > > > 		spin_lock(nocb_lock);
+> > > > 		spin_lock(rnp_lock);
+> > > > 		smp_mb__after_unlock_lock();
+> > > > 		r1 = READ_ONCE(*gpnum);
+> > > > 		WRITE_ONCE(*cb_ready, 1);
+> > > > 		spin_unlock(rnp_lock);
+> > > > 		spin_unlock(nocb_lock);
+> > > > 	}
+> > > > 
+> > > > 	// nocb_cb_wait()
+> > > > 	P2(spinlock_t *nocb_lock, int *cb_ready, int *cb_executed)
+> > > > 	{
+> > > > 		int r2;
+> > > > 
+> > > > 		// rcu_do_batch() -> rcu_segcblist_extract_done_cbs()
+> > > > 		spin_lock(nocb_lock);
+> > > > 		r2 = READ_ONCE(*cb_ready);
+> > > > 		spin_unlock(nocb_lock);
+> > > > 
+> > > > 		// Actual callback execution
+> > > > 		WRITE_ONCE(*cb_executed, 1);
+> > > 
+> > > So related to this something in the docs caught my attention under "Callback
+> > > Invocation" [1]
+> > > 
+> > > <quote>
+> > > However, if the callback function communicates to other CPUs, for example,
+> > > doing a wakeup, then it is that function's responsibility to maintain
+> > > ordering. For example, if the callback function wakes up a task that runs on
+> > > some other CPU, proper ordering must in place in both the callback function
+> > > and the task being awakened. To see why this is important, consider the top
+> > > half of the grace-period cleanup diagram. The callback might be running on a
+> > > CPU corresponding to the leftmost leaf rcu_node structure, and awaken a task
+> > > that is to run on a CPU corresponding to the rightmost leaf rcu_node
+> > > structure, and the grace-period kernel thread might not yet have reached the
+> > > rightmost leaf. In this case, the grace period's memory ordering might not
+> > > yet have reached that CPU, so again the callback function and the awakened
+> > > task must supply proper ordering.
+> > > </quote>
+> > > 
+> > > I believe this text is for non-nocb but if we apply that to the nocb case,
+> > > lets see what happens.
+> > > 
+> > > In the litmus, he rcu_advance_cbs() happened on P1, however the callback is
+> > > executing on P2. That sounds very similar to the non-nocb world described in
+> > > the text where a callback tries to wake something up on a different CPU and
+> > > needs to take care of all the ordering.
+> > > 
+> > > So unless I'm missing something (quite possible), P2 must see the update to
+> > > gpnum as well. However, per your limus test, the only thing P2  does is
+> > > acquire the nocb_lock. I don't see how it is guaranteed to see gpnum == 1.
+> > 
+> > Because P1 writes cb_ready under nocb_lock, and P2 reads cb_ready under
+> > nocb_lock as well and if P2 read P1's write, then we know the serialized
+> > order of locking is P1 first (i.e. the spin_lock(nocb_lock) on P2 reads
+> > from the spin_unlock(nocb_lock) on P1), in other words:
+> > 
+> > (fact #1)
+> > 
+> > 	unlock(nocb_lock) // on P1
+> > 	->rfe
+> > 	lock(nocb_lock) // on P2
+> > 
+> > so if P1 reads P0's write on gpnum
+> > 
+> > (assumption #1)
+> > 
+> > 	W(gpnum)=1 // on P0
+> > 	->rfe
+> > 	R(gpnum)=1 // on P1
+> > 
+> > and we have
+> > 
+> > (fact #2)
+> > 
+> > 	R(gpnum)=1 // on P1
+> > 	->(po; [UL])
+> > 	unlock(nocb_lock) // on P1
+> > 
+> > combine them you get
+> > 
+> > 	W(gpnum)=1 // on P0
+> > 	->rfe           // fact #1
+> > 	->(po; [UL])    // fact #2
+> > 	->rfe           // assumption #1
+> > 	lock(nocb_lock) // on P2
+> > 	->([LKR]; po)
+> > 	M // any access on P2 after spin_lock(nocb_lock);
+> > 
+> > so
+> > 	W(gpnum)=1 // on P0
+> > 	->rfe ->po-unlock-lock-po
+> > 	M // on P2
+> > 
+> > and po-unlock-lock-po is A-culum, hence "->rfe ->po-unlock-lock-po" or
+> > "rfe; po-unlock-lock-po" is culum-fence, hence it's a ->prop, which
+> > means the write of gpnum on P0 propagates to P2 before any memory
+> > accesses after spin_lock(nocb_lock)?
 > 
-> Multiple power domains need to be handled explicitly in each driver. The
-> driver core can not handle it automatically since it is not aware of
-> power sequencing requirements the hardware might have. This is not a
-> problem for simpledrm since everything is expected to be powered on by
-> the bootloader. simpledrm has just ensure it remains powered on during
-> its lifetime.
-> This is required on Apple silicon M2 and M2 Pro/Max/Ultra desktop
-> systems. The HDMI output initialized by the bootloader requires keeping
-> the display controller and a DP phy power domain on.
+> You and Frederic are right. I confirmed this by running herd7 as well.
 > 
-> Signed-off-by: Janne Grunau <j@jannau.net>
-> ---
->   drivers/gpu/drm/tiny/simpledrm.c | 106 +++++++++++++++++++++++++++++++++++++++
->   1 file changed, 106 insertions(+)
+> Also he adds a ->co between P2 and P3, so that's why the
+> smp_mb__after_lock_unlock() helps to keep the propogation intact. Its pretty
+> much the R-pattern extended across 4 CPUs.
 > 
-> diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/simpledrm.c
-> index ff86ba1ae1b8..efedede57d42 100644
-> --- a/drivers/gpu/drm/tiny/simpledrm.c
-> +++ b/drivers/gpu/drm/tiny/simpledrm.c
-> @@ -6,6 +6,7 @@
->   #include <linux/of_address.h>
->   #include <linux/platform_data/simplefb.h>
->   #include <linux/platform_device.h>
-> +#include <linux/pm_domain.h>
->   #include <linux/regulator/consumer.h>
->   
->   #include <drm/drm_aperture.h>
-> @@ -227,6 +228,12 @@ struct simpledrm_device {
->   	unsigned int regulator_count;
->   	struct regulator **regulators;
->   #endif
-> +	/* power-domains */
-> +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
-> +	int pwr_dom_count;
-> +	struct device **pwr_dom_devs;
-> +	struct device_link **pwr_dom_links;
-> +#endif
->   
->   	/* simplefb settings */
->   	struct drm_display_mode mode;
-> @@ -468,6 +475,102 @@ static int simpledrm_device_init_regulators(struct simpledrm_device *sdev)
->   }
->   #endif
->   
-> +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
-> +/*
-> + * Generic power domain handling code.
-> + *
-> + * Here we handle the power-domains properties of our "simple-framebuffer"
-> + * dt node. This is only necessary if there is more than one power-domain.
-> + * A single power-domains is handled automatically by the driver core. Multiple
-> + * power-domains have to be handled by drivers since the driver core can't know
-> + * the correct power sequencing. Power sequencing is not an issue for simpledrm
-> + * since the bootloader has put the power domains already in the correct state.
-> + * simpledrm has only to ensure they remain active for its lifetime.
-> + *
-> + * When the driver unloads, we detach from the power-domains.
-> + *
-> + * We only complain about errors here, no action is taken as the most likely
-> + * error can only happen due to a mismatch between the bootloader which set
-> + * up the "simple-framebuffer" dt node, and the PM domain providers in the
-> + * device tree. Chances are that there are no adverse effects, and if there are,
-> + * a clean teardown of the fb probe will not help us much either. So just
-> + * complain and carry on, and hope that the user actually gets a working fb at
-> + * the end of things.
-> + */
-> +static void simpledrm_device_detach_genpd(void *res)
-> +{
-> +	int i;
-> +	struct simpledrm_device *sdev = /*(struct simpledrm_device *)*/res;
-> +
-> +
-> +	drm_err(&sdev->dev, "% power-domains count:%d\n", __func__, sdev->pwr_dom_count);
-> +	if (sdev->pwr_dom_count <= 1)
-> +		return;
-> +
-> +	for (i = sdev->pwr_dom_count - 1; i >= 0; i--) {
-> +		if (!sdev->pwr_dom_links[i])
-> +			device_link_del(sdev->pwr_dom_links[i]);
-> +		if (!IS_ERR_OR_NULL(sdev->pwr_dom_devs[i]))
-> +			dev_pm_domain_detach(sdev->pwr_dom_devs[i], true);
-> +	}
-> +}
-> +
-> +static int simpledrm_device_attach_genpd(struct simpledrm_device *sdev)
-> +{
-> +	struct device *dev = sdev->dev.dev;
-> +	int i;
-> +
-> +	sdev->pwr_dom_count = of_count_phandle_with_args(dev->of_node, "power-domains",
-> +							 "#power-domain-cells");
-> +	/*
-> +	 * Single power-domain devices are handled by driver core nothing to do
-> +	 * here. The same for device nodes without "power-domains" property.
-> +	 */
-> +	if (sdev->pwr_dom_count <= 1)
-> +		return 0;
-> +
-> +	sdev->pwr_dom_devs = devm_kcalloc(dev, sdev->pwr_dom_count,
-> +					       sizeof(*sdev->pwr_dom_devs),
-> +					       GFP_KERNEL);
-> +	if (!sdev->pwr_dom_devs)
-> +		return -ENOMEM;
-> +
-> +	sdev->pwr_dom_links = devm_kcalloc(dev, sdev->pwr_dom_count,
-> +						sizeof(*sdev->pwr_dom_links),
-> +						GFP_KERNEL);
-> +	if (!sdev->pwr_dom_links)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < sdev->pwr_dom_count; i++) {
-> +		sdev->pwr_dom_devs[i] = dev_pm_domain_attach_by_id(dev, i);
-> +		if (IS_ERR(sdev->pwr_dom_devs[i])) {
-> +			int ret = PTR_ERR(sdev->pwr_dom_devs[i]);
-> +			if (ret == -EPROBE_DEFER) {
-> +				simpledrm_device_detach_genpd(sdev);
-> +				return PTR_ERR(sdev->pwr_dom_devs[i]);
-> +			}
-> +			drm_err(&sdev->dev,
-> +				"pm_domain_attach_by_id(%u) failed: %d\n", i, ret);
-> +		}
-> +
+> We should probably document these in the RCU memory ordering docs.
 
-sdev->pwr_dom_devs[i] can be an ERR_PTR here.
-Maybe a break or a continue missing after drm_err() above?
+I have to trust you on that guys, I haven't managed to spend time on
+tools/memory-model/Documentation/explanation.txt yet. But glad you sorted
+it out.
 
-CJ
-
-> +		sdev->pwr_dom_links[i] = device_link_add(dev,
-> +							 sdev->pwr_dom_devs[i],
-> +							 DL_FLAG_STATELESS |
-> +							 DL_FLAG_PM_RUNTIME |
-> +							 DL_FLAG_RPM_ACTIVE);
-> +		if (!sdev->pwr_dom_links[i])
-> +			drm_err(&sdev->dev, "failed to link power-domain %u\n", i);
-> +	}
-> +
-> +	return devm_add_action_or_reset(dev, simpledrm_device_detach_genpd, sdev);
-> +}
-> +#else
-> +static int simpledrm_device_attach_genpd(struct simpledrm_device *sdev)
-> +{
-> +	return 0;
-> +}
-> +#endif
-> +
->   /*
->    * Modesetting
->    */
-> @@ -651,6 +754,9 @@ static struct simpledrm_device *simpledrm_device_create(struct drm_driver *drv,
->   	if (ret)
->   		return ERR_PTR(ret);
->   	ret = simpledrm_device_init_regulators(sdev);
-> +	if (ret)
-> +		return ERR_PTR(ret);
-> +	ret = simpledrm_device_attach_genpd(sdev);
->   	if (ret)
->   		return ERR_PTR(ret);
->   
 > 
-> ---
-> base-commit: 15d30b46573d75f5cb58cfacded8ebab9c76a2b0
-> change-id: 20230910-simpledrm-multiple-power-domains-f41efa6ad9bc
+> thanks,
 > 
-> Best regards,
-
+>  - Joel
+> 
