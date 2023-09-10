@@ -2,119 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5470779A095
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 01:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230C079A099
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 01:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbjIJXBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 19:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48176 "EHLO
+        id S231487AbjIJXGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 19:06:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230301AbjIJXA6 (ORCPT
+        with ESMTP id S230301AbjIJXGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 19:00:58 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48543184;
-        Sun, 10 Sep 2023 16:00:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1694386848;
-        bh=Hyq7T+RWt9crTM67/bCxWQy98/F2/9vTSK5CGJw8K94=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EaeMW6MM505CcovRzqkVOGch4slYF+jSZTw3Zn3SdRvZstS4Gl8W67SjeislxR77c
-         P2/CJVOD9XcttqX9SRGXfVKyoDcsZ4FX1NI2zeu28urxDA96GegrAaIninZktJXeVA
-         xRR7qsB4ZMRhejWs0SpmoOfDhky57uSS7VSpy2wh+UjnNGJNL7V1j2QO0KQnIbEL+E
-         55+mqZWgXYYzjEaRe7kBlMf+R7ROU/V41nkV0fS6x8k9E1MPHJy/cSI8nKnITYKH3j
-         N3Z3inUn3iT0gYKeellyou+iLsEaDXQWeWYjATITNjOKtw4VIpB/ulUTuyvofaFgiO
-         2YBh2q+qS4Diw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RkQLS2vZ7z4x4T;
-        Mon, 11 Sep 2023 09:00:48 +1000 (AEST)
-Date:   Mon, 11 Sep 2023 09:00:46 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patches in the mediatek tree
-Message-ID: <20230911085725.6778bf3c@canb.auug.org.au>
-In-Reply-To: <20230630084457.3a483c12@canb.auug.org.au>
-References: <20230630084457.3a483c12@canb.auug.org.au>
+        Sun, 10 Sep 2023 19:06:32 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8EE106;
+        Sun, 10 Sep 2023 16:06:26 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 9EE963200564;
+        Sun, 10 Sep 2023 19:06:21 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Sun, 10 Sep 2023 19:06:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jcline.org; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1694387181; x=1694473581; bh=M2
+        YbSJshShWvUhnLY8g4xtG6YDWHsJHJ87/h7S3BeSU=; b=G3kwH7/v/ywICkCB+T
+        TdSKSIlZgSEPGKfTH8Xjj2n7qgv4YWYDtob+ttK71dVVWaokIJZwI4ibMCo1yjts
+        rVsc6gXrAHpGzFGpvOt5bAddtwy2Dqko3C+R5BmlNuUrXNK6Kl00jPckh0H/OktF
+        EeoG3Qd3mlTS9uja/mm1JckvnfdWRj2Kzyn96pqg/QPhySm+XNdheM3IYDtVRL3g
+        NVHxy7CgLTixQ/wK83cNSgNUEAoK2c1ShDM+rBNYXPfyXdeqHh2PAB1WVPkM+te1
+        gxhzEG4u0Bk4IsC4ZWe8eHKhhrdNTgQ5CVVNdu6ARWQ8Sw32jxlzcbDDHh8C80jY
+        eU8g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1694387181; x=1694473581; bh=M2YbSJshShWvU
+        hnLY8g4xtG6YDWHsJHJ87/h7S3BeSU=; b=ekL1wOQmTOQEioSQbMLE9R1Y3M89A
+        vxjmlpSpnq4iPpoL2PFloSBaCm8X4s5l318uVAr9smqQ+YgLm4cCcOAqbnNFeiM0
+        XdAWH5tKlbgl1yxEEVzIHkSsw4W1XUDr4xRNVsJpB1i9Ll2j9iHr7CxAZHsZrerp
+        l3Bz4LnKWftwb8FebVCVjpdD+KID0B6H/MRpfpUJzYNwpRKFuRttz8M0FUCI0/1z
+        WhZkSW5Si11lWllXV8+TYGAWIxpOTgxRmgmH+d+kzlmY7biN348sHNmIb0NKuBwL
+        OyvHzxclv0IqaeuMmsJjLwDvfRqwja5L60TzPBgVZHkrx0dRSYhBILilg==
+X-ME-Sender: <xms:7Ev-ZAmwVuRuUUnTYjadhWx6HkJ1hyW05alxAJWqkMBK2L17sAmXyw>
+    <xme:7Ev-ZP0lU3m3dk1HfxbCK_3hJ4CsfDPWP0y0983WamsaON3erNmlADMDRO_OBUb8U
+    VsroE79EjeI1FGQQ1s>
+X-ME-Received: <xmr:7Ev-ZOrSJL_HW5bqRd8eYV3RzTF3qOB0udcfwOSIHbm6SRanPv6nw8Do-97WOcPeJqN0wjCk2m9VPMsCFDkLYA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeifedgudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomheplfgvrhgv
+    mhihucevlhhinhgvuceojhgvrhgvmhihsehjtghlihhnvgdrohhrgheqnecuggftrfgrth
+    htvghrnhephfefjeejueelueevveelvdehffeufeffvdejkeevteekieduudeludevgeeu
+    vdeinecuffhomhgrihhnpehshiiikhgrlhhlvghrrdgrphhpshhpohhtrdgtohhmnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhgvrhgvmhih
+    sehjtghlihhnvgdrohhrgh
+X-ME-Proxy: <xmx:7Ev-ZMl1xxiEPh1ki9w--L0dpLusU-UvFeZG_tUnsI0TN9C8iLErWw>
+    <xmx:7Ev-ZO2AT-DTPbLnGgwK3P5dv7JxYpaFH5wDeTggDHN_vxbzQ18Emw>
+    <xmx:7Ev-ZDtvEdGQ1Ge0roRP1cfEagXVJDmv_iGWsGgvAowol_s5H0BKUw>
+    <xmx:7Uv-ZHkpdn0r2XK6FYO4RTumPGb6Uuzd9fYxrXEKWs79xMfMzExGmw>
+Feedback-ID: i7a7146c5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 10 Sep 2023 19:06:20 -0400 (EDT)
+Date:   Sun, 10 Sep 2023 19:06:19 -0400
+From:   Jeremy Cline <jeremy@jcline.org>
+To:     Simon Horman <horms@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+c1d0a03d305972dbbe14@syzkaller.appspotmail.com
+Subject: Re: [PATCH net] net: nfc: llcp: Add lock when modifying device list
+Message-ID: <ZP5L6/zF6fE+ogbz@dev>
+References: <20230908235853.1319596-1-jeremy@jcline.org>
+ <20230910152812.GJ775887@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/YPR6DEZwpZH=d3kZw9Taj.2";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230910152812.GJ775887@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/YPR6DEZwpZH=d3kZw9Taj.2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Sep 10, 2023 at 05:28:12PM +0200, Simon Horman wrote:
+> On Fri, Sep 08, 2023 at 07:58:53PM -0400, Jeremy Cline wrote:
+> > The device list needs its associated lock held when modifying it, or the
+> > list could become corrupted, as syzbot discovered.
+> > 
+> > Reported-and-tested-by: syzbot+c1d0a03d305972dbbe14@syzkaller.appspotmail.com
+> > Closes: https://syzkaller.appspot.com/bug?extid=c1d0a03d305972dbbe14
+> > Signed-off-by: Jeremy Cline <jeremy@jcline.org>
+> 
+> Hi Jeremy,
+> 
+> thanks for your patch.
+> 
+> I don't think you need to resubmit for this,
+> I think this patch warrants a fixes tag:
+> 
+> Fixes: d646960f7986 ("NFC: Initial LLCP support")
+> 
 
-Hi all,
+My bad, indeed. The lock in question looks to have been added in
+6709d4b7bc2e ("net: nfc: Fix use-after-free caused by
+nfc_llcp_find_local") which itself includes a couple fix tags, should
+this reference that commit instead as it won't backport without that
+one?
 
-On Fri, 30 Jun 2023 08:44:57 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> The following commits are also in Linus Torvalds' tree as different
-> commits (but the same patches):
->=20
->   1139eb7bf5ef ("arm64: dts: mediatek: mt8186: Wire up CPU frequency/volt=
-age scaling")
->   113b5cc06f44 ("arm64: dts: mediatek: mt8173-elm: remove panel model num=
-ber in DT")
->   2cb0317922e2 ("arm64: dts: mt7986: add pwm-fan and cooling-maps to BPI-=
-R3 dts")
->   320f2af8c387 ("arm64: dts: mt7986: add thermal and efuse")
->   4a7fcb3cdf6c ("arm64: dts: mt7986: use size of reserved partition for b=
-l2")
->   58d2424d9f83 ("arm64: dts: mediatek: mt8192: Add missing dma-ranges to =
-soc node")
->   5e042912c86b ("arm64: dts: mediatek: mt8183: kukui: Add scp firmware-na=
-me")
->   7c8cf2a19228 ("arm64: dts: mediatek: mt8192: Fix CPUs capacity-dmips-mh=
-z")
->   861af546db4f ("arm64: dts: mt7986: add thermal-zones")
->   8b018984aad7 ("arm64: dts: mt8173: Power on panel regulator on boot")
->   c45c921fb524 ("arm64: dts: mt7986: increase bl2 partition on NAND of Ba=
-nanapi R3")
->   ccc2a6d8446c ("arm64: dts: mt8195: Add video decoder node")
->   d0b4508ad0b5 ("arm64: dts: mediatek: Add cpufreq nodes for MT8192")
->   e5b12f3b851f ("arm64: dts: mediatek: mt8186: Add CCI node and CCI OPP t=
-able")
->   eb5aab271611 ("arm64: dts: mediatek: mt8186: Add GPU speed bin NVMEM ce=
-lls")
->   f38ff7d3b0f1 ("arm64: dts: mediatek: mt8186: Wire up GPU voltage/freque=
-ncy scaling")
->   fd6d9a1c9819 ("arm64: dts: mt8192: Add video-codec nodes")
+> Otherwise, this looks good to me.
+> 
+> Reviewed-by: Simon Horman <horms@kernel.org>
+> 
 
-Those duplicates still exist in the mediatek tree
-(git://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git#for-n=
-ext).
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/YPR6DEZwpZH=d3kZw9Taj.2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmT+Sp4ACgkQAVBC80lX
-0GwbAggAncp1X5At7HM5kpEiMF4EUy0/ykBn0+SjluEzaBJJc2uduZLdPhGFEk99
-tq3ueHtAsJdoOa2aX/q3wUT15mwwdO4IktM4i+WNGqhWPLYWK2joeDM9tKe6UhHG
-5VUgcorVA17Oi8FBIv/28KJ3FDMNPpgDLUbeqvYnZva1Ks50s3HfilnZu1bGQJ2w
-P41cugAGcHZSeqUOoYK+9lv/AEuUia6EUNFzLTJ/mFJhfwxTo4n0Hb2NitYvfuap
-f5ftNItTEZHu3je+51Li/O6fmVwUCMtv1nm9AQZ7N8aliMJzbl2Bnl6AMRrFldVt
-T/GlgFerJG6LIdoC6dL32op3jZmObA==
-=QYY9
------END PGP SIGNATURE-----
-
---Sig_/YPR6DEZwpZH=d3kZw9Taj.2--
+Thanks,
+Jeremy
