@@ -2,162 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62958799CE4
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 09:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D322799CEB
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 09:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346381AbjIJHKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 03:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38794 "EHLO
+        id S1346389AbjIJH2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 03:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237286AbjIJHKO (ORCPT
+        with ESMTP id S234283AbjIJH2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 03:10:14 -0400
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2136.outbound.protection.outlook.com [40.107.113.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055461B8;
-        Sun, 10 Sep 2023 00:10:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O+77jvGLY2zEK2ZwS91Y6V1viPS/hQOo7hkjBz9spaZocKGiMtxcYf5/G2JH7rTi8MsJ957eA2eToTZG3CINa8/LADwmdCNUrVUFAttHmDnu73UTg82TJdEZ9wXKuJanfgvDMHWv/gzDUodkBmjUUJlOFLavmsCHccqKnXUTgY868WYDJ2g21C4cTpHHIY/XV79dumiCTD9EGA9SjLHLqv8voL8tpl3+dJH6EdTbNRMly29+R7UnFqTy+/Z5HNHfEYxDeQJoAgw73POiuREUmjZqFbrzHhVzmN3TVI29Z/EJj+5ZjFTWzbHpXJ6DoY5Y7f/IEUsV3PiGPQS6LcW4tA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=g5cL4THlGfk2zdA7iY+J0uSww8HmsbmTjBEqH7Efb0c=;
- b=awjGxNv+iFpsgcbEZmb+NrMRV8gSBe7BKqjebC9xyiploxPgLai3EK95y+nwYj5QJchDJ/fyLvINNYNPJpJmi7fFjIaQVrCq2AxdTPpItd9rIEpIVNN/43h+cev9MRy/ptD3rYM5uX0OkDNtMBr0rDuuAZjfuqpqODcWsvhG1uwk3v0EUdPoK9GzsnXE2G+7VpEa26QrCsWlPNnFmEi+X3l38V6uPYaM4qH8RYaTSj1kTX8csYWxPvRy82u4waB7GMJR0ihi0G920uR+HwvKy4Bz1EhbKrhPpuenBUo9Gkl+VdEZJsfuKsSfE2QiGhRkQz3UNSAwqvHhRWNsHf21Zg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g5cL4THlGfk2zdA7iY+J0uSww8HmsbmTjBEqH7Efb0c=;
- b=j3P1p2bwNMiuR+OccC9uev48caOTfUsKfqKKMTLtOHIsYALozd7a4Zv4xeUePq+c+SbyAXqbk79AFrzUxs8Ptq6tn4E6q7UmMhadOg8s3H43JUr0qEZxfVs5heBhAtWvm91yaIRZAwHSyzQD2Jt8FvJdkNGuUWrbuxyAF9lBVE0=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by TYCPR01MB5917.jpnprd01.prod.outlook.com (2603:1096:400:47::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.34; Sun, 10 Sep
- 2023 07:10:06 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706%5]) with mapi id 15.20.6768.029; Sun, 10 Sep 2023
- 07:10:06 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Sebastian Reichel <sre@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.au@gmail.com>
-Subject: RE: [PATCH 1/2] power: supply: bq24257_charger: Make chip type and
- name in sync
-Thread-Topic: [PATCH 1/2] power: supply: bq24257_charger: Make chip type and
- name in sync
-Thread-Index: AQHZ3dRh8L2C1nAfk0Oxs8wvUKKJfrAKc6kAgAk760A=
-Date:   Sun, 10 Sep 2023 07:10:06 +0000
-Message-ID: <OS0PR01MB592285B86C29C3C1A992C09986F3A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20230902193331.83672-1-biju.das.jz@bp.renesas.com>
- <20230902193331.83672-2-biju.das.jz@bp.renesas.com>
- <ZPWsdjlFvUzeFy45@smile.fi.intel.com>
-In-Reply-To: <ZPWsdjlFvUzeFy45@smile.fi.intel.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TYCPR01MB5917:EE_
-x-ms-office365-filtering-correlation-id: df34b7ed-3e80-462f-8a75-08dbb1ccf612
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jbMTf8b+iQJpIe5GwCjkkndbw3HT8pxRWDKiFo2fo3yVPd00Q+4W0wQxKeBNg3091Uuu9huaQlkABMmO2vbmvwXd4wmAxiwGOPrED/5aey4nOAIs212H/VjjP2ema8NO7zHVVMTUHRXzabfDNtrCZ8xcrRWd/HIORAb8Rh2vos5+eEBzfgliSd+uNWJytMQF/SrLHNFB0Cr8FC5RapOamCX5ZwEhOG4Xv7AaPG7AUaA4A259y1JZvs4Au2WF/czTSljCWbkNEL88bk9+lvzdn2GrNYI9DAenxbvWRLoDc2FNWJJZXlmDnrLCr9+BzImIxevDCY+drYqmzS1WarEquJZmamfY+FW2DlmzSzVLYbRyEtL0oWMsS4dbyO0TD56sYHlS05WaLUNWiPxj/5L4wNcGRIJfnf9fDy87orlrVmdPHZw6vdmeDydAe+XhhVxn8e/sIsP0vykGd83afLqOW47TSi6kla8yW9Tsggj0g+Fo+NVMZVCX+R9w9wBHfSxfOw663ZsSRDjBvlF9YArPrIYqNFyo7vG+KV1S+ctQ7kLCSw/srYYUfxgkrsvHN6hnjCOi5dRX1U33wexLZ3glaaqJ4T7506iUh7Mp1UhWIkzRbkB/GECfLLCUCQVWjSIc
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(396003)(366004)(136003)(346002)(1800799009)(186009)(451199024)(6506007)(7696005)(71200400001)(9686003)(478600001)(26005)(2906002)(66446008)(54906003)(64756008)(66476007)(66556008)(66946007)(6916009)(316002)(76116006)(52536014)(41300700001)(5660300002)(4326008)(8676002)(8936002)(86362001)(33656002)(55016003)(38070700005)(38100700002)(122000001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?AN8m1Goz+W2LRCvpZHwnDd+BplT9IYfRwffZJjiSIHXEgh1taSiJOAuh+oq5?=
- =?us-ascii?Q?i4E0FnoLBGcu8ASe7skRHbj1AZY2HOkhwaJ26tWo6UuKyj0lqmHg/TVQCuF0?=
- =?us-ascii?Q?c3H0ADkvtBbT229zgKhbm13kgehBbqn81PfVu5SLdlvngBnZf7cAt733opD9?=
- =?us-ascii?Q?R8NlqxuuVoeNWm2XPrOOL3wP87RnQJlVCdpvu9OKQgf/feTeivEbFCfOuYj2?=
- =?us-ascii?Q?pfzzAGebHUkb2+G99NuPSITUAcDp+wNmdjjY1bl8Jk4BVIIvEcPs2kHVf5D9?=
- =?us-ascii?Q?epUmEx+su48zg9HNr5n6TQdn+E7Ax9gLY6ZuTSbVdHT2GbDcmb87ojreIK6Y?=
- =?us-ascii?Q?yRGECOi2lSnL6TG5pVgC3wh6thP9f+pLhTd2LwH08R/kJqyiPplTm0i0hW70?=
- =?us-ascii?Q?zoGUOFDNO250uj8dYbT1lwMu0fbMSZqhWVjbC3O+cpH0/l/k7iyPqgrm1qUF?=
- =?us-ascii?Q?z0GvQxxt/xOEkL/0E3mzykggyqzDXUE3vml3zDY4DnfdujgvppqkyzldoZxV?=
- =?us-ascii?Q?1X4aIo4glRuMprcd1WNjDQP40fnGLmPNcKmDqO0UBYQOvfeJfBccAROHWnsb?=
- =?us-ascii?Q?H3CmSjfETbRphRvFAGcIPCdW6SfKzw0s+bTEE9n/+XR8cBFQZAFjvYiYoFm0?=
- =?us-ascii?Q?Y6iN2kZ9odGVCGxlvhPe1DLRuDtGaQym5zOJj2MGIi2DQLhnU9YLFb0iTFkR?=
- =?us-ascii?Q?uraAsZtqbQPVxqmbeptSLcT/c4RMtwQgzE2O4cE8eDAMqFEh1zn5d85aHzvL?=
- =?us-ascii?Q?g/ZsdRFh4KayYA7YZmqyccEMD00GZLvpWVy9T2HVtGCYUR6JOZhF+hWbllnR?=
- =?us-ascii?Q?p98ek7x+Ty1qJUXbw74ryoB7Dt5KDrQMxGaTHPT7thmTTmuHXag/jIm83jxJ?=
- =?us-ascii?Q?hDLJGSMFcXW/nds9RqnQmarXua081psKOkSOAcB6djshZYusyMTRFdRl9ImG?=
- =?us-ascii?Q?D2aZxTHjVYLMPkKh6UL/iDWtCYb3f0ZYUZLhPf2WN9j3C+7KZQ4R3uac2Wuu?=
- =?us-ascii?Q?OUIxPBrFTHp4p1dDx/n7rKea45YR8GAlum3JAvklOu/XCq2q8X/wJV9BA3nn?=
- =?us-ascii?Q?IYzR6sD1UUD/FLumcHOgKQj4RUHg5gRwvvHONEvQYbQGyTOjqBLtlbWuYufN?=
- =?us-ascii?Q?T65uvGewr1163OF4AdZl9OA47nYtZBY1Xbqkp1FaYt4amsDmXR1wHPqdPVWW?=
- =?us-ascii?Q?dhyphbTb2FDFbAATe4MJy2uEvvX+gbLeEFDWqkSI5tsydgc+IYsmkv+SpvJP?=
- =?us-ascii?Q?r1BoborrCq3kUuoWd4mkNIsfvuITF6oC1swAk1Ra6O2V2LGPeaWeY2lC9pSH?=
- =?us-ascii?Q?CYj7xGYz6CEgiEC+tUudL+nkevMbiA4SFrNrrTOs55pKlClW/AiGWd5q7qLm?=
- =?us-ascii?Q?ebp0KaSgClfZKnNjyfuIIiofMxFvwkA4+rd8LRALelvSTQkI7hQLPKh8GmXR?=
- =?us-ascii?Q?qloDyWtX0DEqBLA3I1JsSK5IrrAAfBNjkHv0tcuGSNhyU3X6RviSWZoklFx0?=
- =?us-ascii?Q?v7DCPZ6TcCF33TWQZyrU9MzTDqRoQ/0lxggrRzmUrQ5z4xqzcutCxtFgOGz6?=
- =?us-ascii?Q?tZNhFUNUZVODvAdHuYZ4CltuzYvyQNCbnPgFz8AKa865HDq7czQr9Tx9MJiG?=
- =?us-ascii?Q?jw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Sun, 10 Sep 2023 03:28:07 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1381B8
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 00:28:01 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38A7RGoY124287;
+        Sun, 10 Sep 2023 02:27:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1694330836;
+        bh=cuEQ4MnBvMHeuWnFcZZThMScU6eHr7VCSZ2kRdLbUCU=;
+        h=From:To:CC:Subject:Date;
+        b=yZKEupIkqUpo76Tx14Ikdm2O/0wWfoUJ2JM8BTa+hyqq924pSO7jlJOtlaDRaeDT9
+         t9PyIicAcRM73JpbW0R+3/O5P9hLj2AkkdIsznu9SbFveXK87u5GBoeuZa5o6ciOpl
+         ARPuULmEjE1KbETPucxPngBucYntbY42c6HF7AHw=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38A7RGJa068077
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 10 Sep 2023 02:27:16 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 10
+ Sep 2023 02:27:16 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sun, 10 Sep 2023 02:27:16 -0500
+Received: from LT5CG31242FY.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38A7R9Rt002459;
+        Sun, 10 Sep 2023 02:27:10 -0500
+From:   Shenghao Ding <shenghao-ding@ti.com>
+To:     <tiwai@suse.de>
+CC:     <robh+dt@kernel.org>, <andriy.shevchenko@linux.intel.com>,
+        <lgirdwood@gmail.com>, <perex@perex.cz>,
+        <pierre-louis.bossart@linux.intel.com>, <kevin-lu@ti.com>,
+        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
+        <mengdong.lin@intel.com>, <baojun.xu@ti.com>,
+        <thomas.gfeller@q-drop.com>, <peeyush@ti.com>, <navada@ti.com>,
+        <broonie@kernel.org>, <gentuser@gmail.com>,
+        Shenghao Ding <shenghao-ding@ti.com>
+Subject: [PATCH v1] ALSA: hda/tas2781: Support ACPI_ID both TXNW2781 and TIAS2781
+Date:   Sun, 10 Sep 2023 15:27:03 +0800
+Message-ID: <20230910072704.1359-1-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: df34b7ed-3e80-462f-8a75-08dbb1ccf612
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Sep 2023 07:10:06.2649
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IF7mR5pD4QigzHpgPoFdQa7iSmTsAeqCpl7bNX4khEV/oW0DCZG8u9vhV0Yp9QLIxGKVf3JUexpcw7qhtkKY6YprM/IoeV0SeJZGVyvM2wM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB5917
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy Shevchenko,
+Support ACPI_ID both TXNW2781 and TIAS2781, TXNW2781 is the only one legal
+ACPI ID, TIAS2781 is the widely-used ACPI ID named by our customers, so
+far it is not registered. We have discussed this with them, they requested
+TIAS2781 must be supported for the laptops already released to market,
+their new laptops will switch to TXNW2781.
 
-> Subject: Re: [PATCH 1/2] power: supply: bq24257_charger: Make chip type a=
-nd
-> name in sync
->=20
-> On Sat, Sep 02, 2023 at 08:33:30PM +0100, Biju Das wrote:
-> > Add struct bq2425x_chip_info to make enum bq2425x_chip and it's name
-> > in sync and replace chip->info in struct bq24257_device and add struct
-> > bq2425x_chip_info as match data for OF/ACPI/ID tables.
-> >
-> > Simpilfy probe() by replacing acpi_match_device() and id lookup for
-> > retrieving match data by using i2c_get_match_data().
-> >
-> > Drop bq2425x_chip_name as there is no user and also drop the comment
-> > related to syncing chip and name as it is taken care by struct
-> > bq2425x_chip_info.
->=20
-> ...
->=20
-> > -	if (ACPI_HANDLE(dev)) {
-> > -		acpi_id =3D acpi_match_device(dev->driver->acpi_match_table,
-> > -					    &client->dev);
-> > -		if (!acpi_id) {
-> > -			dev_err(dev, "Failed to match ACPI device\n");
-> > -			return -ENODEV;
-> > -		}
-> > -		bq->chip =3D (enum bq2425x_chip)acpi_id->driver_data;
-> > -	} else {
-> > -		bq->chip =3D (enum bq2425x_chip)id->driver_data;
-> > -	}
->=20
-> Do we still need acpi.h after this change?
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
-Yes, it is still needed as it is using=20
-ACPI_PTR.
+---
+Changes in v1:
+ - Add TXNW2781 into tas2781_acpi_hda_match and move it to the top
+ - Redefine tas2781_generic_fixup, remove hid param
+ - TIAS2781 has been used by our customers, see following dstd.dsl. We
+    have discussed this with them, they requested TIAS2781 must be
+    supported for the laptops already released to market, their new
+    laptops will switch to TXNW2781
+   Name (_HID, "TIAS2781")  // _HID: Hardware ID
+   Name (_UID, Zero)  // _UID: Unique ID
+   Method (_SUB, 0, NotSerialized)  // _SUB: Subsystem ID
+   {
+       If ((SPID == Zero))
+       {
+          Return ("17AA3886")
+       }
 
-Cheers,
-Biju
+       If ((SPID == One))
+       {
+           Return ("17AA3884")
+       }
+   }
+ - Add TXNW2781 support in comp_match_tas2781_dev_name
+---
+ sound/pci/hda/patch_realtek.c   | 36 ++++++++++++++++++---------------
+ sound/pci/hda/tas2781_hda_i2c.c | 33 ++++++++++++++++++------------
+ 2 files changed, 40 insertions(+), 29 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index b7e78bfcff..6dae58a8ef 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6770,24 +6770,35 @@ static int comp_match_cs35l41_dev_name(struct device *dev, void *data)
+ 	return !strcmp(d + n, tmp);
+ }
+ 
++/* TIAS2781 is the unofficial ACPI id, but widely used in current devices.
++ * TXNW2781 is the official ACPI id, and will be used in the new devices.
++ * Check TIAS2781 or TXNW2781
++ */
+ static int comp_match_tas2781_dev_name(struct device *dev,
+ 	void *data)
+ {
+-	struct scodec_dev_name *p = data;
++	const char c[][10] = { "TXNW2781", "TIAS2781" };
+ 	const char *d = dev_name(dev);
+-	int n = strlen(p->bus);
++	const char *bus = data;
++	int n = strlen(bus), i;
+ 	char tmp[32];
+ 
+ 	/* check the bus name */
+-	if (strncmp(d, p->bus, n))
++	if (strncmp(d, bus, n))
+ 		return 0;
+ 	/* skip the bus number */
+ 	if (isdigit(d[n]))
+ 		n++;
+-	/* the rest must be exact matching */
+-	snprintf(tmp, sizeof(tmp), "-%s:00", p->hid);
+ 
+-	return !strcmp(d + n, tmp);
++	for (i = 0; i < ARRAY_SIZE(c); i++) {
++		/* the rest must be exact matching */
++		snprintf(tmp, sizeof(tmp), "-%s:00", c[i]);
++
++		if (!strcmp(d + n, tmp))
++			return 1;
++	}
++
++	return 0;
+ }
+ 
+ static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char *bus,
+@@ -6824,24 +6835,17 @@ static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char
+ }
+ 
+ static void tas2781_generic_fixup(struct hda_codec *cdc, int action,
+-	const char *bus, const char *hid)
++	const char *bus)
+ {
+ 	struct device *dev = hda_codec_dev(cdc);
+ 	struct alc_spec *spec = cdc->spec;
+-	struct scodec_dev_name *rec;
+ 	int ret;
+ 
+ 	switch (action) {
+ 	case HDA_FIXUP_ACT_PRE_PROBE:
+-		rec = devm_kmalloc(dev, sizeof(*rec), GFP_KERNEL);
+-		if (!rec)
+-			return;
+-		rec->bus = bus;
+-		rec->hid = hid;
+-		rec->index = 0;
+ 		spec->comps[0].codec = cdc;
+ 		component_match_add(dev, &spec->match,
+-			comp_match_tas2781_dev_name, rec);
++			comp_match_tas2781_dev_name, (void *)bus);
+ 		ret = component_master_add_with_match(dev, &comp_master_ops,
+ 			spec->match);
+ 		if (ret)
+@@ -6888,7 +6892,7 @@ static void alc287_fixup_legion_16ithg6_speakers(struct hda_codec *cdc, const st
+ static void tas2781_fixup_i2c(struct hda_codec *cdc,
+ 	const struct hda_fixup *fix, int action)
+ {
+-	 tas2781_generic_fixup(cdc, action, "i2c", "TIAS2781");
++	 tas2781_generic_fixup(cdc, action, "i2c");
+ }
+ 
+ /* for alc295_fixup_hp_top_speakers */
+diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
+index fb80280293..8493952305 100644
+--- a/sound/pci/hda/tas2781_hda_i2c.c
++++ b/sound/pci/hda/tas2781_hda_i2c.c
+@@ -65,6 +65,16 @@ enum calib_data {
+ 	CALIB_MAX
+ };
+ 
++/* TIAS2781 is the unofficial ACPI id, but widely used in current devices.
++ * TXNW2781 is the official ACPI id, and will be used in the new devices.
++ */
++static const struct acpi_device_id tas2781_acpi_hda_match[] = {
++	{"TIAS2781", 0 },
++	{"TXNW2781", 1 },
++	{}
++};
++MODULE_DEVICE_TABLE(acpi, tas2781_acpi_hda_match);
++
+ static int tas2781_get_i2c_res(struct acpi_resource *ares, void *data)
+ {
+ 	struct tasdevice_priv *tas_priv = data;
+@@ -644,20 +654,23 @@ static void tas2781_hda_remove(struct device *dev)
+ static int tas2781_hda_i2c_probe(struct i2c_client *clt)
+ {
+ 	struct tasdevice_priv *tas_priv;
+-	const char *device_name;
+-	int ret;
++	int ret, i;
+ 
+-	if (strstr(dev_name(&clt->dev), "TIAS2781"))
+-		device_name = "TIAS2781";
+-	else
+-		return -ENODEV;
++	/* Check TIAS2781 or TXNW2781 */
++	for (i = 0; i < ARRAY_SIZE(tas2781_acpi_hda_match); i++)
++		if (strstr(dev_name(&clt->dev), tas2781_acpi_hda_match[i].id))
++			break;
++
++	if (i == ARRAY_SIZE(tas2781_acpi_hda_match))
++		return dev_err_probe(tas_priv->dev, -ENODEV,
++			"Device not available\n");
+ 
+ 	tas_priv = tasdevice_kzalloc(clt);
+ 	if (!tas_priv)
+ 		return -ENOMEM;
+ 
+ 	tas_priv->irq_info.irq = clt->irq;
+-	ret = tas2781_read_acpi(tas_priv, device_name);
++	ret = tas2781_read_acpi(tas_priv, tas2781_acpi_hda_match[i].id);
+ 	if (ret)
+ 		return dev_err_probe(tas_priv->dev, ret,
+ 			"Platform not supported\n");
+@@ -822,12 +835,6 @@ static const struct i2c_device_id tas2781_hda_i2c_id[] = {
+ 	{}
+ };
+ 
+-static const struct acpi_device_id tas2781_acpi_hda_match[] = {
+-	{"TIAS2781", 0 },
+-	{}
+-};
+-MODULE_DEVICE_TABLE(acpi, tas2781_acpi_hda_match);
+-
+ static struct i2c_driver tas2781_hda_i2c_driver = {
+ 	.driver = {
+ 		.name		= "tas2781-hda",
+-- 
+2.34.1
+
