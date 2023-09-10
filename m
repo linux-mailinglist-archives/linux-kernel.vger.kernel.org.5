@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A18A79A027
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 23:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B3179A07A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 00:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjIJVuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 17:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
+        id S231639AbjIJWBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 18:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjIJVuA (ORCPT
+        with ESMTP id S229604AbjIJWBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 17:50:00 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7555188
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 14:49:56 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68fac16ee5fso599978b3a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 14:49:56 -0700 (PDT)
+        Sun, 10 Sep 2023 18:01:35 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EE418B
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 15:01:28 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68a440a8a20so3655664b3a.3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 15:01:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1694382596; x=1694987396; darn=vger.kernel.org;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1694383288; x=1694988088; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ap2gCwDznGcrACjN46HTkhogiuAiSp+gfJD39Hlrbis=;
-        b=A6aavo+QoMzD7xtxnkKuo/0AoJfvCJpv6eyHijRIDMXdXh0WSOSuxGfHoC+l8lfjZ+
-         dTJ42tA35b5WcjqiZS6WWJzXCzBMD6Erkr8php6tzqljSWzm3wNlsjqDv1XPe9eYfi8S
-         06EoWbZDdnvhl9D35uBlzEDC/DNsuI8D0gUKYFm7thS7NWNA3IYV5XXalNttP8I+ny7A
-         ox2Kx+Jl8E/pj7XfqTe7L9jQuYs3P6HNVsUNq/oKFd+ezU+PY3MmHw6hUPfNkY4Vz4Tv
-         NBwnAjs+89h4Kpp3j5vjb7sO8UbinZp+W+omU28oKxy+L05mHgegPXQSNj2ElGAsNo3r
-         xsPQ==
+        bh=EyybjuBSw2AsBAibBPVqGccWs6P0JtTeGBB0Kwx90Dw=;
+        b=b1Q+Djrc6DRgK0lSMIXf6OVmm1S98Rb1dJdV/4AjeMobXYoqxa/k4Xb7XAYcmCuvbB
+         T8pFPhiJHk/Ig8CcU4is+jZGfReesXQjqK7ULjc+VZz110Uqhy1NjrWTu4Ej2kgb1UEn
+         ZHgnS7dDfuM0nrDuRkgBy+D/YOBtPecXxWCyUh6h/0/NlsJyyOwKHQwSKYYxfVY7xjkS
+         7I+QxdaDiDVRMV8qekGuV48jZlbOlbc6skR8a29kp5hS8zsrhWfeCv9XIJ/gwMURSkPX
+         Ncgzq9d3+KaDgvRq3XsvmeqBjcqt9Lc7ewxeY00IZtUnccPI4WIduUYqP2aDlo+H2VFl
+         7yRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694382596; x=1694987396;
+        d=1e100.net; s=20230601; t=1694383288; x=1694988088;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ap2gCwDznGcrACjN46HTkhogiuAiSp+gfJD39Hlrbis=;
-        b=KDDsDnWcRxh90HSQqAEDYjU6IQjZ6v/Yl/ty+00cVwpaWb0FhEXh1m5dSsmGkHs/Ji
-         1x2lViENu7Zzy5wzj+NoTwoq7/GafAxiK6G6Y5beyjEtdKkNJem5vyLdnBdbc0Mh+T4t
-         GV4HY6ey74nVHj1LALzLTsN0mPp/bJjPL85Ym2Qq8SqcULzyRHEMFW+hcsfuDDe9mfEL
-         MwZPyjnr8bLrEC6pZylJZTK7b/pbW6glyFglrWIaVIUTobZlRwmOouCBgO8rtljKQ0IY
-         0BICxPbYz7cR6HGqUIZH9gfrXpDTRfSJgCwHfbgCY1yuCfJ5khFhWQebWxqrEd170KcW
-         wR7g==
-X-Gm-Message-State: AOJu0YzvmqsM2556yEELPeTdQXYhVyNNxdmr1TReJdJQHP3Fl0c0iF0V
-        QPIiMJqLx0XasRCyWcLBu/jv23KIPPgj1cGZSzA=
-X-Google-Smtp-Source: AGHT+IFAaeZYXvSAMNmSDSiEyPXZ+bYxU0+eTWjMoIIO+arAqg9AyavIHGotGQ32KMQ1T7cFwEtwrg==
-X-Received: by 2002:a05:6a20:948f:b0:148:14ed:2b88 with SMTP id hs15-20020a056a20948f00b0014814ed2b88mr6201483pzb.30.1694382595729;
-        Sun, 10 Sep 2023 14:49:55 -0700 (PDT)
+        bh=EyybjuBSw2AsBAibBPVqGccWs6P0JtTeGBB0Kwx90Dw=;
+        b=H/ubkj3l9KtfUFwXQGYVCwU2Iy3F0pVelp7PfacdLfTHjFhSKwRMSnDpUvOrRP06LU
+         oMmymn4WBWW1vfyrVmExMuGDhs52C6gRCkSvVjSn3IlXDVtpVjv5Kikq6YF6ETG86O4n
+         Lt+/NdGR5QIIrchCM48DRUuQKe5QmHgiwUuuGnfR1PffQ76Lq9TtO+yAmdw8NWxFPuOy
+         FS0WLDng0Q/fjXrK/SiNjIm2sJc/KTeiXQmf48G2ZqUvOg3CkbZIl5sVBE/S94zOrvkj
+         swJGrIdSztn3oNCig7Zb5pEBOJYPHqPKtsc38JWHIbviYRjY5WPY2t6uxwgJ4VP5mr0y
+         Q9kQ==
+X-Gm-Message-State: AOJu0YwTWRHZFbiGbErCOokBBHn5+82ZrjvDzqg6U8NiUhlRj7NTHu2S
+        fdKCcXceS1MNGYylXnZ2jQdBvg==
+X-Google-Smtp-Source: AGHT+IHSYFPf3w2qdTZr9bikkzuSsvPYQjYYZyW+Zfc616rQWXs3Eeo2BzwinmhhOfJVOtnHj1lBTA==
+X-Received: by 2002:a05:6a00:1a0c:b0:68c:57c7:1eb0 with SMTP id g12-20020a056a001a0c00b0068c57c71eb0mr9371853pfv.11.1694383287795;
+        Sun, 10 Sep 2023 15:01:27 -0700 (PDT)
 Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
-        by smtp.gmail.com with ESMTPSA id y13-20020a17090322cd00b001b83e624eecsm5016601plg.81.2023.09.10.14.49.54
+        by smtp.gmail.com with ESMTPSA id u10-20020a62ed0a000000b0068a3dd6c1dasm4403641pfh.142.2023.09.10.15.01.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Sep 2023 14:49:54 -0700 (PDT)
+        Sun, 10 Sep 2023 15:01:27 -0700 (PDT)
 Received: from dave by dread.disaster.area with local (Exim 4.96)
         (envelope-from <david@fromorbit.com>)
-        id 1qfSJT-00DVon-2V;
-        Mon, 11 Sep 2023 07:49:51 +1000
-Date:   Mon, 11 Sep 2023 07:49:51 +1000
+        id 1qfSUe-00DWBA-0u;
+        Mon, 11 Sep 2023 08:01:24 +1000
+Date:   Mon, 11 Sep 2023 08:01:24 +1000
 From:   Dave Chinner <david@fromorbit.com>
-To:     alexjlzheng@gmail.com
-Cc:     chandan.babu@oracle.com, djwong@kernel.org,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jinliang Zheng <alexjlzheng@tencent.com>
-Subject: Re: [PATCH v2] xfs: remove redundant batch variables for
- serialization
-Message-ID: <ZP45/7KfB0sHuCIk@dread.disaster.area>
-References: <20230909071750.2455895-1-alexjlzheng@tencent.com>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Hao Xu <hao.xu@linux.dev>, Matthew Wilcox <willy@infradead.org>,
+        io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        Wanpeng Li <wanpengli@tencent.com>
+Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
+Message-ID: <ZP48tAg2iS0UzKQf@dread.disaster.area>
+References: <20230827132835.1373581-1-hao.xu@linux.dev>
+ <20230827132835.1373581-8-hao.xu@linux.dev>
+ <ZOvA5DJDZN0FRymp@casper.infradead.org>
+ <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
+ <ZO3cI+DkotHQo3md@casper.infradead.org>
+ <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
+ <ZPUJHAKzxvXiEDYA@dread.disaster.area>
+ <6489b8cb-7d54-1e29-f192-a3449ed87fa1@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230909071750.2455895-1-alexjlzheng@tencent.com>
+In-Reply-To: <6489b8cb-7d54-1e29-f192-a3449ed87fa1@gmail.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,37 +98,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 09, 2023 at 03:17:51PM +0800, alexjlzheng@gmail.com wrote:
-> From: Jinliang Zheng <alexjlzheng@tencent.com>
+On Fri, Sep 08, 2023 at 01:29:55AM +0100, Pavel Begunkov wrote:
+> On 9/3/23 23:30, Dave Chinner wrote:
+> > On Wed, Aug 30, 2023 at 02:11:31PM +0800, Hao Xu wrote:
+> > > On 8/29/23 19:53, Matthew Wilcox wrote:
+> > > > On Tue, Aug 29, 2023 at 03:46:13PM +0800, Hao Xu wrote:
+> > > > > On 8/28/23 05:32, Matthew Wilcox wrote:
+> > > > > > On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
+> > > > > > > From: Hao Xu <howeyxu@tencent.com>
+> > > > > > > 
+> > > > > > > Add a boolean parameter for file_accessed() to support nowait semantics.
+> > > > > > > Currently it is true only with io_uring as its initial caller.
+> > > > > > 
+> > > > > > So why do we need to do this as part of this series?  Apparently it
+> > > > > > hasn't caused any problems for filemap_read().
+> > > > > > 
+> > > > > 
+> > > > > We need this parameter to indicate if nowait semantics should be enforced in
+> > > > > touch_atime(), There are locks and maybe IOs in it.
+> > > > 
+> > > > That's not my point.  We currently call file_accessed() and
+> > > > touch_atime() for nowait reads and nowait writes.  You haven't done
+> > > > anything to fix those.
+> > > > 
+> > > > I suspect you can trim this patchset down significantly by avoiding
+> > > > fixing the file_accessed() problem.  And then come back with a later
+> > > > patchset that fixes it for all nowait i/o.  Or do a separate prep series
+> > > 
+> > > I'm ok to do that.
+> > > 
+> > > > first that fixes it for the existing nowait users, and then a second
+> > > > series to do all the directory stuff.
+> > > > 
+> > > > I'd do the first thing.  Just ignore the problem.  Directory atime
+> > > > updates cause I/O so rarely that you can afford to ignore it.  Almost
+> > > > everyone uses relatime or nodiratime.
+> > > 
+> > > Hi Matthew,
+> > > The previous discussion shows this does cause issues in real
+> > > producations: https://lore.kernel.org/io-uring/2785f009-2ebb-028d-8250-d5f3a30510f0@gmail.com/#:~:text=fwiw%2C%20we%27ve%20just%20recently%20had%20similar%20problems%20with%20io_uring%20read/write
+> > > 
+> > 
+> > Then separate it out into it's own patch set so we can have a
+> > discussion on the merits of requiring using noatime, relatime or
+> > lazytime for really latency sensitive IO applications. Changing code
+> > is not always the right solution...
 > 
-> Historically, when generic percpu counters were introduced in xfs for
-> free block counters by commit 0d485ada404b ("xfs: use generic percpu
-> counters for free block counter"), the counters used a custom batch
-> size. In xfs_mod_freecounter(), originally named xfs_mod_fdblocks(),
-> this patch attempted to serialize the program using a smaller batch size
-> as parameter to the addition function as the counter approaches 0.
-> 
-> Commit 8c1903d3081a ("xfs: inode and free block counters need to use
-> __percpu_counter_compare") pointed out the error in commit 0d485ada404b
-> ("xfs: use generic percpu counters for free block counter") mentioned
-> above and said that "Because the counters use a custom batch size, the
-> comparison functions need to be aware of that batch size otherwise the
-> comparison does not work correctly". Then percpu_counter_compare() was
-> replaced with __percpu_counter_compare() with parameter
-> XFS_FDBLOCKS_BATCH.
-> 
-> After commit 8c1903d3081a ("xfs: inode and free block counters need to
-> use __percpu_counter_compare"), the existence of the batch variable is
-> no longer necessary, so this patch is proposed to simplify the code by
-> removing it.
+> Separation sounds reasonable, but it can hardly be said that only
+> latency sensitive apps would care about >1s nowait/async submission
+> delays. Presumably, btrfs can improve on that, but it still looks
+> like it's perfectly legit for filesystems do heavy stuff in
+> timestamping like waiting for IO. Right?
 
-Hmmmm. Fiddling with percpu counter batch thresholds can expose
-unexpected corner case behaviours.  What testing have you done on
-this change?
+Yes, it is, no-one is denying that. And some filesystems are worse
+than others, but none of that means it has to be fixed so getdents
+can be converted to NOWAIT semantics.
 
-Cheers,
+ie. this patchset is about the getdents NOWAIT machinery, and
+fiddling around with timestamps has much, much wider scope than just
+NOWAIT getdents machinery. We'll have this discussion about NOWAIT
+timestamp updates when a RFC is proposed to address the wider
+problem of how timestamp updates should behave in NOWAIT context.
 
-Dave.
+-Dave.
 -- 
 Dave Chinner
 david@fromorbit.com
