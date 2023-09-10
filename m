@@ -2,121 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D142E799D5D
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 10:34:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD84799D62
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 10:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239613AbjIJIeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 04:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44012 "EHLO
+        id S239000AbjIJIul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 04:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239000AbjIJIen (ORCPT
+        with ESMTP id S232421AbjIJIuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 04:34:43 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6164BCD8;
-        Sun, 10 Sep 2023 01:34:26 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99cce6f7de2so425032966b.3;
-        Sun, 10 Sep 2023 01:34:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694334865; x=1694939665; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6sJcNbgOBSMSjzKpgg3NyCG1G05DQaIPABUhyueQ8Ng=;
-        b=ktPiDFibUSXMUXMm3hNlbMtmHcPUJdgNTKkLvXxQWkfwzdOpnNEuTCyxA72QEK0MVM
-         V0nWoi3QVBNyCwXcovltP+0LbHT5v9axSoqaO7EI9mkfDIpUxTz9mr20lJVhnX/xfuQU
-         C5wlAd0aRbsnruUOxIsPN1o2qx07lgeVeUcHz2xfxUmEK/vIysvm5bl0zIpXvTjeGsYU
-         KSEPIoqG2mdtOfb0QxwROPobK/wiZFJ5MLkykapGDSb0HD2Ha4bY3h0j3ijtqKLDAP1/
-         df7yG/sEtE3RE7s2IDY9nBV14tRdmHnwnVBp9ck86hoZCP4z/J+6JXsIf4XlZjbE2Gdc
-         xctQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694334865; x=1694939665;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6sJcNbgOBSMSjzKpgg3NyCG1G05DQaIPABUhyueQ8Ng=;
-        b=Clp5/bQmlxaM7V1236uYaaaCj443tmPtTlU9NSbwSaKt0M1Q7BN1NBjIpceoG0H/4T
-         27FNOh08pWhhHh0ieR9Z2helTv3l9IYmQOTzGxhSuTw8N30oh8ymwXNjDPktsrkHAAjn
-         ixjs5XDl0e6CD/8Q4NLFd2eqlZJjSIFT6lTWz+mTLlGmDeHhhe5qbNKznmbW+xkRn4Gx
-         X6G/cFzodat3BVoaPCFh9YNZWBqDR1tPFmM1ZmhfQsBLHn8UI2f11RfK5TsyL2GLVRf8
-         RS2wt4c6kvg8En3NlECRWU+ovH3JliyPuGd3gXP8GT7E6J++PHE1vfZXoJ4xieC4niny
-         K23A==
-X-Gm-Message-State: AOJu0Yy9C9Y04CUVk41/nGLpo3rwatdg6esR7e3OADXYavJD6bEIuVGe
-        rP5U0uUKUxW6cvgcjhSOIA0=
-X-Google-Smtp-Source: AGHT+IFP6AbgYl3jY4RkxnAMHPgYVmcLqW7TeprlUeUk2ZxoZ7IKZnSrOzV2eAHf+vSJEBLOsRJLpA==
-X-Received: by 2002:a17:906:209e:b0:9aa:167:1054 with SMTP id 30-20020a170906209e00b009aa01671054mr4985395ejq.34.1694334864625;
-        Sun, 10 Sep 2023 01:34:24 -0700 (PDT)
-Received: from localhost (dslb-088-076-253-094.088.076.pools.vodafone-ip.de. [88.76.253.94])
-        by smtp.gmail.com with ESMTPSA id z7-20020a1709060ac700b0099bc08862b6sm3541626ejf.171.2023.09.10.01.34.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Sep 2023 01:34:23 -0700 (PDT)
-From:   Jonas Gorski <jonas.gorski@gmail.com>
-To:     Andres Salomon <dilinger@queued.net>,
-        Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Cc:     "Timur I . Davletshin" <timur.davletshin@gmail.com>,
-        Jo-Philipp Wich <jo@mein.io>, linux-geode@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] hwrng: geode: fix accessing registers
-Date:   Sun, 10 Sep 2023 10:34:17 +0200
-Message-Id: <20230910083418.8990-1-jonas.gorski@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 10 Sep 2023 04:50:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7844A1B9
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 01:50:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77069C433C7;
+        Sun, 10 Sep 2023 08:50:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694335835;
+        bh=vsqC4Q0V2oBEuQjchMzNlW8atq0L+1M6Tmmkzi/4EhQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YLPQ9eXDMYpawn2FVYrooVHIvkEML7VFiVxFM3fpL+1JL79CGzXxdKhWsuOqy4wVT
+         QIy6P7u32Sjt+ae7SJoOEZ8JoQttxYaas9a+Y8JkR3aZRczKQZxjJzGJ8b4+sI3pbw
+         4l+q20Iuhd7eCVkR3MQSuIIFdzmoMhPm5j9tVPFYPIfS5DIxxtK+KFWrboXBrdJEyl
+         Ee33yGFrEov+z7H3J4u3MPzPARqXA8U5fz3odyjCmuSra2DR7UM4cvVwNrQwzeZDTR
+         BPzc+SE3BSFEf0us+d6qga17E560ME+J5VuaWcgI2p+lqL9Bu2SgeR2hLehzhp+K7Q
+         mJ3IX83I3sVOQ==
+Date:   Sun, 10 Sep 2023 04:50:29 -0400
+From:   Guo Ren <guoren@kernel.org>
+To:     Leonardo Bras <leobras@redhat.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [RFC PATCH v5 0/5] Rework & improve riscv cmpxchg.h and atomic.h
+Message-ID: <ZP2DVap64lJZj9g4@gmail.com>
+References: <20230810040349.92279-2-leobras@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810040349.92279-2-leobras@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the membase and pci_dev pointer were moved to a new struct in priv,
-the actual membase users were left untouched, and they started reading
-out arbitrary memory behind the struct instead of registers. This
-unfortunately turned the RNG into a constant number generator, depending
-on the content of what was at that offset.
+On Thu, Aug 10, 2023 at 01:03:42AM -0300, Leonardo Bras wrote:
+> While studying riscv's cmpxchg.h file, I got really interested in
+> understanding how RISCV asm implemented the different versions of
+> {cmp,}xchg.
+> 
+> When I understood the pattern, it made sense for me to remove the
+> duplications and create macros to make it easier to understand what exactly
+> changes between the versions: Instruction sufixes & barriers.
+> 
+> Also, did the same kind of work on atomic.c.
+> 
+> After that, I noted both cmpxchg and xchg only accept variables of 
+> size 4 and 8, compared to x86 and arm64 which do 1,2,4,8.
+> 
+> Now that deduplication is done, it is quite direct to implement them
+> for variable sizes 1 and 2, so I did it. Then Guo Ren already presented
+> me some possible users :)
+> 
+> I did compare the generated asm on a test.c that contained usage for every
+> changed function, and could not detect any change on patches 1 + 2 + 3 
+> compared with upstream.
+> 
+> Pathes 4 & 5 were compiled-tested, merged with guoren/qspinlock_v11 and
+> booted just fine with qemu -machine virt -append "qspinlock". 
+> 
+> (tree: https://gitlab.com/LeoBras/linux/-/commits/guo_qspinlock_v11)
+Tested-by: Guo Ren <guoren@kernel.org>
 
-To fix this, update geode_rng_data_{read,present}() to also get the
-membase via amd_geode_priv, and properly read from the right addresses
-again.
+Sorry for late reply, because we are stress testing CNA qspinlock on
+sg2042 128 cores hardware platform. This series has passed our test for
+several weeks. For more detail, ref:
+https://lore.kernel.org/linux-riscv/20230910082911.3378782-1-guoren@kernel.org/
 
-Fixes: 9f6ec8dc574e ("hwrng: geode - Fix PCI device refcount leak")
-Reported-by: Timur I. Davletshin <timur.davletshin@gmail.com>
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217882
-Tested-by: Timur I. Davletshin <timur.davletshin@gmail.com>
-Suggested-by: Jo-Philipp Wich <jo@mein.io>
-Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
----
- drivers/char/hw_random/geode-rng.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/char/hw_random/geode-rng.c b/drivers/char/hw_random/geode-rng.c
-index 12fbe8091831..159baf00a867 100644
---- a/drivers/char/hw_random/geode-rng.c
-+++ b/drivers/char/hw_random/geode-rng.c
-@@ -58,7 +58,8 @@ struct amd_geode_priv {
- 
- static int geode_rng_data_read(struct hwrng *rng, u32 *data)
- {
--	void __iomem *mem = (void __iomem *)rng->priv;
-+	struct amd_geode_priv *priv = (struct amd_geode_priv *)rng->priv;
-+	void __iomem *mem = priv->membase;
- 
- 	*data = readl(mem + GEODE_RNG_DATA_REG);
- 
-@@ -67,7 +68,8 @@ static int geode_rng_data_read(struct hwrng *rng, u32 *data)
- 
- static int geode_rng_data_present(struct hwrng *rng, int wait)
- {
--	void __iomem *mem = (void __iomem *)rng->priv;
-+	struct amd_geode_priv *priv = (struct amd_geode_priv *)rng->priv;
-+	void __iomem *mem = priv->membase;
- 	int data, i;
- 
- 	for (i = 0; i < 20; i++) {
--- 
-2.34.1
-
+> 
+> Thanks!
+> Leo
+> 
+> Changes since squashed cmpxchg RFCv4:
+> - Added (__typeof__(*(p))) before returning from {cmp,}xchg, as done
+>   in current upstream, (possibly) fixing the bug from kernel test robot
+> https://lore.kernel.org/all/20230809021311.1390578-2-leobras@redhat.com/
+> 
+> Changes since squashed cmpxchg RFCv3:
+> - Fixed bug on cmpxchg macro for var size 1 & 2: now working
+> - Macros for var size 1 & 2's lr.w and sc.w now are guaranteed to receive
+>   input of a 32-bit aligned address
+> - Renamed internal macros from _mask to _masked for patches 4 & 5
+> - __rc variable on macros for var size 1 & 2 changed from register to ulong 
+> https://lore.kernel.org/all/20230804084900.1135660-2-leobras@redhat.com/
+> 
+> Changes since squashed cmpxchg RFCv2:
+> - Removed rc parameter from the new macro: it can be internal to the macro
+> - 2 new patches: cmpxchg size 1 and 2, xchg size 1 and 2
+> https://lore.kernel.org/all/20230803051401.710236-2-leobras@redhat.com/
+> 
+> Changes since squashed cmpxchg RFCv1:
+> - Unified with atomic.c patchset
+> - Rebased on top of torvalds/master (thanks Andrea Parri!)
+> - Removed helper macros that were not being used elsewhere in the kernel.
+> https://lore.kernel.org/all/20230419062505.257231-1-leobras@redhat.com/
+> https://lore.kernel.org/all/20230406082018.70367-1-leobras@redhat.com/
+> 
+> Changes since (cmpxchg) RFCv3:
+> - Squashed the 6 original patches in 2: one for cmpxchg and one for xchg
+> https://lore.kernel.org/all/20230404163741.2762165-1-leobras@redhat.com/
+> 
+> Changes since (cmpxchg) RFCv2:
+> - Fixed  macros that depend on having a local variable with a magic name
+> - Previous cast to (long) is now only applied on 4-bytes cmpxchg
+> https://lore.kernel.org/all/20230321074249.2221674-1-leobras@redhat.com/
+> 
+> Changes since (cmpxchg) RFCv1:
+> - Fixed patch 4/6 suffix from 'w.aqrl' to '.w.aqrl', to avoid build error
+> https://lore.kernel.org/all/20230318080059.1109286-1-leobras@redhat.com/
+> 
+> Leonardo Bras (5):
+>   riscv/cmpxchg: Deduplicate xchg() asm functions
+>   riscv/cmpxchg: Deduplicate cmpxchg() asm and macros
+>   riscv/atomic.h : Deduplicate arch_atomic.*
+>   riscv/cmpxchg: Implement cmpxchg for variables of size 1 and 2
+>   riscv/cmpxchg: Implement xchg for variables of size 1 and 2
+> 
+>  arch/riscv/include/asm/atomic.h  | 164 ++++++-------
+>  arch/riscv/include/asm/cmpxchg.h | 404 ++++++++++---------------------
+>  2 files changed, 200 insertions(+), 368 deletions(-)
+> 
+> 
+> base-commit: cacc6e22932f373a91d7be55a9b992dc77f4c59b
+> -- 
+> 2.41.0
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
