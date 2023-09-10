@@ -2,111 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CBB2799C86
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 06:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED91799C87
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 06:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238403AbjIJEIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 00:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
+        id S1345374AbjIJEJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 00:09:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232538AbjIJEIW (ORCPT
+        with ESMTP id S232538AbjIJEJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 00:08:22 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE43CC;
-        Sat,  9 Sep 2023 21:08:18 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-6493389c56fso19875826d6.2;
-        Sat, 09 Sep 2023 21:08:18 -0700 (PDT)
+        Sun, 10 Sep 2023 00:09:31 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7111A5
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 21:09:25 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-41206fd9717so22692841cf.3
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 21:09:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694318897; x=1694923697; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=R3+2PGmoiy9X+KnZrSJrk+Ytx7sq+T9gDzRcG6umpdA=;
-        b=f0D7mIr9naX6IZ7qkD8Okxb5UsuxzQsjjYl18TBzEY3w1h7yHkju18pBYJL5Z8C0TH
-         TRi2/CcWvQx+ifGZRV5nNu/gkyX9AKe9FO4UMuB2wPTI/GkwnGdloXxQhc5HistfsKZw
-         kyOm3LUI40XARcRyG0oke5G01bPcyDnY6NMsBw4sy5Fdlm+PQElvaXI/FhrJ+fu4wxwS
-         f6rHCotWFo3nHyeAVsKEmgPpBYPp/FV5ljn+3pvRIf+37j3+4SshAGC9XBnkaWuSCJJ0
-         Nui6p5aa3sp8C8oSRC6WP1Xlh2NQcuYklxhQTnXQZA8pj1BGeKXsUIAgiMRXifY3JM4H
-         PlbQ==
+        d=joelfernandes.org; s=google; t=1694318964; x=1694923764; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZkRZLEJK4Dw7pZOYiPMmTawxS/A6O7ErhDLwZB01zqQ=;
+        b=dmckHSTDvaz36ffxMDyzwXfNjSuBMZtkPIbPtQ+cgxcmLyOFe96H3YkKM5xA1PSubZ
+         VSGJn+kBRfceFVI4If9oobbD3ONMkXzb8VOa3I+nidS93R2NYZsTCvxE3ukhxm6JdZg9
+         ZVCNZo51j9+6xQazWhYxt75o3j6qijFUjJIKo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694318897; x=1694923697;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R3+2PGmoiy9X+KnZrSJrk+Ytx7sq+T9gDzRcG6umpdA=;
-        b=uJ3nruH8UAXgmIJ5pAGCJXVR1J1HDqJlJp7wSEp6lpTgONVczCrxq488eO8G37ObI2
-         sntwP6NoKInit0mDW+oCdfmiVoAr4LyEcZ+kbLjjGfO/eCUwNGtzsr+aBLR+H2edFm9n
-         d/QGL7zr4C7eDYoCSaKzsuedD23CFjODVOyNH4UYtLW758nVJ/F1K95+4UVOEM364CPO
-         MPO8qWNYMcwOp0gbzK71MF8V4nrdVk/q+u8LbwVGGXAk9uNEQhrBvxhM6MJujdOJ0Mwj
-         CC7GdpCisBbPNTpgDqPXyhm5hs2pPETPIUSQk5ocqutrnWwFEN6iNqrhgq4BWoB8l1zq
-         nGJw==
-X-Gm-Message-State: AOJu0YxaOcjHCD+kwwpR74aQdNbzA+WVLChPxxsiRbotZr4XyfGUBRMC
-        jvBE68IWlzzKnd6Ew2ReUbEpLGIfvDU=
-X-Google-Smtp-Source: AGHT+IFpRN/w+o7kLwf6EV95mD6p0bWBb0dzBu0qj07J07d9NCzY08A2Dfe9A2S9ERAtVmPUvUUCvw==
-X-Received: by 2002:a05:620a:2551:b0:76f:e93:eb0 with SMTP id s17-20020a05620a255100b0076f0e930eb0mr7610796qko.52.1694318897213;
-        Sat, 09 Sep 2023 21:08:17 -0700 (PDT)
-Received: from computinator.cable.rcn.com (146-115-147-29.s4891.c3-0.nwt-cbr1.sbo-nwt.ma.cable.rcncustomer.com. [146.115.147.29])
-        by smtp.gmail.com with ESMTPSA id q17-20020a05620a039100b0076c9cc1e107sm1631364qkm.54.2023.09.09.21.08.16
+        d=1e100.net; s=20230601; t=1694318964; x=1694923764;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZkRZLEJK4Dw7pZOYiPMmTawxS/A6O7ErhDLwZB01zqQ=;
+        b=r2hwg+05/V8BnOf4CrX+lcqOqO/M/okpditkWLvrjfyAJZE9esUyx/jEtfe7IxwDAk
+         zFhRc/LUH+zHlDFq484oReCmsiHOPImTPdFAI99DuJDdT9EZIPU7J0ylzeDd3WMomczl
+         K6alLqpAj3w5ebFPcLoeU3u0QX3UlHyz55KmqDKu6TgQorI6adAMYJyP5xI05Y8V3kM2
+         oahcwTSIhmnbwEkbiYZP6XKXJDN/O57AEfsI+6K5CQ7/A/mMHnhjFu3+gCoIFhQvOKTM
+         r/Vv2iokgTVJUMnQYkFAeojNM5hhrVykwHPqr0K7Z8bhm+wyUp1VE/Gr75ZhD6Xx4Ofv
+         Rb+g==
+X-Gm-Message-State: AOJu0YxboHJj/vuyV5NcxUJnIS+X0CBf+HX9g7EOA66oYFp5m2wuUfos
+        YbX1FraywQr6KRhb/Ck0mWtW2A==
+X-Google-Smtp-Source: AGHT+IHFXrsdD8XDk4Y1FBqgfo9q1OAiUJca62IOc/9tZwFu57lGE44pZpvL+KmqHgzBojHBuHwLfg==
+X-Received: by 2002:a05:622a:cf:b0:412:b89b:15f7 with SMTP id p15-20020a05622a00cf00b00412b89b15f7mr8726426qtw.41.1694318964599;
+        Sat, 09 Sep 2023 21:09:24 -0700 (PDT)
+Received: from localhost (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id dd4-20020ad45804000000b00655d6d31470sm1077366qvb.43.2023.09.09.21.09.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Sep 2023 21:08:16 -0700 (PDT)
-From:   Oliver Faso <erer1243@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Oliver Faso <erer1243@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] docs/sphinx: Explicitly convert Sphinx paths to str
-Date:   Sun, 10 Sep 2023 00:08:06 -0400
-Message-ID: <20230910040811.53046-1-erer1243@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Sat, 09 Sep 2023 21:09:23 -0700 (PDT)
+Date:   Sun, 10 Sep 2023 00:09:23 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Subject: Re: [PATCH 04/10] rcu/nocb: Remove needless full barrier after
+ callback advancing
+Message-ID: <20230910040923.GA762577@google.com>
+References: <20230908203603.5865-1-frederic@kernel.org>
+ <20230908203603.5865-5-frederic@kernel.org>
+ <20230909043125.GA3920383@google.com>
+ <ZPy3-MS7uOJfmJhs@boqun-archlinux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPy3-MS7uOJfmJhs@boqun-archlinux>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sphinx 7.2+ is switching to using pathlib.Path
-instead of str to represent paths. This fixes the
-current deprecation warnings and eventual breakage.
-This conversion will be a no-op when using older
-Sphinx versions.
+On Sat, Sep 09, 2023 at 11:22:48AM -0700, Boqun Feng wrote:
+> On Sat, Sep 09, 2023 at 04:31:25AM +0000, Joel Fernandes wrote:
+> > On Fri, Sep 08, 2023 at 10:35:57PM +0200, Frederic Weisbecker wrote:
+> > > A full barrier is issued from nocb_gp_wait() upon callbacks advancing
+> > > to order grace period completion with callbacks execution.
+> > > 
+> > > However these two events are already ordered by the
+> > > smp_mb__after_unlock_lock() barrier within the call to
+> > > raw_spin_lock_rcu_node() that is necessary for callbacks advancing to
+> > > happen.
+> > > 
+> > > The following litmus test shows the kind of guarantee that this barrier
+> > > provides:
+> > > 
+> > > 	C smp_mb__after_unlock_lock
+> > > 
+> > > 	{}
+> > > 
+> > > 	// rcu_gp_cleanup()
+> > > 	P0(spinlock_t *rnp_lock, int *gpnum)
+> > > 	{
+> > > 		// Grace period cleanup increase gp sequence number
+> > > 		spin_lock(rnp_lock);
+> > > 		WRITE_ONCE(*gpnum, 1);
+> > > 		spin_unlock(rnp_lock);
+> > > 	}
+> > > 
+> > > 	// nocb_gp_wait()
+> > > 	P1(spinlock_t *rnp_lock, spinlock_t *nocb_lock, int *gpnum, int *cb_ready)
+> > > 	{
+> > > 		int r1;
+> > > 
+> > > 		// Call rcu_advance_cbs() from nocb_gp_wait()
+> > > 		spin_lock(nocb_lock);
+> > > 		spin_lock(rnp_lock);
+> > > 		smp_mb__after_unlock_lock();
+> > > 		r1 = READ_ONCE(*gpnum);
+> > > 		WRITE_ONCE(*cb_ready, 1);
+> > > 		spin_unlock(rnp_lock);
+> > > 		spin_unlock(nocb_lock);
+> > > 	}
+> > > 
+> > > 	// nocb_cb_wait()
+> > > 	P2(spinlock_t *nocb_lock, int *cb_ready, int *cb_executed)
+> > > 	{
+> > > 		int r2;
+> > > 
+> > > 		// rcu_do_batch() -> rcu_segcblist_extract_done_cbs()
+> > > 		spin_lock(nocb_lock);
+> > > 		r2 = READ_ONCE(*cb_ready);
+> > > 		spin_unlock(nocb_lock);
+> > > 
+> > > 		// Actual callback execution
+> > > 		WRITE_ONCE(*cb_executed, 1);
+> > 
+> > So related to this something in the docs caught my attention under "Callback
+> > Invocation" [1]
+> > 
+> > <quote>
+> > However, if the callback function communicates to other CPUs, for example,
+> > doing a wakeup, then it is that function's responsibility to maintain
+> > ordering. For example, if the callback function wakes up a task that runs on
+> > some other CPU, proper ordering must in place in both the callback function
+> > and the task being awakened. To see why this is important, consider the top
+> > half of the grace-period cleanup diagram. The callback might be running on a
+> > CPU corresponding to the leftmost leaf rcu_node structure, and awaken a task
+> > that is to run on a CPU corresponding to the rightmost leaf rcu_node
+> > structure, and the grace-period kernel thread might not yet have reached the
+> > rightmost leaf. In this case, the grace period's memory ordering might not
+> > yet have reached that CPU, so again the callback function and the awakened
+> > task must supply proper ordering.
+> > </quote>
+> > 
+> > I believe this text is for non-nocb but if we apply that to the nocb case,
+> > lets see what happens.
+> > 
+> > In the litmus, he rcu_advance_cbs() happened on P1, however the callback is
+> > executing on P2. That sounds very similar to the non-nocb world described in
+> > the text where a callback tries to wake something up on a different CPU and
+> > needs to take care of all the ordering.
+> > 
+> > So unless I'm missing something (quite possible), P2 must see the update to
+> > gpnum as well. However, per your limus test, the only thing P2  does is
+> > acquire the nocb_lock. I don't see how it is guaranteed to see gpnum == 1.
+> 
+> Because P1 writes cb_ready under nocb_lock, and P2 reads cb_ready under
+> nocb_lock as well and if P2 read P1's write, then we know the serialized
+> order of locking is P1 first (i.e. the spin_lock(nocb_lock) on P2 reads
+> from the spin_unlock(nocb_lock) on P1), in other words:
+> 
+> (fact #1)
+> 
+> 	unlock(nocb_lock) // on P1
+> 	->rfe
+> 	lock(nocb_lock) // on P2
+> 
+> so if P1 reads P0's write on gpnum
+> 
+> (assumption #1)
+> 
+> 	W(gpnum)=1 // on P0
+> 	->rfe
+> 	R(gpnum)=1 // on P1
+> 
+> and we have
+> 
+> (fact #2)
+> 
+> 	R(gpnum)=1 // on P1
+> 	->(po; [UL])
+> 	unlock(nocb_lock) // on P1
+> 
+> combine them you get
+> 
+> 	W(gpnum)=1 // on P0
+> 	->rfe           // fact #1
+> 	->(po; [UL])    // fact #2
+> 	->rfe           // assumption #1
+> 	lock(nocb_lock) // on P2
+> 	->([LKR]; po)
+> 	M // any access on P2 after spin_lock(nocb_lock);
+> 
+> so
+> 	W(gpnum)=1 // on P0
+> 	->rfe ->po-unlock-lock-po
+> 	M // on P2
+> 
+> and po-unlock-lock-po is A-culum, hence "->rfe ->po-unlock-lock-po" or
+> "rfe; po-unlock-lock-po" is culum-fence, hence it's a ->prop, which
+> means the write of gpnum on P0 propagates to P2 before any memory
+> accesses after spin_lock(nocb_lock)?
 
-Signed-off-by: Oliver Faso <erer1243@gmail.com>
----
- Documentation/sphinx/kerneldoc.py | 2 +-
- Documentation/sphinx/kfigure.py   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+You and Frederic are right. I confirmed this by running herd7 as well.
 
-diff --git a/Documentation/sphinx/kerneldoc.py b/Documentation/sphinx/kerneldoc.py
-index 9395892c7ba3..d26155990ec3 100644
---- a/Documentation/sphinx/kerneldoc.py
-+++ b/Documentation/sphinx/kerneldoc.py
-@@ -138,7 +138,7 @@ class KernelDocDirective(Directive):
-                     lineoffset = int(match.group(1)) - 1
-                     # we must eat our comments since the upset the markup
-                 else:
--                    doc = env.srcdir + "/" + env.docname + ":" + str(self.lineno)
-+                    doc = str(env.srcdir) + "/" + env.docname + ":" + str(self.lineno)
-                     result.append(line, doc + ": " + filename, lineoffset)
-                     lineoffset += 1
- 
-diff --git a/Documentation/sphinx/kfigure.py b/Documentation/sphinx/kfigure.py
-index cefdbb7e7523..13e885bbd499 100644
---- a/Documentation/sphinx/kfigure.py
-+++ b/Documentation/sphinx/kfigure.py
-@@ -309,7 +309,7 @@ def convert_image(img_node, translator, src_fname=None):
-     if dst_fname:
-         # the builder needs not to copy one more time, so pop it if exists.
-         translator.builder.images.pop(img_node['uri'], None)
--        _name = dst_fname[len(translator.builder.outdir) + 1:]
-+        _name = dst_fname[len(str(translator.builder.outdir)) + 1:]
- 
-         if isNewer(dst_fname, src_fname):
-             kernellog.verbose(app,
--- 
-2.42.0
+Also he adds a ->co between P2 and P3, so that's why the
+smp_mb__after_lock_unlock() helps to keep the propogation intact. Its pretty
+much the R-pattern extended across 4 CPUs.
+
+We should probably document these in the RCU memory ordering docs.
+
+thanks,
+
+ - Joel
 
