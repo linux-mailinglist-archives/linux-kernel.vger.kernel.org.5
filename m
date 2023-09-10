@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6AF7799C3F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 03:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524AD799C42
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 03:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343515AbjIJBgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 21:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34902 "EHLO
+        id S1343752AbjIJBrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 21:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236268AbjIJBgh (ORCPT
+        with ESMTP id S233350AbjIJBrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 21:36:37 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EA11BF;
-        Sat,  9 Sep 2023 18:36:32 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-500cfb168c6so5328714e87.2;
-        Sat, 09 Sep 2023 18:36:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694309791; x=1694914591; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=XWUyT4PbfqJHBky36kl15hBjq+u3Zrn12t7h3PXaL5c=;
-        b=BZ3ib/rBxHN4kHLss+GwifeMlfVOnmSLkTCyknWlAjJE121IEHRV7bOkvUsWvaB2jj
-         yoxb1Fa45w3CLxB960mshNEyI8gqAAuImr23FH6Zm5+dWzhYaEj9PouJR+8uxDphz+mQ
-         78AW/nqKzboVoEuU2vVQczN+lx2XTDPtvHUnP0r8hivTPHzRzNTHrxj2gvNL4/FHe4Ed
-         XsWFo5j1IWMXBKHqFS4PRmF4OIFpLaWaLjcRKzxfb29mDeuC97k1iIBJlsDG/fo9aGw6
-         +je6dS2RUg9QKb+COqFkzjpYsKNrD9GIREIsBIdPo/I//YH9AVUngFYwbHeBwymDBkeH
-         IpAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694309791; x=1694914591;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XWUyT4PbfqJHBky36kl15hBjq+u3Zrn12t7h3PXaL5c=;
-        b=jKdEMN1pT6JWhZjuKrhsIIiGYApuwf6dhB+8pFrNL5YSnCGk3qeIC38FRN/kM4DtZr
-         pBpK3z96xs/G4wRh5gTvajExKdsERtIkLX+yYveuKV5qkkCMbfQ6KAfJEFmDkPTW3Ih/
-         rc9ewJUg1sSryyAJwStHxSRZG1B+hbS4WpzCpvDkcywR9dwvlHBVPsPqTIJLB/6rjUxE
-         E4+EMLyaWrNYT8zFsxjY1/q6L+bCoh9iHdyLGI4kI4hPRlNO1SSzXe2eQAqK+u3y4ksA
-         GFdnmidla4LkFGTnK78rKnYq6PV8ypjun2fjrkL5as10fp44EJ4lr0d2KnEj2t93ltcH
-         jhoQ==
-X-Gm-Message-State: AOJu0YzWJs864B1ww3rmdX/lLb5aXkwfOq4RabPMGptkpUP0o+S3/6pX
-        slemta99qgNkfRVfqjLjkL5SOEeqtaiPdBX2U/S5Nprd8s4=
-X-Google-Smtp-Source: AGHT+IHNAKU7PqecW7KUirex5eE5n9nownBgwoqkxfsmC//qAvp80Ro1D03ki4O+l9D/wVdQG6JUV8BC4coq4SUGn/s=
-X-Received: by 2002:a05:6512:2256:b0:500:9d6c:913e with SMTP id
- i22-20020a056512225600b005009d6c913emr5298552lfu.52.1694309790830; Sat, 09
- Sep 2023 18:36:30 -0700 (PDT)
+        Sat, 9 Sep 2023 21:47:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E08911BF
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 18:47:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694310428; x=1725846428;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=OEj0u4anMkB3rV0nU6/xMDj0JAfxK9JBvWMcgnjptMk=;
+  b=YK/NeEDDqABj64PsXcPP9RbCDtgTs3a73G0VfErcmtizNGx6nMFABFgW
+   JDmKhrsG/gaZoQ5oEksQjhx71kMivZsG7d3mivfw5FukI9XTr9p+ZG77K
+   H5FAZoh3anaooNFPyePaN30Dg0lJJJTdf3OU35cJMMB1jHSLXG+SPsrrw
+   /Nko2mqJSHRm0fCAdjjfs54e81WCaXPOxnOBpBZjaAxOZ7hcBfj7juXvI
+   M3xQKE/f36CRf/lfN7mk75YsmYe1Hho7+AxvYgpj5tQtUK8iMXPmSMoVn
+   krX5TOxtaHhuOKa4U0RlkgPrrp9n0XKa4GS8zBj7mF/AkWyLmBzn0m1aj
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="444291074"
+X-IronPort-AV: E=Sophos;i="6.02,240,1688454000"; 
+   d="scan'208";a="444291074"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 18:47:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="777989921"
+X-IronPort-AV: E=Sophos;i="6.02,240,1688454000"; 
+   d="scan'208";a="777989921"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 09 Sep 2023 18:47:06 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qf9XU-0004C7-2P;
+        Sun, 10 Sep 2023 01:47:04 +0000
+Date:   Sun, 10 Sep 2023 09:46:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/opp/core.c:2010: warning: Function parameter or member
+ 'opp_table' not described in '_opp_set_prop_name'
+Message-ID: <202309100917.zNUUhk19-lkp@intel.com>
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Sat, 9 Sep 2023 20:36:18 -0500
-Message-ID: <CAH2r5msQ5+okQ3Sk9HzwW6r7YoWDEBDtSfDio0XOhTpVDjibFw@mail.gmail.com>
-Subject: [GIT PULL] smb3 client fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,60 +62,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-b97d64c722598ffed42ece814a2cb791336c6679:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   a3c57ab79a06e333a869ae340420cb3c6f5921d3
+commit: 298098e55a6fcc176a5af52cd689f33577ead5ca OPP: Migrate set-prop-name helper API to use set-config helpers
+date:   1 year, 2 months ago
+config: csky-defconfig (https://download.01.org/0day-ci/archive/20230910/202309100917.zNUUhk19-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230910/202309100917.zNUUhk19-lkp@intel.com/reproduce)
 
-  Merge tag '6.6-rc-smb3-client-fixes-part1' of
-git://git.samba.org/sfrench/cifs-2.6 (2023-08-30 21:01:40 -0700)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309100917.zNUUhk19-lkp@intel.com/
 
-are available in the Git repository at:
+All warnings (new ones prefixed by >>):
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/6.6-rc-smb3-client-fixes-part2
-
-for you to fetch changes up to 5d153cd128251aaedc8e9657f0a949ec94952055:
-
-  spnego: add missing OID to oid registry (2023-09-09 08:18:16 -0500)
-
-----------------------------------------------------------------
-- six smb3 client fixes including ones to allow controlling smb3
-directory caching timeout and limits, and one debugging improvement
-- one fix for nls Kconfig (don't need to expose NLS_UCS2_UTILS option)
-- one minor spnego registry update
-
-----------------------------------------------------------------
-Dr. David Alan Gilbert (1):
-      nls: Hide new NLS_UCS2_UTILS
-
-Katya Orlova (1):
-      smb: propagate error code of extract_sharename()
-
-Steve French (6):
-      smb3: allow controlling length of time directory entries are
-cached with dir leases
-      smb3: add trace point for queryfs (statfs)
-      smb3: allow controlling maximum number of cached directories
-      cifs: update internal module version number for cifs.ko
-      smb3: fix minor typo in SMB2_GLOBAL_CAP_LARGE_MTU
-      spnego: add missing OID to oid registry
-
- fs/nls/Kconfig               |  7 +------
- fs/smb/client/cached_dir.c   | 11 ++++++-----
- fs/smb/client/cached_dir.h   |  2 +-
- fs/smb/client/cifsfs.c       | 12 ++++++++++++
- fs/smb/client/cifsfs.h       |  4 ++--
- fs/smb/client/cifsglob.h     |  2 ++
- fs/smb/client/connect.c      |  1 +
- fs/smb/client/fs_context.c   | 11 ++++++++++-
- fs/smb/client/fs_context.h   |  4 +++-
- fs/smb/client/fscache.c      |  2 +-
- fs/smb/client/smb2ops.c      |  1 +
- fs/smb/client/trace.h        |  2 +-
- fs/smb/common/smb2pdu.h      |  2 +-
- include/linux/oid_registry.h |  1 +
- 14 files changed, 43 insertions(+), 19 deletions(-)
+   drivers/opp/core.c:1967: warning: Function parameter or member 'opp_table' not described in '_opp_set_supported_hw'
+   drivers/opp/core.c:1967: warning: Excess function parameter 'dev' description in '_opp_set_supported_hw'
+>> drivers/opp/core.c:2010: warning: Function parameter or member 'opp_table' not described in '_opp_set_prop_name'
+>> drivers/opp/core.c:2010: warning: Excess function parameter 'dev' description in '_opp_set_prop_name'
+   drivers/opp/core.c:2051: warning: Function parameter or member 'opp_table' not described in '_opp_set_regulators'
+   drivers/opp/core.c:2051: warning: Excess function parameter 'count' description in '_opp_set_regulators'
+   drivers/opp/core.c:2164: warning: Function parameter or member 'opp_table' not described in '_opp_set_clknames'
+   drivers/opp/core.c:2228: warning: Function parameter or member 'opp_table' not described in '_opp_register_set_opp_helper'
+   drivers/opp/core.c:2314: warning: Function parameter or member 'opp_table' not described in '_opp_attach_genpd'
+   drivers/opp/core.c:2536: warning: Function parameter or member 'token' not described in 'dev_pm_opp_clear_config'
+   drivers/opp/core.c:2536: warning: Excess function parameter 'opp_table' description in 'dev_pm_opp_clear_config'
 
 
---
-Thanks,
+vim +2010 drivers/opp/core.c
 
-Steve
+38393409da345c drivers/base/power/opp.c      Viresh Kumar 2014-11-25  1953  
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1954  /**
+89f03984fa2abf drivers/opp/core.c            Viresh Kumar 2022-05-26  1955   * _opp_set_supported_hw() - Set supported platforms
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1956   * @dev: Device for which supported-hw has to be set.
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1957   * @versions: Array of hierarchy of versions to match.
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1958   * @count: Number of elements in the array.
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1959   *
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1960   * This is required only for the V2 bindings, and it enables a platform to
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1961   * specify the hierarchy of versions it supports. OPP layer will then enable
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1962   * OPPs, which are available for those versions, based on its 'opp-supported-hw'
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1963   * property.
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1964   */
+89f03984fa2abf drivers/opp/core.c            Viresh Kumar 2022-05-26  1965  static int _opp_set_supported_hw(struct opp_table *opp_table,
+fa30184d192ec7 drivers/base/power/opp/core.c Viresh Kumar 2017-01-23  1966  				 const u32 *versions, unsigned int count)
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09 @1967  {
+25419de1b8dda2 drivers/opp/core.c            Viresh Kumar 2018-05-22  1968  	/* Another CPU that shares the OPP table has set the property ? */
+25419de1b8dda2 drivers/opp/core.c            Viresh Kumar 2018-05-22  1969  	if (opp_table->supported_hw)
+89f03984fa2abf drivers/opp/core.c            Viresh Kumar 2022-05-26  1970  		return 0;
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1971  
+2c2709dc6921c5 drivers/base/power/opp/core.c Viresh Kumar 2016-02-16  1972  	opp_table->supported_hw = kmemdup(versions, count * sizeof(*versions),
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1973  					GFP_KERNEL);
+89f03984fa2abf drivers/opp/core.c            Viresh Kumar 2022-05-26  1974  	if (!opp_table->supported_hw)
+89f03984fa2abf drivers/opp/core.c            Viresh Kumar 2022-05-26  1975  		return -ENOMEM;
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1976  
+2c2709dc6921c5 drivers/base/power/opp/core.c Viresh Kumar 2016-02-16  1977  	opp_table->supported_hw_count = count;
+fa30184d192ec7 drivers/base/power/opp/core.c Viresh Kumar 2017-01-23  1978  
+89f03984fa2abf drivers/opp/core.c            Viresh Kumar 2022-05-26  1979  	return 0;
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1980  }
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1981  
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1982  /**
+89f03984fa2abf drivers/opp/core.c            Viresh Kumar 2022-05-26  1983   * _opp_put_supported_hw() - Releases resources blocked for supported hw
+89f03984fa2abf drivers/opp/core.c            Viresh Kumar 2022-05-26  1984   * @opp_table: OPP table returned by _opp_set_supported_hw().
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1985   *
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1986   * This is required only for the V2 bindings, and is called for a matching
+89f03984fa2abf drivers/opp/core.c            Viresh Kumar 2022-05-26  1987   * _opp_set_supported_hw(). Until this is called, the opp_table structure
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1988   * will not be freed.
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1989   */
+89f03984fa2abf drivers/opp/core.c            Viresh Kumar 2022-05-26  1990  static void _opp_put_supported_hw(struct opp_table *opp_table)
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1991  {
+89f03984fa2abf drivers/opp/core.c            Viresh Kumar 2022-05-26  1992  	if (opp_table->supported_hw) {
+2c2709dc6921c5 drivers/base/power/opp/core.c Viresh Kumar 2016-02-16  1993  		kfree(opp_table->supported_hw);
+2c2709dc6921c5 drivers/base/power/opp/core.c Viresh Kumar 2016-02-16  1994  		opp_table->supported_hw = NULL;
+2c2709dc6921c5 drivers/base/power/opp/core.c Viresh Kumar 2016-02-16  1995  		opp_table->supported_hw_count = 0;
+7de36b0aa51a5a drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1996  	}
+9c4f220f3dc260 drivers/opp/core.c            Yangtao Li   2021-03-14  1997  }
+9c4f220f3dc260 drivers/opp/core.c            Yangtao Li   2021-03-14  1998  
+01fb4d3c39d35b drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  1999  /**
+298098e55a6fcc drivers/opp/core.c            Viresh Kumar 2022-05-26  2000   * _opp_set_prop_name() - Set prop-extn name
+a5da64477ee79e drivers/base/power/opp/core.c Viresh Kumar 2016-02-16  2001   * @dev: Device for which the prop-name has to be set.
+01fb4d3c39d35b drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  2002   * @name: name to postfix to properties.
+01fb4d3c39d35b drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  2003   *
+01fb4d3c39d35b drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  2004   * This is required only for the V2 bindings, and it enables a platform to
+01fb4d3c39d35b drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  2005   * specify the extn to be used for certain property names. The properties to
+01fb4d3c39d35b drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  2006   * which the extension will apply are opp-microvolt and opp-microamp. OPP core
+01fb4d3c39d35b drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  2007   * should postfix the property name with -<name> while looking for them.
+01fb4d3c39d35b drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  2008   */
+298098e55a6fcc drivers/opp/core.c            Viresh Kumar 2022-05-26  2009  static int _opp_set_prop_name(struct opp_table *opp_table, const char *name)
+01fb4d3c39d35b drivers/base/power/opp/core.c Viresh Kumar 2015-12-09 @2010  {
+878ec1a9f0e5a6 drivers/opp/core.c            Viresh Kumar 2018-05-22  2011  	/* Another CPU that shares the OPP table has set the property ? */
+2c2709dc6921c5 drivers/base/power/opp/core.c Viresh Kumar 2016-02-16  2012  	if (!opp_table->prop_name) {
+298098e55a6fcc drivers/opp/core.c            Viresh Kumar 2022-05-26  2013  		opp_table->prop_name = kstrdup(name, GFP_KERNEL);
+298098e55a6fcc drivers/opp/core.c            Viresh Kumar 2022-05-26  2014  		if (!opp_table->prop_name)
+298098e55a6fcc drivers/opp/core.c            Viresh Kumar 2022-05-26  2015  			return -ENOMEM;
+01fb4d3c39d35b drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  2016  	}
+01fb4d3c39d35b drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  2017  
+298098e55a6fcc drivers/opp/core.c            Viresh Kumar 2022-05-26  2018  	return 0;
+01fb4d3c39d35b drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  2019  }
+01fb4d3c39d35b drivers/base/power/opp/core.c Viresh Kumar 2015-12-09  2020  
+
+:::::: The code at line 2010 was first introduced by commit
+:::::: 01fb4d3c39d35b725441e8a9a26b3f3ad67793ed PM / OPP: Parse 'opp-<prop>-<name>' bindings
+
+:::::: TO: Viresh Kumar <viresh.kumar@linaro.org>
+:::::: CC: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
