@@ -2,143 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBF1799E9B
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 16:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E25CF799E9C
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 16:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345535AbjIJODq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 10:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
+        id S243376AbjIJOGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 10:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbjIJODp (ORCPT
+        with ESMTP id S230174AbjIJOGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 10:03:45 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7886CCC5;
-        Sun, 10 Sep 2023 07:03:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38D5BC433C8;
-        Sun, 10 Sep 2023 14:03:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694354621;
-        bh=wTbYtIegKrFF/yYFdEQr8XdRy/kc5XFbBENiOAM+JqU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=p3NjNXxPNA5C4jMAi6Srjy+TK7wk0Z132c3j2OizyvcaStnONMzt5nCQ8N5BIh17N
-         AY3gYWnfjVMwaRwUwo0YmlwXCP758rWn1MgWEoSIh+KPCAMgegcg8G0NdE7YKOejWr
-         NlJD5r3kyYFf1niD+dxXPW8ALs2iT3XoPhAl+aX8tMGWoY1r76O3uXzR3KMAQY80Eu
-         KVTGH6xus/uTXGhKD8lUEFM1Y1maQNCQf2+dUsi2yzgVsBFkjAD9L8TPVMsObetjY8
-         OwkmPsLVDd6+1HIC2z47bbD9mv67JzevLiZQ2inCmtYpSaCMwyvRLOsbSpU9dAjm0L
-         +V48XEFEiQIcw==
-Date:   Sun, 10 Sep 2023 15:03:33 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Liam Beguin <liambeguin@gmail.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] iio: adc: add ltc2309 support
-Message-ID: <20230910150333.472437be@jic23-huawei>
-In-Reply-To: <20230903124341.360c95fe@jic23-huawei>
-References: <20230828-ltc2309-v3-0-338b3a8fab8b@gmail.com>
-        <20230828-ltc2309-v3-2-338b3a8fab8b@gmail.com>
-        <20230903124341.360c95fe@jic23-huawei>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sun, 10 Sep 2023 10:06:04 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6C2CC5
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 07:05:59 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31dcf18f9e2so3558748f8f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 07:05:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694354757; x=1694959557; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=L9zTfLEefQSg+FCeLVUeQsY+dv2zrbCIrvEk0gyu8Qs=;
+        b=V5QEelikLWOFK3z2Pp2V/uwIvJEk4sr9EQxoCv98X+c1ncrFnGJe/FgSqnnJUbUl/0
+         E0pDSfNuodiET/FOb4VuHK0W2yHNJU5s6P2mb+ZFAmxJfweLRpZYtOm1uHZAp/q3wC/s
+         86IqaiVzF4j1H5fKXrzeRfFOYEgde+/gsbz6FWJ3jX+rOwWyZEbyGKr/fiEsqR3iFKf0
+         S8mBPphVIqWLy5HuLF54TbvLhP+ld0r5ysddzMs2PCbqijGdXNdpuB93+UkyJrv5ahRq
+         UuVR9m79P+7E1RPthsydI8uOehWffJyUrmJ8bF3Pk8Md2WDee4GiEBt5isnrMGeFLcEF
+         CXyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694354757; x=1694959557;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=L9zTfLEefQSg+FCeLVUeQsY+dv2zrbCIrvEk0gyu8Qs=;
+        b=Sl1bhb7+vPMgNIL61FXYZ3VGlOUgiNMZsNWBg9OkHq/Wi/miNWpnfcnS9+9qknFu/n
+         iQAYRYuU0v5cNTL/uJzwe7Ii3spaVcQ2U2VtPuPuJrw4D5G2tsGaSmg9rKqqLhzjePn4
+         WmoZnA+t/7/+DnUq6yw9rUz7r+06eZbtJVhx/vw6If9DoHruXcLbmOrTC42wiAQX9aYR
+         Cu53aGe4y4xA6n2L+Kw/BwANbaJUMNeVC61XU2FbxxOSb9TdukaZAjfYdczujHCrGkRS
+         XIokUxzqMe8dAXn46vWHUI0/tFRmRWKYPxW729DaRivJIBuKGlgGBxYa809jUyO5u8ii
+         pYIA==
+X-Gm-Message-State: AOJu0YzHnbWGzL65YX3KkQrg4kyK2X1tKgaqtO65ECuusLYOrMEUWtk6
+        Igi2o74t7hHrAKBjZxxfIBUBCl9KOxIKPw==
+X-Google-Smtp-Source: AGHT+IGiIP1LCVYGCbKGbK5jIv7WgPIaD+hCnxAjqKZjbbb4i9IEUX1MZ7toWvkhaq1sYQn70CPUrg==
+X-Received: by 2002:adf:f3c9:0:b0:313:ecd3:7167 with SMTP id g9-20020adff3c9000000b00313ecd37167mr5060916wrp.42.1694354756710;
+        Sun, 10 Sep 2023 07:05:56 -0700 (PDT)
+Received: from daniel-ubuntu ([94.202.157.108])
+        by smtp.gmail.com with ESMTPSA id j12-20020adfe50c000000b003176aa612b1sm7389425wrm.38.2023.09.10.07.05.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Sep 2023 07:05:56 -0700 (PDT)
+Date:   Sun, 10 Sep 2023 18:05:53 +0400
+From:   Daniel Hammer <daniel.hammer120@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: wlan-ng: prism2mgmt.c: remove needless parentheses
+ to align with kernel coding style.
+Message-ID: <ZP3NQSQwnmYAHQq+@daniel-ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 3 Sep 2023 12:43:41 +0100
-Jonathan Cameron <jic23@kernel.org> wrote:
+Remove unnecessary parentheses as detected by checkpatch.pl.
 
-> On Mon, 28 Aug 2023 22:41:35 -0400
-> Liam Beguin <liambeguin@gmail.com> wrote:
-> 
-> > The LTC2309 is an 8-Channel, 12-Bit SAR ADC with an I2C Interface.
-> > 
-> > This implements support for all single-ended and differential channels,
-> > in unipolar mode only.
-> > 
-> > Signed-off-by: Liam Beguin <liambeguin@gmail.com>  
-> Hi Liam,
-> 
-> A few really small editorial bits in here.  I'll fix them whilst applying.
-> Series applied to the togreg branch of iio.git
-> 
-> Note I will be rebasing the tree on rc1 once available and in the meantime
-> this will only be pushed out as testing.
+Signed-off-by: Daniel Hammer <daniel.hammer120@gmail.com>
+---
+ drivers/staging/wlan-ng/prism2mgmt.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-A couple more static analysis reports came in (unreachable return in one pace
-and a missing static.  I've fixed up in my tree.
-
-Thanks,
-
-Jonathan
-
-> 
-> Thanks,
-> 
-> Jonathan
-> 
-> 
-> 
-> > +/**
-> > + * struct ltc2309 - internal device data structure
-> > + * @dev:	Device reference
-> > + * @client:	I2C reference
-> > + * @vref:	External reference source
-> > + * @lock:	Lock to serialize data access
-> > + * @vref_mv	Internal voltage reference  
-> 
-> Missing : which is what the bot picked up on.
-> 
-> > + */
-> > +struct ltc2309 {
-> > +	struct device		*dev;
-> > +	struct i2c_client	*client;
-> > +	struct regulator	*vref;
-> > +	struct mutex		lock; /* serialize data access */
-> > +	int			vref_mv;
-> > +};  
-> 
-> > +
-> > +void ltc2309_regulator_disable(void *regulator)
-> > +{
-> > +	struct regulator *r = (struct regulator *)regulator;  
-> 
-> Never any need to explicitly cast from a void * to any other pointer type.
-> (C spec says it is always fine to do this :)
-> 
-> Given type is obvious from use, can just do
-> 	regulator_disable(regulator);
-> and lose the local variable.
-> 
-> > +
-> > +	regulator_disable(r);
-> > +}  
-> 
-> ..
-> > +
-> > +static const struct of_device_id ltc2309_of_match[] = {
-> > +	{ .compatible = "lltc,ltc2309" },
-> > +	{ }
-> > +};
-> > +MODULE_DEVICE_TABLE(of, ltc2309_of_match);
-> > +
-> > +static const struct i2c_device_id ltc2309_id[] = {
-> > +	{ "ltc2309" },
-> > +	{}  
-> 
-> Trivial but space between { and } for consistency.
-> 
-> 
+diff --git a/drivers/staging/wlan-ng/prism2mgmt.c b/drivers/staging/wlan-ng/prism2mgmt.c
+index d5737166564e..201f07229962 100644
+--- a/drivers/staging/wlan-ng/prism2mgmt.c
++++ b/drivers/staging/wlan-ng/prism2mgmt.c
+@@ -1227,9 +1227,9 @@ int prism2mgmt_wlansniff(struct wlandevice *wlandev, void *msgp)
+ 				     word, result);
+ 				goto failed;
+ 			}
+-			if ((msg->keepwepflags.status ==
+-			     P80211ENUM_msgitem_status_data_ok) &&
+-			    (msg->keepwepflags.data != P80211ENUM_truth_true)) {
++			if (msg->keepwepflags.status ==
++			     P80211ENUM_msgitem_status_data_ok &&
++			    msg->keepwepflags.data != P80211ENUM_truth_true) {
+ 				/* Set the wepflags for no decryption */
+ 				word = HFA384x_WEPFLAGS_DISABLE_TXCRYPT |
+ 				    HFA384x_WEPFLAGS_DISABLE_RXCRYPT;
+@@ -1249,9 +1249,9 @@ int prism2mgmt_wlansniff(struct wlandevice *wlandev, void *msgp)
+ 		}
+ 
+ 		/* Do we want to strip the FCS in monitor mode? */
+-		if ((msg->stripfcs.status ==
+-		     P80211ENUM_msgitem_status_data_ok) &&
+-		    (msg->stripfcs.data == P80211ENUM_truth_true)) {
++		if (msg->stripfcs.status ==
++		     P80211ENUM_msgitem_status_data_ok &&
++		    msg->stripfcs.data == P80211ENUM_truth_true) {
+ 			hw->sniff_fcs = 0;
+ 		} else {
+ 			hw->sniff_fcs = 1;
+@@ -1288,9 +1288,9 @@ int prism2mgmt_wlansniff(struct wlandevice *wlandev, void *msgp)
+ 
+ 		/* Set the driver state */
+ 		/* Do we want the prism2 header? */
+-		if ((msg->prismheader.status ==
+-		     P80211ENUM_msgitem_status_data_ok) &&
+-		    (msg->prismheader.data == P80211ENUM_truth_true)) {
++		if (msg->prismheader.status ==
++		     P80211ENUM_msgitem_status_data_ok &&
++		    msg->prismheader.data == P80211ENUM_truth_true) {
+ 			hw->sniffhdr = 0;
+ 			wlandev->netdev->type = ARPHRD_IEEE80211_PRISM;
+ 		} else if ((msg->wlanheader.status ==
+-- 
+2.34.1
 
