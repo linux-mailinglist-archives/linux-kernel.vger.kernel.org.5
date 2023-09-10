@@ -2,66 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8BA799F54
+	by mail.lfdr.de (Postfix) with ESMTP id AA320799F55
 	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 20:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236898AbjIJS3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 14:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48142 "EHLO
+        id S237114AbjIJSab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 14:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234005AbjIJS3X (ORCPT
+        with ESMTP id S234005AbjIJSa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 14:29:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689C119C
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 11:29:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694370558; x=1725906558;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=PzGu76tMua3HCUi2AOOfNljJel3wCG4fnugGy7jKLbs=;
-  b=UM8iFGyWGr005nydNRwi6CNWc9YEbOGGmgpEU7ca1hTIbWlH4D5Yc/xS
-   bNvGnK/T2dyOmwsvjyjIcw5q+0WSU6G8I0+cBgGk3saw43yVGIoxEcjK/
-   kKAxG7JMcNWYJI0IHYDNbIpGDZ8QGR9u4VsKIw1KdHsR1+6//pqUVDrR9
-   4YoceOW4cIt6iTpq0JoTHM8aoybsfiGgskCOGutXOgfdoRt6OFBWFievN
-   5bZU+eRfnaVx3XX67gkmh8BqvzQRgxQq2nG3BuYTa9k/SdGRC+PddoOWZ
-   RQlXUtOOXWFVkBcDiT9eGvLWbWgM6OxIdUSiAIEPmUDQoSWxLo8ZmegQR
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="441932687"
-X-IronPort-AV: E=Sophos;i="6.02,242,1688454000"; 
-   d="scan'208";a="441932687"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 11:29:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="743080658"
-X-IronPort-AV: E=Sophos;i="6.02,242,1688454000"; 
-   d="scan'208";a="743080658"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 10 Sep 2023 11:29:15 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qfPBJ-0005GC-0d;
-        Sun, 10 Sep 2023 18:29:13 +0000
-Date:   Mon, 11 Sep 2023 02:28:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Janne Grunau via B4 Relay <devnull+j.jannau.net@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     oe-kbuild-all@lists.linux.dev, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, asahi@lists.linux.dev
-Subject: Re: [PATCH] drm/simpledrm: Add support for multiple "power-domains"
-Message-ID: <202309110206.wDXP9YXl-lkp@intel.com>
-References: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
+        Sun, 10 Sep 2023 14:30:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B416A19C
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 11:30:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 31250C433C8;
+        Sun, 10 Sep 2023 18:30:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694370622;
+        bh=mZ54+PLc9IhlxDCovXeQUxgZe/yoX7FCotx5+2XnyxI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=hGjYraTNgwz9pL5z1mc0tIopgmeUev+KZjP5U+GpiZtmlzqFJB2+3EIDF4uC7GkYy
+         +8Xwh47ggzWpGGP8nvCEuJ+0WwFJCb3N3+xP29hO+68Ncdja8nm1zUywZaJw5ZWkrW
+         2yeM9qVOZTD90D4w8WtFW+fjZi/tvAKlirIDXd9+42tXBqysV1cK3Jh5ABla+GYyIi
+         B+sqGbeKsJpC0fmu76xy9YsHCEpwoprB9u/0GlxM26Rcie0d6mjXIJYrd8KdQTakvl
+         K6BLEo/R9qyL9da+1yUfXcxoD7mcnzLXKMGOw7kwZjWMWa/8EvsDQCBAHnSvenwzGk
+         bxk430cmkMT4w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 17947E505B7;
+        Sun, 10 Sep 2023 18:30:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v3] octeontx2-pf: Fix page pool cache index corruption.
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169437062209.3953.12683727128957272697.git-patchwork-notify@kernel.org>
+Date:   Sun, 10 Sep 2023 18:30:22 +0000
+References: <20230908025309.45096-1-rkannoth@marvell.com>
+In-Reply-To: <20230908025309.45096-1-rkannoth@marvell.com>
+To:     Ratheesh Kannoth <rkannoth@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+        hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, hawk@kernel.org,
+        alexander.duyck@gmail.com, ilias.apalodimas@linaro.org,
+        linyunsheng@huawei.com, bigeasy@linutronix.de
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,101 +56,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Janne,
+Hello:
 
-kernel test robot noticed the following build warnings:
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-[auto build test WARNING on 15d30b46573d75f5cb58cfacded8ebab9c76a2b0]
+On Fri, 8 Sep 2023 08:23:09 +0530 you wrote:
+> The access to page pool `cache' array and the `count' variable
+> is not locked. Page pool cache access is fine as long as there
+> is only one consumer per pool.
+> 
+> octeontx2 driver fills in rx buffers from page pool in NAPI context.
+> If system is stressed and could not allocate buffers, refiiling work
+> will be delegated to a delayed workqueue. This means that there are
+> two cosumers to the page pool cache.
+> 
+> [...]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Janne-Grunau-via-B4-Relay/drm-simpledrm-Add-support-for-multiple-power-domains/20230911-004026
-base:   15d30b46573d75f5cb58cfacded8ebab9c76a2b0
-patch link:    https://lore.kernel.org/r/20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685%40jannau.net
-patch subject: [PATCH] drm/simpledrm: Add support for multiple "power-domains"
-config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230911/202309110206.wDXP9YXl-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230911/202309110206.wDXP9YXl-lkp@intel.com/reproduce)
+Here is the summary with links:
+  - [net,v3] octeontx2-pf: Fix page pool cache index corruption.
+    https://git.kernel.org/netdev/net/c/88e69af061f2
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309110206.wDXP9YXl-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/linux/device.h:15,
-                    from include/linux/acpi.h:14,
-                    from include/linux/i2c.h:13,
-                    from include/uapi/linux/fb.h:6,
-                    from include/linux/fb.h:7,
-                    from include/linux/platform_data/simplefb.h:12,
-                    from drivers/gpu/drm/tiny/simpledrm.c:7:
-   drivers/gpu/drm/tiny/simpledrm.c: In function 'simpledrm_device_detach_genpd':
->> include/drm/drm_print.h:456:39: warning: ' ' flag used with '%p' gnu_printf format [-Wformat=]
-     456 |         dev_##level##type((drm)->dev, "[drm] " fmt, ##__VA_ARGS__)
-         |                                       ^~~~~~~~
-   include/linux/dev_printk.h:110:30: note: in definition of macro 'dev_printk_index_wrap'
-     110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
-         |                              ^~~
-   include/linux/dev_printk.h:144:56: note: in expansion of macro 'dev_fmt'
-     144 |         dev_printk_index_wrap(_dev_err, KERN_ERR, dev, dev_fmt(fmt), ##__VA_ARGS__)
-         |                                                        ^~~~~~~
-   include/drm/drm_print.h:456:9: note: in expansion of macro 'dev_err'
-     456 |         dev_##level##type((drm)->dev, "[drm] " fmt, ##__VA_ARGS__)
-         |         ^~~~
-   include/drm/drm_print.h:469:9: note: in expansion of macro '__drm_printk'
-     469 |         __drm_printk((drm), err,, "*ERROR* " fmt, ##__VA_ARGS__)
-         |         ^~~~~~~~~~~~
-   drivers/gpu/drm/tiny/simpledrm.c:506:9: note: in expansion of macro 'drm_err'
-     506 |         drm_err(&sdev->dev, "% power-domains count:%d\n", __func__, sdev->pwr_dom_count);
-         |         ^~~~~~~
-
-
-vim +456 include/drm/drm_print.h
-
-e820f52577b14c6 Jim Cromie            2022-09-11  416  
-02c9656b2f0d699 Haneen Mohammed       2017-10-17  417  /**
-b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  418   * DRM_DEV_DEBUG() - Debug output for generic drm code
-02c9656b2f0d699 Haneen Mohammed       2017-10-17  419   *
-306589856399e18 Douglas Anderson      2021-09-21  420   * NOTE: this is deprecated in favor of drm_dbg_core().
-306589856399e18 Douglas Anderson      2021-09-21  421   *
-091756bbb1a9613 Haneen Mohammed       2017-10-17  422   * @dev: device pointer
-091756bbb1a9613 Haneen Mohammed       2017-10-17  423   * @fmt: printf() like format string.
-02c9656b2f0d699 Haneen Mohammed       2017-10-17  424   */
-db87086492581c8 Joe Perches           2018-03-16  425  #define DRM_DEV_DEBUG(dev, fmt, ...)					\
-db87086492581c8 Joe Perches           2018-03-16  426  	drm_dev_dbg(dev, DRM_UT_CORE, fmt, ##__VA_ARGS__)
-b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  427  /**
-b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  428   * DRM_DEV_DEBUG_DRIVER() - Debug output for vendor specific part of the driver
-b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  429   *
-306589856399e18 Douglas Anderson      2021-09-21  430   * NOTE: this is deprecated in favor of drm_dbg() or dev_dbg().
-306589856399e18 Douglas Anderson      2021-09-21  431   *
-b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  432   * @dev: device pointer
-b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  433   * @fmt: printf() like format string.
-b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  434   */
-db87086492581c8 Joe Perches           2018-03-16  435  #define DRM_DEV_DEBUG_DRIVER(dev, fmt, ...)				\
-db87086492581c8 Joe Perches           2018-03-16  436  	drm_dev_dbg(dev, DRM_UT_DRIVER,	fmt, ##__VA_ARGS__)
-b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  437  /**
-b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  438   * DRM_DEV_DEBUG_KMS() - Debug output for modesetting code
-b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  439   *
-306589856399e18 Douglas Anderson      2021-09-21  440   * NOTE: this is deprecated in favor of drm_dbg_kms().
-306589856399e18 Douglas Anderson      2021-09-21  441   *
-b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  442   * @dev: device pointer
-b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  443   * @fmt: printf() like format string.
-b52817e9de06a3a Mauro Carvalho Chehab 2020-10-27  444   */
-db87086492581c8 Joe Perches           2018-03-16  445  #define DRM_DEV_DEBUG_KMS(dev, fmt, ...)				\
-db87086492581c8 Joe Perches           2018-03-16  446  	drm_dev_dbg(dev, DRM_UT_KMS, fmt, ##__VA_ARGS__)
-a18b21929453af7 Lyude Paul            2018-07-16  447  
-fb6c7ab8718eb25 Jani Nikula           2019-12-10  448  /*
-fb6c7ab8718eb25 Jani Nikula           2019-12-10  449   * struct drm_device based logging
-fb6c7ab8718eb25 Jani Nikula           2019-12-10  450   *
-fb6c7ab8718eb25 Jani Nikula           2019-12-10  451   * Prefer drm_device based logging over device or prink based logging.
-fb6c7ab8718eb25 Jani Nikula           2019-12-10  452   */
-fb6c7ab8718eb25 Jani Nikula           2019-12-10  453  
-fb6c7ab8718eb25 Jani Nikula           2019-12-10  454  /* Helper for struct drm_device based logging. */
-fb6c7ab8718eb25 Jani Nikula           2019-12-10  455  #define __drm_printk(drm, level, type, fmt, ...)			\
-fb6c7ab8718eb25 Jani Nikula           2019-12-10 @456  	dev_##level##type((drm)->dev, "[drm] " fmt, ##__VA_ARGS__)
-fb6c7ab8718eb25 Jani Nikula           2019-12-10  457  
-fb6c7ab8718eb25 Jani Nikula           2019-12-10  458  
-
+You are awesome, thank you!
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
