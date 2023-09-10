@@ -2,156 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD84799D62
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 10:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9344A799D63
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 10:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239000AbjIJIul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 04:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35216 "EHLO
+        id S241570AbjIJIyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 04:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232421AbjIJIuk (ORCPT
+        with ESMTP id S239084AbjIJIyg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 04:50:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7844A1B9
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 01:50:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77069C433C7;
-        Sun, 10 Sep 2023 08:50:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694335835;
-        bh=vsqC4Q0V2oBEuQjchMzNlW8atq0L+1M6Tmmkzi/4EhQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YLPQ9eXDMYpawn2FVYrooVHIvkEML7VFiVxFM3fpL+1JL79CGzXxdKhWsuOqy4wVT
-         QIy6P7u32Sjt+ae7SJoOEZ8JoQttxYaas9a+Y8JkR3aZRczKQZxjJzGJ8b4+sI3pbw
-         4l+q20Iuhd7eCVkR3MQSuIIFdzmoMhPm5j9tVPFYPIfS5DIxxtK+KFWrboXBrdJEyl
-         Ee33yGFrEov+z7H3J4u3MPzPARqXA8U5fz3odyjCmuSra2DR7UM4cvVwNrQwzeZDTR
-         BPzc+SE3BSFEf0us+d6qga17E560ME+J5VuaWcgI2p+lqL9Bu2SgeR2hLehzhp+K7Q
-         mJ3IX83I3sVOQ==
-Date:   Sun, 10 Sep 2023 04:50:29 -0400
-From:   Guo Ren <guoren@kernel.org>
-To:     Leonardo Bras <leobras@redhat.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [RFC PATCH v5 0/5] Rework & improve riscv cmpxchg.h and atomic.h
-Message-ID: <ZP2DVap64lJZj9g4@gmail.com>
-References: <20230810040349.92279-2-leobras@redhat.com>
+        Sun, 10 Sep 2023 04:54:36 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2699B19E
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 01:54:32 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-5717f7b932aso2270988eaf.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 01:54:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694336070; x=1694940870; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5lgpH9+mYIZiTiSRi4aA6jYtZEqamFekNzmEa3uRVpo=;
+        b=Mw0DGMC4i0VlCwKll7t6c025MVA6oxRtYAZ6MKroa6FDa4G+ka0Yc3z/91AAeJJrUP
+         VAqAgaO8x6HHmEqCpwigqhRqL2wTyrGLDteN/dJv1efxUTG2XDIjahfPxevQOLUk2515
+         UH+muc5wCrJSOaqzi3HRYaZwjt99EzUfWFkP5LMzwBVbgdw8Gtpg5YUjz2ehhEWKgaAz
+         NVzJCMQAgId//T4p/m8RwnQUZNWzvYScKYAsQGFrX/wq1Jr4warGFIRV7B7etMzDo3Y0
+         0tRdyUlMzqx5NX/GaI1I6an8VY/nTxMcP7JKndLrLBvVh6dNLnxGVzAcpDhVU61RCvQs
+         jcFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694336070; x=1694940870;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5lgpH9+mYIZiTiSRi4aA6jYtZEqamFekNzmEa3uRVpo=;
+        b=R1iS2/HK7wKVLKZ1+KNG7IoGfTn6yddy8Xrl/lpZ2PprZeFSmENTlisXIpzSUzzicb
+         mFmX8LImGrCgUkSEqAdUWsoH9qPV3k7pJZ4WQ5ncenJu08WRh8PCSjToJUYMVOdARwkZ
+         B9WgGSO2Y0/CwjuhZ8K/C7uuREljyQtCgbiJ5D9/wdRyE1vntT+yNOwjnh2a/0bbiPUK
+         9hssVhcgeQxZ8ZDPAO5Ydw5WZdwcz46oF8GdJUlGaGWy+szTEqsOkPmowfQePzqBaqnY
+         3jXcb5mFei2/WiBdlPBfSLWxIr97JzcZHq+OxkQC9K1B29ujmITi67R5/FTOrwEgGtmY
+         NSGA==
+X-Gm-Message-State: AOJu0Yz7tarifj9fUUpctaMACl36QrXnGt0yXKtwxRSq3c/WUtaGsl4k
+        pM03ZZ7gFj//KLSH3mbKd16ig1Akwt8=
+X-Google-Smtp-Source: AGHT+IFo0lXuVT4laYGMB6yJcUTqFaZMQzZR8Ia5MJVnJ73100N8fueG1wWvlVMiQqr/DMEjDeftmg==
+X-Received: by 2002:a05:6870:c214:b0:1c8:d72a:d6b8 with SMTP id z20-20020a056870c21400b001c8d72ad6b8mr8286404oae.36.1694336070626;
+        Sun, 10 Sep 2023 01:54:30 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id 21-20020a170902c25500b001bb9f104328sm4270163plg.146.2023.09.10.01.54.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Sep 2023 01:54:30 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 41E948B25F93; Sun, 10 Sep 2023 15:54:28 +0700 (WIB)
+Date:   Sun, 10 Sep 2023 15:54:28 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Andres Salomon <dilinger@queued.net>,
+        "Timur I. Davletshin" <timur.davletshin@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux AMD GEODE <linux-geode@lists.infradead.org>
+Subject: Re: Fwd: AMD Geode LX hardware RNG driver produces regular patterns
+ (geode-rng.c)
+Message-ID: <ZP2ERFydER7pJprL@debian.me>
+References: <9a28c2fc-d769-4802-a1f2-77ba2cb34d25@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ulctYQL3W5/kDSuY"
 Content-Disposition: inline
-In-Reply-To: <20230810040349.92279-2-leobras@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <9a28c2fc-d769-4802-a1f2-77ba2cb34d25@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 01:03:42AM -0300, Leonardo Bras wrote:
-> While studying riscv's cmpxchg.h file, I got really interested in
-> understanding how RISCV asm implemented the different versions of
-> {cmp,}xchg.
-> 
-> When I understood the pattern, it made sense for me to remove the
-> duplications and create macros to make it easier to understand what exactly
-> changes between the versions: Instruction sufixes & barriers.
-> 
-> Also, did the same kind of work on atomic.c.
-> 
-> After that, I noted both cmpxchg and xchg only accept variables of 
-> size 4 and 8, compared to x86 and arm64 which do 1,2,4,8.
-> 
-> Now that deduplication is done, it is quite direct to implement them
-> for variable sizes 1 and 2, so I did it. Then Guo Ren already presented
-> me some possible users :)
-> 
-> I did compare the generated asm on a test.c that contained usage for every
-> changed function, and could not detect any change on patches 1 + 2 + 3 
-> compared with upstream.
-> 
-> Pathes 4 & 5 were compiled-tested, merged with guoren/qspinlock_v11 and
-> booted just fine with qemu -machine virt -append "qspinlock". 
-> 
-> (tree: https://gitlab.com/LeoBras/linux/-/commits/guo_qspinlock_v11)
-Tested-by: Guo Ren <guoren@kernel.org>
 
-Sorry for late reply, because we are stress testing CNA qspinlock on
-sg2042 128 cores hardware platform. This series has passed our test for
-several weeks. For more detail, ref:
-https://lore.kernel.org/linux-riscv/20230910082911.3378782-1-guoren@kernel.org/
+--ulctYQL3W5/kDSuY
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Thanks!
-> Leo
-> 
-> Changes since squashed cmpxchg RFCv4:
-> - Added (__typeof__(*(p))) before returning from {cmp,}xchg, as done
->   in current upstream, (possibly) fixing the bug from kernel test robot
-> https://lore.kernel.org/all/20230809021311.1390578-2-leobras@redhat.com/
-> 
-> Changes since squashed cmpxchg RFCv3:
-> - Fixed bug on cmpxchg macro for var size 1 & 2: now working
-> - Macros for var size 1 & 2's lr.w and sc.w now are guaranteed to receive
->   input of a 32-bit aligned address
-> - Renamed internal macros from _mask to _masked for patches 4 & 5
-> - __rc variable on macros for var size 1 & 2 changed from register to ulong 
-> https://lore.kernel.org/all/20230804084900.1135660-2-leobras@redhat.com/
-> 
-> Changes since squashed cmpxchg RFCv2:
-> - Removed rc parameter from the new macro: it can be internal to the macro
-> - 2 new patches: cmpxchg size 1 and 2, xchg size 1 and 2
-> https://lore.kernel.org/all/20230803051401.710236-2-leobras@redhat.com/
-> 
-> Changes since squashed cmpxchg RFCv1:
-> - Unified with atomic.c patchset
-> - Rebased on top of torvalds/master (thanks Andrea Parri!)
-> - Removed helper macros that were not being used elsewhere in the kernel.
-> https://lore.kernel.org/all/20230419062505.257231-1-leobras@redhat.com/
-> https://lore.kernel.org/all/20230406082018.70367-1-leobras@redhat.com/
-> 
-> Changes since (cmpxchg) RFCv3:
-> - Squashed the 6 original patches in 2: one for cmpxchg and one for xchg
-> https://lore.kernel.org/all/20230404163741.2762165-1-leobras@redhat.com/
-> 
-> Changes since (cmpxchg) RFCv2:
-> - Fixed  macros that depend on having a local variable with a magic name
-> - Previous cast to (long) is now only applied on 4-bytes cmpxchg
-> https://lore.kernel.org/all/20230321074249.2221674-1-leobras@redhat.com/
-> 
-> Changes since (cmpxchg) RFCv1:
-> - Fixed patch 4/6 suffix from 'w.aqrl' to '.w.aqrl', to avoid build error
-> https://lore.kernel.org/all/20230318080059.1109286-1-leobras@redhat.com/
-> 
-> Leonardo Bras (5):
->   riscv/cmpxchg: Deduplicate xchg() asm functions
->   riscv/cmpxchg: Deduplicate cmpxchg() asm and macros
->   riscv/atomic.h : Deduplicate arch_atomic.*
->   riscv/cmpxchg: Implement cmpxchg for variables of size 1 and 2
->   riscv/cmpxchg: Implement xchg for variables of size 1 and 2
-> 
->  arch/riscv/include/asm/atomic.h  | 164 ++++++-------
->  arch/riscv/include/asm/cmpxchg.h | 404 ++++++++++---------------------
->  2 files changed, 200 insertions(+), 368 deletions(-)
-> 
-> 
-> base-commit: cacc6e22932f373a91d7be55a9b992dc77f4c59b
-> -- 
-> 2.41.0
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
+On Thu, Sep 07, 2023 at 06:37:00PM +0700, Bagas Sanjaya wrote:
+> #regzbot ^introduced: v4.14.267..v5.15.127
+> #regzbot title: predictable urandom output on Alix 2d13
+>=20
+
+#regzbot fix: https://lore.kernel.org/lkml/20230910083418.8990-1-jonas.gors=
+ki@gmail.com/
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--ulctYQL3W5/kDSuY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZP2EPwAKCRD2uYlJVVFO
+ozp8AP97BdzdydMFXvDsCeRnXjJh+ZjSSO52H0t51A3rrvrtmwD+I+a3DQwcf00v
+t9AfVXJJ+3iWZXZb6Mw31XNa6wPzQwU=
+=CWvC
+-----END PGP SIGNATURE-----
+
+--ulctYQL3W5/kDSuY--
