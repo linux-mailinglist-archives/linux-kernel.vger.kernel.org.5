@@ -2,115 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCFA799CD9
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 08:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BE8799CDC
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 08:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346338AbjIJGy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 02:54:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36950 "EHLO
+        id S1346350AbjIJG7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 02:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237352AbjIJGy7 (ORCPT
+        with ESMTP id S237311AbjIJG7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 02:54:59 -0400
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2FA441B8
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 23:54:54 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.02,241,1688396400"; 
-   d="scan'208";a="179288419"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 10 Sep 2023 15:54:51 +0900
-Received: from localhost.localdomain (unknown [10.226.92.9])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 45E124005B40;
-        Sun, 10 Sep 2023 15:54:49 +0900 (JST)
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.au@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Subject: [PATCH v3] regulator: max20086: Drop ID table
-Date:   Sun, 10 Sep 2023 07:54:44 +0100
-Message-Id: <20230910065444.25906-1-biju.das.jz@bp.renesas.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 10 Sep 2023 02:59:13 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E48301BD;
+        Sat,  9 Sep 2023 23:59:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 323ACC433C7;
+        Sun, 10 Sep 2023 06:59:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694329149;
+        bh=5gpqg/DpUwN2Pc9g8wvI9fcEXZrb9npPHr+b/QvBmc0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IMlHdAPM3m8+u8Eb0U382WZh9yLqmqmqJtwVqDKz5BL9vhjy0lOHhc2sccyQhU22I
+         hRitRaLY18OGgZSCEU07WjtdFI+Xi6u7xdx667TjwH/E0HHx92DwnGNJsms+ppZTNy
+         0//JfR9x6qNwQOr7nQcVeZzG6Htd5bkO5ZQN9FyA=
+Date:   Sun, 10 Sep 2023 07:59:06 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco)" 
+        <deeratho@cisco.com>
+Cc:     "salvatore.bonaccorso@gmail.com" <salvatore.bonaccorso@gmail.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free bug in
+ btsdio_remove due to race condition
+Message-ID: <2023091051-blaspheme-quack-c949@gregkh>
+References: <20230906121525.3946250-1-deeratho@cisco.com>
+ <2023090738-passive-snowless-3b9d@gregkh>
+ <DM4PR11MB6189DEDD52F3E17C8C4E3D1BC4EDA@DM4PR11MB6189.namprd11.prod.outlook.com>
+ <DM4PR11MB61890EE125816A786D153C22C4EDA@DM4PR11MB6189.namprd11.prod.outlook.com>
+ <2023090820-wielder-angled-3def@gregkh>
+ <DM4PR11MB618943BFA18521150923326BC4EDA@DM4PR11MB6189.namprd11.prod.outlook.com>
+ <2023090826-fabulous-genetics-e912@gregkh>
+ <DM4PR11MB61897793502F49240BCA903CC4ECA@DM4PR11MB6189.namprd11.prod.outlook.com>
+ <2023090925-eloquence-derail-1e2b@gregkh>
+ <DM4PR11MB6189F15AB7DFD11AA02A16C2C4F3A@DM4PR11MB6189.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM4PR11MB6189F15AB7DFD11AA02A16C2C4F3A@DM4PR11MB6189.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver has an ID table, but it uses the wrong API for retrieving match
-data and that will lead to a crash, if it is instantiated by user space or
-using ID. From this, there is no user for the ID table and let's drop it
-from the driver as it saves some memory.
+On Sun, Sep 10, 2023 at 06:25:22AM +0000, Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco) wrote:
+> -----Original Message-----
+> From: Greg KH <gregkh@linuxfoundation.org> 
+> Sent: Saturday, September 9, 2023 5:17 PM
+> To: Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco) <deeratho@cisco.com>
+> Cc: stable@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free bug in btsdio_remove due to race condition
+> 
+> On Sat, Sep 09, 2023 at 08:49:52AM +0000, Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco) wrote:
+> > -----Original Message-----
+> > From: Greg KH <gregkh@linuxfoundation.org>
+> > Sent: Friday, September 8, 2023 12:39 PM
+> > To: Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco) 
+> > <deeratho@cisco.com>
+> > Cc: stable@vger.kernel.org; linux-kernel@vger.kernel.org
+> > Subject: Re: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free 
+> > bug in btsdio_remove due to race condition
+> > 
+> > > A: http://en.wikipedia.org/wiki/Top_post
+> > > Q: Were do I find info about this thing called top-posting?
+> > > A: Because it messes up the order in which people normally read text.
+> > > Q: Why is top-posting such a bad thing?
+> > > A: Top-posting.
+> > > Q: What is the most annoying thing in e-mail?
+> > 
+> > > A: No.
+> > > Q: Should I include quotations after my reply?
+> > 
+> > 
+> > > http://daringfireball.net/2007/07/on_top
+> > 
+> > On Fri, Sep 08, 2023 at 06:54:06AM +0000, Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco) wrote:
+> > > Hi Greg,
+> > > 
+> > > This change is required to fix kernel CVE: CVE-2023-1989 which is 
+> > > reported in v6.1 kernel version.
+> > 
+> > > Which change?
+> > 
+> > [Deepak]: I am referring below change. This below change is required to fix kernel CVE: CVE-2023-1989 which is reported in v6.1 kernel.
+> > 
+> > Subject: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free bug in 
+> > btsdio_remove due to race condition
+> > 
+> > From: Zheng Wang <zyytlz.wz@163.com>
+> > 
+> > [ Upstream commit 73f7b171b7c09139eb3c6a5677c200dc1be5f318 ]
+> 
+> > This commit is already in the 6.1.52 kernel release, why do you want it included again?
+> 
+> > confused,
+> 
+> > greg k-h
+> 
+> Hi Greg, Salvatore,
+> 
+> When I have submitted this patch for review, at that time, 6.1.52 was not released.
+> 
+> It will be good if you can share me guideline or details like how I
+> can share CVE fix patch to upstream for review like what details I
+> need to include in patch for review so from next time, we can save
+> time in query discussion.
 
-While at it, drop blank lines before MODULE_DEVICE_TABLE* and remove
-trailing comma in the terminator entry for OF table making code robust
-against (theoretical) misrebases or other similar things where the new
-entry goes _after_ the termination without the compiler noticing.
+Why does the random assignment of a CVE number mean anything should be
+done differently than the normal process of getting a stable patch
+merged?
 
-Suggested-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
----
-Note:
- This patch is only compile tested.
+You have read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
 
-v2->v3:
- * Dropped ID table
- * Updated cpmmit header and description.
- * Added Suggested-by tag from Laurent.
-v1->v2:
- * Removed trailing comma in the terminator entry for OF/ID table.
----
- drivers/regulator/max20086-regulator.c | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
+right?
 
-diff --git a/drivers/regulator/max20086-regulator.c b/drivers/regulator/max20086-regulator.c
-index 32f47b896fd1..0eb0a4fb077f 100644
---- a/drivers/regulator/max20086-regulator.c
-+++ b/drivers/regulator/max20086-regulator.c
-@@ -275,16 +275,6 @@ static int max20086_i2c_probe(struct i2c_client *i2c)
- 	return 0;
- }
- 
--static const struct i2c_device_id max20086_i2c_id[] = {
--	{ "max20086" },
--	{ "max20087" },
--	{ "max20088" },
--	{ "max20089" },
--	{ /* Sentinel */ },
--};
--
--MODULE_DEVICE_TABLE(i2c, max20086_i2c_id);
--
- static const struct of_device_id max20086_dt_ids[] __maybe_unused = {
- 	{
- 		.compatible = "maxim,max20086",
-@@ -311,9 +301,8 @@ static const struct of_device_id max20086_dt_ids[] __maybe_unused = {
- 			.num_outputs = 2,
- 		}
- 	},
--	{ /* Sentinel */ },
-+	{ /* Sentinel */ }
- };
--
- MODULE_DEVICE_TABLE(of, max20086_dt_ids);
- 
- static struct i2c_driver max20086_regulator_driver = {
-@@ -323,7 +312,6 @@ static struct i2c_driver max20086_regulator_driver = {
- 		.of_match_table = of_match_ptr(max20086_dt_ids),
- 	},
- 	.probe = max20086_i2c_probe,
--	.id_table = max20086_i2c_id,
- };
- 
- module_i2c_driver(max20086_regulator_driver);
--- 
-2.25.1
+That should cover it.
 
+thanks,
+
+greg k-h
