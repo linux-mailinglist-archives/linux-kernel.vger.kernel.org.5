@@ -2,95 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB2F799CA9
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 06:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BD4799CAE
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 06:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346187AbjIJEhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 00:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35474 "EHLO
+        id S1346261AbjIJEqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 00:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346161AbjIJEho (ORCPT
+        with ESMTP id S236484AbjIJEqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 00:37:44 -0400
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC47195;
-        Sat,  9 Sep 2023 21:37:38 -0700 (PDT)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1d4e0c2901bso2392179fac.0;
-        Sat, 09 Sep 2023 21:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694320658; x=1694925458; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=28TDwagANbm8HIbTFyx3CBMn7Zz+dpCIZxzUcErrG5s=;
-        b=m1WpsjztrNH8peo0rxuhh9CYykqUTvvKq+PZnE5LAhSm2Q39l/5m2RX2QDFdBuV4IZ
-         xyl/eSAFZQCbNslK9r0yfC1HkbBn55TzAmmQhItWr8E8+bujrwBrevQZrYXe9VeeyFOQ
-         54cFhNR805zTVFusk30MLKZ/4+nSfby8hBJizBL4MhA+IZGAbl8nXjMZNltTtL26RdR9
-         H4KhCDuUDVvRlGIpK+uOaBCPwnx400CKFul76WnLPhEVpZQfcUk8yAFpfoBIJWsSE3B7
-         qfFQjNZ5BjNLW5wZn+LFrx2icxpEqM+iH4h05wJlPy1ucvYj2Fp0OpJfNGVXTY87djTH
-         9+6g==
+        Sun, 10 Sep 2023 00:46:03 -0400
+Received: from mail-pf1-f208.google.com (mail-pf1-f208.google.com [209.85.210.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6E61BF
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 21:45:59 -0700 (PDT)
+Received: by mail-pf1-f208.google.com with SMTP id d2e1a72fcca58-68fac73c54aso953264b3a.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Sep 2023 21:45:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694320658; x=1694925458;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=28TDwagANbm8HIbTFyx3CBMn7Zz+dpCIZxzUcErrG5s=;
-        b=hDf1lr3P2DlG7ZlbCKi3A47pyma3wCR1X7ytlOBOXZK3u/krvnVtISWVhC8hZ6N25Q
-         vrsJeznbluCYjHCCqCiKI3uoljOXjbf6Nunfb1znor0o+THFyN6taV1elxxEHvWbAxqC
-         s0jm3UPkmVEDOc+iiI7dzDSAT1/24VY1vNG3+RxEYQs/9V6xik+awPK/hmKY2kTbCzmM
-         HutyfxwfgxbVXjIfn1eYQU4C+fQcY+dv9ReDDREIH0DJg1YyjIAKTJSFkosqBwI2/p0k
-         VrOL1Z66BiXPhbjfgCiN/SERbM1Wet9Ocy7xPw7y8r+VdrcZxSYU/EunJyrJds9nguVW
-         srxA==
-X-Gm-Message-State: AOJu0Yy0uvfQF7/jQpFS8HWvdfL9+ALUyHbbfNgSIR6GTMqhNAh5+Hgt
-        UAhtHN45uHGBAa3Sh25Agh57dMfl9njL+z951GooCSVWzcY=
-X-Google-Smtp-Source: AGHT+IFp5zFknvSKDmGFWesaph1tNcTKmNY5gmPbhFPx4wUKtcAyiXJnWBq1XpvXecYQlxYJj3e2qPsd6JZB0TUcnY0=
-X-Received: by 2002:a05:6870:51c7:b0:1be:f8d9:7bdd with SMTP id
- b7-20020a05687051c700b001bef8d97bddmr8159153oaj.6.1694320658018; Sat, 09 Sep
- 2023 21:37:38 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694321158; x=1694925958;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5rI+wW1D3pEQy6NkxGD/WZQotkC8/aBPOgOXgQXzWXw=;
+        b=BnnxW98ViH1T8CzxFuxr6J9O2ZMr3ZqWvw//8LhIoAdgUiQZdjyBM8KCWIWZSDVv9I
+         EdXguXJi5C9BlHdgYOEMjMYMw7wZDM6J3xdj/AjaOnfThQ3dmEZY3aEugaKLaTXScrf+
+         aV2tPd+tq4d6zH9IW9pr/jtpw/mFqeqgUj6Z2VshUe9lTtOTQKaJVbTljQdnqO8fwR+P
+         rEwYxMF5V2504TSRuYcRWY7twftUL0lVhmn+AtdGwalBTE0IXGmN81KktyQbc+51yK9S
+         Hj4hFfrrOYykQZmggjkynS70ftq7O9Dsqp/lcy1mX3l3u/Nk14rRSiIxNTVx+x/hnoir
+         hm5A==
+X-Gm-Message-State: AOJu0YzQ4nHchH8U18EvkhZK38ZckxorWKR2Cqe86Cr5NAAd3ItoH0pE
+        OfgLmX4HLRBkyAhcUnCCZnIeADBeYYDv9SSxaWSRUfuUgnL3
+X-Google-Smtp-Source: AGHT+IFIGCO87tTTbKFAEIALMs+fleP1/EF6ONSFquTElCD4CFDiwQXu5MlmJh31nNspuerZpEVErDj8EUikbiWlfdwhz9/Plm0+
 MIME-Version: 1.0
-References: <20230910040811.53046-1-erer1243@gmail.com> <ZP1DsYlG+R/Y9fjr@casper.infradead.org>
-In-Reply-To: <ZP1DsYlG+R/Y9fjr@casper.infradead.org>
-From:   Oliver F <erer1243@gmail.com>
-Date:   Sun, 10 Sep 2023 00:37:27 -0400
-Message-ID: <CAHhkmma2uKdnDCCidRVd0pF-xJRPDL_f5qfYos5vpcUE6cXdJA@mail.gmail.com>
-Subject: Re: [PATCH] docs/sphinx: Explicitly convert Sphinx paths to str
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6a00:b55:b0:68e:36bc:1925 with SMTP id
+ p21-20020a056a000b5500b0068e36bc1925mr2639588pfo.1.1694321158463; Sat, 09 Sep
+ 2023 21:45:58 -0700 (PDT)
+Date:   Sat, 09 Sep 2023 21:45:58 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c925dc0604f9e2ef@google.com>
+Subject: [syzbot] [gfs2?] BUG: sleeping function called from invalid context
+ in gfs2_withdraw
+From:   syzbot <syzbot+577d06779fa95206ba66@syzkaller.appspotmail.com>
+To:     agruenba@redhat.com, gfs2@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rpeterso@redhat.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 10, 2023 at 12:19=E2=80=AFAM Matthew Wilcox <willy@infradead.or=
-g> wrote:
->
-> On Sun, Sep 10, 2023 at 12:08:06AM -0400, Oliver Faso wrote:
-> >                  else:
-> > -                    doc =3D env.srcdir + "/" + env.docname + ":" + str=
-(self.lineno)
-> > +                    doc =3D str(env.srcdir) + "/" + env.docname + ":" =
-+ str(self.lineno)
->
-> Would we be better off doing the path manipulation in Path, then converti=
-ng
-> to string?  ie:
->
->                         doc =3D str(env.srcdir / env.docname) + ":" + str=
-(self.lineno)
->
+Hello,
 
-That would be incompatible with earlier Sphinx versions, which most
-people are probably using.
-The benefits would be supporting non-'/' separators, and invalid uft8 in pa=
-ths.
-But, I think those things don't matter here.
+syzbot found the following issue on:
 
-(sorry Matthew for double mail, I hit the wrong reply button)
+HEAD commit:    65d6e954e378 Merge tag 'gfs2-v6.5-rc5-fixes' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10994bcc680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cbf8b29a87b8a830
+dashboard link: https://syzkaller.appspot.com/bug?extid=577d06779fa95206ba66
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10cd8e20680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=115ddba8680000
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-65d6e954.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/040b1e85a692/vmlinux-65d6e954.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/984f55ac441b/bzImage-65d6e954.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/cd97a0244981/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+577d06779fa95206ba66@syzkaller.appspotmail.com
+
+loop0: rw=1, sector=3280942697285464, nr_sectors = 8 limit=32768
+gfs2: fsid=syz:syz.0: Error 10 writing to journal, jid=0
+gfs2: fsid=syz:syz.0: fatal: I/O error(s)
+gfs2: fsid=syz:syz.0: about to withdraw this file system
+BUG: sleeping function called from invalid context at fs/gfs2/util.c:157
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5141, name: syz-executor200
+preempt_count: 1, expected: 0
+RCU nest depth: 0, expected: 0
+INFO: lockdep is turned off.
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 1 PID: 5141 Comm: syz-executor200 Not tainted 6.5.0-syzkaller-11938-g65d6e954e378 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
+ __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10187
+ signal_our_withdraw fs/gfs2/util.c:157 [inline]
+ gfs2_withdraw+0xc7d/0x1280 fs/gfs2/util.c:342
+ gfs2_ail1_empty+0x8cc/0xab0 fs/gfs2/log.c:377
+ gfs2_flush_revokes+0x6b/0x90 fs/gfs2/log.c:815
+ revoke_lo_before_commit+0x22/0x640 fs/gfs2/lops.c:867
+ lops_before_commit fs/gfs2/lops.h:40 [inline]
+ gfs2_log_flush+0x105e/0x27f0 fs/gfs2/log.c:1101
+ gfs2_write_inode+0x24a/0x4b0 fs/gfs2/super.c:453
+ write_inode fs/fs-writeback.c:1456 [inline]
+ __writeback_single_inode+0xa81/0xe70 fs/fs-writeback.c:1668
+ writeback_single_inode+0x2af/0x590 fs/fs-writeback.c:1724
+ sync_inode_metadata+0xa5/0xe0 fs/fs-writeback.c:2786
+ gfs2_fsync+0x218/0x380 fs/gfs2/file.c:761
+ vfs_fsync_range+0x141/0x220 fs/sync.c:188
+ generic_write_sync include/linux/fs.h:2625 [inline]
+ gfs2_file_write_iter+0xd97/0x10c0 fs/gfs2/file.c:1150
+ call_write_iter include/linux/fs.h:1985 [inline]
+ do_iter_readv_writev+0x21e/0x3c0 fs/read_write.c:735
+ do_iter_write+0x17f/0x830 fs/read_write.c:860
+ vfs_iter_write+0x7a/0xb0 fs/read_write.c:901
+ iter_file_splice_write+0x698/0xbf0 fs/splice.c:736
+ do_splice_from fs/splice.c:933 [inline]
+ direct_splice_actor+0x118/0x180 fs/splice.c:1142
+ splice_direct_to_actor+0x347/0xa30 fs/splice.c:1088
+ do_splice_direct+0x1af/0x280 fs/splice.c:1194
+ do_sendfile+0xb88/0x1390 fs/read_write.c:1254
+ __do_sys_sendfile64 fs/read_write.c:1322 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1308 [inline]
+ __x64_sys_sendfile64+0x1d6/0x220 fs/read_write.c:1308
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f86c8957779
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffef8d7a208 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007ffef8d7a3d8 RCX: 00007f86c8957779
+RDX: 0000000000000000 RSI: 0000000000000007 RDI: 0000000000000006
+RBP: 00007f86c89dc610 R08: 00007ffef8d7a3d8 R09: 00007ffef8d7a3d8
+R10: 0001000000201004 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffef8d7a3c8 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+BUG: scheduling while atomic: syz-executor200/5141/0x00000002
+INFO: lockdep is turned off.
+Modules linked in:
+Preemption disabled at:
+[<0000000000000000>] 0x0
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
