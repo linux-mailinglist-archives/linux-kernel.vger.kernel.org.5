@@ -2,188 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BF3799C28
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 02:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 830A6799C2D
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 02:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343837AbjIJAAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 20:00:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
+        id S237566AbjIJAQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 20:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242067AbjIJAAD (ORCPT
+        with ESMTP id S232480AbjIJAQd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 20:00:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4CD1BF
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 16:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694303999; x=1725839999;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=fHTdagqL+LfhPiJe2cHZhqxZp7r3SU4TYF9oqz40oN8=;
-  b=JwPcZV/QgD03YbUcifl5iAVN+ILK/cZ+yxQSkbnfP8txp3Z+5ifYXriQ
-   fQj0J2T6mNEhUnjHAM9yAi6/HzfvOE9t3kna2kQBVvXDZDgUOS40q6VwM
-   s+Hc48sU53kQiAM7NHiPi7Ffxrubq6JdfPJkJ0YtD8xTJb1Ewusm2LJxf
-   crw1Aj/7Tyvh1JR3zO33I+eR8TWPjKNM8NnRoawWo72GPwr62mAYXuvxC
-   fYYmJWnoE23UGHnaAPBRQLf9zm5zC0HnW+VaxivMQyB+CwqBiwpGB5PuJ
-   tS8xoM1qlVi/rSlKim4HJhu2IdPnIvFEfMAqkNeGiAPPryNgTuciTQmhj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="358158849"
-X-IronPort-AV: E=Sophos;i="6.02,240,1688454000"; 
-   d="scan'208";a="358158849"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 16:59:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="857833729"
-X-IronPort-AV: E=Sophos;i="6.02,240,1688454000"; 
-   d="scan'208";a="857833729"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 09 Sep 2023 16:59:57 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qf7rn-00044K-1Y;
-        Sat, 09 Sep 2023 23:59:55 +0000
-Date:   Sun, 10 Sep 2023 07:59:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: kernel/bpf/memalloc.c:139:48: sparse: sparse: incorrect type in
- initializer (different address spaces)
-Message-ID: <202309100756.kJWzQTtH-lkp@intel.com>
+        Sat, 9 Sep 2023 20:16:33 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB26F1BD
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 17:16:27 -0700 (PDT)
+X-QQ-mid: bizesmtp62t1694304964txspi1h0
+Received: from wangjiexun-virtual-machine.loca ( [120.225.34.249])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 10 Sep 2023 08:16:02 +0800 (CST)
+X-QQ-SSF: 01200000000000101000000A0000000
+X-QQ-FEAT: LE7C6P2vL8T8dkxfHfUMK4hSz907dsoEo8Skjve4CIaYwaWm+SWYl7AWRESLI
+        ehkPraxg98x7BxgHqox8OAu/HvVe5UR7B/uh6GIpTqvIM4VlyioRIajkseCrD5vz0Zo+bMp
+        2O1OS8zKXW3HL705eWwadY6uOGid8YnJBkt3hu4yQAl9QBxVhr72wpv5hgaPYrroUi1S8VB
+        6tq+RaWxqUsVOblPxsz8V+MWqLRJwTyx2hOlBEl2ONG9mDsAtHeQTlSbEZbohMLT+PvaXl5
+        3PhxYZfntGPUz9cQV6W/Vx+YT1KJurmcNGlWIyCN+TJ2pqo3xSYgtehlDyeqsJsNi51+461
+        6PlUDSJeTOxhvyJadMEMCjQsNCPTILADZdTDnPvMeI5FpOUlN0=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 9083973876487166381
+From:   Jiexun Wang <wangjiexun@tinylab.org>
+To:     samuel@sholland.org
+Cc:     aou@eecs.berkeley.edu, conor@kernel.org, falcon@tinylab.org,
+        guoren@kernel.org, jszhang@kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, tglx@linutronix.de,
+        wangjiexun@tinylab.org
+Subject: Re: [PATCH v2] RISC-V: Fix use of non existent CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK
+Date:   Sun, 10 Sep 2023 08:16:01 +0800
+Message-Id: <20230910001601.371826-1-wangjiexun@tinylab.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <0e270067-cd2d-ecd0-512b-5dce4865fa4c@sholland.org>
+References: <0e270067-cd2d-ecd0-512b-5dce4865fa4c@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-0
+X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_PBL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6b8bb5b8d9b35fb43f0dbf9fd91b7d35e6232e08
-commit: 4ab67149f3c6e97c5c506a726f0ebdec38241679 bpf: Add percpu allocation support to bpf_mem_alloc.
-date:   1 year ago
-config: i386-randconfig-063-20230910 (https://download.01.org/0day-ci/archive/20230910/202309100756.kJWzQTtH-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230910/202309100756.kJWzQTtH-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309100756.kJWzQTtH-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> kernel/bpf/memalloc.c:139:48: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void *pptr @@     got void [noderef] __percpu * @@
-   kernel/bpf/memalloc.c:139:48: sparse:     expected void *pptr
-   kernel/bpf/memalloc.c:139:48: sparse:     got void [noderef] __percpu *
->> kernel/bpf/memalloc.c:142:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __percpu *__pdata @@     got void *pptr @@
-   kernel/bpf/memalloc.c:142:37: sparse:     expected void [noderef] __percpu *__pdata
-   kernel/bpf/memalloc.c:142:37: sparse:     got void *pptr
->> kernel/bpf/memalloc.c:211:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __percpu *__pdata @@     got void * @@
-   kernel/bpf/memalloc.c:211:43: sparse:     expected void [noderef] __percpu *__pdata
-   kernel/bpf/memalloc.c:211:43: sparse:     got void *
-
-vim +139 kernel/bpf/memalloc.c
-
-   127	
-   128	static void *__alloc(struct bpf_mem_cache *c, int node)
-   129	{
-   130		/* Allocate, but don't deplete atomic reserves that typical
-   131		 * GFP_ATOMIC would do. irq_work runs on this cpu and kmalloc
-   132		 * will allocate from the current numa node which is what we
-   133		 * want here.
-   134		 */
-   135		gfp_t flags = GFP_NOWAIT | __GFP_NOWARN | __GFP_ACCOUNT;
-   136	
-   137		if (c->percpu) {
-   138			void **obj = kmem_cache_alloc_node(c->kmem_cache, flags, node);
- > 139			void *pptr = __alloc_percpu_gfp(c->unit_size, 8, flags);
-   140	
-   141			if (!obj || !pptr) {
- > 142				free_percpu(pptr);
-   143				kfree(obj);
-   144				return NULL;
-   145			}
-   146			obj[1] = pptr;
-   147			return obj;
-   148		}
-   149	
-   150		if (c->kmem_cache)
-   151			return kmem_cache_alloc_node(c->kmem_cache, flags, node);
-   152	
-   153		return kmalloc_node(c->unit_size, flags, node);
-   154	}
-   155	
-   156	static struct mem_cgroup *get_memcg(const struct bpf_mem_cache *c)
-   157	{
-   158	#ifdef CONFIG_MEMCG_KMEM
-   159		if (c->objcg)
-   160			return get_mem_cgroup_from_objcg(c->objcg);
-   161	#endif
-   162	
-   163	#ifdef CONFIG_MEMCG
-   164		return root_mem_cgroup;
-   165	#else
-   166		return NULL;
-   167	#endif
-   168	}
-   169	
-   170	/* Mostly runs from irq_work except __init phase. */
-   171	static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
-   172	{
-   173		struct mem_cgroup *memcg = NULL, *old_memcg;
-   174		unsigned long flags;
-   175		void *obj;
-   176		int i;
-   177	
-   178		memcg = get_memcg(c);
-   179		old_memcg = set_active_memcg(memcg);
-   180		for (i = 0; i < cnt; i++) {
-   181			obj = __alloc(c, node);
-   182			if (!obj)
-   183				break;
-   184			if (IS_ENABLED(CONFIG_PREEMPT_RT))
-   185				/* In RT irq_work runs in per-cpu kthread, so disable
-   186				 * interrupts to avoid preemption and interrupts and
-   187				 * reduce the chance of bpf prog executing on this cpu
-   188				 * when active counter is busy.
-   189				 */
-   190				local_irq_save(flags);
-   191			/* alloc_bulk runs from irq_work which will not preempt a bpf
-   192			 * program that does unit_alloc/unit_free since IRQs are
-   193			 * disabled there. There is no race to increment 'active'
-   194			 * counter. It protects free_llist from corruption in case NMI
-   195			 * bpf prog preempted this loop.
-   196			 */
-   197			WARN_ON_ONCE(local_inc_return(&c->active) != 1);
-   198			__llist_add(obj, &c->free_llist);
-   199			c->free_cnt++;
-   200			local_dec(&c->active);
-   201			if (IS_ENABLED(CONFIG_PREEMPT_RT))
-   202				local_irq_restore(flags);
-   203		}
-   204		set_active_memcg(old_memcg);
-   205		mem_cgroup_put(memcg);
-   206	}
-   207	
-   208	static void free_one(struct bpf_mem_cache *c, void *obj)
-   209	{
-   210		if (c->percpu) {
- > 211			free_percpu(((void **)obj)[1]);
-   212			kmem_cache_free(c->kmem_cache, obj);
-   213			return;
-   214		}
-   215	
-   216		if (c->kmem_cache)
-   217			kmem_cache_free(c->kmem_cache, obj);
-   218		else
-   219			kfree(obj);
-   220	}
-   221	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+On Sat, 9 Sep 2023 16:20:41 -0500, Samuel Holland wrote:=0D
+>Hi,=0D
+>=0D
+>The patch is correct, though the subject isn't quite accurate.=0D
+>CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK exists; it is defined in arch/Kconfig.=0D
+>It's just the wrong option to use to guard the function definition.=0D
+>=0D
+=0D
+I think I should send a new version of the patch with the subject:=0D
+RISC-V: Fix wrong use of CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK. =0D
+Does this subject look more appropriate?=0D
+=0D
+>On 9/6/23 07:32, Jiexun Wang wrote:=0D
+>> If configuration options SOFTIRQ_ON_OWN_STACK and PREEMPT_RT =0D
+>> are enabled simultaneously under RISC-V architecture,=0D
+>> it will result in a compilation failure:=0D
+>> =0D
+>> arch/riscv/kernel/irq.c:64:6: error: redefinition of 'do_softirq_own_sta=
+ck'=0D
+>>    64 | void do_softirq_own_stack(void)=0D
+>>       |      ^~~~~~~~~~~~~~~~~~~~=0D
+>> In file included from ./arch/riscv/include/generated/asm/softirq_stack.h=
+:1,=0D
+>>                  from arch/riscv/kernel/irq.c:15:=0D
+>> ./include/asm-generic/softirq_stack.h:8:20: note: previous definition of=
+ 'do_softirq_own_stack' was here=0D
+>>     8 | static inline void do_softirq_own_stack(void)=0D
+>>       |                    ^~~~~~~~~~~~~~~~~~~~=0D
+>>       =0D
+>> After changing CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK to CONFIG_SOFTIRQ_ON_OWN=
+_STACK,=0D
+>> compilation can be successful.=0D
+>> =0D
+>> Fixes: dd69d07a5a6c ("riscv: stack: Support HAVE_SOFTIRQ_ON_OWN_STACK")=
+=0D
+>> Signed-off-by: Jiexun Wang <wangjiexun@tinylab.org>=0D
+>> ---=0D
+>> Changes in v2:=0D
+>> - changed to a more suitable subject line=0D
+>> - add a Fixes tag=0D
+>> =0D
+>> ---=0D
+>>  arch/riscv/kernel/irq.c | 2 +-=0D
+>>  1 file changed, 1 insertion(+), 1 deletion(-)=0D
+>> =0D
+>> diff --git a/arch/riscv/kernel/irq.c b/arch/riscv/kernel/irq.c=0D
+>> index a8efa053c4a5..a86f272ae2c3 100644=0D
+>> --- a/arch/riscv/kernel/irq.c=0D
+>> +++ b/arch/riscv/kernel/irq.c=0D
+>> @@ -60,7 +60,7 @@ static void init_irq_stacks(void)=0D
+>>  }=0D
+>>  #endif /* CONFIG_VMAP_STACK */=0D
+>>  =0D
+>> -#ifdef CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK=0D
+>> +#ifdef CONFIG_SOFTIRQ_ON_OWN_STACK=0D
+>=0D
+>It would be good to fix the #endif comment at the bottom of the function=0D
+>as well.=0D
+=0D
+Thanks, I will fix this as well.=0D
+=0D
+Best regards,=0D
+Jiexun Wang=0D
+=0D
+>=0D
+>Regards,=0D
+>Samuel=0D
+>=0D
+>>  void do_softirq_own_stack(void)=0D
+>>  {=0D
