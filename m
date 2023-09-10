@@ -2,123 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 796F7799D69
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 11:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53B5799D79
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 11:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343740AbjIJJJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 05:09:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60238 "EHLO
+        id S1345925AbjIJJWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 05:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237286AbjIJJJo (ORCPT
+        with ESMTP id S232597AbjIJJWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 05:09:44 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE491CC5
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 02:09:39 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so9714714a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 02:09:39 -0700 (PDT)
+        Sun, 10 Sep 2023 05:22:11 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CFF919E
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 02:22:07 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3aa1446066aso2470883b6e.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 02:22:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694336978; x=1694941778; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D4YUMVbAN13zpaZAGFCDLaoN91mtJ2lE9r8ZViQLkdw=;
-        b=inLEo1pg6tPx48iaCemSMU3ziGwWgJ59XeDxh3BVV3x+bmWMtSj2I2MzFysfUwyMza
-         l0PuSrY2xDh9GixpBAqMO1ORZuNGa7hyP2Vd0voUcNATXgQ9Yw2I/u9GEqdNLtsOdZNd
-         VeK4Hf0WwrlAqCsrQBV1NyPqbQWAUqwyHOCtnRleuqaPl3rxwNJYpjWHVU9wkoeI9tU/
-         lzZlrmWm4Rg+IIAcTI2ceT8TuJPVDZbnTLzlTxupsuXFpKDex6HOXXCvIJYiOcpJD6xZ
-         k6Y8r+6OtLgqvObwPqaYIWXzbBJDpMQIUvaPfr+gfGGr1I0Ql/sRhJdTni4E59IQiwzO
-         t05Q==
+        d=linaro.org; s=google; t=1694337726; x=1694942526; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=F7KmoimTZXBn7xxEa4JoD6DLQsYP/FrWOgfaS5hIz0M=;
+        b=FQHsx4WS6KrDjMGAM+iUFk3rdg33j0Izz3gD3zOTLh0za4o5zwMEFFES/7fqmp9I5S
+         JbntrPsgKVDyiDFKjJsGu9dBvak9KNTMMTT1hqFvZ1jcydAbYNTueg+vN2EmsbCsbFsy
+         gEo/L3lCzlQOkD6JEkhPc10iRl6H1v66Vux6H0HuFopGfiflwSnN3J72fnTIE397CzcQ
+         d6mlTTX2moVaqUAEUZBGBL6a9PvBt4FkllbMvCIFZV5ltAkApFLhmVXiI5sC6mTHEXtz
+         Y0FoDiRztw41n3I+Dkqe0bfK+qQgkbXja9QbNVtKXVc6JLZLPALSx1yzX+bPXCE1XE7D
+         Uk1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694336978; x=1694941778;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D4YUMVbAN13zpaZAGFCDLaoN91mtJ2lE9r8ZViQLkdw=;
-        b=U2WlG0uIrETZr1PNU0ERbODvYU3pBviK3b8KMw1AF7c3t/lab258DTGvYhCrBA369D
-         9z7h+zQyJA6f3ijoyoCvhGkwRviQ+vHuZbaOla6I3ju2848BWT2m2f26zxCEC9rIYhFY
-         Eyw8ku8rlU7XLSAcZlGq28Yiaf50CCEJ8N7z8HEi0SS4IcDoMNRrNDYTDAvPg2YebyMM
-         j9RdQbkRBncENnmoU4WI6k+Wwv24t5G1VOJMDx5WyqaPQ2rC0P71nx8OqGocePkqoUhN
-         ZgERNXNPd3RC2CxP2byy3FFP+gEDdFYXPS/TDXoDdEgrWSDzCIq7N15N/ALUKFk/jGRI
-         JZCw==
-X-Gm-Message-State: AOJu0YxM7hmQPcYVTq/hrkty/GyvPuILz2Vm3nAaIt8So2XHxWCEZ1Eg
-        iGU9aUEo4CvrD7iK1HiX8c6cYQ==
-X-Google-Smtp-Source: AGHT+IGvOqtyZxH1eotD7XBo6uaExFnUdODBgoQCOSDBpJTGPQZ4tRxNF4mNV3heGAAC4nTzUBWM+g==
-X-Received: by 2002:a17:907:7295:b0:9a5:b66a:436d with SMTP id dt21-20020a170907729500b009a5b66a436dmr13524162ejc.14.1694336978017;
-        Sun, 10 Sep 2023 02:09:38 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id lf28-20020a170907175c00b0099bcf1c07c6sm3541516ejc.138.2023.09.10.02.09.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Sep 2023 02:09:37 -0700 (PDT)
-Message-ID: <f8864242-daa1-e72f-4759-aac3fa1bbcf2@linaro.org>
-Date:   Sun, 10 Sep 2023 11:09:35 +0200
+        d=1e100.net; s=20230601; t=1694337726; x=1694942526;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F7KmoimTZXBn7xxEa4JoD6DLQsYP/FrWOgfaS5hIz0M=;
+        b=U3DLMgu7zDIcj2TNHR5mCo7CqqI8pJTn1iZNTjBsgOhDLLIHujutSyQSfI2+Qlcn8P
+         s2J3j/mFhz61drn9ynzrRXAo+ruhAec0ax8W60n/vVFwnKGgC6aJLQ4DPf+OwbPR8gWv
+         fLysnmGrpLXN4Nj2g8k039JAS9JnRGQe4UrEtoqf3t7Jqc2ooy6Cm76NbkTtQ3iaTdcb
+         wCk79KTDTV6Nny3lyze+31yujRZy8M+2O8EDa/dTp/UdekxVmf0x3529h9dZkD0IteTQ
+         rRMexdWpP5HB8lNJssUtBKn8cfj4sPQNIH1cJVhKrn6w1bLfheg8BtctZie8cIMekFjj
+         u1tQ==
+X-Gm-Message-State: AOJu0YxBaSMx2FSH+Vi1Sj8MKWFEKKWfza5P+aZ9FnD1WKc2mYdcZ3pG
+        zu2WulNgBC/Wlx+PkhgHKtJOQw==
+X-Google-Smtp-Source: AGHT+IEtF3iC/N+5TNNRC07S/EAfYtFzU+WyK//BgA8OVKmPnpzu4mk4hiYrDRGGJDzoNWuNfC03Ag==
+X-Received: by 2002:a05:6808:b3b:b0:3a7:8e05:1699 with SMTP id t27-20020a0568080b3b00b003a78e051699mr8498783oij.37.1694337726511;
+        Sun, 10 Sep 2023 02:22:06 -0700 (PDT)
+Received: from leoy-huanghe.lan ([98.98.49.29])
+        by smtp.gmail.com with ESMTPSA id d5-20020a63a705000000b005633311c70dsm3607356pgf.32.2023.09.10.02.22.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Sep 2023 02:22:05 -0700 (PDT)
+Date:   Sun, 10 Sep 2023 17:22:01 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     linux-perf-users@vger.kernel.org,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf cs-etm: Bump minimum OpenCSD version to ensure a
+ bugfix is present
+Message-ID: <20230910092201.GA52362@leoy-huanghe.lan>
+References: <20230901133716.677499-1-james.clark@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] dt-bindings: arm64: dts: mediatek: add description for
- mt8365-evk board
-To:     Macpaul Lin <macpaul.lin@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     Bear Wang <bear.wang@mediatek.com>,
-        Pablo Sun <pablo.sun@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>
-References: <20230910062852.15415-1-macpaul.lin@mediatek.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230910062852.15415-1-macpaul.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230901133716.677499-1-james.clark@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/09/2023 08:28, Macpaul Lin wrote:
-> Fix the missing description for Mediatek mt8365-evk board.
+On Fri, Sep 01, 2023 at 02:37:15PM +0100, James Clark wrote:
+> Since commit d927ef5004ef ("perf cs-etm: Add exception level consistency
+> check"), the exception that was added to Perf will be triggered unless
+> the following bugfix from OpenCSD is present:
 > 
-> Fixes: 4f5fc078ac6f ("dt-bindings: arm64: dts: mediatek: Add mt8365-evk board")
-
-There is no bug here. Drop.
-
-> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/arm/mediatek.yaml | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  - _Version 1.2.1_:
+>   - __Bugfix__:
+>     ETM4x / ETE - output of context elements to client can in some
+>     circumstances be delayed until after subsequent atoms have been
+>     processed leading to incorrect memory decode access via the client
+>     callbacks. Fixed to flush context elements immediately they are
+>     committed.
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> index c2935e99626b..3ce39a346fb1 100644
-> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
-> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> @@ -248,7 +248,8 @@ properties:
->            - enum:
->                - mediatek,mt8183-pumpkin
->            - const: mediatek,mt8183
-> -      - items:
-> +      - description: MediaTek Genio 350 Boards (Genio 350 EVK)
+> Rather than remove the assert and silently fail, just increase the
+> minimum version requirement to avoid hard to debug issues and
+> regressions.
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-That's a bit confusing. So all of the boards here will be Genio 350 EVK?
-I don't get what is the point of this description.
-
-
-> +        items:
->            - enum:
->                - mediatek,mt8365-evk
->            - const: mediatek,mt8365
-
-Best regards,
-Krzysztof
-
+Tested-by: Leo Yan <leo.yan@linaro.org>
