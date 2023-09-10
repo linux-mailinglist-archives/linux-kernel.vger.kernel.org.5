@@ -2,81 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB5A799F24
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 19:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45FA4799F34
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 19:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233335AbjIJRp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 13:45:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
+        id S234155AbjIJR6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 13:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjIJRp4 (ORCPT
+        with ESMTP id S229958AbjIJR6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 13:45:56 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F00213D
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 10:45:51 -0700 (PDT)
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E24FA3F5DC
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 17:45:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1694367948;
-        bh=VdNNx1qIrx0LeNAoHBCXNUMxzfpMt/YU+ldcvE4loG8=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=sELmJ1as285hScaSpgkyI8GdvpIcWEk0OjMjGLrQIgMa/AgfbgC9rJ0rtMDNkBLU6
-         QQA8E74pTxFHBmLkX+qjJfNq+DPzkgIo0ACCiZ1U8q372Mhc0X1khs3chGCz4ZTNLa
-         iO0xXAlVOqs23wIdYTcbmYxAOW+78D71Y0Ojmr3UYIanKFdGqhuoAZY4D8/w4fcnot
-         TjPf5eipiY4k2X0XsY4StjleUu/yVqTQDxC5LxJwJc1pxrfEdm2BNADH71/Oiug3qN
-         LN3BPrG+Eps5YZRypD0L9hSuK+RR9TdhRyOSbAFrHCGn4nir7EDiJtEKkxodowQufI
-         u3IEnSW1MUqHQ==
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-31f8999d44bso1004575f8f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 10:45:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694367948; x=1694972748;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VdNNx1qIrx0LeNAoHBCXNUMxzfpMt/YU+ldcvE4loG8=;
-        b=tsq+H+au1WxSr5erPAQE0OMef/lUBtWkRn61ikSrk4zS5aeX7fXG1t+Q+milFM1Z6j
-         p9S5iapYDt1sWqW4ORwCrVVnaq3Dxo6j6yDNxRGluI+eG+EVoKk2NSeSy6af9/SYLvXk
-         uKA6JqOlHwVBlguSzwcQQJDDEU8fYsHLJ110I6RkV1Z2WacK/nQqpU89BROzpOM0p3qX
-         v0Reeo+nH4Lvoa6kki7X9JpwZmWGY53AgMy8BYFWLsIEm2U4ee64TIjILFRfApLD0HnQ
-         uVBKdvsA6kV1RsezRBFfzepMDMv8SAOvfT2XHsu/xhr81yw7lPrjZt2A0AayKVUHGW2C
-         7lRQ==
-X-Gm-Message-State: AOJu0Yxp0W70OIDRdLe9B36J7Gfuv3WeEsP9uUegU02XqyEh8A2FlpUh
-        LBdc3h01tbJmK0m+Zvnv6v8uPMEw8o0HXvz9PqYALVhbG7S9VISqivO8x62rtiDVktQXECb/ZqB
-        2D+DCAqWAYZGIT41fxpjRydZ2gUmY0F8ycjtxfwna4Q==
-X-Received: by 2002:a5d:4cc1:0:b0:31f:4173:2ac8 with SMTP id c1-20020a5d4cc1000000b0031f41732ac8mr5593405wrt.18.1694367948355;
-        Sun, 10 Sep 2023 10:45:48 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGa6sDYKMH3HkVInUxt9XgBYP9GmkX0cGcnVkgJTzjnvB7r4ITayGVrUDdNQKphMA0TLPxCLg==
-X-Received: by 2002:a5d:4cc1:0:b0:31f:4173:2ac8 with SMTP id c1-20020a5d4cc1000000b0031f41732ac8mr5593386wrt.18.1694367947918;
-        Sun, 10 Sep 2023 10:45:47 -0700 (PDT)
-Received: from [192.168.123.94] (ip-178-202-040-247.um47.pools.vodafone-ip.de. [178.202.40.247])
-        by smtp.gmail.com with ESMTPSA id z2-20020a5d4c82000000b0031aca6cc69csm7826289wrs.2.2023.09.10.10.45.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Sep 2023 10:45:47 -0700 (PDT)
-Message-ID: <0feac60d-99ec-45fb-8c5b-b1918ffae680@canonical.com>
-Date:   Sun, 10 Sep 2023 19:46:50 +0200
+        Sun, 10 Sep 2023 13:58:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C21180;
+        Sun, 10 Sep 2023 10:58:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65527C433C7;
+        Sun, 10 Sep 2023 17:58:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694368710;
+        bh=NH8cClsBXDOEH39n3025iXsEaUUDx0eXXxKoTLrsTfo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nw1169OdRDD27uQy6uZv9dnITBYxHgo+JW2YfIRjTb+SrKxvk96R7dhKWXFTuUuOd
+         QzvFa0FU0aXP0Dn5dSxdHGMRSqn9HXJo9qq6E6sLqHeUdwaCN4m/Fc18dsV9+nx8aF
+         vrvYUky2hIb0H7BnGLutaJUrtREANLGqLLlZm+lcpX/tGrEZsPgPOAK74+cqia7KZI
+         jNYY2BtRk7UZ47V3lMrsFaJVUdB+430XAv23IDypced/r1ARFcP7I07J0hn+Lb4uq/
+         TvJQLpjtvL6cbxp1jIrqFm3GDqlbrN637P51Q88Kj0oJ/p6x3FZ2/Pr/B27wN43zMB
+         si7gR6HPyzOqg==
+Date:   Sun, 10 Sep 2023 19:58:24 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        corbet@lwn.net, steen.hegelund@microchip.com,
+        rdunlap@infradead.org, casper.casan@gmail.com, andrew@lunn.ch,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        horatiu.vultur@microchip.com, Woojung.Huh@microchip.com,
+        Nicolas.Ferre@microchip.com, UNGLinuxDriver@microchip.com,
+        Thorsten.Kummermehr@microchip.com
+Subject: Re: [RFC PATCH net-next 4/6] net: ethernet: implement data
+ transaction interface
+Message-ID: <20230910175824.GL775887@kernel.org>
+References: <20230908142919.14849-1-Parthiban.Veerasooran@microchip.com>
+ <20230908142919.14849-5-Parthiban.Veerasooran@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] efivarfs: fix statfs() on efivarfs
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Jeremy Kerr <jk@ozlabs.org>, Anisse Astier <an.astier@criteo.com>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230910045445.41632-1-heinrich.schuchardt@canonical.com>
- <CAMj1kXEh3=vzJiCe1hy3r55akqSn0+t1AGZNEF8wqWCR3_rRcg@mail.gmail.com>
- <CAMj1kXEkNSoqG4zWfCZ8Ytte5b2SzwXggZp21Xt17Pszd-q0dg@mail.gmail.com>
-Content-Language: en-US, de-DE
-From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-In-Reply-To: <CAMj1kXEkNSoqG4zWfCZ8Ytte5b2SzwXggZp21Xt17Pszd-q0dg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908142919.14849-5-Parthiban.Veerasooran@microchip.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,150 +59,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/10/23 15:54, Ard Biesheuvel wrote:
-> On Sun, 10 Sept 2023 at 15:08, Ard Biesheuvel <ardb@kernel.org> wrote:
->>
->> On Sun, 10 Sept 2023 at 06:53, Heinrich Schuchardt
->> <heinrich.schuchardt@canonical.com> wrote:
->>>
->>> Some firmware (notably U-Boot) provides GetVariable() and
->>> GetNextVariableName() but not QueryVariableInfo().
->>>
->>> With commit d86ff3333cb1 ("efivarfs: expose used and total size") the
->>> statfs syscall was broken for such firmware.
->>>
->>> If QueryVariableInfo() does not exist or returns an error, just report the
->>> file-system size as 0 as statfs_simple() previously did.
->>>
->>> Fixes: d86ff3333cb1 ("efivarfs: expose used and total size")
->>> Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
->>> ---
->>> v2:
->>>          initialize remaining_space to 0
->>
->> Thanks for the patch, and apologies for the oversight.
->>
->>> ---
->>>   fs/efivarfs/super.c | 20 ++++++++++++--------
->>>   1 file changed, 12 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
->>> index e028fafa04f3..3893aae6a9be 100644
->>> --- a/fs/efivarfs/super.c
->>> +++ b/fs/efivarfs/super.c
->>> @@ -29,14 +29,9 @@ static int efivarfs_statfs(struct dentry *dentry, struct kstatfs *buf)
->>>          const u32 attr = EFI_VARIABLE_NON_VOLATILE |
->>>                           EFI_VARIABLE_BOOTSERVICE_ACCESS |
->>>                           EFI_VARIABLE_RUNTIME_ACCESS;
->>> -       u64 storage_space, remaining_space, max_variable_size;
->>> +       u64 storage_space, remaining_space = 0, max_variable_size;
->>
->> Shouldn't storage_space be set to 0 too?
->>
->>>          efi_status_t status;
->>>
->>> -       status = efivar_query_variable_info(attr, &storage_space, &remaining_space,
->>> -                                           &max_variable_size);
->>> -       if (status != EFI_SUCCESS)
->>> -               return efi_status_to_err(status);
->>> -
->>>          /*
->>>           * This is not a normal filesystem, so no point in pretending it has a block
->>>           * size; we declare f_bsize to 1, so that we can then report the exact value
->>> @@ -44,10 +39,19 @@ static int efivarfs_statfs(struct dentry *dentry, struct kstatfs *buf)
->>>           */
->>>          buf->f_bsize    = 1;
->>>          buf->f_namelen  = NAME_MAX;
->>> -       buf->f_blocks   = storage_space;
->>> -       buf->f_bfree    = remaining_space;
->>>          buf->f_type     = dentry->d_sb->s_magic;
->>>
->>> +       /* Some UEFI firmware does not implement QueryVariable() */
->>> +       if (efi_rt_services_supported(EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)) {
->>> +               status = efivar_query_variable_info(attr, &storage_space,
->>> +                                                   &remaining_space,
->>> +                                                   &max_variable_size);
->>> +               if (status == EFI_SUCCESS) {
->>> +                       buf->f_blocks   = storage_space;
->>> +                       buf->f_bfree    = remaining_space;
->>> +               }
->>> +       }
->>> +
->>
->> I'd prefer not to ignore the error completely here. How about we do
->>
->> --- a/fs/efivarfs/super.c
->> +++ b/fs/efivarfs/super.c
->> @@ -32,10 +32,15 @@ static int efivarfs_statfs(struct dentry *dentry,
->> struct kstatfs *buf)
->>          u64 storage_space, remaining_space, max_variable_size;
->>          efi_status_t status;
->>
->> -       status = efivar_query_variable_info(attr, &storage_space,
->> &remaining_space,
->> -                                           &max_variable_size);
->> -       if (status != EFI_SUCCESS)
->> -               return efi_status_to_err(status);
->> +       /* Some UEFI firmware does not implement QueryVariableInfo() */
->> +       storage_space = remaining_space = 0;
->> +       if (efi_rt_services_supported(EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)) {
->> +               status = efivar_query_variable_info(attr, &storage_space,
->> +                                                   &remaining_space,
->> +                                                   &max_variable_size);
->> +               if (status != EFI_SUCCESS && status != EFI_UNSUPPORTED)
->> +                       return efi_status_to_err(status);
->> +       }
->>
->>          /*
->>           * This is not a normal filesystem, so no point in pretending
->> it has a block
->>
->> (no need to resend if you agree)
-
-Hello Ard,
-
-thanks for reviewing.
-
-Raising an error in such a rare circumstance would be ok for me.
-
+On Fri, Sep 08, 2023 at 07:59:17PM +0530, Parthiban Veerasooran wrote:
+> The ethernet frame to be sent to MAC-PHY is converted into multiple
+> transmit data chunks. A transmit data chunk consists of a 4-byte data
+> header followed by the transmit data chunk payload.
 > 
-> Actually, perhaps it would be better to simply fall back to the old
-> logic if QueryVariableInfo is not provided:
+> The received ethernet frame from the network is converted into multiple
+> receive data chunks by the MAC-PHY and a receive data chunk consists of
+> the receive data chunk payload followed by a 4-byte data footer at the
+> end.
 > 
-> diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
-> index e028fafa04f3..50b05f1fa974 100644
-> --- a/fs/efivarfs/super.c
-> +++ b/fs/efivarfs/super.c
-> @@ -30,10 +30,15 @@ static int efivarfs_statfs(struct dentry *dentry,
-> struct kstatfs *buf)
->                           EFI_VARIABLE_BOOTSERVICE_ACCESS |
->                           EFI_VARIABLE_RUNTIME_ACCESS;
->          u64 storage_space, remaining_space, max_variable_size;
-> -       efi_status_t status;
-> +       efi_status_t status = EFI_UNSUPPORTED;
-> +
-> +       if (efi_rt_services_supported(EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO))
-> +               status = efivar_query_variable_info(attr, &storage_space,
-> +                                                   &remaining_space,
-> +                                                   &max_variable_size);
-> +       if (status == EFI_UNSUPPORTED)
-> +               return simple_statfs(dentry, buf);
-
-I would not know why the block size (buf->f_bsize) should depend on the 
-availability of QueryVariableInfo() (1 vs PAGE_SIZE).
-
-Hence I would prefer your suggestion to just add the error handling 
-suggested in your previous mail.
-
-Best regards
-
-Heinrich
-
+> The MAC-PHY shall support a default data chunk payload size of 64 bytes.
+> Data chunk payload sizes of 32, 16, or 8 bytes may also be supported. The
+> data chunk payload is always a multiple of 4 bytes.
 > 
-> -       status = efivar_query_variable_info(attr, &storage_space,
-> &remaining_space,
-> -                                           &max_variable_size);
->          if (status != EFI_SUCCESS)
->                  return efi_status_to_err(status);
+> The 4-byte data header occurs at the beginning of each transmit data
+> chunk on MOSI and the 4-byte data footer occurs at the end of each
+> receive data chunk on MISO. The data header and footer contain the
+> information needed to determine the validity and location of the transmit
+> and receive frame data within the data chunk payload. Ethernet frames
+> shall be aligned to a 32-bit boundary within the data chunk payload.
+> 
+> Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+
+Hi Parthiban,
+
+this patch seems to introduce new Sparse warnings.
+Please consider addressing those, and ideally the warnings
+flagged in the existing oa_tc6.c code.
+
+Thanks in advance!
