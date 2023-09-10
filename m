@@ -2,107 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0883A799F83
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 21:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF109799F85
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 21:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232586AbjIJTdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 15:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60128 "EHLO
+        id S231485AbjIJTmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 15:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbjIJTdl (ORCPT
+        with ESMTP id S229637AbjIJTmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 15:33:41 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32897103
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 12:33:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95968C433C8;
-        Sun, 10 Sep 2023 19:33:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1694374416;
-        bh=dX0snYQ5v39lGdN7KQzd0K/UxL2B6SP53/xbYKcI+vc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zwp9u4iwtP+uZQXd8KqiTBRa/KExQmJiUWwkKdTXrGjw86L8c1YclTnm4bPIiJaza
-         efWGAZILsxJ3sB/vxNfnRZ+H41OKG5q6zxVwBW4qJ1kK0p5+CUOfzIw1sC8DGZbMQf
-         /yIRO9OhC1UgORONb9mWgQqVd1ULSKQRoWatgu1E=
-Date:   Sun, 10 Sep 2023 12:33:35 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Jiexun Wang <wangjiexun@tinylab.org>
-Cc:     brauner@kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, falcon@tinylab.org
-Subject: Re: [PATCH 1/1] mm/madvise: add cond_resched() in
- madvise_cold_or_pageout_pte_range()
-Message-Id: <20230910123335.36ebf58e46628eeffef612c3@linux-foundation.org>
-In-Reply-To: <95d610623363009a71024c7a473d6895f39f3caf.1694219361.git.wangjiexun@tinylab.org>
-References: <cover.1694219361.git.wangjiexun@tinylab.org>
-        <95d610623363009a71024c7a473d6895f39f3caf.1694219361.git.wangjiexun@tinylab.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Sun, 10 Sep 2023 15:42:21 -0400
+Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A65610F
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 12:42:17 -0700 (PDT)
+Received: from eig-obgw-6002a.ext.cloudfilter.net ([10.0.30.222])
+        by cmsmtp with ESMTP
+        id fNopquHhuEoVsfQK0qUEWR; Sun, 10 Sep 2023 19:42:16 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id fQJzqJJP0vIoMfQJzqFVIL; Sun, 10 Sep 2023 19:42:16 +0000
+X-Authority-Analysis: v=2.4 cv=DJWcXgBb c=1 sm=1 tr=0 ts=64fe1c18
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10
+ a=nIpKAo32jCGvhA34BA0A:9 a=QEXdDO2ut3YA:10
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=R0ZkwvmadZPhU2Uje1oI+7gCWM2CIHpfPotoQ+RZbnQ=; b=Uz7MgwSrSrWK0u0kDLuaE4CBQ4
+        JbWRdZ2IGZcUHMQWdQi4lg94p/NUjwaL+1PttpHrEkN4PiGMhVYByqBj+7r8cTEE4HF69/2NoFBoi
+        1/Z6bNd2ndo9ONlq2h8EradZlFI6tKt+nXgc+xJMPbBovYra59u+yOdPcL0B+DgbJT38TxTGQA4bK
+        Vd4VEZCSR867Nc9H3eN9IwfwsBfxKzNvVavYPgeKU/U1Mpwe4RhRet+D8ikFNs8hVb4fCqXqVnx4d
+        PDsXV3dsL4M/g5lkiwsA+XvtwKC0V+GPDJnoEjpLjzO7jcrqsGY6akiBzCE35oGOYY1QZey+4g1ru
+        RG/7Onjg==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:51270 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qfQJz-001cPn-0n;
+        Sun, 10 Sep 2023 14:42:15 -0500
+Message-ID: <f830b4b0-3d5f-cde8-65d7-e3bee8a40d96@embeddedor.com>
+Date:   Sun, 10 Sep 2023 13:43:08 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [gustavoars:testing/fam01-next20230817] BUILD SUCCESS WITH
+ WARNING dbd3e479335bc8b09ea540102109ac38b0a73336
+To:     Philip Li <philip.li@intel.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "Liu, Yujie" <yujie.liu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <202308181544.cTQDCUcQ-lkp@intel.com>
+ <d8fd6210-84eb-6d32-6486-1d90c86186ca@embeddedor.com>
+ <ZOqykd6tVGip+Swy@rli9-mobl>
+Content-Language: en-US
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <ZOqykd6tVGip+Swy@rli9-mobl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qfQJz-001cPn-0n
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:51270
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 1
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfPi8Fn/COJCusvpi6qp8XG9ulsvO+Mjmtc12xxBl8B8mWuzAbOqoYjgCbs9VOqlCZ/v/JET4cuxnanNf/dk2jr/ozq+/KU/l27mKUF5lgtQfAD+zO2x0
+ ExpAp5mI2wAledOF87LpWB0kA2s9aIfXIPTjgWKdSr1zGxH5CAUvy5b1S9MDnqNkVMlU6Fj5Jctbge7Q6e16qomA5afvBX1RjRNbmLg+LFv8HpM73EPUBksQ
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  9 Sep 2023 13:33:08 +0800 Jiexun Wang <wangjiexun@tinylab.org> wrote:
 
-> Currently the madvise_cold_or_pageout_pte_range() function exhibits 
-> significant latency under memory pressure, which can be effectively 
-> reduced by adding cond_resched() within the loop.
+
+On 8/26/23 20:18, Philip Li wrote:
+> On Mon, Aug 21, 2023 at 11:26:17AM -0600, Gustavo A. R. Silva wrote:
+>> Hi there!
+>>
+>> It'd be great to add to these reports the versions of the compilers you are using
+>> to build the kernel.
+>>
+>> It's not uncommon that some compiler versions contain bugs. And in cases where kernel
+>> developers are aware of those issues, knowing the exact version used to build the
+>> kernel will help us determine whether the issues reported may be false positives or
+>> not.
+>>
+>> Maybe just one line at the beginning mentioning the versions:
+>>
+>> `GCC 13.2.0 and Clang 16.0.0 builds`
 > 
-> When the batch_count reaches SWAP_CLUSTER_MAX, we reschedule 
-> the task to ensure fairness and avoid long lock holding times.
+> Thanks Gustavo for the input, we will add detail version of compiler in the
+> summary report.
 > 
-> ...
->
-> @@ -441,6 +443,13 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->  	arch_enter_lazy_mmu_mode();
->  	for (; addr < end; pte++, addr += PAGE_SIZE) {
->  		ptent = ptep_get(pte);
-> +		
-> +		if (++batch_count == SWAP_CLUSTER_MAX) {
-> +			pte_unmap_unlock(start_pte, ptl);
-> +		 	cond_resched();
-> +		 	start_pte = pte_offset_map_lock(mm, pmd, addr, &ptl);
-> +		 	batch_count = 0;
-> +		}
->  
->  		if (pte_none(ptent))
->  			continue;
+> We will start with the line you suggested, and later will look for a way
+> to add it to the warning line since multiple gcc/clang could be involved
+> in one round test.
 
-I doubt if we can simply drop the lock like this then proceed as if
-nothing has changed while the lock was released.
-
-Could be that something along these lines:
-
-@@ -434,6 +436,7 @@ huge_unlock:
- regular_folio:
- #endif
- 	tlb_change_page_size(tlb, PAGE_SIZE);
-+restart:
- 	start_pte = pte = pte_offset_map_lock(vma->vm_mm, pmd, addr, &ptl);
- 	if (!start_pte)
- 		return 0;
-@@ -441,6 +444,15 @@ regular_folio:
- 	arch_enter_lazy_mmu_mode();
- 	for (; addr < end; pte++, addr += PAGE_SIZE) {
- 		ptent = ptep_get(pte);
-+		
-+		if (++batch_count == SWAP_CLUSTER_MAX) {
-+			batch_count = 0;
-+			if (need_resched()) {
-+				pte_unmap_unlock(start_pte, ptl);
-+				cond_resched();
-+				goto restart;
-+			}
-+		}
- 
- 		if (pte_none(ptent))
- 			continue;
-
-would work, but more analysis would be needed.
-
+Thank you! :)
+--
+Gustavo
