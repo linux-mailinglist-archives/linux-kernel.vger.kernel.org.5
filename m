@@ -2,94 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57662799EC0
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 17:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72232799EC1
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 17:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346721AbjIJPAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 11:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51222 "EHLO
+        id S1346719AbjIJPEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 11:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346713AbjIJPAt (ORCPT
+        with ESMTP id S243148AbjIJPEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 11:00:49 -0400
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7CB0DCCD;
-        Sun, 10 Sep 2023 08:00:45 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.02,241,1688396400"; 
-   d="scan'208";a="179304430"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 11 Sep 2023 00:00:45 +0900
-Received: from localhost.localdomain (unknown [10.226.92.9])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id E524E40065C0;
-        Mon, 11 Sep 2023 00:00:42 +0900 (JST)
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Biju Das <biju.das.au@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 2/2] media: i2c: ov7670: Drop CONFIG_OF ifdeffery
-Date:   Sun, 10 Sep 2023 16:00:33 +0100
-Message-Id: <20230910150033.50596-3-biju.das.jz@bp.renesas.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230910150033.50596-1-biju.das.jz@bp.renesas.com>
-References: <20230910150033.50596-1-biju.das.jz@bp.renesas.com>
+        Sun, 10 Sep 2023 11:04:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53528119
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 08:03:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D923C433C8;
+        Sun, 10 Sep 2023 15:03:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694358236;
+        bh=0nGQI3SleycFfQrHBPI3Gwh0lVAQLEq3Xgtd6fw6MKI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Po1nMdn+w3j838NT3C9YKNOfDFckGRQyC+VUXImcAobwkHukTsxKS7AXMJPCs/ivR
+         tPqLPmmiugVdqy9m6az+8yFua6PcZP2YL1U2EnbrLFYUF/V/iVdNtFCRF5LhVw0K7q
+         0smW8ZZ9rRd+hkMBvLWKajY6+4Rp84+fz961NgGs=
+Date:   Sun, 10 Sep 2023 16:03:53 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Daniel Hammer <daniel.hammer120@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: wlan-ng: prism2mgmt.c: remove needless
+ parentheses to align with kernel coding style.
+Message-ID: <2023091022-suggest-retract-c2b9@gregkh>
+References: <ZP3NQSQwnmYAHQq+@daniel-ubuntu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZP3NQSQwnmYAHQq+@daniel-ubuntu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop of_match_ptr() from ov7670_driver and get rid of ugly CONFIG_OF
-if check. This slightly increases the size of ov7670_driver on non-OF
-system and shouldn't be an issue.
+On Sun, Sep 10, 2023 at 06:05:53PM +0400, Daniel Hammer wrote:
+> Remove unnecessary parentheses as detected by checkpatch.pl.
+> 
+> Signed-off-by: Daniel Hammer <daniel.hammer120@gmail.com>
+> ---
+>  drivers/staging/wlan-ng/prism2mgmt.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/staging/wlan-ng/prism2mgmt.c b/drivers/staging/wlan-ng/prism2mgmt.c
+> index d5737166564e..201f07229962 100644
+> --- a/drivers/staging/wlan-ng/prism2mgmt.c
+> +++ b/drivers/staging/wlan-ng/prism2mgmt.c
+> @@ -1227,9 +1227,9 @@ int prism2mgmt_wlansniff(struct wlandevice *wlandev, void *msgp)
+>  				     word, result);
+>  				goto failed;
+>  			}
+> -			if ((msg->keepwepflags.status ==
+> -			     P80211ENUM_msgitem_status_data_ok) &&
+> -			    (msg->keepwepflags.data != P80211ENUM_truth_true)) {
+> +			if (msg->keepwepflags.status ==
+> +			     P80211ENUM_msgitem_status_data_ok &&
+> +			    msg->keepwepflags.data != P80211ENUM_truth_true) {
+>  				/* Set the wepflags for no decryption */
+>  				word = HFA384x_WEPFLAGS_DISABLE_TXCRYPT |
+>  				    HFA384x_WEPFLAGS_DISABLE_RXCRYPT;
+> @@ -1249,9 +1249,9 @@ int prism2mgmt_wlansniff(struct wlandevice *wlandev, void *msgp)
+>  		}
+>  
+>  		/* Do we want to strip the FCS in monitor mode? */
+> -		if ((msg->stripfcs.status ==
+> -		     P80211ENUM_msgitem_status_data_ok) &&
+> -		    (msg->stripfcs.data == P80211ENUM_truth_true)) {
+> +		if (msg->stripfcs.status ==
+> +		     P80211ENUM_msgitem_status_data_ok &&
+> +		    msg->stripfcs.data == P80211ENUM_truth_true) {
+>  			hw->sniff_fcs = 0;
+>  		} else {
+>  			hw->sniff_fcs = 1;
+> @@ -1288,9 +1288,9 @@ int prism2mgmt_wlansniff(struct wlandevice *wlandev, void *msgp)
+>  
+>  		/* Set the driver state */
+>  		/* Do we want the prism2 header? */
+> -		if ((msg->prismheader.status ==
+> -		     P80211ENUM_msgitem_status_data_ok) &&
+> -		    (msg->prismheader.data == P80211ENUM_truth_true)) {
+> +		if (msg->prismheader.status ==
+> +		     P80211ENUM_msgitem_status_data_ok &&
+> +		    msg->prismheader.data == P80211ENUM_truth_true) {
+>  			hw->sniffhdr = 0;
+>  			wlandev->netdev->type = ARPHRD_IEEE80211_PRISM;
+>  		} else if ((msg->wlanheader.status ==
+> -- 
+> 2.34.1
+> 
 
-Add mod_devicetable.h include.
+Hi,
 
-It also allows, in case if needed, to enumerate this device via ACPI with
-PRP0001 magic.
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- drivers/media/i2c/ov7670.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-diff --git a/drivers/media/i2c/ov7670.c b/drivers/media/i2c/ov7670.c
-index 644457e6993d..41032394a464 100644
---- a/drivers/media/i2c/ov7670.c
-+++ b/drivers/media/i2c/ov7670.c
-@@ -10,6 +10,7 @@
-  */
- #include <linux/clk.h>
- #include <linux/init.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/i2c.h>
-@@ -2013,18 +2014,16 @@ static const struct i2c_device_id ov7670_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, ov7670_id);
- 
--#if IS_ENABLED(CONFIG_OF)
- static const struct of_device_id ov7670_of_match[] = {
- 	{ .compatible = "ovti,ov7670", &ov7670_devdata },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, ov7670_of_match);
--#endif
- 
- static struct i2c_driver ov7670_driver = {
- 	.driver = {
- 		.name	= "ov7670",
--		.of_match_table = of_match_ptr(ov7670_of_match),
-+		.of_match_table = ov7670_of_match,
- 	},
- 	.probe		= ov7670_probe,
- 	.remove		= ov7670_remove,
--- 
-2.25.1
+- You sent a patch that has been sent multiple times in the past few
+  days, and is identical to ones that has been recently rejected.
+  Please always look at the mailing list traffic to determine if you are
+  duplicating other people's work.
 
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
