@@ -2,98 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EBA799DDB
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 13:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003AF799DE6
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 13:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346642AbjIJLUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 07:20:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57710 "EHLO
+        id S234102AbjIJLqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 07:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233692AbjIJLUY (ORCPT
+        with ESMTP id S229455AbjIJLqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 07:20:24 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FCACD5;
-        Sun, 10 Sep 2023 04:20:19 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qfIUD-0005Bf-DQ; Sun, 10 Sep 2023 13:20:17 +0200
-Message-ID: <f8ca4666-1a64-49fe-afa7-47e72c82ef9e@leemhuis.info>
-Date:   Sun, 10 Sep 2023 13:20:16 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] lockdep: Fix static memory detection even more
-Content-Language: en-US, de-DE
-To:     Guenter Roeck <linux@roeck-us.net>, Helge Deller <deller@gmx.de>
-Cc:     linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        Linux kernel regressions list <regressions@lists.linux.dev>
-References: <ZNep5EcYskP9HtGD@p100>
- <b7526bf6-886f-457a-beba-84ae9f75bc77@roeck-us.net>
-From:   "Linux regression tracking #adding (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <b7526bf6-886f-457a-beba-84ae9f75bc77@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1694344819;376fddac;
-X-HE-SMSGID: 1qfIUD-0005Bf-DQ
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 10 Sep 2023 07:46:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75BB3CC5
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 04:45:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCE92C433C8;
+        Sun, 10 Sep 2023 11:45:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694346359;
+        bh=1fPgt6NqjDOo0BmZtv5QdNaLWSnnSlPoyiIVdfmQyi0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QDDaexTUFDKdmVvCWhEPitc7stGlgZIlrhwXVBJ5Mqj3fyZCEiErhXvUZ7Ixv6SWR
+         2ivotYuf1mPueOcrNd+CDiOZIw3PfMA/thrgMr3pGeleB+3DFUB6uye/THSw260Y0f
+         NtPpSYV7n5+n8KHXBYGxqvwLrmsMFxs7NL/yIkrGOJkuC3FpCj0FMq6irdpMrXDBuP
+         oqzTefuCrGVz54cgYtcgkLThrkafS53HzlDe7xFb65cfCDXsh4tDixjdEf5rE6Jjam
+         nXKyYAaqZCh92qpq55WTnXpmYK18FUrRwNmihbCvlqDy7XzCD5fBqepy5PRiwrk0gy
+         d189TXbKxNN/g==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qfIt2-00Bipc-3b;
+        Sun, 10 Sep 2023 12:45:56 +0100
+Date:   Sun, 10 Sep 2023 12:45:55 +0100
+Message-ID: <86bkeadzf0.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+Cc:     linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, Christoffer.Dall@arm.com,
+        eauger@redhat.com, miguel.luis@oracle.com,
+        darren@os.amperecomputing.com, scott@os.amperecomputing.com
+Subject: Re: [PATCH v2 2/2] KVM: arm64: timers: Save restore CVAL of a ptimer across guest entry and exits
+In-Reply-To: <20230904114218.590304-3-gankulkarni@os.amperecomputing.com>
+References: <20230904114218.590304-1-gankulkarni@os.amperecomputing.com>
+        <20230904114218.590304-3-gankulkarni@os.amperecomputing.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: gankulkarni@os.amperecomputing.com, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, Christoffer.Dall@arm.com, eauger@redhat.com, miguel.luis@oracle.com, darren@os.amperecomputing.com, scott@os.amperecomputing.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[side notes:
-* mail has a reduced set of recipients
-* fix is in the works, but add it to the tracking, as rc1 is due
-* just in case it was missed: culprit made it to various stable series]
+On Mon, 04 Sep 2023 12:42:18 +0100,
+Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com> wrote:
+>=20
+> As per FEAT_ECV, when HCR_EL2.{E2H, TGE} =3D=3D {1, 1}, Enhanced Counter
+> Virtualization functionality is disabled and CNTPOFF_EL2 value is treated
+> as zero. On VHE host, E2H and TGE are set, hence it is required
+> to save Guest's CVAL to memory and increment it by CNTPOFF_EL2 at
+> guest exit to avoid false physical timer interrupts and also
+> restore back the CVAL with saved value before the guest entry.
+>=20
+> Signed-off-by: Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+> ---
+>  arch/arm64/kvm/arch_timer.c     | 60 ++++++++++++++++++++++++++++++---
+>  arch/arm64/kvm/hyp/vhe/switch.c | 13 +++++++
+>  include/kvm/arm_arch_timer.h    |  1 +
+>  3 files changed, 69 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/arch/arm64/kvm/arch_timer.c b/arch/arm64/kvm/arch_timer.c
+> index 98b0e8ac02ae..9fe3fa6ed98a 100644
+> --- a/arch/arm64/kvm/arch_timer.c
+> +++ b/arch/arm64/kvm/arch_timer.c
+> @@ -514,6 +514,59 @@ static void set_cntpoff(u64 cntpoff)
+>  		write_sysreg_s(cntpoff, SYS_CNTPOFF_EL2);
+>  }
+> =20
+> +static void ptimer_cval_save(struct arch_timer_context *ctx, u64 offset)
+> +{
+> +	unsigned long flags;
+> +	u64 cval;
+> +
+> +	local_irq_save(flags);
+> +	cval =3D read_sysreg_el0(SYS_CNTP_CVAL);
+> +	timer_set_cval(ctx, cval);
+> +	cval +=3D offset;
+> +	write_sysreg_el0(cval, SYS_CNTP_CVAL);
+> +	isb();
+> +	local_irq_restore(flags);
+> +}
+> +
+> +static void ptimer_cval_restore(struct arch_timer_context *ctx, u64 offs=
+et)
+> +{
+> +	unsigned long flags;
+> +	u64 cval;
+> +
+> +	local_irq_save(flags);
+> +	cval =3D timer_get_cval(ctx);
+> +	write_sysreg_el0(cval, SYS_CNTP_CVAL);
+> +	isb();
+> +	local_irq_restore(flags);
+> +}
+> +
+> +void kvm_ptimer_cval_save_restore(struct kvm_vcpu *vcpu, bool save)
+> +{
+> +	struct timer_map map;
+> +	struct arch_timer_cpu *timer;
+> +	struct arch_timer_context *ctxp;
+> +	u64 offset;
+> +
+> +	get_timer_map(vcpu, &map);
+> +	ctxp =3D map.direct_ptimer;
+> +
+> +	if (unlikely(ctxp =3D=3D NULL))
+> +		return;
+> +
+> +	offset =3D timer_get_offset(ctxp);
+> +	if (!offset)
+> +		return;
+> +
+> +	timer =3D vcpu_timer(ctxp->vcpu);
+> +	if (!timer->enabled || !ctxp->loaded)
+> +		return;
+> +
+> +	if (save)
+> +		ptimer_cval_save(ctxp, offset);
+> +	else
+> +		ptimer_cval_restore(ctxp, offset);
+> +}
+> +
 
-[TLDR: I'm adding this report to the list of tracked Linux kernel
-regressions; the text you find below is based on a few templates
-paragraphs you might have encountered already in similar form.
-See link in footer if these mails annoy you.]
+I really don't want to see any of this code in the arch_timer
+backend. There is nothing here that executes in the context of the
+world-switch until this, and I think this is the wrong level of
+abstraction.
 
-On 03.09.23 21:36, Guenter Roeck wrote:
-> 
-> On Sat, Aug 12, 2023 at 05:48:52PM +0200, Helge Deller wrote:
->> On the parisc architecture, lockdep reports for all static objects which
->> are in the __initdata section (e.g. "setup_done" in devtmpfs,
->> "kthreadd_done" in init/main.c) this warning:
->>
->> 	INFO: trying to register non-static key.
->>
-> [...]
->> Signed-off-by: Helge Deller <deller@gmx.de>
->> Fixes: bac59d18c701 ("x86/setup: Fix static memory detection")
-> 
-> On loongarch, this patch results in the following backtrace.
-> [...]> # first bad commit: [0a6b58c5cd0dfd7961e725212f0fc8dfc5d96195]
-lockdep: fix static memory detection even more
+You end-up doing things that make no sense in the expected execution
+context (timer not loaded?, not enabled?, disabling interrupts?), and
+this makes the whole thing pointlessly complex.
 
-Thanks for the report. To be sure the issue doesn't fall through the
-cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
-tracking bot:
+My take on this problem is still the same (vaguely amended compared to
+the previous version). If this doesn't work for you, please explain
+what is wrong with it. But it has the shape of what I really want to
+see.
 
-#regzbot ^introduced 0a6b58c5cd0dfd7961e725212f0fc8dfc5d961
-#regzbot title lockdep: backtrace on loongarch
-#regzbot ignore-activity
+Thanks,
 
-This isn't a regression? This issue or a fix for it are already
-discussed somewhere else? It was fixed already? You want to clarify when
-the regression started to happen? Or point out I got the title or
-something else totally wrong? Then just reply and tell me -- ideally
-while also telling regzbot about it, as explained by the page listed in
-the footer of this mail.
+	M.
 
-Developers: When fixing the issue, remember to add 'Link:' tags pointing
-to the report (the parent of this mail). See page linked in footer for
-details.
+=46rom 2516a1410c0d45a7d3ba0523847be339bfcb1e50 Mon Sep 17 00:00:00 2001
+From: Marc Zyngier <maz@kernel.org>
+Date: Tue, 22 Aug 2023 13:18:10 +0100
+Subject: [PATCH] KVM: arm64: timers: Correctly handle TGE flip with
+ CNTPOFF_EL2
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
+Contrary to common belief, HCR_EL2.TGE has a direct and immediate
+effect on the way the EL0 physical counter is offset. Flipping
+TGE from 1 to 0 while at EL2 immediately changes the way the counter
+compared to the CVAL limit.
+
+This means that we cannot directly save/restore the guest's view of
+CVAL, but that we instead must treat it as if CNTPOFF didn't exist.
+Only in the world switch, once we figure out that we do have CNTPOFF,
+can we must the offset back and forth depending on the polarity of
+TGE.
+
+Fixes: 2b4825a86940 ("KVM: arm64: timers: Use CNTPOFF_EL2 to offset the phy=
+sical timer")
+Reported-by: Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ arch/arm64/kvm/arch_timer.c     | 13 +++-------
+ arch/arm64/kvm/hyp/vhe/switch.c | 45 +++++++++++++++++++++++++++++++++
+ include/kvm/arm_arch_timer.h    |  7 +++++
+ 3 files changed, 55 insertions(+), 10 deletions(-)
+
+diff --git a/arch/arm64/kvm/arch_timer.c b/arch/arm64/kvm/arch_timer.c
+index 6dcdae4d38cb..a1e24228aaaa 100644
+--- a/arch/arm64/kvm/arch_timer.c
++++ b/arch/arm64/kvm/arch_timer.c
+@@ -55,11 +55,6 @@ static struct irq_ops arch_timer_irq_ops =3D {
+ 	.get_input_level =3D kvm_arch_timer_get_input_level,
+ };
+=20
+-static bool has_cntpoff(void)
+-{
+-	return (has_vhe() && cpus_have_final_cap(ARM64_HAS_ECV_CNTPOFF));
+-}
+-
+ static int nr_timers(struct kvm_vcpu *vcpu)
+ {
+ 	if (!vcpu_has_nv(vcpu))
+@@ -180,7 +175,7 @@ u64 kvm_phys_timer_read(void)
+ 	return timecounter->cc->read(timecounter->cc);
+ }
+=20
+-static void get_timer_map(struct kvm_vcpu *vcpu, struct timer_map *map)
++void get_timer_map(struct kvm_vcpu *vcpu, struct timer_map *map)
+ {
+ 	if (vcpu_has_nv(vcpu)) {
+ 		if (is_hyp_ctxt(vcpu)) {
+@@ -548,8 +543,7 @@ static void timer_save_state(struct arch_timer_context =
+*ctx)
+ 		timer_set_ctl(ctx, read_sysreg_el0(SYS_CNTP_CTL));
+ 		cval =3D read_sysreg_el0(SYS_CNTP_CVAL);
+=20
+-		if (!has_cntpoff())
+-			cval -=3D timer_get_offset(ctx);
++		cval -=3D timer_get_offset(ctx);
+=20
+ 		timer_set_cval(ctx, cval);
+=20
+@@ -636,8 +630,7 @@ static void timer_restore_state(struct arch_timer_conte=
+xt *ctx)
+ 		cval =3D timer_get_cval(ctx);
+ 		offset =3D timer_get_offset(ctx);
+ 		set_cntpoff(offset);
+-		if (!has_cntpoff())
+-			cval +=3D offset;
++		cval +=3D offset;
+ 		write_sysreg_el0(cval, SYS_CNTP_CVAL);
+ 		isb();
+ 		write_sysreg_el0(timer_get_ctl(ctx), SYS_CNTP_CTL);
+diff --git a/arch/arm64/kvm/hyp/vhe/switch.c b/arch/arm64/kvm/hyp/vhe/switc=
+h.c
+index 6537f58b1a8c..5dcbde57f466 100644
+--- a/arch/arm64/kvm/hyp/vhe/switch.c
++++ b/arch/arm64/kvm/hyp/vhe/switch.c
+@@ -39,6 +39,26 @@ static void __activate_traps(struct kvm_vcpu *vcpu)
+=20
+ 	___activate_traps(vcpu);
+=20
++	if (has_cntpoff()) {
++		struct timer_map map;
++
++		get_timer_map(vcpu, &map);
++
++		/*
++		 * We're entrering the guest. Reload the correct
++		 * values from memory now that TGE is clear.
++		 */
++		if (map.direct_ptimer =3D=3D vcpu_ptimer(vcpu))
++			val =3D __vcpu_sys_reg(vcpu, CNTP_CVAL_EL0);
++		if (map.direct_ptimer =3D=3D vcpu_hptimer(vcpu))
++			val =3D __vcpu_sys_reg(vcpu, CNTHP_CVAL_EL2);
++
++		if (map.direct_ptimer) {
++			write_sysreg_s(val, SYS_CNTP_CVAL_EL0);
++			isb();
++		}
++	}
++
+ 	val =3D read_sysreg(cpacr_el1);
+ 	val |=3D CPACR_ELx_TTA;
+ 	val &=3D ~(CPACR_EL1_ZEN_EL0EN | CPACR_EL1_ZEN_EL1EN |
+@@ -77,6 +97,31 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
+=20
+ 	write_sysreg(HCR_HOST_VHE_FLAGS, hcr_el2);
+=20
++	if (has_cntpoff()) {
++		struct timer_map map;
++		u64 val, offset;
++
++		get_timer_map(vcpu, &map);
++
++		/*
++		 * We're exiting the guest. Save the latest CVAL value
++		 * to memory and apply the offset now that TGE is set.
++		 */
++		val =3D read_sysreg_s(SYS_CNTP_CVAL_EL0);
++		if (map.direct_ptimer =3D=3D vcpu_ptimer(vcpu))
++			__vcpu_sys_reg(vcpu, CNTP_CVAL_EL0) =3D val;
++		if (map.direct_ptimer =3D=3D vcpu_hptimer(vcpu))
++			__vcpu_sys_reg(vcpu, CNTHP_CVAL_EL2) =3D val;
++
++		offset =3D read_sysreg_s(SYS_CNTPOFF_EL2);
++
++		if (map.direct_ptimer && offset) {
++			offset =3D read_sysreg_s(SYS_CNTPOFF_EL2);
++			write_sysreg_s(val + offset, SYS_CNTP_CVAL_EL0);
++			isb();
++		}
++	}
++
+ 	/*
+ 	 * ARM errata 1165522 and 1530923 require the actual execution of the
+ 	 * above before we can switch to the EL2/EL0 translation regime used by
+diff --git a/include/kvm/arm_arch_timer.h b/include/kvm/arm_arch_timer.h
+index bb3cb005873e..e748bc957d83 100644
+--- a/include/kvm/arm_arch_timer.h
++++ b/include/kvm/arm_arch_timer.h
+@@ -82,6 +82,8 @@ struct timer_map {
+ 	struct arch_timer_context *emul_ptimer;
+ };
+=20
++void get_timer_map(struct kvm_vcpu *vcpu, struct timer_map *map);
++
+ struct arch_timer_cpu {
+ 	struct arch_timer_context timers[NR_KVM_TIMERS];
+=20
+@@ -145,4 +147,9 @@ u64 timer_get_cval(struct arch_timer_context *ctxt);
+ void kvm_timer_cpu_up(void);
+ void kvm_timer_cpu_down(void);
+=20
++static inline bool has_cntpoff(void)
++{
++	return (has_vhe() && cpus_have_final_cap(ARM64_HAS_ECV_CNTPOFF));
++}
++
+ #endif
+--=20
+2.34.1
+
+
+--=20
+Without deviation from the norm, progress is not possible.
