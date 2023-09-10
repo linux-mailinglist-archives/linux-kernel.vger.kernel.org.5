@@ -2,184 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7038B799C4B
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 04:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E2E799C4F
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 04:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344172AbjIJCAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Sep 2023 22:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
+        id S1345374AbjIJCUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Sep 2023 22:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233350AbjIJCAP (ORCPT
+        with ESMTP id S233350AbjIJCUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Sep 2023 22:00:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9AD132
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 19:00:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694311209; x=1725847209;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=JNFGM5eSTMbD5FHEUqo7i2Bh7InZ7iX5RgnaEQIj+4M=;
-  b=gbJxDwHjm33wP+UuFlC5Ap+pMDjEGxLbe81tFkf1vFJWIsjPfJ6CUp/b
-   mAGHEB5O83vK4MHsmM/xDHyHg5BZa18oqFo9o5DodOorUXqGTDZtEAGUu
-   djMABfR7tS1wqrcL6oJDMU6IZ8L+cfT5J+4sRiOvlUsmuyYttZ5TRsrqH
-   JvXNF+iXKcloiph60MbsIoHbI955JhQM6Nx00jbMbucXR6WQeHyXQVKtk
-   zB7NdfDBXy+sub8bmXiy6DCNlJ8WRIX+NyyY9tNYyY3siho6YN8cpQbDF
-   Dq1ZerjvIVkc+jcNV4eW1iBdb6asFzqmFtiZz2qPCzGU4slay0I4v0fSp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="362909121"
-X-IronPort-AV: E=Sophos;i="6.02,240,1688454000"; 
-   d="scan'208";a="362909121"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2023 19:00:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10827"; a="736364071"
-X-IronPort-AV: E=Sophos;i="6.02,240,1688454000"; 
-   d="scan'208";a="736364071"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 09 Sep 2023 19:00:07 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qf9k5-0004Cl-0Q;
-        Sun, 10 Sep 2023 02:00:05 +0000
-Date:   Sun, 10 Sep 2023 09:59:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: kernel/bpf/hashtab.c:1059:30: sparse: sparse: incorrect type in
- assignment (different address spaces)
-Message-ID: <202309100946.Ulnm01iI-lkp@intel.com>
+        Sat, 9 Sep 2023 22:20:14 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9177F1B5
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Sep 2023 19:20:09 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 90AAE5C00F4;
+        Sat,  9 Sep 2023 22:20:08 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Sat, 09 Sep 2023 22:20:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+         h=cc:cc:content-type:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1694312408; x=
+        1694398808; bh=xrUrQhu0bKn4V0R/7QZgiQCA2ML5d9qouROX3hkBCJo=; b=t
+        ZmU/8ZK10ef7RQsh5BbFhHq3gBSIRMNFClmXdXSHMHbTHt2EmETGJbH5xJ9y36FX
+        Nll8R4rt+MLvFZBETxIRdsyuaAY4EQgGrtqtpkSY5C20UFX7JI+3HyJPVH75Xjtr
+        H5532wpifrx2zUcXJWI7V0s4ljQi9j+ew0+lwv0bi8eMQZ1A4PELioo7SNHrZ7ks
+        wKoES4EE4yvHjC/3wtGbOHEfWNzrFtqW2sq97vou5tkYsqKlSJuPl8GZFjObcvvz
+        zM/xesdiFZfrSsyQ9kimDtzis4+BBkJz/ZmFmY+mUI96r7MYpd4GsETD2R/WTB3W
+        wF1bBGBHkNLw2Umgr8Ybw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1694312408; x=1694398808; bh=xrUrQhu0bKn4V
+        0R/7QZgiQCA2ML5d9qouROX3hkBCJo=; b=Q1aR05P2kxJu/pkxX6HD+PD9WiWdT
+        rEV2MmSvQsDphpr3/6cWGKSfvivTcTcMMKS1blX7sFkk6sCS+muH8yRk6IFAOm2a
+        vZff7lxnuXUJQE4LVScEavHWF8ZWa3MnxIrf8wc430PBnNAIqYXs/0ypULff/a4w
+        9qoeVYbf+EcuqbzDRdW6mIRnxJX5NWKoye2BNjZmsZdGC/Q8k5SB6RMjQK4w1z3w
+        7P5t3mQDhf0jYlFE++FxWM64QLYUWdz0ITi2GUG4NOyJY8eM6hxyHRJJGlqeHer3
+        CG1AhVlutdZTKRjhk+2vnK355BXzp0RBbCrU8knnKtC0B2J4Wrd8lvz0A==
+X-ME-Sender: <xms:2Cf9ZHjJp_0rg958Yi7P2-xSWyqiJgD3mMgLxDiojaj6PsdRlFSQBw>
+    <xme:2Cf9ZEC0CNJCSsW1le3xIKRu_3hCkKo1eZmhiHP8waJxvwnl807KDFldT4gdCSGTJ
+    B-ZAcYfX4uakS6Il4Q>
+X-ME-Received: <xmr:2Cf9ZHGXBuLd7K7LtjS4YVjGzcXLjz8Q5nuhy6cPWnXt1wCybbJuGsWf7eQL2NAOA5Ha95W60UI_cP5ws8XbnWrHlkYbqF6wwzih>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeitddgheegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
+    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
+    hjpheqnecuggftrfgrthhtvghrnhepveeilefhudekffehkeffudduvedvfeduleelfeeg
+    ieeljeehjeeuvdeghfetvedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlh
+    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghs
+    hhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:2Cf9ZERt7Qfuy6naXAwTPcF4xBgKNiJniHZ7t6W_nmCEc2w4pChTVw>
+    <xmx:2Cf9ZExiNp-jFFFxFvwggewpu8oW2KbVyb-jXMWoIrWgDfS0esIDtQ>
+    <xmx:2Cf9ZK6-bq1LB8SRM9edMItb0kpregBIcBM-b3CROcZRSvaynTVKJQ>
+    <xmx:2Cf9ZBpdo55ZsJ7aZmUXPUCrGs_S76NohplTleOXkj4bQhV8brjUZg>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 9 Sep 2023 22:20:07 -0400 (EDT)
+Date:   Sun, 10 Sep 2023 11:20:03 +0900
+From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jan Engelhardt <jengelh@inai.de>, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] firewire updates for 6.6
+Message-ID: <20230910022003.GA67045@workstation.local>
+Mail-Followup-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jan Engelhardt <jengelh@inai.de>, linux-kernel@vger.kernel.org
+References: <20230909033457.GA59845@workstation.local>
+ <CAHk-=wjHYum5R1hbVFxqEYDt6baZGh7zzKNpv_R3sGbtN0=-dQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAHk-=wjHYum5R1hbVFxqEYDt6baZGh7zzKNpv_R3sGbtN0=-dQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   a3c57ab79a06e333a869ae340420cb3c6f5921d3
-commit: ee4ed53c5eb62f49f23560cc2642353547e46c32 bpf: Convert percpu hash map to per-cpu bpf_mem_alloc.
-date:   1 year ago
-config: i386-randconfig-063-20230910 (https://download.01.org/0day-ci/archive/20230910/202309100946.Ulnm01iI-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230910/202309100946.Ulnm01iI-lkp@intel.com/reproduce)
+Hi Linus,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309100946.Ulnm01iI-lkp@intel.com/
+On Sat, Sep 09, 2023 at 11:28:14AM -0700, Linus Torvalds wrote:
+> On Fri, 8 Sept 2023 at 20:35, Takashi Sakamoto <o-takashi@sakamocchi.jp> wrote:
+> >
+> > In the second half of 6.6 merge window, Jan Engelhardt sent the change. It
+> > allows any front ends of Kconfig to deactivate FireWire subsystem at a
+> > clip.
+> 
+> I pulled this, but after looking at it, I unpulled it again.
+> 
+> We *already* had this. Saying 'N' to the existing FIREWIRE option
+> would disable all of the firewire stack, since the rest then just has
+> 
+>         depends on FIREWIRE
+> 
+> on it.
+> 
+> The only exception is the firewire sniffing side (FIREWIRE_NOSY),
+> which technically doesn't need the firewire stack to exist or to work.
+>
+> The other thing this adds is a
+> 
+>         depends on PCI || COMPILE_TEST
+> 
+> for the firewire subsystem, which makes sense since the controllers
+> all depend on PCI even if the code itself doesn't care (thus the
+> COMPILE_TEST) part.
+> 
+> Anyway, both of those changes are fine by me - but adding a new config
+> option, and bothering users that want firewire support with TWO
+> questions about "do you want firewire" is just annoying and frankly
+> just stupid.
+> 
+> I have said this five hundred times before, but I guess I'll say it
+> five hundred times again (the Proclaimers even wrote a song about it):
+> we don't make the config options worse, and we don't ask people stupid
+> things.
+> 
+> So no.
+> 
+> The actual core limitations I'd be ok with: just add that
+> 
+>         depends on PCI || COMPILE_TEST
+> 
+> to the *existing* FIREWIRE config, and add a
+> 
+>         depends on FIREWIRE
+> 
+> to FIREWIRE_NOSY for all I care. That potentiall y*removes* annoying
+> questions, not adds them.
+> 
+> And if people want to change the existing menu to a menuconfig
+> (*keeping* the existing FIREWIRE config option, not adding a new one),
+> that's fine too.
+> 
+> But this "let's add yet another mindless option to ask users" is _not_
+> acceptable.
+> 
+>               Linus
 
-sparse warnings: (new ones prefixed by >>)
->> kernel/bpf/hashtab.c:1059:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void [noderef] __percpu *[assigned] pptr @@     got void * @@
-   kernel/bpf/hashtab.c:1059:30: sparse:     expected void [noderef] __percpu *[assigned] pptr
-   kernel/bpf/hashtab.c:1059:30: sparse:     got void *
->> kernel/bpf/hashtab.c:1065:44: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *ptr_to_pptr @@     got void [noderef] __percpu *[assigned] pptr @@
-   kernel/bpf/hashtab.c:1065:44: sparse:     expected void *ptr_to_pptr
-   kernel/bpf/hashtab.c:1065:44: sparse:     got void [noderef] __percpu *[assigned] pptr
->> kernel/bpf/hashtab.c:1066:34: sparse: sparse: cast removes address space '__percpu' of expression
-   kernel/bpf/hashtab.c:1066:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void [noderef] __percpu *[assigned] pptr @@     got void * @@
-   kernel/bpf/hashtab.c:1066:30: sparse:     expected void [noderef] __percpu *[assigned] pptr
-   kernel/bpf/hashtab.c:1066:30: sparse:     got void *
-   kernel/bpf/hashtab.c:1441:27: sparse: sparse: context imbalance in 'htab_map_delete_elem' - unexpected unlock
-   kernel/bpf/hashtab.c:1475:27: sparse: sparse: context imbalance in 'htab_lru_map_delete_elem' - unexpected unlock
-   kernel/bpf/hashtab.c:1650:27: sparse: sparse: context imbalance in '__htab_map_lookup_and_delete_elem' - unexpected unlock
-   kernel/bpf/hashtab.c: note: in included file (through include/linux/workqueue.h, include/linux/bpf.h):
-   include/linux/rcupdate.h:737:9: sparse: sparse: context imbalance in '__htab_map_lookup_and_delete_batch' - unexpected unlock
-   include/linux/rcupdate.h:737:9: sparse: sparse: context imbalance in 'bpf_hash_map_seq_find_next' - unexpected unlock
-   include/linux/rcupdate.h:737:9: sparse: sparse: context imbalance in 'bpf_hash_map_seq_stop' - unexpected unlock
+Indeed, the additional option would be annoying to users. I figure out
+that It is reasonable to avoid the change and stop 'history repeats'.
 
-vim +1059 kernel/bpf/hashtab.c
+Ideally, core functions of FireWire subsystem in firewire-core can be
+built without dependency on PCI subsystem, but actually it depends, as
+we can see in comment of the menu option. The nosy driver is for Texus
+Instruments PCILynx device and should depends on PCI subsystem. We can
+see apparent difference between these two cases of dependency on PCI
+subsystem. I doubt the loss of direct dependency on PCI subsystem in nosy,
+at present.
 
-  1006	
-  1007	static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
-  1008						 void *value, u32 key_size, u32 hash,
-  1009						 bool percpu, bool onallcpus,
-  1010						 struct htab_elem *old_elem)
-  1011	{
-  1012		u32 size = htab->map.value_size;
-  1013		bool prealloc = htab_is_prealloc(htab);
-  1014		struct htab_elem *l_new, **pl_new;
-  1015		void __percpu *pptr;
-  1016	
-  1017		if (prealloc) {
-  1018			if (old_elem) {
-  1019				/* if we're updating the existing element,
-  1020				 * use per-cpu extra elems to avoid freelist_pop/push
-  1021				 */
-  1022				pl_new = this_cpu_ptr(htab->extra_elems);
-  1023				l_new = *pl_new;
-  1024				htab_put_fd_value(htab, old_elem);
-  1025				*pl_new = old_elem;
-  1026			} else {
-  1027				struct pcpu_freelist_node *l;
-  1028	
-  1029				l = __pcpu_freelist_pop(&htab->freelist);
-  1030				if (!l)
-  1031					return ERR_PTR(-E2BIG);
-  1032				l_new = container_of(l, struct htab_elem, fnode);
-  1033			}
-  1034		} else {
-  1035			if (is_map_full(htab))
-  1036				if (!old_elem)
-  1037					/* when map is full and update() is replacing
-  1038					 * old element, it's ok to allocate, since
-  1039					 * old element will be freed immediately.
-  1040					 * Otherwise return an error
-  1041					 */
-  1042					return ERR_PTR(-E2BIG);
-  1043			inc_elem_count(htab);
-  1044			l_new = bpf_mem_cache_alloc(&htab->ma);
-  1045			if (!l_new) {
-  1046				l_new = ERR_PTR(-ENOMEM);
-  1047				goto dec_count;
-  1048			}
-  1049			check_and_init_map_value(&htab->map,
-  1050						 l_new->key + round_up(key_size, 8));
-  1051		}
-  1052	
-  1053		memcpy(l_new->key, key, key_size);
-  1054		if (percpu) {
-  1055			if (prealloc) {
-  1056				pptr = htab_elem_get_ptr(l_new, key_size);
-  1057			} else {
-  1058				/* alloc_percpu zero-fills */
-> 1059				pptr = bpf_mem_cache_alloc(&htab->pcpu_ma);
-  1060				if (!pptr) {
-  1061					bpf_mem_cache_free(&htab->ma, l_new);
-  1062					l_new = ERR_PTR(-ENOMEM);
-  1063					goto dec_count;
-  1064				}
-> 1065				l_new->ptr_to_pptr = pptr;
-> 1066				pptr = *(void **)pptr;
-  1067			}
-  1068	
-  1069			pcpu_init_value(htab, pptr, value, onallcpus);
-  1070	
-  1071			if (!prealloc)
-  1072				htab_elem_set_ptr(l_new, key_size, pptr);
-  1073		} else if (fd_htab_map_needs_adjust(htab)) {
-  1074			size = round_up(size, 8);
-  1075			memcpy(l_new->key + round_up(key_size, 8), value, size);
-  1076		} else {
-  1077			copy_map_value(&htab->map,
-  1078				       l_new->key + round_up(key_size, 8),
-  1079				       value);
-  1080		}
-  1081	
-  1082		l_new->hash = hash;
-  1083		return l_new;
-  1084	dec_count:
-  1085		dec_elem_count(htab);
-  1086		return l_new;
-  1087	}
-  1088	
+Anyway, the requester has already sent another patch[1]. I postpone it
+and continue discussion with him for next merge window.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+[1] https://lore.kernel.org/lkml/20230909221248.2598-1-jengelh@inai.de/
+
+
+Thanks
+
+Takashi Sakamoto
