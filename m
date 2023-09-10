@@ -2,126 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B72799EF4
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 18:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CC4799EF5
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Sep 2023 18:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbjIJQVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 12:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48840 "EHLO
+        id S233196AbjIJQZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 12:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbjIJQVA (ORCPT
+        with ESMTP id S230177AbjIJQZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 12:21:00 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC0D91A5;
-        Sun, 10 Sep 2023 09:20:55 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99c93638322so777556866b.1;
-        Sun, 10 Sep 2023 09:20:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694362854; x=1694967654; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=ng6BvSWrmtyxNhyAHyI/hbTxjJRF3fVcx0Yq4Iv9jAk=;
-        b=pXbMx/MHgkxhssnkjgFAl7w/qlDa/KwmeDdyQ0o2HsEjKj9bPnd+v9c8pXgLysl/j6
-         EigvuBKaBf0tdaE3mTtkZYwWlmRqKxBMaaaCWi6gRbwEBfanCKW9PoNtIEHcXAMhJG2+
-         VInWaQHgR/Wy1Rq77AA+u6otVHW03v2w3g9rHcmoL3eU0NvW3iaUHWIdPKKhdVPzcrtB
-         0BAHfw1isE+i7nlPMb63OnYYCPq3Sz34Cdjd+LBwOVrViTGFXzwqMl82Q7hnCyux5cFw
-         stfyMQYTiYn9Bg5J03pKdb6xgCfSxiNEOoPoQ8MbJlCkTUVzEO3sDG36T6h7LMaP7Xyl
-         27Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694362854; x=1694967654;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ng6BvSWrmtyxNhyAHyI/hbTxjJRF3fVcx0Yq4Iv9jAk=;
-        b=ZkofB+ekcPXCcamxQFcHZJ3mRW+45/ve5SSto3tBCnslFpdoSAdhbNK+8hYA88put7
-         UMrxUahv99feyZHF5Em2ni/VGnxXq9q+EIhSlDqyzj8xcnIgo4YVkOtXOdgNwdYlJTJC
-         ot87UR0Nkb0BNXlExtS9LaHr4767OikHQaZjUxCp8qmKKCPcdpDOycPuxLBcfKjWEGSU
-         2p+skeD3MXDOmrMrwm0NUXDqE02w7bY0QI4FKzpQw/MSuVJNC9TDoKOidU7U8bXT5Izp
-         l/m5Fln7r4ik5syxXIBrC9X6PGS2azI/veoBTESCarsALJ5yBccXUw8fgzK1KJevpPR1
-         36hw==
-X-Gm-Message-State: AOJu0YzbhApeylmRmu3bOhhUJqy0tc85LjMRMLGVW5oRiCJp8SKU3N3c
-        tM+hG6cmRriLz1uwS0ZAC0Pi/LdDczw=
-X-Google-Smtp-Source: AGHT+IGCMRegEDmfhY3X7vWaNn94jbCgTeUUHMHEqqC+CxFGZQy/psWwhSFG2QM46Vm34HmN/IF0+Q==
-X-Received: by 2002:a17:907:1c94:b0:982:a022:a540 with SMTP id nb20-20020a1709071c9400b00982a022a540mr17799320ejc.11.1694362854037;
-        Sun, 10 Sep 2023 09:20:54 -0700 (PDT)
-Received: from gmail.com (84-236-113-167.pool.digikabel.hu. [84.236.113.167])
-        by smtp.gmail.com with ESMTPSA id m14-20020aa7d34e000000b0052a1a623267sm3507563edr.62.2023.09.10.09.20.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Sep 2023 09:20:53 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sun, 10 Sep 2023 18:20:51 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] perf events fix
-Message-ID: <ZP3s4yKcWtgCn6zb@gmail.com>
+        Sun, 10 Sep 2023 12:25:23 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147B8119
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 09:25:18 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1qfNFM-0008Up-8D; Sun, 10 Sep 2023 18:25:16 +0200
+From:   "Regzbot (on behalf of Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Linux regressions report  for mainline [2023-09-10]
+Date:   Sun, 10 Sep 2023 16:25:15 +0000
+Message-Id: <169436306694.2246708.7828658786502488268@leemhuis.info>
+X-Mailer: git-send-email 2.40.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1694363118;35ef566d;
+X-HE-SMSGID: 1qfNFM-0008Up-8D
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hi Linus. Here is a quick regression report for mainline ahead of
+6.6-rc1. Not much to report. I noticed quite a few reports due to
+regressions during the merge window, but except two all of them got
+fixed already. And the fix for one of them is worked out already as
+well, just not yet heading your way afaics.
 
-Please pull the latest perf/urgent git tree from:
+Ciao, Thorsten
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-urgent-2023-09-10
+---
 
-   # HEAD: 6f7f984fa85b305799076a1bcec941b9377587de perf/x86/uncore: Correct the number of CHAs on EMR
+Hi, this is regzbot, the Linux kernel regression tracking bot.
 
-Work around a firmware bug in the uncore PMU driver,
-affecting certain Intel systems.
+Currently I'm aware of 3 regressions in linux-mainline. Find the
+current status below and the latest on the web:
 
- Thanks,
+https://linux-regtracking.leemhuis.info/regzbot/mainline/
 
-	Ingo
-
------------------->
-Kan Liang (1):
-      perf/x86/uncore: Correct the number of CHAs on EMR
+Bye bye, hope to see you soon for the next report.
+   Regzbot (on behalf of Thorsten Leemhuis)
 
 
- arch/x86/events/intel/uncore_snbep.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+========================================================
+current cycle (v6.5.. aka v6.5-post), culprit identified
+========================================================
 
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index 4d349986f76a..8250f0f59c2b 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -6474,8 +6474,18 @@ void spr_uncore_cpu_init(void)
- 
- 	type = uncore_find_type_by_id(uncore_msr_uncores, UNCORE_SPR_CHA);
- 	if (type) {
-+		/*
-+		 * The value from the discovery table (stored in the type->num_boxes
-+		 * of UNCORE_SPR_CHA) is incorrect on some SPR variants because of a
-+		 * firmware bug. Using the value from SPR_MSR_UNC_CBO_CONFIG to replace it.
-+		 */
- 		rdmsrl(SPR_MSR_UNC_CBO_CONFIG, num_cbo);
--		type->num_boxes = num_cbo;
-+		/*
-+		 * The MSR doesn't work on the EMR XCC, but the firmware bug doesn't impact
-+		 * the EMR XCC. Don't let the value from the MSR replace the existing value.
-+		 */
-+		if (num_cbo)
-+			type->num_boxes = num_cbo;
- 	}
- 	spr_uncore_iio_free_running.num_boxes = uncore_type_max_boxes(uncore_msr_uncores, UNCORE_SPR_IIO);
- }
+
+[ *NEW* ] lockdep: backtrace on loongarch
+-----------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/b7526bf6-886f-457a-beba-84ae9f75bc77@roeck-us.net/
+https://lore.kernel.org/lkml/b7526bf6-886f-457a-beba-84ae9f75bc77@roeck-us.net/
+
+By Guenter Roeck; 6 days ago; 7 activities, latest 1 days ago.
+Introduced in 0a6b58c5cd0d
+
+Recent activities from: Guenter Roeck (4), Helge Deller (3)
+
+3 patch postings are associated with this regression, the latest is this:
+* Re: [PATCH] lockdep: Fix static memory detection even more
+  https://lore.kernel.org/lkml/ZPl%2BY2vRYUnWtTQc@ls3530/
+  3 days ago, by Helge Deller
+
+
+[ *NEW* ] Re: [fstests generic/388, 455, 475, 482 ...] Ext4 journal recovery test fails
+---------------------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/ZPTvIb6hwIjY7T2M@mit.edu/
+https://lore.kernel.org/linux-ext4/ZPTvIb6hwIjY7T2M@mit.edu/
+
+By Theodore Ts'o; 6 days ago; 11 activities, latest 3 days ago.
+Introduced in 8147c4c4546f
+
+Fix incoming:
+* jbd2: Remove page size assumptions
+  https://lore.kernel.org/linux-ext4/eb707c22-b64a-4b08-9cf9-fcbeb1ddf16c@leemhuis.info/
+
+
+3D============
+End of report
+=============
+
+All regressions marked '[ *NEW* ]' were added since the previous report,
+which can be found here:
+https://lore.kernel.org/r/169193884982.322301.2963227405402975023@leemhuis.info
+
+Thanks for your attention, have a nice day!
+
+  Regzbot, your hard working Linux kernel regression tracking robot
+
+
+P.S.: Wanna know more about regzbot or how to use it to track regressions
+for your subsystem? Then check out the getting started guide or the
+reference documentation:
+
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
+
+The short version: if you see a regression report you want to see
+tracked, just send a reply to the report where you Cc
+regressions@lists.linux.dev with a line like this:
+
+#regzbot introduced: v5.13..v5.14-rc1
+
+If you want to fix a tracked regression, just do what is expected
+anyway: add a 'Link:' tag with the url to the report, e.g.:
+
+Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
